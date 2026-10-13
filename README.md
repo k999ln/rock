@@ -27,7 +27,13 @@ The product should feel like one continuous handoff:
 3. Let Zema keep the request, plan, approvals, progress, stop state, result, and history together.
 4. See the estimate before paid cloud work, approve a limit, watch usage while it runs, and read the receipt in Wallet.
 
-Sky helps a person choose and connect the right Tool. Zema keeps the request, plan, approvals, progress, stop state, result, and history together. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist AI, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+
+The implemented coordination path is:
+
+`Owner → Jennifer (COLOMBIA + Goal Contract) → Zema / AMC decomposition → specialist A2A Agent → artifact + signed Receipt → independent reviewer → Jennifer final report → owner acceptance`
+
+Open `/chat`, choose a project, enable **計画を整理**, and send the desired outcome. Jennifer first presents the Goal and decomposition without executing anything. After the owner saves the Goal, each ready leaf can be opened as a Zema Cloud Agent job. Actual remote dispatch still requires a connected Agent, a verified quote, a Broker authorization proof, a budget reservation, and explicit owner approval. A remote “completed” state is not enough: Zema records the artifact and Receipt, and a separate reviewer must accept the leaf before Jennifer can include it as completed. See [Jennifer coordination and execution](docs/jennifer-coordination.md).
 
 ## System map
 
@@ -40,7 +46,7 @@ The map is deliberately drawn from the largest promise down to the smallest impl
 | Zoom level | What a person should understand | The named pieces |
 | --- | --- | --- |
 | **1 / Account** | One identity and one history follow the person across surfaces and devices. | Account, Home, Connect, Add, Settings, Campus |
-| **2 / Work** | A request becomes visible work with an owner, a boundary, a result, and a receipt. | Sky → Zema → Wallet |
+| **2 / Work** | A request becomes visible work with an owner, a boundary, a result, and a receipt. | Jennifer → Zema / AMC → specialist AI → reviewer → Wallet |
 | **3 / Foundation** | Every execution path checks the same identity, permission, storage, recovery, and stop rules. | RockstarOS Core, Broker, Runner, Storage, Recovery |
 | **4 / Capability** | A bounded Agent or Tool performs one useful job where it is allowed to run. | Local, PC/MCP, Cloud, Provider, native registry |
 
@@ -101,10 +107,10 @@ The names below are organized by how a person meets them: core surfaces, support
 | **Connect** | Start an account/device connection and, in the retained onboarding flow, keep carrier/SIM entitlement separate from client/OS install state. | Source + fixtures; no carrier or service-offer launch is accepted | [`app/connect/`](app/connect/) |
 | **Add** | Add Sky, selected data recovery, or LLM entry points to an existing OS client or PWA. | Source path; device and provider acceptance separate | [`app/add/`](app/add/) |
 | **Settings** | Manage account, devices, providers, model choices, and recovery settings. | Web source | [`app/settings/`](app/settings/) |
-| **Chat** | Start with a natural-language request and hand it to the right Sky/Zema work path. | Web source; no autonomous execution implied | [`app/chat/`](app/chat/) |
+| **Jennifer / Chat** | Turn a broad outcome into a Goal Contract and bounded AMC leaf tasks, dispatch ready leaves through Zema, and integrate verified results and unfinished work. | Web source + owner-gated A2A path; production Provider setup remains separate | [`app/chat/`](app/chat/) · [`docs/jennifer-coordination.md`](docs/jennifer-coordination.md) |
 | **Library** | Reopen saved results and private work artifacts. | Web source + owner-scoped storage rules | [`app/zema/library/`](app/zema/library/) |
 | **Campus** | Find people, projects, opportunities, events, communities, portfolios, resources, and NFC/QR entry points. The five campus Sky hubs open at `https://avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub`; NFC stickers store that HTTPS URL as an NDEF URI. | Web source + published route check; physical tag writing remains separate | [`app/campus/`](app/campus/) |
-| **AMC** | Turns a Goal into a plan and records manual progress, review, and acceptance. | Catalog `ready` for assisted preparation; AI implementation and autonomous execution are not connected | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
+| **AMC** | Turns Jennifer's Goal Contract into dependency-ordered leaf tasks and records start, submission, independent review, and owner acceptance. | Catalog `ready`; Jennifer can create the Goal and A2A jobs, while every remote dispatch remains explicitly gated | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
 | **Rock Studio** | Authors a Tool, declares its inputs and permissions, packages it with SDK/MCP, and prepares publication to Sky. | Authoring source; publication and execution still have separate gates | [`app/studio/`](app/studio/) · [`app/sky/publish/`](app/sky/publish/) |
 | **Sky Marketplace / Network / Purchases / Sell** | Finds published Tools, manages connections, and separates buying, selling, and refunds from execution. | Source + fixtures; provider and commercial acceptance are separate | [`app/sky/marketplace/`](app/sky/marketplace/) · [`app/sky/network/`](app/sky/network/) · [`app/sky/purchases/`](app/sky/purchases/) · [`app/sky/sell/`](app/sky/sell/) |
 | **CSV** | Handles one bounded file from request through transformation, inspection, and delivery. | Ready bounded Web path; cloud dispatch and live billing are not live | [`app/csv/`](app/csv/) · [`rockstar-csv-cleanup`](lib/catalog.ts) |

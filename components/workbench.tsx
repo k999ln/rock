@@ -54,6 +54,8 @@ const stateNames = {
   cancelled: '中止',
 };
 type Update = { jobId: string; revision: number; command: WorkCommand };
+type WorkbenchAmcGoal = NonNullable<WorkJob['amcGoal']>;
+type JenniferTaskJobCoordination = NonNullable<WorkJob['coordination']>;
 type PendingUpdate = Update & { ownerScope: string };
 type Creation = { ownerScope: string; id: string; title: string; templateId: string };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
@@ -157,6 +159,44 @@ type DelegationReview = {
   request: DelegationRequest;
   delegationId: string;
   authorizationSha256: string;
+};
+type CloudWorkDraft = {
+  prompt: string;
+  currency: string;
+  maximumBudgetInput: string;
+  model?: string;
+  parentJobId?: string;
+  rootJobId?: string;
+  amcTaskId?: string;
+  specialistProfile?: string;
+  delegationRole?: 'worker' | 'reviewer';
+};
+
+const JENNIFER_SAFE_TASK_ID = /^[a-z0-9][a-z0-9-]{0,79}$/u;
+
+function jenniferDelegationKey(
+  taskId: string,
+  role: 'worker' | 'reviewer',
+  nonce: string,
+) {
+  const normalizedNonce = nonce.replace(/[^A-Za-z0-9.-]/gu, '').slice(0, 48);
+  if (!JENNIFER_SAFE_TASK_ID.test(taskId) || !normalizedNonce)
+    throw new Error('JENNIFER_DELEGATION_KEY_INVALID');
+  return `jennifer:${taskId}:${role}:${normalizedNonce}`;
+}
+
+function parseJenniferDelegationKey(value: string) {
+  const match = /^jennifer:([a-z0-9][a-z0-9-]{0,79}):(worker|reviewer):([A-Za-z0-9.-]{1,48})$/u.exec(value);
+  return match
+    ? { taskId: match[1], role: match[2] as 'worker' | 'reviewer', nonce: match[3] }
+    : null;
+}
+type BrokerAuthorizationStatus = {
+  registered: boolean;
+  deviceRef?: string;
+  authorityId?: string;
+  keyId?: string;
+  expiresAt?: number;
 };
 type DelegationQuote = {
   quote: A2APriceQuote;
@@ -324,6 +364,22 @@ async function delegationRequest<T>(path: string, method = 'GET', value?: unknow
   if (!response.ok) throw new Error(data.error || '委任を保存できませんでした。');
   return data;
 }
+async function amcRequest<T>(path: string, method = 'GET', value?: unknown) {
+  const response = await fetch(path, {
+    method,
+    cache: 'no-store',
+    signal: AbortSignal.timeout(20000),
+    ...(value
+      ? {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(value),
+        }
+      : {}),
+  });
+  const data = (await response.json()) as T & { error?: string };
+  if (!response.ok) throw new Error(data.error || 'JenniferのZema記録を更新できませんでした。');
+  return data;
+}
 async function sha256Hex(value: string) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
@@ -336,7 +392,7 @@ export default function Workbench({
   packageRuntimeServers = [],
 }: {
   embedded?: boolean;
-  cloudDraft?: { prompt: string; currency: string; maximumBudgetInput: string; model?: string } | null;
+  cloudDraft?: CloudWorkDraft | null;
   initialPackageKey?: string;
   packageRuntimeServers?: McpConnection[];
 }) {
@@ -351,6 +407,7 @@ export default function Workbench({
   const [delegationBudgetPool, setDelegationBudgetPool] = useState<DelegationBudgetPool | null>(null);
   const [delegationBudgetReservations, setDelegationBudgetReservations] = useState<DelegationBudgetReservation[]>([]);
   const [a2aAgents, setA2aAgents] = useState<A2AAgentConnection[]>([]);
+  const [a2aExecutionReady, setA2aExecutionReady] = useState(false);
   const [agentOrigin, setAgentOrigin] = useState('');
   const [delegationBusy, setDelegationBusy] = useState(false);
   const [delegationPredecessorId, setDelegationPredecessorId] = useOwnerMemoryState<string | null>(ownerScope, currentOwner, null);
@@ -364,7 +421,7 @@ export default function Workbench({
     targetOrigin: '',
     targetAgentName: '',
     targetAgentVersion: '',
-    message: '',
+    message: cloudDraft?.prompt ?? '',
     budgetCurrency: 'USD',
     budgetLimitInput: '',
     budgetLimitMinor: 0,
@@ -373,6 +430,12 @@ export default function Workbench({
     continueWhileDeviceOffline: false,
   });
   const [delegationReview, setDelegationReview] = useOwnerMemoryState<DelegationReview | null>(ownerScope, currentOwner, null);
+  const [delegationRole, setDelegationRole] = useState<'worker' | 'reviewer'>(
+    cloudDraft?.delegationRole ?? 'worker',
+  );
+  const [brokerProofText, setBrokerProofText] = useState('');
+  const [brokerAuthorization, setBrokerAuthorization] = useState<BrokerAuthorizationStatus | null>(null);
+  const [jenniferRootJob, setJenniferRootJob] = useState<WorkJob | null>(null);
   const [resultReviewConfirmedForJob, setResultReviewConfirmedForJob] = useState('');
   const [handoffPackageResult, setHandoffPackageResult] = useOwnerMemoryState<{
     packageKey: string;
@@ -612,6 +675,75 @@ export default function Workbench({
     }
   }, [ownerScope, setDelegationForm, setDelegationError]);
   const selected = jobs.find((job) => job.id === selectedId);
+  const refreshJenniferRoot = useCallback(async (
+    coordination: JenniferTaskJobCoordination,
+  ) => {
+    const data = await amcRequest<{ job: WorkJob }>(
+      `/api/amc?id=${encodeURIComponent(coordination.rootJobId)}`,
+    );
+    const reference = data.job?.amcGoal?.coordinationRef as { planId?: unknown } | undefined;
+    if (!data.job?.amcGoal || reference?.planId !== coordination.planId)
+      throw new Error('Jenniferの親Goalとこの担当AI jobが一致しません。');
+    setJenniferRootJob(data.job);
+    return data.job;
+  }, []);
+
+  const recordJenniferEvent = useCallback(async (
+    coordination: JenniferTaskJobCoordination,
+    build: (goal: WorkbenchAmcGoal) => Record<string, unknown> | null,
+  ) => {
+    const root = await refreshJenniferRoot(coordination);
+    const event = build(root.amcGoal!);
+    if (!event) return root;
+    const eventId = crypto.randomUUID();
+    try {
+      const data = await amcRequest<{ job: WorkJob }>('/api/amc', 'PATCH', {
+        jobId: root.id,
+        revision: root.revision,
+        command: {
+          id: eventId,
+          action: 'amc_event',
+          event: {
+            id: eventId,
+            ...event,
+            expectedRevision: root.amcGoal!.revision,
+          },
+        },
+      });
+      setJenniferRootJob(data.job);
+      return data.job;
+    } catch (cause) {
+      await refreshJenniferRoot(coordination).catch(() => {});
+      throw cause;
+    }
+  }, [refreshJenniferRoot]);
+
+  useEffect(() => {
+    const coordination = selected?.coordination;
+    let active = true;
+    void Promise.resolve().then(() => {
+      if (!active) return;
+      if (!coordination) {
+        setJenniferRootJob(null);
+        setDelegationRole('worker');
+        return;
+      }
+      setDelegationRole(
+        cloudDraft?.parentJobId === selected.id && cloudDraft.delegationRole
+          ? cloudDraft.delegationRole
+          : coordination.role,
+      );
+      if (cloudDraft?.parentJobId === selected.id && cloudDraft.prompt)
+        setDelegationForm((current) => ({ ...current, message: cloudDraft.prompt }));
+      void refreshJenniferRoot(coordination).catch((cause: unknown) => {
+        if (!active) return;
+        setDelegationError(
+          cause instanceof Error ? cause.message : 'Jenniferの親Goalを確認できませんでした。',
+        );
+      });
+    });
+    return () => { active = false; };
+  }, [selected, cloudDraft, refreshJenniferRoot, setDelegationError, setDelegationForm]);
   const cloudText = useWorkbenchCloudText({ selected, selectedId, selectedIdRef, ownerScope, refreshOwnerScope: refresh, cloudDraft,
     remoteTextCurrency, setRemoteTextCurrency, delegationBudgetPool, refreshDelegations });
   useEffect(() => {
@@ -640,10 +772,16 @@ export default function Workbench({
   }, [selectedId, ownerScope]);
   const refreshA2aAgents = useCallback(async () => {
     try {
-      const data = await delegationRequest<{ agents: A2AAgentConnection[] }>(
+      const data = await delegationRequest<{
+        agents: A2AAgentConnection[];
+        execution?: { approvalGateEnabled?: boolean; serverConfigurationReady?: boolean };
+      }>(
         '/api/sky/a2a-agents',
       );
       setA2aAgents(data.agents ?? []);
+      setA2aExecutionReady(Boolean(
+        data.execution?.approvalGateEnabled && data.execution.serverConfigurationReady,
+      ));
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : 'Agent接続を読み込めませんでした。');
     }
@@ -658,6 +796,9 @@ export default function Workbench({
     if (delegationQuote && JSON.parse(delegationQuote.fingerprint).parentJobId !== id) setDelegationQuote(null);
     if (delegationSubmission.current[author]?.request.parentJobId !== id) setDelegationPredecessorId(null);
     setDelegationQuoteConsent(false);
+    setDelegationReview(null);
+    setBrokerProofText('');
+    setBrokerAuthorization(null);
     setArtifactDocuments({});
     setA2aParentController(null);
     setDelegationBudgetPool(null);
@@ -897,6 +1038,7 @@ export default function Workbench({
         parentBudgetLimitMinor: delegationBudgetPool?.budgetLimitMinor ?? current.parentBudgetLimitMinor,
       }));
       setDelegationPredecessorId(delegation.id);
+      if (selected.coordination) setDelegationRole('reviewer');
       setDelegationQuote(null);
       setDelegationQuoteConsent(false);
       setDelegationReview(null);
@@ -920,6 +1062,143 @@ export default function Workbench({
       setDelegationError(cause instanceof Error ? cause.message : '利用明細を取得できませんでした。');
     } finally {
       if (ownerScope === currentOwner.current) setDelegationBusy(false);
+    }
+  }
+  async function submitJenniferTaskResult(delegation: Delegation) {
+    const selectedJob = jobs.find((job) => job.id === selectedId);
+    const coordination = selectedJob?.coordination;
+    const parsed = parseJenniferDelegationKey(delegation.idempotencyKey);
+    const documents = artifactDocuments[delegation.id] ?? [];
+    const usage = delegationUsageDetails[delegation.id]?.usageReceipt;
+    if (!selectedJob || !coordination || parsed?.role !== 'worker' ||
+      parsed.taskId !== coordination.taskId || delegation.state !== 'remote_completed' ||
+      delegation.artifactsCaptured !== 1 || documents.length === 0 || !usage) {
+      setDelegationError('担当AIの完了状態、保存成果、照合済みusage Receiptを揃えてください。');
+      return;
+    }
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      await recordJenniferEvent(coordination, (goal) => {
+        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
+        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
+        if (task.status === 'submitted' || task.status === 'done') return null;
+        if (task.status !== 'running' || task.startedBy !== `a2a-worker:${delegation.id}`)
+          throw new Error('Zemaの実行担当とこの委任が一致しません。');
+        return {
+          type: 'submit_result',
+          actor: `a2a-worker:${delegation.id}`,
+          role: 'worker',
+          taskId: task.id,
+          outcome: 'succeeded',
+          summary:
+            `${delegation.targetAgentName}のremote completion、${documents.length}件のartifact document、` +
+            `${formatCurrencyMinor(usage.amountMinor, usage.currency)}のProvider署名usage Receiptを取得した。`,
+          deliverables: task.deliverables.map(({ path }) => path),
+          evidence: [
+            `a2a:${delegation.id}:remote-completed`,
+            `a2a:${delegation.id}:artifact`,
+            `a2a:${delegation.id}:usage-receipt`,
+          ],
+        };
+      });
+      setDelegationError('成果・証拠・usage ReceiptをZemaへ提出しました。完了には別Agentの検収が必要です。');
+    } catch (cause) {
+      setDelegationError(
+        cause instanceof Error ? cause.message : '成果をZemaへ提出できませんでした。',
+      );
+    } finally {
+      setDelegationBusy(false);
+    }
+  }
+
+  async function verifyJenniferTaskResult(delegation: Delegation, accepted: boolean) {
+    const selectedJob = jobs.find((job) => job.id === selectedId);
+    const coordination = selectedJob?.coordination;
+    const parsed = parseJenniferDelegationKey(delegation.idempotencyKey);
+    const documents = artifactDocuments[delegation.id] ?? [];
+    const usage = delegationUsageDetails[delegation.id]?.usageReceipt;
+    if (!selectedJob || !coordination || parsed?.role !== 'reviewer' ||
+      parsed.taskId !== coordination.taskId || delegation.state !== 'remote_completed' ||
+      delegation.artifactsCaptured !== 1 || documents.length === 0 || !usage) {
+      setDelegationError('独立reviewerの完了状態、保存成果、照合済みusage Receiptを揃えてください。');
+      return;
+    }
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      await recordJenniferEvent(coordination, (goal) => {
+        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
+        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
+        if (task.status === 'done') return null;
+        if (task.status !== 'submitted')
+          throw new Error('担当AIの成果をZemaへ提出してから独立検収してください。');
+        const evidence = [
+          `a2a:${delegation.id}:review-artifact`,
+          `a2a:${delegation.id}:review-usage-receipt`,
+        ];
+        return {
+          type: 'verify_task',
+          actor: `a2a-reviewer:${delegation.id}`,
+          role: 'reviewer',
+          taskId: task.id,
+          accepted,
+          evidence,
+          criterionResults: task.acceptanceCriteria.map(({ id }) => ({
+            criterionId: id,
+            passed: accepted,
+            evidence,
+          })),
+        };
+      });
+      setDelegationError(
+        accepted
+          ? '独立reviewerの成果を確認し、leaf taskをZemaで検収済みにしました。'
+          : '独立reviewerの指摘を証拠付きで保存し、leaf taskを未合格にしました。',
+      );
+    } catch (cause) {
+      setDelegationError(
+        cause instanceof Error ? cause.message : '独立検収をZemaへ保存できませんでした。',
+      );
+    } finally {
+      setDelegationBusy(false);
+    }
+  }
+
+  async function recordJenniferTaskFailure(delegation: Delegation) {
+    const selectedJob = jobs.find((job) => job.id === selectedId);
+    const coordination = selectedJob?.coordination;
+    const parsed = parseJenniferDelegationKey(delegation.idempotencyKey);
+    if (!selectedJob || !coordination || parsed?.role !== 'worker' ||
+      parsed.taskId !== coordination.taskId ||
+      !['remote_failed', 'remote_rejected', 'expired'].includes(delegation.state)) return;
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      await recordJenniferEvent(coordination, (goal) => {
+        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
+        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
+        if (task.status === 'failed') return null;
+        if (task.status !== 'running' || task.startedBy !== `a2a-worker:${delegation.id}`)
+          throw new Error('Zemaの実行担当とこの失敗委任が一致しません。');
+        return {
+          type: 'submit_result',
+          actor: `a2a-worker:${delegation.id}`,
+          role: 'worker',
+          taskId: task.id,
+          outcome: 'failed',
+          summary: `外部Agentの終了状態を${delegation.state}として確認した。完了扱いにしない。`,
+          deliverables: [],
+          evidence: [`a2a:${delegation.id}:${delegation.state}`],
+        };
+      });
+      setDelegationError('外部Agentの失敗状態をZemaへ保存しました。再開には原因確認と明示的なresumeが必要です。');
+    } catch (cause) {
+      setDelegationError(
+        cause instanceof Error ? cause.message : '失敗状態をZemaへ保存できませんでした。',
+      );
+    } finally {
+      setDelegationBusy(false);
     }
   }
   async function requestDelegationCancel(delegationId: string) {
@@ -988,7 +1267,13 @@ export default function Workbench({
         id: crypto.randomUUID(),
         parentJobId: selected.id,
         ...(delegationPredecessorId ? { predecessorDelegationId: delegationPredecessorId } : {}),
-        idempotencyKey: `zema:${selected.id}:${crypto.randomUUID()}`,
+        idempotencyKey: selected.coordination
+          ? jenniferDelegationKey(
+              selected.coordination.taskId,
+              delegationRole,
+              crypto.randomUUID(),
+            )
+          : `zema:${selected.id}:${crypto.randomUUID()}`,
         messageId: crypto.randomUUID(),
         targetOrigin: delegationForm.targetOrigin.trim(),
         targetAgentName: delegationForm.targetAgentName.trim(),
@@ -1021,6 +1306,8 @@ export default function Workbench({
         setUncertainDelegationOwners((owners) => owners.filter((owner) => owner !== ownerScope));
       }
       setDelegationReview({ request, delegationId: data.delegation.id, authorizationSha256: data.approval.digest });
+      setBrokerProofText('');
+      setBrokerAuthorization(null);
       setDelegationPredecessorId(null);
       await refreshDelegations(selected.id);
     } catch (cause) {
@@ -1057,7 +1344,94 @@ export default function Workbench({
       if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }, [jobs, selectedId, delegationForm, delegationQuote, refreshDelegations, fullDelegationMessage,
-    initialPackageKey, handoffPackage, delegationPredecessorId, ownerScope, setDelegationReview, setDelegationPredecessorId, setDelegationError]);
+    initialPackageKey, handoffPackage, delegationPredecessorId, ownerScope, setDelegationReview,
+    setDelegationPredecessorId, setDelegationError, delegationRole]);
+
+  async function registerBrokerAuthorization() {
+    if (!delegationReview) return;
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      let proof: unknown;
+      try {
+        proof = JSON.parse(brokerProofText);
+      } catch {
+        throw new Error('RockstarOS Brokerが発行した証明JSONをそのまま貼り付けてください。');
+      }
+      const data = await delegationRequest<{
+        accepted: true;
+        deviceRef: string;
+        expiresAt: number;
+      }>(
+        `/api/sky/a2a-delegations/${encodeURIComponent(delegationReview.delegationId)}/broker-authorization`,
+        'POST',
+        { proof, message: delegationReview.request.message },
+      );
+      setBrokerAuthorization({
+        registered: true,
+        deviceRef: data.deviceRef,
+        expiresAt: data.expiresAt,
+      });
+      setBrokerProofText('');
+      setDelegationError('Broker証明を検証して登録しました。表示中の見積・予算・送信内容でのみ承認できます。');
+    } catch (cause) {
+      setDelegationError(
+        cause instanceof Error ? cause.message : 'Broker証明を登録できませんでした。',
+      );
+    } finally {
+      setDelegationBusy(false);
+    }
+  }
+
+  async function approveDelegationDispatch() {
+    if (!delegationReview || brokerAuthorization?.registered !== true) return;
+    const selectedJob = jobs.find((job) => job.id === selectedId);
+    if (!selectedJob || delegationReview.request.parentJobId !== selectedJob.id) return;
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      const data = await delegationRequest<{ delegation: Delegation }>(
+        `/api/sky/a2a-delegations/${encodeURIComponent(delegationReview.delegationId)}`,
+        'PATCH',
+        {
+          action: 'approve',
+          authorizationSha256: delegationReview.authorizationSha256,
+          message: delegationReview.request.message,
+        },
+      );
+      const parsed = parseJenniferDelegationKey(data.delegation.idempotencyKey);
+      if (selectedJob.coordination && parsed?.role === 'worker' &&
+        parsed.taskId === selectedJob.coordination.taskId) {
+        await recordJenniferEvent(selectedJob.coordination, (goal) => {
+          const task = goal.tasks.find(({ id }) => id === parsed.taskId);
+          if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
+          if (['running', 'submitted', 'done'].includes(task.status)) return null;
+          return {
+            type: 'start_task',
+            actor: `a2a-worker:${data.delegation.id}`,
+            role: 'worker',
+            taskId: task.id,
+          };
+        });
+      }
+      setDelegationReview(null);
+      setBrokerAuthorization(null);
+      setBrokerProofText('');
+      await refreshDelegations(selectedJob.id);
+      setDelegationError(
+        parsed?.role === 'reviewer'
+          ? '独立reviewerへのdispatchを承認しました。成果とReceiptを待っています。'
+          : '担当AIへのdispatchを承認し、Zemaでleaf taskを実行中にしました。',
+      );
+    } catch (cause) {
+      await refreshDelegations(selectedJob.id).catch(() => {});
+      setDelegationError(
+        cause instanceof Error ? cause.message : '委任の承認結果を確認できませんでした。',
+      );
+    } finally {
+      setDelegationBusy(false);
+    }
+  }
   const requestDelegationPriceQuote = useCallback(async () => {
     if (!ownerScope || ownerScope !== currentOwner.current) return;
     const selected = jobs.find((job) => job.id === selectedId);
@@ -1410,6 +1784,20 @@ export default function Workbench({
                   <h2>{selected.title}</h2>
                   <span>{stateNames[selected.status]}</span>
                 </div>
+                {selected.coordination && (
+                  <section className="work-notice" aria-label="Jennifer leaf task">
+                    <strong>Jennifer → Zema leaf task</strong>
+                    <p>
+                      {selected.coordination.taskId} · 担当profile {selected.coordination.specialistProfile} ·
+                      親Goal {selected.coordination.rootJobId.slice(0, 8)}
+                    </p>
+                    <p>
+                      Zema状態: {jenniferRootJob?.amcGoal?.tasks.find(
+                        ({ id }) => id === selected.coordination?.taskId,
+                      )?.status ?? '確認中'}。担当AIのremote完了だけでは検収済みにしません。
+                    </p>
+                  </section>
+                )}
                 <ol className="work-steps">
                   {selected.steps.map((step, i) => (
                     <li key={step.id} className={step.passed ? 'passed' : ''}>
@@ -1502,7 +1890,12 @@ export default function Workbench({
                           );
                         })}
                       </div>
-                      <p>Card記載の能力は提供者の自己申告で、審査・安全性・本人の実行許可を意味しません。取得と保存だけでは委任を送信しません。実行gateはOFFです。</p>
+                      <p>
+                        Card記載の能力は提供者の自己申告で、審査・安全性・本人の実行許可を意味しません。取得と保存だけでは委任を送信しません。
+                        {a2aExecutionReady
+                          ? ' Web承認gateとserver設定は有効です。実送信はBroker証明と下の明示承認後、Zema runtimeが行います。'
+                          : ' 現在の環境は実行gateまたはserver設定が未完了のため、実送信できません。'}
+                      </p>
                       <label>
                         選択中の接続先origin
                         <input
@@ -1592,8 +1985,46 @@ export default function Workbench({
                         <dt>依頼文</dt><dd><pre>{delegationReview.request.message}</pre></dd>
                         <dt>条件digest</dt><dd><code>{delegationReview.authorizationSha256}</code></dd>
                       </dl>
-                      <p className="work-delegation-gate">実行承認は、Brokerの権限照合とWalletの原子的な予算予約を接続し、Provider契約・認証・費用条件を検証するまで無効です。現状は開発用の確認画面です。</p>
-                      <button type="button" disabled>Broker／Wallet／Provider接続待ち</button>
+                      <p className="work-delegation-gate">
+                        RockstarOS Brokerが、本人、端末、送信先、本文hash、見積、task上限、親上限、期限を署名した証明だけを登録できます。登録後も下の承認ボタンを押すまで外部送信しません。
+                      </p>
+                      {brokerAuthorization?.registered ? (
+                        <output className="work-delegation-price-note">
+                          <strong>Broker証明を検証済み</strong>
+                          <p>
+                            端末 {brokerAuthorization.deviceRef ?? '確認済み'} ·
+                            期限 {brokerAuthorization.expiresAt ? new Date(brokerAuthorization.expiresAt).toLocaleString('ja-JP') : '証明内'}
+                          </p>
+                        </output>
+                      ) : (
+                        <label>
+                          RockstarOS Brokerの署名済み証明JSON
+                          <textarea
+                            rows={5}
+                            maxLength={10000}
+                            value={brokerProofText}
+                            onChange={(event) => setBrokerProofText(event.target.value)}
+                            placeholder="Brokerでこの条件を確認して発行したJSONを貼り付ける"
+                          />
+                        </label>
+                      )}
+                      {brokerAuthorization?.registered !== true && (
+                        <button
+                          type="button"
+                          disabled={delegationBusy || !brokerProofText.trim()}
+                          onClick={() => void registerBrokerAuthorization()}
+                        >
+                          Broker証明を検証して登録
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="work-primary"
+                        disabled={delegationBusy || brokerAuthorization?.registered !== true}
+                        onClick={() => void approveDelegationDispatch()}
+                      >
+                        この見積・上限・送信内容で承認してdispatch
+                      </button>
                       <button type="button" onClick={() => setDelegationReview(null)}>
                         確認を閉じる
                       </button>
@@ -1615,13 +2046,29 @@ export default function Workbench({
                     <p>この仕事から委任したエージェントはありません。</p>
                   ) : (
                     <div className="work-delegation-list">
-                      {delegations.map((delegation) => (
-                        <article className="work-delegation" key={delegation.id}>
+                      {delegations.map((delegation) => {
+                        const correlation = parseJenniferDelegationKey(delegation.idempotencyKey);
+                        const task = selected.coordination && jenniferRootJob?.amcGoal
+                          ? jenniferRootJob.amcGoal.tasks.find(
+                              ({ id }) => id === selected.coordination?.taskId,
+                            )
+                          : null;
+                        const artifactsLoaded = (artifactDocuments[delegation.id]?.length ?? 0) > 0;
+                        const receiptLoaded = Boolean(
+                          delegationUsageDetails[delegation.id]?.usageReceipt,
+                        );
+                        return <article className="work-delegation" key={delegation.id}>
                           <div className="work-delegation-title">
                             <strong>{delegation.targetAgentName}</strong>
                             <span>v{delegation.targetAgentVersion}</span>
                           </div>
                           <p>{delegationStateName(delegation.state)}</p>
+                          {correlation && (
+                            <small>
+                              Jennifer {correlation.role === 'worker' ? '実行担当' : '独立reviewer'} ·
+                              {correlation.taskId} · Zema {task?.status ?? '確認中'}
+                            </small>
+                          )}
                           {delegation.predecessorDelegationId && <small>前段成果からの続き · {delegation.predecessorDelegationId}</small>}
                           <small>
                             Agent上限 {formatCurrencyMinor(delegation.budgetLimitMinor, delegation.budgetCurrency)} · 親job上限 {formatCurrencyMinor(delegation.parentBudgetLimitMinor, delegation.budgetCurrency)} · 予約 {delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state === 'held' ? `保持中 ${formatCurrencyMinor(delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.reservedMinor ?? 0, delegation.budgetCurrency)}` : delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state ?? '未予約'} · 期限 {new Date(delegation.deadlineAt).toLocaleString('ja-JP')}
@@ -1636,6 +2083,46 @@ export default function Workbench({
                                 成果を確認
                               </button>
                             )}
+                            {selected.coordination && correlation?.role === 'worker' &&
+                              delegation.state === 'remote_completed' && delegation.artifactsCaptured === 1 && (
+                                <button
+                                  type="button"
+                                  disabled={delegationBusy || !artifactsLoaded || !receiptLoaded ||
+                                    !task || !['running', 'submitted'].includes(task.status)}
+                                  onClick={() => void submitJenniferTaskResult(delegation)}
+                                >
+                                  成果・証拠・ReceiptをZemaへ提出
+                                </button>
+                              )}
+                            {selected.coordination && correlation?.role === 'reviewer' &&
+                              delegation.state === 'remote_completed' && delegation.artifactsCaptured === 1 && (
+                                <>
+                                  <button
+                                    type="button"
+                                    disabled={delegationBusy || !artifactsLoaded || !receiptLoaded || task?.status !== 'submitted'}
+                                    onClick={() => void verifyJenniferTaskResult(delegation, true)}
+                                  >
+                                    reviewer成果を確認して検収合格
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={delegationBusy || !artifactsLoaded || !receiptLoaded || task?.status !== 'submitted'}
+                                    onClick={() => void verifyJenniferTaskResult(delegation, false)}
+                                  >
+                                    reviewer指摘を保存して未合格
+                                  </button>
+                                </>
+                              )}
+                            {selected.coordination && correlation?.role === 'worker' &&
+                              ['remote_failed', 'remote_rejected', 'expired'].includes(delegation.state) && (
+                                <button
+                                  type="button"
+                                  disabled={delegationBusy || task?.status !== 'running'}
+                                  onClick={() => void recordJenniferTaskFailure(delegation)}
+                                >
+                                  失敗・未完了をZemaへ記録
+                                </button>
+                              )}
                             {delegation.remoteTaskId && (
                               <button disabled={delegationBusy} onClick={() => void loadUsageDetails(delegation.id)}>
                                 料金・利用明細
@@ -1690,16 +2177,16 @@ export default function Workbench({
                               {document.omittedNonTextParts > 0 && <small>{document.omittedNonTextParts}件のfile／data partは自動取得していません。</small>}
                               {document.truncated && <small>表示できるサイズを超えたため、成果の一部を省略しています。</small>}
                               <div className="work-delegation-actions">
-                                <button type="button" disabled={selected.status !== 'active' || delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1 || document.omittedNonTextParts > 0 || document.truncated}
+                                <button type="button" disabled={selected.status !== 'active' || delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1 || document.omittedNonTextParts > 0 || document.truncated || Boolean(selected.coordination && (correlation?.role !== 'worker' || task?.status !== 'submitted' || !receiptLoaded))}
                                   onClick={() => prepareResultForAnotherAgent(delegation, document)}>
-                                  この成果を別Agentへの依頼案にする
+                                  {selected.coordination ? 'この成果を独立reviewerへの依頼案にする' : 'この成果を別Agentへの依頼案にする'}
                                 </button>
                               </div>
                               <small>クリックしても送信されません。出力は未検証データとして区切られ、次のAgentには新しい見積・予算上限・承認が必要です。</small>
                             </div>
                           ))}
-                        </article>
-                      ))}
+                        </article>;
+                      })}
                     </div>
                   )}
                 </section>

@@ -530,3 +530,38 @@ void test('valid correlated A2A errors retain their explicit refusal classificat
     { code: 'a2a_remote_error' });
   assert.equal(sends, 2);
 });
+
+void test('SendMessage carries only the bounded receipt coordinates needed for signed settlement', async () => {
+  const calls = [];
+  const client = createA2AClient({
+    allowedOrigins: [origin],
+    authorizeDelegation: async () => {},
+    fetch: async (_input, init = {}) => {
+      calls.push(init);
+      const body = JSON.parse(init.body);
+      return rpcResponse(body.id, {
+        task: { id: 'receipt-task-1', status: { state: 'TASK_STATE_SUBMITTED' } },
+      });
+    },
+  });
+  const context = {
+    schema: 'rockstar-a2a-delegation-context/1',
+    ownerUserId: 'owner-1',
+    parentJobId: 'parent-1',
+    delegationId: 'delegation-1',
+    currency: 'USD',
+    budgetLimitMinor: 500,
+    receiptCallbackUrl: 'https://rockstar.example/api/sky/a2a-delegations/delegation-1/usage-receipt',
+  };
+  const sent = await client.sendMessage(card, 'receipt-message-1', 'Run the approved leaf.', undefined, context);
+  assert.equal(sent.kind, 'task');
+  const body = JSON.parse(calls[0].body);
+  assert.deepEqual(body.params.message.metadata['org.rockstar.a2a-delegation.v1'], context);
+  await assert.rejects(
+    client.sendMessage(card, 'receipt-message-2', 'Run.', undefined, {
+      ...context,
+      receiptCallbackUrl: 'http://rockstar.example/receipt',
+    }),
+    { code: 'invalid_receipt_context' },
+  );
+});
