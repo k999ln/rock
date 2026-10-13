@@ -59,7 +59,7 @@ export default function WorkspaceShell({
       <div className="rock-main-column rock-main-column-full">
         <header className="rock-topbar">
           <Link
-            href={tone === 'sky' ? '/sky/marketplace' : '/'}
+            href={tone === 'sky' ? '/os' : '/'}
             className="rock-home-link"
             aria-label="ホームへ戻る"
             aria-disabled={running || undefined}

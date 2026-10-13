@@ -6,7 +6,9 @@
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
-[Try the public Sky preview](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Run it locally](#start-developing)
+[Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)
+
+The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. RockstarOS Home is at `avoado.si/os`, and Sky stays under `avoado.si/os/sky`. The product homepage at `/` links to `avocadomini.si` and `avocadopro.si`. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
 
 [The promise](#the-promise) · [System map](#system-map) · [From a request to a result](#from-a-request-to-a-result) · [Service atlas](#service-atlas) · [Tool catalog](#sky-tool-catalog) · [Status](#where-it-stands) · [Develop](#start-developing)
 
@@ -52,7 +54,7 @@ Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Materi
 
 ## Try it now
 
-The fastest public preview is [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
+The fastest public preview is [Sky via RockstarOS Home](https://avoado.si/os/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. The browser stays on `avoado.si`. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
 In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
 
@@ -109,7 +111,7 @@ The names below are organized by how a person meets them: core surfaces, support
 | **Settings** | Manage account, devices, providers, model choices, and recovery settings. | Web source | [`app/settings/`](app/settings/) |
 | **Jennifer / Chat** | Turn a broad outcome into a Goal Contract and bounded AMC leaf tasks, dispatch ready leaves through Zema, and integrate verified results and unfinished work. | Web source + owner-gated A2A path; production Provider setup remains separate | [`app/chat/`](app/chat/) · [`docs/jennifer-coordination.md`](docs/jennifer-coordination.md) |
 | **Library** | Reopen saved results and private work artifacts. | Web source + owner-scoped storage rules | [`app/zema/library/`](app/zema/library/) |
-| **Campus** | Find people, projects, opportunities, events, communities, portfolios, resources, and NFC/QR entry points. | Web source + local checks | [`app/campus/`](app/campus/) |
+| **Campus** | Find people, projects, opportunities, events, communities, portfolios, resources, and NFC/QR entry points. The five campus Sky hubs open at `https://avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub`; NFC stickers store that HTTPS URL as an NDEF URI. | Web source + published route check; physical tag writing remains separate | [`app/campus/`](app/campus/) |
 | **AMC** | Turns Jennifer's Goal Contract into dependency-ordered leaf tasks and records start, submission, independent review, and owner acceptance. | Catalog `ready`; Jennifer can create the Goal and A2A jobs, while every remote dispatch remains explicitly gated | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
 | **Rock Studio** | Authors a Tool, declares its inputs and permissions, packages it with SDK/MCP, and prepares publication to Sky. | Authoring source; publication and execution still have separate gates | [`app/studio/`](app/studio/) · [`app/sky/publish/`](app/sky/publish/) |
 | **Sky Marketplace / Network / Purchases / Sell** | Finds published Tools, manages connections, and separates buying, selling, and refunds from execution. | Source + fixtures; provider and commercial acceptance are separate | [`app/sky/marketplace/`](app/sky/marketplace/) · [`app/sky/network/`](app/sky/network/) · [`app/sky/purchases/`](app/sky/purchases/) · [`app/sky/sell/`](app/sky/sell/) |
@@ -302,7 +304,7 @@ Updated: 2026-10-12 / 393 task records (32 parents, 192 children, 169 standalone
 | inspect public RockstarOS packages | [Public release](public-release/rockstaros/README.md) · [native OS guide](systems/rock-star-os/README.md) |
 | inspect the separately deployed Workers | [services/README.md](services/README.md) |
 | see the product preview site | [avocadomini.si](https://avocadomini.si) |
-| try the public Sky preview | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
+| try the public Sky preview | [Sky via RockstarOS Home](https://avoado.si/os/sky) |
 | read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [Specification history](docs/spec-history.md) |
 
 Most design and work documents are written in Japanese. The README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.

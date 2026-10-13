@@ -81,6 +81,17 @@ test('legacy RockstarOS path redirects at the HTTP layer', async () => {
   assert.equal(response.headers.get('location'), `${origin}/`);
 });
 
+test('avoado.si/sky opens the live Sky app and keeps its path and query', async () => {
+  for (const path of ['/sky', '/sky/', '/sky/outputs?source=nfc']) {
+    const response = await worker.fetch(new Request(`https://avoado.si${path}`), env(database()));
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get('location'), `https://sky-marketplace.noellesugar1.chatgpt.site${path}`);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+  }
+  const otherHost = await worker.fetch(new Request('https://avocadomini.si/sky'), env(database()));
+  assert.notEqual(otherHost.status, 302);
+});
+
 test('Sky tag links redirect to the configured origin and preserve source query', async () => {
   const response = await worker.fetch(
     new Request(`${origin}/t/columbia-sky-0001?source=qr`),

@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-13",
+  "siteProjectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "siteVersion": 48,
+  "siteSourceSha": "202ab24e8f2b8d427ea4602ce689fffcd90772db",
+  "urls": {
+    "nyu": "https://avoado.si/os/sky/campus/nyu/hub?source=nfc",
+    "fit": "https://avoado.si/os/sky/campus/fit/hub?source=nfc",
+    "columbia": "https://avoado.si/os/sky/campus/columbia/hub?source=nfc",
+    "fordham": "https://avoado.si/os/sky/campus/fordham/hub?source=nfc",
+    "johnjay": "https://avoado.si/os/sky/campus/johnjay/hub?source=nfc"
+  },
+  "checks": {
+    "http200": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "invalidCampusHttp404": true,
+    "nyuBrowserTitle": "NYU · Sky",
+    "nyuBrowserControls": [
+      "Agentを探す",
+      "購入したAgent",
+      "成果を見る",
+      "接続を管理",
+      "Zemaで仕事を管理"
+    ],
+    "nyuManifest": {
+      "name": "NYU Sky",
+      "start_url": "/os/sky/campus/nyu/hub"
+    },
+    "physicalTagWrite": "not_run_no_connected_nfc_writer",
+    "phoneReadback": "not_run",
+    "purchaseProviderStudentQuota": "not_accepted",
+    "fitBrowserTitle": "FIT · Sky",
+    "fitRecommendedTools": [
+      "Instagram運用・受注型ブランド管理",
+      "記事の無料版メーカー",
+      "出典整理ツール"
+    ],
+    "campusManifestInHtml": "/os/sky/campus/nyu/manifest.webmanifest",
+    "allFiveManifestsHttp200AndStartUrlsMatch": true,
+    "siteVersion": 48
+  },
+  "payloadScript": "scripts/generate-sky-campus-nfc.mjs",
+  "payloadDirectory": "/private/tmp/sky-campus-nfc"
+}

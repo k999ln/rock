@@ -14,6 +14,10 @@ local D1、loopback限定preview identity、Ollama `qwen3:0.6b`を用意し、`h
 
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-13 — Skyの5大学NFC入口を公開（WEB06 / SKY21、ROCK）
+
+Sky Site v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db` で `avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc` を公開。5 URLのHTTP 200、無効大学404、NYUの実ブラウザに大学名とSky操作、FITの実ブラウザに大学別おすすめTool、manifestを確認。`scripts/generate-sky-campus-nfc.mjs` で各大学のNDEF URIとCSVを生成し、対象テストと型・buildを通した。現物シールへの書込み、iPhone/Androidの読取り、学生6枠と購入/Provider/Zemaの本人別本番受入は未実施。次は現物タグの機種・容量を確認して書込み/読戻し。証拠は `docs/evidence/sky-campus-nfc-live.json`。GitHub branch保存とmain統合は公開配備と区別する。
+
 ## 2026-10-13 — SkyのTwitter / X型フィードと説明可能な順位を実装（SKY21 / WEB04、ROCK）
 
 利用者の「フィードはTwitterっぽく」という指示に基づき、Skyを1列の社会的フィードへ更新。「おすすめ／マイフィード」の主切替、すべて／今使える／導入候補／コードの絞り込み、保存、詳細、表示理由を追加した。マイフィードは明示followではなく、owner-scopedの保存・接続を新しい関係順に並べる。
@@ -3435,3 +3439,7 @@ G04 / ROCK。当初12 PRの統合直後にDependabotが3本追加。proxy-addr 2
 ## 追加依存3 PRのmain統合完了
 
 PR #79–81を#82経由でmainへ通常merge。統合commit `eafdc4f1f5eff49401c32e39984534a6629e7f69`、検証候補 `1628d2a8e53c18bcf7ba4b4b4a4b794f56d635f2`。同一候補の総合verify、CodeQL両言語/PR check、署名fixture、SPIDER回帰/公開Web測定が成功。source-map-jsはroot/site双方の修正版へ揃えた。これで当初12本と追加3本の計15 PRを実装・修復・検証・main統合済み。履歴secret警告、修正版未提供のbraces/http-cache-semantics、実機・本番release gateは未解決のまま区別する。証拠とrun URL: docs/evidence/open-pr-integration.json。文書追記後も生成資料とmain verifyを再確認する。
+
+## 2026-10-13 — Sky成果画面とFitness第一者表示（WEB06 / SKY21、ROCK、GitHub反映準備）
+
+最新GitHub main `4273ef02` から隔離branch `codex/sky-app-outputs-20261013` を作り、本人別のSky成果一覧と第一者Fitnessアプリの型付き成果表示を移植。既存のjob・委任・暗号化成果・保存済みCloud AI回答を再利用し、新しい成果DBやToolは追加しない。対象2試験とtypecheckが合格。全体 `TMPDIR=/private/tmp npm run verify` exit0（Node 2149合格・1 skip、仕事API1356、CSV385、Web資産欠落0）。`codex/sky-app-outputs-20261013` へGitHub保存。Sky Site v45を `avoado.si` に割り当て、RockstarOS Home `/os` とSky `/os/sky`・成果 `/os/sky/outputs` を同一originで公開。旧 `/sky` は新URLへ転送し、OS/SkyのPWA起動先も更新。Mini Site v15のトップ・予約ページはサーバー内で代理取得し、トップのMini・Proリンクは専用ドメインへの実ブラウザ遷移を確認。トップのRockstarOSリンク3箇所を`/os`へ更新し、公開HTMLで確認。Home→Sky→Homeと成果画面、トップ・予約ページ・予約APIのHTTP200を確認。実Provider、外部アプリSDK、本番本人A/B、大学別NFC権限と6接続枠、main統合は別受入。次は大学別入口の安全な本人・権限境界と本番owner A/Bを実機で検証する。証拠は `docs/evidence/sky-app-output-plugin-github.json`。

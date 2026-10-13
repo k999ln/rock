@@ -7838,5 +7838,64 @@
         }
       ]
     }
+  },
+  "skyAppOutputPlugin": {
+    "status": "main_based_branch_verified_and_github_saved_not_integrated",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB06",
+      "SKY21"
+    ],
+    "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "branch": "codex/sky-app-outputs-20261013",
+    "routes": [
+      "/os",
+      "/os/sky",
+      "/os/sky/outputs",
+      "/fitness"
+    ],
+    "reusedApis": [
+      "/api/work-jobs",
+      "/api/sky/a2a-delegations",
+      "/api/sky/a2a-delegations/{id}/artifacts",
+      "/api/llm/quotes"
+    ],
+    "newOriginalStore": false,
+    "focusedTests": "2/2 passed",
+    "typecheck": "passed",
+    "fullVerify": "exit 0; Node 2149 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "deployed": true,
+    "deploymentBoundary": "Sky Site v45 owns avoado.si; /os Home and /os/sky stay on same host; old /sky redirects; Mini Site v15 root and preorder proxy HTTP 200; Mini/Pro domain navigation and all public OS links at /os verified; signed-in owner A/B not verified",
+    "entryUrl": "https://avoado.si/os/sky",
+    "nextAction": "Review branch CI; validate signed-in owner A/B and NFC campus identity, entitlement, six-connection exception, real Provider output, and external app scope/origin/revocation separately; main integration remains separate.",
+    "verifyLogSha256": "8689c1f0914b61112a9128307de61261d7ca1c132b1a3ba3eaec428ae1c90290",
+    "osHomeUrl": "https://avoado.si/os"
+  },
+  "skyCampusNfcLive": {
+    "date": "2026-10-13",
+    "workstream": "WEB06 / SKY21",
+    "status": "web_published_physical_tags_unwritten",
+    "siteVersion": 48,
+    "siteSourceSha": "202ab24e8f2b8d427ea4602ce689fffcd90772db",
+    "campusUrls": {
+      "nyu": "https://avoado.si/os/sky/campus/nyu/hub?source=nfc",
+      "fit": "https://avoado.si/os/sky/campus/fit/hub?source=nfc",
+      "columbia": "https://avoado.si/os/sky/campus/columbia/hub?source=nfc",
+      "fordham": "https://avoado.si/os/sky/campus/fordham/hub?source=nfc",
+      "johnjay": "https://avoado.si/os/sky/campus/johnjay/hub?source=nfc"
+    },
+    "verification": {
+      "fiveHttp200": true,
+      "invalidCampusHttp404": true,
+      "nyuBrowserUniversityAndSkyControls": true,
+      "manifestHttp200": true,
+      "physicalTagWritten": false,
+      "iphoneAndroidReadback": false,
+      "studentSixSlotLiveAcceptance": false
+    },
+    "nextAction": "NDEF HTTPS URIを現物シールへ書き、iPhone/Androidで読み戻す。本人A/Bと学生6枠・購入/Provider/Zemaの同一artifact受入は別に行う。"
   }
 }

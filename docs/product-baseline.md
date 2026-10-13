@@ -38,7 +38,7 @@ Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の�
 - **Sky fee**: 当面10%（`skyMarketplacePayments.commissionBps=1000`）。0%は「Skyの取り分0、決済の実費は実額」と定義し、従量の粗利が固定費を3か月続けて上回ったら切り替える。
 - **作者への払出し**: 月末締め・翌月末払いの月1回。通信の一次supportはavokadoが受ける。
 - **Miniの回線**: 国内、LTEのみ（5Gなし）、IoT向けdata専用SIM（試作はカード、量産はchip）、SGP.32対応のSIMを選び、遠隔の切替は自作しない。回線つきは別modelかoption。
-- **Skyの置き場所**: `https://avocadomini.si/sky`。本人確認は自前のpasskey。通知はWeb Pushを先に作る。
+- **RockstarOSとSkyの置き場所**: 2026-10-13の利用者の最新明示変更によりHomeは `https://avoado.si/os`、Skyは `https://avoado.si/os/sky`。旧 `avoado.si/sky` は新URLへ転送する。`avoado.si/` のMini・Proリンクは各専用ドメインへ移る。自前passkey・Web Push・本人A/Bの本番受入は未完了。
 - **未受入**: 本番課金、回線の開通、端末へのOS導入。電気通信事業法、携帯電話不正利用防止法、資金決済法、特定商取引法、無線の認証、通信partner、Stripe、cloud AI Providerの規約は外部確認が残る（`accountEntryDecision.externalConfirmationsPending`）。
 
 ## 2026-10-09 Skyタイムラインのコード公開と交換可能な保護
@@ -967,3 +967,10 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 ## 2026-10-05 avokadoProの独立小型PC方針
 
 利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。
+## 2026-10-13 Skyの成果をアプリ内へ渡す
+
+利用者の明示指示により、OS上の仕事管理はZema、Sky単体はAgent/Toolの選択・接続と保存済み成果のアプリ内表示を担う。本人別のSky成果一覧を設け、第一者同一originのFitnessアプリを `sky.fitness.plan/1` の表示例にする。型が合わない文章を運動プランに変換せず、NFCや大学名を成果への権限としない。外部アプリ向け認証SDK、実Fitness Agent、Provider出力と本番受入は別条件。[詳細](sky-launch-design.md#sky-app-output-plugins)。
+
+## 2026-10-13 Sky公開入口の変更
+
+利用者はドメインの綴りを `avoado.si` と確認した後、RockstarOS Homeを `https://avoado.si/os`、Skyを `https://avoado.si/os/sky` にするよう明示した。旧 `avoado.si/sky` は同じドメインの新URLへ転送する。Sky専用Siteが同ドメインを保持し、Skyパスは同一originで処理する。トップと予約ページはavocadoMini Siteからサーバー内で代理取得する。トップのMini・Proリンクは `avocadomini.si` と `avocadopro.si` の各製品ページへ移ることを公開ブラウザで確認した。NFCタグへ入口URLを書けることと、大学別の本人確認・権限・6接続枠が本番で動くことは別の合格条件とする。
