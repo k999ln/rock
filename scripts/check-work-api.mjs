@@ -141,6 +141,7 @@ async function start() {
       compatibilityFlags: config.compatibility_flags,
       bindings: {
         ...config.vars,
+        ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
         ESIMGO_API_KEY: 'fixture-esim-provider-key-only',
         ESIMGO_PROFILE_HASH_SECRET: 'c'.repeat(64),
         ESIMGO_INSTALL_MATERIAL_KEY: 'f'.repeat(64),

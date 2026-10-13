@@ -24,7 +24,11 @@ async function start() {
       .filter(f => f !== config.main && /\.m?js$/.test(f))]
       .map(f => ({type:'ESModule', path:resolve(directory, f)})),
     compatibilityDate: config.compatibility_date, compatibilityFlags: config.compatibility_flags,
-    bindings: {...config.vars, SKY_REMOTE_LLM_ENABLED:'false'},
+    bindings: {
+      ...config.vars,
+      ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
+      SKY_REMOTE_LLM_ENABLED: 'false',
+    },
     d1Databases: {DB:'csv-regression-db'}, r2Buckets: {BUCKET:'csv-regression-files'},
     resourcePersistencePath: join(temporary, 'state'), host:'127.0.0.1', port:0,
   }));
@@ -103,6 +107,26 @@ try {
   check((await db.prepare('SELECT COUNT(*) AS count FROM devices').first()).count,0);
   for (let i=0;i<2;i++) await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:false}});
   check(await library(alice),[]);
+
+  // Phoenix learning is explicit, owner-scoped and independent from execution authority.
+  const feedPath = '/api/sky/feed-history';
+  await call(feedPath, {user:null,status:401});
+  await call(feedPath, {method:'PUT',user:null,body:{enabled:true},status:401});
+  const enabledFeed = await (await call(feedPath, {method:'PUT',body:{enabled:true}})).json();
+  check(enabledFeed.enabled,true); check(enabledFeed.algorithmVersion,'sky-phoenix-v1');
+  const feedEvent = {
+    id: randomUUID(), sessionId: randomUUID(), toolId:'mr-citations',
+    type:'impression', at:Date.now(), dwellMs:1000, position:0,
+  };
+  await call(feedPath, {method:'POST',body:{events:[{...feedEvent,prompt:'never-store'}]},status:400});
+  check(await (await call(feedPath, {method:'POST',body:{events:[feedEvent]}})).json(),{accepted:1,algorithmVersion:'sky-phoenix-v1'});
+  const feed = await (await call(feedPath)).json();
+  check(feed.enabled,true); check(feed.events.length,1); check(feed.events[0].toolId,'mr-citations');
+  check((await (await call(feedPath,{user:bob})).json()).events,[]);
+  check((await db.prepare('SELECT COUNT(*) AS count FROM jobs').first()).count,0);
+  check((await db.prepare('SELECT COUNT(*) AS count FROM sky_connections').first()).count,0);
+  check(await (await call(feedPath,{method:'DELETE'})).json(),{cleared:true});
+  check((await (await call(feedPath)).json()).events,[]);
 
   for (const tool of ['rockstar-csv-cleanup','coconala']) {
     check(await (await call('/api/sky/library',{method:'PUT',body:{tool,saved:true}})).json(),{tool,saved:true});

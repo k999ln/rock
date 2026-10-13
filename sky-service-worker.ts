@@ -27,7 +27,8 @@ export default {
   async fetch(request: Request, env: { DB: D1Database }, ctx: ExecutionContext) {
     if (new URL(request.url).pathname.startsWith('/api/')) {
       try { await ensureSchema(env.DB); }
-      catch {
+      catch (error) {
+        console.error('sky schema initialization failed', error);
         return Response.json({ error: 'サービスを準備しています。少し待って再試行してください。' }, {
           status: 503, headers: { 'Cache-Control': 'no-store', 'Retry-After': '5' },
         });
