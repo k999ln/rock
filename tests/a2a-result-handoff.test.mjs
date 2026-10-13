@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { buildA2AResultHandoffPrompt } from '../lib/a2a-result-handoff.ts';
+import { A2A_MAX_REDELEGATION_DEPTH } from '../lib/a2a-delegation-store.ts';
 
 void test('hands a complete reviewed Agent result to a new task as untrusted JSON data', () => {
   const result = buildA2AResultHandoffPrompt({
@@ -73,7 +74,7 @@ void test('one-step redelegation depth is enforced by the store, API and D1 inse
   const store = readFileSync(resolve(process.cwd(), 'lib/a2a-delegation-store.ts'), 'utf8');
   const api = readFileSync(resolve(process.cwd(), 'app/api/sky/a2a-delegations/route.ts'), 'utf8');
   const migration = readFileSync(resolve(process.cwd(), 'drizzle/0057_a2a_parent_sequence.sql'), 'utf8');
-  assert.match(store, /A2A_MAX_REDELEGATION_DEPTH = 1/);
+  assert.equal(A2A_MAX_REDELEGATION_DEPTH, 1);
   assert.match(store, /getPredecessorDepth/);
   assert.match(store, /a2a_predecessor_depth_exceeded/);
   assert.match(api, /A2A_PREDECESSOR_DEPTH_EXCEEDED/);

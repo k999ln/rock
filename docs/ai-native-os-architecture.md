@@ -60,6 +60,12 @@ external-write用にoutboxと照合状態を追加する設計とする。実装
 
 送信直後の切断/killは「失敗だから再送」としない。provider referenceまたは同じkeyで照会し、署名/内容/金額/状態を照合する。Providerが冪等再送を保証する場合だけ同一keyを再送可能とし、保証も照会もなければuncertainで止め本人/Providerへ解決を求める。一般ネットワークでのexactly-onceは約束しない。取消要求後も既に外部成立した作用は取消完了とせず、別の補償操作とreceiptを作る。時刻変更、再起動、重複callback、承認失効、停止と完了の競合を試験する。
 
+### 2026-10-11 — 確定receiptの再照合（AI04、ROCK）
+
+既存Android Coreの`ExternalWriteOutbox`は、確定済みcallbackの重複をprovider referenceだけで受け入れていた。再起動後も、保存済みpayload hashと実際に確定した金額の両方が一致する場合だけ同じ結果を返す。承認上限1,000に対する確定額800なら、上限以内の799や1,000でも同一receiptではない。不一致は`RECONCILIATION_CONFLICT`で停止し、保存済みreceipt・確定額を変えず、元の作用を再送しない。既存schema、rejectedの非金融観測、権限・本人承認・予算の条件は変更しない。
+
+`ExternalWriteOutboxTest`の再起動fixtureで、正常再送、異なる/null hash、負数・0・確定額の前後・上限内外の異額を照合する。Core 122、Broker 32、SDK 7のhost単体試験とBroker/Shell/記事ToolのAPK build・lintが合格。これはCoreの注入adapter/SQLite境界で、実Provider、Binder接続による外部作用、実機・全OS受入ではない。
+
 ## 5. Sky appとOSのcapability交渉・保存
 
 Sky appはスマホ/Web/PC等の選択・接続UI、OS側Sky serviceはBrokerによる端末実行能力の提示と永続selection管理である。今のShell内Skyを将来の全端末版と呼ばない。既存Shellのno-INTERNET境界は保持し、遠隔版は認証済みgateway/端末接続adapter経由とする。任意ネットワークからBinderを公開しない。
@@ -90,6 +96,16 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 ライブ表示はevent sequenceから作り、欠番/再接続ではsnapshotへ再照合する。端末未接続は最終確認時刻を表示し、架空の進捗や内部思考を生成しない。「停止要求」「停止確認」「外部照合待ち」を分ける。Tool成功→本人の成果確認→仕事完了と、販売→Earning Receipt→Wallet反映は別の列として表示する。
 
 移植時は[Web workflow](../lib/workflow.ts)のrevision競合・command冪等性・sample不合格・review必須をfixtureの共通期待値にする。Androidはowner別DBとBinder境界を持つが、汎用job revision/command集合がWebと完全一致する実装はまだない。将来のschema migrationは旧データを保持し、未知版をresetせず拒否し、rollback readerの互換性を検査する。
+
+### Android Shellからの同一依頼の再確認（2026-10-11、AI04）
+
+既存Binderへの送信前に依頼UUID、入力digest、Android user serialをprivate preferencesへ保存し、同期guardで二重tapを一度に制限する。依頼本文は保存しない。応答不明・再生成時は同じownerと入力digestに限り元UUIDを再利用し、異なる内容やownerには自動で引き継がない。長さを区切ったUTF-8入力のSHA-256を使い、文字列結合の衝突を避ける。
+
+有効なqueued応答、またはcommit前と確認済みの明確な拒否だけで保留IDを消す。Binder／scheduler例外は結果不明のまま保持する。履歴を取得して確認し、本人が警告を読んで破棄する操作はローカル再送IDの解除だけであり、Brokerの仕事取消ではない。破棄後に新規依頼すると重複する可能性を表示する。
+
+SharedPreferencesのcommit失敗はメモリだけ更新済みの場合があるため、Store adapterは元のpending metadataを保持し、同じ保存先を使う再生成Activityもdurableな復元が確認できるまで新規送信させない。clearの失敗を新規UUIDの発行条件にせず、再試行時のprecommit拒否も前の試行が未実行という証拠へ転用しない。
+
+受入はShell host回帰11件とAPK／lint／instrumentation APK compile、独立したmemory-before-disk-failureモデルの5復旧flow。実Activityの二重tap・応答喪失後再生成のinstrumentation試験は用意したが、emulator／実機で未実行。正式署名・全OS image・flash・物理Pixel受入を代替しない。
 
 ## 7. 同じCoreで複数の縦断を作る
 

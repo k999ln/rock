@@ -112,6 +112,27 @@ public class ExternalWriteOutboxTest {
         assertEquals("prepared", outbox.prepare(Effect.EXTERNAL_WRITE, refund, NOW + 8));
     }
 
+    @Test public void confirmedReconciliationRejectsContradictoryDuplicateReceiptsAfterRestart() {
+        outbox.prepare(Effect.EXTERNAL_WRITE, op("op-1", "payload", 1000, "key-1", false), NOW);
+        Dispatch dispatch = outbox.beginDispatch("op-1", ALLOW, NOW + 1);
+        assertTrue(outbox.recordResult(dispatch, Observation.CONFIRMED, "ref-1", 800, NOW + 2));
+        restart();
+        String hash = Engine.digest("payload");
+        assertEquals("confirmed", outbox.reconcile("op-1", Observation.CONFIRMED, "ref-1", hash, 800, NOW + 3));
+        for (long amount : new long[] { -1, 0, 799, 801, 1000, 1001 }) {
+            assertEquals("RECONCILIATION_CONFLICT", assertThrows(IllegalStateException.class,
+                () -> outbox.reconcile("op-1", Observation.CONFIRMED, "ref-1", hash, amount, NOW + 4)).getMessage());
+        }
+        for (String changedHash : new String[] { null, Engine.digest("different payload") }) {
+            assertEquals("RECONCILIATION_CONFLICT", assertThrows(IllegalStateException.class,
+                () -> outbox.reconcile("op-1", Observation.CONFIRMED, "ref-1", changedHash, 800, NOW + 5)).getMessage());
+        }
+        assertEquals("confirmed", outbox.state("op-1"));
+        assertEquals("800", db.query("SELECT settled_amount_minor FROM outbox_operations WHERE operation_id='op-1'")
+            .get(0).get("settled_amount_minor"));
+        assertEquals("confirmed", outbox.reconcile("op-1", Observation.CONFIRMED, "ref-1", hash, 800, NOW + 6));
+    }
+
     @Test public void mismatchedReconciliationStaysUncertainAndAbsenceAllowsCancelOnly() {
         outbox.prepare(Effect.EXTERNAL_WRITE, op("op-1", "{\"price\":1000}", 1000, "key-1", false), NOW);
         Dispatch d = outbox.beginDispatch("op-1", ALLOW, NOW + 1);

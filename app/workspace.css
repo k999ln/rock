@@ -9865,6 +9865,7 @@
 }
 .sky-chat-workflow {
   width: min(100%, 680px);
+  flex-shrink: 0;
   align-self: center;
   margin: 6px 0 10px;
   overflow: hidden;

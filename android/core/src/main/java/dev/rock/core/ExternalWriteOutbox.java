@@ -175,8 +175,14 @@ public final class ExternalWriteOutbox {
             if ("confirmed".equals(state) || "rejected".equals(state)) {
                 boolean same = observed.name().toLowerCase(java.util.Locale.ROOT).equals(state)
                     && (providerReference == null ? row.get("provider_reference") == null : providerReference.equals(row.get("provider_reference")));
+                if (same && "confirmed".equals(state)) {
+                    // A matching provider reference does not make a different receipt a replay.
+                    // Compare the settled amount, which may be below the approved cost ceiling.
+                    same = row.get("payload_hash").equals(observedPayloadHash)
+                        && amountMinor == Long.parseLong(row.get("settled_amount_minor"));
+                }
                 if (!same) throw new IllegalStateException("RECONCILIATION_CONFLICT");
-                return state;                                    // duplicate observation of a settled result
+                return state;                                    // identical observation of a settled result
             }
             if (!"uncertain".equals(state)) throw new IllegalStateException("NOTHING_TO_RECONCILE");
             if (observed == Observation.ABSENT) {

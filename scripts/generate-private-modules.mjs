@@ -1,4 +1,8 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  constants, closeSync, existsSync, fstatSync, lstatSync, mkdirSync,
+  openSync, readFileSync, realpathSync, renameSync, unlinkSync, writeFileSync,
+} from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -10,6 +14,59 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = resolve(root, 'lib/generated/private-content.ts');
 const GIT_CRYPT_HEADER = Buffer.from('\0GITCRYPT\0');
+
+function trustedDirectory(path) {
+  const stat = lstatSync(path);
+  if (!stat.isDirectory() || stat.isSymbolicLink() || realpathSync(path) !== resolve(path))
+    throw new Error('private content: generated directory must be a real directory');
+  return stat;
+}
+
+// The build workspace's parent must be trusted and stable. Replacement publishes
+// the directory entry atomically: it never opens the destination for writing.
+export function writeGeneratedContent(path, text) {
+  const directory = dirname(path);
+  const parent = trustedDirectory(directory);
+  let fd;
+  try {
+    fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+    const stat = fstatSync(fd);
+    if (!stat.isFile() || stat.nlink !== 1)
+      throw new Error('private content: generated output must be a regular, unlinked file');
+    if (readFileSync(fd, 'utf8') === text) {
+      const currentFile = lstatSync(path);
+      const currentParent = trustedDirectory(directory);
+      if (!currentFile.isFile() || currentFile.nlink !== 1 ||
+          currentFile.dev !== stat.dev || currentFile.ino !== stat.ino ||
+          currentParent.dev !== parent.dev || currentParent.ino !== parent.ino)
+        throw new Error('private content: generated output changed during the build');
+      return false;
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+  const temporary = resolve(directory, `.private-content-${randomUUID()}.tmp`);
+  let temporaryCreated = false;
+  let output;
+  try {
+    output = openSync(temporary, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600);
+    temporaryCreated = true;
+    writeFileSync(output, text);
+    closeSync(output);
+    output = undefined;
+    const current = trustedDirectory(directory);
+    if (parent.dev !== current.dev || parent.ino !== current.ino)
+      throw new Error('private content: generated directory changed during the build');
+    renameSync(temporary, path);
+    temporaryCreated = false;
+    return true;
+  } finally {
+    if (output !== undefined) closeSync(output);
+    if (temporaryCreated) unlinkSync(temporary);
+  }
+}
 
 export function isLocked(bytes) {
   return bytes.subarray(0, GIT_CRYPT_HEADER.length).equals(GIT_CRYPT_HEADER);
@@ -81,9 +138,13 @@ export function buildPrivateContent() {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const { text, available } = buildPrivateContent();
-  mkdirSync(dirname(outputPath), { recursive: true });
-  const previous = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
-  if (previous !== text) writeFileSync(outputPath, text);
+  trustedDirectory(resolve(root, 'lib'));
+  try {
+    mkdirSync(dirname(outputPath), { mode: 0o700 });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  writeGeneratedContent(outputPath, text);
   const missing = Object.entries(available).filter(([, ok]) => !ok).map(([name]) => name);
   console.log(
     missing.length

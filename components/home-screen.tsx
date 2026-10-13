@@ -298,7 +298,7 @@ export default function HomeScreen() {
 
         <Link className={styles.serviceSetupLink} href="/connect">
           <RadioTower size={16} />
-          <span>SIM / eSIMからRockstarOSをはじめる</span>
+          <span>アカウント・端末の接続を確認する</span>
           <ChevronRight size={16} />
         </Link>
 

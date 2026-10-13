@@ -629,18 +629,17 @@ export function operations(
         reversesId: null,
       };
     }
-    const existing = await statement(
+    const recorded = () => statement(
       `SELECT ${bookColumns} FROM book_records WHERE id = ? AND user_id = ?`,
       id,
       user,
     ).first<BookRecord>();
+    const sameRecord = (record: BookRecord) => Object.entries(data).every(
+      ([key, value]) => record[key as keyof BookRecord] === value,
+    );
+    const existing = await recorded();
     if (existing) {
-      if (
-        Object.entries(data).every(
-          ([k, val]) => existing[k as keyof BookRecord] === val,
-        )
-      )
-        return existing;
+      if (sameRecord(existing)) return existing;
       throw new OperationError('同じ記録IDで異なる内容は保存できません。', 409);
     }
     const result = await statement(
@@ -657,8 +656,14 @@ export function operations(
       user,
       clock() - 3600_000,
     ).all();
-    if (!result.results.length)
+    if (!result.results.length) {
+      // A concurrent identical request may have committed after the first read.
+      // Only this owner's exact operation is replayable; other IDs/payloads
+      // and a second reversal still conflict.
+      const replay = await recorded();
+      if (replay && sameRecord(replay)) return replay;
       throw new OperationError('重複した取消または保存回数の上限です。', 409);
+    }
     return { id, ...data };
   }
 

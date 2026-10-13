@@ -33,6 +33,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   const deviceHome = read('app/api/rockstar/device-home/route.ts');
   const remoteAiWorker = read('services/sky-agent-runtime/src/worker.ts');
   const deviceTransport = read('android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java');
+  const jsonResponse = read('android/automation/src/main/java/dev/rock/automation/AndroidJsonResponse.java');
   const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
   const shellUi = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
   const shellConnection = read('android/shell/src/main/java/dev/rock/shell/ShellConnection.java');
@@ -80,7 +81,10 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(projectMap, /SIM\/eSIM-led RockstarOS service offer/);
   assert.doesNotMatch(projectMap, /eSIM専用製品の利用開始/);
   assert.doesNotMatch(onboarding, /対応eSIMプランを確認する/);
-  assert.match(onboarding, /Rockstar IDに一度だけ登録する/);
+  assert.match(onboarding, /アカウントでサインインする/);
+  assert.match(onboarding, /Web版を使うためにSIM\/eSIMを購入する必要はありません/);
+  assert.match(onboarding, /新しい消費者向けeSIMの発行・販売は現在保留中/);
+  assert.match(home, /アカウント・端末の接続を確認する/);
   assert.match(onboarding, /署名済み購入claim/);
   assert.match(onboarding, /見積と上限を承認したCloud作業は端末がオフラインでも続き/);
   assert.match(onboarding, /<RockstarEntitlementClaim \/>/);
@@ -178,7 +182,8 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.doesNotMatch(deviceHome, /prompt:\s*item/);
   assert.match(deviceTransport, /if \(!allowedPath\(path\)\)/);
   assert.match(deviceTransport, /setInstanceFollowRedirects\(false\)/);
-  assert.match(deviceTransport, /DEVICE_HOME_RESPONSE_TOO_LARGE/);
+  assert.match(deviceTransport, /return AndroidJsonResponse\.readBounded\(input, maximum, deadline,\s*SystemClock::elapsedRealtime, "DEVICE_HOME"\)/);
+  assert.match(jsonResponse, /if \(output\.size\(\) > maximum - count\) throw new IOException\(errorPrefix \+ "_RESPONSE_TOO_LARGE"\)/);
   assert.match(deviceTransport, /taskDetailPath\(String kind, String id\)/);
   assert.match(deviceTransport, /DEVICE_HOME_TASK_REFERENCE_REJECTED/);
   assert.match(shellApi, /const int API_VERSION = 18/);

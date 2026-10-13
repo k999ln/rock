@@ -7,6 +7,7 @@ import {
   createCurrentNativeSbom,
   createHistoricalNativeSbom,
   validateAndroidPhysicalReleaseAudit,
+  validateCurrentPublicSiteObservation,
   validateOwnerPrivateSitesAudit,
   validatePersonalNumberReleaseAudit,
   validateQemuPostSigningAcceptance,
@@ -87,6 +88,47 @@ void test('current release matrix passes while preserving real blockers', () => 
   });
   assert.equal(result.sites.status, 'OUTDATED');
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
+  assert.deepEqual(result.currentPublicSite, {
+    status: 'BLOCKED_OBSERVED_PUBLIC_PREVIEW',
+    version: readiness.currentSiteObservation.version,
+    sourceCommit: readiness.currentSiteObservation.sourceCommit,
+  });
+});
+
+void test('public delivery remains a separate required runtime gate that source/local success cannot pass', () => {
+  const publicTarget = (matrix) => matrix.targets.find(({ id }) => id === 'web-pwa-public-preview');
+  for (const mutation of ['pass', 'optional', 'deleted', 'local-evidence', 'unscoped-source-policy']) {
+    const changed = structuredClone(readiness);
+    const target = publicTarget(changed);
+    const runtime = target.gates.find(({ id }) => id === 'current-public-delivery-readback');
+    if (mutation === 'pass') runtime.status = 'pass';
+    if (mutation === 'optional') runtime.required = false;
+    if (mutation === 'deleted') target.gates = target.gates.filter(({ id }) => id !== runtime.id);
+    if (mutation === 'local-evidence') runtime.evidence = ['docs/evidence/launch/web-security-local-20260917.json'];
+    if (mutation === 'unscoped-source-policy') delete target.gates.find(({ id }) => id === 'web-security-policy').acceptanceScope;
+    assert.throws(() => validateMatrix({ matrix: changed }), /blockedが必要|必須区分|必須ID集合|観測根拠|範囲を分け/, mutation);
+  }
+});
+
+void test('current public observation must match its evidence instead of a historical version, SHA or audience', () => {
+  for (const [key, value] of [
+    ['version', readiness.currentSiteObservation.version - 1],
+    ['sourceCommit', '0'.repeat(40)],
+    ['observedAt', '2026-09-11T00:00:00Z'],
+    ['projectId', 'appgprj_other'],
+    ['access', 'owner_private'],
+    ['deployed', false],
+  ]) {
+    const changed = structuredClone(readiness);
+    changed.currentSiteObservation[key] = value;
+    assert.throws(() => validateCurrentPublicSiteObservation({ root, readiness: changed, hosting: sitesHosting }), /同じproject\/version\/SHA\/access/, key);
+  }
+  const missing = structuredClone(readiness);
+  delete missing.currentSiteObservation;
+  assert.throws(() => validateMatrix({ matrix: missing }), /現行観測/);
+  const staleEvaluation = structuredClone(readiness);
+  staleEvaluation.evaluatedAt = readiness.currentSiteObservation.observedAt.slice(0, 10) === '2026-10-13' ? '2026-10-12' : '2026-09-01';
+  assert.throws(() => validateMatrix({ matrix: staleEvaluation }), /評価日が監査観測より古い/);
 });
 
 void test('release evaluation cannot predate any incorporated audit observation', () => {
@@ -241,7 +283,7 @@ void test('cannot pass product license with only a license string or placeholder
   const target = changed.targets.find(({ id }) => id === 'web-pwa-public-preview');
   target.gates.find(({ id }) => id === 'product-license').status = 'pass';
   target.gates.find(({ id }) => id === 'public-access-approval').status = 'pass';
-  target.declaredStatus = 'ready';
+  target.declaredStatus = 'blocked';
   changedIntent.ownCodeIntent.specificLicense = 'MIT';
   changedIntent.ownCodeIntent.proposalStatus = 'OWNER_SELECTED';
   assert.throws(

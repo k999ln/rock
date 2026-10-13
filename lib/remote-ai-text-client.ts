@@ -1,3 +1,4 @@
+import type { TextGenerationUsage } from './llm-providers.ts';
 const messages: Record<string, string> = {
   UNAUTHORIZED: 'サインインの有効期限が切れました。再度サインインして続けてください。',
   SERVICE_ENTITLEMENT_REQUIRED: 'この機能の利用権を確認できません。接続状態を確認してください。',
@@ -13,6 +14,7 @@ const messages: Record<string, string> = {
   REMOTE_LLM_DISABLED: 'クラウドAIは接続準備中です。実行は開始していません。',
   REMOTE_AI_PRICING_GATE_UNAVAILABLE: 'クラウドAIの料金・実行確認が完了していません。実行は開始していません。',
   UPSTREAM_TIMEOUT: 'クラウドAIの応答が時間内に返りませんでした。再送せず、保存済みの状態を確認してください。',
+  INVALID_RESPONSE: '応答の内容を確認できませんでした。元の依頼は保持しています。再送せず、保存済みの状態を確認してください。',
   NETWORK: '応答を確認できませんでした。再送せず、保存済みの状態を確認してください。',
 };
 export class RemoteAiTextClientError extends Error {
@@ -47,4 +49,128 @@ export async function remoteAiTextRequest<T>(path: string, method = 'GET', body?
     throw new RemoteAiTextClientError(response.status, code, currencies);
   }
   return data as T;
+}
+
+export type RemoteTextExecution = {
+  id: string;
+  parentJobId: string;
+  parentBudgetLimitMinor: number;
+  requestId: string;
+  approvalDigest: string;
+  state: 'quoted' | 'reserved' | 'sending' | 'completed' | 'unreconciled' | 'cancelled' | 'expired';
+  quote: {
+    requestDigest: string;
+    createdAt: number;
+    expiresAt: number;
+    approvedCapMinor: number;
+    ceiling: {
+      currency: string;
+      maximumChargeMinor: number;
+      inputTokenUpperBound: number;
+      outputTokenLimit: number;
+      modelId: string;
+      pricingVersion: string;
+      rateCardDigest: string;
+    };
+  };
+  settledMinor: number | null;
+  usage: TextGenerationUsage | null;
+  price: { status?: 'priced'; chargeMinor: number; currency: string; pricingVersion: string; items: Array<{ category: string; tokens: number; rateMinorMicrosPerMillionTokens: number }> } | { status: 'unreconciled'; reason: string } | null;
+  spending?: {
+    status: string;
+    currency: string;
+    currentChargeMinor: number | null;
+    currentEstimateMinor: number | null;
+    estimateUpdatedAt: number | null;
+    estimateBasis: string | null;
+    reservedMaximumMinor: number;
+    providerMeter: string;
+    invoiceVerified: boolean;
+  };
+  resultText: string | null;
+  errorCode: string | null;
+  saveResult: boolean;
+  createdAt: number;
+  updatedAt: number;
+};
+export type RemoteTextEstimate = {
+  estimate: RemoteTextExecution['quote']['ceiling'];
+  unitRates: Array<{ category: 'ordinary-input' | 'cached-input' | 'cache-write' | 'output'; rateMinorMicrosPerMillionTokens: number }>;
+  rateSource: string;
+  cardId: string;
+  withinUserCap: boolean;
+  currencies?: string[];
+};
+
+// Validate the browser-facing projection before it enters render state or authorizes
+// the next request. Unknown responses are not empty lists or successful mutations.
+function object(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+const integer = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
+const nonempty = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
+const identifier = (value: unknown) => typeof value === 'string' && /^[A-Za-z0-9._:-]{1,128}$/.test(value);
+const digest = (value: unknown) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
+const currency = (value: unknown) => typeof value === 'string' && /^[A-Z]{3}$/.test(value);
+function invalid(): never { throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE'); }
+function ceiling(value: unknown): value is RemoteTextExecution['quote']['ceiling'] {
+  return object(value) && currency(value.currency) && nonempty(value.modelId) && nonempty(value.pricingVersion) &&
+    digest(value.rateCardDigest) && integer(value.maximumChargeMinor) && integer(value.inputTokenUpperBound) &&
+    integer(value.outputTokenLimit) && value.outputTokenLimit > 0;
+}
+export function readRemoteTextEstimate(value: unknown, expected: { currency: string; model?: string; outputTokenLimit: number; maximumBudgetMinor: number }): RemoteTextEstimate {
+  if (!object(value) || !ceiling(value.estimate) || !Array.isArray(value.unitRates) ||
+    !value.unitRates.every((rate) => object(rate) && ['ordinary-input', 'cached-input', 'cache-write', 'output'].includes(String(rate.category)) && integer(rate.rateMinorMicrosPerMillionTokens)) ||
+    typeof value.withinUserCap !== 'boolean' || !nonempty(value.cardId) || typeof value.rateSource !== 'string' ||
+    !value.rateSource.startsWith('https://') || value.estimate.currency !== expected.currency ||
+    (expected.model !== undefined && value.estimate.modelId !== expected.model) || value.estimate.outputTokenLimit !== expected.outputTokenLimit)
+    invalid();
+  if (!value.withinUserCap || value.estimate.maximumChargeMinor > expected.maximumBudgetMinor)
+    throw new RemoteAiTextClientError(422, 'REMOTE_AI_QUOTE_OVER_CAP_OR_INVALID');
+  return value as RemoteTextEstimate;
+}
+export function readRemoteTextExecution(value: unknown, expected: { parentJobId: string; requestId?: string; requestDigest?: string; previous?: RemoteTextExecution }): RemoteTextExecution {
+  if (!object(value) || !identifier(value.id) || value.parentJobId !== expected.parentJobId || !identifier(value.requestId) ||
+    !digest(value.approvalDigest) || !integer(value.parentBudgetLimitMinor) ||
+    !['quoted', 'reserved', 'sending', 'completed', 'unreconciled', 'cancelled', 'expired'].includes(String(value.state)) ||
+    !object(value.quote) || !ceiling(value.quote.ceiling) || !digest(value.quote.requestDigest) ||
+    !integer(value.quote.createdAt) || !integer(value.quote.expiresAt) || !integer(value.quote.approvedCapMinor) ||
+    !integer(value.createdAt) || !integer(value.updatedAt) ||
+    (value.resultText !== null && typeof value.resultText !== 'string') ||
+    (value.errorCode !== undefined && value.errorCode !== null && typeof value.errorCode !== 'string') ||
+    (value.saveResult !== undefined && typeof value.saveResult !== 'boolean') ||
+    (value.settledMinor !== undefined && value.settledMinor !== null && !integer(value.settledMinor))) invalid();
+  if (value.usage !== undefined && value.usage !== null && (!object(value.usage) ||
+    !['inputTokens', 'outputTokens'].every((key) => integer((value.usage as Record<string, unknown>)[key])) ||
+    !['cachedInputTokens', 'cacheWriteInputTokens'].every((key) => (value.usage as Record<string, unknown>)[key] === null || integer((value.usage as Record<string, unknown>)[key])) ||
+    (value.usage.totalTokens !== undefined && !integer(value.usage.totalTokens)))) invalid();
+  if (value.price !== undefined && value.price !== null) {
+    if (!object(value.price)) invalid();
+    if (value.price.status === 'unreconciled') { if (!nonempty(value.price.reason)) invalid(); }
+    else if ((value.price.status !== undefined && value.price.status !== 'priced') || !integer(value.price.chargeMinor) ||
+      !currency(value.price.currency) || !nonempty(value.price.pricingVersion) || !Array.isArray(value.price.items) ||
+      !value.price.items.every((item) => object(item) && nonempty(item.category) && integer(item.tokens) && integer(item.rateMinorMicrosPerMillionTokens))) invalid();
+  }
+  if (value.spending !== undefined && (!object(value.spending) || !currency(value.spending.currency) ||
+    !nonempty(value.spending.status) || !nonempty(value.spending.providerMeter) || !integer(value.spending.reservedMaximumMinor) ||
+    typeof value.spending.invoiceVerified !== 'boolean' ||
+    !['currentChargeMinor', 'currentEstimateMinor', 'estimateUpdatedAt'].every((key) => value.spending && ((value.spending as Record<string, unknown>)[key] === null || integer((value.spending as Record<string, unknown>)[key]))) ||
+    (value.spending.estimateBasis !== null && typeof value.spending.estimateBasis !== 'string'))) invalid();
+  const record = value as RemoteTextExecution;
+  if ((expected.requestId !== undefined && record.requestId !== expected.requestId) ||
+    (expected.requestDigest !== undefined && record.quote.requestDigest !== expected.requestDigest)) invalid();
+  const previous = expected.previous;
+  if (previous && (record.id !== previous.id || record.requestId !== previous.requestId ||
+    record.approvalDigest !== previous.approvalDigest || record.parentBudgetLimitMinor !== previous.parentBudgetLimitMinor ||
+    record.quote.requestDigest !== previous.quote.requestDigest || record.quote.approvedCapMinor !== previous.quote.approvedCapMinor ||
+    record.quote.createdAt !== previous.quote.createdAt || record.quote.expiresAt !== previous.quote.expiresAt ||
+    record.saveResult !== previous.saveResult || Object.keys(previous.quote.ceiling).some((key) =>
+      record.quote.ceiling[key as keyof typeof record.quote.ceiling] !== previous.quote.ceiling[key as keyof typeof previous.quote.ceiling]))) invalid();
+  return record;
+}
+export function readRemoteTextList(value: unknown, parentJobId: string): { executions: RemoteTextExecution[]; executionAvailable: boolean } {
+  if (!object(value) || !Array.isArray(value.executions) || typeof value.executionAvailable !== 'boolean') invalid();
+  const executions = value.executions.map((item) => readRemoteTextExecution(item, { parentJobId }));
+  if (new Set(executions.map((item) => item.id)).size !== executions.length) invalid();
+  return { executions, executionAvailable: value.executionAvailable };
 }

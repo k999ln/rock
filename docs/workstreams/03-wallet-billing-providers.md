@@ -1,5 +1,12 @@
 # Wallet / Billing / Providers
 
+## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）
+
+2つの既存Wallet画面はuse-wallet-ledgerで読取・保存・取消を共有する。応答喪失後も同じID／payloadで明示確認し、現在ownerを添えてPOSTする。別owner／本人未確認時に元のdraftと過去一覧を見せず、元ownerに戻ると元のIDと入力を復元する。取消も追記型の既存契約を維持し、実送金・料金・Provider接続を追加しない。
+
+検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
+
+
 ## 目的
 
 自動化の仕事、費用、検証済み収益、Rock利用料、払出しを追記型台帳とreceiptで分離し、Wallet会社・ファンド会社を交換可能なProviderとして接続する。

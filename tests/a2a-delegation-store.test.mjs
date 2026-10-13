@@ -138,6 +138,52 @@ function childInput(sequence, overrides = {}) {
   };
 }
 
+void test('delegation read paths preserve quote, binding, predecessor and legacy normalization', async (t) => {
+  const { db, store } = await setup(t);
+  const predecessor = await completedAndCaptured(store, childInput(30, {
+    deadlineAt: 5_000, budgetLimitMinor: 100,
+  }));
+  const quote = JSON.parse(readFileSync(new URL('../android/core/src/test/resources/a2a-price-quote-v1.json', import.meta.url), 'utf8'));
+  const input = childInput(31, {
+    deadlineAt: Date.now() + 60_000, budgetLimitMinor: 200,
+    predecessorDelegationId: predecessor.id,
+    priceQuote: quote, priceQuoteDigest: 'c'.repeat(64),
+    packageRuntimeBindingId: 'fixture-package-binding', packageRuntimeBindingDigest: 'd'.repeat(64),
+  });
+  const draft = (await store.prepare('alice', input, 1_200)).delegation;
+  assert.deepEqual(draft.priceQuote, quote);
+  assert.equal(draft.packageRuntimeBindingId, input.packageRuntimeBindingId);
+  assert.equal(draft.packageRuntimeBindingDigest, input.packageRuntimeBindingDigest);
+  assert.equal(draft.continueWhileDeviceOffline, true);
+  assert.equal(draft.predecessorDelegationId, predecessor.id);
+  assert.deepEqual(await store.get('alice', input.id), draft);
+  assert.deepEqual(await store.getByIdempotency('alice', parentId, input.idempotencyKey, input.inputSha256), draft);
+  assert.deepEqual((await store.listForParent('alice', parentId)).find(({ id }) => id === input.id), draft);
+  assert.deepEqual((await store.prepare('alice', input, 1_201)).delegation, draft);
+  const prepared = await store.approve('alice', input.id, input.authorizationSha256, encryptedInput(input), 1_250);
+  assert.deepEqual((await store.listPrepared()).find(({ id }) => id === input.id), prepared);
+  const claimed = await store.claimDispatch('alice', input.id, 1_300);
+  const sending = await store.beginRemoteSend('alice', input.id, claimed.revision, 1_301);
+  const running = await store.recordTaskReceipt('alice', input.id, sending.revision,
+    { id: 'fixture-readback-task', state: 'TASK_STATE_WORKING' }, 1_302);
+  // These existing scheduler projections omit predecessor; refactoring must
+  // not silently change their output or drop any other persisted field.
+  const scheduled = { ...running, predecessorDelegationId: null };
+  assert.deepEqual((await store.listOverdueRemoteTasks(input.deadlineAt)).find(({ id }) => id === input.id), scheduled);
+  assert.deepEqual((await store.listForReconciliation()).find(({ id }) => id === input.id), scheduled);
+  assert.equal(await store.get('bob', input.id), null);
+  assert.equal(await store.getByIdempotency('bob', parentId, input.idempotencyKey, input.inputSha256), null);
+  assert.deepEqual(await store.listForParent('bob', parentId), []);
+
+  // Legacy or damaged stored quote data remains a null quote for dispatch to
+  // reject; it is not converted into a usable provider authorization here.
+  db.sqlite.prepare('UPDATE agent_delegations SET price_quote_json = ? WHERE id = ?').run('{invalid', input.id);
+  assert.equal((await store.get('alice', input.id)).priceQuote, null);
+  db.sqlite.prepare("UPDATE agent_delegations SET price_quote_json = NULL, price_quote_digest = '' WHERE id = ?").run(input.id);
+  const legacy = await store.get('alice', input.id);
+  assert.equal(legacy.priceQuote, null); assert.equal(legacy.priceQuoteDigest, '');
+});
+
 void test('cloud delegation cannot be queued without affirmative offline-continuation consent', async (t) => {
   const { store } = await setup(t);
   await assert.rejects(

@@ -17,6 +17,10 @@ rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
 
+## 2026-10-11 PC receiverの終端更新
+
+`src/blackberryrock/storage.py`のstatus/result/updated_atによるCASで後着の完了・取消・異なる成果物から確定結果を保護し、完全一致の重複は元の保存時刻を返す。schemaとHTTP interface、取得時`IMPORT-MANIFEST.json`は変更しない。追加3件の修正前失敗と、Store 6件/HTTP 3件のhost合格を[既存検証記録](../../docs/native-os-validation.md#pc-receiverの終端競合と再送ai042026-10-11)に記録。OS image・実機受入ではない。
+
 ## 2026-10-11 QMP受入monitorの総期限
 
 `os/verify-platform.py`のQMP画面取得を総5秒・frame 1 MiBへ制限し、通知継続や細切れ応答でguest外側期限を妨げる待機を修正した。`tests/test_os_platform_qmp.py`の実AF_UNIX fixture 7件と既存scope／配布検証を合わせ69件合格。IMPORT-MANIFESTは維持し、実guestや新imageの保存・復旧受入とは分ける。[再現と環境条件](../../docs/native-os-validation.md#qemu受入monitorの総期限2026-10-11)。

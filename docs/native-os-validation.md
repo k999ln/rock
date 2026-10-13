@@ -1,5 +1,11 @@
 # Native OSのRock統合検証
 
+## PC receiverの終端競合と再送（AI04、2026-10-11）
+
+既存`src/blackberryrock/storage.py`の仕事更新で、2つのSQLite接続が同じrunning状態を読んだ後、完了と取消が両方成功し確定結果を上書きする競合を再現した。更新は読み取ったstatus・result・updated_atに対するCASで行う。同じ終端状態と同じ結果の再送は保存済み行を返し、時刻も書き換えない。異なる成果・状態の後着は409相当の競合として保持し、勝者の結果を消さない。DB schemaとHTTP interfaceは維持する。
+
+native rootで`PYTHONPATH=src python3 -m unittest discover -s tests -p test_storage.py`は6件、`PYTHONPATH=src python3 -m unittest discover -s tests -p test_server.py`は3件合格。新規3件は修正前に失敗し、実SQLiteの2接続・barrierによる同時終端、異なる成果物、完全一致の再送を確認する。独立担当もStore 6件を再実行した。PC receiverのhost source試験であり、Linux全体CI・QEMU image・実機・Provider受入は別の証拠を要する。
+
 ## QEMU受入monitorの総期限（2026-10-11）
 
 `os/verify-platform.py`の画面取得用QMP接続は、従来のsocket待機5秒だけでは通知が流れ続ける間に戻らず、外側のguest起動240秒期限も確認できなかった。実AF_UNIXの合成monitorで、応答なし・通知継続時に5.41秒後も呼出しが未完了になることを再現した。接続、greeting、capability交渉、command応答を一つの単調時計5秒期限へ収め、改行のない細切れ応答にも同じ期限と1 MiBのframe上限を適用する。

@@ -1,7 +1,11 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useWalletLedger,
+  WalletLedgerRecovery,
+  type WalletSnapshot,
+} from '@/components/use-wallet-ledger';
 import Link from 'next/link';
 import {
   ArrowDownLeft,
@@ -20,35 +24,6 @@ import {
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-type WalletRecord = {
-  id: string;
-  kind: 'revenue' | 'expense';
-  amount: number;
-  source: string;
-  occurredOn: string;
-  reversesId: string | null;
-  createdAt: number;
-  reversed: number;
-};
-
-type WalletSnapshot = {
-  currency: 'JPY';
-  balance: number;
-  revenue: number;
-  expense: number;
-  records: WalletRecord[];
-  persistence: 'd1';
-  transfers: 'not-connected';
-  fund: {
-    joined: boolean;
-    status: 'simulation';
-    commonRevenue: number;
-    distributable: number;
-    projectedShare: number;
-    updatedAt: string | null;
-  };
-};
 
 const sources: Record<string, string> = {
   coconala: 'ココナラ',
@@ -85,119 +60,34 @@ const previewWallet: WalletSnapshot = {
   },
 };
 
-async function requestWallet(input?: unknown) {
-  const response = await fetch('/api/wallet', {
-    method: input ? 'POST' : 'GET',
-    headers: input ? { 'Content-Type': 'application/json' } : undefined,
-    body: input ? JSON.stringify(input) : undefined,
-    cache: 'no-store',
-  });
-  const result = (await response.json()) as WalletSnapshot & { error?: string };
-  if (
-    !response.ok &&
-    response.status === 503 &&
-    process.env.NODE_ENV === 'development' &&
-    !input
-  )
-    return previewWallet;
-  if (!response.ok) {
-    const error = new Error(result.error ?? 'Walletを読み込めませんでした。');
-    Object.assign(error, { status: response.status });
-    throw error;
-  }
-  return result;
-}
-
 export default function RevenueWalletWorkspace() {
-  const [snapshot, setSnapshot] = useState<WalletSnapshot | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [needsSignin, setNeedsSignin] = useState(false);
-  const [message, setMessage] = useState('');
-  const [formOpen, setFormOpen] = useState(false);
-  const [kind, setKind] = useState<'revenue' | 'expense'>('revenue');
-  const [source, setSource] = useState('coconala');
-  const [amount, setAmount] = useState('');
-  const [occurredOn, setOccurredOn] = useState(() =>
-    new Date().toISOString().slice(0, 10),
-  );
-
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    try {
-      setSnapshot(await requestWallet());
-      setNeedsSignin(false);
-      setMessage('');
-    } catch (error) {
-      const status = (error as Error & { status?: number }).status;
-      setNeedsSignin(status === 401);
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : 'Walletを読み込めませんでした。',
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => void refresh(), 0);
-    return () => window.clearTimeout(timeout);
-  }, [refresh]);
-
-  async function save(event: React.SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (saving) return;
-    setSaving(true);
-    setMessage('');
-    try {
-      setSnapshot(
-        await requestWallet({
-          id: crypto.randomUUID(),
-          kind,
-          source,
-          amount: Number(amount),
-          occurredOn,
-        }),
-      );
-      setAmount('');
-      setFormOpen(false);
-    } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : '記録を保存できませんでした。',
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function reverse(id: string) {
-    if (saving) return;
-    setSaving(true);
-    setMessage('');
-    try {
-      setSnapshot(
-        await requestWallet({ id: crypto.randomUUID(), reversesId: id }),
-      );
-    } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : '記録を取り消せませんでした。',
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function openForm(nextKind: 'revenue' | 'expense') {
-    setKind(nextKind);
-    setSource(nextKind === 'revenue' ? 'coconala' : 'api');
-    setFormOpen(true);
-  }
+  const ledger = useWalletLedger(previewWallet);
+  const {
+    snapshot,
+    loading,
+    saving,
+    needsSignin,
+    message,
+    locked,
+    formOpen,
+    setFormOpen,
+    kind,
+    source,
+    setSource,
+    amount,
+    setAmount,
+    occurredOn,
+    setOccurredOn,
+    refresh,
+    save,
+    reverse,
+    openForm,
+  } = ledger;
 
   return (
     <WorkspaceShell title="Wallet" hideTopActions>
       <div className="revenue-wallet">
+        <WalletLedgerRecovery ledger={ledger} />
         {loading && !snapshot ? (
           <output className="wallet-loading">
             <LoaderCircle className="sky-billing-spin" size={20} />
@@ -216,7 +106,13 @@ export default function RevenueWalletWorkspace() {
               <h1 id="wallet-signin-title">収益口座を開く</h1>
               <p>収益・費用・分配は、あなたのアカウントだけに保存されます。</p>
             </div>
-            <a href="/signin-with-chatgpt?return_to=/wallet" target="_top">サインイン</a>
+            <a
+              href="/signin-with-chatgpt?return_to=/wallet"
+              target="_blank"
+              rel="noreferrer"
+            >
+              別タブでサインイン
+            </a>
           </section>
         ) : snapshot ? (
           <>
@@ -397,11 +293,17 @@ export default function RevenueWalletWorkspace() {
                     </div>
                   </dl>
                   <div className="revenue-wallet-ledger-actions">
-                    <button onClick={() => openForm('revenue')}>
+                    <button
+                      disabled={locked}
+                      onClick={() => openForm('revenue')}
+                    >
                       <ArrowDownLeft size={17} />
                       売上を記録
                     </button>
-                    <button onClick={() => openForm('expense')}>
+                    <button
+                      disabled={locked}
+                      onClick={() => openForm('expense')}
+                    >
                       <ArrowUpRight size={17} />
                       経費を記録
                     </button>
@@ -420,6 +322,7 @@ export default function RevenueWalletWorkspace() {
                       <button
                         type="button"
                         aria-label="閉じる"
+                        disabled={locked}
                         onClick={() => setFormOpen(false)}
                       >
                         <X size={19} />
@@ -437,6 +340,7 @@ export default function RevenueWalletWorkspace() {
                             min="1"
                             max="100000000"
                             step="1"
+                            disabled={locked}
                             value={amount}
                             onChange={(event) => setAmount(event.target.value)}
                           />
@@ -445,6 +349,7 @@ export default function RevenueWalletWorkspace() {
                       <label>
                         <span>記録元</span>
                         <select
+                          disabled={locked}
                           value={source}
                           onChange={(event) => setSource(event.target.value)}
                         >
@@ -462,6 +367,7 @@ export default function RevenueWalletWorkspace() {
                           type="date"
                           min="2000-01-01"
                           max={new Date().toISOString().slice(0, 10)}
+                          disabled={locked}
                           value={occurredOn}
                           onChange={(event) =>
                             setOccurredOn(event.target.value)
@@ -471,7 +377,7 @@ export default function RevenueWalletWorkspace() {
                     </div>
                     <button
                       className="wallet-save"
-                      disabled={saving}
+                      disabled={locked}
                       type="submit"
                     >
                       <Plus size={18} />
@@ -532,7 +438,7 @@ export default function RevenueWalletWorkspace() {
                             </b>
                             {!isReversal && !record.reversed && (
                               <button
-                                disabled={saving}
+                                disabled={locked}
                                 onClick={() => void reverse(record.id)}
                               >
                                 <RotateCcw size={14} />

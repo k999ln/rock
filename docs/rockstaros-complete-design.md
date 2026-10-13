@@ -187,6 +187,18 @@ ROCKの`os/platform/runner_control.py`は、送信claim前の取消をローカ�
 
 再接続／daemon再起動後に同じ仕事が見つかった場合、queued／runningには取消を要求し、既に成功していればその実結果を回収する。照合済みterminalの確定時に既存の入力／package消去を行う。不在のまま確定できない仕事は未確認と表示し、現protocolにない取消tombstoneを推測しない。hostの実SQLite・署名済み元要求による遅延配送fixtureで、再起動、再送0、取消時実行0回と既成功時1回を検査する。実機、Linux隔離実行、外部Providerの受入は別である。
 
+### PC receiverの終端保存（2026-10-11）
+
+ROCKはPC receiverの結果を同時callbackから保護する。入力は既存job ID・状態・結果、保存は既存SQLite。読み取ったstatus/result/updated_atに対するCASで最初の確定結果を保持し、完全一致の再送は元の行を返す。不一致は競合として利用者に再読込を求める。権限・保存形式・承認・実行回数を変更しない。受入は実SQLiteの競合3回帰と既存HTTP試験、Linux全体の同一SHA CIを分ける。詳細は[既存native検証](native-os-validation.md)と[Core outboxの再照合](ai-native-os-architecture.md)を参照。
+
+### Web端末設定の復元失敗（2026-10-13）
+
+既存AES-GCM端末設定backup v1のHome／addon 2キーを維持する。入力検査後に原値と欠如を保持して復元し、容量・読取・途中削除／書込失敗を成功にしない。元値へrollbackし、復旧書込も失敗した場合は同じタブに原snapshotを保持して再試行する。明示reset成功後に古い復旧memoryを戻さない。保存形式、対象キー、Walletやサーバー履歴の除外を維持する。多キーatomic、別タブCAS、強制reload後のmemory保持、サーバー対backupの受入とは別である。[詳細と保存境界](data-storage-boundaries.md#webの端末設定とサーバー復旧を分ける)と[候補検証](evidence/work-composition-development.json)を正とする。
+
+### Webの複数Tool仕事とレシピ（2026-10-13）
+
+Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計画・途中成果・検査・操作ID・sanitized recipeを追加する。接続済みのeffect-free処理だけを予算0で実行し、外部Agent、Broker承認、Provider receipt、native能力への昇格は行わない。目的・入力・条件・状態・保存・失敗復旧・承認・互換・合格条件・未決事項は[仕事の組み立てとレシピ](sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)を参照。Webの受入をAndroid/nativeの同一契約受入へ転用しない。
+
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。
@@ -304,6 +316,10 @@ Web Previewのvisual contractは、avokado製品Siteと同じグラファイト�
 - fixture、sandbox、実機、本番の区別
 
 keyboard、touch、screen reader、文字倍率、色以外の状態表現、動きを減らすmodeを画面ごとに受け入れる。会話だけを唯一の操作方法にしない。
+
+### 接続案内と現行方針（2026-10-11）
+
+Homeと接続案内は既存のaccountEntryDecisionに合わせ、アカウント利用を先に示す。SIM購入をWeb利用の前提にせず、既存の署名済み購入claim・端末コード・キー管理の経路を保持する。eSIMの新規発行/販売は保留を明示し、この文言修正で機能を有効化しない。合格条件はHome→接続→Sky/Zema導線、既存claim契約検査、PC/390pxでの操作確認。新しい料金・認証方式・販売開始は決めない。
 
 ## 18. Wallet、収益、Fund
 
@@ -481,6 +497,8 @@ APIは領域別に分ける。
 
 更新APIは認証ownerとsame-originを必須にし、body size、未知field、revision、idempotencyを検査する。routeがあることを本番Provider接続やOS機能完成の証拠にしない。
 
+Walletの2画面は`use-wallet-ledger`を共有し、読取・記録・取消と復旧を一箇所で扱う。未確認保存は元owner／ID／payloadを固定し、明示再確認で同じ操作へ戻す。完全な表示モデルを検証してから一覧を更新し、本人未確認・別ownerでは旧一覧と私的入力を隠す。元ownerへ戻った時にだけ元の入力を復元する。未送信入力も移動から保護し、明示破棄で解除する。取消は元記録を消さず既存の追記型台帳へ一度だけ記録する。通信失敗・401・不完全応答・二重クリック・別owner・取消応答喪失の回帰を合格条件とし、実送金やProvider受入を含めない。下書きはメモリ内であり、強制終了後のbackupを保証しない。
+
 ## 28. Android package配置
 
 | package／module | 役割 | 現在地 |
@@ -524,7 +542,7 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 
 ### Androidの認証保存と応答期限（2026-10-11、OS10）
 
-一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
+一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。この4経路のbyte上限と期限検査、および6箇所のJSON header／厳密UTF-8変換は `AndroidJsonResponse` に集約する。各transportが従来の期限起算、error prefix、status／401、署名、JSON構造、close／byte消去を引き続き管理する。service originの純粋な正規化は `RockstarServiceOrigin` に置き、暗号化SessionStoreはHTTP transportに依存しない。caller固有の完全一致・長さ制限は維持する。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
 
 ### Androidの精算済みWallet読戻し（2026-10-11、OS10）
 
