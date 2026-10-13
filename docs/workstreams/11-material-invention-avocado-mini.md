@@ -1,5 +1,9 @@
 # Material Invention / avocadoMini
 
+## サービス設計の再構成
+
+[統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。
+
 ## Web候補比較の品質改善（MAT03 / O5 / ROCK）
 
 5時間の品質改善で、本人別memoryによる配合・候補・保留IDの復旧、二重submit防止、古い一覧によるowner巻戻し拒否、保存入力digestから再生成した候補の照合を修正した。元ownerで同じIDを確認し、不完全な成功応答では保留を消さない。入力形式・安全判定・workflow/CAS・装置非接続は維持する。設計は[CoreのWeb接続](../material-invention-core.md#sky--zemaの机上比較と本人用保存)、証拠は[品質改善記録](../evidence/quality-reliability-review.json)。`node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/material-workspace-recovery.test.mjs`、型・lint、統合verifyと実画面で検証する。未完成JSONを含む未送信入力も保存時点との差分で離脱から保護し、元owner／匿名local draftの明示破棄を同じsnapshotに限定する。空・変更していない保存済み入力では移動できる。強制終了後のmemory復旧、外部ラボ・物理実験・本番受入は含まない。

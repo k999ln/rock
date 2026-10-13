@@ -1,6 +1,12 @@
 # RockstarOS 全設計ポータル
 
-版: 1.4 / 2026-09-24
+版: 2.0 / 2026-10-13
+
+## サービスを理解するために最初に読む設計
+
+[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。2026-10-10確定の無料アカウント入口とRQ01〜RQ50を維持し、古いSIM主入口へ戻さない。Jennifferの役割は本人確認中、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
+
+原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。今回の再構成は文書と説明の統合で、runtime・公開・実機の合格を更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
@@ -24,14 +30,14 @@ avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README
 
 原本PDF p4・17・30のavokado E3は4本＋別Hubを前提とする。OS共通運用・他profileの設計として原本を保持し、このE3配置をR5へ適用しない。R5単独mini用Device Profile・adapterとの統合は未完了。
 
-## 最初に読む8冊
+## 既存詳細と保存原本
 
 1. [RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf) — rocketstar、A-LINK、avokado、colonyを含む2026-09-24統合基準。
 2. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
 3. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — repository実装と既存詳細資料への入口。
 4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、AMCを含む13件をどう使い、どこで止めるか。
 5. [avocadoMini R5 ハードウェア・OS統合基本設計](avocado-mini-r5/README.md) — 現行製品要求、51ページ、図面、計算、受入計画。既存[Material Invention研究仕様](rockstaros-avocado-mini-complete-design.md)は別profileとして保持する。
-6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
+6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ50と、その後の明示判断。
 7. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
 
 8. [rocketstar 設計書完全版 R1.0と全付録](rocketstar-design/README.md) — 両段再使用ロケット、A-LINK、OS、コロニー、ボタンの設計原本と計算・検証履歴。

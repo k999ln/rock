@@ -1,3 +1,7 @@
+<!-- service-design-rebuild:start -->
+サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)から、利用体験、共通契約、各製品、実現順、RQ01〜RQ50へ進めます。現行は無料アカウント入口。これは設計書の整理で、本番課金・実機・飛行の完成ではありません。Jennifferの役割は確認中です。
+<!-- service-design-rebuild:end -->
+
 <div align="center">
 
 # avokado
@@ -279,7 +283,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-12 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-13 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level

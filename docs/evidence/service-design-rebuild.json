@@ -1,0 +1,259 @@
+{
+  "schema": "rock-service-design-reconstruction/1",
+  "date": "2026-10-13",
+  "userRequest": "Rebuild the design documents from the beginning while preserving the intended goals; Sky, Zema, Jenniffer, OS, Mini, Pro, rocketstar.",
+  "taskId": "DOC04",
+  "primaryOwner": "ROCK",
+  "primarySquad": "H1",
+  "primaryWorkstream": "Git / CI / Operations",
+  "scope": "Integrated basic design and documentation consistency only",
+  "input": {
+    "repository": "k999ln/rock",
+    "mainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "sameShaChecks": [
+      {
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617289/job/115384339567"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617524/job/115384292270"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617524/job/115384291965"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617833/job/115383727853"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617833/job/115383727308"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617571/job/115383714019"
+      }
+    ],
+    "branchCount": 15,
+    "branches": [
+      {
+        "name": "claude/sky-compute-grid-live",
+        "sha": "e80d0357aa88291b6ee955e62af875180d35e6cd"
+      },
+      {
+        "name": "codex/compute-grid-recovery-20261011",
+        "sha": "aba88bdd8c12cc84d533954a81729651e2f72855"
+      },
+      {
+        "name": "codex/grid01-spider-exception",
+        "sha": "47d28b42695f0fb3691b2b0a8972870e67ef2846"
+      },
+      {
+        "name": "codex/grid01-spider-exception-v2",
+        "sha": "2cec96635bb5ab802c70054ec9de55d84f3b7fd4"
+      },
+      {
+        "name": "codex/jev-decision-layer-20260920",
+        "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a"
+      },
+      {
+        "name": "codex/os-completion-prompts",
+        "sha": "842141a0f7fbbbcdb8f057e32fcb2fb221bc8014"
+      },
+      {
+        "name": "codex/pixel10-compile-bringup-20260917",
+        "sha": "771770d08457f46f06a2d4db7c1098daeccdbc74"
+      },
+      {
+        "name": "codex/quality-reliability-20261011",
+        "sha": "6b72470ce25d4e7b20940b1698fde5a12281ed69"
+      },
+      {
+        "name": "codex/readme-product-map",
+        "sha": "9f9211667866f57b4bc9ad896131a4bfb40fecea"
+      },
+      {
+        "name": "codex/rock-refactor-20261011",
+        "sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a"
+      },
+      {
+        "name": "codex/site-feature-composition-20261013",
+        "sha": "b10c56688b9e38045685246c718d2de7c6f92f2c"
+      },
+      {
+        "name": "codex/sites-live-v49",
+        "sha": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc"
+      },
+      {
+        "name": "codex/sites-quality-integration-20261012",
+        "sha": "aade8171e4eeffad410242dfe79f59afd2dd6c52"
+      },
+      {
+        "name": "fix/readme-english-ci",
+        "sha": "b49bdf02ab3b953e91b4f5f4b3ff57634fbd81c9"
+      },
+      {
+        "name": "main",
+        "sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7"
+      }
+    ],
+    "openPrSnapshot": [
+      {
+        "number": 110,
+        "title": "feat: 複数Toolの仕事・レシピ・成果編集と設定復旧を追加",
+        "head": "codex/site-feature-composition-20261013",
+        "sha": "b10c56688b9e38045685246c718d2de7c6f92f2c",
+        "base": "codex/sites-quality-integration-20261012",
+        "draft": true
+      },
+      {
+        "number": 108,
+        "title": "SPIDER: review exact Compute Grid tokenizer digest exception",
+        "head": "codex/grid01-spider-exception-v2",
+        "sha": "2cec96635bb5ab802c70054ec9de55d84f3b7fd4",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 106,
+        "title": "公開Siteへ品質改善を反映し、入力・成果・認証復旧を保護",
+        "head": "codex/sites-quality-integration-20261012",
+        "sha": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+        "base": "codex/sites-live-v49",
+        "draft": false
+      },
+      {
+        "number": 105,
+        "title": "fix: 既存ワークフローの二重保存・入力消失・復旧競合を修正",
+        "head": "codex/quality-reliability-20261011",
+        "sha": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 104,
+        "title": "fix(grid): recover interrupted receipt settlement and idempotent release",
+        "head": "codex/compute-grid-recovery-20261011",
+        "sha": "aba88bdd8c12cc84d533954a81729651e2f72855",
+        "base": "claude/sky-compute-grid-live",
+        "draft": false
+      },
+      {
+        "number": 103,
+        "title": "Sky Compute Grid: 永続grid（既定で無効）とAndroid worker・注文consoleの設計",
+        "head": "claude/sky-compute-grid-live",
+        "sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 100,
+        "title": "Web・API・A2A・Androidの責務分離と重複処理の共通化",
+        "head": "codex/rock-refactor-20261011",
+        "sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+        "base": "main",
+        "draft": false
+      }
+    ],
+    "mergedPr": {
+      "number": 111,
+      "state": "closed",
+      "merged": true,
+      "mergeCommit": "3ffc21d3a15235e0bde89a118e2f931135a9189e",
+      "head": "643559b8e00037b1f960afb9dea7bf309534d539"
+    },
+    "originalWorkspace": {
+      "path": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "branch": "codex/esim-cloud-access",
+      "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "sameNamedRemoteBranch": false,
+      "dirtyChangesPreserved": true
+    }
+  },
+  "status": "integrated_basic_design_verified_with_open_role_definition",
+  "authority": {
+    "requirements": "RQ01-RQ50",
+    "accountDirection": "2026-10-10 owner confirmed free account; SIM optional; consumer eSIM sale held",
+    "pricing": "existing confirmed design preserved; no live fee policy changed",
+    "jenniffer": "name specified; role clarification pending; not equated with Jev"
+  },
+  "runtimeChanged": false,
+  "commercialPoliciesChanged": false,
+  "git": {
+    "branch": "codex/service-design-rebuild",
+    "baseSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "localCommit": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "published": false
+  },
+  "verification": {
+    "status": "passed",
+    "fullCommand": "TMPDIR=/private/tmp npm run verify",
+    "exitCode": 0,
+    "nodeTests": 2143,
+    "nodePass": 2142,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 192,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "requirementsExactlyCovered": 50,
+    "localReferencesChecked": 89,
+    "independentReview": "passed_after_three_documentation_repairs",
+    "rawLog": "/private/tmp/rock-service-design-verify-final.log",
+    "rawLogSha256": "2983712fe89de90bd1bb12c3b2922c75359998708c692dc42140dddb71b2bd2a",
+    "scope": "Documentation consistency and existing unchanged runtime host regression; no new UI, provider, device, billing, publication or flight acceptance.",
+    "statusRecordUpdatedAfterVerification": true
+  },
+  "remaining": [
+    "Jenniffer role definition",
+    "runtime branch handoff synchronization",
+    "same-artifact authenticated writing/download/recipe acceptance",
+    "postpay and funded-wallet gate ADR, passkey and provider acceptance",
+    "candidate campus and typed app-output integration",
+    "independent Pixel/QEMU/Mini/Pro/rocketstar acceptance"
+  ],
+  "immutableOriginalArtifactsChanged": false,
+  "preservedOriginalArtifactsSha256": {
+    "docs/rockstaros-complete-design-v1.0.pdf": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+    "docs/avocado-mini-r5/package/integrated_design.md": "b8c8df4605045ad7f7e2bbbb2dd4bff81f48253466bbb2142ee7172279eeacd1",
+    "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291"
+  },
+  "review": {
+    "status": "passed",
+    "repairs": [
+      "index version preserved forward at 1.7",
+      "OS journey and milestone use account entry",
+      "ROCK fixture work independent of paid enablement"
+    ],
+    "runtimeAcceptanceChanged": false
+  }
+}

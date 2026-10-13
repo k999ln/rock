@@ -30,41 +30,33 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## 1. 一言でいうと
 
-2026-10-01の製品方針更新: **物理SIM/eSIMを購入・有効化するとRockstarOSと統合サービスへ簡単にアクセスできる製品**を中心にする。SIMは通信とサービス利用権の提供入口であり、RockstarOSバイナリをSIM内に格納する前提ではない。正確な端末に署名済みOS導入・復旧経路が成立する場合はOS版、それ以外は既存OS上のclientまたはブラウザ版へ案内する。既存のゲーム、生活、ハードウェア設計は応用先として維持し、このSIM/eSIM主導サービス導線と競合する優先入口にはしない。
+現行の主商品は、無料avokadoアカウントひとつでSky・Zema・Agentを使うサービス。2026-10-10の本人確定判断がSIM/eSIM主入口を置き換えた。SIM不要、consumer eSIM発行/販売は保留。MiniのIoT回線は任意の機器option。正確な機種で署名済みOS・boot/保存/復旧が受け入れられた場合だけnative OS、その他は既存OS上のclient/browserへ案内する。
 
-**RockstarOSは、SIM/eSIMをきっかけに一度だけ本人登録し、Sky・Zema・Agentへ接続して、cloud作業の進捗・費用・成果を同じ利用体験で扱うAIサービス基盤である。**
+**RockstarOSは、本人・有限権限・仕事・費用・成果・保存/復旧を共通化するruntimeである。** サービス全体は[統合基本設計](service-design/README.md)、共通責任と11必須項目の具体化は[共通システムと契約](service-design/02-system-contracts.md)を参照する。設計の統一は、Web/native/cloudの認証・DB・履歴を共有済みにする意味ではない。
 
 Skyは「誰に頼むか」を選ぶ場所、Zemaは「頼んだ仕事を最後まで管理する」場所、Platform Coreは「本当に許可された仕事だけを動かす」中心である。
 
 ## 2. 利用者の一周
 
-2026-09-27のSky Market決済追加: 有料の審査済みPackageは「購入」→Stripeの支払い画面→購入履歴で照合→接続先確認へ進む。作者は「販売する」で受取先と価格・条件を登録する。Web API／D1が注文と利用権を管理し、Stripe Connectが決済と10%のSky手数料配分を担う。カード・銀行情報はStripe画面で扱い、LLMの判断だけで支払いを成立させない。これはAgent/Tool marketplace決済の再利用可能な部品であり、SIM/eSIMによるRockstarOS利用権購入とは別商品・別契約である。後者は販売チャネル、通信料金、サービス権利、cloud AI usageを明細上で分離する。[決済設計](sky-billing.md)は有料Package用であり、SIM/eSIMのcarrier billingやクラウドAIのproduction usage billingを受け入れた証拠ではない。
+最初の客は文章を納品する個人事業主。既存の引用整理・無料記事・CSV・結合・検査を使い、有料AIの接続を待たずに素材から成果取得とレシピ再利用までを一周する。有料の審査済みPackage購入は既存Stripe/Commerceを使う別の条件確認で、アカウント作成、接続、実行承認と区別する。
 
 ```text
-購入チャネルでRockstarOS対応SIM/eSIMを選ぶ
-  ↓ 通信条件・利用権・料金を確認する
-SIM有効化／対応SIM追加を行う
-  ↓
-Rockstar identityへ一度サインインし、購入権利を結ぶ
-  ↓ 正確な端末・型番のOS導入条件を判定
-署名済みOS導入（対応時）または既存OS client/browserで開く
-  ↓
-HomeからSky・Zema・Agentsを直接使う
-  ↓ 料金・見積・上限を確認
-Zemaで依頼し、必要予算を明示承認
-  ↓ 足りない情報を確認
-計画・単価・概算を見る
-実行前に予算を承認する
-実行する
-  ↓ 端末 / PC / Cloud / Provider
-進捗を見る・止める
-  ↓
-結果を確認する
-  ↓
-成果、実行receipt、費用、検証済み収益を別々に保存する
+SkyまたはHomeを開く（SIM購入は不要）
+  ↓ 対応するゲスト下書き、または無料アカウントへサインイン
+目的・素材・完成条件を揃える
+  ↓ SkyでTool/Agentと対応環境・条件を選ぶ
+Zemaの同じ仕事で有限手順を確認する
+  ↓ 送信先・価格・上限・停止能力、必要な承認を確認
+Coreが本人・版・権限・予算を検査して実行
+  ↓ 端末 / PC / Cloud / Providerの許可済みadapter
+進捗・途中成果・必要確認を見て、必要なら停止を要求
+  ↓ 外部の停止/結果不明は同じoperationを照合
+成果を検査・保存し、本人がreview/完了を確認
+  ↓ ファイル取得、原成果を残した修正、新素材でレシピ再利用
+実行receipt・項目別usage・納品/入金の証拠を別々に扱う
 ```
 
-SIM/eSIM profileの有効化はRockstarOSの導入成功・service entitlement・Agent権限を意味しない。チャネルから受け取る注文/activation proofを本人、対象プラン、端末、service entitlementへ束ね、通信事業者の回線状態とOS/client導入状態を独立に表示する。未対応機種はeSIMが入ってもfull OS版とは表示せず、利用可能なclient/browserへ案内する。
+native OS/client/browserの分岐はexact deviceの受入へ従う。Mini通信option・旧SIM購入claimは別の機器/配布契約で、通常Skyの利用開始条件にしない。回線開通、本人/service entitlement、OS導入、Agent権限を独立に表示する。consumer eSIM販売と本番課金は既存の保留/受入条件を維持する。[利用体験の全体](service-design/01-service-experience.md)。
 
 利用者の会話中の「はい」だけで、送金、外部投稿、広告、DM、物理実験、出願等を承認しない。承認画面には対象、変更内容、送信先、費用上限、期限を固定して表示する。
 
@@ -159,27 +151,16 @@ Toolは少なくとも次を宣言する。
 
 ## 7. 仕事の状態
 
-利用者向け状態:
+現行Web親仕事は `lib/workflow.ts` の `active / review / completed / cancelled`。生成時active、必須stepの合格後review、本人完了でcompleted、取消でcancelledになる。編集成果は原成果を保持した新しい仕事で再検査する。
 
 ```text
-draft → ready → active → review → completed
-  │       │       │         └→ active（修正）
-  │       │       ├→ waiting
-  │       │       ├→ failed
-  └───────┴───────┴→ cancelled
+active → review → completed
+   └────────┴→ cancelled
 ```
 
-実行step状態:
+下書き、準備完了、承認/通信/資源/Provider待ち、step失敗、外部結果不明は、UI projectionまたは子処理の状態として表示する。親の保存状態へ新しい値を追加済みとしない。A2A委任、native Runner、PC receiverはそれぞれの既存schemaを使う。親のcancelledだけで外部停止や予算解放を確定しない。
 
-```text
-pending → queued → running → succeeded
-                    ├→ needs_review
-                    ├→ failed
-                    ├→ cancelled
-                    └→ uncertain
-```
-
-`waiting`にはapproval、network、resource、provider、reconciliation等の理由を付ける。`uncertain`は外部で成立したか分からない状態であり、失敗として自動再送しない。完了したstepを別の結果で上書きせず、新revisionまたは取消eventを追加する。
+`uncertain / indeterminate` は外部で成立したか分からない状態であり、自動再送しない。同じoperationを照合し、完了stepを別の結果で上書きせず、新しいrevision/仕事/取消eventを契約に従って作る。[状態、費用、保存、失敗/復旧、承認、受入、未決定事項](service-design/02-system-contracts.md#4-状態を混ぜない)。
 
 ### native Runnerの取消と結果不明（2026-10-11）
 

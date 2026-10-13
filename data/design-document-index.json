@@ -1,9 +1,10 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.6",
-  "updatedAt": "2026-10-12",
+  "version": "1.7",
+  "updatedAt": "2026-10-13",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/service-design/README.md",
     "docs/avocado-mini-r5/README.md",
     "docs/rocketstar-design/README.md",
     "docs/rockstaros-complete-design-v1.0.pdf",
@@ -2040,5 +2041,32 @@
       }
     ],
     "reviewScope": "32 nested contracts reviewed against current code after runtime restoration. Existing source invariants restored; old run success and production claims excluded."
+  },
+  "serviceReconstruction": {
+    "status": "basic_design_reorganized_open_decisions_not_runtime_complete",
+    "books": [
+      "docs/service-design/01-service-experience.md",
+      "docs/service-design/02-system-contracts.md",
+      "docs/service-design/03-product-profiles.md",
+      "docs/service-design/04-delivery-and-acceptance.md",
+      "docs/service-design/05-requirement-coverage.md",
+      "docs/service-design/README.md"
+    ],
+    "inputMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "jennifferRole": "owner_clarification_pending",
+    "requiredDesignFieldsInherited": [
+      "purpose_and_user",
+      "end_to_end_experience",
+      "responsibilities_and_forbidden_authority",
+      "inputs_outputs_ids_versions_and_limits",
+      "state_and_failure_transitions",
+      "storage_retention_deletion_and_backup",
+      "offline_retry_duplicate_and_uncertain_result",
+      "update_compatibility_rollback_and_recovery",
+      "safety_privacy_security_and_external_approval",
+      "acceptance_environment_and_evidence",
+      "open_decisions_owner_and_decision_test"
+    ],
+    "originalBytesPreserved": true
   }
 }

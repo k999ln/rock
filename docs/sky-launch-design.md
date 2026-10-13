@@ -12,7 +12,7 @@ ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139
 
 Skyは、利用者がTool・LLMを探し、利用条件を確認し、接続して成果を受け取るマーケットプレイスである。作者には既存の自動化を登録・試験・公開・更新する入口を提供する。OS・Mini・他のアプリはSkyの顧客であり、Skyの利用にOSの導入を要求しない。
 
-2026-10-02 authoritative direction: SIM/eSIM purchase through multiple channels includes access to RockstarOS and its integrated services. Sky is a direct Home entry and agent/tool marketplace within that offering, not the primary SIM storefront. The offer is chosen for quick cloud LLM/agent access, transparent usage-based charges, and low-setup access to Sky and Zema. The OS binary is delivered by a device-supported installation channel or service client; it is not stored on the SIM. Carrier activation and Rockstar service entitlement remain separate. The current Sky Package checkout does not include SIM entitlement, carrier charges or Cloud LLM usage, and its fixtures do not prove external connectivity or production payment. See the [SIM/eSIM-led product architecture](sim-led-product-architecture.md).
+2026-10-10の確定方針は無料avokadoアカウント入口。SIMを必須にせず、consumer eSIM販売は保留、Mini回線は任意機器option。Skyは独立Web/PWA、OS内、対応アプリの文脈へ同じ能力契約を届ける。サービス全体は[統合設計](service-design/README.md)、料金/状態/保存/復旧/承認は[共通契約](service-design/02-system-contracts.md)、実現順と合格証拠は[受入計画](service-design/04-delivery-and-acceptance.md)を参照する。下記の公開先と2026-10-01/02の検証はその時点の履歴で、目標domainの現在readbackや新しい課金受入へ転用しない。
 
 最初の価値は、文章・出典・案件条件・CSV等の具体的な仕事を、利用者が数分で完了して成果を持ち帰れること。その上で、作者のToolを同じ条件で使える市場を成立させる。掲載件数や接続先の多さを、実行可能数・収益・需要の証拠にしない。
 

@@ -1,5 +1,9 @@
 # Product / UX
 
+## サービス設計の再構成
+
+[統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。
+
 > **復元と並べ替え（2026-10-07）** — 2026-10-05のmerge `ecb4b2af` で、この文書はmain側の版（SIM/eSIM主導の目的と、2026-10-01〜02の記録17節）を失い、09-29時点の版へ戻っていました。main側の版をGit履歴（`624124cf`）から戻し、その後に足されたAMC02の3項目を「現在地」へ残しています。あわせて、題名の上や「次に進める順番」の途中に挟まっていた日付付きの記録を、末尾の「日付付きの記録」へ集めました。文言は変えていません。内訳は[merge欠落の監査](../merge-loss-audit-20261007.md)。
 
 ## 目的
