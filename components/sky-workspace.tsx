@@ -1,7 +1,9 @@
 'use client';
 
 import {
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -17,6 +19,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
+  BrainCircuit,
+  Bookmark,
   CheckCircle2,
   EyeOff,
   Link2,
@@ -26,6 +30,7 @@ import {
   Search,
   Send,
   ShieldCheck,
+  Trash2,
   X,
   Zap,
 } from 'lucide-react';
@@ -71,18 +76,34 @@ import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { CAMPUSES, type CampusId } from '@/lib/campus';
 import { SKY_CAMPUS_RECOMMENDATIONS } from '@/lib/sky-campus-recommendations';
+import { rankSkyFeed, type SkyFeedMode } from '@/lib/sky-feed-ranking';
+import {
+  appendSkyPhoenixEvent,
+  clearSkyPhoenixHistory,
+  emptySkyPhoenixState,
+  readSkyPhoenixState,
+  setSkyPhoenixEnabled,
+  SKY_PHOENIX_VERSION,
+  type SkyPhoenixEvent,
+  type SkyPhoenixEventType,
+  type SkyPhoenixState,
+  writeSkyPhoenixState,
+} from '@/lib/sky-phoenix';
 
-type FeedFilter = 'おすすめ' | '今使える' | '導入候補' | 'コード';
+type FeedScope = 'すべて' | '今使える' | '導入候補' | 'コード';
+type SkyLibraryItem = { tool: string; savedAt: number };
+type SkyFeedHistoryResponse = {
+  enabled: boolean;
+  algorithmVersion: string;
+  events: SkyPhoenixEvent[];
+  retentionDays: number;
+};
 
-const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補', 'コード'];
-const recommendedToolIds = new Set([
-  'rockstar-amc',
-  'rockstar-csv-cleanup',
-  'coconala',
-  'mr-free-article',
-  'mr-citations',
-  'fashion-brand-ops',
-]);
+const feedModes: { value: SkyFeedMode; label: string }[] = [
+  { value: 'recommended', label: 'おすすめ' },
+  { value: 'library', label: 'マイフィード' },
+];
+const feedScopes: FeedScope[] = ['すべて', '今使える', '導入候補', 'コード'];
 const quickRoleIds = new Set([
   'rockstar-csv-cleanup',
   'coconala',
@@ -167,7 +188,13 @@ function providerFor(tool: Automation) {
     }
   );
 }
-function statusFor(tool: Automation, fashionConnected = false, connectedTools: string[] = [], pcConnected = false, service?: SkyToolUiContext['service']) {
+function statusFor(
+  tool: Automation,
+  fashionConnected = false,
+  connectedTools: string[] = [],
+  pcConnected = false,
+  service?: SkyToolUiContext['service'],
+) {
   return skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected, service });
 }
 
@@ -198,6 +225,20 @@ function actionLabel(
   return '接続して使う';
 }
 
+function browserStorage() {
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+function dwellBucket(duration: number) {
+  if (duration >= 30_000) return 30_000;
+  if (duration >= 10_000) return 10_000;
+  return 1_000;
+}
+
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
@@ -210,7 +251,8 @@ export default function SkyWorkspace({
   const [inspected, setInspected] = useState<Automation | null>(null);
   const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState<FeedFilter>('おすすめ');
+  const [feedMode, setFeedMode] = useState<SkyFeedMode>('recommended');
+  const [scope, setScope] = useState<FeedScope>('すべて');
   const [selected, setSelected] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
@@ -219,6 +261,11 @@ export default function SkyWorkspace({
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [connectionCenterOpen, setConnectionCenterOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
+  const [learningOpen, setLearningOpen] = useState(false);
+  const [phoenix, setPhoenix] = useState<SkyPhoenixState>(emptySkyPhoenixState);
+  const [learningSync, setLearningSync] = useState<
+    'local' | 'synced' | 'saving'
+  >('local');
   const [connected, setConnected] = useState(false);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [requestText, setRequestText] = useState('');
@@ -226,6 +273,13 @@ export default function SkyWorkspace({
   const [routedTool, setRoutedTool] = useState<Automation | null>(null);
   const [routeMessage, setRouteMessage] = useState('');
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [connectedAt, setConnectedAt] = useState<Record<string, number>>({});
+  const [savedAt, setSavedAt] = useState<Record<string, number>>({});
+  const [saveBusy, setSaveBusy] = useState('');
+  const [saveError, setSaveError] = useState<{
+    tool: string;
+    message: string;
+  } | null>(null);
   const [connectionsLoading, setConnectionsLoading] = useState(true);
   const [connectionBusy, setConnectionBusy] = useState(false);
   const [connectionError, setConnectionError] = useState('');
@@ -238,6 +292,89 @@ export default function SkyWorkspace({
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
+  const phoenixSession = useRef('');
+  const pendingPhoenixEvents = useRef<SkyPhoenixEvent[]>([]);
+  const phoenixSyncTimer = useRef<number | null>(null);
+  const impressedThisSession = useRef(new Set<string>());
+
+  const flushPhoenixEvents = useCallback(() => {
+    if (phoenixSyncTimer.current !== null) {
+      window.clearTimeout(phoenixSyncTimer.current);
+      phoenixSyncTimer.current = null;
+    }
+    if (!pendingPhoenixEvents.current.length) return;
+    void (async () => {
+      while (pendingPhoenixEvents.current.length) {
+        const events = pendingPhoenixEvents.current.splice(0, 20);
+        try {
+          await operationRequest('/api/sky/feed-history', 'POST', { events });
+          setLearningSync('synced');
+        } catch {
+          setLearningSync('local');
+          return;
+        }
+      }
+    })();
+  }, []);
+
+  const recordPhoenix = useCallback(
+    (
+      toolId: string,
+      type: SkyPhoenixEventType,
+      detail: Pick<SkyPhoenixEvent, 'dwellMs' | 'position'> = {},
+      refreshRanking = true,
+    ) => {
+      if (!phoenix.enabled) return;
+      const storage = browserStorage();
+      if (!storage) return;
+      const event: SkyPhoenixEvent = {
+        id: crypto.randomUUID(),
+        sessionId: phoenixSession.current || crypto.randomUUID(),
+        toolId,
+        type,
+        at: Date.now(),
+        ...(detail.dwellMs === undefined ? {} : { dwellMs: detail.dwellMs }),
+        ...(detail.position === undefined ? {} : { position: detail.position }),
+      };
+      const next = appendSkyPhoenixEvent(storage, event);
+      if (refreshRanking) setPhoenix(next);
+      pendingPhoenixEvents.current.push(event);
+      setLearningSync('saving');
+      if (phoenixSyncTimer.current === null)
+        phoenixSyncTimer.current = window.setTimeout(flushPhoenixEvents, 1_200);
+    },
+    [flushPhoenixEvents, phoenix.enabled],
+  );
+
+  useEffect(() => {
+    let active = true;
+    phoenixSession.current = crypto.randomUUID();
+    const storage = browserStorage();
+    if (!storage) return;
+    const local = readSkyPhoenixState(storage);
+    queueMicrotask(() => {
+      if (active) setPhoenix(local);
+    });
+    void operationRequest<SkyFeedHistoryResponse>('/api/sky/feed-history')
+      .then((remote) => {
+        if (!active || remote.algorithmVersion !== SKY_PHOENIX_VERSION) return;
+        const remoteState: SkyPhoenixState = {
+          version: SKY_PHOENIX_VERSION,
+          enabled: remote.enabled,
+          events: remote.events,
+        };
+        writeSkyPhoenixState(storage, remoteState);
+        const merged = readSkyPhoenixState(storage);
+        setPhoenix(merged);
+        setLearningSync('synced');
+      })
+      .catch(() => setLearningSync('local'));
+    return () => {
+      active = false;
+      if (phoenixSyncTimer.current !== null)
+        window.clearTimeout(phoenixSyncTimer.current);
+    };
+  }, [flushPhoenixEvents]);
 
   useEffect(() => {
     const updateConnection = () => setConnected(Boolean(deviceToken()));
@@ -289,7 +426,17 @@ export default function SkyWorkspace({
     let active = true;
     void operationRequest<SkyConnection[]>('/api/sky/connections')
       .then((connections) => {
-        if (active) setConnectedTools(connections.map(({ tool }) => tool));
+        if (active) {
+          setConnectedTools(connections.map(({ tool }) => tool));
+          setConnectedAt(
+            Object.fromEntries(
+              connections.map(({ tool, connectedAt: timestamp }) => [
+                tool,
+                timestamp,
+              ]),
+            ),
+          );
+        }
       })
       .catch((error) => {
         if (
@@ -307,35 +454,207 @@ export default function SkyWorkspace({
     };
   }, [setNeedsSignin]);
 
-  const campusRecommended = campusId
-    ? new Set(SKY_CAMPUS_RECOMMENDATIONS[campusId])
-    : recommendedToolIds;
-  const visibleTools = catalog.filter((tool) => {
-    const matchesFilter =
-      (filter === 'おすすめ' && campusRecommended.has(tool.id)) ||
-      (filter === '今使える' && tool.status === 'ready') ||
-      (filter === '導入候補' && tool.status === 'candidate');
-    const provider = providerFor(tool);
-    const text =
-      tool.name +
-      ' ' +
-      tool.description +
-      ' ' +
-      tool.category +
-      ' ' +
-      provider.name;
-    return (
-      matchesFilter && text.toLowerCase().includes(query.trim().toLowerCase())
-    );
-  });
+  useEffect(() => {
+    let active = true;
+    void operationRequest<SkyLibraryItem[]>('/api/sky/library')
+      .then((items) => {
+        if (active)
+          setSavedAt(
+            Object.fromEntries(
+              items.map(({ tool, savedAt: timestamp }) => [tool, timestamp]),
+            ),
+          );
+      })
+      .catch((error) => {
+        if (
+          active &&
+          error instanceof OperationRequestError &&
+          error.status === 401
+        )
+          setNeedsSignin(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [setNeedsSignin]);
+
+  const availableToolIds = useMemo(
+    () =>
+      new Set(
+        catalog
+          .filter(
+            (tool) =>
+              statusFor(
+                tool,
+                fashionConnected,
+                connectedTools,
+                connected,
+                service,
+              ).className === 'is-ready',
+          )
+          .map((tool) => tool.id),
+      ),
+    [connected, connectedTools, fashionConnected, service],
+  );
+  const rankedTools = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    let candidates = catalog.filter((tool) => {
+      const matchesScope =
+        scope === 'すべて' ||
+        (scope === '今使える' && availableToolIds.has(tool.id)) ||
+        (scope === '導入候補' && tool.status === 'candidate');
+      const provider = providerFor(tool);
+      const text = `${tool.name} ${tool.description} ${tool.category} ${provider.name}`;
+      return (
+        scope !== 'コード' &&
+        matchesScope &&
+        text.toLowerCase().includes(normalizedQuery)
+      );
+    });
+    if (
+      campusId &&
+      feedMode === 'recommended' &&
+      scope === 'すべて' &&
+      !normalizedQuery
+    )
+      candidates = candidates.filter((tool) =>
+        SKY_CAMPUS_RECOMMENDATIONS[campusId].includes(tool.id),
+      );
+    return rankSkyFeed(candidates, feedMode, {
+      savedAt,
+      connectedAt,
+      availableToolIds,
+      routedToolId: routedTool?.id,
+      history: phoenix.enabled ? phoenix.events : [],
+    });
+  }, [
+    availableToolIds,
+    campusId,
+    connectedAt,
+    feedMode,
+    phoenix,
+    query,
+    routedTool?.id,
+    savedAt,
+    scope,
+  ]);
+  const rankedToolSignature = rankedTools.map(({ tool }) => tool.id).join('|');
   const visibleLocalServers =
-    !connected || filter === '導入候補'
+    !connected ||
+    feedMode === 'library' ||
+    scope === '導入候補' ||
+    scope === 'コード'
       ? []
       : localServers.filter((server) =>
           `${server.name} ${server.description}`
             .toLowerCase()
             .includes(query.trim().toLowerCase()),
         );
+
+  useEffect(() => {
+    if (!phoenix.enabled || feedMode !== 'recommended') return;
+    const nodes = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-sky-tool-id]'),
+    );
+    if (!nodes.length || typeof IntersectionObserver === 'undefined') return;
+    const visible = new Set<HTMLElement>();
+    const startedAt = new Map<HTMLElement, number>();
+    const commit = (node: HTMLElement, now = Date.now()) => {
+      const toolId = node.dataset.skyToolId;
+      const started = startedAt.get(node);
+      startedAt.delete(node);
+      if (!toolId || !started || impressedThisSession.current.has(toolId))
+        return;
+      const duration = now - started;
+      if (duration < 1_000) return;
+      impressedThisSession.current.add(toolId);
+      recordPhoenix(
+        toolId,
+        'impression',
+        {
+          dwellMs: dwellBucket(duration),
+          position: Number(node.dataset.skyPosition ?? 0),
+        },
+        false,
+      );
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const now = Date.now();
+        for (const entry of entries) {
+          const node = entry.target as HTMLElement;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
+            visible.add(node);
+            if (document.visibilityState !== 'hidden' && !startedAt.has(node))
+              startedAt.set(node, now);
+          } else {
+            visible.delete(node);
+            commit(node, now);
+          }
+        }
+      },
+      { threshold: [0, 0.55, 1] },
+    );
+    const visibility = () => {
+      const now = Date.now();
+      if (document.visibilityState === 'hidden') {
+        for (const node of visible) commit(node, now);
+      } else {
+        for (const node of visible) {
+          if (!impressedThisSession.current.has(node.dataset.skyToolId ?? ''))
+            startedAt.set(node, now);
+        }
+      }
+    };
+    for (const node of nodes) observer.observe(node);
+    document.addEventListener('visibilitychange', visibility);
+    return () => {
+      const now = Date.now();
+      for (const node of visible) commit(node, now);
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', visibility);
+    };
+  }, [feedMode, phoenix.enabled, rankedToolSignature, recordPhoenix]);
+
+  function openLearningPanel() {
+    const storage = browserStorage();
+    if (storage) setPhoenix(readSkyPhoenixState(storage));
+    setLearningOpen(true);
+  }
+
+  async function toggleLearning() {
+    const storage = browserStorage();
+    if (!storage) {
+      setLearningSync('local');
+      return;
+    }
+    const enabled = !phoenix.enabled;
+    const next = enabled
+      ? setSkyPhoenixEnabled(storage, true)
+      : setSkyPhoenixEnabled(storage, false);
+    const finalState = enabled ? next : clearSkyPhoenixHistory(storage);
+    setPhoenix(finalState);
+    setLearningSync('saving');
+    try {
+      await operationRequest('/api/sky/feed-history', 'PUT', { enabled });
+      setLearningSync('synced');
+    } catch {
+      setLearningSync('local');
+    }
+  }
+
+  async function clearLearning() {
+    const storage = browserStorage();
+    if (storage) setPhoenix(clearSkyPhoenixHistory(storage));
+    pendingPhoenixEvents.current = [];
+    setLearningSync('saving');
+    try {
+      await operationRequest('/api/sky/feed-history', 'DELETE');
+      setLearningSync('synced');
+    } catch {
+      setLearningSync('local');
+    }
+  }
 
   async function connectLocalServer(server: McpConnection) {
     if (server.state === 'connected') {
@@ -364,6 +683,42 @@ export default function SkyWorkspace({
     }
   }
 
+  async function toggleSaved(tool: Automation) {
+    if (saveBusy) return;
+    const saved = !savedAt[tool.id];
+    setSaveBusy(tool.id);
+    setSaveError(null);
+    try {
+      await operationRequest<{ tool: string; saved: boolean }>(
+        '/api/sky/library',
+        'PUT',
+        { tool: tool.id, saved },
+      );
+      setSavedAt((current) => {
+        if (saved) return { ...current, [tool.id]: Date.now() };
+        const next = { ...current };
+        delete next[tool.id];
+        return next;
+      });
+      recordPhoenix(tool.id, saved ? 'save' : 'unsave');
+    } catch (error) {
+      if (error instanceof OperationRequestError && error.status === 401) {
+        setNeedsSignin(true);
+        setSaveError({
+          tool: tool.id,
+          message: '保存にはサインインが必要です。',
+        });
+      } else
+        setSaveError({
+          tool: tool.id,
+          message:
+            error instanceof Error ? error.message : '保存できませんでした。',
+        });
+    } finally {
+      setSaveBusy('');
+    }
+  }
+
   function openConnectedTool(tool: Automation, request = '') {
     let threadId = crypto.randomUUID();
     try {
@@ -385,6 +740,7 @@ export default function SkyWorkspace({
   }
 
   function primaryAction(tool: Automation, request = '') {
+    recordPhoenix(tool.id, 'launch');
     if (tool.id === 'jev-router') {
       setSelected(null);
       router.push('/sky/tools/jev-router');
@@ -431,6 +787,11 @@ export default function SkyWorkspace({
           ? current
           : [...current, connection.tool],
       );
+      setConnectedAt((current) => ({
+        ...current,
+        [connection.tool]: connection.connectedAt,
+      }));
+      recordPhoenix(connection.tool, 'connect');
       // A successful Sky connection immediately creates/opens the matching Zema Bot.
       openConnectedTool(connectedTool, lastRequest);
     } catch (error) {
@@ -446,6 +807,7 @@ export default function SkyWorkspace({
   }
 
   function chooseRole(tool: Automation, request = '') {
+    recordPhoenix(tool.id, 'route');
     setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
@@ -490,7 +852,7 @@ export default function SkyWorkspace({
       {campusId && (
         <section aria-label="大学別Sky" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
           <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
-          <h1 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h1>
+          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h2>
           <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
           <nav aria-label="大学別Skyの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
             <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
@@ -502,12 +864,120 @@ export default function SkyWorkspace({
         </section>
       )}
       <nav aria-label="Skyの主要画面">
-        <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
-        {' · '}
-        <Link href="/sky/outputs">Agentの成果を見る</Link>
+        <Link className="sky-marketplace-link" href="/sky/marketplace">
+          AI・自動化マーケットプレイス
+        </Link>
+        <Link className="sky-marketplace-link" href="/sky/outputs">
+          Agentの成果を見る
+        </Link>
       </nav>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
+          <header className="sky-feed-header">
+            <div className="sky-store-title">
+              <span>Sky</span>
+              <h1 id="sky-feed-title">アプリ</h1>
+            </div>
+            <Tabs
+              value={feedMode}
+              onValueChange={(value) => setFeedMode(value as SkyFeedMode)}
+            >
+              <TabsList
+                className="sky-feed-tabs sky-feed-mode-tabs"
+                aria-label="Sky Timelineの表示"
+              >
+                {feedModes.map((item) => (
+                  <TabsTrigger key={item.value} value={item.value}>
+                    {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+            <div className="sky-feed-header-actions">
+              <button
+                className="sky-header-action"
+                aria-label="サービス接続を管理"
+                onClick={() => setConnectionCenterOpen(true)}
+              >
+                <Link2 size={19} />
+                <span>接続</span>
+              </button>
+              <button
+                className="sky-header-action"
+                aria-label="MCP接続・管理"
+                onClick={() => setMcpOpen(true)}
+              >
+                <Network size={19} />
+                <span>MCP</span>
+              </button>
+              <button
+                className="sky-header-action"
+                aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
+                aria-expanded={searchOpen}
+                onClick={() => {
+                  setSearchOpen((open) => !open);
+                  if (searchOpen) setQuery('');
+                }}
+              >
+                {searchOpen ? <X size={19} /> : <Search size={19} />}
+                <span>{searchOpen ? '閉じる' : '検索'}</span>
+              </button>
+              <button
+                aria-label="Skyにツールを掲載"
+                className="sky-header-action"
+                onClick={() => setPublishOpen(true)}
+              >
+                <PackagePlus size={19} />
+                <span>掲載</span>
+              </button>
+            </div>
+          </header>
+
+          <fieldset className="sky-feed-scopes">
+            <legend className="sr-only">フィードを絞り込む</legend>
+            {feedScopes.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={scope === item ? 'is-active' : ''}
+                aria-pressed={scope === item}
+                onClick={() => setScope(item)}
+              >
+                {item}
+              </button>
+            ))}
+            <button
+              type="button"
+              className={
+                'sky-learning-scope' + (phoenix.enabled ? ' is-on' : '')
+              }
+              aria-pressed={phoenix.enabled}
+              onClick={openLearningPanel}
+            >
+              <BrainCircuit size={15} />
+              {phoenix.enabled ? 'おすすめ学習中' : 'おすすめを学習'}
+            </button>
+          </fieldset>
+
+          {(searchOpen || query) && (
+            <div className="sky-feed-search">
+              <Search size={18} />
+              <input
+                type="search"
+                aria-label="Skyを検索"
+                placeholder="ツール名・できることで検索"
+                value={query}
+                ref={searchInput}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              {query && (
+                <button aria-label="検索をクリア" onClick={() => setQuery('')}>
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          )}
+
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -588,227 +1058,217 @@ export default function SkyWorkspace({
             </div>
           </section>
 
-          <header className="sky-feed-header">
-            <div className="sky-store-title">
-              <span>Sky</span>
-              <h1 id="sky-feed-title">アプリ</h1>
-            </div>
-            <Tabs
-              value={filter}
-              onValueChange={(value) => setFilter(value as FeedFilter)}
-            >
-              <TabsList
-                className="sky-feed-tabs"
-                aria-label="Sky Timelineの表示"
-              >
-                {feedFilters.map((item) => (
-                  <TabsTrigger key={item} value={item}>
-                    {item}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-            <div className="sky-feed-header-actions">
-              <button
-                className="sky-header-action"
-                aria-label="サービス接続を管理"
-                onClick={() => setConnectionCenterOpen(true)}
-              >
-                <Link2 size={19} />
-                <span>接続</span>
-              </button>
-              <button
-                className="sky-header-action"
-                aria-label="MCP接続・管理"
-                onClick={() => setMcpOpen(true)}
-              >
-                <Network size={19} />
-                <span>MCP</span>
-              </button>
-              <button
-                className="sky-header-action"
-                aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
-                aria-expanded={searchOpen}
-                onClick={() => {
-                  setSearchOpen((open) => !open);
-                  if (searchOpen) setQuery('');
-                }}
-              >
-                {searchOpen ? <X size={19} /> : <Search size={19} />}
-                <span>{searchOpen ? '閉じる' : '検索'}</span>
-              </button>
-              <button
-                aria-label="Skyにツールを掲載"
-                className="sky-header-action"
-                onClick={() => setPublishOpen(true)}
-              >
-                <PackagePlus size={19} />
-                <span>掲載</span>
-              </button>
-            </div>
-          </header>
-
-          {(searchOpen || query) && (
-            <div className="sky-feed-search">
-              <Search size={18} />
-              <input
-                type="search"
-                aria-label="Skyを検索"
-                placeholder="ツール名・できることで検索"
-                value={query}
-                ref={searchInput}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-              {query && (
-                <button aria-label="検索をクリア" onClick={() => setQuery('')}>
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          )}
-
-          {(filter === 'おすすめ' || filter === 'コード') && <SkyCodeTimeline />}
-          {filter !== 'コード' && <div className="sky-feed" aria-live="polite">
-            {visibleLocalServers.map((server, index) => (
-              <article
-                className="sky-feed-post"
-                key={`local-${server.id}`}
-                style={{ '--sky-index': index } as CSSProperties}
-              >
-                <div className="sky-timeline-node" aria-hidden="true">
-                  <span className="sky-provider-avatar rock-icon-blue">PC</span>
-                </div>
-                <div className="sky-post-body">
-                  <div className="sky-post-meta-row">
-                    <div className="sky-post-author">
-                      <strong>このPCのツール</strong>
-                      <span>@sky_local</span>
-                    </div>
-                    <span className="sky-post-state">
-                      <i aria-hidden="true" />
-                      {server.state === 'connected' ? '接続済み' : '起動中'}
-                    </span>
-                  </div>
-                  <div className="sky-post-open">
-                    <span className="rock-tool-icon rock-icon-blue">
-                      <Network size={22} strokeWidth={1.7} />
-                    </span>
-                    <span>
-                      <small>Sky SDK</small>
-                      <strong>{server.name}</strong>
-                    </span>
-                  </div>
-                  <p className="sky-post-description">{server.description}</p>
-                  <p className="sky-post-place">
-                    {server.state === 'connected'
-                      ? `${server.passport?.tools.length ?? 0}機能を確認済み`
-                      : 'このPCで実行。接続時に機能と権限を確認します。'}
-                  </p>
-                  <div className="sky-post-actions">
-                    <button
-                      className="sky-post-primary"
-                      disabled={Boolean(localBusy)}
-                      onClick={() => void connectLocalServer(server)}
-                    >
-                      {localBusy === server.id
-                        ? '確認中…'
-                        : server.state === 'connected'
-                          ? '機能を見る'
-                          : '接続'}
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-                  {localError?.id === server.id && (
-                    <p className="bench-error" role="alert">
-                      {localError.message}
-                    </p>
-                  )}
-                </div>
-              </article>
-            ))}
-            {visibleTools.map((tool, index) => {
-              const provider = providerFor(tool);
-              const status = statusFor(
-                tool,
-                fashionConnected,
-                connectedTools,
-                connected,
-                service,
-              );
-              return (
+          {scope === 'コード' && <SkyCodeTimeline />}
+          {scope !== 'コード' && (
+            <div className="sky-feed" aria-live="polite">
+              {visibleLocalServers.map((server, index) => (
                 <article
-                  className={'sky-feed-post ' + status.className}
-                  key={tool.id}
-                  style={
-                    {
-                      '--sky-index': index + visibleLocalServers.length,
-                    } as CSSProperties
-                  }
+                  className="sky-feed-post"
+                  key={`local-${server.id}`}
+                  style={{ '--sky-index': index } as CSSProperties}
                 >
-                  <div className="sky-timeline-node">
-                    <button type="button" aria-label={`${tool.name}の機能と利用方法を見る`} aria-haspopup="dialog" onClick={() => setInspected(tool)}>
-                      <ToolCharacter id={tool.id} />
-                    </button>
+                  <div className="sky-timeline-node" aria-hidden="true">
+                    <span className="sky-provider-avatar rock-icon-blue">
+                      PC
+                    </span>
                   </div>
                   <div className="sky-post-body">
                     <div className="sky-post-meta-row">
                       <div className="sky-post-author">
-                        <strong>{provider.name}</strong>
-                        {status.className === 'is-ready' && (
-                          <BadgeCheck
-                            className="sky-role-verified"
-                            size={16}
-                            aria-label="Skyで利用可能"
-                          />
-                        )}
-                        <span>{provider.handle}</span>
+                        <strong>このPCのツール</strong>
+                        <span>@sky_local</span>
                       </div>
-                      <span className={'sky-post-state ' + status.className}>
+                      <span className="sky-post-state">
                         <i aria-hidden="true" />
-                        {status.label}
+                        {server.state === 'connected' ? '接続済み' : '起動中'}
                       </span>
                     </div>
                     <div className="sky-post-open">
+                      <span className="rock-tool-icon rock-icon-blue">
+                        <Network size={22} strokeWidth={1.7} />
+                      </span>
                       <span>
-                        <strong>{tool.name}</strong>
+                        <small>Sky SDK</small>
+                        <strong>{server.name}</strong>
                       </span>
                     </div>
-                    <p className="sky-post-description">{tool.description}</p>
-                    <p className="sky-post-place">{status.detail}</p>
+                    <p className="sky-post-description">{server.description}</p>
+                    <p className="sky-post-place">
+                      {server.state === 'connected'
+                        ? `${server.passport?.tools.length ?? 0}機能を確認済み`
+                        : 'このPCで実行。接続時に機能と権限を確認します。'}
+                    </p>
                     <div className="sky-post-actions">
                       <button
                         className="sky-post-primary"
-                        onClick={() => primaryAction(tool)}
+                        disabled={Boolean(localBusy)}
+                        onClick={() => void connectLocalServer(server)}
                       >
-                        {tool.status === 'ready' &&
-                          tool.runner !== 'delivery-local' &&
-                          connectedTools.includes(tool.id) && (
-                            <Zap size={16} fill="currentColor" />
-                          )}
-                        {actionLabel(tool, connectedTools, connected)}
+                        {localBusy === server.id
+                          ? '確認中…'
+                          : server.state === 'connected'
+                            ? '機能を見る'
+                            : '接続'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
+                    {localError?.id === server.id && (
+                      <p className="bench-error" role="alert">
+                        {localError.message}
+                      </p>
+                    )}
                   </div>
                 </article>
-              );
-            })}
-            {visibleTools.length + visibleLocalServers.length === 0 && (
-              <div className="sky-feed-empty">
-                <Search size={25} />
-                <strong>見つかりませんでした</strong>
-                <p>検索を消すか、別のタブを選んでください。</p>
-                <button
-                  onClick={() => {
-                    setQuery('');
-                    setFilter('おすすめ');
-                  }}
-                >
-                  おすすめに戻る
-                </button>
-              </div>
-            )}
-          </div>}
+              ))}
+              {rankedTools.map(({ tool, reason, reasonCode }, index) => {
+                const provider = providerFor(tool);
+                const status = statusFor(
+                  tool,
+                  fashionConnected,
+                  connectedTools,
+                  connected,
+                  service,
+                );
+                return (
+                  <article
+                    className={'sky-feed-post ' + status.className}
+                    key={tool.id}
+                    data-sky-tool-id={tool.id}
+                    data-sky-position={index + visibleLocalServers.length}
+                    style={
+                      {
+                        '--sky-index': index + visibleLocalServers.length,
+                      } as CSSProperties
+                    }
+                  >
+                    <div className="sky-timeline-node">
+                      <button
+                        type="button"
+                        aria-label={`${tool.name}の機能と利用方法を見る`}
+                        aria-haspopup="dialog"
+                        onClick={() => {
+                          recordPhoenix(tool.id, 'detail');
+                          setInspected(tool);
+                        }}
+                      >
+                        <ToolCharacter id={tool.id} />
+                      </button>
+                    </div>
+                    <div className="sky-post-body">
+                      <div className="sky-post-meta-row">
+                        <div className="sky-post-author">
+                          <strong>{provider.name}</strong>
+                          {status.className === 'is-ready' && (
+                            <BadgeCheck
+                              className="sky-role-verified"
+                              size={16}
+                              aria-label="Skyで利用可能"
+                            />
+                          )}
+                          <span>{provider.handle}</span>
+                        </div>
+                        <span className={'sky-post-state ' + status.className}>
+                          <i aria-hidden="true" />
+                          {status.label}
+                        </span>
+                      </div>
+                      <div className="sky-feed-reason" data-reason={reasonCode}>
+                        <span aria-hidden="true" />
+                        {reason}
+                      </div>
+                      <div className="sky-post-open">
+                        <span>
+                          <strong>{tool.name}</strong>
+                        </span>
+                      </div>
+                      <p className="sky-post-description">{tool.description}</p>
+                      <p className="sky-post-place">{status.detail}</p>
+                      <div className="sky-post-actions">
+                        <button
+                          className="sky-post-primary"
+                          onClick={() => primaryAction(tool)}
+                        >
+                          {tool.status === 'ready' &&
+                            tool.runner !== 'delivery-local' &&
+                            connectedTools.includes(tool.id) && (
+                              <Zap size={16} fill="currentColor" />
+                            )}
+                          {actionLabel(tool, connectedTools, connected)}
+                          <ArrowRight size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            'sky-post-save' +
+                            (savedAt[tool.id] ? ' is-saved' : '')
+                          }
+                          aria-label={
+                            savedAt[tool.id]
+                              ? `${tool.name}の保存を解除`
+                              : `${tool.name}をマイフィードに保存`
+                          }
+                          aria-pressed={Boolean(savedAt[tool.id])}
+                          disabled={Boolean(saveBusy)}
+                          onClick={() => void toggleSaved(tool)}
+                        >
+                          <Bookmark
+                            size={17}
+                            fill={savedAt[tool.id] ? 'currentColor' : 'none'}
+                          />
+                          <span>{savedAt[tool.id] ? '保存済み' : '保存'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="sky-post-detail"
+                          onClick={() => {
+                            recordPhoenix(tool.id, 'detail');
+                            setInspected(tool);
+                          }}
+                        >
+                          詳細
+                        </button>
+                      </div>
+                    {saveError?.tool === tool.id && needsSignin ? (
+                      <ExecutionSignin />
+                    ) : saveError?.tool === tool.id ? (
+                        <p className="bench-error" role="alert">
+                          {saveError.message}
+                        </p>
+                    ) : null}
+                    </div>
+                  </article>
+                );
+              })}
+              {rankedTools.length + visibleLocalServers.length === 0 && (
+                <div className="sky-feed-empty">
+                  {feedMode === 'library' ? (
+                    <Bookmark size={25} />
+                  ) : (
+                    <Search size={25} />
+                  )}
+                  <strong>
+                    {feedMode === 'library'
+                      ? 'マイフィードはまだ空です'
+                      : '見つかりませんでした'}
+                  </strong>
+                  <p>
+                    {feedMode === 'library'
+                      ? '保存または接続したToolが、ここに新しい順で並びます。'
+                      : '検索を消すか、別の絞り込みを選んでください。'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setQuery('');
+                      setFeedMode('recommended');
+                      setScope('すべて');
+                    }}
+                  >
+                    おすすめに戻る
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           <SkyMcpCenter
             open={mcpOpen}
             connected={connected}
@@ -819,12 +1279,95 @@ export default function SkyWorkspace({
         </section>
       </div>
 
-      <Dialog open={inspected !== null} onOpenChange={(open) => { if (!open) setInspected(null); }}>
-        {inspected && <SkyToolOverview tool={inspected} state={skyToolUiState(inspected, { fashionConnected, connectedTools, pcConnected: connected, service })}>
-          <ol>{inspected.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-          <p>{inspected.note}</p>
-          <Link href={`/sky/tools/${encodeURIComponent(inspected.id)}`}>手順・提供元を詳しく見る</Link>
-        </SkyToolOverview>}
+      <Dialog open={learningOpen} onOpenChange={setLearningOpen}>
+        <DialogContent className="rock-tool-dialog sky-learning-dialog">
+          <div className="sky-learning-title">
+            <span aria-hidden="true">
+              <BrainCircuit size={22} />
+            </span>
+            <div>
+              <p className="rock-eyebrow">Sky Phoenix</p>
+              <DialogTitle className="rock-dialog-title">
+                おすすめの学習
+              </DialogTitle>
+            </div>
+          </div>
+          <DialogDescription className="rock-dialog-description">
+            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Zemaの会話、成果本文、端末IDは保存しません。
+          </DialogDescription>
+          <div className="sky-learning-status" aria-live="polite">
+            <div>
+              <span>状態</span>
+              <strong>{phoenix.enabled ? '学習中' : '停止中'}</strong>
+            </div>
+            <div>
+              <span>履歴</span>
+              <strong>{phoenix.events.length}件・30日間</strong>
+            </div>
+            <div>
+              <span>保存</span>
+              <strong>
+                {learningSync === 'saving'
+                  ? '保存中'
+                  : learningSync === 'synced'
+                    ? '本人アカウントと同期'
+                    : 'このタブのみ'}
+              </strong>
+            </div>
+          </div>
+          <p className="sky-learning-boundary">
+            ランキングだけを変えます。Toolの実行許可、課金、購入、ZemaのJobは作りません。
+          </p>
+          <div className="sky-learning-actions">
+            <button
+              type="button"
+              className="sky-learning-toggle"
+              aria-pressed={phoenix.enabled}
+              onClick={() => void toggleLearning()}
+            >
+              <BrainCircuit size={17} />
+              {phoenix.enabled ? '学習を停止して削除' : '学習をオンにする'}
+            </button>
+            <button
+              type="button"
+              className="sky-learning-clear"
+              disabled={!phoenix.events.length}
+              onClick={() => void clearLearning()}
+            >
+              <Trash2 size={16} />
+              履歴をリセット
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={inspected !== null}
+        onOpenChange={(open) => {
+          if (!open) setInspected(null);
+        }}
+      >
+        {inspected && (
+          <SkyToolOverview
+            tool={inspected}
+            state={skyToolUiState(inspected, {
+              fashionConnected,
+              connectedTools,
+              pcConnected: connected,
+              service,
+            })}
+          >
+            <ol>
+              {inspected.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <p>{inspected.note}</p>
+            <Link href={`/sky/tools/${encodeURIComponent(inspected.id)}`}>
+              手順・提供元を詳しく見る
+            </Link>
+          </SkyToolOverview>
+        )}
       </Dialog>
       <Dialog
         open={selected !== null}
@@ -866,7 +1409,12 @@ export default function SkyWorkspace({
               </div>
 
               {selected.id === 'jev-router' ? (
-                <div className="sky-candidate-state"><p>本体はSkyに未接続です。登録は実行や接続の完了ではありません。</p><Link href="/sky/tools/jev-router">導入条件を見る</Link></div>
+                <div className="sky-candidate-state">
+                  <p>
+                    本体はSkyに未接続です。登録は実行や接続の完了ではありません。
+                  </p>
+                  <Link href="/sky/tools/jev-router">導入条件を見る</Link>
+                </div>
               ) : selected.status === 'candidate' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">

@@ -24,7 +24,9 @@ async function start() {
       .filter(f => f !== config.main && /\.m?js$/.test(f))]
       .map(f => ({type:'ESModule', path:resolve(directory, f)})),
     compatibilityDate: config.compatibility_date, compatibilityFlags: config.compatibility_flags,
-    bindings: {...config.vars, SKY_REMOTE_LLM_ENABLED:'false'},
+    // Keep this production authentication regression independent from the
+    // loopback-only identity used by the interactive local preview.
+    bindings: {...config.vars, ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID:'', SKY_REMOTE_LLM_ENABLED:'false'},
     d1Databases: {DB:'csv-regression-db'}, r2Buckets: {BUCKET:'csv-regression-files'},
     resourcePersistencePath: join(temporary, 'state'), host:'127.0.0.1', port:0,
   }));

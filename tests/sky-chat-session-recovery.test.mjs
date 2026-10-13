@@ -82,7 +82,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   const context = { Error, Event, Element: FixtureElement, queueMicrotask, window, crypto, AbortController, AbortSignal,
     fetch: async (url, init) => {
       if (url === '/api/llm/estimate') { estimates.at(-1).signal = init.signal; return { ok: true, json: async () => ({}) }; }
-      if (url === '/api/llm/text') { const pending = Promise.withResolvers(); requests.push({ ...pending, signal: init.signal }); return pending.promise; }
+      if (url === '/api/llm/local-agent') { const pending = Promise.withResolvers(); requests.push({ ...pending, signal: init.signal }); return pending.promise; }
       return { ok: true, json: async () => url === '/api/csv-jobs' ? { jobs: [] } : { funds: [], membership: null, analytics: [] } };
     },
     require(name) { if (modules[name]) return { __esModule: true, ...modules[name] }; if (name.startsWith('@/components/') || name === 'lucide-react') return {}; if (['@/lib/zema-private-storage','@/lib/currency-format','@/lib/remote-ai-text-client'].includes(name)) return {}; throw Error(`Unexpected module ${name}`); },

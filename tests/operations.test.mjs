@@ -445,6 +445,90 @@ await test('Sky library bookmarks never grant consent, entitlements or create wo
   } finally { sqlite.close(); }
 });
 
+await test('Sky Phoenix history requires consent, is replay-safe and stays owner-scoped', async () => {
+  const { a, b, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = { id: '00000000-0000-4000-8000-000000000001', sessionId: '10000000-0000-4000-8000-000000000001', toolId: 'mr-citations', type: 'detail', at, position: 2 };
+  try {
+    await rejects(() => a.recordSkyFeedEvents({ events: [input] }), 409);
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await a.recordSkyFeedEvents({ events: [input] });
+    await a.recordSkyFeedEvents({ events: [input] });
+    const mine = await a.skyFeedHistory();
+    assert.equal(mine.enabled, true);
+    assert.equal(mine.events.length, 1);
+    assert.equal(mine.events[0].toolId, 'mr-citations');
+    assert.deepEqual((await b.skyFeedHistory()).events, []);
+    await b.setSkyFeedPersonalization({ enabled: true });
+    await b.recordSkyFeedEvents({ events: [input] });
+    assert.equal((await b.skyFeedHistory()).events.length, 1);
+    await a.clearSkyFeedHistory();
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+    assert.equal((await b.skyFeedHistory()).events.length, 1);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky Phoenix rejects private fields, invalid events and altered replays', async () => {
+  const { a, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = { id: '00000000-0000-4000-8000-000000000001', sessionId: '10000000-0000-4000-8000-000000000001', toolId: 'mr-citations', type: 'impression', at, dwellMs: 10_000, position: 2 };
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    for (const invalid of [
+      { ...input, prompt: 'secret' }, { ...input, user_id: 'b' },
+      { ...input, toolId: 'unknown' }, { ...input, type: 'scroll' },
+      { ...input, dwellMs: 300_001 }, { ...input, at: at + 30_001 },
+      { ...input, type: 'launch', dwellMs: 10_000 },
+    ]) await rejects(() => a.recordSkyFeedEvents({ events: [invalid] }), 400);
+    await a.recordSkyFeedEvents({ events: [input] });
+    await rejects(() => a.recordSkyFeedEvents({ events: [{ ...input, position: 3 }] }), 409);
+    assert.equal((await a.skyFeedHistory()).events.length, 1);
+  } finally { sqlite.close(); }
+});
+
+await test('disabling Sky Phoenix deletes only that owner history and grants no authority', async () => {
+  const { a, sqlite } = fixture();
+  const counts = () => sqlite.prepare(`SELECT
+      (SELECT COUNT(*) FROM jobs) AS jobs,
+      (SELECT COUNT(*) FROM sky_connections) AS connections,
+      (SELECT COUNT(*) FROM sky_library_items) AS library`).get();
+  const before = counts();
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await a.recordSkyFeedEvents({ events: [{
+      id: '00000000-0000-4000-8000-000000000001',
+      sessionId: '10000000-0000-4000-8000-000000000001',
+      toolId: 'mr-citations', type: 'launch',
+      at: Date.parse('2026-09-05T12:00:00Z'),
+    }] });
+    assert.deepEqual(counts(), before);
+    await a.setSkyFeedPersonalization({ enabled: false });
+    assert.deepEqual(counts(), before);
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky Phoenix learns owned terminal outcomes and reset keeps old outcomes forgotten', async () => {
+  const { a, b, sqlite, advance } = fixture();
+  const input = job();
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await b.setSkyFeedPersonalization({ enabled: true });
+    advance(1);
+    await a.createJob(input);
+    await a.changeJob(input.id, { action: 'start' });
+    await a.changeJob(input.id, finish);
+    const learned = await a.skyFeedHistory();
+    assert.deepEqual(learned.events.map(({ id, sessionId, toolId, type }) => ({ id, sessionId, toolId, type })), [{
+      id: input.id, sessionId: input.id, toolId: 'mr-citations', type: 'complete',
+    }]);
+    assert.deepEqual((await b.skyFeedHistory()).events, []);
+    advance(1);
+    await a.clearSkyFeedHistory();
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+  } finally { sqlite.close(); }
+});
+
 await test('provider CAS admits one creator/update and preserves owner, provider and secret reference', async () => {
   const { a, b, sqlite, db } = fixture();
   const value = { provider: 'instagram', status: 'setup_required', config: { account: 'first' }, expectedRevision: 0 };

@@ -60,6 +60,8 @@ In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools
 
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
+For a local Zema conversation, run Ollama on `127.0.0.1:11434`, install `qwen3:0.6b`, build and start this repository, then open `http://localhost:8787/chat`. Choose **Ollama** and model ID `qwen3:0.6b` in the conversation-model panel. The model is an untrusted planner: only three bounded, side-effect-free local functions are allowlisted, and there is no cloud fallback. The public `chatgpt.site` Worker cannot reach a model on your PC loopback; a future companion/bridge is required for that path.
+
 ## From a request to a result
 
 Here is the smallest useful mental model: “Please clean this CSV and show me exactly what changed.” The same shape also applies to writing, a security inspection, a market PAPER check, or a material candidate comparison. **This illustrates the intended end-to-end experience; individual Tools and provider connections are at different stages.**
@@ -325,6 +327,8 @@ npm start
 ```
 
 `npm start` applies local D1 migrations and starts the preview only after migration succeeds. Migrations and the preview use the same project-root `.wrangler/state` directory, outside generated build output. Choose a port with `npm start -- --port 8788`, or a separate complete local store with `npm start -- --persist-to /absolute/local-store --port 8788`. Both stages receive that store; rebuilds retain its D1 and R2 data. `--env`/`-e` and `--config`/`-c` select the same environment and configuration for both stages. Change projects with `cd /path/to/project && npm start`; the wrapper rejects `--cwd` and remote mode before migrations. This does not deploy the Worker or run remote migrations. The Operator Dock uses the same local runtime through its separate command: `npm run operator-dock:dev`.
+
+Sky Web/Sites is the sole migration owner for the shared production `site-creator-d1`. Its build and local preview use [`services/sky-web/migrations/`](services/sky-web/migrations/), which preserves the filenames and exact SQL bytes from the last successful RockstarOS Site source. The separate Sky Agent Runtime binds that database but has no production `migrations_dir`; repository-root [`drizzle/`](drizzle/) remains the application-schema and isolated-test history. Do not let two services apply independent histories to one physical database, renumber published Web migrations, or point the Web build back at the root lineage. Add each production schema change as a forward-only Web migration and keep the root schema history compatible for tests and generation.
 
 The preview uses the builder’s lockfile-pinned Wrangler, which may differ from the root CLI used by direct `npx wrangler` commands. `node scripts/spider-web-runtime.mjs cli` prints the selected preview CLI; this selection does not install a newer version.
 

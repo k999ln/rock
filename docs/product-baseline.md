@@ -1,10 +1,24 @@
 > **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 
+## 2026-10-13 SkyからZemaのローカルAgentを使えるようにする
+
+Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の受け皿と実行履歴はZemaが担う。Web版Zemaは、同じPCで動くOllamaまたはOpenAI互換のloopback endpointを選んだとき、ローカルLLMを権限のないplannerとして利用できる。planner出力は閉じたJSON schemaで検査し、最大3手、`sky_route`／`format_citations`／`coconala_check`の副作用がない3処理だけを許可する。shell、任意file、network、購入、投稿、送信、権限変更は許可しない。Cloudへの自動fallbackも行わない。
+
+2026-10-13のlocal previewではOllama `qwen3:0.6b`を導入し、Zema画面から通常会話が完了することを確認した。軽量modelのTool選択品質は限定的であり、未実行処理を実行済みと数えない。`chatgpt.site`上の公開Workerから利用者PCの`127.0.0.1`へは到達できないため、公開版でこのlocal Agentを使うには将来の端末companion／local bridgeが必要。local preview用の固定userはloopback hostだけで有効で、公開hostの認証を迂回しない。
+
+## 2026-10-13 SkyをTwitter / X型の1列フィードにする
+
+利用者は、Skyの一覧をPinterest型ではなくTwitter / Xのような1列フィードにすると決めた。主表示は「おすすめ」と「マイフィード」。マイフィードは明示保存または接続済みのToolだけを新しい関係順に表示し、明示フォローをまだ持たない初版で「フォロー中」とは呼ばない。
+
+初版の固定順位 `sky-usefulness-v1` に加え、同日の追加指示でX Phoenixの設計をSky用へ縮小した `sky-phoenix-v1` を実装する。本人が「おすすめ学習」をオンにした場合だけ、qualified impression、詳細、依頼先選択、Tool開始、保存／解除、接続と、本人の正本Tool runの完了／失敗を30日・最大800件で保持し、detail／launch／save／connect／skipの確率、直近性、Tool／category affinityを順位へ反映する。履歴0件・保存不可・同期失敗・未知versionではv1へ戻す。依頼本文、Zema会話、結果本文、device token、account identifier、raw scroll、人気、収益は入力にしない。本人は画面から停止・全削除できる。フィード履歴はランキングだけに使い、実行権限、job、支払い、購入、Agent promptを作らない。実作業はZemaが担う。詳細は [Sky](sky.md#個人化した1列フィード2026-10-13) 。
+
 ## 2026-10-12 Columbiaの学生に配るNFCカードからSkyを開く
 
 利用者は、NFCタグにSkyを入れる構想を指示し、質問への回答で次を決めた。タッチするとSkyのTool／Agentが開く。使う人はColumbia大学の学生。avokadoが書き込んで配る。1枚のカードは「Columbia用Sky」の入口で、学生向けに選んだTool（出典整理、AMC、特許アシスタント）の一覧を開く。タッチで開く入口とこの3つのToolの画面は英語にする。特許アシスタントは英語版に米国（USPTO）の検索先と仮出願の案内を加え、カードから来た学生にはAI調査を最初は出さない（下書きは無料）。カードと入口ページには「Columbia」と書く（大学のマークの使用規則は承知のうえ。紋章・ロゴは使わない）。実装はCodexが行う。
 
 カードにはURLだけを書き、個人情報・利用権・鍵は入れない。URLは `avocadomini.si/t/<tagId>` に固定し、行き先はサーバー側で変える。既存のCampusタグ入口と匿名集計を使う。詳細は[Sky NFCカード設計](sky-nfc-columbia.md)を正本とする。印刷・書き込み・配布、枚数と費用、配る場所の許可は未定。
+
+2026-10-13の追加指示により、Columbia入口も簡易な説明カード一覧ではなく、`sky-twitter-feed-mobile-v2.png`を基準にしたSkyの完成フィードUIへ揃える。英語のFor you／Saved、端末内の依頼振り分け、単列の3 Tool投稿、browser内保存、実Toolへ進むCTA、下部navigationを持つ。大学の紋章・ロゴは使わず、カード経由の無料処理・外部送信なし・特許AI調査停止の境界を維持する。
 
 ## 2026-10-10 Sky Compute Grid — 余剰スマートフォン計算力の仲介
 

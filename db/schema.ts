@@ -15,6 +15,41 @@ export const skyLibraryItems = sqliteTable('sky_library_items', {
   savedAt: integer('saved_at').notNull(),
 }, (table) => [uniqueIndex('idx_sky_library_owner_tool').on(table.userId, table.tool)]);
 
+export const skyFeedPersonalizationSettings = sqliteTable(
+  'sky_feed_personalization_settings',
+  {
+    userId: text('user_id').primaryKey(),
+    enabled: integer('enabled', { mode: 'boolean' }).notNull().default(false),
+    consentVersion: text('consent_version').notNull(),
+    algorithmVersion: text('algorithm_version').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+);
+
+export const skyFeedHistoryEvents = sqliteTable(
+  'sky_feed_history_events',
+  {
+    id: text('id').notNull(),
+    userId: text('user_id').notNull(),
+    sessionId: text('session_id').notNull(),
+    tool: text('tool').notNull(),
+    eventType: text('event_type').notNull(),
+    occurredAt: integer('occurred_at').notNull(),
+    dwellMs: integer('dwell_ms'),
+    position: integer('position'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.id] }),
+    index('idx_sky_feed_history_owner_time').on(table.userId, table.occurredAt),
+    index('idx_sky_feed_history_owner_tool').on(
+      table.userId,
+      table.tool,
+      table.occurredAt,
+    ),
+  ],
+);
+
 export const skyCommerceSellers = sqliteTable('sky_commerce_sellers', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),
