@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { DatabaseSync } from 'node:sqlite';
 import { localStartFixture } from './local-start-fixture.mjs';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { drizzle } from 'drizzle-orm/d1';
@@ -77,7 +78,7 @@ await test('Sky Web preserves its deployed migration lineage separately from Age
     '0014_csv_review_fixes.sql': 'c9473cb18102517c5a6d2c5f5f3daa345150087b544fbc5349ca56267d863527',
     '0015_csv_billing_account_events.sql': '9c53b391c35b9f9f226f6a4a0cc53d0f2a8c36664bfbaa3de62b3c07c1f2ba0c',
     '0016_sky_code_timeline.sql': '5151b91f2bb2d6a0c9329b4e066ccdc1632a0d48309d693e63fd1cbaa96f6c95',
-    '0017_primary_quality_compatibility.sql': '12f842955ed47647302725f57d05a91e7ad29840ebf428d38f80c1ac78033360',
+    '0017_primary_quality_compatibility.sql': 'a4f8747b03f3da54a0b93755bf61a8075de600daccf153bc2e72ea59e293b43d',
     '0018_sky_feed_personalization.sql': 'ed7c6c5203f196a387647a3dfc1cd40f7b8a63209c7eece598b43bbf4a1e071d',
   };
   const actual = readdirSync(webMigrations)
@@ -104,6 +105,33 @@ await test('the shared production D1 has exactly one migration owner', () => {
   assert.match(webConfig, /migrations_dir: 'services\/sky-web\/migrations'/);
   assert.doesNotMatch(runtimeConfig, /migrations_dir/);
   assert.match(runtimeConfig, /"database_name": "site-creator-d1"/);
+});
+
+await test('the forward Web bridge tolerates objects left by an earlier partial attempt', () => {
+  const sqlite = new DatabaseSync(':memory:');
+  const webMigrations = new URL('../services/sky-web/migrations/', import.meta.url);
+  const split = (sql) => sql
+    .split('--> statement-breakpoint')
+    .filter((statement) => statement.trim());
+  for (const name of readdirSync(webMigrations)
+    .filter((entry) => entry.endsWith('.sql') && !entry.startsWith('0017_'))
+    .sort()) {
+    for (const statement of split(readFileSync(new URL(name, webMigrations), 'utf8')))
+      sqlite.exec(statement);
+  }
+  const bridge = split(readFileSync(
+    new URL('0017_primary_quality_compatibility.sql', webMigrations),
+    'utf8',
+  ));
+  for (const statement of bridge) sqlite.exec(statement);
+  for (const statement of bridge) sqlite.exec(statement);
+  assert.equal(
+    sqlite.prepare("SELECT COUNT(*) AS count FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'").get().count,
+    92,
+  );
+  assert.ok(sqlite.prepare(
+    "SELECT name FROM sqlite_master WHERE type = 'trigger' AND name = 'a2a_usage_receipt_immutable_update'",
+  ).get());
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
