@@ -121,6 +121,19 @@ type ActiveRequest = {
 
 type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
 
+type LocalAgentResult = {
+  text?: string;
+  code?: string;
+  steps?: Array<{
+    index: number;
+    kind: 'tool' | 'response';
+    tool?: string;
+    outcome: 'completed' | 'needs_review';
+    summary: string;
+  }>;
+  artifacts?: Array<{ tool: string; content: string }>;
+};
+
 type FundSnapshot = {
   funds: AutomationFundPlan[];
   membership: { fundId: string } | null;
@@ -888,7 +901,7 @@ export default function SkyChatWorkspace() {
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      void fetch('/api/llm/text', {
+      void fetch('/api/llm/local-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -897,17 +910,28 @@ export default function SkyChatWorkspace() {
           baseUrl: textProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
-          system: tool
+          context: tool
             ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
             : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
           prompt: selectedToolPrompt.slice(-20_000),
-          consent: false,
         }),
         signal: controller.signal,
       }).then(async (response) => {
-        const result = await response.json() as { text?: string; code?: string };
+        const result = await response.json() as LocalAgentResult;
         if (!response.ok || !result.text) throw new Error(result.code || 'TEXT_GENERATION_FAILED');
-        return result.text;
+        const toolArtifacts = (result.artifacts ?? [])
+          .filter((artifact) => artifact.tool !== 'sky_route')
+          .map((artifact) => artifact.content.trim())
+          .filter(Boolean);
+        const executionSummary = (result.steps ?? [])
+          .filter((step) => step.kind === 'tool')
+          .map((step) => `${step.tool ?? 'tool'}: ${step.outcome === 'completed' ? '完了' : '確認が必要'}`)
+          .join(' / ');
+        return [
+          result.text.trim(),
+          ...toolArtifacts,
+          executionSummary ? `ローカルAgent実行記録: ${executionSummary}` : '',
+        ].filter(Boolean).join('\n\n');
       }).then((answer) => {
         if (controller.signal.aborted) return;
         setMessages((current) => conversational
@@ -921,6 +945,10 @@ export default function SkyChatWorkspace() {
         const detail = textProvider === 'local-model'
           ? code === 'LOCAL_LLM_BRIDGE_REQUIRED'
             ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
+            : code === 'INVALID_AGENT_PLAN'
+              ? 'ローカルモデルの計画を安全な形式として確認できませんでした。もう一度試すか、依頼を短くしてください。Toolは実行していません。'
+              : code === 'AGENT_STEP_LIMIT' || code === 'REPEATED_TOOL_CALL'
+                ? 'ローカルAgentを安全上限で停止しました。依頼を小さく分けてください。Cloudへはフォールバックしません。'
             : 'Local LLMブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。'
           : code === 'REMOTE_LLM_DISABLED'
             ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
@@ -1515,7 +1543,7 @@ export default function SkyChatWorkspace() {
                   <Send size={18} />
                 </button>
               </div>
-              {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
+              {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'ローカルAgentが安全な手順を組み立てています…'}</output>}
               {remoteTextProvider && (
                 <section className="zema-remote-consent" aria-live="polite">
                   <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
