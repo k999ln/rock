@@ -45,7 +45,7 @@ void test("a selected real project binds one responsible AI without granting exe
       id: "rockstaros-core",
       displayName: "RockstarOS",
       managerAgentId: "jennifer-os-manager",
-      managerLabel: "OS担当AI",
+      managerLabel: "OS担当si",
       sourceRefs: ["PROJECTS.md"],
     },
     knowledge,

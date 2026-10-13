@@ -63,7 +63,7 @@ Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapsh
 
 管理面と端末側は別状態で表示する。現在の端末側表示は`source_emulator_and_test_signed_physical_verified_production_enrollment_pending`であり、production credential、端末StrongBox identity／attestation、Device Owner provisioning、専用hostnameとD1が揃うまでは`ready`にしない。UIも「開発検証済み・本番登録待ち」と表示し、実端末へ本番配信済みとは表示しない。
 
-Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker、Sky、Zema、Local AI、Tool、WalletまたはbackupへのBinder edgeを持たない。DockへのPOSTは端末Keystore P-256鍵でcanonical requestを署名し、Dockは登録済み端末公開鍵、時刻、nonce、body digestを確認する。端末は保存されたWebAuthn assertionを独立再検証し、対象端末、credential、RP ID、origin、UP／UV flag、P-256署名、payload、発行時刻、開始時刻、失効時刻、単調増加counterを確認してからackする。端末側SQLiteはcommand replayを拒否し、Android Keystore HMAC chainとupdate／delete拒否triggerで監査を追記する。
+Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker、Sky、Zema、Local si、Tool、WalletまたはbackupへのBinder edgeを持たない。DockへのPOSTは端末Keystore P-256鍵でcanonical requestを署名し、Dockは登録済み端末公開鍵、時刻、nonce、body digestを確認する。端末は保存されたWebAuthn assertionを独立再検証し、対象端末、credential、RP ID、origin、UP／UV flag、P-256署名、payload、発行時刻、開始時刻、失効時刻、単調増加counterを確認してからackする。端末側SQLiteはcommand replayを拒否し、Android Keystore HMAC chainとupdate／delete拒否triggerで監査を追記する。
 
 停止操作には署名された解除操作を対で用意する。Sky／Zema package suspension、OTA延期、外部connector package隔離、15分保守表示、紛失modeは、それぞれ再開／解除／終了できる。外部Provider側session失効はまだ実装しておらず、該当commandはlocal実行を停止したうえで`REMOTE_SESSION_REVOCATION_PENDING`としてfail closedにする。factory resetは30分前の端末通知記録があり、Device Ownerで、release gateが有効な場合だけ実行可能だが、実機取消演習が終わるまでgateは`false`である。
 

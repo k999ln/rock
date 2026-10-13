@@ -1,9 +1,10 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.6",
-  "updatedAt": "2026-10-12",
+  "version": "1.9",
+  "updatedAt": "2026-10-13",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/service-design/README.md",
     "docs/avocado-mini-r5/README.md",
     "docs/rocketstar-design/README.md",
     "docs/rockstaros-complete-design-v1.0.pdf",
@@ -217,9 +218,8 @@
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
       "documents": [
-        "docs/architecture.md",
+        "docs/service-design/02-system-contracts.md",
         "docs/backend-design.md",
-        "docs/sim-led-product-architecture.md",
         "docs/rockstaros-complete-design.md"
       ],
       "interfaceImplementation": [
@@ -487,7 +487,7 @@
         "docs/sky-compute-grid.md",
         "docs/amc-goal-orchestrator.md",
         "docs/workstreams/05-web-pwa-sites.md",
-        "docs/sim-led-product-architecture.md",
+        "docs/service-design/02-system-contracts.md",
         "docs/sky-cloud-continuity.md",
         "docs/cloud-agent-provider-comparison-20261001.md",
         "docs/sky-a2a-bridge.md",
@@ -958,6 +958,26 @@
         "docs/database-status.md",
         "data/project-status.json",
         "docs/git-consolidation.md"
+      ]
+    },
+    {
+      "id": "jennifer_coordination",
+      "coverage": "SOURCE_IN_MAIN_AND_DESIGN_WITH_OPEN_ACCEPTANCE",
+      "documents": [
+        "docs/jennifer-coordination.md",
+        "docs/service-design/03-product-profiles.md",
+        "docs/service-design/02-system-contracts.md",
+        "docs/service-design/06-consistency-contracts.md"
+      ],
+      "implementation": [
+        "lib/jennifer-coordination.ts",
+        "lib/jennifer-amc-decomposition.ts",
+        "lib/jennifer-amc-execution.ts",
+        "components/sky-chat-workspace.tsx"
+      ],
+      "recoveredContractReferences": [
+        "tests/jennifer-coordination.test.mjs",
+        "tests/jennifer-amc-execution.test.mjs"
       ]
     }
   ],
@@ -1477,7 +1497,7 @@
         "pricingGateAccepted": false,
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
-        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+        "scope": "legal-guidance and patent-research only; general remote-si encrypted queue/reservation is a separate contract"
       },
       "submissionRecovery": {
         "document": "docs/sky-tools-complete-design.md",
@@ -1565,7 +1585,7 @@
         "pricingGateAccepted": false,
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
-        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+        "scope": "legal-guidance and patent-research only; general remote-si encrypted queue/reservation is a separate contract"
       },
       "submissionRecovery": {
         "document": "docs/sky-tools-complete-design.md",
@@ -2045,5 +2065,52 @@
       }
     ],
     "reviewScope": "32 nested contracts reviewed against current code after runtime restoration. Existing source invariants restored; old run success and production claims excluded."
-  }
+  },
+  "serviceReconstruction": {
+    "status": "basic_design_reorganized_open_decisions_not_runtime_complete",
+    "books": [
+      "docs/service-design/README.md",
+      "docs/service-design/01-service-experience.md",
+      "docs/service-design/02-system-contracts.md",
+      "docs/service-design/03-product-profiles.md",
+      "docs/service-design/04-delivery-and-acceptance.md",
+      "docs/service-design/05-requirement-coverage.md",
+      "docs/service-design/06-consistency-contracts.md"
+    ],
+    "inputMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
+    "requiredDesignFieldsInherited": [
+      "purpose_and_user",
+      "end_to_end_experience",
+      "responsibilities_and_forbidden_authority",
+      "inputs_outputs_ids_versions_and_limits",
+      "state_and_failure_transitions",
+      "storage_retention_deletion_and_backup",
+      "offline_retry_duplicate_and_uncertain_result",
+      "update_compatibility_rollback_and_recovery",
+      "safety_privacy_security_and_external_approval",
+      "acceptance_environment_and_evidence",
+      "open_decisions_owner_and_decision_test"
+    ],
+    "originalBytesPreserved": true,
+    "jenniferSource": {
+      "canonicalName": "Jennifer",
+      "userSpelling": "Jenniffer",
+      "branch": "codex/jennifer-zema-execution",
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+      "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
+      "pullRequest": 113,
+      "mainIntegrated": true,
+      "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+      "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+      "mergedAt": "2026-10-13T18:21:19Z",
+      "branchDeleted": true
+    },
+    "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
+    "crossSystemAcceptanceScenarios": 12,
+    "latestMainSha": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+    "mainIntegrated": true,
+    "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
+  },
+  "productTerminology": "data/product-terminology.json"
 }

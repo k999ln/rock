@@ -74,17 +74,17 @@ requireValue(
 
 const projectGuide = read('PROJECTS.md');
 requireValue(
-  projectGuide.includes('AI自動化チームのTool'),
+  projectGuide.includes('si自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',
 );
 const teamGuide =
   projectGuide
-    .split('## SkyのAI自動化チーム\n')[1]
+    .split('## Skyのsi自動化チーム\n')[1]
     ?.split('## 実装・配備単位\n')[0] ?? '';
 const commonGuide =
   projectGuide
-    .split('| AIチームを支える共通機能 |')[1]
-    ?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+    .split('| siチームを支える共通機能 |')[1]
+    ?.split('## Skyのsi自動化チーム\n')[0] ?? '';
 for (const name of [
   'CSV業務',
   'メルカリ収益ループ',

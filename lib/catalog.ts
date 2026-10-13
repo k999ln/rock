@@ -63,7 +63,7 @@ const catalogEntries = [
     source: 'https://github.com/k999ln/rock/blob/main/lib/material-invention.ts',
     launchPath: '/zema/tools/rockstar-material-invention',
     environment: 'ブラウザ内の候補生成 / サーバーへの保存・復元はサインイン必須',
-    cost: '外部AI・simulation・ラボ・有料APIを呼びません。',
+    cost: '外部si・simulation・ラボ・有料APIを呼びません。',
     steps: ['入力JSONまたは合成サンプルを開く', '端末内で候補・配合比・不足条件を比較する', '必要なら入力と候補を本人用に保存する', '保存した仕事を開き、同一入力の候補を照合する'],
     note: '全候補は未検証の仮説です。物理実験、安全性・性能・特許性の承認、装置操作は行いません。保存時は入力本文を本人用サーバーへ送信します。合成サンプルは実データの仕事完了へ昇格しません。',
     color: 'green', license: 'RockstarOS code', licenseUrl: 'https://github.com/k999ln/rock',
@@ -76,7 +76,7 @@ const catalogEntries = [
     description: 'コードやテキストの秘密情報・個人情報・危険な処理の候補を、ブラウザ内で検査。該当行と対処方法を確認できます。',
     source: 'https://github.com/k999ln/rock/tree/main/toolkits/spider-guard',
     launchPath: '/zema/tools/rockstar-spider',
-    environment: 'ブラウザ内の明示入力のみ / OS・PC接続・外部AI不要',
+    environment: 'ブラウザ内の明示入力のみ / OS・PC接続・外部si不要',
     cost: 'ブラウザ内の検査は基本利用無料。外部APIや有料処理は呼びません。',
     steps: ['検査するコード・テキストを入力し、言語を選ぶ', '検査を実行し、候補の行・理由・対処方法を確認する', '必要な修正後に再検査する', '必要なら値を含まないレポートをダウンロードする'],
     note: '入力と結果は画面内だけで保持し、原文・ファイル名・検出値を送信・保存しません。検出ゼロは安全の保証ではありません。端末全体の常駐監視・全通信の遮断はこのToolの対象外です。',
@@ -96,7 +96,7 @@ const catalogEntries = [
     environment: 'Sky / Zema / 保存・再開にはサインイン必須',
     cost: '計画作成ではLLMや有料の外部実行を呼びません。工数はテンプレートによる参考値です。',
     steps: ['依頼・Goal・意図を確認する', '計画を保存し、部隊と作業順を確認する', '作業の開始・提出・検収を記録する', '人の判断が必要な項目を確認し、Goalを受け入れる'],
-    note: '利用可能なのは計画作成と手動の進捗記録です。AIによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。',
+    note: '利用可能なのは計画作成と手動の進捗記録です。siによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。',
     color: 'green',
     license: 'avocadoOS code',
     licenseUrl: 'https://github.com/k999ln/rock',
@@ -269,7 +269,7 @@ const catalogEntries = [
       'https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/writer-agent/scripts/_shared/make-free-version.py',
     runner: 'free-article',
     environment: 'ブラウザ内 / Rockへのサインインが必要',
-    cost: '外部AIや有料APIを使わず、端末内で文章を処理します。',
+    cost: '外部siや有料APIを使わず、端末内で文章を処理します。',
     steps: [
       '自分が利用できる原稿を用意する',
       '無料にする範囲・まとめ・完全版のリンクを入力する',
@@ -391,14 +391,14 @@ const catalogEntries = [
     runner: 'legal-intake',
     environment:
       'Skyは相談内容を保存しません / 標準は端末内処理、オンライン検索は本人が明示許可した場合だけ',
-    cost: '利用者への料金は0円で提供できます。法令AI接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。',
+    cost: '利用者への料金は0円で提供できます。法令si接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。',
     steps: [
       '危険・逮捕・公的書類・期限の有無を確認する',
       '法務受付との会話で、分野・地域・状況と希望を整理する',
       '政府・裁判所の公式情報に限定した回答と無料窓口を確認する',
       '刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補として、本人確認後に連絡する',
     ],
-    note: '法令AIの回答は一般情報であり、法的助言、期限計算、勝敗予測、受任保証ではありません。自動送信は行わず、受任可否・利益相反・料金・対応地域は弁護士へ直接確認します。差し迫った危険がある場合は米国内では911へ連絡してください。',
+    note: '法令siの回答は一般情報であり、法的助言、期限計算、勝敗予測、受任保証ではありません。自動送信は行わず、受任可否・利益相反・料金・対応地域は弁護士へ直接確認します。差し迫った危険がある場合は米国内では911へ連絡してください。',
     color: 'blue',
     license: 'MIT',
     licenseUrl: '/LICENSE',
@@ -416,14 +416,14 @@ const catalogEntries = [
     runner: 'patent-assistant',
     environment:
       'Skyは発明内容を保存しません / 標準は端末内で書類作成、オンライン調査は本人が明示許可した場合だけ',
-    cost: '書類ドラフトはブラウザ内で作成します。AI調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。',
+    cost: '書類ドラフトはブラウザ内で作成します。si調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。',
     steps: [
       '発明者・出願人候補と、公開済みかどうかを確認する',
       '技術課題、仕組み、構成、効果、既存技術との差を入力する',
       '公式特許情報の候補と原文を確認し、差分を記録する',
       '明細書・請求項・要約のドラフトを専門家と本人が確認し、本人が提出する',
     ],
-    note: '特許性、登録、侵害回避、期限を保証しません。AI調査は漏れを含む可能性があり、電子署名、料金支払、特許庁への提出は自動実行しません。公開済みの場合は公開記録を保存し、弁理士へ早急に確認してください。',
+    note: '特許性、登録、侵害回避、期限を保証しません。si調査は漏れを含む可能性があり、電子署名、料金支払、特許庁への提出は自動実行しません。公開済みの場合は公開記録を保存し、弁理士へ早急に確認してください。',
     color: 'orange',
     license: 'MIT',
     licenseUrl: '/LICENSE',
@@ -454,7 +454,7 @@ const catalogEntries = [
   {
     id: 'transformers-js',
     name: 'Transformers.js',
-    category: 'ブラウザAI',
+    category: 'ブラウザsi',
     description:
       'ブラウザでモデルを実行。分類・要約などのワークフローの土台に。',
     source: 'https://github.com/huggingface/transformers.js',
@@ -497,9 +497,9 @@ const catalogEntries = [
   {
     id: 'jev-ultrafast',
     name: 'Jev Ultrafast',
-    category: 'ブラウザ操作AI',
+    category: 'ブラウザ操作si',
     description:
-      'Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。',
+      'Web画面の操作候補を番号付きで整理し、siが許可された一手を選ぶ高速ブラウザエージェント。',
     source: 'https://github.com/browser-use/jev-ultrafast',
     license: 'MIT',
     licenseUrl:
@@ -542,7 +542,7 @@ const catalogEntries = [
   {
     id: 'typesafe-computer-use',
     name: 'TypeSafe Computer Use',
-    category: 'PC画面操作AI',
+    category: 'PC画面操作si',
     description:
       'Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。',
     source: 'https://github.com/awlevin/typesafe-computer-use',
@@ -565,7 +565,7 @@ const catalogEntries = [
   {
     id: 'jev-review',
     name: 'Jev Review',
-    category: 'コードレビューAI',
+    category: 'コードレビューsi',
     description:
       'Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。',
     source: 'https://github.com/devagrawal09/jev-review',
@@ -587,7 +587,7 @@ const catalogEntries = [
   {
     id: 'jev-router',
     name: 'Jev Router',
-    category: 'AIモデルルーティング',
+    category: 'siモデルルーティング',
     description:
       'Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。',
     source: 'https://github.com/gargpratyush/jev-router',
@@ -608,7 +608,7 @@ const catalogEntries = [
   {
     id: 'jev-browser',
     name: 'Jev Browser',
-    category: 'ブラウザ操作AI',
+    category: 'ブラウザ操作si',
     description:
       '既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。',
     source: 'https://github.com/vlad-terin/jev-browser',
@@ -629,7 +629,7 @@ const catalogEntries = [
   {
     id: 'mobile-jev',
     name: 'Mobile Jev',
-    category: 'Android操作AI',
+    category: 'Android操作si',
     description:
       'Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。',
     source: 'https://github.com/droidrun/mobile-jev',

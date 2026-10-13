@@ -6,7 +6,7 @@
 
 Material Invention Coreは、物質と物質だけでなく、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間、冷却、表面処理を一つの候補として扱い、求める特性に近い材料・用途・工程を探索する。RockstarOSは発明の履歴と判断根拠を管理し、物理計算、化学計算、材料データベース、測定器、ロボット、ラボは交換可能なTool／Providerとして接続する。
 
-このCoreの研究profileとして`avocadoMini Spatial Invention Studio`を設計する。四方向のsensor／cameraが中央のInvention Volumeにある手の動きを捉え、利用者は物質digital twinを掴み、接続し、離し、配合や工程条件を変える。commitされた操作ごとに元候補を破壊しない仮説branchを作り、安全制約を先に検査してから対応simulationを差分再計算する。結果と失敗はInvention Event Ledgerへ残し、人の操作、AI提案、simulation、文献、実験receiptを区別したままPatent AIへ渡して、発明開示と先行技術差分の整理を支援する。
+このCoreの研究profileとして`avocadoMini Spatial Invention Studio`を設計する。四方向のsensor／cameraが中央のInvention Volumeにある手の動きを捉え、利用者は物質digital twinを掴み、接続し、離し、配合や工程条件を変える。commitされた操作ごとに元候補を破壊しない仮説branchを作り、安全制約を先に検査してから対応simulationを差分再計算する。結果と失敗はInvention Event Ledgerへ残し、人の操作、si提案、simulation、文献、実験receiptを区別したままPatent siへ渡して、発明開示と先行技術差分の整理を支援する。
 
 ```mermaid
 flowchart LR
@@ -17,11 +17,11 @@ flowchart LR
   M --> G
   G --> V[VR / AR / 2D表示]
   G --> L[Invention Event Ledger]
-  L --> P[Patent AI支援]
+  L --> P[Patent si支援]
   P --> D[発明開示 / 先行技術差分 / 専門家packet]
 ```
 
-cameraが物理物質を直接動かすわけではなく、gestureは物理実験、外部共有、Wallet、出願の最終承認ではない。Patent AIは新規性、特許性、発明者、権利帰属、登録を自動確定せず、自動出願もしない。
+cameraが物理物質を直接動かすわけではなく、gestureは物理実験、外部共有、Wallet、出願の最終承認ではない。Patent siは新規性、特許性、発明者、権利帰属、登録を自動確定せず、自動出願もしない。
 
 ## 共通データ契約
 
@@ -36,20 +36,20 @@ cameraが物理物質を直接動かすわけではなく、gestureは物理実�
 | `InventionCandidate` | 目的特性、候補版、根拠集合、比較対象、未確認事項、IP区分 | 次の検証判断を一か所にまとめる |
 | `SpatialSceneManifest` | graph digest、候補digest、座標、object binding、安全overlay、表示仮定 | CoreをVR／ARへ正本性を保って投影する |
 | `SpatialInteractionEvent` | 四方向rig、校正、tracking model、gesture、confidence、対象、仮説操作 | 手操作を再現可能なCore入力にする |
-| `InventionEventLedger` | 人／AI区分、graph diff、model版、結果、失敗、共有範囲 | 発明過程を削除せず追跡する |
+| `InventionEventLedger` | 人／si区分、graph diff、model版、結果、失敗、共有範囲 | 発明過程を削除せず追跡する |
 | `PatentAiPacket` | event範囲、課題、構成、効果、source区分、引用、公開状況 | 専門家確認前の発明整理へつなぐ |
 
-各値は単位を必須にし、変換元、測定誤差、欠損、推定値を区別する。生成AIの提案、simulation、文献値、supplier申告、実測値は同じ信頼度として混ぜない。
+各値は単位を必須にし、変換元、測定誤差、欠損、推定値を区別する。生成siの提案、simulation、文献値、supplier申告、実測値は同じ信頼度として混ぜない。
 
 ## 発明ループ
 
 1. 利用者が目的特性、用途、禁止物質、費用、設備、環境条件を定義する。
-2. Skyから材料データ、simulation、文献検索、Patent AI、ラボ候補を接続する。
+2. Skyから材料データ、simulation、文献検索、Patent si、ラボ候補を接続する。
 3. avocadoMiniへMaterialRecordをdigital twinとして読み込み、四方向sensor rigを校正する。
-4. 利用者が手で物質を接続・分離・調整し、ZemaとLocal AIがrelation typeや未確定条件を確認する。
+4. 利用者が手で物質を接続・分離・調整し、ZemaとLocal siがrelation typeや未確定条件を確認する。
 5. Coreが操作を新しい`HYPOTHESIS` branchとして仮適用し、Safety AssessmentがSDS、反応性、毒性、可燃性、圧力、温度、廃棄、輸送、法規を検査する。
 6. 変更部分だけをsimulationまたは既知データと再比較する。予測は実験済みと表示しない。
-7. 人、AI、simulation、文献、実測のsourceを分けてInvention Event Ledgerへ追記し、Patent AIが発明開示と先行技術差分のprivate draftを作る。
+7. 人、si、simulation、文献、実測のsourceを分けてInvention Event Ledgerへ追記し、Patent siが発明開示と先行技術差分のprivate draftを作る。
 8. 物理実験の対象、量、設備、実施者、停止条件、費用上限を、XR gestureとは別の信頼済み画面で本人が承認する。
 9. 資格・設備を持つ外部ラボまたは明示的に許可された装置が実験し、署名付きreceiptとraw data hashを返す。
 10. Coreが予測と測定を照合し、失敗も削除せず次の空間操作と候補生成へ使う。
@@ -60,7 +60,7 @@ cameraが物理物質を直接動かすわけではなく、gestureは物理実�
 - 爆発性、高毒性、病原性、放射性、違法・規制対象、高圧・極端温度などの候補は、資格を持つreviewerと適切な施設の証明なしに実行へ進めない。
 - RockstarOSは危険な合成を無人で開始せず、任意shellや装置の包括制御権限をMaterial Toolへ渡さない。
 - Toolは許可された物質、量、工程、装置、時間、費用上限だけを一回承認で実行する。変更時は再承認する。
-- simulation、生成AI、文献一致だけで「安全」「発明成功」「特許可能」「量産可能」と断定しない。
+- simulation、生成si、文献一致だけで「安全」「発明成功」「特許可能」「量産可能」と断定しない。
 - 実験ノート、未公開配合、raw data、知的財産はowner／project単位で分離し、外部共有には対象と目的を明示した承認を要求する。
 
 ## RockstarOSへの接続
@@ -69,9 +69,9 @@ cameraが物理物質を直接動かすわけではなく、gestureは物理実�
 - Sky: 材料データベース、simulation、測定器、ラボ、知財調査Toolの発見と接続を担当する。
 - Zema: 目的、候補、追加確認、実行計画、停止、結果、次の反復を一つの仕事として管理する。
 - Wallet: simulation、試料、外部ラボ、測定、廃棄の費用を事前上限とreceiptで照合する。研究成果や将来収益を未確認で計上しない。
-- Local AI: 秘密の条件を端末内で扱える候補生成・要約を優先する。モデル版と入力hashを候補へ固定する。
+- Local si: 秘密の条件を端末内で扱える候補生成・要約を優先する。モデル版と入力hashを候補へ固定する。
 - avocadoMini: 現行R5要求に沿う操作面を個別に検証する。四方向sensor、hand interaction、VR／ARは研究profileとして保持し、現在の2D UIと実機の受入を分ける。候補・安全・証拠の正本はCoreに残す。
-- Patent AI: event ledgerから発明開示、先行技術候補、差分表、専門家向けpacketを作る。特許性、発明者、権利帰属、自動出願を確定しない。
+- Patent si: event ledgerから発明開示、先行技術候補、差分表、専門家向けpacketを作る。特許性、発明者、権利帰属、自動出願を確定しない。
 
 ## 最初の実装単位
 
@@ -99,7 +99,7 @@ simulationは`SIMULATED`、文献・supplier情報は`SCREENED`として実測�
 2026-10-11実装。`rockstar-material-invention`をSkyから選び、`/zema/tools/rockstar-material-invention`で入力・比較・保存・再開する。MAT03のうちWeb仕事への接続を進めるもので、MAT03全体、Mini実機、化学simulation、限定記憶、外部ラボの完了ではない。
 
 - **目的・利用体験**: 入力JSONまたは危険物を含まない合成サンプルから、二物質の比率候補を2Dカードで比較する。SDS不足・禁止条件・資格者審査を文字で示し、lot・工程版・入力digestへ戻れる。生成はブラウザ内、保存は別の明示操作である。
-- **責任・費用**: ROCK/O5がCoreとWeb保存を担当。外部AI、simulation、ラボ、有料API、Wallet、装置には接続しない。利用者は入力の由来・共有範囲を判断する。保存操作は本人用サーバーへの入力送信であり、外部共有や物理実行の承認ではない。
+- **責任・費用**: ROCK/O5がCoreとWeb保存を担当。外部si、simulation、ラボ、有料API、Wallet、装置には接続しない。利用者は入力の由来・共有範囲を判断する。保存操作は本人用サーバーへの入力送信であり、外部共有や物理実行の承認ではない。
 - **入出力**: `contracts/material-invention.json`の既存入力を維持。2〜16物質、1〜19比率、工程版を受ける。API入力は48 KB、UIの入力本文は47 KBに制限。Coreから最大2,280候補を生成し、`HYPOTHESIS`と`physicalExecutionAllowed: false`を全候補で維持する。物質IDと工程IDの衝突を拒否する。
 - **状態・承認**: `lib/workflow.ts`の`material-invention`仕事を使用。通常入力は候補生成後に`review`となり、本人が不足条件を確認して`completed`へ進める。完了は机上比較の確認だけである。合成サンプルは`sample: true`のまま`active`へ保存し、実データ仕事の完了へ昇格できない。取消は`cancelled`とし、保存した入力を削除しない。
 - **保存・本人分離**: `/api/material-invention`は既存`requestUser`とZema利用権検査を通し、`work_jobs`へ正規化入力・Core版・request digest・sample区分・WorkJob履歴を保存する。新DBや独立の本人性を作らない。一覧は入力本文を含まない。詳細読出しは本人とjob IDを照合し、入力から候補を再生成してdigestを検証する。機密配合は本人用サーバーへ保存されることを画面に明記し、raw cameraや生体入力は持たない。
@@ -115,4 +115,4 @@ simulationは`SIMULATED`、文献・supplier情報は`SCREENED`として実測�
 
 ## 研究profile: avocadoMini Spatial Invention Studio
 
-この研究profileは、Coreを空間的に操作するための設計を保持する。現行R5の表示方式・精密3D入力・収納・熱・電源と確定回路／加工図は未決を含み、四方向構成を自動的にR5の製造仕様へ採用しない。候補graphをVR／ARへ投影する共通仕様は[Spatial Invention Studio設計](material-invention-xr.md)、四方向sensorでhand interactionを取得し、候補の接続・分離・再計算とPatent AIを結ぶ端末仕様は[avocadoMini設計](avocado-mini-spatial-invention.md)を正本とする。XR sceneとgesture eventはCoreへの派生入力であり、物質、安全判定、証拠の正本にはしない。headsetがない場合も2D fallbackで同じ発明loopを利用できるようにする。
+この研究profileは、Coreを空間的に操作するための設計を保持する。現行R5の表示方式・精密3D入力・収納・熱・電源と確定回路／加工図は未決を含み、四方向構成を自動的にR5の製造仕様へ採用しない。候補graphをVR／ARへ投影する共通仕様は[Spatial Invention Studio設計](material-invention-xr.md)、四方向sensorでhand interactionを取得し、候補の接続・分離・再計算とPatent siを結ぶ端末仕様は[avocadoMini設計](avocado-mini-spatial-invention.md)を正本とする。XR sceneとgesture eventはCoreへの派生入力であり、物質、安全判定、証拠の正本にはしない。headsetがない場合も2D fallbackで同じ発明loopを利用できるようにする。

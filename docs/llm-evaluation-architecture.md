@@ -2,7 +2,7 @@
 
 更新日: 2026-09-27。対象: `avocadoOS 1.0` / `dev.rock`。
 
-この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [AIネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
+この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [siネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
 ## 1. 結論
 
@@ -20,7 +20,7 @@
 ```text
 Sky
   ├─ browser / PC / MCP Tool
-  ├─ AMC ─────── 計画・手動記録（LLMなし、AI実作業は未接続）
+  ├─ AMC ─────── 計画・手動記録（LLMなし、si実作業は未接続）
   ├─ 法務受付 ───── 端末内ガイド（標準） / OpenAI Responses API（明示許可時のみ）
   ├─ 特許アシスタント ─ 端末内ドラフト（標準） / OpenAI Responses API（明示許可時のみ）
   └─ Jev評価Tool ─── Vercel AI Gateway → TypeSafe AI Jev（実装済み・設定待ち）
@@ -30,7 +30,7 @@ Zema
 
 Platform Core
   ├─ Broker ───── 唯一のidentity / capability / approval / policy判定
-  ├─ Local AI ─── plan候補だけを返す。network・Tool実行権限なし
+  ├─ Local si ─── plan候補だけを返す。network・Tool実行権限なし
   ├─ Engine ───── 検証済み有限recipeを実行
   └─ Job / Receipt / Artifact ─ 状態と証拠の正本
 ```
@@ -52,7 +52,7 @@ Sky Tool、model provider、実行場所、通信方式を同じ分類にしな�
 
 Local Qwenの端末実装には、[noellesugar99/local-action-assistant](https://github.com/noellesugar99/local-action-assistant)を採用候補として固定している。Rock側では上流commit、MITのアプリlicense、`llama.rn 0.12.9`、GGUF、Android package、主要ファイルhashを [`os/physical/local-action-assistant-source-lock.json`](../os/physical/local-action-assistant-source-lock.json) で管理する。これはQwen等を端末内で実行するruntime／Tool Brokerであり、Jevの代替モデルではない。
 
-上流の責任分界はRockstarOSのLocal AI境界と一致する。モデルは提案だけを返し、Toolは6個のclosed allowlist、引数検証、1回1Tool、書込前の本人確認を通る。アプリはクラウド推論・telemetry・モデル自動配布を持たず、release/local variantではnetworkを禁止する。モデル重みのlicenseはアプリのMIT licenseと別に扱う。[上流アーキテクチャ](https://github.com/noellesugar99/local-action-assistant/blob/main/docs/ARCHITECTURE.md)
+上流の責任分界はRockstarOSのLocal si境界と一致する。モデルは提案だけを返し、Toolは6個のclosed allowlist、引数検証、1回1Tool、書込前の本人確認を通る。アプリはクラウド推論・telemetry・モデル自動配布を持たず、release/local variantではnetworkを禁止する。モデル重みのlicenseはアプリのMIT licenseと別に扱う。[上流アーキテクチャ](https://github.com/noellesugar99/local-action-assistant/blob/main/docs/ARCHITECTURE.md)
 
 Web／native共通の判断境界は [`lib/decision-layer.ts`](../lib/decision-layer.ts) の `DecisionProvider` に揃える。
 
@@ -69,9 +69,9 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 現在の経路は `Sky selection → Zema request → Broker → Local AI plan-only API v2 → Broker validation → Engine → review` である。
 
-Local AIは閉じたJSON Schemaへplan候補を返す。Brokerは次を再検査する。
+Local siは閉じたJSON Schemaへplan候補を返す。Brokerは次を再検査する。
 
-1. Local AI package、versionCode、signer、API version。
+1. Local si package、versionCode、signer、API version。
 2. 選択token、owner、Tool ID / version、recipe。
 3. planの未知field、step数、Tool identity、入力schema。
 4. claim時の権限、generation、停止、資源条件。
@@ -79,6 +79,10 @@ Local AIは閉じたJSON Schemaへplan候補を返す。Brokerは次を再検査
 LLMが返したTool名、成功、確率、説明を実行許可に変換しない。LLM障害時も履歴、停止、review、既存成果を失わない。再試行、確認待ち、成果保存の主体はAgent runtime / Broker / Engineであり、LLMではない。
 
 現行証拠は試験署名APK、stock Pixel、固定model一構成の範囲である。AOSP image、production signer、SELinux enforcing、OTA、複数ModelProfile、起動後autoloadは別受入とする。
+
+### Zema Webの有限local Agent（最新mainの別profile）
+
+`lib/zema-local-agent.ts`と`/api/llm/local-agent`は、同じPCのOllama/OpenAI互換loopbackに限定した非信頼plannerを使う。閉じたJSON schema、最大3手、`sky_route`/`format_citations`/`coconala_check`だけを受け入れ、Tool結果・入力を命令として扱わない。shell、任意file、外部network、購入/投稿/送信/権限変更とCloud fallbackはない。local previewのqwen3:0.6b会話受入は本番公開・Tool選択品質・native Pixel受入と別。公開Workerは本人PCの127.0.0.1へ到達できず、companion/bridgeは未実装。local preview固定userはloopback hostだけに限定し、公開認証を迂回しない。model出力をBroker権限や未実行Tool成功へ昇格させない。
 
 ## 4. Skyの交換可能な文章モデル接続
 
@@ -214,9 +218,9 @@ Jevのroute、UI、catalog、rubric、receiptは実装済みである。ただ�
 
 - [Vercel AI Gateway — Jev](https://vercel.com/ai-gateway/models/jev)
 - [Vercel AI Gateway Evaluation Quickstart](https://vercel.com/docs/ai-gateway/getting-started/evaluation)
-- [AIネイティブOS共通設計](ai-native-os-architecture.md)
+- [siネイティブOS共通設計](ai-native-os-architecture.md)
 - [Platform Core](platform-core.md)
-- [Local AI実機統合](local-ai-os-integration-20260915.md)
+- [Local si実機統合](local-ai-os-integration-20260915.md)
 - [Sky](sky.md)
 
 

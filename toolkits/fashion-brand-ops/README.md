@@ -14,7 +14,7 @@ brand policy + product design
   → Instagram content plan / draft / calendar
   → signed approval → Social Provider
   → DM classify / FAQ draft / purchase intent
-  → AI Sales Concierge → customer stage / next-best action / unsent reply
+  → si Sales Concierge → customer stage / next-best action / unsent reply
   → customer + made-to-order order
   → signed approval → Payment Provider
   → verified webhook → paid / production / shipping

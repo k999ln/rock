@@ -1,5 +1,9 @@
 # Material Invention / avocadoMini
 
+## サービス設計の再構成
+
+[統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。
+
 ## Web候補比較の品質改善（MAT03 / O5 / ROCK）
 
 5時間の品質改善で、本人別memoryによる配合・候補・保留IDの復旧、二重submit防止、古い一覧によるowner巻戻し拒否、保存入力digestから再生成した候補の照合を修正した。元ownerで同じIDを確認し、不完全な成功応答では保留を消さない。入力形式・安全判定・workflow/CAS・装置非接続は維持する。設計は[CoreのWeb接続](../material-invention-core.md#sky--zemaの机上比較と本人用保存)、証拠は[品質改善記録](../evidence/quality-reliability-review.json)。`node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/material-workspace-recovery.test.mjs`、型・lint、統合verifyと実画面で検証する。未完成JSONを含む未送信入力も保存時点との差分で離脱から保護し、元owner／匿名local draftの明示破棄を同じsnapshotに限定する。空・変更していない保存済み入力では移動できる。強制終了後のmemory復旧、外部ラボ・物理実験・本番受入は含まない。
@@ -42,11 +46,11 @@ MAT01〜MAT13の過去の証拠と実装状態は保持する。旧E3のMAT13を
 
 ## 目的
 
-物質digital twinを四方向sensorと手の動きで接続・分離し、安全検査、simulation再計算、発明履歴、Patent AI支援までを一つの再現可能な仕事にする既存研究profileを保持する。初めて参加する人は[R5製品要求](../avocado-mini-r5/README.md)を読み、必要に応じて[Material Invention研究設計](../rockstaros-avocado-mini-complete-design.md)へ進む。
+物質digital twinを四方向sensorと手の動きで接続・分離し、安全検査、simulation再計算、発明履歴、Patent si支援までを一つの再現可能な仕事にする既存研究profileを保持する。初めて参加する人は[R5製品要求](../avocado-mini-r5/README.md)を読み、必要に応じて[Material Invention研究設計](../rockstaros-avocado-mini-complete-design.md)へ進む。
 
 ## 普段の言葉での全体像
 
-avocadoMiniはRockstarOSを搭載する空間発明端末である。利用者が目の前のデジタル物質を手で組み合わせると、Material Invention Coreが新しい仮説として保存し、安全条件を確認してから計算を更新する。人、AI、計算、文献、実験の根拠を分けたままPatent AIへ渡す。
+avocadoMiniはRockstarOSを搭載する空間発明端末である。利用者が目の前のデジタル物質を手で組み合わせると、Material Invention Coreが新しい仮説として保存し、安全条件を確認してから計算を更新する。人、si、計算、文献、実験の根拠を分けたままPatent siへ渡す。
 
 cameraが実物を変化させるわけではない。gestureだけで物理実験、装置制御、外部共有、Wallet操作、特許出願を承認しない。
 
@@ -55,9 +59,9 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
 - `MAT02`: 二物質・複数比率のsandbox Coreを実装済み。物質・工程ID衝突の拒否を含む10 test。
 - `MAT03`: Sky→Zemaの2D候補比較・本人用WorkJob保存・digest照合再開を実装。限定記憶、simulation、外部lab接続は未実装。本人分離・再送・revision競合・サンプル昇格拒否をhost試験し、実機や本番の完成には換算しない。 認証切れ後の保存再確認でも元IDを保持し、401では古い保存一覧を消し、遅れて届いた一覧応答を無効にする。未確認時の同一タブ内リンクを止め、別タブのサインインとJSON出力を許可する。`tests/material-workspace-recovery.test.mjs` と `tests/pending-save-navigation.test.mjs` で確認する。
-- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budget、concept画像、機構・光学・電気・演算・安全・校正・HVTのhardware詳細設計まで完了。
+- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent si統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budget、concept画像、機構・光学・電気・演算・安全・校正・HVTのhardware詳細設計まで完了。
 - `MAT05`: 決定的scene projectionと合成pose interactionは未着手。
-- `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent AI bridgeは未着手。
+- `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent si bridgeは未着手。
 
 ## 作業範囲
 
@@ -69,7 +73,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - connect、separate、branch、undo／redo
 - simulation manifest、receipt、stale、cancel、unknown result
 - invention event ledger
-- Patent AI provenance bridge
+- Patent si provenance bridge
 - privacy、accessibility、security、合成fixture、受入
 
 ### 含まない
@@ -77,7 +81,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - 未承認の物理実験
 - 危険な合成手順の自動生成・実行
 - camera serviceからの装置直接制御
-- Patent AIによる特許性・発明者・権利帰属の確定
+- Patent siによる特許性・発明者・権利帰属の確定
 - 自動出願、電子署名、料金支払
 - 実材料性能や量産性の未検証合格
 
@@ -97,7 +101,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 3. stale、別project、改変、low confidence、sensor欠落を拒否する。
 4. view-only 2D／XRでMatter Space、Process Tunnel、安全overlayを表示する。
 5. `MAT06`: 一台cameraで誤操作を測り、その後four-view Bench rig、最後にビリヤード台規模Full-scale rigへ進む。
-6. 合成simulation receiptとPatent AI packet fixtureを接続する。
+6. 合成simulation receiptとPatent si packet fixtureを接続する。
 7. 実Provider、実headset、実labはそれぞれ独立して受け入れる。
 
 ## 担当を選ぶ
@@ -105,7 +109,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - 全担当: 完成設計書Aで、まず同じ製品像を持つ
 - Product／UX・Visual: 完成設計書Bと19章
 - XR／3D・Computer Vision／Sensor: 完成設計書6〜9章、14章、19章
-- Core／Material／Simulation・AI／Agent: 完成設計書10〜16章、19章
+- Core／Material／Simulation・si／Agent: 完成設計書10〜16章、19章
 - Patent／Legal・Security／Privacy・QA／Safety: 完成設計書15章、19章、21章、24章
 
 ## 完了条件
@@ -116,7 +120,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - simulationと実験結果を分ける。
 - raw cameraとbiometric streamを既定保存・送信しない。
 - headsetなしの2D fallbackで同じ主要作業を完了できる。
-- 人、AI、simulation、文献、実測のsourceをPatent AI packetで分ける。
+- 人、si、simulation、文献、実測のsourceをPatent si packetで分ける。
 - emulatorやfixtureの成功を、実材料・実機・特許・量産の成功と表示しない。
 
 ## 関連資料
@@ -130,8 +134,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - [Spatial Invention Studio](../material-invention-xr.md)
 - [avocadoMini端末設計](../avocado-mini-spatial-invention.md)
 - [avocadoMiniハードウェア詳細設計](../avocado-mini-hardware-design.md)
-- [アカウント入口と回線の役割整理（2026-10-10確定）](../account-entry-proposal.md)（Miniの回線方式と試作の合格条件。国内LTE・IoT向けdata専用SIM・SGP.32対応・5Gなし）
-- [Patent AI](../sky-patent-assistant-20260912.md)
+- [アカウント入口の確定方針](../product-baseline.md)（Miniの回線方式と試作の合格条件。国内LTE・IoT向けdata専用SIM・SGP.32対応・5Gなし）
+- [Patent si](../sky-patent-assistant-20260912.md)
 - [製品ベース](../product-baseline.md)
 - [全体構成](../system-composition.md)
 - [`contracts/material-invention.json`](../../contracts/material-invention.json)
@@ -148,11 +152,11 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 ## avokadoProのNVIDIA搭載小型PC（2026-10-05）
 
-[Proの構成・組立設計](../avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
+[Proの構成・組立設計](../avokado-pro-pc-design.md)を追加。siとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・si・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
 
 ### Proの公開ソースとP0設計の照合（2026-10-11）
 
-`sites/avocado-mini/`のPro、ホーム、Mini内のPro紹介、販売状況、販売開示を、`avokadoProPcIntent`と[Pro構成・組立設計](../avokado-pro-pc-design.md)へ合わせた。NVIDIA搭載の独立小型PC、AI/PCゲーム、Mini任意を設計目標として説明し、候補RAMとGPU VRAM、Laptop GPUとdesktop GPU、筐体目標と収納/冷却未検証、OS未確定を分ける。既存正本の概念SVGを同一bytesで使い、旧E3 Hub画像は履歴の図と明示した。
+`sites/avocado-mini/`のPro、ホーム、Mini内のPro紹介、販売状況、販売開示を、`avokadoProPcIntent`と[Pro構成・組立設計](../avokado-pro-pc-design.md)へ合わせた。NVIDIA搭載の独立小型PC、si/PCゲーム、Mini任意を設計目標として説明し、候補RAMとGPU VRAM、Laptop GPUとdesktop GPU、筐体目標と収納/冷却未検証、OS未確定を分ける。既存正本の概念SVGを同一bytesで使い、旧E3 Hub画像は履歴の図と明示した。
 
 80万円は販売目標のみ、税・送料・保証・最終価格は未定。旧88万円/US$5,800は販売状況ページの履歴注記だけに保持し、現行PCの確定販売価格・自動通貨換算にしない。Miniの16万円/41万円の旧製品ライン参考値は保存し、R5価格や4本+Hub必須構成へ転用しない。販売・予約・決済は停止のままで、Pro SKUをcheckoutへ渡しても予約・外部決済は作らない。共有台帳や受領原本は変更していない。
 

@@ -178,7 +178,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error: code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
-          ? 'クラウドAIの料金確認機能が接続されるまで外部LLMを利用できません。'
+          ? 'クラウドsiの料金確認機能が接続されるまで外部LLMを利用できません。'
           : '選択したLLMを利用できません。',
         code,
       },

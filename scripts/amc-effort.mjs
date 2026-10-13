@@ -196,6 +196,6 @@ export function estimateGoalEffort(goal) {
     unit: '人時',
     basis:
       '実測に基づかない固定の仮係数。document=1〜3人時、code_test=2〜6人時、既存証拠レビュー=0.5〜1.5人時、親受入レビュー=0.5〜1人時。未完了は1作業テンプレートの100%が残る仮定。親は子とは別の受入レビューのみで、子の実装工数を二重計上しない。',
-    warning: `数値は算定可能な範囲だけの単純合計。残作業の未算定${remainingRange.unestimatedCount}件を除外しており、全体工数の上限ではない。元工数の未算定は${totalOriginalRange.unestimatedCount}件。AI稼働時間・経過時間・納期・価格ではなく、PC性能や並列数による短縮へ換算しない。`,
+    warning: `数値は算定可能な範囲だけの単純合計。残作業の未算定${remainingRange.unestimatedCount}件を除外しており、全体工数の上限ではない。元工数の未算定は${totalOriginalRange.unestimatedCount}件。si稼働時間・経過時間・納期・価格ではなく、PC性能や並列数による短縮へ換算しない。`,
   };
 }

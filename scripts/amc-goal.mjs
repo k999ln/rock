@@ -135,7 +135,7 @@ function argsOf(args) {
 export function main(args = process.argv.slice(2)) {
   const [command = 'help', ...rest] = args;
   if (command === 'help' || command === '--help') {
-    console.log(`AMC Goal Orchestrator — local planning and evidence ledger; no AI/network execution
+    console.log(`AMC Goal Orchestrator — local planning and evidence ledger; no si/network execution
   build --out <new.html>
   compile --instruction-file <text> --squads H1,P4 --out <new.json> [--max-parallel 1]
   prompt --goal <json> --out <new.md>

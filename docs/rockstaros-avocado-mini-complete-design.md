@@ -1,3 +1,7 @@
+## 統合サービスと現行ハードウェアprofile
+
+利用者の今回の設計再構成では[各製品の役割](service-design/03-product-profiles.md)を共通入口にする。MiniはR5の単独空間端末、Proは既存P0の独立NVIDIA PC、rocketstarは独立工学program。共通OSの本人・job・Asset・版・権限・保存/復旧へ接続し、このMaterial研究profileの四方向台や旧HubをR5に適用しない。Mini通信の最新方針は国内LTE/IoT data SIMの任意option。原本・実機0件・表示未成立と各受入境界を維持する。
+
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
 版: 2.0 / 2026-09-18
@@ -23,7 +27,7 @@ RockstarOSは操作のたびに、次の四つを行う。
 1. 何を変えたか記録する。
 2. 危険情報や条件不足を確認する。
 3. 変更した部分だけ計算し直す。
-4. 有望な案をPatent AIへ渡せる形に整理する。
+4. 有望な案をPatent siへ渡せる形に整理する。
 
 最初に扱うのは実物ではない。コンピューターの中にある物質の模型である。実物を混ぜたり装置を動かしたりするのは、別の承認を通過した外部ラボだけである。
 
@@ -79,7 +83,7 @@ AR、VR、2Dは別製品ではない。同じprojectと同じ候補を、違う�
 └─────────────────────────────────────┘
 ```
 
-分からない項目をAIが勝手に埋めることはない。必要な条件がなければ、Zemaが質問して止まる。
+分からない項目をsiが勝手に埋めることはない。必要な条件がなければ、Zemaが質問して止まる。
 
 ### 場面2 — 物質を置く
 
@@ -163,7 +167,7 @@ AR、VR、2Dは別製品ではない。同じprojectと同じ候補を、違う�
 | 表示 | 意味 |
 | --- | --- |
 | 人が入力 | 利用者が直接決めた |
-| AI提案 | AIが候補を出した |
+| si提案 | siが候補を出した |
 | 文献 | 既存資料に書かれている |
 | 予測 | simulationが計算した |
 | 実測 | 承認された実験で測った |
@@ -185,20 +189,22 @@ AR、VR、2Dは別製品ではない。同じprojectと同じ候補を、違う�
 
 数値だけで自動決定しない。不確かさ、安全、費用、再現性を並べ、人が次の案を選ぶ。
 
-### 場面8 — Patent AIへ渡す
+<a id="場面8--patent-aiへ渡す"></a>
 
-Patent AIは次を一つの下書きにまとめる。
+### 場面8 — Patent siへ渡す
+
+Patent siは次を一つの下書きにまとめる。
 
 - 解決したい問題
 - 選んだ構成と工程
 - 人が考えた部分
-- AIが提案した部分
+- siが提案した部分
 - 文献、予測、実測の区別
 - 既存技術と違う可能性がある部分
 - 公開、共同作業、demoの履歴
 - 専門家に確認してほしい点
 
-Patent AIは特許性、法的発明者、権利帰属を決めない。自動出願、電子署名、料金支払もしない。
+Patent siは特許性、法的発明者、権利帰属を決めない。自動出願、電子署名、料金支払もしない。
 
 ## 4. できること／できないこと
 
@@ -208,9 +214,9 @@ Patent AIは特許性、法的発明者、権利帰属を決めない。自動�
 - 割合、並び、工程条件を変えて別案を作る
 - 危険情報や条件不足を先に見つける
 - 変更した部分をsimulationへ渡す
-- 人、AI、文献、予測、実測を分けて残す
+- 人、si、文献、予測、実測を分けて残す
 - 失敗を含む発明過程を版管理する
-- Patent AIや外部ラボへ渡す資料を準備する
+- Patent siや外部ラボへ渡す資料を準備する
 - headsetがなくても2D画面で同じ仕事を行う
 
 ### できないこと
@@ -219,7 +225,7 @@ Patent AIは特許性、法的発明者、権利帰属を決めない。自動�
 - 手のgestureだけで実験装置を動かす
 - 危険情報が不明な案を安全と判定する
 - simulation結果を実験成功として扱う
-- AIだけで特許性や発明者を確定する
+- siだけで特許性や発明者を確定する
 - 本人確認なしに秘密情報を外部へ送る
 - 設計段階の端末を完成品として販売する
 
@@ -227,7 +233,7 @@ Patent AIは特許性、法的発明者、権利帰属を決めない。自動�
 
 ```text
 ① 考える世界                 ② 計算・整理する世界
-avocadoMini / AR / VR / 2D  →  Safety / Simulation / Patent AI
+avocadoMini / AR / VR / 2D  →  Safety / Simulation / Patent si
        │                              │
        │ 仮説                         │ 予測・下書き
        └──────────┬───────────────────┘
@@ -270,7 +276,7 @@ avocadoMini / AR / VR / 2D  →  Safety / Simulation / Patent AI
 │ B          │        A  ↔  B            │ 根拠: 予測     │
 │ C          │                           │               │
 │            │                           │ [比較する]     │
-│ +追加      │                           │ [AIへ相談]     │
+│ +追加      │                           │ [siへ相談]     │
 ├────────────┴───────────────────────────┴───────────────┤
 │ 履歴: 01 目的設定 → 02 A追加 → 03 B追加 → 04 接続       │
 └────────────────────────────────────────────────────────┘
@@ -281,7 +287,7 @@ avocadoMini / AR / VR / 2D  →  Safety / Simulation / Patent AI
 - 今どのprojectと候補を操作しているか
 - 保存済みかpreviewか
 - 安全状態
-- 情報が人・AI・予測・実測のどれか
+- 情報が人・si・予測・実測のどれか
 - cameraや外部接続が動いているか
 - 戻る、止める、2Dへ切り替える方法
 
@@ -334,7 +340,7 @@ Material Invention Core
   └─ 根拠と履歴
   ├────────→ Safety Gate
   ├────────→ Simulation Provider
-  ├────────→ Patent AI
+  ├────────→ Patent si
   └────────→ 承認された外部ラボ
 
 RockstarOS
@@ -345,13 +351,13 @@ RockstarOS
 
 | 部品 | 一言でいう役割 | やってはいけないこと |
 | --- | --- | --- |
-| RockstarOS | 全体の交通整理と安全管理 | UIやAIの申告だけで権限を与える |
+| RockstarOS | 全体の交通整理と安全管理 | UIやsiの申告だけで権限を与える |
 | avocadoMini | 手の動きを操作候補にする | 実験装置を直接動かす |
 | Material Invention Core | 発明候補の正しい記録を持つ | 予測を実測へ書き換える |
 | Zema | 目的、質問、進捗、結果を一つの仕事にする | 足りない条件を勝手に決める |
-| Sky | 材料DB、計算、Patent AI、ラボを接続する | 未確認Providerを安全と表示する |
+| Sky | 材料DB、計算、Patent si、ラボを接続する | 未確認Providerを安全と表示する |
 | Simulation | 性能を予測する | 成功や安全を保証する |
-| Patent AI | 発明説明と比較資料を下書きする | 特許性・発明者・権利を確定する |
+| Patent si | 発明説明と比較資料を下書きする | 特許性・発明者・権利を確定する |
 | 外部ラボ | 承認された実物試験を行う | 承認外の工程や量へ変更する |
 
 ## 12. Coreが保存する記録
@@ -366,7 +372,7 @@ RockstarOS
 | ExperimentReceipt | 実験の受領証 | 実施者、設備、校正、測定、署名 |
 | SpatialSceneManifest | 空間表示の設計図 | 候補との結び付き、座標、安全表示 |
 | SpatialInteractionEvent | 手操作の記録 | sensor、校正、動作、自信度、対象、提案 |
-| InventionEventLedger | 発明過程の時系列 | 人／AI、変更、結果、失敗、共有範囲 |
+| InventionEventLedger | 発明過程の時系列 | 人／si、変更、結果、失敗、共有範囲 |
 | PatentAiPacket | 知財整理用の束 | 対象履歴、構成、効果、引用、公開状況 |
 
 ## 13. 一回の操作が処理される順番
@@ -385,7 +391,7 @@ RockstarOS
 7. 操作eventと候補を保存
 8. 影響する計算だけ依頼
 9. 結果をPREDICTEDとして保存
-10. 比較画面とPatent AI用履歴を更新
+10. 比較画面とPatent si用履歴を更新
 ```
 
 同じ操作を二重に受け取っても、候補を二重作成しない。通信が切れて結果が分からない場合は、成功・失敗を推測せず`UNKNOWN`で止めて照合する。
@@ -437,7 +443,7 @@ privacy:
 - scene、marker、project、候補の版が一致しない
 - sensor校正切れ、時刻ずれ、低confidence
 
-XR、AI、cameraが持たない権限:
+XR、si、cameraが持たない権限:
 
 - Core DBへの直接書込み
 - Walletの直接操作
@@ -479,7 +485,7 @@ XR、AI、cameraが持たない権限:
 | AR／VR表示 | 未実装 | view-only prototype |
 | 2D fallback | 設計のみ | 同じ主要作業を2Dで完了 |
 | simulation接続 | 未実装 | 署名またはhash付き合成receipt |
-| Patent AI接続 | 未実装 | sourceを混ぜないpacket |
+| Patent si接続 | 未実装 | sourceを混ぜないpacket |
 | 外部ラボ | 未接続 | 資格・設備・安全・契約を独立受入 |
 | 新材料・特許・量産 | 未実証 | 実験と専門家判断が必要 |
 
@@ -514,14 +520,16 @@ XR、AI、cameraが持たない権限:
 
 合格: 速さより、誤確定せず理由を説明して止まれる。
 
-### Phase 4 — 計算とPatent AI（MAT06-B）
+<a id="phase-4--計算とpatent-aimat06-b"></a>
+
+### Phase 4 — 計算とPatent si（MAT06-B）
 
 - 変更graphから必要な計算だけ選ぶ
 - model、版、入力、費用、送信範囲を固定する
 - stale、cancel、unknown resultを扱う
-- 選択したevent範囲からPatent AI packetを作る
+- 選択したevent範囲からPatent si packetを作る
 
-合格: 人、AI、文献、予測、実測を混ぜず、別lotや別modelの結果を流用しない。
+合格: 人、si、文献、予測、実測を混ぜず、別lotや別modelの結果を流用しない。
 
 ### Phase 5 — 外部ラボ
 
@@ -537,7 +545,7 @@ XR、AI、cameraが持たない権限:
 | Sensor / CV | 合成four-view pose fixture | sensor欠落・低confidenceを拒否する |
 | Core / Backend | graph→scene pure projection | 同じ入力から同じdigest |
 | Material / Simulation | model manifestと合成receipt | 適用範囲と誤差を必ず表示する |
-| AI / Agent | Zemaの質問と差分計算依頼 | 不足条件を勝手に埋めない |
+| si / Agent | Zemaの質問と差分計算依頼 | 不足条件を勝手に埋めない |
 | Patent / Legal | PatentAiPacket review | 発明者・特許性を断定しない |
 | Security / Privacy | camera data flowとthreat model | raw映像が既定保存・送信されない |
 | QA / Safety | 正常・異常・停止test matrix | unknown、stale、blockedを成功にしない |
@@ -582,8 +590,8 @@ XR、AI、cameraが持たない権限:
 
 - 予測と実測を分ける
 - 実験条件と測定receiptを再現できる
-- 人とAIの寄与を追跡できる
-- Patent AI出力を専門家がreviewできる
+- 人とsiの寄与を追跡できる
+- Patent si出力を専門家がreviewできる
 - 未検証の安全性、特許性、量産性を断定しない
 
 ## 22. 決まっていること／決まっていないこと
@@ -598,7 +606,7 @@ XR、AI、cameraが持たない権限:
 - 操作は仮説branchを作り、元を破壊しない
 - simulationは実測ではない
 - gestureは物理実験や出願の承認ではない
-- Patent AIは補助で、法律判断を確定しない
+- Patent siは補助で、法律判断を確定しない
 
 ### prototypeで決める
 
@@ -629,7 +637,7 @@ XR、AI、cameraが持たない権限:
 | receipt | 実行内容と結果を後から照合する記録 |
 | stale | 元データが変わり、古くてそのまま使えない状態 |
 | fail closed | 分からない場合、安全側に止めること |
-| Patent AI | 発明説明や先行技術比較を助けるAI。法律判断者ではない |
+| Patent si | 発明説明や先行技術比較を助けるsi。法律判断者ではない |
 
 ## 24. 変更してはいけない初期境界
 
@@ -637,7 +645,7 @@ XR、AI、cameraが持たない権限:
 - `equipmentControlAllowed = false`
 - gestureは`HYPOTHESIS_ONLY`
 - simulationは実験証明ではない
-- Patent AIは特許性・発明者・自動出願を確定しない
+- Patent siは特許性・発明者・自動出願を確定しない
 - raw cameraとbiometric streamは既定保存・送信しない
 - blocked safety overlayを隠さない
 - sceneが古い、不一致、追跡不能なら`VIEW_ONLY`へ落とす
@@ -672,7 +680,7 @@ R5のMini単体動作はProを必須としない。専用モデルは端末内�
 
 ## avokadoProのNVIDIA搭載小型PC（2026-10-05）
 
-[Proの構成・組立設計](avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
+[Proの構成・組立設計](avokado-pro-pc-design.md)を追加。siとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・si・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
 
 ## Mini本体SIMによる独立通信（2026-10-05）
 

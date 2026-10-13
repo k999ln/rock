@@ -361,7 +361,7 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
     const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = `sky-ai-${executionId.replace(/[^A-Za-z0-9._-]/g, '-')}.md`;
+    link.download = `sky-si-${executionId.replace(/[^A-Za-z0-9._-]/g, '-')}.md`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -440,7 +440,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
     <section className="work-delegations" aria-labelledby="work-cloud-text-title">
       <div className="work-delegations-heading">
         <div>
-          <h3 id="work-cloud-text-title">クラウドAIへ依頼</h3>
+          <h3 id="work-cloud-text-title">クラウドsiへ依頼</h3>
           <p>OpenAI{remoteTextModel ? ` · ${remoteTextModel}` : ''}。見積もりと上限を確認し、実行前に承認します。</p>
         </div>
         <button type="button" disabled={remoteTextBusy || !selected.id} onClick={() => void refreshRemoteText(selected.id)}>
@@ -449,7 +449,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
       </div>
       {selected.status === 'active' && remoteTextOwnerAvailable ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
         <label htmlFor="work-cloud-text-prompt">
-          AIへの依頼
+          siへの依頼
           <Textarea id="work-cloud-text-prompt" disabled={remoteTextBusy || remoteTextUncertainQuote} value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
         </label>
         <div className="work-delegation-fields">
@@ -475,7 +475,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
           {remoteTextBusy ? '料金を確認中…' : '料金見積を確認して保存'}
         </button>
         <p>見積と保存だけではProviderへ依頼文を送信しません。支出上限はこの親jobの残り予算内に設定してください。Cloud taskとして実行する許可は別の操作です。</p>
-      </form> : <p>{remoteTextOwnerAvailable ? 'Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。' : 'アカウントを確認しています。確認できるまで依頼文と回答を表示・送信しません。'}</p>}
+      </form> : <p>{remoteTextOwnerAvailable ? 'Cloud si依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。' : 'アカウントを確認しています。確認できるまで依頼文と回答を表示・送信しません。'}</p>}
       {remoteTextHasDraft && <div className="work-notice">
         <p>{remoteTextUncertainQuote ? '見積の保存結果が未確認です。同じ仕事の依頼文・上限・保存IDを保持しています。同じ条件で結果を再確認してください。' : 'この画面を開いている間、依頼文と上限を入力したアカウントで保持します。別の画面へ移動する前に必要な内容を保存するか、入力を破棄してください。'}</p>
         <button type="button" disabled={remoteTextDiscardBlocked} onClick={discardRemoteTextDraft}>Cloud依頼の未保存入力を破棄</button>
@@ -492,10 +492,10 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
       </dl>}
       {remoteTextError && <p className="work-delegation-error" role="alert">{remoteTextError}</p>}
       {remoteTextNeedsSignin && <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(typeof window === 'undefined' ? '/work' : window.location.pathname + window.location.search)}`} target="_blank" rel="noopener noreferrer">別タブでサインインして続ける</a>}
-      {!remoteTextExecutionAvailable && <p className="work-delegation-gate">クラウドAIの実行は準備中です。見積もりを保存しても、AIへの送信や課金は始まりません。</p>}
+      {!remoteTextExecutionAvailable && <p className="work-delegation-gate">クラウドsiの実行は準備中です。見積もりを保存しても、siへの送信や課金は始まりません。</p>}
       {remoteTextExecutions.length > 0 && <div className="work-delegation-list" aria-label="Cloud LLM依頼履歴">
         {remoteTextExecutions.map((execution) => <article className="work-delegation" key={execution.id}>
-          <div className="work-delegation-title"><strong>{execution.state === 'quoted' ? '見積・承認待ち' : execution.state === 'reserved' ? '上限を予約済み' : execution.state === 'sending' ? 'Cloud AI実行中' : execution.state === 'completed' ? '処理完了' : execution.state === 'unreconciled' ? '利用量照合待ち' : execution.state === 'cancelled' ? '取消済み' : '期限切れ'}</strong><small>{new Date(execution.createdAt).toLocaleString('ja-JP')}</small></div>
+          <div className="work-delegation-title"><strong>{execution.state === 'quoted' ? '見積・承認待ち' : execution.state === 'reserved' ? '上限を予約済み' : execution.state === 'sending' ? 'Cloud si実行中' : execution.state === 'completed' ? '処理完了' : execution.state === 'unreconciled' ? '利用量照合待ち' : execution.state === 'cancelled' ? '取消済み' : '期限切れ'}</strong><small>{new Date(execution.createdAt).toLocaleString('ja-JP')}</small></div>
           <p>最大額 {formatCurrencyMinor(execution.quote.ceiling.maximumChargeMinor, execution.quote.ceiling.currency)} · {execution.quote.ceiling.modelId} · 期限 {new Date(execution.quote.expiresAt).toLocaleString('ja-JP')}</p>
           {execution.state === 'reserved' || execution.state === 'sending' ? <p>
             {execution.spending?.providerMeter === 'stream_estimate' && typeof execution.spending.currentEstimateMinor === 'number'
@@ -524,7 +524,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
           {execution.state === 'quoted' && !remoteTextPrompt.trim() && <small>再接続後に実行する場合は、見積時と同じ依頼文を入力してください。内容が一致しない場合は実行しません。</small>}
         </article>)}
       </div>}
-      {remoteTextResult && <section className="work-delegation-artifact" aria-label="クラウドAIの回答"><strong>クラウドAIの回答</strong><pre>{remoteTextResult.text}</pre>
+      {remoteTextResult && <section className="work-delegation-artifact" aria-label="クラウドsiの回答"><strong>クラウドsiの回答</strong><pre>{remoteTextResult.text}</pre>
         <button type="button" onClick={() => downloadRemoteText(remoteTextResult.text, remoteTextResult.executionId)}>回答をダウンロード</button>
       </section>}
     </section>

@@ -58,7 +58,7 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
     <p className={styles.warning}>既存コードや過去のテスト成功を、今回のローンチ受入へ繰り越していません。サーバーの最新観測接続は未設定です。着手・提出・検収のAPIは自己申告を拒否し、実行を止めます。</p>
     <div className={styles.actions}>
       <button type="button" className={styles.primary} disabled={disabled} onClick={() => onSave(skyStarterGoal)}>Sky専用Goalを未承認で保存</button>
-      <span className={styles.muted}>本人用の記録を作成。AI実行・公開・課金は始まりません。</span>
+      <span className={styles.muted}>本人用の記録を作成。si実行・公開・課金は始まりません。</span>
     </div>
     <p className={styles.label}>最初に確認する作業</p>
     <div className={styles.actions}>{['S0-01', 'S0-02', 'S0-03', 'S10-01'].map((id) =>

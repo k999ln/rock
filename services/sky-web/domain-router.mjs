@@ -1,7 +1,7 @@
 const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 
 const SKY_PREFIXES = [
-  '/_next', '/api', '/activity', '/chat', '/coconala-team', '/csv', '/fitness',
+  '/_next', '/api', '/activity', '/chat', '/coconala-team', '/connect', '/csv', '/fitness',
   '/fund', '/income', '/market', '/os', '/polymarket', '/settings', '/sky', '/studio',
   '/wallet', '/work', '/zema', '/manifest.webmanifest', '/rock-icon-', '/loop-icon-', '/toolkits',
 ];

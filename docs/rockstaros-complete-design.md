@@ -4,6 +4,8 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 # RockstarOS 全体詳細設計
 
+現行製品の要望・料金・未受入gateは[製品ベース](product-baseline.md)を正本とし、全体の読み始めは[サービス統合設計](service-design/README.md)。
+
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 
 利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。
@@ -18,7 +20,7 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 
 版: 1.0 / 2026-09-18
-対象: RockstarOS Core、Web／PC、Linux／QEMU、Android／Pixel、Sky、Zema、Local AI、Tool、Wallet、運用、更新・復旧。
+対象: RockstarOS Core、Web／PC、Linux／QEMU、Android／Pixel、Sky、Zema、Local si、Tool、Wallet、運用、更新・復旧。
 
 > 2026-09-24更新: rocketstar、A-LINK、avokado、colonyまで含む最新の統合設計基準は[RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf)。本Markdownはrepository実装、既存component、詳細正本への入口として保持する。PDFの全文検索用[抽出テキスト](rockstaros-complete-design-v1.0.txt)と[完全性記録](../data/rockstaros-complete-design-v1.0.json)を同じ版として参照する。PDFの「完全版」は設計範囲の被覆であり、実装・実機・飛行・量産の完成宣言ではない。
 
@@ -30,41 +32,33 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## 1. 一言でいうと
 
-2026-10-01の製品方針更新: **物理SIM/eSIMを購入・有効化するとRockstarOSと統合サービスへ簡単にアクセスできる製品**を中心にする。SIMは通信とサービス利用権の提供入口であり、RockstarOSバイナリをSIM内に格納する前提ではない。正確な端末に署名済みOS導入・復旧経路が成立する場合はOS版、それ以外は既存OS上のclientまたはブラウザ版へ案内する。既存のゲーム、生活、ハードウェア設計は応用先として維持し、このSIM/eSIM主導サービス導線と競合する優先入口にはしない。
+現行の主商品は、無料avokadoアカウントひとつでSky・Zema・Agentを使うサービス。2026-10-10の本人確定判断がSIM/eSIM主入口を置き換えた。SIM不要、consumer eSIM発行/販売は保留。MiniのIoT回線は任意の機器option。正確な機種で署名済みOS・boot/保存/復旧が受け入れられた場合だけnative OS、その他は既存OS上のclient/browserへ案内する。
 
-**RockstarOSは、SIM/eSIMをきっかけに一度だけ本人登録し、Sky・Zema・Agentへ接続して、cloud作業の進捗・費用・成果を同じ利用体験で扱うAIサービス基盤である。**
+**RockstarOSは、本人・有限権限・仕事・費用・成果・保存/復旧を共通化するruntimeである。** サービス全体は[統合基本設計](service-design/README.md)、共通責任と11必須項目の具体化は[共通システムと契約](service-design/02-system-contracts.md)を参照する。設計の統一は、Web/native/cloudの認証・DB・履歴を共有済みにする意味ではない。
 
-Skyは「誰に頼むか」を選ぶ場所、Zemaは「頼んだ仕事を最後まで管理する」場所、Platform Coreは「本当に許可された仕事だけを動かす」中心である。
+Jenniferは利用者が話す全体の統括窓口、Skyは能力を発見・接続する場所、ZemaはJenniferの裏の仕事・承認・停止・成果・費用system、Platform Coreは許可された仕事だけを動かす中心。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はmain統合済みsourceで確認し、真正検収/context/実Providerの残条件を[製品profile](service-design/03-product-profiles.md)へ記録する。
 
 ## 2. 利用者の一周
 
-2026-09-27のSky Market決済追加: 有料の審査済みPackageは「購入」→Stripeの支払い画面→購入履歴で照合→接続先確認へ進む。作者は「販売する」で受取先と価格・条件を登録する。Web API／D1が注文と利用権を管理し、Stripe Connectが決済と10%のSky手数料配分を担う。カード・銀行情報はStripe画面で扱い、LLMの判断だけで支払いを成立させない。これはAgent/Tool marketplace決済の再利用可能な部品であり、SIM/eSIMによるRockstarOS利用権購入とは別商品・別契約である。後者は販売チャネル、通信料金、サービス権利、cloud AI usageを明細上で分離する。[決済設計](sky-billing.md)は有料Package用であり、SIM/eSIMのcarrier billingやクラウドAIのproduction usage billingを受け入れた証拠ではない。
+最初の客は文章を納品する個人事業主。既存の引用整理・無料記事・CSV・結合・検査を使い、有料siの接続を待たずに素材から成果取得とレシピ再利用までを一周する。有料の審査済みPackage購入は既存Stripe/Commerceを使う別の条件確認で、アカウント作成、接続、実行承認と区別する。
 
 ```text
-購入チャネルでRockstarOS対応SIM/eSIMを選ぶ
-  ↓ 通信条件・利用権・料金を確認する
-SIM有効化／対応SIM追加を行う
-  ↓
-Rockstar identityへ一度サインインし、購入権利を結ぶ
-  ↓ 正確な端末・型番のOS導入条件を判定
-署名済みOS導入（対応時）または既存OS client/browserで開く
-  ↓
-HomeからSky・Zema・Agentsを直接使う
-  ↓ 料金・見積・上限を確認
-Zemaで依頼し、必要予算を明示承認
-  ↓ 足りない情報を確認
-計画・単価・概算を見る
-実行前に予算を承認する
-実行する
-  ↓ 端末 / PC / Cloud / Provider
-進捗を見る・止める
-  ↓
-結果を確認する
-  ↓
-成果、実行receipt、費用、検証済み収益を別々に保存する
+SkyまたはHomeを開く（SIM購入は不要）
+  ↓ 対応するゲスト下書き、または無料アカウントへサインイン
+目的・素材・完成条件を揃える
+  ↓ SkyでTool/Agentと対応環境・条件を選ぶ
+Zemaの同じ仕事で有限手順を確認する
+  ↓ 送信先・価格・上限・停止能力、必要な承認を確認
+Coreが本人・版・権限・予算を検査して実行
+  ↓ 端末 / PC / Cloud / Providerの許可済みadapter
+進捗・途中成果・必要確認を見て、必要なら停止を要求
+  ↓ 外部の停止/結果不明は同じoperationを照合
+成果を検査・保存し、本人がreview/完了を確認
+  ↓ ファイル取得、原成果を残した修正、新素材でレシピ再利用
+実行receipt・項目別usage・納品/入金の証拠を別々に扱う
 ```
 
-SIM/eSIM profileの有効化はRockstarOSの導入成功・service entitlement・Agent権限を意味しない。チャネルから受け取る注文/activation proofを本人、対象プラン、端末、service entitlementへ束ね、通信事業者の回線状態とOS/client導入状態を独立に表示する。未対応機種はeSIMが入ってもfull OS版とは表示せず、利用可能なclient/browserへ案内する。
+native OS/client/browserの分岐はexact deviceの受入へ従う。Mini通信option・旧SIM購入claimは別の機器/配布契約で、通常Skyの利用開始条件にしない。回線開通、本人/service entitlement、OS導入、Agent権限を独立に表示する。consumer eSIM販売と本番課金は既存の保留/受入条件を維持する。[利用体験の全体](service-design/01-service-experience.md)。
 
 利用者の会話中の「はい」だけで、送金、外部投稿、広告、DM、物理実験、出願等を承認しない。承認画面には対象、変更内容、送信先、費用上限、期限を固定して表示する。
 
@@ -72,7 +66,7 @@ SIM/eSIM profileの有効化はRockstarOSの導入成功・service entitlement�
 
 Webと公開PreviewのSky→Zemaは、公開package内の`handoff.js`を共通sourceとして使用する。v1のTool ID、本文上限、local provider正規化とsession上限を共有し、WebのUUID/一回消費/10分TTLはhostが強制する。不正・期限切れの保存は除去し、再依頼で復旧する。公開Previewは既存の`local`表記を維持し、remote・不正timestampは共通validatorで拒否する。双方の契約試験と公開packageの試験をroot verifyに含める。UIのセッションがready/completedであることは、Broker権限・本人承認・実機受入の代わりにはならない。
 
-AI通信、MCP、owner/revision保存、Stripe通信の共通化も同じ原則で行う。業務状態や商品別価格/在庫を共通helperへ埋め込まず、[Tool詳細の共通基盤](sky-tools-complete-design.md#共通基盤の統合2026-10-02g04)と[統合記録](git-consolidation.md#2026-10-02-共通実装の統合g04)を実装入口とする。DB migration、OS image変更、backup format変更はない。既存schema/versionとPR revertを復旧経路にし、Node/mockの合格をnative/Provider/本番の合格へ昇格させない。
+si通信、MCP、owner/revision保存、Stripe通信の共通化も同じ原則で行う。業務状態や商品別価格/在庫を共通helperへ埋め込まず、[Tool詳細の共通基盤](sky-tools-complete-design.md#共通基盤の統合2026-10-02g04)と[統合記録](git-consolidation.md#2026-10-02-共通実装の統合g04)を実装入口とする。DB migration、OS image変更、backup format変更はない。既存schema/versionとPR revertを復旧経路にし、Node/mockの合格をnative/Provider/本番の合格へ昇格させない。
 
 ## 3. 三つの実装を一つと呼ばない
 
@@ -88,7 +82,7 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 
 ### Android／Pixel
 
-`dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local AI、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。
+`dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local si、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。
 
 #### 全OS buildと同一成果物の受入
 
@@ -111,14 +105,14 @@ Android Core JUnit 51件とJava／TypeScript共有canonical vector、Worker/D1 A
 | Device Support Package | boot、driver、電源、熱、hardware鍵、AVB、OTA、純正復旧 | Toolや特定modelの業務判断 |
 | Shell / Home | 画面、入力、accessibility、信頼済み承認画面への導線 | DB、鍵、Wallet、任意Toolへの直接権限 |
 | Platform Core / Broker | owner、component認証、capability、承認、仕事、receipt、保存、更新gate | UIの都合による権限省略 |
-| Local AI Adapter | 選択されたmodelを読み、閉じたschemaのplanを返す | Tool直接実行、権限付与、台帳書込み |
+| Local si Adapter | 選択されたmodelを読み、閉じたschemaのplanを返す | Tool直接実行、権限付与、台帳書込み |
 | Agent Runtime | plan検証、有限step、queue、停止、再開 | manifest外の操作、無制限自律実行 |
 | Sky | Tool発見、比較、接続、実行場所選択 | Broker管理権限、秘密の無断送信 |
 | Zema | 依頼、質問、計画、進捗、停止、結果、履歴 | 会話だけによる高risk承認 |
 | Tool | 宣言した個別処理 | 他Tool、他owner、OS内部への横断アクセス |
 | MCP Connector | 本人PCのMCPを認証付きで接続 | 任意host・任意commandの暗黙実行 |
 | Provider Adapter | 外部serviceのcapabilityとreceiptを共通化 | 未宣言機能の擬似実装 |
-| Optional Android Jev Provider | public-only typed TypeSafe advisoryをboundedに取得 | Tool authority、Broker／Shell／Local AI権限、keyの保存・発行 |
+| Optional Android Jev Provider | public-only typed TypeSafe advisoryをboundedに取得 | Tool authority、Broker／Shell／Local si権限、keyの保存・発行 |
 | Wallet | 収益、費用、hold、取消、精算の照合 | seed保管、包括送金、推定収益の残高化 |
 | Operator Agent | 端末状態、限定命令、監査 | 任意shell、私的内容、Wallet、backup鍵 |
 
@@ -159,27 +153,16 @@ Toolは少なくとも次を宣言する。
 
 ## 7. 仕事の状態
 
-利用者向け状態:
+現行Web親仕事は `lib/workflow.ts` の `active / review / completed / cancelled`。生成時active、必須stepの合格後review、本人完了でcompleted、取消でcancelledになる。編集成果は原成果を保持した新しい仕事で再検査する。
 
 ```text
-draft → ready → active → review → completed
-  │       │       │         └→ active（修正）
-  │       │       ├→ waiting
-  │       │       ├→ failed
-  └───────┴───────┴→ cancelled
+active → review → completed
+   └────────┴→ cancelled
 ```
 
-実行step状態:
+下書き、準備完了、承認/通信/資源/Provider待ち、step失敗、外部結果不明は、UI projectionまたは子処理の状態として表示する。親の保存状態へ新しい値を追加済みとしない。A2A委任、native Runner、PC receiverはそれぞれの既存schemaを使う。親のcancelledだけで外部停止や予算解放を確定しない。
 
-```text
-pending → queued → running → succeeded
-                    ├→ needs_review
-                    ├→ failed
-                    ├→ cancelled
-                    └→ uncertain
-```
-
-`waiting`にはapproval、network、resource、provider、reconciliation等の理由を付ける。`uncertain`は外部で成立したか分からない状態であり、失敗として自動再送しない。完了したstepを別の結果で上書きせず、新revisionまたは取消eventを追加する。
+`uncertain / indeterminate` は外部で成立したか分からない状態であり、自動再送しない。同じoperationを照合し、完了stepを別の結果で上書きせず、新しいrevision/仕事/取消eventを契約に従って作る。[状態、費用、保存、失敗/復旧、承認、受入、未決定事項](service-design/02-system-contracts.md#4-状態を混ぜない)。
 
 ### native Runnerの取消と結果不明（2026-10-11）
 
@@ -202,7 +185,7 @@ Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。
-2. Local AIまたは有限recipeが閉じたschemaでplanを作る。
+2. Local siまたは有限recipeが閉じたschemaでplanを作る。
 3. BrokerがTool、入力、権限、effect、費用、実行先を再検証する。
 4. 必要なら信頼済み承認画面でapprovalを発行する。
 5. transaction内でattempt、boot identity、期限、fencing tokenを保存する。
@@ -214,16 +197,18 @@ Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計
 
 停止は新規dispatchを止め、tokenを失効し、協調停止を要求する。既に成立した外部作用を「停止済み」と消さず、Provider照会または補償操作へ進める。
 
-## 9. Local AIとmodel
+<a id="9-local-aiとmodel"></a>
 
-OSへ組み込むLocal AI APKは、上流commitに加えてbase overlayと順序付きextensionのSHA-256をartifact lockへ結合する。stageとbuild直前のverifyで現行sourceと一致しないAPK、版・権限・署名用途を貼り替えたstage metadataを拒否し、同一sourceからの再build・検査・レビューで復旧する。旧v2実機受入はv4の受入に流用しない。入出力・保存・承認・合格条件は[APK/overlay一致契約](local-ai-os-integration-20260915.md#apkとoverlay版の一致2026-10-05)を参照する。
+## 9. Local siとmodel
+
+OSへ組み込むLocal si APKは、上流commitに加えてbase overlayと順序付きextensionのSHA-256をartifact lockへ結合する。stageとbuild直前のverifyで現行sourceと一致しないAPK、版・権限・署名用途を貼り替えたstage metadataを拒否し、同一sourceからの再build・検査・レビューで復旧する。旧v2実機受入はv4の受入に流用しない。入出力・保存・承認・合格条件は[APK/overlay一致契約](local-ai-os-integration-20260915.md#apkとoverlay版の一致2026-10-05)を参照する。
 
 
 `ModelProfile`はmodel ID、版、weight・tokenizer・template hash、license、形式、context、plan schema、RAM／storage、測定条件、品質結果を一組にする。仕事開始時にprofileを固定し、途中でmodelを差し替えない。
 
 更新順は`download → hash/license/容量/API検査 → 隔離試験 → 待機時切替 → health確認`。失敗時は互換性を確認した旧profileへ戻す。失効modelへは戻さず仕事を停止し、新modelでのreplanを新revisionにする。
 
-現在のAndroid Local AIは固定package、version、API、署名と一つのQwen構成による限定受入。汎用model/runtime交換、二profile比較、共通長期記憶は未実装である。
+現在のAndroid Local siは固定package、version、API、署名と一つのQwen構成による限定受入。汎用model/runtime交換、二profile比較、共通長期記憶は未実装である。
 
 ## 10. Agentの記憶
 
@@ -235,7 +220,7 @@ OSへ組み込むLocal AI APKは、上流commitに加えてbase overlayと順序
 | 短期context | 現在の会話や検索結果 | cache。消えても権限・完了は変わらない |
 | 長期記憶 | 本人確認済みの好み、手順、参照 | 出所、用途、期限、訂正、削除を持つ |
 
-model固有tokenやembeddingはprojection cache。canonical記憶としない。AIの推測を本人の事実や承認へ昇格させない。credential、seed、秘密鍵を記憶本文へ入れない。
+model固有tokenやembeddingはprojection cache。canonical記憶としない。siの推測を本人の事実や承認へ昇格させない。credential、seed、秘密鍵を記憶本文へ入れない。
 
 暗号化記憶のhost storeはcipherのseal/open失敗を内容を含まない固定`MemoryUnavailable`へ変換し、原因例外を通常tracebackに連結しない。seal失敗時は既存revision・projectionを変更せず、callerへ失敗を返す。これはAI03／ROCKの保存・診断境界であり、実OS鍵・Android／Zema接続は未受入。[責任・入出力・復旧・合格条件](ai-memory-architecture.md)とhost回帰`systems/rock-star-os/tests/test_memory_store.py`を参照する。
 
@@ -361,7 +346,7 @@ Operator DockはOS外、端末Agentはlauncher非表示・限定scope。管理se
 | 受入環境・証拠 | host検出器・実file/thread fixture、Linux UID/IPC、QEMU同一image boot、Pixel実機、24時間運転を別に記録。host試験だけでOS常駐受入を完了にしない |
 | 未決定と決め方 | 実負荷・検査遅延・再起動監督・復旧時間は同一image試験で決める。Pixel/AOSP移植は既存Core契約・機種gateで判定し、QEMU sourceのpath移植で代用しない |
 
-Web AI送信前検査とMCP Connectorは補助系統として保持する。これらの成功をOS本体の常駐・24時間受入へ振り替えない。OS全体のpacket interceptionや任意アプリの全内容検査を本機能の実装範囲とはしない。
+Web si送信前検査とMCP Connectorは補助系統として保持する。これらの成功をOS本体の常駐・24時間受入へ振り替えない。OS全体のpacket interceptionや任意アプリの全内容検査を本機能の実装範囲とはしない。
 
 2026-10-02 native表示改訂: 利用者の追加映像参照と作業継続指示により、細い発光関節脚、青い足先の輪、小さなpink／cyan coreを使い、実finding行へ移動して重点対象を囲む動きへ改訂する。拒否反応は新たな実`blocked` counter増加時だけに限り、初回の過去累計やresetを新規事件として再生しない。stale／dead／error／missing／disconnected時は停止する。API・UID・保護判定を変更せず、描画からIPCを起動しない。参照、状態遷移、counter境界の受入は[詳細設計](spider-guard.md#nativeアニメーション改訂)に記録する。保存版`a7cfca3`の試験を変更後rendererの合格へ転用せず、新しい描画試験と目視結果を別記録する。Linuxのnative build・描画・counter／health境界、合成fixtureの目視、source hashだけを更新したPIN profileの確認は記録済み。
 
@@ -403,7 +388,7 @@ Android Broker snapshot v3は、Androidが報告するeUICC機能・管理有効
 | Sky / Zema | Tool selection、work、approval、event、artifact | 一台／多端末、Web／nativeを分ける |
 | Wallet / Fund | receipt、Earning Receipt、reconciliation | 実Provider、実資金、地域ごと |
 | Game / IP | owner、job、artifact、save、receipt | game本体、金融交換、動画、VRを分ける |
-| Material Invention / avocadoMini | work、Tool、safety、evidence、Patent AI | XR、sensor、simulation、lab、材料、特許を分ける |
+| Material Invention / avocadoMini | work、Tool、safety、evidence、Patent si | XR、sensor、simulation、lab、材料、特許を分ける |
 | Business Tools | 共通Tool contractとZema | Toolごとに入力、外部作用、品質を受け入れる |
 
 応用systemをCore bootの必須依存へ入れない。応用が未完成でもCoreを試験でき、Core合格だけで応用完成とも呼ばない。
@@ -421,7 +406,7 @@ Android Broker snapshot v3は、Androidが報告するeUICC機能・管理有効
 | backup復元 | paused、token rotate | 旧端末と同時writer |
 | update失敗 | trial拒否、旧slotへ戻る | 壊れた版をmark-good |
 | Provider未確認収益 | pending | Wallet残高へ記帳 |
-| sensor／AIの低confidence | preview／needs info | 確定操作へ昇格 |
+| sensor／siの低confidence | preview／needs info | 確定操作へ昇格 |
 
 ## 24. 合格matrix
 
@@ -442,7 +427,7 @@ Android Broker snapshot v3は、Androidが報告するeUICC機能・管理有効
 
 | 未確定 | 決める方法 | 決定前の挙動 |
 | --- | --- | --- |
-| 比較採用するLocal AI model | 同じ入力、品質、p95、電池、熱で比較 | 現行固定runtime以外を対応表示しない |
+| 比較採用するLocal si model | 同じ入力、品質、p95、電池、熱で比較 | 現行固定runtime以外を対応表示しない |
 | 一般Tool capability schemaの最終版 | SDK、native、MCPのfixtureを相互変換 | P1固定contract外を拒否 |
 | 多端末writer移送transport | offline競合、fencing、旧端末停止を試験 | 自動移送しない |
 | production identity／key ceremony | owner、HSM、別人検証、復旧訓練 | test鍵を本番扱いしない |
@@ -451,7 +436,7 @@ Android Broker snapshot v3は、Androidが報告するeUICC機能・管理有効
 
 ## 26. 詳細正本
 
-- [AIネイティブOS共通設計](ai-native-os-architecture.md)
+- [siネイティブOS共通設計](ai-native-os-architecture.md)
 - [RockstarOS 1.0構成](rockstaros-1.0-architecture.md)
 - [Platform Core](platform-core.md)
 - [Android production architecture](android-production-architecture.md)
@@ -505,7 +490,7 @@ Walletの2画面は`use-wallet-ledger`を共有し、読取・記録・取消と
 | --- | --- | --- |
 | `dev.rock.shell` | Home、Sky、Zemaの薄いUI | 試験署名APK。広い権限なし |
 | `dev.rock.automation` | Platform Broker、owner DB、仕事、Tool dispatch、Wallet fixture | emulator／所有Pixel限定受入 |
-| Local AI package | API v2で閉じたplanを返す | 固定runtime／model |
+| Local si package | API v2で閉じたplanを返す | 固定runtime／model |
 | `dev.rock.tools.article` | citationsとfree-article固定2工程 | P1専用。同署名、INTERNETなし |
 | `dev.rock.operator.agent` | 限定緊急命令の端末側検証 | 本番credential／Device Owner未受入 |
 | `dev.rock.jev.provider` | TypeSafe `state`／`model`／`questions`のpublic-only advisory source | manifest disabled、product既定除外、key provisioning・Gradle／Soong／実機未受入 |
@@ -587,11 +572,11 @@ Sky Marketの既存型・JPY買い切り・10%配分に合わせた[統合設計
 
 ## 専用モデルの追加工程（2026-10-05）
 
-Local AI / AI02にrandom-initの学習・保存・再開・CPU推論の研究toolkitを追加。OSの権限境界や既存model profileは変更せず、Mini実機・cloud配備は未受入。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。
+Local si / AI02にrandom-initの学習・保存・再開・CPU推論の研究toolkitを追加。OSの権限境界や既存model profileは変更せず、Mini実機・cloud配備は未受入。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。
 
 ## avokadoProのNVIDIA搭載小型PC（2026-10-05）
 
-[Proの構成・組立設計](avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
+[Proの構成・組立設計](avokado-pro-pc-design.md)を追加。siとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・si・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
 
 ## Mini本体SIMによる独立通信（2026-10-05）
 
@@ -615,4 +600,4 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 
 ## eSIM導入確認後のクラウド利用権（2026-10-06統合）
 
-既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。

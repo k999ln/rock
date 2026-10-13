@@ -32,7 +32,7 @@ RockstarOSに、
 
 単に「Jev APIを呼べる機能」を追加するのではない。
 
-RockstarOS全体のAIアーキテクチャそのものを、
+RockstarOS全体のsiアーキテクチャそのものを、
 
 CODE
 ↓
@@ -92,9 +92,9 @@ https://docs.typesafe.ai/concepts/use-case-map
 
 公式では大きく、
 
-・AI Automation Software
+・si Automation Software
 ・Real-time applications
-・AI Map Reduce over Big Data
+・si Map Reduce over Big Data
 ・Universal Verification
 ・Harness Engineering
 
@@ -113,7 +113,7 @@ reranking、
 context selection。
 
 ● Universal Verification
-他AIの
+他siの
 input
 output
 reasoning trace
@@ -203,7 +203,7 @@ fee < expected profit
 JSON schema validation
 rate limits
 
-これはAIを使わない。
+これはsiを使わない。
 
 最速・最安・再現可能。
 
@@ -257,7 +257,7 @@ RockstarOSのスマホアプリ内でQwen等を完全ローカル実行したい
 
 目的：
 
-・オフラインAI
+・オフラインsi
 ・個人情報をクラウドに出さない
 ・ローカルファイル処理
 ・ローカルRAG
@@ -271,7 +271,7 @@ RockstarOSのスマホアプリ内でQwen等を完全ローカル実行したい
 
 RockstarOS.app
 
-├ Local AI Runtime
+├ Local si Runtime
 │ └ Qwen
 │
 ├ Local Memory
@@ -506,7 +506,7 @@ FX
 
 のMarket Intelligenceとも統合する。
 
-市場ごとに別AIを作るのではなく、
+市場ごとに別siを作るのではなく、
 
 Market Adapter
 +
@@ -648,7 +648,7 @@ Content automation
 ■ Jevを入れる目的
 ==================================================
 
-「新しいAIモデルを1個増やす」
+「新しいsiモデルを1個増やす」
 ことが目的ではない。
 
 RockstarOS全体を、
@@ -805,7 +805,7 @@ Wallet / real execution
 ==================================================
 
 RockstarOSは単なる
-「複数AIを呼び出すHub」
+「複数siを呼び出すHub」
 ではない。
 
 イベントを常時観測し、
@@ -824,7 +824,7 @@ MCP/Wallet/GitHub/Markets/Appsへaction
 
 という、
 
-常時稼働するAI operating layer
+常時稼働するsi operating layer
 
 にしたい。
 

@@ -4,10 +4,10 @@
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
-  "audit": "docs/os-readiness-audit-20260909.md",
+  "audit": "docs/evidence/service-design-rebuild.json",
   "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
-  "designReview": "docs/os-sky-wallet-game-design.md",
+  "designReview": "docs/service-design/06-consistency-contracts.md",
   "amcGoalOrchestration": {
     "requestedAt": "2026-09-27",
     "authority": "docs/amc-goal-orchestrator.md",
@@ -44,8 +44,10 @@
         "displayName": "avokadoPro",
         "role": "standalone_game_services_compute_and_storage_hardware",
         "currentDefinition": "sites/avocado-mini/src/pages/pro/index.astro",
-        "integratedDesignStatus": "not_created",
-        "missionControlSquad": "P1"
+        "integratedDesignStatus": "candidate_design_documented_physical_acceptance_pending",
+        "missionControlSquad": "P1",
+        "currentDesign": "docs/avokado-pro-pc-design.md",
+        "pcImplementationSquad": "P2"
       },
       {
         "id": "rocketstar",
@@ -105,7 +107,7 @@
   "gameFirstLifeVision": {
     "recordedAt": "2026-09-21",
     "status": "design_direction_not_runtime_acceptance",
-    "document": "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md",
+    "document": "docs/avocado-mini-r5/README.md",
     "primaryExperience": "game_console_then_life_enrichment",
     "localAutonomySeparateFromConnectivity": true,
     "localGameLoopRequiresInternet": false,
@@ -130,36 +132,11 @@
     "customerFacingFocus": "account_led_rockstaros_service_access",
     "leadHardwareConcept": "avocadoMini",
     "leadHardwareForm": "r5_200mm_autonomous_peer_minis_no_required_edge_hub",
-    "previousLeadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
-    "legacyReferencePriceAppliesTo": "historical_motion_tower_p0_kit_only",
     "brandLine": "考える時間を、つくる時間に。",
-    "avocadoMiniDesiredReferencePriceJpy": 410000,
-    "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
-    "referencePriceStatus": "historical_E3_user_proposed_preorder_prices_not_R5_price_or_live_sale",
     "legacyCommercialFields": {
-      "recordedFor": "P0_E2_E3_history_and_existing_site_compatibility",
       "appliesToCurrentR5": false,
-      "fields": [
-        "avocadoMiniDesiredReferencePriceJpy",
-        "avocadoMiniSingleTowerProposedExTaxPriceJpy",
-        "currentFourTowerBasePriceJpyExTax"
-      ],
-      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus"
-    },
-    "motionTowerP0Engineering": {
-      "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
-      "kitTowerCount": 4,
-      "kitEdgeHubCount": 1,
-      "stowedHeightMm": 850,
-      "freeStandingMaxHeightMm": 1200,
-      "dockedMaxHeightMm": 1800,
-      "fullHeightRequiresDockOrFloorLatchDetection": true,
-      "baseDiameterMm": 220,
-      "deployedFeetEnvelopeMm": 520,
-      "camerasPerTower": 3,
-      "arOutput": "external_display_device",
-      "llmCanAuthorizeMotionRecordingOrSafetyBypass": false,
-      "maturity": "P0_quotation_and_prototype_input_not_production_release"
+      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus",
+      "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
     },
     "highPerformanceLlmOs": "product_goal_not_current_production_capability",
     "customerEntrySurfaces": [
@@ -221,42 +198,6 @@
       "replacesMandatoryE3HubConfiguration": true,
       "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
       "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
-    },
-    "mini200E2Integration": {
-      "document": "docs/avocado-mini-mini200-e2/README.md",
-      "role": "historical_E2_central_core_architecture_not_current_R5_topology",
-      "singleEnclosure198x178x198AdoptedAsCompleteProductExterior": false,
-      "osAndPermissionArchitectureAdopted": true,
-      "hardwareCandidatesRemainUnapproved": true,
-      "realDeviceTests": 0
-    },
-    "currentFourTowerBasePriceJpyExTax": 410000,
-    "tower20E3": {
-      "document": "docs/avocado-mini-tower20-e3/README.md",
-      "source": "User-provided RockstarOS Tower20 E3 OS Design and avocadoMini Tower20 E3 Hardware Design",
-      "role": "historical_E3_baseline_superseded_by_R5",
-      "towerCount": 4,
-      "edgeHubCount": 1,
-      "fixedHeight": true,
-      "maximumUsageHeightMm": 200,
-      "proposedNominalHeightMm": 199.5,
-      "proposedArithmeticMaximumHeightMm": 199.95,
-      "bodyOuterDiameterMm": 44,
-      "baseDiameterMm": 96,
-      "footContactCircleDiameterMm": 200,
-      "activeCameraCandidatesPerTower": 1,
-      "reservedDarkWindowsPerTower": 2,
-      "edgeHubEnvelopeMm": [
-        240,
-        200,
-        70
-      ],
-      "fourTowerCenterRoiPlanningBandwidthGbps": 2.260992,
-      "serialLatencyPlanningMs": 95.7,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true,
-      "maturity": "E3_engineering_proposal_not_physical_or_manufacturing_acceptance"
     }
   },
   "distributionPricingIntent": {
@@ -353,6 +294,122 @@
       "sitePublicationPerformed": false,
       "e3HubRequirementAppliesToR5": false,
       "r5DeviceProfileAndAdapterIntegrated": false
+    },
+    "serviceReconstruction": {
+      "entry": "docs/service-design/README.md",
+      "requestedAt": "2026-10-13",
+      "reason": "User explicitly requested rebuilding design documents from the beginning while preserving product goals; names Sky Zema Jenniffer OS Mini Pro rocketstar.",
+      "requirementsPreserved": [
+        "RQ01",
+        "RQ02",
+        "RQ03",
+        "RQ04",
+        "RQ05",
+        "RQ06",
+        "RQ07",
+        "RQ08",
+        "RQ09",
+        "RQ10",
+        "RQ11",
+        "RQ12",
+        "RQ13",
+        "RQ14",
+        "RQ15",
+        "RQ16",
+        "RQ17",
+        "RQ18",
+        "RQ19",
+        "RQ20",
+        "RQ21",
+        "RQ22",
+        "RQ23",
+        "RQ24",
+        "RQ25",
+        "RQ26",
+        "RQ27",
+        "RQ28",
+        "RQ29",
+        "RQ30",
+        "RQ31",
+        "RQ32",
+        "RQ33",
+        "RQ34",
+        "RQ35",
+        "RQ36",
+        "RQ37",
+        "RQ38",
+        "RQ39",
+        "RQ40",
+        "RQ41",
+        "RQ42",
+        "RQ43",
+        "RQ44",
+        "RQ45",
+        "RQ46",
+        "RQ47",
+        "RQ48",
+        "RQ49",
+        "RQ50"
+      ],
+      "commercialAndAuthorityPoliciesChanged": false,
+      "runtimeChanged": true,
+      "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
+      "originalDesignBytesPreserved": true,
+      "jenniferSource": {
+        "canonicalName": "Jennifer",
+        "userSpelling": "Jenniffer",
+        "branch": "codex/jennifer-zema-execution",
+        "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+        "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
+        "pullRequest": 113,
+        "mainIntegrated": true,
+        "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+        "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+        "mergedAt": "2026-10-13T18:21:19Z",
+        "branchDeleted": true
+      },
+      "books": [
+        "docs/service-design/README.md",
+        "docs/service-design/01-service-experience.md",
+        "docs/service-design/02-system-contracts.md",
+        "docs/service-design/03-product-profiles.md",
+        "docs/service-design/04-delivery-and-acceptance.md",
+        "docs/service-design/05-requirement-coverage.md",
+        "docs/service-design/06-consistency-contracts.md"
+      ],
+      "runtimeLogicChanged": false,
+      "displayTextChanged": true,
+      "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
+      "explicitUpdates": [
+        {
+          "date": "2026-10-13",
+          "instruction": "それぞれ辻褄を合わせる",
+          "result": "Cross-system invariant contracts and 12 acceptance scenarios; implementation gaps remain explicit."
+        },
+        {
+          "date": "2026-10-13",
+          "instruction": "全部表記siに変えてai→si",
+          "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
+        }
+      ],
+      "latestMainSha": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+      "obsoleteContentCleanup": {
+        "requestedAt": "2026-10-13",
+        "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+        "reason": "User explicitly requested deleting obsolete confusing content; consolidate current contracts and remove stale duplicate prose and product claims.",
+        "currentRequirementsPreserved": 50,
+        "status": "verified_and_github_saved",
+        "removedPaths": 13,
+        "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+        "mainIntegrated": true
+      },
+      "mainMergeAuthorization": {
+        "instruction": "mainへあげて",
+        "recordedDate": "2026-10-13",
+        "scope": "PR114 design/si/obsolete-content cleanup; preserve latest main; deployment and physical/financial acceptance remain separate"
+      },
+      "mainIntegrated": true,
+      "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
     }
   },
   "northStar": {
@@ -362,7 +419,7 @@
     "designModel": "gpt-6-astra",
     "auditModel": "gpt-5.6-sol",
     "auditDocument": "docs/ai-native-os-design-audit.md",
-    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
+    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned si automation team and connecting verified outcomes to sustainable income opportunities",
     "productCore": "ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime",
     "osIsProductCore": true,
     "osIsUltimateSocialPurpose": false,
@@ -478,25 +535,6 @@
     "hazardousSynthesisWithoutQualifiedReviewAllowed": false,
     "simulationIsExperimentalProof": false,
     "externalLabIsReplaceableProvider": true,
-    "mini200E1": {
-      "requested": true,
-      "recordedAt": "2026-09-21",
-      "status": "engineering_proposal_and_abstract_models_only",
-      "design": "docs/avocado-mini-mini200-e1/README.md",
-      "usageHeightLimitMm": 200,
-      "primaryUse": "game_then_creation_research_and_life",
-      "japaneseVoiceRequested": true,
-      "designSaveRequested": true,
-      "outerAppearanceConfirmed": false,
-      "proposedConfiguration": "single_body_local_compute_front_stereo_plus_rgb_four_mic",
-      "initialSpeechMode": "push_to_talk_local_japanese_candidate",
-      "legacyFourViewContractChanged": false,
-      "runtimeIntegrated": false,
-      "actualAsrTests": 0,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": false
-    },
     "spatialDevelopment": {
       "requested": true,
       "status": "design_approved_runtime_not_implemented",
@@ -515,36 +553,10 @@
       "patentAiIntegrationPlanned": true,
       "physicalExecutionAllowed": false,
       "gestureIsPhysicalApproval": false,
-      "automaticPatentFilingAllowed": false
+      "automaticPatentFilingAllowed": false,
+      "role": "material_invention_research_profile_not_current_R5_sensor_topology"
     },
-    "mini200E2": {
-      "requested": true,
-      "recordedAt": "2026-09-21",
-      "status": "four_tower_exterior_confirmed_e2_central_core_integration_design",
-      "design": "docs/avocado-mini-mini200-e2/README.md",
-      "ownerConfirmedExterior": "four_silver_motion_towers_surrounding_one_low_central_unit",
-      "singleEnclosureMechanicalStudyAdoptedAsCompleteProductExterior": false,
-      "centralCoreUsesE2OsArchitecture": true,
-      "exactTowerCoreIntegrationResolved": false,
-      "runtimeIntegrated": false,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true
-    },
-    "tower20E3": {
-      "requested": true,
-      "recordedAt": "2026-09-22",
-      "status": "current_four_tower_and_separate_edge_hub_integration_design",
-      "design": "docs/avocado-mini-tower20-e3/README.md",
-      "ownerConfirmedExterior": "four_fixed_height_200mm_tower20_units_and_one_separate_low_edge_hub",
-      "telescopingMechanism": false,
-      "activeCameraCandidatesPerTower": 1,
-      "reservedWindowsPerTower": 2,
-      "runtimeIntegrated": false,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true
-    }
+    "currentMiniProduct": "docs/avocado-mini-r5/README.md"
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
@@ -1634,7 +1646,7 @@
   },
   "avokadoProPcIntent": {
     "decisionDate": "2026-10-05",
-    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, AI and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, si and PC gaming, price answer 80 interpreted as JPY800000 sales target",
     "nvidiaGpuRequired": true,
     "standalonePc": true,
     "miniDependency": false,
@@ -1642,7 +1654,12 @@
     "priceTaxUndecided": true,
     "candidateOnly": true,
     "authority": "docs/avokado-pro-pc-design.md",
-    "specification": "data/avokado-pro-pc.json"
+    "specification": "data/avokado-pro-pc.json",
+    "aiPcClarification": {
+      "date": "2026-10-13",
+      "source": "User explicit clarification",
+      "description": "NVIDIA chip/GPU based high-performance si PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
+    }
   },
   "miniCellularIntent": {
     "decisionDate": "2026-10-10",
@@ -2034,11 +2051,11 @@
     "deviceConnectivity": "optional_iot_data_line_for_devices_such_as_avocado_mini",
     "consumerEsimSales": "on_hold_code_kept_disabled_by_default",
     "decisionDate": "2026-10-10",
-    "decisionRecord": "docs/account-entry-proposal.md"
+    "decisionRecord": "docs/product-baseline.md"
   },
   "portableAddons": {
     "requestedAt": "2026-10-06",
-    "authority": "docs/sim-led-product-architecture.md",
+    "authority": "docs/service-design/02-system-contracts.md",
     "tasks": [
       "HOME01",
       "SYS01",
@@ -2128,7 +2145,7 @@
   "accountEntryDecision": {
     "decidedAt": "2026-10-10",
     "decidedBy": "owner",
-    "record": "docs/account-entry-proposal.md",
+    "record": "docs/product-baseline.md",
     "mainProduct": "agents_used_through_one_rockstar_account_on_any_device",
     "simRole": "optional_device_component",
     "seller": "avokado",
@@ -2182,6 +2199,7 @@
       "cloud_ai_provider_resale_terms"
     ]
   },
+  "productTerminology": "data/product-terminology.json",
   "skyAppOutputPlugin": {
     "decidedAt": "2026-10-12",
     "source": "User requested a saved Agent output receptacle and Sky standalone host-app plugins, with Fitness as the first example",

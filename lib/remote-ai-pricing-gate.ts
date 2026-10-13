@@ -21,7 +21,7 @@ export function remoteAiTextExecutionAvailable(runtime: {
 export function remoteAiPricingUnavailable() {
   return Response.json(
     {
-      error: 'クラウドAIの料金見積・支出上限・利用明細が接続されるまで外部実行できません。入力はProviderへ送信していません。',
+      error: 'クラウドsiの料金見積・支出上限・利用明細が接続されるまで外部実行できません。入力はProviderへ送信していません。',
       code: 'REMOTE_AI_PRICING_GATE_UNAVAILABLE',
     },
     { status: 503, headers: { 'Cache-Control': 'no-store' } },

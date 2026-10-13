@@ -282,7 +282,7 @@ export function LegalIntakeRunner({
         error?: string;
       };
       if (!response.ok)
-        throw new Error(payload.error || '法令AIを利用できません。');
+        throw new Error(payload.error || '法令siを利用できません。');
       setAiResult(payload);
       onOutcome?.({ ok: true, text: '公式情報の一次回答を取得しました。出典と引継ぎ内容をこのカードで確認してください。' });
       setNotice(

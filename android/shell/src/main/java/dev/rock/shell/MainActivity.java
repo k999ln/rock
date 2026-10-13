@@ -118,7 +118,7 @@ public final class MainActivity extends Activity {
         scroll.addView(form); setContentView(scroll);
 
         label(form, "RockstarOS  /  Sky  /  Zema", 13);
-        label(form, "AIサービスを使う", 30);
+        label(form, "siサービスを使う", 30);
         label(form, "Rockstarアカウントを一度連携します。サービスごとの利用権・接続状態は個別に確認します。", 16);
         accountLinkStatus = label(form, "アカウント状態を確認中…", 15);
         accountLinkCode = label(form, "", 26); accountLinkCode.setTextIsSelectable(true);
@@ -227,7 +227,7 @@ public final class MainActivity extends Activity {
         zemaSubmitButton = button(form, "このToolで実行", this::submitZema);
         zemaRecoveryButton = button(form, "未確認の依頼を履歴で確認", () -> reviewPendingSubmission(zemaSubmission, zemaRecoveryButton));
         updateSubmissionRecovery(zemaSubmission, zemaRecoveryButton);
-        button(form, "端末内AIの接続を確認", this::checkLocalAi);
+        button(form, "端末内siの接続を確認", this::checkLocalAi);
 
         jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
 
@@ -1961,7 +1961,7 @@ public final class MainActivity extends Activity {
             + " / Android API " + (apiLevel > 0 ? apiLevel : "未取得") + "（OS申告値）"
             + "\nRAM空き/合計: " + memory + " / アプリ領域空き: " + storage
             + "\n観測feature: " + hardware
-            + "\n端末内AI: " + localAi
+            + "\n端末内si: " + localAi
             + "\n提供形態: 既存Android上のclient。native OS適合は未評価。"
             + "\n" + feature + "\n" + management + "\n" + multipleProfiles
             + "\n" + managedEsim + "\n" + automaticEsim
@@ -2157,8 +2157,8 @@ public final class MainActivity extends Activity {
     private void checkLocalAi() {
         worker.execute(() -> {
             String status;
-            try { status = "ローカルAI: " + new ShellConnection(this).localAiStatus(); }
-            catch (Exception error) { status = "ローカルAI: 未接続（アプリ、モデル、署名、APIを確認）"; }
+            try { status = "ローカルsi: " + new ShellConnection(this).localAiStatus(); }
+            catch (Exception error) { status = "ローカルsi: 未接続（アプリ、モデル、署名、APIを確認）"; }
             String result = status;
             runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
         });
@@ -2332,11 +2332,11 @@ public final class MainActivity extends Activity {
     private static String zemaBlockedMessage(String code) {
         if ("DENIED".equals(code)) return "開始していません。保存への同意を確認してください。";
         if ("SKY_SELECTION_REQUIRED".equals(code)) return "開始していません。SkyのTool選択を更新してください。";
-        if ("INVALID_PLAN".equals(code)) return "開始していません。端末内AIの計画が安全確認を通りませんでした。";
+        if ("INVALID_PLAN".equals(code)) return "開始していません。端末内siの計画が安全確認を通りませんでした。";
         if ("LOCAL_AI_NOT_READY".equals(code)) return "開始していません。署名確認済みruntimeに利用可能なモデルを読み込んでください。";
         if ("MODEL_PROFILE_NOT_ACTIVE".equals(code)) return "開始していません。このモデルの検証済み配布profileが有効になっていません。";
         if ("MODEL_PROFILE_RUNTIME_MISMATCH".equals(code)) return "開始していません。モデルprofileと端末内runtimeの版または署名が一致しません。";
-        return "開始していません。Local AIのアプリ、モデル、署名、APIを確認してください。";
+        return "開始していません。Local siのアプリ、モデル、署名、APIを確認してください。";
     }
 
     private void applySkySelection(JSONObject selection) {

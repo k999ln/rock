@@ -11,7 +11,7 @@
 | `ROCK`     | RockstarOSのrepository内だけで実装・検証できる          | 外部待ちにせず進める                                         |
 | `EXTERNAL` | Provider、ToB、OS vendor、hardware vendorなどが提供する | 接続契約と受入条件を定義し、相手の実装をRockの完了に数えない |
 | `JOINT`    | Rockのadapterと外部sandbox／実環境の両方が必要          | 両側の同一条件でend-to-end証拠を取る                         |
-| `OWNER`    | 本人の署名、契約、支払い、公開、端末操作などが必要      | AIや外部Providerが代理決定しない                             |
+| `OWNER`    | 本人の署名、契約、支払い、公開、端末操作などが必要      | siや外部Providerが代理決定しない                             |
 
 ## 分野別の責任
 
@@ -25,7 +25,7 @@
 | Web / PWA / Sites    | source、D1 migration、build、PWA、security header、asset closure       | Hosting基盤、認証サービス、DNS／証明書基盤                           | 配備、一般公開、外部visitor許可                | Git SHA、build SHA、Sites version、実responseが一致      |
 | Native / QEMU        | OS core、Platform API、package、更新、rollback、backup、診断           | Buildroot等の上流componentと各license条件                            | production署名、release公開                    | 同じarchive SHAでfresh導入から削除まで完走               |
 | Android / Device     | Rock共通service、Android接続層、Device Support Package契約、受入script | AOSP／GrapheneOS、OEM BSP、vendor driver、firmware、CTS、必要時のGMS | 対象機種／SKU、unlock、flash、鍵、販売地域     | 同じ実機・buildでboot、hardware、OTA、rollback、純正復旧 |
-| Local AI             | Binder API、Tool allowlist、確認、timeout、resource上限、監査          | 推論runtime、upstream app、GGUF／model、model license                | 使用model、端末への導入、外部送信可否          | airplane mode、変更系確認、熱・RAM・連続稼働の実測       |
+| Local si             | Binder API、Tool allowlist、確認、timeout、resource上限、監査          | 推論runtime、upstream app、GGUF／model、model license                | 使用model、端末への導入、外部送信可否          | airplane mode、変更系確認、熱・RAM・連続稼働の実測       |
 | Game / Market / Fund | SDK、adapter、owner分離、exact approval、PAPER台帳、risk表示           | ゲームserver、market data、注文／清算Provider                        | ゲーム、通貨、rate、取引方向、LIVE利用の承認   | sandboxの両台帳一致と取消・再送・二重使用拒否            |
 | Business Pilots      | CSV処理、仕事状態、私有成果物、retention、検査、収益照合入口           | Marketplace、決済、配送、Meta等の業務API                             | 出品、顧客連絡、入金確認、納品、返金対応       | 第三者取引を検収・Provider入金まで追跡                   |
 | Git / CI / Release   | branch整理、CI、証拠、version、migration互換、復旧手順                 | GitHub／Sitesのサービス提供                                          | main merge、公開release、課金を伴う環境契約    | clean tree、同一SHA CI、配備readback                     |

@@ -24,7 +24,7 @@ const plan = () => createJenniferCoordinationPlan(
     id: "rockstaros-core",
     displayName: "RockstarOS",
     managerAgentId: "jennifer-os-manager",
-    managerLabel: "OS担当AI",
+    managerLabel: "OS担当si",
     sourceRefs: ["PROJECTS.md"],
   },
   knowledge,

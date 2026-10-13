@@ -26,7 +26,7 @@ IDの頭文字だけで担当を推測する方式を廃止し、全taskに一�
 
 32部隊の「次の1タスク」にある入力・担当・成果物・全体合格条件を保ったまま、各6件、合計192件の子作業へ分解した。各子には個別の成果物section、手順、確認可能な合格条件、親の前提と必要な兄弟依存、計画上の負荷区分、実行境界を付ける。すべて未着手・未検証で登録し、既存183 taskの状態と証拠は変更していない。担当者と期限は未割当・未設定を明示し、根拠なく確定しない。
 
-当時は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live AI runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
+当時は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live si runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
 
 対象はローカル基点SHA <code>4e74e2f5f250b87c792ced6c03c5298c882cbd70</code>と作業中変更。確認したremote mainは<code>5f3a3694474180415d08cd814b6aad864694d10f</code>で1 commit先だが、差分は公開画像とWEB19の証拠追加で、task状態・製品要求の変更はない。remote差分は未merge。この精査は静的照合であり、既存の外部Provider・実機・本番試験の再実行ではない。
 
@@ -34,7 +34,7 @@ IDの頭文字だけで担当を推測する方式を廃止し、全taskに一�
 
 - avocadoMini R5は単体で入力、game、保存、停止が成立する要求。外部PC、Hub、Pro、インターネットを基本動作の必須条件にしない。
 - avokadoProは単独のgame・service・compute・storage・audio製品。Mini接続は任意。専用統合設計・BOM・実機は未完成。
-- RockstarOSは共通契約・保存・権限・AI・Tool・配布を担当する。PC/Web、QEMU、Pixelは開発・検証環境であり、販売製品を増やすものではない。
+- RockstarOSは共通契約・保存・権限・si・Tool・配布を担当する。PC/Web、QEMU、Pixelは開発・検証環境であり、販売製品を増やすものではない。
 - rocketstarの一般OS連携は地上計画・承認・記録・成果管理に限定する。飛行制御は独立安全系であり、LLMやSky Toolへ直接の飛行actuation権限を与えない。
 
 ## 段階とタスク状態は別
@@ -59,12 +59,12 @@ plannedは未着手、in_progressは進行中、blockedは明示停止、doneは
 <!-- AMC-SQUADS:START -->
 | ID | 部隊 | 証拠のある段階（対象限定） | 次task | 子作業 | 具体的な成果 |
 | --- | --- | --- | --- | --- | --- |
-| H1 | 製品・Interface統合 | 3 一部統合 | G04, AMC01 | 6 | 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する / 現行3製品とOSの責任表・未決事項台帳をレビューする |
+| H1 | 製品・Interface統合 | 3 一部統合 | G04, AMC01 | 6 | 重複するsi・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する / 現行3製品とOSの責任表・未決事項台帳をレビューする |
 | O1 | 権限・Security | 3 一部統合 | SYS13 | 6 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 |
 | O2 | Work・Data | 3 一部統合 | AI04 | 6 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 |
-| O3 | AI・Agent | 3 一部統合 | AI02 | 6 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 |
+| O3 | si・Agent | 3 一部統合 | AI02 | 6 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 |
 | O4 | Tool・MCP | 3 一部統合 | SKY07 | 6 | MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する |
-| O5 | Sky・Zema・Wallet | 3 一部統合 | SIM01, SKY21, SKY19 | 6 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す / Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる / SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
+| O5 | Sky・Zema・Wallet | 3 一部統合 | SIM01, SKY21, SKY19 | 6 | アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す / Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる / SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
 | O6 | Device Adapter | 2 試作済み | OS02 | 6 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 |
 | O7 | Release・運用 | 3 一部統合 | LCH07 | 6 | 同一最終候補の再現配布・導入・復旧リハーサル |
 | M1 | 製品設計・ICD | 1 基本設計あり | MINI01 | 6 | R5要求・OPEN01〜08と部隊別試験の追跡表を作る |
@@ -127,7 +127,7 @@ AMC01とMINI01〜07・PRO01〜07・RKT01〜10の25親taskは「要求・仕様�
 
 ## 更新と検証
 
-指示から対象部隊と子作業を束ね、Goal用の一括指示文・進捗台帳を作る入口は[AMC Goal Orchestrator](amc-goal-orchestrator.md)。既存計画の候補展開とローカル検収記録の第一版であり、任意指示のAI分解、外部送信、サーバー常駐は未接続。
+指示から対象部隊と子作業を束ね、Goal用の一括指示文・進捗台帳を作る入口は[AMC Goal Orchestrator](amc-goal-orchestrator.md)。既存計画の候補展開とローカル検収記録の第一版であり、任意指示のsi分解、外部送信、サーバー常駐は未接続。
 
 1. data/project-status.jsonにtask・status・前提・実績証拠を記録する。
 2. data/mission-control.jsonに一意の担当、分類、部隊の次task、詳細計画を記録する。

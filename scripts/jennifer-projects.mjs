@@ -68,7 +68,7 @@ if (command === "overview") {
     console.log("");
     console.log(`更新: ${status.updatedAt} / 実行基盤: ${portfolio.executionSystem.displayName}`);
     console.log("");
-    console.log("| Project | 担当AI | 未着手 | 進行中 | 完了 | 停止 |");
+    console.log("| Project | 担当si | 未着手 | 進行中 | 完了 | 停止 |");
     console.log("| --- | --- | ---: | ---: | ---: | ---: |");
     for (const project of projects)
       console.log(
@@ -87,7 +87,7 @@ if (command === "overview") {
     console.log("");
     console.log(`${project.mission}`);
     console.log("");
-    console.log(`担当AI: ${project.managerLabel} (${project.managerAgentId})`);
+    console.log(`担当si: ${project.managerLabel} (${project.managerAgentId})`);
     console.log(`依存: ${project.dependsOn.join(", ") || "なし"}`);
     console.log(`task: ${project.taskCount}件 / 進行中${project.counts.in_progress} / 未着手${project.counts.planned} / 停止${project.counts.blocked}`);
     console.log("");

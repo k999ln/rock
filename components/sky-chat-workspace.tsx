@@ -248,7 +248,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
     return '本体未接続';
   }
   if (tool.runner === 'jev-evaluation' && !latest)
-    return '外部AIの接続確認が必要';
+    return '外部siの接続確認が必要';
   return latest ? jobMessage(latest) : 'Sky登録済み';
 }
 
@@ -844,7 +844,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       if (!goalResponse.ok)
         throw new Error(goalPayload.error || 'JenniferのGoalを読み込めませんでした。');
       if (!jobsResponse.ok)
-        throw new Error(jobsPayload.error || '担当AIの仕事を読み込めませんでした。');
+        throw new Error(jobsPayload.error || '担当siの仕事を読み込めませんでした。');
       const rootJob = goalPayload.job?.amcGoal ? goalPayload.job : null;
       const taskJobs = (jobsPayload.jobs ?? []).filter(
         (job) => rootJob && job.coordination?.rootJobId === rootJob.id &&
@@ -968,7 +968,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         });
         const payload = await response.json() as { job?: WorkJob; error?: string };
         if (!response.ok || !payload.job)
-          throw new Error(payload.error || '担当AI用のZema jobを作成できませんでした。');
+          throw new Error(payload.error || '担当si用のZema jobを作成できませんでした。');
         taskJob = payload.job;
       }
       const prompt = buildJenniferDispatchPrompt(goal, task.id);
@@ -988,7 +988,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       router.push(`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`);
     } catch (cause) {
       setJenniferExecutionError(
-        cause instanceof Error ? cause.message : '担当AIへの実行準備を作れませんでした。',
+        cause instanceof Error ? cause.message : '担当siへの実行準備を作れませんでした。',
       );
     } finally {
       setJenniferExecutionBusy(false);
@@ -1170,7 +1170,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           if (reason.status === 401) setNeedsSignin(true);
           if (reason.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteCurrencyOptions(reason.currencies);
         }
-        setError(reason instanceof Error ? reason.message : 'クラウドAIの料金見積を取得できませんでした。');
+        setError(reason instanceof Error ? reason.message : 'クラウドsiの料金見積を取得できませんでした。');
       } finally {
         if (isCurrent()) {
           estimateAbortRef.current = null;
@@ -1298,7 +1298,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
           : current.map((message) => message.id === `${id}-route`
-            ? { ...message, text: `${message.text}\n\n会話AIは未接続です。Toolの入力と実行は下のカードから使えます。` }
+            ? { ...message, text: `${message.text}\n\n会話siは未接続です。Toolの入力と実行は下のカードから使えます。` }
             : message));
       }).finally(() => {
         if (chatAbortRef.current === controller) {
@@ -1623,7 +1623,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : 'プロジェクト全体を、ここから。'}</h2>
                   <p className="zema-empty-lead">{selectedTool || selectedMcpServer
                     ? '依頼を整理し、使える範囲と次の手順をこの会話で確認できます。'
-                    : 'プロジェクトを選ぶか、目的をそのまま入力してください。担当AIと現在の記録を確認し、Zemaの仕事として進めます。'}</p>
+                    : 'プロジェクトを選ぶか、目的をそのまま入力してください。担当siと現在の記録を確認し、Zemaの仕事として進めます。'}</p>
                   {selectedTool && (
                     <div className="zema-empty-next">
                       <div className="zema-empty-tool-heading">
@@ -1787,7 +1787,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                               </details>
                               {taskJob ? (
                                 <Link href={`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`}>
-                                  担当AIのjobを開く <ArrowRight size={14} aria-hidden="true" />
+                                  担当siのjobを開く <ArrowRight size={14} aria-hidden="true" />
                                 </Link>
                               ) : ready ? (
                                 <button
@@ -1795,7 +1795,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                                   disabled={jenniferExecutionBusy}
                                   onClick={() => void prepareJenniferTask(node.id)}
                                 >
-                                  {node.id === 'task-goal-contract' ? '確認記録済み' : '担当AIへ実行準備'}
+                                  {node.id === 'task-goal-contract' ? '確認記録済み' : '担当siへ実行準備'}
                                 </button>
                               ) : null}
                             </div>
@@ -2156,7 +2156,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'ローカルAgentが安全な手順を組み立てています…'}</output>}
               {remoteTextProvider && (
                 <section className="zema-remote-consent" aria-live="polite">
-                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
+                  <p>クラウドsiの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
                   {remoteEstimate && (
                     <dl>
                       <div><dt>最大費用</dt><dd>{formatCurrencyMinor(remoteEstimate.estimate.maximumChargeMinor, remoteEstimate.estimate.currency)}</dd></div>
@@ -2252,7 +2252,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   aria-pressed={jenniferArmed}
                   disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
                   title={selectedToolId === AUTO_MODE
-                    ? '複数工程の計画と担当AIを、実行せずに整理します'
+                    ? '複数工程の計画と担当siを、実行せずに整理します'
                     : '計画を整理するには「自動で選ぶ」に戻してください'}
                   onClick={() => setJenniferArmed((armed) => !armed)}
                 >

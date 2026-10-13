@@ -19,7 +19,7 @@
 - `scripts/prepare-phone-build.py manifest`がRock本体とLocal Action Assistantの2 repositoryを完全なcommitでGrapheneOSのlocal manifestへ出力する。
 - `prepare`はLocal Action Assistantのrevision、clean worktree、主要ファイルhash、package/runtime版、release variantの`INTERNET` permission除去、GGUF未同梱を検査する。
 - source同期後は`python3 external/rockstaros/scripts/prepare-phone-build.py verify-local-ai <OS-tree>`だけでも同じ読取り専用検査を実行できる。
-- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v2、通常会話、6 tool、stream event、変更系toolの確認必須条件に加え、`article-preparation@1/input-v1`計画専用callを機械可読にした。計画callはJSON Schema constrained decodingを使い、Local AIからのTool callを許可しない。
+- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v2、通常会話、6 tool、stream event、変更系toolの確認必須条件に加え、`article-preparation@1/input-v1`計画専用callを機械可読にした。計画callはJSON Schema constrained decodingを使い、Local siからのTool callを許可しない。
 - `RockAutomationPrototype`へ固定package・同一署名・version 1を要求する呼出しclientと接続診断を追加した。応答は32 KiB、90秒で打ち切り、未知eventを拒否する。
 - 固定commit上で`npm run verify`を実行し、TypeScript、Jest 4 suite／10 test、ESLint、offline manifest source検査を合格した。結果は`docs/evidence/local-ai-source-validation-20260915.json`へ記録した。
 - `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なし、`WAKE_LOCK`、署名限定Binder権限を検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。artifact lockにはplan v2を含むレビュー済みunsigned APKのSHA-256 `b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c`と26,395,708 bytesを固定した。

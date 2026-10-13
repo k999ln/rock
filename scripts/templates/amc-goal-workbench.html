@@ -250,7 +250,7 @@
     <button id="request-tab" type="button" aria-pressed="false">依頼・Goal</button>
   </nav>
   <section id="mission-board-view" tabindex="-1" aria-label="既存32部隊のGoalと進捗">
-    <p class="board-caption">部隊を選ぶと、Goalと次の仕事を確認できます。既存プロジェクトの保存時点の記録です。「依頼・Goal」の計画とは別管理で、自動更新・AI実行は未接続です。</p>
+    <p class="board-caption">部隊を選ぶと、Goalと次の仕事を確認できます。既存プロジェクトの保存時点の記録です。「依頼・Goal」の計画とは別管理で、自動更新・si実行は未接続です。</p>
 __AMC_BOARD__
   </section>
 
@@ -277,7 +277,7 @@ __AMC_BOARD__
         <div class="actions"><button id="planner-revise" type="button">この内容で考え直す</button><button id="planner-backup" type="button" hidden>保存中のGoalをバックアップ</button><button id="planner-adopt" type="button" class="primary" disabled>この候補を計画案として採用</button></div>
         <p class="small">候補の採用では作業を開始しません。計画の承認と成果の独立検収は、既存のGoal管理で行います。</p>
       </section>
-      <details class="simple-preview"><summary>オフラインの共通テンプレートを使う</summary><p class="small">固定の4役・7工程を置く補助機能です。Git調査やAIによる推論は行いません。</p><button id="planner-fallback" type="button">入力から共通テンプレートを開く</button></details>
+      <details class="simple-preview"><summary>オフラインの共通テンプレートを使う</summary><p class="small">固定の4役・7工程を置く補助機能です。Git調査やsiによる推論は行いません。</p><button id="planner-fallback" type="button">入力から共通テンプレートを開く</button></details>
     </section>
     <p id="simple-request-help" class="simple-note">アプリ・bot・自動化・Webなど、作りたいものを普段の言葉で書いてください。既存OS・ハードウェア計画は詳細から。<br>秘密情報やパスワードは入力しないでください。ここでは計画を準備し、実売買や送金は行いません。</p>
   </section>
@@ -289,7 +289,7 @@ __AMC_BOARD__
       <div class="simple-review-field"><label for="simple-intent">意図<span>何のために作る？ 大切にしたいことは？</span></label><textarea id="simple-intent" rows="3" maxlength="2000" required placeholder="実現したいこと・守りたいこと"></textarea></div>
       <details class="simple-preview"><summary>AMCが用意した仕事を見る</summary><div id="simple-plan-preview"></div></details>
     </div>
-    <p class="simple-boundary-note"><strong>このGoalと意図の範囲で進めます。</strong>部隊分けは共通の作業テンプレートです。依頼の細部は、実作業前に確認します。<br>課金・公開・実機操作は、必要になった時に別途確認します。<br>計画は自動作成。AIによる実作業は未接続です。</p>
+    <p class="simple-boundary-note"><strong>このGoalと意図の範囲で進めます。</strong>部隊分けは共通の作業テンプレートです。依頼の細部は、実作業前に確認します。<br>課金・公開・実機操作は、必要になった時に別途確認します。<br>計画は自動作成。siによる実作業は未接続です。</p>
     <div class="simple-review-actions"><button id="simple-back" type="button" class="quiet">依頼を書き直す</button><button id="simple-confirm" type="button" class="primary">このGoalと意図で準備する <span aria-hidden="true">→</span></button></div>
   </section>
 
@@ -298,8 +298,8 @@ __AMC_BOARD__
     <div id="simple-metrics" aria-label="作業の進み具合"></div>
     <h2 class="simple-section-label">部隊の仕事</h2><div id="simple-squads"></div>
     <div id="simple-attention" role="status" aria-live="polite"></div>
-    <div class="simple-progress-actions"><button id="planner-review-goal" type="button" class="primary" hidden>この計画を見直す</button><button id="simple-handoff" type="button" class="primary">AIへ渡す指示をコピー</button><button id="simple-details" type="button" class="quiet">計画の詳細を見る</button></div>
-    <p id="simple-boundary">計画は自動作成。AIによる実作業は未接続です。課金・公開・実機操作は、この計画の承認だけでは行いません。</p>
+    <div class="simple-progress-actions"><button id="planner-review-goal" type="button" class="primary" hidden>この計画を見直す</button><button id="simple-handoff" type="button" class="primary">siへ渡す指示をコピー</button><button id="simple-details" type="button" class="quiet">計画の詳細を見る</button></div>
+    <p id="simple-boundary">計画は自動作成。siによる実作業は未接続です。課金・公開・実機操作は、この計画の承認だけでは行いません。</p>
   </section>
 
   <details id="advanced-workbench" hidden>
@@ -324,7 +324,7 @@ __AMC_BOARD__
         <textarea id="chat-input" maxlength="8000" rows="3" placeholder="例：Proの保存・復旧の設計を進めたい" aria-describedby="chat-context chat-storage-note" required></textarea>
         <div class="chat-compose-footer"><p>Enterで改行、⌘/Ctrl+Enterで送信。<br>秘密情報は入力しないでください。</p><button id="chat-send" type="submit" class="primary">送信 <span aria-hidden="true">↑</span></button></div>
       </form>
-      <div class="chat-footer">AMCの案内はルールベース。AIへの自動送信なし。</div>
+      <div class="chat-footer">AMCの案内はルールベース。siへの自動送信なし。</div>
       <p id="chat-storage-note">このブラウザで使うローカルの会話です。</p>
     </section>
     <details id="inspector">
@@ -339,10 +339,10 @@ __AMC_BOARD__
         <div class="actions request-actions"><p id="instruction-help" class="help">まだ整理できていなくても大丈夫。<br>まずは目的をひとつ、書いてみてください。</p><button id="recommend" type="button" class="primary">担当部隊を確認する <span aria-hidden="true">→</span></button></div>
         <section id="team-picker" hidden aria-label="担当部隊を確認する">
           <div class="eyebrow">担当の候補</div><h2>この部隊で進めますか？</h2>
-          <p id="selection-summary" tabindex="-1"></p><p class="help">既存の計画から、言葉が一致する部隊を候補にしています。新しい仕事をAIが考えた結果ではありません。今回の目的に合うか確認してください。</p>
+          <p id="selection-summary" tabindex="-1"></p><p class="help">既存の計画から、言葉が一致する部隊を候補にしています。新しい仕事をsiが考えた結果ではありません。今回の目的に合うか確認してください。</p>
           <div id="selection-preview"></div>
           <details class="detail-settings"><summary>担当部隊を調整する</summary><div class="actions"><button id="select-all" type="button" class="compact">全32部隊を選ぶ</button><button id="select-none" type="button" class="quiet compact">選択を解除</button></div><div id="squads"></div></details>
-          <details class="detail-settings"><summary>詳細設定</summary><label for="parallel">同時に進める作業数の上限</label><input id="parallel" type="number" min="1" max="32" value="1" required aria-describedby="parallel-help"><p id="parallel-help" class="help">最初は1つで進めます。PCやAIの能力を測った値ではありません。</p></details>
+          <details class="detail-settings"><summary>詳細設定</summary><label for="parallel">同時に進める作業数の上限</label><input id="parallel" type="number" min="1" max="32" value="1" required aria-describedby="parallel-help"><p id="parallel-help" class="help">最初は1つで進めます。PCやsiの能力を測った値ではありません。</p></details>
           <div class="actions"><button class="primary" type="submit">この部隊で計画案をつくる <span aria-hidden="true">→</span></button></div>
           <p class="help">作るのは計画案だけです。承認するまで進捗の記録は始まりません。</p>
         </section>
@@ -362,16 +362,16 @@ __AMC_BOARD__
           <div><label for="coverage">今回はどこまで進める？</label><textarea id="coverage" rows="4" placeholder="進めること：保存・復旧の手順と設計&#10;今回はやらないこと：実機への導入、機能の追加"></textarea></div>
           <div><label for="goal-criteria">何を確認できたら完成？</label><textarea id="goal-criteria" rows="4" placeholder="1行に1つずつ書いてください。&#10;例：保存に失敗した時の復旧手順がある&#10;例：担当と確認方法がすべて決まっている"></textarea></div>
         </div>
-        <div class="approval-footer"><button id="approve" type="button" class="primary">この範囲で計画を承認する <span aria-hidden="true">→</span></button><p class="help">承認してもAIは起動しません。課金・公開・実機操作などの許可も、この承認には含みません。</p></div>
+        <div class="approval-footer"><button id="approve" type="button" class="primary">この範囲で計画を承認する <span aria-hidden="true">→</span></button><p class="help">承認してもsiは起動しません。課金・公開・実機操作などの許可も、この承認には含みません。</p></div>
       </details>
     </section>
     <section id="progress-view" hidden aria-label="進み具合と次の行動">
       <div class="next-card"><div><div class="eyebrow">次にすること</div><h2 id="next-title"></h2><p id="next-description"></p></div><button id="next-action" type="button" class="primary">次の行動を確認</button></div>
       <div id="goal-summary" aria-live="polite"></div><div id="goal-warning" class="help"></div><div id="squad-progress" aria-label="部隊ごとの進捗"></div>
       <details id="handoff-section" class="disclosure">
-        <summary>AIへ渡す・計画を保存する</summary><p class="handoff-note">指示文をコピーして、使うAIへ貼り付けます。保存した計画ファイルも一緒に渡してください。この画面からの自動送信や、結果の自動取込みはまだできません。</p>
+        <summary>siへ渡す・計画を保存する</summary><p class="handoff-note">指示文をコピーして、使うsiへ貼り付けます。保存した計画ファイルも一緒に渡してください。この画面からの自動送信や、結果の自動取込みはまだできません。</p>
         <div class="actions"><button id="copy-prompt" type="button">指示文をコピー</button><button id="save-prompt" type="button">指示文をファイルに保存</button><button id="save-json" type="button">計画・進捗を保存</button></div>
-        <details><summary>渡す指示文の内容を見る</summary><textarea id="prompt" rows="12" readonly aria-label="AIへ渡す指示文"></textarea></details>
+        <details><summary>渡す指示文の内容を見る</summary><textarea id="prompt" rows="12" readonly aria-label="siへ渡す指示文"></textarea></details>
       </details>
       <details id="approved-plan" class="disclosure"><summary>承認した範囲と完成の基準</summary><div id="approved-content"></div></details>
     </section>
@@ -385,7 +385,7 @@ __AMC_BOARD__
         <div class="task-content">
           <section id="task-detail" aria-label="作業の内容と完成の基準" tabindex="-1"></section>
           <details id="record-section">
-            <summary>この作業の結果・進み具合を記録する</summary><p id="record-help">実際に行った作業を記録します。ここでの操作はAIの起動や実ファイルの作成ではありません。</p>
+            <summary>この作業の結果・進み具合を記録する</summary><p id="record-help">実際に行った作業を記録します。ここでの操作はsiの起動や実ファイルの作成ではありません。</p>
             <div class="two">
               <div><label for="actor">記録する人・担当者</label><input id="actor" value="owner" maxlength="120" aria-describedby="actor-help"><p id="actor-help" class="help">担当者を区別する名前です。本人認証はありません。成果の確認は、作業した人とは別の担当で行います。</p></div>
               <div><label for="event-type">何を記録する？</label><select id="event-type"><option value="start_task">作業を始めた</option><option value="submit_result">作業の結果を出す</option><option value="verify_task">成果を確認する</option><option value="block_task">保留にする</option><option value="resume_task">保留を解除する</option><option value="pause">計画全体の記録を一時停止</option><option value="resume">計画全体の記録を再開</option><option value="accept_goal">Goal全体の完成を確認</option></select></div>

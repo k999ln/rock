@@ -179,14 +179,14 @@ export function buildPatentPacket(
         ),
         `調査日時: ${research.searchedAt}`,
       ].join('\n')
-    : 'AIによる先行技術候補の調査は未実施です。下記の検索式を使い、各文献を本人または専門家が確認してください。';
+    : 'siによる先行技術候補の調査は未実施です。下記の検索式を使い、各文献を本人または専門家が確認してください。';
 
   return [
     '# Sky 特許出願準備パケット',
     '',
     `作成日: ${new Date().toISOString().slice(0, 10)}`,
     '',
-    '> これは出願可否の保証や法的助言ではありません。AIの候補調査は完全ではなく、出願書類は弁理士等の確認前ドラフトです。Skyは電子署名、料金支払、特許庁への提出を行いません。',
+    '> これは出願可否の保証や法的助言ではありません。siの候補調査は完全ではなく、出願書類は弁理士等の確認前ドラフトです。Skyは電子署名、料金支払、特許庁への提出を行いません。',
     '',
     '## 1. 発明整理',
     '',
@@ -358,7 +358,7 @@ export function buildEnglishPatentPacket(
     '- Ask CTV or a qualified patent professional to review ownership, inventorship, claims, and filing deadlines.',
     '',
     options.cardEntry
-      ? 'The draft is not submitted anywhere and contains no online AI research from this card entry.'
+      ? 'The draft is not submitted anywhere and contains no online si research from this card entry.'
       : 'The draft is not submitted anywhere. Any online research result requires independent review before use.',
     '',
   ].join('\n');

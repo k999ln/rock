@@ -83,7 +83,7 @@ export default function EnglishPatentAssistant({ cardEntry = false }: { cardEntr
         <h1>Patent Assistant</h1>
         <p className={styles.lede}>
           {cardEntry
-            ? 'Create a local invention assessment and English draft packet. This card entry never runs online AI research.'
+            ? 'Create a local invention assessment and English draft packet. This card entry never runs online si research.'
             : 'Create an English invention assessment and draft packet. Official-source online research is available separately when the account and service gates permit it.'}
         </p>
         <section className={styles.panel}>
@@ -105,7 +105,7 @@ export default function EnglishPatentAssistant({ cardEntry = false }: { cardEntr
               <button type="submit" className={styles.button}>Create local draft</button>
               {!cardEntry && <button type="button" className={styles.download} disabled={researching} onClick={() => void runResearch()}>{researching ? 'Researching…' : 'Run official-source research'}</button>}
             </div>
-            {cardEntry && <p className={styles.notice}>Online AI research is unavailable from this card entry. The draft and US filing guidance remain local and free.</p>}
+            {cardEntry && <p className={styles.notice}>Online si research is unavailable from this card entry. The draft and US filing guidance remain local and free.</p>}
             {error && <p className={styles.error} role="alert">{error}</p>}
           </form>
         </section>
