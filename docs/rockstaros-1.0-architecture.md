@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。Jenniferの専用branchとmainは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
+2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。JenniferはPR #113からmainへ統合済み（`01d2e418`）、公開/真正review/native/Providerは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
 
 本書のLinux/QEMU資産一覧は再利用対象であり、スマートフォンの全機能実装済み、契約済みservice access、物理SIM/eSIMの販売・開通、実機OS導入を意味しない。
 

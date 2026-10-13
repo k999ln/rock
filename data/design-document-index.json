@@ -958,11 +958,22 @@
     },
     {
       "id": "jennifer_coordination",
-      "coverage": "BRANCH_INPUT_AND_BASIC_DESIGN_WITH_OPEN_ACCEPTANCE",
+      "coverage": "SOURCE_IN_MAIN_AND_DESIGN_WITH_OPEN_ACCEPTANCE",
       "documents": [
+        "docs/jennifer-coordination.md",
         "docs/service-design/03-product-profiles.md",
         "docs/service-design/02-system-contracts.md",
         "docs/service-design/06-consistency-contracts.md"
+      ],
+      "implementation": [
+        "lib/jennifer-coordination.ts",
+        "lib/jennifer-amc-decomposition.ts",
+        "lib/jennifer-amc-execution.ts",
+        "components/sky-chat-workspace.tsx"
+      ],
+      "recoveredContractReferences": [
+        "tests/jennifer-coordination.test.mjs",
+        "tests/jennifer-amc-execution.test.mjs"
       ]
     }
   ],
@@ -2082,13 +2093,18 @@
       "canonicalName": "Jennifer",
       "userSpelling": "Jenniffer",
       "branch": "codex/jennifer-zema-execution",
-      "sha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
-      "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+      "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
       "pullRequest": 113,
-      "mainIntegrated": false
+      "mainIntegrated": true,
+      "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+      "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+      "mergedAt": "2026-10-13T18:21:19Z",
+      "branchDeleted": true
     },
     "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
-    "crossSystemAcceptanceScenarios": 12
+    "crossSystemAcceptanceScenarios": 12,
+    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983"
   },
   "productTerminology": "data/product-terminology.json"
 }

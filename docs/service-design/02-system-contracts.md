@@ -44,7 +44,7 @@ stateDiagram-v2
   cancelled --> [*]
 ```
 
-JenniferのGoal/AMC taskと最終報告は別の状態機械で、WorkJobの四状態を置き換えない。担当siの提出、独立検収、本人の最終受入は別段階。branchの手動検収を、serverで検証したreviewer証拠へ昇格させない。詳細は[Jennifer profile](03-product-profiles.md#jennifer利用者表記-jenniffer)と[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)。
+JenniferのGoal/AMC taskと最終報告は別の状態機械で、WorkJobの四状態を置き換えない。担当siの提出、独立検収、本人の最終受入は別段階。統合sourceの手動検収を、serverで検証したreviewer証拠へ昇格させない。詳細は[Jennifer profile](03-product-profiles.md#jennifer利用者表記-jenniffer)と[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)。
 
 A2Aは`awaiting_approval`、dispatch系、`working`、`indeterminate`、cancel系、remote終端を別に持つ。[A2A契約](../../lib/a2a-delegation-store.ts)の状態から親画面を投影する。親をcancelledにしたことだけで外部停止や予約解放が成立したとは表示しない。
 
@@ -96,7 +96,7 @@ service access、購入済みPackage、接続済みProvider、実行scope、支�
 
 端末自己申告を成功にせず、独立参照計算または別lease quorumで検査する。owner identityと正確な位置を買い手へ公開しない。未指定のcloud fallback、任意code、秘密/個人情報、実資金Wallet記帳・実請求・実払出しは許可しない。現段階のtest credits holdを収益へ換算しない。mainへ未統合のGrid PRも保全比較し、同一artifact/実端末/精算は別受入。[Grid正本](../sky-compute-grid.md)。
 
-外部Agentの署名付きquoteはaccount方針の保留対象。Jennifer branchの署名見積経路は設計/sourceとして保持し、保留解除・対象Provider受入が済むまでpaid実行を有効にしない。運営管理model adapterと外部Agent購入を同じ課金railへ暗黙合流させない。
+外部Agentの署名付きquoteはaccount方針の保留対象。Jennifer統合sourceの署名見積経路は設計/sourceとして保持し、保留解除・対象Provider受入が済むまでpaid実行を有効にしない。運営管理model adapterと外部Agent購入を同じ課金railへ暗黙合流させない。
 
 ## 10. 変更を合格にする証拠
 

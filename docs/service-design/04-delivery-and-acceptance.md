@@ -6,11 +6,11 @@
 
 ## 設計入力の現在地
 
-2026-10-13の読取確認: GitHub main `4273ef02da9dbb28ede8ba8862b874615fa8a0d7`、同一SHA6 check成功。mainにはPR #105/#110由来のcomposition・原成果を保つ編集・レシピ・保存/設定復旧の改善が統合済み。open PRが残っていてもmain内のコードを未実装へ戻さない。公開Site v54/source `b10c566`の既存記録は別artifactであり、今回の公開readbackではない。
+最初の設計入力の読取確認: GitHub main `4273ef02da9dbb28ede8ba8862b874615fa8a0d7`、同一SHA6 check成功。mainにはPR #105/#110由来のcomposition・原成果を保つ編集・レシピ・保存/設定復旧の改善が統合済み。open PRが残っていてもmain内のコードを未実装へ戻さない。公開Site v54/source `b10c566`の既存記録は別artifactであり、今回の公開readbackではない。
 
 元の作業コピーは`codex/esim-cloud-access`/`37c06cec`と未保存差分を持ち、同名remote branchは確認できなかった。5大学共通Sky/Fitness成果plugin/要求署名eSIMは、この候補と最新mainのColumbia英語NFC・既存authを比較して個別統合する。再構成は最新mainから分離したbranchで保存し、元のdirty変更を保全する。
 
-Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / PR #113で役割とsourceを確認した。8check中6成功/2失敗、main未統合。役割不明の扱いを訂正し、今回の設計へ利用者窓口→裏のZema/AMC→担当siという関係を継承する。
+JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割とsourceを確認し、2026-10-13 18:21:19 UTCにmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合された。head8check、main7checkは各同一SHAで全成功。役割不明の扱いを訂正し、今回の設計へ利用者窓口→裏のZema/AMC→担当siという関係を継承する。
 
 ## 0. 基準と引継ぎを揃える
 
@@ -20,9 +20,9 @@ Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b
 
 合格: RQ01〜RQ50の対応、リンク、design/baseline/project/mission整合、`npm run verify`。文書保存、作業branchのGit保存、GitHub、main統合、公開は別記録。設計の見やすさをruntime修正の完了へ換算しない。
 
-### Jenniferを統合する前の修正と証拠
+### Jenniferの統合済みsourceと残る受入
 
-原因: Jennifer sourceは専用branchにあり、MCP配布ZIPのsource不一致と、SPIDER回帰の `lib/generated/private-content.ts` 未生成でCI2件が失敗している。ROCKは正本sourceから配布物/生成moduleを再現し、同じSHAで対象回帰とverifyを受け入れてから実装branchへ統合する。今回の設計保存で失敗を修正済みにしない。
+初回source `d0151e89`のMCP ZIP/source不一致とSPIDER生成module/依存不足は、`89f869df`/`3349c247`で修復され、同一head8check全成功を確認後PR #113がmainへ統合された。今回のdesign branchもmainを保全mergeし、si表示を同期した。このGit/CIの解消を真正review証拠や本番Providerの受入にしない。
 
 加えて、worker/reviewer別delegationは存在するが、手動owner検収と真正なreviewer証拠のserver相関照合を区別する必要がある。AMC APIでowner/Goal revision/leaf/別delegation/成果hash/usage/判定を照合する受入、COLOMBIA原本/版、context grant、native UI、実Providerのgateを個別に残す。
 
@@ -64,7 +64,7 @@ MiniはR5の単独操作/保存/停止、光学・入力・安全のprototypeと
 
 ## 未決定事項と決め方
 
-- **Jenniferの統合・検収・context** — ROCKが専用branchのCIを修正し、worker/reviewerのserver証拠相関と既存AMCの受入を検証する。OWNERがCOLOMBIA原本/版と利用資料を指定し、JOINTがProvider/nativeの同一候補を受け入れる。役割を再質問せず、既存Git正本を使う。
+- **Jenniferの統合・検収・context** — ROCKが統合sourceのworker/reviewerのserver証拠相関と既存AMCの受入を検証する。OWNERがCOLOMBIA原本/版と利用資料を指定し、JOINTがProvider/nativeの同一候補を受け入れる。役割を再質問せず、既存Git正本を使う。
 - **期間パスの対象・金額・期間** — OWNERとBillingが既存確定範囲内でSKU、対象能力、更新通知、取消/返金条件を固定する。最終確認画面とsandbox/外部確認を通してから販売へ進む。
 - **後払いと旧Wallet gate** — ROCKが支払能力・budget reservationのADRと移行案、EXTERNALが価格/meter/Stripe条件を出す。並列月上限・結果不明・請求失敗を受け入れるまで旧paid gateを開けない。
 - **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、元dirty候補を同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。

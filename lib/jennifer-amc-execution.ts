@@ -446,7 +446,7 @@ export function buildJenniferExecutionReport(
               : task.status === "submitted"
                 ? "成果提出済み。別の担当による条件別検収が必要です。"
                 : task.status === "running"
-                  ? "担当AIの実行または成果取込を待っています。"
+                  ? "担当siの実行または成果取込を待っています。"
                   : "前提taskの完了またはtask単位の実行承認を待っています。"),
         nextAction:
           indeterminate
@@ -455,7 +455,7 @@ export function buildJenniferExecutionReport(
               ? "独立reviewerへdispatchして検収する"
               : task.status === "running"
                 ? "artifactとusage receiptを取得してZemaへ提出する"
-                : "準備可能になったleafを担当AIへdispatchする",
+                : "準備可能になったleafを担当siへdispatchする",
       };
     });
   const receipts = delegations.flatMap((delegation) => {

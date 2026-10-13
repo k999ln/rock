@@ -1,10 +1,10 @@
-## 2026-10-13 サービス全体の設計書を再構成する
-
 ## 2026-10-13 明示更新: 統合設計とsi表記
 
 利用者の「それぞれ辻褄を合わせる」と「全部表記siに変えてai→si」により、[サービス統合設計](service-design/README.md)を入口＋6章の7冊に再構成し、[横断契約と12受入](service-design/06-consistency-contracts.md)へ本人・仕事・費用・停止・成果・復旧の照合条件を固定する。第一者の製品表示は小文字 **si**。[表記契約](../data/product-terminology.json)に従い技術識別子・外部固有名・保存原本は保持する。既存RQ01〜RQ50、料金・権限の正本と未受入gateを変更せず、表記や文書修正をruntime契約の実装・商用・実機合格へ昇格しない。
 
-利用者は「やりたいことが変わったわけではなく、設計書を最初から組み直して素敵なサービスにしたい」と明示し、Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを指定した。[サービス統合設計](service-design/README.md)へ利用体験、共通契約、製品profile、実現順、要求引継ぎを整理する。RQ01〜RQ49とmainの既存RQ50、最新account入口、料金・権限・保存・受入を保持する。UX配置や実現順は再構成案で、新料金・実行許可・公開/製造/飛行合格を確定したことにはしない。利用者の追加指示でGitを再確認し、JennifferのGit表記Jenniferを専用branch `d0151e892794066e1a59b5e4d1dc8863e314947f` で確認した。Jenniferは利用者が話す全体窓口、Zemaは裏側の仕事system。ProはNVIDIAのchip等を使う高性能si PCという補足を継承する。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)はmain未統合で、CI/検収/context/Providerの残条件を保持する。Jevとは別system。原本PDF/R5/R1.0・固定vendor・既存実装と証拠のbyte列は変更しない。
+## 2026-10-13 サービス全体の設計書を再構成する
+
+利用者は「やりたいことが変わったわけではなく、設計書を最初から組み直して素敵なサービスにしたい」と明示し、Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを指定した。[サービス統合設計](service-design/README.md)へ利用体験、共通契約、製品profile、実現順、要求引継ぎを整理する。RQ01〜RQ49とmainの既存RQ50、最新account入口、料金・権限・保存・受入を保持する。UX配置や実現順は再構成案で、新料金・実行許可・公開/製造/飛行合格を確定したことにはしない。利用者の追加指示でGitを再確認し、JennifferのGit表記Jenniferを最初は専用branchで確認し、PR #113 head `3349c2475468443bc7ecd94a4e3782343f514a8f` のCI8件成功とmain `01d2e418`への統合を再確認した。Jenniferは利用者が話す全体窓口、Zemaは裏側の仕事system。ProはNVIDIAのchip等を使う高性能si PCという補足を継承する。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はmain統合済みで、真正検収/context/Providerの残条件を保持する。Jevとは別system。原本PDF/R5/R1.0・固定vendor・旧受入証拠のbyte列と実行契約は保持する。今回のsource変更はsi表示と統合mainの保全同期。
 
 > **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 

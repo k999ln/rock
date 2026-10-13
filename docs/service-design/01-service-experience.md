@@ -4,7 +4,7 @@
 
 確定方針は[製品ベース](../product-baseline.md)と[機械可読ベース](../../data/product-baseline.json)、現行実処理は[全Tool詳細](../sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)、責任は[責任分界](../workstreams/00-responsibility-boundaries.md)に従う。
 
-Jenniferの根拠は[PR #113のJennifer設計・SHA `d0151e89`](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)。これは`codex/jennifer-zema-execution`の未統合sourceであり、mainの現行UI・公開配備とは分ける。以下のJennifer中心体験はこのsourceと今回の本人指示に基づく目標構成である。
+Jenniferの根拠は[PR #113のJennifer設計・SHA `3349c247`](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)。これはPR #113でmain `01d2e418`へ統合済みのsourceであり、公開配備・真正review・実Provider受入とは分ける。以下のJennifer中心体験はこのsourceと今回の本人指示に基づく目標構成である。
 
 ## 1. 利用者への約束
 
@@ -35,7 +35,7 @@ Sky直接操作とhost appの有限処理は会話を必須にせず、同じown
 
 ## 3. 基本画面と情報の置き場所
 
-画面入口は既存routeを使う。mainにはSky / Zema / composeの実装があり、Jenniferの前面化はPR #113にsourceがある。以下は目標の情報構成であり、main統合・全画面受入・公開配備済みを意味しない。
+画面入口は既存routeを使う。mainにはSky / Zema / composeとPR #113のJennifer sourceがある。以下は目標の情報構成であり、全画面受入・公開配備済みを意味しない。
 
 ### Home — `/`
 
@@ -151,6 +151,6 @@ ROCKの受入は三つのjourneyの実入力、owner分離、競合、応答喪�
 
 pilotの仮説指標は、初見で最初の成果取得まで進める割合、開始から成果取得までの時間、修正から再検査までの時間、復旧の成功率、レシピを別素材で再利用する割合、見積と使用額を説明できる割合とする。現在の測定値・保証・市場優位ではない。対象人数と合格水準はpilot開始前にOWNERが決める。
 
-未完了条件は、Jennifer branchのmain統合と同一SHA CI・公開readback、COLOMBIA原本のsource / version / hash、認証済みreviewer成果との相関検収、nativeの同等UI、実Providerと本番課金、外部納品adapterと顧客受領、Mini / Pro実機の入力・表示・復旧の受入。各条件は対応workstreamへ戻し、画面案で解決済みにしない。
+未完了条件は、Jennifer統合済みsourceの公開readback、COLOMBIA原本のsource / version / hash、認証済みreviewer成果との相関検収、nativeの同等UI、実Providerと本番課金、外部納品adapterと顧客受領、Mini / Pro実機の入力・表示・復旧の受入。各条件は対応workstreamへ戻し、画面案で解決済みにしない。
 
 検証入口は`node --test tests/work-composition*.test.mjs`、既存workflow / owner保存・復旧の回帰、`npm run design:check`、`npm run verify`。この章の完成は体験設計の整理であり、UI実装・Provider接続・実機・商用サービスの受入完了を示さない。

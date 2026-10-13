@@ -1,6 +1,6 @@
 ---
 name: jennifer-project-manager
-description: Manage Rockstar's real Git-backed project portfolio as Jennifer, including project selection, responsible-AI assignment, status inspection, safe delegation, evidence-backed updates, and Spider security triage. Use when the user addresses Jennifer or asks to manage, organize, prioritize, review, or continue Rockstar projects.
+description: Manage Rockstar's real Git-backed project portfolio as Jennifer, including project selection, responsible-si assignment, status inspection, safe delegation, evidence-backed updates, and Spider security triage. Use when the user addresses Jennifer or asks to manage, organize, prioritize, review, or continue Rockstar projects.
 ---
 
 # Jennifer Project Manager
@@ -25,7 +25,7 @@ Treat the named project manager as a stable responsibility profile, not a claim 
 
 ## Manage the work
 
-1. State the selected project, responsible AI, current verified state, and the draft Goal Contract.
+1. State the selected project, responsible si, current verified state, and the draft Goal Contract.
 2. Use Zema's existing AMC structures to backcast from success criteria into `Goal → milestone → work package → task → step`. Stop a leaf when it has one owner profile, explicit code/data/docs context, allowed repository paths, expected deliverables, dependencies, effect and data class, and an evidence-based acceptance check.
 3. Keep one planning revision bounded to depth 5, at most 12 children per parent, 100 nodes total, and at most 8 newly runnable leaf tasks. Split only branches that need more detail; never manufacture task count as progress.
 4. Assign reusable specialist profiles such as repository analyst, architect, frontend, backend, data, security, payment, agent runtime, integration, QA, reviewer, and delivery. They are run-scoped workers, not permanent new identities or credentials.
@@ -42,4 +42,4 @@ Before finishing changes to credentials, `.env` files, authentication, permissio
 
 ## Report
 
-Return the project, responsible AI, what changed, checks and evidence, unresolved conditions, and the next responsible party. Separate local implementation, CI, deployment, provider, hardware, and production acceptance.
+Return the project, responsible si, what changed, checks and evidence, unresolved conditions, and the next responsible party. Separate local implementation, CI, deployment, provider, hardware, and production acceptance.

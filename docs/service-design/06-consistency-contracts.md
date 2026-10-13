@@ -2,7 +2,7 @@
 
 この章は[共通契約](02-system-contracts.md)を、system間で照合する不変条件と受入試験へ具体化する。主担当はWeb / Product UX（ROCK）、連携はSky、Security、Wallet、Native、Gameの既存担当。**到達設計を指定する章であり、未実装gateをruntimeの保証へ換算しない。**
 
-要望・料金の正本は[製品ベース](../product-baseline.md)と[baseline JSON](../../data/product-baseline.json)。Jenniferの根拠は[未統合branchの固定SHA `d0151e89`](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)。main、同branch、公開Site、nativeの受入は別に記録する。
+要望・料金の正本は[製品ベース](../product-baseline.md)と[baseline JSON](../../data/product-baseline.json)。Jenniferの根拠は[main統合済みsourceの固定SHA `3349c247`](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)。mainへのsource統合、公開Site、native/Providerの受入は別に記録する。
 
 ## 1. 会話窓口と権限領域を分ける
 
@@ -96,7 +96,7 @@ passの対象範囲・quotaは見積で固定し、並列処理が同じquotaを
 
 `manual_owner_acceptance`はownerが成果を読んで合否を記録した証拠、`verified_independent_review`は別reviewerの真正な成果をserverが相関検証した証拠とする。これは到達分類で、現行API fieldの実装済み表示ではない。
 
-branchのWorkbenchには全criteriaをownerが確認したbooleanの経路がある。[同branchのAMC API](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/app/api/amc/route.ts)は、認証済みA2A reviewer artifact / usageを横断照合していない。画面の合否入力、別delegationの存在、reviewer名だけで独立review合格にしない。
+統合済みWorkbenchには全criteriaをownerが確認したbooleanの経路がある。[統合sourceのAMC API](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/app/api/amc/route.ts)は、認証済みA2A reviewer artifact / usageを横断照合していない。画面の合否入力、別delegationの存在、reviewer名だけで独立review合格にしない。
 
 到達gateは、owner / realm、Goal ID / revision、leaf、role、別Agent identity、worker対象artifact ID / hash / schema / producer、reviewer delegation / task / artifact、認証済み判定、署名済みReceiptをserverで照合する。同じAgentを表示名だけ変えたreviewerへ割り当てない。
 
@@ -108,7 +108,7 @@ reviewerへの入力は対象artifactの固定版と必要資料のgrantだけ�
 
 ## 8. 下書き・保存・削除・復旧の棚卸し
 
-Jennifer branchの会話は最大8 session・24 message・10分TTLのsessionStorage境界を持つ。これは本人が明示保存したAMC Goalの寿命ではない。会話TTLの満了だけでD1のGoalやusage Receiptを削除したとは表示しない。
+Jenniferの会話は最大8 session・24 message・10分TTLのsessionStorage境界を持つ。これは本人が明示保存したAMC Goalの寿命ではない。会話TTLの満了だけでD1のGoalやusage Receiptを削除したとは表示しない。
 
 到達設計では、会話下書き、保存済みGoal/Job、選択素材、artifact、公開コード、接続credential、usage/金融記録、backupを別data classとして棚卸しする。各classにowner / realm、保存先、目的、共有先、保持条件、削除手順、復旧条件を付ける。
 

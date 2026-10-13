@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。Jenniferの専用branchとmainは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
+2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。JenniferはPR #113からmainへ統合済み（`01d2e418`）、公開/真正review/native/Providerは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
 
 2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 

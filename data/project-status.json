@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-13",
   "milestone": "アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
+  "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
   "tasks": [
     {
       "id": "AMC02",
@@ -7910,7 +7910,7 @@
       "missionCheck": "passed",
       "requirementsExactlyCovered": 50,
       "localReferencesChecked": 90,
-      "independentReview": "passed_including_verified_jennifer_source_and_nvidia_ai_pc",
+      "independentReview": "passed_latest_main_si_and_coherent_cross_system_contracts",
       "rawLog": "/private/tmp/rock-service-design-jennifer-verify.log",
       "rawLogSha256": "4d09f76870b7f2414d9120d4c8e65b4707e8c6ca66ac9f879a0bb0c4fd0bb308",
       "scope": "Prior regression retained as history; current changes include first-party UI/result/help labels and design contracts, with execution logic unchanged.",
@@ -7925,18 +7925,23 @@
         "docs/service-design/05-requirement-coverage.md": "3fffbf0267b27b3b002f4647af90f0d64628942f00b45b0c275d770c708236d8",
         "docs/service-design/README.md": "c0b0328b9333652074f60c34ccfbcb500238c8dca05b383ccc9ae012d41301dc"
       },
-      "runtimeSourceChanged": true
+      "runtimeSourceChanged": true,
+      "uiBrowser": "not_performed_permission_denied"
     },
     "evidence": "docs/evidence/service-design-rebuild.json",
-    "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
+    "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
     "jenniferSource": {
       "canonicalName": "Jennifer",
       "userSpelling": "Jenniffer",
       "branch": "codex/jennifer-zema-execution",
-      "sha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
-      "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+      "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
       "pullRequest": 113,
-      "mainIntegrated": false
+      "mainIntegrated": true,
+      "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+      "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+      "mergedAt": "2026-10-13T18:21:19Z",
+      "branchDeleted": true
     },
     "localGitSaved": true,
     "pullRequest": 114,
@@ -7945,6 +7950,7 @@
     "runtimeLogicChanged": false,
     "displayTextChanged": true,
     "productTerminology": "data/product-terminology.json",
-    "crossSystemAcceptanceScenarios": 12
+    "crossSystemAcceptanceScenarios": 12,
+    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983"
   }
 }

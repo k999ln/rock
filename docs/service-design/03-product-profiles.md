@@ -14,7 +14,7 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 **利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 
-根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、このbranchにWeb構成・計画・実行接続sourceが存在する。main `4273ef02`には未統合。今回、役割と契約を設計へ取り込むが実装sourceはmergeしない。Jevは既存の任意remote evaluatorで、Jenniferと別system。
+根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `3349c2475468443bc7ecd94a4e3782343f514a8f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、Web構成・計画・実行接続sourceはPR #113からmain `01d2e418`へ統合済み。今回の設計branchにもmainを保全mergeした。Jevは既存の任意remote evaluatorで、Jenniferと別system。
 
 入力は本人の依頼、目的/意図、範囲と対象外、成功条件、選択したprojectと許可資料。出力はGoal Contract、依存付き計画、担当profile、必要確認、成果の統合報告。計画は`proposed / advisory-only`、本人確認前のGoalはdraft。計画生成はboundedな決定論的処理で、万能な自然言語LLMや自動実行を実証したものではない。
 
@@ -24,11 +24,11 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 短期計画は既存ZemaのsessionStorage（最大8session/24message/10分TTL）に置き、長期Goalはowner確認後のAMC。Jennifer専用の重複DB/長期memoryを作らない。default data accessはnone、本人が対象を指定する。COLOMBIAは上位contextの登録口で、原本/URL/版/hashは`awaiting-source`。内容を推測して適用せず、大学Columbiaとも同一にしない。
 
-現状のbranchにはworker/reviewer別の確認経路があるが、Workbenchではownerの手動検収を使い、AMC APIはA2A reviewer artifact/usageをserverで相関照合していない。**真正な独立reviewerの証拠が自動検証済みとは表示しない。** 到達設計ではowner/Goal revision/leaf/workerとreviewerの別delegation/成果hash/usage/判定を照合し、手動owner判断とremote review証拠を別に表示する。全leaf完了後も、Jenniferの統合報告を本人が受け入れるまでGoalを受入済みにしない。
+統合sourceにはworker/reviewer別の確認経路があるが、Workbenchではownerの手動検収を使い、AMC APIはA2A reviewer artifact/usageをserverで相関照合していない。**真正な独立reviewerの証拠が自動検証済みとは表示しない。** 到達設計ではowner/Goal revision/leaf/workerとreviewerの別delegation/成果hash/usage/判定を照合し、手動owner判断とremote review証拠を別に表示する。全leaf完了後も、Jenniferの統合報告を本人が受け入れるまでGoalを受入済みにしない。
 
 失敗時は同じGoal/operation/delegationを読み直し、応答喪失を自動再送しない。componentの更新・期限・失効と予算を送信直前に再検査する。actorが変わった時に前の私有計画を表示しない。unknown schema/fieldと権限昇格を拒否する。
 
-branchの同一SHA CIは8件中6成功、2失敗（MCP配布ZIPとsourceの不一致、SPIDER回帰で生成module未生成）。main成功のCIとは別。合格条件はこれらの統合前回帰、owner別保存/再照合、worker/reviewerの証拠相関、context選択、native同等UI、実Provider/D1/secret/trust/callbackの受入。担当はJennifer/Zema projectと既存Sky/AMC/Core/Security担当へ割り当てる。
+最初の参照SHA `d0151e89`はCI6成功/2失敗だったが、`89f869df`/`3349c247`で生成/依存/ZIPを修復し、PR #113 headの8checkとmerge後mainの7checkがそれぞれの同一SHAで全成功。これは公開/Provider/真正review受入ではない。残る合格条件はowner別保存/再照合、worker/reviewerの証拠相関、context選択、native同等UI、実Provider/D1/secret/trust/callbackの受入。担当はJennifer/Zema projectと既存Sky/AMC/Core/Security担当へ割り当てる。
 
 ## RockstarOS
 

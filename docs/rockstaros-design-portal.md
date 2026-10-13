@@ -4,7 +4,7 @@
 
 ## サービスを理解するために最初に読む設計
 
-[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。2026-10-10確定の無料アカウント入口とRQ01〜RQ50を維持し、古いSIM主入口へ戻さない。Jenniferの役割は専用branchで確認済み、main統合・検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
+[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。2026-10-10確定の無料アカウント入口とRQ01〜RQ50を維持し、古いSIM主入口へ戻さない。Jenniferの役割とsourceはmain統合済み（PR #113、`01d2e418`）、真正検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
 
 原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。入口＋6章の7冊と[横断整合契約](service-design/06-consistency-contracts.md)で全体を照合し、製品表示は[si表記契約](../data/product-terminology.json)に統一する。実行ロジック・公開・実機の合格は更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
 

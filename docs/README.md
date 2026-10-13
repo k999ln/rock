@@ -207,7 +207,7 @@ Toolを探す・つなぐ・動かす側の設計。
 | --- | --- | --- | --- |
 | [`sky.md`](sky.md) | 正本 | Skyとは何か。役割、提供形態、Zemaとの連携、接続情報の登録、現在のTool（ready 13・候補22のID付き表）、Telegramからの有効化、利用時の注意と復旧 | 10-07 |
 | [`sky-tools-complete-design.md`](sky-tools-complete-design.md) | 正本 | Sky／Zema／全Tool詳細設計。共通Tool契約と各Toolの入出力・保存・禁止・完了条件 | 10-07 |
-| [`jennifer-coordination.md`](jennifer-coordination.md) | 設計 | Jenniferの役割、COLOMBIA参照、Goal Contract、AMC逆算分解、担当AIへの実dispatch、artifact／Receipt／独立検収、最終統合報告の境界 | 10-13 |
+| [`jennifer-coordination.md`](jennifer-coordination.md) | 設計 | Jenniferの役割、COLOMBIA参照、Goal Contract、AMC逆算分解、担当siへの実dispatch、artifact／Receipt／独立検収、最終統合報告の境界 | 10-13 |
 | [`sky-tool-sdk.md`](sky-tool-sdk.md) | 設計 | Sky Tool SDK／Rock Studio。既存ツールにコードを足してSkyの商品にする導線（RQ37） | 10-03 |
 | [`sky-mcp-architecture.md`](sky-mcp-architecture.md) | 設計 | Agent間接続とMCP接続設計。Capability Router、料金と直接実行の境界、適合とGTA | 10-05 |
 | [`sky-mcp-connector.md`](sky-mcp-connector.md) | 設計 | MCP Connector共通基盤。`servers → connect → prepare → execute`（RQ25） | 10-05 |

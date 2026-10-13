@@ -1,5 +1,5 @@
 <!-- service-design-rebuild:start -->
-サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)は入口＋6章の7冊で、利用体験、共通契約、各製品、実現順、RQ01〜RQ50と12件の横断受入へ進めます。製品表示は小文字のsi、現行は無料アカウント入口。Jennifer（利用者表記Jenniffer）は利用者の全体窓口、Zemaは裏の仕事systemです。専用branchのsourceを確認し、main統合・本番課金・実機・飛行は個別に受け入れます。
+サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)は入口＋6章の7冊で、利用体験、共通契約、各製品、実現順、RQ01〜RQ50と12件の横断受入へ進めます。製品表示は小文字のsi、現行は無料アカウント入口。Jennifer（利用者表記Jenniffer）は利用者の全体窓口、Zemaは裏の仕事systemです。Jennifer sourceはPR #113でmain統合済み。本設計PRのmain統合、本番課金・実機・飛行は個別に受け入れます。
 <!-- service-design-rebuild:end -->
 
 <div align="center">

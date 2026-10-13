@@ -311,7 +311,7 @@ export function createWorkJob(
   if (input.coordination !== undefined && !coordination)
     throw new WorkError('Jennifer task jobの関連付けが不正です。');
   if (coordination && template.id !== 'cloud-agent')
-    throw new WorkError('Jenniferの担当AI jobはCloud Agent形式で作成してください。');
+    throw new WorkError('Jenniferの担当si jobはCloud Agent形式で作成してください。');
   return {
     id: workId(input.id),
     title,

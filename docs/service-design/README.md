@@ -24,7 +24,7 @@
 - **Sky** — 自分に必要なAgentとToolを見つけ、条件を確かめ、購入・接続し、使う場所へ届けるplatform。
 - **Zema** — 依頼を仕事にし、計画・進捗・確認・停止・成果・使用額を見渡す管理役。
 - **RockstarOS** — UIやsiの主張から独立して、本人・有限権限・実行・保存・復旧を強制する共通runtime。対応する機種ではnative OSとしても提供する。
-- **Jennifer（利用者表記 Jenniffer）** — 利用者が話す全体のプロジェクト統括窓口。目的をGoalへ整理し、担当siと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)は専用branchにあり、main統合・本番受入は別。
+- **Jennifer（利用者表記 Jenniffer）** — 利用者が話す全体のプロジェクト統括窓口。目的をGoalへ整理し、担当siと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113でmain統合済み。本番受入は別。
 - **avocadoMini** — 身体・手・日本語音声で遊び、作り、暮らしへ広げる独立した空間端末。現行はR5。
 - **avokadoPro** — NVIDIAのGPU/chipを使う高性能si PC。PCゲームも維持する独立据置PCで、Miniへの接続は任意。
 - **rocketstar** — 衛星輸送・帰還・回収・再使用を目指す独立工学program。一般のAgentから機体管制を行わない。
@@ -66,6 +66,8 @@ Jenniferは会話による統括の窓口。Sky直接操作・host app・ゲス�
 
 要求は[製品ベース](../product-baseline.md)と[data/product-baseline.json](../../data/product-baseline.json)を優先する。最新の明示判断が過去の説明を更新し、原本のバイト列・履歴・受入記録はそのまま保持する。今回の構成案とUX上の選択を、利用者が既に確定した新要望として記録しない。
 
-設計入力のGitHub mainは `4273ef02da9dbb28ede8ba8862b874615fa8a0d7`。同一SHAの6 check成功を読取確認した。mainのcomposition・復旧改善は存在する一方、手元の旧作業コピーにある5大学共用Sky・Fitnessの型付き成果plugin・要求署名版eSIMは別の未保存候補である。未マージをmainへ、CI成功を本番Providerや物理OSへ読み替えない。[再構成の証拠](../evidence/service-design-rebuild.json)に入力・検証・残条件を記録する。
+最初の設計入力のGitHub mainは `4273ef02da9dbb28ede8ba8862b874615fa8a0d7`。同一SHAの6 check成功を読取確認した。mainのcomposition・復旧改善は存在する一方、手元の旧作業コピーにある5大学共用Sky・Fitnessの型付き成果plugin・要求署名版eSIMは別の未保存候補である。未マージをmainへ、CI成功を本番Providerや物理OSへ読み替えない。[再構成の証拠](../evidence/service-design-rebuild.json)に入力・検証・残条件を記録する。
 
-Jenniferのbranch統合・context・検収証拠、課金方式と現行Wallet gateの整合、passkeyの実装・復旧、各端末の実機受入は、[未決定事項と決め方](04-delivery-and-acceptance.md#未決定事項と決め方)に担当と判定条件を置く。
+Jenniferのcontext・真正検収証拠、課金方式と現行Wallet gateの整合、passkeyの実装・復旧、各端末の実機受入は、[未決定事項と決め方](04-delivery-and-acceptance.md#未決定事項と決め方)に担当と判定条件を置く。
+
+最新再確認: PR #113のJennifer sourceはhead `3349c247`の8check成功後、2026-10-13 18:21:19 UTCにmain `01d2e418`へ統合済み。merge SHAの7checkも成功。本設計branchへmainを保全mergeした。原本/context/真正review/native/Providerの未受入条件は引き続き個別に残す。
