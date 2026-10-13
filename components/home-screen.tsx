@@ -48,7 +48,7 @@ const apps: HomeApp[] = [
     id: 'sky',
     name: 'Sky',
     description: '自動化アプリを探して接続',
-    href: '/sky',
+    href: '/os/sky',
     Icon: Cloud,
     color: 'sky',
   },
@@ -249,7 +249,7 @@ export default function HomeScreen() {
           </button>
         </div>
 
-        <Link href="/sky" className={styles.skyWidget}>
+        <Link href="/os/sky" className={styles.skyWidget}>
           <span className={styles.widgetMark} aria-hidden="true">
             <ShieldCheck size={22} />
           </span>
