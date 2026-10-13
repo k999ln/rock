@@ -56,6 +56,8 @@ import {
 } from '@/lib/operations-client';
 import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
 import { createDeliveryRunnerState, hasDeliveryRunnerDraft, type DeliveryRunnerState, type DeliveryRunnerSession } from '@/lib/delivery-runner-state';
+import EnglishCitationsRunner from '@/components/english-citations-runner';
+import EnglishPatentAssistant from '@/components/english-patent-assistant';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -111,17 +113,7 @@ function useRunnerState(session: MrToolRunnerSession | undefined, initialText: s
 }
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
-export function MrToolRunner({
-  tool,
-  initialText = '',
-  onRecord,
-  recordErrorHandledByParent = false,
-  onRunningChange,
-  onOutcome,
-  onFailure,
-  executionDisabled = false,
-  session,
-}: {
+export type MrToolRunnerProps = {
   tool: MrRunner;
   initialText?: string;
   onRecord?: RunRecorder;
@@ -131,7 +123,32 @@ export function MrToolRunner({
   onFailure?: () => void;
   executionDisabled?: boolean;
   session?: MrToolRunnerSession;
-}) {
+  language?: 'ja' | 'en';
+  entry?: string;
+};
+
+export function MrToolRunner(props: MrToolRunnerProps) {
+  const { tool, language = 'ja', entry, onOutcome, executionDisabled = false } = props;
+  if (language === 'en' && tool === 'citations')
+    return <EnglishCitationsRunner onOutcome={onOutcome} executionDisabled={executionDisabled} cardEntry={entry === 'columbia-card'} />;
+  if (language === 'en' && tool === 'patent-assistant')
+    return <EnglishPatentAssistant cardEntry={entry === 'columbia-card'} />;
+  return <MrToolRunnerCore {...props} />;
+}
+
+function MrToolRunnerCore({
+  tool,
+  initialText = '',
+  onRecord,
+  recordErrorHandledByParent = false,
+  onRunningChange,
+  onOutcome,
+  onFailure,
+  executionDisabled = false,
+  session,
+  language = 'ja',
+  entry,
+}: MrToolRunnerProps) {
   const { state, patch, active, runningNow, store } = useRunnerState(session, initialText);
   const deliverySession = useMemo<DeliveryRunnerSession>(() => ({
     getSnapshot: () => store.getSnapshot()?.delivery,
@@ -466,6 +483,8 @@ export function MrToolRunner({
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
         executionDisabled={executionDisabled}
+        language={language}
+        entry={entry}
       />
     );
   if (tool === 'jev-evaluation')

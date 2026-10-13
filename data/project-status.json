@@ -5933,6 +5933,27 @@
         "originalRecord": "CAMPUS01@29202ae6"
       },
       "nextAction": "Revalidate existing Campus runtime and owner/block/report/delete contracts on the integrated candidate before restoring historical done status; production acceptance remains separate."
+    },
+    {
+      "id": "CAMPUS02",
+      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
+      "status": "in_progress",
+      "dependsOn": [
+        "CAMPUS01"
+      ],
+      "evidence": [
+        "docs/sky-nfc-columbia.md",
+        "docs/prompts/sky-nfc-columbia-codex.md",
+        "sites/avocado-mini/worker/index.js",
+        "app/sky/campus/[campusId]/page.tsx",
+        "app/api/campus/route.ts",
+        "app/api/patent-research/route.ts",
+        "lib/campus-tags.ts",
+        "lib/sky-campus.ts",
+        "tests/sky-nfc-columbia.test.mjs",
+        "sites/avocado-mini/tests/preorder.test.mjs"
+      ],
+      "nextAction": "PR上でA1〜A7/A9の統合検証を確認し、A8の実物カード（iPhone/Android）受入と印刷・書き込み・配布はownerの別判断まで保留する。"
     }
   ],
   "phaseGates": [

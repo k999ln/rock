@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
 import { build } from 'esbuild';
+import { CampusError, campusTagId, safeRelativeCampusDestination } from '../lib/campus.ts';
+import { loadRouteFixture } from './route-fixture.mjs';
 const built = await build({ entryPoints: ['lib/campus-store.ts'], bundle: true, write: false, format: 'esm', platform: 'node' });
 const { campusStore } = await import('data:text/javascript;base64,' + Buffer.from(built.outputFiles[0].text).toString('base64'));
 function fixture(t, beforeRun = async () => {}) {
@@ -62,6 +64,54 @@ void test('Campus tag controls and analytics stay private to their owner', async
   await store.clearTagAnalytics('owner', tag.tagId);
   assert.equal((await store.tagAnalytics('owner', 'nyu'))[0].total, 0);
   assert.equal((await store.clearTagAnalytics('owner', tag.tagId)).deletedEvents, 0);
+});
+
+void test('Columbia Sky batches use the allowlisted campus landing destination', async (t) => {
+  const { store } = fixture(t);
+  const [tag] = await store.registerTagBatch('owner', 'columbia', {
+    prefix: 'columbia-sky', start: 1, count: 1, mode: 'research', label: '', placement: '',
+    destination: '/sky/campus/columbia',
+  });
+  assert.equal(tag.destination, '/sky/campus/columbia');
+  const route = loadRouteFixture(new URL('../app/t/[tagId]/route.ts', import.meta.url), new Map([
+    ['@/lib/fund-store', { database: () => ({}) }],
+    ['@/lib/campus', { CampusError, campusTagId, safeRelativeCampusDestination }],
+    ['@/lib/campus-store', { campusStore: () => store }],
+  ]));
+  const response = await route.GET(
+    new Request('https://sky.example.test/t/columbia-sky-0001?source=qr'),
+    { params: Promise.resolve({ tagId: tag.tagId }) },
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get('location'), 'https://sky.example.test/sky/campus/columbia?source=qr');
+  const [analytics] = await store.tagAnalytics('owner', 'columbia');
+  assert.equal(analytics.total, 1);
+  assert.equal(analytics.qr, 1);
+  assert.equal(analytics.nfc, 0);
+  await assert.rejects(
+    store.registerTagBatch('owner', 'columbia', {
+      prefix: 'columbia-sky', start: 2, count: 1, mode: 'research', label: '', placement: '',
+      destination: 'https://evil.example/collect',
+    }),
+    /移動先/,
+  );
+});
+
+void test('maximum valid generated tag IDs are QR-exportable before the batch write', async (t) => {
+  const { store } = fixture(t);
+  const prefix = `columbia-${'x'.repeat(48)}`;
+  const [tag] = await store.registerTagBatch('owner', 'columbia', {
+    prefix, start: 999999, count: 1, mode: 'research', label: '', placement: '',
+    destination: '/sky/campus/columbia',
+  });
+  assert.equal(tag.tagId.length, 64);
+  await assert.rejects(
+    store.registerTagBatch('owner', 'columbia', {
+      prefix: `columbia-${'x'.repeat(49)}`, start: 999999, count: 1,
+      mode: 'research', label: '', placement: '', destination: '/sky/campus/columbia',
+    }),
+    /タグID/,
+  );
 });
 
 void test('an in-flight clear cannot delete analytics after its tag is registered by a new owner', async (t) => {

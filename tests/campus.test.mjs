@@ -114,6 +114,14 @@ void test('campus routes and tag identifiers fail closed', () => {
     safeRelativeCampusDestination('/campus?campus=columbia&mode=research'),
     '/campus?campus=columbia&mode=research',
   );
+  assert.equal(
+    safeRelativeCampusDestination('/sky/campus/columbia'),
+    '/sky/campus/columbia',
+  );
+  assert.throws(
+    () => safeRelativeCampusDestination('/sky/campus/not-a-campus'),
+    CampusError,
+  );
   assert.throws(
     () => safeRelativeCampusDestination('https://evil.example/campus'),
     CampusError,

@@ -10,6 +10,7 @@ import {
   verifiedCampusRequestDomain,
 } from '@/lib/campus';
 import { campusStore } from '@/lib/campus-store';
+import { campusTagCsv, campusTagQrSvg, campusTagUrls } from '@/lib/campus-tags';
 
 function json(value: unknown, status = 200) {
   return Response.json(value, {
@@ -162,19 +163,45 @@ export async function POST(request: Request) {
       const label = typeof input.label === 'string' ? input.label.trim().slice(0, 80) : '';
       const placement =
         typeof input.placement === 'string' ? input.placement.trim().slice(0, 120) : '';
+      const destination =
+        typeof input.destination === 'string' ? input.destination.trim().slice(0, 300) : undefined;
+      const tags = await store.registerTagBatch(user, campus, {
+        prefix,
+        start: input.start as number,
+        count: input.count as number,
+        mode: campusMode(input.mode ?? 'campus'),
+        label,
+        placement,
+        destination,
+      });
+      const urls = tags.map((tag) => campusTagUrls(tag.tagId));
       return json(
         {
-          tags: await store.registerTagBatch(user, campus, {
-            prefix,
-            start: input.start as number,
-            count: input.count as number,
-            mode: campusMode(input.mode ?? 'campus'),
-            label,
-            placement,
-          }),
+          tags: tags.map((tag, index) => ({
+            ...tag,
+            nfcUrl: urls[index].nfcUrl,
+            qrUrl: urls[index].qrUrl,
+            qrSvg: campusTagQrSvg(urls[index].qrUrl),
+          })),
+          csv: campusTagCsv(urls),
         },
         201,
       );
+    }
+
+    if (action === 'exportTags') {
+      const campus = campusId(input.campusId);
+      const tags = await store.tagAnalytics(user, campus);
+      const urls = tags.map((tag) => campusTagUrls(tag.tagId));
+      return json({
+        tags: tags.map((tag, index) => ({
+          tagId: tag.tagId,
+          nfcUrl: urls[index].nfcUrl,
+          qrUrl: urls[index].qrUrl,
+          qrSvg: campusTagQrSvg(urls[index].qrUrl),
+        })),
+        csv: campusTagCsv(urls),
+      });
     }
 
     if (action === 'report') {

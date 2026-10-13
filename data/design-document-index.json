@@ -916,6 +916,24 @@
         "json_and_prompt_export",
         "explicit_local_codex_single_task_runner"
       ],
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": "components/amc-english-workspace.tsx",
+        "states": [
+          "goal",
+          "plan",
+          "work",
+          "review",
+          "accepted"
+        ],
+        "storage": "browser_localStorage_only",
+        "externalExecution": false,
+        "canonicalOwnerLedgerConnected": false,
+        "scope": "limited_card_draft_not_zema_goal_or_cross_device_continuation",
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      },
       "missionBoardRendering": {
         "scope": "canonical_squad_board_only",
         "text": "createElement_and_textContent",
@@ -1278,7 +1296,17 @@
     },
     {
       "id": "mr-citations",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": "components/english-citations-runner.tsx",
+        "processing": "browser_local_pure",
+        "outputHeading": "Sources",
+        "externalTransfer": false,
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      }
     },
     {
       "id": "mr-delivery",
@@ -1399,6 +1427,24 @@
     {
       "id": "rockstar-patent-assistant",
       "catalogStatus": "ready",
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": [
+          "components/english-patent-assistant.tsx",
+          "lib/patent-assistant.ts",
+          "app/api/patent-research/route.ts"
+        ],
+        "localDraft": true,
+        "onlineResearchVisible": false,
+        "apiGate": "query_entry_rejected_before_body_auth_pricing_or_provider",
+        "officialDomainsAdded": [
+          "uspto.gov"
+        ],
+        "productionProviderExecutionVerified": false,
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      },
       "recoveredContractReferences": [
         "docs/sky-tools-complete-design.md",
         "lib/local-guide-history.ts",

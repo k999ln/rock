@@ -88,6 +88,7 @@ README.md ─────────────── これは何か（表玄
 | 料金・手数料はどうなっている？ | [仕様変遷 §3.3](spec-history.md#33-料金手数料) → [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
 | クラウドのAgentはどう動く？ | [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) |
 | 使っていない携帯の計算力をどう束ねる？ | [Sky Compute Grid](sky-compute-grid.md) |
+| NFCカードからSkyを開くには？（Columbiaの学生向け） | [Sky NFCカード](sky-nfc-columbia.md) / [Campus NFC・QR入口](campus-layer.md#nfc--qr-physical-entry) |
 | 機器の回線・SIM購入claim（2026-10-10から任意部品） | [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [利用権claim](sim-service-entitlement-claims.md) |
 | avocadoMiniの現行設計 | [R5統合基本設計](avocado-mini-r5/README.md) |
 | avocadoMiniの昔の形 | [仕様変遷 §3.5](spec-history.md#35-avocadominiの形) → E3（削除済み） / E2（削除済み） / E1（削除済み） |
@@ -212,6 +213,7 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-role-agents-20260912.md`](sky-role-agents-20260912.md) | 設計 | Skyの役割エージェント（担当）の仕様と会話契約 | 09-12 |
 | [`sky-network-economy.md`](sky-network-economy.md) | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
 | [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ精算候補へするVirtual Compute Plant設計 | 10-10 |
+| [`sky-nfc-columbia.md`](sky-nfc-columbia.md) | 設計 | Columbiaの学生に配るNFCカード。タッチで英語の「Sky for Columbia students」を開き、出典整理・AMC・特許アシスタントへ進む | 10-12 |
 | [`sky-mr-automation-candidates.md`](sky-mr-automation-candidates.md) | 設計 | 旧 `Mr.` Hubの自動化11件をSkyの導入候補にする設計 | 09-20 |
 | [`mr-integration.md`](mr-integration.md) | 設計 | `Mr.` からの取り込み範囲、固定原本とhash、license | 10-03 |
 | [`pc-citations-adapter.md`](pc-citations-adapter.md) | 設計 | PC出典整理の実処理接続（固定CLI、上限、cleanup） | 10-02 |
@@ -385,7 +387,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`research.md`](research.md) | 記録 | 設計に使った一次資料 | 09-05 |
 | [`design-implementation-alignment-20260909.md`](design-implementation-alignment-20260909.md) | 履歴 | 設計・プロンプトと実装の再照合（2026-09-09） | 09-12 |
 
-関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（3ファイル）／[`templates/`](templates/)（4ファイル）
+関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（4ファイル）／[`templates/`](templates/)（4ファイル）
 ### P. 証拠・素材
 
 | フォルダ | 何が入っているか |
@@ -406,7 +408,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
 | [`rocketstar-design/`](rocketstar-design/README.md) | 214 | rocketstar 設計アーカイブの最新版（R1.0完全版、RockstarOS完全版v1.0の付録、コロニーC0.1、A-LINK、ボタン）。旧RETURN-1/C3版・作業フォルダ・ZIPは削除済み |
 | [`evidence/`](evidence/) | 763 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
-| [`prompts/`](prompts/) | 3 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
+| [`prompts/`](prompts/) | 4 | 現行の再開指示、台帳・承認記録の理解に必要な原文、Codexへの実装依頼（[Sky NFCカード](prompts/sky-nfc-columbia-codex.md)）。現行入口は `data/product-baseline.json.nextPrompt` |
 | [`templates/`](templates/) | 4 | 受入報告などの雛形 |
 | [`contracts/`](contracts/) | 3 | Sky commerce v2の契約案（SQL・TypeScript） |
 | [`design-validation/`](design-validation/README.md) | 5 | 設計の状態モデル検証（commerce state model） |
