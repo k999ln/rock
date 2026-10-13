@@ -59,7 +59,10 @@ const secondAgentCard = {
     protocolVersion: '1.0',
   }],
 };
-const migrations = await readD1Migrations(resolve(repository, 'drizzle'));
+const migrations = [
+  ...await readD1Migrations(resolve(repository, 'drizzle-legacy/pre-site-bridge')),
+  ...await readD1Migrations(resolve(repository, 'drizzle-legacy/post-site-bridge')),
+];
 const a2aMigrations = migrations.filter((migration) => {
   const number = Number(migration.name.slice(0, 4));
   return number === 10 || number === 16 || (number >= 19 && number <= 26) || number === 33 || number === 39 || number === 40 ||
