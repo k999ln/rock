@@ -1,4 +1,9 @@
-import { catalogConnectionTools, catalogJobTools, type CatalogToolId, type TrackedCatalogToolId } from './catalog.ts';
+import {
+  catalogConnectionTools,
+  catalogJobTools,
+  type CatalogToolId,
+  type TrackedCatalogToolId,
+} from './catalog.ts';
 import { defaultFund, distributeFund, validateFund } from './fund.ts';
 import {
   isSensitiveConnectionKey,
@@ -8,6 +13,12 @@ import {
   type SkyProvider,
   type SkyProviderStatus,
 } from './sky-connections.ts';
+import {
+  SKY_PHOENIX_RETENTION_MS,
+  SKY_PHOENIX_VERSION,
+  type SkyPhoenixEvent,
+  type SkyPhoenixEventType,
+} from './sky-phoenix.ts';
 
 // Keep the persisted connector identity and tracked-job admission aligned with
 // the shared catalog; readiness in that catalog never grants execution by itself.
@@ -71,6 +82,16 @@ export type SkyProviderConnection = {
   updatedAt: number;
 };
 const SKY_CONSENT_VERSION = '2026-09-12';
+const SKY_FEED_CONSENT_VERSION = '2026-10-13';
+const SKY_FEED_EVENT_TYPES = new Set<SkyPhoenixEventType>([
+  'impression',
+  'detail',
+  'route',
+  'launch',
+  'save',
+  'unsave',
+  'connect',
+]);
 export class OperationError extends Error {
   status: number;
   constructor(message: string, status = 400) {
@@ -394,12 +415,15 @@ export function operations(
     if (v.saved) {
       await statement(
         'INSERT INTO sky_library_items (user_id,tool,saved_at) VALUES (?,?,?) ON CONFLICT(user_id,tool) DO NOTHING',
-        user, tool, clock(),
+        user,
+        tool,
+        clock(),
       ).run();
     } else {
       await statement(
         'DELETE FROM sky_library_items WHERE user_id = ? AND tool = ?',
-        user, tool,
+        user,
+        tool,
       ).run();
     }
     // A bookmark never creates execution consent, a purchase entitlement or a job.
@@ -430,6 +454,250 @@ export function operations(
     };
   }
 
+  async function skyFeedHistory() {
+    const now = clock();
+    await statement(
+      'DELETE FROM sky_feed_history_events WHERE user_id = ? AND occurred_at < ?',
+      user,
+      now - SKY_PHOENIX_RETENTION_MS,
+    ).run();
+    const [settings, rows, outcomes] = await Promise.all([
+      statement(
+        `SELECT enabled, consent_version AS consentVersion,
+          algorithm_version AS algorithmVersion, updated_at AS updatedAt
+         FROM sky_feed_personalization_settings WHERE user_id = ?`,
+        user,
+      ).first<{
+        enabled: number;
+        consentVersion: string;
+        algorithmVersion: string;
+        updatedAt: number;
+      }>(),
+      statement(
+        `SELECT id, session_id AS sessionId, tool AS toolId,
+          event_type AS type, occurred_at AS at, dwell_ms AS dwellMs,
+          position FROM sky_feed_history_events
+         WHERE user_id = ? AND occurred_at >= ? AND id IN (
+           SELECT id FROM sky_feed_history_events WHERE user_id = ?
+           ORDER BY occurred_at DESC, id DESC LIMIT 800
+         )
+         ORDER BY occurred_at ASC, id ASC LIMIT 800`,
+        user,
+        now - SKY_PHOENIX_RETENTION_MS,
+        user,
+      ).all<SkyPhoenixEvent>(),
+      statement(
+        `SELECT id, tool, status, created_at AS createdAt FROM tool_runs
+         WHERE user_id = ? AND status IN ('completed', 'failed')
+         ORDER BY created_at DESC LIMIT 100`,
+        user,
+      ).all<{
+        id: string;
+        tool: string;
+        status: 'completed' | 'failed';
+        createdAt: string;
+      }>(),
+    ]);
+    const outcomeEvents: SkyPhoenixEvent[] =
+      settings?.enabled === 1
+        ? outcomes.results.flatMap((outcome) => {
+            const at = Date.parse(outcome.createdAt);
+            if (
+              !Number.isSafeInteger(at) ||
+              at <=
+                Math.max(now - SKY_PHOENIX_RETENTION_MS, settings.updatedAt) ||
+              !SKY_CONNECTION_TOOLS.includes(outcome.tool as SkyConnectionTool)
+            )
+              return [];
+            return [
+              {
+                id: outcome.id,
+                sessionId: outcome.id,
+                toolId: outcome.tool,
+                type: outcome.status === 'completed' ? 'complete' : 'fail',
+                at,
+              } satisfies SkyPhoenixEvent,
+            ];
+          })
+        : [];
+    return {
+      enabled: settings?.enabled === 1,
+      consentVersion: settings?.consentVersion ?? SKY_FEED_CONSENT_VERSION,
+      algorithmVersion: settings?.algorithmVersion ?? SKY_PHOENIX_VERSION,
+      updatedAt: settings?.updatedAt ?? null,
+      events: [...rows.results, ...outcomeEvents]
+        .sort((a, b) => a.at - b.at || a.id.localeCompare(b.id))
+        .slice(-800),
+      retentionDays: 30,
+    };
+  }
+
+  async function setSkyFeedPersonalization(value: unknown) {
+    const v = object(value, ['enabled']);
+    if (typeof v.enabled !== 'boolean')
+      throw new OperationError('おすすめ学習の設定を確認してください。');
+    const now = clock();
+    const writes = [
+      statement(
+        `INSERT INTO sky_feed_personalization_settings
+          (user_id, enabled, consent_version, algorithm_version, updated_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(user_id) DO UPDATE SET enabled = excluded.enabled,
+           consent_version = excluded.consent_version,
+           algorithm_version = excluded.algorithm_version,
+           updated_at = excluded.updated_at`,
+        user,
+        Number(v.enabled),
+        SKY_FEED_CONSENT_VERSION,
+        SKY_PHOENIX_VERSION,
+        now,
+      ),
+    ];
+    if (!v.enabled)
+      writes.push(
+        statement(
+          'DELETE FROM sky_feed_history_events WHERE user_id = ?',
+          user,
+        ),
+      );
+    await db.batch(writes);
+    return {
+      enabled: v.enabled,
+      consentVersion: SKY_FEED_CONSENT_VERSION,
+      algorithmVersion: SKY_PHOENIX_VERSION,
+      updatedAt: now,
+    };
+  }
+
+  async function recordSkyFeedEvents(value: unknown) {
+    const v = object(value, ['events']);
+    if (!Array.isArray(v.events) || v.events.length < 1 || v.events.length > 20)
+      throw new OperationError('おすすめ履歴は1〜20件ずつ送信してください。');
+    const now = clock();
+    const setting = await statement(
+      'SELECT enabled FROM sky_feed_personalization_settings WHERE user_id = ?',
+      user,
+    ).first<{ enabled: number }>();
+    if (setting?.enabled !== 1)
+      throw new OperationError('おすすめ学習をオンにしてください。', 409);
+
+    const events = v.events.map((raw): SkyPhoenixEvent => {
+      const item = object(raw, [
+        'id',
+        'sessionId',
+        'toolId',
+        'type',
+        'at',
+        'dwellMs',
+        'position',
+      ]);
+      const id = uuid(item.id);
+      const sessionId = uuid(item.sessionId);
+      const toolId = skyConnectionToolName(item.toolId);
+      if (
+        typeof item.type !== 'string' ||
+        !SKY_FEED_EVENT_TYPES.has(item.type as SkyPhoenixEventType)
+      )
+        throw new OperationError('おすすめ履歴の操作種別を確認してください。');
+      const at = int(item.at, now + 30_000, now - SKY_PHOENIX_RETENTION_MS);
+      const dwellMs =
+        item.dwellMs === undefined
+          ? undefined
+          : int(item.dwellMs, 30_000, 1_000);
+      const position =
+        item.position === undefined ? undefined : int(item.position, 200);
+      if (item.type !== 'impression' && dwellMs !== undefined)
+        throw new OperationError('滞在時間は表示履歴にだけ記録できます。');
+      if (dwellMs !== undefined && ![1_000, 10_000, 30_000].includes(dwellMs))
+        throw new OperationError(
+          '滞在時間は定義済みbucketで記録してください。',
+        );
+      return {
+        id,
+        sessionId,
+        toolId,
+        type: item.type as SkyPhoenixEventType,
+        at,
+        ...(dwellMs === undefined ? {} : { dwellMs }),
+        ...(position === undefined ? {} : { position }),
+      };
+    });
+
+    const seen = new Set<string>();
+    for (const event of events) {
+      if (seen.has(event.id))
+        throw new OperationError('同じおすすめ履歴IDが重複しています。');
+      seen.add(event.id);
+      const existing = await statement(
+        `SELECT session_id AS sessionId, tool AS toolId, event_type AS type,
+          occurred_at AS at, dwell_ms AS dwellMs, position
+         FROM sky_feed_history_events WHERE user_id = ? AND id = ?`,
+        user,
+        event.id,
+      ).first<Omit<SkyPhoenixEvent, 'id'>>();
+      if (
+        existing &&
+        (existing.sessionId !== event.sessionId ||
+          existing.toolId !== event.toolId ||
+          existing.type !== event.type ||
+          existing.at !== event.at ||
+          (existing.dwellMs ?? undefined) !== event.dwellMs ||
+          (existing.position ?? undefined) !== event.position)
+      )
+        throw new OperationError(
+          '同じおすすめ履歴IDで異なる内容は保存できません。',
+          409,
+        );
+    }
+
+    await db.batch([
+      statement(
+        'DELETE FROM sky_feed_history_events WHERE user_id = ? AND occurred_at < ?',
+        user,
+        now - SKY_PHOENIX_RETENTION_MS,
+      ),
+      ...events.map((event) =>
+        statement(
+          `INSERT OR IGNORE INTO sky_feed_history_events
+            (id, user_id, session_id, tool, event_type, occurred_at, dwell_ms, position, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          event.id,
+          user,
+          event.sessionId,
+          event.toolId,
+          event.type,
+          event.at,
+          event.dwellMs ?? null,
+          event.position ?? null,
+          now,
+        ),
+      ),
+      statement(
+        `DELETE FROM sky_feed_history_events WHERE user_id = ? AND id NOT IN (
+          SELECT id FROM sky_feed_history_events WHERE user_id = ?
+          ORDER BY occurred_at DESC, id DESC LIMIT 800
+        )`,
+        user,
+        user,
+      ),
+    ]);
+    return { accepted: events.length, algorithmVersion: SKY_PHOENIX_VERSION };
+  }
+
+  async function clearSkyFeedHistory() {
+    const now = clock();
+    await db.batch([
+      statement('DELETE FROM sky_feed_history_events WHERE user_id = ?', user),
+      statement(
+        `UPDATE sky_feed_personalization_settings SET updated_at = ?
+         WHERE user_id = ?`,
+        now,
+        user,
+      ),
+    ]);
+    return { cleared: true };
+  }
+
   const providerColumns = `provider, status, config, secret_ref AS secretRef,
     connected_at AS connectedAt, updated_at AS updatedAt, revision`;
   type ProviderRow = Omit<SkyProviderConnection, 'config'> & { config: string };
@@ -438,24 +706,38 @@ export function operations(
     try {
       const parsed: unknown = JSON.parse(row.config);
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
-        config = Object.fromEntries(Object.entries(parsed).filter(
-          ([key, value]) => typeof value === 'string' && !isSensitiveConnectionKey(key),
-        ));
-    } catch { /* Retain the existing behavior for malformed legacy metadata. */ }
+        config = Object.fromEntries(
+          Object.entries(parsed).filter(
+            ([key, value]) =>
+              typeof value === 'string' && !isSensitiveConnectionKey(key),
+          ),
+        );
+    } catch {
+      /* Retain the existing behavior for malformed legacy metadata. */
+    }
     return { ...row, config };
   }
   async function listSkyProviderConnections() {
     const { results } = await statement(
       `SELECT ${providerColumns} FROM sky_provider_connections WHERE user_id = ?
-       ORDER BY updated_at DESC, provider ASC`, user,
+       ORDER BY updated_at DESC, provider ASC`,
+      user,
     ).all<ProviderRow>();
     return results.map(providerRow);
   }
 
   async function saveSkyProviderConnection(value: unknown) {
-    const v = object(value, ['provider', 'status', 'config', 'expectedRevision']),
+    const v = object(value, [
+        'provider',
+        'status',
+        'config',
+        'expectedRevision',
+      ]),
       provider = v.provider;
-    const expectedRevision = int(v.expectedRevision, Number.MAX_SAFE_INTEGER - 1);
+    const expectedRevision = int(
+      v.expectedRevision,
+      Number.MAX_SAFE_INTEGER - 1,
+    );
     if (!isSkyProvider(provider))
       throw new OperationError('対応していない接続先です。');
     if (
@@ -467,7 +749,9 @@ export function operations(
     if (!v.config || typeof v.config !== 'object' || Array.isArray(v.config))
       throw new OperationError('接続情報の形式を確認してください。');
     const config: Record<string, string> = {};
-    for (const [key, raw] of Object.entries(v.config as Record<string, unknown>)) {
+    for (const [key, raw] of Object.entries(
+      v.config as Record<string, unknown>,
+    )) {
       if (
         !/^[a-zA-Z][a-zA-Z0-9_]{0,39}$/.test(key) ||
         isSensitiveConnectionKey(key)
@@ -481,7 +765,8 @@ export function operations(
     }
     if (provider === 'routing') {
       for (const field of providerDefinition(provider).fields) {
-        if (!config[field.id] && field.placeholder) config[field.id] = field.placeholder;
+        if (!config[field.id] && field.placeholder)
+          config[field.id] = field.placeholder;
       }
       for (const key of ['realtimeVoice', 'telephony']) {
         if (config[key] && config[key] !== 'livekit')
@@ -495,28 +780,45 @@ export function operations(
     const status = v.status as SkyProviderStatus;
     if (
       status === 'ready' &&
-      providerDefinition(provider).fields.some((field) => !field.optional && !config[field.id])
+      providerDefinition(provider).fields.some(
+        (field) => !field.optional && !config[field.id],
+      )
     )
       throw new OperationError('必要な接続情報を入力してください。');
     const now = clock();
     // One statement owns both the comparison and write. Never re-read after writing:
     // a second writer may already have advanced the row before this response returns.
-    const row = expectedRevision === 0
+    const row =
+      expectedRevision === 0
       ? await statement(
         `INSERT INTO sky_provider_connections
           (user_id, provider, status, config, secret_ref, connected_at, updated_at, revision)
          VALUES (?, ?, ?, ?, NULL, ?, ?, 1)
          ON CONFLICT(user_id, provider) DO NOTHING RETURNING ${providerColumns}`,
-        user, provider, status, JSON.stringify(config), status === 'ready' ? now : null, now,
+            user,
+            provider,
+            status,
+            JSON.stringify(config),
+            status === 'ready' ? now : null,
+            now,
       ).first<ProviderRow>()
       : await statement(
         `UPDATE sky_provider_connections SET status = ?, config = ?, connected_at = ?,
          updated_at = ?, revision = revision + 1
          WHERE user_id = ? AND provider = ? AND revision = ? RETURNING ${providerColumns}`,
-        status, JSON.stringify(config), status === 'ready' ? now : null, now,
-        user, provider, expectedRevision,
+            status,
+            JSON.stringify(config),
+            status === 'ready' ? now : null,
+            now,
+            user,
+            provider,
+            expectedRevision,
       ).first<ProviderRow>();
-    if (!row) throw new OperationError('別の画面で設定が更新されました。最新設定を確認してから保存してください。', 409);
+    if (!row)
+      throw new OperationError(
+        '別の画面で設定が更新されました。最新設定を確認してから保存してください。',
+        409,
+      );
     return providerRow(row);
   }
 
@@ -629,12 +931,14 @@ export function operations(
         reversesId: null,
       };
     }
-    const recorded = () => statement(
+    const recorded = () =>
+      statement(
       `SELECT ${bookColumns} FROM book_records WHERE id = ? AND user_id = ?`,
       id,
       user,
     ).first<BookRecord>();
-    const sameRecord = (record: BookRecord) => Object.entries(data).every(
+    const sameRecord = (record: BookRecord) =>
+      Object.entries(data).every(
       ([key, value]) => record[key as keyof BookRecord] === value,
     );
     const existing = await recorded();
@@ -797,6 +1101,10 @@ export function operations(
     listSkyLibrary,
     saveSkyLibrary,
     connectSky,
+    skyFeedHistory,
+    setSkyFeedPersonalization,
+    recordSkyFeedEvents,
+    clearSkyFeedHistory,
     listSkyProviderConnections,
     saveSkyProviderConnection,
     device,
