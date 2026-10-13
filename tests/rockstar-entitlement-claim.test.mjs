@@ -91,11 +91,11 @@ await test('D1 claim is atomically bound to one account and repeat redemption is
   }));
   t.after(() => mf.dispose());
   const db = await mf.getD1Database('DB');
-  const migration = readFileSync(new URL('../drizzle/0039_rockstar_service_entitlements.sql', import.meta.url), 'utf8');
+  const migration = readFileSync(new URL('../drizzle-legacy/post-site-bridge/0039_rockstar_service_entitlements.sql', import.meta.url), 'utf8');
   for (const statement of migration.split('--> statement-breakpoint').filter((part) => part.trim())) await db.prepare(statement).run();
-  const eventMigration = readFileSync(new URL('../drizzle/0040_rockstar_entitlement_events.sql', import.meta.url), 'utf8');
+  const eventMigration = readFileSync(new URL('../drizzle-legacy/post-site-bridge/0040_rockstar_entitlement_events.sql', import.meta.url), 'utf8');
   for (const statement of eventMigration.split('--> statement-breakpoint').filter((part) => part.trim())) await db.prepare(statement).run();
-  const oneTimePurchase = readFileSync(new URL('../drizzle/0050_rockstar_entitlement_purchase_once.sql', import.meta.url), 'utf8');
+  const oneTimePurchase = readFileSync(new URL('../drizzle-legacy/post-site-bridge/0050_rockstar_entitlement_purchase_once.sql', import.meta.url), 'utf8');
   for (const statement of oneTimePurchase.split('--> statement-breakpoint').filter((part) => part.trim())) await db.prepare(statement).run();
   const claim = await signedClaim();
   const verified = await verifyRockstarEntitlementClaim(claim, claimCode, trustedRockstarEntitlementIssuerKeyResolver(configuration), now);

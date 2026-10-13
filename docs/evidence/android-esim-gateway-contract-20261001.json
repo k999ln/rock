@@ -41,7 +41,7 @@
       "serverEnrollmentAndBrokerBinderWire": "not_implemented",
       "installationEvidence": "synthetic_fixture_only"
     },
-    "databaseMigration": "drizzle/0036_nostalgic_miek.sql adds the entitlement key algorithm and public-key fingerprint pin; database:check passes.",
+    "databaseMigration": "drizzle-legacy/post-site-bridge/0036_nostalgic_miek.sql adds the entitlement key algorithm and public-key fingerprint pin; database:check passes.",
     "focusedVerification": {
       "result": "passed",
       "eSimTests": 24,

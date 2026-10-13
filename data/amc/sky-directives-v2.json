@@ -2480,7 +2480,7 @@
         "lib/fund-store.ts",
         "db/schema.ts",
         "lib/workflow.ts",
-        "drizzle/0018_sky_commerce.sql",
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
         "drizzle/0019_sky_library.sql"
       ],
       "writePaths": [
@@ -2599,7 +2599,7 @@
         "lib/fund-store.ts",
         "db/schema.ts",
         "lib/workflow.ts",
-        "drizzle/0018_sky_commerce.sql",
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
         "drizzle/0019_sky_library.sql"
       ],
       "writePaths": [
@@ -2717,7 +2717,7 @@
         "lib/fund-store.ts",
         "db/schema.ts",
         "lib/workflow.ts",
-        "drizzle/0018_sky_commerce.sql",
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
         "drizzle/0019_sky_library.sql"
       ],
       "writePaths": [
@@ -3212,7 +3212,7 @@
         "db/schema.ts",
         "lib/sky-stripe.ts",
         "app/api/sky/commerce/[action]/route.ts",
-        "drizzle/0018_sky_commerce.sql"
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql"
       ],
       "writePaths": [
         "lib/fund-store.ts",
@@ -3348,7 +3348,7 @@
         "db/schema.ts",
         "lib/sky-stripe.ts",
         "app/api/sky/commerce/[action]/route.ts",
-        "drizzle/0018_sky_commerce.sql"
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql"
       ],
       "writePaths": [
         "lib/fund-store.ts",
@@ -3471,7 +3471,7 @@
         "db/schema.ts",
         "lib/sky-stripe.ts",
         "app/api/sky/commerce/[action]/route.ts",
-        "drizzle/0018_sky_commerce.sql"
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql"
       ],
       "writePaths": [
         "lib/fund-store.ts",

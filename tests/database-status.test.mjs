@@ -31,7 +31,7 @@ void test('database status inventories every boundary and keeps production readb
     'OWNER_ACCESS_BLOCKED',
   );
   assert.equal(report.webSchema.tableCount, 82);
-  assert.equal(report.webSchema.migrationCount, 64);
+  assert.equal(report.webSchema.migrationCount, 1);
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('sky_feed_history_events'));
   assert.ok(
@@ -50,7 +50,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('sky_package_runtime_bindings'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_authorizations'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0063_talented_ulik.sql');
+  assert.equal(report.webSchema.latestMigration, '0013_sky_provider_connections.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(

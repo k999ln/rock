@@ -25,10 +25,10 @@
 
 ## Web D1
 
-- expected latest migration: 0063_talented_ulik.sql
-- migration files: 64
+- expected latest migration: 0013_sky_provider_connections.sql
+- migration files: 1
 - accidental duplicate: 0
-- published convergence definitions: 6
+- published convergence definitions: 0
 - Marketplace relation guards: 8
 
 | 分野 | table | 内訳 |

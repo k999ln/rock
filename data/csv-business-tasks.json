@@ -74,7 +74,7 @@
       "evidence": [
         "lib/csv-job-store.ts",
         "app/api/csv-jobs/route.ts",
-        "drizzle/0011_overrated_skaar.sql"
+        "drizzle-legacy/pre-site-bridge/0011_overrated_skaar.sql"
       ]
     },
     {
@@ -154,7 +154,7 @@
       "evidence": [
         "lib/csv-fee-policy.ts",
         "tests/csv-fee-policy.test.mjs",
-        "drizzle/0011_overrated_skaar.sql"
+        "drizzle-legacy/pre-site-bridge/0011_overrated_skaar.sql"
       ]
     },
     {

@@ -73,7 +73,7 @@ void test('Zema result handoff only prefills a new sibling draft and keeps fresh
 void test('one-step redelegation depth is enforced by the store, API and D1 insert trigger', () => {
   const store = readFileSync(resolve(process.cwd(), 'lib/a2a-delegation-store.ts'), 'utf8');
   const api = readFileSync(resolve(process.cwd(), 'app/api/sky/a2a-delegations/route.ts'), 'utf8');
-  const migration = readFileSync(resolve(process.cwd(), 'drizzle/0057_a2a_parent_sequence.sql'), 'utf8');
+  const migration = readFileSync(resolve(process.cwd(), 'drizzle-legacy/post-site-bridge/0057_a2a_parent_sequence.sql'), 'utf8');
   assert.equal(A2A_MAX_REDELEGATION_DEPTH, 1);
   assert.match(store, /getPredecessorDepth/);
   assert.match(store, /a2a_predecessor_depth_exceeded/);

@@ -62,7 +62,7 @@ void test('cloud identity precedence cannot inherit preview permissions or broad
 void test('database enforces one active key per order and rejects nullable active slots', (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  sqlite.exec(readFileSync(new URL('../drizzle/0061_esim_cloud_access_keys.sql', import.meta.url), 'utf8'));
+  sqlite.exec(readFileSync(new URL('../drizzle-legacy/post-site-bridge/0061_esim_cloud_access_keys.sql', import.meta.url), 'utf8'));
   const insert = sqlite.prepare(`INSERT INTO esim_cloud_access_keys
     (id,sky_order_id,owner_user_id,device_ref,entitlement_receipt_sha256,token_sha256,scopes_json,created_at,expires_at,active_slot)
     VALUES (?,'order','alice','device',?,?,'["rockstaros_access"]',1,100,?)`);

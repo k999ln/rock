@@ -233,13 +233,13 @@
     {
       "candidateSha256": "1ce694370b7dd15159437b80bf89296a7e276297750abc5d0d7ce4a017b75d23",
       "classification": "public-artifact-digest",
-      "evidence": "Historical artifact/source checksum field /migration_sha256/drizzle/0038_android_attested_gateway_keys.sql",
+      "evidence": "Historical artifact/source checksum field /migration_sha256/drizzle-legacy/post-site-bridge/0038_android_attested_gateway_keys.sql",
       "source": {
         "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
         "path": "docs/evidence/sky-commerce-sql-main-validation.json",
         "line": 112,
         "field": [
-          "/migration_sha256/drizzle/0038_android_attested_gateway_keys.sql"
+          "/migration_sha256/drizzle-legacy/post-site-bridge/0038_android_attested_gateway_keys.sql"
         ]
       },
       "exactPathCount": 1

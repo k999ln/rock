@@ -422,6 +422,6 @@ Walletのチャージ残高、暗号資産購入、送金指図、複数通貨�
 
 ## 19. 根拠・成果物・検証記録
 
-根拠は本書対象SHAの `lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`、`lib/request-auth.ts`、`lib/sky-tool-package.ts`、`components/sky-commerce.tsx`、`db/schema.ts`、`drizzle/0018_sky_commerce.sql` と、既存Wallet/SDKの型。詳細な行番号と検証結果は `docs/evidence/sky-commerce-design-validation.json` にまとめる。
+根拠は本書対象SHAの `lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`、`lib/request-auth.ts`、`lib/sky-tool-package.ts`、`components/sky-commerce.tsx`、`db/schema.ts`、`drizzle-legacy/post-site-bridge/0018_sky_commerce.sql` と、既存Wallet/SDKの型。詳細な行番号と検証結果は `docs/evidence/sky-commerce-design-validation.json` にまとめる。
 
 外部仕様は2026-10-01に公式Stripe、Cloudflare、MCP、消費者庁資料を確認した。Stripe APIは既存 `2026-08-26.dahlia` を維持し、最新版への無条件変更を避ける。Webhook endpoint版と照会版をsandboxで合わせる。[Stripe versioning](https://docs.stripe.com/api/versioning)、[Dahlia changelog](https://docs.stripe.com/changelog/dahlia)。

@@ -103,10 +103,10 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 64,
-    "latestMigration": "0063_talented_ulik.sql",
+    "migrationCount": 1,
+    "latestMigration": "0013_sky_provider_connections.sql",
     "accidentalDuplicateCount": 0,
-    "publishedConvergenceDeclarations": 6,
+    "publishedConvergenceDeclarations": 0,
     "marketplaceRelationGuardCount": 8,
     "skyReviewGuardCount": 2,
     "migrationJournalMatches": true,
@@ -324,7 +324,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0063_talented_ulik.sql",
+      "expectedAppliedThrough": "0013_sky_provider_connections.sql",
       "tableCount": 82,
       "sourceStatus": "VERIFIED",
       "deployment": {

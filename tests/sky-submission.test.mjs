@@ -78,7 +78,7 @@ void test('Sky stores submissions per owner and keeps them in review state', asy
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
   const migration = readFileSync(
-    new URL('../drizzle/0005_early_the_enforcers.sql', import.meta.url),
+    new URL('../drizzle-legacy/pre-site-bridge/0005_early_the_enforcers.sql', import.meta.url),
     'utf8',
   );
   for (const statement of migration

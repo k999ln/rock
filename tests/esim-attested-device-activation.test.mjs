@@ -36,7 +36,7 @@ const db = await worker.getD1Database('DB');
 const store = esimDeviceEntitlementStore(db);
 
 async function applyMigration(name) {
-  const sql = readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8');
+  const sql = readFileSync(new URL(`../drizzle-legacy/post-site-bridge/${name}`, import.meta.url), 'utf8');
   for (const statement of sql.split('--> statement-breakpoint').filter((part) => part.trim()))
     await db.prepare(statement).run();
 }
