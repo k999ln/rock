@@ -7836,8 +7836,10 @@
     "fullVerify": "exit 0; Node 2144 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
     "githubSaved": true,
     "mainIntegrated": false,
-    "deployed": false,
-    "nextAction": "Review branch CI and integrate into main; then deploy matching Site artifact and validate owner A/B, real Provider output, external app scope/origin/revocation separately.",
-    "verifyLogSha256": "b0da5295fbbe0605ee47541a55c8078224f3eb5b444ba537c10a3f9dcab71a9a"
+    "deployed": true,
+    "deploymentBoundary": "Dedicated Sky Site v40 and avocadoMini Site v12 redirect are live; avoado.si/sky changes browser origin; signed-in owner A/B not verified",
+    "entryUrl": "https://avoado.si/sky",
+    "nextAction": "Review branch CI and integrate into main; design same-origin routing without losing per-user auth, then validate NFC campus routing, owner A/B, real Provider output, and external app scope/origin/revocation separately.",
+    "verifyLogSha256": "28553a06c43ad0f2f1552cac18f689000c10bdd3df5d44d333be5dafbde79ec3"
   }
 }

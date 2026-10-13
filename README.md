@@ -6,9 +6,9 @@
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
-[Try the public Sky preview](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Run it locally](#start-developing)
+[Open Sky from avoado.si/sky](https://avoado.si/sky) · [Run it locally](#start-developing)
 
-The new `/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
+The new `/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. `avoado.si/sky` currently redirects to the dedicated Sky Site, so the browser URL changes to that Site. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
 
 [The promise](#the-promise) · [System map](#system-map) · [From a request to a result](#from-a-request-to-a-result) · [Service atlas](#service-atlas) · [Tool catalog](#sky-tool-catalog) · [Status](#where-it-stands) · [Develop](#start-developing)
 
@@ -48,7 +48,7 @@ Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Materi
 
 ## Try it now
 
-The fastest public preview is [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
+The fastest public preview is [Sky via avoado.si](https://avoado.si/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. The entry redirects to the dedicated Sky Site. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
 In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
 
@@ -296,7 +296,7 @@ Updated: 2026-10-12 / 393 task records (32 parents, 192 children, 169 standalone
 | inspect public RockstarOS packages | [Public release](public-release/rockstaros/README.md) · [native OS guide](systems/rock-star-os/README.md) |
 | inspect the separately deployed Workers | [services/README.md](services/README.md) |
 | see the product preview site | [avocadomini.si](https://avocadomini.si) |
-| try the public Sky preview | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
+| try the public Sky preview | [Sky via avoado.si](https://avoado.si/sky) |
 | read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [Specification history](docs/spec-history.md) |
 
 Most design and work documents are written in Japanese. The README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.
