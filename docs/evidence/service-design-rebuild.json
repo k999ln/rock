@@ -191,7 +191,7 @@
     },
     "clarificationRemoteBranchCount": 17
   },
-  "status": "coherent_design_si_display_and_obsolete_cleanup_verified",
+  "status": "main_integrated_host_and_exact_source_ci_verified",
   "authority": {
     "requirements": "RQ01-RQ50",
     "accountDirection": "2026-10-10 owner confirmed free account; SIM optional; consumer eSIM sale held",
@@ -205,14 +205,14 @@
     "baseSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
     "localCommit": true,
     "githubSaved": true,
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "published": false,
     "initialDocumentCommit": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6",
     "savedContentCommit": "f759f0928d106e1995448659945a91f729586d72",
     "pullRequest": 114,
     "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
-    "pullRequestState": "draft",
-    "ci": "latest_main_integration_candidate_pending",
+    "pullRequestState": "merged",
+    "ci": "accepted_head_9_checks_success_reporting_commit_ci_separate",
     "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
     "previousSameShaCi": {
       "sourceCommit": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
@@ -220,22 +220,39 @@
       "success": 9,
       "observedAt": "2026-10-13T20:35:24Z"
     },
-    "savedCampusHandoffContentCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c"
+    "savedCampusHandoffContentCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+    "mainIntegrationCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+    "acceptedSourceCommit": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e"
   },
   "verification": {
-    "status": "passed",
-    "fullCommand": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "verifiedSourceCommit": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e",
+    "sourceMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
     "nodeVersion": "22.23.3",
+    "command": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
     "exitCode": 0,
-    "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
-    "nodeTests": 2168,
-    "nodePass": 2167,
-    "nodeFail": 0,
+    "nodeTests": 2206,
+    "nodePass": 2205,
     "nodeSkip": 1,
+    "nodeFail": 0,
     "workApiAssertions": 1356,
     "csvAssertions": 385,
-    "webAssetReferences": 190,
+    "webAssetReferences": 201,
     "missingAssets": 0,
+    "rawLog": "/private/tmp/rock-main-final-candidate-verify.log",
+    "rawLogSha256": "8cc2a298d84120744438b1579f56a540c67c3788f28666e974739102e8275f4b",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "b5ace06bd9d2262f7e88cff6f0f44b12a660b39037728ab6f90704c5bfdf98e0",
+      "docs/service-design/02-system-contracts.md": "1b6b7920288c21a9f949735e65c599161d427fa4c31d5fd307702f37060782fa",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "476e38b36443622bf6256ce3c787b62aa88c00ef0329e6d6057479b4ba3284b5",
+      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+      "docs/service-design/README.md": "bcf22b334874be532b428faeec11d020dfd7e2703031849b1be8758f1fcf5cc8"
+    },
+    "independentReview": "passed_RQ50_133_upstream_paths_3261_doc_refs_and_connect_bounded_routing",
+    "upstreamPathsByteIdentical": 133,
+    "relativeReferencesChecked": 3261,
+    "missingReferences": 0,
     "typecheck": "passed",
     "lint": "passed",
     "build": "passed",
@@ -244,26 +261,8 @@
     "projectCheck": "passed",
     "missionCheck": "passed",
     "botCheck": "passed",
-    "requirementsExactlyPreserved": 50,
-    "relativeReferencesChecked": 2800,
-    "missingReferences": 0,
-    "removedPaths": 13,
-    "independentReview": "passed_source_report_vs_HTTP_observation_and_prior_vs_current_verification",
-    "rawLog": "/private/tmp/rock-campus-handoff-node22-verify.log",
-    "rawLogSha256": "61107c28de26722c8c5165ba0e2b749317ca88dd85511291cbf799f4e6374628",
-    "verifiedDocumentSourcesSha256": {
-      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
-      "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
-      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
-      "docs/service-design/04-delivery-and-acceptance.md": "a88de2c5a3f604f641c1efc764d8e22a391ed154715a945f19fa464ffe8b2e71",
-      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
-      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
-      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
-    },
-    "scope": "Current campus-route preservation documentation plus complete host regression using the same Node22 major as GitHub CI. HTTP8URL status/title only; no deployment, source/version, browser, physical NFC/student-slot/Provider or flight acceptance.",
-    "metadataOnlyUpdatesAfterVerification": true,
-    "nodeExecutable": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node",
-    "npmVersion": "10.9.9"
+    "scope": "Current integrated main/PR114 source host regression. No Site deploy, physical device, live billing/provider, student/NFC or flight acceptance.",
+    "metadataOnlyUpdatesAfterVerification": true
   },
   "remaining": [
     "Jennifer authenticated reviewer provenance, COLOMBIA/context, native/provider acceptance; Git main integration and prior CI failures resolved",
@@ -361,17 +360,17 @@
     ]
   },
   "latestRepositoryObservation": {
-    "mainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
-    "recordedDate": "2026-10-13",
-    "mergedUpstreamPrs": [
-      112,
-      115,
-      116,
-      117,
-      118
-    ],
-    "scope": "Git source observation; previous Jennifer7/8 checks retained separately with exact SHAs",
-    "mainSameShaChecks": "not_yet_collected_for_latest_main"
+    "mainSha": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+    "mergedAt": "2026-10-13T21:37:37Z",
+    "pullRequest": 114,
+    "acceptedSourceSha": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e",
+    "acceptedSourceChecks": {
+      "sha": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e",
+      "success": 9,
+      "total": 9
+    },
+    "mergeTreeMatchesAcceptedHead": true,
+    "mainCi": "separate_from_PR_head_checks"
   },
   "historicalAuditAnchors": {
     "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
@@ -722,7 +721,7 @@
     }
   },
   "mainIntegration": {
-    "status": "latest_main_candidate_validation_in_progress",
+    "status": "main_merged",
     "ownerInstruction": "mainへあげて",
     "recordedDate": "2026-10-13",
     "branch": "codex/service-design-rebuild",
@@ -755,7 +754,7 @@
       "first-party si display",
       "immutable original/vendor/acceptance evidence and financial/physical gates"
     ],
-    "actualMainMergePerformed": false,
+    "actualMainMergePerformed": true,
     "deploymentPerformed": false,
     "previousCandidate": {
       "sourceCommit": "110166f647d1018787fc0372d6a0757005ac60d4",
@@ -796,6 +795,152 @@
       "postFixPass": 6,
       "runtimePolicyOtherThanRoutingChanged": false,
       "deploymentPerformed": false
+    },
+    "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+    "mergedAt": "2026-10-13T21:37:37Z",
+    "acceptedSourceCommit": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e",
+    "mainTreeSha": "7169341bfb7674bfb3f4a4186db68b9fe06b616c",
+    "acceptedSourceTreeSha": "7169341bfb7674bfb3f4a4186db68b9fe06b616c",
+    "mergeTreeMatchesAcceptedHead": true,
+    "verification": {
+      "verifiedSourceCommit": "7b27ae7dfa46e9559f08b0345b583f9970df7a6e",
+      "sourceMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+      "nodeVersion": "22.23.3",
+      "command": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 2206,
+      "nodePass": 2205,
+      "nodeSkip": 1,
+      "nodeFail": 0,
+      "workApiAssertions": 1356,
+      "csvAssertions": 385,
+      "webAssetReferences": 201,
+      "missingAssets": 0,
+      "rawLog": "/private/tmp/rock-main-final-candidate-verify.log",
+      "rawLogSha256": "8cc2a298d84120744438b1579f56a540c67c3788f28666e974739102e8275f4b",
+      "verifiedDocumentSourcesSha256": {
+        "docs/service-design/01-service-experience.md": "b5ace06bd9d2262f7e88cff6f0f44b12a660b39037728ab6f90704c5bfdf98e0",
+        "docs/service-design/02-system-contracts.md": "1b6b7920288c21a9f949735e65c599161d427fa4c31d5fd307702f37060782fa",
+        "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+        "docs/service-design/04-delivery-and-acceptance.md": "476e38b36443622bf6256ce3c787b62aa88c00ef0329e6d6057479b4ba3284b5",
+        "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+        "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+        "docs/service-design/README.md": "bcf22b334874be532b428faeec11d020dfd7e2703031849b1be8758f1fcf5cc8"
+      },
+      "independentReview": "passed_RQ50_133_upstream_paths_3261_doc_refs_and_connect_bounded_routing",
+      "upstreamPathsByteIdentical": 133,
+      "relativeReferencesChecked": 3261,
+      "missingReferences": 0,
+      "typecheck": "passed",
+      "lint": "passed",
+      "build": "passed",
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "projectCheck": "passed",
+      "missionCheck": "passed",
+      "botCheck": "passed",
+      "scope": "Current integrated main/PR114 source host regression. No Site deploy, physical device, live billing/provider, student/NFC or flight acceptance."
+    },
+    "acceptedSourceChecks": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:31:52Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471273022/job/115550657248",
+        "name": "public-fixture-tests",
+        "startedAt": "2026-10-13T21:31:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Release signing control tests"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:36:18Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272844/job/115550657258",
+        "name": "prototype",
+        "startedAt": "2026-10-13T21:31:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Rock star Android prototype"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:35:16Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272894/job/115550657244",
+        "name": "verify",
+        "startedAt": "2026-10-13T21:31:40Z",
+        "status": "COMPLETED",
+        "workflowName": "Rock star verification"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:33:51Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272816/job/115550657114",
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "startedAt": "2026-10-13T21:31:39Z",
+        "status": "COMPLETED",
+        "workflowName": "SPIDER CodeQL security"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:32:34Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272847/job/115550657243",
+        "name": "SPIDER / repair regressions",
+        "startedAt": "2026-10-13T21:31:40Z",
+        "status": "COMPLETED",
+        "workflowName": "SPIDER repair regressions"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:33:03Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272834/job/115550656481",
+        "name": "SPIDER / secrets",
+        "startedAt": "2026-10-13T21:31:39Z",
+        "status": "COMPLETED",
+        "workflowName": "SPIDER repository security"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:33:13Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272816/job/115550656603",
+        "name": "SPIDER CodeQL (python)",
+        "startedAt": "2026-10-13T21:31:39Z",
+        "status": "COMPLETED",
+        "workflowName": "SPIDER CodeQL security"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:32:40Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/actions/runs/38471272847/job/115550656794",
+        "name": "SPIDER / production web security measurement",
+        "startedAt": "2026-10-13T21:31:40Z",
+        "status": "COMPLETED",
+        "workflowName": "SPIDER repair regressions"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-13T21:33:06Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/k999ln/rock/runs/115551274694",
+        "name": "CodeQL",
+        "startedAt": "2026-10-13T21:33:03Z",
+        "status": "COMPLETED",
+        "workflowName": ""
+      }
+    ],
+    "siteDeploymentPerformed": false,
+    "postMergeRecordValidation": {
+      "scope": "status/documentation only; executable source unchanged",
+      "metadataCheck": "passed",
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "botCheck": "passed",
+      "newPhysicalOrProviderAcceptance": false
     }
   },
   "jenniferIntegrationObservation": {
@@ -817,5 +962,48 @@
       "success": 7,
       "sha": "01d2e41857e8e713bd5df31476deaea8c942e983"
     }
+  },
+  "previousCampusHandoffVerification": {
+    "status": "passed",
+    "fullCommand": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "22.23.3",
+    "exitCode": 0,
+    "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+    "nodeTests": 2168,
+    "nodePass": 2167,
+    "nodeFail": 0,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 190,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "botCheck": "passed",
+    "requirementsExactlyPreserved": 50,
+    "relativeReferencesChecked": 2800,
+    "missingReferences": 0,
+    "removedPaths": 13,
+    "independentReview": "passed_source_report_vs_HTTP_observation_and_prior_vs_current_verification",
+    "rawLog": "/private/tmp/rock-campus-handoff-node22-verify.log",
+    "rawLogSha256": "61107c28de26722c8c5165ba0e2b749317ca88dd85511291cbf799f4e6374628",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+      "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "a88de2c5a3f604f641c1efc764d8e22a391ed154715a945f19fa464ffe8b2e71",
+      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+    },
+    "scope": "Current campus-route preservation documentation plus complete host regression using the same Node22 major as GitHub CI. HTTP8URL status/title only; no deployment, source/version, browser, physical NFC/student-slot/Provider or flight acceptance.",
+    "metadataOnlyUpdatesAfterVerification": true,
+    "nodeExecutable": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node",
+    "npmVersion": "10.9.9"
   }
 }

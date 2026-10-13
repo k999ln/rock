@@ -392,7 +392,7 @@
           "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
         }
       ],
-      "latestMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+      "latestMainSha": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
       "obsoleteContentCleanup": {
         "requestedAt": "2026-10-13",
         "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
@@ -400,13 +400,16 @@
         "currentRequirementsPreserved": 50,
         "status": "verified_and_github_saved",
         "removedPaths": 13,
-        "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918"
+        "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+        "mainIntegrated": true
       },
       "mainMergeAuthorization": {
         "instruction": "mainへあげて",
         "recordedDate": "2026-10-13",
         "scope": "PR114 design/si/obsolete-content cleanup; preserve latest main; deployment and physical/financial acceptance remain separate"
-      }
+      },
+      "mainIntegrated": true,
+      "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
     }
   },
   "northStar": {

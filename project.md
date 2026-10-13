@@ -10,13 +10,13 @@
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
-旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分はsource `c8c9a888`でNode22.23.3（CIと同じmajor）の全体verifyと独立検収が成功。最終検証記録のCIは別に確認する。利用者の「mainへあげて」を受け、最新main `d779297a`のSky/Phoenix・Columbia・有限ローカルAgent・DB互換移行を保全merge中。以前のsource検証を統合後候補へ流用せず、再検証と同一SHA CI後に通常mergeする。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
+旧文書11件と旧P0表示component2件の削除、契約/si表示/現行R5の同期はmainへ統合済み。最新mainのSky/5大学/成果/DB移行を保全したsource `7b27ae7dfa46e9559f08b0345b583f9970df7a6e`はNode22の全体verifyと同一SHA 9 CIが成功。PR #114は2026-10-13 21:37:37 UTCにmain `59412c04ac37a9aa0a7cb6e488b842b1b98c869b`へ通常mergeされ、treeが受入headと一致した。元のdirty作業コピーは保全、Site再配備は未実施。
 
 ## Git・source・公開の現在地
 
 - **品質改善と仕事composition**：PR #111はmainへ通常merge済み、merge `3ffc21d3a15235e0bde89a118e2f931135a9189e`。検証source `643559b8e00037b1f960afb9dea7bf309534d539`とtree一致、同一sourceの15 CI成功を[証拠](docs/evidence/work-composition-development.json)へ記録済み。
 - **Jennifer**：PR #113はmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合済み。head `3349c2475468443bc7ecd94a4e3782343f514a8f`の8 CIとmergeの7 CIは成功。本設計branchにもmainを保全mergeした。真正review/context/Provider/native受入は統合とは別に残る。
-- **統合設計・si表示**：[PR #114](https://github.com/k999ln/rock/pull/114)に保存済み。整理開始時のbranch HEADは`98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。本設計PRのmain統合とSite配備は未実施。以後の最終sourceとCIは[設計証拠](docs/evidence/service-design-rebuild.json)へ記録する。
+- **統合設計・si表示・旧内容削除**：[PR #114](https://github.com/k999ln/rock/pull/114)はmain `59412c04`へ統合済み。head `7b27ae7d`の9 CI全成功とmerge tree一致を[設計証拠](docs/evidence/service-design-rebuild.json)へ記録。main統合はSite再配備/公開本人/端末/Providerの受入とは別。
 - **公開サービス**：記録済みの公開previewは別artifactのv54/source `b10c56688b9e38045685246c718d2de7c6f92f2c`。公開CSV契約・migrationはmainと区別する。今回のmain統合・文書整理で再配備したとはしない。本番本人の一周、端末download完了、商用課金は未受入。
 
 大学NFCの別artifactは、担当報告によるv49のroute消失→v48復旧と、2026-10-13 20:35 UTCの独立HTTP8URL/200・title確認を[既存の設計証拠](docs/evidence/service-design-rebuild.json)へ記録した。配備source/version・追加browser・実カード・学生枠・有料Providerの受入ではない。同じSiteの公開前後に`/os/sky`と5大学Hubを保全する条件を[実現順](docs/service-design/04-delivery-and-acceptance.md)へ追加した。
@@ -31,7 +31,7 @@ PR #118のSite D1 bridgeと正本migration journalがmain `d779297a`へ統合済
 
 ## 検証済み範囲と残る条件
 
-[サービス設計証拠](docs/evidence/service-design-rebuild.json)には、大学route保全の追記後source `c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c`でNode22.23.3の`npm run verify`成功を記録。Node2168件（2167 pass・既存platform skip1・fail0）、仕事API1356、CSV385、asset190参照/欠落0、型/lint/build、baseline/design/project/mission/bot同期が成功。Node22はCIと同じmajor、公式配布物をSHA照合しGit外へ展開、試験/lock/skip/並列設定は不変。Node24ではAMC試験processでV8内部SIGSEGVが再現し、Node26の同じ58試験は成功、Node22の全体回帰が成功した。Node24の原因修正は未宣言で、失敗と再試験を同証拠へ分けて保存する。独立検収は要望50件、文書参照2800件/欠落0、削除13pathの復元、固定原本/vendor/IMPORT-MANIFEST/既存受入証拠の変更0と、今回の担当報告/HTTP/公開受入の区別を確認した。旧source `5086a16a`の削除後受入は固定履歴として保持する。
+[サービス設計証拠](docs/evidence/service-design-rebuild.json)には、最新main保全後source `7b27ae7dfa46e9559f08b0345b583f9970df7a6e`でNode22.23.3の通常`npm run verify`成功を記録。2206件中2205 pass・既存skip1・fail0、仕事API1356、CSV385、asset201参照/欠落0、型/lint/build、baseline/design/project/mission/work/botが成功。同一head9 CI全成功、main merge tree一致、RQ50、上流133path、文書参照3261/欠落0、旧13path削除/復元、金融/実機gateを独立検収した。過去sourceの検証とNode24のV8 crash未修正は別scopeの履歴として保持する。
 
 現設計/表示変更の追加browser受入は未実施。過去のcomposition受入はdesktop1280/390px、owner分離、保存応答喪失、再取得、原成果保持を同証拠の範囲で参照する。現artifactの公開本人認証、download完了、Provider、本番課金、実機OS/hardware、飛行を成功へ換算しない。
 
@@ -43,7 +43,7 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 ## 次の作業
 
-1. PR #114の最新main保全mergeを再検証し同一SHA CIを確認してmainへ通常mergeする。#112/#115/#116/#117はmain適用済みとし、元dirty候補の未回収差分だけを比較する。削除した旧入口を復活させず設計/優先順を先に同期して、大学NFC・host成果の残候補を保全統合する。実NFC・所属/枠・有料Providerは別受入とする。
+1. main統合済みの設計・入口を対象実装branchへ同期し、元dirty候補の未回収差分と同一公開artifactの受入を比較する。PR #112/#115/#116/#117/#118は既にmain適用済みで、旧文書を復活させない。実NFC・所属/枠・有料Provider・任意claim本番受入は別gateとする。
 2. [横断契約と12受入](docs/service-design/06-consistency-contracts.md)の順で、realm/owner/root/leaf/成果相関 → 状態投影と親取消fence → account期間/Goal予算・価格/pass/後払いadapter → 真正reviewer/Receipt → grant/削除journal/鍵喪失復旧 → authority epoch/機器適合を既存fixtureへ接続する。
 3. 同じ公開artifactで文章素材→処理→検査→本人review→download完了→再取得→レシピ再利用を一周し、操作時間・復旧・改善を測る。JenniferのCOLOMBIA原本、context grant、独立review証拠のserver照合を別に受け入れる。
 4. Mini R5/任意LTE、ProのNVIDIA閉箱BOM/QVL/si/game/熱/復旧、Pixel全OS/QEMU、非金融Game/発明、rocketstarを各workstreamのgateで進める。consumer eSIM、888成功報酬、実交換/LIVE、未受入Providerの実行保留を解除しない。
