@@ -10,7 +10,7 @@
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
-旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分の検査/CIは別に確認する。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
+旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分はsource `c8c9a888`でNode22.23.3（CIと同じmajor）の全体verifyと独立検収が成功。最終検証記録のCIは別に確認する。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
 
 ## Git・source・公開の現在地
 
@@ -25,7 +25,7 @@
 
 ## 検証済み範囲と残る条件
 
-[サービス設計証拠](docs/evidence/service-design-rebuild.json)には、削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`でbundled Node24.19.0の`npm run verify`成功を記録。Node2168件（2167 pass・既存platform skip1・fail0）、仕事API1356、CSV385、asset190参照/欠落0、型/lint/build、baseline/design/project/mission/bot同期が成功。独立検収は要望50件のJSON完全一致、文書参照2800件/欠落0、削除13pathの復元、固定原本/vendor/IMPORT-MANIFEST/既存受入証拠の変更0を確認した。旧sourceでの検証は同証拠内の履歴として保持する。
+[サービス設計証拠](docs/evidence/service-design-rebuild.json)には、大学route保全の追記後source `c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c`でNode22.23.3の`npm run verify`成功を記録。Node2168件（2167 pass・既存platform skip1・fail0）、仕事API1356、CSV385、asset190参照/欠落0、型/lint/build、baseline/design/project/mission/bot同期が成功。Node22はCIと同じmajor、公式配布物をSHA照合しGit外へ展開、試験/lock/skip/並列設定は不変。Node24ではAMC試験processでV8内部SIGSEGVが再現し、Node26の同じ58試験は成功、Node22の全体回帰が成功した。Node24の原因修正は未宣言で、失敗と再試験を同証拠へ分けて保存する。独立検収は要望50件、文書参照2800件/欠落0、削除13pathの復元、固定原本/vendor/IMPORT-MANIFEST/既存受入証拠の変更0と、今回の担当報告/HTTP/公開受入の区別を確認した。旧source `5086a16a`の削除後受入は固定履歴として保持する。
 
 現設計/表示変更の追加browser受入は未実施。過去のcomposition受入はdesktop1280/390px、owner分離、保存応答喪失、再取得、原成果保持を同証拠の範囲で参照する。現artifactの公開本人認証、download完了、Provider、本番課金、実機OS/hardware、飛行を成功へ換算しない。
 

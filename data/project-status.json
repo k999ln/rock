@@ -7893,10 +7893,10 @@
     "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
     "verification": {
       "status": "passed",
-      "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
-      "nodeVersion": "24.19.0",
+      "fullCommand": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+      "nodeVersion": "22.23.3",
       "exitCode": 0,
-      "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+      "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
       "nodeTests": 2168,
       "nodePass": 2167,
       "nodeFail": 0,
@@ -7917,20 +7917,22 @@
       "relativeReferencesChecked": 2800,
       "missingReferences": 0,
       "removedPaths": 13,
-      "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
-      "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
-      "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
+      "independentReview": "passed_source_report_vs_HTTP_observation_and_prior_vs_current_verification",
+      "rawLog": "/private/tmp/rock-campus-handoff-node22-verify.log",
+      "rawLogSha256": "61107c28de26722c8c5165ba0e2b749317ca88dd85511291cbf799f4e6374628",
       "verifiedDocumentSourcesSha256": {
         "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
         "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
         "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
-        "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+        "docs/service-design/04-delivery-and-acceptance.md": "a88de2c5a3f604f641c1efc764d8e22a391ed154715a945f19fa464ffe8b2e71",
         "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
         "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
         "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
       },
-      "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
-      "metadataOnlyUpdatesAfterVerification": true
+      "scope": "Current campus-route preservation documentation plus complete host regression using the same Node22 major as GitHub CI. HTTP8URL status/title only; no deployment, source/version, browser, physical NFC/student-slot/Provider or flight acceptance.",
+      "metadataOnlyUpdatesAfterVerification": true,
+      "nodeExecutable": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node",
+      "npmVersion": "10.9.9"
     },
     "evidence": "docs/evidence/service-design-rebuild.json",
     "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
@@ -7981,10 +7983,13 @@
       "http200": 8,
       "deploymentPerformed": false,
       "sameSiteRoutePreservationGate": "documented",
-      "fullVerifySourceUnchanged": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
       "previousCiSource": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
       "previousCiSuccess": 9,
-      "newDocumentationChecks": "pending"
+      "newDocumentationChecks": "passed",
+      "priorFullVerifySource": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+      "latestFullVerifySource": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+      "nodeVersion": "22.23.3",
+      "node24RuntimeCrash": "documented_unresolved_not_assertion_failure"
     }
   }
 }

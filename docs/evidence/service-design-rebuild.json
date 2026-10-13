@@ -219,14 +219,15 @@
       "checks": 9,
       "success": 9,
       "observedAt": "2026-10-13T20:35:24Z"
-    }
+    },
+    "savedCampusHandoffContentCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c"
   },
   "verification": {
     "status": "passed",
-    "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
-    "nodeVersion": "24.19.0",
+    "fullCommand": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "22.23.3",
     "exitCode": 0,
-    "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
     "nodeTests": 2168,
     "nodePass": 2167,
     "nodeFail": 0,
@@ -247,20 +248,22 @@
     "relativeReferencesChecked": 2800,
     "missingReferences": 0,
     "removedPaths": 13,
-    "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
-    "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
-    "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
+    "independentReview": "passed_source_report_vs_HTTP_observation_and_prior_vs_current_verification",
+    "rawLog": "/private/tmp/rock-campus-handoff-node22-verify.log",
+    "rawLogSha256": "61107c28de26722c8c5165ba0e2b749317ca88dd85511291cbf799f4e6374628",
     "verifiedDocumentSourcesSha256": {
       "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
       "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
       "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
-      "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+      "docs/service-design/04-delivery-and-acceptance.md": "a88de2c5a3f604f641c1efc764d8e22a391ed154715a945f19fa464ffe8b2e71",
       "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
       "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
       "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
     },
-    "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
-    "metadataOnlyUpdatesAfterVerification": true
+    "scope": "Current campus-route preservation documentation plus complete host regression using the same Node22 major as GitHub CI. HTTP8URL status/title only; no deployment, source/version, browser, physical NFC/student-slot/Provider or flight acceptance.",
+    "metadataOnlyUpdatesAfterVerification": true,
+    "nodeExecutable": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node",
+    "npmVersion": "10.9.9"
   },
   "remaining": [
     "Jennifer authenticated reviewer provenance, COLOMBIA/context, native/provider acceptance; Git main integration and prior CI failures resolved",
@@ -615,6 +618,112 @@
       "paidProviderAcceptance": false
     },
     "handoff": "Preserve current deployment source/version and eight routes before/after any same-Site publish; integrate v49 capabilities with v48 routes and reaccept the exact artifact. Do not overwrite a newer deployment with an older candidate.",
-    "verification": "Focused design/metadata checks pending for this documentation update; previous full verify remains bound to5086a16a and previous same-SHA CI to48dcb824."
+    "verification": {
+      "status": "passed",
+      "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+      "focusedChecks": "project:update, metadata:check, baseline:check, design:check, git diff --check",
+      "fullVerify": "Node22.23.3 default test settings; exit0;2168 total/2167 pass/1 existing skip/0fail",
+      "independentReview": "passed",
+      "sourceVersionOrBrowserAccepted": false
+    }
+  },
+  "previousCleanupVerification": {
+    "status": "passed",
+    "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "24.19.0",
+    "exitCode": 0,
+    "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "nodeTests": 2168,
+    "nodePass": 2167,
+    "nodeFail": 0,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 190,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "botCheck": "passed",
+    "requirementsExactlyPreserved": 50,
+    "relativeReferencesChecked": 2800,
+    "missingReferences": 0,
+    "removedPaths": 13,
+    "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
+    "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
+    "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+      "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+    },
+    "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
+    "metadataOnlyUpdatesAfterVerification": true
+  },
+  "runtimeDiagnostics": {
+    "node24": {
+      "version": "24.19.0",
+      "fullVerifyExitCode": 1,
+      "fullLog": "/private/tmp/rock-campus-handoff-verify.log",
+      "fullLogSha256": "b40e4a4af95efd6da1bd583dafa0a3aee4ccb75aea01e0648979d24d49645404",
+      "failedFile": "tests/amc-goal-cli.test.mjs",
+      "standaloneExitCode": 1,
+      "standaloneSignal": "SIGSEGV",
+      "tapLog": "/private/tmp/rock-campus-amc-targeted.tap",
+      "tapLogSha256": "0765e9696a161264253a49f36656b3540fcc064437828a04b99ef10dabb76166",
+      "crashReportFile": "node-2026-10-13-163921.ips",
+      "crashReportSha256": "2f9bdca223dda16be4da08b3df651e06c000dbd2a57c84be2c91103c79396d5c",
+      "observedNativeFrame": "V8 ClearStaleLeftTrimmedPointerVisitor and mark-compact garbage collection; EXC_BAD_ACCESS at0xe",
+      "underlyingCauseFixed": false,
+      "individualCaseResultsObserved": false,
+      "individualAssertionFailureEstablished": false
+    },
+    "node26": {
+      "version": "26.0.0",
+      "scope": "same standalone AMC file only",
+      "tests": 58,
+      "pass": 58,
+      "fail": 0,
+      "exitCode": 0,
+      "log": "/private/tmp/rock-campus-amc-node26.tap",
+      "logSha256": "989cb136951c6aba1beb7f8cad651d086a23c644f53d6cd16e54e5f47ac96657",
+      "notFullVerify": true
+    },
+    "rejectedDiagnosticFlag": {
+      "flag": "NODE_OPTIONS=--no-maglev",
+      "exitCode": 9,
+      "reason": "not permitted in NODE_OPTIONS",
+      "testExecuted": false,
+      "adopted": false
+    },
+    "node22": {
+      "officialRuntime": {
+        "source": "https://nodejs.org/dist/latest-v22.x/node-v22.23.3-darwin-arm64.tar.gz",
+        "sha256": "23b25245dcfb9af7262f8ff142e9e2e0af025368117329e7a7458a51e5922f53",
+        "version": "v22.23.3",
+        "node": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node"
+      },
+      "archiveHashMatchesOfficialShasums": true,
+      "ciMajor": 22,
+      "standaloneTests": 58,
+      "standalonePass": 58,
+      "standaloneExitCode": 0,
+      "standaloneLog": "/private/tmp/rock-campus-amc-node22.tap",
+      "standaloneLogSha256": "efc808fe93bc96b2d59cf0a5e977ad8430595c9ee46479678a090221c0aaa8e2",
+      "fullVerifyExitCode": 0,
+      "testSourceChanged": false,
+      "assertionsSkippedOrWeakened": false,
+      "testConcurrencyChanged": false,
+      "globalRuntimeChanged": false,
+      "productDependenciesChanged": false
+    }
   }
 }
