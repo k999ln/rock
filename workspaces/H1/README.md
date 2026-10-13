@@ -56,7 +56,7 @@ G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体
 
 | task | 作業 | 記録状態 / 分類 | 前提待ち・保留 |
 | --- | --- | --- | --- |
-| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了記録あり / 調整 | — |
+| AMC02 | AMC Goal OrchestratorとJenniferの段階承認・本人別Web台帳・専門siへの設定gate付きA2A実dispatch・独立検収を整える | 完了記録あり / 調整 | — |
 | ORG01 | 製品・Skyのsi自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了記録あり / 調整 | — |
 | ORG02 | avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化 | 完了記録あり / 調整 | — |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了記録あり / 調整 | — |

@@ -35,17 +35,18 @@ void test("Zema AMC backcasts an agent request into bounded specialist leaf task
     .filter(({ kind }) => kind === "task")
     .map(({ domain }) => domain);
   assert(domains.includes("frontend"));
-  assert(domains.includes("backend"));
+  assert(!domains.includes("backend"));
   assert(domains.includes("security"));
   assert(domains.includes("agents"));
   assert.equal(draft.planningLimits.maxNodes, 100);
-  const backendImplementation = draft.nodes.find(
-    ({ id }) => id === "task-backend-implementation",
+  const securityImplementation = draft.nodes.find(
+    ({ id }) => id === "task-security-implementation",
   );
-  assert.deepEqual(backendImplementation?.dependsOn, ["task-backend-contract"]);
-  assert(backendImplementation?.contextRefs.includes("lib/jennifer-coordination.ts"));
-  assert(backendImplementation?.allowedPaths.includes("lib/"));
-  assert.equal(backendImplementation?.expectedOutputs.length, 3);
+  assert.deepEqual(securityImplementation?.dependsOn, ["task-security-contract"]);
+  assert(securityImplementation?.contextRefs.includes("lib/jennifer-coordination.ts"));
+  assert(securityImplementation?.allowedPaths.includes("lib/"));
+  assert.equal(securityImplementation?.expectedOutputs.length, 3);
+  assert.equal(draft.planningLimits.initialLeafWave, 1);
   assert.equal(isJenniferAmcDraft(draft), true);
 });
 

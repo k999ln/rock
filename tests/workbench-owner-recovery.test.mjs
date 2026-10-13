@@ -320,6 +320,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
     'rockstar-package-handoff',
     'a2a-result-handoff',
     'sky-package-runtime',
+    'jennifer-execution-reports',
   ])
     modules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
   const compiled = ts.transpileModule(

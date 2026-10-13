@@ -36,7 +36,7 @@ function webDomains(tables) {
     {
       id: 'core',
       label: '仕事・実行・端末・基本台帳',
-      matches: (name) => core.has(name),
+      matches: (name) => core.has(name) || name.startsWith('jennifer_'),
     },
     {
       id: 'sky',

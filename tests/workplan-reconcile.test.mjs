@@ -13,6 +13,13 @@ import { workStore } from '../lib/work-store.ts';
 import { requestUser } from '../lib/request-auth.ts';
 import { a2aDelegationStore } from '../lib/a2a-delegation-store.ts';
 import { rockstarServiceScopeAllowed, missingRockstarServiceScope } from '../lib/rockstar-service-access.ts';
+import * as a2aInputCrypto from '../lib/a2a-input-crypto.ts';
+import * as amcTool from '../lib/amc-tool.ts';
+import * as jenniferAmcExecution from '../lib/jennifer-amc-execution.ts';
+import * as jenniferCoordination from '../lib/jennifer-coordination.ts';
+import * as jenniferExecutionReports from '../lib/jennifer-execution-reports.ts';
+import * as jenniferExecutionStore from '../lib/jennifer-execution-store.ts';
+import { createJenniferCoordinationPlan } from '../lib/jennifer-coordination.ts';
 
 // Real route exports, authentication, reducers, stores and service access.
 // Cloudflare bindings use an in-memory SQLite D1 adapter and a synthetic preview
@@ -32,6 +39,17 @@ function fixture(t) {
       async all() { return { results: sqlite.prepare(sql).all(...args) }; },
       async run() { return { meta: { changes: Number(sqlite.prepare(sql).run(...args).changes) } }; },
     };
+  }, async batch(statements) {
+    sqlite.exec('BEGIN');
+    try {
+      const results = [];
+      for (const statement of statements) results.push(await statement.run());
+      sqlite.exec('COMMIT');
+      return results;
+    } catch (error) {
+      sqlite.exec('ROLLBACK');
+      throw error;
+    }
   } };
   function route(name) {
     const source = readFileSync(new URL(`../app/api/${String(name)}/route.ts`, import.meta.url), 'utf8');
@@ -43,6 +61,12 @@ function fixture(t) {
       '@/lib/amc-sky-web': amcSkyWeb,
       '@/lib/work-store': { workStore }, '@/lib/workflow': workflow,
       '@/lib/a2a-delegation-store': { a2aDelegationStore },
+      '@/lib/a2a-input-crypto': a2aInputCrypto,
+      '@/lib/amc-tool': amcTool,
+      '@/lib/jennifer-amc-execution': jenniferAmcExecution,
+      '@/lib/jennifer-coordination': jenniferCoordination,
+      '@/lib/jennifer-execution-reports': jenniferExecutionReports,
+      '@/lib/jennifer-execution-store': jenniferExecutionStore,
       '@/lib/rockstar-service-access': { rockstarServiceScopeAllowed, missingRockstarServiceScope },
       'cloudflare:workers': { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } },
     };
@@ -130,6 +154,71 @@ await test('AMC and ordinary jobs retain separate events and both Goal/WorkJob r
   assert.deepEqual(await f.store.get('alice', normal.id), normal);
   assert.deepEqual(await f.store.get('alice', amc.id), paused);
   assert.deepEqual(f.snapshot(), before);
+});
+
+await test('Jennifer saves a draft atomically, approves inventory explicitly, and replays the same server operation', async (t) => {
+  const f = fixture(t);
+  const plan = createJenniferCoordinationPlan(
+    '資料を調査して比較し、成果物を作成して',
+    'request-jennifer-route',
+  );
+  const id = randomUUID();
+  const created = await f.call('amc', 'POST', { id, jenniferPlan: plan });
+  assert.equal(created.job.amcGoal.state, 'draft');
+  assert.equal(created.projection.plan.state, 'draft');
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS count FROM work_jobs WHERE id=?').get(id).count, 1);
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS count FROM jennifer_plan_revisions WHERE root_job_id=?').get(id).count, 1);
+  const replayedCreate = await f.call('amc', 'POST', { id, jenniferPlan: plan });
+  assert.deepEqual(replayedCreate.job, created.job);
+
+  const commandId = randomUUID();
+  const approvalBody = {
+    jobId: id,
+    revision: created.job.revision,
+    jennifer: { id: commandId, operation: 'approve_inventory', resolutions: [] },
+  };
+  const approved = await f.call('amc', 'PATCH', approvalBody);
+  assert.equal(approved.job.amcGoal.state, 'active');
+  assert.equal(approved.projection.plan.state, 'inventory_approved');
+  assert.deepEqual(amcTool.amcSummary(approved.job.amcGoal).readyTaskIds, ['task-inventory']);
+  const replayedApproval = await f.call('amc', 'PATCH', approvalBody);
+  assert.deepEqual(replayedApproval.job, approved.job);
+  await f.call('amc', 'PATCH', {
+    ...approvalBody,
+    jennifer: { id: commandId, operation: 'pause' },
+  }, { status: 409 });
+  await f.call('amc', 'PATCH', {
+    jobId: id,
+    revision: approved.job.revision,
+    command: pause(approved.job),
+  }, { status: 409 });
+});
+
+await test('Jennifer child jobs deduplicate by exact coordination and reject a reused ID for another leaf', async (t) => {
+  const f = fixture(t);
+  const rootJobId = randomUUID();
+  const coordination = {
+    schema: 'rockstaros-jennifer-task-job/1',
+    rootJobId,
+    planId: 'jennifer-aaaaaaaa',
+    taskId: 'task-inventory',
+    role: 'worker',
+    specialistProfile: 'repository-analyst',
+  };
+  const id = randomUUID();
+  const first = await f.call('work', 'POST', {
+    id, title: 'Jennifer: inventory', templateId: 'cloud-agent', coordination,
+  });
+  assert.equal(first.created, true);
+  const duplicate = await f.call('work', 'POST', {
+    id: randomUUID(), title: 'Jennifer: inventory', templateId: 'cloud-agent', coordination,
+  }, { status: 200 });
+  assert.equal(duplicate.created, false);
+  assert.equal(duplicate.job.id, id);
+  await f.call('work', 'POST', {
+    id, title: 'Jennifer: inventory', templateId: 'cloud-agent',
+    coordination: { ...coordination, taskId: 'task-architecture' },
+  }, { status: 409 });
 });
 
 await test('AMC list stays scoped and lightweight with one query and at most 100 summaries', async (t) => {

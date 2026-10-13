@@ -11,6 +11,9 @@ import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/
 import { a2aPriceQuoteDigest, verifyA2APriceQuote, type A2APriceQuote } from '@/lib/a2a-price-quote';
 import { trustedA2AUsageKeyResolver } from '@/lib/a2a-usage-receipt';
 import { database } from '@/lib/fund-store';
+import { workStore } from '@/lib/work-store';
+import { jenniferExecutionStore } from '@/lib/jennifer-execution-store';
+import { jenniferDelegationKey } from '@/lib/jennifer-amc-execution';
 import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import { a2aAgentDirectory } from '@/lib/a2a-agent-directory';
 import { skyPackageSchemaSha256 } from '@/lib/sky-package-runtime';
@@ -216,6 +219,47 @@ export async function POST(request: Request) {
     if (predecessorDelegationId !== undefined && predecessorDelegationId !== null &&
       (typeof predecessorDelegationId !== 'string' || !uuid.test(predecessorDelegationId)))
       throw new Error('INVALID_FIELDS');
+    const parentJob = await workStore(db).get(owner, parentJobId);
+    if (parentJob?.coordination) {
+      const coordination = parentJob.coordination;
+      const root = await workStore(db).get(owner, coordination.rootJobId);
+      const plan = await jenniferExecutionStore(db).currentPlan(owner, coordination.rootJobId);
+      const rootReference = root?.amcGoal?.coordinationRef as {
+        schema?: unknown;
+        planId?: unknown;
+      } | undefined;
+      const task = root?.amcGoal?.tasks.find(({ id: taskId }) => taskId === coordination.taskId);
+      const dispatchRole = task?.status === 'submitted' ? 'reviewer' : 'worker';
+      const expectedKey = jenniferDelegationKey(
+        coordination.taskId,
+        dispatchRole,
+        `${coordination.planId.slice(9)}.1`,
+      );
+      if (!root?.amcGoal || root.amcGoal.state !== 'active' || !plan ||
+        rootReference?.schema !== 'rockstaros-jennifer-execution/1' ||
+        rootReference.planId !== coordination.planId || plan.planId !== coordination.planId ||
+        !['inventory_approved', 'delivery_approved'].includes(plan.state) ||
+        !task || idempotencyKey !== expectedKey ||
+        (coordination.taskId !== 'task-inventory' && plan.state !== 'delivery_approved') ||
+        (dispatchRole === 'worker' && task.status !== 'pending') ||
+        (dispatchRole === 'reviewer' && task.status !== 'submitted'))
+        return json({
+          error: 'Jenniferのplan revision、phase、task状態、または決定的dispatch IDを確認できません。',
+          code: 'JENNIFER_DISPATCH_NOT_APPROVED',
+        }, 409);
+      const childJobs = await workStore(db).listJenniferTaskJobs(owner, coordination.rootJobId);
+      const delegationStore = a2aDelegationStore(db);
+      const active = (await Promise.all(childJobs.map((job) => delegationStore.listForParent(owner, job.id))))
+        .flat().filter((item) => ![
+          'cancelled_before_dispatch', 'expired', 'remote_cancelled', 'remote_completed',
+          'remote_failed', 'remote_rejected',
+        ].includes(item.state));
+      if (active.some((item) => item.idempotencyKey !== expectedKey))
+        return json({
+          error: 'Jenniferは現在1件の外部Agent委任だけを実行できます。先行委任を確定してください。',
+          code: 'JENNIFER_GLOBAL_CONCURRENCY_LIMIT',
+        }, 409);
+    }
     let origin: URL;
     try {
       origin = new URL(targetOrigin);

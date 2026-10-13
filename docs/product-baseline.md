@@ -20,7 +20,11 @@
 
 Jennifer（利用者表記Jenniffer）は利用者が話す全体のプロジェクト統括窓口。SkyはAgent/Toolの発見・掲載・購入・接続、ZemaはJenniferの裏で依頼・計画・進捗・承認・停止・成果・費用・Receipt・履歴を持つ仕事system、RockstarOSは本人・権限・実行・保存・復旧の共通runtimeである。JevはSkyから明示利用するremote evaluatorで、Jenniferとは別system。
 
-Jennifer sourceはPR #113のhead `3349c2475468443bc7ecd94a4e3782343f514a8f`からmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合済み。[Gitの設計正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)に従い、8projectは運営の内部portfolioとし、一般利用者のtenant案件と権限・保存を分ける。計画や担当profileに実行権を与えず、Brokerの本人・権限・費用境界を通す。COLOMBIA原本、資料grant、真正reviewer証拠の相関、native UI、実Providerは未受入条件として残る。
+Jennifer sourceはPR #113のhead `3349c2475468443bc7ecd94a4e3782343f514a8f`からmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合済み。[Jennifer Coordination](jennifer-coordination.md)に従い、8projectは運営の内部portfolioとし、一般利用者のtenant案件と権限・保存を分ける。計画や担当profileに実行権を与えず、Brokerの本人・権限・費用境界を通す。COLOMBIA原本、資料grant、native UI、実Providerは未受入条件として残る。
+
+Jenniferは依頼、COLOMBIA、project正本からGoal Contractを作り、AMCでdomain別leafへ逆算し、project担当siと専門siへ割り当て、検収済み成果と未完了を最終報告へ統合する。保存は草案であり承認ではない。COLOMBIAの未決事項を回答または理由付き延期し、ownerがGoal Contractを承認して初めてinventory一件を実行可能にする。inventoryの型付き報告を別principalが検収し、ownerがdelivery段階を承認してから残りを依存順に進める。外部委任は全Goalで同時一件とする。
+
+Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済みusage Receipt、費用状態、停止、取消未確認、独立review、Goal受入をowner別D1へ保持する。ブラウザのactor名、evidence文字列、合否ボタンだけではAMC状態を進めない。workerの`TaskReport`とreviewerの`ReviewReport`はサーバーが既存A2A台帳から生成し、reviewerはworkerと異なるprincipal、同じpredecessor委任、正確なworker report digestへ結び付ける。計画とGoalの状態遷移は同じD1 batchでrevision guardする。remote完了だけを完成扱いせず、全leafの独立検収とownerの最終受入を必要とする。実Provider送信はoperator flag、暗号化鍵、信頼鍵、allowlist、見積、Broker証明、owner個別承認が揃うまで無効のままにする。
 
 会話はJenniferを窓口に統一するが、Sky直接操作・host app・ゲストの純粋処理に会話を強制しない。各入口から同じ仕事・権限契約を使う。親WorkJobは`active / review / completed / cancelled`の四状態を維持し、AMC・A2A・金融・review・削除の状態を混ぜない。
 
@@ -64,7 +68,6 @@ Web/PC、Linux/Buildroot/ARM64 QEMU、Pixelは開発・配布profileで、三har
 <a id="2026-10-13-skyからzemaのローカルagentを使えるようにする"></a>
 
 #### Zema Webの有限ローカルAgent
-
 Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の受け皿と実行履歴はZemaが担う。Web版Zemaは、同じPCで動くOllamaまたはOpenAI互換のloopback endpointを選んだとき、ローカルLLMを権限のないplannerとして利用できる。planner出力は閉じたJSON schemaで検査し、最大3手、`sky_route`／`format_citations`／`coconala_check`の副作用がない3処理だけを許可する。shell、任意file、network、購入、投稿、送信、権限変更は許可しない。Cloudへの自動fallbackも行わない。
 
 2026-10-13のlocal previewではOllama `qwen3:0.6b`を導入し、Zema画面から通常会話が完了することを確認した。軽量modelのTool選択品質は限定的であり、未実行処理を実行済みと数えない。`chatgpt.site`上の公開Workerから利用者PCの`127.0.0.1`へは到達できないため、公開版でこのlocal Agentを使うには将来の端末companion／local bridgeが必要。local preview用の固定userはloopback hostだけで有効で、公開hostの認証を迂回しない。

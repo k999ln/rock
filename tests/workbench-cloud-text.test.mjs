@@ -63,7 +63,7 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
     '@/lib/operations-client': { OperationRequestError: class extends Error {} },
     '@/lib/remote-ai-text-client': { ...remoteTextClient, remoteAiTextRequest: trackedRemote },
   };
-  for (const name of ['workflow', 'work-job-view','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime'])
+  for (const name of ['workflow', 'work-job-view','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime','jennifer-execution-reports'])
     modules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
   function compile(path) {
     const exports = {};

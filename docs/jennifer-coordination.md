@@ -4,11 +4,11 @@
 
 ## 現在の実装と到達契約の読み分け
 
-PR #113のsourceはmain `01d2e418`へ統合済み。以下の役割・画面・fixtureは存在するが、真正な独立reviewの本番受入は未完了である。現在のWorkbench検収はownerの手動booleanで、AMC APIは認証済みA2A reviewer artifact / usageとowner・Goal revision・leaf・delegation・成果hashをserverで横断照合していない。別reviewer名や別delegationの存在から「検収済み」と推測せず、manual verdictとverified independent reviewを分ける。
+PR #113のsourceはmain `01d2e418`へ統合済み。この更新では、保存即承認とowner手動booleanによる検収を廃止し、AMC APIが認証済みA2A worker／reviewer artifact、usage Receipt、owner、Goal revision、leaf、delegation、成果hashをserverで横断照合する。reviewerはworkerと異なるprincipal、同じpredecessor委任、正確なworker report digestへ結び付け、ブラウザのactor名や合否文字列から「検収済み」と推測しない。
 
-8projectは内部開発/運営portfolioで、一般顧客tenantの権限ではない。Jenniferは会話窓口で、Sky直接操作やhost appの有限処理に会話を必須にしない。現行のparent別費用gateはaccount月/Goal全体の階層予算を保証せず、後払い・署名見積・Provider設定の未受入条件も省略しない。実dispatch/課金を有効にする前に、[横断整合契約と12受入](service-design/06-consistency-contracts.md)のserver相関・取消・予算・価格・真正review・保存/復旧を対象実装で受け入れる。
+8projectは内部開発/運営portfolioで、一般顧客tenantの権限ではない。Jenniferは会話窓口で、Sky直接操作やhost appの有限処理に会話を必須にしない。現行のparent別費用gateはaccount月/Goal全体の階層予算を保証せず、後払い・署名見積・Provider設定の未受入条件も省略しない。外部Provider送信はoperator flag、暗号化鍵、信頼鍵、allowlist、見積、Broker証明、owner個別承認が揃うまで無効である。課金を有効にする前に、[横断整合契約と12受入](service-design/06-consistency-contracts.md)の予算・価格・保存/復旧を対象実装で受け入れる。
 
-Jenniferは利用者が常に話す、Rockstar全体のプロジェクト統括窓口である。ZemaはJenniferの裏で依頼、進捗、承認、停止、成果物、利用額、Receipt、履歴を管理する仕事systemであり、競合する別人格として前面へ出さない。Jenniferは権限主体ではなく、Brokerと既存の実行境界を越えない。
+Jenniferは利用者が常に話す、Rockstar全体のプロジェクト統括窓口である。ZemaはJenniferの裏で依頼、進捗、承認、停止、成果物、利用額、Receipt、履歴を管理する仕事systemであり、競合する別人格として前面へ出さない。Jenniferは権限主体ではなく、Brokerと既存の実行境界を越えない。保存、承認、実行、検収、最終受入は別操作である。
 
 ## 責任分界
 
@@ -31,7 +31,7 @@ WebのJennifer計画は常に`authority: advisory-only`、`status: proposed`で�
 
 COLOMBIAはJenniferが曖昧な依頼をGoalへ変換するときに参照する上位contextとして[`data/jennifer-knowledge.json`](../data/jennifer-knowledge.json)へ登録した。現repositoryにはCOLOMBIAの原本、URL、file、versionがないため、状態は`awaiting-source`である。内容を名称から推測せず、Goalへ適用したとは表示しない。原本を受領した後はsource reference、version、content hashを固定し、どの原則をGoalへ適用したか追跡する。COLOMBIAは知識であり、実行権限、本人承認、完成証拠ではない。
 
-Jenniferは依頼をGoal、意図、対象、対象外、成功条件、仮定、未決事項へ言語化する。本人確認前の状態は`draft`である。Zema内AMCはそのGoalから逆算し、`Goal → milestone → work package → task → step`の方向で分解する。現在のWeb previewはmilestone、domain別work package、leaf taskを生成し、最大depth 5、1親12子、100 node、初回実行候補8 leafの上限を保持する。domainを「backendを実装する」の一件で止めず、少なくとも契約確定、実装、専門検証へ分ける。各leafには専門担当、依存、参照するcode／data／docs、変更候補path、返却物、合格条件を付ける。担当profileは必要時だけ起動し、直接Jenniferへ完了報告せず、ZemaへTaskReport、artifact、evidence、Receiptを戻す。
+Jenniferは依頼をGoal、意図、対象、対象外、成功条件、仮定、未決事項へ言語化する。本人確認前の状態は`draft`であり、保存しても承認やdispatchは起きない。COLOMBIAの未決事項は一件ずつ回答するか、理由を書いて延期しなければGoal Contractを承認できない。Zema内AMCはそのGoalから逆算し、`Goal → milestone → work package → task → step`の方向で分解する。現在のWebはmilestone、domain別work package、leaf taskを生成し、最大depth 5、1親12子、100 nodeを上限とする。初回は既存資産を確認するinventory leaf一件だけを開き、全Goalで外部委任を同時一件に制限する。inventoryの型付き報告を別Agentが検収し、ownerがdelivery段階を承認した後だけ残りのleafを依存順に開く。domainを「backendを実装する」の一件で止めず、少なくとも契約確定、実装、専門検証へ分ける。各leafには専門担当、依存、参照するcode／data／docs、変更候補path、返却物、合格条件を付ける。担当profileは必要時だけ起動し、直接Jenniferへ完了報告せず、ZemaへTaskReport、artifact、evidence、Receiptを戻す。
 
 Jenniferは`approve_plan`、dispatch、repository write、公開、課金を自動実行しない。専門担当の報告は`submitted`相当であり、別担当の証拠検収とownerのGoal受入まで`done`にしない。
 
@@ -61,10 +61,12 @@ CLIは`data/project-status.json`をprojectへ集計するだけで、Agent起動
 3. 複数工程を先に確認したい場合は「計画を整理」を有効にする。
 4. 目的、使ってよい資料、必要な調査、欲しい成果物を一つの依頼として送る。
 5. 「Goal Contract」と「Zema内AMCの逆算分解」で、Goal、専門担当、依存、参照context、変更path、期待成果、合格条件を確認する。
-6. 「Goalを確認してZemaへ保存」を押すと、同じGoal IDを使った再試行安全なAMC Goalがowner本人の台帳へ保存される。保存前には外部送信しない。
-7. `ready`になったleafだけを「担当siへ実行準備」で一件ずつCloud Agent Workbenchへ移す。担当siと独立reviewerは別delegation、別Receiptである。
-8. Workbenchで署名済み見積、Broker証明、予算上限を確認して本人が承認すると、Zema runtimeが実A2A `SendMessage`を一度だけ行う。曖昧な応答を自動再送しない。
-9. 到達契約では、担当siのartifactとProvider署名済みusage ReceiptをZemaが保存し、認証済み別reviewerの成果・合否をserverで相関照合した後だけleafをverified review済みにする。現行Workbenchの`done`はowner手動検収の記録で、この真正reviewの保証ではない。全leaf完了後もJenniferの最終報告を本人が受け入れるまでGoalは受入済みにならない。
+6. 「草案をZemaへ保存」を押すと、再試行安全なAMC draftとplan revision 1が同じD1 batchでowner本人の台帳へ保存される。片方だけは残らず、保存だけでは`approve_plan`を発行しない。
+7. COLOMBIAの各未決事項へ回答または延期理由を入力し、「Goal Contractを承認」を押す。これでinventoryだけが`ready`になる。
+8. inventoryを「担当siへ実行準備」でCloud Agent Workbenchへ移す。署名済み見積、Broker証明、予算上限を確認して本人が承認すると、Zema runtimeが実A2A `SendMessage`を一度だけ行う。曖昧な応答を自動再送しない。
+9. 担当siのartifactとProvider署名済みusage ReceiptをZemaが照合し、`TaskReport`をサーバー生成する。別principalのreviewerはそのworker委任とreport digestに結び付いた型付き判定を返す。ブラウザの合否文字列ではleafを完了できない。
+10. inventory検収後にownerがdelivery段階を承認すると、残りのleafを依存順・同時一件で実行できる。全leaf完了後もJenniferの`GoalReceipt`付き最終報告をownerが受け入れるまでGoalは受入済みにならない。
+11. 一時停止は新規dispatchを止め、再開は停止前の段階だけへ戻る。「停止」はさらに実行中委任へ取消要求を送る。計画変更は停止後、実行中／停止未確認がゼロのときだけ新revisionとして保存し、旧承認を無効にする。
 
 JenniferのGoal整理とAMC分解は端末内のplan-only機能なので、実行serviceへ未接続・未認証でも利用できる。画面上部に接続状態を表示し、Tool実行、Job、ReceiptだけはZemaの接続確認後に利用する。生成された長い計画は会話欄内で縮まず、そのままスクロールして全taskを確認できる。
 
@@ -73,14 +75,14 @@ JenniferのGoal整理とAMC分解は端末内のplan-only機能なので、実�
 ## データと保存
 
 - 既定のデータアクセスは`none`。計画中の「本人の選択データ」は、実行時に本人が対象を指定することを意味し、Jenniferが全データを読めることを意味しない。
-- 計画は既存Zema sessionと同じ`sessionStorage`へ保存する。最大8 session、24 message、10分TTLの境界を維持し、独自DBや長期memoryは作らない。
+- 未保存の会話previewは既存Zema session境界を使う。Zemaへ保存したJennifer Goalは`work_jobs`、`jennifer_plan_revisions`、`jennifer_task_attempts`へowner別に永続化し、別browser／deviceでも再構成する。計画変更は親digestとsemantic diffを持つ新revisionにし、旧版を`superseded`にする。
 - 計画schemaは未知field、権限昇格、未知の担当・effect、前工程を参照しない依存を拒否する。approval token、credential、秘密鍵、成果物本文は計画schemaに持たせない。
 - project一覧と担当siはGit管理する。taskの状態は既存`data/project-status.json`と`data/mission-control.json`を使い、Jennifer専用の重複台帳を作らない。
-- 長期Goalへ昇格する場合はJennifer独自保存を追加せず、本人確認後に既存AMCへdraftとして渡す。
+- credential、秘密鍵、artifact本文は計画台帳へ保存しない。A2A入力とartifactは既存暗号化保存、署名Receipt、owner bindingを使う。
 
 ## 実dispatchとReceipt契約
 
-Webの実行経路は `Jennifer proposal → owner確認済みAMC Goal → leaf単位のCloud Agent job → 見積 → Broker証明 → owner承認 → Zema runtime → A2A Agent → 暗号化artifact／署名済みReceipt → 独立reviewer → Jennifer統合報告` である。
+Webの実行経路は `Jennifer proposal → durable draft → COLOMBIA解決 → owner inventory承認 → inventory worker → server TaskReport → workerに結び付いた独立reviewer → owner delivery承認 → leaf単位のCloud Agent job → 見積 → Broker証明 → owner承認 → Zema runtime → A2A Agent → 暗号化artifact／署名済みReceipt → server ReviewReport → Jennifer GoalReceipt付き統合報告 → owner最終受入` である。
 
 Zema runtimeは1分ごとのbounded workerで、送信直前に接続済みAgent Cardのhash、公開HTTPS origin allowlist、暗号化本文digest、Broker署名と期限、Provider署名済み見積、親予算とleaf予約、任意のSky Package runtime bindingを再照合する。`SendMessage`の前にone-shot stateを永続化し、送信後の切断・5xx・不正応答は`indeterminate`として保持する。同じmessageを自動再送しない。remote taskは`GetTask`で再照合し、取消は一回だけ`CancelTask`へ送り、確認できなければ`cancel_unconfirmed`のまま残す。
 
@@ -108,11 +110,18 @@ text artifactだけを32 KiB以下の正規化documentにして暗号化保存�
 - 担当siと独立reviewerへの別A2A delegation、Broker／Wallet／見積の明示gate
 - one-shot SendMessage、GetTask／CancelTask再照合、暗号化artifact回収、署名済みReceipt精算を行うZema runtime
 - remote完了だけでは受入にしないAMC提出／検収と、Jenniferの決定論的な最終統合報告
+- 保存と承認の分離、COLOMBIA未解決時のfail-closed、inventory／delivery二段階承認
+- D1の版付きplan、semantic diff、task attempt台帳と別端末からの復元
+- plan状態とAMC Goalを同じD1 batchで更新するrevision guard
+- 決定的dispatch key、全Goal同時一件、同一task／role／revisionの重複attempt拒否
+- worker委任、artifact hash、署名済みusage Receiptへ結び付くサーバー生成TaskReport
+- workerと異なるprincipal、predecessor委任、worker report digestへ結び付く型付きReviewReport
+- 通貨別の見積・上限・予約・暫定meter・精算・不明件数、pause／stop／resume／revision UI。stopの取消要求は一件ごとに再試行でき、失敗対象を成功表示せず残す
 
 配備・入力待ち:
 
 - COLOMBIA原本のsource reference、version、content hashと適用原則
-- owner-scoped context grantとartifact referenceの選択UI
+- owner-scoped context grantとartifact referenceの細粒度選択UI
 - native Zemaへの同等UI
 - production runtimeのD1 binding、secret／trust key、実Provider、callback公開URLの設定と外部受入
 

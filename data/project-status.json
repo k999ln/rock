@@ -150,7 +150,7 @@
   "tasks": [
     {
       "id": "AMC02",
-      "title": "AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外）",
+      "title": "AMC Goal OrchestratorとJenniferの段階承認・本人別Web台帳・専門siへの設定gate付きA2A実dispatch・独立検収を整える",
       "status": "done",
       "dependsOn": [
         "ORG03"
@@ -181,7 +181,20 @@
         "docs/evidence/spider-observation-source-read.json",
         "scripts/amc-agent.mjs",
         "tests/amc-agent-preflight.test.mjs",
-        "docs/evidence/spider-agent-preflight-read.json"
+        "docs/evidence/spider-agent-preflight-read.json",
+        "docs/jennifer-coordination.md",
+        "lib/jennifer-amc-execution.ts",
+        "lib/jennifer-execution-store.ts",
+        "lib/jennifer-execution-reports.ts",
+        "app/api/sky/a2a-delegations/route.ts",
+        "components/sky-chat-workspace.tsx",
+        "components/workbench.tsx",
+        "drizzle/0014_jennifer_execution_integrity.sql",
+        "tests/jennifer-amc-decomposition.test.mjs",
+        "tests/jennifer-amc-execution.test.mjs",
+        "tests/jennifer-execution-reports.test.mjs",
+        "tests/jennifer-execution-store.test.mjs",
+        "docs/evidence/amc/jennifer-execution-integrity.json"
       ]
     },
     {

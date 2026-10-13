@@ -234,6 +234,74 @@ export const workJobs = sqliteTable(
   ],
 );
 
+export const jenniferPlanRevisions = sqliteTable(
+  'jennifer_plan_revisions',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    rootJobId: text('root_job_id').notNull(),
+    planId: text('plan_id').notNull(),
+    revision: integer('revision').notNull(),
+    planDigest: text('plan_digest').notNull(),
+    parentPlanDigest: text('parent_plan_digest'),
+    planJson: text('plan_json').notNull(),
+    diffJson: text('diff_json').notNull().default('[]'),
+    resolutionJson: text('resolution_json').notNull().default('[]'),
+    state: text('state').notNull(),
+    approvedBy: text('approved_by'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_plan_root_revision').on(
+      table.ownerUserId,
+      table.rootJobId,
+      table.revision,
+    ),
+    uniqueIndex('idx_jennifer_plan_digest').on(
+      table.ownerUserId,
+      table.planDigest,
+    ),
+    index('idx_jennifer_plan_owner_updated').on(table.ownerUserId, table.updatedAt),
+  ],
+);
+
+export const jenniferTaskAttempts = sqliteTable(
+  'jennifer_task_attempts',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    rootJobId: text('root_job_id').notNull(),
+    planRevision: integer('plan_revision').notNull(),
+    taskId: text('task_id').notNull(),
+    attempt: integer('attempt').notNull(),
+    role: text('role').notNull(),
+    childJobId: text('child_job_id').notNull(),
+    delegationId: text('delegation_id').notNull(),
+    principal: text('principal').notNull(),
+    inputDigest: text('input_digest').notNull(),
+    artifactSetDigest: text('artifact_set_digest'),
+    usageReceiptDigest: text('usage_receipt_digest'),
+    reportDigest: text('report_digest'),
+    reportJson: text('report_json'),
+    state: text('state').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_attempt_identity').on(
+      table.ownerUserId,
+      table.rootJobId,
+      table.planRevision,
+      table.taskId,
+      table.attempt,
+      table.role,
+    ),
+    uniqueIndex('idx_jennifer_attempt_delegation').on(table.ownerUserId, table.delegationId),
+    index('idx_jennifer_attempt_root').on(table.ownerUserId, table.rootJobId, table.updatedAt),
+  ],
+);
+
 export const agentDelegations = sqliteTable(
   'agent_delegations',
   {

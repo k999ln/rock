@@ -17,6 +17,16 @@ export type JenniferExecutionCoordinationRef = {
   planId: string;
   requestId: string;
   projectId: string | null;
+  /** Durable source for rebuilding Jennifer on another browser/device. */
+  planSnapshot: JenniferCoordinationPlan;
+  phase: "draft" | "inventory" | "delivery" | "accepted";
+  questionResolutions?: JenniferQuestionResolution[];
+};
+
+export type JenniferQuestionResolution = {
+  question: string;
+  disposition: "answered" | "deferred";
+  note: string;
 };
 
 export type JenniferTaskJobCoordination = {
@@ -116,15 +126,14 @@ function goalContractEvidence(plan: JenniferCoordinationPlan) {
   return `zema:goal-contract:${plan.id}:revision-${plan.amc.goalContract.revision}`;
 }
 
-/**
- * Turn Jennifer's advisory decomposition into the existing AMC state machine.
- * The returned Goal is active only because the caller is expected to invoke
- * this function from the explicit "confirm and save" owner action.
- */
+/** Turn Jennifer's advisory decomposition into a durable AMC draft. */
 export function createJenniferExecutionGoal(
   plan: JenniferCoordinationPlan,
   now = new Date().toISOString(),
+  goalSeriesId = plan.id,
 ): AmcGoal {
+  if (!/^jennifer-[0-9a-f]{8}$/iu.test(goalSeriesId) && !UUID.test(goalSeriesId))
+    throw new Error("JENNIFER_GOAL_SERIES_ID_INVALID");
   const nodes = leafNodes(plan);
   if (nodes.length === 0) throw new Error("JENNIFER_EXECUTION_TASKS_REQUIRED");
   const domains = unique(nodes.map(({ domain }) => domain));
@@ -154,7 +163,7 @@ export function createJenniferExecutionGoal(
   const mission = {
     updatedAt: now,
     audit: {
-      source: "Jennifer owner-confirmed Goal Contract",
+      source: "Jennifer draft Goal Contract",
       planId: plan.id,
       requestId: plan.requestId,
     },
@@ -201,9 +210,9 @@ export function createJenniferExecutionGoal(
     squadIds: squads.map(({ id }) => id),
     mission,
     project,
-    goalId: `amc-${plan.id}`,
+    goalId: `amc-${goalSeriesId}`,
     createdAt: now,
-    maxParallel: Math.min(4, Math.max(1, plan.amc.planningLimits.initialLeafWave)),
+    maxParallel: 1,
   }) as AmcGoal;
   goal = {
     ...goal,
@@ -216,12 +225,14 @@ export function createJenniferExecutionGoal(
     },
     planningMethod: "jennifer_goal_backcast_domain_v1",
     scopeWarning:
-      "Jenniferの提案を本人が確認して保存した実行計画。各leafは別途、実行先・共有データ・見積・上限・Broker承認が必要。",
+      "Jenniferの保存済み草案。ownerがGoal ContractとCOLOMBIAの未決事項を明示承認するまで実行できない。各leafは別途、実行先・共有データ・見積・上限・Broker承認が必要。",
     coordinationRef: {
       schema: JENNIFER_EXECUTION_SCHEMA,
       planId: plan.id,
       requestId: plan.requestId,
       projectId: plan.project?.id ?? null,
+      planSnapshot: structuredClone(plan),
+      phase: "draft",
     } satisfies JenniferExecutionCoordinationRef,
     tasks: goal.tasks.map((task) => {
       const node = nodes.find(({ id }) => id === task.id)!;
@@ -234,11 +245,42 @@ export function createJenniferExecutionGoal(
       };
     }),
   };
-  goal = applyAmcEvent(goal, {
+  return validateAmcGoal(goal);
+}
+
+/**
+ * The server calls this only after authenticating the owner. Saving a draft
+ * never calls it. Every unresolved COLOMBIA question must be answered or
+ * explicitly deferred with a reason before inventory may run.
+ */
+export function approveJenniferExecutionGoal(
+  input: AmcGoal,
+  resolutions: JenniferQuestionResolution[],
+  ownerPrincipal: string,
+  now = new Date().toISOString(),
+): AmcGoal {
+  const goal = validateAmcGoal(input);
+  const reference = goal.coordinationRef as JenniferExecutionCoordinationRef | undefined;
+  const plan = reference?.planSnapshot;
+  if (reference?.schema !== JENNIFER_EXECUTION_SCHEMA || !plan)
+    throw new Error("JENNIFER_PLAN_SNAPSHOT_REQUIRED");
+  if (goal.state !== "draft") throw new Error("JENNIFER_DRAFT_REQUIRED");
+  if (goal.maxParallel !== 1) throw new Error("JENNIFER_PARALLEL_LIMIT_INVALID");
+  const questions = plan.amc.goalContract.unresolvedQuestions;
+  if (
+    resolutions.length !== questions.length ||
+    questions.some((question) => {
+      const resolution = resolutions.find((item) => item.question === question);
+      return !resolution ||
+        !["answered", "deferred"].includes(resolution.disposition) ||
+        !resolution.note.trim() || resolution.note.length > 500;
+    })
+  ) throw new Error("JENNIFER_COLOMBIA_UNRESOLVED");
+  let next = applyAmcEvent(goal, {
     id: `${goal.id}-owner-confirmation`,
     type: "approve_plan",
     expectedRevision: goal.revision,
-    actor: "jennifer-owner-confirmation",
+    actor: ownerPrincipal,
     role: "owner",
     at: now,
     scopeConfirmed: true,
@@ -250,26 +292,34 @@ export function createJenniferExecutionGoal(
       verification: "全leaf taskの独立検収済み証拠とReceiptをZemaで照合する。",
     })),
   });
+  next = {
+    ...next,
+    coordinationRef: {
+      ...reference,
+      phase: "inventory",
+      questionResolutions: resolutions.map((item) => ({ ...item })),
+    },
+  };
 
   // The first leaf is the owner-confirmation itself. Record the real owner
   // click and deterministic schema validation so dispatch starts at inventory.
-  const contractTask = goal.tasks.find(({ id }) => id === "task-goal-contract");
-  if (contractTask && amcSummary(goal).readyTaskIds.includes(contractTask.id)) {
+  const contractTask = next.tasks.find(({ id }) => id === "task-goal-contract");
+  if (contractTask && amcSummary(next).readyTaskIds.includes(contractTask.id)) {
     const evidence = goalContractEvidence(plan);
-    goal = applyAmcEvent(goal, {
-      id: `${goal.id}-contract-start`,
+    next = applyAmcEvent(next, {
+      id: `${next.id}-contract-start`,
       type: "start_task",
-      expectedRevision: goal.revision,
-      actor: "jennifer-owner-confirmation",
+      expectedRevision: next.revision,
+      actor: ownerPrincipal,
       role: "worker",
       taskId: contractTask.id,
       at: now,
     });
-    goal = applyAmcEvent(goal, {
-      id: `${goal.id}-contract-submit`,
+    next = applyAmcEvent(next, {
+      id: `${next.id}-contract-submit`,
       type: "submit_result",
-      expectedRevision: goal.revision,
-      actor: "jennifer-owner-confirmation",
+      expectedRevision: next.revision,
+      actor: ownerPrincipal,
       role: "worker",
       taskId: contractTask.id,
       outcome: "succeeded",
@@ -278,15 +328,15 @@ export function createJenniferExecutionGoal(
       evidence: [evidence],
       at: now,
     });
-    goal = applyAmcEvent(goal, {
-      id: `${goal.id}-contract-verify`,
+    next = applyAmcEvent(next, {
+      id: `${next.id}-contract-verify`,
       type: "verify_task",
-      expectedRevision: goal.revision,
-      actor: "zema-goal-contract-validator",
+      expectedRevision: next.revision,
+      actor: "server:zema-goal-contract-validator",
       role: "reviewer",
       taskId: contractTask.id,
       accepted: true,
-      evidence: [evidence, `zema:goal-schema:${goal.schema}`],
+      evidence: [evidence, `zema:goal-schema:${next.schema}`],
       criterionResults: contractTask.acceptanceCriteria.map(({ id }) => ({
         criterionId: id,
         passed: true,
@@ -295,7 +345,7 @@ export function createJenniferExecutionGoal(
       at: now,
     });
   }
-  return validateAmcGoal(goal);
+  return validateAmcGoal(next);
 }
 
 export function parseJenniferTaskJobCoordination(
