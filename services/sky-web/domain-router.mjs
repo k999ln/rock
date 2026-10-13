@@ -60,9 +60,12 @@ async function proxyMini(request, upstreamFetch) {
 
 async function canonicalManifest(response, path) {
   if (!response.headers.get('content-type')?.includes('text/html')) return response;
-  const manifest = isPath(path, '/os/sky')
-    ? '/os/sky/manifest.webmanifest'
-    : '/os/manifest.webmanifest';
+  const campus = path.match(/^\/os\/sky\/campus\/(nyu|fit|columbia|fordham|johnjay)(?:\/|$)/);
+  const manifest = campus
+    ? `/os/sky/campus/${campus[1]}/manifest.webmanifest`
+    : isPath(path, '/os/sky')
+      ? '/os/sky/manifest.webmanifest'
+      : '/os/manifest.webmanifest';
   const html = await response.text();
   const headers = new Headers(response.headers);
   headers.delete('content-length');
