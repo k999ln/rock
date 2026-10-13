@@ -6,7 +6,9 @@
 
 Git追補: 途中の再確認でJennifer PR #113が18:21:19 UTCにmain `01d2e418`へ統合済みと判明。head `3349c247`のCI8件とmerge SHA7件は全成功。旧CI2失敗の履歴は保持し、設計branchへmainを保全mergeした。JenniferのGit統合を本設計PRや公開/真正review/Providerの合格へ換算しない。
 
-検証中: 前版の全体verify成功（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）を履歴として保持。今回の表示/設計変更は型検査・baseline、Site24件・Fashion2件・AMC58件が成功し、独立検収の古いSIM/888説明、R5構成、LTE国/SKU、章数の指摘を修正。最終全体verifyとGitHub保存は[証拠](docs/evidence/service-design-rebuild.json)へ別記録する。次は設計/si表示の実装branch同期、realm/ID→取消→階層予算/後払い→真正review→grant/削除復旧→authority移管を既存fixtureで受入。Jennifer統合sourceのcontext/真正review、Provider/実機/飛行は未受入のまま引き継ぐ。
+最終検証: bundled Node24.19.0で`npm run verify` exit0、Node2168件（2167 pass/既存skip1/失敗0）、仕事API1356、CSV385、asset193参照/欠落0、型/lint/build、baseline/design/project/mission/bot同期が成功。最初の旧Cloud入力labelに依存した9失敗は期待値を同期し32件再検証成功。Node26で終了しなかったWallet試験は未完扱いとし、Node24の同一43件と全体回帰で合格。追加Bot/context24件、AMC58件も成功。7冊・50要求・92参照と最新Jennifer詳細を含む独立検収が合格。古い見出しbookmark21件を非表示aliasで保持し、原本PDF/R5/R1.0の3hashは不変。
+
+ブラウザのlocalhost接続は承認レビューが許可なしとして拒否したため、実画面操作は未実施。回避経路は使わず、公開・Provider/実資金・実機OS/hardware・飛行の合格は追加しない。検証sourceとGitHub保存・本設計PRのmain統合・公開の区別は[証拠](docs/evidence/service-design-rebuild.json)へ記録。次は設計/si表示の実装branch同期、realm/ID→取消→階層予算/後払い→真正review→grant/削除復旧→authority移管を既存fixtureで受入。Jennifer統合sourceのcontext/真正review、Provider/実機/飛行の残条件を引き継ぐ。
 
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
