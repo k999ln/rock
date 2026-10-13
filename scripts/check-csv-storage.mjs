@@ -79,7 +79,7 @@ try {
   if (hostedBootstrap) {
     check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='csv_trial_payments'").first()), true);
     check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_csv_trial_session'").first()), true);
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=4').first()), true);
+    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()), true);
   }
   await call('/api/csv-jobs',{method:'POST',body:{},requestOrigin:'https://invalid.example',status:403});
 
@@ -137,33 +137,33 @@ try {
   if (hostedBootstrap) {
     // Recover a version-2 database with jobs but without the payment upgrade.
     await db.prepare('DROP TABLE csv_trial_payments').run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=4').run();
+    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
     await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (2)').run();
-    // A partial/invalid upgrade must fail closed without publishing version 4.
+    // A partial/invalid upgrade must fail closed without publishing version 5.
     await db.prepare('CREATE TABLE csv_trial_payments(id TEXT PRIMARY KEY)').run();
     await call('/api/csv-jobs',{user:null,status:503});
-    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=4').first(), null);
+    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first(), null);
     await db.prepare('DROP TABLE csv_trial_payments').run();
     await call('/api/csv-jobs',{user:null,status:401});
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=4').first()), true);
+    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()), true);
     check(await artifacts(first),before);
     // An already-populated payment table must survive the idempotent upgrade.
     await db.prepare("INSERT INTO csv_trial_payments VALUES ('synthetic-payment',?,'test','synthetic-session',1)").bind(first.id).run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=4').run();
+    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
     await call('/api/csv-jobs',{user:null,status:401});
     check(await db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='synthetic-payment'").first(), {session_id:'synthetic-session'});
 
     // A real version-3 database has payments but no library table. A malformed
     // partial library upgrade must block API admission until repaired.
     await db.prepare('DROP TABLE sky_library_items').run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=4').run();
+    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
     await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (3)').run();
     await db.prepare('CREATE TABLE sky_library_items(user_id TEXT)').run();
     await call('/api/sky/library',{status:503});
-    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=4').first(),null);
+    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first(),null);
     await db.prepare('DROP TABLE sky_library_items').run();
     check(await library(alice),[]);
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=4').first()),true);
+    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()),true);
     check(await artifacts(first),before);
     check(await db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='synthetic-payment'").first(),{session_id:'synthetic-session'});
     await call('/api/sky/library',{method:'PUT',body:{tool:'mr-citations',saved:true}});

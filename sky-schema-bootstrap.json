@@ -185,5 +185,9 @@
   "CREATE TABLE IF NOT EXISTS `csv_trial_payments` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`job_id` text NOT NULL,\n\t`mode` text NOT NULL,\n\t`session_id` text,\n\t`created_at` integer NOT NULL\n);",
   "CREATE UNIQUE INDEX IF NOT EXISTS `idx_csv_trial_session` ON `csv_trial_payments` (`session_id`);",
   "CREATE TABLE IF NOT EXISTS sky_library_items (user_id text NOT NULL, tool text NOT NULL, saved_at integer NOT NULL)",
-  "CREATE UNIQUE INDEX IF NOT EXISTS idx_sky_library_owner_tool ON sky_library_items (user_id, tool)"
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_sky_library_owner_tool ON sky_library_items (user_id, tool)",
+  "CREATE TABLE IF NOT EXISTS sky_feed_history_events (id text NOT NULL, user_id text NOT NULL, session_id text NOT NULL, tool text NOT NULL, event_type text NOT NULL, occurred_at integer NOT NULL, dwell_ms integer, position integer, created_at integer NOT NULL, PRIMARY KEY(user_id, id))",
+  "CREATE INDEX IF NOT EXISTS idx_sky_feed_history_owner_time ON sky_feed_history_events (user_id, occurred_at)",
+  "CREATE INDEX IF NOT EXISTS idx_sky_feed_history_owner_tool ON sky_feed_history_events (user_id, tool, occurred_at)",
+  "CREATE TABLE IF NOT EXISTS sky_feed_personalization_settings (user_id text PRIMARY KEY NOT NULL, enabled integer DEFAULT false NOT NULL, consent_version text NOT NULL, algorithm_version text NOT NULL, updated_at integer NOT NULL)"
 ]

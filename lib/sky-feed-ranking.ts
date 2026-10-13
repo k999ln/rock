@@ -1,4 +1,9 @@
 import type { Automation } from './catalog';
+import {
+  buildSkyPhoenixPredictions,
+  type SkyPhoenixEvent,
+  type SkyPhoenixPrediction,
+} from './sky-phoenix.ts';
 
 export type SkyFeedMode = 'recommended' | 'library';
 
@@ -7,6 +12,7 @@ export type SkyFeedSignals = {
   connectedAt?: Readonly<Record<string, number>>;
   availableToolIds?: ReadonlySet<string>;
   routedToolId?: string;
+  history?: readonly SkyPhoenixEvent[];
   now?: number;
 };
 
@@ -17,10 +23,12 @@ export type RankedSkyTool = {
     | 'current-request'
     | 'saved'
     | 'connected'
+    | 'history'
     | 'available'
     | 'curated'
     | 'candidate';
   reason: string;
+  prediction?: SkyPhoenixPrediction;
 };
 
 export const SKY_FEED_WEIGHTS = Object.freeze({
@@ -68,6 +76,7 @@ function rankOne(
   tool: Automation,
   signals: SkyFeedSignals,
   now: number,
+  prediction?: SkyPhoenixPrediction,
 ): RankedSkyTool {
   const saved = Boolean(signals.savedAt?.[tool.id]);
   const connected = Boolean(signals.connectedAt?.[tool.id]);
@@ -84,6 +93,7 @@ function rankOne(
   if (tool.status === 'candidate') score += SKY_FEED_WEIGHTS.candidate;
   if (tool.status === 'pending') score += SKY_FEED_WEIGHTS.pending;
   score += recentRelationshipBoost(relationshipTime(tool.id, signals), now);
+  score += prediction?.score ?? 0;
 
   const [reasonCode, reason] = routed
     ? (['current-request', '今の依頼に関連'] as const)
@@ -91,13 +101,15 @@ function rankOne(
       ? (['saved', '保存したTool'] as const)
       : connected
         ? (['connected', '接続済み'] as const)
+        : prediction?.reason && prediction.score >= 3
+          ? (['history', 'あなたのおすすめ履歴から'] as const)
         : available
           ? (['available', '今使える'] as const)
           : curatedToolIds.has(tool.id)
             ? (['curated', 'Skyのおすすめ'] as const)
             : (['candidate', '新しい候補'] as const);
 
-  return { tool, score, reasonCode, reason };
+  return { tool, score, reasonCode, reason, prediction };
 }
 
 function diversify(items: readonly RankedSkyTool[]) {
@@ -140,9 +152,9 @@ function diversify(items: readonly RankedSkyTool[]) {
 }
 
 /**
- * Ranks catalog metadata, live availability and owner-scoped Tool relationships.
- * Request text, prompts, result bodies, clicks and dwell time are deliberately not
- * accepted by this function. The caller may pass only an ephemeral routed Tool id.
+ * Ranks catalog metadata, live availability, explicit relationships and bounded
+ * semantic feed events. Request/prompt/result bodies and identity data never enter
+ * this function; the caller may pass only an ephemeral routed Tool id.
  */
 export function rankSkyFeed(
   tools: readonly Automation[],
@@ -150,7 +162,14 @@ export function rankSkyFeed(
   signals: SkyFeedSignals = {},
 ): RankedSkyTool[] {
   const now = signals.now ?? Date.now();
-  const ranked = tools.map((tool) => rankOne(tool, signals, now));
+  const predictions = buildSkyPhoenixPredictions(
+    tools,
+    signals.history ?? [],
+    now,
+  );
+  const ranked = tools.map((tool) =>
+    rankOne(tool, signals, now, predictions.get(tool.id)),
+  );
 
   if (mode === 'library') {
     return ranked

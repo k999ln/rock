@@ -147,7 +147,7 @@ function executeCitationFormat(args: Record<string, unknown>): ZemaLocalAgentArt
   const language = args.language === undefined ? 'ja' : args.language;
   if (language !== 'ja' && language !== 'en')
     throw new ZemaLocalAgentError('INVALID_TOOL_ARGUMENTS');
-  return { tool: 'format_citations', content: formatCitations(markdown, language) };
+  return { tool: 'format_citations', content: formatCitations(markdown) };
 }
 
 function executeCoconalaCheck(args: Record<string, unknown>): ZemaLocalAgentArtifact {

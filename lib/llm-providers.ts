@@ -258,6 +258,39 @@ type FetchLike = typeof fetch;
 
 const PROVIDER_TIMEOUT_MS = 20_000;
 
+export function isLoopbackLlmEndpoint(value: string | undefined): boolean {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return (
+      !url.username &&
+      !url.password &&
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname.toLowerCase())
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function isRemoteLlmRequest(
+  provider: TextModelProviderId,
+  runtimeEnv: LlmRuntimeEnv,
+): boolean {
+  if (provider === 'local-model')
+    return (
+      Boolean(runtimeEnv.SKY_LOCAL_LLM_BASE_URL) &&
+      !isLoopbackLlmEndpoint(runtimeEnv.SKY_LOCAL_LLM_BASE_URL)
+    );
+  if (provider === 'ollama')
+    return !isLoopbackLlmEndpoint(
+      runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
+    );
+  if (provider === 'openai-compatible')
+    return !isLoopbackLlmEndpoint(runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL);
+  return true;
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? (value as Record<string, unknown>)

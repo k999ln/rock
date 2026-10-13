@@ -169,6 +169,68 @@ await test('Sky connections are one-tap, idempotent and isolated per user', asyn
     400,
   );
 });
+await test('Sky Phoenix history requires consent, is replay-safe and stays owner-scoped', async () => {
+  const { a, b, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = {
+    id: '00000000-0000-4000-8000-000000000001',
+    sessionId: '10000000-0000-4000-8000-000000000001',
+    toolId: 'mr-citations',
+    type: 'detail',
+    at,
+    position: 2,
+  };
+  try {
+    await rejects(() => a.recordSkyFeedEvents({ events: [input] }), 409);
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await a.recordSkyFeedEvents({ events: [input] });
+    await a.recordSkyFeedEvents({ events: [input] });
+    assert.deepEqual(
+      (await a.skyFeedHistory()).events.map(({ toolId, type }) => ({ toolId, type })),
+      [{ toolId: 'mr-citations', type: 'detail' }],
+    );
+    assert.deepEqual((await b.skyFeedHistory()).events, []);
+    await a.clearSkyFeedHistory();
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+  } finally {
+    sqlite.close();
+  }
+});
+await test('Sky Phoenix rejects private fields and altered replays without granting authority', async () => {
+  const { a, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = {
+    id: '00000000-0000-4000-8000-000000000001',
+    sessionId: '10000000-0000-4000-8000-000000000001',
+    toolId: 'mr-citations',
+    type: 'impression',
+    at,
+    dwellMs: 10_000,
+    position: 2,
+  };
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    for (const invalid of [
+      { ...input, prompt: 'secret' },
+      { ...input, toolId: 'unknown' },
+      { ...input, type: 'scroll' },
+      { ...input, type: 'launch', dwellMs: 10_000 },
+    ])
+      await rejects(() => a.recordSkyFeedEvents({ events: [invalid] }), 400);
+    await a.recordSkyFeedEvents({ events: [input] });
+    await rejects(
+      () => a.recordSkyFeedEvents({ events: [{ ...input, position: 3 }] }),
+      409,
+    );
+    assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM jobs').get().n, 0);
+    assert.equal(
+      sqlite.prepare('SELECT COUNT(*) AS n FROM sky_connections').get().n,
+      0,
+    );
+  } finally {
+    sqlite.close();
+  }
+});
 await test('active slot, hourly limit and disabled tools are enforced before dispatch', async () => {
   const { a, advance } = fixture(),
     first = job();

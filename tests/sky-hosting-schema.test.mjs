@@ -24,6 +24,41 @@ void test('library bookmarks survive idempotent schema replay and remain unique 
   assert.equal(db.prepare('SELECT COUNT(*) AS count FROM devices').get().count,0);
 });
 
+void test('Phoenix history is owner-scoped, bounded by unique IDs, and survives schema replay', (t) => {
+  const db = fixture(t); bootstrap(db);
+  db.prepare(`INSERT INTO sky_feed_personalization_settings
+    (user_id, enabled, consent_version, algorithm_version, updated_at)
+    VALUES (?,?,?,?,?)`).run('synthetic-a', 1, '2026-10-13', 'sky-phoenix-v1', 1);
+  db.prepare(`INSERT INTO sky_feed_history_events
+    (id,user_id,session_id,tool,event_type,occurred_at,dwell_ms,position,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?)`).run(
+      '11111111-1111-4111-8111-111111111111',
+      'synthetic-a',
+      '22222222-2222-4222-8222-222222222222',
+      'mr-citations',
+      'impression',
+      1,
+      1000,
+      0,
+      1,
+    );
+  bootstrap(db);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM sky_feed_history_events WHERE user_id=?').get('synthetic-a').count, 1);
+  assert.throws(() => db.prepare(`INSERT INTO sky_feed_history_events
+    (id,user_id,session_id,tool,event_type,occurred_at,dwell_ms,position,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?)`).run(
+      '11111111-1111-4111-8111-111111111111',
+      'synthetic-a',
+      '33333333-3333-4333-8333-333333333333',
+      'coconala',
+      'detail',
+      2,
+      null,
+      1,
+      2,
+    ), /UNIQUE/);
+});
+
 void test('hosting bootstrap contains every canonical table, column and guard', (t) => {
   const source = fixture(t), hosted = fixture(t);
   const folder = new URL(`../${migrationSourceDirectory}/`, import.meta.url);
