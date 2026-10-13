@@ -5,6 +5,7 @@ import { catalog, type Automation } from '@/lib/catalog';
 import { textModelProviderDefinition } from '@/lib/llm-providers';
 import { consumeSkyZemaHandoff } from '@/lib/sky-zema-handoff';
 import { readZemaChatSessions, saveZemaChatSession, type ZemaChatMessage, type ZemaChatSession } from '@/lib/zema-chat-session';
+import type { JenniferCoordinationPlan } from '@/lib/jennifer-coordination';
 
 export type ChatEntry = ZemaChatMessage;
 export type ActiveRequest = Required<NonNullable<ZemaChatSession['activeRequest']>>;
@@ -30,6 +31,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
   const [sessionReady, setSessionReady] = useState(false);
   const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
   const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
+  const [coordinationPlan, setCoordinationPlan] = useState<JenniferCoordinationPlan | null>(null);
 
   const resetSession = useCallback((resetRequestTime = true) => {
     setSessionReady(false);
@@ -40,6 +42,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
     if (resetRequestTime) setRequestStartedAt(0);
     setWorkflowStatus('ready');
     setOutcome(null);
+    setCoordinationPlan(null);
   }, []);
 
   useEffect(() => {
@@ -75,6 +78,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
           }]);
         } else setWorkflowStatus(saved.workflowStatus);
         setOutcome(saved.outcome);
+        setCoordinationPlan(saved.coordination ?? null);
         setSessionReady(true);
         return;
       }
@@ -113,21 +117,23 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
     try {
       const sessions = saveZemaChatSession({
         version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
-        messages, activeRequest, workflowStatus, outcome,
+        messages, activeRequest, workflowStatus, outcome, coordination: coordinationPlan,
       });
       const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
       return () => window.cancelAnimationFrame(frame);
     } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
+  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome, coordinationPlan]);
 
   function beginSession(session: ZemaChatSession) {
     setRecentThreads(saveZemaChatSession(session));
     setThreadId(session.id);
     setThreadCreatedAt(session.createdAt);
+    setCoordinationPlan(session.coordination ?? null);
     setSessionReady(true);
   }
 
   return { messages, setMessages, activeRequest, setActiveRequest,
     requestStartedAt, setRequestStartedAt, workflowStatus, setWorkflowStatus,
-    threadId, recentThreads, outcome, setOutcome, resetSession, beginSession };
+    threadId, recentThreads, outcome, setOutcome, coordinationPlan, setCoordinationPlan,
+    resetSession, beginSession };
 }

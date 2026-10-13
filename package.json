@@ -39,6 +39,7 @@
     "mission:goal": "node scripts/amc-goal.mjs",
     "mission:codex": "node scripts/amc-codex.mjs",
     "jennifer:projects": "node --experimental-strip-types scripts/jennifer-projects.mjs",
+    "spider:plan": "node scripts/spider-risk-plan.mjs",
     "system:composition:check": "node scripts/check-system-composition.mjs",
     "llm:architecture:check": "node scripts/check-llm-architecture.mjs",
     "csv:check": "node scripts/check-csv-business.mjs",

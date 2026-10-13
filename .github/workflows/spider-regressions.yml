@@ -28,6 +28,8 @@ jobs:
           node-version: '22'
       - name: Test feedback collection and update-message boundaries
         run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
+      - name: Test defensive path and keyword risk planning
+        run: node --test tests/spider-risk-policy.test.mjs tests/spider-program-inspector.test.mjs tests/spider-guard.test.mjs
       - name: Test cache origin-error revalidation boundaries
         run: node --test tests/dependency-cache-revalidation-security.test.mjs
       - name: Test AMC squad text rendering and offline navigation

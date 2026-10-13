@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-jennifer-project-portfolio/1",
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-13",
   "portfolioManager": {
     "id": "jennifer",
     "displayName": "Jennifer",
@@ -20,7 +20,7 @@
       "mission": "OS Core、端末対応、AI runtime、配布・復旧を一つの製品候補として進める",
       "managerAgentId": "jennifer-os-manager",
       "managerLabel": "OS担当AI",
-      "taskPrefixes": ["AI", "BRD", "DSP", "LCH", "N", "OS", "RLS", "V", "VER"],
+      "taskPrefixes": ["AI", "BRD", "DSP", "LCH", "N", "OS", "RLS", "SIM", "V", "VER"],
       "dependsOn": ["spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/rockstaros-complete-design.md", "docs/workstreams/06-native-qemu-release.md", "docs/workstreams/07-android-device-local-ai.md"]
     },
@@ -50,7 +50,7 @@
       "mission": "Jenniferを利用者の全体管理窓口、Zemaを実行・承認・成果管理基盤として運用する",
       "managerAgentId": "jennifer-work-manager",
       "managerLabel": "Jennifer・Zema担当AI",
-      "taskPrefixes": ["HOME", "SKY", "UXCHAR", "WEB"],
+      "taskPrefixes": ["CAMPUS", "GRID", "HOME", "SKY", "UXCHAR", "WEB"],
       "dependsOn": ["rockstaros-core", "spider-security"],
       "sourceRefs": ["docs/jennifer-coordination.md", "docs/sky-tools-complete-design.md", "components/sky-chat-workspace.tsx"]
     },
@@ -80,7 +80,7 @@
       "mission": "Tool事業、収益、料金、Wallet、PAPER市場と外部Provider境界を管理する",
       "managerAgentId": "jennifer-business-manager",
       "managerLabel": "事業・Wallet担当AI",
-      "taskPrefixes": ["BIL", "BIZ", "CSV", "DX", "FB", "FND", "GX", "MKT", "SPN", "WLT"],
+      "taskPrefixes": ["BIL", "BIZ", "CSV", "DX", "FB", "FND", "GM", "GX", "MKT", "SPN", "WLT"],
       "dependsOn": ["jennifer-zema", "spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/workstreams/03-wallet-billing-providers.md", "docs/workstreams/08-game-market-fund.md", "docs/workstreams/09-business-pilots.md"]
     },

@@ -334,7 +334,10 @@ export function createJenniferTaskJobCoordination(
     planId,
     taskId: task.id,
     role,
-    specialistProfile: String(task.specialistProfile ?? "specialist-agent"),
+    specialistProfile:
+      typeof task.specialistProfile === "string"
+        ? task.specialistProfile
+        : "specialist-agent",
   };
   const parsed = parseJenniferTaskJobCoordination(value);
   if (!parsed) throw new Error("JENNIFER_TASK_JOB_INVALID");
@@ -353,7 +356,11 @@ export function buildJenniferDispatchPrompt(goal: AmcGoal, taskId: string) {
     `Goal revision: ${goal.revision}`,
     `Task ID: ${task.id}`,
     `Task: ${task.title}`,
-    `Specialist profile: ${String(task.specialistProfile ?? task.squadId)}`,
+    `Specialist profile: ${
+      typeof task.specialistProfile === "string"
+        ? task.specialistProfile
+        : task.squadId
+    }`,
     `Objective: ${task.scope}`,
     `Dependencies accepted: ${task.dependsOn.length ? task.dependsOn.join(", ") : "none"}`,
     `Allowed paths: ${paths.length ? paths.join(", ") : "none"}`,

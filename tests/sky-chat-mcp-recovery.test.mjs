@@ -48,6 +48,18 @@ function harness() {
     '@/lib/zema-chat-session': { readZemaChatSessions: () => [session], saveZemaChatSession: () => [session] },
     '@/lib/sky-tool-labels': { skyToolLabelFor: () => null },
     '@/components/mcp-bot-runner': { McpBotRunner: 'McpBotRunner' },
+    '@/lib/jennifer-coordination': { createJenniferCoordinationPlan: noop },
+    '@/lib/jennifer-projects': { parseJenniferProjectPortfolio: (value) => value },
+    '@/lib/jennifer-amc-decomposition': { parseJenniferKnowledgeRegistry: (value) => value },
+    '@/data/jennifer-projects.json': { default: { projects: [] } },
+    '@/data/jennifer-knowledge.json': { default: { domains: [] } },
+    '@/lib/amc-tool': { amcSummary: () => ({ readyTaskIds: [] }) },
+    '@/lib/jennifer-amc-execution': {
+      buildJenniferDispatchPrompt: noop,
+      buildJenniferExecutionReport: noop,
+      createJenniferExecutionGoal: noop,
+      createJenniferTaskJobCoordination: noop,
+    },
   };
   const exports = {};
   const context = { Error, Event, queueMicrotask, window, crypto,

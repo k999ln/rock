@@ -1,6 +1,6 @@
 # Spider Guard — RockstarOS本体の秘密・個人情報保護
 
-更新日: 2026-10-05 / task: `SYS15` / 状態: `in_progress`
+更新日: 2026-10-13 / task: `SYS15` / 状態: `in_progress`
 
 ## 要求と現在地
 
@@ -13,6 +13,18 @@
 OSへの同梱、boot時起動、再起動監督、native画面の実データ表示までが実装範囲。現在は実装・検証中で、変更後の同一imageのboot、Pixel実機、24時間連続運転は未受入。過去のQEMU／Pixel試験を今回の常駐保護の成功に流用しない。
 
 2026-10-02、利用者は追加の映像参照に沿ったnativeアニメーション改善を進めるよう明示した。細い発光脚、青い足先の輪、pink／cyanの小さな四角いcoreを、実際の検出位置への移動と重点表示へ取り込む。このアニメーションのLinux source検証は記録済み。さらに利用者はクモに「セキュリティーエージェント」の役割を明示し、実際の監視・検査・拒否・報告と役割表示を接続し、追加のsource検証を記録した。現在の表示先はnative security panelであり、OS全体のoverlayは未選択。以下の旧source検証は保存commit `a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`に対応し、変更後のrendererの合格証拠へ流用しない。
+
+### Repository変更のrisk plan（2026-10-13）
+
+利用者指定の「特定keywordや重要fileにセキュリティーを深くかける」は、防御検査の優先度を上げるrisk signalとして実装する。攻撃方法の選択、exploit、credential抽出、保護fileの書換え、権限拡大には使わない。
+
+```sh
+npm run spider:plan -- --changed
+```
+
+このcommandは変更・未追跡のtext fileをproject root内だけで読み、`.env*`、秘密鍵、keystore、credential／secret設定fileを`critical`、認証・権限・Broker・session、dynamic execution・shell、MCP／Provider／外部送信、DB／migration／storage、Wallet／決済、CI／deployを`deep`として分類する。それ以外は`standard`である。
+
+結果はpath、rule ID、category、severity、推奨check、coverageだけを持ち、file本文、snippet、秘密値、credential、環境変数値は出さない。symlinkとproject外pathを拒否し、件数・file size・合計sizeを制限する。keyword hitは脆弱性・侵害の証明ではなく、hitなしも安全保証ではない。`coverageLimited`、読取失敗、上限超過をcleanへ読み替えない。risk plan自体はGitleaks、CodeQL、program inspector、送信前`assertSafeOutbound`、OS常駐guardを実行済みにしない。
 
 ## 現行 main との統合境界（2026-10-05）
 

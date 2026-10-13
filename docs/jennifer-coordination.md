@@ -1,6 +1,6 @@
 # Jennifer Coordination
 
-更新: 2026-10-10
+更新: 2026-10-13
 
 Jenniferは利用者が常に話す、Rockstar全体のプロジェクト統括窓口である。ZemaはJenniferの裏で依頼、進捗、承認、停止、成果物、利用額、Receipt、履歴を管理する仕事systemであり、競合する別人格として前面へ出さない。Jenniferは権限主体ではなく、Brokerと既存の実行境界を越えない。
 
