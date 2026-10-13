@@ -32,7 +32,12 @@ const original = {
 await test('local production start applies the published migrations before serving', (t) => {
   const f = localStartFixture(t);
   const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
-  assert.match(viteConfig, /migrations_dir: 'drizzle'/);
+  assert.match(viteConfig, /migrations_dir: 'services\/sky-web\/migrations'/);
+  const agentRuntimeConfig = readFileSync(
+    new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
+    'utf8',
+  );
+  assert.match(agentRuntimeConfig, /"migrations_dir": "\.\.\/\.\.\/drizzle"/);
   // Execute the same runner as npm start; failure and signal boundaries live
   // in start-local-web.test.mjs using this shared fixture.
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -45,6 +50,43 @@ await test('local production start applies the published migrations before servi
     { stage: 'd1', args: ['d1', 'migrations', 'apply', 'site-creator-d1', '--local', '--config', 'dist/server/wrangler.json', '--persist-to', join(f.root, '.wrangler/state')], ci: '1' },
     { stage: 'dev', args: ['dev', '--config', 'dist/server/wrangler.json', '--port', '8788', '--ip', '127.0.0.1', '--persist-to', join(f.root, '.wrangler/state')], ci: 'fixture-dev-env' },
   ]);
+});
+
+await test('Sky Web preserves its deployed migration lineage separately from Agent Runtime', () => {
+  const webMigrations = new URL('../services/sky-web/migrations/', import.meta.url);
+  const expected = {
+    '0000_previous_havok.sql': '7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63',
+    '0001_wealthy_shinko_yamashiro.sql': 'dd7a0e05ff9d67b14f09c60addc4f27f689d68eead3d17102f31e898bb3218d9',
+    '0002_operations_backend.sql': '83f1c3ced5eb396775926940fc73dc96e0fc9e2f3bb7991bd5a665b228e9d2eb',
+    '0002_work_jobs.sql': '3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9',
+    '0004_union_bridge.sql': 'e183bc5778f03886bcd03d0a1548121e06252acde6565769043c3b660dc151af',
+    '0005_early_the_enforcers.sql': '711ed2bc635f5145be84fc953d06d9f2704a874d160275129842df9e4affd1b9',
+    '0006_married_scream.sql': '6294d5c0f810962647d15bb739f9ca35d6914e3647f211c11381f5afd5a8ede4',
+    '0007_yielding_giant_man.sql': 'ceeb23872f9d88652a936f6f7f1a09d9f0f7dd096dc5ce191412374de22b8cc2',
+    '0008_wooden_avengers.sql': '542c4e4356ec26b0afb8c55afb46341719ccce91f9c3c449422a7bad0165df70',
+    '0009_sad_giant_girl.sql': '1f167394b9c8fe4fcff2c297c2058c6d1d697daf4cda07066ce4c227af2c91fc',
+    '0010_gray_fat_cobra.sql': '3af98875ff3d2f07b2c5ae4e2d2badf91834c180647c5013fa3659eb575797af',
+    '0011_overrated_skaar.sql': '0cbdb7330ccc5862e16ef35f211fa9a03338369a64a9aae19db1fc86044d9736',
+    '0012_melodic_malcolm_colcord.sql': '420b6364465027b5ffce7b8cf6b3c143eea0b62b51268f60655dc7301d660a9c',
+    '0013_csv_review_fixes.sql': '9fe19477e037bd5bed67ebd8d17448d938c7424184204aed179d1efdedc9e46f',
+    '0014_csv_review_fixes.sql': 'c9473cb18102517c5a6d2c5f5f3daa345150087b544fbc5349ca56267d863527',
+    '0015_csv_billing_account_events.sql': '9c53b391c35b9f9f226f6a4a0cc53d0f2a8c36664bfbaa3de62b3c07c1f2ba0c',
+    '0016_sky_code_timeline.sql': '5151b91f2bb2d6a0c9329b4e066ccdc1632a0d48309d693e63fd1cbaa96f6c95',
+    '0017_primary_quality_compatibility.sql': '12f842955ed47647302725f57d05a91e7ad29840ebf428d38f80c1ac78033360',
+  };
+  const actual = readdirSync(webMigrations)
+    .filter((name) => name.endsWith('.sql'))
+    .sort();
+  assert.deepEqual(actual, Object.keys(expected));
+  for (const [name, digest] of Object.entries(expected)) {
+    assert.equal(
+      createHash('sha256')
+        .update(readFileSync(new URL(name, webMigrations)))
+        .digest('hex'),
+      digest,
+      name,
+    );
+  }
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
