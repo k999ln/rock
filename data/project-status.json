@@ -6931,9 +6931,15 @@
     "publishedSiteVersion": 80,
     "publishedSiteSourceSha": "1d87952384fd6113bec773750290ff4ab8ca51f8",
     "publishedSiteDeploymentId": "appgdep_6ad004d4e62881919d303b98549e767c",
+    "githubIntegration": {
+      "pullRequest": 128,
+      "headSha": "8ebea8e45d46c47b5bd8090eb742572d5ba45d12",
+      "mainMergeSha": "d7171760f5183f1d206de4954a7b2f52b222916f",
+      "headCi": "7/7 passed including verify"
+    },
     "liveReadback": "Columbia / and campus Home and free card returned 200; /os/sky/outputs?source=nfc, marketplace, /chat and /zema/library returned 307 to avoado.si preserving query; reloaded browser showed Explore/Work/You pointing to avoado.si",
     "migrationGate": "Do not replace root 0000/0001 migration lineage with Columbia 0013+ or claim existing data migrated without backup, compatibility tests, owner A/B and recovery readback",
-    "nextAction": "Merge PR #128 after CI, then prepare a backed-up root D1 migration and visual refresh; verify signed-in owner A/B, existing records and recovery before upgrading the root Site."
+    "nextAction": "Prepare a backed-up root D1 migration and visual refresh; verify signed-in owner A/B, existing records and recovery before upgrading the root Site."
   },
   "skyCampusNfcLive": {
     "date": "2026-10-13",
