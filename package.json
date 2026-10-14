@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build",
+    "build": "vinext build && node scripts/stage-sky-domain-router.mjs",
     "start": "CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist/server/wrangler.json && wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs",
