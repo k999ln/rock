@@ -2,9 +2,9 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "2eef8e4a3d630553dacf51508c4c761226c93420c7db694b1f5dad6fb26f831d",
-  "packageEntries": 976,
-  "uniqueComponents": 940,
+  "packageLockSha256": "930767b0df0a472955cd0d145ee9552afb5ad96b09b015d4df29c919962197fc",
+  "packageEntries": 982,
+  "uniqueComponents": 939,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -69,7 +69,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 777,
+      "uniqueComponents": 776,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -94,7 +94,7 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 890,
+    "standard-license-text-and-notice": 889,
     "reciprocal-source-terms-review": 41,
     "license-choice-review": 8,
     "attribution-review": 1
@@ -241,7 +241,7 @@
       "optional": false
     },
     {
-      "purl": "pkg:npm/caniuse-lite@1.0.30001816",
+      "purl": "pkg:npm/caniuse-lite@1.0.30001810",
       "license": "CC-BY-4.0",
       "reviewClass": "attribution-review",
       "lockScope": "production-reachable",
