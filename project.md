@@ -2,6 +2,8 @@
 
 更新: 2026-10-14。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
+2026-10-14、Columbiaと本体Skyの公開差分を確認した。前者は別Sites/D1のv79からv80へ更新し、後者はv53のまま保全した。Columbia Homeと無料の3カード・任意browser保存を残し、Explore／Work／Youと旧共有Sky画面を`avoado.si`へ誘導するv80/source `1d87952384fd6113bec773750290ff4ab8ca51f8`を公開した。匿名HTTPは大学Home・カード200、共有画面307とquery保持、公開browserはExplore/Work/Youの本体URLを確認。GitHub [PR #128](https://github.com/k999ln/rock/pull/128)はCI待ち。本体SiteのDB移行履歴はColumbiaと異なり、旧データは未移行。次はbackup・互換migration・本人A/B・復旧試験を通して本体ソース更新と視覚統一を行う。
+
 2026-10-14、Skyを異種hostと多数の専門Agentへ融合する明示方針を[製品ベース](docs/product-baseline.md)、[Skyローンチ設計](docs/sky-launch-design.md)、[MCP/Agent接続設計](docs/sky-mcp-architecture.md)へ記録した。冷蔵庫の在庫読取→不足/献立/買い物案→本人の注文承認→店舗receipt照合は到達例であり、家電・店舗・自動購入の実接続ではない。主担当はSky / MCP（SKY07、SKY21、ROCK）。次は同一originの型付き成果をhost能力fixtureへ拡張し、別origin認証、二Agent委任、読取専用host、注文作用を段階別に受け入れる。`npm run project:update`、`baseline:check`、`design:check`、`verify`は文書のみのworktreeで成功。現時点の成果は設計文書のみで、main統合・Site公開・実機/Provider受入は別に記録する。
 
 2026-10-14、公開v72の`columbia.avoado.si/os/sky`で再現した404を修正した。Sky domain routerを標準buildへ自動stageし、`*.avoado.si`の`/os/sky`互換、サブドメインHome、旧`/sky`から同一hostの`/os/sky`へのquery保持308転送を両立した。Columbia入口の並行更新はGitHub [PR #123](https://github.com/k999ln/rock/pull/123)、domain-router更新は[PR #124](https://github.com/k999ln/rock/pull/124)でmainへ統合し、両方を含む同一treeをSites v74/source `fbee9f99dd5ea90613ed64be616814c1f20b140d`として公開した。`/`、`/campus`、`/os/sky`、Citations Agent、NFC resolverをbrowser確認済みで、v72はrollback候補として残す。

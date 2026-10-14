@@ -6919,6 +6919,22 @@
       "rollbackVersion": 72
     }
   },
+  "skyCampusMainReconciliation": {
+    "date": "2026-10-14",
+    "taskIds": ["WEB06", "SKY21"],
+    "primaryOwner": "ROCK",
+    "status": "columbia_site_v80_published_root_migration_pending",
+    "rootSite": "avoado.si v53, source e09d4de463156d0f2f765c6a7dcc1769637f666d",
+    "columbiaSite": "columbia.avoado.si v79, source a6058d06178c0483ec760f60109d2a56e0892a88",
+    "dataBoundary": "separate_sites_and_D1; account data and old Columbia browser saves are not unified",
+    "sourceChange": "Columbia Home remains local; shared Sky, Work and account navigation targets avoado.si; legacy Columbia service pages redirect on GET/HEAD while three free card tools remain local",
+    "publishedSiteVersion": 80,
+    "publishedSiteSourceSha": "1d87952384fd6113bec773750290ff4ab8ca51f8",
+    "publishedSiteDeploymentId": "appgdep_6ad004d4e62881919d303b98549e767c",
+    "liveReadback": "Columbia / and campus Home and free card returned 200; /os/sky/outputs?source=nfc, marketplace, /chat and /zema/library returned 307 to avoado.si preserving query; reloaded browser showed Explore/Work/You pointing to avoado.si",
+    "migrationGate": "Do not replace root 0000/0001 migration lineage with Columbia 0013+ or claim existing data migrated without backup, compatibility tests, owner A/B and recovery readback",
+    "nextAction": "Merge PR #128 after CI, then prepare a backed-up root D1 migration and visual refresh; verify signed-in owner A/B, existing records and recovery before upgrading the root Site."
+  },
   "skyCampusNfcLive": {
     "date": "2026-10-13",
     "workstream": "WEB06 / SKY21",

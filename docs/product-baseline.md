@@ -92,6 +92,8 @@ SPIDERは本人の明示入力をブラウザ内で静的検査するSky Toolと
 
 Campusは人・project・機会・event・community・portfolio・resourceの入口で、既存Sky/Zema/Walletを複製しない。Columbia NFCカードはavokadoが書き込み配布するURL入口。`avocadomini.si/t/<tagId>`から英語の出典整理・AMC・米国特許案内を開き、無料下書きを先に示す。大学の文字名を使い紋章・ロゴを使わず、カードに本人情報・鍵・利用権を入れない。匿名tag集計はIP・email・正確な位置・raw User-Agentを保存しない。 Columbia入口も`design/sky-twitter-feed-mobile-v2.png`を基準とする英語のFor you／Saved・端末内の依頼振分け・単列3 Tool投稿・browser内保存・実Tool CTA・下部navigationへ揃える。入力をserver/LLMへ送らず、無料local処理と特許si調査停止を保持する。印刷・枚数・費用・配布許可は未定。[Campus](campus-layer.md)、[NFC設計](sky-nfc-columbia.md)に従う。
 
+2026-10-14の追加指示: `columbia.avoado.si`と本体`avoado.si/os/sky`の差分を解消する。Columbiaの視覚言語を本体Skyへ展開してよいが、大学別Homeと本体Sky Homeは別の役割・画面として維持する。大学Homeの無料ブラウザ内下書きと任意の端末内保存はその場の体験として残し、購入、本人別ライブラリ、接続、Zemaの仕事、Agent成果の正本は本体Skyへ集約する。大学hostの独立DBを、同じAPI pathや同じGit sourceだけで共有済みと呼ばない。既存データの移行はbackup、互換schema、本人A/B、復旧試験を経てから行う。
+
 Campus所属は認証済みemail domainとの一致を`domain_verified`として扱い、在籍・肩書き・大学公式承認にしない。emailをCampus tableへ保存せず、profile公開範囲、block/report、投稿archive、tag停止・集計削除、Campus本人データ削除を維持する。原典のない外部情報はcommunity投稿として区別する。
 
 既存OSへのSky・本人が選ぶfile/メモ回収・LLM追加、IP Studioの音声/電話は既存adapterへ接続する。録音、発着信、外部Tool作用、送信先・権利・費用は別承認とする。通常の会話やsource実装を全データ閲覧・実通話・端末内model導入の受入にしない。
