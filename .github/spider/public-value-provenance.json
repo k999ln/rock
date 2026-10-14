@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 166,
+  "distinctValues": 167,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 59,
+    "public-artifact-digest": 60,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2347,6 +2347,20 @@
         ]
       },
       "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0dd420287575f406496b8a606f1ed614bb6457a0dbafc49b76d4b3ce95cef11b",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of the public text-lexical-embedding-v1 tokenizer specification; recomputed from the three newline-terminated specification lines documented in docs/evidence/amc/grid01-persistent-grid-host.md.",
+      "source": {
+        "commit": "0cf0895fdb0c5891bb649a7b54e03e3cc2000ceb",
+        "path": "lib/sky-compute-grid-skus.ts",
+        "line": 64,
+        "field": [
+          "/lexicalArtifacts/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 3
     }
   ],
   "supplementalReviews": [
