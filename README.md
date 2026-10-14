@@ -26,6 +26,8 @@ The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `
 
 > **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
 
+> **First industry stronghold** — avokado will work with architecture, interior, and sound professionals to improve quality of life through unobtrusive IT. avocadoMini is a candidate physical node for a space; RockstarOS, Sky, and Zema keep identity, permission, revisions, approvals, results, cost, and recovery together. Professional measurement, code review, permits, installation, and inspection remain with qualified people and authorities. The first space, partners, Device Profile, and pilot price are not yet selected.
+
 ## The promise
 
 The product should feel like one continuous handoff:
@@ -299,7 +301,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-14 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-14 / 394 task records (32 parents, 192 children, 170 standalone; 362 execution units excluding parents): 114 done, 49 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level

@@ -793,6 +793,7 @@
         "MINI01-06",
         "MAT14",
         "MAT15",
+        "MAT18",
         "MAT04",
         "MAT07",
         "MAT08",
@@ -13921,6 +13922,11 @@
     },
     {
       "taskId": "MAT15",
+      "primarySquad": "M1",
+      "classification": "current_product"
+    },
+    {
+      "taskId": "MAT18",
       "primarySquad": "M1",
       "classification": "current_product"
     },

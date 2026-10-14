@@ -1,5 +1,16 @@
 # Material Invention / avocadoMini
 
+## 建築・インテリア・サウンドの根城（2026-10-14）
+
+利用者の明示方針により、avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を最初の産業上の根城とする。主担当は本workstreamの`MAT18`（ROCK、in progress）。Product / UX、Sky / MCP、Securityは横断参照とし、無料account起点の共通service、R5、Material Invention、Pixel/QEMUの各境界を維持する。
+
+- `ROCK`: Mini Device Profile候補、RockstarOSの権限・保存・復旧、Sky接続、Zema空間project契約、証拠区分を設計・実装する。
+- `EXTERNAL`: 建築・内装・音響の固有業務、資格、法規、施工、製品保証、保守を提供する。
+- `JOINT`: 実空間の測定、専門家review、設備adapter、設置、音響・privacy・安全、撤去・復旧を同じpilotで受け入れる。
+- `OWNER`: 最初の空間、生活課題、地域、partner、予算、共有、発注、設置、公開を決める。
+
+最初の完了条件は、一つの限定空間で現状→複数案→費用→専門家確認→本人承認→実施／検査→保存・復旧を通し、architecture／interior／soundの少なくとも二分野を別責任のまま接続すること。Miniなしのfallbackも保持する。最初の対象、partner、Device Profile、sound範囲、価格は未決定であり、提携、実機、施工、市場獲得を完了としない。検証は既存の`baseline:check`、`design:check`、`project:check`に加え、pilot確定後に対象schema、privacy、audio、device、専門家readbackを追加する。
+
 ## サービス設計の再構成
 
 [統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。
