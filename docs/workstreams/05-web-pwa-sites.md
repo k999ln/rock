@@ -2,7 +2,7 @@
 
 ## 2026-10-14 — Columbia `/os/sky` route continuity（WEB06 / SKY21、ROCK）
 
-`columbia.avoado.si/os/sky` が404となる本番退行を、最新Sites v72を作業元に再現した。既存のsame-origin routerを標準`npm run build`へ組み込み、`avoado.si`だけでなく`*.avoado.si`でも`/os/sky`と配下を内部`/sky` routeへ結ぶ。サブドメインの`/`と`/os`は各SiteのRockstarOS Homeに残し、Mini proxyはapex `avoado.si`だけに限定する。旧`/sky`は同じhostの`/os/sky`へqueryを保持して308転送する。対象route試験、型検査、本番build、配備後のHTTP/title/UI readbackを同一候補で確認し、直前v72をrollback候補として保持する。
+`columbia.avoado.si/os/sky` が404となる本番退行をSites v72で再現し、既存のsame-origin routerを標準`npm run build`へ組み込んだ。`avoado.si`だけでなく`*.avoado.si`でも`/os/sky`と配下を内部`/sky` routeへ結び、サブドメインの`/`と`/os`は各SiteのHomeに残し、Mini proxyはapex `avoado.si`だけに限定する。旧`/sky`は同じhostの`/os/sky`へqueryを保持して308転送する。Columbia feedと並行router更新をPR #123/#124でmainへ統合し、GitHub mainとtree `971a0aa5a05f1416c8e20175d651842054756767`が一致するSites source `fbee9f99dd5ea90613ed64be616814c1f20b140d`をv74として公開した。route試験7件、typecheck、project同期、両PRの全CI、本番build、`/`・`/campus`・`/os/sky/agents/citations`・NFC resolverのbrowser readbackを確認済み。直前v72はrollback候補として保持する。
 
 ## 2026-10-13 — Sky大学別NFC入口の公開（WEB06 / SKY21、ROCK）
 

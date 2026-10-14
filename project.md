@@ -2,7 +2,7 @@
 
 更新: 2026-10-14。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
-2026-10-14、公開v72の`columbia.avoado.si/os/sky`で404を再現。既存のSky domain routerが通常buildに自動stageされず、apex `avoado.si`だけを正規prefix対象としていた。v72を作業元に、標準buildへのstage、`*.avoado.si`の`/os/sky`互換、サブドメインHomeの維持、旧`/sky`の同一host 308転送を追加する。対象検証と公開readback後にSite版・source SHAを確定し、v72をrollback候補として残す。
+2026-10-14、公開v72の`columbia.avoado.si/os/sky`で再現した404を修正した。Sky domain routerを標準buildへ自動stageし、`*.avoado.si`の`/os/sky`互換、サブドメインHome、旧`/sky`から同一hostの`/os/sky`へのquery保持308転送を両立した。Columbia入口の並行更新はGitHub [PR #123](https://github.com/k999ln/rock/pull/123)、domain-router更新は[PR #124](https://github.com/k999ln/rock/pull/124)でmainへ統合し、両方を含む同一treeをSites v74/source `fbee9f99dd5ea90613ed64be616814c1f20b140d`として公開した。`/`、`/campus`、`/os/sky`、Citations Agent、NFC resolverをbrowser確認済みで、v72はrollback候補として残す。
 
 利用者の「古く紛らわしい不要な内容は削除」に基づき、旧日付ログ・旧端末構成・料金試算・途中状態の重複を本文から削除する。復元元はcommit `98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。復元対象と方法は[Git整理方針](docs/git-consolidation.md)と[archive台帳](data/archived-paths.json)で管理し、新しい歴史文書へ複製しない。固定原本・vendor・evidenceは保持する。
 
@@ -29,7 +29,7 @@ Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整�
 
 最新main `1f256b90e894f3d5e4ae0081e6fe60d564819020`にはPR #115のSky Phoenix/完成feed/Columbia/local Agentと、#116/#117のlocal preview・Site互換DB移行が統合済み。loopback-only/最大3手/3 pure Tool/Cloud fallbackなし、本人同意初期OFF/30日800件/本文非保存/実行権非付与、serverのowner/retry、migration0063とSiteのresumable bridgeを保持する。既存mainの記録は[Sky](docs/sky.md)、[Agent一覧](docs/agents-and-tools.md)、[DB移行](services/sky-web/migrations/README.md)と進捗JSONへ継承し、旧spec-history/長いprojectログを復活させない。main統合はSite再配備・公開OS/Provider/実NFC受入と別である。
 
-2026-10-14のCAMPUS02整合では、最新mainのJennifer/Citations Agentを保ったまま、Site v69/v70で検証済みだったColumbia host選択・任意LinkedIn choice・Phoenix完成feedを対象fileだけ再統合した。`avocadomini.si` の `SKY_TAG_ORIGIN` は `https://columbia.avoado.si` へ更新し、旧`chatgpt.site` hopを除いた。`columbia.avoado.si/`と`/sky/campus/columbia`は同じ英語3 Tool入口、汎用5大学`/os/sky/campus/{id}/hub`は別機能として維持する。`Save here`はbrowser内、Jenniferは`/chat`のZemaへのchief-of-staff導線、`/sky/agents`は第一者Citations Agentへ集約する。現物カード・iPhone/Android readback・配布許可は未受入のまま残す。
+2026-10-14のCAMPUS02整合では、最新mainのJennifer/Citations Agentを保ったまま、Site v69/v70で検証済みだったColumbia host選択・任意LinkedIn choice・Phoenix完成feedを対象fileだけ再統合した。`avocadomini.si` の `SKY_TAG_ORIGIN` は `https://columbia.avoado.si` へ更新し、旧`chatgpt.site` hopを除いた。`columbia.avoado.si/`は英語3 Tool入口を直接返し、互換path `/sky/campus/columbia` はqueryを保って正規公開path `/os/sky/campus/columbia` へ308転送する。汎用5大学`/os/sky/campus/{id}/hub`は別機能として維持する。`Save here`はbrowser内、Jenniferは`/chat`のZemaへのchief-of-staff導線、`/sky/agents`は第一者Citations Agentへ集約する。現物カード・iPhone/Android readback・配布許可は未受入のまま残す。
 
 PR #112はhead `df756bea745277b2a292790e843f185e80f00b02`からmain `1f256b90`へ統合済み。5大学Hub/PWA、NFC生成、同一originの型付きSky成果/Fitness表示、Home `/os`・Sky `/os/sky`・成果の正規URL、旧URL転送、Mini/Pro分離domain、本人情報をMini proxyへ渡さない境界を保全する。公開v48の既存記録は[大学NFC証拠](docs/evidence/sky-campus-nfc-live.json)と[App Output証拠](docs/evidence/sky-app-output-plugin-github.json)へ保持し、今回の配備/実NFC/学生枠/Provider合格とはしない。
 
