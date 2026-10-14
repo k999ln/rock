@@ -2226,6 +2226,19 @@
       "cloud_ai_provider_resale_terms"
     ]
   },
+  "skyFusionDirection": {
+    "decidedAt": "2026-10-14",
+    "source": "Owner explicitly described Sky as a flexible multi-Agent system that can fuse with apps, appliances and other hosts; a refrigerator could observe inventory and help buy needed items",
+    "role": "capability_registry_and_composition_across_heterogeneous_hosts",
+    "hosts": ["web", "apps", "pc", "games", "appliances", "robots", "services"],
+    "agentComposition": "bounded_typed_delegation_tracked_by_zema_and_authorized_by_broker",
+    "interactionStages": ["observe", "propose", "owner_review", "act", "reconcile"],
+    "nfcOrOsRequired": false,
+    "observationGrantsActuation": false,
+    "example": "refrigerator_inventory_to_reviewed_shopping_order",
+    "currentAcceptance": "design_only_no_refrigerator_store_or_multi_agent_production_acceptance",
+    "record": "docs/sky-mcp-architecture.md"
+  },
   "productTerminology": "data/product-terminology.json",
   "skyAppOutputPlugin": {
     "decidedAt": "2026-10-12",
