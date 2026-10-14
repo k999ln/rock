@@ -41,6 +41,8 @@ The implemented coordination path is:
 
 Open `/chat`, choose a project, enable **計画を整理**, and send the desired outcome. Jennifer first presents the Goal and decomposition without executing anything. Saving creates a durable **draft only**. The owner must answer or explicitly defer every unresolved COLOMBIA question and approve the Goal Contract before the single inventory leaf can run. After its typed report passes an independent review, a second owner approval unlocks the remaining delivery leaves, one external delegation at a time. Actual remote dispatch still requires a connected Agent, a verified quote, a Broker authorization proof, a budget reservation, and explicit owner approval. A remote “completed” state is not enough: Zema accepts only server-bound artifacts, signed usage Receipts, a reviewer linked to the exact worker report, and finally the owner's Goal acceptance. See [Jennifer coordination and execution](docs/jennifer-coordination.md).
 
+`/chat`の私用project workspaceは **Jennifer Access** で保護する。最初の登録または端末紛失からの復旧時だけ、既存Sites accountをownerとの結び付けに使い、普段は`columbia.avoado.si`に固定したdiscoverable passkeyと端末のロック解除で開く。登録時のattestation、利用時のassertion、challenge、counter、user verificationをserverで検証し、passkey sessionはSecure／HttpOnly／SameSite=Strictのhost-only cookieに保存する。復旧登録は以前のJennifer passkeyとsessionをすべて失効させてauditへ残す。これはColumbia/Jenniferに限定した入口で、native端末の`rock_session_...`、親domain全体の共通account、課金・dispatch承認を置き換えない。
+
 ## System map
 
 Clean a file, prepare a listing, develop a material idea, find a community, or build a Tool someone else can use. The breadth is deliberate; the same account and permission boundary should make each path understandable.

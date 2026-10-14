@@ -103,6 +103,7 @@
   "dependencies": {
     "@base-ui/react": "1.7.0",
     "@shadcn/react": "0.3.0",
+    "@simplewebauthn/server": "14.0.2",
     "@streamdown/cjk": "^1.0.3",
     "@types/three": "^0.186.0",
     "ai": "^7.0.107",

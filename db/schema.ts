@@ -266,6 +266,93 @@ export const jenniferPlanRevisions = sqliteTable(
   ],
 );
 
+export const jenniferPasskeyChallenges = sqliteTable(
+  'jennifer_passkey_challenges',
+  {
+    id: text('id').primaryKey(),
+    kind: text('kind').notNull(),
+    userId: text('user_id'),
+    challengeSha256: text('challenge_sha256').notNull(),
+    requestKeySha256: text('request_key_sha256').notNull(),
+    rpId: text('rp_id').notNull(),
+    origin: text('origin').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_challenge_hash').on(table.challengeSha256),
+    index('idx_jennifer_passkey_challenge_expiry').on(table.expiresAt),
+    check('jennifer_passkey_challenge_kind_check', sql`${table.kind} IN ('registration','authentication')`),
+    check('jennifer_passkey_challenge_hash_check', sql`length(${table.challengeSha256}) = 64`),
+    check('jennifer_passkey_challenge_request_key_check', sql`length(${table.requestKeySha256}) = 64`),
+    index('idx_jennifer_passkey_challenge_rate').on(table.requestKeySha256, table.createdAt),
+  ],
+);
+
+export const jenniferPasskeyCredentials = sqliteTable(
+  'jennifer_passkey_credentials',
+  {
+    credentialId: text('credential_id').primaryKey(),
+    userId: text('user_id').notNull(),
+    publicKeyCose: text('public_key_cose').notNull(),
+    signCount: integer('sign_count').notNull(),
+    transportsJson: text('transports_json').notNull().default('[]'),
+    label: text('label').notNull(),
+    deviceType: text('device_type').notNull(),
+    backedUp: integer('backed_up').notNull(),
+    rpId: text('rp_id').notNull(),
+    createdAt: integer('created_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_counter_check', sql`${table.signCount} >= 0`),
+    check('jennifer_passkey_transports_check', sql`json_valid(${table.transportsJson})`),
+    check('jennifer_passkey_device_type_check', sql`${table.deviceType} IN ('singleDevice','multiDevice')`),
+    check('jennifer_passkey_backed_up_check', sql`${table.backedUp} IN (0,1)`),
+  ],
+);
+
+export const jenniferPasskeySessions = sqliteTable(
+  'jennifer_passkey_sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    credentialId: text('credential_id').notNull(),
+    authMethod: text('auth_method').notNull(),
+    tokenSha256: text('token_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_session_token').on(table.tokenSha256),
+    index('idx_jennifer_passkey_session_owner').on(table.userId, table.createdAt),
+    index('idx_jennifer_passkey_session_credential').on(table.credentialId, table.createdAt),
+    check('jennifer_passkey_session_hash_check', sql`length(${table.tokenSha256}) = 64`),
+    check('jennifer_passkey_session_method_check', sql`${table.authMethod} = 'passkey'`),
+  ],
+);
+
+export const jenniferPasskeyEvents = sqliteTable(
+  'jennifer_passkey_events',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    eventType: text('event_type').notNull(),
+    credentialId: text('credential_id').notNull(),
+    detailsJson: text('details_json').notNull().default('{}'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_event_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_event_details_check', sql`json_valid(${table.detailsJson})`),
+  ],
+);
+
 export const jenniferTaskAttempts = sqliteTable(
   'jennifer_task_attempts',
   {

@@ -40,7 +40,7 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 担当: O5/SKY21、Wallet/Billing/Securityの既存担当、ROCK/JOINT/OWNER。再利用: 本人認証、device link、service access、見積、A2A委任、usage receipt、取消・結果不明照合。
 
-不足: 自前passkey登録/紛失復旧/Web Push、期間パスと後払い/月上限の同意、stored balanceを持たないbudget予約と現行funded-wallet gateの整合、信頼価格・実meter・請求・返金照合。既存成功報酬のexecutionHoldsは解除しない。
+Jennifer/Columbia限定の自前passkey登録、assertion検証、session、復旧時の旧credential/session一括失効、auditはsourceとlocal試験まで実装した。初回登録・復旧は既存Sites accountをownerに結び付けるが、platformからfresh reauthentication時刻を取得できないため、本番で本人が登録・再訪・復旧・旧端末拒否を読戻す受入は残る。複数端末を旧credential失効なしで追加する管理画面、親domain全体の共通passkey、Web Push、期間パスと後払い/月上限の同意、stored balanceを持たないbudget予約と現行funded-wallet gateの整合、信頼価格・実meter・請求・返金照合も不足する。既存成功報酬のexecutionHoldsは解除しない。
 
 順序: 課金ADR/Provider条件→sandboxでexactな見積と同時予約→本人の上限と同意→実Providerの有限仕事→meter/取消/不明照合→請求/返金→同じ公開artifactで限定本人受入。外部契約と対象額が揃うまでは無断課金しない。
 
