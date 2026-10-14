@@ -502,6 +502,7 @@
         "app/api/sky/agents/citations/route.ts",
         "app/sky/agents/citations/page.tsx",
         "components/sky-citation-agent.tsx",
+        "components/sky-citation-agent.module.css",
         "tests/sky-citation-agent.test.mjs",
         "lib/sky-compute-grid.ts",
         "tests/sky-compute-grid.test.mjs",
