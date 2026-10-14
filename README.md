@@ -6,6 +6,8 @@
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
+Sky is designed to connect many specialist Agents with the capabilities of apps, services, games, and eventually appliances. A refrigerator that reads its inventory and prepares a reviewed shopping order is a design example, not a connected product today. Each new host must declare what it can observe or do; Zema tracks the work, and external actions require the owner's scoped approval. See [the fusion contract](docs/sky-mcp-architecture.md#異種hostと複数agentの融合契約).
+
 [Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.
 
 [Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)

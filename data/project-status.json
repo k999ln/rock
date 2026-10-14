@@ -6943,6 +6943,20 @@
     },
     "nextAction": "NDEF HTTPS URIを現物シールへ書き、iPhone/Androidで読み戻す。本人A/Bと学生6枠・購入/Provider/Zemaの同一artifact受入は別に行う。"
   },
+  "skyFusionContract": {
+    "date": "2026-10-14",
+    "taskIds": ["SKY07", "SKY21"],
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "status": "product_direction_recorded_design_only",
+    "scope": "Heterogeneous app, appliance, game and service hosts with bounded typed multi-Agent delegation; refrigerator inventory and shopping is an example",
+    "sourceMainAtStart": "90cd4ade1e9a89e68dbd1cc8ebfeec3b7c2add09",
+    "validation": "npm run project:update, baseline:check, design:check and full npm run verify passed on the documentation-only worktree; synthetic tests do not establish host or provider acceptance",
+    "implementationAccepted": false,
+    "refrigeratorOrStoreConnected": false,
+    "externalActionAuthorizedByObservation": false,
+    "nextAction": "Extend typed first-party host output fixture, then accept cross-origin identity/scope/revocation, typed two-Agent delegation, one read-only real host, and one owner-approved external action separately."
+  },
   "skyStandaloneAgentPilot": {
     "date": "2026-10-13",
     "taskIds": ["SKY21", "WEB06"],
