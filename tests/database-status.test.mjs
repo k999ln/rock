@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 156);
+  assert.equal(report.summary.tableCount, 160);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,8 +30,8 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 84);
-  assert.equal(report.webSchema.migrationCount, 2);
+  assert.equal(report.webSchema.tableCount, 88);
+  assert.equal(report.webSchema.migrationCount, 3);
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('sky_feed_history_events'));
   assert.ok(
@@ -52,13 +52,15 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
   assert.ok(report.webSchema.tables.includes('jennifer_plan_revisions'));
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
-  assert.equal(report.webSchema.latestMigration, '0014_jennifer_execution_integrity.sql');
+  assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
+  assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
+  assert.equal(report.webSchema.latestMigration, '0015_jennifer_passkey_access.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
-      ['core', 14],
+      ['core', 18],
       ['sky', 37],
       ['marketplace', 7],
       ['csv', 5],

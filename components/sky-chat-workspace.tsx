@@ -23,6 +23,7 @@ import {
   Grid2X2,
   House,
   ListChecks,
+  LogOut,
   MessageCircle,
   PanelLeft,
   Plus,
@@ -56,6 +57,7 @@ import {
   requestExecutionAccessCheck,
   useExecutionAccess,
 } from '@/components/execution-access';
+import { JenniferAccess, useJenniferAccess } from '@/components/jennifer-access';
 import {
   operationRequest,
   OperationRequestError,
@@ -305,19 +307,28 @@ function jenniferEffectLabel(effect: JenniferTaskEffect) {
 
 export default function SkyChatWorkspace() {
   const access = useExecutionAccess();
+  const jenniferAccess = useJenniferAccess();
+  const jenniferAccessState = jenniferAccess.state;
+  const refreshJenniferAccess = jenniferAccess.refresh;
   const [admitted, setAdmitted] = useState(false);
   const storageBlocked = useSyncExternalStore(subscribeZemaPrivateStorage, zemaPrivateStorageBlocked, () => false);
   // Keep drafts through temporary connectivity checks, but never across a known sign-out.
-  if (access.accessState === 'ready' && !storageBlocked && !admitted) setAdmitted(true);
-  if (access.accessState === 'signin' && admitted) setAdmitted(false);
+  if (jenniferAccessState === 'ready' && access.accessState === 'ready' && !storageBlocked && !admitted) setAdmitted(true);
+  if ((jenniferAccessState !== 'ready' || access.accessState === 'signin') && admitted) setAdmitted(false);
   useEffect(() => {
     if (access.accessState === 'signin') clearZemaPrivateSession();
   }, [access.accessState]);
+  useEffect(() => {
+    if (access.accessState === 'signin' && jenniferAccessState === 'ready') void refreshJenniferAccess();
+  }, [access.accessState, jenniferAccessState, refreshJenniferAccess]);
+  if (jenniferAccessState !== 'ready') return <WorkspaceShell title="Jennifer" hideTopActions>
+    <JenniferAccess access={jenniferAccess} />
+  </WorkspaceShell>;
   return <>
     {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
       <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} /></div>}
     {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Zema">
-      <ExecutionSignin state={access.accessState} />
+      <ExecutionSignin state={access.accessState === 'signin' ? 'checking' : access.accessState} />
       {storageBlocked && <section role="alert" aria-label="会話の保存領域を確認">
         <p>前の会話と引き継ぎデータを消去できませんでした。古い内容の読み込みを止めています。</p>
         <p>このサイトの保存領域を利用できる状態に戻し、消去を再試行してください。消去を確認するまで会話と仕事を開きません。</p>
@@ -330,6 +341,20 @@ export default function SkyChatWorkspace() {
 
 function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeedsSignin }: ReturnType<typeof useExecutionAccess>) {
   const router = useRouter();
+  const [signingOutJennifer, setSigningOutJennifer] = useState(false);
+
+  async function signOutJennifer() {
+    if (signingOutJennifer) return;
+    setSigningOutJennifer(true);
+    try {
+      const response = await fetch('/api/jennifer/access', { method: 'DELETE' });
+      if (!response.ok) return;
+      clearZemaPrivateSession();
+      window.location.assign('/chat');
+    } finally {
+      setSigningOutJennifer(false);
+    }
+  }
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
   const preferredPackage = searchParams.get('package') ?? '';
@@ -1536,7 +1561,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/zema/compose"><Sparkles size={16} /><span>仕事を組み立てる</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/zema/compose"><Sparkles size={16} /><span>仕事を組み立てる</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
