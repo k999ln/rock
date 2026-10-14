@@ -2,8 +2,8 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "457d1724c1ac06a1ecc7f9a56d37965c3ad2f1291306a57d7777084cb7f2fe7e",
-  "packageEntries": 978,
+  "packageLockSha256": "8378ed445b817c6f92c63a1261bf27b7aeadd6c7b2dee0375896c2461292ebac",
+  "packageEntries": 972,
   "uniqueComponents": 936,
   "missingLicenseMetadata": 0,
   "licenses": [
@@ -241,7 +241,7 @@
       "optional": false
     },
     {
-      "purl": "pkg:npm/caniuse-lite@1.0.30001810",
+      "purl": "pkg:npm/caniuse-lite@1.0.30001816",
       "license": "CC-BY-4.0",
       "reviewClass": "attribution-review",
       "lockScope": "production-reachable",
