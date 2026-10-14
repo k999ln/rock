@@ -12,6 +12,10 @@
 
 # Sky / MCP
 
+## 2026-10-14 SKY21 / ROCK — 無料第一者Agentを保存前に実行
+
+公開Skyで出典整理Agentの入力後に匿名401となり、有限の引用整理さえ試せないことを確認した。ブラウザ内の第一者ルール処理を実行とし、結果のコピー・Markdown持出しをサインイン前に提供する。Skyへの本人別保存は別ボタンから既存owner scope、利用権、冪等WorkJobを通す。未保存の結果は再読込で消え、保存401／503でも画面上の結果と入力を保持する。これはCloud LLM、外部MCP、購入、学生枠の受入ではない。ROCKがUIと第一者処理を担当し、保存先の認証／D1は既存契約を利用する。本体Site v54/source `0c1cc72ee10d8ea6174974d6997ad22ab0bf6625`を公開し、匿名Chromeで出典1件の結果と未保存表示、保存401の案内、入力と結果の保持を確認。ブラウザdownload eventは確認できず、本人保存/再訪とA/B分離は未受入。合格条件は匿名ブラウザで実出力と持出し、保存401の明示、本人保存と再訪、失敗時非喪失、同一公開artifactのreadback。検証: `node --test tests/sky-citation-agent.test.mjs`、`npm run typecheck`、`npm run build`、公開ブラウザ操作と`npm run verify`。
+
 ## 2026-10-10 GRID01／ROCK — Sky Compute Grid host fixture
 
 未使用Androidの余剰計算を固定・中断可能なlotへmatchingするplatform serviceをSkyへ追加した。MCPの第三者任意Tool実行とは分け、初期SKUは固定runtime/model/tokenizerによるpublic/synthetic text embeddingだけとする。`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contract、hard filter、score、有限lease、独立参照／duplicate検証、service-credit hold preview、合成demo UI/APIをhostで実装した。実端末worker、remote dispatch、本番storage、実需要、実料金・払出しは未接続。詳細は[Sky Compute Grid](../sky-compute-grid.md)。

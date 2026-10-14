@@ -2,6 +2,8 @@
 
 更新: 2026-10-14。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
+2026-10-14、公開Skyの出典整理Agentは匿名入力後に401で止まり、結果を得られないと実画面で確認。SKY21の限定修正としてブラウザ内で無料の有限処理を先に実行し、コピー/Markdown持出しとSkyへの本人別保存を分離した。保存時だけ既存owner認証・WorkJobを使い、未保存結果を保存済みと呼ばない。本体Site v54/source `0c1cc72ee10d8ea6174974d6997ad22ab0bf6625`を公開し、匿名Chromeで入力→出典1件の未保存結果、保存ボタン→サインイン案内と結果保持を確認。ブラウザのdownload eventは確認できず、Markdown持出しの実機受入は残る。`node --test tests/sky-citation-agent.test.mjs`（2/2）、`npm run typecheck`、`npm run build`、`npm run verify`はclean main worktreeで成功。本人保存/再訪・A/B分離、Cloud Agent、外部MCP、Marketplace決済は未完了。次は本人別保存と再訪を公開Siteで受け入れ、モデル/Providerの料金・権限・成果の一周を別段階で実証する。
+
 2026-10-14、Columbiaと本体Skyの公開差分を確認した。前者は別Sites/D1のv79からv80へ更新し、後者はv53のまま保全した。Columbia Homeと無料の3カード・任意browser保存を残し、Explore／Work／Youと旧共有Sky画面を`avoado.si`へ誘導するv80/source `1d87952384fd6113bec773750290ff4ab8ca51f8`を公開した。匿名HTTPは大学Home・カード200、共有画面307とquery保持、公開browserはExplore/Work/Youの本体URLを確認。GitHub [PR #128](https://github.com/k999ln/rock/pull/128)はmain `d7171760f5183f1d206de4954a7b2f52b222916f`へ統合済み。同一headの7 CIは成功。本体SiteのDB移行履歴はColumbiaと異なり、旧データは未移行。次はbackup・互換migration・本人A/B・復旧試験を通して本体ソース更新と視覚統一を行う。
 
 2026-10-14、Skyを異種hostと多数の専門Agentへ融合する明示方針を[製品ベース](docs/product-baseline.md)、[Skyローンチ設計](docs/sky-launch-design.md)、[MCP/Agent接続設計](docs/sky-mcp-architecture.md)へ記録した。冷蔵庫の在庫読取→不足/献立/買い物案→本人の注文承認→店舗receipt照合は到達例であり、家電・店舗・自動購入の実接続ではない。主担当はSky / MCP（SKY07、SKY21、ROCK）。次は同一originの型付き成果をhost能力fixtureへ拡張し、別origin認証、二Agent委任、読取専用host、注文作用を段階別に受け入れる。`npm run project:update`、`baseline:check`、`design:check`、`verify`は文書のみのworktreeで成功。現時点の成果は設計文書のみで、main統合・Site公開・実機/Provider受入は別に記録する。

@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import WorkspaceShell from '@/components/workspace-shell';
+import { runCitationAgent } from '@/lib/sky-citation-agent';
 import styles from './sky-citation-agent.module.css';
 
 type Output = {
@@ -18,15 +19,27 @@ export default function SkyCitationAgent() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [signIn, setSignIn] = useState(false);
-  const [result, setResult] = useState<{ jobId: string; output: Output } | null>(null);
+  const [result, setResult] = useState<{ jobId?: string; output: Output } | null>(null);
   const pending = useRef<{ input: string; id: string } | null>(null);
 
-  async function run() {
+  function run() {
+    if (busy || !markdown.trim()) return;
+    setError('');
+    setSignIn(false);
+    try {
+      const output = runCitationAgent({ markdown, language });
+      setResult({ output: { ...output, execution: 'first-party-rules' } });
+    } catch (cause) {
+      setResult(null);
+      setError(cause instanceof Error ? cause.message : '入力を確認してください。');
+    }
+  }
+
+  async function save() {
     if (busy || !markdown.trim()) return;
     setBusy(true);
     setError('');
     setSignIn(false);
-    setResult(null);
     const input = JSON.stringify({ markdown, language });
     if (pending.current?.input !== input) pending.current = { input, id: crypto.randomUUID() };
     try {
@@ -74,7 +87,7 @@ export default function SkyCitationAgent() {
       <header className={styles.header}>
         <p>FIRST-PARTY AGENT · FREE</p>
         <h1>出典を整えて、成果として残す。</h1>
-        <div>文章中の引用を整理し、重複をまとめてMarkdownにします。スマホのブラウザだけで実行できます。</div>
+        <div>文章中の引用を整理し、重複をまとめてMarkdownにします。スマホのブラウザだけで試せます。アカウントへの保存は別操作です。</div>
       </header>
       <div className={styles.grid}>
         <section className={styles.panel} aria-label="Agentへの依頼">
@@ -88,23 +101,26 @@ export default function SkyCitationAgent() {
             placeholder={'Example: This is a claim. (Source: [Paper](https://example.org/paper))'}
             onChange={(event) => { setMarkdown(event.target.value); setResult(null); }} />
           <p className={styles.hint}>{markdown.length.toLocaleString()} / 20,000文字。入力本文は成果を作るために処理し、保存するのは整理後の成果です。</p>
-          <div className={styles.terms}>実行先: Skyの第一者処理 · モデル推論なし · 外部サイトへの送信なし · 料金: 無料</div>
-          <button className={styles.run} type="button" disabled={busy || !markdown.trim()} onClick={() => void run()}>
-            {busy ? '実行・保存を確認中…' : '実行して成果を保存'}
+          <div className={styles.terms}>ブラウザ内の第一者ルール処理 · モデル推論なし · 入力の外部送信なし · 料金: 無料</div>
+          <button className={styles.run} type="button" disabled={busy || !markdown.trim()} onClick={run}>
+            ブラウザで実行する
           </button>
-          {signIn && <p role="alert" className={styles.notice}><Link href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Fagents%2Fcitations" target="_blank" rel="noopener noreferrer">別タブでサインイン</Link>し、この画面に戻って再実行してください。入力はこの画面に残しています。</p>}
+          {result && !result.jobId && <button className={styles.save} type="button" disabled={busy} onClick={() => void save()}>
+            {busy ? '保存を確認中…' : 'Skyに成果を保存する'}
+          </button>}
+          {signIn && <p role="alert" className={styles.notice}>Skyへの保存には<Link href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Fagents%2Fcitations" target="_blank" rel="noopener noreferrer">サインイン</Link>が必要です。結果はこの画面に残ります。</p>}
           {error && <p role="alert" className={styles.notice}>{error}</p>}
         </section>
         <section className={styles.panel} aria-label="Agentの成果">
-          <div className={styles.panelHead}><span>02 / 成果</span><strong>{result ? '保存済み' : '実行待ち'}</strong></div>
+          <div className={styles.panelHead}><span>02 / 成果</span><strong>{result ? (result.jobId ? 'Skyに保存済み' : 'この画面のみ・未保存') : '実行待ち'}</strong></div>
           {result ? <>
-            <p className={styles.meta}>出典リンク {result.output.sourceCount}件 · 本人のSky成果へ保存しました</p>
+            <p className={styles.meta}>出典リンク {result.output.sourceCount}件 · {result.jobId ? '本人のSky成果へ保存しました' : '再読み込みすると結果は消えます。保存にはサインインが必要です'}</p>
             <pre className={styles.output}>{result.output.text}</pre>
             {result.output.warnings.map((warning) => <p className={styles.warning} key={warning}>{warning}</p>)}
             <div className={styles.actions}>
               <button type="button" onClick={() => void copy()}>コピー</button>
               <button type="button" onClick={download}>Markdownを保存</button>
-              <Link href={`/sky/outputs?job=${encodeURIComponent(result.jobId)}`}>成果一覧で開く →</Link>
+              {result.jobId && <Link href={`/sky/outputs?job=${encodeURIComponent(result.jobId)}`}>成果一覧で開く →</Link>}
             </div>
           </> : <div className={styles.empty}>実行結果と、保存後に開ける成果リンクがここに表示されます。</div>}
         </section>
