@@ -9,7 +9,7 @@
     "predev": "node scripts/generate-private-modules.mjs",
     "dev": "vinext dev",
     "prebuild": "node scripts/local-web-state.mjs && node scripts/generate-private-modules.mjs",
-    "build": "vinext build",
+    "build": "vinext build && node scripts/stage-sky-domain-router.mjs",
     "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",

@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## 2026-10-14 — Columbia `/os/sky` route continuity（WEB06 / SKY21、ROCK）
+
+`columbia.avoado.si/os/sky` が404となる本番退行を、最新Sites v72を作業元に再現した。既存のsame-origin routerを標準`npm run build`へ組み込み、`avoado.si`だけでなく`*.avoado.si`でも`/os/sky`と配下を内部`/sky` routeへ結ぶ。サブドメインの`/`と`/os`は各SiteのRockstarOS Homeに残し、Mini proxyはapex `avoado.si`だけに限定する。旧`/sky`は同じhostの`/os/sky`へqueryを保持して308転送する。対象route試験、型検査、本番build、配備後のHTTP/title/UI readbackを同一候補で確認し、直前v72をrollback候補として保持する。
+
 ## 2026-10-13 — Sky大学別NFC入口の公開（WEB06 / SKY21、ROCK）
 
 既存Sky Site v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db` に5大学の共通Sky画面を配備。NFCのNDEF URIは `https://avoado.si/os/sky/campus/{campus}/hub?source=nfc`。5 URLはHTTP 200、NYUは実ブラウザで大学名とSky操作を確認した。URLは大学文脈だけを選ぶ。本人確認、対象学生6枠、購入権、Agent実行権はタグに含めない。物理シールへの書込み・iPhone/Androidでの読取りは未実施。GitHub branchとmainの同期は別記録。タグ用ファイルの生成は `node scripts/generate-sky-campus-nfc.mjs /private/tmp/sky-campus-nfc`、検査は `node --test tests/sky-campus-nfc.test.mjs`。[設計](../sky-tools-complete-design.md#大学別skyのnfc入口2026-10-13)。

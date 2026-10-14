@@ -1,6 +1,8 @@
 # RockstarOS — 現在の作業と再開情報
 
-更新: 2026-10-13。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
+更新: 2026-10-14。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
+
+2026-10-14、公開v72の`columbia.avoado.si/os/sky`で404を再現。既存のSky domain routerが通常buildに自動stageされず、apex `avoado.si`だけを正規prefix対象としていた。v72を作業元に、標準buildへのstage、`*.avoado.si`の`/os/sky`互換、サブドメインHomeの維持、旧`/sky`の同一host 308転送を追加する。対象検証と公開readback後にSite版・source SHAを確定し、v72をrollback候補として残す。
 
 利用者の「古く紛らわしい不要な内容は削除」に基づき、旧日付ログ・旧端末構成・料金試算・途中状態の重複を本文から削除する。復元元はcommit `98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。復元対象と方法は[Git整理方針](docs/git-consolidation.md)と[archive台帳](data/archived-paths.json)で管理し、新しい歴史文書へ複製しない。固定原本・vendor・evidenceは保持する。
 
@@ -71,7 +73,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-13 / アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-14 / アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
