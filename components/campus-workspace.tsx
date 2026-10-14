@@ -6,7 +6,6 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ChevronRight,
-  CircleUserRound,
   FolderKanban,
   GraduationCap,
   Handshake,
@@ -30,6 +29,13 @@ import {
   type SyntheticEvent,
 } from 'react';
 import type { CampusId, CampusItemKind } from '@/lib/campus';
+import {
+  createLinkedInCampusDecision,
+  linkedinCampusDecisionStorageKey,
+  parseLinkedInCampusDecision,
+  serializeLinkedInCampusDecision,
+  type LinkedInCampusDecision,
+} from '@/lib/campus-linkedin-consent';
 import styles from './campus-workspace.module.css';
 
 type CampusConfig = {
@@ -93,6 +99,7 @@ type Inbox = {
   };
 };
 type Bootstrap = {
+  authenticated: boolean;
   campus: CampusConfig;
   profile: Profile | null;
   people: Profile[];
@@ -156,39 +163,114 @@ function tabForMode(mode?: string): Tab {
   if (mode === 'social') return 'people';
   if (mode === 'career') return 'opportunities';
   if (mode === 'events') return 'events';
-  if (mode === 'research' || mode === 'justice' || mode === 'study') return 'resources';
+  if (mode === 'research' || mode === 'justice' || mode === 'study')
+    return 'resources';
   if (mode === 'creative') return 'projects';
   return 'overview';
 }
-
 const campusUseCases: Record<
   CampusId,
   { title: string; body: string; tab: Tab; icon: typeof UsersRound }[]
 > = {
   nyu: [
-    { title: 'Find a film or startup collaborator', body: 'Match by skills, interests, and what each person is looking for.', tab: 'people', icon: Handshake },
-    { title: 'Launch a project', body: 'Recruit actors, editors, designers, engineers, or cofounders.', tab: 'projects', icon: FolderKanban },
-    { title: 'Discover what is happening', body: 'Browse student-posted events and opportunities around campus and NYC.', tab: 'events', icon: CalendarDays },
+    {
+      title: 'Find a film or startup collaborator',
+      body: 'Match by skills, interests, and what each person is looking for.',
+      tab: 'people',
+      icon: Handshake,
+    },
+    {
+      title: 'Launch a project',
+      body: 'Recruit actors, editors, designers, engineers, or cofounders.',
+      tab: 'projects',
+      icon: FolderKanban,
+    },
+    {
+      title: 'Discover what is happening',
+      body: 'Browse student-posted events and opportunities around campus and NYC.',
+      tab: 'events',
+      icon: CalendarDays,
+    },
   ],
   fit: [
-    { title: 'Turn work into a portfolio', body: 'Publish fashion, photo, film, design, writing, code, and campaign work.', tab: 'portfolio', icon: Sparkles },
-    { title: 'Find creatives', body: 'Connect models, photographers, stylists, designers, and content makers.', tab: 'people', icon: UsersRound },
-    { title: 'Post or find a gig', body: 'Use Opportunities for gigs, internships, jobs, competitions, and research.', tab: 'opportunities', icon: BriefcaseBusiness },
+    {
+      title: 'Turn work into a portfolio',
+      body: 'Publish fashion, photo, film, design, writing, code, and campaign work.',
+      tab: 'portfolio',
+      icon: Sparkles,
+    },
+    {
+      title: 'Find creatives',
+      body: 'Connect models, photographers, stylists, designers, and content makers.',
+      tab: 'people',
+      icon: UsersRound,
+    },
+    {
+      title: 'Post or find a gig',
+      body: 'Use Opportunities for gigs, internships, jobs, competitions, and research.',
+      tab: 'opportunities',
+      icon: BriefcaseBusiness,
+    },
   ],
   columbia: [
-    { title: 'Form a research team', body: 'Create a project, list needed expertise, and accept collaborator requests.', tab: 'projects', icon: Network },
-    { title: 'Build a shared research library', body: 'Post papers, policy documents, datasets, cases, references, and citations.', tab: 'resources', icon: BookOpen },
-    { title: 'Find expertise', body: 'Match with people whose skills complement your research needs.', tab: 'people', icon: Search },
+    {
+      title: 'Form a research team',
+      body: 'Create a project, list needed expertise, and accept collaborator requests.',
+      tab: 'projects',
+      icon: Network,
+    },
+    {
+      title: 'Build a shared research library',
+      body: 'Post papers, policy documents, datasets, cases, references, and citations.',
+      tab: 'resources',
+      icon: BookOpen,
+    },
+    {
+      title: 'Find expertise',
+      body: 'Match with people whose skills complement your research needs.',
+      tab: 'people',
+      icon: Search,
+    },
   ],
   fordham: [
-    { title: 'Build a career network', body: 'Make your interests and skills discoverable without exposing your email.', tab: 'people', icon: Handshake },
-    { title: 'Find internships and fellowships', body: 'Browse community-posted career opportunities with deadlines and links.', tab: 'opportunities', icon: BriefcaseBusiness },
-    { title: 'Start something together', body: 'Create startup, business, leadership, or community projects.', tab: 'projects', icon: FolderKanban },
+    {
+      title: 'Build a career network',
+      body: 'Make your interests and skills discoverable without exposing your email.',
+      tab: 'people',
+      icon: Handshake,
+    },
+    {
+      title: 'Find internships and fellowships',
+      body: 'Browse community-posted career opportunities with deadlines and links.',
+      tab: 'opportunities',
+      icon: BriefcaseBusiness,
+    },
+    {
+      title: 'Start something together',
+      body: 'Create startup, business, leadership, or community projects.',
+      tab: 'projects',
+      icon: FolderKanban,
+    },
   ],
   johnjay: [
-    { title: 'Organize cases and policy sources', body: 'Share cases, papers, policy documents, datasets, and references with citations.', tab: 'resources', icon: BookOpen },
-    { title: 'Build civic projects', body: 'Recruit people across justice, policy, cyber, forensics, and civic tech.', tab: 'projects', icon: Network },
-    { title: 'Find public-service opportunities', body: 'Post and browse internships, volunteer roles, fellowships, research, and jobs.', tab: 'opportunities', icon: BriefcaseBusiness },
+    {
+      title: 'Organize cases and policy sources',
+      body: 'Share cases, papers, policy documents, datasets, and references with citations.',
+      tab: 'resources',
+      icon: BookOpen,
+    },
+    {
+      title: 'Build civic projects',
+      body: 'Recruit people across justice, policy, cyber, forensics, and civic tech.',
+      tab: 'projects',
+      icon: Network,
+    },
+    {
+      title: 'Find public-service opportunities',
+      body: 'Post and browse internships, volunteer roles, fellowships, research, and jobs.',
+      tab: 'opportunities',
+      icon: BriefcaseBusiness,
+    },
   ],
 };
 
@@ -203,6 +285,16 @@ function split(entry: FormDataEntryValue | null) {
 function value(form: FormData, key: string) {
   const entry = form.get(key);
   return typeof entry === 'string' ? entry.trim() : '';
+}
+function storedLinkedInDecision(campus: CampusId) {
+  try {
+    return parseLinkedInCampusDecision(
+      campus,
+      window.localStorage.getItem(linkedinCampusDecisionStorageKey(campus)),
+    );
+  } catch {
+    return null;
+  }
 }
 function maybeDate(form: FormData, key: string) {
   const raw = value(form, key);
@@ -260,12 +352,16 @@ export default function CampusWorkspace({
   const [notice, setNotice] = useState('');
   const [query, setQuery] = useState('');
   const [showComposer, setShowComposer] = useState<CampusItemKind | null>(null);
-  const [editingProfile, setEditingProfile] = useState(false);
+  const [linkedinDecision, setLinkedInDecision] =
+    useState<LinkedInCampusDecision | null>(null);
+  const [consentReady, setConsentReady] = useState(false);
+  const [reviewingConsent, setReviewingConsent] = useState(false);
   const [tags, setTags] = useState<TagAnalytics[]>([]);
   const [tagExport, setTagExport] = useState<TagExport | null>(null);
 
   const load = useCallback(async (nextCampus: CampusId) => {
     setLoading(true);
+    setConsentReady(false);
     setError('');
     try {
       const response = await fetch(
@@ -273,11 +369,16 @@ export default function CampusWorkspace({
         { cache: 'no-store' },
       );
       const payload = (await response.json()) as Bootstrap & { error?: string };
-      if (!response.ok) throw new Error(payload.error || 'Campus could not load.');
+      if (!response.ok)
+        throw new Error(payload.error || 'Campus could not load.');
       setData(payload);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Campus could not load.');
+      setError(
+        reason instanceof Error ? reason.message : 'Campus could not load.',
+      );
     } finally {
+      setLinkedInDecision(storedLinkedInDecision(nextCampus));
+      setConsentReady(true);
       setLoading(false);
     }
   }, []);
@@ -288,11 +389,17 @@ export default function CampusWorkspace({
         `/api/campus?campus=${encodeURIComponent(nextCampus)}&view=analytics`,
         { cache: 'no-store' },
       );
-      const payload = (await response.json()) as { tags?: TagAnalytics[]; error?: string };
+      const payload = (await response.json()) as {
+        tags?: TagAnalytics[];
+        error?: string;
+      };
       if (response.ok) setTags(payload.tags ?? []);
-      else if (response.status !== 401) throw new Error(payload.error || 'Analytics could not load.');
+      else if (response.status !== 401)
+        throw new Error(payload.error || 'Analytics could not load.');
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Analytics could not load.');
+      setError(
+        reason instanceof Error ? reason.message : 'Analytics could not load.',
+      );
     }
   }, []);
 
@@ -313,6 +420,9 @@ export default function CampusWorkspace({
     setQuery('');
     setTags([]);
     setTagExport(null);
+    setConsentReady(false);
+    setLinkedInDecision(null);
+    setReviewingConsent(false);
     const url = new URL(window.location.href);
     url.searchParams.set('campus', next);
     url.searchParams.delete('tag');
@@ -333,47 +443,34 @@ export default function CampusWorkspace({
       await action();
       setNotice(message);
       if (reload) await load(campus);
+      return true;
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Action failed.');
+      return false;
     } finally {
       setSaving(false);
     }
   }
 
-  async function saveProfile(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    await run(
-      () =>
-        api('POST', {
-          action: 'saveProfile',
-          profile: {
-            campusId: campus,
-            handle: value(form, 'handle'),
-            displayName: value(form, 'displayName'),
-            affiliation: value(form, 'affiliation') || 'student',
-            headline: value(form, 'headline'),
-            bio: value(form, 'bio'),
-            skills: split(form.get('skills')),
-            interests: split(form.get('interests')),
-            lookingFor: split(form.get('lookingFor')),
-            links: value(form, 'linkUrl')
-              ? [
-                  {
-                    label: value(form, 'linkLabel') || 'Website',
-                    url: value(form, 'linkUrl'),
-                  },
-                ]
-              : [],
-            isPublic: form.get('isPublic') === 'on',
-          },
-        }),
-      'Profile saved.',
+  function decideLinkedIn(status: LinkedInCampusDecision['status']) {
+    const decision = createLinkedInCampusDecision(campus, status);
+    window.localStorage.setItem(
+      linkedinCampusDecisionStorageKey(campus),
+      serializeLinkedInCampusDecision(decision),
     );
-    setEditingProfile(false);
+    setLinkedInDecision(decision);
+    setReviewingConsent(false);
+    setNotice(
+      status === 'consented'
+        ? 'Consent preference saved. LinkedIn has not shared any data yet.'
+        : 'Campus opened without LinkedIn personalization.',
+    );
   }
 
-  async function createItem(event: SyntheticEvent<HTMLFormElement>, kind: CampusItemKind) {
+  async function createItem(
+    event: SyntheticEvent<HTMLFormElement>,
+    kind: CampusItemKind,
+  ) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const details: Record<string, unknown> = {
@@ -460,19 +557,6 @@ export default function CampusWorkspace({
     await run(
       () => api('PATCH', { action: 'archiveItem', id }),
       'Post archived.',
-    );
-  }
-
-  async function leaveCampus() {
-    if (
-      !window.confirm(
-        'Delete your profile, posts, connections, registered tags, and tag analytics for this Campus? This cannot be undone.',
-      )
-    )
-      return;
-    await run(
-      () => api('DELETE', { action: 'leaveCampus', campusId: campus }),
-      'Campus data deleted.',
     );
   }
 
@@ -580,7 +664,10 @@ export default function CampusWorkspace({
   async function exportTags() {
     await run(
       async () => {
-        const payload = await api('POST', { action: 'exportTags', campusId: campus });
+        const payload = await api('POST', {
+          action: 'exportTags',
+          campusId: campus,
+        });
         setTagExport(payload as unknown as TagExport);
       },
       'CSV and QR files are ready to download.',
@@ -602,7 +689,9 @@ export default function CampusWorkspace({
   return (
     <main
       className={styles.shell}
-      style={{ '--campus-accent': data?.campus.accent ?? '#70a928' } as CSSProperties}
+      style={
+        { '--campus-accent': data?.campus.accent ?? '#70a928' } as CSSProperties
+      }
     >
       <header className={styles.topbar}>
         <Link href="/" className={styles.brand}>
@@ -647,7 +736,9 @@ export default function CampusWorkspace({
             <aside>
               <strong>{data.people.length}</strong>
               <span>public people</span>
-              <strong>{data.items.filter((item) => item.status === 'active').length}</strong>
+              <strong>
+                {data.items.filter((item) => item.status === 'active').length}
+              </strong>
               <span>active posts</span>
             </aside>
           </section>
@@ -666,17 +757,23 @@ export default function CampusWorkspace({
           <div className={styles.truth}>
             <ShieldCheck size={18} />
             <span>
-              Avocado Campus is not an official university system. Profiles marked
-              “verified” only mean the signed-in email domain matched that campus.
-              Events and opportunities are community-posted unless their external
-              source says otherwise.
+              Avocado Campus is not an official university system. Profiles
+              marked “verified” only mean the signed-in email domain matched
+              that campus. Events and opportunities are community-posted unless
+              their external source says otherwise.
             </span>
           </div>
 
           {(error || notice) && (
             <div className={error ? styles.error : styles.notice}>
               <span>{error || notice}</span>
-              <button onClick={() => { setError(''); setNotice(''); }} aria-label="Dismiss">
+              <button
+                onClick={() => {
+                  setError('');
+                  setNotice('');
+                }}
+                aria-label="Dismiss"
+              >
                 <X size={15} />
               </button>
             </div>
@@ -701,8 +798,9 @@ export default function CampusWorkspace({
             {tab === 'overview' && (
               <Overview
                 data={data}
+                linkedinDecision={linkedinDecision}
                 onTab={setTab}
-                onEditProfile={() => setEditingProfile(true)}
+                onReviewConsent={() => setReviewingConsent(true)}
               />
             )}
 
@@ -713,7 +811,12 @@ export default function CampusWorkspace({
                 setQuery={setQuery}
                 saving={saving}
                 onRequest={(id) =>
-                  edge('collaborator_request', 'profile', id, 'Let’s connect through Avocado Campus.')
+                  edge(
+                    'collaborator_request',
+                    'profile',
+                    id,
+                    'Let’s connect through Avocado Campus.',
+                  )
                 }
                 onFollow={(id) => edge('follow', 'profile', id)}
                 onBlock={(id) => edge('block', 'profile', id)}
@@ -731,9 +834,18 @@ export default function CampusWorkspace({
                 kind="project"
                 saving={saving}
                 composer={showComposer === 'project'}
-                onCompose={() => setShowComposer(showComposer === 'project' ? null : 'project')}
+                onCompose={() =>
+                  setShowComposer(showComposer === 'project' ? null : 'project')
+                }
                 onSubmit={createItem}
-                onAction={(id) => edge('collaborator_request', 'item', id, 'I’d like to collaborate on this project.')}
+                onAction={(id) =>
+                  edge(
+                    'collaborator_request',
+                    'item',
+                    id,
+                    'I’d like to collaborate on this project.',
+                  )
+                }
                 actionLabel="Collaborate"
                 onEdit={editItem}
                 onArchive={archiveItem}
@@ -749,7 +861,11 @@ export default function CampusWorkspace({
                 kind="opportunity"
                 saving={saving}
                 composer={showComposer === 'opportunity'}
-                onCompose={() => setShowComposer(showComposer === 'opportunity' ? null : 'opportunity')}
+                onCompose={() =>
+                  setShowComposer(
+                    showComposer === 'opportunity' ? null : 'opportunity',
+                  )
+                }
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
@@ -767,7 +883,9 @@ export default function CampusWorkspace({
                 kind="event"
                 saving={saving}
                 composer={showComposer === 'event'}
-                onCompose={() => setShowComposer(showComposer === 'event' ? null : 'event')}
+                onCompose={() =>
+                  setShowComposer(showComposer === 'event' ? null : 'event')
+                }
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
@@ -785,7 +903,11 @@ export default function CampusWorkspace({
                 kind="community"
                 saving={saving}
                 composer={showComposer === 'community'}
-                onCompose={() => setShowComposer(showComposer === 'community' ? null : 'community')}
+                onCompose={() =>
+                  setShowComposer(
+                    showComposer === 'community' ? null : 'community',
+                  )
+                }
                 onSubmit={createItem}
                 onAction={(id) => edge('join', 'item', id)}
                 actionLabel="Join"
@@ -803,7 +925,11 @@ export default function CampusWorkspace({
                 kind="portfolio"
                 saving={saving}
                 composer={showComposer === 'portfolio'}
-                onCompose={() => setShowComposer(showComposer === 'portfolio' ? null : 'portfolio')}
+                onCompose={() =>
+                  setShowComposer(
+                    showComposer === 'portfolio' ? null : 'portfolio',
+                  )
+                }
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
@@ -821,7 +947,11 @@ export default function CampusWorkspace({
                 kind="resource"
                 saving={saving}
                 composer={showComposer === 'resource'}
-                onCompose={() => setShowComposer(showComposer === 'resource' ? null : 'resource')}
+                onCompose={() =>
+                  setShowComposer(
+                    showComposer === 'resource' ? null : 'resource',
+                  )
+                }
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
@@ -845,15 +975,12 @@ export default function CampusWorkspace({
             )}
           </div>
 
-          {(editingProfile || !data.profile) && (
-            <ProfileEditor
-              profile={data.profile}
+          {consentReady && (reviewingConsent || !linkedinDecision) && (
+            <LinkedInConsentSheet
               campus={data.campus}
-              saving={saving}
-              required={!data.profile}
-              onClose={() => setEditingProfile(false)}
-              onSubmit={saveProfile}
-              onLeave={leaveCampus}
+              decision={linkedinDecision}
+              onClose={() => setReviewingConsent(false)}
+              onDecide={decideLinkedIn}
             />
           )}
         </>
@@ -864,12 +991,14 @@ export default function CampusWorkspace({
 
 function Overview({
   data,
+  linkedinDecision,
   onTab,
-  onEditProfile,
+  onReviewConsent,
 }: {
   data: Bootstrap;
+  linkedinDecision: LinkedInCampusDecision | null;
   onTab: (tab: Tab) => void;
-  onEditProfile: () => void;
+  onReviewConsent: () => void;
 }) {
   return (
     <section className={styles.overview}>
@@ -881,41 +1010,49 @@ function Overview({
       </div>
 
       <div className={styles.caseGrid}>
-        {campusUseCases[data.campus.id].map(({ title, body, tab, icon: Icon }) => (
-          <button key={title} onClick={() => onTab(tab)}>
-            <Icon size={24} />
-            <strong>{title}</strong>
-            <p>{body}</p>
-            <span>
-              Open <ChevronRight size={15} />
-            </span>
-          </button>
-        ))}
+        {campusUseCases[data.campus.id].map(
+          ({ title, body, tab, icon: Icon }) => (
+            <button key={title} onClick={() => onTab(tab)}>
+              <Icon size={24} />
+              <strong>{title}</strong>
+              <p>{body}</p>
+              <span>
+                Open <ChevronRight size={15} />
+              </span>
+            </button>
+          ),
+        )}
       </div>
 
       <div className={styles.profileCard}>
         <div>
-          <CircleUserRound size={24} />
+          <span className={styles.linkedinMark} aria-hidden="true">
+            in
+          </span>
           <span>
-            <small>YOUR CAMPUS IDENTITY</small>
-            <strong>{data.profile?.displayName ?? 'Create your profile'}</strong>
+            <small>OPTIONAL PERSONALIZATION</small>
+            <strong>
+              {linkedinDecision?.status === 'consented'
+                ? 'LinkedIn consent saved'
+                : 'LinkedIn personalization is off'}
+            </strong>
             <p>
-              {data.profile
-                ? data.profile.headline || `@${data.profile.handle}`
-                : 'Add skills, interests, and what you are looking for so matching can work.'}
+              No profile form is required. LinkedIn has not shared data until
+              its own connection is approved.
             </p>
           </span>
         </div>
-        <button onClick={onEditProfile}>
-          {data.profile ? 'Edit profile' : 'Create profile'}
-        </button>
+        <button onClick={onReviewConsent}>Review data use</button>
       </div>
 
       {data.inbox.length > 0 && (
         <button className={styles.inboxBanner} onClick={() => onTab('people')}>
           <Bell size={19} />
           <span>
-            <strong>{data.inbox.length} pending request{data.inbox.length === 1 ? '' : 's'}</strong>
+            <strong>
+              {data.inbox.length} pending request
+              {data.inbox.length === 1 ? '' : 's'}
+            </strong>
             <small>Review collaboration and community requests.</small>
           </span>
           <ChevronRight size={18} />
@@ -949,19 +1086,20 @@ function People({
   onRemove: (id: string) => void;
 }) {
   const q = query.toLowerCase().trim();
-  const people = data.people.filter((person) =>
-    !q ||
-    [
-      person.displayName,
-      person.handle,
-      person.headline,
-      ...person.skills,
-      ...person.interests,
-      ...person.lookingFor,
-    ]
-      .join(' ')
-      .toLowerCase()
-      .includes(q),
+  const people = data.people.filter(
+    (person) =>
+      !q ||
+      [
+        person.displayName,
+        person.handle,
+        person.headline,
+        ...person.skills,
+        ...person.interests,
+        ...person.lookingFor,
+      ]
+        .join(' ')
+        .toLowerCase()
+        .includes(q),
   );
   return (
     <section>
@@ -982,10 +1120,16 @@ function People({
                 <strong>{request.actor?.displayName ?? 'Campus member'}</strong>
                 <p>{request.note || request.edgeType.replaceAll('_', ' ')}</p>
               </div>
-              <button disabled={saving} onClick={() => onRespond(request.id, 'accepted')}>
+              <button
+                disabled={saving}
+                onClick={() => onRespond(request.id, 'accepted')}
+              >
                 Accept
               </button>
-              <button disabled={saving} onClick={() => onRespond(request.id, 'declined')}>
+              <button
+                disabled={saving}
+                onClick={() => onRespond(request.id, 'declined')}
+              >
                 Decline
               </button>
             </article>
@@ -1003,7 +1147,10 @@ function People({
                 <strong>{match.profile.displayName}</strong>
                 <span>@{match.profile.handle}</span>
                 <p>{match.reasons.join(' · ')}</p>
-                <button disabled={saving} onClick={() => onRequest(match.profile.id)}>
+                <button
+                  disabled={saving}
+                  onClick={() => onRequest(match.profile.id)}
+                >
                   Connect
                 </button>
               </article>
@@ -1014,15 +1161,24 @@ function People({
 
       {data.myEdges.length > 0 && (
         <details className={styles.connections}>
-          <summary>Your follows, saves, joins, blocks & requests ({data.myEdges.length})</summary>
+          <summary>
+            Your follows, saves, joins, blocks & requests ({data.myEdges.length}
+            )
+          </summary>
           <div>
             {data.myEdges.map((connection) => (
               <article key={connection.id}>
                 <span>
                   <strong>{connection.targetLabel}</strong>
-                  <small>{connection.edgeType.replaceAll('_', ' ')} · {connection.status}</small>
+                  <small>
+                    {connection.edgeType.replaceAll('_', ' ')} ·{' '}
+                    {connection.status}
+                  </small>
                 </span>
-                <button disabled={saving} onClick={() => onRemove(connection.id)}>
+                <button
+                  disabled={saving}
+                  onClick={() => onRemove(connection.id)}
+                >
                   Remove
                 </button>
               </article>
@@ -1043,7 +1199,9 @@ function People({
       <div className={styles.peopleGrid}>
         {people.map((person) => (
           <article key={person.id}>
-            <div className={styles.avatar}>{person.displayName.slice(0, 1).toUpperCase()}</div>
+            <div className={styles.avatar}>
+              {person.displayName.slice(0, 1).toUpperCase()}
+            </div>
             <div className={styles.personTop}>
               <strong>{person.displayName}</strong>
               <span>@{person.handle}</span>
@@ -1055,16 +1213,22 @@ function People({
             </div>
             <p>{person.headline || person.bio || 'Campus member'}</p>
             <div className={styles.chips}>
-              {[...person.skills, ...person.interests].slice(0, 6).map((chip) => (
-                <i key={chip}>{chip}</i>
-              ))}
+              {[...person.skills, ...person.interests]
+                .slice(0, 6)
+                .map((chip) => (
+                  <i key={chip}>{chip}</i>
+                ))}
             </div>
             {person.lookingFor.length > 0 && (
               <small>Looking for: {person.lookingFor.join(', ')}</small>
             )}
             <div className={styles.cardActions}>
-              <button disabled={saving} onClick={() => onRequest(person.id)}>Collaborate</button>
-              <button disabled={saving} onClick={() => onFollow(person.id)}>Follow</button>
+              <button disabled={saving} onClick={() => onRequest(person.id)}>
+                Collaborate
+              </button>
+              <button disabled={saving} onClick={() => onFollow(person.id)}>
+                Follow
+              </button>
               <details>
                 <summary>•••</summary>
                 <button onClick={() => onReport(person.id)}>Report</button>
@@ -1101,7 +1265,10 @@ function ItemSection({
   saving: boolean;
   composer: boolean;
   onCompose: () => void;
-  onSubmit: (event: SyntheticEvent<HTMLFormElement>, kind: CampusItemKind) => void;
+  onSubmit: (
+    event: SyntheticEvent<HTMLFormElement>,
+    kind: CampusItemKind,
+  ) => void;
   onAction: (id: string) => void;
   actionLabel: string;
   onEdit: (item: Item) => void;
@@ -1122,7 +1289,11 @@ function ItemSection({
       </div>
 
       {composer && (
-        <ItemComposer kind={kind} saving={saving} onSubmit={(event) => onSubmit(event, kind)} />
+        <ItemComposer
+          kind={kind}
+          saving={saving}
+          onSubmit={(event) => onSubmit(event, kind)}
+        />
       )}
 
       <div className={styles.itemGrid}>
@@ -1135,15 +1306,47 @@ function ItemSection({
             <h3>{item.title}</h3>
             <p>{item.summary}</p>
             <div className={styles.chips}>
-              {item.tags.map((tag) => <i key={tag}>{tag}</i>)}
+              {item.tags.map((tag) => (
+                <i key={tag}>{tag}</i>
+              ))}
             </div>
             <dl>
-              {item.startsAt && <div><dt>When</dt><dd>{humanDate(item.startsAt)}</dd></div>}
-              {detail(item, 'organization') && <div><dt>Organization</dt><dd>{detail(item, 'organization')}</dd></div>}
-              {detail(item, 'compensation') && <div><dt>Compensation</dt><dd>{detail(item, 'compensation')}</dd></div>}
-              {detail(item, 'locationText') && <div><dt>Location</dt><dd>{detail(item, 'locationText')}</dd></div>}
-              {detail(item, 'citation') && <div><dt>Source</dt><dd>{detail(item, 'citation')}</dd></div>}
-              {detail(item, 'role') && <div><dt>Role</dt><dd>{detail(item, 'role')}</dd></div>}
+              {item.startsAt && (
+                <div>
+                  <dt>When</dt>
+                  <dd>{humanDate(item.startsAt)}</dd>
+                </div>
+              )}
+              {detail(item, 'organization') && (
+                <div>
+                  <dt>Organization</dt>
+                  <dd>{detail(item, 'organization')}</dd>
+                </div>
+              )}
+              {detail(item, 'compensation') && (
+                <div>
+                  <dt>Compensation</dt>
+                  <dd>{detail(item, 'compensation')}</dd>
+                </div>
+              )}
+              {detail(item, 'locationText') && (
+                <div>
+                  <dt>Location</dt>
+                  <dd>{detail(item, 'locationText')}</dd>
+                </div>
+              )}
+              {detail(item, 'citation') && (
+                <div>
+                  <dt>Source</dt>
+                  <dd>{detail(item, 'citation')}</dd>
+                </div>
+              )}
+              {detail(item, 'role') && (
+                <div>
+                  <dt>Role</dt>
+                  <dd>{detail(item, 'role')}</dd>
+                </div>
+              )}
             </dl>
             <div className={styles.cardActions}>
               {!item.owned && (
@@ -1153,20 +1356,41 @@ function ItemSection({
               )}
               {item.owned && (
                 <>
-                  <button disabled={saving} onClick={() => onEdit(item)}>Edit</button>
-                  <button className={styles.ghost} disabled={saving} onClick={() => onArchive(item.id)}>Archive</button>
+                  <button disabled={saving} onClick={() => onEdit(item)}>
+                    Edit
+                  </button>
+                  <button
+                    className={styles.ghost}
+                    disabled={saving}
+                    onClick={() => onArchive(item.id)}
+                  >
+                    Archive
+                  </button>
                 </>
               )}
               {detail(item, 'externalUrl') && (
-                <a href={detail(item, 'externalUrl')!} target="_blank" rel="noreferrer">
+                <a
+                  href={detail(item, 'externalUrl')!}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Open source <Link2 size={14} />
                 </a>
               )}
-              {!item.owned && <button className={styles.ghost} onClick={() => onReport(item.id)}>Report</button>}
+              {!item.owned && (
+                <button
+                  className={styles.ghost}
+                  onClick={() => onReport(item.id)}
+                >
+                  Report
+                </button>
+              )}
             </div>
           </article>
         ))}
-        {items.length === 0 && <Empty text={`No ${title.toLowerCase()} posted yet.`} />}
+        {items.length === 0 && (
+          <Empty text={`No ${title.toLowerCase()} posted yet.`} />
+        )}
       </div>
     </section>
   );
@@ -1190,18 +1414,30 @@ function ItemComposer({
         </label>
         <label>
           Tags
-          <input name="tags" placeholder="si, film, policy" />
+          <input name="tags" placeholder="AI, film, policy" />
         </label>
       </div>
       <label>
         Description
-        <textarea name="summary" required minLength={2} maxLength={600} rows={3} />
+        <textarea
+          name="summary"
+          required
+          minLength={2}
+          maxLength={600}
+          rows={3}
+        />
       </label>
 
       {kind === 'project' && (
         <div className={styles.formGrid}>
-          <label>Track<input name="track" placeholder="Film / si / Policy" /></label>
-          <label>People needed<input name="needs" placeholder="Editor, designer, researcher" /></label>
+          <label>
+            Track
+            <input name="track" placeholder="Film / AI / Policy" />
+          </label>
+          <label>
+            People needed
+            <input name="needs" placeholder="Editor, designer, researcher" />
+          </label>
         </div>
       )}
       {kind === 'opportunity' && (
@@ -1218,22 +1454,46 @@ function ItemComposer({
               <option value="competition">Competition</option>
             </select>
           </label>
-          <label>Organization<input name="organization" /></label>
-          <label>Compensation<input name="compensation" placeholder="$ / unpaid / credit" /></label>
-          <label>Deadline<input name="deadline" type="datetime-local" /></label>
+          <label>
+            Organization
+            <input name="organization" />
+          </label>
+          <label>
+            Compensation
+            <input name="compensation" placeholder="$ / unpaid / credit" />
+          </label>
+          <label>
+            Deadline
+            <input name="deadline" type="datetime-local" />
+          </label>
         </div>
       )}
       {kind === 'event' && (
         <div className={styles.formGrid}>
-          <label>Starts<input name="startsAt" type="datetime-local" required /></label>
-          <label>Ends<input name="endsAt" type="datetime-local" /></label>
-          <label>Organizer<input name="organizer" /></label>
-          <label>Registration URL<input name="registrationUrl" type="url" /></label>
+          <label>
+            Starts
+            <input name="startsAt" type="datetime-local" required />
+          </label>
+          <label>
+            Ends
+            <input name="endsAt" type="datetime-local" />
+          </label>
+          <label>
+            Organizer
+            <input name="organizer" />
+          </label>
+          <label>
+            Registration URL
+            <input name="registrationUrl" type="url" />
+          </label>
         </div>
       )}
       {kind === 'community' && (
         <div className={styles.formGrid}>
-          <label>Category<input name="category" placeholder="Film club / si / civic tech" /></label>
+          <label>
+            Category
+            <input name="category" placeholder="Film club / AI / civic tech" />
+          </label>
           <label>
             Join policy
             <select name="joinPolicy" defaultValue="open">
@@ -1258,8 +1518,14 @@ function ItemComposer({
               <option value="research">Research</option>
             </select>
           </label>
-          <label>Your role<input name="role" /></label>
-          <label>Year<input name="year" placeholder="2026" /></label>
+          <label>
+            Your role
+            <input name="role" />
+          </label>
+          <label>
+            Year
+            <input name="year" placeholder="2026" />
+          </label>
         </div>
       )}
       {kind === 'resource' && (
@@ -1275,13 +1541,22 @@ function ItemComposer({
               <option value="guide">Guide</option>
             </select>
           </label>
-          <label>Citation<input name="citation" placeholder="Author, title, court, DOI…" /></label>
+          <label>
+            Citation
+            <input name="citation" placeholder="Author, title, court, DOI…" />
+          </label>
         </div>
       )}
 
       <div className={styles.formGrid}>
-        <label>External URL<input name="externalUrl" type="url" placeholder="https://" /></label>
-        <label>Location<input name="locationText" placeholder="Campus / room / online" /></label>
+        <label>
+          External URL
+          <input name="externalUrl" type="url" placeholder="https://" />
+        </label>
+        <label>
+          Location
+          <input name="locationText" placeholder="Campus / room / online" />
+        </label>
         <label>
           Visibility
           <select name="visibility" defaultValue="campus">
@@ -1297,95 +1572,90 @@ function ItemComposer({
   );
 }
 
-function ProfileEditor({
-  profile,
+function LinkedInConsentSheet({
   campus,
-  saving,
-  required,
+  decision,
   onClose,
-  onSubmit,
-  onLeave,
+  onDecide,
 }: {
-  profile: Profile | null;
   campus: CampusConfig;
-  saving: boolean;
-  required: boolean;
+  decision: LinkedInCampusDecision | null;
   onClose: () => void;
-  onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void;
-  onLeave: () => void;
+  onDecide: (status: LinkedInCampusDecision['status']) => void;
 }) {
   return (
     <div className={styles.modalBackdrop}>
-      <form className={styles.modal} onSubmit={onSubmit}>
+      <dialog
+        open
+        className={`${styles.modal} ${styles.consentSheet}`}
+        aria-labelledby="linkedin-consent-title"
+      >
         <header>
           <div>
-            <span>{campus.shortName} PROFILE</span>
-            <h2>{profile ? 'Edit your Campus profile' : 'Join this Campus'}</h2>
+            <span>{campus.shortName} DATA CHOICE</span>
+            <h2 id="linkedin-consent-title">
+              Personalize Campus with LinkedIn?
+            </h2>
           </div>
-          {!required && (
+          {decision && (
             <button type="button" onClick={onClose} aria-label="Close">
               <X size={20} />
             </button>
           )}
         </header>
         <p>
-          Your authenticated email is never displayed. If its domain matches this
-          campus, Avocado shows a domain-verified badge without storing the email here.
+          A Campus profile form is no longer required. Choose whether Avocado
+          may request basic LinkedIn information for personalization after an
+          official LinkedIn connection is available.
         </p>
-        <div className={styles.formGrid}>
-          <label>
-            Display name
-            <input name="displayName" defaultValue={profile?.displayName ?? ''} required />
-          </label>
-          <label>
-            Handle
-            <input name="handle" defaultValue={profile?.handle ?? ''} placeholder="kaiya" required />
-          </label>
-          <label>
-            Affiliation
-            <select name="affiliation" defaultValue={profile?.affiliation ?? 'student'}>
-              <option value="student">Student</option>
-              <option value="alumni">Alumni</option>
-              <option value="faculty">Faculty</option>
-              <option value="staff">Staff</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>
-            Headline
-            <input name="headline" defaultValue={profile?.headline ?? ''} placeholder="Film + si + startups" />
-          </label>
+        <div className={styles.consentScope}>
+          <span className={styles.linkedinMark} aria-hidden="true">
+            in
+          </span>
+          <div>
+            <strong>Basic information only</strong>
+            <p>
+              Name, LinkedIn account ID, profile photo, and locale if LinkedIn
+              provides them.
+            </p>
+          </div>
         </div>
-        <label>
-          Bio
-          <textarea name="bio" rows={3} defaultValue={profile?.bio ?? ''} />
-        </label>
-        <div className={styles.formGrid}>
-          <label>Skills<input name="skills" defaultValue={profile?.skills.join(', ') ?? ''} placeholder="Editing, Python, policy research" /></label>
-          <label>Interests<input name="interests" defaultValue={profile?.interests.join(', ') ?? ''} placeholder="Film, si, fashion" /></label>
-          <label>Looking for<input name="lookingFor" defaultValue={profile?.lookingFor.join(', ') ?? ''} placeholder="Designer, cofounder, photographer" /></label>
-          <label>Website label<input name="linkLabel" defaultValue={profile?.links[0]?.label ?? ''} placeholder="Portfolio" /></label>
-          <label>Website URL<input name="linkUrl" type="url" defaultValue={profile?.links[0]?.url ?? ''} placeholder="https://" /></label>
+        <ul className={styles.consentList}>
+          <li>
+            Purpose: personalize Campus and suggest relevant people, projects,
+            and resources.
+          </li>
+          <li>Never your LinkedIn password, messages, contacts, or posts.</li>
+          <li>
+            No selling, employment decisions, or posting back to LinkedIn.
+          </li>
+          <li>You can withdraw this choice or request deletion at any time.</li>
+        </ul>
+        <div className={styles.consentImportant}>
+          <ShieldCheck size={18} aria-hidden="true" />
+          <p>
+            This choice alone does not connect LinkedIn or import data. LinkedIn
+            will show its own permission screen before sharing anything. The
+            official connection is not enabled yet.
+          </p>
         </div>
-        <label className={styles.checkbox}>
-          <input
-            name="isPublic"
-            type="checkbox"
-            defaultChecked={profile?.isPublic ?? true}
-          />
-          Let other people on this Campus discover this profile
-        </label>
         <div className={styles.modalActions}>
-          <button className={styles.primary} disabled={saving}>
-            {saving ? 'Saving…' : 'Save profile'}
+          <button
+            type="button"
+            className={styles.primary}
+            onClick={() => onDecide('consented')}
+          >
+            I agree — enter Campus
           </button>
-          {profile && (
-            <button type="button" className={styles.danger} disabled={saving} onClick={onLeave}>
-              Delete my Campus data
-            </button>
-          )}
+          <button
+            type="button"
+            className={styles.secondaryAction}
+            onClick={() => onDecide('skipped')}
+          >
+            Continue without LinkedIn
+          </button>
         </div>
-      </form>
+      </dialog>
     </div>
   );
 }
@@ -1412,8 +1682,11 @@ function Tags({
   const total = tags.reduce((sum, tag) => sum + tag.total, 0);
   const nfc = tags.reduce((sum, tag) => sum + tag.nfc, 0);
   const qr = tags.reduce((sum, tag) => sum + tag.qr, 0);
-  const exportedById = new Map((tagExport?.tags ?? []).map((row) => [row.tagId, row]));
-  const dataUrl = (mime: string, value: string) => `data:${mime};charset=utf-8,${encodeURIComponent(value)}`;
+  const exportedById = new Map(
+    (tagExport?.tags ?? []).map((row) => [row.tagId, row]),
+  );
+  const dataUrl = (mime: string, value: string) =>
+    `data:${mime};charset=utf-8,${encodeURIComponent(value)}`;
   return (
     <section>
       <div className={styles.sectionHeading}>
@@ -1421,25 +1694,58 @@ function Tags({
           <span>PHYSICAL ENTRY LAYER</span>
           <h2>NFC / QR tags</h2>
           <p>
-            Register the exact IDs written by the iPhone writer. NFC and QR can point
-            to the same tag ID while analytics keeps the source separate.
+            Register the exact IDs written by the iPhone writer. NFC and QR can
+            point to the same tag ID while analytics keeps the source separate.
           </p>
         </div>
       </div>
 
       <div className={styles.metricGrid}>
-        <article><strong>{tags.length}</strong><span>registered tags</span></article>
-        <article><strong>{total}</strong><span>opens</span></article>
-        <article><strong>{nfc}</strong><span>NFC</span></article>
-        <article><strong>{qr}</strong><span>QR</span></article>
+        <article>
+          <strong>{tags.length}</strong>
+          <span>registered tags</span>
+        </article>
+        <article>
+          <strong>{total}</strong>
+          <span>opens</span>
+        </article>
+        <article>
+          <strong>{nfc}</strong>
+          <span>NFC</span>
+        </article>
+        <article>
+          <strong>{qr}</strong>
+          <span>QR</span>
+        </article>
       </div>
 
       <form key={campus.id} className={styles.composer} onSubmit={onSubmit}>
         <h3>Register a batch</h3>
         <div className={styles.formGrid}>
-          <label>Prefix<input name="prefix" defaultValue={campus.id} /></label>
-          <label>Start number<input name="start" type="number" min="1" max="999999" defaultValue="1" /></label>
-          <label>Count<input name="count" type="number" min="1" max="200" defaultValue="10" /></label>
+          <label>
+            Prefix
+            <input name="prefix" defaultValue={campus.id} />
+          </label>
+          <label>
+            Start number
+            <input
+              name="start"
+              type="number"
+              min="1"
+              max="999999"
+              defaultValue="1"
+            />
+          </label>
+          <label>
+            Count
+            <input
+              name="count"
+              type="number"
+              min="1"
+              max="200"
+              defaultValue="10"
+            />
+          </label>
           <label>
             Mode
             <select name="mode" defaultValue={campus.defaultMode}>
@@ -1453,13 +1759,28 @@ function Tags({
               <option value="events">Events</option>
             </select>
           </label>
-          <label>Label<input name="label" placeholder="Library poster" /></label>
-          <label>Placement<input name="placement" placeholder="Student center noticeboard" /></label>
+          <label>
+            Label
+            <input name="label" placeholder="Library poster" />
+          </label>
+          <label>
+            Placement
+            <input name="placement" placeholder="Student center noticeboard" />
+          </label>
           <label>
             Destination
-            <select name="destination" defaultValue={campus.id === 'columbia' ? '/sky/campus/columbia' : ''}>
+            <select
+              name="destination"
+              defaultValue={
+                campus.id === 'columbia' ? '/sky/campus/columbia' : ''
+              }
+            >
               <option value="">Legacy Campus destination</option>
-              {campus.id === 'columbia' && <option value="/sky/campus/columbia">Sky for Columbia students</option>}
+              {campus.id === 'columbia' && (
+                <option value="/sky/campus/columbia">
+                  Sky for Columbia students
+                </option>
+              )}
             </select>
           </label>
         </div>
@@ -1469,11 +1790,20 @@ function Tags({
       </form>
 
       <div className={styles.tagActions}>
-        <button className={styles.primary} type="button" disabled={saving || tags.length === 0} onClick={onExport}>
+        <button
+          className={styles.primary}
+          type="button"
+          disabled={saving || tags.length === 0}
+          onClick={onExport}
+        >
           {saving ? 'Preparing…' : 'Export CSV + QR SVGs'}
         </button>
         {tagExport && (
-          <a className={styles.ghost} href={dataUrl('text/csv', tagExport.csv)} download={`${campus.id}-sky-tags.csv`}>
+          <a
+            className={styles.ghost}
+            href={dataUrl('text/csv', tagExport.csv)}
+            download={`${campus.id}-sky-tags.csv`}
+          >
             Download CSV
           </a>
         )}
@@ -1497,7 +1827,11 @@ function Tags({
                 height={144}
                 unoptimized
               />
-              <a className={styles.ghost} href={dataUrl('image/svg+xml', row.qrSvg)} download={`${row.tagId}.svg`}>
+              <a
+                className={styles.ghost}
+                href={dataUrl('image/svg+xml', row.qrSvg)}
+                download={`${row.tagId}.svg`}
+              >
                 Download QR SVG
               </a>
             </article>
@@ -1512,22 +1846,42 @@ function Tags({
               <Radio size={19} />
               <span>
                 <strong>{tag.tagId}</strong>
-                <small>{tag.label || tag.mode}{tag.placement ? ` · ${tag.placement}` : ''}</small>
+                <small>
+                  {tag.label || tag.mode}
+                  {tag.placement ? ` · ${tag.placement}` : ''}
+                </small>
               </span>
             </div>
             <dl>
-              <div><dt>Total</dt><dd>{tag.total}</dd></div>
-              <div><dt>NFC</dt><dd>{tag.nfc}</dd></div>
-              <div><dt>QR</dt><dd>{tag.qr}</dd></div>
+              <div>
+                <dt>Total</dt>
+                <dd>{tag.total}</dd>
+              </div>
+              <div>
+                <dt>NFC</dt>
+                <dd>{tag.nfc}</dd>
+              </div>
+              <div>
+                <dt>QR</dt>
+                <dd>{tag.qr}</dd>
+              </div>
             </dl>
             <code>{`/t/${tag.tagId}?source=nfc`}</code>
             <code>{`/t/${tag.tagId}?source=qr`}</code>
-            {exportedById.has(tag.tagId) && <small>CSV and QR SVG are ready above.</small>}
+            {exportedById.has(tag.tagId) && (
+              <small>CSV and QR SVG are ready above.</small>
+            )}
             <div className={styles.tagActions}>
-              <button disabled={saving} onClick={() => onSetActive(tag.tagId, !tag.active)}>
+              <button
+                disabled={saving}
+                onClick={() => onSetActive(tag.tagId, !tag.active)}
+              >
                 {tag.active ? 'Deactivate' : 'Activate'}
               </button>
-              <button disabled={saving || tag.total === 0} onClick={() => onClearAnalytics(tag.tagId)}>
+              <button
+                disabled={saving || tag.total === 0}
+                onClick={() => onClearAnalytics(tag.tagId)}
+              >
                 Clear analytics
               </button>
             </div>
