@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import CampusWorkspace from '@/components/campus-workspace';
 import { CAMPUS_IDS, type CampusId } from '@/lib/campus';
+import { campusForHost } from '@/lib/campus-host';
 
 export const metadata: Metadata = {
   title: 'Campus — Avocado',
@@ -14,9 +16,10 @@ export default async function CampusPage({
   searchParams: Promise<{ campus?: string; mode?: string; tag?: string; source?: string }>;
 }) {
   const params = await searchParams;
+  const hostCampus = campusForHost((await headers()).get('host'));
   const campus = CAMPUS_IDS.includes(params.campus as CampusId)
     ? (params.campus as CampusId)
-    : 'nyu';
+    : (hostCampus ?? 'nyu');
   return (
     <CampusWorkspace
       initialCampus={campus}

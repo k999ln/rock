@@ -1,6 +1,6 @@
 # Sky NFCカード — Columbia大学の学生向け入口（設計）
 
-状態: 設計（2026-10-12、owner指示）。実装はCodexへ依頼する（[依頼文](prompts/sky-nfc-columbia-codex.md)）。カードの印刷・書き込み・配布はまだ行っていない。
+状態: Web入口は実装済み。2026-10-14に最新mainへhost別入口、任意LinkedIn選択、Sky Phoenix、Jennifer/Zema導線を再統合し、`avocadomini.si` の本番転送先を `https://columbia.avoado.si` へ更新した。カードの印刷・書き込み・iPhone/Android実機読取・配布はまだ行っていない。
 
 関連: [Campusレイヤー](campus-layer.md)（NFC／QR入口 `/t/[tagId]` とタグ台帳の正本）、[Sky](sky.md)、[製品ベース 2026-10-12](product-baseline.md)。
 
@@ -27,8 +27,8 @@
    - NFCが使えない、または読めないときは、カードのQRコードを読む。同じ入口に行く。
 2. `https://avocadomini.si/t/columbia-sky-0001` のような短いURLが開き、すぐに英語の入口ページ「Sky for Columbia students」へ移る。
 3. 入口ページには3つのTool（Citations、AMC、Patent Assistant）が並ぶ。それぞれ何ができるか、費用がかからないこと、データがどこで処理されるかを1画面で読める。
-4. Toolを選ぶと英語の画面が開く。入口ページと各Toolの説明は、サインインしなくても読めるようにする（今そうなっていない画面があれば直す）。保存や続きの作業にはavokadoアカウント（無料）を作る。サインインはSkyの決定どおり自前のpasskeyを使う（実装が先に入っていればそれを、無ければ既存のサインインを使う）。
-5. 作業はZemaに残り、あとで同じアカウントで続きができる。
+4. Toolを選ぶと英語の画面が開く。入口ページと各Toolの説明はサインインしなくても読める。入口の「Save here」はbrowser内だけで、アカウント・job・権限・課金を作らない。
+5. 本人が明示的にサインインした後は、第一者Citations Agentへ進むか、Jenniferでgoalを整理し、Zemaで仕事・承認・進捗・成果・費用を管理する。匿名時の下書きや保存内容を自動importしない。
 
 ## 3. カードの中身
 
@@ -77,6 +77,7 @@ QR : https://avocadomini.si/t/columbia-sky-0001?source=qr
 - `tagId` は既存の形式（英小文字・数字・ハイフン）だけを通す。形式外は404。
 - `SKY_TAG_ORIGIN` が未設定なら、転送せずに「このカードはまだ使えません」という静的ページを返す（壊れたリンクにしない）。
 - SkyがSkyの決定どおり `avocadomini.si/sky` へ移ったら、転送先を同じドメインへ変えるだけでよい。カードのURLは変わらない。
+- 2026-10-14にSites本番環境変数 `SKY_TAG_ORIGIN` を旧 `chatgpt.site` から `https://columbia.avoado.si` へ更新し、avocadoMini v16を環境revision 2で再配備した。公開URLから旧hostへの遷移は残さない。
 
 ### 4.2 タグ台帳と行き先
 
@@ -92,6 +93,10 @@ QR : https://avocadomini.si/t/columbia-sky-0001?source=qr
 - 見出し相当はheaderの「Sky / Columbia students」。3つのToolを単列feedへ並べ、それぞれに「何ができるか」「お金がかかるか（どれも無料）」「データがどこで処理されるか」を書く。
 - 各Toolへは `?lang=en&entry=columbia-card` を付けて開く。
 - 保存はこのbrowserのlocal storageだけに置き、権限・job・課金を作らない。「What are you working on?」の入力は3つのToolのどれに進むかを端末内で選び、入力本文をserverやLLMへ送らない。
+- `columbia.avoado.si` はこの入口専用hostとして扱い、`/` と queryなしの `/campus` はColumbia入口を選ぶ。`?campus=` の明示指定は優先し、他hostのqueryなし `/campus` は従来どおりNYUを保つ。
+- LinkedInは任意の将来personalization選択で、同意してもprovider接続・data import・大学所属確認を行わない。`Continue without LinkedIn` で同じ入口を利用できる。
+- Sky Phoenixは本人が有効化するまでOFF。qualified view・details・launch・saveだけを期限付きで保持し、依頼本文・生成結果・raw scroll・device IDを保存せず、実行権・job・課金を作らない。
+- 続きの仕事は「Plan with Jennifer」から `/chat` のZemaへ進める。`/sky/agents` は実装済み第一者Citations Agentへ集約し、未実装一覧の404にしない。
 - アカウントを作る・サインインする導線と、プライバシーの説明へのリンクを置く。
 - ページの言語属性を英語（`lang="en"`）にする。今の全体は `lang="ja"` なので、英語の部分には正しい言語属性を付ける。
 - 他の大学（`/sky/campus/nyu` など）にも同じ形で広げられるようにするが、今回はColumbiaだけを公開する。
@@ -146,6 +151,8 @@ QR : https://avocadomini.si/t/columbia-sky-0001?source=qr
 | A7 | batchのCSV（tag ID・NFC URL・QR URL）とQR画像を書き出せる | 試験 |
 | A8 | 実物のカードをiPhoneとAndroidで読み、英語の入口が開く | avokadoが実機で確認（Codexの合格とは分ける） |
 | A9 | `npm run verify` が通る | CI |
+| A10 | `columbia.avoado.si/` が汎用RockstarOS homeではなく同じ英語入口を返し、`/campus` はhost既定をColumbiaにする。明示`?campus=nyu`と他hostのNYU既定は維持する | host単体試験＋browser |
+| A11 | LinkedInの同意／skipはprovider接続やimportを主張せず、Phoenixは初期OFF・削除可能・実行権を付けない | 単体試験＋browser |
 
 ## 8. リスクとまだ決めていないこと
 

@@ -86,6 +86,7 @@ void test('Columbia entry uses the finished Sky feed shell and keeps actions con
   assert.match(source, /What are you working on\?/);
   assert.match(source, /sky-columbia-saved-tools/);
   assert.match(source, /Made for Columbia students\./);
+  assert.match(source, /Independent service by/u);
   assert.match(source, /visibleTools\.map/);
   assert.match(source, /href=\{tool\.href\}/);
 });

@@ -5982,7 +5982,7 @@
     },
     {
       "id": "CAMPUS02",
-      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許si停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
+      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、host別root、英語3 Tool、任意LinkedIn choice、Phoenix、Jennifer/Zema導線、カード経由の特許si停止）を整合する。Web配備と現物カード受入を分ける",
       "status": "in_progress",
       "dependsOn": [
         "CAMPUS01"
@@ -5991,17 +5991,25 @@
         "docs/sky-nfc-columbia.md",
         "docs/prompts/sky-nfc-columbia-codex.md",
         "sites/avocado-mini/worker/index.js",
+        "app/page.tsx",
+        "app/campus/page.tsx",
         "app/sky/campus/[campusId]/page.tsx",
         "app/sky/campus/[campusId]/columbia-feed.tsx",
         "app/sky/campus/[campusId]/page.module.css",
+        "app/sky/agents/page.tsx",
         "app/api/campus/route.ts",
         "app/api/patent-research/route.ts",
         "lib/campus-tags.ts",
+        "lib/campus-host.ts",
+        "lib/campus-linkedin-consent.ts",
         "lib/sky-campus.ts",
+        "tests/campus-host.test.mjs",
+        "tests/campus-linkedin-consent.test.mjs",
+        "tests/sky-columbia-phoenix.test.mjs",
         "tests/sky-nfc-columbia.test.mjs",
         "sites/avocado-mini/tests/preorder.test.mjs"
       ],
-      "nextAction": "PR上でA1〜A7/A9の統合検証を確認し、A8の実物カード（iPhone/Android）受入と印刷・書き込み・配布はownerの別判断まで保留する。"
+      "nextAction": "最新mainと同じtreeのSite配備・公開browser readbackを完了し、A8の実物カード（iPhone/Android）受入と印刷・書き込み・配布はownerの別判断まで保留する。"
     }
   ],
   "phaseGates": [
