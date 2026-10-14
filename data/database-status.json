@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 156,
+    "tableCount": 160,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。"
   },
   "webSchema": {
-    "tableCount": 84,
+    "tableCount": 88,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -50,6 +50,10 @@
       "esim_provider_profile_bindings",
       "esim_provider_webhook_inbox",
       "fund_plans",
+      "jennifer_passkey_challenges",
+      "jennifer_passkey_credentials",
+      "jennifer_passkey_events",
+      "jennifer_passkey_sessions",
       "jennifer_plan_revisions",
       "jennifer_task_attempts",
       "job_events",
@@ -105,8 +109,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 2,
-    "latestMigration": "0014_jennifer_execution_integrity.sql",
+    "migrationCount": 3,
+    "latestMigration": "0015_jennifer_passkey_access.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 0,
     "marketplaceRelationGuardCount": 8,
@@ -120,6 +124,10 @@
           "book_records",
           "devices",
           "fund_plans",
+          "jennifer_passkey_challenges",
+          "jennifer_passkey_credentials",
+          "jennifer_passkey_events",
+          "jennifer_passkey_sessions",
           "jennifer_plan_revisions",
           "jennifer_task_attempts",
           "job_events",
@@ -132,7 +140,7 @@
           "tool_runs",
           "work_jobs"
         ],
-        "tableCount": 14
+        "tableCount": 18
       },
       {
         "id": "sky",
@@ -275,6 +283,10 @@
         "esim_provider_profile_bindings",
         "esim_provider_webhook_inbox",
         "fund_plans",
+        "jennifer_passkey_challenges",
+        "jennifer_passkey_credentials",
+        "jennifer_passkey_events",
+        "jennifer_passkey_sessions",
         "jennifer_plan_revisions",
         "jennifer_task_attempts",
         "job_events",
@@ -330,8 +342,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0014_jennifer_execution_integrity.sql",
-      "tableCount": 84,
+      "expectedAppliedThrough": "0015_jennifer_passkey_access.sql",
+      "tableCount": 88,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

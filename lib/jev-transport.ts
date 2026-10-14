@@ -1,3 +1,4 @@
+// oxlint-disable-next-line typescript/no-deprecated -- AI SDK exposes evaluation only through this experimental alias.
 import { experimental_evaluate as evaluate } from 'ai';
 import { JEV_MODEL } from './jev-evaluation.ts';
 

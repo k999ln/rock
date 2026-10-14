@@ -4031,6 +4031,120 @@
   margin: 10px 0 18px;
   font-size: 14px;
 }
+.jennifer-access {
+  width: min(100%, 620px);
+  margin: clamp(24px, 8vh, 84px) auto;
+  padding: clamp(28px, 5vw, 52px);
+  border: 1px solid #343431;
+  border-radius: 28px;
+  color: #edede8;
+  background:
+    radial-gradient(circle at 50% 0, #39474266, transparent 38%),
+    linear-gradient(160deg, #1d1e1c, #111110 72%);
+  box-shadow: 0 30px 90px #00000042;
+  text-align: center;
+}
+.jennifer-access-mark {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  border: 1px solid #7c8d85;
+  border-radius: 19px;
+  color: #111110;
+  background: #dfe9e3;
+}
+.jennifer-access-mark svg { width: 28px; height: 28px; }
+.jennifer-access-kicker {
+  margin: 0 0 9px;
+  color: #9daea5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+.jennifer-access h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 540;
+  letter-spacing: -.05em;
+}
+.jennifer-access-lead {
+  max-width: 480px;
+  margin: 16px auto 22px;
+  color: #b7b9b2;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.jennifer-access-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  margin: 0 0 26px;
+  border: 1px solid #343431;
+  border-radius: 14px;
+  background: #343431;
+}
+.jennifer-access-points span {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  color: #b9bcb5;
+  background: #191918;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.jennifer-access-primary,
+.jennifer-access-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1px solid #edede8;
+  border-radius: 999px;
+  font: 700 14px/1 inherit;
+  cursor: pointer;
+}
+.jennifer-access-primary { color: #151514; background: #edede8; }
+.jennifer-access-secondary { color: #edede8; background: transparent; }
+.jennifer-access-primary:disabled { opacity: .48; cursor: wait; }
+.jennifer-access-error {
+  margin: 15px auto 0;
+  padding: 11px 14px;
+  border: 1px solid #795c55;
+  border-radius: 10px;
+  color: #f0c8bc;
+  background: #3b2521;
+  font-size: 13px;
+}
+.jennifer-access-recovery-warning {
+  margin: 15px auto 0;
+  color: #c6bfa8;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.jennifer-access-recovery {
+  display: grid;
+  gap: 7px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid #343431;
+  text-align: left;
+}
+.jennifer-access-recovery strong { font-size: 12px; }
+.jennifer-access-recovery p { margin: 0; color: #92958e; font-size: 12px; line-height: 1.65; }
+.jennifer-access-recovery a { width: fit-content; color: #dfe9e3; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+.jennifer-access > small { display: block; margin-top: 26px; color: #7f827c; font-size: 10px; line-height: 1.6; }
+@media(max-width:640px) {
+  .jennifer-access { margin: 12px auto; padding: 28px 20px; border-radius: 21px; }
+  .jennifer-access-points { grid-template-columns: 1fr; }
+  .jennifer-access-points span { grid-template-columns: 24px 1fr; justify-items: start; align-items: center; text-align: left; }
+  .jennifer-access-primary, .jennifer-access-secondary { width: 100%; }
+}
 .rock-wallet-links {
   margin-top: 28px;
   padding-top: 20px;
@@ -11514,7 +11628,8 @@
   margin-right: auto;
 }
 .zema-new-chat,
-.zema-sidebar-bottom a {
+.zema-sidebar-bottom a,
+.zema-sidebar-bottom button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -11744,7 +11859,8 @@
 .sky-chat-page .zema-sidebar-close,
 .sky-chat-page .zema-sidebar-toggle,
 .sky-chat-page .zema-new-chat,
-.sky-chat-page .zema-sidebar-bottom a {
+.sky-chat-page .zema-sidebar-bottom a,
+.sky-chat-page .zema-sidebar-bottom button {
   border-color: #2f3336;
   color: #e7e9ea;
   background: #16181c;
@@ -13822,7 +13938,9 @@
   font-weight: 550;
 }
 .sky-chat-page .zema-sidebar-bottom a:hover,
-.sky-chat-page .zema-sidebar-bottom a:focus-visible {
+.sky-chat-page .zema-sidebar-bottom a:focus-visible,
+.sky-chat-page .zema-sidebar-bottom button:hover,
+.sky-chat-page .zema-sidebar-bottom button:focus-visible {
   color: #fff;
   background: #24262b;
 }

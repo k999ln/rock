@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { configuredLocalDevelopmentUser, requestUser } from '../lib/request-auth.ts';
+import { configuredLocalDevelopmentUser, requestGatewayUser } from '../lib/request-auth.ts';
 
 void test('local preview identity is explicit and loopback-only', () => {
   assert.equal(
@@ -27,10 +27,26 @@ void test('local preview identity is explicit and loopback-only', () => {
 });
 
 void test('request auth prefers the stable gateway user id', async () => {
-  const request = new Request('https://example.test/api/jobs', {
-    headers: { 'oai-authenticated-user-id': ' owner-1 ' },
+  const request = new Request('https://columbia.avoado.si/api/jobs', {
+    headers: { 'oai-authenticated-user-id': ' owner-1 ', 'x-dispatched-app': 'site---verified-project' },
   });
-  assert.equal(await requestUser(request), 'owner-1');
+  assert.equal(await requestGatewayUser(request), 'owner-1');
+});
+
+void test('the platform-owned generated Sites host keeps its stable gateway id', async () => {
+  const request = new Request('https://rockstaros-kaiya.noellesugar1.chatgpt.site/api/jobs', {
+    headers: { 'oai-authenticated-user-id': 'owner-1' },
+  });
+  assert.equal(await requestGatewayUser(request), 'owner-1');
+});
+
+void test('loopback fixtures can supply a local gateway id without weakening production hosts', async () => {
+  assert.equal(await requestGatewayUser(new Request('http://127.0.0.1:8787/api/jobs', {
+    headers: { 'oai-authenticated-user-id': 'fixture-owner' },
+  })), 'fixture-owner');
+  assert.equal(await requestGatewayUser(new Request('https://route-fixture.invalid/api/jobs', {
+    headers: { 'oai-authenticated-user-id': 'fixture-owner' },
+  })), 'fixture-owner');
 });
 
 void test('Sites email fallback is gateway-bound, stable, and pseudonymous', async () => {
@@ -42,8 +58,8 @@ void test('Sites email fallback is gateway-bound, stable, and pseudonymous', asy
         ...overrides,
       },
     });
-  const first = await requestUser(request('Owner@Example.com'));
-  const second = await requestUser(request('owner@example.com'));
+  const first = await requestGatewayUser(request('Owner@Example.com'));
+  const second = await requestGatewayUser(request('owner@example.com'));
   assert.equal(first, second);
   assert.match(first, /^sites-email-sha256:[a-f0-9]{64}$/);
   assert.doesNotMatch(first, /owner|example/i);
@@ -51,7 +67,7 @@ void test('Sites email fallback is gateway-bound, stable, and pseudonymous', asy
 
 void test('email fallback fails closed away from the Sites gateway', async () => {
   await assert.rejects(
-    requestUser(
+    requestGatewayUser(
       new Request('https://example.test/api/jobs', {
         headers: {
           'oai-authenticated-user-email': 'owner@example.com',
@@ -62,7 +78,7 @@ void test('email fallback fails closed away from the Sites gateway', async () =>
     /UNAUTHORIZED/,
   );
   await assert.rejects(
-    requestUser(
+    requestGatewayUser(
       new Request('https://example.chatgpt.site/api/jobs', {
         headers: { 'oai-authenticated-user-email': 'owner@example.com' },
       }),
@@ -73,7 +89,7 @@ void test('email fallback fails closed away from the Sites gateway', async () =>
 
 void test('mutations still require same origin before identity is accepted', async () => {
   await assert.rejects(
-    requestUser(
+    requestGatewayUser(
       new Request('https://example.chatgpt.site/api/jobs', {
         method: 'POST',
         headers: {
@@ -83,5 +99,23 @@ void test('mutations still require same origin before identity is accepted', asy
       }),
     ),
     /ORIGIN/,
+  );
+});
+
+void test('gateway user id is rejected without a trusted Sites dispatch boundary', async () => {
+  await assert.rejects(
+    requestGatewayUser(new Request('https://columbia.avoado.si/api/jobs', {
+      headers: { 'oai-authenticated-user-id': 'forged-owner' },
+    })),
+    /UNAUTHORIZED/,
+  );
+  await assert.rejects(
+    requestGatewayUser(new Request('https://direct-worker.example/api/jobs', {
+      headers: {
+        'oai-authenticated-user-id': 'forged-owner',
+        'x-dispatched-app': 'site---forged',
+      },
+    })),
+    /UNAUTHORIZED/,
   );
 });

@@ -1,6 +1,6 @@
 # Jennifer Coordination
 
-更新: 2026-10-13
+更新: 2026-10-14
 
 ## 現在の実装と到達契約の読み分け
 
@@ -56,19 +56,20 @@ CLIは`data/project-status.json`をprojectへ集計するだけで、Agent起動
 
 ## Web Previewでの使い方
 
-1. Jenniferを開き、担当を「自動で選ぶ」にする。
-2. 「管理するプロジェクト」から8件のprojectまたは「全体・自動判定」を選ぶ。
-3. 複数工程を先に確認したい場合は「計画を整理」を有効にする。
-4. 目的、使ってよい資料、必要な調査、欲しい成果物を一つの依頼として送る。
-5. 「Goal Contract」と「Zema内AMCの逆算分解」で、Goal、専門担当、依存、参照context、変更path、期待成果、合格条件を確認する。
-6. 「草案をZemaへ保存」を押すと、再試行安全なAMC draftとplan revision 1が同じD1 batchでowner本人の台帳へ保存される。片方だけは残らず、保存だけでは`approve_plan`を発行しない。
-7. COLOMBIAの各未決事項へ回答または延期理由を入力し、「Goal Contractを承認」を押す。これでinventoryだけが`ready`になる。
-8. inventoryを「担当siへ実行準備」でCloud Agent Workbenchへ移す。署名済み見積、Broker証明、予算上限を確認して本人が承認すると、Zema runtimeが実A2A `SendMessage`を一度だけ行う。曖昧な応答を自動再送しない。
-9. 担当siのartifactとProvider署名済みusage ReceiptをZemaが照合し、`TaskReport`をサーバー生成する。別principalのreviewerはそのworker委任とreport digestに結び付いた型付き判定を返す。ブラウザの合否文字列ではleafを完了できない。
-10. inventory検収後にownerがdelivery段階を承認すると、残りのleafを依存順・同時一件で実行できる。全leaf完了後もJenniferの`GoalReceipt`付き最終報告をownerが受け入れるまでGoalは受入済みにならない。
-11. 一時停止は新規dispatchを止め、再開は停止前の段階だけへ戻る。「停止」はさらに実行中委任へ取消要求を送る。計画変更は停止後、実行中／停止未確認がゼロのときだけ新revisionとして保存し、旧承認を無効にする。
+1. `https://columbia.avoado.si/chat`を開く。通常はJennifer専用passkeyと端末のロック解除で本人領域へ入る。最初の登録または端末紛失時だけ「本人用データを引き継いで設定」から既存Sites accountを一度照合する。復旧登録が成功すると以前のJennifer passkeyとsessionはすべて失効する。
+2. Jenniferを開き、担当を「自動で選ぶ」にする。
+3. 「管理するプロジェクト」から8件のprojectまたは「全体・自動判定」を選ぶ。
+4. 複数工程を先に確認したい場合は「計画を整理」を有効にする。
+5. 目的、使ってよい資料、必要な調査、欲しい成果物を一つの依頼として送る。
+6. 「Goal Contract」と「Zema内AMCの逆算分解」で、Goal、専門担当、依存、参照context、変更path、期待成果、合格条件を確認する。
+7. 「草案をZemaへ保存」を押すと、再試行安全なAMC draftとplan revision 1が同じD1 batchでowner本人の台帳へ保存される。片方だけは残らず、保存だけでは`approve_plan`を発行しない。
+8. COLOMBIAの各未決事項へ回答または延期理由を入力し、「Goal Contractを承認」を押す。これでinventoryだけが`ready`になる。
+9. inventoryを「担当siへ実行準備」でCloud Agent Workbenchへ移す。署名済み見積、Broker証明、予算上限を確認して本人が承認すると、Zema runtimeが実A2A `SendMessage`を一度だけ行う。曖昧な応答を自動再送しない。
+10. 担当siのartifactとProvider署名済みusage ReceiptをZemaが照合し、`TaskReport`をサーバー生成する。別principalのreviewerはそのworker委任とreport digestに結び付いた型付き判定を返す。ブラウザの合否文字列ではleafを完了できない。
+11. inventory検収後にownerがdelivery段階を承認すると、残りのleafを依存順・同時一件で実行できる。全leaf完了後もJenniferの`GoalReceipt`付き最終報告をownerが受け入れるまでGoalは受入済みにならない。
+12. 一時停止は新規dispatchを止め、再開は停止前の段階だけへ戻る。「停止」はさらに実行中委任へ取消要求を送る。計画変更は停止後、実行中／停止未確認がゼロのときだけ新revisionとして保存し、旧承認を無効にする。
 
-JenniferのGoal整理とAMC分解は端末内のplan-only機能なので、実行serviceへ未接続・未認証でも利用できる。画面上部に接続状態を表示し、Tool実行、Job、ReceiptだけはZemaの接続確認後に利用する。生成された長い計画は会話欄内で縮まず、そのままスクロールして全taskを確認できる。
+公開説明画面は認証なしで読めるが、JenniferのGoal整理とAMC分解はprivate project contextを扱うためJennifer Accessの後に利用する。Tool実行、Job、ReceiptはさらにZemaの接続・権限・承認を確認する。生成された長い計画は会話欄内で縮まず、そのままスクロールして全taskを確認できる。
 
 直接ToolまたはMCP Botを選んだ依頼は、Jenniferが利用者窓口のまま既存Zema経路へ渡す。計画依頼は単一Toolへ自動で誤ルーティングしない。
 
@@ -76,6 +77,7 @@ JenniferのGoal整理とAMC分解は端末内のplan-only機能なので、実�
 
 - 既定のデータアクセスは`none`。計画中の「本人の選択データ」は、実行時に本人が対象を指定することを意味し、Jenniferが全データを読めることを意味しない。
 - 未保存の会話previewは既存Zema session境界を使う。Zemaへ保存したJennifer Goalは`work_jobs`、`jennifer_plan_revisions`、`jennifer_task_attempts`へowner別に永続化し、別browser／deviceでも再構成する。計画変更は親digestとsemantic diffを持つ新revisionにし、旧版を`superseded`にする。
+- Jennifer Accessは`jennifer_passkey_challenges`、`jennifer_passkey_credentials`、`jennifer_passkey_sessions`、`jennifer_passkey_events`へchallenge、server検証済みcredential、hash化session、登録／復旧auditをowner別に保存する。RPとoriginは`columbia.avoado.si`へ固定し、Sites accountは初回登録と復旧だけに使う。native端末sessionとは混在させない。
 - 計画schemaは未知field、権限昇格、未知の担当・effect、前工程を参照しない依存を拒否する。approval token、credential、秘密鍵、成果物本文は計画schemaに持たせない。
 - project一覧と担当siはGit管理する。taskの状態は既存`data/project-status.json`と`data/mission-control.json`を使い、Jennifer専用の重複台帳を作らない。
 - credential、秘密鍵、artifact本文は計画台帳へ保存しない。A2A入力とartifactは既存暗号化保存、署名Receipt、owner bindingを使う。
