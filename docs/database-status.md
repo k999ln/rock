@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。並行してMAT18で建築・interior・soundの限定空間、地域、partner、Miniなしfallback、Device Profile、専門家承認と撤去復旧を決める。Pro、Mini LTE/R5、OS/Provider、空間pilotは独立gate。
+設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。並行してMAT18で専門家自身の住まい／studio／設計事務所から限定空間、地域、partner、Mini Device Profile、Pro workload、hardwareなしfallback、専門家承認と撤去復旧を決める。Mini LTE/R5、Pro実機、OS/Provider、空間pilotは独立gate。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

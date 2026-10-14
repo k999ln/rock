@@ -12,7 +12,9 @@
 
 2026-10-14の明示方針により、avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初に深く製品・提携・実証する産業上の根城とする。これは無料avokado accountから始まる共通サービスを置き換えず、そのRockstarOS、Sky、Zema、avocadoMiniを実空間の仕事へ集中適用する方針である。
 
-競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧を本人の一つのprojectとして失わず扱えることとする。avocadoMiniは将来の物理node候補、RockstarOSは本人・権限・Agent・端末・保存・復旧・費用上限のruntime、Skyは建築・内装・音響のAgent／Tool／専門家への接続、Zemaは空間projectの依頼・revision・承認・進捗・成果・支出を管理する。MiniなしのWeb／PC経路も保持する。
+同日の追加指示により、最初の利用者は専門家を単なる販売・施工channelとして扱わず、建築家、interior designer、sound／acoustic professional自身とする。本人の住まい、studio、設計事務所でMini、Pro、RockstarOSを共同利用・批評し、その仕事を通じて住宅、店舗、hotel、workplaceとそこで暮らす人へ展開する。Miniは生活空間の物理node候補、Proは専門家の暮らしと制作を支える独立NVIDIA si PC候補で、双方は単独利用可能、同じ空間projectへの接続は任意とする。これは対象partner、販売、導入、市場浸透が成立した証拠ではない。
+
+競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧を本人の一つのprojectとして失わず扱えることとする。avocadoMiniは将来の物理node候補、avokadoProは設計・制作・local si・storage・PC gameを担う独立高性能PC候補、RockstarOSは本人・権限・Agent・端末・保存・復旧・費用上限のruntime、Skyは建築・内装・音響のAgent／Tool／専門家への接続、Zemaは空間projectの依頼・revision・承認・進捗・成果・支出を管理する。Mini／ProなしのWeb／既存PC経路も保持し、ProをMiniの必須Hubにしない。
 
 資格、法規判断、署名、許可、施工・検査・品質保証は専門家・行政・施工者へ残し、生成、simulation、法規候補、見積を実測、専門家承認、許可、施工完了へ自動昇格させない。対象空間、最初のpartner、国・地域、sound範囲、Mini Device Profile、pilot価格は未決定であり、方針保存を提携成立、実機、施工、販売、市場獲得の証拠にしない。[空間領域の詳細設計](rockstaros-avocado-mini-complete-design.md#0-建築インテリアサウンドを中核領域にする)と[担当workstream](workstreams/11-material-invention-avocado-mini.md#建築インテリアサウンドの根城2026-10-14)を参照する。
 

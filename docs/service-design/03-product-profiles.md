@@ -2,6 +2,14 @@
 
 再構成版 1.0。サービスの仕事・権限・成果契約を共有しながら、機器ごとの価値と成立条件を保つ。Sky/Zema/OSを使うためにMini・Pro・rocketstarの完成を待たず、Miniの基本動作にProを要求しない。
 
+## 建築・インテリア・サウンドから暮らしへ
+
+最初の製品領域では、建築家、interior designer、sound／acoustic professionalを外部委託先や販売channelだけでなく、avokadoの最初の利用者・共同設計者とする。本人の住まい、studio、設計事務所でMini、Pro、RockstarOSを使い、その仕事を通じて住宅、店舗、hotel、workplaceとそこで暮らす人へ展開する。
+
+Miniは生活空間との物理接点候補、Proは同じ人の設計・制作・local si・storage・PC gameを支える独立高性能PC候補。RockstarOSは双方とWeb／既存PC経路で本人、権限、project、revision、費用、保存、停止、復旧を共通化する。SkyはAgent／Tool／専門家への接続、Zemaは空間projectの現状、案、専門家review、承認、実施、検査、日常利用と変更を追跡する。MiniとProは互いを必須にせず、hardwareなしのfallbackも保持する。
+
+最初のpilotは限定空間でarchitecture／interior／soundの二分野以上を接続し、Mini／Proありとfallbackを比較する。対象空間、地域、partner、Mini Device Profile、Pro workload、価格は未決で、設計記録を提携・実機・施工・販売の成立へ換算しない。
+
 ## SkyとZema
 
 Skyの主な利用者は能力を使う本人と、能力を届ける作者。発見→条件比較→接続/購入→仕事または対応アプリへ進む。入力は本人の目的、catalog/manifest、接続能力、購入記録。出力は版付きの能力選択と接続状態で、本人承認・実行成功は出力しない。作者公開はPackage宣言と明示した公開コードを区別し、原稿やsecretを登録しない。

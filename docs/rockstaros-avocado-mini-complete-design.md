@@ -8,7 +8,7 @@
 状態: 既存Material Invention研究profileと共通契約の設計資料
 注意: 現行avocadoMiniの製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本書の四方向発明台、AR、Full-scale/rack構成はこの研究profile内の設計であり、R5の完成外形・全空間裸眼表示・製造承認を示さない。
 
-2026-10-14: avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を最初の産業上の根城とする。これは本書のMaterial Invention研究profileを廃止せず、avocadoMiniの将来Device ProfileとRockstarOS共通契約を実空間へ展開する上位製品方針である。
+2026-10-14: avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を最初の産業上の根城とする。専門家自身の住まい、studio、設計事務所を最初の利用・共同設計環境にし、Miniを生活空間のnode、Proを設計・制作・local siの独立PCとして任意接続する。そこで磨いた体験を専門家の仕事を通じて住宅、店舗、hotel、workplaceへ展開する。これは本書のMaterial Invention研究profileを廃止せず、avocadoMiniの将来Device Profile、avokadoPro、RockstarOS共通契約を実空間へ展開する上位製品方針であり、提携・実機・施工・販売成立を示さない。
 
 2026-09-24: R5は使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を目指す。表示・精密3D入力・実部品収納等は未成立/未確定。既存Coreや四方向入力schemaを変更済みとは扱わず、R5専用profileとadapterの実装・受入を別に行う。
 
@@ -22,13 +22,14 @@
 
 ### 目的と利用体験
 
-avocadoMiniとRockstarOSは、生活者がITを操作する時間を増やすためではなく、建築、内装、音、光、温熱、道具、仕事が自然に調和する空間をつくり、維持するために使う。最初の体験は「空間について相談する→現状と希望を記録する→専門家とAgentが案を比較する→本人が費用と共有範囲を承認する→実測・専門家確認・施工を別々に検収する→完成後も変更履歴と復旧方法が残る」という一周を目標にする。
+avocadoMini、avokadoPro、RockstarOSは、生活者がITを操作する時間を増やすためではなく、建築、内装、音、光、温熱、道具、仕事が自然に調和する空間をつくり、維持するために使う。最初の体験は、空間をつくる専門家自身の暮らしとstudioで「空間について相談する→現状と希望を記録する→専門家とAgentが案を比較する→本人が費用と共有範囲を承認する→実測・専門家確認・施工を別々に検収する→完成後も変更履歴と復旧方法が残る」という一周を使い、そこからその人が設計する空間へ展開することを目標にする。
 
 ### 役割
 
 | 担当 | 責任 |
 | --- | --- |
 | avocadoMini | 選定したDevice Profileの範囲で空間との物理接点を担う。入力・表示・音・local controlの候補を扱うが、未測定のsensor精度や設備制御を約束しない |
+| avokadoPro | 専門家の住まい・studio・設計事務所で設計、制作、local si、storage、PC gameを担う独立高性能PC候補。Mini接続は任意で、未組立のP0候補を性能合格へ換算しない |
 | RockstarOS | 本人性、権限、端末能力、Agent実行、保存、復旧、費用上限を強制する |
 | Sky | 審査済みの建築・インテリア・音響Agent／Toolと外部専門家への接続条件を示す |
 | Zema | 一つの空間projectの依頼、revision、承認、進捗、成果、支出、未解決事項を管理する |

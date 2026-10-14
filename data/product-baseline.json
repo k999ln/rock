@@ -21,7 +21,11 @@
     ],
     "serviceEntry": "free_avokado_account_with_web_pc_and_supported_device_access",
     "experiencePrinciple": "technology_supports_the_space_and_daily_life_without_demanding_attention_or_exposing_system_complexity",
+    "firstUsers": "architecture_interior_and_sound_practitioners_in_their_own_homes_studios_and_practices_as_users_and_co_designers_not_only_sales_or_installation_channels",
+    "expansionPath": "practitioner_home_and_studio_to_design_and_site_work_to_client_homes_shops_hotels_and_workplaces_to_daily_life_inside_those_spaces",
     "avocadoMiniRole": "optional_physical_node_between_living_space_people_and_rockstaros_subject_to_device_profile_and_physical_acceptance",
+    "avokadoProRole": "standalone_nvidia_si_pc_candidate_for_practitioner_home_studio_design_creation_local_inference_storage_and_pc_games_with_optional_mini_connection",
+    "hardwareIndependence": "mini_and_pro_are_independently_usable_and_web_or_existing_pc_fallback_remains_available",
     "rockstarOsRole": "identity_permission_agent_device_storage_recovery_and_budget_runtime",
     "skyRole": "connect_reviewed_architecture_interior_acoustic_agents_tools_and_professionals",
     "zemaRole": "manage_one_space_project_requests_revisions_approvals_progress_results_and_spend",
@@ -31,6 +35,7 @@
       "RQ01-RQ50",
       "account_led_primary_service",
       "R5",
+      "avokadoPro_P0",
       "Pixel_QEMU",
       "Material_Invention",
       "existing_pricing_permission_and_acceptance_gates"
@@ -40,6 +45,7 @@
       "countryOrJurisdiction": "undecided",
       "partner": "undecided",
       "miniCapabilities": "undecided_and_must_be_measured",
+      "proWorkload": "undecided_and_must_be_measured",
       "soundScope": "undecided",
       "price": "undecided"
     },

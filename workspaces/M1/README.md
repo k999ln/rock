@@ -44,7 +44,7 @@ MINI01: R5の全要求、OPEN01〜08、試験IDを抽出する
 | MAT11 | 4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入 | 未着手 / 旧版・参考 | MAT09 |
 | MAT13 | Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入 | 未着手 / 旧版・参考 | — |
 | MINI01（親） | R5要求・OPEN01〜08と部隊別試験の追跡表を作る | 未着手 / 現行製品 | — |
-| MAT18 | 建築・インテリア・サウンドをavokadoの根城とし、Mini＋RockstarOSの限定空間pilotと専門家協業契約を定義 | 進行中 / 現行製品 | — |
+| MAT18 | 建築・インテリア・サウンドをavokadoの根城とし、Mini＋Pro＋RockstarOSの限定空間pilotと専門家自身の暮らしから始める協業契約を定義 | 進行中 / 現行製品 | — |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>

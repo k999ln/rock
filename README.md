@@ -2,31 +2,85 @@
 
 # avokado
 
-### One account. More ways to play, make, and get things done.
+### Technology that belongs in the room, not on top of life.
 
-Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
+**avokadoは、建築・インテリア・サウンドと自然なITを一つにつなぎ、空間と暮らしの質を豊かにするプロジェクトです。**
 
-Sky is designed to connect many specialist Agents with the capabilities of apps, services, games, and eventually appliances. A refrigerator that reads its inventory and prepares a reviewed shopping order is a design example, not a connected product today. Each new host must declare what it can observe or do; Zema tracks the work, and external actions require the owner's scoped approval. See [the fusion contract](docs/sky-mcp-architecture.md#異種hostと複数agentの融合契約).
+最初に入りたい場所は、建築家、インテリアデザイナー、音響家など、空間をつくる人自身の住まい、スタジオ、設計事務所です。そこで専門家と一緒に使い、磨いた体験を、彼らが手がける住宅、店舗、ホテル、仕事場へ広げていきます。ITを目立たせるのではなく、光、音、温熱、道具、制作、遊び、仕事が無理なく調和する環境をつくることが目的です。
 
-[Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.
+そのために、暮らす空間へ置く小さなノード **avocadoMini**、設計・制作・ローカルsi・PCゲームを支える高性能な小型PC **avokadoPro**、そして両方を本人性、権限、仕事、記録、復旧でつなぐ **RockstarOS** を開発しています。MiniとProは互いを必須にせず、それぞれ単独でも使え、必要な時だけ同じ空間projectへ参加します。
 
 [Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)
 
-[Columbia Sky](https://columbia.avoado.si/) is a campus-specific discovery Home. Its free card drafts and “Save here” list stay in that browser. Explore, Work, account library, purchases, connections, and saved Agent results belong on the main `avoado.si` Sky service; the two hosted Sites currently have separate databases, and old campus data has not been migrated.
-
-Skyの第一者[出典整理Agent](app/sky/agents/citations/page.tsx)は、サインインした本人がブラウザだけで引用を整理し、その結果を[成果一覧](app/sky/outputs/page.tsx)へ保存する。Sky HomeとMarketplaceから開き、言語とMarkdownを入力して「実行して成果を保存」を選ぶ。無料の有限処理であり、LLM推論・外部検索・リンク先の真偽判定は行わない。Cloud Agentの本番実行と一般Marketplace決済は別受入。[詳細設計](docs/sky-tools-complete-design.md#sky単体の第一者agent縦断経路2026-10-13)。
-
-The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. RockstarOS Home is at `avoado.si/os`, and Sky stays under `avoado.si/os/sky`. The product homepage at `/` links to `avocadomini.si` and `avocadopro.si`. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
-
-[The promise](#the-promise) · [System map](#system-map) · [From a request to a result](#from-a-request-to-a-result) · [Service atlas](#service-atlas) · [Tool catalog](#sky-tool-catalog) · [Status](#where-it-stands) · [Develop](#start-developing)
+[What we are building](#what-we-are-building) · [Who it begins with](#who-it-begins-with) · [From a space to daily life](#from-a-space-to-daily-life) · [System map](#system-map) · [Projects](#projects-in-this-repository) · [Status](#where-it-stands) · [Develop](#start-developing)
 
 </div>
 
-> **Current direction** — avokado starts with an account, not a device. Sign in once and carry identity, work, permissions, results, and usage across a browser, PC, supported device, or cloud job. A physical SIM or eSIM is optional device connectivity for products such as avocadoMini; it is not where the OS is stored.
+> **Current direction** — avokado starts with a person and an account, not with a hardware purchase. Mini and Pro are product experiences on the same foundation, while browser and existing-PC paths remain available. A SIM or eSIM is optional device connectivity; it is not where RockstarOS is stored.
 
-> **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
+> **Where it stands** — this repository contains working web paths, bounded Tools, software previews, shared contracts, and hardware designs. There is no live billing, carrier contract, manufactured Mini, assembled Pro, or generally available phone OS yet. Each of those has its own acceptance gate.
 
-> **First industry stronghold** — avokado will work with architecture, interior, and sound professionals to improve quality of life through unobtrusive IT. avocadoMini is a candidate physical node for a space; RockstarOS, Sky, and Zema keep identity, permission, revisions, approvals, results, cost, and recovery together. Professional measurement, code review, permits, installation, and inspection remain with qualified people and authorities. The first space, partners, Device Profile, and pilot price are not yet selected.
+## What we are building
+
+avokado is not one app and it is not a conventional smart-home remote. It is a product family for carrying the intent of a space—from the first conversation through measurements, alternatives, revisions, professional review, approval, installation, daily use, and recovery—without losing who decided what or which version is real.
+
+| Product | Role in everyday life and work |
+| --- | --- |
+| **avocadoMini** | A candidate spatial node for a home, room, shop, or studio. It aims to make input, sound, display, local control, play, and creation available without making a phone or Pro mandatory. The current R5 is a design target; no physical product has passed acceptance yet. |
+| **avokadoPro** | A standalone NVIDIA-based compact si PC for an architect's, designer's, or sound professional's home and studio: local inference, design and media work, high-performance Tools, storage, and PC gaming. Mini connection is optional. The current P0 is a candidate design; no unit has been assembled or benchmarked yet. |
+| **RockstarOS** | The common runtime for identity, permission, device capability, Agent execution, records, spending limits, stop state, storage, and recovery. It keeps the work understandable when it moves between browser, PC, Mini, supported device, or cloud. |
+| **Sky** | The place to find and connect architecture, interior, acoustic, creative, and general-purpose Agents, Tools, apps, devices, and qualified people. A listing or model suggestion never grants itself permission to act. |
+| **Zema** | The project record: request, plan, revision, approval, progress, unresolved issue, result, cost, inspection, and recovery. It keeps one space project coherent across the people and systems involved. |
+| **Jennifer / Wallet** | Jennifer helps turn a broad intention into bounded work; Wallet separates estimates, reservations, usage, and confirmed receipts so the owner can understand and stop spending. |
+
+The long-term value is not the number of generated floor plans or connected switches. It is that a person can live with a space, change it, understand it, and recover it—while the architect's intent, the interior revision, the acoustic decision, the owner's approval, and the installed result remain distinguishable.
+
+## Who it begins with
+
+The first community is made of people who already notice space deeply:
+
+- architects who move between their own home, studio, site measurements, drawings, clients, approvals, and completed buildings;
+- interior designers who need material, light, furniture, budget, procurement, and revision decisions to stay connected;
+- sound and acoustic professionals who need listening intent, measurement, equipment, privacy, installation, and tuning to remain separate but traceable;
+- owners and residents who want the benefits of technology without having to manage a visible pile of dashboards and automation rules.
+
+We want to enter the daily life of these practitioners first—not merely sell them back-office software. Their homes and studios are where Mini, Pro, and RockstarOS can be used together, criticized, and refined. From there, the same contract can travel into the spaces they design for other people.
+
+```text
+the practitioner's home and studio
+                ↓
+       design and site work
+                ↓
+homes, shops, hotels, and workplaces they create
+                ↓
+     the daily life inside those spaces
+```
+
+## From a space to daily life
+
+A representative project begins with a lived problem, not a device specification:
+
+1. **Listen** — record how a person wants to live or work, what currently feels wrong, and what must not be changed or shared.
+2. **Understand the space** — keep drawings, photographs, dimensions, sound observations, constraints, and their sources distinct. Raw camera, audio, address, and behavior data are not saved by default without a defined need and retention rule.
+3. **Compare** — use professional judgment and bounded Tools to compare spatial, interior, acoustic, lighting, equipment, cost, and Mini/Pro options. Generated images and simulations remain proposals, not measurements or approvals.
+4. **Review and approve** — show revisions, evidence, sharing boundaries, estimate, responsibility, and unresolved questions. The owner approves the selected scope; qualified people retain code, permit, engineering, installation, and inspection authority.
+5. **Make and verify** — track ordering, installation, tuning, inspection, failures, and unknown results without calling them complete early.
+6. **Live, change, and recover** — preserve the accepted version, manual controls, removal plan, and recovery path so the space is not trapped by one device, provider, or model.
+
+The first pilot will test this whole loop in one bounded space and connect at least two of architecture, interior, and sound while keeping their responsibilities separate. It will compare the distinct value of Mini, Pro, and a Web/existing-PC fallback instead of making either device compulsory. The space, jurisdiction, partners, exact Mini Device Profile, Pro workload, sound scope, and pilot price are still undecided.
+
+## Projects in this repository
+
+| Project | What it is trying to prove | Current stage |
+| --- | --- | --- |
+| **Built-environment pilot / MAT18** | Mini, Pro, RockstarOS, Sky, and Zema can support one real space from intent through professional review, implementation, daily use, and recovery. | Direction and contract are being defined; no partner or physical pilot has been accepted. |
+| **avocadoMini R5** | A small, autonomous spatial device that can play, create, store, and support life without requiring Pro, a phone, or constant internet. | Design and calculation baseline; physical prototype and manufacturing acceptance are open. |
+| **avokadoPro P0** | A compact NVIDIA si PC for local models, creative work, storage, and PC games, with optional Mini integration. | Candidate architecture and target configuration; procurement, assembly, thermal, performance, and sales acceptance are open. |
+| **RockstarOS 1.0** | The same identity, permission, work, cost, storage, stop, and recovery contract across web, PC, device, and cloud paths. | Web/native source and Developer Previews exist; exact-device and production gates remain separate. |
+| **Sky + Zema + Wallet** | Discover capabilities, turn an intention into controlled work, and explain its results and cost. | Several bounded local/Web paths work; production Providers, general marketplace commerce, and live billing are not accepted. |
+| **Material Invention** | Keep material hypotheses, evidence, simulation, safety checks, and expert handoff reproducible. | Web sandbox and saved-work paths exist; physical apparatus, lab, and production acceptance are open. |
+
+Pixel 10 physical-device preview, Linux/QEMU Developer Preview, campus discovery, games, and the independent rocketstar engineering program remain active workstreams. They share selected contracts, but none is allowed to borrow another project's acceptance evidence.
 
 ## The promise
 
@@ -37,7 +91,7 @@ The product should feel like one continuous handoff:
 3. Let Zema keep the request, plan, approvals, progress, stop state, result, and history together.
 4. See the estimate before paid cloud work, approve a limit, watch usage while it runs, and read the receipt in Wallet.
 
-Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+Sky helps a person choose and connect the right Tool, professional, or device capability. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
 
 The implemented coordination path is:
 
@@ -49,7 +103,7 @@ Open `/chat`, choose a project, enable **計画を整理**, and send the desired
 
 ## System map
 
-Clean a file, prepare a listing, develop a material idea, find a community, or build a Tool someone else can use. The breadth is deliberate; the same account and permission boundary should make each path understandable.
+Begin with a space, prepare a design revision, compare a material, tune a sound environment, clean a file, or build a Tool someone else can use. The breadth is deliberate, but the first product focus is the built environment: the same person, project, permission, evidence, cost, and recovery boundary should remain understandable from a professional's studio to daily life in the completed space.
 
 The map is deliberately drawn from the largest promise down to the smallest implementation unit. A Tool is useful because it participates in the same account, work, permission, and receipt contract.
 
@@ -62,7 +116,7 @@ The map is deliberately drawn from the largest promise down to the smallest impl
 | **3 / Foundation** | Every execution path checks the same identity, permission, storage, recovery, and stop rules. | RockstarOS Core, Broker, Runner, Storage, Recovery |
 | **4 / Capability** | A bounded Agent or Tool performs one useful job where it is allowed to run. | Local, PC/MCP, Cloud, Provider, native registry |
 
-Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Material Invention uses the service stack for digital candidate work, with physical and laboratory extensions still in development. rocketstar is a separate design program.
+Device programs sit alongside the service: avocadoMini R5 for spatial interaction and avokadoPro for standalone high-performance local compute, creative work, and games. Material Invention uses the service stack for digital candidate work, with physical and laboratory extensions still in development. rocketstar is a separate design program.
 
 ## Try it now
 
@@ -72,11 +126,17 @@ In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools
 
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
+[Columbia Sky](https://columbia.avoado.si/) is a campus-specific discovery Home. Its free card drafts and “Save here” list stay in that browser. Explore, Work, account library, purchases, connections, and saved Agent results belong on the main `avoado.si` Sky service; the two hosted Sites currently have separate databases, and old campus data has not been migrated.
+
+Skyの第一者[出典整理Agent](app/sky/agents/citations/page.tsx)は、サインインした本人がブラウザだけで引用を整理し、その結果を[成果一覧](app/sky/outputs/page.tsx)へ保存する。無料の有限処理であり、LLM推論・外部検索・リンク先の真偽判定は行わない。Cloud Agentの本番実行と一般Marketplace決済は別受入。[詳細設計](docs/sky-tools-complete-design.md#sky単体の第一者agent縦断経路2026-10-13)。`/fitness`はSkyの型付き成果を第一者アプリで表示する例で、実Fitness Agentと外部アプリSDKは未受入。[詳細](docs/sky-launch-design.md#sky-app-output-plugins)。
+
 For a local Zema conversation, run Ollama on `127.0.0.1:11434`, install `qwen3:0.6b`, build and start this repository, then open `http://localhost:8787/chat`. Choose **Ollama** and model ID `qwen3:0.6b` in the conversation-model panel. The model is an untrusted planner: only three bounded, side-effect-free local functions are allowlisted, and there is no cloud fallback. The public `chatgpt.site` Worker cannot reach a model on your PC loopback; a future companion/bridge is required for that path.
 
 ## From a request to a result
 
-Here is the smallest useful mental model: “Please clean this CSV and show me exactly what changed.” The same shape also applies to writing, a security inspection, a market PAPER check, or a material candidate comparison. **This illustrates the intended end-to-end experience; individual Tools and provider connections are at different stages.**
+For the primary market, the request may be: “Make this combined home and studio calmer to live in and better for design reviews, without exposing private conversations or making everything depend on the cloud.” Zema keeps the space, current problems, versions, decisions, professional responsibilities, cost, implementation, inspection, and later changes in one project. Mini may become the physical point in the room; Pro may provide private local compute and creative performance; neither is silently made mandatory.
+
+The same contract also works for a smaller digital request: “Please clean this CSV and show me exactly what changed.” This runnable example makes the approval, execution, result, and receipt boundary easier to inspect today. The same shape applies to writing, a security inspection, a market PAPER check, or a material candidate comparison. **It illustrates the intended end-to-end experience; individual Tools and Provider connections are at different stages.**
 
 <img src="docs/brand/avokado/avokado-work-journey.svg" alt="six-step CSV job journey: find in Sky, request in Zema, approve the boundary and budget, run locally or in the cloud, review the result, and read the Wallet receipt" width="100%">
 
@@ -91,6 +151,9 @@ Here is the smallest useful mental model: “Please clean this CSV and show me e
 
 The current CSV Tool already has a bounded local/Web path for one file and an explicit change report. Cloud dispatch and live billing are not yet live.
 
+<details>
+<summary>Implementation and recovery details for current previews</summary>
+
 When a Wallet or CSV save has an unknown result, keep the page open and use its same-operation recovery action. Signing in opens a separate tab so the original operation can be retained; a different account cannot retry it. Wallet and CSV hide private drafts until the original account is confirmed again. Unsubmitted input is protected during in-app navigation; only the confirmed original account can explicitly discard it. The pending input is held in memory, so it is not a backup against closing the browser. CSV work abandoned in `processing` after a server process stops still requires operator investigation.
 
 Workbench, Material, Mercari and Coconala also keep private draft recovery tied to the original account. In Coconala, closing and reopening the editor retains unsaved terms. If someone else changes the case while you edit, saving stops with the original input intact; review the newer case before starting a replacement edit. Use the explicit discard action only when you no longer need that account’s unsaved input. No external orders, payments or messages are sent by these recovery controls. Material also protects incomplete local JSON and title edits before they can be exported; save or explicitly discard the current draft before leaving. Empty or unchanged saved work does not block navigation.
@@ -98,6 +161,8 @@ Workbench, Material, Mercari and Coconala also keep private draft recovery tied 
 If a Zema Tool finishes but its progress record is unconfirmed, use the record’s recovery controls instead of running the Tool again. A failed state reload keeps the original command; it is cleared only after the same account’s saved history confirms it. An unsent Cloud si prompt also blocks accidental navigation until it is saved or explicitly discarded. The existing citation, free-article and Coconala checker inputs and generated results, plus Mr. Delivery’s review JSON, selected files and result, remain in memory for the same account, job and step while the Workbench reconnects. These Tool drafts also block accidental same-tab navigation. Save or export any result you need, then use the per-Tool discard action shown with its job and step to leave; it clears only that Tool’s in-memory input and generated output, not saved Library results or job records. The original confirmed account can discard a retained draft even after its job is cancelled or another step is selected. Forced reload or tab closure can still lose unsaved memory. For Mr. Delivery, an expired sign-in hides private inputs until the Workbench confirms the original account again; reconnect in a separate tab, then reload the work list. A child connection check alone cannot restore the old account’s inputs. This does not cover the internal state of other specialized runners.
 
 Zema asks before discarding unsent text when changing conversations or following an internal link. Back/Forward uses the same check in browsers with the Navigation API; older browsers retain only the existing link and unload protection.
+
+</details>
 
 ## Service atlas
 

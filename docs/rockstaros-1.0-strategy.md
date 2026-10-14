@@ -4,9 +4,9 @@
 
 ## 2026-10-14 建築・インテリア・サウンドを最初の産業拠点にする
 
-利用者の明示方針により、avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初の産業上の根城とする。これは無料account起点のRockstarOS service、Sky、Zemaを置き換えず、その共通runtimeとavocadoMiniを実空間の仕事へ集中適用する市場・提携方針である。
+利用者の明示方針により、avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初の産業上の根城とする。建築家、interior designer、sound／acoustic professional自身の住まい、studio、設計事務所を最初の利用・共同設計環境にし、そこで磨いた体験を彼らの仕事を通じて住宅、店舗、hotel、workplaceとそこで暮らす人へ展開する。これは無料account起点のRockstarOS service、Sky、Zemaを置き換えず、その共通runtime、avocadoMini、avokadoProを実空間の暮らしと仕事へ集中適用する市場・提携方針である。
 
-競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧の状態を本人の一つのprojectとして失わず扱えることとする。技術は必要な時だけ現れ、停止、手動利用、privacy、accessibilityを保つ。資格、法規判断、署名、許可、施工責任は専門家と行政へ残し、siやMiniの出力を自動承認しない。対象空間、最初のpartner、国・地域、sound範囲、Mini Device Profile、pilot価格は未決定である。
+競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧の状態を本人の一つのprojectとして失わず扱えることとする。Miniは生活空間との物理接点、Proは設計・制作・local si・storage・PC gameを支える独立高性能PCの候補で、双方の接続は任意、Web／既存PC fallbackを残す。技術は必要な時だけ現れ、停止、手動利用、privacy、accessibilityを保つ。資格、法規判断、署名、許可、施工責任は専門家と行政へ残し、siやhardwareの出力を自動承認しない。対象空間、最初のpartner、国・地域、sound範囲、Mini Device Profile、Pro workload、pilot価格は未決定である。
 
 2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
