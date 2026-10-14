@@ -2,9 +2,15 @@
 
 2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。JenniferはPR #113からmainへ統合済み（`01d2e418`）、公開/真正review/native/Providerは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
 
+## 2026-10-14 建築・インテリア・サウンドを最初の産業拠点にする
+
+利用者の明示方針により、avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初の産業上の根城とする。これは無料account起点のRockstarOS service、Sky、Zemaを置き換えず、その共通runtimeとavocadoMiniを実空間の仕事へ集中適用する市場・提携方針である。
+
+競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧の状態を本人の一つのprojectとして失わず扱えることとする。技術は必要な時だけ現れ、停止、手動利用、privacy、accessibilityを保つ。資格、法規判断、署名、許可、施工責任は専門家と行政へ残し、siやMiniの出力を自動承認しない。対象空間、最初のpartner、国・地域、sound範囲、Mini Device Profile、pilot価格は未決定である。
+
 2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
-状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ49](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
+状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ50](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
 
 ## 1. 製品価値と共通基盤の区分
 

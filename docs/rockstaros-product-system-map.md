@@ -2,13 +2,13 @@
 
 版: 2.0 / 2026-10-13 / サービス設計の再構成
 
-**主商品は、無料avokadoアカウントひとつでSky・Zema・si Agentを使い、成果を仕事・創作・ゲーム・生活へ持ち帰るサービス。** 最新確定は[2026-10-10のアカウント方針](product-baseline.md)。SIM/eSIM購入を利用開始の必須条件に戻さない。新しい説明の全体は[サービス統合設計](service-design/README.md)を先に読む。
+**主商品は、無料avokadoアカウントひとつでSky・Zema・si Agentを使い、成果を仕事・創作・ゲーム・生活へ持ち帰るサービス。** 最新確定は[2026-10-10のアカウント方針](product-baseline.md)。SIM/eSIM購入を利用開始の必須条件に戻さない。最初に深く適用する産業領域は建築・インテリア・サウンドで、自然なITによって生活の質を豊かにする。新しい説明の全体は[サービス統合設計](service-design/README.md)を先に読む。
 
 ## 利用者が出会うもの
 
 Jenniferは利用者が話す全体の統括窓口。Skyは能力を見つけて接続する場所。ZemaはJenniferの裏で依頼・進捗・確認・停止・成果・使用額を管理する仕事system。RockstarOSは本人、有限権限、実行、保存、復旧を守る共通runtimeと、対応機種向けnative OSである。
 
-Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIAのGPU/chipを使う独立高性能si PC（PCゲームも保持）、rocketstarは独立した衛星輸送・回収・再使用の工学program。JennifferのGit表記はJennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113からmainへ統合済み（`01d2e418`）。Jevとは別system。
+Miniは身体・手・日本語音声による独立空間端末で、将来は受入済みDevice Profileに限って建築・インテリア・サウンドの空間projectへ接続する物理node候補。Miniはservice開始の必須条件ではなく、Web／PC fallbackを保持する。ProはNVIDIAのGPU/chipを使う独立高性能si PC（PCゲームも保持）、rocketstarは独立した衛星輸送・回収・再使用の工学program。JennifferのGit表記はJennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113からmainへ統合済み（`01d2e418`）。Jevとは別system。
 
 ```mermaid
 flowchart TB

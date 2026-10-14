@@ -8,6 +8,49 @@
   "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/service-design/06-consistency-contracts.md",
+  "builtEnvironmentStronghold": {
+    "recordedAt": "2026-10-14",
+    "status": "explicit_product_direction_design_and_partner_pilot_pending",
+    "vision": "partner_with_architecture_interior_and_sound_practitioners_and_use_unobtrusive_it_to_enrich_quality_of_life",
+    "strategicMeaning": "first_industry_stronghold_not_exclusive_market_or_verified_market_leadership",
+    "domains": [
+      "architecture",
+      "interior",
+      "sound",
+      "naturally_integrated_it"
+    ],
+    "serviceEntry": "free_avokado_account_with_web_pc_and_supported_device_access",
+    "experiencePrinciple": "technology_supports_the_space_and_daily_life_without_demanding_attention_or_exposing_system_complexity",
+    "avocadoMiniRole": "optional_physical_node_between_living_space_people_and_rockstaros_subject_to_device_profile_and_physical_acceptance",
+    "rockstarOsRole": "identity_permission_agent_device_storage_recovery_and_budget_runtime",
+    "skyRole": "connect_reviewed_architecture_interior_acoustic_agents_tools_and_professionals",
+    "zemaRole": "manage_one_space_project_requests_revisions_approvals_progress_results_and_spend",
+    "professionalAuthority": "licensed_design_code_review_permitting_engineering_installation_inspection_and_site_responsibility_remain_with_qualified_people_and_authorities",
+    "modelAuthority": "generation_simulation_code_candidates_and_estimates_never_become_measurement_professional_approval_permit_or_completed_work_automatically",
+    "preserves": [
+      "RQ01-RQ50",
+      "account_led_primary_service",
+      "R5",
+      "Pixel_QEMU",
+      "Material_Invention",
+      "existing_pricing_permission_and_acceptance_gates"
+    ],
+    "firstPilot": {
+      "space": "undecided",
+      "countryOrJurisdiction": "undecided",
+      "partner": "undecided",
+      "miniCapabilities": "undecided_and_must_be_measured",
+      "soundScope": "undecided",
+      "price": "undecided"
+    },
+    "taskIds": [
+      "MAT18"
+    ],
+    "runtimeChanged": false,
+    "partnershipAccepted": false,
+    "physicalPilotAccepted": false,
+    "marketLeadershipClaimed": false
+  },
   "amcGoalOrchestration": {
     "requestedAt": "2026-09-27",
     "authority": "docs/amc-goal-orchestrator.md",

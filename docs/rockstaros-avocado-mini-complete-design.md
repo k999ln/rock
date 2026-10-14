@@ -8,6 +8,8 @@
 状態: 既存Material Invention研究profileと共通契約の設計資料
 注意: 現行avocadoMiniの製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本書の四方向発明台、AR、Full-scale/rack構成はこの研究profile内の設計であり、R5の完成外形・全空間裸眼表示・製造承認を示さない。
 
+2026-10-14: avokadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を最初の産業上の根城とする。これは本書のMaterial Invention研究profileを廃止せず、avocadoMiniの将来Device ProfileとRockstarOS共通契約を実空間へ展開する上位製品方針である。
+
 2026-09-24: R5は使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を目指す。表示・精密3D入力・実部品収納等は未成立/未確定。既存Coreや四方向入力schemaを変更済みとは扱わず、R5専用profileとadapterの実装・受入を別に行う。
 
 2026-09-21 Mini200 E1追補: 利用者の最新の20cmゲーム機・日本語音声・README保存要求は[Mini200 E1設計](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md)へ記録した。本書の四方向発明台は既存profileとして保持する。E1のゲーム入力からMaterial Coreへ接続するadapter、実ASR、console OS、実機、物理マイクOFFの受入は未完了であり、本書の「設計完成」をE1の製造完成へ拡張しない。
@@ -15,6 +17,40 @@
 ---
 
 # A. まず製品を理解する
+
+## 0. 建築・インテリア・サウンドを中核領域にする
+
+### 目的と利用体験
+
+avocadoMiniとRockstarOSは、生活者がITを操作する時間を増やすためではなく、建築、内装、音、光、温熱、道具、仕事が自然に調和する空間をつくり、維持するために使う。最初の体験は「空間について相談する→現状と希望を記録する→専門家とAgentが案を比較する→本人が費用と共有範囲を承認する→実測・専門家確認・施工を別々に検収する→完成後も変更履歴と復旧方法が残る」という一周を目標にする。
+
+### 役割
+
+| 担当 | 責任 |
+| --- | --- |
+| avocadoMini | 選定したDevice Profileの範囲で空間との物理接点を担う。入力・表示・音・local controlの候補を扱うが、未測定のsensor精度や設備制御を約束しない |
+| RockstarOS | 本人性、権限、端末能力、Agent実行、保存、復旧、費用上限を強制する |
+| Sky | 審査済みの建築・インテリア・音響Agent／Toolと外部専門家への接続条件を示す |
+| Zema | 一つの空間projectの依頼、revision、承認、進捗、成果、支出、未解決事項を管理する |
+| 建築・内装・音響の専門家／行政／施工者 | 実測、資格判断、法規、署名、許可、施工、検査、品質保証を担当する |
+| OWNER | 対象空間、共有範囲、予算、採用案、外部送信、発注、設置、公開を決める |
+
+### 入出力・状態・保存
+
+- 入力候補は、本人の目的、空間情報、写真・図面・寸法、音環境、制約、予算、専門家の指摘。raw camera／audio、住所、生活patternは必要性・保持期間・共有先を決めるまで既定保存しない。
+- 出力候補は、比較案、根拠付き制約、revision差分、見積範囲、専門家確認待ち、施工・検査記録。生成画像やsimulationを実測図面、法規適合、許可済み、施工済みと表示しない。
+- project状態は少なくとも`DRAFT`、`MEASURE_PENDING`、`OPTION_REVIEW`、`PROFESSIONAL_REVIEW`、`OWNER_APPROVAL`、`PERMIT_OR_CONTRACT_PENDING`、`IN_PROGRESS`、`INSPECTION_PENDING`、`ACCEPTED`、`BLOCKED`を区別する。既存`lib/workflow.ts`へ実装する場合は同じ本人別revision競合判定を通す。
+- 保存する場合はowner、space、source、版、測定／生成／専門家／行政／施工の区分、artifact digest、承認、費用を関連付ける。住宅・現場データを学習利用や別顧客へ転用しない。
+
+### 失敗・復旧・承認
+
+- 不完全な測定、座標ずれ、古い図面、欠けたrevision、sensor断、音声誤認、専門家未確認、施工結果不明を成功へ変換しない。
+- 端末交換、Miniなし、network断、専門家交代でも、最後に確認済みの版と未解決事項を復旧できるようにする。設備の物理停止、手動操作、純正復旧をRockstarOSから独立して残す。
+- 外部共有、現場camera／audio、費用発生、専門家への依頼、発注、設備操作、設置、公開は対象と範囲を示して本人が個別承認する。Agentの提案や空間観測だけで権限を生成しない。
+
+### 合格条件と未決定事項
+
+一つの限定空間で、本人の課題、実測、複数案、architecture／interior／soundの少なくとも二分野、専門家確認、費用、本人承認、実施／検査、保存・復旧を一周する。同じ入力をMiniあり／なしで比較し、Miniが必須の価値とfallbackを明確にする。対象空間、国・地域、partner、Device Profile、sound範囲、pilot価格はOWNERと専門家がpilot前に確定し、未決定のまま本番・販売へ進めない。
 
 ## 1. これは何？
 

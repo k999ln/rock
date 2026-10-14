@@ -146,7 +146,7 @@
   },
   "updatedAt": "2026-10-14",
   "milestone": "アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
+  "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。並行してMAT18で建築・interior・soundの限定空間、地域、partner、Miniなしfallback、Device Profile、専門家承認と撤去復旧を決める。Pro、Mini LTE/R5、OS/Provider、空間pilotは独立gate。",
   "tasks": [
     {
       "id": "AMC02",
@@ -4342,6 +4342,25 @@
       "acceptance": "同一Pro実機でsi/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
     },
     {
+      "id": "MAT18",
+      "title": "建築・インテリア・サウンドをavokadoの根城とし、Mini＋RockstarOSの限定空間pilotと専門家協業契約を定義",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/rockstaros-1.0-strategy.md",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/rockstaros-product-system-map.md",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ],
+      "primaryOwner": "ROCK",
+      "rockDeliverable": "Mini Device Profile候補、RockstarOS権限・保存・復旧、Sky接続、Zema空間project契約と証拠区分",
+      "externalDependency": "建築・内装・音響の専門家、対象地域の法規・許可、設備・施工・保守",
+      "ownerAction": "最初の空間、課題、地域、partner、予算、共有、発注、設置、公開を決定",
+      "acceptance": "限定空間で現状、複数案、費用、専門家確認、本人承認、実施・検査、保存・復旧を一周し、二分野以上を別責任のまま接続。Miniなしfallbackも比較する。",
+      "nextAction": "一つの限定空間と生活課題、国・地域、architecture／interior／sound partner候補、Miniなしfallback、必要Device Profile、入力・出力・privacy・専門家承認・費用・撤去復旧を確定し、現行手順と比較できるpilot acceptanceを作る。"
+    },
+    {
       "id": "ORG04",
       "title": "既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する",
       "status": "done",
@@ -4823,9 +4842,10 @@
         "scripts/spider-web-runtime.mjs",
         "tests/spider-web-runtime.test.mjs",
         "docs/amc-autonomy-fixture.md",
-        "docs/evidence/amc-fixture-csv-main-integration.json"
+        "docs/evidence/amc-fixture-csv-main-integration.json",
+        "docs/evidence/git-main-catchup-20261014.json"
       ],
-      "nextAction": "Integrate the nine open PR histories and selective merge-loss repairs with current main; run full verify and same-SHA CI, publish the work branch and reviewable PR. Main merge and deployment remain separate.",
+      "nextAction": "Continue from codex/main-catchup-20261014 at main 3997158f: review the 30 main-untouched tracked changes, 16 divergent now-tracked paths and 74 main-absent files by feature; reconcile migration numbering before import; run targeted tests and full verify, then publish a reviewable PR. The old dirty worktree remains preserved and must not be overlaid onto main.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
@@ -6964,6 +6984,40 @@
       "studentSixSlotLiveAcceptance": false
     },
     "nextAction": "NDEF HTTPS URIを現物シールへ書き、iPhone/Androidで読み戻す。本人A/Bと学生6枠・購入/Provider/Zemaの同一artifact受入は別に行う。"
+  },
+  "builtEnvironmentStronghold": {
+    "date": "2026-10-14",
+    "taskId": "MAT18",
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "primaryOwner": "ROCK",
+    "status": "explicit_direction_recorded_pilot_scope_and_partners_pending",
+    "scope": "Architecture, interior, sound and unobtrusive IT as avokado's first industry stronghold; Mini as an optional physical node and RockstarOS/Sky/Zema as the shared work, permission, evidence and recovery system.",
+    "serviceEntry": "free_avokado_account; Mini, native OS and connectivity are optional profiles with separate acceptance",
+    "responsibility": {
+      "ROCK": "Device Profile candidates, runtime permission/storage/recovery, Sky connection and Zema space-project contract",
+      "EXTERNAL": "professional design, code, permits, installation, construction quality and maintenance",
+      "JOINT": "real-space measurement, professional review, device integration, sound/privacy/safety and removal/recovery acceptance",
+      "OWNER": "first space, problem, jurisdiction, partner, budget, sharing, order, installation and publication"
+    },
+    "runtimeChanged": false,
+    "partnerContracted": false,
+    "pilotScopeConfirmed": false,
+    "deviceProfileConfirmed": false,
+    "physicalPilotAccepted": false,
+    "professionalAcceptanceComplete": false,
+    "marketLeadershipClaimed": false,
+    "validation": {
+      "projectUpdate": "passed: 114/394 done",
+      "baselineCheck": "passed: RQ01-RQ50 preserved",
+      "designCheck": "passed: 19 domains / 37 catalog tools / 6 native families",
+      "projectCheck": "passed",
+      "missionCheck": "passed: 32 squads / 394 explicit owners / 229 scoped plans",
+      "databaseCheck": "passed: production readback remains 0/6",
+      "repositoryCheck": "passed",
+      "verify": "passed: Node 2234 passed and 1 skipped; Worker/D1 work 1381 assertions; CSV 385 assertions",
+      "acceptanceBoundary": "repository and synthetic fixture validation only; no partner, physical space, device, provider, deployment or production acceptance"
+    },
+    "nextAction": "Choose one bounded space and quality-of-life problem, jurisdiction and architecture/interior/sound partners; define the no-Mini fallback, required Mini capabilities, data boundaries, professional approvals, cost and removal/recovery; then measure one end-to-end pilot."
   },
   "skyFusionContract": {
     "date": "2026-10-14",

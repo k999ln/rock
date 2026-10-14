@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-14",
+  "taskId": "G04",
+  "primaryOwner": "ROCK",
+  "sourceWorktree": {
+    "branch": "codex/esim-cloud-access",
+    "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "aheadOfMain": 2,
+    "behindMain": 447,
+    "statusEntries": 216,
+    "trackedDirtyFiles": 128,
+    "untrackedStatusEntries": 88,
+    "untrackedFiles": 100,
+    "preservedWithoutResetOrCheckout": true
+  },
+  "integrationWorktree": {
+    "branch": "codex/main-catchup-20261014",
+    "baseMainSha": "3997158f6b2c1fbc1aaf04cca37e14cded8db73d",
+    "baseMainChecks": {
+      "total": 6,
+      "successful": 6,
+      "names": [
+        "verify",
+        "SPIDER / secrets",
+        "SPIDER / production web security measurement",
+        "SPIDER / repair regressions",
+        "SPIDER CodeQL (python)",
+        "SPIDER CodeQL (javascript-typescript)"
+      ]
+    },
+    "createdFromLatestOriginMain": true,
+    "mainModified": false,
+    "published": false,
+    "pullRequestCreated": false,
+    "candidateValidation": {
+      "projectUpdate": "passed: 114/394 done and metadata synchronized",
+      "baselineCheck": "passed: RQ01-RQ50 preserved",
+      "designCheck": "passed: 19 domains / 37 catalog tools / 6 native families",
+      "projectCheck": "passed",
+      "missionCheck": "passed: 32 squads / 394 explicit owners / 229 scoped plans",
+      "databaseCheck": "passed: 6 boundaries / 160 tables / production readback 0/6",
+      "repositoryCheck": "passed",
+      "verify": "passed after installing root and sites/avocado-mini dependencies from committed lockfiles; Node 2234 passed, 1 skipped; Worker/D1 work 1381 assertions; CSV 385 assertions",
+      "scope": "repository and synthetic fixture validation; not partner, physical space, device, provider, deployment or production acceptance"
+    }
+  },
+  "classification": {
+    "trackedDirtyAlsoChangedOnMain": 98,
+    "trackedDirtyWithMainUntouched": 30,
+    "untrackedIdenticalToMain": 10,
+    "untrackedDivergentFromMain": 16,
+    "untrackedAbsentFromMain": 74,
+    "policy": "Do not overlay the old tree. Keep main versions by default; recover only reviewed, still-required behavior with its current contract and tests."
+  },
+  "recoveredInThisCandidate": {
+    "productDirection": "Architecture, interior and sound as the first industry stronghold, adapted to the current account-led service contract.",
+    "taskId": "MAT18",
+    "runtimeChanged": false
+  },
+  "remaining": [
+    "Review 30 tracked changes whose base file was not changed on main; generated artifacts and obsolete copies are not automatically restored.",
+    "Review 16 divergent paths now present on main and keep the newer main contract unless a tested behavior is missing.",
+    "Group 74 main-absent files by feature and accept each group with targeted tests before addition.",
+    "Reconcile database migration numbering and journal before importing any old 0059-0063 migration.",
+    "Publish the verified reviewable branch and confirm same-SHA CI before any main merge."
+  ]
+}
