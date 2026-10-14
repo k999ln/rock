@@ -19,6 +19,8 @@
 
 技術の細部は[全体詳細設計](../rockstaros-complete-design.md)、[全Tool詳細](../sky-tools-complete-design.md)、[全設計ポータル](../rockstaros-design-portal.md)から開く。ここはサービス全体を理解し実装判断へ渡す統合基本設計で、原本PDF、各Device Profile、Tool schemaの代用品にはしない。
 
+全製品の接続、LLMを使う／使わない実行経路、Mr.由来ToolとMR、現在の受入状態は[全体Mermaid関係図](../rockstaros-product-system-map.md)にまとめた。図の線は設計上の契約であり、実Providerや実機の接続完了を意味しない。
+
 ## 七つの名前をどう理解するか
 
 - **Sky** — 自分に必要なAgentとToolを見つけ、条件を確かめ、購入・接続し、使う場所へ届けるplatform。

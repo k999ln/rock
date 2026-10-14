@@ -42,6 +42,8 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 価値は、身体・手・日本語音声で遊び、作り、学び、暮らしへ広げる空間端末。現行R5は**使用時全高200mm以内の銀色円筒、1本自律、同型mini増設、外部給電、別Edge Hub不要**。テレビ・スマホ・Pro・外部PC・インターネットを基本操作と保存の必須条件にしない。[R5正本](../avocado-mini-r5/README.md)と[統合基本設計](../avocado-mini-r5/package/integrated_design.md)を引き継ぐ。
 
+建築一体型はR5 coreの任意設置profile。新築の計画時に建築士・設備設計者・施工者と天井内の設置位置、点検口、電源、熱、室内への展開/収納、撤去後の原状回復を協議する。天井の種類ごとにmounting kitを分けるが、Mini一台のlocal起動・入力・保存・停止を建物ネットワークやProへ依存させない。施工者と建物所有者は設置・設備の責任を持ち、居住者の私的な音声・映像・作品・Jobの閲覧権を得ない。住まいのToolや家電は対応hostのread/propose/act権限と本人承認を別に受け入れる。設計段階への参入は販路構想であり、契約済み物件や施工完了の証拠ではない。[設置profileと受入](../avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を参照。
+
 Miniはcloud accountなしのlocal guest/個人profileで起動・入力・遊び・保存・停止できる。cloud link、選択作品の同期/送信は別の強い本人確認と同意で結び、service期限切れやlink解除でもlocal作品と停止を保持する。
 
 入力profileはsensor/pose/手/声、game interaction、本人切替。出力はscene/game状態、検査済みartifact、表示能力と安全状態。顔候補の識別を強い本人認証にせず、人別保存・切替・離席lockをOSへ結ぶ。sensor uncertainty・入力喪失・表示停止・熱・給電停止の時は安全な停止と保存へ進み、ゲームの操作をcloud支出へ変換しない。

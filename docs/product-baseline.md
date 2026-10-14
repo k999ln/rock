@@ -1,6 +1,6 @@
 # RockstarOS — 現行製品方針と確定要望
 
-更新: 2026-10-13。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
+更新: 2026-10-14。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
 
 利用者は「やりたいことは変わっていない。設計書を最初から組み直したい」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」「古く紛らわしい不要な内容は削除」と明示した。このため本書を**現行方針 → RQ01〜RQ50 → 現在の未受入gate**へ再構成する。旧SIM購入入口、旧Mini構成・価格、日付付き変更ログは現行本文から削除し、Git履歴へ残す。復元先は[Git整理方針](git-consolidation.md)で管理する。固定原本・vendor・受入証拠は変更しない。
 
@@ -48,6 +48,8 @@ Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済�
 ### Mini、Pro、rocketstarと配布対象
 
 現行hardwareはavocadoMini R5、avokadoPro、rocketstarの三program。Miniは使用時全高200mm以内の銀色円筒、1本自律、別Edge Hub不要、同型Mini増設、外部給電、眼鏡なしの周囲空間表示、身体・手・日本語音声、ゲームから生活支援への展開を目指す。Proやスマホ、インターネットを基本操作・保存の必須条件にしない。[R5正本](avocado-mini-r5/README.md)の光学・精密入力・収納・熱・電源・安全・製造gateは未受入。
+
+2026-10-14の明示方針として、Miniには**建築一体型の設置profile**を加える。新築の設計段階から建築・設備・内装側と設置条件を調整し、天井への収納・展開を複数の天井構成に合わせて検討する。これはR5単体coreを置き換える別製品や建物制御Hubの必須化ではなく、取外し・点検できる設置方式の追加である。居住者のlocal利用・停止・保存を建物所有者や施工者の権限と分離する。天井構造、給電、熱、落下/可動部、光・音・camera、保守、消防・建築上の適合は対象物件ごとに有資格者と確認し、実施工・販売・対応天井の確定を設計記載だけで宣言しない。[建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を正本とする。
 
 Miniの回線は任意の別model/optionで、国内LTEのみ、IoT data専用SIM、試作カード・量産chip、SGP.32対応とし、遠隔profile切替を自作しない。Pro・phone tether不要。回線料は自社名義の機器service料に含め、一次supportはavokadoが受ける。consumer eSIM発行・販売は保留、既存codeは既定無効で保持する。[Mini通信](avocado-mini-cellular.md)で回線と機器適合を別受入にする。
 
