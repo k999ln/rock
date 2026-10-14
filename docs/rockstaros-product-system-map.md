@@ -1,6 +1,6 @@
 # RockstarOS 製品・サービス・システム関係図
 
-版: 2.0 / 2026-10-13 / サービス設計の再構成
+版: 2.1 / 2026-10-14 / 全体接続と実行状態を明示
 
 **主商品は、無料avokadoアカウントひとつでSky・Zema・si Agentを使い、成果を仕事・創作・ゲーム・生活へ持ち帰るサービス。** 最新確定は[2026-10-10のアカウント方針](product-baseline.md)。SIM/eSIM購入を利用開始の必須条件に戻さない。新しい説明の全体は[サービス統合設計](service-design/README.md)を先に読む。
 
@@ -10,31 +10,43 @@ Jenniferは利用者が話す全体の統括窓口。Skyは能力を見つけて
 
 Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIAのGPU/chipを使う独立高性能si PC（PCゲームも保持）、rocketstarは独立した衛星輸送・回収・再使用の工学program。JennifferのGit表記はJennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113からmainへ統合済み（`01d2e418`）。Jevとは別system。
 
+### 1. 製品・サービス・端末の全体図
+
 ```mermaid
 flowchart TB
-  U[本人の目的] --> ACCOUNT[無料avokado account / 対応するゲスト下書き]
-  ACCOUNT --> JENNIFER[Jennifer 目的・Goal・担当si・成果受領]
-  JENNIFER --> SKY[Sky 発見・購入・接続]
-  JENNIFER --> ZEMA
-  SKY --> ZEMA[Zema 仕事・確認・停止・成果]
-  SKY -. 対応アプリでの利用 .-> APP[仕事・創作・Game・生活アプリ]
-  ZEMA --> AMC[AMC 分解・専門担当・検収]
-  AMC --> CORE[RockstarOS Core / Broker]
-  ZEMA --> CORE
-  APP --> CORE
-  CORE --> EXEC[端末内 / 本人PC / cloud / self-host]
-  EXEC --> RESULT[Artifact・Receipt・usage]
-  RESULT --> ZEMA
-  RESULT --> APP
-  WALLET[Wallet / Commerce 購入・費用・金融記録の照合] <--> CORE
-  MINI[Mini R5 単独空間端末] --> CORE
-  PRO[Pro 単独si・ゲームPC] --> CORE
-  MINI <-. 任意の許可済み接続 .-> PRO
-  RS[rocketstar 専用地上Gateway] -. 工程・観測・記録 .-> CORE
-  FLIGHT[独立機上制御・飛行安全系] -->|観測だけ| RS
+  U["本人の目的"] --> ACCOUNT["無料avokadoアカウント<br/>本人・利用権・端末状態は別記録"]
+  U --> WEB["Web / PWA / 既存OS client"]
+  WEB --> ACCOUNT
+  WEB --> GUEST["無登録の有限処理・下書き<br/>保存・課金・本人権限なし"]
+  NFC["NFC / QR<br/>SkyへのURLだけ"] -.-> WEB
+  ACCOUNT --> J["Jenniffer<br/>Git正本: Jennifer<br/>Goalと最終報告"]
+  ACCOUNT --> SKY["Sky<br/>Agent・Toolの発見と接続"]
+  GUEST --> SKY
+  J --> SKY
+  J --> Z["Zema<br/>仕事・承認・停止・成果・使用額"]
+  SKY --> Z
+  Z --> AMC["AMC<br/>有限taskへの分解・担当・独立検収"]
+  Z --> CORE["RockstarOS Core / Broker<br/>本人・権限・予算・版・失効"]
+  AMC --> CORE
+  SKY -. "対応アプリへ能力を渡す" .-> APPS["仕事・創作・Game・生活アプリ"]
+  APPS --> CORE
+  CORE --> JOB["Job・Artifact・Receipt<br/>保存・再照合・復旧"]
+  CORE --> RUN["許可済み実行先<br/>端末内 / PC / cloud / self-host"]
+  RUN --> JOB
+  JOB --> Z
+  JOB --> APPS
+  JOB -->|"usage・確認済み収益だけ"| WALLET["Wallet / Commerce<br/>購入・usage・費用・確認済み収益"]
+  AUTHOR["Tool・Agent作者"] --> STUDIO["Rock Studio / SDK<br/>宣言・審査・Package"]
+  STUDIO -->|"審査後に掲載"| SKY
+  MINI["avocadoMini R5<br/>単独で入力・遊び・保存"] --> CORE
+  PRO["avokadoPro<br/>NVIDIA si・ゲームPC"] --> CORE
+  MINI <-. "本人が許可した任意接続" .-> PRO
+  SIM["国内IoT data SIM<br/>Miniの任意通信option"] -.-> MINI
+  RS["rocketstar専用地上Gateway<br/>工程・観測・記録"] -.-> CORE
+  FLIGHT["機上制御・独立飛行安全系"] -->|"観測のみ"| RS
 ```
 
-矢印は到達設計の責任と接続契約。全接続・同じDB・cross-origin認証を完成済みとは扱わない。LLM/Tool/画面は権限を決めず、Brokerが本人とexactな条件を検査する。
+実線は責任上の接続、点線は任意・限定の接続であり、線の存在を本番接続済みの証拠にしない。Sky直接操作や対応アプリの有限処理にはJennifferとの会話を必須にしない。MiniはProやSIMなしで基本動作を成立させる。rocketstarの機上制御へ一般Agentから命令を送る経路はない。Web、Android、QEMU、native OSが同じDBを共有済みという意味でもない。
 
 ## 入口の設計
 
@@ -48,6 +60,74 @@ Jenniferの会話方式は共通だが、社内portfolioと一般利用者の案
 ## 実行と成果の流れ
 
 本人の依頼→JenniferのGoal整理→SkyのTool/Agent選択→裏側Zema/AMCまたは対応アプリで条件確認→Coreで本人/版/権限/見積/上限を再検査→adapter実行→結果schema/receipt照合→成果保存→本人検収/取得→項目別usage/決済照合。
+
+### 2. LLM・Agent・Toolがつながる実行経路
+
+```mermaid
+flowchart LR
+  GUEST["無登録のSky有限処理"] --> GUESTOUT["画面内の未保存結果<br/>コピー・持出し"]
+  IN["Zema / 対応アプリの依頼"] --> B["Broker<br/>本人・選択・版・同意・上限を検査"]
+  B -->|"LLM不要"| CODE["有限の決定論的処理"]
+  B -->|"端末内で計画"| LOCAL["端末内LLM<br/>plan候補のみ"]
+  LOCAL --> CHECK["Brokerがplan schema・Tool・権限を再検査"]
+  CHECK --> ENGINE["Engine<br/>許可済みstepだけ実行"]
+  CODE --> ENGINE
+  ENGINE --> TOOL["Tool / MCP adapter<br/>端末内・本人PC・Pro・self-host"]
+  TOOL -. "接続・scope・失効を個別確認" .-> MCP["外部MCP / 業務Provider"]
+  MR["Mr.固定原本 vendor/mr"] --> ADAPTER["Rock adapter<br/>原本とは別の実行契約"]
+  ADAPTER --> TOOL
+  B -->|"有料cloud・外部Agent"| QUOTE["送信内容・単価・見積・期限・予算"]
+  QUOTE --> APPROVAL["本人のexact承認・予算予約"]
+  APPROVAL --> CLOUD["Cloud job / A2A runtime<br/>送信・停止・結果不明照合"]
+  CLOUD --> PROVIDER["契約した外部LLM / Agent Provider<br/>本人がモデルを所有する必要なし"]
+  PROVIDER --> CLOUD
+  TOOL --> VERIFY["出力schema・hash・実行Receiptを照合"]
+  CLOUD --> VERIFY
+  VERIFY --> STORE["本人別Artifact・履歴・usage保存"]
+  STORE --> REVIEW["別担当の検収・本人の成果確認"]
+  STORE --> Z["Zema進捗・成果 / Sky成果一覧 / 対応アプリ表示"]
+  STORE --> BILL["Wallet / Billing<br/>署名済みusageと外部実費を照合"]
+  SKYJ["SkyでJev Toolを明示選択"] --> JEV["Jev任意評価"]
+  JEV -. "助言のみ・権限ではない" .-> REVIEW
+```
+
+ここでいうAgentは、目標を有限の仕事へ分け、許可された実行先へ渡し、停止・再取得・検収まで追う仕事の仕組みである。LLMはその一部で、自然文からの計画や文章生成に必要な経路だけで使う。決定論的ToolはLLMなしで実行できる。無登録のSky有限処理は画面内の未保存出力に止まり、本人別Job保存や有料Agent実行へ自動昇格しない。LLM、Jev、外部Agentの自己申告をTool成功・本人承認・Wallet確定へ変換しない。Cloud ProviderはRock側の契約・設定を使う想定で、利用者が自前のLLMを持つことを開始条件にしない。BYOKは任意の別設定である。
+
+### 3. 応用領域と物理作用の境界
+
+```mermaid
+flowchart LR
+  SKY["Sky / Zema / Brokerの共通契約"] --> WORK["CSV・出典・記事・Coconala・Mercari<br/>有限の仕事と本人による外部操作"]
+  SKY --> GAME["Game / IP Studio<br/>制作・試遊・作者SDK"]
+  GAME -. "実交換は別のWallet gate" .-> WALLET["Wallet / Provider台帳"]
+  SKY --> MARKET["Market<br/>現行はPAPER試験"]
+  MARKET -. "実注文は別Provider gate" .-> WALLET
+  SKY --> FUND["Automation Fund<br/>収益検証前の構想・fixture"]
+  FUND -. "検証済み収益だけ" .-> WALLET
+  SKY --> GRID["Compute Grid<br/>固定lotの合成仲介"]
+  SKY --> MAT["Material Invention Core<br/>候補・版・安全・証拠"]
+  MINI["Mini R5<br/>手・声・空間入力"] -. "採用済みDevice Profileで接続" .-> MAT
+  MAT --> VIEW["MR / AR / VR / 2D<br/>表示と候補操作"]
+  MAT -. "別資格・別承認" .-> LAB["外部lab / 物理実験"]
+  MAT -. "専門家確認" .-> PATENT["Patent si・出願支援"]
+  PRO["Pro<br/>private si推論・制作・PC game"] -. "許可済みadapter" .-> SKY
+  SKY -. "工学記録だけ" .-> GROUND["rocketstar地上Gateway"]
+  FLIGHT["機上制御・飛行安全系"] -->|"観測のみ"| GROUND
+```
+
+`Mr.`は旧repository由来のTool原本、`MR`はMixed Realityの入力・表示方式であり別物。Gameの点数は実資金、材料simulationは実測、地上でのsi提案は飛行許可にならない。外部納品・公開・課金・実資金・物理作用・飛行は、それぞれ個別の承認と受入を通す。
+
+### 4. 2026-10-14の接続状態
+
+| 経路 | 確認できた範囲 | まだ接続・受入していない範囲 |
+| --- | --- | --- |
+| Skyの有限処理 | 出典整理等の決まったWeb処理と成果保存のsource。Pixelの17項目テストは8実処理・9模擬 | テスト結果をAgent実行、外部検索、Provider成果へ換算しない |
+| Pixelの端末内LLM | 以前の試験署名APKで固定Qwen profileを実証 | 今回の端末読取は`no_model`。現行PixelのZema自然文依頼→モデル→Toolの一周は未受入 |
+| Jennifer / Zema / AMC | Goal草案、限定分解、本人承認、仕事・A2Aのsourceとfixture | COLOMBIA原本、本番Provider配備・資格情報、月予算/後払い、native同等UIの受入 |
+| Cloud LLM / A2A | 見積、予算、委任、usage Receiptのsourceと局所fixture | 本番model/Agent Provider、実meter・請求・取消・復旧の同一環境受入 |
+| Mini / Pro / rocketstar | R5、Pro P0、rocketstar R1.0の設計と個別のprototype/試験記録 | Mini・Pro製品実機、全OS image、製造・販売、rocketstarの製造・飛行受入 |
+
+この表は設計書・source・2026-10-14のPixel読取を区別した現在地である。`ready`というcatalog表示、図の矢印、過去の別環境試験だけで本番利用可能とは表示しない。[実現順と受入](service-design/04-delivery-and-acceptance.md)と[LLMの現在地](llm-evaluation-architecture.md)で次の合格証拠を確認する。
 
 仕事状態は既存Webの`active/review/completed/cancelled`を使う。承認待ち・通信待ち・外部結果不明は子処理と画面の状態で説明する。保存応答が不明なら同じIDを照合し、自動再送しない。親の取消と外部停止確認は別である。
 

@@ -6979,6 +6979,21 @@
     "externalActionAuthorizedByObservation": false,
     "nextAction": "Extend typed first-party host output fixture, then accept cross-origin identity/scope/revocation, typed two-Agent delegation, one read-only real host, and one owner-approved external action separately."
   },
+  "fullSystemMermaidMap": {
+    "date": "2026-10-14",
+    "taskId": "DOC04",
+    "primarySquad": "H1",
+    "primaryOwner": "ROCK",
+    "status": "complete_design_map_documented_runtime_unchanged",
+    "sourceMainSha": "da6410ef03a1202a1d46fa72b138058be669fd7a",
+    "document": "docs/rockstaros-product-system-map.md",
+    "scope": "Jenniffer/Jennifer, Sky, Zema, AMC, Broker, deterministic Tool, local and cloud model/Agent, Mr. adapter, MCP, Wallet, Mini, Pro, Game, Market, Fund, Compute Grid, Material MR and rocketstar boundaries",
+    "pixelObservation": "2026-10-14: 17 local test outputs comprised 8 deterministic operations and 9 simulations; separate local model status was no_model",
+    "validation": "Mermaid 3/3 parsed; project:update, mission:update, baseline:check, design:check, project:check, mission:check and full npm run verify passed in isolated origin/main worktree",
+    "implementationChanged": false,
+    "providerOrPhysicalAcceptanceChanged": false,
+    "nextAction": "Accept one exact Pixel model-planning Tool job and one independently quoted, approved and receipt-verified cloud Provider job on their respective target environments."
+  },
   "skyStandaloneAgentPilot": {
     "date": "2026-10-13",
     "taskIds": ["SKY21", "WEB06"],
