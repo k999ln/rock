@@ -45,6 +45,8 @@ Skyは選択・公開・アクセス判断の正本。Zemaは既存APIに結び�
 
 WebとOSに同じコードがあることと、同じDB・履歴・購入権限を共有することは別である。公開Skyは独立したSite/DBを持つ。OS側の既存DBを無断移行しない。同一originにマウントされたWeb入口は既存APIを使う。別origin・nativeクライアントの共通利用は、下記の本人確認契約の実装・受入後に有効にする。
 
+Columbia公開入口と本体Skyも別Sites project・別D1である。大学Homeは英語の発見フィードと無料ブラウザ内下書きを維持し、本体Sky Homeはマーケット、実行、成果・接続管理を担う。大学HomeのExplore／Work／Youと本人別操作への入口は正規origin `https://avoado.si` へ遷移させる。これで新規操作の保存先を選べるが、既存のColumbia D1履歴やbrowser localStorageを自動移行したことにはならない。Columbiaのlocal card処理と任意の推薦履歴は大学Home固有と明示する。本体Siteの古い`0000/0001` migration lineageとColumbia Siteの`0013`以降のlineageを単純に置換しない。本体公開版のソース更新はDB backup・互換migration・既存rowの読取/書込・復旧試験に合格してから行う。
+
 ## 異種hostへの融合とAgent構成
 
 Skyの対象はOSとWebだけに閉じない。アプリ、家電、ゲーム、ロボット、外部サービスもhostとして参加し、それぞれが提供する観測・表示・操作能力を宣言する。利用者の目的に対してSkyが適合するAgent/Toolを発見・接続し、必要なら複数の専門Agentを一つの仕事へ組み合わせる。Zemaは依頼、委任、進捗、成果、費用、停止を同一ownerのjobで追い、Brokerは各境界の権限を強制する。「何でも対応」は新しいhost/Agentを契約で追加できる拡張性であり、未知の機器を自動操作できるという稼働表示ではない。

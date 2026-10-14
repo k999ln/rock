@@ -63,6 +63,7 @@ type FeedMode = 'recommended' | 'saved';
 
 const SAVE_KEY = 'sky-columbia-saved-tools';
 const LINKEDIN_CHOICE_EVENT = 'avocado-campus-linkedin-choice';
+const SKY_MAIN = 'https://avoado.si';
 
 type SkyFeedHistoryResponse = {
   enabled: boolean;
@@ -495,7 +496,7 @@ export default function ColumbiaFeed() {
     <main lang="en" className={styles.page}>
       <div className={styles.shell}>
         <aside className={styles.leftRail} aria-label="Primary Sky navigation">
-          <Link className={styles.sideBrand} href="/sky" aria-label="Sky home">
+          <Link className={styles.sideBrand} href={`${SKY_MAIN}/os/sky`} aria-label="Sky home">
             <Sparkles size={29} strokeWidth={1.8} aria-hidden="true" />
             <span>Sky</span>
           </Link>
@@ -504,11 +505,11 @@ export default function ColumbiaFeed() {
               <Home size={25} fill="currentColor" aria-hidden="true" />
               <span>Home</span>
             </Link>
-            <Link href="/sky">
+            <Link href={`${SKY_MAIN}/os/sky`}>
               <Search size={25} aria-hidden="true" />
               <span>Explore</span>
             </Link>
-            <Link href="/chat">
+            <Link href={`${SKY_MAIN}/chat`}>
               <BriefcaseBusiness size={25} aria-hidden="true" />
               <span>Work</span>
             </Link>
@@ -542,7 +543,7 @@ export default function ColumbiaFeed() {
 
         <section className={styles.centerColumn} aria-label="Sky tool feed">
           <header className={styles.topbar}>
-            <Link className={styles.home} href="/sky" aria-label="Sky home">
+            <Link className={styles.home} href={`${SKY_MAIN}/os/sky`} aria-label="Sky home">
               <House size={28} strokeWidth={1.8} />
             </Link>
             <div className={styles.brand}>
@@ -826,7 +827,7 @@ export default function ColumbiaFeed() {
           </section>
           <section className={styles.railPanel} aria-labelledby="continue-heading">
             <h2 id="continue-heading">Continue your work</h2>
-            <Link className={styles.goalLink} href="/chat">
+            <Link className={styles.goalLink} href={`${SKY_MAIN}/chat`}>
               <span>J</span>
               <div>
                 <small>Project chief of staff</small>
@@ -834,7 +835,7 @@ export default function ColumbiaFeed() {
               </div>
               <ArrowRight size={17} aria-hidden="true" />
             </Link>
-            <Link className={styles.goalLink} href="/sky/agents/citations">
+            <Link className={styles.goalLink} href={`${SKY_MAIN}/os/sky/agents/citations`}>
               <span>A</span>
               <div>
                 <small>Sign in to save results</small>
@@ -854,11 +855,11 @@ export default function ColumbiaFeed() {
             <Home size={24} fill="currentColor" />
             <span>Home</span>
           </Link>
-          <Link href="/sky">
+          <Link href={`${SKY_MAIN}/os/sky`}>
             <Search size={24} />
             <span>Explore</span>
           </Link>
-          <Link href="/chat">
+          <Link href={`${SKY_MAIN}/chat`}>
             <BriefcaseBusiness size={24} />
             <span>Work</span>
           </Link>
@@ -866,7 +867,7 @@ export default function ColumbiaFeed() {
             <Bookmark size={24} />
             <span>Saved</span>
           </button>
-          <Link href="/signin-with-chatgpt?return_to=%2Fsky%2Fcampus%2Fcolumbia">
+          <Link href={`${SKY_MAIN}/signin-with-chatgpt?return_to=%2Fos%2Fsky`}>
             <UserRound size={24} />
             <span>You</span>
           </Link>

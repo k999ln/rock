@@ -2226,6 +2226,16 @@
       "cloud_ai_provider_resale_terms"
     ]
   },
+  "skyCampusMainReconciliation": {
+    "decidedAt": "2026-10-14",
+    "source": "Owner requested reconciliation of columbia.avoado.si with avoado.si/os/sky while keeping their Home tabs distinct",
+    "canonicalSkyOrigin": "https://avoado.si",
+    "campusHome": "campus_specific_discovery_and_free_browser_drafts",
+    "mainHome": "agent_marketplace_execution_and_management",
+    "sharedDurableOwnership": ["purchases", "account_library", "connections", "zema_jobs", "agent_outputs"],
+    "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
+    "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
+  },
   "skyFusionDirection": {
     "decidedAt": "2026-10-14",
     "source": "Owner explicitly described Sky as a flexible multi-Agent system that can fuse with apps, appliances and other hosts; a refrigerator could observe inventory and help buy needed items",

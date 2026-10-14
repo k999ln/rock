@@ -179,7 +179,7 @@ void test('avoado.si keeps RockstarOS at /os and canonicalizes Sky under /os/sky
   );
 });
 
-void test('Columbia custom domain keeps its OS home and serves canonical /os/sky routes', async () => {
+void test('Columbia keeps its campus Home while shared Sky and work routes use the main origin', async () => {
   const seen = [];
   let miniCalls = 0;
   const app = withMiniSite(
@@ -202,10 +202,20 @@ void test('Columbia custom domain keeps its OS home and serves canonical /os/sky
   const canonical = await app.fetch(
     new Request('https://columbia.avoado.si/os/sky/outputs?source=nfc'),
   );
-  assert.equal(canonical.status, 200);
-  assert.equal(await canonical.text(), 'sky');
-  assert.deepEqual(seen, ['/', '/sky/outputs']);
+  assert.equal(canonical.status, 307);
+  assert.equal(canonical.headers.get('location'), 'https://avoado.si/os/sky/outputs?source=nfc');
+  const campus = await app.fetch(new Request('https://columbia.avoado.si/os/sky/campus/columbia'));
+  assert.equal(campus.status, 200);
+  const card = await app.fetch(new Request('https://columbia.avoado.si/os/sky/tools/mr-citations?entry=columbia-card'));
+  assert.equal(card.status, 200);
+  assert.deepEqual(seen, ['/', '/sky/campus/columbia', '/sky/tools/mr-citations']);
   assert.equal(miniCalls, 0);
+
+  for (const path of ['/os/sky', '/os/sky/marketplace', '/chat', '/zema/library']) {
+    const response = await app.fetch(new Request(`https://columbia.avoado.si${path}`));
+    assert.equal(response.status, 307, path);
+    assert.equal(response.headers.get('location'), `https://avoado.si${path}`);
+  }
 
   const old = await app.fetch(
     new Request('https://columbia.avoado.si/sky/outputs?source=nfc'),

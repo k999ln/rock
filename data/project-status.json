@@ -6919,6 +6919,18 @@
       "rollbackVersion": 72
     }
   },
+  "skyCampusMainReconciliation": {
+    "date": "2026-10-14",
+    "taskIds": ["WEB06", "SKY21"],
+    "primaryOwner": "ROCK",
+    "status": "source_navigation_verified_publication_pending",
+    "rootSite": "avoado.si v53, source e09d4de463156d0f2f765c6a7dcc1769637f666d",
+    "columbiaSite": "columbia.avoado.si v79, source a6058d06178c0483ec760f60109d2a56e0892a88",
+    "dataBoundary": "separate_sites_and_D1; account data and old Columbia browser saves are not unified",
+    "sourceChange": "Columbia Home remains local; shared Sky, Work and account navigation targets avoado.si; legacy Columbia service pages redirect on GET/HEAD while three free card tools remain local",
+    "migrationGate": "Do not replace root 0000/0001 migration lineage with Columbia 0013+ or claim existing data migrated without backup, compatibility tests, owner A/B and recovery readback",
+    "nextAction": "Run focused and full verification, merge main, publish Columbia Site only, then test live campus Home and canonical action navigation; separately prepare a backed-up root D1 migration and visual refresh."
+  },
   "skyCampusNfcLive": {
     "date": "2026-10-13",
     "workstream": "WEB06 / SKY21",

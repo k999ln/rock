@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## 2026-10-14 — Columbiaと本体Skyの入口を分離して正本へ誘導（WEB06 / SKY21、ROCK）
+
+Columbia Site v79と本体Sky Site v53は別Worker／別D1。Columbiaの大学Homeと無料browser cardは維持し、Explore／Work／Youなどの本人別操作を本体`avoado.si`へ向ける。Columbia hostで旧Sky/Zema画面へ直接入るGET/HEADも本体へ307転送する。大学Homeの任意browser保存と推薦履歴は同一データにならず、既存Columbia D1の購入・仕事・成果の移行も未実施。本体Siteは`0000/0001`、Columbia Siteは`0013`以降の別migration lineageなので、一括ソース置換は行わない。次にroot DBのbackup・互換移行・本人A/B・復旧とroot UI更新を同一候補で受け入れる。検証は`node --test tests/sky-domain-router.test.mjs tests/sky-nfc-columbia.test.mjs`、`npm run verify`、公開後の両host browser操作と本人別成果readback。ROCKが導線と移行を担当し、Sitesの配備基盤はEXTERNAL、公開版の最終受入はOWNER。
+
 ## 2026-10-14 — Columbia `/os/sky` route continuity（WEB06 / SKY21、ROCK）
 
 `columbia.avoado.si/os/sky` が404となる本番退行をSites v72で再現し、既存のsame-origin routerを標準`npm run build`へ組み込んだ。`avoado.si`だけでなく`*.avoado.si`でも`/os/sky`と配下を内部`/sky` routeへ結び、サブドメインの`/`と`/os`は各SiteのHomeに残し、Mini proxyはapex `avoado.si`だけに限定する。旧`/sky`は同じhostの`/os/sky`へqueryを保持して308転送する。Columbia feedと並行router更新をPR #123/#124でmainへ統合し、GitHub mainとtree `971a0aa5a05f1416c8e20175d651842054756767`が一致するSites source `fbee9f99dd5ea90613ed64be616814c1f20b140d`をv74として公開した。route試験7件、typecheck、project同期、両PRの全CI、本番build、`/`・`/campus`・`/os/sky/agents/citations`・NFC resolverのbrowser readbackを確認済み。直前v72はrollback候補として保持する。

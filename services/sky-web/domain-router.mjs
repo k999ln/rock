@@ -1,5 +1,6 @@
 const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const MINI_PUBLIC_HOST = 'avoado.si';
+const COLUMBIA_HOST = 'columbia.avoado.si';
 
 const SKY_PREFIXES = [
   '/_next',
@@ -31,6 +32,21 @@ const isPath = (path, prefix) =>
   path === prefix || path.startsWith(`${prefix}/`);
 const usesCanonicalSkyPrefix = (hostname) =>
   hostname === MINI_PUBLIC_HOST || hostname.endsWith(`.${MINI_PUBLIC_HOST}`);
+
+function columbiaSkyDestination(source) {
+  if (source.hostname !== COLUMBIA_HOST) return null;
+  const path = source.pathname;
+  const campusHome = isPath(path, '/os/sky/campus/columbia');
+  const localCard = /^\/os\/sky\/tools\/(mr-citations|rockstar-amc|rockstar-patent-assistant)$/.test(path)
+    && source.searchParams.get('entry') === 'columbia-card';
+  if (campusHome || localCard) return null;
+  if (!isPath(path, '/os/sky') && !isPath(path, '/chat') &&
+      !isPath(path, '/work') && !isPath(path, '/zema') &&
+      path !== '/signin-with-chatgpt') return null;
+  const destination = new URL(source);
+  destination.hostname = MINI_PUBLIC_HOST;
+  return destination.href;
+}
 
 export function routesToSky(path) {
   if (isPath(path, '/api/preorders') || isPath(path, '/api/admin'))
@@ -123,6 +139,9 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      const columbiaDestination = columbiaSkyDestination(source);
+      if (columbiaDestination && ['GET', 'HEAD'].includes(request.method))
+        return Response.redirect(columbiaDestination, 307);
       if (usesCanonicalSkyPrefix(source.hostname) && isPath(path, '/sky')) {
         source.pathname = `/os${path}`;
         return Response.redirect(source.href, 308);

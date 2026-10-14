@@ -91,6 +91,15 @@ void test('Columbia entry uses the finished Sky feed shell and keeps actions con
   assert.match(source, /href=\{tool\.href\}/);
 });
 
+void test('Columbia Home stays local while account and work navigation uses the main Sky origin', () => {
+  const source = readFileSync('app/sky/campus/[campusId]/columbia-feed.tsx', 'utf8');
+  assert.match(source, /href="\/sky\/campus\/columbia" aria-current="page"/);
+  assert.match(source, /href=\{`\$\{SKY_MAIN\}\/os\/sky`\}/);
+  assert.match(source, /href=\{`\$\{SKY_MAIN\}\/chat`\}/);
+  assert.match(source, /href=\{`\$\{SKY_MAIN\}\/signin-with-chatgpt\?return_to=%2Fos%2Fsky`\}/);
+  assert.match(source, /href=\{tool\.href\}/, 'free local card entries remain on the campus host');
+});
+
 void test('tag redirect preserves a configured origin pathname and records one anonymous event', async () => {
   let events = 0;
   const route = loadRouteFixture(new URL('../app/t/[tagId]/route.ts', import.meta.url), new Map([
