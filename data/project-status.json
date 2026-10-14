@@ -6985,9 +6985,9 @@
     "primarySquad": "H1",
     "primaryOwner": "ROCK",
     "status": "complete_design_map_documented_runtime_unchanged",
-    "sourceMainSha": "da6410ef03a1202a1d46fa72b138058be669fd7a",
+    "sourceMainSha": "89e3d77d0d69e6175e56acb39fc399e7de208252",
     "document": "docs/rockstaros-product-system-map.md",
-    "scope": "Jenniffer/Jennifer, Sky, Zema, AMC, Broker, deterministic Tool, local and cloud model/Agent, Mr. adapter, MCP, Wallet, Mini, Pro, Game, Market, Fund, Compute Grid, Material MR and rocketstar boundaries",
+    "scope": "Jenniffer/Jennifer, Sky, Zema, AMC, Broker, deterministic Tool, local and cloud model/Agent, Mr. adapter, MCP, Wallet, Mini, Pro, living/heterogeneous hosts, Game, Market, Fund, Compute Grid, Material MR and rocketstar boundaries",
     "pixelObservation": "2026-10-14: 17 local test outputs comprised 8 deterministic operations and 9 simulations; separate local model status was no_model",
     "validation": "Mermaid 3/3 parsed; project:update, mission:update, baseline:check, design:check, project:check, mission:check and full npm run verify passed in isolated origin/main worktree",
     "implementationChanged": false,
@@ -7026,6 +7026,18 @@
       "publicBrowser": "Anonymous Chrome produced one source and an unsaved output on the public citation-agent page; the save action requested sign-in and retained the output. Download completion and signed-in save were not verified.",
       "localVerification": "Citation agent tests 2/2, typecheck, build, and npm run verify passed.",
       "pending": ["Signed-in owner A/B save, reload, replay and isolation", "External provider execution with permission, budget and receipt", "Purchase and entitlement acceptance", "OS and other-app identity and output contract acceptance"]
+    },
+    "routeRepair": {
+      "date": "2026-10-14",
+      "cause": "Public Site v54 source used vinext build without stage-sky-domain-router, so /os/sky and descendants returned 404 despite /sky returning 200.",
+      "siteVersion": 55,
+      "siteSourceSha": "825d117d0ff715f4bb01cd10373313e657061f4d",
+      "siteDeploymentId": "appgdep_6ad00e1a33bc8191a1a01ecba533ca62",
+      "sitePublished": true,
+      "liveReadback": "Public /os/sky, /os/sky/agents/citations and /os/sky/campus/nyu/hub returned HTTP 200; /sky redirects to /os/sky; the user's existing IAB tab rendered Sky after reload.",
+      "verification": "Site source typecheck, router tests 3/3, build and local Wrangler route readback passed; GitHub main source router tests 7/7 and npm run verify passed.",
+      "githubMainIntegration": "The router staging implementation was already in main; this repair changed the separate Sites source and deployment only.",
+      "nextAction": "For each Site build verify index.js, vinext.js and domain-router.mjs in the deployed archive and read back the canonical public URL."
     }
   }
 }

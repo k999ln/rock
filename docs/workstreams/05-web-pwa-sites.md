@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## 2026-10-14 — 本体Sky `/os/sky` 404退行の修復（WEB06 / SKY21、ROCK）
+
+公開Site v54で`/sky`は200、正規`/os/sky`は404。Site専用sourceのbuild scriptがmainの`vinext build && node scripts/stage-sky-domain-router.mjs`から`vinext build`だけに逸れ、配布archiveに`domain-router.mjs`と`vinext.js`が入っていなかった。Site source `825d117d0ff715f4bb01cd10373313e657061f4d`のbuildをmainと同じ形へ修復し、Site専用rewriteも追加してv55を公開。ローカルWranglerでroot 200、旧`/sky` 308、`/os/sky`・Agent・NYU hub 200を確認。公開`avoado.si`の同じURLはHTTP 200、利用者が開いていたIABタブの再読込でもSky UIが表示された。GitHub mainのrouter stage実装は既存であり、今後はSite sourceとarchive中の3ファイルを出荷前に照合する。本人保存やAgent全体の実行受入とは別のroute修復である。
+
 ## 2026-10-14 — Columbiaと本体Skyの入口を分離して正本へ誘導（WEB06 / SKY21、ROCK）
 
 Columbia Site v79と本体Sky Site v53は別Worker／別D1。Columbiaの大学Homeと無料browser cardは維持し、Explore／Work／Youなどの本人別操作を本体`avoado.si`へ向ける。Columbia hostで旧Sky/Zema画面へ直接入るGET/HEADも本体へ307転送する。大学Homeの任意browser保存と推薦履歴は同一データにならず、既存Columbia D1の購入・仕事・成果の移行も未実施。本体Siteは`0000/0001`、Columbia Siteは`0013`以降の別migration lineageなので、一括ソース置換は行わない。Columbia Site v80/source `1d87952384fd6113bec773750290ff4ab8ca51f8`を公開し、大学Home・無料カード200、共有画面307とquery保持、browserのExplore/Work/You本体URLを確認した。`npm run verify`はsourceで成功、[PR #128](https://github.com/k999ln/rock/pull/128)はmain `d7171760f5183f1d206de4954a7b2f52b222916f`へ統合済み。同一headの7 CIは成功。次にroot DBのbackup・互換移行・本人A/B・復旧とroot UI更新を同一候補で受け入れる。検証は`node --test tests/sky-domain-router.test.mjs tests/sky-nfc-columbia.test.mjs`、`npm run verify`、公開後の本人別成果readback。ROCKが導線と移行を担当し、Sitesの配備基盤はEXTERNAL、公開版の最終受入はOWNER。
