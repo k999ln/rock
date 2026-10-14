@@ -6987,12 +6987,26 @@
     "status": "complete_design_map_documented_runtime_unchanged",
     "sourceMainSha": "89e3d77d0d69e6175e56acb39fc399e7de208252",
     "document": "docs/rockstaros-product-system-map.md",
-    "scope": "Jenniffer/Jennifer, Sky, Zema, AMC, Broker, deterministic Tool, local and cloud model/Agent, Mr. adapter, MCP, Wallet, Mini, Pro, living/heterogeneous hosts, Game, Market, Fund, Compute Grid, Material MR and rocketstar boundaries",
+    "scope": "Jenniffer/Jennifer, Sky, Zema, AMC, Broker, deterministic Tool, local and cloud model/Agent, Mr. adapter, MCP, Wallet, Mini, Pro, preconstruction ceiling integration and living/heterogeneous hosts, Game, Market, Fund, Compute Grid, Material MR and rocketstar boundaries",
     "pixelObservation": "2026-10-14: 17 local test outputs comprised 8 deterministic operations and 9 simulations; separate local model status was no_model",
-    "validation": "Mermaid 3/3 parsed; project:update, mission:update, baseline:check, design:check, project:check, mission:check and full npm run verify passed in isolated origin/main worktree",
+    "validation": "Mermaid 3/3 parsed; project:update, mission:update, baseline:check, avocado:r5:check, design:check, project:check, mission:check and full npm run verify passed after current main and architectural Mini profile reconciliation",
     "implementationChanged": false,
     "providerOrPhysicalAcceptanceChanged": false,
     "nextAction": "Accept one exact Pixel model-planning Tool job and one independently quoted, approved and receipt-verified cloud Provider job on their respective target environments."
+  },
+  "miniArchitecturalIntegration": {
+    "date": "2026-10-14",
+    "taskId": "MAT15",
+    "primaryOwner": "JOINT",
+    "status": "design_profile_documented_physical_acceptance_pending",
+    "source": "User explicit direction to integrate Mini into architecture from before construction, including ceiling-storage variants",
+    "authority": "docs/avocado-mini-r5/README.md",
+    "preservedR5Boundary": "same removable standalone R5 core, optional architectural mount, external power, no Pro or building network dependency for basic use",
+    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
+    "physicalAcceptance": "none",
+    "constructionContract": "none_verified",
+    "validation": "Mermaid 3/3 parsed; baseline:check, avocado:r5:check, design:check and full npm run verify passed; R5 package integrity is archival only",
+    "nextAction": "Fix one property and ceiling construction, obtain specialist design inputs, then test a full-size mount/mockup for installation, motion/stop, power loss, heat, privacy, removal and same-core local storage/recovery before site-specific installation approval."
   },
   "skyStandaloneAgentPilot": {
     "date": "2026-10-13",

@@ -101,6 +101,8 @@ flowchart LR
   SKY --> LIVING["暮らしの案件<br/>住まい・インテリア・音響の案と費用を整理"]
   HOME["家電などのhost<br/>観測・提案・実行を別capabilityに分離"] -. "対応adapterの受入後" .-> LIVING
   LIVING -. "契約・資格・現場判断は別" .-> EXPERT["専門家・店舗・施工者<br/>外部契約と実作業"]
+  ARCH["新築前の建築・設備・内装計画<br/>天井・給電・点検条件"] -. "物件別の専門設計" .-> BUILTIN["建築一体型Mini設置profile<br/>R5 coreを収納・展開・取外し"]
+  BUILTIN -. "居住者が許可する空間入力" .-> LIVING
   SKY --> GAME["Game / IP Studio<br/>制作・試遊・作者SDK"]
   GAME -. "実交換は別のWallet gate" .-> WALLET["Wallet / Provider台帳"]
   SKY --> MARKET["Market<br/>現行はPAPER試験"]
@@ -110,7 +112,7 @@ flowchart LR
   SKY --> GRID["Compute Grid<br/>固定lotの合成仲介"]
   SKY --> MAT["Material Invention Core<br/>候補・版・安全・証拠"]
   MINI["Mini R5<br/>手・声・空間入力"] -. "採用済みDevice Profileで接続" .-> MAT
-  MINI -. "本人が選ぶ空間入力" .-> LIVING
+  MINI -. "同じcoreの任意設置" .-> BUILTIN
   MAT --> VIEW["MR / AR / VR / 2D<br/>表示と候補操作"]
   MAT -. "別資格・別承認" .-> LAB["外部lab / 物理実験"]
   MAT -. "専門家確認" .-> PATENT["Patent si・出願支援"]
@@ -121,7 +123,7 @@ flowchart LR
 
 `Mr.`は旧repository由来のTool原本、`MR`はMixed Realityの入力・表示方式であり別物。Gameの点数は実資金、材料simulationは実測、地上でのsi提案は飛行許可にならない。外部納品・公開・課金・実資金・物理作用・飛行は、それぞれ個別の承認と受入を通す。
 
-**暮らしへの接続**は、たとえば住まいの間取り・インテリア・音響を一つの案件として、Skyで必要なToolや専門家を探し、Zemaで案・資料・見積・本人の判断・成果を追うこと。Miniは採用されたDevice Profileと本人の許可がある場合の空間入力候補で、必須ではない。家電は「観測→提案→本人確認→実行→結果照合」を別capabilityとして設計する。現在の公開Skyには対応冷蔵庫・店舗の本番adapterはなく、発注や機器操作、建築判断・施工を図の矢印だけで実行できるとは扱わない。[異種hostの契約](sky-mcp-architecture.md#異種hostと複数agentの融合契約)に接続条件を定める。
+**暮らしへの接続**は、住まいの間取り・インテリア・音響を一つの案件として、Skyで必要なToolや専門家を探し、Zemaで案・資料・見積・本人の判断・成果を追うこと。新築前からMiniの収納/展開と給電/点検を建築・設備・内装計画に組み込み、居住者が許可した空間入力へつなぐ構想を加えた。これはR5 coreの任意設置profileで、建物/Pro/cloudをMini単体の必須条件にしない。対象天井の適合、施工、安全、保守と居住者のprivacyは別受入である。家電は「観測→提案→本人確認→実行→結果照合」を別capabilityとして設計する。現在の公開Skyには対応冷蔵庫・店舗の本番adapterはなく、発注や機器操作、建築判断・施工を図の矢印だけで実行できるとは扱わない。[Mini建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)と[異種hostの契約](sky-mcp-architecture.md#異種hostと複数agentの融合契約)に接続条件を定める。
 
 ### 4. 2026-10-14の接続状態
 
@@ -131,7 +133,7 @@ flowchart LR
 | Pixelの端末内LLM | 以前の試験署名APKで固定Qwen profileを実証 | 今回の端末読取は`no_model`。現行PixelのZema自然文依頼→モデル→Toolの一周は未受入 |
 | Jennifer / Zema / AMC | Goal草案、限定分解、本人承認、仕事・A2Aのsourceとfixture | COLOMBIA原本、本番Provider配備・資格情報、月予算/後払い、native同等UIの受入 |
 | Cloud LLM / A2A | 見積、予算、委任、usage Receiptのsourceと局所fixture | 本番model/Agent Provider、実meter・請求・取消・復旧の同一環境受入 |
-| 暮らし・異種host | Skyの能力宣言・読取/提案/実行分離、Zemaの仕事管理とMiniの空間入力を設計 | 住まいの専門家/施工連携、対応家電・店舗adapter、実注文や機器動作の受入 |
+| 暮らし・建築・異種host | Skyの能力宣言・読取/提案/実行分離、Zemaの仕事管理、Miniの建築一体型設置profileと空間入力を設計 | 天井別の実寸適合、実施工・点検・復旧、住まいの専門家連携、対応家電・店舗adapter、実注文や機器動作の受入 |
 | Mini / Pro / rocketstar | R5、Pro P0、rocketstar R1.0の設計と個別のprototype/試験記録 | Mini・Pro製品実機、全OS image、製造・販売、rocketstarの製造・飛行受入 |
 
 この表は設計書・source・2026-10-14のPixel読取を区別した現在地である。`ready`というcatalog表示、図の矢印、過去の別環境試験だけで本番利用可能とは表示しない。[実現順と受入](service-design/04-delivery-and-acceptance.md)と[LLMの現在地](llm-evaluation-architecture.md)で次の合格証拠を確認する。

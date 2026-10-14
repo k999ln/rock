@@ -172,7 +172,7 @@ These live under `services/` and have their own runtime or deployment boundary. 
 
 | Program | Intended role | Current stage |
 | --- | --- | --- |
-| **avocadoMini R5** | A 200 mm stand-alone spatial-input, display, game, and everyday-help device that can use the account and services. | **R5 is the current design baseline.** Design and calculation checks exist; no physical-device tests, manufacturing drawings, or manufacturing approval are complete. |
+| **avocadoMini R5** | A 200 mm stand-alone spatial-input, display, game, and everyday-help device. An optional removable ceiling installation is designed for planning with architects before construction, while the stand-alone form remains available. | **R5 is the current design baseline.** Ceiling variants are design candidates; no building compatibility, installation, physical-device tests, manufacturing drawings, or manufacturing approval are complete. |
 | **avokadoPro** | A compact NVIDIA desktop for local si, services, and PC games, optionally paired with Mini. | Candidate design and planning only; no purchase or assembly. |
 | **Material Invention** | Reproducible digital candidate comparison, then a larger path toward XR, sensors, simulation, patent, and lab work. | 2D candidate comparison and Sky/Zema connection exist. Simulation and laboratory connections are not implemented. |
 | **rocketstar** | A separate reusable small-satellite launch-vehicle and A-LINK design program. | Design archive only; no manufacturing, launch, or flight acceptance. |
@@ -294,7 +294,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 | **Web / Sky / Zema / Wallet** | Source for screens, catalog, work, approvals, history, Wallet boundaries, and Tool runners. | Current-version readback for each deployment, external Providers, and production commercial acceptance. |
 | **Pixel 10 GL066** | Existing-OS pre-tests with a test-signed app for offline planning, limited Tools, storage, and restart. | Full RockstarOS image, production signing, first flash/boot, OTA, and total-loss recovery; all four first-flash gates are failing. |
 | **Linux / QEMU** | Independent RockstarOS Developer Preview and acceptance records. | Release gates for the current artifact; results do not transfer to Android or a physical device. |
-| **avocadoMini R5** | R5 is the current design baseline, with integrated design and calculation checks ([R5 design](docs/avocado-mini-r5/README.md)). | Zero physical-device tests have been completed, and manufacturing approval is **on hold**. Still open: input/display adapter, sensors, enclosure, thermal/power, and manufacturing drawings. |
+| **avocadoMini R5** | R5 is the current design baseline, with integrated design and calculation checks ([R5 design and optional architectural installation](docs/avocado-mini-r5/README.md)). | Zero physical-device tests have been completed, and manufacturing approval is **on hold**. Ceiling-specific fit, safe motion, access for maintenance, input/display, thermal/power, and manufacturing drawings remain open. |
 | **Material Invention** | Sandbox core, candidate comparison in Sky/Zema, owner-scoped saved work, and digest-checked recovery. | Physical R5 adapter and sensors. Simulation and laboratory connections are not implemented. |
 | **avokadoPro / rocketstar** | Public source includes product pages and design-program boundaries. | Purchase, assembly, manufacturing, flight, and physical acceptance. |
 

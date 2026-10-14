@@ -1,6 +1,6 @@
 {
-  "version": "2.00",
-  "decidedAt": "2026-10-13",
+  "version": "2.01",
+  "decidedAt": "2026-10-14",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -1687,6 +1687,19 @@
       "source": "User explicit clarification",
       "description": "NVIDIA chip/GPU based high-performance si PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
     }
+  },
+  "miniArchitecturalIntegration": {
+    "decisionDate": "2026-10-14",
+    "source": "User explicit instruction: integrate Mini into architecture from before construction, including ceiling-storage variants so it blends into daily life",
+    "authority": "docs/avocado-mini-r5/README.md",
+    "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
+    "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
+    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
+    "standaloneMiniPreserved": true,
+    "proOrBuildingNetworkRequired": false,
+    "residentOwnsPrivateProfile": true,
+    "installedCeilingCompatibility": "per_property_unverified",
+    "constructionAndProductAcceptance": "not_completed"
   },
   "miniCellularIntent": {
     "decisionDate": "2026-10-10",
