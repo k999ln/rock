@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## 現在地監査とPixel実用化のP0〜P7
+
+OS11/O6/ROCKが[現在地と実用順](../native-os-integration.md#pixelの現在地と実用化の順番)を主担当とする。[監査JSON](../evidence/pixel-readiness.json)はmain `1cb16d06`の7 CI、main外の手元12 source hash、過去実機APKと今日のADB 0件を分離する。先に候補同期→現行v4 Pixel再受入→一仕事→Sky選択→Home→compile-only→release gate→同image受入。cloud料金plan/Provider一周はBIL02/SKY21のC1/C2として並行し、localを商用完成待ちにしない。実装/flash/課金を今回実行した証拠ではない。
+
 ## Pixel先行とiOS機能追加の提供順
 
 2026-10-15の本人指示を[多機種契約](../device-support-architecture.md#pixel先行とiosへの機能追加)へ反映。OS11/O6/ROCKのPixel独自OS統合を優先し、iOSはSIM01/WEB04/SKY07/SKY21/RLS02と接続するeSIM商品＋client/Web/対応native連携の設計候補。PixelのDT/物理OS gateとiOSのIP01〜04は別受入。検証は`npm run device-support:check`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。iOS clientコード、carrier entitlement、Store配布、実開通は未受入。

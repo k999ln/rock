@@ -74,6 +74,18 @@ Cloud停止・結果不明の契約は[継続実行](../sky-cloud-continuity.md)
 
 Mr.の固定Toolは[既存adapter](../../lib/mr-tools.ts)と[固定原本](../../vendor/mr/)を維持する。PC接続はinitialize→initialized→tools/listの通信結果と、別のtools/call結果を確認する。ブラウザ単独/PC/MCPの実行先を表示し、失敗時に黙って別経路へ切り替えない。Origin/Host、短命な接続資格、入力上限、パス逸脱拒否、一時領域消去を保持し、原稿・本文をサーバー履歴やログへ混ぜない。端末自身のlocalhostとPCのlocalhostは異なるため、スマホ接続へ旧loopback tokenを流用しない。
 
+## siクラウドのサービス事業者としての料金プラン
+
+2026-10-15の本人指示に基づき、avokadoが提供する料金の中心をsiクラウドのサービス契約へ置く。利用者はSkyでmodel/Agent/Toolと実行先を選び、cloudの利用を契約/使用量/上限/明細として把握する。通信事業者のように使える商品という設計であり、通信網の運営資格やpartner契約が成立したとの意味ではない。eSIM商品の通信＋si利用権と接続し、回線profileを本人・課金authorityにしない。
+
+- 契約: plan ID/版、期間、対象model/Agent/workload、含む利用枠がある場合の単位と量、超過の扱い、単価と改定時の扱いを提示する。月額/含む枠/超過単価の値は未確定。既存のaccount無料、30%/1,000円等の数値判断は新しい明示決定まで維持し、新しいplanと二重徴収する条件を作らない。
+- meter: modelの入力/出力token等、Agent runnerの計算/時間/工程、Tool/外部実費、回線量を別に照合する。異なるmodelのtokenや通信GBを同じ単価へ黙って換算しない。生の使用量と請求額をplan/rate-card版・見積・同JobのReceiptへ関連付ける。
+- 予算: 含む枠の消費と通貨建ての支出予約を区別する。Job横断・複数端末・並列実行のaccount月上限を原子的に照合し、実行中の予約も含める。quotaを出金/移転可能なstored moneyにしない。既存の親Job予算だけでaccount月上限の完成とはしない。
+- local: 端末内だけの推論はcloud使用量0として区別する。購入Tool/license、任意support、回線等の別費用がある場合は別に表示する。localという名称だけで、その工程に接続した外部Toolまで無料/無通信と表示しない。
+- 継続/失敗: プラン切替・期限切れ・上限到達・解約・支払失敗時の新規実行と受付済み仕事を分ける。勝手な超過実行やProvider切替をせず、停止・照会・最終usageを照合してから未使用予約を解放する。解約操作だけで発生済み費用を消さない。
+
+BIL02/SIM01/SKY21（ROCK、O5）が既存後払い/利用権/Agent workflow契約を再利用してplan仕様と受入を整える。OWNERは月額/枠/超過と契約条件を、partner条件と原価/meterの証拠を見て決める。現時点では料金設計方針のみで、売上・新plan販売・Provider契約・請求成功ではない。Pixelのlocal試作/一仕事/Home受入はこの商用完成待ちにしない。[現状とPixelの順番](../native-os-integration.md#pixelの現在地と実用化の順番)のC1/C2でcloud商用を独立して受け入れる。
+
 ## 6. 料金とWalletを説明できるようにする
 
 最新確定の設計は[製品ベースのaccount方針](../product-baseline.md)とbaselineの`accountEntryDecision`である。アカウント無料、期間パスは6か月未満、従量はしきい値1,000円または月末の後払い・初期上乗せ30%、本人が月の上限を指定する。残高を持たず、回線つき機器には別の基本料を設ける。期間パスの自動更新は既定オンを購入画面へ明示し更新前に通知、途中返金は既定なしという既存判断を引き継ぐ。外部確認と実装・本番受入は残る。

@@ -4,6 +4,8 @@
 
 ### One account. More ways to play, make, and get things done.
 
+The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
+
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
 RockstarOS integrates Jennifer, Sky and Zema; each service is also designed for standalone use. Sky alone owns the journey from Agent selection and usage to monthly billing, without requiring Jennifer, Zema, Mini, SIM or native OS installation. Shared billing infrastructure is reused; monthly provider acceptance is still pending. [Standalone service and billing contract](docs/sky-billing.md).
