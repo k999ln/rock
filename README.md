@@ -4,6 +4,8 @@
 
 ### One account. More ways to play, make, and get things done.
 
+The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
+
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
 Sky is an Agent/LLM marketplace and open hub across software, hardware, furniture, interiors and architecture. RockstarOS is a first-party runtime and Mini is an optional spatial host. An instrumented sofa could provide validated, consented observations to a weight-trend Agent; this remains a design example, not a working sensor product. [Fusion contract](docs/sky-mcp-architecture.md#家具建築まで開くskyの融合).

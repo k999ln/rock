@@ -1,4 +1,37 @@
 {
+  "cloudServicePlanIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "なら料金プランはsiを使うクラウド代で通信事業者みたいな形にする",
+    "seller": "avokado",
+    "businessRole": "si_cloud_service_operator_with_plans_usage_caps_and_itemized_statements",
+    "analogy": "service_contract_and_metering_like_a_connectivity_provider_not_a_legal_carrier_classification",
+    "authority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
+    "billingBasis": "cloud_si_service_usage_with_versioned_plan_and_rate_card",
+    "planFieldsRequired": [
+      "plan_id_and_version",
+      "service_period",
+      "eligible_model_agent_and_workload",
+      "included_usage_if_any",
+      "overage_rule_and_unit_prices",
+      "per_run_quote_and_account_spend_cap",
+      "concurrent_reservations",
+      "pause_expiry_cancellation_and_in_progress_work",
+      "itemized_meter_and_reconciliation"
+    ],
+    "monthlyPriceDecided": false,
+    "includedQuotaDecided": false,
+    "overageRateDecided": false,
+    "localOnlyInferenceCountsAsCloudUsage": false,
+    "networkToolDeviceAndCloudChargesSeparate": true,
+    "modelAndAgentComputeMeterSeparate": true,
+    "unlimitedUsagePromised": false,
+    "quotaIsStoredMoney": false,
+    "existingNumericBillingDecisionsChanged": false,
+    "liveBillingAccepted": false,
+    "paidExecutionGateChanged": false,
+    "commercialAcceptance": "pending_plan_terms_provider_meter_postpay_budget_and_invoice_acceptance"
+  },
   "skyExecutionChoiceDecision": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",
@@ -308,7 +341,7 @@
       }
     ]
   },
-  "version": "2.06",
+  "version": "2.07",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -2571,7 +2604,9 @@
       "stripe_connect_configuration_and_threshold_billing",
       "cloud_ai_provider_resale_terms"
     ],
-    "entryDecisionSource": "connectivityServiceBundleDecision"
+    "entryDecisionSource": "connectivityServiceBundleDecision",
+    "cloudPlanAuthority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
+    "cloudPlanDesignStatus": "operator_plan_intent_confirmed_price_quota_overage_undecided"
   },
   "skyCampusMainReconciliation": {
     "decidedAt": "2026-10-14",
