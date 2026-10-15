@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-15 BIL02/O5: PR #142をmain df615298へ統合。Sky単体のAgent利用→月次請求をlocal fixtureを実装。既存citation Agent/workflow/work_jobsを再利用し、料金と模擬入金をsandbox専用記録へ分離。local fixture実装・UI一周/再送/再起動・専用8件・D1移行11件が成功。npm run verifyは全stage exit 0（2242 pass/既存skip1、仕事API1381/CSV385）。ログ /private/tmp/sky-monthly-final-verify.log、証拠 docs/evidence/sky-monthly-sandbox.json。新schemaのjournal/DB件数fixtureとD1 SQL区切り、lint、起動時migration再適用を修正して再検証。本番gate/既存Wallet残高は変更しない。次は実外部Agent署名usageのadapter・実Provider sandbox・料金/訂正/未払い受入。公開なし。
+
 2026-10-15、BIL02/O5（同期DOC04/H1）: 本人指示でSky単体のAgent選択・利用・計測・月次請求を独立成立する設計へ明確化。RockstarOSにはJennifer/Sky/Zemaを統合し各単体利用を保持。請求のZema依存を図から除き、既存台帳/Broker再利用、復旧、sandbox合格条件を正本へ同期。npm run verifyが全stage終了コード0で合格（通常2234 pass/1 skip、仕事API1381、asset208/欠落0）。ログ /private/tmp/sky-standalone-verify.log。最新main a3e7a8caを取得確認、取り込みは未実施。PR #142へ保存、main統合・実装・本番課金は別。次はSky単体の月次sandbox一周受入。
 
 更新: 2026-10-15。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
