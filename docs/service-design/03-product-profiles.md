@@ -1,5 +1,7 @@
 # 各製品の役割と接続
 
+2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](../sky-billing.md)は設計であり、本番課金受入ではない。
+
 再構成版 1.0。サービスの仕事・権限・成果契約を共有しながら、機器ごとの価値と成立条件を保つ。Sky/Zema/OSを使うためにMini・Pro・rocketstarの完成を待たず、Miniの基本動作にProを要求しない。
 
 ## ソフト・家具・建築へ開くマーケットプレイスとハブ
@@ -16,7 +18,7 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 ## Jennifer（利用者表記 Jenniffer）
 
-**利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
+**会話を選ぶ利用者の、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 
 根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `3349c2475468443bc7ecd94a4e3782343f514a8f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、Web構成・計画・実行接続sourceはPR #113からmain `01d2e418`へ統合済み。今回の設計branchにもmainを保全mergeした。Jevは既存の任意remote evaluatorで、Jenniferと別system。
 

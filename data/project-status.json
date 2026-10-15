@@ -1,4 +1,5 @@
 {
+  "skyStandaloneMonthlyDesign": {"date": "2026-10-15", "tasks": ["BIL02", "DOC04"], "status": "design_recorded_acceptance_pending", "document": "docs/sky-billing.md", "validation": "npm run verify: all stages passed exit 0; log /private/tmp/sky-standalone-verify.log", "observedMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f", "mainIntegrated": false, "runtimeChanged": false, "productionBillingEnabled": false, "nextAction": "Sky単体で月次Provider sandbox一周、重複/月境界/本人分離/復旧を受入"},
   "pixelFirstIosPluginDesign": {
     "date": "2026-10-15",
     "taskId": "SKY07",

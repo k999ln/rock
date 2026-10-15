@@ -12,10 +12,12 @@ flowchart LR
   W[衛星／携帯／固定WAN] --> M
   M --> L[本人が許可したWi-Fi端末]
   M --> S[Sky 能力・実行先の選択]
-  S --> Z[Zema 同じ仕事・成果・usage]
-  Z --> B[契約accountの月次明細]
+  S --> B[Sky 契約accountの月次明細]
+  S -. 任意の管理連携 .-> Z[Zema 同じ仕事・成果・usage]
   B --> P[収納Provider・入金照合]
 ```
+
+Sky単体で利用から月次請求まで完結し、Mini・Jennifer・Zema・RockstarOS導入は必須ではない。Zemaは同じusageを参照する任意の仕事管理入口。
 
 線は設計契約であり、回線や本番Provider接続の証拠ではない。
 

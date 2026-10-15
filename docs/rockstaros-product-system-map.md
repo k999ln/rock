@@ -1,5 +1,30 @@
 # RockstarOS 製品・サービス・システム関係図
 
+## RockstarOSへの統合と各サービスの単体利用
+
+2026-10-15の本人指示により、**RockstarOSにはJennifer・Sky・Zemaを統合する。同時に3つはそれぞれ単体でも利用できる設計とする。** Jenniferは話しかける窓口、SkyはAgent/LLM/Toolの選択・接続・利用と月次請求、Zemaは仕事・進捗・承認・停止・成果・使用額の管理を担う。
+
+**SkyだけでAgent利用から月次請求まで完結する。** JenniferやZema、native OS、Mini、SIMの導入を必須にしない。Zemaの使用額表示はSkyの同じ明細を参照し、請求の成立条件にならない。共通の本人・権限・Job/Run・成果・usage契約をadapter経由で利用し、全サービスの同一DB化や全経路の実装完了を意味しない。[請求責任・状態・保存・復旧・合格条件](sky-billing.md)を正本とする。
+
+```mermaid
+flowchart TB
+  subgraph OS[RockstarOS 統合利用]
+    J[Jennifer 会話の窓口]
+    S[Sky 選択・接続・Agent利用・月次請求]
+    Z[Zema 仕事・進捗・成果・使用額]
+    R[共通runtime 本人・権限・実行・保存・復旧]
+    J --> R
+    S --> R
+    Z --> R
+  end
+  U[既存OS・browserから単体利用] --> J
+  U --> S
+  U --> Z
+```
+
+図は論理的な統合と利用入口を示す。単体利用時は必要な共通backend/adapterへ接続し、native RockstarOSのインストールは要求しない。独立配布・認証・実Provider連携の受入は各経路で別に行う。
+
+
 版: 2.2 / 2026-10-15 / 全体接続と実行状態を明示
 
 **商品入口は、eSIMの通信とsi利用権をまとめて提供するサービス。** 2026-10-15の本人選択に基づく。accountは本人・契約・仕事・成果・予算の正本、OS導入は対応機種ごとの別工程。無料試用/client/browser経路を維持する。[6層の基盤とGrapheneOSの改変可能性](native-os-integration.md)から読む。

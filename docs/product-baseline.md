@@ -1,5 +1,7 @@
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
+
 更新: 2026-10-15。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
 
 利用者は「やりたいことは変わっていない。設計書を最初から組み直したい」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」「古く紛らわしい不要な内容は削除」と明示した。このため本書を**現行方針 → RQ01〜RQ50 → 現在の未受入gate**へ再構成する。旧SIM購入入口、旧Mini構成・価格、日付付き変更ログは現行本文から削除し、Git履歴へ残す。復元先は[Git整理方針](git-consolidation.md)で管理する。固定原本・vendor・受入証拠は変更しない。

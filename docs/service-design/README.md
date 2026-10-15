@@ -1,5 +1,30 @@
 # avocado サービス統合設計
 
+## RockstarOSへの統合と各サービスの単体利用
+
+2026-10-15の本人指示により、**RockstarOSにはJennifer・Sky・Zemaを統合する。同時に3つはそれぞれ単体でも利用できる設計とする。** Jenniferは話しかける窓口、SkyはAgent/LLM/Toolの選択・接続・利用と月次請求、Zemaは仕事・進捗・承認・停止・成果・使用額の管理を担う。
+
+**SkyだけでAgent利用から月次請求まで完結する。** JenniferやZema、native OS、Mini、SIMの導入を必須にしない。Zemaの使用額表示はSkyの同じ明細を参照し、請求の成立条件にならない。共通の本人・権限・Job/Run・成果・usage契約をadapter経由で利用し、全サービスの同一DB化や全経路の実装完了を意味しない。[請求責任・状態・保存・復旧・合格条件](../sky-billing.md)を正本とする。
+
+```mermaid
+flowchart TB
+  subgraph OS[RockstarOS 統合利用]
+    J[Jennifer 会話の窓口]
+    S[Sky 選択・接続・Agent利用・月次請求]
+    Z[Zema 仕事・進捗・成果・使用額]
+    R[共通runtime 本人・権限・実行・保存・復旧]
+    J --> R
+    S --> R
+    Z --> R
+  end
+  U[既存OS・browserから単体利用] --> J
+  U --> S
+  U --> Z
+```
+
+図は論理的な統合と利用入口を示す。単体利用時は必要な共通backend/adapterへ接続し、native RockstarOSのインストールは要求しない。独立配布・認証・実Provider連携の受入は各経路で別に行う。
+
+
 再構成版 1.0 / 2026-10-13 / 設計案と既存契約の整理。製品版は RockstarOS 1.0 Developer Preview を維持する。
 
 利用者の明示指示により、第一者の製品表示はすべて小文字の **si** を使う。[表記契約](../../data/product-terminology.json)に従い、API/schema・package名・task ID・外部固有名と保存原本は互換性と証拠のため保持する。表記変更で能力・実行権限・受入状態は変えない。
