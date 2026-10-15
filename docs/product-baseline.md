@@ -18,7 +18,7 @@
 
 2026-10-15の本人指示「料金プランはsiを使うクラウド代で通信事業者みたいな形にする」により、avokadoはsi cloudの契約・利用枠・使用量・支出上限・明細を提供するサービス事業者を目指す。通信事業者のような利用体験という方針で、法的な事業区分や契約取得の完了宣言ではない。Skyで選ぶmodel/Agentのcloud利用を料金プランへ結び、回線料・Tool代・端末代・外部実費とは別明細にする。端末内だけの推論をcloud usageへ計上しない。
 
-月額、含む枠の有無/量、超過単価は未確定で、本指示だけで旧30%/1,000円等の数値を変更しない。無制限利用やconsumer stored balanceを作らず、見積・並列予約・account上限・usage/請求照合・停止/解約を同じplan版へ結ぶ。[料金契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)と`cloudServicePlanIntent`が具体化の正本。本番課金/paid実行gateは未受入のまま。
+本人の追加指示によりSkyの月額140 USDプランを設計する。利用枠100 USD・運営分40 USDは提案で未承認。含む枠の確定量、税、超過単価は未確定で、本指示だけで旧30%/1,000円等の数値を変更しない。無制限利用やconsumer stored balanceを作らず、見積・並列予約・account上限・usage/請求照合・停止/解約を同じplan版へ結ぶ。[料金契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)と`cloudServicePlanIntent`が具体化の正本。本番課金/paid実行gateは未受入のまま。
 
 ### ソフト・家具・建築へ開くマーケットプレイスとハブ
 

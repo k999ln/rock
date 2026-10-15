@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-15",
+  "taskId": "BIL02",
+  "mode": "stripe-test",
+  "unitTests": {
+    "passed": 10,
+    "command": "node --experimental-strip-types --test tests/sky-cloud-monthly.test.mjs"
+  },
+  "ui": {
+    "usageImport": "passed_with_synthetic_fixture",
+    "invoiceCreation": "blocked_account_api_403",
+    "plan140Calculator": "passed_100_and_140_budget_switch"
+  },
+  "stripe": {
+    "sandboxCreated": true,
+    "accountId": "acct_1UQrEIGfTgzUjVHJ",
+    "sandboxExpires": "2026-10-22",
+    "claimCompleted": false,
+    "roundtripPassed": false
+  },
+  "realCloudExecution": {
+    "performed": false,
+    "reason": "provider credentials and approved budget pending"
+  },
+  "productionBillingEnabled": false,
+  "fullVerify": {
+    "status": "passed",
+    "node": "22.23.3",
+    "environment": "WRANGLER_HIDE_BANNER=true",
+    "log": "/private/tmp/sky-cloud-final-verify.log",
+    "previousFailures": "Wrangler update-check shutdown timeout; release dependency count fixture corrected"
+  },
+  "secretsCommitted": false,
+  "plan": {
+    "monthlyUsd": 140,
+    "usageProposalUsd": 100,
+    "serviceProposalUsd": 40,
+    "allocationApproved": false,
+    "liveEnabled": false
+  },
+  "canvasTypecheck": "passed"
+}

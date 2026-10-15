@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-15 BIL02/O5（DOC04/H1同期）: main 869addcからCloud確定usage→月次請求→Stripe test adapterを実装中。既存精算済み記録のみ取込、本人/金額/アカウント照合・重複防止・署名webhook再取得を追加。専用7件合格。実Stripe sandboxは作成済みだが未claim鍵のaccount APIが403、外部往復未完了。実Cloud実行も接続先/予算待ち。fixtureと実外部受入は分離、本番課金無効。branch codex/sky-cloud-monthly-provider、月額140 USDは本人指定、利用枠100/運営40は提案として試算UIを追加。初回の全体verifyはWrangler更新確認の終了待ちtimeout。WRANGLER_HIDE_BANNER=true・Node22.23.3で全体verify exit 0、専用10件/DB等23件/Canvas型検査/UI計算切替合格。実外部CloudとStripe往復は未完。
+
 2026-10-15 BIL02/O5: PR #142をmain df615298へ統合。Sky単体のAgent利用→月次請求をlocal fixtureを実装。既存citation Agent/workflow/work_jobsを再利用し、料金と模擬入金をsandbox専用記録へ分離。local fixture実装・UI一周/再送/再起動・専用8件・D1移行11件が成功。npm run verifyは全stage exit 0（2242 pass/既存skip1、仕事API1381/CSV385）。ログ /private/tmp/sky-monthly-final-verify.log、証拠 docs/evidence/sky-monthly-sandbox.json。新schemaのjournal/DB件数fixtureとD1 SQL区切り、lint、起動時migration再適用を修正して再検証。本番gate/既存Wallet残高は変更しない。次は実外部Agent署名usageのadapter・実Provider sandbox・料金/訂正/未払い受入。公開なし。
 
 2026-10-15、BIL02/O5（同期DOC04/H1）: 本人指示でSky単体のAgent選択・利用・計測・月次請求を独立成立する設計へ明確化。RockstarOSにはJennifer/Sky/Zemaを統合し各単体利用を保持。請求のZema依存を図から除き、既存台帳/Broker再利用、復旧、sandbox合格条件を正本へ同期。npm run verifyが全stage終了コード0で合格（通常2234 pass/1 skip、仕事API1381、asset208/欠落0）。ログ /private/tmp/sky-standalone-verify.log。最新main a3e7a8caを取得確認、取り込みは未実施。PR #142へ保存、main統合・実装・本番課金は別。次はSky単体の月次sandbox一周受入。

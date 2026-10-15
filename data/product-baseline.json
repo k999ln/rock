@@ -19,7 +19,13 @@
       "pause_expiry_cancellation_and_in_progress_work",
       "itemized_meter_and_reconciliation"
     ],
-    "monthlyPriceDecided": false,
+    "monthlyPriceDecided": true,
+    "requestedMonthlyPriceUsd": 140,
+    "priceDecisionQuote": "月額140ドルでプラン作成して、それでどのくらい使えるのか計算して",
+    "draftPlan": "sky-140-draft-v1",
+    "proposedUsageUsd": 100,
+    "proposedServiceUsd": 40,
+    "allocationApproved": false,
     "includedQuotaDecided": false,
     "overageRateDecided": false,
     "localOnlyInferenceCountsAsCloudUsage": false,
@@ -2619,7 +2625,7 @@
     ],
     "entryDecisionSource": "connectivityServiceBundleDecision",
     "cloudPlanAuthority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
-    "cloudPlanDesignStatus": "operator_plan_intent_confirmed_price_quota_overage_undecided"
+    "cloudPlanDesignStatus": "monthly_140_requested_quota_and_overage_terms_pending"
   },
   "skyCampusMainReconciliation": {
     "decidedAt": "2026-10-14",
