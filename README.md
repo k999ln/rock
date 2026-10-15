@@ -6,6 +6,8 @@
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
+The Pixel reference device is intended to become a dedicated si terminal: after unlock, Jennifer is the primary surface for requests, progress, artifacts, costs and stop controls. Mini can continue the same work without carrying the phone. The current Shell is an ordinary launchable app; dedicated Home, voice integration and full-OS device acceptance remain to be implemented. [Terminal experience and acceptance](docs/native-os-integration.md#si専用端末の利用体験と実装境界).
+
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
 The intended experience is to keep making things without standing at a PC or in front of the object, and to interact without holding a phone. Mini or an accepted ambient host provides the conversation and authoring surface; Pro/cloud can supply optional remote compute. Physical production still needs a capable maker or machine, an approved design revision, and separate completion evidence. [Experience and acceptance](docs/service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験) are design requirements, not claims of working hands-free hardware or fabrication.
@@ -307,7 +309,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-14 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-15 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level

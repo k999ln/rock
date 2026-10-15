@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-14
+更新日: 2026-10-15
 
 ## 全体
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊app体験→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
+通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

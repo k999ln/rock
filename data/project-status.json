@@ -1,4 +1,43 @@
 {
+  "dedicatedSiTerminalDesign": {
+    "date": "2026-10-15",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "coordinationTask": "DOC04",
+    "sourceMainSha": "ef1c9a7a7f4ab042bdc2c81e1d6c6b97dd77977c",
+    "status": "design_verified",
+    "authority": "docs/native-os-integration.md#si専用端末の利用体験と実装境界",
+    "ownerQuote": "ai専用端末に変えたいんだよね",
+    "runtimeChanged": false,
+    "physicalAcceptance": "not_run",
+    "nextAction": "非破壊の一仕事とHome試作briefを固定し、owner選択/解除・再起動・同Job復元を受け入れる。",
+    "verification": {
+      "commands": [
+        "npm run project:update",
+        "npm run baseline:check",
+        "npm run design:check",
+        "npm run verify",
+        "git diff --check"
+      ],
+      "result": "pass_locally",
+      "node": "22.23.3",
+      "fullVerifyLog": "/private/tmp/rock-si-terminal-verify.log",
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0
+      },
+      "workApiAssertions": 1381,
+      "physicalCases": "DT01-DT06 not_run"
+    },
+    "gitEvidence": {
+      "branch": "codex/si-dedicated-terminal",
+      "readbackCommand": "gh pr view codex/si-dedicated-terminal --json state,mergedAt,mergeCommit,headRefOid",
+      "sitePublished": false
+    }
+  },
   "grapheneCloudFoundation": {
     "date": "2026-10-15",
     "taskId": "OS11",
@@ -262,9 +301,9 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-14",
+  "updatedAt": "2026-10-15",
   "milestone": "通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる",
-  "nextAction": "通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊app体験→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。",
+  "nextAction": "通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。",
   "tasks": [
     {
       "id": "AMC02",

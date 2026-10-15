@@ -10,6 +10,10 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 2026-10-15の[基盤設計](native-os-integration.md)に従い、eSIM通信＋si利用権商品を入口とし、account・回線profile・device鍵・OS image・cloud実行・請求を別々に照合する。GrapheneOS改変は対応Pixelのdevice profileであり、Linux/QEMU、Mini、Proのimageと合格を共用しない。
 
+## si専用端末の参照profile
+
+Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。現在のShell通常起動appからHome/必要な音声role/OS統合へ段階受入し、DT01〜06は未実行。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
+
 ## 制作場所と計算場所を分ける共通runtime契約
 
 [携帯を持たない制作/対話](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)は、Mini/対応hostの入力・応答、離れた計算先、確定版の製作先を既存Job/Artifact/Receiptへ接続する。声/在室を本人承認へ昇格させず、非電話の本人確認、recipient/版/grant/上限/失効をBrokerで確認する。端末移動は同じ仕事の再取得で、承認済み版変更や応答喪失からの二重実行を拒否する。実機・自然文理解・製作作用は別受入。

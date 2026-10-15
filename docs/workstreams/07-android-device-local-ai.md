@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## si専用端末のHome受入
+
+本人の2026-10-15指示を[端末体験契約](../native-os-integration.md#si専用端末の利用体験と実装境界)へ固定する。OS11/O6/ROCKが主担当、DOC04/WEB04/AI04/SKY07/SKY21/RLS02が接続する。現在のShellはMAIN/LAUNCHERでHOME/voice role未宣言。非破壊の一仕事→owner選択/解除可能なHome→必要な音声入力→同imageのOS/更新/復旧の順とし、DT01〜06は未実行。検証commandは`npm run baseline:check`、`npm run design:check`、`npm run verify`、実装時は`docs/os-prototype.md`のAPK/SQLite/端末試験とOS受入reportを追加する。
+
 ## GrapheneOSと通信＋si商品の土台
 
 2026-10-15の[基盤調査](../native-os-integration.md)はOS11/O6（ROCK）、同期はDOC04/H1。32項目をapp/role、source/privileged、機種/partner条件、cloud、一般化不可へ分類する。SIM01は購入/発行/利用権binding、SKY07/SKY21/BIL02は実Provider/共通予算/明細、RLS02は正式署名/flash/独自OTA/復旧を担当する。通信＋si商品入口という本人選択を反映するが、既存gate/source lock/鍵を変えず、実発行・cloud課金・flashは行わない。ADB接続0件で本日の実機状態は未確認。

@@ -1,4 +1,58 @@
 {
+  "dedicatedSiTerminalIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "ai専用端末に変えたいんだよね",
+    "displayTerm": "si",
+    "authority": "docs/native-os-integration.md#si専用端末の利用体験と実装境界",
+    "scope": "pixel_reference_profile_and_shared_job_experience",
+    "targetDevice": "Pixel 10 GL066 / frankel",
+    "primaryEntry": "si_home_after_unlock",
+    "conversationSurface": "Jennifer",
+    "capabilityHub": "Sky",
+    "jobRecord": "Zema",
+    "enforcement": "RockstarOS Broker / Platform Core",
+    "defaultReasoning": "contracted_cloud_when_accepted",
+    "localModelRequired": false,
+    "appSelectionRequiredForRoutineJob": false,
+    "ambientMiniContinuesSameJob": true,
+    "generalAppPolicy": "undecided_keep_recovery_settings_and_manual_stop",
+    "runtimeImplemented": false,
+    "physicalAcceptance": "not_run",
+    "changesLiveExecutionGates": false,
+    "acceptanceCases": [
+      {
+        "id": "DT01",
+        "case": "boot_unlock_home_restart_restore_same_owner_and_job",
+        "status": "not_run"
+      },
+      {
+        "id": "DT02",
+        "case": "request_edit_review_save_resume_without_app_selection",
+        "status": "not_run"
+      },
+      {
+        "id": "DT03",
+        "case": "cloud_unavailable_offline_save_stop_no_hidden_fallback",
+        "status": "not_run"
+      },
+      {
+        "id": "DT04",
+        "case": "locked_other_person_mute_private_output_and_approval",
+        "status": "not_run"
+      },
+      {
+        "id": "DT05",
+        "case": "quote_budget_stop_uncertain_result_reconcile_without_duplicate_action",
+        "status": "not_run"
+      },
+      {
+        "id": "DT06",
+        "case": "mini_handoff_same_revision_grant_budget_and_device_recovery",
+        "status": "not_run"
+      }
+    ]
+  },
   "connectivityServiceBundleDecision": {
     "decidedAt": "2026-10-15",
     "source": "Direct owner answer in this chat",
@@ -105,7 +159,7 @@
       }
     ]
   },
-  "version": "2.04",
+  "version": "2.05",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
