@@ -1,4 +1,5 @@
 {
+  "standaloneServiceBillingDesign": {"document": "docs/sky-billing.md", "composition": "docs/service-design/README.md", "owner": "Sky", "requiredCompanionProducts": [], "status": "design_only_provider_acceptance_pending"},
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
@@ -1007,7 +1008,9 @@
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
-        "docs/avocado-mini-hardware-design.md"
+        "docs/avocado-mini-hardware-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "docs/service-design/08-mini-connectivity-and-billing.md"
       ]
     },
     {

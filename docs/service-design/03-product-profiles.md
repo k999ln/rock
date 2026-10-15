@@ -1,5 +1,7 @@
 # 各製品の役割と接続
 
+2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](../sky-billing.md)は設計であり、本番課金受入ではない。
+
 再構成版 1.0。サービスの仕事・権限・成果契約を共有しながら、機器ごとの価値と成立条件を保つ。Sky/Zema/OSを使うためにMini・Pro・rocketstarの完成を待たず、Miniの基本動作にProを要求しない。
 
 ## ソフト・家具・建築へ開くマーケットプレイスとハブ
@@ -16,7 +18,7 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 ## Jennifer（利用者表記 Jenniffer）
 
-**利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
+**会話を選ぶ利用者の、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 
 根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `3349c2475468443bc7ecd94a4e3782343f514a8f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、Web構成・計画・実行接続sourceはPR #113からmain `01d2e418`へ統合済み。今回の設計branchにもmainを保全mergeした。Jevは既存の任意remote evaluatorで、Jenniferと別system。
 
@@ -48,7 +50,7 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 ## avocadoMini
 
-価値は、身体・手・日本語音声で遊び、作り、学び、暮らしへ広げる空間端末。現行R5は**使用時全高200mm以内の銀色円筒、1本自律、同型mini増設、外部給電、別Edge Hub不要**。テレビ・スマホ・Pro・外部PC・インターネットを基本操作と保存の必須条件にしない。[R5正本](../avocado-mini-r5/README.md)と[統合基本設計](../avocado-mini-r5/package/integrated_design.md)を引き継ぐ。
+価値は、身体・手・日本語音声で遊び、作り、学び、暮らしへ広げる空間端末。現行R5は**使用時全高200mm以内の銀色円筒、1本自律、同型mini増設、設置中給電＋携帯電源（部品未選定）、別Edge Hub不要**。テレビ・スマホ・Pro・外部PC・インターネットを基本操作と保存の必須条件にしない。[R5正本](../avocado-mini-r5/README.md)と[統合基本設計](../avocado-mini-r5/package/integrated_design.md)を引き継ぐ。
 
 建築一体型はR5 coreの任意設置profile。新築の計画時に建築士・設備設計者・施工者と天井内の設置位置、点検口、電源、熱、室内への展開/収納、撤去後の原状回復を協議する。天井の種類ごとにmounting kitを分けるが、Mini一台のlocal起動・入力・保存・停止を建物ネットワークやProへ依存させない。施工者と建物所有者は設置・設備の責任を持ち、居住者の私的な音声・映像・作品・Jobの閲覧権を得ない。住まいのToolや家電は対応hostのread/propose/act権限と本人承認を別に受け入れる。設計段階への参入は販路構想であり、契約済み物件や施工完了の証拠ではない。[設置profileと受入](../avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を参照。
 
@@ -61,6 +63,8 @@ Miniはcloud accountなしのlocal guest/個人profileで起動・入力・遊�
 通信optionの確定方針は**国内LTE、IoT data専用SIM、試作カード・量産chip、SGP.32対応SIM、遠隔profile切替を自作しない**。回線つき別model/optionと回線なしMiniを保持する。通信料は自社名義の機器service料に含める設計で、consumer eSIM販売の再開ではない。[Mini通信](../avocado-mini-cellular.md)と[data正本](../../data/avocado-mini-cellular.json)を使う。開発boardのbench試験はR5閉箱受入と分ける。含まれるLTE通信は自社cloudへの制御・Agent・音声のみ。OS/model更新・映像/streaming・game取得等の大容量転送はWi-Fiへ分け、LTEへの無断fallbackを行わない。
 
 未決は光学方式、module/carrier、BOM・熱・電源・収納の統合。MAT系担当が候補比較と非金融prototypeを出し、OWNERが実機・調達条件を確定する。受入は同一実機の単独入力/停止/保存/再起動と、採用表示方式の測定、安全、通信option、製造工程を別々に記録する。
+
+[着脱・衛星Wi-Fiと月次請求の統合](08-mini-connectivity-and-billing.md)で、可搬coreの電源、通信能力、場所権限と本人jobを分離し、実機/収納Providerの受入へ進む。
 
 ## avokadoPro
 

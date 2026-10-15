@@ -171,3 +171,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 ## Mini本体SIMによる独立通信（2026-10-05）
 
 利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。
+
+## 着脱・衛星携帯Wi-Fi
+
+MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivity.md)。取り外し後の電源を必須化し、DP01〜05を同一試作機で受入する。請求はBIL02/O5。設計のみ、実機未受入。

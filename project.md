@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-15、BIL02/O5（同期DOC04/H1）: 本人指示でSky単体のAgent選択・利用・計測・月次請求を独立成立する設計へ明確化。RockstarOSにはJennifer/Sky/Zemaを統合し各単体利用を保持。請求のZema依存を図から除き、既存台帳/Broker再利用、復旧、sandbox合格条件を正本へ同期。npm run verifyが全stage終了コード0で合格（通常2234 pass/1 skip、仕事API1381、asset208/欠落0）。ログ /private/tmp/sky-standalone-verify.log。最新main a3e7a8caを取得確認、取り込みは未実施。PR #142へ保存、main統合・実装・本番課金は別。次はSky単体の月次sandbox一周受入。
+
 更新: 2026-10-15。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
 2026-10-15、OS11/O6/ROCK（同期DOC04/H1）として[Pixelの現在地・実用化P0〜P7](docs/native-os-integration.md#pixelの現在地と実用化の順番)と[監査JSON](docs/evidence/pixel-readiness.json)を作成。main `1cb16d06`同SHAの7 CI成功、手元未commitの17項目候補12 hash一致、過去API v2実機と現v4 unsigned候補、今日のADB 0件を分離する。compile branchはmainの祖先、PR #130は追加2/後退23・check 0でPixel前提にしない。statusの古いcompile tag/統合branchを固定lock/mainへ訂正し、実機更新とはしない。本人のsi cloud料金plan方針を共通契約へ同期、月額/枠/超過単価は未決・既存数値/実gateは維持。branch `codex/pixel-readiness-cloud-plans`で14固定source hash/12手元hash、baseline/design/device/LLM/first-flash設定、Canvas型検査、Node22.23.3の`npm run verify`が合格（通常2235件:2234 pass/既存skip1/fail0/cancel0、仕事API1381、CSV385、asset208/欠落0）。flash設定の合格は0/4の閉鎖を確認したもので、flash受入ではない。ログはGit管理外 `/private/tmp/rock-pixel-readiness-verify.log`。保存/CI/main統合は同branchのGitHub PRで追跡する。原dirty作業木、runtime、鍵、実機、課金、公開は変更しない。
@@ -516,3 +518,11 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 次の作業: P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。
 <!-- project-status:end -->
+
+## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
+
+MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
+
+検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
+
+最終ローカル検証: 回帰2234成功/1skip、型/lint、全設計/基準/担当、Web build/asset closure、仕事API1381・CSV385合格。verifyはsite専用依存不足で一度停止し、依存導入後に停止stage以降をbot:checkまで再開して全て成功。同一headのGitHub CIはPR #142で確認中。
