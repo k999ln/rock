@@ -4,6 +4,8 @@
 
 主担当はGit / CI / Operations、ROCK、既存DOC04、AMC主担当H1。Sky/ZemaはO5/SKY21、WebはWEB06、共通runtimeはOS10、Pro統合設計はP1、PC実装はP2/MAT16、Game/発明は既存AI06等のtaskPlansへ渡す。担当は[Mission Control](../mission-control.md)のtaskAssignmentsを正本にし、prefixから推測しない。
 
+横断調査で見つかった不足は[14 gapと改修順](07-ecosystem-strategy-and-data.md#i-不足を何で補いどの順で直すか)へまとめた。月/Goal予算と後払い、実Provider identity、realm間移行、削除/backup、host/建築Mini/Proの実受入を既存taskへ接続する。
+
 ## 設計入力の現在地
 
 最初の設計入力の読取確認: GitHub main `4273ef02da9dbb28ede8ba8862b874615fa8a0d7`、同一SHA6 check成功。mainにはPR #105/#110由来のcomposition・原成果を保つ編集・レシピ・保存/設定復旧の改善が統合済み。open PRが残っていてもmain内のコードを未実装へ戻さない。公開Site v54/source `b10c566`の既存記録は別artifactであり、今回の公開readbackではない。
@@ -24,7 +26,7 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 初回source `d0151e89`のMCP ZIP/source不一致とSPIDER生成module/依存不足は、`89f869df`/`3349c247`で修復され、同一head8check全成功を確認後PR #113がmainへ統合された。今回のdesign branchもmainを保全mergeし、si表示を同期した。このGit/CIの解消を真正review証拠や本番Providerの受入にしない。
 
-加えて、worker/reviewer別delegationは存在するが、手動owner検収と真正なreviewer証拠のserver相関照合を区別する必要がある。AMC APIでowner/Goal revision/leaf/別delegation/成果hash/usage/判定を照合する受入、COLOMBIA原本/版、context grant、native UI、実Providerのgateを個別に残す。
+現行mainにはAMC APIの型付きTaskReport/ReviewReportと、root/plan/task、workerのpredecessor委任、成果hash、usage、判定のserver相関処理がある。新しい台帳を作り直さず、この処理を再利用して手動owner判断とremote検収を分ける。残る受入は実Providerのidentity/運用上の独立性、公開D1/secret/trust/callbackでの一周、COLOMBIA原本/版、context grant、native UIである。
 
 横断統合では[整合契約と12シナリオ](06-consistency-contracts.md)を先に固定する。root/leaf/子job/role/realmのserver相関、account/Goalを束ねた予算、取消fence、真正なreview/実artifact、grant/保持/削除/backup、authority epochの順で不足を修正する。現行A2AのparentJob予算だけを月上限へ読み替えない。
 

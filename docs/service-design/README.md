@@ -16,6 +16,7 @@
 4. [実現順と受入](04-delivery-and-acceptance.md) — 再利用する実装、不足、担当、合格証拠、次の作業。
 5. [要望の引継ぎ](05-requirement-coverage.md) — RQ01〜RQ49と最新mainで追加されたRQ50の対応先。
 6. [横断整合契約](06-consistency-contracts.md) — 同じ本人・仕事・予算・成果を追う不変条件と12受入シナリオ。
+7. [関連・戦略・データ・取引の調査設計](07-ecosystem-strategy-and-data.md) — 19系統の入出力と不足の補完、25接続、13データ種、15取引、一次資料と改善証拠。
 
 技術の細部は[全体詳細設計](../rockstaros-complete-design.md)、[全Tool詳細](../sky-tools-complete-design.md)、[全設計ポータル](../rockstaros-design-portal.md)から開く。ここはサービス全体を理解し実装判断へ渡す統合基本設計で、原本PDF、各Device Profile、Tool schemaの代用品にはしない。
 

@@ -96,7 +96,7 @@ passの対象範囲・quotaは見積で固定し、並列処理が同じquotaを
 
 `manual_owner_acceptance`はownerが成果を読んで合否を記録した証拠、`verified_independent_review`は別reviewerの真正な成果をserverが相関検証した証拠とする。これは到達分類で、現行API fieldの実装済み表示ではない。
 
-統合済みWorkbenchには全criteriaをownerが確認したbooleanの経路がある。[統合sourceのAMC API](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/app/api/amc/route.ts)は、認証済みA2A reviewer artifact / usageを横断照合していない。画面の合否入力、別delegationの存在、reviewer名だけで独立review合格にしない。
+Workbenchのowner手動判断とは別に、現行mainの[AMC API](../../app/api/amc/route.ts)はA2A artifact / usageから型付き報告を生成し、workerのpredecessor委任・report digest・全criteriaと、別principal（`origin|Agent名|版`）をserverで照合する。このsourceを「相関照合未実装」とした旧説明を訂正する。ただし、実Providerのidentity、別名Agentの運用上の独立性、公開D1/鍵/信頼設定を含む一周の受入は別であり、画面の合否入力やAgent名だけを合格証拠にしない。
 
 到達gateは、owner / realm、Goal ID / revision、leaf、role、別Agent identity、worker対象artifact ID / hash / schema / producer、reviewer delegation / task / artifact、認証済み判定、署名済みReceiptをserverで照合する。同じAgentを表示名だけ変えたreviewerへ割り当てない。
 

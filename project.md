@@ -2,6 +2,8 @@
 
 更新: 2026-10-14。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
+2026-10-14、DOC04/H1/ROCKとして[全系統の関連・戦略・データ・取引設計](docs/service-design/07-ecosystem-strategy-and-data.md)を作成。main `c6df4ca9`の全50 RQ・19領域・37 Toolを、19系統/25接続/13データ種/15取引/14外部候補/14 gapへ対応し、39一次資料と45 source hashを照合した。旧03/04/06のJennifer server相関処理を未実装とする説明は現コードへ訂正し、実Providerの独立性受入は残す。PR #130の建築専門家先行案とlocal Companionは未統合資料として分離。`research:check -- --source-hashes`、8 Mermaid構文、Canvas型検査、`npm run verify`（Node22.23.3）は合格。途中の既存PC adapter cleanup試験1失敗は単独/最終全体の再合格と共に[証拠](data/ecosystem-research.json)へ記録し、runtime修正と呼ばない。最終ログはGit管理外 `/private/tmp/rock-ecosystem-research-verify-final.log`。設計は[PR #135](https://github.com/k999ln/rock/pull/135)へ保存済み。同一head CIとmain統合は確認待ちで、公開・契約・実課金・施工・実機受入は未実施。
+
 2026-10-14、利用者の公開画面で`https://avoado.si/os/sky`が404と判明。v54の公開用Site sourceはmainと異なり`package.json`のbuildが`vinext build`だけで、既存の`stage-sky-domain-router.mjs`を呼ばず、artifactに`domain-router.mjs`/`vinext.js`が入っていなかった。Site sourceのbuildをmainと同じrouter stage込みに戻し、Site専用`next.config.ts`にも`/os/sky`と配下の内部rewriteを追加。Site source `825d117d0ff715f4bb01cd10373313e657061f4d`をv55として公開した。ローカルWranglerで`/sky`→308、`/os/sky`・Agent・NYU hub→200、公開後の同じURLでHTTP 200、利用者の既存ブラウザタブを再読込してSky画面表示を確認した。GitHub mainのrouter stage実装は既存であり、追加のruntime修正はSite sourceだけ。`node --test tests/sky-domain-router.test.mjs` 7/7と`npm run verify`はmain sourceで成功。次の公開でもarchive内の`dist/server/index.js`・`vinext.js`・`domain-router.mjs`を確認する。
 
 2026-10-14、利用者の追加方針「Miniを建つ前から建築に組み込み、複数の天井へ収納する」をR5の任意設置profileとして[Mini設計入口](docs/avocado-mini-r5/README.md)・[製品baseline](docs/product-baseline.md)・[全体図](docs/rockstaros-product-system-map.md)へ反映。既存の一台自律・外部給電・使用時200mm・据置型を維持し、建築/設備/内装の設計と取付/点検、居住者のprivacy/保存を分離した。MAT15（JOINT）が一つの天井型と対象物件を選び、実寸mockupで安全/停止/停電/交換/復旧を実測する。現時点では候補設計で、物件契約・適合認定・施工・製造は未受入。Mermaid構文3/3、`npm run baseline:check`、`npm run avocado:r5:check`、`npm run design:check`、`npm run project:check`、`npm run verify`は合格。全体ログはGit管理外の`/private/tmp/rock-full-system-mermaid-verify-final-ceiling.log`。
@@ -26,7 +28,7 @@ Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整�
 
 ## 現在の作業
 
-主担当はGit / CI / Operations（ROCK）、DOC04 / G04 / H1。作業branchは`codex/service-design-rebuild`。無料account入口、Jennifer→Sky→Zema/AMC→Broker→成果という役割、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持して、サービス設計7冊と周辺入口を現在の契約へ揃える。
+主担当はGit / CI / Operations（ROCK）、DOC04 / H1。作業branchは`codex/ecosystem-research-design`。無料account入口、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。次はG01/G02/G03/G05/G06の共通予算・後払い・Provider・本人分離・data lifecycleを既存担当へ引き渡す。
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 

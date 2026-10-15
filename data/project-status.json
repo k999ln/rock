@@ -1,4 +1,32 @@
 {
+  "ecosystemResearchDesign": {
+    "date": "2026-10-14",
+    "taskId": "DOC04",
+    "primarySquad": "H1",
+    "primaryOwner": "ROCK",
+    "status": "github_saved_pending_ci_and_main",
+    "sourceMainSha": "c6df4ca93e3b9cee9986755e0bf1f333effe54f6",
+    "scope": "all seven product names, 19 indexed design domains, 37 catalog Tools and RQ01-RQ50; relations, compensation, strategy, data and commercial interfaces",
+    "externalAction": "none",
+    "nextAction": "Verify PR135 same-head CI, integrate main; then take G01/G02/G03/G05/G06 via existing task owners before paid/runtime claims.",
+    "authority": "docs/service-design/07-ecosystem-strategy-and-data.md",
+    "evidence": "data/ecosystem-research.json",
+    "coverage": {
+      "requirements": 50,
+      "domains": 19,
+      "tools": 37,
+      "systems": 19,
+      "flows": 25,
+      "dataClasses": 13,
+      "transactions": 15,
+      "sources": 39
+    },
+    "verification": "research:check --source-hashes, baseline/design/project/mission checks, 8 Mermaid syntax checks, Canvas typecheck and npm run verify pass; physical/Provider/Canvas rendered UI acceptance not performed",
+    "runtimeChanged": false,
+    "mainIntegrated": false,
+    "sitePublished": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/135"
+  },
   "skyLocalAgentPreview": {
     "task": "AI04",
     "primaryOwner": "ROCK",

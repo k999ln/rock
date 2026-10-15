@@ -51,6 +51,10 @@ Linux/QEMUの候補は `org.rockstar.citation-organizer` の既存native recipe�
 
 native recipeとPC版Mr.の同名処理を同一商品と決めつけない。既存比較では出力形式に差があり、PC adapterの追加自体は処理速度改善を示していない。[比較記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/hub-wallet-pc-comparison-20260909.md)と[接続制約](pc-citations-adapter.md)を基準に、必要な場合だけ同じ成果契約で比較する。
 
+### 調査を加えた戦略の具体化
+
+[横断調査設計](service-design/07-ecosystem-strategy-and-data.md)は、共通account/仕事/権限/費用/成果を維持し、Miniの建築設置・Proの重い計算・hostの実作用を別adapterで補う。建築・内装・音響専門家を先行利用者にするPR #130は調査時点で未統合の別版であり、本節の文章pilotを黙って置き換えない。比較は同一品質での操作時間、初回成果再表示、保存/復旧、実測費用と再利用で行い、39資料の追加やTool件数だけで優位性を宣言しない。
+
 ## 4. systemごとの責任と既存資産
 
 新しい万能基盤を作り直さない。下表は到達設計であり、すべてが現在のOS imageに接続済みという意味ではない。

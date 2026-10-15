@@ -51,6 +51,8 @@ Clean a file, prepare a listing, develop a material idea, find a community, or b
 
 The map is deliberately drawn from the largest promise down to the smallest implementation unit. A Tool is useful because it participates in the same account, work, permission, and receipt contract.
 
+[Open the researched system, data and transaction design](docs/service-design/07-ecosystem-strategy-and-data.md) for all 19 system contracts, 25 connections, 13 data classes, 15 transaction paths, evidence and remaining acceptance work.
+
 [Open the complete Mermaid system map](docs/rockstaros-product-system-map.md) for the product connections, model-dependent and model-free execution paths, hardware boundaries, and verified versus pending connections.
 
 <img src="docs/brand/avokado/avokado-ecosystem-map.svg" alt="avokado account-led ecosystem map: one account opens Home, Campus, Connect, Add, and Settings; Sky finds Tools, Zema runs work, Wallet explains usage, RockstarOS provides the shared foundation, and Agents and Tools run locally or in the cloud" width="100%">

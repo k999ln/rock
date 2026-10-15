@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.10",
+  "version": "1.11",
   "updatedAt": "2026-10-14",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -15,7 +15,8 @@
     "docs/jev-local-qwen-decision-fabric-design.md",
     "docs/product-baseline.md",
     "docs/mission-control.md",
-    "docs/amc-goal-orchestrator.md"
+    "docs/amc-goal-orchestrator.md",
+    "docs/service-design/07-ecosystem-strategy-and-data.md"
   ],
   "sourceArtifacts": [
     {
@@ -112,7 +113,9 @@
       "id": "product_service_system_relations",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
       "documents": [
-        "docs/rockstaros-product-system-map.md"
+        "docs/rockstaros-product-system-map.md",
+        "docs/service-design/07-ecosystem-strategy-and-data.md",
+        "data/ecosystem-research.json"
       ]
     },
     {
