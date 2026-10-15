@@ -1,5 +1,9 @@
 # Material Invention / avocadoMini
 
+## 携帯・PC前・対象物前を必須にしない制作と対話
+
+2026-10-15の[本人指示と6受入ケース](../service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を追加。設計同期はDOC04/H1（ROCK）、体験はWEB04、能力/仕事連携はSKY21、実機入力/表示/停止と空間到達範囲はMAT15（JOINT）。最初は一室・一作品で電話取り出し0/PC前必須操作0、案/修正/保存/再開を測る。確定版の製作引渡しは非電話の本人確認と設備/専門家の受入を別に通す。新規購入/製作/契約/実送信はこの設計更新では実施しない。
+
 ## サービス設計の再構成
 
 [統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。

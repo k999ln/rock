@@ -1,10 +1,12 @@
 # RockstarOS 製品・サービス・システム関係図
 
-版: 2.1 / 2026-10-14 / 全体接続と実行状態を明示
+版: 2.2 / 2026-10-15 / 全体接続と実行状態を明示
 
 **主商品は、無料avokadoアカウントひとつでSky・Zema・si Agentを使い、成果を仕事・創作・ゲーム・生活へ持ち帰るサービス。** 最新確定は[2026-10-10のアカウント方針](product-baseline.md)。SIM/eSIM購入を利用開始の必須条件に戻さない。新しい説明の全体は[サービス統合設計](service-design/README.md)を先に読む。
 
 データの取得・保存・共有・削除、契約相手と費用、異種規格の役割、不足の補完と改修順は[関連・戦略・データ・取引の調査設計](service-design/07-ecosystem-strategy-and-data.md)を参照する。一次資料39件とrepository sourceを区別し、線があることを接続完了にしない。
+
+2026-10-15の[制作と対話の要件](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を全体へ適用する。制作の入口はMini/対応host、計算先は任意のPro/cloud等、現物の製作先は権限を持つ設備/製作者で分ける。案の保存・製作引渡し・現物完成を同じ成功にしない。
 
 ## 利用者が出会うもの
 
@@ -16,7 +18,7 @@ Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIA�
 
 ```mermaid
 flowchart TB
-  U["本人の目的"] --> ACCOUNT["無料avokadoアカウント<br/>本人・利用権・端末状態は別記録"]
+  U["本人の目的<br/>PC・対象物の前にいない制作 / 携帯なしの対話"] --> ACCOUNT["無料avokadoアカウント<br/>本人・利用権・端末状態は別記録"]
   U --> WEB["Web / PWA / 既存OS client"]
   WEB --> ACCOUNT
   WEB --> GUEST["無登録の有限処理・下書き<br/>保存・課金・本人権限なし"]

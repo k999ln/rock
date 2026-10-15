@@ -1,4 +1,51 @@
 {
+  "ambientCreationDesign": {
+    "date": "2026-10-15",
+    "taskId": "DOC04",
+    "primarySquad": "H1",
+    "primaryOwner": "ROCK",
+    "sourceMainSha": "4945f83ed47aa4b1195a6805f5a4e7e5986b37ce",
+    "status": "design_verified",
+    "authority": "docs/service-design/01-service-experience.md",
+    "baseline": "data/product-baseline.json#ambientCreationIntent",
+    "intent": "制作場所と計算/製作場所を分け、携帯を持たず対話・確認・指示を続ける",
+    "runtimeChanged": false,
+    "physicalAcceptance": "not_run",
+    "providerAcceptance": "not_run",
+    "externalActionsPerformed": [],
+    "verification": {
+      "state": "passed_locally",
+      "commands": [
+        "npm run baseline:check",
+        "npm run avocado:r5:check",
+        "npm run design:check",
+        "npm run project:check",
+        "npm run mission:check",
+        "npm run verify"
+      ],
+      "runtime": "Node 22.23.3 / macOS arm64",
+      "fullVerifyExitCode": 0,
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0
+      },
+      "mermaidSyntax": {
+        "pass": 8,
+        "fail": 0
+      },
+      "fullVerifyLog": "/private/tmp/rock-ambient-verify-final.log",
+      "environmentRepair": "Reused worktree dependencies predated main. Initial typecheck lacked @simplewebauthn/server; npm ci restored current lockfile dependencies and final full verify passed. Runtime source unchanged."
+    },
+    "nextAction": "AC01の一室/一作品を選び、電話/PC前の必須操作0を実測する。非電話の本人確認と確定版の製作引渡しは別受入。",
+    "gitEvidence": {
+      "branch": "codex/ambient-making-design",
+      "integrationAuthority": "GitHub associated pull request mergedAt/mergeCommit; local validation is separate from main integration",
+      "readbackCommand": "gh pr view codex/ambient-making-design --json state,mergedAt,mergeCommit,headRefOid",
+      "sitePublished": false
+    }
+  },
   "ecosystemResearchDesign": {
     "date": "2026-10-14",
     "taskId": "DOC04",

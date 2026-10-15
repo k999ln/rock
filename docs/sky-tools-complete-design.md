@@ -2,6 +2,10 @@
 
 サービス全体の目的、Sky/Zema/OSと各製品の責任、入出力、状態、保存、失敗・復旧、承認、受入と未決定の決め方を[統合基本設計](service-design/README.md)へ整理した。個々のToolの詳細は本書を維持する。`catalogStatus`・`connectionStatus`・本人条件を満たす実行可能性・受入環境を別に説明し、catalogのreadyからcredential設定/実行/本番合格を推測しない。これらの分類は説明の契約で、新schemaへ移行済みとは扱わない。現在の無料account入口と料金設計は最新baselineを優先する。5大学/Fitness等の元dirty候補はmainと別受入。Jenniferは利用者の統括窓口、Zemaは裏側systemとして[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)を継承する。PR #113のsourceはmain `01d2e418`へ統合済み。公開/真正review/Providerは別受入で、新しいcatalog Toolは登録していない。
 
+## 携帯を持たない制作を既存Toolへ接続する
+
+[制作と対話の契約](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)に従い、Skyは入力面から独立して対応する制作/計算/引渡し能力を選ぶ。新たなcatalog Toolや任意shell/設備操作APIはここで登録しない。既存四状態Jobと版付き成果を使い、製作先の能力/schema/確定版/宛先/見積/本人承認/結果不明照合を個別に受け入れる。未接続なら保存済み案から待機・再開する。
+
 # Sky／Zema／全Tool詳細設計
 
 版: 1.2 / 2026-09-27

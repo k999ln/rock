@@ -26,6 +26,12 @@
 
 現行mainの最初の商用pilotは文章を納品する個人事業主。PR #130には建築家・interior designer・sound/acoustic professional自身の住まい/studio/事務所から始める追加方針が未統合で保存されている。調査からの提案は**建築専門家が使う一室で、設計/制作→設置→暮らし→保守を実証する**ことである。どちらを先に資金/人員投入するかは、最新版baselineへ明示してから固定する。原稿pilotやGame要求を黙って削除しない。
 
+### A2a. PC・対象物・携帯から制作の入口を解放する
+
+2026-10-15の本人指示により、制作場所と計算場所を分ける。本人はMini/対応空間hostから話し、案/版を確認し、PC/Pro/cloudは必要な計算先として使う。現物が目の前にない時は許可済み図面/寸法/計測を参照し、デジタル成果→確定版→製作引渡し→測定/受取を同じJobの工程記録へつなぐ。データは既存D01/D02/D04/D05/D06/D07/D08/D09、商流は既存T02/T04/T05/T08の責任を再利用する。これらは接続契約で、新しい実機/製作Providerの完成ではない。
+
+[6受入ケースと引継ぎ](01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を基準に、通常の制作/対話は携帯を取り出す回数0・PC前の必須操作0を測る。私有応答の出力先と非電話の本人確認を別途受け入れ、未成立では作用を保留する。前日の調査SHA/45 hash/39資料は当時のsnapshotとして保持し、本追加方針は本人指示を根拠に区別する。
+
 ### A3. 共通化と分業
 
 Rockが持つのはidentity/grant、Job/Artifact/Receipt、予算/重複防止、停止/結果不明照合、SDK/Package/互換、local保存/復旧。外部へ求めるのはmodel、正式決済/通信、OEM、建築/電気/音響/材料/航空宇宙の専門能力である。JOINTのadapter受入で両側を結び、OWNERが対象・外部作用・費用・公開を選ぶ。UIは既存の業務契約から状態を表示し、名前ごとの独立microservice/DBを増やさない。
@@ -47,7 +53,7 @@ Rockが持つのはidentity/grant、Job/Artifact/Receipt、予算/重複防止�
 
 ```mermaid
 flowchart TB
-  U["本人の目的 / 許可する資料"] --> J["Jenniffer / Jennifer<br/>Goalと確認事項"]
+  U["本人の目的 / 許可する資料<br/>Mini・対応hostから電話なしで入力"] --> J["Jenniffer / Jennifer<br/>Goalと確認事項"]
   U --> S["Sky<br/>能力・作者・版・条件を選ぶ"]
   J --> Z["Zema / AMC<br/>依存・承認・停止・成果"]
   S --> Z
@@ -58,7 +64,7 @@ flowchart TB
   V --> Z
   Z --> W["Wallet / Commerce<br/>予約・usage・請求・返金を照合"]
   MINI["Mini<br/>一台自律・任意の建築取付"] -. "入力 / local作品" .-> B
-  PRO["Pro<br/>独立NVIDIA PC"] -. "private計算 / 制作" .-> B
+  PRO["Pro<br/>離れた計算先にもなる独立NVIDIA PC"] -. "private計算 / 制作" .-> B
   C["Campus / NFC / host app"] --> S
   SEC["SPIDER / Identity / Release"] --> B
   B --> INF["Web D1/R2 / Android SQLite / QEMU<br/>保存realmとauthorityは別"]
