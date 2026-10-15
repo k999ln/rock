@@ -29,6 +29,13 @@
       "when": 1792080000000,
       "tag": "0016_sky_monthly_sandbox",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1792080000001,
+      "tag": "0017_sky_cloud_monthly_test",
+      "breakpoints": true
     }
   ]
 }

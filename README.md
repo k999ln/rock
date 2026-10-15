@@ -386,3 +386,7 @@ After changing progress records or generated status, run the repository-prescrib
 Recording, external publication, appliance operation, purchasing, and payment each need their own permission. RockstarOS 1.0 is a Developer Preview. Packages in `public-release/rockstaros/` are MIT-licensed; a reuse license for the rest of the proprietary code has not been selected. Bundled open-source software, models, and external services keep their own terms. Images and GIFs are concept material, not product photographs or evidence of a working spatial display, manufacturing approval, safety performance, carrier availability, live billing, or production integration. [Distribution requirements](docs/release-minimum-gates.md) · [Sources and licenses](docs/mr-integration.md)
 
 [Miniの建築埋込・着脱・衛星Wi-FiとAgent月次請求](docs/service-design/08-mini-connectivity-and-billing.md)を統合設計へ追加。携帯電源・直接衛星通信・月次収納は設計段階で、実機/本番受入は未完了。
+
+### Cloud使用量→月次請求のProviderテスト
+
+既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。実Provider往復はsandbox claim待ち、実Cloud実行は接続先/予算待ち。本番課金は無効です。

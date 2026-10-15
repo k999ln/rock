@@ -265,3 +265,36 @@ RQ36により、`0004_rock_settlement_wallet.sql`でRock受取operator、5分cha
 既存のusage、予算予約、Wallet/請求storeとProvider参照を再利用する。契約version、支払同意reference、billing period/timezone、usage ID、invoice ID、明細revision、入金reference、通知履歴、異議、restriction reasonを本人別に保存。確定請求を直接上書きせず訂正記録で追跡する。
 
 合格条件は、同一account複数Mini/ゲーム/Agentの集約、上限を超える同時実行拒否、月境界/遅延usage、重複/順序逆転通知、引落し失敗/結果不明、異議/訂正、制限後の入金復旧、解約後最終請求のsandbox往復。すべて追加の本番受入は未実施。対象国、B2C/B2B、請求/収納主体、料金単位、締日/支払日、猶予/再試行、与信/上限、収納Provider、回収委託先は未確定。既存買い切り決済やfixtureを月次後払いの完成へ換算しない。
+
+## Cloud使用量とStripe test接続
+
+BIL02/O5が既存RemoteAiTextStoreのcompleted/priced/settled記録と、既存A2A storeで署名検証・精算済みのusage receiptを月次明細へ取り込む。Jennifer/Zemaは不要。本人別の既存work_jobs/予算承認/上限/実行精算を維持し、請求取込時にWalletを再精算しない。入力は種類と実行IDのみで、金額はserver側の保存済み記録から取得する。実行Providerは既存接続設定、決済Providerは別のStripe sandbox設定を使用する。
+
+保存は0017のinvoices/items/events。source IDとprovider referenceを一意にし、月はUTCの確定時刻、USD/JPY、価格版とusage snapshot/hashを保存。請求合計はDB triggerで加算し、明細の編集/削除を拒否。1請求は同一owner・月・通貨・Stripe accountに限定し、draft→submitting→open→paid、異常はattention。締め後追加は拒否し、遅延usage/訂正/返金の翌月調整は未実装。自動月締め・税・与信・未払い制限も未実装で、今回の受入を本番後払い完成としない。
+
+画面は利用記録の取込→表示額確認→テスト請求作成→照合。Stripeへ送るのは合計・内部請求ID・月で、原稿や個別usageは送らない。顧客/請求/明細/確定それぞれに固定idempotency keyを使用。timeoutは同じ請求で23時間以内に再開し、それ以降は自動再送せず人がProvider側を照合する。確定後も本体・通貨・金額・顧客・metadata・sandbox一致を取得APIで確認し、paidは支払額全額一致と残額0のみ。Webhookはraw bodyの署名と時刻を検証、イベント重複を拒否、通知内容だけでpaidにせず再取得する。
+
+`/sky/billing/provider-test`と`/api/sky/cloud-monthly-test/{account,webhook}`はstripe-test設定かつHTTP loopbackだけ。有効な既存本人認証を使い、POSTは同一Originを要求する。専用Mac起動はsynthetic accountを使う。test鍵以外、別account、livemode objectを拒否する。未claimの権限制限やaccount API 403を理由に照合を解除しない。契約・本番鍵・実カード・銀行口座を使わない。
+
+起動用のGit管理外0600 JSONに `SKY_CLOUD_MONTHLY_MODE=stripe-test`、`SKY_MONTHLY_STRIPE_KEY`、`SKY_MONTHLY_STRIPE_ACCOUNT`、`SKY_MONTHLY_STRIPE_WEBHOOK_SECRET`を設定し、次を実行する。Stripe CLIは対象sandbox profileでlistenし、通知を下記portのwebhookへ転送する。設定やclaim URLはログ/Gitへ出さない。
+
+```sh
+SKY_MONTHLY_PROVIDER_TEST=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json npm run sky:monthly:sandbox
+node --experimental-strip-types --test tests/sky-cloud-monthly.test.mjs
+```
+
+Mac画面は `http://127.0.0.1:5222/sky/billing`。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+
+合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。最後の2項目は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
+
+### Sky 140 の料金案と利用量試算
+
+本人が2026-10-15に月額140 USDを指定。`sky-140-draft-v1`として記録し、`lib/sky-plan-estimate.ts`とProviderテスト画面で比較する。料金の指定は実Cloud消費予算の承認や本番契約ではない。利用枠100 USD相当（Provider原価ベース）＋運営分40 USDは提案で未承認。枠は返金/送金できる預金ではなく月内サービス使用上限。超過自動請求なし・枠到達停止・繰越なしを案とする。税、適格Agent、契約更新/解約、未使用枠、返金、異議、決済料金/採算、原価単価を利用者向けにどう表示するかは本番前に決定する。通信/SIM/端末料金は別。40 USDは利益ではなく決済・保存・サーバー・サポート・損失等の控除前残額。
+
+[OpenAI公式料金](https://developers.openai.com/api/docs/pricing)、[Anthropic公式料金](https://platform.claude.com/docs/en/about-claude/pricing)を2026-10-15確認。標準、cache割引なし、各呼出しは短いcontext枠と仮定。入力/出力100万token当たりUSDは、GPT-6 Luna 0.10/0.50、GPT-6.1 Sol 2/10、GPT-6 Astra 10/50、Claude Sonnet 5.5 2/10、Claude Opus 5.5 4/20。これは試算であり、既存の署名付き実行rate cardやProvider対応表を置換しない。
+
+計算式は `floor(利用原価枠 ÷ ((全呼出し入力token × 入力単価 + 全呼出し課金出力token × 出力単価)/1,000,000 + 外部Tool等の原価))`。出力には推論tokenを含む。標準1仕事を全呼出し合計入力50,000/出力10,000tokenとすると、100 USD枠ではLuna 10,000件、Sol/Sonnet 500件、Opus 250件、Astra 100件。140 USD全額を原価に使う比較ではそれぞれ14,000/700/350/140件。各モデルを単独利用した場合で、全件数を同時に提供する意味ではない。
+
+Solで軽い仕事入力10,000/出力2,000を1,000件（40 USD）、標準200件（40 USD）、長い仕事入力500,000/出力100,000を10件（20 USD）の組合せは計1,210件/100 USD。長い仕事は複数の短context呼出しの合計と仮定する。検索・ツール・runner・長context割増・再試行が加われば減る。OpenAI Web検索は1,000回10 USDと検索内容token分が別に必要。品質/完遂率・実トークン消費の測定前なので保証回数ではない。
+
+定額契約と既存従量test invoiceの合算/控除は未実装。140 USD＋含むusageの二重請求を避ける必要があり、承認されたplan版を既存商品/契約schemaに接続し、月次quota予約→実使用→請求相殺の受入後に有効化する。今回の画面は試算、外部Stripe商品/Subscriptionは未作成。
