@@ -4,6 +4,8 @@
 
 ### One account. More ways to play, make, and get things done.
 
+[Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
+
 The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.

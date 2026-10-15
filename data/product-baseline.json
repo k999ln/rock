@@ -1,4 +1,43 @@
 {
+  "pixelSiReferenceDesignIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction_in_current_message",
+    "ownerQuote": "残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして",
+    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+    "evidence": "docs/evidence/grapheneos-source-audit.json",
+    "researchTag": "2026100600",
+    "compileInputTagUnchanged": "2026100200",
+    "modules": [
+      "PX-HOME",
+      "PX-VOICE",
+      "PX-SKY",
+      "PX-LOCAL",
+      "PX-LINK",
+      "PX-JOB",
+      "PX-COST",
+      "PX-RELEASE"
+    ],
+    "acceptanceIds": [
+      "PX01",
+      "PX02",
+      "PX03",
+      "PX04",
+      "PX05",
+      "PX06",
+      "PX07",
+      "PX08",
+      "PX09",
+      "PX10",
+      "PX11",
+      "PX12"
+    ],
+    "reuseExistingBrokerTransportsAndWorkflow": true,
+    "rootAuthorityFixedPerJob": true,
+    "speechServicesBundledTtsVerifiedStatically": true,
+    "japaneseAsrTtsAccepted": false,
+    "runtimeImplementedByThisChange": false,
+    "priceOrExecutionGateChanged": false
+  },
   "cloudServicePlanIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",
@@ -347,7 +386,7 @@
       }
     ]
   },
-  "version": "2.07",
+  "version": "2.08",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",

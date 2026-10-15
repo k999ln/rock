@@ -1,6 +1,6 @@
-# avocadoOS — LLM・評価モデル設計
+# RockstarOS — LLM・評価モデル設計
 
-更新日: 2026-09-27。対象: `avocadoOS 1.0` / `dev.rock`。
+更新日: 2026-10-15（Pixel実装設計への接続を追補）。対象: `RockstarOS 1.0` / `dev.rock`。
 
 この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [siネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
@@ -67,7 +67,9 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 ## 3. Local plannerの契約
 
-現在の経路は `Sky selection → Zema request → Broker → Local AI plan-only API v2 → Broker validation → Engine → review` である。
+現在のsource契約は `Sky selection → Zema request → Broker → Local AI plan-only API v4 → Broker validation → Engine → review`。`contracts/local-ai-runtime.json`を正本とし、9月のAPI v2実機証拠を現v4実機合格へ転用しない。transport識別子等に残るv2は互換IDとして扱い、実際に照合するAPI版と混ぜない。
+
+Pixel si端末への組込みは[実装設計](native-os-integration.md#pixel-si専用端末の実装設計)のPX-VOICE/PX-LOCAL/PX-LINK/PX-JOBへ対応する。GrapheneOS SpeechServices v3のTTSと、ASR、会話LLM、Tool実行を分け、日本語ASR/TTSは未受入の不足とする。混合工程はmodel推論先/runner/root authorityを別々に固定し、realm間adapter受入前に利用可能と表示しない。
 
 Local siは閉じたJSON Schemaへplan候補を返す。Brokerは次を再検査する。
 
