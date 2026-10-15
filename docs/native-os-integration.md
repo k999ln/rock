@@ -1,4 +1,6 @@
-# RockstarOS — GrapheneOS・eSIM・LLMクラウドの基盤設計
+# RockstarOS — Pixel si専用端末とSky・クラウドの設計
+
+**Pixelの具体的な実装方針は[Pixel si専用端末の実装設計](#pixel-si専用端末の実装設計)を参照。** 2026-10-15の追加依頼に基づき、GrapheneOSの固定構成・公開差分・同梱app・kernel/vendorの確認範囲を[コード調査台帳](evidence/grapheneos-source-audit.json)へ記録する。前の73項目は説明用の分類で、全機能数や全ソース精読の証拠ではない。以下の32項目は改変可能性、追加節は採用・改変・追加の実装判断として読む。
 
 更新: 2026-10-15 / OS11（O6、ROCK）・DOC04（H1、設計同期）。基準main `8b374cfc7838d3a751faf5e28b367c860ddbcd0d`。利用者の「通信とsi利用権をまとめる商品入口」「GrapheneOSをもとに、書換え可能性とできることを全部調べる」に対する調査設計。機械可読根拠は[調査台帳](evidence/graphene-cloud-foundation.json)。
 
@@ -414,3 +416,167 @@ GrapheneOSの公式build資料に従い、full buildはx86_64 Linux、RAM32GiB�
 旧native統合文書は、[基準mainのGit履歴](https://github.com/k999ln/rock/blob/8b374cfc7838d3a751faf5e28b367c860ddbcd0d/docs/native-os-integration.md)から復元できる。Linux/Buildroot/QEMUの実装と受入は削除せず、`systems/rock-star-os/`と[native検証](native-os-validation.md)を独立して維持する。固定IMPORT-MANIFEST/vendor/原本/署名/source lockは変更していない。
 
 検証結果は[進捗JSON](../data/project-status.json)の`grapheneCloudFoundation`へ記録する。本書は調査設計で、実OS書込み・開通・クラウド契約・Provider実行・課金・配備を実施した報告ではない。
+
+## Pixel si専用端末の実装設計
+
+2026-10-15 / OS11・O6・ROCK、設計同期DOC04・H1。本人の追加指示「残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして」を具体化する。基準mainは`a3e7a8ca8c166dc670a811a735b104dde9fd958f`、同SHAの7 CI成功を確認した。RQ01〜RQ50、DT01〜06、SC01〜05、既存の料金・初回flash gateを維持する。
+
+### 1. 固定版と調査の意味
+
+調査版はGrapheneOS `2026100600`、manifest commit `26f7e8a760d4343a501faf09773ec4cc61a6b56b`。構成は1,057 project、うちGrapheneOS側remoteは129。公開GitHub/GitLabの構成と、取得できたAndroid基盤との差分、独立app、Pixel 10用設定を横断する。公式機能ページのAndroid 16という説明と、調査manifestの`android-17.0.0_r1`を混同しない。原稿・大量ログ・diff・APK・kernel・imageはGitへ入れず、revision/hash/対象/取得失敗/未検証条件を[台帳](evidence/grapheneos-source-audit.json)へ保存する。
+
+GitHub 127件とGitLab 2件の構成を取得し、86 repositoryのAOSP比較diff（binary/シンボル表を含む2,611 entry）と、選択取得したsource/config 4,705 fileを検索した。diff APIの300 file上限で切らず、downloadしたdiffの行頭headerを数える。DeskClockは比較diff取得に失敗したためsource snapshotへ切り替え、14件のkernel prebuiltはsource精読の代わりにしていない。独立app sourceは別commitを固定し、OS同梱APKとのbyte再現は未証明と記録する。
+
+Rockの**採用compile入力は引き続き2026100200**。調査版とはGrapheneOS側27 projectのrevisionが異なる。Settings/NetworkLocation/Updaterは同一だが、framework/Virtualization/adevtool等は異なる。調査版の存在を理由にlockや受入済みAPKを更新しない。採用更新はsource署名・差分・vendor/復旧互換を確認する別作業とする。
+
+「全構成を分類して公開差分を検索した」「主要処理の制御を追った」「同一imageで実機合格」は別の証拠である。vendor firmware/HAL、kernel prebuilt、Google由来部品のbinary内部、全Android API、全flag組合せの動作は今回のsource検索だけで保証できない。未公開部分は必要なinterface/版/hashと実機試験へ落とし、機能を推測して埋めない。
+
+Pixel 10 kernelの参考checkoutは`kernel_pixel_6.6` commit `66529eed85e8f3ccbda7f74911b125e7d6df7efc`、内側ACKは`de3eb0b989169834cea291dd421a4cb4619bbf88`へ固定して設定を確認した。muzelのbuild scriptには`--disable_slab_canary`があり、総論の防御一覧を全機種で常に同じ有効設定と扱わない。この参考sourceが固定OS prebuiltを再現することや、現在の実機で当該flagが有効なことまでは確認していない。
+
+### 2. 端末が提供する体験と境界
+
+Pixelを解除するとsi Homeを開き、Jenniferへ依頼し、作成・修正・確認・保存・再開する。SkyはAgent/LLM/Toolを選び接続する入口、Zemaは同じ仕事の進捗・承認・成果・費用・停止を扱う。推論結果は計画候補であり、端末Brokerまたはサーバー側policyが再検査した範囲だけを実行する。利用者がPCの前へ移動しなくても、許可したcloud/Pro等を計算先にできる。
+
+初期試作の音声入力は明示した開始/停止から受け入れる。常時hotword、ロック中の私有読み上げ、声だけの購入/送信承認を最初の完成条件へ紛れ込ませない。文字入力・設定・緊急機能・mute・手動停止・復旧を常に残す。Mini/建築hostへ移った場合もPixelの携行や中継を必須にせず、受入済みhostが同じaccount/仕事の許可を再取得する。
+
+```mermaid
+flowchart TB
+  U["本人 / 解除・入力・承認"] --> H["Pixel si Home / Jennifer"]
+  G["GrapheneOS基盤<br/>AVB・暗号化・権限・回線・更新"] --> H
+  H --> S["Sky<br/>能力・版・接続先の選択"]
+  H --> Z["Zema UI<br/>仕事・成果・使用額・停止"]
+  S --> B["端末Broker<br/>本人・UID・scope・版・上限検査"]
+  Z --> B
+  B --> L["非信頼local LLM / local音声"]
+  L -->|"提案のみ"| B
+  B --> T["端末の有限Tool / 許可したアプリAPI"]
+  B --> C["既存device transport<br/>HTTPS・限定session・送信scope"]
+  C --> A["自社cloud API<br/>本人・利用権・承認を再検査"]
+  A --> J["D1 Zema/AMC・A2A<br/>Job・委任・予約・revision"]
+  J --> R["限定runner / Provider adapter"]
+  R --> M["選んだmodel・Agent・Tool<br/>外部API / 自社GPU / 本人Pro"]
+  M --> E["成果・Receipt・usage照合"]
+  E --> J
+  J --> C
+  E --> BILL["plan版・明細・後払い照合"]
+  MINI["Mini / iOS / 他host<br/>個別の権限・出力先"] --> A
+  OTA["独自署名・OTA・復旧<br/>仕事cloudとは別trust"] -.-> G
+```
+
+矢印は接続設計で、全経路の実装完了を示さない。local LLMの結果、cloud response、push通知、接続済み表示を本人承認や成功証拠にしない。
+
+### 3. そのまま引き継ぐもの
+
+| 領域 | 採用判断 | 接続・確認条件 |
+| --- | --- | --- |
+| boot/kernel/vendor・AVB・SELinux | GrapheneOS/機種適合BSPと防御を維持 | 独自root APIや汎用daemonを追加しない。kernel sourceとprebuiltの対応、vendor inventory、署名、rollbackを同imageで検査 |
+| 暗号化・Keystore・画面ロック・ユーザー隔離 | 維持 | OS解除とcloud account、私有成果、支出承認は別。Direct Bootで私有鍵や原稿を先読みしない |
+| 通話/SMS・緊急機能・Wi-Fi/BT/NFC・eSIM管理 | 既存UI/APIを再利用 | 国/SKU/carrier別受入。回線profileをownerやTool許可にしない。回線の停止を仕事取消成功にしない |
+| Network/Sensors/Storage/Contact Scopes・Secure Paste | 強制を維持 | Agentの便宜で一括許可しない。IME/アクセシビリティ/共有UID等の例外もdata flowへ含める |
+| 設定・通知・privacy indicator・USB制御 | 維持 | si Homeから到達可能にする。収音表示や権限promptを隠さない |
+| Vanadium/WebView・Camera・PDF・Files・キーボード・TalkBack | 基本部品として再利用 | Web表示、明示撮影、共有picker、文書確認を使う。入力/保存権限を常時の全端末走査へ拡張しない |
+| 連絡先・時計・計算機・Calendar等 | 基本機能として保持 | 専用端末という理由だけで削除しない。一般アプリ制限の強さは本人判断待ち |
+| アプリ互換・sandboxed Play・Android Auto | 必要な人の追加能力 | 標準での必須化はしない。外部appの受入条件、権限差分、private profileを別検査 |
+| 端末診断・Auditor・LogViewer・Seedvault | 既存機能を入口に使う | 独自OS鍵の認証受入、ログの本文秘匿、アプリ別backup対象、Keystore全損は追加受入 |
+| Linux Terminal/AVF | 任意の制作実行先候補 | 組込flag/VM能力/容量/guest像/port/保存/停止を受入後にSkyへ登録。存在だけで任意shell公開や本番Tool実行を許可しない |
+
+住所↔座標、80%充電上限、代替touch、CT/Widevine配信先、Play Integrity通知/拒否、Security Preview、プロファイル間clipboardは調査台帳へ独立記録する。設定定義だけの項目は、利用可能機能と同列にしない。充電制御の下位経路とNFC_AUTO_OFFの実利用経路は特に未確認条件を保持する。
+
+### 4. 改変するところ・追加するところ
+
+以下は論理moduleの分割で、新しい独立microserviceや完成済みpackageを増やした宣言ではない。
+
+| ID / 担当 | 再利用するsource | 具体的な差分・責任 |
+| --- | --- | --- |
+| PX-HOME / OS11・O6、表示WEB04・O5 | `android/shell`、`ShellConnection`、既存device-home API | HOME候補/本人による既定選択、Jennifer入力、仕事/確認/成果/費用/停止。戻る/解除/再起動/crash/更新後の復帰を追加。現在はLAUNCHERのみ |
+| PX-VOICE / OS11・O6、AI04・O2 | Android音声API、TalkBack/TTS、既存LLM境界 | 明示収音、日本語ASR、読み上げ、通話競合、音声出力先、mute。LLMへの入力とTool承認を分離し、ロック中の秘密出力を拒否 |
+| PX-SKY / SKY07・O4 | catalog、接続、Device Capability、model registry | model/Agent/Toolの作者・版・license・能力・実host・資源・送信先・見積をnativeへ投影。modelのdownload/検証/導入とAPI接続を区別 |
+| PX-LOCAL / AI04・O2、OS11・O6 | Local si API v4、GGUF/llama.rn、Engine、有限Tool SDK | 同一signer/API/型を照合した一仕事。model更新・容量不足・hash不一致・熱/低電池・読込み失敗・停止・再起動後の再読込みを受入 |
+| PX-LINK / SKY21・O5、端末OS11・O6 | `AndroidRockstarDeviceAuthorizationTransport`、`AndroidRockstarDeviceSessionStore`、`AndroidRockstarDeviceHomeTransport`、`AndroidA2ABrokerDeviceTransport`、`lib/rockstar-device-link.ts` | 既存の本人連携・暗号化session・HTTPSを再利用し、認可済みJob/入力/成果/取消の操作へ限定。汎用URL fetchやProvider鍵配布にしない |
+| PX-JOB / AI04・O2、SKY21・O5 | `lib/workflow.ts`、A2A/AMC、Android SQLite/Job/Receipt | authority/realmと同Job参照、revision・operation ID、片側受付・通信断・取消未確認を整合。schema/native fixtureの移行は未実装 |
+| PX-COST / BIL02・O5 | quote、予算予約、usage-store、commerce/後払い | account全体の月上限・同時予約・plan版・明細照合を追加受入。現parentJob予算やfunded Walletをそのまま月次後払いの完成形にしない |
+| PX-RELEASE / RLS02・O7、OS11・O6 | Soong/product、source lock、既存署名/復旧gate、Updater | exact採用版へ組込。first-party作者鍵とOS/OTA鍵を分離し、独自更新配信・正式署名・rollback・純正復旧を受入 |
+
+重要な現状: **ShellにINTERNET権限はないが、`android/automation`のBrokerには既にINTERNETとdevice transportがある。** 「Brokerは通信できない」と再設計せず、既存の到達先・要求型・失効/応答制限を再利用する。`operator-agent`は署名済み管理操作の別系統で、Jenniferの対話・一般Agentの万能実行口へ転用しない。第三者Toolを第一者のsignature権限へ入れるためのplatform署名は行わない。
+
+OS側の改変はHomeと導入/設定への必要最小限の接続から始める。frameworkの強制部を変える場合だけ理由・権限差分・上流追従・隔離/CTS影響をADRへ固定する。最初からkernel/driver、一般appの全操作、全画面監視を追加する構成は採らない。
+
+SkyのmarketplaceはAppStore/PackageInstallerを置き換える実行権限ではない。APKは作者署名・PackageInstallerの結果、modelはdataの版/hash/licenseと対応runtime、Agent/Recipeは能力宣言・grant・有限工程をそれぞれ検査する。Sky購入・掲載・download完了をinstall成功やTool実行許可にしない。OS/OTA鍵、第一者app鍵、第三者作者鍵、catalog署名を分離し、同じpackageを複数経路で更新する場合の管理元/署名互換を確認する。
+
+### 5. 音声のコード確認と日本語の不足
+
+固定manifestが参照する`platform_external_SpeechServices`は**GitLab remote**である。前の調査でGitHub側を探して得た404/422を、正式取得先のsource不存在として扱った点を訂正する。正しいremoteの`Android.bp`はarm64/x86_64の事前build APKを組込む。固定arm64 APKを取得しhash・manifestを読取り検査した結果は台帳へ残す。端末へ導入/実行はしていない。
+
+固定arm64 APKは75,506,283 bytes、SHA-256 `cacbe72f4ac05e30cb874947513cbd6702faa7aea49615100cfdaee0b0ad056c`、package `app.grapheneos.speechservices`、versionCode/Name `3`。manifestに`TTS_SERVICE`と`directBootAware=true`があり、INTERNET/RECORD_AUDIO権限とASR service宣言はない。これはAPKの静的検査で、署名真正性・再現build・実機動作の合格ではない。[対応するsource tag 3](https://github.com/GrapheneOS/SpeechServices/tree/c7576fb41bbb8928de945f30685473aa48683423)のREADMEは端末内TTS、`Voices.kt`の登録voiceは`en_US`だけ。sourceの版対応とAPKのbyte再現は区別する。
+
+したがって「標準TTSなし」という前の説明を撤回し、**TTSの同梱は確認、日本語ASR/TTSは不足、hotword/会話Agentは別実装**とする。Direct Boot対応宣言だけでlock中の私有内容を読み上げない。日本語ASR/TTSの採用品は未決定で、他サービス契約やmodel導入を今回開始しない。
+
+最初のvoice adapterは `収音開始 → 上限付きbuffer → 選んだASR → 編集可能な文字 → planner → 本人確認 → Tool → 選んだTTS`。音声bufferは既定でvolatile、録音を成果へ保存/送信する場合は別grant。文字起こしと原音を同じ保持条件にしない。local-only時に対応ASR/TTSがなければ不足を表示し文字操作へ戻る。cloud音声は音声送信先・保持・見積を先に承認し、認識失敗を理由に無断切替しない。会話の声紋や発話内容だけで支出/送信を承認しない。
+
+### 6. 実行先と仕事正本の対応
+
+| 選択 | 推論 / runner | 正本・端末停止時 | 課金・不足時 |
+| --- | --- | --- | --- |
+| 端末内のみ | local model / 端末の有限runner | Android Broker/SQLiteが正本。端末停止中は進まない。cloudへJob本文を同期しない | cloud推論usageは0。未導入modelや非対応Toolを実行可能としない |
+| cloud中心 | 選んだremote model / cloud runner | 受付確認後は既存D1 Job/A2Aが正本。端末はprojectionと未送信command outbox | cloud/Tool/実費を見積・予約。圏外でも承認済み期限/上限内のみ継続 |
+| 明示した混合工程 | 工程ごとにmodel先とrunnerを別固定 | 開始時に一つのroot authorityを指定。端末/remote工程は子の実行記録と同成果版へ結ぶ | 送信境界ごとにgrant/quote。realm間adapter受入までは未対応表示 |
+| 本人PC/Pro・任意VM | 選んだmodel / 対応hostの限定runner | host側の実行記録をroot Jobへ照合。停止/切断は結果不明を保持 | GPU/資源条件・host認証が必要。Pixelが無断で任意shellやLAN全体へ接続しない |
+
+rootの`authorityRealm + job ID`、delegation/operation、artifact ID/revision/hash、入力digest、接続/Tool/model版、grant、quote/予約を**既存schemaへ対応する実装計画**として固定する。概念一覧をそのまま新しいHTTP payloadとして送らない。local/remote双方へ同じ仕事の正本を作り、最終更新時刻だけで競合解決する方式は採らない。
+
+初期実装は開始時のrealmを固定する。local正本をremoteへ委任するなら、D1側へ必要なparent参照を作るadapterとnative復旧fixtureが必要。cloud正本のlocal工程は端末へ期限付き依頼を出し、返した成果をサーバーが照合する。この橋がない現sourceを「すべて同じDBへ同期済み」と呼ばず、SC03/PX06受入前は混合経路を選べる表示にしない。既存Web親Jobの四状態は維持し、音声/通信待ち等は工程または画面の状態で表す。
+
+端末が通信前に保存するdraftは未受付。POSTの応答喪失では同operationを照合し、新しいJobや予約を作らない。旧入力版に承認済みの要求はrevision不一致で拒否。pushは再取得のきっかけであり、payloadから承認/課金/成果成功へ状態を進めない。
+
+### 7. eSIM・利用権・cloud・料金
+
+初期導入は `適合するOSの導入済み状態 → 本人解除 → bootstrap通信 → account連携 → bundle注文/claim照合 → eSIM profile配信/開通 → service利用権照合 → Skyで能力準備 → 一仕事`。既存回線/Wi-Fiだけでも対応local機能を使える。eSIMをOSやmodelの格納場所、SIM番号を本人ID、網登録を有料実行許可にはしない。OS導入の成否と注文/開通を独立に追跡する。
+
+cloud APIはdevice sessionからownerを決め、scope/期限/失効、plan、対象model/Agent、data grant、quoteと支出承認を再検査する。端末の承認記録だけを信頼してpaid gateを迂回しない。Provider秘密鍵はserverの秘密管理、本人BYOKは既存暗号化保管と失効を使い、ROM/model/catalogへ埋め込まない。
+
+料金は[既存plan契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)に従い、plan ID/版/期間/対象能力/含む量/超過単価/上限/終了条件を見積へ固定する。含む量も並列予約で引当て、model token、Agent計算、Tool、通信、端末、外部実費を区別。自己host modelとrunnerを二重計上せず、Provider実meter/取消実費と一致させる。月額/含む量/超過単価は未決定、既存30%/10%/1,000円等を変更しない。未実測のGPU原価を利益へ換算しない。
+
+**account月上限と同時予約、funded Walletに依存しない後払い契約、commercial scopeのfail-closed受入は未完。** 現sourceのordinary previewはscope強制が設定依存、A2A予約はowner/parentJob単位、remote pricing gateはfalse、workerにはD1 placeholder/実行無効設定がある。これらを文書だけで修正済みにせず、C1/C2とPX07へ対応する。本番の実行/発行/課金gateは閉じたまま。
+
+### 8. 保存・個人情報・復旧・更新
+
+| データ | 正本・保持 | 失敗・削除・復旧 |
+| --- | --- | --- |
+| 原音・収音中buffer | 端末volatileを既定。保存/送信は別grant | 中止/mute/期限で破棄。lockやcrash後に自動で収音を再開しない |
+| local draft/Job/成果 | Android owner領域の既存SQLite/保護file、版/hash | quota/書込失敗を成功表示せず、壊れたDBを空で上書きしない。cloud同期は本人が選ぶ |
+| cloud Job/委任/成果 | owner別D1/R2等の既存権限下。端末cacheはprojection | schema/hash/版を再取得。取消/削除tombstoneを反映し、backup復元で削除済み成果を復活させない |
+| device session・鍵 | 既存Keystore/暗号化session storeとserver hash/失効 | Keystore全損時は失効/再連携。backupから支出承認やdevice権限を復活させない |
+| model/runtime/package | 作者・版・hash・license、OSとは別更新 | 中断/hash不一致/失効/容量不足で旧合格版を保持。第三者をOS platform鍵で署名しない |
+| usage/quote/予約/請求 | サーバーの既存台帳 | 取消未確認・応答喪失では精算/解放を推測しない。端末cache消去で債務を消さない |
+| 診断・log・metric | 既存の本人選択export。測定値と秘匿済みID/hash | 原稿・原音・token・住所・連絡先を既定で記録しない。自動全ログuploadを追加しない |
+
+復旧は①Home crash/通常再起動、②model読込/更新失敗、③account/session失効、④OS更新失敗、⑤userdata/Keystore全損、⑥純正OS復帰に分ける。Seedvault/OTA rollbackだけで⑤⑥の合格にしない。独自OSは独自署名/自社Updater配信/鍵rotation・失効・サポート終了を設計し、OTA管理権限をLLM/Toolの権限へ渡さない。AVB rollback indexで拒否される旧imageへの任意downgradeを、A/Bの起動失敗rollbackと混同しない。
+
+### 9. 同じ候補で受け入れる12ケース
+
+全ケース未実行。機能実装後、候補commit・OS/APK/model/設定のhash・signer・端末SKU・回線・Provider環境を固定して記録する。PXはこの設計のケースIDであり、新しい完了taskではない。
+
+| ケース | 既存担当/対応 | 合格条件と必要環境 |
+| --- | --- | --- |
+| PX01 localの一仕事 | AI04/O2、P1/P2 | 現API v4と対応modelでoffline依頼→plan検査→有限Tool→review→成果保存/停止/再起動。模擬結果0、同じ入力/成果hashを実Pixelで照合 |
+| PX02 Home | OS11/O6、DT01/02・P4 | 本人のHOME選択/解除、boot/unlock/back/crash/更新から同Jobへ復帰。設定/緊急/停止へ会話なしで到達 |
+| PX03 日本語音声 | OS11/O6、DT04 | 固定した発話fixtureでASR/TTSの対応・誤認識修正・mute・通話競合・別人/lock拒否を実測。声だけの変更系承認は0 |
+| PX04 Sky選択 | SKY07/O4、SC01/02/04 | modelとrunnerを別に固定し、未導入/未接続/失効/資源不足を区別。hash不一致・非対応を実行不可。無断fallback/送信0 |
+| PX05 cloud継続/停止 | SKY21/O5、DT03/05・C2 | Provider sandbox後、承認予算内の有限仕事。受付前/後の通信断、同ID照合、停止要求/外部停止/精算を分離。重複実行0 |
+| PX06 realmと混合 | AI04/O2、SC03/05 | local/remoteのroot authorityを固定し、子工程・入力/成果版・ownerを照合。切断/二端末/遅延結果/重複で二重正本や完了捏造0 |
+| PX07 plan/月上限 | BIL02/O5、C1/C2 | account全体の並列予約で月上限を超えない。含む量/超過/後払い/取消実費/期間境界/再送を同plan版とProvider明細で照合 |
+| PX08 本人/情報分離 | OS11/O6、SKY21/O5 | owner A/B、別profile、expired grant、clipboard例外、lock、IME/音声出力先、紛失端末失効を検査。原稿やtokenの診断漏えい0 |
+| PX09 回線/利用権 | SKY21/O5、SIM01 | bootstrap、profile追加/切替失敗、期限/解約/再発行、Wi-Fi代替、bundle claimとaccount scopeを別々に照合。eSIM所有だけの承認0 |
+| PX10 保存/全損 | RLS02/O7、DT06 | 通常再起動とfull userdata/Keystore全損を別試験。欠落/未知schema/hash不一致/容量不足を拒否し、再連携・削除journal・既存成果の扱いを照合 |
+| PX11 OS image | RLS02/O7、OS11/O6・P5〜P7 | compile-onlyを先行。first-flash 4/4と必要な本人操作後、同imageでAVB/SELinux/hardware/OTA/rollback/純正復旧を受入 |
+| PX12 他host継続 | SKY07/O4、DT06・SF | Mini/iOS等の受入済みhostが同owner/root Job/成果版を取得。Pixel中継必須なし、私有出力先確認、重複作用0。家具sensor/施工は別の実受入 |
+
+性能は発話/文字依頼の応答時間、ASR誤認識、Tool成功率、Job再開時間、RAM/熱/電池、cloud待ち時間/実費を測る。ハードな不変条件は権限越境0・予算超過0・重複作用0・未検証成功表示0。速度/品質/電池の数値閾値は代表一仕事と採用modelのbench後にOWNERが確定し、測っていない値を合格扱いしない。
+
+### 10. 実装の順番と未決事項
+
+既存[P0〜P7/C1/C2](#pixelの現在地と実用化の順番)を維持する。**P0**で手元候補を選別同期/固定 → **P1/P2**でPX01のlocal一仕事 → **P3/P4**でSky選択・Homeと明示音声（PX02〜04）。**C1/C2**は独立してplan/Providerを受け入れ、PX05/07/09を開く。**P5**の専用Linux compile-only → **P6**で4つのflash条件 → **P7**でPX10/11。混合PX06と他host PX12は必要adapter/host受入に従い、local試作を商用課金待ちにしない。
+
+未決事項の決め方: 一般app/kioskの強さ・音声待受はOWNERが通常操作と復旧の比較で決める。日本語ASR/TTS/modelはAI04/OS11がlicense・品質・資源・offline benchを提示して決める。cloud事業者/契約・料金額・枠はBIL02/SKY21が承認対象となる原価/見積/保持/停止/請求の資料を準備しOWNERが決める。調査版へのsource更新はOS11/RLS02が差分/署名/vendor/復旧互換を示して選ぶ。これらは不足を隠すためのfixture、任意のAPI key要求、無断の契約/flashでは補わない。
+
+設計の検証は`npm run baseline:check`、`npm run design:check`、`npm run device-support:check`、`npm run llm:architecture:check`、`npm run android:first-flash:check`、`npm run verify`。実装後は[Android試作手順](os-prototype.md)と[OS受入report](templates/os-acceptance-report.md)を使い、host/fixture/provider sandbox/実機/本番の欄を分ける。文書保存・branch/CI・main統合と、OS導入・契約・本番利用は別々に記録する。

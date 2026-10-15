@@ -20,6 +20,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 各仕事の記録正本は保存realmとauthorityを一つに固定する。WebはAPI policy/D1/R2、AndroidはUID Broker/SQLite、QEMUはPlatform Core、Miniはlocal runtimeを使い、他surfaceはclient/projectionになる。共通契約は一つのBroker process/DBを共有済みという意味ではない。[参照連鎖、階層予算、停止/精算/削除の投影](06-consistency-contracts.md)を実装時の拘束条件とする。
 
+[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)はこれを具体化する。local-onlyはAndroid正本、cloud受付後はD1正本とし、端末cache/未送信commandを別に扱う。混合工程のroot authority、親参照、委任/成果/停止の対応adapterは未受入であり、同じ仕事を二つのDBへ独立に確定しない。既存device transportを再利用し、ShellのHOME未対応、Brokerの既存通信権限、料金/Provider gateの現状を保持する。
+
 ## 3. IDと入力の契約
 
 一回の操作を、認証principal由来のowner、project/job ID、表示revision、operation/idempotency ID、Tool/Agentと版、入力digest、実行先、同意scope、見積/予算、期限へ結ぶ。外部APIではそのschemaで定義されたfieldだけを送り、この概念一覧をそのまま新API payloadにはしない。

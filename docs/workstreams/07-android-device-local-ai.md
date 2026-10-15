@@ -2,6 +2,12 @@
 
 # Android / Device / Local si
 
+## Pixel si専用端末の公開コード調査と実装設計
+
+OS11/O6/ROCK、同期DOC04/H1。2026-10-15の本人依頼を[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)と[調査台帳](../evidence/grapheneos-source-audit.json)へ対応する。調査版の全129 GrapheneOS remoteを分類し、取得した公開差分/独立app/Pixel設定と非公開部品を分離。OSの防御・回線・標準appを再利用し、8 module/PX01〜12へ不足を割り当てる。EXTERNALはupstream/BSP/model/Provider、JOINTは同image/回線/host受入、OWNERはapp方針・日本語音声・予算/契約/端末変更。SpeechServicesの正しいGitLab remoteとv3 TTSを確認し、日本語ASR/TTSの追加受入へつなぐ。採用lockは2026100200を維持。
+
+次はP0候補同期/固定、PX01の現v4 local一仕事から始める。HOME/明示音声/Sky選択と、cloud plan/月上限/後払い/realm間adapterを別の受入へ進める。検証はbaseline/design/device-support/llm:architecture/android:first-flash/verify。設計の合格をOS build、実機、Provider、課金の合格にしない。
+
 ## 現在地監査とPixel実用化のP0〜P7
 
 OS11/O6/ROCKが[現在地と実用順](../native-os-integration.md#pixelの現在地と実用化の順番)を主担当とする。[監査JSON](../evidence/pixel-readiness.json)はmain `1cb16d06`の7 CI、main外の手元12 source hash、過去実機APKと今日のADB 0件を分離する。先に候補同期→現行v4 Pixel再受入→一仕事→Sky選択→Home→compile-only→release gate→同image受入。cloud料金plan/Provider一周はBIL02/SKY21のC1/C2として並行し、localを商用完成待ちにしない。実装/flash/課金を今回実行した証拠ではない。

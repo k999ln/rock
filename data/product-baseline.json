@@ -341,7 +341,7 @@
       }
     ]
   },
-  "version": "2.07",
+  "version": "2.08",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -2061,7 +2061,11 @@
     "authority": "docs/avocado-mini-r5/README.md",
     "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
     "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
-    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
+    "candidateCeilingTypes": [
+      "recessed",
+      "suspended",
+      "exposed_or_retrofit_cover"
+    ],
     "standaloneMiniPreserved": true,
     "proOrBuildingNetworkRequired": false,
     "residentOwnsPrivateProfile": true,
@@ -2614,7 +2618,13 @@
     "canonicalSkyOrigin": "https://avoado.si",
     "campusHome": "campus_specific_discovery_and_free_browser_drafts",
     "mainHome": "agent_marketplace_execution_and_management",
-    "sharedDurableOwnership": ["purchases", "account_library", "connections", "zema_jobs", "agent_outputs"],
+    "sharedDurableOwnership": [
+      "purchases",
+      "account_library",
+      "connections",
+      "zema_jobs",
+      "agent_outputs"
+    ],
     "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
   },
@@ -2700,5 +2710,44 @@
       "real Fitness Agent",
       "production Provider output"
     ]
+  },
+  "pixelSiReferenceDesignIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction_in_current_message",
+    "ownerQuote": "残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして",
+    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+    "evidence": "docs/evidence/grapheneos-source-audit.json",
+    "researchTag": "2026100600",
+    "compileInputTagUnchanged": "2026100200",
+    "modules": [
+      "PX-HOME",
+      "PX-VOICE",
+      "PX-SKY",
+      "PX-LOCAL",
+      "PX-LINK",
+      "PX-JOB",
+      "PX-COST",
+      "PX-RELEASE"
+    ],
+    "acceptanceIds": [
+      "PX01",
+      "PX02",
+      "PX03",
+      "PX04",
+      "PX05",
+      "PX06",
+      "PX07",
+      "PX08",
+      "PX09",
+      "PX10",
+      "PX11",
+      "PX12"
+    ],
+    "reuseExistingBrokerTransportsAndWorkflow": true,
+    "rootAuthorityFixedPerJob": true,
+    "speechServicesBundledTtsVerifiedStatically": true,
+    "japaneseAsrTtsAccepted": false,
+    "runtimeImplementedByThisChange": false,
+    "priceOrExecutionGateChanged": false
   }
 }

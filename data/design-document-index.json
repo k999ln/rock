@@ -45,10 +45,40 @@
       "SC03",
       "SC04",
       "SC05"
-    ]
+    ],
+    "implementationDesign": {
+      "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+      "baselineKey": "pixelSiReferenceDesignIntent",
+      "evidence": "docs/evidence/grapheneos-source-audit.json",
+      "modules": [
+        "PX-HOME",
+        "PX-VOICE",
+        "PX-SKY",
+        "PX-LOCAL",
+        "PX-LINK",
+        "PX-JOB",
+        "PX-COST",
+        "PX-RELEASE"
+      ],
+      "acceptanceIds": [
+        "PX01",
+        "PX02",
+        "PX03",
+        "PX04",
+        "PX05",
+        "PX06",
+        "PX07",
+        "PX08",
+        "PX09",
+        "PX10",
+        "PX11",
+        "PX12"
+      ],
+      "runtimeImplemented": false
+    }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.16",
+  "version": "1.17",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
