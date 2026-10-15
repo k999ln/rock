@@ -3942,7 +3942,13 @@
       "workApiAssertions": 1381,
       "csvAssertions": 385,
       "webAssetReferences": 208,
-      "webAssetMissing": 0
+      "webAssetMissing": 0,
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0
+      }
     },
     "earlierFailures": [
       {
@@ -3961,7 +3967,10 @@
     "git": {
       "branch": "codex/ecosystem-research-design",
       "mainIntegrated": false,
-      "sitePublished": false
+      "sitePublished": false,
+      "submittedSourceSha": "473d764c",
+      "pullRequest": "https://github.com/k999ln/rock/pull/135",
+      "status": "github_saved_pending_same_head_ci_and_main"
     }
   },
   "repositoryEvidence": [
