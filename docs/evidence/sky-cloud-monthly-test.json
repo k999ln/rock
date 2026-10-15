@@ -27,8 +27,9 @@
     "status": "passed",
     "node": "22.23.3",
     "environment": "WRANGLER_HIDE_BANNER=true",
-    "log": "/private/tmp/sky-cloud-final-verify.log",
-    "previousFailures": "Wrangler update-check shutdown timeout; release dependency count fixture corrected"
+    "log": "/private/tmp/sky-cloud-merged-verify.log",
+    "previousFailures": "Wrangler update-check shutdown timeout; release dependency count fixture corrected",
+    "afterMainMerge": "a07bfebec4266d1b53f7660fd94e3011f5a06ecb"
   },
   "secretsCommitted": false,
   "plan": {
