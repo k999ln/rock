@@ -1,8 +1,14 @@
-# RockstarOS account service: implementation handoff
+# RockstarOS service and Pixel: implementation handoff
 
-Updated 2026-10-13. Read `docs/service-design/README.md`, `docs/service-design/06-consistency-contracts.md` and `data/product-terminology.json` first, then the product baseline, project status, Mission Control and the relevant workstream. Preserve RQ01–RQ49 and main's existing RQ50. This handoff organizes the existing goals; it does not authorize new pricing, funds movement, device flashing or flight operations.
+## 2026-10-15: Pixel現在地からの優先入口
 
-The current product direction is the OWNER-confirmed 2026-10-10 free avokado account entry. SIM is not required; consumer eSIM issuance/sales remain on hold with code retained and disabled by default. Mini's domestic LTE IoT data SIM is an optional device component. The 2026-10-02 SIM-led entry is superseded; obsolete explanatory copies were removed and remain recoverable from Git. Native OS/client/browser routing still requires exact device and recovery evidence.
+最初にmain/branch/同SHA CIと`docs/evidence/pixel-readiness.json`を再取得する。`docs/native-os-integration.md#pixelの現在地と実用化の順番`のP0を最優先とし、手元`codex/esim-cloud-access`の17項目候補（未commit/main未反映）をmainの現行API/権限/料金gateへ選別同期する。12 hashが一致する過去候補でも、現在の端末状態とはしない。P1で現行v4と一modelの非破壊Pixel受入、P2/P3で一仕事とSky選択、P4 Home、P5 compile-only、P6/P7のrelease/同image受入へ進む。mainのベース未反映を先に解消し、旧compile branchを未実装機能の隠れた最新版と扱わない。
+
+cloudはC1/C2の独立系列。本人の「料金プランはsiを使うクラウド代で通信事業者みたいな形」を、`cloudServicePlanIntent`と共通契約へ対応する。月額/quota/超過単価は未決、回線/Tool/local/cloudの明細を分け、実料金gateを環境変数だけで開けない。local一仕事/Homeの実装をcloud契約待ちで止めない。今日の監査ではADB 0件で実機再試験を行っていない。各段階は原因/修正順/同artifactの証拠/未解決条件を残し、保存・branch反映・main統合・公開・実機を別々に報告する。
+
+Updated 2026-10-15. Read `docs/service-design/README.md`, `docs/service-design/06-consistency-contracts.md` and `data/product-terminology.json` first, then the product baseline, project status, Mission Control and the relevant workstream. Preserve RQ01–RQ49 and main's existing RQ50. This handoff organizes the existing goals; it does not authorize new pricing, funds movement, device flashing or flight operations.
+
+The current product entry is the OWNER-confirmed 2026-10-15 connectivity-and-si-access bundle, with a free account as the identity/contract/job/artifact/budget root and free preview/client paths retained. Sky is the open Agent/LLM marketplace and hub with explicit local/cloud choices. avokado intends to provide cloud service plans, metering, caps and itemized statements; monthly prices, quotas and overage rates are undecided. Live carrier issuance, billing and paid cloud remain gated. Mini's domestic LTE IoT data SIM stays optional. Pixel 10 GL066/frankel is the first physical native-OS target; iOS is a client integration path. Exact-device signing, boot and recovery acceptance remain required.
 
 ## Verified inputs and boundaries
 

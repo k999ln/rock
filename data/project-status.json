@@ -1,4 +1,56 @@
 {
+  "pixelReadinessAudit": {
+    "date": "2026-10-15",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "coordinationTask": "DOC04",
+    "sourceMainSha": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+    "status": "audit_and_design_verified",
+    "authority": "docs/native-os-integration.md#pixelの現在地と実用化の順番",
+    "evidence": "docs/evidence/pixel-readiness.json",
+    "runtimeChanged": false,
+    "deviceRetested": false,
+    "adbDevicesObserved": 0,
+    "localCandidateSourceHashMatches": 12,
+    "currentMainCiSuccessful": 7,
+    "cloudPlanNumbersDecided": false,
+    "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。",
+    "verification": {
+      "runtimeRetested": false,
+      "deviceRetested": false,
+      "fullVerify": "pass_locally",
+      "log": "/private/tmp/rock-pixel-readiness-verify.log",
+      "node": "22.23.3",
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0,
+        "cancelled": 0
+      },
+      "workApiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssetReferences": 208,
+      "missingAssets": 0,
+      "frozenSourceHashes": 14,
+      "localSourceHashesMatched": 12,
+      "canvasTypecheck": "pass",
+      "focusedChecks": [
+        "baseline:check",
+        "design:check",
+        "device-support:check",
+        "llm:architecture:check",
+        "android:first-flash:check"
+      ],
+      "flashGateResult": "valid_config_but_all_4_blocked_not_flash_accepted"
+    },
+    "gitEvidence": {
+      "branch": "codex/pixel-readiness-cloud-plans",
+      "readbackCommand": "gh pr view codex/pixel-readiness-cloud-plans --json state,mergedAt,mergeCommit,headRefOid",
+      "sitePublished": false
+    }
+  },
   "pixelFirstIosPluginDesign": {
     "date": "2026-10-15",
     "taskId": "SKY07",
@@ -362,7 +414,7 @@
   },
   "updatedAt": "2026-10-15",
   "milestone": "通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる",
-  "nextAction": "Skyで一仕事のmodel/Agent実行先・送信・費用を選択/固定し、Pixel 10 GL066のsi Home/同Job復元を最初の物理商品として受け入れる。通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。",
+  "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5485,7 +5537,7 @@
     },
     "sourceLock": "os/physical/frankel-source-lock.json",
     "dspSourceAudit": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
-    "sourceTag": "2026091000",
+    "sourceTag": "2026100200",
     "sourceTagSignatureVerified": true,
     "deviceLayoutReadOnlyVerified": true,
     "recoveryArtifactsHashed": false,
@@ -5496,7 +5548,7 @@
     "flashReady": false,
     "sourcePreparationCommit": "3eeeeed66ed438f8d543ae88260e072c63bd0132",
     "sourcePreparationPr": 7,
-    "integrationBranch": "codex/rockstaros-launch-candidate-20260910",
+    "integrationBranch": "main",
     "sourceCiEvidence": "docs/evidence/launch/ci-phone-3eeeeed.json",
     "cloudBudget": {
       "currency": "USD",
@@ -5582,7 +5634,10 @@
         "evidence": "docs/evidence/phone-build-preparation.json"
       },
       "mainMergeCommit": "1d8af61528683f4f13b720c2eeb3e387635da80a"
-    }
+    },
+    "historicalIntegrationBranch": "codex/rockstaros-launch-candidate-20260910",
+    "sourceTagEvidence": "docs/evidence/phone-source-verification.json",
+    "sourceTagMeaning": "current_compile_input_not_a_new_physical_OS_readback"
   },
   "deviceSupportArchitecture": {
     "status": "DESIGN_AND_VALIDATION_IMPLEMENTED",

@@ -48,7 +48,7 @@
     ]
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.15",
+  "version": "1.16",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -433,7 +433,8 @@
         "docs/workstreams/07-android-device-local-ai.md",
         "docs/provider-contract-readiness-20260930.md",
         "docs/native-os-integration.md",
-        "docs/evidence/graphene-cloud-foundation.json"
+        "docs/evidence/graphene-cloud-foundation.json",
+        "docs/evidence/pixel-readiness.json"
       ],
       "interfaceImplementation": [
         "scripts/build-phone-bringup.sh",

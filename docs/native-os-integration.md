@@ -353,6 +353,27 @@ flowchart TB
 9. **新旧資料**: 本書のBlackBerry-first/旧料金を現行入口から退役。phone-preview中の旧2026091000記述は現在のsource lockへ同期し、旧物理観測や過去の受入はそのまま保持する。
 10. **今日の物理確認**: ADBの接続/認証済み端末は0件。Pixelの実OS/boot状態、現eSIM、回線、実LLMを本調査で確認したとはしない。
 
+## Pixelの現在地と実用化の順番
+
+2026-10-15の[監査記録](evidence/pixel-readiness.json)はmain `1cb16d06`、同SHAの7 CI成功、現source、手元の別候補、同artifactの過去実機証拠を照合した。今日のADB一覧は0件で、現在のOS/APK/model/回線を観測したとはしない。主担当OS11/O6/ROCK、同期DOC04/H1。source/CI・過去APK実証・手元未反映・実機未受入を分け、完成率を算出しない。
+
+現在動いた証拠があるのは、mainの有限Tool/仕事・権限・保存のhost/CI、9月16日の固定local LLMと試験APKの非破壊再起動等。現API v4はunsigned build/stage済みで実機未受入。手元`codex/esim-cloud-access`には10月9日の17項目test modeと11実機試験の未コミット記録があり、12 source hashは今回全一致した。8実処理/9模擬で、当時は`no_model`、Brokerの実仕事は作成しない。mainにActivity/実行器がないことを「手元にも未実装」と読み替えず、この候補をmain反映済みとも呼ばない。
+
+未完了は、現行v4と同候補のPixel一仕事、model/Agent実行先のnative選択、専用Home/音声、正式全OS、実cloud/課金、eSIM商用、iOS/Mini/家具・建築の各実機受入。`remoteAiPricingGateAccepted()`はfalse固定、cloud runtimeのrepo設定にはplaceholderがあり、現在の本番環境/credentialsを確認した証拠ではない。全OS compileと初回flashを別gateに保つ。
+
+1. **P0: 候補を同期・固定（RLS02/O7）** — mainの最新契約と、手元test modeの必要な12 source/依存差分を選別し、単一commit・APK hash・署名identity・復旧先を固定する。dirty全体を一括mergeしない。旧compile branchはmainの祖先で追加commit 0件、PR #130の未統合設計はPixel実用化の前提にしない。
+2. **P1: 現行v4を非破壊再受入（OS11/O6）** — GL066を読取り確認し、Broker/Tool/runtimeと一つの署名済みmodel profileを同候補へ揃え、実Binder・機内モード推論・保存・停止・実再起動を試す。9月のAPI v2系の合格をv4へ流用しない。
+3. **P2: 一件の実用仕事（AI04/O2）** — 既存の記事/出典Toolで依頼→local plan→権限確認→Tool→本人review→同Artifact版保存/再開を通す。17項目の模擬Zema/LLMを実Agentの成功へ加算しない。
+4. **P3: Skyの実行先選択（SKY07/O4）** — model推論先とAgent runnerを別に選び、実host/版/grant/見積を同Jobへ固定する。cloud未接続は未接続表示、C2合格後に同じ仕事のcloud経路を比較する。無断fallbackなし。
+5. **P4: 専用Homeと対話入口（OS11/O6、WEB04連携）** — ownerが選択/解除できるHome、Jennifer/仕事導線、文字/押して話す入力、設定/mute/停止/復旧を実装し、lock/crash/再起動の復帰を測る。常時待受は後続の機種/電池/privacy受入とする。
+6. **P5: compile-only（OS11/O6）** — ANDROID-PREFULLと同候補freeze後、予算/対象の確定した専用x86_64 Linuxへ固定source `2026100200`、vendor inventory、現行APKを揃えてbringup build。現repoのRAM64GiB/空き400GiB要件と同build numberのtarget-files/otatools/hash検査を通す。compile合格はflash許可ではない。
+7. **P6: release前条件（RLS02/O7）** — 鍵管理/rotation、rollback運用、純正factory/full OTA実byte、Keystore喪失復元を初回flashの4 gateへ揃える。現在0/4。実行前/後のrollback試験境界、初期化/復元の対象と復旧手順を具体化し、gateを勝手に開けない。
+8. **P7: 同imageの実機OS受入（RLS02/O7）** — 適合/backup/書込み条件を満たした対象へ導入し、boot・権限・通信・保存・再起動・一仕事・OTA/rollback/純正復旧を同image hashの受入reportへ記録する。公開・本番金融・実回線商用は別gate。
+
+**並行するcloud系列**: C1（BIL02/O5）でsiクラウドのplan/利用枠/超過/実meter/account月上限/後払い/失効をfixtureへ結び、C2（SKY21/O5）でsandbox→予算承認済み一Providerの見積/予約/実行/停止/usage/請求一周を受け入れる。P0の候補と同Job契約を使い、localのP1〜P4をC2完成待ちにしない。local/cloud両方を実際に選べる日常利用には双方の受入が必要。モデル/署名/依頼/計画/料金を変えたら該当証拠を取り直す。
+
+各段階の原因・再利用path・担当・合格証拠・未解決条件は監査JSONに保存する。検証は既存`npm run device-support:check`、`npm run llm:architecture:check`、`npm run android:first-flash:check`、`npm run design:check`、`npm run verify`、実装時は`docs/os-prototype.md`とAndroid CIの同候補APK/実Binder/SQLite/端末試験を使う。`--require-pass`は現状0/4のため拒否されるのが期待値で、実機合格として表示しない。
+
 ## 6. 作る順番と合格を示すもの
 
 1. **商品契約（SIM01 / SKY21 / BIL02）**: 通信とsiの含有範囲、partner/地域、accountへの購入binding、再発行/解約/返金、価格/上限/実費を確定する。購入直後に無制限の実行権は付けない。
