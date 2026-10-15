@@ -6,6 +6,8 @@
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
+The intended experience is to keep making things without standing at a PC or in front of the object, and to interact without holding a phone. Mini or an accepted ambient host provides the conversation and authoring surface; Pro/cloud can supply optional remote compute. Physical production still needs a capable maker or machine, an approved design revision, and separate completion evidence. [Experience and acceptance](docs/service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験) are design requirements, not claims of working hands-free hardware or fabrication.
+
 Sky is designed to connect many specialist Agents with the capabilities of apps, services, games, and eventually appliances. A refrigerator that reads its inventory and prepares a reviewed shopping order is a design example, not a connected product today. Each new host must declare what it can observe or do; Zema tracks the work, and external actions require the owner's scoped approval. See [the fusion contract](docs/sky-mcp-architecture.md#異種hostと複数agentの融合契約).
 
 [Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.

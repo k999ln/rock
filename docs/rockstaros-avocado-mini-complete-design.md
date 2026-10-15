@@ -2,6 +2,8 @@
 
 利用者の今回の設計再構成では[各製品の役割](service-design/03-product-profiles.md)を共通入口にする。MiniはR5の単独空間端末、Proは既存P0の独立NVIDIA PC、rocketstarは独立工学program。共通OSの本人・job・Asset・版・権限・保存/復旧へ接続し、このMaterial研究profileの四方向台や旧HubをR5に適用しない。Mini通信の最新方針は国内LTE/IoT data SIMの任意option。2026-10-14の[建築一体型設置profile](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)も同じR5 coreの任意取付であり、四方向台・建物管理Hubへ置き換えない。原本・実機0件・表示未成立と各受入境界を維持する。
 
+2026-10-15の本人指示を[携帯を持たない制作/対話](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)へ具体化する。対象物の前にいない時も、許可済み資料の由来/単位/版を追って案を作り、検査・本人承認・製作引渡し・測定を別に扱う。Miniは入口、Pro/cloudは任意計算先、lab/製作者は別の実作業主体であり、研究sceneや空間表示を現物製造の合格にしない。
+
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
 版: 2.0 / 2026-09-18

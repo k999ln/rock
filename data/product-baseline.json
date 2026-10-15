@@ -1,6 +1,92 @@
 {
-  "version": "2.02",
-  "decidedAt": "2026-10-14",
+  "ambientCreationIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "User explicit instruction in this chat",
+    "ownerQuote": "pcのやリアルの物の前にたたなくてもものが作れる状態をつくる、携帯を持たなくてもやり取りができる状態を作る",
+    "purpose": "PCや対象の実物の前に拘束されず制作を進め、携帯を持たずに対話・確認・指示・許可した相手との連絡を続ける",
+    "authority": "docs/service-design/01-service-experience.md",
+    "relatedRequirements": [
+      "RQ37",
+      "RQ40",
+      "RQ42",
+      "RQ48",
+      "RQ49"
+    ],
+    "authoringSurface": "Miniまたは受入済みの空間host。音声を基本入口とし、対応する手/空間表示/固定表示で修正と比較を補う",
+    "systemResponsibilities": {
+      "jennifer": "会話/意図/版差分/確認の提示",
+      "sky": "必要な制作・計算・製作連携能力を選ぶ",
+      "zema": "既存Job/plan/artifact revision/進捗/停止/引継ぎ",
+      "core": "本人/資料grant/予算/版/宛先/失効/保存復旧を強制",
+      "mini": "電話なしの入力/応答/作品操作とlocal保存・停止",
+      "pro": "任意の離れた計算先。本人がPCの前に立つ必須条件にしない",
+      "externalProduction": "権限を持つ設備または製作者が同意済み図版・条件で実製作し、測定/納品を照合"
+    },
+    "creationStages": [
+      "意図/入力資料",
+      "案/編集/比較",
+      "検査済み版の保存",
+      "必要時の見積と本人承認",
+      "確定版の製作引渡し",
+      "製作/測定/受取の照合"
+    ],
+    "availabilityBoundary": "受入済みの部屋/音声到達範囲/端末/通信/能力を明示。どこでも常時利用可能とは約束しない",
+    "phoneRequiredForNormalInteraction": false,
+    "phoneRequiredForApprovalByDesign": false,
+    "identityBoundary": "声の一致や在室だけを本人承認にしない。初回登録/紛失復旧/実行承認までMini側/対応固定端末等の電話に依存しない強い本人確認を別受入し、未成立なら草案を保存して作用を保留",
+    "localAndCloudBoundary": "Mini単独の既存local基本動作を維持。自然文理解は選択modelの実能力次第。Pro/cloudを使う時は接続・送信内容・費用上限を別確認",
+    "physicalBoundary": "設計作成、製作引渡し、現物完成は別状態。製作する設備/専門家は必要。危険設備の現地安全確認や一般Agentから独立した停止系を省略しない",
+    "continuityBoundary": "部屋/端末を変えても同じJobとartifact版を照合。変更版の既存製作承認を失効し、重複製作/誤送信を防ぐ",
+    "privacyBoundary": "部屋の無断常時録音や他人の会話送信を前提にしない。mute/応答停止/私有内容の出力先と本人切替を受入",
+    "runtimeChangedByThisDecision": false,
+    "acceptanceStatus": "design_only_not_physical_or_provider_accepted",
+    "taskIds": [
+      "DOC04",
+      "WEB04",
+      "SKY21",
+      "MAT15"
+    ],
+    "acceptanceCases": [
+      {
+        "id": "AC01",
+        "case": "携帯を持たずPCの前にも座らず、音声で一作品の案→2回修正→比較→保存→再表示→停止/再開",
+        "passEvidence": "同じowner/Job/作品版。電話を取り出す回数0、PC前での必須操作0、時間/誤認/修正回数を実測",
+        "status": "not_run"
+      },
+      {
+        "id": "AC02",
+        "case": "対象物が目の前になくても、許可した図面/寸法/計測の版から部品や空間を設計",
+        "passEvidence": "単位/公差/出所/計測時刻を保持。不足・古い計測は確認待ちとし、形状生成を製造適合へ昇格させない",
+        "status": "not_run"
+      },
+      {
+        "id": "AC03",
+        "case": "電話への強制handoffなしで確定版/相手/金額/範囲を確認し、製作先への引渡しをsandboxで検証",
+        "passEvidence": "初回登録/紛失復旧を含む非電話の本人確認、版変更後の再承認、受領ID、応答喪失/取消/二重製作拒否。現物完成は別の測定/受取証拠",
+        "status": "not_run"
+      },
+      {
+        "id": "AC04",
+        "case": "騒音/誤起動/別人の発話/同居人/来客/離席/mute",
+        "passEvidence": "無断送信・注文・設備作用なし。私有内容を別人の部屋へ読み上げず、停止して保存",
+        "status": "not_run"
+      },
+      {
+        "id": "AC05",
+        "case": "通信断/電源断/部屋・端末の切替と再開",
+        "passEvidence": "同じ仕事/版/費用/未解決holdを照合し二重dispatchなし。移動先を確認するまで私有応答を保留。利用可能範囲を表示",
+        "status": "not_run"
+      },
+      {
+        "id": "AC06",
+        "case": "model/Pro/cloud/製作設備のどれかが未接続",
+        "passEvidence": "利用可能なlocal編集/保存/停止を維持。必要な能力を未接続と示し、携帯必須への暗黙切替や無断cloud fallbackを行わない",
+        "status": "not_run"
+      }
+    ]
+  },
+  "version": "2.03",
+  "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
