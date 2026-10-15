@@ -1,0 +1,97 @@
+{
+  "schema": "sky-visual-scribe-local/1",
+  "date": "2026-10-15",
+  "taskId": "SKY21",
+  "primaryOwner": "ROCK",
+  "branch": "codex/sky-conversation-diagrams",
+  "baseMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f",
+  "catalogBefore": {
+    "total": 37,
+    "ready": 15,
+    "candidate": 22
+  },
+  "catalogAfter": {
+    "total": 38,
+    "ready": 16,
+    "candidate": 22
+  },
+  "tool": {
+    "id": "visual-scribe",
+    "name": "会話図解 · Visual Scribe",
+    "route": "/sky/visual-scribe",
+    "availability": "ready",
+    "executionScope": "browser-processing",
+    "input": "Pasted text or a UTF-8 .txt file, up to 50,000 characters and 50 blank-line-separated paragraphs",
+    "output": "Per-paragraph labeled flow, source-paragraph disclosure, all-diagrams text copy and current-diagram SVG download",
+    "processingBoundary": "Deterministic finite rules in the browser; no external transfer, model inference or persistence"
+  },
+  "implementation": [
+    "app/sky/visual-scribe/page.tsx",
+    "components/conversation-diagram-workspace.tsx",
+    "components/conversation-diagram-workspace.module.css",
+    "lib/conversation-diagram.ts",
+    "lib/catalog.ts",
+    "lib/sky-tool-execution-scope.ts",
+    "tests/conversation-diagram.test.mjs",
+    "tests/sky-tool-execution-scope.test.mjs"
+  ],
+  "validation": [
+    {
+      "command": "node --experimental-strip-types --test tests/conversation-diagram.test.mjs tests/sky-tool-execution-scope.test.mjs",
+      "status": "PASS",
+      "result": "29/29"
+    },
+    {
+      "command": "npm run baseline:check",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run design:check",
+      "status": "PASS",
+      "result": "19 domains / 38 Tools"
+    },
+    {
+      "command": "npm run sky:check",
+      "status": "PASS",
+      "result": "ready 16 / candidate 22"
+    },
+    {
+      "command": "npm run typecheck",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "result": "/sky/visual-scribe emitted"
+    },
+    {
+      "command": "npm run verify",
+      "status": "PASS",
+      "result": "2240 ordinary tests: 2239 pass / 1 existing platform skip / 0 fail; Work API 1381 assertions; CSV 385 assertions"
+    }
+  ],
+  "manualBrowser": {
+    "environment": "Codex in-app browser at localhost:3123",
+    "status": "PASS",
+    "observed": [
+      "Blank state rendered",
+      "Two blank-line-separated paragraphs became two diagrams",
+      "Paragraph selector reported 1/2 and 2/2",
+      "Next-paragraph control changed the visible nodes",
+      "Paragraph 2 exposed reason and decision labels",
+      "Text-copy and SVG-download actions were present"
+    ]
+  },
+  "accepted": [
+    "Local source behavior",
+    "Catalog and execution-scope registration",
+    "Local browser input and paragraph navigation"
+  ],
+  "notAccepted": [
+    "Public deployment or public readback",
+    "Audio capture or transcription",
+    "Model-based semantic summarization",
+    "Owner-scoped persistence or return visit",
+    "Mobile-device visual acceptance"
+  ]
+}

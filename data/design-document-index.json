@@ -557,6 +557,11 @@
         "docs/amc-autonomy-fixture.md"
       ],
       "interfaceImplementation": [
+        "lib/conversation-diagram.ts",
+        "app/sky/visual-scribe/page.tsx",
+        "components/conversation-diagram-workspace.tsx",
+        "components/conversation-diagram-workspace.module.css",
+        "tests/conversation-diagram.test.mjs",
         "lib/sky-citation-agent.ts",
         "app/api/sky/agents/citations/route.ts",
         "app/sky/agents/citations/page.tsx",
@@ -631,6 +636,22 @@
         "components/use-sky-chat-session.ts",
         "tests/sky-chat-session-recovery.test.mjs"
       ],
+      "visualScribe": {
+        "taskId": "SKY21",
+        "catalogId": "visual-scribe",
+        "document": "docs/sky-tools-complete-design.md#会話図解--visual-scribe",
+        "purposeAndUser": "Turn a person's pasted conversation or transcript into paragraph-level flow diagrams for review and export.",
+        "endToEndExperience": "Paste or open UTF-8 text, receive an automatic local diagram for each blank-line paragraph, compare with source, copy all text diagrams or export the current SVG.",
+        "responsibilityAndForbiddenAuthority": "ROCK owns bounded parsing and rendering; the Tool cannot infer verified meaning, approve minutes, transcribe audio, send text externally or claim durable save.",
+        "inputOutputLimits": "50,000 UTF-8 characters, 50 paragraphs, at most 6 nodes per paragraph; sky.conversation-diagram/1 plus source paragraph and warning.",
+        "stateAndFailure": "Empty, generated or explicit validation/export error; input and generated output remain in page memory on recoverable errors.",
+        "storageRetentionDeletionBackup": "No server, localStorage, cookie or analytics body storage; clear, reload or tab close removes page memory; downloaded SVG is user-managed.",
+        "offlineRetryDuplicateUncertain": "Processing is deterministic and local after bundle load; same input converges to the same plan; copy/download retry is explicit and does not rerun an external action.",
+        "updateCompatibilityRollbackRecovery": "Keep visual-scribe ID and schema version stable; roll back catalog, route, runtime and count documentation together; a future save mode cannot silently change local non-retention.",
+        "safetyPrivacySecurityApproval": "React text rendering and XML-escaped SVG; no credential, purchase, budget or external approval; diagrams represent speech and are not fact verification.",
+        "acceptanceEnvironmentEvidence": "Host parser, limit, node bound, XML escape, catalog count, typecheck, lint and build; public Site, mobile download and voice remain separate acceptance.",
+        "openDecisionsOwnerTest": "Realtime voice, speaker/timecode, semantic beats, edit/merge, owner save and model summarization require owner decision plus provenance, duplicate, cost, stop and recovery tests."
+      },
       "recoveredContractReferences": [
         "docs/sky-tool-sdk.md",
         "toolkits/sky-tool-sdk/src/index.mjs",
@@ -1042,6 +1063,43 @@
     }
   ],
   "catalogTools": [
+    {
+      "id": "visual-scribe",
+      "catalogStatus": "ready",
+      "displayName": "会話図解 · Visual Scribe",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "会話図解 · Visual Scribe",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "O5",
+      "implementationTask": "SKY21",
+      "readyScope": [
+        "browser_local_transcript_segmentation",
+        "paragraph_flow_rendering",
+        "text_copy_and_svg_export"
+      ],
+      "implementation": [
+        "lib/conversation-diagram.ts",
+        "app/sky/visual-scribe/page.tsx",
+        "components/conversation-diagram-workspace.tsx",
+        "components/conversation-diagram-workspace.module.css"
+      ],
+      "recoveredContractReferences": [
+        "tests/conversation-diagram.test.mjs",
+        "tests/sky-tool-execution-scope.test.mjs"
+      ],
+      "implementationBoundary": {
+        "schema": "sky.conversation-diagram/1",
+        "inputMaxCharacters": 50000,
+        "paragraphMax": 50,
+        "nodeMaxPerParagraph": 6,
+        "execution": "first-party-rules",
+        "externalTransmission": false,
+        "serverOrBrowserPersistentStorage": false,
+        "modelInference": false,
+        "voiceTranscription": false,
+        "productionDeploymentAccepted": false
+      }
+    },
     {
       "id": "rockstar-amc",
       "catalogStatus": "ready",

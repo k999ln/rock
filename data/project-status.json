@@ -5028,7 +5028,12 @@
         "lib/sky-feed-ranking.ts",
         "tests/sky-feed-ranking.test.mjs",
         "tests/web-route-style-contract.test.mjs",
-        "docs/sky.md"
+        "docs/sky.md",
+        "docs/evidence/sky-visual-scribe-local-20261015.json",
+        "app/sky/visual-scribe/page.tsx",
+        "components/conversation-diagram-workspace.tsx",
+        "lib/conversation-diagram.ts",
+        "tests/conversation-diagram.test.mjs"
       ],
       "nextAction": "Verify the new single-column Sky usefulness feed at desktop and 390px, then accept it with the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. The feed ranks only explicit saved/connected state, authoritative current availability, an ephemeral routed Tool id and curated fallback; it does not create execution authority. Historical Sites versions and local tests do not prove this branch is deployed or commercially accepted; explicit follow, provider/paid/native gates remain open.",
       "recoveredFrom": {
@@ -7285,6 +7290,36 @@
     "constructionContract": "none_verified",
     "validation": "Mermaid 3/3 parsed; baseline:check, avocado:r5:check, design:check and full npm run verify passed; R5 package integrity is archival only",
     "nextAction": "Fix one property and ceiling construction, obtain specialist design inputs, then test a full-size mount/mockup for installation, motion/stop, power loss, heat, privacy, removal and same-core local storage/recovery before site-specific installation approval."
+  },
+  "skyVisualScribe": {
+    "date": "2026-10-15",
+    "taskIds": ["SKY21"],
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "status": "local_ready_tool_implemented_public_acceptance_pending",
+    "source": "User explicit request to add automatic diagrams of spoken content to Sky",
+    "catalogBefore": {
+      "total": 37,
+      "ready": 15,
+      "candidate": 22
+    },
+    "catalogAfter": {
+      "total": 38,
+      "ready": 16,
+      "candidate": 22
+    },
+    "scope": "Paste or open UTF-8 text, split by blank lines, render each paragraph as a short labeled flow, inspect the source paragraph, copy all diagrams as text and download the current diagram as SVG.",
+    "route": "/sky/visual-scribe",
+    "executionBoundary": "Browser-only deterministic finite rules. No external transfer, model inference, account save, audio capture or transcription.",
+    "branch": "codex/sky-conversation-diagrams",
+    "baseMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "deployed": false,
+    "localBrowserReadback": "IAB localhost created two diagrams from two blank-line-separated paragraphs and switched to paragraph 2 with the expected reason and decision nodes.",
+    "validation": "Targeted conversation diagram and execution-scope tests 29/29 passed; baseline:check, design:check, sky:check, typecheck and build passed; full npm run verify passed with 2240 ordinary tests (2239 pass, one existing platform skip, zero failures), 1381 Work API assertions and 385 CSV assertions.",
+    "evidence": "docs/evidence/sky-visual-scribe-local-20261015.json",
+    "nextAction": "Save the exact branch on GitHub, pass full CI, then deploy the same accepted source and verify desktop/mobile input, export and privacy copy before calling it public. Add finalized voice segments, provenance and owner-scoped save only as separate stages."
   },
   "skyStandaloneAgentPilot": {
     "date": "2026-10-13",
