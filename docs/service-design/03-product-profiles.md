@@ -2,6 +2,10 @@
 
 再構成版 1.0。サービスの仕事・権限・成果契約を共有しながら、機器ごとの価値と成立条件を保つ。Sky/Zema/OSを使うためにMini・Pro・rocketstarの完成を待たず、Miniの基本動作にProを要求しない。
 
+## ソフト・家具・建築へ開くマーケットプレイスとハブ
+
+2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](../sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
+
 ## SkyとZema
 
 Skyの主な利用者は能力を使う本人と、能力を届ける作者。発見→条件比較→接続/購入→仕事または対応アプリへ進む。入力は本人の目的、catalog/manifest、接続能力、購入記録。出力は版付きの能力選択と接続状態で、本人承認・実行成功は出力しない。作者公開はPackage宣言と明示した公開コードを区別し、原稿やsecretを登録しない。
@@ -37,6 +41,10 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れられた端末へ提供する。その他は既存OS上のclient/browserへ分岐する。Linux/QEMU、Android試験APK、Pixelの全OS imageは別profile。Local LLMは対応機種の能力で、ブラウザ利用の必須条件にしない。
 
 保存はowner別の既存SQLite/D1と保護file、更新はcomponent identity・署名・互換性・保存schemaを検査する。失敗時は保存済み仕事の照合、互換versionへのrollback、受け入れたbackup経路を使う。未知schemaや全損を勝手に初期化して正常復旧としない。[native統合](../native-os-integration.md)、[native検証](../native-os-validation.md)、[Pixel Preview](../phone-preview-20260911.md)の各gateを維持する。
+
+### Pixel専用OSとiOS機能追加の提供順
+
+本人の2026-10-15指示でPixel 10 GL066 / frankelの独自OS統合を最初の物理商品とする。iOSはeSIM通信＋si利用権をaccountへ結び、client/Webと受入済みのApp Intents等で同じJob/Artifact/費用へ接続する後続経路。eSIMとclient/native権限を別状態にし、iOSをPixel経由の中継clientにしない。[多機種契約の保存・失敗・復旧・一次資料・IP01〜04](../device-support-architecture.md#pixel先行とiosへの機能追加)を参照。Pixel全OS/iOS native連携は未受入。
 
 ## avocadoMini
 

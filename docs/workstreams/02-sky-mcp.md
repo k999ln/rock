@@ -1,5 +1,9 @@
 ## 2026-10-09 SKY20／ROCK — コードのタイムライン公開
 
+## model・Agent・実行先の選択
+
+SKY07/SKY21（ROCK）は[local/cloud/明示組合せの選択契約](../llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)を既存registryへ接続する。OS11/AI04/WEB04/BIL02と、導入/実host/データ送信/費用/Job版/grant/停止/無断fallback拒否を受け入れる。SC01〜05は未実行。検証は`npm run llm:architecture:check`、`npm run design:check`、`npm run verify`。
+
 明示指示に基づきコード本文・commit・履歴・差分・複製・非公開／再公開を実装。SYS15のSPIDERを既定のserver検査へ接続し、交換・取り外しを版ごとに記録する。主担当ROCK、外部検査器は未接続、OWNERは公開権限／licenseと保護変更の確認を担当する。Package審査／実行／料金とは独立。合格条件は本人別保存・CAS競合・再送・検査迂回拒否・実画面。検証入口: `node --experimental-strip-types --test tests/sky-code-timeline.test.mjs`、`npm run verify`。[詳細](../sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。本番配備は未実施。
 
 ## 2026-10-01 SKY21 / JOINT — Pixelのサービス受入

@@ -1,6 +1,21 @@
 {
+  "executionChoiceDesign": {
+    "authority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "status": "designed_not_implemented",
+    "choiceRequired": true,
+    "agentAndModelPlacementSeparate": true,
+    "automaticFallback": false,
+    "selectionDoesNotRaiseExistingCapabilityStatus": true,
+    "acceptanceIds": [
+      "SC01",
+      "SC02",
+      "SC03",
+      "SC04",
+      "SC05"
+    ]
+  },
   "schemaVersion": 1,
-  "updatedAt": "2026-10-13",
+  "updatedAt": "2026-10-15",
   "product": {
     "displayName": "avocadoOS",
     "internalId": "dev.rock",

@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## Pixel先行とiOS機能追加の提供順
+
+2026-10-15の本人指示を[多機種契約](../device-support-architecture.md#pixel先行とiosへの機能追加)へ反映。OS11/O6/ROCKのPixel独自OS統合を優先し、iOSはSIM01/WEB04/SKY07/SKY21/RLS02と接続するeSIM商品＋client/Web/対応native連携の設計候補。PixelのDT/物理OS gateとiOSのIP01〜04は別受入。検証は`npm run device-support:check`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。iOS clientコード、carrier entitlement、Store配布、実開通は未受入。
+
 ## si専用端末のHome受入
 
 本人の2026-10-15指示を[端末体験契約](../native-os-integration.md#si専用端末の利用体験と実装境界)へ固定する。OS11/O6/ROCKが主担当、DOC04/WEB04/AI04/SKY07/SKY21/RLS02が接続する。現在のShellはMAIN/LAUNCHERでHOME/voice role未宣言。非破壊の一仕事→owner選択/解除可能なHome→必要な音声入力→同imageのOS/更新/復旧の順とし、DT01〜06は未実行。検証commandは`npm run baseline:check`、`npm run design:check`、`npm run verify`、実装時は`docs/os-prototype.md`のAPK/SQLite/端末試験とOS受入reportを追加する。

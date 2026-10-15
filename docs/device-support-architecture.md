@@ -4,6 +4,42 @@
 
 機械可読の正本は [`data/device-support-matrix.json`](../data/device-support-matrix.json)。`npm run device-support:check`は、未確認端末を対応済みまたはflash可能へ変更する誤りを拒否する。
 
+## Pixel先行とiOSへの機能追加
+
+2026-10-15の本人指示で、**最初の専用端末はPixel 10 GL066 / frankel、到達形はGrapheneOSベースの独自RockstarOS**とする。先にPixelでsi Home、Jenniferへの依頼、Sky/Zema、Broker、保存/再起動/復旧を一周させる。既存OS上の非破壊APKはその準備・比較の段階で、最終商品をAPKだけへ縮小しない。独自imageを導入できる経路と、実際にbuild/署名/flash/boot/OTA/復旧が合格した状態は分ける。OEM署名firmware等の機種制約は残り、「完全にOSを入れる」を全hardwareの自由な書換えや全機能完成とは表示しない。
+
+**iOS/iPadOSはeSIM商品を入口とする機能追加型client**。本書でいう「機能プラグイン」は、通信＋si利用権を本人accountへ結び、Skyの利用可能な能力をアプリ/Webから選び、対応するnative機能だけApp Intents等へ公開する構成とする。iOSのOS image置換や、eSIMに実行codeを入れてOSへ注入する方式は採らない。以下はApple一次資料を踏まえたRock側の設計判断で、Appleの承認取得やiOS client実装の記録ではない。
+
+### 購入から利用まで
+
+1. 通信＋si利用権商品を購入し、検証済みorderを本人accountへclaimする。`order / carrier profile / service grant / client導入・版 / device session`を別々に保存する。回線profileや電話番号だけを本人性・支出承認へ使わない。
+2. 対応する機種/地域/carrierの手順でeSIMを追加する。QR/link/設定画面等はpartnerが提供する経路を使う。app内の直接発行・追加APIはcarrier app向けentitlement等の条件を満たした場合だけ選び、未取得なら案内経路を使う。profile追加だけでclientや機能の導入完了にしない（I01/I02）。
+3. 対応Web、将来のiOS clientへ本人認証で入り、利用権・送信範囲・料金・上限を読む。Skyのremote Tool利用とnative権限を別承認する。既存のpreview bypassを本番利用権の照合として転用しない。
+4. client導入後、対応するApp IntentsからSiri/Shortcuts/Spotlight等へ明示した仕事操作を公開する案を試す（I03）。最初の候補は依頼の下書き、仕事を開く、進捗確認。有料開始/外部送信/停止の作用は既存の本人・権限・予算・冪等契約を通す。呼び出せたことを承認済みにしない。native連携はbrowserだけでは提供済みにならず、対応OS/機種/署名appの受入が必要。
+5. cloud側のZema/Agentが許可済み仕事を継続し、clientは同じJobとArtifact revisionを再取得する。iPhoneのappが閉じた状態で端末processが無期限に動く前提にはしない（I05）。cloudで完結する経路ではPixelをiOSの中継serverや常時onlineの必須機器にしない。本人が別端末のlocal modelを工程に明示選択した場合は、その端末/bridgeの到達性を必要条件として表示し、切断時は保留する。Pixel専用Broker/Binder権限はiOSへ渡らず、各clientの能力とserver側gateで照合する。
+
+### プラグインの配布・保存・失敗境界
+
+初期scopeは既存Skyのremote capabilityと型付き入出力、Web経路、署名clientに含めたnative adapter。第三者native codeの自由なdownload/実行は前提にしない。HTML/JavaScript等のmini app/chatbot/plugin提供はApp Reviewの4.7等に従う別候補で、無条件禁止とも承認済みとも扱わない。native API公開、データ共有の本人同意、catalog/リンク、年齢/内容、販売地域ごとの配布・課金条件を設計・審査で確認する（I04）。通信bundleであることだけをdigital service販売規則の例外根拠にしない。
+
+本人別Job/Artifact/receiptは既存server正本を使い、clientは必要最小限のcacheと保護されたsessionを持つ。再開時は認証・権限・revisionを再照合する。通信断/期限切れ/権限拒否で勝手に別回線・model・Toolへ送信しない。profile削除/再発行とservice期限/失効は契約上の関係を照合し、それだけで作品やaccountを削除しない。device失効はそのsessionを止め、古い応答や同じ購入からの重複grant/課金/仕事開始を防ぐ。client未導入、native能力非対応、cloud停止、保存未取得を明示し、Webへ戻る場合も機能差を表示する。
+
+### 担当・受入・未決定
+
+主担当はAndroid / Device OS11/O6/ROCK。Pixelのnative受入を先行し、DOC04が方針同期、WEB04が将来client体験、SIM01が商品/profile/service binding、SKY07/SKY21が能力接続、RLS02が署名/配布/復旧を担当する。iOSは設計候補で、Swift/Xcode app、App Intents、carrier entitlementの実装/取得/実機受入を確認できていない。QEMU、Mini、Pro、Gameは独立した既存系列を維持し、iOSの完成待ちにしない。
+
+合格条件はbaselineのIP01〜IP04（全て未実行）。IP01は購入/profile導入/利用権/client状態の独立性と失敗再開、IP02は同owner/Job/版の継続とiOS権限拒否/別owner遮断、IP03はapp停止/再起動中のcloud予算/停止/照合と二重dispatch拒否、IP04は回線切替/期限/失効/紛失時の保存と分離。Pixelは既存DT01〜06および同imageの物理OS gateを別に通す。
+
+ROCKはPixelの最初の一仕事とHome復帰を先に試作する。OWNER/JOINTと後続で対象iPhone/iOS版・地域・通信商品・回線と利用権の解約関係・配布/課金経路を定め、最小iOS機能を選ぶ。現段階で機種対応、Store審査、carrier契約、有料サービス、flashの合格を宣言しない。
+
+### 確認した一次資料（2026-10-15）
+
+- **I01** [Apple: iPhoneのeSIM設定](https://support.apple.com/en-us/118669) — carrier対応に応じたQR/link/app/手動設定。
+- **I02** [Apple: CTCellularPlanProvisioning](https://developer.apple.com/documentation/coretelephony/ctcellularplanprovisioning) — carrier appとentitlementの条件。
+- **I03** [Apple: App Intents](https://developer.apple.com/documentation/appintents) — アプリの明示したaction/dataをsystemの対応面へ接続。
+- **I04** [Apple: App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) — 2.5の公開API/code/背景動作、3.1の販売条件、4.7のplugin等の条件。地域/配布経路の詳細はリリース時に再確認。
+- **I05** [Apple: Background strategies](https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app) — backgroundは用途・時間・system schedulingの制約付き。
+
 ## 一つの製品、四つの提供区分
 
 | 区分               | 意味                                                                  | 現在の例                               |
@@ -69,11 +105,11 @@ unlockやflashに伴うデータ消去は、対象端末と実行直前に利用
 
 ## 現在の順序
 
-1. QEMUの既存受入を保持し、Android共通CoreのCuttlefish入口を作る。
+1. 物理商品の優先はPixel 10の専用si端末。QEMUの既存受入とCuttlefishの共通Core検証は独立系列として維持し、Pixelの実機合格へ転用しない。
 2. 所有済みPixel 10／`frankel`を最初の物理対象とし、読取り専用診断でproduct、現在OS、OEM unlocking可否を確認する。Pixel 7／`panther`はPixel 10受入後まで保留する。
 3. 予算承認後に専用LinuxでPixel 10の全source buildを行う。
 4. 選択端末の実機受入後、Treble端末を`gsi_experimental`として一機種ずつ追加する。
 5. BlackBerry Androidは正確なモデルにsupported unlock・vendor・recovery経路がある場合だけ実験候補へ上げる。旧BlackBerryは非対応を維持する。
-6. iPhone/iPadはOS置換ではなくclientとして共通Coreへ接続する。
+6. Pixel先行の後続経路として、iPhone/iPadはeSIM商品＋client/Web/対応native連携で共通serviceへ接続する。利用権はaccount正本、端末OSの置換やPixel常時onlineは前提にしない。
 
 この順序により、Coreの改善をすべての提供形態へ反映しながら、機種固有の失敗を他端末やWallet契約へ波及させない。

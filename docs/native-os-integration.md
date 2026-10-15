@@ -10,6 +10,10 @@
 
 販売する体験は `通信＋RockstarOS/Sky/Zema/si利用権`。通信料、LLM/Agent従量、Tool/外部実費は明細を分ける。「利用権を含む」は無制限token/GPUや全機種native OSを意味しない。既存30%/10%/1,000円等の料金判断は新しい価格決定まで維持し、回線原価/含むquota/対象国/carrier/解約・再発行・利用停止の関係は契約前に決める。
 
+## Pixelを先行し、iOSはeSIMから機能を追加する
+
+2026-10-15の本人指示を[多機種の提供契約](device-support-architecture.md#pixel先行とiosへの機能追加)へ固定する。最初はPixel 10 GL066 / frankelへGrapheneOSベースのRockstarOSを統合する専用端末。iOSは通信＋si利用権商品から、accountに結び付いたclient/Web/対応App Intents等へ進む機能追加型の後続経路。eSIM開通、利用権、client導入、native権限は独立して照合し、eSIMによるcode導入・OS権限獲得を前提にしない。同じJob/Artifact/費用を使いながら機種の能力は別受入とする。Pixel全OS/iOS連携とも未受入で、実行gateは変更しない。
+
 ## si専用端末の利用体験と実装境界
 
 2026-10-15の本人指示「ai専用端末に変えたいんだよね」を、製品表記siで具体化する。**Pixel参照機の目標は、unlock後の中心がJenniferとの対話・制作・仕事になるsi専用端末。** GrapheneOSを土台にしたRockstarOSのdevice profileとして設計し、通信＋si利用権の商品入口を維持する。全体の携帯不要という目的は維持し、この端末の常時携行をMini利用の条件にしない。Mini/対応hostは同じ仕事へ別の場所から入る。
@@ -18,7 +22,7 @@
 
 1. 初期設定で本人・端末鍵・service利用権・通信を個別に確認する。再起動後はOSの本人unlockを経てsi Homeへ戻り、未送信の下書き、進行中の仕事、承認待ち、停止を表示する。boot直後の鍵が利用できない状態を自動unlockで迂回しない。
 2. Jenniferへ音声または文字で目的を伝える。音声が使えない場面でも文字/画面操作を残す。常時待受/呼びかけの方式は消費電力・mic表示・privacy・機種対応を実測して選び、常時録音を前提にしない。
-3. Skyが使える能力と不足条件を示し、Zemaが既存Jobと成果の版を保存する。通常の一件で利用者がアプリ一覧やmodelを毎回選ばずに済む導線にする。理解/制作は契約・受入済みcloudを標準候補とし、端末内modelは対応機種の任意能力。model未接続時は未接続と示す。
+3. Skyが使える能力と不足条件を示し、Zemaが既存Jobと成果の版を保存する。通常の一件で利用者がアプリ一覧やmodelを毎回選ばずに済む導線にする。理解/制作のmodelとAgent実行先はSkyで選ぶ。対応端末内LLM、受入済みcloud、明示した工程ごとの組合せを、準備状態・送信先・資源・費用とともに提示する。選択を必要なJob条件へ保存した後は毎回選び直しを要求せず、未接続や経路変更時は確認へ戻す。[選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、未接続時の無断fallbackをしない。
 4. 費用・送信先・作用・対象版を示し、必要な本人承認を得てBrokerが実行条件を確認する。Jenniferの発話やmodelの回答で権限を作らない。進捗/成果/使用額/停止をHomeから扱い、外部作用の応答喪失時は同じ実行IDを照合する。
 5. Miniへ移っても同じowner/Job/Artifact revision/grant/予算を再取得し、私有出力先を確認する。端末を変えたことを二度目の注文・製作・課金の理由にしない。
 

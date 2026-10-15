@@ -1,4 +1,63 @@
 {
+  "pixelFirstIosPluginDesign": {
+    "date": "2026-10-15",
+    "taskId": "SKY07",
+    "primarySquad": "O4",
+    "primaryOwner": "ROCK",
+    "coordinationTask": "DOC04",
+    "sourceMainSha": "19ad86145afc24945865735991f1a3c31403c4d1",
+    "status": "design_verified",
+    "authority": "docs/device-support-architecture.md#pixel先行とiosへの機能追加",
+    "runtimeChanged": false,
+    "pixelNativeAcceptance": "pending",
+    "iosNativeAcceptance": "not_run",
+    "nextAction": "Skyの一仕事で実host/model/Agentのlocal-cloud選択と費用/送信/停止を固定し、Pixel si Home/同Job再起動を先に試作する。iOSと家具read-only hostは独立した後続受入。",
+    "verification": {
+      "result": "pass_locally_with_scopes_separated",
+      "node": "22.23.3",
+      "fullVerifyLog": "/private/tmp/rock-pixel-sky-final-verify.log",
+      "fullVerifyScope": "after_local_cloud_refinement_before_final_furniture_fusion_documentation",
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0,
+        "cancelled": 0
+      },
+      "workApiAssertions": 1381,
+      "finalFocusedCommands": [
+        "baseline:check",
+        "device-support:check",
+        "llm:architecture:check",
+        "design:check",
+        "avocado:r5:check"
+      ],
+      "finalFocusedResult": "pass",
+      "firstFullVerify": "30 Wallet UI cancellations from pending Promise/event-loop exit; not treated as success; isolated 43-case suite and subsequent full verify passed without runtime modification",
+      "firstLog": "/private/tmp/rock-pixel-ios-verify.log",
+      "isolatedLog": "/private/tmp/rock-pixel-ios-wallet-retry.log",
+      "physicalOrProviderAcceptance": "not_performed",
+      "firstCiFailure": "8d9051ad: sky:check rejected omission of 端末・PC・Cloud in edited docs/sky.md; restore execution-target and lifecycle description, keep validator unchanged."
+    },
+    "gitEvidence": {
+      "branch": "codex/pixel-first-ios-service-plugins",
+      "readbackCommand": "gh pr view codex/pixel-first-ios-service-plugins --json state,mergedAt,mergeCommit,headRefOid",
+      "sitePublished": false
+    },
+    "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "ownerRefinement": "SkyはRockstarOS外へ開くAgent/LLM市場兼ハブ。local/cloud選択と家具/建築融合、センサー付きソファーの本人別観測例を既存host契約へ接続。",
+    "crossHostFusionAuthority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
+    "relatedTaskIds": [
+      "SKY21",
+      "OS11",
+      "AI04",
+      "WEB04",
+      "SIM01",
+      "MAT15",
+      "RLS02",
+      "BIL02"
+    ]
+  },
   "dedicatedSiTerminalDesign": {
     "date": "2026-10-15",
     "taskId": "OS11",
@@ -303,7 +362,7 @@
   },
   "updatedAt": "2026-10-15",
   "milestone": "通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる",
-  "nextAction": "通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。",
+  "nextAction": "Skyで一仕事のmodel/Agent実行先・送信・費用を選択/固定し、Pixel 10 GL066のsi Home/同Job復元を最初の物理商品として受け入れる。通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。",
   "tasks": [
     {
       "id": "AMC02",
