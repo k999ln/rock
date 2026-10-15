@@ -10,6 +10,32 @@
 
 販売する体験は `通信＋RockstarOS/Sky/Zema/si利用権`。通信料、LLM/Agent従量、Tool/外部実費は明細を分ける。「利用権を含む」は無制限token/GPUや全機種native OSを意味しない。既存30%/10%/1,000円等の料金判断は新しい価格決定まで維持し、回線原価/含むquota/対象国/carrier/解約・再発行・利用停止の関係は契約前に決める。
 
+## si専用端末の利用体験と実装境界
+
+2026-10-15の本人指示「ai専用端末に変えたいんだよね」を、製品表記siで具体化する。**Pixel参照機の目標は、unlock後の中心がJenniferとの対話・制作・仕事になるsi専用端末。** GrapheneOSを土台にしたRockstarOSのdevice profileとして設計し、通信＋si利用権の商品入口を維持する。全体の携帯不要という目的は維持し、この端末の常時携行をMini利用の条件にしない。Mini/対応hostは同じ仕事へ別の場所から入る。
+
+### 通常の一周
+
+1. 初期設定で本人・端末鍵・service利用権・通信を個別に確認する。再起動後はOSの本人unlockを経てsi Homeへ戻り、未送信の下書き、進行中の仕事、承認待ち、停止を表示する。boot直後の鍵が利用できない状態を自動unlockで迂回しない。
+2. Jenniferへ音声または文字で目的を伝える。音声が使えない場面でも文字/画面操作を残す。常時待受/呼びかけの方式は消費電力・mic表示・privacy・機種対応を実測して選び、常時録音を前提にしない。
+3. Skyが使える能力と不足条件を示し、Zemaが既存Jobと成果の版を保存する。通常の一件で利用者がアプリ一覧やmodelを毎回選ばずに済む導線にする。理解/制作は契約・受入済みcloudを標準候補とし、端末内modelは対応機種の任意能力。model未接続時は未接続と示す。
+4. 費用・送信先・作用・対象版を示し、必要な本人承認を得てBrokerが実行条件を確認する。Jenniferの発話やmodelの回答で権限を作らない。進捗/成果/使用額/停止をHomeから扱い、外部作用の応答喪失時は同じ実行IDを照合する。
+5. Miniへ移っても同じowner/Job/Artifact revision/grant/予算を再取得し、私有出力先を確認する。端末を変えたことを二度目の注文・製作・課金の理由にしない。
+
+### 画面・保存・失敗・復旧
+
+Homeの中心は会話、進行中、確認待ち、成果、費用、停止。設定には通信・本人連携・権限・入力/出力・保存/復旧への明示導線を置く。ロック中/他人利用時の私有成果読み上げと承認を拒否し、muteと手動停止を会話以外から操作できるようにする。通信/LLM停止時は受入済みの有限local機能と暗号化保存/再取得を使い、cloud代替への無断送信や無断追加費用を発生させない。localにないcloud成果をofflineで取得できたとは表示しない。
+
+保存は既存owner別Job、版付きArtifact、端末の暗号化連携/保存を再利用する。認証失効・鍵喪失・home crash・OS更新失敗を区別し、読み取れない記録を空の正常状態で上書きしない。設定/復旧、OSが提供する緊急機能への導線は確保する。一般Android appを許可する範囲、kiosk/管理端末化、Homeの置換範囲は未決定であり、「専用」という発言だけで全app削除や利用者の脱出不能を決めない。外部appも必要な能力として接続する場合は既存のscope/承認を通す。
+
+### 現在の差分と順番
+
+現sourceの`android/shell/src/aosp/AndroidManifest.xml`はMAIN/LAUNCHERで、HOME categoryやVoiceInteractionServiceを宣言していない。現在のShell APKをsi Home/OS常駐音声として完成扱いしない。①既存OS上で非破壊に一仕事の対話/成果導線を検証 → ②ownerが選択/解除できるHome候補とcrash復帰を検証 → ③必要なら音声role/機種の入力経路を検証 → ④独自署名OSへ統合し同imageのboot/更新/復旧を受け入れる。app試作とprivileged OS統合は別成果にする。音声roleの可能性は調査G14〜16、独自build/OTAはG01/G05に従う。
+
+**合格条件**はbaselineのDT01〜DT06。DT01はboot/unlock/Home/再起動と同owner/Job復元、DT02はapp選択なしの依頼→改訂→確認→保存→再開、DT03はcloud/通信断、DT04はロック/他人/mute/私有出力、DT05は見積/上限/停止/応答喪失の重複防止、DT06はMini引継ぎと端末復旧。所要時間、誤認識、再開時間、電池/熱、費用を同じ候補artifactで測り、値の合否基準は試作briefで定める。全6件は未実行。既存AC01〜06、OS受入report、DEVICE-INSTALL等のgateを省略しない。
+
+主担当はOS11/O6/ROCK、体験同期DOC04/H1、Home/仕事WEB04、local planner AI04、cloud/Sky SKY07・SKY21、署名/復旧RLS02。次の試作briefでROCKが代表一仕事とHome復帰動作を具体化し、OWNERが一般appの扱いと音声待受の選択を行う。専用端末方針は署名鍵生成、flash、回線契約、有料実行gateの解除を含まない。
+
 ## 2. 下から積む6層
 
 1. **通信**: 対象端末/eUICC/LTE modem、通信partnerのprofile発行・開通。購入、profile配信、端末install、網登録、IP通信を別状態にする。最初のprofile downloadに使うWi-Fi等のbootstrap通信も準備する。

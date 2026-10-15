@@ -1,6 +1,24 @@
 {
+  "dedicatedSiTerminal": {
+    "authority": "docs/native-os-integration.md#si専用端末の利用体験と実装境界",
+    "baselineKey": "dedicatedSiTerminalIntent",
+    "domains": [
+      "android_pixel",
+      "platform_core_and_jobs"
+    ],
+    "taskId": "OS11",
+    "acceptanceIds": [
+      "DT01",
+      "DT02",
+      "DT03",
+      "DT04",
+      "DT05",
+      "DT06"
+    ],
+    "runtimeImplemented": false
+  },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.13",
+  "version": "1.14",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
