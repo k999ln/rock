@@ -7295,7 +7295,7 @@
       "baselineAndR5Tests": "5/5 passed",
       "r5Archive": "26 hashes preserved",
       "firstVerify": "R5 old external-power-only regression found and updated to new portable-power requirement",
-      "finalVerify": "running; see PR #142 for same-head CI",
+      "finalVerify": "verify reached site test after 2234 pass/1 skip; installed missing site dependencies, resumed all remaining stages through bot:check successfully; same-head CI tracked in PR #142",
       "runtimeAcceptance": "not performed"
     }
   }
