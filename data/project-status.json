@@ -36,7 +36,8 @@
       "firstFullVerify": "30 Wallet UI cancellations from pending Promise/event-loop exit; not treated as success; isolated 43-case suite and subsequent full verify passed without runtime modification",
       "firstLog": "/private/tmp/rock-pixel-ios-verify.log",
       "isolatedLog": "/private/tmp/rock-pixel-ios-wallet-retry.log",
-      "physicalOrProviderAcceptance": "not_performed"
+      "physicalOrProviderAcceptance": "not_performed",
+      "firstCiFailure": "8d9051ad: sky:check rejected omission of 端末・PC・Cloud in edited docs/sky.md; restore execution-target and lifecycle description, keep validator unchanged."
     },
     "gitEvidence": {
       "branch": "codex/pixel-first-ios-service-plugins",
