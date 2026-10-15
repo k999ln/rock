@@ -14,7 +14,7 @@ export default function SkyMonthlySandbox() {
   const [busy, setBusy] = useState(false);
   async function request(body?: unknown) {
     const response = await fetch('/api/sky/monthly-sandbox', body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
-    const data = await response.json() as { error?: string; quote?: Quote; invoices?: Invoice[]; usage?: Usage[]; job?: { standaloneAgent: { text: string } }; replayed?: boolean; simulatedMonthEnd?: boolean; simulatedPayment?: boolean }; 
+    const data = await response.json() as { error?: string; quote?: Quote; invoices?: Invoice[]; usage?: Usage[]; job?: { standaloneAgent: { text: string } }; replayed?: boolean; simulatedMonthEnd?: boolean; simulatedPayment?: boolean };
     if (!response.ok) throw new Error(data.error ?? '利用できません。');
     return data;
   }

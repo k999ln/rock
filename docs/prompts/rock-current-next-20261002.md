@@ -1,5 +1,9 @@
 # RockstarOS service and Pixel: implementation handoff
 
+## Pixel si実装設計の追補
+
+`docs/native-os-integration.md#pixel-si専用端末の実装設計`と`docs/evidence/grapheneos-source-audit.json`を読む。調査版2026100600と採用lock2026100200は別。129構成/公開差分/独立appのsource検索を全image実機合格にしない。SpeechServicesはGitLabの固定v3 APK/TTSで、source tag 3のvoiceはen_US、日本語ASR/TTSは別受入。Brokerには既存INTERNET/device transportがあり、ShellはHOME/voice role未対応。PX-HOME〜PX-RELEASEの8 module、PX01〜12を既存P0〜P7/C1/C2へ対応し、端末/cloud二重正本・parentJob予算の月上限読み替え・文書によるpaid gate解除を禁止する。P0同期/固定を先に行い、local一仕事をcloud契約待ちにしない。
+
 ## 2026-10-15: Pixel現在地からの優先入口
 
 最初にmain/branch/同SHA CIと`docs/evidence/pixel-readiness.json`を再取得する。`docs/native-os-integration.md#pixelの現在地と実用化の順番`のP0を最優先とし、手元`codex/esim-cloud-access`の17項目候補（未commit/main未反映）をmainの現行API/権限/料金gateへ選別同期する。12 hashが一致する過去候補でも、現在の端末状態とはしない。P1で現行v4と一modelの非破壊Pixel受入、P2/P3で一仕事とSky選択、P4 Home、P5 compile-only、P6/P7のrelease/同image受入へ進む。mainのベース未反映を先に解消し、旧compile branchを未実装機能の隠れた最新版と扱わない。
