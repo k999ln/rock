@@ -1091,7 +1091,10 @@ export function validateBaseline(
       miniR5?.sameTypePeerExpansion === true &&
       miniR5?.separateEdgeHubRequired === false &&
       miniR5?.externalPcRequiredForCoreFunctions === false &&
-      miniR5?.externalPowerRequired === true &&
+      miniR5?.externalPowerRequired === false &&
+      miniR5?.portablePowerRequired === true &&
+      miniR5?.externalPowerPolicy === "dock_power_for_installed_mode_portable_power_required_off_dock" &&
+      miniR5?.batterySelectionStatus === "internal_vs_detachable_under_design_not_selected" &&
       miniR5?.batteryAdopted === false &&
       miniR5?.displayRequirement === 'naked_eye_particles_distributed_in_surrounding_real_space' &&
       miniR5?.displayStatus === 'unavailable_research_gate_not_room_scale_validated' &&

@@ -625,3 +625,7 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 ## eSIM導入確認後のクラウド利用権（2026-10-06統合）
 
 既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+
+## 着脱Miniと請求の共通契約
+
+[Mini通信・月次請求](service-design/08-mini-connectivity-and-billing.md)に本人、場所scope、携帯電源、WAN能力、usage/請求/制限/復旧を統合。OSによる銀行口座凍結は行わず、本番gateと旧料金保留を維持する。

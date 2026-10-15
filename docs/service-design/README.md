@@ -78,3 +78,5 @@ Jenniferのcontext・真正検収証拠、課金方式と現行Wallet gateの整
 最新再確認: PR #113のJennifer sourceはhead `3349c247`の8check成功後、2026-10-13 18:21:19 UTCにmain `01d2e418`へ統合済み。merge SHAの7checkも成功。本設計branchへmainを保全mergeした。原本/context/真正review/native/Providerの未受入条件は引き続き個別に残す。
 
 利用者の「mainへあげて」によりPR #114を2026-10-13 21:37:37 UTCにmain `59412c04`へ通常mergeした。最新mainの#112/#115/#116/#117/#118を保全した受入head `7b27ae7d`は全体verifyと同一SHA9 CI成功、merge treeも一致。Git統合をSite再配備/Provider/実機受入へ換算しない。
+
+8. [Miniの着脱・衛星Wi-FiとAgent月次請求](08-mini-connectivity-and-billing.md) — 建築から携帯へつながる体験、通信・仕事・料金、受入境界。

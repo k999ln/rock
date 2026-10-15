@@ -1006,7 +1006,9 @@
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
-        "docs/avocado-mini-hardware-design.md"
+        "docs/avocado-mini-hardware-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "docs/service-design/08-mini-connectivity-and-billing.md"
       ]
     },
     {

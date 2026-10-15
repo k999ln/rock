@@ -519,7 +519,7 @@
       "sameTypePeerExpansion": true,
       "separateEdgeHubRequired": false,
       "externalPcRequiredForCoreFunctions": false,
-      "externalPowerRequired": true,
+      "externalPowerRequired": false,
       "batteryAdopted": false,
       "displayRequirement": "naked_eye_particles_distributed_in_surrounding_real_space",
       "displayStatus": "unavailable_research_gate_not_room_scale_validated",
@@ -533,7 +533,20 @@
       "maturity": "integrated_basic_design_with_open_engineering_decisions",
       "replacesMandatoryE3HubConfiguration": true,
       "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
-      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
+      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24",
+      "externalPowerPolicy": "dock_power_for_installed_mode_portable_power_required_off_dock",
+      "portablePowerRequired": true,
+      "batterySelectionStatus": "internal_vs_detachable_under_design_not_selected",
+      "embeddedPortableConnectivity": {
+        "document": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "source": "2026-10-15 user image and explicit embedded/detachable/satellite/portable Wi-Fi request",
+        "embeddedDock": true,
+        "detachableCore": true,
+        "satelliteWanTarget": true,
+        "wifiHotspotTarget": true,
+        "directSatelliteAccepted": false,
+        "portablePowerAccepted": false
+      }
     }
   },
   "distributionPricingIntent": {
@@ -2665,5 +2678,19 @@
       "real Fitness Agent",
       "production Provider output"
     ]
+  },
+  "agentMonthlyPostpaidIntent": {
+    "date": "2026-10-15",
+    "source": "携帯料金と同じシステムでAgent利用を毎月請求、強い支払義務",
+    "billingCycle": "monthly",
+    "settlementDirection": "postpaid",
+    "scope": "contract_account_agent_usage",
+    "quoteAndBudgetCapRequired": true,
+    "carrierBillIntegrationAccepted": false,
+    "bankAccountFreezeByOs": false,
+    "delinquencyPolicy": "notice_grace_dispute_paid_agent_restriction_reconciliation_and_lawful_collection_review",
+    "jurisdiction": "undecided",
+    "productionBillingEnabled": false,
+    "document": "docs/sky-billing.md"
   }
 }

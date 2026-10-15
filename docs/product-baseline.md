@@ -77,7 +77,7 @@ Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済�
 
 ### Mini、Pro、rocketstarと配布対象
 
-現行hardwareはavocadoMini R5、avokadoPro、rocketstarの三program。Miniは使用時全高200mm以内の銀色円筒、1本自律、別Edge Hub不要、同型Mini増設、外部給電、眼鏡なしの周囲空間表示、身体・手・日本語音声、ゲームから生活支援への展開を目指す。Proやスマホ、インターネットを基本操作・保存の必須条件にしない。[R5正本](avocado-mini-r5/README.md)の光学・精密入力・収納・熱・電源・安全・製造gateは未受入。
+現行hardwareはavocadoMini R5、avokadoPro、rocketstarの三program。Miniは使用時全高200mm以内の銀色円筒、1本自律、別Edge Hub不要、同型Mini増設、設置中給電＋携帯電源（部品未選定）、眼鏡なしの周囲空間表示、身体・手・日本語音声、ゲームから生活支援への展開を目指す。Proやスマホ、インターネットを基本操作・保存の必須条件にしない。[R5正本](avocado-mini-r5/README.md)の光学・精密入力・収納・熱・電源・安全・製造gateは未受入。
 
 2026-10-14の明示方針として、Miniには**建築一体型の設置profile**を加える。新築の設計段階から建築・設備・内装側と設置条件を調整し、天井への収納・展開を複数の天井構成に合わせて検討する。これはR5単体coreを置き換える別製品や建物制御Hubの必須化ではなく、取外し・点検できる設置方式の追加である。居住者のlocal利用・停止・保存を建物所有者や施工者の権限と分離する。天井構造、給電、熱、落下/可動部、光・音・camera、保守、消防・建築上の適合は対象物件ごとに有資格者と確認し、実施工・販売・対応天井の確定を設計記載だけで宣言しない。[建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を正本とする。
 
@@ -444,3 +444,7 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 - **Gitと公開** — 本書・baseline JSON・設計index・進捗を同じ変更へ同期し、`npm run design:check`と`npm run verify`を通す。GitHub保存・main統合・Sites配備・実responseを別記録。古いsnapshotや取得失敗を最新確認済みにしない。
 
 8原則による優先順位とpilot指標は[1.0 strategy](rockstaros-1.0-strategy.md)の検証仮説であり、需要・独占・市場首位・収益を保証しない。次の担当は[作業入口](workstreams/README.md)と[責任分界](workstreams/00-responsibility-boundaries.md)から既存taskと検証条件を選び、[最新prompt](prompts/rock-current-next-20261002.md)を最新Gitに照合して再開する。
+
+## 2026-10-15 Mini着脱・衛星Wi-FiとAgent月次請求
+
+利用者が建築/家具へ埋め込む着脱Mini、衛星WANによる携帯Wi-Fi、携帯料金に近いAgent利用の月次後払いを明示。R5の1本自律を維持し、外部給電のみの前提を設置中給電＋携帯電源へ更新。battery部品・衛星方式・料金数値は未確定。未払い時は通知/異議/有料実行制限/適法な回収で扱い、OSに銀行口座凍結権を与えない。[統合設計](service-design/08-mini-connectivity-and-billing.md)。

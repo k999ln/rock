@@ -7276,5 +7276,19 @@
       "githubMainIntegration": "The router staging implementation was already in main; this repair changed the separate Sites source and deployment only.",
       "nextAction": "For each Site build verify index.js, vinext.js and domain-router.mjs in the deployed archive and read back the canonical public URL."
     }
+  },
+  "miniDockMonthlyDesign": {
+    "date": "2026-10-15",
+    "tasks": [
+      "MAT15",
+      "BIL02"
+    ],
+    "status": "design_recorded_acceptance_pending",
+    "document": "docs/service-design/08-mini-connectivity-and-billing.md",
+    "sourceMain": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+    "physicalTests": 0,
+    "liveBilling": false,
+    "bankActions": false,
+    "nextAction": "DP01〜05と月次請求sandboxを別受入。国/契約/料金/電池/RF/施工条件を確定。"
   }
 }

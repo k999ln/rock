@@ -514,3 +514,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 次の作業: Skyで一仕事のmodel/Agent実行先・送信・費用を選択/固定し、Pixel 10 GL066のsi Home/同Job復元を最初の物理商品として受け入れる。通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
 <!-- project-status:end -->
+
+## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
+
+MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
