@@ -2,9 +2,13 @@
 
 更新: 2026-10-13。最初に[サービス統合設計](service-design/README.md)を読む。旧仕様と現行仕様を並べて選ばせず、一つの製品体験と各契約の責任から説明する。
 
+## まず通信・OS・siクラウドの土台から読む
+
+[GrapheneOS・eSIM・LLMクラウドの基盤設計](native-os-integration.md)に6層の関係、32改変項目、現在のsource/本番gate、次の受入をまとめた。2026-10-15の商品入口は通信＋si利用権bundleで、以下のaccountは本人/仕事の正本として読む。
+
 ## サービスの中心
 
-無料avokadoアカウントから始める。Jenniferに目的を伝え、SkyでAgent/Toolを選び、裏側のZema/AMCで仕事・承認・停止・成果・費用を管理する。RockstarOS/Brokerが本人・権限・保存・復旧を強制し、modelの応答を実行許可にしない。
+通信＋si利用権bundleを商品入口とし、無料avokadoアカウントで本人・仕事を管理する。Jenniferに目的を伝え、SkyでAgent/Toolを選び、裏側のZema/AMCで仕事・承認・停止・成果・費用を管理する。RockstarOS/Brokerが本人・権限・保存・復旧を強制し、modelの応答を実行許可にしない。
 
 MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独立したNVIDIA高性能si PC。rocketstarは独立工学programで、一般Agentの実行経路と飛行管制を分ける。各機器の完成をSkyの利用条件にしない。
 

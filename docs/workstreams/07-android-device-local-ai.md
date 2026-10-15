@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## GrapheneOSと通信＋si商品の土台
+
+2026-10-15の[基盤調査](../native-os-integration.md)はOS11/O6（ROCK）、同期はDOC04/H1。32項目をapp/role、source/privileged、機種/partner条件、cloud、一般化不可へ分類する。SIM01は購入/発行/利用権binding、SKY07/SKY21/BIL02は実Provider/共通予算/明細、RLS02は正式署名/flash/独自OTA/復旧を担当する。通信＋si商品入口という本人選択を反映するが、既存gate/source lock/鍵を変えず、実発行・cloud課金・flashは行わない。ADB接続0件で本日の実機状態は未確認。
+
 ## 2026-10-11 — 既存機能の品質・復旧改善（AI04 / OS10、ROCK）
 
 Shell送信の二重tapとBinder応答喪失を同じUUID／入力digest／Android userで照合する。詳細はsi native OS設計§6。Core outboxの確定receiptはprovider参照・payload hash・実精算額の完全一致でのみ再照合する。host／SQLite回帰、Shell APK、lint、instrumentation APK compileを実機受入と分ける。

@@ -1,4 +1,24 @@
 {
+  "connectivityServiceBundleDecision": {
+    "decidedAt": "2026-10-15",
+    "source": "Direct owner answer in this chat",
+    "ownerChoice": "通信とsi利用権をまとめて提供する商品の入口",
+    "authority": "docs/native-os-integration.md",
+    "primaryEntry": "connectivity_and_si_access_bundle",
+    "accountIsOwnerAndLedgerRoot": true,
+    "connectivityAndServiceHaveSeparateStates": true,
+    "grantRequiresVerifiedPurchase": true,
+    "osInstallationIsSeparate": true,
+    "profileIdentityIsNotAccount": true,
+    "siUsageUnlimited": false,
+    "autoFlashAllowed": false,
+    "liveIssuanceEnabled": false,
+    "liveCloudDispatchEnabled": false,
+    "pricingChanged": false,
+    "supersedes": "2026-10-10 account-only commercial entry and consumer-eSIM product-design hold; preserves account identity, previews and all unaccepted production gates",
+    "grapheneBase": "feasibility_audited_candidate_not_full_os_acceptance",
+    "audit": "docs/evidence/graphene-cloud-foundation.json"
+  },
   "ambientCreationIntent": {
     "decidedAt": "2026-10-15",
     "source": "User explicit instruction in this chat",
@@ -85,7 +105,7 @@
       }
     ]
   },
-  "version": "2.03",
+  "version": "2.04",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -537,6 +557,15 @@
         "catalogTools": 37
       },
       "commercialPolicyChanged": false,
+      "runtimeChanged": false
+    },
+    "cloudAndDeviceFoundation": {
+      "authority": "docs/native-os-integration.md",
+      "evidence": "docs/evidence/graphene-cloud-foundation.json",
+      "decision": "connectivityServiceBundleDecision",
+      "reviewDate": "2026-10-15",
+      "capabilityCount": 32,
+      "primarySourceCount": 21,
       "runtimeChanged": false
     }
   },
@@ -2046,12 +2075,12 @@
     "source": "2026-10-02 authoritative product requirements: physical SIM or eSIM purchase includes RockstarOS service access across multiple distribution channels; OS is installed through a supported device path",
     "supersededSource": "製品はesimで完結させたいから、開発だけしたい",
     "distribution": "physical_sim_and_esim",
-    "currentScope": "development_and_contract_preparation",
+    "currentScope": "bundle_product_contract_and_source_design_no_live_issuance",
     "physicalSimPurchase": true,
     "liveServiceEnabled": false,
     "implementation": "host_fixture_and_local_worker_d1",
     "document": "docs/product-baseline.md",
-    "supersededBy": "serviceAccessModel"
+    "supersededBy": "connectivityServiceBundleDecision"
   },
   "cloudContinuationIntent": {
     "decidedAt": "2026-09-30",
@@ -2145,7 +2174,7 @@
   },
   "serviceAccessModel": {
     "status": "authoritative_product_direction_design_and_local_onboarding_only",
-    "primaryEntry": "rockstar_account_service_access",
+    "primaryEntry": "connectivity_and_si_access_bundle",
     "distributionChannels": [
       "rockstar_direct",
       "mobile_carrier",
@@ -2183,16 +2212,15 @@
     "carrierActivationAccepted": false,
     "deviceOsInstallationAccepted": false,
     "supersedes": [
-      "2026-09-30_esim_only_distribution",
-      "esim_catalog_as_primary_product_entry",
-      "hardware_first_service_positioning",
-      "2026-10-02_sim_esim_purchase_as_primary_entry"
+      "2026-10-10_account_only_product_entry_and_consumer_esim_design_hold"
     ],
     "simRequiredForService": false,
-    "deviceConnectivity": "optional_iot_data_line_for_devices_such_as_avocado_mini",
-    "consumerEsimSales": "on_hold_code_kept_disabled_by_default",
-    "decisionDate": "2026-10-10",
-    "decisionRecord": "docs/product-baseline.md"
+    "deviceConnectivity": "bundle_line_or_authorized_wifi_transport; mini_iot_profile_remains_separate",
+    "consumerEsimSales": "bundle_product_design_live_issuance_disabled",
+    "decisionDate": "2026-10-15",
+    "decisionRecord": "docs/product-baseline.md",
+    "accountRole": "identity_contract_job_artifact_and_budget_owner",
+    "bundleDecision": "connectivityServiceBundleDecision"
   },
   "portableAddons": {
     "requestedAt": "2026-10-06",
@@ -2284,11 +2312,11 @@
     "record": "docs/sky.md"
   },
   "accountEntryDecision": {
-    "decidedAt": "2026-10-10",
+    "decidedAt": "2026-10-15",
     "decidedBy": "owner",
     "record": "docs/product-baseline.md",
-    "mainProduct": "agents_used_through_one_rockstar_account_on_any_device",
-    "simRole": "optional_device_component",
+    "mainProduct": "connectivity_plus_si_access_bundle_with_account_owned_jobs_and_costs",
+    "simRole": "product_entry_connectivity_with_separate_account_identity",
     "seller": "avokado",
     "firstCustomers": "individuals_starting_with_solo_businesses_that_deliver_writing",
     "billing": {
@@ -2324,9 +2352,9 @@
       "osHomeUrl": "https://avoado.si/os"
     },
     "onHold": [
-      "consumer_esim_issuance_and_sales",
       "self_built_remote_profile_switching",
-      "signed_quotes_from_external_agents"
+      "signed_quotes_from_external_agents",
+      "production_esim_issuance_until_partner_and_acceptance"
     ],
     "liveBillingAccepted": false,
     "externalConfirmationsPending": [
@@ -2338,7 +2366,8 @@
       "carrier_partner_third_party_use_and_sgp32_pricing",
       "stripe_connect_configuration_and_threshold_billing",
       "cloud_ai_provider_resale_terms"
-    ]
+    ],
+    "entryDecisionSource": "connectivityServiceBundleDecision"
   },
   "skyCampusMainReconciliation": {
     "decidedAt": "2026-10-14",

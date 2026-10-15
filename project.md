@@ -2,6 +2,7 @@
 
 更新: 2026-10-15。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
+2026-10-15、OS11/O6/ROCK（同期DOC04/H1）として[GrapheneOS・eSIM・LLM cloudの基盤調査](docs/native-os-integration.md)に着手。本人の「通信＋si利用権の商品入口」選択で旧商品入口方針を更新し、account正本・料金率・実発行/paid/flash gateは維持する。32項目の改変可能性と21一次資料、固定source `2026100200`、本日ADB端末0件、cloud paid gate falseとplaceholder配備を区別する。旧native入口/phone source説明を現在の正本へ同期。32項目/21一次資料/37 source hashと参照整合、9 Mermaid構文、Canvas SDK型検査、baseline/design/project/mission、Node22.23.3の`npm run verify`が合格（通常2235件:2234 pass/既存skip1/fail0、仕事API1381、CSV385、asset208/欠落0）。旧validatorのMini/入口決定日の結合を分離し、無制限/自動flash/実発行/paid等の不正な方針変更は試験で拒否した。ログはGit管理外 `/private/tmp/rock-graphene-verify.log`。Git保存/main統合はbranch `codex/graphene-cloud-foundation`に対応するGitHub PRのhead/CI/mergedAt/mergeCommitで別々に追跡する。実OS書込み・鍵生成・開通・契約・実Provider/課金・公開は行っていない。
 2026-10-15、DOC04/H1/ROCKとして本人の「PCや実物の前にいなくても制作し、携帯を持たずやり取りする」方針を[体験設計](docs/service-design/01-service-experience.md)・baseline・Mini/OS/Tool詳細・全体図へ同期。制作の入口、計算先、現物の製作先を分け、6受入ケースは未実行として記録する。基準main `4945f83e`は同一SHAの取得済み11 check成功。`baseline:check`、`avocado:r5:check`、`design:check`、8 Mermaid構文、`project/mission:check`、Node22.23.3の`npm run verify`が合格（通常2235件:2234 pass/既存skip1/fail0）。再利用worktreeの依存不足は`npm ci`で解消し、runtime修正ではない。検証ログはGit管理外 `/private/tmp/rock-ambient-verify-final.log`。作業branch `codex/ambient-making-design`とmain統合はGitHubの同branch PRのhead/CI/mergedAt/mergeCommitで別々に追跡する。実機・製作・外部契約/送信・公開は実施していない。
 2026-10-14、DOC04/H1/ROCKとして[全系統の関連・戦略・データ・取引設計](docs/service-design/07-ecosystem-strategy-and-data.md)を作成。main `c6df4ca9`の全50 RQ・19領域・37 Toolを、19系統/25接続/13データ種/15取引/14外部候補/14 gapへ対応し、39一次資料と45 source hashを照合した。旧03/04/06のJennifer server相関処理を未実装とする説明は現コードへ訂正し、実Providerの独立性受入は残す。PR #130の建築専門家先行案とlocal Companionは未統合資料として分離。`research:check -- --source-hashes`、8 Mermaid構文、Canvas型検査、`npm run verify`（Node22.23.3）は合格。途中の既存PC adapter cleanup試験1失敗は単独/最終全体の再合格と共に[証拠](data/ecosystem-research.json)へ記録し、runtime修正と呼ばない。最終ログはGit管理外 `/private/tmp/rock-ecosystem-research-verify-final.log`。設計は[PR #135](https://github.com/k999ln/rock/pull/135)のhead `d63e074b`で8 CI全成功後、UTC `2026-10-15T00:31:34Z`にmain `b0ecbd2cdc9c95334abf6adb746c772395479f32`へ通常mergeされ、検証headとtree一致を確認した。公開・契約・実課金・施工・実機受入は未実施。
 
@@ -29,7 +30,7 @@ Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整�
 
 ## 現在の作業
 
-主担当はGit / CI / Operations（ROCK）、DOC04 / H1。作業branchは`codex/ecosystem-research-design`。無料account入口、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。次はG01/G02/G03/G05/G06の共通予算・後払い・Provider・本人分離・data lifecycleを既存担当へ引き渡す。
+主担当はAndroid / Device / Local si（ROCK）、OS11 / O6。設計同期はDOC04 / H1、作業branchは`codex/graphene-cloud-foundation`。通信＋si利用権商品とaccount正本、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。次はG01/G02/G03/G05/G06の共通予算・後払い・Provider・本人分離・data lifecycleを既存担当へ引き渡す。
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
@@ -90,7 +91,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-14 / アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-14 / 通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -507,5 +508,5 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。
+次の作業: 通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊app体験→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
 <!-- project-status:end -->

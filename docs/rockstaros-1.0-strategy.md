@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。JenniferはPR #113からmainへ統合済み（`01d2e418`）、公開/真正review/native/Providerは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
+2026-10-15確定方針: 商品入口は通信とsi利用権をまとめるeSIM bundle。accountは本人・仕事・成果・費用の正本、GrapheneOS派生OSは対応Pixel向け候補で、MiniのIoT LTEやProは別profile。料金率と実発行/課金/flashの未受入gateは維持する。[基盤設計](native-os-integration.md)の6層と32項目を優先する。
 
 2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
@@ -10,11 +10,11 @@
 
 **目指す体験: accountからJenniferへ依頼し、Skyで能力を選び、Zemaで進捗・確認・成果・費用を追える。**
 
-旧SIM/eSIM購入claimは任意の招待/店頭/機器経路として保持し、通常サービスの開始条件にしない。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
+SIM/eSIM購入claimを通信＋si利用権商品のaccount bindingへ再利用する。試用や既存OS client/browser経路は残し、回線の有無をOS権限と同一にしない。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
 
 | 区分 | この設計での扱い |
 | --- | --- |
-| 利用者の確定指示 | 無料avokadoアカウントを入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、透明なusage料金、短いonboarding。SIMは必須にせず、consumer eSIM販売は保留、Miniの国内LTEは任意。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
+| 利用者の確定指示 | 通信＋si利用権bundleを入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、account正本、透明なusage料金、短いonboarding。実発行は未受入で、Miniの国内IoT LTEは別profile。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
 | 具体化した設計案 | 最初の実用検証を一つの業務に集中し、同じ商品の実行・成果・状態確認・復旧を通す。配布と販売の入口を開発と同時に設計する |
 | 検証する仮説 | 初期利用者は文章・記事・提案を納品する個人事業主/クリエイター。候補商品は既存の引用整理。結果と状態を探す負担の削減が選ばれる理由になる |
 | 未実証 | 需要、継続率、支払意思、競争優位、市場規模、独占、世界初、利益、実機対応、本番金融。設計への記載を実証に換算しない |

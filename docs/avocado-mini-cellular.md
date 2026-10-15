@@ -41,7 +41,7 @@ SIM認識、携帯網への登録、データ通信、Rockstar本人ログイン
 
 旧2026-10-05のRM520N/5G比較は履歴であり、現行LTE候補の採用品・収納証拠にしない。採用するLTE moduleはメーカーのexact SKU資料とcarrier条件を取得し、connector/antenna/電源/放熱/computeとの干渉をCADと同一試作で検証する。
 
-試作はnano SIMカード、量産はSGP.32対応のchip型IoT SIMを選ぶ。遠隔profile切替は通信partnerの機能を使い、自作しない。consumer eSIM販売の保留とは別の機器通信契約として、carrier対応、失効/再発行/復旧を受け入れる。現行Miniは外部給電のままで、SIM追加を電池内蔵の承認に読み替えない。使用時全高200mmの要求を保持し、cellular部品追加後の収納と熱を再評価する。
+試作はnano SIMカード、量産はSGP.32対応のchip型IoT SIMを選ぶ。遠隔profile切替は通信partnerの機能を使い、自作しない。2026-10-15に再開したconsumer eSIM商品設計とは別の機器通信契約として、carrier対応、失効/再発行/復旧を受け入れる。現行Miniは外部給電のままで、SIM追加を電池内蔵の承認に読み替えない。使用時全高200mmの要求を保持し、cellular部品追加後の収納と熱を再評価する。
 
 ## 接続管理と失敗時の動作
 

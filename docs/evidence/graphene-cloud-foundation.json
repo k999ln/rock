@@ -1,0 +1,1001 @@
+{
+  "schema": "rock-graphene-cloud-foundation/1",
+  "date": "2026-10-15",
+  "sourceMainSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d",
+  "authority": "docs/native-os-integration.md",
+  "scope": "GrapheneOS改変・Pixel端末・eSIM商品入口・LLM/cloud・署名/更新/復旧の32項目。全app/全carrier/全法令を調べ尽くした意味ではない。",
+  "ownerDecision": {
+    "esim": "通信とsi利用権をまとめて提供する商品の入口",
+    "baseOs": "gurafennosをGrapheneOSとして調査する。採用build/flashの実行指示ではない"
+  },
+  "sources": [
+    {
+      "id": "G01",
+      "title": "GrapheneOS build",
+      "url": "https://grapheneos.org/build",
+      "finding": "改変/独自build、frankel、build資源、vendor、release署名と独自OTA",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G02",
+      "title": "GrapheneOS supported devices",
+      "url": "https://grapheneos.org/faq#supported-devices",
+      "finding": "Pixel 10 frankelは公式対象。任意機器の同等対応ではない",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G03",
+      "title": "GrapheneOS eSIM usage",
+      "url": "https://grapheneos.org/usage#esim-support",
+      "finding": "既存profile利用と追加/管理を区別。追加管理にproprietary機能、Google Play依存は不要",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G04",
+      "title": "GrapheneOS source repositories",
+      "url": "https://grapheneos.org/source",
+      "finding": "Launcher/Settings/SystemUI/Telephony/Updater等のsource分割",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G05",
+      "title": "GrapheneOS install",
+      "url": "https://grapheneos.org/install/web",
+      "finding": "公式導入/検証/復旧の入口。端末の適合・unlock条件を別確認",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G06",
+      "title": "GrapheneOS attestation",
+      "url": "https://grapheneos.org/articles/attestation-compatibility-guide",
+      "finding": "独自OSの鍵/verified bootを自社サービスのtrustへ照合する",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G07",
+      "title": "AOSP eSIM architecture",
+      "url": "https://source.android.com/docs/core/connect/esim-overview",
+      "finding": "eUICC/LPA/SM-DP+/carrier appを分離。profileの証明書規則でcarrier権限を制御",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G08",
+      "title": "AOSP eUICC APIs",
+      "url": "https://source.android.com/docs/core/connect/esim-euicc-api",
+      "finding": "eUICC管理の専用APIとLPA役割",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G09",
+      "title": "EuiccManager",
+      "url": "https://developer.android.com/reference/android/telephony/euicc/EuiccManager",
+      "finding": "eSIMの追加/切替等はpermission/carrier privilege/本人解決の条件付き",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G10",
+      "title": "Privileged permission allowlist",
+      "url": "https://source.android.com/docs/core/permissions/perms-allowlist",
+      "finding": "preinstallだけではprivileged権限を満たさずallowlistとpartitionを確認",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G11",
+      "title": "Android Verified Boot",
+      "url": "https://source.android.com/docs/security/features/verifiedboot",
+      "finding": "署名されたchain/rollbackの保証範囲",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G12",
+      "title": "Bootloader locking",
+      "url": "https://source.android.com/docs/core/architecture/bootloader/locking_unlocking",
+      "finding": "unlock/lockは適合とdata消去を伴う。任意のlocked機を上書きしない",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G13",
+      "title": "SELinux",
+      "url": "https://source.android.com/docs/security/features/selinux",
+      "finding": "domainとenforcing policyで隔離を強制",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G14",
+      "title": "VoiceInteractionService",
+      "url": "https://developer.android.com/reference/android/service/voice/VoiceInteractionService",
+      "finding": "本人が選んだvoice interactorの仕組み。hotword/音声UIの実装候補",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G15",
+      "title": "Background microphone restrictions",
+      "url": "https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start",
+      "finding": "通常appのbackground microphoneには制限があり例外も条件付き",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G16",
+      "title": "Audio input sharing",
+      "url": "https://developer.android.com/media/platform/sharing-audio-input",
+      "finding": "assistantと他app/通話の同時音声取得は規則と権限に依存",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G17",
+      "title": "Play Integrity verdicts",
+      "url": "https://developer.android.com/google/play/integrity/verdicts",
+      "finding": "自社attestationとGoogle認証/他社app利用可否は別",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G18",
+      "title": "AOSP licenses",
+      "url": "https://source.android.com/docs/setup/contribute/licenses",
+      "finding": "Apache系を中心に複数license、kernel GPL等を個別確認",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G19",
+      "title": "GrapheneOS Updater license",
+      "url": "https://raw.githubusercontent.com/GrapheneOS/platform_packages_apps_Updater/17/LICENSE",
+      "finding": "MIT形式の改変/配布許諾とnotice条件。OS全体の包括許諾ではない",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G20",
+      "title": "GrapheneOS branding license",
+      "url": "https://raw.githubusercontent.com/GrapheneOS/branding/17/LICENSE",
+      "finding": "取得したbranding sourceのlicense。商標/全vendor blobの判断へ拡張しない",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    },
+    {
+      "id": "G21",
+      "title": "GrapheneOS release channel",
+      "url": "https://grapheneos.org/releases#frankel",
+      "finding": "採用前にexact機種のsigned stableを確認。現repo固定tagとは別",
+      "checkedAt": "2026-10-15",
+      "kind": "official_primary_source"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "C01",
+      "area": "体験",
+      "title": "独自Home / Launcher",
+      "level": "app_or_role",
+      "possible": "独自Home appで入口をまとめる",
+      "current": "RockShellはLAUNCHER activityで、HOME role宣言は見つからない",
+      "gap": "Home roleと既定選択を設計する",
+      "acceptance": "起動/戻る/再起動/更新後も本人の選択を保持",
+      "sourceIds": [
+        "G04"
+      ],
+      "repoRefs": [
+        "android/shell/src/aosp/AndroidManifest.xml"
+      ]
+    },
+    {
+      "id": "C02",
+      "area": "体験",
+      "title": "標準app同梱 / 削除 / branding",
+      "level": "source_build",
+      "possible": "product構成で同梱appと表示を変更",
+      "current": "RockShell/Automation/Articleのproduct記述あり",
+      "gap": "独自UI/不要app/依存関係とlicenseをexact tagで照合",
+      "acceptance": "user buildのapp一覧と機能/更新/noticeを確認",
+      "sourceIds": [
+        "G01",
+        "G04",
+        "G18"
+      ],
+      "repoRefs": [
+        "android/Android.bp",
+        "os/physical/rockstaros.mk"
+      ]
+    },
+    {
+      "id": "C03",
+      "area": "体験",
+      "title": "初回設定とeSIM商品導線",
+      "level": "source_build",
+      "possible": "SetupWizardと自社app導線を編集する候補",
+      "current": "購入claim/端末session sourceあり。統合初回設定は未受入",
+      "gap": "無料account先行から通信＋si商品入口へ方針同期",
+      "acceptance": "購入/開通/本人/利用権/OS状態を別表示し一周",
+      "sourceIds": [
+        "G04",
+        "G07"
+      ],
+      "repoRefs": [
+        "lib/rockstar-entitlement-claim.ts",
+        "docs/service-entitlements.md"
+      ]
+    },
+    {
+      "id": "C04",
+      "area": "体験",
+      "title": "Settings / SystemUI / quick settings",
+      "level": "source_build",
+      "possible": "設定・status表示・quick tile等を変更可能",
+      "current": "独自ShellはあるがSystemUI統合は未証明",
+      "gap": "上流patch維持と部品別の変更範囲を固定",
+      "acceptance": "通知/権限/lock/privacy indicatorが退行しない",
+      "sourceIds": [
+        "G04"
+      ],
+      "repoRefs": [
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java"
+      ]
+    },
+    {
+      "id": "C05",
+      "area": "権限",
+      "title": "Broker / Binder共通実行",
+      "level": "app_or_source",
+      "possible": "明示APIと署名/UIDで限定作用を仲介",
+      "current": "Binder/SDK/Job/Receipt sourceとAPK系列がある",
+      "gap": "全OS Soongとproduction署名/UID/SELinuxは未受入",
+      "acceptance": "越境・改ざん・失効・再起動を同imageで拒否",
+      "sourceIds": [
+        "G10",
+        "G13"
+      ],
+      "repoRefs": [
+        "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
+        "android/automation/src/aosp/AndroidManifest.xml"
+      ]
+    },
+    {
+      "id": "C06",
+      "area": "権限",
+      "title": "privileged app / system service",
+      "level": "source_build",
+      "possible": "必要な権限だけproduct/allowlist/frameworkで追加",
+      "current": "現Soong appsはsdk current/testkey。包括platform権限はない",
+      "gap": "必要性ごとに通常appとの差をADR化",
+      "acceptance": "partition/allowlist/署名/SELinuxとCTS影響を確認",
+      "sourceIds": [
+        "G10",
+        "G13"
+      ],
+      "repoRefs": [
+        "android/Android.bp",
+        "android/sepolicy/private/rockstar_platform.te"
+      ]
+    },
+    {
+      "id": "C07",
+      "area": "権限",
+      "title": "任意appデータの無条件取得",
+      "level": "not_general",
+      "possible": "owner許可APIや共有fileだけを扱う",
+      "current": "Brokerの隔離契約とneverallowあり",
+      "gap": "root/Accessibilityを万能迂回路にしない",
+      "acceptance": "別owner/app/profileの私有dataを拒否",
+      "sourceIds": [
+        "G13"
+      ],
+      "repoRefs": [
+        "android/sepolicy/private/rockstar_platform.te"
+      ]
+    },
+    {
+      "id": "C08",
+      "area": "対話",
+      "title": "音声入力 / ASR / TTS",
+      "level": "app_or_source",
+      "possible": "専用runtime/許可したcloudで組み込む候補",
+      "current": "前turnのAC01〜06は設計のみ",
+      "gap": "言語/認識/遅延/電力/声の出力先と保持を実測",
+      "acceptance": "電話/PC前操作0で一作品の修正/保存/再開",
+      "sourceIds": [
+        "G14",
+        "G15",
+        "G16"
+      ],
+      "repoRefs": [
+        "docs/service-design/01-service-experience.md"
+      ]
+    },
+    {
+      "id": "C09",
+      "area": "対話",
+      "title": "background assistant / hotword",
+      "level": "conditional_source",
+      "possible": "選択されたvoice serviceや必要な専用実装を使う",
+      "current": "現RockShell manifestにvoice serviceなし",
+      "gap": "DSP/lock/電池/他appのmicとの共存は未確認",
+      "acceptance": "誤起動/騒音/通話/lock/mute/別人を実機確認",
+      "sourceIds": [
+        "G14",
+        "G15",
+        "G16"
+      ],
+      "repoRefs": [
+        "android/shell/src/aosp/AndroidManifest.xml"
+      ]
+    },
+    {
+      "id": "C10",
+      "area": "model",
+      "title": "端末内LLM",
+      "level": "app_or_source",
+      "possible": "model/runtimeを許可範囲で同梱/交換する",
+      "current": "Qwen plannerの限定試験APK系列あり。model結果は非信頼",
+      "gap": "model license/熱/RAM/電池/更新/大model能力を受入",
+      "acceptance": "offline plan→Broker→有限Tool→保存/停止を確認",
+      "sourceIds": [
+        "G13"
+      ],
+      "repoRefs": [
+        "docs/llm-evaluation-architecture.md",
+        "data/llm-capabilities.json"
+      ]
+    },
+    {
+      "id": "C11",
+      "area": "model",
+      "title": "cloud LLM / remote Agent",
+      "level": "cloud_outside_os",
+      "possible": "自社gatewayから選択Providerへ接続",
+      "current": "6種provider定義、quote/workflow source。paid gateはfalse",
+      "gap": "実Provider/鍵/予算/usage/請求とproductionは未受入",
+      "acceptance": "一仕事の見積/承認/受付/成果/usage/請求を照合",
+      "sourceIds": [
+        "G11"
+      ],
+      "repoRefs": [
+        "lib/llm-providers.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "services/sky-agent-runtime/src/worker.ts"
+      ]
+    },
+    {
+      "id": "C12",
+      "area": "model",
+      "title": "自社GPUでLLM提供",
+      "level": "cloud_outside_os",
+      "possible": "別のinference基盤として接続可能な設計候補",
+      "current": "互換endpoint定義はある。GPU fleet稼働証拠なし",
+      "gap": "model license/配備/隔離/queue/採算/品質を別に実証",
+      "acceptance": "固定負荷で品質/待ち時間/原価/中断復旧を比較",
+      "sourceIds": [
+        "G18"
+      ],
+      "repoRefs": [
+        "lib/llm-providers.ts",
+        "docs/cloud-agent-provider-comparison-20261001.md"
+      ]
+    },
+    {
+      "id": "C13",
+      "area": "通信",
+      "title": "既存eSIM profileの利用",
+      "level": "device_conditional",
+      "possible": "GrapheneOS上での既存profile利用を公式案内",
+      "current": "GL066の本日ADB接続0件。現回線未確認",
+      "gap": "exact SKU/回線/電波/OS版の実試験",
+      "acceptance": "既存profileのdata/再起動/圏外復帰を確認",
+      "sourceIds": [
+        "G02",
+        "G03"
+      ],
+      "repoRefs": [
+        "docs/avocado-mini-cellular.md"
+      ]
+    },
+    {
+      "id": "C14",
+      "area": "通信",
+      "title": "eSIM追加 / 削除 / 切替",
+      "level": "conditional_source",
+      "possible": "公式のeSIM管理機能とEuicc APIを使う",
+      "current": "eSIM order/proof sourceあり。発行gate無効",
+      "gap": "管理にはproprietary機能。Google Playとは別。本人/権限を確認",
+      "acceptance": "追加/失敗/本人解決/切替/再発行を同端末で確認",
+      "sourceIds": [
+        "G03",
+        "G07",
+        "G09"
+      ],
+      "repoRefs": [
+        "app/api/esim/orders/[orderId]/issue/route.ts",
+        "lib/esim-install-proof.ts"
+      ]
+    },
+    {
+      "id": "C15",
+      "area": "通信",
+      "title": "carrier appの限定管理",
+      "level": "partner_conditional",
+      "possible": "通信partnerがprofileへ署名証明書規則を付ける場合に設計",
+      "current": "Rockの利用権署名とcarrier privilegeは別",
+      "gap": "通信partner契約/ARF/署名更新を要照合",
+      "acceptance": "他carrier profile操作拒否と本人解決を確認",
+      "sourceIds": [
+        "G07",
+        "G09"
+      ],
+      "repoRefs": [
+        "lib/esim-device-entitlement.ts"
+      ]
+    },
+    {
+      "id": "C16",
+      "area": "通信",
+      "title": "独自LPA / eUICC / SM-DP+",
+      "level": "not_free_rewrite",
+      "possible": "Android LPAの統合は可能だがprofile供給/secure elementは独立",
+      "current": "自社LPA/SM-DP+の実装・資格受入なし",
+      "gap": "LPA自作とeUICC firmware改変を混同しない。partner機能を先に使う",
+      "acceptance": "end-to-end発行/鍵/失効/規格/契約を別受入",
+      "sourceIds": [
+        "G07",
+        "G08"
+      ],
+      "repoRefs": [
+        "lib/esimgo-provider.ts",
+        "docs/avocado-mini-cellular.md"
+      ]
+    },
+    {
+      "id": "C17",
+      "area": "通信",
+      "title": "電話 / SMS / VoLTE / 5G / APN",
+      "level": "device_conditional",
+      "possible": "OSとcarrierの対応範囲を維持して設計する",
+      "current": "Miniは別LTE-only data契約。Pixelの電話serviceとは別",
+      "gap": "国内SKU/通信会社/IMS/契約を未確定のまま保証しない",
+      "acceptance": "対象planでdata/必要な通話/SMS/緊急導線を受入",
+      "sourceIds": [
+        "G03",
+        "G07"
+      ],
+      "repoRefs": [
+        "docs/device-support-architecture.md"
+      ]
+    },
+    {
+      "id": "C18",
+      "area": "通信",
+      "title": "SIMだけでOSを書換え / 任意locked機導入",
+      "level": "not_general",
+      "possible": "SIMでサービス開始へ誘導できるがOS導入は別",
+      "current": "APK/PWAは既存OS経路。全OS flash未実施",
+      "gap": "eSIM=OS image/bootloader解除と説明しない",
+      "acceptance": "対応/非対応機を判定しclient/browserへ分岐",
+      "sourceIds": [
+        "G05",
+        "G12"
+      ],
+      "repoRefs": [
+        "os/physical/frankel-source-lock.json"
+      ]
+    },
+    {
+      "id": "C19",
+      "area": "端末",
+      "title": "kernelとdriverの変更",
+      "level": "source_hardware_conditional",
+      "possible": "公開kernel等は対象機のbuild手順で変更可能",
+      "current": "frankel laguna/muzel 6.6を固定",
+      "gap": "各driver/firmware/セキュリティ機能の継続更新が必要",
+      "acceptance": "boot/hardware/熱/休止/復旧の同image試験",
+      "sourceIds": [
+        "G01",
+        "G04"
+      ],
+      "repoRefs": [
+        "os/physical/frankel-source-lock.json"
+      ]
+    },
+    {
+      "id": "C20",
+      "area": "端末",
+      "title": "baseband / TEE / eUICC firmwareの任意改造",
+      "level": "not_general",
+      "possible": "OEM署名firmwareやhardware権限をOSのsource変更で解除しない",
+      "current": "vendor取得/純正復旧artifactは別gate",
+      "gap": "公開sourceと任意署名/無線許可を同一にしない",
+      "acceptance": "取得元/版/署名/復旧・再配布条件を照合",
+      "sourceIds": [
+        "G01",
+        "G11"
+      ],
+      "repoRefs": [
+        "docs/android-google-stock-recovery.md"
+      ]
+    },
+    {
+      "id": "C21",
+      "area": "端末",
+      "title": "独自OS署名 / AVB / bootloader relock",
+      "level": "device_conditional",
+      "possible": "対応する機種で独自鍵のsigned user imageを受入する",
+      "current": "testkey source/署名custody設計あり。正式署名/flash未完",
+      "gap": "鍵生成/保管/復旧は未実施。unlock可能な個体を確認",
+      "acceptance": "同一imageの鍵/boot/保存/再起動/復旧を独立受入",
+      "sourceIds": [
+        "G05",
+        "G11",
+        "G12"
+      ],
+      "repoRefs": [
+        "docs/android-production-signing-custody.md",
+        "os/physical/rockstaros.mk"
+      ]
+    },
+    {
+      "id": "C22",
+      "area": "更新",
+      "title": "自社OTAとsecurity更新",
+      "level": "source_and_operations",
+      "possible": "独自署名に対応する自社配信元と更新clientを維持",
+      "current": "現productはOFFICIAL_BUILD=trueを拒否",
+      "gap": "上流Updater採用には自社URL/鍵検証付きhook等の別設計が必要。現guardは解除しない",
+      "acceptance": "testing→beta→stable、rollback/中断/鍵喪失/上流patchを受入",
+      "sourceIds": [
+        "G01",
+        "G19"
+      ],
+      "repoRefs": [
+        "os/physical/rockstaros.mk",
+        "docs/android-rollback-index-policy.md"
+      ]
+    },
+    {
+      "id": "C23",
+      "area": "更新",
+      "title": "OSとTool/appの署名・配信を分ける",
+      "level": "app_or_source",
+      "possible": "OS releaseと作者app鍵、model packageを分離",
+      "current": "Sky package署名/版、testkey APKあり",
+      "gap": "release鍵とauthor鍵を混ぜず更新と失効を実装受入",
+      "acceptance": "他作者/旧版/改ざん/期限切れを拒否",
+      "sourceIds": [
+        "G10",
+        "G11"
+      ],
+      "repoRefs": [
+        "docs/service-entitlements.md",
+        "android/Android.bp"
+      ]
+    },
+    {
+      "id": "C24",
+      "area": "更新",
+      "title": "backup / 複数profile / 端末移管",
+      "level": "app_or_source",
+      "possible": "ownerごとの暗号化保存/選択export/復旧を接続",
+      "current": "23/23試験APKの非破壊再起動証拠。全損未受入",
+      "gap": "鍵喪失/再登録/SIM再発行/別realm復旧を別試験",
+      "acceptance": "同じJob/版/未解決費用を保持し別人へ漏れない",
+      "sourceIds": [
+        "G11",
+        "G13"
+      ],
+      "repoRefs": [
+        "docs/android-backup-recovery.md"
+      ]
+    },
+    {
+      "id": "C25",
+      "area": "互換",
+      "title": "Google Play / 他社app / 決済互換",
+      "level": "third_party_conditional",
+      "possible": "許可された互換経路で個別appを試す",
+      "current": "自社APKの合格は銀行/Wallet/DRMの合格ではない",
+      "gap": "他社のGoogle認証/規約/機種要求を回避できると約束しない",
+      "acceptance": "対象app/版/OSで一機能ずつ確認",
+      "sourceIds": [
+        "G17"
+      ],
+      "repoRefs": [
+        "docs/device-support-architecture.md"
+      ]
+    },
+    {
+      "id": "C26",
+      "area": "互換",
+      "title": "独自attestation trust",
+      "level": "source_and_cloud",
+      "possible": "自社OSのAVB鍵/patch/boot状態を自社serverへ登録",
+      "current": "Broker device登録APIはsource/合成検証あり",
+      "gap": "GrapheneOS公式鍵やGoogle認証を借用しない",
+      "acceptance": "challenge/鍵/失効/boot状態/owner/bindingを実機照合",
+      "sourceIds": [
+        "G06",
+        "G11",
+        "G17"
+      ],
+      "repoRefs": [
+        "app/api/rockstar/broker-devices/route.ts"
+      ]
+    },
+    {
+      "id": "C27",
+      "area": "配布",
+      "title": "商用再配布と独自brand",
+      "level": "license_review",
+      "possible": "componentごとの許諾とnoticeに従い設計する",
+      "current": "Updater/brandingのMIT形式source licenseを確認",
+      "gap": "OS全体/license/vendor/model/商標は別審査。公式と誤表示しない",
+      "acceptance": "exact tagのSBOM/NOTICE/source提供/再配布表を受入",
+      "sourceIds": [
+        "G18",
+        "G19",
+        "G20"
+      ],
+      "repoRefs": [
+        "scripts/check-release-readiness.mjs"
+      ]
+    },
+    {
+      "id": "C28",
+      "area": "配布",
+      "title": "Mini/Pro/任意hardwareへのport",
+      "level": "not_supported_by_pixel_support",
+      "possible": "共通業務契約は使えるがOS imageは機種別",
+      "current": "Pixel OS、Linux/QEMU、Mini R5、NVIDIA PCは別系列",
+      "gap": "GrapheneOS frankelの合格を他SoC/GPU/光学/RFへ転用しない",
+      "acceptance": "各BSP/driver/boot/復旧/安全/熱を別受入",
+      "sourceIds": [
+        "G01",
+        "G02"
+      ],
+      "repoRefs": [
+        "docs/device-support-architecture.md",
+        "docs/avocado-mini-r5/README.md",
+        "docs/avokado-pro-pc-design.md"
+      ]
+    },
+    {
+      "id": "C29",
+      "area": "クラウド",
+      "title": "購入/回線/利用権の一商品化",
+      "level": "cloud_outside_os",
+      "possible": "購入eventをaccount契約とscopeへ結ぶ",
+      "current": "claim/order/cloud credential sourceあり。live issueはdisabled",
+      "gap": "carrier側確定と自社grantの片成功/再発行/返金/解約を要設計",
+      "acceptance": "同じorder/eventで一回grantしSIM交換でowner/仕事を失わない",
+      "sourceIds": [
+        "G07",
+        "G09"
+      ],
+      "repoRefs": [
+        "lib/esim-cloud-access.ts",
+        "lib/rockstar-entitlement-claim.ts"
+      ]
+    },
+    {
+      "id": "C30",
+      "area": "クラウド",
+      "title": "端末切断後のAgent継続",
+      "level": "cloud_outside_os",
+      "possible": "Cloudが受付済みの有限仕事を期限/予算内で続ける",
+      "current": "D1/Workflow/one-shot照合sourceとlocal fixtureあり",
+      "gap": "production DB/鍵/provider/配備は未受入",
+      "acceptance": "切断後に継続/承認待ち/取消未確認/再接続照合を確認",
+      "sourceIds": [
+        "G11"
+      ],
+      "repoRefs": [
+        "docs/sky-cloud-continuity.md",
+        "services/sky-agent-runtime/wrangler.jsonc"
+      ]
+    },
+    {
+      "id": "C31",
+      "area": "クラウド",
+      "title": "月上限 / 後払い / 明細",
+      "level": "cloud_outside_os",
+      "possible": "通信料/si使用料/実費/Tool料金を分けて上限を強制",
+      "current": "署名ratecard/quote/parentJob poolあり。共通paid gate false",
+      "gap": "account月→Goal→leaf/worker/reviewerと後払いの照合は未受入",
+      "acceptance": "二端末同時上限・遅延usage・返金・不払いで二重計上なし",
+      "sourceIds": [
+        "G11"
+      ],
+      "repoRefs": [
+        "lib/a2a-delegation-store.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "docs/sky-billing.md"
+      ]
+    },
+    {
+      "id": "C32",
+      "area": "クラウド",
+      "title": "公開運用の認証 / 保存 / secrets",
+      "level": "cloud_outside_os",
+      "possible": "API制御、D1台帳、artifact保存、Workflow、secretsを分離",
+      "current": "scope enforcementはflag条件、runtime DB IDはplaceholder",
+      "gap": "公開環境のfail-closed設定/鍵保管/backup/retention/監査/DRを受入",
+      "acceptance": "owner A/B・失効・復旧・data削除・費用を同じ配備で確認",
+      "sourceIds": [
+        "G11",
+        "G13"
+      ],
+      "repoRefs": [
+        "lib/rockstar-service-access.ts",
+        "services/sky-agent-runtime/wrangler.jsonc"
+      ]
+    }
+  ],
+  "facts": {
+    "deviceTarget": "Pixel 10 / GL066 / frankel",
+    "pinnedSourceTag": "2026100200",
+    "upstreamSourceOnly": "公式supported target確認はRockの全OS受入ではない",
+    "adbObservation": {
+      "authorizedDeviceCount": 0,
+      "physicalStateVerified": false
+    },
+    "remotePricingGate": "hardcoded_false",
+    "esimProviderDebit": "requires_explicit_true_not_enabled_by_this_research",
+    "cloudRuntimeDatabase": "placeholder_in_repository_config_not_production_acceptance",
+    "physicalBuildFlash": "not_run",
+    "keysGenerated": false,
+    "externalContractsOrPayments": false
+  },
+  "verification": {
+    "state": "passed_locally",
+    "commands": [
+      "npm run baseline:check",
+      "npm run design:check",
+      "node --test tests/product-baseline.test.mjs",
+      "npm run project:check",
+      "npm run mission:check",
+      "npm run verify"
+    ],
+    "runtime": "Node 22.23.3 / macOS arm64",
+    "fullVerify": {
+      "exitCode": 0,
+      "unitTests": {
+        "tests": 2235,
+        "pass": 2234,
+        "skip": 1,
+        "fail": 0
+      },
+      "workApiAssertions": 1381,
+      "csvAssertions": 385,
+      "assetReferences": 208,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-graphene-verify.log"
+    },
+    "auditReferences": {
+      "capabilities": 32,
+      "primarySources": 21,
+      "repositoryHashes": 37,
+      "status": "pass"
+    },
+    "mermaidSyntax": {
+      "pass": 9,
+      "fail": 0
+    },
+    "canvas": {
+      "typecheck": "pass",
+      "renderedUiAcceptance": "not_performed",
+      "path": "/Users/kaiya/.cursor/projects/Users-kaiya-Documents-ChatGPT-avokdo/canvases/rock-cloud-foundation.canvas.tsx"
+    },
+    "normativePolicyTest": "6 bundle mutations rejected: automatic flash, live cloud, live issue, unverified purchase, profile-as-account, unlimited usage",
+    "initialFailure": "Old validator coupled Mini decision date to account-entry date; explicit independent Mini date 2026-10-10 is now preserved when product entry changes on 2026-10-15. Targeted baseline tests and final verify passed.",
+    "git": {
+      "branch": "codex/graphene-cloud-foundation",
+      "integrationAuthority": "Read associated GitHub PR head/CI/state/mergedAt/mergeCommit; no Site publication in this task"
+    }
+  },
+  "researchLimits": [
+    "FAQ#trademarkの現在の本文を特定できなかったため商標許諾確認済みとはしない",
+    "branding/main/LICENSEは404、公式repoの17 branch LICENSEを改めて確認した",
+    "carrier/設備/クラウド契約、価格見積、実eSIM/実LLM/全OS/実機は試験していない",
+    "ADB端末0件。既存物理証拠は当時の同APK/環境に限定",
+    "immutable source lock/原本/鍵/gateは変更しない"
+  ],
+  "repositoryEvidence": [
+    {
+      "path": "android/Android.bp",
+      "sha256": "86f98fe4f7984e6503a538b9eeb9515ebbaa1ec521527f2e10b3f328de42b39f",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "android/automation/src/aosp/AndroidManifest.xml",
+      "sha256": "11b505880758d08791ab2626ef6dba4de0bfcd7eb8596a16a11a88bf42fd45c5",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "android/sepolicy/private/rockstar_platform.te",
+      "sha256": "aa6210da51d52340c5a93ce7f874fae13b30077fa2189a0b89c5b5e07fe497b1",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "android/shell/src/aosp/AndroidManifest.xml",
+      "sha256": "0aea9cb456475217e3ae4193aced529807455d4bf62ecb5aa15946d4c97ef8ff",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "sha256": "09e5eb4edcdf24c19dffa2743416f0fdaef971dd3c1fff8d44a7c34ab956b516",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
+      "sha256": "5c5d1da3527cde65aa815b4e2cfe62fa7b825689c6ddd5135f931bdac9406fbd",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "app/api/esim/orders/[orderId]/issue/route.ts",
+      "sha256": "b38df4ed57da9912c152473c5688c99ad73c53ceba44e9b07f2943b3f3175925",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "app/api/rockstar/broker-devices/route.ts",
+      "sha256": "8c4aeb564143eaa19f4ee80931c2020a0506715f5753532c49b6282360c9b592",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "data/llm-capabilities.json",
+      "sha256": "80150eaf929b6aee493830f0f3e0f578764540ab0cc0097c3b37c8851172e0dc",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/android-backup-recovery.md",
+      "sha256": "b492edfb5024b3f92c5a9f14c791211b2d35b17aaba2aacd50375a066a6f7e6b",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/android-google-stock-recovery.md",
+      "sha256": "5c04a88f9e82c7081f765329127ebb25833771911d51f99aa9992017a73a09be",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/android-production-signing-custody.md",
+      "sha256": "dd84f0fbcc0747a13035e0d2abb1010a83f5c06759fe8464f5fae132746f471a",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/android-rollback-index-policy.md",
+      "sha256": "b86bdf3cddcf2e81e4613be42834279a5e07aa25f22fc6731365890984a1a5f8",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/avocado-mini-cellular.md",
+      "sha256": "4a0c0127835102631202a348c14252af009a0efc76f8a8028e480231be77fbcf",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/avocado-mini-r5/README.md",
+      "sha256": "8febb5abb6a7b2ce16bbeee0e06a847e9a983acd2d8757ec86073e400be7c284",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/avokado-pro-pc-design.md",
+      "sha256": "49b33643520b39531feb1bd09b1b12619d431041ae349ce3d2305574af19421c",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/cloud-agent-provider-comparison-20261001.md",
+      "sha256": "a7f75593e226a60485cdf66e4cee27cafcc806740b51e8c3ff85b7e9d0b0b862",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/device-support-architecture.md",
+      "sha256": "1082432604396c14797affe88cd98218ee64f82ad50fe46cc7d089975b0a2d8d",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/llm-evaluation-architecture.md",
+      "sha256": "d3f418be61eb9299918b9e3e99b9abce04f31004cae60b6f8b112755a77a2971",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/service-design/01-service-experience.md",
+      "sha256": "3e7614bec1f2571ddbfadb348e02e4439440683e6d723e3de2b0a1613e6a7474",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/service-entitlements.md",
+      "sha256": "5235701a46307d0df1803ef2876137dc1b0a6f31c91662461433daab9fbd8a84",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/sky-billing.md",
+      "sha256": "d654e6e6d270d2aa661c9b19ae7fe27b5556b137900add866276dd3ed3977401",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "docs/sky-cloud-continuity.md",
+      "sha256": "3655dc8ab3c2b11380ce0284a570d83631ffec6a7c6d4f46155473b2ba09ebbd",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/a2a-delegation-store.ts",
+      "sha256": "23ba06b8e2dd75fccc1983612bb6693e59301095d69d706b2da107730744ffb5",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/esim-cloud-access.ts",
+      "sha256": "e78e90e81576286aeb32e839fe3bae513ddcba766054cf9e27263d2c26fb9879",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/esim-device-entitlement.ts",
+      "sha256": "0638f373be3b7e5a2be853ce6a073ef12d7a2a808d76061ba7d69e139ef85652",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/esim-install-proof.ts",
+      "sha256": "3ff918dcb9b0efdbf5a06660e57687a37b12f93d724acaab614776c8613d6315",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/esimgo-provider.ts",
+      "sha256": "a1b2bb503caa8b8e17ee4f5833c71df85ac1e9b8e60e2e6dcb2048bfc3a6b8f5",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/llm-providers.ts",
+      "sha256": "6f73347a58ca7e794efd60054237abf4c1d5ae4786a731f11f40bd800e7b98e7",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/remote-ai-pricing-gate.ts",
+      "sha256": "b4f0f29bd9f504e606c82fe81b36f5a80f06dba13d3b29ff34e82f9da6276032",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/rockstar-entitlement-claim.ts",
+      "sha256": "eb533ae2cb1c8f4a1702e1ccb646770d05a927ea71f0ee9580dd76e092d7c794",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "lib/rockstar-service-access.ts",
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "os/physical/frankel-source-lock.json",
+      "sha256": "20218b0e26303416c2cd9c8a7bf2c6ed4e3efb4eb899014c7db7a3b85a6d2cfe",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "os/physical/rockstaros.mk",
+      "sha256": "644518753a07ae9500424959e4ef24d466b3906a91e63e7d2be23834c6bc5124",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "services/sky-agent-runtime/src/worker.ts",
+      "sha256": "b715c59f7197c29b34e0911137bdf3d6a0dd3fb55b242cd39496546095afc897",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "services/sky-agent-runtime/wrangler.jsonc",
+      "sha256": "84e9d13bd4bee76399c2b28d321f56287e58ad202e604c088982f9eddee56a15",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d"
+    },
+    {
+      "path": "scripts/check-release-readiness.mjs",
+      "gitSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d",
+      "sha256": "bbc9ff016fc438678233254f91e3aff366a145365a39455b2c10442b6501a760"
+    }
+  ]
+}
