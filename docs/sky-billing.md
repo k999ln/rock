@@ -1,5 +1,19 @@
 # Sky Market決済と旧収益精算
 
+## Sky単体の月次請求ローカル実装（2026-10-15）
+
+`/sky/billing` と `/api/sky/monthly-sandbox` を追加した。`npm run sky:monthly:sandbox` で `http://127.0.0.1:5220/sky/billing` を開く。NodeのSQLiteを使うローカル専用サーバーは合成accountで動き、同じReact画面・HTTP handler・D1互換storeを利用する。通常WebのAPIは既存本人確認とrate limitを通し、`SKY_MONTHLY_SANDBOX_MODE=local-fixture` かつHTTP loopbackのときだけ有効。外部公開originでは404。これは実Provider sandboxや本番課金ではない。
+
+既存の出典整理Agent `lib/sky-citation-agent.ts` → `lib/workflow.ts` → `work_jobs`を再利用する。新しいAgent/LLM能力や通貨残高は作らない。見積IDに本文hash・テスト単価版・金額・5分期限を固定し、明示承認後に規則処理を実行する。原稿1,000文字（JS UTF-16単位）ごと10円、月上限1,000円はfixture専用値で、商用価格ではない。成果とusageは一つのDB batchで保存し、DB triggerで月上限・締め状態を確認する。同じIDの再送は成果を再取得し、再計上しない。
+
+migration `0016_sky_monthly_sandbox.sql` はsandbox専用の見積・usage・請求を追加する。月はUTC、通常の締め処理は過去月のみ。画面の「月末を模擬」はlocal fixtureでのみ当月を締める。締め後に同月の新規実行はできない。入金照合は`fixture:` ID・本人・請求ID・金額・通貨・sandbox区分を照合し、不一致/応答不明ではissuedを保つ。実Provider呼出し、カード、銀行、旧収益精算、funded Wallet残高は変更しない。
+
+保存は `work/sky-monthly-sandbox/state.sqlite`（Git対象外）。再起動後も明細を再取得できる。ローカルfixture accountは実本人確認の証拠ではない。通常Web経路の既存認証とローカル合成accountを区別する。停止は起動terminalのCtrl-C。復旧は同じDBで再起動し同じ見積/請求IDを照合する。締め後に新しい試験を始める場合は既存DBを保全し、`SKY_MONTHLY_TEST_DB=work/sky-monthly-sandbox/new-test.sqlite SKY_MONTHLY_TEST_PORT=5221 npm run sky:monthly:sandbox` で別DB/portの試験を始める。
+
+検証: `node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs` で一周、二重送信、上限、本人分離、期限/月境界、Provider結果不明/不一致、DB再起動、HTTP gateを確認。画面から見積10円→Agent成果→再送追加なし→月締め→模擬入金照合を操作確認した。
+
+未完了: 実外部Agent/LLMの署名usageからの月次計上、実Provider sandbox/支払手段/通知、税/請求書/訂正/返金、未払い制限・復旧、複数契約/商用料金、定期月締め運用。既存A2A/remote LLMの予算予約・署名usageを次にadapterで接続する。本実装の成功を実決済・商用Agent月次請求の受入にしない。
+
 ## Sky単体のAgent利用・月次請求（2026-10-15確定設計）
 
 本人の明示指示により、**Sky単体でAgent/LLM/Toolの選択、接続、利用、使用量計測、明細確認、月次請求、支払い状態の確認まで成立させる**。RockstarOSの導入、Jenniferとの会話、Zemaの利用、Miniの購入、SIM契約は必須条件にしない。既存OSのbrowser/clientから利用できるサービスを目指す。本節は設計の責任分担であり、既存の買い切りCheckout実装を月次従量請求の実装済み証拠にしない。

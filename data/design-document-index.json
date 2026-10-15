@@ -1,5 +1,5 @@
 {
-  "standaloneServiceBillingDesign": {"document": "docs/sky-billing.md", "composition": "docs/service-design/README.md", "owner": "Sky", "requiredCompanionProducts": [], "status": "design_only_provider_acceptance_pending"},
+  "standaloneServiceBillingDesign": {"document": "docs/sky-billing.md", "composition": "docs/service-design/README.md", "owner": "Sky", "requiredCompanionProducts": [], "status": "local_fixture_implemented_provider_acceptance_pending", "implementation": ["lib/sky-monthly-sandbox.ts", "lib/sky-monthly-sandbox-http.ts", "components/sky-monthly-sandbox.tsx"], "tests": "tests/sky-monthly-sandbox.test.mjs"},
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
