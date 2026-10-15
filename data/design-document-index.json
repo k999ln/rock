@@ -1,4 +1,11 @@
 {
+  "standaloneServiceBillingDesign": {
+    "document": "docs/sky-billing.md",
+    "composition": "docs/service-design/README.md",
+    "owner": "Sky",
+    "requiredCompanionProducts": [],
+    "status": "design_only_provider_acceptance_pending"
+  },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
@@ -78,7 +85,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.17",
+  "version": "1.18",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1037,7 +1044,9 @@
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
-        "docs/avocado-mini-hardware-design.md"
+        "docs/avocado-mini-hardware-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "docs/service-design/08-mini-connectivity-and-billing.md"
       ]
     },
     {

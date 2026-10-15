@@ -1,6 +1,8 @@
 # RockstarOS — 現在の作業と再開情報
 
-2026-10-15、OS11/O6/ROCK（設計同期DOC04/H1）で[Pixel si実装設計](docs/native-os-integration.md#pixel-si専用端末の実装設計)と[コード調査台帳](docs/evidence/grapheneos-source-audit.json)を作成。基準main `a3e7a8ca`の7 CI成功、GrapheneOS側129構成、86 repo/2,611 diff entry、選択source/config 4,705 fileを確認・検索し、非公開vendorや同image未受入を分離した。SpeechServicesの正式GitLab/v3 TTSを確認して前の未確認理由を訂正、日本語ASR/TTSは不足。8 module/12未実行ケース、既存Broker通信の再利用、local/cloudの一つのroot authority、料金/月上限/後払い・停止・全損/OTA復旧を対応する。採用lock2026100200、runtime、鍵、端末、実gateは変更なし。branch `codex/pixel-si-source-design`でbaseline/design/device/LLM・15固定source hash・Mermaid2図・Canvas型検査とNode22.23.3全体verifyが成功（通常2235件:2234 pass/既存skip1/fail0/cancel0、仕事API1381、CSV385、asset208/欠落0）。ログはGit外 `/private/tmp/pixel-si-source-design-verify.log`。GitHub保存/同head CI/main統合は同branch PRのreadbackで確認する。次はP0候補同期/固定→PX01現v4 local一仕事。C1/C2は独立して受け入れる。
+2026-10-15、OS11/O6/ROCK（設計同期DOC04/H1）で[Pixel si実装設計](docs/native-os-integration.md#pixel-si専用端末の実装設計)と[コード調査台帳](docs/evidence/grapheneos-source-audit.json)を作成。基準main `a3e7a8ca`の7 CI成功、GrapheneOS側129構成、86 repo/2,611 diff entry、選択source/config 4,705 fileを確認・検索し、非公開vendorや同image未受入を分離した。SpeechServicesの正式GitLab/v3 TTSを確認して前の未確認理由を訂正、日本語ASR/TTSは不足。8 module/12未実行ケース、既存Broker通信の再利用、local/cloudの一つのroot authority、料金/月上限/後払い・停止・全損/OTA復旧を対応する。採用lock2026100200、runtime、鍵、端末、実gateは変更なし。branch `codex/pixel-si-source-design`でbaseline/design/device/LLM・15固定source hash・Mermaid2図・Canvas型検査とNode22.23.3全体verifyが成功（通常2235件:2234 pass/既存skip1/fail0/cancel0、仕事API1381、CSV385、asset208/欠落0）。ログはGit外 `/private/tmp/pixel-si-source-design-verify.log`。GitHub保存/同head CI/main統合は同branch PRのreadbackで確認する。次はP0候補同期/固定→PX01現v4 local一仕事。C1/C2は独立して受け入れる。 main PR #142/df615298のSky単体月次請求・着脱Miniと進捗を保全mergeし、15 source hashの不変、同mainの6 CI成功、統合後の全体verify exit 0を確認した。統合後ログは `/private/tmp/pixel-si-source-design-verify-merged.log`。
+
+2026-10-15、BIL02/O5（同期DOC04/H1）: 本人指示でSky単体のAgent選択・利用・計測・月次請求を独立成立する設計へ明確化。RockstarOSにはJennifer/Sky/Zemaを統合し各単体利用を保持。請求のZema依存を図から除き、既存台帳/Broker再利用、復旧、sandbox合格条件を正本へ同期。npm run verifyが全stage終了コード0で合格（通常2234 pass/1 skip、仕事API1381、asset208/欠落0）。ログ /private/tmp/sky-standalone-verify.log。最新main a3e7a8caを取得確認、取り込みは未実施。PR #142へ保存、main統合・実装・本番課金は別。次はSky単体の月次sandbox一周受入。
 
 更新: 2026-10-15。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
@@ -518,3 +520,11 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 次の作業: P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。
 <!-- project-status:end -->
+
+## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
+
+MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
+
+検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
+
+最終ローカル検証: 回帰2234成功/1skip、型/lint、全設計/基準/担当、Web build/asset closure、仕事API1381・CSV385合格。verifyはsite専用依存不足で一度停止し、依存導入後に停止stage以降をbot:checkまで再開して全て成功。同一headのGitHub CIはPR #142で確認中。

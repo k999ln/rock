@@ -1,4 +1,43 @@
 {
+  "pixelSiReferenceDesignIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction_in_current_message",
+    "ownerQuote": "残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして",
+    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+    "evidence": "docs/evidence/grapheneos-source-audit.json",
+    "researchTag": "2026100600",
+    "compileInputTagUnchanged": "2026100200",
+    "modules": [
+      "PX-HOME",
+      "PX-VOICE",
+      "PX-SKY",
+      "PX-LOCAL",
+      "PX-LINK",
+      "PX-JOB",
+      "PX-COST",
+      "PX-RELEASE"
+    ],
+    "acceptanceIds": [
+      "PX01",
+      "PX02",
+      "PX03",
+      "PX04",
+      "PX05",
+      "PX06",
+      "PX07",
+      "PX08",
+      "PX09",
+      "PX10",
+      "PX11",
+      "PX12"
+    ],
+    "reuseExistingBrokerTransportsAndWorkflow": true,
+    "rootAuthorityFixedPerJob": true,
+    "speechServicesBundledTtsVerifiedStatically": true,
+    "japaneseAsrTtsAccepted": false,
+    "runtimeImplementedByThisChange": false,
+    "priceOrExecutionGateChanged": false
+  },
   "cloudServicePlanIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",
@@ -552,7 +591,7 @@
       "sameTypePeerExpansion": true,
       "separateEdgeHubRequired": false,
       "externalPcRequiredForCoreFunctions": false,
-      "externalPowerRequired": true,
+      "externalPowerRequired": false,
       "batteryAdopted": false,
       "displayRequirement": "naked_eye_particles_distributed_in_surrounding_real_space",
       "displayStatus": "unavailable_research_gate_not_room_scale_validated",
@@ -566,7 +605,20 @@
       "maturity": "integrated_basic_design_with_open_engineering_decisions",
       "replacesMandatoryE3HubConfiguration": true,
       "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
-      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
+      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24",
+      "externalPowerPolicy": "dock_power_for_installed_mode_portable_power_required_off_dock",
+      "portablePowerRequired": true,
+      "batterySelectionStatus": "internal_vs_detachable_under_design_not_selected",
+      "embeddedPortableConnectivity": {
+        "document": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "source": "2026-10-15 user image and explicit embedded/detachable/satellite/portable Wi-Fi request",
+        "embeddedDock": true,
+        "detachableCore": true,
+        "satelliteWanTarget": true,
+        "wifiHotspotTarget": true,
+        "directSatelliteAccepted": false,
+        "portablePowerAccepted": false
+      }
     }
   },
   "distributionPricingIntent": {
@@ -2061,11 +2113,7 @@
     "authority": "docs/avocado-mini-r5/README.md",
     "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
     "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
-    "candidateCeilingTypes": [
-      "recessed",
-      "suspended",
-      "exposed_or_retrofit_cover"
-    ],
+    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
     "standaloneMiniPreserved": true,
     "proOrBuildingNetworkRequired": false,
     "residentOwnsPrivateProfile": true,
@@ -2618,13 +2666,7 @@
     "canonicalSkyOrigin": "https://avoado.si",
     "campusHome": "campus_specific_discovery_and_free_browser_drafts",
     "mainHome": "agent_marketplace_execution_and_management",
-    "sharedDurableOwnership": [
-      "purchases",
-      "account_library",
-      "connections",
-      "zema_jobs",
-      "agent_outputs"
-    ],
+    "sharedDurableOwnership": ["purchases", "account_library", "connections", "zema_jobs", "agent_outputs"],
     "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
   },
@@ -2711,43 +2753,25 @@
       "production Provider output"
     ]
   },
-  "pixelSiReferenceDesignIntent": {
-    "decidedAt": "2026-10-15",
-    "source": "direct_owner_instruction_in_current_message",
-    "ownerQuote": "残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして",
-    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
-    "evidence": "docs/evidence/grapheneos-source-audit.json",
-    "researchTag": "2026100600",
-    "compileInputTagUnchanged": "2026100200",
-    "modules": [
-      "PX-HOME",
-      "PX-VOICE",
-      "PX-SKY",
-      "PX-LOCAL",
-      "PX-LINK",
-      "PX-JOB",
-      "PX-COST",
-      "PX-RELEASE"
-    ],
-    "acceptanceIds": [
-      "PX01",
-      "PX02",
-      "PX03",
-      "PX04",
-      "PX05",
-      "PX06",
-      "PX07",
-      "PX08",
-      "PX09",
-      "PX10",
-      "PX11",
-      "PX12"
-    ],
-    "reuseExistingBrokerTransportsAndWorkflow": true,
-    "rootAuthorityFixedPerJob": true,
-    "speechServicesBundledTtsVerifiedStatically": true,
-    "japaneseAsrTtsAccepted": false,
-    "runtimeImplementedByThisChange": false,
-    "priceOrExecutionGateChanged": false
+  "agentMonthlyPostpaidIntent": {
+    "date": "2026-10-15",
+    "source": "携帯料金と同じシステムでAgent利用を毎月請求、強い支払義務",
+    "billingCycle": "monthly",
+    "settlementDirection": "postpaid",
+    "scope": "contract_account_agent_usage",
+    "serviceOwner": "Sky",
+    "standaloneEndToEndRequired": true,
+    "requiredCompanionProducts": [],
+    "optionalIntegratedServices": ["Jennifer", "Zema"],
+    "rockstarOsIntegratedServices": ["Jennifer", "Sky", "Zema"],
+    "eachServiceStandaloneDesign": true,
+    "monthlyProviderAcceptance": "pending",
+    "quoteAndBudgetCapRequired": true,
+    "carrierBillIntegrationAccepted": false,
+    "bankAccountFreezeByOs": false,
+    "delinquencyPolicy": "notice_grace_dispute_paid_agent_restriction_reconciliation_and_lawful_collection_review",
+    "jurisdiction": "undecided",
+    "productionBillingEnabled": false,
+    "document": "docs/sky-billing.md"
   }
 }

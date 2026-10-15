@@ -1,5 +1,7 @@
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
+
 更新: 2026-10-15。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
 
 利用者は「やりたいことは変わっていない。設計書を最初から組み直したい」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」「古く紛らわしい不要な内容は削除」と明示した。このため本書を**現行方針 → RQ01〜RQ50 → 現在の未受入gate**へ再構成する。旧SIM購入入口、旧Mini構成・価格、日付付き変更ログは現行本文から削除し、Git履歴へ残す。復元先は[Git整理方針](git-consolidation.md)で管理する。固定原本・vendor・受入証拠は変更しない。
@@ -87,7 +89,7 @@ Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済�
 
 ### Mini、Pro、rocketstarと配布対象
 
-現行hardwareはavocadoMini R5、avokadoPro、rocketstarの三program。Miniは使用時全高200mm以内の銀色円筒、1本自律、別Edge Hub不要、同型Mini増設、外部給電、眼鏡なしの周囲空間表示、身体・手・日本語音声、ゲームから生活支援への展開を目指す。Proやスマホ、インターネットを基本操作・保存の必須条件にしない。[R5正本](avocado-mini-r5/README.md)の光学・精密入力・収納・熱・電源・安全・製造gateは未受入。
+現行hardwareはavocadoMini R5、avokadoPro、rocketstarの三program。Miniは使用時全高200mm以内の銀色円筒、1本自律、別Edge Hub不要、同型Mini増設、設置中給電＋携帯電源（部品未選定）、眼鏡なしの周囲空間表示、身体・手・日本語音声、ゲームから生活支援への展開を目指す。Proやスマホ、インターネットを基本操作・保存の必須条件にしない。[R5正本](avocado-mini-r5/README.md)の光学・精密入力・収納・熱・電源・安全・製造gateは未受入。
 
 2026-10-14の明示方針として、Miniには**建築一体型の設置profile**を加える。新築の設計段階から建築・設備・内装側と設置条件を調整し、天井への収納・展開を複数の天井構成に合わせて検討する。これはR5単体coreを置き換える別製品や建物制御Hubの必須化ではなく、取外し・点検できる設置方式の追加である。居住者のlocal利用・停止・保存を建物所有者や施工者の権限と分離する。天井構造、給電、熱、落下/可動部、光・音・camera、保守、消防・建築上の適合は対象物件ごとに有資格者と確認し、実施工・販売・対応天井の確定を設計記載だけで宣言しない。[建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を正本とする。
 
@@ -454,3 +456,7 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 - **Gitと公開** — 本書・baseline JSON・設計index・進捗を同じ変更へ同期し、`npm run design:check`と`npm run verify`を通す。GitHub保存・main統合・Sites配備・実responseを別記録。古いsnapshotや取得失敗を最新確認済みにしない。
 
 8原則による優先順位とpilot指標は[1.0 strategy](rockstaros-1.0-strategy.md)の検証仮説であり、需要・独占・市場首位・収益を保証しない。次の担当は[作業入口](workstreams/README.md)と[責任分界](workstreams/00-responsibility-boundaries.md)から既存taskと検証条件を選び、[最新prompt](prompts/rock-current-next-20261002.md)を最新Gitに照合して再開する。
+
+## 2026-10-15 Mini着脱・衛星Wi-FiとAgent月次請求
+
+利用者が建築/家具へ埋め込む着脱Mini、衛星WANによる携帯Wi-Fi、携帯料金に近いAgent利用の月次後払いを明示。R5の1本自律を維持し、外部給電のみの前提を設置中給電＋携帯電源へ更新。battery部品・衛星方式・料金数値は未確定。未払い時は通知/異議/有料実行制限/適法な回収で扱い、OSに銀行口座凍結権を与えない。[統合設計](service-design/08-mini-connectivity-and-billing.md)。

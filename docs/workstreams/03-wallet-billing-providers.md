@@ -271,3 +271,7 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 ## 実装と受入の再開
 
 BIL02は[決済詳細の実装順](../sky-commerce-design.md#16-実装の分割と完了条件)と[受入分類](../sky-commerce-design.md#検査する実装経路と段階)へ再開する。設計/model/DDLの履歴成功をruntimeやProvider受入へ転用せず、最新main/実在branch/同一SHA CIを読み、原稿/秘密をGitへ入れず、既存migration/共通Stripe/Wallet/SDKを再利用する。独立したROCK実装を外部credential待ちで止めず、sandbox/運用/限定live/銀行照合を別証拠にする。完了時はproject/status/workstreamと`npm run project:update`を同期し、commit/PR/main/公開と残条件を別々に報告する。
+
+## Agent月次後払い
+
+BIL02/O5の[請求設計](../sky-billing.md)へ2026-10-15の利用者要求を追加。usage/予算/明細/収納/権限制限を分け、与信とProvider受入後に有効化。旧ToC収益料金のexecutionHoldsは解除しない。

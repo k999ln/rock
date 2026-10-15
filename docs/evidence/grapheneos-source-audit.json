@@ -2479,7 +2479,7 @@
   },
   "verification": {
     "fullVerify": "pass",
-    "log": "/private/tmp/pixel-si-source-design-verify.log",
+    "log": "/private/tmp/pixel-si-source-design-verify-merged.log",
     "node": "22.23.3",
     "unitTests": {
       "tests": 2235,
@@ -2502,11 +2502,32 @@
       "llm:architecture:check",
       "git diff --check"
     ],
-    "runtimeAndDeviceAcceptance": "not_run"
+    "runtimeAndDeviceAcceptance": "not_run",
+    "initialVerifyLog": "/private/tmp/pixel-si-source-design-verify.log"
   },
   "gitEvidence": {
     "branch": "codex/pixel-si-source-design",
     "readbackCommand": "gh pr view codex/pixel-si-source-design --json state,mergedAt,mergeCommit,headRefOid",
     "sitePublished": false
+  },
+  "mainSynchronization": {
+    "incomingMainSha": "df615298bdb0e6b1af2bd35bf3a811ccc0e6a30c",
+    "incomingPr": 142,
+    "incomingSameShaChecks": 6,
+    "allSuccessful": true,
+    "rockSourceHashesStillMatch": 15,
+    "preserved": [
+      "standalone Sky agent usage and monthly billing",
+      "detachable Mini dock portable core design",
+      "portable power baseline and R5 regression",
+      "existing product pricing and execution holds"
+    ],
+    "conflictsResolved": [
+      "data/product-baseline.json",
+      "data/project-status.json",
+      "project.md"
+    ],
+    "semantics": "Pixel integrated profile does not require Zema/Jennifer/OS/Mini/SIM for standalone Sky billing",
+    "postMergeVerify": "pass_all_stages"
   }
 }

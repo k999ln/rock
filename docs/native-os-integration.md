@@ -465,6 +465,8 @@ flowchart TB
 
 矢印は接続設計で、全経路の実装完了を示さない。local LLMの結果、cloud response、push通知、接続済み表示を本人承認や成功証拠にしない。
 
+本図はPixel統合profileである。mainに統合されたPR #142の[Sky単体・月次請求契約](sky-billing.md#sky単体のagent利用月次請求2026-10-15確定設計)を維持し、Sky単体の選択/利用/計測/明細/請求にJennifer、Zemaの利用、RockstarOS導入、Mini、SIMを必須としない。Skyは既存の共通権限・実行/usage台帳を使って完結し、Zema画面は同じ記録への任意の仕事管理入口。Pixelではそれらを一つの体験として統合する。D1正本という実装上の責任と、特定の画面・サービス利用を強制することを区別する。
+
 ### 3. そのまま引き継ぐもの
 
 | 領域 | 採用判断 | 接続・確認条件 |
@@ -535,6 +537,8 @@ rootの`authorityRealm + job ID`、delegation/operation、artifact ID/revision/h
 cloud APIはdevice sessionからownerを決め、scope/期限/失効、plan、対象model/Agent、data grant、quoteと支出承認を再検査する。端末の承認記録だけを信頼してpaid gateを迂回しない。Provider秘密鍵はserverの秘密管理、本人BYOKは既存暗号化保管と失効を使い、ROM/model/catalogへ埋め込まない。
 
 料金は[既存plan契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)に従い、plan ID/版/期間/対象能力/含む量/超過単価/上限/終了条件を見積へ固定する。含む量も並列予約で引当て、model token、Agent計算、Tool、通信、端末、外部実費を区別。自己host modelとrunnerを二重計上せず、Provider実meter/取消実費と一致させる。月額/含む量/超過単価は未決定、既存30%/10%/1,000円等を変更しない。未実測のGPU原価を利益へ換算しない。
+
+Agent利用の請求周期と未払い/異議/入金復旧は[Sky月次後払いの正本](sky-billing.md#agent利用料の月次後払いと未払い対応2026-10-15)へ従う。旧しきい値や既存fixtureの記載は互換・保全であり、このPixel追補から月途中徴収や本番与信を開始しない。Skyが単独で同じ契約accountのusage/明細を照会でき、Pixel/Zemaの利用有無で請求が失われないことをPX07の条件に含める。
 
 **account月上限と同時予約、funded Walletに依存しない後払い契約、commercial scopeのfail-closed受入は未完。** 現sourceのordinary previewはscope強制が設定依存、A2A予約はowner/parentJob単位、remote pricing gateはfalse、workerにはD1 placeholder/実行無効設定がある。これらを文書だけで修正済みにせず、C1/C2とPX07へ対応する。本番の実行/発行/課金gateは閉じたまま。
 
