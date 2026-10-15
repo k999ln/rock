@@ -88,9 +88,9 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 
 ## 確認した上流と端末layout
 
-Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d124f3ea8dd545c1e4045f26359f501d80e`、manifest commitは`ac9f2fdf0badebea2f6ac6c3e93b125aba02116a`。公式`allowed_signers`の固定byteで、`contact@grapheneos.org`／`SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM`のtag署名を検証した。AOSP基底は`android-17.0.0_r1`。全project取得やbuildは未実行。[公式リリース](https://grapheneos.org/releases#frankel)／[公式build手順](https://grapheneos.org/build)。
+現在のcompile入力は`os/physical/frankel-source-lock.json`のsigned stable `2026100200`、tag object `94691f0fc2ebfd9cf70d58d9091e52a895e515c9`、manifest commit `58467adfb0c9f8a944f55e817e225ed862213c78`。2026-10-06の[署名/source検証証拠](evidence/phone-source-verification.json)を根拠にし、今日の最新tag確認やfull sync/build/flashの合格にはしない。旧2026091000は履歴で、physical layoutは2026-09-16の観測のまま。
 
-固定adevtoolは`117ef1de94510854f3fc25154c8246819e56f049`。生成された大きなproduct makefileを直接編集せず、[端末別の小さいhook](https://github.com/GrapheneOS/adevtool/blob/117ef1de94510854f3fc25154c8246819e56f049/config/mk/google_devices/device/frankel/device.mk)へRock共通productのinheritを追加する。実機kernel prebuiltは`e10186c8b757f4658dc38973a37c0034b05fc0b6`のlaguna／muzel／6.6で、muzel treeは`1c1a65e54c92adb11979a73fcc9acea9cc8183b1`。QEMUのvirt向けimageは使用しない。
+固定adevtoolは`649267e954063263d53799d3cc53e382ab242893`。frankelの小さいdevice hookとlaguna/muzel/6.6 kernelの入力は同じsource lockと検証JSONを参照する。過去のtagに付随するhook/kernel hashを現在のcompile入力へ流用しない。QEMU virt imageは使用しない。
 
 実機は書込みなしでDynamic Partition、Virtual A/B、A/B update、AVB 1.4、locked vbmetaを確認した。`boot`、`dtbo`、`init_boot`、`vbmeta`、`vbmeta_system`、`vbmeta_vendor`、`vendor_boot`、`vendor_kernel_boot`はA/B、`super`、`metadata`、`userdata`も存在する。端末serialは保存していない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)。
 
@@ -112,7 +112,7 @@ Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d1
 
 以下は未実行の全OS手順。上の事前gateが全て合格し、初回対象がPixel 10の正確なSKUまで確定してから専用環境を用意して実施する。
 
-1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026091000`を実行する。
+1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026100200`を実行する。
 2. 公式の`https://grapheneos.org/allowed_signers`をその環境の専用公開鍵ファイルへ取得し、manifestのタグ署名と固定commitを検証する。ユーザー全体のGit設定は変更しない。
 3. cleanなRock checkoutから`python3 scripts/prepare-phone-build.py manifest`でXMLを生成し、OS作業ディレクトリの`.repo/local_manifests/rock-phone.xml`へ保存する。Rockは`external/rockstaros`へ取得され、既存Cuttlefish専用設定と混ぜない。
 4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d <lockのdevice>`を実施し、vendor取得・照合結果を保存する。

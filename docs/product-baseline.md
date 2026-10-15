@@ -22,11 +22,13 @@ PCやPro/cloudは必要に応じた計算先であり、利用者がその前に
 
 [体験と6受入ケース](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を正本の具体化とし、RQ37/40/42/48/49、既存Mini R5/建築取付/host契約へ接続する。新たなTool登録・製造開始・本番接続の合格ではない。
 
-### 無料アカウントを入口にする
+### 通信とsi利用権をまとめる商品を入口にする
 
-2026-10-10の「全部確定でいい」により、主商品はavokadoの無料アカウントひとつで、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービスとなった。SIM/eSIM購入を入口にする方針を置き換える。SIMにOS binaryを格納しない。専用機器と回線は利用開始条件ではない。
+2026-10-15、利用者はeSIMの役割として**「通信とsi利用権をまとめて提供する商品の入口」**を選んだ。2026-10-10の無料account先行・consumer eSIM販売保留という商品設計方針を更新する。accountは本人・契約・利用権・Job・成果・予算の正本として維持し、回線profileを本人IDや実行許可の代わりにしない。無料accountと対応Toolの試用は残し、商品の購入と既存OS app/browserの利用経路を分ける。
 
-売り手はavokado。最初の客は個人で、文章を納品する個人事業主から始める。ゲストは対応Toolの説明・ローカル下書きを利用でき、本人別保存・接続・有料実行・公開で認証と個別承認を通す。最新の公開Homeは`https://avoado.si/os`、Skyは`https://avoado.si/os/sky`、成果は`/os/sky/outputs`、本人確認は自前passkey、通知はWeb Pushを先に作る到達設計で、移行・本番受入は別に判定する。
+売り手はavokado。商品は通信とRockstarOS/Sky/Zema/si利用権を組み合わせ、LLM従量・通信料・Tool/外部実費を別明細にする。利用権の同梱を無制限のtoken/GPU利用にせず、従来の料金率や上限を本選択だけで変更しない。対象国/通信partner/plan/quota/再発行/解約と本番課金条件を確定するまで実発行/有料cloud gateは無効のままにする。
+
+eSIMへOS binary/LLMを格納せず、回線開通、本人/利用権、OS/client導入状態、cloud job/使用量を別々に追跡する。GrapheneOSの改変・Pixel導入・自社OTAとcloudの関係は[基盤設計と32項目の調査](native-os-integration.md)を正本の具体化とする。独自全OSはexact機種・署名・復旧の受入が揃う場合に案内し、それ以外は対応client/browserへ分岐する。公開Home `https://avoado.si/os`、Sky `https://avoado.si/os/sky`、成果 `/os/sky/outputs`は維持する。
 
 ### Jennifer、Sky、Zema、OSの役割
 
@@ -63,7 +65,7 @@ Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済�
 
 2026-10-14の明示方針として、Miniには**建築一体型の設置profile**を加える。新築の設計段階から建築・設備・内装側と設置条件を調整し、天井への収納・展開を複数の天井構成に合わせて検討する。これはR5単体coreを置き換える別製品や建物制御Hubの必須化ではなく、取外し・点検できる設置方式の追加である。居住者のlocal利用・停止・保存を建物所有者や施工者の権限と分離する。天井構造、給電、熱、落下/可動部、光・音・camera、保守、消防・建築上の適合は対象物件ごとに有資格者と確認し、実施工・販売・対応天井の確定を設計記載だけで宣言しない。[建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を正本とする。
 
-Miniの回線は任意の別model/optionで、国内LTEのみ、IoT data専用SIM、試作カード・量産chip、SGP.32対応とし、遠隔profile切替を自作しない。Pro・phone tether不要。回線料は自社名義の機器service料に含め、一次supportはavokadoが受ける。consumer eSIM発行・販売は保留、既存codeは既定無効で保持する。[Mini通信](avocado-mini-cellular.md)で回線と機器適合を別受入にする。
+Miniの回線は任意の別model/optionで、国内LTEのみ、IoT data専用SIM、試作カード・量産chip、SGP.32対応とし、遠隔profile切替を自作しない。Pro・phone tether不要。回線料は自社名義の機器service料に含め、一次supportはavokadoが受ける。consumer eSIMを商品入口として設計する方針は2026-10-15に再開した。実発行は未受入で既存codeのgateは既定無効のままにする。[Mini通信](avocado-mini-cellular.md)で回線と機器適合を別受入にする。
 
 ProはNVIDIAのGPU/chipを使う高性能si PCが主眼で、独立据置PC・PCゲーム目標を維持し、Mini接続は任意。販売目標は80万円/台、税込/税別等は未定で、確定販売価格ではない。最終BOM、性能、冷却、販売条件、調達・製造は[Pro設計](avokado-pro-pc-design.md)の未受入条件。旧Mini構成や参考価格を新しい販売契約へ転用しない。
 
@@ -418,7 +420,7 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 - **サービスの一周** — 同じ公開source/artifactで本人が文章素材→処理→検査→review→download完了→再取得→レシピ再利用を通す。既存compositionの実装/host受入と、本番本人認証・実downloadを分ける。
 - **横断runtime** — realm/owner/root/leaf/delegation/artifact相関、親取消fence、account期間/Goal予算、価格/pass snapshotと後払い、真正reviewer証拠、context grant、削除journal/鍵喪失復旧、authority epochを既存fixtureで受け入れる。設計7冊の整合を実装完了にしない。
-- **料金・外部契約** — Stripe/Providerのsandbox、見積/meter/invoice、請求/返金/払出し、再販規約、通信・本人確認・資金決済・特商法・無線等の確認を完了する。consumer eSIMと888料金保留、Game/LIVEの個別無効gateを維持する。
+- **料金・外部契約** — Stripe/Providerのsandbox、見積/meter/invoice、請求/返金/払出し、再販規約、通信・本人確認・資金決済・特商法・無線等の確認を完了する。consumer eSIMは商品設計を再開したが実発行は未受入。888料金保留、Game/LIVEと有料cloudの個別無効gateを維持する。
 - **Pixel全OS** — Pixel 10 GL066 / frankel、署名検証済みsource `2026100200`、専用x86_64 Linux、build予算/アカウントを固定する。試験署名APKの非破壊実再起動23/23は[既存証拠](evidence/android-pixel-10-prefull-physical-20260916.json)だけの受入。全OS build、正式鍵、初回flash四gate、同じimageのboot/保存/OTA/純正復旧、data/Keystore全損復元は未完了。[phone計画](phone-preview-20260911.md)を使う。
 - **QEMU/配布** — RQ12の独立Developer Previewを保持し、同archiveの署名・fresh導入・更新/rollback/backup/削除・license受入を行う。Pixel/APK/他候補のPASSを転用しない。
 - **Mini/Pro** — R5の単独ゲーム/保存/停止、光学/入力/熱/給電/安全/製造、任意LTE、ProのNVIDIA閉箱BOM/QVL/si/game/熱/復旧を別受入。実機・販売・予約/決済を文書保存で開始しない。

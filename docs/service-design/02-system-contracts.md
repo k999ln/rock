@@ -2,6 +2,8 @@
 
 再構成版 1.0。利用者がどこから操作しても、同じ本人・仕事・権限・成果を説明できる構成を目指す。ここでの統一は契約の統一であり、Web・Android・Linuxの保存先を統合済みと扱わない。
 
+2026-10-15の商品入口は[通信＋si利用権bundle](../native-os-integration.md)。無料accountは本人と仕事の正本、eSIMは回線、OS導入は機種別、cloudは予算付き実行として分ける。以下の料金/状態/権限契約を再利用し、購入で無制限実行やOS書込みを許可しない。
+
 ## 1. サービスをつくる責任
 
 **Jennifer**は利用者の窓口として目的/Goalと担当si、確認、成果受領を統括する。**Sky**はcatalog、作者、版、license、価格条件、購入、接続先、対応能力を示す。**Zema**はJenniferの裏の仕事systemとして、AMCで確認済みGoalを有限の仕事へ分解し、現在地、必要確認、停止、成果、費用へ案内する。**Core/Broker**は認証principal、capability、同意、予算、component/入力の版を検査して実行を許可する。**Tool/Provider adapter**は契約で許された個別処理と受信証拠を返す。**Wallet/Commerce**は購入・費用・収益・返金・予約・照合を扱う。

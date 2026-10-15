@@ -55,9 +55,9 @@ export function validateBaseline(
   requireValue(
     serviceAccess?.status ===
       'authoritative_product_direction_design_and_local_onboarding_only' &&
-      serviceAccess?.primaryEntry === 'rockstar_account_service_access' &&
+      serviceAccess?.primaryEntry === 'connectivity_and_si_access_bundle' &&
       serviceAccess?.simRequiredForService === false &&
-      serviceAccess?.consumerEsimSales === 'on_hold_code_kept_disabled_by_default' &&
+      serviceAccess?.consumerEsimSales === 'bundle_product_design_live_issuance_disabled' &&
       JSON.stringify(serviceAccess?.distributionChannels) ===
         JSON.stringify([
           'rockstar_direct',
@@ -70,7 +70,23 @@ export function validateBaseline(
       serviceAccess?.productionBillingAccepted === false &&
       serviceAccess?.carrierActivationAccepted === false &&
       serviceAccess?.deviceOsInstallationAccepted === false,
-    'Account-led service access (SIM optional), channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
+    'Connectivity-bundled service access, separate account/line/device delivery, and unaccepted production states must remain explicit',
+  );
+  const bundle = data.connectivityServiceBundleDecision;
+  requireValue(
+    bundle?.decidedAt === '2026-10-15' &&
+      bundle?.primaryEntry === serviceAccess.primaryEntry &&
+      bundle?.accountIsOwnerAndLedgerRoot === true &&
+      bundle?.connectivityAndServiceHaveSeparateStates === true &&
+      bundle?.grantRequiresVerifiedPurchase === true &&
+      bundle?.osInstallationIsSeparate === true &&
+      bundle?.profileIdentityIsNotAccount === true &&
+      bundle?.siUsageUnlimited === false &&
+      bundle?.autoFlashAllowed === false &&
+      bundle?.liveIssuanceEnabled === false &&
+      bundle?.liveCloudDispatchEnabled === false &&
+      bundle?.pricingChanged === false,
+    'Connectivity bundle decision must preserve account ownership, verified purchase, separate OS installation, bounded usage and closed live gates',
   );
   requireValue(
     JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
@@ -1443,7 +1459,7 @@ export function validateBaseline(
     devicePolicy.physicalFlashAuthorized === false,
     '実機flashは未承認です',
   );
-  // The 2026-10-10 decisions live in the encrypted baseline; this public script checks
+  // Pricing decisions originated on 2026-10-10; the product entry was updated on 2026-10-15. This script checks
   // their shape and internal consistency without restating the decided values.
   const entry = data.accountEntryDecision;
   const nonEmpty = (value) => typeof value === 'string' && value.length > 0;
@@ -1471,7 +1487,7 @@ export function validateBaseline(
       nonEmpty(data.miniCellularIntent?.sim) &&
       typeof data.miniCellularIntent?.sgp32Capable === 'boolean' &&
       nonEmpty(data.miniCellularIntent?.remoteProfileSwitching) &&
-      data.miniCellularIntent?.decisionDate === entry.decidedAt,
+      data.miniCellularIntent?.decisionDate === '2026-10-10',
     'miniCellularIntent: Miniの回線の確定事項が欠けています',
   );
   for (const file of [

@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.12",
+  "version": "1.13",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -16,7 +16,8 @@
     "docs/product-baseline.md",
     "docs/mission-control.md",
     "docs/amc-goal-orchestrator.md",
-    "docs/service-design/07-ecosystem-strategy-and-data.md"
+    "docs/service-design/07-ecosystem-strategy-and-data.md",
+    "docs/native-os-integration.md"
   ],
   "sourceArtifacts": [
     {
@@ -128,7 +129,9 @@
         "docs/rockstaros-complete-design.md",
         "docs/workstreams/03-wallet-billing-providers.md",
         "docs/workstreams/07-android-device-local-ai.md",
-        "docs/provider-contract-readiness-20260930.md"
+        "docs/provider-contract-readiness-20260930.md",
+        "docs/native-os-integration.md",
+        "docs/evidence/graphene-cloud-foundation.json"
       ],
       "interfaceImplementation": [
         "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
@@ -265,7 +268,7 @@
           "app/connect/page.tsx",
           "tests/sim-service-entry.test.mjs"
         ],
-        "contract": "Use the current account-led entry; preserve existing purchase claims and device links; consumer eSIM issuance/sales remains on hold."
+        "contract": "Use the 2026-10-15 connectivity-plus-si bundle entry; preserve account-owned jobs, existing purchase claims and device links. Runtime UI remains the prior account-led implementation until its own UI acceptance; actual issuance, paid dispatch and OS installation stay gated."
       },
       "pendingWalletRecovery": {
         "implementation": [
@@ -380,7 +383,9 @@
         "docs/device-support-architecture.md",
         "data/android-release-architecture-policy.json",
         "docs/workstreams/07-android-device-local-ai.md",
-        "docs/provider-contract-readiness-20260930.md"
+        "docs/provider-contract-readiness-20260930.md",
+        "docs/native-os-integration.md",
+        "docs/evidence/graphene-cloud-foundation.json"
       ],
       "interfaceImplementation": [
         "scripts/build-phone-bringup.sh",

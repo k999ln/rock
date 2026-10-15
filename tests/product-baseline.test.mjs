@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const osOnSim = structuredClone(source);
   osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
-  assert.throws(() => validateBaseline(osOnSim), /Account-led service access/);
+  assert.throws(() => validateBaseline(osOnSim), /Connectivity-bundled service access/);
   const esimOnly = structuredClone(source);
   esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
-  assert.throws(() => validateBaseline(esimOnly), /Account-led service access/);
+  assert.throws(() => validateBaseline(esimOnly), /Connectivity-bundled service access/);
   const offlineCloudLost = structuredClone(source);
   offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
     offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
@@ -23,10 +23,22 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
   const billingGateOpened = structuredClone(source);
   billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
-  assert.throws(() => validateBaseline(billingGateOpened), /Account-led service access/);
+  assert.throws(() => validateBaseline(billingGateOpened), /Connectivity-bundled service access/);
   const simRequired = structuredClone(source);
   simRequired.serviceAccessModel.simRequiredForService = true;
-  assert.throws(() => validateBaseline(simRequired), /Account-led service access/);
+  assert.throws(() => validateBaseline(simRequired), /Connectivity-bundled service access/);
+  for (const [key, value] of [
+    ['autoFlashAllowed', true],
+    ['liveCloudDispatchEnabled', true],
+    ['liveIssuanceEnabled', true],
+    ['grantRequiresVerifiedPurchase', false],
+    ['profileIdentityIsNotAccount', false],
+    ['siUsageUnlimited', true],
+  ]) {
+    const invalidBundle = structuredClone(source);
+    invalidBundle.connectivityServiceBundleDecision[key] = value;
+    assert.throws(() => validateBaseline(invalidBundle), /Connectivity bundle decision/);
+  }
   const storedBalance = structuredClone(source);
   storedBalance.accountEntryDecision.billing.storedBalance = true;
   assert.throws(() => validateBaseline(storedBalance), /accountEntryDecision/);
