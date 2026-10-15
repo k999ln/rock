@@ -542,6 +542,8 @@ Agent利用の請求周期と未払い/異議/入金復旧は[Sky月次後払い
 
 **account月上限と同時予約、funded Walletに依存しない後払い契約、commercial scopeのfail-closed受入は未完。** 現sourceのordinary previewはscope強制が設定依存、A2A予約はowner/parentJob単位、remote pricing gateはfalse、workerにはD1 placeholder/実行無効設定がある。これらを文書だけで修正済みにせず、C1/C2とPX07へ対応する。本番の実行/発行/課金gateは閉じたまま。
 
+現在地追補: PR #144（main `869addc1`）の`lib/sky-monthly-sandbox.ts`、HTTP境界/API、schema/migration、[既存の受入記録](evidence/sky-monthly-sandbox.json)も再利用する。これはloopback HTTP＋`local-fixture`限定で、引用整形の有限Agent、見積/金額・単価版の承認、原子的な成果/usage保存、上限制御、模擬月締め・fixture収納照合を持つ。公開/production経路は404とし、10円/1,000文字と月上限1,000円はfixture値で商品価格ではない。外部LLM、実Provider、真正な本人受入、訂正/返金/未払い、商用月次請求の合格へ転用しない。PX07はこのlocal fixtureを再利用して、実meter/全account/商用契約までを段階受入する。この追補で「月次の試験実装が一切ない」とは扱わない。
+
 ### 8. 保存・個人情報・復旧・更新
 
 | データ | 正本・保持 | 失敗・削除・復旧 |

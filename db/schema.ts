@@ -1871,3 +1871,26 @@ export const skyCodeCommits = sqliteTable('sky_code_commits', {
   revision: integer('revision').notNull(), parentId: text('parent_id'),
   payload: text('payload').notNull(), createdAt: integer('created_at').notNull(),
 }, table => [uniqueIndex('idx_sky_code_repo_revision').on(table.repoId, table.revision)]);
+
+// Local monthly billing fixtures; never a real funded balance or payment authority.
+export const skyMonthlySandboxInvoices = sqliteTable('sky_monthly_sandbox_invoices', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), period: text('period').notNull(),
+  currency: text('currency').notNull().default('JPY'), status: text('status').notNull().default('draft'),
+  totalMinor: integer('total_minor').notNull().default(0), capMinor: integer('cap_minor').notNull().default(1000),
+  providerReceipt: text('provider_receipt'), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_owner_period').on(t.ownerId,t.period),
+  check('monthly_sandbox_currency',sql`${t.currency}='JPY'`),
+  check('monthly_sandbox_status',sql`${t.status} IN ('draft','issued','paid')`),
+  check('monthly_sandbox_total',sql`${t.totalMinor} BETWEEN 0 AND 1000`),
+  check('monthly_sandbox_cap',sql`${t.capMinor}=1000`)]);
+export const skyMonthlySandboxQuotes = sqliteTable('sky_monthly_sandbox_quotes', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), invoiceId: text('invoice_id').notNull(),
+  inputJson: text('input_json').notNull(), inputHash: text('input_hash').notNull(), rateVersion: text('rate_version').notNull(),
+  quantity: integer('quantity').notNull(), amountMinor: integer('amount_minor').notNull(),
+  expiresAt: integer('expires_at').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [check('monthly_sandbox_quantity',sql`${t.quantity} BETWEEN 1 AND 20`),check('monthly_sandbox_amount',sql`${t.amountMinor} BETWEEN 10 AND 200`)]);
+export const skyMonthlySandboxUsage = sqliteTable('sky_monthly_sandbox_usage', {
+  quoteId: text('quote_id').primaryKey(), ownerId: text('owner_id').notNull(),
+  invoiceId: text('invoice_id').notNull().references(() => skyMonthlySandboxInvoices.id),
+  jobId: text('job_id').notNull(), amountMinor: integer('amount_minor').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_job').on(t.jobId)]);

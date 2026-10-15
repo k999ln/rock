@@ -2479,18 +2479,18 @@
   },
   "verification": {
     "fullVerify": "pass",
-    "log": "/private/tmp/pixel-si-source-design-verify-merged.log",
+    "log": "/private/tmp/pixel-si-source-design-verify-final-main.log",
     "node": "22.23.3",
     "unitTests": {
-      "tests": 2235,
-      "pass": 2234,
+      "tests": 2243,
+      "pass": 2242,
       "skip": 1,
       "fail": 0,
       "cancelled": 0
     },
     "workApiAssertions": 1381,
     "csvAssertions": 385,
-    "webAssetReferences": 208,
+    "webAssetReferences": 209,
     "missingAssets": 0,
     "rockSourceHashesUnchanged": 15,
     "mermaidDiagramsParsed": 2,
@@ -2503,7 +2503,8 @@
       "git diff --check"
     ],
     "runtimeAndDeviceAcceptance": "not_run",
-    "initialVerifyLog": "/private/tmp/pixel-si-source-design-verify.log"
+    "initialVerifyLog": "/private/tmp/pixel-si-source-design-verify.log",
+    "previousIntegratedVerifyLog": "/private/tmp/pixel-si-source-design-verify-merged.log"
   },
   "gitEvidence": {
     "branch": "codex/pixel-si-source-design",
@@ -2528,6 +2529,33 @@
       "project.md"
     ],
     "semantics": "Pixel integrated profile does not require Zema/Jennifer/OS/Mini/SIM for standalone Sky billing",
+    "postMergeVerify": "pass_all_stages"
+  },
+  "additionalMainSynchronization": {
+    "incomingMainSha": "869addc124fab734d0e341c429b28555182a5652",
+    "incomingPr": 144,
+    "acceptedSourceHead": "2ee6d7018e95f61db77d7592af8f336b3dc473ec",
+    "sourceHeadChecksSuccessful": 8,
+    "scope": "local fixture runtime; not provider sandbox or production billing",
+    "sourceReferences": [
+      {
+        "path": "lib/sky-monthly-sandbox.ts",
+        "sha256": "fad1d6001cbc1c4073e8fdf61ed532e6e1f9cce3fa407da55e7ba05736adb993"
+      },
+      {
+        "path": "lib/sky-monthly-sandbox-http.ts",
+        "sha256": "e48da948429cc5728b710a337dd3180ec23d6a9a35a8ae0720915172c4812116"
+      },
+      {
+        "path": "app/api/sky/monthly-sandbox/route.ts",
+        "sha256": "ba6e4c3f425776830aac0520468f45e74dbab32c491361f41dd629163180bf40"
+      },
+      {
+        "path": "docs/evidence/sky-monthly-sandbox.json",
+        "sha256": "0b80103761b9fdc3553992ac690eee3919780b9dd8c0170a9c695e84623c2ba2"
+      }
+    ],
+    "independentUiRetestPerformedHere": false,
     "postMergeVerify": "pass_all_stages"
   }
 }

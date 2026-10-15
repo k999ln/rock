@@ -1,5 +1,7 @@
 ## 共通サービス体験と状態の読み分け
 
+2026-10-15実装追補: Sky単体の出典整理Agent→月次請求のlocal fixtureを追加。既存workflow/work_jobsを再利用し、模擬料金/入金はsandbox専用。実Providerと本番課金は未受入。[起動・保存・失敗/復旧・検証・残条件](sky-billing.md#sky単体の月次請求ローカル実装2026-10-15)。
+
 2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
 
 サービス全体の目的、Sky/Zema/OSと各製品の責任、入出力、状態、保存、失敗・復旧、承認、受入と未決定の決め方を[統合基本設計](service-design/README.md)へ整理した。個々のToolの詳細は本書を維持する。`catalogStatus`・`connectionStatus`・本人条件を満たす実行可能性・受入環境を別に説明し、catalogのreadyからcredential設定/実行/本番合格を推測しない。これらの分類は説明の契約で、新schemaへ移行済みとは扱わない。現在の無料account入口と料金設計は最新baselineを優先する。5大学/Fitness等の元dirty候補はmainと別受入。Jenniferは利用者の統括窓口、Zemaは裏側systemとして[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)を継承する。PR #113のsourceはmain `01d2e418`へ統合済み。公開/真正review/Providerは別受入で、新しいcatalog Toolは登録していない。
