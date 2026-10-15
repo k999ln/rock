@@ -7289,6 +7289,14 @@
     "physicalTests": 0,
     "liveBilling": false,
     "bankActions": false,
-    "nextAction": "DP01〜05と月次請求sandboxを別受入。国/契約/料金/電池/RF/施工条件を確定。"
+    "nextAction": "DP01〜05と月次請求sandboxを別受入。国/契約/料金/電池/RF/施工条件を確定。",
+    "validation": {
+      "projectMissionBaselineDesign": "passed",
+      "baselineAndR5Tests": "5/5 passed",
+      "r5Archive": "26 hashes preserved",
+      "firstVerify": "R5 old external-power-only regression found and updated to new portable-power requirement",
+      "finalVerify": "running; see PR #142 for same-head CI",
+      "runtimeAcceptance": "not performed"
+    }
   }
 }

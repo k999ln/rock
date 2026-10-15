@@ -518,3 +518,5 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
 
 MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
+
+検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
