@@ -847,3 +847,7 @@ npm run verify
 ```
 
 research:checkは全RQ/全catalog/全設計領域の対応、ID参照、資料URLと証拠形式を検査する。履歴を保持する環境では`--source-hashes`で基準SHAの45 source hashを別途照合する。shallow CIのcoverage合格を履歴hash照合済みとは呼ばない。Mermaid構文と対話資料の表示/typecheckは別に確認する。完了は設計と参照の整合で、Provider/実機/施工/取引の合格は本章へ創作しない。
+
+検証結果: Node22.23.3の`npm run verify`は合格（通常2235件:2234 pass・既存skip1・fail0、仕事API1381、CSV385、asset208参照/欠落0）。source hash45件、Mermaid新章5/既存図3、Canvas SDK型検査は合格。Canvasのrendered UI受入は未実施。既存PC adapter cleanup試験の途中1失敗と、未変更の単独/最終全体再合格はJSONへ記録し、runtime修正と呼ばない。
+
+GitHubの[PR #135](https://github.com/k999ln/rock/pull/135)はhead `d63e074be2a32a5c00e9f8adf3b4cf17df3a7508`の8 CI全成功後、UTC `2026-10-15T00:31:34Z`にmain `b0ecbd2cdc9c95334abf6adb746c772395479f32`へ統合済み。merge treeは検証headと一致。Site配備、実Provider、施工/実機/商用取引の受入は別で、今回実施していない。

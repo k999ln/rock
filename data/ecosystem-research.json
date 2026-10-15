@@ -3908,7 +3908,7 @@
     }
   ],
   "verification": {
-    "state": "passed_locally_pending_github",
+    "state": "passed_and_design_integrated_main",
     "commands": [
       "npm run research:check",
       "npm run research:check -- --source-hashes",
@@ -3966,11 +3966,57 @@
     ],
     "git": {
       "branch": "codex/ecosystem-research-design",
-      "mainIntegrated": false,
+      "mainIntegrated": true,
       "sitePublished": false,
       "submittedSourceSha": "473d764c",
       "pullRequest": "https://github.com/k999ln/rock/pull/135",
-      "status": "github_saved_pending_same_head_ci_and_main"
+      "status": "main_integrated_site_and_external_acceptance_separate",
+      "verifiedSourceSha": "d63e074be2a32a5c00e9f8adf3b4cf17df3a7508",
+      "mainMergeCommit": "b0ecbd2cdc9c95334abf6adb746c772395479f32",
+      "mergedAt": "2026-10-15T00:31:34Z",
+      "treeMatchesVerifiedSource": true,
+      "sameHeadCi": [
+        {
+          "name": "public-fixture-tests",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660050051/job/116178902051"
+        },
+        {
+          "name": "verify",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660052354/job/116179262069"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660050228/job/116179252067"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660049829/job/116179132907"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660049819/job/116179238561"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660050228/job/116179251858"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/38660049829/job/116179133232"
+        },
+        {
+          "name": "CodeQL",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/116179842862"
+        }
+      ]
     }
   },
   "repositoryEvidence": [
