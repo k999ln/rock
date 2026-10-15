@@ -1,4 +1,140 @@
 {
+  "skyExecutionChoiceDecision": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuotes": [
+      "クラウドでエージェントを動かすのがいいのと、llmもローカルで入れるのが良い、でもこれは選択できる必要がある",
+      "だからskyがあるんだ"
+    ],
+    "authority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "selectionSurface": "Sky",
+    "modelExecutionChoices": [
+      "device_local_when_accepted",
+      "cloud_when_accepted",
+      "explicit_stepwise_hybrid"
+    ],
+    "agentRunnerIsSeparateFromModel": true,
+    "automaticFallback": false,
+    "localModelRequired": false,
+    "cloudRequiredForEveryTool": false,
+    "selectionIsNotExecutionApproval": true,
+    "perJobEffectiveRouteMustBePinned": true,
+    "unavailableChoicesMustExplainPrerequisites": true,
+    "adapterLocalityIsNotProofOfDataResidency": true,
+    "silentDataEgressAllowed": false,
+    "runtimeChanged": false,
+    "acceptanceCases": [
+      {
+        "id": "SC01",
+        "case": "same_supported_task_explicit_local_or_cloud_choice_with_honest_availability",
+        "status": "not_run"
+      },
+      {
+        "id": "SC02",
+        "case": "local_model_install_integrity_capacity_offline_reboot_and_safe_removal",
+        "status": "not_run"
+      },
+      {
+        "id": "SC03",
+        "case": "cloud_quote_budget_consent_usage_stop_and_reconcile",
+        "status": "not_run"
+      },
+      {
+        "id": "SC04",
+        "case": "provider_or_model_unavailable_no_implicit_fallback_or_hidden_data_egress",
+        "status": "not_run"
+      },
+      {
+        "id": "SC05",
+        "case": "explicit_hybrid_handoff_pinned_revision_grant_quote_and_no_duplicate_dispatch",
+        "status": "not_run"
+      }
+    ]
+  },
+  "pixelFirstIosPluginStrategy": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "端末はまずピクセルから攻めたい、完全にosを入れれるからで、iosとかはesimで機能プラグインとか考えてる",
+    "authority": "docs/device-support-architecture.md#pixel先行とiosへの機能追加",
+    "primaryDevice": "pixel-10-frankel",
+    "confirmedSku": "GL066",
+    "primaryDelivery": "native_os",
+    "nativeOsAcceptance": "pending",
+    "iosDelivery": "client_only",
+    "iosProductEntry": "connectivity_and_si_access_bundle",
+    "iosPluginMeaning": [
+      "account_scoped_Sky_remote_capabilities",
+      "native_client_actions_via_accepted_App_Intents",
+      "browser_service_access"
+    ],
+    "esimInstallsOsOrCode": false,
+    "esimAloneGrantsPlatformPermission": false,
+    "iosNativeAppImplemented": false,
+    "iosNativeIntegrationsAccepted": false,
+    "sharedContracts": [
+      "owner",
+      "Job",
+      "Artifact revision",
+      "grant",
+      "budget",
+      "Receipt"
+    ],
+    "iosCloudRouteRequiresPixelOnline": false,
+    "pixelRuntimeAuthorityDoesNotTransferToIos": true,
+    "iosPhase": "design_after_pixel_priority_not_parallel_release_commitment",
+    "minimumIosAndModel": "not_selected",
+    "distributionAndPaymentPolicy": "requires_region_product_and_channel_acceptance_no_esim_bypass_assumption",
+    "checkedAt": "2026-10-15",
+    "primarySources": [
+      {
+        "id": "I01",
+        "title": "Apple: Set up eSIM on iPhone",
+        "url": "https://support.apple.com/en-us/118669"
+      },
+      {
+        "id": "I02",
+        "title": "Apple: CTCellularPlanProvisioning",
+        "url": "https://developer.apple.com/documentation/coretelephony/ctcellularplanprovisioning"
+      },
+      {
+        "id": "I03",
+        "title": "Apple: App Intents",
+        "url": "https://developer.apple.com/documentation/appintents"
+      },
+      {
+        "id": "I04",
+        "title": "Apple: App Review Guidelines 2.5 / 3.1 / 4.7",
+        "url": "https://developer.apple.com/app-store/review/guidelines/"
+      },
+      {
+        "id": "I05",
+        "title": "Apple: Choosing background strategies",
+        "url": "https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app"
+      }
+    ],
+    "acceptanceCases": [
+      {
+        "id": "IP01",
+        "case": "purchase_profile_install_service_grant_and_client_states_are_independent",
+        "status": "not_run"
+      },
+      {
+        "id": "IP02",
+        "case": "same_owner_job_revision_ios_capability_and_permission_denial",
+        "status": "not_run"
+      },
+      {
+        "id": "IP03",
+        "case": "app_suspended_cloud_budget_stop_reconcile_without_duplicate_dispatch",
+        "status": "not_run"
+      },
+      {
+        "id": "IP04",
+        "case": "profile_change_service_expiry_device_revocation_and_owner_isolation",
+        "status": "not_run"
+      }
+    ]
+  },
   "dedicatedSiTerminalIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",
@@ -12,7 +148,7 @@
     "capabilityHub": "Sky",
     "jobRecord": "Zema",
     "enforcement": "RockstarOS Broker / Platform Core",
-    "defaultReasoning": "contracted_cloud_when_accepted",
+    "defaultReasoning": "user_selected_local_cloud_or_explicit_hybrid",
     "localModelRequired": false,
     "appSelectionRequiredForRoutineJob": false,
     "ambientMiniContinuesSameJob": true,
@@ -89,7 +225,20 @@
     "authoringSurface": "Miniまたは受入済みの空間host。音声を基本入口とし、対応する手/空間表示/固定表示で修正と比較を補う",
     "systemResponsibilities": {
       "jennifer": "会話/意図/版差分/確認の提示",
-      "sky": "必要な制作・計算・製作連携能力を選ぶ",
+      "sky": {
+        "displayName": "Sky",
+        "role": "agent_llm_marketplace_and_cross_host_capability_hub",
+        "definition": "An Agent/LLM marketplace and open hub across software, hardware, furniture and architecture: discover, install/connect and explicitly choose capabilities and execution targets; use Zema for work and scoped host/server enforcement for permissions.",
+        "inventory": "docs/sky.md",
+        "internalSurfaces": [
+          "/csv"
+        ],
+        "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
+        "legacyInternalName": "hub",
+        "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+        "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+        "fusionAuthority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合"
+      },
       "zema": "既存Job/plan/artifact revision/進捗/停止/引継ぎ",
       "core": "本人/資料grant/予算/版/宛先/失効/保存復旧を強制",
       "mini": "電話なしの入力/応答/作品操作とlocal保存・停止",
@@ -159,7 +308,7 @@
       }
     ]
   },
-  "version": "2.05",
+  "version": "2.06",
   "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -773,14 +922,15 @@
   "sky": {
     "displayName": "Sky",
     "role": "automation_discovery_connection_and_catalog",
-    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
+    "definition": "Discover, install or connect model/Agent/Tool capabilities; explicitly select accepted local or cloud execution with author/version/permissions/data destination/cost, and hand work control to Zema.",
     "inventory": "docs/sky.md",
     "internalSurfaces": [
       "/csv"
     ],
     "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
-    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
+    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+    "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ"
   },
   "baseApps": [
     {
@@ -2434,17 +2584,72 @@
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
   },
   "skyFusionDirection": {
-    "decidedAt": "2026-10-14",
-    "source": "Owner explicitly described Sky as a flexible multi-Agent system that can fuse with apps, appliances and other hosts; a refrigerator could observe inventory and help buy needed items",
-    "role": "capability_registry_and_composition_across_heterogeneous_hosts",
-    "hosts": ["web", "apps", "pc", "games", "appliances", "robots", "services"],
+    "decidedAt": "2026-10-15",
+    "source": "Owner explicitly defined Sky as an Agent/LLM marketplace and hub beyond RockstarOS, combining software, hardware, interiors and architecture to improve daily life; sofa weight observation is an example",
+    "role": "open_agent_llm_marketplace_and_capability_composition_hub",
+    "hosts": [
+      "web",
+      "apps",
+      "pc",
+      "games",
+      "appliances",
+      "robots",
+      "services",
+      "furniture",
+      "interiors",
+      "buildings"
+    ],
     "agentComposition": "bounded_typed_delegation_tracked_by_zema_and_authorized_by_broker",
-    "interactionStages": ["observe", "propose", "owner_review", "act", "reconcile"],
+    "interactionStages": [
+      "observe",
+      "propose",
+      "owner_review",
+      "act",
+      "reconcile"
+    ],
     "nfcOrOsRequired": false,
     "observationGrantsActuation": false,
     "example": "refrigerator_inventory_to_reviewed_shopping_order",
-    "currentAcceptance": "design_only_no_refrigerator_store_or_multi_agent_production_acceptance",
-    "record": "docs/sky-mcp-architecture.md"
+    "currentAcceptance": "design_only_no_sofa_refrigerator_building_or_multi_agent_production_acceptance",
+    "record": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
+    "rockstarOsRequired": false,
+    "miniRequiredForEveryIntegration": false,
+    "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "examples": [
+      "refrigerator_inventory_to_reviewed_shopping_order",
+      "instrumented_sofa_load_to_consented_weight_trend"
+    ],
+    "sofaSensorImplemented": false,
+    "sofaWeightAccuracyValidated": false,
+    "healthObservationRequiresConsentedPersonAndValidMeasurement": true,
+    "healthDataAccessGrantedToFurnitureOrBuildingSeller": false,
+    "acceptanceCases": [
+      {
+        "id": "SF01",
+        "case": "third_party_host_without_RockstarOS_and_without_Mini_uses_scoped_catalog_job",
+        "status": "not_run"
+      },
+      {
+        "id": "SF02",
+        "case": "sofa_tare_calibration_known_load_posture_floor_and_invalid_measurement",
+        "status": "not_run"
+      },
+      {
+        "id": "SF03",
+        "case": "shared_sofa_multiple_people_pet_guest_and_no_weight_only_identification",
+        "status": "not_run"
+      },
+      {
+        "id": "SF04",
+        "case": "local_cloud_consent_retention_deletion_and_partner_owner_isolation",
+        "status": "not_run"
+      },
+      {
+        "id": "SF05",
+        "case": "sensor_or_Mini_offline_revocation_duplicate_event_and_recovery",
+        "status": "not_run"
+      }
+    ]
   },
   "productTerminology": "data/product-terminology.json",
   "skyAppOutputPlugin": {

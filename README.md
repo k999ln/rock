@@ -6,6 +6,12 @@
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
+Sky is an Agent/LLM marketplace and open hub across software, hardware, furniture, interiors and architecture. RockstarOS is a first-party runtime and Mini is an optional spatial host. An instrumented sofa could provide validated, consented observations to a weight-trend Agent; this remains a design example, not a working sensor product. [Fusion contract](docs/sky-mcp-architecture.md#家具建築まで開くskyの融合).
+
+Sky is where the user chooses accepted model, Agent and Tool capabilities and their local or cloud execution targets. Model inference and the Agent runner are separate choices; explicit mixed workflows retain the same job, permissions and budget. Unavailable targets require a new choice rather than silent fallback. [Execution choice contract](docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ).
+
+Pixel 10 GL066 / frankel is the first physical product target for a GrapheneOS-based RockstarOS image. iOS follows through the connectivity-and-si-access bundle, with client/Web access and accepted native integrations such as App Intents. eSIM activation, account access, client installation and platform permissions remain separate. [Delivery strategy](docs/device-support-architecture.md#pixel先行とiosへの機能追加).
+
 The Pixel reference device is intended to become a dedicated si terminal: after unlock, Jennifer is the primary surface for requests, progress, artifacts, costs and stop controls. Mini can continue the same work without carrying the phone. The current Shell is an ordinary launchable app; dedicated Home, voice integration and full-OS device acceptance remain to be implemented. [Terminal experience and acceptance](docs/native-os-integration.md#si専用端末の利用体験と実装境界).
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.

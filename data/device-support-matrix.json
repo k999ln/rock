@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-device-support/1",
-  "updatedAt": "2026-09-16",
+  "updatedAt": "2026-10-15",
   "policy": {
     "architecture": "shared-core-plus-device-support-package",
     "deliveryModes": [
@@ -10,7 +10,18 @@
       "unsupported"
     ],
     "supportRule": "A physical device is supported only after its exact model and SKU, unlock path, vendor interface, hardware, signed OTA rollback and stock recovery have passed on-device acceptance.",
-    "fallbackRule": "When native OS installation is unavailable, expose the RockstarOS experience through a least-privilege client and approved remote execution instead of claiming OS replacement."
+    "fallbackRule": "When native OS installation is unavailable, expose the RockstarOS experience through a least-privilege client and approved remote execution instead of claiming OS replacement.",
+    "productDeliveryDecision": {
+      "decidedAt": "2026-10-15",
+      "authority": "docs/device-support-architecture.md#pixel先行とiosへの機能追加",
+      "firstPhysicalTarget": "pixel-10-frankel",
+      "firstPhysicalDelivery": "native_os",
+      "iosDelivery": "client_only",
+      "iosEntry": "connectivity_and_si_access_bundle",
+      "iosFunctions": "client_web_and_explicit_platform_integrations",
+      "esimInstallsOsOrCode": false,
+      "runtimeAccepted": false
+    }
   },
   "deviceSupportPackageContract": {
     "required": [

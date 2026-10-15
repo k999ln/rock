@@ -2,6 +2,14 @@
 
 サービス全体の目的、Sky/Zema/OSと各製品の責任、入出力、状態、保存、失敗・復旧、承認、受入と未決定の決め方を[統合基本設計](service-design/README.md)へ整理した。個々のToolの詳細は本書を維持する。`catalogStatus`・`connectionStatus`・本人条件を満たす実行可能性・受入環境を別に説明し、catalogのreadyからcredential設定/実行/本番合格を推測しない。これらの分類は説明の契約で、新schemaへ移行済みとは扱わない。現在の無料account入口と料金設計は最新baselineを優先する。5大学/Fitness等の元dirty候補はmainと別受入。Jenniferは利用者の統括窓口、Zemaは裏側systemとして[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)を継承する。PR #113のsourceはmain `01d2e418`へ統合済み。公開/真正review/Providerは別受入で、新しいcatalog Toolは登録していない。
 
+## ソフト・家具・建築へ開くマーケットプレイスとハブ
+
+2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
+
+## Skyが受け持つmodel・Agent・実行先の選択
+
+本人の2026-10-15指示により、Skyはcloud Agentと導入したlocal LLMの双方を選ぶ入口とする。modelの推論先とAgent runnerを区別し、端末内/cloud/明示した工程ごとの組合せ、必要な導入・接続・データ送信・費用・準備状態を示す。Zemaは選んだ経路の仕事/成果/費用を保持し、Brokerは権限/予算/承認を強制する。使えない時の自動fallbackは行わず選び直す。[詳細契約・現在地・未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、6 adapterの定義と本番接続を区別する。
+
 ## 携帯を持たない制作を既存Toolへ接続する
 
 [制作と対話の契約](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)に従い、Skyは入力面から独立して対応する制作/計算/引渡し能力を選ぶ。新たなcatalog Toolや任意shell/設備操作APIはここで登録しない。既存四状態Jobと版付き成果を使い、製作先の能力/schema/確定版/宛先/見積/本人承認/結果不明照合を個別に受け入れる。未接続なら保存済み案から待機・再開する。

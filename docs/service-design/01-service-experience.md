@@ -18,6 +18,10 @@ Jenniferの根拠は[PR #113のJennifer設計・SHA `3349c247`](https://github.c
 
 料金の確定条件は、2026-10-15に商品入口だけを更新した[既存の料金・account方針](../product-baseline.md#2026-10-10-現行製品方針-アカウントを入口にしsimは機器の任意部品にする)を引き継ぐ。アカウント無料と、Tool購入・si従量・外部実費・機器回線料を別表示する。本番課金・Provider・規約等の受入が揃うまで、見積画面や試験台帳を実請求と表示しない。
 
+## Skyが受け持つmodel・Agent・実行先の選択
+
+本人の2026-10-15指示により、Skyはcloud Agentと導入したlocal LLMの双方を選ぶ入口とする。modelの推論先とAgent runnerを区別し、端末内/cloud/明示した工程ごとの組合せ、必要な導入・接続・データ送信・費用・準備状態を示す。Zemaは選んだ経路の仕事/成果/費用を保持し、Brokerは権限/予算/承認を強制する。使えない時の自動fallbackは行わず選び直す。[詳細契約・現在地・未実行SC01〜05](../llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、6 adapterの定義と本番接続を区別する。
+
 ### si専用端末を通常の操作面にする
 
 2026-10-15の本人指示により、Pixel参照機はunlock後にJenniferへ依頼し、進捗・成果・費用・承認・停止へ戻れるsi Homeを主役にする。Sky/Zema/Brokerは同じ一仕事を裏で支え、利用者が毎回appやmodelを選ぶことを通常操作の条件にしない。通信＋si利用権商品と、Miniから同じ仕事へ入る携帯不要の目標を維持する。一般appの扱いは未決定で、設定/復旧/mute/手動停止は残す。[端末の保存・失敗・復旧・DT01〜06と実装差分](../native-os-integration.md#si専用端末の利用体験と実装境界)が詳細正本。現在のShellは通常起動appで、専用Home/音声role/全OSの実機受入はこれから行う。

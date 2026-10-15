@@ -10,6 +10,18 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 2026-10-15の[基盤設計](native-os-integration.md)に従い、eSIM通信＋si利用権商品を入口とし、account・回線profile・device鍵・OS image・cloud実行・請求を別々に照合する。GrapheneOS改変は対応Pixelのdevice profileであり、Linux/QEMU、Mini、Proのimageと合格を共用しない。
 
+## ソフト・家具・建築へ開くマーケットプレイスとハブ
+
+2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
+
+## Skyの実行先選択と共通runtime
+
+[選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、Skyでmodel/Agent/Toolと実hostを選び、Zemaの同Job/版/grant/見積へ固定する。model推論先とAgent runnerを分け、local/cloud/明示組合せを対応能力の範囲で提示する。全選択肢の実装/本番受入は未完了で、Brokerの承認/予算/停止と無断fallback禁止を維持する。
+
+## Pixel先行とiOSのservice client
+
+[多機種契約](device-support-architecture.md#pixel先行とiosへの機能追加)に従い、最初の物理商品はPixelの独自OS統合。iOSはeSIM商品＋client/Web/対応native連携の後続経路として同じJob/Artifact/予算/Receiptへ接続する。回線profile、利用権、client版、device sessionとOS権限を分離し、Pixel専用権限をiOSへ継承しない。Pixelが不在でもcloud接続できる設計とし、実装/実機受入は別に記録する。
+
 ## si専用端末の参照profile
 
 Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。現在のShell通常起動appからHome/必要な音声role/OS統合へ段階受入し、DT01〜06は未実行。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。

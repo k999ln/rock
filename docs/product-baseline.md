@@ -12,6 +12,18 @@
 
 <a id="2026-10-10-現行製品方針-アカウントを入口にしsimは機器の任意部品にする"></a>
 
+### ソフト・家具・建築へ開くマーケットプレイスとハブ
+
+2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
+
+### Skyでlocal・cloud・明示した組合せを選ぶ
+
+2026-10-15、本人はcloud Agentの利用とlocal LLM導入の双方を選択可能にし、「だからskyがある」と明示した。Skyをmodel/Agent/Toolの発見・導入/接続・実行先選択の入口とし、cloud固定や全機種local必須にしない。modelの推論先とAgent runnerを区別し、準備状態・実host・送信範囲・費用・必要資源を提示する。選んだ経路は同じZemaのJob/成果/上限へ結び、未接続時の自動fallbackや無断送信を行わない。[詳細と未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)および`skyExecutionChoiceDecision`を正本にする。既存6 adapter/固定local modelの証拠は保持し、全選択肢の利用可能・本番合格を宣言しない。
+
+### Pixel先行、iOSはeSIM商品から機能追加
+
+2026-10-15、本人が「端末はまずピクセル」「iosとかはesimで機能プラグイン」と明示した。最初の物理商品はPixel 10 GL066 / frankelへGrapheneOSベースのRockstarOSを統合する専用si端末とし、iOSは通信＋si利用権商品からclient/Web/対応native連携で機能を使う後続経路にする。account/仕事/成果/費用は共通、OS権限/対応機能は端末別。eSIM開通だけでOS/code/client/native権限が導入されたとはしない。詳細・Apple一次資料・未実行IP01〜04は[多機種契約](device-support-architecture.md#pixel先行とiosへの機能追加)、機械可読判断は`pixelFirstIosPluginStrategy`。独自OSの導入可能性と同image実機合格は別で、flashや有料gateは開かない。
+
 ### si専用端末を目指す
 
 2026-10-15の本人指示「ai専用端末に変えたいんだよね」により、Pixel 10 GL066 / frankelの参照profileはJenniferとの対話・制作・仕事を通常の入口とするsi専用端末を目指す。GrapheneOSベースのOS、Skyの能力接続、Zemaの仕事/成果/費用、Brokerの本人/権限/予算を接続し、unlock後のsi Homeから扱う。一般app制限の強さは未決定で、設定/復旧/mute/手動停止を確保する。専用端末の携行をMini利用の条件にせず、通信＋si利用権商品・既存client経路・ゲーム要求を維持する。[詳細と未実行の6受入](native-os-integration.md#si専用端末の利用体験と実装境界)を`dedicatedSiTerminalIntent`へ対応する。本更新は体験の具体化で、全OS導入や有料gate解除の完了ではない。

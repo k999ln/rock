@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
+Skyで一仕事のmodel/Agent実行先・送信・費用を選択/固定し、Pixel 10 GL066のsi Home/同Job復元を最初の物理商品として受け入れる。通信＋si利用権商品の購入/回線/owner/scope binding→cloud一仕事の見積・共通予算・Receipt/請求→GrapheneOS上の非破壊si体験→owner選択/解除可能なsi Homeと同Job復元→必要な最小OS差分→正式署名/自社OTA/純正復旧。Pixel10 GL066とQEMU/Mini/Proは別gate、実発行/有料cloud/flashは受入まで無効を維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

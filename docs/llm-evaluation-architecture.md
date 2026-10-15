@@ -84,6 +84,39 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 `lib/zema-local-agent.ts`と`/api/llm/local-agent`は、同じPCのOllama/OpenAI互換loopbackに限定した非信頼plannerを使う。閉じたJSON schema、最大3手、`sky_route`/`format_citations`/`coconala_check`だけを受け入れ、Tool結果・入力を命令として扱わない。shell、任意file、外部network、購入/投稿/送信/権限変更とCloud fallbackはない。local previewのqwen3:0.6b会話受入は本番公開・Tool選択品質・native Pixel受入と別。公開Workerは本人PCの127.0.0.1へ到達できず、companion/bridgeは未実装。local preview固定userはloopback hostだけに限定し、公開認証を迂回しない。model出力をBroker権限や未実行Tool成功へ昇格させない。
 
+## SkyでmodelとAgent実行先を選ぶ
+
+2026-10-15、本人はcloud Agentと端末内LLMの双方を使え、選択できること、そしてそのためにSkyがあると明示した。**Skyはmodel/Agent/Toolを探し、必要な能力を導入・接続し、実行先を選ぶ共通入口。** cloud固定や全機種local必須を製品方針にしない。先の専用端末設計の「cloudを標準候補」はこの明示判断で更新し、Pixel先行/iOS clientの提供順は維持する。これは既存registryを使う到達設計で、全選択肢の接続/実機/本番受入ではない。
+
+### 二つの選択軸
+
+- **modelの推論先**: 対応端末内の導入済みLLM、許可したPro/PC等の計算先、契約したcloud model。別PC/LANやcloudのendpointを「この端末内」と表示しない。互換APIのadapter名やregistryの`locality`値だけをデータ所在地の証明にしない。
+- **Agentの実行先**: cloudで継続する仕事runner、対応端末の有限local runner。LLMは生成/計画の能力、Agentはその能力とToolを使い仕事を進める実行系で、同一のものとして選ばせない。cloud Agentから本人端末のLLMへ接続する構成には明示bridge/認証/到達性/停止/費用が必要で、cloudが端末のlocalhostへ到達できる前提にしない。
+
+初期の理解しやすい選択は「端末内で処理」「cloudで処理」「工程ごとに明示して組合せ」。組合せはlocal草案→本人が選んだ部分だけcloud検査等の有限工程で表し、未接続の任意構成を実行可能にしない。LLMを使わない既存有限Toolも選べる。local planner/remote evaluatorの結果をBroker権限やTool成功へ昇格させない。
+
+### Skyで確認してから使う
+
+カード/詳細には作者・model/Agent/Toolの版、実行する実host、送信先と送信範囲、必要RAM/保存容量/対応runtime、license、準備状態、費用/見積と上限を示す。未導入、未接続、未対応、試験合格、本番受入を分け、選択肢は不足理由を示す。LLMを持たない利用者は受入済みcloudを選べ、対応Pixelでは検証済みmodel/runtimeを導入する選択もできる。
+
+local導入は版/hash/信頼できる配布元/license/空き容量/対応性を検査し、download/検証/導入/利用可能/失敗を分ける。実行前はmodel読込みと熱/電池/資源上限を確認する。中断・容量不足・hash不一致で旧受入版を壊さず、削除時も既存成果を保持する。既存の固定GGUFと署名/manifest/Device Capabilityの仕組みを再利用し、任意binary取得やroot APIを増やさない。複数model導入と起動後autoloadは別受入のまま。
+
+選択は設定上の希望と、そのJob/stepで確定した実行経路を分ける。Zema側の既存Job/step/Artifactへowner、実host、model/Agent/Tool版、入力digest/grant、見積/上限、承認対象を対応し、実行記録へ残す。保存した希望だけでdispatch/課金しない。切替時は互換性・送信条件・見積と必要な承認を再確認し、旧承認/実行をそのまま再利用しない。新しい万能Job状態や別の仕事DBを作らず、既存WorkJob四状態と工程記録を使う。
+
+### 保存・停止・失敗・復旧
+
+選んだ実行先が使えない時は理由を表示し、草案/仕事/成果を保持して停止・明示再試行・別経路の選び直しへ進む。local失敗からcloud、cloud失敗から別Providerへ黙って切り替えず、本文や費用を無断で増やさない。組合せの工程間でも同じowner/版/grantを再検査し、応答喪失は同じ実行IDを照合する。local保存とcloud同期は別操作、credentialは既存の保護された配置を維持する。
+
+cloudは見積→予算予約→承認→実行→usage/Receipt照合、localは受入済み資源制限と停止を通す。「local」はmodel推論先の説明であり、すべてのToolや同期が無通信になるという保証にしない。必要な外部接続は別表示/同意する。iOSは受入済みclient能力だけを表示し、Pixelのlocal Binderやmodel搭載をiOSで利用可能とは表示しない。
+
+### 現在地・担当・合格条件
+
+`lib/llm-providers.ts`の6 adapter、Skyの既存provider/model選択、端末のLocal Action Assistant、Webの有限local Agentを再利用する。6定義は6接続の本番合格を意味せず、native bridge/公開Webから本人PCへの到達/複数model/全host共通の選択UIと版付きJob経路は追加受入が必要。既存の`defaultProvider: local-model`はsourceの初期値で、本人が全仕事でlocalを選んだ証拠ではない。paid cloud gateは閉じたまま。
+
+主担当SKY07/SKY21（ROCK）、OS11/AI04がPixel導入と有限実行、WEB04が選択面、BIL02が費用、DOC04が設計同期を担う。最初は既存の一仕事と一つの検証済みlocal model/runtime・一つのcloud経路を比較対象にし、ROCKが資源/接続/費用の測定briefを提示する。OWNERが用途別の希望と外部送信/予算を選ぶ。
+
+SC01は同じ対応仕事でlocal/cloudを選び準備状態と実hostを照合、SC02はlocal導入/改竄/容量/完全offline/再起動/削除、SC03はcloud見積/上限/同意/usage/停止、SC04は未接続/切断で無断fallbackなし、SC05は明示組合せの版/grant/予算/再送防止。全5件は未実行で、既存Pixel/eSIM/iOSの受入を兼ねたことにしない。
+
 ## 4. Skyの交換可能な文章モデル接続
 
 Skyの文章生成は `lib/llm-providers.ts` のadapter registryを経由する。UIの「Skyの接続管理 → Providerルーティング → 文章・LLM」でproviderとmodel IDを選べる。現在のadapterは次の6種類である。
