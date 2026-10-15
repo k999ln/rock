@@ -56,7 +56,7 @@ Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、
 
 ## 1. 一言でいうと
 
-現行の主商品は、無料avokadoアカウントひとつでSky・Zema・Agentを使うサービス。2026-10-10の本人確定判断がSIM/eSIM主入口を置き換えた。SIM不要、consumer eSIM発行/販売は保留。MiniのIoT回線は任意の機器option。正確な機種で署名済みOS・boot/保存/復旧が受け入れられた場合だけnative OS、その他は既存OS上のclient/browserへ案内する。
+現行の主商品入口は、2026-10-15の本人選択による通信＋si利用権bundle。無料avokadoアカウントは本人/契約/仕事/成果/費用の正本として維持し、Skyのlocal/cloud選択と外部host連携を使う。無料試用と既存client/browserは維持し、実発行/販売/有料実行はpartner・配布・課金の受入まで開始しない。MiniのIoT回線は任意の機器option。正確な機種で署名済みOS・boot/保存/復旧が受け入れられた場合だけnative OS、その他は既存OS上のclient/browserへ案内する。
 
 **RockstarOSは、本人・有限権限・仕事・費用・成果・保存/復旧を共通化するruntimeである。** サービス全体は[統合基本設計](service-design/README.md)、共通責任と11必須項目の具体化は[共通システムと契約](service-design/02-system-contracts.md)を参照する。設計の統一は、Web/native/cloudの認証・DB・履歴を共有済みにする意味ではない。
 
@@ -82,7 +82,7 @@ Coreが本人・版・権限・予算を検査して実行
 実行receipt・項目別usage・納品/入金の証拠を別々に扱う
 ```
 
-native OS/client/browserの分岐はexact deviceの受入へ従う。Mini通信option・旧SIM購入claimは別の機器/配布契約で、通常Skyの利用開始条件にしない。回線開通、本人/service entitlement、OS導入、Agent権限を独立に表示する。consumer eSIM販売と本番課金は既存の保留/受入条件を維持する。[利用体験の全体](service-design/01-service-experience.md)。
+native OS/client/browserの分岐はexact deviceの受入へ従う。通信bundleの購入claim、Mini通信option、clientの無料試用は別の契約/状態として照合し、通常Skyの試用にSIM購入を必須化しない。回線開通、本人/service entitlement、OS導入、Agent権限を独立に表示する。通信＋si商品の設計と、実eSIM発行/販売・本番課金の受入を分ける。[利用体験の全体](service-design/01-service-experience.md)。
 
 利用者の会話中の「はい」だけで、送金、外部投稿、広告、DM、物理実験、出願等を承認しない。承認画面には対象、変更内容、送信先、費用上限、期限を固定して表示する。
 
