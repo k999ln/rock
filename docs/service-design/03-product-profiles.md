@@ -24,11 +24,11 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 短期計画は既存ZemaのsessionStorage（最大8session/24message/10分TTL）に置き、長期Goalはowner確認後のAMC。Jennifer専用の重複DB/長期memoryを作らない。default data accessはnone、本人が対象を指定する。COLOMBIAは上位contextの登録口で、原本/URL/版/hashは`awaiting-source`。内容を推測して適用せず、大学Columbiaとも同一にしない。
 
-統合sourceにはworker/reviewer別の確認経路があるが、Workbenchではownerの手動検収を使い、AMC APIはA2A reviewer artifact/usageをserverで相関照合していない。**真正な独立reviewerの証拠が自動検証済みとは表示しない。** 到達設計ではowner/Goal revision/leaf/workerとreviewerの別delegation/成果hash/usage/判定を照合し、手動owner判断とremote review証拠を別に表示する。全leaf完了後も、Jenniferの統合報告を本人が受け入れるまでGoalを受入済みにしない。
+現行mainの[AMC API](../../app/api/amc/route.ts)と[型付き報告](../../lib/jennifer-execution-reports.ts)は、保存済みroot/plan/taskとA2A委任、暗号化artifact、usage Receiptを照合してTaskReportを生成する。reviewerはworkerのpredecessor委任、正確なworker report digest、全criteriaへ結び付け、`origin|Agent名|版`で構成するprincipalがworkerと同一なら拒否する。これはserver相関処理のsourceが存在するという意味で、実Providerの本人性・運用上の独立性・公開環境の一周は別受入である。Workbenchのowner手動判断、型付きremote検収、ownerの最終Goal受入を別々に示す。COLOMBIA等のcontext未受入を報告生成だけで解消しない。
 
 失敗時は同じGoal/operation/delegationを読み直し、応答喪失を自動再送しない。componentの更新・期限・失効と予算を送信直前に再検査する。actorが変わった時に前の私有計画を表示しない。unknown schema/fieldと権限昇格を拒否する。
 
-最初の参照SHA `d0151e89`はCI6成功/2失敗だったが、`89f869df`/`3349c247`で生成/依存/ZIPを修復し、PR #113 headの8checkとmerge後mainの7checkがそれぞれの同一SHAで全成功。これは公開/Provider/真正review受入ではない。残る合格条件はowner別保存/再照合、worker/reviewerの証拠相関、context選択、native同等UI、実Provider/D1/secret/trust/callbackの受入。担当はJennifer/Zema projectと既存Sky/AMC/Core/Security担当へ割り当てる。
+最初の参照SHA `d0151e89`はCI6成功/2失敗だったが、`89f869df`/`3349c247`で生成/依存/ZIPを修復し、PR #113 headの8checkとmerge後mainの7checkがそれぞれの同一SHAで全成功。これは公開/Provider/真正review受入ではない。残る合格条件は公開環境のowner別保存/再照合、実Providerでのworker/reviewer証拠相関、context選択、native同等UI、実Provider/D1/secret/trust/callbackの受入。担当はJennifer/Zema projectと既存Sky/AMC/Core/Security担当へ割り当てる。
 
 ## RockstarOS
 

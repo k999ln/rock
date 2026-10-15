@@ -8,7 +8,7 @@
 
 MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独立したNVIDIA高性能si PC。rocketstarは独立工学programで、一般Agentの実行経路と飛行管制を分ける。各機器の完成をSkyの利用条件にしない。
 
-## 入口＋6章の7冊
+## 入口＋7章の8冊
 
 - [統合設計の入口](service-design/README.md) — 目的と全体像。
 - [01 利用体験](service-design/01-service-experience.md) — 依頼から成果を持ち帰り、再利用するまで。
@@ -17,6 +17,8 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [04 実現順と受入](service-design/04-delivery-and-acceptance.md) — 再利用する実装、不足、担当と合格証拠。
 - [05 要望対応](service-design/05-requirement-coverage.md) — RQ01〜RQ50の引継ぎ。
 - [06 横断整合契約](service-design/06-consistency-contracts.md) — 同じowner・仕事・予算・成果を照合する12シナリオ。
+
+- [07 関連・戦略・データ・取引](service-design/07-ecosystem-strategy-and-data.md) — 全系統の接続・補完・保存・取引責任・外部候補・合格証拠。
 
 ## 正本と現在地
 

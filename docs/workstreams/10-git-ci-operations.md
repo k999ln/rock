@@ -1,6 +1,10 @@
 # Git / CI / Operations
 ## 2026-10-13 品質改善・仕事compositionのmain統合（G04 / H1、ROCK）
 
+## 全系統の調査設計（DOC04 / H1、ROCK）
+
+入口は[関連・戦略・データ・取引](../service-design/07-ecosystem-strategy-and-data.md)。main `c6df4ca9`の全19領域・37 Tool・50 RQと39一次資料を照合し、補完先、データのlifecycle、支払者/受取者/失敗照合、14 gapを既存taskへつなぐ。ROCKは契約とsource照合、EXTERNALはProvider/機器API/規格、JOINTは実接続とMini設置受入、OWNERは市場/物件/国/価格と個別実行の判断を持つ。完了条件はcoverage/参照/履歴hash/5 Mermaid/全体verify。実Provider・施工・課金は別gate。検証: `npm run research:check -- --source-hashes`、`npm run design:check`、`npm run verify`。
+
 ## サービス設計の再構成
 
 [統合基本設計](../service-design/README.md)を体験と各製品の入口にする。主担当はDOC04/H1（Git / CI / Operations、ROCK）、Sky/Zemaと各profileは既存担当へ接続する。新しい料金・権限・実機/本番受入は追加しない。[実現順と残条件](../service-design/04-delivery-and-acceptance.md)、[同一入力と検証証拠](../evidence/service-design-rebuild.json)。

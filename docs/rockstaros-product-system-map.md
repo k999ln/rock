@@ -4,6 +4,8 @@
 
 **主商品は、無料avokadoアカウントひとつでSky・Zema・si Agentを使い、成果を仕事・創作・ゲーム・生活へ持ち帰るサービス。** 最新確定は[2026-10-10のアカウント方針](product-baseline.md)。SIM/eSIM購入を利用開始の必須条件に戻さない。新しい説明の全体は[サービス統合設計](service-design/README.md)を先に読む。
 
+データの取得・保存・共有・削除、契約相手と費用、異種規格の役割、不足の補完と改修順は[関連・戦略・データ・取引の調査設計](service-design/07-ecosystem-strategy-and-data.md)を参照する。一次資料39件とrepository sourceを区別し、線があることを接続完了にしない。
+
 ## 利用者が出会うもの
 
 Jenniferは利用者が話す全体の統括窓口。Skyは能力を見つけて接続する場所。ZemaはJenniferの裏で依頼・進捗・確認・停止・成果・使用額を管理する仕事system。RockstarOSは本人、有限権限、実行、保存、復旧を守る共通runtimeと、対応機種向けnative OSである。

@@ -1,5 +1,5 @@
 {
-  "version": "2.01",
+  "version": "2.02",
   "decidedAt": "2026-10-14",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -402,7 +402,8 @@
         "docs/service-design/03-product-profiles.md",
         "docs/service-design/04-delivery-and-acceptance.md",
         "docs/service-design/05-requirement-coverage.md",
-        "docs/service-design/06-consistency-contracts.md"
+        "docs/service-design/06-consistency-contracts.md",
+        "docs/service-design/07-ecosystem-strategy-and-data.md"
       ],
       "runtimeLogicChanged": false,
       "displayTextChanged": true,
@@ -437,6 +438,20 @@
       },
       "mainIntegrated": true,
       "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
+    },
+    "ecosystemResearch": {
+      "authority": "docs/service-design/07-ecosystem-strategy-and-data.md",
+      "data": "data/ecosystem-research.json",
+      "requestedAt": "2026-10-14",
+      "instruction": "全ての関連性・稼働system・不足の補完・戦略・データ・取引を調査して設計する",
+      "sourceMainSha": "c6df4ca93e3b9cee9986755e0bf1f333effe54f6",
+      "coverage": {
+        "requirements": 50,
+        "domains": 19,
+        "catalogTools": 37
+      },
+      "commercialPolicyChanged": false,
+      "runtimeChanged": false
     }
   },
   "northStar": {
