@@ -65,6 +65,7 @@ class RunnerTests(unittest.TestCase):
                 ' print("frankel\\tfrankel-cur-userdebug\\tvendor/adevtool/hook\\tkernel\\ttarget-files-package,otatools-package")\n'
                 'elif sys.argv[1] == "verify-hook": print("hook\\tfixture-hash")\n')
             (scripts / 'stage-local-ai-apk.py').write_text('# fake staged input\n')
+            (scripts / 'stage-model-crypto.py').write_text('# fake staged crypto input\n')
             (scripts / 'freeze-phone-build-inputs.py').write_text(
                 'import pathlib,sys\n'
                 'if "--output" in sys.argv: pathlib.Path(sys.argv[sys.argv.index("--output")+1]).write_text("{}")\n')
@@ -72,6 +73,8 @@ class RunnerTests(unittest.TestCase):
             (root / 'os/physical/frankel-source-lock.json').write_text('{}')
             (tree / 'vendor/rockstaros-local-ai').mkdir(parents=True)
             (tree / 'vendor/rockstaros-local-ai/artifact.json').write_text('{}')
+            (tree / 'vendor/rockstaros-model-crypto').mkdir(parents=True)
+            (tree / 'vendor/rockstaros-model-crypto/artifact.json').write_text('{}')
             fakebin = tree / 'bin'
             fakebin.mkdir()
             for name, content in {
@@ -101,6 +104,7 @@ class RunnerTests(unittest.TestCase):
             signers.write_text('fixture only')
             env = dict(os.environ, PATH=str(fakebin) + os.pathsep + os.environ['PATH'],
                        ROCK_LOCAL_AI_APK='fixture.apk', ROCK_ANDROID_AAPT2='fixture-aapt2',
+                       ROCK_MODEL_CRYPTO_JAR='fixture.jar',
                        PYTHONPATH=str(ROOT / 'tests'))
             env.pop('ROCK_OPERATOR_AGENT_CONFIG', None)
             for mode, expected in [('valid', 0), ('compile-failure', 37), ('invalid-artifact', 1)]:

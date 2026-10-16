@@ -232,7 +232,8 @@
     "modelCryptoPinnedJarStage": "pass_host_stage_and_verify_not_Soong_compile",
     "fullVerifyBeforeSoftwareCrypto": "/private/tmp/pixel-local-jennifer/verify-final.log",
     "securityAndStagerRegressionTestsPassed": 39,
-    "gitDiffCheck": "pass"
+    "gitDiffCheck": "pass",
+    "sourcePreparationFixtureRepair": "Existing fake build-runner fixture now supplies the newly required crypto JAR input and staged receipt; real JAR hash verification remains in stage-model-crypto and Gradle"
   },
   "gitEvidence": {
     "readbackCommand": "gh pr view codex/pixel-local-jennifer --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit",
