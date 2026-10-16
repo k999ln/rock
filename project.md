@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-16 BIL02/O5（JOINT）: PR #148は同headの全CI成功後、main 60765fc3へ統合。次は140 USD固定額・100 USD枠内追加請求0・未払い/復旧判定をStripe sandboxで受け入れる。codex/sky-140-collection-sandboxで着手。過去2か月の月末操作と合成usageを使う専用harnessであり、実契約・月次scheduler・実Agent実行gateへの接続を完成とはしない。
+
 2026-10-16 BIL02/O5（DOC04/H1同期）: 本人が米国向け・月額140 USD/Agent利用枠100 USD・携帯契約のような請求を指定。契約同意/継続回収/未払い時の新規有料利用制限/入金後復旧を正本へ具体化、試算画面の未承認表示を更新。main 37b95959を基準にcodex/sky-contract-billingで着手。Stripe account APIは引き続き403、実Cloud設定も未取得。実決済・停止強制・本番契約を完了としない。Node22.23.3/WRANGLER_HIDE_BANNER=trueでnpm run verify全stage exit 0。Canvas型検査、Mac画面の米国/確定枠/未実装境界表示を確認。ログ /private/tmp/sky-us-verify.log。Git保存/main統合は同branch PRのreadbackで別記録。
 
 2026-10-15 BIL02/O5（DOC04/H1同期）: main 869addcからCloud確定usage→月次請求→Stripe test adapterを実装中。既存精算済み記録のみ取込、本人/金額/アカウント照合・重複防止・署名webhook再取得を追加。専用10件合格。実Stripe sandboxは作成済みだが未claim鍵のaccount APIが403、外部往復未完了。実Cloud実行も接続先/予算待ち。fixtureと実外部受入は分離、本番課金無効。branch codex/sky-cloud-monthly-provider、月額140 USDは本人指定、利用枠100/運営40は提案として試算UIを追加。初回の全体verifyはWrangler更新確認の終了待ちtimeout。WRANGLER_HIDE_BANNER=true・Node22.23.3で全体verify exit 0、専用10件/DB等23件/Canvas型検査/UI計算切替合格。最新main a07bfebe（Pixel設計）を保全merge、統合後も全体verify exit 0（/private/tmp/sky-cloud-merged-verify.log）。実外部CloudとStripe往復は未完。
@@ -540,3 +542,5 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 着手: 本人がSandboxのCLI接続を承認。対象account一致を確認し403を解消。send_invoiceに必要なテスト顧客email不足を修正中。旧失敗請求は保持し、fresh合成利用量で請求→テスト決済→署名通知を検証する。本番課金・実Cloud実行・定額自動回収は対象外。
 
 検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。
+
+2026-10-16 BIL02検証: Sky 140の2期間140 USD請求、枠内usage追加請求0、決済失敗/復旧、古いpaidだけで解除しない判定、署名通知を実Sandboxで確認（10項目）。最初の失敗用カードはattach時に拒否されたため、公式のattach成功後に失敗するテストカードへ変更し、既存invoice IDから再開した。6単体試験成功。Node22.23.3 / WRANGLER_HIDE_BANNER=trueで全体npm run verify全段階exit 0（/private/tmp/sky140-verify.log）。再起動後の報告復元とStripe請求が2件・各140 USDのまま不変を確認。顧客の実同意/自動月次回収/実Agent制限を完成扱いにしない。

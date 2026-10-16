@@ -6,7 +6,7 @@
 
 [Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
 
-The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
+The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Sky 140 is USD 140/month with a confirmed USD 100 usage allowance; overage rates and production contract terms remain undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
@@ -392,3 +392,5 @@ Recording, external publication, appliance operation, purchasing, and payment ea
 既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。合成usage 1 USDのStripe sandbox請求・テスト決済・署名通知・Sky paid再取得は受入済み。実Cloud実行は接続先/予算待ち。テスト顧客は予約ドメインの架空emailを使用し、実メール送信は行いません。本番課金は無効です。
 
 米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。
+
+Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sandbox.mjs` で明示実行するテスト専用harnessです。[起動・復旧・未実装範囲](docs/sky-billing.md#sky-140の固定請求失敗復旧sandbox)。Mac表示は5224。月次schedulerや実Agent利用権を有効にはしません。

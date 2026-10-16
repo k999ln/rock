@@ -1,5 +1,6 @@
 ## 共通サービス体験と状態の読み分け
 
+Sky 140は固定140 USDの2期間請求・決済失敗/復旧のSandbox判定を受入。実Agent制限と月次schedulerは未接続。[責任・保存・復旧・未受入](sky-billing.md#sky-140の固定請求失敗復旧sandbox)。
 2026-10-16: 米国向けSky 140（月額140 USD・利用枠100 USD）の設計条件を本人が確定。契約同意・継続回収・未払い制限・復旧を[米国向け契約請求](sky-billing.md#米国向けの契約に基づく月次請求)へ対応。契約stateとProvider入金と実行権限を分け、自動回収/停止の本番受入は未完。
 
 Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのStripe sandbox請求・テスト決済・署名通知・Sky paid再取得は受入済み。実Cloud実行は接続/予算待ち。[責任・状態・失敗復旧と受入](sky-billing.md#cloud使用量とstripe-test接続)。本番課金は無効。

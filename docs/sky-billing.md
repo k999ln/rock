@@ -344,3 +344,22 @@ Solで軽い仕事入力10,000/出力2,000を1,000件（40 USD）、標準200件
 2026-10-16、本人承認で既存sandboxを引き取り、同じaccountのtest鍵へ更新しaccount APIの403を解消。合成usage 1 USDを請求し、テストカード決済・署名付きinvoice.paid・Stripe再照合・Sky paid表示まで確認した。鍵やclaim URLをチャット/Gitへ貼らない。Cloud Providerのcredentialと実試験の小額予算も別に必要で、月額売価140 USDを試験支出上限に転用しない。
 
 合格条件は同意なし拒否、初回後払い期間の有限上限、月境界と予約、140 USDの1回請求と枠内usageの追加請求0、テストカード成功/失敗/要認証、重複通知、逆順通知、異議中/解約済み復旧拒否、過去未払いの残存、未払い停止中の成果export、入金後の正しい復旧、再起動後の同一状態。実Stripe testで同じcontract/invoice/usage IDを記録し、本番カード/引落し/回収/銀行制限は実施しない。
+
+
+### Sky 140の固定請求・失敗復旧Sandbox
+
+BIL02/O5（JOINT）、2026-10-16。`lib/sky-140-collection-test.ts`と`scripts/sky-140-collection-sandbox.mjs`は、既存Sky 140の価格定義とStripe test設定・署名検証を使う受入harnessである。実利用の月次サービスではない。既存Wallet/RemoteAiTextStore/A2A予算台帳を複製せず、合成の確定原価100 cents・予約0を判定入力にして、後のserver統合で要求する契約を検証する。純粋判定関数へ渡す残高/予約/契約/請求集合はserver正本が必要で、browser申告やLLM出力を本番権限として使わない。
+
+- 目的・体験: 過去の2026-08/09を合成サービス期間として月末操作を明示実行し、各140 USDを請求。初月成功→翌月失敗→同じ翌月請求の復旧を、Macの5224画面で確認する。実際に2か月待った証拠やschedulerの証拠ではない。
+- 条件: fixture専用の同意版と与信140 USDを使う。顧客の契約同意、本人確認、後払い与信承認を取得したとは扱わない。100 USD枠の残額は預金ではない。月末前・未確定予約・原価枠超過は請求確定を拒否し、枠内usageの追加請求は0。
+- 入出力・状態: account一致→全請求をStripeから再取得→ID/customer/metadata/版/期間/USD/140 USD/test modeを照合。全請求が全額paidかつ残額0の場合だけSandbox利用判定を許す。前月paidで翌月未払いを隠さず、契約取消/異議・同意不足・枠超過・結果不明では拒否。成果exportと支払入口の許可は保持する。これは実Agent送信gateの強制ではない。
+- 保存: Git外0600 JSONへrun ID、操作ごとの冪等keyに対応するProvider ID、チェック済み段階、署名通知を保存。秘密鍵は別の0600設定だけ。原稿・カード番号は保存しない。完了後再起動は保存済み報告の復元のみで、新規課金しない。
+- 失敗・復旧: 23時間を超える未完操作は再送せず照合へ止める。既存invoice IDを維持し、失敗カードから成功カードへ明示的に試験を進める。キー/設定が変わる場合もaccount一致必須。署名通知は重複を記録せず、現在の全請求を再取得して判定する。新しい試験には別の`SKY140_TEST_STATE`を明示し、旧記録を消して再実行しない。
+- 承認・実費: 利用者の「次」と既存Sandbox試験許可の範囲。`SKY140_SANDBOX_ACCEPTANCE=1`とtest鍵が必要。`charge_automatically`の請求を作るがauto_advance=falseで、harnessがテストカードのpay APIを呼ぶ。自動月次回収・Subscriptionの実装/受入ではない。実Cloud、本番鍵/カード/銀行引落しは使わない。
+- 合格: 6ローカル試験、外部Sandbox10項目、署名通知5件、UIのpassedを確認。[同じsource hashの証拠](evidence/sky-140-collection-sandbox.json)。実Agentの事前予約/送信箇所へ利用判定を原子的に組み込むこと、契約同意保存、月次scheduler、要認証カード、返金/chargeback、税、州別条件は未受入。与信/期日/猶予の製品条件はOWNERが確定し、今回のfixture値を自動採用しない。
+
+```sh
+# 同じSandboxのCLI listenを127.0.0.1:5224/webhookへ向け、署名secretをprivate configに設定
+SKY140_SANDBOX_ACCEPTANCE=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-140-collection-sandbox.mjs
+node --experimental-strip-types --test tests/sky-140-collection.test.mjs
+```

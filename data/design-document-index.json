@@ -18,7 +18,15 @@
     "planEstimate": "lib/sky-plan-estimate.ts",
     "usContractBilling": "docs/sky-billing.md#米国向けの契約に基づく月次請求",
     "collectionRuntimeAccepted": false,
-    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json"
+    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json",
+    "fixedPlanSandbox": {
+      "implementation": "lib/sky-140-collection-test.ts",
+      "harness": "scripts/sky-140-collection-sandbox.mjs",
+      "tests": "tests/sky-140-collection.test.mjs",
+      "evidence": "docs/evidence/sky-140-collection-sandbox.json",
+      "productionAgentEnforcement": false,
+      "scheduledCollectionAccepted": false
+    }
   },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",

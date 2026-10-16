@@ -279,3 +279,5 @@ BIL02/O5の[請求設計](../sky-billing.md)へ2026-10-15の利用者要求を�
 BIL02/O5: Sky月次請求local fixtureを実装。既存citation workflowを再利用し、見積承認・usage・月締め・模擬入金・再送/復旧を検証する。`npm run sky:monthly:sandbox`、`node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs`。[責任と残条件](../sky-billing.md#sky単体の月次請求ローカル実装2026-10-15)。実Provider受入とは別。
 
 BIL02/O5（JOINT）2026-10-16: 合成usage 1 USDでStripe sandbox請求→テストカード→署名通知HTTP 200→Sky paidを受入。[証拠](../evidence/sky-cloud-monthly-test.json)。send_invoice用のfixture email不足を修正。実Cloud、定額140 USD回収、未払い制限、本番課金は未受入。
+
+BIL02/O5（JOINT）: Sky 140の140 USD固定請求2期間・枠内usage追加0・失敗/復旧の外部Sandbox判定10項目を受入。[証拠](../evidence/sky-140-collection-sandbox.json)。本番Agent送信gate・月次scheduler・契約同意は別実装。既存予算台帳を再実装せず、純粋判定と保存済みテスト操作を先に検証する。
