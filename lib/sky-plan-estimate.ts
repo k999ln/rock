@@ -1,8 +1,9 @@
 /** Planning only: never an executable rate card or authorization to bill/run a model. */
 export const sky140Plan = {
  id:'sky-140-draft-v1', monthlyUsd:140, proposedUsageUsd:100, proposedServiceUsd:40,
- priceRequested:true, allocationApproved:false, liveEnabled:false, automaticOverage:false,
- checkedAt:'2026-10-15',
+ priceRequested:true, allocationApproved:true, liveEnabled:false, automaticOverage:false,
+ checkedAt:'2026-10-15', allocationConfirmedAt:'2026-10-16', targetMarket:'US',
+ collectionPolicyStatus:'design_only_not_enforced',
  sources:['https://developers.openai.com/api/docs/pricing','https://platform.claude.com/docs/en/about-claude/pricing'],
  models:[
   {id:'gpt-6-luna',input:0.10,output:0.50},

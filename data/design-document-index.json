@@ -15,7 +15,9 @@
     ],
     "tests": "tests/sky-monthly-sandbox.test.mjs",
     "cloudTests": "tests/sky-cloud-monthly.test.mjs",
-    "planEstimate": "lib/sky-plan-estimate.ts"
+    "planEstimate": "lib/sky-plan-estimate.ts",
+    "usContractBilling": "docs/sky-billing.md#米国向けの契約に基づく月次請求",
+    "collectionRuntimeAccepted": false
   },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
