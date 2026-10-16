@@ -170,10 +170,10 @@
     "fullVerifyBeforeFinalIdentityGuard": "pass_all_stages; /private/tmp/pixel-local-jennifer/verify.log",
     "fullVerifyLog": "/private/tmp/pixel-local-jennifer/verify-final.log",
     "nodeTests": {
-      "tests": 2,
-      "pass": 2,
+      "tests": 2253,
+      "pass": 2252,
       "fail": 0,
-      "skipped": 0,
+      "skipped": 1,
       "cancelled": 0
     },
     "repairs": [
