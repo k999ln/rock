@@ -4,7 +4,7 @@
   "taskId": "OS11",
   "primarySquad": "O6",
   "primaryOwner": "ROCK",
-  "status": "physical_apk_accepted_with_explicit_gaps_ci_pending",
+  "status": "physical_apk_and_pr_ci_accepted_main_merged",
   "authority": "docs/native-os-integration.md#pixel-terminal-implementation",
   "request": "この設計で、Pixelで実際にsi専用端末として使えるように実装を進めて",
   "source": {
@@ -151,7 +151,7 @@
       "localAiStatusTestsPassed": 4,
       "modelInferenceAccepted": false
     },
-    "emulatorTests": "pending_ci",
+    "emulatorTests": "pass_exact_pr_head",
     "fullVerify": "pass_all_stages",
     "osContractCheck": "pass",
     "dependencyRepair": {
@@ -233,7 +233,58 @@
     },
     "installedApkReadback": "all_three_match_candidate_bytes_and_previous_signer",
     "homeRequestAndAppList": "system_request_cancel_and_local_app_list_verified",
-    "previousFinalVerifyLog": "/private/tmp/pixel-si-final-acceptance-verify.log"
+    "previousFinalVerifyLog": "/private/tmp/pixel-si-final-acceptance-verify.log",
+    "githubCi": [
+      {
+        "name": "prototype",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665390/job/116832654718"
+      },
+      {
+        "name": "verify",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665379/job/116832654792"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665386/job/116832655043"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665766/job/116832656262"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665448/job/116832655175"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665386/job/116832654815"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/actions/runs/38857665766/job/116832656016"
+      },
+      {
+        "name": "CodeQL",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/k999ln/rock/runs/116833050528"
+      }
+    ],
+    "acceptanceDocumentationRecheck": {
+      "fullVerify": "pass_all_stages",
+      "log": "/private/tmp/pixel-si-acceptance-verify-retry.log",
+      "previousAttempt": "existing amc-workspace-snapshot symlink scenario spawnSync ETIMEDOUT; not a pass",
+      "previousLog": "/private/tmp/pixel-si-acceptance-verify.log",
+      "isolatedRecheckPassed": 9,
+      "isolatedLog": "/private/tmp/pixel-si-acceptance-timeout-recheck.log",
+      "runtimeCodeChangedForTimeout": false
+    }
   },
   "voiceObservation": {
     "onDeviceAsrAvailable": false,
@@ -262,8 +313,13 @@
     "forcePushPerformed": false
   },
   "gitEvidence": {
-    "branch": "codex/pixel-si-terminal-implementation",
-    "readbackCommand": "gh pr view codex/pixel-si-terminal-implementation --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
+    "pullRequest": "https://github.com/k999ln/rock/pull/149",
+    "acceptedHead": "b7e1b30fbe054de64dbb63507eff87a03c88edf2",
+    "sameHeadSuccessfulChecks": 8,
+    "mergedAt": "2026-10-16T07:54:54Z",
+    "mergeCommit": "bd429699672f7433d8e50fac3a886d73c36fb994",
+    "mergeTreeMatchesAcceptedHead": true,
+    "readbackCommand": "gh pr view 149 --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
   },
   "mainSynchronization": {
     "incomingMainSha": "60765fc3dda25a1a2f9730c54230b2b6184a8db3",

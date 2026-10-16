@@ -4,6 +4,8 @@
 
 最初にGitHub main/対象branch/同SHA CIと`docs/evidence/pixel-si-terminal-implementation.json`を再取得する。実装正本は`docs/native-os-integration.md#pixel-terminal-implementation`。OS11/O6のbranch `codex/pixel-si-terminal-implementation`はmain `019c2231`から開始し、原dirty候補のShellUiと画面遷移を選別し、現行LocalSubmission/Broker API 18/Local si API v4/料金/復旧を保持した。原dirtyの全体取込や模擬17項目を実Agentへ昇格させない。
 
+実装はPR #149、受入head `b7e1b30f`の8 CI全成功後、main `bd429699`へ通常merge済み（tree一致）。現在のmainと同SHA CIは再取得する。
+
 Home候補・4画面、3経路の下書き、実Toolの保存/確認/停止/書出しと依頼時scheduler、現v4状態表示、明示端末内音声adapterを実装。host/実機/CI/本番の合格範囲と同APK hashは台帳で確認する。端末はPixel 10 GL066/frankel、読取りOS incrementalは2026100601、採用compile lockは2026100200のまま。10-15のADB 0件やHOMEなしは旧調査基点で、現在の実装未着手と読み替えない。
 
 次はPX01の登録済model profile/署名済導入経路と現v4推論一仕事、日本語ASR/TTSの実対応、Jennifer Goal統括のnative接続。model未準備時のLLMなし有限Tool受入を、LLM推論やPX01/DT全体の合格にしない。日本語の端末内サービスがなければ文字へ戻し、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
