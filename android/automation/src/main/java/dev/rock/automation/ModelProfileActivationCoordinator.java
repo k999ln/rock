@@ -28,6 +28,10 @@ final class ModelProfileActivationCoordinator {
     }
 
     long installAndActivate(ModelProfileManifest candidate, long now) {
+        return installAndActivate(candidate, now, () -> true);
+    }
+
+    long installAndActivate(ModelProfileManifest candidate, long now, java.util.function.BooleanSupplier mayActivate) {
         synchronized (ModelProfileOperationLock.LOCK) {
             if (candidate == null) throw new IllegalArgumentException("MODEL_PROFILE_REQUIRED");
             RuntimeManifest runtime = platform.runtimeManifest(candidate.runtimeComponentId,
@@ -37,7 +41,11 @@ final class ModelProfileActivationCoordinator {
             ModelProfileManifest previous = platform.activeModelProfile();
             AtomicBoolean runtimeLoadStarted = new AtomicBoolean(false);
             TrustedModelArtifactPipeline pipeline = new TrustedModelArtifactPipeline(publishers, stager,
-                (profile, stageReceipt) -> load(profile, runtime, stageReceipt, runtimeLoadStarted));
+                (profile, stageReceipt) -> {
+                    String receipt = load(profile, runtime, stageReceipt, runtimeLoadStarted);
+                    if (!mayActivate.getAsBoolean()) throw new SecurityException("DEVICE_UNLOCK_REQUIRED");
+                    return receipt;
+                });
             try {
                 return platform.activateModelProfile(candidate.profileId, candidate.version, pipeline, now);
             } catch (RuntimeException activationFailure) {

@@ -27,7 +27,7 @@ public final class ModelProfileManifest {
         require(signingKeyId, "[A-Za-z0-9][A-Za-z0-9._:-]{2,127}", "INVALID_MODEL_SIGNING_KEY_ID");
         require(manifestSignatureBase64Url, "[A-Za-z0-9_-]{86}", "INVALID_MODEL_MANIFEST_SIGNATURE");
         require(runtimeComponentId, "[a-z0-9]+(?:[._-][a-z0-9]+){2,}", "INVALID_RUNTIME_ID");
-        PlatformApi.requireCompatible(runtimeApiMin, runtimeApiMax);
+        RuntimeManifest.requireApiRange(runtimeApiMin, runtimeApiMax);
         require(format, "[A-Z][A-Z0-9_]{0,31}", "INVALID_MODEL_FORMAT");
         require(quantization, "[A-Z0-9][A-Z0-9_]{0,31}", "INVALID_QUANTIZATION");
         if (contextTokens < 1 || contextTokens > 1_048_576) throw new IllegalArgumentException("INVALID_CONTEXT_LIMIT");

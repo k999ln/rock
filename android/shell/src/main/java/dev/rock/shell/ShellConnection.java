@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 final class ShellConnection {
     static final String BROKER_PACKAGE = "dev.rock.automation";
     static final String BROKER_SERVICE = BROKER_PACKAGE + ".RockShellService";
-    static final int API_VERSION = 18;
+    static final int API_VERSION = 19;
     private final Context context;
 
     ShellConnection(Context context) { this.context = context; }
@@ -33,6 +33,13 @@ final class ShellConnection {
     String submitZema(String requestId, String selectionToken, String prompt, String contextJson,
                       boolean consent) throws Exception {
         return withService(api -> api.submitZema(requestId, selectionToken, prompt, contextJson, consent));
+    }
+    String localModelCatalog() throws Exception { return withService(IShellApi::localModelCatalog); }
+    String importLocalModel(String profileId, ParcelFileDescriptor source, boolean consent) throws Exception {
+        return withService(api -> api.importLocalModel(profileId, source, consent));
+    }
+    String reloadLocalModel(String profileId, boolean consent) throws Exception {
+        return withService(api -> api.reloadLocalModel(profileId, consent));
     }
     String skySelection() throws Exception { return withService(IShellApi::skySelection); }
     String selectSkyTool(String toolId) throws Exception {

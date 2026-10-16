@@ -8,7 +8,7 @@
 
 Home候補・4画面、3経路の下書き、実Toolの保存/確認/停止/書出しと依頼時scheduler、現v4状態表示、明示端末内音声adapterを実装。host/実機/CI/本番の合格範囲と同APK hashは台帳で確認する。端末はPixel 10 GL066/frankel、読取りOS incrementalは2026100601、採用compile lockは2026100200のまま。10-15のADB 0件やHOMEなしは旧調査基点で、現在の実装未着手と読み替えない。
 
-次はPX01の登録済model profile/署名済導入経路と現v4推論一仕事、日本語ASR/TTSの実対応、Jennifer Goal統括のnative接続。model未準備時のLLMなし有限Tool受入を、LLM推論やPX01/DT全体の合格にしない。日本語の端末内サービスがなければ文字へ戻し、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
+署名済debug catalog/SAF import/明示reload/有限Jennifer計画/stop fenceをprivate API 19へ実装した次候補は`docs/evidence/pixel-local-jennifer.json`を参照。本人が実機未接続と回答したため新APKのPixel導入・現v4推論一仕事は未受入。再接続時は同signer/同APK/同GGUFから確認する。日本語ASR/TTSとJennifer Goal統括は引き続き別の未受入。model未準備時のLLMなし有限Tool受入を、LLM推論やPX01/DT全体の合格にしない。日本語の端末内サービスがなければ文字へ戻し、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
 
 cloud C1/C2は独立系列。米国向けSky 140（月額140 USD・利用枠100 USD）の既存確定設計と実行保留を保持し、`docs/sky-billing.md`、statusのusSkyContractBilling/skyCloudMonthlyTest、executionHoldsを読む。実Provider/料金版/予算/後払い/収納は個別受入。本人・支出・scope・root authorityを維持し、envだけでpaid gateを解除しない。文書保存・branch/CI・main統合・端末更新・公開を別々に記録する。
 

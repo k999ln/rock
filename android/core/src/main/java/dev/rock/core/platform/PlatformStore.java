@@ -667,9 +667,7 @@ public final class PlatformStore {
             if (Long.parseLong(component.get("version_code")) != manifest.versionCode
                 || !manifest.signingDigest.equals(component.get("signing_digest")))
                 throw new SecurityException("RUNTIME_IDENTITY_MISMATCH");
-            ComponentManifest declared = manifest(manifest.componentId, manifest.versionCode);
-            if (manifest.apiMin < declared.apiMin || manifest.apiMax > declared.apiMax)
-                throw new SecurityException("RUNTIME_API_OUTSIDE_COMPONENT_RANGE");
+            // Component API is Platform v1; the independently validated runtime speaks Binder v4.
             List<Map<String,String>> old = db.query("SELECT manifest_digest FROM runtime_manifests WHERE component_id=? AND version_code=?", manifest.componentId, manifest.versionCode);
             if (!old.isEmpty()) {
                 if (!manifest.digest().equals(old.get(0).get("manifest_digest"))) throw new SecurityException("RUNTIME_MANIFEST_REPLACED");

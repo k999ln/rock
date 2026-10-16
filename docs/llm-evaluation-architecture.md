@@ -67,6 +67,9 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 ## 3. Local plannerの契約
 
+2026-10-16のPixel実装は[署名済catalog・導入・再読込み・Jennifer有限計画](native-os-integration.md#pixel-local-jennifer)を既存v4 handoffへ接続する。Platform API v1とruntime Binder v4は別の版範囲。現在の候補はdebug-onlyの一modelで、production catalogは空、Pixel実推論は本人の再接続待ち。
+
+
 現在のsource契約は `Sky selection → Zema request → Broker → Local AI plan-only API v4 → Broker validation → Engine → review`。`contracts/local-ai-runtime.json`を正本とし、9月のAPI v2実機証拠を現v4実機合格へ転用しない。transport識別子等に残るv2は互換IDとして扱い、実際に照合するAPI版と混ぜない。
 
 Pixel si端末への組込みは[実装設計](native-os-integration.md#pixel-si専用端末の実装設計)のPX-VOICE/PX-LOCAL/PX-LINK/PX-JOBへ対応する。GrapheneOS SpeechServices v3のTTSと、ASR、会話LLM、Tool実行を分け、日本語ASR/TTSは未受入の不足とする。混合工程はmodel推論先/runner/root authorityを別々に固定し、realm間adapter受入前に利用可能と表示しない。

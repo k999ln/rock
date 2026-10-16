@@ -74,5 +74,17 @@
   "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_api_v2_not_v3_not_os_image",
   "profileV3Validation": "docs/evidence/local-ai-profile-v3-validation-20261001.json",
   "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
-  "nativeBuildValidation": "docs/evidence/local-ai-apk-v4-build.json"
+  "nativeBuildValidation": "docs/evidence/local-ai-apk-v4-build.json",
+  "modelCatalogImport": {
+    "catalog": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+    "productionCatalog": "empty_by_default",
+    "privateShellApiVersion": 19,
+    "platformComponentApiVersion": 1,
+    "runtimeBinderApiVersion": 4,
+    "weightImport": "owner_selected_readonly_regular_descriptor_exact_length_sha256",
+    "licenseConsent": "explicit_owner_profile_digest_receipt_in_private_preferences",
+    "reload": "explicit_verified_cached_profile_only",
+    "physicalInferenceAccepted": false,
+    "evidence": "docs/evidence/pixel-local-jennifer.json"
+  }
 }

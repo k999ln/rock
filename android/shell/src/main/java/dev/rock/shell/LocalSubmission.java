@@ -92,7 +92,7 @@ final class LocalSubmission {
     static boolean knownZemaRefusal(Attempt attempt, String code) {
         // A refusal now cannot disprove a previous attempt that may have committed.
         return !attempt.recovery && java.util.Set.of("DENIED", "SKY_SELECTION_REQUIRED", "LOCAL_AI_NOT_READY",
-            "MODEL_PROFILE_NOT_ACTIVE", "MODEL_PROFILE_RUNTIME_MISMATCH").contains(code == null ? "" : code);
+            "MODEL_PROFILE_NOT_ACTIVE", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_EXECUTION_PAUSED").contains(code == null ? "" : code);
     }
 
     static String fingerprint(String... fields) {
