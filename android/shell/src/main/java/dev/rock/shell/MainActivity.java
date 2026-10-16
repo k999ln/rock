@@ -16,6 +16,12 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.view.View;
+import android.view.Gravity;
+import android.view.WindowInsets;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ViewFlipper;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,8 +40,31 @@ import org.json.JSONObject;
 /** Unprivileged RockstarOS shell. Persistent work and execution remain in the Platform Broker. */
 public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
+    static final int LOCAL_AI_STATUS_API_VERSION = 4;
+    private ShellUi ui;
+    private ViewFlipper pages;
+    private final TextView[] navigation = new TextView[4];
+    private final LinearLayout[] pageContent = new LinearLayout[4];
+    private TextView homeWorkSummary, homeConnectionStatus, localAiStatus;
+    private EditText homePrompt;
+    private RadioGroup homeExecutionChoice;
+    private LinearLayout cloudLlmPanel, manualToolPanel;
+    private TerminalVoice voice;
+    private int selectedPage;
+    private final android.window.OnBackInvokedCallback backToHome = () -> selectPage(0);
+    private boolean backToHomeRegistered;
     private static final int CREATE_BACKUP_DOCUMENT = 201;
     private static final int OPEN_BACKUP_DOCUMENT = 202;
+    private static final int CREATE_ARTIFACT_DOCUMENT = 203;
+    private static final int REQUEST_HOME_ROLE = 204;
+    private TextView homeRoleStatus;
+    private String artifactExportWorkId;
+    private final Handler localTaskHandler = new Handler(Looper.getMainLooper());
+    private JSONObject lastAccountPresentation = new JSONObject();
+    private JSONObject lastLocalPresentation;
+    private final Runnable localTaskRefresh = this::refreshLocalJobs;
+    private final java.util.Map<String, String> reviewDrafts = new java.util.HashMap<>();
+    private String renderedWorkState;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Handler deviceLinkHandler = new Handler(Looper.getMainLooper());
@@ -110,16 +139,25 @@ public final class MainActivity extends Activity {
         super.onCreate(state);
         zemaSubmission = localSubmission("zema_submission_recovery");
         articleSubmission = localSubmission("article_submission_recovery");
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.rgb(10, 15, 20));
-        form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
-        form.setBackgroundColor(Color.rgb(10, 15, 20));
-        int padding = (int)(24 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
-        scroll.addView(form); setContentView(scroll);
-
-        label(form, "RockstarOS  /  Sky  /  Zema", 13);
-        label(form, "siサービスを使う", 30);
-        label(form, "Rockstarアカウントを一度連携します。サービスごとの利用権・接続状態は個別に確認します。", 16);
+        ui = new ShellUi(this);
+        createShellFrame();
+        heading(pageContent[1], "Sky", "能力と実行先を選ぶ");
+        LinearLayout toolCard = ui.card(pageContent[1]);
+        heading(pageContent[2], "仕事", "依頼・確認・成果・停止");
+        LinearLayout composer = ui.card(pageContent[2]);
+        jobs = ui.column(); pageContent[2].addView(jobs);
+        button(pageContent[2], "進捗を更新", () -> perform(connection -> null));
+        button(pageContent[2], "端末の仕事を全停止", () -> perform(connection -> { connection.setPaused(true); return null; }));
+        button(pageContent[2], "端末の自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
+        heading(pageContent[3], "設定", "本人・端末・保存と復旧");
+        form = ui.card(pageContent[3]);
+        label(form, "ホームと端末の設定", 18);
+        homeRoleStatus = label(form, "ホームはAndroidの選択画面で変更・解除できます。", 14);
+        button(form, "このアプリをホームに選ぶ", this::chooseDefaultHome);
+        button(form, "Androidの設定を開く", () -> openSystemSettings(android.provider.Settings.ACTION_SETTINGS));
+        button(form, "アプリを開く", this::showInstalledApps);
+        label(form, "Rockstarアカウント", 18);
+        label(form, "連携するとクラウドの利用権・仕事を確認できます。端末内Toolの利用には不要です。", 14);
         accountLinkStatus = label(form, "アカウント状態を確認中…", 15);
         accountLinkCode = label(form, "", 26); accountLinkCode.setTextIsSelectable(true);
         button(form, "Rockstarアカウントを連携", this::beginDeviceLink);
@@ -127,7 +165,8 @@ public final class MainActivity extends Activity {
         accountLinkApprovalButton.setVisibility(View.GONE);
         accountLinkCheckButton = button(form, "承認状態を確認", this::pollDeviceLink);
         accountLinkCheckButton.setVisibility(View.GONE);
-        label(form, "Sky・Zema・クラウドエージェント", 20);
+        form = ui.card(pageContent[2]);
+        label(form, "クラウドの仕事", 20);
         cloudServiceHomeStatus = label(form, "アカウント連携後に、利用権とクラウド作業をここで確認できます。", 14);
         button(form, "クラウドの状態・作業結果を更新", this::refreshCloudServiceHome);
         entitlementClaimPanel = new LinearLayout(this); entitlementClaimPanel.setOrientation(LinearLayout.VERTICAL);
@@ -155,6 +194,7 @@ public final class MainActivity extends Activity {
         cloudTaskDetailStatus.setTextIsSelectable(true);
         cloudTaskDetailActions = new LinearLayout(this); cloudTaskDetailActions.setOrientation(LinearLayout.VERTICAL);
         form.addView(cloudTaskDetailActions);
+        form = disclosure(pageContent[1], "クラウドAgentを選ぶ・見積を確認");
         label(form, "Sky Agentを探して見積を確認", 20);
         label(form, "接続済みAgentの自己申告情報を確認し、依頼文を見積のためProviderへ送る場合は明示同意します。ここでは見積だけを取得し、有料実行は開始しません。", 14);
         cloudA2aPrompt = field(form, "Agentへ依頼する内容", "", true);
@@ -196,6 +236,8 @@ public final class MainActivity extends Activity {
         cloudA2aFinalApprovalButton.setVisibility(View.GONE);
         cloudA2aExecutionRecoveryButton = button(form, "同じCloud委任IDの状態を再確認", this::recoverCloudA2AExecution);
         cloudA2aExecutionRecoveryButton.setVisibility(View.GONE);
+        cloudLlmPanel = disclosure(pageContent[2], "クラウドLLMへの依頼・見積");
+        form = cloudLlmPanel;
         label(form, "クラウドLLMへの依頼", 20);
         label(form, "見積依頼では入力をRockstarOSのサービスへ送ります。LLM Providerへの実行送信は行いません。上限は表示通貨の金額で入力してください。", 14);
         cloudLlmPrompt = field(form, "クラウドLLMに依頼する内容", "", true);
@@ -212,15 +254,22 @@ public final class MainActivity extends Activity {
         cloudLlmExecuteButton = button(form, "上限を承認してクラウド実行", this::executeCloudLlmQuote);
         cloudLlmExecuteButton.setVisibility(View.GONE);
         label(form, "このShellのToolは端末内で動作します。有料クラウド作業は見積・上限承認・利用明細の経路が接続するまで開始しません。", 15);
+        form = ui.card(pageContent[3]);
         label(form, "この端末の対応状況", 18);
         deviceCapabilityStatus = label(form, "端末機能を確認中…", 14);
         button(form, "端末対応を再確認", () -> perform(connection -> null));
+        localAiStatus = label(form, "端末内siの準備状態は確認待ちです。", 14);
+        button(form, "端末内siの接続を確認", this::checkLocalAi);
+        form = toolCard;
         label(form, "使うTool", 13);
         skyStatus = label(form, "Skyの選択を確認中…", 16);
         button(form, "出典整理 → 無料記事 　変更", () -> perform(connection -> {
             connection.selectSkyTool(ARTICLE_TOOL); return null;
         }));
-        label(form, "依頼内容", 13);
+        label(form, "出典整理と無料記事の準備。自動計画には対応する端末内モデルが必要です。", 14);
+        button(form, "このToolで依頼を準備", () -> selectPage(2));
+        form = composer;
+        label(form, "端末内LLMで計画する依頼", 18);
         zemaPrompt = field(form, "何をしたいですか？", "", true);
         zemaConsent = new CheckBox(this); zemaConsent.setText("この端末内で処理することを許可"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
@@ -229,13 +278,7 @@ public final class MainActivity extends Activity {
         updateSubmissionRecovery(zemaSubmission, zemaRecoveryButton);
         button(form, "端末内siの接続を確認", this::checkLocalAi);
 
-        jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
-
-        button(form, "詳細設定（開発者向け）", () -> {
-            advancedPanel.setVisibility(advancedPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-        });
-        advancedPanel = new LinearLayout(this); advancedPanel.setOrientation(LinearLayout.VERTICAL);
-        advancedPanel.setVisibility(View.GONE); form.addView(advancedPanel);
+        advancedPanel = disclosure(pageContent[3], "バックアップと復元");
         label(advancedPanel, "バックアップと復元", 22);
         label(advancedPanel, "通常は触る必要ありません。復元用の情報は端末外へ送信しません。", 16);
         recoveryStatus = label(advancedPanel, "復元設定を確認中…", 16);
@@ -247,6 +290,7 @@ public final class MainActivity extends Activity {
         button(advancedPanel, "暗号化バックアップを書き出す", this::chooseBackupDestination);
         recoveryPhraseInput = field(advancedPanel, "復元時だけ24単語を入力", "", true);
         button(advancedPanel, "バックアップから復元", this::chooseBackupSource);
+        advancedPanel = disclosure(pageContent[3], "開発者向けの接続・端末鍵");
         label(advancedPanel, "Sky Agent連携とWallet受取", 22);
         label(advancedPanel, "端末鍵登録は認証済みRockstarアカウントとhardware-backed Keystoreを使います。強い保護が利用できない端末は登録できません。Cloud成果のWallet反映は、同じAgent依頼の端末内承認・予約が存在する場合だけ行い、未承認の依頼を実行しません。", 15);
         a2aBrokerStatus = label(advancedPanel, "Agent用端末鍵は未確認です。", 14);
@@ -260,7 +304,10 @@ public final class MainActivity extends Activity {
         esimChallengeInput = field(advancedPanel, "challenge JSON", "", true);
         esimGatewayResult = label(advancedPanel, "", 13); esimGatewayResult.setTextIsSelectable(true);
         button(advancedPanel, "端末認証鍵を準備", this::provisionEsimGatewayKey);
-        label(advancedPanel, "手動入力（開発用）", 22);
+        manualToolPanel = disclosure(pageContent[2], "LLMなしで記事を整える");
+        advancedPanel = manualToolPanel;
+        label(advancedPanel, "原稿を確認して端末内Toolで処理", 18);
+        label(advancedPanel, "LLMは使いません。入力した原稿・要約・条件を、出典整理と無料記事の2工程で処理して保存します。", 14);
         markdown = field(advancedPanel, "原稿（Markdown）", "", true);
         summary = field(advancedPanel, "まとめ（- で始まる3〜5項目）", "", true);
         cutoff = field(advancedPanel, "無料範囲の文字数", "40", false);
@@ -275,6 +322,284 @@ public final class MainActivity extends Activity {
         button(advancedPanel, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
         button(advancedPanel, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
         button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
+        buildHomePage();
+        Object retained = getLastNonConfigurationInstance();
+        if (retained instanceof String[]) {
+            String[] drafts = (String[]) retained;
+            homePrompt.setText(drafts[0]); zemaPrompt.setText(drafts[1]);
+        }
+        selectPage(state == null ? 0 : state.getInt("selectedPage", 0));
+    }
+
+    private void createShellFrame() {
+        getWindow().setStatusBarColor(ShellUi.BACKGROUND);
+        getWindow().setNavigationBarColor(ShellUi.BACKGROUND);
+        getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        LinearLayout root = ui.column(); root.setBackgroundColor(ShellUi.BACKGROUND);
+        root.setFocusableInTouchMode(true);
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            android.graphics.Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            android.graphics.Insets keyboard = insets.getInsets(WindowInsets.Type.ime());
+            view.setPadding(bars.left, bars.top, bars.right, Math.max(bars.bottom, keyboard.bottom));
+            return WindowInsets.CONSUMED;
+        });
+        LinearLayout header = new LinearLayout(this); header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(ui.dp(22), ui.dp(12), ui.dp(22), ui.dp(12));
+        TextView brand = new TextView(this); brand.setText("RockstarOS"); brand.setTextSize(18);
+        brand.setTextColor(ShellUi.INK); brand.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1f));
+        TextView preview = new TextView(this); preview.setText("Developer Preview"); preview.setTextSize(10);
+        preview.setTextColor(ShellUi.MUTED); preview.setPadding(ui.dp(8), ui.dp(5), ui.dp(8), ui.dp(5));
+        preview.setBackground(ui.surface(ShellUi.SURFACE, ShellUi.LINE, 7)); header.addView(preview);
+        root.addView(header);
+        View topLine = new View(this); topLine.setBackgroundColor(ShellUi.LINE);
+        root.addView(topLine, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        pages = new ViewFlipper(this); pages.setTag("pages");
+        for (int index = 0; index < pageContent.length; index++) {
+            ScrollView scroll = new ScrollView(this); scroll.setFillViewport(true);
+            scroll.setClipToPadding(false); scroll.setVerticalScrollBarEnabled(false);
+            pageContent[index] = ui.column(); pageContent[index].setTag("page-" + index);
+            pageContent[index].setPadding(ui.dp(20), ui.dp(12), ui.dp(20), ui.dp(28));
+            scroll.addView(pageContent[index]); pages.addView(scroll);
+        }
+        root.addView(pages, new LinearLayout.LayoutParams(-1, 0, 1f));
+        View line = new View(this); line.setBackgroundColor(ShellUi.LINE);
+        root.addView(line, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        LinearLayout bar = new LinearLayout(this); bar.setBackgroundColor(ShellUi.BACKGROUND);
+        bar.setPadding(ui.dp(8), ui.dp(6), ui.dp(8), ui.dp(6));
+        String[] names = {"ホーム", "Sky", "仕事", "設定"};
+        for (int index = 0; index < names.length; index++) {
+            final int destination = index;
+            navigation[index] = ui.navigation(bar, names[index], index, () -> selectPage(destination));
+        }
+        root.addView(bar); setContentView(root); root.requestFocus(); root.requestApplyInsets();
+    }
+
+    private void buildHomePage() {
+        LinearLayout home = pageContent[0];
+        heading(home, "Jennifer", "何を進めますか？");
+        label(home, "依頼を準備し、内容と実行先を確認してから始めます。", 14);
+        label(home, "受付済みの仕事は保存されます。未送信の下書きはアプリ終了で消えます。", 12);
+        homePrompt = field(home, "依頼・原稿の下書き", "", true);
+        homePrompt.setTag("home-prompt");
+        homeExecutionChoice = new RadioGroup(this);
+        String[] choices = {"端末内Tool（LLMなし）", "端末内LLMで計画してToolを実行", "クラウドLLM（見積から）"};
+        for (int index = 0; index < choices.length; index++) {
+            RadioButton option = new RadioButton(this);
+            option.setId(3101 + index); option.setText(choices[index]); option.setTextColor(ShellUi.INK);
+            option.setButtonTintList(new android.content.res.ColorStateList(
+                new int[][]{new int[]{android.R.attr.state_checked}, new int[]{}}, new int[]{ShellUi.ACCENT, ShellUi.MUTED}));
+            option.setMinHeight(ui.dp(48)); homeExecutionChoice.addView(option);
+        }
+        int selected = getSharedPreferences("terminal_preferences", MODE_PRIVATE).getInt("executionChoice", 3101);
+        homeExecutionChoice.check(selected >= 3101 && selected <= 3103 ? selected : 3101);
+        homeExecutionChoice.setOnCheckedChangeListener((group, id) ->
+            getSharedPreferences("terminal_preferences", MODE_PRIVATE).edit().putInt("executionChoice", id).apply());
+        home.addView(homeExecutionChoice);
+        ui.primary(button(home, "内容を確認して依頼を準備", this::prepareHomeRequest));
+        TextView voiceStatus = label(home, "音声は押して開始します。利用できる端末内サービスだけを使います。", 13);
+        voiceStatus.setTag("voice-status");
+        voice = new TerminalVoice(this, homePrompt, voiceStatus);
+        button(home, "この端末で話して入力", voice::start);
+        button(home, "音声を停止・読み上げを止める", voice::stop);
+        button(home, "依頼文を端末内で読み上げる", () -> voice.speak(homePrompt.getText().toString()));
+        homeWorkSummary = label(home, "保存された仕事を確認中…", 16);
+        button(home, "仕事・確認待ち・成果を見る", () -> selectPage(2));
+        button(home, "Skyで能力を選ぶ", () -> selectPage(1));
+        homeConnectionStatus = label(home, "準備状態を確認中…", 13);
+        button(home, "接続・端末・復旧の設定", () -> selectPage(3));
+        button(home, "端末内の仕事を全停止", () -> perform(connection -> { connection.setPaused(true); return null; }));
+        label(home, "端末の停止とクラウドの取消は別です。クラウドの停止結果は仕事画面で確認します。", 12);
+        button(home, "アプリ・電話・カメラを開く", this::showInstalledApps);
+        zemaPrompt.setTag("work-prompt"); zemaConsent.setTag("work-consent");
+        articleSubmitButton.setTag("manual-submit"); consent.setTag("manual-consent");
+    }
+
+    private void prepareHomeRequest() {
+        String draft = homePrompt.getText().toString().trim();
+        if (draft.isEmpty()) { homePrompt.setError("依頼・原稿を入力してください"); return; }
+        int route = homeExecutionChoice.getCheckedRadioButtonId();
+        EditText destination = route == 3101 ? markdown : route == 3102 ? zemaPrompt : cloudLlmPrompt;
+        Runnable transfer = () -> {
+            destination.setText(draft);
+            // Preparing a draft never carries an earlier execution or disclosure approval.
+            zemaConsent.setChecked(false); consent.setChecked(false); cloudLlmExecutionConsent.setChecked(false);
+            selectPage(2);
+            if (route == 3101) reveal(manualToolPanel);
+            else if (route == 3103) reveal(cloudLlmPanel);
+            destination.requestFocus();
+            destination.post(() -> destination.requestRectangleOnScreen(
+                new android.graphics.Rect(0, 0, destination.getWidth(), destination.getHeight()), true));
+            message.setText(route == 3101 ? "LLMは使いません。原稿・条件・保存への同意を確認してください。"
+                : route == 3102 ? "Skyで選んだToolと端末内モデルを確認してください。まだ実行していません。"
+                : "見積の後に上限・送信先を確認します。まだクラウドへ送信していません。");
+        };
+        String current = destination.getText().toString().trim();
+        if (!current.isEmpty() && !current.equals(draft)) {
+            new AlertDialog.Builder(this).setTitle("入力中の下書きを置き換えますか？")
+                .setMessage("仕事画面に別の内容が入力されています。保存済みの仕事は変更しません。")
+                .setNegativeButton("戻る", null).setPositiveButton("置き換える", (dialog, which) -> transfer.run()).show();
+        } else transfer.run();
+    }
+
+    private void reveal(LinearLayout contents) {
+        contents.setVisibility(View.VISIBLE);
+        Object control = contents.getTag();
+        if (control instanceof Button) ((Button) control).setStateDescription("展開中");
+    }
+
+    private void showInstalledApps() {
+        Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+        List<android.content.pm.ResolveInfo> apps = new ArrayList<>(getPackageManager().queryIntentActivities(launcher, 0));
+        apps.removeIf(info -> info.activityInfo == null || getPackageName().equals(info.activityInfo.packageName));
+        apps.sort(new android.content.pm.ResolveInfo.DisplayNameComparator(getPackageManager()));
+        String[] labels = new String[apps.size()];
+        for (int index = 0; index < apps.size(); index++) labels[index] = apps.get(index).loadLabel(getPackageManager()).toString();
+        new AlertDialog.Builder(this).setTitle("アプリを開く").setItems(labels, (dialog, index) -> {
+            android.content.pm.ActivityInfo app = apps.get(index).activityInfo;
+            try { startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(new android.content.ComponentName(app.packageName, app.name)));
+            } catch (android.content.ActivityNotFoundException | SecurityException unavailable) {
+                message.setText("このアプリを開けません。Androidの設定から確認してください。");
+            }
+        }).setNegativeButton("閉じる", null).show();
+    }
+
+    private void refreshLocalJobs() {
+        if (!activityResumed || isDestroyed()) return;
+        worker.execute(() -> {
+            try {
+                JSONObject snapshot = new JSONObject(new ShellConnection(this).snapshot());
+                runOnUiThread(() -> {
+                    if (!activityResumed || isDestroyed()) return;
+                    render(snapshot.optJSONArray("works") == null ? new JSONArray() : snapshot.optJSONArray("works"));
+                    updateHome(snapshot, lastAccountPresentation);
+                    scheduleLocalRefresh(snapshot);
+                });
+            } catch (Exception unavailable) {
+                runOnUiThread(() -> { if (activityResumed && !isDestroyed())
+                    homeWorkSummary.setText("最新の仕事状態を確認できません。進捗を更新してください。"); });
+            }
+        });
+    }
+
+    private void scheduleLocalRefresh(JSONObject snapshot) {
+        localTaskHandler.removeCallbacks(localTaskRefresh);
+        if (!activityResumed || snapshot.optBoolean("paused")) return;
+        JSONArray works = snapshot.optJSONArray("works");
+        if (works != null) for (int index = 0; index < works.length(); index++) {
+            JSONObject work = works.optJSONObject(index);
+            if (work != null && "active".equals(work.optString("state"))) {
+                localTaskHandler.postDelayed(localTaskRefresh, 5_000); return;
+            }
+        }
+    }
+
+    private void updateHome(JSONObject snapshot, JSONObject account) {
+        lastLocalPresentation = snapshot;
+        JSONArray works = snapshot.optJSONArray("works");
+        int active = 0, review = 0, complete = 0;
+        if (works != null) for (int i = 0; i < works.length(); i++) {
+            JSONObject work = works.optJSONObject(i); if (work == null) continue;
+            String state = work.optString("state");
+            if ("active".equals(state)) active++;
+            else if ("review".equals(state)) review++;
+            else if ("completed".equals(state)) complete++;
+        }
+        homeWorkSummary.setText((snapshot.optBoolean("paused") ? "端末の実行を全停止中\n" : "")
+            + "最近の仕事：進行中 " + active + " ・確認待ち " + review + " ・完了 " + complete
+            + (snapshot.optBoolean("truncated") ? "\n最新25件を表示しています。" : ""));
+        JSONObject capabilities = snapshot.optJSONObject("deviceCapabilities");
+        JSONObject profile = capabilities == null ? null : capabilities.optJSONObject("deviceProfile");
+        JSONObject inference = profile == null ? null : profile.optJSONObject("localInferenceObservation");
+        String local = validLocalInferenceObservation(inference) ? localInferenceSummary(inference) : "未確認";
+        localAiStatus.setText("端末内si：" + local);
+        homeConnectionStatus.setText("端末内si：" + local
+            + "\nクラウド：" + ("linked".equals(account.optString("state")) ? "本人連携済み。利用権・見積を別途確認。" : "本人連携が必要")
+            + "\nモデル未準備でも、入力を確認して端末内Toolを使えます。");
+    }
+
+    private void showUnlinkedCloudHome() {
+        try { applyCloudServiceHome(new JSONObject().put("state", "not_linked")); }
+        catch (org.json.JSONException invalid) { throw new IllegalStateException(invalid); }
+    }
+
+    private void chooseDefaultHome() {
+        android.app.role.RoleManager roles = getSystemService(android.app.role.RoleManager.class);
+        if (roles != null && roles.isRoleAvailable(android.app.role.RoleManager.ROLE_HOME)) {
+            if (roles.isRoleHeld(android.app.role.RoleManager.ROLE_HOME)) {
+                openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS); return;
+            }
+            try { startActivityForResult(roles.createRequestRoleIntent(android.app.role.RoleManager.ROLE_HOME), REQUEST_HOME_ROLE); }
+            catch (android.content.ActivityNotFoundException unavailable) { openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS); }
+        } else openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS);
+    }
+
+    private void openSystemSettings(String action) {
+        try { startActivity(new Intent(action)); }
+        catch (android.content.ActivityNotFoundException unavailable) {
+            new AlertDialog.Builder(this).setMessage("この端末では設定画面を開けません。Androidの設定から確認してください。")
+                .setPositiveButton("閉じる", null).show();
+        }
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent); setIntent(intent);
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasCategory(Intent.CATEGORY_HOME)) selectPage(0);
+    }
+
+    private void heading(LinearLayout parent, String title, String subtitle) {
+        label(parent, title, 26); label(parent, subtitle, 14);
+    }
+
+    private LinearLayout disclosure(LinearLayout parent, String title) {
+        LinearLayout card = ui.card(parent);
+        LinearLayout contents = ui.column(); contents.setVisibility(View.GONE);
+        Button toggle = button(card, title + "  ＋", () -> {});
+        toggle.setOnClickListener(view -> {
+            boolean expanded = contents.getVisibility() != View.VISIBLE;
+            contents.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            toggle.setText(title + (expanded ? "  −" : "  ＋"));
+            toggle.setStateDescription(expanded ? "展開中" : "折りたたみ");
+        });
+        toggle.setStateDescription("折りたたみ"); card.addView(contents);
+        contents.setTag(toggle);
+        return contents;
+    }
+
+    private void selectPage(int index) {
+        if (voice != null) voice.stop();
+        selectedPage = Math.max(0, Math.min(index, pageContent.length - 1));
+        View focused = getCurrentFocus();
+        if (focused != null) {
+            InputMethodManager keyboard = getSystemService(InputMethodManager.class);
+            if (keyboard != null) keyboard.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+            focused.clearFocus();
+        }
+        pages.setDisplayedChild(selectedPage);
+        for (int tab = 0; tab < navigation.length; tab++) ui.selectNavigation(navigation[tab], tab, tab == selectedPage);
+        if (selectedPage != 0 && !backToHomeRegistered) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, backToHome);
+            backToHomeRegistered = true;
+        } else if (selectedPage == 0 && backToHomeRegistered) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
+            backToHomeRegistered = false;
+        }
+    }
+
+    // Drafts survive configuration changes in memory only; consent is always reset.
+    @Override public Object onRetainNonConfigurationInstance() {
+        return new String[]{homePrompt.getText().toString(), zemaPrompt.getText().toString()};
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putInt("selectedPage", selectedPage);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override public void onBackPressed() {
+        if (selectedPage != 0) selectPage(0); else super.onBackPressed();
     }
 
     private void provisionEsimGatewayKey() {
@@ -384,7 +709,9 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        if (voice != null) voice.stop();
         activityResumed = false;
+        localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
         cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
@@ -437,20 +764,15 @@ public final class MainActivity extends Activity {
         input.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12));
         input.setPadding(16, 14, 16, 14);
         input.setInputType(InputType.TYPE_CLASS_TEXT | (multi ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0));
-        input.setSingleLine(!multi); if (multi) input.setMinLines(3); container.addView(input); return input;
+        input.setSingleLine(!multi); if (multi) input.setMinLines(3); ui.input(input); input.setSaveEnabled(false); container.addView(input); return input;
     }
-    private TextView label(LinearLayout container, String text, int size) {
-        TextView value = new TextView(this); value.setText(text); value.setTextSize(size);
-        value.setTextColor(size >= 22 ? Color.WHITE : Color.rgb(190, 202, 214));
-        value.setPadding(0, size >= 22 ? 20 : 12, 0, size >= 22 ? 10 : 8); container.addView(value); return value;
+    private TextView label(LinearLayout container, String text, int size) { return ui.text(container, text, size); }
+    private Button button(LinearLayout container, String text, Runnable action) { return ui.button(container, text, action); }
+    private void styleCheckBox(CheckBox box) {
+        box.setTextColor(ShellUi.INK); box.setPadding(0, ui.dp(10), 0, ui.dp(10));
+        box.setButtonTintList(new android.content.res.ColorStateList(
+            new int[][]{new int[]{android.R.attr.state_checked}, new int[]{}}, new int[]{ShellUi.ACCENT, ShellUi.MUTED}));
     }
-    private Button button(LinearLayout container, String text, Runnable action) {
-        Button value = new Button(this); value.setText(text); value.setTextColor(Color.WHITE); value.setTextSize(15);
-        value.setAllCaps(false); value.setPadding(18, 12, 18, 12);
-        value.setBackground(background(Color.rgb(27, 42, 54), Color.rgb(95, 151, 183), 14));
-        value.setOnClickListener(view -> action.run()); container.addView(value); return value;
-    }
-    private void styleCheckBox(CheckBox box) { box.setTextColor(Color.rgb(205, 216, 226)); box.setPadding(0, 12, 0, 12); }
     private GradientDrawable background(int fill, int stroke, int radius) {
         GradientDrawable drawable = new GradientDrawable(); drawable.setColor(fill); drawable.setCornerRadius(radius * getResources().getDisplayMetrics().density);
         drawable.setStroke((int)(1 * getResources().getDisplayMetrics().density), stroke); return drawable;
@@ -466,8 +788,7 @@ public final class MainActivity extends Activity {
                 JSONObject selection = new JSONObject(connection.skySelection());
                 JSONObject recovery = new JSONObject(connection.recoveryStatus());
                 JSONObject account = new JSONObject(connection.rockstarDeviceLinkStatus());
-                JSONObject cloudHome = "linked".equals(account.optString("state"))
-                    ? new JSONObject(connection.cloudServiceHome()) : new JSONObject("{\"state\":\"not_linked\"}");
+
                 boolean paused = snapshot.getBoolean("paused");
                 JSONArray workItems = snapshot.getJSONArray("works");
                 runOnUiThread(() -> {
@@ -476,9 +797,13 @@ public final class MainActivity extends Activity {
                         applySkySelection(selection);
                         applyRecoveryStatus(recovery);
                         applyDeviceLinkStatus(account);
-                        applyCloudServiceHome(cloudHome);
+                        if ("linked".equals(account.optString("state"))) refreshCloudServiceHome();
+                        else showUnlinkedCloudHome();
                         message.setText(paused ? "全停止中" : "予約済みの仕事は充電中に実行します。原稿・成果物はBroker側だけに保存します。");
                         render(workItems);
+                        lastAccountPresentation = account;
+                        updateHome(snapshot, account);
+                        scheduleLocalRefresh(snapshot);
                     }
                 });
             } catch (Exception error) {
@@ -1831,6 +2156,8 @@ public final class MainActivity extends Activity {
 
     private void applyDeviceLinkStatus(JSONObject status) {
         if (accountLinkStatus == null || status == null) return;
+        lastAccountPresentation = status;
+        if (lastLocalPresentation != null && homeConnectionStatus != null) updateHome(lastLocalPresentation, status);
         String state = status.optString("state", "blocked");
         if ("linked".equals(state)) {
             deviceLinkFlowId = null; deviceLinkApprovalUri = null;
@@ -2013,7 +2340,7 @@ public final class MainActivity extends Activity {
             && observation.optInt("apiVersion", -1) == 0;
         if (!"approved_package_signature_and_binder_api".equals(trust)
                 || !"llama.rn".equals(observation.optString("runtime"))
-                || observation.optInt("apiVersion", -1) != 2
+                || observation.optInt("apiVersion", -1) != LOCAL_AI_STATUS_API_VERSION
                 || !(observation.opt("modelLoaded") instanceof Boolean)) return false;
         return ("ready".equals(state) && observation.optBoolean("modelLoaded"))
             || ("no_model".equals(state) && !observation.optBoolean("modelLoaded"))
@@ -2117,6 +2444,33 @@ public final class MainActivity extends Activity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_HOME_ROLE) {
+            android.app.role.RoleManager roles = getSystemService(android.app.role.RoleManager.class);
+            boolean held = roles != null && roles.isRoleHeld(android.app.role.RoleManager.ROLE_HOME);
+            homeRoleStatus.setText(held ? "RockstarOSをホームに選択しました。Androidのホーム設定で変更できます。"
+                : "ホームは変更していません。必要なときにAndroidの選択画面から選べます。");
+            return;
+        }
+        if (requestCode == CREATE_ARTIFACT_DOCUMENT) {
+            String workId = artifactExportWorkId; artifactExportWorkId = null;
+            if (resultCode != RESULT_OK || data == null || data.getData() == null || workId == null) return;
+            Uri destination = data.getData();
+            worker.execute(() -> {
+                try {
+                    byte[] artifact = new ShellConnection(this).result(workId).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                    try (ParcelFileDescriptor output = getContentResolver().openFileDescriptor(destination, "wt")) {
+                        if (output == null) throw new java.io.IOException("DESTINATION_UNAVAILABLE");
+                        try (java.io.FileOutputStream stream = new ParcelFileDescriptor.AutoCloseOutputStream(output)) {
+                            stream.write(artifact); stream.flush(); stream.getFD().sync();
+                        }
+                    }
+                    runOnUiThread(() -> { if (!isDestroyed()) message.setText("確認した保存先へ成果を書き出しました。"); });
+                } catch (Exception unavailable) {
+                    runOnUiThread(() -> { if (!isDestroyed()) message.setText("書込みを確認できません。元の成果は保存されています。保存先を確認してください。"); });
+                }
+            });
+            return;
+        }
         if (resultCode != RESULT_OK || data == null || data.getData() == null) {
             if (requestCode == OPEN_BACKUP_DOCUMENT) restorePhraseForPicker = null;
             return;
@@ -2157,10 +2511,15 @@ public final class MainActivity extends Activity {
     private void checkLocalAi() {
         worker.execute(() -> {
             String status;
-            try { status = "ローカルsi: " + new ShellConnection(this).localAiStatus(); }
+            try {
+                String state = new ShellConnection(this).localAiStatus();
+                status = "ready".equals(state) ? "端末内モデルは読込済みです。実行時に選択したprofileを照合します。"
+                    : "no_model".equals(state) ? "端末内サービスは接続済みですが、モデルは未読込です。LLMなしのTool処理は使えます。"
+                    : "端末内siは準備中または利用できません。少し待って再確認してください。";
+            }
             catch (Exception error) { status = "ローカルsi: 未接続（アプリ、モデル、署名、APIを確認）"; }
             String result = status;
-            runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
+            runOnUiThread(() -> { if (!isDestroyed()) { message.setText(result); localAiStatus.setText(result); } });
         });
     }
 
@@ -2358,18 +2717,20 @@ public final class MainActivity extends Activity {
     }
 
     private void render(JSONArray workItems) {
+        String stateKey = workItems.toString();
+        if (stateKey.equals(renderedWorkState)) return;
+        renderedWorkState = stateKey;
         jobs.removeAllViews(); label(jobs, "最近の仕事", 22);
         int visibleJobs = 0;
         for (int index = 0; index < workItems.length(); index++) {
             JSONObject work = workItems.optJSONObject(index);
             if (work == null) continue;
             String id = work.optString("id"), state = work.optString("state");
-            // Old cancelled test runs are developer history, not user work.
-            if ("cancelled".equals(state)) continue;
             visibleJobs++;
             LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
             card.setPadding(16, 14, 16, 14); card.setBackground(background(Color.rgb(19, 28, 36), Color.rgb(48, 66, 80), 14)); jobs.addView(card);
             label(card, friendlyState(state), 18);
+            label(card, "仕事 " + id.substring(0, Math.min(8, id.length())), 12);
             JSONArray runs = work.optJSONArray("runs");
             int succeeded = 0, total = runs == null ? 0 : runs.length();
             if (runs != null) for (int runIndex = 0; runIndex < runs.length(); runIndex++) {
@@ -2382,12 +2743,35 @@ public final class MainActivity extends Activity {
                     try { String output = new ShellConnection(this).result(id); runOnUiThread(() -> artifact.setText(output)); }
                     catch (Exception error) { runOnUiThread(() -> artifact.setText("成果物の整合性を確認できません。")); }
                 }));
+                button(card, "成果を書き出す", () -> {
+                    artifactExportWorkId = id;
+                    try { startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("text/markdown")
+                        .addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE, "rockstaros-" + id.substring(0, 8) + ".md"), CREATE_ARTIFACT_DOCUMENT);
+                    } catch (android.content.ActivityNotFoundException unavailable) {
+                        artifactExportWorkId = null; message.setText("保存先を選ぶアプリを利用できません。");
+                    }
+                });
             }
             if (state.equals("review")) {
-                EditText note = new EditText(this); note.setHint("確認メモ（任意）"); note.setTextColor(Color.WHITE); note.setHintTextColor(Color.rgb(146, 161, 174));
+                EditText note = new EditText(this); note.setHint("確認メモ（必須）"); note.setTextColor(Color.WHITE); note.setHintTextColor(Color.rgb(146, 161, 174));
                 note.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12)); note.setPadding(16, 14, 16, 14); card.addView(note);
-                button(card, "確認して完了", () -> { String value = note.getText().toString(); perform(connection -> { connection.complete(id, value); return null; }); });
+                note.setSaveEnabled(false); note.setText(reviewDrafts.getOrDefault(id, ""));
+                note.addTextChangedListener(new android.text.TextWatcher() {
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+                    public void onTextChanged(CharSequence s, int start, int before, int count) { reviewDrafts.put(id, s.toString()); }
+                    public void afterTextChanged(android.text.Editable value) { }
+                });
+                button(card, "確認して完了", () -> {
+                    String value = note.getText().toString();
+                    if (value.trim().isEmpty()) { note.setError("確認した内容を入力してください"); return; }
+                    perform(connection -> { connection.complete(id, value); return null; });
+                });
             }
+            if (state.equals("active") || state.equals("review")) button(card, "この仕事を中止", () ->
+                new AlertDialog.Builder(this).setTitle("端末内の仕事を中止しますか？")
+                    .setMessage("保存済みの記録は残します。この操作はクラウドの仕事を取り消しません。")
+                    .setNegativeButton("戻る", null).setPositiveButton("中止する", (dialog, which) ->
+                        perform(connection -> { connection.cancel(id); return null; })).show());
             if (state.equals("active") && !work.optBoolean("sample"))
                 button(card, "失敗した工程だけを再試行", () -> perform(connection -> { connection.retry(id); return null; }));
         }
@@ -2406,13 +2790,17 @@ public final class MainActivity extends Activity {
 
     @Override public void onDestroy() {
         activityResumed = false;
+        localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
         cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
         recoverySetupToken = null; restorePhraseForPicker = null;
+        artifactExportWorkId = null; reviewDrafts.clear();
         clearDeviceCapabilityExpiry();
         if (recoveryPhraseView != null) recoveryPhraseView.setText("");
         if (recoveryPhraseInput != null) recoveryPhraseInput.setText("");
+        if (voice != null) voice.close();
+        if (backToHomeRegistered) getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
         worker.shutdownNow(); super.onDestroy();
     }
     private interface Action { Object run(ShellConnection connection) throws Exception; }

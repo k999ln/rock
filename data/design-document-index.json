@@ -95,12 +95,30 @@
         "PX11",
         "PX12"
       ],
-      "runtimeImplemented": false
+      "runtimeImplemented": false,
+      "apkImplementation": {
+        "authority": "docs/native-os-integration.md#pixel-terminal-implementation",
+        "evidence": "docs/evidence/pixel-si-terminal-implementation.json",
+        "taskId": "OS11",
+        "status": "implemented_partial_acceptance",
+        "components": [
+          "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+          "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+          "android/shell/src/main/java/dev/rock/shell/TerminalVoice.java",
+          "android/shell/src/main/AndroidManifest.xml",
+          "android/shell/src/aosp/AndroidManifest.xml",
+          "android/automation/src/main/java/dev/rock/automation/Scheduler.java",
+          "android/automation/src/main/java/dev/rock/automation/AutomationJobService.java",
+          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java"
+        ],
+        "fullSiTerminalAccepted": false,
+        "fullOsAccepted": false
+      }
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.18",
-  "updatedAt": "2026-10-15",
+  "version": "1.19",
+  "updatedAt": "2026-10-16",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",

@@ -55,9 +55,9 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## si専用端末の参照profile
 
-[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)で再利用・改変・追加の8 moduleを定義する。既存Brokerには通信とdevice transportがあり、ShellはHOME/音声role未対応。SpeechServices v3はTTSとして確認、日本語ASR/TTSは追加受入。local Android正本とcloud D1正本を一つのroot authorityへ対応し、未受入のrealm間adapterを完成扱いしない。plan/account上限/後払い・独自署名OTA・全損復旧を含むPX01〜12を既存DT/SC/P0〜P7/C1/C2へ結ぶ。根拠は[公開コード調査](evidence/grapheneos-source-audit.json)。
+[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)で再利用・改変・追加の8 moduleを定義する。既存Brokerには通信とdevice transportがあり、Shellは10-16にHOME候補・4画面・明示端末内音声adapterを実装。VoiceInteractionService/常時待受と全OS受入は別。SpeechServices v3はTTSとして確認、日本語ASR/TTSは追加受入。local Android正本とcloud D1正本を一つのroot authorityへ対応し、未受入のrealm間adapterを完成扱いしない。plan/account上限/後払い・独自署名OTA・全損復旧を含むPX01〜12を既存DT/SC/P0〜P7/C1/C2へ結ぶ。根拠は[公開コード調査](evidence/grapheneos-source-audit.json)。
 
-Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。現在のShell通常起動appからHome/必要な音声role/OS統合へ段階受入し、DT01〜06は未実行。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
+Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。[Pixelアプリ実装](native-os-integration.md#pixel-terminal-implementation)の受入範囲を実装台帳へ記録する。HOME候補・有限Tool・保存/再開の部分受入と、DT01〜06の全体受入を区別する。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
 
 ## 制作場所と計算場所を分ける共通runtime契約
 

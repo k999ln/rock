@@ -19,10 +19,12 @@ public final class AutomationJobService extends JobService {
         volatile ToolConnection connection;
         volatile Future<?> task;
     }
-    private volatile Session active;
+    private final ConcurrentMap<Integer, Session> sessions = new ConcurrentHashMap<>();
     private Engine engine() { return ((RockApplication)getApplication()).engine(); }
     @Override public boolean onStartJob(JobParameters params) {
-        Session s = new Session(); active = s;
+        Session s = new Session();
+        Session previous = sessions.put(params.getJobId(), s);
+        stop(previous);
         s.task = worker.submit(() -> {
             boolean reschedule = false;
             try {
@@ -44,12 +46,15 @@ public final class AutomationJobService extends JobService {
                     reschedule = i == 7;
                 }
             } catch (RuntimeException e) { /* Fail closed; no raw payload/error logging. UI keeps persistent state. */ }
-            finally { if (!s.stopped.get()) jobFinished(params, reschedule); }
+            finally {
+                sessions.remove(params.getJobId(), s);
+                if (!s.stopped.get()) jobFinished(params, reschedule);
+            }
         });
         return true;
     }
     @Override public boolean onStopJob(JobParameters params) {
-        stop(active);
+        stop(sessions.remove(params.getJobId()));
         return !engine().paused();
     }
     private void stop(Session s) {
@@ -59,5 +64,8 @@ public final class AutomationJobService extends JobService {
         Future<?> f = s.task; if (f != null) f.cancel(true);
         Engine.Ticket t = s.current; if (t != null) engine().interrupt(t);
     }
-    @Override public void onDestroy() { stop(active); worker.shutdownNow(); super.onDestroy(); }
+    @Override public void onDestroy() {
+        for (Session s : sessions.values()) stop(s);
+        sessions.clear(); worker.shutdownNow(); super.onDestroy();
+    }
 }
