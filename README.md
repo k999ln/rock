@@ -391,6 +391,6 @@ Recording, external publication, appliance operation, purchasing, and payment ea
 
 ### Cloud使用量→月次請求のProviderテスト
 
-既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。実Provider往復はsandbox claim待ち、実Cloud実行は接続先/予算待ち。本番課金は無効です。
+既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。合成usage 1 USDのStripe sandbox請求・テスト決済・署名通知・Sky paid再取得は受入済み。実Cloud実行は接続先/予算待ち。テスト顧客は予約ドメインの架空emailを使用し、実メール送信は行いません。本番課金は無効です。
 
 米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。

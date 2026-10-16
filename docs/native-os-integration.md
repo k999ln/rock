@@ -617,4 +617,6 @@ main/aosp双方でHOME/DEFAULT候補を宣言する。既定HomeはRoleManager�
 
 Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4モデル推論一周、署名済model導入/catalog、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
 
+main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
+
 主担当OS11/O6、ROCKはAPK/Core/同ID・状態・停止・保存を実装する。AI04は署名済modelと日本語ASR/TTSのlicense/品質/資源、SKY21/BIL02はProvider/請求、RLS02は同imageの配布・復旧を受け持つ。OWNERのHome選択・model/外部送信/予算同意を保持する。検証は`os:check`、AndroidのCore/SDK/JVM/build/lint、`TerminalHomeIntegrationTest`、`LocalAiServiceIntegrationTest`、`design:check`、`npm run verify`。失敗は同じ候補の原因・修正・再検証と未実行欄へ残す。

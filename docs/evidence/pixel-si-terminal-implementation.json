@@ -197,7 +197,7 @@
       "deviceRebootPerformed": false,
       "appDataCleared": false
     },
-    "fullVerifyLog": "/private/tmp/pixel-si-final-acceptance-verify.log",
+    "fullVerifyLog": "/private/tmp/pixel-si-main148-verify.log",
     "nodeVersion": "22.23.3",
     "nodeTests": {
       "tests": 2253,
@@ -232,7 +232,8 @@
       }
     },
     "installedApkReadback": "all_three_match_candidate_bytes_and_previous_signer",
-    "homeRequestAndAppList": "system_request_cancel_and_local_app_list_verified"
+    "homeRequestAndAppList": "system_request_cancel_and_local_app_list_verified",
+    "previousFinalVerifyLog": "/private/tmp/pixel-si-final-acceptance-verify.log"
   },
   "voiceObservation": {
     "onDeviceAsrAvailable": false,
@@ -263,5 +264,19 @@
   "gitEvidence": {
     "branch": "codex/pixel-si-terminal-implementation",
     "readbackCommand": "gh pr view codex/pixel-si-terminal-implementation --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
+  },
+  "mainSynchronization": {
+    "incomingMainSha": "60765fc3dda25a1a2f9730c54230b2b6184a8db3",
+    "preservedPr": 148,
+    "acceptedPrHead": "f366650dec73540661dbac485236b16d51f8e533",
+    "acceptedPrHeadChecks": 7,
+    "androidCodeUnchangedByIncomingMain": true,
+    "postMergeVerify": "pass_all_stages",
+    "preserved": [
+      "Stripe sandbox invoice/email fixture fix",
+      "synthetic 1 USD usage/payment/signed-webhook acceptance",
+      "US 140/100 plan and real Cloud/budget/production holds"
+    ],
+    "sourceHashesStillMatch": 8
   }
 }

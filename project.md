@@ -46,7 +46,7 @@ Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整�
 
 ## 現在の作業
 
-2026-10-16、OS11/O6/ROCKで本人の実装指示によりPixel si端末のAPK previewを実装。基準main `019c2231`の同SHA取得済み6 CI成功から `codex/pixel-si-terminal-implementation` を作成し、原dirtyの表示部品のみ回収、現mainのBroker/同ID/料金/復旧を保持した。HOME候補・4画面・3経路の下書き・実Toolの保存/review/停止/書出し・依頼時scheduler・現v4表示・明示端末内音声adapterを追加。GL066へ既存開発署名と一致するAPKをdata保持で更新し、最終Shell 5件、同Brokerのv4 service 4件、system保存355 bytesのhash一致、Shell/Broker実プロセス停止後の同成果、Home system選択画面/取消を確認。既定Homeは変更なし。host Android build/lintとCore122/Shell JVM11/automation JVM32/SDK7、Node22.23.3全体verify exit 0（2252 pass/既存skip1、API1381/CSV385、asset210/欠落0）。依存不足はnpm ciで修復、RoleManagerの結果付き呼出しを実機検証で修正した。証拠は `docs/evidence/pixel-si-terminal-implementation.json`、最終ログ `/private/tmp/pixel-si-final-acceptance-verify.log`。APK/復旧copyはGit外 `~/Library/RockstarOS/pixel-si-terminal-20261016/`。現v4モデル推論・署名済model導入・日本語音声・Jennifer native統括・実Provider/商用課金・全OS/flash/OTA/全損復旧は未受入。次は署名済profileと一推論、日本語音声。保存/CI/mainは同branch PRでreadbackする。
+2026-10-16、OS11/O6/ROCKで本人の実装指示によりPixel si端末のAPK previewを実装。基準main `019c2231`の同SHA取得済み6 CI成功から `codex/pixel-si-terminal-implementation` を作成し、原dirtyの表示部品のみ回収、現mainのBroker/同ID/料金/復旧を保持した。HOME候補・4画面・3経路の下書き・実Toolの保存/review/停止/書出し・依頼時scheduler・現v4表示・明示端末内音声adapterを追加。GL066へ既存開発署名と一致するAPKをdata保持で更新し、最終Shell 5件、同Brokerのv4 service 4件、system保存355 bytesのhash一致、Shell/Broker実プロセス停止後の同成果、Home system選択画面/取消を確認。既定Homeは変更なし。host Android build/lintとCore122/Shell JVM11/automation JVM32/SDK7、Node22.23.3全体verify exit 0（2252 pass/既存skip1、API1381/CSV385、asset210/欠落0）。依存不足はnpm ciで修復、RoleManagerの結果付き呼出しを実機検証で修正した。証拠は `docs/evidence/pixel-si-terminal-implementation.json`、最終ログ `/private/tmp/pixel-si-final-acceptance-verify.log`。APK/復旧copyはGit外 `~/Library/RockstarOS/pixel-si-terminal-20261016/`。現v4モデル推論・署名済model導入・日本語音声・Jennifer native統括・実Provider/商用課金・全OS/flash/OTA/全損復旧は未受入。次は署名済profileと一推論、日本語音声。保存/CI/mainは同branch PRでreadbackする。 main PR #148/60765fc3のStripe sandbox受入と修正を保全mergeし、Android差分0・固定8 source hash一致を確認。合成usage決済と実Cloud/継続契約は別。統合後のNode22全体verifyもexit 0（2252 pass/既存skip1、API1381/CSV385、asset210/欠落0）。ログは `/private/tmp/pixel-si-main148-verify.log`。
 
 主担当はAndroid / Device / Local si（ROCK）、OS11 / O6。設計同期はDOC04 / H1、作業branchは`codex/pixel-si-terminal-implementation`。通信＋si利用権商品とaccount正本、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。表示候補の選別回収と実Tool一仕事はAPKで受入。次はPX01の署名済model導入・現v4推論一仕事と日本語音声。cloudのC1/C2、共通予算・後払い・Provider・本人分離・data lifecycleは既存担当へ接続する。
 
@@ -536,3 +536,9 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
 
 最終ローカル検証: 回帰2234成功/1skip、型/lint、全設計/基準/担当、Web build/asset closure、仕事API1381・CSV385合格。verifyはsite専用依存不足で一度停止し、依存導入後に停止stage以降をbot:checkまで再開して全て成功。同一headのGitHub CIはPR #142で確認中。
+
+## 2026-10-16 — Sky Stripe sandbox接続と決済受入（BIL02 / O5、JOINT）
+
+着手: 本人がSandboxのCLI接続を承認。対象account一致を確認し403を解消。send_invoiceに必要なテスト顧客email不足を修正中。旧失敗請求は保持し、fresh合成利用量で請求→テスト決済→署名通知を検証する。本番課金・実Cloud実行・定額自動回収は対象外。
+
+検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。

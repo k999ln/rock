@@ -283,9 +283,11 @@ SKY_MONTHLY_PROVIDER_TEST=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/conf
 node --experimental-strip-types --test tests/sky-cloud-monthly.test.mjs
 ```
 
-Mac画面は `http://127.0.0.1:5222/sky/billing`。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+テスト専用顧客は `sky-monthly-test@example.com` を設定する。send_invoiceがemailを要求するためで、本人の連絡先ではなく予約ドメインのfixtureである。請求書メールの送信APIは呼ばず、auto_advance=falseを維持する。旧email欠落で失敗した請求はDBごと保持し、idempotency key変更や金額改変で再発行せず、fresh合成DBで修正版を検証した。
 
-合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。最後の2項目は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
+Mac画面は `http://127.0.0.1:5222/sky/billing`。`SKY_MONTHLY_TEST_PORT=5223`で今回の受入画面へ変更でき、CLIの転送portも合わせる。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+
+合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。2026-10-16に合成usage 1 USDの実Stripe sandbox往復を受入済み。実Cloud実行との同一ID照合は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
 
 ### Sky 140 の料金案と利用量試算
 
@@ -339,6 +341,6 @@ Solで軽い仕事入力10,000/出力2,000を1,000件（40 USD）、標準200件
 
 現コードは確定usage取込・従量test invoice・署名通知の再照合と料金試算まで。定額契約、SetupIntent、月次Subscription、未払い制限をAgent実行の権限として強制する接続、通知、返金/異議復旧は未実装/未受入。今回の画面の手順表示をruntime成功とはしない。
 
-2026-10-16に既存sandbox account APIを再確認し403。未claim/制限付きキーの権限不足を回避せず、既存sandboxを引き取り、同じaccountに対するtest鍵をserver設定へ安全に更新してから再照合する。鍵やclaim URLをチャット/Gitへ貼らない。Cloud Providerのcredentialと実試験の小額予算も別に必要で、月額売価140 USDを試験支出上限に転用しない。
+2026-10-16、本人承認で既存sandboxを引き取り、同じaccountのtest鍵へ更新しaccount APIの403を解消。合成usage 1 USDを請求し、テストカード決済・署名付きinvoice.paid・Stripe再照合・Sky paid表示まで確認した。鍵やclaim URLをチャット/Gitへ貼らない。Cloud Providerのcredentialと実試験の小額予算も別に必要で、月額売価140 USDを試験支出上限に転用しない。
 
 合格条件は同意なし拒否、初回後払い期間の有限上限、月境界と予約、140 USDの1回請求と枠内usageの追加請求0、テストカード成功/失敗/要認証、重複通知、逆順通知、異議中/解約済み復旧拒否、過去未払いの残存、未払い停止中の成果export、入金後の正しい復旧、再起動後の同一状態。実Stripe testで同じcontract/invoice/usage IDを記録し、本番カード/引落し/回収/銀行制限は実施しない。
