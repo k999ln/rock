@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "physical_apk_accepted_ci_pending",
+    "status": "physical_apk_and_pr_ci_accepted_main_merged",
     "branch": "codex/pixel-si-terminal-implementation",
     "baseMainSha": "019c2231891952b506a3fd13614edb733c346527",
     "scope": [
@@ -18,7 +18,7 @@
     "fullOsBuilt": false,
     "flashPerformed": false,
     "paidExecutionEnabledByThisChange": false,
-    "nextAction": "Accept signed model/profile import and a real API v4 inference job, installed Japanese ASR/TTS and Jennifer native orchestration. Keep cloud/OS/release acceptance separate; confirm PR head CI and main readback.",
+    "nextAction": "Accept signed model/profile import and a real API v4 inference job, installed Japanese ASR/TTS and Jennifer native orchestration. Keep cloud/OS/release acceptance separate.",
     "authority": "docs/native-os-integration.md#pixel-terminal-implementation",
     "evidence": "docs/evidence/pixel-si-terminal-implementation.json",
     "initialPhysicalTestsPassed": 9,
@@ -41,6 +41,15 @@
       "acceptedPrHeadChecks": 7,
       "androidCodeUnchangedByIncomingMain": true,
       "postMergeVerify": "pass_all_stages"
+    },
+    "gitAcceptance": {
+      "pullRequest": "https://github.com/k999ln/rock/pull/149",
+      "acceptedHead": "b7e1b30fbe054de64dbb63507eff87a03c88edf2",
+      "sameHeadSuccessfulChecks": 8,
+      "mergedAt": "2026-10-16T07:54:54Z",
+      "mergeCommit": "bd429699672f7433d8e50fac3a886d73c36fb994",
+      "mergeTreeMatchesAcceptedHead": true,
+      "readbackCommand": "gh pr view 149 --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
     }
   },
   "usSkyContractBilling": {"date": "2026-10-16", "taskId": "BIL02", "market": "US", "monthlyUsd": 140, "includedUsageUsd": 100, "allocationApproved": true, "status": "design_and_preview_verified", "fullVerify": "pass", "verifyLog": "/private/tmp/sky-us-verify.log", "uiVerified": true, "runtimeEnforcementAccepted": false, "providerSandbox": "synthetic_usage_invoice_payment_signed_webhook_passed", "productionBillingEnabled": false, "nextAction": "implement US contract, finite postpay exposure, recurring collection and access restoration; real Cloud usage requires provider and budget"},
