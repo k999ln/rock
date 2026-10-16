@@ -4,6 +4,7 @@
   "taskId": "SKY21",
   "primaryOwner": "ROCK",
   "branch": "codex/sky-conversation-diagrams",
+  "githubPullRequest": "https://github.com/k999ln/rock/pull/147",
   "baseMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f",
   "integratedMain": "019c2231891952b506a3fd13614edb733c346527",
   "catalogBefore": {
