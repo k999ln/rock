@@ -4,7 +4,7 @@
     "composition": "docs/service-design/README.md",
     "owner": "Sky",
     "requiredCompanionProducts": [],
-    "status": "cloud_usage_adapter_implemented_external_acceptance_pending",
+    "status": "synthetic_usage_stripe_sandbox_roundtrip_accepted_real_cloud_pending",
     "implementation": [
       "lib/sky-monthly-sandbox.ts",
       "lib/sky-monthly-sandbox-http.ts",
@@ -17,7 +17,8 @@
     "cloudTests": "tests/sky-cloud-monthly.test.mjs",
     "planEstimate": "lib/sky-plan-estimate.ts",
     "usContractBilling": "docs/sky-billing.md#米国向けの契約に基づく月次請求",
-    "collectionRuntimeAccepted": false
+    "collectionRuntimeAccepted": false,
+    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json"
   },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",

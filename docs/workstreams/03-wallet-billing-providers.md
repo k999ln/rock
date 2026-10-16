@@ -277,3 +277,5 @@ BIL02は[決済詳細の実装順](../sky-commerce-design.md#16-実装の分割�
 BIL02/O5の[請求設計](../sky-billing.md)へ2026-10-15の利用者要求を追加。usage/予算/明細/収納/権限制限を分け、与信とProvider受入後に有効化。旧ToC収益料金のexecutionHoldsは解除しない。
 
 BIL02/O5: Sky月次請求local fixtureを実装。既存citation workflowを再利用し、見積承認・usage・月締め・模擬入金・再送/復旧を検証する。`npm run sky:monthly:sandbox`、`node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs`。[責任と残条件](../sky-billing.md#sky単体の月次請求ローカル実装2026-10-15)。実Provider受入とは別。
+
+BIL02/O5（JOINT）2026-10-16: 合成usage 1 USDでStripe sandbox請求→テストカード→署名通知HTTP 200→Sky paidを受入。[証拠](../evidence/sky-cloud-monthly-test.json)。send_invoice用のfixture email不足を修正。実Cloud、定額140 USD回収、未払い制限、本番課金は未受入。

@@ -534,3 +534,9 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
 
 最終ローカル検証: 回帰2234成功/1skip、型/lint、全設計/基準/担当、Web build/asset closure、仕事API1381・CSV385合格。verifyはsite専用依存不足で一度停止し、依存導入後に停止stage以降をbot:checkまで再開して全て成功。同一headのGitHub CIはPR #142で確認中。
+
+## 2026-10-16 — Sky Stripe sandbox接続と決済受入（BIL02 / O5、JOINT）
+
+着手: 本人がSandboxのCLI接続を承認。対象account一致を確認し403を解消。send_invoiceに必要なテスト顧客email不足を修正中。旧失敗請求は保持し、fresh合成利用量で請求→テスト決済→署名通知を検証する。本番課金・実Cloud実行・定額自動回収は対象外。
+
+検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。

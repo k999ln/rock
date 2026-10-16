@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-15",
+  "date": "2026-10-16",
   "taskId": "BIL02",
   "mode": "stripe-test",
   "unitTests": {
@@ -8,15 +8,34 @@
   },
   "ui": {
     "usageImport": "passed_with_synthetic_fixture",
-    "invoiceCreation": "blocked_account_api_403",
-    "plan140Calculator": "passed_100_and_140_budget_switch"
+    "invoiceCreation": "passed_fresh_synthetic_usage",
+    "plan140Calculator": "passed_100_and_140_budget_switch",
+    "paymentReadback": "paid",
+    "url": "http://127.0.0.1:5223/sky/billing",
+    "restartReadback": "same_invoice_paid"
   },
   "stripe": {
     "sandboxCreated": true,
     "accountId": "acct_1UQrEIGfTgzUjVHJ",
-    "sandboxExpires": "2026-10-22",
-    "claimCompleted": false,
-    "roundtripPassed": false
+    "claimCompleted": true,
+    "roundtripPassed": true,
+    "acceptance": {
+      "account": "acct_1UQrEIGfTgzUjVHJ",
+      "invoice": "in_1UR3ehGfTgzUjVHJ8NwJVABk",
+      "livemode": false,
+      "status": "paid",
+      "total": 100,
+      "amount_paid": 100,
+      "amount_remaining": 0,
+      "currency": "usd",
+      "syntheticUsage": true,
+      "actualCloudExecution": false
+    },
+    "webhookEvents": [
+      "evt_1UR3ekGfTgzUjVHJ33e4esoM",
+      "evt_1UR3f5GfTgzUjVHJhG1WZmxA"
+    ],
+    "webhookHttpStatus": 200
   },
   "realCloudExecution": {
     "performed": false,
@@ -27,17 +46,29 @@
     "status": "passed",
     "node": "22.23.3",
     "environment": "WRANGLER_HIDE_BANNER=true",
-    "log": "/private/tmp/sky-cloud-merged-verify.log",
-    "previousFailures": "Wrangler update-check shutdown timeout; release dependency count fixture corrected",
-    "afterMainMerge": "a07bfebec4266d1b53f7660fd94e3011f5a06ecb"
+    "log": "/private/tmp/sky-claimed-verify.log"
   },
   "secretsCommitted": false,
   "plan": {
     "monthlyUsd": 140,
     "usageProposalUsd": 100,
     "serviceProposalUsd": 40,
-    "allocationApproved": false,
+    "allocationApproved": true,
     "liveEnabled": false
   },
-  "canvasTypecheck": "passed"
+  "canvasTypecheck": "passed",
+  "sourceBase": "019c2231891952b506a3fd13614edb733c346527",
+  "sourceHashes": {
+    "lib/sky-cloud-monthly-stripe.ts": "26cd5c7530dedb72c17f3a298b82094b987332fe4f22a4190f95dee08bb3b5c8",
+    "lib/sky-cloud-monthly-store.ts": "d9577b24514c3cb259fde45fe6458f751a63c6b228706c7372a995025b5a61e6",
+    "lib/sky-cloud-monthly-http.ts": "fdb0cff9a20410d581b385b9c5db2cad95fb2790728518f479b16003021dd0c5"
+  },
+  "repair": {
+    "cause": "send_invoice requires customer email; original fixture customer had none",
+    "change": "test-only customer creation sets reserved example.com address; no sendInvoice API",
+    "oldFailedDatabase": "work/sky-cloud-monthly-test/wizard.sqlite",
+    "acceptedDatabase": "work/sky-cloud-monthly-test/claimed.sqlite",
+    "oldInvoicePreserved": true,
+    "recurring140PlanAccepted": false
+  }
 }
