@@ -7388,11 +7388,12 @@
     "executionBoundary": "Browser-only deterministic finite rules. No external transfer, model inference, account save, audio capture or transcription.",
     "branch": "codex/sky-conversation-diagrams",
     "baseMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f",
+    "integratedMain": "019c2231891952b506a3fd13614edb733c346527",
     "githubSaved": false,
     "mainIntegrated": false,
     "deployed": false,
     "localBrowserReadback": "IAB localhost created two diagrams from two blank-line-separated paragraphs and switched to paragraph 2 with the expected reason and decision nodes.",
-    "validation": "Targeted conversation diagram and execution-scope tests 29/29 passed; baseline:check, design:check, sky:check, typecheck and build passed; full npm run verify passed with 2240 ordinary tests (2239 pass, one existing platform skip, zero failures), 1381 Work API assertions and 385 CSV assertions.",
+    "validation": "Before the latest-main merge, full npm run verify passed with 2240 ordinary tests (2239 pass, one existing platform skip, zero failures), 1381 Work API assertions and 385 CSV assertions. After merging main 019c2231, baseline:check, design:check, sky:check, typecheck, A2A positive 14/14, build, package/site/API/mission/work/bot checks and targeted feature tests passed. The local full chain remains non-green only for existing host test-harness timing: Wrangler D1 migration/seed exceeded the fixed 30-second A2A timeout, and two parallel cleanup races each passed on immediate isolated rerun. GitHub CI on the saved head remains required.",
     "evidence": "docs/evidence/sky-visual-scribe-local-20261015.json",
     "nextAction": "Save the exact branch on GitHub, pass full CI, then deploy the same accepted source and verify desktop/mobile input, export and privacy copy before calling it public. Add finalized voice segments, provenance and owner-scoped save only as separate stages."
   },
