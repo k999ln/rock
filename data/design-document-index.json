@@ -127,7 +127,12 @@
             "android/automation/src/main/java/dev/rock/automation/LocalPlanningFence.java",
             "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
             "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
-            "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl"
+            "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+            "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+            "android/core/build.gradle",
+            "android/Android.bp",
+            "os/physical/model-crypto-artifact-lock.json",
+            "scripts/stage-model-crypto.py"
           ],
           "physicalInferenceAccepted": false,
           "fullJenniferGoalAccepted": false

@@ -148,6 +148,30 @@
     {
       "path": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
       "sha256": "e434c3098161837c12bb71e47df9dc478afaf95212c1dcbce3907c6d56b1e0fd"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+      "sha256": "69b2d86ad1a54a06ce9ccb742fb84aea51f6103157a061ea41882d77a61a1116"
+    },
+    {
+      "path": "android/core/build.gradle",
+      "sha256": "f49747f0b5dd03088cca7619952d4dd6e51889e9dac6881851865f4187dd0f75"
+    },
+    {
+      "path": "android/Android.bp",
+      "sha256": "4af42552996733e09793f833ea0b5eec3590eab0255fe51618b48cad94c37a28"
+    },
+    {
+      "path": "os/physical/model-crypto-artifact-lock.json",
+      "sha256": "76fd949411d9dd9927cb47dc343450fb659116db183bb12f67cef97c44b31a38"
+    },
+    {
+      "path": "scripts/stage-model-crypto.py",
+      "sha256": "5323e154e933f0321df2dcce1dd257dbcec2d612ea16d5d15d5ee17d6d4c1fda"
+    },
+    {
+      "path": "scripts/build-phone-bringup.sh",
+      "sha256": "546dc76c69372c20fe79ae1d4594efb773c2e924dcd8864c7effba21fa472008"
     }
   ],
   "verification": {
@@ -161,14 +185,14 @@
     "hostTestsFailed": 0,
     "hostTestsSkipped": 0,
     "instrumentationApksCompiled": true,
-    "androidBuildLog": "/private/tmp/pixel-local-jennifer/android-identity-final.log",
+    "androidBuildLog": "/private/tmp/pixel-local-jennifer/android-crypto-final.log",
     "fullVerify": "pass_all_stages",
     "physicalInference": "not_run_owner_device_unavailable",
     "physicalOptInTest": "dev.rock.automation.LocalModelPlanningAcceptanceTest; requires rockPhysicalModelAcceptance=true; default skip is not inference acceptance",
     "releaseApkCatalogInspection": "empty; debug APK contains one signed model definition",
     "candidateApkSignatures": "all six match the previous accepted development certificate; not installed on Pixel",
     "fullVerifyBeforeFinalIdentityGuard": "pass_all_stages; /private/tmp/pixel-local-jennifer/verify.log",
-    "fullVerifyLog": "/private/tmp/pixel-local-jennifer/verify-final.log",
+    "fullVerifyLog": "/private/tmp/pixel-local-jennifer/verify-crypto-final.log",
     "nodeTests": {
       "tests": 2253,
       "pass": 2252,
@@ -181,10 +205,37 @@
       "Android test helpers use compileSdk35-compatible byte read/write instead of unavailable Files.readString/writeString",
       "Runtime/activation IPC clears and restores caller identity after the exact Shell gate",
       "Rejected a different historical APK-lock hash; reused only the verified frozen CI payload and existing signed copy without changing OS artifact locks"
-    ]
+    ],
+    "secretScanReview": {
+      "initialResult": "two generic-api-key detections of the same public tokenizerSha256 digest; not a private key",
+      "classification": "public GGUF metadata SHA-256",
+      "candidateSha256": "d130682d1942226b7eeb8dda0e3e5489c384e4685af1007ce0c383fcd7801e6d",
+      "exactPaths": [
+        "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "docs/evidence/pixel-local-jennifer.json"
+      ],
+      "scope": "one literal at two exact paths; scanner defaults and actual credential detection remain enabled",
+      "policy": ".github/spider/gitleaks.toml",
+      "provenance": ".github/spider/public-value-provenance.json",
+      "reviewedControlCommit": "75832b7b783d27d1ca32ad40c866fbc33e738b2b",
+      "realGitleaksRegressionTestsPassed": 16,
+      "reachableHistoryCandidatesAfterExactException": 0,
+      "log": "/private/tmp/pixel-local-jennifer/secrets-history.log"
+    },
+    "initialAndroidCiFailure": {
+      "head": "fb7067141326837d259cdd30015380e3acae4bcc",
+      "url": "https://github.com/k999ln/rock/actions/runs/38946258728",
+      "cause": "JCA Ed25519 selected AndroidKeyStore, which refused the software public X509 key",
+      "fix": "Pinned Bouncy Castle 1.86 lightweight Ed25519 verifier; no global provider registration or signature bypass"
+    },
+    "modelCryptoStagerAndPhoneTestsPassed": 23,
+    "modelCryptoPinnedJarStage": "pass_host_stage_and_verify_not_Soong_compile",
+    "fullVerifyBeforeSoftwareCrypto": "/private/tmp/pixel-local-jennifer/verify-final.log",
+    "securityAndStagerRegressionTestsPassed": 39
   },
   "gitEvidence": {
-    "readbackCommand": "gh pr view codex/pixel-local-jennifer --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
+    "readbackCommand": "gh pr view codex/pixel-local-jennifer --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit",
+    "pullRequest": "https://github.com/k999ln/rock/pull/152"
   },
   "remaining": [
     "Install matching candidate APKs on reconnected Pixel and read back signatures/bytes",
@@ -203,8 +254,8 @@
   "candidateApks": {
     "automation-debug.apk": {
       "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/automation-debug.apk",
-      "bytes": 825480,
-      "sha256": "dcd89bf4d215f2877ab22472392d29b7f393af3d26e2931d4d2923808789edb5",
+      "bytes": 6829809,
+      "sha256": "2e49283df191cd7b0bfdf5bf3ac6c91114b32591c67e4528643709998efb0de0",
       "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
     },
     "shell-debug.apk": {
@@ -227,8 +278,8 @@
     },
     "article-tool-debug.apk": {
       "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/article-tool-debug.apk",
-      "bytes": 354474,
-      "sha256": "7c35f2dfba44ba4a96fc6c2a1760a20ce0115eecf6207579f9cd8e14a938b905",
+      "bytes": 6372620,
+      "sha256": "79461ab59d58e65a0b761d9a545d0988451273c43835fa3b5fbe1eebc90b55b8",
       "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
     },
     "local-ai-v4-preview.apk": {
@@ -253,5 +304,20 @@
     "artifactLockUnchanged": true,
     "initialDifferentArtifactLockHashWasRejected": true,
     "signingPerformedThisTurn": false
+  },
+  "cryptoArtifact": {
+    "schema": "rock-model-crypto-artifact/1",
+    "library": "Bouncy Castle lightweight Ed25519 verifier",
+    "coordinate": "org.bouncycastle:bcprov-jdk15to18:1.86",
+    "version": "1.86",
+    "license": "MIT",
+    "url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.86/bcprov-jdk15to18-1.86.jar",
+    "sha256": "fc50334d4d87b4272e72fa95ca748ead05bdef02ef760a5b13f64ffee317cd81",
+    "bytes": 7177698,
+    "moduleName": "rock-model-crypto",
+    "stagingPath": "vendor/rockstaros-model-crypto",
+    "verificationScope": "Same pinned library for Gradle APK and full-OS Soong source; no global JCA provider registration",
+    "licenseNoticeSha256": "89e61e44dcdd5bf128446fcdb8b2adf41d597d5c5a3de25e91c0b682af710ed8",
+    "globalProviderRegistration": false
   }
 }

@@ -1,0 +1,14 @@
+{
+  "schema": "rock-model-crypto-artifact/1",
+  "library": "Bouncy Castle lightweight Ed25519 verifier",
+  "coordinate": "org.bouncycastle:bcprov-jdk15to18:1.86",
+  "version": "1.86",
+  "license": "MIT",
+  "url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.86/bcprov-jdk15to18-1.86.jar",
+  "sha256": "fc50334d4d87b4272e72fa95ca748ead05bdef02ef760a5b13f64ffee317cd81",
+  "bytes": 7177698,
+  "moduleName": "rock-model-crypto",
+  "stagingPath": "vendor/rockstaros-model-crypto",
+  "verificationScope": "Same pinned library for Gradle APK and full-OS Soong source; no global JCA provider registration",
+  "licenseNoticeSha256": "89e61e44dcdd5bf128446fcdb8b2adf41d597d5c5a3de25e91c0b682af710ed8"
+}

@@ -319,7 +319,7 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 ## 検証
 
 - `npm run device-support:check`
-- `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py tests/test_freeze_phone_build_inputs.py`
+- `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py tests/test_stage_model_crypto.py tests/test_freeze_phone_build_inputs.py`
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
 - `gradle -p android :jev-preview:assembleDebug :jev-preview:assembleRelease :jev-preview:testDebugUnitTest :jev-preview:lintDebug :jev-preview:lintRelease --no-daemon`
 - 同一debug signerのLocal si／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 11 non-skipped testとShell 5 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否、phrase確認、v2 export、新Keystore再bindingを確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。物理wipe復元は純正復旧artifactを揃えた別の管理試験にする。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)、backup emulator受入は[証拠](../evidence/android-backup-v2-emulator-20260916.json)。

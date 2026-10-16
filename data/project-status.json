@@ -17,8 +17,12 @@
     "privateShellApiVersion": 19,
     "productionCatalogEmpty": true,
     "fullVerify": "pass_all_stages",
-    "verifyLog": "/private/tmp/pixel-local-jennifer/verify-final.log",
-    "candidateDirectory": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate"
+    "verifyLog": "/private/tmp/pixel-local-jennifer/verify-crypto-final.log",
+    "candidateDirectory": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate",
+    "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json",
+    "privateModelSigningKeyGenerated": true,
+    "osSigningKeyGenerated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/152"
   },
   "pixelSiImplementation": {
     "date": "2026-10-16",

@@ -14,6 +14,8 @@ Home候補・4画面・実行先別の下書き・明示音声adapter・成果�
 
 ### Pixelの端末内LLM・Jennifer候補を受け入れる
 
+署名検証ライブラリはGradleが`os/physical/model-crypto-artifact-lock.json`のSHA-256/sizeをcompile前に照合する。Soongは同じJARを`ROCK_MODEL_CRYPTO_JAR`からstageする別経路で、専用Linuxでの全OS compileは未実行。
+
 [モデル導入と有限計画の契約](native-os-integration.md#pixel-local-jennifer)と[候補台帳](evidence/pixel-local-jennifer.json)を読む。Shell/Brokerはprivate API 19の組で更新する。現行Local Action AssistantはversionCode 3 / Binder API 4 / 同じ開発signer、記事Toolは従来のAPIを使う。release catalogは空で、Developer Preview APKの署名済一modelだけを対象とする。本人が実機を接続できないため、この候補の実機試験は未実行。
 
 1. 再接続したPixelの`frankel`/GL066・OS・空き容量・解除状態、現在のAPK/Signerを読み取り確認する。既存APKを退避し、same signerを確認してからShell/Brokerを`adb install -r`で更新する。`-d`/uninstall/data clear/OS flashは使わない。UI/Brokerは同じAPI 19、runtimeは承認済みAPI 4であることを確認する。
