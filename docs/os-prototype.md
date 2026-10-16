@@ -4,6 +4,12 @@
 
 対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。最初の物理対象はPixel 10 GL066／frankel。BlackBerry-firstは退役済みで、Linux/QEMU Developer Previewは独立した受入系列として保持する。
 
+## Pixel si端末アプリの実装（2026-10-16）
+
+Home候補・4画面・実行先別の下書き・明示音声adapter・成果書出しと、Brokerの依頼時one-shot schedulerを[Pixel実装正本](native-os-integration.md#pixel-terminal-implementation)へ同期する。通常の署名済APK更新で、OS flashではない。[同一候補の台帳](evidence/pixel-si-terminal-implementation.json)にhost/emulator/GL066/全OSを分けて記録する。`gradle -p android :core:test :shell:testDebugUnitTest :automation:testDebugUnitTest :tool-sdk:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :automation:assembleDebug :automation:assembleDebugAndroidTest :article-tool:assembleDebug :shell:lintDebug :automation:lintDebug`、接続先を固定した`TerminalHomeIntegrationTest`と`LocalAiServiceIntegrationTest`を使う。既存開発署名との一致と復旧用APK退避を先に確認し、`adb install -r`でdataを保持する。既定Homeの自動変更、app data clear、OS署名鍵生成、bootloader操作は含めない。
+
+このpreviewの戻し方: まずAndroidの「デフォルトのアプリ→ホームアプリ」で元のLauncherを選ぶ。APKは `~/Library/RockstarOS/pixel-si-terminal-20261016/candidate/`、更新前は同directoryの`before/`、hashは`artifact-manifest.json`へ保存する。画面だけを戻す場合も、既存署名/versionとShell API 18が一致することを確認してから`before/dev.rock.shell.apk`を`adb install -r`する。Broker/DBを消去せず、Broker/Tool全体の巻戻しはschema/契約の互換確認を別に行う。旧APK退避と署名照合は実施、旧版への実rollbackは未試験。Developer Previewの試験署名であり、本番配布用の鍵やOS imageではない。
+
 ## 現行の再開入口（2026-10-11）
 
 現行の段階と同SHAの証拠は[Android workstreamの表](workstreams/07-android-device-local-ai.md#現行の検証段階と再開条件2026-10-11)を優先する。既存JDK 17／SDK 35を使ったhostの実SQLite・AIDL／Java compileに加え、`19ef1020`の[Android API 35 CI](https://github.com/k999ln/rock/actions/runs/38153378733)が成功した。Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationのautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件とAPK build／lintが対象で、RockstarOS imageの起動試験ではない。

@@ -1,0 +1,267 @@
+{
+  "schema": "rock-pixel-si-terminal-implementation/1",
+  "date": "2026-10-16",
+  "taskId": "OS11",
+  "primarySquad": "O6",
+  "primaryOwner": "ROCK",
+  "status": "physical_apk_accepted_with_explicit_gaps_ci_pending",
+  "authority": "docs/native-os-integration.md#pixel-terminal-implementation",
+  "request": "この設計で、Pixelで実際にsi専用端末として使えるように実装を進めて",
+  "source": {
+    "baseMainSha": "019c2231891952b506a3fd13614edb733c346527",
+    "baseSameShaChecksSuccessful": 6,
+    "branch": "codex/pixel-si-terminal-implementation",
+    "files": [
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "sha256": "2a1fd2a2d46ed03bcfcd2071f5ddc7052ad21ab7be77eb22381df5dfa7e58cef"
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+        "sha256": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7"
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/TerminalVoice.java",
+        "sha256": "16af7d20cb619a984acb34a2851363c61a58f14e8a8c7badc6792240c8ab5f43"
+      },
+      {
+        "path": "android/shell/src/main/AndroidManifest.xml",
+        "sha256": "a024ed90ad2d90a4665e9feb12bb87b0db392bcee1d5c00b6ef74cc01681644e"
+      },
+      {
+        "path": "android/shell/src/aosp/AndroidManifest.xml",
+        "sha256": "19f58862da0ea2b926699a09ea30e4997a3cf3dc537d63fb67cdf9b877876400"
+      },
+      {
+        "path": "android/automation/src/main/java/dev/rock/automation/Scheduler.java",
+        "sha256": "5a3ddfe4443ff798789ad3bf7d1f3415241f18d7f08c7f2f2603bba271963662"
+      },
+      {
+        "path": "android/automation/src/main/java/dev/rock/automation/AutomationJobService.java",
+        "sha256": "ee48c54a52d5895813dde2bd32c9788597c62087ac9d68e873c8e94d046c3b2f"
+      },
+      {
+        "path": "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java",
+        "sha256": "7a055381fc7fc3401ab75336f90b08f644e5489a9e85079a2347903c29782cf0"
+      }
+    ]
+  },
+  "selectiveRecovery": {
+    "from": "original dirty codex/esim-cloud-access",
+    "copiedPresentationFile": "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+    "copiedFileSha256": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7",
+    "adaptedMethods": [
+      "createShellFrame",
+      "heading",
+      "disclosure",
+      "selectPage",
+      "memory-only draft configuration retention"
+    ],
+    "originalWorkingTreeChangedByThisWork": false,
+    "wholeDirtyTreeImported": false,
+    "simulationToolsImported": false,
+    "preservedCurrentMain": [
+      "LocalSubmission same-ID recovery",
+      "Broker Shell API 18",
+      "Local si API v4",
+      "workflow, billing, owner and provider gates",
+      "recovery/backup and source lock"
+    ]
+  },
+  "device": {
+    "model": "Pixel 10",
+    "device": "frankel",
+    "sku": "GL066",
+    "androidRelease": "17",
+    "apiLevel": 37,
+    "osIncremental": "2026100601",
+    "verifiedBoot": "yellow",
+    "vbmetaDeviceState": "locked",
+    "serialStored": false
+  },
+  "candidateApks": {
+    "dev.rock.shell": {
+      "versionCode": 1,
+      "sha256": "6a7222bea624250a2f279ddf50e7c668b8bfbd50d3614327d1105a993cec4f3f",
+      "previousApkSha256": "9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4",
+      "sameExistingDevelopmentSigner": true,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "dev.rock.automation": {
+      "versionCode": 1,
+      "sha256": "668478f42868986f9bc3c2dec8446c7a5b8c55711238f2ef9f61741422a42c8b",
+      "previousApkSha256": "bfe42505f2a59f8f93ee60d1779c4d82de3a2da8fe8751f49a23ae08bf3f5225",
+      "sameExistingDevelopmentSigner": true,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "dev.rock.tools.article": {
+      "versionCode": 1,
+      "sha256": "bac42883de55800967945733cacac1fb4109f8aa7f4f72403a7ab2aa1e970d04",
+      "previousApkSha256": "5def4a5be4cebe31beda34d9acb7b694e37f00633fb2284ef544f8a902fdfe6e",
+      "sameExistingDevelopmentSigner": true,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    }
+  },
+  "installation": {
+    "previousApksBackedUpOutsideGit": true,
+    "mode": "adb install -r",
+    "appDataCleared": false,
+    "uninstalled": false,
+    "defaultHomeChangedAutomatically": false,
+    "osWritten": false,
+    "finalPresentationCandidateInstalledAndVerified": true,
+    "stableCandidateAndRecoveryDirectory": "/Users/kaiya/Library/RockstarOS/pixel-si-terminal-20261016"
+  },
+  "implemented": [
+    "Home/Sky/Work/Settings navigation and user-selectable HOME role",
+    "manual Tool, local LLM and cloud quote draft routes without auto execution",
+    "on-device-only explicit voice adapter with lifecycle and lock guards",
+    "API v4 observation validation; v2 rejection",
+    "idempotent real article Tool submission, review, cancellation and export",
+    "foreground local job refresh and same-ID restart recovery",
+    "charging-gated one-shot scheduler plus periodic maintenance with per-job sessions"
+  ],
+  "verification": {
+    "hostAndroidBuildAndLint": "pass",
+    "hostLogs": [
+      "/private/tmp/pixel-si-android-build-final.log",
+      "/private/tmp/pixel-si-final-presentation-build.log",
+      "/private/tmp/pixel-si-home-role-fix-build.log"
+    ],
+    "coreTests": 122,
+    "shellJvmTests": 11,
+    "automationJvmTests": 32,
+    "toolSdkTests": 7,
+    "initialPhysicalShellTests": {
+      "passed": 5,
+      "log": "/private/tmp/pixel-si-terminal-physical.log",
+      "shellApkSha256": "887899fa1475609d76b3d3b02e97a3fa01224d4b7adc82ceaad70369c75e57ab",
+      "scope": "real Tool/no duplicate/review/Activity restart, draft safety, HOME candidate and API validation; before final presentation polish"
+    },
+    "localAiV4PhysicalTests": {
+      "passed": 4,
+      "log": "/private/tmp/pixel-si-local-ai-v4-physical.log",
+      "scope": "same-signer installed API v4 status and no-profile planning refusal; not model inference"
+    },
+    "currentPhysicalTests": {
+      "shellTestsPassed": 5,
+      "shellTestsSkipped": 0,
+      "shellLog": "/private/tmp/pixel-si-terminal-rolefixed-physical.log",
+      "sameFinalShellApk": true,
+      "localAiStatusTestsPassed": 4,
+      "modelInferenceAccepted": false
+    },
+    "emulatorTests": "pending_ci",
+    "fullVerify": "pass_all_stages",
+    "osContractCheck": "pass",
+    "dependencyRepair": {
+      "reason": "main PR145 added stripe dependency; existing worktree node_modules stale",
+      "action": "npm ci on Node22",
+      "runtimeFixClaimed": false,
+      "initialLog": "/private/tmp/pixel-si-implementation-verify.log",
+      "retryLog": "/private/tmp/pixel-si-implementation-verify-final.log",
+      "retryResult": "pass_2252_tests_plus_1_existing_skip_before_final_role_java_patch"
+    },
+    "homeRoleUiFix": {
+      "issue": "startActivity without an activity result did not meet RoleManager request contract",
+      "fix": "startActivityForResult and read actual role on result",
+      "officialReference": "https://developer.android.com/reference/android/app/role/RoleManager#createRequestRoleIntent(java.lang.String)",
+      "systemChooserObservedAfterFix": true
+    },
+    "exportReadback": {
+      "sameFinalShellApk": true,
+      "systemPicker": "com.android.documentsui",
+      "fileName": "rockstaros-705a8eee.md",
+      "bytes": 355,
+      "sha256": "a0ac2e8ffa7bff3cc3d1af5ebff4c6515b2cc77bb3b13282b410db894ff44517",
+      "matchesDisplayedBrokerArtifact": true,
+      "savedFileReadBack": true,
+      "savedLocation": "/sdcard/Download/rockstaros-705a8eee.md"
+    },
+    "homeRoleReadback": {
+      "systemChooserObserved": true,
+      "systemPackage": "com.android.permissioncontroller",
+      "cancelConfirmedByActivityResult": true,
+      "previousHomePreserved": true,
+      "homeHolder": "com.android.launcher3",
+      "defaultHomeChangedByThisWork": false,
+      "appChooserOpened": true,
+      "phoneLauncherResolved": true
+    },
+    "processRestartReadback": {
+      "brokerProcessActuallyStopped": true,
+      "newBrokerProcessObserved": true,
+      "sameArtifactAfterProcessRestart": true,
+      "artifactSha256": "a0ac2e8ffa7bff3cc3d1af5ebff4c6515b2cc77bb3b13282b410db894ff44517",
+      "artifactBytes": 355,
+      "deviceRebootPerformed": false,
+      "appDataCleared": false
+    },
+    "fullVerifyLog": "/private/tmp/pixel-si-final-acceptance-verify.log",
+    "nodeVersion": "22.23.3",
+    "nodeTests": {
+      "tests": 2253,
+      "passed": 2252,
+      "existingSkipped": 1,
+      "failed": 0,
+      "cancelled": 0
+    },
+    "apiAssertions": 1381,
+    "csvAssertions": 385,
+    "webAssetReferences": 210,
+    "missingAssets": 0,
+    "gitDiffCheck": "pass",
+    "installedFinalApkReadback": {
+      "dev.rock.shell": {
+        "sha256": "6a7222bea624250a2f279ddf50e7c668b8bfbd50d3614327d1105a993cec4f3f",
+        "installedBytesMatch": true,
+        "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+        "savedApk": "/Users/kaiya/Library/RockstarOS/pixel-si-terminal-20261016/candidate/shell-debug.apk"
+      },
+      "dev.rock.automation": {
+        "sha256": "668478f42868986f9bc3c2dec8446c7a5b8c55711238f2ef9f61741422a42c8b",
+        "installedBytesMatch": true,
+        "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+        "savedApk": "/Users/kaiya/Library/RockstarOS/pixel-si-terminal-20261016/candidate/automation-debug.apk"
+      },
+      "dev.rock.tools.article": {
+        "sha256": "bac42883de55800967945733cacac1fb4109f8aa7f4f72403a7ab2aa1e970d04",
+        "installedBytesMatch": true,
+        "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+        "savedApk": "/Users/kaiya/Library/RockstarOS/pixel-si-terminal-20261016/candidate/article-tool-debug.apk"
+      }
+    },
+    "installedApkReadback": "all_three_match_candidate_bytes_and_previous_signer",
+    "homeRequestAndAppList": "system_request_cancel_and_local_app_list_verified"
+  },
+  "voiceObservation": {
+    "onDeviceAsrAvailable": false,
+    "observedMessage": "端末内の音声認識がありません。文字で入力してください。クラウドへは切り替えません。",
+    "recordingPerformed": false,
+    "japaneseTtsAccepted": false,
+    "cloudFallback": false
+  },
+  "remaining": [
+    "PX01 real API v4 model-profile inference and full one-job acceptance",
+    "signed model catalog/import and production publisher configuration",
+    "installed Japanese on-device ASR/TTS quality and lifecycle acceptance",
+    "native Jennifer goal orchestration and wider Tool catalog",
+    "real cloud Provider, budget and commercial billing acceptance",
+    "mixed realm adapter and Mini/iOS physical continuation",
+    "full OS image/signing/flash/OTA/full-loss recovery"
+  ],
+  "safety": {
+    "compileInputTagUnchanged": "2026100200",
+    "modelOrProviderSecretsAdded": false,
+    "osSigningKeysGenerated": false,
+    "paidExecutionEnabled": false,
+    "cloudProvisioned": false,
+    "fullOsBuilt": false,
+    "flashPerformed": false,
+    "forcePushPerformed": false
+  },
+  "gitEvidence": {
+    "branch": "codex/pixel-si-terminal-implementation",
+    "readbackCommand": "gh pr view codex/pixel-si-terminal-implementation --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit"
+  }
+}

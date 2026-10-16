@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## Pixel si専用端末アプリの実装
+
+2026-10-16、OS11/O6/ROCK。本人の実装指示で[Pixelのアプリ実装](../native-os-integration.md#pixel-terminal-implementation)を開始し、4画面/Home候補、実行先の下書き、モデルなし実Tool、現v4表示、保存/停止/再開/書出し、依頼時scheduler、明示端末内音声adapterを実装する。台帳は[同一候補の証拠](../evidence/pixel-si-terminal-implementation.json)。既存原dirty表示部品だけを選別し、同ID/予算/本人/Provider/復旧の現mainを保持。host、emulator、GL066、全OSを別受入し、モデルなしToolをLLM推論へ昇格させない。次は現v4モデルprofile導入と推論一周、日本語音声、独自OS。Android build/lint/Core/SDK/JVM、TerminalHomeIntegrationTest、LocalAiServiceIntegrationTest、os/design/verifyで検証する。
+
 ## Pixel si専用端末の公開コード調査と実装設計
 
 OS11/O6/ROCK、同期DOC04/H1。2026-10-15の本人依頼を[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)と[調査台帳](../evidence/grapheneos-source-audit.json)へ対応する。調査版の全129 GrapheneOS remoteを分類し、取得した公開差分/独立app/Pixel設定と非公開部品を分離。OSの防御・回線・標準appを再利用し、8 module/PX01〜12へ不足を割り当てる。EXTERNALはupstream/BSP/model/Provider、JOINTは同image/回線/host受入、OWNERはapp方針・日本語音声・予算/契約/端末変更。SpeechServicesの正しいGitLab remoteとv3 TTSを確認し、日本語ASR/TTSの追加受入へつなぐ。採用lockは2026100200を維持。
