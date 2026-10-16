@@ -1,5 +1,7 @@
 # 共通システムと契約
 
+2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](../sky-billing.md)は設計であり、本番課金受入ではない。
+
 再構成版 1.0。利用者がどこから操作しても、同じ本人・仕事・権限・成果を説明できる構成を目指す。ここでの統一は契約の統一であり、Web・Android・Linuxの保存先を統合済みと扱わない。
 
 2026-10-15の商品入口は[通信＋si利用権bundle](../native-os-integration.md)。無料accountは本人と仕事の正本、eSIMは回線、OS導入は機種別、cloudは予算付き実行として分ける。以下の料金/状態/権限契約を再利用し、購入で無制限実行やOS書込みを許可しない。
@@ -19,6 +21,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 再利用先は[workflow](../../lib/workflow.ts)、[本人認証](../../lib/request-auth.ts)、[service access](../../lib/rockstar-service-access.ts)、[catalog](../../lib/catalog.ts)、[A2A委任](../../lib/a2a-delegation-store.ts)、[cloud継続](../sky-cloud-continuity.md)、[SDK](../sky-tool-sdk.md)。adapterの追加で保存・権限・receiptを作り直さない。
 
 各仕事の記録正本は保存realmとauthorityを一つに固定する。WebはAPI policy/D1/R2、AndroidはUID Broker/SQLite、QEMUはPlatform Core、Miniはlocal runtimeを使い、他surfaceはclient/projectionになる。共通契約は一つのBroker process/DBを共有済みという意味ではない。[参照連鎖、階層予算、停止/精算/削除の投影](06-consistency-contracts.md)を実装時の拘束条件とする。
+
+[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)はこれを具体化する。local-onlyはAndroid正本、cloud受付後はD1正本とし、端末cache/未送信commandを別に扱う。混合工程のroot authority、親参照、委任/成果/停止の対応adapterは未受入であり、同じ仕事を二つのDBへ独立に確定しない。既存device transportを再利用し、ShellのHOME未対応、Brokerの既存通信権限、料金/Provider gateの現状を保持する。
 
 ## 3. IDと入力の契約
 
@@ -76,7 +80,7 @@ Mr.の固定Toolは[既存adapter](../../lib/mr-tools.ts)と[固定原本](../..
 
 2026-10-15の本人指示に基づき、avokadoが提供する料金の中心をsiクラウドのサービス契約へ置く。利用者はSkyでmodel/Agent/Toolと実行先を選び、cloudの利用を契約/使用量/上限/明細として把握する。通信事業者のように使える商品という設計であり、通信網の運営資格やpartner契約が成立したとの意味ではない。eSIM商品の通信＋si利用権と接続し、回線profileを本人・課金authorityにしない。
 
-- 契約: plan ID/版、期間、対象model/Agent/workload、含む利用枠がある場合の単位と量、超過の扱い、単価と改定時の扱いを提示する。月額/含む枠/超過単価の値は未確定。既存のaccount無料、30%/1,000円等の数値判断は新しい明示決定まで維持し、新しいplanと二重徴収する条件を作らない。
+- 契約: plan ID/版、期間、対象model/Agent/workload、含む利用枠がある場合の単位と量、超過の扱い、単価と改定時の扱いを提示する。本人の追加指示でSky 140の月額は140 USD。含む枠100 USD・運営分40 USDは提案で、枠/税/超過条件の確定は未了。[試算と実装境界](../sky-billing.md#sky-140-の料金案と利用量試算)を参照。既存のaccount無料、30%/1,000円等の数値判断は新しい明示決定まで維持し、新しいplanと二重徴収する条件を作らない。
 - meter: modelの入力/出力token等、Agent runnerの計算/時間/工程、Tool/外部実費、回線量を別に照合する。異なるmodelのtokenや通信GBを同じ単価へ黙って換算しない。生の使用量と請求額をplan/rate-card版・見積・同JobのReceiptへ関連付ける。
 - 予算: 含む枠の消費と通貨建ての支出予約を区別する。Job横断・複数端末・並列実行のaccount月上限を原子的に照合し、実行中の予約も含める。quotaを出金/移転可能なstored moneyにしない。既存の親Job予算だけでaccount月上限の完成とはしない。
 - local: 端末内だけの推論はcloud使用量0として区別する。購入Tool/license、任意support、回線等の別費用がある場合は別に表示する。localという名称だけで、その工程に接続した外部Toolまで無料/無通信と表示しない。

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-15",
+  "tasks": [
+    "BIL02",
+    "DOC04"
+  ],
+  "designMainMerge": "df615298bdb0e6b1af2bd35bf3a811ccc0e6a30c",
+  "scope": "local fixture; first-party citation Agent and simulated monthly billing",
+  "realProviderSandbox": false,
+  "productionBillingEnabled": false,
+  "externalModelExecution": false,
+  "actualIdentityAcceptance": false,
+  "sharedContracts": [
+    "lib/sky-citation-agent.ts",
+    "lib/workflow.ts",
+    "lib/work-store.ts",
+    "work_jobs"
+  ],
+  "ui": {
+    "url": "http://127.0.0.1:5220/sky/billing",
+    "observed": [
+      "quote 10 JPY",
+      "approved execution saved artifact and usage",
+      "repeat submission did not increase total",
+      "simulated month close",
+      "mock payment reconciled",
+      "server restart retained invoice and artifact"
+    ],
+    "screenshot": "/private/tmp/sky-monthly-sandbox-ui.png"
+  },
+  "verification": {
+    "focusedCommand": "node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs",
+    "migrationCommand": "node --experimental-strip-types --test tests/migration-union.test.mjs",
+    "migrationResult": "11 passed",
+    "fullCommand": "npm run verify",
+    "fullResult": "passed exit 0: 2242 pass, 1 existing skip; API 1381, CSV 385; build/asset closure and all gates",
+    "log": "/private/tmp/sky-monthly-final-verify.log",
+    "focusedResult": "8 passed in full suite"
+  },
+  "remaining": [
+    "real external Agent signed usage adapter",
+    "real provider sandbox payment",
+    "commercial contracts/rates/tax",
+    "invoice correction/refund/delinquency",
+    "scheduled month-close operations",
+    "production release"
+  ]
+}

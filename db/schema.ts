@@ -1871,3 +1871,39 @@ export const skyCodeCommits = sqliteTable('sky_code_commits', {
   revision: integer('revision').notNull(), parentId: text('parent_id'),
   payload: text('payload').notNull(), createdAt: integer('created_at').notNull(),
 }, table => [uniqueIndex('idx_sky_code_repo_revision').on(table.repoId, table.revision)]);
+
+// Local monthly billing fixtures; never a real funded balance or payment authority.
+export const skyMonthlySandboxInvoices = sqliteTable('sky_monthly_sandbox_invoices', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), period: text('period').notNull(),
+  currency: text('currency').notNull().default('JPY'), status: text('status').notNull().default('draft'),
+  totalMinor: integer('total_minor').notNull().default(0), capMinor: integer('cap_minor').notNull().default(1000),
+  providerReceipt: text('provider_receipt'), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_owner_period').on(t.ownerId,t.period),
+  check('monthly_sandbox_currency',sql`${t.currency}='JPY'`),
+  check('monthly_sandbox_status',sql`${t.status} IN ('draft','issued','paid')`),
+  check('monthly_sandbox_total',sql`${t.totalMinor} BETWEEN 0 AND 1000`),
+  check('monthly_sandbox_cap',sql`${t.capMinor}=1000`)]);
+export const skyMonthlySandboxQuotes = sqliteTable('sky_monthly_sandbox_quotes', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), invoiceId: text('invoice_id').notNull(),
+  inputJson: text('input_json').notNull(), inputHash: text('input_hash').notNull(), rateVersion: text('rate_version').notNull(),
+  quantity: integer('quantity').notNull(), amountMinor: integer('amount_minor').notNull(),
+  expiresAt: integer('expires_at').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [check('monthly_sandbox_quantity',sql`${t.quantity} BETWEEN 1 AND 20`),check('monthly_sandbox_amount',sql`${t.amountMinor} BETWEEN 10 AND 200`)]);
+export const skyMonthlySandboxUsage = sqliteTable('sky_monthly_sandbox_usage', {
+  quoteId: text('quote_id').primaryKey(), ownerId: text('owner_id').notNull(),
+  invoiceId: text('invoice_id').notNull().references(() => skyMonthlySandboxInvoices.id),
+  jobId: text('job_id').notNull(), amountMinor: integer('amount_minor').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_job').on(t.jobId)]);
+
+export const skyCloudMonthlyInvoices = sqliteTable('sky_cloud_monthly_invoices', {
+ id:text('id').primaryKey(),ownerId:text('owner_id').notNull(),period:text('period').notNull(),currency:text('currency').notNull(),
+ stripeAccountId:text('stripe_account_id').notNull(),status:text('status').notNull().default('draft'),totalMinor:integer('total_minor').notNull().default(0),
+ stripeCustomerId:text('stripe_customer_id'),stripeInvoiceId:text('stripe_invoice_id'),stripeItemId:text('stripe_item_id'),
+ hostedInvoiceUrl:text('hosted_invoice_url'),submissionStartedAt:integer('submission_started_at'),createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_sky_cloud_monthly_contract').on(t.ownerId,t.period,t.currency,t.stripeAccountId),uniqueIndex('idx_sky_cloud_monthly_stripe_invoice').on(t.stripeInvoiceId),check('sky_cloud_monthly_total',sql`${t.totalMinor} BETWEEN 0 AND 1000000`),check('sky_cloud_monthly_state',sql`${t.status} IN ('draft','submitting','open','paid','attention')`)]);
+export const skyCloudMonthlyItems = sqliteTable('sky_cloud_monthly_items',{
+ sourceKind:text('source_kind').notNull(),sourceId:text('source_id').notNull(),invoiceId:text('invoice_id').notNull().references(()=>skyCloudMonthlyInvoices.id),ownerId:text('owner_id').notNull(),providerId:text('provider_id').notNull(),providerReference:text('provider_reference').notNull(),amountMinor:integer('amount_minor').notNull(),currency:text('currency').notNull(),pricingVersion:text('pricing_version').notNull(),usageJson:text('usage_json').notNull(),sourceDigest:text('source_digest').notNull(),occurredAt:integer('occurred_at').notNull(),
+},t=>[primaryKey({columns:[t.sourceKind,t.sourceId]}),uniqueIndex('idx_sky_cloud_monthly_provider_reference').on(t.providerId,t.providerReference),check('sky_cloud_monthly_source_kind',sql`${t.sourceKind} IN ('a2a','remote_llm')`),check('sky_cloud_monthly_item_amount',sql`${t.amountMinor}>=0`)]);
+export const skyCloudMonthlyEvents = sqliteTable('sky_cloud_monthly_events',{
+ eventId:text('event_id').primaryKey(),invoiceId:text('invoice_id').notNull(),type:text('type').notNull(),processedAt:integer('processed_at').notNull(),
+});

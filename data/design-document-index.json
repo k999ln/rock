@@ -1,4 +1,22 @@
 {
+  "standaloneServiceBillingDesign": {
+    "document": "docs/sky-billing.md",
+    "composition": "docs/service-design/README.md",
+    "owner": "Sky",
+    "requiredCompanionProducts": [],
+    "status": "cloud_usage_adapter_implemented_external_acceptance_pending",
+    "implementation": [
+      "lib/sky-monthly-sandbox.ts",
+      "lib/sky-monthly-sandbox-http.ts",
+      "components/sky-monthly-sandbox.tsx",
+      "lib/sky-cloud-monthly-source.ts",
+      "lib/sky-cloud-monthly-store.ts",
+      "lib/sky-cloud-monthly-stripe.ts"
+    ],
+    "tests": "tests/sky-monthly-sandbox.test.mjs",
+    "cloudTests": "tests/sky-cloud-monthly.test.mjs",
+    "planEstimate": "lib/sky-plan-estimate.ts"
+  },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
@@ -45,10 +63,40 @@
       "SC03",
       "SC04",
       "SC05"
-    ]
+    ],
+    "implementationDesign": {
+      "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+      "baselineKey": "pixelSiReferenceDesignIntent",
+      "evidence": "docs/evidence/grapheneos-source-audit.json",
+      "modules": [
+        "PX-HOME",
+        "PX-VOICE",
+        "PX-SKY",
+        "PX-LOCAL",
+        "PX-LINK",
+        "PX-JOB",
+        "PX-COST",
+        "PX-RELEASE"
+      ],
+      "acceptanceIds": [
+        "PX01",
+        "PX02",
+        "PX03",
+        "PX04",
+        "PX05",
+        "PX06",
+        "PX07",
+        "PX08",
+        "PX09",
+        "PX10",
+        "PX11",
+        "PX12"
+      ],
+      "runtimeImplemented": false
+    }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.16",
+  "version": "1.18",
   "updatedAt": "2026-10-15",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1028,7 +1076,9 @@
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
-        "docs/avocado-mini-hardware-design.md"
+        "docs/avocado-mini-hardware-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "docs/service-design/08-mini-connectivity-and-billing.md"
       ]
     },
     {

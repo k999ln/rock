@@ -1,5 +1,34 @@
 ## Skyコード公開の共通境界（2026-10-09）
 
+Cloud確定usageの取込とStripe test adapterを追加。実Provider往復はsandbox claim待ち、実Cloud実行は接続/予算待ち。[責任・状態・失敗復旧と受入](sky-billing.md#cloud使用量とstripe-test接続)。本番課金は無効。
+
+2026-10-15実装追補: Sky単体の出典整理Agent→月次請求のlocal fixtureを追加。既存workflow/work_jobsを再利用し、模擬料金/入金はsandbox専用。実Providerと本番課金は未受入。[起動・保存・失敗/復旧・検証・残条件](sky-billing.md#sky単体の月次請求ローカル実装2026-10-15)。
+
+## RockstarOSへの統合と各サービスの単体利用
+
+2026-10-15の本人指示により、**RockstarOSにはJennifer・Sky・Zemaを統合する。同時に3つはそれぞれ単体でも利用できる設計とする。** Jenniferは話しかける窓口、SkyはAgent/LLM/Toolの選択・接続・利用と月次請求、Zemaは仕事・進捗・承認・停止・成果・使用額の管理を担う。
+
+**SkyだけでAgent利用から月次請求まで完結する。** JenniferやZema、native OS、Mini、SIMの導入を必須にしない。Zemaの使用額表示はSkyの同じ明細を参照し、請求の成立条件にならない。共通の本人・権限・Job/Run・成果・usage契約をadapter経由で利用し、全サービスの同一DB化や全経路の実装完了を意味しない。[請求責任・状態・保存・復旧・合格条件](sky-billing.md)を正本とする。
+
+```mermaid
+flowchart TB
+  subgraph OS[RockstarOS 統合利用]
+    J[Jennifer 会話の窓口]
+    S[Sky 選択・接続・Agent利用・月次請求]
+    Z[Zema 仕事・進捗・成果・使用額]
+    R[共通runtime 本人・権限・実行・保存・復旧]
+    J --> R
+    S --> R
+    Z --> R
+  end
+  U[既存OS・browserから単体利用] --> J
+  U --> S
+  U --> Z
+```
+
+図は論理的な統合と利用入口を示す。単体利用時は必要な共通backend/adapterへ接続し、native RockstarOSのインストールは要求しない。独立配布・認証・実Provider連携の受入は各経路で別に行う。
+
+
 Skyのタイムラインへ公開ソースの版付き保存を追加する。SPIDER標準／交換／取り外しはコード公開時の検査設定であり、Core/Brokerの本人性・権限・料金・実行承認を変更しない。単体SPIDERのmemory-only検査と明示的な一般公開送信を分離する。[詳細契約](sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
 
 # RockstarOS 全体詳細設計
@@ -23,6 +52,8 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 [多機種契約](device-support-architecture.md#pixel先行とiosへの機能追加)に従い、最初の物理商品はPixelの独自OS統合。iOSはeSIM商品＋client/Web/対応native連携の後続経路として同じJob/Artifact/予算/Receiptへ接続する。回線profile、利用権、client版、device sessionとOS権限を分離し、Pixel専用権限をiOSへ継承しない。Pixelが不在でもcloud接続できる設計とし、実装/実機受入は別に記録する。
 
 ## si専用端末の参照profile
+
+[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)で再利用・改変・追加の8 moduleを定義する。既存Brokerには通信とdevice transportがあり、ShellはHOME/音声role未対応。SpeechServices v3はTTSとして確認、日本語ASR/TTSは追加受入。local Android正本とcloud D1正本を一つのroot authorityへ対応し、未受入のrealm間adapterを完成扱いしない。plan/account上限/後払い・独自署名OTA・全損復旧を含むPX01〜12を既存DT/SC/P0〜P7/C1/C2へ結ぶ。根拠は[公開コード調査](evidence/grapheneos-source-audit.json)。
 
 Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。現在のShell通常起動appからHome/必要な音声role/OS統合へ段階受入し、DT01〜06は未実行。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
 
@@ -625,3 +656,7 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 ## eSIM導入確認後のクラウド利用権（2026-10-06統合）
 
 既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+
+## 着脱Miniと請求の共通契約
+
+[Mini通信・月次請求](service-design/08-mini-connectivity-and-billing.md)に本人、場所scope、携帯電源、WAN能力、usage/請求/制限/復旧を統合。OSによる銀行口座凍結は行わず、本番gateと旧料金保留を維持する。

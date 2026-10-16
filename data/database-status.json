@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 160,
+    "tableCount": 166,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
-    "tableCount": 88,
+    "tableCount": 94,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -86,6 +86,9 @@
       "sky_campus_reports",
       "sky_campus_tag_events",
       "sky_campus_tags",
+      "sky_cloud_monthly_events",
+      "sky_cloud_monthly_invoices",
+      "sky_cloud_monthly_items",
       "sky_code_commits",
       "sky_code_repositories",
       "sky_commerce_events",
@@ -97,6 +100,9 @@
       "sky_feed_history_events",
       "sky_feed_personalization_settings",
       "sky_library_items",
+      "sky_monthly_sandbox_invoices",
+      "sky_monthly_sandbox_quotes",
+      "sky_monthly_sandbox_usage",
       "sky_package_runtime_bindings",
       "sky_provider_connections",
       "sky_remote_ai_rate_limits",
@@ -109,8 +115,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 3,
-    "latestMigration": "0015_jennifer_passkey_access.sql",
+    "migrationCount": 5,
+    "latestMigration": "0017_sky_cloud_monthly_test.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 0,
     "marketplaceRelationGuardCount": 8,
@@ -164,6 +170,9 @@
           "sky_campus_reports",
           "sky_campus_tag_events",
           "sky_campus_tags",
+          "sky_cloud_monthly_events",
+          "sky_cloud_monthly_invoices",
+          "sky_cloud_monthly_items",
           "sky_code_commits",
           "sky_code_repositories",
           "sky_commerce_events",
@@ -175,6 +184,9 @@
           "sky_feed_history_events",
           "sky_feed_personalization_settings",
           "sky_library_items",
+          "sky_monthly_sandbox_invoices",
+          "sky_monthly_sandbox_quotes",
+          "sky_monthly_sandbox_usage",
           "sky_package_runtime_bindings",
           "sky_provider_connections",
           "sky_remote_ai_rate_limits",
@@ -184,7 +196,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 37
+        "tableCount": 43
       },
       {
         "id": "marketplace",
@@ -319,6 +331,9 @@
         "sky_campus_reports",
         "sky_campus_tag_events",
         "sky_campus_tags",
+        "sky_cloud_monthly_events",
+        "sky_cloud_monthly_invoices",
+        "sky_cloud_monthly_items",
         "sky_code_commits",
         "sky_code_repositories",
         "sky_commerce_events",
@@ -330,6 +345,9 @@
         "sky_feed_history_events",
         "sky_feed_personalization_settings",
         "sky_library_items",
+        "sky_monthly_sandbox_invoices",
+        "sky_monthly_sandbox_quotes",
+        "sky_monthly_sandbox_usage",
         "sky_package_runtime_bindings",
         "sky_provider_connections",
         "sky_remote_ai_rate_limits",
@@ -342,8 +360,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0015_jennifer_passkey_access.sql",
-      "tableCount": 88,
+      "expectedAppliedThrough": "0017_sky_cloud_monthly_test.sql",
+      "tableCount": 94,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

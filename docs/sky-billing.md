@@ -1,5 +1,50 @@
 # Sky Market決済と旧収益精算
 
+## Sky単体の月次請求ローカル実装（2026-10-15）
+
+`/sky/billing` と `/api/sky/monthly-sandbox` を追加した。`npm run sky:monthly:sandbox` で `http://127.0.0.1:5220/sky/billing` を開く。NodeのSQLiteを使うローカル専用サーバーは合成accountで動き、同じReact画面・HTTP handler・D1互換storeを利用する。通常WebのAPIは既存本人確認とrate limitを通し、`SKY_MONTHLY_SANDBOX_MODE=local-fixture` かつHTTP loopbackのときだけ有効。外部公開originでは404。これは実Provider sandboxや本番課金ではない。
+
+既存の出典整理Agent `lib/sky-citation-agent.ts` → `lib/workflow.ts` → `work_jobs`を再利用する。新しいAgent/LLM能力や通貨残高は作らない。見積IDに本文hash・テスト単価版・金額・5分期限を固定し、明示承認後に規則処理を実行する。原稿1,000文字（JS UTF-16単位）ごと10円、月上限1,000円はfixture専用値で、商用価格ではない。成果とusageは一つのDB batchで保存し、DB triggerで月上限・締め状態を確認する。同じIDの再送は成果を再取得し、再計上しない。
+
+migration `0016_sky_monthly_sandbox.sql` はsandbox専用の見積・usage・請求を追加する。月はUTC、通常の締め処理は過去月のみ。画面の「月末を模擬」はlocal fixtureでのみ当月を締める。締め後に同月の新規実行はできない。入金照合は`fixture:` ID・本人・請求ID・金額・通貨・sandbox区分を照合し、不一致/応答不明ではissuedを保つ。実Provider呼出し、カード、銀行、旧収益精算、funded Wallet残高は変更しない。
+
+保存は `work/sky-monthly-sandbox/state.sqlite`（Git対象外）。再起動後も明細を再取得できる。ローカルfixture accountは実本人確認の証拠ではない。通常Web経路の既存認証とローカル合成accountを区別する。停止は起動terminalのCtrl-C。復旧は同じDBで再起動し同じ見積/請求IDを照合する。締め後に新しい試験を始める場合は既存DBを保全し、`SKY_MONTHLY_TEST_DB=work/sky-monthly-sandbox/new-test.sqlite SKY_MONTHLY_TEST_PORT=5221 npm run sky:monthly:sandbox` で別DB/portの試験を始める。
+
+検証: `node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs` で一周、二重送信、上限、本人分離、期限/月境界、Provider結果不明/不一致、DB再起動、HTTP gateを確認。画面から見積10円→Agent成果→再送追加なし→月締め→模擬入金照合を操作確認した。
+
+未完了: 実外部Agent/LLMの署名usageからの月次計上、実Provider sandbox/支払手段/通知、税/請求書/訂正/返金、未払い制限・復旧、複数契約/商用料金、定期月締め運用。既存A2A/remote LLMの予算予約・署名usageを次にadapterで接続する。本実装の成功を実決済・商用Agent月次請求の受入にしない。
+
+## Sky単体のAgent利用・月次請求（2026-10-15確定設計）
+
+本人の明示指示により、**Sky単体でAgent/LLM/Toolの選択、接続、利用、使用量計測、明細確認、月次請求、支払い状態の確認まで成立させる**。RockstarOSの導入、Jenniferとの会話、Zemaの利用、Miniの購入、SIM契約は必須条件にしない。既存OSのbrowser/clientから利用できるサービスを目指す。本節は設計の責任分担であり、既存の買い切りCheckout実装を月次従量請求の実装済み証拠にしない。
+
+Skyは利用者向け料金表示・契約・usage集計・請求の責任を持つ。実行の権限と予算は共通Broker契約で強制し、収納は決済Provider、台帳・予約・照合は既存Wallet/Billing契約を再利用する。Sky単体とは独立した利用入口と業務完結性を指し、重複する決済基盤や無制限の実行権限を作る意味ではない。
+
+```mermaid
+flowchart LR
+  U[既存OSの利用者] --> S[Sky 選択・見積・上限承認]
+  S --> E[権限付きAgent実行]
+  E --> R[検証済みusage・Receipt]
+  R --> B[Sky 契約accountの月次明細・請求]
+  B --> P[収納Providerと既存台帳の照合]
+  P --> S
+  J[任意のJennifer 会話窓口] -. 依頼 .-> S
+  Z[任意のZema 仕事管理] -. 同じ仕事・成果・使用額を参照 .-> S
+```
+
+### 入出力・保存・失敗と復旧
+
+入力は本人/契約account、選択した能力と版、実行先、単価版、見積、許可上限、対象期間。出力はJob/Runに相関するusage・Receipt、項目別明細、請求/支払い/訂正状態。同じaccount・実行ID・usageイベントIDを使い、JenniferやZemaから閲覧しても再計上しない。既存の本人別保存、revision競合、予約・台帳・監査を共有し、UIごとの請求DBを新設しない。Agent利用料、通信回線料、OS料金、商品代、外部実費を区別する。
+
+利用状態と請求状態を分離する。見積→上限承認→予算予約→実行→usage確定→月締め→請求→入金照合を別記録にし、異議/訂正・未払い・結果不明も保持する。成功した仕事を請求失敗で未実行へ戻さない。再接続時は既存実行と決済を照合し、二重実行・二重請求を防ぐ。通信断やProvider応答不明を支払い成功としない。単価/予算の変更は新しい同意が必要で、無断で上限を超えない。未払い対応は下記の通知・制限・照合・復旧方針に従う。
+
+### 独立利用の合格条件
+
+RockstarOS未導入、Jennifer/Zema未利用、Mini/SIMなしのテストaccountで、Skyのみから選択→上限承認→Agent実行→usage確認→月締め→Provider sandbox請求→入金照合→明細再取得まで一周する。本人A/Bの分離、月境界、重複usage/Webhook、同一account複数入口、実行停止、上限超過拒否、通信断/応答不明、訂正、未払い制限と復旧を確認する。Zema接続後も同じ金額/実行を参照し、請求件数が増えないことを検証する。これらの月次一周試験は未実行。
+
+契約/収納主体、国、単価、税、締日/支払日、与信・保存期間・ProviderはBIL02/O5で既存契約との適合を決め、sandbox証拠と本番gateを分ける。製品関係の同期はDOC04/H1。新しい本番課金を有効にする変更ではない。
+
+
 **2026-10-01 設計更新:** 既存実装に対する[決済・Wallet統合詳細設計](sky-commerce-design.md)と[Wallet詳細](wallet-commerce-design.md)を追加した。型/DDLは実装前の参照契約。今回の利用者指示で旧月額8.88 USD案は対象外とし、下記の過去実装記録とは区別する。
 
 **2026-09-27 現行判断:** 利用者の「決済もできるようにして」という明示指示により、Sky Marketの商品購入をStripe Checkout / Connectへ接続する実装を追加した。Sky手数料10%、登録・接続・公開・基本利用料0円を維持する。外部決済、API、siモデル、cloud等の第三者実費は別項目である。実資格情報の設定、Stripe sandbox受入、実課金、本番配備は未実施。8.88 USDのToC収益料金案は引き続き保留し、旧精算Workerは新しいToC Earning Receiptを409 `SKY_FEE_POLICY_ON_HOLD`で拒否する。
@@ -187,3 +232,69 @@ RQ36により、`0004_rock_settlement_wallet.sql`でRock受取operator、5分cha
 ## 2026-10-01 CSVの50円決済試験
 
 [CSV試験の接続と受入](sky-csv-trial-payment.md)。通常受付と別の指定サンプルにJPY50のHosted Checkoutを追加。Apple Pay表示と実課金は本番接続・本人決済の受入待ち。
+
+
+## Agent利用料の月次後払いと未払い対応（2026-10-15）
+
+利用者は「携帯料金と同じシステムでAgent利用を毎月請求し、強い支払義務にする」と明示した。主担当Billing/BIL02、ROCKは契約・計測・請求状態とサービス権限、EXTERNALは決済/収納・適法な債権回収、JOINTは請求/入金/復旧の受入、OWNERは契約主体・対象国・料金・支払条件を確定する。本項は料金方式の設計変更であり実請求・引落し・回収の実施ではない。
+
+### 契約と請求
+
+- Agent利用料は契約account単位で毎月まとめて後払い請求する方向とする。携帯キャリアの実請求への合算は別契約/接続が必要で、今回成立したとは扱わない。
+- Agent/Provider、使用単位、単価の版、実行job、利用期間、税/値引/返金を明細化。通信料、SIM/eSIM、端末代、既存OS料金、Agent料金、第三者実費を分ける。定額/無料枠/超過単価は未定で、既存Sky基本無料・商品販売10%手数料・旧8.88案保留を一括上書きしない。
+- 締日、支払日、通貨、回収方法（口座振替/カード等）、収納主体、支払同意、税、返金、解約時の最終請求、契約変更通知を契約版へ固定する。銀行/カード情報は選定決済Providerへ預ける。
+- 後払いでも単価提示、実行見積、月額利用上限、実行中予約を必須にする。上限内の包括利用同意と個々の高額/権限変更承認を区別。後払い与信枠は未設計/未受入で、既存の実行gateを無条件に解除しない。
+- 月次集計は検証済みusageを一度だけ計上。通信切断/遅延receipt/重複webhookで二重請求せず、不明usageを推測確定しない。未確定項目は保留・翌月調整等を契約に定義する。請求書発行、引落し要求、引落し成功、入金照合を別状態にする。
+
+### 支払いを確実にする設計
+
+`accruing → invoice_open → payment_pending → paid` を基本状態にし、`payment_failed / overdue / disputed / restricted / recovery_review` を支払状態と権限状態の組合せで管理する。
+
+1. 開始時に支払方法の確認と契約同意、本人/法人の支払責任者を記録する。
+2. 締め前に利用額と上限、請求確定時に明細と支払期限を提示する。
+3. 決済失敗は残高不足・認証待ち・Provider障害・結果不明を区別。結果不明は照合し、無制限再引落ししない。
+4. 未払いは通知、契約で定めた猶予と再試行、異議申立て/訂正窓口を通す。争いのある明細は確定した支払義務と分離する。
+5. 期限超過時は新規の有料Agent実行と追加与信を停止する。安全停止、保存済み成果の確認/適切なexport、請求確認/支払い/異議申立ての入口は残す。家の施錠・警報・電池安全を回収手段として止めない。通信回線停止はその通信契約と事業者の責任に従い、OSが任意に切断しない。
+6. 入金確認・請求訂正後に権限を復旧する。支払済みと誤認して与信を増やさず、二重回収/二重返金を拒否する。
+7. 長期未払いは契約/利用/請求/通知/異議/入金の証拠を保全し、人の審査と対象国で認められる回収手続きを経る。自動的に訴訟/差押えを実行しない。
+
+「口座が止まるほど」は強い回収可能性を求める意図として記録する。RockstarOSに銀行口座凍結権を与える設計にはしない。日本では、銀行預金等の差押えは判決や仮執行宣言付支払督促等の債務名義に基づく裁判所の債権執行手続であり、利用規約への同意だけで口座全体を自由に停止できるという意味ではない。日本以外は対象国の専門家による別確認が必要。[裁判所の債権執行案内](https://www.courts.go.jp/saiban/syurui/syurui_minzi/minzi_25_08/index.html)（2026-10-15確認）。信用情報への登録や他口座への横断的制限も自動権限としない。
+
+### 保存・受入・次の決定
+
+既存のusage、予算予約、Wallet/請求storeとProvider参照を再利用する。契約version、支払同意reference、billing period/timezone、usage ID、invoice ID、明細revision、入金reference、通知履歴、異議、restriction reasonを本人別に保存。確定請求を直接上書きせず訂正記録で追跡する。
+
+合格条件は、同一account複数Mini/ゲーム/Agentの集約、上限を超える同時実行拒否、月境界/遅延usage、重複/順序逆転通知、引落し失敗/結果不明、異議/訂正、制限後の入金復旧、解約後最終請求のsandbox往復。すべて追加の本番受入は未実施。対象国、B2C/B2B、請求/収納主体、料金単位、締日/支払日、猶予/再試行、与信/上限、収納Provider、回収委託先は未確定。既存買い切り決済やfixtureを月次後払いの完成へ換算しない。
+
+## Cloud使用量とStripe test接続
+
+BIL02/O5が既存RemoteAiTextStoreのcompleted/priced/settled記録と、既存A2A storeで署名検証・精算済みのusage receiptを月次明細へ取り込む。Jennifer/Zemaは不要。本人別の既存work_jobs/予算承認/上限/実行精算を維持し、請求取込時にWalletを再精算しない。入力は種類と実行IDのみで、金額はserver側の保存済み記録から取得する。実行Providerは既存接続設定、決済Providerは別のStripe sandbox設定を使用する。
+
+保存は0017のinvoices/items/events。source IDとprovider referenceを一意にし、月はUTCの確定時刻、USD/JPY、価格版とusage snapshot/hashを保存。請求合計はDB triggerで加算し、明細の編集/削除を拒否。1請求は同一owner・月・通貨・Stripe accountに限定し、draft→submitting→open→paid、異常はattention。締め後追加は拒否し、遅延usage/訂正/返金の翌月調整は未実装。自動月締め・税・与信・未払い制限も未実装で、今回の受入を本番後払い完成としない。
+
+画面は利用記録の取込→表示額確認→テスト請求作成→照合。Stripeへ送るのは合計・内部請求ID・月で、原稿や個別usageは送らない。顧客/請求/明細/確定それぞれに固定idempotency keyを使用。timeoutは同じ請求で23時間以内に再開し、それ以降は自動再送せず人がProvider側を照合する。確定後も本体・通貨・金額・顧客・metadata・sandbox一致を取得APIで確認し、paidは支払額全額一致と残額0のみ。Webhookはraw bodyの署名と時刻を検証、イベント重複を拒否、通知内容だけでpaidにせず再取得する。
+
+`/sky/billing/provider-test`と`/api/sky/cloud-monthly-test/{account,webhook}`はstripe-test設定かつHTTP loopbackだけ。有効な既存本人認証を使い、POSTは同一Originを要求する。専用Mac起動はsynthetic accountを使う。test鍵以外、別account、livemode objectを拒否する。未claimの権限制限やaccount API 403を理由に照合を解除しない。契約・本番鍵・実カード・銀行口座を使わない。
+
+起動用のGit管理外0600 JSONに `SKY_CLOUD_MONTHLY_MODE=stripe-test`、`SKY_MONTHLY_STRIPE_KEY`、`SKY_MONTHLY_STRIPE_ACCOUNT`、`SKY_MONTHLY_STRIPE_WEBHOOK_SECRET`を設定し、次を実行する。Stripe CLIは対象sandbox profileでlistenし、通知を下記portのwebhookへ転送する。設定やclaim URLはログ/Gitへ出さない。
+
+```sh
+SKY_MONTHLY_PROVIDER_TEST=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json npm run sky:monthly:sandbox
+node --experimental-strip-types --test tests/sky-cloud-monthly.test.mjs
+```
+
+Mac画面は `http://127.0.0.1:5222/sky/billing`。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+
+合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。最後の2項目は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
+
+### Sky 140 の料金案と利用量試算
+
+本人が2026-10-15に月額140 USDを指定。`sky-140-draft-v1`として記録し、`lib/sky-plan-estimate.ts`とProviderテスト画面で比較する。料金の指定は実Cloud消費予算の承認や本番契約ではない。利用枠100 USD相当（Provider原価ベース）＋運営分40 USDは提案で未承認。枠は返金/送金できる預金ではなく月内サービス使用上限。超過自動請求なし・枠到達停止・繰越なしを案とする。税、適格Agent、契約更新/解約、未使用枠、返金、異議、決済料金/採算、原価単価を利用者向けにどう表示するかは本番前に決定する。通信/SIM/端末料金は別。40 USDは利益ではなく決済・保存・サーバー・サポート・損失等の控除前残額。
+
+[OpenAI公式料金](https://developers.openai.com/api/docs/pricing)、[Anthropic公式料金](https://platform.claude.com/docs/en/about-claude/pricing)を2026-10-15確認。標準、cache割引なし、各呼出しは短いcontext枠と仮定。入力/出力100万token当たりUSDは、GPT-6 Luna 0.10/0.50、GPT-6.1 Sol 2/10、GPT-6 Astra 10/50、Claude Sonnet 5.5 2/10、Claude Opus 5.5 4/20。これは試算であり、既存の署名付き実行rate cardやProvider対応表を置換しない。
+
+計算式は `floor(利用原価枠 ÷ ((全呼出し入力token × 入力単価 + 全呼出し課金出力token × 出力単価)/1,000,000 + 外部Tool等の原価))`。出力には推論tokenを含む。標準1仕事を全呼出し合計入力50,000/出力10,000tokenとすると、100 USD枠ではLuna 10,000件、Sol/Sonnet 500件、Opus 250件、Astra 100件。140 USD全額を原価に使う比較ではそれぞれ14,000/700/350/140件。各モデルを単独利用した場合で、全件数を同時に提供する意味ではない。
+
+Solで軽い仕事入力10,000/出力2,000を1,000件（40 USD）、標準200件（40 USD）、長い仕事入力500,000/出力100,000を10件（20 USD）の組合せは計1,210件/100 USD。長い仕事は複数の短context呼出しの合計と仮定する。検索・ツール・runner・長context割増・再試行が加われば減る。OpenAI Web検索は1,000回10 USDと検索内容token分が別に必要。品質/完遂率・実トークン消費の測定前なので保証回数ではない。
+
+定額契約と既存従量test invoiceの合算/控除は未実装。140 USD＋含むusageの二重請求を避ける必要があり、承認されたplan版を既存商品/契約schemaに接続し、月次quota予約→実使用→請求相殺の受入後に有効化する。今回の画面は試算、外部Stripe商品/Subscriptionは未作成。

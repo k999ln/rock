@@ -4,9 +4,15 @@
 
 ### One account. More ways to play, make, and get things done.
 
+[Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
+
 The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
+
+RockstarOS integrates Jennifer, Sky and Zema; each service is also designed for standalone use. Sky alone owns the journey from Agent selection and usage to monthly billing, without requiring Jennifer, Zema, Mini, SIM or native OS installation. Shared billing infrastructure is reused; monthly provider acceptance is still pending. [Standalone service and billing contract](docs/sky-billing.md).
+
+Local monthly billing test: run `npm run sky:monthly:sandbox`, then open [Sky billing](http://127.0.0.1:5220/sky/billing). It runs the citation Agent, saves outputs and usage, closes a simulated month and reconciles a mock payment. No external model or real payment is used. State persists under `work/sky-monthly-sandbox/`. [Scope and recovery](docs/sky-billing.md#sky単体の月次請求ローカル実装2026-10-15).
 
 Sky is an Agent/LLM marketplace and open hub across software, hardware, furniture, interiors and architecture. RockstarOS is a first-party runtime and Mini is an optional spatial host. An instrumented sofa could provide validated, consented observations to a weight-trend Agent; this remains a design example, not a working sensor product. [Fusion contract](docs/sky-mcp-architecture.md#家具建築まで開くskyの融合).
 
@@ -379,3 +385,9 @@ After changing progress records or generated status, run the repository-prescrib
 ## Safety, rights, and images
 
 Recording, external publication, appliance operation, purchasing, and payment each need their own permission. RockstarOS 1.0 is a Developer Preview. Packages in `public-release/rockstaros/` are MIT-licensed; a reuse license for the rest of the proprietary code has not been selected. Bundled open-source software, models, and external services keep their own terms. Images and GIFs are concept material, not product photographs or evidence of a working spatial display, manufacturing approval, safety performance, carrier availability, live billing, or production integration. [Distribution requirements](docs/release-minimum-gates.md) · [Sources and licenses](docs/mr-integration.md)
+
+[Miniの建築埋込・着脱・衛星Wi-FiとAgent月次請求](docs/service-design/08-mini-connectivity-and-billing.md)を統合設計へ追加。携帯電源・直接衛星通信・月次収納は設計段階で、実機/本番受入は未完了。
+
+### Cloud使用量→月次請求のProviderテスト
+
+既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。実Provider往復はsandbox claim待ち、実Cloud実行は接続先/予算待ち。本番課金は無効です。

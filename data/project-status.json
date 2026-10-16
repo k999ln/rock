@@ -1,4 +1,78 @@
 {
+  "skyCloudMonthlyTest": {"date": "2026-10-15", "taskId": "BIL02", "coordinationTask": "DOC04", "branch": "codex/sky-cloud-monthly-provider", "sourceMain": "869addc124fab734d0e341c429b28555182a5652", "status": "implemented_external_acceptance_pending", "requestedMonthlyPriceUsd": 140, "allocationProposalUsd": {"usage": 100, "service": 40}, "allocationApproved": false, "unitTestsPassed": 10, "fullVerify": "passed_node22_WRANGLER_HIDE_BANNER_true", "verifyLog": "/private/tmp/sky-cloud-merged-verify.log", "integratedMain": "a07bfebec4266d1b53f7660fd94e3011f5a06ecb", "realCloudExecution": "pending_provider_and_budget", "stripeSandbox": "created_unclaimed_account_api_403", "providerRoundtripPassed": false, "productionBillingEnabled": false, "evidence": "docs/evidence/sky-cloud-monthly-test.json", "nextAction": "claim sandbox then repeat invoice/payment/webhook; select Cloud Provider and approved budget"},
+  "pixelSiSourceDesign": {
+    "date": "2026-10-15",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "coordinationTask": "DOC04",
+    "status": "source_audit_and_design_verified",
+    "sourceMainSha": "a3e7a8ca8c166dc670a811a735b104dde9fd958f",
+    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+    "evidence": "docs/evidence/grapheneos-source-audit.json",
+    "runtimeChanged": false,
+    "deviceTested": false,
+    "gateChanged": false,
+    "branch": "codex/pixel-si-source-design",
+    "nextAction": "P0候補同期/固定→PX01現v4 local一仕事→Sky選択/Home/明示音声。C1/C2と混合realm adapterは独立した受入。",
+    "researchTag": "2026100600",
+    "compileInputTagChanged": false,
+    "grapheneProjectsClassified": 129,
+    "aospDiffRepositories": 86,
+    "diffEntriesIncludingBinaryAndSymbolMaps": 2611,
+    "snapshotFilesSearched": 4705,
+    "moduleCount": 8,
+    "acceptanceCases": 12,
+    "acceptanceCasesExecuted": 0,
+    "verification": {
+      "fullVerify": "pass",
+      "log": "/private/tmp/pixel-si-source-design-verify-final-main.log",
+      "node": "22.23.3",
+      "unitTests": {
+        "tests": 2243,
+        "pass": 2242,
+        "skip": 1,
+        "fail": 0,
+        "cancelled": 0
+      },
+      "workApiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssetReferences": 209,
+      "missingAssets": 0,
+      "rockSourceHashesUnchanged": 15,
+      "mermaidDiagramsParsed": 2,
+      "canvasTypecheck": "pass",
+      "checks": [
+        "baseline:check",
+        "design:check",
+        "device-support:check",
+        "llm:architecture:check",
+        "git diff --check"
+      ],
+      "runtimeAndDeviceAcceptance": "not_run",
+      "initialVerifyLog": "/private/tmp/pixel-si-source-design-verify.log",
+      "previousIntegratedVerifyLog": "/private/tmp/pixel-si-source-design-verify-merged.log"
+    },
+    "gitEvidence": {
+      "branch": "codex/pixel-si-source-design",
+      "readbackCommand": "gh pr view codex/pixel-si-source-design --json state,mergedAt,mergeCommit,headRefOid",
+      "sitePublished": false
+    },
+    "mainSynchronization": {
+      "incomingMainSha": "df615298bdb0e6b1af2bd35bf3a811ccc0e6a30c",
+      "preservedPr": 142,
+      "sameShaChecks": 6,
+      "sourceHashesMatched": 15,
+      "postMergeVerify": "pass_all_stages"
+    },
+    "additionalMainSynchronization": {
+      "preservedPr": 144,
+      "incomingMainSha": "869addc124fab734d0e341c429b28555182a5652",
+      "scope": "local_fixture_not_live_billing",
+      "postMergeVerify": "pass_all_stages"
+    }
+  },
+  "skyStandaloneMonthlyDesign": {"date": "2026-10-15", "tasks": ["BIL02", "DOC04"], "status": "design_recorded_acceptance_pending", "document": "docs/sky-billing.md", "validation": "npm run verify: all stages passed exit 0; log /private/tmp/sky-standalone-verify.log", "observedMain": "a3e7a8ca8c166dc670a811a735b104dde9fd958f", "mainIntegrated": true, "designMergeSha": "df615298bdb0e6b1af2bd35bf3a811ccc0e6a30c", "runtimeChanged": true, "runtimeStatus": "local_fixture_verified", "runtimeEvidence": "docs/evidence/sky-monthly-sandbox.json", "runtimeValidation": "npm run verify exit 0: 2242 pass/1 skip; UI loop and restart passed; real Provider sandbox not run", "productionBillingEnabled": false, "runtimeBranch": "codex/sky-monthly-sandbox", "runtimeGitReadback": "gh pr view codex/sky-monthly-sandbox --json state,headRefOid,mergeCommit", "nextAction": "実外部Agent署名usage adapterと実Provider sandbox、訂正/未払い運用を別受入"},
   "pixelReadinessAudit": {
     "date": "2026-10-15",
     "taskId": "OS11",
@@ -7365,6 +7439,28 @@
       "verification": "Site source typecheck, router tests 3/3, build and local Wrangler route readback passed; GitHub main source router tests 7/7 and npm run verify passed.",
       "githubMainIntegration": "The router staging implementation was already in main; this repair changed the separate Sites source and deployment only.",
       "nextAction": "For each Site build verify index.js, vinext.js and domain-router.mjs in the deployed archive and read back the canonical public URL."
+    }
+  },
+  "miniDockMonthlyDesign": {
+    "date": "2026-10-15",
+    "tasks": [
+      "MAT15",
+      "BIL02"
+    ],
+    "status": "design_recorded_acceptance_pending",
+    "document": "docs/service-design/08-mini-connectivity-and-billing.md",
+    "sourceMain": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+    "physicalTests": 0,
+    "liveBilling": false,
+    "bankActions": false,
+    "nextAction": "DP01〜05と月次請求sandboxを別受入。国/契約/料金/電池/RF/施工条件を確定。",
+    "validation": {
+      "projectMissionBaselineDesign": "passed",
+      "baselineAndR5Tests": "5/5 passed",
+      "r5Archive": "26 hashes preserved",
+      "firstVerify": "R5 old external-power-only regression found and updated to new portable-power requirement",
+      "finalVerify": "verify reached site test after 2234 pass/1 skip; installed missing site dependencies, resumed all remaining stages through bot:check successfully; same-head CI tracked in PR #142",
+      "runtimeAcceptance": "not performed"
     }
   }
 }

@@ -1,5 +1,13 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-15 BIL02/O5（DOC04/H1同期）: main 869addcからCloud確定usage→月次請求→Stripe test adapterを実装中。既存精算済み記録のみ取込、本人/金額/アカウント照合・重複防止・署名webhook再取得を追加。専用10件合格。実Stripe sandboxは作成済みだが未claim鍵のaccount APIが403、外部往復未完了。実Cloud実行も接続先/予算待ち。fixtureと実外部受入は分離、本番課金無効。branch codex/sky-cloud-monthly-provider、月額140 USDは本人指定、利用枠100/運営40は提案として試算UIを追加。初回の全体verifyはWrangler更新確認の終了待ちtimeout。WRANGLER_HIDE_BANNER=true・Node22.23.3で全体verify exit 0、専用10件/DB等23件/Canvas型検査/UI計算切替合格。最新main a07bfebe（Pixel設計）を保全merge、統合後も全体verify exit 0（/private/tmp/sky-cloud-merged-verify.log）。実外部CloudとStripe往復は未完。
+
+2026-10-15、OS11/O6/ROCK（設計同期DOC04/H1）で[Pixel si実装設計](docs/native-os-integration.md#pixel-si専用端末の実装設計)と[コード調査台帳](docs/evidence/grapheneos-source-audit.json)を作成。基準main `a3e7a8ca`の7 CI成功、GrapheneOS側129構成、86 repo/2,611 diff entry、選択source/config 4,705 fileを確認・検索し、非公開vendorや同image未受入を分離した。SpeechServicesの正式GitLab/v3 TTSを確認して前の未確認理由を訂正、日本語ASR/TTSは不足。8 module/12未実行ケース、既存Broker通信の再利用、local/cloudの一つのroot authority、料金/月上限/後払い・停止・全損/OTA復旧を対応する。採用lock2026100200、runtime、鍵、端末、実gateは変更なし。branch `codex/pixel-si-source-design`でbaseline/design/device/LLM・15固定source hash・Mermaid2図・Canvas型検査とNode22.23.3全体verifyが成功（通常2235件:2234 pass/既存skip1/fail0/cancel0、仕事API1381、CSV385、asset208/欠落0）。ログはGit外 `/private/tmp/pixel-si-source-design-verify.log`。GitHub保存/同head CI/main統合は同branch PRのreadbackで確認する。次はP0候補同期/固定→PX01現v4 local一仕事。C1/C2は独立して受け入れる。 main PR #142/df615298のSky単体月次請求・着脱Miniと進捗を保全mergeし、15 source hashの不変、同mainの6 CI成功、統合後の全体verify exit 0を確認した。統合後ログは `/private/tmp/pixel-si-source-design-verify-merged.log`。 main PR #144/869addc1のlocal月次sandboxも保全統合し、見積/有限Agent/原子的usage/模擬締め・収納と実Provider/商用受入を分離。再検証はNode22.23.3全体verify exit 0（通常2243件:2242 pass/既存skip1/fail0/cancel0、仕事API1381、CSV385、asset209/欠落0）。最終ログは `/private/tmp/pixel-si-source-design-verify-final-main.log`。
+
+2026-10-15 BIL02/O5: PR #144をmain 869addc1へ統合。Sky単体のAgent利用→月次請求のlocal fixtureを実装。既存citation Agent/workflow/work_jobsを再利用し、料金と模擬入金をsandbox専用記録へ分離。local fixture実装・UI一周/再送/再起動・専用8件・D1移行11件が成功。npm run verifyは全stage exit 0（2242 pass/既存skip1、仕事API1381/CSV385）。ログ /private/tmp/sky-monthly-final-verify.log、証拠 docs/evidence/sky-monthly-sandbox.json。新schemaのjournal/DB件数fixtureとD1 SQL区切り、lint、起動時migration再適用を修正して再検証。本番gate/既存Wallet残高は変更しない。次は実外部Agent署名usageのadapter・実Provider sandbox・料金/訂正/未払い受入。公開なし。
+
+2026-10-15、BIL02/O5（同期DOC04/H1）: 本人指示でSky単体のAgent選択・利用・計測・月次請求を独立成立する設計へ明確化。RockstarOSにはJennifer/Sky/Zemaを統合し各単体利用を保持。請求のZema依存を図から除き、既存台帳/Broker再利用、復旧、sandbox合格条件を正本へ同期。npm run verifyが全stage終了コード0で合格（通常2234 pass/1 skip、仕事API1381、asset208/欠落0）。ログ /private/tmp/sky-standalone-verify.log。最新main a3e7a8caを取得確認、取り込みは未実施。PR #142へ保存、main統合・実装・本番課金は別。次はSky単体の月次sandbox一周受入。
+
 更新: 2026-10-15。製品要望は[製品ベース](docs/product-baseline.md)、サービスの設計入口は[統合設計](docs/service-design/README.md)、taskの現在値は[進捗JSON](data/project-status.json)と[Mission Control](data/mission-control.json)に置く。本書は現在の作業、証拠、未完了、再開方法と生成済みtask一覧に絞る。
 
 2026-10-15、SKY21/O5/ROCKとして、会話・文字起こしを空行ごとの段落へ分け、各段落を「話題／問い／背景／理由／転換／判断／展開／着地」の短い流れへ自動変換する第一者Tool「会話図解 · Visual Scribe」を追加した。入力・生成はbrowser内の有限ルール処理だけで、外部送信、model推論、保存を行わない。貼り付けとUTF-8 `.txt`、段落切替、元段落確認、全段落コピー、現在図のSVG保存を実装し、`/sky/visual-scribe`をcatalogのready Toolへ接続した。catalogは基準mainの37件（ready 15 / candidate 22）から、このbranchで38件（ready 16 / candidate 22）となる。対象Node試験29/29、baseline/design/Sky catalog/typecheck/build、local IABで2段落の自動生成と切替を確認した。branch `codex/sky-conversation-diagrams`、基準main `a3e7a8ca`。[local証拠](docs/evidence/sky-visual-scribe-local-20261015.json)を正本とし、公開Site配備、音声取得・文字起こし、意味推論、本人保存、mobile実機は未受入。
@@ -38,7 +46,7 @@ Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整�
 
 ## 現在の作業
 
-主担当はAndroid / Device / Local si（ROCK）、OS11 / O6。設計同期はDOC04 / H1、作業branchは`codex/graphene-cloud-foundation`。通信＋si利用権商品とaccount正本、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。次はG01/G02/G03/G05/G06の共通予算・後払い・Provider・本人分離・data lifecycleを既存担当へ引き渡す。
+主担当はAndroid / Device / Local si（ROCK）、OS11 / O6。設計同期はDOC04 / H1、作業branchは`codex/pixel-si-source-design`。通信＋si利用権商品とaccount正本、Jennifer→Sky→Zema/AMC→Broker→成果、RQ01〜RQ50、Mini R5、NVIDIA高性能si PCのPro、非金融Game、rocketstar独立安全系を維持し、サービス設計8冊と関連台帳を同期する。次はPixelのP0候補同期/固定→PX01の現v4 local一仕事。cloudのC1/C2、共通予算・後払い・Provider・本人分離・data lifecycleは既存担当へ接続する。
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
@@ -518,3 +526,11 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 次の作業: P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。
 <!-- project-status:end -->
+
+## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
+
+MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
+
+検証: project/mission/baseline/design合格、R5原本26hash保全、基準/R5試験5/5合格。初回全体verifyで旧外部給電必須のテスト1件を検出し、新携帯電源要求へ同期。最終全体検証と同一head CIはPR #142で追跡する。
+
+最終ローカル検証: 回帰2234成功/1skip、型/lint、全設計/基準/担当、Web build/asset closure、仕事API1381・CSV385合格。verifyはsite専用依存不足で一度停止し、依存導入後に停止stage以降をbot:checkまで再開して全て成功。同一headのGitHub CIはPR #142で確認中。
