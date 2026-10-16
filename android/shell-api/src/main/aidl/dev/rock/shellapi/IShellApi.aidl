@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 18;
+    const int API_VERSION = 19;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -70,4 +70,10 @@ interface IShellApi {
     String cancelCloudA2ADelegation(String delegationId) = 38;
     /** Registers a seller-signed physical-SIM/eSIM service claim for the linked device-session owner. */
     String claimRockstarServiceEntitlement(String packageJson) = 39;
+    /** Reads only APK-authenticated model definitions; never downloads or activates weights. */
+    String localModelCatalog() = 40;
+    /** Explicit consent, fixed catalog profile and read-only file; all verification/activation stays in Broker. */
+    String importLocalModel(String profileId, in ParcelFileDescriptor source, boolean consent) = 41;
+    /** Explicitly reload one previously verified cached catalog model; no auto-load on boot. */
+    String reloadLocalModel(String profileId, boolean consent) = 42;
 }

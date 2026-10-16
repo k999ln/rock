@@ -61,7 +61,7 @@ public final class RockShellService extends Service {
             String id = engine().submit(requestId, inputJson, sample, consent); Scheduler.schedule(RockShellService.this); return id;
         }
         @Override public void setPaused(boolean paused) {
-            enforceShellCaller(); engine().setPaused(paused);
+            enforceShellCaller(); ZemaOrchestrator.setPaused(engine(), paused);
             if (paused) Scheduler.stop(RockShellService.this); else Scheduler.schedule(RockShellService.this);
         }
         @Override public String result(String workId) { enforceShellCaller(); validWorkId(workId); return engine().result(workId); }
@@ -114,12 +114,27 @@ public final class RockShellService extends Service {
                 return zemaResponse("blocked", "INVALID_PLAN", null);
             } catch (IllegalStateException unavailable) {
                 String reason = unavailable.getMessage();
-                String code = "MODEL_PROFILE_NOT_ACTIVE".equals(reason)
-                    ? "MODEL_PROFILE_NOT_ACTIVE" : "LOCAL_AI_UNAVAILABLE";
+                String code = "MODEL_PROFILE_NOT_ACTIVE".equals(reason) ? "MODEL_PROFILE_NOT_ACTIVE"
+                    : "LOCAL_EXECUTION_PAUSED".equals(reason) ? "LOCAL_EXECUTION_PAUSED" : "LOCAL_AI_UNAVAILABLE";
                 return zemaResponse("blocked", code, null);
             } catch (Exception failed) {
                 return zemaResponse("blocked", "LOCAL_AI_UNAVAILABLE", null);
             }
+        }
+        @Override public String localModelCatalog() {
+            enforceShellCaller();
+            try { return boundedJson(new JSONObject(new LocalModelInstaller(RockShellService.this, platform()).catalogJson())); }
+            catch (Exception failure) { return "{\"models\":[],\"code\":\"MODEL_CATALOG_UNAVAILABLE\"}"; }
+        }
+        @Override public String importLocalModel(String profileId, ParcelFileDescriptor source, boolean consent) {
+            enforceShellCaller();
+            try { return new LocalModelInstaller(RockShellService.this, platform()).install(profileId, source, consent); }
+            catch (Exception failure) { return modelImportFailure(failure); }
+        }
+        @Override public String reloadLocalModel(String profileId, boolean consent) {
+            enforceShellCaller();
+            try { return new LocalModelInstaller(RockShellService.this, platform()).reload(profileId, consent); }
+            catch (Exception failure) { return modelImportFailure(failure); }
         }
         @Override public String skySelection() {
             enforceShellCaller(); return skySelectionResponse(engine().skySelection());
@@ -860,6 +875,7 @@ public final class RockShellService extends Service {
         synchronized (deviceLinkLock) { clearPendingDeviceLink(); }
         super.onDestroy();
     }
+    private PlatformStore platform() { return ((RockApplication) getApplication()).platform(); }
     private Engine engine() { return ((RockApplication) getApplication()).engine(); }
     private RecoverableBackupManager backupManager() { return new RecoverableBackupManager(this); }
 
@@ -892,6 +908,11 @@ public final class RockShellService extends Service {
                 Map<String,String> work = workItems.get(index);
                 JSONObject item = new JSONObject();
                 item.put("id", work.get("id")); item.put("state", work.get("state")); item.put("sample", "1".equals(work.get("sample")));
+                try {
+                    Map<String,String> pin = platform().modelProfilePin(AndroidOwner.current(this), work.get("id"));
+                    item.put("planner", new JSONObject().put("name", "Jennifer local")
+                        .put("profileId", pin.get("profile_id")).put("profileVersion", pin.get("profile_version")));
+                } catch (RuntimeException noReadablePin) { /* Manual and legacy jobs have no model pin. */ }
                 JSONArray runs = new JSONArray();
                 for (Map<String,String> run : engine().runs(work.get("id"))) {
                     JSONObject step = new JSONObject();
@@ -988,6 +1009,15 @@ public final class RockShellService extends Service {
 
     private static void validWorkId(String value) {
         if (value == null || !value.matches("[0-9a-f-]{36}")) throw new IllegalArgumentException("INVALID_WORK_ID");
+    }
+
+    private static String modelImportFailure(Exception failure) {
+        Set<String> codes = Set.of("MODEL_IMPORT_CONSENT_REQUIRED", "DEVICE_UNLOCK_REQUIRED", "MODEL_FILE_LENGTH_MISMATCH",
+            "MODEL_NOT_IN_TRUSTED_CATALOG", "READ_ONLY_REGULAR_MODEL_FILE_REQUIRED", "MODEL_MEMORY_UNAVAILABLE",
+            "MODEL_STORAGE_UNAVAILABLE", "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK", "MODEL_ARTIFACT_HASH_MISMATCH",
+            "MODEL_PROFILE_RUNTIME_MISMATCH", "MODEL_LICENSE_RECEIPT_NOT_SAVED");
+        String code = codes.contains(failure.getMessage()) ? failure.getMessage() : "MODEL_IMPORT_FAILED";
+        return "{\"status\":\"failed\",\"code\":\"" + code + "\"}";
     }
 
     private static String zemaResponse(String status, String code, String workId) {

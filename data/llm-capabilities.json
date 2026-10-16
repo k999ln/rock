@@ -35,8 +35,8 @@
       "role": "local_planner",
       "provider": "local",
       "model": "Qwen3-0.6B-Q8_0-GGUF",
-      "runtime": "llama.rn@0.12.9 / Local Action Assistant API v2",
-      "status": "device_apk_verified",
+      "runtime": "llama.rn@0.12.9 / Local Action Assistant API v4 (current source)",
+      "status": "implemented_configuration_required",
       "network": "prohibited",
       "authority": "plan_only",
       "automaticFallback": false,
@@ -47,11 +47,24 @@
         "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java"
       ],
       "limitations": [
-        "test-signed standalone APK on an existing OS",
-        "single fixed model/runtime profile",
-        "model metadata persists but post-reboot autoload is not verified",
-        "not integrated into an avocadoOS production image"
-      ]
+        "Current API v4 inference and this new APK are not accepted on Pixel; the owner cannot connect it now",
+        "Previous model/Tool inference evidence applies to API v2 only",
+        "Developer-preview model definition signing is separate from Qwen authorship and OS signing",
+        "Production model catalog is empty; no model auto-download or post-boot autoload",
+        "Full native Jennifer Goal orchestration and OS image remain pending"
+      ],
+      "historicalAcceptance": {
+        "apiVersion": 2,
+        "status": "device_apk_verified",
+        "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+      },
+      "currentImplementation": {
+        "privateShellApiVersion": 19,
+        "signedModelCatalog": "debug_only",
+        "runtimeApiVersion": 4,
+        "physicalInferenceAccepted": false,
+        "evidence": "docs/evidence/pixel-local-jennifer.json"
+      }
     },
     {
       "id": "sky-openai-legal",

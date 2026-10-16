@@ -591,7 +591,7 @@ Agent利用の請求周期と未払い/異議/入金復旧は[Sky月次後払い
 
 ## Pixelのアプリ実装と受入
 
-2026-10-16、本人の「この設計でPixelで実際にsi専用端末として使えるように実装を進めて」に基づくOS11/O6/ROCKの第一段階。最新main `019c2231`を土台に、原dirty候補から表示部品と画面遷移だけを選別し、現在のBinder API 18、Local si API v4、LocalSubmissionの同ID照合、仕事/予算/復旧契約を保持する。実装と同一APKの証拠は[実装台帳](evidence/pixel-si-terminal-implementation.json)を正本にする。
+2026-10-16、本人の「この設計でPixelで実際にsi専用端末として使えるように実装を進めて」に基づくOS11/O6/ROCKの第一段階。最新main `019c2231`を土台に、原dirty候補から表示部品と画面遷移だけを選別し、初回APKのBinder API 18（次段のモデル導入は19）、Local si API v4、LocalSubmissionの同ID照合、仕事/予算/復旧契約を保持する。実装と同一APKの証拠は[実装台帳](evidence/pixel-si-terminal-implementation.json)を正本にする。
 
 ### 使う体験と責任
 
@@ -607,6 +607,29 @@ LLMなしの経路も`ShellConnection.submit`→既存Broker/Engine→`citations
 
 BrokerのSchedulerは既存充電必須・熱・pause・lease・有限Tool制限を維持し、15分の保守jobに加えて依頼時のone-shot jobを登録する。全停止は両jobを停止し、JobServiceはjob ID別のsessionを保持して取消対象を混同しない。Job完了、成果review、本人の完了承認を分ける。
 
+<a id="pixel-local-jennifer"></a>
+
+### 端末内モデル導入とJenniferの有限計画
+
+本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。本人は現在実機を接続できないと回答しており、この変更のPixel導入・推論・生成物は未確認。PR #149のLLMなし実機合格を転用しない。
+
+**利用体験と範囲。** Skyの「端末内モデル」で対応GGUFと取得元・license・容量・配布定義の署名を確認し、本人が同意してsystem file pickerから選ぶ。導入後、Homeの「端末内LLM」から依頼を準備し、仕事画面でSkyの選択と処理/保存を承認する。Jenniferの端末内計画は既存`ZemaOrchestrator`の有限経路であり、この版は記事準備一件だけ。`LLM入力案 → Brokerの厳格schema検査 → citations@1 → free-article@1 → review → 本人の確認メモ → completed`を使う。投稿・送信・課金は含まず、Goal Contract/COLOMBIA/AMC全体のnative統括を実装済みとはしない。
+
+**責任と入力。** ShellはUI、選んだread-only descriptor、profile ID、明示同意だけを渡す。Brokerの`LocalModelCatalog`/`LocalModelInstaller`が配布定義・モデル・license同意・資源・登録を管理し、既存`ModelProfileActivationCoordinator`が実runtimeへの読込みとactive pointerを確定する。UI/Brokerのprivate APIは19、共通Platform APIは1、Local si Binder APIは4。各番号を別の契約として検査する。`com.localactionassistant`の実package/version/same signer/UID/APIを検証し、モデル名やファイル名から信頼を作らない。
+
+**配布定義。** 初期Developer Previewの一候補は[Qwen公式のQwen3 0.6B Q8_0 GGUF](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/tree/23749fefcc72300e3a2ad315e1317431b06b590a)、639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、[Apache-2.0](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/blob/23749fefcc72300e3a2ad315e1317431b06b590a/LICENSE)。contextはruntimeの2,048 token。tokenizerはGGUFの`tokenizer.*`（chat_template以外）のsorted-key/UTF-8/compact JSON、templateはGGUFの`tokenizer.chat_template` UTF-8のSHA-256をprofileへ固定する。両方は同じ検証済みGGUF内にあり、外部assetを追加取得しない。2 GiBの最小総RAMは導入条件で、実機の速度/品質/安全な空きRAMの受入証拠ではない。
+
+Ed25519の署名はRockの**開発preview配布定義**を認証する。Qwen本人の署名、安全性・文章品質の保証、OS/platform署名ではない。公開鍵・署名済profileはBrokerの署名APK内debug assetに固定し、読み込むGGUFから鍵やmanifestを受け取らない。release/Soong用の既定catalogは空、productionの配布設定は別gate。private model keyとweightはGit外、OS署名鍵は生成しない。
+
+Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software公開鍵のSPKI取込に失敗した。署名検証を省略せず、[Bouncy Castle公式配布](https://www.bouncycastle.org/download/bouncy-castle-java/)のlightweight Ed25519 verifier（`bcprov-jdk15to18:1.86`）へ統一する。providerのglobal登録や鍵生成はしない。GradleとSoongは`os/physical/model-crypto-artifact-lock.json`の同じJAR hash/sizeを検査する。full OSの専用Linuxでは`ROCK_MODEL_CRYPTO_JAR`を渡し、既存build入口が`stage-model-crypto.py`でvendorの`rock-model-crypto` moduleとlicense NOTICEを固定配置・再検証する。JARやcacheはGitに入れない。これはhost/Android候補であり、Soong全OS compileは未実行。
+
+
+**検証・状態・保存。** 未導入/確認待ち/検証中/読込み中/ready/失敗を分け、ファイル選択や登録だけでreadyにしない。readonlyかつregularなPFD、exact length、選択ファイルのSHA-256を先に確認する。既存stagerでBroker-private no-backup領域へコピー・再hash・atomic昇格し、runtimeがreadonly PFDから再コピー・再hashして返すprofile/hash/byte receiptとstatusを照合する。全て成功した時だけPlatformStoreのactive pointerを確定する。2コピーとreserveの容量、RAM/low-memory、解除状態を検査する。license同意はowner/profile digest/license/timeをBroker-private preferencesへ保存し、実行承認とは別にする。原稿と成果の正本は既存Broker DB/保護fileのまま。
+
+**失敗と復旧。** 不明profile・未知key/失効key・改変署名・別weight・writable/pipe descriptor・容量不足・lock・version/signer/API不一致では停止し、仕事や旧active pointerを消さない。検証済cache/partialが残る場合は同じcatalog候補だけ明示再試行する。起動時autoloadや別model/cloudへのfallbackはなく、Skyから「保存済みモデルを再読込み」を選ぶ。runtime読込み後にactivationが失敗した時は既存coordinatorの旧profile復帰を試み、失敗を成功扱いにしない。失効・非互換profileへ戻さない。
+
+**仕事・停止・合格条件。** 依頼は既存LocalSubmissionの同owner/同ID、Sky token、署名profile/weights/runtime pinへ固定し、モデル結果を成功や権限にしない。モデル計画中も停止ボタンは別control executorからBrokerへ届き、`LocalPlanningFence`がstopと最終submitを直列化する。停止→再開後に旧計画が届いても新しい仕事を作らない。保存済み仕事、成果、本人review、工程claim時の電源/熱/停止制約を維持する。hostではv4とPlatform v1の分離・実2セグメントpackage、catalog改変/失効/未知項目、停止→再開の遅延結果拒否を検査する。Androidでは実署名検証、同意なし・writable・長さ不一致でactive/job不変を検査する。Pixelでは同一APK/同一GGUFでimport→実推論→2 Tool→review artifact→同ID再試行→再開/再読込みを確認し、未実行を合格へ換算しない。詳細手順は[Android prototype](os-prototype.md#pixel-local-model-acceptance)。
+
 ### Home・音声・一般アプリ
 
 main/aosp双方でHOME/DEFAULT候補を宣言する。既定HomeはRoleManagerのsystem画面で選択・変更でき、自動設定しない。Homeへ戻る操作で新しい仕事を実行しない。Android設定と、LAUNCHERとして公開された一般appへの入口を残し、QUERY_ALL_PACKAGES・任意shell/root・他appの私有data取得を追加しない。
@@ -615,7 +638,7 @@ main/aosp双方でHOME/DEFAULT候補を宣言する。既定HomeはRoleManager�
 
 ### 合格条件と残る実装
 
-Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4モデル推論一周、署名済model導入/catalog、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
+Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4実機推論一周、model導入/catalog候補の実機受入とproduction配布設定、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
 
 main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
 

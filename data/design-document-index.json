@@ -112,7 +112,31 @@
           "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java"
         ],
         "fullSiTerminalAccepted": false,
-        "fullOsAccepted": false
+        "fullOsAccepted": false,
+        "localModelPlanning": {
+          "authority": "docs/native-os-integration.md#pixel-local-jennifer",
+          "evidence": "docs/evidence/pixel-local-jennifer.json",
+          "status": "implemented_candidate_physical_inference_pending",
+          "privateShellApiVersion": 19,
+          "runtimeBinderApiVersion": 4,
+          "platformApiVersion": 1,
+          "debugOnlyModelCatalog": true,
+          "components": [
+            "android/automation/src/main/java/dev/rock/automation/LocalModelCatalog.java",
+            "android/automation/src/main/java/dev/rock/automation/LocalModelInstaller.java",
+            "android/automation/src/main/java/dev/rock/automation/LocalPlanningFence.java",
+            "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+            "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+            "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+            "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+            "android/core/build.gradle",
+            "android/Android.bp",
+            "os/physical/model-crypto-artifact-lock.json",
+            "scripts/stage-model-crypto.py"
+          ],
+          "physicalInferenceAccepted": false,
+          "fullJenniferGoalAccepted": false
+        }
       }
     }
   },

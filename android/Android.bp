@@ -1,6 +1,7 @@
 // Source-build integration for the virtual OS prototype; not yet Soong-build verified.
 java_library {
     name: "rock-automation-core",
+    static_libs: ["rock-model-crypto"],
     srcs: ["core/src/main/java/**/*.java"],
     java_resource_dirs: ["core/src/main/resources"],
     sdk_version: "current",

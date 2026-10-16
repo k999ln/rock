@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 166,
+  "distinctValues": 167,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 59,
+    "public-artifact-digest": 60,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2347,6 +2347,20 @@
         ]
       },
       "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "d130682d1942226b7eeb8dda0e3e5489c384e4685af1007ce0c383fcd7801e6d",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template. Recomputed from official Qwen3-0.6B Q8_0, revision 23749fefcc72300e3a2ad315e1317431b06b590a, weight SHA-256 9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031; public metadata digest, not a credential.",
+      "source": {
+        "commit": "663da184f12345d938d488e19d8f044a9921db7f",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 22,
+        "field": [
+          "/models/0/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 2
     }
   ],
   "supplementalReviews": [
@@ -2355,6 +2369,17 @@
       "recordedOn": "2026-10-06",
       "addedDistinctValues": 3,
       "basis": "Recomputed source SHA-256 values; exact path and exact value only."
+    },
+    {
+      "head": "fb7067141326837d259cdd30015380e3acae4bcc",
+      "recordedOn": "2026-10-16",
+      "addedDistinctValues": 1,
+      "exactPaths": [
+        "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "docs/evidence/pixel-local-jennifer.json"
+      ],
+      "basis": "One independently recomputed public tokenizer digest, exact value AND two exact paths only. Historical occurrence counts and reviewedHead stay historical.",
+      "policySha256": "9ade73e2b477e48e3759bf8e5b7cc89821de545905b256f50136df5f2a7e15e4"
     }
   ],
   "integratedReview": {

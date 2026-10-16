@@ -3,7 +3,7 @@
 set -eo pipefail
 
 if [[ $# != 4 || $1 != --mode || ($2 != bringup && $2 != release) ]]; then
-  echo 'Usage: ROCK_LOCAL_AI_APK=<reviewed.apk> ROCK_ANDROID_AAPT2=<aapt2> [ROCK_OPERATOR_AGENT_CONFIG=<external-public.json>] bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup|release <OS-tree> <GrapheneOS-allowed-signers>' >&2
+  echo 'Usage: ROCK_LOCAL_AI_APK=<reviewed.apk> ROCK_MODEL_CRYPTO_JAR=<reviewed-bcprov.jar> ROCK_ANDROID_AAPT2=<aapt2> [ROCK_OPERATOR_AGENT_CONFIG=<external-public.json>] bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup|release <OS-tree> <GrapheneOS-allowed-signers>' >&2
   exit 2
 fi
 rock_phone_mode="$2"
@@ -77,6 +77,7 @@ PY_FINISH
 }
 trap 'rock_phone_finish "$?"' EXIT
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" host "$OUT_DIR"
+: "${ROCK_MODEL_CRYPTO_JAR:?Set ROCK_MODEL_CRYPTO_JAR to the lock-reviewed model verifier JAR}"
 
 if [[ $rock_phone_mode == release ]]; then
   python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" recovery \
@@ -89,6 +90,7 @@ fi
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" prepare "$rock_phone_tree" \
   --mode "$rock_phone_mode" --allowed-signers "$rock_phone_signers"
 python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" stage "$rock_phone_tree" "$ROCK_LOCAL_AI_APK" --aapt2 "$ROCK_ANDROID_AAPT2"
+python3 "$rock_phone_root/scripts/stage-model-crypto.py" stage "$rock_phone_tree" "$ROCK_MODEL_CRYPTO_JAR"
 if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
   python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" stage "$rock_phone_tree" "$ROCK_OPERATOR_AGENT_CONFIG"
 fi
@@ -108,6 +110,7 @@ export ROCK_PHONE_HOOK_REPO_PATH="$rock_phone_hook_repo_path"
 export ROCK_PHONE_EXPECTED_HOOK_SHA256="$rock_phone_hook_sha256"
 repo forall -e -c 'bash "$ROCK_PHONE_SOURCE_ROOT/scripts/check-phone-project.sh"'
 python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" verify "$rock_phone_tree"
+python3 "$rock_phone_root/scripts/stage-model-crypto.py" verify "$rock_phone_tree"
 if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
   python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" verify "$rock_phone_tree"
 fi
@@ -124,6 +127,7 @@ if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
 fi
 cp "$rock_phone_root/os/physical/frankel-source-lock.json" "$rock_phone_evidence/source-lock.json"
 cp vendor/rockstaros-local-ai/artifact.json "$rock_phone_evidence/local-ai-artifact.json"
+cp vendor/rockstaros-model-crypto/artifact.json "$rock_phone_evidence/model-crypto-artifact.json"
 m "${rock_phone_build_targets[@]}" dist
 python3 "$rock_phone_root/scripts/verify-phone-artifacts.py" --dist "$DIST_DIR" \
   --build-number "$BUILD_NUMBER" --operator "$ROCK_OPERATOR_AGENT_MODE" \

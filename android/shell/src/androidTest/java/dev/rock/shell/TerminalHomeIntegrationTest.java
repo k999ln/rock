@@ -135,6 +135,24 @@ public final class TerminalHomeIntegrationTest {
         } finally { ui(activity::finish); }
     }
 
+    @Test public void modelCatalogAndConsentRefusalCrossTheRealShellBinderWithoutCreatingWork() throws Exception {
+        ShellConnection broker = new ShellConnection(context());
+        JSONObject before = new JSONObject(broker.snapshot());
+        JSONObject catalog = new JSONObject(broker.localModelCatalog());
+        assertEquals(1, catalog.getJSONArray("models").length());
+        JSONObject model = catalog.getJSONArray("models").getJSONObject(0);
+        assertEquals("dev.rock.qwen3-06b-q8", model.getString("profileId"));
+        java.io.File file = java.io.File.createTempFile("unapproved-model-", ".gguf", context().getCacheDir());
+        try (android.os.ParcelFileDescriptor descriptor = android.os.ParcelFileDescriptor.open(file,
+                android.os.ParcelFileDescriptor.MODE_READ_ONLY)) {
+            JSONObject denied = new JSONObject(broker.importLocalModel(model.getString("profileId"), descriptor, false));
+            assertEquals("failed", denied.getString("status"));
+            assertEquals("MODEL_IMPORT_CONSENT_REQUIRED", denied.getString("code"));
+        } finally { file.delete(); }
+        assertEquals(before.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+        assertEquals(catalog.optString("activeProfileId"), new JSONObject(broker.localModelCatalog()).optString("activeProfileId"));
+    }
+
     @Test public void realToolSubmissionRunsOnceWithoutAModelAndSurvivesActivityRestart() throws Exception {
         Assume.assumeTrue("physical/emulator execution needs the existing charging gate", context().getSystemService(BatteryManager.class).isCharging());
         ShellConnection broker = new ShellConnection(context());

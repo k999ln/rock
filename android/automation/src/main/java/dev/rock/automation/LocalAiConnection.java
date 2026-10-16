@@ -272,6 +272,13 @@ final class LocalAiConnection {
     }
 
     private synchronized <T> T withService(BoundCall<T> call) throws Exception {
+        // Shell authentication happens in RockShellService; runtime IPC uses the Broker identity.
+        long identity = Binder.clearCallingIdentity();
+        try { return withTrustedService(call); }
+        finally { Binder.restoreCallingIdentity(identity); }
+    }
+
+    private <T> T withTrustedService(BoundCall<T> call) throws Exception {
         PackageManager pm = context.getPackageManager();
         int expectedUid = pm.getPackageUid(PACKAGE, 0);
         if (pm.getPackageInfo(PACKAGE, 0).getLongVersionCode() != PACKAGE_VERSION_CODE)
@@ -304,6 +311,11 @@ final class LocalAiConnection {
     private static void validToken(String token) {
         if (token == null || !token.matches("[a-f0-9-]{36}"))
             throw new IllegalArgumentException("INVALID_REQUEST_TOKEN");
+    }
+
+    String trustedInstalledSigningDigest() throws Exception {
+        status();
+        return installedSigningDigest();
     }
 
     private String installedSigningDigest() throws Exception {

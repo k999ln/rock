@@ -10,6 +10,30 @@ Home候補・4画面・実行先別の下書き・明示音声adapter・成果�
 
 このpreviewの戻し方: まずAndroidの「デフォルトのアプリ→ホームアプリ」で元のLauncherを選ぶ。APKは `~/Library/RockstarOS/pixel-si-terminal-20261016/candidate/`、更新前は同directoryの`before/`、hashは`artifact-manifest.json`へ保存する。画面だけを戻す場合も、既存署名/versionとShell API 18が一致することを確認してから`before/dev.rock.shell.apk`を`adb install -r`する。Broker/DBを消去せず、Broker/Tool全体の巻戻しはschema/契約の互換確認を別に行う。旧APK退避と署名照合は実施、旧版への実rollbackは未試験。Developer Previewの試験署名であり、本番配布用の鍵やOS imageではない。
 
+<a id="pixel-local-model-acceptance"></a>
+
+### Pixelの端末内LLM・Jennifer候補を受け入れる
+
+署名検証ライブラリはGradleが`os/physical/model-crypto-artifact-lock.json`のSHA-256/sizeをcompile前に照合する。Soongは同じJARを`ROCK_MODEL_CRYPTO_JAR`からstageする別経路で、専用Linuxでの全OS compileは未実行。
+
+[モデル導入と有限計画の契約](native-os-integration.md#pixel-local-jennifer)と[候補台帳](evidence/pixel-local-jennifer.json)を読む。Shell/Brokerはprivate API 19の組で更新する。現行Local Action AssistantはversionCode 3 / Binder API 4 / 同じ開発signer、記事Toolは従来のAPIを使う。release catalogは空で、Developer Preview APKの署名済一modelだけを対象とする。本人が実機を接続できないため、この候補の実機試験は未実行。
+
+1. 再接続したPixelの`frankel`/GL066・OS・空き容量・解除状態、現在のAPK/Signerを読み取り確認する。既存APKを退避し、same signerを確認してからShell/Brokerを`adb install -r`で更新する。`-d`/uninstall/data clear/OS flashは使わない。UI/Brokerは同じAPI 19、runtimeは承認済みAPI 4であることを確認する。
+2. 公式固定版の`Qwen3-0.6B-Q8_0.gguf`（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`）を端末へコピーする。Sky → 端末内モデル → license/hash/容量を確認 → 同意 → system pickerで該当GGUFを選ぶ。ready receiptとstatusを読む。任意modelや外部URLをruntimeへ直接渡さない。
+3. Homeで「端末内LLM」を選び、syntheticな記事下書きを依頼する。仕事画面で選択Toolと端末処理/保存の同意を確認し、Jenniferの計画を開始する。充電・停止・熱のgateを維持し、実2工程がreviewへ進むこと、成果の内容・保存先picker・再読込み・同ID二重作成防止を確認する。modelの提案本文とTool成果を分ける。
+4. 依頼中の全停止→再開で古い計画が遅れて実行されないこと、壊れたfile/未知profile/署名不一致/容量不足で旧仕事・成果が残ることを確認する。再起動後は自動推論せず、Skyから保存済みモデルを明示して再読込みする。実アプリ/端末再起動と全損復旧を分ける。
+
+通常のAndroid CIは`LocalModelImportBoundaryTest`（実署名/descriptor/同意/小容量hash fixture）とShellのcatalog Binder試験を行う。実GGUFの推論試験は自動で走らせず、未実行ならskipとして表示する。専用Pixelでの明示受入時だけ、Broker自身のexternal filesへ同hash weightを置き、次を実行する（合成入力の一仕事だけを作る）。
+
+```sh
+adb shell am instrument -w \
+  -e class dev.rock.automation.LocalModelPlanningAcceptanceTest \
+  -e rockPhysicalModelAcceptance true \
+  dev.rock.automation.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+この試験は`frankel`・充電・全停止でない状態を必須とし、本人の停止状態を変更しない。外部file名は`getExternalFilesDir(null)/Qwen3-0.6B-Q8_0.gguf`。`local-jennifer-acceptance.json`へjob/profile/weight/artifact hashを保存し、最後に自分が作った合成jobだけを中止する。system picker操作、UIでの本人review、再起動、文章品質は別に確認する。このcommandやビルド成功を実機実行済みと記載しない。
+
 ## 現行の再開入口（2026-10-11）
 
 現行の段階と同SHAの証拠は[Android workstreamの表](workstreams/07-android-device-local-ai.md#現行の検証段階と再開条件2026-10-11)を優先する。既存JDK 17／SDK 35を使ったhostの実SQLite・AIDL／Java compileに加え、`19ef1020`の[Android API 35 CI](https://github.com/k999ln/rock/actions/runs/38153378733)が成功した。Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationのautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件とAPK build／lintが対象で、RockstarOS imageの起動試験ではない。

@@ -59,6 +59,10 @@ GitHub と同じ PR head `a85a25e`、control commit `b6ab1988`、Gitleaks 8.30.1
 
 これは source review の結論であり、GitHub alert の dismissal や check 合格ではない。指摘を隠すための source 書換え・除外は行わない。Gitleaks の実 binary を使う scanner/policy の 12 件、MCP ZIP の source 同一性検査も成功した。全体 release check は sparse checkout の画像 asset 不在で未完了、公開/実機/長時間常駐の受入は未実施のまま保持する。
 
+### Pixelモデルの公開metadata digest
+
+2026-10-16、Pixelモデルcatalogと候補証拠の`tokenizerSha256`がgeneric-api-keyに検出された。同じ値は公式固定GGUFのtokenizer metadataのSHA-256として再計算済みで、credentialではない。policyはその一つのliteralと二つのexact pathのANDだけを追加し、出典をpublic-value-provenance.jsonへ記録する。変更値・別path・本物のsecretに対する検出は維持し、実Gitleaks 8.30.1の既存16回帰を再実行した。scanner本体を変更せず、新しいpolicyを含む不変commitへcontrol refを更新する。runtime実機の合格とは別のCI修復である。[候補証拠](evidence/pixel-local-jennifer.json)。
+
 ## GitHub上でrockを検査する
 
 利用者の追加指示により、`k999ln/rock`そのものをActionsで検査し、GitHubのPR check、実行summary、Security画面へ結果を表示する。ローカル画面への貼り付けは不要。
