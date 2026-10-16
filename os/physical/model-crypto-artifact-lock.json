@@ -10,5 +10,5 @@
   "moduleName": "rock-model-crypto",
   "stagingPath": "vendor/rockstaros-model-crypto",
   "verificationScope": "Same pinned library for Gradle APK and full-OS Soong source; no global JCA provider registration",
-  "licenseNoticeSha256": "89e61e44dcdd5bf128446fcdb8b2adf41d597d5c5a3de25e91c0b682af710ed8"
+  "licenseNoticeSha256": "782703fcd39c06fcfba0e23d1cdc65c3f219d58b5a5ffa632a5b37008cfec956"
 }

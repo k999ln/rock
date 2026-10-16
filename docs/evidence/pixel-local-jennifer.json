@@ -163,7 +163,7 @@
     },
     {
       "path": "os/physical/model-crypto-artifact-lock.json",
-      "sha256": "76fd949411d9dd9927cb47dc343450fb659116db183bb12f67cef97c44b31a38"
+      "sha256": "121a24db08d1ad62c9eabc4fca0bbc86fbbc7af5da04254f3e4bbc8cdc0fbe9a"
     },
     {
       "path": "scripts/stage-model-crypto.py",
@@ -231,7 +231,8 @@
     "modelCryptoStagerAndPhoneTestsPassed": 23,
     "modelCryptoPinnedJarStage": "pass_host_stage_and_verify_not_Soong_compile",
     "fullVerifyBeforeSoftwareCrypto": "/private/tmp/pixel-local-jennifer/verify-final.log",
-    "securityAndStagerRegressionTestsPassed": 39
+    "securityAndStagerRegressionTestsPassed": 39,
+    "gitDiffCheck": "pass"
   },
   "gitEvidence": {
     "readbackCommand": "gh pr view codex/pixel-local-jennifer --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit",
@@ -317,7 +318,7 @@
     "moduleName": "rock-model-crypto",
     "stagingPath": "vendor/rockstaros-model-crypto",
     "verificationScope": "Same pinned library for Gradle APK and full-OS Soong source; no global JCA provider registration",
-    "licenseNoticeSha256": "89e61e44dcdd5bf128446fcdb8b2adf41d597d5c5a3de25e91c0b682af710ed8",
+    "licenseNoticeSha256": "782703fcd39c06fcfba0e23d1cdc65c3f219d58b5a5ffa632a5b37008cfec956",
     "globalProviderRegistration": false
   }
 }
