@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SkyToolWorkspace from '@/components/sky-tool-workspace';
+import SkyFreeArticleDetailPage from '@/components/sky-free-article-detail-page';
 import { catalog } from '@/lib/catalog';
 
 type Props = { params: Promise<{ toolId: string }> };
@@ -14,5 +15,6 @@ export default async function SkyToolPage({
   params,
 }: Props) {
   const { toolId } = await params;
+  if (toolId === 'mr-free-article') return <SkyFreeArticleDetailPage />;
   return <SkyToolWorkspace toolId={toolId} />;
 }

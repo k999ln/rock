@@ -11,7 +11,7 @@ import {
   registryHostMismatch,
 } from '../lib/sky-tool-compatibility.ts';
 
-const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell] = await Promise.all([
+const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell, toolRoute, freeArticleDetailPage, freeArticleOrder] = await Promise.all([
   readFile(new URL('../app/sky/marketplace/page.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-marketplace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-workspace.tsx', import.meta.url), 'utf8'),
@@ -22,6 +22,9 @@ const [page, marketplace, sky, registry, detail, publisher, overview, coconala, 
   readFile(new URL('../components/coconala-team-workspace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-commerce.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/workspace-shell.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../app/sky/tools/[toolId]/page.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../components/sky-free-article-detail-page.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../components/sky-free-article-order.tsx', import.meta.url), 'utf8'),
 ]);
 
 void test('commerce uses the workspace main landmark without nesting a second main', () => {
@@ -87,6 +90,26 @@ void test('catalog icons reveal capabilities without starting or connecting a to
   assert.match(overview, /<dd>\{state\.label\}<\/dd>/);
   assert.match(overview, /<dd>\{tool\.environment\}<\/dd>/);
   assert.match(overview, /<dd>\{tool\.cost\}<\/dd>/);
+});
+
+void test('free article CTA opens the zero-cost card and connects only after confirmation', () => {
+  assert.match(marketplace, /tool\.id === 'mr-free-article' \? '開いて使う'/);
+  assert.match(marketplace, /onAction=\{tool\.id === 'mr-free-article' \? \(\) => setSelectedCatalog\(tool\)/);
+  assert.match(marketplace, /selectedCatalog\.id === 'mr-free-article' \? <SkyFreeArticleOrder/);
+  assert.match(freeArticleOrder, /0円 · 決済なし/);
+  assert.match(freeArticleOrder, /onClick=\{\(\) => void confirmOrder\(\)\}/);
+  assert.match(freeArticleOrder, /operationRequest<SkyConnection>\('\/api\/sky\/connections', 'PUT', \{ tool: toolId \}\)/);
+  assert.match(freeArticleOrder, /\/zema\/tools\/mr-free-article/);
+  assert.doesNotMatch(freeArticleOrder, /\/api\/sky\/commerce|checkout|stripe/i);
+});
+
+void test('direct free article URL uses the same order card instead of the old Sky workspace', () => {
+  assert.match(toolRoute, /toolId === 'mr-free-article'\) return <SkyFreeArticleDetailPage \/>/);
+  assert.match(freeArticleDetailPage, /<SkyToolOverview tool=\{articleTool\} state=\{skyToolUiState\(articleTool, context\)\} standalone>/);
+  assert.match(freeArticleDetailPage, /<SkyFreeArticleOrder \/>/);
+  assert.doesNotMatch(freeArticleDetailPage, /SkyLibrarySave|MrToolRunner|<form/);
+  assert.match(overview, /standalone \? <h1 className=\{styles\.title\}>/);
+  assert.match(toolRoute, /return <SkyToolWorkspace toolId=\{toolId\}/);
 });
 
 void test('Sky home icon opens a single overview with the next action', () => {

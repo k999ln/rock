@@ -30,6 +30,7 @@ import {
 } from '@/lib/sky-tool-compatibility';
 import SkyToolCard from '@/components/sky-tool-card';
 import SkyToolOverview from '@/components/sky-tool-overview';
+import SkyFreeArticleOrder from '@/components/sky-free-article-order';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import WorkspaceShell from '@/components/workspace-shell';
 import { skyToolDetailActionLabel, skyToolUiState } from '@/lib/sky-tool-ui';
@@ -307,8 +308,9 @@ export default function SkyMarketplace() {
                         state={skyToolUiState(tool, runtimeContext)}
                         expanded={selectedCatalog?.id === tool.id}
                         onInspect={() => setSelectedCatalog(tool)}
-                        actionLabel={skyToolDetailActionLabel(tool)}
-                        href={`/sky/tools/${encodeURIComponent(tool.id)}`}
+                        actionLabel={tool.id === 'mr-free-article' ? '開いて使う' : skyToolDetailActionLabel(tool)}
+                        onAction={tool.id === 'mr-free-article' ? () => setSelectedCatalog(tool) : undefined}
+                        href={tool.id === 'mr-free-article' ? undefined : `/sky/tools/${encodeURIComponent(tool.id)}`}
                         hostMismatch={catalogHostMismatch(tool, host)}
                       />
                     ))}
@@ -372,9 +374,11 @@ export default function SkyMarketplace() {
             state={skyToolUiState(selectedCatalog, runtimeContext)}
             hostMismatch={host ? catalogHostMismatch(selectedCatalog, host) : null}
           >
-            <Link className={styles.modalAction} href={`/sky/tools/${encodeURIComponent(selectedCatalog.id)}`}>
-              {skyToolDetailActionLabel(selectedCatalog)} <ArrowRight size={17} />
-            </Link>
+            {selectedCatalog.id === 'mr-free-article' ? <SkyFreeArticleOrder /> : (
+              <Link className={styles.modalAction} href={`/sky/tools/${encodeURIComponent(selectedCatalog.id)}`}>
+                {skyToolDetailActionLabel(selectedCatalog)} <ArrowRight size={17} />
+              </Link>
+            )}
           </SkyToolOverview>
         )}
       </Dialog>
