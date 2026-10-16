@@ -1194,3 +1194,11 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
 regexes = ['''\A502ae8861ba3decf5b2dfe0a6ed8d3566de2b643caa497262b653749033b305e\z''']
+
+# Public tokenizer metadata digest recomputed from the official pinned GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest d130682d1942"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
+regexes = ['''\A27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d\z''']
