@@ -24,7 +24,7 @@ export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Pr
 
 export async function runFreeCloudText(input: {
   db: DB; owner: string; id: string; prompt: string; model: string;
-  consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch;
+  consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number;
 }) {
   if (!freeCloudEnabled(input.runtime, input.owner) || input.consent !== true)
     throw new WorkError('無料Cloudの接続設定と外部送信への同意が必要です。', 403);
@@ -38,7 +38,7 @@ export async function runFreeCloudText(input: {
     if (saved.freeCloud?.requestDigest !== digest) throw new WorkError('同じ依頼IDの内容が一致しません。',409);
     return saved; // Includes uncertain/failed sends: never silently repeat an external request.
   }
-  const plan = await skyRecurringUsage(input.db,input.owner);
+  const plan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
   if (plan.reason !== 'available') throw new WorkError(`Skyプランで停止しています: ${plan.reason}`,403);
   const fetcher = input.fetcher ?? fetch;
   const candidates = await discoverFreeCloudModels(fetcher);
@@ -52,7 +52,7 @@ export async function runFreeCloudText(input: {
   // Existing owner/revision CAS is the one-time send claim; a crash leaves an uncertain job, not a retry.
   if (!await store.update(input.owner,claimed,created.revision)) return (await store.get(input.owner,input.id))!;
   try {
-    const currentPlan = await skyRecurringUsage(input.db,input.owner);
+    const currentPlan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
     const startedAt = Date.now();
     const response = await fetcher(`${ORIGIN}/openai`, {

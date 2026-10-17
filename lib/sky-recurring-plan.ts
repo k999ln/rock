@@ -20,9 +20,9 @@ export async function skyRecurringUsage(db: DB, owner: string, now = Date.now())
       FROM agent_delegation_budget_reservations r JOIN contract c ON c.owner_id=r.owner_user_id
       LEFT JOIN a2a_usage_receipts a ON a.delegation_id=r.delegation_id AND a.owner_user_id=r.owner_user_id
       WHERE r.state='held' OR (r.state='settled' AND r.created_at>=c.period_start AND r.created_at<c.period_end)
-    ) SELECT c.status,c.period_start,c.period_end,c.access_until,x.*
+    ) SELECT c.consent_version,c.stripe_account_id,c.status,c.period_start,c.period_end,c.access_until,x.*
       FROM contract c LEFT JOIN contributions x ON 1=1`).bind(owner).all<Contribution & {
-        status: string; period_start: number; period_end: number; access_until: number;
+        consent_version: string; stripe_account_id: string; status: string; period_start: number; period_end: number; access_until: number;
       }>();
   const c = rows.results[0];
   if (!c) throw new WorkError('Sandboxプラン契約が見つかりません。',404);
@@ -33,7 +33,8 @@ export async function skyRecurringUsage(db: DB, owner: string, now = Date.now())
   const reason = c.status!=='active' ? 'payment_or_contract_blocked' :
     c.access_until<=now || c.period_start>now || c.period_end<=now ? 'verification_expired' :
     remainingMinor===0 ? 'quota_exhausted' : 'available';
-  return {currency:'USD',monthlyFeeMinor:14000,includedMinor:10000,settledMinor,reservedMinor,remainingMinor,
+  const contractKind=c.consent_version==='sky140-monthly-postpaid-sandbox-v1' && c.stripe_account_id!=='acct_fixture_free_only' ? 'monthly_sandbox' : c.consent_version==='synthetic-free-only-v1' ? 'one_hour_synthetic' : 'other';
+  return {contractKind,currency:'USD',monthlyFeeMinor:14000,includedMinor:10000,settledMinor,reservedMinor,remainingMinor,
     periodStart:c.period_start,periodEnd:c.period_end,reason,items};
 }
 

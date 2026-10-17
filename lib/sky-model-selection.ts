@@ -5,13 +5,13 @@ import type { LlmRuntimeEnv } from './llm-providers.ts';
 
 export async function selectSkyModel(input: {
   db: Pick<D1Database,'prepare'|'batch'>; owner: string; prompt: string;
-  allowCloud: boolean; runtime: LlmRuntimeEnv & FreeCloudRuntime; fetcher?: typeof fetch;
+  allowCloud: boolean; runtime: LlmRuntimeEnv & FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number;
 }) {
   const candidates = await discoverSkyLocalModels(input.runtime,input.fetcher);
   let cloudStatus = input.allowCloud ? 'not_connected' : 'consent_required';
   if (input.allowCloud && freeCloudEnabled(input.runtime,input.owner)) {
     try {
-      const plan = await skyRecurringUsage(input.db,input.owner);
+      const plan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
       cloudStatus = plan.reason;
       if (plan.reason==='available') { const cloud=await discoverFreeCloudModels(input.fetcher); candidates.push(...cloud); cloudStatus=cloud.length?'available':'no_anonymous_model'; }
     } catch (error) { cloudStatus = error instanceof Error ? error.message : 'unavailable'; }

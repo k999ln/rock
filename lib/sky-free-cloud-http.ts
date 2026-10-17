@@ -1,13 +1,13 @@
 import { runFreeCloudText, type FreeCloudRuntime } from './sky-free-cloud.ts';
 import { WorkError } from './workflow.ts';
-export async function freeCloudTextHttp(request: Request, db: Pick<D1Database,'prepare'|'batch'>, owner: string, runtime: FreeCloudRuntime, fetcher?: typeof fetch) {
+export async function freeCloudTextHttp(request: Request, db: Pick<D1Database,'prepare'|'batch'>, owner: string, runtime: FreeCloudRuntime, fetcher?: typeof fetch, clock?: () => number) {
   const headers={'Cache-Control':'no-store'};
   try {
     const raw=await request.text();
     if(new TextEncoder().encode(raw).byteLength>50000) throw new WorkError('依頼が長すぎます。',413);
     const value=JSON.parse(raw) as Record<string,unknown>;
     if(typeof value.id!=='string'||typeof value.prompt!=='string'||typeof value.model!=='string') throw new WorkError('依頼の形式を確認してください。');
-    const job=await runFreeCloudText({db,owner,id:value.id,prompt:value.prompt,model:value.model,consent:value.consent===true,runtime,fetcher});
+    const job=await runFreeCloudText({db,owner,id:value.id,prompt:value.prompt,model:value.model,consent:value.consent===true,runtime,fetcher,clock});
     const record=job.freeCloud;
     if(record?.state!=='completed') return Response.json({error:record?.error || '実行中または結果未確認です。同じ依頼を再送しません。',id:job.id,state:record?.state},{status:409,headers});
     return Response.json({id:job.id,text:record.text,model:record.model,reportedModel:record.reportedModel,providerResponseId:record.providerResponseId,
