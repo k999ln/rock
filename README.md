@@ -1,5 +1,8 @@
 <div align="center">
 
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。現在の無料限定検証では自動対象は接続済みローカルモデル。Cloudの無料利用権・実応答は未受入です。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
+
+
 # avokado
 
 ### One account. More ways to play, make, and get things done.

@@ -225,5 +225,17 @@
     "design": "docs/avokado-llm-pretraining.md",
     "source": "toolkits/avokado-llm/",
     "evidence": "docs/evidence/avokado-llm-pretraining.json"
+  },
+  "skyAutomaticModelSelection": {
+    "date": "2026-10-17",
+    "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+    "default": "auto",
+    "manualProviderModelSupported": true,
+    "implementation": "lib/sky-model-routing.ts",
+    "document": "docs/llm-evaluation-architecture.md",
+    "cloudAutoAccepted": false,
+    "policy": "free_only_local_discovery_until_cloud_entitlement_verified",
+    "status": "host_verified_ui_authentication_pending",
+    "tests": "tests/sky-model-routing.test.mjs"
   }
 }
