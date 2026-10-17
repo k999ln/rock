@@ -48,6 +48,13 @@ public final class MainActivity extends Activity {
     private TextView homeWorkSummary, homeConnectionStatus, localAiStatus;
     private EditText homePrompt;
     private RadioGroup homeExecutionChoice;
+    private TextView homeModelChoice, modelChoiceStatus, discoveryStatus;
+    private EditText discoveryQuery;
+    private LinearLayout discoveryResults;
+    private Button discoverySearch;
+    private String preparedModelDigest, preparedModelPrompt;
+    private int modelChoiceRevision;
+    private final Runnable refreshModelChoice = this::prepareModelChoice;
     private LinearLayout cloudLlmPanel, manualToolPanel;
     private TerminalVoice voice;
     private int selectedPage;
@@ -315,14 +322,38 @@ public final class MainActivity extends Activity {
         localModelMessage = label(modelCard, "未確認。導入や再読込みは本人操作で開始します。", 14);
         button(modelCard, "モデルの導入状態を確認", this::refreshLocalModels);
         localModels = new LinearLayout(this); localModels.setOrientation(LinearLayout.VERTICAL); modelCard.addView(localModels);
+        LinearLayout discoveryCard = ui.card(pageContent[1]);
+        label(discoveryCard, "公開LLMを探す", 18);
+        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GGUF関連の公開候補を更新順で探します。", 14);
+        discoveryQuery = field(discoveryCard, "モデル名・公開キーワード", "Qwen", false);
+        discoverySearch = button(discoveryCard, "今の公開モデルを検索", this::searchPublicModels);
+        discoveryStatus = label(discoveryCard, "未検索。公開情報は導入・動作・ライセンス適合の保証ではありません。", 14);
+        button(discoveryCard, "Xで最新の投稿を探す（外部）", () -> {
+            String q = discoveryQuery.getText().toString().trim();
+            if (q.isEmpty() || q.length() > 80) { discoveryQuery.setError("1〜80文字で入力してください"); return; }
+            new AlertDialog.Builder(this).setTitle("Xで検索")
+                .setMessage("検索語「" + q + " open LLM」をXへ渡し、外部ブラウザを開きます。X APIは未接続のため、投稿をSky内で取得・検証はしません。")
+                .setPositiveButton("Xを開く", (d, w) -> openPublicModelUrl("https://x.com/search?q=" + android.net.Uri.encode(q + " open LLM") + "&f=live"))
+                .setNegativeButton("戻る", null).show();
+        });
+        discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
         form = composer;
         label(form, "依頼を確認", 20);
         button(form, "依頼を閉じて仕事を見る", () -> { workComposer.setVisibility(View.GONE); scrollPageTop(2); });
         label(form, "この版は記事準備の2工程に対応します。LLMが入力案を作り、Brokerが検査してToolへ渡します。投稿・送信・課金はしません。", 14);
         zemaPrompt = field(form, "何をしたいですか？", "", true);
+        modelChoiceStatus = label(form, "モデルは実行前に確認します。", 14);
+        button(form, "使うモデルを変更", this::showModelChooser);
+        button(form, "Skyでモデルを導入・接続", () -> selectPage(1));
         zemaConsent = new CheckBox(this); zemaConsent.setText("この依頼を端末内LLMで計画し、検査に通ったToolの実行と成果物保存を許可する"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
         zemaSubmitButton = button(form, "Jenniferに計画と実行を依頼", this::submitZema); ui.primary(zemaSubmitButton);
+        zemaSubmitButton.setEnabled(false);
+        zemaPrompt.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence value, int start, int count, int after) { }
+            public void onTextChanged(CharSequence value, int start, int before, int count) { invalidateModelChoice(); }
+            public void afterTextChanged(android.text.Editable value) { }
+        });
         zemaStopButton = button(form, "端末の実行を一時停止", () -> changeLocalPause(true)); zemaStopButton.setVisibility(View.GONE);
         zemaRecoveryButton = button(form, "未確認の依頼を履歴で確認", () -> reviewPendingSubmission(zemaSubmission, zemaRecoveryButton));
         updateSubmissionRecovery(zemaSubmission, zemaRecoveryButton);
@@ -441,19 +472,24 @@ public final class MainActivity extends Activity {
         homePrompt.setTag("home-prompt"); homePrompt.setMinLines(3);
         label(compose, "実行する場所", 13);
         homeExecutionChoice = new RadioGroup(this);
-        String[] choices = {"このPixelのToolで整える · モデル不要", "このPixelのsiに依頼する · 端末内モデル", "クラウドに依頼する · まず見積"};
+        String[] choices = {"自動 · 作業に合う導入済みモデル", "このPixelのToolで整える · モデル不要", "このPixelのsiに依頼する · モデルを指定", "クラウドに依頼する · まず見積"};
         for (int index = 0; index < choices.length; index++) {
             RadioButton option = new RadioButton(this);
-            option.setId(3101 + index); option.setText(choices[index]); option.setTextColor(ShellUi.INK); option.setTextSize(14);
+            option.setId(3100 + index); option.setText(choices[index]); option.setTextColor(ShellUi.INK); option.setTextSize(14);
             option.setButtonTintList(new android.content.res.ColorStateList(
                 new int[][]{new int[]{android.R.attr.state_checked}, new int[]{}}, new int[]{ShellUi.ACCENT, ShellUi.MUTED}));
             option.setMinHeight(ui.dp(48)); homeExecutionChoice.addView(option);
         }
-        int selected = getSharedPreferences("terminal_preferences", MODE_PRIVATE).getInt("executionChoice", 3101);
-        homeExecutionChoice.check(selected >= 3101 && selected <= 3103 ? selected : 3101);
-        homeExecutionChoice.setOnCheckedChangeListener((group, id) ->
-            getSharedPreferences("terminal_preferences", MODE_PRIVATE).edit().putInt("executionChoice", id).apply());
+        android.content.SharedPreferences choicesStore = getSharedPreferences("terminal_preferences", MODE_PRIVATE);
+        int selected = choicesStore.getBoolean("modelChoiceDefaultV1", false) ? choicesStore.getInt("executionChoice", 3100) : 3100;
+        choicesStore.edit().putBoolean("modelChoiceDefaultV1", true).apply();
+        homeExecutionChoice.check(selected >= 3100 && selected <= 3103 ? selected : 3100);
+        homeExecutionChoice.setOnCheckedChangeListener((group, id) -> {
+            choicesStore.edit().putInt("executionChoice", id).apply(); updateModelChoiceLabel(); invalidateModelChoice();
+        });
         compose.addView(homeExecutionChoice);
+        homeModelChoice = label(compose, "", 13); updateModelChoiceLabel();
+        button(compose, "LLMを自分で選ぶ", this::showModelChooser);
         ui.primary(button(compose, "依頼の内容を確認", this::prepareHomeRequest));
         label(compose, "確認した後に開始します。入力だけでは実行しません。", 12);
         LinearLayout voicePanel = disclosure(home, "音声で入力・読み上げ");
@@ -471,13 +507,134 @@ public final class MainActivity extends Activity {
         articleSubmitButton.setTag("manual-submit"); consent.setTag("manual-consent");
     }
 
+    private String selectedModelChoice() {
+        int route = homeExecutionChoice == null ? 3100 : homeExecutionChoice.getCheckedRadioButtonId();
+        return route == 3100 ? "auto"
+            : getSharedPreferences("terminal_preferences", MODE_PRIVATE).getString("preferredLocalModel", "auto");
+    }
+
+    private void updateModelChoiceLabel() {
+        if (homeModelChoice == null) return;
+        String choice = selectedModelChoice();
+        homeModelChoice.setText("auto".equals(choice) ? "標準は自動。使うモデルと理由を、開始前に表示します。"
+            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
+    }
+
+    private void showModelChooser() {
+        worker.execute(() -> {
+            try {
+                JSONArray models = new JSONObject(new ShellConnection(this).localModelCatalog()).getJSONArray("models");
+                java.util.List<String> names = new ArrayList<>(), ids = new ArrayList<>();
+                names.add("自動 — 作業に合う導入済みモデル"); ids.add("auto");
+                for (int i = 0; i < models.length(); i++) {
+                    JSONObject model = models.getJSONObject(i);
+                    names.add(model.getString("name") + ("dev.rock.qwen3-06b-q8".equals(model.optString("profileId")) ? " · 品質不合格/診断用" : "") + (model.optBoolean("cached") && model.optBoolean("licenseAccepted") ? " · 導入済み" : " · Skyで準備が必要"));
+                    ids.add(model.getString("profileId"));
+                }
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    new AlertDialog.Builder(this).setTitle("使うLLMを選ぶ")
+                        .setItems(names.toArray(new String[0]), (dialog, index) -> {
+                            String choice = ids.get(index);
+                            getSharedPreferences("terminal_preferences", MODE_PRIVATE).edit().putString("preferredLocalModel", choice).apply();
+                            homeExecutionChoice.check("auto".equals(choice) ? 3100 : 3102);
+                            updateModelChoiceLabel(); invalidateModelChoice();
+                        }).setNegativeButton("戻る", null).show();
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) homeModelChoice.setText("モデル一覧を読めません。Skyで状態を確認してください。"); }); }
+        });
+    }
+
+    private void openPublicModelUrl(String value) {
+        android.net.Uri uri = android.net.Uri.parse(value);
+        if (!"https".equals(uri.getScheme()) || uri.getUserInfo() != null || uri.getPort() != -1
+            || !java.util.Set.of("github.com", "huggingface.co", "x.com").contains(uri.getHost())) return;
+        try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)); }
+        catch (android.content.ActivityNotFoundException missing) { discoveryStatus.setText("ブラウザが見つかりません。端末の設定を確認してください。"); }
+    }
+
+    private void searchPublicModels() {
+        String query = discoveryQuery.getText().toString().trim();
+        if (query.isEmpty() || query.length() > 80 || query.codePoints().anyMatch(Character::isISOControl)) {
+            discoveryQuery.setError("公開キーワードを1〜80文字で入力してください"); return;
+        }
+        discoverySearch.setEnabled(false); discoveryResults.removeAllViews();
+        discoveryStatus.setText("公開情報を検索しています。モデルは導入・実行しません。");
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(new ShellConnection(this).searchPublicModels(query));
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    discoverySearch.setEnabled(true);
+                    StringBuilder status = new StringBuilder("検索語: ").append(query).append(" · ");
+                    String state = result.optString("status");
+                    status.append("ok".equals(state) ? "両方の取得に成功" : "partial".equals(state) ? "一部だけ取得" : "rate_limited".equals(state) ? "少し待って再検索してください" : "取得できませんでした。通信を確認して再検索できます");
+                    if (result.optLong("fetchedAt") > 0) status.append("\n照会: ").append(java.time.Instant.ofEpochMilli(result.optLong("fetchedAt")).toString());
+                    JSONArray sources = result.optJSONArray("sources");
+                    if (sources != null) for (int i = 0; i < sources.length(); i++) {
+                        JSONObject source = sources.optJSONObject(i); if (source == null) continue;
+                        status.append("\n").append(source.optString("source")).append(": ").append("ok".equals(source.optString("status")) ? "取得済み" : "rate_limited".equals(source.optString("status")) ? "API利用制限中" : "取得失敗");
+                        if (source.optBoolean("incompleteResults")) status.append("（検索結果は一部）");
+                    }
+                    status.append("\n候補は未導入・未検証。自動選択や実行には使いません。"); discoveryStatus.setText(status.toString());
+                    JSONArray candidates = result.optJSONArray("candidates");
+                    if (candidates != null) for (int i = 0; i < candidates.length(); i++) {
+                        JSONObject candidate = candidates.optJSONObject(i); if (candidate == null) continue;
+                        LinearLayout card = ui.card(discoveryResults);
+                        label(card, candidate.optString("id"), 16);
+                        label(card, candidate.optString("source") + " · 更新: " + candidate.optString("updatedAt")
+                            + "\nライセンスの公開表記: " + candidate.optString("licenseClaim", "unknown")
+                            + "\n未導入・未検証 · Pixelへの適合は未確認", 13);
+                        String url = candidate.optString("url"); button(card, "公開元で詳細を見る（外部）", () -> openPublicModelUrl(url));
+                    }
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) { discoverySearch.setEnabled(true); discoveryStatus.setText("検索できませんでした。通信とBrokerの接続を確認してください。"); } }); }
+        });
+    }
+
+    private void invalidateModelChoice() {
+        modelChoiceRevision++; preparedModelDigest = null; preparedModelPrompt = null;
+        if (zemaConsent != null) zemaConsent.setChecked(false);
+        if (zemaSubmitButton != null) zemaSubmitButton.setEnabled(false);
+        if (modelChoiceStatus != null) modelChoiceStatus.setText("依頼に合うモデルを確認します。まだ実行していません。");
+        mainHandler.removeCallbacks(refreshModelChoice);
+        if (zemaPrompt != null && !zemaPrompt.getText().toString().trim().isEmpty()) mainHandler.postDelayed(refreshModelChoice, 250);
+    }
+
+    private void prepareModelChoice() {
+        if (isDestroyed()) return;
+        final String prompt = zemaPrompt.getText().toString(), choice = selectedModelChoice();
+        final int revision = modelChoiceRevision;
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(new ShellConnection(this).prepareLocalModelChoice(choice, prompt));
+                runOnUiThread(() -> {
+                    if (isDestroyed() || revision != modelChoiceRevision || !prompt.equals(zemaPrompt.getText().toString())) return;
+                    if ("prepared".equals(result.optString("status"))) {
+                        preparedModelDigest = result.optString("manifestDigest"); preparedModelPrompt = prompt;
+                        modelChoiceStatus.setText("使うモデル: " + result.optString("name") + "\n" + result.optString("reason")
+                            + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
+                        zemaConsent.setChecked(false); zemaSubmitButton.setEnabled(!zemaSubmission.inFlight());
+                    } else {
+                        String code = result.optString("code");
+                        modelChoiceStatus.setText("TASK_REQUIRES_OTHER_CAPABILITY".equals(code)
+                            ? "この版の端末内実行は記事準備に対応します。この作業に必要な能力をSkyで選んでください。実行はしていません。"
+                            : "モデルの導入・利用条件・端末の余裕を確認してください。Skyで準備してから再入力できます（" + code + "）。");
+                    }
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed() && revision == modelChoiceRevision) modelChoiceStatus.setText("モデルの選択結果を確認できません。自動で実行・送信はしません。"); }); }
+        });
+    }
+
     private void prepareHomeRequest() {
         String draft = homePrompt.getText().toString().trim();
         if (draft.isEmpty()) { homePrompt.setError("依頼・原稿を入力してください"); return; }
-        int route = homeExecutionChoice.getCheckedRadioButtonId();
+        int requestedRoute = homeExecutionChoice.getCheckedRadioButtonId();
+        int route = requestedRoute == 3100 ? 3102 : requestedRoute;
         EditText destination = route == 3101 ? markdown : route == 3102 ? zemaPrompt : cloudLlmPrompt;
         Runnable transfer = () -> {
             destination.setText(draft);
+            if (route == 3102) invalidateModelChoice();
             // Preparing a draft never carries an earlier execution or disclosure approval.
             zemaConsent.setChecked(false); consent.setChecked(false); cloudLlmExecutionConsent.setChecked(false);
             focusedWorkId = null;
@@ -578,7 +735,7 @@ public final class MainActivity extends Activity {
             if (work != null && "review".equals(work.optString("state"))) { nextReview = work.optString("id"); break; }
         }
         final String reviewId = nextReview;
-        homeNextAction.setText(review > 0 ? "確認待ちの成果を見る" : active > 0 ? "進み具合を見る" : "保存した仕事を見る");
+        homeNextAction.setText(review > 0 ? "確認が必要な仕事を見る" : active > 0 ? "進み具合を見る" : "保存した仕事を見る");
         homeNextAction.setOnClickListener(view -> { if (reviewId != null) openWork(reviewId); else selectPage(2); });
         JSONObject capabilities = snapshot.optJSONObject("deviceCapabilities");
         JSONObject profile = capabilities == null ? null : capabilities.optJSONObject("deviceProfile");
@@ -785,6 +942,7 @@ public final class MainActivity extends Activity {
     @Override protected void onPause() {
         if (voice != null) voice.stop();
         activityResumed = false;
+        mainHandler.removeCallbacks(refreshModelChoice);
         localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
@@ -874,7 +1032,7 @@ public final class MainActivity extends Activity {
                 ShellConnection connection = new ShellConnection(this);
                 action.run(connection);
                 JSONObject snapshot = new JSONObject(connection.snapshot());
-                WorkNotifications.sync(this, snapshot, null, true);
+                WorkNotifications.sync(this, snapshot, null, false);
                 JSONObject deviceCapabilities = snapshot.optJSONObject("deviceCapabilities");
                 JSONObject selection = new JSONObject(connection.skySelection());
                 JSONObject recovery = new JSONObject(connection.recoveryStatus());
@@ -2705,15 +2863,19 @@ public final class MainActivity extends Activity {
         if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
         if (selectionToken == null) { message.setText("先にSkyで使用するToolを選択してください。"); return; }
         if (!allowed) { message.setText("端末内での処理と保存への同意を確認してください。"); return; }
+        final String modelDigest = preparedModelDigest;
+        if (modelDigest == null || !prompt.equals(preparedModelPrompt)) {
+            message.setText("使うモデルを確認しています。モデル名が表示された後に同意して開始してください。"); return;
+        }
         final LocalSubmission.Attempt attempt = beginSubmission(zemaSubmission, zemaSubmitButton,
-            LocalSubmission.fingerprint("zema", selectionToken, prompt, "[]", Boolean.toString(allowed)));
+            LocalSubmission.fingerprint("zema", selectionToken, prompt, "[]", modelDigest, Boolean.toString(allowed)));
         if (attempt == null) return;
         message.setText("JenniferがこのPixelで計画しています。まだToolは実行していません…");
         zemaStopButton.setVisibility(View.VISIBLE);
         worker.execute(() -> {
             try {
-                JSONObject response = new JSONObject(new ShellConnection(this).submitZema(
-                    attempt.requestId, selectionToken, prompt, "[]", allowed));
+                JSONObject response = new JSONObject(new ShellConnection(this).submitZemaSelected(
+                    attempt.requestId, selectionToken, prompt, "[]", modelDigest, allowed));
                 String status = response.getString("status");
                 String workId = response.isNull("workId") ? null : response.getString("workId");
                 String code = response.isNull("code") ? null : response.getString("code");
@@ -2815,7 +2977,7 @@ public final class MainActivity extends Activity {
             message.setText(uncertainSubmissionMessage());
             return false;
         } finally {
-            submit.setEnabled(!guard.inFlight());
+            submit.setEnabled(!guard.inFlight() && (guard != zemaSubmission || preparedModelDigest != null));
             if (guard == zemaSubmission) zemaStopButton.setVisibility(guard.inFlight() ? View.VISIBLE : View.GONE);
             updateSubmissionRecovery(guard, recovery);
         }
@@ -2867,6 +3029,9 @@ public final class MainActivity extends Activity {
     }
 
     private static String zemaBlockedMessage(String code) {
+        if ("MODEL_SELECTION_REQUIRED".equals(code) || "MODEL_SELECTION_CHANGED".equals(code)) return "開始していません。使うモデルをもう一度確認し、同意して実行してください。";
+        if ("MODEL_SELECTION_SETUP_REQUIRED".equals(code)) return "開始していません。Skyで選んだモデルを導入してください。";
+        if ("MODEL_PROFILE_SWITCH_HAS_PINNED_WORK".equals(code)) return "開始していません。進行中の仕事や計画の保持が解除されてからモデルを切り替えられます。";
         if ("LOCAL_EXECUTION_PAUSED".equals(code)) return "停止しました。この計画からToolを開始していません。再開後に新しく依頼してください。";
         if ("DENIED".equals(code)) return "開始していません。保存への同意を確認してください。";
         if ("SKY_SELECTION_REQUIRED".equals(code)) return "開始していません。SkyのTool選択を更新してください。";
@@ -3103,6 +3268,7 @@ public final class MainActivity extends Activity {
 
     @Override public void onDestroy() {
         activityResumed = false;
+        mainHandler.removeCallbacks(refreshModelChoice);
         localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);

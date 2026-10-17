@@ -175,14 +175,18 @@
           "status": "implemented_acceptance_pending",
           "notificationsScope": "local_broker_jobs_only",
           "notificationDoesNotExecute": true,
-          "fullOsAccepted": false
+          "fullOsAccepted": false,
+          "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+          "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+          "privateShellApiVersion": 20,
+          "discoveryGrantsExecution": false
         }
       }
     }
   },
   "schema": "rockstaros-design-document-index/1",
   "version": "1.19",
-  "updatedAt": "2026-10-16",
+  "updatedAt": "2026-10-17",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",

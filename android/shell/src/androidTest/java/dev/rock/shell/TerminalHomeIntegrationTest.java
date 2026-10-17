@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -210,6 +211,50 @@ public final class TerminalHomeIntegrationTest {
             }
         }
     }
+    @Test public void physicalPublicDiscoverySearchesWithoutInstallingOrSubmitting() throws Exception {
+        Assume.assumeTrue("live public search requires explicit physical opt-in", "true".equals(InstrumentationRegistry.getArguments().getString("rockPhysicalDiscoveryAcceptance")));
+        ShellConnection broker = new ShellConnection(context());
+        int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
+        String catalogBefore = broker.localModelCatalog();
+        MainActivity activity = launch();
+        try {
+            ui(() -> {
+                call(activity, "selectPage", new Class<?>[]{int.class}, 1);
+                ((EditText) field(activity, "discoveryQuery")).setText("Qwen2.5-1.5B");
+                ((Button) field(activity, "discoverySearch")).performClick();
+            });
+            java.util.concurrent.atomic.AtomicBoolean finished = new java.util.concurrent.atomic.AtomicBoolean();
+            long deadline = SystemClock.elapsedRealtime() + 45_000;
+            do { ui(() -> finished.set(((Button) field(activity, "discoverySearch")).isEnabled())); if (!finished.get()) SystemClock.sleep(200); }
+            while (!finished.get() && SystemClock.elapsedRealtime() < deadline);
+            assertTrue("public search must finish within bounded time", finished.get());
+            java.util.concurrent.atomic.AtomicReference<String> shown = new java.util.concurrent.atomic.AtomicReference<>();
+            ui(() -> {
+                shown.set(((TextView) field(activity, "discoveryStatus")).getText().toString());
+                assertTrue("must fetch live metadata from at least one public API", shown.get().contains("取得済み"));
+                assertTrue(((LinearLayout) field(activity, "discoveryResults")).getChildCount() > 0);
+                assertTrue(text((View) field(activity, "discoveryResults")).contains("未導入・未検証"));
+            });
+            assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+            assertEquals(catalogBefore, broker.localModelCatalog());
+            JSONObject receipt = new JSONObject().put("status", "passed").put("query", "Qwen2.5-1.5B")
+                .put("summary", shown.get()).put("newWorkCount", 0).put("catalogChanged", false).put("weightsDownloaded", false);
+            java.nio.file.Files.write(new java.io.File(context().getExternalFilesDir(null), "public-model-discovery-acceptance.json").toPath(), receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } finally { ui(activity::finish); }
+    }
+
+    @Test public void modelChoicePreparationAndRefusalsCannotStartWork() throws Exception {
+        ShellConnection broker = new ShellConnection(context());
+        int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
+        JSONObject invalid = new JSONObject(broker.prepareLocalModelChoice("github/untrusted", "記事"));
+        assertEquals("blocked", invalid.getString("status")); assertFalse(invalid.getBoolean("executionStarted"));
+        JSONObject unsupported = new JSONObject(broker.prepareLocalModelChoice("auto", "deploy a server"));
+        assertEquals("TASK_REQUIRES_OTHER_CAPABILITY", unsupported.getString("code"));
+        JSONObject denied = new JSONObject(broker.submitZemaSelected(UUID.randomUUID().toString(), "invalid-token", "記事", "{}", "not-a-digest", false));
+        assertEquals("MODEL_SELECTION_REQUIRED", denied.getString("code"));
+        assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+    }
+
     @Test public void physicalLocalModelHomeRequestCreatesOneReviewArtifact() throws Exception {
         Assume.assumeTrue("owner-connected physical model UI acceptance is opt-in",
             "true".equals(InstrumentationRegistry.getArguments().getString("rockPhysicalModelAcceptance")));
@@ -223,6 +268,9 @@ public final class TerminalHomeIntegrationTest {
         broker.selectSkyTool("article-preparation@1");
         Set<String> before = new HashSet<>(); JSONArray old = initial.getJSONArray("works");
         for (int i = 0; i < old.length(); i++) before.add(old.getJSONObject(i).getString("id"));
+        String choice = InstrumentationRegistry.getArguments().getString("rockModelChoice", "auto");
+        String previousModel = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getString("preferredLocalModel", "auto");
+        context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", choice).commit();
         MainActivity activity = launch(); String created = null; boolean readyForReview = false;
         ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
         int previousRoute = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getInt("executionChoice", 3101);
@@ -234,13 +282,20 @@ public final class TerminalHomeIntegrationTest {
             assertTrue("real Sky selection must reach the UI", selected.get());
             ui(() -> {
                 ((EditText) field(activity, "homePrompt")).setText("日本語で、部屋の片づけを小さく始める方法の記事下書きを作る。導入、具体的な3手順、最後の確認を書く。出典は未調査と明記し、実在する人物や根拠のない数値を作らない。まとめは3項目。投稿や課金はしない。");
-                ((RadioGroup) field(activity, "homeExecutionChoice")).check(3102);
+                ((RadioGroup) field(activity, "homeExecutionChoice")).check("auto".equals(choice) ? 3100 : 3102);
                 call(activity, "prepareHomeRequest", new Class<?>[0]);
                 assertEquals(2, field(activity, "selectedPage"));
                 assertFalse(((CheckBox) field(activity, "zemaConsent")).isChecked());
             });
             assertEquals(initial.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+            deadline = SystemClock.elapsedRealtime() + 15_000;
+            java.util.concurrent.atomic.AtomicReference<String> prepared = new java.util.concurrent.atomic.AtomicReference<>();
+            do { ui(() -> prepared.set((String) field(activity, "preparedModelDigest"))); if (prepared.get() == null) SystemClock.sleep(100); }
+            while (prepared.get() == null && SystemClock.elapsedRealtime() < deadline);
+            assertNotNull("task-aware selection must prepare an exact model before consent", prepared.get());
             ui(() -> {
+                assertFalse(((CheckBox) field(activity, "zemaConsent")).isChecked());
+                assertTrue(((TextView) field(activity, "modelChoiceStatus")).getText().toString().contains("1.5B"));
                 ((CheckBox) field(activity, "zemaConsent")).setChecked(true);
                 Button submit = (Button) field(activity, "zemaSubmitButton"); submit.performClick(); submit.performClick();
             });
@@ -261,6 +316,10 @@ public final class TerminalHomeIntegrationTest {
             }
             assertNotNull("the real Home request must produce work", created); assertEquals("review", state);
             assertEquals(initial.getInt("totalWorkCount") + 1, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+            JSONObject chosen = null; JSONArray savedWorks = new JSONObject(broker.snapshot()).getJSONArray("works");
+            for (int i = 0; i < savedWorks.length(); i++) if (created.equals(savedWorks.getJSONObject(i).getString("id"))) chosen = savedWorks.getJSONObject(i).getJSONObject("planner");
+            assertNotNull(chosen); assertEquals("dev.rock.qwen25-15b-q4km", chosen.getString("profileId"));
+            assertEquals(prepared.get(), chosen.getString("manifestDigest"));
             String artifact = broker.result(created); assertFalse(artifact.isBlank()); assertFalse(artifact.contains("<think>"));
             assertTrue("the generated artifact must address the actual room-tidying request", (artifact.contains("片づけ") || artifact.contains("片付け")));
             assertFalse("do not accept the old generic prompt example as a useful article", artifact.contains("- 要点1"));
@@ -268,13 +327,13 @@ public final class TerminalHomeIntegrationTest {
             java.nio.file.Files.write(new java.io.File(directory, "local-jennifer-ui-artifact.md").toPath(), artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             JSONObject receipt = new JSONObject().put("workId", created).put("state", "review")
                 .put("draftPreparationCreatedNoWork", true).put("explicitConsent", true).put("doubleTapCreatedOneWork", true)
-                .put("bytes", artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8).length).put("humanReviewAccepted", false);
-            java.nio.file.Files.write(new java.io.File(directory, "local-jennifer-ui-acceptance.json").toPath(), receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                .put("choice", choice).put("model", chosen).put("bytes", artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8).length).put("humanReviewAccepted", false);
+            java.nio.file.Files.write(new java.io.File(directory, "local-jennifer-ui-" + ("auto".equals(choice) ? "auto" : "manual") + "-acceptance.json").toPath(), receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
             readyForReview = true; // Intentionally leave only this synthetic artifact for inspection in the UI.
         } finally {
             if (created != null && !readyForReview) broker.cancel(created);
             ui(activity::finish);
-            context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putInt("executionChoice", previousRoute).commit();
+            context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putInt("executionChoice", previousRoute).putString("preferredLocalModel", previousModel).commit();
         }
     }
 

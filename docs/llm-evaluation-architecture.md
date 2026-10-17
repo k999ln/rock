@@ -1,12 +1,12 @@
 # RockstarOS — LLM・評価モデル設計
 
-更新日: 2026-10-15（Pixel実装設計への接続を追補）。対象: `RockstarOS 1.0` / `dev.rock`。
+更新日: 2026-10-17（Pixelのモデル選択と公開モデル検索を実装）。対象: `RockstarOS 1.0` / `dev.rock`。
 
 この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [siネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
 ## 1. 結論
 
-- 現行の端末内LLMは、Pixel 10上の `Qwen3-0.6B Q8_0` と `llama.rn 0.12.9` による固定profileの試験署名APK実証である。交換可能な複数profileやOS image搭載は未実装。
+- 現行の端末内LLMはPixel 10の署名済2 profile（Qwen2.5 1.5B / Qwen3 0.6B）と `llama.rn 0.12.9` / Binder v4を使うDeveloper Preview APK。手動指定と記事準備向け自動選択を実装した。全OS image搭載と一般品質は未受入。
 - 端末内LLMは**非信頼planner**である。Toolを実行せず、許可を発行せず、台帳や仕事状態を書き換えない。
 - Brokerが唯一の実行権限判定者、Engineが検証済みToolの決定論的実行者、Zemaが依頼・進捗・承認・停止・結果の窓口である。
 - WebのOpenAI接続はSkyの `法務受付` と `特許アシスタント` のオンライン検索オプション内部だけにある。標準経路は端末内の決定論的ガイド／ドラフトで、通信断時もSkyの受付・整理・引継ぎを止めない。
@@ -67,13 +67,31 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 <a id="selectable-models-and-automatic-default"></a>
 
-## LLMの明示選択と、作業に応じる自動選択（実装待ち）
+## LLMの明示選択と、作業に応じる自動選択
 
 2026-10-17、本人が「Codex経由しか使えない形にせずLLMを選べるように、defaultは作業に一番良いものを自動で選ぶ」と指示。これを次の実装要件として記録する。現在のPixelはCodex loginを使わない端末内Qwenの有限Tool経路を持ち、Webに6 provider adapterがあるが、選択肢の登録を接続・credential・本番利用可能と扱わない。AMCの一部実作業はCodex CLIへの個別引渡しであり、任意LLMと同等のTool実行を持つわけではない。
 
-次はmodel推論先とAgent/Tool runnerを分離して、Home/Skyの通常値を自動選択にし、手動指定も残す。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
+model推論先とAgent/Tool runnerを分離する。PixelのHomeの通常値は「自動」、LLM名の手動指定は別の選択として実装した。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
 
-未実装: Pixelのモデル選択/自動候補routerと実行先固定、共通model/runner能力契約、作業別の品質・時間・費用の検証。合格条件は、未接続・未許可・予算超過候補を除外し、手動指定/自動選択の実model pin・Tool/Agent成果・同IDを同一artifactで照合できること。credential不足や商用契約待ちはそのまま表示する。
+**Pixelの実装範囲。** `ModelSelectionPolicy` v1は記事準備という有限能力を対象とし、署名catalog・private cache・owner別license同意・端末RAMを満たす1.5Bを自動選択する。0.6Bは文章品質不合格のため自動候補から除外、診断目的の手動指定だけを残す。未対応作業/未導入/資源不足は開始せず、外部モデルや有料cloudへfallbackしない。`prepareLocalModelChoice` は読取りのみで、model名・理由・警告・manifest digestを表示する。依頼や選択を変えるとdigestと実行同意を無効化する。明示実行後の `submitZemaSelected` は同ID・digestを固定し、必要なときだけ同意済cacheを既存gateで再読込み、pinとruntimeの同一性を計画の前後で照合する。進行中pinがあるmodel切替は拒否し、既存15分保持を迂回しない。私有Shell API 20、Platform API 1、Local Binder API 4を区別する。
+
+**未受入と次の判断。** 全作業共通のmodel/runner能力契約、比較benchmark、文章品質、各cloud providerの接続・手動model指定・実利用/費用の受入は残る。現在の自動選択は世界全体の最新modelから最良を保証するものではない。合格証拠は[同一APK台帳](evidence/pixel-intuitive-experience.json)で実model pin、Tool成果、同IDを照合する。credential不足や商用契約待ちはそのまま表示する。
+
+<a id="public-model-discovery"></a>
+
+## Skyの公開モデル検索と、実行できるモデルの境界
+
+2026-10-17の本人指示「今何が使えるのかリアルタイムでサーチ、XやGit等のopen LLM」を受け、Skyに明示検索を追加。検索語は原稿とは独立した1〜80文字。検索buttonを押したときだけBrokerがGitHub repository searchとHugging Face model APIへHTTPS GETし、各4件のGGUF関連候補を更新順に取得する。Homeの依頼文・原稿・credentialを検索へ渡さず、Shellとlocal runtimeにはINTERNET権限を付けない。
+
+**責任・入出力・状態。** ROCKは固定origin/path、無redirect、8秒connect/read timeout、1MiB応答上限、ID/文字列/件数の検査を管理する。GitHub/Hugging Faceは公開情報の提供者で、licenseや性能の記載は第三者のclaim。表示は出典URL、取得時刻、更新日時、licenseの公開表記、未導入・未検証、Pixel適合未確認とする。OSSかどうか・商用許可を自動認定しない。外部sourceの本文や命令をplan/Tool/署名catalogへ昇格しない。検索はweightsのdownload、license同意、model登録、実行を伴わない。
+
+**保存・失敗・復旧。** 検索結果は画面メモリのみで、履歴・原稿・認証情報を保存しない。15秒以内の再検索とsource別403/429を抑止し、Retry-After/resetを最大1時間まで尊重。片方失敗はpartial、全失敗はunavailableとして再検索を案内し、古い結果を最新として再表示しない。system browserで公開元を開ける。任意URLやgithub clone/scriptを取得実行しない。
+
+**Xと未決定。** 現在は明示確認付きでXの最新検索を外部browserへ開く。X APIは未接続で、投稿取得/ランキング/検証済み表示はない。API連携には公式App Bearer認証と契約・予算・秘密管理を先に定義する。検索結果から導入候補を増やす際は、重みlicense・固定revision/hash・runtime適合・資源・品質試験・publisher署名・本人同意を既存配布契約へ通す。検索人気や自己申告だけで自動実行対象を増やさない。
+
+**合格条件。** parser/rate/応答上限/不正origin/partialのhost試験、Pixelの実UI→両公開API→候補表示、検索前後の仕事数と署名catalog不変、手動/自動のexact profile pin、通知の実System UI tapを同一APKで検証する。Xの外部検索をX API実通信と数えない。
+
+一次資料: [GitHub Search API](https://docs.github.com/en/rest/search/search#search-repositories)、[GitHub rate limits](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)、[Hugging Face model search](https://huggingface.co/docs/huggingface_hub/en/guides/search)、[X recent search認証](https://docs.x.com/x-api/posts/search/quickstart/recent-search)。
 
 ## 3. Local plannerの契約
 

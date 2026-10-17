@@ -4,17 +4,20 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "checkpoint_ui_partial_pass_background_notification_failed",
+    "status": "notification_discovery_device_pass_model_choice_validation_in_progress",
     "branch": "codex/pixel-intuitive-experience",
     "mainBase": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
     "scope": [
       "native_shell_design",
       "focused_work_list_and_detail",
       "explicit_notification_permission",
-      "read_only_notification_navigation"
+      "read_only_notification_navigation",
+      "local_model_manual_and_task_aware_default",
+      "public_GitHub_HuggingFace_discovery",
+      "X_external_search"
     ],
     "physicalAccepted": false,
-    "nextAction": "Checkpoint requested by owner. Fix unobserved background review notification, retest actual System UI tap, then implement selectable LLMs and a task-aware automatic default. No main merge or full-OS acceptance.",
+    "nextAction": "Validate same APK auto/manual exact model pins and no duplicate jobs; finalize host/full verification and GitHub exact-head checks. Cloud/X API credentials and general content quality remain separate.",
     "tests": {
       "physicalPassed": 11,
       "physicalFailed": 1,
@@ -24,7 +27,8 @@
     "candidateSourceSha": "7b16d61be7adb4b057f6ab8c710c1034b7d0ece2",
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
     "codeHeadCiPassed": 8,
-    "mainMerged": false
+    "mainMerged": false,
+    "privateShellApiVersion": 20
   },
   "skyRecurringSandbox": {"taskId": "BIL02", "coordinationTask": "DOC04", "date": "2026-10-17", "status": "sandbox_scheduler_and_agent_fences_accepted", "scope": "opt_in_sandbox_scheduler_and_existing_agent_database_gates", "mainBase": "1f0cd54e61cf3bb4b3d0e146e04d89e177cbf3b1", "productionBillingEnabled": false, "actualCloudExecution": false, "unitTests": 8, "fullVerify": "passed_all_stages_node22", "nextAction": "same-head CI and main integration; real Cloud execution and production contract gates remain closed", "providerChecks": 6, "verifiedProviderEvents": 4, "uiVerified": true, "evidence": "docs/evidence/sky-recurring-sandbox.json"},
   "sky140CollectionSandbox": {"taskId": "BIL02", "date": "2026-10-16", "status": "provider_policy_harness_passed", "scope": "fixed_postpaid_invoice_and_access_policy_harness", "mainBase": "60765fc3", "productionBillingEnabled": false, "realAgentEnforcement": false, "evidence": "docs/evidence/sky-140-collection-sandbox.json", "unitTests": 6, "providerChecks": 10, "fullVerify": "passed_node22_WRANGLER_HIDE_BANNER_true", "nextAction": "contract consent storage and atomic integration with existing reservation/dispatch; monthly scheduler, authentication-required payment, tax and credit policy remain"},

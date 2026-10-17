@@ -191,7 +191,7 @@ final class LocalAiConnection {
         return result;
     }
 
-    private void requireReadyForProfile(ModelProfileManifest profile, String expectedRuntimeSignerDigest) throws Exception {
+    void requireReadyForProfile(ModelProfileManifest profile, String expectedRuntimeSignerDigest) throws Exception {
         JSONObject status = withService((remote, ignoredUid) -> validatedStatus(remote));
         if (!"ready".equals(status.optString("state")) || !status.optBoolean("modelLoaded")
                 || !profile.profileId.equals(status.optString("modelProfileId"))

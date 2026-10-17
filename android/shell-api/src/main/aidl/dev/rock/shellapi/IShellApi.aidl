@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 19;
+    const int API_VERSION = 20;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -76,4 +76,11 @@ interface IShellApi {
     String importLocalModel(String profileId, in ParcelFileDescriptor source, boolean consent) = 41;
     /** Explicitly reload one previously verified cached catalog model; no auto-load on boot. */
     String reloadLocalModel(String profileId, boolean consent) = 42;
+    /** Read-only task-aware selection from signed, cached, owner-consented local profiles. */
+    String prepareLocalModelChoice(String choice, String prompt) = 43;
+    /** Executes only the displayed exact model digest; no implicit substitute or cloud fallback. */
+    String submitZemaSelected(String requestId, String selectionToken, String prompt, String contextJson,
+        String expectedModelDigest, boolean consent) = 44;
+    /** Explicit public-keyword search only; returned metadata never becomes a trusted executable profile. */
+    String searchPublicModels(String query) = 45;
 }

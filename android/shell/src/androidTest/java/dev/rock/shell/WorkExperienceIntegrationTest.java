@@ -137,6 +137,7 @@ public final class WorkExperienceIntegrationTest {
         // No Shell activity is kept visible: only the Broker scheduler and protected receiver deliver the notification.
         Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context().startActivity(home); SystemClock.sleep(500);
+        long started = SystemClock.elapsedRealtime();
         String id = broker.submit(UUID.randomUUID().toString(), input.toString(), false, true);
         NotificationManager manager = context().getSystemService(NotificationManager.class);
         MainActivity opened = null;
@@ -146,7 +147,11 @@ public final class WorkExperienceIntegrationTest {
             do {
                 for (android.service.notification.StatusBarNotification note : manager.getActiveNotifications())
                     if (id.equals(note.getTag()) && "あなたの確認待ち".contentEquals(note.getNotification().extras.getCharSequence(android.app.Notification.EXTRA_TITLE, ""))) found = note;
-                if (found != null) break; SystemClock.sleep(300);
+                if (found != null) break;
+                android.content.SharedPreferences diagnostics = WorkNotifications.preferences(context());
+                if (diagnostics.getLong("lastRefreshAt", -1) >= started)
+                    assertEquals("protected receiver refresh failed", "refreshed", diagnostics.getString("lastRefreshCode", "none"));
+                SystemClock.sleep(300);
             } while (SystemClock.elapsedRealtime() < deadline);
             assertNotNull("actual background completion must deliver the notification", found);
             assertEquals(android.app.Notification.VISIBILITY_PRIVATE, found.getNotification().visibility);
