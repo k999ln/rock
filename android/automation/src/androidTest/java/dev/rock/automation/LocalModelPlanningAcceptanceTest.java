@@ -162,4 +162,27 @@ public final class LocalModelPlanningAcceptanceTest {
         assertFalse(input.getString("summary").contains("- 要点1"));
     }
 
+    @Test public void physicalSavedArtifactMatchesItsReceiptAfterProcessRestart() throws Exception {
+        android.os.Bundle args = InstrumentationRegistry.getArguments();
+        Assume.assumeTrue("physical readback needs an explicit synthetic receipt",
+            "true".equals(args.getString("rockPhysicalModelAcceptance"))
+                && args.getString("rockSyntheticWorkId") != null && args.getString("rockExpectedArtifactSha256") != null);
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        assertEquals("frankel", android.os.Build.DEVICE);
+        RockApplication app = (RockApplication) context.getApplicationContext();
+        String id = args.getString("rockSyntheticWorkId"), expected = args.getString("rockExpectedArtifactSha256");
+        assertTrue(id.matches("[a-f0-9-]{36}")); assertTrue(expected.matches("[a-f0-9]{64}"));
+        String artifact = app.engine().result(id);
+        assertEquals(expected, Engine.digest(artifact));
+        java.util.Map<String,String> pin = app.platform().modelProfileForPin(AndroidOwner.current(context), id);
+        assertEquals(physicalProfileId(), pin.get("profile_id"));
+        Files.write(new File(context.getExternalFilesDir(null), "local-jennifer-readback-artifact.md").toPath(),
+            artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        JSONObject receipt = new JSONObject().put("mode", "existing_artifact_readback_only")
+            .put("workId", id).put("profileId", physicalProfileId()).put("artifactSha256", expected)
+            .put("artifactBytes", artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8).length).put("deviceReboot", false);
+        Files.write(new File(context.getExternalFilesDir(null), "local-jennifer-readback.json").toPath(),
+            receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+
 }

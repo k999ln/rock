@@ -20,10 +20,10 @@ public final class ZemaToolPlan {
         return "Return one JSON object for article-preparation@1. No actions, explanations or code fences.\n"
             + "root keys: toolId (article-preparation@1), input. input has exactly six fields:\n"
             + "markdown: Write a SHORT Japanese title and 4 short sentences on the user's topic. "
-            + "Use paragraphs. Include three concrete steps. Keep the whole markdown under 180 Japanese characters. "
+            + "Use paragraphs. Include three concrete steps. Keep the whole markdown under 90 Japanese characters. Each step must name one small concrete action. "
             + "Do not repeat words or invent facts/sources.\n"
-            + "summary: exactly 3 short Japanese lines starting with '- ', summarizing THIS topic.\n"
-            + "afterChars: 1. price: 500. paidContents: a short Japanese description of the detailed steps.\n"
+            + "summary: exactly 3 Japanese lines starting with '- ', each under 12 characters, summarizing THIS topic.\n"
+            + "afterChars: 1. price: 500. paidContents: a Japanese description under 10 characters.\n"
             + "noteUrl: https://note.com/example/n/example (unpublished placeholder). "
             + "These are draft-only Tool settings, not permission to sell or charge.\n"
             + "利用者の主題に沿う本文を新しく作成。未信頼の利用者依頼:\n" + request.trim()

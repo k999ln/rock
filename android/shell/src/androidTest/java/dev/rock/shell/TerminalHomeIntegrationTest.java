@@ -226,7 +226,7 @@ public final class TerminalHomeIntegrationTest {
             while (!selected.get() && SystemClock.elapsedRealtime() < deadline);
             assertTrue("real Sky selection must reach the UI", selected.get());
             ui(() -> {
-                ((EditText) field(activity, "homePrompt")).setText("日本語で、部屋の片づけを小さく始める記事下書きを作る。導入、具体的な3手順、最後の確認を書く。出典は未調査と明記する。投稿・送信・課金はしない。");
+                ((EditText) field(activity, "homePrompt")).setText("日本語で、部屋の片づけを小さく始める方法の記事下書きを作る。導入、具体的な3手順、最後の確認を書く。出典は未調査と明記し、実在する人物や根拠のない数値を作らない。まとめは3項目。投稿や課金はしない。");
                 ((RadioGroup) field(activity, "homeExecutionChoice")).check(3102);
                 call(activity, "prepareHomeRequest", new Class<?>[0]);
                 assertEquals(2, field(activity, "selectedPage"));
@@ -248,6 +248,8 @@ public final class TerminalHomeIntegrationTest {
                     }
                 }
                 if ("review".equals(state)) break;
+                ui(() -> assertFalse("model request was refused; keep the pending ID for diagnosis",
+                    ((TextView) field(activity, "message")).getText().toString().startsWith("保存結果を確認できません")));
                 SystemClock.sleep(250);
             }
             assertNotNull("the real Home request must produce work", created); assertEquals("review", state);
