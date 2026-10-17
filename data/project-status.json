@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "runtime6_built_real_search_passed_local_generation_pending",
+    "status": "five_item_parts_physical_twenty_trial_in_progress",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,7 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Build/sign/inspect package6, reaccept exact signed profiles, retake real code and 20 ideas without diagnostic restarts, then execute and read back the requested 300 actual service ideas.",
+    "nextAction": "Accept two five-item calls per saved stage on real Pixel, then run the actual requested 300-item work, verify real count/uniqueness and persistent hashes; finish same-head checks before main merge.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39064987817,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
@@ -25,7 +25,11 @@
       "repairLimit": 3,
       "repairScope": "pure local ideation only",
       "numberOwner": "Broker",
-      "actualItemCardinalityRequired": true
+      "actualItemCardinalityRequired": true,
+      "rawPartSize": 5,
+      "rawPartTimeoutSeconds": 90,
+      "partsPerSavedStage": 2,
+      "incompletePartPersisted": false
     },
     "physicalTrials": {
       "generalCacheVerifiedInstall": "PASS_18.945s",
@@ -38,7 +42,8 @@
       "package5": "20-item batch timed out at 180s with zero saved; five-item isolation reached JSON boundary then runtime callback crashed on undefined.catch; not accepted",
       "publicApiConnectivity": "Both known public origins HTTP200; actual search UI PASS 4.313s after reconnect",
       "notification": "PASS_actual_completion_notification_tap_on_new_Broker_and_Shell",
-      "runtime6ImportGate": "Explicitly cancelled only held synthetic 20-item job before profile upgrade; pinned work guard preserved"
+      "runtime6ImportGate": "Explicitly cancelled only held synthetic 20-item job before profile upgrade; pinned work guard preserved",
+      "runtime6FiveProbe": "PASS_17749ms_real_five_strings_no_runtime_crash_not_owner_300"
     },
     "runtimeBuildSource": "f96ca583f9bff51d91c46a4141149591594775db",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",

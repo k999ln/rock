@@ -30,33 +30,42 @@ final class ToolConnection {
             LocalAiConnection runtime = new LocalAiConnection(context); local = runtime; String proposal = null;
             try {
                 runtime.requireReadyForPlanning(pin);
-                String task, prompt, schema = LocalWorkDraft.SCHEMA;
                 if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
                     int humanRetries=(int)engine.events(ticket.workId).stream().filter(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_retry".equals(e.get("kind"))).count();
-                    task = "planning"; schema = LocalIdeaBatch.schema(ticket.input); prompt = LocalIdeaBatch.prompt(ticket.input, ticket.attempt + 3*humanRetries);
-                } else {
-                    org.json.JSONObject input = new org.json.JSONObject(ticket.input);
-                    if (input.length() != 3 || !input.has("prompt")) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
-                    task = input.getString("task");
-                    if (!LocalWorkDraft.TASKS.contains(task)) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
-                    prompt = input.getString("prompt"); Engine.bounded(prompt);
+                    org.json.JSONObject state=LocalIdeaBatch.state(ticket.input);
+                    if(!"local-ideas/2".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
+                    int remaining=Math.min(LocalIdeaBatch.BATCH_SIZE,state.getInt("target")-state.getJSONArray("ideas").length());
+                    String next=ticket.input;
+                    while(remaining>0) {
+                        if(cancelled.get() || Thread.currentThread().isInterrupted())throw new InterruptedException();
+                        int count=Math.min(LocalIdeaBatch.GENERATION_PART_SIZE,remaining);
+                        // Fresh IPC token per completion; the immutable Engine ticket/lease is unchanged.
+                        token=java.util.UUID.randomUUID().toString();
+                        LocalAiConnection.Result part=runtime.plan(token,pin,LocalIdeaBatch.schemaForCount(count),LocalIdeaBatch.promptPart(next,ticket.attempt+3*humanRetries,count),"[]",90);
+                        if(cancelled.get() || Thread.currentThread().isInterrupted())throw new InterruptedException();
+                        runtime.requireReadyForPlanning(pin);
+                        if(!"completed".equals(part.event)) {
+                            if("IDEA_SCHEMA_COUNT_MISMATCH".equals(part.payload))throw new IllegalArgumentException("IDEA_BATCH_COUNT_MISMATCH");
+                            if("INVALID_IDEA_STRING".equals(part.payload))throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA");
+                            if("INVALID_IDEA_JSON".equals(part.payload))throw new IllegalArgumentException("INVALID_LOCAL_DRAFT_JSON");
+                            return new Result("held","LOCAL_MODEL_RESPONSE_FAILED");
+                        }
+                        proposal=part.payload;next=LocalIdeaBatch.appendPart(next,proposal,count);remaining-=count;
+                    }
+                    return new Result("passed",next);
                 }
+                org.json.JSONObject input = new org.json.JSONObject(ticket.input);
+                if (input.length() != 3 || !input.has("prompt")) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
+                String task = input.getString("task");
+                if (!LocalWorkDraft.TASKS.contains(task)) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
+                String prompt = input.getString("prompt"); Engine.bounded(prompt);
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
-                LocalAiConnection.Result result = runtime.plan(ticket.token, pin, schema, prompt, "[]");
+                LocalAiConnection.Result result = runtime.plan(ticket.token, pin, LocalWorkDraft.SCHEMA, prompt, "[]");
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
                 runtime.requireReadyForPlanning(pin);
-                if (!"completed".equals(result.event)) {
-                    if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
-                        if ("IDEA_SCHEMA_COUNT_MISMATCH".equals(result.payload)) return new Result("retryable_idea","IDEA_BATCH_COUNT_MISMATCH");
-                        if ("INVALID_IDEA_STRING".equals(result.payload)) return new Result("retryable_idea","DUPLICATE_OR_INVALID_IDEA");
-                        if ("INVALID_IDEA_JSON".equals(result.payload)) return new Result("retryable_idea","INVALID_LOCAL_DRAFT_JSON");
-                    }
-                    return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
-                }
+                if (!"completed".equals(result.event)) return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
                 proposal = result.payload;
-                String output = LocalWorkDraft.verify(task, proposal);
-                return new Result("passed", LocalIdeaBatch.GENERATE.equals(ticket.tool)
-                    ? LocalIdeaBatch.append(ticket.input, output) : output);
+                return new Result("passed", LocalWorkDraft.verify(task, proposal));
             } catch (IllegalArgumentException | SecurityException invalid) {
                 String code = invalid.getMessage();
                 if (proposal != null && BuildConfig.DEBUG && ticket.workId.equals(context.getSharedPreferences("synthetic-plan-probe", Context.MODE_PRIVATE).getString("workId", null))) {

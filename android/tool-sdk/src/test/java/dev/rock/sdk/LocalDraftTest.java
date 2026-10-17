@@ -66,4 +66,26 @@ public final class LocalDraftTest {
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(0));
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(11));
     }
+    @Test public void boundedPiecesPreserveTargetAndValidateAcrossTheSavedAndInMemoryPrefix() throws Exception {
+        String original=LocalIdeaBatch.start("サービスのアイデア300",300);JSONArray first=new JSONArray(),second=new JSONArray();
+        for(int i=0;i<5;i++){first.put("暮らしのサービス"+i);second.put("仕事のサービス"+i);}
+        String half=LocalIdeaBatch.appendPart(original,draft("planning",first.toString()),5);
+        assertEquals(0,LocalIdeaBatch.state(original).getJSONArray("ideas").length());
+        assertEquals(5,LocalIdeaBatch.state(half).getJSONArray("ideas").length());
+        assertEquals(300,LocalIdeaBatch.state(half).getInt("target"));
+        assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(half,draft("planning",first.toString()),5));
+        String complete=LocalIdeaBatch.appendPart(half,draft("planning",second.toString()),5);
+        assertEquals(10,LocalIdeaBatch.state(complete).getJSONArray("ideas").length());
+        assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(original,draft("planning",first.toString()),6));
+        assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.render(half));
+    }
+
+    @Test public void legacyTwentyItemCheckpointKeepsItsOriginalReadAndValidationContract() throws Exception {
+        String old=new JSONObject().put("kind","local-ideas/1").put("request","アイデア40").put("target",40).put("ideas",new JSONArray()).toString();
+        JSONArray values=new JSONArray();for(int i=0;i<20;i++)values.put("旧形式のサービス"+i);
+        String next=LocalIdeaBatch.append(old,draft("planning",values.toString()));
+        assertEquals(20,LocalIdeaBatch.state(next).getJSONArray("ideas").length());
+        assertTrue(LocalIdeaBatch.prompt(old,1).contains("20件"));
+    }
+
 }

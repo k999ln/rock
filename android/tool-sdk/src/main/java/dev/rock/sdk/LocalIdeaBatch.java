@@ -10,7 +10,7 @@ import org.json.*;
 
 /** Durable bounded ideation: each checkpoint contains only accepted unique items, not model reasoning. */
 public final class LocalIdeaBatch {
-    public static final int BATCH_SIZE = 10;
+    public static final int BATCH_SIZE = 10, GENERATION_PART_SIZE = 5;
     public static final String GENERATE = "local-ideas-generate@1", SEAL = "local-ideas-seal@1";
     private LocalIdeaBatch() { }
     public static int requestedCount(String prompt) {
@@ -51,13 +51,25 @@ public final class LocalIdeaBatch {
         return "local-work@1/ideas-"+count+"-v1";
     }
     public static String prompt(String checkpoint, int attempt) {
+        return promptCount(checkpoint, attempt, 20);
+    }
+    public static String promptPart(String checkpoint, int attempt, int count) {
+        requirePartCount(checkpoint,count);
+        return promptCount(checkpoint,attempt,count);
+    }
+    private static void requirePartCount(String checkpoint, int count) {
+        JSONObject data=state(checkpoint);
+        if(count<1 || count>GENERATION_PART_SIZE || count>batchSize(data) || count>data.optInt("target")-data.optJSONArray("ideas").length())
+            throw new IllegalArgumentException("INVALID_IDEA_PART_COUNT");
+    }
+    private static String promptCount(String checkpoint, int attempt, int count) {
         JSONObject data = state(checkpoint);
         try {
-            JSONArray ideas = data.getJSONArray("ideas"); int begin = ideas.length() + 1, end = Math.min(data.getInt("target"), begin + batchSize(data) - 1);
+            JSONArray ideas = data.getJSONArray("ideas"); int begin = ideas.length() + 1, end = Math.min(data.getInt("target"), begin + Math.min(count,batchSize(data)) - 1);
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"日々の暮らし", "仕事の負担軽減", "創作", "学習", "アクセシビリティ", "住まいと家具", "外出と移動", "家族", "健康の記録", "地域", "開発者", "遊び", "省資源", "安心と復旧", "他サービスとの連携"};
             StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 20); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
-            return "日本語の具体的なサービス案を" + (end-begin+1) + "件。各案12文字以内。返答はideas文字列配列だけのJSON。番号・説明・他のfieldは不要。"
+            return "日本語の具体的なサービス案を" + (end-begin+1) + "件。各案12文字以内。名前だけでなく具体的な動作と便利さを書く。Skyという名前は毎回書かなくてよい。返答はideas文字列配列だけのJSON。番号・説明・他のfieldは不要。"
                 + "商品: RockstarOSは権限と保存を備えた端末/クラウド実行基盤。SkyはAgent/LLM/Toolの市場と接続ハブ。Zemaは依頼・進捗・承認・費用・成果を管理。Miniは家具や建築へ埋め込む構想。"
                 + "視点: " + angles[(ideas.length()/batchSize(data)+Math.max(0,attempt-1))%angles.length]
                 + "。対象: " + (ideas.length()<150?"個人・家庭":"地域の店・事業者")
@@ -96,10 +108,18 @@ public final class LocalIdeaBatch {
         return values;
     }
     public static String append(String checkpoint, String modelOutput) {
+        return appendCount(checkpoint,modelOutput,20);
+    }
+    /** A verified in-memory piece. Caller persists only the complete original stage checkpoint. */
+    public static String appendPart(String checkpoint, String modelOutput, int count) {
+        requirePartCount(checkpoint,count);
+        return appendCount(checkpoint,modelOutput,count);
+    }
+    private static String appendCount(String checkpoint, String modelOutput, int count) {
         JSONObject data = state(checkpoint);
         try {
             JSONObject draft = new JSONObject(LocalWorkDraft.verify("planning", modelOutput)); JSONArray ideas = data.getJSONArray("ideas");
-            int needed = Math.min(batchSize(data), data.getInt("target")-ideas.length());
+            int needed = Math.min(Math.min(count,batchSize(data)), data.getInt("target")-ideas.length());
             if (needed<1) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] values = items(draft.getString("body"),needed,ideas.length());
             Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(ideas.getString(i)));

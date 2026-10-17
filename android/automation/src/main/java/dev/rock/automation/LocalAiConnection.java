@@ -119,6 +119,11 @@ final class LocalAiConnection {
 
     Result plan(String requestToken, Engine.ModelProfilePin pin, String schemaId,
                 String prompt, String contextJson) throws Exception {
+        return plan(requestToken,pin,schemaId,prompt,contextJson,180);
+    }
+    Result plan(String requestToken, Engine.ModelProfilePin pin, String schemaId,
+                String prompt, String contextJson, long timeoutSeconds) throws Exception {
+        if(timeoutSeconds<1 || timeoutSeconds>180)throw new IllegalArgumentException("INVALID_PLAN_TIMEOUT");
         validToken(requestToken);
         if (pin == null) throw new SecurityException("MODEL_PROFILE_PIN_REQUIRED");
         boolean exactSchema = java.util.Set.of(dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA).contains(schemaId) && schemaId.equals(pin.planSchemaId);
@@ -127,7 +132,7 @@ final class LocalAiConnection {
             throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
         Engine.bounded(prompt); Engine.bounded(contextJson);
         return exchange(requestToken, (remote, callback) ->
-            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback), 180, true);
+            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback), timeoutSeconds, true);
     }
 
     /** Transfers a verified staged artifact through a read-only descriptor, never a broker path or URL. */

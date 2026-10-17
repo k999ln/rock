@@ -386,3 +386,5 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 package6は実機で発見したllama.rnのJSI `stopCompletion()` が型宣言に反してvoidを返す経路にも対応する。停止の戻り値をPromiseへ正規化し、同期throw/非同期rejectをtoken callbackの外へ漏らさない。package5の5件試験はJSON完成後に`.catch`参照でcrashしたため未受入、10件試験は180秒で停止し0件保持。旧runtime pinを更新せず新profileへ明示再同意する。
 
 導入失敗時は取得状況を読み直して回復する。旧model pinを持つ未完了仕事があれば、本人にその仕事の完了/中止を案内し、自動中止・自動repinをしない。失敗応答にoperationIdがない場合、空の取得IDで中止要求を送らず「取得状況を更新」を表示する。
+
+実機のraw10件schemaが180秒を超え、raw5件は17.749秒で実完了したため、現行v2の1保存工程を最大2回のraw5件生成（各90秒上限）へ分割する。各回は新しいIPC tokenを使い、Engine ticket/model pin/leaseは不変。メモリ上の5件も重複・実数検査し、2回とも合格した10件だけを元の工程checkpointへ保存する。不完全な回の5件を保存済みと表示しない。再生成上限は元の保存工程あたり3回、通常Toolや有料処理へ適用しない。旧v1 checkpointの20件検査・backup読取は維持し、新runtimeでの再実行は明示再計画を求める。

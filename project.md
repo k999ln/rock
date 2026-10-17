@@ -12,6 +12,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 OS11/O6/ROCK: package6のraw5案は実推論17.749sで正常完了（crash修正を受入）。raw10件は180s超のため、1保存工程をraw5件×最大2回・各90sへ分割。途中5件はメモリ上検査のみ、10件合格後にcheckpoint保存。IPC tokenは回ごとに新規、Engine ticket/model pin/240s leaseは不変。旧v1は20件読取検査を維持し再計画案内。SDK16/automation47/Shell14とhost build/lint成功。新しい20件の通常Home試験を実行中、300件は未完了。
+
 2026-10-17 OS11/O6/ROCK: package6 CI39064987817/source f96ca583のactual APK/署名payload照合が合格。実検索UIは再接続後4.313s合格、GitHub/HFともHTTP200、実通知tapも合格。モデル再導入は旧20件試験pinの保護で停止したため、その合成試験だけ明示中止し再試験中。失敗画面の空operation cancelを除き、状況更新と本人による仕事整理を案内する。実生成20/300はまだ未受入。
 
 2026-10-17 OS11/O6/ROCK: package5実機試験で10件は180秒timeout/保存0。5件の切分けでJSON完成後にJSI stopCompletionの実戻り値voidへ.catchを呼ぶcrashを確認。package6で停止戻り値を正規化し、実void/throw/rejectの回帰試験を追加。新profile署名/本人再同意で旧pinを保持し、実機受入は再実施する。
