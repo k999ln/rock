@@ -144,7 +144,12 @@
     "rawMaxCharacters": 48,
     "brokerMaxUtf8Bytes": 96,
     "oldSchemaV1MaxCharacters": 24,
-    "actualApkBuilt": false,
-    "physicalAccepted": false
+    "actualApkBuilt": true,
+    "physicalAccepted": false,
+    "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
+    "nativeBuildRun": 39072982374,
+    "unsignedSha256": "689bdfa94de242f7cef377d2351290ba554c34f74dcecd0e5460e91a00bc7242",
+    "signedSha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008",
+    "signedPayloadMatches": true
   }
 }

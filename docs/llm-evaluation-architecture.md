@@ -73,7 +73,7 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 model推論先とAgent/Tool runnerを分離する。PixelのHomeの通常値は「自動」、LLM名の手動指定は別の選択として実装した。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
 
-**Pixelの実装範囲。** 新候補の `ModelSelectionPolicy` v3は記事・要約・翻訳・コード下書き・計画・文章を区別する。署名catalog、owner別license同意、検証済private cache、RAM条件を満たす候補から選ぶ。記事・要約・翻訳はQwen2.5 1.5B、コードは導入済Qwen2.5 Coder 1.5B、発想・計画・文章はQwen3 4B Instruct 2507を優先する。1.5Bは発想の内容試験不合格でplanning/writingから除外。4Bは短文20案の限定生成・保存試験であり、関連性が弱い案もあるため有用性・事業性の保証ではない。0.6Bは文章品質不合格のため自動候補に入れない。手動指定はexact digestを固定し、無断切替・cloud fallbackはしない。私有Shell API 21、Platform API 1、Local Binder API 4/package version 7は別の版である。新候補の実機合格は下記の受入で確定し、旧版15件の成功を転用しない。
+**Pixelの実装範囲。** 新候補の `ModelSelectionPolicy` v3は記事・要約・翻訳・コード下書き・計画・文章を区別する。署名catalog、owner別license同意、検証済private cache、RAM条件を満たす候補から選ぶ。記事・要約・翻訳はQwen2.5 1.5B、コードは導入済Qwen2.5 Coder 1.5B、発想・計画・文章はQwen3 4B Instruct 2507を優先する。1.5Bは発想の内容試験不合格でplanning/writingから除外。4Bは短文20案の限定生成・保存試験であり、関連性が弱い案もあるため有用性・事業性の保証ではない。0.6Bは文章品質不合格のため自動候補に入れない。手動指定はexact digestを固定し、無断切替・cloud fallbackはしない。私有Shell API 21、Platform API 1、Local Binder API 4/package version 8（新候補、実機再受入中）は別の版である。新候補の実機合格は下記の受入で確定し、旧版15件の成功を転用しない。
 
 **未受入と次の判断。** 全作業共通のmodel/runner能力契約、比較benchmark、文章品質、各cloud providerの接続・手動model指定・実利用/費用の受入は残る。現在の自動選択は世界全体の最新modelから最良を保証するものではない。合格証拠は[同一APK台帳](evidence/pixel-intuitive-experience.json)で実model pin、Tool成果、同IDを照合する。credential不足や商用契約待ちはそのまま表示する。
 
@@ -322,9 +322,9 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 **導入・失敗・復旧。** 既存private cacheに同一hash/byte数のweightがあれば、明示同意後に再検証して再利用できる。finishは読取り専用regular FDを既存stagerへ渡し、全byte hash・署名・RAM/容量・画面解除・runtime signer/API/version・ロード後receiptを確認して初めてactivateする。破損、容量不足、実行中pin、runtime不一致では停止する。成功前のファイルを自動候補へ入れない。完了ファイルは検証失敗時に保持し、取得中止は自己DownloadManager rowだけに限定する。secret/API keyやCodex loginは使わない。
 
-**生成と仕事。** 通常の `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。サービス発想はpackage6の派生schema `local-work@1/ideas-N-v1`（N=1..10）を使い、モデルの生出力を `ideas` 文字列配列ひとつへ限定し、minItems/maxItemsをNに固定する。runtimeは実在するN文字列を検査してbodyへそのまま配列JSONとして格納し、task=planning・title・注意summaryはruntime側のメタデータとして付ける。モデルのtaskを付け替える処理や、不足案の補填はしない。Brokerでも実件数と全仕事の重複を再検査する。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。単一の正確なJSON code fenceは表示上の包みとしてだけ除去し、後続の文章・未知field・別taskは拒否する。taskはBroker側の決定と一致しなければならず、モデルの誤分類を付け替えて通さない。新runtimeはtitle60/body600/summary120文字のschema制限と最大512 output tokens、plan180秒を用い、Brokerのgeneration lease240秒と分ける。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。通常文書の最初の入力artifactにはowner依頼と生成promptそのものを保存し、開始時のrequest digestへ結び付ける。保存promptのない旧試験入力は明示再計画を求め、更新した指示を黙って適用しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
+**生成と仕事。** 通常の `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。サービス発想の現候補はpackage8の派生schema `local-work@1/ideas-N-v2`（N=1..10、raw文字列上限48、Broker各案96 UTF-8 bytes）を使い、旧v1の24文字契約も維持する。モデルの生出力を `ideas` 文字列配列ひとつへ限定し、minItems/maxItemsをNに固定する。runtimeは実在するN文字列を検査してbodyへそのまま配列JSONとして格納し、task=planning・title・注意summaryはruntime側のメタデータとして付ける。モデルのtaskを付け替える処理や、不足案の補填はしない。Brokerでも実件数と全仕事の重複を再検査する。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。単一の正確なJSON code fenceは表示上の包みとしてだけ除去し、後続の文章・未知field・別taskは拒否する。taskはBroker側の決定と一致しなければならず、モデルの誤分類を付け替えて通さない。新runtimeはtitle60/body600/summary120文字のschema制限と最大512 output tokens、plan180秒を用い、Brokerのgeneration lease240秒と分ける。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。通常文書の最初の入力artifactにはowner依頼と生成promptそのものを保存し、開始時のrequest digestへ結び付ける。保存promptのない旧試験入力は明示再計画を求め、更新した指示を黙って適用しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
 
-**300件のアイデア。** planningの有限subtypeとして最大300件をcheckpoint v3で5件ずつ生成・保存する。raw5件を1回（plan180秒以内）、generation lease240秒で扱う。旧v1（20件）/v2（10件）の保存本文・読取契約を保持し、新しい生成契約で再実行する旧未完了workは明示再計画を要する。空行と単一のJSON表示fenceだけを正規化し、一貫した全体番号/回内番号、箇条書き、または文字列配列のactual itemsを同じ検査へ通す。全体の番号はBrokerが付ける。各回の実件数、文字数、Unicode正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。件数・重複・形式の不正は同じ5件範囲を最大3回まで再生成し、揃わなければ保存済みprefixを残して停止する。これは端末内の純粋な発想生成だけで、他のTool・有料cloud・権限不足を自動再試行しない。run attemptと再生成eventを永続化し、再起動で上限を巻き戻さない。欠けた案をfixtureで補完しない。
+**300件のアイデア。** planningの有限subtypeとして最大300件をcheckpoint v4で5件ずつ生成・保存する。raw5件を1回（plan180秒以内）、generation lease240秒で扱う。旧v1（20件）/v2（10件）/v3（5件・raw v1）の保存本文・読取契約を保持し、新しい生成契約で再実行する旧未完了workは明示再計画を要する。空行と単一のJSON表示fenceだけを正規化し、一貫した全体番号/回内番号、箇条書き、または文字列配列のactual itemsを同じ検査へ通す。全体の番号はBrokerが付ける。各回の実件数、文字数、Unicode正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。件数・重複・形式の不正は同じ5件範囲を最大3回まで再生成し、揃わなければ保存済みprefixを残して停止する。これは端末内の純粋な発想生成だけで、他のTool・有料cloud・権限不足を自動再試行しない。run attemptと再生成eventを永続化し、再起動で上限を巻き戻さない。欠けた案をfixtureで補完しない。
 
 **互換性と受入。** Engine DBは3→4のtransactionで既存runsを保存し、有限stageを最大61（生成60回+seal）に拡張する。旧schema3の二工程backupを受け入れ、new backupのstage列は既存記事・3段階文書・最大60batch+sealのclosed形だけを許す。restoreは既存のpause/権限失効を維持する。更新前のAPKとprivate DB退避はGit外へ保存し、旧schema3 BrokerへDB4をそのまま戻さない。旧model profile/versionと成果物は書き換えない。
 
@@ -383,6 +383,8 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 
 無料Cloudの402/429は契約未払いと区別し、Providerが数値Retry-Afterを返した場合だけ待機秒数を表示する。未指定なら無料枠の利用可否確認を案内する。同じ依頼IDは結果未確認のまま保持し、再送・有料切替をしない。検証はtests/sky-free-cloud.test.mjsのcooldown/refusal試験と公開UIで行う。
 
+### 過去の候補試験（現行候補への合格転用なし）
+
 package6は実機で発見したllama.rnのJSI `stopCompletion()` が型宣言に反してvoidを返す経路にも対応する。停止の戻り値をPromiseへ正規化し、同期throw/非同期rejectをtoken callbackの外へ漏らさない。package5の5件試験はJSON完成後に`.catch`参照でcrashしたため未受入、10件試験は180秒で停止し0件保持。旧runtime pinを更新せず新profileへ明示再同意する。
 
 導入失敗時は取得状況を読み直して回復する。旧model pinを持つ未完了仕事があれば、本人にその仕事の完了/中止を案内し、自動中止・自動repinをしない。失敗応答にoperationIdがない場合、空の取得IDで中止要求を送らず「取得状況を更新」を表示する。
@@ -399,10 +401,10 @@ package7はclosed idea subtypeだけtemperature0.7/top_p0.9/top_k40/repeat_penal
 
 4Bの実返答を限定診断で確認したところ、具体的な5動作は返るがAI表記で拒否されていた。本人の表記指定を決定的なAI→si整形として新規案へ適用する。要素数は不変で、表記整形後の全prefix重複を検査し、URL/作者名のliteral識別子と旧保存本文は変えない。動作の完成した短文を求める。当時のv2は各raw105秒×2回/lease240秒だったが、現行v3はraw180秒×1回/5件保存へ置き換える。長いworkは1Jobあたり最大2工程とし、正常な継続は新しい即時Job IDへ渡す。失敗backoffを正常な分割へ累積せず、充電/熱/停止/lease/token gateを保持し、pauseは継続IDも取り消す。
 
-現行checkpoint v3は生成5件が合格した時点で保存し、300件は60生成+sealの61工程とする。新規案にモデル制御記号（`<|`、`|>`、code fence、JSON終端断片）が混入した場合は除去して通さず拒否・有限再生成する。旧保存本文は読取り時に書き換えない。SkyはAgent/Tool hub、Miniは家具・建築へ埋め込む端末であることをpromptへ含める。4Bの旧20件試験は形式・保存・正常Job継続が成功したが、終了記号が1件に混入して重複を隠したため内容受入に算入しない。
+package7当時のcheckpoint v3は生成5件が合格した時点で保存し、300件は60生成+sealの61工程とする。新規案にモデル制御記号（`<|`、`|>`、code fence、JSON終端断片）が混入した場合は除去して通さず拒否・有限再生成する。旧保存本文は読取り時に書き換えない。SkyはAgent/Tool hub、Miniは家具・建築へ埋め込む端末であることをpromptへ含める。4Bの旧20件試験は形式・保存・正常Job継続が成功したが、終了記号が1件に混入して重複を隠したため内容受入に算入しない。
 
 300件の長い仕事では、同じ分野が別対象へ再登場する。promptへ関連分野の過去最大6案と直近2案を上限付きで含め、対象の暮らしに即した1分野の動作を求める。全prefixの重複拒否はBrokerで維持し、modelの記憶やpromptだけに依存しない。意味上の類似はdraft確認事項。
 
 ### 発想の途中切れを受けたpackage8候補
 
-package7/旧raw v1の300件試験は、保存prefixで文末切断と大文字SIを発見したため、実25件を保持して当該仕事だけ中止した。未受入であり、実20件の限定試験を一般品質へ転用しない。旧24文字上限で文章を閉じる圧力を除くため、新raw `ideas-N-v2` は48文字の余裕を設ける。旧v1は24文字契約のまま、新checkpoint v4だけv2を使い、旧checkpointは読取維持・生成再開に明示再計画を要する。Brokerの各案96 UTF-8 bytes/Engine32KiB上限は維持し、長過ぎる返答を切って合格にせず拒否する。promptは20字程度の完結した動作、見出し/反復主語/途中切れ不可を指定。新規AI/SIはsiへ決定的整形し、要素数不変・alias重複検査・URL/作者識別子/旧本文の保全を維持。runtime8向けprofileは新version/既存publisher署名で再同意し、同じ重みを再検証して再利用する。実APK生成と実機20→300は未完了。
+package7/旧raw v1の300件試験は、保存prefixで文末切断と大文字SIを発見したため、実25件を保持して当該仕事だけ中止した。未受入であり、実20件の限定試験を一般品質へ転用しない。旧24文字上限で文章を閉じる圧力を除くため、新raw `ideas-N-v2` は48文字の余裕を設ける。旧v1は24文字契約のまま、新checkpoint v4だけv2を使い、旧checkpointは読取維持・生成再開に明示再計画を要する。Brokerの各案96 UTF-8 bytes/Engine32KiB上限は維持し、長過ぎる返答を切って合格にせず拒否する。promptは20字程度の完結した動作、見出し/反復主語/途中切れ不可を指定。新規AI/SIはsiへ決定的整形し、要素数不変・alias重複検査・URL/作者識別子/旧本文の保全を維持。runtime8向けprofileは新version/既存publisher署名で再同意し、同じ重みを再検証して再利用する。package8実APKはrun39072982374/source31414985から実bytesを検証済み、同一preview signer/payload一致。Pixel再受入20→300は未完了。

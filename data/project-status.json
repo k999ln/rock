@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "package7_300_prefix_rejected_package8_complete_phrase_fix_in_progress",
+    "status": "package8_actual_apk_verified_physical_reacceptance_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -15,7 +15,7 @@
     "physicalAccepted": false,
     "nextAction": "Build/inspect/sign actual runtime8, import reviewed existing weights into new version pins, manual20 complete phrases then auto300 fresh acceptance; do not claim old25 as300.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
-    "runtimeBuildRun": 39067064393,
+    "runtimeBuildRun": 39072982374,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
@@ -60,7 +60,7 @@
       "currentUi": "PASS_sequential14_reported_13_actual_1_optin_skip_notification_tap_and_live_search",
       "physicalBoundariesSqlite": "PASS_5_actual_0_skip"
     },
-    "runtimeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
+    "runtimeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
     "planningLimits": {
       "outputTokens": 512,
@@ -102,6 +102,15 @@
       "target": 300,
       "observedAt": "2026-10-17T21:48:40.718867+00:00",
       "status": "cancelled_preserved_content_not_accepted"
+    },
+    "pendingCandidate": {
+      "runtimePackage": 8,
+      "binderApi": 4,
+      "creativeProfileVersion": 2,
+      "checkpointVersion": 4,
+      "actualNativeArtifactVerified": true,
+      "signedSha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008",
+      "physicalAccepted": false
     }
   },
 

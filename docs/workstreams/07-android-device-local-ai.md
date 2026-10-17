@@ -378,7 +378,7 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 
 ### OS11 / O6: 公開モデル導入と有限文書生成
 
-本人指定の追加範囲は、検索したopen weightのPixel導入、記事以外の仕事、作業別の既定model選択、RockstarOS・Skyのサービスアイデア300件。責任/入出力/保存/復旧/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。Shell21、runtime package7/API4、Engine4の非破壊組合せを検証する。現行checkpoint v3は5件/回・raw180秒・lease240秒、最大60生成+seal。旧v1/v2の読取とデータを維持し、新契約への未完了work再実行は明示再計画。モデルの直接取得、Macで検証後の転送導入、実推論、内容品質を別記録にする。runtime切断はBinder待機を解き、保存済みprefixを保って停止する。署名catalog/owner consent/immutable pin/lease/Broker検査を迂回しない。Android CIは `workflow_dispatch` でも同じ試験を実行できるようにし、PR workflow未起動を成功と記録しない。
+本人指定の追加範囲は、検索したopen weightのPixel導入、記事以外の仕事、作業別の既定model選択、RockstarOS・Skyのサービスアイデア300件。責任/入出力/保存/復旧/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。Shell21、runtime package7/API4、Engine4の非破壊組合せを検証する。現候補checkpoint v4は5件/回・raw180秒・lease240秒、最大60生成+seal。旧v1/v2/v3の読取とデータを維持し、新契約への未完了work再実行は明示再計画。モデルの直接取得、Macで検証後の転送導入、実推論、内容品質を別記録にする。runtime切断はBinder待機を解き、保存済みprefixを保って停止する。署名catalog/owner consent/immutable pin/lease/Broker検査を迂回しない。Android CIは `workflow_dispatch` でも同じ試験を実行できるようにし、PR workflow未起動を成功と記録しない。
 
 文書生成はtask別の短い指示に限定する。コード依頼へ翻訳/要約向けの指示も並べる旧promptは実機で形式崩れを起こしたため退役。通常文書はexact promptを仕事inputへ保存し、旧prompt未保存入力は再計画を要求する。モデルの単一JSON fenceを正規化しても、余分な文章/field/別taskは許可しない。診断本文はGit外、SDKの拒否fixtureと合否要約だけを保存する。
 
