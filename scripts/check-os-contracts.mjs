@@ -258,6 +258,7 @@ assert.equal(localAi.routeId, 'local-action-assistant');
 assert.equal(localAi.executionTarget, 'local');
 assert.equal(localAi.apiVersion, 4);
 assert.equal(localAi.packageVersionCode, 8);
+assert.equal(Number(read('android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java').match(/PACKAGE_VERSION_CODE = (\d+);/)[1]), localAi.packageVersionCode);
 assert.equal(localAi.androidPackage, 'com.localactionassistant');
 assert.equal(localAi.androidService, 'com.localactionassistant.RockLocalAiService');
 assert.equal(localAi.androidPermission, 'dev.rock.permission.USE_LOCAL_AI');

@@ -59,12 +59,14 @@ public final class DiscoveredModelAcceptanceTest {
         String id = creative ? "dev.rock.qwen3-4b-2507-q4km" : coder ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
         boolean reviewedCatalog="true".equals(InstrumentationRegistry.getArguments().getString("rockUseReviewedCatalog"));
         String query = creative ? "Qwen3-4B-Instruct-2507-GGUF" : coder ? "Qwen2.5-Coder-1.5B-Instruct-GGUF" : "Qwen2.5-1.5B-Instruct-GGUF";
+        for(String suffix:new String[]{"progress.json","receipt.json"})new File(context().getExternalFilesDir(null),"download-"+variant+"-"+suffix).delete();
         JSONObject prepared = new JSONObject(broker.preparePublicModelInstall(id)); assertEquals("prepared",prepared.optString("status"));
         int jobs = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         MainActivity activity = (MainActivity)instrumentation.startActivitySync(new Intent(context(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         long start = SystemClock.elapsedRealtime();
         try {
             ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+            ui(() -> { try { Method m=MainActivity.class.getDeclaredMethod("selectPage",int.class);m.setAccessible(true);m.invoke(activity,1); } catch(Exception e){throw new AssertionError(e);} });
             if (reviewedCatalog) {
                 ui(() -> { try { Method m=MainActivity.class.getDeclaredMethod("preparePublicModelInstall",String.class);m.setAccessible(true);m.invoke(activity,id); } catch(Exception e){throw new AssertionError(e);} });
             } else {
@@ -91,9 +93,10 @@ public final class DiscoveredModelAcceptanceTest {
             JSONObject state=null; deadline=SystemClock.elapsedRealtime()+1200000; boolean actualNetwork=false;
             while(SystemClock.elapsedRealtime()<deadline) {
                 state=new JSONObject(broker.publicModelInstallStatus());
+                ui(() -> assertNull("begin failure must stop immediately; never poll an old operation",button((android.view.View)field(activity,"modelDownloadPanel"),"取得状況を更新")));
                 if(id.equals(state.optString("profileId"))) {
                     actualNetwork|=state.optLong("bytesDownloaded")>0;
-                    Files.write(new File(context().getExternalFilesDir(null),"download-"+variant+"-progress.json").toPath(),state.toString().getBytes(StandardCharsets.UTF_8));
+                    Files.write(new File(context().getExternalFilesDir(null),"download-"+variant+"-progress.json").toPath(),new JSONObject(state.toString()).put("acceptanceManifestDigest",prepared.getString("manifestDigest")).put("acceptanceElapsedMs",SystemClock.elapsedRealtime()-start).toString().getBytes(StandardCharsets.UTF_8));
                     assertFalse("download failure: "+state,"failed".equals(state.optString("status")));
                     if("downloaded".equals(state.optString("status")))break;
                 }
