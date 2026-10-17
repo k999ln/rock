@@ -611,7 +611,7 @@ BrokerのSchedulerは既存充電必須・熱・pause・lease・有限Tool制限
 
 ### 端末内モデル導入とJenniferの有限計画
 
-本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。本人は現在実機を接続できないと回答しており、この変更のPixel導入・推論・生成物は未確認。PR #149のLLMなし実機合格を転用しない。
+本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。2026-10-17に本人が接続し、GL066/frankelと同signerを照合、既存4 APKを退避して6候補APKの非破壊更新と固定GGUF転送に成功した。その後ADB接続が切れ、再接続待ち。現v4推論・生成物は未開始/未受入。PR #149のLLMなし実機合格を転用しない。
 
 **利用体験と範囲。** Skyの「端末内モデル」で対応GGUFと取得元・license・容量・配布定義の署名を確認し、本人が同意してsystem file pickerから選ぶ。導入後、Homeの「端末内LLM」から依頼を準備し、仕事画面でSkyの選択と処理/保存を承認する。Jenniferの端末内計画は既存`ZemaOrchestrator`の有限経路であり、この版は記事準備一件だけ。`LLM入力案 → Brokerの厳格schema検査 → citations@1 → free-article@1 → review → 本人の確認メモ → completed`を使う。投稿・送信・課金は含まず、Goal Contract/COLOMBIA/AMC全体のnative統括を実装済みとはしない。
 

@@ -24,7 +24,18 @@
     "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json",
     "privateModelSigningKeyGenerated": true,
     "osSigningKeyGenerated": false,
-    "pullRequest": "https://github.com/k999ln/rock/pull/152"
+    "pullRequest": "https://github.com/k999ln/rock/pull/152",
+    "physicalTrial": {
+      "date": "2026-10-17",
+      "status": "in_progress",
+      "device": "Pixel 10 GL066/frankel",
+      "branch": "codex/pixel-local-physical-20261017",
+      "backupApksVerified": true,
+      "candidateApksInstalled": 6,
+      "pinnedModelTransferred": true,
+      "connection": "lost_after_installation",
+      "inferenceStarted": false
+    }
   },
   "pixelSiImplementation": {
     "date": "2026-10-16",
