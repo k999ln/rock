@@ -18,7 +18,7 @@
                                        prompt: String?, contextJson: String?, callback: ILocalAiCallback?) {
        authenticate(); token(requestToken)
 -      if (callback == null || schemaId != "article-preparation@1/input-v1"
-+      if (callback == null || schemaId !in setOf("article-preparation@1/input-v1", "local-work@1/output-v1")
++      if (callback == null || schemaId == null || schemaId !in setOf("article-preparation@1/input-v1", "local-work@1/output-v1")
            || expectedWeightsSha256 == null || !Regex("[a-f0-9]{64}").matches(expectedWeightsSha256)
            || prompt.isNullOrBlank() || prompt.toByteArray().size > 8000
            || contextJson == null || contextJson.toByteArray().size > 32768)
