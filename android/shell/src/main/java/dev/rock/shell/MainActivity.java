@@ -323,6 +323,7 @@ public final class MainActivity extends Activity {
         button(modelCard, "モデルの導入状態を確認", this::refreshLocalModels);
         localModels = new LinearLayout(this); localModels.setOrientation(LinearLayout.VERTICAL); modelCard.addView(localModels);
         LinearLayout discoveryCard = ui.card(pageContent[1]);
+        pageContent[1].removeView(discoveryCard); pageContent[1].addView(discoveryCard, 2);
         label(discoveryCard, "公開LLMを探す", 18);
         label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GGUF関連の公開候補を更新順で探します。", 14);
         discoveryQuery = field(discoveryCard, "モデル名・公開キーワード", "Qwen", false);

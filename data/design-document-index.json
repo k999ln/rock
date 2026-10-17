@@ -182,7 +182,8 @@
           "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
           "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
           "privateShellApiVersion": 20,
-          "discoveryGrantsExecution": false
+          "discoveryGrantsExecution": false,
+          "publicDiscoveryEntry": "sky_top_after_heading"
         }
       }
     }

@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+Pixel実画面で公開モデル検索が導入詳細に埋もれる点を確認したため、Sky先頭へ移動する。先の58ef9537の15件合格を新配置の証拠へ転用せず、更新APKの同byte照合と同じ実機受入を再実施する。
+
 2026-10-17 OS11/O6/ROCK: source 58ef9537の同一3 APKをsame signer・実byte読戻し一致で非破壊導入。Pixelで全14件/84.402秒と手動model追加1件が成功、失敗/skip0。実System UI通知tap、SkyからGitHub/Hugging Face両APIの実検索、Homeのauto/manual 1.5B→実2 Tool→395-byte成果・exact manifest pin・二重tap1仕事を確認。実UIのLLM一覧から1.5B手動選択も操作。host Core123/automation46/Shell14、build/lint、Node22の全体verify成功（2266 pass/既存skip1）。証拠はdocs/evidence/pixel-intuitive-experience.json、APK/log/合成本文はGit外。同sourceのCIと受入台帳commitのCI/main統合は別々に確認する。一般文章品質/全OS/cloud実Provider/X APIは未受入、OS11全体完了ではない。
 
 本人の追加指示（2026-10-17）で公開open LLM検索をSkyへ実装。GitHub/Hugging FaceのGGUF候補は取得時刻・license claim・未検証を表示し、検索と導入/実行を分ける。XはAPI未設定のため明示外部検索のみ。署名/owner同意済modelの手動選択と、記事準備向け1.5B自動選択をAPI20でexact digest固定する。全OS/一般品質/cloud実Providerの受入は含めない。
