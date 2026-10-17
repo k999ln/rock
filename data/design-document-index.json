@@ -695,7 +695,7 @@
         "primaryOwner": "ROCK",
         "design": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
         "privateShellApi": 21,
-        "runtimePackageVersion": 5,
+        "runtimePackageVersion": 6,
         "localBinderApi": 4,
         "engineSchema": 4,
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",

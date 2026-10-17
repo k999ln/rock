@@ -30,7 +30,7 @@ final class LocalAiConnection {
     static final String PACKAGE = "com.localactionassistant";
     static final String SERVICE = PACKAGE + ".RockLocalAiService";
     static final String RUNTIME_COMPONENT_ID = "org.rockstar.runtime.localai";
-    static final int PACKAGE_VERSION_CODE = 5;
+    static final int PACKAGE_VERSION_CODE = 6;
     static final int API_VERSION = 4;
     private static final Set<String> TERMINAL_EVENTS = Set.of("proposal", "completed", "failed");
     private final Context context;

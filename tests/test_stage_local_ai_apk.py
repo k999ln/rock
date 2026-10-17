@@ -47,7 +47,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
             "uses-permission: name='dev.rock.permission.USE_LOCAL_AI'\n"
             if binder_permission else "",
         ]
-        self.aapt2.write_text("#!/bin/sh\nprintf \"package: name='com.localactionassistant' versionCode='5' versionName='1.0'\\n"
+        self.aapt2.write_text("#!/bin/sh\nprintf \"package: name='com.localactionassistant' versionCode='6' versionName='1.0'\\n"
                               + "".join(permissions) + "\"\n")
         self.aapt2.chmod(0o755)
 
@@ -56,7 +56,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
         self.artifact_lock.write_text(json.dumps({
             "schema": "rock-local-ai-apk/1", "stage": stage,
             "sourceCommit": "1" * 40, "moduleName": "RockLocalActionAssistant",
-            "packageName": "com.localactionassistant", "versionCode": 5,
+            "packageName": "com.localactionassistant", "versionCode": 6,
             "requiredAbis": ["arm64-v8a"], "internetPermission": False,
             "wakeLockPermission": True,
             "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -128,7 +128,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
             stager.stage_apk(self.tree, self.apk, self.aapt2)
 
     def test_old_package_version_is_rejected_by_current_runtime_contract(self):
-        self.aapt2.write_text(self.aapt2.read_text().replace("versionCode='5'", "versionCode='1'"))
+        self.aapt2.write_text(self.aapt2.read_text().replace("versionCode='6'", "versionCode='1'"))
         with self.assertRaisesRegex(ValueError, "package/version differs"):
             stager.inspect_apk(self.apk, self.aapt2)
 

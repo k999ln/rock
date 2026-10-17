@@ -110,6 +110,20 @@ public final class LocalModelImportBoundaryTest {
         assertEquals("dev.rock.qwen25-15b-q4km",app.engine().modelProfilePinForWork(AndroidOwner.current(context()),id).profileId);
         assertTrue(context().getSharedPreferences("synthetic-plan-probe",Context.MODE_PRIVATE).edit().putString("workId",id).commit());
     }
+    @Test public void explicitlyProbeFiveConciseIdeasWithoutCreatingWork() throws Exception {
+        org.junit.Assume.assumeTrue("explicit synthetic performance diagnosis", "true".equals(InstrumentationRegistry.getArguments().getString("rockFiveIdeaProbe")));
+        String id=InstrumentationRegistry.getArguments().getString("rockSyntheticIdeaWork");
+        RockApplication app=(RockApplication)context().getApplicationContext();
+        assertEquals(20,dev.rock.sdk.LocalIdeaBatch.state(app.engine().checkpoint(id)).getInt("target"));
+        dev.rock.core.Engine.ModelProfilePin pin=app.engine().modelProfilePinForWork(AndroidOwner.current(context()),id);
+        assertEquals("dev.rock.qwen25-15b-q4km",pin.profileId);
+        LocalAiConnection runtime=new LocalAiConnection(context());runtime.requireReadyForPlanning(pin);
+        long started=android.os.SystemClock.elapsedRealtime();
+        LocalAiConnection.Result result=runtime.plan(java.util.UUID.randomUUID().toString(),pin,"local-work@1/ideas-5-v1","Skyはエージェントの接続ハブです。暮らしに使えるサービスを日本語で5件。各案は12文字以内。JSONのideas配列だけを返す。", "[]");
+        org.json.JSONObject receipt=new org.json.JSONObject().put("event",result.event).put("elapsedMs",android.os.SystemClock.elapsedRealtime()-started).put("payload",result.payload);
+        Files.write(new File(context().getExternalFilesDir(null),"synthetic-five-ideas.json").toPath(),receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        assertEquals("completed",result.event);dev.rock.sdk.LocalWorkDraft.verify("planning",result.payload);
+    }
     @Test public void readOnlyPhysicalMigrationHashes() throws Exception {
         org.junit.Assume.assumeTrue("explicit physical hash-only migration readback", "true".equals(InstrumentationRegistry.getArguments().getString("rockMigrationReadback")));
         org.json.JSONArray works=new org.json.JSONArray(),artifacts=new org.json.JSONArray();

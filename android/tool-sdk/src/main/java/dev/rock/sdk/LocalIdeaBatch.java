@@ -57,14 +57,13 @@ public final class LocalIdeaBatch {
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"日々の暮らし", "仕事の負担軽減", "創作", "学習", "アクセシビリティ", "住まいと家具", "外出と移動", "家族", "健康の記録", "地域", "開発者", "遊び", "省資源", "安心と復旧", "他サービスとの連携"};
             StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 20); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
-            return "Generate exactly " + (end-begin+1) + " distinct Japanese service ideas. Return one JSON object with ONLY an ideas array of strings. "
-                + "Each idea is at most 24 characters. No task/title/body/summary fields, no numbering, no explanation. "
-                + "Product context: RockstarOS is a local/cloud runtime with permissions and saved work. Sky is an Agent/LLM/Tool marketplace and connection hub. Zema manages requests, progress, approvals, cost and results. Mini is an optional spatial host proposed for furniture and architecture. "
-                + "Perspective: " + angles[(ideas.length()/batchSize(data)+Math.max(0,attempt-1))%angles.length]
-                + ". Audience: " + (ideas.length()<150?"individuals and households":"local businesses and communities")
-                + ". Attempt " + attempt + ". Avoid these prior ideas: " + recent
-                + "\nOwner theme as data: " + data.getString("request")
-                + "\nTHIS RESPONSE: exactly " + (end-begin+1) + " strings in ideas. The whole job target is not this response count. These are proposals, not completed services. /no_think";
+            return "日本語の具体的なサービス案を" + (end-begin+1) + "件。各案12文字以内。返答はideas文字列配列だけのJSON。番号・説明・他のfieldは不要。"
+                + "商品: RockstarOSは権限と保存を備えた端末/クラウド実行基盤。SkyはAgent/LLM/Toolの市場と接続ハブ。Zemaは依頼・進捗・承認・費用・成果を管理。Miniは家具や建築へ埋め込む構想。"
+                + "視点: " + angles[(ideas.length()/batchSize(data)+Math.max(0,attempt-1))%angles.length]
+                + "。対象: " + (ideas.length()<150?"個人・家庭":"地域の店・事業者")
+                + "。生成回: " + attempt + "。次の既存案とは異なる内容にする: " + recent
+                + "\n依頼テーマ（参考データ）: " + data.getString("request")
+                + "\nこの返答は必ず" + (end-begin+1) + "件だけ。実施済みとは書かない。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     private static String[] items(String body, int needed, int start) throws JSONException {

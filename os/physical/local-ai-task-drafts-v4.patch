@@ -6,8 +6,8 @@
          targetSdkVersion rootProject.ext.targetSdkVersion
 -        versionCode 3
 -        versionName "1.2"
-+        versionCode 5
-+        versionName "1.4"
++        versionCode 6
++        versionName "1.5"
      }
      buildTypes {
          debug {
@@ -86,7 +86,7 @@
 --- a/src/native/modelRuntime.ts
 +++ b/src/native/modelRuntime.ts
 @@ -1,3 +1,4 @@
-+import {completePlanBoundary} from './planBoundary';
++import {completePlanBoundary, requestPlanStop} from './planBoundary';
  import {Platform} from 'react-native';
  import ReactNativeBlobUtil from 'react-native-blob-util';
  import {initLlama, type CompletionResponseFormat, type LlamaContext} from 'llama.rn';
@@ -136,7 +136,7 @@
 +      streamed += data.token;
 +      if (!stopping && completePlanBoundary(streamed)) {
 +        stopping = true;
-+        context.stopCompletion().catch(() => { /* bounded token limit remains the fallback */ });
++        requestPlanStop(() => context.stopCompletion());
 +      }
      });
      if (Array.isArray(result.tool_calls) && result.tool_calls.length) {
@@ -185,7 +185,7 @@
      expect(bridge.setModelIdentity).not.toHaveBeenCalled();
 --- a/src/native/planBoundary.ts
 +++ b/src/native/planBoundary.ts
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,31 @@
 +/** A complete JSON envelope ends decoding; Broker still validates every field and permission. */
 +export function completePlanBoundary(value: string): boolean {
 +  if (value.length > 32768) return true; // stop excessive output; the Broker rejects it
@@ -211,10 +211,16 @@
 +  }
 +  return false;
 +}
++
++/** Some llama.rn Android JSI versions return void despite their Promise<void> type. */
++export function requestPlanStop(stop: () => unknown): void {
++  try { Promise.resolve(stop()).catch(() => { /* the token bound remains the fallback */ }); }
++  catch { /* Synchronous native failure must not crash the token callback. */ }
++}
 --- a/src/native/__tests__/planBoundary.test.ts
 +++ b/src/native/__tests__/planBoundary.test.ts
-@@ -0,0 +1,18 @@
-+import {completePlanBoundary} from '../planBoundary';
+@@ -0,0 +1,31 @@
++import {completePlanBoundary, requestPlanStop} from '../planBoundary';
 +
 +describe('closed plan completion boundary', () => {
 +  it('waits for a whole root and ignores braces and escaped quotes in strings', () => {
@@ -230,6 +236,19 @@
 +    expect(completePlanBoundary('{"a":1}{"b":2}')).toBe(false);
 +    expect(completePlanBoundary('prose {"a":1}')).toBe(false);
 +    expect(completePlanBoundary('x'.repeat(32769))).toBe(true);
++  });
++});
++
++describe('real native completion-stop return shapes', () => {
++  it('accepts the actual Android void result and invokes native stop once', () => {
++    const stop = jest.fn(() => undefined);
++    expect(() => requestPlanStop(stop)).not.toThrow();
++    expect(stop).toHaveBeenCalledTimes(1);
++  });
++  it('contains synchronous throws and asynchronous rejection', async () => {
++    expect(() => requestPlanStop(() => { throw new Error('native stop'); })).not.toThrow();
++    requestPlanStop(() => Promise.reject(new Error('native stop')));
++    await Promise.resolve(); await Promise.resolve();
 +  });
 +});
 --- a/src/native/ideaPlan.ts

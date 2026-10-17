@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "runtime5_installed_physical_acceptance_in_progress",
+    "status": "runtime6_void_stop_crash_fix_build_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -45,7 +45,7 @@
       "generationLeaseSeconds": 240
     },
     "runtimeCandidate": {
-      "packageVersion": 5,
+      "packageVersion": 6,
       "binderApi": 4,
       "rawIdeaSchema": "ideas array only, exact N 1..10",
       "metadataOwner": "runtime, never model authority",
