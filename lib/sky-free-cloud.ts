@@ -56,7 +56,7 @@ export async function runFreeCloudText(input: {
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
     const startedAt = Date.now();
     const response = await fetcher(`${ORIGIN}/openai`, {
-      method:'POST', redirect:'manual', signal:AbortSignal.timeout(60000),
+      method:'POST', redirect:'manual', signal:AbortSignal.timeout(180000),
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:input.model,messages:[{role:'user',content:input.prompt}],max_tokens:1024,stream:false}),
     });

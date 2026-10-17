@@ -21,7 +21,7 @@ export default function SkyFreeCloudPanel() {
       if(!route.ok||!chosen.selection)throw new Error(chosen.error||'モデルを選択できません。');
       setSelection(`${chosen.selection.provider} / ${chosen.selection.model} — ${chosen.selection.reason}`);
       if(chosen.selection.provider!=='pollinations')throw new Error('この検証画面は無料Cloud専用です。ローカルは会話画面から実行してください。');
-      const response=await fetch('/api/llm/free-cloud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:requestId.current,prompt,model:chosen.selection.model,consent}),signal:AbortSignal.timeout(65000)});
+      const response=await fetch('/api/llm/free-cloud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:requestId.current,prompt,model:chosen.selection.model,consent}),signal:AbortSignal.timeout(185000)});
       const result=await response.json() as {text?:string;reportedModel?:string;providerResponseId?:string;usage?:{inputTokens:number;outputTokens:number;chargeMinor:number};error?:string};
       if(!response.ok||!result.text||!result.usage)throw new Error(result.error||'応答・使用量を確認できません。');
       setAnswer(result.text);setUsage(`実モデル: ${result.reportedModel} / 入力 ${result.usage.inputTokens}・出力 ${result.usage.outputTokens} tokens / $${(result.usage.chargeMinor/100).toFixed(2)} / 参照 ${result.providerResponseId}`);
