@@ -700,7 +700,7 @@
         "engineSchema": 4,
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
         "firstRequestedTask": "300 RockstarOS/Sky service ideas",
-        "creativeModelTrial": "Qwen3 4B Instruct 2507 / Unsloth Q4_K_M fixed artifact; 8GiB RAM minimum; package7 limited20 trial superseded by truncated phrase in300; package8 manual/auto acceptance pending",
+        "creativeModelTrial": "Qwen3 4B Instruct 2507 / Unsloth Q4_K_M fixed artifact; 8GiB RAM minimum; package8/profile2/prompt5 limited manual20 accepted as drafts, auto priority80 planning/writing; actual300 pending",
         "schedulerContinuation": "two stages per healthy job, fresh alternating immediate IDs without failure backoff; charge/thermal/pause/lease gates retained",
         "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
         "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; requested standalone AI term formatted as si; actual count unchanged, alias duplicates rejected, historical text readable",

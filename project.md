@@ -645,3 +645,5 @@ Native8/raw-v2の実20件は397.822秒・5工程attempt1、文末/si表記/番�
 Git同期: main43cf290e（Sky無料Cloudのbounded自動続行/画面外継続、PR161/162）を統合。競合はPixel資料とCloud追記を双方保持して解消。Android/native入力へのmain新差分は0、実機APKの入力を変えていない。main統合済みはこの作業branchへの取込を指し、PR158のmain公開受入は未完了。
 
 Native8のauto General6 summaryは29.578秒で3工程保存が通るが英語本文のため日本語内容は不合格。指定言語を元依頼のdataとは別のprompt controlへ固定し、本文だけの日本語検査を実機harnessへ追加。auto Coder5は29.514秒、正しいsum_even本文を実保存・コード非実行。最新候補で再試験する。
+
+Native8/prompt5の手動20件は533.698秒、5工程attempt1、実20件/si表記/番号/完全重複/制御記号検査合格。限定draftとして発想auto80へ接続し、関連性/実現性/一般品質は本人確認を維持。現在8da版でCode40.923秒、導入境界/SQLite5実試験、UI14報告=13実/1optin skip、実通知tap/公開検索合格。日本語要約は言語/保存合格だがSky/Zemaの役割混同があり内容未受入。main43cf統合後の通常verifyは既存process timing3失敗、対象40試験は直列成功。同時数2で全体verify成功（assert/試験範囲は変更なし）。新auto300は次に実行。
