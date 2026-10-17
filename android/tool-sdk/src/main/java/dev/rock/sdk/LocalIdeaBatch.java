@@ -72,12 +72,16 @@ public final class LocalIdeaBatch {
             JSONArray ideas = data.getJSONArray("ideas"); int begin = ideas.length() + 1, end = Math.min(data.getInt("target"), begin + Math.min(count,batchSize(data)) - 1);
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"朝の支度","料理","食材管理","買物","掃除","洗濯","睡眠","体調の記録","家族連絡","子育て","介護","外出","移動","防災","地域","学習","読書","文章","画像と映像","音楽","ゲーム","仕事の計画","会議","資料","開発","家具","照明","空調","建築","機器連携"};
-            StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 2); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
             int group=ideas.length()/GENERATION_PART_SIZE;
+            // Bounded context: related prior topic groups plus immediate neighbors; full prefix is checked below.
+            java.util.LinkedHashSet<Integer> prior=new java.util.LinkedHashSet<>();
+            for(int i=ideas.length()-1;i>=0 && prior.size()<6;i--)if((i/GENERATION_PART_SIZE)%6==(group+Math.max(0,attempt-1))%6)prior.add(i);
+            for(int i=Math.max(0,ideas.length()-2);i<ideas.length();i++)prior.add(i);
+            StringBuilder recent=new StringBuilder();for(int i:prior)recent.append(ideas.getString(i)).append("; ");
             String[] audiences={"一人暮らし","子育て家庭","高齢者","学生","在宅勤務","小さな店","工房","施設","建築現場","地域団体"};
             StringBuilder topics=new StringBuilder();for(int i=0;i<end-begin+1;i++){if(i>0)topics.append("、");topics.append(angles[(group*5+i+5*Math.max(0,attempt-1))%angles.length]);}
             return "SkyはAgentとToolの接続hub。Miniは家具・建築に埋め込む端末。依頼: " + data.getString("request")
-                + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野から1案ずつ: " + topics + "。再使用禁止: " + recent
+                + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。対象の暮らしに即し、1案は1分野の動作にする。各分野から1案ずつ: " + topics + "。再使用禁止: " + recent
                 + "\n日本語で" + (end-begin+1) + "案だけ。短い一文で動作を完結する。製品名のみ不可。AIはsi表記。JSONのideas配列のみ。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }

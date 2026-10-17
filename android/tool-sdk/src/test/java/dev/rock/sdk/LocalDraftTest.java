@@ -114,4 +114,11 @@ public final class LocalDraftTest {
         assertEquals("local-work@1/ideas-4-v1",LocalIdeaBatch.schema(legacy.toString()));
         assertTrue(LocalIdeaBatch.promptPart(initial,1,5).contains("Miniは家具・建築に埋め込む端末"));
     }
+    @Test public void repeatedTopicGroupsGetBoundedRelatedHistoryWithoutLosingOriginalRequest() throws Exception {
+        JSONObject saved=new JSONObject(LocalIdeaBatch.start("Skyのアイデア300",300));JSONArray ideas=saved.getJSONArray("ideas");
+        for(int i=0;i<270;i++)ideas.put("過去のサービス"+i);
+        String prompt=LocalIdeaBatch.promptPart(saved.toString(),1,5);
+        assertTrue(prompt.contains("過去のサービス240;"));assertTrue(prompt.contains("過去のサービス269;"));
+        assertFalse(prompt.contains("過去のサービス0;"));assertTrue(prompt.contains("Skyのアイデア300"));assertTrue(prompt.length()<1000);
+    }
 }

@@ -118,7 +118,7 @@
       "fileName": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
       "source": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/a06e946bb6b655725eafa393f4a9745d460374c9/Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
       "licenseUrl": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/blob/a06e946bb6b655725eafa393f4a9745d460374c9/README.md",
-      "trustLabel": "Qwenの元モデル、Unslothの量子化。Apache-2.0の公開定義を固定hashで確認。Rock Developer Previewが配布定義を署名。Qwen/Unslothによる署名ではありません。実機の発想品質を試験中、自動選択は無効。",
+      "trustLabel": "Qwenの元モデル、Unslothの量子化。Apache-2.0の公開定義を固定hashで確認。Rock Developer Previewが配布定義を署名。Qwen/Unslothによる署名ではありません。Pixelで短文20案の生成・保存を限定試験済み。発想の自動候補。案の有用性・関連性は確認が必要。",
       "profile": {
         "profileId": "dev.rock.qwen3-4b-2507-q4km",
         "version": 1,
@@ -142,11 +142,9 @@
       },
       "tasks": [
         "planning",
-        "writing",
-        "summary",
-        "translation"
+        "writing"
       ],
-      "autoPriority": 0
+      "autoPriority": 80
     }
   ]
 }

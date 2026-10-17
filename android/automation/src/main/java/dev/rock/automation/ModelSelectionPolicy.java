@@ -6,7 +6,7 @@ import java.util.Set;
 
 /** Versioned, task/capability/resource policy; rankings are hypotheses, not universal benchmarks. */
 final class ModelSelectionPolicy {
-    static final String VERSION = "pixel-local-work-model-choice/2";
+    static final String VERSION = "pixel-local-work-model-choice/3";
     static final class Candidate {
         final String id; final boolean cached, licensed, fits; final Set<String> tasks; final int priority;
         Candidate(String id, boolean cached, boolean licensed, boolean fits) {

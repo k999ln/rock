@@ -38,4 +38,16 @@ public final class ModelSelectionPolicyTest {
         assertEquals(large, ModelSelectionPolicy.select("auto", "日本語に翻訳", models));
         assertEquals(large, ModelSelectionPolicy.select(large, "Pythonコード", models));
     }
+    @Test public void creativeIsPreferredForPlanningWithoutReintroducingFailedSmallPlanner() {
+        String creative="dev.rock.qwen3-4b-2507-q4km",coder="dev.rock.qwen25-coder-15b-q4km";
+        List<ModelSelectionPolicy.Candidate> models=List.of(
+            new ModelSelectionPolicy.Candidate(large,true,true,true,java.util.Set.of("article","summary","translation","code"),50),
+            new ModelSelectionPolicy.Candidate(coder,true,true,true,java.util.Set.of("code"),90),
+            new ModelSelectionPolicy.Candidate(creative,true,true,true,java.util.Set.of("planning","writing"),80));
+        assertEquals(creative,ModelSelectionPolicy.select("auto","Skyのアイデア300",models));
+        assertEquals(creative,ModelSelectionPolicy.select("auto","予定を計画",models));
+        assertEquals(coder,ModelSelectionPolicy.select("auto","Pythonコード",models));
+        assertEquals(large,ModelSelectionPolicy.select("auto","日本語に翻訳",models));
+        denied("NO_SUITABLE_INSTALLED_MODEL","auto","アイデア300",models.subList(0,2));
+    }
 }
