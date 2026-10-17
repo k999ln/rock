@@ -704,7 +704,7 @@
         "schedulerContinuation": "two stages per healthy job, fresh alternating immediate IDs without failure backoff; charge/thermal/pause/lease gates retained",
         "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
         "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; requested standalone AI term formatted as si; actual count unchanged, alias duplicates rejected, historical text readable",
-        "ideaGeneration": {"checkpointVersion":4,"rawPartLimit":5,"partsPerSavedStage":1,"partTimeoutSeconds":180,"savedBatch":5,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
+        "ideaGeneration": {"checkpointVersion":5,"rawPartLimit":5,"partsPerSavedStage":1,"partTimeoutSeconds":180,"savedBatch":5,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
         "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
         "limits": [
           "signed APK catalog only",

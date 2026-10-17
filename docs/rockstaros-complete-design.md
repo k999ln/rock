@@ -734,3 +734,5 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan180秒/lease240秒、最大60生成+seal）。旧v1/v2は読取を維持、新規制御記号混入は拒否する。詳細と未受入はLLM正本へ集約。
 
 最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
+
+発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。

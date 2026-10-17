@@ -385,3 +385,5 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 アイデアの形式差は空行・一貫した全体/回内番号・箇条書き・文字列配列を正規化し、実件数/Unicode重複/byte上限は緩めない。元依頼の全体件数と今回の5件をprompt末尾でも分離する。純粋な発想生成の不正だけ同じ範囲を最大3回再生成し、lease/token/pause fenceとdurable attempt/eventを維持、他Tool/有料cloudを再送しない。3回不合格ならprefixを残して本人操作を待つ。明示した合成20件probeだけ、debug APKの私有cache一ファイルへ拒否提案を診断保存できる。releaseでは無効、Git/ログ/正式成果物/達成件数へ入れない。
 
 最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
+
+発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。
