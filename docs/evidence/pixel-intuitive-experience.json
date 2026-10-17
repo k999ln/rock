@@ -198,7 +198,8 @@
   "git": {
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
     "sourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
-    "mainMerged": false,
-    "sourceValidationNotTransferredToDifferentApks": true
+    "sourceValidationNotTransferredToDifferentApks": true,
+    "mainMergedAtEvidenceWrite": false,
+    "integrationStatusAuthority": "https://github.com/k999ln/rock/pull/157"
   }
 }

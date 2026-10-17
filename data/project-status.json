@@ -17,7 +17,7 @@
       "X_external_search"
     ],
     "physicalAccepted": true,
-    "nextAction": "Wait exact-head CI, then normal main integration. Next extend signed model compatibility/quality and configured cloud adapters; X API and paid/full-OS gates remain closed.",
+    "nextAction": "Extend signed model compatibility/quality and configured cloud adapters; X API and paid/full-OS gates remain closed. Read PR #157 for live integration status; acceptance evidence records its write-time snapshot.",
     "tests": {
       "physicalPassed": 15,
       "physicalFailed": 0,
@@ -28,7 +28,8 @@
     "candidateSourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
     "codeHeadCiPassed": null,
-    "mainMerged": false,
+    "mainMergedAtAcceptanceWrite": false,
+    "gitIntegrationAuthority": "https://github.com/k999ln/rock/pull/157",
     "privateShellApiVersion": 20,
     "fullVerify": "passed_all_stages_node22",
     "evidence": "docs/evidence/pixel-intuitive-experience.json"
