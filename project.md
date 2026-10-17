@@ -1,3 +1,7 @@
+# 無料Cloud 402の再検証
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: PR #160の残条件を公開version63/source 4a17a16aで受入。402はProvider IP待機制限、実Retry-After 25秒を表示する修正を配備。26秒以上待機後、新しい合成依頼を実accountで自動openai-fast→GPT-OSS20Bへ送り「14 + 15 は 29」、337/104 tokens/$0の実応答成功。月次Sandbox active/残り100 USD、本番課金なし。npm run verify全stage exit0（2289 pass/既存skip1）、対象9試験成功。証拠 docs/evidence/sky-hosted-monthly.json。次は同head CIとPR #160のmain統合。無料Providerの再度の待機制限は残り、恒久無制限とはしない。
+
 # 公開Skyの月次Sandbox契約移行
 
 2026-10-17 BIL02/O5（JOINT）: 公開version62/source fc0f1cefで実accountを140 USD/月・100 USD枠のStripe Sandboxへ移行済み。列挙50表148行をGit外保全、追加DDL後一致、UI後も旧契約JSON/id/created_atと他48表の既存行を保持。画面で自動選択・合成100 USD停止・未払い停止・同一140 USD請求へのテスト入金とactive/残額100 USD復旧を確認。署名通知3件。無料Cloud生成2回はProvider HTTP 402で実応答未受入、有料fallbackなし。npm run verify全stage exit0（2288 pass/既存skip1）。証拠 docs/evidence/sky-hosted-monthly.json。本番課金なし。次は無料Provider復旧後の実応答再受入、main統合は保留。

@@ -61,3 +61,12 @@ void test('edge-compatible manual redirect mode never follows redirected discove
  await assert.rejects(discoverFreeCloudModels(async(_url,init)=>{count++;assert.equal(init.redirect,'manual');return new Response(null,{status:302,headers:{Location:'https://other.invalid'}});}));assert.equal(count,1);
  const db=setup(t);let sends=0;await assert.rejects(runFreeCloudText(request(db,async(url,init)=>{assert.equal(init.redirect,'manual');if(url.endsWith('/models'))return catalog();sends++;return new Response(null,{status:307,headers:{Location:'https://other.invalid'}});})));assert.equal(sends,1);
 });
+
+void test('402 cooldown is distinguished from an upstream refusal without retry timing',async t=>{
+ for (const retry of [null,'30','injected invalid value']) {
+  const db=setup(t);let sends=0;
+  const input=request(db,async url=>{if(url.endsWith('/models'))return catalog();sends++;return new Response(null,{status:402,headers:retry?{'Retry-After':retry}:{}});});
+  await assert.rejects(runFreeCloudText(input),retry==='30'?/待機指定: 30秒/:/待機時間の指定がありません/);
+  await runFreeCloudText(input);assert.equal(sends,1);
+ }
+});

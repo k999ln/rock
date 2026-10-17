@@ -60,9 +60,16 @@ export async function runFreeCloudText(input: {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:input.model,messages:[{role:'user',content:input.prompt}],max_tokens:1024,stream:false}),
     });
-    // In particular, 402 is a free-slot limit. Never pay x402, add a wallet, or upgrade to the keyed API.
-    if (!response.ok) throw new WorkError(response.status===402 || response.status===429
-      ? '無料枠の待機時間・上限に達しました。支払いや有料切替は行いません。' : 'Cloudの実行結果を確認できません。',response.status);
+    // A 402 may be an IP cooldown OR an upstream credit refusal. Do not claim
+    // that waiting will fix it without the provider's Retry-After evidence.
+    if (!response.ok) {
+      const rawRetry=response.headers.get('Retry-After');
+      const seconds=rawRetry && /^\d{1,6}$/.test(rawRetry) ? Number(rawRetry) : null;
+      const limited=response.status===402 || response.status===429;
+      throw new WorkError(limited
+        ? `無料CloudがHTTP ${response.status}を返しました。${seconds!==null ? `Providerの待機指定: ${seconds}秒。待機後に「新しい依頼」から再試行してください。` : 'Providerから待機時間の指定がありません。無料枠の利用可否を確認してください。'}Sky契約の未払いとは別です。支払いや有料切替・自動再送は行いません。`
+        : 'Cloudの実行結果を確認できません。',response.status);
+    }
     const body = await response.json() as {id?: unknown; model?: unknown; user_tier?: unknown; choices?: {finish_reason?: unknown;message?: {content?: unknown;tool_calls?: unknown}}[]; usage?:{prompt_tokens?:unknown;completion_tokens?:unknown;total_tokens?:unknown}};
     const choice=body.choices?.[0], usage=body.usage;
     if (body.user_tier!=='anonymous' || choice?.finish_reason!=='stop' ||

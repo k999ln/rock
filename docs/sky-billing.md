@@ -436,3 +436,5 @@ SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOU
 安全な停止はSKY_HOSTED_MONTHLY_SANDBOXとSKY_FREE_CLOUD_ENABLEDを無効化して再配備する。過去契約/試験明細を削除・上書きして戻さず、請求はStripe test objectを再照合する。旧source version 61へ戻す場合も追加表を残す。必要なキーはSKY_CLOUD_MONTHLY_MODE=stripe-test、SKY_MONTHLY_STRIPE_KEY/ACCOUNT/WEBHOOK_SECRET、既存の本人限定SKY_FREE_CLOUD_OWNER_ID。旧stripe販売設定と公開範囲を変更しない。本番契約・税・与信・無人運用は未受入。
 
 公開version62で移行・自動選択・合成上限停止・未払い停止・同一140 USDテスト請求の入金/契約復旧を確認した。旧契約snapshotも一致。生成は移行直後と復旧後の2回とも無料Provider HTTP 402で停止し、実応答の合格条件は未達。本番課金や有料fallbackは行わない。全体verifyは2288 pass/既存skip1、全stage成功。main統合は実応答の残条件を確認してから行う。
+
+2026-10-17追検証: version63でProvider Retry-After 25秒を確認し、26秒以上待機後に新しい依頼を送信。月次契約の実accountで自動openai-fast→GPT-OSS20B実応答「14 + 15 は 29」、337/104 tokens/$0を受入。上記version62の実応答未達はこの追検証で解消。無料Providerの待機制限自体を解除したわけではなく、再発時は同じ待機案内と送信停止を維持する。

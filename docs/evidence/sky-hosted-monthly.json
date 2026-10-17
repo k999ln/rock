@@ -1,6 +1,6 @@
 {
   "date": "2026-10-17",
-  "status": "billing_ui_passed_cloud_response_blocked",
+  "status": "hosted_billing_and_cloud_ui_passed",
   "productionBilling": false,
   "backupTables": 50,
   "backupRows": 148,
@@ -63,9 +63,36 @@
     "/private/tmp/sky-hosted-restored.png"
   ],
   "limitations": [
-    "Free Provider HTTP 402 blocks post-migration real response acceptance",
+    "Anonymous Provider cooldown can recur; no uptime guarantee or paid fallback",
     "Unattended scheduler operational acceptance not included",
-    "Synthetic cap/clock are explicitly separated from actual Cloud usage",
-    "main integration withheld pending remaining real-response acceptance"
-  ]
+    "Synthetic cap/clock separated from actual zero-cost Cloud usage"
+  ],
+  "freeCloudFollowup": {
+    "date": "2026-10-17",
+    "version": 63,
+    "source": "4a17a16a71454554c636a940b3cdd9c0a2e94a38",
+    "deployment": "appgdep_6ad3c8126b6c81919bf35510dba64831",
+    "environmentRevision": 4,
+    "archiveSha256": "a0c35415c206db59c3280384456df14cd26c739bdaa07a5759242cf987c98cec",
+    "cause": "Provider per-IP cooldown; observed Retry-After 25 seconds",
+    "repair": "Display validated Retry-After separately from Sky contract status; no paid fallback or automatic resend",
+    "method": "Waited at least 26 seconds after observing Retry-After, then explicitly created a new synthetic request on authenticated UI",
+    "automaticSelection": "pollinations/openai-fast",
+    "reportedModel": "gpt-oss-20b",
+    "response": "14 + 15 は 29 です。",
+    "inputTokens": 337,
+    "outputTokens": 104,
+    "chargeMinor": 0,
+    "providerResponseId": "pllns_c30632d0b2cae521c1f98c8a8fe4b1c6",
+    "plan": "active / available / 100 USD remaining",
+    "verification": "npm run verify: all stages exit 0; 2289 pass, one existing skip; focused free Cloud tests 9 passed",
+    "log": "/private/tmp/sky-402-verify.log",
+    "screenshot": "/private/tmp/sky-402-recovered.png",
+    "sources": [
+      "https://raw.githubusercontent.com/pollinations/pollinations/master/APIDOCS.md",
+      "https://raw.githubusercontent.com/pollinations/pollinations/master/shared/ip-slot.js"
+    ],
+    "productionBilling": false,
+    "replay": "UI re-press returned same response id/text/usage; unit test verifies one outbound generation"
+  }
 }
