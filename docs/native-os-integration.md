@@ -626,7 +626,7 @@ Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software
 
 **検証・状態・保存。** 未導入/確認待ち/検証中/読込み中/ready/失敗を分け、ファイル選択や登録だけでreadyにしない。readonlyかつregularなPFD、exact length、選択ファイルのSHA-256を先に確認する。既存stagerでBroker-private no-backup領域へコピー・再hash・atomic昇格し、runtimeがreadonly PFDから再コピー・再hashして返すprofile/hash/byte receiptとstatusを照合する。全て成功した時だけPlatformStoreのactive pointerを確定する。2コピーとreserveの容量、RAM/low-memory、解除状態を検査する。license同意はowner/profile digest/license/timeをBroker-private preferencesへ保存し、実行承認とは別にする。原稿と成果の正本は既存Broker DB/保護fileのまま。
 
-2026-10-17の実機初回試験ではimport/loadは通ったが、計画時に旧単体appの`repository.model()`を参照して失敗した。追加overlay `local-ai-loaded-profile-v4.patch`では計画を現在ロード済みの検証hashだけへ結び、単体appのmodel登録・暗黙load・profile再ラベルへ進めない。未load/別hashを拒否し、runtime内部の排他hash再照合とBrokerの前後照合を保持する。hostのbridge回帰3ケースを含む26 Jest・型・lint・offline source検査が成功。新runtime buildと実機再試験は未完了。OS用APK lockは旧4 overlayのartifactとして保持し、新5 overlay source候補のbuild/実機証拠と混同しない。
+2026-10-17の実機初回試験ではimport/loadは通ったが、計画時に旧単体appの`repository.model()`を参照して失敗した。追加overlay `local-ai-loaded-profile-v4.patch`では計画を現在ロード済みの検証hashだけへ結び、単体appのmodel登録・暗黙load・profile再ラベルへ進めない。冷起動時は旧profile IDもhash/sizeとともに消してno_model状態を整合させる。未load/別hashを拒否し、runtime内部の排他hash再照合とBrokerの前後照合を保持する。hostのbridge回帰3ケースを含む26 Jest・型・lint・offline source検査が成功。新runtime buildと実機再試験は未完了。OS用APK lockは旧4 overlayのartifactとして保持し、新5 overlay source候補のbuild/実機証拠と混同しない。
 
 **失敗と復旧。** 不明profile・未知key/失効key・改変署名・別weight・writable/pipe descriptor・容量不足・lock・version/signer/API不一致では停止し、仕事や旧active pointerを消さない。検証済cache/partialが残る場合は同じcatalog候補だけ明示再試行する。起動時autoloadや別model/cloudへのfallbackはなく、Skyから「保存済みモデルを再読込み」を選ぶ。runtime読込み後にactivationが失敗した時は既存coordinatorの旧profile復帰を試み、失敗を成功扱いにしない。失効・非互換profileへ戻さない。
 

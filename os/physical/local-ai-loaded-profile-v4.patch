@@ -1,3 +1,16 @@
+diff --git a/android/app/src/main/java/com/localactionassistant/MainApplication.kt b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+index 3b44468..e37d139 100644
+--- a/android/app/src/main/java/com/localactionassistant/MainApplication.kt
++++ b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+@@ -24,7 +24,7 @@ class MainApplication : Application(), ReactApplication {
+     super.onCreate()
+     getSharedPreferences("rock-local-ai", 0).edit()
+         .putString("state", "no_model").putBoolean("modelLoaded", false)
+-        .remove("weightsSha256").remove("modelBytes").apply()
++        .remove("weightsSha256").remove("modelBytes").remove("modelProfileId").apply()
+     loadReactNative(this)
+   }
+ }
 diff --git a/src/native/__tests__/osBridgePlan.test.ts b/src/native/__tests__/osBridgePlan.test.ts
 new file mode 100644
 index 0000000..ab0e80d

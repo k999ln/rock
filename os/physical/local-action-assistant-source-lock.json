@@ -58,8 +58,8 @@
       },
       {
         "path": "os/physical/local-ai-loaded-profile-v4.patch",
-        "sha256": "d1b77b0e9b22eb012bad10f6005636864903b0734d0ee61d57b7244c40073e49",
-        "purpose": "plan_only_with_authenticated_already_loaded_profile_without_standalone_repository_autoload"
+        "sha256": "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
+        "purpose": "plan_only_with_authenticated_already_loaded_profile_without_standalone_repository_autoload; clear_all_model_identity_fields_on_process_restart"
       }
     ]
   },
