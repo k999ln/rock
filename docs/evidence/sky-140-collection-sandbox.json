@@ -1,0 +1,186 @@
+{
+  "date": "2026-10-16",
+  "taskId": "BIL02",
+  "scope": "Manual historical month-close, collection and access-policy acceptance harness; no production Agent enforcement",
+  "sourceBase": "60765fc3",
+  "sourceHashes": {
+    "lib/sky-140-collection-test.ts": "9c72f38505725f0477b8ea304301bcaafe2f73abf0b583fba2ceb41e59922e04",
+    "scripts/sky-140-collection-sandbox.mjs": "e3487f23445dbd72decb6370aab83a424b944584ca35af02b4be66e1159dee12",
+    "tests/sky-140-collection.test.mjs": "56759a7115443931ac7152bf75aa858f82ec15bc7def3fb03cdae3899fa20829"
+  },
+  "mode": "stripe-test",
+  "account": "acct_1UQrEIGfTgzUjVHJ",
+  "contractId": "51e0d6b4-cab6-4f01-8d1c-a2d9b82c706a",
+  "invoices": [
+    {
+      "id": "in_1UR401GfTgzUjVHJVqN9jvqv",
+      "period": "2026-08"
+    },
+    {
+      "id": "in_1UR405GfTgzUjVHJdmWUyGfN",
+      "period": "2026-09"
+    }
+  ],
+  "checks": [
+    {
+      "name": "有限与信140ドルのテスト契約で開始",
+      "passed": true
+    },
+    {
+      "name": "2026-08: 月末請求140ドル・枠内利用の追加請求0",
+      "passed": true
+    },
+    {
+      "name": "初月の140ドルをテストカードで全額回収",
+      "passed": true
+    },
+    {
+      "name": "2026-09: 月末請求140ドル・枠内利用の追加請求0",
+      "passed": true
+    },
+    {
+      "name": "翌月の決済失敗で新規有料処理を拒否（テスト判定）",
+      "passed": true
+    },
+    {
+      "name": "古い支払済み請求があっても未払いを解除しない",
+      "passed": true
+    },
+    {
+      "name": "制限中も成果export・支払い入口を保持",
+      "passed": true
+    },
+    {
+      "name": "同じ請求の入金照合後に復旧（テスト判定）",
+      "passed": true
+    },
+    {
+      "name": "Stripe署名付きの決済失敗通知を受信",
+      "passed": true
+    },
+    {
+      "name": "Stripe署名付きの支払済み通知を受信",
+      "passed": true
+    }
+  ],
+  "events": [
+    {
+      "id": "evt_1UR403GfTgzUjVHJJpilnUwg",
+      "type": "invoice.finalized",
+      "invoice": "in_1UR401GfTgzUjVHJVqN9jvqv",
+      "access": {
+        "allowed": false,
+        "reason": "unpaid_or_unknown",
+        "exportAllowed": true,
+        "paymentAllowed": true,
+        "productionAuthorized": false
+      },
+      "at": "2026-10-16T05:48:15.928Z"
+    },
+    {
+      "id": "evt_1UR405GfTgzUjVHJigc9cCEq",
+      "type": "invoice.paid",
+      "invoice": "in_1UR401GfTgzUjVHJVqN9jvqv",
+      "access": {
+        "allowed": true,
+        "reason": "sandbox_only",
+        "exportAllowed": true,
+        "paymentAllowed": true,
+        "productionAuthorized": false
+      },
+      "at": "2026-10-16T05:48:17.694Z"
+    },
+    {
+      "id": "evt_1UR407GfTgzUjVHJKTcbjoBn",
+      "type": "invoice.finalized",
+      "invoice": "in_1UR405GfTgzUjVHJdmWUyGfN",
+      "access": {
+        "allowed": false,
+        "reason": "unpaid_or_unknown",
+        "exportAllowed": true,
+        "paymentAllowed": true,
+        "productionAuthorized": false
+      },
+      "at": "2026-10-16T05:48:20.459Z"
+    },
+    {
+      "id": "evt_1UR40rGfTgzUjVHJDXcohjHA",
+      "type": "invoice.payment_failed",
+      "invoice": "in_1UR405GfTgzUjVHJdmWUyGfN",
+      "access": {
+        "allowed": false,
+        "reason": "unpaid_or_unknown",
+        "exportAllowed": true,
+        "paymentAllowed": true,
+        "productionAuthorized": false
+      },
+      "at": "2026-10-16T05:49:06.319Z"
+    },
+    {
+      "id": "evt_1UR40tGfTgzUjVHJd1cEYJgy",
+      "type": "invoice.paid",
+      "invoice": "in_1UR405GfTgzUjVHJdmWUyGfN",
+      "access": {
+        "allowed": true,
+        "reason": "sandbox_only",
+        "exportAllowed": true,
+        "paymentAllowed": true,
+        "productionAuthorized": false
+      },
+      "at": "2026-10-16T05:49:07.973Z"
+    }
+  ],
+  "payments": {
+    "2026-08:pay": {
+      "id": "in_1UR401GfTgzUjVHJVqN9jvqv",
+      "status": "paid",
+      "paid": 14000,
+      "remaining": 0
+    },
+    "2026-09:decline": {
+      "code": "card_declined",
+      "declineCode": "generic_decline"
+    },
+    "2026-09:recovery": {
+      "id": "in_1UR405GfTgzUjVHJdmWUyGfN",
+      "status": "paid",
+      "paid": 14000,
+      "remaining": 0
+    }
+  },
+  "unitTests": 6,
+  "fullVerify": {
+    "status": "passed",
+    "command": "npm run verify",
+    "node": "22.23.3",
+    "environment": "WRANGLER_HIDE_BANNER=true",
+    "log": "/private/tmp/sky140-verify.log"
+  },
+  "productionBillingEnabled": false,
+  "actualCloudExecution": false,
+  "actualAgentEnforcement": false,
+  "subscriptionCreated": false,
+  "schedulerAccepted": false,
+  "fixtureConsentIsCustomerContract": false,
+  "budgetLedgerReimplemented": false,
+  "testCreditMinor": 14000,
+  "testUsageMinor": 100,
+  "testMonths": [
+    "2026-08",
+    "2026-09"
+  ],
+  "initialSetupFailure": "issuer-decline card cannot attach; switched to documented pm_card_chargeCustomerFail and resumed existing invoices",
+  "runtimeState": "work/sky-140-collection/state.json",
+  "reproduction": "SKY140_SANDBOX_ACCEPTANCE=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-140-collection-sandbox.mjs",
+  "reportUrl": "http://127.0.0.1:5224/",
+  "restart": {
+    "savedReportRestored": true,
+    "providerReadback": {
+      "count": 2,
+      "hasMore": false,
+      "allTest": true,
+      "allPaid": true,
+      "totalMinor": 28000
+    }
+  }
+}

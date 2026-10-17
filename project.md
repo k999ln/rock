@@ -1,5 +1,9 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 BIL02/O5（JOINT）、DOC04/H1同期: 本人の「毎月140ドルの自動請求・未払いAgent停止・入金後復旧、Sandboxのみ」により、main 1f0cd54eを既存PR #150 branchへ保全merge。新しいopt-in Sandbox契約/請求projectionと月次timerを既存Remote LLM/A2A予約・送信のDB境界へ接続。実Cloud送信と本番課金は無効。ローカル8件、実Stripe Sandbox6項目、署名通知4件、UIのpassedと2請求paidを確認。Node22/WRANGLER_HIDE_BANNER=trueでnpm run verify全stage exit 0（2266 pass/既存skip1）。初回の移行一覧fixture欠落を修正して全体再実行。証拠 docs/evidence/sky-recurring-sandbox.json、ログ /private/tmp/sky-recurring-verify-final.log。本番課金/実Cloud未実行。同head CI/main統合は未完了。
+
+2026-10-16 BIL02/O5（JOINT）: PR #148は同headの全CI成功後、main 60765fc3へ統合。次は140 USD固定額・100 USD枠内追加請求0・未払い/復旧判定をStripe sandboxで受け入れる。codex/sky-140-collection-sandboxで着手。過去2か月の月末操作と合成usageを使う専用harnessであり、実契約・月次scheduler・実Agent実行gateへの接続を完成とはしない。
+
 2026-10-17 OS11/O6/ROCK: 本人がPixelを接続。main PR #152から同署名APK/固定Qwen GGUFの実機受入を開始。GL066/frankel、空き約55 GiBを確認し、既存4 APKをGit外へ退避。6 APKの`install -r`と固定GGUF転送は成功。その後ADB接続が切れ、再接続待ち。API v4実推論・成果物・停止/復旧は未開始/未受入。今回の`npm run verify`は全stage exit 0（Git外log: `/private/tmp/pixel-local-physical-20261017/verify.log`）。
 
 2026-10-16 OS11/O6/ROCK: 本人の端末内LLM/Pixel Jennifer実装指示により、main `0d39fddc`から`codex/pixel-local-jennifer`で署名済debug model catalog/SAF import/明示reload/有限計画/停止fenceを実装。private Shell API 19、Platform API 1、runtime Binder API 4を分離し、実runtimeの2-segment packageとBroker自身のIPC identityを検査する。host Android build/lintと179件、通常版catalog空・六APKの既存開発signer一致を確認。台帳は`docs/evidence/pixel-local-jennifer.json`。既存v4 runtimeはCI provenance/固定source/全overlay/payloadを確認した署名copyを再利用し、OS用artifact lockは変更なし。候補とGGUFはGit外`~/Library/RockstarOS/pixel-local-jennifer-20261016/`。本人は「今は実機を接続できない」と回答したため新APK導入/実推論/成果物/再起動/品質は未受入。日本語音声、全Goal/AMC、production配布、OS/flash、paid cloudは別gate。次は再接続時の同APK/同GGUF実機受入。 初回Android CIのJCA公開鍵import不備は同じEd25519を検証する固定BC 1.86で修正し、Gradle/Soongの同JAR byte-pinとstage/NOTICEを追加。公開tokenizer digestの誤検知は一literal/二pathの精密例外で対処、実Gitleaks16件・履歴候補0・stage/phone23件を確認。検査省略や全OS受入への転用はしない。 Node22.23.3の最終`npm run verify`も全stage exit 0（2252 pass/既存skip1、`/private/tmp/pixel-local-jennifer/verify-crypto-final.log`）。GitHub CI/mainは同branch PRのreadbackで照合し、host成功をPixel推論へ転用しない。
@@ -546,3 +550,5 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 着手: 本人がSandboxのCLI接続を承認。対象account一致を確認し403を解消。send_invoiceに必要なテスト顧客email不足を修正中。旧失敗請求は保持し、fresh合成利用量で請求→テスト決済→署名通知を検証する。本番課金・実Cloud実行・定額自動回収は対象外。
 
 検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。
+
+2026-10-16 BIL02検証: Sky 140の2期間140 USD請求、枠内usage追加請求0、決済失敗/復旧、古いpaidだけで解除しない判定、署名通知を実Sandboxで確認（10項目）。最初の失敗用カードはattach時に拒否されたため、公式のattach成功後に失敗するテストカードへ変更し、既存invoice IDから再開した。6単体試験成功。Node22.23.3 / WRANGLER_HIDE_BANNER=trueで全体npm run verify全段階exit 0（/private/tmp/sky140-verify.log）。再起動後の報告復元とStripe請求が2件・各140 USDのまま不変を確認。顧客の実同意/自動月次回収/実Agent制限を完成扱いにしない。

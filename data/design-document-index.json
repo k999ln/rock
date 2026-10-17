@@ -18,7 +18,25 @@
     "planEstimate": "lib/sky-plan-estimate.ts",
     "usContractBilling": "docs/sky-billing.md#米国向けの契約に基づく月次請求",
     "collectionRuntimeAccepted": false,
-    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json"
+    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json",
+    "fixedPlanSandbox": {
+      "implementation": "lib/sky-140-collection-test.ts",
+      "harness": "scripts/sky-140-collection-sandbox.mjs",
+      "tests": "tests/sky-140-collection.test.mjs",
+      "evidence": "docs/evidence/sky-140-collection-sandbox.json",
+      "productionAgentEnforcement": false,
+      "scheduledCollectionAccepted": false
+    },
+    "recurringSandbox": {
+      "implementation": "lib/sky-recurring-sandbox.ts",
+      "migration": "drizzle/0018_sky_recurring_sandbox.sql",
+      "scheduler": "scripts/sky-recurring-sandbox-server.mjs",
+      "acceptance": "scripts/check-sky-recurring-provider.mjs",
+      "tests": "tests/sky-recurring-sandbox.test.mjs",
+      "evidence": "docs/evidence/sky-recurring-sandbox.json",
+      "productionBillingEnabled": false,
+      "status": "sandbox_scheduler_and_agent_fences_accepted"
+    }
   },
   "skyMarketplaceAndFusion": {
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
