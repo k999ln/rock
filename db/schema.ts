@@ -1919,3 +1919,14 @@ export const skyRecurringCharges = sqliteTable('sky_recurring_charges', {
  id:text('id').primaryKey(),contractId:text('contract_id').notNull().references(()=>skyRecurringContracts.id),periodStart:integer('period_start').notNull(),periodEnd:integer('period_end').notNull(),status:text('status').notNull(),
  invoiceId:text('invoice_id').unique(),itemId:text('item_id'),startedAt:integer('started_at').notNull(),attemptRevision:integer('attempt_revision').notNull().default(-1),attemptKeyRevision:integer('attempt_key_revision').notNull().default(-1),attemptStartedAt:integer('attempt_started_at'),paidAt:integer('paid_at'),
 },t=>[uniqueIndex('sky_recurring_charge_period').on(t.contractId,t.periodStart),check('sky_recurring_charge_state',sql`${t.status} IN ('creating','open','paid','attention')`)]);
+
+// Owner-only hosted monthly Sandbox acceptance; prior contract snapshot is retained.
+export const skyHostedMonthlyTests = sqliteTable('sky_hosted_monthly_tests', {
+ ownerId:text('owner_id').primaryKey(),id:text('id').notNull().unique(),contractId:text('contract_id').notNull(),oldContractJson:text('old_contract_json').notNull(),
+ stripeAccountId:text('stripe_account_id').notNull(),createdAt:integer('created_at').notNull(),periodStart:integer('period_start').notNull(),periodEnd:integer('period_end').notNull(),
+ phase:text('phase').notNull().default('migrating'),fixtureMinor:integer('fixture_minor').notNull().default(0),customerId:text('customer_id'),failMethodId:text('fail_method_id'),goodMethodId:text('good_method_id'),
+ lease:text('lease'),leaseUntil:integer('lease_until').notNull().default(0),
+},t=>[check('sky_hosted_fixture',sql`${t.fixtureMinor} IN (0,10000)`),check('sky_hosted_phase',sql`${t.phase} IN ('migrating','active','capped','unpaid','restored')`)]);
+export const skyHostedMonthlyEvents=sqliteTable('sky_hosted_monthly_events',{
+ id:text('id').primaryKey(),type:text('type').notNull(),invoiceId:text('invoice_id').notNull(),processedAt:integer('processed_at').notNull(),
+});

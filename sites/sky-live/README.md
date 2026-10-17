@@ -9,3 +9,7 @@ Shared source: `sky-free-cloud`, `sky-free-cloud-http`, `sky-model-selection`, `
 Backup: bounded complete read of all 50 live tables / 144 rows stored privately outside Git; SQLite row reconstruction and pre/post additive-migration comparison passed. This is not an atomic physical D1 backup. A subsequent complete live read confirmed all existing rows unchanged before account testing. Account tests may append only their rate-limit, contract and work rows.
 
 Rollback: disable `SKY_FREE_CLOUD_ENABLED` and `SKY_FREE_CLOUD_SANDBOX_SETUP`, then redeploy saved version 56 (`appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_8b5cd6e593b881919f21c317abdcd4a6`). Keep additive tables in place; do not drop or overwrite live data. Never reapply older SQL manually. Test grants expire after one hour and enrollment cannot renew or replace an existing contract. Production billing is not enabled by this overlay.
+
+## Hosted monthly Sandbox overlay
+
+Owner-authorized follow-up adds `0003_lowly_baron_zemo.sql` (only two new audit/fixture tables). Preserve the earlier immutable SQL and the live 4-argument scope/auth adapter. Reuse shared hosted-monthly service, existing recurring collector and Stripe signature verification. Configure dedicated test-only monthly keys separately from existing storefront Stripe keys. Old contract JSON remains in the migration audit; no work or usage deletion. Main migration 0019 has the same two-table DDL. See docs/sky-billing.md for per-request reconciliation, virtual-clock phases and fail-closed rollback.
