@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 167,
+  "distinctValues": 168,
   "classifications": {
     "idempotency-fixture": 87,
     "public-artifact-digest": 60,
@@ -2361,6 +2361,20 @@
         ]
       },
       "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "f6fcc71149d22754b2ddb3f36458495bf4216eb2e3f62421efda082c0e058867",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template, independently recomputed from official Qwen2.5-1.5B Instruct Q4_K_M at revision 91cad51170dc346986eccefdc2dd33a9da36ead9. Exact weights SHA-256 6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e; public metadata, not a credential.",
+      "source": {
+        "commit": "3fc6d0a5f30dd3bb936b98231ad972bb0006d9c3",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 50,
+        "field": [
+          "/models/1/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 2
     }
   ],
   "supplementalReviews": [
@@ -2380,6 +2394,17 @@
       ],
       "basis": "One independently recomputed public tokenizer digest, exact value AND two exact paths only. Historical occurrence counts and reviewedHead stay historical.",
       "policySha256": "9ade73e2b477e48e3759bf8e5b7cc89821de545905b256f50136df5f2a7e15e4"
+    },
+    {
+      "head": "3fc6d0a5f30dd3bb936b98231ad972bb0006d9c3",
+      "recordedOn": "2026-10-17",
+      "addedDistinctValues": 1,
+      "exactPaths": [
+        "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "docs/evidence/pixel-local-jennifer.json"
+      ],
+      "basis": "One recomputed public tokenizer digest; exact value AND two exact paths. Historical snapshot counts remain historical.",
+      "policySha256": "989dbf05352bd1395512a6af1bacdafe21be917148857882719579ab7e9f232e"
     }
   ],
   "integratedReview": {

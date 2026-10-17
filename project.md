@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 SKY07/ROCK: 実アカウントでの無料Cloud受入と条件付きmain統合に着手。localhost:5226は未認証（setupAvailable false、パスキーoptionsはPASSKEY_INVALID）。開発IDを実アカウントとして扱わず、本人提示のGitHubから公開Sky avoado.siを照合し、成果画面→サインイン→auth.openai.com/log-inへ到達。本人ログイン待ち。origin/main f10b7309を作業branchへ保全統合しproject.mdの両系列を保持。統合候補npm run verify全stage exit 0（2284 pass/既存skip1、/private/tmp/sky-auth-merge-verify.log）。main反映と本番課金は未実施。
+
 2026-10-17 SKY07/ROCK・BIL02/JOINT: 無料Cloud実応答と画面接続を継続。空tool_callsの誤判定を修正。Mac共通React画面→自動選択→匿名実Cloud→実usage/費用0表示を受入（GPT-OSS 20B、入力331/出力118、再押下POST追加0）。契約は合成、Stripe接続0、本番課金なし。会話UI/API配線も追加し、本人/同意/プランを維持。npm run verify全stage exit 0（2284 pass/既存skip1、/private/tmp/sky-free-live-verify-final.log）。最新UI再確認と再押下追加POST0も合格。同一promptのProvider cache応答は新規推論と区別する。証拠 docs/evidence/sky-free-cloud-live.json。実パスキーsession・main統合は未受入。
 
 
@@ -10,12 +12,11 @@
 
 
 2026-10-17 BIL02/O5（JOINT）、DOC04/H1同期: PR #150/main 90d9a6d4から、実Cloud usageと100 USD枠の接続を着手。本人は無料枠のみを指定、Provider/APIキーの所在は不明。project環境変数/.env/.dev.varsにCloud資格情報は見つからず、有料APIは呼ばない。既存executeReservedRemoteAiTextと確定usageを再利用し、100 USD到達の外部送信ゼロをfixtureで先行受入する。実応答と合成境界を区別する。既存coordinatorへの接続・usage projection・100 USD境界/並列/usage欠落/再送/取消/A2A共通枠の6件とUI表示を確認。npm run verify全stage exit 0（2272 pass/既存skip1、/private/tmp/sky-usage-verify-final.log）。初回の無関係fixture cleanup ENOTEMPTYは単独と全体再試験で合格。OpenAI billingはログイン画面へ遷移し本人ログイン待ち。実Cloud送信0/Provider費用0、本番無効。次は無料利用権と接続の確認、実応答受入。
+2026-10-17 OS11/O6/ROCK: Pixelのruntimeを5番目のoverlayで修正し、CI 39043256663の全overlay/同payloadを実検査、同signerで非破壊導入。0.6Bは構造的一周に成功したが文章品質は失敗。既存15分pin予約gateを保ったまま署名済Qwen2.5 1.5Bへ明示切替。固定候補6c9a3083（4 production APKをbyte読戻し一致）で、本人unlock後のHome→実v4計画→実2 Tool→確認待ち成果物保存が64.625秒で合格。明示同意・二重tap1仕事・1.5B pin・395-byte成果のBroker process再起動readback一致を確認。文章は主題に沿うが依頼構成/出典未調査表示を満たさず、一般品質は未合格。0.6B停止ack6ms/遅延仕事0、native ready待ち28.785秒で即時計算停止の受入ではない。host180件、patched runtime26 Jest/型/lint/offline、merged-mainのnpm run verify全stage exit0（2266 pass/既存skip1）。現branch codex/pixel-local-inference-20261017、PR #154。同head CI11件成功、system picker書出し395 bytes一致。コードPR #154はmain bf35f5f1へ統合済み。実機証拠と本人メモはcodex/pixel-physical-evidence-20261017で別保存し、同head CI後mainへ統合する。本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」をbaseline/Android workstreamに保存、体験改善は未実装。OS/flash/有料cloud/日本語音声/全Goal/AMCは未受入。
 
 2026-10-17 BIL02/O5（JOINT）、DOC04/H1同期: 本人の「毎月140ドルの自動請求・未払いAgent停止・入金後復旧、Sandboxのみ」により、main 1f0cd54eを既存PR #150 branchへ保全merge。新しいopt-in Sandbox契約/請求projectionと月次timerを既存Remote LLM/A2A予約・送信のDB境界へ接続。実Cloud送信と本番課金は無効。ローカル8件、実Stripe Sandbox6項目、署名通知4件、UIのpassedと2請求paidを確認。Node22/WRANGLER_HIDE_BANNER=trueでnpm run verify全stage exit 0（2266 pass/既存skip1）。初回の移行一覧fixture欠落を修正して全体再実行。証拠 docs/evidence/sky-recurring-sandbox.json、ログ /private/tmp/sky-recurring-verify-final.log。本番課金/実Cloud未実行。同head CI/main統合は未完了。
 
 2026-10-16 BIL02/O5（JOINT）: PR #148は同headの全CI成功後、main 60765fc3へ統合。次は140 USD固定額・100 USD枠内追加請求0・未払い/復旧判定をStripe sandboxで受け入れる。codex/sky-140-collection-sandboxで着手。過去2か月の月末操作と合成usageを使う専用harnessであり、実契約・月次scheduler・実Agent実行gateへの接続を完成とはしない。
-
-2026-10-17 OS11/O6/ROCK: 本人がPixelを接続。main PR #152から同署名APK/固定Qwen GGUFの実機受入を開始。GL066/frankel、空き約55 GiBを確認し、既存4 APKをGit外へ退避。6 APKの`install -r`と固定GGUF転送は成功。その後ADB接続が切れ、再接続待ち。API v4実推論・成果物・停止/復旧は未開始/未受入。今回の`npm run verify`は全stage exit 0（Git外log: `/private/tmp/pixel-local-physical-20261017/verify.log`）。
 
 2026-10-16 OS11/O6/ROCK: 本人の端末内LLM/Pixel Jennifer実装指示により、main `0d39fddc`から`codex/pixel-local-jennifer`で署名済debug model catalog/SAF import/明示reload/有限計画/停止fenceを実装。private Shell API 19、Platform API 1、runtime Binder API 4を分離し、実runtimeの2-segment packageとBroker自身のIPC identityを検査する。host Android build/lintと179件、通常版catalog空・六APKの既存開発signer一致を確認。台帳は`docs/evidence/pixel-local-jennifer.json`。既存v4 runtimeはCI provenance/固定source/全overlay/payloadを確認した署名copyを再利用し、OS用artifact lockは変更なし。候補とGGUFはGit外`~/Library/RockstarOS/pixel-local-jennifer-20261016/`。本人は「今は実機を接続できない」と回答したため新APK導入/実推論/成果物/再起動/品質は未受入。日本語音声、全Goal/AMC、production配布、OS/flash、paid cloudは別gate。次は再接続時の同APK/同GGUF実機受入。 初回Android CIのJCA公開鍵import不備は同じEd25519を検証する固定BC 1.86で修正し、Gradle/Soongの同JAR byte-pinとstage/NOTICEを追加。公開tokenizer digestの誤検知は一literal/二pathの精密例外で対処、実Gitleaks16件・履歴候補0・stage/phone23件を確認。検査省略や全OS受入への転用はしない。 Node22.23.3の最終`npm run verify`も全stage exit 0（2252 pass/既存skip1、`/private/tmp/pixel-local-jennifer/verify-crypto-final.log`）。GitHub CI/mainは同branch PRのreadbackで照合し、host成功をPixel推論へ転用しない。
 

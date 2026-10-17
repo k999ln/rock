@@ -12,15 +12,16 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
-  "apkSizeBytes": 26416892,
+  "apkSha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9",
+  "apkSizeBytes": 26416972,
   "imageIntegrated": false,
-  "notes": "Unsigned API v4 / package version 3 arm64 APK built by GitHub Actions run 37279537731 at Rock source 2ba33366. Actual APK bytes, package/version, ABI, Binder permission, WAKE_LOCK and absence of INTERNET match the inspection and ordered overlay evidence. Historical API v2 physical results remain in the 2026-09-16 evidence; this v4 APK has not been signed, installed on a device, integrated in an OS image, or accepted for release.",
+  "notes": "Unsigned API v4/package version 3 APK built by GitHub Actions run 39043256663 at Rock source ff0518c7. Actual bytes and five ordered overlays are inspected. The fifth overlay fixes Broker-loaded planning and cold-start identity clearing. This unsigned OS staging artifact is separate from the same-payload developer-signed physical candidate; see docs/evidence/pixel-local-jennifer.json. No OS image integration, production signature, flash or release acceptance.",
   "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
   "extensionSha256": [
     "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
     "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
     "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
-    "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c"
+    "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
+    "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411"
   ]
 }

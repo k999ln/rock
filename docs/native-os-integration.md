@@ -611,7 +611,7 @@ BrokerのSchedulerは既存充電必須・熱・pause・lease・有限Tool制限
 
 ### 端末内モデル導入とJenniferの有限計画
 
-本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。2026-10-17に本人が接続し、GL066/frankelと同signerを照合、既存4 APKを退避して6候補APKの非破壊更新と固定GGUF転送に成功した。その後ADB接続が切れ、再接続待ち。現v4推論・生成物は未開始/未受入。PR #149のLLMなし実機合格を転用しない。
+本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。2026-10-17に本人が接続し、GL066/frankelと同signerを照合、既存4 APKを退避して6候補APKの非破壊更新と固定GGUF転送に成功した。一時ADB接続が切れたが本人許可後に再接続。現v4の実2 Tool/保存一周は合格したが、0.6Bの内容は雛形コピーや主題の取違えがあり品質未合格。署名済1.5Bを追加し、同一固定APKのHome一周まで機能確認した。PR #149のLLMなし実機合格を転用しない。
 
 **利用体験と範囲。** Skyの「端末内モデル」で対応GGUFと取得元・license・容量・配布定義の署名を確認し、本人が同意してsystem file pickerから選ぶ。導入後、Homeの「端末内LLM」から依頼を準備し、仕事画面でSkyの選択と処理/保存を承認する。Jenniferの端末内計画は既存`ZemaOrchestrator`の有限経路であり、この版は記事準備一件だけ。`LLM入力案 → Brokerの厳格schema検査 → citations@1 → free-article@1 → review → 本人の確認メモ → completed`を使う。投稿・送信・課金は含まず、Goal Contract/COLOMBIA/AMC全体のnative統括を実装済みとはしない。
 
@@ -626,7 +626,13 @@ Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software
 
 **検証・状態・保存。** 未導入/確認待ち/検証中/読込み中/ready/失敗を分け、ファイル選択や登録だけでreadyにしない。readonlyかつregularなPFD、exact length、選択ファイルのSHA-256を先に確認する。既存stagerでBroker-private no-backup領域へコピー・再hash・atomic昇格し、runtimeがreadonly PFDから再コピー・再hashして返すprofile/hash/byte receiptとstatusを照合する。全て成功した時だけPlatformStoreのactive pointerを確定する。2コピーとreserveの容量、RAM/low-memory、解除状態を検査する。license同意はowner/profile digest/license/timeをBroker-private preferencesへ保存し、実行承認とは別にする。原稿と成果の正本は既存Broker DB/保護fileのまま。
 
+2026-10-17の実機初回試験ではimport/loadは通ったが、計画時に旧単体appの`repository.model()`を参照して失敗した。追加overlay `local-ai-loaded-profile-v4.patch`では計画を現在ロード済みの検証hashだけへ結び、単体appのmodel登録・暗黙load・profile再ラベルへ進めない。冷起動時は旧profile IDもhash/sizeとともに消してno_model状態を整合させる。未load/別hashを拒否し、runtime内部の排他hash再照合とBrokerの前後照合を保持する。hostのbridge回帰3ケースを含む26 Jest・型・lint・offline source検査が成功。CI 39043256663の同source/5 overlay APKを実検査しOS用unsigned lockへ更新、同payloadの開発署名copyで現v4の構造的一周を確認した。内容品質と全OSの合格は別である。
+
 **失敗と復旧。** 不明profile・未知key/失効key・改変署名・別weight・writable/pipe descriptor・容量不足・lock・version/signer/API不一致では停止し、仕事や旧active pointerを消さない。検証済cache/partialが残る場合は同じcatalog候補だけ明示再試行する。起動時autoloadや別model/cloudへのfallbackはなく、Skyから「保存済みモデルを再読込み」を選ぶ。runtime読込み後にactivationが失敗した時は既存coordinatorの旧profile復帰を試み、失敗を成功扱いにしない。失効・非互換profileへ戻さない。
+
+**モデル比較と内容品質。** 完成文の入力例をモデルがコピーしたため、`ZemaToolPlan.planningPrompt`は完成原稿を含めず短い主題別の入力条件を渡す。構造・Tool成功と内容の妥当性を分け、実機の合成依頼で主題との一致・雛形の不使用を検査する。0.6Bは一般利用の品質を未受入とし、追加のQwen公式Qwen2.5 1.5B Instruct Q4_K_M（revision `91cad51170dc346986eccefdc2dd33a9da36ead9`、1,117,320,736 bytes、SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e`、Apache-2.0、総RAM 4 GiB条件）を同じ開発publisher keyで認証する。license/size/hashを本人が確認して明示選択し、別profileへの無断fallbackはしない。debug catalogは2候補、release catalogは空。既存の未確定planに対する15分の固定予約とactive jobの切替禁止を保持する。 予約期限後に1.5Bの構造的一周（80.811秒）と保存済artifactのprocess再起動readbackを確認。その後のHome試験失敗と自動lock観測を経て、本人解除後に試験windowだけ点灯を維持し、固定候補`6c9a3083`のHome試験が64.625秒で合格した。準備だけでは仕事0、明示同意後に二重tapでも仕事1、実2工程成功、1.5B pinの395-byte成果物を確認待ちで保存。Broker process再起動後も同SHA-256を読み戻し、画面で成果表示、system保存先pickerから書出した395 bytesも一致した。内容は主題一致・完成文見本の不使用を確認したにとどまり、導入/3手順/出典未調査の依頼構成を満たさない。SDKは`afterChars=1`を指定し、既存`free-article@1`は有料部分を残して本文を切る契約のため、表示成果だけでrawモデル本文の不足原因を断定できない。次はraw本文の品質と抜粋Toolの出力目的を分け、依頼した草案全体に合う既存成果契約を選ぶ。一般的な文章品質や全Agent統括を合格にしない。
+
+実機の全停止→再開ではack 6 ms/遅延仕事0を確認したが、runtimeがreadyへ戻るまで28.785秒を要した。これは協調停止の現状であり、計算の即時終了を受入済みとしない。
 
 **仕事・停止・合格条件。** 依頼は既存LocalSubmissionの同owner/同ID、Sky token、署名profile/weights/runtime pinへ固定し、モデル結果を成功や権限にしない。モデル計画中も停止ボタンは別control executorからBrokerへ届き、`LocalPlanningFence`がstopと最終submitを直列化する。停止→再開後に旧計画が届いても新しい仕事を作らない。保存済み仕事、成果、本人review、工程claim時の電源/熱/停止制約を維持する。hostではv4とPlatform v1の分離・実2セグメントpackage、catalog改変/失効/未知項目、停止→再開の遅延結果拒否を検査する。Androidでは実署名検証、同意なし・writable・長さ不一致でactive/job不変を検査する。Pixelでは同一APK/同一GGUFでimport→実推論→2 Tool→review artifact→同ID再試行→再開/再読込みを確認し、未実行を合格へ換算しない。詳細手順は[Android prototype](os-prototype.md#pixel-local-model-acceptance)。
 
@@ -638,7 +644,7 @@ main/aosp双方でHOME/DEFAULT候補を宣言する。既定HomeはRoleManager�
 
 ### 合格条件と残る実装
 
-Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4実機推論一周、model導入/catalog候補の実機受入とproduction配布設定、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
+Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4実機一周は下記の限定recipe/APKで確認済み。production配布設定、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
 
 main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
 
