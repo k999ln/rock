@@ -36,7 +36,21 @@
     "speechServicesBundledTtsVerifiedStatically": true,
     "japaneseAsrTtsAccepted": false,
     "runtimeImplementedByThisChange": false,
-    "priceOrExecutionGateChanged": false
+    "priceOrExecutionGateChanged": false,
+    "usabilityFeedback": {
+      "recordedAt": "2026-10-17",
+      "source": "direct_owner_memo",
+      "ownerQuote": "メモ　デザインがダサい、通知と、仕事の操作性が直感的じゃない、",
+      "status": "recorded_not_implemented",
+      "areas": [
+        "visual_design",
+        "notifications",
+        "job_interaction"
+      ],
+      "authority": "docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback",
+      "reason": "実機利用中の本人指摘を次の体験改善へ引き継ぐ。機能試験の合格と使いやすさの受入は分ける。",
+      "newRqOrExecutionPermission": false
+    }
   },
   "cloudServicePlanIntent": {
     "decidedAt": "2026-10-15",

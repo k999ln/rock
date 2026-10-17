@@ -15,7 +15,7 @@
     ]
   },
   "schemaVersion": 1,
-  "updatedAt": "2026-10-15",
+  "updatedAt": "2026-10-17",
   "product": {
     "displayName": "avocadoOS",
     "internalId": "dev.rock",
@@ -34,9 +34,9 @@
       "tool": null,
       "role": "local_planner",
       "provider": "local",
-      "model": "Qwen3-0.6B-Q8_0-GGUF",
+      "model": "Qwen2.5-1.5B-Instruct-Q4_K_M-GGUF (explicit selection); Qwen3-0.6B-Q8_0-GGUF diagnostic alternative",
       "runtime": "llama.rn@0.12.9 / Local Action Assistant API v4 (current source)",
-      "status": "implemented_configuration_required",
+      "status": "device_apk_verified",
       "network": "prohibited",
       "authority": "plan_only",
       "automaticFallback": false,
@@ -44,11 +44,12 @@
         "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
         "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
-        "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java"
+        "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+        "docs/evidence/pixel-local-jennifer.json"
       ],
       "limitations": [
-        "Current API v4 inference and this new APK are not accepted on Pixel; the owner cannot connect it now",
-        "Previous model/Tool inference evidence applies to API v2 only",
+        "Frozen API v4 candidate passed one Home-to-model-to-two-Tool artifact trial on Pixel 10 GL066; not full native OS or general Agent acceptance",
+        "1.5B output is on topic but sparse and misses requested structure; 0.6B content quality failed",
         "Developer-preview model definition signing is separate from Qwen authorship and OS signing",
         "Production model catalog is empty; no model auto-download or post-boot autoload",
         "Full native Jennifer Goal orchestration and OS image remain pending"
@@ -62,8 +63,10 @@
         "privateShellApiVersion": 19,
         "signedModelCatalog": "debug_only",
         "runtimeApiVersion": 4,
-        "physicalInferenceAccepted": false,
-        "evidence": "docs/evidence/pixel-local-jennifer.json"
+        "physicalInferenceAccepted": true,
+        "evidence": "docs/evidence/pixel-local-jennifer.json",
+        "candidateSourceSha": "6c9a30830e3b07e49de29902ec63f2d9abb5515c",
+        "scope": "one local article-preparation recipe on Pixel 10 GL066; functional Home pipeline only"
       }
     },
     {
