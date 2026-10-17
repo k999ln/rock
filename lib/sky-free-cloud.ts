@@ -54,6 +54,7 @@ export async function runFreeCloudText(input: {
   try {
     const currentPlan = await skyRecurringUsage(input.db,input.owner);
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
+    const startedAt = Date.now();
     const response = await fetcher(`${ORIGIN}/openai`, {
       method:'POST', redirect:'error', signal:AbortSignal.timeout(60000),
       headers:{'Content-Type':'application/json'},
@@ -62,14 +63,15 @@ export async function runFreeCloudText(input: {
     // In particular, 402 is a free-slot limit. Never pay x402, add a wallet, or upgrade to the keyed API.
     if (!response.ok) throw new WorkError(response.status===402 || response.status===429
       ? '無料枠の待機時間・上限に達しました。支払いや有料切替は行いません。' : 'Cloudの実行結果を確認できません。',response.status);
-    const body = await response.json() as {id?: unknown; model?: unknown; choices?: {finish_reason?: unknown;message?: {content?: unknown;tool_calls?: unknown}}[]; usage?:{prompt_tokens?:unknown;completion_tokens?:unknown;total_tokens?:unknown}};
+    const body = await response.json() as {id?: unknown; model?: unknown; user_tier?: unknown; choices?: {finish_reason?: unknown;message?: {content?: unknown;tool_calls?: unknown}}[]; usage?:{prompt_tokens?:unknown;completion_tokens?:unknown;total_tokens?:unknown}};
     const choice=body.choices?.[0], usage=body.usage;
-    if (choice?.finish_reason!=='stop' || choice.message?.tool_calls || typeof choice.message?.content!=='string' || !choice.message.content.trim() || choice.message.content.length>24000 ||
+    if (body.user_tier!=='anonymous' || choice?.finish_reason!=='stop' ||
+      (choice.message?.tool_calls !== undefined && (!Array.isArray(choice.message.tool_calls) || choice.message.tool_calls.length!==0)) || typeof choice.message?.content!=='string' || !choice.message.content.trim() || choice.message.content.length>24000 ||
       typeof body.id!=='string' || !body.id || body.id.length>200 || typeof body.model!=='string' || body.model.length>200 ||
       !usage || !Number.isSafeInteger(usage.prompt_tokens) || !Number.isSafeInteger(usage.completion_tokens) ||
       (usage.prompt_tokens as number)<0 || (usage.completion_tokens as number)<0 || usage.total_tokens!==(usage.prompt_tokens as number)+(usage.completion_tokens as number))
       throw new WorkError('Cloudの完了・使用量を確認できません。再送せず確認してください。',502);
-    const completed = applyWorkCommand(claimed,{id:crypto.randomUUID(),action:'record',stepId:'generate',tool:'sky-free-cloud-text',transport:'browser',outcome:'passed',sample:false,durationMs:0},claimed.revision);
+    const completed = applyWorkCommand(claimed,{id:crypto.randomUUID(),action:'record',stepId:'generate',tool:'sky-free-cloud-text',transport:'browser',outcome:'passed',sample:false,durationMs:Math.max(0,Date.now()-startedAt)},claimed.revision);
     completed.freeCloud={...claimed.freeCloud!,state:'completed',text:choice.message.content,providerResponseId:body.id,reportedModel:body.model,
       inputTokens:usage.prompt_tokens as number,outputTokens:usage.completion_tokens as number,chargeMinor:0};
     if (!await store.update(input.owner,completed,claimed.revision)) throw new WorkError('成果の保存を確認できません。再送せず確認してください。',409);

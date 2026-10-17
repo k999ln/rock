@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-17",
+  "scope": "Mac loopback shared React panel, selection service, free Cloud HTTP adapter and persistent workflow; synthetic plan with real anonymous Provider",
+  "realCloudResponseAccepted": true,
+  "authenticatedProductionUiAccepted": false,
+  "productionBillingEnabled": false,
+  "stripeRequests": 0,
+  "provider": "Pollinations Classic",
+  "source": "https://raw.githubusercontent.com/pollinations/pollinations/master/APIDOCS.md",
+  "modelSelection": "catalog-derived auto; only one anonymous Cloud model currently available",
+  "uiUrl": "http://127.0.0.1:5227/",
+  "screenshot": "/private/tmp/sky-free-cloud-live.png",
+  "realUiPosts": 2,
+  "diagnosticRealPosts": 1,
+  "replayAdditionalPosts": 0,
+  "response": {
+    "id": "0107cf1d-72f7-47fb-83e3-9bb2875b128f",
+    "text": "2 + 3 は 5 です。",
+    "model": "openai-fast",
+    "reportedModel": "gpt-oss-20b",
+    "providerResponseId": "pllns_31202e6cd43bb3d85da7cf807d38a988",
+    "usage": {
+      "inputTokens": 331,
+      "outputTokens": 118,
+      "chargeMinor": 0,
+      "currency": "USD",
+      "basis": "anonymous-classic-free-tier"
+    }
+  },
+  "causeFixed": "Empty tool_calls array incorrectly treated as tool execution; only absent/empty array accepted now",
+  "fullVerify": {
+    "result": "passed",
+    "exitCode": 0,
+    "unitPassed": 2284,
+    "unitSkipped": 1,
+    "log": "/private/tmp/sky-free-live-verify-final.log"
+  },
+  "limitations": [
+    "Synthetic Sandbox contract is not a Stripe subscription acceptance",
+    "Main authenticated conversation tested through component harness, not a real passkey session",
+    "Free tier is best effort and rate limited; no API key, payment header or paid fallback",
+    "One available anonymous cloud model does not demonstrate optimal ranking across multiple Cloud providers"
+  ],
+  "revalidatedAt": "2026-10-17T17:24:02.909Z",
+  "providerCacheNote": "Repeated identical prompt returned the same Provider response ID; two network POSTs, not proof of two fresh inference runs."
+}

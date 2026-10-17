@@ -7548,5 +7548,21 @@
   "status": "host_verified_ui_authentication_pending",
   "tests": "tests/sky-model-routing.test.mjs"
 },
-"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "checkpointVerify": "all_stages_exit_0_2280_pass_1_existing_skip", "checkpointVerifiedCode": "be362895", "checkpointLog": "/private/tmp/sky-free-checkpoint-verify-final.log", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"}
+"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "checkpointVerify": "all_stages_exit_0_2280_pass_1_existing_skip", "checkpointVerifiedCode": "be362895", "checkpointLog": "/private/tmp/sky-free-checkpoint-verify-final.log", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "mac_shared_ui_real_cloud_accepted_regression_passed",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "mac_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": false
+}
 }

@@ -1,6 +1,6 @@
 <div align="center">
 
-Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。現在の無料限定検証では自動対象は接続済みローカルモデル。Cloudの無料利用権・実応答は未受入です。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。Macの合成Sandbox契約で実Cloud応答を確認しました。本番課金は無効です。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
 
 
 # avokado
@@ -405,4 +405,4 @@ Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sand
 
 Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`。5225に確定/予約/残り枠を表示します。現在は合成応答で100 USD到達・並列競合時の送信拒否を確認、無料Cloud接続先と資格情報は未確認で実Cloud実行は未受入です。[再開条件](docs/sky-billing.md#cloud-usageから100-usd枠への接続)。
 
-無料Cloud拡張は作業ブランチで試作中です。Pollinations Classicの実POSTは完了/usage検査で停止しており、Cloud自動選択の画面は未接続です。再開情報は `project.md` と `lib/sky-free-cloud.ts` を参照してください。本番課金は無効です。
+無料Cloudの確認画面は `/sky/free-cloud`。Macの独立検証は `node --experimental-strip-types scripts/sky-free-cloud-preview.mjs` を起動し `http://127.0.0.1:5227/` で依頼文・送信同意を確認して「自動選択して実行」。実応答とtoken usageを表示し、同じ依頼IDは再送しません。合成契約と実Cloudを使う試験で、Stripe接続・本番課金はありません。証拠は `docs/evidence/sky-free-cloud-live.json`。

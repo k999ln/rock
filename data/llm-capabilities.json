@@ -237,5 +237,21 @@
     "policy": "free_only_local_discovery_until_cloud_entitlement_verified",
     "status": "host_verified_ui_authentication_pending",
     "tests": "tests/sky-model-routing.test.mjs"
-  }
+  },
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "mac_shared_ui_real_cloud_accepted_regression_passed",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "mac_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": false
+}
 }
