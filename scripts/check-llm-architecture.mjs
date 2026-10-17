@@ -14,6 +14,12 @@ requireValue(matrix.schemaVersion === 1, 'schemaVersion must be 1');
 requireValue(matrix.product.displayName === 'avocadoOS', 'display name drift');
 requireValue(matrix.product.internalId === 'dev.rock', 'internal ID drift');
 
+const shellVersion = Number(read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl').match(/const int API_VERSION = (\d+)/)?.[1]);
+const pixelPolicy = read('android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java').match(/VERSION = "([^"]+)"/)?.[1];
+requireValue(matrix.pixelModelChoice.privateShellApiVersion === shellVersion, 'Pixel private API inventory must match source');
+requireValue(matrix.pixelModelChoice.policyVersion === pixelPolicy, 'Pixel model policy inventory must match source');
+requireValue(matrix.capabilities.find(entry => entry.id === 'native-local-planner').candidateImplementation.runtimePackageVersion === JSON.parse(read('contracts/local-ai-runtime.json')).packageVersionCode, 'Pixel runtime package inventory must match source');
+
 const ids = new Set(matrix.capabilities.map((entry) => entry.id));
 requireValue(
   ids.size === matrix.capabilities.length,

@@ -68,6 +68,23 @@
         "evidence": "docs/evidence/pixel-intuitive-experience.json",
         "candidateSourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
         "scope": "Pixel bounded article-preparation, exact auto/manual pin, actual notification tap and public metadata search; no general Agent/content acceptance"
+      },
+      "candidateImplementation": {
+        "privateShellApiVersion": 21,
+        "runtimePackageVersion": 5,
+        "runtimeApiVersion": 4,
+        "planSchema": "local-work@1/output-v1",
+        "modelCatalog": [
+          "dev.rock.qwen25-15b-q4km",
+          "dev.rock.qwen25-coder-15b-q4km",
+          "dev.rock.qwen3-06b-q8"
+        ],
+        "scope": "bounded untrusted text drafts and durable service ideation; pure three-attempt batch repair only",
+        "physicalAccepted": false,
+        "codePreliminaryAccepted": true,
+        "serviceIdea300Accepted": false,
+        "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+        "ideaSchemaFamily": "local-work@1/ideas-N-v1 (N=1..10, exact raw ideas array)"
       }
     },
     {
@@ -260,14 +277,27 @@
 },
   "pixelModelChoice": {
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
-    "status": "device_apk_verified",
-    "policyVersion": "pixel-article-model-choice/1",
-    "privateShellApiVersion": 20,
+    "status": "implemented_configuration_required",
+    "policyVersion": "pixel-local-work-model-choice/2",
+    "privateShellApiVersion": 21,
     "automaticModel": "dev.rock.qwen25-15b-q4km",
     "manualSelection": true,
     "generalTaskQualityAccepted": false,
     "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
     "discoveryGrantsExecution": false,
-    "xApiConfigured": false
+    "xApiConfigured": false,
+    "automaticModelsByTask": {
+      "code": "dev.rock.qwen25-coder-15b-q4km",
+      "article_summary_translation_planning_writing": "dev.rock.qwen25-15b-q4km"
+    },
+    "candidateAcceptance": {
+      "source": "9b4563c1c875481349087e11f79867dced0415f1",
+      "codeTrial": "PASS_d00867df_Broker_with_a9c35a37_runtime_137386ms",
+      "requestedServiceIdeas": 300,
+      "ideasAccepted": false,
+      "earlyCompletionRuntime": "package5_structured_array_native_build_pending",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install"
+    },
+    "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file"
   }
 }

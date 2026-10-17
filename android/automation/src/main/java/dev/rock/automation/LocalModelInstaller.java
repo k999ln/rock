@@ -101,8 +101,10 @@ final class LocalModelInstaller {
                 long now = System.currentTimeMillis();
                 platform.register("local-model-runtime:" + component.digest(), component, now);
                 platform.activate(component.componentId, component.versionCode, false, now);
+                java.util.ArrayList<String> schemas = new java.util.ArrayList<>(List.of(ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA));
+                for (int count=1;count<=10;count++) schemas.add(dev.rock.sdk.LocalIdeaBatch.schemaForCount(count));
                 platform.registerRuntimeManifest(new RuntimeManifest(component.componentId, component.versionCode, signer,
-                    LocalAiConnection.API_VERSION, LocalAiConnection.API_VERSION, List.of("GGUF"), List.of(ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA)));
+                    LocalAiConnection.API_VERSION, LocalAiConnection.API_VERSION, List.of("GGUF"), schemas));
                 ResumableModelArtifactStager stager = new ResumableModelArtifactStager(
                     new java.io.File(context.getNoBackupFilesDir(), "verified-models").toPath(), (candidate, offset) -> {
                         requireUnlocked();

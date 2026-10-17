@@ -30,7 +30,7 @@ final class LocalAiConnection {
     static final String PACKAGE = "com.localactionassistant";
     static final String SERVICE = PACKAGE + ".RockLocalAiService";
     static final String RUNTIME_COMPONENT_ID = "org.rockstar.runtime.localai";
-    static final int PACKAGE_VERSION_CODE = 4;
+    static final int PACKAGE_VERSION_CODE = 5;
     static final int API_VERSION = 4;
     private static final Set<String> TERMINAL_EVENTS = Set.of("proposal", "completed", "failed");
     private final Context context;
@@ -121,7 +121,9 @@ final class LocalAiConnection {
                 String prompt, String contextJson) throws Exception {
         validToken(requestToken);
         if (pin == null) throw new SecurityException("MODEL_PROFILE_PIN_REQUIRED");
-        if (!java.util.Set.of(dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA).contains(schemaId) || !schemaId.equals(pin.planSchemaId))
+        boolean exactSchema = java.util.Set.of(dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA).contains(schemaId) && schemaId.equals(pin.planSchemaId);
+        boolean ideaSubtype = dev.rock.sdk.LocalWorkDraft.SCHEMA.equals(pin.planSchemaId) && schemaId != null && schemaId.matches("local-work@1/ideas-([1-9]|10)-v1");
+        if (!(exactSchema || ideaSubtype))
             throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
         Engine.bounded(prompt); Engine.bounded(contextJson);
         return exchange(requestToken, (remote, callback) ->

@@ -409,6 +409,20 @@ public final class Engine {
         });
     }
 
+    /** Pure ideation only: reject a proposal without saving it; at most three durable attempts per batch. */
+    public boolean retryRejectedIdea(Ticket ticket, String reason, String boot, long elapsedMs) {
+        if (!"local-ideas-generate@1".equals(ticket.tool) || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD").contains(reason))
+            throw new IllegalArgumentException("INVALID_IDEA_RETRY");
+        return db.transaction(() -> {
+            Map<String,String> row=run(ticket.workId,ticket.step);
+            if (!"running".equals(row.get("state")) || !ticket.token.equals(row.get("token")) || !boot.equals(row.get("boot"))
+                    || elapsedMs<0 || elapsedMs>=Long.parseLong(row.get("deadline")) || paused() || !"active".equals(work(ticket.workId).get("state"))) return false;
+            boolean exhausted=ticket.attempt>=3;
+            db.execute("UPDATE runs SET state=?,token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", exhausted?"needs_review":"queued",reason,ticket.workId,ticket.step);
+            event(ticket.workId,ticket.step,exhausted?"idea_rejected":"idea_regenerate"); return true;
+        });
+    }
+
     /** Broker stop for a claimed run whose prerequisite (for example its pinned model) is unusable. Never auto-retried. */
     public void hold(Ticket ticket, String reason) {
         if (reason == null || !reason.matches("[A-Z_]{1,40}")) throw new IllegalArgumentException("INVALID_HOLD_REASON");

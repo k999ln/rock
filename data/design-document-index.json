@@ -693,7 +693,7 @@
         "primaryOwner": "ROCK",
         "design": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
         "privateShellApi": 21,
-        "runtimePackageVersion": 4,
+        "runtimePackageVersion": 5,
         "localBinderApi": 4,
         "engineSchema": 4,
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
@@ -705,7 +705,27 @@
           "exact immutable job model pin",
           "no code execution or paid cloud",
           "full OS gates unchanged"
-        ]
+        ],
+        "ideationSubschemas": {
+          "counts": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "rawFields": [
+            "ideas"
+          ],
+          "exactCardinality": true,
+          "retryLimit": 3,
+          "modelChoosesTaskOrTool": false
+        }
       }
     },
     {

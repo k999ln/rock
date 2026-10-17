@@ -17,7 +17,7 @@
       "trustLabel": "内容品質は未合格：入力例のコピーや主題相違を確認。構造の動作試験向け。Rock Developer Previewの検証済み配布定義。Qwenによる署名ではありません。",
       "profile": {
         "profileId": "dev.rock.qwen3-06b-q8",
-        "version": 2,
+        "version": 3,
         "weightsSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
         "tokenizerSha256": "27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d",
         "templateSha256": "57f1fd00f0013a2be96aa79b857391f27e23df5b5f847072b524c897e24d0361",
@@ -25,7 +25,7 @@
         "publisherId": "dev.rock.preview",
         "signingKeyId": "dev.rock.preview.20261016",
         "runtimeComponentId": "org.rockstar.runtime.localai",
-        "runtimeVersionCode": 4,
+        "runtimeVersionCode": 5,
         "runtimeApiMin": 4,
         "runtimeApiMax": 4,
         "format": "GGUF",
@@ -34,7 +34,7 @@
         "planSchemaId": "local-work@1/output-v1",
         "artifactBytes": 639446688,
         "minRamBytes": 2147483648,
-        "manifestSignatureBase64Url": "RuXKQaVg-bPgP8kzI8cY_C1vNPkQfGorHkpngE6fKy4QH8-VPgABOu8MW4ejkYU8vmFDGIPyGc-JmuDzbVF1BA"
+        "manifestSignatureBase64Url": "L6y5muZQHBLFij1r4UQt2mJfOaSZET-sWnJct-Ra6uukpV_gDfpn5_ADidjl9ArNIYixkI1WFxpogWp2_Fa1CA"
       },
       "tasks": [
         "article",
@@ -54,7 +54,7 @@
       "trustLabel": "Rock Developer Previewの検証済み配布定義。Qwenによる署名ではありません。",
       "profile": {
         "profileId": "dev.rock.qwen25-15b-q4km",
-        "version": 2,
+        "version": 3,
         "weightsSha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
         "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
         "templateSha256": "d5495a1e5db0611132a97e46a65dbb64a642a499421228b9c8b93229097fa9a4",
@@ -62,7 +62,7 @@
         "publisherId": "dev.rock.preview",
         "signingKeyId": "dev.rock.preview.20261016",
         "runtimeComponentId": "org.rockstar.runtime.localai",
-        "runtimeVersionCode": 4,
+        "runtimeVersionCode": 5,
         "runtimeApiMin": 4,
         "runtimeApiMax": 4,
         "format": "GGUF",
@@ -71,7 +71,7 @@
         "planSchemaId": "local-work@1/output-v1",
         "artifactBytes": 1117320736,
         "minRamBytes": 4294967296,
-        "manifestSignatureBase64Url": "ezQu-VQawBGVQIT8H7Ahbz2uw9bKMouAIPmF6-yssmD9qc5kgH85oE2LIoZgJIZZgeBncLmcTXmLKrqO51lACg"
+        "manifestSignatureBase64Url": "bW6EqkWzARWht64EVi7PVJ57E26zVkhTF_9eKDVXNufLIChYKnfBpmNjjL14LnXuT7CPt5GvB3T4qU-_em2_Aw"
       },
       "tasks": [
         "article",
@@ -91,7 +91,7 @@
       "trustLabel": "Rock Developer Previewの固定配布定義。コード下書き向け候補。生成コードは実行せず、内容は本人が確認します。Qwenによる署名ではありません。",
       "profile": {
         "profileId": "dev.rock.qwen25-coder-15b-q4km",
-        "version": 1,
+        "version": 2,
         "weightsSha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
         "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
         "templateSha256": "24f79a69401549da90b4da8477caf9cab6fc0a58929b81767003df310a513e33",
@@ -99,7 +99,7 @@
         "publisherId": "dev.rock.preview",
         "signingKeyId": "dev.rock.preview.20261016",
         "runtimeComponentId": "org.rockstar.runtime.localai",
-        "runtimeVersionCode": 4,
+        "runtimeVersionCode": 5,
         "runtimeApiMin": 4,
         "runtimeApiMax": 4,
         "format": "GGUF",
@@ -108,7 +108,7 @@
         "planSchemaId": "local-work@1/output-v1",
         "artifactBytes": 1117320768,
         "minRamBytes": 4294967296,
-        "manifestSignatureBase64Url": "ms5Jw5bCafXZNSdZNpeR14_86RfXiXGt8CZnDsrA-zc_Ptq9cV_oEDzhXkvgtsorCWPq49uR4UAlQNNY6cf4Dw"
+        "manifestSignatureBase64Url": "R9LoGGpiBdtMrsZ4bt1IDGloN3vXFJ6taMRxHOawngTYL0T-Qmp9oLSzn_3DsZtHV_2onqVnCSqQuMeCqVhUCQ"
       },
       "tasks": [
         "code"

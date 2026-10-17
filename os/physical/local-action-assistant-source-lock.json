@@ -63,8 +63,8 @@
       },
       {
         "path": "os/physical/local-ai-task-drafts-v4.patch",
-        "sha256": "e0fdfb30fb8987ed04a043075c4372e6d8582090b44909cdc2cb008a32a8d025",
-        "purpose": "package_version_4_closed_task_draft_schema_without_tool_or_network_authority"
+        "sha256": "fbd809efd36a3fadbe9830fef5b9c00e50a865647c65f775fe23f3415aa6aa2a",
+        "purpose": "package_version_5_closed_text_and_exact_structured_idea_array_with_no_tool_authority"
       }
     ]
   },

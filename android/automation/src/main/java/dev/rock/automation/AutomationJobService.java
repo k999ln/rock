@@ -42,7 +42,8 @@ public final class AutomationJobService extends JobService {
                     try {
                         ToolConnection.Result result = s.connection.execute(s.current);
                         if (!s.stopped.get()) {
-                            if ("held".equals(result.outcome)) engine().hold(s.current, result.output);
+                            if ("retryable_idea".equals(result.outcome)) engine().retryRejectedIdea(s.current,result.output,Integer.toString(boot),SystemClock.elapsedRealtime());
+                            else if ("held".equals(result.outcome)) engine().hold(s.current, result.output);
                             else engine().finish(s.current, result.outcome, result.output, Integer.toString(boot), SystemClock.elapsedRealtime());
                         }
                     } catch (Exception e) { engine().interrupt(s.current); reschedule = true; break; }

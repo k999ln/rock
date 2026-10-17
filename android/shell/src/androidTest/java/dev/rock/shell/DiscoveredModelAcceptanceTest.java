@@ -55,14 +55,18 @@ public final class DiscoveredModelAcceptanceTest {
         ShellConnection broker = new ShellConnection(context());
         boolean coder = "coder".equals(InstrumentationRegistry.getArguments().getString("rockDownloadModel", "coder"));
         String id = coder ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
+        boolean reviewedCatalog="true".equals(InstrumentationRegistry.getArguments().getString("rockUseReviewedCatalog"));
         String query = coder ? "Qwen2.5-Coder-1.5B-Instruct-GGUF" : "Qwen2.5-1.5B-Instruct-GGUF";
         JSONObject prepared = new JSONObject(broker.preparePublicModelInstall(id)); assertEquals("prepared",prepared.optString("status"));
         int jobs = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         MainActivity activity = (MainActivity)instrumentation.startActivitySync(new Intent(context(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         long start = SystemClock.elapsedRealtime();
         try {
+            ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+            if (reviewedCatalog) {
+                ui(() -> { try { Method m=MainActivity.class.getDeclaredMethod("preparePublicModelInstall",String.class);m.setAccessible(true);m.invoke(activity,id); } catch(Exception e){throw new AssertionError(e);} });
+            } else {
             ui(() -> {
-                activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 try { Method m = MainActivity.class.getDeclaredMethod("selectPage", int.class); m.setAccessible(true); m.invoke(activity,1); } catch(Exception e){throw new AssertionError(e);}
                 ((EditText)field(activity,"discoveryQuery")).setText(query);
                 ((Button)field(activity,"discoverySearch")).performClick();
@@ -70,7 +74,8 @@ public final class DiscoveredModelAcceptanceTest {
             AtomicReference<Button> install = new AtomicReference<>(); long deadline = SystemClock.elapsedRealtime()+30000;
             do { ui(() -> install.set(button((android.view.View)field(activity,"discoveryResults"),"条件を確認してPixelへ導入"))); if(install.get()==null)SystemClock.sleep(250); } while(install.get()==null && SystemClock.elapsedRealtime()<deadline);
             assertNotNull("live public result must map to the reviewed catalog",install.get()); ui(() -> install.get().performClick());
-            AtomicReference<Button> begin = new AtomicReference<>(); deadline=SystemClock.elapsedRealtime()+10000;
+            }
+            AtomicReference<Button> begin = new AtomicReference<>(); long deadline=SystemClock.elapsedRealtime()+10000;
             do {
                 ui(() -> { for(android.view.View root:android.view.inspector.WindowInspector.getGlobalWindowViews()) {
                     Button b=button(root,"取得を始める"); if(b!=null){
@@ -93,7 +98,7 @@ public final class DiscoveredModelAcceptanceTest {
                 SystemClock.sleep(1000);
             }
             assertNotNull(state); assertEquals(state.toString(),"downloaded",state.getString("status"));
-            if(coder)assertFalse("new coder must come from actual download",state.getBoolean("cachedSource"));
+            if(coder && !reviewedCatalog)assertFalse("new coder must come from actual download",state.getBoolean("cachedSource"));
             ui(() -> call(activity,"refreshModelDownload"));
             AtomicReference<Button> finish=new AtomicReference<>();deadline=SystemClock.elapsedRealtime()+10000;
             do { ui(() -> finish.set(button((android.view.View)field(activity,"modelDownloadPanel"),"検証してPixelへ導入")));if(finish.get()==null)SystemClock.sleep(100); }while(finish.get()==null&&SystemClock.elapsedRealtime()<deadline);
@@ -105,7 +110,7 @@ public final class DiscoveredModelAcceptanceTest {
             for(int i=0;i<catalog.length();i++)if(id.equals(catalog.getJSONObject(i).getString("profileId")))matching=catalog.getJSONObject(i);
             assertNotNull(matching);assertTrue(matching.getBoolean("cached"));assertTrue(matching.getBoolean("licenseAccepted"));assertTrue(matching.getBoolean("activeProfile"));
             assertEquals(jobs,new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
-            JSONObject receipt=new JSONObject().put("status","passed").put("profile",matching).put("download",state).put("prepared",prepared).put("liveSearchButton",true).put("explicitLicenseConsent",true).put("realDownloadObserved",actualNetwork).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("createdWork",false);
+            JSONObject receipt=new JSONObject().put("status","passed").put("profile",matching).put("download",state).put("prepared",prepared).put("liveSearchButton",!reviewedCatalog).put("explicitLicenseConsent",true).put("realDownloadObserved",actualNetwork).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("createdWork",false);
             Files.write(new File(context().getExternalFilesDir(null),"download-"+(coder?"coder":"general")+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {ui(activity::finish);}
     }

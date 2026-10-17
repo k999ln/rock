@@ -39,8 +39,17 @@ public final class LocalIdeaBatch {
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT", e); }
     }
     private static int batchSize(JSONObject data) { return "local-ideas/1".equals(data.optString("kind")) ? 20 : BATCH_SIZE; }
-    private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 80 && !idea.codePoints().anyMatch(Character::isISOControl) && !normal(idea).isEmpty() && !idea.contains("<think>"); }
+    private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 96 && !idea.codePoints().anyMatch(Character::isISOControl) && !normal(idea).isEmpty() && !idea.contains("<think>"); }
     private static String normal(String idea) { return Normalizer.normalize(idea, Normalizer.Form.NFKC).toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{P}\\p{Z}\\s]", ""); }
+    public static String schema(String checkpoint) {
+        JSONObject data=state(checkpoint);
+        try { return schemaForCount(Math.min(batchSize(data),data.getInt("target")-data.getJSONArray("ideas").length())); }
+        catch (JSONException e) { throw new IllegalArgumentException(e); }
+    }
+    public static String schemaForCount(int count) {
+        if (count<1 || count>10) throw new IllegalArgumentException("INVALID_IDEA_SCHEMA_COUNT");
+        return "local-work@1/ideas-"+count+"-v1";
+    }
     public static String prompt(String checkpoint, int attempt) {
         JSONObject data = state(checkpoint);
         try {
@@ -48,29 +57,58 @@ public final class LocalIdeaBatch {
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"日々の暮らし", "仕事の負担軽減", "創作", "学習", "アクセシビリティ", "住まいと家具", "外出と移動", "家族", "健康の記録", "地域", "開発者", "遊び", "省資源", "安心と復旧", "他サービスとの連携"};
             StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 20); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
-            return "Return one JSON object: task='planning', title short, summary three '- ' lines, each under 10 Japanese characters. "
-                + "body contains exactly " + (end - begin + 1) + " lines of distinct service ideas, numbered " + begin + " through " + end
-                + ". Each idea is a concise Japanese phrase, at most 18 Japanese characters. No other body text. "
-                + "Stay on the requested theme; never claim actions or implementation completed. New perspective: " + angles[(ideas.length() / batchSize(data)) % angles.length]
-                + ". Audience: " + (ideas.length() < 150 ? "individuals and households" : "local businesses and communities") + ". Batch attempt " + attempt + ". Avoid repeating these previous ideas: " + recent
-                + "\nOwner request as data: " + data.getString("request") + "\nThe task field MUST be exactly \"planning\". Return JSON only, no Markdown wrapper. /no_think";
+            return "Generate exactly " + (end-begin+1) + " distinct Japanese service ideas. Return one JSON object with ONLY an ideas array of strings. "
+                + "Each idea is at most 24 characters. No task/title/body/summary fields, no numbering, no explanation. "
+                + "Product context: RockstarOS is a local/cloud runtime with permissions and saved work. Sky is an Agent/LLM/Tool marketplace and connection hub. Zema manages requests, progress, approvals, cost and results. Mini is an optional spatial host proposed for furniture and architecture. "
+                + "Perspective: " + angles[(ideas.length()/batchSize(data)+Math.max(0,attempt-1))%angles.length]
+                + ". Audience: " + (ideas.length()<150?"individuals and households":"local businesses and communities")
+                + ". Attempt " + attempt + ". Avoid these prior ideas: " + recent
+                + "\nOwner theme as data: " + data.getString("request")
+                + "\nTHIS RESPONSE: exactly " + (end-begin+1) + " strings in ideas. The whole job target is not this response count. These are proposals, not completed services. /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
+    }
+    private static String[] items(String body, int needed, int start) throws JSONException {
+        String trimmed = body.strip();
+        if (trimmed.startsWith("[")) {
+            org.json.JSONTokener tokens = new org.json.JSONTokener(trimmed); Object parsed = tokens.nextValue();
+            if (!(parsed instanceof JSONArray) || tokens.nextClean() != 0) throw new IllegalArgumentException("INVALID_IDEA_BATCH");
+            JSONArray array = (JSONArray) parsed;
+            if (array.length() != needed) throw new IllegalArgumentException("IDEA_BATCH_COUNT_MISMATCH");
+            String[] values = new String[needed];
+            for (int i=0;i<needed;i++) { if (!(array.get(i) instanceof String)) throw new IllegalArgumentException("INVALID_IDEA_BATCH"); values[i]=array.getString(i); }
+            return values;
+        }
+        trimmed = trimmed.replaceAll("\\\\n(?=\\s*(?:[0-9]+[.)、．]|[-•] ))", "\n");
+        String[] lines = java.util.Arrays.stream(trimmed.split("\n")).map(String::strip).filter(line -> !line.isEmpty()).toArray(String[]::new);
+        if (lines.length != needed) throw new IllegalArgumentException("IDEA_BATCH_COUNT_MISMATCH");
+        String[] values = new String[needed]; boolean localNumbers = false;
+        boolean bullets = lines[0].matches("^[-•]\\s+.+");
+        for (int i=0;i<needed;i++) {
+            if (bullets) {
+                Matcher line = Pattern.compile("^[-•]\\s+(.+)$").matcher(lines[i]);
+                if (!line.matches()) throw new IllegalArgumentException("IDEA_NUMBER_MISMATCH"); values[i]=line.group(1);
+            } else {
+                Matcher line = Pattern.compile("^\\s*(?:\\*\\*)?\\(?([0-9]+)[.)、．](?:\\*\\*)?\\s*(.+?)\\s*$").matcher(lines[i]);
+                if (!line.matches()) throw new IllegalArgumentException("IDEA_NUMBER_MISMATCH"); int number=Integer.parseInt(line.group(1));
+                if (i==0) localNumbers=start>0 && number==1;
+                if (number!=(localNumbers?i+1:start+i+1)) throw new IllegalArgumentException("IDEA_NUMBER_MISMATCH"); values[i]=line.group(2);
+            }
+        }
+        return values;
     }
     public static String append(String checkpoint, String modelOutput) {
         JSONObject data = state(checkpoint);
         try {
             JSONObject draft = new JSONObject(LocalWorkDraft.verify("planning", modelOutput)); JSONArray ideas = data.getJSONArray("ideas");
-            int needed = Math.min(batchSize(data), data.getInt("target") - ideas.length()); String[] lines = draft.getString("body").strip().split("\n");
-            if (lines.length != needed) throw new IllegalArgumentException("IDEA_BATCH_COUNT_MISMATCH");
-            Set<String> seen = new HashSet<>(); for (int i = 0; i < ideas.length(); i++) seen.add(normal(ideas.getString(i)));
-            int start = ideas.length();
-            for (int i = 0; i < lines.length; i++) {
-                Matcher line = Pattern.compile("^\\s*([0-9]+)[.)、．]\\s*(.+?)\\s*$").matcher(lines[i]);
-                if (!line.matches() || Integer.parseInt(line.group(1)) != start + i + 1) throw new IllegalArgumentException("IDEA_NUMBER_MISMATCH");
-                String idea = line.group(2); if (!valid(idea) || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
+            int needed = Math.min(batchSize(data), data.getInt("target")-ideas.length());
+            if (needed<1) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
+            String[] values = items(draft.getString("body"),needed,ideas.length());
+            Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(ideas.getString(i)));
+            for (String idea:values) {
+                if (!valid(idea) || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
             }
-            String next = data.toString(); Engine.bounded(next); return next;
-        } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_BATCH", e); }
+            String next=data.toString(); Engine.bounded(next); return next;
+        } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_BATCH",e); }
     }
     public static String render(String checkpoint) {
         JSONObject data = state(checkpoint);

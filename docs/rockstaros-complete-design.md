@@ -674,7 +674,7 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 
 ## Pixelの公開モデル導入・有限文書生成
 
-[導入と実行契約](llm-evaluation-architecture.md#pixel-discovered-model-install)をOS local model componentの現行詳細とする。目的は公開open weightをPixelで使い、要約/翻訳/code下書き/計画/アイデアを同じ仕事管理で保存すること。入力は署名profile ID・owner同意・依頼、出力はhash検証済weightと非信頼の下書きartifact。Sky/Broker/既存runtimeの責任・入出力・状態・保存・失敗・停止/復旧・承認・合格条件・未対応modelの判断手順は同契約に従う。runtime package4/API4、Shell21、Engine schema4を区別し、3→4 migrationは既存job/artifactを保持する。最初の実利用は本人指定のサービスアイデア300件。新APKと実weightを照合する実機受入が必要であり、全OSや一般品質の成功にはしない。
+[導入と実行契約](llm-evaluation-architecture.md#pixel-discovered-model-install)をOS local model componentの現行詳細とする。目的は公開open weightをPixelで使い、要約/翻訳/code下書き/計画/アイデアを同じ仕事管理で保存すること。入力は署名profile ID・owner同意・依頼、出力はhash検証済weightと非信頼の下書きartifact。Sky/Broker/既存runtimeの責任・入出力・状態・保存・失敗・停止/復旧・承認・合格条件・未対応modelの判断手順は同契約に従う。runtime package5/API4、Shell21、Engine schema4を区別し、3→4 migrationは既存job/artifactを保持する。最初の実利用は本人指定のサービスアイデア300件。新APKと実weightを照合する実機受入が必要であり、全OSや一般品質の成功にはしない。
 
 ## 作業別のモデル自動選択（2026-10-17）
 

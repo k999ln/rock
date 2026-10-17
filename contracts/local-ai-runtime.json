@@ -3,7 +3,7 @@
   "routeId": "local-action-assistant",
   "executionTarget": "local",
   "apiVersion": 4,
-  "packageVersionCode": 4,
+  "packageVersionCode": 5,
   "androidPackage": "com.localactionassistant",
   "androidService": "com.localactionassistant.RockLocalAiService",
   "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -111,7 +111,28 @@
     "planningTimeoutSeconds": 180,
     "maxTitleCharacters": 60,
     "maxBodyCharacters": 600,
-    "maxSummaryCharacters": 120
+    "maxSummaryCharacters": 120,
+    "ideationSubtypes": {
+      "schemaPattern": "local-work@1/ideas-N-v1",
+      "counts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "rawModelFields": [
+        "ideas"
+      ],
+      "exactArrayCardinality": true,
+      "metadataOwner": "runtime",
+      "brokerValidatesActualStringsAndUniqueness": true
+    }
   },
   "candidateBuild": {
     "status": "pending_new_artifact",
@@ -124,6 +145,6 @@
       "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
       "d011572a358e35ba52a3a18e2410ee4d3650be06fe30f80d3e1536deac659c7e"
     ],
-    "reason": "stop decoding at a complete JSON envelope; Broker field/task/permission validation remains independent"
+    "reason": "package5 constrains requested idea count in a closed array schema; no filler, no model-owned task authority"
   }
 }

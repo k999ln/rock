@@ -286,4 +286,14 @@ public class EngineTest {
         Engine.Ticket next = claim(3); assertEquals(1, next.step); assertEquals("saved", next.input);
         assertTrue(engine.finish(next,"passed","final","boot-1",4)); assertEquals("final",engine.result(id));
     }
+    @Test public void rejectedIdeasRetryOnlyPureGenerationThreeTimesAndKeepTheCheckpoint() {
+        Engine.ModelProfilePin pin=localTextPin("idea-repair");String id=engine.submitPinnedIdeas(pin,"idea-repair","saved prefix",1,true);
+        Engine.Ticket first=claim(1);assertTrue(engine.retryRejectedIdea(first,"IDEA_BATCH_COUNT_MISMATCH","boot-1",2));
+        assertFalse(engine.retryRejectedIdea(first,"IDEA_BATCH_COUNT_MISMATCH","boot-1",3));assertEquals("saved prefix",engine.checkpoint(id));
+        Engine.Ticket second=claim(4);assertEquals(2,second.attempt);assertTrue(engine.retryRejectedIdea(second,"DUPLICATE_OR_INVALID_IDEA","boot-1",5));
+        Engine.Ticket third=claim(6);assertEquals(3,third.attempt);assertTrue(engine.retryRejectedIdea(third,"IDEA_NUMBER_MISMATCH","boot-1",7));
+        assertEquals("needs_review",engine.runs(id).get(0).get("state"));assertNull(claim(8));assertEquals("saved prefix",engine.checkpoint(id));
+        engine.retry(id);Engine.Ticket again=claim(9);engine.setPaused(true);assertFalse(engine.retryRejectedIdea(again,"IDEA_NUMBER_MISMATCH","boot-1",10));
+        assertThrows(IllegalArgumentException.class,()->engine.retryRejectedIdea(again,"MODEL_PROFILE_RUNTIME_MISMATCH","boot-1",11));
+    }
 }

@@ -27,12 +27,13 @@ final class ToolConnection {
             if (cancelled.get()) throw new InterruptedException();
             Engine engine = ((RockApplication) context.getApplicationContext()).engine();
             Engine.ModelProfilePin pin = engine.modelProfilePinForWork(AndroidOwner.current(context), ticket.workId);
-            LocalAiConnection runtime = new LocalAiConnection(context); local = runtime;
+            LocalAiConnection runtime = new LocalAiConnection(context); local = runtime; String proposal = null;
             try {
                 runtime.requireReadyForPlanning(pin);
-                String task, prompt;
+                String task, prompt, schema = LocalWorkDraft.SCHEMA;
                 if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
-                    task = "planning"; prompt = LocalIdeaBatch.prompt(ticket.input, ticket.attempt);
+                    int humanRetries=(int)engine.events(ticket.workId).stream().filter(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_retry".equals(e.get("kind"))).count();
+                    task = "planning"; schema = LocalIdeaBatch.schema(ticket.input); prompt = LocalIdeaBatch.prompt(ticket.input, ticket.attempt + 3*humanRetries);
                 } else {
                     org.json.JSONObject input = new org.json.JSONObject(ticket.input);
                     if (input.length() != 3 || !input.has("prompt")) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
@@ -41,17 +42,33 @@ final class ToolConnection {
                     prompt = input.getString("prompt"); Engine.bounded(prompt);
                 }
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
-                LocalAiConnection.Result result = runtime.plan(ticket.token, pin, LocalWorkDraft.SCHEMA, prompt, "[]");
+                LocalAiConnection.Result result = runtime.plan(ticket.token, pin, schema, prompt, "[]");
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
                 runtime.requireReadyForPlanning(pin);
-                if (!"completed".equals(result.event)) return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
-                String output = LocalWorkDraft.verify(task, result.payload);
+                if (!"completed".equals(result.event)) {
+                    if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
+                        if ("IDEA_SCHEMA_COUNT_MISMATCH".equals(result.payload)) return new Result("retryable_idea","IDEA_BATCH_COUNT_MISMATCH");
+                        if ("INVALID_IDEA_STRING".equals(result.payload)) return new Result("retryable_idea","DUPLICATE_OR_INVALID_IDEA");
+                        if ("INVALID_IDEA_JSON".equals(result.payload)) return new Result("retryable_idea","INVALID_LOCAL_DRAFT_JSON");
+                    }
+                    return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
+                }
+                proposal = result.payload;
+                String output = LocalWorkDraft.verify(task, proposal);
                 return new Result("passed", LocalIdeaBatch.GENERATE.equals(ticket.tool)
                     ? LocalIdeaBatch.append(ticket.input, output) : output);
             } catch (IllegalArgumentException | SecurityException invalid) {
                 String code = invalid.getMessage();
+                if (proposal != null && BuildConfig.DEBUG && ticket.workId.equals(context.getSharedPreferences("synthetic-plan-probe", Context.MODE_PRIVATE).getString("workId", null))) {
+                    // Explicit instrumentation-only allowlist; one bounded private cache file, never a work artifact or log.
+                    try {
+                        String observation = new org.json.JSONObject().put("workId", ticket.workId).put("error", code).put("payload", proposal).toString();
+                        java.nio.file.Files.write(new java.io.File(context.getCacheDir(), "synthetic-plan-probe.json").toPath(), observation.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    } catch (Exception ignored) { /* Diagnosis cannot change execution outcome. */ }
+                }
                 if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
-                return new Result("held", code);
+                boolean repairable=LocalIdeaBatch.GENERATE.equals(ticket.tool) && java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD").contains(code);
+                return new Result(repairable?"retryable_idea":"held", code);
             } catch (IllegalStateException unavailable) {
                 return new Result("held", "LOCAL_AI_INTERRUPTED".equals(unavailable.getMessage()) ? "LOCAL_GENERATION_TIMED_OUT" : "LOCAL_GENERATION_UNAVAILABLE");
             } finally { local = null; }

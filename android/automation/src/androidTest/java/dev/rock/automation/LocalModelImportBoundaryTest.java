@@ -103,6 +103,13 @@ public final class LocalModelImportBoundaryTest {
         Files.write(file.toPath(),new org.json.JSONObject().put("event",result.event).put("payload",result.payload).put("elapsedMs",android.os.SystemClock.elapsedRealtime()-start).toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         assertEquals("completed",result.event);dev.rock.sdk.LocalWorkDraft.verify("code",result.payload);
     }
+    @Test public void enableOnlySyntheticIdeaProbeDiagnostics() throws Exception {
+        org.junit.Assume.assumeTrue("explicit private synthetic diagnostic only", "true".equals(InstrumentationRegistry.getArguments().getString("rockEnableIdeaProbe")));
+        String id=InstrumentationRegistry.getArguments().getString("rockSyntheticIdeaWork");RockApplication app=(RockApplication)context().getApplicationContext();
+        org.json.JSONObject checkpoint=dev.rock.sdk.LocalIdeaBatch.state(app.engine().checkpoint(id));assertEquals(20,checkpoint.getInt("target"));
+        assertEquals("dev.rock.qwen25-15b-q4km",app.engine().modelProfilePinForWork(AndroidOwner.current(context()),id).profileId);
+        assertTrue(context().getSharedPreferences("synthetic-plan-probe",Context.MODE_PRIVATE).edit().putString("workId",id).commit());
+    }
     private String active() {
         dev.rock.core.platform.ModelProfileManifest active = platform().activeModelProfile();
         return active == null ? null : active.digest();

@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "physical_acceptance_in_progress",
+    "status": "structured_ideas_runtime5_native_build_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,7 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Complete fresh model code/idea trials, inspect actual saved outputs, finish or accurately limit direct DownloadManager acceptance, then freeze exact APK source and verify CI.",
+    "nextAction": "Build/sign/inspect package5, explicitly import cached weights under new profile versions, accept code and structured 20-item trials, then execute the owner-requested 300 actual service ideas with checkpoint readback and same-head CI.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39059611493,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
@@ -21,15 +21,20 @@
     "batchPolicy": {
       "size": 10,
       "checkpointVersion": 2,
-      "reason": "physical twenty-item generation exceeded the ninety-second bound; preserve legacy checkpoints and hold uncertain work"
+      "reason": "physical twenty-item generation exceeded the ninety-second bound; preserve legacy checkpoints and hold uncertain work",
+      "repairLimit": 3,
+      "repairScope": "pure local ideation only",
+      "numberOwner": "Broker",
+      "actualItemCardinalityRequired": true
     },
     "physicalTrials": {
       "generalCacheVerifiedInstall": "PASS_18.945s",
       "coderTransferInstall": "PASS_11.507s_after_runtime_process_recovery",
       "directCoderDownload": "PARTIAL_interrupted_connection_DownloadManager_retry",
       "twentyItemProbe": "INTERRUPTED_no_false_completed_items",
-      "codeAndRequested300": "NINETY_SECOND_CODE_TIMEOUT_HELD_same_job_retry_with_bounded_runtime_in_progress",
-      "notificationAndManualFlow": "13_of_14_passed_live_search_network_failure_recorded"
+      "codeAndRequested300": "CODE_PASS_139344ms_candidate4_requested300_not_yet_accepted",
+      "notificationAndManualFlow": "13_of_14_passed_live_search_network_failure_recorded",
+      "ideaProbe": "Actual model returned one item for a requested batch of ten; validator held at zero, no fabricated completion"
     },
     "runtimeBuildSource": "a9c35a37d5cf56a36ff6e5cbd7c42e628ef2e53a",
     "mergedMain": "d6d7bd33492224826c22aef148f6b206225bb854",
@@ -38,6 +43,14 @@
       "headlessSeconds": 180,
       "brokerPlanSeconds": 180,
       "generationLeaseSeconds": 240
+    },
+    "runtimeCandidate": {
+      "packageVersion": 5,
+      "binderApi": 4,
+      "rawIdeaSchema": "ideas array only, exact N 1..10",
+      "metadataOwner": "runtime, never model authority",
+      "sourceTests": 31,
+      "nativeBuild": "PENDING"
     }
   },
 

@@ -50,6 +50,7 @@ final class PublicModelInstall {
             boolean cached = reusable(e) != null;
             if (!prefs.edit().clear().putString("operation", operation).putString("profile", id)
                     .putString("owner", AndroidOwner.current(context)).putString("manifest", e.profile.digest())
+                    .putString("name",e.name).putString("source",e.source).putLong("bytes",e.profile.artifactBytes)
                     .putLong("download", -1).putBoolean("cached", cached).putBoolean("terminal", false).commit())
                 throw new IllegalStateException("MODEL_DOWNLOAD_STATE_NOT_SAVED");
             if (!cached) {
@@ -66,20 +67,23 @@ final class PublicModelInstall {
             return status();
         }
     }
-    private LocalModelCatalog.Entry current(String operation) throws Exception {
+    private void requireOperationOwner(String operation) {
         if (operation == null || !operation.equals(prefs.getString("operation", null))
                 || !AndroidOwner.current(context).equals(prefs.getString("owner", null))) throw new SecurityException("MODEL_DOWNLOAD_OPERATION_INVALID");
+    }
+    private LocalModelCatalog.Entry current(String operation) throws Exception {
+        requireOperationOwner(operation);
         LocalModelCatalog.Entry e = installer.catalog().require(prefs.getString("profile", ""));
         if (!e.profile.digest().equals(prefs.getString("manifest", ""))) throw new SecurityException("MODEL_DOWNLOAD_PROFILE_CHANGED");
         return e;
     }
-    private long downloadId(String operation, LocalModelCatalog.Entry e) {
+    private long downloadId(String operation, String source) {
         long id = prefs.getLong("download", -1); if (id >= 0) return id;
         long found = -1;
         try (Cursor rows = manager.query(new DownloadManager.Query())) {
             while (rows != null && rows.moveToNext()) {
                 if (!("rock-model:" + operation).equals(rows.getString(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_DESCRIPTION)))
-                        || !e.source.equals(rows.getString(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_URI)))) continue;
+                        || source != null && !source.equals(rows.getString(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_URI)))) continue;
                 if (found >= 0) throw new IllegalStateException("MODEL_DOWNLOAD_STATE_UNCERTAIN");
                 found = rows.getLong(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_ID));
             }
@@ -91,12 +95,20 @@ final class PublicModelInstall {
         synchronized (LOCK) {
             String operation = prefs.getString("operation", null);
             if (operation == null) return "{\"status\":\"idle\"}";
-            LocalModelCatalog.Entry e = current(operation);
+            requireOperationOwner(operation);
+            LocalModelCatalog.Entry e;
+            try { e=current(operation); }
+            catch (SecurityException changed) {
+                if (!java.util.Set.of("MODEL_DOWNLOAD_PROFILE_CHANGED","MODEL_NOT_IN_TRUSTED_CATALOG").contains(changed.getMessage())) throw changed;
+                return new JSONObject().put("status","profile_changed").put("operationId",operation).put("profileId",prefs.getString("profile",""))
+                    .put("name",prefs.getString("name","以前のモデル" )).put("terminal",prefs.getBoolean("terminal",false))
+                    .put("previousStatus",prefs.getString("terminalState","pending")).put("network","wifi_only").toString();
+            }
             String state = prefs.getString("terminalState", ""), pauseReason = ""; long bytes = 0;
             if (!prefs.getBoolean("terminal", false)) {
                 if (prefs.getBoolean("cached", false)) state = reusable(e) == null ? "failed" : "downloaded";
                 else {
-                    long id = downloadId(operation, e); state = "uncertain";
+                    long id = downloadId(operation, e.source); state = "uncertain";
                     if (id >= 0) try (Cursor rows = manager.query(new DownloadManager.Query().setFilterById(id))) {
                         if (rows != null && rows.moveToFirst()) {
                             int status = rows.getInt(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
@@ -124,7 +136,7 @@ final class PublicModelInstall {
             if (!"downloaded".equals(new JSONObject(status()).getString("status"))) throw new IllegalStateException("MODEL_DOWNLOAD_NOT_COMPLETE");
             File cached = prefs.getBoolean("cached", false) ? reusable(e) : null;
             ParcelFileDescriptor source = cached != null ? ParcelFileDescriptor.open(cached, ParcelFileDescriptor.MODE_READ_ONLY)
-                : manager.openDownloadedFile(downloadId(operation, e));
+                : manager.openDownloadedFile(downloadId(operation, e.source));
             // Existing installer verifies every byte, signature, owner consent, resources and runtime receipt before activation.
             String receipt = installer.install(e.profile.profileId, source, true);
             if (!"ready".equals(new JSONObject(receipt).optString("status"))) throw new IllegalStateException("MODEL_IMPORT_NOT_READY");
@@ -136,9 +148,9 @@ final class PublicModelInstall {
     }
     String cancel(String operation) throws Exception {
         synchronized (LOCK) {
-            LocalModelCatalog.Entry e = current(operation);
+            requireOperationOwner(operation);
             if (prefs.getBoolean("terminal", false)) return status();
-            long id = downloadId(operation, e);
+            long id = downloadId(operation,prefs.getString("source",null));
             if (id < 0 && !prefs.getBoolean("cached", false)) throw new IllegalStateException("MODEL_DOWNLOAD_STATE_UNCERTAIN");
             if (id >= 0) manager.remove(id);
             if (!prefs.edit().putBoolean("terminal", true).putString("terminalState", "cancelled").commit()) throw new IllegalStateException("MODEL_DOWNLOAD_STATE_NOT_SAVED");

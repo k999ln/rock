@@ -4,7 +4,9 @@
 
 # RockstarOS — 現在の作業と再開情報
 
-OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4、Shell21、作業別general/Coder選択を実装。本人の実利用は「RockstarOS・Skyで実現するサービスのアイデア300件」。20件生成が90秒で中断したため新checkpoint v2は10件ずつ保存し、旧v1を黙って変更しない。timeout/不正出力は理由付きhold、runtime切断時の待機を解除する。host Core125/automation47/SDK11/Shell14、build/lint成功。新runtime native CI 39059611493/source a9c35a37の実byte/signerを検証。コード生成も90秒でholdしたため、closed schemaの文字数/512 tokens上限とplan180秒/lease240秒へ調整し、再試行も形式不正でhold。生の合成結果からコード指示への要約指示混入と単一JSON fenceを確認し、task別の短いprompt・exact prompt保存・closed JSON正規化へ修正。旧入力は再計画、新しいHome依頼で検証中。Pixelのgeneral再検証導入18.945s成功、Coderは公式固定revisionのMac取得/hash照合→転送→実導入11.507s成功。直接DownloadManager取得は通信中断/再接続を観測、全量合格は未確定。通知/手動経路を含む14件中13件成功、公開検索の通信失敗1件を別記録。code/300件の実推論と最終同一source受入を検証中。最新main d6d7bd33を保全統合、Web無料Cloud系列の正本を保持。旧APK/DB退避済み、OS11全体/全OS/有料cloud gateは変更しない。
+OS11/O6/ROCK：Pixel Home→Coder自動選択→実推論→3段階→偶数合計Python関数の保存が139.344sで事前成功（d00867df/Broker、a9c35a37/runtime、コード実行なし）。20件probeはモデルが10件の要求へ1件だけ返したことを私有合成診断で確認し、0件のまま停止。package5/API4にexact N=1..10のideas配列schemaを追加し、task/title/summaryはruntimeメタデータ、実案は補填せずBrokerでも件数/重複を再検査する。完全JSONでdecodeを止め、readyをterminal callback前に公開。source31試験・型/lint成功（警告0）。General/Coderの旧job pinを黙って更新せず、署名済profileをそれぞれv3/v2へ更新、同じhashの既存weightを本人同意後に再検証する。Core126/automation47/SDK13/Shell14、host build/lint成功。旧合成20件仕事と重複途中downloadだけを明示中止。本人指定「RockstarOS・Skyのサービスアイデア300件」は未受入。次はnative5 build→実byte/signer→新profile導入→20/300実推論→同一source受入。main d6d7bd33のWeb無料Cloudを保全統合、全OS/正式署名/flash/有料cloud gate不変。
+
+
 
 
 

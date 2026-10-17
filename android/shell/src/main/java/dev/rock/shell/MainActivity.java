@@ -607,11 +607,12 @@ public final class MainActivity extends Activity {
             : "installed".equals(state) ? "導入完了。作業に合わせて選択できます。"
             : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
             : "paused".equals(state) ? ("waiting_to_retry".equals(result.optString("pauseReason")) ? "通信が途切れたため、Androidの再接続を待っています。取得済みの位置から再開します。" : "取得は待機中です。Wi-Fi・保存容量を確認してください。")
+            : "profile_changed".equals(state) ? "モデルの導入条件が更新されています。以前の取得があれば中止し、現行の条件を確認してください。"
             : "cancelled".equals(state) ? "取得を中止しました。" : "取得・導入を確認できません: " + result.optString("code", state);
         label(modelDownloadPanel, name + "\n" + label, 14);
         String operation = result.optString("operationId");
         if ("downloaded".equals(state)) button(modelDownloadPanel, "検証してPixelへ導入", () -> modelDownloadAction(c -> c.finishPublicModelInstall(operation, true)));
-        if (java.util.Set.of("downloaded", "downloading", "paused", "failed").contains(state))
+        if (java.util.Set.of("downloaded", "downloading", "paused", "failed").contains(state) || "profile_changed".equals(state) && !result.optBoolean("terminal"))
             button(modelDownloadPanel, "この取得を中止", () -> modelDownloadAction(c -> c.cancelPublicModelDownload(operation)));
     }
 
@@ -677,7 +678,7 @@ public final class MainActivity extends Activity {
                     if ("prepared".equals(result.optString("status"))) {
                         preparedModelDigest = result.optString("manifestDigest"); preparedModelPrompt = prompt;
                         modelChoiceStatus.setText("使うモデル: " + result.optString("name") + "\n" + result.optString("reason")
-                            + (result.optInt("ideaTarget") > 0 ? "\nアイデア " + result.optInt("ideaTarget") + " 件を分割生成・保存" : "") + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
+                            + (result.optInt("ideaTarget") > 0 ? "\nアイデア " + result.optInt("ideaTarget") + " 件を分割生成・保存。重複・不足の回だけ最大3回生成し直します" : "") + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
                         zemaConsent.setChecked(false); zemaSubmitButton.setEnabled(!zemaSubmission.inFlight());
                     } else {
                         String code = result.optString("code");
