@@ -5,7 +5,7 @@
   "tasks": [
     {
       "id": "SKY22",
-      "title": "所有者専用avocado建築プランをSkyで読取同期し、進捗と試行証拠を可視化する",
+      "title": "所有者専用avocado建築プランをSkyで読取同期し、Sky Chatとの対話往復をつなぐ",
       "status": "in_progress",
       "dependsOn": ["SKY21"],
       "evidence": [
@@ -13,9 +13,11 @@
         "app/sky/avocado/page.tsx",
         "components/sky-avocado-progress.tsx",
         "components/sky-avocado-progress.module.css",
+        "components/sky-chat-workspace.tsx",
+        "app/workspace.css",
         "docs/workstreams/05-web-pwa-sites.md"
       ],
-      "nextAction": "両Siteを配備し、所有者での実読取、匿名/別利用者の拒否、原本更新後60秒以内の反映を確認する。Skyからの編集とTool実行は対象外。"
+      "nextAction": "両Siteを配備し、所有者での実読取、匿名/別利用者の拒否、原本更新後60秒以内の反映、およびブラウザでの下書き・結果往復を確認する。自動Chat送信とTool実行は対象外。"
     },
     {
       "id": "SKY21",

@@ -272,6 +272,8 @@ export default function SkyChatWorkspace() {
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
+  const [avocadoHandoff, setAvocadoHandoff] = useState<{ monthId: string; token: string; requestId: string | null } | null>(null);
+  const [avocadoFeedback, setAvocadoFeedback] = useState('');
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
     null,
@@ -308,6 +310,45 @@ export default function SkyChatWorkspace() {
   const hasActiveCsvJob = csvJobs.some(
     (job) => job.status === 'accepted' || job.status === 'processing',
   );
+
+  useEffect(() => {
+    const origin = 'https://avocado-princeton-progress.noellesugar1.chatgpt.site';
+    const receive = (event: MessageEvent) => {
+      if (event.origin !== origin || event.source !== window.opener) return;
+      const message = event.data as Record<string, unknown> | null;
+      if (message?.type !== 'avocado.sky.brief.v1' ||
+        typeof message.token !== 'string' || !/^[a-f0-9-]{36}$/i.test(message.token) ||
+        typeof message.monthId !== 'string' || !/^y[1-4]m(?:[1-9]|1[0-2])$/.test(message.monthId) ||
+        typeof message.brief !== 'string' || message.brief.length > 2000) return;
+      setDraft(message.brief);
+      setAvocadoHandoff({ monthId: message.monthId, token: message.token, requestId: null });
+      setAvocadoFeedback('個人プランから依頼の下書きを受け取りました。内容を確認してから送信してください。');
+      window.opener?.postMessage({ type: 'avocado.sky.accepted.v1', token: message.token }, origin);
+      requestAnimationFrame(() => composerRef.current?.focus());
+    };
+    window.addEventListener('message', receive);
+    window.opener?.postMessage({ type: 'avocado.sky.ready.v1' }, origin);
+    return () => window.removeEventListener('message', receive);
+  }, []);
+
+  const avocadoResult = avocadoHandoff?.requestId
+    ? outcome?.text || messages.find((message) =>
+        message.id === `${avocadoHandoff.requestId}-reply` && message.side === 'sky')?.text || ''
+    : '';
+  function returnAvocadoResult() {
+    if (!avocadoHandoff || !avocadoResult.trim()) return;
+    if (!window.opener || window.opener.closed) {
+      setAvocadoFeedback('個人プランのタブが閉じています。結果をコピーして記録してください。');
+      return;
+    }
+    window.opener.postMessage({
+      type: 'avocado.sky.result.v1',
+      token: avocadoHandoff.token,
+      monthId: avocadoHandoff.monthId,
+      summary: avocadoResult.trim().slice(0, 1800),
+    }, 'https://avocado-princeton-progress.noellesugar1.chatgpt.site');
+    setAvocadoFeedback('結果を個人プランへ送りました。プラン側で保存状態を確認してください。');
+  }
 
   useEffect(() => {
     const smallScreen = window.matchMedia('(max-width: 767px)');
@@ -852,6 +893,10 @@ export default function SkyChatWorkspace() {
       return;
     }
     setRemoteEstimate(null);
+    if (avocadoHandoff) {
+      setAvocadoHandoff({ ...avocadoHandoff, requestId: id });
+      setAvocadoFeedback('Skyの返答を確認し、プランに残す内容を選んでください。');
+    }
     setDraft('');
     setError('');
     setOutcome(null);
@@ -1520,6 +1565,11 @@ export default function SkyChatWorkspace() {
             </div>
 
             <form className="sky-chat-composer" onSubmit={sendMessage}>
+              {avocadoHandoff && <div className="sky-avocado-handoff" aria-live="polite">
+                <strong>avocadoの4年プランと接続中</strong>
+                <span>{avocadoFeedback}</span>
+                {avocadoResult.trim() && <button type="button" onClick={returnAvocadoResult}>この結果をプランへ戻す</button>}
+              </div>}
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">
                 <textarea

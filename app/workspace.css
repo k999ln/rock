@@ -13228,3 +13228,7 @@
 .spin { animation: sky-activation-spin 1s linear infinite; }
 @keyframes sky-activation-spin { to { transform: rotate(360deg); } }
 @media (max-width: 840px) { .sky-activation-form { grid-template-columns: 1fr 1fr; } .sky-activation-form label:first-child { grid-column: 1 / -1; } .sky-activation-form .rock-button { justify-self: start; } }
+.sky-avocado-handoff{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin:0 0 10px;border:1px solid #85a996;border-radius:12px;background:#193d2d;color:#e9f2e7;font-size:12px;line-height:1.5}
+.sky-avocado-handoff strong{white-space:nowrap;color:#d2ebb2}
+.sky-avocado-handoff span{flex:1;min-width:190px}
+.sky-chat-page .sky-avocado-handoff button{background:#d2ebb2;color:#173628;border:0;border-radius:8px;padding:8px 12px;font-weight:800}
