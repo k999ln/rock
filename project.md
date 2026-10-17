@@ -619,3 +619,5 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。
 
 2026-10-16 BIL02検証: Sky 140の2期間140 USD請求、枠内usage追加請求0、決済失敗/復旧、古いpaidだけで解除しない判定、署名通知を実Sandboxで確認（10項目）。最初の失敗用カードはattach時に拒否されたため、公式のattach成功後に失敗するテストカードへ変更し、既存invoice IDから再開した。6単体試験成功。Node22.23.3 / WRANGLER_HIDE_BANNER=trueで全体npm run verify全段階exit 0（/private/tmp/sky140-verify.log）。再起動後の報告復元とStripe請求が2件・各140 USDのまま不変を確認。顧客の実同意/自動月次回収/実Agent制限を完成扱いにしない。
+
+Pixel OS11/O6: 4Bの旧20件は形式・保存・正常Job継続合格だが、制御記号混入と重複隠蔽を検出し内容未受入。checkpoint v3を5件/保存・raw180秒・lease240秒へ変更し、混入は除去せず拒否。旧v1/v2読取・60生成+seal backup/停止を検証する。300件・自動選択・現行Coder実機受入は未完了。

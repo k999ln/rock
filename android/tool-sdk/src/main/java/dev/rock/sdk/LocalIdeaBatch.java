@@ -10,7 +10,7 @@ import org.json.*;
 
 /** Durable bounded ideation: each checkpoint contains only accepted unique items, not model reasoning. */
 public final class LocalIdeaBatch {
-    public static final int BATCH_SIZE = 10, GENERATION_PART_SIZE = 5;
+    public static final int BATCH_SIZE = 5, GENERATION_PART_SIZE = 5;
     public static final String GENERATE = "local-ideas-generate@1", SEAL = "local-ideas-seal@1";
     private LocalIdeaBatch() { }
     public static int requestedCount(String prompt) {
@@ -23,14 +23,14 @@ public final class LocalIdeaBatch {
     }
     public static String start(String prompt, int count) {
         if (count < 1 || count > 300 || prompt.getBytes(StandardCharsets.UTF_8).length > 2000) throw new IllegalArgumentException("INVALID_IDEA_REQUEST");
-        try { return new JSONObject().put("kind", "local-ideas/2").put("batchSize", BATCH_SIZE).put("request", prompt).put("target", count).put("ideas", new JSONArray()).toString(); }
+        try { return new JSONObject().put("kind", "local-ideas/3").put("batchSize", BATCH_SIZE).put("request", prompt).put("target", count).put("ideas", new JSONArray()).toString(); }
         catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     public static JSONObject state(String value) {
         Engine.bounded(value);
         try {
             JSONObject data = new JSONObject(value);
-            if (!("local-ideas/1".equals(data.optString("kind")) && data.length() == 4 || "local-ideas/2".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE) || !(data.get("request") instanceof String)) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
+            if (!("local-ideas/1".equals(data.optString("kind")) && data.length() == 4 || "local-ideas/2".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == 10 || "local-ideas/3".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE) || !(data.get("request") instanceof String)) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
             int target = data.getInt("target"); JSONArray ideas = data.getJSONArray("ideas");
             if (target < 1 || target > 300 || ideas.length() > target || data.getString("request").getBytes(StandardCharsets.UTF_8).length > 2000) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
             Set<String> seen = new HashSet<>();
@@ -38,7 +38,7 @@ public final class LocalIdeaBatch {
             return data;
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT", e); }
     }
-    private static int batchSize(JSONObject data) { return "local-ideas/1".equals(data.optString("kind")) ? 20 : BATCH_SIZE; }
+    private static int batchSize(JSONObject data) { return "local-ideas/1".equals(data.optString("kind")) ? 20 : "local-ideas/2".equals(data.optString("kind")) ? 10 : BATCH_SIZE; }
     private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 96 && !idea.codePoints().anyMatch(Character::isISOControl) && !normal(idea).isEmpty() && !idea.contains("<think>"); }
     private static String terms(String idea) {
         if(idea.contains("://"))return idea; // Preserve literal URLs and publisher identifiers.
@@ -76,8 +76,8 @@ public final class LocalIdeaBatch {
             int group=ideas.length()/GENERATION_PART_SIZE;
             String[] audiences={"一人暮らし","子育て家庭","高齢者","学生","在宅勤務","小さな店","工房","施設","建築現場","地域団体"};
             StringBuilder topics=new StringBuilder();for(int i=0;i<end-begin+1;i++){if(i>0)topics.append("、");topics.append(angles[(group*5+i+5*Math.max(0,attempt-1))%angles.length]);}
-            return "Agent・道具・家具をつなぐ構想。依頼: " + data.getString("request")
-                + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野から1案ずつ: " + topics + "。既出と異なる動作: " + recent
+            return "SkyはAgentとToolの接続hub。Miniは家具・建築に埋め込む端末。依頼: " + data.getString("request")
+                + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野から1案ずつ: " + topics + "。再使用禁止: " + recent
                 + "\n日本語で" + (end-begin+1) + "案だけ。短い一文で動作を完結する。製品名のみ不可。AIはsi表記。JSONのideas配列のみ。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
@@ -128,7 +128,7 @@ public final class LocalIdeaBatch {
             Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(terms(ideas.getString(i))));
             for (String raw:values) {
                 String idea=terms(raw);
-                if (!valid(idea) || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
+                if (!valid(idea) || idea.contains("<|") || idea.contains("|>") || idea.contains("```") || idea.contains("]}") || idea.contains("}]") || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
             }
             String next=data.toString(); Engine.bounded(next); return next;
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_BATCH",e); }

@@ -1328,7 +1328,7 @@ public final class PlatformStore {
             int step = integer(row, "step");
             int attempt = integer(row, "attempt");
             String tool = required(row, "tool");
-            if (!works.contains(workId) || step < 0 || step > 30 || attempt < 0 || attempt > 3 ||
+            if (!works.contains(workId) || step < 0 || step > 60 || attempt < 0 || attempt > 3 ||
                 !Set.of("citations@1", "free-article@1", "local-generate@1", "local-text-validate@1", "local-text-seal@1", "local-ideas-generate@1", "local-ideas-seal@1").contains(tool) ||
                 !Set.of("pending", "queued", "running", "succeeded", "needs_review", "failed", "cancelled").contains(required(row, "state")) ||
                 !runs.add(workId + ":" + step)) {
@@ -1345,7 +1345,7 @@ public final class PlatformStore {
         }
         for (String workId : works) {
             java.util.SortedMap<Integer,String> sequence = stages.get(workId);
-            if (sequence == null || sequence.size() < 2 || sequence.size() > 31)
+            if (sequence == null || sequence.size() < 2 || sequence.size() > 61)
                 throw new IllegalArgumentException("BACKUP_RUN_COUNT");
             int index = 0; for (int step : sequence.keySet()) if (step != index++) throw new IllegalArgumentException("BACKUP_RUN_SEQUENCE");
             List<String> tools = new ArrayList<>(sequence.values());

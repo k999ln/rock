@@ -232,7 +232,7 @@ public final class Engine {
     }
 
     public String submitPinnedIdeas(ModelProfilePin pin, String requestKey, String input, int batches, boolean consent) {
-        if (batches < 1 || batches > 30) throw new IllegalArgumentException("INVALID_IDEA_BATCH_COUNT");
+        if (batches < 1 || batches > 60) throw new IllegalArgumentException("INVALID_IDEA_BATCH_COUNT");
         String[] stages = new String[batches + 1]; java.util.Arrays.fill(stages, "local-ideas-generate@1");
         stages[batches] = "local-ideas-seal@1";
         return submitPinnedRecipe(pin, requestKey, input, false, consent, "local-ideas@1", stages);

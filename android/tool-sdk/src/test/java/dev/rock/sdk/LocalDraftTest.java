@@ -45,23 +45,23 @@ public final class LocalDraftTest {
         assertThrows(IllegalArgumentException.class, () -> LocalIdeaBatch.state(tamper.toString()));
     }
     @Test public void presentationBlankLinesAndConsistentLocalNumbersDoNotInventItems() throws Exception {
-        String checkpoint=LocalIdeaBatch.start("サービスのアイデア20",20);StringBuilder first=new StringBuilder();
-        for(int i=1;i<=10;i++)first.append(i).append(". 最初のサービス").append(i).append("\n\n");
-        checkpoint=LocalIdeaBatch.append(checkpoint,draft("planning",first.toString()));assertEquals(10,LocalIdeaBatch.state(checkpoint).getJSONArray("ideas").length());
-        StringBuilder second=new StringBuilder();for(int i=1;i<=10;i++)second.append(i).append(". 別のサービス").append(i).append("\n");
+        String checkpoint=LocalIdeaBatch.start("サービスのアイデア10",10);StringBuilder first=new StringBuilder();
+        for(int i=1;i<=5;i++)first.append(i).append(". 最初のサービス").append(i).append("\n\n");
+        checkpoint=LocalIdeaBatch.append(checkpoint,draft("planning",first.toString()));assertEquals(5,LocalIdeaBatch.state(checkpoint).getJSONArray("ideas").length());
+        StringBuilder second=new StringBuilder();for(int i=1;i<=5;i++)second.append(i).append(". 別のサービス").append(i).append("\n");
         String complete=LocalIdeaBatch.append(checkpoint,draft("planning",second.toString()));
-        assertEquals(20,LocalIdeaBatch.state(complete).getJSONArray("ideas").length());assertTrue(LocalIdeaBatch.render(complete).contains("20. 別のサービス10"));
+        assertEquals(10,LocalIdeaBatch.state(complete).getJSONArray("ideas").length());assertTrue(LocalIdeaBatch.render(complete).contains("10. 別のサービス5"));
         String previous=checkpoint;assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.append(previous,draft("planning",second.toString().replace("2. ","12. "))));
     }
     @Test public void exactBulletOrStringArrayItemsUseBrokerNumbersAndNeverPadding() throws Exception {
-        String checkpoint=LocalIdeaBatch.start("アイデア20",20);StringBuilder bullets=new StringBuilder();JSONArray array=new JSONArray();
-        for(int i=1;i<=10;i++){bullets.append("- 新しいサービス").append(i).append("\n");array.put("別の新しいサービス"+i);}
+        String checkpoint=LocalIdeaBatch.start("アイデア10",10);StringBuilder bullets=new StringBuilder();JSONArray array=new JSONArray();
+        for(int i=1;i<=5;i++){bullets.append("- 新しいサービス").append(i).append("\n");array.put("別の新しいサービス"+i);}
         checkpoint=LocalIdeaBatch.append(checkpoint,draft("planning",bullets.toString()));
-        String complete=LocalIdeaBatch.append(checkpoint,draft("planning",array.toString()));assertEquals(20,LocalIdeaBatch.state(complete).getJSONArray("ideas").length());
-        String previous=checkpoint;array.remove(9);assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.append(previous,draft("planning",array.toString())));
+        String complete=LocalIdeaBatch.append(checkpoint,draft("planning",array.toString()));assertEquals(10,LocalIdeaBatch.state(complete).getJSONArray("ideas").length());
+        String previous=checkpoint;array.remove(4);assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.append(previous,draft("planning",array.toString())));
     }
     @Test public void structuredSubtypeCountComesFromSavedActualPrefixAndRemainingTarget() throws Exception {
-        assertEquals("local-work@1/ideas-10-v1",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア300",300)));
+        assertEquals("local-work@1/ideas-5-v1",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア300",300)));
         assertEquals("local-work@1/ideas-1-v1",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア1",1)));
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(0));
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(11));
@@ -101,4 +101,17 @@ public final class LocalDraftTest {
         assertTrue(LocalIdeaBatch.promptPart(original,1,5).contains("Skyのアイデア20"));
     }
 
+    @Test public void newProtocolJunkIsRejectedWithoutRewritingHistoricalCheckpoints() throws Exception {
+        String initial=LocalIdeaBatch.start("アイデア5",5);
+        for(String junk:new String[]{"<|im_end|>","|>","```", "]}", "}]"}) {
+            JSONArray values=new JSONArray();for(int i=0;i<5;i++)values.put("家具で暮らしを支援"+i);
+            values.put(0,"子育て計画を調整"+junk);
+            assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(initial,draft("planning",values.toString()),5));
+        }
+        JSONObject legacy=new JSONObject(initial).put("kind","local-ideas/2").put("batchSize",10);
+        legacy.getJSONArray("ideas").put("子育て計画を調整]}<|im_e");
+        assertEquals("子育て計画を調整]}<|im_e",LocalIdeaBatch.state(legacy.toString()).getJSONArray("ideas").getString(0));
+        assertEquals("local-work@1/ideas-4-v1",LocalIdeaBatch.schema(legacy.toString()));
+        assertTrue(LocalIdeaBatch.promptPart(initial,1,5).contains("Miniは家具・建築に埋め込む端末"));
+    }
 }

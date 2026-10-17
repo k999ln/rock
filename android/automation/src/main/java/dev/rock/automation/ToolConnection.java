@@ -33,7 +33,7 @@ final class ToolConnection {
                 if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
                     int humanRetries=(int)engine.events(ticket.workId).stream().filter(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_retry".equals(e.get("kind"))).count();
                     org.json.JSONObject state=LocalIdeaBatch.state(ticket.input);
-                    if(!"local-ideas/2".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
+                    if(!"local-ideas/3".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
                     int remaining=Math.min(LocalIdeaBatch.BATCH_SIZE,state.getInt("target")-state.getJSONArray("ideas").length());
                     String next=ticket.input;
                     while(remaining>0) {
@@ -41,7 +41,7 @@ final class ToolConnection {
                         int count=Math.min(LocalIdeaBatch.GENERATION_PART_SIZE,remaining);
                         // Fresh IPC token per completion; the immutable Engine ticket/lease is unchanged.
                         token=java.util.UUID.randomUUID().toString();
-                        LocalAiConnection.Result part=runtime.plan(token,pin,LocalIdeaBatch.schemaForCount(count),LocalIdeaBatch.promptPart(next,ticket.attempt+3*humanRetries,count),"[]",105);
+                        LocalAiConnection.Result part=runtime.plan(token,pin,LocalIdeaBatch.schemaForCount(count),LocalIdeaBatch.promptPart(next,ticket.attempt+3*humanRetries,count),"[]",180);
                         if(cancelled.get() || Thread.currentThread().isInterrupted())throw new InterruptedException();
                         runtime.requireReadyForPlanning(pin);
                         if(!"completed".equals(part.event)) {

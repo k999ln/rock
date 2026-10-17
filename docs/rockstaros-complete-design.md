@@ -730,3 +730,5 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 無料Cloudの402/429は契約未払いと区別し、Providerが数値Retry-Afterを返した場合だけ待機秒数を表示する。未指定なら無料枠の利用可否確認を案内する。同じ依頼IDは結果未確認のまま保持し、再送・有料切替をしない。検証はtests/sky-free-cloud.test.mjsのcooldown/refusal試験と公開UIで行う。
 
 端末内の発想モデル選定は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)を参照。1.5Bは形式保存が通っても内容品質不合格を区別し、発想の自動候補から外す。Qwen3 4B Instructの固定Unsloth量子化を手動・資源制限付きで試験し、受入前に自動順位や一般品質を宣言しない。
+
+Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan180秒/lease240秒、最大60生成+seal）。旧v1/v2は読取を維持、新規制御記号混入は拒否する。詳細と未受入はLLM正本へ集約。

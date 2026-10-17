@@ -248,8 +248,8 @@ public class EngineTest {
     }
     @Test public void variableStagesKeepCheckpointAcrossRestartPauseAndLateCallbackAndRestore() throws Exception {
         Engine.ModelProfilePin pin = localTextPin("ideas-300");
-        String work = engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true);
-        assertEquals(16, engine.runs(work).size()); assertEquals(work, engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true));
+        String work = engine.submitPinnedIdeas(pin, "ideas-300", "zero", 60, true);
+        assertEquals(61, engine.runs(work).size()); assertEquals(work, engine.submitPinnedIdeas(pin, "ideas-300", "zero", 60, true));
         assertThrows(IllegalStateException.class, () -> engine.modelProfilePinForWork("owner:bob", work));
         Engine.Ticket first = claim(10); assertEquals(240010, first.deadline);
         assertTrue(engine.finish(first, "passed", "twenty", "boot-1", 20));
@@ -259,16 +259,16 @@ public class EngineTest {
         db.close(); db = new JdbcDatabase(file); engine = new Engine(db);
         assertTrue(engine.paused()); assertEquals("twenty", engine.checkpoint(work));
         engine.setPaused(false); long now = 100;
-        for (int step = 1; step < 16; step++) {
+        for (int step = 1; step < 61; step++) {
             Engine.Ticket t = engine.claim("boot-2", now++, true); assertNotNull(t); assertEquals(step, t.step);
             assertEquals(pin.manifestDigest, engine.modelProfilePinForWork("owner:alice", work).manifestDigest);
-            assertTrue(engine.finish(t, "passed", step == 15 ? "final 300" : "checkpoint-" + step, "boot-2", now++));
+            assertTrue(engine.finish(t, "passed", step == 60 ? "final 300" : "checkpoint-" + step, "boot-2", now++));
         }
         assertEquals("review", engine.work(work).get("state")); assertEquals("final 300", engine.result(work));
         byte[] backup = new PlatformStore(db).exportRecoverableState("owner:alice");
         try (JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("ideas-restored.db").getPath())) {
             Engine restored = new Engine(restoredDb); new PlatformStore(restoredDb).restoreRecoverableState(backup, "owner:alice", 1000);
-            assertEquals(16, restored.runs(work).size()); assertEquals("final 300", restored.result(work)); assertTrue(restored.paused());
+            assertEquals(61, restored.runs(work).size()); assertEquals("final 300", restored.result(work)); assertTrue(restored.paused());
         }
         db.execute("UPDATE runs SET tool='shell@1' WHERE work_id=? AND step=8", work);
         byte[] corrupt = new PlatformStore(db).exportRecoverableState("owner:alice");
