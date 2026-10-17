@@ -116,7 +116,13 @@
     "providerResponseId": "pllns_fe751b2162a65e83b8f16f5c00871b12",
     "replay": "same saved response displayed; code CAS/replay unit coverage confirms no new generation; live outbound network count not instrumented",
     "screenshot": "/private/tmp/sky-real-account-cloud-success.png",
-    "verification": "all stages passed before latest-main integration; merged candidate check in progress",
-    "mainIntegrated": false
+    "verification": "merged candidate npm run verify all stages exit 0",
+    "mainIntegrated": false,
+    "unitPassed": 2286,
+    "unitSkipped": 1,
+    "verifyLog": "/private/tmp/sky-live-merged-verify.log",
+    "anonymousExecutionHttpStatus": 401,
+    "generationWallTimeMs": 6158,
+    "replayWallTimeMs": 243
   }
 }

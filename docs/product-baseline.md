@@ -1,6 +1,6 @@
 # RockstarOS — 現行製品方針と確定要望
 
-Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。Macの合成Sandbox契約で実Cloud応答を確認しました。本番課金は無効です。詳しくは [LLM設計](llm-evaluation-architecture.md)を参照。
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと1時間限定の合成検証契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。詳しくは [LLM設計](llm-evaluation-architecture.md)を参照。
 
 
 2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
