@@ -11,8 +11,10 @@ const requireValue = (ok, message) => {
 
 const matrix = JSON.parse(read('data/llm-capabilities.json'));
 requireValue(matrix.schemaVersion === 1, 'schemaVersion must be 1');
-requireValue(matrix.product.displayName === 'avocadoOS', 'display name drift');
-requireValue(matrix.product.internalId === 'dev.rock', 'internal ID drift');
+const productIdentity = JSON.parse(read('data/product-identity.json'));
+requireValue(matrix.product.displayName === productIdentity.displayName, 'display name drift');
+requireValue(matrix.product.releaseName === productIdentity.releaseName, 'release name drift');
+requireValue(matrix.product.internalId === productIdentity.internalIdentifier, 'internal ID drift');
 
 const shellVersion = Number(read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl').match(/const int API_VERSION = (\d+)/)?.[1]);
 const pixelPolicy = read('android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java').match(/VERSION = "([^"]+)"/)?.[1];

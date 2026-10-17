@@ -2,13 +2,13 @@
 
 ## 現在のPixel公開モデル実装・受入
 
-主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最新GitHub main/branch/同一SHA CIを再取得し、`docs/evidence/pixel-discovered-models.json`、`data/project-status.json`のpixelDiscoveredModels、LLM正本のpixel-discovered-model-installを優先する。旧下段のcheckpointは経緯であり、現在の不具合や未実装と読み替えない。
+主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最新GitHub main/branch/同一SHA CIを取得し、`docs/evidence/pixel-discovered-models.json`、progress JSONのpixelDiscoveredModelsとLLM正本を優先する。main43cf290eのWeb無料Cloud継続は取込み済み。下段の古いcheckpointを現在の通知失敗/未実装へ転用しない。
 
-現在のAPK実装sourceは `4f160cf0`、native runtime package7/API4の実build sourceは `96dd7c305b6c7cdeb5613f4c764113572b55b79b`（run39067064393）。Shell21/Engine4、同一preview signerで非破壊更新。Qwen3 4B Instruct2507 Q4_K_MはPixel自身で全2497281120bytes取得・固定hash/署名/ロードを確認。手動20案の生成/保存は合格だが関連性の弱い案があり、一般品質保証ではない。runtime7のauto Coderでsum_even本文→検査→保存が成功し、コード実行はしない。現行の実通知tap/公開検索は逐次suiteで成功。元の24仕事/70artifactは維持。
+実機の現在APKはapp source `dba3389a320e86dc3399ff88aafe73487490ec82`。Native8/API4はsource31414985/run39072982374、既存preview signerと実bytes/payload一致を検証。Shell21/Platform1/Engine4、Pixel10 GL066/frankelへの非破壊更新。General6/Coder5/Creative2を再導入し、Creativeは実公開検索→license→既存2.5GB重量のhash再検証→ロードを確認（新規通信取得なし）。元の24仕事/70artifactは保全。auto Coderの正しいsum_evenは文章として保存、実行しない。日本語summaryは言語/保存だけ合格でSky/Zema役割混同が残り、内容は未受入。通知tap/公開検索/導入境界/SQLiteは同じ候補で実機成功。全OS image/正式署名/flash/全損復旧は別gate。
 
-本人指定の「RockstarOS・Skyで実現するサービス案300件」の最初の実300試験は、旧24字制限による途中切れと大文字SIを発見し、当該仕事だけ25件保持で中止した。現在はpackage8/raw ideas-N-v2（48文字headroom、Broker96 UTF-8 bytes上限は維持）/checkpoint v4の候補をbuild・再受入する。5件ずつ/plan180秒/lease240秒、最大60生成+seal。制御記号混入・全prefix完全重複・実数不足は拒否し、純粋発想のみ3回まで。途中件数を300と表示しない。旧中止仕事を復活させず、runtime8新profileへ明示再同意後に新しい20件→300件を検証する。保存prefixを確認し、重複起動や無制限の本人retryをしない。生成本文はGit外、合成/host/旧runtime試験で実300を置換しない。完了後は全件の内容/個数/hash/readback、同一head CIとmain統合を別記録する。
+新prompt契約v5/raw ideas-v2の実手動20件は533.698秒、5工程attempt1、番号/実20件/si表記/完全重複/制御記号検査合格。関連性の粗い案は残るため限定draft。発想/文章の自動候補4B80、code Coder90、記事/要約/翻訳General50。0.6BとGeneralの発想は内容不合格として自動対象外。
 
-LLMの選択は無断cloud fallback/有料gate/Tool権限へ昇格しない。Pixel Developer Preview APKと全OS image/正式署名/flash/OTA/全損復旧は別受入。
+本人指定の新しい「RockstarOS・Skyサービス案300件」がauto4B2で実行中。別仕事を作らず既存のsnapshot/保存prefixを確認する。旧package7の300試験は25件保存で中止済み、復活させない。生成は5件/回、plan180秒、lease240秒、純粋発想のみ同じ工程で最大3再生成、60生成+seal。手動retryで無制限に継続させず、停止/不明をそのまま記録する。**モデル実行中にBroker instrumentationを起動するとworkerが切れるため実施しない。** 生成本文はGit外。完了後は実300件/全内容/正規化完全重複/hash/保存readback、元データ保全、最終verifyと同一head CI、main統合を別々に記録する。モデル結果をTool成功/本人承認/予算へ昇格しない。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 

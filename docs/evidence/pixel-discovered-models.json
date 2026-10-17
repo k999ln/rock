@@ -1,36 +1,36 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "IN_PROGRESS_PACKAGE7_300_PREFIX_REJECTED_PACKAGE8_PENDING",
+  "status": "RUNNING_REQUESTED300_NOT_ACCEPTED",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
-  "appBuildSource": "4f160cf0ab92ad46f46ef4daf4072e99620680f0",
-  "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
-  "nativeBuildRun": 39067064393,
+  "appBuildSource": "dba3389a320e86dc3399ff88aafe73487490ec82",
+  "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
+  "nativeBuildRun": 39072982374,
   "installedApks": {
     "automation": {
       "package": "dev.rock.automation",
-      "sha256": "2875c88db8fff2eed8c099a7fe60897d83c0036e75e1cb26fde6a3ba727aefc9",
-      "bytes": 6937393
+      "bytes": 6937397,
+      "sha256": "bab98af59727d730e7a86f3ae9f10e0a33aff85c2e410569155db55fb9f9ff95"
     },
     "shell": {
       "package": "dev.rock.shell",
-      "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2",
-      "bytes": 685388
+      "bytes": 685388,
+      "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2"
     },
     "runtime": {
       "package": "com.localactionassistant",
-      "sha256": "760c579c0c33312ffa1cfcc01d19b06c414b71619e47b1fa294c08b434ae3d1a",
-      "bytes": 26465947
+      "bytes": 26465947,
+      "sha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008"
     }
   },
   "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
   "versions": {
-    "runtimePackage": 7,
+    "runtimePackage": 8,
     "binderApi": 4,
     "shellApi": 21,
     "platformApi": 1,
     "engineSchema": 4,
-    "ideaCheckpoint": 3,
+    "ideaCheckpoint": 5,
     "modelPolicy": 3
   },
   "generation": {
@@ -48,46 +48,6 @@
     "chargingTrial": true
   },
   "physical": {
-    "manualCreative20": {
-      "status": "PASS_LIMITED_DRAFT_NOT_GENERAL_QUALITY",
-      "appSource": "67a2dc185a3b3ed77defa665193175bd8c311a74",
-      "count": 20,
-      "elapsedMs": 367917,
-      "artifactSha256": "6e68066de7aa8f12534b9591cf73b29289d32b0038ea52efeb818fb3597d4e8e",
-      "manualChooserUsed": true,
-      "allFiveStagesAttemptOne": true,
-      "humanReviewAccepted": false,
-      "limitations": [
-        "Some ideas have weak relationships (laundry and health), usefulness is not accepted.",
-        "Exact normalized lexical uniqueness is not semantic uniqueness."
-      ]
-    },
-    "autoCoder": {
-      "status": "PASS_GENERATE_VALIDATE_SEAL",
-      "profile": "dev.rock.qwen25-coder-15b-q4km",
-      "profileVersion": 4,
-      "definitionDigest": "98e4840029a1385748b36038786d8b89fe6fe5d868c8ca37ced75fe6eb73faa5",
-      "elapsedMs": 35922,
-      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
-      "artifactBytes": 235,
-      "actualFunction": "sum_even",
-      "codeExecuted": false,
-      "humanReviewAccepted": false
-    },
-    "currentUi": {
-      "status": "PASS_SEQUENTIAL_SUITE",
-      "reportedTests": 14,
-      "actualTests": 13,
-      "optInSkipped": 1,
-      "actualNotificationTap": true,
-      "livePublicSearch": true,
-      "firstConcurrentRun": "1 public-search failure; not accepted; separate sequential rerun passed"
-    },
-    "installBoundariesAndSqlite": {
-      "status": "PASS",
-      "actualTests": 5,
-      "skips": 0
-    },
     "pre300Migration": {
       "originalWorksPreserved": 24,
       "originalArtifactsPreserved": 70,
@@ -96,13 +56,14 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "STOPPED_FOR_CONTENT_DEFECT_PREFIX_25_PRESERVED",
+      "status": "RUNNING",
       "accepted": false,
       "target": 300,
       "choice": "auto",
       "expectedProfile": "dev.rock.qwen3-4b-2507-q4km",
-      "completed": 25,
-      "reason": "One truncated phrase at old raw24-character hard cap and uppercase SI spelling; operator stopped only this job via its actual detail/confirmation UI. Shell instrumentation was stopped for inspection, not product crash."
+      "profileVersion": 2,
+      "checkpointVersion": 5,
+      "manualRetries": 0
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -117,17 +78,113 @@
       "weightSha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
       "quantPublisher": "Unsloth",
       "baseAuthor": "Qwen",
-      "fixedRevision": "a06e946bb6b655725eafa393f4a9745d460374c9"
+      "fixedRevision": "a06e946bb6b655725eafa393f4a9745d460374c9",
+      "runtimePackage": 7
+    },
+    "runtime7ManualCreative20": {
+      "status": "PASS_LIMITED_DRAFT_NOT_GENERAL_QUALITY",
+      "appSource": "67a2dc185a3b3ed77defa665193175bd8c311a74",
+      "count": 20,
+      "elapsedMs": 367917,
+      "artifactSha256": "6e68066de7aa8f12534b9591cf73b29289d32b0038ea52efeb818fb3597d4e8e",
+      "manualChooserUsed": true,
+      "allFiveStagesAttemptOne": true,
+      "humanReviewAccepted": false,
+      "limitations": [
+        "Some ideas have weak relationships (laundry and health), usefulness is not accepted.",
+        "Exact normalized lexical uniqueness is not semantic uniqueness."
+      ]
+    },
+    "runtime7AutoCoder": {
+      "status": "PASS_GENERATE_VALIDATE_SEAL",
+      "profile": "dev.rock.qwen25-coder-15b-q4km",
+      "profileVersion": 4,
+      "definitionDigest": "98e4840029a1385748b36038786d8b89fe6fe5d868c8ca37ced75fe6eb73faa5",
+      "elapsedMs": 35922,
+      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
+      "artifactBytes": 235,
+      "actualFunction": "sum_even",
+      "codeExecuted": false,
+      "humanReviewAccepted": false
+    },
+    "runtime7Ui": {
+      "status": "PASS_SEQUENTIAL_SUITE",
+      "reportedTests": 14,
+      "actualTests": 13,
+      "optInSkipped": 1,
+      "actualNotificationTap": true,
+      "livePublicSearch": true,
+      "firstConcurrentRun": "1 public-search failure; not accepted; separate sequential rerun passed"
+    },
+    "runtime7BoundariesAndSqlite": {
+      "status": "PASS",
+      "actualTests": 5,
+      "skips": 0
+    },
+    "native8Manual20": {
+      "status": "PASS_LIMITED_DRAFT_NOT_GENERAL_CONTENT_QUALITY",
+      "appSource": "8da536a2",
+      "count": 20,
+      "elapsedMs": 531665,
+      "artifactSha256": "8897b0df67af0fcd68871aa4abeebbc4a5937edcdc1194d39547d27b26ee8798",
+      "manualChooserUsed": true,
+      "all5stagesAttempt1": true,
+      "humanReviewAccepted": false,
+      "semanticReview": "All20 read. Complete short proposals, but vague furniture/environment links remain; originality/usefulness/physical implementation not accepted."
+    },
+    "native8CreativeInstall": {
+      "status": "PASS_LIVE_PUBLIC_SEARCH_LICENSE_CACHED_WEIGHT_REVERIFY_LOAD",
+      "appSource": "c899a1f3",
+      "profileVersion": 2,
+      "definitionDigest": "a4f63aa4666c3b2b4af749bf357ec536a21c26b0868aab7b4948329bbd8b89aa",
+      "elapsedMs": 42737,
+      "liveSearchButton": true,
+      "cachedSource": true,
+      "actualNewDownloadObserved": false
+    },
+    "native8AutoCoder": {
+      "status": "PASS_GENERATE_VALIDATE_SEAL",
+      "appSource": "8da536a2",
+      "profile": "dev.rock.qwen25-coder-15b-q4km",
+      "profileVersion": 5,
+      "definitionDigest": "a94d04ac0194b3794269f5e7cce8c5261be72f405bfc026dd22cd8ca27b07c62",
+      "elapsedMs": 38716,
+      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
+      "artifactBytes": 235,
+      "codeExecuted": false,
+      "actualFunction": "sum_even",
+      "humanReviewAccepted": false
+    },
+    "native8AutoSummary": {
+      "status": "PASS_JAPANESE_LANGUAGE_FORMAT_PERSISTENCE_CONTENT_NOT_ACCEPTED",
+      "appSource": "8da536a2",
+      "profileVersion": 6,
+      "elapsedMs": 43476,
+      "artifactSha256": "60a42d6285e1286a55cff060eaeaafebc304eacbc37088e00556b5819ce72f04",
+      "limitation": "Japanese body still conflates Sky and Zema responsibilities; requires content review."
+    },
+    "finalUi": {
+      "status": "PASS_SEQUENTIAL_SAME_APKS",
+      "reportedTests": 14,
+      "actualTests": 13,
+      "optInSkipped": 1,
+      "actualNotificationTap": true,
+      "livePublicSearch": true,
+      "seconds": 23.008
+    },
+    "finalBoundariesSqlite": {
+      "status": "PASS",
+      "actualTests": 5,
+      "skips": 0,
+      "seconds": 0.569
+    },
+    "native8Pre300Migration": {
+      "originalWorksPreserved": 24,
+      "originalArtifactsPreserved": 70,
+      "currentWorks": 60,
+      "currentArtifacts": 174,
+      "allBodyDigestsVerified": true
     }
-  },
-  "host": {
-    "fullVerify": "PASS_ALL_STAGES_exit_0_on_app_source_4f160cf0",
-    "androidBuildLintTests": "PASS",
-    "coreTests": 126,
-    "automationTests": 48,
-    "sdkTests": 19,
-    "shellTests": 14,
-    "unitFailures": 0
   },
   "limitations": [
     "Production catalog remains empty.",
@@ -137,19 +194,47 @@
     "Generated artifacts stay outside Git; receipts contain hashes and counts only."
   ],
   "mainIntegrated": false,
-  "pendingCandidate": {
-    "runtimePackage": 8,
-    "checkpointVersion": 4,
-    "rawSchema": "local-work@1/ideas-N-v2",
-    "rawMaxCharacters": 48,
-    "brokerMaxUtf8Bytes": 96,
-    "oldSchemaV1MaxCharacters": 24,
-    "actualApkBuilt": true,
-    "physicalAccepted": false,
-    "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
-    "nativeBuildRun": 39072982374,
-    "unsignedSha256": "689bdfa94de242f7cef377d2351290ba554c34f74dcecd0e5460e91a00bc7242",
-    "signedSha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008",
-    "signedPayloadMatches": true
+  "previousRuntime7Artifact": {
+    "appBuildSource": "4f160cf0ab92ad46f46ef4daf4072e99620680f0",
+    "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
+    "installedApks": {
+      "automation": {
+        "package": "dev.rock.automation",
+        "sha256": "2875c88db8fff2eed8c099a7fe60897d83c0036e75e1cb26fde6a3ba727aefc9",
+        "bytes": 6937393
+      },
+      "shell": {
+        "package": "dev.rock.shell",
+        "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2",
+        "bytes": 685388
+      },
+      "runtime": {
+        "package": "com.localactionassistant",
+        "sha256": "760c579c0c33312ffa1cfcc01d19b06c414b71619e47b1fa294c08b434ae3d1a",
+        "bytes": 26465947
+      }
+    }
+  },
+  "previousHost": {
+    "fullVerify": "PASS_ALL_STAGES_exit_0_on_app_source_4f160cf0",
+    "androidBuildLintTests": "PASS",
+    "coreTests": 126,
+    "automationTests": 48,
+    "sdkTests": 19,
+    "shellTests": 14,
+    "unitFailures": 0
+  },
+  "host": {
+    "fullVerify": "PASS_ALL_STAGES_exit0_main43cf_8da_source_with_test_file_concurrency2_no_tests_skipped",
+    "firstBroadRun": "3 existing process-timing failures at normal concurrency; related40 focused tests then passed",
+    "androidUnits": {
+      "core": 126,
+      "automation": 48,
+      "tool-sdk": 19,
+      "shell": 14
+    },
+    "nativeSourceTests": 34,
+    "pythonPrepareStageTests": 21,
+    "androidBuildLint": "PASS"
   }
 }

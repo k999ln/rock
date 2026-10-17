@@ -17,9 +17,10 @@
   "schemaVersion": 1,
   "updatedAt": "2026-10-17",
   "product": {
-    "displayName": "avocadoOS",
+    "displayName": "RockstarOS",
     "internalId": "dev.rock",
-    "releaseStage": "Developer Preview"
+    "releaseStage": "Developer Preview",
+    "releaseName": "RockstarOS 1.0"
   },
   "statusVocabulary": [
     "designed_not_implemented",
@@ -34,7 +35,7 @@
       "tool": null,
       "role": "local_planner",
       "provider": "local",
-      "model": "Qwen2.5-1.5B-Instruct-Q4_K_M-GGUF (bounded auto/manual); Qwen3-0.6B-Q8_0-GGUF diagnostic manual alternative",
+      "model": "Qwen3-4B-Instruct-2507 Q4_K_M creative drafts; Qwen2.5-Coder-1.5B Q4_K_M code drafts; Qwen2.5-1.5B Q4_K_M article/summary/translation; 0.6B diagnostic only",
       "runtime": "llama.rn@0.12.9 / Local Action Assistant API v4 (current source)",
       "status": "device_apk_verified",
       "network": "prohibited",
@@ -85,7 +86,9 @@
         "codePreliminaryAccepted": true,
         "serviceIdea300Accepted": false,
         "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
-        "ideaSchemaFamily": "local-work@1/ideas-N-v1 (N=1..10, exact raw ideas array)"
+        "ideaSchemaFamily": "local-work@1/ideas-N-v2 (N1..10 exact arrays; raw48 characters, Broker96 UTF-8 bytes; legacy v1 retained)",
+        "currentEvidence": "docs/evidence/pixel-discovered-models.json",
+        "ideaCheckpointVersion": 5
       }
     },
     {
@@ -260,22 +263,22 @@
     "status": "live_account_cloud_verified",
     "tests": "tests/sky-model-routing.test.mjs"
   },
-"skyFreeCloudAcceptance":{
-  "date": "2026-10-17",
-  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
-  "status": "live_account_real_cloud_accepted_synthetic_contract",
-  "implementation": [
-    "lib/sky-free-cloud.ts",
-    "lib/sky-model-selection.ts",
-    "lib/sky-free-cloud-http.ts",
-    "app/api/llm/free-cloud/route.ts",
-    "components/sky-free-cloud-panel.tsx"
-  ],
-  "evidence": "docs/evidence/sky-free-cloud-live.json",
-  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
-  "productionBillingEnabled": false,
-  "mainAuthenticatedUiAccepted": true
-},
+  "skyFreeCloudAcceptance": {
+    "date": "2026-10-17",
+    "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+    "status": "live_account_real_cloud_accepted_synthetic_contract",
+    "implementation": [
+      "lib/sky-free-cloud.ts",
+      "lib/sky-model-selection.ts",
+      "lib/sky-free-cloud-http.ts",
+      "app/api/llm/free-cloud/route.ts",
+      "components/sky-free-cloud-panel.tsx"
+    ],
+    "evidence": "docs/evidence/sky-free-cloud-live.json",
+    "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+    "productionBillingEnabled": false,
+    "mainAuthenticatedUiAccepted": true
+  },
   "pixelModelChoice": {
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
     "status": "implemented_configuration_required",
@@ -293,12 +296,13 @@
       "planning_writing": "dev.rock.qwen3-4b-2507-q4km"
     },
     "candidateAcceptance": {
-      "source": "9b4563c1c875481349087e11f79867dced0415f1",
-      "codeTrial": "PASS_d00867df_Broker_with_a9c35a37_runtime_137386ms",
+      "source": "dba3389a320e86dc3399ff88aafe73487490ec82",
+      "codeTrial": "PASS_native8_Coder5_actual_sum_even_text_not_executed",
       "requestedServiceIdeas": 300,
       "ideasAccepted": false,
-      "earlyCompletionRuntime": "package7_API4_actual_build_and_import_verified_300_acceptance_pending",
-      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install"
+      "earlyCompletionRuntime": "package8_API4_actual_build_signer_payload_and_Pixel_import_verified",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+      "evidence": "docs/evidence/pixel-discovered-models.json"
     },
     "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file"
   }
