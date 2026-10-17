@@ -42,6 +42,7 @@ public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
     static final int LOCAL_AI_STATUS_API_VERSION = 4;
     private ShellUi ui;
+    private AutoCloseable visibleBrokerBinding;
     private ViewFlipper pages;
     private final TextView[] navigation = new TextView[4];
     private final LinearLayout[] pageContent = new LinearLayout[4];
@@ -994,6 +995,19 @@ public final class MainActivity extends Activity {
                     "受取を反映できません。本人・端末鍵・既存の有効な端末内予約とCloud receiptを確認してください。重複実行はせず、元の仕事は維持しています。"); });
             }
         });
+    }
+
+    @Override protected void onStart() {
+        super.onStart();
+        try { visibleBrokerBinding=new ShellConnection(this).bindWhileVisible(); }
+        catch(Exception unavailable) { visibleBrokerBinding=null; /* Ordinary authenticated RPC still reports availability. */ }
+    }
+    @Override protected void onStop() {
+        if(visibleBrokerBinding!=null) {
+            try { visibleBrokerBinding.close(); } catch(Exception disconnected) { /* Already unbound/dead. */ }
+            visibleBrokerBinding=null;
+        }
+        super.onStop();
     }
 
     @Override protected void onResume() {

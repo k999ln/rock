@@ -695,11 +695,12 @@
         "primaryOwner": "ROCK",
         "design": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
         "privateShellApi": 21,
-        "runtimePackageVersion": 6,
+        "runtimePackageVersion": 7,
         "localBinderApi": 4,
         "engineSchema": 4,
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
         "firstRequestedTask": "300 RockstarOS/Sky service ideas",
+        "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
         "ideaGeneration": {"rawPartLimit":5,"partsPerSavedStage":2,"partTimeoutSeconds":90,"savedBatch":10,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
         "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
         "limits": [

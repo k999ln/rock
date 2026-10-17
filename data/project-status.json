@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "five_item_parts_physical_twenty_trial_in_progress",
+    "status": "runtime7_ideation_sampling_and_visible_binding_build_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,7 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Accept two five-item calls per saved stage on real Pixel, then run the actual requested 300-item work, verify real count/uniqueness and persistent hashes; finish same-head checks before main merge.",
+    "nextAction": "Build/inspect runtime7, consent and reimport exact new profiles, verify visible job foreground priority and actual unique 20 ideas, then requested300, auto Coder/manual model and same-head CI.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39064987817,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
@@ -43,7 +43,8 @@
       "publicApiConnectivity": "Both known public origins HTTP200; actual search UI PASS 4.313s after reconnect",
       "notification": "PASS_actual_completion_notification_tap_on_new_Broker_and_Shell",
       "runtime6ImportGate": "Explicitly cancelled only held synthetic 20-item job before profile upgrade; pinned work guard preserved",
-      "runtime6FiveProbe": "PASS_17749ms_real_five_strings_no_runtime_crash_not_owner_300"
+      "runtime6FiveProbe": "PASS_17749ms_real_five_strings_no_runtime_crash_not_owner_300",
+      "samePromptDirect": "PASS_COMPLETION_23467ms_but_four_repeated_items_not_work_accepted"
     },
     "runtimeBuildSource": "f96ca583f9bff51d91c46a4141149591594775db",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
@@ -54,13 +55,13 @@
       "generationLeaseSeconds": 240
     },
     "runtimeCandidate": {
-      "packageVersion": 6,
+      "packageVersion": 7,
       "binderApi": 4,
       "rawIdeaSchema": "ideas array only, exact N 1..10",
       "metadataOwner": "runtime, never model authority",
-      "sourceTests": 33,
-      "nativeBuild": "PASS_UNSIGNED_BYTES_AND_EXISTING_PREVIEW_SIGNER",
-      "fix": "Android JSI stopCompletion returns void despite Promise type; contain sync/async stop failures",
+      "sourceTests": 34,
+      "nativeBuild": "PENDING",
+      "fix": "idea-only varied sampling; lifecycle-scoped trusted Broker visible binding; strict validators unchanged",
       "nativeBuildSource": "f96ca583"
     },
     "migrationReadback": {

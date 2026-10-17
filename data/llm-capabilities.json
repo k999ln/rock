@@ -71,7 +71,7 @@
       },
       "candidateImplementation": {
         "privateShellApiVersion": 21,
-        "runtimePackageVersion": 6,
+        "runtimePackageVersion": 7,
         "runtimeApiVersion": 4,
         "planSchema": "local-work@1/output-v1",
         "modelCatalog": [

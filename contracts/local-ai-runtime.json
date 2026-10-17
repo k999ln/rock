@@ -3,7 +3,7 @@
   "routeId": "local-action-assistant",
   "executionTarget": "local",
   "apiVersion": 4,
-  "packageVersionCode": 6,
+  "packageVersionCode": 7,
   "androidPackage": "com.localactionassistant",
   "androidService": "com.localactionassistant.RockLocalAiService",
   "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -133,5 +133,18 @@
       "metadataOwner": "runtime",
       "brokerValidatesActualStringsAndUniqueness": true
     }
+  },
+  "candidateBuild": {
+    "status": "pending_new_artifact",
+    "previousArtifactVersionCode": 6,
+    "previousExtensionSha256": [
+      "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+      "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+      "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+      "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
+      "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
+      "61e7403b689400c8598d15872d71383c34caacdff3f6b688c858bf0104581ddc"
+    ],
+    "reason": "closed ideation uses bounded varied sampling to address real greedy repeated-item failure; other tasks unchanged"
   }
 }

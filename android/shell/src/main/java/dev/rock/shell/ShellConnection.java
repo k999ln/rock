@@ -134,12 +134,26 @@ final class ShellConnection {
         return withService(api -> api.cancelCloudA2ADelegation(delegationId));
     }
 
-    private <T> T withService(Call<T> call) throws Exception {
+    private void requireTrustedBroker() throws Exception {
         PackageManager pm = context.getPackageManager();
         if (pm.getPackageInfo(BROKER_PACKAGE, 0).getLongVersionCode() != 1)
             throw new SecurityException("UNAPPROVED_BROKER_VERSION");
         if (pm.checkSignatures(context.getPackageName(), BROKER_PACKAGE) != PackageManager.SIGNATURE_MATCH)
             throw new SecurityException("UNTRUSTED_BROKER_SIGNER");
+    }
+    /** Keep only the trusted process visible while the Activity is visible. No execution request. */
+    AutoCloseable bindWhileVisible() throws Exception {
+        requireTrustedBroker();
+        ServiceConnection connection=new ServiceConnection() {
+            @Override public void onServiceConnected(ComponentName name,IBinder binder) { }
+            @Override public void onServiceDisconnected(ComponentName name) { }
+        };
+        if(!context.bindService(new Intent().setComponent(new ComponentName(BROKER_PACKAGE,BROKER_SERVICE)),connection,Context.BIND_AUTO_CREATE))
+            throw new IllegalStateException("BROKER_UNAVAILABLE");
+        return () -> context.unbindService(connection);
+    }
+    private <T> T withService(Call<T> call) throws Exception {
+        requireTrustedBroker();
         CountDownLatch connected = new CountDownLatch(1);
         IShellApi[] remote = new IShellApi[1];
         ServiceConnection connection = new ServiceConnection() {

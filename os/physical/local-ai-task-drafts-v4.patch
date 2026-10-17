@@ -6,8 +6,8 @@
          targetSdkVersion rootProject.ext.targetSdkVersion
 -        versionCode 3
 -        versionName "1.2"
-+        versionCode 6
-+        versionName "1.5"
++        versionCode 7
++        versionName "1.6"
      }
      buildTypes {
          debug {
@@ -90,11 +90,12 @@
  import {Platform} from 'react-native';
  import ReactNativeBlobUtil from 'react-native-blob-util';
  import {initLlama, type CompletionResponseFormat, type LlamaContext} from 'llama.rn';
-@@ -146,13 +147,14 @@
+@@ -146,13 +147,15 @@
      messages: ChatMessage[],
      responseFormat: CompletionResponseFormat,
      expectedWeightsSha256: string,
 +    maxTokens = 768,
++    creative = false,
    ): Promise<string> {
      return this.exclusive(async () => {
        if (!this.context || this.activeWeightsSha256 === null) {
@@ -102,15 +103,16 @@
        }
        assertModelWeightsHash(expectedWeightsSha256, this.activeWeightsSha256);
 -      return this.planWithinQueue(system, messages, responseFormat);
-+      return this.planWithinQueue(system, messages, responseFormat, maxTokens);
++      return this.planWithinQueue(system, messages, responseFormat, maxTokens, creative);
      });
    }
  
-@@ -160,10 +162,13 @@
+@@ -160,10 +163,14 @@
      system: string,
      messages: ChatMessage[],
      responseFormat: CompletionResponseFormat,
 +    maxTokens: number,
++    creative: boolean,
    ): Promise<string> {
      if (!this.context) throw new Error('先にGGUFモデルを読み込んでください');
      await this.context.clearCache();
@@ -121,15 +123,19 @@
        messages: [
          {role: 'system', content: system},
          ...messages.slice(-6).map(message => ({
-@@ -173,12 +178,18 @@
+@@ -173,12 +180,19 @@
        ],
        response_format: responseFormat,
        reasoning_format: 'none',
 -      n_predict: 768,
+-      temperature: 0,
+-      top_p: 1,
+-      top_k: 1,
 +      n_predict: maxTokens,
-       temperature: 0,
-       top_p: 1,
-       top_k: 1,
++      temperature: creative ? 0.7 : 0,
++      top_p: creative ? 0.9 : 1,
++      top_k: creative ? 40 : 1,
++      ...(creative ? {repeat_penalty: 1.12} : {}),
        seed: 0,
        stop: ['<|im_end|>', '<|end|>', '<|eot_id|>', '<|endoftext|>'],
 +    }, data => {
@@ -144,7 +150,7 @@
 --- a/src/native/osBridge.ts
 +++ b/src/native/osBridge.ts
 @@ -1,3 +1,4 @@
-+import {canonicalIdeaDraft} from './ideaPlan';
++import {canonicalIdeaDraft, ideaCount} from './ideaPlan';
  import AsyncStorage from '@react-native-async-storage/async-storage';
  import ReactNativeBlobUtil from 'react-native-blob-util';
  import {AppRegistry, NativeModules} from 'react-native';
@@ -154,7 +160,7 @@
                   createdAt: new Date().toISOString()});
 -  const output = await modelRuntime.plan(spec.systemPrompt, messages, spec.responseFormat, expectedWeightsSha256);
 -  emit(token, 'completed', requiredText(output, 'plan_output'));
-+  const output = await modelRuntime.plan(spec.systemPrompt, messages, spec.responseFormat, expectedWeightsSha256, schemaId.startsWith('local-work@1/') ? 512 : 768);
++  const output = await modelRuntime.plan(spec.systemPrompt, messages, spec.responseFormat, expectedWeightsSha256, schemaId.startsWith('local-work@1/') ? 512 : 768, ideaCount(schemaId) !== null);
 +  const draft = requiredText(canonicalIdeaDraft(schemaId, output), 'plan_output');
 +  bridge?.setStatus('ready', true); // publish readiness before the synchronous Binder callback can return
 +  emit(token, 'completed', draft);
@@ -173,9 +179,11 @@
    }
 --- a/src/native/__tests__/osBridgePlan.test.ts
 +++ b/src/native/__tests__/osBridgePlan.test.ts
-@@ -30,6 +30,9 @@
+@@ -29,10 +29,22 @@
+   it('plans with the authenticated loaded hash when standalone storage has no model', async () => {
      await run(request);
      expect(modelRuntime.plan).toHaveBeenCalledTimes(1);
++    expect((modelRuntime.plan as jest.Mock).mock.calls[0][5]).toBe(false);
      expect(bridge.emitEvent).toHaveBeenCalledWith(request.requestToken, 'completed', '{"toolId":"article-preparation@1"}');
 +    const completedIndex = bridge.emitEvent.mock.calls.findIndex(call => call[1] === 'completed');
 +    const readyIndex = bridge.setStatus.mock.calls.findIndex(call => call[0] === 'ready');
@@ -183,6 +191,17 @@
      expect(repository.model).not.toHaveBeenCalled();
      expect(modelRuntime.load).not.toHaveBeenCalled();
      expect(bridge.setModelIdentity).not.toHaveBeenCalled();
++  });
++  it('enables varied sampling only for the closed idea schema and preserves actual strings', async () => {
++    const ideas = ['調理時間を記録', '洗濯の乾燥を通知', '照明を手元で調整', '会議を短く要約', '家具から体重記録'];
++    (modelRuntime.plan as jest.Mock).mockResolvedValue(JSON.stringify({ideas}));
++    await run({...request, schemaId: 'local-work@1/ideas-5-v1'});
++    expect((modelRuntime.plan as jest.Mock).mock.calls[0][5]).toBe(true);
++    const completed = bridge.emitEvent.mock.calls.find(call => call[1] === 'completed');
++    expect(JSON.parse(JSON.parse(completed![2]).body)).toEqual(ideas);
+   });
+   it.each([{loaded: false}, {weightsSha256: 'b'.repeat(64)}])('rejects absent/mismatched loaded identity without autoload: %o', async state => {
+     Object.assign(modelRuntime, state);
 --- a/src/native/planBoundary.ts
 +++ b/src/native/planBoundary.ts
 @@ -0,0 +1,31 @@

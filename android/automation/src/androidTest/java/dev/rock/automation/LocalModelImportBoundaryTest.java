@@ -119,7 +119,8 @@ public final class LocalModelImportBoundaryTest {
         assertEquals("dev.rock.qwen25-15b-q4km",pin.profileId);
         LocalAiConnection runtime=new LocalAiConnection(context());runtime.requireReadyForPlanning(pin);
         long started=android.os.SystemClock.elapsedRealtime();
-        LocalAiConnection.Result result=runtime.plan(java.util.UUID.randomUUID().toString(),pin,"local-work@1/ideas-5-v1","Skyはエージェントの接続ハブです。暮らしに使えるサービスを日本語で5件。各案は12文字以内。JSONのideas配列だけを返す。", "[]");
+        String prompt="true".equals(InstrumentationRegistry.getArguments().getString("rockUseSavedIdeaPrompt")) ? dev.rock.sdk.LocalIdeaBatch.promptPart(app.engine().checkpoint(id),1,5) : "Skyはエージェントの接続ハブです。暮らしに使えるサービスを日本語で5件。各案は12文字以内。JSONのideas配列だけを返す。";
+        LocalAiConnection.Result result=runtime.plan(java.util.UUID.randomUUID().toString(),pin,"local-work@1/ideas-5-v1",prompt, "[]");
         org.json.JSONObject receipt=new org.json.JSONObject().put("event",result.event).put("elapsedMs",android.os.SystemClock.elapsedRealtime()-started).put("payload",result.payload);
         Files.write(new File(context().getExternalFilesDir(null),"synthetic-five-ideas.json").toPath(),receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         assertEquals("completed",result.event);dev.rock.sdk.LocalWorkDraft.verify("planning",result.payload);
