@@ -19,7 +19,7 @@
       "pro",
       "rocketstar"
     ],
-    "catalogCount": 37,
+    "catalogCount": 38,
     "designDomainCount": 19,
     "requirementCount": 50,
     "coverageMeaning": "各項目を読取/調査/関連契約へ対応した設計coverage。実装/実機/契約/収益の達成率ではない。"
@@ -461,7 +461,7 @@
       "authority": "catalog ready、署名、購入のどれもTool実行成功を意味しない。",
       "storage": "既存catalog/connection/package、同意時だけfeed履歴。本文を推薦学習へ流さない。",
       "compensation": "業務状態はZema、権限はCore、外部固有処理はadapter、作者の品質は審査/検収。",
-      "implemented": "37 catalog、有限Web処理、feed、大学別入口、SDK/接続管理のsource。",
+      "implemented": "38 catalog、有限Web処理、feed、大学別入口、SDK/接続管理のsource。",
       "gap": "全Tool実行器、外部hostの認証SDK、有料Marketplaceの公開受入。",
       "acceptance": "同一owner/Tool版で発見→条件→接続/購入→仕事→成果→失効/削除。",
       "repoRefs": [
@@ -2279,8 +2279,8 @@
     {
       "id": "I04",
       "before": "既存受入表はあるが全catalogを横断する一覧は分散",
-      "after": "37 Toolをsource/fixture/実機/本番/未統合の境界へ対応",
-      "verification": "37 Toolの掲載分類と実行条件を別記録",
+      "after": "38 Toolをsource/fixture/実機/本番/未統合の境界へ対応",
+      "verification": "38 Toolの掲載分類と実行条件を別記録",
       "limit": "Tool数で完成率を出さない"
     },
     {
@@ -2928,6 +2928,30 @@
     }
   ],
   "toolCoverage": [
+    {
+      "id": "visual-scribe",
+      "name": "会話図解 · Visual Scribe",
+      "catalogStatus": "ready",
+      "runner": null,
+      "environment": "ブラウザ内の決定的ルール処理 / サインイン不要 / 入力・結果を保存しない",
+      "upstream": "https://github.com/k999ln/rock/blob/main/lib/conversation-diagram.ts",
+      "upstreamLicenseLabel": "RockstarOS code",
+      "licenseVerification": "catalog_metadata_not_a_new_license_audit",
+      "systemIds": [
+        "sky"
+      ],
+      "dataIds": [
+        "D02",
+        "D05"
+      ],
+      "potentialTransactionIds": [],
+      "executionBoundary": "browser_local_rule_processing_not_semantic_or_factual_verification",
+      "externalTermsGate": "none_for_initial_browser_local_processing; future_voice_model_and_save_require_separate_acceptance",
+      "repoRefs": [
+        "lib/catalog.ts",
+        "docs/sky-tools-complete-design.md"
+      ]
+    },
     {
       "id": "rockstar-material-invention",
       "name": "Material Invention · 物質候補の比較",

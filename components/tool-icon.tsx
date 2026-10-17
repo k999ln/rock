@@ -6,12 +6,13 @@ import {
   Globe, Inbox, LayoutTemplate, Lightbulb, ListChecks, MessageSquare,
   MessagesSquare, Monitor, MousePointer2, PackageCheck, Palette, PenLine,
   Radar, Receipt, Route, Scale, Search, Send, Shirt, ShoppingBag,
-  Smartphone, Sparkles, TrendingUp, Users, Workflow, ShieldCheck,
+  Smartphone, Sparkles, TrendingUp, Users, Waypoints, Workflow, ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 
 // One stable, task-specific symbol per catalog entry. Unknown IDs keep a neutral icon.
 export const toolIcons: Record<string, LucideIcon> = {
+  'visual-scribe': Waypoints,
   'rockstar-spider': ShieldCheck,
   'rockstar-material-invention': FlaskConical,
   'rockstar-csv-cleanup': FileSpreadsheet,

@@ -56,6 +56,23 @@ const mrHubCandidates = ([
 }));
 const catalogEntries = [
   {
+    id: 'visual-scribe',
+    name: '会話図解 · Visual Scribe',
+    category: '会議・文章整理',
+    description: '会話や文字起こしを貼ると、段落ごとに話題・展開・判断・着地の流れへ自動で図解します。',
+    source: 'https://github.com/k999ln/rock/blob/main/lib/conversation-diagram.ts',
+    launchPath: '/sky/visual-scribe',
+    environment: 'ブラウザ内の決定的ルール処理 / サインイン不要 / 入力・結果を保存しない',
+    cost: '無料。外部モデル、API、保存先を呼びません。',
+    steps: ['会話または文字起こしを貼るか、UTF-8のtxtを開く', '空行ごとの段落と発言の流れを自動図解する', '元の段落と照合する', '全段落をコピーするか、選んだ図をSVGで保存する'],
+    note: '発言を短く区切る第一者ルール処理です。意味推論、事実確認、話者の意図の補完、話者分離、音声文字起こしは行いません。未保存の入力と図解は再読み込みで消えます。',
+    color: 'green',
+    license: 'RockstarOS code',
+    licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-material-invention',
     name: 'Material Invention · 物質候補の比較',
     category: '研究・ものづくり',

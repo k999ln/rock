@@ -206,12 +206,13 @@ These live under `services/` and have their own runtime or deployment boundary. 
 
 ## Sky Tool catalog
 
-The catalog source is [`lib/catalog.ts`](lib/catalog.ts). At this commit it contains **37 entries**: **15 `ready`** entries that have a Sky path or bounded local fallback, and **22 `candidate`** entries that are listed for future integration. `ready` does not mean external credentials, production payments, live Provider contracts, physical-device acceptance, or autonomous execution are complete. A candidate is not an executable standard Tool.
+The catalog source is [`lib/catalog.ts`](lib/catalog.ts). At this commit it contains **38 entries**: **16 `ready`** entries that have a Sky path or bounded local fallback, and **22 `candidate`** entries that are listed for future integration. `ready` does not mean external credentials, production payments, live Provider contracts, physical-device acceptance, or autonomous execution are complete. A candidate is not an executable standard Tool.
 
-### The 15 ready entries
+### The 16 ready entries
 
 | Tool | ID | What a person uses it for | Where to look |
 | --- | --- | --- | --- |
+| **Visual Scribe** | `visual-scribe` | Turn pasted conversation or transcript paragraphs into bounded browser-local flow diagrams and export one as SVG. | [`lib/conversation-diagram.ts`](lib/conversation-diagram.ts) |
 | **Material Invention** | `rockstar-material-invention` | Compare deterministic material candidates, missing safety conditions, and owner-scoped saved work. | [`lib/material-invention.ts`](lib/material-invention.ts) |
 | **SPIDER** | `rockstar-spider` | Inspect pasted code or text for secret, personal-data, and dangerous-processing candidates in the browser without sending or saving the source. | [`toolkits/spider-guard/`](toolkits/spider-guard/) |
 | **AMC** | `rockstar-amc` | Prepare a Goal plan and record manual work, submission, review, and acceptance. | [`app/amc/`](app/amc/) |
