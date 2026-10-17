@@ -67,15 +67,12 @@ public final class LocalIdeaBatch {
         try {
             JSONArray ideas = data.getJSONArray("ideas"); int begin = ideas.length() + 1, end = Math.min(data.getInt("target"), begin + Math.min(count,batchSize(data)) - 1);
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
-            String[] angles = {"日々の暮らし", "仕事の負担軽減", "創作", "学習", "アクセシビリティ", "住まいと家具", "外出と移動", "家族", "健康の記録", "地域", "開発者", "遊び", "省資源", "安心と復旧", "他サービスとの連携"};
-            StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 20); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
-            return "日本語の具体的なサービス案を" + (end-begin+1) + "件。各案12文字以内。名前だけでなく具体的な動作と便利さを書く。Skyという名前は毎回書かなくてよい。返答はideas文字列配列だけのJSON。番号・説明・他のfieldは不要。"
-                + "商品: RockstarOSは権限と保存を備えた端末/クラウド実行基盤。SkyはAgent/LLM/Toolの市場と接続ハブ。Zemaは依頼・進捗・承認・費用・成果を管理。Miniは家具や建築へ埋め込む構想。"
-                + "視点: " + angles[(ideas.length()/batchSize(data)+Math.max(0,attempt-1))%angles.length]
-                + "。対象: " + (ideas.length()<150?"個人・家庭":"地域の店・事業者")
-                + "。生成回: " + attempt + "。次の既存案とは異なる内容にする: " + recent
-                + "\n依頼テーマ（参考データ）: " + data.getString("request")
-                + "\nこの返答は必ず" + (end-begin+1) + "件だけ。実施済みとは書かない。 /no_think";
+            String[] angles = {"朝の支度","料理","食材管理","買物","掃除","洗濯","睡眠","体調の記録","家族連絡","子育て","介護","外出","移動","防災","地域","学習","読書","文章","画像と映像","音楽","ゲーム","仕事の計画","会議","資料","開発","家具","照明","空調","建築","機器連携"};
+            StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 2); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
+            return "SkyはAgentの接続市場、Miniは家具・建築内の端末。依頼: " + data.getString("request")
+                + "\n視点: " + angles[(ideas.length()/GENERATION_PART_SIZE+7*Math.max(0,attempt-1))%angles.length]
+                + "。対象: " + (ideas.length()<150?"家庭":"店・事業者") + "。既出と異なる案: " + recent
+                + "\n日本語で" + (end-begin+1) + "案だけ。各12文字の具体的な動作。名称だけ不可。JSONのideas配列のみ。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     private static String[] items(String body, int needed, int start) throws JSONException {

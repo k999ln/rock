@@ -85,7 +85,7 @@ public final class LocalDraftTest {
         JSONArray values=new JSONArray();for(int i=0;i<20;i++)values.put("旧形式のサービス"+i);
         String next=LocalIdeaBatch.append(old,draft("planning",values.toString()));
         assertEquals(20,LocalIdeaBatch.state(next).getJSONArray("ideas").length());
-        assertTrue(LocalIdeaBatch.prompt(old,1).contains("20件"));
+        assertTrue(LocalIdeaBatch.prompt(old,1).contains("20案"));
     }
 
 }
