@@ -208,7 +208,7 @@ public final class DiscoveredModelAcceptanceTest {
                 assertEquals(initial.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
                 ui(() -> { assertFalse(((CheckBox) field(activity,"zemaConsent")).isChecked()); ((CheckBox) field(activity,"zemaConsent")).setChecked(true); Button button = (Button) field(activity,"zemaSubmitButton"); button.performClick(); button.performClick(); });
             }
-            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? 7200000 : 300000);
+            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? (target==300?10800000:1200000) : 300000);
             int completed = 0;
             while (SystemClock.elapsedRealtime() < deadline) {
                 JSONObject snapshot = new JSONObject(broker.snapshot()); JSONArray works = snapshot.getJSONArray("works");
@@ -231,7 +231,19 @@ public final class DiscoveredModelAcceptanceTest {
             assertNotNull("Home must create one persisted job", work); assertEquals(work.toString(), "review", work.getString("state"));
             JSONArray runs = work.getJSONArray("runs"); for(int i=0;i<runs.length();i++) assertEquals("succeeded", runs.getJSONObject(i).getString("state"));
             String artifact = broker.result(created); assertFalse(artifact.isBlank()); assertFalse(artifact.contains("<think>"));
-            if ("ideas".equals(mode)) { assertEquals(target, artifact.split("(?m)^\\d+\\. ", -1).length-1); assertEquals(target, work.getJSONObject("ideaProgress").getInt("completed")); }
+            if ("ideas".equals(mode)) {
+                assertEquals(target, artifact.split("(?m)^\\d+\\. ", -1).length-1);assertEquals(target,work.getJSONObject("ideaProgress").getInt("completed"));
+                java.util.regex.Matcher lines=java.util.regex.Pattern.compile("(?m)^([0-9]+)\\. (.+)$").matcher(artifact);Set<String> unique=new HashSet<>();int number=0;
+                while(lines.find()) {
+                    assertEquals(++number,Integer.parseInt(lines.group(1)));String idea=lines.group(2);
+                    assertTrue(idea.getBytes(StandardCharsets.UTF_8).length<=96);
+                    assertFalse("model control tail must not reach the saved artifact",idea.contains("<|")||idea.contains("|>")||idea.contains("```")||idea.contains("]}")||idea.contains("}]"));
+                    String normalized=java.text.Normalizer.normalize(idea,java.text.Normalizer.Form.NFKC);
+                    assertFalse("requested si spelling",java.util.regex.Pattern.compile("(?<![A-Za-z0-9_./:@])[AS]I(?![A-Za-z0-9_@])").matcher(normalized).find());
+                    assertTrue("all saved ideas must be lexically unique",unique.add(normalized.toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{P}\\p{Z}\\s]","")));
+                }
+                assertEquals(target,number);
+            }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
             JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
