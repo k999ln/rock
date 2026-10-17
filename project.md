@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 BIL02/O5（JOINT）、DOC04/H1同期: PR #150/main 90d9a6d4から、実Cloud usageと100 USD枠の接続を着手。本人は無料枠のみを指定、Provider/APIキーの所在は不明。project環境変数/.env/.dev.varsにCloud資格情報は見つからず、有料APIは呼ばない。既存executeReservedRemoteAiTextと確定usageを再利用し、100 USD到達の外部送信ゼロをfixtureで先行受入する。実応答と合成境界を区別する。既存coordinatorへの接続・usage projection・100 USD境界/並列/usage欠落/再送/取消/A2A共通枠の6件とUI表示を確認。npm run verify全stage exit 0（2272 pass/既存skip1、/private/tmp/sky-usage-verify-final.log）。初回の無関係fixture cleanup ENOTEMPTYは単独と全体再試験で合格。OpenAI billingはログイン画面へ遷移し本人ログイン待ち。実Cloud送信0/Provider費用0、本番無効。次は無料利用権と接続の確認、実応答受入。
+
 2026-10-17 BIL02/O5（JOINT）、DOC04/H1同期: 本人の「毎月140ドルの自動請求・未払いAgent停止・入金後復旧、Sandboxのみ」により、main 1f0cd54eを既存PR #150 branchへ保全merge。新しいopt-in Sandbox契約/請求projectionと月次timerを既存Remote LLM/A2A予約・送信のDB境界へ接続。実Cloud送信と本番課金は無効。ローカル8件、実Stripe Sandbox6項目、署名通知4件、UIのpassedと2請求paidを確認。Node22/WRANGLER_HIDE_BANNER=trueでnpm run verify全stage exit 0（2266 pass/既存skip1）。初回の移行一覧fixture欠落を修正して全体再実行。証拠 docs/evidence/sky-recurring-sandbox.json、ログ /private/tmp/sky-recurring-verify-final.log。本番課金/実Cloud未実行。同head CI/main統合は未完了。
 
 2026-10-16 BIL02/O5（JOINT）: PR #148は同headの全CI成功後、main 60765fc3へ統合。次は140 USD固定額・100 USD枠内追加請求0・未払い/復旧判定をStripe sandboxで受け入れる。codex/sky-140-collection-sandboxで着手。過去2か月の月末操作と合成usageを使う専用harnessであり、実契約・月次scheduler・実Agent実行gateへの接続を完成とはしない。
