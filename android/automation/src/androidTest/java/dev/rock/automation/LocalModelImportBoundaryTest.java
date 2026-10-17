@@ -116,7 +116,7 @@ public final class LocalModelImportBoundaryTest {
         RockApplication app=(RockApplication)context().getApplicationContext();
         assertEquals(20,dev.rock.sdk.LocalIdeaBatch.state(app.engine().checkpoint(id)).getInt("target"));
         dev.rock.core.Engine.ModelProfilePin pin=app.engine().modelProfilePinForWork(AndroidOwner.current(context()),id);
-        assertEquals("dev.rock.qwen25-15b-q4km",pin.profileId);
+        assertTrue(java.util.Set.of("dev.rock.qwen25-15b-q4km","dev.rock.qwen3-4b-2507-q4km").contains(pin.profileId));
         LocalAiConnection runtime=new LocalAiConnection(context());runtime.requireReadyForPlanning(pin);
         long started=android.os.SystemClock.elapsedRealtime();
         String prompt="true".equals(InstrumentationRegistry.getArguments().getString("rockUseSavedIdeaPrompt")) ? dev.rock.sdk.LocalIdeaBatch.promptPart(app.engine().checkpoint(id),1,5) : "Skyはエージェントの接続ハブです。暮らしに使えるサービスを日本語で5件。各案は12文字以内。JSONのideas配列だけを返す。";

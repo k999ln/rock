@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "general15b_content_failed_manual_4b_network_import_trial",
+    "status": "four_b_model_formatted_twenty_trial_and_job_continuation_running",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -27,11 +27,13 @@
       "numberOwner": "Broker",
       "actualItemCardinalityRequired": true,
       "rawPartSize": 5,
-      "rawPartTimeoutSeconds": 90,
+      "rawPartTimeoutSeconds": 105,
       "partsPerSavedStage": 2,
       "incompletePartPersisted": false,
       "diversity": "one model idea per distinct topic; 30 topics/10 audiences; full original request retained",
-      "newTerminology": "standalone AI rejected for new ideas; old text remains readable"
+      "newTerminology": "requested standalone AI formatted as si; count unchanged; alias duplicates rejected; old text unchanged",
+      "stagesPerJob": 2,
+      "normalContinuationUsesFailureBackoff": false
     },
     "physicalTrials": {
       "generalCacheVerifiedInstall": "PASS_18.945s",
@@ -50,7 +52,8 @@
       "priorityExperiment": "Old runtime6, new visible Shell binding: native/Broker fg while visible, bg after close; saved10 and held after3 duplicate replies, no false20",
       "singleTopicRuntime7": "Saved actual10; stopped synthetic20 to trial distinct-topic prompt, not accepted as20",
       "diverseTwentyFormat": "PASS_170965ms_actual20_saved_and_review_state",
-      "diverseTwentyContent": "FAIL_topic_labels_and_truncated_names_not_usable_service_ideas"
+      "diverseTwentyContent": "FAIL_topic_labels_and_truncated_names_not_usable_service_ideas",
+      "creativeDirect": "Real5 actions_82626ms_AI_spelling_triggered_old_rejection"
     },
     "runtimeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
@@ -85,7 +88,8 @@
       "revision": "a06e946bb6b655725eafa393f4a9745d460374c9",
       "hostHashVerified": true,
       "automaticPriority": 0,
-      "deviceQualityAccepted": false
+      "deviceQualityAccepted": false,
+      "deviceNetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
     }
   },
 

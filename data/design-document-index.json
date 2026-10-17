@@ -701,9 +701,10 @@
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
         "firstRequestedTask": "300 RockstarOS/Sky service ideas",
         "creativeModelTrial": "Qwen3 4B Instruct 2507 / Unsloth Q4_K_M fixed artifact; 8GiB RAM minimum; explicit manual only until real quality acceptance",
+        "schedulerContinuation": "two stages per healthy job, fresh alternating immediate IDs without failure backoff; charge/thermal/pause/lease gates retained",
         "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
-        "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; new standalone AI term rejected in favor of si; historical text readable",
-        "ideaGeneration": {"rawPartLimit":5,"partsPerSavedStage":2,"partTimeoutSeconds":90,"savedBatch":10,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
+        "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; requested standalone AI term formatted as si; actual count unchanged, alias duplicates rejected, historical text readable",
+        "ideaGeneration": {"rawPartLimit":5,"partsPerSavedStage":2,"partTimeoutSeconds":105,"savedBatch":10,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
         "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
         "limits": [
           "signed APK catalog only",

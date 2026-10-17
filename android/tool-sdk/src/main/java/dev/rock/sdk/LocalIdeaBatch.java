@@ -40,6 +40,10 @@ public final class LocalIdeaBatch {
     }
     private static int batchSize(JSONObject data) { return "local-ideas/1".equals(data.optString("kind")) ? 20 : BATCH_SIZE; }
     private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 96 && !idea.codePoints().anyMatch(Character::isISOControl) && !normal(idea).isEmpty() && !idea.contains("<think>"); }
+    private static String terms(String idea) {
+        if(idea.contains("://"))return idea; // Preserve literal URLs and publisher identifiers.
+        return idea.replaceAll("(?<![A-Za-z0-9_./:@Ａ-Ｚａ-ｚ０-９])[AaＡａ][IiＩｉ](?![A-Za-z0-9_@Ａ-Ｚａ-ｚ０-９])","si");
+    }
     private static String normal(String idea) { return Normalizer.normalize(idea, Normalizer.Form.NFKC).toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{P}\\p{Z}\\s]", ""); }
     public static String schema(String checkpoint) {
         JSONObject data=state(checkpoint);
@@ -74,7 +78,7 @@ public final class LocalIdeaBatch {
             StringBuilder topics=new StringBuilder();for(int i=0;i<end-begin+1;i++){if(i>0)topics.append("、");topics.append(angles[(group*5+i+5*Math.max(0,attempt-1))%angles.length]);}
             return "Agent・道具・家具をつなぐ構想。依頼: " + data.getString("request")
                 + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野から1案ずつ: " + topics + "。既出と異なる動作: " + recent
-                + "\n日本語で" + (end-begin+1) + "案だけ。各12文字で具体的な動作を書く。製品名のみ不可。AIはsi表記。JSONのideas配列のみ。 /no_think";
+                + "\n日本語で" + (end-begin+1) + "案だけ。短い一文で動作を完結する。製品名のみ不可。AIはsi表記。JSONのideas配列のみ。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     private static String[] items(String body, int needed, int start) throws JSONException {
@@ -121,9 +125,10 @@ public final class LocalIdeaBatch {
             int needed = Math.min(Math.min(count,batchSize(data)), data.getInt("target")-ideas.length());
             if (needed<1) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] values = items(draft.getString("body"),needed,ideas.length());
-            Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(ideas.getString(i)));
-            for (String idea:values) {
-                if (!valid(idea) || java.util.regex.Pattern.compile("(?<![A-Za-z])[Aa][Ii](?![A-Za-z])").matcher(Normalizer.normalize(idea,Normalizer.Form.NFKC)).find() || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
+            Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(terms(ideas.getString(i))));
+            for (String raw:values) {
+                String idea=terms(raw);
+                if (!valid(idea) || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
             }
             String next=data.toString(); Engine.bounded(next); return next;
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_BATCH",e); }

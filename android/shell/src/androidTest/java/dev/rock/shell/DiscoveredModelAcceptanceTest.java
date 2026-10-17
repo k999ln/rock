@@ -208,7 +208,7 @@ public final class DiscoveredModelAcceptanceTest {
                 assertEquals(initial.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
                 ui(() -> { assertFalse(((CheckBox) field(activity,"zemaConsent")).isChecked()); ((CheckBox) field(activity,"zemaConsent")).setChecked(true); Button button = (Button) field(activity,"zemaSubmitButton"); button.performClick(); button.performClick(); });
             }
-            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? 3600000 : 300000);
+            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? 7200000 : 300000);
             int completed = 0;
             while (SystemClock.elapsedRealtime() < deadline) {
                 JSONObject snapshot = new JSONObject(broker.snapshot()); JSONArray works = snapshot.getJSONArray("works");

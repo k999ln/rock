@@ -26,12 +26,12 @@ public final class AutomationJobService extends JobService {
         Session previous = sessions.put(params.getJobId(), s);
         stop(previous);
         s.task = worker.submit(() -> {
-            boolean reschedule = false;
+            boolean reschedule = false, continuation = false;
             try {
                 if (!getSystemService(UserManager.class).isUserUnlocked()) return;
                 int boot = Settings.Global.getInt(getContentResolver(), Settings.Global.BOOT_COUNT, -1);
                 if (boot < 0) throw new IllegalStateException("BOOT_ID_UNAVAILABLE");
-                for (int i = 0; i < 8 && !s.stopped.get(); i++) {
+                for (int i = 0; i < 2 && !s.stopped.get(); i++) {
                     boolean charging = getSystemService(BatteryManager.class).isCharging();
                     if (getSystemService(PowerManager.class).getCurrentThermalStatus() >= PowerManager.THERMAL_STATUS_SEVERE) { reschedule = true; break; }
                     s.current = engine().claim(Integer.toString(boot), SystemClock.elapsedRealtime(), charging);
@@ -48,12 +48,15 @@ public final class AutomationJobService extends JobService {
                         }
                     } catch (Exception e) { engine().interrupt(s.current); reschedule = true; break; }
                     finally { WorkChangeSignal.changed(this, s.current.workId); s.connection.cancel(); s.connection = null; s.current = null; }
-                    reschedule = i == 7;
+                    continuation = i == 1;
                 }
             } catch (RuntimeException e) { /* Fail closed; no raw payload/error logging. UI keeps persistent state. */ }
             finally {
                 sessions.remove(params.getJobId(), s);
-                if (!s.stopped.get()) jobFinished(params, reschedule);
+                if (!s.stopped.get()) {
+                    jobFinished(params, reschedule);
+                    if(continuation)Scheduler.continueWork(this,params.getJobId());
+                }
             }
         });
         return true;

@@ -12,6 +12,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 OS11/O6/ROCK: 4BはPixel自身で全2,497,281,120bytesをWi-Fi取得→SHA/署名/読み込みまで104.912s成功（cachedSource=false）。手動選択UIも実選択。20件はAI表記拒否で0件のまま3回停止したため、限定direct診断で実5動作/82.626sとAI表記を確認。owner指定のAI→si整形に変更し、表記後の重複検査/旧データ不変を維持。part105s×最大2/lease240、2工程で正常Job継続・失敗backoff分離・pauseの4103取消を実装。Core126/automation47/SDK17/Shell14とbuild/lint合格、20件を新sourceで試験中。4B自動順位はまだ0、300件は未実行。
+
 2026-10-17 OS11/O6/ROCK: b33fe6a6の20件は形式・保存170.965s合格だが、分野名コピー/途中切れが多く内容品質不合格。General1.5Bのplanning/writingを自動候補から除外。Qwen3 4B Instruct 2507のUnsloth量子化（Apache2、固定rev/hash、2.497GB）をホスト全量SHA/実GGUF42metadata/tokenizer/templateで確認し、既存鍵でprofile1/runtime7へ追加。autoPriority0/8GiB RAM条件の手動試験だけとし、Pixelで実Wi-Fi全量取得を進めている（既に1.22GB受信、未導入）。新4Bの品質/300件は未受入。
 
 2026-10-17 OS11/O6/ROCK: single-topic runtime7試験は実10件保存まで進んだが再生成が多く、次の試験へ切替えて中止（保存prefix保持）。raw5へ異なる5分野を1案ずつ求め、30分野/10対象で多様化し、AI語は新規案だけsiへ再生成要求、旧AI checkpoint読取は維持。SDK17/host build/lint成功。新20件を再試験中。手動model試験は実ダイアログ選択を行い、手動route3102/自動3100を分離した。追加旧「記事準備のみ」表示も汎用説明へ訂正。300件は未着手。

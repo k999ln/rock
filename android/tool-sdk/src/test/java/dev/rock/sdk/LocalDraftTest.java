@@ -88,12 +88,16 @@ public final class LocalDraftTest {
         assertTrue(LocalIdeaBatch.prompt(old,1).contains("20案"));
     }
 
-    @Test public void newIdeasUseSiTerminologyWhileHistoricalAiTextRemainsReadable() throws Exception {
+    @Test public void requestedSiFormattingPreservesActualCountRejectsAliasDuplicatesAndKeepsHistoricalText() throws Exception {
         String original=LocalIdeaBatch.start("Skyのアイデア20",20);JSONArray values=new JSONArray();for(int i=0;i<5;i++)values.put("暮らしの支援"+i);
         values.put(0,"AIで洗濯支援");
-        assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
-        JSONObject old=new JSONObject(original);old.getJSONArray("ideas").put("AIで洗濯支援");assertEquals(1,LocalIdeaBatch.state(old.toString()).getJSONArray("ideas").length());
-        values.put(0,"siで洗濯支援");assertEquals(5,LocalIdeaBatch.state(LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5)).getJSONArray("ideas").length());
+        JSONObject result=LocalIdeaBatch.state(LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
+        assertEquals(5,result.getJSONArray("ideas").length());assertEquals("siで洗濯支援",result.getJSONArray("ideas").getString(0));
+        values.put(1,"siで洗濯支援");assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
+        JSONObject old=new JSONObject(original);old.getJSONArray("ideas").put("AIで洗濯支援");assertEquals("AIで洗濯支援",LocalIdeaBatch.state(old.toString()).getJSONArray("ideas").getString(0));
+        values.put(1,"OpenAIの文書を要約");values.put(2,"https://example.aiを見る");
+        result=LocalIdeaBatch.state(LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
+        assertEquals("OpenAIの文書を要約",result.getJSONArray("ideas").getString(1));assertEquals("https://example.aiを見る",result.getJSONArray("ideas").getString(2));
         assertTrue(LocalIdeaBatch.promptPart(original,1,5).contains("Skyのアイデア20"));
     }
 

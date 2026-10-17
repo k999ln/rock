@@ -41,7 +41,7 @@ final class ToolConnection {
                         int count=Math.min(LocalIdeaBatch.GENERATION_PART_SIZE,remaining);
                         // Fresh IPC token per completion; the immutable Engine ticket/lease is unchanged.
                         token=java.util.UUID.randomUUID().toString();
-                        LocalAiConnection.Result part=runtime.plan(token,pin,LocalIdeaBatch.schemaForCount(count),LocalIdeaBatch.promptPart(next,ticket.attempt+3*humanRetries,count),"[]",90);
+                        LocalAiConnection.Result part=runtime.plan(token,pin,LocalIdeaBatch.schemaForCount(count),LocalIdeaBatch.promptPart(next,ticket.attempt+3*humanRetries,count),"[]",105);
                         if(cancelled.get() || Thread.currentThread().isInterrupted())throw new InterruptedException();
                         runtime.requireReadyForPlanning(pin);
                         if(!"completed".equals(part.event)) {
