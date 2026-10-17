@@ -78,10 +78,10 @@ public final class DiscoveredModelAcceptanceTest {
             AtomicReference<Button> begin = new AtomicReference<>(); long deadline=SystemClock.elapsedRealtime()+10000;
             do {
                 ui(() -> { for(android.view.View root:android.view.inspector.WindowInspector.getGlobalWindowViews()) {
-                    Button b=button(root,"取得を始める"); if(b!=null){
+                    Button b=button(root,"取得を始める"); if(b!=null && !b.isEnabled()){
                         assertFalse("owner consent is initially unchecked",b.isEnabled());
                         CheckBox c=(CheckBox)find(root,v -> v instanceof CheckBox && ((CheckBox)v).getText().toString().startsWith("ライセンスと容量"));
-                        assertNotNull(c); c.setChecked(true); begin.set(b);
+                        assertNotNull(c); assertFalse("owner checkbox is initially unchecked",c.isChecked()); c.setChecked(true); begin.set(b); break;
                     }
                 }}); if(begin.get()==null)SystemClock.sleep(100);
             } while(begin.get()==null && SystemClock.elapsedRealtime()<deadline);
@@ -159,20 +159,26 @@ public final class DiscoveredModelAcceptanceTest {
             : "translation".equals(mode) ? "次の文を英語に翻訳して。Skyは暮らしと仕事をつなぎます。"
             : "Pythonで、整数の配列を受け取り偶数だけの合計を返す関数sum_evenのコードを書いて。コードは実行しない。";
         String expected = "code".equals(mode) ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
-        JSONObject prepared = new JSONObject(broker.prepareLocalModelChoice("auto", prompt));
+        String choice=InstrumentationRegistry.getArguments().getString("rockModelChoice","auto");
+        JSONObject prepared = new JSONObject(broker.prepareLocalModelChoice(choice, prompt));
         assertEquals(prepared.toString(), "prepared", prepared.optString("status")); assertEquals(expected, prepared.getString("profileId"));
         Set<String> before = new HashSet<>(); JSONArray old = initial.getJSONArray("works");
         for (int i = 0; i < old.length(); i++) before.add(old.getJSONObject(i).getString("id"));
         String previousChoice = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getString("preferredLocalModel", "auto");
-        context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", "auto").commit();
+        context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", choice).commit();
         MainActivity activity = (MainActivity) instrumentation.startActivitySync(new Intent(context(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         String created = InstrumentationRegistry.getArguments().getString("rockResumeWork"); JSONObject work = null;
         File dir = context().getExternalFilesDir(null); long start = SystemClock.elapsedRealtime();
         try {
             ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
             if (created != null) {
-                assertEquals("ready", new JSONObject(broker.reloadLocalModel(expected, true)).getString("status"));
-                broker.retry(created);
+                JSONObject saved = null; JSONArray savedWorks = new JSONObject(broker.snapshot()).getJSONArray("works");
+                for(int i=0;i<savedWorks.length();i++)if(created.equals(savedWorks.getJSONObject(i).getString("id")))saved=savedWorks.getJSONObject(i);
+                assertNotNull("resume only the existing owner-requested work",saved);
+                boolean held=false;JSONArray savedRuns=saved.getJSONArray("runs");for(int i=0;i<savedRuns.length();i++)held|=java.util.Set.of("failed","needs_review").contains(savedRuns.getJSONObject(i).getString("state"));
+                String readiness=broker.localAiStatus();
+                if(!"ready".equals(readiness)&&!"busy".equals(readiness))assertEquals("ready",new JSONObject(broker.reloadLocalModel(expected,true)).getString("status"));
+                if(held)broker.retry(created);
             }
             if (created == null) {
                 ui(() -> { ((EditText) field(activity, "homePrompt")).setText(prompt); ((RadioGroup) field(activity, "homeExecutionChoice")).check(3100); call(activity, "prepareHomeRequest"); });
@@ -208,7 +214,7 @@ public final class DiscoveredModelAcceptanceTest {
             if ("ideas".equals(mode)) { assertEquals(target, artifact.split("(?m)^\\d+\\. ", -1).length-1); assertEquals(target, work.getJSONObject("ideaProgress").getInt("completed")); }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
-            JSONObject receipt = new JSONObject().put("status","passed").put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
+            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
             Files.write(new File(dir,"discovered-"+mode+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {
             // Requested ideas and accepted drafts remain saved; never mark human review complete here.

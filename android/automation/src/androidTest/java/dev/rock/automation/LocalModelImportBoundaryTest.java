@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-/** Real Android signature, descriptor and SQLite boundaries; no substitute weights or model inference. */
+/** Real Android trust/storage boundaries and explicitly opted-in physical model diagnostics. */
 @RunWith(AndroidJUnit4.class)
 public final class LocalModelImportBoundaryTest {
     private Context context() { return InstrumentationRegistry.getInstrumentation().getTargetContext(); }
@@ -109,6 +109,20 @@ public final class LocalModelImportBoundaryTest {
         org.json.JSONObject checkpoint=dev.rock.sdk.LocalIdeaBatch.state(app.engine().checkpoint(id));assertEquals(20,checkpoint.getInt("target"));
         assertEquals("dev.rock.qwen25-15b-q4km",app.engine().modelProfilePinForWork(AndroidOwner.current(context()),id).profileId);
         assertTrue(context().getSharedPreferences("synthetic-plan-probe",Context.MODE_PRIVATE).edit().putString("workId",id).commit());
+    }
+    @Test public void readOnlyPhysicalMigrationHashes() throws Exception {
+        org.junit.Assume.assumeTrue("explicit physical hash-only migration readback", "true".equals(InstrumentationRegistry.getArguments().getString("rockMigrationReadback")));
+        org.json.JSONArray works=new org.json.JSONArray(),artifacts=new org.json.JSONArray();
+        try(AndroidDatabase db=new AndroidDatabase(context())) {
+            for(java.util.Map<String,String> row:db.query("SELECT id FROM works ORDER BY id"))works.put(row.get("id"));
+            for(java.util.Map<String,String> row:db.query("SELECT work_id,digest,body FROM artifacts ORDER BY work_id,digest")) {
+                assertEquals("every stored body must match its digest",row.get("digest"),dev.rock.core.Engine.digest(row.get("body")));
+                artifacts.put(new org.json.JSONObject().put("workId",row.get("work_id")).put("digest",row.get("digest")));
+            }
+            org.json.JSONObject result=new org.json.JSONObject().put("engineSchema",Integer.parseInt(db.query("SELECT version FROM rock_meta").get(0).get("version")))
+                .put("works",works).put("artifacts",artifacts).put("allBodyDigestsVerified",true);
+            Files.write(new File(context().getExternalFilesDir(null),"migration-hash-readback.json").toPath(),result.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        }
     }
     private String active() {
         dev.rock.core.platform.ModelProfileManifest active = platform().activeModelProfile();

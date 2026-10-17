@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "structured_ideas_runtime5_native_build_pending",
+    "status": "runtime5_installed_physical_acceptance_in_progress",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -15,7 +15,7 @@
     "physicalAccepted": false,
     "nextAction": "Build/sign/inspect package5, explicitly import cached weights under new profile versions, accept code and structured 20-item trials, then execute the owner-requested 300 actual service ideas with checkpoint readback and same-head CI.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
-    "runtimeBuildRun": 39059611493,
+    "runtimeBuildRun": 39063165913,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
@@ -36,8 +36,8 @@
       "notificationAndManualFlow": "13_of_14_passed_live_search_network_failure_recorded",
       "ideaProbe": "Actual model returned one item for a requested batch of ten; validator held at zero, no fabricated completion"
     },
-    "runtimeBuildSource": "a9c35a37d5cf56a36ff6e5cbd7c42e628ef2e53a",
-    "mergedMain": "d6d7bd33492224826c22aef148f6b206225bb854",
+    "runtimeBuildSource": "cbb484215de20a0a7ff47c533bdd1944c21b915d",
+    "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
     "planningLimits": {
       "outputTokens": 512,
       "headlessSeconds": 180,
@@ -50,7 +50,12 @@
       "rawIdeaSchema": "ideas array only, exact N 1..10",
       "metadataOwner": "runtime, never model authority",
       "sourceTests": 31,
-      "nativeBuild": "PENDING"
+      "nativeBuild": "PASS_ACTUAL_APK_INSPECTION_AND_SAME_PAYLOAD_PREVIEW_SIGNING"
+    },
+    "migrationReadback": {
+      "originalWorksPreserved": 24,
+      "originalArtifactsPreserved": 70,
+      "allCurrentBodyDigestsVerified": true
     }
   },
 

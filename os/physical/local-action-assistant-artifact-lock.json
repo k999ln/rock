@@ -4,7 +4,7 @@
   "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "moduleName": "RockLocalActionAssistant",
   "packageName": "com.localactionassistant",
-  "versionCode": 4,
+  "versionCode": 5,
   "requiredAbis": [
     "arm64-v8a"
   ],
@@ -12,10 +12,10 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "7459c1e1c0b673c79c9edc98f5ec3632ddddabe6e2fa9ff6e25fe0521ce50ebb",
-  "apkSizeBytes": 26417692,
+  "apkSha256": "90e50347aa1c064404b858aceea01053690818306882b9fb2a20a0fd33fdf0a4",
+  "apkSizeBytes": 26420228,
   "imageIntegrated": false,
-  "notes": "Unsigned package4/API4 APK from GitHub Actions 39059611493 at Rock source a9c35a37. Six reviewed overlays include closed local-work schema, 512-token draft limit and 180-second planning window after physical 90-second timeouts. Actual bytes inspected and preview-signed payload compared. OS image/production signing/flash not accepted.",
+  "notes": "Unsigned package5/API4 APK from GitHub Actions 39063165913 at Rock source cbb48421. Six reviewed overlays include exact-cardinality idea arrays, JSON completion stopping and bounded planning. Actual bytes inspected and existing preview-signed payload compared. Separate physical acceptance required; OS image/production signing/flash not accepted.",
   "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
   "extensionSha256": [
     "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
@@ -23,6 +23,6 @@
     "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
     "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
     "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
-    "d011572a358e35ba52a3a18e2410ee4d3650be06fe30f80d3e1536deac659c7e"
+    "fbd809efd36a3fadbe9830fef5b9c00e50a865647c65f775fe23f3415aa6aa2a"
   ]
 }
