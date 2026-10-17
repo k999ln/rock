@@ -13,7 +13,7 @@ export function freeCloudEnabled(runtime: FreeCloudRuntime, owner: string) {
 }
 export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Promise<ModelCandidate[]> {
   const response = await fetcher(`${ORIGIN}/models`, { redirect: 'error', signal: AbortSignal.timeout(5000) });
-  if (!response.ok) throw new WorkError('無料Cloudのモデル一覧を確認できません。', 503);
+  if (!response.ok) throw new WorkError(`無料Cloudのモデル一覧 HTTP ${response.status}`, 503);
   const rows: unknown = await response.json();
   if (!Array.isArray(rows)) return [];
   return rows.slice(0, 20).flatMap(row => row && row.tier === 'anonymous' &&
