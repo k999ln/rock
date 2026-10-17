@@ -12,13 +12,21 @@
   "userRequest": "Install a local LLM and connect Pixel Jennifer planning to real Tools and an artifact; verify on the physical device",
   "physical": {
     "initialAdbDeviceCount": 0,
-    "ownerReply": "今は実機を接続できない",
-    "newApkInstalled": false,
+    "ownerReply": "実機接続できた (2026-10-17)",
+    "newApkInstalled": true,
     "realV4InferenceRun": false,
     "realToolArtifactFromThisModelObserved": false,
     "deviceRebootTested": false,
     "defaultHomeChanged": false,
-    "deviceSerialStored": false
+    "deviceSerialStored": false,
+    "modelTransferred": true,
+    "connectionLostAfterInstallation": true,
+    "installationDate": "2026-10-17",
+    "installedCandidateSourceSha": "d955e6af6903a1b890fbdb77650d56e0b88346c9",
+    "allSixInstallCommandsSucceeded": true,
+    "previousFourApksBackedUpWithMatchingSigner": true,
+    "modelTransferBytes": 639446688,
+    "inferenceStarted": false
   },
   "implementation": {
     "scope": "one catalog-pinned model and one existing article-preparation recipe; not full native Goal/AMC orchestration",
@@ -240,7 +248,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/152"
   },
   "remaining": [
-    "Install matching candidate APKs on reconnected Pixel and read back signatures/bytes",
+    "Read back installed candidate APKs and pinned GGUF on reconnection; six matching APK updates and model transfer already succeeded on 2026-10-17",
     "Accept API v4 real GGUF import, inference and the actual two-Tool artifact from UI",
     "Verify language quality, RAM/temperature/latency and stop during real inference",
     "Accept reload/restart/recovery on this exact candidate",
