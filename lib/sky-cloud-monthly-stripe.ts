@@ -11,7 +11,7 @@ export function readMonthlyStripeConfig(env:Record<string,unknown>):MonthlyStrip
 export function monthlyStripeTest(config:MonthlyStripeConfig, client?:Stripe) {
   // The same validation is enforced for direct callers and scripts.
   readMonthlyStripeConfig({SKY_CLOUD_MONTHLY_MODE:'stripe-test',SKY_MONTHLY_STRIPE_KEY:config.secretKey,SKY_MONTHLY_STRIPE_ACCOUNT:config.accountId,SKY_MONTHLY_STRIPE_WEBHOOK_SECRET:config.webhookSecret});
-  const stripe=client??new Stripe(config.secretKey,{maxNetworkRetries:0,timeout:15000});
+  const stripe=client??new Stripe(config.secretKey,{httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:0,timeout:15000});
   const key=(row:CloudMonthlyInvoice,operation:string)=>`sky-monthly:${config.accountId}:${row.id}:${operation}`;
   function testObject<T extends {livemode?:boolean}>(value:T):T {if(value.livemode!==false)throw new WorkError('本番オブジェクトを拒否しました。',409);return value;}
   async function account(){const value=await stripe.accounts.retrieve(null);if(value.id!==config.accountId)throw new WorkError('Stripe sandboxが一致しません。',409);}

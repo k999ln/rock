@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-17",
+  "status": "billing_ui_passed_cloud_response_blocked",
+  "productionBilling": false,
+  "backupTables": 50,
+  "backupRows": 148,
+  "backupSha256": "39db3607208c2945e3096fb17a2fb359b9549339e2b5e0b0c9bfc82c748cf704",
+  "preservedAfterDdl": true,
+  "liveVersion": 62,
+  "siteSource": "fc0f1cef26132063ca1cad1769eeb9aa23f2da30",
+  "unitTests": 24,
+  "testEnvironment": "Stripe Sandbox / hosted authenticated owner",
+  "monthlyPriceUsd": 140,
+  "includedUsageUsd": 100,
+  "deployment": "appgdep_6ad3c1e2a0208191b29dfd9a708082d9",
+  "environmentRevision": 4,
+  "archiveSha256": "ab7a2b5e3ae0dfb1fce603a121d6a85fd6a1642896a7413bd8a000b0b7b744e6",
+  "preservation": {
+    "scope": "50 tables enumerated by viewing API, not atomic physical D1 backup",
+    "all148RowsUnchangedAfterAdditiveDdl": true,
+    "afterUi": {
+      "48NonContractNonRateTablesOriginalRowsPreserved": true,
+      "oldContractSnapshotExact": true,
+      "contractIdAndCreatedAtPreserved": true,
+      "historicalFixtureMinorRetained": 10000
+    }
+  },
+  "ui": {
+    "migration": "passed",
+    "automaticSelection": "pollinations/openai-fast",
+    "cap": "quota_exhausted at synthetic 100 USD; request refused",
+    "unpaid": "past_due; payment_or_contract_blocked; request refused",
+    "paid": "same invoice paid; active; available; 100 USD remaining",
+    "restoredPeriod": [
+      "2026-10-01",
+      "2026-11-01"
+    ],
+    "generation": "two UI attempts returned Provider HTTP 402; no paid fallback; current real response not accepted"
+  },
+  "stripe": {
+    "invoice": "in_1URceVGfTgzUjVHJQ8ClIfny",
+    "status": "paid",
+    "livemode": false,
+    "total": 14000,
+    "amountPaid": 14000,
+    "remaining": 0,
+    "signedEvents": 3
+  },
+  "negativeChecks": {
+    "anonymousMutationHttp": 401,
+    "unsignedWebhookHttp": 503,
+    "directGenerationAtCapAndUnpaid": "unit assertions: rejected, zero fetch calls"
+  },
+  "validation": {
+    "npmRunVerify": "exit 0; 2288 passed, 1 existing skip; all stages passed",
+    "log": "/private/tmp/sky-hosted-verify-final2.log",
+    "focusedRecurringTests": "10 passed",
+    "sitesTypecheckBuild": "passed"
+  },
+  "screenshots": [
+    "/private/tmp/sky-hosted-cap.png",
+    "/private/tmp/sky-hosted-unpaid.png",
+    "/private/tmp/sky-hosted-restored.png"
+  ],
+  "limitations": [
+    "Free Provider HTTP 402 blocks post-migration real response acceptance",
+    "Unattended scheduler operational acceptance not included",
+    "Synthetic cap/clock are explicitly separated from actual Cloud usage",
+    "main integration withheld pending remaining real-response acceptance"
+  ]
+}

@@ -412,3 +412,5 @@ Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `no
 ### 月額140ドルプランの無料Cloud Sandbox
 
 `http://127.0.0.1:5228/`では既存Stripe Sandboxの月次契約・100ドル枠・無料Cloudの自動選択/実応答を一緒に確認できます。合成利用量で上限停止し、テスト入金と次月更新後に復旧します。1時間の合成契約を使わず、既存公開アカウントは変更しません。起動/復旧/署名通知の設定は[請求設計](docs/sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。本番課金は無効です。
+
+公開実アカウントの月次Sandbox移行は[無料Cloud画面](https://avoado.si/os/sky/free-cloud)で本人限定操作を提供します。旧契約を保持し、合成100ドル上限・テスト月締め/入金後復旧を検証します。本番課金なし。[設計と再開手順](docs/sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。

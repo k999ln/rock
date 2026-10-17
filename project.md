@@ -1,3 +1,7 @@
+# 公開Skyの月次Sandbox契約移行
+
+2026-10-17 BIL02/O5（JOINT）: 公開version62/source fc0f1cefで実accountを140 USD/月・100 USD枠のStripe Sandboxへ移行済み。列挙50表148行をGit外保全、追加DDL後一致、UI後も旧契約JSON/id/created_atと他48表の既存行を保持。画面で自動選択・合成100 USD停止・未払い停止・同一140 USD請求へのテスト入金とactive/残額100 USD復旧を確認。署名通知3件。無料Cloud生成2回はProvider HTTP 402で実応答未受入、有料fallbackなし。npm run verify全stage exit0（2288 pass/既存skip1）。証拠 docs/evidence/sky-hosted-monthly.json。本番課金なし。次は無料Provider復旧後の実応答再受入、main統合は保留。
+
 # Sky月額プランと無料Cloudの統合Sandbox
 
 2026-10-17 BIL02/O5（JOINT）: 本人指示で月額140 USD・利用枠100 USDの既存Stripe Sandbox契約に無料Cloud自動選択を接続する。main a067a03eからcodex/sky-monthly-free-cloudで開始。1時間合成契約とは分離した永続月次契約・署名通知・上限停止・入金後復旧を同一DBで検証する。境界金額は合成、Cloud応答は匿名無料実接続、本番課金は無効。23件の対象試験、実Stripeの140 USD失敗→同一請求入金と署名通知3件、無料Cloud実POST3回・UI再押下追加0回、再起動保持を確認。全体verifyは全stage exit0（2287成功/既存skip1、/private/tmp/sky-monthly-free-verify.log）。証拠 docs/evidence/sky-monthly-free-cloud.json。公開D1/実アカウント契約は変更なし。次は同head CIとmain統合、公開account移行・常設schedulerは別配備受入。
