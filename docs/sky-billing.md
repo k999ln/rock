@@ -390,3 +390,33 @@ SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOU
 ```
 
 受入driverの作業ディレクトリは`work/sky-recurring-sandbox`（Git外）、5225は読み取りレポート。Stripe CLIで`invoice.paid,invoice.payment_failed,invoice.payment_succeeded,charge.refunded,charge.dispute.created`を5225へforwardする。検証完了状態からの再起動は新しい請求を作らない。途中失敗時は保存済みDB/請求IDを照合し、未払い状態を消してやり直さない。本番移行時の未決条件はBIL02/OWNERが確定するまでgateを閉じる。
+
+### Cloud usageから100 USD枠への接続
+
+2026-10-17 BIL02/O5。本人の追加指示で実CloudのusageをSky 140へつなぐ。検証費用は「無料枠のみ」と指定されたため、有料API実行は許可しない。projectの環境変数、`.env`、`.dev.vars`でCloud資格情報を確認できず、無料Providerの本人account/残高/対象modelも未確定。実Cloud受入は未完了で、既存Stripe Sandbox合格を転用しない。
+
+`lib/sky-recurring-usage.ts`のserver専用入口は、同一owner・Sandbox accountの契約と承認済み入力digestを検査し、既存のquote→予約→暗号化入力保存→`executeReservedRemoteAiText`→Provider最終usage→`cloudMonthlySource`の照合へ接続する。別owner、別account、live決済設定は拒否する。既存の公開paid gateを開かず、現段階は受入用の明示呼出しだけ。入力は完了時に既存削除処理で破棄する。
+
+- 確定料金は既存の署名済み単価版と最終token usageから計算する。表示中の文字数やbrowser申告料金を精算に使わない。usage/response ID/単価版/所有者を保持し、再送は同じ記録を読む。Sky月額140 USDへ同じusageを加算しない。
+- 読取projectionはRemote LLM/A2Aの既存確定額と未確定予約を合算して`settledMinor`、`reservedMinor`、`remainingMinor`、停止理由を返す。新たな金融台帳は作らない。予約可否の権限正本は0018の同DB triggerであり、画面に表示した残額は実行許可ではない。
+- 100 USDちょうどで次の有料予約は拒否。到達直前でも最大見積が残額を超える仕事は送信前に拒否する。並列予約を含み、既に送信済みの処理は許可済み上限内の結果を照合する。timeoutや最終usage不明は予約を保持して、無料/0円扱いで枠を戻さない。
+- `tests/sky-recurring-usage.test.mjs`は合成単価と合成HTTP応答を使用する。99 USD＋1 USD→次のfetch 0件、最後の1 USDの並列競合、usage欠落のhold保持、重複/owner/account/live拒否、送信前取消、A2A/LLM共通枠の計6件を確認する。実際に100 USD消費したという証拠ではない。
+- Macの5225レポートは保存済み台帳から確定・予約・残りを表示する。既存データは合成であり、実Cloudの利用明細とは表示しない。
+
+公式の[usage/token契約](https://developers.openai.com/api/docs/guides/token-counting)と[料金表](https://developers.openai.com/api/docs/pricing)を2026-10-17に確認。最終usageのoutputには見えない生成tokenも含まれるため、出力文の文字数から確定料金を作らない。今回は新たなmodelの選定・実単価の固定・無料枠の承認をしていない。
+
+再開条件は、本人の無料利用権を確認できるProvider/account、接続鍵、対象modelと受入済み単価、無料枠を超えて請求されない条件。揃えば少量の実応答を同じ経路へ通し、response IDとtoken明細・精算額・枠の差分を記録する。100 USD境界は独立した合成試験として表示し続ける。追加課金・自動購入・上限解除は行わない。
+
+## 月額プランと無料Cloudの統合Sandbox（2026-10-17）
+
+本人指示により、BIL02/O5（JOINT）で月額140 USD・利用枠100 USDの既存月次契約へ無料Cloud自動選択を結ぶ。1時間の合成契約を月次購入として扱わない。ROCKは契約/usage/送信gate/保存、EXTERNALはStripe Sandboxの決済とPollinations匿名無料API、OWNERは本番契約条件を担当する。
+
+利用体験は「月次契約・残枠表示 → 外部送信への同意 → 自動選択 → 無料Cloud実応答 → トークンと0 USD表示」。`skyRecurringUsage`が本人の契約、期間内の確定usage、期間をまたぐ未確定予約を合算する。無料応答は0 USDであり100 USDを架空に減らさない。枠切れでは無料Cloudも新規選択/送信を停止する。未払い/照合期限切れも停止し、Stripeの署名イベントを受けたinvoice再取得・140 USD一致・入金確認で復旧する。
+
+入金と枠の更新は別条件。消費済み枠は同じ月内の照合/入金では戻さず、過去の請求が入金済みで次の期間へ進んだ時だけ新しい100 USD枠になる。未確定予約は翌月にも残す。停止中でも保存済み結果は再送せず参照できる。Provider失敗/usage不明は結果未確認として保存し自動再送しない。429/402で有料fallbackや追加購入をしない。
+
+独立SQLiteと既存Stripe Sandboxで検証し、既存の公開D1/実アカウント/1時間契約を上書きしない。公開アカウントの月次契約移行・常設schedulerは別の配備受入。画面は月次契約と補助の1時間合成契約を区別する。clockはserver内のテスト依存注入だけに限定し、HTTP bodyから指定させない。
+
+合格条件は月次契約での実応答、合成100 USD上限のネットワークゼロ停止、140 USDの実Sandbox支払失敗、署名通知と同一請求入金再取得、次月更新後の実応答、過去usage保持、再押下で外部POST追加ゼロ。証拠は[統合受入](evidence/sky-monthly-free-cloud.json)。本番税/与信/契約条件は未決で、この試験は決定しない。
+
+再現はNode 22で `node --experimental-strip-types --test tests/sky-free-cloud.test.mjs tests/sky-recurring-sandbox.test.mjs tests/sky-recurring-usage.test.mjs`。実Provider試験は `SKY_MONTHLY_FREE_CLOUD=1 SKY_MONTHLY_FREE_DIR=/absolute/private/run SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/test-config.json node --experimental-strip-types scripts/check-sky-monthly-free-cloud.mjs`。Stripe CLIでinvoice.paid/payment_failed/payment_succeededを`http://127.0.0.1:5228/webhook`へ転送し、その署名秘密を同configへ設定する。test鍵/account一致のみ許可する。終了/再開は同runのDB/acceptance.jsonを保持し、曖昧な送信・23時間を超えた未完了決済を自動再実行しない。新しい試験は別ディレクトリを指定する。検証画面は`http://127.0.0.1:5228/`。

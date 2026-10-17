@@ -1,5 +1,8 @@
 <div align="center">
 
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと1時間限定の合成検証契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
+
+
 # avokado
 
 ### One account. More ways to play, make, and get things done.
@@ -402,3 +405,13 @@ Recording, external publication, appliance operation, purchasing, and payment ea
 米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。
 
 Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sandbox.mjs` で明示実行するテスト専用harnessです。[起動・復旧・未実装範囲](docs/sky-billing.md#sky-140の固定請求失敗復旧sandbox)。旧判定harnessのMac表示は5224。新しい月次timerと既存Agent予約/送信gateのSandbox受入は `scripts/check-sky-recurring-provider.mjs`（5225）です。[起動・保存・復旧手順](docs/sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。本番課金は無効です。
+
+Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`。5225に確定/予約/残り枠を表示します。現在は合成応答で100 USD到達・並列競合時の送信拒否を確認、無料Cloud接続先と資格情報は未確認で実Cloud実行は未受入です。[再開条件](docs/sky-billing.md#cloud-usageから100-usd枠への接続)。
+
+無料Cloudの確認画面は `/sky/free-cloud`。Macの独立検証は `node --experimental-strip-types scripts/sky-free-cloud-preview.mjs` を起動し `http://127.0.0.1:5227/` で依頼文・送信同意を確認して「自動選択して実行」。実応答とtoken usageを表示し、同じ依頼IDは再送しません。合成契約と実Cloudを使う試験で、Stripe接続・本番課金はありません。証拠は `docs/evidence/sky-free-cloud-live.json`。
+
+無料Cloudの実アカウント検証画面は `/os/sky/free-cloud`。本人接続を確認し、管理者が指定したownerだけが請求なし・1時間限定の合成契約に同意して検証します。これは月額プランの購入や本番請求ではありません。
+
+### 月額140ドルプランの無料Cloud Sandbox
+
+`http://127.0.0.1:5228/`では既存Stripe Sandboxの月次契約・100ドル枠・無料Cloudの自動選択/実応答を一緒に確認できます。合成利用量で上限停止し、テスト入金と次月更新後に復旧します。1時間の合成契約を使わず、既存公開アカウントは変更しません。起動/復旧/署名通知の設定は[請求設計](docs/sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。本番課金は無効です。

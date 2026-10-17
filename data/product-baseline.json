@@ -1,4 +1,5 @@
 {
+  "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
   "automaticLlmSelectionIntent": {
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",
@@ -2848,6 +2849,34 @@
     "productionBillingEnabled": false,
     "document": "docs/sky-billing.md"
   },
+  "skyAutomaticModelSelection": {
+  "date": "2026-10-17",
+  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+  "default": "auto",
+  "manualProviderModelSupported": true,
+  "implementation": "lib/sky-model-routing.ts",
+  "document": "docs/llm-evaluation-architecture.md",
+  "cloudAutoAccepted": false,
+  "policy": "local_and_owner_enabled_consented_free_cloud",
+  "status": "live_account_cloud_verified",
+  "tests": "tests/sky-model-routing.test.mjs"
+},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "live_account_real_cloud_accepted_synthetic_contract",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": true
+},
   "publicModelDiscoveryIntent": {
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",

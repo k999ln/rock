@@ -19,6 +19,7 @@ import {
 } from './jennifer-amc-execution.ts';
 
 export const workflowTemplates = [
+  {id:'free-cloud-text',name:'無料Cloudの文章生成',description:'無料Cloudで生成し、応答と使用量を記録して本人が確認します。',steps:[{id:'generate',title:'応答と使用量を取得',tool:'sky-free-cloud-text',runner:'free-cloud-text'}]},
   {
     id: 'material-invention', name: '物質候補の机上比較',
     description: '配合候補と安全上の不足を保存・確認します。実験、性能評価、装置操作は行いません。',
@@ -132,6 +133,7 @@ export type WorkCommand =
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
+  freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'; source:string; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   composition?: CompositionState;
   id: string;
   title: string;

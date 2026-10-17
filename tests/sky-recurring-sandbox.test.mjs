@@ -70,3 +70,28 @@ void test('A2A approval and final remote send use the same unpaid fence and reco
  const sent=await store.beginRemoteSend('owner',claimed.id,claimed.revision,end+2);assert.equal(sent.state,'dispatch_submitting');
  await store.approve('owner',second.id,second.authorizationSha256,encrypted,end+2);
 });
+void test('monthly contract gates free auto-selection, exact quota, payment and renewal without clearing history',async t=>{
+ const {selectSkyModel}=await import('../lib/sky-model-selection.ts');
+ const {runFreeCloudText}=await import('../lib/sky-free-cloud.ts');
+ const {skyRecurringUsage}=await import('../lib/sky-recurring-plan.ts');
+ const {service,c,db}=await setup(t,'pm_fail');let now=end-1000,calls=0;
+ const runtime={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner'};
+ const fetcher=async url=>{if(!url.startsWith('https://text.pollinations.ai/'))throw Error('local unavailable');calls++;if(url.endsWith('/models'))return Response.json([{name:'openai-fast',tier:'anonymous',input_modalities:['text'],output_modalities:['text']}]);return Response.json({id:'fixture-free',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'7'}}],usage:{prompt_tokens:1,completion_tokens:1,total_tokens:2}});};
+ const select=()=>selectSkyModel({db,owner:'owner',prompt:'Synthetic',allowCloud:true,runtime,fetcher,clock:()=>now});
+ const run=()=>runFreeCloudText({db,owner:'owner',id:crypto.randomUUID(),prompt:'Synthetic',model:'openai-fast',consent:true,runtime,fetcher,clock:()=>now});
+ await service.tick(now);assert.equal((await select()).selection.provider,'pollinations');assert.equal((await run()).freeCloud.chargeMinor,0);
+ await seedMonthlyCloudFixture(db,'owner',{now,exactAmountMinor:10000});
+ const blocked=async reason=>{const before=calls;assert.equal((await select()).cloudStatus,reason);await assert.rejects(run(),new RegExp(reason));assert.equal(calls,before);};
+ await blocked('quota_exhausted');await service.tick(now);await blocked('quota_exhausted');
+ now=end;await service.tick(now);await blocked('payment_or_contract_blocked');
+ await service.replacePaymentMethod('owner',c.id,'pm_good');await service.tick(now);
+ assert.equal((await skyRecurringUsage(db,'owner',now)).remainingMinor,10000);
+ assert.equal((await select()).selection.provider,'pollinations');assert.equal((await run()).freeCloud.chargeMinor,0);
+ assert.equal(db.sqlite.prepare("SELECT SUM(settled_minor) AS n FROM remote_ai_text_executions WHERE state='completed'").get().n,10000);
+ assert.equal((await service.charges(c.id)).length,1);
+ // Holds survive period renewal, so payment cannot release unresolved usage.
+ const held=await seedMonthlyCloudFixture(db,'owner',{now,exactAmountMinor:10000,stage:'reserved'});
+ now=nextRecurringMonth(end);await service.tick(now);await blocked('quota_exhausted');
+ await held.store.cancelBeforeSend('owner',held.id,held.approval,now);
+ assert.equal((await skyRecurringUsage(db,'owner',now)).remainingMinor,10000);
+});

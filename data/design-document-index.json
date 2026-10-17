@@ -1,4 +1,6 @@
 {
+  "skyMonthlyFreeCloud": {"taskId": "BIL02", "primaryOwner": "JOINT", "status": "sandbox_provider_cloud_ui_and_verify_passed", "branch": "codex/sky-monthly-free-cloud", "productionBilling": false, "evidence": "docs/evidence/sky-monthly-free-cloud.json", "design": "docs/sky-billing.md", "implementation": ["lib/sky-recurring-plan.ts", "lib/sky-free-cloud.ts", "scripts/check-sky-monthly-free-cloud.mjs"], "nextAction": "Same-head CI and Git integration; hosted account monthly migration remains separate"},
+  "skyLiveMigration": {"status": "deployed_real_account_cloud_accepted", "version": 61, "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},
   "standaloneServiceBillingDesign": {
     "document": "docs/sky-billing.md",
     "composition": "docs/service-design/README.md",
@@ -35,7 +37,14 @@
       "tests": "tests/sky-recurring-sandbox.test.mjs",
       "evidence": "docs/evidence/sky-recurring-sandbox.json",
       "productionBillingEnabled": false,
-      "status": "sandbox_scheduler_and_agent_fences_accepted"
+      "status": "sandbox_scheduler_and_agent_fences_accepted",
+      "usageConnection": {
+        "implementation": "lib/sky-recurring-usage.ts",
+        "tests": "tests/sky-recurring-usage.test.mjs",
+        "evidence": "docs/evidence/sky-real-cloud-quota.json",
+        "status": "boundary_passed_real_cloud_unavailable",
+        "realCloudAccepted": false
+      }
     }
   },
   "skyMarketplaceAndFusion": {
@@ -2341,5 +2350,34 @@
     "mainIntegrated": true,
     "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
   },
-  "productTerminology": "data/product-terminology.json"
+  "productTerminology": "data/product-terminology.json",
+  "skyAutomaticModelSelection": {
+  "date": "2026-10-17",
+  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+  "default": "auto",
+  "manualProviderModelSupported": true,
+  "implementation": "lib/sky-model-routing.ts",
+  "document": "docs/llm-evaluation-architecture.md",
+  "cloudAutoAccepted": false,
+  "policy": "local_and_owner_enabled_consented_free_cloud",
+  "status": "live_account_cloud_verified",
+  "tests": "tests/sky-model-routing.test.mjs"
+},
+"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "live_account_real_cloud_accepted_synthetic_contract",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": true
+}
 }

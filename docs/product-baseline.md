@@ -1,5 +1,10 @@
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-17追加指示: 1時間の合成契約とは別に、月額140ドル・利用枠100ドルの月次プランへ無料Cloud自動選択を接続し、上限停止と入金後復旧をSandboxで検証する。本番課金は無効。仕様と受入範囲は[請求設計](sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。
+
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと1時間限定の合成検証契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。詳しくは [LLM設計](llm-evaluation-architecture.md)を参照。
+
+
 2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
 
 更新: 2026-10-15。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。

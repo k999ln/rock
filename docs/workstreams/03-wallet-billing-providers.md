@@ -286,3 +286,7 @@ BIL02/O5（JOINT）: Sky 140の140 USD固定請求2期間・枠内usage追加0�
 ### BIL02 月次timerと既存Agent停止・復旧（2026-10-17）
 
 JOINT/O5、同期DOC04/H1。[Sky月次自動請求Sandbox](../sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)を正本とする。ROCKは永続契約/請求projection・既存予約/送信の原子的gate、EXTERNALはStripe決済、OWNERは本番契約条件を担当。合格条件は月額140の自動請求、失敗時のRemote LLM/A2A拒否、同一請求入金照合後復旧、重複/再起動/100 USD枠。検証は`node --experimental-strip-types --test tests/sky-recurring-sandbox.test.mjs`と明示Sandbox driver、`npm run verify`。本番課金・実Cloud呼出し・実機受入へ転用しない。
+
+BIL02/O5追補: [Cloud usageと100 USD枠](../sky-billing.md#cloud-usageから100-usd枠への接続)。ROCK側の既存実行経路・usage projection・境界6試験を追加。EXTERNAL/OWNER側の無料Provider本人account/鍵/単価/無料上限が未確認のため実応答は未実行。検証 `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`、全体 `npm run verify`。合成金額を実消費へ転用しない。
+
+BIL02/O5（JOINT）: [月次契約と無料Cloudの統合](../sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。既存契約/台帳/Stripe署名通知を再利用し、ローカル月次Sandboxで無料Cloudの実応答・合成100 USD停止・テスト入金後復旧を検証する。公開D1や実アカウントの変更は含まない。
