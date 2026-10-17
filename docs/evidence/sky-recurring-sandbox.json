@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-17",
+  "taskId": "BIL02",
+  "sourceBase": "1f0cd54e61cf3bb4b3d0e146e04d89e177cbf3b1",
+  "scope": "persistent sandbox month scheduler, actual RemoteAiTextStore/A2A database fences; synthetic jobs, no model network calls",
+  "status": "sandbox_accepted",
+  "sourceHashes": {
+    "lib/sky-recurring-sandbox.ts": "19d7232cc0ea7d17ddb946fae068a6a1677e3abcf145165fe4f4ecdff20927bd",
+    "drizzle/0018_sky_recurring_sandbox.sql": "7560003271cc4e43e6a0e447c90a9e28b564d0f0a47933559e45686e1ec44b36",
+    "scripts/sky-cloud-monthly-fixture.mjs": "567d10521628363bd20bd68518744c7b050adfe2cc11598a0619707e47fc5c0a",
+    "scripts/sky-monthly-sandbox-db.mjs": "0d2b0d844ea0b6414a9ed43721ecd2336fc62afee78d27337dedde47375357aa",
+    "scripts/sky-recurring-sandbox-server.mjs": "313200ac48153033a4d31a21a1266bab0eac5ee6592aa7749451fb3978474a5d",
+    "scripts/check-sky-recurring-provider.mjs": "33a02645cc16924748c05f9fd2e1815dc3b2bb467533238e236bf5f16409bb74",
+    "tests/sky-recurring-sandbox.test.mjs": "9e77196e7659707843cb6154341a7bbd4e7b1df805a67ced8d641455f7051ff0"
+  },
+  "mode": "stripe-test",
+  "account": "acct_1UQrEIGfTgzUjVHJ",
+  "contractId": "bbb55093-3785-46b8-a764-e3b461499f4e",
+  "invoices": [
+    {
+      "id": "in_1URZFPGfTgzUjVHJHes6fplw",
+      "total": 14000,
+      "paid": 14000,
+      "livemode": false
+    },
+    {
+      "id": "in_1URZFXGfTgzUjVHJSDvmj9aq",
+      "total": 14000,
+      "paid": 14000,
+      "livemode": false
+    }
+  ],
+  "verifiedEvents": [
+    {
+      "id": "evt_1URZFSGfTgzUjVHJ2FqzXlUX",
+      "type": "invoice.payment_failed",
+      "objectId": "in_1URZFPGfTgzUjVHJHes6fplw"
+    },
+    {
+      "id": "evt_1URZFVGfTgzUjVHJaBgXho0Q",
+      "type": "invoice.paid",
+      "objectId": "in_1URZFPGfTgzUjVHJHes6fplw"
+    },
+    {
+      "id": "evt_1URZFWGfTgzUjVHJGsAPYCbw",
+      "type": "invoice.payment_succeeded",
+      "objectId": "in_1URZFPGfTgzUjVHJHes6fplw"
+    },
+    {
+      "id": "evt_1URZFbGfTgzUjVHJ6oJhDFEE",
+      "type": "invoice.payment_succeeded",
+      "objectId": "in_1URZFXGfTgzUjVHJSDvmj9aq"
+    }
+  ],
+  "checks": [
+    "前払いなし・月締め前の請求ゼロ",
+    "未払いで実Agent予約・最終送信を停止",
+    "同じ請求の入金照合後にAgent送信を復旧",
+    "独立した2か月をタイマーで自動決済・各140ドル・利用量二重請求なし",
+    "実Stripeの支払失敗・入金通知を署名検証して再照合",
+    "再起動後も契約・請求を保持し重複請求なし"
+  ],
+  "unitTests": 8,
+  "productionBillingEnabled": false,
+  "actualCloudExecution": false,
+  "realMonthElapsed": false,
+  "testClockPeriods": [
+    "2026-10",
+    "2026-11"
+  ],
+  "clockAfterAcceptance": "2026-12-01T00:00:00Z",
+  "ui": "http://127.0.0.1:5225/",
+  "limitations": [
+    "UTC calendar-month fixture, not commercial renewal-date acceptance",
+    "Customer agreement UX, SCA flow, tax/credit/long-term hosted scheduler operations pending",
+    "Synthetic Agent store lifecycle; real provider execution remains gated"
+  ],
+  "resume": "SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DIR=work/sky-recurring-sandbox/verified-webhooks SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/check-sky-recurring-provider.mjs",
+  "historicalHarnessSecurityChange": {
+    "path": "scripts/sky-140-collection-sandbox.mjs",
+    "change": "Remove caller-controlled Host/URL security guard; bind loopback and authorize writes only with raw signed Stripe events. Prior evidence source hashes retained as historical."
+  },
+  "fullVerify": {
+    "result": "passed_all_stages",
+    "log": "/private/tmp/sky-recurring-verify-final.log",
+    "node": "22.23.3",
+    "testsPassed": 2266,
+    "testsSkipped": 1
+  },
+  "uiVerified": true,
+  "screenshot": "/private/tmp/sky-recurring-sandbox-acceptance.png"
+}

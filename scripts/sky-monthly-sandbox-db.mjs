@@ -16,8 +16,8 @@ export function openMonthlySandboxDatabase(path = ':memory:') {
   class Statement {
     constructor(sql, values = []) { this.sql = sql; this.values = values; }
     bind(...values) { return new Statement(this.sql, values); }
-    first() { return sqlite.prepare(this.sql).get(...this.values) ?? null; }
-    all() { return { success: true, results: sqlite.prepare(this.sql).all(...this.values) }; }
+    async first() { return sqlite.prepare(this.sql).get(...this.values) ?? null; }
+    async all() { return { success: true, results: sqlite.prepare(this.sql).all(...this.values) }; }
     run() { return { success: true, meta: { changes: Number(sqlite.prepare(this.sql).run(...this.values).changes) } }; }
   }
   return { sqlite, prepare: sql => new Statement(sql), batch(statements) {
