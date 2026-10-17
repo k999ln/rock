@@ -399,3 +399,5 @@ Recording, external publication, appliance operation, purchasing, and payment ea
 米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。
 
 Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sandbox.mjs` で明示実行するテスト専用harnessです。[起動・復旧・未実装範囲](docs/sky-billing.md#sky-140の固定請求失敗復旧sandbox)。旧判定harnessのMac表示は5224。新しい月次timerと既存Agent予約/送信gateのSandbox受入は `scripts/check-sky-recurring-provider.mjs`（5225）です。[起動・保存・復旧手順](docs/sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。本番課金は無効です。
+
+Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`。5225に確定/予約/残り枠を表示します。現在は合成応答で100 USD到達・並列競合時の送信拒否を確認、無料Cloud接続先と資格情報は未確認で実Cloud実行は未受入です。[再開条件](docs/sky-billing.md#cloud-usageから100-usd枠への接続)。

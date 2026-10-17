@@ -35,7 +35,14 @@
       "tests": "tests/sky-recurring-sandbox.test.mjs",
       "evidence": "docs/evidence/sky-recurring-sandbox.json",
       "productionBillingEnabled": false,
-      "status": "sandbox_scheduler_and_agent_fences_accepted"
+      "status": "sandbox_scheduler_and_agent_fences_accepted",
+      "usageConnection": {
+        "implementation": "lib/sky-recurring-usage.ts",
+        "tests": "tests/sky-recurring-usage.test.mjs",
+        "evidence": "docs/evidence/sky-real-cloud-quota.json",
+        "status": "boundary_passed_real_cloud_unavailable",
+        "realCloudAccepted": false
+      }
     }
   },
   "skyMarketplaceAndFusion": {
