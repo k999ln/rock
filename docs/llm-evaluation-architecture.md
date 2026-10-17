@@ -437,3 +437,5 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 最大5試行・開始から10分。待機秒数は次回確認の目安であり成功保証ではない。停止はqueued/waitingをCASでcancelledにする。送信中の取消は受理しない。通信断・結果不明・保存不明・期限切れは自動再送しない。sendingでプロセスが失われた場合も成果不明として手動確認し、勝手に送信権を戻さない。モデル出力はレビュー待ちでありTool成功や本人承認ではない。
 
 運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
+
+Generic summaryの実機試験は生成/保存が通っても、日本語指定への英語返答を不合格として分離する。明示した日/英の要約言語を有限のtrusted prompt controlへ抽出し、コピーした依頼本文の後で指定する。既存仕事は保存promptをそのまま使い、新規仕事だけへ適用。codeの本文/識別子や翻訳先をこの修正で書き換えない。実機harnessはruntime所有のtitle/footerを除いた本文の日本語も検査する。

@@ -643,3 +643,5 @@ package8最初の導入はBrokerのPACKAGE_VERSION_CODE旧値7が安全側で拒
 Native8/raw-v2の実20件は397.822秒・5工程attempt1、文末/si表記/番号/完全重複/保存合格。ただし不要な家具・温度連動の弱い内容があり、実用性は保留。prompt契約v5でソフト単体を許し、分野の困りごとを助ける具体動作を求める。旧v4履歴保全・生成再開は明示再計画。General/Coder再受入と新20→自動300を継続。
 
 Git同期: main43cf290e（Sky無料Cloudのbounded自動続行/画面外継続、PR161/162）を統合。競合はPixel資料とCloud追記を双方保持して解消。Android/native入力へのmain新差分は0、実機APKの入力を変えていない。main統合済みはこの作業branchへの取込を指し、PR158のmain公開受入は未完了。
+
+Native8のauto General6 summaryは29.578秒で3工程保存が通るが英語本文のため日本語内容は不合格。指定言語を元依頼のdataとは別のprompt controlへ固定し、本文だけの日本語検査を実機harnessへ追加。auto Coder5は29.514秒、正しいsum_even本文を実保存・コード非実行。最新候補で再試験する。

@@ -249,6 +249,10 @@ public final class DiscoveredModelAcceptanceTest {
                 }
                 assertEquals(target,number);
             }
+            if ("summary".equals(mode)) {
+                int bodyStart=artifact.indexOf("\n\n")+2,bodyEnd=artifact.lastIndexOf("\n\n---\n");assertTrue(bodyEnd>bodyStart);
+                assertTrue("Japanese request must produce Japanese body, excluding owned title/footer",artifact.substring(bodyStart,bodyEnd).matches("(?s).*[\\p{IsHiragana}\\p{IsKatakana}].*"));
+            }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
             JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
