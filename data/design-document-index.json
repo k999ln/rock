@@ -127,15 +127,26 @@
           "android/shell/src/aosp/AndroidManifest.xml",
           "android/automation/src/main/java/dev/rock/automation/Scheduler.java",
           "android/automation/src/main/java/dev/rock/automation/AutomationJobService.java",
-          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java"
+          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkPresentation.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotifications.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotificationReceiver.java",
+          "android/shell/src/main/res/drawable/ic_rockstar.xml",
+          "android/shell/src/main/res/drawable/ic_work_notification.xml",
+          "android/automation/src/main/java/dev/rock/automation/WorkChangeSignal.java",
+          "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+          "android/automation/src/main/AndroidManifest.xml",
+          "android/automation/src/aosp/AndroidManifest.xml",
+          "android/shell/src/androidTest/java/dev/rock/shell/WorkExperienceIntegrationTest.java",
+          "android/shell/src/test/java/dev/rock/shell/WorkPresentationTest.java"
         ],
         "fullSiTerminalAccepted": false,
         "fullOsAccepted": false,
         "localModelPlanning": {
           "authority": "docs/native-os-integration.md#pixel-local-jennifer",
-          "evidence": "docs/evidence/pixel-local-jennifer.json",
-          "status": "physical_pipeline_pass_content_quality_pending",
-          "privateShellApiVersion": 19,
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "bounded_auto_manual_pipeline_device_verified_content_quality_pending",
+          "privateShellApiVersion": 20,
           "runtimeBinderApiVersion": 4,
           "platformApiVersion": 1,
           "debugOnlyModelCatalog": true,
@@ -153,17 +164,33 @@
             "scripts/stage-model-crypto.py",
             "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
             "android/automation/src/debug/assets/rock-local-model-catalog.json",
-            "os/physical/local-ai-loaded-profile-v4.patch"
+            "os/physical/local-ai-loaded-profile-v4.patch",
+            "android/automation/src/main/java/dev/rock/automation/LocalModelChoice.java",
+            "android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java",
+            "android/automation/src/main/java/dev/rock/automation/PublicModelDiscovery.java"
           ],
-          "physicalInferenceAccepted": false,
+          "physicalInferenceAccepted": true,
           "fullJenniferGoalAccepted": false
+        },
+        "workExperience": {
+          "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "bounded_apk_device_verified_general_quality_pending",
+          "notificationsScope": "local_broker_jobs_only",
+          "notificationDoesNotExecute": true,
+          "fullOsAccepted": false,
+          "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+          "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+          "privateShellApiVersion": 20,
+          "discoveryGrantsExecution": false,
+          "publicDiscoveryEntry": "sky_top_after_heading"
         }
       }
     }
   },
   "schema": "rockstaros-design-document-index/1",
   "version": "1.19",
-  "updatedAt": "2026-10-16",
+  "updatedAt": "2026-10-17",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",

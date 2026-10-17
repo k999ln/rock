@@ -615,7 +615,7 @@ BrokerのSchedulerは既存充電必須・熱・pause・lease・有限Tool制限
 
 **利用体験と範囲。** Skyの「端末内モデル」で対応GGUFと取得元・license・容量・配布定義の署名を確認し、本人が同意してsystem file pickerから選ぶ。導入後、Homeの「端末内LLM」から依頼を準備し、仕事画面でSkyの選択と処理/保存を承認する。Jenniferの端末内計画は既存`ZemaOrchestrator`の有限経路であり、この版は記事準備一件だけ。`LLM入力案 → Brokerの厳格schema検査 → citations@1 → free-article@1 → review → 本人の確認メモ → completed`を使う。投稿・送信・課金は含まず、Goal Contract/COLOMBIA/AMC全体のnative統括を実装済みとはしない。
 
-**責任と入力。** ShellはUI、選んだread-only descriptor、profile ID、明示同意だけを渡す。Brokerの`LocalModelCatalog`/`LocalModelInstaller`が配布定義・モデル・license同意・資源・登録を管理し、既存`ModelProfileActivationCoordinator`が実runtimeへの読込みとactive pointerを確定する。UI/Brokerのprivate APIは19、共通Platform APIは1、Local si Binder APIは4。各番号を別の契約として検査する。`com.localactionassistant`の実package/version/same signer/UID/APIを検証し、モデル名やファイル名から信頼を作らない。
+**責任と入力。** ShellはUI、選んだread-only descriptor、profile ID、明示同意だけを渡す。Brokerの`LocalModelCatalog`/`LocalModelInstaller`が配布定義・モデル・license同意・資源・登録を管理し、既存`ModelProfileActivationCoordinator`が実runtimeへの読込みとactive pointerを確定する。UI/Brokerのprivate APIは20（model choice/discoveryをappend、既存transaction保持）、共通Platform APIは1、Local si Binder APIは4。各番号を別の契約として検査する。`com.localactionassistant`の実package/version/same signer/UID/APIを検証し、モデル名やファイル名から信頼を作らない。
 
 **配布定義。** 初期Developer Previewの一候補は[Qwen公式のQwen3 0.6B Q8_0 GGUF](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/tree/23749fefcc72300e3a2ad315e1317431b06b590a)、639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、[Apache-2.0](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/blob/23749fefcc72300e3a2ad315e1317431b06b590a/LICENSE)。contextはruntimeの2,048 token。tokenizerはGGUFの`tokenizer.*`（chat_template以外）のsorted-key/UTF-8/compact JSON、templateはGGUFの`tokenizer.chat_template` UTF-8のSHA-256をprofileへ固定する。両方は同じ検証済みGGUF内にあり、外部assetを追加取得しない。2 GiBの最小総RAMは導入条件で、実機の速度/品質/安全な空きRAMの受入証拠ではない。
 
@@ -635,6 +635,26 @@ Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software
 実機の全停止→再開ではack 6 ms/遅延仕事0を確認したが、runtimeがreadyへ戻るまで28.785秒を要した。これは協調停止の現状であり、計算の即時終了を受入済みとしない。
 
 **仕事・停止・合格条件。** 依頼は既存LocalSubmissionの同owner/同ID、Sky token、署名profile/weights/runtime pinへ固定し、モデル結果を成功や権限にしない。モデル計画中も停止ボタンは別control executorからBrokerへ届き、`LocalPlanningFence`がstopと最終submitを直列化する。停止→再開後に旧計画が届いても新しい仕事を作らない。保存済み仕事、成果、本人review、工程claim時の電源/熱/停止制約を維持する。hostではv4とPlatform v1の分離・実2セグメントpackage、catalog改変/失効/未知項目、停止→再開の遅延結果拒否を検査する。Androidでは実署名検証、同意なし・writable・長さ不一致でactive/job不変を検査する。Pixelでは同一APK/同一GGUFでimport→実推論→2 Tool→review artifact→同ID再試行→再開/再読込みを確認し、未実行を合格へ換算しない。詳細手順は[Android prototype](os-prototype.md#pixel-local-model-acceptance)。
+
+<a id="pixel-intuitive-experience"></a>
+
+### Pixelの直感的な仕事操作と通知
+
+2026-10-17の本人の改善指示をOS11/O6/ROCKで実装する。目的は依頼・進行・確認・成果物・停止を探さず扱うこと。Shellの表示を刷新し、仕事/工程/保存/承認の正本は既存Brokerのままにする。全OS、cloud push、文章品質の受入を追加したとはしない。
+
+**利用体験と入出力。** Homeで依頼と実行先を選び「依頼の内容を確認」へ進む。準備だけでは仕事を作らず同意を外す。明示同意後だけ既存の同ID送信を行い、受付後は一つの仕事の詳細へ進む。Homeの確認待ちボタン、仕事タブの件数、一覧のカード、通知は同じ仕事へ戻る入口。確認待ちを優先し、進行中/履歴で絞れる。詳細は最新snapshotの工程数から進捗を示し、完了率・残り時間を推測しない。成果は全工程成功のreview/completedだけ自動読込みし、全文表示・system picker保存・確認メモ付き完了を用意する。失敗/needs_reviewを成果完成と表示せず、activeで失敗した工程だけ再試行を案内する。中止は対象仕事の確認dialog、全停止は端末全体の独立操作とする。計画中のフォームには端末の一時停止を置く。
+
+**通知の不具合修正。** receiver制限ContextでBinder接続していたため、Pixelで `ReceiverCallNotAllowedException` を再現。application Contextへ修正し、通常snapshot更新をbaseline扱いしないよう変更した。初回通知ON時だけbaselineを作る。診断はexception classと受信/読取り時刻だけをprivate保存し、本文/原稿は記録しない。
+
+**通知と責任。** Shell設定の「仕事の通知を受け取る」からAndroid通知許可を求め、既存仕事をbaseline化してから通知を開始する。拒否/失効/アプリ側OFFでも仕事は変えない。進行は静かなchannel、確認/対応は独立channelで種類と音を本人が変更できる。Brokerはsubmit/状態変更/JobScheduler工程の後、explicit componentとsignature permissionでIDだけの更新hintを送る。Shell receiverは既存のexact-package/signer Binderでsnapshotを読み直して通知を作る。hintのstate、原稿、成果を採用しない。通知はgenericな状態/工程数のみ、lockscreenはprivate/public版で原稿やtitleを見せない。同じ仕事/状態は再通知せず、中止は通知を除く。通知を押してもsubmit/retry/complete/承認/課金は実行せず、immutable PendingIntentのIDを最新25件と照合して詳細を開く。外部の未知IDでも表示照合に限る。通知の状態は最後の観測であり、タップ後のBroker正本を優先する。
+
+**保存・失敗・復旧。** 原稿/成果/同ID/本人メモは既存Broker、表示中の下書きは既存メモリ、フィルタ/詳細IDはActivity状態、通知のON/OFFと状態stampはShell-private preferences。通知stampはReceipt/完了証拠ではない。読取り失敗は通知を作らず、画面再開で正本を再取得する。通知許可の処理中にOFFにした場合は遅延のON要求を破棄する。通知停止/読取り失敗をTool failureへ変換しない。タイトルは検証できた既存成果の先頭行だけ、技術ID/モデル名/工程内訳は詳細の折りたたみに置く。先頭25件外の通知IDは不明と示し、仕事を作り直さない。
+
+**モデルと検索。** [選択/公開検索の詳細契約](llm-evaluation-architecture.md#selectable-models-and-automatic-default)に従う。Homeは自動が初期値、署名済LLMを手動指定可能。準備したexact digestを実行時pinと照合する。Skyの公開検索は別の明示操作であり、未検証candidateを自動選択対象にしない。
+
+**合格条件。** 同じAPKのPixel GL066で (PXUX01) 自動を含む4経路の準備に実行/同意継承0、(PXUX02) 優先一覧→一件の詳細→戻る、(PXUX03) 不完全reviewの成果/完了を禁止しempty確認を拒否、(PXUX04) 実Tool二重送信1仕事と成果保存/読戻し、(PXUX05) 許可/拒否/OFFで仕事を変更しない、(PXUX06) background実Tool→通知→実System UI tap→同じ仕事と成果、追加実行0、(PXUX07) 中止/停止/再開と失敗時の再試行表示、(PXUX08) 大きな文字・画面幅・戻る・process再起動の操作を検証する。fixture、host、emulator、実機は別に[台帳](evidence/pixel-intuitive-experience.json)へ記録する。
+
+未決定: 通知音の好みはAndroid channel設定で本人が選ぶ。cloud通知/多端末引継ぎ/25件を超える検索は対応adapterとowner-scoped paginationの別受入を必要とする。機種やSKU間でPixelの証拠を転用しない。
 
 ### Home・音声・一般アプリ
 

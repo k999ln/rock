@@ -20,13 +20,15 @@ import android.widget.TextView;
 
 /** Shared, density-aware presentation. No execution or persistence authority. */
 final class ShellUi {
-    static final int BACKGROUND = 0xff0b0d10;
-    static final int SURFACE = 0xff15181d;
-    static final int RAISED = 0xff20252c;
-    static final int LINE = 0xff343b45;
+    static final int BACKGROUND = 0xff0a1019;
+    static final int SURFACE = 0xff131e2b;
+    static final int RAISED = 0xff1d2b3c;
+    static final int LINE = 0xff304155;
     static final int INK = 0xfff4f6f8;
     static final int MUTED = 0xffa0a8b3;
-    static final int ACCENT = 0xffe5e7eb;
+    static final int ACCENT = 0xffb2ddff;
+    static final int SUCCESS = 0xff9ce0c2;
+    static final int WARNING = 0xffffd39b;
     private final Context context;
 
     ShellUi(Context context) { this.context = context; }
@@ -44,8 +46,8 @@ final class ShellUi {
     }
     LinearLayout card(LinearLayout parent) {
         LinearLayout card = column();
-        card.setPadding(dp(16), dp(12), dp(16), dp(16));
-        card.setBackground(surface(SURFACE, LINE, 12));
+        card.setPadding(dp(20), dp(14), dp(20), dp(20));
+        card.setBackground(surface(SURFACE, LINE, 22));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.topMargin = dp(12); params.bottomMargin = dp(4);
         parent.addView(card, params);
@@ -73,10 +75,10 @@ final class ShellUi {
     Button button(LinearLayout parent, String text, Runnable action) {
         Button view = new Button(context);
         view.setText(text); view.setTextColor(INK); view.setTextSize(14);
-        view.setAllCaps(false); view.setMinHeight(dp(50));
+        view.setAllCaps(false); view.setMinHeight(dp(52));
         view.setPadding(dp(14), dp(10), dp(14), dp(10));
         view.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), surface(RAISED, LINE, 8), null));
+        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), surface(RAISED, LINE, 14), null));
         view.setOnClickListener(v -> action.run());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.topMargin = dp(8);
@@ -85,7 +87,14 @@ final class ShellUi {
     }
     void primary(Button view) {
         view.setTextColor(SURFACE);
-        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), surface(ACCENT, 0, 8), null));
+        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), surface(ACCENT, 0, 14), null));
+    }
+    TextView badge(LinearLayout parent, String text, int color) {
+        TextView view = text(parent, text, 12);
+        view.setTextColor(color); view.setPadding(dp(12), dp(6), dp(12), dp(6));
+        view.setBackground(surface(RAISED, 0, 24));
+        view.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
+        return view;
     }
     TextView navigation(LinearLayout parent, String name, int index, Runnable action) {
         TextView view = new TextView(context);

@@ -60,7 +60,7 @@ Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.
 
 [Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)で再利用・改変・追加の8 moduleを定義する。既存Brokerには通信とdevice transportがあり、Shellは10-16にHOME候補・4画面・明示端末内音声adapterを実装。VoiceInteractionService/常時待受と全OS受入は別。SpeechServices v3はTTSとして確認、日本語ASR/TTSは追加受入。local Android正本とcloud D1正本を一つのroot authorityへ対応し、未受入のrealm間adapterを完成扱いしない。plan/account上限/後払い・独自署名OTA・全損復旧を含むPX01〜12を既存DT/SC/P0〜P7/C1/C2へ結ぶ。根拠は[公開コード調査](evidence/grapheneos-source-audit.json)。
 
-Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。[Pixelアプリ実装](native-os-integration.md#pixel-terminal-implementation)の受入範囲を実装台帳へ記録する。HOME候補・有限Tool・保存/再開の部分受入と、DT01〜06の全体受入を区別する。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
+Pixel参照機はunlock後のsi HomeからJenniferへ依頼し、Skyの能力、Zemaの進捗/成果/費用、Brokerの承認/停止へつなぐ。[専用端末の詳細契約](native-os-integration.md#si専用端末の利用体験と実装境界)を正本とする。[Pixelアプリ実装](native-os-integration.md#pixel-terminal-implementation)の受入範囲を実装台帳へ記録する。 [Pixelの仕事操作・通知](native-os-integration.md#pixel-intuitive-experience)はHome→確認準備→優先一覧/一件の詳細→成果表示/保存を同じBrokerへ結ぶ。通知は明示許可後の読取りと詳細入口だけで、仕事の実行/本人承認を持たない。HOME候補・有限Tool・保存/再開の部分受入と、DT01〜06の全体受入を区別する。設定/復旧/mute/手動停止を確保し、Miniの同Job引継ぎと一般app方針の未決定を保持する。
 
 ## 制作場所と計算場所を分ける共通runtime契約
 
@@ -142,7 +142,7 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 
 ### Android／Pixel
 
-Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 19→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。新候補の実機推論は未受入で、API v2やLLMなしの過去合格と区別する。
+Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 20→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。実機の有限計画/2 Tool受入と一般品質・全OS受入を区別する。[手動/自動model選択と公開検索](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は同じBrokerへ接続し、公開候補へ実行権を付けない。公開検索はSky先頭に配置し、長い導入詳細を通らず探せる。API v2やLLMなしの過去合格を現v4へ転用しない。
 
 
 `dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local si、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。

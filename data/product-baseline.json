@@ -1,4 +1,21 @@
 {
+  "automaticLlmSelectionIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "ログインしてないcodex経由しか使えないんじゃなくてllm選べるようにして、デフォルトは勝手にその作業に一番いいのを選んで",
+    "status": "pixel_bounded_manual_and_automatic_device_verified",
+    "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+    "requirements": [
+      "Codex login is not the sole prerequisite or inference path",
+      "User may explicitly select an LLM",
+      "Default selects a suitable available LLM for the task before execution",
+      "Separate model inference from the Tool/Agent executor",
+      "Respect model readiness, task capability, data-sending permission and approved budget; selection does not grant execution authority",
+      "Do not claim universal model superiority or silently send to an unconfigured/paid provider"
+    ],
+    "newProviderProvisioned": false,
+    "executionHoldsChanged": false
+  },
   "pixelSiReferenceDesignIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction_in_current_message",
@@ -41,7 +58,7 @@
       "recordedAt": "2026-10-17",
       "source": "direct_owner_memo",
       "ownerQuote": "メモ　デザインがダサい、通知と、仕事の操作性が直感的じゃない、",
-      "status": "recorded_not_implemented",
+      "status": "implementation_in_progress",
       "areas": [
         "visual_design",
         "notifications",
@@ -49,7 +66,14 @@
       ],
       "authority": "docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback",
       "reason": "実機利用中の本人指摘を次の体験改善へ引き継ぐ。機能試験の合格と使いやすさの受入は分ける。",
-      "newRqOrExecutionPermission": false
+      "newRqOrExecutionPermission": false,
+      "implementationRequest": {
+        "date": "2026-10-17",
+        "ownerQuote": "じゃあデザインと通知、仕事の操作性をちゃんと改善して、Pixelで直感的に使えるようにして",
+        "followUp": "操作性がもっと直感的にしてほしい",
+        "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+        "evidence": "docs/evidence/pixel-intuitive-experience.json"
+      }
     }
   },
   "cloudServicePlanIntent": {
@@ -2137,7 +2161,11 @@
     "authority": "docs/avocado-mini-r5/README.md",
     "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
     "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
-    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
+    "candidateCeilingTypes": [
+      "recessed",
+      "suspended",
+      "exposed_or_retrofit_cover"
+    ],
     "standaloneMiniPreserved": true,
     "proOrBuildingNetworkRequired": false,
     "residentOwnsPrivateProfile": true,
@@ -2690,7 +2718,13 @@
     "canonicalSkyOrigin": "https://avoado.si",
     "campusHome": "campus_specific_discovery_and_free_browser_drafts",
     "mainHome": "agent_marketplace_execution_and_management",
-    "sharedDurableOwnership": ["purchases", "account_library", "connections", "zema_jobs", "agent_outputs"],
+    "sharedDurableOwnership": [
+      "purchases",
+      "account_library",
+      "connections",
+      "zema_jobs",
+      "agent_outputs"
+    ],
     "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
   },
@@ -2786,8 +2820,15 @@
     "serviceOwner": "Sky",
     "standaloneEndToEndRequired": true,
     "requiredCompanionProducts": [],
-    "optionalIntegratedServices": ["Jennifer", "Zema"],
-    "rockstarOsIntegratedServices": ["Jennifer", "Sky", "Zema"],
+    "optionalIntegratedServices": [
+      "Jennifer",
+      "Zema"
+    ],
+    "rockstarOsIntegratedServices": [
+      "Jennifer",
+      "Sky",
+      "Zema"
+    ],
     "eachServiceStandaloneDesign": true,
     "monthlyProviderAcceptance": "pending",
     "quoteAndBudgetCapRequired": true,
@@ -2797,5 +2838,18 @@
     "jurisdiction": "undecided",
     "productionBillingEnabled": false,
     "document": "docs/sky-billing.md"
+  },
+  "publicModelDiscoveryIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "今何が使えるのかとかリアルタイムでサーチできるようにしたい、xとかgitとかのopenllmを利用する形で",
+    "authority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+    "scope": [
+      "explicit_public_query_to_GitHub_and_HuggingFace",
+      "X_external_search_until_API_credentials_and_contract_ready",
+      "untrusted_candidates_separate_from_executable_catalog",
+      "no_silent_install_or_paid_fallback"
+    ],
+    "newPaidProviderProvisioned": false
   }
 }

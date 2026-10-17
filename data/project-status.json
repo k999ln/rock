@@ -1,4 +1,39 @@
 {
+  "pixelIntuitiveExperience": {
+    "date": "2026-10-17",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "status": "same_apk_notification_model_choice_public_discovery_device_pass",
+    "branch": "codex/pixel-intuitive-experience",
+    "mainBase": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
+    "scope": [
+      "native_shell_design",
+      "focused_work_list_and_detail",
+      "explicit_notification_permission",
+      "read_only_notification_navigation",
+      "local_model_manual_and_task_aware_default",
+      "public_GitHub_HuggingFace_discovery",
+      "X_external_search"
+    ],
+    "physicalAccepted": true,
+    "nextAction": "Extend signed model compatibility/quality and configured cloud adapters; X API and paid/full-OS gates remain closed. Read PR #157 for live integration status; acceptance evidence records its write-time snapshot.",
+    "tests": {
+      "physicalPassed": 15,
+      "physicalFailed": 0,
+      "physicalSkipped": 0,
+      "hostPassed": 183,
+      "hostFailed": 0
+    },
+    "candidateSourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
+    "pullRequest": "https://github.com/k999ln/rock/pull/157",
+    "codeHeadCiPassed": null,
+    "mainMergedAtAcceptanceWrite": false,
+    "gitIntegrationAuthority": "https://github.com/k999ln/rock/pull/157",
+    "privateShellApiVersion": 20,
+    "fullVerify": "passed_all_stages_node22",
+    "evidence": "docs/evidence/pixel-intuitive-experience.json"
+  },
   "skyRecurringSandbox": {"taskId": "BIL02", "coordinationTask": "DOC04", "date": "2026-10-17", "status": "sandbox_scheduler_and_agent_fences_accepted", "scope": "opt_in_sandbox_scheduler_and_existing_agent_database_gates", "mainBase": "1f0cd54e61cf3bb4b3d0e146e04d89e177cbf3b1", "productionBillingEnabled": false, "actualCloudExecution": false, "unitTests": 8, "fullVerify": "passed_all_stages_node22", "nextAction": "same-head CI and main integration; real Cloud execution and production contract gates remain closed", "providerChecks": 6, "verifiedProviderEvents": 4, "uiVerified": true, "evidence": "docs/evidence/sky-recurring-sandbox.json"},
   "sky140CollectionSandbox": {"taskId": "BIL02", "date": "2026-10-16", "status": "provider_policy_harness_passed", "scope": "fixed_postpaid_invoice_and_access_policy_harness", "mainBase": "60765fc3", "productionBillingEnabled": false, "realAgentEnforcement": false, "evidence": "docs/evidence/sky-140-collection-sandbox.json", "unitTests": 6, "providerChecks": 10, "fullVerify": "passed_node22_WRANGLER_HIDE_BANNER_true", "nextAction": "contract consent storage and atomic integration with existing reservation/dispatch; monthly scheduler, authentication-required payment, tax and credit policy remain"},
   "pixelLocalJennifer": {
