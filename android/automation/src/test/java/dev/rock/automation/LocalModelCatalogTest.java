@@ -10,10 +10,13 @@ public final class LocalModelCatalogTest {
     private String preview() throws Exception { return new String(Files.readAllBytes(Path.of("src/debug/assets/rock-local-model-catalog.json")), java.nio.charset.StandardCharsets.UTF_8); }
     @Test public void acceptsRealPreviewSignatureButProductionInventoryIsEmpty() throws Exception {
         LocalModelCatalog catalog = new LocalModelCatalog(preview());
-        assertEquals(1, catalog.entries.size());
+        assertEquals(2, catalog.entries.size());
         LocalModelCatalog.Entry entry = catalog.require("dev.rock.qwen3-06b-q8");
         assertEquals(639446688L, entry.profile.artifactBytes);
         assertEquals(4, entry.profile.runtimeApiMin);
+        LocalModelCatalog.Entry larger = catalog.require("dev.rock.qwen25-15b-q4km");
+        assertEquals(1117320736L, larger.profile.artifactBytes);
+        assertTrue(catalog.verifier.verifySignature(larger.profile).matches("[a-f0-9]{64}"));
         assertTrue(catalog.verifier.verifySignature(entry.profile).matches("[a-f0-9]{64}"));
         assertTrue(new LocalModelCatalog(new String(Files.readAllBytes(Path.of("src/main/assets/rock-local-model-catalog.json")), java.nio.charset.StandardCharsets.UTF_8)).entries.isEmpty());
         assertThrows(SecurityException.class, () -> catalog.require("arbitrary.unknown.model"));

@@ -139,7 +139,7 @@ public final class TerminalHomeIntegrationTest {
         ShellConnection broker = new ShellConnection(context());
         JSONObject before = new JSONObject(broker.snapshot());
         JSONObject catalog = new JSONObject(broker.localModelCatalog());
-        assertEquals(1, catalog.getJSONArray("models").length());
+        assertEquals(2, catalog.getJSONArray("models").length());
         JSONObject model = catalog.getJSONArray("models").getJSONObject(0);
         assertEquals("dev.rock.qwen3-06b-q8", model.getString("profileId"));
         java.io.File file = java.io.File.createTempFile("unapproved-model-", ".gguf", context().getCacheDir());
@@ -206,4 +206,72 @@ public final class TerminalHomeIntegrationTest {
             }
         }
     }
+    @Test public void physicalLocalModelHomeRequestCreatesOneReviewArtifact() throws Exception {
+        Assume.assumeTrue("owner-connected physical model UI acceptance is opt-in",
+            "true".equals(InstrumentationRegistry.getArguments().getString("rockPhysicalModelAcceptance")));
+        assertEquals("frankel", android.os.Build.DEVICE);
+        assertTrue(context().getSystemService(BatteryManager.class).isCharging());
+        assertFalse("owner must unlock the physical screen for the UI trial",
+            context().getSystemService(android.app.KeyguardManager.class).isDeviceLocked());
+        ShellConnection broker = new ShellConnection(context());
+        JSONObject initial = new JSONObject(broker.snapshot());
+        assertFalse("do not resume unrelated paused work", initial.getBoolean("paused"));
+        broker.selectSkyTool("article-preparation@1");
+        Set<String> before = new HashSet<>(); JSONArray old = initial.getJSONArray("works");
+        for (int i = 0; i < old.length(); i++) before.add(old.getJSONObject(i).getString("id"));
+        MainActivity activity = launch(); String created = null; boolean readyForReview = false;
+        ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+        int previousRoute = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getInt("executionChoice", 3101);
+        try {
+            long deadline = SystemClock.elapsedRealtime() + 10_000;
+            java.util.concurrent.atomic.AtomicBoolean selected = new java.util.concurrent.atomic.AtomicBoolean();
+            do { ui(() -> selected.set(field(activity, "skySelectionToken") != null)); if (!selected.get()) SystemClock.sleep(100); }
+            while (!selected.get() && SystemClock.elapsedRealtime() < deadline);
+            assertTrue("real Sky selection must reach the UI", selected.get());
+            ui(() -> {
+                ((EditText) field(activity, "homePrompt")).setText("日本語で、部屋の片づけを小さく始める方法の記事下書きを作る。導入、具体的な3手順、最後の確認を書く。出典は未調査と明記し、実在する人物や根拠のない数値を作らない。まとめは3項目。投稿や課金はしない。");
+                ((RadioGroup) field(activity, "homeExecutionChoice")).check(3102);
+                call(activity, "prepareHomeRequest", new Class<?>[0]);
+                assertEquals(2, field(activity, "selectedPage"));
+                assertFalse(((CheckBox) field(activity, "zemaConsent")).isChecked());
+            });
+            assertEquals(initial.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+            ui(() -> {
+                ((CheckBox) field(activity, "zemaConsent")).setChecked(true);
+                Button submit = (Button) field(activity, "zemaSubmitButton"); submit.performClick(); submit.performClick();
+            });
+            deadline = SystemClock.elapsedRealtime() + 120_000; String state = null;
+            while (SystemClock.elapsedRealtime() < deadline) {
+                JSONArray works = new JSONObject(broker.snapshot()).getJSONArray("works");
+                for (int i = 0; i < works.length(); i++) {
+                    JSONObject work = works.getJSONObject(i); String id = work.getString("id");
+                    if (!before.contains(id)) {
+                        if (created == null) created = id; else assertEquals("double tap must create one model job", created, id);
+                        state = work.getString("state");
+                    }
+                }
+                if ("review".equals(state)) break;
+                ui(() -> assertFalse("model request was refused; keep the pending ID for diagnosis",
+                    ((TextView) field(activity, "message")).getText().toString().startsWith("保存結果を確認できません")));
+                SystemClock.sleep(250);
+            }
+            assertNotNull("the real Home request must produce work", created); assertEquals("review", state);
+            assertEquals(initial.getInt("totalWorkCount") + 1, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+            String artifact = broker.result(created); assertFalse(artifact.isBlank()); assertFalse(artifact.contains("<think>"));
+            assertTrue("the generated artifact must address the actual room-tidying request", (artifact.contains("片づけ") || artifact.contains("片付け")));
+            assertFalse("do not accept the old generic prompt example as a useful article", artifact.contains("- 要点1"));
+            java.io.File directory = context().getExternalFilesDir(null);
+            java.nio.file.Files.write(new java.io.File(directory, "local-jennifer-ui-artifact.md").toPath(), artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            JSONObject receipt = new JSONObject().put("workId", created).put("state", "review")
+                .put("draftPreparationCreatedNoWork", true).put("explicitConsent", true).put("doubleTapCreatedOneWork", true)
+                .put("bytes", artifact.getBytes(java.nio.charset.StandardCharsets.UTF_8).length).put("humanReviewAccepted", false);
+            java.nio.file.Files.write(new java.io.File(directory, "local-jennifer-ui-acceptance.json").toPath(), receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            readyForReview = true; // Intentionally leave only this synthetic artifact for inspection in the UI.
+        } finally {
+            if (created != null && !readyForReview) broker.cancel(created);
+            ui(activity::finish);
+            context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putInt("executionChoice", previousRoute).commit();
+        }
+    }
+
 }
