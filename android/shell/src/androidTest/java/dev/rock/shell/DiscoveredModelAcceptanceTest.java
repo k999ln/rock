@@ -175,7 +175,9 @@ public final class DiscoveredModelAcceptanceTest {
         context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", "auto").commit();
         MainActivity activity = (MainActivity) instrumentation.startActivitySync(new Intent(context(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         String created = InstrumentationRegistry.getArguments().getString("rockResumeWork"); JSONObject work = null;
-        File dir = context().getExternalFilesDir(null); long start = SystemClock.elapsedRealtime();
+        File dir = context().getExternalFilesDir(null);
+        if(created==null)for(String suffix:new String[]{"receipt.json","artifact.md"})new File(dir,"discovered-"+mode+"-"+suffix).delete();
+        long start = SystemClock.elapsedRealtime();
         try {
             ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
             if (created != null) {
