@@ -1,6 +1,7 @@
 import { assertSafeOutbound, SensitiveDataBlockedError } from '../toolkits/spider-guard/detector.mjs';
 
 export type TextModelProviderId =
+  | 'pollinations'
   | 'local-model'
   | 'ollama'
   | 'openai'
@@ -18,6 +19,7 @@ export type TextModelProviderDefinition = {
 };
 
 export const textModelProviders: readonly TextModelProviderDefinition[] = [
+  {id:'pollinations',name:'Pollinations Classic（無料Cloud）',detail:'匿名の無料Cloud。待機制限あり。有料切替なし。',defaultModel:'openai-fast',locality:'remote'},
   {
     id: 'local-model',
     name: 'Local Action Assistant / Qwen',
@@ -608,6 +610,7 @@ async function generateTextRequest(
 ): Promise<TextGenerationResult> {
   if (!request.prompt.trim() || request.prompt.length > 24_000)
     throw new LlmProviderError('INVALID_PROMPT', 400);
+  if (request.provider === 'pollinations') throw new LlmProviderError('FREE_CLOUD_COORDINATOR_REQUIRED', 403);
   assertSafeOutbound({
     prompt: request.prompt,
     system: request.system,

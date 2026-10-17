@@ -1,5 +1,8 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 SKY07/ROCK・BIL02/JOINT: 無料Cloud拡張を本人指定で途中Git保存。Pollinations Classic匿名APIのモデル一覧取得と1件の実POSTを実施、完了/usage検査で停止し実応答は未受入。lib/sky-free-cloud.ts、既存workflow/CASへの記録を試作。UI/select API接続・$100境界の追加受入は未完了。本番課金なし。次は応答形式の照合、UI配線、無料Cloud全経路の受入。
+
+
 2026-10-17 SKY07（Web/Sky・ROCK）、BIL02連携: 本人はOpenAI未ログインを訂正し、LLM手動選択＋作業別自動を標準として指定。ログイン待ちを撤回。モデル一覧由来のローカル候補を作業別に選び、未接続は停止する実装。Cloud無料利用権・実応答は未確認、本番課金なし。関連25試験・全体verify（2277 pass/既存skip1、全stage exit 0）が合格。UIはlocalhost:5226/chatのJenniferパスキーで停止、操作未受入。実Cloudとmain統合は未完了。証拠 docs/evidence/sky-model-routing.json。
 
 

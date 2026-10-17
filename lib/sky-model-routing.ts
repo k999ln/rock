@@ -1,6 +1,6 @@
 import { isLoopbackLlmEndpoint, type LlmRuntimeEnv, type TextModelProviderId } from './llm-providers.ts';
 
-export type ModelCandidate = { provider: TextModelProviderId; model: string };
+export type ModelCandidate = { provider: TextModelProviderId; model: string; cloud?: boolean };
 
 /** A transparent heuristic, not a benchmark or a grant of execution permission. */
 export function chooseSkyModel(prompt: string, candidates: ModelCandidate[]) {
@@ -10,8 +10,8 @@ export function chooseSkyModel(prompt: string, candidates: ModelCandidate[]) {
   })).sort((a, b) => b.score - a.score || a.index - b.index);
   if (!ranked.length) return null;
   return { ...ranked[0].candidate,
-    reason: coding ? 'コード作業向け候補を優先。接続先が返した利用可能モデルから選択。' : '一般対話向け候補を優先。接続先が返した利用可能モデルから選択。',
-    policy: 'local-only-until-cloud-free-entitlement-verified' as const,
+    reason: `${coding ? 'コード作業向け' : '一般対話向け'}候補を優先。${ranked[0].candidate.cloud ? '無料Cloud' : 'ローカル'}のモデル一覧から選択。`,
+    policy: 'verified-free-cloud-and-local' as const,
   };
 }
 

@@ -2304,5 +2304,6 @@
   "policy": "free_only_local_discovery_until_cloud_entitlement_verified",
   "status": "host_verified_ui_authentication_pending",
   "tests": "tests/sky-model-routing.test.mjs"
-}
+},
+"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"}
 }
