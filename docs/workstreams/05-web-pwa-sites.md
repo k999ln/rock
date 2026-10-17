@@ -4,6 +4,10 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+### SKY22 — 個人プランとの読取同期（2026-10-17）
+
+Skyの`/sky/avocado`は所有者専用の進捗画面。公開SkyのAPIはSites本人確認と所有者メールの一致を確認してから、固定URLのowner-private個人プランへサーバー間で接続する。Site access用bearerと同期専用secretは両Siteのruntime secretだけに保持する。個人プランは原本であり、Skyは60秒ごとに達成チェック、次の一歩、Sky試行段階と証拠URLを読取表示する。制作メモ・回復記録は返さない。複数の原本利用者行がある場合は409で停止し、別の人の最新行を推測しない。Skyからの編集、Toolの実行、本人登録の証拠を実行receiptと認定することはしない。主担当ROCK、配備境界はSites。合格条件は両Site配備、所有者の実読取、匿名と別利用者の拒否、原本更新後の反映。source buildだけを本番受入に換算しない。
+
 - 2026-09-24、利用者の画像デザインを変更しないことを優先し、生成した差し替え画像を製品Siteから撤去して、提供済みのR5黒スタジオ画像と既存の承認済み画像だけへ戻した。CSSの配置・背景接続だけを調整し、製品の形状・部品・質感は変えていない。中央寄せを上書きしていたanimation、Highlight見出しのfont selector衝突、壊れたRockstarOSアンカー、画像のない疑似回転、重複Highlight、過剰な断定、ARIA、外部font、SEO metadata、旧route redirectも修正。Astro 11 route、Site試験12/12、1280pxと390pxの実ブラウザで欠損画像・欠損fragment・横overflow 0を確認した。GitHub `main` `4dcacf2`、Site source `7388127c8174171f6a6fc3bc4ab7ad33b32d16f3`、公開v64、deployment `appgdep_6ab5db9bbfe08191b88540cf3c136002`。
 
 - 2026-09-24、公開avokado mini SiteをAstro 7.3.5のまま英語中心へ統一した。ホーム、試作計画、Developer Preview、RockstarOS配布状況、販売状況・確認・完了、販売表示、privacy、rocketstar、redirectの11 routeで`lang=en`と日本語UIなしをbuild契約化。390px幅の全routeで横overflow、runtime overlay、console errorがないことを確認し、英語注記の位置ずれと下層共通logoの未指定寸法も修正した。現行R5の1本自律・別Hub不要、実機試験0件、販売停止は変更しない。GitHub `main` `11f0919`、Site source `26e146ecb579f306992abffea7b0c83f23867cf3`、公開v63、deployment `appgdep_6ab5d3eb5b488191b985ab8f901e6576`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。

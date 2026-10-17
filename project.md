@@ -1,3 +1,7 @@
+## 2026-10-17 — avocado建築プランとSkyの所有者専用読取同期（SKY22）
+
+Sky公開Siteへ`/sky/avocado`と本人限定APIを追加。個人プランSiteから進捗・次の一歩・Sky証拠をサーバー間で取得し、60秒ごとに再読込する。個人プランが原本で、制作メモはSkyへ複製しない。両Siteの秘密値はruntime secretに保管。Sky側の型検査・buildは合格、本人の本番読取と他者拒否は配備後に別確認する。`npm run project:check`は既存のAI02証拠ファイル欠落で停止したため、全体verify合格とは扱わない。
+
 ## Sky公開版への接続復帰の限定統合（ROCK / WEB04・S2-02）
 
 公開v33のsource 00109c6から保護したbranchで、保存済みr46の端末判定と接続状態制御を統合。既存サインイン復帰・接続管理・device helper・Stripe/DB/サービスworkerは保持。導線は実在するZema /chat を使用し、未実装libraryと実PC権限・本番受入は未完了。関連34試験、typecheck、対象lintとローカルbuildが合格。同ビルドのWorkerを使い、匿名401でPC接続無効、合成gatewayのGET/jobs 200で読取再確認から復帰、待機・6秒案内・503失敗・再試行、390px横overflowなし、keyboardで詳細開閉/元のfocus復帰を部分検証。最終詳細画面の匿名無効化は再確認中。本人の公開認証・実PC権限・200%拡大・本番受入は未完了。元の公開sourceのproject:updateはSKY20の既存migration根拠欠落で失敗。公開未実施。
