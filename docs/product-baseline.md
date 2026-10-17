@@ -14,7 +14,7 @@
 
 ### 公開コードを根拠にPixel si専用端末を設計する
 
-2026-10-17の本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を、[Pixelの体験改善項目](workstreams/07-android-device-local-ai.md#pixel-usability-feedback)として記録する。見た目・通知・仕事操作は未改善／未受入。機能が動くことを操作性の合格に置き換えず、既存RQの体験改善として扱う。
+2026-10-17の本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を、[Pixelの体験改善項目](workstreams/07-android-device-local-ai.md#pixel-usability-feedback)として記録する。続く本人の「改善して、Pixelで直感的に使えるように」「操作性がもっと直感的に」の実装指示により、[一覧/詳細/通知の導線](native-os-integration.md#pixel-intuitive-experience)を改修する。同一APKの実機成績は[専用台帳](evidence/pixel-intuitive-experience.json)で確認し、設計だけで改善受入済みにしない。機能が動くことを操作性の合格に置き換えず、既存RQの体験改善として扱う。
 
 2026-10-15、本人の追加依頼により[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)を具体化する。GrapheneOSの公開構成/差分を根拠に、既存OSの防御・回線・標準appを引き継ぎ、Home/音声/能力選択/仕事/費用/復旧を既存Rock実装へ接続する。端末とcloudの仕事正本を分け、混合工程には同root authorityのadapter受入を必要とする。SpeechServicesの正しいremoteとv3 TTSを確認し、日本語ASR/TTSの不足を別途扱う。調査版2026100600で採用lock2026100200を自動更新しない。機械可読判断は`pixelSiReferenceDesignIntent`、調査根拠は[コード台帳](evidence/grapheneos-source-audit.json)。新しいRQ/価格/実行許可を増やさず、PX01〜12は未実行の受入条件とする。
 

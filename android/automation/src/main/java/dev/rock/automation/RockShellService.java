@@ -58,16 +58,17 @@ public final class RockShellService extends Service {
         }
         @Override public String submit(String requestId, String inputJson, boolean sample, boolean consent) {
             enforceShellCaller(); ArticlePayload.parse(inputJson);
-            String id = engine().submit(requestId, inputJson, sample, consent); Scheduler.schedule(RockShellService.this); return id;
+            String id = engine().submit(requestId, inputJson, sample, consent); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, id); return id;
         }
         @Override public void setPaused(boolean paused) {
             enforceShellCaller(); ZemaOrchestrator.setPaused(engine(), paused);
             if (paused) Scheduler.stop(RockShellService.this); else Scheduler.schedule(RockShellService.this);
+            WorkChangeSignal.changed(RockShellService.this, null);
         }
         @Override public String result(String workId) { enforceShellCaller(); validWorkId(workId); return engine().result(workId); }
-        @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); }
-        @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); }
-        @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); }
+        @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public String localAiStatus() throws android.os.RemoteException {
             enforceShellCaller();
             try { return new LocalAiConnection(RockShellService.this).status(); }
@@ -94,6 +95,7 @@ public final class RockShellService extends Service {
                     String id = new ZemaOrchestrator(RockShellService.this, engine())
                         .submit(requestId, selectionToken, prompt, contextJson, consent);
                     Scheduler.schedule(RockShellService.this);
+                    WorkChangeSignal.changed(RockShellService.this, id);
                     return zemaResponse("queued", null, id);
                 }
             } catch (SecurityException denied) {
@@ -921,7 +923,15 @@ public final class RockShellService extends Service {
                     step.put("error", run.get("error") == null ? JSONObject.NULL : run.get("error"));
                     runs.put(step);
                 }
-                item.put("runs", runs); works.put(item);
+                item.put("runs", runs);
+                if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
+                    try {
+                        String title = engine().result(work.get("id")).split("\n", 2)[0]
+                            .replaceFirst("^#{1,6}\\s+", "").replaceAll("[\\p{Cntrl}]", "").trim();
+                        if (!title.isEmpty()) item.put("title", title.substring(0, Math.min(60, title.length())));
+                    } catch (RuntimeException noVerifiedArtifact) { /* Incomplete review is not a ready artifact. */ }
+                }
+                works.put(item);
             }
             root.put("works", works); String result = root.toString(); Engine.bounded(result); return result;
         } catch (JSONException invalid) {

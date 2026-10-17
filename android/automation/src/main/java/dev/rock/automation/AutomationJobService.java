@@ -36,13 +36,14 @@ public final class AutomationJobService extends JobService {
                     if (getSystemService(PowerManager.class).getCurrentThermalStatus() >= PowerManager.THERMAL_STATUS_SEVERE) { reschedule = true; break; }
                     s.current = engine().claim(Integer.toString(boot), SystemClock.elapsedRealtime(), charging);
                     if (s.current == null) { reschedule = !charging && !engine().paused(); break; }
+                    WorkChangeSignal.changed(this, s.current.workId);
                     s.connection = new ToolConnection(this);
                     if (s.stopped.get()) { engine().interrupt(s.current); break; }
                     try {
                         ToolConnection.Result result = s.connection.execute(s.current);
                         if (!s.stopped.get()) engine().finish(s.current, result.outcome, result.output, Integer.toString(boot), SystemClock.elapsedRealtime());
                     } catch (Exception e) { engine().interrupt(s.current); reschedule = true; break; }
-                    finally { s.connection.cancel(); s.connection = null; s.current = null; }
+                    finally { WorkChangeSignal.changed(this, s.current.workId); s.connection.cancel(); s.connection = null; s.current = null; }
                     reschedule = i == 7;
                 }
             } catch (RuntimeException e) { /* Fail closed; no raw payload/error logging. UI keeps persistent state. */ }

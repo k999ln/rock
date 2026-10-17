@@ -1,0 +1,29 @@
+{
+  "schema": "rock-pixel-intuitive-experience/1",
+  "date": "2026-10-17",
+  "taskId": "OS11",
+  "primarySquad": "O6",
+  "primaryOwner": "ROCK",
+  "branch": "codex/pixel-intuitive-experience",
+  "baseMainSha": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
+  "status": "implemented_physical_acceptance_pending",
+  "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+  "host": {
+    "buildAndLint": "passed",
+    "physicalFixtureRegressionLog": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/physical-ux-regressions.log"
+  },
+  "physical": {
+    "device": "Pixel 10 GL066/frankel",
+    "dataCleared": false,
+    "osFlashed": false,
+    "defaultHomeChanged": false,
+    "notificationAccepted": false,
+    "ownerUsabilityAccepted": false
+  },
+  "remaining": [
+    "Same final-candidate Home local model and real background notification tests",
+    "System notification tap, saved-artifact/export/readback and visual inspection",
+    "Final full verify and same-head CI/main integration",
+    "General article quality, full OS and cloud push remain separate"
+  ]
+}

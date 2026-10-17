@@ -127,7 +127,18 @@
           "android/shell/src/aosp/AndroidManifest.xml",
           "android/automation/src/main/java/dev/rock/automation/Scheduler.java",
           "android/automation/src/main/java/dev/rock/automation/AutomationJobService.java",
-          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java"
+          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkPresentation.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotifications.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotificationReceiver.java",
+          "android/shell/src/main/res/drawable/ic_rockstar.xml",
+          "android/shell/src/main/res/drawable/ic_work_notification.xml",
+          "android/automation/src/main/java/dev/rock/automation/WorkChangeSignal.java",
+          "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+          "android/automation/src/main/AndroidManifest.xml",
+          "android/automation/src/aosp/AndroidManifest.xml",
+          "android/shell/src/androidTest/java/dev/rock/shell/WorkExperienceIntegrationTest.java",
+          "android/shell/src/test/java/dev/rock/shell/WorkPresentationTest.java"
         ],
         "fullSiTerminalAccepted": false,
         "fullOsAccepted": false,
@@ -157,6 +168,14 @@
           ],
           "physicalInferenceAccepted": false,
           "fullJenniferGoalAccepted": false
+        },
+        "workExperience": {
+          "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "implemented_acceptance_pending",
+          "notificationsScope": "local_broker_jobs_only",
+          "notificationDoesNotExecute": true,
+          "fullOsAccepted": false
         }
       }
     }

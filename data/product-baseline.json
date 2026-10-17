@@ -41,7 +41,7 @@
       "recordedAt": "2026-10-17",
       "source": "direct_owner_memo",
       "ownerQuote": "メモ　デザインがダサい、通知と、仕事の操作性が直感的じゃない、",
-      "status": "recorded_not_implemented",
+      "status": "implementation_in_progress",
       "areas": [
         "visual_design",
         "notifications",
@@ -49,7 +49,14 @@
       ],
       "authority": "docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback",
       "reason": "実機利用中の本人指摘を次の体験改善へ引き継ぐ。機能試験の合格と使いやすさの受入は分ける。",
-      "newRqOrExecutionPermission": false
+      "newRqOrExecutionPermission": false,
+      "implementationRequest": {
+        "date": "2026-10-17",
+        "ownerQuote": "じゃあデザインと通知、仕事の操作性をちゃんと改善して、Pixelで直感的に使えるようにして",
+        "followUp": "操作性がもっと直感的にしてほしい",
+        "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+        "evidence": "docs/evidence/pixel-intuitive-experience.json"
+      }
     }
   },
   "cloudServicePlanIntent": {

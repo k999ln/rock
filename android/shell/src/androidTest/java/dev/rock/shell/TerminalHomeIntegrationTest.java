@@ -118,12 +118,16 @@ public final class TerminalHomeIntegrationTest {
     @Test public void cancelledWorkRemainsVisibleAndEmptyReviewCannotComplete() throws Exception {
         MainActivity activity = launch();
         try {
+            String reviewId = UUID.randomUUID().toString();
             JSONArray works = new JSONArray().put(new JSONObject().put("id", UUID.randomUUID()).put("state", "cancelled"))
-                .put(new JSONObject().put("id", UUID.randomUUID()).put("state", "review").put("runs", new JSONArray()));
+                .put(new JSONObject().put("id", reviewId).put("state", "review").put("runs", new JSONArray()
+                    .put(new JSONObject().put("state", "succeeded")).put(new JSONObject().put("state", "succeeded"))));
             ui(() -> {
                 call(activity, "render", new Class<?>[]{JSONArray.class}, works);
                 View jobs = (View) field(activity, "jobs");
                 assertTrue(text(jobs).contains("中止"));
+                assertNull(button(jobs, "確認して完了"));
+                call(activity, "openWork", new Class<?>[]{String.class}, reviewId);
                 Button complete = button(jobs, "確認して完了"); assertNotNull(complete);
                 complete.performClick();
                 ViewGroup card = (ViewGroup) complete.getParent();
