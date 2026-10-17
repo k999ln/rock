@@ -16,7 +16,9 @@
 - 通知: 進行・確認依頼・完了・失敗を見分け、該当する仕事へ直接戻れるようにする。実際の状態を正本から読み、通知だけで成功や承認にしない。
 - 仕事: 今の状態、次にできる操作、確認・停止・成果物表示を迷わず見つけられる導線にする。内部IDや複雑な設定を主操作へ露出させない。
 
-次は現行Pixel画面と通知経路を調べ、一つの依頼について「依頼→進行→確認→成果物」と「失敗→復旧」「停止」を具体的な画面案へ落とす。本人・承認・同ID・保存・停止の既存契約を再利用する。UI変更時はTerminalHomeIntegrationTestと関連通知試験、同一APKのPixel操作で確認し、未検証の通知を実装済みと表示しない。本人の意見と、上記の具体化案を区別して引き継ぐ。
+checkpoint: 固定候補7b16d61bのPixel試験は12件中11成功・1失敗・skip0。Homeの実1.5B→2 Tool→成果保存と二重tap1仕事は通った。background実Toolのreview通知を90秒以内に確認できず、実System UI tapへ未到達。原因未確定。foreground snapshotで通知stampをbaseline化する競合候補と、protected receiver/Binder読取り/通知channelを切り分ける。host build/lint/全体verifyと同head CI8件成功を、この実機失敗の合格にしない。本人の「ここまでGitに」指示でPR #157へ保存し、main統合は保留する。
+
+追加の[LLM手動選択/作業別自動default要求](../llm-evaluation-architecture.md#selectable-models-and-automatic-default)は記録済み・未実装。まず通知の不達を直し、同一候補の通知tap・状態・保存/復旧を受け入れ、続いて利用可能なmodel/runnerの選択を共通契約へ結ぶ。
 
 ## Pixel si専用端末の公開コード調査と実装設計
 

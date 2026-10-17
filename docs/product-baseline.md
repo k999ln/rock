@@ -32,6 +32,8 @@
 
 ### Skyでlocal・cloud・明示した組合せを選ぶ
 
+2026-10-17の追加指示により、LLMを手動でも選べるようにし、通常は作業に適合する利用可能なmodelを自動選択する。Codex loginを唯一の前提にしない。[要求・現在の不足・合格条件](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は実装待ち。モデルの自動選択と、本人の実行承認・外部送信許可・費用上限を分ける。
+
 2026-10-15、本人はcloud Agentの利用とlocal LLM導入の双方を選択可能にし、「だからskyがある」と明示した。Skyをmodel/Agent/Toolの発見・導入/接続・実行先選択の入口とし、cloud固定や全機種local必須にしない。modelの推論先とAgent runnerを区別し、準備状態・実host・送信範囲・費用・必要資源を提示する。選んだ経路は同じZemaのJob/成果/上限へ結び、未接続時の自動fallbackや無断送信を行わない。[詳細と未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)および`skyExecutionChoiceDecision`を正本にする。既存6 adapter/固定local modelの証拠は保持し、全選択肢の利用可能・本番合格を宣言しない。
 
 ### Pixel先行、iOSはeSIM商品から機能追加

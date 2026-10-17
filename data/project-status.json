@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "implementation_started",
+    "status": "checkpoint_ui_partial_pass_background_notification_failed",
     "branch": "codex/pixel-intuitive-experience",
     "mainBase": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
     "scope": [
@@ -14,7 +14,17 @@
       "read_only_notification_navigation"
     ],
     "physicalAccepted": false,
-    "nextAction": "Implement focused state/action UI and trusted notification hints; build and verify on Pixel GL066 without data reset or OS flash."
+    "nextAction": "Checkpoint requested by owner. Fix unobserved background review notification, retest actual System UI tap, then implement selectable LLMs and a task-aware automatic default. No main merge or full-OS acceptance.",
+    "tests": {
+      "physicalPassed": 11,
+      "physicalFailed": 1,
+      "physicalSkipped": 0,
+      "hostFailed": 0
+    },
+    "candidateSourceSha": "7b16d61be7adb4b057f6ab8c710c1034b7d0ece2",
+    "pullRequest": "https://github.com/k999ln/rock/pull/157",
+    "codeHeadCiPassed": 8,
+    "mainMerged": false
   },
   "skyRecurringSandbox": {"taskId": "BIL02", "coordinationTask": "DOC04", "date": "2026-10-17", "status": "sandbox_scheduler_and_agent_fences_accepted", "scope": "opt_in_sandbox_scheduler_and_existing_agent_database_gates", "mainBase": "1f0cd54e61cf3bb4b3d0e146e04d89e177cbf3b1", "productionBillingEnabled": false, "actualCloudExecution": false, "unitTests": 8, "fullVerify": "passed_all_stages_node22", "nextAction": "same-head CI and main integration; real Cloud execution and production contract gates remain closed", "providerChecks": 6, "verifiedProviderEvents": 4, "uiVerified": true, "evidence": "docs/evidence/sky-recurring-sandbox.json"},
   "sky140CollectionSandbox": {"taskId": "BIL02", "date": "2026-10-16", "status": "provider_policy_harness_passed", "scope": "fixed_postpaid_invoice_and_access_policy_harness", "mainBase": "60765fc3", "productionBillingEnabled": false, "realAgentEnforcement": false, "evidence": "docs/evidence/sky-140-collection-sandbox.json", "unitTests": 6, "providerChecks": 10, "fullVerify": "passed_node22_WRANGLER_HIDE_BANNER_true", "nextAction": "contract consent storage and atomic integration with existing reservation/dispatch; monthly scheduler, authentication-required payment, tax and credit policy remain"},

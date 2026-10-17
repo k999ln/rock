@@ -65,6 +65,16 @@ Web／native共通の判断境界は [`lib/decision-layer.ts`](../lib/decision-l
 
 Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確認へ、local-only要求をLocal Qwenへ、複雑かつremote許可済みの要求だけをJev／cloud候補へ送る。Local runtime未接続時に秘密データをcloudへ送らない。Jevのchoice結果も `advisory-only` であり、Brokerの権限、Wallet、MCP、Tool成功を決めない。
 
+<a id="selectable-models-and-automatic-default"></a>
+
+## LLMの明示選択と、作業に応じる自動選択（実装待ち）
+
+2026-10-17、本人が「Codex経由しか使えない形にせずLLMを選べるように、defaultは作業に一番良いものを自動で選ぶ」と指示。これを次の実装要件として記録する。現在のPixelはCodex loginを使わない端末内Qwenの有限Tool経路を持ち、Webに6 provider adapterがあるが、選択肢の登録を接続・credential・本番利用可能と扱わない。AMCの一部実作業はCodex CLIへの個別引渡しであり、任意LLMと同等のTool実行を持つわけではない。
+
+次はmodel推論先とAgent/Tool runnerを分離して、Home/Skyの通常値を自動選択にし、手動指定も残す。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
+
+未実装: Pixelのモデル選択/自動候補routerと実行先固定、共通model/runner能力契約、作業別の品質・時間・費用の検証。合格条件は、未接続・未許可・予算超過候補を除外し、手動指定/自動選択の実model pin・Tool/Agent成果・同IDを同一artifactで照合できること。credential不足や商用契約待ちはそのまま表示する。
+
 ## 3. Local plannerの契約
 
 2026-10-16のPixel実装は[署名済catalog・導入・再読込み・Jennifer有限計画](native-os-integration.md#pixel-local-jennifer)を既存v4 handoffへ接続する。Platform API v1とruntime Binder v4は別の版範囲。debug catalogは署名済み2候補、production catalogは空。2026-10-17、固定候補`6c9a3083`とQwen2.5 1.5BでPixel 10 GL066のHome→実v4計画→実2 Tool→確認待ち成果物保存を64.625秒の試験で確認した。生成文は主題に沿うが短く、依頼した構成や出典未調査表示を満たさず一般品質は未受入。機能・内容・全OSの受入を分ける。

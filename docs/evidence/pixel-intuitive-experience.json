@@ -6,11 +6,25 @@
   "primaryOwner": "ROCK",
   "branch": "codex/pixel-intuitive-experience",
   "baseMainSha": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
-  "status": "implemented_physical_acceptance_pending",
+  "status": "checkpoint_ui_partial_pass_background_notification_failed",
   "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
   "host": {
     "buildAndLint": "passed",
-    "physicalFixtureRegressionLog": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/physical-ux-regressions.log"
+    "physicalFixtureRegressionLog": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/physical-ux-regressions.log",
+    "coreTests": 123,
+    "automationTests": 38,
+    "shellTests": 14,
+    "failed": 0,
+    "skipped": 0,
+    "toolSdkPreviouslyVerified": 8,
+    "fullVerify": "passed_all_stages",
+    "verifyLog": "/private/tmp/pixel-ux-verify.log",
+    "nodeTests": {
+      "tests": 2267,
+      "passed": 2266,
+      "failed": 0,
+      "skipped": 1
+    }
   },
   "physical": {
     "device": "Pixel 10 GL066/frankel",
@@ -18,12 +32,73 @@
     "osFlashed": false,
     "defaultHomeChanged": false,
     "notificationAccepted": false,
-    "ownerUsabilityAccepted": false
+    "ownerUsabilityAccepted": false,
+    "permissionDialogDeniedThenAllowed": true,
+    "appNotificationPreference": "enabled_after_actual_system_permission_dialog",
+    "tests": 12,
+    "passed": 11,
+    "failed": 1,
+    "skipped": 0,
+    "testSeconds": 167.824,
+    "log": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/physical-frozen-all.log",
+    "failure": {
+      "test": "realBackgroundToolCompletionNotifiesAndTapOnlyOpensItsSavedWork",
+      "condition": "No review notification was observed within 90 seconds; actual System UI tap was not reached",
+      "cause": "not_confirmed",
+      "investigate": [
+        "Foreground perform() currently baselines notification stamps on every snapshot; possible suppression race",
+        "Trace protected hint receipt, fresh Binder snapshot, dedup and channel posting separately"
+      ],
+      "runtimeFixed": false
+    },
+    "localModelHome": {
+      "receipt": {
+        "workId": "68fa880c-027a-3c53-ae17-b143e27c8162",
+        "state": "review",
+        "draftPreparationCreatedNoWork": true,
+        "explicitConsent": true,
+        "doubleTapCreatedOneWork": true,
+        "bytes": 395,
+        "humanReviewAccepted": false
+      },
+      "profileId": "dev.rock.qwen25-15b-q4km",
+      "artifactSha256": "f6e93a0d60b746aaa97b4a571dfa968b13522f089dc7ff50374956c9c58ac0aa",
+      "scope": "same frozen candidate, actual model and two Tools; quality remains separate"
+    }
   },
   "remaining": [
-    "Same final-candidate Home local model and real background notification tests",
-    "System notification tap, saved-artifact/export/readback and visual inspection",
-    "Final full verify and same-head CI/main integration",
-    "General article quality, full OS and cloud push remain separate"
-  ]
+    "Fix and retest background notifications and actual System UI notification tap; CI success is not physical acceptance",
+    "Retest the corrected same APK through Home, work detail, export and process recovery",
+    "Implement owner-requested selectable LLMs and task-aware automatic default; currently a recorded requirement only",
+    "Owner usability acceptance, general article quality, full OS and cloud push remain separate"
+  ],
+  "candidateSourceSha": "7b16d61be7adb4b057f6ab8c710c1034b7d0ece2",
+  "candidateArtifacts": [
+    {
+      "file": "automation-debug.apk",
+      "sha256": "9541f61a251013e604e79f2a911e48011e3c51b966a9b6f05d0fe82c862dce89",
+      "bytes": 6851625,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    {
+      "file": "shell-debug.apk",
+      "sha256": "6bed5804650e6254b63b2d94c7effd90242c3f9004f372ab224160949bd547c3",
+      "bytes": 607772,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    {
+      "file": "shell-debug-androidTest.apk",
+      "sha256": "16d12ba068905aba931e35ce3d3815dd00bebab8c262f118b1deaae7f26246e3",
+      "bytes": 4546313,
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    }
+  ],
+  "installedByteReadback": "all_three_candidate_APKs_match",
+  "git": {
+    "pullRequest": "https://github.com/k999ln/rock/pull/157",
+    "verifiedCodeHead": "7b16d61be7adb4b057f6ab8c710c1034b7d0ece2",
+    "verifiedCodeHeadCiPassed": 8,
+    "mainMerged": false,
+    "reason": "checkpoint; physical background notification remains failed"
+  }
 }
