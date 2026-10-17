@@ -1907,3 +1907,15 @@ export const skyCloudMonthlyItems = sqliteTable('sky_cloud_monthly_items',{
 export const skyCloudMonthlyEvents = sqliteTable('sky_cloud_monthly_events',{
  eventId:text('event_id').primaryKey(),invoiceId:text('invoice_id').notNull(),type:text('type').notNull(),processedAt:integer('processed_at').notNull(),
 });
+
+// Sandbox-only, opt-in monthly collection and atomic execution restrictions.
+export const skyRecurringContracts = sqliteTable('sky_recurring_contracts', {
+ id:text('id').primaryKey(), ownerId:text('owner_id').notNull().unique(), stripeAccountId:text('stripe_account_id').notNull(),
+ customerId:text('customer_id').notNull(), paymentMethodId:text('payment_method_id').notNull(), paymentRevision:integer('payment_revision').notNull().default(0),
+ consentVersion:text('consent_version').notNull(), creditMinor:integer('credit_minor').notNull(), periodStart:integer('period_start').notNull(),periodEnd:integer('period_end').notNull(),
+ status:text('status').notNull(),accessUntil:integer('access_until').notNull(),lease:text('lease'),leaseUntil:integer('lease_until').notNull().default(0),createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[check('sky_recurring_credit',sql`${t.creditMinor}=14000`),check('sky_recurring_period',sql`${t.periodEnd}>${t.periodStart}`),check('sky_recurring_state',sql`${t.status} IN ('active','collecting','past_due','cancelled','disputed')`)]);
+export const skyRecurringCharges = sqliteTable('sky_recurring_charges', {
+ id:text('id').primaryKey(),contractId:text('contract_id').notNull().references(()=>skyRecurringContracts.id),periodStart:integer('period_start').notNull(),periodEnd:integer('period_end').notNull(),status:text('status').notNull(),
+ invoiceId:text('invoice_id').unique(),itemId:text('item_id'),startedAt:integer('started_at').notNull(),attemptRevision:integer('attempt_revision').notNull().default(-1),attemptKeyRevision:integer('attempt_key_revision').notNull().default(-1),attemptStartedAt:integer('attempt_started_at'),paidAt:integer('paid_at'),
+},t=>[uniqueIndex('sky_recurring_charge_period').on(t.contractId,t.periodStart),check('sky_recurring_charge_state',sql`${t.status} IN ('creating','open','paid','attention')`)]);

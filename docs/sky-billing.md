@@ -363,3 +363,30 @@ BIL02/O5（JOINT）、2026-10-16。`lib/sky-140-collection-test.ts`と`scripts/s
 SKY140_SANDBOX_ACCEPTANCE=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-140-collection-sandbox.mjs
 node --experimental-strip-types --test tests/sky-140-collection.test.mjs
 ```
+
+
+## Sky 140の月次自動請求とAgent停止復旧Sandbox
+
+2026-10-17 BIL02/O5（JOINT）、設計同期DOC04/H1。本人の追加指示により、旧5224の純粋判定harnessを拡張し、`lib/sky-recurring-sandbox.ts`と`0018_sky_recurring_sandbox.sql`を実装する。目的はSky単体で月締め後の140 USD自動回収と未払い時の既存Agent利用制限を一周させること。Jennifer/Zema/物理SIMは必須ではない。本番課金を有効にせず、明示登録したSandbox契約ownerだけを対象とする。
+
+- 体験・料金: UTC暦月の終了後、固定140 USDを保存済みテスト支払方法に自動請求。100 USD相当のAgent利用枠を含み、従量明細をもう一度加算しない。未使用枠繰越/超過自動請求なし。入会時の前払いなし、未払いは次月の新規有料予約と外部送信を停止。既存成果の閲覧・保存と送信済み処理の精算は保持する。実行済みの外部処理を遡って取消すものではない。
+- 責任: ROCKが契約projection、scheduler、照合、既存AgentのDB gateを担当。Stripeがテスト決済結果を担当。OWNERはSandbox検証を承認済み。本番提供の契約同意UX、更新日/期日/猶予、税・与信・返金条件は未受入で、fixtureのUTC暦月や即時停止を商用条件と扱わない。銀行口座や他サービスを凍結する機能はない。
+- 入出力・保存: server専用登録でowner/account/customer/PaymentMethod/テスト同意版を保存。`sky_recurring_contracts`は契約期間・状態・確認有効期限・排他lease、`sky_recurring_charges`は期間一意のStripe請求ID・明細ID・再送revisionを保存する。これは回収projectionであり、WalletやAgent精算台帳を作り直さない。既存未確定実行があるownerの新規登録は照合完了まで拒否。
+- 予約/送信: RemoteAiTextStoreの予約・dispatch・最終send claim、A2Aの予約INSERT・dispatch・remote send直前をSQL triggerで原子的に検査する。既存の本人/承認digest/親予算/取消/重複防止は維持。USDの既存確定額と未確定予約を両系統で合算し10000 centsを超える予約を拒否。旧期間の未確定予約も保守的に加算する。無料local処理や未登録ownerへ新規請求は発生しない。
+- 状態: active → collecting → active/past_due。請求処理中、未払い、Provider照合失敗、確認期限切れは送信を許可しない。照合結果は最大5分で失効しtimerが更新。cancelled/disputedは自動復旧しない。返金/dispute通知は署名検証とProvider再取得後に停止する。過去の未払いが残れば新しい月だけ払っても復旧しない。
+- 自動回収: loopback5225のserverが30秒毎に期限到来を確認する。Stripe Subscriptionの前払いを使わず、独自の永続月次schedulerから`charge_automatically`/`auto_advance:false`の請求を作成してpayする。期間unique制約、120秒lease、アカウント別idempotency key、保存済みIDで再起動と重複を防ぐ。支払失敗後は自動で無限に再試行せず、明示的なテスト支払方法更新を新revisionとして同じ請求に再試行する。
+- 失敗/復旧: 不明な作成・支払結果は同じkeyで23時間以内のみ再送、期限超過は照合待ちで停止し人が保存IDを確認。raw webhook署名、test mode、account、customer、通貨、固定総額、期間metadata、paid/残額を再取得して照合後だけ復旧する。HTTPはreadonlyレポートと署名webhookのみで、登録や支払方法変更の公開APIは設けない。
+- 検証: 合成LLM/A2A仕事を既存storeへ通すローカル8件と、Stripe実Sandboxでのタイマー月締め・失敗停止・同一請求の支払復旧・翌月請求・署名通知・再起動を区別して記録する。[同一sourceの証拠](evidence/sky-recurring-sandbox.json)。実Cloud APIの実行/消費、顧客の本番契約、公開scheduler運用・監視、SCA対応UX、長期運用の受入は別gate。
+
+Node22での起動と受入:
+
+```sh
+node --experimental-strip-types --test tests/sky-recurring-sandbox.test.mjs
+# private configはsk_test/account/CLI listenerの署名secretのみ。Gitへ保存しない。
+SKY_RECURRING_SANDBOX=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/check-sky-recurring-provider.mjs
+# 受入driverは検証時計を進める。実際の月待ちを省略し、既存予約・送信gateのみ動かす。
+# 通常の時計を使うcollector（DBは事前にテスト登録済みのもの）
+SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-recurring-sandbox-server.mjs
+```
+
+受入driverの作業ディレクトリは`work/sky-recurring-sandbox`（Git外）、5225は読み取りレポート。Stripe CLIで`invoice.paid,invoice.payment_failed,invoice.payment_succeeded,charge.refunded,charge.dispute.created`を5225へforwardする。検証完了状態からの再起動は新しい請求を作らない。途中失敗時は保存済みDB/請求IDを照合し、未払い状態を消してやり直さない。本番移行時の未決条件はBIL02/OWNERが確定するまでgateを閉じる。

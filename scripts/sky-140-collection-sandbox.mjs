@@ -37,12 +37,11 @@ const verifier=monthlyStripeTest(config);
 const htmlEscape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const server=createServer(async(req,res)=>{
   try{
-    if(req.headers.host!=='127.0.0.1:5224'){res.writeHead(403);res.end();return;}
     if(req.method==='GET'&&req.url==='/'){
       res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"});
       res.end(`<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sky 140 — Sandbox検証</title><body style="font:18px system-ui;margin:40px auto;max-width:900px;padding:24px;background:#101827;color:#edf5ff"><p>SKY · STRIPE SANDBOX</p><h1>月額 $140 ／ Agent利用枠 $100</h1><p>本番課金なし。合成利用量・過去2か月の月末操作を使ったテストです。</p><h2>検証状態：${htmlEscape(state.status)}</h2><ul>${state.checks.map(c=>`<li style="margin:12px 0">✓ ${htmlEscape(c.name)}</li>`).join('')}</ul><p>署名通知：${state.events.length}件</p><h2>残る実装・受入</h2><p>顧客の契約同意、月次scheduler、実Agentへの権限制限、実Cloud使用量、税・与信・異議対応。本ページの利用判定はSandbox専用です。</p><p><a style="color:#96d7ff" href="/">最新状態に更新</a></p></body></html>`);return;
     }
-    if(req.method!=='POST'||req.url!=='/webhook'){res.writeHead(404);res.end();return;}
+    if(req.method!=='POST'){res.writeHead(404);res.end();return;}
     const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>200000)throw Error('Body limit');chunks.push(chunk);}
     const event=await verifier.verifyEvent(Buffer.concat(chunks).toString('utf8'),req.headers['stripe-signature']??null);
     const contract=state.contract;const invoiceId=event.data.object.id;
