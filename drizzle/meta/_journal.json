@@ -15,6 +15,13 @@
       "when": 1790866131057,
       "tag": "0001_csv_trial_payments",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792259007921,
+      "tag": "0002_lush_enchantress",
+      "breakpoints": true
     }
   ]
 }

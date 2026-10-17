@@ -1,4 +1,7 @@
+import { assertSafeOutbound, SensitiveDataBlockedError } from '../toolkits/spider-guard/detector.mjs';
+
 export type TextModelProviderId =
+  | 'pollinations'
   | 'local-model'
   | 'ollama'
   | 'openai'
@@ -16,6 +19,7 @@ export type TextModelProviderDefinition = {
 };
 
 export const textModelProviders: readonly TextModelProviderDefinition[] = [
+  {id:'pollinations',name:'Pollinations Classic（無料Cloud）',detail:'匿名の無料Cloud。待機制限あり。有料切替なし。',defaultModel:'openai-fast',locality:'remote'},
   {
     id: 'local-model',
     name: 'Local Action Assistant / Qwen',
@@ -57,7 +61,8 @@ export const textModelProviders: readonly TextModelProviderDefinition[] = [
   {
     id: 'openai-compatible',
     name: 'OpenAI互換エンドポイント',
-    detail: 'LM Studio・vLLM・llama.cppなど、Chat Completions互換の接続先です。',
+    detail:
+      'LM Studio・vLLM・llama.cppなど、Chat Completions互換の接続先です。',
     defaultModel: 'local-model',
     locality: 'local',
     credentialEnv: 'SKY_LLM_COMPATIBLE_API_KEY',
@@ -353,8 +358,20 @@ function textFromOpenAiResponse(payload: Record<string, unknown> | null) {
   return text;
 }
 
+function hasToolCalls(value: unknown) {
+  // Compatible servers may omit the field or serialize the optional default.
+  return value !== undefined && value !== null &&
+    (!Array.isArray(value) || value.length > 0);
+}
+
 function textFromChatResponse(payload: Record<string, unknown> | null) {
   const choices = Array.isArray(payload?.choices) ? payload.choices : [];
+  if (choices.some((choice) => {
+    const record = asRecord(choice);
+    const message = asRecord(record?.message);
+    return record?.finish_reason !== 'stop' || hasToolCalls(message?.tool_calls) ||
+      message?.function_call != null;
+  })) throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
   const text = choices
     .map((choice) => {
       const message = asRecord(asRecord(choice)?.message);
@@ -404,12 +421,98 @@ export type OpenAiResponseResult = {
   providerRequestId: string | null;
 };
 
+export type OpenAiOutputProgress = (progress: { outputBytes: number; observedAt: number }) => Promise<void>;
+
+const MAX_STREAM_BYTES = 3_000_000;
+const MAX_STREAM_EVENT_BYTES = 1_200_000;
+
+async function streamedOpenAiResponse(response: Response, onProgress: OpenAiOutputProgress) {
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => undefined);
+    throw new LlmProviderError('UPSTREAM_ERROR', 502);
+  }
+  const contentType = response.headers.get('content-type')?.split(';', 2)[0].trim().toLowerCase();
+  if (contentType !== 'text/event-stream' || !response.body) {
+    await response.body?.cancel().catch(() => undefined);
+    throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let totalBytes = 0;
+  let outputBytes = 0;
+  let latestPayload: Record<string, unknown> | null = null;
+  let streamEnded = false;
+  let lastProgressAt = 0;
+  let lastProgressBytes = 0;
+  const encoder = new TextEncoder();
+
+  const consume = async (line: string) => {
+    if (!line.startsWith('data:')) return;
+    const data = line.slice(5).trimStart();
+    if (!data || data === '[DONE]') return;
+    if (encoder.encode(data).byteLength > MAX_STREAM_EVENT_BYTES)
+      throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+    let event: unknown;
+    try { event = JSON.parse(data); }
+    catch { throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502); }
+    const record = asRecord(event);
+    if (!record || typeof record.type !== 'string')
+      throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    if (record.type === 'response.output_text.delta' && typeof record.delta === 'string') {
+      outputBytes += encoder.encode(record.delta).byteLength;
+      if (!Number.isSafeInteger(outputBytes) || outputBytes > MAX_STREAM_BYTES)
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      const now = Date.now();
+      if (now - lastProgressAt >= 1_000 || outputBytes - lastProgressBytes >= 512) {
+        await onProgress({ outputBytes, observedAt: now });
+        lastProgressAt = now;
+        lastProgressBytes = outputBytes;
+      }
+    }
+    if (record.type === 'response.completed') {
+      latestPayload = asRecord(record.response);
+      if (!latestPayload) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    } else if (record.type === 'response.failed' || record.type === 'error') {
+      throw new LlmProviderError('UPSTREAM_ERROR', 502);
+    }
+  };
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) { streamEnded = true; break; }
+      totalBytes += value.byteLength;
+      if (!Number.isSafeInteger(totalBytes) || totalBytes > MAX_STREAM_BYTES)
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      buffer += decoder.decode(value, { stream: true });
+      if (buffer.length > MAX_STREAM_EVENT_BYTES && !buffer.includes('\n'))
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      let newline = buffer.indexOf('\n');
+      while (newline >= 0) {
+        const line = buffer.slice(0, newline).replace(/\r$/, '');
+        buffer = buffer.slice(newline + 1);
+        await consume(line);
+        newline = buffer.indexOf('\n');
+      }
+    }
+    buffer += decoder.decode();
+    if (buffer) await consume(buffer.replace(/\r$/, ''));
+  } finally {
+    if (!streamEnded) await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
+  if (!latestPayload) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  return { payload: latestPayload, outputBytes };
+}
+
 /** Shared transport for text and cited research. Callers must authorize spending first. */
 export async function createOpenAiResponse(
   body: Record<string, unknown>,
   runtimeEnv: Pick<LlmRuntimeEnv, 'OPENAI_API_KEY'>,
   fetchImpl: FetchLike = fetch,
   clientRequestId?: string,
+  onProgress?: OpenAiOutputProgress,
 ): Promise<OpenAiResponseResult> {
   if (!runtimeEnv.OPENAI_API_KEY)
     throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
@@ -428,12 +531,14 @@ export async function createOpenAiResponse(
         'Content-Type': 'application/json',
         ...(clientRequestId ? { 'X-Client-Request-Id': clientRequestId } : {}),
       },
-      body: JSON.stringify({ ...body, store: false }),
+      body: JSON.stringify({ ...body, ...(onProgress ? { stream: true } : {}), store: false }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const requestHeader = response.headers?.get('x-request-id');
     providerRequestId = requestHeader && /^req_[A-Za-z0-9_-]{1,200}$/.test(requestHeader) ? requestHeader : null;
-    const payload = await jsonResponse(response);
+    const payload = onProgress
+      ? (await streamedOpenAiResponse(response, onProgress)).payload
+      : await jsonResponse(response);
     if (payload.status !== undefined && payload.status !== 'completed')
       throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     return {
@@ -479,16 +584,17 @@ export async function generateText(
   request: TextGenerationRequest,
   runtimeEnv: LlmRuntimeEnv,
   fetchImpl: FetchLike = fetch,
+  onProgress?: OpenAiOutputProgress,
 ): Promise<TextGenerationResult> {
   const startedAt = Date.now();
   // Edge Workers support manual redirects. Never forward provider credentials.
   const guardedFetch: FetchLike = (input, init) =>
     fetchImpl(input, { ...init, redirect: 'manual' });
   try {
-    const result = await generateTextRequest(request, runtimeEnv, guardedFetch);
+    const result = await generateTextRequest(request, runtimeEnv, guardedFetch, onProgress);
     return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
   } catch (error) {
-    if (error instanceof LlmProviderError) throw error;
+    if (error instanceof LlmProviderError || error instanceof SensitiveDataBlockedError) throw error;
     if (error instanceof Error &&
         (error.name === 'TimeoutError' || error.name === 'AbortError'))
       throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
@@ -500,9 +606,16 @@ async function generateTextRequest(
   request: TextGenerationRequest,
   runtimeEnv: LlmRuntimeEnv,
   fetchImpl: FetchLike = fetch,
+  onProgress?: OpenAiOutputProgress,
 ): Promise<TextGenerationResult> {
   if (!request.prompt.trim() || request.prompt.length > 24_000)
     throw new LlmProviderError('INVALID_PROMPT', 400);
+  if (request.provider === 'pollinations') throw new LlmProviderError('FREE_CLOUD_COORDINATOR_REQUIRED', 403);
+  assertSafeOutbound({
+    prompt: request.prompt,
+    system: request.system,
+    model: request.model,
+  });
   const model = modelFor(request);
   const maxOutputTokens = limitFor(request);
   const messages = messagesFor(request);
@@ -514,11 +627,14 @@ async function generateTextRequest(
     const endpoint = normalized.endsWith('/chat/completions')
       ? normalized
       : `${normalized.replace(/\/v1$/, '')}/v1/chat/completions`;
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
     if (runtimeEnv.SKY_LOCAL_LLM_API_KEY)
       headers.Authorization = `Bearer ${runtimeEnv.SKY_LOCAL_LLM_API_KEY}`;
     const response = await fetchImpl(endpoint, {
       method: 'POST',
+      redirect: 'error',
       headers,
       body: JSON.stringify({
         model,
@@ -537,12 +653,12 @@ async function generateTextRequest(
   }
 
   if (request.provider === 'ollama') {
-    const base = (runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(
-      /\/+$/,
-      '',
-    );
+    const base = (
+      runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434'
+    ).replace(/\/+$/, '');
     const response = await fetchImpl(`${base}/api/chat`, {
       method: 'POST',
+      redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model,
@@ -557,6 +673,9 @@ async function generateTextRequest(
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
+    if (payload.done !== true || payload.done_reason !== 'stop' ||
+        hasToolCalls(asRecord(payload.message)?.tool_calls))
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text =
       payload && typeof payload.message === 'object' && payload.message
         ? (payload.message as { content?: unknown }).content
@@ -577,6 +696,7 @@ async function generateTextRequest(
       runtimeEnv,
       fetchImpl,
       request.clientRequestId,
+      onProgress,
     );
     return {
       provider: request.provider,
@@ -599,6 +719,7 @@ async function generateTextRequest(
       throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
     const response = await fetchImpl('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      redirect: 'error',
       headers: {
         'x-api-key': runtimeEnv.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
@@ -613,11 +734,17 @@ async function generateTextRequest(
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
+    if ((payload.stop_reason !== 'end_turn' && payload.stop_reason !== 'stop_sequence') ||
+        (Array.isArray(payload.content) && payload.content.some((item) =>
+          ['tool_use', 'server_tool_use'].includes(String(asRecord(item)?.type)))))
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text = Array.isArray(payload?.content)
       ? payload.content
           .filter((item) => asRecord(item)?.type === 'text')
           .map((item) => asRecord(item)?.text)
-          .filter((value: unknown): value is string => typeof value === 'string')
+          .filter(
+            (value: unknown): value is string => typeof value === 'string',
+          )
           .join('\n')
           .trim()
       : '';
@@ -632,6 +759,7 @@ async function generateTextRequest(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(runtimeEnv.GOOGLE_GENERATIVE_AI_API_KEY)}`,
       {
         method: 'POST',
+        redirect: 'error',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [
@@ -652,6 +780,12 @@ async function generateTextRequest(
       },
     );
     const payload = await jsonResponse(response);
+    if (Array.isArray(payload.candidates) && payload.candidates.some((candidate) => {
+      const record = asRecord(candidate);
+      const parts = asRecord(record?.content)?.parts;
+      return record?.finishReason !== 'STOP' || (Array.isArray(parts) &&
+        parts.some((part) => asRecord(part)?.functionCall != null));
+    })) throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text = Array.isArray(payload?.candidates)
       ? payload.candidates
           .flatMap((candidate) => {
@@ -659,7 +793,9 @@ async function generateTextRequest(
             return Array.isArray(content?.parts) ? content.parts : [];
           })
           .map((part) => asRecord(part)?.text)
-          .filter((value: unknown): value is string => typeof value === 'string')
+          .filter(
+            (value: unknown): value is string => typeof value === 'string',
+          )
           .join('\n')
           .trim()
       : '';
@@ -670,11 +806,14 @@ async function generateTextRequest(
   const base = runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL?.trim();
   if (!base) throw new LlmProviderError('MISSING_PROVIDER_ENDPOINT', 503);
   const endpoint = `${base.replace(/\/+$/, '').replace(/\/v1$/, '')}/v1/chat/completions`;
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
   if (runtimeEnv.SKY_LLM_COMPATIBLE_API_KEY)
     headers.Authorization = `Bearer ${runtimeEnv.SKY_LLM_COMPATIBLE_API_KEY}`;
   const response = await fetchImpl(endpoint, {
     method: 'POST',
+    redirect: 'error',
     headers,
     body: JSON.stringify({
       model,

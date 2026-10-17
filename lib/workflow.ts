@@ -1,4 +1,5 @@
 export const workflowTemplates = [
+  {id:'free-cloud-text',name:'無料Cloudの文章生成',description:'無料Cloudで生成し、応答と使用量を記録して本人が確認します。',steps:[{id:'generate',title:'応答と使用量を取得',tool:'sky-free-cloud-text',runner:'free-cloud-text'}]},
   {
     id: 'sky-citation-agent', name: 'Sky 出典整理Agent',
     description: 'スマホのブラウザだけで出典を整理し、本人の成果として保存します。モデル推論や外部検索は行いません。',
@@ -59,6 +60,7 @@ export type WorkCommand =
   | { id: string; action: 'complete'; note: string }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
+  freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'; source:string; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   id: string;
   title: string;
   templateId: string;
