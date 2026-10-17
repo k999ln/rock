@@ -92,7 +92,7 @@ final class PublicModelInstall {
             String operation = prefs.getString("operation", null);
             if (operation == null) return "{\"status\":\"idle\"}";
             LocalModelCatalog.Entry e = current(operation);
-            String state = prefs.getString("terminalState", ""); long bytes = 0;
+            String state = prefs.getString("terminalState", ""), pauseReason = ""; long bytes = 0;
             if (!prefs.getBoolean("terminal", false)) {
                 if (prefs.getBoolean("cached", false)) state = reusable(e) == null ? "failed" : "downloaded";
                 else {
@@ -101,6 +101,10 @@ final class PublicModelInstall {
                         if (rows != null && rows.moveToFirst()) {
                             int status = rows.getInt(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
                             bytes = rows.getLong(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                            int reason = rows.getInt(rows.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON));
+                            if (status == DownloadManager.STATUS_PAUSED) pauseReason = reason == DownloadManager.PAUSED_WAITING_TO_RETRY ? "waiting_to_retry"
+                                : reason == DownloadManager.PAUSED_WAITING_FOR_NETWORK ? "waiting_for_network"
+                                : reason == DownloadManager.PAUSED_QUEUED_FOR_WIFI ? "waiting_for_wifi" : "paused_unknown";
                             state = status == DownloadManager.STATUS_SUCCESSFUL ? "downloaded" : status == DownloadManager.STATUS_FAILED ? "failed"
                                 : status == DownloadManager.STATUS_PAUSED ? "paused" : "downloading";
                         }
@@ -109,7 +113,7 @@ final class PublicModelInstall {
             }
             return new JSONObject().put("status", state).put("operationId", operation).put("profileId", e.profile.profileId)
                 .put("name", e.name).put("bytesDownloaded", bytes).put("bytesTotal", e.profile.artifactBytes)
-                .put("cachedSource", prefs.getBoolean("cached", false)).put("network", "wifi_only").toString();
+                .put("pauseReason", pauseReason).put("cachedSource", prefs.getBoolean("cached", false)).put("network", "wifi_only").toString();
         }
     }
     String finish(String operation, boolean consent) throws Exception {

@@ -324,7 +324,7 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 **生成と仕事。** `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
 
-**300件のアイデア。** planningの有限subtypeとして最大300件を20件ずつ生成する。各回は指定範囲の連番、実件数、文字数、正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。不正な出力は停止して明示再試行し、欠けた案をfixtureで補完しない。
+**300件のアイデア。** planningの有限subtypeとして最大300件を10件ずつ生成する。実機の20件生成が90秒で中断したため、checkpoint v2へbatchSizeを保存して10件に縮小した。旧v1 checkpointは20件契約を保持し、既存仕事を黙って変更しない。各回は指定範囲の連番、実件数、文字数、正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。不正な出力は停止して明示再試行し、欠けた案をfixtureで補完しない。
 
 **互換性と受入。** Engine DBは3→4のtransactionで既存runsを保存し、有限stageを最大31に拡張する。旧schema3の二工程backupを受け入れ、new backupのstage列は既存記事・3段階文書・最大30batch+sealのclosed形だけを許す。restoreは既存のpause/権限失効を維持する。更新前のAPKとprivate DB退避はGit外へ保存し、旧schema3 BrokerへDB4をそのまま戻さない。旧model profile/versionと成果物は書き換えない。
 

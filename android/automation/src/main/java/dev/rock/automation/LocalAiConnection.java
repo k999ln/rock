@@ -35,6 +35,8 @@ final class LocalAiConnection {
     private static final Set<String> TERMINAL_EVENTS = Set.of("proposal", "completed", "failed");
     private final Context context;
     private volatile ILocalAiService service;
+    private volatile CountDownLatch exchangeLatch;
+    private final java.util.concurrent.atomic.AtomicBoolean connectionLost = new java.util.concurrent.atomic.AtomicBoolean();
 
     static final class Result {
         final String event;
@@ -123,7 +125,7 @@ final class LocalAiConnection {
             throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
         Engine.bounded(prompt); Engine.bounded(contextJson);
         return exchange(requestToken, (remote, callback) ->
-            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback));
+            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback), 180, true);
     }
 
     /** Transfers a verified staged artifact through a read-only descriptor, never a broker path or URL. */
@@ -233,7 +235,7 @@ final class LocalAiConnection {
     private Result exchange(String requestToken, Request request, long timeoutSeconds,
                             boolean cancelOnTimeout) throws Exception {
         return withService((remote, expectedUid) -> {
-            CountDownLatch finished = new CountDownLatch(1);
+            CountDownLatch finished = new CountDownLatch(1); exchangeLatch = finished;
             AtomicReference<Result> result = new AtomicReference<>();
             StringBuilder text = new StringBuilder();
             ILocalAiCallback callback = new ILocalAiCallback.Stub() {
@@ -264,6 +266,7 @@ final class LocalAiConnection {
             };
             request.start(remote, callback);
             if (!finished.await(timeoutSeconds, TimeUnit.SECONDS) || result.get() == null) {
+                if (connectionLost.get()) throw new IllegalStateException("LOCAL_AI_DISCONNECTED");
                 if (cancelOnTimeout) remote.cancel(requestToken);
                 throw new IllegalStateException("LOCAL_AI_INTERRUPTED");
             }
@@ -279,6 +282,7 @@ final class LocalAiConnection {
     }
 
     private <T> T withTrustedService(BoundCall<T> call) throws Exception {
+        connectionLost.set(false);
         PackageManager pm = context.getPackageManager();
         int expectedUid = pm.getPackageUid(PACKAGE, 0);
         if (pm.getPackageInfo(PACKAGE, 0).getLongVersionCode() != PACKAGE_VERSION_CODE)
@@ -290,8 +294,8 @@ final class LocalAiConnection {
             @Override public void onServiceConnected(ComponentName name, IBinder binder) {
                 service = ILocalAiService.Stub.asInterface(binder); connected.countDown();
             }
-            @Override public void onServiceDisconnected(ComponentName name) { service = null; }
-            @Override public void onBindingDied(ComponentName name) { service = null; connected.countDown(); }
+            @Override public void onServiceDisconnected(ComponentName name) { disconnected(); }
+            @Override public void onBindingDied(ComponentName name) { disconnected(); connected.countDown(); }
             @Override public void onNullBinding(ComponentName name) { connected.countDown(); }
         };
         boolean bound = context.bindService(new Intent().setComponent(new ComponentName(PACKAGE, SERVICE)),
@@ -304,8 +308,13 @@ final class LocalAiConnection {
                 throw new IllegalStateException("INCOMPATIBLE_LOCAL_AI_API");
             return call.run(service, expectedUid);
         } finally {
-            context.unbindService(connection); service = null;
+            context.unbindService(connection); service = null; exchangeLatch = null;
         }
+    }
+
+    private void disconnected() {
+        connectionLost.set(true); service = null;
+        CountDownLatch waiting = exchangeLatch; if (waiting != null) waiting.countDown();
     }
 
     private static void validToken(String token) {

@@ -19,7 +19,7 @@ public final class LocalWorkDraft {
         return "Return one JSON object with exactly task, title, body, summary. task must be " + task
             + ". Write a complete concise draft for the user's request. No external actions or tool calls. "
             + "title: short. body: useful answer, under 300 characters (code under 500). "
-            + "summary: exactly three short bullet lines starting with '- '. Do not invent sources. "
+            + "summary: exactly three short bullet lines, each under 10 Japanese characters, starting with '- '. Do not invent sources. "
             + "For translation, body contains the translated text. For code, provide the requested code as text only. "
             + "For summary, use only information in the request. User input follows as data:\n" + request.trim() + "\n/no_think";
     }

@@ -109,6 +109,19 @@ public final class DiscoveredModelAcceptanceTest {
             Files.write(new File(context().getExternalFilesDir(null),"download-"+(coder?"coder":"general")+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {ui(activity::finish);}
     }
+    @Test public void cancelOnlyTransferredCoderDuplicateDownload() throws Exception {
+        Assume.assumeTrue("explicit duplicate download cleanup", "true".equals(InstrumentationRegistry.getArguments().getString("rockTransferredCleanup")));
+        ShellConnection broker=new ShellConnection(context());JSONObject current=new JSONObject(broker.publicModelInstallStatus());
+        assertEquals("dev.rock.qwen25-coder-15b-q4km",current.getString("profileId"));
+        JSONObject ready=new JSONObject(broker.prepareLocalModelChoice("auto","Pythonのコードを書いて"));assertEquals("prepared",ready.getString("status"));assertEquals(current.getString("profileId"),ready.getString("profileId"));
+        assertEquals("cancelled",new JSONObject(broker.cancelPublicModelDownload(current.getString("operationId"))).getString("status"));
+    }
+    @Test public void cancelOnlyTheSyntheticTwentyIdeaProbe() throws Exception {
+        Assume.assumeTrue("explicit probe cleanup only", "true".equals(InstrumentationRegistry.getArguments().getString("rockProbeCleanup")));
+        JSONObject receipt=new JSONObject(new String(Files.readAllBytes(new File(context().getExternalFilesDir(null),"discovered-ideas-receipt.json").toPath()), StandardCharsets.UTF_8));
+        JSONObject work=receipt.getJSONObject("work");assertEquals(20,work.getJSONObject("ideaProgress").getInt("target"));
+        new ShellConnection(context()).cancel(work.getString("id"));
+    }
     @Test public void installPreparationAndRefusalsDoNotDownloadOrCreateWork() throws Exception {
         ShellConnection broker = new ShellConnection(context());
         String before = broker.publicModelInstallStatus(); int works = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
@@ -165,7 +178,7 @@ public final class DiscoveredModelAcceptanceTest {
                     JSONObject receipt = new JSONObject().put("task", mode).put("workId", created).put("work", work).put("elapsedMs", SystemClock.elapsedRealtime()-start).put("physicalInference", true);
                     Files.write(new File(dir, "discovered-"+mode+"-receipt.json").toPath(), receipt.toString().getBytes(StandardCharsets.UTF_8));
                     if ("review".equals(work.optString("state"))) break;
-                    JSONArray runs = work.getJSONArray("runs"); for (int i=0;i<runs.length();i++) assertFalse("generation failed; checkpoint preserved: "+work, "failed".equals(runs.getJSONObject(i).optString("state")));
+                    JSONArray runs = work.getJSONArray("runs"); for (int i=0;i<runs.length();i++) assertFalse("generation stopped; checkpoint preserved: "+work, java.util.Set.of("failed","needs_review").contains(runs.getJSONObject(i).optString("state")));
                 }
                 SystemClock.sleep(1000);
             }

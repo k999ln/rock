@@ -41,12 +41,16 @@ final class ToolConnection {
                 LocalAiConnection.Result result = runtime.plan(ticket.token, pin, LocalWorkDraft.SCHEMA, prompt, "[]");
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
                 runtime.requireReadyForPlanning(pin);
-                if (!"completed".equals(result.event)) return new Result("failed", "");
+                if (!"completed".equals(result.event)) return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
                 String output = LocalWorkDraft.verify(task, result.payload);
                 return new Result("passed", LocalIdeaBatch.GENERATE.equals(ticket.tool)
                     ? LocalIdeaBatch.append(ticket.input, output) : output);
             } catch (IllegalArgumentException | SecurityException invalid) {
-                return new Result("failed", "");
+                String code = invalid.getMessage();
+                if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
+                return new Result("held", code);
+            } catch (IllegalStateException unavailable) {
+                return new Result("held", "LOCAL_AI_INTERRUPTED".equals(unavailable.getMessage()) ? "LOCAL_GENERATION_TIMED_OUT" : "LOCAL_GENERATION_UNAVAILABLE");
             } finally { local = null; }
         }
         if (LocalIdeaBatch.SEAL.equals(ticket.tool)) {

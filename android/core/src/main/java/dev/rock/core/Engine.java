@@ -325,7 +325,7 @@ public final class Engine {
 
     /** elapsedMs is monotonic uptime. bootId must change on reboot, not on app restart. */
     public Ticket claim(String bootId, long elapsedMs, boolean charging) {
-        if (bootId == null || bootId.isEmpty() || elapsedMs < 0 || elapsedMs > Long.MAX_VALUE - 180_000L)
+        if (bootId == null || bootId.isEmpty() || elapsedMs < 0 || elapsedMs > Long.MAX_VALUE - 240_000L)
             throw new IllegalArgumentException("INVALID_CLOCK");
         return db.transaction(() -> {
             recover(bootId, elapsedMs);
@@ -340,7 +340,7 @@ public final class Engine {
             if (rows.isEmpty()) return null;
             Map<String,String> r = rows.get(0);
             String id = r.get("work_id"); int step = Integer.parseInt(r.get("step"));
-            db.execute("UPDATE runs SET state='running',attempt=attempt+1,token=?,boot=?,deadline=?,error=NULL WHERE work_id=? AND step=? AND state='queued'", UUID.randomUUID().toString(), bootId, elapsedMs + (r.get("tool").contains("generate@1") ? 180_000L : LEASE_MS), id, step);
+            db.execute("UPDATE runs SET state='running',attempt=attempt+1,token=?,boot=?,deadline=?,error=NULL WHERE work_id=? AND step=? AND state='queued'", UUID.randomUUID().toString(), bootId, elapsedMs + (r.get("tool").contains("generate@1") ? 240_000L : LEASE_MS), id, step);
             event(id, step, "started");
             Map<String,String> current = one(db.query("SELECT r.*,w.model_profile_id,w.model_profile_version,w.model_activation_generation "
                 + "FROM runs r JOIN works w ON w.id=r.work_id WHERE r.work_id=? AND r.step=?", id, step));

@@ -1,6 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
-OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4のclosed文書schema、Shell21、作業別general/Coder自動選択を実装中。本人の初期依頼は「RockstarOS・Skyで実現するサービスのアイデア300件」。生成は20件ずつ検査・checkpoint保存し、実件数を表示、全件seal前は完了にしない。Engine3→4と旧backup互換、owner/pin/停止fenceを保持する。host/build/lintは通過、追加migration/backup試験とruntime native CIを検証中。Pixelは接続/充電中、画面解除待ち。旧APK/DBはGit外へ退避済み。新sourceの実機・CI・main統合は未完了、OS11全体/全OS/有料cloud gateは変更しない。
+OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4、Shell21、作業別general/Coder選択を実装。本人の実利用は「RockstarOS・Skyで実現するサービスのアイデア300件」。20件生成が90秒で中断したため新checkpoint v2は10件ずつ保存し、旧v1を黙って変更しない。timeout/不正出力は理由付きhold、runtime切断時の待機を解除する。host Core125/automation47/SDK11/Shell14、build/lint成功。新runtime native CI 39058032806の実byte/signerを検証。Pixelのgeneral再検証導入18.945s成功、Coderは公式固定revisionのMac取得/hash照合→転送→実導入11.507s成功。直接DownloadManager取得は通信中断/再接続を観測、全量合格は未確定。code/300件の実推論と最終同一source受入を検証中。旧APK/DB退避済み、OS11全体/全OS/有料cloud gateは変更しない。
+
 
 公開モデル検索をSky先頭へ移した最終source f4718e10の3 APKをsame signer/実byte読戻しで照合。更新APKでも実機全14件/84.327秒と手動1件/64.56秒が成功、失敗/skip0。通知実tap・両公開API・auto/manual exact pin・実2 Tool/成果保存を再受入し、全体verifyもexit0（/private/tmp/pixel-sky-entry-verify.log）。台帳はこの最終候補へ更新、GitHub同一head検査とmain統合はPR #157のreadbackで別確認する。
 

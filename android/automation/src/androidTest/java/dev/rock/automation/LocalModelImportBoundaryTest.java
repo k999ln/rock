@@ -18,7 +18,7 @@ public final class LocalModelImportBoundaryTest {
     private PlatformStore platform() { return ((RockApplication) context().getApplicationContext()).platform(); }
     @Test public void catalogSignatureVerifiesOnAndroidAndUnlistedModelsAreRejected() throws Exception {
         LocalModelCatalog catalog = new LocalModelInstaller(context(), platform()).catalog();
-        assertEquals(2, catalog.entries.size());
+        assertEquals(3, catalog.entries.size());
         assertThrows(SecurityException.class, () -> catalog.require("not.a.catalog-model"));
     }
     @Test public void missingConsentDoesNotReadOrActivateTheModel() throws Exception {
@@ -71,6 +71,25 @@ public final class LocalModelImportBoundaryTest {
         } finally { file.delete(); }
     }
 
+    @Test public void explicitlyImportOfficialTransferredCoderAndReadDownloadReason() throws Exception {
+        org.junit.Assume.assumeTrue("owner-approved physical transferred weight only", "true".equals(InstrumentationRegistry.getArguments().getString("rockTransferredCoder")));
+        org.json.JSONArray downloads = new org.json.JSONArray(); android.app.DownloadManager manager = context().getSystemService(android.app.DownloadManager.class);
+        try (android.database.Cursor rows = manager.query(new android.app.DownloadManager.Query())) {
+            while(rows != null && rows.moveToNext()) {
+                String description=rows.getString(rows.getColumnIndexOrThrow(android.app.DownloadManager.COLUMN_DESCRIPTION));
+                if(description==null||!description.startsWith("rock-model:"))continue;
+                downloads.put(new org.json.JSONObject().put("status", rows.getInt(rows.getColumnIndexOrThrow(android.app.DownloadManager.COLUMN_STATUS)))
+                    .put("reason",rows.getInt(rows.getColumnIndexOrThrow(android.app.DownloadManager.COLUMN_REASON)))
+                    .put("bytes",rows.getLong(rows.getColumnIndexOrThrow(android.app.DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))));
+            }
+        }
+        File directory=context().getExternalFilesDir(null);
+        Files.write(new File(directory,"public-download-diagnostic.json").toPath(),downloads.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String id="dev.rock.qwen25-coder-15b-q4km"; LocalModelCatalog.Entry entry=new LocalModelInstaller(context(),platform()).catalog().require(id);
+        String receipt=new LocalModelInstaller(context(),platform()).install(id,ParcelFileDescriptor.open(new File(directory,entry.fileName),ParcelFileDescriptor.MODE_READ_ONLY),true);
+        assertEquals("ready",new org.json.JSONObject(receipt).getString("status"));
+        Files.write(new File(directory,"transferred-coder-install.json").toPath(),new org.json.JSONObject(receipt).put("acquisition","official_fixed_revision_host_download_then_adb_transfer").toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
     private String active() {
         dev.rock.core.platform.ModelProfileManifest active = platform().activeModelProfile();
         return active == null ? null : active.digest();

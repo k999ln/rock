@@ -606,7 +606,7 @@ public final class MainActivity extends Activity {
         String label = "downloaded".equals(state) ? "取得済み。署名・ハッシュの検証と導入が必要です。"
             : "installed".equals(state) ? "導入完了。作業に合わせて選択できます。"
             : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
-            : "paused".equals(state) ? "取得は待機中です。Wi-Fi・保存容量を確認してください。"
+            : "paused".equals(state) ? ("waiting_to_retry".equals(result.optString("pauseReason")) ? "通信が途切れたため、Androidの再接続を待っています。取得済みの位置から再開します。" : "取得は待機中です。Wi-Fi・保存容量を確認してください。")
             : "cancelled".equals(state) ? "取得を中止しました。" : "取得・導入を確認できません: " + result.optString("code", state);
         label(modelDownloadPanel, name + "\n" + label, 14);
         String operation = result.optString("operationId");
@@ -3268,6 +3268,12 @@ public final class MainActivity extends Activity {
             : localWorkPaused ? "端末の実行は一時停止中です。再開は一覧のボタンから行えます。"
             : "端末内で進めています。待機中の工程は充電中に実行します。画面を離れても保存した仕事は残ります。";
         label(card, hint, 15);
+        if (failed && runs != null) for (int i=0;i<runs.length();i++) {
+            JSONObject run = runs.optJSONObject(i);
+            if (java.util.Set.of("failed", "needs_review").contains(run.optString("state"))) {
+                label(card, WorkPresentation.issue(run.optString("error")), 14); break;
+            }
+        }
         if (hasArtifact) {
             label(card, "成果物", 18);
             TextView artifact = label(card, "読み込んでいます…", 16); artifact.setTextIsSelectable(true); artifact.setMaxLines(12);
@@ -3318,7 +3324,7 @@ public final class MainActivity extends Activity {
             JSONObject run = runs.optJSONObject(i); String step = run.optString("state");
             String label = "succeeded".equals(step) ? "完了" : "running".equals(step) ? "実行中"
                 : "failed".equals(step) || "needs_review".equals(step) ? "対応が必要" : "cancelled".equals(step) ? "中止" : "待機中";
-            label(technical, (i + 1) + ". " + (i == 0 ? "出典を整理" : "記事を整える") + " · " + label, 14);
+            label(technical, (i + 1) + ". " + WorkPresentation.stageLabel(run.optString("tool")) + " · " + label, 14);
         }
     }
 

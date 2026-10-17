@@ -374,3 +374,8 @@ ROCK／O3。`lib/llm-providers.ts`でOllama／Anthropic／Gemini／Chat Completi
 ### AI07: Jev receiptと期限のhost受入（2026-10-11）
 
 ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしていた境界を修正し、rubricの3回答・型・有限範囲とusage整合だけを受け入れる。Providerの任意metadataをReceiptへコピーせず、共通transportは20秒でabortし再送しない。合格条件は不正／欠落回答の拒否、正常なゼロ始まりscore・部分usageの保持、期限中止、advisory-onlyと既存privacy gateの維持。`node --experimental-strip-types --test tests/jev-evaluation.test.mjs tests/jev-receipt-boundary.test.mjs tests/jev-transport.test.mjs`で検査する。Provider契約、本課金、Android／実機への接続はこのhost検証に含めない。[契約](../llm-evaluation-architecture.md#5-jev-api契約)。
+
+
+### OS11 / O6: 公開モデル導入と有限文書生成
+
+本人指定の追加範囲は、検索したopen weightのPixel導入、記事以外の仕事、作業別の既定model選択、RockstarOS・Skyのサービスアイデア300件。責任/入出力/保存/復旧/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。Shell21、runtime package4/API4、Engine4の非破壊組合せを検証する。20件生成の実機timeoutによりcheckpoint v2は10件/回へ縮小、旧v1契約は維持。モデルの直接取得、Macで検証後の転送導入、実推論、内容品質を別記録にする。runtime切断はBinder待機を解き、保存済みprefixを保って停止する。署名catalog/owner consent/immutable pin/lease/Broker検査を迂回しない。Android CIは `workflow_dispatch` でも同じ試験を実行できるようにし、PR workflow未起動を成功と記録しない。

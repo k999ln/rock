@@ -152,12 +152,12 @@ public final class LocalModelPlanningAcceptanceTest {
         Engine.ModelProfilePin pin = app.engine().prepareModelProfilePin(AndroidOwner.current(context),
             UUID.randomUUID().toString(), Engine.digest(prompt), System.currentTimeMillis());
         LocalAiConnection.Result result = new LocalAiConnection(context).plan(UUID.randomUUID().toString(), pin,
-            ZemaToolPlan.ARTICLE_PLAN_SCHEMA, prompt, "[]");
+            dev.rock.sdk.LocalWorkDraft.SCHEMA, dev.rock.sdk.LocalWorkDraft.prompt("article", prompt), "[]");
         JSONObject observed = new JSONObject().put("event", result.event).put("payload", result.payload);
         Files.write(new File(context.getExternalFilesDir(null), "local-jennifer-synthetic-plan.json").toPath(),
             observed.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         assertEquals("synthetic diagnostic payload is saved in the app's external files", "completed", result.event);
-        JSONObject input = new JSONObject(ZemaToolPlan.verifiedInput(ZemaToolPlan.ARTICLE_TOOL, result.payload));
+        JSONObject input = new JSONObject(dev.rock.sdk.LocalWorkDraft.articleInput(result.payload));
         assertTrue(input.getString("markdown").contains("片") || input.getString("markdown").contains("部屋"));
         assertFalse(input.getString("summary").contains("- 要点1"));
     }

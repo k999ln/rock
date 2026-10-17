@@ -373,7 +373,7 @@ const pendingLocalAiArtifact = localAi.candidateBuild?.status === 'pending_new_a
 assert.equal(localAiArtifact.versionCode, pendingLocalAiArtifact ? localAi.candidateBuild.previousArtifactVersionCode : localAi.packageVersionCode);
 assert.equal(localAiArtifact.overlaySha256, localAiLock.overlay.sha256);
 assert.equal(localAiLock.overlay.extensions[4].path, 'os/physical/local-ai-loaded-profile-v4.patch');
-assert.deepEqual(localAiArtifact.extensionSha256, localAiLock.overlay.extensions.slice(0, pendingLocalAiArtifact ? 5 : 6).map((extension) => extension.sha256));
+assert.deepEqual(localAiArtifact.extensionSha256, pendingLocalAiArtifact ? localAi.candidateBuild.previousExtensionSha256 : localAiLock.overlay.extensions.map((extension) => extension.sha256));
 const localAiNativeBuild = JSON.parse(read(localAi.nativeBuildValidation));
 assert.equal(localAiNativeBuild.status, 'PASS_UNSIGNED_APK_NOT_DEVICE_ACCEPTANCE');
 assert.equal(localAiNativeBuild.inspection.sha256, localAiArtifact.apkSha256);

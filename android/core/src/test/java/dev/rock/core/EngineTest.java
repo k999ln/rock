@@ -251,7 +251,7 @@ public class EngineTest {
         String work = engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true);
         assertEquals(16, engine.runs(work).size()); assertEquals(work, engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true));
         assertThrows(IllegalStateException.class, () -> engine.modelProfilePinForWork("owner:bob", work));
-        Engine.Ticket first = claim(10); assertEquals(180010, first.deadline);
+        Engine.Ticket first = claim(10); assertEquals(240010, first.deadline);
         assertTrue(engine.finish(first, "passed", "twenty", "boot-1", 20));
         Engine.Ticket second = claim(30); engine.setPaused(true);
         assertFalse(engine.finish(second, "passed", "late", "boot-1", 40));
