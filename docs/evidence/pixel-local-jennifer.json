@@ -101,7 +101,12 @@
         "artifactBytes": 395,
         "deviceReboot": false
       },
-      "uiArtifactDisplayed": true
+      "uiArtifactDisplayed": true,
+      "contentLimitationCause": {
+        "verifiedSource": "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java + android/core/src/main/java/dev/rock/core/ArticleTools.java",
+        "known": "Planner asks for afterChars=1; free-article@1 intentionally truncates the body and requires a paid remainder. Visible artifact cannot establish the full raw model draft quality.",
+        "next": "Separate raw model draft quality from the existing paid-excerpt Tool output; choose a suitable existing draft-output contract before claiming full requested article acceptance."
+      }
     }
   },
   "implementation": {
