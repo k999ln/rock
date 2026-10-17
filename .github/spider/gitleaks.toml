@@ -1202,3 +1202,11 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
 regexes = ['''\A27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d\z''']
+
+# Public tokenizer metadata digest independently recomputed from the pinned official Qwen2.5 GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest f6fcc71149d2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
+regexes = ['''\Adb18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547\z''']
