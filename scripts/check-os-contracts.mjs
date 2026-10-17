@@ -371,11 +371,8 @@ assert.equal(localAiArtifact.stage, 'APK_REVIEWED_NOT_IN_IMAGE');
 assert.equal(localAiArtifact.sourceCommit, localAiLock.commit);
 assert.equal(localAiArtifact.versionCode, localAi.packageVersionCode);
 assert.equal(localAiArtifact.overlaySha256, localAiLock.overlay.sha256);
-// The locked OS APK remains the historical four-overlay artifact until this candidate is rebuilt.
-assert.equal(localAiLock.candidateArtifactRelationship, 'APPENDED_OVERLAY_AFTER_LOCKED_APK_REQUIRES_NEW_BUILD');
 assert.equal(localAiLock.overlay.extensions[4].path, 'os/physical/local-ai-loaded-profile-v4.patch');
-assert.equal(localAiArtifact.extensionSha256.length, 4);
-assert.deepEqual(localAiArtifact.extensionSha256, localAiLock.overlay.extensions.slice(0, 4).map((extension) => extension.sha256));
+assert.deepEqual(localAiArtifact.extensionSha256, localAiLock.overlay.extensions.map((extension) => extension.sha256));
 const localAiNativeBuild = JSON.parse(read(localAi.nativeBuildValidation));
 assert.equal(localAiNativeBuild.status, 'PASS_UNSIGNED_APK_NOT_DEVICE_ACCEPTANCE');
 assert.equal(localAiNativeBuild.inspection.sha256, localAiArtifact.apkSha256);

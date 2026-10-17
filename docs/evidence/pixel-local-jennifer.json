@@ -4,7 +4,7 @@
   "taskId": "OS11",
   "primarySquad": "O6",
   "primaryOwner": "ROCK",
-  "status": "candidate_implemented_physical_pending",
+  "status": "physical_pipeline_pass_content_quality_pending",
   "authority": "docs/native-os-integration.md#pixel-local-jennifer",
   "baseMainSha": "0d39fddc591befa79ccde97632687a9e322cb49d",
   "baseSameShaSuccessfulChecks": 6,
@@ -14,8 +14,8 @@
     "initialAdbDeviceCount": 0,
     "ownerReply": "実機接続できた (2026-10-17)",
     "newApkInstalled": true,
-    "realV4InferenceRun": false,
-    "realToolArtifactFromThisModelObserved": false,
+    "realV4InferenceRun": true,
+    "realToolArtifactFromThisModelObserved": true,
     "deviceRebootTested": false,
     "defaultHomeChanged": false,
     "deviceSerialStored": false,
@@ -26,7 +26,32 @@
     "allSixInstallCommandsSucceeded": true,
     "previousFourApksBackedUpWithMatchingSigner": true,
     "modelTransferBytes": 639446688,
-    "inferenceStarted": false
+    "inferenceStarted": true,
+    "reconnectedAfterOwnerAllowedDebugging": true,
+    "installedFourApkByteReadback": "matched_original_candidate",
+    "deviceGgufSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+    "initialAttempt": {
+      "modelImportAndLoad": "pass",
+      "planning": "LOCAL_AI_PLAN_FAILED",
+      "toolsExecuted": false,
+      "repeatImport": "INVALID_LOCAL_AI_STATUS",
+      "uiFilePicker": "operated_import_failed_due_to_invalid_runtime_status"
+    },
+    "runtimeCorrection": "Broker-loaded hash planning without standalone repository lookup; cold-start clears profile ID as well as hash/bytes",
+    "fixedRuntimeAccepted": true,
+    "uiFilePickerImport": "passed_after_runtime_fix",
+    "contentQuality": "0.6B failed: copied old example; changed prompt produced irrelevant/repetitive text",
+    "stopAcceptance": {
+      "actualRuntimeBusyObserved": true,
+      "stopThenResume": true,
+      "lateWorkCreated": false,
+      "runtimeReadyAfterStop": true,
+      "stopMillis": 6,
+      "runtimeReadyWaitMillis": 28785,
+      "workCountBefore": 5,
+      "workCountAfter": 5
+    },
+    "modelSwitchGate": "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK; preserved; waiting for existing reservation expiry"
   },
   "implementation": {
     "scope": "one catalog-pinned model and one existing article-preparation recipe; not full native Goal/AMC orchestration",
@@ -86,7 +111,21 @@
     "templateDigestEncoding": "UTF-8 GGUF tokenizer.chat_template",
     "hostDownloadedLengthAndSha256Verified": true,
     "license": "Apache-2.0",
-    "savedWeightPath": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/models/Qwen3-0.6B-Q8_0.gguf"
+    "savedWeightPath": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/models/Qwen3-0.6B-Q8_0.gguf",
+    "comparisonCandidate": {
+      "repository": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+      "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+      "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "bytes": 1117320736,
+      "license": "Apache-2.0",
+      "tokenizerHashEncoding": "sorted-key UTF-8 compact JSON of tokenizer.* excluding tokenizer.chat_template",
+      "templateHashEncoding": "UTF-8 tokenizer.chat_template",
+      "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
+      "templateSha256": "d5495a1e5db0611132a97e46a65dbb64a642a499421228b9c8b93229097fa9a4",
+      "profileId": "dev.rock.qwen25-15b-q4km",
+      "qualityAccepted": false
+    }
   },
   "sources": [
     {
@@ -248,11 +287,10 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/152"
   },
   "remaining": [
-    "Read back installed candidate APKs and pinned GGUF on reconnection; six matching APK updates and model transfer already succeeded on 2026-10-17",
-    "Accept API v4 real GGUF import, inference and the actual two-Tool artifact from UI",
-    "Verify language quality, RAM/temperature/latency and stop during real inference",
-    "Accept reload/restart/recovery on this exact candidate",
-    "Production model publisher and full OS/native Jennifer Goal/AMC remain separate gates"
+    "Content quality: compare Qwen2.5 1.5B with a fresh explicit request; no quality acceptance yet",
+    "UI review/export and process restart/reload on the final candidate",
+    "Cooperative native cancellation took 28.785 seconds to settle after the 6 ms stop acknowledgement; no late Tool work was created",
+    "General quality, ordinary device reboot, Japanese voice, production catalog and full OS remain unaccepted"
   ],
   "boundaries": {
     "osFlash": false,
@@ -301,19 +339,19 @@
   },
   "runtimeArtifact": {
     "ci": {
-      "conclusion": "success",
-      "headSha": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
       "status": "completed",
-      "url": "https://github.com/k999ln/rock/actions/runs/37404165171"
+      "conclusion": "success",
+      "headSha": "ff0518c715d3c1cd8a143e0f7e665d78e3460a70",
+      "url": "https://github.com/k999ln/rock/actions/runs/39043256663"
     },
-    "unsignedSha256": "1f3fea6f2e5977c35298d762946e917836fb85c96c3da6b6f0fb9eda85b33df1",
-    "signedSha256": "d197b5fbfc252ae41e51eeadd20d7188a8ab360962b005c91bd9580cf4bde242",
+    "unsignedSha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9",
+    "signedSha256": "19a8cd67d7d84960326e01c67c8bb1b151111c9be3bbda369c5c68ec8cc097b4",
     "pinnedSourceAndAllOverlaysMatch": true,
     "signedPayloadEntriesUnchanged": true,
     "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
-    "artifactLockUnchanged": true,
-    "initialDifferentArtifactLockHashWasRejected": true,
-    "signingPerformedThisTurn": false
+    "artifactLockUpdatedToInspectedFiveOverlayBuild": true,
+    "signingPerformedThisTurn": true,
+    "osSigningKeyGenerated": false
   },
   "cryptoArtifact": {
     "schema": "rock-model-crypto-artifact/1",

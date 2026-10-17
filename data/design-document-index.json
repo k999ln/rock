@@ -116,7 +116,7 @@
         "localModelPlanning": {
           "authority": "docs/native-os-integration.md#pixel-local-jennifer",
           "evidence": "docs/evidence/pixel-local-jennifer.json",
-          "status": "implemented_candidate_physical_inference_pending",
+          "status": "physical_pipeline_pass_content_quality_pending",
           "privateShellApiVersion": 19,
           "runtimeBinderApiVersion": 4,
           "platformApiVersion": 1,
@@ -133,6 +133,8 @@
             "android/Android.bp",
             "os/physical/model-crypto-artifact-lock.json",
             "scripts/stage-model-crypto.py",
+            "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+            "android/automation/src/debug/assets/rock-local-model-catalog.json",
             "os/physical/local-ai-loaded-profile-v4.patch"
           ],
           "physicalInferenceAccepted": false,
