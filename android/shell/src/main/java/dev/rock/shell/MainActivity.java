@@ -522,7 +522,7 @@ public final class MainActivity extends Activity {
         if (homeModelChoice == null) return;
         String choice = selectedModelChoice();
         homeModelChoice.setText("auto".equals(choice) ? "標準は自動。使うモデルと理由を、開始前に表示します。"
-            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen25-coder-15b-q4km".equals(choice) ? "Qwen2.5 Coder 1.5B" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
+            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen25-coder-15b-q4km".equals(choice) ? "Qwen2.5 Coder 1.5B" : "dev.rock.qwen3-4b-2507-q4km".equals(choice) ? "Qwen3 4B Instruct" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
     }
 
     private void showModelChooser() {
@@ -533,7 +533,7 @@ public final class MainActivity extends Activity {
                 names.add("自動 — 作業に合う導入済みモデル"); ids.add("auto");
                 for (int i = 0; i < models.length(); i++) {
                     JSONObject model = models.getJSONObject(i);
-                    names.add(model.getString("name") + ("dev.rock.qwen3-06b-q8".equals(model.optString("profileId")) ? " · 品質不合格/診断用" : "") + (model.optBoolean("cached") && model.optBoolean("licenseAccepted") ? " · 導入済み" : " · Skyで準備が必要"));
+                    names.add(model.getString("name") + ("dev.rock.qwen25-15b-q4km".equals(model.optString("profileId")) ? " · 発想は内容品質不合格" : "") + ("dev.rock.qwen3-06b-q8".equals(model.optString("profileId")) ? " · 品質不合格/診断用" : "") + (model.optBoolean("cached") && model.optBoolean("licenseAccepted") ? " · 導入済み" : " · Skyで準備が必要"));
                     ids.add(model.getString("profileId"));
                 }
                 runOnUiThread(() -> {
@@ -567,7 +567,7 @@ public final class MainActivity extends Activity {
                     if (isDestroyed()) return;
                     LinearLayout content = new LinearLayout(this); content.setOrientation(LinearLayout.VERTICAL); content.setPadding(32, 16, 32, 16);
                     label(content, prepared.optString("name") + "\n" + prepared.optString("licenseId")
-                        + "\n容量: " + prepared.optLong("bytes") + " bytes\n" + prepared.optString("source")
+                        + "\n容量: " + android.text.format.Formatter.formatFileSize(this,prepared.optLong("bytes")) + "\n" + prepared.optString("source")
                         + "\nSHA-256: " + prepared.optString("sha256")
                         + (prepared.optBoolean("reusableCache") ? "\n保存済みの同一重みを再検証できます。" : "\nWi-Fi接続時に取得します。"), 13);
                     button(content, "ライセンスを見る", () -> openPublicModelUrl(prepared.optString("licenseUrl")));

@@ -77,6 +77,7 @@
         "modelCatalog": [
           "dev.rock.qwen25-15b-q4km",
           "dev.rock.qwen25-coder-15b-q4km",
+          "dev.rock.qwen3-4b-2507-q4km",
           "dev.rock.qwen3-06b-q8"
         ],
         "scope": "bounded untrusted text drafts and durable service ideation; pure three-attempt batch repair only",
@@ -288,7 +289,8 @@
     "xApiConfigured": false,
     "automaticModelsByTask": {
       "code": "dev.rock.qwen25-coder-15b-q4km",
-      "article_summary_translation_planning_writing": "dev.rock.qwen25-15b-q4km"
+      "article_summary_translation": "dev.rock.qwen25-15b-q4km",
+      "planning_writing": "NO_SUITABLE_INSTALLED_MODEL_until_4B_quality_acceptance"
     },
     "candidateAcceptance": {
       "source": "9b4563c1c875481349087e11f79867dced0415f1",

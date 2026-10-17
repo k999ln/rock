@@ -12,6 +12,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 OS11/O6/ROCK: b33fe6a6の20件は形式・保存170.965s合格だが、分野名コピー/途中切れが多く内容品質不合格。General1.5Bのplanning/writingを自動候補から除外。Qwen3 4B Instruct 2507のUnsloth量子化（Apache2、固定rev/hash、2.497GB）をホスト全量SHA/実GGUF42metadata/tokenizer/templateで確認し、既存鍵でprofile1/runtime7へ追加。autoPriority0/8GiB RAM条件の手動試験だけとし、Pixelで実Wi-Fi全量取得を進めている（既に1.22GB受信、未導入）。新4Bの品質/300件は未受入。
+
 2026-10-17 OS11/O6/ROCK: single-topic runtime7試験は実10件保存まで進んだが再生成が多く、次の試験へ切替えて中止（保存prefix保持）。raw5へ異なる5分野を1案ずつ求め、30分野/10対象で多様化し、AI語は新規案だけsiへ再生成要求、旧AI checkpoint読取は維持。SDK17/host build/lint成功。新20件を再試験中。手動model試験は実ダイアログ選択を行い、手動route3102/自動3100を分離した。追加旧「記事準備のみ」表示も汎用説明へ訂正。300件は未着手。
 
 2026-10-17 OS11/O6/ROCK: package7 actual build CI39067064393/source96dd7c30をunsigned SHA4696a5cb…/署名後760c579c…/既存certとpayload一致で検査。非破壊更新し新profileの実導入/20件を受入中。旧6+新Shellの優先度実験では表示中fg/閉じた後bg、実10件保存と後半duplicate3回停止を確認し、合成20件仕事だけ明示中止、保存prefixは保持。300件は未実行。

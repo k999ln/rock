@@ -53,10 +53,12 @@ public final class DiscoveredModelAcceptanceTest {
         assertEquals("frankel", android.os.Build.DEVICE);
         assertFalse(context().getSystemService(android.app.KeyguardManager.class).isDeviceLocked());
         ShellConnection broker = new ShellConnection(context());
-        boolean coder = "coder".equals(InstrumentationRegistry.getArguments().getString("rockDownloadModel", "coder"));
-        String id = coder ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
+        String variant=InstrumentationRegistry.getArguments().getString("rockDownloadModel","coder");
+        boolean coder="coder".equals(variant),creative="creative".equals(variant);
+        assertTrue(java.util.Set.of("coder","creative","general").contains(variant));
+        String id = creative ? "dev.rock.qwen3-4b-2507-q4km" : coder ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
         boolean reviewedCatalog="true".equals(InstrumentationRegistry.getArguments().getString("rockUseReviewedCatalog"));
-        String query = coder ? "Qwen2.5-Coder-1.5B-Instruct-GGUF" : "Qwen2.5-1.5B-Instruct-GGUF";
+        String query = creative ? "Qwen3-4B-Instruct-2507-GGUF" : coder ? "Qwen2.5-Coder-1.5B-Instruct-GGUF" : "Qwen2.5-1.5B-Instruct-GGUF";
         JSONObject prepared = new JSONObject(broker.preparePublicModelInstall(id)); assertEquals("prepared",prepared.optString("status"));
         int jobs = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         MainActivity activity = (MainActivity)instrumentation.startActivitySync(new Intent(context(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -91,7 +93,7 @@ public final class DiscoveredModelAcceptanceTest {
                 state=new JSONObject(broker.publicModelInstallStatus());
                 if(id.equals(state.optString("profileId"))) {
                     actualNetwork|=state.optLong("bytesDownloaded")>0;
-                    Files.write(new File(context().getExternalFilesDir(null),"download-"+(coder?"coder":"general")+"-progress.json").toPath(),state.toString().getBytes(StandardCharsets.UTF_8));
+                    Files.write(new File(context().getExternalFilesDir(null),"download-"+variant+"-progress.json").toPath(),state.toString().getBytes(StandardCharsets.UTF_8));
                     assertFalse("download failure: "+state,"failed".equals(state.optString("status")));
                     if("downloaded".equals(state.optString("status")))break;
                 }
@@ -113,7 +115,7 @@ public final class DiscoveredModelAcceptanceTest {
             assertNotNull(matching);assertTrue(matching.getBoolean("cached"));assertTrue(matching.getBoolean("licenseAccepted"));assertTrue(matching.getBoolean("activeProfile"));
             assertEquals(jobs,new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
             JSONObject receipt=new JSONObject().put("status","passed").put("profile",matching).put("download",state).put("prepared",prepared).put("liveSearchButton",!reviewedCatalog).put("explicitLicenseConsent",true).put("realDownloadObserved",actualNetwork).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("createdWork",false);
-            Files.write(new File(context().getExternalFilesDir(null),"download-"+(coder?"coder":"general")+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(context().getExternalFilesDir(null),"download-"+variant+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {ui(activity::finish);}
     }
     @Test public void cancelOnlyTransferredCoderDuplicateDownload() throws Exception {
@@ -160,7 +162,7 @@ public final class DiscoveredModelAcceptanceTest {
             : "summary".equals(mode) ? "次の文章を日本語で短く要約して。SkyはエージェントやLLMのマーケットプレイスと接続ハブ。Zemaは仕事の依頼、進捗、承認、成果、使用額を管理する。"
             : "translation".equals(mode) ? "次の文を英語に翻訳して。Skyは暮らしと仕事をつなぎます。"
             : "Pythonで、整数の配列を受け取り偶数だけの合計を返す関数sum_evenのコードを書いて。コードは実行しない。";
-        String expected = "code".equals(mode) ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km";
+        String expected = InstrumentationRegistry.getArguments().getString("rockExpectedProfile", "code".equals(mode) ? "dev.rock.qwen25-coder-15b-q4km" : "dev.rock.qwen25-15b-q4km");
         String choice=InstrumentationRegistry.getArguments().getString("rockModelChoice","auto");
         JSONObject prepared = new JSONObject(broker.prepareLocalModelChoice(choice, prompt));
         assertEquals(prepared.toString(), "prepared", prepared.optString("status")); assertEquals(expected, prepared.getString("profileId"));

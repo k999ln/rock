@@ -18,7 +18,7 @@ public final class LocalModelImportBoundaryTest {
     private PlatformStore platform() { return ((RockApplication) context().getApplicationContext()).platform(); }
     @Test public void catalogSignatureVerifiesOnAndroidAndUnlistedModelsAreRejected() throws Exception {
         LocalModelCatalog catalog = new LocalModelInstaller(context(), platform()).catalog();
-        assertEquals(3, catalog.entries.size());
+        assertEquals(4, catalog.entries.size());
         assertThrows(SecurityException.class, () -> catalog.require("not.a.catalog-model"));
     }
     @Test public void missingConsentDoesNotReadOrActivateTheModel() throws Exception {

@@ -50,7 +50,7 @@ final class LocalModelChoice {
             .put("ideaTarget", ideas).put("task", ModelSelectionPolicy.task(prompt)).put("reason", "auto".equals(choice)
                 ? "作業の種類、対応能力、導入・同意・端末資源を照合して選びました。世界全体の性能順位や内容品質の保証ではありません。"
                 : "指定したモデルを固定しました。別モデルへ自動で切り替えません。")
-            .put("warning", "dev.rock.qwen3-06b-q8".equals(id) ? "0.6Bは文章品質の試験に不合格。診断用の明示選択です。" : entry.tasks.contains(ModelSelectionPolicy.task(prompt)) ? "生成内容は確認して利用してください。外部操作やコード実行は行いません。" : "このモデルと作業の組合せは未検証です。指定を優先します。")
+            .put("warning", "dev.rock.qwen25-15b-q4km".equals(id)&&java.util.Set.of("planning","writing").contains(ModelSelectionPolicy.task(prompt)) ? "1.5Bは発想の内容品質試験に不合格です。指定を優先しますが、作業に合う上位モデルを推奨します。" : "dev.rock.qwen3-06b-q8".equals(id) ? "0.6Bは文章品質の試験に不合格。診断用の明示選択です。" : entry.tasks.contains(ModelSelectionPolicy.task(prompt)) ? "生成内容は確認して利用してください。外部操作やコード実行は行いません。" : "このモデルと作業の組合せは未検証です。指定を優先します。")
             .put("executionStarted", false).put("network", false).toString();
     }
     LocalModelCatalog.Entry requireDigest(String digest) throws Exception {

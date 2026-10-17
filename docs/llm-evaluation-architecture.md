@@ -394,3 +394,5 @@ package6は実機で発見したllama.rnのJSI `stopCompletion()` が型宣言�
 package7はclosed idea subtypeだけtemperature0.7/top_p0.9/top_k40/repeat_penalty1.12とし、実機で発見したgreedy同一案の反復を減らす。文字列の実数/重複検査は緩和しない。他taskのsamplingと権限は不変。ShellはonStartからonStopまで既存の同署名Brokerへ空のbindingを保持し、画面表示中の実行をforegroundの優先度へつなぐ。binding自体は仕事の作成・再開・承認ではない。画面外では解放し、JobScheduler/lease/checkpointへ戻る。一般backgroundモデル品質/完走をこの受入へ流用しない。
 
 発想の重複対策として各raw5件へ異なる分野を1つずつ割り当て、30分野と10対象を切り替える。これは入力の視点であり、成果の案を固定文言で補填する処理ではない。owner依頼は保持する。新しい案のAI表記はsiを要求し、append時に単独AI語を拒否して再生成する。旧checkpointのAI表記は改変せず読み取れる。意味上の新規性・類似は引き続き人による確認が必要。
+
+小型General1.5Bは20件保存/形式検査は通ったが、分野名コピー・途中切れが多く内容品質不合格。planning/writingの自動候補から除外する。上位候補Qwen3-4B-Instruct-2507（Qwen元モデル、Unsloth Q4_K_M、Apache-2.0、revision a06e946bb6b655725eafa393f4a9745d460374c9、2497281120 bytes、SHA256 3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597）を既存runtime7/API4へ署名定義として追加し、8GiB未満の端末を自動候補にしない。現段階はautoPriority0の明示試験のみ、品質受入後に順位を決める。実tokenizer/template metadataを固定hashから抽出検査し、作者/量子化者/配布定義署名者を分ける。元モデルと量子化の根拠はhttps://huggingface.co/Qwen/Qwen3-4B-Instruct-2507 およびhttps://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF 。

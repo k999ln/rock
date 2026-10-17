@@ -144,7 +144,7 @@ public final class TerminalHomeIntegrationTest {
         ShellConnection broker = new ShellConnection(context());
         JSONObject before = new JSONObject(broker.snapshot());
         JSONObject catalog = new JSONObject(broker.localModelCatalog());
-        assertEquals(3, catalog.getJSONArray("models").length());
+        assertEquals(4, catalog.getJSONArray("models").length());
         JSONObject model = catalog.getJSONArray("models").getJSONObject(0);
         assertEquals("dev.rock.qwen3-06b-q8", model.getString("profileId"));
         java.io.File file = java.io.File.createTempFile("unapproved-model-", ".gguf", context().getCacheDir());
