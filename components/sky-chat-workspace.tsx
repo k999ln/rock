@@ -190,6 +190,7 @@ const quickRequests = [
 const providerRoutingDefaults: Record<string, string> = {
   imageGeneration: 'higgsfield',
   videoGeneration: 'higgsfield',
+  textSelectionMode: 'auto',
   textGeneration: 'local-model',
   textGenerationModel: 'Qwen3-0.6B-Q8_0-GGUF',
   localLlmBaseUrl: 'http://127.0.0.1:4317/v1',
@@ -712,11 +713,13 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     ) ?? null;
   const displayMessages = messages.filter((message) =>
     !message.id.startsWith('welcome-') && !message.id.startsWith('progress-'));
+  const [modelSelectionNote, setModelSelectionNote] = useState('');
+  const [allowFreeCloud, setAllowFreeCloud] = useState(false);
   const textProvider = isTextModelProvider(providerRouting.textGeneration)
     ? providerRouting.textGeneration
     : 'local-model';
   const textProviderDefinition = textModelProviderDefinition(textProvider);
-  const remoteTextProvider = textProviderDefinition.locality === 'remote';
+  const remoteTextProvider = providerRouting.textSelectionMode === 'manual' && textProvider !== 'pollinations' && textProviderDefinition.locality === 'remote';
   const activeTool = activeRequest
     ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
@@ -828,6 +831,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
 
   function changeProviderRoute(field: string, value: string) {
     const next = { ...routingDraft.state.config, [field]: value };
+    if (field === 'textGeneration' || field === 'textGenerationModel') next.textSelectionMode = 'manual';
+    setModelSelectionNote('');
     invalidateRemoteEstimate();
     setRemoteCurrency('');
     setRemoteBudgetInput('');
@@ -1224,7 +1229,35 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     }
     if (!confirmAmcReplacement(() => { void sendMessage(event); })) return;
     submissionRef.current = true;
-    if (!requestedJenniferPlan && !isAmc && remoteTextProvider) {
+    let requestProvider = textProvider;
+    let requestModel = providerRouting.textGenerationModel || textProviderDefinition.defaultModel;
+    if (!requestedJenniferPlan && !isAmc && providerRouting.textSelectionMode !== 'manual') {
+      setChatLoading(true);
+      const selectionController = new AbortController();
+      chatAbortRef.current = selectionController;
+      activeChatThreadRef.current = requestedThreadId;
+      try {
+        const response = await fetch('/api/llm/select', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: text, allowCloud: allowFreeCloud, baseUrl: providerRouting.localLlmBaseUrl || undefined }),
+          signal: AbortSignal.any([selectionController.signal, AbortSignal.timeout(10000)]),
+        });
+        const result = await response.json() as { selection?: { provider: string; model: string; reason: string }; error?: string };
+        if (selectionController.signal.aborted) return;
+        if (!response.ok || !result.selection || !isTextModelProvider(result.selection.provider))
+          throw new Error(result.error || 'モデルを選択できませんでした。');
+        requestProvider = result.selection.provider;
+        requestModel = result.selection.model;
+        setModelSelectionNote(`${textModelProviderDefinition(requestProvider).name} / ${requestModel}: ${result.selection.reason}`);
+      } catch (reason) {
+        if (selectionController.signal.aborted) return;
+        setError(reason instanceof Error ? reason.message : 'モデルを選択できませんでした。');
+        submissionRef.current = false;
+        setChatLoading(false);
+        return;
+      }
+    }
+    if (!requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
         .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
@@ -1247,8 +1280,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         if (remoteBudgetInput.trim() && parsedBudget === null)
           throw new Error(`${remoteCurrency || '選択した通貨'}の上限額を確認してください。`);
         const result = await remoteAiTextRequest<RemoteAiEstimateResult>('/api/llm/estimate', 'POST', {
-          provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
+          provider: requestProvider,
+          model: requestModel,
           system: estimateSystem,
           prompt: estimatePrompt.slice(-20_000),
           maxOutputTokens: 1_200,
@@ -1316,9 +1349,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           text,
           toolId,
           executionProvider: 'local-model' as const,
-          plannerProvider: textProvider,
+          plannerProvider: requestProvider,
           plannerModel:
-            providerRouting.textGenerationModel || textProviderDefinition.defaultModel,
+            requestModel,
         }
       : null;
     setMessages(nextMessages);
@@ -1335,24 +1368,25 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      void fetch('/api/llm/local-agent', {
+      void fetch(requestProvider === 'pollinations' ? '/api/llm/free-cloud' : '/api/llm/local-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
-          baseUrl: textProvider === 'local-model'
+          id: id.replace(/^chat-/, ''), consent: allowFreeCloud,
+          provider: requestProvider,
+          model: requestModel,
+          baseUrl: requestProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
           context: tool
             ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
             : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
-          prompt: selectedToolPrompt.slice(-20_000),
+          prompt: requestProvider === 'pollinations' ? text : selectedToolPrompt.slice(-20_000),
         }),
         signal: controller.signal,
       }).then(async (response) => {
-        const result = await response.json() as LocalAgentResult;
-        if (!response.ok || !result.text) throw new Error(result.code || 'TEXT_GENERATION_FAILED');
+        const result = await response.json() as LocalAgentResult & {error?:string; usage?:{inputTokens:number;outputTokens:number;chargeMinor:number}; reportedModel?:string};
+        if (!response.ok || !result.text) throw new Error(result.error || result.code || 'TEXT_GENERATION_FAILED');
         const toolArtifacts = (result.artifacts ?? [])
           .filter((artifact) => artifact.tool !== 'sky_route')
           .map((artifact) => artifact.content.trim())
@@ -1363,6 +1397,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           .join(' / ');
         return [
           result.text.trim(),
+          ...(result.usage ? [`無料Cloud: ${result.reportedModel || requestModel} · 入力 ${result.usage.inputTokens} / 出力 ${result.usage.outputTokens} tokens · $0.00`] : []),
           ...toolArtifacts,
           executionSummary ? `ローカルAgent実行記録: ${executionSummary}` : '',
         ].filter(Boolean).join('\n\n');
@@ -1376,7 +1411,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       }).catch((reason) => {
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
-        const detail = code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
+        const detail = requestProvider === 'pollinations' ? (code || '無料Cloudの結果を確認できません。') : code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
           ? 'この接続先はクラウド扱いですが、信頼できる料金見積・予算予約・利用明細が未接続です。Providerへは送信していません。'
           : code === 'EXPLICIT_REMOTE_CONSENT_REQUIRED'
             ? '設定された接続先は外部サーバーです。料金確認と本人の明示承認が整うまで実行できません。Providerへは送信していません。'
@@ -2339,7 +2374,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   {remoteTextProvider ? '料金を見積もる' : <Send size={18} />}
                 </button>
               </div>
-              {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'ローカルAgentが安全な手順を組み立てています…'}</output>}
+              {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'モデルを選択し、応答を確認しています…'}</output>}
               {remoteTextProvider && (
                 <section className="zema-remote-consent" aria-live="polite">
                   <p>クラウドsiの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
@@ -2398,7 +2433,16 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                 </section>
               )}
               <details className="zema-model-settings">
-                <summary>会話モデル: {textProviderDefinition.name}</summary>
+                <summary>会話モデル: {providerRouting.textSelectionMode !== 'manual' ? '自動（作業に合わせる）' : textProviderDefinition.name}</summary>
+                <label><input type="checkbox" checked={allowFreeCloud} disabled={chatLoading} onChange={(event) => setAllowFreeCloud(event.target.checked)} />今回の会話で無料Cloudへの送信を許可（Pollinationsに入力した依頼文を送信）</label>
+                <label>モデルの選び方
+                  <select value={providerRouting.textSelectionMode === 'manual' ? 'manual' : 'auto'} disabled={routingDraft.disabled || chatLoading} onChange={(event) => changeProviderRoute('textSelectionMode', event.target.value)}>
+                    <option value="auto">自動（作業に合わせる）</option>
+                    <option value="manual">自分で選ぶ</option>
+                  </select>
+                </label>
+                <p>自動はローカルと、許可した無料Cloudのモデル一覧から作業に合わせて選びます。有料モデルへの切替はありません。</p>
+                {modelSelectionNote && <output>{modelSelectionNote}</output>}
                 <div>
                   <label>接続先
                     <select value={textProvider} disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
