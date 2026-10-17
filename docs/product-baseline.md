@@ -17,7 +17,7 @@ Skyの会話モデルは「自動（作業に合わせる）」が標準です�
 
 ### 公開コードを根拠にPixel si専用端末を設計する
 
-2026-10-17の本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を、[Pixelの体験改善項目](workstreams/07-android-device-local-ai.md#pixel-usability-feedback)として記録する。見た目・通知・仕事操作は未改善／未受入。機能が動くことを操作性の合格に置き換えず、既存RQの体験改善として扱う。
+2026-10-17の本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を、[Pixelの体験改善項目](workstreams/07-android-device-local-ai.md#pixel-usability-feedback)として記録する。続く本人の「改善して、Pixelで直感的に使えるように」「操作性がもっと直感的に」の実装指示により、[一覧/詳細/通知の導線](native-os-integration.md#pixel-intuitive-experience)を改修する。同一APKの実機成績は[専用台帳](evidence/pixel-intuitive-experience.json)で確認し、設計だけで改善受入済みにしない。機能が動くことを操作性の合格に置き換えず、既存RQの体験改善として扱う。
 
 2026-10-15、本人の追加依頼により[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)を具体化する。GrapheneOSの公開構成/差分を根拠に、既存OSの防御・回線・標準appを引き継ぎ、Home/音声/能力選択/仕事/費用/復旧を既存Rock実装へ接続する。端末とcloudの仕事正本を分け、混合工程には同root authorityのadapter受入を必要とする。SpeechServicesの正しいremoteとv3 TTSを確認し、日本語ASR/TTSの不足を別途扱う。調査版2026100600で採用lock2026100200を自動更新しない。機械可読判断は`pixelSiReferenceDesignIntent`、調査根拠は[コード台帳](evidence/grapheneos-source-audit.json)。新しいRQ/価格/実行許可を増やさず、PX01〜12は未実行の受入条件とする。
 
@@ -34,6 +34,8 @@ Skyの会話モデルは「自動（作業に合わせる）」が標準です�
 2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
 
 ### Skyでlocal・cloud・明示した組合せを選ぶ
+
+2026-10-17の追加指示により、LLMを手動でも選べるようにし、通常は作業に適合する利用可能なmodelを自動選択する。Codex loginを唯一の前提にしない。[要求・現在の不足・合格条件](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は実装待ち。モデルの自動選択と、本人の実行承認・外部送信許可・費用上限を分ける。
 
 2026-10-15、本人はcloud Agentの利用とlocal LLM導入の双方を選択可能にし、「だからskyがある」と明示した。Skyをmodel/Agent/Toolの発見・導入/接続・実行先選択の入口とし、cloud固定や全機種local必須にしない。modelの推論先とAgent runnerを区別し、準備状態・実host・送信範囲・費用・必要資源を提示する。選んだ経路は同じZemaのJob/成果/上限へ結び、未接続時の自動fallbackや無断送信を行わない。[詳細と未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)および`skyExecutionChoiceDecision`を正本にする。既存6 adapter/固定local modelの証拠は保持し、全選択肢の利用可能・本番合格を宣言しない。
 

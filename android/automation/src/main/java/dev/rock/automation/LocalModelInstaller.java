@@ -41,6 +41,8 @@ final class LocalModelInstaller {
             entries.put(new JSONObject().put("profileId", p.profileId).put("name", entry.name).put("fileName", entry.fileName)
                 .put("source", entry.source).put("licenseUrl", entry.licenseUrl).put("licenseId", p.licenseId)
                 .put("bytes", p.artifactBytes).put("sha256", p.weightsSha256).put("trustLabel", entry.trustLabel)
+                .put("manifestDigest", p.digest()).put("version", p.version)
+                .put("cached", LocalModelChoice.cached(context, p)).put("licenseAccepted", LocalModelChoice.accepted(context, p))
                 .put("activeProfile", active != null && p.digest().equals(active.digest())));
         }
         return new JSONObject().put("models", entries).put("activeProfileId", active == null ? JSONObject.NULL : active.profileId)
@@ -50,6 +52,12 @@ final class LocalModelInstaller {
     String install(String profileId, ParcelFileDescriptor source, boolean consent) throws Exception {
         if (source == null) throw new SecurityException("MODEL_FILE_REQUIRED");
         return activate(profileId, source, consent);
+    }
+
+    String reloadAccepted(String profileId) throws Exception {
+        ModelProfileManifest profile = catalog().require(profileId).profile;
+        if (!LocalModelChoice.accepted(context, profile)) throw new SecurityException("MODEL_LICENSE_CONSENT_REQUIRED");
+        return activate(profileId, null, true);
     }
 
     String reload(String profileId, boolean consent) throws Exception {
@@ -118,7 +126,7 @@ final class LocalModelInstaller {
                     });
                 JSONObject licenseReceipt = new JSONObject().put("profileDigest", profile.digest())
                     .put("licenseId", profile.licenseId).put("owner", AndroidOwner.current(context)).put("acceptedAt", now);
-                if (!context.getSharedPreferences("local-model-license", Context.MODE_PRIVATE).edit()
+                if (!LocalModelChoice.accepted(context, profile) && !context.getSharedPreferences("local-model-license", Context.MODE_PRIVATE).edit()
                         .putString(profile.digest(), licenseReceipt.toString()).commit())
                     throw new IllegalStateException("MODEL_LICENSE_RECEIPT_NOT_SAVED");
                 // Verify before activation so a locked device or failed import cannot change the pointer.

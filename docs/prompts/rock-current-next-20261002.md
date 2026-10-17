@@ -1,5 +1,13 @@
 # RockstarOS service and Pixel: implementation handoff
 
+## 2026-10-17 Pixel操作性のcheckpoint
+
+main f10b7309からcodex/pixel-intuitive-experience、PR #157。固定候補7b16d61bはデザイン/優先一覧/一件の詳細/通知の実装を含む。host/全体verify・同head CI8件成功。Pixel12試験は11成功・通知1失敗・skip0（docs/evidence/pixel-intuitive-experience.json）。background完了通知が90秒以内に見つからず、実System UI tapは未到達。foreground performのbaseline stamp更新による抑制競合は候補原因で未確定。receiver到達、fresh snapshot、dedup、channel postingを調べて修正し、同一APKで再試験する。成功ログへ書き換えたりCIで代替しない。
+
+本人が続けてLLMの手動選択と、作業に合うLLMを自動で選ぶdefaultを指示。data/product-baseline.jsonのautomaticLlmSelectionIntentとdocs/llm-evaluation-architecture.md#selectable-models-and-automatic-defaultを読む。実装待ち。Codex CLIのAgent executorと任意modelの文章生成を同一能力にしない。未接続/未許可/予算超過を除外し、選択理由・実model/host・pinを確認する。model選択から本人承認/有料gateを推測しない。
+
+本人の「ここまでGitに」指示でcheckpointを保存する。未完了の通知/LLM選択をmain完成扱いにしない。再開時は最新main/branch/PRと同SHA CIを再取得し、mainの新差分を保全する。
+
 ## Pixel si端末の実装と次の受入（2026-10-17）
 
 最初にGitHub main/対象branch/同SHA CIと`docs/evidence/pixel-si-terminal-implementation.json`を再取得する。実装正本は`docs/native-os-integration.md#pixel-terminal-implementation`。OS11/O6のbranch `codex/pixel-si-terminal-implementation`はmain `019c2231`から開始し、原dirty候補のShellUiと画面遷移を選別し、現行LocalSubmission/Broker API 18/Local si API v4/料金/復旧を保持した。原dirtyの全体取込や模擬17項目を実Agentへ昇格させない。
