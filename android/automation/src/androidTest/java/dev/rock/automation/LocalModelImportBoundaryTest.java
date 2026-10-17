@@ -124,6 +124,17 @@ public final class LocalModelImportBoundaryTest {
         Files.write(new File(context().getExternalFilesDir(null),"synthetic-five-ideas.json").toPath(),receipt.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         assertEquals("completed",result.event);dev.rock.sdk.LocalWorkDraft.verify("planning",result.payload);
     }
+    @Test public void explicitlyDiagnoseOnlyPublicModelConnectivity() throws Exception {
+        org.junit.Assume.assumeTrue("explicit public-origin connectivity diagnosis", "true".equals(InstrumentationRegistry.getArguments().getString("rockPublicConnectivity")));
+        org.json.JSONArray results=new org.json.JSONArray();
+        for(String url:new String[]{"https://api.github.com/search/repositories?q=Qwen+GGUF&per_page=1","https://huggingface.co/api/models?search=Qwen2.5&limit=1"}) {
+            org.json.JSONObject entry=new org.json.JSONObject().put("origin",java.net.URI.create(url).getHost());
+            try {PublicModelDiscovery.Reply r=PublicModelDiscovery.https(url);entry.put("status",r.status).put("bytes",r.body.length());}
+            catch(Exception e){entry.put("exception",e.getClass().getSimpleName());if(e.getCause()!=null)entry.put("cause",e.getCause().getClass().getSimpleName());}
+            results.put(entry);
+        }
+        Files.write(new File(context().getExternalFilesDir(null),"public-connectivity-diagnosis.json").toPath(),results.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
     @Test public void readOnlyPhysicalMigrationHashes() throws Exception {
         org.junit.Assume.assumeTrue("explicit physical hash-only migration readback", "true".equals(InstrumentationRegistry.getArguments().getString("rockMigrationReadback")));
         org.json.JSONArray works=new org.json.JSONArray(),artifacts=new org.json.JSONArray();

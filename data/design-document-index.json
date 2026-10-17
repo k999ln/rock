@@ -700,6 +700,7 @@
         "engineSchema": 4,
         "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
         "firstRequestedTask": "300 RockstarOS/Sky service ideas",
+        "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
         "limits": [
           "signed APK catalog only",
           "explicit Wi-Fi acquisition and license consent",

@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "runtime6_void_stop_crash_fix_build_pending",
+    "status": "runtime6_built_real_search_passed_local_generation_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,9 +13,9 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Build/sign/inspect package5, explicitly import cached weights under new profile versions, accept code and structured 20-item trials, then execute the owner-requested 300 actual service ideas with checkpoint readback and same-head CI.",
+    "nextAction": "Build/sign/inspect package6, reaccept exact signed profiles, retake real code and 20 ideas without diagnostic restarts, then execute and read back the requested 300 actual service ideas.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
-    "runtimeBuildRun": 39063165913,
+    "runtimeBuildRun": 39064987817,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
@@ -34,9 +34,13 @@
       "twentyItemProbe": "INTERRUPTED_no_false_completed_items",
       "codeAndRequested300": "CODE_PASS_139344ms_candidate4_requested300_not_yet_accepted",
       "notificationAndManualFlow": "13_of_14_passed_live_search_network_failure_recorded",
-      "ideaProbe": "Actual model returned one item for a requested batch of ten; validator held at zero, no fabricated completion"
+      "ideaProbe": "Actual model returned one item for a requested batch of ten; validator held at zero, no fabricated completion",
+      "package5": "20-item batch timed out at 180s with zero saved; five-item isolation reached JSON boundary then runtime callback crashed on undefined.catch; not accepted",
+      "publicApiConnectivity": "Both known public origins HTTP200; actual search UI PASS 4.313s after reconnect",
+      "notification": "PASS_actual_completion_notification_tap_on_new_Broker_and_Shell",
+      "runtime6ImportGate": "Explicitly cancelled only held synthetic 20-item job before profile upgrade; pinned work guard preserved"
     },
-    "runtimeBuildSource": "cbb484215de20a0a7ff47c533bdd1944c21b915d",
+    "runtimeBuildSource": "f96ca583f9bff51d91c46a4141149591594775db",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
     "planningLimits": {
       "outputTokens": 512,
@@ -49,8 +53,10 @@
       "binderApi": 4,
       "rawIdeaSchema": "ideas array only, exact N 1..10",
       "metadataOwner": "runtime, never model authority",
-      "sourceTests": 31,
-      "nativeBuild": "PASS_ACTUAL_APK_INSPECTION_AND_SAME_PAYLOAD_PREVIEW_SIGNING"
+      "sourceTests": 33,
+      "nativeBuild": "PASS_UNSIGNED_BYTES_AND_EXISTING_PREVIEW_SIGNER",
+      "fix": "Android JSI stopCompletion returns void despite Promise type; contain sync/async stop failures",
+      "nativeBuildSource": "f96ca583"
     },
     "migrationReadback": {
       "originalWorksPreserved": 24,

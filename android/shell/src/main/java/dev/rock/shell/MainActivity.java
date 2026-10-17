@@ -608,11 +608,12 @@ public final class MainActivity extends Activity {
             : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
             : "paused".equals(state) ? ("waiting_to_retry".equals(result.optString("pauseReason")) ? "通信が途切れたため、Androidの再接続を待っています。取得済みの位置から再開します。" : "取得は待機中です。Wi-Fi・保存容量を確認してください。")
             : "profile_changed".equals(state) ? "モデルの導入条件が更新されています。以前の取得があれば中止し、現行の条件を確認してください。"
-            : "cancelled".equals(state) ? "取得を中止しました。" : "取得・導入を確認できません: " + result.optString("code", state);
+            : "cancelled".equals(state) ? "取得を中止しました。" : "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK".equals(result.optString("code")) ? "以前のモデルを使う仕事が残っています。その仕事を完了または中止してから、取得状況を更新してもう一度導入してください。" : "取得・導入を確認できません: " + result.optString("code", state);
         label(modelDownloadPanel, name + "\n" + label, 14);
         String operation = result.optString("operationId");
+        if ("failed".equals(state)) button(modelDownloadPanel, "取得状況を更新", this::refreshModelDownload);
         if ("downloaded".equals(state)) button(modelDownloadPanel, "検証してPixelへ導入", () -> modelDownloadAction(c -> c.finishPublicModelInstall(operation, true)));
-        if (java.util.Set.of("downloaded", "downloading", "paused", "failed").contains(state) || "profile_changed".equals(state) && !result.optBoolean("terminal"))
+        if (java.util.Set.of("downloaded", "downloading", "paused").contains(state) || "profile_changed".equals(state) && !result.optBoolean("terminal"))
             button(modelDownloadPanel, "この取得を中止", () -> modelDownloadAction(c -> c.cancelPublicModelDownload(operation)));
     }
 

@@ -104,7 +104,9 @@ public final class DiscoveredModelAcceptanceTest {
             do { ui(() -> finish.set(button((android.view.View)field(activity,"modelDownloadPanel"),"検証してPixelへ導入")));if(finish.get()==null)SystemClock.sleep(100); }while(finish.get()==null&&SystemClock.elapsedRealtime()<deadline);
             assertNotNull(finish.get());ui(() -> finish.get().performClick());
             deadline=SystemClock.elapsedRealtime()+900000;
-            do {state=new JSONObject(broker.publicModelInstallStatus());if("installed".equals(state.optString("status")))break;assertFalse(state.toString(),"failed".equals(state.optString("status")));SystemClock.sleep(1000);}while(SystemClock.elapsedRealtime()<deadline);
+            do {state=new JSONObject(broker.publicModelInstallStatus());if("installed".equals(state.optString("status")))break;assertFalse(state.toString(),"failed".equals(state.optString("status")));
+                ui(() -> assertNull("UI import failure must fail the acceptance immediately",button((android.view.View)field(activity,"modelDownloadPanel"),"取得状況を更新")));
+                SystemClock.sleep(1000);}while(SystemClock.elapsedRealtime()<deadline);
             assertEquals(state.toString(),"installed",state.getString("status"));
             JSONObject matching=null;JSONArray catalog=new JSONObject(broker.localModelCatalog()).getJSONArray("models");
             for(int i=0;i<catalog.length();i++)if(id.equals(catalog.getJSONObject(i).getString("profileId")))matching=catalog.getJSONObject(i);
