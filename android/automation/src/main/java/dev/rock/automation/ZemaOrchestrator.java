@@ -6,6 +6,12 @@ import java.util.UUID;
 
 /** Broker-owned path from Zema text to an exact selected Tool job. */
 final class ZemaOrchestrator {
+    private static final LocalPlanningFence PLANNING = new LocalPlanningFence();
+    static void setPaused(Engine engine, boolean paused) {
+        long identity = android.os.Binder.clearCallingIdentity();
+        try { PLANNING.changePause(paused, () -> engine.setPaused(paused)); }
+        finally { android.os.Binder.restoreCallingIdentity(identity); }
+    }
     private final android.content.Context context;
     private final Engine engine;
 
@@ -16,9 +22,12 @@ final class ZemaOrchestrator {
 
     String submit(String requestId, String selectionToken, String prompt, String contextJson,
                   boolean consent) throws Exception {
-        synchronized (ModelProfileOperationLock.LOCK) {
-            return submitLocked(requestId, selectionToken, prompt, contextJson, consent);
-        }
+        long identity = android.os.Binder.clearCallingIdentity();
+        try {
+            synchronized (ModelProfileOperationLock.LOCK) {
+                return submitLocked(requestId, selectionToken, prompt, contextJson, consent);
+            }
+        } finally { android.os.Binder.restoreCallingIdentity(identity); }
     }
 
     private String submitLocked(String requestId, String selectionToken, String prompt, String contextJson,
@@ -36,10 +45,12 @@ final class ZemaOrchestrator {
         Engine.ModelProfilePin pin = engine.prepareModelProfilePin(owner, requestId,
             requestDigest, System.currentTimeMillis());
         LocalAiConnection localAi = new LocalAiConnection(context);
+        String token = UUID.randomUUID().toString();
+        LocalPlanningFence.Attempt planning = PLANNING.begin(engine::paused, () -> localAi.cancel(token));
+        try {
         localAi.requireReadyForPlanning(pin);
         LocalAiConnection.Result result = localAi.plan(
-            UUID.randomUUID().toString(), pin, ZemaToolPlan.ARTICLE_PLAN_SCHEMA,
-            planningPrompt, contextJson);
+            token, pin, ZemaToolPlan.ARTICLE_PLAN_SCHEMA, planningPrompt, contextJson);
         if (!"completed".equals(result.event)) {
             if ("proposal".equals(result.event))
                 throw new SecurityException("LOCAL_AI_MAY_NOT_EXECUTE_SELECTED_TOOL");
@@ -49,6 +60,11 @@ final class ZemaOrchestrator {
         localAi.requireReadyForPlanning(pin);
         if (!toolId.equals(engine.requireSkySelection(selectionToken)))
             throw new SecurityException("SKY_SELECTION_MISMATCH");
-        return engine.submitPinned(pin, requestId, input, false, true);
+        return PLANNING.commit(planning, engine::paused,
+            () -> engine.submitPinned(pin, requestId, input, false, true));
+        } catch (Exception failure) {
+            if (PLANNING.stopped(planning)) throw new IllegalStateException("LOCAL_EXECUTION_PAUSED", failure);
+            throw failure;
+        } finally { PLANNING.finish(planning); }
     }
 }

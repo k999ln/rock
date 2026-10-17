@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## Pixel si専用端末アプリの実装
+
+2026-10-16、OS11/O6/ROCK。本人の実装指示で[Pixelのアプリ実装](../native-os-integration.md#pixel-terminal-implementation)を開始し、4画面/Home候補、実行先の下書き、モデルなし実Tool、現v4表示、保存/停止/再開/書出し、依頼時scheduler、明示端末内音声adapterを実装する。台帳は[同一候補の証拠](../evidence/pixel-si-terminal-implementation.json)。既存原dirty表示部品だけを選別し、同ID/予算/本人/Provider/復旧の現mainを保持。host、emulator、GL066、全OSを別受入し、モデルなしToolをLLM推論へ昇格させない。次は現v4モデルprofile導入と推論一周、日本語音声、独自OS。Android build/lint/Core/SDK/JVM、TerminalHomeIntegrationTest、LocalAiServiceIntegrationTest、os/design/verifyで検証する。
+
 ## Pixel si専用端末の公開コード調査と実装設計
 
 OS11/O6/ROCK、同期DOC04/H1。2026-10-15の本人依頼を[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)と[調査台帳](../evidence/grapheneos-source-audit.json)へ対応する。調査版の全129 GrapheneOS remoteを分類し、取得した公開差分/独立app/Pixel設定と非公開部品を分離。OSの防御・回線・標準appを再利用し、8 module/PX01〜12へ不足を割り当てる。EXTERNALはupstream/BSP/model/Provider、JOINTは同image/回線/host受入、OWNERはapp方針・日本語音声・予算/契約/端末変更。SpeechServicesの正しいGitLab remoteとv3 TTSを確認し、日本語ASR/TTSの追加受入へつなぐ。採用lockは2026100200を維持。
@@ -18,11 +22,13 @@ OS11/O6/ROCKが[現在地と実用順](../native-os-integration.md#pixelの現�
 
 ## si専用端末のHome受入
 
-本人の2026-10-15指示を[端末体験契約](../native-os-integration.md#si専用端末の利用体験と実装境界)へ固定する。OS11/O6/ROCKが主担当、DOC04/WEB04/AI04/SKY07/SKY21/RLS02が接続する。現在のShellはMAIN/LAUNCHERでHOME/voice role未宣言。非破壊の一仕事→owner選択/解除可能なHome→必要な音声入力→同imageのOS/更新/復旧の順とし、DT01〜06は未実行。検証commandは`npm run baseline:check`、`npm run design:check`、`npm run verify`、実装時は`docs/os-prototype.md`のAPK/SQLite/端末試験とOS受入reportを追加する。
+OS11/O6/ROCKのHOME候補・4画面・LLMなし有限ToolはPR #149のAPKで部分実機受入済み。[端末実装](../native-os-integration.md#pixel-terminal-implementation)と証拠の同SHA/同APKを読む。全OSやDT01〜06全体の合格とは区別する。
+
+続く本人指示で、署名済model catalog/SAF取込/明示reloadとJenniferの端末内有限計画をprivate Shell API 19へ実装した。[目的・入出力・責任・状態・保存・復旧・停止・合格条件](../native-os-integration.md#pixel-local-jennifer)、[host/Android/実機の別台帳](../evidence/pixel-local-jennifer.json)、[再接続時の手順](../os-prototype.md#pixel-local-model-acceptance)を正本にする。model関係はAI02/O3、保存/同IDはAI04/O2を参照。本人が今は実機を接続できないため、Pixelの新候補・推論・生成物は未受入。日本語音声、Goal/AMC全体、cloud/料金、全OSを合算しない。
 
 ## GrapheneOSと通信＋si商品の土台
 
-2026-10-15の[基盤調査](../native-os-integration.md)はOS11/O6（ROCK）、同期はDOC04/H1。32項目をapp/role、source/privileged、機種/partner条件、cloud、一般化不可へ分類する。SIM01は購入/発行/利用権binding、SKY07/SKY21/BIL02は実Provider/共通予算/明細、RLS02は正式署名/flash/独自OTA/復旧を担当する。通信＋si商品入口という本人選択を反映するが、既存gate/source lock/鍵を変えず、実発行・cloud課金・flashは行わない。ADB接続0件で本日の実機状態は未確認。
+2026-10-15の[基盤調査](../native-os-integration.md)はOS11/O6（ROCK）、同期はDOC04/H1。32項目をapp/role、source/privileged、機種/partner条件、cloud、一般化不可へ分類する。SIM01は購入/発行/利用権binding、SKY07/SKY21/BIL02は実Provider/共通予算/明細、RLS02は正式署名/flash/独自OTA/復旧を担当する。通信＋si商品入口という本人選択を反映するが、既存gate/source lock/鍵を変えず、実発行・cloud課金・flashは行わない。この調査時点のADB 0件は履歴。現在の接続と実機受入は該当候補台帳で判断する。
 
 ## 2026-10-11 — 既存機能の品質・復旧改善（AI04 / OS10、ROCK）
 
@@ -313,7 +319,7 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 ## 検証
 
 - `npm run device-support:check`
-- `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py tests/test_freeze_phone_build_inputs.py`
+- `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py tests/test_stage_model_crypto.py tests/test_freeze_phone_build_inputs.py`
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
 - `gradle -p android :jev-preview:assembleDebug :jev-preview:assembleRelease :jev-preview:testDebugUnitTest :jev-preview:lintDebug :jev-preview:lintRelease --no-daemon`
 - 同一debug signerのLocal si／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 11 non-skipped testとShell 5 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否、phrase確認、v2 export、新Keystore再bindingを確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。物理wipe復元は純正復旧artifactを揃えた別の管理試験にする。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)、backup emulator受入は[証拠](../evidence/android-backup-v2-emulator-20260916.json)。

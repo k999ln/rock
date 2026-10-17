@@ -43,7 +43,7 @@ public final class ComponentManifest {
     ) {
         if (kind == null) throw new IllegalArgumentException("KIND_REQUIRED");
         require(componentId, "[a-z0-9]+(?:[._-][a-z0-9]+){2,}", "INVALID_COMPONENT_ID");
-        require(packageName, "[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*){2,}", "INVALID_PACKAGE");
+        require(packageName, "[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+", "INVALID_PACKAGE");
         if (versionCode < 1) throw new IllegalArgumentException("INVALID_VERSION");
         PlatformApi.requireCompatible(apiMin, apiMax);
         if (uid < 10_000 || uid > 99_999) throw new IllegalArgumentException("INVALID_APP_UID");

@@ -2,6 +2,8 @@
 
 更新: 2026-10-14
 
+PixelのJennifer欄は[端末内の有限計画経路](native-os-integration.md#pixel-local-jennifer)へ接続する。Skyで明示導入した署名model profileから記事準備Toolの入力案を作り、Broker/Engineの検査と本人承認を通す。これはAPK候補の実装で、実機推論の確認待ち。以下のGoal/COLOMBIA/AMC/独立review全体がnativeで完成したという意味ではない。
+
 ## 現在の実装と到達契約の読み分け
 
 PR #113のsourceはmain `01d2e418`へ統合済み。この更新では、保存即承認とowner手動booleanによる検収を廃止し、AMC APIが認証済みA2A worker／reviewer artifact、usage Receipt、owner、Goal revision、leaf、delegation、成果hashをserverで横断照合する。reviewerはworkerと異なるprincipal、同じpredecessor委任、正確なworker report digestへ結び付け、ブラウザのactor名や合否文字列から「検収済み」と推測しない。
