@@ -170,7 +170,10 @@
             "android/automation/src/main/java/dev/rock/automation/PublicModelDiscovery.java"
           ],
           "physicalInferenceAccepted": true,
-          "fullJenniferGoalAccepted": false
+          "fullJenniferGoalAccepted": false,
+          "nextRuntimePackageVersionCode": 4,
+          "nextTaskDraftSchema": "local-work@1/output-v1",
+          "newRuntimeBuildAccepted": false
         },
         "workExperience": {
           "authority": "docs/native-os-integration.md#pixel-intuitive-experience",

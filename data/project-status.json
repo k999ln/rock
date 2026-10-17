@@ -1,4 +1,20 @@
 {
+  "pixelDiscoveredModels": {
+    "date": "2026-10-17",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "status": "implementation_started",
+    "branch": "codex/pixel-discovered-models",
+    "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
+    "scope": [
+      "search_to_verified_download_and_install",
+      "task_aware_multi_model_selection",
+      "non_article_text_artifacts_in_existing_workflow"
+    ],
+    "physicalAccepted": false,
+    "nextAction": "Implement signed model installation from public search, extend the bounded runtime response contract and existing job/artifact persistence, then accept two models and non-article tasks on Pixel. No arbitrary code execution, paid cloud or OS flash."
+  },
   "pixelIntuitiveExperience": {
     "date": "2026-10-17",
     "taskId": "OS11",

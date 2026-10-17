@@ -32,7 +32,7 @@
     "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
-    "status": "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
+    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
     "path": "os/physical/local-ai-overlay.patch",
     "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
     "extensions": [
@@ -60,6 +60,11 @@
         "path": "os/physical/local-ai-loaded-profile-v4.patch",
         "sha256": "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
         "purpose": "plan_only_with_authenticated_already_loaded_profile_without_standalone_repository_autoload; clear_all_model_identity_fields_on_process_restart"
+      },
+      {
+        "path": "os/physical/local-ai-task-drafts-v4.patch",
+        "sha256": "aace90f447f8c9ec8bfe0c1bcf029b457ff3fb941b5f1b9c0332162a8ac5f6be",
+        "purpose": "package_version_4_closed_task_draft_schema_without_tool_or_network_authority"
       }
     ]
   },
