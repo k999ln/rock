@@ -9,7 +9,7 @@
   "status": "same_apk_notification_model_choice_public_discovery_pass_quality_pending",
   "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
   "candidate": {
-    "sourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+    "sourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
     "privateShellApi": 20,
     "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
     "artifacts": [
@@ -23,8 +23,8 @@
       {
         "package": "dev.rock.shell",
         "file": "shell-debug.apk",
-        "sha256": "c54a5617525431b3466b9908e52bf2c636c5c3241eb34461b56011ee5b7d6188",
-        "bytes": 627120,
+        "sha256": "c6942dc3037b665fa5d5d0de870b65da2905c26e6cc39d66bc9d40cb672007a8",
+        "bytes": 627208,
         "installedReadbackMatched": true
       },
       {
@@ -43,9 +43,9 @@
     "shellTests": 14,
     "failed": 0,
     "skipped": 0,
-    "buildLog": "/private/tmp/pixel-choice-finalbuild.log",
+    "buildLog": "/private/tmp/pixel-sky-entry-build.log",
     "fullVerify": "passed_all_stages",
-    "verifyLog": "/private/tmp/pixel-choice-verify.log",
+    "verifyLog": "/private/tmp/pixel-sky-entry-verify.log",
     "nodeTests": {
       "tests": 2267,
       "passed": 2266,
@@ -65,25 +65,25 @@
     "failed": 0,
     "skipped": 0,
     "combinedRegression": {
-      "log": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/final-58ef9537-all.log",
+      "log": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/final-f4718e10-all.log",
       "tests": 14,
       "passed": 14,
       "failed": 0,
       "skipped": 0,
-      "seconds": 84.402,
-      "sha256": "d0299fb114a3ab9af92370b962f3f16a02cfb862ef339f4e64709dd9835a74e3"
+      "seconds": 84.327,
+      "sha256": "520f5ae3844170d080177f009b82c815ac90709f53984008dc89b0f49a4fad5e"
     },
     "manualModelTrial": {
-      "log": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/final-58ef9537-manual.log",
+      "log": "/Users/kaiya/Library/RockstarOS/pixel-intuitive-experience-20261017/final-f4718e10-manual.log",
       "tests": 1,
       "passed": 1,
       "failed": 0,
       "skipped": 0,
-      "seconds": 65.633,
-      "sha256": "2df1898300e23fe16ebd398fbe4629eaa908d86ba83ec6e46145eaf74721a779"
+      "seconds": 64.56,
+      "sha256": "84f8f82299b18cc51741081db7193013d404a4e1a81c6c2692fbd7d9596501dc"
     },
     "notification": {
-      "workId": "86176293-983c-4813-8c92-c138f829bbee",
+      "workId": "016b4349-2d2e-4b9e-adcd-c61c24ace48e",
       "backgroundRealTools": true,
       "reviewNotification": true,
       "actualSystemNotificationTapped": true,
@@ -93,7 +93,7 @@
       "artifactBytes": 364
     },
     "automaticModel": {
-      "workId": "55560c2a-733f-3a30-a20c-dfb788344950",
+      "workId": "ae18ade4-3cc2-3e21-954d-9f26c2de850a",
       "state": "review",
       "draftPreparationCreatedNoWork": true,
       "explicitConsent": true,
@@ -109,7 +109,7 @@
       "humanReviewAccepted": false
     },
     "manualModel": {
-      "workId": "6fb75948-ab61-3b84-9822-c48dc140d774",
+      "workId": "e078d70b-9fad-3ae1-8968-b1d618683a55",
       "state": "review",
       "draftPreparationCreatedNoWork": true,
       "explicitConsent": true,
@@ -128,12 +128,14 @@
       "actualHomeButtonTapped": true,
       "catalogDialogShown": true,
       "actualManualModelRowTapped": true,
-      "shownSelection": "指定中: Qwen2.5 1.5B · 別モデルへ自動で変更しません。"
+      "shownSelection": "指定中: Qwen2.5 1.5B · 別モデルへ自動で変更しません。",
+      "sourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+      "chooserCodeUnchangedInFinalCandidate": true
     },
     "publicDiscovery": {
       "status": "passed",
       "query": "Qwen2.5-1.5B",
-      "summary": "検索語: Qwen2.5-1.5B · 両方の取得に成功\n照会: 2026-10-17T17:36:21.390Z\ngithub: 取得済み\nhuggingface: 取得済み\n候補は未導入・未検証。自動選択や実行には使いません。",
+      "summary": "検索語: Qwen2.5-1.5B · 両方の取得に成功\n照会: 2026-10-17T17:46:56.376Z\ngithub: 取得済み\nhuggingface: 取得済み\n候補は未導入・未検証。自動選択や実行には使いません。",
       "newWorkCount": 0,
       "catalogChanged": false,
       "weightsDownloaded": false
@@ -149,7 +151,8 @@
       "bytes": 395,
       "sha256": "f6e93a0d60b746aaa97b4a571dfa968b13522f089dc7ff50374956c9c58ac0aa",
       "bodyStoredInGit": false
-    }
+    },
+    "skySearchEntry": "top_after_heading"
   },
   "notificationDiagnosis": {
     "interimError": "ReceiverCallNotAllowedException",
@@ -197,9 +200,14 @@
   },
   "git": {
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
-    "sourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+    "sourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
     "sourceValidationNotTransferredToDifferentApks": true,
     "mainMergedAtEvidenceWrite": false,
     "integrationStatusAuthority": "https://github.com/k999ln/rock/pull/157"
+  },
+  "previousAcceptedUiCandidate": {
+    "sourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+    "physicalTestsPassed": 15,
+    "newChange": "Move public discovery above long model-import details after visual inspection; acceptance repeated on new frozen APKs."
   }
 }

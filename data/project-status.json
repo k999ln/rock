@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "sky_search_entry_reposition_validation_in_progress",
+    "status": "same_apk_notification_model_choice_public_discovery_device_pass",
     "branch": "codex/pixel-intuitive-experience",
     "mainBase": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
     "scope": [
@@ -16,7 +16,7 @@
       "public_GitHub_HuggingFace_discovery",
       "X_external_search"
     ],
-    "physicalAccepted": false,
+    "physicalAccepted": true,
     "nextAction": "Extend signed model compatibility/quality and configured cloud adapters; X API and paid/full-OS gates remain closed. Read PR #157 for live integration status; acceptance evidence records its write-time snapshot.",
     "tests": {
       "physicalPassed": 15,
@@ -25,7 +25,7 @@
       "hostPassed": 183,
       "hostFailed": 0
     },
-    "candidateSourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+    "candidateSourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
     "codeHeadCiPassed": null,
     "mainMergedAtAcceptanceWrite": false,

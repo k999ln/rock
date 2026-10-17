@@ -66,7 +66,7 @@
         "runtimeApiVersion": 4,
         "physicalInferenceAccepted": true,
         "evidence": "docs/evidence/pixel-intuitive-experience.json",
-        "candidateSourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+        "candidateSourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
         "scope": "Pixel bounded article-preparation, exact auto/manual pin, actual notification tap and public metadata search; no general Agent/content acceptance"
       }
     },
