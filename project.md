@@ -623,3 +623,5 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 Pixel OS11/O6: 4Bの旧20件は形式・保存・正常Job継続合格だが、制御記号混入と重複隠蔽を検出し内容未受入。checkpoint v3を5件/保存・raw180秒・lease240秒へ変更し、混入は除去せず拒否。旧v1/v2読取・60生成+seal backup/停止を検証する。300件・自動選択・現行Coder実機受入は未完了。
 
 Pixel v3手動4B20案: 実機370.282秒、5工程すべてattempt1、実20件保存、制御記号/完全重複なし。洗濯と体調など関連性が弱い案もあり、有用性・一般品質は未保証。policy v3は発想/文章4B80、コードCoder90、記事/要約/翻訳General50。新規300件自動実行とruntime7 Coder受入を次に実施。
+
+OS11/O6連携Security: 公開4B tokenizer metadata digestを既定secret scannerがgeneric-api-keyとして誤検知。固定GGUF全hashとmetadata再計算で確認し、値+catalog一位置のAND例外を追加。実scannerの10例外/変異/別位置試験合格、全履歴scan候補0。policyを先にcommitし、そのcommitへcontrol pinを更新する。300件は現在自動生成中、未完了。

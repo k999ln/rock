@@ -1,0 +1,138 @@
+{
+  "schema": "rock-pixel-discovered-models/1",
+  "recordedOn": "2026-10-17",
+  "status": "IN_PROGRESS_REQUESTED_300_NOT_YET_ACCEPTED",
+  "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
+  "appBuildSource": "4f160cf0ab92ad46f46ef4daf4072e99620680f0",
+  "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
+  "nativeBuildRun": 39067064393,
+  "installedApks": {
+    "automation": {
+      "package": "dev.rock.automation",
+      "sha256": "2875c88db8fff2eed8c099a7fe60897d83c0036e75e1cb26fde6a3ba727aefc9",
+      "bytes": 6937393
+    },
+    "shell": {
+      "package": "dev.rock.shell",
+      "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2",
+      "bytes": 685388
+    },
+    "runtime": {
+      "package": "com.localactionassistant",
+      "sha256": "760c579c0c33312ffa1cfcc01d19b06c414b71619e47b1fa294c08b434ae3d1a",
+      "bytes": 26465947
+    }
+  },
+  "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+  "versions": {
+    "runtimePackage": 7,
+    "binderApi": 4,
+    "shellApi": 21,
+    "platformApi": 1,
+    "engineSchema": 4,
+    "ideaCheckpoint": 3,
+    "modelPolicy": 3
+  },
+  "generation": {
+    "maxIdeas": 300,
+    "savedBatch": 5,
+    "rawCallsPerStage": 1,
+    "planSeconds": 180,
+    "stageLeaseSeconds": 240,
+    "maxGenerationStages": 60,
+    "sealStages": 1,
+    "maxPureIdeaAttemptsPerStage": 3,
+    "stagesPerJob": 2,
+    "normalContinuationFailureBackoff": false,
+    "foregroundTrial": true,
+    "chargingTrial": true
+  },
+  "physical": {
+    "manualCreative20": {
+      "status": "PASS_LIMITED_DRAFT_NOT_GENERAL_QUALITY",
+      "appSource": "67a2dc185a3b3ed77defa665193175bd8c311a74",
+      "count": 20,
+      "elapsedMs": 367917,
+      "artifactSha256": "6e68066de7aa8f12534b9591cf73b29289d32b0038ea52efeb818fb3597d4e8e",
+      "manualChooserUsed": true,
+      "allFiveStagesAttemptOne": true,
+      "humanReviewAccepted": false,
+      "limitations": [
+        "Some ideas have weak relationships (laundry and health), usefulness is not accepted.",
+        "Exact normalized lexical uniqueness is not semantic uniqueness."
+      ]
+    },
+    "autoCoder": {
+      "status": "PASS_GENERATE_VALIDATE_SEAL",
+      "profile": "dev.rock.qwen25-coder-15b-q4km",
+      "profileVersion": 4,
+      "definitionDigest": "98e4840029a1385748b36038786d8b89fe6fe5d868c8ca37ced75fe6eb73faa5",
+      "elapsedMs": 35922,
+      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
+      "artifactBytes": 235,
+      "actualFunction": "sum_even",
+      "codeExecuted": false,
+      "humanReviewAccepted": false
+    },
+    "currentUi": {
+      "status": "PASS_SEQUENTIAL_SUITE",
+      "reportedTests": 14,
+      "actualTests": 13,
+      "optInSkipped": 1,
+      "actualNotificationTap": true,
+      "livePublicSearch": true,
+      "firstConcurrentRun": "1 public-search failure; not accepted; separate sequential rerun passed"
+    },
+    "installBoundariesAndSqlite": {
+      "status": "PASS",
+      "actualTests": 5,
+      "skips": 0
+    },
+    "pre300Migration": {
+      "originalWorksPreserved": 24,
+      "originalArtifactsPreserved": 70,
+      "currentWorks": 49,
+      "currentArtifacts": 132,
+      "allBodyDigestsVerified": true
+    },
+    "requested300": {
+      "status": "RUNNING",
+      "accepted": false,
+      "target": 300,
+      "choice": "auto",
+      "expectedProfile": "dev.rock.qwen3-4b-2507-q4km"
+    },
+    "creativeNetworkInstall": {
+      "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
+      "elapsedMs": 102362,
+      "bytes": 2497281120,
+      "cachedSource": false,
+      "actualNetworkObserved": true,
+      "explicitLicenseConsent": true,
+      "createdWork": false,
+      "profile": "dev.rock.qwen3-4b-2507-q4km",
+      "profileVersion": 1,
+      "weightSha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+      "quantPublisher": "Unsloth",
+      "baseAuthor": "Qwen",
+      "fixedRevision": "a06e946bb6b655725eafa393f4a9745d460374c9"
+    }
+  },
+  "host": {
+    "fullVerify": "PASS_ALL_STAGES_exit_0_on_app_source_4f160cf0",
+    "androidBuildLintTests": "PASS",
+    "coreTests": 126,
+    "automationTests": 48,
+    "sdkTests": 19,
+    "shellTests": 14,
+    "unitFailures": 0
+  },
+  "limitations": [
+    "Production catalog remains empty.",
+    "Models do not grant Tool, owner, budget or execution authority.",
+    "No cloud credentials, paid provider, X API or full OS acceptance added.",
+    "No claim of general model quality or unattended background reliability.",
+    "Generated artifacts stay outside Git; receipts contain hashes and counts only."
+  ],
+  "mainIntegrated": false
+}
