@@ -33,7 +33,7 @@ final class ToolConnection {
                 if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
                     int humanRetries=(int)engine.events(ticket.workId).stream().filter(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_retry".equals(e.get("kind"))).count();
                     org.json.JSONObject state=LocalIdeaBatch.state(ticket.input);
-                    if(!"local-ideas/3".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
+                    if(!"local-ideas/4".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
                     int remaining=Math.min(LocalIdeaBatch.BATCH_SIZE,state.getInt("target")-state.getJSONArray("ideas").length());
                     String next=ticket.input;
                     while(remaining>0) {

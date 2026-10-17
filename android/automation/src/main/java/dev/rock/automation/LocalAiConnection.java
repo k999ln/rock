@@ -127,7 +127,7 @@ final class LocalAiConnection {
         validToken(requestToken);
         if (pin == null) throw new SecurityException("MODEL_PROFILE_PIN_REQUIRED");
         boolean exactSchema = java.util.Set.of(dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA).contains(schemaId) && schemaId.equals(pin.planSchemaId);
-        boolean ideaSubtype = dev.rock.sdk.LocalWorkDraft.SCHEMA.equals(pin.planSchemaId) && schemaId != null && schemaId.matches("local-work@1/ideas-([1-9]|10)-v1");
+        boolean ideaSubtype = dev.rock.sdk.LocalWorkDraft.SCHEMA.equals(pin.planSchemaId) && schemaId != null && schemaId.matches("local-work@1/ideas-([1-9]|10)-v[12]");
         if (!(exactSchema || ideaSubtype))
             throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
         Engine.bounded(prompt); Engine.bounded(contextJson);

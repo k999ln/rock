@@ -676,3 +676,5 @@ main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usag
 検索→署名catalog照合→明示Wi-Fi取得→検証済weight導入→作業別model選択→実推論/成果保存の詳細は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)。主担当OS11/O6/ROCKのAPK実装候補である。private Shell API21とruntime package7/API4を組にし、DB3→4 migrationと旧backup互換を確認してから非破壊更新する。初期テーマは本人指定の「RockstarOS・Skyで実現するサービスのアイデア300件」。旧15件合格やfull OSの受入へ転用せず、検索/取得/導入、実model選択、300件保存の証拠を分ける。
 
 Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan180秒/lease240秒、最大60生成+seal）。旧v1/v2は読取を維持、新規制御記号混入は拒否する。詳細と未受入はLLM正本へ集約。
+
+最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。

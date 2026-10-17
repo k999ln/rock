@@ -1,7 +1,7 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "IN_PROGRESS_REQUESTED_300_NOT_YET_ACCEPTED",
+  "status": "IN_PROGRESS_PACKAGE7_300_PREFIX_REJECTED_PACKAGE8_PENDING",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
   "appBuildSource": "4f160cf0ab92ad46f46ef4daf4072e99620680f0",
   "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
@@ -96,11 +96,13 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "RUNNING",
+      "status": "STOPPED_FOR_CONTENT_DEFECT_PREFIX_25_PRESERVED",
       "accepted": false,
       "target": 300,
       "choice": "auto",
-      "expectedProfile": "dev.rock.qwen3-4b-2507-q4km"
+      "expectedProfile": "dev.rock.qwen3-4b-2507-q4km",
+      "completed": 25,
+      "reason": "One truncated phrase at old raw24-character hard cap and uppercase SI spelling; operator stopped only this job via its actual detail/confirmation UI. Shell instrumentation was stopped for inspection, not product crash."
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -134,5 +136,15 @@
     "No claim of general model quality or unattended background reliability.",
     "Generated artifacts stay outside Git; receipts contain hashes and counts only."
   ],
-  "mainIntegrated": false
+  "mainIntegrated": false,
+  "pendingCandidate": {
+    "runtimePackage": 8,
+    "checkpointVersion": 4,
+    "rawSchema": "local-work@1/ideas-N-v2",
+    "rawMaxCharacters": 48,
+    "brokerMaxUtf8Bytes": 96,
+    "oldSchemaV1MaxCharacters": 24,
+    "actualApkBuilt": false,
+    "physicalAccepted": false
+  }
 }

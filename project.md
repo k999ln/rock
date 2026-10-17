@@ -625,3 +625,5 @@ Pixel OS11/O6: 4Bの旧20件は形式・保存・正常Job継続合格だが、�
 Pixel v3手動4B20案: 実機370.282秒、5工程すべてattempt1、実20件保存、制御記号/完全重複なし。洗濯と体調など関連性が弱い案もあり、有用性・一般品質は未保証。policy v3は発想/文章4B80、コードCoder90、記事/要約/翻訳General50。新規300件自動実行とruntime7 Coder受入を次に実施。
 
 OS11/O6連携Security: 公開4B tokenizer metadata digestを既定secret scannerがgeneric-api-keyとして誤検知。固定GGUF全hashとmetadata再計算で確認し、値+catalog一位置のAND例外を追加。実scannerの10例外/変異/別位置試験合格、全履歴scan候補0。policyを先にcommitし、そのcommitへcontrol pinを更新する。300件は現在自動生成中、未完了。
+
+Pixel300の途中20件読取りで旧24字schemaによる文末切断・大文字SIを発見し、当該仕事だけ実UI中止（保存25件保全）。package8/raw ideas-v2/headroom48字、Broker96bytes維持・checkpoint4・SI→si整形へ修正中。旧完了20件も一般品質に昇格させない。新しい実APK/20→300受入は未実行。

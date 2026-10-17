@@ -6,7 +6,7 @@
 
 現在のAPK実装sourceは `4f160cf0`、native runtime package7/API4の実build sourceは `96dd7c305b6c7cdeb5613f4c764113572b55b79b`（run39067064393）。Shell21/Engine4、同一preview signerで非破壊更新。Qwen3 4B Instruct2507 Q4_K_MはPixel自身で全2497281120bytes取得・固定hash/署名/ロードを確認。手動20案の生成/保存は合格だが関連性の弱い案があり、一般品質保証ではない。runtime7のauto Coderでsum_even本文→検査→保存が成功し、コード実行はしない。現行の実通知tap/公開検索は逐次suiteで成功。元の24仕事/70artifactは維持。
 
-本人指定の「RockstarOS・Skyで実現するサービス案300件」を、policy v3自動選択の4Bで実行中。checkpoint v3で5件ずつ/plan180秒/lease240秒、最大60生成+seal。制御記号混入・全prefix完全重複・実数不足は拒否し、純粋発想のみ3回まで。途中件数を300と表示しない。現在の仕事をsnapshot/保存prefixで確認し、重複起動や無制限の本人retryをしない。生成本文はGit外、合成/host/旧runtime試験で実300を置換しない。完了後は全件の内容/個数/hash/readback、同一head CIとmain統合を別記録する。
+本人指定の「RockstarOS・Skyで実現するサービス案300件」の最初の実300試験は、旧24字制限による途中切れと大文字SIを発見し、当該仕事だけ25件保持で中止した。現在はpackage8/raw ideas-N-v2（48文字headroom、Broker96 UTF-8 bytes上限は維持）/checkpoint v4の候補をbuild・再受入する。5件ずつ/plan180秒/lease240秒、最大60生成+seal。制御記号混入・全prefix完全重複・実数不足は拒否し、純粋発想のみ3回まで。途中件数を300と表示しない。旧中止仕事を復活させず、runtime8新profileへ明示再同意後に新しい20件→300件を検証する。保存prefixを確認し、重複起動や無制限の本人retryをしない。生成本文はGit外、合成/host/旧runtime試験で実300を置換しない。完了後は全件の内容/個数/hash/readback、同一head CIとmain統合を別記録する。
 
 LLMの選択は無断cloud fallback/有料gate/Tool権限へ昇格しない。Pixel Developer Preview APKと全OS image/正式署名/flash/OTA/全損復旧は別受入。
 

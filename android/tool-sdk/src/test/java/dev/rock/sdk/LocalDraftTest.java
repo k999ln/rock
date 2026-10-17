@@ -61,8 +61,8 @@ public final class LocalDraftTest {
         String previous=checkpoint;array.remove(4);assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.append(previous,draft("planning",array.toString())));
     }
     @Test public void structuredSubtypeCountComesFromSavedActualPrefixAndRemainingTarget() throws Exception {
-        assertEquals("local-work@1/ideas-5-v1",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア300",300)));
-        assertEquals("local-work@1/ideas-1-v1",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア1",1)));
+        assertEquals("local-work@1/ideas-5-v2",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア300",300)));
+        assertEquals("local-work@1/ideas-1-v2",LocalIdeaBatch.schema(LocalIdeaBatch.start("アイデア1",1)));
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(0));
         assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.schemaForCount(11));
     }
@@ -90,9 +90,9 @@ public final class LocalDraftTest {
 
     @Test public void requestedSiFormattingPreservesActualCountRejectsAliasDuplicatesAndKeepsHistoricalText() throws Exception {
         String original=LocalIdeaBatch.start("Skyのアイデア20",20);JSONArray values=new JSONArray();for(int i=0;i<5;i++)values.put("暮らしの支援"+i);
-        values.put(0,"AIで洗濯支援");
+        values.put(0,"AIで洗濯支援");values.put(3,"SIで照明を調整");
         JSONObject result=LocalIdeaBatch.state(LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
-        assertEquals(5,result.getJSONArray("ideas").length());assertEquals("siで洗濯支援",result.getJSONArray("ideas").getString(0));
+        assertEquals(5,result.getJSONArray("ideas").length());assertEquals("siで洗濯支援",result.getJSONArray("ideas").getString(0));assertEquals("siで照明を調整",result.getJSONArray("ideas").getString(3));
         values.put(1,"siで洗濯支援");assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.appendPart(original,draft("planning",values.toString()),5));
         JSONObject old=new JSONObject(original);old.getJSONArray("ideas").put("AIで洗濯支援");assertEquals("AIで洗濯支援",LocalIdeaBatch.state(old.toString()).getJSONArray("ideas").getString(0));
         values.put(1,"OpenAIの文書を要約");values.put(2,"https://example.aiを見る");

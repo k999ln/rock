@@ -383,3 +383,5 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 文書生成はtask別の短い指示に限定する。コード依頼へ翻訳/要約向けの指示も並べる旧promptは実機で形式崩れを起こしたため退役。通常文書はexact promptを仕事inputへ保存し、旧prompt未保存入力は再計画を要求する。モデルの単一JSON fenceを正規化しても、余分な文章/field/別taskは許可しない。診断本文はGit外、SDKの拒否fixtureと合否要約だけを保存する。
 
 アイデアの形式差は空行・一貫した全体/回内番号・箇条書き・文字列配列を正規化し、実件数/Unicode重複/byte上限は緩めない。元依頼の全体件数と今回の5件をprompt末尾でも分離する。純粋な発想生成の不正だけ同じ範囲を最大3回再生成し、lease/token/pause fenceとdurable attempt/eventを維持、他Tool/有料cloudを再送しない。3回不合格ならprefixを残して本人操作を待つ。明示した合成20件probeだけ、debug APKの私有cache一ファイルへ拒否提案を診断保存できる。releaseでは無効、Git/ログ/正式成果物/達成件数へ入れない。
+
+最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
