@@ -1,3 +1,7 @@
+# 無料Cloudの待機と自動続行
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: 公開version65/source 9b7f46b5に402のカウントダウンと同ID自動続行を配備。生成前FREE_LIMITだけ再開、最大5試行/10分、owner/revision CASと毎回の契約/枠確認を維持。実accountで9秒表示→停止→0秒で追加送信なし→再開→同IDで待機拒否3回/生成1回、「31 + 32 は 63」、339/107 tokens/$0を確認。再押下でも応答ID/試行4回不変。請求台帳1件→1件、同invoice/status/period保持（照合paid_atのみ更新）。対象13試験、全体verify全stage exit0（2293 pass/既存skip1）。証拠 docs/evidence/sky-free-cloud-auto-continue.json。本番課金なし。次はGit保存/同head CI、無人queueは対象外。
+
 # 無料Cloud 402の再検証
 
 2026-10-17 SKY07/ROCK・WEB01/JOINT: PR #160の残条件を公開version63/source 4a17a16aで受入。402はProvider IP待機制限、実Retry-After 25秒を表示する修正を配備。26秒以上待機後、新しい合成依頼を実accountで自動openai-fast→GPT-OSS20Bへ送り「14 + 15 は 29」、337/104 tokens/$0の実応答成功。月次Sandbox active/残り100 USD、本番課金なし。npm run verify全stage exit0（2289 pass/既存skip1）、対象9試験成功。証拠 docs/evidence/sky-hosted-monthly.json。次は同head CIとPR #160のmain統合。無料Providerの再度の待機制限は残り、恒久無制限とはしない。

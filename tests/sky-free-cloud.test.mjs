@@ -70,3 +70,40 @@ void test('402 cooldown is distinguished from an upstream refusal without retry 
   await runFreeCloudText(input);assert.equal(sends,1);
  }
 });
+
+void test('confirmed cooldown resumes one same-id generation after deadline under parallel calls, with no charges',async t=>{
+ const db=setup(t);let wall=Date.now(),sends=0;
+ const input={...request(db,async url=>{if(url.endsWith('/models'))return catalog();sends++;if(sends===1)return Response.json({error:{code:'FREE_LIMIT'}},{status:402,headers:{'Retry-After':'30'}});return Response.json({id:'one-response',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Done'}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5}});}),autoContinue:true,retryClock:()=>wall};
+ const waiting=await runFreeCloudText(input);assert.equal(waiting.freeCloud.state,'waiting');assert.equal(waiting.freeCloud.retryAt,wall+30000);
+ await Promise.all([runFreeCloudText(input),runFreeCloudText(input)]);assert.equal(sends,1);
+ wall+=30000;
+ await runFreeCloudText({...input,autoContinue:false});assert.equal(sends,1);
+ await Promise.all([runFreeCloudText(input),runFreeCloudText(input)]);assert.equal(sends,2);
+ const done=await runFreeCloudText(input);assert.equal(done.freeCloud.state,'completed');assert.equal(done.freeCloud.attempts,2);assert.equal(done.freeCloud.chargeMinor,0);assert.equal(sends,2);
+ assert.equal(db.sqlite.prepare('SELECT count(*) n FROM sky_recurring_charges').get().n,0);
+ assert.equal(db.sqlite.prepare('SELECT count(*) n FROM work_jobs').get().n,1);
+});
+void test('cooldown does not bypass revoked consent, expired time, changed prompt, or unpaid plan',async t=>{
+ const db=setup(t);let wall=Date.now(),sends=0;
+ const input={...request(db,async url=>{if(url.endsWith('/models'))return catalog();sends++;return Response.json({error:{code:'FREE_LIMIT'}},{status:402,headers:{'Retry-After':'1'}});}),autoContinue:true,retryClock:()=>wall};
+ await runFreeCloudText(input);wall+=1000;
+ await assert.rejects(runFreeCloudText({...input,consent:false}));
+ await assert.rejects(runFreeCloudText({...input,prompt:'changed'}));
+ db.sqlite.prepare("UPDATE sky_recurring_contracts SET status='past_due'").run();await assert.rejects(runFreeCloudText(input));assert.equal(sends,1);
+ db.sqlite.prepare("UPDATE sky_recurring_contracts SET status='active'").run();wall+=600000;await runFreeCloudText(input);assert.equal(sends,1);
+});
+void test('automatic continuation is bounded and never retries ambiguous or non-FREE_LIMIT errors',async t=>{
+ for(const kind of ['unknown','timeout','limit']){
+  const db=setup(t);let wall=Date.now(),sends=0;
+  const input={...request(db,async url=>{if(url.endsWith('/models'))return catalog();sends++;if(kind==='timeout')throw Error('lost response');return Response.json({error:{code:kind==='limit'?'FREE_LIMIT':'OTHER'}},{status:402,headers:{'Retry-After':'1'}});}),autoContinue:true,retryClock:()=>wall};
+  for(let i=0;i<8;i++){await runFreeCloudText(input).catch(()=>{});wall+=1000;}
+  assert.equal(sends,kind==='limit'?5:1);assert.equal((await workStore(db).get('owner',input.id)).freeCloud.state,'unconfirmed');
+ }
+});
+void test('HTTP exposes durable same-id countdown and early duplicate does not send again',async t=>{
+ const {freeCloudTextHttp}=await import('../lib/sky-free-cloud-http.ts');const db=setup(t);let sends=0;
+ const value={id:crypto.randomUUID(),prompt:'Countdown',model:'openai-fast',consent:true,autoContinue:true};
+ const http=()=>freeCloudTextHttp(new Request('https://example.test/api/llm/free-cloud',{method:'POST',body:JSON.stringify(value)}),db,'owner',{SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner'},async url=>{if(url.endsWith('/models'))return catalog();sends++;return Response.json({error:{code:'FREE_LIMIT'}},{status:402,headers:{'Retry-After':'30'}});});
+ const first=await http();assert.equal(first.status,202);const a=await first.json();assert.equal(a.id,value.id);assert.equal(a.attempts,1);assert.ok(a.retryAt>Date.now());
+ const second=await http();assert.equal(second.status,202);assert.deepEqual(await second.json(),a);assert.equal(sends,1);
+});
