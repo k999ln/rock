@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import SkyMarketplace from '@/components/sky-marketplace';
+import { findCampus } from '@/lib/campus-sky';
 
 export const metadata: Metadata = {
   title: 'AI・自動化ツール マーケット — Sky',
@@ -9,9 +10,13 @@ export const metadata: Metadata = {
 export default async function SkyMarketplacePage({
   searchParams,
 }: {
-  searchParams: Promise<{ package?: string | string[] }>;
+  searchParams: Promise<{ package?: string | string[]; campus?: string | string[] }>;
 }) {
   const params = await searchParams;
   const value = Array.isArray(params.package) ? params.package[0] : params.package;
-  return <SkyMarketplace initialPackageKey={typeof value === 'string' ? value.slice(0, 256) : null} />;
+  const campusValue = Array.isArray(params.campus) ? params.campus[0] : params.campus;
+  return <SkyMarketplace
+    initialPackageKey={typeof value === 'string' ? value.slice(0, 256) : null}
+    campusId={findCampus(campusValue ?? '')?.id}
+  />;
 }

@@ -47,3 +47,7 @@
 - `npm run release:check`
 - `npm run release:signing:check`
 - `npm run web:security:check`
+
+## SIM01 — eSIM gateway鍵によるCloud API認証
+
+ROCK担当。本人が有効化したeSIM利用権へ登録済み端末鍵の要求署名を結合し、署名再使用、scope越境、鍵失効後のアクセスを拒否する。[詳細と導入条件](../sim-led-product-architecture.md#esimに結び付く端末鍵でのcloud-apiアクセス2026-10-07)。実eUICC/端末adapterはEXTERNAL/JOINT受入が残る。`node --experimental-strip-types --test tests/esim-cloud-proof.test.mjs tests/esim-cloud-access.test.mjs`、build後の`node scripts/check-work-api.mjs`、`npm run verify`を用いる。

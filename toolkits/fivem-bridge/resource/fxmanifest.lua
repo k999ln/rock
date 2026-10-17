@@ -1,0 +1,10 @@
+fx_version 'cerulean'
+game 'gta5'
+node_version '22'
+author 'avocado'
+description 'RockstarOS local development boundary bridge; not GTA VI support'
+version '0.1.0'
+ui_page 'ui/index.html'
+files { 'ui/index.html', 'ui/style.css', 'ui/ui.js' }
+client_script 'client.js'
+server_script 'server.js'

@@ -1,0 +1,36 @@
+{
+  "schema": "sky-app-output-plugin-local/1",
+  "date": "2026-10-12",
+  "workstream": "Web / PWA / Sites",
+  "owner": "ROCK",
+  "taskIds": ["WEB06", "SKY21"],
+  "scope": "first-party same-origin saved Agent output inbox and Fitness host-app rendering example",
+  "routes": ["/sky/outputs", "/sky/campus/{campus}/outputs", "/fitness", "/fitness?preview=1"],
+  "sourceOfTruth": ["owner-scoped work jobs", "owner-scoped A2A delegations and encrypted artifacts", "optional saved Cloud AI answers"],
+  "sourceSha256": {
+    "components/sky-output-center.tsx": "6725a8c05270071f46eb1d1c56ab4602a050bef771ad111876abb701ff6ee679",
+    "components/sky-app-output-slot.tsx": "13cea96a29efb61c2de9baae3bfd2137a8f127988340914f65da4ee9117923f9",
+    "components/sky-fitness-plugin.tsx": "3b05a20f453137491d33e225ed6db00f047d1f56af72ddf0cb32ce16b1174c47",
+    "lib/sky-fitness-output.ts": "f3eeefe7f2828056bbf32d903540f0c0b379736f7f505e52093b2eb8f8ab043a",
+    "app/fitness/page.tsx": "555e196aeb1e56b8ceeb77b0b2cf9aad9cf6fd640f7ed51f19bbea88367ce17f"
+  },
+  "verification": {
+    "focusedTests": "2/2 passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "designCheck": "passed",
+    "fullVerify": "exit 0; Node 915/915; Work API 1178; CSV 113; Web assets missing 0",
+    "rawLog": "/private/tmp/sky-app-output-plugin-verify-final.log",
+    "rawLogSha256": "a2b067036045c767e8b21defb23bd60c105fcf1c227d73fca0063558eb6d612b",
+    "browser": "Sky outputs and FIT outputs readback; Fitness sample rendered; 320px output and Fitness pages without horizontal overflow",
+    "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/12/01a13164-efb3-7253-a986-5517c3db5a71/sky-fitness-plugin-preview.png"
+  },
+  "sampleIsRealAgentOutput": false,
+  "realProviderOutputTested": false,
+  "productionOwnerABTested": false,
+  "externalCrossOriginSdkAccepted": false,
+  "fitnessAgentProviderAccepted": false,
+  "deployed": false,
+  "githubSaved": false,
+  "mainIntegrated": false
+}

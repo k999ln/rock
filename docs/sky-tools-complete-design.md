@@ -1,3 +1,7 @@
+## AWS実行adapterと提携準備（2026-10-05）
+
+AWSを優先相談先として、SKY07のCloud接続へ代表Agentの実証を計画する。新しいcatalog Toolや価格を追加せず、既存のPackage/審査/quote/予算/receipt/成果契約をAWS実行adapterで受け入れる。[詳細契約](provider-contract-readiness-20260930.md#aws-partnership-preparation)に入力・出力、状態/失敗、保存/削除、停止/復旧、本人承認、合格条件と未決定事項を記載。既存A2A 1.0 clientとAWS公開サンプルのwire差分、sessionの一時性、service認証とowner binding、job別usageと請求照合を検証するまで有料dispatchを有効化しない。OpenAI/Jev/local経路を無断で置換しない。今回は設計・相談準備のみでAWS runtimeや提携は未成立。
+
 ## Sky focused公開判定の修正（2026-10-02）
 
 ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。
@@ -33,6 +37,10 @@ Zema Workbenchの選択中jobからdirect-text quoteを作成し、親jobの残�
 ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェックの既存実行画面に「この端末に保存」、保存成果再表示・削除を追加。原稿は端末処理、成果は本人が選んだ同一ブラウザのlocalStorageへ全Tool合計20件、サーバーには本文を送らない。共有端末の閲覧可能性とMarkdown代替を明示。関連15試験・typecheck成功。独立作業コピーの全verifyは519 tests・265 API assertions・build等完走（既存database-status期待件数101→102の整合を含む）。実ブラウザでMarket検索→出典整理→保存→再読込→再表示、無料記事作成・保存を確認。稼働コピーは2026-10-01チャットのwork/sky-service。共有作業treeの以後の変更はこの合格へ算入しない。本番未配備。配備元7c79e43のSiteは一般公開設定で、以前のOS管理者限定要求との相違があるため公開範囲の回答待ち。アカウント別クラウド成果同期・実Provider接続の合格ではない。
 
 # Sky／Zema／全Tool詳細設計
+
+## メインSIM通信と共通Agent実行（2026-10-07）
+
+Skyのcatalog/Package/Provider/予算/usage契約を共通に使い、eSIM入口の有無や通信経路によって新しいTool、本人権限、別の課金台帳を作らない。端末はメインSIM/Wi-Fiで既存cloud APIへ接続し、eSIM発行・端末連携は独立adapterとする。通信切替でも同じjob/承認/receiptを維持し、クラウド利用量と通信料金を分離する。目的から未決定事項までの設計と検証順は[メインSIMクラウド設計](sim-led-product-architecture.md#main-sim-cloud-service)を参照。既存Tool販売10%をクラウド原価へ自動加算しない。これは既存契約の設計補足で、新規Tool実装・本番請求の合格ではない。
 
 ## 2026-10-05 選択可能なeSIM提供形態の課金境界
 
@@ -623,3 +631,77 @@ PixelのPAPER実行履歴受入で、旧Market共通CSSの絶対配置により�
 - 接続設定は認証復旧後に本人別一覧を再取得する。編集済み入力を取得応答で上書きしない。取得失敗中は設定保存を止め、読取専用の再取得を提供する。設定保存をOAuth/外部実行成功と表示しない。
 - 合格条件: 通信切断/503/不正配列/timeout/401で実行停止、入力保持、再確認のwrite 0、復旧後の明示実行1件、metadata保存、結果の端末保存/再取得、接続設定の再取得と編集保持。秘密値/実ユーザー本文を障害fixtureへ入れず、合成ローカル受入を本人実機/本番へ換算しない。
 - 未決: 本人desktopとPixelの現行公開版での再受入、Apple Pay対応端末、実AI資格情報/信頼済み料金/予算。公開済みの判定はnative deployment結果を別に記録する。
+
+## Tool・eSIM・クラウドの共通決済（2026-10-05）
+
+Sky購入画面から`/sky/payments`で本人の注文・CSV・確定usageと入金/返金を確認する。Tool売上10%は従来どおり、クラウド原価へ10%を自動加算しない。eSIMはアクセス経路で、別の支払権限や二重請求対象ではない。直接LLMのtest回収は永続実行ID/金額/通貨/digestを照合し、A2Aは既存Wallet精算を維持する。共通transportはMini/Fashionにも配布するが、別Siteの顧客・注文・merchantは自動統合しない。詳細の11項目（目的から未決定の決め方まで）は[共通決済契約](sky-billing.md#共通決済2026-10-05)に記載。本番クラウド課金は未受入。
+
+## Optional eSIM cloud access — 2026-10-05
+
+既存BIZ01/SKY19/BIL02のeSIM導入証明を、owner別クラウドアクセスキーへ接続する。`/sky/purchases`で導入確認後に開始し、期限・再発行・停止を管理する。`/connect`は通常Web/appと併存する任意入口を案内する。目的、責任、設定、入出力、状態、保存、失敗、復旧、承認、合格条件と未決定事項は[共通契約](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。
+
+追加保存はWeb D1 migration `0059`のhash/owner/order/device/receipt/scope/expiry/失効履歴。署名済みinstall proof、gateway鍵、現行Package審査、返金状態を使用ごとに照合する。キーは許可されたcloud APIだけへ接続し、同じownerの見積・予算・usageを再利用する。eSIM同梱Starter Packの表示を既存利用権APIへ追加し、OS Brokerの権限・本人承認・Tool成功へ昇格させない。キー自体で支払いや管理操作は行えない。未設定は提供準備中、競合は状態再取得、紛失は再発行、失効は拒否し既存成果を保存する。自動的なブラウザ起動、実通信会社接続、実機導入、商用クラウド実行、従量単価と合算請求は未受入。[ローカル証拠](evidence/esim-cloud-access-local.json)を本番成功へ読み替えない。
+
+## 登録不要の出力テスト（WEB04 / 2026-10-09）
+
+目的・体験: `/test` は既存catalogの全項目を列挙し、サンプル一括実行、編集入力の個別実行、結果のコピー・保存・リセットを提供する。実処理・模擬データ・接続待ちを同じ状態語で表示する。CSV、文章、企画、受付文、照合は既存の純粋関数を再利用し、Zema試験はlib/workflow.tsへsample=trueの記録を通す。本番完了へ昇格しない。
+
+責任・入力出力: ROCKのstateless POST `/api/output-tests`。同一Origin/JSONのみ、本文64KB・欄12,000文字まで。固定allowlist以外の入力・Tool・owner指定を拒否。応答はid/mode/status/output/details/executedAt。Provider、DB、Broker、Wallet、本番保存API、任意shellは呼ばない。模擬Marketは入力検査のみ、Walletは表示計算のみ、実注文・実残高ではない。未接続Toolのanswerはnull/not_run。
+
+状態・保存・失敗復旧: idle→running→output/not_run/error。失敗は当該項目だけに表示し、再実行可能。編集時に古い出力を破棄。一括はサンプルへ戻すと明示。結果と入力はReactの画面メモリのみ、再読込で消去。アプリDBへの記録なし、ログへ本文を書かず、Cache-Control:no-store。利用者操作でテキスト/CSV/全結果JSONを端末へ保存。アプリ自身の保持・削除と配信基盤のメタデータログは区別する。
+
+承認・合格・未決定: 登録不要でも本番の本人性・予算・同意を緩和しない。サンプルは架空と明示し、法務/特許は受付整理に限定。外部公開・送金・AI API呼出なし。全catalog coverage、入力変化、境界拒否、workflow未完了、ブラウザ一括/個別/保存/リセット、verifyで検収する。Cloud鍵・利用枠、候補Toolの実行環境、Pixel端末内modelは別途OWNER/EXTERNALの準備と実受入が必要。撤去時はheader入口と/test・stateless endpointを除去、旧配備へrollbackできる。
+
+## Pixel内の登録不要テストモード（OS10 / 2026-10-09）
+
+目的・体験: 利用者の「ピクセルに入ってんの」「テストでなんでもできる状態にして」を受け、既存ShellのHome先頭にテストモードを置く。別ブラウザではなくnative Activityで17項目のサンプル一括、機能選択、入力変更、実行、出力、コピー、SAF保存、リセットを提供する。8実処理・9模擬の別と未実施の範囲を各結果に埋め込む。出典整理・無料記事は既存ArticleToolsを再利用。CSVは上限付きのUTF-8簡易変換で、Webの文字コード/納品契約の全移植ではない。
+
+責任・入力出力: ROCKのOutputTestToolsはpure Javaで固定17 IDのみ。入力/補足は各12,000文字。出力はテキスト、全結果exportはrockstaros-native-output-tests/1 JSON。model応答・録音・HTTP取得の模擬結果は推論/取得成功と表示しない。ShellConnection・DB・Providerを呼ばず、ShellのINTERNET権限なしを維持する。TestModeActivityはexported=false、明示したHome入口から起動する。通常Brokerの本人性・予算・同意・仕事状態を変更しない。Zema表示例は本番workflowではなくfixtureとし、正式な仕事を作らない。
+
+状態・保存・復旧: idle→running→output/error。入力編集で旧出力を破棄し、入力不正は当該項目だけ失敗、一括は他項目を続行。重複クリックをbusyで抑止。画面メモリだけで保持、閉じると破棄。回転はretained instanceで入力を保持、実行中断は再試行する。自動保存・backupへの組込なし。本人がコピーまたはDocument Pickerで保存先を選んだ場合だけ端末へ出力する。保存失敗はメッセージとコピーの代替を提示。登録・課金・送金・外部公開なし。
+
+配布・承認・合格: 接続Pixel 10 GL066/frankelのAPK署名一致と更新前hashを確認し、adb install -rで非破壊更新する。旧APKをGit外へ保持。Core単体、Article parity、SDK/APK/lint、OS/design/verify、同一APK実機4新規試験と既存7試験、Broker件数・選択の不変、候補/実機hash一致を別々に記録。OS flash・初期化・正式OS受入へ換算しない。
+
+実機受入: 同一署名のShell APKを非破壊更新し、実機hash 9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4を照合。Core116・SDK7・parity36・build/lint・実機11/11・全体verify exit0が合格。17結果とexport JSON内容、入力編集、clipboard、reset、Homeからnative起動、Broker件数/選択の不変を確認。SAF保存先を実際に選んだファイル書込は未検証。生画像・ログはGit外、要約は下記証拠へ保存。
+
+未決定: 本物のcloud AIにはOWNERの接続先・鍵・利用枠、local AIには署名済みmodelの選定・導入受入、外部ToolにはProvider環境が必要。模擬結果を本番許可やTool成功へ昇格しない。次段階は対象を特定した実接続受入。証拠はdocs/evidence/pixel-native-testing.json。
+
+## IP Studioから現実とGTAへの出力（2026-10-09）
+
+同じIP／作品／Agent設定を現実のサービスとGTA向けrenditionへ展開し、結果をZemaへ返す。[橋渡し仕様](gta-reality-bridge.md)をIP StudioとGame連携の追加契約とする。目的・体験・責任・入出力・状態・保存・失敗復旧・承認・受入・未決定事項を同文書に定義。NUI表示、3D導入、NPC動作、現実の外部作用は別能力とし、最初のFiveMデモ候補を本番対応や金融交換へ換算しない。新しいready Toolは追加せず、adapterも未実装。
+
+## Skyのアプリ内成果受け皿（2026-10-12）
+
+Sky単体は各アプリへAgent能力を接続するplatformで、OS上のZemaは仕事全体の管理役とする。Skyに成果の共通履歴を用意し、第一者同一originアプリへ本人別の保存済み成果だけを渡す。例のFitnessアプリは `sky.fitness.plan/1` の型付きテキストだけを運動プランとして描画する。目的、入力、責任、状態、保存、失敗、復旧、承認と外部アプリへの拡張条件は[Sky App Output Plugins](sky-launch-design.md#sky-app-output-plugins)を正本にする。これは新しいcatalog Tool/Agentの実装ではなく、既存成果の出力先の追加である。外部アプリ向け実行権付与や任意callbackは実装済みとしない。
+
+## 大学別NFC Sky（2026-10-12）
+
+入口全体は[NFC・通常Web・任意eSIM・iOSの共通仕様](sim-led-product-architecture.md#sky-shared-entry)へ同期する。指定チャットの最新方針により既存SkyのAgentフィード・役割・Market・接続・Sky内Zemaを共用し、大学別の独立したフォーム中心Hubを主画面にしない。eSIM/OSは単独Skyの利用条件に加えない。以下の枠・本人・保存契約を保持し、旧Hubの試験、現行source、GitHub main、異なる公開Siteの受入は別に記録する。
+
+利用者の明示指示を受け、NYU・FIT・Columbia・Fordham・John Jayの学生向けに、既存OSのブラウザから使うSky入口を追加する。一般のMCP無料接続枠は5個、対象5大学学生の特別枠は6個。一般6個目・対象学生7個目から有料拡張の対象とする。金額・期間・税・返金条件は未決定で、現時点では追加購入を有効にしない。既存のTool売上10%・Cloud使用料・外部実費とは別の接続枠方針である。
+
+目的はポスターから大学別の制作・研究・協働へ短い手順で入ること。NFCにはHTTPS URLだけをNDEF URIとして書く。同じURLをQRにも用い、NFC非対応時もbrowserから開ける。OS binaryやSkyをタグへ格納せず、OS導入・SIM/eSIMを必須にしない。大学との提携や公式サービスは未確認であり、学生コミュニティ向けの独立サービスと表示する。
+
+入力は許可済みcampus ID（nyu/fit/columbia/fordham/johnjay）、既存tag ID、本人の3項目各500文字の下書き。出力は大学名付き画面、用途別brief、テキストdownload/copy、既存Zema入力への一回限りの引継ぎ。NYUはfilm/AI/startup、FITはfashion/portfolio/branding、Columbiaはresearch/evidence、Fordhamはcommunity/career、John Jayはcivic/policy。下書き整形は決定的なbrowser処理でAI回答と呼ばない。Zema以降の仕事は既存lib/workflow.ts、本人・revision・予算・承認に従い、自動実行しない。
+
+入口は `/sky/campus/{id}`。大学選択は `/sky/campus`。既存Campusのタグ登録にskyモードを追加し、登録済みSkyタグ `/t/{tagId}` は大学別Agent Hub `/sky/campus/{id}/hub` へ直接解決する。既存のSkyタグが大学別トップを保存している場合もHubへ転送し、tag/sourceの情報を維持する。従来の非Skyモードは維持。停止した登録タグは大学prefixによるfallbackへ昇格させない。未知タグは選択画面へ戻し、不正IDは404。DB障害時も直接の大学URLとbrowser briefは使える。端末がNFCのURLを開けば初回からHubを使えるが、iPhoneの背景読取りではOS通知を本人がタップする手順が入る。PWAの端末追加は利用者の操作に従う別状態であり、タグ読取りだけで自動installしない。[AppleのNFC仕様](https://developer.apple.com/documentation/corenfc/adding-support-for-background-tag-reading)、[PWA installの操作要件](https://web.dev/learn/pwa/installation-prompt)。
+
+接続枠の権限はNFC/URL/cookie/localStorageから付与しない。本人認証後のCampus profileがstudentかつdomain_verifiedで対象5大学の場合のみ6枠。メールdomain確認は在籍証明そのものではなく、student属性は自己申告である。既存IdPで大学メールを確認できない場合は一般5枠を維持する。個別の在籍証明制度・有効期限が必要になった場合はOWNERが方式を決め、別の最小情報による受入を行う。
+
+D1 `sky_mcp_slots` にowner ID・Connector tokenの一方向SHA-256 fingerprint＋server ID・表示名・作成時刻だけを保存する。トークン、認証メール、原稿は保存しない。1枠は1 Connector installation/serverで、内包Tool数は数えない。異なる端末の接続も本人の同じ上限へ合算。同じキーの再試行は冪等。SQLのcount・所属確認・insertを一文にして競合時の超過を防ぐ。接続失敗／結果不明では枠を保持し、再試行またはConnectorのdisconnect成功後に枠解除。PCを失った場合は本人の「Manage saved connections」でSky枠を削除でき、以後のSky prepare/executeを拒否する。枠削除は既存jobの停止やPC process停止ではないと画面で説明する。学生証明喪失時は新規追加を5枠以下に制限し、既存接続を無断切断しない。
+
+WebのMCP接続・prepare・executeは本人の枠を確認する。ブラウザ→本人PCのConnectorという既存構成を再利用し、ユーザーが直接動かす独立OSS Connectorの利用や任意改変をSaaSの課金強制で制御できたとは扱わない。スマホ単独のcloud MCP relay/OAuthと、受入済みserver側実行境界へのquota強制はまだない。したがって今回の枠管理だけでスマホ外部MCP・全機能有料サービスのproduction合格としない。
+
+責任: ROCKは画面・枠API・競合/owner分離・タグ無効化・回帰。EXTERNALはNFC端末挙動・IdP・MCP/AI provider。JOINTは公開同一artifactの本人A/B、実NFC/iPhone/Android、接続/実行/解除。OWNERは有料条件・タグ書込み対象・大学配布・外部費用上限。既存Sky公開先のv39を確認したが、この新差分の配備は別判定。
+
+保存・削除・復旧: guest原稿はReactメモリのみ、画面離脱で消えるためdownloadを案内。Zema引継ぎは既存sessionStorageで10分・一回限り。profile削除は既存Campus管理、枠削除は本人のdisconnect。枠台帳はD1 backup対象、0063 migrationは追加のみ。rollbackでは台帳を保持し、旧版の枠非対応MCPを公開有効にしない。旧Skyタグは保存先を変更せず、読取り時のHub転送で互換性を維持する。
+
+合格条件: 5大学名・各briefの入出力・copy/download/Zema引継ぎ、未知/停止タグ、一般5/学生6/超過拒否/同時要求/別owner/未確認所属/所属変更、320/390px表示を検査。`node --experimental-strip-types --test tests/campus-sky.test.mjs tests/campus.test.mjs tests/campus-store.test.mjs tests/sky-mcp-onboarding.test.mjs`、`npm run typecheck`、`npm run design:check`、`npm run verify`。本番公開・実NFC書込み・実端末・有料受入をlocal合格へ混同しない。
+
+追加明示指示（同日）: Skyを学生のスマホに専用アプリのように置き、Sky MarketでAgentを購入した後もSky内でZemaを使って管理する。NFCのHTTPS URIは大学別入口だけを決め、学生資格・購入権・OS権限を付与しない。本人がbrowserのInstall/Add to Home Screenを選んだ場合、大学別manifestの固有ID・大学名・開始URLでPWAとして追加する。インストール非対応・拒否でも同じURLのbrowser版を使う。SkyのAgent Hubは既存の本人別購入履歴APIとZema job APIを読取り、決済未設定、未ログイン、通信失敗、保留/返金/失効を空の「利用可能」と誤表示しない。Marketへ大学文脈付きで戻れるようにし、Zemaは既存`sky-chat-workspace`と`lib/workflow.ts`の状態・本人・revisionを同じSky配下のURLで再利用する。購入前の価格・作者・権限・実行先を確認し、Apple PayはStripe Checkoutと端末/ブラウザ/決済設定が適格なときだけ提示され、決済成功は署名通知とProvider再照合を要する。購入したPackageのendpointを端末が直接実行できるとは限らず、実行権限は本人・有効な購入/サービス利用権・manifest版・Provider接続・予算承認をserver側で照合する。
+
+Web体験の修正（同日）: NFCで到着するAgent Hubを宣伝文と空のstatusだけのLPにしない。最初に大学別の依頼入力と例を表示し、入力をtab内の一回限り・10分の下書きとしてSky内Zemaのcomposerへ移す。送信や実行は行わない。無登録で使える3項目briefは既存決定的`buildCampusBrief`を再利用し、結果をcopy/download/Zemaへ渡す。大学別のPeople・資料/案件・Sky Marketへ実リンクを出し、本人の仕事/購入/MCP接続枠は既存owner-scoped APIの状態を表示する。未ログイン・決済未設定・未接続を明示し、購入やAgentの稼働を偽装しない。PWA追加は補助導線に下げる。合格は初回画面から依頼→Zema composerの内容一致、guest briefの結果一致、5大学固有の見出し/例/導線、320/390pxの横はみ出しなし、本人別status読戻しで判定する。
+
+最新の明示修正（同日、公開Sky確認後）: 上記の専用Hub画面を現行着地点として扱わない。Sky単体でも成立する既存アプリのフィード・役割選択・Tool詳細・Marketplaceを大学別Hub URLで直接再利用し、大学名と既存`ready` Toolのおすすめ、購入履歴・接続・Sky内Zemaの管理導線を変える。NFCから別LPや別仕事フォームへ誘導しない。大学別briefは `/sky/campus/{id}` の補助Toolとして残し、Agent選択・購入・接続・実行の代替とはしない。責任/状態/保存/失敗/復旧/承認は既存Sky・Commerce・Zema・MCP契約を共有し、大学IDを実行権限に使わない。合格は同じSky画面で5大学別おすすめと操作導線、390/320px幅、本人別の購入/接続/仕事の読戻し、決済からProvider利用と費用/停止までの縦断受入を分けて判定する。今回のローカル画面変更は前半のみで、後半の本番受入は未完了。
+
+責任はROCKがmanifest/Hub/Zema内導線と本人別表示、EXTERNALがNFC/PWA挙動・Stripe/Apple Pay・Agent Provider、JOINTが実機/決済/実行の同一artifact検収、OWNERが販売条件と大学配布。入力は許可済み大学ID、本人セッション、購入/仕事の既存記録。出力は大学名付きSky、購入状態、仕事状態と次の操作。保存は既存購入台帳・仕事台帳のみを正本とし、PWA追加自体を購入権や本人資格として保存しない。通信/決済不明時は既存注文の照合を優先し、仕事の自動再送・二重購入・予算外実行をしない。合格条件は5大学manifestの識別、NFC/QR→大学名、browser/PWA導線、本人A/Bで購入と仕事の隔離、未決済/返金/失効の拒否、実Apple Pay適格端末、購入AgentのProvider利用とZema仕事readback/停止/費用、320/390px実機。現時点のsourceは入口・Hub・Zema再利用までで、実決済・スマホ単独Provider/MCP実行・本番公開は未受入。Agent販売対象/料金、Cloud実行先、学生本人確認水準、NFC配布先は各責任者の受入で決める。

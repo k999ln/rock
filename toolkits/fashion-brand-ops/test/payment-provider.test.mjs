@@ -19,7 +19,7 @@ test('Stripe invoice preserves four merchant-specific steps, stable derived keys
   for (const { options, form } of requests) {
     assert.equal(options.headers.Authorization, 'Bearer sk_test_fixture');
     assert.equal(options.headers['Stripe-Version'], undefined);
-    assert.equal(options.redirect, 'error');
+    assert.equal(options.redirect, 'manual');
     assert.equal(form.has('payment_intent_data[application_fee_amount]'), false);
     assert.equal(form.has('payment_intent_data[transfer_data][destination]'), false);
   }

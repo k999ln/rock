@@ -1,5 +1,7 @@
 # Sky Cloud — 端末切断中の継続実行
 
+2026-10-05明示指示: AWSをクラウド導入・提携の優先相談先とし、avokado llc／米国名義で[構成レビューと代表Agent実証](provider-contract-readiness-20260930.md#aws-partnership-preparation)を準備する。既存Cloudflare管理系は初回実証の基準とし、AWSへの管理系移行は別受入する案。下記の12シナリオ、owner/同意/予算/保存/復旧契約は維持する。AgentCore sessionの継続を永続jobの保証へ読み替えない。AWS配備・実Provider・提携は未受入。
+
 2026-09-30、利用者は「クラウドのAIは、先に頼まれた仕事を続ける」を採用し、その準備を指示した。本書は開発の必須契約・受入条件。A2A 1.0 dispatch／reconciliation／one-shot cancel とlocal Cloudflare Workflow fixturesは一部実装済み。**これはクラウド本番配備、実LLM、契約Provider上の停止・課金受け入れを示さない。**
 
 制御プレーン候補と公式料金の同条件比較、実行sandboxの候補、契約前質問は[Cloud agent provider comparison](cloud-agent-provider-comparison-20261001.md)を参照。比較表は2026-10-02に公式料金・制限を再確認した公開料金で、契約見積・LLM料金・本番確定額ではない。Durable Workflowの30日default retention、1 MiB step/event境界、Cloudflare Containersのregional egress、AgentCore V2のregion/8-hour session上限を反映した。Rockstarのdurable job ledgerを実行sandboxの一時sessionやWorkflow retentionで置き換えない。

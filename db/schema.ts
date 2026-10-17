@@ -9,6 +9,13 @@ import {
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
+export const skyMcpSlots = sqliteTable('sky_mcp_slots', {
+  userId: text('user_id').notNull(),
+  connectionKey: text('connection_key').notNull(),
+  name: text('name').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, (table) => [primaryKey({ columns: [table.userId, table.connectionKey] })]);
+
 export const skyCommerceSellers = sqliteTable('sky_commerce_sellers', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),
@@ -1420,6 +1427,28 @@ export const esimDeviceEntitlements = sqliteTable(
   ],
 );
 
+export const esimCloudAccessKeys = sqliteTable('esim_cloud_access_keys', {
+  id: text('id').primaryKey(),
+  skyOrderId: text('sky_order_id').notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  deviceRef: text('device_ref').notNull(),
+  entitlementReceiptSha256: text('entitlement_receipt_sha256').notNull(),
+  tokenSha256: text('token_sha256').notNull(),
+  scopesJson: text('scopes_json').notNull(),
+  createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  revokedAt: integer('revoked_at'),
+  activeSlot: text('active_slot'),
+  replacedById: text('replaced_by_id'),
+}, (table) => [
+  uniqueIndex('idx_esim_cloud_token').on(table.tokenSha256),
+  uniqueIndex('idx_esim_cloud_active_order').on(table.activeSlot),
+  index('idx_esim_cloud_owner').on(table.ownerUserId, table.skyOrderId, table.createdAt),
+  check('esim_cloud_hash_check', sql`length(${table.tokenSha256})=64 AND length(${table.entitlementReceiptSha256})=64`),
+  check('esim_cloud_expiry_check', sql`${table.expiresAt}>${table.createdAt}`),
+  check('esim_cloud_active_check', sql`(${table.revokedAt} IS NULL AND ${table.activeSlot} IS NOT NULL AND ${table.activeSlot}=${table.skyOrderId}) OR (${table.revokedAt} IS NOT NULL AND ${table.activeSlot} IS NULL)`),
+]);
+
 export const csvTrialPayments = sqliteTable('csv_trial_payments', {
   id: text('id').primaryKey(),
   jobId: text('job_id').notNull(),
@@ -1639,3 +1668,28 @@ export const skyCampusReports = sqliteTable(
     index('idx_sky_campus_reports_target').on(table.campusId, table.targetType, table.targetId, table.status),
   ],
 );
+
+// Collection records reference usage; budget settlement itself is not a customer payment.
+export const skyUsagePayments = sqliteTable('sky_usage_payments', {
+  id: text('id').primaryKey(), ownerUserId: text('owner_user_id').notNull(),
+  sourceId: text('source_id').notNull(), sourceDigest: text('source_digest').notNull(),
+  amountMinor: integer('amount_minor').notNull(), currency: text('currency').notNull(),
+  mode: text('mode').notNull(), state: text('state').notNull().default('pending'),
+  sessionId: text('session_id'), paymentIntentId: text('payment_intent_id'),
+  refundedMinor: integer('refunded_minor').notNull().default(0),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, (table) => [
+  uniqueIndex('idx_sky_usage_source_mode').on(table.sourceId, table.mode),
+  uniqueIndex('idx_sky_usage_session').on(table.sessionId),
+  uniqueIndex('idx_sky_usage_intent').on(table.paymentIntentId),
+  index('idx_sky_usage_owner').on(table.ownerUserId, table.createdAt),
+]);
+
+export const esimCloudProofUses = sqliteTable('esim_cloud_proof_uses', {
+  accessKeyId: text('access_key_id').notNull(),
+  requestId: text('request_id').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+}, (table) => [
+  primaryKey({ columns: [table.accessKeyId, table.requestId] }),
+  index('idx_esim_cloud_proof_expiry').on(table.expiresAt),
+]);

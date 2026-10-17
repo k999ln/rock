@@ -1012,7 +1012,7 @@ export function validateBaseline(
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
       data.homeExperience?.preferencesStorage === 'device_local' &&
-      data.homeExperience?.customizable?.includes('app_order') &&
+      data.homeExperience?.customizable?.includes('focus_mode') &&
       data.homeExperience?.settingsFunctions?.includes('pc_connector') &&
       data.homeExperience?.settingsFunctions?.includes(
         'install_recovery_guidance',
@@ -1090,7 +1090,10 @@ export function validateBaseline(
       miniR5?.sameTypePeerExpansion === true &&
       miniR5?.separateEdgeHubRequired === false &&
       miniR5?.externalPcRequiredForCoreFunctions === false &&
-      miniR5?.externalPowerRequired === true &&
+      miniR5?.externalPowerRequired === false &&
+      miniR5?.portablePowerRequired === true &&
+      miniR5?.externalPowerPolicy === "dock_power_for_installed_mode_portable_power_required_off_dock" &&
+      miniR5?.batterySelectionStatus === "internal_vs_detachable_under_design_not_selected" &&
       miniR5?.batteryAdopted === false &&
       miniR5?.displayRequirement === 'naked_eye_particles_distributed_in_surrounding_real_space' &&
       miniR5?.displayStatus === 'unavailable_research_gate_not_room_scale_validated' &&
@@ -1122,6 +1125,7 @@ export function validateBaseline(
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));
   const skySource = read(resolve(root, 'components/sky-workspace.tsx'));
   const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
+  const osHeaderSource = read(resolve(root, 'components/os-header.tsx'));
   const workspaceStyles = read(resolve(root, 'app/workspace.css'));
   requireValue(
     data.visualSystem?.surfaces?.includes('/') &&
@@ -1143,7 +1147,7 @@ export function validateBaseline(
       !homeSource.includes("id: 'csv'") &&
       !skySource.includes('href="/work"') &&
       !skySource.includes('href="/csv"') &&
-      homeSource.includes('WEB / LOCAL') &&
+      /DEVELOPER\s+PREVIEW/.test(homeSource) &&
       data.homeExperience?.workspaceNavigation ===
         'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
       data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
@@ -1156,7 +1160,10 @@ export function validateBaseline(
       !shellSource.includes('Sidebar') &&
       !shellSource.includes('rock-sidebar') &&
       shellSource.includes('rock-main-column rock-main-column-full') &&
-      shellSource.includes('className="rock-home-link"') &&
+      shellSource.includes('<OSHeader title={title} running={running}>') &&
+      osHeaderSource.includes('href="/"') &&
+      osHeaderSource.includes('aria-label="RockstarOS ホーム"') &&
+      osHeaderSource.includes('aria-disabled={running || undefined}') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
         'RockstarOS / Studio — shared dark launch system',

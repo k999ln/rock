@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-09",
+  "taskIds": [
+    "HOME01",
+    "WEB01"
+  ],
+  "primaryOwner": "ROCK",
+  "sourceBase": "b2d6d95927168fd345674bdce0db8d9a82fe85f6",
+  "githubMainRead": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "site": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+    "audience": "public",
+    "deployment": "succeeded",
+    "version": 45,
+    "sourceSha": "e8d0353b92858602415a6c976aadbade089a6fa4",
+    "deploymentId": "appgdep_6ac92888d90c8191ae9c02be7e64d8c6",
+    "archiveSha256": "cb94a6388951764e69c6168074f4fb234b0c95c6e36d57b64c36fbfb98b7e3bc",
+    "publicHomeReadback": "confirmed; actual signed-out state, no fake jobs",
+    "verifiedAtUtc": "2026-10-09T17:47:00Z"
+  },
+  "validation": {
+    "publishedSourceVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "unitTests": 285,
+      "fashionTests": 19,
+      "workerD1Assertions": 495,
+      "assetReferences": 94,
+      "missingAssets": 0
+    },
+    "canonical": {
+      "typecheck": "pass",
+      "designCheck": "pass",
+      "focusedTests": 22,
+      "fullVerify": "blocked_by_preexisting_database_status_mismatch"
+    },
+    "browser": {
+      "viewports": [
+        1280,
+        390,
+        320
+      ],
+      "checked": [
+        "intent preset to Zema editable draft without auto-send",
+        "native dialog search and Escape focus restoration",
+        "focus mode preserved after reload",
+        "local WorkJob creation displayed on Home",
+        "completed/active filtering",
+        "same job restored through workJob link",
+        "NFC entry guide and dismissal",
+        "320px document width equals viewport"
+      ],
+      "localDataOnly": true,
+      "screenshots": "work/home-redesign-qa/live-desktop.jpg, work/home-redesign-qa/live-mobile.jpg"
+    },
+    "postFormattingFocusedTests": 14
+  },
+  "limitations": [
+    "Native OS/physical device/production Provider/billing acceptance not changed",
+    "GitHub main not merged",
+    "Public source is older than canonical repository; existing APIs and audience preserved"
+  ],
+  "recovery": "Sites v44 is previous UI; redeploy its saved version if needed. GitHub canonical changes remain local and main is not merged.",
+  "neutralRevision": {
+    "date": "2026-10-09",
+    "reason": "explicit user correction: Home must fit other apps or become neutral",
+    "changes": [
+      "removed sculpture and lime tint",
+      "smaller headings and neutral graphite/silver palette",
+      "replaced floating dock with top app shortcuts",
+      "focus mode hides shortcuts, intro and example"
+    ],
+    "sourceVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "unitTests": 285,
+      "fashionTests": 19,
+      "workerD1Assertions": 495,
+      "missingAssets": 0
+    },
+    "canonicalFocused": {
+      "tests": 20,
+      "typecheck": "pass",
+      "designCheck": "pass",
+      "fullVerify": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "nodeTests": 900,
+        "workerD1Assertions": 1178,
+        "csvAssertions": 113,
+        "missingAssets": 0
+      }
+    },
+    "browser": {
+      "viewports": [
+        1280,
+        390,
+        320
+      ],
+      "horizontalOverflowAt320": false,
+      "sculptureCount": 0,
+      "checked": [
+        "app links",
+        "search dialog and Escape",
+        "focus preference survives reload",
+        "Zema draft handoff without auto-send",
+        "existing local job rendered"
+      ]
+    },
+    "deployment": {
+      "status": "succeeded",
+      "version": 46,
+      "sourceSha": "6d0e5f6137615f765022f3ac7212dee9786fbfb5",
+      "deploymentId": "appgdep_6ac92b57924481919ed830fce78256d5",
+      "archiveSha256": "sha256:995d3029474323e009ec99ac7a00bbbaf3c05269033f0dd0a06626427e5f1463",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+      "verifiedAtUtc": "2026-10-09T17:59:00.644234+00:00",
+      "publicHomeReadback": "neutral Home confirmed; signed-out owner state; no decorative sculpture",
+      "screenshot": "work/home-redesign-qa/neutral-live-desktop.jpg"
+    },
+    "githubMainMerged": false,
+    "recovery": "Redeploy saved v45 to restore the preceding Home. Canonical source is local; GitHub main is not merged."
+  }
+}

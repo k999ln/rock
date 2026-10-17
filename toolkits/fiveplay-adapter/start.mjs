@@ -1,0 +1,11 @@
+import {randomBytes} from 'node:crypto';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {createBridgeServer} from '../fivem-bridge/server.mjs';
+const dir=resolve('work/fiveplay-bridge');mkdirSync(dir,{recursive:true,mode:0o700});
+const token=randomBytes(32).toString('hex');
+const instance=createBridgeServer({path:resolve(dir,'state.sqlite'),mode:'fiveplay',gameToken:token,port:5217,player:'fiveplay-local-owner'});
+await instance.listen();
+writeFileSync(resolve(dir,'connection-token.txt'),token,{mode:0o600});
+console.log('FivePlay接続: http://127.0.0.1:5217/\n拡張設定用token: work/fiveplay-bridge/connection-token.txt （1時間有効、再起動で更新）');
+for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>instance.server.close(()=>{instance.store.close();process.exit(0);}));

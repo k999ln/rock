@@ -1,474 +1,561 @@
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway. */
 'use client';
 
 import {
-  ChartNoAxesCombined,
-  Bot,
+  ArrowUpRight,
+  ArrowRight,
+  ArrowUp,
+  Asterisk,
   Check,
-  ChevronLeft,
-  ChevronRight,
+  Command,
+  Search,
+  X,
+  Plus,
+  SlidersHorizontal,
   Cloud,
   GraduationCap,
   MessageCircle,
-  RadioTower,
-  RotateCcw,
-  Settings2,
-  ShieldCheck,
   WalletCards,
-  X,
+  ChartNoAxesCombined,
+  Settings2,
+  RefreshCw,
+  CornerDownLeft,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
+  type SyntheticEvent,
 } from 'react';
+import type { WorkJob } from '@/lib/workflow';
+import { writeHomeIntent, HOME_INTENT_MAX_LENGTH } from '@/lib/home-intent';
 import styles from './home-screen.module.css';
+import OSHeader from './os-header';
 
-type Wallpaper = 'aurora' | 'sky' | 'night' | 'ember';
-type IconSize = 'small' | 'medium' | 'large';
-type Preferences = {
-  wallpaper: Wallpaper;
-  iconSize: IconSize;
-  showLabels: boolean;
-  accent: string;
-  appOrder: string[];
-};
-type HomeApp = {
-  id: string;
+type App = {
   name: string;
   description: string;
   href: string;
   Icon: LucideIcon;
-  color: string;
 };
-
-const STORAGE_KEY = 'rockstaros.home.preferences.v1';
-const apps: HomeApp[] = [
+const apps: App[] = [
   {
-    id: 'sky',
-    name: 'Sky',
-    description: '自動化アプリを探して接続',
-    href: '/sky',
-    Icon: Cloud,
-    color: 'sky',
-  },
-  {
-    id: 'chat',
-    name: 'Zema',
-    description: 'ツールを選ぶ・頼む・結果を確認',
-    href: '/chat',
-    Icon: MessageCircle,
-    color: 'chat',
-  },
-  {
-    id: 'campus',
     name: 'Campus',
     description: '大学の人・プロジェクト・機会をつなぐ',
     href: '/campus',
     Icon: GraduationCap,
-    color: 'campus',
   },
   {
-    id: 'wallet',
+    name: 'Sky',
+    description: '必要なエージェントと道具を見つける',
+    href: '/sky',
+    Icon: Cloud,
+  },
+  {
+    name: 'Zema',
+    description: '依頼を伝える・一緒に進める',
+    href: '/chat',
+    Icon: MessageCircle,
+  },
+  {
     name: 'Wallet',
-    description: '収支と資金を管理',
+    description: '費用と資金を確認する',
     href: '/wallet',
     Icon: WalletCards,
-    color: 'wallet',
   },
   {
-    id: 'market',
     name: 'Market',
-    description: 'あらゆる価値をPAPER取引',
+    description: '価値を探索する · PAPER',
     href: '/market',
     Icon: ChartNoAxesCombined,
-    color: 'market',
   },
   {
-    id: 'settings',
     name: '設定',
-    description: '接続・権限・更新・外観',
+    description: '接続・権限・自分の環境',
     href: '/settings',
     Icon: Settings2,
-    color: 'settings',
   },
 ];
-const appIds = apps.map(({ id }) => id);
-const defaults: Preferences = {
-  wallpaper: 'aurora',
-  iconSize: 'medium',
-  showLabels: true,
-  accent: '#bedce6',
-  appOrder: appIds,
+const intentions = [
+  {
+    label: 'つくる',
+    example: '伝えたいアイデアを、読みやすい記事にしたい',
+    placeholder: '作りたいものや、伝えたい内容を入力',
+  },
+  {
+    label: '調べる',
+    example: 'このアイデアに関連する特許を調べたい',
+    placeholder: '調べたいテーマや条件を入力',
+  },
+  {
+    label: '整える',
+    example: '記事の出典を整理して、確かめたい',
+    placeholder: '整理したい内容や目的を入力',
+  },
+];
+const filters = [
+  { id: 'all', label: 'すべて' },
+  { id: 'active', label: '進行中' },
+  { id: 'review', label: '確認待ち' },
+  { id: 'completed', label: '完了' },
+] as const;
+const statusNames: Record<WorkJob['status'], string> = {
+  active: '進行中',
+  review: '確認待ち',
+  completed: '完了',
+  cancelled: '取消済み',
 };
-const wallpaperOptions: { id: Wallpaper; label: string }[] = [
-  { id: 'aurora', label: 'オーロラ' },
-  { id: 'sky', label: 'スカイ' },
-  { id: 'night', label: 'ナイト' },
-  { id: 'ember', label: 'サンセット' },
-];
-const sizeOptions: { id: IconSize; label: string }[] = [
-  { id: 'small', label: '小' },
-  { id: 'medium', label: '標準' },
-  { id: 'large', label: '大' },
-];
-
-function normalizePreferences(value: unknown): Preferences {
-  if (!value || typeof value !== 'object') return defaults;
-  const candidate = value as Partial<Preferences>;
-  const order = Array.isArray(candidate.appOrder)
-    ? candidate.appOrder.filter((id) => appIds.includes(id))
-    : [];
-  for (const id of appIds) if (!order.includes(id)) order.push(id);
-  return {
-    wallpaper: wallpaperOptions.some(({ id }) => id === candidate.wallpaper)
-      ? (candidate.wallpaper as Wallpaper)
-      : defaults.wallpaper,
-    iconSize: sizeOptions.some(({ id }) => id === candidate.iconSize)
-      ? (candidate.iconSize as IconSize)
-      : defaults.iconSize,
-    showLabels:
-      typeof candidate.showLabels === 'boolean'
-        ? candidate.showLabels
-        : defaults.showLabels,
-    accent:
-      typeof candidate.accent === 'string' &&
-      /^#[0-9a-f]{6}$/i.test(candidate.accent)
-        ? candidate.accent.toLowerCase() === '#c8ff2e'
-          ? defaults.accent
-          : candidate.accent
-        : defaults.accent,
-    appOrder: order,
-  };
-}
+type LoadState = 'loading' | 'ready' | 'signin' | 'error';
 
 export default function HomeScreen() {
-  const [now, setNow] = useState<Date | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [preferences, setPreferences] = useState(defaults);
-  const closeEditorButton = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
+  const [intent, setIntent] = useState('');
+  const [mode, setMode] = useState(0);
+  const [focus, setFocus] = useState(false);
+  const [intentError, setIntentError] = useState('');
+  const [jobs, setJobs] = useState<WorkJob[]>([]);
+  const [loadState, setLoadState] = useState<LoadState>('loading');
+  const [filter, setFilter] = useState<(typeof filters)[number]['id']>('all');
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
+  const input = useRef<HTMLTextAreaElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const loadController = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    const initialize = window.setTimeout(() => {
-      setNow(new Date());
-      try {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (stored) setPreferences(normalizePreferences(JSON.parse(stored)));
-      } catch {
-        // Broken or unavailable device-local settings fall back to defaults.
+  const refresh = useCallback(async () => {
+    loadController.current?.abort();
+    const controller = new AbortController();
+    loadController.current = controller;
+    setLoadState('loading');
+    setJobs([]);
+    const timeout = window.setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch('/api/work-jobs', {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        signal: controller.signal,
+      });
+      if (controller !== loadController.current) return;
+      if (response.status === 401) {
+        setLoadState('signin');
+        return;
       }
-      if (new URLSearchParams(window.location.search).get('edit') === '1')
-        setEditing(true);
-      setLoaded(true);
-    }, 0);
-    const timer = window.setInterval(() => setNow(new Date()), 30_000);
-    void navigator.serviceWorker?.register('/sw.js').catch(() => {});
-    return () => {
-      window.clearTimeout(initialize);
-      window.clearInterval(timer);
-    };
+      if (!response.ok) throw new Error('unavailable');
+      const data = (await response.json()) as { jobs: WorkJob[] };
+      if (!Array.isArray(data.jobs)) throw new Error('invalid');
+      if (controller !== loadController.current || controller.signal.aborted)
+        return;
+      setJobs(
+        data.jobs
+          .slice()
+          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+      );
+      setLoadState('ready');
+    } catch {
+      if (controller === loadController.current) {
+        setJobs([]);
+        setLoadState('error');
+      }
+    } finally {
+      window.clearTimeout(timeout);
+    }
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
-    } catch {
-      // Private browsing and locked-down devices can reject local writes.
-    }
-  }, [loaded, preferences]);
+    const initialize = window.setTimeout(() => {
+      void refresh();
+      setDate(
+        new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })
+          .format(new Date())
+          .toUpperCase(),
+      );
+      try {
+        setFocus(
+          new URLSearchParams(window.location.search).get('focus') === '1' ||
+            window.localStorage.getItem('rockstaros.home.focus.v1') === '1',
+        );
+      } catch {
+        /* Optional display preference. */
+      }
+    }, 0);
+    void navigator.serviceWorker?.register('/sw.js').catch(() => {});
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+      if (event.key === 'Escape') setPaletteOpen(false);
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void refresh();
+    };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.clearTimeout(initialize);
+      const controller = loadController.current;
+      loadController.current = null;
+      controller?.abort();
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [refresh]);
 
   useEffect(() => {
-    if (!editing) return;
-    closeEditorButton.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setEditing(false);
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [editing]);
+    if (paletteOpen) dialog.current?.showModal();
+    else dialog.current?.close();
+  }, [paletteOpen]);
 
-  const orderedApps = useMemo(
+  const visibleJobs = useMemo(
     () =>
-      preferences.appOrder
-        .map((id) => apps.find((app) => app.id === id))
-        .filter((app): app is HomeApp => Boolean(app)),
-    [preferences.appOrder],
+      jobs
+        .filter((job) => filter === 'all' || job.status === filter)
+        .slice(0, 4),
+    [jobs, filter],
   );
-
-  function moveApp(id: string, direction: -1 | 1) {
-    setPreferences((current) => {
-      const order = [...current.appOrder];
-      const from = order.indexOf(id);
-      const to = from + direction;
-      if (from < 0 || to < 0 || to >= order.length) return current;
-      [order[from], order[to]] = [order[to], order[from]];
-      return { ...current, appOrder: order };
-    });
+  const foundApps = apps.filter((app) =>
+    `${app.name} ${app.description}`
+      .toLowerCase()
+      .includes(search.trim().toLowerCase()),
+  );
+  function submit(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      writeHomeIntent(window.sessionStorage, intent);
+      setIntentError('');
+      router.push('/chat');
+    } catch {
+      setIntentError(
+        '依頼を引き継げませんでした。入力は残っています。コピーしてZemaを開いてください。',
+      );
+    }
   }
-
-  const time = now
-    ? new Intl.DateTimeFormat('ja-JP', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }).format(now)
-    : '--:--';
-  const date = now
-    ? new Intl.DateTimeFormat('ja-JP', {
-        month: 'long',
-        day: 'numeric',
-        weekday: 'short',
-      }).format(now)
-    : 'RockstarOS';
-
+  function toggleFocus() {
+    const value = !focus;
+    setFocus(value);
+    try {
+      window.localStorage.setItem(
+        'rockstaros.home.focus.v1',
+        value ? '1' : '0',
+      );
+    } catch {
+      /* Still works in this session. */
+    }
+  }
   return (
-    <main
-      className={styles.home}
-      data-wallpaper={preferences.wallpaper}
-      data-icon-size={preferences.iconSize}
-      data-editing={editing ? 'true' : 'false'}
-      style={{ '--home-accent': preferences.accent } as CSSProperties}
-    >
-      <div className={styles.noise} aria-hidden="true" />
-      <header className={styles.statusBar}>
-        <strong>{time}</strong>
-        <span className={styles.statusName}>RockstarOS</span>
-        <span className={styles.statusIcons} aria-label="Web版・端末内設定">
-          <ShieldCheck size={15} />
-          <span>WEB / LOCAL</span>
-        </span>
-      </header>
+    <main className={styles.home} data-focus={focus}>
+      <a href="#home-intent" className={styles.skip}>
+        依頼を入力する
+      </a>
+      <OSHeader title="ホーム">
+        <button
+          className={styles.launcher}
+          onClick={() => {
+            setSearch('');
+            setPaletteOpen(true);
+          }}
+          aria-haspopup="dialog"
+        >
+          <span>すべてのツール</span>
+          <kbd>
+            <Command size={11} /> K
+          </kbd>
+        </button>
+      </OSHeader>
 
-      <section className={styles.desktop} aria-label="RockstarOSホーム">
-        <div className={styles.homeHeading}>
-          <div>
-            <p>{date}</p>
-            <h1>{time}</h1>
+      <section className={styles.hero} aria-labelledby="home-title">
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>Zemaに依頼</p>
+          <h1 id="home-title">何を進めますか。</h1>
+          <p className={styles.intro}>
+            作成・調査・整理したいことを、Zemaに伝えられます。
+          </p>
+          <div className={styles.intentModes} aria-label="依頼のヒント">
+            {intentions.map((item, index) => (
+              <button
+                key={item.label}
+                aria-pressed={mode === index}
+                onClick={() => setMode(index)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {item.label}
+                {mode === index && <span className={styles.modeDot} />}
+              </button>
+            ))}
           </div>
+          <form className={styles.composer} onSubmit={submit}>
+            <label htmlFor="home-intent" className={styles.composerLabel}>
+              いま、何をしたい？
+            </label>
+            <textarea
+              id="home-intent"
+              ref={input}
+              value={intent}
+              onChange={(e) => {
+                setIntent(e.target.value);
+                setIntentError('');
+              }}
+              placeholder={intentions[mode].placeholder}
+              maxLength={HOME_INTENT_MAX_LENGTH}
+              rows={2}
+              onKeyDown={(event) => {
+                if (
+                  (event.metaKey || event.ctrlKey) &&
+                  event.key === 'Enter' &&
+                  !event.nativeEvent.isComposing
+                ) {
+                  event.preventDefault();
+                  event.currentTarget.form?.requestSubmit();
+                }
+              }}
+            />
+            <div className={styles.composerBottom}>
+              <span>
+                <span className={styles.tinyStar}>✳</span> Zemaと始める{' '}
+                <span className={styles.composerNote}>
+                  送信前に確認できます
+                </span>
+              </span>
+              <button
+                type="submit"
+                disabled={!intent.trim()}
+                aria-label="依頼をZemaへ引き継ぐ"
+              >
+                <ArrowUp size={20} />
+              </button>
+            </div>
+          </form>
+          {intentError && (
+            <p className={styles.intentError} role="alert">
+              {intentError} <Link href="/chat">Zemaを開く</Link>
+            </p>
+          )}
           <button
-            className={styles.editButton}
-            onClick={() => setEditing(true)}
-            aria-label="ホーム画面を編集"
+            className={styles.example}
+            onClick={() => {
+              setIntent(intentions[mode].example);
+              input.current?.focus();
+            }}
           >
-            <Settings2 size={17} />
-            編集
+            <Plus size={13} /> たとえば、{intentions[mode].example}
+            <ArrowUpRight size={13} />
           </button>
         </div>
-
-        <Link href="/sky" className={styles.skyWidget}>
-          <span className={styles.widgetMark} aria-hidden="true">
-            <ShieldCheck size={22} />
-          </span>
-          <span className={styles.widgetCopy}>
-            <small>SKY AUTO</small>
-            <strong>どのアプリを使う？</strong>
-            <span>Skyからツールを選び、専用画面で入力・実行できます</span>
-          </span>
-          <span className={styles.widgetAction}>Skyを開く</span>
-        </Link>
-
-        <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
-          <Link href="/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
-          <Link href="/chat"><MessageCircle size={16} /><strong>Zema</strong><span>仕事を依頼</span></Link>
-          <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
-        </nav>
-
-        <Link className={styles.serviceSetupLink} href="/connect">
-          <RadioTower size={16} />
-          <span>SIM / eSIMからRockstarOSをはじめる</span>
-          <ChevronRight size={16} />
-        </Link>
-
-        <div className={styles.appGrid} aria-label="ホームアプリ">
-          {orderedApps.map(({ id, name, description, href, Icon, color }) => (
-            <div className={styles.appSlot} key={id}>
-              <Link
-                className={styles.appLink}
-                href={href}
-                aria-label={`${name} — ${description}`}
-                onClick={(event) => {
-                  if (editing) event.preventDefault();
-                }}
-              >
-                <span className={`${styles.appIcon} ${styles[color]}`}>
-                  <Icon size={34} strokeWidth={1.7} />
-                </span>
-                {preferences.showLabels && <span>{name}</span>}
-              </Link>
-              {editing && (
-                <div
-                  className={styles.orderControls}
-                  aria-label={`${name}の並び順`}
-                >
-                  <button
-                    onClick={() => moveApp(id, -1)}
-                    disabled={preferences.appOrder[0] === id}
-                    aria-label={`${name}を前へ`}
-                  >
-                    <ChevronLeft size={15} />
-                  </button>
-                  <button
-                    onClick={() => moveApp(id, 1)}
-                    disabled={preferences.appOrder.at(-1) === id}
-                    aria-label={`${name}を後ろへ`}
-                  >
-                    <ChevronRight size={15} />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.pageDots} aria-label="ホーム画面 1ページ目">
-          <span />
-          <i />
-        </div>
+        <button
+          className={styles.focusToggle}
+          aria-pressed={focus}
+          onClick={toggleFocus}
+        >
+          <SlidersHorizontal size={13} />
+          {focus ? '通常表示に戻す' : '入力に集中'}
+        </button>
       </section>
 
-      <footer className={styles.homeIndicator} aria-hidden="true">
-        <span />
-      </footer>
-
-      {editing && (
-        <div
-          className={styles.editorBackdrop}
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setEditing(false);
-          }}
-        >
-          <dialog
-            open
-            className={styles.editor}
-            aria-labelledby="home-editor-title"
-            aria-modal="true"
+      <section className={styles.activity} aria-labelledby="activity-title">
+        <div className={styles.activityHeading}>
+          <div>
+            <h2 id="activity-title">最近の仕事</h2>
+          </div>
+          <button
+            className={styles.refresh}
+            aria-label="仕事を再読み込み"
+            disabled={loadState === 'loading'}
+            onClick={() => void refresh()}
           >
-            <header>
+            <RefreshCw size={15} />
+          </button>
+        </div>
+        <div className={styles.activityBar}>
+          <div className={styles.filters} aria-label="仕事を絞り込む">
+            {filters.map((item) => (
+              <button
+                key={item.id}
+                aria-pressed={filter === item.id}
+                onClick={() => setFilter(item.id)}
+              >
+                {item.label}
+                {loadState === 'ready' && (
+                  <span>
+                    {
+                      jobs.filter(
+                        (job) => item.id === 'all' || job.status === item.id,
+                      ).length
+                    }
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <Link href="/chat?view=work" className={styles.allWork}>
+            仕事を開く <ArrowUpRight size={14} />
+          </Link>
+        </div>
+        <div aria-live="polite" aria-busy={loadState === 'loading'}>
+          {loadState === 'loading' && (
+            <div className={styles.empty}>
+              <span className={styles.emptyMark}>
+                <span className={styles.loadingDot} />
+              </span>
               <div>
-                <small>この端末だけに保存</small>
-                <h2 id="home-editor-title">ホーム画面を編集</h2>
+                <strong>あなたの仕事を読み込んでいます</strong>
+                <p>保存済みの進捗を取得しています。</p>
+              </div>
+            </div>
+          )}
+          {loadState === 'signin' && (
+            <div className={styles.empty}>
+              <span className={styles.emptyMark}>
+                <Asterisk size={28} strokeWidth={1} />
+              </span>
+              <div>
+                <strong>保存した仕事を確認</strong>
+                <p>
+                  サインインすると、保存した仕事をひとつの場所で確認できます。
+                </p>
+              </div>
+              <a
+                className={styles.emptyAction}
+                href="/signin-with-chatgpt?return_to=%2F"
+                target="_top"
+              >
+                サインイン <ArrowRight size={16} />
+              </a>
+            </div>
+          )}
+          {loadState === 'error' && (
+            <div className={styles.empty}>
+              <span className={styles.emptyMark}>
+                <RefreshCw size={22} strokeWidth={1} />
+              </span>
+              <div>
+                <strong>仕事を読み込めませんでした</strong>
+                <p>接続を確認して、もう一度お試しください。</p>
               </div>
               <button
-                ref={closeEditorButton}
-                onClick={() => setEditing(false)}
-                aria-label="編集を閉じる"
+                className={styles.emptyAction}
+                onClick={() => void refresh()}
               >
-                <X size={20} />
+                再読み込み <ArrowRight size={16} />
               </button>
-            </header>
-
-            <div className={styles.editorSection}>
-              <strong>壁紙</strong>
-              <div className={styles.wallpaperChoices}>
-                {wallpaperOptions.map(({ id, label }) => (
-                  <button
-                    key={id}
-                    data-choice={id}
-                    aria-pressed={preferences.wallpaper === id}
-                    onClick={() =>
-                      setPreferences((current) => ({
-                        ...current,
-                        wallpaper: id,
-                      }))
-                    }
-                  >
-                    <span>
-                      {preferences.wallpaper === id && <Check size={17} />}
-                    </span>
-                    <small>{label}</small>
-                  </button>
-                ))}
+            </div>
+          )}
+          {loadState === 'ready' && !visibleJobs.length && (
+            <div className={styles.empty}>
+              <span className={styles.emptyMark}>
+                <Plus size={24} strokeWidth={1} />
+              </span>
+              <div>
+                <strong>
+                  {filter === 'all'
+                    ? 'まだ仕事はありません。'
+                    : `${filters.find((item) => item.id === filter)?.label}の仕事はまだありません。`}
+                </strong>
+                <p>上の入力欄から依頼すると、Zemaへ引き継げます。</p>
               </div>
-            </div>
-
-            <div className={styles.editorRow}>
-              <span>
-                <strong>アイコン</strong>
-                <small>大きさ</small>
-              </span>
-              <div className={styles.segmented}>
-                {sizeOptions.map(({ id, label }) => (
-                  <button
-                    key={id}
-                    aria-pressed={preferences.iconSize === id}
-                    onClick={() =>
-                      setPreferences((current) => ({
-                        ...current,
-                        iconSize: id,
-                      }))
-                    }
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <label
-              className={styles.editorRow}
-              htmlFor="show-app-labels"
-              aria-label="アプリ名の表示"
-            >
-              <span>
-                <strong>アプリ名</strong>
-                <small>アイコンの下に表示</small>
-              </span>
-              <input
-                id="show-app-labels"
-                className={styles.switch}
-                type="checkbox"
-                checked={preferences.showLabels}
-                onChange={(event) =>
-                  setPreferences((current) => ({
-                    ...current,
-                    showLabels: event.target.checked,
-                  }))
-                }
-              />
-            </label>
-
-            <label className={styles.editorRow} htmlFor="home-accent-color">
-              <span>
-                <strong>アクセント</strong>
-                <small>ボタンと選択色</small>
-              </span>
-              <input
-                id="home-accent-color"
-                className={styles.colorInput}
-                type="color"
-                value={preferences.accent}
-                onChange={(event) =>
-                  setPreferences((current) => ({
-                    ...current,
-                    accent: event.target.value,
-                  }))
-                }
-                aria-label="アクセントカラー"
-              />
-            </label>
-
-            <p className={styles.reorderHint}>
-              ホーム上の矢印で、アプリの順番も変更できます。
-            </p>
-            <div className={styles.editorActions}>
-              <button onClick={() => setPreferences(defaults)}>
-                <RotateCcw size={16} />
-                初期状態に戻す
-              </button>
-              <button onClick={() => setEditing(false)}>
-                完了
-                <Check size={17} />
+              <button
+                className={styles.emptyAction}
+                onClick={() => input.current?.focus()}
+              >
+                依頼を書く <ArrowUpRight size={16} />
               </button>
             </div>
-          </dialog>
+          )}
+          {loadState === 'ready' &&
+            visibleJobs.map((job, index) => (
+              <Link
+                key={job.id}
+                href={`/chat?view=work&workJob=${encodeURIComponent(job.id)}`}
+                className={styles.job}
+              >
+                <span className={styles.jobIndex}>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div className={styles.jobTitle}>
+                  <strong>{job.title}</strong>
+                  <span>
+                    {job.steps.filter((step) => step.passed).length} /{' '}
+                    {job.steps.length} ステップ
+                  </span>
+                </div>
+                <span className={styles.jobStatus} data-status={job.status}>
+                  {job.status === 'completed' ? <Check size={13} /> : <span />}
+                  {statusNames[job.status]}
+                </span>
+                <ArrowUpRight size={17} />
+              </Link>
+            ))}
         </div>
-      )}
+      </section>
+      <footer className={styles.footer}>
+        <Link href="/connect">
+          SIM・サービス利用権を接続 <ArrowUpRight size={11} />
+        </Link>
+        <span>
+          ROCKSTAROS <span className={styles.footerDivider}>/</span> DEVELOPER
+          PREVIEW
+        </span>
+        <span>
+          {date} <span className={styles.footerDivider}>/</span> WEB
+        </span>
+      </footer>
+
+      <dialog
+        ref={dialog}
+        className={styles.palette}
+        onClose={() => setPaletteOpen(false)}
+        aria-labelledby="palette-title"
+      >
+        <div className={styles.paletteInner}>
+          <header>
+            <h2 id="palette-title">アプリを開く</h2>
+            <button
+              onClick={() => setPaletteOpen(false)}
+              aria-label="ツール一覧を閉じる"
+            >
+              <X size={19} />
+            </button>
+          </header>
+          <label className={styles.paletteSearch}>
+            <Search size={18} />
+            <input
+              placeholder="ツールを探す"
+              aria-label="ツールを検索"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <div className={styles.paletteResults}>
+            {foundApps.map(({ name, description, href, Icon }) => (
+              <Link
+                href={href}
+                key={href}
+                onClick={() => setPaletteOpen(false)}
+              >
+                <Icon size={22} />
+                <span>
+                  <strong>{name}</strong>
+                  <small>{description}</small>
+                </span>
+                <CornerDownLeft size={16} />
+              </Link>
+            ))}
+            {!foundApps.length && <p>一致するツールがありません。</p>}
+          </div>
+          <footer>
+            <kbd>esc</kbd> 閉じる <span>ROCKSTAROS / TOOLS</span>
+          </footer>
+        </div>
+      </dialog>
     </main>
   );
 }

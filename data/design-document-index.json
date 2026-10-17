@@ -1,9 +1,10 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.4",
-  "updatedAt": "2026-10-05",
+  "version": "1.5",
+  "updatedAt": "2026-10-14",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/avocado-schoolbag-safety-device.md",
     "docs/avocado-mini-r5/README.md",
     "docs/rocketstar-design/README.md",
     "docs/rockstaros-complete-design-v1.0.pdf",
@@ -48,6 +49,15 @@
     "open_decisions_owner_and_decision_test"
   ],
   "systemDomains": [
+    {
+      "id": "avocado_schoolbag_safety_device",
+      "coverage": "HANGING_DETACHABLE_VOICE_COMPANION_P0_DESIGN_WITH_PHYSICAL_VOICE_SAFETY_AND_MANUFACTURING_PENDING",
+      "documents": [
+        "docs/avocado-schoolbag-safety-device.md",
+        "data/avocado-schoolbag-safety-device.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ]
+    },
     {
       "id": "avocado_mini_r5",
       "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
@@ -120,7 +130,18 @@
         "app/workspace.css",
         "components/system-settings.module.css",
         "components/csv-business-workspace.module.css",
-        "components/rock-studio.tsx"
+        "components/rock-studio.tsx",
+        "lib/home-intent.ts",
+        "components/os-header.tsx",
+        "app/os-design-tokens.css",
+        "app/os-appearance.css",
+        "app/test/page.tsx",
+        "app/api/output-tests/route.ts",
+        "components/output-test-workspace.tsx",
+        "components/output-test-workspace.module.css",
+        "lib/test-workspace.ts",
+        "lib/test-workspace-executor.ts",
+        "tests/output-testing.test.mjs"
       ],
       "documents": [
         "docs/architecture.md",
@@ -156,7 +177,17 @@
         "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
         "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
         "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
-        "tests/esim-device-entitlement.test.mjs"
+        "tests/esim-device-entitlement.test.mjs",
+        "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+        "android/shell/src/main/res/values/styles.xml",
+        "android/shell/src/main/res/drawable/launcher_foreground.xml",
+        "android/shell/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellNavigationTest.java",
+        "app/os-design-tokens.css",
+        "android/core/src/main/java/dev/rock/core/OutputTestTools.java",
+        "android/core/src/test/java/dev/rock/core/OutputTestToolsTest.java",
+        "android/shell/src/main/java/dev/rock/shell/TestModeActivity.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/NativeOutputTest.java"
       ],
       "documents": [
         "docs/android-production-architecture.md",
@@ -164,7 +195,8 @@
         "docs/device-support-architecture.md",
         "data/android-release-architecture-policy.json",
         "docs/workstreams/07-android-device-local-ai.md",
-        "docs/provider-contract-readiness-20260930.md"
+        "docs/provider-contract-readiness-20260930.md",
+        "docs/rockstaros-complete-design.md"
       ]
     },
     {
@@ -249,7 +281,8 @@
         "docs/sky-tool-sdk.md",
         "docs/sky-launch-design.md",
         "docs/sky-launch-operations.md",
-        "docs/agent-control-plane.md"
+        "docs/agent-control-plane.md",
+        "docs/provider-contract-readiness-20260930.md"
       ],
       "implementation": [
         "scripts/check-sky-launch.mjs",
@@ -270,7 +303,8 @@
       "documents": [
         "docs/sky-mcp-connector.md",
         "docs/sky-mcp-architecture.md",
-        "docs/external-wallet-fund-provider-boundary-20260913.md"
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/provider-contract-readiness-20260930.md"
       ]
     },
     {
@@ -300,6 +334,17 @@
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
         "docs/rock-wallet-production-rail-20260913.md"
+      ],
+      "implementation": [
+        "shared/stripe.mjs",
+        "lib/sky-stripe.ts",
+        "lib/sky-usage-payment.ts",
+        "lib/sky-payments.ts",
+        "components/sky-payments.tsx",
+        "app/sky/payments/page.tsx",
+        "app/api/sky/payments/[action]/route.ts",
+        "drizzle/0060_sky_usage_payments.sql",
+        "tests/sky-usage-payment.test.mjs"
       ]
     },
     {
@@ -309,7 +354,16 @@
         "docs/security-incident-response.md",
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
-        "data/release-readiness.json"
+        "data/release-readiness.json",
+        "docs/sim-led-product-architecture.md",
+        "docs/workstreams/04-security-identity-compliance.md"
+      ],
+      "interfaceImplementation": [
+        "lib/esim-cloud-proof.ts",
+        "lib/esim-cloud-access.ts",
+        "lib/esim-cloud-grant.ts",
+        "drizzle/0061_esim_cloud_proof_uses.sql",
+        "tests/esim-cloud-proof.test.mjs"
       ]
     },
     {
@@ -319,7 +373,24 @@
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/workstreams/08-game-market-fund.md"
+        "docs/workstreams/08-game-market-fund.md",
+        "docs/gta-reality-bridge.md",
+        "docs/avocado-mini-r5/game-runtime-design.md"
+      ],
+      "implementationReferences": [
+        "app/game/page.tsx",
+        "components/game-companion.tsx",
+        "lib/game-launch.ts",
+        "tests/game-launch.test.mjs",
+        "toolkits/fivem-bridge/README.md",
+        "toolkits/fiveplay-adapter/README.md",
+        "toolkits/fiveplay-adapter/manifest.json",
+        "toolkits/fivem-bridge/store.mjs",
+        "toolkits/fivem-bridge/agents.mjs",
+        "toolkits/fivem-bridge/sky-directory.mjs",
+        "toolkits/fivem-bridge/server.mjs",
+        "toolkits/fivem-bridge/resource/fxmanifest.lua",
+        "tests/fivem-bridge.test.mjs"
       ]
     },
     {
@@ -335,7 +406,9 @@
         "docs/avocado-mini-mini200-e1/design.md",
         "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md",
         "docs/avocado-mini-mini200-e2/README.md",
-        "docs/avocado-mini-tower20-e3/README.md"
+        "docs/avocado-mini-tower20-e3/README.md",
+        "docs/avocado-mini-r5/game-runtime-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md"
       ]
     },
     {
@@ -777,6 +850,91 @@
       "SKY19",
       "BIL02"
     ],
-    "productionAccepted": false
+    "productionAccepted": false,
+    "implementation": {
+      "document": "docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation",
+      "api": "/api/esim/orders/{orderId}/cloud-access",
+      "migration": "0059_esim_cloud_access_keys",
+      "states": [
+        "not_issued",
+        "active",
+        "suspended",
+        "expired",
+        "revoked"
+      ],
+      "evidence": "docs/evidence/esim-cloud-access-local.json",
+      "productionAccepted": false
+    },
+    "mainSimTransportDesign": {
+      "document": "docs/sim-led-product-architecture.md#main-sim-cloud-service",
+      "authority": "data/product-baseline.json.cloudOsUsageBusinessIntent.mainSimTransportDesign",
+      "systemDesign": "docs/rockstaros-complete-design.md",
+      "toolDesign": "docs/sky-tools-complete-design.md",
+      "workstream": "docs/workstreams/02-sky-mcp.md",
+      "status": "design_only_existing_contracts_reused",
+      "runtimeChanged": false,
+      "productionAccepted": false
+    }
+  },
+  "awsCloudPartnershipPreparation": {
+    "document": "docs/provider-contract-readiness-20260930.md",
+    "systemDesign": "docs/rockstaros-complete-design.md",
+    "toolDesign": "docs/sky-tools-complete-design.md",
+    "status": "design_proposal_not_runtime_or_partnership_acceptance",
+    "existingTasks": [
+      "SKY07",
+      "BIL02"
+    ],
+    "runtimeChanged": false
+  },
+  "grapheneReuseDirection": {
+    "recordedAt": "2026-10-10",
+    "domain": "android_pixel",
+    "tasks": [
+      "OS10",
+      "RLS02"
+    ],
+    "status": "design_only_with_open_device_and_transport_decisions",
+    "documents": [
+      "docs/device-support-architecture.md",
+      "docs/rockstaros-complete-design.md",
+      "docs/workstreams/07-android-device-local-ai.md"
+    ],
+    "runtimeAccepted": false
+  },
+  "campusSkyEntry": {
+    "document": "docs/sky-tools-complete-design.md",
+    "section": "大学別NFC Sky（2026-10-12）",
+    "routes": [
+      "/t/[tagId]",
+      "/sky/campus",
+      "/sky/campus/[campus]",
+      "/api/sky/mcp/plan",
+      "/sky/campus/[campus]/hub",
+      "/sky/campus/[campus]/manage",
+      "/sky/campus/[campus]/manifest.webmanifest"
+    ],
+    "tasks": [
+      "WEB06",
+      "SKY21"
+    ],
+    "status": "local_agent_hub_and_embedded_zema_verified_not_deployed",
+    "evidence": "docs/evidence/campus-sky-entry.json"
+  },
+  "skySharedEntrySpecification": {
+    "document": "docs/sim-led-product-architecture.md",
+    "anchor": "sky-shared-entry",
+    "relatedDocuments": [
+      "docs/sky-tools-complete-design.md",
+      "docs/rockstaros-complete-design.md",
+      "docs/workstreams/05-web-pwa-sites.md"
+    ],
+    "tasks": [
+      "WEB06",
+      "SKY21",
+      "SIM01"
+    ],
+    "status": "design_aligned_with_observed_source_production_unaccepted",
+    "evidence": "data/project-status.json#skyEntrySpecificationSync"
   }
 }

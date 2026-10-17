@@ -25,6 +25,17 @@ function fixture(t, beforeRun = async () => {}) {
 const profile = (handle) => ({ campusId: 'nyu', handle, displayName: handle, affiliation: 'student', headline: '', bio: '', skills: [], interests: [], lookingFor: [], links: [], isPublic: true });
 const post = { campusId: 'nyu', kind: 'project', title: 'Film project', summary: 'A student project', tags: [], details: {}, visibility: 'campus', startsAt: null, endsAt: null };
 
+void test('NFC Sky tags resolve to the correct university and deactivation cannot fall back into an active entry', async (t) => {
+  const { store } = fixture(t);
+  for (const campus of ['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) {
+    const [tag] = await store.registerTagBatch('owner', campus, { prefix: campus, start: 1, count: 1, mode: 'sky', label: 'Poster', placement: '' });
+    assert.match((await store.resolveTag(tag.tagId)).destination, new RegExp(`^/sky/campus/${campus}/hub\\?`));
+    await store.setTagActive('owner', tag.tagId, false);
+    assert.equal(await store.resolveTag(tag.tagId), null);
+    assert.match((await store.resolveTag(`${campus}-new-0010`)).destination, new RegExp(`^/sky/campus/${campus}\\?`));
+  }
+});
+
 void test('Campus item writes are owner scoped and anonymous readers only see public posts', async (t) => {
   const { store } = fixture(t);
   const item = await store.createItem('owner', post);

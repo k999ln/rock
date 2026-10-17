@@ -1,3 +1,17 @@
+## Sky App Output Plugins
+
+OS版ではZemaがAgentの依頼・承認・停止・成果・費用を統合する。Sky単体はAgent/Toolの発見・権限・購入・接続・実行契約と成果の正本を提供し、対応するアプリが自分のUIに成果を描画する。Fitness×Agentは例であり、結果をSky内の汎用チャットへ固定しない。利用者の「受け皿がない」指摘に対し、`/sky/outputs` と大学文脈の `/sky/campus/{id}/outputs` は本人別の保存済み成果を確認する共通受け皿。第一者同一originアプリは `SkyAppOutputSlot` から既存のowner-scoped成果APIを読み、型付きschemaを検証した後にアプリ内で表示する。Fitness例は `sky.fitness.plan/1` だけを運動プランとして受け、任意テキスト・別schema・超過データをプランに変換しない。
+
+入力は既存Zema親job、本人認証済み委任ID、暗号化保存済み成果。出力はAgent名・状態・テキスト部分と、host appが受け入れる型付き表示。保存と復旧は既存の親job、委任、成果、任意保存のCloud AI回答を正本にし、ブラウザやNFCに権限を保存しない。未ログイン、取得失敗、結果未保存、ファイル/データ部分省略、truncated、schema不一致は区別して表示し、空結果に見せかけない。コピー/テキスト保存は取得済みの完全なテキスト成果に限る。次Agentや外部送信は別の見積・権限・承認が必要。現行第一者pluginは成果の読取り/描画であり、外部アプリのcross-origin認証、Provider実行、Fitness Agentそのものは未受入。外部アプリ提供時はapp登録、scope、origin、購入権、失効、callback先、利用明細を個別受入する。
+
+合格条件: 本人A/Bで他人の成果取得を拒否、完了していない委任を成果として表示しない、保存しないCloud AI回答を履歴から復元しない、schema不一致/大型出力/部分省略を拒否または明示、アプリ側が自分の画面で型付き成果を描画、Zemaへの戻りと停止/費用を同じ親jobへ結ぶ。現時点はsource UIとparser試験、ローカル画面まで。実Provider出力と本番A/B、外部アプリSDKは別ゲート。
+
+## 大学別SkyのAgent HubとZema内包（2026-10-12）
+
+追加の明示方針: OSでの提供と同時にSky単体のWeb/PWAも主製品として成立させる。公開 `/sky` の既存Agentフィード・役割選択・Marketplace・接続画面を確認した結果、大学版を別の仕事フォーム中心アプリに分岐させない。NFCのHub URLは同じ `SkyWorkspace` を大学名・大学別おすすめTool・購入履歴／接続／Sky内Zemaの管理導線付きで開く。旧専用Hub画面は退役し、大学別briefは補助Toolとして別入口に残す。この修正は利用者が公開Skyを明示して単体品質を求めたためで、公開版への反映や有料Agentの実行完了を意味しない。
+
+対象5大学のNFC/QRは大学別HTTPS入口へ解決し、本人が希望すれば大学別PWAとして追加する。Sky配下のAgent Hubで既存Marketplace購入状態とZema仕事を本人別に読み、Sky内Zemaへ移動する。購入Packageは署名済み決済・Provider状態を照合し、Apple Payは適格なCheckout環境でのみ表示する。NFC/PWA追加/購入表示からAgent実行権を推定しない。現時点はsource候補であり公開Sky v39への配備・実Apple Pay・スマホ単独Provider実行・費用と停止の縦断受入は未完了。[詳細](sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。
+
 ## Sky focused公開判定の修正（2026-10-02）
 
 ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。

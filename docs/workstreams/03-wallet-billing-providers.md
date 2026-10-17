@@ -198,3 +198,18 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 ## 2026-10-02 Package runtime positive dispatch and SIM-led status
 
 `npm run sky:a2a:workflow:positive` passes 12/12. Added a Cloudflare Worker/D1/Workflow positive test that registers a Provider-signed Package runtime binding, pins it through approved delegation, confirms the Worker preserves Agent Card extension declaration across durable serialization, sends the bound operation and request digest to a controlled fixture service, captures the completed artifact encrypted, verifies a synthetic Provider-signed usage receipt, and settles the local logical reservation. The mock service binding is not a real Provider or production integration. This updates the previous checkpoint that the successful Package executor path was absent: a local executor fixture now exists, while real Provider implementation, external interoperability, real rates, invoice settlement, and funded Wallet reconciliation remain open. Full `npm run verify` passes after the code change (Node 737/737, API 994 assertions, CSV 113 assertions, Fashion 19/19, typecheck/lint/build and repository gates). Production D1 readback remains 0/6 and all OS/carrier/customer acceptance gates remain separate. See [correction evidence](../evidence/sim-led-product-correction-20261002.json).
+
+## 共通決済への適用（2026-10-05、BIL02）
+
+利用者の明示依頼により、既存Stripe transportをSky/CSV/Mini/Fashionで共有し、`/sky/payments`へTool・eSIM購入とクラウドusage/回収状況を集める。直接LLMは保存済み確定usageからtest-only Checkoutを作成し、原価計算と小売請求を区別する。A2Aは既存Wallet精算を維持し二重回収しない。現在は実装・合成試験、ROCK担当範囲の進捗で、本番料金/資金/請求照合はJOINT/OWNER待ち。[契約、API、状態、運用と未決定](../sky-billing.md#共通決済2026-10-05)。
+
+検証: `node --experimental-strip-types --test tests/shared-stripe.test.mjs tests/sky-stripe.test.mjs tests/sky-commerce.test.mjs tests/csv-trial-payment.test.mjs tests/sky-usage-payment.test.mjs tests/sky-payment-worker.test.mjs`、`npm run typecheck`、`npm run design:check`、`npm run verify`。次は小売料金とfunding契約→Stripe sandbox→同一公開版の本人受入→live gate判断。既存50円試験を再請求しない。
+
+## Optional eSIM cloud access (BIZ01 / SKY19 / BIL02)
+
+2026-10-05: ROCK実装は署名済み導入証明→期限付きcloud key→既存Sky scope/owner/予算の接続。詳細は[共通契約](../sim-led-product-architecture.md#optional-esim-cloud-access-implementation)。検証は `node --experimental-strip-types --test tests/esim-cloud-access.test.mjs tests/rockstar-service-package-access.test.mjs`、`npm run build`、`node scripts/check-work-api.mjs`、`npm run verify`。完了条件はローカル発行・再発行/失効・返金/期限/鍵失効・owner/Origin分離・同一注文の競合と秘密非表示。本番側はEXTERNALの導入proof、JOINTの契約/期限/料金/端末受入、OWNERのアカウント/鍵配備が残る。通常Web/app、native/offline系統を置換しない。実課金・carrier合算の合格証拠は別に必要。
+
+
+### Agent利用料の月次後払い（2026-10-15）
+
+利用者指示により、Agent利用を契約accountごとに毎月まとめて請求する方向へ更新。[請求・未払い対応設計](../sky-billing.md)で単価/見積/上限、usage照合、支払方法、通知/猶予/有料実行制限/入金復旧/適法な回収を定義。通信・端末・OS・Agentの明細は分ける。銀行口座をOSが直接凍結する権限は持たせない。後払い与信・Provider sandbox・実請求は未受入。

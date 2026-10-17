@@ -1,0 +1,159 @@
+{
+  "schema": "rockstar-pixel-shell-design/1",
+  "recordedAt": "2026-10-09",
+  "status": "physical_ui_accepted_service_and_model_configuration_pending",
+  "request": "GitHub正本を確認して開発し、Pixel版のデザインを改善する",
+  "workstream": "Android / Device / Local AI",
+  "responsibility": "ROCK",
+  "taskIds": [
+    "OS10",
+    "RLS02"
+  ],
+  "source": {
+    "repository": "k999ln/rock",
+    "mainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "localBranch": "codex/esim-cloud-access",
+    "mainIntegrated": false,
+    "sourceFilesSha256": {
+      "android/Android.bp": "72d1cb709374d98c314bb8da7c1a097f97fd458855e48cfc5a7a8001d7efac27",
+      "android/shell/build.gradle": "049ae52ad1ab141fe9947d0b7b3d8c03c7374631ec1a75c03544bc2d671f46df",
+      "android/shell/src/main/AndroidManifest.xml": "f378aa79b22d562534a66fe8f80495ff6a323a7b1b177a975eb08d2247280bee",
+      "android/shell/src/aosp/AndroidManifest.xml": "db5af5f4413f2e9c515304b935d79d35691624c7ccdccad663fbab08328e1267",
+      "android/shell/src/main/java/dev/rock/shell/MainActivity.java": "8f66415c8d2b5c4b08282b9eb4a4dcf307c9e080d0726ff0e26d03cf02b21af0",
+      "android/shell/src/main/java/dev/rock/shell/UsageCurrencyFormatter.java": "851871342f6cc4a617c25ec6f857f5815cdc1a4177295c7434f5a35c0fede4e1",
+      "android/shell/src/main/java/dev/rock/shell/ShellConnection.java": "0b14e051968a74599794009aa25c96b89c9b62b6594c3059aeb8054722fcd50f",
+      "android/shell/src/main/java/dev/rock/shell/ShellUi.java": "0eb96dd47ba71e2a6b1c98469798e6d13bcc5d7b3ff92132433b28922a3e1305",
+      "android/shell/src/main/res/drawable/launcher_foreground.xml": "0315c14bd54e0287f82bc1db84291d8517582a15a87503a7b769f3e8ea55bdfb",
+      "android/shell/src/main/res/values/styles.xml": "eefef17ddbfb1a6f32b1a30bf5afcb0007b166e218993a22d35c44e41de85a1b",
+      "android/shell/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": "9b0617d2360c01b32aedbd3ef0735da6a86fdc1d280670e9249e0b3647606295",
+      "android/shell/src/androidTest/java/dev/rock/shell/ShellNavigationTest.java": "142faf688142c5023da53cc3fbfcca984d6c9003a9994550b3b56682139e9c17",
+      "scripts/check-os-contracts.mjs": "daec242d7027ce632591770d9b287f722df06509ec884ccbc86042526de35285"
+    }
+  },
+  "changes": [
+    "Home/Sky/work/settings navigation with system and keyboard insets",
+    "neutral surface, type, controls and adaptive launcher icon",
+    "draft handoff with consent reset and replacement confirmation",
+    "unconfigured service shown as setup pending; no_model explained",
+    "existing Binder, execution, budget and recovery contracts preserved",
+    "Fix stale API v2-only capability validation to current Local AI API v4; reject invalid trust/model state and check contract-version parity"
+  ],
+  "device": {
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "androidRelease": "17",
+    "buildId": "CP3A.260905.009",
+    "buildIncremental": "2026100200",
+    "bootloaderLocked": true
+  },
+  "installation": {
+    "before": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model"
+    },
+    "after": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model",
+      "capabilityDiagnostics": {
+        "protocolVersion": 3,
+        "scope": "local_observation",
+        "ageMs": 80,
+        "validityMs": 30000,
+        "profileVersion": 2,
+        "profileSource": "android_public_api",
+        "deliveryMode": "existing_os_client",
+        "localInference": {
+          "state": "no_model",
+          "modelLoaded": false,
+          "runtime": "llama.rn",
+          "apiVersion": 4,
+          "trustBasis": "approved_package_signature_and_binder_api",
+          "modelProfileIdentity": "not_reported"
+        }
+      }
+    },
+    "dataPreserved": true,
+    "shellSha256": "2d20276ede1b9635c337673355c28f2010413ade79b301b41b852e62e89822dd",
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "installMode": "adb install -r",
+    "instrumentation": "7/7",
+    "osBuildIncremental": "2026100200",
+    "bootloaderLocked": true,
+    "appDataCleared": false,
+    "deviceFactoryReset": false,
+    "osFlashed": false
+  },
+  "verification": {
+    "androidBuild": "PASS",
+    "lint": "PASS_WITH_WARNINGS",
+    "coreJvm": {
+      "passed": 111,
+      "failed": 0
+    },
+    "toolSdkJvm": {
+      "passed": 7,
+      "failed": 0
+    },
+    "pixelNavigationInstrumentation": {
+      "passed": 7,
+      "failed": 0,
+      "resetsBroker": false,
+      "executesWork": false
+    },
+    "targetedSourceTests": "PASS",
+    "osContract": "PASS",
+    "designIndex": "PASS",
+    "baseline": "PASS_AFTER_SHARED_HEADER_CHECK_UPDATE",
+    "repositoryVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 900,
+      "workerD1Assertions": 1178,
+      "csvAssertions": 113,
+      "scope": "local tree including existing concurrent Web changes; not GitHub main or production"
+    },
+    "physicalUi": "4 tabs, input/keyboard insets, Android Back and restart checked",
+    "freshDeviceCapabilities": "PASS; current API v4 no_model observation is accepted without implying model readiness",
+    "earlierAttempts": [
+      {
+        "stage": "lint",
+        "result": "wrong Typeface constant fixed; later pass"
+      },
+      {
+        "stage": "baseline",
+        "result": "shared Web header extracted; home-link validation followed the new component"
+      },
+      {
+        "stage": "Node suite",
+        "result": "899/900, same header extraction left one stale source check; synchronized; next full verify900/900"
+      }
+    ],
+    "postRecordChecks": "project, database, baseline, design, OS contracts, Android architecture and diff checks passed"
+  },
+  "notAccepted": [
+    "cloud service access or provider execution",
+    "local model inference",
+    "full OS image/flash/OTA/recovery",
+    "physical wipe and Keystore full-loss restore"
+  ],
+  "nextAction": "Configure accepted service origin and signed local model under existing gates; consolidate this change onto current GitHub main separately.",
+  "artifactsDirectory": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121b1-41b0-7553-9210-4d8ba0eeed5f/pixel-shell-design",
+  "savedArtifacts": {
+    "installedApkSha256": "2d20276ede1b9635c337673355c28f2010413ade79b301b41b852e62e89822dd",
+    "screenshots": {
+      "work.png": "293fbd30a367297fe75ba9a235f434bdac1110a4d1e77928df3d6b0082e706f9",
+      "settings.png": "b00422000874dabe423ea246b091dd6fdd994daf36d8828856d68f4a12afa013",
+      "home.png": "8b3668d274a0c453abc2f9194ddbbc887b53b93e70013fda89563dd739832970",
+      "device-capability.png": "1972aee81d4f5711b9f3ed98ce35d521bf366786a14b81467139351b7f5ec73c",
+      "sky.png": "0fece5b5a4a5df8af7cfef75b677a592f0d0affec37f32042cd1a1cede1b8ae2"
+    }
+  }
+}

@@ -1,36 +1,36 @@
-.page { min-height: 0; color: #18232c; background: transparent; }
+.page { min-height: 0; color: var(--os-text); background: transparent; }
 .content { width: min(920px, calc(100% - 48px)); margin: 0 auto; padding: 32px 0 70px; }
-.hero { display: flex; align-items: center; gap: 18px; padding: 24px; border: 1px solid #303944; border-radius: 18px; color: #f5f7f9; background: radial-gradient(circle at 100% 0, #7698a125, transparent 35%), #0c1016; }
-.hero > span { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px; color: #172631; background: #dce7eb; box-shadow: 0 10px 28px #050d141f; }
-.hero small { color: #bedce6; font: 800 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .14em; }
+.hero { display: flex; align-items: center; gap: 18px; padding: 24px; border: 1px solid var(--os-line); border-radius: 18px; color: var(--os-text); background: var(--os-panel); }
+.hero > span { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px; color: var(--os-text); background: var(--os-panel); box-shadow: none; }
+.hero small { color: var(--os-muted); font: 800 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .14em; }
 .hero h1 { margin-top: 2px; font-size: 28px; letter-spacing: -.04em; }
-.hero p { margin-top: 4px; color: #a5ada2; font-size: 13px; }
+.hero p { margin-top: 4px; color: var(--os-muted); font-size: 13px; }
 .health { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 29px; }
 .health { margin-top: 12px; margin-bottom: 30px; }
-.health > div { min-width: 0; padding: 15px; display: grid; border: 1px solid #d5dfe5; border-radius: 15px; background: #fff; }
+.health > div { min-width: 0; padding: 15px; display: grid; border: 1px solid var(--os-line); border-radius: 15px; background: var(--os-panel); }
 .health > div > span { width: 30px; height: 30px; margin-bottom: 12px; display: grid; place-items: center; border-radius: 9px; }
 .health > div > span svg { width: 17px; height: 17px; }
-.health small { color: #737c73; font-size: 10px; }
+.health small { color: var(--os-muted); font-size: 10px; }
 .health strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-.ok { color: #17433a; background: #dcefe9; }
-.idle { color: #555e55; background: #edf0eb; }
-.warn { color: #ffbc65; background: rgba(255,188,101,.12); }
+.ok { color: var(--os-success); background: var(--os-success-bg); }
+.idle { color: var(--os-muted); background: var(--os-panel); }
+.warn { color: var(--os-warning); background: color-mix(in srgb, var(--os-warning-bg) 12%, transparent); }
 .group { margin-top: 22px; }
-.group h2 { margin: 0 0 8px 13px; color: #687985; font: 650 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; }
-.group > div { overflow: hidden; border: 1px solid #d5dfe5; border-radius: 16px; background: #fff; }
-.item { width: 100%; min-height: 67px; padding: 10px 13px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; color: #18232c; background: transparent; text-align: left; }
-.item:not(:last-child) { border-bottom: 1px solid #e7ebe5; }
-.item:hover { opacity: 1; background: #f1f6f8; }
-.item > svg:last-child { color: #788078; }
-.itemIcon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: #bedce6; background: #17232b !important; }
+.group h2 { margin: 0 0 8px 13px; color: var(--os-muted); font: 650 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; }
+.group > div { overflow: hidden; border: 1px solid var(--os-line); border-radius: 16px; background: var(--os-panel); }
+.item { width: 100%; min-height: 67px; padding: 10px 13px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; color: var(--os-text); background: transparent; text-align: left; }
+.item:not(:last-child) { border-bottom: 1px solid var(--os-line); }
+.item:hover { opacity: 1; background: var(--os-panel); }
+.item > svg:last-child { color: var(--os-muted); }
+.itemIcon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: var(--os-muted); background: var(--os-bg) !important; }
 .itemIcon svg { width: 19px; height: 19px; }
-.purple, .blue, .green, .cyan, .sky, .orange, .gray, .red { background: #17232b; }
+.purple, .blue, .green, .cyan, .sky, .orange, .gray, .red { background: var(--os-bg); }
 .itemCopy { min-width: 0; display: grid; }
 .itemCopy strong { font-size: 15px; }
-.itemCopy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #7a837a; font-size: 11px; }
-.rowCheck { color: #398299 !important; }
-.inlineHelp { padding: 13px 16px 15px 63px; border-top: 1px solid #dde6ea; color: #596d78; background: #f4f8fa; font-size: 12px; line-height: 1.7; }
-.boundary { margin: 25px 10px 0; color: #737c73; font-size: 11px; line-height: 1.75; }
+.itemCopy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--os-muted); font-size: 11px; }
+.rowCheck { color: var(--os-muted) !important; }
+.inlineHelp { padding: 13px 16px 15px 63px; border-top: 1px solid var(--os-line); color: var(--os-muted); background: var(--os-panel); font-size: 12px; line-height: 1.7; }
+.boundary { margin: 25px 10px 0; color: var(--os-muted); font-size: 11px; line-height: 1.75; }
 
 @media (max-width: 560px) {
   .content { width: calc(100% - 24px); padding-top: 18px; }
@@ -41,3 +41,13 @@
   .health strong { font-size: 11px; }
   .item { min-height: 64px; }
 }
+
+/* Settings uses the common app chrome and panel geometry. */
+.page { font-family: var(--os-font); color-scheme: dark; }
+.content { width: calc(100% - 48px); max-width: calc(var(--os-content) - 48px); padding-top: 28px; }
+.hero > span, .itemIcon { background: var(--os-raised); color: var(--os-text); box-shadow: none; border: 1px solid var(--os-line); border-radius: 10px; }
+.hero small { color: var(--os-muted); }
+.hero h1 { font-size: 26px; font-weight: 600; }
+.group > div, .health > div { border-radius: var(--os-radius); border-color: var(--os-line); background: var(--os-panel); }
+.itemCopy strong { font-weight: 500; }
+@media (max-width: 650px) { .content { width: calc(100% - 32px); padding-top: 20px; } }

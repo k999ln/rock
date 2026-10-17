@@ -1,4 +1,5 @@
 import { DEVICE_URL, deviceToken } from '@/lib/device';
+import type { McpPlan } from './sky-mcp-plan';
 
 export type McpConnectionState =
   | 'available'
@@ -97,7 +98,28 @@ export async function listMcpConnections() {
   return data.servers;
 }
 
-export async function connectMcp(serverId: string) {
+async function mcpConnectionKey(serverId: string) {
+  const token = deviceToken();
+  if (!token) throw new McpHubError('先にこのPCを接続してください。', 'connector_not_connected');
+  // Only a one-way installation fingerprint leaves the device; never its bearer token.
+  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+  const fingerprint = Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, '0')).join('');
+  return `${fingerprint}:${serverId}`;
+}
+
+async function planRequest(method: 'GET' | 'POST' | 'DELETE', value?: unknown) {
+  const response = await fetch('/api/sky/mcp/plan', { method, credentials: 'same-origin', cache: 'no-store',
+    headers: { 'Content-Type': 'application/json' }, ...(value ? { body: JSON.stringify(value) } : {}) });
+  const result = await response.json() as McpPlan & { error?: string };
+  if (!response.ok) throw new McpHubError(result.error ?? 'MCP接続枠を確認できません。', 'mcp_plan_required');
+  window.dispatchEvent(new Event('sky-mcp-plan'));
+  return result;
+}
+
+export async function connectMcp(serverId: string, name = serverId) {
+  await planRequest('POST', { connectionKey: await mcpConnectionKey(serverId), name });
+  // Keep the reservation on ambiguous network failure. Retry is idempotent;
+  // confirmed disconnect releases it, so an unknown live server cannot free a slot.
   const data = await connector<{ passport: McpConnectionPassport }>(
     `/servers/${encodeURIComponent(serverId)}/connect`,
     { method: 'POST', body: '{}' },
@@ -106,10 +128,19 @@ export async function connectMcp(serverId: string) {
 }
 
 export async function disconnectMcp(serverId: string) {
-  return connector<{ id: string; state: 'available' }>(
+  const result = await connector<{ id: string; state: 'available' }>(
     `/servers/${encodeURIComponent(serverId)}/disconnect`,
     { method: 'POST', body: '{}' },
   );
+  await planRequest('DELETE', { connectionKey: await mcpConnectionKey(serverId) });
+  return result;
+}
+
+async function requireMcpSlot(serverId: string) {
+  const connectionKey = await mcpConnectionKey(serverId);
+  const plan = await planRequest('GET');
+  if (!plan.connections.some((slot: { connectionKey: string }) => slot.connectionKey === connectionKey))
+    throw new McpHubError('MCP接続枠を確保するため、Skyで接続し直してください。', 'mcp_plan_required');
 }
 
 export async function prepareMcpTool(
@@ -117,6 +148,7 @@ export async function prepareMcpTool(
   name: string,
   args: Record<string, unknown>,
 ) {
+  await requireMcpSlot(serverId);
   return connector<McpApproval>(
     `/servers/${encodeURIComponent(serverId)}/prepare`,
     {
@@ -132,6 +164,7 @@ export async function executeApprovedMcpTool<T = unknown>(
   args: Record<string, unknown>,
   approvalToken: string,
 ) {
+  await requireMcpSlot(serverId);
   const data = await connector<{ result: T }>(
     `/servers/${encodeURIComponent(serverId)}/execute`,
     {

@@ -1,0 +1,36 @@
+{
+  "schema": "amc-codex-usability/1",
+  "recordedAt": "2026-10-05",
+  "sourceMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
+  "workBranch": "codex/esim-cloud-access",
+  "scope": "Native Codex skill, existing role launcher and diagnostic only; no Web or Goal runtime merge",
+  "verification": {
+    "focusedTests": "10/10 passed including interrupted ENOSPC write recovery, competing destination preservation, unsafe-parent diagnosis",
+    "lint": "passed",
+    "install": "passed; existing roles retained",
+    "doctor": "passed with low-space warnings",
+    "nativeDelegation": "passed for bounded task: worker edited usage README and ran tests/doctor; separate reviewer inspected artifacts and requested 2 fixes; both corrected and accepted as read-only review",
+    "fullVerify": "NOT_RUN: automatic approval review rejected broad verify because approximately 349MiB free and prior SQLITE_FULL; no workaround retry",
+    "independentReview": {
+      "result": "pass",
+      "launcherSha256": "3294934c3334b8657b797937fa4dd2afb8338d71f4eb5c7c02e3825f9039add8",
+      "testsRerunByReviewer": false
+    },
+    "projectBaselineDesign": "passed",
+    "preview": "passed; started=false; Japanese Goal retained as literal argument"
+  },
+  "limits": [
+    "Web automatic launch/sync not connected",
+    "Low host disk space remains; user files were not removed",
+    "No custom-role automatic-discovery or persistent autonomous-runtime acceptance",
+    "No commit/push/main integration/deploy"
+  ],
+  "files": {
+    "scripts/amc-agent.mjs": "3294934c3334b8657b797937fa4dd2afb8338d71f4eb5c7c02e3825f9039add8",
+    "data/amc/agent-definitions.json": "5b5f656c819af505261a58faae871132d08ccd320f38d6afb84e88a2c7032dfb",
+    "toolkits/amc-agent/SKILL.md": "d2c1c806be4c5f65ad7b77974ae6e45c4cd3786476465a3974201c99b7cd99a9",
+    "toolkits/amc-agent/README.md": "5f46ba528fd74908dfc0ccf7499b741ab6a3cd3322d8897eafcd582b4bf866f1",
+    "tests/amc-agent.test.mjs": "e0f9ed7c663c0cdce7b3f82d5769bafea5fa31a69bc3eca187ebc7d5df862a87"
+  },
+  "remainingAction": "Owner decision for storage recovery before full verify. Playwright browser cache observed about 1.1GiB; untouched; deletion would require re-download before affected browser tests."
+}

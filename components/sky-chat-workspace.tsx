@@ -9,6 +9,7 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import { takeHomeIntent } from '@/lib/home-intent';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -79,6 +80,7 @@ import {
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
 
 type ChatEntry = {
   id: string;
@@ -242,14 +244,19 @@ function readableChatResult(markdown: string) {
     .trim();
 }
 
-export default function SkyChatWorkspace() {
+export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const campusHubPath = campusId ? `/sky/campus/${campusId}/hub` : '/sky';
+  const zemaPath = campusId ? `/sky/campus/${campusId}/manage` : '/chat';
+  const zemaChatPath = campusId ? `${zemaPath}?view=chat` : zemaPath;
+  const zemaWorkPath = `${zemaPath}?view=work`;
+  const skyOutputsPath = campusId ? `/sky/campus/${campusId}/outputs` : '/sky/outputs';
   const preferredTool = searchParams.get('tool') ?? '';
   const preferredPackage = searchParams.get('package') ?? '';
   const requestedThreadId = searchParams.get('thread') ?? '';
   const preferredFund = searchParams.get('fund') ?? '';
-  const workView = searchParams.get('view') === 'work';
+  const workView = searchParams.get('view') === 'work' || Boolean(campusId && searchParams.get('view') !== 'chat');
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
   const [providerRouting, setProviderRouting] = useState<Record<string, string>>(
     providerRoutingDefaults,
@@ -264,6 +271,15 @@ export default function SkyChatWorkspace() {
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const intent = takeHomeIntent(window.sessionStorage);
+        if (intent) setDraft(intent);
+      } catch { /* Unavailable tab storage leaves the composer editable. */ }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
     null,
@@ -704,7 +720,7 @@ export default function SkyChatWorkspace() {
     setThreadId('');
     setThreadCreatedAt(0);
     setSessionReady(false);
-    router.replace(`/chat?tool=${encodeURIComponent(toolId)}`, { scroll: false });
+    router.replace(`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(toolId)}`, { scroll: false });
   }
 
   function startNewChat() {
@@ -985,7 +1001,7 @@ export default function SkyChatWorkspace() {
         setThreadId(nextThreadId);
         setThreadCreatedAt(createdAt);
         setSessionReady(true);
-        router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
+        router.replace(`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
       } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
     }
   }
@@ -1017,9 +1033,11 @@ export default function SkyChatWorkspace() {
 
   return (
     <WorkspaceShell
-      title="Zema"
+      title={campusId ? `${CAMPUSES[campusId].shortName} Sky` : 'Zema'}
       contentClassName="sky-chat-page"
       running={running}
+      standaloneSky={Boolean(campusId)}
+      standaloneHomeHref={campusHubPath}
     >
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
@@ -1030,7 +1048,7 @@ export default function SkyChatWorkspace() {
             <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Zema <small>WORKSPACE</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
-          <Link className="zema-new-chat" href="/chat" onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
+          <Link className="zema-new-chat" href={zemaChatPath} onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">ツールと会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="ツール・会話を検索" /></label>
           <div className="zema-sidebar-section-title"><span>ツール</span><span>{visibleBotApps.length}</span></div>
           <div className="zema-character-list">
@@ -1089,16 +1107,16 @@ export default function SkyChatWorkspace() {
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {
               const title = session.messages.find((message) => message.side === 'me')?.text || '新しい会話';
-              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
+              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+          <div className="zema-sidebar-bottom"><Link href={campusId ? `/sky/marketplace?campus=${campusId}` : '/sky'}><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href={zemaWorkPath}><ListChecks size={16} /><span>仕事</span></Link><Link href={campusHubPath}><House size={16} /><span>{campusId ? `${CAMPUSES[campusId].shortName} Hub` : 'ホーム'}</span></Link></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
-            <div><span>AVOKADO / ROCKSTAROS</span><h1>Zema</h1></div>
+            <div><span>{campusId ? `AVOKADO / ${CAMPUSES[campusId].shortName.toUpperCase()} SKY` : 'AVOKADO / ROCKSTAROS'}</span><h1>Zema</h1></div>
           </div>
           {selectedTool || selectedMcpServer ? (
             <div className="zema-active-bot" title={selectedTool?.name ?? selectedMcpServer?.name}>
@@ -1107,7 +1125,7 @@ export default function SkyChatWorkspace() {
             </div>
           ) : <span className="zema-auto-label">ツールは依頼に合わせて選択</span>}
           <nav aria-label="Zemaナビゲーション">
-            <Link href="/" aria-label="ホームへ戻る">
+            <Link href={campusHubPath} aria-label={campusId ? '大学別Skyのハブへ戻る' : 'ホームへ戻る'}>
               <House size={18} />
               <span>ホーム</span>
             </Link>
@@ -1116,7 +1134,7 @@ export default function SkyChatWorkspace() {
               <span>Sky</span>
             </Link>
             <Link
-              href="/chat"
+              href={zemaChatPath}
               aria-current={!workView ? 'page' : undefined}
               aria-label="Zemaの会話を開く"
             >
@@ -1124,7 +1142,7 @@ export default function SkyChatWorkspace() {
               <span>会話</span>
             </Link>
             <Link
-              href="/chat?view=work"
+              href={zemaWorkPath}
               aria-current={workView ? 'page' : undefined}
               aria-label="Zemaで仕事を管理する"
             >
@@ -1147,6 +1165,7 @@ export default function SkyChatWorkspace() {
               <p>
                 作成、手順の実行、確認、中止、結果の記録をここに集約します。
               </p>
+              <Link href={skyOutputsPath}>保存済みの成果を見る <ArrowRight size={15} /></Link>
             </header>
             <section
               className="sky-chat-job-center"
@@ -1198,7 +1217,7 @@ export default function SkyChatWorkspace() {
                           job.status,
                         ) && (
                           <Link
-                            href={`/chat?tool=${encodeURIComponent(job.tool)}`}
+                            href={`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(job.tool)}`}
                           >
                             <RotateCcw size={14} /> もう一度指示
                           </Link>
@@ -1592,7 +1611,7 @@ export default function SkyChatWorkspace() {
                       maximumBudgetInput: remoteBudgetInput,
                       model: providerRouting.textGenerationModel?.trim() || undefined,
                     });
-                    router.push('/chat?view=work');
+                    router.push(zemaWorkPath);
                   }}>この依頼文を仕事へ引き継ぐ <ArrowRight size={16} aria-hidden="true" /></button>}
                 </section>
               )}

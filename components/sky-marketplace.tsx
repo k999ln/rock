@@ -41,6 +41,7 @@ import {
 import styles from '@/components/sky-marketplace.module.css';
 import { CommerceNavigation, MarketplacePurchase, commerceAmount, usePublicCommerceOffers } from '@/components/sky-commerce';
 import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
 
 type RegistryItem = {
   packageKey: string;
@@ -71,7 +72,7 @@ const getHostSnapshot = (): SkyHostEnvironment | null =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const getServerHostSnapshot = (): SkyHostEnvironment | null => null;
 
-export default function SkyMarketplace({ initialPackageKey = null }: { initialPackageKey?: string | null }) {
+export default function SkyMarketplace({ initialPackageKey = null, campusId }: { initialPackageKey?: string | null; campusId?: CampusId }) {
   const runtimeContext = useSkyToolContext();
   const commerce = usePublicCommerceOffers();
   const [query, setQuery] = useState(initialPackageKey ?? '');
@@ -211,7 +212,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
     <WorkspaceShell title="Sky Market" tone="sky" contentClassName={styles.shell} hideTopActions>
       <div className={styles.page}>
         <nav className={styles.breadcrumb} aria-label="現在位置">
-          <Link href="/sky"><ArrowLeft size={14} /> Skyに戻る</Link>
+          <Link href={campusId ? `/sky/campus/${campusId}/hub` : '/sky'}><ArrowLeft size={14} /> {campusId ? `${CAMPUSES[campusId].shortName} Agent Hubに戻る` : 'Skyに戻る'}</Link>
           <span>/</span>
           <strong>マーケット</strong>
         </nav>

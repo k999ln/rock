@@ -1,3 +1,103 @@
+## 2026-10-15 Agent利用の月次後払い
+
+利用者の明示指示により携帯料金に近い毎月のAgent利用請求と確実な支払い管理を設計する。実行単価/上限/本人同意は維持し、未払い時は通知・猶予・異議対応・有料実行制限・入金復旧・適法な回収手続を定義する。銀行口座凍結をOSの権限にはしない。国/契約/料金/Providerは未確定、実課金未実施。[設計](sky-billing.md)。
+
+## 2026-10-15 建築・家具に埋め込み、取り外して携帯Wi-FiにするMini
+
+利用者は天井から円筒を取り外す参考画像とともに、建築/インテリアへの埋込・着脱・衛星回線による携帯Wi-Fiを明示。R5を固定dock＋可搬coreとして設計し、取り外し後の電源を必須設計項目に追加する。直接衛星通信は要求であり成立済み事実ではない。WAN上り/下りとWi-Fi LAN、屋内遮蔽、電池/熱/収納、場所権限を別検証する。[設計](avocado-mini-r5/embedded-portable-connectivity.md)。
+
+## 2026-10-15 avocadoMini単体のWebゲーム実行設計
+
+利用者はFivePlay等をMiniでも動かせる仕様と、RockstarOSとの関連を強めることを要求し、対象をavocadoMiniの設計と明示。R5の1本自律を維持し、ゲーム実行とSky/Zemaの同一仕事継続を設計へ追加する。必要RAM/SoCは実測後に選定し、外部PC必須・GTA VI対応済み・実機完成としない。[設計追補](avocado-mini-r5/game-runtime-design.md)。
+
+2026-10-15追加指示: ゲーム連携Agentは接続可能なものを全て対象とし、不足時は作成する。ローカル有限Tool Agentと外部LLM Agentの接続/実行受入を区別する。
+
+## 2026-10-15 ゲーム内Agent依頼・現実での継続・制作物の収益化
+
+利用者はゲーム内から接続済みSky Agentへ依頼し、現実側で同じ仕事を継続することを要求した。GTA VIのゲーム内通貨と、Higgsfield等の生成物をskinにしてmarketで収益化する構想も追加。Agent名、通貨操作の意味/方向/条件、GTA VIの接続口、販売許可は未確定。既存Zemaの親job・Sky委任・見積/承認/成果/usageを再利用し、カードの往復やfixtureを実Agent実行へ読み替えない。制作・ゲーム形式変換・導入・販売・入金を区別し、実交換はRQ13の個別gate、marketは提供者の権利条件を通す。[調査と実装順](gta-reality-bridge.md#14-ゲーム内のsky-agent依頼とクリエイター収益化2026-10-15追加指示)。
+
+## 2026-10-15 FiveMを現実とゲーム世界の最初の接続先にする
+
+利用者が「FiveMで外とゲームの世界がRockstarOSでつながる形を作って。まずMacで検証できるところから進めて」と明示したため、従来候補だったFiveMを先行接続先に選択する。起動リンク／手動メモだけで要求達成とせず、現実側から同一カードをNUIへ届け確認を返す往復と、ゲーム側から現実への未承認下書きを扱う。Mac host試験・resource候補・実FiveM受入・本番Zema統合を分ける。GTA VI接続仕様、具体的なserver/client/playerは未確定。RQ01〜RQ49、通貨交換gate、現実の外部作用の別承認を維持する。[正本](gta-reality-bridge.md#13-fivem選択とmac先行の世界境界bridge2026-10-15)。
+
+## 2026-10-14 建築・インテリア・サウンドをavocadoの根城にする
+
+利用者は、avocadoが建築・インテリアの専門家・事業者と組み、architecture、interior、soundを中核領域として、生活の質をより豊かにすることを明示した。ITは生活者へ機能を誇示する目的ではなく、空間、音、光、温熱、仕事、保存・復旧を自然につなぐために使う。これはavocadoが最初に深く製品・提携・実証を積む産業上の「根城」であり、建築図面生成だけの会社、汎用smart-home操作盤、無資格の設計・施工代行を意味しない。
+
+avocadoMiniは生活空間とRockstarOSを結ぶ物理node、RockstarOSは本人性・権限・Agent・端末・保存・復旧・費用上限の共通runtime、Skyは建築・インテリア・音響のAgent／Tool／専門家への接続、Zemaは一つの空間projectの依頼・revision・承認・進捗・成果・支出を管理する。建築士、設計者、施工者、音響家等の資格・契約・現場責任をAIへ移さず、生成・simulation・法規候補・見積を実測、専門家確認、行政許可、施工完了へ自動昇格させない。
+
+現行RQ01〜RQ49、SIM/eSIM起点の主商品、R5、Pixel/QEMU、Material Invention、料金・安全gateは維持する。最初の対象空間、利用者、国・地域、提携先、Miniの必要sensor／出力、soundの範囲、pilot価格は未決定。設計方針の保存を、提携成立、図面・法規適合、実機、施工、販売、市場獲得の証拠にしない。[avocadoMini完成設計の製品領域](rockstaros-avocado-mini-complete-design.md#0-建築インテリアサウンドを中核領域にする)と[担当workstream](workstreams/11-material-invention-avocado-mini.md#建築インテリアサウンドの根城2026-10-14)を参照する。
+
+## 2026-10-14 ランドセル防犯ベルサイズのRockstarOS hardware
+
+同日追加の明示方針: 黒い鏡面に二つの目を持つ手のひらサイズの相棒を、ランドセル等へ短い金具で**ぶら下げ、片手で外して話せる**ようにする。防犯は複数機能の一つ。本体にSOS操作と独立local alarmを置き、外した後も警報を使える。V0の会話は子供の明示操作から保護者スマホ中継またはWi-Fiで許可済みCloud Agentへつなぐ設計で、実機動作は未確認。eSIM単独通信、位置共有、家族通話、常時呼びかけは後続候補で、別受入。名称案は`avocado Companion`、正式名は未決定。[詳細設計](avocado-schoolbag-safety-device.md)。
+
+利用者は追加の手持ち小型screen参考を示し「もっとこんな感じ」と指示した。Pixel操作試作をV0.2 Pocket Consoleへ改訂し、二つの目に加えて処理状態・接続・SOS試験と操作履歴を一面で見せる。これは見た目と操作の方向修正で、吊り下げ本体に全面displayを確定する指示とは断定しない。二つの目だけの省電力案と小型情報screen案を、電池・視認性・安全の同じ受入で比較する。[Pixel試作と参考の扱い](avocado-schoolbag-safety-device.md#pixel-10で見えるv0操作試作2026-10-14)。
+
+利用者は、avocadoのRockstarOS系hardwareとして、子供のランドセルへ付ける防犯ベル程度の大きさの端末も開発すると明示した。これはRQ48の専用Device Profileとして追加し、RQ01〜RQ49、SIM/eSIM主商品、R5、Pixel/QEMUの各受入を維持する。R5の単純縮小やfull Android/Linux搭載を前提にせず、通信・account・MCU applicationに依存しないlocal alarm pathと、署名済み低消費電力firmware、保護者端末／cloud側のRockstarOSを分離する。
+
+利用者提示の有線home hardware、小型丸画面＋button／haptic／BLE／USB relay、ESP32-S3 USB input bridgeの3参考を比較する。携行本体は無線・電池、家庭側service dockは有線給電・診断を候補とし、screenless safety案P0-Aと丸画面companion案P0-Bを同じ包絡で検証する。iPhoneの任意tap／typeは子供用alarm経路へ入れず、採用する場合も成人owner端末の有限sessionに限定した別adapterとする。
+
+製品名、対象年齢・国、最終寸法・重量、alarm／通知／位置／通話、電源・無線、価格・販売は未確定。P0の70 × 45 × 25 mm以下、80 g以下はbenchmark用設計目標で、製造仕様ではない。設計、保存、規格調査を実機、安全認証、量産、販売へ換算しない。[P0設計と受入gate](avocado-schoolbag-safety-device.md)。
+
+## 2026-10-12 Skyの成果受け皿とアプリへのプラグイン
+
+利用者の追加指示: OS上の仕事管理はZemaが担う。一方、Sky単体は各アプリへAgentを接続し、成果をそのアプリの文脈で出すplatformにする。Fitness×Agentは最初の具体例である。Skyには本人の保存済み成果を確認する共通受け皿を置くが、アプリ内の主結果画面をZemaへ強制しない。アプリ側はSkyの本人別・保存済み成果を照会し、型付き出力schemaを検証して表示する。NFC・大学名・PWA追加を実行権や成果権へ使わない。現行sourceの第一者同一origin連携は外部アプリ向けcross-origin SDK/認証の完成を意味しない。[設計と境界](sky-launch-design.md#sky-app-output-plugins)。
+
+## 2026-10-12 Sky単独品質と共通入口の進捗同期
+
+利用者指定チャット「大学別NFCでSkyに接続」の「OSでも出すがSky単体でも高品質に使える」と公開Skyを基準にする最新指示を優先する。大学NFC/QRは既存Skyを大学名・おすすめ付きで開き、Agent/Tool/MCPの発見・購入・接続・利用とSky内Zemaを共用する。旧フォーム中心Hubは主画面として退役し、briefを補助Toolとして保持する。任意eSIMの利用権導入も同じSkyへ合流し、通常URL/NFCの利用者にeSIMやOS完成を要求しない。iOS初期版は本人操作で使うbrowser/PWA、native/App Clip/App Intentsは後続候補。目的から受入までの正本は[共通入口仕様](sim-led-product-architecture.md#sky-shared-entry)。RQ01〜RQ49と一般5/対象学生6枠、既存料金、権限、Pixel/QEMU/Provider gateを維持する。仕様同期は実装・公開・実機合格ではない。
+
+## 2026-10-12 大学別NFC Skyと接続枠
+
+利用者は添付画像のNYU・FIT・Columbia・Fordham・John Jay向けに、NFCタップで大学名付きSkyがスマホbrowserで開く仕様と大学別機能を明示した。一般MCP接続は5個まで無料、6個目から有料。追加指示により対象5大学学生は6個まで無料、7個目から有料とする。価格・決済開始は未指定。NFCは大学別Skyの専用入口であり、端末への無断導入や本人認証ではない。Skyは単独browser/PWAとして本人の操作でホーム画面へ追加できる。Sky内にAgent HubとZema管理画面を置き、Marketplaceの発見→条件確認→対象環境でApple Payが提供される場合のStripe Checkout→購入照合→利用権確認→仕事の承認・停止・成果確認につなげる。購入済み表示だけで外部Agentの実行権限を与えず、Cloud/Providerの接続・使用額は別受入とする。[詳細契約](sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。RQ01〜RQ49、SIM/eSIM、OS各受入と既存料金境界を維持する。
+
+追加の明示指示「NFCタップで即Sky」により、登録済みSkyタグは大学別Agent Hubへ直接進む。以前に登録したSkyタグの大学別トップURLもHubへ転送する。ブラウザ上でそのまま利用できる状態と、端末へのPWA追加は分け、後者は本人の明示操作で行う。未登録・無効タグを利用権に昇格させない。
+
+追加修正（同日）: 大学別SkyのWebはポスター風LPではなく、優秀な学生が最初の作業を始められるサービス画面にする。NFCの着地点で依頼入力→Zema下書きへ引継ぎ、無登録の3項目brief作成、大学別の人・資料/案件・Agentへの操作、本人の仕事・購入・MCP枠の状態確認を提供する。空の状態を稼働中のAgentと見せず、下書き移動と実行・課金を分ける。
+
+最新の明示方針（同日）: 公開 `/sky` のAgentフィード、役割選択、Marketplaceと接続管理を見たうえで、OS内だけでなくSky単体のWeb/PWAとして高品質に提供する。大学版は別フォーム型サービスへ分岐させず、NFCから同じSkyアプリを大学名と大学別おすすめで開き、購入したAgent・接続・Sky内Zemaへつなぐ。上記のbriefとCampusの人・資料は補助機能として保持する。この判断変更は利用者が実際の公開Skyを指定したためであり、商品料金、決済可否、実行権限、接続枠は変更しない。
+
+## 2026-10-10 GrapheneOSの長所を再利用する方針
+
+利用者の「グラフェンのいいとこどりをしよう」を明示方針として記録する。Pixel版では既存のGrapheneOSベースを生かし、権限・隔離・検証起動・署名更新・Android互換性と、対応端末のLinux実行機能をRockstarOSのHome／Sky／Zema／Agentへ接続する方向で進める。個々の採用項目とLinux接続方式は下記設計の実装案であり、機種ごとの受入で決める。保護機構を無差別に削って速度を得る指示、全端末への対応、GrapheneOSと同等の安全性・速度の実証ではない。
+
+端末内Linuxを唯一のRockstarOS実行先にはせず、Android native・Linux／QEMU・cloud・他端末clientを共通契約へ接続する。Linux側の管理者権限からAndroid本体の権限へ昇格させず、OS全体のbuild／正式署名／flash／復旧と、VM内の処理・試験を別受入にする。RQ01〜RQ49、既存SIM/eSIM・料金・Wallet・Gameの境界を保持する。[再利用範囲・責任・実装順・受入条件](device-support-architecture.md#graphene-reuse)。
+
+## 2026-10-09 現実とGTAをつなぐ出力仕様
+
+利用者の「gtaでも出力できる仕様にしたい、リアルとgtaをつなげる橋渡しである」を明示製品要件として追加する。RockstarOSの作品・仕事・Agentの出力を現実のアプリ／サービスとGTA内の体験へ届け、結果を同じZemaプロジェクトへ返す。既存IP StudioのAsset／権利／版、Skyの交換可能adapter、Brokerの承認、Zemaの仕事・revisionを再利用する。これはRQ01・RQ04・RQ14・RQ48の具体化で、RQ01〜RQ49を維持する。
+
+最初の候補は管理権限のあるFiveM環境で自作カードをNUIへ表示し、結果をZemaへ返す非金融デモ。服・物・空間への変換、NPC／Agent、GTAから現実のサービスへの連携を段階拡張する。最初の出力とGTA版／serverは未指定で、FiveMの採用確定や接続成功ではない。GTA内の操作と現実の送信・発注・機器操作は別承認、RQ13の交換タイトル・方向・rate・実資金gateは未確定のまま保持する。SIM/eSIM／Web/app/nativeの製品方針、Pixel/QEMU、料金・Walletの境界は変更しない。詳細と合格条件は[現実とGTAの橋渡し仕様](gta-reality-bridge.md)。
+
+## 2026-10-09 Web全体のデザイン統一
+
+Homeだけの中性化では不十分という利用者の「デザインが統一されてない」により、Home・Sky・Zema・Wallet・Market・設定の背景・文字・操作部・header/navigationを共通化する。共通tokenとOSHeaderを使い、黒/白/色違いの個別テーマを同じグラファイト・銀色へ揃える。既存業務契約と意味色は保持する。
+
+## 2026-10-09 ホームを意図・仕事・成果の起点へ刷新
+
+利用者の「既存の概念は壊して、最新の先端をいってくれ」により、旧iPhone着想のアプリ配列と大時計を、依頼入力・本人の仕事・ツールへの短い導線を持つHomeへ置き換える。同日の利用者による「Homeをもっと中性的に」「他のappと常軌を逸している」という修正指示を優先し、彫刻・ライム・大きなコピーを撤去。既存アプリになじむ無彩色の暗い面・銀色の文字・細い罫線を使い、上部アプリ導線と通常サイズの依頼欄を配置する。集中表示とキーボード対応のツール一覧を保持する。旧外観設定は保存を壊さず適用を終了し、設定入口を集中表示へ更新する。入力は同じタブの10分以内の一回限りの下書きとしてZemaへ渡し、URLへ載せず自動実行しない。仕事は既存owner認証とworkflow状態を読み取る。料金・権限・実行先・native OS受入は変更しない。
+
+## 2026-10-07 eSIMアクセスキーの実装指示
+
+利用者は、eSIMをRockstarOSへのアクセスキーとする実装を今すぐ進めるよう明示した。既存SIM01の本人・購入・導入証明・gateway鍵・利用権・scope/期限/失効を再利用し、登録済み端末鍵によるCloud API要求署名を接続する。eSIM内秘密鍵、実carrier/端末受入、個人データの非保存はこのsource実装と別に判定する。会話中の800円/千円は新しい確定料金や請求開始へ換算しない。[設計と合格条件](sim-led-product-architecture.md#esimに結び付く端末鍵でのcloud-apiアクセス2026-10-07)。
+
+## 2026-10-07 メインSIM通信と共通クラウドサービス
+
+利用者は、eSIMを入口とするRockstarOS/SkyのクラウドAgent従量利用について「雛形は同じものを使い」「mainsimから基本は通信を享受しクラウドで動くシステムを設計したい」と明示した。この任意提供形態は既存メインSIM/Wi-Fiを通信に使い、新しい通信回線の購入を共通必須条件にしない。既存のHome/Sky/Zema、本人session、利用権、仕事/保存、予算・usage・決済を共通テンプレートとして再利用し、owner・秘密・台帳は分離する。
+
+実eSIMの発行/導入/サービス引渡しには対応provider/端末の受入が必要。eSIM内でRockstarOS/LLMを実行することや、通信契約なしの独自profileを全機種へ自由に追加できることは要件の実現方式としない。既存`service_only` claim経路で共通クラウド機能を検証し、実eSIM adapterは別受入する。旧通信同梱offerとnative/local/Web/appを保持する。具体的な目的・入出力・保存・失敗/復旧・責任・合格条件・未決定事項は[共通クラウド設計](sim-led-product-architecture.md#main-sim-cloud-service)を参照。料金の新設、本番請求、回線契約、OS書込みを開始した意味ではない。
+
+## 2026-10-05 AWSへのクラウド導入・提携準備
+
+同日追記: 利用者は「俺はお金払いたくない払って仕事しないだろ」と明示した。このAWS案件の本人/avokadoの自己負担上限は0。大規模な相手側費用支援・無償環境・技術協力を交渉し、対象外/超過/期限後/税/撤収費の支払義務も残さない条件を求める。開発対価はクレジットと別の交渉案とする。支援・報酬の採択は未確認。自己資金での契約や自動有料移行は行わず、未成立なら有料環境は作らない。既存の別契約への変更指示ではない。
+
+利用者はAWSへのクラウド導入と既存設計に沿った提携を希望し、相談名義を「avokado llc」「アメリカ」と回答した。AWSを優先相談先として、構成レビュー・代表Agentの実証・利用クレジット・実証後の事業連携を準備する。[AWS提携設計](provider-contract-readiness-20260930.md#aws-partnership-preparation)を参照。既存Cloudflare/D1/Workflow、本人認証、予算・Wallet・receiptを再利用し、初回はAWS実行adapterを接続、管理系のAWS移行は同一契約の検証後に段階実施する案とする。任意eSIM/Web/app/native/localの提供形態、料金保留、Pixel/QEMUの独立gateを維持する。相談先選定と提携成立、クレジット採択、契約、AWS配備、本番課金を区別する。外部出資・既存支援利用歴・account・連絡先・予算は未確認で、外部送信と有料契約は未実施。
+
+## 2026-10-05 決済の共通適用
+
+利用者は既存決済の安全性を確認し、Sky・ハードウェア・eSIM経由クラウドを含む各サービスへ共通適用するよう明示した。既存Stripe接続、商品別注文、Wallet予約・台帳・照合を再利用する。登録・掲載・接続・基本利用無料と有料Tool売上10%を維持し、クラウドの小売単価・利益幅・税・最低額を新設しない。サービス利用権と支払い承認、利用量計算と請求・入金、商品代と通信料を分離する。A2Aの既存Wallet精算をカードへ二重請求しない。これは全決済の本番合格、資金保管、追加の実請求または公開済みの宣言ではない。[共通決済の設計と残る条件](sky-billing.md#共通決済2026-10-05)。
+
 ## 2026-10-05 明示方針 — 選択可能なeSIM提供形態とSky従量課金
 
 利用者の明示指示「通信とかの部類じゃなくてesimからアクセスできるosでありクラウド上でskyのエージェント利用して従量課金で利益を取る形にしたい」を、続く明示補足「eSIMのパターンはね」「別に全部がそれってわけじゃないけどそれが可能なものはそれでもいいよね」と合わせて記録する。これは全製品の一本化ではなく、対応できる端末・提供形態で選べるeSIM経由のクラウドOSサービスである。この形態ではSkyで選んだエージェントのクラウド利用に応じた料金から利益を得る。この形態を通信回線の販売・通信量課金中心の商品として扱わない。eSIMなしのWeb/app、端末内LLM/offline agentを持つnative OS、能力・同意に応じたlocal/cloud併用も維持する。

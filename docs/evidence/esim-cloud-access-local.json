@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-05",
+  "branch": "codex/esim-cloud-access",
+  "sourceBase": "37c06cec",
+  "status": "local_verified_production_gated",
+  "scope": "optional eSIM access; ordinary native/local/app/Web paths preserved",
+  "tests": {
+    "focusedUnit": {
+      "passed": 7,
+      "command": "node --experimental-strip-types --test tests/esim-cloud-access.test.mjs tests/rockstar-service-package-access.test.mjs"
+    },
+    "fullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 882,
+      "workerD1Assertions": 1159,
+      "csvAssertions": 113,
+      "webAssetMissing": 0,
+      "log": "/private/tmp/rock-esim-verify.log",
+      "logSha256": "99e54e6817d5905d6594dfb07a03387452f4725e83749e24adcf3335e2d5c65d"
+    }
+  },
+  "ui": {
+    "entry": "http://localhost:3000/connect",
+    "purchaseNavigation": "passed using actual browser click",
+    "purchaseState": "payment service configuration pending",
+    "realKeyLifecycleUiAccepted": false
+  },
+  "production": {
+    "carrierActivation": false,
+    "physicalDeviceAcceptance": false,
+    "liveCloudExecution": false,
+    "realBilling": false,
+    "published": false
+  },
+  "concurrentWork": "Unrelated payment integration edits are present in the shared checkout and preserved.",
+  "covered": [
+    "signed install and device receipt prerequisite",
+    "owner and Origin isolation",
+    "secret only in HttpOnly cookie/hash at rest",
+    "concurrent rotation single winner",
+    "stale key ID conflict",
+    "refund/expiry/install issuer and device key revocation",
+    "restricted scopes despite broader account or preview access",
+    "refund during replacement keeps recoverable revoked key",
+    "revocation wins against already-preflighted rotation",
+    "same service term after rotation",
+    "reviewed Starter Pack in entitlement response"
+  ],
+  "openGates": [
+    "accepted carrier/device proof-to-account handoff",
+    "same-device real eSIM acceptance",
+    "per-offer service duration/scopes and production key custody",
+    "real cloud provider execution and invoice reconciliation",
+    "commercial metering rates/margins/refund terms and actual collection",
+    "carrier-bill aggregation",
+    "native signed OS image acceptance"
+  ],
+  "sourceSha256": {
+    "lib/esim-cloud-access.ts": "bb8df2e53790b3db725c0517f783c125c80f2cdc741f0e7f6e57f7e255488263",
+    "lib/esim-cloud-grant.ts": "63e28c49a1bdd7f7c6e15ef9382d8fdd59056b50df957519c58ed682645580e4",
+    "lib/request-auth.ts": "42fe07f01b97fc31a162667cf206b09b8b432a9a9f10f090fb0bfd995b90f593",
+    "lib/rockstar-service-access.ts": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09",
+    "lib/rockstar-service-package-access.ts": "b61f7bb01eacd420e800dd41c52b747b48aefa9d3bead7549aeb714ab938cfb9",
+    "app/api/esim/orders/[orderId]/cloud-access/route.ts": "c06dd34bb74da628b66a5ff8afcf61a6cc1295fa923cedc8eb75d0f76202025a",
+    "components/esim-purchase-setup.tsx": "85cf01b91cb9ffa9024ef4a662f58d22ca5094007b04c52832f9e2feffbea254",
+    "app/connect/page.tsx": "8c52b602b543af2c68107de64b32be2bba10a6fdb5e651d796e151b6aa108232",
+    "drizzle/0059_esim_cloud_access_keys.sql": "a004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946",
+    "tests/esim-cloud-access.test.mjs": "abcc58bec3df8652716dac5d8e4c9e98faf63246411c9fd9a6a77fdf4df7e304",
+    "tests/rockstar-service-package-access.test.mjs": "ef5f29b2d03fe478d8e8cc81f9a481b967cc8d0142e0529c9652778de9a59727",
+    "scripts/check-work-api.mjs": "96a362584c5fc437e8f981f58524be23a3df417a9de84d3dfb25cb9c18f58d9b"
+  },
+  "verificationEnvironment": "local macOS Node 26 / Worker+D1 synthetic fixtures; full suite ran with concurrent payment changes preserved",
+  "storageIncident": "ENOSPC stopped initial build and verify attempts; regenerable task temp copies/npm caches cleaned, final rerun exit 0"
+}

@@ -54,9 +54,10 @@ android_app {
 
 android_app {
     name: "RockShell",
+    resource_dirs: ["shell/src/main/res"],
     manifest: "shell/src/aosp/AndroidManifest.xml",
     srcs: ["shell/src/main/java/**/*.java"],
-    static_libs: ["rock-shell-api"],
+    static_libs: ["rock-shell-api", "rock-automation-core"],
     sdk_version: "current",
     min_sdk_version: "35",
     target_sdk_version: "35",

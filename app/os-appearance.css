@@ -1,0 +1,390 @@
+/* Shared geometry and controls for Home, Sky, Zema, Wallet, Market and Settings. */
+.rock-workspace.rock-workspace {
+  --rock-paper: var(--os-bg);
+  --rock-ink: var(--os-text);
+  --rock-muted: var(--os-muted);
+  --rock-line: var(--os-line);
+  --rock-lime: var(--os-accent);
+  --background: var(--os-bg);
+  --foreground: var(--os-text);
+  --card: var(--os-panel);
+  --card-foreground: var(--os-text);
+  --popover: var(--os-panel);
+  --popover-foreground: var(--os-text);
+  --primary: var(--os-accent);
+  --primary-foreground: var(--os-accent-ink);
+  --secondary: var(--os-raised);
+  --secondary-foreground: var(--os-text);
+  --muted: var(--os-panel);
+  --muted-foreground: var(--os-muted);
+  --accent: var(--os-raised);
+  --accent-foreground: var(--os-text);
+  --border: var(--os-line);
+  --input: var(--os-line);
+  --ring: var(--os-focus);
+  min-height: 100dvh;
+  width: 100%;
+  display: block;
+  background: var(--os-bg);
+  color: var(--os-text);
+  font-family: var(--os-font);
+  line-height: 1.65;
+  color-scheme: dark;
+}
+.rock-workspace .rock-main-column.rock-main-column-full {
+  width: 100%;
+  min-width: 0;
+  background: var(--os-bg);
+}
+.rock-workspace .rock-main.rock-main {
+  width: 100%;
+  max-width: var(--os-content);
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  color: var(--os-text);
+  background: var(--os-bg);
+  border-radius: 0;
+}
+.rock-workspace .rock-bottom-note {
+  width: 100%;
+  max-width: var(--os-content);
+  margin: 0 auto;
+  padding: 16px 24px 28px;
+  border-top: 1px solid var(--os-line);
+  color: var(--os-muted);
+  background: var(--os-bg);
+}
+.rock-workspace .rock-bottom-note a {
+  color: var(--os-muted);
+}
+.rock-workspace .rock-button,
+.rock-workspace .market-categories button,
+.rock-workspace .market-create-button,
+.rock-workspace .sky-header-action,
+.rock-workspace .sky-role-pill,
+.rock-workspace .sky-chat-quick-requests button {
+  border: 1px solid var(--os-line);
+  border-radius: 8px;
+  min-height: 40px;
+  background: var(--os-panel);
+  color: var(--os-text);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none;
+}
+.rock-workspace .rock-button-primary,
+.rock-workspace .sky-one-tap-connect,
+.rock-workspace .sky-main-feed .sky-post-primary,
+.rock-workspace .sky-assistant-composer button,
+.rock-workspace .sky-chat-composer-box button,
+.rock-workspace .wallet-signin > a,
+.rock-workspace .wallet-send-button,
+.rock-workspace .market-ticket-submit {
+  min-height: 40px;
+  border: 1px solid var(--os-accent);
+  border-radius: 8px;
+  background: var(--os-accent);
+  color: var(--os-accent-ink);
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.rock-workspace .rock-button-primary:hover,
+.rock-workspace .sky-main-feed .sky-post-primary:hover,
+.rock-workspace .sky-one-tap-connect:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--os-accent-ink);
+}
+.rock-workspace button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.rock-workspace :is(input, textarea, select) {
+  color-scheme: dark;
+}
+.rock-workspace :is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--os-focus);
+  outline-offset: 3px;
+}
+.rock-workspace .sky-feed-layout {
+  max-width: none;
+}
+.rock-workspace .sky-feed-column {
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius);
+  background: var(--os-panel);
+  overflow: clip;
+}
+.rock-workspace .sky-main-feed .sky-feed-header {
+  position: relative;
+  top: auto;
+  background: var(--os-panel);
+  min-height: 72px;
+}
+.rock-workspace .sky-main-feed .sky-feed-search {
+  position: relative;
+  top: auto;
+  background: var(--os-panel);
+}
+.rock-workspace .sky-feed-post {
+  background: var(--os-panel);
+}
+.rock-workspace .sky-feed-post:hover {
+  background: var(--os-raised);
+}
+.rock-workspace .sky-one-tap {
+  background: var(--os-panel);
+  border-bottom: 1px solid var(--os-line);
+}
+.rock-workspace .sky-one-tap-icon,
+.rock-workspace .sky-assistant-avatar,
+.rock-workspace .sky-chat-auto-mark,
+.rock-workspace .sky-chat-sky-mark,
+.rock-workspace .market-brand > span {
+  color: var(--os-text);
+  background: var(--os-raised);
+  border-color: var(--os-line);
+  box-shadow: none;
+}
+.rock-workspace .sky-role-list {
+  margin-right: 0;
+}
+.rock-workspace .sky-chat-page.sky-chat-page {
+  min-height: calc(100dvh - 116px);
+}
+.rock-workspace .sky-chat-simple {
+  width: 100%;
+  min-height: calc(100dvh - 192px);
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius);
+  background: var(--os-panel);
+  overflow: clip;
+}
+.rock-workspace .sky-chat-commandbar {
+  min-height: 54px;
+  padding: 12px 18px;
+  background: var(--os-panel);
+  border-bottom: 1px solid var(--os-line);
+}
+.rock-workspace .sky-chat-commandbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.rock-workspace .sky-chat-commandbar > div > span,
+.rock-workspace .sky-chat-commandbar > nav a[href='/'],
+.rock-workspace .sky-chat-commandbar > nav a[href='/sky'] {
+  display: none;
+}
+.rock-workspace .sky-chat-mode-row {
+  background: var(--os-panel);
+}
+.rock-workspace .sky-chat-mode-row > button {
+  background: var(--os-panel);
+  border-color: var(--os-line);
+  color: var(--os-muted);
+}
+.rock-workspace .sky-chat-mode-row > button.is-selected {
+  background: var(--os-raised);
+  color: var(--os-text);
+}
+.rock-workspace .sky-chat-bubble.is-user {
+  background: var(--os-raised);
+  border-color: var(--os-line);
+  color: var(--os-text);
+}
+.rock-workspace .sky-chat-bubble.is-sky {
+  background: transparent;
+  color: var(--os-text);
+}
+.rock-workspace .sky-chat-composer {
+  background: var(--os-panel);
+}
+.rock-workspace .sky-chat-composer-box {
+  border-color: var(--os-line);
+  background: var(--os-bg);
+  border-radius: var(--os-radius);
+}
+.rock-workspace .sky-chat-composer-box textarea {
+  color: var(--os-text);
+}
+.rock-workspace .sky-chat-composer-box textarea::placeholder {
+  color: var(--os-muted);
+}
+.rock-workspace .everything-market {
+  color: var(--os-text);
+  background: var(--os-bg);
+}
+.rock-workspace .market-top,
+.rock-workspace .market-categories {
+  background: var(--os-bg);
+  padding-right: 0;
+  padding-left: 0;
+  border-color: var(--os-line);
+}
+.rock-workspace .market-hero {
+  padding: 28px 0;
+  background: var(--os-bg);
+  border-bottom: 1px solid var(--os-line);
+  gap: 24px;
+}
+.rock-workspace .market-hero h1 {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  color: var(--os-text);
+}
+.rock-workspace .market-hero h1 br {
+  display: none;
+}
+.rock-workspace .market-hero p {
+  color: var(--os-muted);
+  font-size: 13px;
+}
+.rock-workspace .market-runtime-card,
+.rock-workspace .market-activity,
+.rock-workspace .market-card,
+.rock-workspace .market-loading,
+.rock-workspace .wallet-signin,
+.rock-workspace .rock-settlement-wallet,
+.rock-workspace .wallet-balance,
+.rock-workspace .wallet-transactions {
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius);
+  background: var(--os-panel);
+  color: var(--os-text);
+  box-shadow: none;
+}
+.rock-workspace .market-categories button.is-active {
+  background: var(--os-raised);
+  color: var(--os-text);
+  border-color: var(--os-line);
+}
+.rock-workspace .market-layout {
+  padding-right: 0;
+  padding-left: 0;
+  padding-top: 24px;
+}
+.rock-workspace .market-search {
+  background: var(--os-panel);
+  border-color: var(--os-line);
+  color: var(--os-muted);
+}
+.rock-workspace .market-search input {
+  color: var(--os-text);
+}
+.rock-workspace .wallet-app {
+  max-width: none;
+}
+.rock-workspace .wallet-signin {
+  min-height: 230px;
+  padding: 28px;
+}
+.rock-workspace .wallet-signin h1 {
+  color: var(--os-text);
+  font-size: 26px;
+  font-weight: 600;
+}
+.rock-workspace .wallet-signin > span {
+  color: var(--os-text);
+  background: var(--os-raised);
+  border: 1px solid var(--os-line);
+  border-radius: 10px;
+}
+@media (max-width: 650px) {
+  .rock-workspace .rock-main.rock-main {
+    padding: 20px 16px 32px;
+  }
+  .rock-workspace .rock-bottom-note {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .rock-workspace .sky-chat-page.sky-chat-page {
+    padding: 16px 12px 24px;
+  }
+  .rock-workspace .sky-chat-simple {
+    min-height: calc(100dvh - 164px);
+  }
+  .rock-workspace .sky-main-feed .sky-feed-header {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 10px;
+  }
+  .rock-workspace .sky-main-feed .sky-feed-tabs {
+    order: 3;
+    width: 100%;
+  }
+  .rock-workspace .sky-main-feed .sky-feed-header-actions {
+    margin-left: auto;
+  }
+  .rock-workspace .market-hero {
+    display: block;
+    padding: 22px 0;
+  }
+  .rock-workspace .market-hero h1 {
+    font-size: 25px;
+  }
+  .rock-workspace .market-runtime-card {
+    margin-top: 18px;
+  }
+  .rock-workspace .wallet-signin {
+    padding: 22px;
+  }
+  .rock-workspace .wallet-signin h1 {
+    font-size: 23px;
+  }
+}
+
+.os-header .os-header-actions .rock-button {
+  border: 1px solid var(--os-line);
+  border-radius: 8px;
+  background: var(--os-panel);
+  color: var(--os-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 12px;
+}
+.rock-workspace .rock-main.everything-market-page.everything-market-page {
+  padding: 28px 24px 48px;
+}
+.rock-workspace .sky-feed-post {
+  animation: none;
+  opacity: 1;
+}
+.rock-workspace .market-safety,
+.rock-workspace .market-runtime-card > b {
+  background: var(--os-raised);
+  color: var(--os-muted);
+  border-color: var(--os-line);
+}
+.rock-workspace .market-activity-head > b {
+  background: var(--os-raised);
+  color: var(--os-text);
+}
+.rock-workspace .market-hero > div > span,
+.rock-workspace .market-runtime-card > svg {
+  color: var(--os-muted);
+}
+@media (max-width: 650px) {
+  .rock-workspace .rock-main.everything-market-page.everything-market-page {
+    padding: 20px 16px 32px;
+  }
+}
+
+@media (max-width: 650px) {
+  .rock-workspace .sky-main-feed .sky-feed-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 8px; }
+  .rock-workspace .sky-main-feed .sky-store-title { min-width: 0; }
+  .rock-workspace .sky-main-feed .sky-store-title .text-link { font-size: 10px; white-space: normal; line-height: 1.5; }
+  .rock-workspace .sky-main-feed .sky-feed-header > [data-slot='tabs'] { grid-column: 1 / -1; grid-row: 2; }
+  .rock-workspace .sky-main-feed .sky-feed-header-actions { grid-column: 2; grid-row: 1; padding: 0; gap: 4px; }
+}
+
+.rock-workspace .market-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; position: relative; top: auto; }
+.rock-workspace .market-search { position: static; width: 100%; max-width: none; min-width: 0; margin-left: 0; }
+@media (max-width: 650px) {
+  .rock-workspace .market-top { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+  .rock-workspace .market-search { grid-column: 1 / -1; grid-row: 2; }
+  .rock-workspace .market-wallet { grid-column: 2; grid-row: 1; }
+}

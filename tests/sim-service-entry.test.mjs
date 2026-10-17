@@ -17,6 +17,7 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   const claimPackage = read('lib/rockstar-entitlement-package.ts');
   const launch = read('app/rockstaros/page.tsx');
   const home = read('components/home-screen.tsx');
+  const osHeader = read('components/os-header.tsx');
   const skyMarketplace = read('components/sky-marketplace.tsx');
   const workbench = read('components/workbench.tsx');
   const packageHandoff = read('lib/rockstar-package-handoff.ts');
@@ -142,11 +143,12 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   assert.match(claimUI, /signin-with-chatgpt\?return_to=%2Fconnect/);
   assert.match(launch, /署名済み導入経路/);
   assert.match(home, /href="\/connect"/);
-  assert.match(home, /aria-label="RockstarOSの主要サービス"/);
-  assert.match(home, /href="\/sky"><Cloud/);
-  assert.match(home, /href="\/chat"><MessageCircle/);
-  assert.match(home, /href="\/work"><Bot/);
-  assert.match(home, /href="\/work"><Bot[^]*?<strong>Agent<\/strong><span>依頼・進捗・費用・成果<\/span>/);
+  assert.match(home, /<OSHeader\b/);
+  assert.match(osHeader, /aria-label="RockstarOSの主要サービス"/);
+  assert.match(home, /href: '\/sky'/);
+  assert.match(home, /href: '\/chat'/);
+  assert.match(home, /href="\/chat\?view=work"/);
+  assert.match(home, /\/api\/work-jobs/);
   assert.match(deviceHome, /requestRockstarUser\(request, db\)/);
   assert.match(deviceHome, /recentAgents/);
   assert.match(deviceHome, /recentLlm/);

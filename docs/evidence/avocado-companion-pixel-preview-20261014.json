@@ -1,0 +1,68 @@
+{
+  "schema": "avocado-companion-pixel-preview-evidence/1",
+  "recordedAt": "2026-10-14",
+  "taskId": "MAT16",
+  "artifact": "public/companion-preview/index.html",
+  "device": {
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "browser": "Vanadium",
+    "connection": "USB adb reverse to localhost development server"
+  },
+  "commands": [
+    "python3 -m http.server 8765 --bind 127.0.0.1 --directory public",
+    "adb reverse tcp:8765 tcp:8765",
+    "adb shell am start -a android.intent.action.VIEW -d 'http://127.0.0.1:8765/companion-preview/index.html' -p app.vanadium.browser",
+    "adb shell uiautomator dump /sdcard/companion-window.xml"
+  ],
+  "observed": {
+    "pageRenderedOnPixel": true,
+    "twoEyeCompanionVisible": true,
+    "schoolModeStateShown": true,
+    "microphoneDisabledInSchoolMode": true,
+    "offlineCheckboxSelectable": true,
+    "typedInputFixedReplyShown": true,
+    "sosTestStateShown": true,
+    "sosTestStopStateShown": true,
+    "guardianNotification": "not_connected_and_not_sent"
+  },
+  "v02PocketConsole": {
+    "reference": "https://www.instagram.com/reel/DecnZE8CPLP/",
+    "pixel10VanadiumRenderedCompactScreen": true,
+    "pixel10ScreenshotReviewedOutsideGit": true,
+    "localBrowserUiChecks": [
+      "school_mode_changed_status_to_SCHOOL_and_disabled_mic",
+      "offline_checkbox_changed_connection_label_to_simulation",
+      "typed_input_generated_fixed_reply_and_TALK_event",
+      "sos_start_changed_screen_and_receipt_without_guardian_notification",
+      "sos_stop_restored_standby_and_stopped_test"
+    ],
+    "onPixelInteractionRetest": "not_completed_for_v02_due_to_foreground_app_change_after_render",
+    "hardwareScreenSelected": false,
+    "childFacingDiagnosticsAccepted": false
+  },
+  "v03BoundedAgent": {
+    "source": "public/companion-preview/agent.js",
+    "pixel10VanadiumAgentStartObserved": true,
+    "pixel10VanadiumTypedInputAndUnsupportedReplyObserved": true,
+    "pixel10ScreenshotOutsideGit": "/private/tmp/companion-agent-pixel-dispatch.png",
+    "nodeTestCommand": "node --test tests/companion-agent.test.cjs",
+    "nodeTestsPassed": 4,
+    "multiTurnPlayTestedOnPixel": false,
+    "safetyGuidanceTestedOnPixel": false,
+    "modelOrCloudAgentConnected": false,
+    "localModelArtifactFoundInRepositoryOrTemp": false,
+    "pixelFullFilesystemModelSearchPerformed": false,
+    "guardianNotification": "not_connected_and_not_sent"
+  },
+  "notTested": [
+    "browser_speech_recognition",
+    "browser_speech_synthesis",
+    "real_alarm_loudness_or_independence",
+    "real_guardian_notification",
+    "actual_offline_network_behavior",
+    "device_firmware",
+    "companion_android_apk"
+  ],
+  "limits": "This is a host-served browser interaction prototype on a Pixel. The SOS sound is intentionally quiet and is not a safety alarm. No physical companion hardware, independent alarm path, child pilot, or product safety acceptance was performed."
+}

@@ -81,6 +81,7 @@ export async function POST(request: Request) {
       user,
       'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Zema');
     const candidate = createWorkJob(await body(request));
     const saved = await workStore(db).create(user, candidate);

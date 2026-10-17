@@ -61,6 +61,10 @@ import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { skyToolUiState } from '@/lib/sky-tool-ui';
 import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
 import { catalogHostMismatch, detectSkyHost } from '@/lib/sky-tool-compatibility';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
+import { CAMPUS_TOOL_STARTERS } from '@/lib/campus-sky';
+import SkyMcpPlan from '@/components/sky-mcp-plan';
+import SkyOwnedAgents from '@/components/sky-owned-agents';
 
 const subscribeHost = () => () => undefined;
 const browserHost = () => detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
@@ -187,9 +191,11 @@ function actionLabel(
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
+  campusId,
 }: {
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
+  campusId?: CampusId;
 }) {
   const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
@@ -282,10 +288,14 @@ export default function SkyWorkspace({
     };
   }, [setNeedsSignin]);
 
+  const campusRecommendations = campusId
+    ? new Set(CAMPUS_TOOL_STARTERS[campusId].map((tool) => tool.id))
+    : recommendedToolIds;
+  const campusQuickRoles = campusId ? campusRecommendations : quickRoleIds;
   const visibleTools = catalog.filter((tool) => {
     if (host && catalogHostMismatch(tool, host)) return false;
     const matchesFilter = Boolean(query.trim()) ||
-      (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
+      (filter === 'おすすめ' && campusRecommendations.has(tool.id)) ||
       (filter === 'Skyのツール' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
     const provider = providerFor(tool);
@@ -455,18 +465,33 @@ export default function SkyWorkspace({
       tone="sky"
       contentClassName={styles.shell}
       onConnect={() => setDeviceOpen(true)}
+      hideTopActions={Boolean(campusId)}
+      standaloneSky={Boolean(campusId)}
+      standaloneHomeHref={campusId ? `/sky/campus/${campusId}/hub` : '/sky'}
     >
       <div className={styles.page}>
         <header className={styles.heading}>
           <div>
-            <p className={styles.eyebrow}>YOUR TOOLS</p>
-            <h1 id="sky-feed-title">ツールを選ぶ</h1>
-            <p className={styles.intro}>アイコンで機能を確認。そのまま使い始められます。</p>
+            <p className={styles.eyebrow}>{campusId ? `SKY FOR ${CAMPUSES[campusId].name.toUpperCase()}` : 'YOUR TOOLS'}</p>
+            <h1 id="sky-feed-title">{campusId ? `${CAMPUSES[campusId].shortName} のSky` : 'ツールを選ぶ'}</h1>
+            <p className={styles.intro}>{campusId ? 'Agentを探して接続。仕事はSky内のZemaで管理できます。' : 'アイコンで機能を確認。そのまま使い始められます。'}</p>
           </div>
-          <Link className={styles.marketLink} href="/sky/marketplace">
+          {!campusId && <Link className={styles.marketLink} href="/sky/marketplace">
             <Store size={17} /> マーケット <ArrowUpRight size={15} />
-          </Link>
+          </Link>}
         </header>
+        {campusId ? <nav className={styles.campusNav} aria-label={`${CAMPUSES[campusId].shortName} Skyの管理`}>
+          <Link href={`/sky/marketplace?campus=${campusId}`}>Agentを探す <ArrowUpRight size={14} /></Link>
+          <Link href="/sky/purchases">購入したAgent <ArrowUpRight size={14} /></Link>
+          <Link href={`/sky/campus/${campusId}/outputs`}>成果を見る <ArrowUpRight size={14} /></Link>
+          <Link href="/sky/network">接続を管理 <ArrowUpRight size={14} /></Link>
+          <Link href={`/sky/campus/${campusId}/manage?view=work`}>Zemaで仕事を管理 <ArrowUpRight size={14} /></Link>
+          <Link href="/sky/campus">大学を変更 <ArrowUpRight size={14} /></Link>
+        </nav> : <div className={styles.generalNav}><Link href="/sky/outputs">Agentの成果を見る <ArrowUpRight size={14} /></Link><Link href="/sky/campus">大学別のSkyを開く <ArrowUpRight size={14} /></Link></div>}
+        {campusId ? <details className={styles.planDetails}>
+          <summary>MCP接続枠 · 一般5 / 対象大学生6</summary>
+          <SkyMcpPlan campusId={campusId} />
+        </details> : <SkyMcpPlan />}
         <section className={styles.assistant} aria-labelledby="sky-assistant-title">
           <h2 id="sky-assistant-title">やりたいことから探す</h2>
           <form className={styles.composer} onSubmit={submitRequest}>
@@ -474,7 +499,7 @@ export default function SkyWorkspace({
             <button disabled={!requestText.trim()} aria-label="Skyへ依頼を送る"><ArrowRight size={19} /></button>
           </form>
           <div className={styles.roles} aria-label="Skyの役割">
-            {skyRoles.filter((role) => allRolesOpen || quickRoleIds.has(role.toolId)).map((role) => {
+            {skyRoles.filter((role) => allRolesOpen || campusQuickRoles.has(role.toolId)).map((role) => {
               const tool = catalog.find((item) => item.id === role.toolId)!;
               if (host && catalogHostMismatch(tool, host)) return null;
               return <button key={role.toolId} onClick={() => openRole(tool, lastRequest || role.label)}>{role.label}</button>;
@@ -533,6 +558,7 @@ export default function SkyWorkspace({
             </div>
           )}
         </section>
+        <SkyOwnedAgents campusId={campusId} />
         <nav className={styles.utilities} aria-label="Skyの管理">
           <button onClick={() => setConnectionCenterOpen(true)}><Link2 size={17} /> サービス接続</button>
           <button onClick={() => setMcpOpen(true)}><Network size={17} /> PCのツール</button>

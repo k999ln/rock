@@ -1,0 +1,1583 @@
+{
+  "schema": "sky-campus-entry-evidence/1",
+  "date": "2026-10-12",
+  "status": "source_and_local_browser_verified_not_deployed",
+  "tasks": [
+    "WEB06",
+    "SKY21"
+  ],
+  "primaryOwner": "ROCK",
+  "primaryWorkstream": "Web / PWA / Sites",
+  "decision": {
+    "campuses": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "generalFreeConnections": 5,
+    "eligibleStudentFreeConnections": 6,
+    "paidExpansionPrice": null,
+    "paidCheckoutEnabled": false,
+    "entry": "NFC NDEF HTTPS URL / QR / browser",
+    "nativeOsRequired": false
+  },
+  "git": {
+    "localBranch": "codex/esim-cloud-access",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "remoteMainObserved": "70bcd8b8c67a1a7455d74dde0e6a711c34925ec0",
+    "remoteMainCi": "6/6 success on that SHA; does not apply to local dirty tree",
+    "sameNameRemoteBranchExists": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "integrationBlocker": "Existing local 0059/0060/0061 migrations diverge from current main Sky library/code/provider migrations. New campus migration uses 0063 to avoid adding a 0062 collision. Preserve and reconcile prior work before release."
+  },
+  "productionObserved": {
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "access": "public",
+    "version": 39,
+    "sourceCommit": "8cd0a4d7c541312a0f26f584c877631be621e606",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "campusChangesDeployed": false
+  },
+  "sourceSha256": {
+    "app/sky/campus/page.tsx": "38f2b335b10eb1804a327a0832384ba422c5c7dc56704e1d6bace0f6b61c4d39",
+    "app/sky/campus/[campus]/page.tsx": "a0e64db9e5fec2a40d5e49282ff39a2b5b08bb8857c489dc578ca91f9cf6e5fa",
+    "components/campus-sky.tsx": "df681ed5785b50ba4c8c416745d79b76d973d6ce90e16bc6f0ddb344fd9f104a",
+    "components/campus-sky.module.css": "78a2e7684f2faf89bf3283150f03456849ecb2ed98eeae586ef4494f5179c31e",
+    "components/sky-mcp-plan.tsx": "61925f48bf358627f5ce4c6e75e5afea45d93fb6b138d24ad9de2802debe0a7b",
+    "lib/campus-sky.ts": "f18e9e64100ea22a273e43fa9669c7a1ecffa03c1df5241aad22b7003df69520",
+    "lib/sky-mcp-plan.ts": "76d7d2e26c89b748c0615a13e6e8b578fe1e4a67a2ccf477d15d66dff8b7bbb1",
+    "lib/mcp-hub.ts": "1b8dee54b57b353084b222a69ad978d1ee8191c7f949e970ec236490bc568bf1",
+    "lib/campus.ts": "e2f5116d14cff20c85646c8cd1e76c4fc048b3b23cc2d8efdc5bd4c1907836f6",
+    "lib/campus-store.ts": "e59e0b8a61dab5bdb6e88c45c97b941fa393780ffc0fa91fae5f5255840e80a5",
+    "app/api/sky/mcp/plan/route.ts": "c9afdaab1518915d08603951ea728a25feac916cdd8c711ddd269e3e1c045c83",
+    "app/t/[tagId]/route.ts": "623d9536f9a89207e2d9b593e806b2aa3b4ddc6131d5776ce413aabb5d665bc4",
+    "app/sky/page.tsx": "7331472c40ac019926c1bb85aa5e7d61bdd015f2f989c1e928c940bc93b8b330",
+    "components/sky-workspace.tsx": "53c0f321d21fb9215834d6503dc8a8d99818ece775f07772c50c911bcafb2455",
+    "components/sky-mcp-center.tsx": "e0f796f899c6577ea1dcc346fb89d90203f0c6602e7aab37844905e788fa6704",
+    "app/campus/page.tsx": "94c8017a3feaaa456e858b8d18ff9ee4df26e5436d12579bc47230dfc1272fae",
+    "components/campus-workspace.tsx": "7ca5d49a4d7eab84859f1bcb0234db4964ea3e16da5d93e1e247d551a0b6395e",
+    "drizzle/0063_sky_mcp_slots.sql": "ce0277e0da1fe12a609f764fa11f2114e78f7211770536d546c6560694170572",
+    "db/schema.ts": "d4a2814c0ba961f7612e67038fba8e1f118a449f02145478aaa9dbd8a98da989",
+    "tests/campus-sky.test.mjs": "723668dc6402c6baf84f495396352e3770c8ce1b9da2c55c78778289575fd642",
+    "tests/campus-store.test.mjs": "042b767eb465bfe0d42de0ce0b40cfbfdfe86b92d8f8feb01dbeffd01952fa08"
+  },
+  "verification": {
+    "focusedCommand": "node --experimental-strip-types --test tests/campus-sky.test.mjs tests/campus.test.mjs tests/campus-store.test.mjs tests/sky-mcp-onboarding.test.mjs",
+    "focusedPassed": 19,
+    "fullCommand": "TMPDIR=/private/tmp npm run verify",
+    "fullExitCode": 0,
+    "nodeTests": 912,
+    "workerD1Assertions": 1178,
+    "csvAssertions": 113,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "assetReferences": 156,
+    "missingAssets": 0,
+    "rawLog": "/private/tmp/sky-campus-verify-final.log",
+    "rawLogSha256": "fe7dd0b78f8c1bf965a9cba4061052017a49ce4d8e5963a0aeee63cdc41e8b46"
+  },
+  "browser": {
+    "environment": "localhost Vinext; local synthetic sign-in; not production identity acceptance",
+    "universityNames": "all five verified",
+    "mobile320": {
+      "tested": 5,
+      "overflow": 0
+    },
+    "mobile390": "FIT screenshot visually checked",
+    "brief": "NYU and John Jay input/output checked",
+    "zemaHandoff": "NYU brief appeared in Zema composer, not submitted or executed",
+    "download": "John Jay text downloaded and content read back; browser download event listener timed out but actual file exists",
+    "downloadSha256": "9eafc5dd10bf154a59fa903505062237d71551e7cdcb5798f947ffd2e27095e5",
+    "planDisplay": "0 / 5 under local synthetic general identity after local migrations",
+    "screenshot": "/private/tmp/sky-campus-preview.jpg",
+    "physicalNfcWritten": false,
+    "physicalNfcTested": false,
+    "iosAndroidHardwareTested": false
+  },
+  "remaining": [
+    "Reconcile main and existing migrations on an isolated release candidate; retain all prior changes",
+    "Deploy exact candidate to existing Sky site and accept owner A/B + university identity + deletion/recovery",
+    "Implement accepted mobile cloud MCP relay/OAuth and server-side execution admission; current connection path is browser-to-PC",
+    "Determine paid expansion price, cap, period, tax/refund terms; no new charge authorized",
+    "Write exact accepted HTTPS URL to physical NFC and matching QR; test iPhone/Android"
+  ],
+  "scopeBoundary": "D1 quota applies to saved Sky slots and existing Web MCP admission. Independent OSS Connector and manually altered clients are not a SaaS billing enforcement boundary. Browser brief formatting is deterministic, not AI execution.",
+  "preWriteAudit": {
+    "checkedAt": "2026-10-12T23:02:23.697Z",
+    "intent": "Inspect current Sky before writing the supplied physical NFC stickers; no deployment or NFC write requested at this step",
+    "tag": {
+      "packagingLabel": "NTAG215 NFC Tags Sticker, 100 Pcs (Transparent)",
+      "identifiedFrom": "User-supplied packaging photograph",
+      "individualChipsRead": false,
+      "ndefWritten": false,
+      "userMemoryBytesPerNxp": 504,
+      "reference": "https://docs.nxp.com/bundle/NTAG213_215_216/page/topics/get_version.html",
+      "entry": "NDEF HTTPS URI to a server-managed campus destination; native OS installation is not required"
+    },
+    "production": {
+      "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+      "version": 39,
+      "sourceCommit": "8cd0a4d7c541312a0f26f584c877631be621e606",
+      "deploymentId": "appgdep_6ac05526bbd881919d960c7f260dc198",
+      "deploymentStatus": "succeeded",
+      "access": "public",
+      "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+      "uiLabel": "Developer Preview",
+      "serviceStatus": {
+        "version": 1,
+        "database": "available",
+        "csvStorageConfigured": true,
+        "legalAiConfigured": false,
+        "patentAiConfigured": false,
+        "jevConfigured": false,
+        "payments": "unconfigured",
+        "csvPayments": "live"
+      },
+      "statusMeaning": "API configuration/status only; does not prove provider execution, payment acceptance, or current database isolation. Secret env values are redacted and were not used to infer readiness.",
+      "campusNyuHttpStatus": 404
+    },
+    "browser": {
+      "environment": "Codex in-app browser; anonymous session; desktop browser at 390x844 viewport, not a physical phone",
+      "skyWidth": 390,
+      "skyScrollWidth": 390,
+      "citations": "Opened /sky/tools/mr-citations; sign-in required, sample/input/run disabled. No sign-in or processing performed.",
+      "externalMcp": "Published Sky displays PC connection and initial Connector requirement; mobile-only external MCP not accepted"
+    },
+    "local": {
+      "sourceHashMatches": 21,
+      "previousFullVerifyEvidence": "verification in this file; same runtime source hashes, not rerun by this read-only production audit",
+      "generalLimit": 5,
+      "eligibleStudentLimit": 6,
+      "campusChangesPublished": false
+    },
+    "launchCheck": {
+      "command": "npm run sky:launch:check",
+      "commandExit": 0,
+      "allStagesAccepted": false,
+      "note": "Exit 0 means the report ran; basic/marketplace/paid/clients/focused all report 未合格. Basic gaps are authenticated-first-use, csv-private-delivery, service-policy-and-support, recovery-and-update."
+    },
+    "remoteMainObserved": "70bcd8b8c67a1a7455d74dde0e6a711c34925ec0",
+    "sameNamedRemoteBranch": false,
+    "readyForRequestedCampusNfcRollout": false,
+    "remaining": [
+      "Reconcile and deploy exact university/5-or-6-slot candidate",
+      "Accept student identity, sign-in, owner isolation and recovery on the deployed candidate",
+      "Implement and accept phone-only MCP execution and paid expansion separately",
+      "Write one confirmed URL to one NTAG215 and test actual iPhone/Android before bulk tags"
+    ]
+  },
+  "launchResearch": {
+    "schema": "sky-nfc-launch-research/1",
+    "date": "2026-10-12",
+    "scope": "5大学向けNFC/QRからWeb版Sky、一般MCP5枠・対象学生6枠、スマホremote MCPと有料拡張",
+    "verdict": "依頼された全体仕様での一般配布は未受入",
+    "evidence": "公開Sky v39 / source 8cd0a4d7、main 70bcd8b8、local HEAD 37c06cec＋dirty差分。公開APIを今回再取得。UI/実タグ写真確認は同日直前turn。",
+    "requirements": [
+      {
+        "id": "R01",
+        "group": "公開版の統合",
+        "gate": "公開前",
+        "owner": "ROCK",
+        "state": "未統合",
+        "title": "先行変更を保全して公開候補を一本化",
+        "current": "local HEADとGitHub mainとSites v39は異なる。既存dirty差分あり。",
+        "need": "先行差分を退避し、最新main・引継ぎを同期して大学版を隔離候補へ統合。",
+        "acceptance": "同一commitのverify・CI・配備sourceを記録。無関係な差分を落とさない。",
+        "files": [
+          "docs/evidence/campus-sky-entry.json"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R02",
+        "group": "公開版の統合",
+        "gate": "公開前",
+        "owner": "ROCK",
+        "state": "未受入",
+        "title": "DB migrationを安全に適用",
+        "current": "0059〜0061のローカル系列はmainと相違。今回の枠tableは0063。",
+        "need": "適用済み履歴を調べ、番号・journal・schemaを整合。利用者データを保った移行を試す。",
+        "acceptance": "本番相当snapshotでmigrationと復旧を実演。学生枠・既存仕事が保持される。",
+        "files": [
+          "drizzle/0063_sky_mcp_slots.sql",
+          "db/schema.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R03",
+        "group": "公開版の統合",
+        "gate": "公開前",
+        "owner": "ROCK",
+        "state": "未配備",
+        "title": "5大学ページと5/6枠を公開Skyへ反映",
+        "current": "公開v39でNYU大学routeは404。ローカル5大学画面は検証済み。",
+        "need": "既存Sky projectへ検証済み同一候補を配備し、大学route・API・案内を再確認。",
+        "acceptance": "5大学URLが200、大学名・専用機能・本人枠が一致。直リンクとNFC経由の両方で確認。",
+        "files": [
+          "app/sky/campus/[campus]/page.tsx",
+          "app/api/sky/mcp/plan/route.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R04",
+        "group": "公開版の統合",
+        "gate": "公開前",
+        "owner": "ROCK",
+        "state": "要再分類",
+        "title": "本当に使える機能だけを正しく案内",
+        "current": "34 Toolは掲載数。Oct 2の分類は過去v28＋local混在の証拠。",
+        "need": "同じ公開候補で全掲載機能を利用可・要接続・テンプレート・利用不可へ再分類。旧「基本接続0円」表記も5/6枠と同期。",
+        "acceptance": "未実行AI、模擬、外部未接続を成功と表示しない。対象外は入口で説明。",
+        "files": [
+          "lib/catalog.ts",
+          "lib/sky-tool-ui.ts",
+          "components/sky-service-help.tsx"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R05",
+        "group": "NFCと入口",
+        "gate": "設置前",
+        "owner": "OWNER + ROCK",
+        "state": "URL未確定",
+        "title": "長期維持できるHTTPS入口",
+        "current": "既存Sky URLは利用可能。専用domainを新設する必然性はない。",
+        "need": "大学別・設置箇所別の管理URLを確定。既存/t routeを使いサーバー側で行先を更新・停止。",
+        "acceptance": "タグを書き換えず行先更新可能。無効タグ・他domainへの不正redirectを拒否。",
+        "files": [
+          "app/t/[tagId]/route.ts",
+          "lib/campus-store.ts"
+        ],
+        "sourceIds": [
+          "nxp"
+        ]
+      },
+      {
+        "id": "R06",
+        "group": "NFCと入口",
+        "gate": "設置前",
+        "owner": "OWNER + JOINT",
+        "state": "未実機",
+        "title": "実タグへNDEF URLを書いて読み戻す",
+        "current": "包装はNTAG215、個体の容量・ロック状態は未読取り。",
+        "need": "NFC対応スマホ＋writerアプリで1枚を読取、HTTPS URIレコードを1つ書く。秘密や認証情報は格納しない。",
+        "acceptance": "書込後のURL readback一致、対象大学表示。試験中は不可逆のread-only lockを行わない。",
+        "files": [
+          "docs/evidence/campus-sky-entry.json"
+        ],
+        "sourceIds": [
+          "nxp",
+          "writer"
+        ]
+      },
+      {
+        "id": "R07",
+        "group": "NFCと入口",
+        "gate": "設置前",
+        "owner": "ROCK + OWNER",
+        "state": "未検証",
+        "title": "実際に読めるQRと短い案内",
+        "current": "提供画像はデザイン参考。QRの実URLと読取性は未検証。",
+        "need": "確定URLからQRを生成し、印刷現物をdecode。NFC非対応/無効時のQR・手入力URLを併記。",
+        "acceptance": "NFCとQRが同じ大学へ到達。iPhoneとAndroidの通知タップを含めて案内。",
+        "files": [
+          "docs/evidence/campus-sky-entry.json"
+        ],
+        "sourceIds": [
+          "apple",
+          "android"
+        ]
+      },
+      {
+        "id": "R08",
+        "group": "NFCと入口",
+        "gate": "設置前",
+        "owner": "OWNER + ROCK",
+        "state": "未運用",
+        "title": "タグ台帳・貼付場所・破損/貼替対応",
+        "current": "写真のタグだけでは貼付面での読取性を証明できない。",
+        "need": "大学・設置場所・tag ID・URL・担当・開始/撤去日を記録。貼った状態で試験。改変/偽QR通報と停止を用意。",
+        "acceptance": "破損・不正な貼替時に管理URLを止められる。量産後も抜取りreadback。",
+        "files": [
+          "lib/campus-store.ts"
+        ],
+        "sourceIds": [
+          "writer"
+        ]
+      },
+      {
+        "id": "R09",
+        "group": "本人と学生特典",
+        "gate": "公開前",
+        "owner": "ROCK + JOINT",
+        "state": "要受入",
+        "title": "初めての学生のサインイン導線",
+        "current": "公開の文章Toolはサインイン必須。現在の入口はChatGPT認証。",
+        "need": "既存認証を使う条件を明示し、大学ページ→signin→元ページへ戻る。一般メールで登録した人の大学確認も可能にする。",
+        "acceptance": "初回/ログアウト/期限切れで入力と大学文脈を失わず復帰。別端末も同一owner。",
+        "files": [
+          "lib/request-auth.ts",
+          "app/api/campus/route.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R10",
+        "group": "本人と学生特典",
+        "gate": "公開前",
+        "owner": "ROCK + JOINT",
+        "state": "限定実装",
+        "title": "大学メールを本人アカウントへ紐付け",
+        "current": "今は認証経路のemail headerとdomainを確認。別の大学メールを追加確認する専用経路は未受入。",
+        "need": "既存IDへ期限付き確認リンク/OTP等の証明を結び付ける。大学・aliasを調べ、未確認文字列で特典を付けない。",
+        "acceptance": "無効/期限切れ/再利用token拒否。一般メールでログインしても大学証明を同一ownerへ保持。",
+        "files": [
+          "lib/campus.ts",
+          "lib/campus-store.ts"
+        ],
+        "sourceIds": [
+          "alumni",
+          "fordham-email"
+        ]
+      },
+      {
+        "id": "R11",
+        "group": "本人と学生特典",
+        "gate": "公開前",
+        "owner": "OWNER + JOINT",
+        "state": "方針未確定",
+        "title": "学生6枠の対象と有効期間",
+        "current": "studentは自己申告。大学メールの所有確認は在学確認ではない。",
+        "need": "現行の自己申告を許す特典にするか、在学確認Provider/大学連携等を採用するか決める。卒業・期限・再確認・異議申立ても定義。",
+        "acceptance": "非学生・別大学・期限切れを定義どおり判定。6枠はタグURLだけで付与されない。",
+        "files": [
+          "lib/sky-mcp-plan.ts"
+        ],
+        "sourceIds": [
+          "alumni",
+          "fordham-email"
+        ]
+      },
+      {
+        "id": "R12",
+        "group": "本人と学生特典",
+        "gate": "公開前",
+        "owner": "ROCK + JOINT",
+        "state": "本番未受入",
+        "title": "利用者と大学データの分離",
+        "current": "ローカルowner分離はあるが、公開版の本人A/B全受入が残る。",
+        "need": "認証proxyが外部入力の本人headerを除去すること、CSRF/権限/公開範囲/管理権限を配信境界で確認。",
+        "acceptance": "Aの枠・token・仕事・原稿をBが見られない。大学名を変更しても権限が増えない。",
+        "files": [
+          "lib/request-auth.ts",
+          "app/api/campus/route.ts"
+        ],
+        "sourceIds": [
+          "mcp-security"
+        ]
+      },
+      {
+        "id": "R13",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "ROCK + JOINT",
+        "state": "未完成",
+        "title": "スマホから動くサーバー側MCP client",
+        "current": "現行Web MCPはPC Connectorへ通信。PCなしのcloud経路は未受入。",
+        "need": "スマホ→Sky認証API→本人別MCP client→許可済みremote MCP→Zema結果という経路を実装。既存Cloudflare/D1/Workflowを再利用候補にする。",
+        "acceptance": "PCを停止したiPhone/Androidの携帯回線から外部Toolを実行し、結果を再取得できる。",
+        "files": [
+          "lib/mcp-hub.ts",
+          "docs/sky-mcp-architecture.md"
+        ],
+        "sourceIds": [
+          "cf-client"
+        ]
+      },
+      {
+        "id": "R14",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "ROCK + EXTERNAL",
+        "state": "未受入",
+        "title": "現行MCP認可と各社OAuth",
+        "current": "既存設計にOAuthはあるが、一般利用者のremote実接続は未受入。",
+        "need": "protocol版とSDKを固定。metadata discovery、PKCE、state、issuer/resource検査、CIMDまたは提供者所定の登録方式を実装。",
+        "acceptance": "初回接続、拒否、callback改変、再認証、scope変更を各Providerで試す。",
+        "files": [
+          "docs/sky-mcp-architecture.md"
+        ],
+        "sourceIds": [
+          "mcp-auth",
+          "notion",
+          "github"
+        ]
+      },
+      {
+        "id": "R15",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "ROCK",
+        "state": "未受入",
+        "title": "本人ごとの秘密保管と失効",
+        "current": "PC tokenをCloud用の共通鍵として使う構成は不可。",
+        "need": "外部access/refresh tokenをサーバーで暗号化。接続単位でrefreshを直列化し、鍵rotationと切断時の失効を実装。",
+        "acceptance": "HTML・URL・ブラウザ保存・ログに秘密なし。refresh競合と盗用/失効時に別本人へ波及しない。",
+        "files": [
+          "docs/sky-mcp-architecture.md"
+        ],
+        "sourceIds": [
+          "notion",
+          "mcp-security"
+        ]
+      },
+      {
+        "id": "R16",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "ROCK + EXTERNAL",
+        "state": "受入待ち",
+        "title": "許可済み接続先と権限のカタログ",
+        "current": "任意URLや任意stdioをそのままスマホcloudで動かせない。",
+        "need": "当初は審査済みremote HTTPSのみ。作者・版・scope・料金・送信先・schemaを固定。egressで内部IP/redirect/DNS変更を制御。",
+        "acceptance": "initialize→tools/list→許可された1操作→結果確認。metadata経由の内部ネットワーク到達も拒否。",
+        "files": [
+          "docs/sky-mcp-architecture.md"
+        ],
+        "sourceIds": [
+          "mcp-security"
+        ]
+      },
+      {
+        "id": "R17",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "OWNER + ROCK",
+        "state": "ローカル枠のみ",
+        "title": "5/6枠をサーバー実行時にも強制",
+        "current": "D1 atomic枠は実装済みだがIDはPC token fingerprint＋server ID。改変clientの実行境界にはならない。",
+        "need": "「1接続」を外部account/workspace＋接続先などで定義。Cloudのconnect/dispatch直前に本人の有効枠を確認。端末が増えても二重計数しない方針を確定。",
+        "acceptance": "一般5成功/6拒否、対象学生6成功/7拒否、同時要求・再接続・複数端末・直接APIでも同じ結果。",
+        "files": [
+          "lib/mcp-hub.ts",
+          "lib/sky-mcp-plan.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R18",
+        "group": "スマホMCP",
+        "gate": "MCP前",
+        "owner": "ROCK + JOINT",
+        "state": "未受入",
+        "title": "接続解除・停止・再試行と資源上限",
+        "current": "枠削除はPC process停止ではない。外部副作用は結果不明になる場合がある。",
+        "need": "枠解除、OAuth失効、進行job停止を分離。timeout・件数/サイズ・同時実行上限・429待ち・重複送信防止を接続。",
+        "acceptance": "切断後に新規実行不可。通信断から二重投稿せず復帰。取消済みと結果不明を区別。",
+        "files": [
+          "lib/mcp-hub.ts",
+          "lib/workflow.ts"
+        ],
+        "sourceIds": [
+          "mcp-security",
+          "notion"
+        ]
+      },
+      {
+        "id": "R19",
+        "group": "AIと仕事",
+        "gate": "AI前",
+        "owner": "OWNER + ROCK",
+        "state": "gate閉鎖",
+        "title": "AI Providerと信頼済み料金を接続",
+        "current": "公開statusは法務/特許/Jev=false。local remoteAiPricingGateAcceptedはfalse固定。",
+        "need": "利用するProvider/モデル、請求account、サーバー専用鍵、入力暗号鍵、実料金、本人別予算を設定。鍵投入だけでgateを開けない。",
+        "acceptance": "実応答・token/usage・費用・上限・timeoutを同じ公開経路で照合後、有効化。",
+        "files": [
+          "lib/remote-ai-pricing-gate.ts",
+          "lib/sky-service-status.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R20",
+        "group": "AIと仕事",
+        "gate": "AI前",
+        "owner": "ROCK",
+        "state": "未完走",
+        "title": "依頼→承認→実行→保存を結ぶ",
+        "current": "大学briefは決定的な整形。Zema引継ぎは下書きで自動実行しない。",
+        "need": "既存lib/workflow.tsを通し、見積、実行承認、queue/executor、途中経過、成果・履歴をつなぐ。",
+        "acceptance": "新規依頼1件が実外部処理から保存結果まで到達。reload後も同じjobへ戻る。",
+        "files": [
+          "lib/workflow.ts",
+          "lib/campus-sky.ts",
+          "components/sky-chat-workspace.tsx"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R21",
+        "group": "AIと仕事",
+        "gate": "AI前",
+        "owner": "ROCK + JOINT",
+        "state": "未受入",
+        "title": "費用の予約・確定・結果不明処理",
+        "current": "料金/予約/usageのソースはあるが本番同一経路の請求照合は未受入。",
+        "need": "事前見積＋本人上限＋実行中予約＋実usage明細。再送/返金/取消/Providerの失敗時の扱いを統一。",
+        "acceptance": "許可予算を超えず、timeoutで成功や無料を捏造しない。重複請求0・不明額を不明のまま表示。",
+        "files": [
+          "docs/sky-billing.md",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R22",
+        "group": "AIと仕事",
+        "gate": "AI前",
+        "owner": "ROCK",
+        "state": "受入待ち",
+        "title": "AI提案と外部実行の承認境界",
+        "current": "大学ページや外部資料を指示/認可として信頼できない。",
+        "need": "Toolの内容・送り先・送るデータ・費用を確認し、外部投稿/共有/削除の承認を分ける。Tool結果内の命令を権限へ昇格させない。",
+        "acceptance": "悪意ある文書やTool応答で別MCPへデータ送信や権限拡大が起こらない。",
+        "files": [
+          "docs/sky-mcp-architecture.md",
+          "lib/workflow.ts"
+        ],
+        "sourceIds": [
+          "mcp-security"
+        ]
+      },
+      {
+        "id": "R23",
+        "group": "大学別の価値",
+        "gate": "公開前",
+        "owner": "ROCK + OWNER",
+        "state": "brief実装済み",
+        "title": "大学ごとに成果まで出る代表機能",
+        "current": "NYU/FIT/Columbia/Fordham/John Jayに3欄brief・取得・Zema導線がある。",
+        "need": "各大学1本の最小完成フローを選び、保存・共有範囲・次の行動まで実装/受入。AIや外部連携の有無を明示。",
+        "acceptance": "5大学で異なる題材から役立つ成果ができる。見出しだけの変更やAI風テンプレートを実AIとしない。",
+        "files": [
+          "lib/campus-sky.ts",
+          "components/campus-sky.tsx"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R24",
+        "group": "大学別の価値",
+        "gate": "公開前",
+        "owner": "ROCK + OWNER",
+        "state": "既存基盤あり",
+        "title": "コミュニティを使う場合の実内容と管理",
+        "current": "既存Campusにproject/event/profile等あり。実学生・団体・投稿の成立は未確認。",
+        "need": "公開範囲、募集への応募、通報/block、削除、管理担当を決める。初期実コンテンツを用意し、架空の活動を実績にしない。",
+        "acceptance": "非公開募集は対象外へ漏れず、通報/削除/本人交代で権限が正しい。",
+        "files": [
+          "lib/campus-store.ts",
+          "components/campus-workspace.tsx"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R25",
+        "group": "大学別の価値",
+        "gate": "公開前",
+        "owner": "ROCK + JOINT",
+        "state": "一部確認",
+        "title": "NY学生向けの言語・モバイル操作",
+        "current": "大学入口は英語だが公開Skyの主要画面は日本語。幅確認は実機受入と別。",
+        "need": "英語中心の導線、料金通貨/日付/時差、キーボード、読み上げ、文字拡大、保存・共有、エラー復帰を整える。",
+        "acceptance": "初見の学生が説明なしに1仕事を完了。320/390幅と実Safari/Chrome、200%文字拡大で主要操作可能。",
+        "files": [
+          "components/campus-sky.tsx",
+          "components/sky-workspace.tsx"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R26",
+        "group": "料金と決済",
+        "gate": "有料前",
+        "owner": "OWNER",
+        "state": "未確定",
+        "title": "追加接続枠の商品条件",
+        "current": "一般5/対象学生6は確定。超過の価格・上限・期間は未確定で購入無効。",
+        "need": "月額/追加枠単位・通貨・最大枠・特典期限・税/返金・失効/解約時に残す接続を決める。既存Tool売上10%と分離。",
+        "acceptance": "購入前の総額・付与枠・更新周期・取消方法が明確。勝手に課金されない。",
+        "files": [
+          "lib/sky-mcp-plan.ts",
+          "docs/sky-billing.md"
+        ],
+        "sourceIds": [
+          "stripe"
+        ]
+      },
+      {
+        "id": "R27",
+        "group": "料金と決済",
+        "gate": "有料前",
+        "owner": "OWNER + ROCK",
+        "state": "新SKU未接続",
+        "title": "追加枠のCheckoutと請求管理",
+        "current": "CSV専用payments=live、一般payments=unconfigured。CSVの決済実績はMCP追加枠の実績ではない。",
+        "need": "既存Stripe基盤へ追加枠SKUを接続。checkout、領収/請求、支払方法、解約導線を用意。自社利用枠販売だけなら第三者分配を一律必須にしない。",
+        "acceptance": "testで購入/取消/認証追加/失敗を完走。購入完了URLだけで枠を増やさない。",
+        "files": [
+          "docs/sky-billing.md",
+          "lib/sky-commerce.ts"
+        ],
+        "sourceIds": [
+          "stripe"
+        ]
+      },
+      {
+        "id": "R28",
+        "group": "料金と決済",
+        "gate": "有料前",
+        "owner": "ROCK + JOINT",
+        "state": "未受入",
+        "title": "支払状態と利用権の同期",
+        "current": "paidExpansionAvailableはfalse固定。追加枠の付与・失効は未実装。",
+        "need": "署名Webhook、event冪等、順序逆転、再送、支払い遅延、取消、返金、chargeback、再照合を実装。",
+        "acceptance": "他人の支払いで増枠不可。失効/返金後の新規実行を定義どおり拒否し保存成果は消さない。",
+        "files": [
+          "lib/sky-mcp-plan.ts",
+          "docs/sky-billing.md"
+        ],
+        "sourceIds": [
+          "stripe"
+        ]
+      },
+      {
+        "id": "R29",
+        "group": "料金と決済",
+        "gate": "AI前",
+        "owner": "OWNER + ROCK",
+        "state": "運用値未定",
+        "title": "運営費と無料利用の上限",
+        "current": "6接続無料は6サービスの有料機能やAI無制限を意味しない。",
+        "need": "hosting/DB/storage/AI/外部SaaS/決済/在学確認/印刷を別集計。無料AI量、1人/日/全体上限と停止基準を決める。",
+        "acceptance": "使用量増加時も承認済み支出上限を超える処理を開始しない。利用者画面に費用区分を表示。",
+        "files": [
+          "docs/sky-billing.md"
+        ],
+        "sourceIds": [
+          "cf-price",
+          "canva"
+        ]
+      },
+      {
+        "id": "R30",
+        "group": "保存と運営",
+        "gate": "公開前",
+        "owner": "OWNER + ROCK",
+        "state": "不足あり",
+        "title": "利用条件・プライバシー・私有窓口",
+        "current": "helpはあるが運営条件/私有サポート疎通はlaunch gate未合格。",
+        "need": "運営主体、無料/有料境界、外部送信先、保存場所/期限、削除、問い合わせ、退会、未成年の扱いを実装に合わせて確定。",
+        "acceptance": "実画面と規約が一致。原稿や個人情報を公開Issueへ送らず問い合わせを完了。",
+        "files": [
+          "components/sky-service-help.tsx",
+          "data/sky-service-launch.json"
+        ],
+        "sourceIds": [
+          "ftc"
+        ]
+      },
+      {
+        "id": "R31",
+        "group": "保存と運営",
+        "gate": "公開前",
+        "owner": "ROCK + JOINT",
+        "state": "本番未受入",
+        "title": "データ取得・削除・退会",
+        "current": "CSVは7日取得期限の設計。端末内成果、サーバー成果、外部Providerは保存先が異なる。",
+        "need": "自分の成果export、プロフィール/アカウント削除、token失効、外部に残るデータの説明を用意。期限拒否と物理削除を分ける。",
+        "acceptance": "A/Bで本人のみ取得・削除。期限/退会後の残存データとバックアップ方針が一致。",
+        "files": [
+          "components/sky-service-help.tsx",
+          "docs/sky-launch-design.md"
+        ],
+        "sourceIds": [
+          "ftc"
+        ]
+      },
+      {
+        "id": "R32",
+        "group": "保存と運営",
+        "gate": "公開前",
+        "owner": "ROCK",
+        "state": "本番未受入",
+        "title": "DBとファイルを一緒に復旧",
+        "current": "合成snapshot復旧の証拠はある。運用backup・削除journal再適用は未受入。",
+        "need": "D1/R2等の対になるbackup、暗号鍵復旧、migration rollback、停止時の復元手順を試す。",
+        "acceptance": "復旧で削除済み個人データが復活せず、paid枠/仕事/成果が整合。RPO/RTOを実測。",
+        "files": [
+          "docs/sky-launch-design.md",
+          "docs/evidence/sky-paired-storage-recovery-verification.json"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R33",
+        "group": "保存と運営",
+        "gate": "公開前",
+        "owner": "ROCK + OWNER",
+        "state": "未受入",
+        "title": "監視・障害停止・接続失効",
+        "current": "公開DB availableは疎通でありサービス全体の稼働保証ではない。",
+        "need": "error/latency/quota/費用/Provider障害を監視し、機能単位の停止と案内を用意。ログへ秘密/原稿を残さない。",
+        "acceptance": "Provider落ちでも無限再試行や二重副作用がない。担当へ異常が届き復旧手順を実行できる。",
+        "files": [
+          "docs/sky-launch-operations.md"
+        ],
+        "sourceIds": [
+          "mcp-security"
+        ]
+      },
+      {
+        "id": "R34",
+        "group": "実機と受入",
+        "gate": "設置前",
+        "owner": "JOINT",
+        "state": "未実施",
+        "title": "実iPhoneとAndroidでNFC一本通し",
+        "current": "desktop幅390の確認のみ。所有Pixelの別APK受入は今回Web/NFCの受入ではない。",
+        "need": "対応iPhone/SafariとNFC対応Android/Chromeで通知→大学→認証→接続→入力→成果→再取得。Wi-Fi/携帯回線、QRも試す。",
+        "acceptance": "端末型番/OS/公開source/タグURLと成否を記録。NFC非対応機にはQRが機能する。",
+        "files": [
+          "docs/evidence/campus-sky-entry.json"
+        ],
+        "sourceIds": [
+          "apple",
+          "android"
+        ]
+      },
+      {
+        "id": "R35",
+        "group": "実機と受入",
+        "gate": "MCP前",
+        "owner": "ROCK + JOINT",
+        "state": "localのみ合格",
+        "title": "特典と接続上限の本番試験",
+        "current": "localの一般5・学生6・同時8要求など19試験は合格済み。",
+        "need": "本番候補で学生/一般/非学生、全5大学、最後の1枠同時要求、解除再接続、別端末、偽装大学、退会/失効を試す。",
+        "acceptance": "上限超過0、owner越境0。provider failure時に枠が永久に詰まらず回復できる。",
+        "files": [
+          "tests/campus-sky.test.mjs",
+          "lib/sky-mcp-plan.ts"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R36",
+        "group": "実機と受入",
+        "gate": "MCP前",
+        "owner": "JOINT",
+        "state": "未実施",
+        "title": "各MCPの実成功・失敗・取消",
+        "current": "公式MCPが存在してもSkyからの相互運用合格ではない。",
+        "need": "採用する各接続先でOAuth→読取→本人承認後の1変更→Provider側確認→切断→失効拒否を受入。",
+        "acceptance": "返却文字列だけで成功扱いせずProvider側成果を確認。結果不明の自動再送なし。",
+        "files": [
+          "docs/sky-mcp-architecture.md"
+        ],
+        "sourceIds": [
+          "notion",
+          "linear",
+          "github",
+          "canva",
+          "figma",
+          "slack"
+        ]
+      },
+      {
+        "id": "R37",
+        "group": "実機と受入",
+        "gate": "公開前",
+        "owner": "OWNER + JOINT",
+        "state": "未実施",
+        "title": "小規模pilotと配布判断",
+        "current": "需要/継続率/サポート負荷は未実測。",
+        "need": "まず各大学の実協力者でtap→開始→初回成果→再利用を計測。人数/目標時間/費用上限は仮説として定める。",
+        "acceptance": "認証越境・超過課金・二重外部操作・重大データ消失が0。実測結果で拡大/停止を判断。",
+        "files": [
+          "data/sky-service-launch.json"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R38",
+        "group": "掲示と公開範囲",
+        "gate": "設置前",
+        "owner": "OWNER + EXTERNAL",
+        "state": "未取得",
+        "title": "設置場所の許可と表示権利",
+        "current": "ポスター画像だけでは学内設置・大学提携・写真/ロゴ利用の許可を確認できない。",
+        "need": "5大学の設置施設/管理者に商用NFCポスター可否を確認。学外なら場所の所有者へ確認。大学名・画像の権利と非公式表示を整理。",
+        "acceptance": "承認された現物/場所/期間だけに設置。大学別の案内を大学公式サービスと誤認させない。",
+        "files": [
+          "components/campus-sky.tsx"
+        ],
+        "sourceIds": [
+          "fit-post",
+          "fordham-post",
+          "nyu-post",
+          "columbia-post",
+          "johnjay-post"
+        ]
+      },
+      {
+        "id": "R39",
+        "group": "掲示と公開範囲",
+        "gate": "公開前",
+        "owner": "OWNER + ROCK",
+        "state": "判定待ち",
+        "title": "公開範囲ごとの合格条件",
+        "current": "sky:launch:checkはbasic/marketplace/paid/clients/focusedすべて未合格。",
+        "need": "大学Web・remote MCP・有料枠の各条件を証拠で閉じる。外部作者販売、native OS/Mini、eSIM等は別の既存gateを維持。",
+        "acceptance": "限定pilotを全Sky完成と呼ばない。既存gateを削除して合格にせず、未受入機能は提供範囲に含めない。",
+        "files": [
+          "data/sky-service-launch.json",
+          "scripts/check-sky-launch.mjs"
+        ],
+        "sourceIds": []
+      },
+      {
+        "id": "R40",
+        "group": "掲示と公開範囲",
+        "gate": "公開前",
+        "owner": "ROCK + OWNER",
+        "state": "未受入",
+        "title": "担当者が運用を引き継げる状態",
+        "current": "開発者のローカルPCにしかない変更と試験手順が残る。",
+        "need": "source/配備版、復旧、秘密の保管責任、タグ停止、学生例外、決済照合、問い合わせ対応、撤去手順を1つの入口へまとめる。",
+        "acceptance": "別の担当が秘密値を文書へ載せずに、障害停止/復旧と利用者対応を再現できる。",
+        "files": [
+          "docs/workstreams/05-web-pwa-sites.md",
+          "docs/sky-launch-operations.md"
+        ],
+        "sourceIds": []
+      }
+    ],
+    "universities": [
+      {
+        "name": "NYU",
+        "id": "nyu",
+        "implemented": "Creative project brief",
+        "proposed": "映像/AI/起業の企画→役割と日程→制作タスク→成果リンク",
+        "boundary": "企画テンプレートとZema下書き引継ぎはlocal実装。撮影/制作/チーム自動運営ではない。"
+      },
+      {
+        "name": "FIT",
+        "id": "fit",
+        "implemented": "Creative direction brief",
+        "proposed": "作品/ブランド方向→制作物と担当→ポートフォリオ/撮影計画",
+        "boundary": "画像生成、Figma/Canva連携、Instagram投稿は別の接続・承認が必要。"
+      },
+      {
+        "name": "Columbia",
+        "id": "columbia",
+        "implemented": "Research brief",
+        "proposed": "問い→提供された出典整理→検証方法→共同研究タスク",
+        "boundary": "実論文検索/評価は未接続。大学の購読資料を無断取得しない。"
+      },
+      {
+        "name": "Fordham",
+        "id": "fordham",
+        "implemented": "Community project brief",
+        "proposed": "地域/キャリア企画→協力者→活動計画→実施記録",
+        "boundary": "求人紹介・採用判断・大学キャリアセンター連携の成立は未確認。"
+      },
+      {
+        "name": "John Jay",
+        "id": "johnjay",
+        "implemented": "Civic project brief",
+        "proposed": "公共課題→公開根拠→政策/シビックテック案→行動計画",
+        "boundary": "法的判断、個人の犯罪予測、機密事件記録の取込みを初期機能にしない。"
+      }
+    ],
+    "providers": [
+      {
+        "name": "Notion",
+        "purpose": "研究メモ・企画・共同制作資料",
+        "gate": "優先候補",
+        "required": "Sky側のOAuth client、暗号化token保存、workspace許可、refresh競合対策。",
+        "sourceId": "notion"
+      },
+      {
+        "name": "Linear",
+        "purpose": "制作/開発のタスク管理",
+        "gate": "優先候補",
+        "required": "OAuthとworkspaceごとの接続管理。初回はread-only権限で検証可能。",
+        "sourceId": "linear"
+      },
+      {
+        "name": "GitHub",
+        "purpose": "AI/シビックテック開発",
+        "gate": "アプリ登録が必要",
+        "required": "SkyのGitHub App/OAuth App、callback、必要repo権限。組織の承認条件を確認。",
+        "sourceId": "github"
+      },
+      {
+        "name": "Canva",
+        "purpose": "ポートフォリオ・企画/広報素材",
+        "gate": "開発者登録が必要",
+        "required": "Developer PortalでMCPを有効化したclient ID/secret方式、またはCIMDのwaitlist。学生ごとの認証とplan別機能確認。",
+        "sourceId": "canva"
+      },
+      {
+        "name": "Figma",
+        "purpose": "デザイン・UI・共同制作",
+        "gate": "外部審査/登録待ち",
+        "required": "SkyをFigma MCP Catalogへ接続可能なclientとして認めてもらう。公式waitlistあり。今すぐ提供可能と案内しない。",
+        "sourceId": "figma"
+      },
+      {
+        "name": "Slack",
+        "purpose": "チームの情報検索と連絡",
+        "gate": "公開配布に制約",
+        "required": "MCP利用可能な登録app。一般配布にはMarketplace条件の確認が必要。internal app条件を他大学の公開配布へ転用しない。",
+        "sourceId": "slack"
+      }
+    ],
+    "accounts": [
+      {
+        "name": "配備と保存",
+        "need": "GitHub正本・既存Sites project・D1/R2・公開ログを管理できる権限。現在のprojectを再利用。",
+        "owner": "ROCK / OWNER"
+      },
+      {
+        "name": "Cloud実行",
+        "need": "本人別MCP/AIを稼働できる実行基盤と秘密保管。既存Cloudflare系の再利用を第一候補にする。新AWS契約は必須ではない。",
+        "owner": "ROCK / OWNER"
+      },
+      {
+        "name": "恒久URL",
+        "need": "既存SkyのHTTPS URLを使える。独自domainを選ぶ場合だけ、domain所有・DNS/TLS・更新責任が追加。",
+        "owner": "OWNER"
+      },
+      {
+        "name": "大学確認",
+        "need": "既存loginと別の大学メールを安全に結び付ける経路。厳密な在学確認を選ぶならProvider契約または大学との連携。",
+        "owner": "OWNER / JOINT"
+      },
+      {
+        "name": "外部MCP",
+        "need": "提供者のdeveloper app登録・審査、利用者自身の外部accountと同意。大学管理workspaceは管理者承認も確認。",
+        "owner": "OWNER / EXTERNAL / 利用者"
+      },
+      {
+        "name": "AI",
+        "need": "採用Provider/モデルのAPI利用account、請求責任者、server専用credential、利用上限。ChatGPT等へのログインとAPI利用枠を混同しない。",
+        "owner": "OWNER"
+      },
+      {
+        "name": "決済",
+        "need": "既存Stripe accountの適格性、追加枠SKU/価格、Webhook、解約/返金窓口。第三者へ売上分配する場合だけConnect等の別受入を追加。",
+        "owner": "OWNER / JOINT"
+      },
+      {
+        "name": "実物と利用者",
+        "need": "購入済みタグ、NFC対応の書込スマホ、試験用iPhone/Android、印刷QR、許可された設置場所、実学生の協力者。",
+        "owner": "OWNER / JOINT"
+      },
+      {
+        "name": "運営",
+        "need": "私有問い合わせ先、障害/費用通知の受信者、削除/学生特典の例外対応担当。",
+        "owner": "OWNER"
+      }
+    ],
+    "decisions": [
+      {
+        "title": "学生の確認水準",
+        "detail": "大学メール＋自己申告を特典の条件にするか、在学確認まで行うか。利用者の意図である学生特典を勝手に卒業生全員へ広げない。"
+      },
+      {
+        "title": "1枠の数え方",
+        "detail": "推奨案は1人の外部account/workspaceと接続先の組。Tool関数数やスマホ台数で数えない。最終条件は未確定。"
+      },
+      {
+        "title": "有料追加枠",
+        "detail": "一般は6個目から、対象学生は7個目から。価格/通貨/最大枠/課金周期/返金/解約後の残す枠を決める。"
+      },
+      {
+        "title": "AI無料量と支出上限",
+        "detail": "6枠無料とAI使用料を分離。利用者1人、1日、サービス全体の予算を確定。"
+      },
+      {
+        "title": "初期MCPの採用",
+        "detail": "6枠は接続可能数であり、6社を自動接続する意味ではない。公式条件を満たし実相互運用に合格した接続先から公開する。"
+      },
+      {
+        "title": "公開対象",
+        "detail": "最初の大学・配布枚数・協力者・設置場所・運営窓口。日時は外部審査/実機受入後に判断。"
+      }
+    ],
+    "tests": [
+      {
+        "name": "入口",
+        "acceptance": "5大学の各URLとNFC/QRが同じ大学へ。未知/停止tagは安全な案内へ。"
+      },
+      {
+        "name": "端末",
+        "acceptance": "実iPhone＋Safari、Android＋Chrome。通知操作・NFC無効・非対応端末のQR・携帯回線/Wi-Fi。"
+      },
+      {
+        "name": "初回",
+        "acceptance": "新規利用者が大学画面から認証して戻り、サンプル→自分の入力→成果を取得。"
+      },
+      {
+        "name": "本人分離",
+        "acceptance": "A/Bのprofile・MCP・仕事・token・成果・課金・管理権限が交差しない。"
+      },
+      {
+        "name": "学生",
+        "acceptance": "全5大学、一般、自己申告のみ、非学生、卒業/期限切れ、別メール紐付けを判定。"
+      },
+      {
+        "name": "枠",
+        "acceptance": "一般5/6・学生6/7の境界、同時追加、再接続、別端末、解除後再追加、直接API。"
+      },
+      {
+        "name": "OAuth",
+        "acceptance": "同意拒否、改変callback、期限切れ、refresh競合、Provider側失効、scope追加。"
+      },
+      {
+        "name": "外部MCP",
+        "acceptance": "採用した各社で実成果を確認。readのみから開始し、変更は内容/送り先を確認して実施。"
+      },
+      {
+        "name": "AI",
+        "acceptance": "実Providerの応答とusage/cost、上限拒否、長文/悪意あるTool内容、timeoutと結果不明。"
+      },
+      {
+        "name": "決済",
+        "acceptance": "testで成功/失敗/取消/再送/順序逆転/返金/解約/期限切れと枠反映。実課金は別条件。"
+      },
+      {
+        "name": "復帰",
+        "acceptance": "ブラウザを閉じて再開、session期限切れ、通信断、Provider障害でも二重実行しない。"
+      },
+      {
+        "name": "削除",
+        "acceptance": "成果/CSV/アカウント削除・期限切れ。Aだけが削除でき、backupから勝手に復活しない。"
+      },
+      {
+        "name": "移行",
+        "acceptance": "本番相当DB/R2のmigration、rollback、対snapshot復旧、秘密鍵のrotation。"
+      },
+      {
+        "name": "運用",
+        "acceptance": "通報→タグ/Tool停止→利用者案内→復旧。費用通知と私有問い合わせを実送受信できる。"
+      },
+      {
+        "name": "pilot",
+        "acceptance": "実学生が達成した成果、所要時間、再利用、離脱、接続失敗、1人当たり費用を測る。"
+      }
+    ],
+    "stages": [
+      {
+        "title": "1. 統合候補を作る",
+        "detail": "R01〜04。最新mainと先行差分、DB履歴を合わせ、同一sourceを固定。"
+      },
+      {
+        "title": "2. 大学Webと認証を受け入れる",
+        "detail": "R05、R09〜12、R23〜25、R30〜33。学生判定・英語導線・本人保存を確認。"
+      },
+      {
+        "title": "3. スマホMCPとAIを実接続する",
+        "detail": "R13〜22、R29、R35〜36。許可済み接続先・予算の下でPC不要の実成果を確認。"
+      },
+      {
+        "title": "4. 有料枠を完成させる",
+        "detail": "R26〜28。価格確定後にtest決済と利用権を受入。未完なら上限以上は停止し、販売開始を表示しない。"
+      },
+      {
+        "title": "5. 1枚から小規模配布へ進む",
+        "detail": "R06〜08、R34、R37〜40。実NFC/QR・掲示許可・運営手順を確認して拡大。"
+      }
+    ],
+    "sources": [
+      {
+        "id": "nxp",
+        "title": "NXP: NTAG215 memory / Type 2",
+        "url": "https://docs.nxp.com/bundle/NTAG213_215_216/page/topics/get_version.html",
+        "note": "NTAG215のuser memoryは504 bytes。URL格納用。個別タグの真正性・書込み可否は実読取りが必要。"
+      },
+      {
+        "id": "apple",
+        "title": "Apple: Background tag reading",
+        "url": "https://developer.apple.com/documentation/corenfc/adding-support-for-background-tag-reading",
+        "note": "対応iPhoneはNDEF URIを読み、通知をユーザーがタップしてリンクを開く。条件によりバックグラウンド読取り不可。"
+      },
+      {
+        "id": "android",
+        "title": "Android: NFC basics",
+        "url": "https://developer.android.com/develop/connectivity/nfc/nfc",
+        "note": "Android 16以降のWeb URLはACTION_VIEW。Android 17はリンクを開く通知への操作が必要。"
+      },
+      {
+        "id": "writer",
+        "title": "Wakdev: NFC Tools",
+        "url": "https://www.wakdev.com/en/apps/nfc-tools-android.html",
+        "note": "NTAG215対応。型番・書込可否の読取りとURLレコードの書込みを提供。"
+      },
+      {
+        "id": "mcp-auth",
+        "title": "MCP 2026-07-28: Authorization",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+        "note": "HTTP認可、PKCE、resource、metadata、issuer検証。CIMDを優先し、旧DCRだけに依存しない。"
+      },
+      {
+        "id": "mcp-security",
+        "title": "MCP: Security best practices",
+        "url": "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices",
+        "note": "tokenの不正な横流し、SSRF、DNS変更、session取り違え等への対策。"
+      },
+      {
+        "id": "cf-client",
+        "title": "Cloudflare: MCP client",
+        "url": "https://developers.cloudflare.com/agents/tools/mcp/",
+        "note": "サーバー側Agentから外部MCPへ接続する既存SDK。採用・配備・相互運用は別検証。"
+      },
+      {
+        "id": "cf-price",
+        "title": "Cloudflare: Workers pricing",
+        "url": "https://developers.cloudflare.com/workers/platform/pricing/",
+        "note": "直接Workersを契約する場合、Freeあり。Paidはaccount最低$5/月＋超過。Sitesの請求額ではない。"
+      },
+      {
+        "id": "notion",
+        "title": "Notion: Build an MCP client",
+        "url": "https://developers.notion.com/guides/mcp/build-mcp-client",
+        "note": "OAuthと暗号化token保存。refreshの直列化・原子的保存・再認証を設計する。"
+      },
+      {
+        "id": "linear",
+        "title": "Linear: MCP server",
+        "url": "https://linear.app/docs/mcp",
+        "note": "Streamable HTTP/OAuth。read-only endpointあり。workspaceごとの認証を分離。"
+      },
+      {
+        "id": "github",
+        "title": "GitHub: MCP host integration",
+        "url": "https://github.com/github/github-mcp-server/blob/main/docs/host-integration.md",
+        "note": "Remote MCPのOAuthにはhost側のGitHub App/OAuth App準備が必要。DCR非対応。"
+      },
+      {
+        "id": "figma",
+        "title": "Figma: MCP introduction",
+        "url": "https://developers.figma.com/docs/figma-mcp-server/",
+        "note": "Remoteあり。接続できるのはMCP Catalog掲載client。新clientはwaitlist。"
+      },
+      {
+        "id": "canva",
+        "title": "Canva: MCP access and permissions",
+        "url": "https://www.canva.dev/docs/apps/mcp/access/",
+        "note": "Developer Portalのclient ID/secret方式、またはCIMD waitlist。各利用者のCanva認証が必要。"
+      },
+      {
+        "id": "slack",
+        "title": "Slack: MCP overview",
+        "url": "https://docs.slack.dev/ai/slack-mcp-server",
+        "note": "登録Slack appとconfidential OAuth。MCP利用はMarketplace公開appまたはinternal app。unlistedは不可。"
+      },
+      {
+        "id": "stripe",
+        "title": "Stripe: Subscription webhooks",
+        "url": "https://docs.stripe.com/billing/subscriptions/webhooks",
+        "note": "支払い・契約更新・失敗・取消・返金等の通知から利用権を同期。戻り画面だけで権限付与しない。"
+      },
+      {
+        "id": "alumni",
+        "title": "Columbia: Final term / email",
+        "url": "https://isso.columbia.edu/content/final-term-reminders",
+        "note": "Morningsideの非医療卒業生のLionMailは期限切れにならない。大学メール＝在学中とは限らない。"
+      },
+      {
+        "id": "fordham-email",
+        "title": "Fordham: Role-based email",
+        "url": "https://www.fordham.edu/information-technology/standard-software/google-workspace/gmail/role-based-email-account/",
+        "note": "学生・卒業生・職員等のroleがある。メールdomainだけを在学証明としない。"
+      },
+      {
+        "id": "fit-post",
+        "title": "FIT: Campus posting policy",
+        "url": "https://www.fitnyc.edu/documents/policies/em002-campus-posting.pdf",
+        "note": "学内掲示の提出・承認・掲示場所・撤去を規定。商用NFCポスターの許可取得とは別。"
+      },
+      {
+        "id": "fordham-post",
+        "title": "Fordham: Publicity and posting",
+        "url": "https://www.fordham.edu/student-life/deans-of-students-and-student-life/student-handbook/university-regulations/a---z-listing/publicity-and-posting/",
+        "note": "Office for Student Involvementでの承認、指定場所、終了日等。外部商用企画の掲示許可は未取得。"
+      },
+      {
+        "id": "nyu-post",
+        "title": "NYU Law: Poster guidelines",
+        "url": "https://www.law.nyu.edu/studentaffairs/studentorganizationsandstudentactivityfunding/posterguidelines",
+        "note": "法学部の学生団体向け規則。NYU全体や外部広告の許可に一般化できない。設置施設ごとに確認。"
+      },
+      {
+        "id": "columbia-post",
+        "title": "Columbia Business School: Event planning",
+        "url": "https://students.business.columbia.edu/osa/sle/slr/event-planning",
+        "note": "Geffen/Kravisの壁・ガラスへの印刷広告掲示は禁止。全学の商用掲示可否は別確認。"
+      },
+      {
+        "id": "johnjay-post",
+        "title": "John Jay: Forms and policies",
+        "url": "https://www.jjay.cuny.edu/student-life/student-activities-association/forms-policies",
+        "note": "College eventの広報規則と窓口。外部サービスの掲示許可や大学ロゴ利用権を意味しない。"
+      },
+      {
+        "id": "ftc",
+        "title": "FTC: Protecting personal information",
+        "url": "https://www.ftc.gov/business-guidance/resources/protecting-personal-information-guide-business-0",
+        "note": "必要最小限の収集、アクセス制限、保管期間と安全な廃棄を実際の処理に合わせる。"
+      },
+      {
+        "id": "ferpa",
+        "title": "US Education: Third-party providers / FERPA",
+        "url": "https://studentprivacy.ed.gov/resources/responsibilities-third-party-service-providers-under-ferpa",
+        "note": "大学から教育記録を受け取る契約へ拡張する場合の確認資料。一般消費者向け利用と同一条件とは扱わない。"
+      }
+    ],
+    "tools": [
+      {
+        "id": "faster-whisper",
+        "name": "faster-whisper",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "transformers-js",
+        "name": "Transformers.js",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "playwright",
+        "name": "Playwright",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "jev-ultrafast",
+        "name": "Jev Ultrafast",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "jev-trader",
+        "name": "Jev Trader",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "typesafe-computer-use",
+        "name": "TypeSafe Computer Use",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "jev-review",
+        "name": "Jev Review",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "jev-browser",
+        "name": "Jev Browser",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "mobile-jev",
+        "name": "Mobile Jev",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "connection-plan"
+      },
+      {
+        "id": "coconala-proposal-draft",
+        "name": "ココナラ提案文の下書き",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "gig-workflow",
+        "name": "受託案件ワークフロー",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "coconala-inbox",
+        "name": "ココナラの依頼・添付整理",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "youtube-script-writer",
+        "name": "YouTube台本",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "seo-blueprint",
+        "name": "SEO・記事構成",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "landing-page-sprint",
+        "name": "LP・販売ページ制作",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "sales-objection-reply-builder",
+        "name": "商談返信・見積り支援",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "user-interview-synthesizer",
+        "name": "顧客インタビュー分析",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "local-template"
+      },
+      {
+        "id": "calendar-coordination",
+        "name": "予定・カレンダー連携",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "local-template"
+      },
+      {
+        "id": "telegram-notifications",
+        "name": "Telegram通知・承認",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "local-template"
+      },
+      {
+        "id": "producthunt-discovery",
+        "name": "外部ツール候補の発見",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "local-template"
+      },
+      {
+        "id": "rockstar-csv-cleanup",
+        "name": "CSV整形・検査・納品",
+        "classification": "過去の限定実利用証拠あり",
+        "scope": "Prior limited-live ¥50 trial retained; current loopback free CSV sample, independent inspection, result retrieval and reload."
+      },
+      {
+        "id": "mr-free-article",
+        "name": "記事の無料版メーカー",
+        "classification": "過去の限定実利用証拠あり",
+        "scope": "Prior Pixel production acceptance; current loopback article transformation, optional browser storage and reload."
+      },
+      {
+        "id": "mr-citations",
+        "name": "出典整理ツール",
+        "classification": "過去の限定実利用証拠あり",
+        "scope": "Prior Pixel production acceptance; current loopback citation grouping, optional browser storage and reload."
+      },
+      {
+        "id": "rockstar-markets-analysis",
+        "name": "avocadoOS Market Scanner",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Synthetic PAPER proposal, explicit approval, execution, receipt and reload; no real transaction."
+      },
+      {
+        "id": "mercari-revenue",
+        "name": "メルカリ収益スターター",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Synthetic listing draft and ¥400 estimate stored and reloaded; no Mercari listing/API execution."
+      },
+      {
+        "id": "fashion-brand-ops",
+        "name": "Instagram運用・受注型ブランド管理",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Rule-based browser brand plan returned; no PC persistence, image generation, Instagram action or billing."
+      },
+      {
+        "id": "coconala",
+        "name": "ココナラ",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Owner-scoped synthetic case draft stored and reloaded; no application, external contract, message or transfer."
+      },
+      {
+        "id": "rockstar-legal-intake",
+        "name": "法務受付",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Local standard guide returned without remote consent or telemetry opt-in; no online research or legal decision."
+      },
+      {
+        "id": "rockstar-patent-assistant",
+        "name": "特許アシスタント",
+        "classification": "local処理/テンプレート/合成",
+        "scope": "Local preliminary draft and missing-information checks returned; no prior-art research, signature or submission."
+      },
+      {
+        "id": "rockstar-ip-studio",
+        "name": "IP Studio — SNS・ゲーム・音声",
+        "classification": "当該試験環境では利用不可",
+        "scope": "Dedicated PC app link is present; this test environment does not run the required app. Mobile support remains unaccepted."
+      },
+      {
+        "id": "jev-router",
+        "name": "Jev Router",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "Sky one-click connection is explicitly unimplemented; PC CLI instructions only."
+      },
+      {
+        "id": "mr-delivery",
+        "name": "納品記録の照合",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "PC connector and selected work directory are required; no real delivery inspection executed."
+      },
+      {
+        "id": "rockstar-ledger",
+        "name": "サブスク顧問",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "Local Ledger endpoint unavailable: UI displays connection failure; no ledger processing executed."
+      },
+      {
+        "id": "jev-evaluation",
+        "name": "Jev品質評価",
+        "classification": "接続・実行器の受入待ち",
+        "scope": "Gateway credential and accepted pricing unavailable; empty input stops locally. No actual evaluation returned."
+      }
+    ],
+    "inventoryEvidence": "2026-10-02のv28/loopback証拠を分類した34 Tool。2026-10-12公開v39で全34件を再実行した結果ではない。",
+    "cost": "運営費 = hosting + DB/ファイル/queue/log + AI usage + 外部サービス + 決済手数料 + 在学確認 + domain/印刷。規模・モデル・利用回数・保管量が未定なので総額は算定不可。直接Workers Paidを選ぶ場合のみaccount基本$5/月＋超過。既存Sitesの請求額やAI総費用ではない。",
+    "notPrerequisites": [
+      "native OS完成、OS flash、専用SIM/eSIM発行、App Store配布はWeb/NFC入口の必須条件ではない。",
+      "スマホブラウザで任意のPC用stdio MCPを直接実行する前提にしない。必要なら将来の隔離Cloud runnerまたは本人PCを別受入。",
+      "自社追加枠販売の開始を、第三者作者への売上分配やWallet実資金、全34 Tool、Mini実機完成と結び付けない。",
+      "FERPA等の学校からの教育記録提供に関する契約条件は、大学システム/記録と連携する場合に追加確認。今回の学生向けWeb利用だけで大学とのデータ提供契約成立を仮定しない。"
+    ],
+    "actionsTaken": "読取り調査とローカル証拠/資料更新のみ。MCP接続・developer app申請・課金・契約・外部への連絡・配備・タグ書込みは未実施。"
+  },
+  "campusAgentHub": {
+    "date": "2026-10-12",
+    "status": "local_source_and_browser_verified_not_deployed",
+    "serviceWorkspace": {
+      "decision": "NFC destination is a task workspace, not a poster-style landing page",
+      "localBrowser": [
+        "NYU task entered in Hub, opened in Sky-path Zema composer with matching text and without sending",
+        "NYU guest three-field brief produced the matching structured output",
+        "NYU Film collaboration example populated a specific editable task prompt",
+        "FIT Hub shows its own campus name, portfolio/creative/gig examples and campus navigation",
+        "NYU Hub at 390px and 320px: document horizontal overflow 0"
+      ],
+      "ownerApis": [
+        "/api/work-jobs",
+        "/api/sky/commerce/purchases",
+        "/api/sky/mcp/plan"
+      ],
+      "verification": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "nodeTests": 913,
+        "workApiAssertions": 1178,
+        "csvAssertions": 113,
+        "webAssetMissing": 0,
+        "rawLog": "/private/tmp/sky-campus-service-workspace-verify-final.log",
+        "rawLogSha256": "2fd4886fbaf3adbb6b5e8ea2bd8b5fd31ccf5ef2d966e6f7c133d63f1bd71251"
+      },
+      "paymentProviderAndPhysicalNfcAccepted": false
+    },
+    "routes": [
+      "/sky/campus/{id}/hub",
+      "/sky/campus/{id}/manage",
+      "/sky/campus/{id}/manifest.webmanifest"
+    ],
+    "source": [
+      "components/campus-agent-hub.tsx",
+      "components/campus-agent-hub.module.css",
+      "components/campus-sky-install.tsx",
+      "lib/campus-sky.ts",
+      "components/sky-chat-workspace.tsx",
+      "lib/sky-app-manifest.ts",
+      "app/sky/campus/[campus]/hub/page.tsx",
+      "app/sky/campus/[campus]/manage/page.tsx"
+    ],
+    "identityBoundary": "NFC and PWA manifest choose campus presentation only; owner auth stays in existing APIs",
+    "paymentBoundary": "Purchase readback from existing signed/reconciled commerce; Apple Pay eligible condition, no real wallet acceptance",
+    "executionBoundary": "Purchased package access is separate from provider execution and usage; mobile standalone Cloud MCP not accepted",
+    "deployment": false,
+    "physicalTagWrite": false,
+    "nfcDirectLaunch": {
+      "target": "/t/{tagId}?source=nfc -> /sky/campus/{campus}/hub",
+      "newSkyTags": "store destination is campus hub",
+      "legacySkyTags": "read-time redirect from campus landing to hub",
+      "inactiveTags": "do not fall back to campus prefix",
+      "deviceInstall": "requires separate user action",
+      "focusedCommand": "node --experimental-strip-types --test tests/campus-store.test.mjs tests/campus-sky.test.mjs tests/campus.test.mjs",
+      "focusedPassed": 16,
+      "fullCommand": "TMPDIR=/private/tmp npm run verify",
+      "fullExitCode": 0,
+      "nodeTests": 913,
+      "workApiAssertions": 1178,
+      "csvAssertions": 113,
+      "webAssetMissing": 0,
+      "rawLog": "/private/tmp/sky-campus-nfc-direct-verify.log",
+      "rawLogSha256": "0e20e6c9c3b884c38c37da314ccce995915db86ff59281e61ec9bcee73cc3add",
+      "publicDeployment": false,
+      "physicalTagWrite": false
+    },
+    "verification": {
+      "focusedTests": 49,
+      "fullCommand": "TMPDIR=/private/tmp npm run verify",
+      "fullExitCode": 0,
+      "nodeTests": 913,
+      "workApiAssertions": 1178,
+      "csvAssertions": 113,
+      "build": "passed",
+      "typecheck": "passed",
+      "lint": "passed",
+      "designCheck": "passed",
+      "browser": [
+        "NYU Agent Hub shows campus name, purchase configuration state, work state",
+        "NYU Hub to Sky-path Zema manage route",
+        "NYU manifest serves campus-specific identity and hub start URL",
+        "390px Hub and Zema work view: document overflow 0"
+      ],
+      "rawLog": "/private/tmp/sky-campus-agent-hub-verify-final.log",
+      "rawLogSha256": "bea333d10606d64403fcaf9913a0833b115c3eda10848d25723badb255663b34"
+    }
+  },
+  "latestIntegratedUi": {
+    "observedAt": "2026-10-13T00:50:48Z",
+    "remoteMainObserved": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+    "publicSkyObserved": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky",
+    "decision": "reuse SkyWorkspace for campus NFC hub; prior dedicated campus-agent-hub prototype superseded",
+    "localPath": "/sky/campus/nyu/hub",
+    "campusPicker": "5 listed university links resolve directly to their Sky hub; each of 5 hub headings read back with the matching university name",
+    "localBrowser": "NYU 390px and FIT 320px viewport/document widths matched; Sky feed, campus name, ready recommendations, Marketplace/Purchases/Connections/Zema navigation and purchase-state panel visible",
+    "focusedTests": "6/6",
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "fullVerify": "passed locally; npm run verify exit 0, Node 913, Work API 1178, CSV 113, Web asset missing 0",
+    "rawLog": "/private/tmp/sky-standalone-verify-accepted.log",
+    "rawLogSha256": "1eb28554fdf728a73a5c707f7073d25962e9c1ea26e281b9af631abce5c1288d",
+    "deployed": false,
+    "physicalNfcTested": false,
+    "paidAgentExecutionAccepted": false
+  }
+}

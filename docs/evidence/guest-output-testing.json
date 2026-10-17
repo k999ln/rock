@@ -1,0 +1,81 @@
+{
+  "schema": "rockstaros-output-testing/1",
+  "checkedAt": "2026-10-09",
+  "taskId": "WEB04",
+  "status": "deployed",
+  "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+  "version": 48,
+  "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_1dde0ebcd2308191bdac0b1dd48d8865",
+  "sourceSha": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+  "deploymentId": "appgdep_6ac946eb402c81918725bed562354780",
+  "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/test",
+  "audience": "public",
+  "production": {
+    "responseScenarios": 17,
+    "realProcessing": 10,
+    "simulation": 3,
+    "unconnected": 4,
+    "allResponded": true,
+    "cloudAiGenerated": false,
+    "paidCalls": false,
+    "realFinancialTransactions": false
+  },
+  "validation": {
+    "targetedTests": 6,
+    "sourceVerify": {
+      "exit": 0,
+      "nodeTests": 291,
+      "fashionTests": 19,
+      "apiAssertions": 495,
+      "assetMissing": 0
+    },
+    "rootVerify": {
+      "exit": 0,
+      "apiAssertions": 1178,
+      "csvAssertions": 113,
+      "assetMissing": 0
+    },
+    "browser": [
+      "production_17_responses",
+      "production_csv_output",
+      "production_cloud_answer_null_not_run",
+      "preview_edited_csv_output",
+      "preview_wallet_over_reservation_rejected",
+      "preview_reset_and_reload_clears",
+      "preview_clipboard_exact_csv",
+      "downloaded_json_17_results_no_errors",
+      "mobile_390_320_no_overflow",
+      "production_390_no_overflow"
+    ],
+    "downloadedFile": "/Users/kaiya/Downloads/rockstar-test-results.json"
+  },
+  "architecture": {
+    "storage": "component_memory_only_no_app_db",
+    "inputLimitBytes": 64000,
+    "fieldLimitCharacters": 12000,
+    "authentication": "existing_protected_routes_unchanged; separate_same_origin_stateless_allowlist",
+    "network": "browser_to_same_site_only; executor_has_no_provider_calls",
+    "workflow": "sample_true_does_not_complete_real_work"
+  },
+  "native": {
+    "apkChanged": false,
+    "entry": "Existing Web版を開く then 出力テスト",
+    "physicalReverificationThisTurn": false,
+    "cloudAccount": "not_configured",
+    "localAi": "no_model"
+  },
+  "git": {
+    "mainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "rootChanges": "local_working_tree",
+    "mainIntegrated": false
+  },
+  "remaining": [
+    "Cloud AI requires provider credential and usage limit",
+    "faster-whisper / Transformers.js / Playwright adapters are unconnected in this hosted source",
+    "This is output testing; production workflow storage and native AI are not enabled"
+  ],
+  "screenshots": [
+    "work/output-testing-qa/public-desktop.jpg",
+    "work/output-testing-qa/public-mobile.jpg"
+  ]
+}

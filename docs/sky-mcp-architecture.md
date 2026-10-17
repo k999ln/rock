@@ -183,3 +183,11 @@ LLMの動作とゲーム本体の動作、本体実行と外部ホスト実行�
 異なる二つのagent実装で発見から成果・記録まで通すことを受入条件とし、別owner、版変更、能力不一致、上限超過、循環、切断・復旧、停止と完了の競合を検証する。GTA、個人端末、業務agentは共通契約へ載せる対象だが、各接続口と許可を実証する。
 
 2026-09-30にA2A 1.0 JSON-RPC client、owner-scoped child task store／状態event log、Cloudflare Worker reconciliationと暗号化text artifact経路を追加した。さらに本人が指定した公開HTTPS originからAgent Cardを取得し、originとJSON-RPC版を検査、card digest・版・時刻をD1へowner別に保存するSky個人接続帳とZema候補選択UIを追加した。候補は自己申告・未審査として明示し、登録だけでは委任しない。native Brokerからの短命Ed25519 proof発行methodとWeb検証器を実装し、Broker 45 tests、proof verifier/trust 3 testsのcross-language固定vector、API/Worker/D1 251 assertionsが成功。Web承認前にowner-scoped Broker proofを登録し、Runtime WorkerはAgent Card取得前・send marker前・message/send直前に検証するfixture経路を追加した。実機signer、Wallet/WebAuthn、trusted device key lifecycle、device gateway、production key listとWorkflow実行受入は未完了。詳細と限定範囲は[Sky A2A Bridge](sky-a2a-bridge.md)と[native Broker](../systems/rock-star-os/docs/MCP-BROKER.md)。Sky全体の検索・提供者審査、本番egress経路の受入、Wallet連携・予約、異なる実装間の相互接続、実Provider／cloud継続／請求は未実装・未受入。fixtureや既存MCP試験を外部相互運用の合格へ転用しない。
+
+## 現実とGTAへの出力adapter（2026-10-09）
+
+利用者の明示指示により、既存Capability Routerを現実↔GTAの非金融出力とevent返却へ具体化する。[詳細仕様](gta-reality-bridge.md)に、対象profile、Asset rendition、player link、配送journal、状態照会、承認・停止・復旧・合格条件を定義した。FiveMは候補、カード表示は最初のデモ案。`game.output.*`等はRock側の未実装契約案で、外部公式APIではない。既存MCP/A2A資格情報やWallet交換権限を流用しない。
+
+## 大学別NFC Sky（2026-10-12、WEB06 / SKY21）
+
+利用者の追加指示で5大学別のbrowser入口と大学別brief、一般MCP5枠・対象学生6枠を追加。主担当Web / PWA / Sites、ROCK。OS完成を必須にせず、NFCはURL入口とする。本人単位の枠管理を実装し、有料拡張の価格・cloud MCP実行・公開同一artifact・実NFC/端末の受入は別gateに残す。[目的・状態・保存・失敗/復旧・責任・合格条件](sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。

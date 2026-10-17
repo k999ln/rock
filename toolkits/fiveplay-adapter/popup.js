@@ -1,0 +1,2 @@
+document.getElementById('save').onclick=async()=>{const token=document.getElementById('token').value;if(token.length<32){document.getElementById('status').textContent='32文字以上のtokenが必要です。';return;}await chrome.storage.session.set({token});document.getElementById('token').value='';document.getElementById('status').textContent='保存しました。FivePlay画面で接続を確認してください。';};
+document.getElementById('clear').onclick=async()=>{await chrome.storage.session.remove('token');document.getElementById('status').textContent='解除しました。';};

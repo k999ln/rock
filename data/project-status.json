@@ -1,7 +1,71 @@
 {
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-14",
+  "notionProgressSync": {
+    "date": "2026-10-13",
+    "taskId": "G04",
+    "primaryWorkstream": "Git / CI / Operations",
+    "primaryOwner": "ROCK",
+    "status": "notion_synced_and_readback_verified",
+    "repository": "k999ln/rock",
+    "mainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "mainChecks": "6 retrieved checks success on the same SHA",
+    "gridPullRequest103": "open at e80d0357aa88291b6ee955e62af875180d35e6cd",
+    "notionPagesUpdated": 4,
+    "workspaceUnified": false,
+    "scopeReview": "Four-page progress sync only. Related legacy projects, historical daily logs, meeting notes and materials have not been fully mapped. Distinguish separate repositories and template examples; name similarity is not migration evidence. Scope and unresolved mapping recorded on the current Notion page.",
+    "readback": "current project summary, two daily summaries, historical proposal annotation, project relation and evidence links verified in browser UI",
+    "privateNotionContentCopiedToRepository": false,
+    "automaticSyncConfigured": false,
+    "runtimeChanged": false,
+    "githubSaved": false,
+    "nextAction": "Map legacy Notion records to current rock tasks, proposal history, separate repositories or pending decisions with adoption and migration evidence. Preserve dirty changes and reconcile main, handoff and database history under G04. Update acceptance stages only when matching artifact evidence changes.",
+    "validation": {
+      "notionReadback": "passed: four pages and corrected project relation; current overview re-opened with content and evidence links preserved",
+      "projectUpdate": "passed",
+      "projectCheck": "passed",
+      "baselineCheck": "passed",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: existing database-status artifacts are out of sync; local full verification not accepted",
+      "verifyLog": "/private/tmp/notion-rock-progress-sync-verify-20261013.log"
+    },
+    "supersededBy": "notionCleanup for legacy-page scope and current entry guidance"
+  },
+  "notionProgressAudit": {
+    "date": "2026-10-13",
+    "taskId": "G04",
+    "primaryWorkstream": "Git / CI / Operations",
+    "primaryOwner": "ROCK",
+    "status": "audit_complete_local_verify_blocked_by_database_status",
+    "repository": "k999ln/rock",
+    "mainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "integrationCommit": "3ffc21d3a15235e0bde89a118e2f931135a9189e",
+    "mainBaselineVersion": "1.98",
+    "mainTaskCount": 393,
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "localBranch": "codex/esim-cloud-access",
+    "sameNamedRemoteBranchExists": false,
+    "mergedPullRequestsReadBack": [
+      109,
+      111
+    ],
+    "mainChecks": "6 retrieved checks success at 4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "pullRequest111Checks": "15/15 success at verified head 643559b8e00037b1f960afb9dea7bf309534d539",
+    "privateNotionContentCopiedToRepository": false,
+    "notionEdited": false,
+    "runtimeChanged": false,
+    "githubSaved": false,
+    "nextAction": "Preserve dirty changes and reconcile main, handoff and database history before syncing the Notion current summary with repository, task IDs, SHA and separate acceptance stages.",
+    "validation": {
+      "projectUpdate": "passed",
+      "baselineCheck": "passed",
+      "projectCheck": "passed",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: database:check reports data/database-status.json and docs/database-status.md need database:status regeneration; full local verification not accepted",
+      "verifyLog": "/private/tmp/notion-rock-progress-verify-20261013.log"
+    }
+  },
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",
-  "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation.",
+  "nextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。並行してMAT18で建築・interior・soundの最初の限定空間・生活課題・地域・partner・Mini Device Profileを選び、専門家責任を分けたpilot契約を作る。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。追加枠価格・学生確認水準・Cloud費用・空間pilot価格は未確定。既存Pixel/QEMU/eSIM/Provider gateは維持。",
   "tasks": [
     {
       "id": "SIM01",
@@ -295,7 +359,12 @@
         "app/api/internal/rockstar/entitlement-deliveries/route.ts",
         "docs/evidence/sim-led-product-correction-followup-20261002.json",
         "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl"
+        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+        "lib/esim-cloud-proof.ts",
+        "lib/esim-cloud-access.ts",
+        "drizzle/0061_esim_cloud_proof_uses.sql",
+        "tests/esim-cloud-proof.test.mjs",
+        "docs/evidence/esim-signed-access-local.json"
       ],
       "nextAction": "The current Android Shell source already wires signed quote review, stable-ID Cloud draft, separate device-credential Wallet approval, exact quote-bound hold, Broker proof, explicit Cloud approval and same-ID recovery; source-contract/shared canonical-vector tests pass. The earlier missing-handoff audit is superseded. Run Android Core/AIDL/APK and credential/restart/reconnect instrumentation on equipped CI/device hardware; this host has no usable Java/Gradle/Android SDK toolchain. In parallel, seller checkout/buyer delivery, physical fulfillment, carrier activation, Provider contract/rates/meters/invoices, funded settlement and exact-SKU install remain external acceptance gates. Never count local claims or usage as production proof.",
       "files": [
@@ -328,7 +397,8 @@
         "tests/rockstar-entitlement-issuer-store.test.mjs",
         "tests/rockstar-entitlement-issuer.test.mjs",
         "docs/evidence/sim-service-claim-file-import-local-20261002.json"
-      ]
+      ],
+      "entrySpecificationNextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。"
     },
     {
       "id": "SKY21",
@@ -354,9 +424,13 @@
         "components/legal-intake-runner.tsx",
         "components/patent-assistant-runner.tsx",
         "tests/local-guide-history.test.mjs",
-        "tests/operations.test.mjs"
+        "tests/operations.test.mjs",
+        "docs/evidence/campus-sky-entry.json",
+        "docs/sim-led-product-architecture.md"
       ],
-      "nextAction": "Sky v20公開。Pixel PAPER提案承認実行・D12件ずつ・レシート再取得・次操作導線・スマホheader受入。全34 Toolの分類JSONで未確認4件を保持。市場修正後のfull verify631/19/API622合格、以後の並行0044 a2a_live_usage_snapshots schema差分は別gateとして未整合。Mercari/Coconala台帳/候補3件のUI受入とPC接続を進める。Cloud AI専用credentialとApple Pay対応端末が必要。"
+      "nextAction": "Sky v20公開。Pixel PAPER提案承認実行・D12件ずつ・レシート再取得・次操作導線・スマホheader受入。全34 Toolの分類JSONで未確認4件を保持。市場修正後のfull verify631/19/API622合格、以後の並行0044 a2a_live_usage_snapshots schema差分は別gateとして未整合。Mercari/Coconala台帳/候補3件のUI受入とPC接続を進める。Cloud AI専用credentialとApple Pay対応端末が必要。",
+      "campusNextAction": "先行dirty差分を保全してmainの引継ぎ・migrationを同期。大学版候補を公開Skyへ配備し同一artifactで本人A/B・学生所属・実NFC/QR/iPhone/Androidを受入。スマホCloud MCPの実行境界と有料拡張条件は別実装・受入。",
+      "entrySpecificationNextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。"
     },
     {
       "id": "ORG01",
@@ -393,8 +467,47 @@
         "MAT14"
       ],
       "evidence": [
-        "docs/avocado-mini-r5/package/integrated_design.md"
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-r5/game-runtime-design.md"
+      ],
+      "nextAction": "MG01〜06のbrowser/board benchとR5表示・入力成立を別検証後、閉箱MG07へ。ゲーム設計追補のみ、物理受入未実施。"
+    },
+    {
+      "id": "MAT16",
+      "title": "吊り下げ・着脱・会話・SOSを持つ小型companion P0のbenchmark・mockup・独立alarm／音声／電源benchとDevice Profileを作る",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/avocado-schoolbag-safety-device.md",
+        "data/avocado-schoolbag-safety-device.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ],
+      "nextAction": "防犯ブザー候補3機種以上を実測。吊り下げ・片手着脱・本体SOSの非通電mockupとP0-A安全比較案／P0-B二つ目会話主案を同じ包絡で測り、独立alarm・明示音声session・電源2案をbench化する。型番は測定後に選定する。"
+    },
+    {
+      "id": "MAT17",
+      "title": "ランドセル携行端末の同一engineering prototypeで機械・音響・電池・無線・privacy・recovery・子供向け安全を第三者受入",
+      "status": "planned",
+      "dependsOn": [
+        "MAT16"
+      ],
+      "evidence": [
+        "docs/avocado-schoolbag-safety-device.md"
       ]
+    },
+    {
+      "id": "MAT18",
+      "title": "建築・インテリア・サウンドをavocadoの根城とし、Mini＋RockstarOSの限定空間pilotと専門家協業契約を定義",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/rockstaros-1.0-strategy.md",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/rockstaros-product-system-map.md",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ],
+      "nextAction": "一つの限定空間と生活課題、国・地域、建築／interior／sound partner候補、Miniなしfallback、必要Device Profile、入力・出力・privacy・専門家承認・費用・撤去復旧を確定し、現行手順と比較できるpilot acceptanceを作る。"
     },
     {
       "id": "UXCHAR01",
@@ -629,7 +742,8 @@
       ],
       "evidence": [
         "docs/ai-native-os-architecture.md",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/gta-reality-bridge.md"
       ]
     },
     {
@@ -1112,7 +1226,8 @@
         "lib/work-store.ts",
         "app/api/work-jobs/route.ts",
         "tests/workflow.test.mjs",
-        "docs/evidence/a2a-runtime-recheck-20261002.json"
+        "docs/evidence/a2a-runtime-recheck-20261002.json",
+        "docs/provider-contract-readiness-20260930.md"
       ],
       "nextAction": "The SIM-led service direction and two-step user-mediated A2A handoff, parent progress snapshot, deadline sweep, signed pricing, budget reservation, receipt verification and offline-continuation records are implemented in source. Local Worker/D1 positive Workflow tests pass 13/13; independent Node/Python A2A 1.0 client tests pass 10/10; typecheck and product lint pass. Wrangler process restart proves only prepared D1 rows survive restart with zero remote-send claims; it does not prove scheduled dispatch/recovery. Next validate on an equipped Android CI/device host and prepare production Cloudflare/Provider acceptance: migration/readback, contracted quote/execution/usage/invoice semantics, funded Wallet settlement, and exact hardware SKU installation. Local fixtures are not production billing, carrier activation, or OS installation.",
       "next": "Prioritize implementable client-side acceptance evidence for Home → Sky/Zema/Agents, quote/estimate/cap/approval, progress, reconnect results and itemized usage; verify account/session paths and short purchase-to-service onboarding. Keep all production and exact-device gates explicit. First close the test gap for local scheduled dispatch/recovery without representing persistence-only checks as scheduler acceptance. Production D1 readback remains 0/6; real seller, carrier, provider and device acceptance are outstanding."
@@ -1392,8 +1507,48 @@
         "app/sky/manifest.webmanifest/route.ts",
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
-        "docs/sky.md"
-      ]
+        "docs/sky.md",
+        "components/os-header.tsx",
+        "app/os-design-tokens.css",
+        "app/os-appearance.css",
+        "docs/evidence/web-unified-design.json"
+      ],
+      "amcCodexRegistration": {
+        "status": "configured",
+        "primaryOwner": "ROCK",
+        "scope": "Project Codex roles only; no AMC runtime merge",
+        "evidence": [
+          "docs/evidence/amc-codex-registration.json",
+          ".codex/agents/amc.toml",
+          ".codex/agents/amc-worker.toml",
+          ".codex/agents/amc-reviewer.toml"
+        ],
+        "nextAction": "Superseded by amcCodexUsability: same-chat skill and CLI are installed; disk-space recovery is required before broad verification.",
+        "verification": "TOML and canonical match 3/3, installer tests 4/4, independent read-only review passed. Full verify exit 1 at final CSV check: SQLITE_FULL; Work API 1159 passed."
+      },
+      "amcCodexUsability": {
+        "status": "configured_verified_in_scope",
+        "primaryOwner": "ROCK",
+        "scope": "Same-chat skill entry and reusable launcher diagnostics",
+        "evidence": [
+          "docs/evidence/amc-codex-usability.json",
+          "toolkits/amc-agent/SKILL.md",
+          "scripts/amc-agent.mjs",
+          "tests/amc-agent.test.mjs"
+        ],
+        "nextAction": "Resolve host storage capacity with owner-approved cleanup; rerun full verify after capacity is sufficient. Web synchronization and persisted Goal acceptance remain separate.",
+        "verification": "10/10 focused tests, lint, baseline/design/project checks, literal preview, real native worker submission and independent read-only review passed; full verify blocked by approval review due to low disk space"
+      },
+      "unifiedDesignRevision": {
+        "date": "2026-10-09",
+        "status": "published_verified",
+        "owner": "ROCK",
+        "scope": "shared Web appearance and navigation",
+        "evidence": "docs/evidence/web-unified-design.json",
+        "version": 47,
+        "sourceSha": "f1c74e6993a87fa3733b0490812f85f6ab9d3587",
+        "githubMainMerged": false
+      }
     },
     {
       "id": "BRD01",
@@ -1464,8 +1619,12 @@
         "docs/workstreams/05-web-pwa-sites.md",
         "lib/csv-job-store.ts",
         "scripts/check-csv-storage.mjs",
-        "docs/evidence/sky-csv-storage-hardening.json"
-      ]
+        "docs/evidence/sky-csv-storage-hardening.json",
+        "docs/evidence/campus-sky-entry.json",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "campusNextAction": "先行dirty差分を保全してmainの引継ぎ・migrationを同期。大学版候補を公開Skyへ配備し同一artifactで本人A/B・学生所属・実NFC/QR/iPhone/Androidを受入。スマホCloud MCPの実行境界と有料拡張条件は別実装・受入。",
+      "entrySpecificationNextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。"
     },
     {
       "id": "WEB07",
@@ -1924,7 +2083,7 @@
     },
     {
       "id": "HOME01",
-      "title": "iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装",
+      "title": "中性的なHomeへ調整し、アプリ導線・依頼・本人の仕事・集中表示を保持",
       "status": "done",
       "dependsOn": [
         "SKY10"
@@ -1937,8 +2096,19 @@
         "app/settings/page.tsx",
         "components/system-settings.tsx",
         "components/system-settings.module.css",
-        "docs/product-baseline.md"
-      ]
+        "docs/product-baseline.md",
+        "lib/home-intent.ts",
+        "tests/home-intent.test.mjs",
+        "docs/evidence/home-intent-refresh.json"
+      ],
+      "neutralRevision": {
+        "date": "2026-10-09",
+        "status": "deployed",
+        "scope": "presentation_only",
+        "evidence": "docs/evidence/home-intent-refresh.json",
+        "version": 46,
+        "sourceSha": "6d0e5f6137615f765022f3ac7212dee9786fbfb5"
+      }
     },
     {
       "id": "HOME02",
@@ -2472,9 +2642,12 @@
         "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
         "contracts/device-capability-snapshot.json",
         "docs/workstreams/07-android-device-local-ai.md",
-        "scripts/check-os-contracts.mjs"
+        "scripts/check-os-contracts.mjs",
+        "docs/evidence/pixel-app-refresh-20261009.json",
+        "docs/evidence/pixel-shell-design-20261009.json",
+        "docs/device-support-architecture.md"
       ],
-      "nextAction": "Run :shell:connectedDebugAndroidTest and :shell:lintDebug on the JDK-equipped Android CI/device host; verify eUICC supported/disabled/unknown status on representative emulator and Pixel hardware. Then extend the Broker Capability API with provenance and expiry before using capability results to select or execute tools. Current host has no Java runtime/Gradle, so the Android changes remain authored but uncompiled and unexecuted."
+      "nextAction": "Pixel Shell four-page UI and current Local AI API v4 capability display passed 7 non-destructive device tests; saved Tool selection and work count survived same-signer update. Configure and accept the real service origin/account path and signed Local AI model, then run Tool execution and restart/recovery acceptance. Consolidate source onto latest GitHub main separately. APK/UI acceptance does not accept full OS, provider billing or model inference. GrapheneOS reuse direction: after main/handoff sync, probe Terminal/AVF capabilities before choosing a scoped Linux Tool adapter; see docs/device-support-architecture.md#graphene-reuse. This design is not AVF or full OS acceptance."
     },
     {
       "id": "OS11",
@@ -2849,7 +3022,9 @@
         "docs/evidence/launch/progress-audit-20260912.json",
         "scripts/freeze-phone-build-inputs.py",
         "tests/test_freeze_phone_build_inputs.py",
-        "docs/evidence/android-prefull-input-freeze-20260916.json"
+        "docs/evidence/android-prefull-input-freeze-20260916.json",
+        "docs/evidence/pixel-app-refresh-20261009.json",
+        "docs/evidence/pixel-shell-design-20261009.json"
       ]
     },
     {
@@ -3181,7 +3356,8 @@
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
         "tests/owner-revision-json-store.test.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/evidence/git-organization-audit-20261007.json"
       ]
     }
   ],
@@ -4414,19 +4590,1236 @@
   },
   "cloudOsUsageDirection": {
     "decidedAt": "2026-10-05",
-    "status": "design_recorded_runtime_not_accepted",
+    "status": "local_implemented_verified_production_gated",
     "document": "docs/sim-led-product-architecture.md",
     "tasks": [
       "BIZ01",
       "SKY19",
       "BIL02"
     ],
-    "remoteMain": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+    "remoteMain": "9f64aee3de9cc74e6b6e7eae34052780e000c296",
     "reviewedLocalHead": "c9b806fe3b497a292f5f7a7c13e00d68060c0b17",
-    "mainIntegratedIntoWorkBranch": false,
+    "mainIntegratedIntoWorkBranch": true,
     "published": false,
-    "validation": "project/baseline/design/database checks and npm run verify exit 0 on local branch; latest-main CI failures and D1 PAPER race remain unresolved",
+    "validation": "npm run verify exit 0: Node 882, Worker/D1 1159 assertions, CSV 113, web assets missing 0; focused unit 7/7. Synthetic only. UI connect-to-purchases link verified; issuance UI needs configured account/order.",
     "scope": "optional-compatible-eSIM-offering; native/local/app/Web modes preserved",
-    "auditEvidence": "docs/evidence/cloud-os-direction-audit.json"
+    "auditEvidence": "docs/evidence/cloud-os-direction-audit.json",
+    "workBranch": "codex/esim-cloud-access",
+    "nextAction": "契約済みProvider・同一端末でpurchase→install proof→gateway→cloud keyを受入。提供期間/scope/本番鍵を確定。商用クラウド実行、料金・回収/合算請求、native OS実機は独立gate。",
+    "sourceBase": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "latestMainObserved": "80a662cc8dbd967ecc4f04e46bba086b54c4d725",
+    "implementationEvidence": "docs/evidence/esim-cloud-access-local.json",
+    "savedLocally": true,
+    "pushedToGitHub": false
+  },
+  "unifiedPaymentPreparation": {
+    "stage": "local_verified_production_acceptance_pending",
+    "task": "BIL02",
+    "primaryOwner": "JOINT",
+    "scope": "Reuse Stripe transport and existing product ledgers across Sky, CSV, hardware and eSIM/cloud; audit exact amounts, consent, duplicates and reconciliation. No new live charge or custody.",
+    "sourceHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "latestMainObserved": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+    "concurrentWork": "Preserve existing eSIM cloud-access edits; local branch is not remote main.",
+    "evidence": "docs/evidence/unified-payment-verification.json",
+    "focusedTests": 84,
+    "liveCloudCollectionEnabled": false,
+    "nextAction": "Confirm customer tariff/funding, merchant alignment and real Stripe sandbox; accept the authenticated owner/device journey on the same artifact before live collection. Local UI rendering/error states verified; new path is not published.",
+    "fullVerify": {
+      "exitCode": 0,
+      "nodeTests": 882,
+      "workerD1Assertions": 1133,
+      "csvAssertions": 113
+    },
+    "published": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "roadmap": {
+      "document": "docs/sky-billing.md#本番受入までの逆算工程",
+      "date": "2026-10-05",
+      "phases": 9,
+      "actions": 28,
+      "estimatedRockPersonDays": [
+        24,
+        41
+      ],
+      "estimateExcludes": "External reviews/contracts, provider answers, payout/invoice cycles and major rework",
+      "observedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+      "mainCi": "Rock star verification success; SPIDER repository security failure; CodeQL rerun pending at observation",
+      "implementationUnchanged": true,
+      "verification": {
+        "command": "npm run verify",
+        "exitCode": 0,
+        "workerD1Assertions": 1159,
+        "csvAssertions": 113,
+        "log": "/tmp/rock-payment-roadmap-verify.log",
+        "canvasTypecheck": "passed; local SDK declarations"
+      }
+    }
+  },
+  "publicInstallEntry20261005": {
+    "taskId": "WEB13",
+    "responsibility": "JOINT",
+    "status": "web_entry_published_esim_native_blocked",
+    "domain": "avocadomini.si",
+    "siteProjectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+    "baseSiteSourceSha": "79714855ad246d591d0a235d7da4bba68ddfb233",
+    "observedMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "nextAction": "Contract and configure eSIM provider, deploy the reviewed OS connect/purchase flow, then verify real issuance and install proof. Deliver native images only after per-target signing/install/recovery gates pass. GitHub changes remain local and unmerged.",
+    "siteSourceSha": "b75716b61fbde99dd7d21e56b52f4d089d0b80c9",
+    "version": 6,
+    "deploymentId": "appgdep_6ac35d46d18081918fd0ddd6375a2141",
+    "evidence": "docs/evidence/public-install-entry.json",
+    "verification": "Repository verify exit0 (882 Node /1159 Worker D1 /113 CSV); final Site build13 routes and18 tests pass."
+  },
+  "awsPartnershipPreparation": {
+    "recordedAt": "2026-10-05",
+    "stage": "zero_self_funding_proposal_ready_not_sent",
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "tasks": [
+      "SKY07",
+      "BIL02"
+    ],
+    "companyNameUserProvided": "avokado llc",
+    "countryUserProvided": "United States",
+    "fundingStatus": "unknown",
+    "document": "docs/provider-contract-readiness-20260930.md",
+    "outreachSent": false,
+    "partnershipAgreed": false,
+    "awsRuntimeDeployed": false,
+    "paidExecutionEnabled": false,
+    "sourceHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "remoteMainObserved": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "remoteWorkBranchFound": false,
+    "mainIntegratedIntoWorkBranch": false,
+    "nextAction": "Obtain explicit send instruction and contact facts for sponsored AWS collaboration. Require zero avokado payment liability before resource creation; negotiate development compensation separately. No self-funded deployment.",
+    "draftPreparedOutsideGit": true,
+    "draftPath": "/private/tmp/rock-aws-partnership/aws-inquiry-en.txt",
+    "implementationChanged": false,
+    "githubSaved": false,
+    "mainMerged": false,
+    "validation": {
+      "projectCheck": true,
+      "baselineCheck": true,
+      "designCheck": true,
+      "diffCheck": true,
+      "priorProposalFullVerify": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "nodeTests": 882,
+        "workerD1Assertions": 1159,
+        "csvAssertions": 113,
+        "log": "/private/tmp/rock-aws-partnership/verify-retry.log",
+        "logSha256": "0b1e4f0524a6fc86d062bed97d05e9496716367b005daa49d494eb59b958f290",
+        "scope": "Local working-tree regression including concurrent changes; documentation-only AWS proposal, no AWS runtime or partnership acceptance.",
+        "initialAttempt": "Sandbox denied loopback listen; approved rerun passed."
+      },
+      "zeroCostRevision": {
+        "projectCheck": true,
+        "baselineCheck": true,
+        "designCheck": true,
+        "diffCheck": true,
+        "fullVerifyExitCode": 1,
+        "failure": "sky: プロジェクト別ガイドにToolKitがありません: amc-agent",
+        "scope": "Concurrent AMC toolkit/index mismatch outside this AWS documentation change; later runtime tests not executed.",
+        "log": "/private/tmp/rock-aws-partnership/verify-zero-cost.log",
+        "logSha256": "d3d47721df0981b8749f2d39114eb470dc81a371a8bb7998dec11193fb2fa969"
+      }
+    },
+    "fundingPolicy": {
+      "recordedAt": "2026-10-05",
+      "ownerAndCompanyOutOfPocketMaximum": 0,
+      "scope": "this_AWS_adoption_and_partnership_initiative_only",
+      "selfFundedDeploymentAuthorized": false,
+      "uncoveredChargesOrAutomaticPaidConversionAccepted": false,
+      "desiredScale": "large_scale_sponsored_capacity_with_staged_acceptance",
+      "developmentCompensation": "proposed_negotiation_item_not_agreed_or_claimed_available",
+      "creditsAreDeveloperCompensation": false,
+      "sponsorMustCover": [
+        "usage",
+        "excluded_services",
+        "overages",
+        "expiry_transition",
+        "taxes",
+        "retention",
+        "transfer",
+        "wind_down"
+      ],
+      "ifUnsupported": "planning_only_no_billable_resources"
+    }
+  },
+  "needsComposition": {
+    "status": "in_progress",
+    "taskId": "SKY14",
+    "owner": "ROCK",
+    "scope": "目的別の可変計画、成果引継ぎ、依存無効化、本人検収。外部処理は未接続状態を保持。",
+    "verification": "pending",
+    "publication": "not_performed"
+  },
+  "mainSimCloudServiceDesign": {
+    "recordedAt": "2026-10-07",
+    "stage": "design_saved_checks_passed_full_verify_blocked",
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "tasks": [
+      "SKY19",
+      "BIZ01",
+      "BIL02"
+    ],
+    "document": "docs/sim-led-product-architecture.md#main-sim-cloud-service",
+    "scope": "Shared cloud service template; existing main-SIM/Wi-Fi transport; optional accepted eSIM entry adapter",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "workBranch": "codex/esim-cloud-access",
+    "remoteMainObserved": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "remoteWorkBranchFound": false,
+    "remoteMainCheckRuns": {
+      "total": 6,
+      "completedSuccess": 6,
+      "appliesToLocalWorkingTree": false
+    },
+    "runtimeChanged": false,
+    "actualEsimAccepted": false,
+    "productionUsageBillingAccepted": false,
+    "githubSaved": false,
+    "mainMerged": false,
+    "published": false,
+    "nextAction": "Preserve pending edits and synchronize main/handoff first; validate existing service_only claim plus cloud job/budget/usage, then contracted eSIM/device handoff and provider invoice/payment on the same artifact. Do not weaken paid-order install-proof checks.",
+    "savedLocally": true,
+    "validation": {
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "projectCheck": "passed",
+      "diffCheck": "passed",
+      "fullVerify": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 1,
+        "stoppedAt": "database:check",
+        "reason": "Existing data/database-status.json and docs/database-status.md require regeneration; this change did not edit runtime/schema/database snapshots. Later verification stages were not executed.",
+        "log": "/private/tmp/rock-main-sim-design-verify.log",
+        "logSha256": "eadfac5ee64d04aa961543966c9e486cefa35ac2f8efe0ca808664fc80d07b06"
+      },
+      "deviceProviderUiTests": "not_run_design_only"
+    }
+  },
+  "esimSignedAccess": {
+    "status": "source_and_local_fixture_verified",
+    "updatedAt": "2026-10-07",
+    "primaryWorkstream": "Security / Identity / Compliance",
+    "primaryOwner": "ROCK",
+    "taskId": "SIM01",
+    "scope": "Registered eSIM gateway key signs cloud API requests; reuse owner/order/grant and revocation. Not eUICC key custody acceptance.",
+    "next": "Preserve/synchronize latest main and outstanding work; connect native device signer/UI using accepted carrier/OEM interfaces and apply migration 0061 in the accepted environment.",
+    "externalAcceptance": "Real eSIM/eUICC signer and device/provider acceptance pending.",
+    "verification": {
+      "focused": {
+        "command": "node --experimental-strip-types --test tests/esim-cloud-proof.test.mjs tests/esim-cloud-access.test.mjs tests/rockstar-service-package-access.test.mjs",
+        "passed": 12,
+        "failed": 0
+      },
+      "full": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "log": "/private/tmp/rock-esim-proof-verify.log",
+        "apiAssertions": 1178,
+        "csvAssertions": 113,
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "pass",
+        "baselineCheck": "pass",
+        "designCheck": "pass",
+        "nodeTests": 897
+      }
+    },
+    "evidence": "docs/evidence/esim-signed-access-local.json",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "gitOrganizationAudit": {
+    "recordedAt": "2026-10-07T14:17:54-04:00",
+    "status": "audit_complete_cleanup_pending",
+    "mainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "evidence": "docs/evidence/git-organization-audit-20261007.json",
+    "openPrs": 5,
+    "dirtyWorktrees": 3,
+    "preAuditChangedFileInstances": 127,
+    "pr85ConflictFiles": 8,
+    "localSnapshotConflictFiles": 31,
+    "localVerify": "exit 0; Node 897, Worker/D1 1178, CSV 113",
+    "githubSaved": false,
+    "mainIntegrated": false
+  },
+  "homeExperienceRefresh": {
+    "taskIds": [
+      "HOME01",
+      "WEB01"
+    ],
+    "status": "deployed_and_ui_verified",
+    "evidence": "docs/evidence/home-intent-refresh.json",
+    "scope": "Home UI, Zema handoff, owner job list, tool search and focus mode",
+    "githubMainMerged": false,
+    "siteVersion": 45,
+    "siteSourceSha": "e8d0353b92858602415a6c976aadbade089a6fa4",
+    "publicUrl": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+    "nextAction": "最新GitHub mainへ正本のHome差分を分離統合。既存database-status不一致を解消後に正本全体verify。"
+  },
+  "pixelAppRefresh": {
+    "recordedAt": "2026-10-09",
+    "taskIds": [
+      "OS10",
+      "RLS02"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "installed_smoke_pass_service_configuration_pending",
+    "sourceCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "before": {
+      "label": "avocadoOS",
+      "versionName": "0.1.0",
+      "shellApkSha256": "bddef77e5b91bae0eb987354b4f46eb5adae4ff1b727330644b6fb6b4a112e2c",
+      "lastUpdated": "2026-09-16"
+    },
+    "nextAction": "Keep the existing local debug signing identity for future app updates. Configure and accept an actual service endpoint and signed Local AI model separately; do not claim production service, inference or full OS readiness from this app refresh.",
+    "osFlashed": false,
+    "deviceDataCleared": false,
+    "evidence": "docs/evidence/pixel-app-refresh-20261009.json",
+    "candidateLabel": "RockstarOS",
+    "preparedApkCount": 4,
+    "oldSignerKeyFound": false,
+    "deviceApplicationsChanged": true,
+    "appDataRestoreVerified": false,
+    "localVerify": "Initial npm verify: 897/900, three MCP timeouts. Unchanged serial retry: 13/13. Remaining 13 stages pass, Worker/D1 1178 and CSV113. Physical update smoke separately passed.",
+    "appDataResetAuthorized": true,
+    "authorizationScope": "User explicitly approved deleting data and reinstalling exactly Shell, Broker, article Tool and Local AI after the stated data-loss warning; no OS reset or flash.",
+    "installedApkCount": 4,
+    "visibleLabel": "RockstarOS",
+    "physicalChecks": {
+      "apkHashReadback": "PASS_4_OF_4",
+      "uiHierarchyBrand": "PASS_ROCKSTAROS",
+      "shellLaunch": "PASS",
+      "shellBrokerBinder": "PASS_STATUS_AND_PERSISTED_TOOL_SELECTION",
+      "localAiBinder": "PASS_NO_MODEL_RESPONSE",
+      "localAiInference": "NOT_RUN_NO_MODEL",
+      "skyToolSelectionAfterShellRestart": "PASS_REVISION_1",
+      "articleToolExecution": "NOT_RUN_ON_THIS_NEW_SET",
+      "deviceReboot": "NOT_RUN",
+      "cloudService": "NOT_CONFIGURED",
+      "screenshotVisualQA": "UNAVAILABLE_BLACK_SCREEN_CAPTURE_UI_HIERARCHY_USED",
+      "leftAt": "RockstarOS home"
+    },
+    "trialAppDataCleared": true,
+    "deviceFactoryReset": false
+  },
+  "pixelShellDesign": {
+    "updatedAt": "2026-10-09",
+    "status": "physical_ui_accepted_service_and_model_configuration_pending",
+    "workstream": "Android / Device / Local AI",
+    "responsibility": "ROCK",
+    "tasks": [
+      "OS10",
+      "RLS02"
+    ],
+    "baseMainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "scope": "Native Shell four-page navigation, neutral visual design, accurate setup states, same-signer update with data preservation",
+    "nextAction": "Configure accepted service origin and signed local model under existing gates; consolidate this change onto current GitHub main separately.",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/pixel-shell-design-20261009.json",
+    "installedShellSha256": "cc1adc835b368fb5c5a5529a1a351f80e4b619f0a9d1d016e28cc6a425c83af8",
+    "dataPreserved": true,
+    "verification": {
+      "pixelTestsPassed": 7,
+      "coreTestsPassed": 111,
+      "sdkTestsPassed": 7,
+      "repositoryVerifyExitCode": 0
+    },
+    "capabilityDisplay": "Local AI API version mismatch fixed; fresh physical snapshot now displayed",
+    "latestVisualUpdate": {
+      "evidence": "docs/evidence/pixel-unified-design.json",
+      "scope": "Web v47 shared appearance, selected navigation and explicit public browser entry",
+      "repositoryVerification": "All stages passed; final API stage passed in separate retry after timeout"
+    },
+    "installedHashAppliesTo": "historical acceptance artifact; current installed APK is pixelNativeTesting.installedShellSha256",
+    "latestNativeTestingEvidence": "docs/evidence/pixel-native-testing.json"
+  },
+  "pixelUnifiedDesign": {
+    "date": "2026-10-09",
+    "status": "installed_and_physical_ui_verified",
+    "taskIds": [
+      "OS10",
+      "RLS02"
+    ],
+    "primaryOwner": "ROCK",
+    "webVersion": 47,
+    "dataPreservingUpdate": true,
+    "githubMainMerged": false,
+    "evidence": "docs/evidence/pixel-unified-design.json",
+    "installedShellSha256": "cc1adc835b368fb5c5a5529a1a351f80e4b619f0a9d1d016e28cc6a425c83af8",
+    "physicalTestsPassed": 7,
+    "dataPreserved": true,
+    "installedHashAppliesTo": "historical acceptance artifact; current installed APK is pixelNativeTesting.installedShellSha256",
+    "latestNativeTestingEvidence": "docs/evidence/pixel-native-testing.json"
+  },
+  "currentUsageReadiness": {
+    "date": "2026-10-09",
+    "status": "readiness_audited_not_full_service_acceptance",
+    "publicSourceSha": "f1c74e6993a87fa3733b0490812f85f6ab9d3587",
+    "localBackend": {
+      "command": "TMPDIR=/private/tmp npm run test:api",
+      "cwd": "work/home-redesign-source",
+      "passed": 495,
+      "failed": 0,
+      "scope": "synthetic local users and temporary D1, not authenticated public execution"
+    },
+    "publicLogin": {
+      "settingsShowsSigninRequired": true,
+      "gatewayPath": "/signin-with-chatgpt?return_to=%2Fsettings",
+      "loginPageObserved": true,
+      "provider": "ChatGPT",
+      "credentialsSubmitted": false
+    },
+    "publicEnvironment": {
+      "revision": 3,
+      "openaiApiKeyConfigured": false,
+      "aiGatewayKeyConfigured": false,
+      "secretValuesRecorded": false
+    },
+    "pixel": {
+      "accountState": "not_configured",
+      "localAiState": "no_model",
+      "basis": "same installed APK physical evidence in pixel-unified-design.json"
+    },
+    "finding": "Browser-local writing tools currently require an authenticated execution record before calculating; UI design acceptance is not cloud/provider execution acceptance.",
+    "guestProposal": {
+      "status": "proposal_only_not_implemented",
+      "approach": "Local guest use first; optional authenticated cloud save, migration and funded usage later; preserve owner isolation and paid-execution approvals"
+    },
+    "productionApiProbe": "Unauthenticated CLI probes were blocked at edge; browser direct API navigation unsupported. Do not label authenticated production execution verified.",
+    "evidence": "docs/evidence/web-unified-design.json#usabilityReadiness",
+    "guestOutputTestUpdate": "v48 /test available; deterministic processing and isolated simulations; cloud AI still unconnected",
+    "nativeOutputTestUpdate": "Pixel native 17 scenarios available without registration/network: 8 local deterministic processing and 9 explicitly simulated. Same installed APK passed 11 physical tests; cloud/model still unconfigured. See docs/evidence/pixel-native-testing.json."
+  },
+  "guestOutputTesting": {
+    "status": "deployed_and_verified",
+    "taskId": "WEB04",
+    "route": "/test",
+    "publicScenarios": {
+      "total": 17,
+      "realProcessing": 10,
+      "simulation": 3,
+      "unconnected": 4
+    },
+    "publicVerify": "passed",
+    "browserChecks": [
+      "run_all",
+      "edited_csv",
+      "invalid_wallet",
+      "reset",
+      "390_and_320_no_overflow",
+      "download_17_results_json"
+    ],
+    "nativeApkChanged": false,
+    "externalAiEnabled": false,
+    "evidence": "docs/evidence/guest-output-testing.json",
+    "rootVerify": "passed",
+    "version": 48,
+    "siteSourceSha": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "deploymentId": "appgdep_6ac946eb402c81918725bed562354780",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/test",
+    "mainIntegrated": false
+  },
+  "pixelNativeTesting": {
+    "status": "installed_and_physical_tests_passed",
+    "taskId": "OS10",
+    "primaryOwner": "ROCK",
+    "scope": "native offline output tests; production Broker unchanged",
+    "physicalDevice": "Pixel 10 GL066 / frankel",
+    "evidence": "docs/evidence/pixel-native-testing.json",
+    "date": "2026-10-09",
+    "installedShellSha256": "9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4",
+    "totalScenarios": 17,
+    "realLocalProcessing": 8,
+    "explicitSimulations": 9,
+    "physicalTestsPassed": 11,
+    "dataPreserved": true,
+    "repositoryVerifyExitCode": 0,
+    "mainIntegrated": false,
+    "nextAction": "Use native sample execution for output review; then accept specific real providers or signed local model under the existing identity, consent and usage-budget gates. Preserve this signer and use install -r for future APK updates."
+  },
+  "agentRuntimeRepair": {
+    "status": "diagnosed_runtime_connection_pending",
+    "date": "2026-10-09",
+    "primaryWorkstream": "Sky / MCP",
+    "taskId": "SKY21",
+    "responsibility": "ROCK",
+    "findings": [
+      "public v48 chat handler uses fixed responses and no LLM request",
+      "public guest tool connection requires sign-in; observed 401s",
+      "production env revision3 has no LLM credentials",
+      "local development cloud chat stops after estimate and remote pricing gate is false; this is not the public v48 implementation",
+      "last accepted Pixel state is no_model"
+    ],
+    "nextAction": "Pixel requires accepted model/profile and genuine Broker/Tool output acceptance. Web requires actual model/executor connection, approval/budget path and publication; target surface confirmation pending.",
+    "evidence": "docs/evidence/agent-runtime-readiness.json",
+    "runtimeRepaired": false
+  },
+  "gtaRealityBridge": {
+    "date": "2026-10-09",
+    "taskId": "AI06",
+    "primaryOwner": "ROCK",
+    "status": "design_saved_verified_runtime_pending",
+    "runtimeImplemented": false,
+    "gtaRuntimeAccepted": false,
+    "mainIntegrated": false,
+    "document": "docs/gta-reality-bridge.md",
+    "rockDeliverable": "既存IP Studio・Sky・Zemaを使う非金融出力／event返却の詳細契約",
+    "externalDependency": "GTA版、FiveM server/client/resource、対象用途の適用条件と受入",
+    "ownerAction": "最初の出力、GTA版、server管理者、共有対象、費用上限を確定",
+    "currentStage": "DESIGN_ONLY_NOT_ROCK_READY",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "githubMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "localBranch": "codex/esim-cloud-access",
+    "sameNameRemoteBranchExists": false,
+    "githubSaved": false,
+    "published": false,
+    "nextAction": "最新main・先行変更を同期した候補で、非金融adapterのschema・journal・player link・workflow receipt gateをfixture実装し、固定したFiveM環境で同一artifactの一周を受入する。",
+    "validation": {
+      "status": "passed",
+      "commands": [
+        "npm run project:update",
+        "npm run baseline:check",
+        "npm run design:check",
+        "npm run project:check",
+        "TMPDIR=/private/tmp npm run verify",
+        "git diff --check -- <changed documentation paths>"
+      ],
+      "verifyExitCode": 0,
+      "workerD1Assertions": 1178,
+      "csvAssertions": 113,
+      "webAssetMissing": 0,
+      "log": "/private/tmp/rock-gta-bridge-verify.log",
+      "scope": "existing local regression and documentation consistency; no GTA adapter or real-game test"
+    }
+  },
+  "grapheneReusePreparation": {
+    "recordedAt": "2026-10-10",
+    "status": "design_documented_verified_runtime_unaccepted",
+    "primaryOwner": "ROCK",
+    "tasks": [
+      "OS10",
+      "RLS02"
+    ],
+    "document": "docs/device-support-architecture.md#graphene-reuse",
+    "completed": [
+      "reuse_scope_and_security_boundaries_documented",
+      "linux_adapter_candidate_acceptance_sequence_documented"
+    ],
+    "nextAction": "Preserve local changes and sync current main/handoff, inspect Pixel host/Terminal/AVF/guest capabilities, then select one non-financial Tool and an authenticated bounded transport for same-job result recovery.",
+    "linuxAdapterImplemented": false,
+    "avfDeviceAccepted": false,
+    "performanceImprovementProven": false,
+    "fullOsAccepted": false,
+    "validation": {
+      "status": "passed",
+      "commands": [
+        "npm run project:update",
+        "npm run baseline:check",
+        "npm run design:check",
+        "npm run device-support:check",
+        "npm run android:first-flash:check",
+        "TMPDIR=/private/tmp npm run verify"
+      ],
+      "verifyExitCode": 0,
+      "scope": "repository_document_contract_and_existing_host_regression_only",
+      "rawLog": "/private/tmp/rock-graphene-reuse-verify.log",
+      "runtimeAcceptance": false,
+      "note": "Generated database-status dates synchronized with npm run database:status (no schema changes). Sandbox localhost listen EPERM was resolved by running the authorized local verification outside the sandbox."
+    },
+    "git": {
+      "remoteMainSha": "1c20e9873ed0fc783424cc063967a8bd7d3025f2",
+      "existingPixelBranch": "codex/pixel10-compile-bringup-20260917",
+      "existingPixelBranchSha": "771770d08457f46f06a2d4db7c1098daeccdbc74",
+      "localBranch": "codex/esim-cloud-access",
+      "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "localBranchFoundRemotely": false,
+      "sameShaCiChecked": false,
+      "githubSaved": false,
+      "mainIntegrated": false
+    }
+  },
+  "campusSkyEntry": {
+    "status": "local_shared_sky_app_campus_entry_verified_not_deployed",
+    "taskIds": [
+      "WEB06",
+      "SKY21"
+    ],
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "scope": "5大学のNFC/QR→Sky browser/PWA、大学別Agent HubとSky内Zema、大学別仕事テンプレート、本人単位MCP一般5/対象学生6枠",
+    "source": "User explicit request 2026-10-12; campus student exception overrides general cap only",
+    "remoteMainObserved": "70bcd8b8c67a1a7455d74dde0e6a711c34925ec0",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "localBranch": "codex/esim-cloud-access",
+    "sameNamedRemoteBranch": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "published": false,
+    "verification": {
+      "focusedCommand": "node --experimental-strip-types --test tests/campus-sky.test.mjs tests/campus.test.mjs tests/campus-store.test.mjs tests/sky-mcp-onboarding.test.mjs",
+      "focusedPassed": 19,
+      "fullCommand": "TMPDIR=/private/tmp npm run verify",
+      "fullExitCode": 0,
+      "nodeTests": 912,
+      "workerD1Assertions": 1178,
+      "csvAssertions": 113,
+      "typecheck": "passed",
+      "lint": "passed",
+      "build": "passed",
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "assetReferences": 156,
+      "missingAssets": 0,
+      "rawLog": "/private/tmp/sky-campus-verify-final.log",
+      "rawLogSha256": "fe7dd0b78f8c1bf965a9cba4061052017a49ce4d8e5963a0aeee63cdc41e8b46"
+    },
+    "nextAction": "保全したdirty差分とmain 8c5891fcのColumbia動的routeを統合して同一Sky入口へ整理し、公開同一artifactで5大学/本人A-B/実NFC・スマホ、購入→Provider→Zema承認/停止/費用を縦断受入する。",
+    "evidence": "docs/evidence/campus-sky-entry.json",
+    "mobileCloudMcpAccepted": false,
+    "freeLimits": {
+      "general": 5,
+      "eligibleCampusStudent": 6
+    },
+    "preWriteAudit": {
+      "checkedAt": "2026-10-12T23:02:23.697Z",
+      "productionVersion": 39,
+      "campusNyuHttpStatus": 404,
+      "tagPackaging": "NTAG215",
+      "requestedRolloutReady": false,
+      "evidence": "docs/evidence/campus-sky-entry.json",
+      "scope": "Read-only status check before physical tags; no runtime/deployment/NFC changes"
+    },
+    "launchResearch": {
+      "date": "2026-10-12",
+      "status": "research_complete_requested_rollout_not_accepted",
+      "requirementCount": 40,
+      "officialSourceCount": 24,
+      "acceptanceScenarioCount": 15,
+      "providerCandidateCount": 6,
+      "evidence": "docs/evidence/campus-sky-entry.json",
+      "runtimeSourceHashesUnchanged": 21,
+      "sourceVerification": "Prior full verify retained; this change updates research/handoff only",
+      "canvasTypecheck": "passed",
+      "runtimeChanged": false,
+      "deployed": false,
+      "tagWritten": false
+    },
+    "agentHubIntegration": {
+      "status": "local_source_and_browser_verified_not_deployed",
+      "serviceWorkspace": {
+        "status": "local_browser_interactions_verified_not_deployed",
+        "firstAction": "campus_task_input_to_zema_composer_via_one_shot_tab_draft",
+        "guestAction": "three_field_deterministic_brief_with_copy_download_and_zema_handoff",
+        "secondaryActions": "campus_people_resources_market",
+        "ownerStatus": "work_purchases_mcp_slots_from_existing_apis",
+        "verifiedCampusExamples": [
+          "nyu",
+          "fit"
+        ],
+        "mobileWidthsChecked": [
+          320,
+          390
+        ],
+        "verification": {
+          "command": "TMPDIR=/private/tmp npm run verify",
+          "exitCode": 0,
+          "nodeTests": 913,
+          "workApiAssertions": 1178,
+          "csvAssertions": 113,
+          "webAssetMissing": 0,
+          "log": "/private/tmp/sky-campus-service-workspace-verify-final.log",
+          "logSha256": "2fd4886fbaf3adbb6b5e8ea2bd8b5fd31ccf5ef2d966e6f7c133d63f1bd71251"
+        },
+        "deployed": false
+      },
+      "routes": [
+        "/sky/campus/{campus}/hub",
+        "/sky/campus/{campus}/manage",
+        "/sky/campus/{campus}/manifest.webmanifest"
+      ],
+      "purchaseSource": "existing_owner_scoped_commerce_purchases",
+      "workSource": "existing_owner_scoped_work_jobs",
+      "payment": "Stripe Checkout existing; Apple Pay eligible only, unaccepted",
+      "mobileAgentExecutionAccepted": false,
+      "published": false,
+      "tagWritten": false,
+      "nfcDirectLaunch": {
+        "registeredSkyTag": "/t/{tagId}?source=nfc -> /sky/campus/{campus}/hub",
+        "legacySkyTag": "server redirects prior campus landing destinations to hub",
+        "pwaInstall": "separate explicit user action",
+        "physicalDeviceAccepted": false,
+        "verification": {
+          "focusedTests": 16,
+          "fullCommand": "TMPDIR=/private/tmp npm run verify",
+          "fullExitCode": 0,
+          "nodeTests": 913,
+          "workApiAssertions": 1178,
+          "csvAssertions": 113,
+          "webAssetMissing": 0,
+          "rawLog": "/private/tmp/sky-campus-nfc-direct-verify.log",
+          "rawLogSha256": "0e20e6c9c3b884c38c37da314ccce995915db86ff59281e61ec9bcee73cc3add"
+        }
+      },
+      "verification": {
+        "focusedTests": 49,
+        "fullCommand": "TMPDIR=/private/tmp npm run verify",
+        "fullExitCode": 0,
+        "nodeTests": 913,
+        "workApiAssertions": 1178,
+        "csvAssertions": 113,
+        "build": "passed",
+        "typecheck": "passed",
+        "lint": "passed",
+        "designCheck": "passed",
+        "browser": "NYU Hub to embedded Zema; NYU manifest; 390px Hub and Zema no horizontal overflow",
+        "rawLog": "/private/tmp/sky-campus-agent-hub-verify-final.log",
+        "rawLogSha256": "bea333d10606d64403fcaf9913a0833b115c3eda10848d25723badb255663b34"
+      },
+      "supersededBy": "integratedSkyExperience"
+    },
+    "integratedSkyExperience": {
+      "decision": "NFC opens the existing standalone Sky app with campus context, not a separate task-first hub",
+      "remoteMainObserved": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+      "publicSkyObserved": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky",
+      "campusEntry": "/sky/campus/{campus}/hub",
+      "campusPicker": "all five links open their matching Sky hub",
+      "sharedComponent": "components/sky-workspace.tsx",
+      "campusDifferences": "name, curated existing ready Tool recommendations, marketplace/purchase/connection/Zema links, PWA identity",
+      "localBrowser": "NYU 390px and FIT 320px, no horizontal overflow; Sky feed, purchase-state panel and navigation visible",
+      "localVerify": "npm run verify exit 0; Node 913, Work API 1178, CSV 113, Web asset missing 0",
+      "deployed": false,
+      "purchaseToProviderAccepted": false,
+      "mobileCloudMcpAccepted": false,
+      "mainIntegrated": false
+    }
+  },
+  "skyAppOutputPlugin": {
+    "status": "local_source_and_ui_verified_not_deployed",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB06",
+      "SKY21"
+    ],
+    "decision": "OS uses Zema for work management; standalone Sky supplies saved Agent outputs to host apps",
+    "sharedOutputRoutes": [
+      "/sky/outputs",
+      "/sky/campus/{campus}/outputs"
+    ],
+    "firstPartyHostExample": "/fitness",
+    "firstPartyOutputSlot": "components/sky-app-output-slot.tsx",
+    "hostSchemaExample": "sky.fitness.plan/1",
+    "reuses": [
+      "/api/work-jobs",
+      "/api/sky/a2a-delegations",
+      "/api/sky/a2a-delegations/{id}/artifacts",
+      "/api/llm/quotes"
+    ],
+    "newOriginalStore": false,
+    "verification": {
+      "focused": "2/2 presenter and Fitness schema tests passed",
+      "typecheck": "passed",
+      "lint": "passed",
+      "designCheck": "passed",
+      "fullVerify": "exit 0; Node 915/915, Work API 1178, CSV 113, Web assets missing 0",
+      "browser": "Sky outputs and FIT outputs readback; Fitness sample rendered; 320px output and Fitness pages without horizontal overflow",
+      "rawLog": "/private/tmp/sky-app-output-plugin-verify-final.log",
+      "rawLogSha256": "a2b067036045c767e8b21defb23bd60c105fcf1c227d73fca0063558eb6d612b"
+    },
+    "externalCrossOriginSdkAccepted": false,
+    "fitnessAgentProviderAccepted": false,
+    "liveOwnerABAccepted": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyEntrySpecificationSync": {
+    "status": "specification_complete_host_verified_runtime_unaccepted",
+    "date": "2026-10-12",
+    "sourceThreadId": "01a13164-efb3-7253-a986-5517c3db5a71",
+    "sourceThreadTitle": "大学別NFCでSkyに接続",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB06",
+      "SKY21",
+      "SIM01"
+    ],
+    "scope": "Align existing Sky, university NFC, optional eSIM and iOS client specification with current code and separate acceptance evidence; documentation only",
+    "runtimeChanged": false,
+    "published": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "document": "docs/sim-led-product-architecture.md#sky-shared-entry",
+    "reason": "User requested alignment with the named chat; latest direction reuses existing Sky instead of a separate campus task-form hub, while eSIM/iOS remain optional entry extensions.",
+    "remoteMainObserved": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+    "remoteMainChecks": {
+      "sameSha": true,
+      "total": 8,
+      "success": 8,
+      "verifyUrl": "https://github.com/k999ln/rock/actions/runs/38325012912/job/115061552181"
+    },
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "localBranch": "codex/esim-cloud-access",
+    "sameNamedRemoteBranch": false,
+    "relatedOpenPr": {
+      "number": 103,
+      "head": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+      "scope": "Compute Grid reference only; not merged or accepted by this specification"
+    },
+    "mainSource": "app/sky/campus/[campusId]/page.tsx: Columbia-only landing at observed main",
+    "sharedSource": "app/sky/campus/[campus]/hub/page.tsx reuses SkyWorkspace; manage reuses SkyChatWorkspace",
+    "publicUiObservation": {
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky",
+      "method": "read-only existing in-app browser UI",
+      "visible": [
+        "Agent feed and role buttons",
+        "marketplace link",
+        "service and MCP connection management",
+        "agent code timeline",
+        "AMC autonomous execution unconnected label"
+      ],
+      "notVerified": [
+        "deployment version and source hash",
+        "campus deployment",
+        "owner authentication and purchase",
+        "provider execution"
+      ],
+      "separateHistoricalSite": "https://sky-marketplace.noellesugar1.chatgpt.site: v39/source 8cd0a4d7 belongs to separate prior campus evidence"
+    },
+    "remaining": [
+      "main/local route and migration reconciliation",
+      "same-artifact 5-campus and owner A/B acceptance",
+      "real Provider budget approval execution usage stop recovery",
+      "physical iPhone Android NFC PWA",
+      "Apple Pay and extra-slot paid acceptance",
+      "real eSIM issuer/device handoff",
+      "optional iOS native App Clip integrations"
+    ],
+    "verification": {
+      "status": "passed",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 913,
+      "workApiAssertions": 1178,
+      "csvAssertions": 113,
+      "webAssetReferences": 157,
+      "missingAssets": 0,
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "projectCheck": "passed",
+      "localDocumentLinksMissing": 0,
+      "rawLog": "/private/tmp/sky-entry-spec-verify.log",
+      "rawLogSha256": "abcbcce3b1ce4529ca502422455f8eee20ad8666a7a64f730daa85b3040eb889",
+      "sourceHashesStableThroughVerification": true,
+      "scope": "documentation alignment and current shared-workspace host regression; not new UI, real device, provider, or production acceptance",
+      "preliminaryFailure": "database:check reported stale generated summary; regenerated with npm run database:status, then full verify passed; no schema edit made by this task"
+    },
+    "observedSourceSha256": {
+      "app/sky/page.tsx": "7331472c40ac019926c1bb85aa5e7d61bdd015f2f989c1e928c940bc93b8b330",
+      "app/sky/campus/[campus]/hub/page.tsx": "f17f9baae178e4f332fcb024ec6d84068fad48043777cf0a67bc24f20dc36e37",
+      "app/sky/campus/[campus]/manage/page.tsx": "662bd41a04ece4b003c35c256eafd80e5f8570ee5886a128453772ba689ebf33",
+      "components/sky-workspace.tsx": "929fcb6a7ff2992b8ffecb1d3f05cf9af65be9049fd4668c16489a19ad6ca43c",
+      "components/sky-chat-workspace.tsx": "f5d083e779cd2006f02b401dccedc772636055adca28aed4c426daab234cf9be",
+      "lib/remote-ai-pricing-gate.ts": "afa1cf375d630166e23302046f518b4af051caf7eb7db7cba1f581b8682e2c70",
+      "app/t/[tagId]/route.ts": "b3e05abeee847d90901c11aab848e6cc38bc0dd3125c370adc0d3b8c862dadab",
+      "lib/campus-sky.ts": "fa22c351cb1277e2122511f6a4008b6772045d9440f60ca41f51a72463b98126"
+    },
+    "nextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。",
+    "changedArtifacts": [
+      "docs/sim-led-product-architecture.md",
+      "docs/product-baseline.md",
+      "data/product-baseline.json",
+      "docs/rockstaros-complete-design.md",
+      "docs/sky-tools-complete-design.md",
+      "data/design-document-index.json",
+      "docs/workstreams/05-web-pwa-sites.md",
+      "docs/prompts/rock-current-next-20261002.md",
+      "README.md",
+      "project.md",
+      "data/project-status.json"
+    ]
+  },
+  "notionCleanup": {
+    "date": "2026-10-13",
+    "taskId": "G04",
+    "primaryOwner": "ROCK",
+    "status": "notion_cleanup_and_readback_verified",
+    "authorization": "User explicitly requested removing overlapping non-avocado projects and repository guidance from Notion to prevent collaboration conflicts.",
+    "repository": "k999ln/rock",
+    "trashedTopLevelItems": 23,
+    "counts": {
+      "legacyProjects": 4,
+      "legacyTasksAndRequests": 11,
+      "otherRepositoryMaterials": 2,
+      "exampleDatabases": 4,
+      "exampleGuides": 2
+    },
+    "exampleDatabaseChildrenIncludedInCount": false,
+    "recoverableTrash": true,
+    "permanentDeletionPerformed": false,
+    "notionEntriesUpdated": 2,
+    "githubRepositoriesDeleted": false,
+    "runtimeChanged": false,
+    "permissionsChanged": false,
+    "privateNotionContentCopiedToRepository": false,
+    "automaticSyncConfigured": false,
+    "githubSaved": false,
+    "historicalFullTextAuditComplete": false,
+    "scope": "Reviewed project, task, mutual-request, material and template entry points. Original meeting and daily history and unrelated independent businesses retained; historical text is not current execution authority.",
+    "nextAction": "Continue existing G04 preservation and main/branch/database reconciliation. Manually refresh the current Notion entry when matching implementation or acceptance evidence changes.",
+    "validation": {
+      "trashReadback": "passed: Restore page visible for all 23 targeted items",
+      "entryReadback": "passed: main project list excludes four retired projects; parent has one avocado entry and no example navigation; overview has one body, updated 23-item count and no retired Notion links or competing repository mentions",
+      "projectCheck": "passed",
+      "baselineCheck": "passed",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: existing data/database-status.json and docs/database-status.md out of sync; local full verification not accepted",
+      "projectUpdate": "passed",
+      "verifyLog": "/private/tmp/notion-cleanup-verify-20261013.log"
+    }
+  },
+  "builtEnvironmentStronghold": {
+    "date": "2026-10-14",
+    "taskId": "MAT18",
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "primaryOwner": "ROCK",
+    "status": "explicit_direction_recorded_pilot_scope_and_partners_pending",
+    "scope": "Architecture, interior, sound and unobtrusive IT as avocado's first industry stronghold; Mini as a candidate physical node and RockstarOS/Sky/Zema as the shared work, permission, evidence and recovery system.",
+    "responsibility": {
+      "ROCK": "Device Profile candidates, runtime permission/storage/recovery, Sky connection and Zema space-project contract",
+      "EXTERNAL": "professional design, code, permits, installation, construction quality and maintenance",
+      "JOINT": "real-space measurement, professional review, device integration, sound/privacy/safety and removal/recovery acceptance",
+      "OWNER": "first space, problem, jurisdiction, partner, budget, sharing, order, installation and publication"
+    },
+    "preserves": [
+      "RQ01-RQ49",
+      "SIM/eSIM-led primary service",
+      "R5",
+      "Material Invention",
+      "Pixel/QEMU",
+      "existing pricing and safety gates"
+    ],
+    "runtimeChanged": false,
+    "partnerContracted": false,
+    "pilotScopeConfirmed": false,
+    "deviceProfileConfirmed": false,
+    "physicalPilotAccepted": false,
+    "professionalAcceptanceComplete": false,
+    "marketLeadershipClaimed": false,
+    "nextAction": "Choose one bounded space and quality-of-life problem, jurisdiction and architecture/interior/sound partners; define the no-Mini fallback, required Mini capabilities, data boundaries, professional approvals, cost and removal/recovery; then measure one end-to-end pilot.",
+    "validation": {
+      "productBaselineJson": "passed",
+      "projectUpdate": "passed: 104/163 done",
+      "baselineCheck": "passed: RQ01-RQ49 preserved",
+      "designCheck": "passed: 18 domains / 34 catalog tools / 6 native families",
+      "projectCheck": "passed",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: existing data/database-status.json and docs/database-status.md require database:status regeneration; later verification stages were not executed and full local verification is not accepted",
+      "verifyLog": "/private/tmp/rock-built-environment-verify-20261014.log"
+    }
+  },
+  "schoolbagSafetyDevice": {
+    "date": "2026-10-14",
+    "taskIds": [
+      "MAT16",
+      "MAT17"
+    ],
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "primaryOwner": "ROCK",
+    "status": "pixel_pocket_console_v03_bounded_local_agent_started_and_input_observed_physical_prototype_pending",
+    "document": "docs/avocado-schoolbag-safety-device.md",
+    "profile": "data/avocado-schoolbag-safety-device.json",
+    "pixelBrowserPreview": "public/companion-preview/index.html",
+    "pixelPreviewVersion": "V0.3 Pocket Console bounded local agent",
+    "pixelAgentRuntime": "public/companion-preview/agent.js",
+    "pixelAgentKind": "rule_based_session_only_not_llm",
+    "pixelAgentNodeTestsPassed": 4,
+    "pixelAgentStartAndUnsupportedReplyObserved": true,
+    "pixelModelConnected": false,
+    "physicalInformationDisplayAccepted": false,
+    "pixelPreviewEvidence": "docs/evidence/avocado-companion-pixel-preview-20261014.json",
+    "pixelPreviewRendered": true,
+    "pixelSchoolModeInteractionObserved": true,
+    "androidCompanionApkAccepted": false,
+    "userReferencesReviewed": 5,
+    "prototypeVariants": [
+      "P0-A_screenless_safety",
+      "P0-B_hanging_detachable_two_eye_voice_companion"
+    ],
+    "workingProductName": "avocado Companion",
+    "finalProductNameConfirmed": false,
+    "voiceBenchAccepted": false,
+    "hangingDetachHumanFactorsAccepted": false,
+    "runtimeChanged": false,
+    "pixelPreviewRuntimeChanged": true,
+    "pixelPreviewImplemented": true,
+    "physicalPrototypeAccepted": false,
+    "childSafetyAccepted": false,
+    "alarmStandardAccepted": false,
+    "radioAccepted": false,
+    "batteryAccepted": false,
+    "manufacturingAuthorized": false,
+    "saleAuthorized": false,
+    "nextAction": "Measure three reference alarms; mock up hanging, one-hand release and SOS on removable body; bench explicit voice through guardian phone/Wi-Fi, independent local alarm and two power options; then choose components and record battery/acoustic/retention evidence.",
+    "validation": {
+      "profileJson": "passed: four touched JSON artifacts parsed including Pixel evidence",
+      "pixelBrowser": "passed: Pixel 10 frankel Vanadium rendered preview; school mode disabled mic; typed input displayed fixed reply; SOS test start and stop states observed",
+      "pocketConsoleV02": "passed: Pixel 10 rendered compact status panel; local browser verified school mode and mic disabled, offline simulation label, fixed reply, SOS test start and stop. V0.2 interactions were not separately accepted as Pixel hardware features",
+      "pocketConsoleV03": "passed: Pixel 10 Vanadium showed bounded Agent start and typed input -> unsupported reply; 4 Node state tests passed. LLM and hardware not accepted",
+      "agentNodeTests": "passed: node --test tests/companion-agent.test.cjs (4/4)",
+      "previewJsSyntax": "passed: Node vm.Script parse",
+      "designCheck": "passed: 18 domains / 34 catalog tools / 6 native families",
+      "projectCheck": "passed: 104/163 done and documents synchronized",
+      "baselineCheck": "passed: RQ01-RQ49 preserved",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: database:check reports existing data/database-status.json and docs/database-status.md need database:status regeneration; full local verification not accepted",
+      "verifyLog": "/private/tmp/avocado-companion-agent-verify-20261014.log"
+    }
+  },
+  "notionVisualGuide": {
+    "date": "2026-10-13",
+    "taskId": "G04",
+    "primaryOwner": "ROCK",
+    "status": "revised_dashboard_and_detail_views_readback_verified",
+    "repository": "k999ln/rock",
+    "sourceMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "guidePages": 4,
+    "navigationPages": 2,
+    "pngDiagrams": 6,
+    "mermaidDiagrams": 5,
+    "catalog": {
+      "total": 37,
+      "ready": 15,
+      "candidate": 22
+    },
+    "financialActuals": "unverified_not_zero",
+    "runtimeChanged": false,
+    "taskAcceptanceChanged": false,
+    "permissionsChanged": false,
+    "privateNotionContentCopiedToRepository": false,
+    "githubSaved": false,
+    "automaticSyncConfigured": false,
+    "nextAction": "Continue G04 main/branch/database reconciliation; refresh the existing Notion guide against source SHA and matching acceptance evidence.",
+    "validation": {
+      "sourceLinks": "passed: all pinned repository file links resolve in the source tree",
+      "localDiagramVisualQa": "passed: original five figures plus compact overview inspected",
+      "notionReadback": "passed: revised dashboard figure and two-column table fit current browser; four detail pages cleaned, five native Mermaid diagrams set to preview only; old navigation and empty import wrapper retired",
+      "projectUpdate": "passed",
+      "projectCheck": "passed",
+      "baselineCheck": "passed",
+      "targetDiffCheck": "passed",
+      "verify": "exit 1: existing data/database-status.json and docs/database-status.md out of sync; runtime not changed or accepted",
+      "verifyLog": "/private/tmp/avocado-guide-redesign-verify-20261013.log"
+    },
+    "emptyImportFolderTrashed": true,
+    "designRevision": 2,
+    "revisionReason": "User requested a clearer visual hierarchy after reviewing the first guide.",
+    "revisionScope": {
+      "dashboard": "compact relationship figure, seven-domain progress table, next three actions and links to four details",
+      "detailPagesCleaned": 4,
+      "mermaidPreviewOnly": 5,
+      "oldNavigationAndEmptyImportWrapperTrashed": 2,
+      "navigationReadback": "existing project and guide entries now lead to the revised dashboard"
+    }
+  },
+  "gtaWebsiteCompatibilityTest": {
+    "date": "2026-10-15",
+    "taskId": "AI06",
+    "primaryWorkstream": "Game / Market / Fund",
+    "primaryOwner": "ROCK",
+    "status": "inconclusive_browser_startup_incomplete_integration_not_verified",
+    "requestedUrl": "https://gta.deloskiyt.pl/",
+    "observedUrl": "https://fiveplay.lol/",
+    "environment": "macOS Codex in-app browser; not avocadoMini/Pro or native RockstarOS hardware",
+    "nextAction": "Resolve browser startup on the target device, obtain site-supported API/import documentation or operator integration agreement, identify avocadoPro artifact, then test one non-financial asset round-trip. Managed FiveM is a separate existing candidate, not this site.",
+    "runtimeChanged": false,
+    "githubSaved": false,
+    "mainSha": "8b374cfc7838d3a751faf5e28b367c860ddbcd0d",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "localBranch": "codex/esim-cloud-access",
+    "sameNamedRemoteBranchExists": false,
+    "observations": [
+      "Automatic redirect to fiveplay.lol",
+      "Sandbox Mode > GTA V Map selectable",
+      "Repeated observations remained Starting... 6%, Game data: 248 MB; no playable scene reached",
+      "No WebMCP tools advertised; no integration/import UI observed in the reached screen"
+    ],
+    "results": {
+      "avocadoMini": "not_tested_on_hardware; no site integration demonstrated",
+      "RockstarOS": "existing GTA/FiveM provider settings are not an implemented adapter for this site; integration not demonstrated",
+      "avocadoPro": "current executable/deployment not identified in inspected repository; not tested"
+    },
+    "screenshot": "/private/tmp/gta-compatibility-20261015.png",
+    "validation": {
+      "projectUpdate": "passed",
+      "verify": "exit 1: existing data/database-status.json and docs/database-status.md regeneration required",
+      "verifyLog": "/private/tmp/gta-site-verify.log"
+    },
+    "nativeAcceptance": false,
+    "mainMerged": false,
+    "followup": {
+      "intent": "Mini/Pro gameplay and RockstarOS linkage; user confirms no hardware and Mac-first testing",
+      "route": "/game",
+      "status": "local_launch_and_manual_zema_draft_implemented_gameplay_pending",
+      "profiles": [
+        "standard",
+        "low=1&res=1280x720&fps=30"
+      ],
+      "tests": "game-launch 2/2 pass",
+      "automaticGameSync": false,
+      "gameplayAccepted": false,
+      "hardwareAccepted": false,
+      "validation": {
+        "typecheck": "passed",
+        "designCheck": "passed",
+        "unitTests": "2/2 passed",
+        "ui": "/game rendered; handoff text read back in Zema composer; no send",
+        "verify": "exit 1: pre-existing database-status artifacts out of sync",
+        "log": "/private/tmp/gta-companion-verify.log"
+      },
+      "supersededBy": "fivemWorldBridge: user clarified world boundary; /game now points to Mac bridge, historical launcher/manual-note result retained"
+    }
+  },
+  "fivemWorldBridge": {
+    "date": "2026-10-15",
+    "taskId": "AI06",
+    "primaryOwner": "ROCK",
+    "status": "host_round_trip_verified_real_game_pending",
+    "scope": "local developer gateway, shared NUI and FiveM resource candidate; existing workflow contract in isolated SQLite",
+    "mainObserved": "ef1c9a7a7f4ab042bdc2c81e1d6c6b97dd77977c",
+    "realFiveMAccepted": false,
+    "gtaVIAccepted": false,
+    "productionZemaConnected": false,
+    "deployed": false,
+    "githubSaved": false,
+    "nextAction": "Fix exact authorized Windows GTA V/FiveM server/client profile and player; accept resource load/focus, two-player isolation, card hash, disconnect/restart/stop. Integrate production identity/Asset/Broker/D1 separately.",
+    "evidence": "docs/evidence/fivem-world-bridge-host.json",
+    "validation": {
+      "bridgeTests": "8/8 passed",
+      "existingLaunchRegression": "2/2 passed",
+      "typecheck": "passed",
+      "lint": "scoped passed",
+      "baseline": "passed",
+      "design": "passed",
+      "syntax": "resource server/client passed",
+      "ui": [
+        "OS card save -> approval -> identical hash in shared NUI -> game confirmation -> OS review -> workflow completed",
+        "Game request -> OS unapproved draft -> explicit OS approval -> same NUI content",
+        "Gateway process stopped and restarted, then browser reload retained completed card and pending draft"
+      ],
+      "verify": "exit 1 at database:check: pre-existing data/database-status.json and docs/database-status.md stale; later stages not executed"
+    },
+    "localUrl": "http://127.0.0.1:5216/",
+    "workflows": "existing lib/workflow.ts / composition, isolated local SQLite",
+    "resource": "toolkits/fivem-bridge/resource",
+    "agentCreatorExpansion": {
+      "status": "host_local_agent_workflow_verified_external_execution_pending",
+      "runtimeChanged": true,
+      "selectedAgentName": null,
+      "connectedAgentExecutionAccepted": false,
+      "gtaVISupported": false,
+      "marketOpened": false,
+      "currencyMoved": false,
+      "nextAction": "Connect authenticated Sky directory and existing quote/approval/delegation path; accept actual FiveM separately. User additionally requested FivePlay system analysis and integration.",
+      "validation": {
+        "targetedTests": "14/14 passed",
+        "typecheck": "passed",
+        "scopedLint": "passed",
+        "design": "passed",
+        "baseline": "passed",
+        "verify": "exit 1 preexisting database-status two files stale; later stages unexecuted",
+        "evidence": "docs/evidence/fivem-world-bridge-agents-host.json"
+      },
+      "selectedAgentPolicy": "all_connectable_agents_and_create_missing",
+      "hostValidation": "bridge 11/11 and launcher 2/2 passed; UI same job round 1 to 2, actual citation output, explicit share, complete, custom Agent creation"
+    },
+    "fiveplayAdapter": {
+      "status": "source_and_mock_http_verified_browser_install_pending",
+      "build": "8b0b5899ed",
+      "gameBootAccepted": false,
+      "extensionInstalled": false,
+      "engineWriteApiConfirmed": false,
+      "currencyMoved": false,
+      "localUrl": "http://127.0.0.1:5217/",
+      "validation": "14/14 targeted tests, typecheck/scoped lint/design/baseline passed; verify preexisting DB mismatch; extension install pending",
+      "nextAction": "User-approved Chrome unpacked extension installation, same-site overlay request/result UI acceptance; provider must resolve game engine boot separately"
+    }
+  },
+  "avocadoMiniWebGameDesign": {
+    "date": "2026-10-15",
+    "taskId": "MAT15",
+    "owner": "JOINT",
+    "status": "design_recorded_runtime_and_physical_pending",
+    "document": "docs/avocado-mini-r5/game-runtime-design.md",
+    "sourceMainObserved": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "githubSaved": false,
+    "miniPhysicalTests": 0,
+    "gates": {
+      "MG01": "NOT_RUN",
+      "MG02": "NOT_RUN",
+      "MG03": "NOT_RUN",
+      "MG04": "NOT_RUN",
+      "MG05": "NOT_RUN",
+      "MG06": "NOT_RUN",
+      "MG07": "NOT_RUN"
+    },
+    "validation": {
+      "designCheck": "passed",
+      "baselineCheck": "passed",
+      "projectUpdate": "passed",
+      "r5ArchiveIntegrity": "passed, original 26 hashes preserved",
+      "diffCheck": "passed",
+      "verify": "exit 1 at preexisting database-status two-file mismatch; later stages not executed",
+      "log": "/private/tmp/mini-game-verify.log"
+    }
+  },
+  "avocadoMiniEmbeddedPortableDesign": {
+    "date": "2026-10-15",
+    "tasks": [
+      "MAT15",
+      "MAT18"
+    ],
+    "status": "design_recorded_hardware_radio_power_pending",
+    "document": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+    "physicalTests": 0,
+    "directSatelliteAccepted": false,
+    "wifiHotspotAccepted": false,
+    "batterySelected": false,
+    "githubSaved": false,
+    "nextAction": "比較するantenna/modem/Providerと電池/着脱dockを選定し、DP01〜05を同一prototypeで受入。",
+    "validation": {
+      "design": "passed",
+      "baseline": "passed; validator updated for explicit portable-power requirement",
+      "baselineTests": "2/2 passed",
+      "r5Archive": "26 hashes preserved",
+      "verify": "preexisting database-status mismatch; later stages not executed",
+      "log": "/private/tmp/mini-dock-verify.log"
+    }
+  },
+  "agentMonthlyPostpaidDesign": {
+    "date": "2026-10-15",
+    "taskId": "BIL02",
+    "status": "design_recorded_provider_credit_and_jurisdiction_pending",
+    "document": "docs/sky-billing.md",
+    "liveCharges": false,
+    "bankActions": false,
+    "nextAction": "対象国/契約主体/単価/締日/支払日/与信枠/収納Providerを固定し既存usage-storeを月次invoiceと照合、sandboxで未払い/訂正/入金復旧を受入",
+    "validation": {
+      "projectUpdate": "passed",
+      "baseline": "passed",
+      "design": "passed",
+      "diffCheck": "passed",
+      "verify": "exit 1: preexisting database-status two-file mismatch; later stages not run",
+      "log": "/private/tmp/monthly-verify.log"
+    }
   }
 }

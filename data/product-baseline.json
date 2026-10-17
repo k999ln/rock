@@ -1,5 +1,5 @@
 {
-  "version": "1.96",
+  "version": "1.98",
   "decidedAt": "2026-10-01",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -42,6 +42,48 @@
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
     "runtimeChangedByThisDesign": false
+  },
+  "builtEnvironmentStronghold": {
+    "recordedAt": "2026-10-14",
+    "status": "explicit_product_direction_design_and_partner_pilot_pending",
+    "vision": "partner_with_architecture_and_interior_practitioners_and_use_architecture_sound_and_unobtrusive_it_to_enrich_quality_of_life",
+    "strategicMeaning": "first_industry_stronghold_not_exclusive_market_or_verified_market_leadership",
+    "domains": [
+      "architecture",
+      "interior",
+      "sound",
+      "naturally_integrated_it"
+    ],
+    "experiencePrinciple": "technology_supports_the_space_and_daily_life_without_demanding_attention_or_exposing_system_complexity",
+    "avocadoMiniRole": "physical_node_between_living_space_people_and_rockstaros_subject_to_device_profile_and_physical_acceptance",
+    "rockstarOsRole": "identity_permission_agent_device_storage_recovery_and_budget_runtime",
+    "skyRole": "connect_reviewed_architecture_interior_acoustic_agents_tools_and_professionals",
+    "zemaRole": "manage_one_space_project_requests_revisions_approvals_progress_results_and_spend",
+    "professionalAuthority": "licensed_design_code_review_permitting_engineering_installation_and_site_responsibility_remain_with_qualified_people_and_authorities",
+    "modelAuthority": "generation_simulation_code_candidates_and_estimates_never_become_measurement_professional_approval_permit_or_completed_work_automatically",
+    "preserves": [
+      "RQ01-RQ49",
+      "sim_esim_led_primary_service",
+      "R5",
+      "Pixel_QEMU",
+      "Material_Invention",
+      "existing_pricing_permission_and_acceptance_gates"
+    ],
+    "firstPilot": {
+      "space": "undecided",
+      "countryOrJurisdiction": "undecided",
+      "partner": "undecided",
+      "miniCapabilities": "undecided_and_must_be_measured",
+      "soundScope": "undecided",
+      "price": "undecided"
+    },
+    "taskIds": [
+      "MAT18"
+    ],
+    "runtimeChanged": false,
+    "partnershipAccepted": false,
+    "physicalPilotAccepted": false,
+    "marketLeadershipClaimed": false
   },
   "gameFirstLifeVision": {
     "recordedAt": "2026-09-21",
@@ -147,7 +189,7 @@
       "sameTypePeerExpansion": true,
       "separateEdgeHubRequired": false,
       "externalPcRequiredForCoreFunctions": false,
-      "externalPowerRequired": true,
+      "externalPowerRequired": false,
       "batteryAdopted": false,
       "displayRequirement": "naked_eye_particles_distributed_in_surrounding_real_space",
       "displayStatus": "unavailable_research_gate_not_room_scale_validated",
@@ -161,7 +203,29 @@
       "maturity": "integrated_basic_design_with_open_engineering_decisions",
       "replacesMandatoryE3HubConfiguration": true,
       "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
-      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
+      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24",
+      "webGameDesign": {
+        "document": "docs/avocado-mini-r5/game-runtime-design.md",
+        "source": "2026-10-15 user: FivePlay等をminiでも動かせる仕様、avocado miniの設計",
+        "primaryExecution": "on_mini_no_required_external_compute_hub",
+        "workContinuation": "same_job_id_game_to_sky_zema_to_real_world",
+        "hardwareSelection": "benchmark_gpu_driver_memory_thermal_enclosure_before_freeze",
+        "externalGameAccepted": false,
+        "miniPhysicalAccepted": false
+      },
+      "externalPowerPolicy": "dock_power_for_installed_mode_portable_power_required_off_dock",
+      "portablePowerRequired": true,
+      "batterySelectionStatus": "internal_vs_detachable_under_design_not_selected",
+      "embeddedPortableConnectivity": {
+        "document": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "source": "2026-10-15 user image and explicit embedded/detachable/satellite/portable Wi-Fi request",
+        "embeddedDock": true,
+        "detachableCore": true,
+        "satelliteWanTarget": true,
+        "wifiHotspotTarget": true,
+        "directSatelliteAccepted": false,
+        "portablePowerAccepted": false
+      }
     },
     "mini200E2Integration": {
       "document": "docs/avocado-mini-mini200-e2/README.md",
@@ -523,7 +587,38 @@
       "tag_activate_deactivate",
       "tag_analytics_delete",
       "campus_data_delete"
-    ]
+    ],
+    "skyEntry": {
+      "decisionDate": "2026-10-12",
+      "route": "/sky/campus/{campusId}",
+      "entry": "nfc_ndef_https_url_or_qr",
+      "nfcLaunch": "registered_sky_tag_redirects_directly_to_university_agent_hub_legacy_sky_destinations_included",
+      "deviceInstall": "browser_access_immediate_pwa_install_requires_explicit_user_action",
+      "generalFreeMcpConnections": 5,
+      "eligibleStudentFreeMcpConnections": 6,
+      "studentCampuses": [
+        "nyu",
+        "fit",
+        "columbia",
+        "fordham",
+        "johnjay"
+      ],
+      "eligibility": "authenticated_domain_verified_campus_profile_with_self_declared_student_affiliation",
+      "extraConnections": "paid_price_unset_checkout_disabled",
+      "nativeOsRequired": false,
+      "implementationScope": "browser_entry_campus_pwa_existing_sky_agent_feed_and_marketplace_embedded_zema_with_brief_as_auxiliary_tool",
+      "mobileCloudMcpAccepted": false,
+      "agentHub": {
+        "route": "/sky/campus/{campusId}/hub",
+        "firstUse": "existing_sky_agent_feed_and_role_selection_with_campus_name_and_ready_tool_recommendations_then_marketplace_purchases_connections_and_zema",
+        "zemaRoute": "/sky/campus/{campusId}/manage",
+        "pwaManifest": "/sky/campus/{campusId}/manifest.webmanifest",
+        "purchase": "existing_sky_marketplace_and_verified_stripe_checkout",
+        "applePay": "conditional_eligible_stripe_checkout_not_yet_accepted",
+        "authorization": "nfc_and_pwa_never_grant_identity_student_status_purchase_or_agent_execution",
+        "execution": "separate_owner_entitlement_provider_budget_and_usage_acceptance_required"
+      }
+    }
   },
   "baseApps": [
     {
@@ -566,15 +661,11 @@
       "minimumPrimaryTouchTargetPx": 44,
       "pageHorizontalOverflow": "forbidden"
     },
-    "visualBasis": "iphone_inspired_app_launcher",
+    "visualBasis": "shared_os_design_tokens_and_header",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": [
-      "wallpaper",
-      "accent",
-      "icon_size",
-      "labels",
-      "app_order"
+      "focus_mode"
     ],
     "settingsFunctions": [
       "appearance",
@@ -592,7 +683,21 @@
       "sanitized_diagnostic_export",
       "allowlisted_device_reset",
       "release_readiness"
-    ]
+    ],
+    "legacyPreferences": "wallpaper/accent/icon_size/labels/app_order remain stored but are not used by the redesigned Home",
+    "intentHandoff": {
+      "storage": "sessionStorage",
+      "ttlSeconds": 600,
+      "oneShot": true,
+      "urlContainsRequestText": false,
+      "autoExecute": false
+    },
+    "latestDirection": {
+      "date": "2026-10-09",
+      "reason": "利用者がデザイン未統一を再指摘し、HomeだけでなくWeb主要アプリ共通の外観・導線へ修正",
+      "scope": "Home/Sky/Zema/Wallet/Market/Settings shared appearance and navigation; existing authority unchanged"
+    },
+    "focusMode": "hide_intro_and_examples_keep_global_navigation"
   },
   "launchPage": {
     "domainSeparation": {
@@ -1574,7 +1679,8 @@
     "document": "docs/sky-cloud-continuity.md",
     "globalAlwaysAvailableClaim": false,
     "launchProcured": false,
-    "satelliteFieldTests": 0
+    "satelliteFieldTests": 0,
+    "miniEmbeddedPortableDocument": "docs/avocado-mini-r5/embedded-portable-connectivity.md"
   },
   "universalAdaptationIntent": {
     "decidedAt": "2026-09-30",
@@ -1685,7 +1791,9 @@
       "2026-09-30_esim_only_distribution",
       "esim_catalog_as_primary_product_entry",
       "hardware_first_service_positioning"
-    ]
+    ],
+    "applicability": "SIM/eSIM offering only; ordinary Web and campus NFC entry do not require SIM/eSIM; latest shared-entry policy is authoritative for standalone Sky",
+    "sharedEntrySpecification": "docs/sim-led-product-architecture.md#sky-shared-entry"
   },
   "cloudOsUsageBusinessIntent": {
     "decidedAt": "2026-10-05",
@@ -1732,6 +1840,297 @@
       "existing-OS app",
       "Web access without eSIM",
       "hybrid local/cloud by capability and consent"
+    ],
+    "mainSimTransportDesign": {
+      "decidedAt": "2026-10-07",
+      "source": "explicit-user-design-request",
+      "userInstruction": "雛形は同じものを使い既存の通信システムではなく、mainsimから基本は通信を享受しクラウドで動くシステムのことを設計したい",
+      "document": "docs/sim-led-product-architecture.md#main-sim-cloud-service",
+      "transport": "existing_owner_selected_main_sim_or_wifi_via_device_os",
+      "sharedTemplate": "existing_Home_Sky_Zema_identity_entitlement_workflow_budget_usage_and_payment_contracts",
+      "separatePerOwner": [
+        "credentials",
+        "entitlements",
+        "jobs",
+        "budgets",
+        "usage",
+        "results"
+      ],
+      "newCarrierPlanRequiredForCloudService": false,
+      "ordinaryServiceEntry": "existing_service_only_signed_claim_and_owner_session",
+      "actualEsimEntry": "separate_contracted_issuer_and_exact_device_handoff_acceptance",
+      "universalNonCarrierEsimSupportClaimed": false,
+      "eUiccRuntimeHostsRockstarOs": false,
+      "implementationScope": "design_only_runtime_unchanged",
+      "liveBillingAuthorizedByThisDesign": false
+    },
+    "billingCycleDirection": "monthly_postpaid_not_runtime_acceptance"
+  },
+  "unifiedPaymentsIntent": {
+    "recordedAt": "2026-10-05",
+    "source": "User explicitly requested checking the existing payment system and applying it to all services, including eSIM cloud charges.",
+    "document": "docs/sky-billing.md",
+    "sharedProvider": "Stripe for first-party card collection; existing native Wallet and external carrier rails remain separately reconciled",
+    "basicAccessFee": "free_existing_policy",
+    "marketplaceCommissionBasisPoints": 1000,
+    "cloudRetailTariff": "not_decided",
+    "esimAccessIsPaymentConsent": false,
+    "liveCloudCollectionAccepted": false,
+    "scope": "Reuse transport/signature verification; unify owner-facing payment entry and link usage records to collection without double settlement."
+  },
+  "awsCloudPartnershipDirection": {
+    "recordedAt": "2026-10-05",
+    "status": "user_requested_aws_adoption_and_partnership_preparation",
+    "companyNameUserProvided": "avokado llc",
+    "countryUserProvided": "United States",
+    "document": "docs/provider-contract-readiness-20260930.md",
+    "preferredDiscussionProvider": "AWS",
+    "proposal": "initial_existing_control_plane_plus_aws_agent_runtime_pilot_then_separately_accepted_control_plane_migration",
+    "existingIdentityBudgetWalletAndWorkflowContractsPreserved": true,
+    "optionalEsimWebAppNativeAndLocalModesPreserved": true,
+    "fundingStatus": "unknown",
+    "outreachSent": false,
+    "partnershipAgreed": false,
+    "creditsAwarded": false,
+    "awsRuntimeDeployed": false,
+    "productionBillingAccepted": false,
+    "fundingPolicy": {
+      "recordedAt": "2026-10-05",
+      "ownerAndCompanyOutOfPocketMaximum": 0,
+      "scope": "this_AWS_adoption_and_partnership_initiative_only",
+      "selfFundedDeploymentAuthorized": false,
+      "uncoveredChargesOrAutomaticPaidConversionAccepted": false,
+      "desiredScale": "large_scale_sponsored_capacity_with_staged_acceptance",
+      "developmentCompensation": "proposed_negotiation_item_not_agreed_or_claimed_available",
+      "creditsAreDeveloperCompensation": false,
+      "sponsorMustCover": [
+        "usage",
+        "excluded_services",
+        "overages",
+        "expiry_transition",
+        "taxes",
+        "retention",
+        "transfer",
+        "wind_down"
+      ],
+      "ifUnsupported": "planning_only_no_billable_resources"
+    }
+  },
+  "esimSignedAccessIntent": {
+    "recordedAt": "2026-10-07",
+    "source": "User explicitly requests immediate implementation of eSIM as access key to RockstarOS.",
+    "taskId": "SIM01",
+    "implementation": "Bind registered eSIM gateway key signatures to each Cloud API request; reuse existing purchase, installation, owner, scope, expiry and revocation.",
+    "notAccepted": [
+      "eUICC-resident private key integration",
+      "real carrier/device signer acceptance",
+      "server data non-retention",
+      "new product price or live billing"
     ]
+  },
+  "webDesignSystem": {
+    "tokens": "app/os-design-tokens.css",
+    "header": "components/os-header.tsx",
+    "appearance": "app/os-appearance.css",
+    "routes": [
+      "/",
+      "/sky",
+      "/chat",
+      "/wallet",
+      "/market",
+      "/settings"
+    ],
+    "theme": "graphite_silver",
+    "stateColors": "semantic_with_labels",
+    "minimumTouchTargetPx": 44
+  },
+  "gtaRealityBridgeIntent": {
+    "recordedAt": "2026-10-09",
+    "source": "利用者: gtaでも出力できる仕様にしたい、リアルとgtaをつなげる橋渡しである",
+    "status": "design_direction_not_runtime_acceptance",
+    "document": "docs/gta-reality-bridge.md",
+    "requirements": [
+      "RQ01",
+      "RQ04",
+      "RQ14",
+      "RQ48"
+    ],
+    "taskId": "AI06",
+    "purpose": "shared_artifact_and_agent_outputs_across_real_services_and_gta_with_results_returned_to_zema",
+    "directions": [
+      "reality_to_game",
+      "shared_agent_to_each_surface",
+      "game_to_real_work_draft"
+    ],
+    "firstEnvironmentCandidate": "owner_controlled_fivem_server",
+    "firstEnvironmentConfirmed": true,
+    "firstDemoCandidate": "owned_card_to_nui_then_review_in_zema",
+    "exactGameBuildAndServer": "unspecified",
+    "separateApprovalForRealWorldEffects": true,
+    "runtimeImplemented": false,
+    "gtaRuntimeAccepted": false,
+    "financialExchangeEnabled": false,
+    "partnershipConfirmed": false,
+    "selectionRecordedAt": "2026-10-15",
+    "selectionSource": "利用者添付の指示: FiveMで外とゲームの世界がRockstarOSでつながる形を作って。まずMacで検証できるところから進めて。",
+    "hostBridgeImplemented": true,
+    "implementationScope": "local_developer_host_gateway_and_fivem_resource_candidate_not_game_runtime_acceptance",
+    "creatorWorkflowExpansion": {
+      "recordedAt": "2026-10-15",
+      "source": "ゲーム内からSky Agentへ依頼し現実で継続、GTA VIの通貨と外部生成skinのmarket収益化を希望",
+      "selectedAgentPolicy": "all_connectable_agents_and_create_missing",
+      "workflow": "game_request_to_sky_agent_to_same_zema_job_to_real_world_continuation_to_asset_conversion_and_permitted_distribution",
+      "currencyMeaningAndDirection": "unconfirmed",
+      "gtaVIInterfaceConfirmed": false,
+      "marketplacePermissionConfirmed": false,
+      "realCurrencyExchangeEnabled": false,
+      "runtimeImplemented": false,
+      "document": "docs/gta-reality-bridge.md#14-ゲーム内のsky-agent依頼とクリエイター収益化2026-10-15追加指示",
+      "hostLocalAgentWorkflowImplemented": true
+    }
+  },
+  "grapheneReuseIntent": {
+    "recordedAt": "2026-10-10",
+    "source": "利用者: グラフェンのいいとこどりをしよう。",
+    "status": "design_direction_not_runtime_acceptance",
+    "document": "docs/device-support-architecture.md#graphene-reuse",
+    "taskIds": [
+      "OS10",
+      "RLS02"
+    ],
+    "firstPhysicalTarget": "Pixel 10 GL066 / frankel",
+    "direction": "reuse_grapheneos_android_security_update_and_linux_capabilities_for_rockstar_experience",
+    "implementationCandidates": [
+      "existing_pixel_grapheneos_base",
+      "upstream_isolation_and_verified_update_mechanisms",
+      "terminal_linux_development_and_scoped_tool_adapter"
+    ],
+    "linuxIntegrationMode": "candidate_pending_device_capability_probe",
+    "sharedContracts": [
+      "owner",
+      "scope",
+      "approval",
+      "job_revision",
+      "budget",
+      "usage",
+      "artifact_recovery"
+    ],
+    "hostRootFromGuest": false,
+    "arbitraryShellAsCommonApi": false,
+    "wholeProductRequiresLinuxVm": false,
+    "linuxAdapterImplemented": false,
+    "avfDeviceAccepted": false,
+    "performanceImprovementProven": false,
+    "fullOsAccepted": false
+  },
+  "skySharedEntrySpecification": {
+    "decidedAt": "2026-10-12",
+    "sourceThreadId": "01a13164-efb3-7253-a986-5517c3db5a71",
+    "sourceThreadTitle": "大学別NFCでSkyに接続",
+    "document": "docs/sim-led-product-architecture.md#sky-shared-entry",
+    "scope": "standalone_Sky_and_shared_entry_design_aligned_with_observed_source_not_production_acceptance",
+    "entries": [
+      "ordinary_web",
+      "campus_nfc_qr",
+      "optional_sim_esim_service_handoff",
+      "existing_os_client",
+      "accepted_native_os"
+    ],
+    "sharedExperience": "existing_Sky_agent_feed_roles_marketplace_purchases_connections_and_host_app_outputs_with_Zema_for_OS_work_management",
+    "campusVariation": "name_recommendations_examples_only_shared_identity_entitlement_jobs_and_budget",
+    "skyRequiresEsim": false,
+    "skyRequiresNativeOs": false,
+    "iosInitialDelivery": "browser_or_user_added_pwa",
+    "iosAutomaticInstallFromEsim": false,
+    "iosFutureCandidates": [
+      "App_Clip",
+      "native_client_App_Intents_Siri_Shortcuts_widgets"
+    ],
+    "iosFutureCandidatesImplemented": false,
+    "continuation": "accepted_cloud_jobs_with_budget_and_stop_reconcile_in_Zema_not_unrestricted_ios_daemon",
+    "authorization": "entry_context_is_not_identity_affiliation_purchase_or_execution_approval",
+    "feeBoundaries": [
+      "mcp_connection_slots",
+      "agent_tool_purchase",
+      "cloud_usage",
+      "external_provider_cost",
+      "telecom"
+    ],
+    "generalFreeMcpConnections": 5,
+    "eligibleCampusStudentFreeMcpConnections": 6,
+    "studentProofBoundary": "verified_university_email_domain_plus_self_declared_student_not_independent_enrollment_proof",
+    "rolloutOrder": [
+      "preserve_and_reconcile_main_local_migrations_and_handoff",
+      "shared_Sky_campus_and_owner_acceptance",
+      "one_real_agent_end_to_end_with_cost_and_recovery",
+      "same_artifact_publication_and_physical_nfc_pwa",
+      "optional_esim_and_ios_extensions"
+    ],
+    "implementationStatus": "specification_only_latest_shared_Sky_UI_is_parallel_work",
+    "productionAccepted": false
+  },
+  "schoolbagSafetyDeviceIntent": {
+    "decidedAt": "2026-10-14",
+    "source": "User directed schoolbag-alarm-size hardware, then explicitly chose a hanging, detachable, conversational companion with physical SOS after sharing an ESP32 ball visual reference.",
+    "status": "design_and_pixel_browser_preview_started_physical_prototype_not_accepted",
+    "requirements": [
+      "RQ48"
+    ],
+    "document": "docs/avocado-schoolbag-safety-device.md",
+    "machineReadableProfile": "data/avocado-schoolbag-safety-device.json",
+    "pixelBrowserPreview": "public/companion-preview/index.html",
+    "pixelPocketConsoleRevision": "V0.2 small-screen status-and-controls study based on user-supplied Instagram reel; physical display selection pending",
+    "pixelPreviewIsNotAndroidApkOrHardwareFirmware": true,
+    "taskIds": [
+      "MAT16",
+      "MAT17"
+    ],
+    "notR5Shrink": true,
+    "notFullAndroidOrLinuxRequirement": true,
+    "localAlarmIndependentOfNetworkCloudAccountAndApplication": true,
+    "prototypeVariants": [
+      "P0-A_screenless_safety",
+      "P0-B_hanging_detachable_two_eye_voice_companion"
+    ],
+    "hangingAttachmentAndOneHandRemoval": true,
+    "heldConversationWithExplicitMicSession": true,
+    "sosRemainsOnRemovableBody": true,
+    "v0VoiceTransport": "guardian_phone_relay_or_wifi",
+    "standaloneCellularAndLocationAccepted": false,
+    "wiredHomeServiceDockCandidate": true,
+    "childAlarmPathAllowsArbitraryPhoneInput": false,
+    "workingProductName": "avocado Companion",
+    "finalProductName": null,
+    "targetAge": null,
+    "firstMarket": null,
+    "manufacturingAuthorized": false,
+    "saleAuthorized": false,
+    "physicalPrototypeAccepted": false
+  },
+  "skyAppOutputPlugins": {
+    "decidedAt": "2026-10-12",
+    "productRule": "Sky_standalone_plugs_agents_into_host_apps_OS_uses_Zema_for_work_management",
+    "sharedOutputInbox": "/sky/outputs",
+    "firstPartyHostExample": "/fitness",
+    "hostOutputSchemaExample": "sky.fitness.plan/1",
+    "sourceOfTruth": "owner_scoped_existing_work_delegation_and_saved_artifact_records",
+    "nfcOrCampusGrantsOutputAccess": false,
+    "externalCrossOriginSdkAccepted": false,
+    "fitnessAgentProviderAccepted": false,
+    "productionAccepted": false
+  },
+  "agentMonthlyPostpaidIntent": {
+    "date": "2026-10-15",
+    "source": "携帯料金と同じシステムでAgent利用を毎月請求、強い支払義務",
+    "billingCycle": "monthly",
+    "settlementDirection": "postpaid",
+    "scope": "contract_account_agent_usage",
+    "quoteAndBudgetCapRequired": true,
+    "carrierBillIntegrationAccepted": false,
+    "bankAccountFreezeByOs": false,
+    "delinquencyPolicy": "notice_grace_dispute_paid_agent_restriction_reconciliation_and_lawful_collection_review",
+    "jurisdiction": "undecided",
+    "productionBillingEnabled": false,
+    "document": "docs/sky-billing.md"
   }
 }

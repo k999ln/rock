@@ -151,6 +151,7 @@ export class CampusError extends Error {
 
 const MAX_LIST = 12;
 const allowedModes = new Set([
+  'sky',
   'campus',
   'creative',
   'study',
@@ -232,11 +233,19 @@ export function campusTagId(value: unknown) {
   return value;
 }
 export function safeRelativeCampusDestination(value: unknown) {
-  if (typeof value !== 'string' || !value.startsWith('/campus'))
+  if (typeof value !== 'string' || !value.startsWith('/'))
     throw new CampusError('タグの移動先はCampus内の相対パスにしてください。');
   const parsed = new URL(value, 'https://avocado.invalid');
-  if (parsed.origin !== 'https://avocado.invalid' || !parsed.pathname.startsWith('/campus'))
+  if (parsed.origin !== 'https://avocado.invalid' || !(parsed.pathname === '/campus' || CAMPUS_IDS.some((id) => parsed.pathname === `/sky/campus/${id}` || parsed.pathname === `/sky/campus/${id}/hub`)))
     throw new CampusError('タグの移動先を確認してください。');
+  return `${parsed.pathname}${parsed.search}`;
+}
+export function campusTagLaunchDestination(tag: { campusId: CampusId; mode: string; destination: string }) {
+  const safe = safeRelativeCampusDestination(tag.destination);
+  if (tag.mode !== 'sky') return safe;
+  const parsed = new URL(safe, 'https://avocado.invalid');
+  if (parsed.pathname !== `/sky/campus/${tag.campusId}`) return safe;
+  parsed.pathname = `/sky/campus/${tag.campusId}/hub`;
   return `${parsed.pathname}${parsed.search}`;
 }
 export function profileInput(value: unknown): CampusProfileInput {

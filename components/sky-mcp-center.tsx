@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import {
   connectMcp,
+  disconnectMcp,
   listMcpConnections,
   type McpConnection,
 } from '@/lib/mcp-hub';
@@ -169,7 +170,7 @@ export default function SkyMcpCenter({
     setConnectionMessage('');
     setConnectionFailed(false);
     try {
-      const passport = await connectMcp(server.id);
+      const passport = await connectMcp(server.id, server.name);
       window.dispatchEvent(new Event('sky-mcp-servers'));
       setConnectionMessage(
         `${server.name}へ接続しました。${passport.tools.length}機能を確認済みです。`,
@@ -183,6 +184,20 @@ export default function SkyMcpCenter({
     } finally {
       setBusyServer('');
     }
+  }
+
+  async function disconnectServer(server: McpConnection) {
+    setBusyServer(server.id);
+    setConnectionFailed(false);
+    try {
+      await disconnectMcp(server.id);
+      setConnectionMessage(`${server.name}の接続とMCP枠を解除しました。`);
+      window.dispatchEvent(new Event('sky-mcp-servers'));
+      await refreshServers();
+    } catch (error) {
+      setConnectionFailed(true);
+      setConnectionMessage(error instanceof Error ? error.message : '接続を解除できませんでした。');
+    } finally { setBusyServer(''); }
   }
 
   function openDevice() {
@@ -396,6 +411,7 @@ export default function SkyMcpCenter({
                               ? '再確認'
                               : '接続'}
                         </button>
+                        <button type="button" disabled={busyServer === server.id} onClick={() => void disconnectServer(server)} aria-label={`${server.name}の接続枠を解除`}>解除</button>
                       </article>
                     ))}
                     {visibleServers.length === 0 && (

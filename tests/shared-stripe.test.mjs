@@ -30,11 +30,11 @@ void test('shared Stripe transport is fixed-origin, bounded, redacts failures an
     await assert.rejects(stripeRequest({ path, secretKey: 'sk_fixture', fetchImpl() { assert.fail('must not send credentials'); } }), /STRIPE_REQUEST_INVALID/);
   }
   await assert.rejects(stripeRequest({ path: '/v1/refunds', secretKey: 'sk_fixture', idempotencyKey: 'x\r\nsecret', fetchImpl() { assert.fail('invalid key must not send'); } }), /STRIPE_IDEMPOTENCY_KEY_INVALID/);
-  for (const response of [new Response('customer@example.test sk_fixture', { status: 400 }), new Response('not-json-secret'), Response.json(null), Response.json([])]) {
+  for (const response of [new Response('customer@example.test sk_fixture', { status: 400 }), new Response('not-json-secret'), Response.json(null), Response.json([]), new Response(null, { status: 302, headers: { location: 'https://attacker.test/' } })]) {
     let calls = 0;
     await assert.rejects(stripeRequest({ path: '/v1/refunds', secretKey: 'sk_fixture', idempotencyKey: 'refund:fixture', fetchImpl: async (_url, options) => {
       calls += 1;
-      assert.equal(options.redirect, 'error');
+      assert.equal(options.redirect, 'manual');
       assert.ok(options.signal instanceof AbortSignal);
       assert.equal(options.headers['Idempotency-Key'], 'refund:fixture');
       return response;

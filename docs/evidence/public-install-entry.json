@@ -1,0 +1,41 @@
+{
+  "schema": "rock-public-install-entry/1",
+  "recordedOn": "2026-10-05",
+  "taskId": "WEB13",
+  "domain": "avocadomini.si",
+  "domainStatus": "active",
+  "sslStatus": "active",
+  "siteProjectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+  "siteSourceSha": "b75716b61fbde99dd7d21e56b52f4d089d0b80c9",
+  "version": 6,
+  "versionId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_9464ba9f2a548191ad78b0d03faf736d",
+  "deploymentId": "appgdep_6ac35d46d18081918fd0ddd6375a2141",
+  "deploymentStatus": "succeeded",
+  "deployedUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+  "archiveSha256": "sha256:1dd0f0fa023d0b38790c8b4c67c7849966c72d29745aaf385093865159a0af52",
+  "validation": {
+    "siteBuild": "13 routes",
+    "siteTests": "18/18",
+    "repositoryVerify": "exit 0; Node 882, Worker/D1 1159, CSV 113, Web assets missing 0",
+    "repositoryVerifyLog": "/private/tmp/rock-install-verify.log",
+    "finalUiOnlyFollowup": "After full verify, fixed Astro style output and removed unshipped eSIM links; final same-source site build and 18 tests passed.",
+    "ui": "Public /settings and local /install rendered; iPhone instructions expanded.",
+    "nativeInstall": "not performed",
+    "esimInstall": "not performed",
+    "verifyLogSha256": "c6ac2dab85463b38dbea42100abe1de7f2057dec983ef81d2393d885a3205a99",
+    "installSourceSha256": "d88dc8831068f57b1549c705c73402f09c3ee808d840447bdf64af5a3fc1f248"
+  },
+  "limitations": [
+    "Only Web app entry and browser installation instructions are available.",
+    "Public OS /connect and /sky/purchases returned 404; links removed in version 6.",
+    "Real eSIM requires contracted issuer, production plan/profile and same-device acceptance.",
+    "Pixel/Mini/Pro have no accepted public OS image; QEMU public release gates remain blocked."
+  ],
+  "sourceTracking": {
+    "githubMainObserved": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "localBranch": "codex/esim-cloud-access",
+    "githubChanges": "uncommitted",
+    "githubMainMerged": false,
+    "siteSource": "pushed exact source; existing published home and AVOKADO LLC identity preserved"
+  }
+}

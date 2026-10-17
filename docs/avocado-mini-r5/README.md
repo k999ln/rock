@@ -4,6 +4,14 @@
 
 **製造承認は保留です。** 表示エンジン、精密3D入力、最終収納・熱・電源・専用NPU、確定回路・加工図は未決を含みます。本資料だけで加工・通電・光源実験・量産へ進めません。
 
+## WebゲームとRockstarOSの連携設計
+
+2026-10-15の利用者指示を反映した[Webゲーム実行・Sky/Zema連携の設計追補](game-runtime-design.md)。Mini単体のWASM/WebGPU実行、入力focus、2D表示surface、部品選定と熱、同一仕事の継続、MG01〜07の受入を定義。外部PC必須へ変更せず、FivePlay対応は未受入。原本PDF/Word/ZIPは保存時点のまま保持します。
+
+## 建築への埋込・着脱・携帯Wi-Fi
+
+2026-10-15の新しい明示要求は[着脱・衛星WAN・携帯Wi-Fi設計](embedded-portable-connectivity.md)に反映。建築/家具側dockと持ち出すcoreを分け、携帯電源を必須設計項目へ更新しました。直接衛星通信・電池方式・hotspot性能は未確定/未受入です。
+
 ## 一式を開く
 
 - [閲覧用PDF — 51ページ](package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf)
@@ -35,7 +43,7 @@ ZIPは前回渡した27ファイルの配布パッケージをそのまま保存
 同時期にmainへ追加された[OS設計書完全版 v1.0](../rockstaros-complete-design-v1.0.pdf)も原本のまま保持します。同書p4・17・30のE3「4本＋別Hub」配置はR5へ適用せず、OS共通運用設計とのDevice Profile・adapter統合は未完了です。
 
 - R5はこのタスクで利用者が指定した新しい製品要求です。E3の「4本＋別Edge Hub必須」を現行必須構成としません。
-- 外部給電は必要で、電池は未採用。通信設備と外部演算Hubを混同しません。
+- 原本時点では外部給電必須・電池未採用。2026-10-15追補で取り外し後の携帯電源を必須設計項目へ変更。電池部品は未選定。通信設備と外部演算Hubを混同しません。
 - 以前の価格、実装候補、外形寸法、TV/ARへの表示をR5へ自動継承しません。P0.2・E1・E2・E3の資料と実験記録は削除しません。
 - 既存の[Material Invention研究契約](../rockstaros-avocado-mini-complete-design.md)、[OS共通設計](../rockstaros-complete-design.md)、Pixel/QEMU/Walletの受入は独立です。R5のサービス名・API案を実装済みと扱いません。
 - GitHub保存と公開商品サイトの配備は別です。サイト・OS image・外部AI・決済環境はこの保存作業で変更していません。

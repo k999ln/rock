@@ -1,5 +1,38 @@
 # Sky Market決済と旧収益精算
 
+## Agent利用料の月次後払いと未払い対応（2026-10-15）
+
+利用者は「携帯料金と同じシステムでAgent利用を毎月請求し、強い支払義務にする」と明示した。主担当Billing/BIL02、ROCKは契約・計測・請求状態とサービス権限、EXTERNALは決済/収納・適法な債権回収、JOINTは請求/入金/復旧の受入、OWNERは契約主体・対象国・料金・支払条件を確定する。本項は料金方式の設計変更であり実請求・引落し・回収の実施ではない。
+
+### 契約と請求
+
+- Agent利用料は契約account単位で毎月まとめて後払い請求する方向とする。携帯キャリアの実請求への合算は別契約/接続が必要で、今回成立したとは扱わない。
+- Agent/Provider、使用単位、単価の版、実行job、利用期間、税/値引/返金を明細化。通信料、SIM/eSIM、端末代、既存OS料金、Agent料金、第三者実費を分ける。定額/無料枠/超過単価は未定で、既存Sky基本無料・商品販売10%手数料・旧8.88案保留を一括上書きしない。
+- 締日、支払日、通貨、回収方法（口座振替/カード等）、収納主体、支払同意、税、返金、解約時の最終請求、契約変更通知を契約版へ固定する。銀行/カード情報は選定決済Providerへ預ける。
+- 後払いでも単価提示、実行見積、月額利用上限、実行中予約を必須にする。上限内の包括利用同意と個々の高額/権限変更承認を区別。後払い与信枠は未設計/未受入で、既存の実行gateを無条件に解除しない。
+- 月次集計は検証済みusageを一度だけ計上。通信切断/遅延receipt/重複webhookで二重請求せず、不明usageを推測確定しない。未確定項目は保留・翌月調整等を契約に定義する。請求書発行、引落し要求、引落し成功、入金照合を別状態にする。
+
+### 支払いを確実にする設計
+
+`accruing → invoice_open → payment_pending → paid` を基本状態にし、`payment_failed / overdue / disputed / restricted / recovery_review` を支払状態と権限状態の組合せで管理する。
+
+1. 開始時に支払方法の確認と契約同意、本人/法人の支払責任者を記録する。
+2. 締め前に利用額と上限、請求確定時に明細と支払期限を提示する。
+3. 決済失敗は残高不足・認証待ち・Provider障害・結果不明を区別。結果不明は照合し、無制限再引落ししない。
+4. 未払いは通知、契約で定めた猶予と再試行、異議申立て/訂正窓口を通す。争いのある明細は確定した支払義務と分離する。
+5. 期限超過時は新規の有料Agent実行と追加与信を停止する。安全停止、保存済み成果の確認/適切なexport、請求確認/支払い/異議申立ての入口は残す。家の施錠・警報・電池安全を回収手段として止めない。通信回線停止はその通信契約と事業者の責任に従い、OSが任意に切断しない。
+6. 入金確認・請求訂正後に権限を復旧する。支払済みと誤認して与信を増やさず、二重回収/二重返金を拒否する。
+7. 長期未払いは契約/利用/請求/通知/異議/入金の証拠を保全し、人の審査と対象国で認められる回収手続きを経る。自動的に訴訟/差押えを実行しない。
+
+「口座が止まるほど」は強い回収可能性を求める意図として記録する。RockstarOSに銀行口座凍結権を与える設計にはしない。日本では、銀行預金等の差押えは判決や仮執行宣言付支払督促等の債務名義に基づく裁判所の債権執行手続であり、利用規約への同意だけで口座全体を自由に停止できるという意味ではない。日本以外は対象国の専門家による別確認が必要。[裁判所の債権執行案内](https://www.courts.go.jp/saiban/syurui/syurui_minzi/minzi_25_08/index.html)（2026-10-15確認）。信用情報への登録や他口座への横断的制限も自動権限としない。
+
+### 保存・受入・次の決定
+
+既存のusage、予算予約、Wallet/請求storeとProvider参照を再利用する。契約version、支払同意reference、billing period/timezone、usage ID、invoice ID、明細revision、入金reference、通知履歴、異議、restriction reasonを本人別に保存。確定請求を直接上書きせず訂正記録で追跡する。
+
+合格条件は、同一account複数Mini/ゲーム/Agentの集約、上限を超える同時実行拒否、月境界/遅延usage、重複/順序逆転通知、引落し失敗/結果不明、異議/訂正、制限後の入金復旧、解約後最終請求のsandbox往復。すべて追加の本番受入は未実施。対象国、B2C/B2B、請求/収納主体、料金単位、締日/支払日、猶予/再試行、与信/上限、収納Provider、回収委託先は未確定。既存買い切り決済やfixtureを月次後払いの完成へ換算しない。
+
+
 ## 2026-10-05 選択可能なeSIM提供形態の課金境界
 
 最新の明示方針は、対応可能な端末・提供形態で選べるeSIM経由のRockstarOSクラウドOSと、そこでのSkyエージェント利用に対する従量課金。製品全体をこの方式へ一本化せず、eSIM不要のWeb/app、native OSの端末内LLM/offline agent、local/cloud併用を維持する。通信量販売を中心にせず、本人別の利用権・見積り・上限・承認・実行・停止・保存/再開・利用量・請求照合を一体の体験にする。具体的な責任、入出力、保存、失敗、復旧、承認、合格条件、料金の未決定事項は[共通設計](sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)を参照する。既存Tool/SDK/Walletを再利用し、端末内LLMとPixel/QEMUの受入は独立して保持する。これは設計変更であり、本番実行・課金や実機対応の完了ではない。
@@ -186,3 +219,259 @@ RQ36により、`0004_rock_settlement_wallet.sql`でRock受取operator、5分cha
 ## 2026-10-01 CSVの50円決済試験
 
 [CSV試験の接続と受入](sky-csv-trial-payment.md)。通常受付と別の指定サンプルにJPY50のHosted Checkoutを追加。Apple Pay表示と実課金は本番接続・本人決済の受入待ち。
+
+## 共通決済（2026-10-05）
+
+利用者の明示指示により、共通化の主担当をWallet / Billing（BIL02、JOINT）とする。これはRockが販売と請求を管理し、カード処理・受取先本人確認・銀行入金をStripeへ委ねる構成。自社acquirerやcustodyの完成を意味しない。
+
+### 目的・利用体験・責任
+
+`/sky/payments`でTool/eSIM注文、CSV受付、直接LLMの計算済みusage、A2A usage、カード入金/返金状態を本人別に確認する。既存購入画面から入れる。商品注文・CSV受付は従来の本人確認/履行/返金APIへ戻り、直接LLMは明細確認→金額への明示承認→Hosted Checkout→本人による再照合または署名Webhookの順とする。再読み込みや決済の戻りURLは入金を確定しない。カード入力はStripeで行い、Rockへ保存しない。
+
+Rockは金額・通貨・注文/実行ID・利用者・同一処理の結合、再送制御、秘密非表示、保存/復旧を担当する。Stripeは決済処理を担当する。eSIMは入口/利用権であり課金承認ではない。WebとeSIMで同じ実行IDを再利用しても請求受付は一つ。制限付きeSIM Cloud tokenへ決済権限を追加せず、本人アカウントへサインインして承認する。
+
+### 共通実装と入出力
+
+`shared/stripe.mjs`の単一transport/signatureをSky、CSV（skyStripe経由）、Mini販売Worker、Fashionで再利用する。Mini/Fashionの独立配布コピーは`npm run shared:sync`で生成し、`shared:check`で同一性を確認する。固定Stripe origin、15秒timeout、明示idempotency key、リダイレクト非追随、エラーの秘密非表示を共通化した。Workersで非対応の`redirect:error`を`manual`へ変更し、全非2xxを拒否する。独立Siteの履歴やStripe Customerを自動統合した意味ではない。同じ販売主体のmerchant設定とアカウント対応付けは別の運用受入が必要。
+
+`GET /api/sky/payments/summary`は本人の直近記録だけを返す。`POST statement`は直接LLMの保存済みcompleted recordから料金を再計算し、source digest・項目別利用量・金額を返す。`POST checkout`はsourceId/digest/amountMinor/currencyを再照合する。owner・価格・eSIM claim・送金先をクライアント入力から採用しない。LLMの内部settled額は資金の入金ではなく原価計算であり、小売料金確定前のためこの回収経路はtest専用。JPY/USDの50最小通貨単位未満は勝手に最低額へ切り上げず停止する。他通貨や利用集約は未対応。
+
+### 状態・保存・失敗・復旧
+
+Migration `0060_sky_usage_payments.sql`は直接LLM実行を参照し、owner、source digest、金額、通貨、mode、Stripe session/intent、返金額を保存する。source+mode、session、intentをuniqueにし、元の金額/owner/参照/作成時刻はimmutable。状態はpending / paid / expired / partially_refunded / refunded / disputed。usage budgetのsettled値は回収時に再加算しない。A2Aは既存の署名usage→Wallet精算経路を表示し、追加カード回収へ流さない。将来別の回収方式を使う場合は資金予約・既払い状態・返金まで共通の排他契約が先に必要。
+
+Checkout timeout時も同じ永続IDを使う。20時間を越えた結果不明の作成は再送せずStripe照合へ止める。署名Webhookから元のsource digestと注文条件を確認してsessionを復旧できる。通知の重複や順序逆転では、Stripe APIから現状を取得し、全額/部分返金と紛争を遅いpaid通知で戻さない。これらは[Stripeの冪等性仕様](https://docs.stripe.com/api/idempotent_requests)と[履行・通知の仕様](https://docs.stripe.com/payments/checkout/fulfill-orders)に基づく。
+
+### 承認・合格条件・未決定
+
+既存`SKY_*` merchant設定に加え、直接LLM回収は専用`SKY_USAGE_STRIPE_WEBHOOK_SECRET`と`SKY_USAGE_PAYMENTS_TEST_ENABLED=true`を使う。ただし`SKY_PAYMENTS_MODE=live`では環境変数を設定しても回収を503で拒否する。実行側の`remoteAiPricingGateAccepted()`も閉じたまま。Webhook pathは`/api/sky/payments/webhook`、対象はcheckout.session.completed / async_payment_succeeded / expired、charge.refunded / dispute.created / dispute.closed。ローカル設定だけで本番通知先を変更しない。
+
+合格証拠は全migration上のowner分離、8並行一件受付、金額/通貨/送金先改変拒否、本文署名、応答消失の復旧、返金/紛争と遅延通知、20時間後の再送拒否、同じusage予算の二重精算拒否。実Provider請求、実受取先、運用の復旧、独立Siteのmerchant同一性、顧客の小売単価/利益/税/返金条件、funded Walletと実行前資金確保、A2A異種回収排他、本人desktop/Pixel操作の受入が残る。次担当はこれらを一つずつ確定し、同一公開artifactで受け入れてからlive gate変更をレビューする。
+
+既存50円CSV受入は保持するが、この新しい経路の実課金試験は行っていない。新機能の公開・GitHub main統合は別状態で記録する。
+
+## 本番受入までの逆算工程
+
+指定した販売範囲で、本人の承認→資金確保→決済→商品提供/クラウド実行→明細→返金→銀行/Provider照合→障害復旧が同じ取引IDで完走した状態をPRODUCTIONと定義する。永久に欠陥ゼロという意味の「完全」は宣言しない。
+
+2026-10-05 UTC。調査開始07:58、主要調査08:05まで。ユーザー指定の5分を目安に一次資料と対象コードを確認した範囲であり、網羅的な外部監査ではない。ローカルHEAD37c06cec＋未commit差分。観測main592daeea。通常verify成功、SPIDER repository security失敗、CodeQL再実行中。
+
+AMCの意味は確認待ち。表示形式は暫定的に、工程・作業・到達点・合格条件のCanvasとして整理。ここに書いた前払方式、工数、pilot基準は提案であり、料金や本番解禁の確定指示ではない。
+
+### 結論と順序
+
+PRODUCTION ← 締め/入金/返金/復旧の運用受入 ← 上限付き限定実利用 ← 同一配備物の外部sandbox・実機受入 ← 提供/失効・照合/復旧実装 ← 共通本人/請求ID・実資金予約 ← 料金/契約/対象確定 ← 版固定
+
+28項目は9工程にまとめた粗い見積で、ROCK側の実装・検証作業は合計24–41人日。1人で週5日なら約5–9稼働週相当。外部審査/契約/専門家確認/Provider回答/入金/請求周期と大きな不具合修正は含めない。所要日数の実測ではなく、今回の短時間調査に基づく仮説。G1確定後に再見積する。各項目への重複配賦はしていない。
+
+同じ支払い画面・本人アカウントは共有する。自社商品、Connectの販売者商品、用途限定クラウド利用枠、通信Provider料金、既存A2A Walletは金銭責任を分けて照合する。共通化は汎用残高への混在を意味しない。
+
+最初の3作業はG0/01の版固定、G1/04–06の料金と契約整理、G2/07の共通請求アカウント設計。G4の復旧骨格・試験設計は外部契約待ちの間に進められる。G3の小売実装は料金方式確定後、G5の実発行はProvider条件確定後に進める。
+
+### 現在地（コード/保存証拠から）
+
+- **共通transportと本人別明細 — 確認済み**: 前ターンの全体verify合格: Node882、Worker/D1 1133、CSV113。外部決済は合成Provider。 根拠: `docs/evidence/unified-payment-verification.json`。
+- **クラウド本番実行/回収 — 未受入**: pricing gateはfalse、回収はtest-only。小売単価とfunded authorizationが未受入。 根拠: `lib/remote-ai-pricing-gate.ts / lib/sky-usage-payment.ts`。
+- **全入口の注文・顧客統合 — 実装残**: Mini/Fashionはtransport共有まで。共通Customer、履歴の認可付き横断、合算請求は別作業。 根拠: `lib/sky-payments.ts / docs/sky-billing.md`。
+- **自動復旧と紛争決着 — 実装残**: 新usage経路はWebhookと手動confirm。永続event inbox/定期scannerなし。disputedは固定、expiredからの再attemptなし。 根拠: `lib/sky-usage-payment.ts / drizzle/0060_sky_usage_payments.sql`。
+- **少額請求と端数 — 設計残**: 実行ごとの原価を切上げる計算はあるが、請求周期単位の小売集約とは異なる。 根拠: `lib/remote-ai-text-pricing.ts:197`。
+- **eSIMの注文応答消失 — 外部確認**: orderReferenceが保存できた後は読戻し可能。参照自体を失うとreconciliation_requiredで止まる。 根拠: `lib/esimgo-provider.ts / docs/workstreams/03-wallet-billing-providers.md`。
+- **公開ドメインと本人認証 — 条件付き**: liveは.chatgpt.site＋dispatchを要求。独自domain対応には信頼境界の設計と試験が必要。 根拠: `lib/sky-payments.ts:35`。
+- **新画面の本人操作と外部実取引 — 未検証**: 画面/読込/設定不足案内は確認済み。本人サインイン→Checkout→戻り→返金は未受入。 根拠: `docs/evidence/unified-payment-verification.json`。
+
+### 詳細工程
+
+#### G0 対象と検証する版を固定
+
+担当: ROCK。依存: なし。仮工数: 1–2人日。到達点: 同じコードを試験・配備・監査する。
+
+**01. ローカル変更をmainとの差分へ整理**
+- 作業: 37c06cec上の決済/eSIM差分を分離して保存し、最新mainを取り込む。既存migration番号の衝突を確認する。 観測main 592daeeaの通常verify成功とSPIDER repository security失敗を別々に扱い、原因と影響範囲を解消/判定する。
+- 合格証拠: commit SHA、変更一覧、migration整合、同一SHAのCI成功
+
+**02. 販売対象と公開先を一覧化**
+- 作業: Sky商品、CSV、eSIM、直接LLM、A2A、Mini/Fashionを分類。販売者、通貨、対象国、公開Site、顧客ID、精算先を明示する。
+- 合格証拠: 各商品に責任者と対象環境があり、対象外を完了数へ入れない
+
+**03. リリース判定を固定**
+- 作業: ROCK_READY→PROVIDER_READY→INTEGRATED→LIMITED_LIVE→PRODUCTIONを既存BIL02の証拠に結ぶ。
+- 合格証拠: 未受入項目がある範囲の本番gateは閉じたまま
+
+#### G1 料金・販売者・資金負担を確定
+
+担当: OWNER / JOINT。依存: G0。仮工数: 2–3人日＋契約待ち。到達点: 誰が何にいくら払うかが決まる。
+
+**04. 小売料金表を確定**
+- 作業: 商品代、通信料、OS月額、AI使用料、実費、無料枠、BYOKを分離。税・為替・丸め・最低請求額・返金条件を決める。Sky売上10%をクラウドへ自動流用しない。
+- 合格証拠: 版付き販売料金表と同意文面。原価と小売価格を独立表示
+
+**05. 請求方式を選ぶ**
+- 作業: クラウドは用途限定の前払利用枠、または与信上限付きのまとめ請求を比較。前払案を推奨候補とするが、契約/地域条件確認前に採用しない。
+- 合格証拠: 少額利用を集約する単位、締め、端数、未払い、失効/返金を確定
+
+**06. 通信と販売責任を確定**
+- 作業: 1GLOBAL優先候補・eSIM Go比較候補という既存調査を保持。通信Provider直接請求かRock再販か、利用国・期間・一次サポート・再販権を契約確認する。
+- 合格証拠: 販売主体・通信責任・Provider条件の承認記録。審査日数は未確定
+
+#### G2 本人・顧客・販売口座を接続
+
+担当: ROCK / JOINT。依存: G0、G1。仮工数: 3–5人日＋アカウント審査。到達点: 一人の注文が全入口で追える。
+
+**07. 共通請求アカウントを設計**
+- 作業: 本人ID→販売主体→Stripe顧客→注文/利用IDを対応付ける。Mini/Fashion別Siteの注文は認可付き参照で統合し、メール一致だけで自動結合しない。
+- 合格証拠: 別人の記録を見せず、同じ本人はWeb/eSIM/clientで同じ明細を読む
+
+**08. 販売者口座を実確認**
+- 作業: 自社売上とConnect販売者売上の経路を分け、KYC・charges/payouts・能力失効・売上10%・受取先をsandboxで読む。
+- 合格証拠: 販売者停止中は販売拒否。正しい相手へ正しい純額が分配される
+
+**09. 認証gatewayと公開ドメインを受入**
+- 作業: 現在live APIは.chatgpt.siteとdispatchヘッダーを要求する。独自domainを使う場合は信頼gatewayを整備し、単にsuffix検査を外さない。eSIM cloud keyに決済権限を与えない。
+- 合格証拠: 匿名、偽ヘッダー、別owner、失効tokenは拒否。本人再認証が成功
+
+#### G3 実行前の資金確保とクラウド請求
+
+担当: ROCK / JOINT。依存: G1、G2。仮工数: 5–8人日。到達点: 払える範囲だけ実行し、一度だけ精算。
+
+**10. 小売見積を原価見積から独立**
+- 作業: model・tier・キャッシュ・単価版・有効期限・入力digestを固定し、承認額に小売条件を結ぶ。現行原価のchargeMinorをそのまま売上にしない。
+- 合格証拠: 表示額・承認額・請求額が一致し、改定が実行途中へ混入しない
+
+**11. 実残高/与信と予約を原子的に結ぶ**
+- 作業: 既存Wallet/親job予算を再利用。入金確認→利用可能→予約→実行→確定/解放を一つの資金権限で管理。A2Aと直接LLMの二重使用を防ぐ。
+- 合格証拠: 同一残高から複数端末が競合しても上限超過ゼロ。未入金では送信ゼロ
+
+**12. 少額の集約と月額更新**
+- 作業: 保存済み高精度numerator/denominatorから請求期間へ集約し、丸め規則を定義。Stripe Meters/Credits採用なら別adapterと重複防止を追加。既存OS月額を維持し、更新/解約/支払失敗/再認証/適用期間を独立lineで扱う。
+- 合格証拠: 1円未満・50円未満・期間跨ぎ・訂正・再送が一致。勝手な最低額切上げなし
+
+**13. 停止・不明usage・返金を処理**
+- 作業: 取消後の到着usage、応答消失、料金超過、Provider請求差異を保留する。支払い取消やchargeback後の未使用枠を失効し、使用済み損失の負担を記録する。
+- 合格証拠: 結果不明を無料/成功へ変えない。既存A2Aをカードへ二重請求しない
+
+#### G4 通知・再決済・返金の復旧を完成
+
+担当: ROCK。依存: G2、G3の契約。仮工数: 3–5人日。到達点: 通知や通信が壊れても回収状態を復元。
+
+**14. 通知の永続受付と定期照合**
+- 作業: 署名検証後にevent ID/処理状態を永続化して再処理。外部APIを待たず安全に受付できる構成へ。未通知・未確定をschedulerで照合する。
+- 合格証拠: 重複/逆順/数日停止/再起動でも二重計上ゼロ。処理待ちが監視される
+
+**15. 失効決済と結果不明を区別**
+- 作業: 現行20時間後の不明停止を維持し、Stripe照合後だけ再開。確実に未払いで期限切れのsessionは新attemptへ移せる契約を作る。
+- 合格証拠: 旧attemptが後で成功しても一請求。解決担当と証拠が残る
+
+**16. 返金・紛争の完了状態を作る**
+- 作業: クラウド返金を実行する管理権限、部分返金/失敗/取消、dispute won/lostの決着を追記。現行disputed固定を直接paidへ書換えない。
+- 合格証拠: カード返金・販売者送金戻し・手数料返金・利用権を各々照合
+
+#### G5 購入後の提供と失効を商品別に完走
+
+担当: JOINT / EXTERNAL。依存: G1、G2、G4。仮工数: 3–6人日＋Provider待ち。到達点: 支払った商品だけを一度提供。
+
+**17. eSIM発行を実Providerで受入**
+- 作業: validateと実transactionを分離。応答消失時にorderReferenceを回復できる永続client referenceまたはProvider冪等性を確認。未確認なら自動再送しない。
+- 合格証拠: 同じ注文から二重仕入れなし。不明注文を正しいProfileへ一意に復旧
+
+**18. eSIMからクラウド利用権へ接続**
+- 作業: 支払→Profile配信→実端末導入proof→本人service access→cloud keyを別状態で保存。返品/期限切れ/端末交換/鍵再発行を検証する。
+- 合格証拠: Pixel 10 GL066の同じ本人で導入/利用/失効。秘密QRをログへ残さない
+
+**19. Tool・CSV・ハードウェアを受入**
+- 作業: 外部Toolの提供者側認証/返金失効、CSV通常料金と50円試験の区別、物理商品は在庫/納期/配送/返品を接続する。
+- 合格証拠: 各販売SKUで購入から提供・返金まで証拠あり。買えるだけを完成にしない
+
+#### G6 同じ配備物で外部sandbox・実機試験
+
+担当: JOINT。依存: G3、G4、対象商品のG5。仮工数: 3–5人日。到達点: mockを外しても一連の取引が成立。
+
+**20. 実Stripe sandboxを接続**
+- 作業: 別sandbox、専用webhook、固定API版、test/live分離、server-only鍵を設定。合成eventだけでなく実際にtest Checkoutを作って通知を受ける。
+- 合格証拠: Stripe session/intent/chargeとRock行の実ID・金額・通貨が一致
+
+**21. 失敗系を通す**
+- 作業: 3DS成功/中断、残高不足、ブラウザ終了、二重クリック、復帰、Webhook重複/逆順、API timeout、返金失敗を試す。
+- 合格証拠: 全シナリオの期待結果と実結果を同一buildで記録
+
+**22. 利用と予算の端末間一致**
+- 作業: PCとPixel、本人A/B、複数端末、圏外→再接続、料金改定、usage欠落、Provider再起動を試す。
+- 合格証拠: 古い画面や他端末から支払/権限/上限を上書きできない
+
+#### G7 入金・原価・復旧を運用へ接続
+
+担当: ROCK / OWNER / JOINT。依存: G4、G6。仮工数: 2–4人日。到達点: 売上と実際の手残りが説明できる。
+
+**23. 日次の多者照合**
+- 作業: 注文/請求、Stripe charge/refund/fee/balance transaction/payout、銀行着金、LLM usage/invoice、通信卸明細を関連付ける。
+- 合格証拠: 未説明差額ゼロ。端数/FX差は理由と担当を記録。10%売上手数料を純利益と呼ばない
+
+**24. 監視と停止手順を実演**
+- 作業: 長時間pending、不明注文、負残高、通知失敗、原価超過、鍵失効、Provider残高不足を検知。新規決済/実行を止めても照合と返金は動かす。
+- 合格証拠: 通知先、当番、対応期限、停止/再開操作を実演。閾値はpilot前に確定
+
+**25. 復元と秘密管理を受入**
+- 作業: D1/R2・暗号鍵・監査記録を復元し、外部Stripe/Providerの後続取引を再照合する。鍵ローテーション、PCI自己評価等のアカウント要件、サポート、決済/認証境界の独立レビューを確認する。重大・高リスク未解決を残さない。
+- 合格証拠: 復元後も再請求・再発行ゼロ。RPO/RTOは計測して承認し、DB復元だけで完了にしない
+
+#### G8 限定実利用から本番判定へ
+
+担当: OWNER / JOINT。依存: G0〜G7の対象gate。仮工数: 2–3人日＋入金/請求周期。到達点: 指定範囲のPRODUCTIONを宣言できる。
+
+**26. 一つの代表商品で限定実利用**
+- 作業: 対象owner、金額上限、SKU、Provider、期間を確定。受入済み版を配備し、購入→提供→利用→明細→返金の最小実取引を照合する。
+- 合格証拠: 同一source/build/deploy IDの証拠。過去CSV50円を新経路の合格へ流用しない
+
+**27. 締めと障害を観測**
+- 作業: 少なくとも対象の実入金・Provider請求が閉じるまで観測。月額/まとめ請求は請求周期を受入。返金と復旧演習の未解決を解消する。
+- 合格証拠: 二重請求・承認超過ゼロ、未説明差額ゼロ、重大未解決ゼロ
+
+**28. 対象別に本番表示を解禁**
+- 作業: Sky商品、eSIM、cloud、hardwareを個別に判定。未受入SKUやnative OSを一括で本番対応にしない。版更新時も同じgateを再適用する。
+- 合格証拠: 運用責任者が証拠付き判定。一般公開後も監視・更新・再受入を継続
+
+### 段階ごとの必要試験
+
+各項目は環境（fixture / Provider sandbox / 実機 / limited live）、source/build/deploy ID、実行日時、秘匿した取引参照、期待結果、実結果、差額、未解決条件を記録する。合成データを実課金や実機受入の証拠にしない。
+
+- **本人・承認**: A/B分離、偽gateway、eSIM keyから決済拒否、鍵失効、同一本人2端末。合格: 他人情報/無断承認なし。
+- **金額**: 単価更新、通貨変更、quote期限切れ、1円未満、50円未満、税/端数、親予算競合。合格: 承認額を超えず、集約明細と総額一致。
+- **送信・通知**: 8並行、timeout直後の再起動、同じ通知10回、逆順、通知数日停止。合格: 外部注文/請求は一件、復旧が同じIDへ収束。
+- **決済**: 3DS成功/中断、拒否、ブラウザ終了、期限切れ、結果不明20時間超。合格: 未払を払済みにせず、安全な再開へ。
+- **提供**: Stripe支払済み・eSIM仕入失敗、導入失敗、二重発行、Toolアクセス拒否。合格: 不提供を検出し返金/再提供へ。二重仕入れなし。
+- **取消**: 全額/部分返金、返金失敗、売手口座停止、紛争勝敗、使用済みクラウド。合格: 資金・利用権・履歴が一貫。
+- **復元**: D1復元、Worker/cron再起動、旧鍵/新鍵、圏外復帰、外部で先行した入金。合格: 再課金せず照合。RPO/RTOを計測。
+- **経理**: 手数料、Connect分配、payout、銀行着金、通信卸・LLM請求。合格: 理由のない差額ゼロ。収益と入金を区別。
+
+### OWNER側で確定する5項目
+
+- **D1 最初に売る商品・国・通貨**: 対象SKU、販売者、対象国、JPY/USD、公開先。必要時期: G1前半。
+- **D2 クラウド小売単価**: 原価、上乗せ、無料枠、税、端数、返金条件。必要時期: G3着手前。
+- **D3 資金確保方式**: 用途限定前払か上限付きまとめ請求か。汎用Wallet転用をしない。必要時期: G3着手前。
+- **D4 通信供給と請求主体**: 直接請求経路の有無、再販権、残高資金、支援窓口。必要時期: G5外部受入前。
+- **D5 限定実取引の条件**: 本人、SKU、Provider、金額上限、期間、停止担当。必要時期: G8直前。
+
+### コマンドと証拠の使い方
+
+既存回帰: `node --experimental-strip-types --test tests/shared-stripe.test.mjs tests/sky-stripe.test.mjs tests/sky-commerce.test.mjs tests/csv-trial-payment.test.mjs tests/sky-usage-payment.test.mjs tests/sky-payment-worker.test.mjs`。eSIM固有試験は既存workstreamのコマンドを再利用。
+各変更後に対象試験、`npm run typecheck`、`npm run design:check`。統合候補は `npm run verify`。`npm run sky:launch:check` と `node scripts/check-sky-launch.mjs --require-stage focused` は既存gateに従う。full verify成功は本番gate合格を意味しない。新しいfunding/集約/復旧の試験は実装と同時に追加する。
+G6以降はCLIによる合成通知だけでは不足し、外部sandboxの実test注文/通知、実端末、配備先DBの読戻しを必要とする。Web/client課金の完成はPixel native OS全体の完成と分離し、OS image/正式署名/flash/全損復元は別の既存release gateで受け入れる。
+
+### 一次資料（今回確認）
+
+- [Stripe 最低決済額](https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts) — 最小額は決済/入金通貨に依存。JPY50・USD0.50の表があり、極少額usageの都度徴収には集約設計が必要。
+- [Stripe Billing credits](https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits) — 対象は所定のmetered subscription。単発Checkoutへの自動適用や第三者への支払い・汎用残高を前提にしない。
+- [Stripe Webhooks](https://docs.stripe.com/webhooks) — 順序保証なし、重複あり、本番自動再送は最大3日。Rockの定期照合・復旧証拠が必要。
+- [Stripe 冪等性](https://docs.stripe.com/api/idempotent_requests) — 冪等キーは少なくとも24時間経過後に削除され得る。長期の結果不明を単純再送しない。
+- [Stripe Connect destination charges](https://docs.stripe.com/connect/destination-charges?platform=web&ui=stripe-hosted) — 決済手数料・返金・紛争はplatform残高へ影響。販売者送金戻しとapplication fee返金の照合が別途必要。
+- [Stripe Billing試験](https://docs.stripe.com/billing/testing) — 実testオブジェクトからの通知と失敗系を検証。採用する場合はtest clocksで請求周期も確認。
+- [Stripe 入金照合](https://docs.stripe.com/reports/payout-reconciliation) — カード決済成功と銀行着金は別。payoutと構成取引を突合する。
+- [Stripe セキュリティ](https://docs.stripe.com/security/guide) — Hosted Checkoutでも自社側のPCI責任は残る。該当申告と構成を確認する。
+- [Stripe 鍵管理](https://docs.stripe.com/keys-best-practices) — 秘密をserver側に限定し、最小権限・ローテーション・監査を運用する。
+- [eSIM Go v2.5 orders](https://docs.esim-go.com/api/v2_5/operations/orders/post/) — 実注文の契約を確認。公開ページ内にidempotency記述は見つからず、非対応とは断定しない。Provider確認が必要。
+- [eSIM Go install details](https://docs.esim-go.com/api/v2_5/operations/esimsassignments/get/) — referenceを使って既知注文の導入情報を取得。注文応答自体を失った場合の一意復旧とは別。
+- [eSIM Go 本番受入](https://docs.esim-go.com/guides/going_live/) — 残高、鍵管理、実端末への配信、エラー処理、V3署名callbackを受入する。自動補充は予算承認なしに有効化しない。
+- [Cloudflare D1 復元](https://developers.cloudflare.com/d1/reference/time-travel/) — DBの復元手段。外部決済まで過去へ戻るわけではなく、復元後の外部照合はRockの設計事項。
+
+### 未確定・今回の作業範囲
+
+契約アカウント・販売地域・実単価・予算は未確定。この調査では問い合わせ送信、契約、実注文、実課金、配備、main統合を行わない。前ターンの試験証拠を再掲し、今回新たなruntime合格とはしない。今後の実装許可と本番実取引の条件を混同しない。

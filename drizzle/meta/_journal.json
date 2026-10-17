@@ -414,6 +414,34 @@
       "when": 1791158400000,
       "tag": "0058_campus_layer",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "6",
+      "when": 1791244800000,
+      "tag": "0059_esim_cloud_access_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "6",
+      "when": 1791244800001,
+      "tag": "0060_sky_usage_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "6",
+      "when": 1791331200000,
+      "tag": "0061_esim_cloud_proof_uses",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "6",
+      "when": 1791763200000,
+      "tag": "0063_sky_mcp_slots",
+      "breakpoints": true
     }
   ]
 }

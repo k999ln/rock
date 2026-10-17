@@ -1,3 +1,4 @@
+import { stripeRequest, StripeTransportError } from '../shared/stripe.mjs';
 import { marketplaceCommissionMinor } from './sky-marketplace-policy.ts';
 
 export class SkyPaymentError extends Error {
@@ -91,7 +92,6 @@ export type SkyStripeOrder = {
 };
 
 export const SKY_STRIPE_API_VERSION = '2026-08-26.dahlia';
-const STRIPE_API_ORIGIN = 'https://api.stripe.com';
 const REQUEST_TIMEOUT_MS = 15_000;
 const CONFIG_ERROR = '決済の接続設定が完了していません。';
 const PROVIDER_ERROR =
@@ -193,60 +193,20 @@ export function skyStripe(
     parameters: Record<string, string> = {},
     idempotencyKey?: string,
   ): Promise<T> {
-    const fields = new URLSearchParams(parameters);
-    const url = new URL(path, STRIPE_API_ORIGIN);
-    if (method === 'GET') url.search = fields.toString();
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${validated.secretKey}`,
-      'Stripe-Version': SKY_STRIPE_API_VERSION,
-    };
-    if (idempotencyKey !== undefined)
-      headers['Idempotency-Key'] = validateIdempotencyKey(idempotencyKey);
-    if (method === 'POST')
-      headers['Content-Type'] = 'application/x-www-form-urlencoded';
     try {
-      const response = await fetcher(url.href, {
-        method,
-        headers,
-        body: method === 'POST' ? fields.toString() : undefined,
-        // Workers implements manual/follow only. Non-2xx responses below remain rejected.
-        // Never follow a redirect carrying the payment credential.
-        redirect: 'manual',
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      });
-      if (!response.ok) {
-        // Keep provider diagnostics useful without recording submitted data or messages.
-        const requestId = response.headers.get('request-id');
-        const knownCodes = new Set([
-          'api_key_expired', 'invalid_api_key', 'account_invalid',
-          'amount_too_small', 'parameter_unknown', 'parameter_invalid_integer',
-          'rate_limit', 'idempotency_key_in_use', 'platform_account_required',
-        ]);
-        let code = 'unclassified';
-        try {
-          const body = await response.json() as { error?: { code?: unknown } };
-          if (typeof body.error?.code === 'string' && knownCodes.has(body.error.code))
-            code = body.error.code;
-        } catch { /* Non-JSON errors still retain the HTTP status. */ }
-        console.error('[sky-stripe] provider_response', {
-          status: response.status,
-          operation: path.startsWith('/v1/checkout/sessions') ? 'checkout' : 'payment-api',
-          code,
-          requestId: requestId && /^req_[A-Za-z0-9]{1,100}$/.test(requestId) ? requestId : null,
-        });
-        throw new SkyPaymentError(PROVIDER_ERROR, 502);
-      }
-      const result: unknown = await response.json();
-      if (!result || typeof result !== 'object' || Array.isArray(result)) {
-        throw new SkyPaymentError(PROVIDER_ERROR, 502);
-      }
-      return result as T;
+      return await stripeRequest({ path, method, parameters, idempotencyKey,
+        secretKey: validated.secretKey, apiVersion: SKY_STRIPE_API_VERSION,
+        fetchImpl: fetcher, timeoutMs: REQUEST_TIMEOUT_MS }) as T;
     } catch (error) {
-      // Provider messages can include submitted data. Never return or log them.
-      if (!(error instanceof SkyPaymentError)) {
+      if (error instanceof StripeTransportError && error.status) {
+        console.error('[sky-stripe] provider_response', {
+          status: error.status,
+          operation: path.startsWith('/v1/checkout/sessions') ? 'checkout' : 'payment-api',
+          code: error.providerCode, requestId: error.requestId,
+        });
+      } else {
         console.error('[sky-stripe] transport_failure', {
-          kind: error instanceof Error && ['TimeoutError', 'AbortError', 'SyntaxError'].includes(error.name)
-            ? error.name : 'network-or-response',
+          kind: error instanceof StripeTransportError ? error.kind : 'network-or-response',
         });
       }
       throw new SkyPaymentError(PROVIDER_ERROR, 502);
@@ -266,6 +226,30 @@ export function skyStripe(
   }
 
   return {
+    /** First-party, exact final usage. Never apply marketplace commission or transfer twice. */
+    async createUsageCheckout(order: { id: string; amountMinor: number; currency: string; digest: string }, idempotencyKey: string): Promise<StripeCheckoutSession> {
+      if (!/^[a-f0-9-]{36}$/.test(order.id) || !/^[a-f0-9]{64}$/.test(order.digest) ||
+        !['jpy', 'usd'].includes(order.currency) || !Number.isSafeInteger(order.amountMinor) ||
+        order.amountMinor < 50 || order.amountMinor > 99_999_999)
+        throw new SkyPaymentError('利用料金の決済条件を確認できません。', 409);
+      const result = validateResultId(await request<StripeCheckoutSession>('/v1/checkout/sessions', 'POST', {
+        mode: 'payment', 'payment_method_types[0]': 'card',
+        'line_items[0][quantity]': '1', 'line_items[0][price_data][currency]': order.currency,
+        'line_items[0][price_data][unit_amount]': String(order.amountMinor),
+        'line_items[0][price_data][product_data][name]': 'Sky cloud usage',
+        client_reference_id: order.id,
+        'metadata[purpose]': 'sky_cloud_usage', 'metadata[usage_payment_id]': order.id,
+        'metadata[source_digest]': order.digest,
+        'payment_intent_data[metadata][purpose]': 'sky_cloud_usage',
+        'payment_intent_data[metadata][usage_payment_id]': order.id,
+        'payment_intent_data[metadata][source_digest]': order.digest,
+        'adaptive_pricing[enabled]': 'false',
+        success_url: `${validated.origin}/sky/payments?usage=${order.id}`,
+        cancel_url: `${validated.origin}/sky/payments?usage=${order.id}&canceled=1`,
+      }, idempotencyKey), 'cs');
+      if (result.url != null) result.url = validateStripeRedirect(result.url, 'checkout.stripe.com');
+      return result;
+    },
     async createAccount(idempotencyKey: string): Promise<StripeAccount> {
       return validateResultId(
         await request<StripeAccount>(

@@ -16,6 +16,10 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.view.View;
+import android.view.Gravity;
+import android.view.WindowInsets;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ViewFlipper;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,6 +38,8 @@ import org.json.JSONObject;
 /** Unprivileged RockstarOS shell. Persistent work and execution remain in the Platform Broker. */
 public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
+    // Pinned to contracts/local-ai-runtime.json by os:check; Broker validates the signed runtime.
+    static final int LOCAL_AI_STATUS_API_VERSION = 4;
     private static final int CREATE_BACKUP_DOCUMENT = 201;
     private static final int OPEN_BACKUP_DOCUMENT = 202;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
@@ -43,6 +49,15 @@ public final class MainActivity extends Activity {
     private ConnectivityManager cloudConnectivityManager;
     private ConnectivityManager.NetworkCallback cloudConnectivityCallback;
     private boolean cloudNetworkValidated;
+    private ShellUi ui;
+    private ViewFlipper pages;
+    private final TextView[] navigation = new TextView[4];
+    private final LinearLayout[] pageContent = new LinearLayout[4];
+    private TextView homeWorkSummary, homeConnectionStatus, localAiStatus;
+    private EditText homePrompt;
+    private int selectedPage;
+    private final android.window.OnBackInvokedCallback backToHome = () -> selectPage(0);
+    private boolean backToHomeRegistered;
     private LinearLayout form, jobs;
     private LinearLayout advancedPanel;
     private TextView message, skyStatus, recoveryStatus, recoveryPhraseView, deviceCapabilityStatus;
@@ -81,7 +96,7 @@ public final class MainActivity extends Activity {
     private String cloudA2aSelectedParentId, cloudA2aSelectedParentTitle;
     private String cloudA2aRecoveryParentId, cloudA2aRecoveryIdempotencyKey, cloudA2aRecoveryInputSha256;
     private String cloudA2aWalletApprovalId, cloudA2aHeldDelegationId;
-    private Button accountLinkApprovalButton, accountLinkCheckButton;
+    private Button accountLinkStartButton, accountLinkApprovalButton, accountLinkCheckButton;
     private LinearLayout recoveryChallenge;
     private EditText zemaPrompt, markdown, summary, paid, url, cutoff, price;
     private EditText recoveryPhraseInput;
@@ -106,24 +121,30 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.rgb(10, 15, 20));
-        form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
-        form.setBackgroundColor(Color.rgb(10, 15, 20));
-        int padding = (int)(24 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
-        scroll.addView(form); setContentView(scroll);
-
-        label(form, "RockstarOS  /  Sky  /  Zema", 13);
-        label(form, "AIサービスを使う", 30);
-        label(form, "Rockstarアカウントを一度連携します。サービスごとの利用権・接続状態は個別に確認します。", 16);
+        ui = new ShellUi(this);
+        createShellFrame();
+        heading(pageContent[1], "Sky", "使うToolとAgentを選ぶ");
+        LinearLayout toolCard = ui.card(pageContent[1]);
+        heading(pageContent[2], "仕事", "依頼・進捗・成果をここに");
+        LinearLayout composer = ui.card(pageContent[2]);
+        jobs = ui.column(); pageContent[2].addView(jobs);
+        button(pageContent[2], "進捗を更新", () -> perform(connection -> null));
+        LinearLayout executionControls = disclosure(pageContent[2], "実行の停止・再開");
+        button(executionControls, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
+        button(executionControls, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
+        heading(pageContent[3], "設定", "アカウント・端末・データ");
+        form = ui.card(pageContent[3]);
+        label(form, "Rockstarアカウント", 18);
+        label(form, "連携すると、利用権とクラウドの仕事を確認できます。", 14);
         accountLinkStatus = label(form, "アカウント状態を確認中…", 15);
         accountLinkCode = label(form, "", 26); accountLinkCode.setTextIsSelectable(true);
-        button(form, "Rockstarアカウントを連携", this::beginDeviceLink);
+        accountLinkStartButton = button(form, "Rockstarアカウントを連携", this::beginDeviceLink);
         accountLinkApprovalButton = button(form, "ブラウザーで承認ページを開く", this::openDeviceLinkApproval);
         accountLinkApprovalButton.setVisibility(View.GONE);
         accountLinkCheckButton = button(form, "承認状態を確認", this::pollDeviceLink);
         accountLinkCheckButton.setVisibility(View.GONE);
-        label(form, "Sky・Zema・クラウドエージェント", 20);
+        form = ui.card(pageContent[2]);
+        label(form, "クラウドの仕事", 18);
         cloudServiceHomeStatus = label(form, "アカウント連携後に、利用権とクラウド作業をここで確認できます。", 14);
         button(form, "クラウドの状態・作業結果を更新", this::refreshCloudServiceHome);
         entitlementClaimPanel = new LinearLayout(this); entitlementClaimPanel.setOrientation(LinearLayout.VERTICAL);
@@ -151,7 +172,10 @@ public final class MainActivity extends Activity {
         cloudTaskDetailStatus.setTextIsSelectable(true);
         cloudTaskDetailActions = new LinearLayout(this); cloudTaskDetailActions.setOrientation(LinearLayout.VERTICAL);
         form.addView(cloudTaskDetailActions);
-        label(form, "Sky Agentを探して見積を確認", 20);
+        label(pageContent[1], "クラウドAgent", 20);
+        label(pageContent[1], "アカウント連携後に利用できます。見積と上限を確認してから実行します。", 14);
+        button(pageContent[1], "接続設定を開く", () -> selectPage(3));
+        form = disclosure(pageContent[1], "Agentを探して見積を確認");
         label(form, "接続済みAgentの自己申告情報を確認し、依頼文を見積のためProviderへ送る場合は明示同意します。ここでは見積だけを取得し、有料実行は開始しません。", 14);
         cloudA2aPrompt = field(form, "Agentへ依頼する内容", "", true);
         cloudA2aCurrency = field(form, "見積通貨（ISO 4217）", "USD", false);
@@ -192,7 +216,7 @@ public final class MainActivity extends Activity {
         cloudA2aFinalApprovalButton.setVisibility(View.GONE);
         cloudA2aExecutionRecoveryButton = button(form, "同じCloud委任IDの状態を再確認", this::recoverCloudA2AExecution);
         cloudA2aExecutionRecoveryButton.setVisibility(View.GONE);
-        label(form, "クラウドLLMへの依頼", 20);
+        form = disclosure(pageContent[2], "クラウドLLMへの依頼・見積");
         label(form, "見積依頼では入力をRockstarOSのサービスへ送ります。LLM Providerへの実行送信は行いません。上限は表示通貨の金額で入力してください。", 14);
         cloudLlmPrompt = field(form, "クラウドLLMに依頼する内容", "", true);
         cloudLlmCurrency = field(form, "見積通貨（ISO 4217）", "USD", false);
@@ -207,31 +231,35 @@ public final class MainActivity extends Activity {
         styleCheckBox(cloudLlmExecutionConsent); cloudLlmExecutionConsent.setVisibility(View.GONE); form.addView(cloudLlmExecutionConsent);
         cloudLlmExecuteButton = button(form, "上限を承認してクラウド実行", this::executeCloudLlmQuote);
         cloudLlmExecuteButton.setVisibility(View.GONE);
-        label(form, "このShellのToolは端末内で動作します。有料クラウド作業は見積・上限承認・利用明細の経路が接続するまで開始しません。", 15);
-        label(form, "この端末の対応状況", 18);
-        deviceCapabilityStatus = label(form, "端末機能を確認中…", 14);
+        form = ui.card(pageContent[3]);
+        label(form, "この端末", 18);
+        label(form, "Androidアプリ版 · Developer Preview", 14);
+        deviceCapabilityStatus = label(disclosure(form, "端末の対応状況を見る"), "端末機能を確認中…", 14);
+        deviceCapabilityStatus.setTag("device-capability-status");
         button(form, "端末対応を再確認", () -> perform(connection -> null));
-        label(form, "使うTool", 13);
+        localAiStatus = label(form, "端末内AIは、対応モデルの準備後に利用できます。", 14);
+        button(form, "端末内AIの接続を確認", this::checkLocalAi);
+        form = toolCard;
+        label(form, "この端末のTool", 13);
+        label(form, "出典整理 → 無料記事", 20);
+        label(form, "出典付きの原稿を整理して、無料記事を準備します。自動計画には端末内AIの準備が必要です。", 14);
         skyStatus = label(form, "Skyの選択を確認中…", 16);
-        button(form, "出典整理 → 無料記事 　変更", () -> perform(connection -> {
+        button(form, "このToolを選択", () -> perform(connection -> {
             connection.selectSkyTool(ARTICLE_TOOL); return null;
         }));
-        label(form, "依頼内容", 13);
+        button(form, "このToolで依頼を作る", () -> selectPage(2));
+        form = composer;
+        label(form, "新しい依頼", 18);
+        label(form, "端末内Toolに依頼します。SkyでToolを選び、端末内AIを準備してください。", 14);
         zemaPrompt = field(form, "何をしたいですか？", "", true);
         zemaConsent = new CheckBox(this); zemaConsent.setText("この端末内で処理することを許可"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
-        button(form, "このToolで実行", this::submitZema);
-        button(form, "端末内AIの接続を確認", this::checkLocalAi);
+        ui.primary(button(form, "このToolで実行", this::submitZema));
+        button(form, "Toolを選ぶ", () -> selectPage(1));
 
-        jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
-
-        button(form, "詳細設定（開発者向け）", () -> {
-            advancedPanel.setVisibility(advancedPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-        });
-        advancedPanel = new LinearLayout(this); advancedPanel.setOrientation(LinearLayout.VERTICAL);
-        advancedPanel.setVisibility(View.GONE); form.addView(advancedPanel);
+        advancedPanel = disclosure(pageContent[3], "バックアップと復元");
         label(advancedPanel, "バックアップと復元", 22);
-        label(advancedPanel, "通常は触る必要ありません。復元用の情報は端末外へ送信しません。", 16);
+        label(advancedPanel, "復元用の情報は端末外へ送信しません。", 14);
         recoveryStatus = label(advancedPanel, "復元設定を確認中…", 16);
         recoveryPhraseView = label(advancedPanel, "", 16); recoveryPhraseView.setTextIsSelectable(true);
         recoveryChallenge = new LinearLayout(this); recoveryChallenge.setOrientation(LinearLayout.VERTICAL);
@@ -241,6 +269,8 @@ public final class MainActivity extends Activity {
         button(advancedPanel, "暗号化バックアップを書き出す", this::chooseBackupDestination);
         recoveryPhraseInput = field(advancedPanel, "復元時だけ24単語を入力", "", true);
         button(advancedPanel, "バックアップから復元", this::chooseBackupSource);
+        advancedPanel = disclosure(pageContent[3], "詳細設定（開発者向け）");
+        label(advancedPanel, "接続先はBrokerのbuild設定（rockstarServiceOrigin）で指定します。この画面から接続先や権限を変更することはできません。", 13);
         label(advancedPanel, "Sky Agent連携とWallet受取", 22);
         label(advancedPanel, "端末鍵登録は認証済みRockstarアカウントとhardware-backed Keystoreを使います。強い保護が利用できない端末は登録できません。Cloud成果のWallet反映は、同じAgent依頼の端末内承認・予約が存在する場合だけ行い、未承認の依頼を実行しません。", 15);
         a2aBrokerStatus = label(advancedPanel, "Agent用端末鍵は未確認です。", 14);
@@ -272,9 +302,160 @@ public final class MainActivity extends Activity {
                 perform(connection -> connection.submit(UUID.randomUUID().toString(), payload, isSample, allowed));
             } catch (Exception error) { message.setText("入力を確認してください。文字数・価格は整数、全項目の入力が必要です。"); }
         });
-        button(advancedPanel, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
-        button(advancedPanel, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
-        button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
+        buildHomePage();
+        Object retained = getLastNonConfigurationInstance();
+        if (retained instanceof String[]) {
+            String[] drafts = (String[]) retained;
+            homePrompt.setText(drafts[0]); zemaPrompt.setText(drafts[1]);
+        }
+        selectPage(state == null ? 0 : state.getInt("selectedPage", 0));
+    }
+
+    private void createShellFrame() {
+        getWindow().setStatusBarColor(ShellUi.BACKGROUND);
+        getWindow().setNavigationBarColor(ShellUi.BACKGROUND);
+        getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        LinearLayout root = ui.column(); root.setBackgroundColor(ShellUi.BACKGROUND);
+        root.setFocusableInTouchMode(true);
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            android.graphics.Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            android.graphics.Insets keyboard = insets.getInsets(WindowInsets.Type.ime());
+            view.setPadding(bars.left, bars.top, bars.right, Math.max(bars.bottom, keyboard.bottom));
+            return WindowInsets.CONSUMED;
+        });
+        LinearLayout header = new LinearLayout(this); header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(ui.dp(22), ui.dp(12), ui.dp(22), ui.dp(12));
+        TextView brand = new TextView(this); brand.setText("✳  RockstarOS"); brand.setTextSize(18);
+        brand.setTextColor(ShellUi.INK); brand.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1f));
+        TextView preview = new TextView(this); preview.setText("Developer Preview"); preview.setTextSize(10);
+        preview.setTextColor(ShellUi.MUTED); preview.setPadding(ui.dp(8), ui.dp(5), ui.dp(8), ui.dp(5));
+        preview.setBackground(ui.surface(ShellUi.SURFACE, ShellUi.LINE, 7)); header.addView(preview);
+        root.addView(header);
+        View topLine = new View(this); topLine.setBackgroundColor(ShellUi.LINE);
+        root.addView(topLine, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        pages = new ViewFlipper(this); pages.setTag("pages");
+        for (int index = 0; index < pageContent.length; index++) {
+            ScrollView scroll = new ScrollView(this); scroll.setFillViewport(true);
+            scroll.setClipToPadding(false); scroll.setVerticalScrollBarEnabled(false);
+            pageContent[index] = ui.column(); pageContent[index].setTag("page-" + index);
+            pageContent[index].setPadding(ui.dp(20), ui.dp(12), ui.dp(20), ui.dp(28));
+            scroll.addView(pageContent[index]); pages.addView(scroll);
+        }
+        root.addView(pages, new LinearLayout.LayoutParams(-1, 0, 1f));
+        View line = new View(this); line.setBackgroundColor(ShellUi.LINE);
+        root.addView(line, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        LinearLayout bar = new LinearLayout(this); bar.setBackgroundColor(ShellUi.BACKGROUND);
+        bar.setPadding(ui.dp(8), ui.dp(6), ui.dp(8), ui.dp(6));
+        String[] names = {"ホーム", "Sky", "仕事", "設定"};
+        for (int index = 0; index < names.length; index++) {
+            final int destination = index;
+            navigation[index] = ui.navigation(bar, names[index], index, () -> selectPage(destination));
+        }
+        root.addView(bar); setContentView(root); root.requestFocus(); root.requestApplyInsets();
+    }
+
+    private void buildHomePage() {
+        LinearLayout home = pageContent[0];
+        heading(home, "ホーム", "依頼から成果まで、一つの場所で。");
+        LinearLayout testing = ui.card(home);
+        label(testing, "登録なしで試す", 20);
+        label(testing, "このPixelだけで入力から出力まで。17項目を実処理・模擬結果で試せます。", 14);
+        Button testEntry = button(testing, "テストモードを開く", () -> startActivity(new Intent(this, TestModeActivity.class)));
+        ui.primary(testEntry); testEntry.setTag("native-test-entry");
+        LinearLayout composer = ui.card(home);
+        label(composer, "何を進めますか？", 22);
+        homePrompt = field(composer, "依頼の下書き", "", true);
+        homePrompt.setTag("home-prompt"); homePrompt.setHint("例：資料を整理して、記事の下書きを作りたい");
+        ui.primary(button(composer, "依頼を準備する", () -> {
+            String draft = homePrompt.getText().toString().trim();
+            if (draft.isEmpty()) { homePrompt.setError("依頼内容を入力してください"); homePrompt.requestFocus(); return; }
+            Runnable transfer = () -> {
+                zemaPrompt.setText(draft); zemaConsent.setChecked(false); selectPage(2);
+                ((ScrollView) pages.getChildAt(2)).smoothScrollTo(0, 0);
+            };
+            String current = zemaPrompt.getText().toString().trim();
+            if (!current.isEmpty() && !current.equals(draft)) {
+                new AlertDialog.Builder(this).setTitle("仕事の下書きを置き換えますか？")
+                    .setMessage("仕事画面に入力中の依頼があります。")
+                    .setNegativeButton("戻る", null).setPositiveButton("置き換える", (dialog, which) -> transfer.run()).show();
+            } else transfer.run();
+        }));
+        label(composer, "内容と使うToolを確認してから実行します。", 12);
+        LinearLayout work = ui.card(home); label(work, "仕事の状況", 18);
+        homeWorkSummary = label(work, "保存された仕事を確認中…", 14);
+        button(work, "仕事と成果を見る", () -> selectPage(2));
+        LinearLayout tools = ui.card(home); label(tools, "Sky", 18);
+        label(tools, "この端末のToolと、接続したAgentを探す。", 14);
+        button(tools, "Toolを選ぶ", () -> selectPage(1));
+        homeConnectionStatus = label(home, "接続状態を確認中…", 12);
+        button(home, "接続・端末の設定", () -> selectPage(3));
+        LinearLayout web = ui.card(home);
+        label(web, "Web版", 18);
+        label(web, "Home・Sky・Zema・Wallet・Market・設定をブラウザで開きます。Web版へのサインインは別途必要です。", 13);
+        button(web, "Web版を開く", () -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://rockstaros-kaiya.noellesugar1.chatgpt.site/")));
+            } catch (android.content.ActivityNotFoundException error) {
+                new AlertDialog.Builder(this).setTitle("ブラウザを利用できません")
+                    .setMessage("ブラウザを有効にしてから、もう一度お試しください。")
+                    .setPositiveButton("閉じる", null).show();
+            }
+        }).setTag("public-web-entry");
+        zemaPrompt.setTag("work-prompt"); zemaConsent.setTag("work-consent");
+    }
+
+    private void heading(LinearLayout parent, String title, String subtitle) {
+        label(parent, title, 26); label(parent, subtitle, 14);
+    }
+
+    private LinearLayout disclosure(LinearLayout parent, String title) {
+        LinearLayout card = ui.card(parent);
+        LinearLayout contents = ui.column(); contents.setVisibility(View.GONE);
+        Button toggle = button(card, title + "  ＋", () -> {});
+        toggle.setOnClickListener(view -> {
+            boolean expanded = contents.getVisibility() != View.VISIBLE;
+            contents.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            toggle.setText(title + (expanded ? "  −" : "  ＋"));
+            toggle.setStateDescription(expanded ? "展開中" : "折りたたみ");
+        });
+        toggle.setStateDescription("折りたたみ"); card.addView(contents);
+        return contents;
+    }
+
+    private void selectPage(int index) {
+        selectedPage = Math.max(0, Math.min(index, pageContent.length - 1));
+        View focused = getCurrentFocus();
+        if (focused != null) {
+            InputMethodManager keyboard = getSystemService(InputMethodManager.class);
+            if (keyboard != null) keyboard.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+            focused.clearFocus();
+        }
+        pages.setDisplayedChild(selectedPage);
+        for (int tab = 0; tab < navigation.length; tab++) ui.selectNavigation(navigation[tab], tab, tab == selectedPage);
+        if (selectedPage != 0 && !backToHomeRegistered) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, backToHome);
+            backToHomeRegistered = true;
+        } else if (selectedPage == 0 && backToHomeRegistered) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
+            backToHomeRegistered = false;
+        }
+    }
+
+    // Drafts survive configuration changes in memory only; consent is always reset.
+    @Override public Object onRetainNonConfigurationInstance() {
+        return new String[]{homePrompt.getText().toString(), zemaPrompt.getText().toString()};
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putInt("selectedPage", selectedPage);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override public void onBackPressed() {
+        if (selectedPage != 0) selectPage(0); else super.onBackPressed();
     }
 
     private void provisionEsimGatewayKey() {
@@ -432,29 +613,21 @@ public final class MainActivity extends Activity {
 
     private EditText field(String title, String initial, boolean multi) { return field(form, title, initial, multi); }
     private EditText field(LinearLayout container, String title, String initial, boolean multi) {
-        label(container, title, 16); EditText input = new EditText(this); input.setText(initial); input.setTextSize(16);
-        input.setTextColor(Color.WHITE); input.setHintTextColor(Color.rgb(146, 161, 174));
-        input.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12));
-        input.setPadding(16, 14, 16, 14);
+        TextView caption = label(container, title, 13);
+        EditText input = new EditText(this); input.setId(View.generateViewId()); input.setText(initial);
+        input.setSaveEnabled(false); caption.setLabelFor(input.getId()); ui.input(input);
         input.setInputType(InputType.TYPE_CLASS_TEXT | (multi ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0));
-        input.setSingleLine(!multi); if (multi) input.setMinLines(3); container.addView(input); return input;
+        input.setSingleLine(!multi); if (multi) input.setMinLines(3);
+        container.addView(input, new LinearLayout.LayoutParams(-1, -2)); return input;
     }
-    private TextView label(LinearLayout container, String text, int size) {
-        TextView value = new TextView(this); value.setText(text); value.setTextSize(size);
-        value.setTextColor(size >= 22 ? Color.WHITE : Color.rgb(190, 202, 214));
-        value.setPadding(0, size >= 22 ? 20 : 12, 0, size >= 22 ? 10 : 8); container.addView(value); return value;
+    private TextView label(LinearLayout container, String text, int size) { return ui.text(container, text, size); }
+    private Button button(LinearLayout container, String text, Runnable action) { return ui.button(container, text, action); }
+    private void styleCheckBox(CheckBox box) {
+        box.setTextColor(ShellUi.MUTED); box.setTextSize(14); box.setPadding(0, ui.dp(10), 0, ui.dp(10));
+        box.setMinHeight(ui.dp(48)); box.setSaveEnabled(false);
+        box.setButtonTintList(android.content.res.ColorStateList.valueOf(ShellUi.MUTED));
     }
-    private Button button(LinearLayout container, String text, Runnable action) {
-        Button value = new Button(this); value.setText(text); value.setTextColor(Color.WHITE); value.setTextSize(15);
-        value.setAllCaps(false); value.setPadding(18, 12, 18, 12);
-        value.setBackground(background(Color.rgb(27, 42, 54), Color.rgb(95, 151, 183), 14));
-        value.setOnClickListener(view -> action.run()); container.addView(value); return value;
-    }
-    private void styleCheckBox(CheckBox box) { box.setTextColor(Color.rgb(205, 216, 226)); box.setPadding(0, 12, 0, 12); }
-    private GradientDrawable background(int fill, int stroke, int radius) {
-        GradientDrawable drawable = new GradientDrawable(); drawable.setColor(fill); drawable.setCornerRadius(radius * getResources().getDisplayMetrics().density);
-        drawable.setStroke((int)(1 * getResources().getDisplayMetrics().density), stroke); return drawable;
-    }
+    private GradientDrawable background(int fill, int stroke, int radius) { return ui.surface(fill, stroke, radius); }
 
     private void perform(Action action) {
         worker.execute(() -> {
@@ -467,7 +640,7 @@ public final class MainActivity extends Activity {
                 JSONObject recovery = new JSONObject(connection.recoveryStatus());
                 JSONObject account = new JSONObject(connection.rockstarDeviceLinkStatus());
                 JSONObject cloudHome = "linked".equals(account.optString("state"))
-                    ? new JSONObject(connection.cloudServiceHome()) : new JSONObject("{\"state\":\"not_linked\"}");
+                    ? new JSONObject(connection.cloudServiceHome()) : new JSONObject().put("state", account.optString("state", "not_linked"));
                 boolean paused = snapshot.getBoolean("paused");
                 JSONArray workItems = snapshot.getJSONArray("works");
                 runOnUiThread(() -> {
@@ -477,7 +650,7 @@ public final class MainActivity extends Activity {
                         applyRecoveryStatus(recovery);
                         applyDeviceLinkStatus(account);
                         applyCloudServiceHome(cloudHome);
-                        message.setText(paused ? "全停止中" : "予約済みの仕事は充電中に実行します。原稿・成果物はBroker側だけに保存します。");
+                        message.setText(paused ? "全停止中" : "予約した仕事は充電中に進めます。原稿と成果物はこの端末に保存します。");
                         render(workItems);
                     }
                 });
@@ -493,10 +666,14 @@ public final class MainActivity extends Activity {
         cloudServiceHomeStatus.setText("クラウドの状態を取得中…");
         worker.execute(() -> {
             try {
-                JSONObject response = new JSONObject(new ShellConnection(this).cloudServiceHome());
+                ShellConnection connection = new ShellConnection(this);
+                JSONObject account = new JSONObject(connection.rockstarDeviceLinkStatus());
+                JSONObject response = "linked".equals(account.optString("state"))
+                    ? new JSONObject(connection.cloudServiceHome())
+                    : new JSONObject().put("state", account.optString("state", "not_linked"));
                 runOnUiThread(() -> {
                     cloudServiceHomeRequestInFlight = false;
-                    if (!isDestroyed()) applyCloudServiceHome(response);
+                    if (!isDestroyed()) { applyDeviceLinkStatus(account); applyCloudServiceHome(response); }
                 });
             } catch (Exception failure) {
                 runOnUiThread(() -> {
@@ -626,11 +803,15 @@ public final class MainActivity extends Activity {
 
     private void applyCloudServiceHome(JSONObject home) {
         String state = home.optString("state", "ready");
-        if ("not_linked".equals(state)) {
+        if ("not_linked".equals(state) || "not_configured".equals(state) || "authorization_pending".equals(state) || "slow_down".equals(state) || "expired".equals(state) || "denied".equals(state)) {
             cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
             entitlementClaimPanel.setVisibility(View.GONE);
             entitlementClaimPackageInput.setText("");
-            cloudServiceHomeStatus.setText("クラウドの状態を確認するにはRockstarアカウント連携が必要です。");
+            cloudTaskActions.removeAllViews(); cloudTaskDetailActions.removeAllViews();
+            cloudTaskDetailStatus.setText("");
+            cloudServiceHomeStatus.setText("not_configured".equals(state)
+                ? "このプレビューはクラウド接続の準備待ちです。端末内の仕事は別に確認できます。"
+                : "設定でRockstarアカウントを連携すると、クラウドの仕事と利用状況を確認できます。");
             return;
         }
         if (!"ready".equals(state)) {
@@ -1817,6 +1998,11 @@ public final class MainActivity extends Activity {
     private void applyDeviceLinkStatus(JSONObject status) {
         if (accountLinkStatus == null || status == null) return;
         String state = status.optString("state", "blocked");
+        accountLinkStartButton.setEnabled(!"not_configured".equals(state));
+        accountLinkStartButton.setAlpha("not_configured".equals(state) ? 0.45f : 1f);
+        homeConnectionStatus.setText("linked".equals(state) ? "アカウント連携済み · 利用権は仕事画面で確認"
+            : "not_configured".equals(state) ? "クラウド接続は準備待ち · Androidアプリ版"
+            : "アカウント未連携 · 設定から接続できます");
         if ("linked".equals(state)) {
             deviceLinkFlowId = null; deviceLinkApprovalUri = null;
             deviceLinkHandler.removeCallbacks(deviceLinkPoll);
@@ -1845,7 +2031,7 @@ public final class MainActivity extends Activity {
         accountLinkApprovalButton.setVisibility(View.GONE);
         accountLinkCheckButton.setVisibility(View.GONE);
         if ("not_configured".equals(state))
-            accountLinkStatus.setText("Rockstarサービス接続先が未設定です。開発時はGradleのrockstarServiceOriginを指定します。");
+            accountLinkStatus.setText("このプレビューのクラウド接続先は準備中です。接続対応版への更新後にアカウントを連携できます。");
         else if ("denied".equals(state)) accountLinkStatus.setText("連携は承認されませんでした。必要ならもう一度開始してください。");
         else if ("expired".equals(state)) accountLinkStatus.setText("承認コードの期限が切れました。もう一度開始してください。");
         else if ("not_linked".equals(state)) accountLinkStatus.setText("Rockstarアカウント未連携です。");
@@ -1958,7 +2144,7 @@ public final class MainActivity extends Activity {
         return summary.toString();
     }
 
-    private static boolean validLocalInferenceObservation(JSONObject observation) {
+    static boolean validLocalInferenceObservation(JSONObject observation) {
         if (observation == null || !"not_reported".equals(observation.optString("modelProfileIdentity"))) return false;
         String trust = observation.optString("trustBasis");
         String state = observation.optString("state");
@@ -1967,7 +2153,7 @@ public final class MainActivity extends Activity {
             && observation.optInt("apiVersion", -1) == 0;
         if (!"approved_package_signature_and_binder_api".equals(trust)
                 || !"llama.rn".equals(observation.optString("runtime"))
-                || observation.optInt("apiVersion", -1) != 2
+                || observation.optInt("apiVersion", -1) != LOCAL_AI_STATUS_API_VERSION
                 || !(observation.opt("modelLoaded") instanceof Boolean)) return false;
         return ("ready".equals(state) && observation.optBoolean("modelLoaded"))
             || ("no_model".equals(state) && !observation.optBoolean("modelLoaded"))
@@ -2111,10 +2297,19 @@ public final class MainActivity extends Activity {
     private void checkLocalAi() {
         worker.execute(() -> {
             String status;
-            try { status = "ローカルAI: " + new ShellConnection(this).localAiStatus(); }
-            catch (Exception error) { status = "ローカルAI: 未接続（アプリ、モデル、署名、APIを確認）"; }
+            try {
+                String observed = new ShellConnection(this).localAiStatus();
+                switch (observed) {
+                    case "no_model": status = "端末内AI: モデルの準備が必要です。Local AIアプリで対応モデルを読み込んでください。"; break;
+                    case "ready": status = "端末内AI: モデルを読み込み済みです。依頼ごとの実行可否は安全確認後に判定します。"; break;
+                    case "loading": status = "端末内AI: モデルを読み込み中です。"; break;
+                    case "busy": status = "端末内AI: 処理中です。しばらくしてから確認してください。"; break;
+                    default: status = "端末内AI: 現在利用できません。Local AIアプリを確認してください。";
+                }
+            }
+            catch (Exception error) { status = "端末内AI: 接続できません。対応するLocal AIアプリを確認してください。"; }
             String result = status;
-            runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
+            runOnUiThread(() -> { if (!isDestroyed()) localAiStatus.setText(result); });
         });
     }
 
@@ -2166,7 +2361,7 @@ public final class MainActivity extends Activity {
         if ("selected".equals(selection.optString("status"))
                 && ARTICLE_TOOL.equals(selection.optString("toolId"))) {
             skySelectionToken = selection.optString("selectionToken", null);
-            skyStatus.setText("選択済み: 出典整理→無料記事 · revision " + selection.optInt("revision"));
+            skyStatus.setText("このToolを選択中");
         } else {
             skySelectionToken = null;
             skyStatus.setText("未選択です。使用するToolを選んでください。");
@@ -2190,8 +2385,7 @@ public final class MainActivity extends Activity {
             // Old cancelled test runs are developer history, not user work.
             if ("cancelled".equals(state)) continue;
             visibleJobs++;
-            LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
-            card.setPadding(16, 14, 16, 14); card.setBackground(background(Color.rgb(19, 28, 36), Color.rgb(48, 66, 80), 14)); jobs.addView(card);
+            LinearLayout card = ui.card(jobs);
             label(card, friendlyState(state), 18);
             JSONArray runs = work.optJSONArray("runs");
             int succeeded = 0, total = runs == null ? 0 : runs.length();
@@ -2214,7 +2408,9 @@ public final class MainActivity extends Activity {
             if (state.equals("active") && !work.optBoolean("sample"))
                 button(card, "失敗した工程だけを再試行", () -> perform(connection -> { connection.retry(id); return null; }));
         }
-        if (visibleJobs == 0) label(jobs, "まだ仕事はありません。ここから実行できます。", 16);
+        if (visibleJobs == 0) label(jobs, "まだ仕事はありません。依頼を準備すると、進捗と成果がここに表示されます。", 14);
+        homeWorkSummary.setText(visibleJobs == 0 ? "まだ仕事はありません。最初の依頼を準備しましょう。"
+            : visibleJobs + "件の仕事があります。仕事画面で進捗と成果を確認できます。");
     }
 
     private static String friendlyState(String state) {
@@ -2229,6 +2425,7 @@ public final class MainActivity extends Activity {
 
     @Override public void onDestroy() {
         activityResumed = false;
+        if (backToHomeRegistered) getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
         cloudTaskHandler.removeCallbacks(cloudTaskRefresh);

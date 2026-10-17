@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { CAMPUSES, type CampusId } from './campus.ts';
 
 export function skyAppManifest(os: MetadataRoute.Manifest): MetadataRoute.Manifest {
   return {
@@ -10,5 +11,22 @@ export function skyAppManifest(os: MetadataRoute.Manifest): MetadataRoute.Manife
     start_url: '/sky/marketplace',
     scope: '/sky/',
     orientation: 'any',
+  };
+}
+
+export function campusSkyAppManifest(
+  os: MetadataRoute.Manifest,
+  campusId: CampusId,
+): MetadataRoute.Manifest {
+  const base = skyAppManifest(os);
+  const shortName = CAMPUSES[campusId].shortName;
+  return {
+    ...base,
+    id: `/sky/campus/${campusId}`,
+    name: `${shortName} Sky`,
+    short_name: `${shortName} Sky`,
+    description: `Sky and Zema for ${shortName} students.`,
+    start_url: `/sky/campus/${campusId}/hub`,
+    lang: 'en',
   };
 }

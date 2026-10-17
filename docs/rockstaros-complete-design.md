@@ -1,5 +1,27 @@
 # RockstarOS 全体詳細設計
 
+## ランドセル防犯ベルサイズDevice Profile（2026-10-14）
+
+利用者の明示指示により、ランドセルへぶら下げ、外して手で持って話せる防犯ベル程度のhardwareを、RQ48の限定Device Profileとして追加する。`avocado Companion`は仮称。二つの目で状態を伝え、明示操作中だけマイクを開き、保護者スマホ／Wi-Fiから許可済みCloud Agentへ接続する。SOS入力と独立local alarmは取り外す本体側に置き、会話・通信が落ちても使える。full Android／LinuxやR5の空間表示を小型筐体へ詰めず、署名済み低消費電力firmwareと保護者端末／cloud側RockstarOSへ責任を分ける。screenless safety比較案を残し、家庭側service dockは有線給電・診断候補。任意のphone tap／typeはalarm経路へ含めない。[目的、体験、責任、入出力、状態、保存、失敗、復旧、受入、未決定事項](avocado-schoolbag-safety-device.md)。設計段階であり実機・認証・製造・販売の受入ではない。
+
+## Sky単独提供とNFC・eSIM・iOSの共通入口（2026-10-12）
+
+指定チャットの最新明示方針へ同期。SkyはOS完成やeSIM購入を待たず単独Web/PWAとして使える品質を目指し、NFCは既存Skyを大学名・おすすめ付きで開く。任意eSIMのclaimも同じ本人・購入・接続・Zemaへ合流する。iOS初期提供はbrowser/PWA、native/App Clip/App Intentsは後続候補で、eSIMによる自動導入・無制限常駐を約束しない。[目的・利用体験・入出力・状態・保存・失敗/復旧・承認・責任・進捗・合格条件](sim-led-product-architecture.md#sky-shared-entry)を共通仕様とする。main、local大学版、指定公開Siteと別Sky Siteの証拠を区別し、仕様保存で本番受入を更新しない。
+
+## GrapheneOSの長所の再利用（2026-10-10）
+
+Pixel版のGrapheneOS／Android基盤、権限と隔離、AVBと署名更新、対応端末のTerminal／Linuxを再利用し、RockstarのHome／Sky／Zema／Agentへ接続する方針。Linuxは開発環境と限定Toolの任意実行先候補であり、製品全体のVM移行やhost rootの共通API化ではない。既存Broker、workflow、本人・予算・保存契約を維持する。[目的、利用体験、責任、入出力、状態、保存、失敗、復旧、承認、合格条件と未決定の決め方](device-support-architecture.md#graphene-reuse)を多機種設計へ統合した。設計反映のみで、Linux adapter、AVF実機、性能、full OSの受入は未完了。既存QEMU／Pixel／clientとSIM/eSIMの各gateを保持する。
+
+2026-10-07: eSIMに結び付く登録済みgateway鍵の保有証明をCloud APIへ接続。要求単位の署名・期限・replay拒否・既存利用権/失効を実装する。秘密鍵は送信しない。eUICC保管・実端末adapter・データ非保存は別受入。[目的・状態・保存・失敗・復旧・承認・合格条件](sim-led-product-architecture.md#esimに結び付く端末鍵でのcloud-apiアクセス2026-10-07)。
+
+## メインSIM通信を使うクラウド提供形態（2026-10-07）
+
+任意のeSIM提供形態では、本人が設定した既存メインSIM/Wi-Fiでclientから共通クラウドへ接続する。eSIM内の専用OSとRockstarOSを区別し、Home/Sky/Zema・本人・利用権・仕事・予算/usageを再利用する。eSIMごとのクラウド複製や通信回線購入は共通要件にしない。既存`service_only` claimと実eSIM導入証拠adapterを分け、後者の署名・注文照合は保持する。目的、体験、責任、入出力、状態、保存、失敗、復旧、承認、合格条件、未決定の決め方は[共通設計](sim-led-product-architecture.md#main-sim-cloud-service)を正本とする。設計のみで、browserによるSIM指定、実eSIM発行、実機、本番課金の受入は未完了。
+
+## AWSクラウド導入・提携準備（2026-10-05）
+
+利用者の明示指示でAWSをクラウド導入・技術提携の優先相談先にする。相談主体はavokado llc／米国（本人申告）。[AWS提携設計](provider-contract-readiness-20260930.md#aws-partnership-preparation)に目的・利用体験・入出力・状態・費用・保存・復旧・責任・受入・未決定条件を定義する。初回は既存管理系からAWSの代表Agent実行へ接続し、その後の管理系移行を別受入する案。本人/利用権・Broker・Wallet・Zemaの契約は保持し、AWS認証やmodel出力を本人承認へ昇格させない。adapter実装、AWS配備、提携成立、顧客課金、OS実機受入は未完了。
+
 ## 2026-10-05 選択可能なeSIM提供形態の課金境界
 
 最新の明示方針は、対応可能な端末・提供形態で選べるeSIM経由のRockstarOSクラウドOSと、そこでのSkyエージェント利用に対する従量課金。製品全体をこの方式へ一本化せず、eSIM不要のWeb/app、native OSの端末内LLM/offline agent、local/cloud併用を維持する。通信量販売を中心にせず、本人別の利用権・見積り・上限・承認・実行・停止・保存/再開・利用量・請求照合を一体の体験にする。具体的な責任、入出力、保存、失敗、復旧、承認、合格条件、料金の未決定事項は[共通設計](sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)を参照する。既存Tool/SDK/Walletを再利用し、端末内LLMとPixel/QEMUの受入は独立して保持する。これは設計変更であり、本番実行・課金や実機対応の完了ではない。
@@ -75,6 +97,18 @@ SkyのココナラToolは応募前チェックと本人用案件台帳を一つ�
 Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署名Tool、Registry、Runner、Wallet、A/B更新、backup、復旧のnative契約を検証する。QEMU合格はPixel合格ではない。
 
 ### Android／Pixel
+
+
+#### Pixel Shellの画面契約（2026-10-09）
+
+利用者のGitHub正本に基づく開発・デザイン改善指示を受け、既存Webの中性デザインへ揃える。目的は、依頼・Tool選択・仕事・接続設定を長い一枚のフォームから分離し、普段の操作を見つけやすくすること。`dev.rock.shell`の4入口は「ホーム」「Sky」「仕事」「設定」。ホームは依頼下書きと実際に保存された仕事の件数、Skyは端末Toolと接続済みAgent、仕事は依頼・進捗・成果・クラウド利用状況、設定はアカウント・端末・復旧を担当する。クラウド見積や開発設定は必要時に展開する。背景`#0b0d10`、面`#14171c`、罫線`#2b3037`、文字`#f4f6f8`を基本とし、48dp以上の操作領域、文字拡大、画面端・キーボードのinsetを扱う。
+
+入力はホームの未送信下書き、Skyの選択、Brokerの状態。出力は本人が確認できる依頼編集画面と実際の進捗であり、ナビゲーション自体は実行しない。ホームから仕事へ引き継ぐと実行同意を解除し、既存の異なる下書きがある場合は置換確認を要求する。下書きはタブ移動と構成変更の間だけメモリーに保持し、端末の永続保存や外部送信は行わない。画面選択のみinstance stateに保持する。Brokerが仕事・Tool選択・鍵・課金上限・本人承認を所有し、Shellへ新たな通信・DB・鍵の権限は追加しない。見積・Wallet予約・最終承認の既存契約も維持する。
+
+状態は未連携、連携待ち、接続先未設定、接続失敗を区別する。接続先未設定ではアカウント連携を開始せず、通信障害と誤表示しない。Local AIの`no_model`はモデル準備待ち、`ready`はruntimeの報告として示し、推論やTool成功へ昇格させない。 端末能力snapshotのLocal AI API版は`contracts/local-ai-runtime.json`（現在v4）と一致させ、旧版・未知の新版・不正trust・readyとmodelLoadedの矛盾は拒否する。`os:check`で版の一致、実機試験で新しいsnapshotの表示を検査する。失敗時は本人の入力・保存仕事を維持し、更新・再確認を選べる。復旧と実行停止は設定／仕事から開く。更新は保持済み署名による非破壊APK上書きが前提で、署名不一致時のデータ削除はこのUI変更から許可を推測しない。
+
+合格条件はShell/APIのSDK build・lint、4画面の表示、下書き保持、未入力拒否、置換確認、同意解除、自動実行なし、同一署名の実機上書き前後でTool選択・仕事件数が維持されること。`ShellNavigationTest`はBrokerを初期化せず、前後の仕事件数と選択を照合する。アプリ受入をfull OSやサービス契約の合格に転用しない。クラウド接続先・model配布の未決定は各既存gateで判断し、UIだけで解決済みとしない。
+
 
 `dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local AI、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。
 
@@ -264,7 +298,7 @@ OSのtrial slotではmark-good前にhardware rollback indexを進めない。boo
 
 HomeはSky、Zema、Wallet、Market、Settingsへの入口。仕事はZemaへ集め、専用Tool画面からも同じwork／receiptへ戻る。
 
-Web Previewのvisual contractは、avokado製品Siteと同じグラファイトのshellとHome、銀色の文字・面、淡い青のfocus／選択手掛かりを基準にする。Sky、Wallet、Market、Settings、CSVなど情報量の多い画面には冷たい白い面を使い、Zema会話とStudioは暗い操作面を維持する。Homeの旧既定黄緑accentだけを新既定色へ移行し、利用者が選んだ別色は保持する。Tool固有アイコン、成功／警告／失敗の意味色はブランドaccentと分け、色だけで状態を伝えない。狭い画面でもHome導線、主要操作、実際の接続状態が見え、横方向のページはみ出しを起こさない。これらはWeb表示の設計であり、native OS・Provider接続・本番公開の完了を意味しない。
+2026-10-09の明示指示によりHomeのvisual contractは下記「Home: 意図から仕事へ」を優先する。その他のWeb Previewのvisual contractは、avokado製品Siteと同じグラファイトのshellとHome、銀色の文字・面、淡い青のfocus／選択手掛かりを基準にする。Sky、Wallet、Market、Settings、CSVなど情報量の多い画面には冷たい白い面を使い、Zema会話とStudioは暗い操作面を維持する。Homeの旧既定黄緑accentだけを新既定色へ移行し、利用者が選んだ別色は保持する。Tool固有アイコン、成功／警告／失敗の意味色はブランドaccentと分け、色だけで状態を伝えない。狭い画面でもHome導線、主要操作、実際の接続状態が見え、横方向のページはみ出しを起こさない。これらはWeb表示の設計であり、native OS・Provider接続・本番公開の完了を意味しない。
 
 全画面で表示するもの:
 
@@ -453,3 +487,112 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 非金融Game fixtureはseed固定・粒子world・保存再読込を検証する試験基盤であり、外部ゲームの残高や資金を変更しない。Decision FabricのRouter/Harnessと任意Jev providerは提案だけを返し、Brokerの権限や本人承認を付与しない。Agent Control Plane公開APIは認証済みdry-runのみを受け付け、見積・owner予算予約・冪等dispatch・Provider receiptの接続までremote起動を拒否する。詳細は[LLM境界](llm-evaluation-architecture.md)と[Agent Control Plane](agent-control-plane.md)を参照する。
 
 統合対象・除外理由・検証環境は[PR統合証拠](evidence/pr-consolidation-20261005.json)に保存する。旧仕様へのrollbackはmerge履歴から追跡し、現行署名registry、SIM entitlement、本人別保存、課金上限を失う一括巻戻しをしない。
+
+## 共通決済とeSIMクラウドの境界（2026-10-05）
+
+利用者の明示指示により、Sky/CSV/ハードウェア/クラウドのStripe transportと本人向け支払い入口を共有する。商品/使用量/入金は異なる正本へ保存し、eSIM利用権から課金承認を推論しない。目的、利用体験、責任、入力/出力、状態、保存、失敗、復旧、承認、合格条件と未決定は[共通決済](sky-billing.md#共通決済2026-10-05)を参照。直接LLM回収はtest専用で、A2AのWallet予約/精算を追加カード請求へ変換しない。OS/native署名、実資金、端末受入または商用完成を示さない。
+
+## Optional eSIM cloud access — 2026-10-05
+
+既存BIZ01/SKY19/BIL02のeSIM導入証明を、owner別クラウドアクセスキーへ接続する。`/sky/purchases`で導入確認後に開始し、期限・再発行・停止を管理する。`/connect`は通常Web/appと併存する任意入口を案内する。目的、責任、設定、入出力、状態、保存、失敗、復旧、承認、合格条件と未決定事項は[共通契約](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。
+
+追加保存はWeb D1 migration `0059`のhash/owner/order/device/receipt/scope/expiry/失効履歴。署名済みinstall proof、gateway鍵、現行Package審査、返金状態を使用ごとに照合する。キーは許可されたcloud APIだけへ接続し、同じownerの見積・予算・usageを再利用する。eSIM同梱Starter Packの表示を既存利用権APIへ追加し、OS Brokerの権限・本人承認・Tool成功へ昇格させない。キー自体で支払いや管理操作は行えない。未設定は提供準備中、競合は状態再取得、紛失は再発行、失効は拒否し既存成果を保存する。自動的なブラウザ起動、実通信会社接続、実機導入、商用クラウド実行、従量単価と合算請求は未受入。[ローカル証拠](evidence/esim-cloud-access-local.json)を本番成功へ読み替えない。
+
+## Home: 意図から仕事へ（2026-10-09）
+
+- 目的・体験: Homeで依頼を入力し、Zemaへ引継ぎ確認。本人の仕事を状態別に見て再開する。道具は上部のアプリ一覧と検索可能dialogから開く。
+- 責任: Web / PWA / Sites、ROCK、HOME01 / WEB01。Homeは表示と下書き引継ぎを担い、認証・workflow・予算承認を代行しない。
+- 入出力: 1〜2000文字の依頼をsessionStorageへ保存し、Zemaの編集欄へ一回だけ読み出す。GET /api/work-jobsの本人jobを一覧・絞込み・詳細リンクへ表示する。
+- 状態: loading / ready / signin / errorと、active / review / completed / cancelledを区別。activeはworkflow状態でありAgent実行中の捏造ではない。
+- 表示: 2026-10-09の追加修正指示で無彩色のHomeへ変更。彫刻・ライム・大見出し・浮遊dockを撤去し、既存アプリの暗い面・銀色文字・細い罫線へ合わせる。集中表示はアプリ一覧・説明・入力例を畳む。
+- 保存: 下書きは同じタブ、10分で失効、読出時消去。URL・localStorage・新規serverへ本文を保存しない。集中表示のbooleanだけをlocalStorageへ保存。旧外観設定値を削除しない。
+- 失敗・復旧: 保存拒否なら入力を残してコピーとZemaへの直接導線を提示。401は履歴を消してサインイン、読取失敗は空件数を捏造せず再読込。中断・古い応答は破棄する。
+- 承認: HomeはGETだけ。下書き引継ぎでTool実行・外部送信・支払は開始しない。実行は既存画面の承認に従う。
+- 合格条件: handoff一回/期限/不正値/保存失敗試験、typecheck、既存回帰、PC/mobileで入力→Zema・検索dialog・集中表示・仕事導線を確認。motion低減とkeyboard/focusを保持する。
+- 未決定: provider本番受入・native移植は既存gateへ残す。別Site移行は今回のUI刷新へ混ぜず、指定されたpublic Siteのaudienceを保持する。
+
+## Web共通デザイン（2026-10-09修正）
+
+- 目的・体験: Home・Sky・Zema・Wallet・Market・設定を、同じ製品のアプリとして行き来する。全画面で同じRockstarOSヘッダー、主要6アプリのナビゲーション、選択表示、コンテンツ幅を使う。Home単独の中性化では不十分という利用者の明示指示に基づく。
+- 共通定義: `app/os-design-tokens.css`を背景・面・文字・罫線・focus・意味色の正本にする。`components/os-header.tsx`と`app/os-appearance.css`を共通操作部にする。背景#0b0d10、面#15181d、文字#f4f6f8、選択・主操作は銀色。入力focusは淡い青、成功・注意・失敗は意味色とラベルを併用する。
+- 責任・入出力: Web / PWA / Sites、ROCK、WEB04 / HOME01。既存routeとpathname、実行中状態を入力に表示する。API・owner認証・仕事状態・料金・権限を変更しない。
+- 状態・保存: loading、未認証、失敗、workflow状態をそのまま表示する。共通ナビに現在地をaria-currentで示す。新規サーバー保存なし。Home集中表示は説明と入力例だけを畳み、共通ナビを残す。
+- 失敗・承認・復旧: running時は共通ナビも既存の離脱防止に従う。表示の変更で接続・送信・支払を実行しない。Sitesの前版v46を保存し、必要なら同版へ戻せる。
+- 合格条件: PC1280・スマホ390/320で全6routeのヘッダー・背景・選択・横はみ出し・入力・検索を確認。共通文字/面のcontrast、既存style contract、typecheck、design:check、npm run verify、配信version/sourceを記録する。
+- 未決定: native OS受入、provider本番・課金gateは既存契約へ残す。public製品紹介・OS配布案内はアプリ画面とは役割が異なり、一般利用可能という表示へ変更しない。
+
+
+### Pixel既存OS clientへの共通外観適用（2026-10-09）
+
+利用者の接続Pixelへの反映指示により、ShellUiの背景・面・枠・文字・銀色primary・選択tabをWeb共通tokenと同値にする。端末内のHome/Sky/仕事/設定の目的・入力・Broker責任・保存契約は維持。Home末尾の「Web版を開く」は既存のpublic HTTPS SiteをAndroid ACTION_VIEWでブラウザへ渡し、秘密・下書き・本人tokenをURLへ付けず、サインインを自動移送しない。ブラウザがなければ案内を表示して再試行できる。Webの6画面と端末内4画面の実装・本人sessionを区別する。Web未通信時も端末内機能の状態を変えない。更新は同一署名APKの上書きのみ、仕事数/Tool選択とAPK hashの前後照合、実機画面・キーボード/下書きの既存非破壊試験を合格条件とする。対象違い・署名不一致なら停止し、削除再導入へ切り替えない。URL変更は明示された配備先と照合し、OS image/flashや本番Cloud受入を外観更新の完了に含めない。
+
+## 登録不要の出力テスト（WEB04 / 2026-10-09）
+
+目的・体験: `/test` は既存catalogの全項目を列挙し、サンプル一括実行、編集入力の個別実行、結果のコピー・保存・リセットを提供する。実処理・模擬データ・接続待ちを同じ状態語で表示する。CSV、文章、企画、受付文、照合は既存の純粋関数を再利用し、Zema試験はlib/workflow.tsへsample=trueの記録を通す。本番完了へ昇格しない。
+
+責任・入力出力: ROCKのstateless POST `/api/output-tests`。同一Origin/JSONのみ、本文64KB・欄12,000文字まで。固定allowlist以外の入力・Tool・owner指定を拒否。応答はid/mode/status/output/details/executedAt。Provider、DB、Broker、Wallet、本番保存API、任意shellは呼ばない。模擬Marketは入力検査のみ、Walletは表示計算のみ、実注文・実残高ではない。未接続Toolのanswerはnull/not_run。
+
+状態・保存・失敗復旧: idle→running→output/not_run/error。失敗は当該項目だけに表示し、再実行可能。編集時に古い出力を破棄。一括はサンプルへ戻すと明示。結果と入力はReactの画面メモリのみ、再読込で消去。アプリDBへの記録なし、ログへ本文を書かず、Cache-Control:no-store。利用者操作でテキスト/CSV/全結果JSONを端末へ保存。アプリ自身の保持・削除と配信基盤のメタデータログは区別する。
+
+承認・合格・未決定: 登録不要でも本番の本人性・予算・同意を緩和しない。サンプルは架空と明示し、法務/特許は受付整理に限定。外部公開・送金・AI API呼出なし。全catalog coverage、入力変化、境界拒否、workflow未完了、ブラウザ一括/個別/保存/リセット、verifyで検収する。Cloud鍵・利用枠、候補Toolの実行環境、Pixel端末内modelは別途OWNER/EXTERNALの準備と実受入が必要。撤去時はheader入口と/test・stateless endpointを除去、旧配備へrollbackできる。
+
+## Pixel内の登録不要テストモード（OS10 / 2026-10-09）
+
+目的・体験: 利用者の「ピクセルに入ってんの」「テストでなんでもできる状態にして」を受け、既存ShellのHome先頭にテストモードを置く。別ブラウザではなくnative Activityで17項目のサンプル一括、機能選択、入力変更、実行、出力、コピー、SAF保存、リセットを提供する。8実処理・9模擬の別と未実施の範囲を各結果に埋め込む。出典整理・無料記事は既存ArticleToolsを再利用。CSVは上限付きのUTF-8簡易変換で、Webの文字コード/納品契約の全移植ではない。
+
+責任・入力出力: ROCKのOutputTestToolsはpure Javaで固定17 IDのみ。入力/補足は各12,000文字。出力はテキスト、全結果exportはrockstaros-native-output-tests/1 JSON。model応答・録音・HTTP取得の模擬結果は推論/取得成功と表示しない。ShellConnection・DB・Providerを呼ばず、ShellのINTERNET権限なしを維持する。TestModeActivityはexported=false、明示したHome入口から起動する。通常Brokerの本人性・予算・同意・仕事状態を変更しない。Zema表示例は本番workflowではなくfixtureとし、正式な仕事を作らない。
+
+状態・保存・復旧: idle→running→output/error。入力編集で旧出力を破棄し、入力不正は当該項目だけ失敗、一括は他項目を続行。重複クリックをbusyで抑止。画面メモリだけで保持、閉じると破棄。回転はretained instanceで入力を保持、実行中断は再試行する。自動保存・backupへの組込なし。本人がコピーまたはDocument Pickerで保存先を選んだ場合だけ端末へ出力する。保存失敗はメッセージとコピーの代替を提示。登録・課金・送金・外部公開なし。
+
+配布・承認・合格: 接続Pixel 10 GL066/frankelのAPK署名一致と更新前hashを確認し、adb install -rで非破壊更新する。旧APKをGit外へ保持。Core単体、Article parity、SDK/APK/lint、OS/design/verify、同一APK実機4新規試験と既存7試験、Broker件数・選択の不変、候補/実機hash一致を別々に記録。OS flash・初期化・正式OS受入へ換算しない。
+
+実機受入: 同一署名のShell APKを非破壊更新し、実機hash 9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4を照合。Core116・SDK7・parity36・build/lint・実機11/11・全体verify exit0が合格。17結果とexport JSON内容、入力編集、clipboard、reset、Homeからnative起動、Broker件数/選択の不変を確認。SAF保存先を実際に選んだファイル書込は未検証。生画像・ログはGit外、要約は下記証拠へ保存。
+
+未決定: 本物のcloud AIにはOWNERの接続先・鍵・利用枠、local AIには署名済みmodelの選定・導入受入、外部ToolにはProvider環境が必要。模擬結果を本番許可やTool成功へ昇格しない。次段階は対象を特定した実接続受入。証拠はdocs/evidence/pixel-native-testing.json。
+
+## Game / IPと現実の共通出力（2026-10-09）
+
+RockstarOSは現実とGTAへの作品・仕事・Agent出力を結ぶ。既存Coreのowner／job／artifact／approval／receiptを保持し、Zemaの親仕事へ対象別配送とゲーム由来eventを接続する。[詳細仕様](gta-reality-bridge.md)に全11設計項目を定義。ゲームから戻るeventは非信頼入力で、現実の送信・購入・機器操作は既存Brokerで別認可する。FiveMは検証候補で、OS本体の受入・GTA実動作・提携を完了扱いにしない。
+
+## 大学別NFC Sky（2026-10-12、WEB06 / SKY21）
+
+利用者の追加指示で5大学別のbrowser入口と大学別brief、一般MCP5枠・対象学生6枠を追加。さらに大学別PWA追加、Sky内Agent Hubでの購入/仕事表示、Sky配下でのZema管理画面の再利用を指示。主担当Web / PWA / Sites、ROCK。OS完成を必須にせず、NFCはURL入口とする。本人単位の枠管理を実装し、有料拡張の価格・cloud MCP/Agent実行・Apple Pay・公開同一artifact・実NFC/端末の受入は別gateに残す。[目的・状態・保存・失敗/復旧・責任・合格条件](sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。
+
+### Webゲームの起動入口（2026-10-15）
+
+`/game`は固定したGTA Web URLを標準／軽量設定で別タブ起動し、本人の手動試験メモを既存home-intent経由でZema下書きへ引き継ぐ。目的、責任、入力上限、状態、保存・復旧、承認と未受入範囲は[Webゲーム連携契約](gta-reality-bridge.md#12-webゲームの起動とzemaへの手動引継ぎ2026-10-15)を参照。ゲーム内API同期、native組込、Mini／Pro実機の合格を意味しない。
+
+### FiveMとの世界境界bridge（Mac先行）
+
+最新の明示指示でFiveMを選択。本人承認したカードを同一NUIへ届け、確認を同じ仕事へ返す。ゲーム側の依頼は未承認下書き。既存workflow/composition契約を試験専用ローカル保存で利用する。権限・入出力・保存・失敗・復旧・合格条件・本番/実機の残条件は[GTA bridge §13](gta-reality-bridge.md#13-fivem選択とmac先行の世界境界bridge2026-10-15)を正本とする。主担当AI06/ROCK、実ゲームはJOINT。
+
+
+### MacのAgent仕事（2026-10-15、AI06 / ROCK）
+
+利用者の「繋げるやつ全部となければ作成」により、対象名の回答待ちを解除。既存compositionの利用可能5 ToolをローカルAgentとして一覧化し、本人が最大6手順のAgentを作成できる。LLM推論ではない。ゲームNUIで目的・素材を依頼し、現実側で内容を承認して実処理、同じ仕事IDの最大10版を継続、成果を明示共有、検収/停止する。既存workflow契約・revision・操作IDを維持しSQLiteへ保存。ゲーム側には現実側の原稿・設定・過去版を出さず、共有した成果だけ戻す。最大100仕事/20 custom Agent、素材UTF-8 8000バイト、停止/失敗を成功に昇格しない。失敗時は設定済みAgentまたは次の版で修正する。無料記事Toolは標準設定だけでは実行できず、詳細設定が必要。
+
+Sky外部AgentはROCK_BRIDGE_SKY_ORIGIN（HTTPS origin）とROCK_BRIDGE_SKY_TOKEN（既存本人session）の明示設定で登録一覧を取得するread-only connector。資格情報はgateway内のみ。未設定・認証失敗は未接続表示、登録済みを実行可能にしない。外部実行は既存見積/予算/Broker/delegation/usage経路の接続と受入が未完了。GTA VI、実FiveM、本番Zema、通貨交換、skin販売の成功ではない。
+
+合格証拠: tests/fivem-bridge.test.mjs 11/11＋旧launcher 2/2、Mac UIで仕事cd237d92-84cb-4c33-a334-875fcf2d3bcdの出典整理→同ID第2版→明示共有→completedとcustom Agent作成。次は外部接続の本人環境・許可済み予算を設定して別受入する。
+
+
+### FivePlay公開システム解析とadapter（2026-10-15、AI06）
+
+利用者が指定したFivePlay軽量URLを解析。build 8b0b5899edはWASM/WebGPU、GPU/IO worker、IndexedDB userdata、COOP/COEPのWeb版。FiveMやGTA VI公式APIと混同しない。Mac IABで6%→No progress表示、world未到達。ロード表示はタイマーで6ポイントまで進むため起動成功証拠ではない。原因は未確定。
+
+ゲームメモリや通貨を変更する入口は確認できず、公開コードから連携に使えるのは起動設定と画面上の診断。本人入力の仕事端末をChrome拡張として重ね、専用localhost:5217 gatewayにagent_requestを送り、同じworkflowで現実側の実行・継続・共有を扱う。目的/素材/Agentが入力、仕事要約/明示共有成果が出力。専用SQLiteとsession token、1時間失効、同ID再照会、原稿非公開、外部実行なし。拡張実導入は未受入。詳細・失敗/復旧・権限・受入手順はtoolkits/fiveplay-adapter/README.md。14/14対象試験＋lint合格。次は利用者確認後の拡張導入と同site UI往復、ゲームengine起動は提供者側の問題として独立して切り分ける。
+
+
+## Mini単体のWebゲーム設計（2026-10-15）
+
+利用者の追加指示により、主担当MAT15/JOINT、Game AI06連携として[R5ゲーム実行設計](avocado-mini-r5/game-runtime-design.md)を追加。1本自律・200mm以内・別Edge Hub不要を維持し、WASM/WebGPU、GPU driver、メモリ比較、電源/熱、OS/game focus、同一仕事IDの継続、原稿非公開、失敗/復旧、MG01〜07の合格条件を定義。Chrome拡張はMac参照adapterで、Mini本番はOS操作面/Brokerへ移植する。Mini実装・実機・FivePlay起動・裸眼表示・製造の合格ではない。原本packageは不変。
+
+
+## 建築埋込・着脱・衛星経由の携帯Wi-Fi（2026-10-15）
+
+利用者の画像と明示指示により、[R5着脱通信設計](avocado-mini-r5/embedded-portable-connectivity.md)を追加。建築/家具側dockと可搬core、取り外し後の電源、衛星WANとWi-Fi LAN、job継続と場所権限失効、給電/熱/通信の失敗復旧、DP01〜05を定義。従来の外部給電のみの前提を変更するが、battery部品・衛星方式は未選定。1本自律/200mm以内/別演算Hub不要を維持。画像は機構参考であり、屋内衛星通信・実機・施工・製造合格ではない。MAT15/18の設計追補、原本packageは不変。
+
+
+### Agent利用料の月次後払い（2026-10-15）
+
+利用者指示により、Agent利用を契約accountごとに毎月まとめて請求する方向へ更新。[請求・未払い対応設計](sky-billing.md)で単価/見積/上限、usage照合、支払方法、通知/猶予/有料実行制限/入金復旧/適法な回収を定義。通信・端末・OS・Agentの明細は分ける。銀行口座をOSが直接凍結する権限は持たせない。後払い与信・Provider sandbox・実請求は未受入。

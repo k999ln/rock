@@ -1,0 +1,14 @@
+.panel { margin-top: 26px; padding: 20px; border: 1px solid var(--sky-line); border-radius: 16px; color: var(--sky-text); background: var(--sky-panel); }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.heading span { color: var(--sky-muted); font: 700 10px/1.4 ui-monospace, monospace; letter-spacing: .12em; }
+.heading h2 { margin: 4px 0 0; font-size: 18px; letter-spacing: -.03em; }
+.heading a, .row a, .notice a, .notice button { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; color: var(--sky-text); font-size: 12px; font-weight: 700; text-decoration: none; }
+.panel p { margin: 15px 0 0; color: var(--sky-muted); font-size: 13px; line-height: 1.55; }
+.panel p a { color: var(--sky-text); text-decoration: underline; }
+.row, .notice { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--sky-line); }
+.row div { display: grid; gap: 5px; min-width: 0; overflow-wrap: anywhere; }
+.row strong { font-size: 14px; }
+.row span { color: var(--sky-muted); font-size: 12px; line-height: 1.45; }
+.notice p { margin: 0; }
+.notice button { padding: 0; border: 0; background: transparent; cursor: pointer; }
+@media (max-width: 540px) { .panel { padding: 16px; } .row, .notice { align-items: flex-start; flex-direction: column; } }

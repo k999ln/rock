@@ -1,5 +1,28 @@
 # Android / Device / Local AI
 
+## GrapheneOSの長所の再利用（2026-10-10 / OS10・RLS02）
+
+主担当ROCK。利用者の明示方針を[多機種設計](../device-support-architecture.md#graphene-reuse)へ反映。既存GrapheneOSベース、Broker／Shell、Linuxユーザー空間実装を再利用し、権限・隔離・署名更新を保持したままRockstarの体験を追加する。Terminal／AVFは開発と限定Tool実行先の候補とし、transport・対象Tool・保存／resource制約は実機能力調査後に決定する。EXTERNALは上流・機種対応、JOINTは互換と実機受入、OWNERは入力・外部作用・費用・端末変更を担当する。
+
+次はmainと既存作業branchの差分を保全して同期し、Pixelのhost／Terminal／guest能力を読取り確認、非金融Tool一件の往復案へ進む。合格条件は本人・scope・revision・job一致、改ざん／重複拒否、取消・結果不明、VM停止／再起動・保存／復旧と実測性能。`npm run baseline:check`、`npm run design:check`、`npm run device-support:check`、`npm run android:first-flash:check`、`npm run verify`で文書・既存契約を確認する。今回は設計のみ、Linux adapter実装／VM実機／full OS／公開の合格ではない。
+
+## Web統一デザインのPixel反映（OS10 / RLS02、2026-10-09）
+
+ROCK担当。公開v47の共通色・枠線・選択表示を既存Shellの4画面へ適用し、Home末尾に同じpublic Siteをブラウザで開く入口を置く。接続済みPixel 10 GL066へ同一署名・データ維持で上書きする。合格条件と復旧境界は[OS全体設計](../rockstaros-complete-design.md)のPixel共通外観節、結果は[実機記録](../evidence/pixel-unified-design.json)を参照。
+
+## Pixel Shellの操作・デザイン（OS10 / RLS02）
+
+2026-10-09の開発・デザイン改善依頼により、GitHub main0455499dと一致するAndroid実装を基点に、ホーム／Sky／仕事／設定へ分割した。中性の面・罫線・文字、常設タブ、画面端とキーボードの余白、適応型アイコンを実装。依頼引継ぎでは同意を解除し、既存下書きの置換は本人確認を要求する。接続先未設定と通信障害、`no_model`と推論可能を分ける。Brokerと課金承認の契約は維持した。端末情報を隠していたLocal AI API版不一致（画面v2／実runtime v4）も修正し、契約版の照合と実機のfresh snapshot表示を追加試験した。
+
+保持済み署名でShellだけを`adb install -r`更新。前後の仕事件数0・article Tool選択revision1・未設定アカウント・no_modelが一致し、実機APK hashも候補と一致。7件の非破壊UI instrumentation、SDK build/lint、Core111、SDK7、source/OS/design検査が合格。旧APKと写真・OSは削除していない。実機4画面の表示と操作を確認。全体verifyと最終画面の証拠は[今回の受入記録](../evidence/pixel-shell-design-20261009.json)を参照する。Cloud実行、model推論、full OS、全損復元は未受入。
+
+再現: Java17 / Gradle8.11.1 / SDK35で `gradle -p android :shell:assembleDebug :shell:assembleDebugAndroidTest :shell:lintDebug :core:test :tool-sdk:testDebugUnitTest`。実機では署名一致を確認して上書きし、`adb shell am instrument -w -e class dev.rock.shell.ShellNavigationTest dev.rock.shell.test/androidx.test.runner.AndroidJUnitRunner`。このsuiteはBrokerを初期化せず、課金・仕事実行を行わない。一般の既存統合suiteは試験用データを変更するため、所有端末で無選別実行しない。次は実service originと署名済みmodelの個別受入、およびGit workstreamの既存統合順序で最新mainへ取り込む。main統合は未実施。
+
+## Pixelの旧名試験APK更新（2026-10-09 / OS10・RLS02）
+
+担当ROCK。9月16日のavocadoOS試験APKを実byte hashで特定し、旧署名鍵不足によるデータ削除を本人が明示了承後、4試験アプリだけを同一の保持済み開発署名で再導入した。main0455499dの合格済みAndroid 3 APKと、build入力が同mainに一致するLocal AI v3を使用。候補と端末のhash4/4一致、RockstarOS表示、Shell→Broker応答、SkyのTool選択のShell再起動後保持、Local AI Binderのno_model応答を実機確認。今回のarticle Tool実行、端末全体の再起動、Local AI推論、クラウド接続先／account／Provider、OS image・flashは未受入。旧アプリ内データは了承どおり削除、端末OS・写真の初期化はしていない。旧APKと限定rawデータ退避は復旧保証ではない。次は同じ保持済み署名を継続し、実service endpointと署名済みmodelを別gateで設定・受入する。詳しいSHA・コマンド境界・残る条件は[更新証拠](../evidence/pixel-app-refresh-20261009.json)。
+
+
 ## SIM/eSIMサービスの利用開始におけるAndroidの役割（2026-10-01）
 
 ## 2026-10-02 製品要件監査と優先順位
@@ -143,3 +166,17 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
 - 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 11 non-skipped testとShell 5 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否、phrase確認、v2 export、新Keystore再bindingを確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。物理wipe復元は純正復旧artifactを揃えた別の管理試験にする。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)、backup emulator受入は[証拠](../evidence/android-backup-v2-emulator-20260916.json)。
 - 対象端末のflash／boot／OTA／rollback／stock recovery受入
+
+## Pixel内の登録不要テストモード（OS10 / 2026-10-09）
+
+目的・体験: 利用者の「ピクセルに入ってんの」「テストでなんでもできる状態にして」を受け、既存ShellのHome先頭にテストモードを置く。別ブラウザではなくnative Activityで17項目のサンプル一括、機能選択、入力変更、実行、出力、コピー、SAF保存、リセットを提供する。8実処理・9模擬の別と未実施の範囲を各結果に埋め込む。出典整理・無料記事は既存ArticleToolsを再利用。CSVは上限付きのUTF-8簡易変換で、Webの文字コード/納品契約の全移植ではない。
+
+責任・入力出力: ROCKのOutputTestToolsはpure Javaで固定17 IDのみ。入力/補足は各12,000文字。出力はテキスト、全結果exportはrockstaros-native-output-tests/1 JSON。model応答・録音・HTTP取得の模擬結果は推論/取得成功と表示しない。ShellConnection・DB・Providerを呼ばず、ShellのINTERNET権限なしを維持する。TestModeActivityはexported=false、明示したHome入口から起動する。通常Brokerの本人性・予算・同意・仕事状態を変更しない。Zema表示例は本番workflowではなくfixtureとし、正式な仕事を作らない。
+
+状態・保存・復旧: idle→running→output/error。入力編集で旧出力を破棄し、入力不正は当該項目だけ失敗、一括は他項目を続行。重複クリックをbusyで抑止。画面メモリだけで保持、閉じると破棄。回転はretained instanceで入力を保持、実行中断は再試行する。自動保存・backupへの組込なし。本人がコピーまたはDocument Pickerで保存先を選んだ場合だけ端末へ出力する。保存失敗はメッセージとコピーの代替を提示。登録・課金・送金・外部公開なし。
+
+配布・承認・合格: 接続Pixel 10 GL066/frankelのAPK署名一致と更新前hashを確認し、adb install -rで非破壊更新する。旧APKをGit外へ保持。Core単体、Article parity、SDK/APK/lint、OS/design/verify、同一APK実機4新規試験と既存7試験、Broker件数・選択の不変、候補/実機hash一致を別々に記録。OS flash・初期化・正式OS受入へ換算しない。
+
+実機受入: 同一署名のShell APKを非破壊更新し、実機hash 9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4を照合。Core116・SDK7・parity36・build/lint・実機11/11・全体verify exit0が合格。17結果とexport JSON内容、入力編集、clipboard、reset、Homeからnative起動、Broker件数/選択の不変を確認。SAF保存先を実際に選んだファイル書込は未検証。生画像・ログはGit外、要約は下記証拠へ保存。
+
+未決定: 本物のcloud AIにはOWNERの接続先・鍵・利用枠、local AIには署名済みmodelの選定・導入受入、外部ToolにはProvider環境が必要。模擬結果を本番許可やTool成功へ昇格しない。次段階は対象を特定した実接続受入。証拠はdocs/evidence/pixel-native-testing.json。

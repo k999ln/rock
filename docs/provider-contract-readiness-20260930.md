@@ -1,5 +1,108 @@
 # eSIM・クラウド供給元の契約準備
 
+## AWS partnership preparation
+
+更新: 2026-10-05。利用者は「クラウドこれに入れたい」「その設計でやるのに提携組みたい」とAWSへの導入・提携の準備を指定し、相談名義を **avokado llc／米国** と回答した。これは本人申告で、登記情報を独立照合したものではない。以降、AWSをクラウド導入・技術提携の優先相談先とする。先行するCloudflare優先という比較結論を、この相談方針に限り更新する。既存Cloudflare実装は移行検証の基準として保持する。
+
+主担当: Sky / MCP、既存SKY07、準備はROCK、実証はJOINT。請求照合はBIL02。以下は提携相談用の設計案であり、AWSからの協力合意、正式Partner認定、契約、クレジット採択、AWS配備の証拠ではない。
+
+### 費用負担の明示条件（2026-10-05追記）
+
+利用者は大規模なAWS利用を希望した後、「俺はお金払いたくない払って仕事しないだろ」と明示した。**このAWS導入・提携に関する本人/avokadoの自己負担上限は0**。自社資金で借りる案や、月額支払上限を再度尋ねる前提を撤回する。大規模な支援枠と技術協力を提案し、実証は支援が確保された範囲から段階実施する。
+
+AWSまたは協賛者による費用負担、無償環境、支援クレジット等の組合せを交渉する。クレジットは開発報酬ではなく、単独では自己負担ゼロの保証にもならない。対象外利用、超過、期限切れ、税、継続保存/転送、撤収費まで誰が負担するかを合意し、avokadoへ請求・立替・最低利用保証・自動有料移行の義務が残る条件では開始しない。必要なら協賛者管理の実証環境を依頼する。予算通知や自動停止だけで残存料金もゼロと断定しない。
+
+開発/検証作業の対価は交渉案として相談項目に追加する。無償開発・source/IP譲渡・独占提供を約束しない。報酬をAWSが支払う制度の適用や、支援採択を確認した事実はない。条件不成立なら有料環境は作らず、無償でできる準備までにとどめる。これは今回のAWS案件の方針であり、既存の別サービス契約を解約・変更する指示ではない。
+
+### 提携で依頼するもの
+
+1. **技術窓口と構成レビュー**: AWS Startups担当・Solutions Architectとの初回面談。Agent実行、利用者分離、保存/復旧、停止、費用計測を既存設計と照合する。
+2. **大規模展開を見据えた費用支援・実証協力**: Generative AI Innovation Center等の支援対象・相手側費用負担・提供範囲を確認する。支援された代表Agent一つで異常系まで受け入れ、利用枠を段階拡張する。AWSが実装を引き受けると事前に約束しない。
+3. **利用クレジット**: AWS Activateの適格枠・対象サービス・期限・超過請求条件を確認する。出資状況・過去受給歴が未確認なので枠や支援額は確定しない。
+4. **開発対価と実証後の事業連携**: avokadoによる追加開発・検証の対価を相談する。成功した同一artifactと実測値をもとに、導入事例・共同マーケティング・Marketplace/共同販売の適格性も別途相談する。報酬条件は未決定で、出資・独占契約・無償開発・顧客紹介・売上保証を約束しない。
+
+avokado側は、既存sourceと契約、審査済みAgent候補、合成入力、同意/予算/復旧の試験、計測結果を提供する。未公開の原稿・利用者データ・秘密値は初回相談へ渡さない。共同事例の公開範囲・名前/ロゴ利用は実証後に双方で決める。
+
+### AWSへ入れる範囲と移行順
+
+提案する到達点は、Rockstarのクラウド実行・管理をAWSで運用できる状態。**初回実証は既存Cloudflare管理系＋AWS実行系**とし、現在のD1/Workflowを壊さず、Skyの同じjob・本人・承認・予算契約をAWSへ渡せることを確認する。その後、API/DB/永続workflowのAWS移行を段階別に受け入れる。hybridは移行段階の案であり、AWSへ移せないという結論でも永久構成の確約でもない。
+
+```mermaid
+flowchart LR
+  U[Web / Android / SIM・eSIM利用権] --> S[Sky・Zema / Rockstar本人認証]
+  S --> C[既存の永続job・同意・予算台帳]
+  C --> A[AWS接続adapter / scoped認証]
+  A --> R[AgentCore Runtime候補 / 審査済みAgent]
+  R --> M[Amazon Bedrock等 / 明示許可したmodel]
+  R --> P[成果保存・job別usage・照合API]
+  P --> C
+  C --> S
+```
+
+| 領域 | 初回実証とAWSでの到達候補 | 再利用・変更・受入 |
+|---|---|---|
+| 本人・利用権・承認 | Rockstar accountと端末sessionを維持。AWS側のservice認証を追加 | eSIM cloud keyをAWS credentialへ流用しない。owner/project/jobの検証と短期の権限限定認証が必要。Cognito採用は未決定で、別アカウント再登録を利用者に要求しない |
+| Cloud Agent | Amazon Bedrock AgentCore Runtimeを優先評価 | `lib/a2a-client.ts`、Package/quote/receipt契約を再利用。AgentCoreのA2A対応だけで既存通信仕様の一致とはしない |
+| LLM | Amazon Bedrockの対象modelを個別評価 | 既存のOpenAI/Jev/local planner経路は維持。Bedrockを既存HTTP endpointへ差すだけでは接続済みにしない。model・API・region・単価・token/usage・停止をadapterで受入 |
+| 永続API/DB/workflow | 当初は既存Worker/D1/Workflow。移行先候補はAWSのAPI/compute、relational DB、Step Functions等 | D1 SQLiteをAWS DBへそのまま移植できるとしない。unique/transaction/revision/原子的予算予約、workflow replay、idempotencyを同じfixtureで検査。DBと業務状態の正本は各jobに一つだけ |
+| 成果・監視・秘密 | S3、CloudWatch、KMS/Secrets Manager等を構成レビューで評価 | owner別暗号化保存、最小IAM、retention/delete/backup/restore、内容を含まない監査を実証。AWS上の具体設定は未実装 |
+| OS build | 別accountまたは別権限・費用枠のx86_64 Linux/EC2候補 | Pixel full OSのbuild gateと署名/復旧条件を独立維持。Agent用環境の成功をOS build/flashへ転用しない |
+
+上表のAWSサービス配置はRock側の提案で、AWS推奨構成・契約済み構成ではない。regionは会社の登記国だけで固定せず、利用者所在地、データ処理、latency、サービス可用性とモデル提供条件を面談で決める。
+
+### adapterの契約と見つかった相違
+
+2026-10-05のsource確認では `lib/a2a-client.ts` はA2A 1.0の `SendMessage` / `GetTask` / `CancelTask`、`ROLE_USER`、`TASK_STATE_*`、価格見積・Package runtime拡張を要求する。AWS公開A2A例には `message/send`、`role: user`、`kind: text` があり、同一wire schemaとは確認できない。AWS全体が特定の旧版のみ対応すると断定せず、実際に配備するserverとSDK版を固定し、Agent Card・methods・state・拡張の一致を検査する。差分はAWS側のRock管理adapterで変換し、既存clientの検証を緩めない。[AWS A2A資料](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-a2a.html)
+
+入力はowner/project、job/delegation/message ID、Package ID/版/hash、quote ID/hash/単価版、入力hash、同意/期限/予算上限、最大token/手順/同時実行数。出力は受付receipt、provider task ID、状態revision、artifact参照/hash、観測usageと最終usage、停止確認。AWS session IDは別の実行識別子でありjob IDの代替にしない。互換性・価格・認証が不明なら送信前に拒否する。
+
+AWSの公開資料ではruntime sessionは最大8時間で、終了後の同じsession IDは新しい実行環境を作る。sessionは業務台帳ではない。controller/adapterの永続状態から照合し、応答不明を新しいsessionへの自動再実行で解消しない。長時間処理は安全なcheckpointと期限で分割する設計をレビューする。[Runtime lifecycle](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)
+
+AWSのIAM認証だけではRockstar本人承認や予算承認を満たさない。workerは許可されたTool/modelだけを呼び出し、短期credential・送信先制限・資源上限を持つ。第三者Toolへplatform鍵や任意root権限を付与しない。AWS管理側の認証方式とowner binding、信頼鍵管理は実証前に具体化する。
+
+### 状態・費用・保存・復旧
+
+- Webの業務状態は `lib/workflow.ts`、Cloud委任は既存delegation state machineを正本とする。queued、承認待ち、実行中、結果不明、取消要求、停止確認、成果取得、利用量照合を別々に扱う。worker完了だけで本人検収や支払い済みへ昇格させない。
+- 予算は実行前に既存Wallet/quote契約で予約し、各model/Tool呼出し前に残額・期限・取消を再確認する。推論、compute、保存、転送、logなどの費用を分ける。AWS予算通知・クレジット残高だけをhard capとして扱わず、遅れて届く請求明細は後段で照合する。
+- AWSが提供するusage/請求データと、Rock管理adapterが署名するjob receiptを区別する。Rockの署名をAWS発行の請求証明と呼ばない。job別実行IDから課金明細への対応、共有費の配賦、端数・税・返金は未決定。従量小売単価・利益幅は新設しない。
+- D1/現行artifact保存は初回実証の正本。AWS内で一時保存する入力・成果の暗号化、保管期限、削除・backup方針はjobの同意と結合する。CloudWatchへ入力本文・token・eSIM activation情報を記録しない。保持期間は実証計画で決め、無期限保存にしない。
+- 移行はexport→整合hash/件数/owner検査→書込停止またはwriter epoch切替→新保存先で同一fixture→readbackの順。dual-writeを既定にせず、切替後の新規書込を捨てるrollbackをしない。rollback時は送信停止と差分照合を先行させる。
+- 認証失効、予算不足、queue枯渇は実行を拒否。dispatch後のtimeout、session終了、controller障害はholdを保持してprovider taskを照合。cancel受付と実際の停止を分け、停止未確認中の追加費用も照合する。
+
+### 最初の共同実証案と合格条件
+
+提案するpilotは、審査済みの代表Agent一つで「合成の依頼文→計画と成果下書き→保存/再取得」を通す。外部メール送信・購入・実資金移動を伴わない題材を選ぶ。利用者二主体の分離試験と、同一ownerの端末切断/再接続を別々に実施する。これは提案で、試験件数、期間、同時数、model、費用上限はavokadoとAWSで決める。
+
+1. **着手条件**: avokadoの自己負担0と対象外/超過/期限後/税/撤収費の相手側負担を合意したうえで、account/支払者/region/model/審査済みPackage、short-lived auth、単価と支援された実証総予算・job cap、保存期限、責任者を確定する。クレジット採択だけで有料実行を承認した扱いにしない。
+2. **接続受入**: pinned SDK/Agent Card/A2A/見積拡張/権限を検査し、未承認・別owner・期限切れ・改変入力を拒否する。
+3. **実行受入**: [Cloud継続12シナリオ](sky-cloud-continuity.md#必須受入シナリオ未実行)を同じartifactで実施。少なくとも受付応答消失、重複要求、controller/runtime再起動、圏外継続、取消/完了競合、予算/期限、成果の保存/復旧、別owner拒否を計測する。
+4. **料金受入**: 見積/予約/観測usage/確定usage/AWS請求/顧客請求を分けて照合。不明分は保留し、二重課金しない。実証費用を顧客に自動転嫁しない。
+5. **運用受入**: 秘密非混入、鍵失効、backup復元と削除、復旧時間、実行時間、jobごとの原価を記録する。RTO/RPOや性能値は測定前に保証しない。
+
+各証拠にはGit SHA・Package/image digest・AWS runtime version/region・テスト日時・job ID・Provider参照・合否・未実行範囲を残す。AWS配備、実端末、実model、実請求の証拠をhost fixtureへ混ぜない。full OS/flash、ゲーム実交換、Wallet実資金は別gate。
+
+### 責任・未確定事項・実行順
+
+- **ROCK**: 既存契約の再利用、adapter、認可/予算強制、永続job、receipt照合、UI、移行/復旧試験。設計準備が今回の対象で、AWS adapter/runtimeは未実装。
+- **EXTERNAL / AWS**: サービス・modelの供給、account審査、利用枠・region、支援プログラム採否、障害連絡・契約上のサービス条件。
+- **JOINT**: pinned仕様の実証、異常系、usage/invoice対応、運用分界と負荷/復旧の計測。
+- **OWNER / avokado llc**: 正式連絡先、登記州・設立年、出資/過去支援受給歴、AWS accountと権限付与、実証予算、データ/商用条件、契約・公表の判断。秘密値をchatやGitへ貼らない。
+
+次の順序で進める。(1) 米国窓口への相談原稿と公開可能な製品説明を完成、(2) 本人の連絡先と送信指示を得て送付、(3) AWSから支援・条件・担当者を確認、(4) runtime作業前に最新mainを作業branchへ同期し既存差分を保持、(5) adapter契約fixture、(6) 上記着手条件の後にAWS sandbox実証、(7) 成功証拠に基づき本番化/管理系移行/事業連携を別々に判断する。問い合わせ送信だけで提携成立と記録しない。
+
+### 公式窓口と情報の範囲
+
+2026-10-05確認。以下は相談先・プログラムの存在の根拠であり、avokadoへの提供確約ではない。
+
+- [AWS Sales（米国/グローバル入口）](https://aws.amazon.com/contact-us/sales-support/) — Startups担当・Solutions Architect・GenAIICへの紹介を依頼する。フォームの会社名/国は本人申告を使い、氏名・email・電話・州など未確認項目を推測しない。
+- [AWS Generative AI Innovation Center](https://aws.amazon.com/ai/generative-ai/innovation-center/) — 技術助言・実装協力・startup accelerationを案内。対象・費用・体制は担当者と確認。
+- [AWS Activate](https://aws.amazon.com/startups/credits/) — 自己資金と提携支援機関経由で枠が異なる。既存受給額、紹介Org ID、利用対象、期限を確認。クレジットは現金/出資ではない。
+- [AWS Generative AI Accelerator](https://aws.amazon.com/startups/programs/generative-ai/) — 選抜支援の候補。今回の現在募集状況は未確認で、これの採択を初回相談・実装準備の前提にしない。
+
+送付用英文はGit管理外に置く。外部連絡・申請・契約・AWS作成は未実施。設計準備の検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。実装後は既存 `npm run sky:a2a:workflow:test` と `npm run sky:a2a:workflow:positive` にAWS adapterの同一契約fixtureを追加し、同じsuiteをsandboxへ適用する。今回これらをAWSで実行したという意味ではない。
+
+## 2026-10-02比較の記録
+
 確認日: 2026-10-02（公式公開資料を再確認）。これは契約前の技術・公開価格比較であり、取引条件・販売権・日本国内の提供資格・見積・アカウント審査・sandbox accessを確認した結果ではない。外部への問い合わせ、契約、課金、実profile発行、配備はしていない。SIM/eSIM販売に付属するRockstarOS service accessを主商品とし、物理SIM/eSIM販売・通信開通・OS/client導入を別状態で扱う方針は[product baseline](product-baseline.md)に従う。
 
 ## 結論

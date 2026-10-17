@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function CampusPage({
   searchParams,
 }: {
-  searchParams: Promise<{ campus?: string; mode?: string; tag?: string; source?: string }>;
+  searchParams: Promise<{ campus?: string; mode?: string; tag?: string; source?: string; profile?: string }>;
 }) {
   const params = await searchParams;
   const campus = CAMPUS_IDS.includes(params.campus as CampusId)
@@ -23,6 +23,7 @@ export default async function CampusPage({
       entryMode={params.mode}
       entryTag={params.tag}
       entrySource={params.source}
+      openProfile={params.profile === '1'}
     />
   );
 }

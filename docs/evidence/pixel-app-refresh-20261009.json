@@ -1,0 +1,316 @@
+{
+  "sourceCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "ciRun": "37675078886",
+  "signing": "existing persistent local Android debug identity; not production",
+  "installation": "PASS_AUTHORIZED_RESET_AND_ATOMIC_FOUR_APK_INSTALL",
+  "artifacts": [
+    {
+      "package": "dev.rock.automation",
+      "file": "automation-debug.apk",
+      "sha256": "bfe42505f2a59f8f93ee60d1779c4d82de3a2da8fe8751f49a23ae08bf3f5225",
+      "ciSha256": "2e1e3e44faa668669712a59089ed455e5eaa8334b2b258ecc265f6a63d12c61f",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "payloadUnchanged": true,
+      "apkSignatureVerified": true,
+      "permissionContractVerified": true
+    },
+    {
+      "package": "dev.rock.shell",
+      "file": "shell-debug.apk",
+      "sha256": "b1b7c6c30011bd250b2a3134350f29795eeb4684b8594edc07fbc25958f0da9a",
+      "ciSha256": "176297fd3d97af60b4a1e3e3ca5daa373fe41686e59a2fe03d28a0a5a7ec5886",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "payloadUnchanged": true,
+      "apkSignatureVerified": true,
+      "permissionContractVerified": true
+    },
+    {
+      "package": "dev.rock.tools.article",
+      "file": "article-tool-debug.apk",
+      "sha256": "5def4a5be4cebe31beda34d9acb7b694e37f00633fb2284ef544f8a902fdfe6e",
+      "ciSha256": "c3607de9b112877c13bb282b708d2bcbb1429542beee424ec410dec04ea45bb8",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "payloadUnchanged": true,
+      "apkSignatureVerified": true,
+      "permissionContractVerified": true
+    }
+  ],
+  "localAi": {
+    "package": "com.localactionassistant",
+    "file": "LocalActionAssistant.apk",
+    "versionCode": 3,
+    "sha256": "d197b5fbfc252ae41e51eeadd20d7188a8ab360962b005c91bd9580cf4bde242",
+    "ciRun": "37404165171",
+    "ciSourceCommit": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
+    "buildInputsMatchCurrentMain": true,
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "payloadUnchanged": true,
+    "apkSignatureVerified": true,
+    "physicalAcceptance": "NOT_RUN"
+  },
+  "schema": "rock-pixel-app-refresh/1",
+  "recordedAt": "2026-10-09",
+  "status": "installed_smoke_pass_service_configuration_pending",
+  "device": {
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "androidRelease": "17",
+    "build": "2026100200",
+    "bootloaderLocked": true
+  },
+  "before": {
+    "shellLabel": "avocadoOS",
+    "versionName": "0.1.0",
+    "shellLastUpdate": "2026-09-16 18:58:19",
+    "signerSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
+    "shellApkSha256": "bddef77e5b91bae0eb987354b4f46eb5adae4ff1b727330644b6fb6b4a112e2c",
+    "brokerApkSha256": "9d4d356251328b37bf5559ffccf58587a1b76184e7fa3fb4101e5502156ae098",
+    "articleToolApkSha256": "d2a3712bd63a4dce5a052b1e59208547250764ed8794cf3a1a5f76aeac882810",
+    "matchesSeptember16Evidence": true,
+    "localAi": {
+      "package": "com.localactionassistant",
+      "versionCode": 1,
+      "versionName": "1.0",
+      "sha256": "f980ce9aa59137559231d69077f7fc892f25a185eed2ad8fe17109f06a6058a7",
+      "lastUpdate": "2026-09-16 14:37:59",
+      "signerMatchesOtherThree": true
+    }
+  },
+  "candidateShellLabel": "RockstarOS",
+  "ciArchiveSha256": "397b802c552a033d85bb693e386788840173a40a0968a044f7d3ba6652724243",
+  "ciUrl": "https://github.com/k999ln/rock/actions/runs/37675078886",
+  "mainVerify": "success_same_sha",
+  "androidCi": "success_same_sha",
+  "originalSignerKeyFound": false,
+  "preparedBundle": "/Volumes/Extreme SSD/Codex/pixel-update-20261009/prepared",
+  "privateAppDataBackup": {
+    "scope": "Shell/Broker/article-tool app files only, not Local AI",
+    "format": "valid tar",
+    "brokerFiles": 5,
+    "brokerBytes": 179712,
+    "keystoreExported": false,
+    "restorationVerified": false,
+    "path": "/private/tmp/pixel-rockstar-update-20261009/private-backup",
+    "gitStored": false
+  },
+  "apkBackupsPath": "/Volumes/Extreme SSD/Codex/pixel-update-20261009/installed-apks",
+  "deviceApplicationsChanged": true,
+  "deviceDataDeleted": false,
+  "osFlashed": false,
+  "localRepositoryVerify": {
+    "command": "TMPDIR=/private/tmp npm run verify",
+    "exitCode": 0,
+    "workerD1Assertions": 1178,
+    "csvAssertions": 113,
+    "webAssetMissing": 0,
+    "log": "/Volumes/Extreme SSD/Codex/pixel-update-20261009/repository-verify-apfs.log",
+    "scope": "current dirty working tree including unrelated existing changes; not a newly installed Pixel build"
+  },
+  "notAccepted": [
+    "Cloud service origin/account entitlement and provider billing",
+    "signed model setup and Local AI inference",
+    "new-set article Tool execution and physical reboot/full data recovery",
+    "full OS image/signing/flash/OTA",
+    "production provider or billing"
+  ],
+  "localRepositoryVerifyAttempts": [
+    {
+      "temporaryFilesystem": "APFS",
+      "result": "stopped_at_stale_generated_database_status",
+      "resolvedBy": "npm run database:status"
+    },
+    {
+      "temporaryFilesystem": "ExFAT",
+      "result": "18_file_permission_assertions_failed",
+      "cause": "filesystem reported 0700 after chmod 0600",
+      "resolvedBy": "TMPDIR=/private/tmp"
+    }
+  ],
+  "appDataResetAuthorization": {
+    "date": "2026-10-09",
+    "userReply": "いいよ",
+    "scope": [
+      "dev.rock.shell",
+      "dev.rock.automation",
+      "dev.rock.tools.article",
+      "com.localactionassistant"
+    ],
+    "afterDataLossWarning": true,
+    "osResetOrFlashAuthorized": false
+  },
+  "installationRecord": [
+    {
+      "action": "uninstall_authorized_trial_app_and_data",
+      "package": "dev.rock.shell",
+      "result": "Success"
+    },
+    {
+      "action": "uninstall_authorized_trial_app_and_data",
+      "package": "dev.rock.automation",
+      "result": "Success"
+    },
+    {
+      "action": "uninstall_authorized_trial_app_and_data",
+      "package": "dev.rock.tools.article",
+      "result": "Success"
+    },
+    {
+      "action": "uninstall_authorized_trial_app_and_data",
+      "package": "com.localactionassistant",
+      "result": "Success"
+    },
+    {
+      "action": "atomic_install_four_prepared_trial_apks",
+      "result": "Created parent session ID 1536624613.\nCreated child session ID 1353240113.\nCreated child session ID 1504967619.\nCreated child session ID 1048215967.\nCreated child session ID 526705318.\nSuccess"
+    }
+  ],
+  "after": {
+    "packages": [
+      {
+        "package": "dev.rock.automation",
+        "installedSha256": "bfe42505f2a59f8f93ee60d1779c4d82de3a2da8fe8751f49a23ae08bf3f5225",
+        "matchesCandidate": true,
+        "metadata": [
+          "versionCode=1 minSdk=35 targetSdk=35",
+          "versionName=0.1.0",
+          "lastUpdateTime=2026-10-09 13:53:22"
+        ]
+      },
+      {
+        "package": "dev.rock.shell",
+        "installedSha256": "b1b7c6c30011bd250b2a3134350f29795eeb4684b8594edc07fbc25958f0da9a",
+        "matchesCandidate": true,
+        "metadata": [
+          "versionCode=1 minSdk=35 targetSdk=35",
+          "versionName=0.1.0",
+          "lastUpdateTime=2026-10-09 13:53:22"
+        ]
+      },
+      {
+        "package": "dev.rock.tools.article",
+        "installedSha256": "5def4a5be4cebe31beda34d9acb7b694e37f00633fb2284ef544f8a902fdfe6e",
+        "matchesCandidate": true,
+        "metadata": [
+          "versionCode=1 minSdk=35 targetSdk=35",
+          "versionName=0.1.0",
+          "lastUpdateTime=2026-10-09 13:53:22"
+        ]
+      },
+      {
+        "package": "com.localactionassistant",
+        "installedSha256": "d197b5fbfc252ae41e51eeadd20d7188a8ab360962b005c91bd9580cf4bde242",
+        "matchesCandidate": true,
+        "metadata": [
+          "versionCode=3 minSdk=24 targetSdk=36",
+          "versionName=1.2",
+          "lastUpdateTime=2026-10-09 13:53:22"
+        ]
+      }
+    ],
+    "visibleShellLabel": "RockstarOS  /  Sky  /  Zema",
+    "shellLaunch": "PASS",
+    "shellBrokerReadback": "PASS_UNCONFIGURED_SERVICE_STATUS_DISPLAYED",
+    "cloudConnection": "NOT_CONFIGURED_CI_BUILD_HAS_NO_SERVICE_ORIGIN",
+    "brokerProcessPresent": true,
+    "osBuild": "2026100200",
+    "bootloaderLocked": true
+  },
+  "physicalChecks": {
+    "apkHashReadback": "PASS_4_OF_4",
+    "uiHierarchyBrand": "PASS_ROCKSTAROS",
+    "shellLaunch": "PASS",
+    "shellBrokerBinder": "PASS_STATUS_AND_PERSISTED_TOOL_SELECTION",
+    "localAiBinder": "PASS_NO_MODEL_RESPONSE",
+    "localAiInference": "NOT_RUN_NO_MODEL",
+    "skyToolSelectionAfterShellRestart": "PASS_REVISION_1",
+    "articleToolExecution": "NOT_RUN_ON_THIS_NEW_SET",
+    "deviceReboot": "NOT_RUN",
+    "cloudService": "NOT_CONFIGURED",
+    "screenshotVisualQA": "UNAVAILABLE_BLACK_SCREEN_CAPTURE_UI_HIERARCHY_USED",
+    "leftAt": "RockstarOS home"
+  },
+  "nextAction": "Keep the existing local debug signing identity for future app updates. Configure and accept an actual service endpoint and signed Local AI model separately; do not claim production service, inference or full OS readiness from this app refresh.",
+  "localRepositoryVerifyAfterInstall": {
+    "command": "TMPDIR=/private/tmp npm run verify",
+    "exitCode": 1,
+    "nodeTests": 900,
+    "passed": 897,
+    "failed": 3,
+    "failures": "MCP connector/stdio/PC adapter timeouts during concurrent suite",
+    "focusedRetryCommand": "node --experimental-strip-types --test --test-concurrency=1 tests/mcp-connector.test.mjs tests/mcp.test.mjs tests/mr-pc-adapter.test.mjs",
+    "focusedRetryExitCode": 0,
+    "focusedRetryPassed": 13,
+    "remainingStages": "PASS_13_OF_13",
+    "logs": [
+      "/Volumes/Extreme SSD/Codex/pixel-update-20261009/repository-verify-post-install.log",
+      "/Volumes/Extreme SSD/Codex/pixel-update-20261009/focused-regression-retry.log",
+      "/Volumes/Extreme SSD/Codex/pixel-update-20261009/remaining-verification.log"
+    ],
+    "remainingStageResults": [
+      {
+        "command": "npm run fashion:package:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run mcp:package:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run billing:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run operator-dock:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:fashion-brand-ops",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:avocado-mini-site",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:public-preview",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:meme-intelligence",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:avocado-farm",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run build",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run release:web-bundle:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run release:web-assets:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run test:api",
+        "exitCode": 0
+      }
+    ],
+    "workerD1Assertions": 1178,
+    "csvAssertions": 113,
+    "conclusion": "Initial all-in-one run timed out in three unrelated MCP tests; all three files passed unchanged in a 13-test serial retry, and all 13 remaining verification stages passed. Do not relabel the initial command exit code as success."
+  },
+  "retainedDebugSigning": {
+    "keyLocation": "~/.android/debug.keystore",
+    "certificateSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "privateKeyInRepository": false,
+    "productionCredential": false,
+    "futureUpdateRule": "Verify the installed certificate and retain this signing identity; never uninstall data or substitute a newly generated CI signer without explicit owner approval."
+  },
+  "trialAppDataDeleted": true,
+  "deviceFactoryReset": false
+}

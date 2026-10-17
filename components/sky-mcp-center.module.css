@@ -5,8 +5,8 @@
   gap: 12px;
   min-height: 72px;
   padding: 12px 16px;
-  border-bottom: 1px solid #2f3336;
-  background: #0b0f14;
+  border-bottom: 1px solid var(--os-line);
+  background: var(--os-bg);
 }
 
 .railIcon,
@@ -16,10 +16,10 @@
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
-  border: 1px solid rgba(195, 225, 240, 0.34);
+  border: 1px solid color-mix(in srgb, var(--os-line) 34%, transparent);
   border-radius: 12px;
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.08);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 8%, transparent);
 }
 
 .railCopy {
@@ -33,7 +33,7 @@
 }
 
 .railCopy strong {
-  color: #f3f4f4;
+  color: var(--os-text);
   font-size: 16px;
   letter-spacing: 0.02em;
 }
@@ -41,9 +41,9 @@
 .railCopy span,
 .tabs button span {
   padding: 2px 7px;
-  border: 1px solid #3b5261;
+  border: 1px solid var(--os-line);
   border-radius: 999px;
-  color: #afc9d9;
+  color: var(--os-muted);
   font-size: 12px;
   letter-spacing: 0.04em;
 }
@@ -51,7 +51,7 @@
 .railCopy p {
   margin-top: 3px;
   overflow: hidden;
-  color: #9aa1a7;
+  color: var(--os-muted);
   font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -61,7 +61,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #a0a7ad;
+  color: var(--os-muted);
   font-size: 13px;
 }
 
@@ -69,16 +69,16 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #697078;
+  background: var(--os-raised);
 }
 
 .connectionStatus.isConnected {
-  color: #c3e1f0;
+  color: var(--os-muted);
 }
 
 .connectionStatus.isConnected i {
-  background: #c3e1f0;
-  box-shadow: 0 0 0 4px rgba(195, 225, 240, 0.1);
+  background: var(--os-raised);
+  box-shadow: none;
 }
 
 .manageButton,
@@ -91,8 +91,8 @@
   min-height: 40px;
   padding: 0 15px;
   border-radius: 999px;
-  color: #10202b;
-  background: #c3e1f0;
+  color: var(--os-text);
+  background: var(--os-raised);
   font-size: 14px;
   font-weight: 750;
 }
@@ -100,14 +100,14 @@
 .manageButton:hover,
 .primaryAction:hover,
 .toolFooter button:hover {
-  background: #deeff8;
+  background: var(--os-panel);
 }
 
 .manageButton:focus-visible,
 .primaryAction:focus-visible,
 .toolFooter button:focus-visible,
 .tabs button:focus-visible {
-  outline: 3px solid rgba(195, 225, 240, 0.34);
+  outline: 3px solid color-mix(in srgb, var(--os-focus) 34%, transparent);
   outline-offset: 2px;
 }
 
@@ -125,11 +125,11 @@
   max-height: min(820px, calc(100dvh - 32px));
   overflow: hidden;
   padding: 0 !important;
-  border: 1px solid #2e3c47 !important;
+  border: 1px solid var(--os-line) !important;
   border-radius: 22px !important;
-  color: #f1f4ee;
-  background: #10171e !important;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.68) !important;
+  color: var(--os-text);
+  background: var(--os-bg) !important;
+  box-shadow: none !important;
 }
 
 .dialogHeader {
@@ -137,12 +137,8 @@
   display: grid;
   gap: 16px;
   padding: 24px 50px 20px 26px;
-  border-bottom: 1px solid #2e3c47;
-  background: radial-gradient(
-    circle at 90% 0%,
-    rgba(195, 225, 240, 0.1),
-    transparent 38%
-  );
+  border-bottom: 1px solid var(--os-line);
+  background: var(--os-panel);
 }
 
 .dialogTitleRow {
@@ -162,7 +158,7 @@
 }
 
 .dialogTitleRow p {
-  color: #a0b1bc !important;
+  color: var(--os-muted) !important;
   font-size: 15px !important;
   line-height: 1.55;
 }
@@ -179,21 +175,21 @@
   gap: 6px;
   min-height: 30px;
   padding: 4px 10px;
-  border: 1px solid #38505f;
+  border: 1px solid var(--os-line);
   border-radius: 999px;
-  color: #c3e1f0;
+  color: var(--os-muted);
   font-size: 13px;
 }
 
 .policyBadges .liveOff {
-  border-color: #343a3f;
-  color: #a0a7ad;
+  border-color: var(--os-line);
+  color: var(--os-muted);
 }
 
 .policyBadges .liveOn {
-  border-color: #587486;
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.07);
+  border-color: var(--os-line);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 7%, transparent);
 }
 
 .tabs {
@@ -201,19 +197,19 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 0 26px;
-  border-bottom: 1px solid #2e3c47;
+  border-bottom: 1px solid var(--os-line);
 }
 
 .tabs button {
   position: relative;
   min-height: 52px;
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 14px;
   font-weight: 680;
 }
 
 .tabs button[aria-selected='true'] {
-  color: #f2f5ef;
+  color: var(--os-text);
 }
 
 .tabs button[aria-selected='true']::after {
@@ -223,7 +219,7 @@
   left: 20%;
   height: 2px;
   border-radius: 2px 2px 0 0;
-  background: #c3e1f0;
+  background: var(--os-raised);
   content: '';
 }
 
@@ -247,9 +243,9 @@
   display: grid;
   gap: 12px;
   padding: 16px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 15px;
-  background: #0e161e;
+  background: var(--os-bg);
 }
 
 .serverList {
@@ -263,9 +259,9 @@
   align-items: center;
   gap: 11px;
   padding: 12px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 12px;
-  background: #151f29;
+  background: var(--os-bg);
 }
 
 .serverIcon {
@@ -274,8 +270,8 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.08);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 8%, transparent);
 }
 
 .serverList article > div {
@@ -289,14 +285,14 @@
 }
 
 .serverList strong {
-  color: #edf3f7;
+  color: var(--os-text);
   font-size: 14px;
 }
 
 .serverList p {
   margin-top: 3px;
   overflow: hidden;
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -304,7 +300,7 @@
 
 .serverList small {
   margin-top: 4px;
-  color: #afc9d9;
+  color: var(--os-muted);
   font-size: 11px;
 }
 
@@ -314,9 +310,9 @@
   gap: 6px;
   min-height: 34px;
   padding: 0 11px;
-  border: 1px solid #587486;
+  border: 1px solid var(--os-line);
   border-radius: 999px;
-  color: #deeff8;
+  color: var(--os-text);
   font-size: 12px;
 }
 
@@ -327,9 +323,9 @@
 
 .serverEmpty {
   padding: 14px;
-  border: 1px dashed #3b4b58;
+  border: 1px dashed var(--os-line);
   border-radius: 10px;
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -337,18 +333,18 @@
 .connectionMessage {
   padding: 10px 12px;
   border-radius: 9px;
-  color: #d2e4ef;
-  background: #1a2b37;
+  color: var(--os-text);
+  background: var(--os-bg);
   font-size: 12px;
   line-height: 1.5;
 }
 
 .errorMessage {
   padding: 12px;
-  border: 1px solid #714238;
+  border: 1px solid var(--os-line);
   border-radius: 10px;
-  color: #ffc1b6;
-  background: #39231f;
+  color: var(--os-error);
+  background: var(--os-error-bg);
   font-size: 13px;
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -367,12 +363,12 @@
 }
 
 .sectionHeading strong {
-  color: #edf3f7;
+  color: var(--os-text);
   font-size: 16px;
 }
 
 .sectionHeading p {
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 13px;
   line-height: 1.5;
 }
@@ -380,9 +376,9 @@
 .sectionHeading > span {
   flex: 0 0 auto;
   padding: 4px 7px;
-  border: 1px solid #38505f;
+  border: 1px solid var(--os-line);
   border-radius: 999px;
-  color: #afc9d9;
+  color: var(--os-muted);
   font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.07em;
@@ -403,20 +399,20 @@
   min-width: 0;
   min-height: 94px;
   padding: 13px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 13px;
-  color: #e9ede6;
-  background: #141e28;
+  color: var(--os-text);
+  background: var(--os-bg);
   text-align: left;
 }
 
 .targetCard:not(:disabled):hover {
-  border-color: #587486;
-  background: #1b2a36;
+  border-color: var(--os-line);
+  background: var(--os-bg);
 }
 
 .targetCard:focus-visible {
-  outline: 3px solid rgba(195, 225, 240, 0.34);
+  outline: 3px solid color-mix(in srgb, var(--os-focus) 34%, transparent);
   outline-offset: 2px;
 }
 
@@ -426,9 +422,9 @@
 }
 
 .targetSelected {
-  border-color: #7b9bb0;
-  background: rgba(195, 225, 240, 0.07);
-  box-shadow: inset 0 0 0 1px rgba(195, 225, 240, 0.1);
+  border-color: var(--os-line);
+  background: color-mix(in srgb, var(--os-raised) 7%, transparent);
+  box-shadow: none;
 }
 
 .targetIcon {
@@ -437,8 +433,8 @@
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.08);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 8%, transparent);
 }
 
 .targetCopy {
@@ -455,7 +451,7 @@
 }
 
 .targetCopy small {
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 12px;
   line-height: 1.4;
 }
@@ -471,13 +467,13 @@
 }
 
 .targetReady {
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.09);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 9%, transparent);
 }
 
 .targetPending {
-  color: #a0a7ad;
-  background: #1e2a35;
+  color: var(--os-muted);
+  background: var(--os-bg);
 }
 
 .currentState {
@@ -485,9 +481,9 @@
   align-items: center;
   gap: 13px;
   padding: 16px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 14px;
-  background: #141e28;
+  background: var(--os-bg);
 }
 
 .stateOff,
@@ -498,13 +494,13 @@
   height: 42px;
   flex: 0 0 auto;
   border-radius: 12px;
-  color: #a8bcca;
-  background: #1e2a35;
+  color: var(--os-muted);
+  background: var(--os-bg);
 }
 
 .stateOn {
-  color: #10202b;
-  background: #c3e1f0;
+  color: var(--os-text);
+  background: var(--os-raised);
 }
 
 .currentState > div:last-child {
@@ -513,12 +509,12 @@
 }
 
 .currentState strong {
-  color: #edf3f7;
+  color: var(--os-text);
   font-size: 16px;
 }
 
 .currentState p {
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -538,9 +534,9 @@
   gap: 12px;
   min-width: 0;
   padding: 16px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 14px;
-  background: #121b24;
+  background: var(--os-bg);
 }
 
 .installSteps li > span {
@@ -548,9 +544,9 @@
   place-items: center;
   width: 28px;
   height: 28px;
-  border: 1px solid #587486;
+  border: 1px solid var(--os-line);
   border-radius: 50%;
-  color: #c3e1f0;
+  color: var(--os-muted);
   font-size: 13px;
   font-weight: 800;
 }
@@ -561,13 +557,13 @@
 }
 
 .installSteps strong {
-  color: #e5e9e1;
+  color: var(--os-text);
   font-size: 14px;
   line-height: 1.4;
 }
 
 .installSteps p {
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -581,8 +577,8 @@
 .boundaryNote {
   margin: -4px 0 0;
   padding-top: 16px;
-  border-top: 1px solid #2e3c47;
-  color: #a0b1bc;
+  border-top: 1px solid var(--os-line);
+  color: var(--os-muted);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -598,9 +594,9 @@
   align-items: center;
   gap: 12px;
   padding: 14px;
-  border: 1px solid #2e3c47;
+  border: 1px solid var(--os-line);
   border-radius: 13px;
-  background: #141e28;
+  background: var(--os-bg);
 }
 
 .toolIcon {
@@ -609,8 +605,8 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  color: #c3e1f0;
-  background: rgba(195, 225, 240, 0.08);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 8%, transparent);
 }
 
 .toolList article > div {
@@ -621,12 +617,12 @@
 }
 
 .toolList strong {
-  color: #e9ede6;
+  color: var(--os-text);
   font-size: 15px;
 }
 
 .toolList p {
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 13px;
 }
 
@@ -636,8 +632,8 @@
   overflow-wrap: anywhere;
   padding: 5px 7px;
   border-radius: 7px;
-  color: #b9cbd7;
-  background: #1d2a35;
+  color: var(--os-muted);
+  background: var(--os-bg);
   font-size: 12px;
 }
 
@@ -651,7 +647,7 @@
 
 .toolFooter p {
   max-width: 390px;
-  color: #a0b1bc;
+  color: var(--os-muted);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -730,5 +726,15 @@
   }
 }
 
-.dialog :global([data-slot='dialog-close']) { z-index: 2; color: #edf3f7; }
-.serverList button:focus-visible { outline: 2px solid #c3e1f0; outline-offset: 3px; }
+.dialog :global([data-slot='dialog-close']) { z-index: 2; color: var(--os-text); }
+.serverList button:focus-visible { outline: 2px solid var(--os-focus); outline-offset: 3px; }
+
+.manageButton { min-height: 44px; padding: 0 14px; white-space: nowrap; border-radius: 8px; background: var(--os-accent); color: var(--os-accent-ink); font-size: 13px; font-weight: 600; }
+@media (max-width: 650px) {
+  .rail { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; padding: 14px; }
+  .railIcon { display: none; }
+  .railCopy { grid-column: 1; grid-row: 1; }
+  .railCopy p { font-size: 11px; }
+  .rail .connectionStatus { display: inline-flex; grid-column: 1; grid-row: 2; font-size: 11px; }
+  .manageButton { grid-column: 2; grid-row: 1 / 3; padding: 0 11px; min-width: 88px; }
+}

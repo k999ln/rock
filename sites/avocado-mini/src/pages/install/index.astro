@@ -6,23 +6,68 @@ import "../../style.css";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="RockstarOS installation status and the currently available Developer Preview guide." />
+  <meta name="description" content="Open RockstarOS on your phone or computer, add the Web app, and check eSIM and device OS installation availability." />
   <link rel="canonical" href="https://avocadomini.si/install/" />
-  <title>RockstarOS release status — avokado</title>
+  <title>Get RockstarOS — avokado</title>
   <script is:inline src="/site-enhancements.js" defer></script>
 </head>
 <body class="subpage installer-page">
   <header class="site-header"><a class="brand" href="/"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a><nav class="primary-nav" aria-label="Navigation"><a href="/">Back to product</a><a href="/rocket-star/">rocketstar</a></nav></header>
   <main class="article" id="main">
-    <p class="eyebrow">ROCKSTAROS / RELEASE STATUS</p>
-    <h1>One system<br>foundation.</h1>
-    <p class="lead">RockstarOS is being built to connect approved avokado hardware, local services, and experiences with less setup between them.</p>
-    <div class="notice" role="status"><strong>PUBLIC INSTALLER NOT YET AVAILABLE</strong><p>No device image, physical installation, payment, or reservation is available from this page.</p></div>
+    <p class="eyebrow">ROCKSTAROS / GET STARTED</p>
+    <h1>Choose your<br>way in.</h1>
+    <p class="lead">Use the Web app on your current phone or computer. Check the separate installation path for eSIM access or a device OS below.</p>
+    <section id="web" class="web-install" aria-labelledby="web-title">
+      <p class="eyebrow">AVAILABLE / WEB DEVELOPER PREVIEW</p>
+      <h2 id="web-title">Start on the device<br>you already have.</h2>
+      <p>Open RockstarOS, then add it from your browser. The app opens on the RockstarOS service domain. This adds the Web app; it does not replace your phone or computer's operating system.</p>
+      <div class="install-actions"><a class="button" href="https://rockstaros-kaiya.noellesugar1.chatgpt.site/">Open RockstarOS Web</a><a class="text-link" href="https://rockstaros-kaiya.noellesugar1.chatgpt.site/settings">Open app settings</a></div>
+      <details class="install-help"><summary>iPhone / iPad</summary><ol><li>Open RockstarOS Web in Safari.</li><li>Open the Share menu and choose Add to Home Screen.</li><li>Keep Open as Web App enabled if shown, then confirm the name and tap Add.</li></ol></details>
+      <details class="install-help"><summary>Android</summary><ol><li>Open RockstarOS Web in Chrome.</li><li>Open the browser menu and choose Add to home screen or Install app, when offered.</li><li>Confirm the browser's installation prompt.</li></ol></details>
+      <details class="install-help"><summary>Mac / Windows / Linux</summary><ol><li>Open RockstarOS Web in a browser that supports Web app installation.</li><li>Choose the install action in the address bar or browser menu, when available.</li><li>If installation is not offered, keep using RockstarOS in the browser.</li></ol></details>
+      <p>If you are inside another app's browser, open the link in Safari or Chrome first. Sign-in and connected services may be required for individual tools. Adding the Web app does not enable paid agents or an eSIM plan.</p>
+    </section>
+    <section id="esim" aria-labelledby="esim-title">
+      <p class="eyebrow">ESIM / PROVIDER CONNECTION PENDING</p>
+      <h2 id="esim-title">A key to your cloud.</h2>
+      <p>The eSIM offering is designed to unlock dedicated cloud access and Sky agents after a verified installation. It can be used alongside compatible device editions; the OS itself is not stored on the eSIM.</p>
+      <div class="notice"><strong>eSIM installation is not available yet</strong><p>A contracted provider, a purchasable plan and a real activation profile are still required. This page cannot issue an eSIM or an activation QR code.</p></div>
+      <p>The eSIM setup and purchase-history pages are also awaiting deployment to the public RockstarOS service. Installation will become available here after the complete purchase and activation flow has been verified.</p>
+    </section>
+    <section id="device-os" aria-labelledby="device-os-title">
+      <p class="eyebrow">DEVICE EDITIONS / IN DEVELOPMENT</p>
+      <h2 id="device-os-title">Match the OS<br>to the hardware.</h2>
+      <div class="notice"><strong>DEVICE OS PUBLIC INSTALLER NOT YET AVAILABLE</strong><p>The following editions do not yet have an accepted public installer. Do not use a build for another device.</p></div>
+      <div class="install-editions">
+        <article><h3>avocadoMini</h3><p>Embedded RockstarOS for Mini hardware. A compatible device image and hardware acceptance are pending.</p><a href="/mini/">Explore Mini</a></article>
+        <article><h3>Pixel</h3><p>The first physical OS target is Pixel 10 GL066 / frankel. App testing is separate from a complete, signed OS installation. A public flash image is not available.</p><a href="https://github.com/k999ln/rock/blob/main/docs/phone-preview-20260911.md" hreflang="ja">Pixel development status (Japanese)</a></article>
+        <article><h3>avokadoPro</h3><p>Embedded RockstarOS for Pro hardware. The compatible build, installation and recovery process are pending.</p><a href="/pro/">Explore Pro</a></article>
+        <article><h3>PC / virtual environment</h3><p>QEMU Developer Preview is a separate development track. Public release clearance is pending; it is not a general-purpose PC installer.</p><a href="/guide/">Read the Developer Preview guide</a></article>
+      </div>
+    </section>
     <section><p class="eyebrow">WHAT IT IS FOR</p><h2>Keep the experience together.</h2><p>The goal is one trusted foundation for approved hardware, local services, games, storage, and connected experiences.</p></section>
     <section id="os-use-cases" class="os-use-cases" aria-labelledby="os-use-cases-title"><p class="eyebrow">WHAT IT CONNECTS</p><h2 id="os-use-cases-title">Input in.<br />Approved action out.</h2><p>RockstarOS keeps the path understandable: receive an input, check what is allowed, then send it to the experience.</p><div class="os-use-case-grid"><article><span>CARE + MOTION</span><strong>Movement record → review tool</strong><p>Pass a session to an approved research or training workflow.</p></article><article><span>RESEARCH + DEVELOPMENT</span><strong>Sensor input → developer app</strong><p>Connect physical movement to a prototype without rebuilding the whole system.</p></article><article><span>EVERYDAY SPACE</span><strong>Gesture → room action</strong><p>Route a recognized trigger to an approved light, sound, or service.</p></article><article><span>GAME</span><strong>Player movement → game session</strong><p>Keep Mini input, Pro compute, audio, and play state together.</p></article></div></section>
-    <section><p class="eyebrow">DEVELOPER PREVIEW</p><h2>Explore the foundation today.</h2><p>A separate Developer Preview runs in a virtual environment on a Mac. It does not install RockstarOS on physical avokado hardware.</p><a class="button" href="/guide/">Read the Developer Preview guide ↗</a></section>
+    <section><p class="eyebrow">DEVELOPER PREVIEW</p><h2>Follow the development preview.</h2><p>The current candidate targets a virtual environment on a Mac. Public release is pending. It does not install RockstarOS on physical avokado hardware.</p><a class="button" href="/guide/">Read the Developer Preview guide ↗</a></section>
     <section class="article-next"><p class="eyebrow">NEXT</p><h2>Choose what you want to unlock.</h2><div><a class="button" href="/mini/">Explore avocadoMini →</a><a class="text-link" href="/pro/">Explore avokadoPro →</a></div></section>
   </main>
-  <footer><span>© 2026 avokadinc</span><div><span>RockstarOS / RELEASE IN PREPARATION</span></div></footer>
+  <footer><span>© 2026 AVOKADO LLC</span><div><span>RockstarOS / RELEASE IN PREPARATION</span></div></footer>
 </body>
 </html>
+
+<style is:global>
+  .installer-page .article { max-width: 1000px; }
+  .installer-page .article > h1 { font-size: clamp(3rem, 8vw, 6rem); }
+  .installer-page .eyebrow { font-size: .875rem; letter-spacing: .1em; }
+  .installer-page .article section p, .install-help li { font-size: 1rem; line-height: 1.7; }
+  .install-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin: 1.5rem 0; }
+  .install-actions .button { font-size: 1rem; text-align: center; }
+  .install-help { border-bottom: 1px solid #ffffff22; padding: 1rem 0; }
+  .install-help summary { cursor: pointer; font-size: 1.125rem; padding: .5rem 0; }
+  .install-help ol { padding-left: 1.5rem; }
+  .install-editions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+  .install-editions article { padding: 1.5rem; border: 1px solid #ffffff22; border-radius: .75rem; background: #ffffff05; }
+  .install-editions h3 { font-size: 1.5rem; margin: 0; }
+  .install-editions a { font-size: 1rem; }
+  .installer-page a:focus-visible, .install-help summary:focus-visible { outline: 3px solid #9feaff; outline-offset: 4px; }
+  @media(max-width:650px) { .install-editions { grid-template-columns: 1fr; } }
+</style>

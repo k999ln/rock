@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-15",
+  "task": "AI06",
+  "environment": "macOS local Node HTTP + SQLite + browser; Cfx runtime mocked for adapter tests",
+  "status": "host_round_trip_verified_real_game_pending",
+  "acceptance": {
+    "bridgeTests": "8/8 passed",
+    "existingLaunchRegression": "2/2 passed",
+    "typecheck": "passed",
+    "lint": "scoped passed",
+    "baseline": "passed",
+    "design": "passed",
+    "syntax": "resource server/client passed",
+    "ui": [
+      "OS card save -> approval -> identical hash in shared NUI -> game confirmation -> OS review -> workflow completed",
+      "Game request -> OS unapproved draft -> explicit OS approval -> same NUI content",
+      "Gateway process stopped and restarted, then browser reload retained completed card and pending draft"
+    ],
+    "verify": "exit 1 at database:check: pre-existing data/database-status.json and docs/database-status.md stale; later stages not executed"
+  },
+  "logs": [
+    "/private/tmp/fivem-final-tests.log",
+    "/private/tmp/fivem-typecheck.log",
+    "/private/tmp/fivem-lint.log",
+    "/private/tmp/fivem-verify.log"
+  ],
+  "screenshot": "/private/tmp/fivem-world-bridge-mac.png",
+  "realFiveM": false,
+  "gtaVI": false,
+  "hardware": false,
+  "cloudAgent": false,
+  "productionZema": false,
+  "deployed": false,
+  "mainMerged": false,
+  "sourceSha256": {
+    "toolkits/fivem-bridge/store.mjs": "a540cc31c54c0a64d40886f92e4870b6ddfaf12a968606d0668bdf23998e0edc",
+    "toolkits/fivem-bridge/server.mjs": "1bde3a2124060979a98caadbd273c5b32f2dae3cb8ed1df9d1c6a189c9d0dd56",
+    "toolkits/fivem-bridge/dashboard.html": "369c02c6170002c791a6aed41da749a431065bf282d531822442d6b7400c10d7",
+    "toolkits/fivem-bridge/dashboard.js": "7d56a017f57e38b6ff45d254fbb8eb363114932eef9a34f4721f5f39c82e6e6b",
+    "toolkits/fivem-bridge/resource/fxmanifest.lua": "1665f8181e21348352b4cc4400f5dafcdd923c0da74c8c8282e9fbee67080395",
+    "toolkits/fivem-bridge/resource/server.js": "271953ad7eabf0f9f740ba7c703d0b8678c3aa2c1dbc7ba7f505adc4230da089",
+    "toolkits/fivem-bridge/resource/client.js": "329778b3fd409daeefa0e5fd4a1c3c3db416ee71325f8d5d249751b1ffcff9c3",
+    "toolkits/fivem-bridge/resource/ui/index.html": "51daaf8ebd861d7e910683bfa4a3f630924bf8d797b906b1c3d67e56c3cefba4",
+    "toolkits/fivem-bridge/resource/ui/ui.js": "3a9685b56f6208fe8f8cce9dc8c3db5f09aa47fc58017649c9c2be3dc61203b8",
+    "toolkits/fivem-bridge/resource/ui/style.css": "307ccec860e4a3076e2d9718ea6381727a95be218e56d800a5fbc868cba40338",
+    "tests/fivem-bridge.test.mjs": "a82ec35d8b1c4d5c008984930f2590c3d53fafd0ce82d554a62dc88894772c50",
+    "lib/workflow.ts": "46a97392bc6e799be9a694d677f4af2f7f084ff2609f50a4c453cba1ffd537a6",
+    "lib/work-composition.ts": "b86518d34ddca990d7102a270ce61ec53f3512a6b54e684fe21ec87997d0b793",
+    "lib/work-composition-executor.ts": "83f6b80a9f884bc8107da82f123bcf3f9284e466247d6682e2ae3bbe6c892a5f"
+  },
+  "next": "Fix exact authorized Windows GTA V/FiveM server/client profile and player; accept resource load/focus, two-player isolation, card hash, disconnect/restart/stop. Integrate production identity/Asset/Broker/D1 separately."
+}

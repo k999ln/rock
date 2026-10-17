@@ -1,0 +1,39 @@
+{
+  "schema": "amc-codex-registration/1",
+  "recordedAt": "2026-10-05",
+  "scope": "Project-scoped Codex role registration only",
+  "sourceSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "roles": [
+    {
+      "path": ".codex/agents/amc.toml",
+      "sha256": "459f4628efe99b8814c9025bb040ebf841e791c7dfb4018ae3ffb83541411b21",
+      "canonicalMatch": true
+    },
+    {
+      "path": ".codex/agents/amc-worker.toml",
+      "sha256": "b77d3eb5175a1987cab03273e29e0cb80c00c26a768173b395fc910263a4b588",
+      "canonicalMatch": true
+    },
+    {
+      "path": ".codex/agents/amc-reviewer.toml",
+      "sha256": "8cc020725d255438813460b36b8e262384ba5b381a1fe67d3df2017856640ee1",
+      "canonicalMatch": true
+    }
+  ],
+  "verification": {
+    "tomlParse": "passed",
+    "installerTests": "4/4 passed on canonical source",
+    "fullVerify": "exit 1: project/baseline/design/typecheck/lint/tests/build/assets and Work API 1159 assertions passed; final CSV storage check failed with SQLITE_FULL at scripts/check-csv-storage.mjs:72",
+    "automaticDiscovery": "not_verified",
+    "independentRoleReview": "passed; separate reviewer inspected installed files read-only",
+    "logs": [
+      "/private/tmp/amc-registration-full-verify.log",
+      "/private/tmp/amc-registration-full-verify-unrestricted.log"
+    ]
+  },
+  "limits": [
+    "Current checkout does not contain the AMC CLI/core from main. Native Codex role definitions can be used independently; referenced runtime files require the canonical main checkout.",
+    "No Web launch or automatic synchronization acceptance. No production acceptance."
+  ],
+  "nextAction": "In a new Codex session for this project, request AMC with a concrete Goal. If roles are not discovered, reload the project/session; do not claim automatic discovery from this file check."
+}

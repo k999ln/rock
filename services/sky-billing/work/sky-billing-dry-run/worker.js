@@ -6002,7 +6002,7 @@ __name(verifyReceiptSignature, "verifyReceiptSignature");
 function configuration(env) {
   const sky = new URL(env.SKY_ORIGIN);
   const baseRpc = new URL(env.BASE_RPC_URL ?? BASE_MAINNET_RPC_URL);
-  if (sky.protocol !== "https:" || baseRpc.protocol !== "https:" || (env.BILLING_SHARED_SECRET ?? "").length < 32 || (env.SETTLEMENT_INGEST_SECRET ?? "").length < 32 || (env.PAYOUT_ADAPTER_SECRET ?? "").length < 32)
+  if (sky.protocol !== "https:" || baseRpc.protocol !== "https:" || (env.BILLING_SHARED_SECRET ?? "").length < 32 || (env.SETTLEMENT_INGEST_SECRET ?? "").length < 32)
     throw new Error("SETTLEMENT_CONFIGURATION_INVALID");
   return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
 }
@@ -6066,7 +6066,7 @@ async function rockWalletOperator(db) {
   ).bind(ROCK_WALLET_PROVIDER_ID).first();
 }
 __name(rockWalletOperator, "rockWalletOperator");
-async function rockWalletStatus(request, env) {
+async function rockWalletStatus(request, env, legacyFixture = false) {
   const { origin, token } = await authorizeUser(request, env);
   const operator = await rockWalletOperator(env.DB);
   const isOperator = operator?.userId === token.sub;
@@ -6096,7 +6096,7 @@ async function rockWalletStatus(request, env) {
       provider: {
         providerId: ROCK_WALLET_PROVIDER_ID,
         displayName: "Rock Settlement Wallet",
-        mode: "LIVE_RECEIVE",
+        mode: legacyFixture ? "LIVE_RECEIVE" : "ON_HOLD",
         custody: false,
         network: "base",
         chainId: BASE_MAINNET_CHAIN_ID,
@@ -6114,7 +6114,7 @@ async function rockWalletStatus(request, env) {
         updatedAt: operator.updatedAt
       } : null,
       operator: isOperator,
-      canClaim: operator === null || isOperator,
+      canClaim: legacyFixture && (operator === null || isOperator),
       totals: isOperator ? totals ?? {
         collectedMinor: 0,
         pendingMinor: 0,
@@ -6377,7 +6377,7 @@ async function reconcileRockCollection(request, env) {
   }
 }
 __name(reconcileRockCollection, "reconcileRockCollection");
-async function status(request, env) {
+async function status(request, env, legacyFixture = false) {
   const { origin, token } = await authorizeUser(request, env);
   const period = periodForUnix(Math.floor(Date.now() / 1e3));
   const settlement = await env.DB.prepare(
@@ -6430,9 +6430,10 @@ async function status(request, env) {
   return response(
     {
       policy: {
-        mode: "verified_earnings_only",
+        mode: legacyFixture ? "verified_earnings_only" : "fee_policy_on_hold",
         currency: SETTLEMENT_CURRENCY,
-        monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+        monthlyFeeCapMinor: legacyFixture ? SKY_MONTHLY_FEE_CAP_MINOR : null,
+        legacyMonthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
         upfrontCharge: false,
         debtCarry: false,
         tobFeeMinor: 0,
@@ -6444,10 +6445,10 @@ async function status(request, env) {
       period,
       settlement: {
         ...current,
-        remainingFeeCapMinor: Math.max(
+        remainingFeeCapMinor: legacyFixture ? Math.max(
           0,
           SKY_MONTHLY_FEE_CAP_MINOR - Number(current.skyFeeMinor ?? 0)
-        )
+        ) : null
       },
       funds: funds.results,
       tools: tools.results,
@@ -6491,7 +6492,7 @@ async function receiptResult(db, receiptId) {
   ).bind(receiptId).first();
 }
 __name(receiptResult, "receiptResult");
-async function ingest(request, env) {
+async function ingest(request, env, legacyFixture = false) {
   configuration(env);
   const raw = await request.text();
   if (new TextEncoder().encode(raw).length > 65536)
@@ -6502,6 +6503,14 @@ async function ingest(request, env) {
     env.SETTLEMENT_INGEST_SECRET
   );
   const receipt = validateEarningReceipt(JSON.parse(raw));
+  if (receipt.beneficiaryRole === "toc" && !legacyFixture)
+    return response(
+      {
+        code: "SKY_FEE_POLICY_ON_HOLD",
+        error: "\u5229\u7528\u8005\u5411\u3051\u53CE\u76CA\u6599\u91D1\u306F\u4FDD\u7559\u4E2D\u3067\u3059\u3002\u6599\u91D1\u3068\u56DE\u53CE\u52D5\u7DDA\u306E\u78BA\u5B9A\u5F8C\u306B\u518D\u958B\u3057\u307E\u3059\u3002"
+      },
+      409
+    );
   const now = Math.floor(Date.now() / 1e3);
   if (receipt.occurredAt > now + 300)
     throw new Error("EARNING_RECEIPT_OCCURRED_AT_INVALID");
@@ -6666,13 +6675,16 @@ async function ingest(request, env) {
 __name(ingest, "ingest");
 async function signedInput(request, env) {
   configuration(env);
+  const payoutSecret = env.PAYOUT_ADAPTER_SECRET;
+  if (!payoutSecret || payoutSecret.length < 32)
+    throw new Error("SETTLEMENT_CONFIGURATION_INVALID");
   const raw = await request.text();
   if (new TextEncoder().encode(raw).length > 16384)
     throw new Error("SIGNED_INPUT_TOO_LARGE");
   await verifyReceiptSignature(
     raw,
     request.headers.get("sky-receipt-signature"),
-    env.PAYOUT_ADAPTER_SECRET
+    payoutSecret
   );
   const value = JSON.parse(raw);
   if (!value || typeof value !== "object" || Array.isArray(value))
@@ -6756,7 +6768,7 @@ __name(completePayout, "completePayout");
 function retired(origin) {
   return response(
     {
-      error: "\u5148\u6255\u3044\u306E\u6708\u984D\u5951\u7D04\u306F\u5EC3\u6B62\u3057\u307E\u3057\u305F\u3002Sky\u306F\u691C\u8A3C\u6E08\u307F\u81EA\u52D5\u5316\u53CE\u76CA\u304B\u3089\u3060\u3051\u6700\u5927$8.88\u3092\u7CBE\u7B97\u3057\u307E\u3059\u3002",
+      error: "\u5148\u6255\u3044\u306E\u6708\u984D\u5951\u7D04\u306F\u5EC3\u6B62\u3057\u307E\u3057\u305F\u3002\u5229\u7528\u8005\u5411\u3051\u53CE\u76CA\u6599\u91D1\u3082\u73FE\u5728\u4FDD\u7559\u4E2D\u3067\u3059\u3002",
       code: "UPFRONT_BILLING_RETIRED"
     },
     410,
@@ -6764,6 +6776,17 @@ function retired(origin) {
   );
 }
 __name(retired, "retired");
+function feeOnHold(origin) {
+  return response(
+    {
+      code: "SKY_FEE_POLICY_ON_HOLD",
+      error: "\u5229\u7528\u8005\u5411\u3051\u53CE\u76CA\u6599\u91D1\u306F\u4FDD\u7559\u4E2D\u3067\u3059\u3002\u6599\u91D1\u3068\u56DE\u53CE\u52D5\u7DDA\u306E\u78BA\u5B9A\u5F8C\u306B\u518D\u958B\u3057\u307E\u3059\u3002"
+    },
+    409,
+    origin
+  );
+}
+__name(feeOnHold, "feeOnHold");
 function errorResponse(error, origin) {
   const message = error instanceof Error ? error.message : "";
   const status2 = message === "UNAUTHORIZED" || message.startsWith("TOKEN_") ? 401 : message === "ORIGIN" || message === "ROCK_WALLET_OPERATOR_FORBIDDEN" ? 403 : message === "ROCK_COLLECTION_NOT_FOUND" ? 404 : message === "EARNING_RECEIPT_CONFLICT" || message === "PAYOUT_CLAIM_CONFLICT" || message === "PAYOUT_RESULT_CONFLICT" || message === "ROCK_WALLET_OPERATOR_CONFLICT" || message === "ROCK_WALLET_CHALLENGE_INVALID" || message === "ROCK_COLLECTION_CONFLICT" ? 409 : message === "ROCK_WALLET_RPC_UNAVAILABLE" || message === "ROCK_WALLET_RPC_CHAIN_INVALID" ? 503 : message.includes("SIGNATURE") ? 401 : message.startsWith("EARNING_RECEIPT_") || message === "PAYOUT_INPUT_INVALID" || message === "SIGNED_INPUT_TOO_LARGE" || message.startsWith("ROCK_WALLET_") || message.startsWith("ROCK_COLLECTION_") || message === "SETTLEMENT_PREVIOUS_FEE_INVALID" || error instanceof SyntaxError ? 400 : message === "SETTLEMENT_CONFIGURATION_INVALID" ? 503 : 500;
@@ -6776,54 +6799,61 @@ function errorResponse(error, origin) {
   );
 }
 __name(errorResponse, "errorResponse");
-var worker_default = {
-  async fetch(request, env) {
-    let origin;
-    try {
-      const { skyOrigin } = configuration(env);
-      origin = request.headers.get("origin") === skyOrigin ? skyOrigin : void 0;
-      const url = new URL(request.url);
-      if (request.method === "OPTIONS") {
-        if (!origin) return new Response(null, { status: 403 });
-        return new Response(null, { status: 204, headers: cors(origin) });
+function createBillingWorker(legacyFixture = false) {
+  return {
+    async fetch(request, env) {
+      let origin;
+      try {
+        const { skyOrigin } = configuration(env);
+        origin = request.headers.get("origin") === skyOrigin ? skyOrigin : void 0;
+        const url = new URL(request.url);
+        if (request.method === "OPTIONS") {
+          if (!origin) return new Response(null, { status: 403 });
+          return new Response(null, { status: 204, headers: cors(origin) });
+        }
+        if (request.method === "GET" && url.pathname === "/health")
+          return response({
+            ok: true,
+            mode: legacyFixture ? "verified_earnings_only" : "fee_policy_on_hold",
+            monthlyFeeCapMinor: legacyFixture ? SKY_MONTHLY_FEE_CAP_MINOR : null,
+            legacyMonthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+            currency: SETTLEMENT_CURRENCY
+          });
+        if (request.method === "GET" && url.pathname === "/v1/status")
+          return await status(request, env, legacyFixture);
+        if (request.method === "GET" && url.pathname === "/v1/rock-wallet")
+          return await rockWalletStatus(request, env, legacyFixture);
+        if (request.method === "POST" && url.pathname === "/v1/rock-wallet/challenge")
+          return legacyFixture ? await createRockWalletChallenge(request, env) : feeOnHold(origin);
+        if (request.method === "POST" && url.pathname === "/v1/rock-wallet/verify")
+          return legacyFixture ? await verifyRockWallet(request, env) : feeOnHold(origin);
+        if (request.method === "POST" && url.pathname === "/v1/rock-wallet/reconcile")
+          return legacyFixture ? await reconcileRockCollection(request, env) : feeOnHold(origin);
+        if (request.method === "DELETE" && url.pathname === "/v1/rock-wallet")
+          return await revokeRockWallet(request, env);
+        if (request.method === "POST" && url.pathname === "/v1/earnings")
+          return await ingest(request, env, legacyFixture);
+        if (request.method === "POST" && url.pathname === "/v1/payouts/claim")
+          return await claimPayout(request, env);
+        if (request.method === "POST" && url.pathname === "/v1/payouts/result")
+          return await completePayout(request, env);
+        if (request.method === "POST" && ["/v1/checkout", "/v1/portal", "/v1/webhooks/stripe"].includes(
+          url.pathname
+        ))
+          return retired(origin);
+        return response({ error: "not_found" }, 404, origin);
+      } catch (error) {
+        return errorResponse(error, origin);
       }
-      if (request.method === "GET" && url.pathname === "/health")
-        return response({
-          ok: true,
-          mode: "verified_earnings_only",
-          monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
-          currency: SETTLEMENT_CURRENCY
-        });
-      if (request.method === "GET" && url.pathname === "/v1/status")
-        return await status(request, env);
-      if (request.method === "GET" && url.pathname === "/v1/rock-wallet")
-        return await rockWalletStatus(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/rock-wallet/challenge")
-        return await createRockWalletChallenge(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/rock-wallet/verify")
-        return await verifyRockWallet(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/rock-wallet/reconcile")
-        return await reconcileRockCollection(request, env);
-      if (request.method === "DELETE" && url.pathname === "/v1/rock-wallet")
-        return await revokeRockWallet(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/earnings")
-        return await ingest(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/payouts/claim")
-        return await claimPayout(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/payouts/result")
-        return await completePayout(request, env);
-      if (request.method === "POST" && ["/v1/checkout", "/v1/portal", "/v1/webhooks/stripe"].includes(
-        url.pathname
-      ))
-        return retired(origin);
-      return response({ error: "not_found" }, 404, origin);
-    } catch (error) {
-      return errorResponse(error, origin);
     }
-  }
-};
+  };
+}
+__name(createBillingWorker, "createBillingWorker");
+var legacyFixtureBillingWorker = createBillingWorker(true);
+var worker_default = createBillingWorker();
 export {
-  worker_default as default
+  worker_default as default,
+  legacyFixtureBillingWorker
 };
 /*! Bundled license information:
 

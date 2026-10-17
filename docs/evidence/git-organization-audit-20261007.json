@@ -1,0 +1,1303 @@
+{
+  "schema": "rock-git-organization-audit/1",
+  "recordedAt": "2026-10-07T14:17:54-04:00",
+  "taskId": "G04",
+  "primaryOwner": "ROCK",
+  "scope": "Git organization inspection, not source integration, production acceptance, or full security review",
+  "status": "audit_complete_cleanup_pending",
+  "measurementBoundary": "Counts and snapshot merge simulations were captured before adding this audit documentation. Changed file instances include duplicates across worktrees.",
+  "repository": "k999ln/rock",
+  "mainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+  "rootHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+  "prCounts": {
+    "MERGED": 74,
+    "OPEN": 5,
+    "CLOSED": 12
+  },
+  "openPrs": [
+    {
+      "number": 90,
+      "title": "fix(security): update root sharp and bundled librsvg",
+      "headSha": "90f8df72030a33aab4f507dbbf7c6c776a1a80a4",
+      "mergeable": "MERGEABLE",
+      "checks": [
+        {
+          "name": "public-fixture-tests",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023532/job/112623230831"
+        },
+        {
+          "name": "verify",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023537/job/112623231239"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023534/job/112623230796"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023544/job/112623230716"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023517/job/112623230777"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023534/job/112623230948"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37569023544/job/112623230915"
+        },
+        {
+          "name": "CodeQL",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/112623608195"
+        }
+      ],
+      "url": "https://github.com/k999ln/rock/pull/90"
+    },
+    {
+      "number": 89,
+      "title": "build(deps): bump @modelcontextprotocol/sdk from 1.30.0 to 1.32.1",
+      "headSha": "1da02922e994e93d4e515936db1de414e9af4faa",
+      "mergeable": "MERGEABLE",
+      "checks": [
+        {
+          "name": "verify",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079750/job/112626500055"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079787/job/112626499743"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079718/job/112626499733"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079792/job/112626500168"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079787/job/112626499993"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37570079718/job/112626499500"
+        },
+        {
+          "name": "CodeQL",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/112626880727"
+        }
+      ],
+      "url": "https://github.com/k999ln/rock/pull/89"
+    },
+    {
+      "number": 88,
+      "title": "build(deps): bump sharp from 0.35.4 to 0.35.5 in /sites/avocado-mini",
+      "headSha": "33d6469855a656dc5da165b11d2aacd7dfa0f610",
+      "mergeable": "MERGEABLE",
+      "checks": [
+        {
+          "name": "verify",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230375/job/112429157814"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230279/job/112429157275"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230372/job/112429158049"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230299/job/112429157806"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230279/job/112429157684"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37510230372/job/112429157724"
+        },
+        {
+          "name": "CodeQL",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/112429775588"
+        }
+      ],
+      "url": "https://github.com/k999ln/rock/pull/88"
+    },
+    {
+      "number": 85,
+      "title": "feat: add scoped eSIM cloud access and recover progress tracking",
+      "headSha": "a7caf43a360fa0b8583feda6d9a78e86d6412fdb",
+      "mergeable": "CONFLICTING",
+      "checks": [
+        {
+          "name": "verify",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684043/job/112417014585"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684059/job/112417015344"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684231/job/112417031405"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684166/job/112417020373"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684059/job/112417015556"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37506684231/job/112417031018"
+        },
+        {
+          "name": "CodeQL",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/112417864385"
+        }
+      ],
+      "url": "https://github.com/k999ln/rock/pull/85"
+    },
+    {
+      "number": 84,
+      "title": "fix(security): block prohibited cache reuse on origin errors",
+      "headSha": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0",
+      "mergeable": "MERGEABLE",
+      "checks": [
+        {
+          "name": "verify",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887322/job/112641436365"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887339/job/112641436866"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887104/job/112641435987"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887162/job/112641436343"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887339/job/112641436632"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/actions/runs/37574887104/job/112641435830"
+        },
+        {
+          "name": "CodeQL",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/k999ln/rock/runs/112641878448"
+        }
+      ],
+      "url": "https://github.com/k999ln/rock/pull/84"
+    }
+  ],
+  "closedPrHistory": {
+    "checks": [
+      {
+        "pr": 59,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 1
+      },
+      {
+        "pr": 25,
+        "ancestorOfMain": true,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 16,
+        "ancestorOfMain": true,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 15,
+        "ancestorOfMain": true,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 14,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 7,
+        "equivalentPatches": 1
+      },
+      {
+        "pr": 11,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 2,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 9,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 2,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 6,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 1,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 5,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 1,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 4,
+        "ancestorOfMain": false,
+        "unmatchedPatches": 4,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 3,
+        "ancestorOfMain": true,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 0
+      },
+      {
+        "pr": 2,
+        "ancestorOfMain": true,
+        "unmatchedPatches": 0,
+        "equivalentPatches": 0
+      }
+    ],
+    "interpretation": "Five closed heads are ancestors of main; #59 is patch-equivalent and superseded by #60. #5 workflow and #6 signing scripts/tests exactly match main. #14/#11/#9/#4 have explicit closure records describing replacement; patch non-equivalence alone is not evidence of lost work. Their full runtime behavior was not re-audited."
+  },
+  "branches": [
+    {
+      "name": "codex/avocadomini-domain",
+      "sha": "e5e8318582328be386999d0922164909526a8f31",
+      "localOnly": 0,
+      "mainOnly": 421,
+      "onRemote": false,
+      "upstream": "origin/codex/avocadomini-domain",
+      "prs": [
+        {
+          "number": 61,
+          "state": "MERGED",
+          "head": "b2eb8d18"
+        }
+      ]
+    },
+    {
+      "name": "codex/avokado-llm",
+      "sha": "ebaf4688b96e678c80d418b7efaa9e20996b408d",
+      "localOnly": 0,
+      "mainOnly": 422,
+      "onRemote": false,
+      "upstream": "origin/codex/avokado-llm",
+      "prs": [
+        {
+          "number": 63,
+          "state": "MERGED",
+          "head": "ebaf4688"
+        }
+      ]
+    },
+    {
+      "name": "codex/avokado-pro-pc",
+      "sha": "178a9f589a99308ff966f30021e46e19b2acbaea",
+      "localOnly": 0,
+      "mainOnly": 90,
+      "onRemote": false,
+      "upstream": "origin/codex/avokado-pro-pc",
+      "prs": [
+        {
+          "number": 64,
+          "state": "MERGED",
+          "head": "178a9f58"
+        }
+      ]
+    },
+    {
+      "name": "codex/complete-dependency-prs",
+      "sha": "822150c3928ad288c4d314a24195f373bd967eea",
+      "localOnly": 0,
+      "mainOnly": 15,
+      "onRemote": false,
+      "upstream": "origin/codex/complete-dependency-prs",
+      "prs": [
+        {
+          "number": 82,
+          "state": "MERGED",
+          "head": "1628d2a8"
+        }
+      ]
+    },
+    {
+      "name": "codex/complete-open-prs",
+      "sha": "558e5bde554f8e4daa43e0e31f547c9cfe0afc17",
+      "localOnly": 0,
+      "mainOnly": 24,
+      "onRemote": false,
+      "upstream": "origin/codex/complete-open-prs",
+      "prs": [
+        {
+          "number": 77,
+          "state": "MERGED",
+          "head": "9dc7ab40"
+        }
+      ]
+    },
+    {
+      "name": "codex/esim-cloud-access",
+      "sha": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "localOnly": 2,
+      "mainOnly": 165,
+      "onRemote": false,
+      "upstream": "",
+      "prs": []
+    },
+    {
+      "name": "codex/esim-portable-runtime",
+      "sha": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+      "localOnly": 0,
+      "mainOnly": 1,
+      "onRemote": false,
+      "upstream": "origin/main",
+      "prs": [
+        {
+          "number": 91,
+          "state": "MERGED",
+          "head": "e3c8f2e9"
+        }
+      ]
+    },
+    {
+      "name": "codex/ip-studio-livekit",
+      "sha": "c9b806fe3b497a292f5f7a7c13e00d68060c0b17",
+      "localOnly": 0,
+      "mainOnly": 425,
+      "onRemote": false,
+      "upstream": "origin/codex/ip-studio-livekit",
+      "prs": [
+        {
+          "number": 58,
+          "state": "MERGED",
+          "head": "c9b806fe"
+        }
+      ]
+    },
+    {
+      "name": "codex/os-completion",
+      "sha": "fd4108e943cd7d58426039d6c6fd897a12650b47",
+      "localOnly": 0,
+      "mainOnly": 7,
+      "onRemote": false,
+      "upstream": "origin/codex/os-completion",
+      "prs": [
+        {
+          "number": 86,
+          "state": "MERGED",
+          "head": "fd4108e9"
+        }
+      ]
+    },
+    {
+      "name": "codex/os-completion-prompts",
+      "sha": "842141a0f7fbbbcdb8f057e32fcb2fb221bc8014",
+      "localOnly": 1,
+      "mainOnly": 1,
+      "onRemote": true,
+      "upstream": "origin/codex/os-completion-prompts",
+      "prs": []
+    },
+    {
+      "name": "codex/os-completion-status",
+      "sha": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "localOnly": 0,
+      "mainOnly": 5,
+      "onRemote": false,
+      "upstream": "origin/main",
+      "prs": []
+    },
+    {
+      "name": "codex/pass-security-gates",
+      "sha": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+      "localOnly": 0,
+      "mainOnly": 10,
+      "onRemote": false,
+      "upstream": "origin/codex/pass-security-gates",
+      "prs": [
+        {
+          "number": 83,
+          "state": "MERGED",
+          "head": "4e702fc2"
+        }
+      ]
+    },
+    {
+      "name": "codex/progress-and-esim-integration",
+      "sha": "a7caf43a360fa0b8583feda6d9a78e86d6412fdb",
+      "localOnly": 4,
+      "mainOnly": 10,
+      "onRemote": true,
+      "upstream": "origin/codex/progress-and-esim-integration",
+      "prs": [
+        {
+          "number": 85,
+          "state": "OPEN",
+          "head": "a7caf43a"
+        }
+      ]
+    },
+    {
+      "name": "codex/release-blockers",
+      "sha": "7be01664fd7d4b2184655c4d3b3a53498b35e26d",
+      "localOnly": 0,
+      "mainOnly": 78,
+      "onRemote": false,
+      "upstream": "origin/codex/release-blockers",
+      "prs": [
+        {
+          "number": 65,
+          "state": "MERGED",
+          "head": "7be01664"
+        }
+      ]
+    },
+    {
+      "name": "codex/repository-cleanup",
+      "sha": "55031027e0b6a8d4fd0d665314e1daf81e1ad8ee",
+      "localOnly": 0,
+      "mainOnly": 76,
+      "onRemote": false,
+      "upstream": "origin/codex/repository-cleanup",
+      "prs": [
+        {
+          "number": 69,
+          "state": "MERGED",
+          "head": "55031027"
+        }
+      ]
+    },
+    {
+      "name": "main",
+      "sha": "31ef33a64a63a25bf4031a6d4211b69583ca4ff5",
+      "localOnly": 0,
+      "mainOnly": 426,
+      "onRemote": true,
+      "upstream": "origin/main",
+      "prs": []
+    }
+  ],
+  "remoteBranches": [
+    {
+      "name": "codex/jev-decision-layer-20260920",
+      "protected": false,
+      "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a"
+    },
+    {
+      "name": "codex/os-completion-prompts",
+      "protected": false,
+      "sha": "842141a0f7fbbbcdb8f057e32fcb2fb221bc8014"
+    },
+    {
+      "name": "codex/pixel10-compile-bringup-20260917",
+      "protected": false,
+      "sha": "771770d08457f46f06a2d4db7c1098daeccdbc74"
+    },
+    {
+      "name": "codex/progress-and-esim-integration",
+      "protected": false,
+      "sha": "a7caf43a360fa0b8583feda6d9a78e86d6412fdb"
+    },
+    {
+      "name": "codex/spider-cache-error-revalidation",
+      "protected": false,
+      "sha": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0"
+    },
+    {
+      "name": "codex/spider-root-sharp-update",
+      "protected": false,
+      "sha": "90f8df72030a33aab4f507dbbf7c6c776a1a80a4"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/modelcontextprotocol/sdk-1.32.1",
+      "protected": false,
+      "sha": "1da02922e994e93d4e515936db1de414e9af4faa"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/sites/avocado-mini/sharp-0.35.5",
+      "protected": false,
+      "sha": "33d6469855a656dc5da165b11d2aacd7dfa0f610"
+    },
+    {
+      "name": "fix/readme-english-ci",
+      "protected": false,
+      "sha": "b49bdf02ab3b953e91b4f5f4b3ff57634fbd81c9"
+    },
+    {
+      "name": "main",
+      "protected": false,
+      "sha": "0fbf688b4585b829f9e34d37799d446cb5a66b32"
+    }
+  ],
+  "staleRemoteTrackingRefs": [
+    "origin/agent/jev-control-plane-20260927",
+    "origin/chore/ledger-sync-20260925",
+    "origin/codex/amc-main-integration",
+    "origin/codex/avocado-campus-layer",
+    "origin/codex/avocadomini-domain",
+    "origin/codex/avokado-llm",
+    "origin/codex/avokado-pro-pc",
+    "origin/codex/complete-dependency-prs",
+    "origin/codex/complete-open-prs",
+    "origin/codex/ip-studio-livekit",
+    "origin/codex/os-completion",
+    "origin/codex/pass-security-gates",
+    "origin/codex/release-blockers",
+    "origin/codex/repository-cleanup",
+    "origin/codex/spider-agent-preflight-read",
+    "origin/codex/spider-autonomy-state-read",
+    "origin/codex/spider-guard",
+    "origin/codex/spider-mission-squad-dom",
+    "origin/codex/spider-observation-source-read",
+    "origin/codex/spider-observer-output-schema",
+    "origin/codex/spider-restore-locked-dependencies",
+    "origin/codex/spider-work-plan-contract",
+    "origin/codex/spider-workspace-snapshot-read",
+    "origin/dependabot/npm_and_yarn/brace-expansion-5.0.12",
+    "origin/dependabot/npm_and_yarn/fast-uri-3.1.8",
+    "origin/dependabot/npm_and_yarn/ip-address-10.7.3",
+    "origin/dependabot/npm_and_yarn/multi-7da7ba23a3",
+    "origin/dependabot/npm_and_yarn/multi-b51a9c416e",
+    "origin/dependabot/npm_and_yarn/proxy-addr-2.0.8",
+    "origin/dependabot/npm_and_yarn/sites/avocado-mini/source-map-js-1.2.2",
+    "origin/docs/avokado-mini-product-name",
+    "origin/feat/ai02-model-pinning-fixture",
+    "origin/feat/ai03-bounded-memory-fixture",
+    "origin/feat/ai04-operation-key-fixture",
+    "origin/feat/ai05-capability-single-executor-fixture",
+    "origin/feat/game-minimal-loop-fixture",
+    "origin/feature/avocado-farm-sandbox",
+    "origin/feature/meme-intelligence-sandbox"
+  ],
+  "worktrees": [
+    {
+      "path": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "branch": "refs/heads/codex/esim-cloud-access",
+      "counts": {
+        "tracked": 64,
+        "untracked": 33,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/amc-preview/avokdo",
+      "head": "592daeea322cd47aa189b67dd689e323662c0c67",
+      "branch": null,
+      "counts": {
+        "tracked": 0,
+        "untracked": 0,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/avocadomini-domain/avokdo",
+      "head": "178a9f589a99308ff966f30021e46e19b2acbaea",
+      "branch": "refs/heads/codex/avokado-pro-pc",
+      "counts": {
+        "tracked": 2,
+        "untracked": 3,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/avokado-llm/avokdo",
+      "head": "ebaf4688b96e678c80d418b7efaa9e20996b408d",
+      "branch": "refs/heads/codex/avokado-llm",
+      "counts": {
+        "tracked": 0,
+        "untracked": 0,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/pr-completion/avokdo",
+      "head": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+      "branch": "refs/heads/codex/esim-portable-runtime",
+      "counts": {
+        "tracked": 15,
+        "untracked": 10,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/release-blockers/avokdo",
+      "head": "7be01664fd7d4b2184655c4d3b3a53498b35e26d",
+      "branch": "refs/heads/codex/release-blockers",
+      "counts": {
+        "tracked": 0,
+        "untracked": 0,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/repository-cleanup/avokdo",
+      "head": "55031027e0b6a8d4fd0d665314e1daf81e1ad8ee",
+      "branch": "refs/heads/codex/repository-cleanup",
+      "counts": {
+        "tracked": 0,
+        "untracked": 0,
+        "conflicted": 0
+      }
+    },
+    {
+      "path": "/Users/kaiya/.codex-work/worktrees/rock-progress-integration/avokdo",
+      "head": "842141a0f7fbbbcdb8f057e32fcb2fb221bc8014",
+      "branch": "refs/heads/codex/os-completion-prompts",
+      "counts": {
+        "tracked": 0,
+        "untracked": 0,
+        "conflicted": 0
+      }
+    }
+  ],
+  "fileComparisons": [
+    {
+      "worktree": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "counts": {
+        "sameAsMain": 4,
+        "differentFromMain": 65,
+        "absentFromMain": 28
+      },
+      "sameAsMain": [
+        ".codex/agents/amc-reviewer.toml",
+        ".codex/agents/amc-worker.toml",
+        ".codex/agents/amc.toml",
+        "data/amc/agent-definitions.json"
+      ],
+      "differentFromMain": [
+        "PROJECTS.md",
+        "README.md",
+        "app/api/jev-evaluation/route.ts",
+        "app/api/legal-guidance/route.ts",
+        "app/api/llm/estimate/route.ts",
+        "app/api/llm/quotes/[id]/route.ts",
+        "app/api/llm/quotes/route.ts",
+        "app/api/llm/text/route.ts",
+        "app/api/patent-research/route.ts",
+        "app/api/rockstar/device-home/route.ts",
+        "app/api/rockstar/entitlements/route.ts",
+        "app/api/sky/a2a-agents/route.ts",
+        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-price-quotes/route.ts",
+        "app/api/sky/mcp/inspect/route.ts",
+        "app/api/work-jobs/route.ts",
+        "app/connect/page.tsx",
+        "components/esim-purchase-setup.tsx",
+        "components/sky-commerce.tsx",
+        "data/database-status.json",
+        "data/design-document-index.json",
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "db/schema.ts",
+        "docs/cloud-agent-provider-comparison-20261001.md",
+        "docs/database-status.md",
+        "docs/product-baseline.md",
+        "docs/prompts/rock-current-next-20261002.md",
+        "docs/provider-contract-readiness-20260930.md",
+        "docs/rockstaros-complete-design.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/sky-billing.md",
+        "docs/sky-cloud-continuity.md",
+        "docs/sky-tools-complete-design.md",
+        "docs/workstreams/02-sky-mcp.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/workstreams/04-security-identity-compliance.md",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "drizzle/meta/_journal.json",
+        "lib/request-auth.ts",
+        "lib/rockstar-service-access.ts",
+        "lib/rockstar-service-package-access.ts",
+        "lib/sky-stripe.ts",
+        "lib/workflow.ts",
+        "package.json",
+        "project.md",
+        "public/toolkits/fashion-brand-ops-connector.zip",
+        "public/toolkits/sky-mcp-connector.zip",
+        "scripts/check-work-api.mjs",
+        "shared/stripe.mjs",
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/pages/install/index.astro",
+        "sites/avocado-mini/tests/preorder.test.mjs",
+        "sites/avocado-mini/worker/shared/stripe.mjs",
+        "tests/database-status.test.mjs",
+        "tests/migration-union.test.mjs",
+        "tests/rockstar-service-package-access.test.mjs",
+        "tests/shared-stripe.test.mjs",
+        "toolkits/fashion-brand-ops/src/shared/stripe.mjs",
+        "toolkits/fashion-brand-ops/test/payment-provider.test.mjs",
+        "scripts/amc-agent.mjs",
+        "tests/amc-agent.test.mjs",
+        "toolkits/amc-agent/README.md"
+      ],
+      "absentFromMain": [
+        "services/sky-billing/work/sky-billing-dry-run/worker.js",
+        "services/sky-billing/work/sky-billing-dry-run/worker.js.map",
+        ".agents/skills/amc/SKILL.md",
+        "app/api/esim/orders/[orderId]/cloud-access/route.ts",
+        "app/api/sky/payments/[action]/route.ts",
+        "app/api/work-jobs/composition/route.ts",
+        "app/sky/payments/page.tsx",
+        "components/sky-payments.tsx",
+        "docs/evidence/amc-codex-registration.json",
+        "docs/evidence/amc-codex-usability.json",
+        "docs/evidence/esim-cloud-access-local.json",
+        "docs/evidence/esim-signed-access-local.json",
+        "docs/evidence/public-install-entry.json",
+        "docs/evidence/unified-payment-verification.json",
+        "drizzle/0059_esim_cloud_access_keys.sql",
+        "drizzle/0060_sky_usage_payments.sql",
+        "drizzle/0061_esim_cloud_proof_uses.sql",
+        "lib/esim-cloud-access.ts",
+        "lib/esim-cloud-grant.ts",
+        "lib/esim-cloud-proof.ts",
+        "lib/sky-payments.ts",
+        "lib/sky-usage-payment.ts",
+        "lib/work-composition-executor.ts",
+        "lib/work-composition.ts",
+        "tests/esim-cloud-access.test.mjs",
+        "tests/esim-cloud-proof.test.mjs",
+        "tests/sky-usage-payment.test.mjs",
+        "toolkits/amc-agent/SKILL.md"
+      ],
+      "sameAsPR85": [
+        "app/api/legal-guidance/route.ts",
+        "app/api/llm/estimate/route.ts",
+        "app/api/llm/quotes/[id]/route.ts",
+        "app/api/llm/quotes/route.ts",
+        "app/api/patent-research/route.ts",
+        "app/api/rockstar/device-home/route.ts",
+        "app/api/rockstar/entitlements/route.ts",
+        "app/api/sky/a2a-agents/route.ts",
+        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-price-quotes/route.ts",
+        "app/api/sky/mcp/inspect/route.ts",
+        "app/connect/page.tsx",
+        "components/esim-purchase-setup.tsx",
+        "lib/rockstar-service-package-access.ts",
+        "tests/rockstar-service-package-access.test.mjs",
+        ".codex/agents/amc-reviewer.toml",
+        ".codex/agents/amc-worker.toml",
+        ".codex/agents/amc.toml",
+        "data/amc/agent-definitions.json"
+      ]
+    },
+    {
+      "worktree": "/Users/kaiya/.codex-work/worktrees/avocadomini-domain/avokdo",
+      "counts": {
+        "sameAsMain": 0,
+        "differentFromMain": 2,
+        "absentFromMain": 3
+      },
+      "sameAsMain": [],
+      "differentFromMain": [
+        "data/project-status.json",
+        "project.md"
+      ],
+      "absentFromMain": [
+        "data/amc/mini-pro-gta-plan.json",
+        "scripts/mini-pro-budget.mjs",
+        "tests/mini-pro-research.test.mjs"
+      ],
+      "sameAsPR85": []
+    },
+    {
+      "worktree": "/Users/kaiya/.codex-work/worktrees/pr-completion/avokdo",
+      "counts": {
+        "sameAsMain": 20,
+        "differentFromMain": 5,
+        "absentFromMain": 0
+      },
+      "sameAsMain": [
+        "README.md",
+        "app/connect/page.tsx",
+        "components/home-screen.tsx",
+        "data/database-status.json",
+        "data/design-document-index.json",
+        "data/product-baseline.json",
+        "docs/database-status.md",
+        "docs/product-baseline.md",
+        "docs/prompts/rock-current-next-20261002.md",
+        "docs/rockstaros-complete-design.md",
+        "docs/sim-led-product-architecture.md",
+        "lib/system-backup.ts",
+        "app/add/data/page.tsx",
+        "app/add/page.tsx",
+        "components/data-collection-workspace.tsx",
+        "components/rockstar-addons.module.css",
+        "components/rockstar-addons.tsx",
+        "lib/backup-crypto.ts",
+        "lib/data-collection.ts",
+        "lib/rockstar-addons.ts"
+      ],
+      "differentFromMain": [
+        "data/project-status.json",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md",
+        "tests/data-collection.test.mjs",
+        "tests/rockstar-addons.test.mjs"
+      ],
+      "absentFromMain": [],
+      "sameAsPR85": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "GIT-A01",
+      "priority": "high",
+      "finding": "Current checkout is not synchronized with main and has uncommitted source.",
+      "evidence": {
+        "branch": "codex/esim-cloud-access",
+        "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+        "localOnlyCommits": 2,
+        "mainOnlyCommits": 165,
+        "sameNamedRemoteBranch": false,
+        "trackedModified": 64,
+        "untrackedFiles": 33
+      },
+      "next": "Preserve all working changes before reconciling against pinned latest main; do not reset or copy whole files over newer main."
+    },
+    {
+      "id": "GIT-A02",
+      "priority": "high",
+      "finding": "PR #85 passes its checks but conflicts with main in eight paths. The current working snapshot conflicts in 31 paths.",
+      "evidence": {
+        "pr85": {
+          "exitCode": 1,
+          "tree": "0e292ed2906c600e11b8348298210a0bd45103fa",
+          "conflicts": [
+            ".github/spider/gitleaks.toml",
+            ".github/spider/public-value-provenance.json",
+            ".github/workflows/spider.yml",
+            "app/connect/page.tsx",
+            "data/database-status.json",
+            "data/project-status.json",
+            "docs/database-status.md",
+            "project.md"
+          ],
+          "stderr": ""
+        },
+        "working_snapshot": {
+          "exitCode": 1,
+          "tree": "9b3fcfe099a9a1aa065ac7a1aa7d489c1cf34883",
+          "conflicts": [
+            "PROJECTS.md",
+            "README.md",
+            "app/api/work-jobs/route.ts",
+            "app/connect/page.tsx",
+            "data/database-status.json",
+            "data/design-document-index.json",
+            "data/product-baseline.json",
+            "data/project-status.json",
+            "docs/database-status.md",
+            "docs/product-baseline.md",
+            "docs/prompts/rock-current-next-20261002.md",
+            "docs/rockstaros-complete-design.md",
+            "docs/sky-billing.md",
+            "docs/sky-tools-complete-design.md",
+            "docs/workstreams/03-wallet-billing-providers.md",
+            "docs/workstreams/04-security-identity-compliance.md",
+            "docs/workstreams/05-web-pwa-sites.md",
+            "drizzle/meta/_journal.json",
+            "lib/workflow.ts",
+            "project.md",
+            "public/toolkits/fashion-brand-ops-connector.zip",
+            "public/toolkits/sky-mcp-connector.zip",
+            "scripts/amc-agent.mjs",
+            "scripts/check-work-api.mjs",
+            "services/sky-billing/work/sky-billing-dry-run/worker.js",
+            "services/sky-billing/work/sky-billing-dry-run/worker.js.map",
+            "sites/avocado-mini/src/pages/index.astro",
+            "tests/amc-agent.test.mjs",
+            "tests/database-status.test.mjs",
+            "tests/migration-union.test.mjs",
+            "toolkits/amc-agent/README.md"
+          ],
+          "stderr": ""
+        }
+      },
+      "next": "Use the existing PR #85 implementation as the base for eSIM integration; preserve subsequent proof/payment changes separately; revalidate the merged candidate."
+    },
+    {
+      "id": "GIT-A03",
+      "priority": "high",
+      "finding": "Migration ordinals differ across local/main/PR #85.",
+      "evidence": {
+        "main": [
+          "0059_sky_library"
+        ],
+        "pr85": [
+          "0059_sky_library",
+          "0060_esim_cloud_access_keys"
+        ],
+        "local": [
+          "0059_esim_cloud_access_keys",
+          "0060_sky_usage_payments",
+          "0061_esim_cloud_proof_uses"
+        ]
+      },
+      "next": "Inspect applied database histories, retain main library migration and PR #85 lineage, assign unused numbers to pending changes, synchronize journal/schema/snapshots/tests and run migration-union tests. Do not rename already applied migrations blindly."
+    },
+    {
+      "id": "GIT-A04",
+      "priority": "high",
+      "finding": "Progress and baseline copies have diverged.",
+      "evidence": {
+        "localTasks": 160,
+        "mainTasks": 378,
+        "onlyLocalTaskIds": [
+          "B06",
+          "G04",
+          "SIM01",
+          "SKY21"
+        ],
+        "onlyMainTaskCount": 222,
+        "sharedTaskCount": 156,
+        "localBaselineVersion": "1.96",
+        "mainBaselineVersion": "1.96",
+        "sameBaselineContents": false
+      },
+      "next": "Reconcile task contracts and their evidence by ID and successor relationship; do not replace either complete status file with the other."
+    },
+    {
+      "id": "GIT-A05",
+      "priority": "medium",
+      "finding": "Three of eight worktrees are dirty; 127 changed file instances before audit documentation. Some are already integrated.",
+      "evidence": {
+        "root": 97,
+        "avokadoProPc": 5,
+        "esimPortableRuntime": 25,
+        "portableIdenticalToMain": 20,
+        "portableOtherFiles": "Two tests lack ten explicit void registrations fixed on main; three progress documents are older.",
+        "rootIdenticalToMain": 4,
+        "rootIdenticalToPR85": 21
+      },
+      "next": "Preserve Pro PC local work; synchronize the portable-runtime worktree from main after confirming recorded differences; do not count all 127 files as unique unmerged implementation."
+    },
+    {
+      "id": "GIT-A06",
+      "priority": "medium",
+      "finding": "Branch/reference cleanup is incomplete.",
+      "evidence": {
+        "localBranches": 16,
+        "remoteBranches": 10,
+        "staleRemoteTrackingRefs": 38,
+        "localMainBehindCommits": 426,
+        "remoteNoOpenPrUnique": [
+          "codex/os-completion-prompts",
+          "fix/readme-english-ci"
+        ],
+        "remoteAlreadyInMain": [
+          "codex/jev-decision-layer-20260920",
+          "codex/pixel10-compile-bringup-20260917"
+        ]
+      },
+      "next": "Review two no-PR branches before selecting or retiring them; archive only fully recovered worktrees and prune stale tracking refs after preservation."
+    },
+    {
+      "id": "GIT-A07",
+      "priority": "medium",
+      "finding": "Two generated billing worker files deleted by cleanup PR #69 are still tracked and modified on this old checkout.",
+      "evidence": {
+        "files": [
+          "services/sky-billing/work/sky-billing-dry-run/worker.js",
+          "services/sky-billing/work/sky-billing-dry-run/worker.js.map"
+        ],
+        "mainHasFiles": false,
+        "mainIgnore": "services/**/work/"
+      },
+      "next": "Preserve main cleanup when integrating. Keep required source archives and vendor originals unchanged."
+    },
+    {
+      "id": "GIT-A08",
+      "priority": "medium",
+      "finding": "GitHub reports main protected=false and no repository rulesets; delete_branch_on_merge is enabled.",
+      "next": "Review intended required checks and PR/branch protection separately; no settings were changed."
+    },
+    {
+      "id": "GIT-A09",
+      "priority": "info",
+      "finding": "Claude artifact is a proposal and was not adopted as a product-policy change by this audit.",
+      "evidence": {
+        "artifact": "https://claude.ai/artifact/MJVHsasdHprZZMcJfKKnGs#d9eb2131-1346.m2938k3wf46.5492",
+        "policyChangesApplied": false
+      },
+      "next": "Keep current explicit product decisions; evaluate any requested policy revision against current source and evidence."
+    }
+  ],
+  "verification": {
+    "mainChecks": [
+      {
+        "name": "collect",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37627378430/job/112812524253"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37608077273/job/112748361066"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37607128611/job/112745232182"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37607128611/job/112745231596"
+      },
+      {
+        "name": "collect",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37578696111/job/112653249587"
+      },
+      {
+        "name": "verify",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368508/job/112583432301"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368348/job/112583432045"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368393/job/112583431980"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368348/job/112583431875"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368393/job/112583431813"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "headSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/37556368374/job/112583431394"
+      }
+    ],
+    "gitConnectivity": {
+      "command": "git fsck --connectivity-only --no-dangling",
+      "exitCode": 0
+    },
+    "workingDiffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "localVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 897,
+      "workerD1Assertions": 1178,
+      "csvAssertions": 113,
+      "webAssetMissing": 0,
+      "log": "/private/tmp/rock-git-audit-verify-unrestricted.log",
+      "logSha256": "d1f06d02852ddef2fda1c00dc4613cd07c7166e5838bdc3f7bdf825c993bc1cf",
+      "initialSandboxAttempt": "exit 1: localhost listen EPERM; rerun outside sandbox passed",
+      "sourceBoundary": "Runtime tested before documentation-only audit changes. Post-documentation checks recorded separately."
+    },
+    "priorEvidenceHashes": {
+      "esimSignedAccess": {
+        "checked": 9,
+        "mismatches": 0
+      },
+      "unifiedPayments": {
+        "checked": 8,
+        "mismatches": 0
+      }
+    },
+    "postDocumentation": {
+      "checks": [
+        {
+          "command": "npm run project:check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run repository:check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run baseline:check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run design:check",
+          "exitCode": 0
+        },
+        {
+          "command": "git diff --check",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run database:status",
+          "exitCode": 0
+        },
+        {
+          "command": "npm run database:check",
+          "exitCode": 0
+        },
+        {
+          "command": "node --experimental-strip-types --test tests/database-status.test.mjs",
+          "exitCode": 0,
+          "passed": 2
+        }
+      ],
+      "initialDatabaseCheck": "exit 1 after nextAction edit; regenerated only the nextAction mirror in data/database-status.json and docs/database-status.md, then passed",
+      "runtimeFilesChangedByAudit": false,
+      "finalMainAndOpenPrHeads": "Unchanged on final GitHub readback",
+      "rootChangedFilesAfterAuditDocumentation": 99,
+      "artifactBoundary": "Original 97 changed files preserved; this audit adds one changed workstream file and one new evidence file; seven existing tracked document/status files were edited."
+    }
+  },
+  "actionsPerformed": [
+    "read/fetch GitHub refs and PR/check metadata",
+    "inspect all eight worktrees and compare changed file blobs",
+    "simulate merges in temporary clone only",
+    "run local verify and Git connectivity checks",
+    "record audit and handoff documents"
+  ],
+  "notPerformed": [
+    "source merge/rebase/reset",
+    "branch/worktree deletion",
+    "commit/push/PR mutation",
+    "GitHub settings mutation",
+    "deployment, carrier operation, paid execution",
+    "adoption of Claude policy proposal"
+  ],
+  "nextOrder": [
+    "Preserve every dirty worktree and reconcile the handoff against latest main.",
+    "Integrate reviewed dependency/security PRs on pinned candidates and rerun same-SHA checks.",
+    "Resolve PR #85 conflicts; combine only necessary newer eSIM proof/payment/composition changes.",
+    "Reconcile migration lineage, task IDs, evidence and baseline content.",
+    "Validate combined candidate locally and on GitHub before main integration.",
+    "Synchronize already-merged portable worktree; recover remaining no-PR branches and Pro PC work; retire only redundant branches/worktrees."
+  ]
+}

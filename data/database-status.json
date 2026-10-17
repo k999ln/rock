@@ -1,24 +1,24 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-14",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 148,
+    "tableCount": 152,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 160,
+    "total": 163,
     "done": 104,
-    "in_progress": 40,
-    "planned": 15,
+    "in_progress": 42,
+    "planned": 16,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",
-    "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation."
+    "nextAction": "共通入口仕様に従い、main/先行dirty差分とDB履歴を保全同期→既存Skyを5大学文脈で共用→代表Agentの購入/接続/予算/成果/停止/復旧→同一artifact公開/本人A/B/実NFC/PWAを受入。並行してMAT18で建築・interior・soundの最初の限定空間・生活課題・地域・partner・Mini Device Profileを選び、専門家責任を分けたpilot契約を作る。任意eSIM/iOS拡張とOS完成を単独Skyの前提にしない。追加枠価格・学生確認水準・Cloud費用・空間pilot価格は未確定。既存Pixel/QEMU/eSIM/Provider gateは維持。"
   },
   "webSchema": {
-    "tableCount": 76,
+    "tableCount": 80,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -40,6 +40,8 @@
       "csv_monthly_fees",
       "csv_trial_payments",
       "devices",
+      "esim_cloud_access_keys",
+      "esim_cloud_proof_uses",
       "esim_device_entitlements",
       "esim_device_gateway_challenges",
       "esim_device_gateway_keys",
@@ -85,6 +87,7 @@
       "sky_commerce_sellers",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_mcp_slots",
       "sky_package_runtime_bindings",
       "sky_provider_connections",
       "sky_remote_ai_rate_limits",
@@ -93,12 +96,13 @@
       "sky_tool_package_reviews",
       "sky_tool_packages",
       "sky_tool_submissions",
+      "sky_usage_payments",
       "tool_controls",
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 59,
-    "latestMigration": "0058_campus_layer.sql",
+    "migrationCount": 63,
+    "latestMigration": "0063_sky_mcp_slots.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -152,6 +156,7 @@
           "sky_commerce_sellers",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_mcp_slots",
           "sky_package_runtime_bindings",
           "sky_provider_connections",
           "sky_remote_ai_rate_limits",
@@ -159,9 +164,10 @@
           "sky_tool_grants",
           "sky_tool_package_reviews",
           "sky_tool_packages",
-          "sky_tool_submissions"
+          "sky_tool_submissions",
+          "sky_usage_payments"
         ],
-        "tableCount": 32
+        "tableCount": 34
       },
       {
         "id": "marketplace",
@@ -196,6 +202,8 @@
           "automation_fund_memberships",
           "automation_funds",
           "coconala_team_cases",
+          "esim_cloud_access_keys",
+          "esim_cloud_proof_uses",
           "esim_device_entitlements",
           "esim_device_gateway_challenges",
           "esim_device_gateway_keys",
@@ -214,7 +222,7 @@
           "rockstar_entitlement_issuer_rate_limits",
           "rockstar_service_entitlements"
         ],
-        "tableCount": 20
+        "tableCount": 22
       }
     ]
   },
@@ -249,6 +257,8 @@
         "csv_monthly_fees",
         "csv_trial_payments",
         "devices",
+        "esim_cloud_access_keys",
+        "esim_cloud_proof_uses",
         "esim_device_entitlements",
         "esim_device_gateway_challenges",
         "esim_device_gateway_keys",
@@ -294,6 +304,7 @@
         "sky_commerce_sellers",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_mcp_slots",
         "sky_package_runtime_bindings",
         "sky_provider_connections",
         "sky_remote_ai_rate_limits",
@@ -302,12 +313,13 @@
         "sky_tool_package_reviews",
         "sky_tool_packages",
         "sky_tool_submissions",
+        "sky_usage_payments",
         "tool_controls",
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0058_campus_layer.sql",
-      "tableCount": 76,
+      "expectedAppliedThrough": "0063_sky_mcp_slots.sql",
+      "tableCount": 80,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

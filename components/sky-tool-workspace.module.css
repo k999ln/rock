@@ -55,10 +55,10 @@
   width: 64px;
   height: 64px;
   place-items: center;
-  border: 1px solid #465f6b;
+  border: 1px solid var(--os-line);
   border-radius: 17px;
-  color: #d2eaf5;
-  background: #223743;
+  color: var(--os-text);
+  background: var(--os-bg);
 }
 .markButton {
   grid-template-rows: 33px 12px;
@@ -67,14 +67,14 @@
   cursor: pointer;
 }
 .markButton span {
-  color: #d8edf6;
+  color: var(--os-text);
   font-size: 9px;
   font-weight: 700;
   line-height: 1;
 }
 .markButton:hover {
-  border-color: #a3cfe2;
-  background: #2d4a59;
+  border-color: var(--os-line);
+  background: var(--os-raised);
 }
 .markButton:focus-visible {
   outline: 2px solid var(--sky-accent);
@@ -148,7 +148,7 @@
   gap: 8px;
   margin: 4px 0;
   padding-left: 19px;
-  color: #c5d5df;
+  color: var(--os-muted);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -161,7 +161,7 @@
   margin-top: 6px;
   padding: 10px 15px;
   border-radius: 10px;
-  color: #11222b;
+  color: var(--os-text);
   background: var(--sky-accent);
   font-size: 13px;
   font-weight: 700;
@@ -172,7 +172,7 @@
   flex: none;
 }
 .action:hover {
-  background: #e3f3fb;
+  background: var(--os-panel);
 }
 .guide {
   margin-top: 18px;
@@ -183,7 +183,7 @@
 }
 .guide summary {
   padding: 16px 18px;
-  color: #c6d9e4;
+  color: var(--os-muted);
   font-size: 13px;
   font-weight: 650;
   cursor: pointer;
@@ -263,39 +263,39 @@
 .body :global(.bench-field [data-slot='select-trigger']),
 .body :global(.fashion-quick-form input),
 .body :global(.fashion-quick-form textarea) {
-  border-color: #49606e;
+  border-color: var(--os-line);
   color: var(--sky-text);
-  background: #0d151c;
+  background: var(--os-bg);
 }
 .body input::placeholder,
 .body textarea::placeholder {
-  color: #8d9fab;
+  color: var(--os-muted);
 }
 .body :global(.bench-output),
 .body :global(.mr-workbench pre),
 .body :global(.fashion-quick-result) {
   border-color: var(--sky-line);
   color: var(--sky-text);
-  background: #0d151c;
+  background: var(--os-bg);
 }
 .body :global(.outline-tag) {
-  border-color: #49606e;
-  color: #c6dfe9;
-  background: #1d303b;
+  border-color: var(--os-line);
+  color: var(--os-muted);
+  background: var(--os-bg);
 }
 .body :global(.black-button) {
   border-color: var(--sky-accent);
-  color: #11222b;
+  color: var(--os-text);
   background: var(--sky-accent);
 }
 .body :global(.black-button:hover:not(:disabled)) {
-  background: #e3f3fb;
+  background: var(--os-panel);
 }
 .body :global(.secondary-button),
 .body :global(.output-actions button) {
-  border-color: #49606e;
+  border-color: var(--os-line);
   color: var(--sky-accent);
-  background: #20333f;
+  background: var(--os-bg);
 }
 .body :global(.text-link) {
   color: var(--sky-accent);
@@ -334,7 +334,7 @@
   min-width: 0;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1px solid #49606e;
+  border: 1px solid var(--os-line);
   border-radius: 9px;
   font-size: 14px;
   line-height: 1.6;
@@ -444,7 +444,7 @@
 .body :global(.patent-packet-preview) {
   border-color: var(--sky-line);
   color: var(--sky-text);
-  background: #0e171e;
+  background: var(--os-warning-bg);
 }
 .body :global(.legal-runner) :is(label, p, small, summary),
 .body :global(.legal-runner-progress) li,
@@ -453,8 +453,8 @@
 .body :global(.legal-runner) :is(h3, h4, strong),
 .body :global(.legal-runner-progress) li:global(.current) { color: var(--sky-text); }
 .body :global(.legal-runner) :is(textarea, input:not([type='checkbox']), select) {
-  min-width: 0; max-width: 100%; border-color: #49606e;
-  color: var(--sky-text); background: #101820; font-size: 16px;
+  min-width: 0; max-width: 100%; border-color: var(--os-line);
+  color: var(--sky-text); background: var(--os-bg); font-size: 16px;
 }
 .body :global(.legal-runner) input[type='checkbox'] { accent-color: var(--sky-accent); }
 .body :global(.legal-agent-avatar),
@@ -462,15 +462,15 @@
 .body :global(.legal-runner-privacy),
 .body :global(.legal-runner-progress) li > span,
 .body :global(.legal-runner-triage) {
-  border-color: #49606e; color: #c3e1f0 !important; background: #20333f;
+  border-color: var(--os-line); color: var(--os-muted) !important; background: var(--os-bg);
 }
 .body :global(.legal-runner-progress) li:global(.current) > span {
-  color: #11222b !important; background: var(--sky-accent);
+  color: var(--os-text) !important; background: var(--sky-accent);
 }
 .body :global(.legal-runner-emergency),
 .body :global(.legal-runner-triage.urgent),
 .body :global(.legal-runner-triage.emergency),
-.body :global(.patent-error) { border-color: #b17b66; color: #ffe1ce; background: #392920; }
+.body :global(.patent-error) { border-color: var(--os-line); color: var(--os-error); background: var(--os-error-bg); }
 .body :global(.legal-runner-back),
 .body :global(.legal-runner) :is(a, summary) { color: var(--sky-accent); }
 .body :global(.legal-agent-thread) { height: 220px; }

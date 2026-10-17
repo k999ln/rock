@@ -16,7 +16,7 @@ void test('R5 rejects required hubs, oversize envelopes and unverified acceptanc
     ['sameTypePeerExpansion', false],
     ['separateEdgeHubRequired', true],
     ['externalPcRequiredForCoreFunctions', true],
-    ['externalPowerRequired', false],
+    ['externalPowerRequired', true],
     ['batteryAdopted', true],
     ['displayRequirement', 'wall_projection'],
     ['displayStatus', 'room_scale_validated'],

@@ -1,0 +1,224 @@
+{
+  "schema": "avocado-schoolbag-safety-device/1",
+  "profileId": "avocado-schoolbag-safety-p0",
+  "recordedAt": "2026-10-14",
+  "status": "user_directed_hanging_detachable_voice_companion_design_physical_prototype_pending",
+  "source": "User directed a schoolbag-alarm-size RockstarOS companion that hangs from a bag, detaches, supports conversation, and includes physical SOS.",
+  "requirements": [
+    "RQ48"
+  ],
+  "document": "docs/avocado-schoolbag-safety-device.md",
+  "pixelBrowserPreview": {
+    "source": "public/companion-preview/index.html",
+    "version": "V0.3 Pocket Console bounded local agent",
+    "evidence": "docs/evidence/avocado-companion-pixel-preview-20261014.json",
+    "class": "host_served_browser_interaction_prototype_not_android_apk_or_device_firmware",
+    "capabilities": [
+      "commute_school_home_mode_switching",
+      "two_eye_status_display",
+      "explicit_start_stop_bounded_session_agent",
+      "multi_turn_shiritori_and_unsent_message_draft",
+      "safety_guidance_priority_and_finite_step_log",
+      "offline_simulation",
+      "sos_state_and_quiet_test_chirp_without_notification",
+      "live_mode_voice_agent_guardian_alarm_state_panel",
+      "ephemeral_local_ui_event_log"
+    ],
+    "voiceRecognition": "browser_provider_may_use_external_service_adult_test_voice_only",
+    "agentRuntime": "public/companion-preview/agent.js",
+    "agentClass": "session_only_rule_based_not_llm_or_cloud_agent",
+    "agentTests": "node --test tests/companion-agent.test.cjs: 4 passed",
+    "localAiServicePackageInstalledOnPixel": false,
+    "modelArtifactAvailableForPreview": false,
+    "cloudModelConnected": false,
+    "independentPhysicalAlarmAccepted": false,
+    "guardianNotificationConnected": false
+  },
+  "compactScreenStudy": {
+    "source": "https://www.instagram.com/reel/DecnZE8CPLP/",
+    "status": "user_requested_more_like_reference_pixel_visual_revision_implemented_hardware_display_not_selected",
+    "comparison": "two_eye_low_power_face_versus_small_information_screen_with_same_safety_and_battery_envelope",
+    "pixelViewIncludesDeveloperDiagnosticsNotChildFacingFinalUi": true,
+    "physicalDisplayAccepted": false
+  },
+  "confirmed": {
+    "hardwareDevelopment": true,
+    "sizeClass": "child_schoolbag_security_alarm",
+    "rockstarOsFamily": true,
+    "hangingAttachment": true,
+    "oneHandDetachment": true,
+    "heldConversation": true,
+    "physicalSosOnRemovableBody": true,
+    "securityIsOneOfMultipleFunctions": true
+  },
+  "name": {
+    "working": "avocado Companion",
+    "final": false,
+    "decisionOwner": "OWNER"
+  },
+  "workingEnvelope": {
+    "final": false,
+    "bodyMaximumMm": {
+      "height": 70,
+      "width": 45,
+      "depth": 25
+    },
+    "massMaximumGramsIncludingBatteryAndMount": 80,
+    "excludes": [
+      "mounting_hardware",
+      "alarm_pull"
+    ],
+    "decisionMethod": "measure_at_least_three_current_security_alarm_products_then_compare_three_non_powered_mockups"
+  },
+  "architecture": {
+    "runtimeClass": "signed_low_power_device_profile_not_full_android_or_linux",
+    "localAlarmIndependentOf": [
+      "mcu_application_health",
+      "network",
+      "cloud",
+      "account",
+      "service_entitlement"
+    ],
+    "baseCapabilities": [
+      "device.self_test",
+      "alarm.local.trigger",
+      "alarm.local.stop",
+      "companion.voice.session.start",
+      "companion.voice.session.stop",
+      "companion.voice.reply.play",
+      "device.status.read",
+      "device.firmware.update"
+    ],
+    "connectedCapability": "guardian.notification.request",
+    "v0VoiceTransport": "guardian_phone_relay_or_wifi_with_explicit_session",
+    "sosOverridesVoice": true,
+    "excludedFromP0": [
+      "continuous_location",
+      "device.location.once",
+      "camera",
+      "continuous_microphone",
+      "family_voice_call",
+      "wallet",
+      "payment_approval",
+      "arbitrary_shell",
+      "cloud_llm_on_device",
+      "external_tool_execution"
+    ]
+  },
+  "prototypeVariants": [
+    {
+      "id": "P0-A",
+      "purpose": "safety_first_low_power_screenless",
+      "interface": [
+        "alarm_pull_or_large_control",
+        "status_led",
+        "haptic",
+        "two_bounded_controls"
+      ]
+    },
+    {
+      "id": "P0-B",
+      "purpose": "hanging_detachable_two_eye_voice_companion",
+      "interface": [
+        "P0-A_safety_path",
+        "two_eye_status_expression",
+        "explicit_microphone_session",
+        "speaker_reply",
+        "one_hand_detachable_short_hanger",
+        "sos_on_removable_body",
+        "ble",
+        "wifi_candidate",
+        "wired_service_dock_candidate"
+      ],
+      "screenAndBatteryAccepted": false
+    }
+  ],
+  "userSuppliedReferences": [
+    {
+      "url": "https://x.com/jetdaizu/status/2110034514923970783?s=46",
+      "use": "wired_power_and_diagnostics_for_stationary_home_service_dock_not_a_tethered_child_device",
+      "adoptionStatus": "design_principle_only"
+    },
+    {
+      "url": "https://x.com/oab10don/status/2110166623495868657?s=46",
+      "use": "round_display_physical_buttons_haptic_ble_usb_and_external_relay_reference",
+      "adoptionStatus": "P0-B_comparison_reference_not_reproduced"
+    },
+    {
+      "url": "https://x.com/hr98w/status/2110005513144721410?s=46",
+      "supportingPage": "https://anan.sh/iphone-use",
+      "use": "separately_gated_esp32_usb_input_bridge_reference",
+      "adoptionStatus": "excluded_from_child_alarm_path_laboratory_adapter_only"
+    },
+    {
+      "url": "https://x.com/stevencheng/status/2110375346046746649?s=20",
+      "use": "obsidian_ball_two_eye_visual_reference_prompted_user_direction_for_hanging_detachable_talking_companion",
+      "adoptionStatus": "industrial_design_reference_only_not_hardware_evidence"
+    },
+    {
+      "url": "https://www.instagram.com/reel/DecnZE8CPLP/",
+      "use": "small_handheld_screen_with_visible_processing_status_and_controls_reference",
+      "adoptionStatus": "pixel_pocket_console_visual_revision_not_hardware_specification"
+    }
+  ],
+  "states": [
+    "unprovisioned",
+    "guardian_bound",
+    "ready",
+    "voice_connecting",
+    "voice_active",
+    "voice_unavailable",
+    "alarm_local",
+    "notification_pending",
+    "attention_required",
+    "lost_or_revoked"
+  ],
+  "privacyDefault": {
+    "locationCollected": false,
+    "audioStored": false,
+    "videoStored": false,
+    "childNameStoredOnDevice": false,
+    "schoolStoredOnDevice": false,
+    "operatorContinuousTrackingAllowed": false
+  },
+  "voicePrivacyDefault": {
+    "explicitStartRequired": true,
+    "visibleMicStateRequired": true,
+    "audioStoredOnDevice": false,
+    "cloudRetentionAndProvider": "undecided_requires_guardian_terms_and_acceptance",
+    "offlineReplayOfUnsentAudio": false
+  },
+  "taskIds": [
+    "MAT16",
+    "MAT17"
+  ],
+  "acceptance": {
+    "pixelBrowserPreviewRendered": true,
+    "pixelSchoolModeInteractionObserved": true,
+    "androidCompanionApkAccepted": false,
+    "designFixtureAccepted": false,
+    "poweredBenchAccepted": false,
+    "physicalPrototypeAccepted": false,
+    "childProductSafetyAccepted": false,
+    "alarmStandardAccepted": false,
+    "radioAccepted": false,
+    "batteryAccepted": false,
+    "privacyAndGuardianPilotAccepted": false,
+    "voiceBenchAccepted": false,
+    "hangingDetachHumanFactorsAccepted": false,
+    "manufacturingAuthorized": false,
+    "saleAuthorized": false
+  },
+  "openOwnerDecisions": [
+    "alarm_product_standard_application",
+    "final_product_name_and_trademark",
+    "target_age",
+    "first_market",
+    "school_voice_use_rules",
+    "guardian_notification_launch_scope",
+    "future_one_time_location",
+    "hanger_release_sos_layout_and_battery_after_measurement",
+    "cloud_voice_provider_retention_and_budget",
+    "price_and_connectivity_contract"
+  ]
+}

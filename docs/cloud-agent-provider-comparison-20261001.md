@@ -4,6 +4,12 @@ Research date: 2026-10-02. Prices below are public list prices read from the lin
 
 ## Decision summary
 
+2026-10-05 funding correction: the user requires zero personal/avokado out-of-pocket cost for this AWS initiative and seeks substantial sponsored capacity. Provider price comparisons are planning inputs only, not authority to purchase. Sponsorship must cover excluded/overage/expiry/tax/wind-down charges; otherwise no billable deployment. Development compensation is a separate discussion item, not an awarded benefit.
+
+2026-10-05 user direction supersedes the provider preference below: prioritize **AWS for cloud adoption and partnership discussions**, under avokado llc (United States, user-provided). The [AWS partnership design](provider-contract-readiness-20260930.md#aws-partnership-preparation) proposes an initial AWS agent-runtime pilot using the existing control plane, then separately accepted API/database/workflow migration. Existing Cloudflare implementations remain the migration baseline. This is preparation, not an AWS agreement, deployment or credit award. Prices and limits below remain the 2026-10-02 research snapshot and are not a fresh AWS proposal quote.
+
+### Previous comparison conclusion (2026-10-02)
+
 Keep the current Cloudflare Workers + D1 + Durable Workflows implementation as the first production candidate for Rockstar's **durable control plane**: it is already the repository's workflow runtime and the local fixture proves prepared-work recovery after a Wrangler/Workerd process restart. This is a candidate, not a contract or production acceptance. It has usage and retention limits that must be designed around; a long sleep is not a free archive, because persisted state for sleeping and completed workflows counts toward storage and completed state is retained by default for 30 days on the Paid plan. The paid plan currently includes 50,000 concurrent running workflows, 2 million queued instances and 365-day maximum `step.sleep`; verify account-level rate limits and needed retention before launch. [Cloudflare Workflows limits](https://developers.cloudflare.com/workflows/reference/limits/) · [Cloudflare Workflows pricing](https://developers.cloudflare.com/workflows/reference/pricing/)
 
 ### 2026-10-02 official-source recheck

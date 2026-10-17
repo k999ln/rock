@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-09",
+  "status": "installed_and_physical_ui_verified",
+  "request": "繋いでるピクセルに反映させて",
+  "tasks": [
+    "OS10",
+    "RLS02"
+  ],
+  "owner": "ROCK",
+  "webVersion": 47,
+  "device": {
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066",
+    "osBuild": "2026100200"
+  },
+  "scope": "Existing Android Shell appearance and explicit browser entry; not full OS flash",
+  "githubMainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "githubMainMerged": false,
+  "installation": {
+    "sha256": "cc1adc835b368fb5c5a5529a1a351f80e4b619f0a9d1d016e28cc6a425c83af8",
+    "signatureMatched": true,
+    "physicalTests": "7/7",
+    "dataCleared": false,
+    "osBuild": "2026100200",
+    "bootloaderLocked": true,
+    "mode": "adb install -r",
+    "previousApkSha256": "2d20276ede1b9635c337673355c28f2010413ade79b301b41b852e62e89822dd",
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "before": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model"
+    },
+    "after": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model"
+    },
+    "dataPreserved": true,
+    "osFlashed": false
+  },
+  "artifactsDirectory": "/Users/kaiya/Documents/ChatGPT/avokdo/work/pixel-unified-design",
+  "verification": {
+    "androidBuild": "PASS",
+    "androidLint": "PASS_WITH_WARNINGS",
+    "physicalNavigationTests": {
+      "passed": 7,
+      "failed": 0,
+      "executesWork": false,
+      "resetsBroker": false
+    },
+    "physicalCaptureTest": {
+      "passed": 1,
+      "failed": 0,
+      "pages": [
+        "home",
+        "sky",
+        "work",
+        "settings"
+      ],
+      "frameWait": "UiAutomation.waitForIdle"
+    },
+    "publicWebEntry": {
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+      "browserHandler": "app.vanadium.browser/com.google.android.apps.chrome.IntentDispatcher",
+      "browserLoginSharedWithShell": false
+    },
+    "repositoryVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 1,
+      "nodeTests": 900,
+      "nodeFailures": 0,
+      "build": "PASS",
+      "missingAssets": 0,
+      "failure": "Final local API stage timed out during parallel Android compilation. Initial sandbox attempt separately failed EPERM for localhost listeners.",
+      "retry": {
+        "command": "TMPDIR=/private/tmp npm run test:api",
+        "exitCode": 0,
+        "workerD1Assertions": 1178,
+        "csvAssertions": 113
+      }
+    }
+  },
+  "remaining": [
+    "GitHub main integration",
+    "Cloud service configuration and signed local model acceptance remain separate"
+  ],
+  "sourceFilesSha256": {
+    "android/shell/src/main/java/dev/rock/shell/MainActivity.java": "78e229e7758547087a5b4d8a86a9c681a0b70324b8d95ebf92414c9ab346fa53",
+    "android/shell/src/main/java/dev/rock/shell/ShellUi.java": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7",
+    "android/shell/src/main/res/values/styles.xml": "ef2fc751026f7e4039627bea09b5b2a9346c7a9cf3849d09a4c1592ce78a1b38",
+    "android/shell/src/androidTest/java/dev/rock/shell/ShellNavigationTest.java": "e42e3ef236b9a68834871a74e76c0141e20863c0b7c4b814674f6a82169e9eb0",
+    "app/os-design-tokens.css": "ae3f76f266ebf7cd0373aa34c5771d235002a971218f4e6100586d3920a503a7"
+  },
+  "screenshots": {
+    "work.png": "592cc2af595379187f0409ef182f764a5b69d8492710518915d764168cdb817e",
+    "settings.png": "784d386c2bffcda2eb21d6850882facbe802d9e94c986697dcbc5d204042cd27",
+    "home.png": "7ea4ccf4caaf1699ac92c6c4828dfb7f256c6953ec9b1be368e1c952c07acb2f",
+    "sky.png": "a71d1134caa96d91fb2cab98b80b7517915047702946e0281ded3757d78e8d10"
+  }
+}

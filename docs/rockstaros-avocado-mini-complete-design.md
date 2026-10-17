@@ -4,6 +4,12 @@
 状態: 既存Material Invention研究profileと共通契約の設計資料
 注意: 現行avocadoMiniの製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本書の四方向発明台、AR、Full-scale/rack構成はこの研究profile内の設計であり、R5の完成外形・全空間裸眼表示・製造承認を示さない。
 
+2026-10-14: avocadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を産業上の根城とする。これは本書のMaterial Invention研究profileを廃止せず、avocadoMiniの将来Device ProfileとRockstarOS共通契約を実空間へ展開する上位製品方針である。
+
+2026-10-14: 子供のランドセルへ吊り下げ、外して話せる防犯ベル程度のhardwareは、[avocado Companion（仮称）P0 Device Profile](avocado-schoolbag-safety-device.md)として設計を開始した。R5や本書の四方向Material Invention端末を縮小したものではなく、取り外す本体のlocal alarm、保護者側RockstarOS、中継会話、子供向け安全受入を別taskで扱う。
+
+同日の手持ち小型screen参考を受け、PixelのPocket Console V0.2では二つの目と処理状態を一面で表示する。小型情報screenは比較候補であり、吊り下げ本体のdisplay、電池、警報、安全の合格や最終外観の確定ではない。詳細と未決事項は上記Device Profileを正本とする。
+
 2026-09-24: R5は使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を目指す。表示・精密3D入力・実部品収納等は未成立/未確定。既存Coreや四方向入力schemaを変更済みとは扱わず、R5専用profileとadapterの実装・受入を別に行う。
 
 2026-09-21 Mini200 E1追補: 利用者の最新の20cmゲーム機・日本語音声・README保存要求は[Mini200 E1設計](avocado-mini-mini200-e1/README.md)へ記録した。本書の四方向発明台は既存profileとして保持する。E1のゲーム入力からMaterial Coreへ接続するadapter、実ASR、console OS、実機、物理マイクOFFの受入は未完了であり、本書の「設計完成」をE1の製造完成へ拡張しない。
@@ -11,6 +17,46 @@
 ---
 
 # A. まず製品を理解する
+
+## 0. 建築・インテリア・サウンドを中核領域にする
+
+### 目的と利用体験
+
+avocadoMiniとRockstarOSは、生活者がITを操作する時間を増やすためではなく、建築、内装、音、光、温熱、道具、仕事が自然に調和する空間をつくり、維持するために使う。最初の体験は「空間について相談する→現状と希望を記録する→専門家とAgentが案を比較する→本人が費用と共有範囲を承認する→実測・専門家確認・施工を別々に検収する→完成後も変更履歴と復旧方法が残る」という一周を目標にする。
+
+### 役割
+
+| 担当 | 責任 |
+| --- | --- |
+| avocadoMini | 選定したDevice Profileの範囲で空間との物理接点を担う。入力・表示・音・local controlの候補を扱うが、未測定のsensor精度や設備制御を約束しない |
+| RockstarOS | 本人性、権限、端末能力、Agent実行、保存、復旧、費用上限を強制する |
+| Sky | 審査済みの建築・インテリア・音響Agent／Toolと外部専門家への接続条件を示す |
+| Zema | 一つの空間projectの依頼、revision、承認、進捗、成果、支出、未解決事項を管理する |
+| 建築・内装・音響の専門家／行政／施工者 | 実測、資格判断、法規、署名、許可、施工、検査、品質保証を担当する |
+| OWNER | 対象空間、共有範囲、予算、採用案、外部送信、発注、設置、公開を決める |
+
+### 入出力・状態・保存
+
+- 入力候補は、本人の目的、空間情報、写真・図面・寸法、音環境、制約、予算、専門家の指摘。raw camera／audio、住所、生活patternは必要性・保持期間・共有先を決めるまで既定保存しない。
+- 出力候補は、比較案、根拠付き制約、revision差分、見積範囲、専門家確認待ち、施工・検査記録。生成画像やsimulationを実測図面、法規適合、許可済み、施工済みと表示しない。
+- project状態は少なくとも`DRAFT`、`MEASURE_PENDING`、`OPTION_REVIEW`、`PROFESSIONAL_REVIEW`、`OWNER_APPROVAL`、`PERMIT_OR_CONTRACT_PENDING`、`IN_PROGRESS`、`INSPECTION_PENDING`、`ACCEPTED`、`BLOCKED`を区別する。既存`lib/workflow.ts`へ実装する場合は同じ本人別revision競合判定を通す。
+- 保存する場合はowner、space、source、版、測定／生成／専門家／行政／施工の区分、artifact digest、承認、費用を関連付ける。住宅・現場データを学習利用や別顧客へ転用しない。
+
+### 失敗・復旧・承認
+
+- sensor欠落、寸法不確実、音響測定不足、古い法規、資格者不在、Provider切断、結果不明、費用超過では成功へ進めず、不足と安全な再開点を示す。
+- 自動再送、無断録音、常時監視、無断設備操作、無断発注を行わない。生活を妨げる場合は物理停止、手動fallback、ネットワークなしの安全状態へ戻せるようにする。
+- AI提案、code候補、見積、設備操作、外部共有、発注、申請、施工開始、録音は別々に承認する。専門資格と行政権限をRockstarOSの本人承認で代替しない。
+
+### 最初の合格条件と未決定事項
+
+1. 一つの限定空間と一つの具体的な生活課題を選び、現行手順と所要時間・revision・復旧を比較する。
+2. 同じspace/projectでarchitecture、interior、soundの少なくとも二分野を、責任者と成果schemaを分けてつなぐ。
+3. MiniなしのWeb／既存端末fallbackと、選定したMini prototypeの両方で本人が同じprojectを確認できる。
+4. 生成物、実測、専門家承認、許可、施工、検査を別証拠として再表示できる。
+5. privacy、騒音、accessibility、電源・通信断、費用上限、撤去・復旧を同じpilotで受け入れる。
+
+最初の住宅種別、部屋／建物範囲、国・地域、partner、Miniのsensor・speaker・表示・設備adapter、soundの設計／再生／測定範囲、価格、保守、データ保持は未決定。文書保存を提携、製造、施工、市場占有の合格にしない。
 
 ## 1. これは何？
 
@@ -664,3 +710,13 @@ XR、AI、cameraが持たない権限:
 - project責任者: 全章と作業ストリームを読む
 
 新しい仕様を追加するときは、「利用者のどの場面が変わるか」を先にAへ反映し、その後に画面、Core、契約、test、進捗を更新する。難しい仕様だけが増え、利用者の体験を説明できなくなる変更は受け入れない。
+
+
+## Mini単体のWebゲーム設計（2026-10-15）
+
+利用者の追加指示により、主担当MAT15/JOINT、Game AI06連携として[R5ゲーム実行設計](avocado-mini-r5/game-runtime-design.md)を追加。1本自律・200mm以内・別Edge Hub不要を維持し、WASM/WebGPU、GPU driver、メモリ比較、電源/熱、OS/game focus、同一仕事IDの継続、原稿非公開、失敗/復旧、MG01〜07の合格条件を定義。Chrome拡張はMac参照adapterで、Mini本番はOS操作面/Brokerへ移植する。Mini実装・実機・FivePlay起動・裸眼表示・製造の合格ではない。原本packageは不変。
+
+
+## 建築埋込・着脱・衛星経由の携帯Wi-Fi（2026-10-15）
+
+利用者の画像と明示指示により、[R5着脱通信設計](avocado-mini-r5/embedded-portable-connectivity.md)を追加。建築/家具側dockと可搬core、取り外し後の電源、衛星WANとWi-Fi LAN、job継続と場所権限失効、給電/熱/通信の失敗復旧、DP01〜05を定義。従来の外部給電のみの前提を変更するが、battery部品・衛星方式は未選定。1本自律/200mm以内/別演算Hub不要を維持。画像は機構参考であり、屋内衛星通信・実機・施工・製造合格ではない。MAT15/18の設計追補、原本packageは不変。

@@ -237,11 +237,13 @@ export default function CampusWorkspace({
   entryMode,
   entryTag,
   entrySource,
+  openProfile = false,
 }: {
   initialCampus: CampusId;
   entryMode?: string;
   entryTag?: string;
   entrySource?: string;
+  openProfile?: boolean;
 }) {
   const [campus, setCampus] = useState<CampusId>(initialCampus);
   const [data, setData] = useState<Bootstrap | null>(null);
@@ -252,7 +254,7 @@ export default function CampusWorkspace({
   const [notice, setNotice] = useState('');
   const [query, setQuery] = useState('');
   const [showComposer, setShowComposer] = useState<CampusItemKind | null>(null);
-  const [editingProfile, setEditingProfile] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(openProfile);
   const [tags, setTags] = useState<TagAnalytics[]>([]);
 
   const load = useCallback(async (nextCampus: CampusId) => {
@@ -587,7 +589,7 @@ export default function CampusWorkspace({
           <small>Campus</small>
         </Link>
         <div className={styles.toplinks}>
-          <Link href="/sky">Sky</Link>
+          <Link href={`/sky/campus/${campus}`}>Sky · {campusOptions.find((option) => option.id === campus)?.label}</Link>
           <Link href="/chat">Zema</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />
@@ -1410,7 +1412,8 @@ function Tags({
           <label>Count<input name="count" type="number" min="1" max="200" defaultValue="10" /></label>
           <label>
             Mode
-            <select name="mode" defaultValue={campus.defaultMode}>
+            <select name="mode" defaultValue="sky">
+              <option value="sky">Sky for this university</option>
               <option value="campus">Campus home</option>
               <option value="creative">Creative</option>
               <option value="study">Study</option>

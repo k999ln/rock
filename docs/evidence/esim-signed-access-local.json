@@ -1,0 +1,63 @@
+{
+  "schema": "rock-esim-signed-access-local/1",
+  "recordedAt": "2026-10-07",
+  "status": "source_and_local_fixture_verified",
+  "branch": "codex/esim-cloud-access",
+  "baseHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+  "observedGithubMain": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+  "remoteWorkBranch": "not_found",
+  "workingTree": "uncommitted; preserves pre-existing changes",
+  "verification": {
+    "focused": {
+      "command": "node --experimental-strip-types --test tests/esim-cloud-proof.test.mjs tests/esim-cloud-access.test.mjs tests/rockstar-service-package-access.test.mjs",
+      "passed": 12,
+      "failed": 0
+    },
+    "full": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "log": "/private/tmp/rock-esim-proof-verify.log",
+      "apiAssertions": 1178,
+      "csvAssertions": 113,
+      "typecheck": "pass",
+      "lint": "pass",
+      "build": "pass",
+      "baselineCheck": "pass",
+      "designCheck": "pass",
+      "nodeTests": 897
+    }
+  },
+  "accepted": [
+    "ES256 and Ed25519 request signing with signer callback; no private-key upload",
+    "real local Worker/D1 signed Home request and workflow job creation",
+    "atomic concurrent proof replay rejection",
+    "method/origin/path/query/body/expiry binding",
+    "scope restriction; no fallback to account headers on explicit proof",
+    "invalid signer, key rotation and refunded order rejection",
+    "no request content/signature saved in replay table"
+  ],
+  "integrationRepairs": [
+    "PROJECTS.md existing AMC toolkit link/count",
+    "existing work-composition-executor validated number template type annotation",
+    "database snapshot and schema migration counts"
+  ],
+  "remaining": [
+    "real eUICC-resident private key provisioning and signing adapter",
+    "real carrier/OEM/exact-device acceptance",
+    "device UI hookup to native signer",
+    "deployment and production migration",
+    "GitHub branch save and main integration",
+    "zero-retention/confidential cloud processing are separate work"
+  ],
+  "sourceSha256": {
+    "lib/esim-cloud-proof.ts": "803e733b0ac277270582b44d404f5e9943f70d5ac0514be07e702198db235fb9",
+    "lib/esim-cloud-access.ts": "9cc73def1aa252f752bdc7ed8dd8ee8e1f69cf36e602b5881b51ed3df4f5b15a",
+    "lib/esim-cloud-grant.ts": "30adede9ccac78cc80f40bdb21093364310e6ec413f4f8c17c0b56db3c69f9fe",
+    "lib/request-auth.ts": "78ebf676ba1022b2b713b7a3408dc97416bf34057fba574e2136fbda522fc092",
+    "lib/rockstar-service-access.ts": "f68048da2057a5afd4d1be2ad075df49a55416c532b52087db01b5617f7e0754",
+    "drizzle/0061_esim_cloud_proof_uses.sql": "81179c5895b2218420f22ef8ee811b9c315f68d2e7cf0cf17f68967606f07807",
+    "db/schema.ts": "ee1777df75d49b6593766ddb6a7ee5417929c4217966e7b5ddd6aab1dd85def0",
+    "tests/esim-cloud-proof.test.mjs": "05b29eb64bd23cad9a9487023b190fd5686f98b2ad813f26234dd9458f7daff7",
+    "scripts/check-work-api.mjs": "501170b70cbfe8d74bd63101c0f3da8d4f2cbba8e198c46223f3d3f9ed880313"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "rock-unified-payment-verification/1",
+  "evaluatedAt": "2026-10-05",
+  "baseCommit": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+  "scope": "local source and synthetic payment provider; concurrent eSIM access edits preserved",
+  "sourceHashes": {
+    "shared/stripe.mjs": "d75d5fdbcfea09fff999072c39f1d51e72e057b376c90537cd83fe3b1d26142d",
+    "lib/sky-stripe.ts": "7c4134e8e150d58b03265ff968830bce45daa72f84c67ebca246b8259453e925",
+    "lib/sky-usage-payment.ts": "d76715658c0c2f221d6dc1fadb6ece94cce4ac68234339b436fb31fda5838146",
+    "lib/sky-payments.ts": "e12dcfb12ecf45ca679ddc85721fc7cebb1e1976d4ae7eda6e8db242232600a7",
+    "components/sky-payments.tsx": "f6aa7f2bf04734c2adc5a3b92ce2e5bd6e19f939468f3e3361fe9efc7f2e50c1",
+    "app/api/sky/payments/[action]/route.ts": "cc4858de8b65b133221bca2f9083974311433d6a57b90b5a7586944be25382ce",
+    "drizzle/0060_sky_usage_payments.sql": "4d98258ab0686a88d673e3ae89ab11b35d048dd66b9aea1e54591e2b79f1dd8d",
+    "tests/sky-usage-payment.test.mjs": "98a9a481fec178a4d530203a2576c19d18e46a4d64ae1214c8140b32f82f511a"
+  },
+  "focusedTests": {
+    "passed": 84,
+    "failed": 0,
+    "environment": "Node SQLite + local Cloudflare workerd, fixture Stripe only",
+    "log": "/tmp/rock-payment-all-focused.log"
+  },
+  "typecheck": "passed",
+  "designCheck": "passed",
+  "fullVerify": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 882,
+    "fashionTests": 22,
+    "miniTests": 18,
+    "publicPreviewTests": 21,
+    "memeTests": 7,
+    "farmTests": 25,
+    "workerD1Assertions": 1133,
+    "csvAssertions": 113,
+    "webAssetMissing": 0,
+    "log": "/tmp/rock-payment-verify-final.log",
+    "logSha256": "6ebd59805a0c3d551e9f84b85c56c7f8ea20817a6471f44b10743fdb4922ddf1"
+  },
+  "published": false,
+  "githubSaved": false,
+  "mainIntegrated": false,
+  "liveChargesPerformed": 0,
+  "liveCloudCollectionEnabled": false,
+  "remaining": [
+    "Customer retail tariff/margin/tax/refund policy; provider cost is not retail revenue",
+    "Funded spending authorization before cloud execution; existing live execution gate remains closed",
+    "Real Stripe sandbox and same-artifact owner/device journey, provider usage and invoice reconciliation",
+    "A2A stays on existing Wallet settlement; alternate collection route requires atomic paid/funding authority",
+    "Hardware/Fashion share transport, not cross-site customer and order histories; merchant alignment remains an operating acceptance"
+  ],
+  "ui": {
+    "surface": "local /sky/payments",
+    "verified": [
+      "page rendering",
+      "purchase/CSV navigation links",
+      "loading state",
+      "safe missing-configuration error"
+    ],
+    "authenticatedFullJourney": false,
+    "realStripeCheckout": false
+  }
+}

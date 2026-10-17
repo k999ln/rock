@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-09",
+  "status": "diagnosed_not_repaired",
+  "taskId": "SKY21",
+  "responsibility": "ROCK",
+  "public": {
+    "siteProjectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "version": 48,
+    "sourceCommit": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "sourceClean": true,
+    "chatSourceSha256": "fa168c5cf5bef81fd84f5b3d6f3782b84165c686643eb7ac68fe5720aa1ff0e3",
+    "observedUi": "Sky article-editor connection dialog requires sign in before input; not connected",
+    "conversationBehavior": "sendMessage invokes responseFor fixed strings and selects tool; no LLM request in this handler",
+    "credentials": {
+      "environmentRevision": 3,
+      "openaiConfigured": false,
+      "otherLlmProviderConfigured": false
+    },
+    "logs": "Recent production GET /api/work-jobs, /api/jobs, /api/sky/connections returned 401; no credentials or raw headers saved."
+  },
+  "localDevelopment": {
+    "githubMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "remoteWorkingBranchPresent": false,
+    "cloudConversation": "components/sky-chat-workspace.tsx stops after /api/llm/estimate; quote approval/queue/result not connected to this UI",
+    "remoteGate": "lib/remote-ai-pricing-gate.ts remoteAiPricingGateAccepted returns false",
+    "executorExists": "services/sky-agent-runtime/src/worker.ts and lib/remote-ai-text-execution.ts exist; this is not evidence of accepted deployment or provider execution",
+    "distinction": "Do not attribute local cloud quote code to published v48"
+  },
+  "pixel": {
+    "basis": "docs/evidence/pixel-native-testing.json",
+    "state": "no_model",
+    "testModeIsNotAgentRuntime": true,
+    "installedShellSha256": "9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4"
+  },
+  "changesThisInvestigation": "Evidence/status only; no runtime fix or redeployment claimed",
+  "repairOrder": [
+    "Choose affected Pixel/Web surface; reuse existing planner, Broker, Tool and workflow contracts.",
+    "Pixel: provision accepted model/profile and verify genuine plan → Broker → Tool → stored result.",
+    "Web: connect an actual model/executor and approved usage path, then publish source and verify live request → execution → result.",
+    "Retest without mocked model/output; keep simulation and production evidence separate."
+  ],
+  "openQuestions": [
+    "User-selected target surface",
+    "For cloud: provider/account and permitted test budget; key acquisition via supported OpenAI Developers integration if chosen"
+  ],
+  "integrationSuggestion": {
+    "name": "OpenAI Developers",
+    "installed": false,
+    "suggested": true,
+    "note": "Installing the plugin alone neither completes the Agent implementation nor enables provider billing."
+  }
+}

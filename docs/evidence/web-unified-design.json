@@ -1,0 +1,226 @@
+{
+  "date": "2026-10-09",
+  "tasks": [
+    "WEB04",
+    "HOME01"
+  ],
+  "owner": "ROCK",
+  "sourceBase": "6d0e5f6137615f765022f3ac7212dee9786fbfb5",
+  "githubMainRead": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "stage": "published_verified",
+  "routes": [
+    "/",
+    "/sky",
+    "/chat",
+    "/wallet",
+    "/market",
+    "/settings"
+  ],
+  "deployment": {
+    "versionNumber": 47,
+    "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_61a4484de79c81918f7c1aadeb2fd830",
+    "deploymentId": "appgdep_6ac936f54aa88191adfaf9b643508cbf",
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "status": "succeeded",
+    "sourceSha": "f1c74e6993a87fa3733b0490812f85f6ab9d3587",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+    "audience": "public",
+    "archiveSha256": "48096f3f735c1303d00a95f16b1ceb622729ab0c0a1103d25e5ad74b114ab3e5"
+  },
+  "githubMainMerged": false,
+  "verification": {
+    "publicSource": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 285,
+      "fashionTests": 19,
+      "apiAssertions": 495,
+      "missingAssets": 0
+    },
+    "canonical": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 900,
+      "apiAssertions": 1178,
+      "csvAssertions": 113,
+      "missingAssets": 0,
+      "scope": "local working tree including concurrent changes"
+    },
+    "browser": {
+      "target": "public-source localhost preview",
+      "widths": [
+        1280,
+        390,
+        320
+      ],
+      "routes": [
+        "/",
+        "/sky",
+        "/chat",
+        "/wallet",
+        "/market",
+        "/settings"
+      ],
+      "sharedHeaderCount": 1,
+      "navigationItems": 6,
+      "background": "rgb(11, 13, 16)",
+      "horizontalOverflow": false,
+      "screenshots": "work/unified-design-qa/",
+      "checks": "work/unified-design-qa/browser-checks.json"
+    },
+    "contrastRatios": {
+      "textOnBackground": 17.96,
+      "textOnPanel": 16.42,
+      "mutedOnPanel": 7.41,
+      "primaryButton": 14.37,
+      "warning": 9.22,
+      "error": 8.13
+    },
+    "finalBuild": {
+      "exitCode": 0,
+      "source": "f1c74e6993a87fa3733b0490812f85f6ab9d3587",
+      "commands": [
+        "npm run project:check",
+        "npm run typecheck",
+        "Sites build-site.mjs"
+      ],
+      "note": "First build stopped by ENOSPC; regenerated own preview/build caches, retried successfully before source push."
+    },
+    "publicBrowser": {
+      "version": 47,
+      "desktop": [
+        {
+          "active": "ホーム",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/",
+          "width": 1280
+        },
+        {
+          "active": "Sky",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/sky",
+          "width": 1280
+        },
+        {
+          "active": "Zema",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/chat",
+          "width": 1280
+        },
+        {
+          "active": "Wallet",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/wallet",
+          "width": 1280
+        },
+        {
+          "active": "Market",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/market",
+          "width": 1280
+        },
+        {
+          "active": "設定",
+          "background": "rgb(11, 13, 16)",
+          "headerCount": 1,
+          "overflow": false,
+          "route": "/settings",
+          "width": 1280
+        }
+      ],
+      "mobile": [
+        {
+          "active": "ホーム",
+          "headerCount": 1,
+          "route": "/",
+          "scrollWidth": 320,
+          "width": 320
+        },
+        {
+          "active": "Sky",
+          "headerCount": 1,
+          "route": "/sky",
+          "scrollWidth": 320,
+          "width": 320
+        },
+        {
+          "active": "Zema",
+          "headerCount": 1,
+          "route": "/chat",
+          "scrollWidth": 320,
+          "width": 320
+        },
+        {
+          "active": "Wallet",
+          "headerCount": 1,
+          "route": "/wallet",
+          "scrollWidth": 320,
+          "width": 320
+        },
+        {
+          "active": "Market",
+          "headerCount": 1,
+          "route": "/market",
+          "scrollWidth": 320,
+          "width": 320
+        },
+        {
+          "active": "設定",
+          "headerCount": 1,
+          "route": "/settings",
+          "scrollWidth": 320,
+          "width": 320
+        }
+      ]
+    }
+  },
+  "remaining": [
+    "GitHub main integration remains separate"
+  ],
+  "usabilityReadiness": {
+    "date": "2026-10-09",
+    "status": "readiness_audited_not_full_service_acceptance",
+    "publicSourceSha": "f1c74e6993a87fa3733b0490812f85f6ab9d3587",
+    "localBackend": {
+      "command": "TMPDIR=/private/tmp npm run test:api",
+      "cwd": "work/home-redesign-source",
+      "passed": 495,
+      "failed": 0,
+      "scope": "synthetic local users and temporary D1, not authenticated public execution"
+    },
+    "publicLogin": {
+      "settingsShowsSigninRequired": true,
+      "gatewayPath": "/signin-with-chatgpt?return_to=%2Fsettings",
+      "loginPageObserved": true,
+      "provider": "ChatGPT",
+      "credentialsSubmitted": false
+    },
+    "publicEnvironment": {
+      "revision": 3,
+      "openaiApiKeyConfigured": false,
+      "aiGatewayKeyConfigured": false,
+      "secretValuesRecorded": false
+    },
+    "pixel": {
+      "accountState": "not_configured",
+      "localAiState": "no_model",
+      "basis": "same installed APK physical evidence in pixel-unified-design.json"
+    },
+    "finding": "Browser-local writing tools currently require an authenticated execution record before calculating; UI design acceptance is not cloud/provider execution acceptance.",
+    "guestProposal": {
+      "status": "proposal_only_not_implemented",
+      "approach": "Local guest use first; optional authenticated cloud save, migration and funded usage later; preserve owner isolation and paid-execution approvals"
+    },
+    "productionApiProbe": "Unauthenticated CLI probes were blocked at edge; browser direct API navigation unsupported. Do not label authenticated production execution verified."
+  }
+}

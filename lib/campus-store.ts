@@ -558,7 +558,8 @@ export function campusStore(db: Db) {
     const records = Array.from({ length: input.count }, (_, index) => {
       const number = String(input.start + index).padStart(4, '0');
       const tagId = `${input.prefix}-${number}`;
-      const destination = `/campus?campus=${campus}&mode=${encodeURIComponent(input.mode)}&tag=${tagId}`;
+      const destination = input.mode === 'sky' ? `/sky/campus/${campus}/hub?tag=${tagId}`
+        : `/campus?campus=${campus}&mode=${encodeURIComponent(input.mode)}&tag=${tagId}`;
       return { tagId, destination };
     });
     const results = await db.batch(
@@ -682,17 +683,17 @@ export function campusStore(db: Db) {
     const row = await statement(
       db,
       `SELECT tag_id AS tagId, campus_id AS campusId, mode, destination, active
-       FROM sky_campus_tags WHERE tag_id = ? AND active = 1`,
+       FROM sky_campus_tags WHERE tag_id = ?`,
       tagId,
     ).first<{ tagId: string; campusId: CampusId; mode: string; destination: string; active: number }>();
-    if (row) return row;
+    if (row) return row.active ? row : null;
     const fallback = campusFromTagPrefix(tagId);
     return fallback
       ? {
           tagId,
           campusId: fallback,
           mode: CAMPUSES[fallback].defaultMode,
-          destination: `/campus?campus=${fallback}&mode=${CAMPUSES[fallback].defaultMode}&tag=${tagId}&unregistered=1`,
+          destination: `/sky/campus/${fallback}?tag=${tagId}&unregistered=1`,
           active: 0,
         }
       : null;

@@ -122,7 +122,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 9ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 12ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -149,7 +149,10 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Meme Intelligence Sandbox** | GMGN/on-chain、Social Sieve、Narrative/KOL/Caller/Wallet cluster、Jev境界を合成したPAPER候補評価 | [`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/) | [README](toolkits/meme-intelligence-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **AMC Agent** | 現在のCodexチャットでの任務分担・独立検収と登録診断。Web自動同期は未接続 | [`toolkits/amc-agent/`](toolkits/amc-agent/) | [利用・復旧手順](toolkits/amc-agent/README.md) |
 | **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **FiveM Reality Bridge** | 仕事カードの共有とFiveM向けNUI確認・依頼下書きの開発sandbox。実ゲームengine・GTA VI対応・本番Zema連携は未受入 | [`toolkits/fivem-bridge/`](toolkits/fivem-bridge/) | [開発ガイド](toolkits/fivem-bridge/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **FivePlay Browser Adapter** | FivePlay向けの拡張sourceとmock HTTP試験。ゲーム起動・extension導入・engine API・残高変更は未受入 | [`toolkits/fiveplay-adapter/`](toolkits/fiveplay-adapter/) | [開発ガイド](toolkits/fiveplay-adapter/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 
 ## 共有領域と正本
 

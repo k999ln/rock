@@ -1,0 +1,199 @@
+{
+  "date": "2026-10-09",
+  "status": "installed_and_physical_tests_passed",
+  "workstream": "Android / Device / Local AI",
+  "taskIds": [
+    "OS10",
+    "RLS02"
+  ],
+  "responsibility": "ROCK",
+  "request": "Pixelアプリ内で登録なしに入力・実行・出力を試せるテストモード",
+  "source": {
+    "repository": "k999ln/rock",
+    "githubMainShaObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "workingBranch": "codex/esim-cloud-access",
+    "localHead": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "remoteWorkingBranchPresent": false,
+    "implementationCommitted": false,
+    "mainIntegrated": false,
+    "basis": "local working tree with prior parallel changes; hashes identify source, not a clean commit",
+    "sha256": {
+      "android/core/src/main/java/dev/rock/core/OutputTestTools.java": "f6001a9e2fc4e1432d1f99b4a2b05b9ace7e5c0f5a9d8e5daf63ae98387f3d11",
+      "android/core/src/test/java/dev/rock/core/OutputTestToolsTest.java": "a0cf4b9189832450c2916c7ad52922f286d8714b6811c05ee2c69713e59326ce",
+      "android/shell/src/main/java/dev/rock/shell/TestModeActivity.java": "9e4bc3856d8a5850879f49e60d1f6277eb2a5662135ef9c825dc328e28a8b096",
+      "android/shell/src/main/java/dev/rock/shell/MainActivity.java": "bbb471f4d391a80dfb6266141c961291c46aed243ed9cdee051a08ad4c0644d3",
+      "android/shell/src/main/java/dev/rock/shell/ShellUi.java": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7",
+      "android/shell/src/androidTest/java/dev/rock/shell/NativeOutputTest.java": "c22b3cb8e63b3a7253f87b945450f8c1c5944b6413446295695640e3e1b46436",
+      "android/shell/src/androidTest/java/dev/rock/shell/ShellNavigationTest.java": "e42e3ef236b9a68834871a74e76c0141e20863c0b7c4b814674f6a82169e9eb0",
+      "android/shell/src/main/AndroidManifest.xml": "46ac6388307dbdc2c4e6e1abd0760a51c0d185f58fc481141efc11e6d0c419b7",
+      "android/shell/src/aosp/AndroidManifest.xml": "e0bfd49e72faae7d7ed0da8b4167b1714feaa2c523787a4b6e5825392c6d7429",
+      "android/shell/build.gradle": "9052adab09c9da55fccd50e8bdc2373fce082d8bba560b052357755e2e9668f3",
+      "android/Android.bp": "ae3be690d00299e4fbca1ac3962e5530234ced3397b097c4077df799c5b17978",
+      "tests/native-output-testing.test.mjs": "24fa3f9f590facf525fcb720f633730900a12d66e9c78351fd7f13bdfbad924d"
+    }
+  },
+  "installation": {
+    "model": "Pixel 10",
+    "device": "frankel",
+    "sku": "GL066",
+    "osBuild": "2026100200",
+    "verifiedBoot": "yellow",
+    "beforeSha256": "cc1adc835b368fb5c5a5529a1a351f80e4b619f0a9d1d016e28cc6a425c83af8",
+    "installedSha256": "9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4",
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "dataPreservingInstall": true,
+    "internetPermission": false,
+    "package": "dev.rock.shell",
+    "scope": "existing Android client APK; no OS flash or device reset",
+    "sameExistingDevelopmentSigner": true,
+    "installedBytesMatchedCandidate": true,
+    "previousApkBackup": "work/pixel-native-testing/shell-before.apk"
+  },
+  "experience": {
+    "entry": "RockstarOS → ホーム → テストモードを開く",
+    "nativeActivity": "dev.rock.shell.TestModeActivity",
+    "requiresSignin": false,
+    "requiresNetwork": false,
+    "totalScenarios": 17,
+    "realLocalProcessing": 8,
+    "explicitSimulations": 9,
+    "realIds": [
+      "csv",
+      "citations",
+      "article",
+      "mercari",
+      "legal",
+      "patent",
+      "delivery",
+      "subscriptions"
+    ],
+    "simulationIds": [
+      "coconala",
+      "fashion",
+      "market",
+      "wallet",
+      "zema",
+      "cloud-ai",
+      "whisper",
+      "local-ai",
+      "browser"
+    ],
+    "limits": "Real processing is deterministic local conversion/template/calculation. Legal/patent memos do not perform research or give professional conclusions. CSV is a bounded simplified UTF-8 implementation. No actual AI inference, mic capture, remote browsing, orders, transfers or production workflow submission.",
+    "storage": "Memory only until close; optional explicit clipboard or user-selected JSON export",
+    "exportSchema": "rockstaros-native-output-tests/1"
+  },
+  "isolation": {
+    "brokerBefore": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model"
+    },
+    "brokerAfter": {
+      "workCount": 0,
+      "selectionStatus": "selected",
+      "selectedTool": "article-preparation@1",
+      "selectionRevision": 1,
+      "accountState": "not_configured",
+      "localAiState": "no_model"
+    },
+    "observedFieldsEqual": true,
+    "productionWorkCreated": false,
+    "realWalletChanged": false,
+    "externalCalls": false,
+    "shellInternetPermission": false,
+    "activityExported": false
+  },
+  "verification": {
+    "android": {
+      "command": "gradle -p android -ProckBuildRoot=/private/tmp/rock-pixel-native-testing/build :core:test :tool-sdk:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :shell:lintDebug --offline --no-daemon",
+      "javaHome": "/private/tmp/rock-pixel-design/runtime/jdk-17.0.20.1+1/Contents/Home",
+      "androidHome": "/private/tmp/rock-pixel-design/runtime/sdk",
+      "gradleExecutable": "/private/tmp/rock-pixel-design/runtime/gradle-8.11.1/bin/gradle",
+      "exitCode": 0,
+      "coreTests": 116,
+      "sdkTests": 7,
+      "lintPassed": true
+    },
+    "articleParity": {
+      "command": "node --experimental-strip-types scripts/check-os-parity.mjs /private/tmp/rock-pixel-native-testing/build/core/classes/java/main",
+      "checksPassed": 36
+    },
+    "physical": {
+      "command": "adb -s <connected Pixel serial> shell am instrument -w -e class dev.rock.shell.NativeOutputTest,dev.rock.shell.ShellNavigationTest -e rockCaptureUi true dev.rock.shell.test/androidx.test.runner.AndroidJUnitRunner",
+      "passed": 11,
+      "newNativeOutputTests": 4,
+      "existingNavigationTests": 7,
+      "preUpdateReadOnlyTestPassed": 1,
+      "coverage": [
+        "17 sample results and JSON export data",
+        "edited CSV output",
+        "actual clipboard content",
+        "reset clears results",
+        "fixture budget rejection",
+        "AI result explicitly states no model answer",
+        "Home opens native test Activity",
+        "existing navigation and observed Broker state preserved"
+      ],
+      "notCovered": [
+        "User selecting a destination and writing exported JSON through the system file picker",
+        "real cloud or local model inference",
+        "external provider execution",
+        "full OS acceptance"
+      ],
+      "rawLog": "work/pixel-native-testing/physical-tests.log",
+      "rawLogSha256": "c4fd0b0b38855080cabff540eae556afb07ba4896d183201e11c3f15dab1b913"
+    },
+    "repository": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 907,
+      "workerD1Assertions": 1178,
+      "csvAssertions": 113,
+      "webAssetReferences": 151,
+      "webAssetsMissing": 0,
+      "scope": "local working tree including prior parallel changes; completed before evidence-only final edits",
+      "log": "/private/tmp/rock-pixel-native-testing-verify.log",
+      "logSha256": "01f1f2774e0c241e5479c04bb0bfccad0945710b78c97ec85233a656ef0b829f"
+    },
+    "additionalChecks": [
+      "npm run os:check",
+      "npm run design:check"
+    ],
+    "visualInspection": {
+      "device": "same installed Pixel APK",
+      "screenshots": [
+        "work/pixel-native-testing/unified-page-0.png",
+        "work/pixel-native-testing/native-test-entry.png",
+        "work/pixel-native-testing/native-test-results.png",
+        "work/pixel-native-testing/native-test-ai.png"
+      ],
+      "observed": "Home native entry, real CSV output, explicit simulated AI/no inference labels, shared dark neutral appearance; no visible overlap"
+    },
+    "finalDocumentationChecks": {
+      "commands": [
+        "npm run project:update",
+        "npm run project:check",
+        "npm run design:check",
+        "npm run baseline:check"
+      ],
+      "exitCode": 0
+    }
+  },
+  "remaining": [
+    "Cloud AI needs accepted provider configuration, credentials and budget; current account is not configured.",
+    "Local AI needs an accepted signed model; observed state remains no_model.",
+    "External tools need individual provider acceptance.",
+    "GitHub source commit/main integration are separate and not completed.",
+    "Full OS build/signing/flash and full-loss recovery remain outside this APK acceptance."
+  ],
+  "nextAction": "Use native sample execution for output review; then accept specific real providers or signed local model under the existing identity, consent and usage-budget gates. Preserve this signer and use install -r for future APK updates.",
+  "rollback": "Keep work/pixel-native-testing/shell-before.apk. Same-package, same-signer rollback only after rechecking current device/package and data compatibility; do not uninstall or clear data.",
+  "handoff": {
+    "foregroundActivity": "dev.rock.shell/.MainActivity",
+    "confirmedBy": "am start Status ok and dumpsys activity Resumed/ResumedActivity for same package",
+    "initialForegroundParser": "First readback filtered old Android field names and did not match; follow-up matched the actual Android 17 Resumed fields."
+  }
+}

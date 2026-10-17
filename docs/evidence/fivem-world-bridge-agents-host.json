@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-15",
+  "scope": "Mac host local Agent workflow and FivePlay adapter source/mock HTTP only",
+  "sha256": {
+    "toolkits/fivem-bridge/agents.mjs": "2d6e0098922d13c88b741fba950c1aac6e2a34ead0fb313b9951374aab3ae437",
+    "toolkits/fivem-bridge/store.mjs": "2afd569582021371be89dc2548004752074df09c58e2e81a3b8b889839b748e8",
+    "toolkits/fivem-bridge/server.mjs": "06328594daa93397224d9eb30351aed9486e33213cc6fb1ff3e696f7a322df40",
+    "toolkits/fiveplay-adapter/manifest.json": "6ba316aa68e1e9cdf0972bfa8b4b100806933ffb40bba90a13fd551616136a80",
+    "toolkits/fiveplay-adapter/background.js": "8da565f84ce22e96b81e461bb1324585937fe108c87eb9dcf629eb9d63982950",
+    "toolkits/fiveplay-adapter/content.js": "cfe5cbfce41c9bf03334dae6bdbdb492e781172a513240d97c97e91f2277391c",
+    "tests/fivem-bridge.test.mjs": "0f2e7f1641540d9cb7b49745e4589bc72b62a3a4d6e76616a9c62a43e1abe759"
+  },
+  "tests": "14/14 targeted pass",
+  "typecheck": "pass",
+  "scopedLint": "pass",
+  "design": "pass",
+  "baseline": "pass",
+  "verify": "exit 1 at preexisting database-status two files mismatch; later stages unexecuted",
+  "verifyLog": "/private/tmp/fiveplay-verify.log",
+  "ui": {
+    "jobId": "cd237d92-84cb-4c33-a334-875fcf2d3bcd",
+    "round": 2,
+    "status": "completed",
+    "customAgent": "制作資料の出典・完成検査",
+    "processRestartRetained": true
+  },
+  "fiveplay": {
+    "build": "8b0b5899ed",
+    "gameBoot": false,
+    "observation": "6%, No progress for 43 s",
+    "extensionInstalled": false,
+    "providerApiAccepted": false
+  },
+  "productionZema": false,
+  "externalAgentExecution": false,
+  "fundsMoved": false,
+  "deployed": false
+}

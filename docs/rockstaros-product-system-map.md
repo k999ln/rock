@@ -4,7 +4,7 @@
 
 状態: **正本補助設計**。製品、サービス、内部システム、`Mr.` 由来Tool、MR（Mixed Reality）端末の関係を一つの図で確認するための文書。各コンポーネントのfield単位の契約は表中のリンク先を正本とする。
 
-対外的な主商品は、物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、cloud LLMとAgentへアクセスするサービスである。SIM購入にはサービス利用権を含める設計だが、OS binary自体はSIM/eUICCへ保存しない。avocadoMiniは別のhardware programで、実機試作と販売は未実施であり、サービス利用の必須端末ではない。
+対外的な主商品は、物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、cloud LLMとAgentへアクセスするサービスである。SIM購入にはサービス利用権を含める設計だが、OS binary自体はSIM/eUICCへ保存しない。avocadoは建築・インテリア・サウンドを最初に深く適用する産業領域とし、avocadoMiniを生活空間との物理node候補にする。Miniは別のhardware programで、実機試作と販売は未実施であり、サービス利用の必須端末ではない。
 
 入口は、購入チャネルでのSIM/eSIM offer、Rockstar service onboarding、既存OS client/browser、そして対応機種に限るnative OS導入である。通信開通、利用権claim、アカウント認証、端末へのOS/client導入を別々に確認する。
 
@@ -20,7 +20,7 @@ eSIM/物理SIMの回線料金、RockstarOS service access、Cloud LLM/Agent usag
 
 - RockstarOSは、SIM/eSIMを入口にSky、Zema、cloud LLM/Agentへアクセスするサービスと、その本人性・権限・仕事・復旧を支える共通OS/Core。
 - SkyはAI自動化チームの仕事とToolを選ぶ入口、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
-- avocadoMiniはMaterial Invention Studioを手で扱う別programの専用device。OSそのものでもサービス開始の前提でもない。
+- avocadoMiniは、現行Material Invention Studioを手で扱う専用deviceであり、将来は受入済みDevice Profileに限って建築・インテリア・サウンドの空間projectへ接続する。OSそのものでもサービス開始の前提でもない。
 
 ## 1. 会社が提供するもの
 
@@ -104,7 +104,7 @@ flowchart TB
 | Wallet | Settlement Worker / Provider | 完了した仕事と確定入金を分離し、Receiptで照合する | [Sky billing](sky-billing.md) | fixture / sandbox、実払出しは未接続 |
 | LLM Runtime | Agent Runtime | 選択されたLLMがplanを返し、Agentが許可済み手順だけを実行 | [AI-native OS設計](ai-native-os-architecture.md) / [Decision Fabric](jev-local-qwen-decision-fabric-design.md) | Qwen機内モードと固定runtimeを検証中 |
 | Platform Core | Local LLM / Cloud LLM / 自社LLM | モデルは交換可能。権限付与とTool実行はモデルの外に残す | [Local AI契約](../contracts/local-ai-runtime.json) | 既存モデルを先に搭載、自社LLMは追加接続 |
-| avocadoMini | Material Invention Studio | センサーと表示でdigital twinを操作する専用入力・表示機器 | [avocadoMini設計](rockstaros-avocado-mini-complete-design.md) | 設計 / Bench試作前 |
+| avocadoMini | Material Invention Studio／空間project | 現行はdigital twinの専用入力・表示機器。将来の建築・interior・sound接続は別Device Profileと実空間pilotで受け入れる | [avocadoMini設計](rockstaros-avocado-mini-complete-design.md) | 方針・設計 / Bench・実空間pilot前 |
 | Material Invention Studio | Material Invention Core | 発明チームの将来の操作画面から物質候補、制約、安全状態、simulation結果をCoreへ渡す | [Material Core](material-invention-core.md) | Core sandbox実装、Studio操作画面と物理設備は未接続 |
 | Material Invention Core | Patent AI Bridge | 人・AI・文献・予測・実測を分けて発明資料へ整理 | [空間発明設計](rockstaros-avocado-mini-complete-design.md) | 接続設計、特許性・出願の自動判断はしない |
 

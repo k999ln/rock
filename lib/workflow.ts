@@ -1,3 +1,5 @@
+import { parseCompositionPlan, reviseComposition, capabilityFor, runnableCompositionNodes, COMPOSITION_TEXT_LIMIT, type CompositionState, type CompositionArtifact } from './work-composition.ts';
+
 export const workflowTemplates = [
   {
     id: 'article',
@@ -89,6 +91,7 @@ export type WorkCommand =
   | { id: string; action: 'complete'; note: string }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
+  composition?: CompositionState;
   id: string;
   title: string;
   templateId: string;
@@ -134,6 +137,11 @@ function defaultWorkPlan(templateId: string, objective: string): WorkPlan {
   };
 }
 export function normalizeWorkJob(job: WorkJob): WorkJob {
+  if (job.templateId === 'composition') {
+    if (!job.composition) throw new WorkError('組み合わせ計画がありません。');
+    parseCompositionPlan(job.composition.plan);
+    return job;
+  }
   const expected = defaultWorkPlan(job.templateId, job.title);
   if (
     job.plan?.schemaVersion === 1 &&
@@ -186,6 +194,16 @@ export function createWorkJob(
   now = new Date().toISOString(),
 ): WorkJob {
   const input = objectInput(value, ['id', 'title', 'templateId', 'plan']);
+  if (input.templateId === 'composition') {
+    const plan = parseCompositionPlan(input.plan);
+    return {
+      id: workId(input.id), title: boundedText(input.title, 120), templateId: 'composition',
+      plan: { schemaVersion: 1, objective: plan.objective, approvalGates: [] },
+      composition: { plan, source: null, artifacts: {}, operations: [] },
+      revision: 0, status: 'active', events: [], createdAt: now, updatedAt: now,
+      steps: plan.nodes.map((node) => ({ id: node.id, title: capabilityFor(node.tool)!.name, tool: node.tool, runner: 'composition', passed: false })),
+    };
+  }
   const template = workflowTemplates.find(
     (item) => item.id === input.templateId,
   );
@@ -300,6 +318,8 @@ export function applyWorkCommand(
   now = new Date().toISOString(),
 ): WorkJob {
   const command = parseWorkCommand(value);
+  if (job.templateId === 'composition' && !['complete', 'cancel'].includes(command.action))
+    throw new WorkError('組み合わせの計画・実行は専用画面から行ってください。', 409);
   const duplicate = job.events.find((event) => event.command.id === command.id);
   if (duplicate) {
     if (JSON.stringify(duplicate.command) !== JSON.stringify(command))
@@ -343,6 +363,8 @@ export function applyWorkCommand(
   };
   if (command.action === 'cancel') next.status = 'cancelled';
   else if (command.action === 'complete') {
+    if (job.composition && (job.composition.materialCleared || job.composition.plan.nodes.some((node) => job.composition!.artifacts[node.id]?.status !== 'passed')))
+      throw new WorkError('最新の成果と完成条件をすべて検査してください。', 409);
     if (job.status !== 'review' || !job.steps.every((step) => step.passed))
       throw new WorkError('手順をすべて終えてから内容を確認してください。');
     next.status = 'completed';
@@ -361,4 +383,44 @@ export function applyWorkCommand(
     if (next.steps.every((item) => item.passed)) next.status = 'review';
   }
   return next;
+}
+
+/** The server executes bounded, effect-free adapters before calling this reducer.
+ * Public record commands cannot supply or certify composition outputs. */
+export function updateComposedWork(
+  job: WorkJob,
+  update: { id: string; fingerprint: string; revision: number } & (
+    { action: 'revise'; plan: unknown } |
+    { action: 'clear' } |
+    { action: 'run'; stepId: string; source: string; result: CompositionArtifact }
+  ),
+  now = new Date().toISOString(),
+): WorkJob {
+  if (!job.composition || job.templateId !== 'composition') throw new WorkError('組み合わせの仕事を選んでください。');
+  const id = workId(update.id);
+  const duplicate = job.composition.operations.find((operation) => operation.id === id);
+  if (duplicate) {
+    if (duplicate.fingerprint !== update.fingerprint) throw new WorkError('同じ操作IDの内容が異なります。', 409);
+    return job;
+  }
+  if (update.revision !== job.revision) throw new WorkError('別の操作で更新されました。再読込してください。', 409);
+  if (job.composition.operations.length >= 100) throw new WorkError('操作上限です。手順を保存して新しい仕事を作成してください。', 409);
+  if (update.action !== 'clear' && ['completed', 'cancelled'].includes(job.status)) throw new WorkError('終了した仕事は変更できません。', 409);
+  let composition: CompositionState;
+  if (update.action === 'clear') composition = { ...job.composition, source: null, artifacts: {}, materialCleared: true };
+  else if (update.action === 'revise') composition = reviseComposition(job.composition, parseCompositionPlan(update.plan));
+  else {
+    if (job.status !== 'active' || !runnableCompositionNodes(job.composition).some((node) => node.id === update.stepId))
+      throw new WorkError('実行できる手順ではありません。計画と入力元を確認してください。', 409);
+    if (!update.source.trim() || update.source.length > COMPOSITION_TEXT_LIMIT ||
+        (job.composition.source !== null && job.composition.source !== update.source)) throw new WorkError('素材が不正です。素材を変える場合は先に素材を消去してください。');
+    composition = { ...job.composition, source: update.source, artifacts: { ...job.composition.artifacts, [update.stepId]: update.result } };
+    if (JSON.stringify(composition.artifacts).length > 100_000) throw new WorkError('成果の合計上限を超えました。仕事を分けてください。', 413);
+  }
+  composition.operations = [...composition.operations, { id, fingerprint: update.fingerprint }];
+  const steps = composition.plan.nodes.map((node) => ({ id: node.id, title: capabilityFor(node.tool)!.name, tool: node.tool, runner: 'composition', passed: composition.artifacts[node.id]?.status === 'passed' }));
+  return { ...job, composition, steps,
+    plan: { ...job.plan, objective: composition.plan.objective },
+    status: ['completed', 'cancelled'].includes(job.status) ? job.status : steps.every((step) => step.passed) ? 'review' : 'active',
+    revision: job.revision + 1, updatedAt: now };
 }

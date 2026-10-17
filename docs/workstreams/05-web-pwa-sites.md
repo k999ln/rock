@@ -1,5 +1,40 @@
 # Web / PWA / Sites
 
+## Sky成果受け皿と第一者アプリplugin（WEB06 / SKY21、2026-10-12）
+
+主担当ROCK。OSのZema管理とSky単体の各アプリ内成果表示を分ける。Skyのowner-scoped成果一覧を `/sky/outputs` に作り、第一者同一originアプリが保存済み委任成果を読んで型付き表示する最初の例をFitnessで検証する。外部app SDK/別origin認証、Agent Provider、実Apple PayはJOINT/EXTERNALの別受入。未保存/部分成果を完成として表示しない。合格は `tests/sky-output-presenter.test.mjs`、`tests/sky-fitness-output.test.mjs`、type/lint/design/verifyとPC/mobileの画面、既存APIの本人A/B境界。成果ページの保存は既存仕事/委任/回答台帳を再利用し、新しい原本DBを作らない。[詳細](../sky-launch-design.md#sky-app-output-plugins)。
+
+## Sky共通入口の仕様同期（WEB06 / SKY21 / SIM01、2026-10-12）
+
+主担当ROCK。利用者指定チャット「大学別NFCでSkyに接続」の最新方針とiOS/eSIM要望を[共通入口仕様](../sim-led-product-architecture.md#sky-shared-entry)へ統合。既存SkyをNFCの大学文脈と任意eSIMから使い、Zema・本人・購入・仕事・予算を共用する。iOS初期版はbrowser/PWA、native/App Clipは後続候補。原因は旧大学専用Hub、SIM必須に見える旧記述、main/local/二つの公開Siteの進捗混同。修正順はmain/DB/引継ぎ同期→共通Skyの実操作→代表Agentの費用/成果縦断→同一artifact公開/本人A/B/実機→任意eSIM。ROCKの仕様保存とJOINTの実機/Provider受入、OWNERの料金/配布条件を分ける。`npm run project:update`・`baseline:check`・`design:check`・`verify`、UI変更時は実操作。今回の観測/証拠は`data/project-status.json`の`skyEntrySpecificationSync`。
+
+## 大学別SkyをNFCからホーム画面へ（WEB06 / SKY21、2026-10-12）
+
+主担当ROCK。5大学の既存Sky入口に大学別PWA manifest、本人別の購入/仕事を読むAgent Hub、Sky配下で既存Zema画面を再利用する導線を追加。登録済みSkyタグは大学別Hubへ直接進み、旧Skyタグも読取り時にHubへ転送する。NFCはHTTPS入口でブラウザ利用は即時、PWA追加は本人操作。Apple Payは適格端末でのStripe Checkout選択肢で、購入権とAgent実行権は別に照合する。公開v39には未配備。対象manifest/commerce/workflow試験、type/lint/build、全体verifyの後、同一artifactで実NFC・iPhone/Android・本人A/B・決済・Provider・Zema停止/復旧を別々に受け入れる。[詳細](../sky-tools-complete-design.md#大学別nfc-sky2026-10-12)、[証拠](../evidence/campus-sky-entry.json)。
+
+同日のWeb体験修正: タグ着地先はLPでなく作業開始画面。大学別の依頼入力→Zema下書き、guest brief、People/資料/Market、本人の仕事・購入・MCP枠を最初の画面で操作できる構成とする。sourceの動線検証を公開/実機/Provider受入へ混同しない。
+
+## Web共通デザイン（WEB04 / HOME01、2026-10-09）
+
+利用者の追加指摘により、Home単独修正から主要6アプリの共通ヘッダー・無彩色tokenへ範囲を拡張。表示責任はROCK。PC/mobile全画面比較と既存回帰を合格条件にし、[既存全体設計](../rockstaros-complete-design.md#web共通デザイン2026-10-09修正)と[同一sourceの検証証拠](../evidence/web-unified-design.json)を入口にする。Sites公開とGitHub main統合を分ける。
+
+## Home刷新（2026-10-09、HOME01 / WEB01）
+
+同日の修正指示でHomeを中性化し、公開v46/source `6d0e5f6137615f765022f3ac7212dee9786fbfb5`を読戻し確認。彫刻・ライム・巨大コピーを外し、上部アプリ一覧と依頼・仕事の通常密度へ変更。公開sourceの全体verify、正本の全体verify（Node900/API1178/CSV113）が成功。既存証拠のneutralRevisionを現在の配備・検証記録とし、以下v45の記録は前版の履歴。GitHub mainは未統合。
+
+公開v45/source `e8d0353b92858602415a6c976aadbade089a6fa4`。public audienceを維持し、公開ホームを読戻し確認。[検証証拠](../evidence/home-intent-refresh.json)。公開source全体verifyは成功。正本側の対象22試験とdesign検査は成功、全体verifyは既存DB進捗不一致で停止。GitHub mainは未統合。
+
+ROCK担当。依頼・本人の仕事・成果を中心にHomeを刷新し、指定public Siteの既存sourceへ適用する。認証、workflow、Wallet、課金は既存契約のまま。GitHub正本のsourceと、旧公開版に適合させたsourceを区別する。詳細契約は[全体設計のHome節](../rockstaros-complete-design.md#home-意図から仕事へ2026-10-09)。検証はhandoff試験、typecheck、npm run design:check、npm run verify、PC/mobile操作とSites versionで記録。
+
+
+## 公開インストール入口（2026-10-05、WEB13）
+
+利用者はeSIMとRockstarOSの導入入口を依頼し、ドメインを`avocadomini.si`（c）へ確定した。公開Site version4とドメイン/TLS activeを再取得。旧DNS待ちは履歴。主担当JOINT: ROCKは`/install/`の端末別導線、SitesはHTTPS配信、EXTERNALは契約済みeSIM発行、OWNERは契約と署名鍵を担当する。Web/PWAの追加は既存公開OSサービスへ遷移する。eSIM/Pixel/Mini/Pro/QEMUは未受入の発行・imageを配布せず不足条件を示す。6分類は入口/対象機器の整理であり6つの完成OSを意味しない。eSIMは他の機器版とも併用可能なサービスアクセス方式。個人データやactivation materialを公開サイトに保存しない。
+
+合格条件: `/install/`から公開Web版へ到達、端末別追加手順、eSIM未配備の明示、未配布imageの誤配布防止。UI到達、公開sourceのbuild/test、repository `npm run verify`、Sites配備成功を別々に記録する。Webの追加失敗時はSafari/Chromeで開き直すかブラウザ利用へ戻る。native配布は既存release gate、eSIMはBIL02/Provider gateで再開する。
+
+公開結果: version6/source `b75716b6`、配備成功。全体verify exit0、最終Site13routes/18tests合格。公開OSの`/connect`と`/sky/purchases`は404のためリンクを除去した。証拠は`docs/evidence/public-install-entry.json`。GitHub側はローカル未commitでmain未統合。実eSIM/実機OSの受入は未完了。
+
 ## avocadomini.si（2026-10-05、WEB13）
 
 利用者は `k999ln/rock` のホームページを `avocadomini.si` で公開するよう指定した。担当はJOINT。ROCKはmain `aa7f2b41ce34a32c262500a83238bb713c003dee` の `sites/avocado-mini` と公開artifactを同期し、Sitesは配信とTLS、OWNERはDNS管理サービスの接続を担当する。現在のmainのSIM/eSIMホームとMini／Pro／Rocket Star等の既存ページを維持する。
@@ -166,3 +201,34 @@ WEB06/ROCK: 正本main b3e2676から今回のCSV受付衝突/競合cleanupと期
 PR #40（`0d2b758f`）は2026-09-24時点の日本語README、R5先行トップページ、`avokado mini`への表記統一とその生成物を扱う履歴である。現mainは `97d185ea` / `aa7f2b41` でSIM/eSIM-led service accessを主導線とする英語版ホーム、独立したMini / Proページ、現在の利用権・課金未受入表示へ更新済み。このため#40の履歴をmerge parentとして保存し、旧ページ本文・旧hero・旧生成CSSによる置換は採用しない。原本は同PRの履歴から取得でき、現行製品名・現mainのREADMEと公開サイトsourceを巻き戻さない。
 
 PR #61は独自ドメインのcanonical、sitemap、hosting参照と既存の配備記録を取り込む。混入していたSky Billing dry-run生成物は変更対象のsourceがなく、この統合では現main版を保持する。このローカル統合自体ではDNS変更、Site配備、外部回線・Providerへの操作を実施していない。
+
+## AMCのCodex登録（2026-10-05 / WEB04）
+
+ROCK担当。GitHub mainの既存3役を、このcheckoutの `.codex/agents/` へ登録。完了条件は正本一致、構文と役割の検査、既存model/承認設定の保持。`node --test tests/amc-agent.test.mjs` はmainのpreview checkoutで4/4合格。現在のcheckoutにはCLI/Coreがないため、単なる定義登録をruntime統合・Web起動/同期・実Goal完走へ換算しない。結果と次の自動読込確認は [登録証拠](../evidence/amc-codex-registration.json) に記録。
+
+## AMCチャット内入口の改善（2026-10-05 / WEB04 / ROCK）
+
+前回の定義登録だけでは現在のcheckoutにCLIがなく、利用者に新しいチャットやWebを使う手順を要求していた。現在は `toolkits/amc-agent/SKILL.md` を `.agents/skills/amc/SKILL.md` へ登録し、同じCodexチャットの司令官からnative委任と独立検収へ進む。既存のmain launcherと定義を再利用し、`npm run amc` のhelpと一文依頼、`doctor` の設定/CLI/容量診断、未対応端末での復旧案内を追加。保存Goal、Web API、Sky catalogの実行権限は変更しない。既存の異なるskill/agent定義を保持し、秘密値・model・承認設定を複製しない。容量不足はOSの実状態であり、診断表示を空き確保の成功へ換算しない。
+
+合格条件: 引数なしでhelp、一文Goalがliteral argv、preview無実行、対話端末なしで復旧案内、変更なしdoctor、既存設定保持、再登録冪等、native実行担当の成果を別担当が確認。検証: `node --test tests/amc-agent.test.mjs`、`npm run amc -- doctor`、`TMPDIR=/private/tmp npm run verify`。[証拠](../evidence/amc-codex-usability.json)。次は実ユーザーの具体的なGoalで継続利用し、Web同期が必要なら別の本人認証付きadapterとして受け入れる。
+
+検証完了: 対象10試験、lint、project/baseline/design、literal preview合格。実行担当のREADME提出を独立検収し、途中ENOSPCと親symlink診断の2件を修正して限定pass。全体verifyは低容量によるauto-review拒否のため未実行。ユーザーファイル/ブラウザcacheは削除せず、容量回復後に再検証する。
+
+## 登録不要の出力テスト（WEB04 / 2026-10-09）
+
+目的・体験: `/test` は既存catalogの全項目を列挙し、サンプル一括実行、編集入力の個別実行、結果のコピー・保存・リセットを提供する。実処理・模擬データ・接続待ちを同じ状態語で表示する。CSV、文章、企画、受付文、照合は既存の純粋関数を再利用し、Zema試験はlib/workflow.tsへsample=trueの記録を通す。本番完了へ昇格しない。
+
+責任・入力出力: ROCKのstateless POST `/api/output-tests`。同一Origin/JSONのみ、本文64KB・欄12,000文字まで。固定allowlist以外の入力・Tool・owner指定を拒否。応答はid/mode/status/output/details/executedAt。Provider、DB、Broker、Wallet、本番保存API、任意shellは呼ばない。模擬Marketは入力検査のみ、Walletは表示計算のみ、実注文・実残高ではない。未接続Toolのanswerはnull/not_run。
+
+状態・保存・失敗復旧: idle→running→output/not_run/error。失敗は当該項目だけに表示し、再実行可能。編集時に古い出力を破棄。一括はサンプルへ戻すと明示。結果と入力はReactの画面メモリのみ、再読込で消去。アプリDBへの記録なし、ログへ本文を書かず、Cache-Control:no-store。利用者操作でテキスト/CSV/全結果JSONを端末へ保存。アプリ自身の保持・削除と配信基盤のメタデータログは区別する。
+
+承認・合格・未決定: 登録不要でも本番の本人性・予算・同意を緩和しない。サンプルは架空と明示し、法務/特許は受付整理に限定。外部公開・送金・AI API呼出なし。全catalog coverage、入力変化、境界拒否、workflow未完了、ブラウザ一括/個別/保存/リセット、verifyで検収する。Cloud鍵・利用枠、候補Toolの実行環境、Pixel端末内modelは別途OWNER/EXTERNALの準備と実受入が必要。撤去時はheader入口と/test・stateless endpointを除去、旧配備へrollbackできる。
+
+## 大学別NFC Sky（2026-10-12、WEB06 / SKY21）
+
+公開前の調査一覧は[既存証拠のlaunchResearch](../evidence/campus-sky-entry.json)。公式24資料、必要40項目、大学別機能案、Provider6候補の登録制限、15受入シナリオをまとめた。現状はlocal大学版のみ受入、公開v39のNYU入口は404、PC不要remote MCP・AI実料金gate・追加枠販売は未受入。main/local/配備sourceとmigrationを同期してから、本人/大学確認→スマホMCP/AI→有料枠→実NFC/設置の順に同一候補で検証する。大学メールと在学証明、6枠無料とAI/外部SaaS料金、過去34 Tool分類と現行公開版の実利用を混同しない。今回の調査では公開・接続・契約・タグ書込みを行っていない。
+
+利用者の追加指示で5大学別のbrowser入口と大学別brief、一般MCP5枠・対象学生6枠を追加。主担当Web / PWA / Sites、ROCK。OS完成を必須にせず、NFCはURL入口とする。本人単位の枠管理を実装し、有料拡張の価格・cloud MCP実行・公開同一artifact・実NFC/端末の受入は別gateに残す。[目的・状態・保存・失敗/復旧・責任・合格条件](../sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。
+## 2026-10-12 大学NFC入口を既存Skyアプリへ統合（WEB06 / SKY21、ROCK）
+
+利用者が公開Skyを示し、OS外でもSky単体が成立する品質を明示した。大学Hubの別フォーム画面を着地点から外し、既存`SkyWorkspace`のAgentフィード/役割選択を大学名、大学別の既存ready Tool、購入履歴・接続・Sky内Zema導線付きで再利用する。NFCと大学別PWAのURLは維持。brief/People/資料は補助入口、MCP 5/6枠は認証済み状態のまま。ROCKは同一Sky UIと本人状態、EXTERNALは実NFC/決済/Provider、JOINTは同一配備artifactのiPhone/Androidと購入→実行→Zema/費用、OWNERは販売/大学配布条件を担当。ローカルUI検査と型・対象試験は本番合格ではない。既存main `8c5891fc` にはColumbia専用の別動的routeがあり、dirty差分を保全した統合時に同一路線を一つへ整理する。

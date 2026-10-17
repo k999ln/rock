@@ -1,5 +1,11 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
+## 2026-10-14 建築・インテリア・サウンドを最初の産業拠点にする
+
+利用者の最新の明示方針により、avocadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初の産業上の根城とする。これは顧客向け主商品であるSIM/eSIM起点のRockstarOS service accessを置き換えず、その共通runtime、Sky、Zema、avocadoMiniを実空間の仕事へ集中適用する市場・提携方針である。
+
+競争単位は図面生成やsmart-home remoteの機能数ではなく、空間の意図、現場情報、設計revision、音環境、見積、専門家承認、施工・復旧の状態を本人の一つのprojectとして失わず扱えることとする。技術は前面へ押し出さず、必要な時だけ現れ、停止・手動利用・privacy・accessibilityを保つ。資格、法規判断、署名、許可、施工責任は専門家・行政へ残し、AIやMiniの出力を自動承認しない。対象空間、最初のpartner、国・地域、sound範囲、Mini Device Profile、pilot価格は検証前の未決定事項である。
+
 ## 2026-10-05 選択可能なeSIM提供形態の課金境界
 
 最新の明示方針は、対応可能な端末・提供形態で選べるeSIM経由のRockstarOSクラウドOSと、そこでのSkyエージェント利用に対する従量課金。製品全体をこの方式へ一本化せず、eSIM不要のWeb/app、native OSの端末内LLM/offline agent、local/cloud併用を維持する。通信量販売を中心にせず、本人別の利用権・見積り・上限・承認・実行・停止・保存/再開・利用量・請求照合を一体の体験にする。具体的な責任、入出力、保存、失敗、復旧、承認、合格条件、料金の未決定事項は[共通設計](sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)を参照する。既存Tool/SDK/Walletを再利用し、端末内LLMとPixel/QEMUの受入は独立して保持する。これは設計変更であり、本番実行・課金や実機対応の完了ではない。

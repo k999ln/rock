@@ -1,0 +1,10 @@
+.game-companion { min-height:100vh; background:var(--os-bg,#101113); color:var(--os-text,#ededee); }
+.game-companion main { max-width:800px; margin:auto; padding:48px 24px; }
+.game-companion h1 { font-size:clamp(28px,5vw,42px); letter-spacing:-.04em; }
+.game-companion p { color:#b4b6bd; line-height:1.7; }
+.game-companion .game-eyebrow { font-size:11px; letter-spacing:.15em; }
+.game-companion section { border-top:1px solid #383a40; margin-top:32px; padding-top:20px; }
+.game-companion label { display:grid; gap:10px; margin:16px 0; }
+.game-companion select,.game-companion textarea { width:100%; padding:12px; background:#1d1f23; color:inherit; border:1px solid #50525b; border-radius:8px; font:inherit; }
+.game-companion button,.game-companion .game-primary { display:inline-block; padding:12px 18px; background:#e3e4e8; color:#151619; border:0; border-radius:8px; font:inherit; text-decoration:none; cursor:pointer; }
+.game-companion button:disabled { opacity:.4; cursor:default; }

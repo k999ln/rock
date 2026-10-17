@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090b">
+  <title>avocado Companion · Pocket Console</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif; background: #0a0d11; color: #f3f5f7; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; background: radial-gradient(circle at 50% 17%, #25313b 0, #11171d 28%, #0a0d11 62%); }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .shell { max-width: 560px; min-height: 100svh; margin: auto; padding: max(20px, env(safe-area-inset-top)) 18px max(35px, env(safe-area-inset-bottom)); }
+    .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .eyebrow { color: #9aabb9; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 6px 0 3px; font-size: 26px; letter-spacing: -.045em; font-weight: 650; }
+    .sub { margin: 0; color: #a2afb8; font-size: 12px; line-height: 1.5; }
+    .tag { border: 1px solid #52616b; border-radius: 999px; padding: 7px 10px; color: #d6e0e6; font-size: 11px; white-space: nowrap; }
+    .stage { height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .tether { width: 6px; height: 46px; margin-bottom: -2px; border-radius: 3px; background: repeating-linear-gradient(90deg,#222a30 0 2px,#3f484e 2px 3px); box-shadow: 0 0 0 2px #11171d; }
+    .loop { width: 36px; height: 26px; border: 6px solid #5b6972; border-radius: 18px 18px 9px 9px; margin-bottom: -7px; position: relative; z-index: 1; }
+    .orb { width: 196px; height: 166px; border-radius: 49% 49% 45% 45%; position: relative; border: 6px solid #596168; background: radial-gradient(circle at 30% 12%, #4d535a 0, #1d252c 21%, #06090c 62%, #030507 100%); box-shadow: inset 0 5px 13px #afb6b447, inset 0 -12px 26px #020304, 0 25px 40px #0009, 0 0 70px #7894ac1d; transition: transform .25s, box-shadow .25s; }
+    .orb::before { content: ""; position: absolute; top: 13px; left: 28px; width: 88px; height: 20px; border-radius: 50%; background: #c4d5e633; filter: blur(15px); transform: rotate(-25deg); }
+    .orb.listening { box-shadow: inset 0 5px 13px #afb6b447, 0 0 0 7px #c8e6ff18, 0 0 65px #9bcfff60; transform: scale(1.025); }
+    .orb.alarm { box-shadow: inset 0 5px 13px #afb6b447, 0 0 0 8px #ff7b3245, 0 0 75px #ff7b3255; animation: pulse .55s infinite alternate; }
+    @keyframes pulse { to { transform: scale(1.035); } }
+    .eyes { position: absolute; top: 60px; left: 0; right: 0; display: flex; justify-content: center; gap: 31px; }
+    .eye { display: block; width: 24px; height: 47px; border-radius: 15px; background: #f8fbff; box-shadow: 0 0 19px #e1f2ff95; transform: rotate(9deg); transition: height .2s, border-radius .2s, transform .2s; }
+    .eye:last-child { transform: rotate(-9deg); }
+    .orb.speaking .eye { height: 18px; border-radius: 14px 14px 6px 6px; transform: translateY(18px); }
+    .orb.speaking .eye:last-child { transform: translateY(18px); }
+    .orb.alarm .eye { background: #ff9858; box-shadow: 0 0 18px #ff743c; }
+    .orb.quiet .eye { height: 8px; transform: translateY(24px); }
+    .orb.quiet .eye:last-child { transform: translateY(24px); }
+    .pull { width: 46px; height: 22px; border: 5px solid #9b5b31; border-radius: 0 0 13px 13px; margin-top: -3px; }
+    .state { margin-top: 19px; color: #dce7ed; font-size: 13px; letter-spacing: .03em; }
+    .panel { border: 1px solid #35414a; background: #111820df; border-radius: 20px; padding: 16px; margin-bottom: 13px; box-shadow: 0 10px 25px #0004; }
+    .panel h2 { margin: 0 0 13px; font-size: 15px; font-weight: 600; }
+    .modes { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+    .mode { min-height: 42px; border: 1px solid #3b4a56; background: #18222b; color: #c8d3da; border-radius: 11px; font-size: 13px; }
+    .mode[aria-pressed="true"] { color: white; border-color: #afc7d8; background: #32414d; }
+    .status { display: flex; justify-content: space-between; gap: 14px; align-items: center; margin: 12px 0 0; color: #a7b7c2; font-size: 12px; }
+    .status label { display: flex; align-items: center; gap: 7px; }
+    .status input { accent-color: #a5c7dc; width: 17px; height: 17px; }
+    .chat { height: 172px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 2px 1px 7px; }
+    .bubble { max-width: 88%; padding: 9px 12px; border-radius: 12px; background: #26323b; color: #e8eef2; font-size: 13px; line-height: 1.55; }
+    .bubble.me { align-self: flex-end; background: #324657; }
+    .bubble.note { color: #b2bdc4; background: #1b242b; font-size: 12px; }
+    .composer { display: flex; gap: 8px; margin-top: 11px; }
+    .composer input { min-width: 0; flex: 1; border: 1px solid #465560; border-radius: 11px; background: #0c1218; color: white; padding: 11px; outline: none; font-size: 14px; }
+    .composer input:focus { border-color: #afc7d8; }
+    .send { border: 0; border-radius: 11px; padding: 0 15px; color: #111b22; background: #d9e7ee; font-weight: 600; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+    .action { min-height: 44px; border: 1px solid #5b6d79; border-radius: 11px; background: #21303b; color: #f4f7f8; font-size: 13px; }
+    .action:disabled, .send:disabled { opacity: .4; }
+    .danger { width: 100%; min-height: 50px; border: 1px solid #d58250; border-radius: 12px; background: #4a2a1f; color: #ffe8dc; font-weight: 600; }
+    .danger.active { background: #a4492d; }
+    .foot { color: #9daab3; font-size: 11px; line-height: 1.6; margin: 8px 2px 0; }
+    .receipt { color: #b3c0c8; font-size: 12px; margin-top: 10px; }
+    /* A compact, functional screen study inspired by the user's handheld reference. */
+    :root { font-family: Inter, -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif; background: #08090b; }
+    body { background: radial-gradient(circle at 50% 10%, #2b241f 0, #111417 34%, #08090b 68%); }
+    .shell { max-width: 500px; padding: max(18px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom)); }
+    .top { align-items: center; margin-bottom: 18px; }
+    .eyebrow { color: #ee946c; font-size: 10px; letter-spacing: .21em; }
+    h1 { font-size: 21px; letter-spacing: -.04em; margin: 4px 0 2px; }
+    .sub { font-size: 11px; }
+    .tag { color: #f6b594; border-color: #805039; font: 10px ui-monospace, SFMono-Regular, monospace; }
+    .device { width: min(100%, 370px); margin: 0 auto 18px; padding: 8px; border-radius: 22px; background: linear-gradient(145deg,#fa8a54,#b63f1e 53%,#e76c38); box-shadow: 0 0 0 1px #ffb48955, inset 0 2px 2px #ffd3ab8a, inset 0 -2px 2px #78200f, 0 25px 55px #000b; position: relative; }
+    .device::before { content: ""; position: absolute; width: 44px; height: 13px; border: 5px solid #5d3526; border-bottom: 0; border-radius: 14px 14px 0 0; top: -16px; left: calc(50% - 22px); }
+    .device::after { content: ""; position: absolute; width: 45px; height: 22px; border: 5px solid #a65933; border-top: 0; border-radius: 0 0 12px 12px; bottom: -17px; left: calc(50% - 23px); }
+    .display { min-height: 385px; padding: 15px 16px 13px; border: 2px solid #422518; border-radius: 15px; background: radial-gradient(circle at 50% 43%,#161e23 0,#0b1014 43%,#050708 100%); box-shadow: inset 0 0 0 1px #848d7e4f, inset 0 8px 35px #000c; overflow: hidden; }
+    .screen-top, .screen-head, .screen-status, .screen-columns, .screen-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .screen-top, .screen-foot, .screen-label, .screen-status, .screen-columns { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .screen-top { color: #c3c9c8; font-size: 9px; letter-spacing: .08em; }
+    .brand-mark { color: #ff8551; font-weight: 800; }
+    .screen-head { border-bottom: 1px solid #3b4445; padding: 13px 0 10px; }
+    .screen-head strong { display: block; font-size: 19px; letter-spacing: -.04em; }
+    .screen-label { color: #889a9f; font-size: 9px; letter-spacing: .14em; margin-bottom: 3px; }
+    .live-pill { border: 1px solid #8e674e; color: #ffb082; border-radius: 100px; padding: 5px 7px; font: 9px ui-monospace,monospace; white-space: nowrap; }
+    .face-stage { height: 126px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .orb { width: 126px; height: 78px; border: 0; border-radius: 47% 47% 43% 43%; background: radial-gradient(ellipse at 36% 23%,#2c3c43,#05090b 60%); box-shadow: inset 0 1px 2px #8ba2a65c, 0 0 30px #74a8b61a; }
+    .orb::before { display: none; }
+    .orb.listening { box-shadow: inset 0 1px 2px #8ba2a65c, 0 0 25px #8bcaff91; transform: scale(1.03); }
+    .orb.alarm { box-shadow: inset 0 1px 2px #ff8a59, 0 0 30px #f97048a0; }
+    .eyes { top: 24px; gap: 22px; }
+    .eye { width: 13px; height: 27px; box-shadow: 0 0 12px #e5f6ffbe; }
+    .orb.speaking .eye { height: 11px; transform: translateY(8px); }
+    .orb.speaking .eye:last-child { transform: translateY(8px); }
+    .orb.quiet .eye { height: 5px; transform: translateY(13px); }
+    .orb.quiet .eye:last-child { transform: translateY(13px); }
+    .state { margin-top: 7px; font-size: 11px; color: #d7e4e6; text-align: center; }
+    .screen-status { border-block: 1px solid #344043; padding: 8px 0; color: #d8e3e5; font-size: 10px; }
+    .status-light { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #d4a279; box-shadow: 0 0 8px #ff865f; margin-right: 4px; }
+    .screen-columns { padding: 10px 0; align-items: flex-start; font-size: 9px; }
+    .screen-columns > div { flex: 1; }
+    .screen-columns b { display: block; color: #eff5f2; font-size: 11px; font-weight: 500; margin-top: 4px; }
+    .screen-columns .muted { color: #98a5a8; }
+    .screen-foot { border-top: 1px solid #344043; padding-top: 10px; color: #88999c; font-size: 9px; }
+    .screen-foot span:last-child { color: #f0a474; }
+    .panel { background: #111719; border-color: #303b3d; border-radius: 15px; padding: 15px; }
+    .panel h2 { font-size: 13px; letter-spacing: .01em; }
+    .panel-kicker { color: #e8885a; font: 10px ui-monospace,monospace; letter-spacing: .1em; margin: 0 0 6px; }
+    .mode { background: #172024; border-color: #3b494a; }
+    .mode[aria-pressed="true"] { background: #603927; border-color: #ed8859; color: #fff; }
+    .status { font-size: 11px; }
+    .chat { height: 126px; }
+    .bubble { background: #243033; }
+    .bubble.me { background: #5b3c30; }
+    .send { background: #f69a6c; }
+    .action { background: #1a2529; }
+    .danger { background: #42251e; }
+    .event-log { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; border-top: 1px solid #354044; padding-top: 10px; color: #9fadb0; font: 10px ui-monospace,monospace; }
+    .event-log div::before { content: '› '; color: #f29260; }
+    @media (max-width: 360px) { .display { padding-inline: 11px; } .status { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="top">
+      <div><div class="eyebrow">ROCKSTAROS / POCKET CORE</div><h1>avocado Companion</h1><p class="sub">Pixel 10で動かす相棒の操作・状態試作</p></div>
+      <div class="tag">V0.3 · LOCAL</div>
+    </div>
+    <div class="device" aria-label="小型画面のデザイン試作。実機ではありません">
+      <div class="display">
+        <div class="screen-top"><span><span class="brand-mark">✳</span> AVC / COMPANION</span><time id="clock">--:--</time></div>
+        <div class="screen-head"><div><div class="screen-label">DEVICE SESSION</div><strong>いっしょに、いこう。</strong></div><span class="live-pill" id="coreState">STANDBY</span></div>
+        <div class="face-stage"><div id="orb" class="orb"><div class="eyes"><i class="eye"></i><i class="eye"></i></div></div><div id="state" class="state" aria-live="polite">待機中 · マイクは閉じています</div></div>
+        <div class="screen-status"><span><i class="status-light"></i> MODE <b id="coreMode">通学</b></span><span id="coreLink">LOCAL AGENT 停止</span></div>
+        <div class="screen-columns"><div><span class="muted">VOICE</span><b id="coreVoice">マイク OFF</b></div><div><span class="muted">GUARDIAN</span><b>通知 未接続</b></div><div><span class="muted">ALARM</span><b id="coreAlarm">試験 待機</b></div></div>
+        <div class="screen-foot"><span>限定Agent · LLM未接続</span><span id="coreEvent">READY →</span></div>
+      </div>
+    </div>
+    <section class="panel">
+      <p class="panel-kicker">01 / MODE</p><h2>いまの場所</h2>
+      <div class="modes">
+        <button class="mode" data-mode="commute" aria-pressed="true">通学</button>
+        <button class="mode" data-mode="school" aria-pressed="false">学校</button>
+        <button class="mode" data-mode="home" aria-pressed="false">家</button>
+      </div>
+      <div class="status"><span id="modeHint">通学中は、押した時だけ話します</span><label><input type="checkbox" id="offline">圏外を再現</label></div>
+      <div class="actions"><button id="agentPower" class="action" type="button">エージェントを起動</button><span id="agentDetail" class="foot" role="status">停止中 · LLM未接続</span></div>
+      <div id="eventLog" class="event-log" aria-label="この画面の操作履歴"><div>READY / 操作待ち</div></div>
+    </section>
+    <section class="panel">
+      <p class="panel-kicker">02 / TALK</p><h2>話しかける</h2>
+      <div id="chat" class="chat" aria-live="polite">
+        <div class="bubble note">エージェントを起動後、「しりとり」「迷った」「帰る時間は？」を試せます。端末内の限定機能で、自由会話のAIではありません。</div>
+      </div>
+      <form id="form" class="composer"><input id="input" type="text" autocomplete="off" placeholder="聞きたいことを入力"><button class="send" type="submit">送る</button></form>
+      <div class="actions"><button id="mic" class="action" type="button">マイクで話す</button><button id="stopVoice" class="action" type="button">会話を止める</button></div>
+      <p class="foot">限定エージェントはこのページ内だけで動き、会話を保存・送信しません。自由会話のLLMは未接続です。マイクの音声認識はブラウザが提供し、外部サービスへ送られる場合があります。子供の実データでは試さないでください。</p>
+    </section>
+    <section class="panel">
+      <p class="panel-kicker">03 / SAFETY TEST</p><h2>緊急時の動きを試す</h2>
+      <button id="alarm" class="danger" type="button">SOS動作を試す · 小さな試験音</button>
+      <div id="receipt" class="receipt">現地警報: 未作動 ／ 保護者通知: 未接続</div>
+      <p class="foot">これはPixelの動作試作です。緊急時に使う防犯機器ではありません。通知・位置送信・通報は行いません。</p>
+    </section>
+  </main>
+  <script src="./agent.js"></script>
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const orb = $('orb'), state = $('state'), chat = $('chat'), mic = $('mic'), alarmButton = $('alarm');
+      let mode = 'commute', alarm = false, voiceSession = false, recognizer = null, audioContext = null, toneTimer = null;
+      const agent = new window.CompanionAgent();
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const tick = () => { $('clock').textContent = new Intl.DateTimeFormat('ja-JP', { hour: '2-digit', minute: '2-digit' }).format(new Date()); };
+      tick(); setInterval(tick, 30000);
+      const logEvent = label => {
+        const row = document.createElement('div'); row.textContent = label;
+        $('eventLog').prepend(row);
+        while ($('eventLog').children.length > 3) $('eventLog').lastElementChild.remove();
+        $('coreEvent').textContent = label.split(' / ')[0] + ' →';
+      };
+      const setState = (label, face = '') => {
+        state.textContent = label; orb.className = 'orb ' + face;
+        $('coreState').textContent = { alarm: 'SOS TEST', listening: 'LISTENING', speaking: 'REPLYING', quiet: 'SCHOOL' }[face] || 'STANDBY';
+        $('coreVoice').textContent = face === 'listening' ? 'マイク ON' : 'マイク OFF';
+      };
+      const add = (message, kind) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble ' + kind;
+        bubble.textContent = message;
+        chat.appendChild(bubble);
+        chat.scrollTop = chat.scrollHeight;
+      };
+      const stopSpeech = () => {
+        if (recognizer) { const current = recognizer; recognizer = null; try { current.abort(); } catch (_) {} }
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        voiceSession = false;
+        if (!alarm) setState(mode === 'school' ? '学校モード · マイクは閉じています' : '待機中 · マイクは閉じています', mode === 'school' ? 'quiet' : '');
+      };
+      const speak = message => {
+        if (!('speechSynthesis' in window) || mode === 'school' || alarm) return;
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = 'ja-JP'; utterance.rate = 1.05;
+        utterance.onend = () => { if (!alarm) setState('待機中 · マイクは閉じています'); };
+        utterance.onerror = () => { if (!alarm) setState('返答を表示しました · 音声再生は利用不可'); };
+        setState('返答中 · マイクは閉じています', 'speaking');
+        window.speechSynthesis.speak(utterance);
+      };
+      const refreshAgent = () => {
+        $('agentPower').textContent = agent.running ? 'エージェントを停止' : 'エージェントを起動';
+        $('agentPower').disabled = mode === 'school';
+        $('agentDetail').textContent = agent.running ? '稼働中 · 限定機能 / LLM未接続' : '停止中 · LLM未接続';
+        $('coreLink').textContent = agent.running ? 'LOCAL AGENT 稼働' : 'LOCAL AGENT 停止';
+        if (!alarm && mode !== 'school' && !orb.classList.contains('listening') && !orb.classList.contains('speaking')) $('coreState').textContent = agent.running ? 'AGENT ON' : 'STANDBY';
+      };
+      const stopAgent = () => {
+        agent.stop(); refreshAgent();
+        chat.replaceChildren(); add('会話を停止し、この画面の会話と下書きを消しました。', 'note');
+      };
+      $('agentPower').addEventListener('click', () => {
+        stopSpeech();
+        if (agent.running) { stopAgent(); logEvent('AGENT / STOP'); return; }
+        const result = agent.start();
+        refreshAgent(); logEvent('AGENT / ' + result.event);
+        add(result.detail + '。自由会話のAIと保護者通知は未接続です。', 'note');
+      });
+      const send = text => {
+        const message = text.trim();
+        if (!message || alarm) return;
+        if (mode === 'school') { add('学校モードでは会話を止めています。SOSの試験はできます。', 'note'); logEvent('BLOCK / 学校モード'); return; }
+        stopSpeech();
+        add(message, 'me');
+        const result = agent.dispatch(message, { mode, offline: $('offline').checked });
+        add(result.reply, '');
+        logEvent('AGENT / ' + result.event);
+        result.steps.forEach(step => logEvent('STEP / ' + step));
+        if (agent.running) speak(result.reply);
+      };
+      document.querySelectorAll('.mode').forEach(button => button.addEventListener('click', () => {
+        mode = button.dataset.mode;
+        $('coreMode').textContent = button.textContent;
+        document.querySelectorAll('.mode').forEach(item => item.setAttribute('aria-pressed', item === button ? 'true' : 'false'));
+        $('modeHint').textContent = { commute: '通学中は、押した時だけ話します', school: '通常は静かに。SOSの試験は使えます', home: '家では会話と充電・自己診断を想定' }[mode];
+        stopSpeech();
+        if (mode === 'school' && !alarm) setState('学校モード · マイクは閉じています', 'quiet');
+        if (mode === 'school') stopAgent();
+        refreshAgent();
+        mic.disabled = mode === 'school' || alarm;
+        logEvent('MODE / ' + button.textContent);
+      }));
+      $('offline').addEventListener('change', () => {
+        const offline = $('offline').checked;
+        logEvent(offline ? 'LINK / 圏外を再現' : 'LINK / 再接続を再現');
+      });
+      $('form').addEventListener('submit', event => { event.preventDefault(); const value = $('input').value; $('input').value = ''; send(value); });
+      mic.addEventListener('click', () => {
+        if (mode === 'school' || alarm) return;
+        stopSpeech();
+        if (!Speech) { add('このブラウザでは音声認識を使えません。下の入力欄から話しかけてください。', 'note'); return; }
+        if (!window.confirm('ブラウザの音声認識は外部サービスへ音声を送る場合があります。成人の試験音声だけで続けますか？')) return;
+        const current = new Speech(); recognizer = current; voiceSession = true;
+        current.lang = 'ja-JP'; current.interimResults = false; current.maxAlternatives = 1;
+        current.onresult = event => { if (recognizer !== current || alarm) return; recognizer = null; voiceSession = false; send(event.results[0][0].transcript); };
+        current.onerror = event => { if (recognizer !== current || alarm) return; recognizer = null; voiceSession = false; setState('音声認識は利用不可 · マイクは閉じています'); add('音声認識を開始できませんでした（' + event.error + '）。文字入力で試せます。', 'note'); logEvent('VOICE / 利用不可'); };
+        current.onend = () => { if (recognizer === current) { recognizer = null; voiceSession = false; if (!alarm) setState('待機中 · マイクは閉じています'); } };
+        try { current.start(); setState('聞き取り中 · マイクが開いています', 'listening'); logEvent('VOICE / 試験開始'); }
+        catch (_) { recognizer = null; voiceSession = false; setState('音声認識は利用不可 · マイクは閉じています'); }
+      });
+      $('stopVoice').addEventListener('click', () => { stopSpeech(); stopAgent(); logEvent('AGENT / STOP'); });
+      function chirp() {
+        try {
+          audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator(); const gain = audioContext.createGain();
+          oscillator.type = 'sine'; oscillator.frequency.value = 740;
+          gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.035, audioContext.currentTime + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.20);
+          oscillator.connect(gain); gain.connect(audioContext.destination); oscillator.start(); oscillator.stop(audioContext.currentTime + 0.21);
+        } catch (_) {}
+        if ('vibrate' in navigator) navigator.vibrate([100, 70, 100]);
+      }
+      alarmButton.addEventListener('click', () => {
+        if (alarm) {
+          alarm = false; clearInterval(toneTimer); toneTimer = null;
+          alarmButton.textContent = 'SOS動作を試す · 小さな試験音'; alarmButton.classList.remove('active');
+          $('receipt').textContent = '現地警報: 試験停止 ／ 保護者通知: 未接続';
+          $('coreAlarm').textContent = '試験 停止'; logEvent('SOS / 試験停止');
+          mic.disabled = mode === 'school'; stopSpeech(); return;
+        }
+        stopSpeech(); stopAgent(); alarm = true; mic.disabled = true;
+        setState('SOS試験中 · 会話は停止', 'alarm');
+        alarmButton.textContent = 'SOS試験を止める'; alarmButton.classList.add('active');
+        $('receipt').textContent = '現地警報: Pixelで試験動作中 ／ 保護者通知: 未接続・送信なし';
+        $('coreAlarm').textContent = '試験 作動中'; logEvent('SOS / 小音量の試験');
+        chirp(); toneTimer = setInterval(chirp, 950);
+      });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) { stopSpeech(); stopAgent(); if (alarm) alarmButton.click(); } });
+      window.addEventListener('pagehide', () => { stopSpeech(); stopAgent(); });
+    })();
+  </script>
+</body>
+</html>

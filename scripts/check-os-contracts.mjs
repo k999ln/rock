@@ -257,6 +257,11 @@ assert.equal(localAi.schemaVersion, 1);
 assert.equal(localAi.routeId, 'local-action-assistant');
 assert.equal(localAi.executionTarget, 'local');
 assert.equal(localAi.apiVersion, 4);
+assert.equal(
+  Number(deviceShellMain.match(/LOCAL_AI_STATUS_API_VERSION\s*=\s*(\d+)/)?.[1]),
+  localAi.apiVersion,
+  'Shell capability display must use the accepted Local AI runtime API version',
+);
 assert.equal(localAi.packageVersionCode, 3);
 assert.equal(localAi.androidPackage, 'com.localactionassistant');
 assert.equal(localAi.androidService, 'com.localactionassistant.RockLocalAiService');

@@ -174,7 +174,7 @@ test('uncertain checkout retries keep one reservation and the same Stripe idempo
   for (const { url, options } of calls) {
     assert.equal(url, 'https://api.stripe.com/v1/checkout/sessions');
     assert.equal(options.headers['Idempotency-Key'], order.id);
-    assert.equal(options.redirect, 'error');
+    assert.equal(options.redirect, 'manual');
     assert.ok(options.signal instanceof AbortSignal);
   }
   assert.equal(calls[0].options.body, calls[1].options.body);

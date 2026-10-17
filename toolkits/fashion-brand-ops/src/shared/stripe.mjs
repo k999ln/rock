@@ -9,6 +9,10 @@ export class StripeTransportError extends Error {
     super(code);
     this.name = 'StripeTransportError';
     this.status = status;
+    this.providerCode = 'unclassified';
+    /** @type {string | null} */
+    this.requestId = null;
+    this.kind = 'network-or-response';
   }
 }
 
@@ -63,9 +67,22 @@ export async function stripeRequest({ path, method = 'POST', secretKey, apiVersi
   try {
     const response = await fetchImpl(url.href, {
       method, headers, body: method === 'POST' ? fields.toString() : undefined,
-      redirect: 'error', signal: AbortSignal.timeout(timeoutMs),
+      // Cloudflare Workers supports manual/follow. Reject redirects below without forwarding credentials.
+      redirect: 'manual', signal: AbortSignal.timeout(timeoutMs),
     });
-    if (!response.ok) throw new StripeTransportError('STRIPE_HTTP_ERROR', response.status);
+    if (!response.ok) {
+      const failure = new StripeTransportError('STRIPE_HTTP_ERROR', response.status);
+      const requestId = response.headers.get('request-id');
+      failure.requestId = requestId && /^req_[A-Za-z0-9]{1,100}$/.test(requestId) ? requestId : null;
+      const known = new Set(['api_key_expired', 'invalid_api_key', 'account_invalid',
+        'amount_too_small', 'parameter_unknown', 'parameter_invalid_integer',
+        'rate_limit', 'idempotency_key_in_use', 'platform_account_required']);
+      try {
+        const data = await response.json();
+        if (typeof data?.error?.code === 'string' && known.has(data.error.code)) failure.providerCode = data.error.code;
+      } catch { /* Never retain a provider body, message or submitted content. */ }
+      throw failure;
+    }
     const result = await response.json();
     if (!result || typeof result !== 'object' || Array.isArray(result)) {
       throw new StripeTransportError('STRIPE_RESPONSE_INVALID');
@@ -74,7 +91,9 @@ export async function stripeRequest({ path, method = 'POST', secretKey, apiVersi
   } catch (error) {
     if (error instanceof StripeTransportError) throw error;
     // Network errors and response bodies can contain credentials or customer data.
-    throw new StripeTransportError('STRIPE_REQUEST_FAILED');
+    const failure = new StripeTransportError('STRIPE_REQUEST_FAILED');
+    if (error instanceof Error && ['TimeoutError', 'AbortError', 'SyntaxError'].includes(error.name)) failure.kind = error.name;
+    throw failure;
   }
 }
 

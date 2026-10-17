@@ -13,7 +13,6 @@ import {
   Download,
   FileDown,
   HardDrive,
-  House,
   KeyRound,
   LoaderCircle,
   RefreshCw,
@@ -53,6 +52,7 @@ import {
 } from '@/lib/system-backup';
 import releaseReadiness from '@/data/release-readiness.json';
 import styles from './system-maintenance.module.css';
+import OSHeader from './os-header';
 
 type CheckState = 'checking' | 'ready' | 'attention' | 'blocked';
 type Check = {
@@ -404,16 +404,12 @@ export default function SystemMaintenance() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.topbar}>
-        <nav className={styles.topbarLinks} aria-label="戻る">
-          <Link href="/" aria-label="ホームへ戻る"><House size={19} /></Link>
-          <Link href="/settings" aria-label="設定へ戻る"><ArrowLeft size={19} /></Link>
-        </nav>
-        <strong>システム</strong>
+      <OSHeader title="システム" running={running}>
+        <Link href="/settings" aria-label="設定へ戻る"><ArrowLeft size={19} /></Link>
         <button onClick={() => void runDiagnostics()} disabled={running} aria-label="再診断">
           <RefreshCw size={18} className={running ? styles.spin : undefined} />
         </button>
-      </header>
+      </OSHeader>
 
       <div className={styles.content}>
         <section className={styles.overview}>

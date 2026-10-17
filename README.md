@@ -1,3 +1,57 @@
+<!-- built-environment-stronghold:start -->
+avocadoは建築・インテリアの専門家・事業者と組み、**architecture・interior・soundと自然なITで生活の質を豊かにする領域**を最初の産業上の根城とします。avocadoMiniは生活空間との物理node候補、RockstarOSは本人性・権限・Agent・保存・復旧・費用の共通runtime、SkyはTool／専門家への接続、Zemaは空間projectのrevision・承認・進捗・成果を扱います。資格判断、許可、施工責任をAIへ移さず、生成・simulation・見積を実測や専門家承認へ自動昇格しません。最初の空間・partner・Device Profile・価格は未決定で、提携・実機・施工・市場獲得は未受入です。[製品方針と受入条件](docs/rockstaros-avocado-mini-complete-design.md#0-建築インテリアサウンドを中核領域にする)。
+<!-- built-environment-stronghold:end -->
+
+<!-- sky-shared-entry:start -->
+Skyの共通入口仕様を更新: 通常URL・大学NFC/QR・任意eSIMから同じSkyのAgent選択、購入・接続、Zema管理へ進む。大学版も既存Skyを共用し、OS/eSIMを単独Web利用の必須条件にしない。iPhoneはbrowser/PWAが初期対象で、追加は本人操作。eSIM自動インストールやnative iOS連携の完成を意味しない。[現行仕様・進捗・実装順](docs/sim-led-product-architecture.md#sky-shared-entry)。
+<!-- sky-shared-entry:end -->
+
+Skyの保存済みAgent成果は [成果一覧](app/sky/outputs/page.tsx) で本人が確認し、対応する第一者アプリ内でも表示できる。OS版のZemaは仕事・承認・停止・費用の管理役。Sky単体は各アプリへAgentを組み込むplatformとして扱う。[Fitness×Agentの第一者plugin例](app/fitness/page.tsx) は既存の本人別成果APIと型付き出力 `sky.fitness.plan/1` を使い、実Agent成果が保存されている場合だけ運動プランを表示する。外部アプリSDK、Fitness Agentの実行、cross-origin認証、本番Provider連携は未受入。[設計](docs/sky-launch-design.md#sky-app-output-plugins)。
+
+<!-- campus-sky:start -->
+大学別Skyのbrowser入口は `/sky/campus/nyu`・`fit`・`columbia`・`fordham`・`johnjay`。登録済みSky NFCタグのHTTPS URL `/t/{tagId}?source=nfc` は、端末で開くと `/sky/campus/{id}/hub` へ進む。そこでは別のLPではなく既存SkyのAgentフィード・役割選択・Marketplaceを大学名と大学別おすすめ付きで使い、購入履歴、接続管理、Sky内Zemaへ移動できる。大学別briefとPeople/資料は補助入口に残す。iPhoneではNFC通知のタップ、PWA追加には本人操作が必要で、自動インストールや学生資格付与はしない。購入は既存Stripe Checkoutへ進み、Apple Payは適格端末と設定で提供される場合だけ利用可能。購入済みPackageと実行可能なAgentは別確認。一般MCP5枠、対象大学の確認済み学生は6枠。追加有料枠の価格・checkout、スマホ単独cloud MCP、実決済と実機NFC、本番配備は未受入。枠APIにはmigration `0063_sky_mcp_slots.sql` が必要。[仕様・検証・残る条件](docs/sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。
+<!-- campus-sky:end -->
+
+GrapheneOS reuse direction: the Pixel edition builds on its Android platform, isolation and verified updates, while Terminal/Linux is a candidate development environment and optional Tool execution target. Rockstar Home/Sky/Zema keep the shared identity, approval, job and usage contracts. Linux integration and full OS acceptance remain unverified. See the [design and acceptance sequence](docs/device-support-architecture.md#graphene-reuse).
+
+<!-- native-output-tests:start -->
+Pixelアプリ内の登録不要テストは **RockstarOS → ホーム → テストモードを開く**。全17項目をサンプル実行、または入力を変えて実行できます。8項目は端末内の実処理、9項目は明示した模擬結果。通信・外部登録は不要です。コピー・全結果JSON保存・リセットに対応。通常の仕事や残高には反映せず、画面を閉じると入力・結果は消えます。本物のAI推論や外部サービス連携は別途準備が必要です。[実機受入記録](docs/evidence/pixel-native-testing.json)。
+<!-- native-output-tests:end -->
+
+<!-- output-tests:start -->
+登録せずに出力を確認するには、画面上部の **出力テスト**（`/test`）を開き、**サンプルを全部実行**を押してください。入力変更・コピー・ファイル保存に対応。実処理と模擬データ、接続待ちを表示し、本番の仕事・残高・課金には反映しません。入力はサイトの処理サーバーに送られ、結果は画面内だけで保持されます。クラウドAIの本物の生成には接続鍵と利用枠の設定が別途必要です。
+<!-- output-tests:end -->
+
+<!-- pixel-app-refresh:start -->
+Pixelの試験アプリは **RockstarOS** を開いてください。2026-10-09に旧avocadoOSと連携アプリを更新し、起動・端末内接続・Tool選択の保持を確認しました。クラウド接続先と端末内AIモデルは未設定です。これは既存Android上の試験アプリで、OS本体の入れ替えではありません。[実機確認と残る設定](docs/evidence/pixel-app-refresh-20261009.json)。
+<!-- pixel-app-refresh:end -->
+
+<!-- pixel-shell-design:start -->
+Pixel版Shellは下部の **ホーム・Sky・仕事・設定** から操作します。Web版と共通の配色・枠線・選択表示を使い、ホーム末尾の「Web版を開く」から公開サイトの6画面へ進めます（ブラウザ側のサインインは別です）。[Pixelへの反映記録](docs/evidence/pixel-unified-design.json)。「依頼を準備する」で仕事の編集画面へ進み、Toolと同意を確認してから実行します。タブ移動で入力を保持し、既存下書きの置換は確認してから行います。アカウント・端末内AI・バックアップは設定へ、クラウド見積は仕事／Skyの展開欄へまとめました。2026-10-09に保存データを維持して実機更新し、UI7試験・端末情報表示を確認しました。Cloud接続とmodel準備は別の未完了項目です。[改修と実機検証](docs/evidence/pixel-shell-design-20261009.json)。
+<!-- pixel-shell-design:end -->
+
+<!-- home-intent-refresh -->
+Home・Sky・Zema・Wallet・Market・設定は共通ヘッダーと配色を使い、上部からアプリを切り替えられます。
+ホームで依頼を入力し、矢印でZemaへ引き継いで内容を確認します。「最近の仕事」で保存した仕事を確認できます。ツール一覧は上部ボタンまたは⌘/Ctrl K、全主要アプリに共通の上部ナビゲーションがあります。「入力に集中」で説明・入力例を畳めます。下書きは同じタブで一度だけ引き継ぎ、自動送信しません。
+
+Git audit (2026-10-07): inspection is complete; consolidation is still pending. Latest main CI and local verification pass, but five PRs and changes in three worktrees remain. See [findings and integration order](docs/workstreams/10-git-ci-operations.md#2026-10-07-git全体監査g04--rock).
+
+eSIMに結び付く端末鍵でのCloud APIアクセスを追加しました。対応clientは、購入画面で有効化した利用権の公開キーIDと登録済みgateway鍵を使い、`signEsimCloudRequest`で各要求へ署名します。先にmigration `0061`を適用してください。署名の使い回し・改変・失効したキーを拒否します。実eSIM内鍵/端末adapterの受入はまだ必要です。[client接続・復旧手順](docs/sim-led-product-architecture.md#esimに結び付く端末鍵でのcloud-apiアクセス2026-10-07)。
+
+Main-SIM cloud service design: reuse one RockstarOS/Sky/Zema service template over the user’s existing main SIM or Wi-Fi, with metered cloud agents. Real eSIM onboarding is a separately accepted provider/device adapter; a new carrier plan is not required for ordinary cloud access. This is a design update, not live eSIM or billing acceptance. See the [architecture and implementation sequence](docs/sim-led-product-architecture.md#main-sim-cloud-service).
+
+AWS collaboration funding condition: **zero out-of-pocket cost or payment liability for avokado** for this initiative. Seek sponsored capacity and technical collaboration; no self-funded deployment or automatic paid conversion. See the [partnership conditions](docs/provider-contract-readiness-20260930.md#aws-partnership-preparation).
+
+AWS cloud adoption and partnership preparation: avokado llc (US, owner-provided) is preparing a technical-review and bounded agent-pilot inquiry. See the [architecture, responsibilities and acceptance plan](docs/provider-contract-readiness-20260930.md#aws-partnership-preparation). This is a proposal; AWS outreach, partnership, deployment and credit approval are pending.
+
+<!-- amc-codex-registration:start -->
+AMCはこのチャットで **「AMCで、〇〇を進めて」** と依頼して使います。スキル選択では `$amc` を指定できます。司令官が任務を分け、実行担当と独立検収担当へ引き継ぎます。Web画面や別CLIの起動は不要です。設定や保存の問題は `npm run amc -- doctor` で確認できます。[使い方と復旧](toolkits/amc-agent/README.md)。Webとの自動同期は未接続です。
+<!-- amc-codex-registration:end -->
+
+<!-- install-entry:start -->
+RockstarOSの導入入口: [avocadomini.si/install](https://avocadomini.si/install/)。Web版の起動・ホーム画面追加手順を案内します。実eSIM発行とPixel/Mini/Pro/QEMUの公開OS配布はそれぞれ受入待ちです。
+<!-- install-entry:end -->
+
 
 
 Custom domain: **avocadomini.si** is registered for the [deployed GitHub homepage](https://avocadomini.noellesugar1.chatgpt.site); DNS/TLS validation is pending. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
@@ -52,6 +106,9 @@ The dedicated **avocadoMini R5** and small-satellite launch vehicle **rocketstar
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
 
 ### Optional eSIM access and cloud agent usage — clarified October 5, 2026
+
+Local implementation: open `/connect` → `/sky/purchases`, inspect an eligible eSIM order, and choose **クラウドアクセスを開始** after signed installation and device/Starter Pack confirmation. The purchase view shows key/service expiry and supports explicit reissue/revocation; the secret is held only in an HttpOnly cookie. Apply migration `0059` and configure `ESIM_CLOUD_ACCESS_POLICIES_JSON` for each exact purchased package/hash, agreed duration and scopes before enabling this optional path. Missing configuration keeps issuance disabled. Normal sign-in is required for key management. See [configuration, recovery and acceptance](docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation).
+
 
 On accepted compatible devices and channels, RockstarOS may offer an eSIM-led cloud service as one access pattern. This does not replace native OS/local LLM and offline agents, ordinary app/Web access without eSIM, or hybrid operation. Users choose Sky agents, approve a usage estimate and spending limit, run work in the cloud, and recover progress, results and itemized usage through one account. For this optional offering, the intended revenue model is metered Sky cloud-agent usage with a service margin. Connectivity supports access; the OS and LLM do not execute inside the eSIM. Pricing units, rates, cost allocation and margins are undecided, and real onboarding, provider billing and device acceptance remain separate gates. See the [service and revenue contract](docs/sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction).
 
@@ -110,6 +167,18 @@ The PLAY / MAKE / LIVE flow below describes the separate R5 hardware experience 
 | Display | The requirement is to show particles in the surrounding real space without glasses, but the method and safety remain research topics. Infrared sensing light, a television, AR glasses, or wall projection do not count as proof that this requirement is met. |
 
 The [51-page integrated R5 basic design](docs/avocado-mini-r5/README.md) ([PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) · [complete ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip)) contains requirements, candidate components, comparative calculations, drawings, and assembly and acceptance plans. Fourteen automated checks reproduce arithmetic and decision conditions; **zero physical-device tests have been completed, and manufacturing approval is on hold**. The “four units plus a separate hub” Tower20 E3 material still visible on the public product site is classified as a [historical design](docs/avocado-mini-tower20-e3/README.md).
+
+### Schoolbag safety-size RockstarOS device — P0 design
+
+avocado is designing **avocado Companion** (working name), a schoolbag-alarm-size RockstarOS device that hangs from a bag, detaches with one hand, and can be held for conversation. The removable body carries the physical SOS control and an independent local alarm. V0 voice sessions require explicit activation and use a guardian phone relay or Wi-Fi to reach an approved Cloud Agent; cellular, location sharing, and family calling need separate acceptance. The two-eye face and shell are visual concepts, and the 70 × 45 × 25 mm / 80 g envelope is only a mockup target. Physical prototypes, child-product safety, voice performance, alarm performance, radio and battery acceptance, manufacturing, and sale are pending. [Read the design and acceptance gates](docs/avocado-schoolbag-safety-device.md).
+
+For an early Pixel 10 interaction preview, start `python3 -m http.server 8765 --bind 127.0.0.1 --directory public`, run `adb reverse tcp:8765 tcp:8765`, then open `http://127.0.0.1:8765/companion-preview/index.html` in Vanadium on the connected Pixel. Press “エージェントを起動” to run the [bounded local agent](public/companion-preview/agent.js): it tracks a multi-turn word game, holds an unsent message draft, and prioritizes safety guidance. Test it with `node --test tests/companion-agent.test.cjs`. This is not an LLM or Cloud Agent, Android APK, real alarm, or guardian notification service. Browser speech recognition may use an external provider and is restricted to adult test audio. [Pixel observation](docs/evidence/avocado-companion-pixel-preview-20261014.json).
+
+The V0.2 Pocket Console revision places the two-eye face inside a compact screen study with mode, microphone, Agent/guardian connection, SOS-test state, and an ephemeral UI event log. It responds to the [user-supplied handheld-screen reference](https://www.instagram.com/reel/DecnZE8CPLP/); a physical information display has not been selected or safety-tested.
+
+## 現実とGTAの橋渡し（設計）
+
+RockstarOSで扱う作品・仕事・Agentの出力を現実のサービスとGTA内へ届け、結果をZemaへ戻す[接続仕様](docs/gta-reality-bridge.md)を追加しました。最初の候補は管理権限のあるFiveM環境への自作カード表示と結果返却です。GTA adapter・実ゲーム受入は未完了で、利用できる公開機能ではありません。3D Asset・NPC・現実側の実行は別々に承認・検証し、通貨交換を自動で有効にしません。
 
 ## Feature details
 
@@ -205,6 +274,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 | Track | Verified | Incomplete |
 | --- | --- | --- |
 | avocadoMini R5 | Integrated basic design, 51 pages, eight design-study diagrams, and 14 calculation checks | Zero physical-device tests; unaided full-space display, precise 3D input, final enclosure, thermal and power design, manufacturing drawings, and safety acceptance |
+| Schoolbag safety-size device | P0 design, two prototype variants, bounded Device Profile, independent local-alarm architecture, and explicit safety/privacy gates | Benchmark measurements, mockups, powered bench, firmware, physical prototype, child-product/alarm/radio/battery acceptance, pilot, manufacturing, and sale |
 | RockstarOS v1.0 | Current 41-page, 32-chapter OS/system-software design; five deployment profiles, 13 logical services, 60 requirements; 43/43 appendix structure and DDL checks | New OS image, R5 Device Profile and adapter, and physical-device, onboard, and field acceptance. Document checks are not operational tests. |
 | rocketstar R1.0 | Current 44-page, 35-chapter integrated rocket design with 60 requirements and 18 system interfaces | Manufacturing drawings, physical performance, and flight certification. Comparative calculations are not final performance. |
 | Web / Sky / Zema | Source for screens, catalog, work, approvals, history, and the Tool foundation | Current-version readback for each deployment, external providers, and production commercial acceptance |
@@ -215,7 +285,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-05 / 160 tasks: 104 done, 40 in progress, 15 planned, 1 blocked
+Updated: 2026-10-14 / 163 tasks: 104 done, 42 in progress, 16 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
@@ -388,3 +458,21 @@ Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pag
 ## Skyサービスの利用とローンチ設計
 
 Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)・[運用と作者/決済の受入手順](docs/sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
+
+### Payments across Sky and cloud access
+
+Open `/sky/payments` from Sky purchases to see your Tool/eSIM orders, CSV receipts, cloud usage calculations, and collection/refund status. eSIM access does not authorize a charge. Cloud usage collection currently supports **Stripe test mode only** and requires a separate review of the saved usage amount; production cloud charges remain disabled. Existing A2A Wallet settlement is not charged again by card. Mini and Fashion reuse the same Stripe transport, while their separate customer/order records remain separate. Setup and acceptance requirements: [common payments](docs/sky-billing.md#共通決済2026-10-05).
+
+### 現実とFiveMをつなぐMac試験
+
+`npm run game:bridge` → `http://127.0.0.1:5216/`。現実側のカード保存・承認→同一NUIのゲーム側試験表示→確認→現実側検収を試せます。ゲーム側からの依頼は未承認下書きで届きます。`/game`はこの試作の入口へ変更しました。本文と履歴はGit管理外の試験SQLiteへ保存。既存workflowを再利用しますが、本番Zema・Cloud Agent・実FiveM・GTA VI・実機対応ではありません。[起動・停止・復旧・実resource候補](toolkits/fivem-bridge/README.md)。
+
+Mac bridgeのAgent試験: `npm run game:bridge` → http://127.0.0.1:5216/ 。ゲーム側でAgentと素材を選んで依頼し、現実側で実行・同じ仕事の継続・共有・検収。詳細は[bridge手順](toolkits/fivem-bridge/README.md)。外部Sky Agent実行は未接続。
+
+FivePlay用の仕事端末adapterは[導入・解析手順](toolkits/fiveplay-adapter/README.md)。`node --experimental-strip-types toolkits/fiveplay-adapter/start.mjs`で専用Mac gateway（5217）を起動。Chrome拡張導入は別途必要、ゲームengine起動やGTA VI対応は未受入。
+
+avocadoMiniの現行R5には[Webゲーム実行・RockstarOS連携設計](docs/avocado-mini-r5/game-runtime-design.md)を追加。Mini単体の演算/描画、Sky/Zema仕事継続、入力、熱、保存と復旧の受入条件を定義しています。FivePlay・Mini実機対応は未受入。
+
+avocadoMiniの[建築埋込・着脱・携帯Wi-Fi設計](docs/avocado-mini-r5/embedded-portable-connectivity.md)を追加。固定dock＋可搬core、取り外し後の電源、衛星WANとWi-Fi共有、仕事継続を設計目標にしています。直接衛星通信・電池・実機は未受入。
+
+Agent料金は[月次後払い・未払い管理の設計](docs/sky-billing.md)を追加。見積/利用上限/明細を維持し、通知・有料Agent実行制限・入金復旧を定義。実引落しや銀行口座制限は未実施。

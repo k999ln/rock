@@ -1,5 +1,32 @@
 # Material Invention / avocadoMini
 
+## 建築・インテリア・サウンドの根城（2026-10-14）
+
+利用者の明示方針により、avocadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITで生活の質を豊かにする領域を最初の産業上の根城とする。主担当は本workstream、`MAT18`（ROCK、in progress）。Product / UX、Sky / MCP、Securityは横断参照とし、既存RQ01〜RQ49、SIM/eSIM主商品、R5、Material Invention、Pixel/QEMUを維持する。
+
+- `ROCK`: Mini Device Profile候補、RockstarOSの権限・保存・復旧、Sky接続、Zema空間project契約、証拠区分を設計・実装する。
+- `EXTERNAL`: 建築・内装・音響の固有業務、資格、法規、施工、製品保証、保守を提供する。
+- `JOINT`: 実空間の測定、専門家review、設備adapter、設置、音響・privacy・安全、撤去・復旧を同じpilotで受け入れる。
+- `OWNER`: 最初の空間・生活課題・地域・partner・予算・共有・発注・設置・公開を決める。
+
+最初の完了条件は、一つの限定空間で現状→複数案→費用→専門家確認→本人承認→実施／検査→保存・復旧を通し、architecture／interior／soundの少なくとも二分野を別責任のまま接続すること。Miniなしのfallbackも保持する。最初の対象、partner、Device Profile、sound範囲、価格は未決定であり、提携・実機・施工・市場獲得を完了としない。検証は既存の`baseline:check`、`design:check`、`project:check`に加え、pilot確定後に対象schema、privacy、audio、device、専門家readbackを追加する。
+
+## ランドセル防犯ベルサイズ端末（2026-10-14）
+
+利用者の明示指示により、R5とは別に[avocado Companion（仮称）P0](../avocado-schoolbag-safety-device.md)を追加した。RQ48の限定Device Profileとして、ランドセル等へ短く吊り下げ、片手で外して手持ち会話を行う。二つの目・マイク・スピーカー・保護者スマホ／Wi-Fi中継の主案P0-Bとscreenless安全比較案P0-Aを同じ包絡で測る。SOSと独立local alarmは取り外す本体側。iPhone USB input bridgeは子供用alarm権限へ含めない。
+
+- `MAT16`（ROCK、in progress）: 3機種以上の実物benchmark、吊り下げ・着脱・SOSの非通電mockup、独立alarm／MCU／電源2案bench、明示操作の会話bench、機械可読profileを作る。
+- `MAT17`（JOINT、planned）: 同一engineering prototypeで音響、落下、圧縮、引張、雨、粉じん、温度、電池、無線、false trigger、firmware／通知／recovery、子供向けhuman factorsを受け入れる。
+- `OWNER`: 正式名、対象年齢・販売国、学校での音声利用、通知・位置、Cloud Providerと料金上限、外観、価格、pilotを決める。
+
+70 × 45 × 25 mm以下／80 g以下はP0比較目標であり確定仕様ではない。設計保存、開発基板、3D print、投稿参考、合成通知を、実機、安全規格、量産、販売の合格にしない。
+
+2026-10-14に`MAT16`の早期操作試作として[Pixelブラウザ版](../../public/companion-preview/index.html)を追加した。学校／通学／家、固定会話、圏外再現、SOS試験音と停止をPixel 10で表示・操作した。[実機観察](../evidence/avocado-companion-pixel-preview-20261014.json)。これはAndroid APK／MCU firmware／独立alarmの受入ではなく、MAT16/17の物理gateを変更しない。次は実物benchmarkと非通電mockupに並行して、Pixelで見えた状態遷移をfirmware・保護者clientの契約へ落とす。
+
+同日、利用者の追加指示でPixel版へ明示起動・停止できる[限定エージェント](../../public/companion-preview/agent.js)を接続した。複数ターンのしりとり、未送信伝言下書き、安全相談の優先と処理stepをsession内で実行する。Pixelで起動と入力応答、Nodeで状態試験4件を確認。LLM、Cloud Agent、保護者通知、独立警報の実装/受入ではない。次は既存Broker/usage/保護者gateに沿ってmodel実行先を決め、子供の実データを使わず評価する。
+
+追加の手持ち小型screen参考に合わせて同試作をV0.2 Pocket Consoleへ改訂。状態と操作ログを読めるPixel表示は実装したが、子供が吊るす本体の全面screen採用は未決定。二つの目のみの案と小型情報screen案を、同じ電池・安全・視認性条件で比較する。細かなdeveloper診断を子供向け最終UIへ自動採用しない。
+
 ## R5の現行入口
 
 2026-09-24の明示要求により、製品要求は[R5統合基本設計](../avocado-mini-r5/README.md)を優先する。使用時全高200mm以内、1本自律、同型miniの増設、別Edge Hubを必須にしない、全空間裸眼表示を目指す。外部給電は必要。表示方式・精密3D入力・収納・熱・電源・確定回路/加工図は未決を含み、実機0件・製造承認保留である。
@@ -138,3 +165,13 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `node --experimental-strip-types --test tests/material-invention.test.mjs tests/product-baseline.test.mjs tests/patent-assistant.test.mjs`
 - `npm run typecheck`
 - `npm run lint:product`
+
+
+## Mini単体のWebゲーム設計（2026-10-15）
+
+利用者の追加指示により、主担当MAT15/JOINT、Game AI06連携として[R5ゲーム実行設計](../avocado-mini-r5/game-runtime-design.md)を追加。1本自律・200mm以内・別Edge Hub不要を維持し、WASM/WebGPU、GPU driver、メモリ比較、電源/熱、OS/game focus、同一仕事IDの継続、原稿非公開、失敗/復旧、MG01〜07の合格条件を定義。Chrome拡張はMac参照adapterで、Mini本番はOS操作面/Brokerへ移植する。Mini実装・実機・FivePlay起動・裸眼表示・製造の合格ではない。原本packageは不変。
+
+
+## 建築埋込・着脱・衛星経由の携帯Wi-Fi（2026-10-15）
+
+利用者の画像と明示指示により、[R5着脱通信設計](../avocado-mini-r5/embedded-portable-connectivity.md)を追加。建築/家具側dockと可搬core、取り外し後の電源、衛星WANとWi-Fi LAN、job継続と場所権限失効、給電/熱/通信の失敗復旧、DP01〜05を定義。従来の外部給電のみの前提を変更するが、battery部品・衛星方式は未選定。1本自律/200mm以内/別演算Hub不要を維持。画像は機構参考であり、屋内衛星通信・実機・施工・製造合格ではない。MAT15/18の設計追補、原本packageは不変。

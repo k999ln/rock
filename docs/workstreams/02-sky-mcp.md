@@ -1,3 +1,11 @@
+## 2026-10-05 SKY07 / ROCK — AWSクラウド導入・提携準備
+
+費用方針の訂正: 本人/avokado自己負担0。大規模な支援枠を相談し、超過/対象外/期限後/税/撤収まで相手側負担を確定してから実証する。開発対価は別途交渉。自社負担の月額上限を再度求めず、未成立なら有料環境を作らない。
+
+利用者指定でAWSを優先相談先とし、avokado llc／米国名義の構成レビュー・代表Agent実証・クレジット支援を準備する。[相談範囲、構成、責任、合格条件](../provider-contract-readiness-20260930.md#aws-partnership-preparation)と[比較の更新](../cloud-agent-provider-comparison-20261001.md)が入口。初回hybrid実証から、永続API/DB/workflowのAWS移行を段階受入する案。A2A wire仕様・認証・quote/usage拡張の相違をadapterで検証し、既存の本人・予算・二重送信拒否を緩めない。ROCKは準備/adapter、EXTERNALはAWS提供条件、JOINTはsandbox受入、OWNERは連絡先/予算/契約。請求はBIL02へ接続する。
+
+完了条件は相談原稿・移行境界・実証合格条件・未決定条件の明記。提携成立・runtime受入は別。`npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`で文書整合を検査する。GitHub main 592daeeaとlocal 37c06cecは異なり、runtime実装前にmain/引継ぎ入口を同期する。問い合わせ・AWS作成・実model実行は未実施。
+
 ## 2026-10-01 SKY21 / JOINT — Pixelのサービス受入
 
 [実機受入記録](../evidence/sky-pixel-service-acceptance.json): USB承認済みPixel 10／GL066／frankel、Android17を限定propertyで確認。Rock3アプリは0.1.0。Web27・CSV8・端末reader3試験合格、全体verifyはNode550・Fashion19・合成API376合格。PixelのSky画面操作は本人から明示許可済み。Vanadiumで公開Marketの表示、Android向け絞り込み、CSV検索1件、詳細からCSV専用画面への移動と未ログイン時のサインイン案内を実機確認した。本人ログイン、受付・処理・保存・再表示・ダウンロード、本番利用者の分離は未受入。スクリーンショットと結果を受入JSONへ記録した。本人の実機・本番サインインと、fixtureの成功を分離する。
@@ -119,6 +127,10 @@ ZemaのA2A draftで「受付・承認後に端末が圏外／アプリ終了中�
 
 2026-10-01 lost-response recovery: draft POST応答が失われた場合、Zemaは保持している同じparent job・idempotency keyと本文SHA-256でowner-scoped status lookupを行う。戻ったdelegationのID、message、target、budget、deadline、同意、input digestを元の依頼と一致照合し、`awaiting_approval`なら既存のauthorization digestを再表示する。結果が見つからない／一致しない時は新しいキーで再送しない。store/API・UIの実装を追加し、A2A fixture 45/45、API Worker/D1 301 assertions、typecheck、product lint、buildを確認。Providerが受付後に応答を落としたremote `messageId`照合とは別であり、契約sandboxが必要。
 
+## メインSIM通信を使う共通クラウド設計（2026-10-07）
+
+主担当ROCK、既存SKY19/BIZ01/BIL02。[共通設計](../sim-led-product-architecture.md#main-sim-cloud-service)にメインSIM/Wi-Fi、共通テンプレート、利用者隔離、eSIM発行adapter、利用量/請求の境界を追記。EXTERNALはprofile/LPA/Provider、JOINTはexact端末から請求までの受入、OWNERは回線設定・権限/上限・商用条件を担当。まずmainと引継ぎを同期し、既存service_only claimのfixture→同じcloud jobと予算/usage→実eSIM引渡し→実端末→Provider sandbox/請求を検証する。完成条件は設計節の8項、検証は`npm run baseline:check`、`npm run design:check`、`npm run project:check`、`npm run verify`。文書整合の成功をruntime/実eSIM/実請求へ転用しない。
+
 ## 2026-10-02 SIM-led product correction and Package dispatch acceptance
 
 The SIM/eSIM is the distribution and service-entitlement offer; RockstarOS binaries are delivered through supported device routes, not stored on the SIM. The app/Home provides direct Sky, Zema and Agent entry points, while shared identity, durable cloud jobs, offline continuation consent, recovery and itemized usage remain the implementation base. `npm run sky:a2a:workflow:positive` now passes 12/12 Worker/D1/Workflow tests. The new positive case carries a reviewed Package binding through quote/delegation/Broker authorization/dispatch, preserves required extension declarations across Workflow serialization, and validates a completed result plus a synthetic signed usage receipt and local logical settlement. A controlled service binding stands in for the Provider; external execution, paid production billing, physical SIM/eSIM activation and exact-device RockstarOS installation remain unaccepted. Earlier entries describing the positive Package executor as absent or all positive Worker dispatch as unverified are superseded by this checkpoint only for the local fixture scope. See [SIM-led architecture](../sim-led-product-architecture.md), [A2A bridge](../sky-a2a-bridge.md), and [evidence](../evidence/sim-led-product-correction-20261002.json).
@@ -183,3 +195,7 @@ Local verification includes a forged-progress API regression (valid-shaped but n
 `WorkJob` now stores `plan.schemaVersion`, the owner-editable objective, and a fixed `approvalGates` list in its existing persisted JSON payload. The objective can be revised while the job is active and before its first step is recorded; each edit is an owner-authenticated, revision-checked event. Gate requirements are generated from the server template and are not accepted from client input: Cloud Agent work requires a signed quote, native Wallet reservation and explicit Cloud approval before paid execution, then terminal Cloud status, captured result and a stored usage receipt before result review. Editing the objective never reuses an execution approval or changes the separate Agent request text.
 
 Legacy WorkJob payloads without a plan are read with a version-1 default, and altered/mismatched gate definitions are repaired to the server-derived requirements. Local Node/SQLite tests cover edit-before-start, edit rejection after work begins, unsupported version and client-supplied gate rejection, migration of legacy payloads, and persistence. Focused suite: `tests/workflow.test.mjs` and `tests/sim-service-entry.test.mjs`; TypeScript and product lint pass. This version only allows editing the goal; arbitrary step authoring, runtime A2A dispatch, Android acceptance and production Provider billing remain separate work.
+
+## 大学別NFC Sky（2026-10-12、WEB06 / SKY21）
+
+利用者の追加指示で5大学別のbrowser入口と大学別brief、一般MCP5枠・対象学生6枠を追加。主担当Web / PWA / Sites、ROCK。OS完成を必須にせず、NFCはURL入口とする。本人単位の枠管理を実装し、有料拡張の価格・cloud MCP実行・公開同一artifact・実NFC/端末の受入は別gateに残す。[目的・状態・保存・失敗/復旧・責任・合格条件](../sky-tools-complete-design.md#大学別nfc-sky2026-10-12)。

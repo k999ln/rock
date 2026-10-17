@@ -282,6 +282,8 @@ export function SkyPurchases() {
     }
   }, [orderId, canceled, refresh]);
   return <CommercePage title="購入したツール" description="支払い状況と、AIへの接続先をここに。">
+    <Link href="/sky/campus">大学別SkyのAgent Hubへ戻る <ArrowRight size={16} /></Link>
+    <Link href="/sky/payments">支払いとクラウド利用明細をまとめて確認</Link>
     {canceled && <output className={styles.notice}>決済を途中で閉じました。支払いが必要な場合は、購入履歴から再開できます。</output>}
     <ErrorNotice error={error || actionError} returnTo="/sky/purchases" />
     {loading && !data && <output className={styles.loading}>購入履歴を読み込んでいます…</output>}

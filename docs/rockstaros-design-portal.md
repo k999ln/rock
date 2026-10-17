@@ -1,6 +1,8 @@
 # RockstarOS 全設計ポータル
 
-版: 1.4 / 2026-09-24
+版: 1.5 / 2026-10-14
+
+2026-10-14追加: [avocado Companion（仮称）P0](avocado-schoolbag-safety-device.md)は、利用者が指定した吊り下げ・着脱・会話・SOSの小型RockstarOS hardware profile。二つの目、明示操作の音声session、保護者スマホ／Wi-Fi中継、取り外す本体の独立local alarmを設計する。R5の縮小版ではない。実機、安全規格、製造、販売は未受入。
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
@@ -127,3 +129,7 @@ RockstarOS Platform Core
 - 「動く」「対応」「安全」「完成」は、環境と証拠を併記しない限り使用しない。
 - 日付付き調査資料を新しい入口にせず、このポータルの正本表から辿れるようにする。
 - 実装と文書が違う場合は、実装を完成扱いせず差分を進捗taskへ登録する。
+
+## 現実とGTAの橋渡し
+
+2026-10-09の明示製品要件は[現実とGTAをつなぐ出力仕様](gta-reality-bridge.md)。既存Game/IP・Sky adapter・Zemaの詳細化として、双方向の成果、承認、保存・復旧、段階受入を定義。設計保存のみで、GTA adapter実装・提携・実ゲーム受入は未完了。

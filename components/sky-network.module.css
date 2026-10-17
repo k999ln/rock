@@ -1,21 +1,16 @@
 .shell {
   min-height: calc(100dvh - 70px);
   padding: 0;
-  color: #f6f7f3;
+  color: var(--os-text);
   background:
-    radial-gradient(
-      circle at 82% 6%,
-      rgba(183, 255, 90, 0.08),
-      transparent 23rem
-    ),
-    #070807;
+    var(--os-panel);
 }
 
 .page {
-  --ink: #f6f7f3;
-  --muted: #9ba19a;
-  --line: rgba(255, 255, 255, 0.12);
-  --lime: #c9ff63;
+  --ink: var(--os-text);
+  --muted: var(--os-muted);
+  --line: color-mix(in srgb, var(--os-line) 12%, transparent);
+  --lime: var(--os-accent);
   --green: #7ce0a8;
   width: min(1220px, calc(100% - 64px));
   margin: 0 auto;
@@ -42,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #aeb5ac;
+  color: var(--os-muted);
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.2em;
@@ -90,18 +85,18 @@
   gap: 7px;
   min-height: 34px;
   padding: 6px 11px;
-  border: 1px solid rgba(201, 255, 99, 0.28);
+  border: 1px solid color-mix(in srgb, var(--os-line) 28%, transparent);
   border-radius: 999px;
-  color: #dbf9a8;
-  background: rgba(201, 255, 99, 0.06);
+  color: var(--os-muted);
+  background: color-mix(in srgb, var(--os-raised) 6%, transparent);
   font-size: 11px;
   font-weight: 650;
 }
 
 .heroBadges .previewBadge {
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #adb3ac;
-  background: rgba(255, 255, 255, 0.03);
+  border-color: color-mix(in srgb, var(--os-line) 12%, transparent);
+  color: var(--os-warning);
+  background: color-mix(in srgb, var(--os-warning-bg) 3%, transparent);
 }
 
 .heroOrb {
@@ -118,14 +113,14 @@
   width: 42%;
   height: 42%;
   border-radius: 50%;
-  background: rgba(201, 255, 99, 0.16);
+  background: color-mix(in srgb, var(--os-raised) 16%, transparent);
   filter: blur(45px);
   content: '';
 }
 
 .heroOrb > span:not(.orbCore) {
   position: absolute;
-  border: 1px solid rgba(201, 255, 99, 0.18);
+  border: 1px solid color-mix(in srgb, var(--os-line) 18%, transparent);
   border-radius: 50%;
 }
 
@@ -146,11 +141,11 @@
   width: 92px;
   height: 92px;
   place-items: center;
-  border: 1px solid rgba(201, 255, 99, 0.64);
+  border: 1px solid color-mix(in srgb, var(--os-line) 64%, transparent);
   border-radius: 50%;
-  color: #0d100b;
+  color: var(--os-text);
   background: var(--lime);
-  box-shadow: 0 0 70px rgba(201, 255, 99, 0.24);
+  box-shadow: none;
   font-size: 33px;
   font-weight: 850;
 }
@@ -159,10 +154,10 @@
   position: absolute;
   width: 11px;
   height: 11px;
-  border: 2px solid #070807;
+  border: 2px solid var(--os-line);
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 1px rgba(124, 224, 168, 0.35);
+  box-shadow: none;
 }
 
 .orbNodeOne {
@@ -188,7 +183,7 @@
 .promiseCard {
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: #0d0f0d;
+  background: var(--os-bg);
 }
 
 .connectPanel {
@@ -209,14 +204,14 @@
   height: 25px;
   place-items: center;
   border-radius: 50%;
-  color: #11140e;
+  color: var(--os-text);
   background: var(--lime);
   font-size: 10px;
   font-weight: 800;
 }
 
 .sectionLabel p {
-  color: #e9ece6;
+  color: var(--os-text);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.18em;
@@ -224,7 +219,7 @@
 
 .sectionLabel small {
   margin-left: auto;
-  color: #777f76;
+  color: var(--os-muted);
   font-size: 10px;
 }
 
@@ -276,15 +271,15 @@
   gap: 10px;
   min-height: 52px;
   padding: 0 15px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid color-mix(in srgb, var(--os-line) 16%, transparent);
   border-radius: 10px;
-  color: #788078;
-  background: #090a09;
+  color: var(--os-muted);
+  background: var(--os-bg);
 }
 
 .sourceInput:focus-within {
-  border-color: rgba(201, 255, 99, 0.72);
-  box-shadow: 0 0 0 3px rgba(201, 255, 99, 0.08);
+  border-color: color-mix(in srgb, var(--os-line) 72%, transparent);
+  box-shadow: none;
 }
 
 .sourceInput input {
@@ -292,14 +287,14 @@
   min-width: 0;
   border: 0;
   outline: 0;
-  color: #f2f4ef;
+  color: var(--os-text);
   background: transparent;
   font: inherit;
   font-size: 13px;
 }
 
 .sourceInput input::placeholder {
-  color: #656b65;
+  color: var(--os-muted);
 }
 
 .connectForm > button {
@@ -309,7 +304,7 @@
   gap: 8px;
   min-width: 132px;
   border-radius: 10px;
-  color: #11140e;
+  color: var(--os-text);
   background: var(--lime);
   font-size: 12px;
   font-weight: 750;
@@ -318,7 +313,7 @@
 .demoLink {
   margin-top: 10px;
   padding: 0;
-  color: #818980;
+  color: var(--os-muted);
   background: transparent;
   font-size: 10px;
   text-decoration: underline;
@@ -340,7 +335,7 @@
   position: relative;
   min-height: 95px;
   padding: 15px;
-  background: #111311;
+  background: var(--os-bg);
 }
 
 .checkStep > span {
@@ -349,9 +344,9 @@
   height: 23px;
   place-items: center;
   margin-bottom: 12px;
-  border: 1px solid #3b403a;
+  border: 1px solid var(--os-line);
   border-radius: 50%;
-  color: #7f867f;
+  color: var(--os-muted);
   font-size: 9px;
 }
 
@@ -361,21 +356,21 @@
 }
 
 .checkStep strong {
-  color: #dfe3dc;
+  color: var(--os-text);
   font-size: 10px;
   letter-spacing: 0.06em;
 }
 
 .checkStep small {
   margin-top: 4px;
-  color: #747b74;
+  color: var(--os-muted);
   font-size: 9px;
 }
 
 .checkRail[data-state='checking'] .checkStep:first-child > span,
 .checkRail[data-state='ready'] .checkStep > span {
   border-color: var(--lime);
-  color: #10130e;
+  color: var(--os-text);
   background: var(--lime);
 }
 
@@ -383,15 +378,15 @@
   min-height: 104px;
   margin-top: 12px;
   padding: 16px;
-  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border: 1px dashed color-mix(in srgb, var(--os-line) 14%, transparent);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.018);
+  background: color-mix(in srgb, var(--os-panel) 2%, transparent);
 }
 
 .passport[data-state='ready'] {
   border-style: solid;
-  border-color: rgba(124, 224, 168, 0.35);
-  background: rgba(124, 224, 168, 0.035);
+  border-color: color-mix(in srgb, var(--os-line) 35%, transparent);
+  background: color-mix(in srgb, var(--os-raised) 4%, transparent);
 }
 
 .emptyPassport {
@@ -400,7 +395,7 @@
   justify-content: center;
   gap: 12px;
   min-height: 70px;
-  color: #6e766e;
+  color: var(--os-muted);
   font-size: 11px;
 }
 
@@ -426,22 +421,22 @@
 }
 
 .passportHeader small {
-  color: #778078;
+  color: var(--os-muted);
   font-size: 8px;
   letter-spacing: 0.16em;
 }
 
 .passportHeader strong {
   margin-top: 2px;
-  color: #e8ece5;
+  color: var(--os-text);
   font-size: 12px;
 }
 
 .passportHeader em {
   padding: 3px 7px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid color-mix(in srgb, var(--os-line) 15%, transparent);
   border-radius: 999px;
-  color: #8d958d;
+  color: var(--os-muted);
   font-size: 8px;
   font-style: normal;
 }
@@ -456,7 +451,7 @@
 
 .passportFacts > div {
   padding: 10px 9px;
-  background: #0d0f0d;
+  background: var(--os-bg);
 }
 
 .passportFacts span,
@@ -465,14 +460,14 @@
 }
 
 .passportFacts span {
-  color: #727a72;
+  color: var(--os-muted);
   font-size: 8px;
 }
 
 .passportFacts strong {
   margin-top: 3px;
   overflow: hidden;
-  color: #d7dcd5;
+  color: var(--os-muted);
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -485,7 +480,7 @@
 
 .demoNotice {
   margin-top: 12px;
-  color: #717871;
+  color: var(--os-muted);
   font-size: 9px;
   line-height: 1.7;
 }
@@ -497,7 +492,7 @@
   padding: 26px;
   overflow: hidden;
   background:
-    linear-gradient(150deg, rgba(201, 255, 99, 0.13), transparent 50%), #131612;
+    var(--os-panel);
 }
 
 .promiseCard::after {
@@ -506,7 +501,7 @@
   bottom: -72px;
   width: 190px;
   height: 190px;
-  border: 1px solid rgba(201, 255, 99, 0.18);
+  border: 1px solid color-mix(in srgb, var(--os-line) 18%, transparent);
   border-radius: 50%;
   content: '';
 }
@@ -514,7 +509,7 @@
 .promiseTop {
   display: flex;
   justify-content: space-between;
-  color: #8b9489;
+  color: var(--os-muted);
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.15em;
@@ -542,7 +537,7 @@
 
 .promiseCard > p {
   margin-top: 14px;
-  color: #9da59b;
+  color: var(--os-muted);
   font-size: 11px;
   line-height: 1.85;
 }
@@ -559,7 +554,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #dfe4dc;
+  color: var(--os-text);
   font-size: 11px;
 }
 
@@ -575,7 +570,7 @@
   gap: 9px;
   margin-top: auto;
   padding-top: 24px;
-  color: #7d867c;
+  color: var(--os-muted);
 }
 
 .costBoundary p {
@@ -614,13 +609,13 @@
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: #0c0e0c;
+  background: var(--os-bg);
 }
 
 .stackGrid article > div {
   display: flex;
   justify-content: space-between;
-  color: #7d857c;
+  color: var(--os-muted);
 }
 
 .stackGrid article > div span {
@@ -634,7 +629,7 @@
 
 .stackGrid h3 {
   margin-top: 48px;
-  color: #ebeee8;
+  color: var(--os-text);
   font-size: 14px;
   font-weight: 650;
   letter-spacing: -0.02em;
@@ -642,7 +637,7 @@
 
 .stackGrid p {
   margin-top: 10px;
-  color: #858d84;
+  color: var(--os-muted);
   font-size: 10px;
   line-height: 1.8;
 }
@@ -664,7 +659,7 @@
   padding: 4px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #0d0f0d;
+  background: var(--os-bg);
 }
 
 .audienceSwitch button {
@@ -674,13 +669,13 @@
   min-height: 34px;
   padding: 0 12px;
   border-radius: 7px;
-  color: #7f877e;
+  color: var(--os-muted);
   background: transparent;
   font-size: 10px;
 }
 
 .audienceSwitch button[aria-pressed='true'] {
-  color: #12150f;
+  color: var(--os-text);
   background: var(--lime);
   font-weight: 750;
 }
@@ -697,7 +692,7 @@
   min-height: 300px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #0c0e0c;
+  background: var(--os-bg);
 }
 
 .flowDiagram {
@@ -719,8 +714,8 @@
   padding: 15px;
   border: 1px solid var(--line);
   border-radius: 13px;
-  color: #bfc5bd;
-  background: #111311;
+  color: var(--os-muted);
+  background: var(--os-bg);
 }
 
 .flowNode small,
@@ -729,25 +724,25 @@
 }
 
 .flowNode small {
-  color: #6f766e;
+  color: var(--os-muted);
   font-size: 7px;
   letter-spacing: 0.14em;
 }
 
 .flowNode strong {
   margin-top: 4px;
-  color: #e2e6df;
+  color: var(--os-text);
   font-size: 11px;
 }
 
 .poolNode {
-  border-color: rgba(201, 255, 99, 0.35);
+  border-color: color-mix(in srgb, var(--os-line) 35%, transparent);
   color: var(--lime);
-  background: rgba(201, 255, 99, 0.055);
+  background: color-mix(in srgb, var(--os-raised) 6%, transparent);
 }
 
 .flowArrow {
-  color: #566055;
+  color: var(--os-muted);
 }
 
 .recipientStack {
@@ -763,7 +758,7 @@
   padding: 0 10px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  color: #aab1a8;
+  color: var(--os-muted);
   font-size: 9px;
 }
 
@@ -777,13 +772,13 @@
   height: 42px;
   place-items: center;
   border-radius: 12px;
-  color: #12150f;
+  color: var(--os-text);
   background: var(--lime);
 }
 
 .audienceKicker {
   margin-top: 21px;
-  color: #768076;
+  color: var(--os-muted);
   font-size: 8px;
   font-weight: 750;
   letter-spacing: 0.17em;
@@ -802,12 +797,12 @@
   gap: 15px;
   padding: 9px 0;
   border-top: 1px solid var(--line);
-  color: #80887f;
+  color: var(--os-muted);
   font-size: 9px;
 }
 
 .receiptLine strong {
-  color: #d9ded7;
+  color: var(--os-muted);
   font-size: 10px;
   text-align: right;
 }
@@ -818,7 +813,7 @@
 
 .audienceFootnote {
   margin-top: 14px;
-  color: #737b73;
+  color: var(--os-muted);
   font-size: 9px;
   line-height: 1.7;
 }
@@ -853,20 +848,20 @@
   padding: 0 11px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  color: #a8afa6;
+  color: var(--os-muted);
   font-size: 9px;
 }
 
 .deviceList > i {
   width: 22px;
   height: 1px;
-  background: #4b534a;
+  background: var(--os-raised);
 }
 
 .deviceList .contractChip {
-  border-color: rgba(201, 255, 99, 0.3);
+  border-color: color-mix(in srgb, var(--os-line) 30%, transparent);
   color: var(--lime);
-  background: rgba(201, 255, 99, 0.05);
+  background: color-mix(in srgb, var(--os-raised) 5%, transparent);
 }
 
 .pageFooter {
@@ -879,7 +874,7 @@
 
 .pageFooter p {
   max-width: 690px;
-  color: #747b73;
+  color: var(--os-muted);
   font-size: 9px;
   line-height: 1.7;
 }

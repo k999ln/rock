@@ -124,11 +124,11 @@ export default function SystemSettings() {
 
           <SettingsGroup title="自分のOS">
             <SettingLink
-              href="/?edit=1"
+              href="/?focus=1#home-intent"
               icon={<Palette />}
               tone="purple"
               title="ホーム画面と外観"
-              detail="壁紙・色・アイコン・並び順"
+              detail="説明・入力例の表示切り替え"
             />
             <SettingButton
               icon={<Download />}
