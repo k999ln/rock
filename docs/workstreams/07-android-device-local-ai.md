@@ -6,6 +6,18 @@
 
 2026-10-16、OS11/O6/ROCK。本人の実装指示で[Pixelのアプリ実装](../native-os-integration.md#pixel-terminal-implementation)を開始し、4画面/Home候補、実行先の下書き、モデルなし実Tool、現v4表示、保存/停止/再開/書出し、依頼時scheduler、明示端末内音声adapterを実装する。台帳は[同一候補の証拠](../evidence/pixel-si-terminal-implementation.json)。既存原dirty表示部品だけを選別し、同ID/予算/本人/Provider/復旧の現mainを保持。host、emulator、GL066、全OSを別受入し、モデルなしToolをLLM推論へ昇格させない。次は現v4モデルprofile導入と推論一周、日本語音声、独自OS。Android build/lint/Core/SDK/JVM、TerminalHomeIntegrationTest、LocalAiServiceIntegrationTest、os/design/verifyで検証する。
 
+<a id="pixel-usability-feedback"></a>
+
+## Pixelの見た目・通知・仕事操作の改善メモ
+
+2026-10-17、OS11/O6/ROCK。本人の実機利用中の指摘「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を記録。現時点は未改善・未受入。既存RQの体験改善であり、実機の機能合格を使いやすさの合格にしない。
+
+- 見た目: 情報の強弱、余白、文字、色、ボタンの一貫性を見直す。
+- 通知: 進行・確認依頼・完了・失敗を見分け、該当する仕事へ直接戻れるようにする。実際の状態を正本から読み、通知だけで成功や承認にしない。
+- 仕事: 今の状態、次にできる操作、確認・停止・成果物表示を迷わず見つけられる導線にする。内部IDや複雑な設定を主操作へ露出させない。
+
+次は現行Pixel画面と通知経路を調べ、一つの依頼について「依頼→進行→確認→成果物」と「失敗→復旧」「停止」を具体的な画面案へ落とす。本人・承認・同ID・保存・停止の既存契約を再利用する。UI変更時はTerminalHomeIntegrationTestと関連通知試験、同一APKのPixel操作で確認し、未検証の通知を実装済みと表示しない。本人の意見と、上記の具体化案を区別して引き継ぐ。
+
 ## Pixel si専用端末の公開コード調査と実装設計
 
 OS11/O6/ROCK、同期DOC04/H1。2026-10-15の本人依頼を[Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)と[調査台帳](../evidence/grapheneos-source-audit.json)へ対応する。調査版の全129 GrapheneOS remoteを分類し、取得した公開差分/独立app/Pixel設定と非公開部品を分離。OSの防御・回線・標準appを再利用し、8 module/PX01〜12へ不足を割り当てる。EXTERNALはupstream/BSP/model/Provider、JOINTは同image/回線/host受入、OWNERはapp方針・日本語音声・予算/契約/端末変更。SpeechServicesの正しいGitLab remoteとv3 TTSを確認し、日本語ASR/TTSの追加受入へつなぐ。採用lockは2026100200を維持。
@@ -24,7 +36,7 @@ OS11/O6/ROCKが[現在地と実用順](../native-os-integration.md#pixelの現�
 
 OS11/O6/ROCKのHOME候補・4画面・LLMなし有限ToolはPR #149のAPKで部分実機受入済み。[端末実装](../native-os-integration.md#pixel-terminal-implementation)と証拠の同SHA/同APKを読む。全OSやDT01〜06全体の合格とは区別する。
 
-続く本人指示で、署名済model catalog/SAF取込/明示reloadとJenniferの端末内有限計画をprivate Shell API 19へ実装した。[目的・入出力・責任・状態・保存・復旧・停止・合格条件](../native-os-integration.md#pixel-local-jennifer)、[host/Android/実機の別台帳](../evidence/pixel-local-jennifer.json)、[再接続時の手順](../os-prototype.md#pixel-local-model-acceptance)を正本にする。model関係はAI02/O3、保存/同IDはAI04/O2を参照。本人が今は実機を接続できないため、Pixelの新候補・推論・生成物は未受入。日本語音声、Goal/AMC全体、cloud/料金、全OSを合算しない。
+続く本人指示で、署名済model catalog/SAF取込/明示reloadとJenniferの端末内有限計画をprivate Shell API 19へ実装した。[目的・入出力・責任・状態・保存・復旧・停止・合格条件](../native-os-integration.md#pixel-local-jennifer)、[host/Android/実機の別台帳](../evidence/pixel-local-jennifer.json)、[再接続時の手順](../os-prototype.md#pixel-local-model-acceptance)を正本にする。model関係はAI02/O3、保存/同IDはAI04/O2を参照。2026-10-17に再接続し、固定候補`6c9a3083`と1.5BのHome→実v4推論→実2 Tool→395-byte成果物保存が64.625秒で機能合格。同ID/二重tapは仕事1件、Broker process再起動後の同hash読戻しも確認。文章は主題に沿うが依頼構成が不十分で一般品質は未受入。日本語音声、Goal/AMC全体、cloud/料金、全OSを合算しない。
 
 ## GrapheneOSと通信＋si商品の土台
 
