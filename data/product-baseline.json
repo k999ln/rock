@@ -1,4 +1,5 @@
 {
+  "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
   "automaticLlmSelectionIntent": {
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",
