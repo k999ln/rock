@@ -3,19 +3,19 @@
   "recordedOn": "2026-10-17",
   "status": "REQUESTED300_RUNNING_AFTER_ONE_EXPLICIT_COMPACT_RECOVERY",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
-  "appBuildSource": "dba3389a320e86dc3399ff88aafe73487490ec82",
+  "appBuildSource": "ef20d8ae",
   "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
   "nativeBuildRun": 39072982374,
   "installedApks": {
     "automation": {
       "package": "dev.rock.automation",
-      "bytes": 6937397,
-      "sha256": "bab98af59727d730e7a86f3ae9f10e0a33aff85c2e410569155db55fb9f9ff95"
+      "bytes": 6940217,
+      "sha256": "29e122b8dfca6c6703ca842a1e9e7d21296d716c76ba5b7cdb325077f6aacdef"
     },
     "shell": {
       "package": "dev.rock.shell",
-      "bytes": 685388,
-      "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2"
+      "bytes": 687816,
+      "sha256": "ccbea1131fd84e014f191befe979ead4302c743b17615607daaa43d203188002"
     },
     "runtime": {
       "package": "com.localactionassistant",
@@ -27,10 +27,10 @@
   "versions": {
     "runtimePackage": 8,
     "binderApi": 4,
-    "shellApi": 21,
+    "shellApi": 22,
     "platformApi": 1,
     "engineSchema": 4,
-    "ideaCheckpoint": 5,
+    "ideaCheckpoint": 6,
     "modelPolicy": 3
   },
   "generation": {
@@ -64,7 +64,7 @@
       "profileVersion": 2,
       "checkpointVersion": 5,
       "manualRetries": 0,
-      "completed": 35,
+      "completed": 45,
       "originalRunElapsedMs": 1033135,
       "explicitCompactReplans": 1,
       "original30Preserved": true,
@@ -169,7 +169,14 @@
       "artifactSha256": "60a42d6285e1286a55cff060eaeaafebc304eacbc37088e00556b5819ce72f04",
       "limitation": "Japanese body still conflates Sky and Zema responsibilities; requires content review."
     },
-    "finalUi": {
+    "native8Pre300Migration": {
+      "originalWorksPreserved": 24,
+      "originalArtifactsPreserved": 70,
+      "currentWorks": 60,
+      "currentArtifacts": 174,
+      "allBodyDigestsVerified": true
+    },
+    "preCompactUi": {
       "status": "PASS_SEQUENTIAL_SAME_APKS",
       "reportedTests": 14,
       "actualTests": 13,
@@ -178,18 +185,14 @@
       "livePublicSearch": true,
       "seconds": 23.008
     },
-    "finalBoundariesSqlite": {
+    "preCompactBoundariesSqlite": {
       "status": "PASS",
       "actualTests": 5,
       "skips": 0,
       "seconds": 0.569
     },
-    "native8Pre300Migration": {
-      "originalWorksPreserved": 24,
-      "originalArtifactsPreserved": 70,
-      "currentWorks": 60,
-      "currentArtifacts": 174,
-      "allBodyDigestsVerified": true
+    "postCompactUi": {
+      "status": "PENDING_AFTER_MODEL_JOB_COMPLETES"
     }
   },
   "limitations": [
@@ -254,5 +257,52 @@
     "recoveryOncePerJob": true,
     "physicalRecoveryAccepted": true,
     "recoveryObservation": "Actual UI consent accepted once at30; checkpoint35 saved under v6, first30/request/target byte-for-byte equivalent in parsed fields. Initial harness saw old snapshot before async ack and failed; monitor restart did not invoke recovery again."
-  }
+  },
+  "generationSegments": [
+    {
+      "throughCount": 30,
+      "appSource": "dba3389a320e86dc3399ff88aafe73487490ec82",
+      "checkpoint": 5,
+      "apks": {
+        "automation": {
+          "package": "dev.rock.automation",
+          "bytes": 6937397,
+          "sha256": "bab98af59727d730e7a86f3ae9f10e0a33aff85c2e410569155db55fb9f9ff95"
+        },
+        "shell": {
+          "package": "dev.rock.shell",
+          "bytes": 685388,
+          "sha256": "aa57815d8bb25f20e6f17f296436c494ff638dd083be0f76f52ab470d2ef76c2"
+        },
+        "runtime": {
+          "package": "com.localactionassistant",
+          "bytes": 26465947,
+          "sha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008"
+        }
+      }
+    },
+    {
+      "afterCount": 30,
+      "appSource": "ef20d8ae",
+      "checkpoint": 6,
+      "apks": {
+        "automation": {
+          "package": "dev.rock.automation",
+          "bytes": 6940217,
+          "sha256": "29e122b8dfca6c6703ca842a1e9e7d21296d716c76ba5b7cdb325077f6aacdef"
+        },
+        "shell": {
+          "package": "dev.rock.shell",
+          "bytes": 687816,
+          "sha256": "ccbea1131fd84e014f191befe979ead4302c743b17615607daaa43d203188002"
+        },
+        "runtime": {
+          "package": "com.localactionassistant",
+          "bytes": 26465947,
+          "sha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008"
+        }
+      },
+      "explicitCompactReplans": 1
+    }
+  ]
 }
