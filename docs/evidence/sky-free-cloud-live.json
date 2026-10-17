@@ -42,5 +42,45 @@
     "One available anonymous cloud model does not demonstrate optimal ranking across multiple Cloud providers"
   ],
   "revalidatedAt": "2026-10-17T17:24:02.909Z",
-  "providerCacheNote": "Repeated identical prompt returned the same Provider response ID; two network POSTs, not proof of two fresh inference runs."
+  "providerCacheNote": "Repeated identical prompt returned the same Provider response ID; two network POSTs, not proof of two fresh inference runs.",
+  "realAccountFollowup": {
+    "date": "2026-10-17",
+    "status": "authenticated_deployment_missing",
+    "localVerify": "all_stages_exit_0_2284_pass_1_existing_skip",
+    "verifyLog": "/private/tmp/sky-real-account-verify.log",
+    "siteProjectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "liveUrl": "https://avoado.si",
+    "sourceCommit": "a28a9f4288c96cade94d1a4895ba4ffdd32b408b",
+    "siteLatestVersionNumber": 56,
+    "signedInOutputsUi": true,
+    "signedInScreenshot": "/private/tmp/sky-real-account-signed-in.png",
+    "missingPageScreenshot": "/private/tmp/sky-real-account-free-cloud-missing.png",
+    "restoredLiveSource": "/private/tmp/sky-authenticated-source",
+    "freeCloudPage": "404 at /os/sky/free-cloud",
+    "missingSourceRoutes": [
+      "app/api/llm/select/route.ts",
+      "app/api/llm/free-cloud/route.ts"
+    ],
+    "missingRuntimeKeys": [
+      "SKY_FREE_CLOUD_ENABLED",
+      "SKY_FREE_CLOUD_OWNER_ID"
+    ],
+    "missingLiveTables": [
+      "work_jobs",
+      "sky_recurring_contracts",
+      "sky_recurring_charges",
+      "remote_ai_text_send_claims"
+    ],
+    "schemaInventoryTruncated": false,
+    "realAccountCloudRequests": 0,
+    "deploymentChanged": false,
+    "mainMerged": false,
+    "productionBillingChanged": false,
+    "requiredNextSteps": [
+      "Back up and verify restore of live Sky D1 before compatible additive migrations; preserve 0000/0001 Sky lineage, do not replace with Columbia lineage.",
+      "Port exact candidate dependencies into actual Sky source, validate migrations and existing rows on a restored copy.",
+      "Bind authenticated owner to a verified Sandbox contract; configure owner-only free Cloud gate without enabling paid execution.",
+      "Deploy candidate, verify signed-in select/response/usage/replay/denial paths, then merge PR155 only after same-head CI succeeds."
+    ]
+  }
 }

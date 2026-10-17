@@ -1,5 +1,5 @@
 {
-  "skyAuthenticatedCloudFollowup": {"status": "owner_signin_pending", "mergedCandidateVerify": "all_stages_exit_0_2284_pass_1_existing_skip", "localAccess": "unauthenticated", "passkeyOptions": "PASSKEY_INVALID", "mainMerged": false, "productionBillingEnabled": false, "nextAction": "Owner sign-in at Sky avoado.si redirects to auth.openai.com/log-in; then validate real account selection and response before main merge."},
+  "skyAuthenticatedCloudFollowup": {"status": "authenticated_deployment_missing", "mergedCandidateVerify": "all_stages_exit_0_2284_pass_1_existing_skip", "localAccess": "unauthenticated", "passkeyOptions": "PASSKEY_INVALID", "mainMerged": false, "productionBillingEnabled": false, "nextAction": "Actual Sky source/schema migration acceptance and owner Sandbox contract binding before signed-in free Cloud test; see docs/evidence/sky-free-cloud-live.json", "realAccountLoginAccepted": true, "realAccountCloudAccepted": false},
   "skyRealCloudQuota": {
   "taskId": "BIL02",
   "date": "2026-10-17",

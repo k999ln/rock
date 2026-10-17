@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 SKY07/ROCK・BIL02/JOINT: 本人ログイン後、公開Sky avoado.siの成果画面で認証済みを確認。無料Cloud画面は404。実Site appgprj_6abdfad4c5648191bcae957913bd02fa（取得source a28a9f4、latest version 56）は作業root設定のColumbiaとは別。無料Cloud routes/owner設定、work_jobs/sky_recurring_contracts/charges/remote_ai_text_send_claimsが未配備。実accountからCloud送信0、公開変更0、本番課金変更0。実応答の合格条件未達によりmain統合は保留。次は既存D1 backup/復元と0000/0001系列互換移行の受入、実Siteへ候補を接続、本人Sandbox契約の照合、実UI試験。npm run verify全stage exit 0（2284 pass/既存skip1、/private/tmp/sky-real-account-verify.log）。詳細 docs/evidence/sky-free-cloud-live.json。
+
 2026-10-17 SKY07/ROCK: 実アカウントでの無料Cloud受入と条件付きmain統合に着手。localhost:5226は未認証（setupAvailable false、パスキーoptionsはPASSKEY_INVALID）。開発IDを実アカウントとして扱わず、本人提示のGitHubから公開Sky avoado.siを照合し、成果画面→サインイン→auth.openai.com/log-inへ到達。本人ログイン待ち。origin/main f10b7309を作業branchへ保全統合しproject.mdの両系列を保持。統合候補npm run verify全stage exit 0（2284 pass/既存skip1、/private/tmp/sky-auth-merge-verify.log）。main反映と本番課金は未実施。
 
 2026-10-17 SKY07/ROCK・BIL02/JOINT: 無料Cloud実応答と画面接続を継続。空tool_callsの誤判定を修正。Mac共通React画面→自動選択→匿名実Cloud→実usage/費用0表示を受入（GPT-OSS 20B、入力331/出力118、再押下POST追加0）。契約は合成、Stripe接続0、本番課金なし。会話UI/API配線も追加し、本人/同意/プランを維持。npm run verify全stage exit 0（2284 pass/既存skip1、/private/tmp/sky-free-live-verify-final.log）。最新UI再確認と再押下追加POST0も合格。同一promptのProvider cache応答は新規推論と区別する。証拠 docs/evidence/sky-free-cloud-live.json。実パスキーsession・main統合は未受入。
