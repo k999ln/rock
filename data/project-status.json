@@ -31,8 +31,10 @@
       "backupApksVerified": true,
       "candidateApksInstalled": 6,
       "pinnedModelTransferred": true,
-      "connection": "lost_after_installation",
-      "inferenceStarted": false
+      "connection": "reconnected",
+      "firstInferenceTest": "failed_after_import_load_before_tools",
+      "runtimeFix": "loaded_profile_only_overlay_source_verified_26_tests_build_pending",
+      "inferenceStarted": true
     }
   },
   "pixelSiImplementation": {

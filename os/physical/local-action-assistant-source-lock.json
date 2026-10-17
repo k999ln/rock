@@ -55,11 +55,17 @@
         "path": "os/physical/local-ai-build-v4.patch",
         "sha256": "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
         "purpose": "api_v4_binder_handshake_and_long_headless_timeout_build_fix"
+      },
+      {
+        "path": "os/physical/local-ai-loaded-profile-v4.patch",
+        "sha256": "d1b77b0e9b22eb012bad10f6005636864903b0734d0ee61d57b7244c40073e49",
+        "purpose": "plan_only_with_authenticated_already_loaded_profile_without_standalone_repository_autoload"
       }
     ]
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "deviceInferenceVerified": true,
-  "notes": "Base, plan-v2 and profile-v3 overlays retain prior Pixel 10 GL066 evidence. The API v4 extension adds an authenticated read-only ParcelFileDescriptor model handoff: the runtime accepts regular files only, independently bounds size and disk reserve, copies into private no-backup storage, verifies exact length and SHA-256, atomically renames, loads through the local runtime, and reports the active profile ID with the loaded model digest. Pinned upstream source TypeScript/Jest/lint/manifest checks and clean overlay application pass. Android Gradle/AIDL build, API v4 Binder/device tests, OS-image integration and production signing have not been run. Prior physical inference evidence applies only to the reviewed API v2 artifact."
+  "notes": "Base, plan-v2 and profile-v3 overlays retain prior Pixel 10 GL066 evidence. The API v4 extension adds an authenticated read-only ParcelFileDescriptor model handoff: the runtime accepts regular files only, independently bounds size and disk reserve, copies into private no-backup storage, verifies exact length and SHA-256, atomically renames, loads through the local runtime, and reports the active profile ID with the loaded model digest. Pinned upstream source TypeScript/Jest/lint/manifest checks and clean overlay application pass. Android Gradle/AIDL build, API v4 Binder/device tests, OS-image integration and production signing have not been run. Prior physical inference evidence applies only to the reviewed API v2 artifact.",
+  "candidateArtifactRelationship": "APPENDED_OVERLAY_AFTER_LOCKED_APK_REQUIRES_NEW_BUILD"
 }

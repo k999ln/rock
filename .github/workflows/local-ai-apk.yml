@@ -7,7 +7,7 @@ on:
       - 'android/local-ai-api/**'
       - 'contracts/local-ai-runtime.json'
       - 'os/physical/local-action-assistant-*.json'
-      - 'os/physical/local-ai-overlay.patch'
+      - 'os/physical/local-ai-*.patch'
       - 'scripts/build-local-ai-apk.sh'
       - 'scripts/prepare-local-ai-runtime.py'
       - 'scripts/stage-local-ai-apk.py'

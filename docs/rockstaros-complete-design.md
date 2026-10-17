@@ -47,6 +47,8 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## Skyの実行先選択と共通runtime
 
+Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.md#pixel-local-jennifer)に従う。2026-10-17の実機で見つかった旧単体model登録への誤参照は、検証済みロードhashだけを使う追加overlayで修正中。暗黙loadや別modelへの切替をせず、未load/別hashでは停止する。旧OS用APKの固定と新source候補を別受入にする。
+
 [選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、Skyでmodel/Agent/Toolと実hostを選び、Zemaの同Job/版/grant/見積へ固定する。model推論先とAgent runnerを分け、local/cloud/明示組合せを対応能力の範囲で提示する。全選択肢の実装/本番受入は未完了で、Brokerの承認/予算/停止と無断fallback禁止を維持する。
 
 ## Pixel先行とiOSのservice client

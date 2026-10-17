@@ -132,7 +132,8 @@
             "android/core/build.gradle",
             "android/Android.bp",
             "os/physical/model-crypto-artifact-lock.json",
-            "scripts/stage-model-crypto.py"
+            "scripts/stage-model-crypto.py",
+            "os/physical/local-ai-loaded-profile-v4.patch"
           ],
           "physicalInferenceAccepted": false,
           "fullJenniferGoalAccepted": false

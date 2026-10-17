@@ -1,0 +1,67 @@
+diff --git a/src/native/__tests__/osBridgePlan.test.ts b/src/native/__tests__/osBridgePlan.test.ts
+new file mode 100644
+index 0000000..ab0e80d
+--- /dev/null
++++ b/src/native/__tests__/osBridgePlan.test.ts
+@@ -0,0 +1,45 @@
++import {AppRegistry, NativeModules} from 'react-native';
++import {modelRuntime} from '../modelRuntime';
++import {repository} from '../../data/repository';
++
++jest.mock('../modelRuntime', () => ({modelRuntime: {
++  loaded: true, weightsSha256: 'a'.repeat(64), plan: jest.fn(), load: jest.fn(),
++}}));
++jest.mock('../../data/repository', () => ({repository: {model: jest.fn()}}));
++jest.mock('../../core/toolBroker', () => ({}));
++
++describe('Broker-loaded plan route', () => {
++  const bridge = {emitEvent: jest.fn(), setStatus: jest.fn(), setModelIdentity: jest.fn()};
++  let run: (data: object) => Promise<void>;
++  beforeAll(() => {
++    NativeModules.RockLocalAiBridge = bridge;
++    jest.spyOn(AppRegistry, 'registerHeadlessTask').mockImplementation((_name, provider) => {
++      run = provider();
++    });
++    require('../osBridge').registerOsBridge();
++  });
++  beforeEach(() => {
++    jest.clearAllMocks();
++    Object.assign(modelRuntime, {loaded: true, weightsSha256: 'a'.repeat(64)});
++    (modelRuntime.plan as jest.Mock).mockResolvedValue('{"toolId":"article-preparation@1"}');
++    (repository.model as jest.Mock).mockResolvedValue(null);
++  });
++  const request = {kind: 'plan', requestToken: 'synthetic-request', schemaId: 'article-preparation@1/input-v1',
++    expectedWeightsSha256: 'a'.repeat(64), prompt: 'synthetic article', contextJson: '[]'};
++  it('plans with the authenticated loaded hash when standalone storage has no model', async () => {
++    await run(request);
++    expect(modelRuntime.plan).toHaveBeenCalledTimes(1);
++    expect(bridge.emitEvent).toHaveBeenCalledWith(request.requestToken, 'completed', '{"toolId":"article-preparation@1"}');
++    expect(repository.model).not.toHaveBeenCalled();
++    expect(modelRuntime.load).not.toHaveBeenCalled();
++    expect(bridge.setModelIdentity).not.toHaveBeenCalled();
++  });
++  it.each([{loaded: false}, {weightsSha256: 'b'.repeat(64)}])('rejects absent/mismatched loaded identity without autoload: %o', async state => {
++    Object.assign(modelRuntime, state);
++    await run(request);
++    expect(bridge.emitEvent).toHaveBeenCalledWith(request.requestToken, 'failed', 'MODEL_PROFILE_MISMATCH');
++    expect(modelRuntime.plan).not.toHaveBeenCalled();
++    expect(repository.model).not.toHaveBeenCalled();
++    expect(modelRuntime.load).not.toHaveBeenCalled();
++  });
++});
+diff --git a/src/native/osBridge.ts b/src/native/osBridge.ts
+index bb2f979..8204d9a 100644
+--- a/src/native/osBridge.ts
++++ b/src/native/osBridge.ts
+@@ -112,7 +112,10 @@ async function complete(data: BridgeData, token: string): Promise<void> {
+ async function plan(data: BridgeData, token: string): Promise<void> {
+   const expectedWeightsSha256 = requiredText(data.expectedWeightsSha256, 'expected_weights_sha256', 64);
+   if (!/^[a-f0-9]{64}$/.test(expectedWeightsSha256)) throw new Error('INVALID_EXPECTED_MODEL_HASH');
+-  await ensureModel(expectedWeightsSha256);
++  // Broker imports are deliberately separate from the standalone app's model record.
++  // Use only the already-loaded identity; never autoload or relabel another profile.
++  if (!modelRuntime.loaded || modelRuntime.weightsSha256 !== expectedWeightsSha256)
++    throw new Error('MODEL_PROFILE_MISMATCH');
+   bridge?.setStatus('busy', true);
+   const schemaId = requiredText(data.schemaId, 'schema_id', 80);
+   const prompt = requiredText(data.prompt, 'prompt', 8000);
