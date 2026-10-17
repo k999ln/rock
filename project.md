@@ -1,3 +1,11 @@
+# 無料Cloudの画面外継続
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: main 26df75e4から実装。公開Site v68/source 40015e38と毎分Cloudflare Workerを配備。実accountで送信0回の依頼を保存してタブ終了、cronだけで実応答「41に42を足すと83です。」を保存、再訪で337/117 tokens/$0を確認。別依頼のqueued/sending/completed再押下も送信1回/同参照不変。Sandbox請求は1件→1件、同invoice/status/period。既存データ移行なし。本番課金なし。無料Cloud対象16試験、全体verify exit0（本体2296 pass/既存skip1、全試験stage fail0）。証拠 docs/evidence/sky-free-cloud-background.json。実402の再発は今回観測せず、402待機/並列は合成試験。Git保存とmain統合は公開配備とは別。次はPRの同head CI確認。
+
+# 無料Cloudの待機と自動続行
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: 公開version65/source 9b7f46b5に402のカウントダウンと同ID自動続行を配備。生成前FREE_LIMITだけ再開、最大5試行/10分、owner/revision CASと毎回の契約/枠確認を維持。実accountで9秒表示→停止→0秒で追加送信なし→再開→同IDで待機拒否3回/生成1回、「31 + 32 は 63」、339/107 tokens/$0を確認。再押下でも応答ID/試行4回不変。請求台帳1件→1件、同invoice/status/period保持（照合paid_atのみ更新）。対象13試験、全体verify全stage exit0（2293 pass/既存skip1）。証拠 docs/evidence/sky-free-cloud-auto-continue.json。本番課金なし。次はGit保存/同head CI、無人queueは対象外。
+
 # 無料Cloud 402の再検証
 
 2026-10-17 SKY07/ROCK・WEB01/JOINT: PR #160の残条件を公開version63/source 4a17a16aで受入。402はProvider IP待機制限、実Retry-After 25秒を表示する修正を配備。26秒以上待機後、新しい合成依頼を実accountで自動openai-fast→GPT-OSS20Bへ送り「14 + 15 は 29」、337/104 tokens/$0の実応答成功。月次Sandbox active/残り100 USD、本番課金なし。npm run verify全stage exit0（2289 pass/既存skip1）、対象9試験成功。証拠 docs/evidence/sky-hosted-monthly.json。次は同head CIとPR #160のmain統合。無料Providerの再度の待機制限は残り、恒久無制限とはしない。
@@ -633,3 +641,5 @@ package8実build受入: run39072982374/source31414985、unsigned SHA689bdfa94de2
 package8最初の導入はBrokerのPACKAGE_VERSION_CODE旧値7が安全側で拒否し、新規取得前に停止。前回progressファイルの読違いを訂正。client/contract版照合をsource gateへ追加、開始失敗をUIから即検知し旧試験ファイルを使わないharnessへ修正。重み再利用機構は既存に存在し、修正後の実導入で確認する。
 
 Native8/raw-v2の実20件は397.822秒・5工程attempt1、文末/si表記/番号/完全重複/保存合格。ただし不要な家具・温度連動の弱い内容があり、実用性は保留。prompt契約v5でソフト単体を許し、分野の困りごとを助ける具体動作を求める。旧v4履歴保全・生成再開は明示再計画。General/Coder再受入と新20→自動300を継続。
+
+Git同期: main43cf290e（Sky無料Cloudのbounded自動続行/画面外継続、PR161/162）を統合。競合はPixel資料とCloud追記を双方保持して解消。Android/native入力へのmain新差分は0、実機APKの入力を変えていない。main統合済みはこの作業branchへの取込を指し、PR158のmain公開受入は未完了。

@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-17",
+  "status": "hosted_real_account_countdown_continuation_replay_passed",
+  "productionBilling": false,
+  "siteVersion": 65,
+  "siteSource": "9b7f46b5bc876a919de11fe3bfc118927df3be97",
+  "deployment": "appgdep_6ad3d71ed5848191b2a26efea5acb13b",
+  "environmentRevision": 4,
+  "archiveSha256": "cd4abffa0bb243e35305b3cc307ded009c7287fb0221ea091345a089cfcc0e0e",
+  "semantics": {
+    "retryOnly": "HTTP 402 + FREE_LIMIT + numeric Retry-After 1..300 seconds",
+    "sameIdAndModel": true,
+    "revisionCas": true,
+    "maxAttempts": 5,
+    "maxMinutes": 10,
+    "ambiguousSendRetry": false,
+    "paidFallback": false,
+    "pageCloseStopsContinuation": true
+  },
+  "tests": {
+    "focusedFreeCloud": 13,
+    "verify": "all stages exit 0; 2293 passed, 1 existing skip",
+    "log": "/private/tmp/sky-auto-verify-final.log"
+  },
+  "databaseMigration": false,
+  "earlierVersion64": {
+    "jobId": "cb38a0c8-06be-4033-a6a9-46ec73969d3c",
+    "attempts": 2,
+    "response": "21 + 22 は 43 です。",
+    "inputTokens": 335,
+    "outputTokens": 99,
+    "chargeMinor": 0
+  },
+  "finalUi": {
+    "jobId": "1ed52f5a-76de-427d-bc69-ae1b31399e7c",
+    "observedCountdownSeconds": 9,
+    "pausedAtSeconds": 2,
+    "pauseAtZeroNoAdditionalAttempt": true,
+    "resumedSameId": true,
+    "attempts": 4,
+    "confirmedFreeRejections": 3,
+    "successfulGenerations": 1,
+    "model": "gpt-oss-20b",
+    "response": "31 + 32 は 63 です。",
+    "inputTokens": 339,
+    "outputTokens": 107,
+    "chargeMinor": 0,
+    "providerResponseId": "pllns_d8b448406c4270b5c9f9b4adc22239a1",
+    "replay": "same response id/text/usage/attempts after saved-result button",
+    "screenshots": [
+      "/private/tmp/sky-auto-countdown.png",
+      "/private/tmp/sky-auto-completed.png"
+    ]
+  },
+  "billingReadback": {
+    "beforeChargeRows": 1,
+    "afterChargeRows": 1,
+    "invoiceIdStatusContractAndPeriodUnchanged": true,
+    "changedField": "paid_at refreshed by existing reconciliation",
+    "newChargeRows": 0
+  },
+  "limits": [
+    "Actual parallel CAS and timeout/unknown-no-retry are unit-tested; live UI verifies pause/resume and replay",
+    "Free provider availability not guaranteed",
+    "Closing/reloading page stops continuation; no unattended queue",
+    "No production billing or paid provider execution"
+  ]
+}

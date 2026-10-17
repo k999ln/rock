@@ -31,7 +31,7 @@
       "partsPerSavedStage": 1,
       "incompletePartPersisted": false,
       "diversity": "one model idea per distinct topic; 30 topics/10 audiences; full original request retained",
-      "newTerminology": "requested standalone AI formatted as si; count unchanged; alias duplicates rejected; old text unchanged",
+      "newTerminology": "standalone AI/SI formatted as si; count unchanged; alias duplicates rejected; old text unchanged",
       "stagesPerJob": 2,
       "normalContinuationUsesFailureBackoff": false
     },
@@ -56,12 +56,12 @@
       "creativeDirect": "Real5 actions_82626ms_AI_spelling_triggered_old_rejection",
       "creativeTwentyV2": "FORMAT_PASS_374086ms_CONTENT_REJECTED_control_tail_hid_duplicate",
       "creativeTwentyV3": "PASS_370282ms_manual_chooser_actual20_all5stages_attempt1_no_control_tails_or_exact_duplicates_relevance_review_required",
-      "currentCoder": "PASS_37994ms_auto_exact_profile4_three_stages_actual_sum_even_text_saved_not_executed",
-      "currentUi": "PASS_sequential14_reported_13_actual_1_optin_skip_notification_tap_and_live_search",
-      "physicalBoundariesSqlite": "PASS_5_actual_0_skip"
+      "runtime7Coder": "PASS_37994ms_auto_exact_profile4_three_stages_actual_sum_even_text_saved_not_executed",
+      "runtime7Ui": "PASS_sequential14_reported_13_actual_1_optin_skip_notification_tap_and_live_search",
+      "runtime7BoundariesSqlite": "PASS_5_actual_0_skip"
     },
     "runtimeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
-    "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
+    "mergedMain": "43cf290e35facb2c3f6a2360612b340ca4638819",
     "planningLimits": {
       "outputTokens": 512,
       "headlessSeconds": 180,
@@ -69,14 +69,14 @@
       "generationLeaseSeconds": 240
     },
     "runtimeCandidate": {
-      "packageVersion": 7,
+      "packageVersion": 8,
       "binderApi": 4,
-      "rawIdeaSchema": "ideas array only, exact N 1..10",
+      "rawIdeaSchema": "exact arrays N1..10; legacy v1 max24 chars, v2 max48 headroom; Broker96 UTF-8 bytes",
       "metadataOwner": "runtime, never model authority",
       "sourceTests": 34,
       "nativeBuild": "PASS_ACTUAL_APK_BYTES_SIGNER_AND_PAYLOAD_COMPARISON",
-      "fix": "idea-only varied sampling; lifecycle-scoped trusted Broker visible binding; strict validators unchanged",
-      "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b"
+      "fix": "complete phrase headroom, client/contract version source gate, no stale acceptance files; practical prompt5 pending",
+      "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99"
     },
     "migrationReadback": {
       "originalWorksPreserved": 24,
@@ -85,8 +85,8 @@
     },
     "creativeModel": {
       "profileId": "dev.rock.qwen3-4b-2507-q4km",
-      "version": 1,
-      "runtimePackage": 7,
+      "version": 2,
+      "runtimePackage": 8,
       "minRamBytes": 8589934592,
       "weightBytes": 2497281120,
       "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
@@ -94,7 +94,9 @@
       "hostHashVerified": true,
       "automaticPriority": 0,
       "deviceQualityAccepted": false,
-      "deviceNetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
+      "definitionDigest": "a4f63aa4666c3b2b4af749bf357ec536a21c26b0868aab7b4948329bbd8b89aa",
+      "deviceCachedImport": "PASS_45429ms_live_search_cached_existing_weights_no_new_network",
+      "previousRuntime7NetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
     },
     "currentDecision": "Package8 raw-v2 manual20 passed all5stages attempt1, no truncated/control tails or uppercase SI; weak forced furniture links remain. Prompt5 permits software-only services and requires a useful action for each domain. Preserve old4 read/hold; new20 and300 not accepted.",
     "requested300Checkpoint": {
@@ -107,7 +109,7 @@
       "runtimePackage": 8,
       "binderApi": 4,
       "creativeProfileVersion": 2,
-      "checkpointVersion": 4,
+      "checkpointVersion": 5,
       "actualNativeArtifactVerified": true,
       "signedSha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008",
       "physicalAccepted": false
@@ -115,6 +117,9 @@
   },
 
 
+
+  "skyFreeCloudBackground":{"taskId":"SKY07","status":"hosted_tab_closed_real_response_and_replay_verified","siteVersion":68,"productionBilling":false,"mainIntegrated":false,"evidence":"docs/evidence/sky-free-cloud-background.json"},
+  "skyFreeCloudAutoContinue":{"taskId":"SKY07","status":"hosted_real_account_countdown_continuation_replay_passed","productionBilling":false,"branch":"codex/sky-free-cloud-auto-continue","siteVersion":65,"evidence":"docs/evidence/sky-free-cloud-auto-continue.json"},
   "skyHostedMonthly": {"taskId":"BIL02","primaryOwner":"JOINT","status":"hosted_billing_and_cloud_ui_passed","version":63,"preservedTables":50,"preservedRows":148,"productionBilling":false,"evidence":"docs/evidence/sky-hosted-monthly.json","branch":"codex/sky-hosted-monthly-sandbox","next":"公開実応答成功。PR #160の同head CI後mainへ統合。"},
   "skyMonthlyFreeCloud": {"taskId": "BIL02", "primaryOwner": "JOINT", "status": "sandbox_provider_cloud_ui_and_verify_passed", "branch": "codex/sky-monthly-free-cloud", "productionBilling": false, "evidence": "docs/evidence/sky-monthly-free-cloud.json", "design": "docs/sky-billing.md", "implementation": ["lib/sky-recurring-plan.ts", "lib/sky-free-cloud.ts", "scripts/check-sky-monthly-free-cloud.mjs"], "nextAction": "Same-head CI and Git integration; hosted account monthly migration remains separate"},
   "skyLiveMigration": {"status": "deployed_real_account_cloud_accepted", "version": 61, "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},

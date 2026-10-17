@@ -729,10 +729,29 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 
 無料Cloudの402/429は契約未払いと区別し、Providerが数値Retry-Afterを返した場合だけ待機秒数を表示する。未指定なら無料枠の利用可否確認を案内する。同じ依頼IDは結果未確認のまま保持し、再送・有料切替をしない。検証はtests/sky-free-cloud.test.mjsのcooldown/refusal試験と公開UIで行う。
 
-端末内の発想モデル選定は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)を参照。1.5Bは形式保存が通っても内容品質不合格を区別し、発想の自動候補から外す。Qwen3 4B Instructの固定Unsloth量子化を手動・資源制限付きで試験し、受入前に自動順位や一般品質を宣言しない。
+Pixelの端末内モデル選定・導入・実機証拠は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)と[受入台帳](evidence/pixel-discovered-models.json)へ集約する。発想の1.5Bは内容不合格として自動対象外。Native8と4Bの固定定義を再受入中であり、一般品質や実300の完了を宣言しない。
 
-Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan180秒/lease240秒、最大60生成+seal）。旧v1/v2は読取を維持、新規制御記号混入は拒否する。詳細と未受入はLLM正本へ集約。
+発想の現保存/prompt契約はcheckpoint v5、raw ideas-v2（48文字headroom、Broker各案96 UTF-8 bytes）、実5件ごとに保存、plan180秒/lease240秒、最大60生成+seal。旧checkpoint v1〜v4は本文を維持して読み、未完了の旧契約の再実行は明示再計画。制御記号/不足/完全重複は拒否・純粋発想だけ有限3再生成。Skyのソフト単体も含め、家具/環境との連動は課題解決に必要な案だけとする。過去の実300試験は内容不備を発見し25件保存で中止、最新実機受入は別に記録する。
 
-最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
+## 無料Cloudの待機と自動続行（2026-10-17）
 
-発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。
+本人の追加指示により、従来の「すべての402で自動再送なし」を限定更新する。依頼送信時の「無料枠の待機後、同じ依頼を自動で続行する」を有効にした場合、HTTP 402・error.code=FREE_LIMIT・1〜300秒の数値Retry-Afterがすべて確認できた生成前拒否だけをwaitingとして保存する。単なる402/429、通信切断、timeout、usage欠落、保存失敗はunconfirmedで停止し、再送しない。有料fallback・決済呼出しを追加しない。
+
+既存WorkJobのowner/id/requestDigest/modelを固定し、revision CASでwaiting→sendingを一人だけが獲得する。retryAtまでは外部呼出しなし。再開前に同意・無料接続設定・月次契約・残枠・モデル無料対象を再確認する。最大5送信試行（拒否を含む）、最初の依頼から10分以内に限定。待機記録の永続化失敗では再送不可。同じ完了IDは保存済み応答だけを返す。請求明細は増やさず、成功時も匿名無料の実トークン/$0を記録する。
+
+画面は残り秒数、依頼ID、試行回数、同じモデルの結果を表示する。チェック解除で自動続行を停止できる。旧version65ではタブ終了で停止した。現行の画面外継続は下記の永続ジョブ仕様に従う。未確定要求の解放や別IDへの自動置換はしない。最大回数・期限到達は手動調査へ進み、成功を偽装しない。
+
+受入はtests/sky-free-cloud.test.mjsで同時再開・早期再送拒否・同意撤回・未払い・期限・回数・異常応答・一仕事/請求追加0を確認する。公開実accountでは実FREE_LIMIT→カウントダウン→同ID実応答、再押下同じ応答ID/試行回数、既存月次請求維持を検証する。Providerの無料枠が回復しなければその条件を未受入と記録する。
+
+
+## 無料Cloudの画面外継続
+
+2026-10-17の本人指示により、画面内タイマー限定を永続ジョブに変更する。目的は、本人が送信・保存・画面外続行へ同意した依頼を、タブを閉じても待機・実行し、再訪時に同じアカウントで成果を読むこと。Sky（SKY07/ROCK）がジョブと無料モデル実行を所有し、Web（WEB01/JOINT）が認証・保存・公開UIを担当する。
+
+入力は依頼ID、prompt、選択済み無料model、送信/保存/画面外続行の明示同意。D1の既存WorkJob JSONにprompt・同意・期限を追加保存する。DB移行や既存行の書換えは不要。GET /api/llm/free-cloud/jobs は本人の最新20件と保存成果を返し、promptを返さず、実行もしない。再訪はGETだけ。POSTの再押下は同一ID/同一digestなら既存記録を返す。
+
+queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認できた場合だけwaiting → sending。1分周期の専用Cloudflare Workerが署名付きwakeを送り、Siteは固定ownerの保存済み依頼から1件を処理する。Workerにはprompt・本人情報を渡さない。timestamp/HMAC/固定bodyでwakeを検証し、owner/revision CASを唯一の送信権とする。複数wakeの重複配信でも送信権は1件。各送信前にservice scope、月次契約、100 USD利用枠、無料model eligibilityを再確認する。有料切替はない。
+
+最大5試行・開始から10分。待機秒数は次回確認の目安であり成功保証ではない。停止はqueued/waitingをCASでcancelledにする。送信中の取消は受理しない。通信断・結果不明・保存不明・期限切れは自動再送しない。sendingでプロセスが失われた場合も成果不明として手動確認し、勝手に送信権を戻さない。モデル出力はレビュー待ちでありTool成功や本人承認ではない。
+
+運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。

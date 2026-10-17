@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-17",
+  "status": "live_account_tab_close_result_replay_cancel_passed",
+  "sourceBase": "26df75e4961c6e5bbc5b93491d1417aa9d37a98c",
+  "site": {
+    "version": 68,
+    "sourceCommit": "40015e388cbc19ff476ca1b706babb1b24429923",
+    "deployment": "appgdep_6ad3e87515a0819185526c0a25908df8",
+    "url": "https://avoado.si/os/sky/free-cloud"
+  },
+  "scheduler": {
+    "name": "rockstar-sky-free-cloud-wake",
+    "cron": "* * * * *",
+    "manualWakeUsed": false,
+    "providerPaidPlanChanged": false
+  },
+  "realAccount": {
+    "jobId": "ec676a8f-a357-453b-b191-1392fdf6d573",
+    "closedAt": "2026-10-17T21:29:16.322Z",
+    "attemptsBeforeClose": 0,
+    "wakeTimestamp": 1792272581147,
+    "wakeStatus": 200,
+    "wakeWallMs": 8816,
+    "reopenedResult": "41に42を足すと83です。",
+    "attemptsAfter": 1,
+    "reportedModel": "gpt-oss-20b",
+    "responseId": "pllns_dec7559b9597054e25c834fa2fefbd10",
+    "inputTokens": 337,
+    "outputTokens": 117,
+    "chargeMinor": 0
+  },
+  "localTests": {
+    "freeCloudTests": 16,
+    "verifyExit": 0,
+    "mainTestPassed": 2296,
+    "mainTestSkipped": 1,
+    "allTestStagesFailed": 0,
+    "cases": [
+      "enqueue does not generate",
+      "overlapping wakes claim once",
+      "confirmed FREE_LIMIT waits until retryAt then resumes",
+      "replay/history never sends",
+      "owner cancellation",
+      "expiry prevents sending",
+      "HMAC tamper/stale/body rejected"
+    ]
+  },
+  "limits": [
+    "5 attempts / 10 minutes / one eligible job per wake",
+    "Uncertain sending never reset or auto-retried",
+    "Owner-limited",
+    "No database migration or existing-data rewrite",
+    "Actual first request did not encounter 402; 402 timing/overlap covered by fake-provider tests"
+  ],
+  "productionBilling": false,
+  "mainIntegrated": false,
+  "replay": {
+    "jobId": "c3aa636c-70dc-4d7d-9a38-999f3afe108d",
+    "phases": [
+      "queued",
+      "sending",
+      "completed"
+    ],
+    "attemptsAfter": 1,
+    "responseId": "pllns_1e8b0d6f07c26d567efe5aeb271bf379",
+    "result": "51 + 52 の答えは 103 です。",
+    "inputTokens": 334,
+    "outputTokens": 67,
+    "chargeMinor": 0
+  },
+  "billing": {
+    "environment": "Stripe Sandbox",
+    "monthlyUsd": 140,
+    "includedUsd": 100,
+    "chargesBefore": 1,
+    "chargesAfter": 1,
+    "identityInvoiceStatusPeriodUnchanged": true,
+    "invoiceId": "in_1URceVGfTgzUjVHJQ8ClIfny",
+    "note": "paid_at reconciliation time may change; production not enabled"
+  },
+  "cancel": {
+    "jobId": "7eff8eec-df58-4ab1-b241-f1a2f5d2c801",
+    "state": "cancelled",
+    "attempts": 0
+  }
+}
