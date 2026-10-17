@@ -1,12 +1,14 @@
 # RockstarOS service and Pixel: implementation handoff
 
-## 2026-10-17 Pixel操作性のcheckpoint
+## 現在のPixel公開モデル実装・受入
 
-main f10b7309からcodex/pixel-intuitive-experience、PR #157。固定候補7b16d61bはデザイン/優先一覧/一件の詳細/通知の実装を含む。host/全体verify・同head CI8件成功。Pixel12試験は11成功・通知1失敗・skip0（docs/evidence/pixel-intuitive-experience.json）。background完了通知が90秒以内に見つからず、実System UI tapは未到達。foreground performのbaseline stamp更新による抑制競合は候補原因で未確定。receiver到達、fresh snapshot、dedup、channel postingを調べて修正し、同一APKで再試験する。成功ログへ書き換えたりCIで代替しない。
+主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最新GitHub main/branch/同一SHA CIを再取得し、`docs/evidence/pixel-discovered-models.json`、`data/project-status.json`のpixelDiscoveredModels、LLM正本のpixel-discovered-model-installを優先する。旧下段のcheckpointは経緯であり、現在の不具合や未実装と読み替えない。
 
-本人が続けてLLMの手動選択と、作業に合うLLMを自動で選ぶdefaultを指示。data/product-baseline.jsonのautomaticLlmSelectionIntentとdocs/llm-evaluation-architecture.md#selectable-models-and-automatic-defaultを読む。実装待ち。Codex CLIのAgent executorと任意modelの文章生成を同一能力にしない。未接続/未許可/予算超過を除外し、選択理由・実model/host・pinを確認する。model選択から本人承認/有料gateを推測しない。
+現在のAPK実装sourceは `4f160cf0`、native runtime package7/API4の実build sourceは `96dd7c305b6c7cdeb5613f4c764113572b55b79b`（run39067064393）。Shell21/Engine4、同一preview signerで非破壊更新。Qwen3 4B Instruct2507 Q4_K_MはPixel自身で全2497281120bytes取得・固定hash/署名/ロードを確認。手動20案の生成/保存は合格だが関連性の弱い案があり、一般品質保証ではない。runtime7のauto Coderでsum_even本文→検査→保存が成功し、コード実行はしない。現行の実通知tap/公開検索は逐次suiteで成功。元の24仕事/70artifactは維持。
 
-本人の「ここまでGitに」指示でcheckpointを保存する。未完了の通知/LLM選択をmain完成扱いにしない。再開時は最新main/branch/PRと同SHA CIを再取得し、mainの新差分を保全する。
+本人指定の「RockstarOS・Skyで実現するサービス案300件」を、policy v3自動選択の4Bで実行中。checkpoint v3で5件ずつ/plan180秒/lease240秒、最大60生成+seal。制御記号混入・全prefix完全重複・実数不足は拒否し、純粋発想のみ3回まで。途中件数を300と表示しない。現在の仕事をsnapshot/保存prefixで確認し、重複起動や無制限の本人retryをしない。生成本文はGit外、合成/host/旧runtime試験で実300を置換しない。完了後は全件の内容/個数/hash/readback、同一head CIとmain統合を別記録する。
+
+LLMの選択は無断cloud fallback/有料gate/Tool権限へ昇格しない。Pixel Developer Preview APKと全OS image/正式署名/flash/OTA/全損復旧は別受入。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 
@@ -18,7 +20,7 @@ Home候補・4画面、3経路の下書き、実Toolの保存/確認/停止/書�
 
 署名済debug catalog/SAF import/明示reload/有限Jennifer計画/stop fenceはprivate API 19。コードPR #154はhead `6c9a3083`のCI11件成功後、main `bf35f5f1`へ統合。`docs/evidence/pixel-local-jennifer.json`と現Gitを照合する。固定4 APKを実機から読戻して一致確認、API v4 runtimeの計画/冷起動profile不備は5番目のoverlayで修正。0.6Bの内容品質は失敗。既存15分model-pin gateを保ち、明示選択したQwen2.5 1.5BでHome→実計画→実2 Tool→確認待ち395-byte成果が64.625秒で機能合格。明示同意・二重tap1仕事・Broker process再起動同hash・system picker書出し同bytesを確認した。端末自体の再起動や全OSではない。
 
-次は (1) 本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を`docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback`で確認し、依頼/進行/確認/成果物/失敗復旧/停止の画面案を既存Shell/Brokerの状態へ結ぶ、(2) 文章が主題に沿っていても依頼の導入・3手順・出典未調査表示を欠く原因をSDK promptと実ToolのafterChars出力契約から調べ、同一candidateの実推論/生成物で改善を検証する。`afterChars=1`と`free-article@1`の有料抜粋契約は本文を切るため、見えている成果だけでモデル本文の品質を断定しない。草案全体の出力契約と原稿を確認してから改修する。見た目の変更やprompt変更だけで品質改善を宣言しない。通知は仕事正本への入口とし、本人承認や成功にしない。既存LocalSubmissionの同ID・revision・本人・保存/復旧・停止を維持する。
+当時の残項目（現在のPixel正本を優先）: (1) 本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を`docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback`で確認し、依頼/進行/確認/成果物/失敗復旧/停止の画面案を既存Shell/Brokerの状態へ結ぶ、(2) 文章が主題に沿っていても依頼の導入・3手順・出典未調査表示を欠く原因をSDK promptと実ToolのafterChars出力契約から調べ、同一candidateの実推論/生成物で改善を検証する。`afterChars=1`と`free-article@1`の有料抜粋契約は本文を切るため、見えている成果だけでモデル本文の品質を断定しない。草案全体の出力契約と原稿を確認してから改修する。見た目の変更やprompt変更だけで品質改善を宣言しない。通知は仕事正本への入口とし、本人承認や成功にしない。既存LocalSubmissionの同ID・revision・本人・保存/復旧・停止を維持する。
 
 0.6Bで停止ack6ms/遅延仕事0を確認したがnative ready待ち28.785秒、1.5B即時停止は未受入。日本語ASR/TTS、Jennifer Goal/AMC統括、production配布、普通の端末再起動、全OSは独立gate。model未準備時のLLMなし有限Tool受入や過去API v2試験を現v4へ転用せず、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
 

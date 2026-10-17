@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "v3_twenty_limited_draft_accepted_auto_300_and_current_coder_pending",
+    "status": "current_coder_ui_accepted_requested300_auto_running",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,7 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Install current candidate, verify runtime7 Coder auto code then fresh automatic4B300; inspect all draft ideas and persistence.",
+    "nextAction": "Monitor existing automatic4B300 job without duplicate submission; inspect all actual drafts/count/hash/readback, preserve original data, final same-head CI and main merge.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39067064393,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
@@ -55,7 +55,10 @@
       "diverseTwentyContent": "FAIL_topic_labels_and_truncated_names_not_usable_service_ideas",
       "creativeDirect": "Real5 actions_82626ms_AI_spelling_triggered_old_rejection",
       "creativeTwentyV2": "FORMAT_PASS_374086ms_CONTENT_REJECTED_control_tail_hid_duplicate",
-      "creativeTwentyV3": "PASS_370282ms_manual_chooser_actual20_all5stages_attempt1_no_control_tails_or_exact_duplicates_relevance_review_required"
+      "creativeTwentyV3": "PASS_370282ms_manual_chooser_actual20_all5stages_attempt1_no_control_tails_or_exact_duplicates_relevance_review_required",
+      "currentCoder": "PASS_37994ms_auto_exact_profile4_three_stages_actual_sum_even_text_saved_not_executed",
+      "currentUi": "PASS_sequential14_reported_13_actual_1_optin_skip_notification_tap_and_live_search",
+      "physicalBoundariesSqlite": "PASS_5_actual_0_skip"
     },
     "runtimeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
@@ -93,7 +96,13 @@
       "deviceQualityAccepted": "limited_20_short_drafts_not_general_quality",
       "deviceNetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
     },
-    "currentDecision": "Checkpoint v3 saves five actual validated ideas per stage (one raw call, 180s, lease 240s); legacy v1/v2 read preserved; reject fresh model control tails. Creative 4B old20 format/persistence passed but content not accepted. Actual300 not yet run."
+    "currentDecision": "Runtime7 Coder auto code and sequential notification/public-search UI passed. Original24works/70artifacts preserved. Checkpoint v3 saves5 actual ideas; original automatic300 job running, no final300 acceptance yet.",
+    "requested300Checkpoint": {
+      "completed": 15,
+      "target": 300,
+      "observedAt": "2026-10-17T21:48:40.718867+00:00",
+      "status": "running_not_accepted"
+    }
   },
 
 
