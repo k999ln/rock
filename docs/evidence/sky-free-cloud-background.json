@@ -49,11 +49,10 @@
     "5 attempts / 10 minutes / one eligible job per wake",
     "Uncertain sending never reset or auto-retried",
     "Owner-limited",
-    "No database migration or existing-data rewrite",
-    "Actual first request did not encounter 402; 402 timing/overlap covered by fake-provider tests"
+    "No database migration or existing-data rewrite"
   ],
   "productionBilling": false,
-  "mainIntegrated": false,
+  "mainIntegrated": true,
   "replay": {
     "jobId": "c3aa636c-70dc-4d7d-9a38-999f3afe108d",
     "phases": [
@@ -82,5 +81,60 @@
     "jobId": "7eff8eec-df58-4ab1-b241-f1a2f5d2c801",
     "state": "cancelled",
     "attempts": 0
-  }
+  },
+  "real402Acceptance": {
+    "date": "2026-10-17",
+    "codeBase": "43cf290e35facb2c3f6a2360612b340ca4638819",
+    "jobId": "50c364dc-6bb6-47cb-a414-547d8036173e",
+    "input": "無料枠の待機と再開の確認です。61 + 62 の答えを日本語で一文だけ返してください。",
+    "waitingObserved": true,
+    "attemptsBeforeClose": 1,
+    "closedAt": "2026-10-17T22:35:17.129Z",
+    "waitingProof": "Only upstream HTTP 402 + FREE_LIMIT + numeric Retry-After can persist waiting in the deployed implementation; live UI showed waiting, not fixture injection.",
+    "manualWakeUsed": false,
+    "status": "real_provider_402_tab_closed_resume_passed",
+    "productionBilling": false,
+    "stateAfterRevisit": "completed",
+    "attemptsAfter": 2,
+    "successfulGenerations": 1,
+    "rejectedBeforeGeneration": 1,
+    "result": "61+62 の答えは123です。",
+    "reportedModel": "gpt-oss-20b",
+    "inputTokens": 338,
+    "outputTokens": 153,
+    "chargeMinor": 0,
+    "responseId": "pllns_a1472dc95843d8310241319e4d09585f",
+    "serverWakeWhileTabClosed": {
+      "timestamp": 1792276538850,
+      "httpStatus": 200,
+      "wallMs": 8120
+    },
+    "readbackUnchanged": true,
+    "recurringChargesBefore": 1,
+    "recurringChargesAfter": 1,
+    "chargeIdentityInvoiceStatusPeriodUnchanged": true,
+    "invoiceId": "in_1URceVGfTgzUjVHJQ8ClIfny",
+    "additionalWakeTimestamps": [
+      1792276591975,
+      1792276650928,
+      1792276710825
+    ],
+    "attemptsAfterAdditionalWakesAndReload": 2,
+    "verification": {
+      "fullVerifyExit": 1,
+      "fullVerifyPassed": 2289,
+      "fullVerifyFailed": 4,
+      "fullVerifyCancelled": 3,
+      "fullVerifySkipped": 1,
+      "failureContext": "Concurrent host load >60; MCP/PC adapter deadlines and activation timeouts. No runtime changes in this acceptance branch.",
+      "serialAffectedAndFreeCloudRerun": {
+        "exit": 0,
+        "passed": 58,
+        "failed": 0,
+        "cancelled": 0
+      },
+      "fullVerifyRerun": false
+    }
+  },
+  "mainMergeCommit": "43cf290e35facb2c3f6a2360612b340ca4638819"
 }

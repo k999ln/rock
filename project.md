@@ -1,3 +1,7 @@
+# 実402の画面外継続受入
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: main 43cf290eの実accountで実FREE_LIMIT待機を確認。依頼50c364dc…をwaiting/試行1回で22:35:17Zにタブ終了。cronが22:35:38Zに自動続行し、再訪で同IDの実応答「61+62 の答えは123です。」、338/153 tokens、$0を確認。拒否1回＋生成1回で試行2回、再読込不変。Sandbox請求1→1、同invoice/status/period。本番課金・手動wake・fixture注入なし。証拠 docs/evidence/sky-free-cloud-background.json。コード変更・再配備は不要。今回の全体verifyは高負荷下で4 fail/3 cancelled（MCP/activation timeout等）、対象5ファイルの直列再試験は58/58合格。全体再実行合格とは扱わない。Git保存は受入記録として別PR、mainは未統合。
+
 # 無料Cloudの画面外継続
 
 2026-10-17 SKY07/ROCK・WEB01/JOINT: main 26df75e4から実装。公開Site v68/source 40015e38と毎分Cloudflare Workerを配備。実accountで送信0回の依頼を保存してタブ終了、cronだけで実応答「41に42を足すと83です。」を保存、再訪で337/117 tokens/$0を確認。別依頼のqueued/sending/completed再押下も送信1回/同参照不変。Sandbox請求は1件→1件、同invoice/status/period。既存データ移行なし。本番課金なし。無料Cloud対象16試験、全体verify exit0（本体2296 pass/既存skip1、全試験stage fail0）。証拠 docs/evidence/sky-free-cloud-background.json。実402の再発は今回観測せず、402待機/並列は合成試験。Git保存とmain統合は公開配備とは別。次はPRの同head CI確認。
