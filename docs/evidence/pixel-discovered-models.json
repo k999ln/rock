@@ -1,7 +1,7 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "REQUESTED300_HELD_AT30_COMPACT_RECOVERY_PENDING",
+  "status": "REQUESTED300_RUNNING_AFTER_ONE_EXPLICIT_COMPACT_RECOVERY",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
   "appBuildSource": "dba3389a320e86dc3399ff88aafe73487490ec82",
   "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
@@ -56,7 +56,7 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "HELD_AT30_TIMEOUT_STEP6",
+      "status": "RUNNING_AFTER_ONE_EXPLICIT_RECOVERY",
       "accepted": false,
       "target": 300,
       "choice": "auto",
@@ -64,8 +64,12 @@
       "profileVersion": 2,
       "checkpointVersion": 5,
       "manualRetries": 0,
-      "completed": 30,
-      "originalRunElapsedMs": 1033135
+      "completed": 35,
+      "originalRunElapsedMs": 1033135,
+      "explicitCompactReplans": 1,
+      "original30Preserved": true,
+      "sameRequest": true,
+      "sameModelPin": true
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -248,6 +252,7 @@
     "explicitOwnerConsentAndCheckpointCas": true,
     "oldPrefixNotRewritten": true,
     "recoveryOncePerJob": true,
-    "physicalRecoveryAccepted": false
+    "physicalRecoveryAccepted": true,
+    "recoveryObservation": "Actual UI consent accepted once at30; checkpoint35 saved under v6, first30/request/target byte-for-byte equivalent in parsed fields. Initial harness saw old snapshot before async ack and failed; monitor restart did not invoke recovery again."
   }
 }

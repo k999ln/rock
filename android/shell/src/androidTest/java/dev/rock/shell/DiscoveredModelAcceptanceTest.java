@@ -201,6 +201,10 @@ public final class DiscoveredModelAcceptanceTest {
                     AtomicReference<Button> confirm=new AtomicReference<>();long confirmDeadline=SystemClock.elapsedRealtime()+5000;
                     do {ui(() -> {for(android.view.View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){Button b=button(root,"続ける");if(b!=null){confirm.set(b);break;}}});if(confirm.get()==null)SystemClock.sleep(100);}while(confirm.get()==null&&SystemClock.elapsedRealtime()<confirmDeadline);
                     assertNotNull("explicit compact-replan consent dialog",confirm.get());ui(() -> confirm.get().performClick());
+                    boolean acknowledged=false;long ackDeadline=SystemClock.elapsedRealtime()+15000;
+                    do {JSONArray items=new JSONObject(broker.snapshot()).getJSONArray("works");for(int i=0;i<items.length();i++)if(resumeId.equals(items.getJSONObject(i).getString("id")))acknowledged=items.getJSONObject(i).optInt("compactReplanCount")==1;if(!acknowledged)SystemClock.sleep(100);}while(!acknowledged && SystemClock.elapsedRealtime()<ackDeadline);
+                    assertTrue("wait for durable recovery acknowledgement before testing progression",acknowledged);
+
                 } else if(held)broker.retry(created);
             }
             if (created == null) {

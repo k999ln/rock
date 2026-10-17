@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "auto300_timed_out30_compact_recovery_v6_implementation",
+    "status": "same_auto300_resumed_once_compact35_saved",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,7 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Run compact recovery unit/build checks, update same-signer APKs, use exact held300 UI recovery once, monitor remaining270 with no further operator retries, inspect/readback/final verify/CI/main.",
+    "nextAction": "Monitor existing compact v6 job to300; do not start Broker instrumentation or install APKs while it runs. No further operator retries. Inspect all draft content/count/hash/readback, original data, final verify/CI and main merge.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39072982374,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
@@ -103,15 +103,16 @@
       "deviceCachedImport": "PASS_45429ms_live_search_cached_existing_weights_no_new_network",
       "previousRuntime7NetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
     },
-    "currentDecision": "Actual300 held at30, stage6 timed out. Compact v6 reduces prompt/history; Shell22 adds one explicit owner+digest CAS recovery retaining same job/pin/prefix. Not auto replay; recovery count must be reported.",
+    "currentDecision": "Same actual300 progressed from30 to35 after one real UI compact recovery; original30/request/target and model pin retained. Compact event1 verified; no second recovery or new job. Initial harness asynchronous-ack race corrected for future trials; existing running job is only monitored.",
     "requested300Checkpoint": {
-      "completed": 30,
+      "completed": 35,
       "target": 300,
       "observedAt": "2026-10-17T22:53:31.117313+00:00",
-      "status": "needs_review_timeout_not_accepted",
+      "status": "running_after_one_explicit_compact_replan",
       "profileVersion": 2,
-      "checkpointVersion": 5,
-      "choice": "auto"
+      "checkpointVersion": 6,
+      "choice": "auto",
+      "explicitCompactReplans": 1
     },
     "pendingCandidate": {
       "runtimePackage": 8,

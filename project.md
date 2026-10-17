@@ -653,3 +653,5 @@ Native8/prompt5の手動20件は533.698秒、5工程attempt1、実20件/si表記
 LLM台帳の旧avocadoOS固定checkを現行product-identity正本のdisplayName/releaseName/internalIdentifier照合へ同期。内部dev.rockと過去証拠は維持し、版や名称を実機完了へ換算しない。実300ジョブは継続、code/APK更新なし。
 
 実auto300は30件でLOCAL_GENERATION_TIMED_OUT（生成step6、attempt1）により停止。v6短縮contextとShell22の一度だけの明示compact復旧を実装中。同owner/pin/同意/expected digest/純粋発想timeout/eventを検査し、旧30件artifactや成功runを書き換えない。新Root仕事を作らず続行し、復旧介入1件を記録する。完了・無介入自動完走とはしない。
+
+実機compact復旧: 同じ300件仕事を実UI確認dialogで一度承認し、35件まで新たに保存。旧30件/元依頼/目標をread-only DBコピーのhash検証後に比較して不変、human_compact_replan event1。最初のharnessは非同期受付前snapshotで停止と判定したが、実処理は受理済み。二度目の復旧を呼ばず既存running監視へ切替。将来用harnessへdurable ack待機を追加し、実機へ途中再インストールはしていない。300全完了は未受入。
