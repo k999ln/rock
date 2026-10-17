@@ -51,7 +51,26 @@
       "workCountBefore": 5,
       "workCountAfter": 5
     },
-    "modelSwitchGate": "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK; preserved; waiting for existing reservation expiry"
+    "modelSwitchGate": "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK; preserved; waiting for existing reservation expiry",
+    "previous15bPipeline": {
+      "receipt": {
+        "workId": "44dad0e7-0112-3158-b891-9796606ec88d",
+        "profileId": "dev.rock.qwen25-15b-q4km",
+        "weightsSha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+        "artifactSha256": "ad4ae4843c53343312623d42265267214a8f41d2579224378dd8209fb5a56dd0",
+        "stepsSucceeded": 2,
+        "reviewRequired": true,
+        "deviceRebootAccepted": false
+      },
+      "seconds": 80.811,
+      "savedArtifactReadbackPassed": true,
+      "artifactBytes": 389,
+      "sameCurrentCompactPromptApk": false,
+      "scope": "Functional trial before the latest prompt reduction; not final-candidate acceptance"
+    },
+    "currentCompactCandidatePhysicalAccepted": false,
+    "ownerScreenUnlockRequired": true,
+    "screenLockObserved": true
   },
   "implementation": {
     "scope": "one catalog-pinned model and one existing article-preparation recipe; not full native Goal/AMC orchestration",
@@ -283,11 +302,14 @@
     "sourcePreparationFixtureRepair": "Existing fake build-runner fixture now supplies the newly required crypto JAR input and staged receipt; real JAR hash verification remains in stage-model-crypto and Gradle"
   },
   "gitEvidence": {
-    "readbackCommand": "gh pr view codex/pixel-local-jennifer --json state,headRefOid,statusCheckRollup,mergedAt,mergeCommit",
-    "pullRequest": "https://github.com/k999ln/rock/pull/152"
+    "pullRequest": "https://github.com/k999ln/rock/pull/154",
+    "initialImplementationPullRequest": "https://github.com/k999ln/rock/pull/152",
+    "installationRecordPullRequest": "https://github.com/k999ln/rock/pull/153",
+    "mergedMain": "90d9a6d4",
+    "note": "Keep new Sky 140 sandbox changes, phase gates and account/provider boundaries."
   },
   "remaining": [
-    "Content quality: compare Qwen2.5 1.5B with a fresh explicit request; no quality acceptance yet",
+    "Owner screen unlock, then frozen compact candidate Home/real model/Tool/content acceptance; 1.5B earlier functional trial is not current-candidate acceptance",
     "UI review/export and process restart/reload on the final candidate",
     "Cooperative native cancellation took 28.785 seconds to settle after the 6 ms stop acknowledgement; no late Tool work was created",
     "General quality, ordinary device reboot, Japanese voice, production catalog and full OS remain unaccepted"

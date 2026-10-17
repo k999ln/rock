@@ -630,7 +630,7 @@ Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software
 
 **失敗と復旧。** 不明profile・未知key/失効key・改変署名・別weight・writable/pipe descriptor・容量不足・lock・version/signer/API不一致では停止し、仕事や旧active pointerを消さない。検証済cache/partialが残る場合は同じcatalog候補だけ明示再試行する。起動時autoloadや別model/cloudへのfallbackはなく、Skyから「保存済みモデルを再読込み」を選ぶ。runtime読込み後にactivationが失敗した時は既存coordinatorの旧profile復帰を試み、失敗を成功扱いにしない。失効・非互換profileへ戻さない。
 
-**モデル比較と内容品質。** 完成文の入力例をモデルがコピーしたため、`ZemaToolPlan.planningPrompt`は完成原稿を含めず短い主題別の入力条件を渡す。構造・Tool成功と内容の妥当性を分け、実機の合成依頼で主題との一致・雛形の不使用を検査する。0.6Bは一般利用の品質を未受入とし、追加のQwen公式Qwen2.5 1.5B Instruct Q4_K_M（revision `91cad51170dc346986eccefdc2dd33a9da36ead9`、1,117,320,736 bytes、SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e`、Apache-2.0、総RAM 4 GiB条件）を同じ開発publisher keyで認証する。license/size/hashを本人が確認して明示選択し、別profileへの無断fallbackはしない。debug catalogは2候補、release catalogは空。既存の未確定planに対する15分の固定予約とactive jobの切替禁止を保持する。
+**モデル比較と内容品質。** 完成文の入力例をモデルがコピーしたため、`ZemaToolPlan.planningPrompt`は完成原稿を含めず短い主題別の入力条件を渡す。構造・Tool成功と内容の妥当性を分け、実機の合成依頼で主題との一致・雛形の不使用を検査する。0.6Bは一般利用の品質を未受入とし、追加のQwen公式Qwen2.5 1.5B Instruct Q4_K_M（revision `91cad51170dc346986eccefdc2dd33a9da36ead9`、1,117,320,736 bytes、SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e`、Apache-2.0、総RAM 4 GiB条件）を同じ開発publisher keyで認証する。license/size/hashを本人が確認して明示選択し、別profileへの無断fallbackはしない。debug catalogは2候補、release catalogは空。既存の未確定planに対する15分の固定予約とactive jobの切替禁止を保持する。 予約期限後に1.5Bの構造的一周（80.811秒）と保存済artifactのprocess再起動readbackは確認したが、Homeからの最新compact prompt候補は未受入。画面の自動lockを観測し、本人の解除後に試験windowだけ点灯を維持して再試験する。先の試験結果を最新APKへ転用しない。
 
 実機の全停止→再開ではack 6 ms/遅延仕事0を確認したが、runtimeがreadyへ戻るまで28.785秒を要した。これは協調停止の現状であり、計算の即時終了を受入済みとしない。
 

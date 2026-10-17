@@ -12,7 +12,7 @@
     "initialAdbDeviceCount": 0,
     "realV4ModelInferenceAccepted": false,
     "fullOsAccepted": false,
-    "nextAction": "Compare explicitly selected signed Qwen2.5 1.5B profile after existing 15-minute pending-plan reservations expire; reject copied/irrelevant output. Then UI artifact/export/process recovery and exact-head CI. OS/image, general quality and paid cloud remain separate.",
+    "nextAction": "Owner must unlock the Pixel screen; freeze and retest the compact-prompt candidate through Home, real model/Tools, export and process recovery. Prior 1.5B pipeline and saved-artifact readback passed, but current UI candidate is not accepted. OS/image, general quality and paid cloud remain separate.",
     "evidence": "docs/evidence/pixel-local-jennifer.json",
     "hostBuildAndLint": "pass",
     "hostTestsPassed": 179,
@@ -24,10 +24,10 @@
     "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json",
     "privateModelSigningKeyGenerated": true,
     "osSigningKeyGenerated": false,
-    "pullRequest": "https://github.com/k999ln/rock/pull/152",
+    "pullRequest": "https://github.com/k999ln/rock/pull/154",
     "physicalTrial": {
       "date": "2026-10-17",
-      "status": "model_comparison_pending",
+      "status": "compact_candidate_physical_ui_pending_owner_unlock",
       "device": "Pixel 10 GL066/frankel",
       "branch": "codex/pixel-local-physical-20261017",
       "backupApksVerified": true,
@@ -37,7 +37,11 @@
       "firstInferenceTest": "initial load/plan failure fixed; actual v4 two-Tool pipeline passed; 0.6B content quality failed",
       "runtimeFix": "five-overlay CI build 39043256663; signed payload verified; real API v4 pipeline passed",
       "inferenceStarted": true,
-      "modelSwitch": "existing pinned-plan reservation gate; not bypassed"
+      "modelSwitch": "1.5B activated after existing reservation expiry; no bypass",
+      "previous15bPipelineSeconds": 80.811,
+      "previous15bSavedArtifactReadback": "pass",
+      "currentCompactCandidatePhysicalAccepted": false,
+      "ownerScreenUnlockRequired": true
     }
   },
   "pixelSiImplementation": {

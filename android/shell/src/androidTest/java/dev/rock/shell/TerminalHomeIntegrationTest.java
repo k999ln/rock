@@ -211,6 +211,8 @@ public final class TerminalHomeIntegrationTest {
             "true".equals(InstrumentationRegistry.getArguments().getString("rockPhysicalModelAcceptance")));
         assertEquals("frankel", android.os.Build.DEVICE);
         assertTrue(context().getSystemService(BatteryManager.class).isCharging());
+        assertFalse("owner must unlock the physical screen for the UI trial",
+            context().getSystemService(android.app.KeyguardManager.class).isDeviceLocked());
         ShellConnection broker = new ShellConnection(context());
         JSONObject initial = new JSONObject(broker.snapshot());
         assertFalse("do not resume unrelated paused work", initial.getBoolean("paused"));
@@ -218,6 +220,7 @@ public final class TerminalHomeIntegrationTest {
         Set<String> before = new HashSet<>(); JSONArray old = initial.getJSONArray("works");
         for (int i = 0; i < old.length(); i++) before.add(old.getJSONObject(i).getString("id"));
         MainActivity activity = launch(); String created = null; boolean readyForReview = false;
+        ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
         int previousRoute = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getInt("executionChoice", 3101);
         try {
             long deadline = SystemClock.elapsedRealtime() + 10_000;
