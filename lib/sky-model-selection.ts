@@ -1,6 +1,6 @@
 import { chooseSkyModel, discoverSkyLocalModels } from './sky-model-routing.ts';
 import { discoverFreeCloudModels, freeCloudEnabled, type FreeCloudRuntime } from './sky-free-cloud.ts';
-import { skyRecurringUsage } from './sky-recurring-usage.ts';
+import { skyRecurringUsage } from './sky-recurring-plan.ts';
 import type { LlmRuntimeEnv } from './llm-providers.ts';
 
 export async function selectSkyModel(input: {
@@ -13,8 +13,8 @@ export async function selectSkyModel(input: {
     try {
       const plan = await skyRecurringUsage(input.db,input.owner);
       cloudStatus = plan.reason;
-      if (plan.reason==='available') candidates.push(...await discoverFreeCloudModels(input.fetcher));
-    } catch { cloudStatus = 'unavailable'; }
+      if (plan.reason==='available') { const cloud=await discoverFreeCloudModels(input.fetcher); candidates.push(...cloud); cloudStatus=cloud.length?'available':'no_anonymous_model'; }
+    } catch (error) { cloudStatus = error instanceof Error ? error.message : 'unavailable'; }
   }
   return {selection:chooseSkyModel(input.prompt,candidates),cloudStatus};
 }

@@ -27,7 +27,7 @@ export async function discoverSkyLocalModels(runtime: LlmRuntimeEnv, fetcher: ty
     const root = base.replace(/\/+$/, '').replace(/\/chat\/completions$/, '').replace(/\/v1$/, '');
     try {
       const response = await fetcher(`${root}${provider === 'ollama' ? '/api/tags' : '/v1/models'}`, {
-        redirect: 'error', signal: AbortSignal.timeout(2500),
+        redirect: 'manual', signal: AbortSignal.timeout(2500),
         headers: key ? { Authorization: `Bearer ${key}` } : {},
       });
       if (!response.ok) return [];

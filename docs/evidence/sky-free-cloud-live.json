@@ -82,5 +82,27 @@
       "Bind authenticated owner to a verified Sandbox contract; configure owner-only free Cloud gate without enabling paid execution.",
       "Deploy candidate, verify signed-in select/response/usage/replay/denial paths, then merge PR155 only after same-head CI succeeds."
     ]
+  },
+  "liveMigration": {
+    "date": "2026-10-17",
+    "targetProject": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "sourceBase": "a28a9f4288c96cade94d1a4895ba4ffdd32b408b",
+    "backupTables": 50,
+    "backupRows": 144,
+    "rowRestoreVerified": true,
+    "atomicPhysicalBackup": false,
+    "postMigrationAllOriginalRowsUnchanged": true,
+    "initialVersion": 57,
+    "currentVersion": 60,
+    "realAccountLogin": true,
+    "realAccountPlan": "synthetic-free-only-v1",
+    "autoModelSelected": "pollinations/openai-fast",
+    "realResponseAccepted": false,
+    "firstGeneration": "timeout_after_60000ms_no_automatic_resend",
+    "runtimeFix": "Workers supports redirect manual, not error; 3xx rejected",
+    "nextAttemptTimeoutMs": 180000,
+    "productionBillingEnabled": false,
+    "paidFallback": false,
+    "rollback": "sites/sky-live/README.md"
   }
 }

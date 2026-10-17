@@ -8,7 +8,7 @@ function request(db,fetcher){return {db,owner:'owner',id:crypto.randomUUID(),pro
 const catalog=()=>Response.json([{name:'openai-fast',tier:'anonymous',input_modalities:['text'],output_modalities:['text']}]);
 void test('confirmed free result records zero usage cost and does not resend a replay',async t=>{
  const db=setup(t);let sends=0;
- const input=request(db,async(url,init)=>{if(url.endsWith('/models'))return catalog();sends++;assert.equal(init.redirect,'error');assert.equal(init.headers.Authorization,undefined);return Response.json({id:'synthetic',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Test',tool_calls:[]}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5}});});
+ const input=request(db,async(url,init)=>{if(url.endsWith('/models'))return catalog();sends++;assert.equal(init.redirect,'manual');assert.equal(init.headers.Authorization,undefined);return Response.json({id:'synthetic',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Test',tool_calls:[]}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5}});});
  const result=await runFreeCloudText(input);assert.equal(result.status,'review');assert.equal(result.freeCloud.chargeMinor,0);assert.equal(result.freeCloud.outputTokens,3);
  await runFreeCloudText(input);assert.equal(sends,1);
 });
@@ -41,4 +41,23 @@ void test('automatic selection includes Cloud only with consent, matching owner 
  assert.equal((await selectSkyModel(input)).selection.provider,'pollinations');assert.equal(cloudGets,1);
  assert.equal((await selectSkyModel({...input,owner:'other'})).selection,null);assert.equal(cloudGets,1);
  db.sqlite.prepare("UPDATE sky_recurring_contracts SET status='past_due'").run();assert.equal((await selectSkyModel(input)).selection,null);assert.equal(cloudGets,1);
+});
+void test('free-only sandbox enrollment requires owner and consent, expires and never replaces a contract',async t=>{
+ const {enrollFreeCloudSandbox}=await import('../lib/sky-free-cloud-sandbox.ts');
+ const db=openMonthlySandboxDatabase();t.after(()=>db.close());const now=Date.now();
+ const env={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_SANDBOX_SETUP:'true'};
+ await assert.rejects(enrollFreeCloudSandbox(db,'other',env,'synthetic-free-only-v1',now));
+ await assert.rejects(enrollFreeCloudSandbox(db,'owner',{...env,SKY_FREE_CLOUD_SANDBOX_SETUP:'false'},'synthetic-free-only-v1',now));
+ await assert.rejects(enrollFreeCloudSandbox(db,'owner',env,null,now));
+ assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM sky_recurring_contracts').get().n,0);
+ await enrollFreeCloudSandbox(db,'owner',env,'synthetic-free-only-v1',now);
+ const before=db.sqlite.prepare('SELECT * FROM sky_recurring_contracts').get();assert.equal(before.access_until,now+3600000);assert.equal(before.stripe_account_id,'acct_fixture_free_only');
+ await enrollFreeCloudSandbox(db,'owner',env,'synthetic-free-only-v1',now+1000);assert.deepEqual(db.sqlite.prepare('SELECT * FROM sky_recurring_contracts').get(),before);
+ const {skyRecurringUsage}=await import('../lib/sky-recurring-plan.ts');assert.equal((await skyRecurringUsage(db,'owner',now+3600001)).reason,'verification_expired');
+ assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM sky_recurring_charges').get().n,0);
+});
+void test('edge-compatible manual redirect mode never follows redirected discovery or generation',async t=>{
+ const {discoverFreeCloudModels}=await import('../lib/sky-free-cloud.ts');let count=0;
+ await assert.rejects(discoverFreeCloudModels(async(_url,init)=>{count++;assert.equal(init.redirect,'manual');return new Response(null,{status:302,headers:{Location:'https://other.invalid'}});}));assert.equal(count,1);
+ const db=setup(t);let sends=0;await assert.rejects(runFreeCloudText(request(db,async(url,init)=>{assert.equal(init.redirect,'manual');if(url.endsWith('/models'))return catalog();sends++;return new Response(null,{status:307,headers:{Location:'https://other.invalid'}});})));assert.equal(sends,1);
 });

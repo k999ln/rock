@@ -1,4 +1,5 @@
 {
+  "skyLiveMigration": {"status": "prepared", "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},
   "skyAuthenticatedCloudFollowup": {"status": "authenticated_deployment_missing", "mergedCandidateVerify": "all_stages_exit_0_2284_pass_1_existing_skip", "localAccess": "unauthenticated", "passkeyOptions": "PASSKEY_INVALID", "mainMerged": false, "productionBillingEnabled": false, "nextAction": "Actual Sky source/schema migration acceptance and owner Sandbox contract binding before signed-in free Cloud test; see docs/evidence/sky-free-cloud-live.json", "realAccountLoginAccepted": true, "realAccountCloudAccepted": false},
   "skyRealCloudQuota": {
   "taskId": "BIL02",

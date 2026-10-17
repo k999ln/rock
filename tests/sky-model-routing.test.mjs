@@ -12,7 +12,7 @@ void test('task routing chooses installed coding or general model deterministica
 void test('discovery makes only local metadata GET calls and filters invalid IDs', async () => {
   const seen=[];
   const models=await discoverSkyLocalModels({SKY_LOCAL_LLM_BASE_URL:'http://127.0.0.1:4317/v1',SKY_LLM_COMPATIBLE_BASE_URL:'https://paid.example/v1'}, async (url, init) => {
-    seen.push(url); assert.equal(init.redirect,'error'); assert.equal(init.body,undefined);
+    seen.push(url); assert.equal(init.redirect,'manual'); assert.equal(init.body,undefined);
     return Response.json(url.endsWith('/api/tags') ? {models:[{name:'qwen3:4b'}]} : {data:[{id:'local/coder'},{id:'invalid model'},null]});
   });
   assert.equal(seen.length,2);

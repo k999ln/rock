@@ -1,7 +1,7 @@
 import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import { applyWorkCommand, createWorkJob, WorkError, type WorkJob } from './workflow.ts';
 import { workStore } from './work-store.ts';
-import { skyRecurringUsage } from './sky-recurring-usage.ts';
+import { skyRecurringUsage } from './sky-recurring-plan.ts';
 import type { ModelCandidate } from './sky-model-routing.ts';
 
 const ORIGIN = 'https://text.pollinations.ai';
@@ -12,8 +12,8 @@ export function freeCloudEnabled(runtime: FreeCloudRuntime, owner: string) {
   return runtime.SKY_FREE_CLOUD_ENABLED === 'true' && !!owner && runtime.SKY_FREE_CLOUD_OWNER_ID === owner;
 }
 export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Promise<ModelCandidate[]> {
-  const response = await fetcher(`${ORIGIN}/models`, { redirect: 'error', signal: AbortSignal.timeout(5000) });
-  if (!response.ok) throw new WorkError('無料Cloudのモデル一覧を確認できません。', 503);
+  const response = await fetcher(`${ORIGIN}/models`, { redirect: 'manual', signal: AbortSignal.timeout(5000) });
+  if (!response.ok) throw new WorkError(`無料Cloudのモデル一覧 HTTP ${response.status}`, 503);
   const rows: unknown = await response.json();
   if (!Array.isArray(rows)) return [];
   return rows.slice(0, 20).flatMap(row => row && row.tier === 'anonymous' &&
@@ -56,7 +56,7 @@ export async function runFreeCloudText(input: {
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
     const startedAt = Date.now();
     const response = await fetcher(`${ORIGIN}/openai`, {
-      method:'POST', redirect:'error', signal:AbortSignal.timeout(60000),
+      method:'POST', redirect:'manual', signal:AbortSignal.timeout(180000),
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:input.model,messages:[{role:'user',content:input.prompt}],max_tokens:1024,stream:false}),
     });

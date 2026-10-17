@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       ...(typeof value.baseUrl === 'string' ? { SKY_LOCAL_LLM_BASE_URL: value.baseUrl } : {}),
     }});
     return Response.json(result.selection ? result : { ...result,
-      error: '利用可能なモデルがありません。接続・Cloud送信の同意・プランの残り枠を確認してください。',
+      error: `利用可能なモデルがありません。Cloud状態: ${result.cloudStatus}`,
     }, { status: result.selection ? 200 : 409, headers });
   } catch (error) {
     return Response.json({ error: error instanceof RemoteAiGuardError ? 'サインイン・操作権限を確認してください。' : 'モデル接続を確認できませんでした。' }, {

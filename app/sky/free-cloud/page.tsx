@@ -1,2 +1,3 @@
 import SkyFreeCloudPanel from '@/components/sky-free-cloud-panel';
-export default function FreeCloudPage(){return <main><SkyFreeCloudPanel/></main>;}
+import SkyFreeCloudAccount from '@/components/sky-free-cloud-account';
+export default function Page(){return <main style={{maxWidth:900,margin:'40px auto',padding:24}}><SkyFreeCloudAccount/><SkyFreeCloudPanel/></main>;}

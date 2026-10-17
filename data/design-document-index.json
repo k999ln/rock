@@ -1,4 +1,5 @@
 {
+  "skyLiveMigration": {"status": "prepared", "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},
   "standaloneServiceBillingDesign": {
     "document": "docs/sky-billing.md",
     "composition": "docs/service-design/README.md",
