@@ -76,7 +76,12 @@
 +});
 --- a/src/native/modelRuntime.ts
 +++ b/src/native/modelRuntime.ts
-@@ -146,13 +146,14 @@
+@@ -1,3 +1,4 @@
++import {completePlanBoundary} from './planBoundary';
+ import {Platform} from 'react-native';
+ import ReactNativeBlobUtil from 'react-native-blob-util';
+ import {initLlama, type CompletionResponseFormat, type LlamaContext} from 'llama.rn';
+@@ -146,13 +147,14 @@
      messages: ChatMessage[],
      responseFormat: CompletionResponseFormat,
      expectedWeightsSha256: string,
@@ -92,7 +97,7 @@
      });
    }
  
-@@ -160,6 +161,7 @@
+@@ -160,10 +162,13 @@
      system: string,
      messages: ChatMessage[],
      responseFormat: CompletionResponseFormat,
@@ -100,7 +105,14 @@
    ): Promise<string> {
      if (!this.context) throw new Error('先にGGUFモデルを読み込んでください');
      await this.context.clearCache();
-@@ -173,7 +175,7 @@
+-    const result = await this.context.completion({
++    const context = this.context;
++    let streamed = '', stopping = false;
++    const result = await context.completion({
+       messages: [
+         {role: 'system', content: system},
+         ...messages.slice(-6).map(message => ({
+@@ -173,12 +178,18 @@
        ],
        response_format: responseFormat,
        reasoning_format: 'none',
@@ -109,6 +121,17 @@
        temperature: 0,
        top_p: 1,
        top_k: 1,
+       seed: 0,
+       stop: ['<|im_end|>', '<|end|>', '<|eot_id|>', '<|endoftext|>'],
++    }, data => {
++      streamed += data.token;
++      if (!stopping && completePlanBoundary(streamed)) {
++        stopping = true;
++        void context.stopCompletion().catch(() => { /* bounded token limit remains the fallback */ });
++      }
+     });
+     if (Array.isArray(result.tool_calls) && result.tool_calls.length) {
+       throw new Error('PLAN_TOOL_CALL_REJECTED');
 --- a/src/native/osBridge.ts
 +++ b/src/native/osBridge.ts
 @@ -123,7 +123,7 @@
@@ -120,3 +143,52 @@
    emit(token, 'completed', requiredText(output, 'plan_output'));
  }
  
+--- a/src/native/planBoundary.ts
++++ b/src/native/planBoundary.ts
+@@ -0,0 +1,25 @@
++/** A complete JSON envelope ends decoding; Broker still validates every field and permission. */
++export function completePlanBoundary(value: string): boolean {
++  if (value.length > 32768) return true; // stop excessive output; the Broker rejects it
++  let text = value.trimStart();
++  const prefix = '<|im_start|>assistant';
++  if (text.startsWith(prefix)) text = text.slice(prefix.length).trimStart();
++  const fenced = text.startsWith('```json\n');
++  if (fenced) text = text.slice(8);
++  if (!text.startsWith('{')) return false;
++  let depth = 0, quoted = false, escaped = false;
++  for (let i = 0; i < text.length; i++) {
++    const char = text[i];
++    if (quoted) {
++      if (escaped) escaped = false;
++      else if (char === '\\') escaped = true;
++      else if (char === '"') quoted = false;
++    } else if (char === '"') quoted = true;
++    else if (char === '{') depth++;
++    else if (char === '}' && --depth === 0) {
++      const rest = text.slice(i + 1).trim();
++      return fenced ? rest === '```' : rest === '';
++    }
++  }
++  return false;
++}
+--- a/src/native/__tests__/planBoundary.test.ts
++++ b/src/native/__tests__/planBoundary.test.ts
+@@ -0,0 +1,18 @@
++import {completePlanBoundary} from '../planBoundary';
++
++describe('closed plan completion boundary', () => {
++  it('waits for a whole root and ignores braces and escaped quotes in strings', () => {
++    const json = JSON.stringify({body: 'return {"x": "}"}', nested: [{value: 1}]});
++    for (let i = 0; i < json.length; i++) expect(completePlanBoundary(json.slice(0, i))).toBe(false);
++    expect(completePlanBoundary(json)).toBe(true);
++  });
++  it('accepts only exact presentation envelopes and stops excessive output', () => {
++    expect(completePlanBoundary('<|im_start|>assistant\n{"task":"code"}')).toBe(true);
++    expect(completePlanBoundary('```json\n{"body":"code"}\n```')).toBe(true);
++    expect(completePlanBoundary('```json\n{"body":"code"}')).toBe(false);
++    expect(completePlanBoundary('{"a":1} trailing')).toBe(false);
++    expect(completePlanBoundary('{"a":1}{"b":2}')).toBe(false);
++    expect(completePlanBoundary('prose {"a":1}')).toBe(false);
++    expect(completePlanBoundary('x'.repeat(32769))).toBe(true);
++  });
++});
