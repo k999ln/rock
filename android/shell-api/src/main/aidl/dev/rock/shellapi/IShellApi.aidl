@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 20;
+    const int API_VERSION = 21;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -83,4 +83,9 @@ interface IShellApi {
         String expectedModelDigest, boolean consent) = 44;
     /** Explicit public-keyword search only; returned metadata never becomes a trusted executable profile. */
     String searchPublicModels(String query) = 45;
+    String preparePublicModelInstall(String profileId) = 46;
+    String beginPublicModelDownload(String profileId, boolean consent) = 47;
+    String publicModelInstallStatus() = 48;
+    String finishPublicModelInstall(String operationId, boolean consent) = 49;
+    String cancelPublicModelDownload(String operationId) = 50;
 }

@@ -429,6 +429,12 @@ public final class PlatformStoreTest {
             tool.componentId, "clean.write", PAYLOAD, 100, 10_000, 10);
         store.confirmApproval("owner:alice", approval, 11);
         byte[] plaintext = store.exportRecoverableState("owner:alice");
+        // Prior schema-3 backups share this exact two-stage wire shape and remain importable.
+        java.io.DataInputStream legacyHeader = new java.io.DataInputStream(new java.io.ByteArrayInputStream(plaintext));
+        legacyHeader.readUTF(); legacyHeader.readInt(); legacyHeader.readUTF();
+        int engineHeaderOffset = plaintext.length - legacyHeader.available();
+        java.nio.ByteBuffer.wrap(plaintext).putInt(engineHeaderOffset, 3);
+
 
         JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("restored.db").getPath());
         try {

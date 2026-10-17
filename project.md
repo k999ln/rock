@@ -1,5 +1,7 @@
 # RockstarOS — 現在の作業と再開情報
 
+OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4のclosed文書schema、Shell21、作業別general/Coder自動選択を実装中。本人の初期依頼は「RockstarOS・Skyで実現するサービスのアイデア300件」。生成は20件ずつ検査・checkpoint保存し、実件数を表示、全件seal前は完了にしない。Engine3→4と旧backup互換、owner/pin/停止fenceを保持する。host/build/lintは通過、追加migration/backup試験とruntime native CIを検証中。Pixelは接続/充電中、画面解除待ち。旧APK/DBはGit外へ退避済み。新sourceの実機・CI・main統合は未完了、OS11全体/全OS/有料cloud gateは変更しない。
+
 公開モデル検索をSky先頭へ移した最終source f4718e10の3 APKをsame signer/実byte読戻しで照合。更新APKでも実機全14件/84.327秒と手動1件/64.56秒が成功、失敗/skip0。通知実tap・両公開API・auto/manual exact pin・実2 Tool/成果保存を再受入し、全体verifyもexit0（/private/tmp/pixel-sky-entry-verify.log）。台帳はこの最終候補へ更新、GitHub同一head検査とmain統合はPR #157のreadbackで別確認する。
 
 2026-10-17 OS11/O6/ROCK: source 58ef9537の同一3 APKをsame signer・実byte読戻し一致で非破壊導入。Pixelで全14件/84.402秒と手動model追加1件が成功、失敗/skip0。実System UI通知tap、SkyからGitHub/Hugging Face両APIの実検索、Homeのauto/manual 1.5B→実2 Tool→395-byte成果・exact manifest pin・二重tap1仕事を確認。実UIのLLM一覧から1.5B手動選択も操作。host Core123/automation46/Shell14、build/lint、Node22の全体verify成功（2266 pass/既存skip1）。証拠はdocs/evidence/pixel-intuitive-experience.json、APK/log/合成本文はGit外。同sourceのCIと受入台帳commitのCI/main統合は別々に確認する。一般文章品質/全OS/cloud実Provider/X APIは未受入、OS11全体完了ではない。

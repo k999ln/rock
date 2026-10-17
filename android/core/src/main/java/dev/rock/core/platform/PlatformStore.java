@@ -1204,7 +1204,7 @@ public final class PlatformStore {
                 throw new IllegalArgumentException("UNSUPPORTED_RECOVERABLE_STATE");
             if (!expectedOwner.equals(input.readUTF())) throw new SecurityException("BACKUP_OWNER_MISMATCH");
             int engineSchema = input.readInt(), platformSchema = input.readInt();
-            if (engineSchema != Engine.SCHEMA_VERSION || (platformSchema != 3 && platformSchema != SCHEMA_VERSION) ||
+            if ((engineSchema != 3 && engineSchema != Engine.SCHEMA_VERSION) || (platformSchema != 3 && platformSchema != SCHEMA_VERSION) ||
                 (stateVersion >= 3 && platformSchema != SCHEMA_VERSION)) {
                 throw new IllegalArgumentException("UNSUPPORTED_RECOVERABLE_SCHEMA");
             }
@@ -1212,8 +1212,8 @@ public final class PlatformStore {
             List<Map<String,String>> selection = readTable(input, "sky_selection", Set.of("tool_id", "revision"), 1);
             List<Map<String,String>> works = readTable(input, "works", Set.of("id", "request_key", "request_hash", "state", "sample", "review_note", "model_profile_id", "model_profile_version", "model_activation_generation"), Engine.MAX_WORKS);
             List<Map<String,String>> pins = readTable(input, "model_profile_job_pins", Set.of("owner", "work_id", "request_digest", "profile_id", "profile_version", "activation_generation", "created_at"), Engine.MAX_WORKS);
-            List<Map<String,String>> artifacts = readTable(input, "artifacts", Set.of("work_id", "digest", "body"), Engine.MAX_WORKS * 3);
-            List<Map<String,String>> runs = readTable(input, "runs", Set.of("work_id", "step", "tool", "state", "attempt", "input_digest", "output_digest", "error"), Engine.MAX_WORKS * 2);
+            List<Map<String,String>> artifacts = readTable(input, "artifacts", Set.of("work_id", "digest", "body"), MAX_BACKUP_ROWS);
+            List<Map<String,String>> runs = readTable(input, "runs", Set.of("work_id", "step", "tool", "state", "attempt", "input_digest", "output_digest", "error"), MAX_BACKUP_ROWS);
             List<Map<String,String>> events = readTable(input, "events", Set.of("work_id", "step", "kind"), MAX_BACKUP_ROWS);
             List<Map<String,String>> approvals = readTable(input, "platform_approvals", Set.of("id", "request_key", "component_id", "action", "payload_digest", "max_cost_minor", "expires_at", "state", "component_generation", "confirmed_at", "consumed_at"), MAX_BACKUP_ROWS);
             List<Map<String,String>> ledger = readTable(input, "platform_ledger", Set.of("receipt_id", "request_key", "component_id", "approval_id", "amount_minor", "currency", "provider_ref", "provider_receipt_digest", "reverses_receipt", "entry_digest", "created_at"), MAX_BACKUP_ROWS);
@@ -1322,17 +1322,19 @@ public final class PlatformStore {
             }
         }
         Set<String> runs = new HashSet<>();
+        Map<String,java.util.SortedMap<Integer,String>> stages = new HashMap<>();
         for (Map<String,String> row : snapshot.runs) {
             String workId = required(row, "work_id");
             int step = integer(row, "step");
             int attempt = integer(row, "attempt");
             String tool = required(row, "tool");
-            if (!works.contains(workId) || step < 0 || step > 1 || attempt < 0 || attempt > 3 ||
-                !(step == 0 ? "citations@1" : "free-article@1").equals(tool) ||
+            if (!works.contains(workId) || step < 0 || step > 30 || attempt < 0 || attempt > 3 ||
+                !Set.of("citations@1", "free-article@1", "local-generate@1", "local-text-validate@1", "local-text-seal@1", "local-ideas-generate@1", "local-ideas-seal@1").contains(tool) ||
                 !Set.of("pending", "queued", "running", "succeeded", "needs_review", "failed", "cancelled").contains(required(row, "state")) ||
                 !runs.add(workId + ":" + step)) {
                 throw new IllegalArgumentException("BACKUP_RUN");
             }
+            stages.computeIfAbsent(workId, ignored -> new java.util.TreeMap<>()).put(step, tool);
             for (String field : List.of("input_digest", "output_digest")) {
                 String artifact = value(row, field);
                 if (artifact != null && (!artifact.matches("[a-f0-9]{64}") ||
@@ -1341,10 +1343,22 @@ public final class PlatformStore {
                 }
             }
         }
-        if (runs.size() != works.size() * 2) throw new IllegalArgumentException("BACKUP_RUN_COUNT");
+        for (String workId : works) {
+            java.util.SortedMap<Integer,String> sequence = stages.get(workId);
+            if (sequence == null || sequence.size() < 2 || sequence.size() > 31)
+                throw new IllegalArgumentException("BACKUP_RUN_COUNT");
+            int index = 0; for (int step : sequence.keySet()) if (step != index++) throw new IllegalArgumentException("BACKUP_RUN_SEQUENCE");
+            List<String> tools = new ArrayList<>(sequence.values());
+            boolean article = tools.equals(List.of("citations@1", "free-article@1"));
+            boolean text = tools.equals(List.of("local-generate@1", "local-text-validate@1", "local-text-seal@1"));
+            boolean ideas = tools.get(tools.size() - 1).equals("local-ideas-seal@1") &&
+                tools.subList(0, tools.size() - 1).stream().allMatch("local-ideas-generate@1"::equals);
+            if (!(article || ((text || ideas) && pinnedWorks.contains(workId))))
+                throw new IllegalArgumentException("BACKUP_RUN_RECIPE");
+        }
         for (Map<String,String> row : snapshot.events) {
             if (!works.contains(required(row, "work_id")) || integer(row, "step") < -1 ||
-                integer(row, "step") > 1 || !required(row, "kind").matches("[a-z_]{3,40}")) {
+                integer(row, "step") >= stages.get(required(row, "work_id")).size() || !required(row, "kind").matches("[a-z_]{3,40}")) {
                 throw new IllegalArgumentException("BACKUP_EVENT");
             }
         }

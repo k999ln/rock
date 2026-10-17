@@ -14,7 +14,16 @@
       "Do not claim universal model superiority or silently send to an unconfigured/paid provider"
     ],
     "newProviderProvisioned": false,
-    "executionHoldsChanged": false
+    "executionHoldsChanged": false,
+    "followupRequest": {
+      "decidedAt": "2026-10-17",
+      "source": "direct_owner_instruction",
+      "intent": "Install a searched open LLM on Pixel and route non-article work to a suitable installed model",
+      "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
+      "status": "candidate_implementation_physical_pending",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+      "gatesChanged": false
+    }
   },
   "pixelSiReferenceDesignIntent": {
     "decidedAt": "2026-10-15",

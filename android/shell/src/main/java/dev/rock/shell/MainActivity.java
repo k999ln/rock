@@ -75,6 +75,7 @@ public final class MainActivity extends Activity {
     private static final int OPEN_MODEL_DOCUMENT = 205;
     private LinearLayout localModels;
     private TextView localModelMessage;
+    private LinearLayout modelDownloadPanel;
     private String modelImportProfileId;
     private boolean modelImportBusy;
     private TextView homeRoleStatus;
@@ -318,14 +319,14 @@ public final class MainActivity extends Activity {
         button(form, "このToolで依頼を準備", () -> { selectPage(0); homePrompt.requestFocus(); });
         LinearLayout modelCard = ui.card(pageContent[1]);
         label(modelCard, "端末内モデル", 18);
-        label(modelCard, "対応するGGUFを選び、ライセンス・容量・署名・ハッシュを確認して導入します。モデルは自動ダウンロードしません。", 14);
+        label(modelCard, "対応するGGUFを選び、ライセンス・容量・署名・ハッシュを確認して導入します。検索で見つけた対応モデルは、同意後にWi-Fiで取得できます。", 14);
         localModelMessage = label(modelCard, "未確認。導入や再読込みは本人操作で開始します。", 14);
         button(modelCard, "モデルの導入状態を確認", this::refreshLocalModels);
         localModels = new LinearLayout(this); localModels.setOrientation(LinearLayout.VERTICAL); modelCard.addView(localModels);
         LinearLayout discoveryCard = ui.card(pageContent[1]);
         pageContent[1].removeView(discoveryCard); pageContent[1].addView(discoveryCard, 2);
         label(discoveryCard, "公開LLMを探す", 18);
-        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GGUF関連の公開候補を更新順で探します。", 14);
+        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GitHubは更新順、Hugging Faceはダウンロード数順でGGUF関連候補を探します。", 14);
         discoveryQuery = field(discoveryCard, "モデル名・公開キーワード", "Qwen", false);
         discoverySearch = button(discoveryCard, "今の公開モデルを検索", this::searchPublicModels);
         discoveryStatus = label(discoveryCard, "未検索。公開情報は導入・動作・ライセンス適合の保証ではありません。", 14);
@@ -337,11 +338,13 @@ public final class MainActivity extends Activity {
                 .setPositiveButton("Xを開く", (d, w) -> openPublicModelUrl("https://x.com/search?q=" + android.net.Uri.encode(q + " open LLM") + "&f=live"))
                 .setNegativeButton("戻る", null).show();
         });
+        modelDownloadPanel = new LinearLayout(this); modelDownloadPanel.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(modelDownloadPanel);
+        button(discoveryCard, "ダウンロード状態を確認", this::refreshModelDownload); refreshModelDownload();
         discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
         form = composer;
         label(form, "依頼を確認", 20);
         button(form, "依頼を閉じて仕事を見る", () -> { workComposer.setVisibility(View.GONE); scrollPageTop(2); });
-        label(form, "この版は記事準備の2工程に対応します。LLMが入力案を作り、Brokerが検査してToolへ渡します。投稿・送信・課金はしません。", 14);
+        label(form, "要約・翻訳・コードの下書き・計画・アイデア生成に対応します。記事は既存の2 Toolへ接続します。生成したコードは文章として保存します。", 14);
         zemaPrompt = field(form, "何をしたいですか？", "", true);
         modelChoiceStatus = label(form, "モデルは実行前に確認します。", 14);
         button(form, "使うモデルを変更", this::showModelChooser);
@@ -518,7 +521,7 @@ public final class MainActivity extends Activity {
         if (homeModelChoice == null) return;
         String choice = selectedModelChoice();
         homeModelChoice.setText("auto".equals(choice) ? "標準は自動。使うモデルと理由を、開始前に表示します。"
-            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
+            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen25-coder-15b-q4km".equals(choice) ? "Qwen2.5 Coder 1.5B" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
     }
 
     private void showModelChooser() {
@@ -554,6 +557,64 @@ public final class MainActivity extends Activity {
         catch (android.content.ActivityNotFoundException missing) { discoveryStatus.setText("ブラウザが見つかりません。端末の設定を確認してください。"); }
     }
 
+    private void preparePublicModelInstall(String id) {
+        worker.execute(() -> {
+            try {
+                JSONObject prepared = new JSONObject(new ShellConnection(this).preparePublicModelInstall(id));
+                if (!"prepared".equals(prepared.optString("status"))) throw new IllegalStateException();
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    LinearLayout content = new LinearLayout(this); content.setOrientation(LinearLayout.VERTICAL); content.setPadding(32, 16, 32, 16);
+                    label(content, prepared.optString("name") + "\n" + prepared.optString("licenseId")
+                        + "\n容量: " + prepared.optLong("bytes") + " bytes\n" + prepared.optString("source")
+                        + "\nSHA-256: " + prepared.optString("sha256")
+                        + (prepared.optBoolean("reusableCache") ? "\n保存済みの同一重みを再検証できます。" : "\nWi-Fi接続時に取得します。"), 13);
+                    button(content, "ライセンスを見る", () -> openPublicModelUrl(prepared.optString("licenseUrl")));
+                    CheckBox consent = new CheckBox(this); consent.setText("ライセンスと容量を確認し、このモデルの取得と導入準備に同意する"); styleCheckBox(consent); content.addView(consent);
+                    AlertDialog dialog = new AlertDialog.Builder(this).setTitle("モデルを取得") .setView(content)
+                        .setPositiveButton("取得を始める", null).setNegativeButton("戻る", null).create();
+                    dialog.setOnShowListener(d -> {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        consent.setOnCheckedChangeListener((b, checked) -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(checked));
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                            if (!consent.isChecked()) return; dialog.dismiss();
+                            modelDownloadAction(c -> c.beginPublicModelDownload(id, true));
+                        });
+                    }); dialog.show();
+                });
+            } catch (Exception failure) { runOnUiThread(() -> { if (!isDestroyed()) discoveryStatus.setText("導入条件を確認できません。対応モデルとBrokerの版を確認してください。"); }); }
+        });
+    }
+    private interface ModelDownloadCall { String run(ShellConnection connection) throws Exception; }
+    private void modelDownloadAction(ModelDownloadCall call) {
+        if (modelDownloadPanel != null) { modelDownloadPanel.removeAllViews(); label(modelDownloadPanel, "モデルの状態を確認しています…", 14); }
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(call.run(new ShellConnection(this)));
+                runOnUiThread(() -> { if (!isDestroyed()) {
+                    renderModelDownload(result);
+                    if ("installed".equals(result.optString("status"))) { refreshLocalModels(); checkLocalAi(); invalidateModelChoice(); }
+                } });
+            } catch (Exception failure) { runOnUiThread(() -> { if (!isDestroyed()) { modelDownloadPanel.removeAllViews(); label(modelDownloadPanel, "状態を取得できません。再確認できます。", 14); } }); }
+        });
+    }
+    private void refreshModelDownload() { modelDownloadAction(ShellConnection::publicModelInstallStatus); }
+    private void renderModelDownload(JSONObject result) {
+        modelDownloadPanel.removeAllViews(); String state = result.optString("status");
+        if ("idle".equals(state)) return;
+        String name = result.optString("name", "モデル");
+        String label = "downloaded".equals(state) ? "取得済み。署名・ハッシュの検証と導入が必要です。"
+            : "installed".equals(state) ? "導入完了。作業に合わせて選択できます。"
+            : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
+            : "paused".equals(state) ? "取得は待機中です。Wi-Fi・保存容量を確認してください。"
+            : "cancelled".equals(state) ? "取得を中止しました。" : "取得・導入を確認できません: " + result.optString("code", state);
+        label(modelDownloadPanel, name + "\n" + label, 14);
+        String operation = result.optString("operationId");
+        if ("downloaded".equals(state)) button(modelDownloadPanel, "検証してPixelへ導入", () -> modelDownloadAction(c -> c.finishPublicModelInstall(operation, true)));
+        if (java.util.Set.of("downloaded", "downloading", "paused", "failed").contains(state))
+            button(modelDownloadPanel, "この取得を中止", () -> modelDownloadAction(c -> c.cancelPublicModelDownload(operation)));
+    }
+
     private void searchPublicModels() {
         String query = discoveryQuery.getText().toString().trim();
         if (query.isEmpty() || query.length() > 80 || query.codePoints().anyMatch(Character::isISOControl)) {
@@ -577,7 +638,7 @@ public final class MainActivity extends Activity {
                         status.append("\n").append(source.optString("source")).append(": ").append("ok".equals(source.optString("status")) ? "取得済み" : "rate_limited".equals(source.optString("status")) ? "API利用制限中" : "取得失敗");
                         if (source.optBoolean("incompleteResults")) status.append("（検索結果は一部）");
                     }
-                    status.append("\n候補は未導入・未検証。自動選択や実行には使いません。"); discoveryStatus.setText(status.toString());
+                    status.append("\n対応確認済みの候補には導入ボタンを表示します。その他は適合未確認です。"); discoveryStatus.setText(status.toString());
                     JSONArray candidates = result.optJSONArray("candidates");
                     if (candidates != null) for (int i = 0; i < candidates.length(); i++) {
                         JSONObject candidate = candidates.optJSONObject(i); if (candidate == null) continue;
@@ -587,6 +648,8 @@ public final class MainActivity extends Activity {
                             + "\nライセンスの公開表記: " + candidate.optString("licenseClaim", "unknown")
                             + "\n未導入・未検証 · Pixelへの適合は未確認", 13);
                         String url = candidate.optString("url"); button(card, "公開元で詳細を見る（外部）", () -> openPublicModelUrl(url));
+                        String installId = candidate.optString("installProfileId");
+                        if (!installId.isEmpty()) button(card, "条件を確認してPixelへ導入", () -> preparePublicModelInstall(installId));
                     }
                 });
             } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) { discoverySearch.setEnabled(true); discoveryStatus.setText("検索できませんでした。通信とBrokerの接続を確認してください。"); } }); }
@@ -614,7 +677,7 @@ public final class MainActivity extends Activity {
                     if ("prepared".equals(result.optString("status"))) {
                         preparedModelDigest = result.optString("manifestDigest"); preparedModelPrompt = prompt;
                         modelChoiceStatus.setText("使うモデル: " + result.optString("name") + "\n" + result.optString("reason")
-                            + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
+                            + (result.optInt("ideaTarget") > 0 ? "\nアイデア " + result.optInt("ideaTarget") + " 件を分割生成・保存" : "") + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
                         zemaConsent.setChecked(false); zemaSubmitButton.setEnabled(!zemaSubmission.inFlight());
                     } else {
                         String code = result.optString("code");
@@ -2800,6 +2863,7 @@ public final class MainActivity extends Activity {
                             + " / " + (model.optLong("bytes") / (1024 * 1024)) + " MiB", 16);
                         label(localModels, model.optString("trustLabel"), 12);
                         label(localModels, "取得元: " + model.optString("source"), 12).setTextIsSelectable(true);
+                        button(localModels, "Wi-Fiで取得・導入", () -> preparePublicModelInstall(model.optString("profileId")));
                         button(localModels, "GGUFを選んで導入・読込み", () -> confirmModelImport(model, false));
                         if (model.optBoolean("activeProfile")) {
                             label(localModels, "設定済み。実行時には読込み状態とモデルの一致を再確認します。", 13);
@@ -2862,14 +2926,13 @@ public final class MainActivity extends Activity {
         final String selectionToken = skySelectionToken;
         final boolean allowed = zemaConsent.isChecked();
         if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
-        if (selectionToken == null) { message.setText("先にSkyで使用するToolを選択してください。"); return; }
         if (!allowed) { message.setText("端末内での処理と保存への同意を確認してください。"); return; }
         final String modelDigest = preparedModelDigest;
         if (modelDigest == null || !prompt.equals(preparedModelPrompt)) {
             message.setText("使うモデルを確認しています。モデル名が表示された後に同意して開始してください。"); return;
         }
         final LocalSubmission.Attempt attempt = beginSubmission(zemaSubmission, zemaSubmitButton,
-            LocalSubmission.fingerprint("zema", selectionToken, prompt, "[]", modelDigest, Boolean.toString(allowed)));
+            LocalSubmission.fingerprint("zema", selectionToken == null ? "local-draft" : selectionToken, prompt, "[]", modelDigest, Boolean.toString(allowed)));
         if (attempt == null) return;
         message.setText("JenniferがこのPixelで計画しています。まだToolは実行していません…");
         zemaStopButton.setVisibility(View.VISIBLE);
@@ -3164,7 +3227,7 @@ public final class MainActivity extends Activity {
             boolean failed = failedRuns(work);
             LinearLayout card = ui.card(jobs); card.setTag("work-card-" + id);
             ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : "review".equals(state) ? ShellUi.ACCENT : ShellUi.SUCCESS);
-            label(card, work.optString("title", "記事の準備") + (work.optBoolean("sample") ? " · サンプル" : ""), 21);
+            label(card, work.optString("title", "端末内siの仕事") + (work.optBoolean("sample") ? " · サンプル" : ""), 21);
             label(card, "仕事 " + id.substring(0, 8), 12);
             workProgress(card, work);
             String action = failed ? "止まっている工程を確認" : "review".equals(state) ? "成果を確認する"
@@ -3179,6 +3242,8 @@ public final class MainActivity extends Activity {
     private int workProgress(LinearLayout card, JSONObject work) {
         JSONArray runs = work.optJSONArray("runs"); int succeeded = 0, total = runs == null ? 0 : runs.length();
         if (runs != null) for (int i = 0; i < runs.length(); i++) if ("succeeded".equals(runs.optJSONObject(i).optString("state"))) succeeded++;
+        JSONObject ideaProgress = work.optJSONObject("ideaProgress");
+        if (ideaProgress != null) label(card, "アイデア " + ideaProgress.optInt("completed") + " / " + ideaProgress.optInt("target") + " 件を保存", 16);
         if (total > 0) {
             label(card, succeeded + " / " + total + " 工程が完了", 14);
             android.widget.ProgressBar bar = new android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
@@ -3192,7 +3257,7 @@ public final class MainActivity extends Activity {
         String id = work.optString("id"), state = work.optString("state"); boolean failed = failedRuns(work);
         LinearLayout card = ui.card(jobs); card.setTag("work-detail-" + id);
         ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : ShellUi.ACCENT);
-        label(card, work.optString("title", "記事の準備"), 24);
+        label(card, work.optString("title", "端末内siの仕事"), 24);
         int succeeded = workProgress(card, work);
         JSONArray runs = work.optJSONArray("runs"); int total = runs == null ? 0 : runs.length();
         boolean hasArtifact = ("review".equals(state) || "completed".equals(state)) && !failed && total > 0 && succeeded == total;

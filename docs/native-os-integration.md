@@ -669,3 +669,8 @@ Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧
 main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
 
 主担当OS11/O6、ROCKはAPK/Core/同ID・状態・停止・保存を実装する。AI04は署名済modelと日本語ASR/TTSのlicense/品質/資源、SKY21/BIL02はProvider/請求、RLS02は同imageの配布・復旧を受け持つ。OWNERのHome選択・model/外部送信/予算同意を保持する。検証は`os:check`、AndroidのCore/SDK/JVM/build/lint、`TerminalHomeIntegrationTest`、`LocalAiServiceIntegrationTest`、`design:check`、`npm run verify`。失敗は同じ候補の原因・修正・再検証と未実行欄へ残す。
+
+
+## Pixelの公開モデル導入と記事以外の仕事
+
+検索→署名catalog照合→明示Wi-Fi取得→検証済weight導入→作業別model選択→実推論/成果保存の詳細は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)。主担当OS11/O6/ROCKのAPK実装候補である。private Shell API21とruntime package4/API4を組にし、DB3→4 migrationと旧backup互換を確認してから非破壊更新する。初期テーマは本人指定の「RockstarOS・Skyで実現するサービスのアイデア300件」。旧15件合格やfull OSの受入へ転用せず、検索/取得/導入、実model選択、300件保存の証拠を分ける。

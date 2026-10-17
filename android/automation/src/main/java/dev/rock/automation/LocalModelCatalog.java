@@ -18,8 +18,17 @@ final class LocalModelCatalog {
     static final class Entry {
         final String name, fileName, source, licenseUrl, trustLabel;
         final ModelProfileManifest profile;
+        final java.util.Set<String> tasks; final int autoPriority;
         Entry(JSONObject value) throws Exception {
-            exact(value, "name", "fileName", "source", "licenseUrl", "trustLabel", "profile");
+            exact(value, "name", "fileName", "source", "licenseUrl", "trustLabel", "profile", "tasks", "autoPriority");
+            java.util.Set<String> capabilities = new java.util.LinkedHashSet<>();
+            JSONArray taskValues = value.getJSONArray("tasks");
+            for (int i = 0; i < taskValues.length(); i++) {
+                String task = taskValues.getString(i);
+                if (!dev.rock.sdk.LocalWorkDraft.TASKS.contains(task) || !capabilities.add(task)) throw new SecurityException("INVALID_MODEL_CAPABILITIES");
+            }
+            tasks = java.util.Collections.unmodifiableSet(capabilities); autoPriority = value.getInt("autoPriority");
+            if (tasks.isEmpty() || autoPriority < 0 || autoPriority > 100) throw new SecurityException("INVALID_MODEL_CAPABILITIES");
             name = bounded(value.getString("name"), 120);
             fileName = bounded(value.getString("fileName"), 120);
             if (!fileName.matches("[A-Za-z0-9._-]+\\.gguf")) throw new SecurityException("INVALID_MODEL_FILENAME");

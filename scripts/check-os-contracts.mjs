@@ -116,7 +116,7 @@ assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
 assert.ok(read('android/Android.bp').includes('name: "RockShell"'));
 const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
-assert.ok(shellApi.includes('const int API_VERSION = 20'));
+assert.ok(shellApi.includes('const int API_VERSION = 21'));
 assert.ok(shellApi.includes('String claimRockstarServiceEntitlement(String packageJson)'));
 assert.ok(shellApi.includes('String cloudA2AAgents()'));
 assert.ok(shellApi.includes('String prepareCloudA2ADelegation(String draftJson)'));
@@ -235,7 +235,7 @@ assert.ok(zemaOrchestrator.includes('engine.submitPinned(pin'));
 assert.ok(shellService.includes('"LOCAL_AI_NOT_READY".equals(reason)'));
 assert.ok(deviceShellMain.includes('if ("LOCAL_AI_NOT_READY".equals(code))'));
 const engine = read('android/core/src/main/java/dev/rock/core/Engine.java');
-assert.ok(engine.includes('SCHEMA_VERSION = 3'));
+assert.ok(engine.includes('SCHEMA_VERSION = 4'));
 assert.ok(engine.includes('submitPinned'));
 assert.ok(engine.includes('model_activation_generation'));
 assert.ok(engine.includes('CREATE TABLE sky_selection'));

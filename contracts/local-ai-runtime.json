@@ -89,10 +89,23 @@
     "signatureVerifier": "Bouncy Castle lightweight Ed25519; pinned shared JAR, no AndroidKeyStore public-key import",
     "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json"
   },
-  "candidateBuild": {
-    "status": "pending_new_artifact",
-    "previousArtifactVersionCode": 3,
-    "newSchema": "local-work@1/output-v1",
-    "apiVersionUnchanged": 4
+  "taskDraftSchema": {
+    "schemaId": "local-work@1/output-v1",
+    "fields": [
+      "task",
+      "title",
+      "body",
+      "summary"
+    ],
+    "tasks": [
+      "article",
+      "summary",
+      "translation",
+      "code",
+      "planning",
+      "writing"
+    ],
+    "additionalProperties": false,
+    "externalExecution": false
   }
 }

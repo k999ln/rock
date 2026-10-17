@@ -125,12 +125,15 @@ public class EngineTest {
             legacy.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
             legacy.execute("INSERT INTO rock_meta VALUES(1)");
             legacy.execute("CREATE TABLE works(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL,state TEXT NOT NULL,sample INTEGER NOT NULL,review_note TEXT NOT NULL DEFAULT '')");
+            legacy.execute("CREATE TABLE artifacts(work_id TEXT NOT NULL,digest TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(work_id,digest))");
+            legacy.execute("CREATE TABLE runs(work_id TEXT NOT NULL,step INTEGER,tool TEXT,state TEXT,attempt INTEGER,token TEXT,boot TEXT,deadline INTEGER,input_digest TEXT,output_digest TEXT,error TEXT,PRIMARY KEY(work_id,step))");
+            legacy.execute("CREATE INDEX runs_queue ON runs(state,work_id,step)");
             Engine migrated = new Engine(legacy);
-            assertEquals("3", legacy.query("SELECT version FROM rock_meta").get(0).get("version"));
-            assertNull(migrated.skySelection());
-            legacy.execute("UPDATE rock_meta SET version=4");
-            assertThrows(IllegalStateException.class, () -> new Engine(legacy));
             assertEquals("4", legacy.query("SELECT version FROM rock_meta").get(0).get("version"));
+            assertNull(migrated.skySelection());
+            legacy.execute("UPDATE rock_meta SET version=99");
+            assertThrows(IllegalStateException.class, () -> new Engine(legacy));
+            assertEquals("99", legacy.query("SELECT version FROM rock_meta").get(0).get("version"));
         } catch (Exception failure) { throw new AssertionError(failure); }
     }
 
@@ -226,5 +229,61 @@ public class EngineTest {
         Engine.Ticket t = claim(1); engine.finish(t, "passed", "TOP_SECRET_OUTPUT", "boot-1", 2);
         assertThrows(IllegalStateException.class, () -> engine.retry(id));
         assertFalse(engine.events(id).toString().contains("TOP_SECRET"));
+    }
+
+    private Engine.ModelProfilePin localTextPin(String request) {
+        PlatformStore platform = new PlatformStore(db); String signer = "a".repeat(64);
+        ComponentManifest component = new ComponentManifest(ComponentManifest.Kind.TOOL,
+            "org.rockstar.runtime.localai", "org.rockstar.runtime.localai", 1, 1, 1, 12003,
+            "rock_tool_app", signer, List.of("local-ai.inference"), 1, 1);
+        platform.register("register:text-runtime", component, 1); platform.activate(component.componentId, 1, false, 2);
+        platform.registerRuntimeManifest(new RuntimeManifest(component.componentId, 1, signer, 1, 1,
+            List.of("GGUF"), List.of("local-work@1/output-v1")));
+        ModelProfileManifest profile = new ModelProfileManifest("profile.fixture.local", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.fixture", "key.fixture", "A".repeat(86), component.componentId, 1, 1, 1, "GGUF", "Q4_K_M", 2048,
+            "local-work@1/output-v1", 1000, 2000);
+        platform.registerModelProfile(profile); platform.activateModelProfile(profile.profileId, 1, c -> Engine.digest("verified"), 3);
+        return engine.prepareModelProfilePin("owner:alice", request, Engine.digest(request), 4);
+    }
+    @Test public void variableStagesKeepCheckpointAcrossRestartPauseAndLateCallbackAndRestore() throws Exception {
+        Engine.ModelProfilePin pin = localTextPin("ideas-300");
+        String work = engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true);
+        assertEquals(16, engine.runs(work).size()); assertEquals(work, engine.submitPinnedIdeas(pin, "ideas-300", "zero", 15, true));
+        assertThrows(IllegalStateException.class, () -> engine.modelProfilePinForWork("owner:bob", work));
+        Engine.Ticket first = claim(10); assertEquals(180010, first.deadline);
+        assertTrue(engine.finish(first, "passed", "twenty", "boot-1", 20));
+        Engine.Ticket second = claim(30); engine.setPaused(true);
+        assertFalse(engine.finish(second, "passed", "late", "boot-1", 40));
+        assertEquals("twenty", engine.checkpoint(work));
+        db.close(); db = new JdbcDatabase(file); engine = new Engine(db);
+        assertTrue(engine.paused()); assertEquals("twenty", engine.checkpoint(work));
+        engine.setPaused(false); long now = 100;
+        for (int step = 1; step < 16; step++) {
+            Engine.Ticket t = engine.claim("boot-2", now++, true); assertNotNull(t); assertEquals(step, t.step);
+            assertEquals(pin.manifestDigest, engine.modelProfilePinForWork("owner:alice", work).manifestDigest);
+            assertTrue(engine.finish(t, "passed", step == 15 ? "final 300" : "checkpoint-" + step, "boot-2", now++));
+        }
+        assertEquals("review", engine.work(work).get("state")); assertEquals("final 300", engine.result(work));
+        byte[] backup = new PlatformStore(db).exportRecoverableState("owner:alice");
+        try (JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("ideas-restored.db").getPath())) {
+            Engine restored = new Engine(restoredDb); new PlatformStore(restoredDb).restoreRecoverableState(backup, "owner:alice", 1000);
+            assertEquals(16, restored.runs(work).size()); assertEquals("final 300", restored.result(work)); assertTrue(restored.paused());
+        }
+        db.execute("UPDATE runs SET tool='shell@1' WHERE work_id=? AND step=8", work);
+        byte[] corrupt = new PlatformStore(db).exportRecoverableState("owner:alice");
+        try (JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("ideas-invalid.db").getPath())) {
+            new Engine(restoredDb); PlatformStore store = new PlatformStore(restoredDb);
+            assertThrows(IllegalArgumentException.class, () -> store.restoreRecoverableState(corrupt, "owner:alice", 1000));
+            assertTrue(restoredDb.query("SELECT * FROM works").isEmpty());
+        }
+    }
+    @Test public void versionThreeMigrationPreservesOldJobsAndArtifacts() {
+        String id = submit(); Engine.Ticket t = claim(1); assertTrue(engine.finish(t, "passed", "saved", "boot-1", 2));
+        db.execute("UPDATE rock_meta SET version=3"); engine = new Engine(db);
+        assertEquals("4", db.query("SELECT version FROM rock_meta").get(0).get("version"));
+        assertEquals(2, engine.runs(id).size()); assertEquals("saved", engine.checkpoint(id));
+        Engine.Ticket next = claim(3); assertEquals(1, next.step); assertEquals("saved", next.input);
+        assertTrue(engine.finish(next,"passed","final","boot-1",4)); assertEquals("final",engine.result(id));
     }
 }

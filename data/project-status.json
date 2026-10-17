@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "implementation_started",
+    "status": "host_build_pass_physical_pending",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,7 +13,10 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Implement signed model installation from public search, extend the bounded runtime response contract and existing job/artifact persistence, then accept two models and non-article tasks on Pixel. No arbitrary code execution, paid cloud or OS flash."
+    "nextAction": "Finish runtime4 native CI, sign using existing preview APK key, install paired candidate after Pixel unlock, verify real Sky download/install, task routing and requested 300 actual ideas.",
+    "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
+    "runtimeBuildRun": 39058032806,
+    "schemaMigration": "3_to_4_existing_jobs_preserved"
   },
   "pixelIntuitiveExperience": {
     "date": "2026-10-17",

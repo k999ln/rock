@@ -41,12 +41,12 @@ final class LocalModelInstaller {
             entries.put(new JSONObject().put("profileId", p.profileId).put("name", entry.name).put("fileName", entry.fileName)
                 .put("source", entry.source).put("licenseUrl", entry.licenseUrl).put("licenseId", p.licenseId)
                 .put("bytes", p.artifactBytes).put("sha256", p.weightsSha256).put("trustLabel", entry.trustLabel)
-                .put("manifestDigest", p.digest()).put("version", p.version)
+                .put("manifestDigest", p.digest()).put("version", p.version).put("tasks", new JSONArray(entry.tasks)).put("autoPriority", entry.autoPriority)
                 .put("cached", LocalModelChoice.cached(context, p)).put("licenseAccepted", LocalModelChoice.accepted(context, p))
                 .put("activeProfile", active != null && p.digest().equals(active.digest())));
         }
         return new JSONObject().put("models", entries).put("activeProfileId", active == null ? JSONObject.NULL : active.profileId)
-            .put("automaticLoad", false).put("networkDownload", false).toString();
+            .put("automaticLoad", false).put("networkDownload", "explicit_wifi_only_signed_catalog").toString();
     }
 
     String install(String profileId, ParcelFileDescriptor source, boolean consent) throws Exception {
@@ -102,7 +102,7 @@ final class LocalModelInstaller {
                 platform.register("local-model-runtime:" + component.digest(), component, now);
                 platform.activate(component.componentId, component.versionCode, false, now);
                 platform.registerRuntimeManifest(new RuntimeManifest(component.componentId, component.versionCode, signer,
-                    LocalAiConnection.API_VERSION, LocalAiConnection.API_VERSION, List.of("GGUF"), List.of(ZemaToolPlan.ARTICLE_PLAN_SCHEMA)));
+                    LocalAiConnection.API_VERSION, LocalAiConnection.API_VERSION, List.of("GGUF"), List.of(ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA)));
                 ResumableModelArtifactStager stager = new ResumableModelArtifactStager(
                     new java.io.File(context.getNoBackupFilesDir(), "verified-models").toPath(), (candidate, offset) -> {
                         requireUnlocked();

@@ -2,10 +2,10 @@
   "schema": "rock-local-ai-native-build/1",
   "recordedAt": "2026-10-17",
   "status": "PASS_UNSIGNED_APK_NOT_DEVICE_ACCEPTANCE",
-  "buildSourceSha": "ff0518c715d3c1cd8a143e0f7e665d78e3460a70",
-  "ciRun": 39043256663,
-  "ciUrl": "https://github.com/k999ln/rock/actions/runs/39043256663",
-  "artifactName": "local-ai-unsigned-arm64-39043256663",
+  "buildSourceSha": "ecc0acd0a38cdad75e2d25ffa2687a3b9146d0ae",
+  "ciRun": 39058032806,
+  "ciUrl": "https://github.com/k999ln/rock/actions/runs/39058032806",
+  "artifactName": "local-ai-unsigned-arm64-39058032806",
   "upstreamSourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "overlay": {
     "schema": "rock-local-ai-overlay/1",
@@ -16,15 +16,16 @@
       "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
       "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
       "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
-      "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411"
+      "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
+      "f1119263d97b4e0118a6c76aa91761418d5eac9131260b977744e3fe1116eeda"
     ],
-    "status": "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED"
+    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT"
   },
   "inspection": {
     "packageName": "com.localactionassistant",
-    "versionCode": 3,
-    "sha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9",
-    "sizeBytes": 26416972,
+    "versionCode": 4,
+    "sha256": "aa77272e86c108f98f0aaf378ffadf74e2c72c983f6dfc629a1b4f4718995d5f",
+    "sizeBytes": 26417540,
     "requiredAbis": [
       "arm64-v8a"
     ],
@@ -36,28 +37,14 @@
   "deviceTested": false,
   "osImageBuilt": false,
   "productionSigned": false,
-  "historicalDeviceEvidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
-  "limitations": [
-    "Build and AAPT inspection do not prove API v4 Binder execution or GGUF inference on a physical device.",
-    "API v4 physical preview acceptance is tracked separately in docs/evidence/pixel-local-jennifer.json; this file records the unsigned build only.",
-    "No cloud infrastructure, OS signing, bootloader operation or flash occurred."
-  ],
-  "localReadback": {
-    "aapt2": "official SDK 35.0.0",
-    "inspectionMatchesCi": true,
-    "actualApkStage": "PASS",
-    "idempotentRestage": "PASS",
-    "verifyStage": "PASS",
-    "focusedTests": 21
-  },
   "previousArtifact": {
-    "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
-    "apkSizeBytes": 26416892,
-    "extensions": [
-      "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
-      "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
-      "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
-      "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c"
-    ]
-  }
+    "ciRun": 39043256663,
+    "sourceSha": "ff0518c715d3c1cd8a143e0f7e665d78e3460a70",
+    "versionCode": 3,
+    "sha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9"
+  },
+  "limitations": [
+    "Unsigned native build and APK byte inspection only. Physical preview is separate evidence.",
+    "No OS image, production signing, flash, cloud provider or general content-quality acceptance."
+  ]
 }

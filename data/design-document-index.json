@@ -652,7 +652,10 @@
         "scripts/stage-local-ai-apk.py",
         "tests/test_stage_local_ai_apk.py",
         "systems/rock-star-os/src/blackberryrock/memory_access.py",
-        "systems/rock-star-os/tests/test_memory_access.py"
+        "systems/rock-star-os/tests/test_memory_access.py",
+        "android/automation/src/main/java/dev/rock/automation/PublicModelInstall.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/LocalWorkDraft.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/LocalIdeaBatch.java"
       ],
       "outboxReceiptReplay": {
         "implementation": [
@@ -674,6 +677,26 @@
           "android/shell/src/androidTest/java/dev/rock/shell/LocalSubmissionIntegrationTest.java"
         ],
         "limits": "Host tests and APK compile only; instrumentation/device execution pending."
+      },
+      "publicModelInstallationAndTaskDrafts": {
+        "taskId": "OS11",
+        "ownerSquad": "O6",
+        "primaryOwner": "ROCK",
+        "design": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+        "privateShellApi": 21,
+        "runtimePackageVersion": 4,
+        "localBinderApi": 4,
+        "engineSchema": 4,
+        "status": "IMPLEMENTED_CANDIDATE_PHYSICAL_PENDING",
+        "firstRequestedTask": "300 RockstarOS/Sky service ideas",
+        "limits": [
+          "signed APK catalog only",
+          "explicit Wi-Fi acquisition and license consent",
+          "untrusted text drafts only",
+          "exact immutable job model pin",
+          "no code execution or paid cloud",
+          "full OS gates unchanged"
+        ]
       }
     },
     {

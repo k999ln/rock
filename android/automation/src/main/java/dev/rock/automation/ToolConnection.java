@@ -13,6 +13,7 @@ final class ToolConnection {
     static final String PACKAGE = "dev.rock.tools.article";
     private final Context context;
     private volatile ITool tool;
+    private volatile LocalAiConnection local;
     private volatile String token;
     private final AtomicBoolean cancelled = new AtomicBoolean();
     ToolConnection(Context context) { this.context = context; }
@@ -21,6 +22,45 @@ final class ToolConnection {
         Result(String outcome, String output) { this.outcome = outcome; this.output = output; }
     }
     Result execute(Engine.Ticket ticket) throws Exception {
+        token = ticket.token;
+        if ("local-generate@1".equals(ticket.tool) || LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
+            if (cancelled.get()) throw new InterruptedException();
+            Engine engine = ((RockApplication) context.getApplicationContext()).engine();
+            Engine.ModelProfilePin pin = engine.modelProfilePinForWork(AndroidOwner.current(context), ticket.workId);
+            LocalAiConnection runtime = new LocalAiConnection(context); local = runtime;
+            try {
+                runtime.requireReadyForPlanning(pin);
+                String task, prompt;
+                if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
+                    task = "planning"; prompt = LocalIdeaBatch.prompt(ticket.input, ticket.attempt);
+                } else {
+                    org.json.JSONObject input = new org.json.JSONObject(ticket.input);
+                    if (input.length() != 2) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
+                    task = input.getString("task"); prompt = LocalWorkDraft.prompt(task, input.getString("request"));
+                }
+                LocalAiConnection.Result result = runtime.plan(ticket.token, pin, LocalWorkDraft.SCHEMA, prompt, "[]");
+                if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
+                runtime.requireReadyForPlanning(pin);
+                if (!"completed".equals(result.event)) return new Result("failed", "");
+                String output = LocalWorkDraft.verify(task, result.payload);
+                return new Result("passed", LocalIdeaBatch.GENERATE.equals(ticket.tool)
+                    ? LocalIdeaBatch.append(ticket.input, output) : output);
+            } catch (IllegalArgumentException | SecurityException invalid) {
+                return new Result("failed", "");
+            } finally { local = null; }
+        }
+        if (LocalIdeaBatch.SEAL.equals(ticket.tool)) {
+            if (cancelled.get()) throw new InterruptedException();
+            return new Result("passed", LocalIdeaBatch.render(ticket.input));
+        }
+        if (LocalWorkDraft.VALIDATE.equals(ticket.tool)) {
+            if (cancelled.get()) throw new IllegalStateException("LOCAL_TASK_CANCELLED");
+            return new Result("passed", LocalWorkDraft.render(ticket.input));
+        }
+        if (LocalWorkDraft.SEAL.equals(ticket.tool)) {
+            if (cancelled.get()) throw new IllegalStateException("LOCAL_TASK_CANCELLED");
+            Engine.bounded(ticket.input); return new Result("passed", ticket.input);
+        }
         PackageManager pm = context.getPackageManager();
         int uid = pm.getPackageUid(PACKAGE, 0);
         if (pm.getPackageInfo(PACKAGE, 0).getLongVersionCode() != 1)
@@ -60,7 +100,9 @@ final class ToolConnection {
         } finally { cancel(); context.unbindService(connection); tool = null; token = null; }
     }
     void cancel() {
-        cancelled.set(true); ITool current = tool; String currentToken = token;
+        cancelled.set(true); LocalAiConnection runtime = local;
+        if (runtime != null && token != null) runtime.cancel(token);
+        ITool current = tool; String currentToken = token;
         if (current != null && currentToken != null) try { current.cancel(currentToken); } catch (RemoteException ignored) { }
     }
 }

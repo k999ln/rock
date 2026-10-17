@@ -36,19 +36,21 @@ final class LocalModelChoice {
         } catch (Exception unavailable) { return false; }
     }
     String prepare(String choice, String prompt) throws Exception {
+        dev.rock.sdk.LocalWorkDraft.prompt(ModelSelectionPolicy.task(prompt), prompt);
+        int ideas = dev.rock.sdk.LocalIdeaBatch.requestedCount(prompt);
         LocalModelCatalog catalog = new LocalModelInstaller(context, platform).catalog();
         ActivityManager.MemoryInfo memory = new ActivityManager.MemoryInfo(); context.getSystemService(ActivityManager.class).getMemoryInfo(memory);
         List<ModelSelectionPolicy.Candidate> candidates = new ArrayList<>();
         for (LocalModelCatalog.Entry entry : catalog.entries.values()) candidates.add(new ModelSelectionPolicy.Candidate(entry.profile.profileId,
-            cached(context, entry.profile), accepted(context, entry.profile), !memory.lowMemory && memory.totalMem >= entry.profile.minRamBytes));
+            cached(context, entry.profile), accepted(context, entry.profile), !memory.lowMemory && memory.totalMem >= entry.profile.minRamBytes, entry.tasks, entry.autoPriority));
         String id = ModelSelectionPolicy.select(choice, prompt, candidates);
         LocalModelCatalog.Entry entry = catalog.require(id);
         return new JSONObject().put("status", "prepared").put("profileId", id).put("manifestDigest", entry.profile.digest())
             .put("name", entry.name).put("choice", choice).put("policyVersion", ModelSelectionPolicy.VERSION)
-            .put("task", "article-preparation").put("reason", "auto".equals(choice)
-                ? "この記事準備に対応し、実機の構造的一周を確認した導入済み1.5Bを選びました。文章品質の保証ではありません。"
+            .put("ideaTarget", ideas).put("task", ModelSelectionPolicy.task(prompt)).put("reason", "auto".equals(choice)
+                ? "作業の種類、対応能力、導入・同意・端末資源を照合して選びました。世界全体の性能順位や内容品質の保証ではありません。"
                 : "指定したモデルを固定しました。別モデルへ自動で切り替えません。")
-            .put("warning", "dev.rock.qwen3-06b-q8".equals(id) ? "0.6Bは文章品質の試験に不合格。診断用の明示選択です。" : "")
+            .put("warning", "dev.rock.qwen3-06b-q8".equals(id) ? "0.6Bは文章品質の試験に不合格。診断用の明示選択です。" : entry.tasks.contains(ModelSelectionPolicy.task(prompt)) ? "生成内容は確認して利用してください。外部操作やコード実行は行いません。" : "このモデルと作業の組合せは未検証です。指定を優先します。")
             .put("executionStarted", false).put("network", false).toString();
     }
     LocalModelCatalog.Entry requireDigest(String digest) throws Exception {
