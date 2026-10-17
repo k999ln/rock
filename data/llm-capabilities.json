@@ -34,7 +34,7 @@
       "tool": null,
       "role": "local_planner",
       "provider": "local",
-      "model": "Qwen2.5-1.5B-Instruct-Q4_K_M-GGUF (explicit selection); Qwen3-0.6B-Q8_0-GGUF diagnostic alternative",
+      "model": "Qwen2.5-1.5B-Instruct-Q4_K_M-GGUF (bounded auto/manual); Qwen3-0.6B-Q8_0-GGUF diagnostic manual alternative",
       "runtime": "llama.rn@0.12.9 / Local Action Assistant API v4 (current source)",
       "status": "device_apk_verified",
       "network": "prohibited",
@@ -45,7 +45,8 @@
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
         "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
         "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
-        "docs/evidence/pixel-local-jennifer.json"
+        "docs/evidence/pixel-local-jennifer.json",
+        "docs/evidence/pixel-intuitive-experience.json"
       ],
       "limitations": [
         "Frozen API v4 candidate passed one Home-to-model-to-two-Tool artifact trial on Pixel 10 GL066; not full native OS or general Agent acceptance",
@@ -60,13 +61,13 @@
         "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
       },
       "currentImplementation": {
-        "privateShellApiVersion": 19,
+        "privateShellApiVersion": 20,
         "signedModelCatalog": "debug_only",
         "runtimeApiVersion": 4,
         "physicalInferenceAccepted": true,
-        "evidence": "docs/evidence/pixel-local-jennifer.json",
-        "candidateSourceSha": "6c9a30830e3b07e49de29902ec63f2d9abb5515c",
-        "scope": "one local article-preparation recipe on Pixel 10 GL066; functional Home pipeline only"
+        "evidence": "docs/evidence/pixel-intuitive-experience.json",
+        "candidateSourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
+        "scope": "Pixel bounded article-preparation, exact auto/manual pin, actual notification tap and public metadata search; no general Agent/content acceptance"
       }
     },
     {
@@ -231,7 +232,7 @@
   },
   "pixelModelChoice": {
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
-    "status": "implemented_configuration_required",
+    "status": "device_apk_verified",
     "policyVersion": "pixel-article-model-choice/1",
     "privateShellApiVersion": 20,
     "automaticModel": "dev.rock.qwen25-15b-q4km",

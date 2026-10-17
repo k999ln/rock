@@ -3,7 +3,7 @@
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",
     "ownerQuote": "ログインしてないcodex経由しか使えないんじゃなくてllm選べるようにして、デフォルトは勝手にその作業に一番いいのを選んで",
-    "status": "pixel_bounded_implementation_validation_in_progress",
+    "status": "pixel_bounded_manual_and_automatic_device_verified",
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
     "requirements": [
       "Codex login is not the sole prerequisite or inference path",

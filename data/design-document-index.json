@@ -144,9 +144,9 @@
         "fullOsAccepted": false,
         "localModelPlanning": {
           "authority": "docs/native-os-integration.md#pixel-local-jennifer",
-          "evidence": "docs/evidence/pixel-local-jennifer.json",
-          "status": "physical_pipeline_pass_content_quality_pending",
-          "privateShellApiVersion": 19,
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "bounded_auto_manual_pipeline_device_verified_content_quality_pending",
+          "privateShellApiVersion": 20,
           "runtimeBinderApiVersion": 4,
           "platformApiVersion": 1,
           "debugOnlyModelCatalog": true,
@@ -164,15 +164,18 @@
             "scripts/stage-model-crypto.py",
             "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
             "android/automation/src/debug/assets/rock-local-model-catalog.json",
-            "os/physical/local-ai-loaded-profile-v4.patch"
+            "os/physical/local-ai-loaded-profile-v4.patch",
+            "android/automation/src/main/java/dev/rock/automation/LocalModelChoice.java",
+            "android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java",
+            "android/automation/src/main/java/dev/rock/automation/PublicModelDiscovery.java"
           ],
-          "physicalInferenceAccepted": false,
+          "physicalInferenceAccepted": true,
           "fullJenniferGoalAccepted": false
         },
         "workExperience": {
           "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
           "evidence": "docs/evidence/pixel-intuitive-experience.json",
-          "status": "implemented_acceptance_pending",
+          "status": "bounded_apk_device_verified_general_quality_pending",
           "notificationsScope": "local_broker_jobs_only",
           "notificationDoesNotExecute": true,
           "fullOsAccepted": false,

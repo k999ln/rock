@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "notification_discovery_device_pass_model_choice_validation_in_progress",
+    "status": "same_apk_notification_model_choice_public_discovery_device_pass",
     "branch": "codex/pixel-intuitive-experience",
     "mainBase": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
     "scope": [
@@ -16,19 +16,22 @@
       "public_GitHub_HuggingFace_discovery",
       "X_external_search"
     ],
-    "physicalAccepted": false,
-    "nextAction": "Validate same APK auto/manual exact model pins and no duplicate jobs; finalize host/full verification and GitHub exact-head checks. Cloud/X API credentials and general content quality remain separate.",
+    "physicalAccepted": true,
+    "nextAction": "Wait exact-head CI, then normal main integration. Next extend signed model compatibility/quality and configured cloud adapters; X API and paid/full-OS gates remain closed.",
     "tests": {
-      "physicalPassed": 11,
-      "physicalFailed": 1,
+      "physicalPassed": 15,
+      "physicalFailed": 0,
       "physicalSkipped": 0,
+      "hostPassed": 183,
       "hostFailed": 0
     },
-    "candidateSourceSha": "7b16d61be7adb4b057f6ab8c710c1034b7d0ece2",
+    "candidateSourceSha": "58ef953703467ff8a09d6d6aa0f3cf0f8330c068",
     "pullRequest": "https://github.com/k999ln/rock/pull/157",
-    "codeHeadCiPassed": 8,
+    "codeHeadCiPassed": null,
     "mainMerged": false,
-    "privateShellApiVersion": 20
+    "privateShellApiVersion": 20,
+    "fullVerify": "passed_all_stages_node22",
+    "evidence": "docs/evidence/pixel-intuitive-experience.json"
   },
   "skyRecurringSandbox": {"taskId": "BIL02", "coordinationTask": "DOC04", "date": "2026-10-17", "status": "sandbox_scheduler_and_agent_fences_accepted", "scope": "opt_in_sandbox_scheduler_and_existing_agent_database_gates", "mainBase": "1f0cd54e61cf3bb4b3d0e146e04d89e177cbf3b1", "productionBillingEnabled": false, "actualCloudExecution": false, "unitTests": 8, "fullVerify": "passed_all_stages_node22", "nextAction": "same-head CI and main integration; real Cloud execution and production contract gates remain closed", "providerChecks": 6, "verifiedProviderEvents": 4, "uiVerified": true, "evidence": "docs/evidence/sky-recurring-sandbox.json"},
   "sky140CollectionSandbox": {"taskId": "BIL02", "date": "2026-10-16", "status": "provider_policy_harness_passed", "scope": "fixed_postpaid_invoice_and_access_policy_harness", "mainBase": "60765fc3", "productionBillingEnabled": false, "realAgentEnforcement": false, "evidence": "docs/evidence/sky-140-collection-sandbox.json", "unitTests": 6, "providerChecks": 10, "fullVerify": "passed_node22_WRANGLER_HIDE_BANNER_true", "nextAction": "contract consent storage and atomic integration with existing reservation/dispatch; monthly scheduler, authentication-required payment, tax and credit policy remain"},
