@@ -24,7 +24,7 @@ export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Pr
 
 export async function runFreeCloudText(input: {
   db: DB; owner: string; id: string; prompt: string; model: string;
-  consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number; autoContinue?: boolean; retryClock?: () => number;
+  consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number; autoContinue?: boolean; enqueue?: boolean; retryClock?: () => number;
 }) {
   if (!freeCloudEnabled(input.runtime, input.owner) || input.consent !== true)
     throw new WorkError('無料Cloudの接続設定と外部送信への同意が必要です。', 403);
@@ -38,9 +38,11 @@ export async function runFreeCloudText(input: {
   if (saved) {
     if (saved.freeCloud?.requestDigest !== digest) throw new WorkError('同じ依頼IDの内容が一致しません。',409);
     // Only a confirmed FREE_LIMIT rejection can resume, never an ambiguous send.
-    if (saved.freeCloud.state!=='waiting' || input.autoContinue!==true || !saved.freeCloud.autoContinue ||
+    if (input.enqueue) return saved;
+    if (saved.freeCloud.state!=='queued' && (saved.freeCloud.state!=='waiting' || input.autoContinue!==true || !saved.freeCloud.autoContinue ||
         retryNow() < (saved.freeCloud.retryAt ?? Infinity) || retryNow() >= (saved.freeCloud.retryDeadline ?? 0) ||
-        (saved.freeCloud.attempts ?? 0)>=5) return saved;
+        (saved.freeCloud.attempts ?? 0)>=5)) return saved;
+    if(saved.freeCloud.retryDeadline && retryNow()>=saved.freeCloud.retryDeadline) throw new WorkError('依頼の実行期限に達しました。',409);
   }
   const plan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
   if (plan.reason !== 'available') throw new WorkError(`Skyプランで停止しています: ${plan.reason}`,403);
@@ -48,10 +50,11 @@ export async function runFreeCloudText(input: {
   const candidates = await discoverFreeCloudModels(fetcher);
   if (!candidates.some(m=>m.model===input.model)) throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
   const fresh = createWorkJob({id:input.id,templateId:'free-cloud-text',title:'無料Cloudの文章生成'});
-  fresh.freeCloud = { requestDigest:digest, model:input.model, state:'prepared', source:CLASSIC_FREE_SOURCE, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
+  fresh.freeCloud = { requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
   const created = saved ?? await store.create(input.owner,fresh);
   if (!created || created.freeCloud?.requestDigest!==digest) throw new WorkError('依頼IDが競合しています。',409);
-  if (created.freeCloud.state!=='prepared' && !(saved && created.freeCloud.state==='waiting')) return created;
+  if(input.enqueue)return created;
+  if (created.freeCloud.state!=='queued' && created.freeCloud.state!=='prepared' && !(saved && created.freeCloud.state==='waiting')) return created;
   const claimed: WorkJob = {...created,revision:created.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...created.freeCloud,state:'sending',attempts:(created.freeCloud.attempts??0)+1,retryAt:undefined,error:undefined}};
   // Existing owner/revision CAS is the one-time send claim; a crash leaves an uncertain job, not a retry.
   if (!await store.update(input.owner,claimed,created.revision)) return (await store.get(input.owner,input.id))!;

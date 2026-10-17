@@ -250,3 +250,6 @@ O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証�
 通常の対象コマンドは以下。main追加6件は既存typescript devDependencyを必要とする。ローカルではlock検証済みcompilerをメモリ読み込みし6件、依存不要の既存67件を別実行して全て合格。main APIで2件の負例を確認した。通常install不一致はPR #73、DB inventory・catalog・AMC export退行は別件。[証拠](../evidence/spider-work-plan-contract.json)。main mergeと配備は自動サイクルでは行わない。
 
     node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/workplan-reconcile.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs
+
+
+無料Cloud画面外継続（SKY07/ROCK、WEB01/JOINT）: 永続WorkJob、毎分wake、本人別履歴を追加。正本はLLM設計の画面外継続。復旧/運用はservices/sky-free-cloud-wake/README.md、受入はdocs/evidence/sky-free-cloud-background.json。合成試験は `node --experimental-strip-types --test tests/sky-free-cloud.test.mjs`、全体は `npm run verify`。公開配備、Git保存、main統合を別記する。
