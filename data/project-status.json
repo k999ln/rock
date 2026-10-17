@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "runtime7_ideation_sampling_and_visible_binding_build_pending",
+    "status": "runtime7_diverse_topics_and_si_style_twenty_trial_running",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -15,7 +15,7 @@
     "physicalAccepted": false,
     "nextAction": "Build/inspect runtime7, consent and reimport exact new profiles, verify visible job foreground priority and actual unique 20 ideas, then requested300, auto Coder/manual model and same-head CI.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
-    "runtimeBuildRun": 39064987817,
+    "runtimeBuildRun": 39067064393,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
@@ -29,7 +29,9 @@
       "rawPartSize": 5,
       "rawPartTimeoutSeconds": 90,
       "partsPerSavedStage": 2,
-      "incompletePartPersisted": false
+      "incompletePartPersisted": false,
+      "diversity": "one model idea per distinct topic; 30 topics/10 audiences; full original request retained",
+      "newTerminology": "standalone AI rejected for new ideas; old text remains readable"
     },
     "physicalTrials": {
       "generalCacheVerifiedInstall": "PASS_18.945s",
@@ -44,9 +46,11 @@
       "notification": "PASS_actual_completion_notification_tap_on_new_Broker_and_Shell",
       "runtime6ImportGate": "Explicitly cancelled only held synthetic 20-item job before profile upgrade; pinned work guard preserved",
       "runtime6FiveProbe": "PASS_17749ms_real_five_strings_no_runtime_crash_not_owner_300",
-      "samePromptDirect": "PASS_COMPLETION_23467ms_but_four_repeated_items_not_work_accepted"
+      "samePromptDirect": "PASS_COMPLETION_23467ms_but_four_repeated_items_not_work_accepted",
+      "priorityExperiment": "Old runtime6, new visible Shell binding: native/Broker fg while visible, bg after close; saved10 and held after3 duplicate replies, no false20",
+      "singleTopicRuntime7": "Saved actual10; stopped synthetic20 to trial distinct-topic prompt, not accepted as20"
     },
-    "runtimeBuildSource": "f96ca583f9bff51d91c46a4141149591594775db",
+    "runtimeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
     "mergedMain": "dbf02cc637195fae9ff77549f052b7840e17adb6",
     "planningLimits": {
       "outputTokens": 512,
@@ -60,7 +64,7 @@
       "rawIdeaSchema": "ideas array only, exact N 1..10",
       "metadataOwner": "runtime, never model authority",
       "sourceTests": 34,
-      "nativeBuild": "PENDING",
+      "nativeBuild": "PASS_ACTUAL_APK_BYTES_SIGNER_AND_PAYLOAD_COMPARISON",
       "fix": "idea-only varied sampling; lifecycle-scoped trusted Broker visible binding; strict validators unchanged",
       "nativeBuildSource": "f96ca583"
     },

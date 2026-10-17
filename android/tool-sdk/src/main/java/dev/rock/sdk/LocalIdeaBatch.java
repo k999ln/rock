@@ -69,10 +69,12 @@ public final class LocalIdeaBatch {
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"朝の支度","料理","食材管理","買物","掃除","洗濯","睡眠","体調の記録","家族連絡","子育て","介護","外出","移動","防災","地域","学習","読書","文章","画像と映像","音楽","ゲーム","仕事の計画","会議","資料","開発","家具","照明","空調","建築","機器連携"};
             StringBuilder recent = new StringBuilder(); for (int i = Math.max(0, ideas.length() - 2); i < ideas.length(); i++) recent.append(ideas.getString(i)).append("; ");
-            return "Agent・道具・家具をつないで暮らしを便利にする構想。依頼: " + data.getString("request")
-                + "\n視点: " + angles[(ideas.length()/GENERATION_PART_SIZE+7*Math.max(0,attempt-1))%angles.length]
-                + "。対象: " + (ideas.length()<150?"家庭":"店・事業者") + "。既出と異なる案: " + recent
-                + "\n日本語で" + (end-begin+1) + "案だけ。各12文字の具体的な動作。製品名や抽象名詞だけは不可。JSONのideas配列のみ。 /no_think";
+            int group=ideas.length()/GENERATION_PART_SIZE;
+            String[] audiences={"一人暮らし","子育て家庭","高齢者","学生","在宅勤務","小さな店","工房","施設","建築現場","地域団体"};
+            StringBuilder topics=new StringBuilder();for(int i=0;i<end-begin+1;i++){if(i>0)topics.append("、");topics.append(angles[(group*5+i+5*Math.max(0,attempt-1))%angles.length]);}
+            return "Agent・道具・家具をつなぐ構想。依頼: " + data.getString("request")
+                + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野から1案ずつ: " + topics + "。既出と異なる動作: " + recent
+                + "\n日本語で" + (end-begin+1) + "案だけ。各12文字で具体的な動作を書く。製品名のみ不可。AIはsi表記。JSONのideas配列のみ。 /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     private static String[] items(String body, int needed, int start) throws JSONException {
@@ -121,7 +123,7 @@ public final class LocalIdeaBatch {
             String[] values = items(draft.getString("body"),needed,ideas.length());
             Set<String> seen = new HashSet<>(); for (int i=0;i<ideas.length();i++) seen.add(normal(ideas.getString(i)));
             for (String idea:values) {
-                if (!valid(idea) || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
+                if (!valid(idea) || java.util.regex.Pattern.compile("(?<![A-Za-z])[Aa][Ii](?![A-Za-z])").matcher(Normalizer.normalize(idea,Normalizer.Form.NFKC)).find() || !seen.add(normal(idea))) throw new IllegalArgumentException("DUPLICATE_OR_INVALID_IDEA"); ideas.put(idea);
             }
             String next=data.toString(); Engine.bounded(next); return next;
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_BATCH",e); }

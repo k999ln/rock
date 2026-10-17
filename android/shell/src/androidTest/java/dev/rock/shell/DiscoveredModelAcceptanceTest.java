@@ -167,7 +167,7 @@ public final class DiscoveredModelAcceptanceTest {
         Set<String> before = new HashSet<>(); JSONArray old = initial.getJSONArray("works");
         for (int i = 0; i < old.length(); i++) before.add(old.getJSONObject(i).getString("id"));
         String previousChoice = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getString("preferredLocalModel", "auto");
-        context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", choice).commit();
+        context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", "auto").commit();
         MainActivity activity = (MainActivity) instrumentation.startActivitySync(new Intent(context(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         String created = InstrumentationRegistry.getArguments().getString("rockResumeWork"); JSONObject work = null;
         File dir = context().getExternalFilesDir(null); long start = SystemClock.elapsedRealtime();
@@ -183,7 +183,23 @@ public final class DiscoveredModelAcceptanceTest {
                 if(held)broker.retry(created);
             }
             if (created == null) {
-                ui(() -> { ((EditText) field(activity, "homePrompt")).setText(prompt); ((RadioGroup) field(activity, "homeExecutionChoice")).check(3100); call(activity, "prepareHomeRequest"); });
+                if(!"auto".equals(choice)) {
+                    ui(() -> call(activity,"showModelChooser"));
+                    AtomicReference<android.widget.ListView> choices=new AtomicReference<>();long chooseDeadline=SystemClock.elapsedRealtime()+10000;
+                    do {
+                        ui(() -> {for(android.view.View root:android.view.inspector.WindowInspector.getGlobalWindowViews()) {
+                            android.view.View list=find(root,v -> v instanceof android.widget.ListView);if(list!=null){choices.set((android.widget.ListView)list);break;}
+                        }});if(choices.get()==null)SystemClock.sleep(100);
+                    }while(choices.get()==null&&SystemClock.elapsedRealtime()<chooseDeadline);
+                    assertNotNull("actual manual model chooser must open",choices.get());
+                    ui(() -> {android.widget.ListView list=choices.get();boolean selected=false;
+                        for(int i=0;i<list.getAdapter().getCount();i++)if(list.getAdapter().getItem(i).toString().startsWith(prepared.optString("name"))) {
+                            android.view.View item=list.getChildAt(i-list.getFirstVisiblePosition());assertNotNull(item);list.performItemClick(item,i,list.getAdapter().getItemId(i));selected=true;break;
+                        }assertTrue("select exact model from visible chooser",selected);
+                    });
+                    assertEquals(choice,context().getSharedPreferences("terminal_preferences",Context.MODE_PRIVATE).getString("preferredLocalModel","auto"));
+                }
+                ui(() -> { ((EditText) field(activity, "homePrompt")).setText(prompt); ((RadioGroup) field(activity, "homeExecutionChoice")).check("auto".equals(choice)?3100:3102); call(activity, "prepareHomeRequest"); });
                 AtomicReference<String> digest = new AtomicReference<>(); long deadline = SystemClock.elapsedRealtime() + 15000;
                 do { ui(() -> digest.set((String) field(activity,"preparedModelDigest"))); if (digest.get() == null) SystemClock.sleep(100); } while(digest.get() == null && SystemClock.elapsedRealtime() < deadline);
                 assertEquals(prepared.getString("manifestDigest"), digest.get());
@@ -216,7 +232,7 @@ public final class DiscoveredModelAcceptanceTest {
             if ("ideas".equals(mode)) { assertEquals(target, artifact.split("(?m)^\\d+\\. ", -1).length-1); assertEquals(target, work.getJSONObject("ideaProgress").getInt("completed")); }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
-            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
+            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
             Files.write(new File(dir,"discovered-"+mode+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {
             // Requested ideas and accepted drafts remain saved; never mark human review complete here.

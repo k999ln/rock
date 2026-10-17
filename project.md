@@ -12,6 +12,10 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 OS11/O6/ROCK: single-topic runtime7試験は実10件保存まで進んだが再生成が多く、次の試験へ切替えて中止（保存prefix保持）。raw5へ異なる5分野を1案ずつ求め、30分野/10対象で多様化し、AI語は新規案だけsiへ再生成要求、旧AI checkpoint読取は維持。SDK17/host build/lint成功。新20件を再試験中。手動model試験は実ダイアログ選択を行い、手動route3102/自動3100を分離した。追加旧「記事準備のみ」表示も汎用説明へ訂正。300件は未着手。
+
+2026-10-17 OS11/O6/ROCK: package7 actual build CI39067064393/source96dd7c30をunsigned SHA4696a5cb…/署名後760c579c…/既存certとpayload一致で検査。非破壊更新し新profileの実導入/20件を受入中。旧6+新Shellの優先度実験では表示中fg/閉じた後bg、実10件保存と後半duplicate3回停止を確認し、合成20件仕事だけ明示中止、保存prefixは保持。300件は未実行。
+
 2026-10-17 OS11/O6/ROCK: 同一compact promptを直接呼ぶと23.467sで完了し、仕事経由は90s超。直接呼出し時の実processはforeground。返答は5件中4件が同一で、実仕事への保存は0のまま。package7はidea subtypeだけsamplingを変更し、通常taskは維持。Shell表示中は同署名BrokerへのbindingをonStart/onStopで保持/解放し、実行権限とは分離。source34試験/型/lint0、Python21、Android host build/lint成功。新profileGeneral v5/Coder v4を署名。native7 buildと実機20/300は未受入。
 
 2026-10-17 OS11/O6/ROCK: 共通説明の長いraw5も90s超を確認。owner依頼を切り捨てず、商品文脈をSky/Miniの最小説明・30視点・直近2案へ短縮。全prefixの重複検査はBrokerが維持。旧20件読取テストの表記差分を修正し、ビルド失敗後に旧APKへ進まないset-e/OK guard付き手順でhost試験→非破壊更新→再導入17.676s成功→新20件試験を開始。

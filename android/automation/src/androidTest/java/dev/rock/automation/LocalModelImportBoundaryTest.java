@@ -136,6 +136,13 @@ public final class LocalModelImportBoundaryTest {
         }
         Files.write(new File(context().getExternalFilesDir(null),"public-connectivity-diagnosis.json").toPath(),results.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
+    @Test public void readOnlyTheSyntheticTwentyIdeaCheckpoint() throws Exception {
+        org.junit.Assume.assumeTrue("explicit synthetic saved-prefix readback", "true".equals(InstrumentationRegistry.getArguments().getString("rockReadSyntheticPrefix")));
+        String id=InstrumentationRegistry.getArguments().getString("rockSyntheticIdeaWork");
+        String checkpoint=((RockApplication)context().getApplicationContext()).engine().checkpoint(id);
+        assertEquals(20,dev.rock.sdk.LocalIdeaBatch.state(checkpoint).getInt("target"));
+        Files.write(new File(context().getExternalFilesDir(null),"synthetic-twenty-checkpoint.json").toPath(),checkpoint.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
     @Test public void readOnlyPhysicalMigrationHashes() throws Exception {
         org.junit.Assume.assumeTrue("explicit physical hash-only migration readback", "true".equals(InstrumentationRegistry.getArguments().getString("rockMigrationReadback")));
         org.json.JSONArray works=new org.json.JSONArray(),artifacts=new org.json.JSONArray();

@@ -685,7 +685,7 @@ public final class MainActivity extends Activity {
                     } else {
                         String code = result.optString("code");
                         modelChoiceStatus.setText("TASK_REQUIRES_OTHER_CAPABILITY".equals(code)
-                            ? "この版の端末内実行は記事準備に対応します。この作業に必要な能力をSkyで選んでください。実行はしていません。"
+                            ? "この作業に必要な能力をSkyで選んでください。対応する実行先を確認してから進められます。実行はしていません。"
                             : "モデルの導入・利用条件・端末の余裕を確認してください。Skyで準備してから再入力できます（" + code + "）。");
                     }
                 });

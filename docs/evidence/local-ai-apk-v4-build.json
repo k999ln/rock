@@ -2,10 +2,10 @@
   "schema": "rock-local-ai-native-build/1",
   "recordedAt": "2026-10-17",
   "status": "PASS_UNSIGNED_APK_NOT_DEVICE_ACCEPTANCE",
-  "buildSourceSha": "f96ca583f9bff51d91c46a4141149591594775db",
-  "ciRun": 39064987817,
-  "ciUrl": "https://github.com/k999ln/rock/actions/runs/39064987817",
-  "artifactName": "local-ai-unsigned-arm64-39064987817",
+  "buildSourceSha": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
+  "ciRun": 39067064393,
+  "ciUrl": "https://github.com/k999ln/rock/actions/runs/39067064393",
+  "artifactName": "local-ai-unsigned-arm64-39067064393",
   "upstreamSourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "overlay": {
     "schema": "rock-local-ai-overlay/1",
@@ -17,15 +17,15 @@
       "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
       "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
       "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
-      "61e7403b689400c8598d15872d71383c34caacdff3f6b688c858bf0104581ddc"
+      "b769e4cc3de84217cb4be4591756e429f98a20f2297cd96241dd8f7695359faf"
     ],
     "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT"
   },
   "inspection": {
     "packageName": "com.localactionassistant",
-    "versionCode": 6,
-    "sha256": "b930d2641e803c7c5b5bb3c152b30f56456daa7f6fe14d231f7a51131baaaff9",
-    "sizeBytes": 26420380,
+    "versionCode": 7,
+    "sha256": "4696a5cb703a612ad350e9bde106d7caa881d7e71ecc7f938521ba1915f4a600",
+    "sizeBytes": 26420556,
     "requiredAbis": [
       "arm64-v8a"
     ],
@@ -38,10 +38,10 @@
   "osImageBuilt": false,
   "productionSigned": false,
   "previousArtifact": {
-    "ciRun": 39063165913,
-    "sourceSha": "cbb484215de20a0a7ff47c533bdd1944c21b915d",
-    "versionCode": 5,
-    "sha256": "90e50347aa1c064404b858aceea01053690818306882b9fb2a20a0fd33fdf0a4"
+    "ciRun": 39064987817,
+    "sourceSha": "f96ca583f9bff51d91c46a4141149591594775db",
+    "versionCode": 6,
+    "sha256": "b930d2641e803c7c5b5bb3c152b30f56456daa7f6fe14d231f7a51131baaaff9"
   },
   "limitations": [
     "Actual unsigned native build and APK inspection only; separate physical evidence is required.",
