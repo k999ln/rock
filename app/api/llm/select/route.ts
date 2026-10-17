@@ -1,3 +1,4 @@
+import {hostedMonthlyClock} from '@/lib/sky-hosted-monthly';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import { authorizeRemoteAiRequest, RemoteAiGuardError } from '@/lib/remote-ai-guard';
@@ -20,7 +21,8 @@ export async function POST(request: Request) {
     if (typeof value.prompt !== 'string' || !value.prompt.trim() || value.prompt.length > 24000 ||
       (value.baseUrl !== undefined && (typeof value.baseUrl !== 'string' || !isLoopbackLlmEndpoint(value.baseUrl))))
       return Response.json({ error: '依頼・接続先を確認してください。' }, { status: 400, headers });
-    const result = await selectSkyModel({db,owner,prompt:value.prompt,allowCloud:value.allowCloud===true,runtime:{...runtime,
+    const monthlyNow=await hostedMonthlyClock(db,env as unknown as Record<string,string>,owner);
+    const result = await selectSkyModel({db,owner,clock:()=>monthlyNow,prompt:value.prompt,allowCloud:value.allowCloud===true,runtime:{...runtime,
       ...(typeof value.baseUrl === 'string' ? { SKY_LOCAL_LLM_BASE_URL: value.baseUrl } : {}),
     }});
     return Response.json(result.selection ? result : { ...result,

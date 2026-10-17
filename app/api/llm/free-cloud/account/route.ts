@@ -15,7 +15,7 @@ async function handle(request:Request){
    await enrollFreeCloudSandbox(db,owner,runtime,(JSON.parse(raw) as {consent?:unknown}).consent);
   }
   let plan;try{plan=await skyRecurringUsage(db,owner);}catch{plan={reason:'not_configured'};}
-  return Response.json({accountId:owner,enabled:freeCloudEnabled(runtime,owner),plan,contractLabel:'検証用の合成契約・請求なし。本番月額契約ではありません。'},{headers});
+  return Response.json({accountId:owner,enabled:freeCloudEnabled(runtime,owner),plan,setupAvailable:runtime.SKY_FREE_CLOUD_SANDBOX_SETUP==='true' && plan.reason==='not_configured',contractLabel:'contractKind' in plan && plan.contractKind==='monthly_sandbox'?'月額140ドル・利用枠100ドルのStripe Sandbox契約。本番課金なし。':'1時間限定の合成検証契約、または未設定。本番月額契約ではありません。'},{headers});
  }catch(error){return Response.json({error:error instanceof WorkError?error.message:'サインイン・操作権限を確認してください。'},{status:error instanceof WorkError||error instanceof RemoteAiGuardError?error.status:400,headers});}
 }
 export const GET=handle;
