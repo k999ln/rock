@@ -9,7 +9,7 @@ export const nextRecurringMonth = (start:number) => {const d=new Date(start);d.s
 /** Server-only, explicitly sandbox-only. Scheduler and webhook use the same durable collector. */
 export function skyRecurringSandbox(db:DB, env:Record<string,unknown>, injected?:Stripe) {
  const config=readMonthlyStripeConfig(env);
- const stripe=injected??new Stripe(config.secretKey,{timeout:15000,maxNetworkRetries:0});
+ const stripe=injected??new Stripe(config.secretKey,{httpClient:Stripe.createFetchHttpClient(),timeout:15000,maxNetworkRetries:0});
  const verifier=monthlyStripeTest(config,stripe);
  const test=<T extends {livemode?:boolean}>(o:T)=>{if(o.livemode!==false)throw new WorkError('本番objectは使えません。',409);return o;};
  const account=async()=>{if((await stripe.accounts.retrieve(null)).id!==config.accountId)throw new WorkError('Sandbox不一致',409);};

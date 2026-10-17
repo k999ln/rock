@@ -420,3 +420,21 @@ SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOU
 合格条件は月次契約での実応答、合成100 USD上限のネットワークゼロ停止、140 USDの実Sandbox支払失敗、署名通知と同一請求入金再取得、次月更新後の実応答、過去usage保持、再押下で外部POST追加ゼロ。証拠は[統合受入](evidence/sky-monthly-free-cloud.json)。本番税/与信/契約条件は未決で、この試験は決定しない。
 
 再現はNode 22で `node --experimental-strip-types --test tests/sky-free-cloud.test.mjs tests/sky-recurring-sandbox.test.mjs tests/sky-recurring-usage.test.mjs`。実Provider試験は `SKY_MONTHLY_FREE_CLOUD=1 SKY_MONTHLY_FREE_DIR=/absolute/private/run SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/test-config.json node --experimental-strip-types scripts/check-sky-monthly-free-cloud.mjs`。Stripe CLIでinvoice.paid/payment_failed/payment_succeededを`http://127.0.0.1:5228/webhook`へ転送し、その署名秘密を同configへ設定する。test鍵/account一致のみ許可する。終了/再開は同runのDB/acceptance.jsonを保持し、曖昧な送信・23時間を超えた未完了決済を自動再実行しない。新しい試験は別ディレクトリを指定する。検証画面は`http://127.0.0.1:5228/`。
+
+## 公開実アカウントの月次Sandbox移行（2026-10-17）
+
+本人の追加指示で、公開avoado.siの既存1時間合成契約を月額140 USD・利用枠100 USDのStripe Sandboxへ移行する。BIL02/O5（JOINT）、ROCKは移行履歴/本人限定UI/停止判定、Stripeはテスト請求/入金通知を担当する。本番課金・有料Cloudは有効化しない。
+
+`sky_hosted_monthly_tests`に旧契約JSONと検証期間、合成利用額、Stripeテスト参照、処理leaseを保存する。旧契約のid/created_at、成果物と明細を残し、本人限定・明示同意・旧fixture口座/同意版一致・更新時刻CASを満たす場合だけ契約の接続先を変更する。既存の請求や未確定予約がある契約は移行拒否。外部処理は永続id由来のidempotency keyと23時間の再送期限で保護する。移行が中断された時は履歴から再開し、契約を新規作成し直さない。
+
+画面は `月次契約を確認 → 同意して移行 → 無料Cloud実応答 → 合成100ドルで上限停止 → テスト月締め/支払失敗 → テスト入金/復旧`。合成usageは専用表に明示し、実usageへ捏造挿入しない。無料Cloudの共通projectionだけがこの本人・契約・口座・旧検証期間に結びつく合成額を集計する。新しい実有料Agent経路の受入ではない。合成額を消去せず次期間へ更新することで新しい枠に進み、未確定の実予約は既存集計で持ち越す。
+
+初期phaseは前月末の検証時計、未払いphaseは月初境界、復旧後は現在時刻を使う。時計・金額・owner・Stripe接続先はHTTP入力で指定できない。課金には既存Stripe Sandbox collectorを使い、test鍵、account一致、livemode=false、14000 centsのinvoice照合を強制する。署名通知は専用endpointで検証・再取得し、event idを保存する。本人の画面確認/実行時にも照合を更新する。常設の無人月次schedulerの運用受入は含めず、照合が途切れた際は5分lease満了で停止する。
+
+合格条件は旧契約・既存データ保持、実アカウントの月次移行、画面からの自動選択/実応答、枠切れ/未払い時の送信拒否、同一invoice入金照合と次月更新後の復旧、署名通知と再読込み保持。証拠は[evidence](evidence/sky-hosted-monthly.json)。元の公開50表148行はGit外へ保全し、追加DDL配備直後に同じ148行の一致を確認した。これは閲覧APIが列挙した表の行保全で、全D1のatomic物理snapshotではない。
+
+安全な停止はSKY_HOSTED_MONTHLY_SANDBOXとSKY_FREE_CLOUD_ENABLEDを無効化して再配備する。過去契約/試験明細を削除・上書きして戻さず、請求はStripe test objectを再照合する。旧source version 61へ戻す場合も追加表を残す。必要なキーはSKY_CLOUD_MONTHLY_MODE=stripe-test、SKY_MONTHLY_STRIPE_KEY/ACCOUNT/WEBHOOK_SECRET、既存の本人限定SKY_FREE_CLOUD_OWNER_ID。旧stripe販売設定と公開範囲を変更しない。本番契約・税・与信・無人運用は未受入。
+
+公開version62で移行・自動選択・合成上限停止・未払い停止・同一140 USDテスト請求の入金/契約復旧を確認した。旧契約snapshotも一致。生成は移行直後と復旧後の2回とも無料Provider HTTP 402で停止し、実応答の合格条件は未達。本番課金や有料fallbackは行わない。全体verifyは2288 pass/既存skip1、全stage成功。main統合は実応答の残条件を確認してから行う。
+
+2026-10-17追検証: version63でProvider Retry-After 25秒を確認し、26秒以上待機後に新しい依頼を送信。月次契約の実accountで自動openai-fast→GPT-OSS20B実応答「14 + 15 は 29」、337/104 tokens/$0を受入。上記version62の実応答未達はこの追検証で解消。無料Providerの待機制限自体を解除したわけではなく、再発時は同じ待機案内と送信停止を維持する。

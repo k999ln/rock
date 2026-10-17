@@ -1,6 +1,6 @@
 import { WorkError } from './workflow.ts';
 type DB = Pick<D1Database, 'prepare' | 'batch'>;
-type Contribution = { kind: 'remote_llm' | 'a2a'; id: string; state: string; amount: number; reserved: number; providerReference: string | null };
+type Contribution = { kind: 'remote_llm' | 'a2a' | 'sandbox_fixture'; id: string; state: string; amount: number; reserved: number; providerReference: string | null };
 
 /** Read-only projection of the same rows enforced by migration 0018. Never a replacement ledger or send authorization. */
 export async function skyRecurringUsage(db: DB, owner: string, now = Date.now()) {
@@ -20,6 +20,8 @@ export async function skyRecurringUsage(db: DB, owner: string, now = Date.now())
       FROM agent_delegation_budget_reservations r JOIN contract c ON c.owner_id=r.owner_user_id
       LEFT JOIN a2a_usage_receipts a ON a.delegation_id=r.delegation_id AND a.owner_user_id=r.owner_user_id
       WHERE r.state='held' OR (r.state='settled' AND r.created_at>=c.period_start AND r.created_at<c.period_end)
+      UNION ALL
+      SELECT 'sandbox_fixture',t.id,'synthetic',t.fixture_minor,0,NULL FROM sky_hosted_monthly_tests t JOIN contract c ON c.id=t.contract_id AND c.owner_id=t.owner_id AND c.stripe_account_id=t.stripe_account_id WHERE c.consent_version='sky140-monthly-postpaid-sandbox-v1' AND t.period_start=c.period_start AND t.fixture_minor>0
     ) SELECT c.consent_version,c.stripe_account_id,c.status,c.period_start,c.period_end,c.access_until,x.*
       FROM contract c LEFT JOIN contributions x ON 1=1`).bind(owner).all<Contribution & {
         consent_version: string; stripe_account_id: string; status: string; period_start: number; period_end: number; access_until: number;

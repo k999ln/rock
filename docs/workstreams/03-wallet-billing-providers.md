@@ -290,3 +290,5 @@ JOINT/O5、同期DOC04/H1。[Sky月次自動請求Sandbox](../sky-billing.md#sky
 BIL02/O5追補: [Cloud usageと100 USD枠](../sky-billing.md#cloud-usageから100-usd枠への接続)。ROCK側の既存実行経路・usage projection・境界6試験を追加。EXTERNAL/OWNER側の無料Provider本人account/鍵/単価/無料上限が未確認のため実応答は未実行。検証 `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`、全体 `npm run verify`。合成金額を実消費へ転用しない。
 
 BIL02/O5（JOINT）: [月次契約と無料Cloudの統合](../sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。既存契約/台帳/Stripe署名通知を再利用し、ローカル月次Sandboxで無料Cloudの実応答・合成100 USD停止・テスト入金後復旧を検証する。公開D1や実アカウントの変更は含まない。
+
+BIL02/O5（JOINT）公開実アカウント追補: [本人限定月次Sandbox移行](../sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。検証は既存24対象試験、Sites型/build、公開UI/Stripe test invoice/署名通知、全体verify。既存データと旧契約JSON保持を必須とする。
