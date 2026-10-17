@@ -62,7 +62,7 @@ final class ZemaOrchestrator {
         if (!article) {
             int ideas = dev.rock.sdk.LocalIdeaBatch.requestedCount(prompt);
             String input = ideas > 0 ? dev.rock.sdk.LocalIdeaBatch.start(prompt, ideas)
-                : new org.json.JSONObject().put("task", task).put("request", prompt).toString();
+                : new org.json.JSONObject().put("task", task).put("request", prompt).put("prompt", planningPrompt).toString();
             LocalPlanningFence.Attempt prepared = PLANNING.begin(engine::paused, () -> { });
             try { return PLANNING.commit(prepared, engine::paused, () -> ideas > 0
                 ? engine.submitPinnedIdeas(pin, requestId, input,

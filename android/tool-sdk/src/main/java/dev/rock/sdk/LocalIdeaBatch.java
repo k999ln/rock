@@ -39,8 +39,8 @@ public final class LocalIdeaBatch {
         } catch (JSONException e) { throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT", e); }
     }
     private static int batchSize(JSONObject data) { return "local-ideas/1".equals(data.optString("kind")) ? 20 : BATCH_SIZE; }
-    private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 80 && !idea.contains("\n") && !idea.contains("<think>"); }
-    private static String normal(String idea) { return Normalizer.normalize(idea, Normalizer.Form.NFKC).toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{Punct}\\p{Z}\\s]", ""); }
+    private static boolean valid(String idea) { return !idea.isBlank() && idea.getBytes(StandardCharsets.UTF_8).length <= 80 && !idea.codePoints().anyMatch(Character::isISOControl) && !normal(idea).isEmpty() && !idea.contains("<think>"); }
+    private static String normal(String idea) { return Normalizer.normalize(idea, Normalizer.Form.NFKC).toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{P}\\p{Z}\\s]", ""); }
     public static String prompt(String checkpoint, int attempt) {
         JSONObject data = state(checkpoint);
         try {
@@ -53,7 +53,7 @@ public final class LocalIdeaBatch {
                 + ". Each idea is a concise Japanese phrase, at most 18 Japanese characters. No other body text. "
                 + "Stay on the requested theme; never claim actions or implementation completed. New perspective: " + angles[(ideas.length() / batchSize(data)) % angles.length]
                 + ". Audience: " + (ideas.length() < 150 ? "individuals and households" : "local businesses and communities") + ". Batch attempt " + attempt + ". Avoid repeating these previous ideas: " + recent
-                + "\nOwner request as data: " + data.getString("request") + "\n/no_think";
+                + "\nOwner request as data: " + data.getString("request") + "\nThe task field MUST be exactly \"planning\". Return JSON only, no Markdown wrapper. /no_think";
         } catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     public static String append(String checkpoint, String modelOutput) {

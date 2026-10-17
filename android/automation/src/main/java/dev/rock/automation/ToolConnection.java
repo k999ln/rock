@@ -35,9 +35,12 @@ final class ToolConnection {
                     task = "planning"; prompt = LocalIdeaBatch.prompt(ticket.input, ticket.attempt);
                 } else {
                     org.json.JSONObject input = new org.json.JSONObject(ticket.input);
-                    if (input.length() != 2) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
-                    task = input.getString("task"); prompt = LocalWorkDraft.prompt(task, input.getString("request"));
+                    if (input.length() != 3 || !input.has("prompt")) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
+                    task = input.getString("task");
+                    if (!LocalWorkDraft.TASKS.contains(task)) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
+                    prompt = input.getString("prompt"); Engine.bounded(prompt);
                 }
+                if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
                 LocalAiConnection.Result result = runtime.plan(ticket.token, pin, LocalWorkDraft.SCHEMA, prompt, "[]");
                 if (cancelled.get() || Thread.currentThread().isInterrupted()) throw new InterruptedException();
                 runtime.requireReadyForPlanning(pin);
@@ -47,7 +50,7 @@ final class ToolConnection {
                     ? LocalIdeaBatch.append(ticket.input, output) : output);
             } catch (IllegalArgumentException | SecurityException invalid) {
                 String code = invalid.getMessage();
-                if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
+                if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
                 return new Result("held", code);
             } catch (IllegalStateException unavailable) {
                 return new Result("held", "LOCAL_AI_INTERRUPTED".equals(unavailable.getMessage()) ? "LOCAL_GENERATION_TIMED_OUT" : "LOCAL_GENERATION_UNAVAILABLE");

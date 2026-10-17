@@ -31,6 +31,7 @@ final class WorkPresentation {
         }
     }
     static String issue(String code) {
+        if ("LOCAL_REQUEST_REPLAN_REQUIRED".equals(code)) return "この旧試験版の依頼は、保存した条件を引き継いで再計画する必要があります。履歴を確認し、新しい依頼として準備してください。";
         if ("LOCAL_GENERATION_TIMED_OUT".equals(code)) return "生成に時間がかかったため停止しました。保存済みの内容は残っています。止まった工程から再試行できます。";
         if (java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA").contains(code))
             return "今回の案に件数・番号・重複の問題があり、保存前に停止しました。保存済みの案を残して、この工程を再試行できます。";

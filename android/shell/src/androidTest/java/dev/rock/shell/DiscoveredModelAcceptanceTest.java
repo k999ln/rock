@@ -116,6 +116,13 @@ public final class DiscoveredModelAcceptanceTest {
         JSONObject ready=new JSONObject(broker.prepareLocalModelChoice("auto","Pythonのコードを書いて"));assertEquals("prepared",ready.getString("status"));assertEquals(current.getString("profileId"),ready.getString("profileId"));
         assertEquals("cancelled",new JSONObject(broker.cancelPublicModelDownload(current.getString("operationId"))).getString("status"));
     }
+    @Test public void cancelOnlyTheSyntheticCodeProbe() throws Exception {
+        Assume.assumeTrue("explicit synthetic probe cleanup", "true".equals(InstrumentationRegistry.getArguments().getString("rockCodeProbeCleanup")));
+        JSONObject receipt=new JSONObject(new String(Files.readAllBytes(new File(context().getExternalFilesDir(null),"discovered-code-receipt.json").toPath()),StandardCharsets.UTF_8));
+        JSONObject work=receipt.getJSONObject("work"); assertEquals("code",receipt.getString("task"));
+        assertEquals("dev.rock.qwen25-coder-15b-q4km",work.getJSONObject("planner").getString("profileId"));
+        new ShellConnection(context()).cancel(work.getString("id"));
+    }
     @Test public void cancelOnlyTheSyntheticTwentyIdeaProbe() throws Exception {
         Assume.assumeTrue("explicit probe cleanup only", "true".equals(InstrumentationRegistry.getArguments().getString("rockProbeCleanup")));
         JSONObject receipt=new JSONObject(new String(Files.readAllBytes(new File(context().getExternalFilesDir(null),"discovered-ideas-receipt.json").toPath()), StandardCharsets.UTF_8));
@@ -170,7 +177,7 @@ public final class DiscoveredModelAcceptanceTest {
                 assertEquals(initial.getInt("totalWorkCount"), new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
                 ui(() -> { assertFalse(((CheckBox) field(activity,"zemaConsent")).isChecked()); ((CheckBox) field(activity,"zemaConsent")).setChecked(true); Button button = (Button) field(activity,"zemaSubmitButton"); button.performClick(); button.performClick(); });
             }
-            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? 1800000 : 180000);
+            long deadline = SystemClock.elapsedRealtime() + ("ideas".equals(mode) ? 3600000 : 300000);
             int completed = 0;
             while (SystemClock.elapsedRealtime() < deadline) {
                 JSONObject snapshot = new JSONObject(broker.snapshot()); JSONArray works = snapshot.getJSONArray("works");

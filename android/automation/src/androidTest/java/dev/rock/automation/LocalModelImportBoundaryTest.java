@@ -90,6 +90,19 @@ public final class LocalModelImportBoundaryTest {
         assertEquals("ready",new org.json.JSONObject(receipt).getString("status"));
         Files.write(new File(directory,"transferred-coder-install.json").toPath(),new org.json.JSONObject(receipt).put("acquisition","official_fixed_revision_host_download_then_adb_transfer").toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
+    @Test public void inspectOnlyRequestedSyntheticCodePlan() throws Exception {
+        org.junit.Assume.assumeTrue("explicit synthetic model diagnostic", "true".equals(InstrumentationRegistry.getArguments().getString("rockDraftDiagnostic")));
+        RockApplication app=(RockApplication)context().getApplicationContext();
+        String workId=InstrumentationRegistry.getArguments().getString("rockDiagnosticWork");
+        dev.rock.core.Engine.ModelProfilePin pin=app.engine().modelProfilePinForWork(AndroidOwner.current(context()),workId);
+        LocalAiConnection runtime=new LocalAiConnection(context());runtime.requireReadyForPlanning(pin);
+        String prompt=dev.rock.sdk.LocalWorkDraft.prompt("code", "Python function sum_even(xs): return the sum of even integers. One line only, no example usage.");
+        long start=android.os.SystemClock.elapsedRealtime();
+        LocalAiConnection.Result result=runtime.plan(java.util.UUID.randomUUID().toString(),pin,dev.rock.sdk.LocalWorkDraft.SCHEMA,prompt,"[]");
+        File file=new File(context().getExternalFilesDir(null),"synthetic-code-plan-diagnostic.json");
+        Files.write(file.toPath(),new org.json.JSONObject().put("event",result.event).put("payload",result.payload).put("elapsedMs",android.os.SystemClock.elapsedRealtime()-start).toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        assertEquals("completed",result.event);dev.rock.sdk.LocalWorkDraft.verify("code",result.payload);
+    }
     private String active() {
         dev.rock.core.platform.ModelProfileManifest active = platform().activeModelProfile();
         return active == null ? null : active.digest();

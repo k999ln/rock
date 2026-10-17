@@ -11,6 +11,9 @@ public final class LocalDraftTest {
     @Test public void closedDraftKeepsCodeAsTextAndRejectsToolFieldsAndChangedTask() throws Exception {
         String code = draft("code", "print('hello')");
         assertTrue(LocalWorkDraft.render(code).contains("print('hello')"));
+        assertEquals(LocalWorkDraft.verify("code",code),LocalWorkDraft.verify("code","```json\n"+code+"\n```"));
+        assertThrows(IllegalArgumentException.class, () -> LocalWorkDraft.verify("code",code+" trailing"));
+        assertThrows(SecurityException.class, () -> LocalWorkDraft.verify("planning","```json\n"+code+"\n```"));
         assertThrows(SecurityException.class, () -> LocalWorkDraft.verify("planning", code));
         assertThrows(IllegalArgumentException.class, () -> LocalWorkDraft.verify("code", new JSONObject(code).put("tool", "shell").toString()));
         assertThrows(IllegalArgumentException.class, () -> LocalWorkDraft.verify("code", "```" + code));
@@ -33,6 +36,7 @@ public final class LocalDraftTest {
             assertEquals(start + LocalIdeaBatch.BATCH_SIZE - 1, LocalIdeaBatch.state(checkpoint).getJSONArray("ideas").length());
             if (start == 1) {
                 assertThrows(IllegalArgumentException.class, () -> LocalIdeaBatch.append(previous, draft("planning", body.toString().replace("2. サービス案2", "2. サービス案1"))));
+                assertThrows(IllegalArgumentException.class, () -> LocalIdeaBatch.append(previous, draft("planning", body.toString().replace("2. サービス案2", "2. サービス案1。"))));
                 assertThrows(IllegalArgumentException.class, () -> LocalIdeaBatch.append(previous, draft("planning", body.toString().replace("2. ", "3. "))));
             }
         }
