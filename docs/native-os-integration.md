@@ -680,3 +680,5 @@ Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan1
 最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
 
 発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。
+
+最新発想契約v6/Shell22: auto300は30件保存で推論timeout。短縮した入力で同じ仕事を一度だけ明示復旧する。owner/同意/expected checkpoint CAS/timeout限定/event重複防止をBroker/Coreで検証し、旧prefix・成功run・pinを保持。新5件合格後にv6保存、旧v5の自動書換えなし。実機復旧と最終300は未受入。詳細はLLM正本compact復旧。

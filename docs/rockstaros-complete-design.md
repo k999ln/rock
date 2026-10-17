@@ -755,3 +755,5 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 最大5試行・開始から10分。待機秒数は次回確認の目安であり成功保証ではない。停止はqueued/waitingをCASでcancelledにする。送信中の取消は受理しない。通信断・結果不明・保存不明・期限切れは自動再送しない。sendingでプロセスが失われた場合も成果不明として手動確認し、勝手に送信権を戻さない。モデル出力はレビュー待ちでありTool成功や本人承認ではない。
 
 運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
+
+最新発想契約v6/Shell22: auto300は30件保存で推論timeout。短縮した入力で同じ仕事を一度だけ明示復旧する。owner/同意/expected checkpoint CAS/timeout限定/event重複防止をBroker/Coreで検証し、旧prefix・成功run・pinを保持。新5件合格後にv6保存、旧v5の自動書換えなし。実機復旧と最終300は未受入。詳細はLLM正本compact復旧。

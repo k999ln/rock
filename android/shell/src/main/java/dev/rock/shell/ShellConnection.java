@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 final class ShellConnection {
     static final String BROKER_PACKAGE = "dev.rock.automation";
     static final String BROKER_SERVICE = BROKER_PACKAGE + ".RockShellService";
-    static final int API_VERSION = 21;
+    static final int API_VERSION = 22;
     private final Context context;
 
     ShellConnection(Context context) { this.context = context; }
@@ -27,6 +27,7 @@ final class ShellConnection {
     void setPaused(boolean paused) throws Exception { withService(api -> { api.setPaused(paused); return null; }); }
     String result(String workId) throws Exception { return withService(api -> api.result(workId)); }
     void complete(String workId, String note) throws Exception { withService(api -> { api.complete(workId, note); return null; }); }
+    void compactReplanIdeas(String workId,String digest,boolean consent) throws Exception {withService(api -> {api.compactReplanIdeas(workId,digest,consent);return null;});}
     void retry(String workId) throws Exception { withService(api -> { api.retry(workId); return null; }); }
     void cancel(String workId) throws Exception { withService(api -> { api.cancel(workId); return null; }); }
     String localAiStatus() throws Exception { return withService(IShellApi::localAiStatus); }

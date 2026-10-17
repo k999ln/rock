@@ -118,7 +118,17 @@ public final class LocalDraftTest {
         JSONObject saved=new JSONObject(LocalIdeaBatch.start("Skyのアイデア300",300));JSONArray ideas=saved.getJSONArray("ideas");
         for(int i=0;i<270;i++)ideas.put("過去のサービス"+i);
         String prompt=LocalIdeaBatch.promptPart(saved.toString(),1,5);
-        assertTrue(prompt.contains("過去のサービス240;"));assertTrue(prompt.contains("過去のサービス269;"));
+        assertTrue(prompt.contains("過去のサービス244;"));assertTrue(prompt.contains("過去のサービス269;"));
         assertFalse(prompt.contains("過去のサービス0;"));assertTrue(prompt.contains("Skyのアイデア300"));assertTrue(prompt.length()<1000);
+    }
+    @Test public void compactReplanPreservesEverySavedIdeaAndFullRequestWithoutGrowingPromptHistory() throws Exception {
+        JSONObject legacy=new JSONObject(LocalIdeaBatch.start("RockstarOSとSkyのアイデア300",300)).put("kind","local-ideas/5");
+        for(int i=0;i<30;i++)legacy.getJSONArray("ideas").put("保存済みの動作"+i);
+        String original=legacy.toString(),updated=LocalIdeaBatch.compactCheckpoint(original);JSONObject next=LocalIdeaBatch.state(updated);
+        assertEquals("local-ideas/5",new JSONObject(original).getString("kind"));assertEquals("local-ideas/6",next.getString("kind"));
+        assertEquals(legacy.getString("request"),next.getString("request"));assertEquals(300,next.getInt("target"));assertEquals(legacy.getJSONArray("ideas").toString(),next.getJSONArray("ideas").toString());
+        String oldPrompt=LocalIdeaBatch.promptPart(original,1,5),compact=LocalIdeaBatch.promptPart(updated,1,5);
+        assertTrue(compact.length()<oldPrompt.length());assertTrue(compact.contains(legacy.getString("request")));
+        assertThrows(IllegalArgumentException.class,()->LocalIdeaBatch.compactCheckpoint(updated));
     }
 }

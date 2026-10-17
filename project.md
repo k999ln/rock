@@ -651,3 +651,5 @@ Native8/prompt5の手動20件は533.698秒、5工程attempt1、実20件/si表記
 最終app source dba3389aの実機再検証: 導入境界/SQLite5実試験、UI14報告=13実/1skip（実通知tap/公開検索）、実DB全body hash/元24仕事70artifact保持が合格。新auto300を既存の一仕事として実行開始、実5件保存を確認。未完了のためphysicalAccepted/300Acceptedはfalse。実行中にBroker instrumentationを重ねず、完了後のreadbackと同一head CI/mainを続ける。
 
 LLM台帳の旧avocadoOS固定checkを現行product-identity正本のdisplayName/releaseName/internalIdentifier照合へ同期。内部dev.rockと過去証拠は維持し、版や名称を実機完了へ換算しない。実300ジョブは継続、code/APK更新なし。
+
+実auto300は30件でLOCAL_GENERATION_TIMED_OUT（生成step6、attempt1）により停止。v6短縮contextとShell22の一度だけの明示compact復旧を実装中。同owner/pin/同意/expected digest/純粋発想timeout/eventを検査し、旧30件artifactや成功runを書き換えない。新Root仕事を作らず続行し、復旧介入1件を記録する。完了・無介入自動完走とはしない。

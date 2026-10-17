@@ -484,6 +484,28 @@ public final class Engine {
         });
     }
 
+    /** One owner-authorized compact replan of a timed-out pure ideation step; never changes saved input or pin. */
+    public boolean canCompactReplanIdeas(String owner, String id) {
+        try {
+            modelProfilePinForWork(owner,id);
+            if(paused() || !"active".equals(work(id).get("state")) || !"0".equals(work(id).get("sample")))return false;
+            if(!db.query("SELECT 1 FROM events WHERE work_id=? AND kind='human_compact_replan'",id).isEmpty())return false;
+            List<Map<String,String>> stopped=db.query("SELECT * FROM runs WHERE work_id=? AND state IN('failed','needs_review')",id);
+            return stopped.size()==1 && "needs_review".equals(stopped.get(0).get("state")) && "local-ideas-generate@1".equals(stopped.get(0).get("tool")) && "LOCAL_GENERATION_TIMED_OUT".equals(stopped.get(0).get("error"));
+        } catch(RuntimeException denied) { return false; }
+    }
+    public void compactReplanIdeas(String owner, String id, String expectedCheckpointDigest, boolean consent) {
+        if(!consent)throw new SecurityException("COMPACT_REPLAN_CONSENT_REQUIRED");
+        if(expectedCheckpointDigest==null || !expectedCheckpointDigest.matches("[a-f0-9]{64}"))throw new IllegalArgumentException("INVALID_CHECKPOINT_DIGEST");
+        db.transaction(() -> {
+            if(!canCompactReplanIdeas(owner,id))throw new IllegalStateException("COMPACT_REPLAN_NOT_ALLOWED");
+            Map<String,String> row=one(db.query("SELECT * FROM runs WHERE work_id=? AND state='needs_review'",id));
+            if(!expectedCheckpointDigest.equals(row.get("input_digest")) || !expectedCheckpointDigest.equals(digest(checkpoint(id))))throw new IllegalStateException("CHECKPOINT_CHANGED");
+            db.execute("UPDATE runs SET state='queued',attempt=0,error=NULL,token=NULL,boot=NULL,deadline=NULL WHERE work_id=? AND step=?",id,Integer.parseInt(row.get("step")));
+            event(id,Integer.parseInt(row.get("step")),"human_compact_replan");return null;
+        });
+    }
+
     public boolean paused() { return "1".equals(db.query("SELECT paused FROM settings WHERE id=1").get(0).get("paused")); }
     public List<Map<String,String>> list() { return db.query("SELECT id,state,sample FROM works ORDER BY rowid DESC"); }
     public Map<String,String> work(String id) { return one(db.query("SELECT * FROM works WHERE id=?", id)); }

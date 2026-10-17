@@ -23,14 +23,14 @@ public final class LocalIdeaBatch {
     }
     public static String start(String prompt, int count) {
         if (count < 1 || count > 300 || prompt.getBytes(StandardCharsets.UTF_8).length > 2000) throw new IllegalArgumentException("INVALID_IDEA_REQUEST");
-        try { return new JSONObject().put("kind", "local-ideas/5").put("batchSize", BATCH_SIZE).put("request", prompt).put("target", count).put("ideas", new JSONArray()).toString(); }
+        try { return new JSONObject().put("kind", "local-ideas/6").put("batchSize", BATCH_SIZE).put("request", prompt).put("target", count).put("ideas", new JSONArray()).toString(); }
         catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     public static JSONObject state(String value) {
         Engine.bounded(value);
         try {
             JSONObject data = new JSONObject(value);
-            if (!("local-ideas/1".equals(data.optString("kind")) && data.length() == 4 || "local-ideas/2".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == 10 || "local-ideas/3".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE || "local-ideas/4".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE || "local-ideas/5".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE) || !(data.get("request") instanceof String)) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
+            if (!("local-ideas/1".equals(data.optString("kind")) && data.length() == 4 || "local-ideas/2".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == 10 || "local-ideas/3".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE || "local-ideas/4".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE || "local-ideas/5".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE || "local-ideas/6".equals(data.optString("kind")) && data.length() == 5 && data.getInt("batchSize") == BATCH_SIZE) || !(data.get("request") instanceof String)) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
             int target = data.getInt("target"); JSONArray ideas = data.getJSONArray("ideas");
             if (target < 1 || target > 300 || ideas.length() > target || data.getString("request").getBytes(StandardCharsets.UTF_8).length > 2000) throw new IllegalArgumentException("INVALID_IDEA_CHECKPOINT");
             Set<String> seen = new HashSet<>();
@@ -45,9 +45,15 @@ public final class LocalIdeaBatch {
         return idea.replaceAll("(?<![A-Za-z0-9_./:@Ａ-Ｚａ-ｚ０-９])[AaSsＡａＳｓ][IiＩｉ](?![A-Za-z0-9_@Ａ-Ｚａ-ｚ０-９])","si");
     }
     private static String normal(String idea) { return Normalizer.normalize(idea, Normalizer.Form.NFKC).toLowerCase(java.util.Locale.ROOT).replaceAll("[\\p{P}\\p{Z}\\s]", ""); }
+    /** Called only after the Broker records explicit owner compact-replan consent; saved source is untouched. */
+    public static String compactCheckpoint(String checkpoint) {
+        JSONObject data=state(checkpoint);
+        if(!"local-ideas/5".equals(data.optString("kind")))throw new IllegalArgumentException("COMPACT_REPLAN_SOURCE_INVALID");
+        try{return data.put("kind","local-ideas/6").toString();}catch(JSONException invalid){throw new IllegalArgumentException(invalid);}
+    }
     public static String schema(String checkpoint) {
         JSONObject data=state(checkpoint);
-        try { return schemaForCount(Math.min(batchSize(data),data.getInt("target")-data.getJSONArray("ideas").length())).replace("-v2", java.util.Set.of("local-ideas/4","local-ideas/5").contains(data.optString("kind")) ? "-v2" : "-v1"); }
+        try { return schemaForCount(Math.min(batchSize(data),data.getInt("target")-data.getJSONArray("ideas").length())).replace("-v2", java.util.Set.of("local-ideas/4","local-ideas/5","local-ideas/6").contains(data.optString("kind")) ? "-v2" : "-v1"); }
         catch (JSONException e) { throw new IllegalArgumentException(e); }
     }
     public static String schemaForCount(int count) {
@@ -72,14 +78,17 @@ public final class LocalIdeaBatch {
             JSONArray ideas = data.getJSONArray("ideas"); int begin = ideas.length() + 1, end = Math.min(data.getInt("target"), begin + Math.min(count,batchSize(data)) - 1);
             if (begin > end) throw new IllegalArgumentException("IDEAS_ALREADY_COMPLETE");
             String[] angles = {"朝の支度","料理","食材管理","買物","掃除","洗濯","睡眠","体調の記録","家族連絡","子育て","介護","外出","移動","防災","地域","学習","読書","文章","画像と映像","音楽","ゲーム","仕事の計画","会議","資料","開発","家具","照明","空調","建築","機器連携"};
-            int group=ideas.length()/GENERATION_PART_SIZE;
+            int group=ideas.length()/GENERATION_PART_SIZE;boolean compact="local-ideas/6".equals(data.optString("kind"));
             // Bounded context: related prior topic groups plus immediate neighbors; full prefix is checked below.
             java.util.LinkedHashSet<Integer> prior=new java.util.LinkedHashSet<>();
-            for(int i=ideas.length()-1;i>=0 && prior.size()<6;i--)if((i/GENERATION_PART_SIZE)%6==(group+Math.max(0,attempt-1))%6)prior.add(i);
-            for(int i=Math.max(0,ideas.length()-2);i<ideas.length();i++)prior.add(i);
+            for(int i=ideas.length()-1;i>=0 && prior.size()<(compact?2:6);i--)if((i/GENERATION_PART_SIZE)%6==(group+Math.max(0,attempt-1))%6)prior.add(i);
+            for(int i=Math.max(0,ideas.length()-(compact?1:2));i<ideas.length();i++)prior.add(i);
             StringBuilder recent=new StringBuilder();for(int i:prior)recent.append(ideas.getString(i)).append("; ");
             String[] audiences={"一人暮らし","子育て家庭","高齢者","学生","在宅勤務","小さな店","工房","施設","建築現場","地域団体"};
             StringBuilder topics=new StringBuilder();for(int i=0;i<end-begin+1;i++){if(i>0)topics.append("、");topics.append(angles[(group*5+i+5*Math.max(0,attempt-1))%angles.length]);}
+            if(compact)return "SkyはAgent/Tool hub。Miniは家具・建築に埋め込む端末。ソフト単体可。必要な機器だけ連携。依頼: "+data.getString("request")
+                +"\n対象:"+audiences[Math.min(audiences.length-1,group/6)]+"。分野:"+topics+"。再使用禁止:"+recent
+                +"\n日本語"+(end-begin+1)+"案。各20字程で困りごとを解く1動作。si表記。ideas配列JSONのみ。/no_think";
             return "Skyはソフトや機器をつなぐAgent/Tool hub。Miniは家具・建築に埋め込む端末。ソフト単体の案も可。家具や環境の連動は課題解決に必要な場合だけ。依頼: " + data.getString("request")
                 + "\n対象: " + audiences[Math.min(audiences.length-1,group/6)] + "。各分野の困りごとを解く動作を1つずつ: " + topics + "。再使用禁止: " + recent
                 + "\n日本語で" + (end-begin+1) + "案だけ。何をどう助けるかが単独でわかる20字程度の文。見出し・主語の反復・途中切れは不可。AI/SIはsi表記。JSONのideas配列のみ。 /no_think";

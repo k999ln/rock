@@ -1,7 +1,7 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "RUNNING_REQUESTED300_NOT_ACCEPTED",
+  "status": "REQUESTED300_HELD_AT30_COMPACT_RECOVERY_PENDING",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
   "appBuildSource": "dba3389a320e86dc3399ff88aafe73487490ec82",
   "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
@@ -56,14 +56,16 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "RUNNING",
+      "status": "HELD_AT30_TIMEOUT_STEP6",
       "accepted": false,
       "target": 300,
       "choice": "auto",
       "expectedProfile": "dev.rock.qwen3-4b-2507-q4km",
       "profileVersion": 2,
       "checkpointVersion": 5,
-      "manualRetries": 0
+      "manualRetries": 0,
+      "completed": 30,
+      "originalRunElapsedMs": 1033135
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -236,5 +238,16 @@
     "nativeSourceTests": 34,
     "pythonPrepareStageTests": 21,
     "androidBuildLint": "PASS"
+  },
+  "pendingCompactCandidate": {
+    "privateShellApi": 22,
+    "checkpointVersion": 6,
+    "maxRelatedExamples": 2,
+    "recentExamples": 1,
+    "sameJobAndPin": true,
+    "explicitOwnerConsentAndCheckpointCas": true,
+    "oldPrefixNotRewritten": true,
+    "recoveryOncePerJob": true,
+    "physicalRecoveryAccepted": false
   }
 }

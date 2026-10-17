@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 21;
+    const int API_VERSION = 22;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -88,4 +88,6 @@ interface IShellApi {
     String publicModelInstallStatus() = 48;
     String finishPublicModelInstall(String operationId, boolean consent) = 49;
     String cancelPublicModelDownload(String operationId) = 50;
+    /** Owner consent and exact checkpoint CAS; one compact recovery of pure local ideation only. */
+    void compactReplanIdeas(String workId, String expectedCheckpointDigest, boolean consent) = 51;
 }

@@ -3330,8 +3330,15 @@ public final class MainActivity extends Activity {
             new AlertDialog.Builder(this).setTitle("この仕事を中止しますか？")
                 .setMessage("この端末の仕事だけを中止します。保存した記録は残ります。クラウドの仕事は取り消しません。")
                 .setNegativeButton("続ける", null).setPositiveButton("中止する", (dialog, which) -> perform(connection -> { connection.cancel(id); return null; })).show());
-        if ("active".equals(state) && failed && !work.optBoolean("sample"))
-            ui.primary(button(card, "止まった工程を再試行", () -> perform(connection -> { connection.retry(id); return null; })));
+        if ("active".equals(state) && failed && !work.optBoolean("sample")) {
+            JSONObject progress=work.optJSONObject("ideaProgress");
+            if(progress!=null && progress.optBoolean("compactResumeAvailable")) {
+                String label=progress.optInt("completed")+"件を残して続ける";String digest=progress.optString("checkpointDigest");
+                ui.primary(button(card,label,() -> new AlertDialog.Builder(this).setTitle("保存した案を残して続けますか？")
+                    .setMessage("保存済み"+progress.optInt("completed")+"件と同じモデルを保ち、指示を短くして次の工程から再開します。")
+                    .setNegativeButton("戻る",null).setPositiveButton("続ける",(dialog,which) -> perform(connection -> {connection.compactReplanIdeas(id,digest,true);return null;})).show()));
+            } else ui.primary(button(card, "止まった工程を再試行", () -> perform(connection -> { connection.retry(id); return null; })));
+        }
         LinearLayout technical = disclosure(card, "工程と詳細");
         label(technical, "仕事ID: " + id, 12);
         JSONObject planner = work.optJSONObject("planner");

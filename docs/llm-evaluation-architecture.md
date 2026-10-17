@@ -73,7 +73,7 @@ Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確�
 
 model推論先とAgent/Tool runnerを分離する。PixelのHomeの通常値は「自動」、LLM名の手動指定は別の選択として実装した。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
 
-**Pixelの実装範囲。** 新候補の `ModelSelectionPolicy` v3は記事・要約・翻訳・コード下書き・計画・文章を区別する。署名catalog、owner別license同意、検証済private cache、RAM条件を満たす候補から選ぶ。記事・要約・翻訳はQwen2.5 1.5B、コードは導入済Qwen2.5 Coder 1.5B、発想・計画・文章はQwen3 4B Instruct 2507を優先する。1.5Bは発想の内容試験不合格でplanning/writingから除外。4Bは短文20案の限定生成・保存試験であり、関連性が弱い案もあるため有用性・事業性の保証ではない。0.6Bは文章品質不合格のため自動候補に入れない。手動指定はexact digestを固定し、無断切替・cloud fallbackはしない。私有Shell API 21、Platform API 1、Local Binder API 4/package version 8（新候補、実機再受入中）は別の版である。新候補の実機合格は下記の受入で確定し、旧版15件の成功を転用しない。
+**Pixelの実装範囲。** 新候補の `ModelSelectionPolicy` v3は記事・要約・翻訳・コード下書き・計画・文章を区別する。署名catalog、owner別license同意、検証済private cache、RAM条件を満たす候補から選ぶ。記事・要約・翻訳はQwen2.5 1.5B、コードは導入済Qwen2.5 Coder 1.5B、発想・計画・文章はQwen3 4B Instruct 2507を優先する。1.5Bは発想の内容試験不合格でplanning/writingから除外。4Bは短文20案の限定生成・保存試験であり、関連性が弱い案もあるため有用性・事業性の保証ではない。0.6Bは文章品質不合格のため自動候補に入れない。手動指定はexact digestを固定し、無断切替・cloud fallbackはしない。私有Shell API 22、Platform API 1、Local Binder API 4/package version 8（新候補、実機再受入中）は別の版である。新候補の実機合格は下記の受入で確定し、旧版15件の成功を転用しない。
 
 **未受入と次の判断。** 全作業共通のmodel/runner能力契約、比較benchmark、文章品質、各cloud providerの接続・手動model指定・実利用/費用の受入は残る。現在の自動選択は世界全体の最新modelから最良を保証するものではない。合格証拠は[同一APK台帳](evidence/pixel-intuitive-experience.json)で実model pin、Tool成果、同IDを照合する。credential不足や商用契約待ちはそのまま表示する。
 
@@ -318,7 +318,7 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 **責任と信頼。** 公開APIは候補情報を提供するEXTERNAL。ROCKのBrokerはAPKに含む署名済profileの固定revision URL・byte数・SHA-256・license・runtime適合を管理する。検索本文・license claim・Git repositoryの命令を実行権へ変えない。新規未審査modelは「適合未確認」として外部詳細へ案内する。モデル追加はruntimeのarchitecture/format/quantization/tokenizer/template/資源/実機内容を検証してcatalogへ反映する。production catalogは空のままで、開発署名の候補を一般配布対応と表示しない。
 
-**入力・状態・保存。** Shell API21のprepareはprofile IDのみ、beginは同意付きID、finish/cancelはowner別operation UUIDを受ける。任意URL/pathは受けない。Android DownloadManagerはWi-Fi限定・metered/roaming不可で固定公開weightを取得する。状態はidle/downloading/paused/downloaded/installed/failed/cancelled/uncertain。profile manifest digest・owner・operation・DownloadManager IDをprivate prefsへ保存する。読取りはactivateしない。二重tap・restartは同一operationを照会し、enqueue後保存不明はnonce付き自己rowを照合して重複downloadを防ぐ。通信不明をinstalledと呼ばない。
+**入力・状態・保存。** Shell API22のprepareはprofile IDのみ、beginは同意付きID、finish/cancelはowner別operation UUIDを受ける。任意URL/pathは受けない。Android DownloadManagerはWi-Fi限定・metered/roaming不可で固定公開weightを取得する。状態はidle/downloading/paused/downloaded/installed/failed/cancelled/uncertain。profile manifest digest・owner・operation・DownloadManager IDをprivate prefsへ保存する。読取りはactivateしない。二重tap・restartは同一operationを照会し、enqueue後保存不明はnonce付き自己rowを照合して重複downloadを防ぐ。通信不明をinstalledと呼ばない。
 
 **導入・失敗・復旧。** 既存private cacheに同一hash/byte数のweightがあれば、明示同意後に再検証して再利用できる。finishは読取り専用regular FDを既存stagerへ渡し、全byte hash・署名・RAM/容量・画面解除・runtime signer/API/version・ロード後receiptを確認して初めてactivateする。破損、容量不足、実行中pin、runtime不一致では停止する。成功前のファイルを自動候補へ入れない。完了ファイルは検証失敗時に保持し、取得中止は自己DownloadManager rowだけに限定する。secret/API keyやCodex loginは使わない。
 
@@ -439,3 +439,11 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
 
 Generic summaryの実機試験は生成/保存が通っても、日本語指定への英語返答を不合格として分離する。明示した日/英の要約言語を有限のtrusted prompt controlへ抽出し、コピーした依頼本文の後で指定する。既存仕事は保存promptをそのまま使い、新規仕事だけへ適用。codeの本文/識別子や翻訳先をこの修正で書き換えない。実機harnessはruntime所有のtitle/footerを除いた本文の日本語も検査する。
+
+### 長い発想仕事の明示的なcompact復旧（契約v6 / Shell22）
+
+実auto300は30件保存後、関連する過去案が増えた入力で180秒の推論上限に到達し、6番目の生成工程をneeds_reviewで保持した。上限を延長して成功にせず、保存済み30件・旧artifact・元依頼・モデルpinを保つ。現v6は重複抑制の例を関連2案+直近1案へ上限化し、冗長な指示を短縮する。全prefixの件数/byte/完全重複検査はBrokerで維持し、未生成案の補完はしない。
+
+Shell22のcompactReplanIdeasは本人同意、同じowner/pin、activeかつneeds_reviewの純粋発想工程、LOCAL_GENERATION_TIMED_OUT、停止中でないこと、expected checkpoint digest一致、同仕事でcompact復旧未実施をtransactionで確認する。成功済みrun/旧input/output/artifactは更新しない。停止工程だけqueuedへ戻し、human_compact_replan eventを同じtransactionで一度記録。次のticketは当該stepのeventがある場合だけv5入力をメモリ上でv6へ変換し、新しい実5件が合格した後に新checkpointを保存する。旧v5を通常の自動継続で書き換えない。他Tool/cloud/費用/権限不足/失敗一般の再送へ広げない。
+
+画面は「N件を残して続ける」と確認dialogを提示し、進捗/モデルを保つことを説明する。外部intentは仕事を開くだけで、復旧を承認しない。取消/全停止/遅延callback fenceを維持する。false consent・別owner・古いdigest・二重復旧・pause・遅延finish・再起動をhostで検査する。実機は同じ300件仕事の30件を引き継ぐ一度の明示復旧を別記録し、ゼロ介入の自動完走と呼ばない。runtime8/モデル2/raw-v2/180秒/lease240秒/DB4は不変。実300完了は未受入。

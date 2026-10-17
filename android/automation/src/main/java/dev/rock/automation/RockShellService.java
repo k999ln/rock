@@ -68,6 +68,16 @@ public final class RockShellService extends Service {
         }
         @Override public String result(String workId) { enforceShellCaller(); validWorkId(workId); return engine().result(workId); }
         @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void compactReplanIdeas(String workId,String digest,boolean consent) {
+            enforceShellCaller();validWorkId(workId);long identity=Binder.clearCallingIdentity();
+            try {
+                if(!consent)throw new SecurityException("COMPACT_REPLAN_CONSENT_REQUIRED");
+                JSONObject saved=dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(workId));
+                if(!"local-ideas/5".equals(saved.optString("kind")))throw new IllegalStateException("COMPACT_REPLAN_SOURCE_INVALID");
+                engine().compactReplanIdeas(AndroidOwner.current(RockShellService.this),workId,digest,true);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,workId);
+            } finally {Binder.restoreCallingIdentity(identity);}
+        }
         @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public String localAiStatus() throws android.os.RemoteException {
@@ -982,9 +992,13 @@ public final class RockShellService extends Service {
                 }
                 item.put("runs", runs);
                 if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {
+                    item.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
                     try {
                         org.json.JSONObject checkpoint = dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(work.get("id")));
-                        item.put("ideaProgress", new JSONObject().put("completed", checkpoint.getJSONArray("ideas").length()).put("target", checkpoint.getInt("target")));
+                        JSONObject progress=new JSONObject().put("completed",checkpoint.getJSONArray("ideas").length()).put("target",checkpoint.getInt("target"));
+                        if("local-ideas/5".equals(checkpoint.optString("kind")) && engine().canCompactReplanIdeas(AndroidOwner.current(this),work.get("id")))progress.put("compactResumeAvailable",true).put("checkpointDigest",Engine.digest(engine().checkpoint(work.get("id"))));
+                        progress.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+                        item.put("ideaProgress",progress);
                     } catch (RuntimeException sealed) {
                         if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
                             int count = engine().result(work.get("id")).split("(?m)^\\d+\\. ", -1).length - 1;

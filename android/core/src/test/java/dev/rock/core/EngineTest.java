@@ -296,4 +296,24 @@ public class EngineTest {
         engine.retry(id);Engine.Ticket again=claim(9);engine.setPaused(true);assertFalse(engine.retryRejectedIdea(again,"IDEA_NUMBER_MISMATCH","boot-1",10));
         assertThrows(IllegalArgumentException.class,()->engine.retryRejectedIdea(again,"MODEL_PROFILE_RUNTIME_MISMATCH","boot-1",11));
     }
+    @Test public void compactReplanIsOneExplicitOwnerActionAndNeverRewritesThePrefixOrPin() throws Exception {
+        Engine.ModelProfilePin pin=localTextPin("compact-recovery");String id=engine.submitPinnedIdeas(pin,"compact-recovery","initial",2,true);
+        Engine.Ticket first=claim(1);assertTrue(engine.finish(first,"passed","saved actual prefix","boot-1",2));
+        Engine.Ticket timed=claim(3);engine.hold(timed,"LOCAL_GENERATION_TIMED_OUT");String digest=Engine.digest(engine.checkpoint(id));
+        assertFalse(engine.canCompactReplanIdeas("owner:bob",id));
+        assertThrows(SecurityException.class,()->engine.compactReplanIdeas("owner:alice",id,digest,false));
+        assertThrows(IllegalStateException.class,()->engine.compactReplanIdeas("owner:alice",id,"0".repeat(64),true));
+        assertTrue(engine.events(id).stream().noneMatch(e -> "human_compact_replan".equals(e.get("kind"))));
+        engine.setPaused(true);assertFalse(engine.canCompactReplanIdeas("owner:alice",id));engine.setPaused(false);
+        engine.compactReplanIdeas("owner:alice",id,digest,true);
+        assertEquals("saved actual prefix",engine.checkpoint(id));assertEquals("succeeded",engine.runs(id).get(0).get("state"));
+        assertEquals(pin.manifestDigest,engine.modelProfilePinForWork("owner:alice",id).manifestDigest);
+        assertFalse(engine.finish(timed,"passed","late","boot-1",4));
+        assertThrows(IllegalStateException.class,()->engine.compactReplanIdeas("owner:alice",id,digest,true));
+        db.close();db=new JdbcDatabase(file);engine=new Engine(db);
+        assertEquals(1,engine.events(id).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+        Engine.Ticket continued=claim(5);assertEquals(1,continued.step);assertEquals(1,continued.attempt);assertEquals("saved actual prefix",continued.input);
+        engine.hold(continued,"LOCAL_GENERATION_TIMED_OUT");assertFalse(engine.canCompactReplanIdeas("owner:alice",id));
+    }
+
 }

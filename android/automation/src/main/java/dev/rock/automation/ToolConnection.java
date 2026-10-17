@@ -33,9 +33,12 @@ final class ToolConnection {
                 if (LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
                     int humanRetries=(int)engine.events(ticket.workId).stream().filter(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_retry".equals(e.get("kind"))).count();
                     org.json.JSONObject state=LocalIdeaBatch.state(ticket.input);
-                    if(!"local-ideas/5".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
+                    String input=ticket.input;
+                    boolean compactConsent=engine.events(ticket.workId).stream().anyMatch(e -> Integer.toString(ticket.step).equals(e.get("step")) && "human_compact_replan".equals(e.get("kind")));
+                    if("local-ideas/5".equals(state.getString("kind")) && compactConsent){input=LocalIdeaBatch.compactCheckpoint(input);state=LocalIdeaBatch.state(input);}
+                    if(!"local-ideas/6".equals(state.getString("kind")))return new Result("held","LOCAL_REQUEST_REPLAN_REQUIRED");
                     int remaining=Math.min(LocalIdeaBatch.BATCH_SIZE,state.getInt("target")-state.getJSONArray("ideas").length());
-                    String next=ticket.input;
+                    String next=input;
                     while(remaining>0) {
                         if(cancelled.get() || Thread.currentThread().isInterrupted())throw new InterruptedException();
                         int count=Math.min(LocalIdeaBatch.GENERATION_PART_SIZE,remaining);

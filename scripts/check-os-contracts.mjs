@@ -116,7 +116,7 @@ assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
 assert.ok(read('android/Android.bp').includes('name: "RockShell"'));
 const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
-assert.ok(shellApi.includes('const int API_VERSION = 21'));
+assert.ok(shellApi.includes('const int API_VERSION = 22'));
 assert.ok(shellApi.includes('String claimRockstarServiceEntitlement(String packageJson)'));
 assert.ok(shellApi.includes('String cloudA2AAgents()'));
 assert.ok(shellApi.includes('String prepareCloudA2ADelegation(String draftJson)'));

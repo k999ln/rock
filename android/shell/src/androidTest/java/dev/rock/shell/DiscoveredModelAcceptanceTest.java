@@ -187,7 +187,21 @@ public final class DiscoveredModelAcceptanceTest {
                 boolean held=false;JSONArray savedRuns=saved.getJSONArray("runs");for(int i=0;i<savedRuns.length();i++)held|=java.util.Set.of("failed","needs_review").contains(savedRuns.getJSONObject(i).getString("state"));
                 String readiness=broker.localAiStatus();
                 if(!"ready".equals(readiness)&&!"busy".equals(readiness))assertEquals("ready",new JSONObject(broker.reloadLocalModel(expected,true)).getString("status"));
-                if(held)broker.retry(created);
+                if(held && "true".equals(InstrumentationRegistry.getArguments().getString("rockCompactResume"))) {
+                    JSONObject progress=saved.getJSONObject("ideaProgress");assertTrue(progress.getBoolean("compactResumeAvailable"));assertEquals(0,saved.getInt("compactReplanCount"));
+                    boolean consentDenied=false,staleDenied=false;
+                    try{broker.compactReplanIdeas(created,progress.getString("checkpointDigest"),false);}catch(Exception denied){consentDenied=true;}
+                    try{broker.compactReplanIdeas(created,"0".repeat(64),true);}catch(Exception denied){staleDenied=true;}
+                    assertTrue("no replan without consent",consentDenied);assertTrue("stale checkpoint must be rejected",staleDenied);
+
+                    String resumeId=created;ui(() -> {try {Method m=MainActivity.class.getDeclaredMethod("openNotificationIntent",Intent.class);m.setAccessible(true);m.invoke(activity,new Intent(Intent.ACTION_VIEW).putExtra("rock.workId",resumeId));}catch(Exception e){throw new AssertionError(e);}});
+                    String label=progress.getInt("completed")+"件を残して続ける";AtomicReference<Button> resume=new AtomicReference<>();long resumeDeadline=SystemClock.elapsedRealtime()+15000;
+                    do {ui(() -> resume.set(button(activity.getWindow().getDecorView(),label)));if(resume.get()==null)SystemClock.sleep(100);}while(resume.get()==null && SystemClock.elapsedRealtime()<resumeDeadline);
+                    assertNotNull("real scoped recovery button must appear",resume.get());ui(() -> resume.get().performClick());
+                    AtomicReference<Button> confirm=new AtomicReference<>();long confirmDeadline=SystemClock.elapsedRealtime()+5000;
+                    do {ui(() -> {for(android.view.View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){Button b=button(root,"続ける");if(b!=null){confirm.set(b);break;}}});if(confirm.get()==null)SystemClock.sleep(100);}while(confirm.get()==null&&SystemClock.elapsedRealtime()<confirmDeadline);
+                    assertNotNull("explicit compact-replan consent dialog",confirm.get());ui(() -> confirm.get().performClick());
+                } else if(held)broker.retry(created);
             }
             if (created == null) {
                 if(!"auto".equals(choice)) {
@@ -255,7 +269,7 @@ public final class DiscoveredModelAcceptanceTest {
             }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
-            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
+            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("explicitCompactResumeUsed","true".equals(InstrumentationRegistry.getArguments().getString("rockCompactResume"))).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
             Files.write(new File(dir,"discovered-"+mode+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {
             // Requested ideas and accepted drafts remain saved; never mark human review complete here.

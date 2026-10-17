@@ -4,7 +4,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "final_native8_auto300_running",
+    "status": "auto300_timed_out30_compact_recovery_v6_implementation",
     "branch": "codex/pixel-discovered-models",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
@@ -13,14 +13,14 @@
       "non_article_text_artifacts_in_existing_workflow"
     ],
     "physicalAccepted": false,
-    "nextAction": "Monitor existing automatic300 without duplicate submission or manual retries. Do not start Broker instrumentation while it runs. After completion inspect all300/count/uniqueness/hash, restart/readback, original data, final verify/same-head CI and main merge.",
+    "nextAction": "Run compact recovery unit/build checks, update same-signer APKs, use exact held300 UI recovery once, monitor remaining270 with no further operator retries, inspect/readback/final verify/CI/main.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
     "runtimeBuildRun": 39072982374,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
       "size": 5,
-      "checkpointVersion": 5,
+      "checkpointVersion": 6,
       "reason": "physical control-tail defect and atomic ten-item regeneration waste; save each valid five-item completion",
       "repairLimit": 3,
       "repairScope": "pure local ideation only",
@@ -103,12 +103,12 @@
       "deviceCachedImport": "PASS_45429ms_live_search_cached_existing_weights_no_new_network",
       "previousRuntime7NetworkImport": "PASS_104912ms_full2497281120bytes_no_cache"
     },
-    "currentDecision": "Frozen app dba3389a/Native8/profile2/checkpoint5 actual automatic300 is running. Final same-APK boundaries5, UI14reported/13actual/1skip and original24works/70artifacts readback passed. No final300 acceptance yet.",
+    "currentDecision": "Actual300 held at30, stage6 timed out. Compact v6 reduces prompt/history; Shell22 adds one explicit owner+digest CAS recovery retaining same job/pin/prefix. Not auto replay; recovery count must be reported.",
     "requested300Checkpoint": {
-      "completed": 5,
+      "completed": 30,
       "target": 300,
       "observedAt": "2026-10-17T22:53:31.117313+00:00",
-      "status": "running_not_accepted",
+      "status": "needs_review_timeout_not_accepted",
       "profileVersion": 2,
       "checkpointVersion": 5,
       "choice": "auto"
