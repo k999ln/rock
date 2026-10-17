@@ -133,7 +133,7 @@ export type WorkCommand =
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
-  freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'; source:string; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
+  freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   composition?: CompositionState;
   id: string;
   title: string;

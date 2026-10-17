@@ -2355,5 +2355,16 @@
   "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
   "productionBillingEnabled": false,
   "mainAuthenticatedUiAccepted": true
+},
+"skyFreeCloudBackground":{
+  "document": "docs/llm-evaluation-architecture.md",
+  "implementation": [
+    "lib/sky-free-cloud-background.ts",
+    "services/sky-free-cloud-wake/worker.ts",
+    "app/api/llm/free-cloud/jobs/route.ts",
+    "app/api/llm/free-cloud/tick/route.ts"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-background.json",
+  "productionBilling": false
 }
 }

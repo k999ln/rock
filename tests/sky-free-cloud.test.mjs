@@ -107,3 +107,32 @@ void test('HTTP exposes durable same-id countdown and early duplicate does not s
  const first=await http();assert.equal(first.status,202);const a=await first.json();assert.equal(a.id,value.id);assert.equal(a.attempts,1);assert.ok(a.retryAt>Date.now());
  const second=await http();assert.equal(second.status,202);assert.deepEqual(await second.json(),a);assert.equal(sends,1);
 });
+void test('durable queue survives a new caller, overlapping wakes and history replay without new charges',async t=>{
+ const {tickBackground,backgroundJobs}=await import('../lib/sky-free-cloud-background.ts');const db=setup(t);let sends=0;
+ const env={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_BACKGROUND_ENABLED:'true'};
+ const fetcher=async url=>{if(url.endsWith('/models'))return catalog();sends++;if(sends===1)return Response.json({error:{code:'FREE_LIMIT'}},{status:402,headers:{'Retry-After':'1'}});return Response.json({id:'background-once',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Persisted'}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5}});};
+ const input={...request(db,fetcher),enqueue:true,autoContinue:true,runtime:env};
+ assert.equal((await runFreeCloudText(input)).freeCloud.state,'queued');assert.equal(sends,0);
+ await Promise.all([tickBackground(db,env,async()=>Date.now(),fetcher),tickBackground(db,env,async()=>Date.now(),fetcher)]);assert.equal(sends,1);
+ await tickBackground(db,env,async()=>Date.now(),fetcher);assert.equal(sends,1);
+ db.sqlite.prepare("UPDATE work_jobs SET payload=json_set(payload,'$.freeCloud.retryAt',0)").run();
+ await Promise.all([tickBackground(db,env,async()=>Date.now(),fetcher),tickBackground(db,env,async()=>Date.now(),fetcher)]);assert.equal(sends,2);
+ await tickBackground(db,env,async()=>Date.now(),fetcher);await runFreeCloudText(input);assert.equal(sends,2);
+ const history=await backgroundJobs(db,'owner');assert.equal(history.length,1);assert.equal(history[0].text,'Persisted');assert.equal(history[0].attempts,2);assert.equal((await backgroundJobs(db,'other')).length,0);
+ assert.equal(db.sqlite.prepare('SELECT count(*) n FROM sky_recurring_charges').get().n,0);
+});
+void test('background cancellation and expiry prevent subsequent sending',async t=>{
+ const {tickBackground,cancelBackground}=await import('../lib/sky-free-cloud-background.ts');const db=setup(t);let sends=0;
+ const env={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_BACKGROUND_ENABLED:'true'};
+ const fetcher=async url=>{if(url.endsWith('/models'))return catalog();sends++;throw Error('must not send');};
+ const input={...request(db,fetcher),enqueue:true,autoContinue:true,runtime:env};await runFreeCloudText(input);
+ await assert.rejects(cancelBackground(db,'other',input.id));await cancelBackground(db,'owner',input.id);await tickBackground(db,env,async()=>Date.now(),fetcher);assert.equal(sends,0);
+ await runFreeCloudText({...input,id:crypto.randomUUID()});await tickBackground(db,env,async()=>Date.now(),fetcher,Date.now()+600001);assert.equal(sends,0);
+});
+void test('wake requires a fresh signature and fixed body',async()=>{
+ const {verifyWake}=await import('../lib/sky-free-cloud-background.ts');const key='synthetic-only-not-a-secret-0123456789';const stamp=String(Date.now());
+ const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+ const sig=Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(`${stamp}\nPOST\n/api/llm/free-cloud/tick\n{}`))),x=>x.toString(16).padStart(2,'0')).join('');
+ const request=body=>new Request('https://example.test/api/llm/free-cloud/tick',{method:'POST',headers:{'x-sky-time':stamp,'x-sky-signature':sig},body});
+ assert.equal(await verifyWake(request('{}'),key),true);assert.equal(await verifyWake(request('{"owner":"other"}'),key),false);assert.equal(await verifyWake(request('{}'),key,Number(stamp)+120001),false);assert.equal(await verifyWake(request('{}'),'wrong'),false);
+});
