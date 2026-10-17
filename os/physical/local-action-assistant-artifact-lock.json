@@ -12,10 +12,10 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "aa77272e86c108f98f0aaf378ffadf74e2c72c983f6dfc629a1b4f4718995d5f",
-  "apkSizeBytes": 26417540,
+  "apkSha256": "7459c1e1c0b673c79c9edc98f5ec3632ddddabe6e2fa9ff6e25fe0521ce50ebb",
+  "apkSizeBytes": 26417692,
   "imageIntegrated": false,
-  "notes": "Unsigned package4/API4 APK from GitHub Actions 39058032806 at Rock source ecc0acd0. Six ordered overlays and actual downloaded bytes inspected. Separate existing preview signer used for physical candidate; payload entries compared byte-for-byte. No OS image, production signature or flash acceptance.",
+  "notes": "Unsigned package4/API4 APK from GitHub Actions 39059611493 at Rock source a9c35a37. Six reviewed overlays include closed local-work schema, 512-token draft limit and 180-second planning window after physical 90-second timeouts. Actual bytes inspected and preview-signed payload compared. OS image/production signing/flash not accepted.",
   "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
   "extensionSha256": [
     "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
@@ -23,6 +23,6 @@
     "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
     "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
     "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
-    "f1119263d97b4e0118a6c76aa91761418d5eac9131260b977744e3fe1116eeda"
+    "d011572a358e35ba52a3a18e2410ee4d3650be06fe30f80d3e1536deac659c7e"
   ]
 }

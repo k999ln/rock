@@ -106,19 +106,11 @@
       "writing"
     ],
     "additionalProperties": false,
-    "externalExecution": false
-  },
-  "candidateBuild": {
-    "status": "pending_new_artifact",
-    "previousArtifactVersionCode": 4,
-    "previousExtensionSha256": [
-      "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
-      "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
-      "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
-      "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
-      "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
-      "f1119263d97b4e0118a6c76aa91761418d5eac9131260b977744e3fe1116eeda"
-    ],
-    "reason": "bounded universal draft lengths, 512 output tokens and 180-second planning window after actual Pixel timeout"
+    "externalExecution": false,
+    "maxOutputTokens": 512,
+    "planningTimeoutSeconds": 180,
+    "maxTitleCharacters": 60,
+    "maxBodyCharacters": 600,
+    "maxSummaryCharacters": 120
   }
 }

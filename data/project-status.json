@@ -15,7 +15,7 @@
     "physicalAccepted": false,
     "nextAction": "Complete fresh model code/idea trials, inspect actual saved outputs, finish or accurately limit direct DownloadManager acceptance, then freeze exact APK source and verify CI.",
     "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
-    "runtimeBuildRun": 39058032806,
+    "runtimeBuildRun": 39059611493,
     "schemaMigration": "3_to_4_existing_jobs_preserved",
     "runtimeBuildResult": "PASS_actual_unsigned_bytes_and_existing_preview_signer_verified",
     "batchPolicy": {
@@ -28,7 +28,16 @@
       "coderTransferInstall": "PASS_11.507s_after_runtime_process_recovery",
       "directCoderDownload": "PARTIAL_interrupted_connection_DownloadManager_retry",
       "twentyItemProbe": "INTERRUPTED_no_false_completed_items",
-      "codeAndRequested300": "IN_PROGRESS"
+      "codeAndRequested300": "NINETY_SECOND_CODE_TIMEOUT_HELD_same_job_retry_with_bounded_runtime_in_progress",
+      "notificationAndManualFlow": "13_of_14_passed_live_search_network_failure_recorded"
+    },
+    "runtimeBuildSource": "a9c35a37d5cf56a36ff6e5cbd7c42e628ef2e53a",
+    "mergedMain": "d6d7bd33492224826c22aef148f6b206225bb854",
+    "planningLimits": {
+      "outputTokens": 512,
+      "headlessSeconds": 180,
+      "brokerPlanSeconds": 180,
+      "generationLeaseSeconds": 240
     }
   },
 

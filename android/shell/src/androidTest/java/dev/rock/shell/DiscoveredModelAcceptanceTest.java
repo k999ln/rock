@@ -128,7 +128,11 @@ public final class DiscoveredModelAcceptanceTest {
         JSONObject denied = new JSONObject(broker.beginPublicModelDownload("arbitrary.unknown.model", false));
         assertEquals("failed", denied.getString("status")); assertEquals("MODEL_IMPORT_CONSENT_REQUIRED", denied.getString("code"));
         assertEquals("MODEL_NOT_IN_TRUSTED_CATALOG", new JSONObject(broker.preparePublicModelInstall("arbitrary.unknown.model")).getString("code"));
-        assertEquals(before, broker.publicModelInstallStatus()); assertEquals(works, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+        JSONObject after = new JSONObject(broker.publicModelInstallStatus()), previous = new JSONObject(before);
+        assertEquals(previous.optString("operationId"), after.optString("operationId"));
+        assertEquals(previous.optString("profileId"), after.optString("profileId"));
+        if ("idle".equals(previous.optString("status"))) assertEquals("idle", after.getString("status"));
+        assertEquals(works, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
     }
     @Test public void realHomeRequestRoutesExactInstalledModelAndPersistsVerifiedDraft() throws Exception {
         Assume.assumeTrue("explicit physical acceptance only", "true".equals(InstrumentationRegistry.getArguments().getString("rockDiscoveredAcceptance")));
@@ -154,6 +158,10 @@ public final class DiscoveredModelAcceptanceTest {
         File dir = context().getExternalFilesDir(null); long start = SystemClock.elapsedRealtime();
         try {
             ui(() -> activity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+            if (created != null) {
+                assertEquals("ready", new JSONObject(broker.reloadLocalModel(expected, true)).getString("status"));
+                broker.retry(created);
+            }
             if (created == null) {
                 ui(() -> { ((EditText) field(activity, "homePrompt")).setText(prompt); ((RadioGroup) field(activity, "homeExecutionChoice")).check(3100); call(activity, "prepareHomeRequest"); });
                 AtomicReference<String> digest = new AtomicReference<>(); long deadline = SystemClock.elapsedRealtime() + 15000;

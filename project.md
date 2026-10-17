@@ -4,7 +4,7 @@
 
 # RockstarOS — 現在の作業と再開情報
 
-OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4、Shell21、作業別general/Coder選択を実装。本人の実利用は「RockstarOS・Skyで実現するサービスのアイデア300件」。20件生成が90秒で中断したため新checkpoint v2は10件ずつ保存し、旧v1を黙って変更しない。timeout/不正出力は理由付きhold、runtime切断時の待機を解除する。host Core125/automation47/SDK11/Shell14、build/lint成功。新runtime native CI 39058032806の実byte/signerを検証。Pixelのgeneral再検証導入18.945s成功、Coderは公式固定revisionのMac取得/hash照合→転送→実導入11.507s成功。直接DownloadManager取得は通信中断/再接続を観測、全量合格は未確定。code/300件の実推論と最終同一source受入を検証中。旧APK/DB退避済み、OS11全体/全OS/有料cloud gateは変更しない。
+OS11/O6/ROCK：公開検索→対応署名catalog→明示Wi-Fi取得→検証済導入、runtime package4/API4、Shell21、作業別general/Coder選択を実装。本人の実利用は「RockstarOS・Skyで実現するサービスのアイデア300件」。20件生成が90秒で中断したため新checkpoint v2は10件ずつ保存し、旧v1を黙って変更しない。timeout/不正出力は理由付きhold、runtime切断時の待機を解除する。host Core125/automation47/SDK11/Shell14、build/lint成功。新runtime native CI 39059611493/source a9c35a37の実byte/signerを検証。コード生成も90秒でholdしたため、closed schemaの文字数/512 tokens上限とplan180秒/lease240秒へ調整し、同じ仕事を再試行中。Pixelのgeneral再検証導入18.945s成功、Coderは公式固定revisionのMac取得/hash照合→転送→実導入11.507s成功。直接DownloadManager取得は通信中断/再接続を観測、全量合格は未確定。通知/手動経路を含む14件中13件成功、公開検索の通信失敗1件を別記録。code/300件の実推論と最終同一source受入を検証中。最新main d6d7bd33を保全統合、Web無料Cloud系列の正本を保持。旧APK/DB退避済み、OS11全体/全OS/有料cloud gateは変更しない。
 
 
 

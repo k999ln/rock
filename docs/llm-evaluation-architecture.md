@@ -322,7 +322,7 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 **導入・失敗・復旧。** 既存private cacheに同一hash/byte数のweightがあれば、明示同意後に再検証して再利用できる。finishは読取り専用regular FDを既存stagerへ渡し、全byte hash・署名・RAM/容量・画面解除・runtime signer/API/version・ロード後receiptを確認して初めてactivateする。破損、容量不足、実行中pin、runtime不一致では停止する。成功前のファイルを自動候補へ入れない。完了ファイルは検証失敗時に保持し、取得中止は自己DownloadManager rowだけに限定する。secret/API keyやCodex loginは使わない。
 
-**生成と仕事。** `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
+**生成と仕事。** `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。新runtimeはtitle60/body600/summary120文字のschema制限と最大512 output tokens、plan180秒を用い、Brokerのgeneration lease240秒と分ける。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
 
 **300件のアイデア。** planningの有限subtypeとして最大300件を10件ずつ生成する。実機の20件生成が90秒で中断したため、checkpoint v2へbatchSizeを保存して10件に縮小した。旧v1 checkpointは20件契約を保持し、既存仕事を黙って変更しない。各回は指定範囲の連番、実件数、文字数、正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。不正な出力は停止して明示再試行し、欠けた案をfixtureで補完しない。
 
