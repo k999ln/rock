@@ -378,14 +378,8 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 
 ### OS11 / O6: 公開モデル導入と有限文書生成
 
-本人指定の追加範囲は、検索したopen weightのPixel導入、記事以外の仕事、作業別の既定model選択、RockstarOS・Skyのサービスアイデア300件。責任/入出力/保存/復旧/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。Shell21、runtime package7/API4、Engine4の非破壊組合せを検証する。現候補checkpoint v4は5件/回・raw180秒・lease240秒、最大60生成+seal。旧v1/v2/v3の読取とデータを維持し、新契約への未完了work再実行は明示再計画。モデルの直接取得、Macで検証後の転送導入、実推論、内容品質を別記録にする。runtime切断はBinder待機を解き、保存済みprefixを保って停止する。署名catalog/owner consent/immutable pin/lease/Broker検査を迂回しない。Android CIは `workflow_dispatch` でも同じ試験を実行できるようにし、PR workflow未起動を成功と記録しない。
+本人指定の追加範囲は公開open weightのPixel導入、記事以外の仕事、手動/作業別既定model選択、RockstarOS・Skyサービス案300件。責任/入出力/保存/復旧/承認/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。現在はShell22/runtime8/API4/Engine4/checkpoint6。現実機の同production APKで実300件の保存・全prefix連鎖・Broker再起動後同bytes、auto/実手動Coder5、通知tap/公開検索、境界/SQLiteが合格。元24仕事/70artifactを保持。source/各APK hash/試験数/失敗/2回の明示復旧は[台帳](../evidence/pixel-discovered-models.json)を優先する。無介入完走や内容品質/全OSへ昇格しない。
 
-文書生成はtask別の短い指示に限定する。コード依頼へ翻訳/要約向けの指示も並べる旧promptは実機で形式崩れを起こしたため退役。通常文書はexact promptを仕事inputへ保存し、旧prompt未保存入力は再計画を要求する。モデルの単一JSON fenceを正規化しても、余分な文章/field/別taskは許可しない。診断本文はGit外、SDKの拒否fixtureと合否要約だけを保存する。
+5件/保存、raw180秒/lease240秒、最大60生成+seal。旧checkpoint読取とデータを維持し、新契約へ旧未完了workを黙って再実行しない。コード/要約等はtask別exact promptをinputへ保存し、単一JSON fence以外の余分な文章/field/別taskは拒否する。発想は実数/Unicode完全重複/96 UTF-8 bytes/制御記号を検査し、純粋な不正返答だけ同じ範囲を最大3回再生成、durable attempt/event・lease/token/pause fenceを維持。他Tool/有料cloudを再送しない。明示合成probeだけdebug私有cacheへ診断でき、releaseでは無効、Git/ログ/正式成果/件数へ算入しない。
 
-アイデアの形式差は空行・一貫した全体/回内番号・箇条書き・文字列配列を正規化し、実件数/Unicode重複/byte上限は緩めない。元依頼の全体件数と今回の5件をprompt末尾でも分離する。純粋な発想生成の不正だけ同じ範囲を最大3回再生成し、lease/token/pause fenceとdurable attempt/eventを維持、他Tool/有料cloudを再送しない。3回不合格ならprefixを残して本人操作を待つ。明示した合成20件probeだけ、debug APKの私有cache一ファイルへ拒否提案を診断保存できる。releaseでは無効、Git/ログ/正式成果物/達成件数へ入れない。
-
-最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
-
-発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。
-
-最新発想契約v6/Shell22: auto300は30件保存で推論timeout。短縮した入力で同じ仕事を一度だけ明示復旧する。owner/同意/expected checkpoint CAS/timeout限定/event重複防止をBroker/Coreで検証し、旧prefix・成功run・pinを保持。新5件合格後にv6保存、旧v5の自動書換えなし。実機復旧と最終300は未受入。詳細はLLM正本compact復旧。
+今後は意味上の多様性/速度と、SKY07/SKY21の任意作者addプラグインの共通admission/互換/権限/更新/失効を別受入にする。現固定profileはPixel実機検証の範囲で公式専用枠ではない。検証は `npm run os:check`、Android Core/SDK/unit/build/lint、該当opt-in実機試験、`npm run llm:architecture:check`、`npm run design:check`、`npm run verify`。MacのD1起動deadline失敗と同一SHAのGitHub全体成功を分け、CI未実行を成功にしない。

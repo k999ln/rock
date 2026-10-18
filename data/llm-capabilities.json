@@ -296,14 +296,24 @@
       "planning_writing": "dev.rock.qwen3-4b-2507-q4km"
     },
     "candidateAcceptance": {
-      "source": "dba3389a320e86dc3399ff88aafe73487490ec82",
-      "codeTrial": "PASS_native8_Coder5_actual_sum_even_text_not_executed",
+      "source": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
+      "codeTrial": "PASS_current_APKs_auto_and_manual_Coder5_real_text_saved_not_executed",
       "requestedServiceIdeas": 300,
       "ideasAccepted": false,
       "earlyCompletionRuntime": "package8_API4_actual_build_signer_payload_and_Pixel_import_verified",
       "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
-      "evidence": "docs/evidence/pixel-discovered-models.json"
+      "evidence": "docs/evidence/pixel-discovered-models.json",
+      "testSource": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+      "actualIdeas": 300,
+      "ideasStructuralAcceptance": true,
+      "semanticQualityAccepted": false,
+      "humanReviewAccepted": false,
+      "operatorInterventions": 2,
+      "sameSavedArtifactAfterBrokerRestart": true
     },
-    "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file"
+    "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file",
+    "catalogScope": "tested_Pixel_preview_profiles_not_a_fixed_Sky_product_or_official_tier",
+    "skyAddPluginAuthority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "dynamicThirdPartyNativeAdmissionAccepted": false
   }
 }

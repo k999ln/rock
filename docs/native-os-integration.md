@@ -673,12 +673,8 @@ main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usag
 
 ## Pixelの公開モデル導入と記事以外の仕事
 
-検索→署名catalog照合→明示Wi-Fi取得→検証済weight導入→作業別model選択→実推論/成果保存の詳細は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)。主担当OS11/O6/ROCKのAPK実装候補である。private Shell API21とruntime package7/API4を組にし、DB3→4 migrationと旧backup互換を確認してから非破壊更新する。初期テーマは本人指定の「RockstarOS・Skyで実現するサービスのアイデア300件」。旧15件合格やfull OSの受入へ転用せず、検索/取得/導入、実model選択、300件保存の証拠を分ける。
+検索→対応署名profile照合→明示Wi-Fi取得または同weight再検証→作業別選択→実推論/保存の正本は[LLM設計](llm-evaluation-architecture.md#pixel-discovered-model-install)、同artifactの証拠は[実機台帳](evidence/pixel-discovered-models.json)。主担当OS11/O6/ROCK。現在はShell22・runtime package8/API4・Engine4・checkpoint6の非破壊Developer Preview APK受入。DB3→4と旧backup読取を維持し、一般品質やfull OSへ転用しない。
 
-Pixel公開model発想の現行保存契約はcheckpoint v3（raw5件×1、plan180秒/lease240秒、最大60生成+seal）。旧v1/v2は読取を維持、新規制御記号混入は拒否する。詳細と未受入はLLM正本へ集約。
+本人指定のRockstarOS・Skyサービス案は、同じowner/request/model pinの実300件を5件ずつ60生成+sealで保存し、番号・実数・正規化完全重複・制御記号・全prefixのhash連鎖、Broker再起動後の同bytesを確認。各raw180秒/lease240秒、拒否返答の有限再生成3回、30件でcompact復旧1回と220件で通常UI retry1回が必要だった。旧v5だけ短い指示への明示compactを許し、新規v6の時間切れは保存済み案を保つ通常の再試行へ案内する。owner/同意/expected digest/pin/timeout/event/停止fenceを維持し、黙った旧本文の変更や無制限retryをしない。
 
-最新候補: 300件試験で途中切れを発見し旧仕事を25件保存で中止。package8/raw-v2（48文字headroom、Broker96bytesは維持）/checkpoint v4へ更新中。旧package7の実機記録は履歴、現在候補の受入へ転用しない。詳細・復旧・合格条件はLLM正本末尾。
-
-発想の現prompt契約はcheckpoint v5。ソフト単体も含め、家具/環境の連動は課題解決に必要な案だけとする。旧v4は読取保持し生成は明示再計画。Native8/raw-v2/96bytes/lease240秒と既存権限は不変。実300の受入は未完了（LLM正本参照）。
-
-最新発想契約v6/Shell22: auto300は30件保存で推論timeout。短縮した入力で同じ仕事を一度だけ明示復旧する。owner/同意/expected checkpoint CAS/timeout限定/event重複防止をBroker/Coreで検証し、旧prefix・成功run・pinを保持。新5件合格後にv6保存、旧v5の自動書換えなし。実機復旧と最終300は未受入。詳細はLLM正本compact復旧。
+現APKでauto code→Coder5、実手動chooser→同profileの生成/保存、実通知tap/公開検索、導入境界/SQLite、元24仕事/70artifactと全248body hashを確認した。コードは実行しない。意味の近い案・弱い物理連携・前提条件不足は残る下書きで、owner確認待ちを維持する。旧package7の25件中止や旧checkpoint v1〜v5の失敗はLLM台帳の履歴へ集約し、現行と並列の候補にしない。動的な任意作者native導入は未実装で、[Skyのaddプラグイン方針](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)と現Pixel適合範囲を分ける。全OS image/正式署名/flash/OTA/全損復旧・一般backgroundは別gate。

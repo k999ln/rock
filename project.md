@@ -663,3 +663,7 @@ compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842
 2026-10-17 OS11/O6/ROCK・SKY07/SKY21同期: 本人の最新Sky方針をbaseline・融合契約・全OS/Tool詳細・設計索引へ反映。機能/作者の固定と公式による優遇を製品条件にせず、作者共通の互換/権限/版/更新/失効を維持。現Pixel固定catalogの検証範囲と動的native導入未実装を分離。実行中300件のAPK/promptは変更しない。
 
 実auto300のv6監視は5,595.623秒で220件まで実保存した後、step44/attempt1のLOCAL_GENERATION_TIMED_OUTで失敗。step42の形式/重複等の拒否は自動2回目で成功。compact復旧は1回のまま、220件/旧30件/元依頼/pinを保全し、300件未受入。ロック解除待ちの間に、既存の通常再試行ボタンを一度だけ実UI操作するopt-in harnessへ変更する。監視だけの再開が黙ってretryする旧分岐を拒否し、ready/対象仕事/純粋発想timeoutを照合、操作のackを待つ。timeoutやleaseを延長せず、追加手動介入も受入記録へ残す。現時点では通常retry未実行。
+
+通常UI再試行: ownerのロック解除を実測で確認し、既存「止まった工程を再試行」を一度だけ操作。human_retry event1/compact event1、新規Rootなし、旧220件/元依頼/目標を保持し、実225件保存へ進んだ。モデル実行中のBroker instrumentation/更新は再び禁止。Mac全体verifyと該当D1 stageはwrangler spawn30秒timeoutで失敗、同一source b33024b2のGitHub全体verify run39085208518は成功。Sky本体と設計portalもaddプラグイン方針へ同期し、portalの旧入口文を現baselineへの参照へ直す。
+
+実機最終受入: 同じauto4B2の実300件がreviewに到達。60生成+sealの全prefix連鎖、最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6、番号/実数/si/完全重複/制御記号とBroker再起動後同bytesを照合。compact1/通常UI retry1/有限拒否再生成3、無介入完走とはしない。現EF APKでauto Coder5 48.189s、実手動chooser Coder5 41.258sの生成・保存、コード非実行。通知tap/公開検索を含むUI13 actual+既存skip1(24.24s)、境界/SQLite5 actual(0.729s)、元24仕事/70artifactを含む全248body hashが合格。内容の弱い関係・意味重複と一般background/全OSは未受入。Git保存/main統合はPR158のmergedAt/mergeCommit・current mainを正本に別確認する。

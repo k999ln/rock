@@ -1,9 +1,9 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "REQUESTED300_HELD_AT220_AFTER_ONE_COMPACT_RECOVERY",
+  "status": "PASS_LIMITED_DEVELOPER_APK_DRAFTS_WITH_TWO_EXPLICIT_RECOVERIES",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
-  "appBuildSource": "ef20d8ae",
+  "appBuildSource": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
   "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
   "nativeBuildRun": 39072982374,
   "installedApks": {
@@ -56,24 +56,57 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "HELD_LOCAL_GENERATION_TIMED_OUT",
-      "accepted": false,
+      "status": "PASS_ACTUAL300_SAVED_AND_READ_BACK",
+      "accepted": true,
       "target": 300,
       "choice": "auto",
       "expectedProfile": "dev.rock.qwen3-4b-2507-q4km",
       "profileVersion": 2,
       "checkpointVersion": 6,
-      "manualRetries": 0,
-      "completed": 220,
+      "manualRetries": 1,
+      "completed": 300,
       "originalRunElapsedMs": 1033135,
       "explicitCompactReplans": 1,
       "original30Preserved": true,
       "sameRequest": true,
       "sameModelPin": true,
-      "failedGenerationStep": 44,
       "recoveryMonitorElapsedMs": 5595623,
-      "automaticRejectedProposalRegenerations": 1,
-      "plannedExistingUiRetry": "one_explicit_trial_only_after_unlock_and_runtime_ready_no_budget_or_timeout_change"
+      "automaticRejectedProposalRegenerations": 3,
+      "acceptanceScope": "structural_finite_draft_generation_persistence_not_semantic_or_business_quality",
+      "operatorInterventions": 2,
+      "zeroInterventionCompletion": false,
+      "finalRetryMonitorElapsedMs": 2530748,
+      "artifactSha256": "5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6",
+      "artifactBytes": 16274,
+      "maxIdeaBytes": 78,
+      "first30Preserved": true,
+      "first220Preserved": true,
+      "all61StagesSucceeded": true,
+      "sequentialNumbers": true,
+      "normalizedLexicalUniqueness": true,
+      "semanticUniquenessAccepted": false,
+      "humanReviewAccepted": false,
+      "readbackAfterBrokerRestart": true,
+      "bodyHashMatchesReadback": true,
+      "allSavedPrefixesLinkedAndPreserved": true,
+      "failureHistory": [
+        {
+          "saved": 30,
+          "checkpoint": 5,
+          "step": 6,
+          "error": "LOCAL_GENERATION_TIMED_OUT",
+          "elapsedMs": 1033135,
+          "recovery": "one_explicit_compact_replan"
+        },
+        {
+          "saved": 220,
+          "checkpoint": 6,
+          "step": 44,
+          "error": "LOCAL_GENERATION_TIMED_OUT",
+          "elapsedMs": 5595623,
+          "recovery": "one_existing_scoped_UI_retry_after_unlock_and_ready_check"
+        }
+      ]
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -196,7 +229,67 @@
       "seconds": 0.569
     },
     "postCompactUi": {
-      "status": "PENDING_AFTER_MODEL_JOB_COMPLETES"
+      "status": "PASS_SEQUENTIAL_SAME_PRODUCTION_APKS",
+      "reportedTests": 14,
+      "actualTests": 13,
+      "optInSkipped": 1,
+      "skippedCase": "extra_article_model_trial_not_enabled_current_model_trials_recorded_separately",
+      "seconds": 24.24,
+      "actualSystemNotificationTap": true,
+      "tapOnlyOpensSavedJob": true,
+      "liveGitHubAndHuggingFaceSearch": true
+    },
+    "postCompactBoundariesSqlite": {
+      "status": "PASS",
+      "actualTests": 5,
+      "skips": 0,
+      "seconds": 0.729
+    },
+    "native8CurrentAutoCoder": {
+      "status": "PASS_REAL_GENERATE_VALIDATE_SEAL",
+      "appSource": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
+      "testSource": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+      "profile": "dev.rock.qwen25-coder-15b-q4km",
+      "profileVersion": 5,
+      "definitionDigest": "a94d04ac0194b3794269f5e7cce8c5261be72f405bfc026dd22cd8ca27b07c62",
+      "choice": "auto",
+      "manualChooserUsed": false,
+      "elapsedMs": 48189,
+      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
+      "artifactBytes": 235,
+      "actualFunction": "sum_even",
+      "codeExecuted": false,
+      "humanReviewAccepted": false
+    },
+    "native8CurrentManualCoder": {
+      "status": "PASS_REAL_GENERATE_VALIDATE_SEAL",
+      "appSource": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
+      "testSource": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+      "profile": "dev.rock.qwen25-coder-15b-q4km",
+      "profileVersion": 5,
+      "definitionDigest": "a94d04ac0194b3794269f5e7cce8c5261be72f405bfc026dd22cd8ca27b07c62",
+      "choice": "dev.rock.qwen25-coder-15b-q4km",
+      "manualChooserUsed": true,
+      "elapsedMs": 41258,
+      "artifactSha256": "08d8cc219829406577453c246b17444255d2f70d07c8f9c19ef8dd39d83684a9",
+      "artifactBytes": 235,
+      "actualFunction": "sum_even",
+      "codeExecuted": false,
+      "humanReviewAccepted": false
+    },
+    "finalPersistence": {
+      "artifactSha256": "5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6",
+      "artifactBytes": 16274,
+      "originalWorksPreserved": 24,
+      "originalArtifactsPreserved": 70,
+      "currentWorks": 65,
+      "currentArtifacts": 248,
+      "allBodyDigestsVerified": true,
+      "humanReviewAccepted": false,
+      "status": "PASS_READONLY_MIGRATION_AND_SAME_RESULT_AFTER_BROKER_RESTART",
+      "migrationSeconds": 0.66,
+      "readbackSeconds": 3.958,
+      "newInferenceDuringReadback": false
     }
   },
   "limitations": [
@@ -204,9 +297,10 @@
     "Models do not grant Tool, owner, budget or execution authority.",
     "No cloud credentials, paid provider, X API or full OS acceptance added.",
     "No claim of general model quality or unattended background reliability.",
-    "Generated artifacts stay outside Git; receipts contain hashes and counts only."
+    "Generated artifacts stay outside Git; receipts contain hashes and counts only.",
+    "The 300-item work required one compact recovery at30 and one ordinary UI retry at220; it did not finish without intervention.",
+    "All300 raw drafts were inspected. Semantic repetitions, awkward actions and weak physical relationships remain; usefulness, independent business ideas and real sensor/medical/notification capabilities are not accepted."
   ],
-  "mainIntegrated": false,
   "previousRuntime7Artifact": {
     "appBuildSource": "4f160cf0ab92ad46f46ef4daf4072e99620680f0",
     "nativeBuildSource": "96dd7c305b6c7cdeb5613f4c764113572b55b79b",
@@ -238,7 +332,7 @@
     "unitFailures": 0
   },
   "host": {
-    "fullVerify": "PASS_ALL_STAGES_exit0_compact22_fixed_test_file_concurrency2_existing_skip1_no_new_skips",
+    "fullVerify": "PASS_SAME_SOURCE_GITHUB_NPM_VERIFY_RUN39085208518_PREVIOUS_MAC_COMPACT22_PASS_LATEST_MAC_D1_TIMEOUT_RECORDED",
     "firstBroadRun": "3 existing process-timing failures at normal concurrency; related40 focused tests then passed",
     "androidUnits": {
       "core": 127,
@@ -248,19 +342,24 @@
     },
     "nativeSourceTests": 34,
     "pythonPrepareStageTests": 21,
-    "androidBuildLint": "PASS"
-  },
-  "pendingCompactCandidate": {
-    "privateShellApi": 22,
-    "checkpointVersion": 6,
-    "maxRelatedExamples": 2,
-    "recentExamples": 1,
-    "sameJobAndPin": true,
-    "explicitOwnerConsentAndCheckpointCas": true,
-    "oldPrefixNotRewritten": true,
-    "recoveryOncePerJob": true,
-    "physicalRecoveryAccepted": true,
-    "recoveryObservation": "Actual UI consent accepted once at30; checkpoint35 saved under v6, first30/request/target byte-for-byte equivalent in parsed fields. Initial harness saw old snapshot before async ack and failed; monitor restart did not invoke recovery again."
+    "androidBuildLint": "PASS",
+    "latestMacVerify": {
+      "status": "FAILED_UNCHANGED_WRANGLER_D1_STAGE_PROCESS_DEADLINE",
+      "stage": "sky:a2a:workflow:test",
+      "error": "spawnSync node ETIMEDOUT",
+      "timeoutMs": 30000,
+      "focusedRerun": "same_timeout",
+      "noAssertionsWeakened": true
+    },
+    "ciFullVerify": {
+      "source": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+      "run": 39085208518,
+      "url": "https://github.com/k999ln/rock/actions/runs/39085208518",
+      "status": "PASS",
+      "sameSourceChecks": 14,
+      "sameSourceChecksAcceptedBy": "GitHub REST commit check-runs all14 success",
+      "finalCommitCiAuthority": "current PR158 head check-runs"
+    }
   },
   "generationSegments": [
     {
@@ -306,7 +405,30 @@
           "sha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008"
         }
       },
-      "explicitCompactReplans": 1
+      "explicitCompactReplans": 1,
+      "throughCount": 300
     }
-  ]
+  ],
+  "recordedAtUTC": "2026-10-18T01:59:04.852294+00:00",
+  "testBuildSource": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+  "compactRecovery": {
+    "privateShellApi": 22,
+    "checkpointVersion": 6,
+    "maxRelatedExamples": 2,
+    "recentExamples": 1,
+    "sameJobAndPin": true,
+    "explicitOwnerConsentAndCheckpointCas": true,
+    "oldPrefixNotRewritten": true,
+    "recoveryOncePerJob": true,
+    "physicalRecoveryAccepted": true,
+    "recoveryObservation": "Actual UI consent accepted once at30; checkpoint35 saved under v6, first30/request/target byte-for-byte equivalent in parsed fields. Initial harness saw old snapshot before async ack and failed; monitor restart did not invoke recovery again.",
+    "status": "PASS_ONE_EXPLICIT_LEGACY_V5_TO_V6_RECOVERY",
+    "original30Preserved": true
+  },
+  "mainIntegratedAtEvidenceCommit": false,
+  "integrationAuthority": {
+    "pullRequest": "https://github.com/k999ln/rock/pull/158",
+    "statusAtEvidenceCommit": "not_merged",
+    "readCurrentStateFrom": "GitHub mergedAt/mergeCommit and current main; source saving and main integration are separate"
+  }
 }

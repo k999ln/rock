@@ -338,7 +338,7 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 入力は依頼文と保存済み選択モード。サーバーで本人・利用権を確認し、設定済みloopbackのモデル一覧（Ollama tags / OpenAI互換models）を読み取る。モデル一覧にある候補のうちコード作業ならcoder系、その他なら一般系を優先する決定的な初期ヒューリスティック。性能比較による「世界で一番」の実証ではない。返すProvider/モデルID/理由を当該依頼に固定し、会話モデル設定に表示する。自動選択に失敗したら依頼文を保持し、接続設定後に再送する。別Providerへの実行時フォールバックは行わない。
 
-無料枠のみという現在の条件では自動対象をローカルに限定。Cloudの資格情報・無料利用権・料金契約は未確認で、自動Cloud送信は未受入。手動のOpenAI/Anthropic/Google/互換接続先とモデルIDは選択できるが、実行の料金gate・同意・対応coordinatorは別条件である。Cloud実利用が有効になる場合も既存Sky140の予約/確定usage/$100停止を経由し、選択API自体は予算や請求を変更しない。
+初期local selector単体の対象はローカル。現在のWebは後述の同意・本人限定flag・有効Sandboxプランを満たす匿名無料Cloud selectorを使う。Pixel native実機はlocalで受け入れ、Web Cloudと混同しない。手動のOpenAI/Anthropic/Google/互換接続先とモデルIDは選択できるが、実行の料金gate・同意・対応coordinatorは別条件である。Cloud実利用が有効になる場合も既存Sky140の予約/確定usage/$100停止を経由し、選択API自体は予算や請求を変更しない。
 
 選択モードと手動指定は既存provider draftへ本人別保存し、選択理由は画面内のみ。資格情報は応答・ログに出さない。一覧取得は2.5秒で停止し、redirectを拒否。未接続/不正一覧は候補に加えない。主担当Web/Sky（ROCK、SKY07）、Cloud利用権はEXTERNAL/OWNER、料金境界BIL02はJOINT。合格条件は作業別選択、一覧由来の候補のみ、未接続停止、外部URL除外、手動指定維持、型・全体試験。Cloud能力比較と無料利用権の接続は未解決で、確認済みの契約ごとに追加する。
 
@@ -448,4 +448,10 @@ Generic summaryの実機試験は生成/保存が通っても、日本語指定�
 
 Shell22のcompactReplanIdeasは本人同意、同じowner/pin、activeかつneeds_reviewの純粋発想工程、LOCAL_GENERATION_TIMED_OUT、停止中でないこと、expected checkpoint digest一致、同仕事でcompact復旧未実施をtransactionで確認する。成功済みrun/旧input/output/artifactは更新しない。停止工程だけqueuedへ戻し、human_compact_replan eventを同じtransactionで一度記録。次のticketは当該stepのeventがある場合だけv5入力をメモリ上でv6へ変換し、新しい実5件が合格した後に新checkpointを保存する。旧v5を通常の自動継続で書き換えない。他Tool/cloud/費用/権限不足/失敗一般の再送へ広げない。
 
-画面は「N件を残して続ける」と確認dialogを提示し、進捗/モデルを保つことを説明する。外部intentは仕事を開くだけで、復旧を承認しない。取消/全停止/遅延callback fenceを維持する。false consent・別owner・古いdigest・二重復旧・pause・遅延finish・再起動をhostで検査する。実機は同じ300件仕事の30件を引き継ぐ一度の明示復旧を別記録し、ゼロ介入の自動完走と呼ばない。runtime8/モデル2/raw-v2/180秒/lease240秒/DB4は不変。実300完了は未受入。
+画面は「N件を残して続ける」と確認dialogを提示し、進捗/モデルを保つことを説明する。外部intentは仕事を開くだけで、復旧を承認しない。取消/全停止/遅延callback fenceを維持する。false consent・別owner・古いdigest・二重復旧・pause・遅延finish・再起動をhostで検査する。実機は同じ300件仕事の30件を引き継ぐ一度の明示復旧を別記録し、ゼロ介入の自動完走と呼ばない。runtime8/モデル2/raw-v2/180秒/lease240秒/DB4は不変。この時点の実300は未完了。最終の限定受入は次節で別記録する。
+
+### 現Pixelの限定機能受入
+
+Native8/API4・Shell22・checkpoint6の同preview署名APKで、本人指定の実300件を60生成+sealの61工程から保存。番号/実数/正規化完全重複/si表記/制御記号/全保存prefixのhash連鎖と、Broker processを開き直した同bytes読戻しを確認した。16,274bytes、SHA256 `5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6`。元の24仕事/70artifactを保持し、全248 artifactのhashを検査。30件で一度のcompact復旧、220件で通常の再試行を一度、形式等の拒否には計3回の有限自動再生成が必要だった。v6新規仕事は既に短い入力なので、時間切れには通常の再試行を使い、旧v5向けcompactを重ねない。無介入完走や一般background信頼性へ転用しない。
+
+現在のAPKで、auto code→Coder5の実3段階保存と、実際の手動chooser→同profileの生成保存も確認。コードは実行しない。実通知タップ/公開GitHub・Hugging Face検索を含むUI13件、既存opt-in未選択1件、導入境界/SQLite5件を分けて記録する。全300の本文には意味の近い案、不自然な物理連携、前提条件の不足があり、300の独立した事業案・一般的なモデル品質・医療/計測/外部通知の能力を合格扱いにしない。owner確認待ちを維持する。[artifact・各source・失敗と復旧・同一APKの詳細証拠](evidence/pixel-discovered-models.json)を正本とする。

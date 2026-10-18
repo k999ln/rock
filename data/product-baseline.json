@@ -2745,6 +2745,7 @@
     "ownerQuote": "skyは全てのaddプラグインになる拡張機能、固定されたものやオフィシャルなものはなく、ただみんなが使いたいものがある、",
     "role": "open_add_plugin_discovery_and_composition_across_hosts",
     "fixedFeatureOrAuthorSet": false,
+    "officialProductTier": false,
     "officialStatusRequired": false,
     "officialStatusSelectionPreference": false,
     "pluginKinds": [

@@ -1,4 +1,4 @@
-2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
 ## Skyコード公開の共通境界（2026-10-09）
 
@@ -50,7 +50,7 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## Skyの実行先選択と共通runtime
 
-Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.md#pixel-local-jennifer)に従う。2026-10-17の実機で見つかった旧単体model登録への誤参照は、検証済みロードhashだけを使う追加overlayで修正し構造的一周を実機確認。内容は0.6Bの雛形コピー/主題相違を検出したため、短い主題別promptと明示選択する署名済1.5Bの比較を進める。暗黙loadや別modelへの切替をせず、未load/別hashでは停止する。5 overlayの新unsigned APK固定はCI artifactの実検査後に更新し、開発署名APKの実機・内容・協調停止・全OSを別受入にする。
+Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.md#pixel-local-jennifer)と[公開モデル/作業別選択](llm-evaluation-architecture.md#pixel-discovered-model-install)に従う。旧0.6Bの内容不合格を保持し、Native8/API4の検証済みhashと署名profile General6/Coder5/Creative2を仕事ごとに固定する。現在APKの実300下書き/auto・手動Coder/通知・公開検索・保存readbackは[限定実機台帳](evidence/pixel-discovered-models.json)で確認する。内容品質・無介入/一般background・full OSは未受入。
 
 [選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、Skyでmodel/Agent/Toolと実hostを選び、Zemaの同Job/版/grant/見積へ固定する。model推論先とAgent runnerを分け、local/cloud/明示組合せを対応能力の範囲で提示する。全選択肢の実装/本番受入は未完了で、Brokerの承認/予算/停止と無断fallback禁止を維持する。
 
@@ -144,9 +144,9 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 
 ### Android／Pixel
 
-Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 21→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。実機の有限計画/2 Tool受入と一般品質・全OS受入を区別する。[手動/自動model選択と公開検索](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は同じBrokerへ接続し、公開候補へ実行権を付けない。公開検索はSky先頭に配置し、長い導入詳細を通らず探せる。API v2やLLMなしの過去合格を現v4へ転用しない。
+Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 22→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。実機の有限計画/2 Tool受入と一般品質・全OS受入を区別する。[手動/自動model選択と公開検索](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は同じBrokerへ接続し、公開候補へ実行権を付けない。公開検索はSky先頭に配置し、長い導入詳細を通らず探せる。API v2やLLMなしの過去合格を現v4へ転用しない。
 
-検索からの対応model導入と記事以外の文章成果は、private Shellの明示選択・Brokerの署名/weight/license検証・作業別選択へ拡張中。runtime package 4（Binder API 4を維持）へclosedな `local-work@1/output-v1` を追加し、生成コードは成果文字列として保存する。既存記事ToolとJob/停止/確認/成果契約を保持し、新候補の実機証拠は受入まで未取得とする。
+検索からの対応model導入と記事以外の文章成果はNative8/Binder API4のclosedな `local-work@1/output-v1` とideas-N-v2で実装。生成コードは文字列として保存し、実行しない。既存Job/停止/確認/成果契約を保ち、現APKの実300件・2回の明示復旧・同bytes readbackと内容上の不足は[限定実機証拠](evidence/pixel-discovered-models.json)を参照する。
 
 
 `dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local si、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。

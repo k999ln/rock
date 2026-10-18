@@ -6,13 +6,13 @@
 
 ## 現在のPixel公開モデル実装・受入
 
-主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最新GitHub main/branch/同一SHA CIを取得し、`docs/evidence/pixel-discovered-models.json`、progress JSONのpixelDiscoveredModelsとLLM正本を優先する。main43cf290eのWeb無料Cloud継続は取込み済み。下段の古いcheckpointを現在の通知失敗/未実装へ転用しない。
+主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runsと `docs/evidence/pixel-discovered-models.json` を読む。main43cf290eのWeb無料Cloud継続は取込み済み。PRのGraphQL rollupだけで欠落/合格を決めず、REST commit check-runsを確認する。Git保存とmain統合は分ける。
 
-実機の現在APKはapp source `ef20d8ae`（API22/compact契約v6）。同一300件仕事の最初の30件は旧app source `dba3389a320e86dc3399ff88aafe73487490ec82`で生成し、証拠台帳のgenerationSegmentsで区別する。Native8/API4はsource31414985/run39072982374、既存preview signerと実bytes/payload一致を検証。Shell22/Platform1/Engine4、Pixel10 GL066/frankelへの非破壊更新。General6/Coder5/Creative2を再導入し、Creativeは実公開検索→license→既存2.5GB重量のhash再検証→ロードを確認（新規通信取得なし）。元の24仕事/70artifactは保全。auto Coderの正しいsum_evenは文章として保存、実行しない。日本語summaryは言語/保存だけ合格でSky/Zema役割混同が残り、内容は未受入。通知tap/公開検索/導入境界/SQLiteは復旧前候補で実機成功。現API22での再試験は300件完了後に行う。全OS image/正式署名/flash/全損復旧は別gate。
+実機production APKはapp source ef20d8ae、最初の30案だけdba3389a。Native8/API4はsource31414985/run39072982374で実bytes/既存preview signer/payload一致、Shell22/Platform1/Engine4/checkpoint6。生成中のAPI変更や再インストールはしていない。署名profile General6/Coder5/Creative2は端末で検証済み。4Bの元の2.5GB取得はruntime7/profile1、runtime8/profile2は同weightのcache再検証/再同意であり、新downloadと読み替えない。production catalogは空、Sky全体の作者/機能固定とは区別する。
 
-prompt契約v5/raw ideas-v2の旧試験の実手動20件は533.698秒、5工程attempt1、番号/実20件/si表記/完全重複/制御記号検査合格。関連性の粗い案は残るため限定draft。発想/文章の自動候補4B80、code Coder90、記事/要約/翻訳General50。0.6BとGeneralの発想は内容不合格として自動対象外。
+本人指定の実300件は同じowner/request/pinで保存し、60生成+sealの全prefix/番号/実数/正規化完全重複/表記/byte/hashを検査。30件のtimeout後compactを一度、220件のtimeout後通常UI retryを一度、拒否返答の有限自動再生成3回。無介入完走ではない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同じ。現在APKのauto/実手動Coder5、実通知tap/公開検索を含むUI13 actual+既存optin skip1、境界/SQLite5 actualが成功。元24仕事/70artifactと全248body hashを保持確認。生成本文はGit外。全300に意味の重なりや不自然な連携が残り、事業性/独自性/内容品質は未受入。日本語summaryのSky/Zema混同も未解決。コードは下書きで実行しない。全OS image/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
 
-本人指定の「RockstarOS・Skyサービス案300件」はauto4B2で30件を保存後、生成step6の180秒timeoutで停止。現在はShell22/compact契約v6で同じ仕事・同じ30件を保持する一度の明示復旧を実機で実施し、220件保存後にstep44の180秒timeoutで再び停止。通常の再試行はまだ未実行で、端末ロック解除と同runtime ready確認後の一度の明示UI試行を準備中。復旧操作の初回harnessは非同期応答待ち不足で失敗したが、DBのevent1/生成再開を確認済み。再監視は二度目の復旧ではない。別仕事を作らず既存のsnapshot/保存prefixを確認する。旧package7の300試験は25件保存で中止済み、復活させない。生成は5件/回、plan180秒、lease240秒、純粋発想のみ同じ工程で最大3再生成、60生成+seal。compact復旧のowner同意/expected checkpoint CAS/一度のeventを検証し、介入1件を正直に記録する。手動retryで無制限に継続させず、停止/不明をそのまま記録する。**モデル実行中にBroker instrumentationを起動するとworkerが切れるため実施しない。** 生成本文はGit外。完了後は実300件/全内容/正規化完全重複/hash/保存readback、元データ保全、最終verifyと同一head CI、main統合を別々に記録する。モデル結果をTool成功/本人承認/予算へ昇格しない。
+Macの最新verifyは未変更のWrangler D1起動30秒deadlineで失敗（focusedも同じ）。従前Mac compact22全stage成功は履歴。同source b33024b2のGitHub `npm run verify` run39085208518とREST全14 checkは成功。最終commitのCI/main統合はGitHubで再取得する。モデルの結果をTool成功/本人承認/予算へ昇格しない。次は意味上の多様性/速度の検証と、開かれたaddプラグインの作者共通admission/互換/権限/更新/失効を既存SKY07/SKY21へ接続する。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 
