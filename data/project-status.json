@@ -74,7 +74,7 @@
       "native8Actual300": "PASS_300_saved_16274bytes_same_hash_after_Broker_restart_two_explicit_recoveries_semantic_quality_not_accepted"
     },
     "runtimeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
-    "mergedMain": "43cf290e35facb2c3f6a2360612b340ca4638819",
+    "mergedMain": "c1ba4106147a99be7e818fb5a4142d4ad6f502d8",
     "planningLimits": {
       "outputTokens": 512,
       "headlessSeconds": 180,
@@ -150,8 +150,8 @@
     }
   },
 
-
-
+"skyBackgroundPlanGates":{"status":"post_main_live_account_cap_unpaid_closed_tab_resume_verified","fullVerify":"passed_after_bounded_a2a_migration_timeout_fix","siteVersion":70,"evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false,"mainIntegrated":true},
+  "skyBackgroundReal402":{"taskId":"SKY07","status":"real_402_tab_closed_resume_revisit_verified","productionBilling":false},
   "skyFreeCloudBackground":{"taskId":"SKY07","status":"hosted_tab_closed_real_response_and_replay_verified","siteVersion":68,"productionBilling":false,"mainIntegrated":false,"evidence":"docs/evidence/sky-free-cloud-background.json"},
   "skyFreeCloudAutoContinue":{"taskId":"SKY07","status":"hosted_real_account_countdown_continuation_replay_passed","productionBilling":false,"branch":"codex/sky-free-cloud-auto-continue","siteVersion":65,"evidence":"docs/evidence/sky-free-cloud-auto-continue.json"},
   "skyHostedMonthly": {"taskId":"BIL02","primaryOwner":"JOINT","status":"hosted_billing_and_cloud_ui_passed","version":63,"preservedTables":50,"preservedRows":148,"productionBilling":false,"evidence":"docs/evidence/sky-hosted-monthly.json","branch":"codex/sky-hosted-monthly-sandbox","next":"公開実応答成功。PR #160の同head CI後mainへ統合。"},

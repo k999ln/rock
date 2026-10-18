@@ -6,7 +6,7 @@
 
 ## 現在のPixel公開モデル実装・受入
 
-主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runsと `docs/evidence/pixel-discovered-models.json` を読む。main43cf290eのWeb無料Cloud継続は取込み済み。PRのGraphQL rollupだけで欠落/合格を決めず、REST commit check-runsを確認する。Git保存とmain統合は分ける。
+主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runsと `docs/evidence/pixel-discovered-models.json` を読む。main c1ba4106のWeb無料Cloud継続・公開Sandbox停止/翌月復旧とbounded D1 cold-init修正は取込み済み。Android/Native runtime入力の追加差分は0。PRのGraphQL rollupだけで欠落/合格を決めず、REST commit check-runsを確認する。Git保存とmain統合は分ける。
 
 実機production APKはapp source ef20d8ae、最初の30案だけdba3389a。Native8/API4はsource31414985/run39072982374で実bytes/既存preview signer/payload一致、Shell22/Platform1/Engine4/checkpoint6。生成中のAPI変更や再インストールはしていない。署名profile General6/Coder5/Creative2は端末で検証済み。4Bの元の2.5GB取得はruntime7/profile1、runtime8/profile2は同weightのcache再検証/再同意であり、新downloadと読み替えない。production catalogは空、Sky全体の作者/機能固定とは区別する。
 

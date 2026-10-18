@@ -1,3 +1,16 @@
+# 待機中のプラン停止・復旧
+
+2026-10-18 BIL02/SKY07: A2A local D1初期化の30秒タイムアウトを、初期化だけ120秒の有限budgetへ分離（通常query30秒維持）、失敗時stdout/stderr診断と初期化実測を追加。単独A2A成功、全体verify exit0でbot:checkまで完走、同実行の初期化3415ms・positive14件成功。公開Sandboxの既存受入記録を保存。runtime・配備・本番課金変更なし。次は同head CIと承認済みmain統合。
+
+2026-10-18 BIL02/JOINT・SKY07: main f2a2fba8後の公開v70（対象runtimeはmainと一致）で実account再受入。依頼8188afe5…は閉画面の上限/未払いcron後も送信0回、同invoice in_1URiPR…のSandbox入金・翌月更新後、閉画面で自動続行し送信1回・183の実応答・335/149 tokens/$0を保存。請求は旧3件保持＋当周期1件の計4件paid、period/invoice各一意。本番課金/再配備/DB移行なし。証拠 docs/evidence/sky-background-plan-gates.json。関連11試験成功、project:update成功。全体verifyはA2Aのlocal D1準備ETIMEDOUTで未完走（後続未実行）。検証記録のGit保存はmain統合とは別。
+
+
+2026-10-18 SKY07/BIL02: 公開v70/source eedc50a2で次周期Sandbox試験を履歴保持で反復可能にした。実accountのqueued依頼でcap/未払いとも閉画面cron後送信0回。復旧後Provider timeout→unconfirmedで再送なし。別の実402 waiting依頼c14e2929…で、タブ終了後cap/未払いの各cronをまたいでも試行1回不変、同invoiceへの入金・翌月更新後に同ID completed「81 + 82 の答えは163です」、338/165 tokens/$0を保存。試行2回=拒否1+生成1。請求は旧1+試験2周期の各1=3件すべてpaid、旧履歴保持。本番課金なし。対象27試験、全体verify exit0（主2297 pass/既存skip1、全stage fail0）。証拠 docs/evidence/sky-background-plan-gates.json。次はGit保存と同head CI、main統合は別。
+
+# 実402の画面外継続受入
+
+2026-10-17 SKY07/ROCK・WEB01/JOINT: main 43cf290eの実accountで実FREE_LIMIT待機を確認。依頼50c364dc…をwaiting/試行1回で22:35:17Zにタブ終了。cronが22:35:38Zに自動続行し、再訪で同IDの実応答「61+62 の答えは123です。」、338/153 tokens、$0を確認。拒否1回＋生成1回で試行2回、再読込不変。Sandbox請求1→1、同invoice/status/period。本番課金・手動wake・fixture注入なし。証拠 docs/evidence/sky-free-cloud-background.json。コード変更・再配備は不要。今回の全体verifyは高負荷下で4 fail/3 cancelled（MCP/activation timeout等）、対象5ファイルの直列再試験は58/58合格。全体再実行合格とは扱わない。Git保存は受入記録として別PR、mainは未統合。
+
 # 無料Cloudの画面外継続
 
 2026-10-17 SKY07/ROCK・WEB01/JOINT: main 26df75e4から実装。公開Site v68/source 40015e38と毎分Cloudflare Workerを配備。実accountで送信0回の依頼を保存してタブ終了、cronだけで実応答「41に42を足すと83です。」を保存、再訪で337/117 tokens/$0を確認。別依頼のqueued/sending/completed再押下も送信1回/同参照不変。Sandbox請求は1件→1件、同invoice/status/period。既存データ移行なし。本番課金なし。無料Cloud対象16試験、全体verify exit0（本体2296 pass/既存skip1、全試験stage fail0）。証拠 docs/evidence/sky-free-cloud-background.json。実402の再発は今回観測せず、402待機/並列は合成試験。Git保存とmain統合は公開配備とは別。次はPRの同head CI確認。
@@ -667,3 +680,5 @@ compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842
 通常UI再試行: ownerのロック解除を実測で確認し、既存「止まった工程を再試行」を一度だけ操作。human_retry event1/compact event1、新規Rootなし、旧220件/元依頼/目標を保持し、実225件保存へ進んだ。モデル実行中のBroker instrumentation/更新は再び禁止。Mac全体verifyと該当D1 stageはwrangler spawn30秒timeoutで失敗、同一source b33024b2のGitHub全体verify run39085208518は成功。Sky本体と設計portalもaddプラグイン方針へ同期し、portalの旧入口文を現baselineへの参照へ直す。
 
 実機最終受入: 同じauto4B2の実300件がreviewに到達。60生成+sealの全prefix連鎖、最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6、番号/実数/si/完全重複/制御記号とBroker再起動後同bytesを照合。compact1/通常UI retry1/有限拒否再生成3、無介入完走とはしない。現EF APKでauto Coder5 48.189s、実手動chooser Coder5 41.258sの生成・保存、コード非実行。通知tap/公開検索を含むUI13 actual+既存skip1(24.24s)、境界/SQLite5 actual(0.729s)、元24仕事/70artifactを含む全248body hashが合格。内容の弱い関係・意味重複と一般background/全OSは未受入。Git保存/main統合はPR158のmergedAt/mergeCommit・current mainを正本に別確認する。
+
+最終main同期: c1ba4106（PR165）の公開Sandbox cap/未払い/翌月復旧と、cold D1 migrations起動budget修正を取り込む。3件の文書/進捗競合は双方を保持して解消。Android/Native入力差分0なので実機APK/source EFの証拠は維持し、Web Sandboxの受入をPixelへ転用しない。main側のD1起動修正があるため、最新同一headの全体verifyを再実行する。
