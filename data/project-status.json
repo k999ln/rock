@@ -1,4 +1,5 @@
 {
+  "skyConcurrentSandbox":{"status":"two_tab_safety_verified_one_provider_402_stop","evidence":"docs/evidence/sky-concurrent-sandbox.json","siteVersion":72,"productionBilling":false},
   "skyOpenAddPluginDirection": {"date":"2026-10-17","taskIds":["SKY07","SKY21"],"status":"design_updated_runtime_admission_pending","officialPreference":false,"fixedAuthorSet":false,"dynamicNativeAccepted":false,"authority":"docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤"},
   "pixelDiscoveredModels": {
     "date": "2026-10-17",

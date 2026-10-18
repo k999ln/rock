@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-18",
+  "baseMain": "c1ba4106147a99be7e818fb5a4142d4ad6f502d8",
+  "status": "two_tab_account_sandbox_safety_verified_provider_a_limited",
+  "publicSite": "https://avoado.si/os/sky/free-cloud",
+  "siteVersion": 72,
+  "siteSource": "c097ab096a2692106ba6260137f9a6f29e409d25",
+  "scope": "Two independent UI tabs on one Mac, same authenticated account; not two physical devices or independent login cookies",
+  "jobs": {
+    "a": "41361362-041c-43e5-a7ff-6870d05c788e",
+    "b": "82122eb8-b31a-4bd8-b72f-ad609ce69bfa"
+  },
+  "cap": {
+    "fixtureMinor": 10000,
+    "bothScreensReason": "quota_exhausted",
+    "aAttempts": 0,
+    "bAttempts": 1,
+    "bAttemptWasPreGenerationFreeLimit": true,
+    "concurrentCap": "one accepted, one lease conflict"
+  },
+  "billing": {
+    "before": 4,
+    "after": 5,
+    "uniquePeriods": 5,
+    "uniqueInvoices": 5,
+    "allPaid": true,
+    "newInvoice": "in_1URjykGfTgzUjVHJgpbQLyfM",
+    "concurrentCloseAndPay": "lease conflicts; retry same operation; one invoice for same period",
+    "priorHistoryRetained": true
+  },
+  "resultB": {
+    "state": "completed",
+    "attempts": 2,
+    "successfulGenerations": 1,
+    "preGenerationRejections": 1,
+    "text": "103 + 104 は 207 です。",
+    "inputTokens": 332,
+    "outputTokens": 169,
+    "providerResponseId": "pllns_eb35c5ce5710992bf46288e5e1205592",
+    "chargeMinor": 0
+  },
+  "pollingFix": {
+    "observedError": 429,
+    "cause": "5s per-tab polling exceeds shared 20 requests/minute",
+    "newPollMs": 30000,
+    "backoffMs": 60000,
+    "perTabConcurrentReads": 1,
+    "guardLimitUnchanged": true,
+    "twoTab200ReadbackObserved": true,
+    "finalTwoMinuteErrors": 0,
+    "finalTwoMinuteReadSuccesses": 10
+  },
+  "syntheticTests": {
+    "passed": 33,
+    "failed": 0,
+    "covers": [
+      "concurrent last-dollar reservation admits only one send",
+      "same request replay",
+      "shared LLM/A2A allowance",
+      "unconfirmed reservation retention",
+      "duplicate signed payment events"
+    ]
+  },
+  "productionBilling": false,
+  "realPaidProviderBoundaryTested": false,
+  "physicalMultiDeviceTested": false,
+  "resultA": {
+    "state": "unconfirmed",
+    "attempts": 5,
+    "lastStatus": 402,
+    "lastRetryAfterSeconds": 6,
+    "automaticResendStopped": true,
+    "successfulResponseObserved": false
+  },
+  "validation": {
+    "fullVerify": "exit 0 through bot:check",
+    "log": "/private/tmp/sky-concurrent-verify-final.log",
+    "initialRun": "2 unrelated 10s timeout cancellations during concurrent build; not treated as passed",
+    "projectUpdate": "passed"
+  }
+}
