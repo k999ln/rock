@@ -12,7 +12,7 @@
 
 prompt契約v5/raw ideas-v2の旧試験の実手動20件は533.698秒、5工程attempt1、番号/実20件/si表記/完全重複/制御記号検査合格。関連性の粗い案は残るため限定draft。発想/文章の自動候補4B80、code Coder90、記事/要約/翻訳General50。0.6BとGeneralの発想は内容不合格として自動対象外。
 
-本人指定の「RockstarOS・Skyサービス案300件」はauto4B2で30件を保存後、生成step6の180秒timeoutで停止。現在はShell22/compact契約v6で同じ仕事・同じ30件を保持する一度の明示復旧を実機で実施し、追加生成を継続中。復旧操作の初回harnessは非同期応答待ち不足で失敗したが、DBのevent1/生成再開を確認済み。再監視は二度目の復旧ではない。別仕事を作らず既存のsnapshot/保存prefixを確認する。旧package7の300試験は25件保存で中止済み、復活させない。生成は5件/回、plan180秒、lease240秒、純粋発想のみ同じ工程で最大3再生成、60生成+seal。compact復旧のowner同意/expected checkpoint CAS/一度のeventを検証し、介入1件を正直に記録する。手動retryで無制限に継続させず、停止/不明をそのまま記録する。**モデル実行中にBroker instrumentationを起動するとworkerが切れるため実施しない。** 生成本文はGit外。完了後は実300件/全内容/正規化完全重複/hash/保存readback、元データ保全、最終verifyと同一head CI、main統合を別々に記録する。モデル結果をTool成功/本人承認/予算へ昇格しない。
+本人指定の「RockstarOS・Skyサービス案300件」はauto4B2で30件を保存後、生成step6の180秒timeoutで停止。現在はShell22/compact契約v6で同じ仕事・同じ30件を保持する一度の明示復旧を実機で実施し、220件保存後にstep44の180秒timeoutで再び停止。通常の再試行はまだ未実行で、端末ロック解除と同runtime ready確認後の一度の明示UI試行を準備中。復旧操作の初回harnessは非同期応答待ち不足で失敗したが、DBのevent1/生成再開を確認済み。再監視は二度目の復旧ではない。別仕事を作らず既存のsnapshot/保存prefixを確認する。旧package7の300試験は25件保存で中止済み、復活させない。生成は5件/回、plan180秒、lease240秒、純粋発想のみ同じ工程で最大3再生成、60生成+seal。compact復旧のowner同意/expected checkpoint CAS/一度のeventを検証し、介入1件を正直に記録する。手動retryで無制限に継続させず、停止/不明をそのまま記録する。**モデル実行中にBroker instrumentationを起動するとworkerが切れるため実施しない。** 生成本文はGit外。完了後は実300件/全内容/正規化完全重複/hash/保存readback、元データ保全、最終verifyと同一head CI、main統合を別々に記録する。モデル結果をTool成功/本人承認/予算へ昇格しない。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 

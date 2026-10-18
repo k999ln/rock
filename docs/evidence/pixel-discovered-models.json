@@ -1,7 +1,7 @@
 {
   "schema": "rock-pixel-discovered-models/1",
   "recordedOn": "2026-10-17",
-  "status": "REQUESTED300_RUNNING_AFTER_ONE_EXPLICIT_COMPACT_RECOVERY",
+  "status": "REQUESTED300_HELD_AT220_AFTER_ONE_COMPACT_RECOVERY",
   "scope": "Same-signer non-destructive Developer Preview APK on Pixel 10 GL066/frankel, not full OS image",
   "appBuildSource": "ef20d8ae",
   "nativeBuildSource": "31414985faab2dd065e6f609af42df3bfa6e9e99",
@@ -56,20 +56,24 @@
       "allBodyDigestsVerified": true
     },
     "requested300": {
-      "status": "RUNNING_AFTER_ONE_EXPLICIT_RECOVERY",
+      "status": "HELD_LOCAL_GENERATION_TIMED_OUT",
       "accepted": false,
       "target": 300,
       "choice": "auto",
       "expectedProfile": "dev.rock.qwen3-4b-2507-q4km",
       "profileVersion": 2,
-      "checkpointVersion": 5,
+      "checkpointVersion": 6,
       "manualRetries": 0,
-      "completed": 45,
+      "completed": 220,
       "originalRunElapsedMs": 1033135,
       "explicitCompactReplans": 1,
       "original30Preserved": true,
       "sameRequest": true,
-      "sameModelPin": true
+      "sameModelPin": true,
+      "failedGenerationStep": 44,
+      "recoveryMonitorElapsedMs": 5595623,
+      "automaticRejectedProposalRegenerations": 1,
+      "plannedExistingUiRetry": "one_explicit_trial_only_after_unlock_and_runtime_ready_no_budget_or_timeout_change"
     },
     "creativeNetworkInstall": {
       "status": "PASS_FULL_PHONE_DOWNLOAD_HASH_SIGNATURE_LOAD",
@@ -234,12 +238,12 @@
     "unitFailures": 0
   },
   "host": {
-    "fullVerify": "PASS_ALL_STAGES_exit0_main43cf_8da_source_with_test_file_concurrency2_no_tests_skipped",
+    "fullVerify": "PASS_ALL_STAGES_exit0_compact22_fixed_test_file_concurrency2_existing_skip1_no_new_skips",
     "firstBroadRun": "3 existing process-timing failures at normal concurrency; related40 focused tests then passed",
     "androidUnits": {
-      "core": 126,
+      "core": 127,
       "automation": 48,
-      "tool-sdk": 19,
+      "tool-sdk": 20,
       "shell": 14
     },
     "nativeSourceTests": 34,

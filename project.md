@@ -661,3 +661,5 @@ compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842
 現行入口の整理: README/LLM正本/次プロンプトをNative8・Shell22・checkpoint6へ同期し、旧General発想候補と25件中止試験を現在の経路から分離。実300件は一度のcompact復旧後も同仕事で生成中。追加ソース変更や実機APK更新は行わず、終了後の境界/通知/readback受入を待つ。全体verify compact22-fixedは全stage exit0（ファイル並列2）、design:check合格。
 
 2026-10-17 OS11/O6/ROCK・SKY07/SKY21同期: 本人の最新Sky方針をbaseline・融合契約・全OS/Tool詳細・設計索引へ反映。機能/作者の固定と公式による優遇を製品条件にせず、作者共通の互換/権限/版/更新/失効を維持。現Pixel固定catalogの検証範囲と動的native導入未実装を分離。実行中300件のAPK/promptは変更しない。
+
+実auto300のv6監視は5,595.623秒で220件まで実保存した後、step44/attempt1のLOCAL_GENERATION_TIMED_OUTで失敗。step42の形式/重複等の拒否は自動2回目で成功。compact復旧は1回のまま、220件/旧30件/元依頼/pinを保全し、300件未受入。ロック解除待ちの間に、既存の通常再試行ボタンを一度だけ実UI操作するopt-in harnessへ変更する。監視だけの再開が黙ってretryする旧分岐を拒否し、ready/対象仕事/純粋発想timeoutを照合、操作のackを待つ。timeoutやleaseを延長せず、追加手動介入も受入記録へ残す。現時点では通常retry未実行。

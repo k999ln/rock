@@ -5,7 +5,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "same_auto300_running_after_one_compact_recovery",
+    "status": "same_auto300_held_timeout_at220_unlock_needed_for_one_existing_ui_retry",
     "branch": "codex/pixel-discovered-models",
     "currentAppSource": "ef20d8ae",
     "hostVerify": "PASS_all_stages_compact22_fixed_test_file_concurrency2",

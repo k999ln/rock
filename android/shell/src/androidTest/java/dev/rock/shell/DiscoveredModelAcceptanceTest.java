@@ -174,7 +174,7 @@ public final class DiscoveredModelAcceptanceTest {
         String previousChoice = context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).getString("preferredLocalModel", "auto");
         context().getSharedPreferences("terminal_preferences", Context.MODE_PRIVATE).edit().putString("preferredLocalModel", "auto").commit();
         MainActivity activity = (MainActivity) instrumentation.startActivitySync(new Intent(context(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        String created = InstrumentationRegistry.getArguments().getString("rockResumeWork"); JSONObject work = null;
+        String created = InstrumentationRegistry.getArguments().getString("rockResumeWork"); JSONObject work = null; boolean humanRetryUsed=false;
         File dir = context().getExternalFilesDir(null);
         if(created==null)for(String suffix:new String[]{"receipt.json","artifact.md"})new File(dir,"discovered-"+mode+"-"+suffix).delete();
         long start = SystemClock.elapsedRealtime();
@@ -205,7 +205,21 @@ public final class DiscoveredModelAcceptanceTest {
                     do {JSONArray items=new JSONObject(broker.snapshot()).getJSONArray("works");for(int i=0;i<items.length();i++)if(resumeId.equals(items.getJSONObject(i).getString("id")))acknowledged=items.getJSONObject(i).optInt("compactReplanCount")==1;if(!acknowledged)SystemClock.sleep(100);}while(!acknowledged && SystemClock.elapsedRealtime()<ackDeadline);
                     assertTrue("wait for durable recovery acknowledgement before testing progression",acknowledged);
 
-                } else if(held)broker.retry(created);
+                } else if(held) {
+                    assertTrue("a monitor must not silently retry held work", "true".equals(InstrumentationRegistry.getArguments().getString("rockRetryHeldIdeasOnce")));
+                    assertEquals("ideas",mode);assertEquals(300,target);assertEquals("ready",readiness);
+                    assertEquals(1,saved.getInt("compactReplanCount"));
+                    int stopped=-1;
+                    for(int i=0;i<savedRuns.length();i++)if("needs_review".equals(savedRuns.getJSONObject(i).getString("state"))){assertEquals("LOCAL_GENERATION_TIMED_OUT",savedRuns.getJSONObject(i).getString("error"));assertEquals(-1,stopped);stopped=i;}
+                    assertTrue(stopped>=0);String retryId=created;int stoppedStep=stopped;
+                    ui(() -> {try {Method m=MainActivity.class.getDeclaredMethod("openNotificationIntent",Intent.class);m.setAccessible(true);m.invoke(activity,new Intent(Intent.ACTION_VIEW).putExtra("rock.workId",retryId));}catch(Exception e){throw new AssertionError(e);}});
+                    AtomicReference<Button> retry=new AtomicReference<>();long retryDeadline=SystemClock.elapsedRealtime()+15000;
+                    do {ui(() -> retry.set(button(activity.getWindow().getDecorView(),"止まった工程を再試行")));if(retry.get()==null)SystemClock.sleep(100);}while(retry.get()==null&&SystemClock.elapsedRealtime()<retryDeadline);
+                    assertNotNull("retry only through the existing scoped work UI",retry.get());ui(() -> retry.get().performClick());
+                    boolean acknowledged=false;long ackDeadline=SystemClock.elapsedRealtime()+15000;
+                    do {JSONArray items=new JSONObject(broker.snapshot()).getJSONArray("works");for(int i=0;i<items.length();i++)if(retryId.equals(items.getJSONObject(i).getString("id"))){JSONObject run=items.getJSONObject(i).getJSONArray("runs").getJSONObject(stoppedStep);acknowledged=java.util.Set.of("queued","running","succeeded").contains(run.optString("state"));}if(!acknowledged)SystemClock.sleep(100);}while(!acknowledged&&SystemClock.elapsedRealtime()<ackDeadline);
+                    assertTrue("wait for explicit retry acknowledgement",acknowledged);humanRetryUsed=true;
+                }
             }
             if (created == null) {
                 if(!"auto".equals(choice)) {
@@ -273,7 +287,7 @@ public final class DiscoveredModelAcceptanceTest {
             }
             if ("code".equals(mode)) { assertTrue(artifact.contains("sum_even")); assertTrue(artifact.contains("return")); }
             Files.write(new File(dir, "discovered-"+mode+"-artifact.md").toPath(), artifact.getBytes(StandardCharsets.UTF_8));
-            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("explicitCompactResumeUsed","true".equals(InstrumentationRegistry.getArguments().getString("rockCompactResume"))).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("humanReviewAccepted",false);
+            JSONObject receipt = new JSONObject().put("status","passed").put("choice",choice).put("manualChooserUsed",!"auto".equals(choice)&&InstrumentationRegistry.getArguments().getString("rockResumeWork")==null).put("resumedExistingWork",InstrumentationRegistry.getArguments().getString("rockResumeWork")!=null).put("explicitCompactResumeUsed","true".equals(InstrumentationRegistry.getArguments().getString("rockCompactResume"))).put("task",mode).put("workId",created).put("work",work).put("artifactBytes",artifact.getBytes(StandardCharsets.UTF_8).length).put("artifactSha256",hash(artifact)).put("elapsedMs",SystemClock.elapsedRealtime()-start).put("physicalInference",true).put("explicitHumanRetryUsed",humanRetryUsed).put("humanReviewAccepted",false);
             Files.write(new File(dir,"discovered-"+mode+"-receipt.json").toPath(),receipt.toString().getBytes(StandardCharsets.UTF_8));
         } finally {
             // Requested ideas and accepted drafts remain saved; never mark human review complete here.
