@@ -20,6 +20,8 @@ Skyは、ToBが少ない入力で自動化ツールを掲載し、ToCがタイ�
 
 **現在地と受入。** PixelのAPK同梱署名catalogは特定runtime/modelの実機検証範囲であり、Sky全体の固定商品一覧・公式限定の方針にはしない。任意作者の動的なnative plugin導入は未実装。この制限を外すには既存のpackage/作者鍵/互換/隔離/更新/失効契約を実装して受け入れる。SKY07/SKY21（ROCK）とOS11/WEB04が、(1)独立した2作者の同種能力を同じ適合条件で比較・追加・交換、(2)別hostでの利用、(3)更新権限差分拒否・失効・取消・旧成果readbackを検証する。これらは未実行。未対応形式や必要な計測hardwareは個別adapter briefで決め、未確定価格・外部契約を既成事実にしない。
 
+Pixelの動的追加実装は[LLM・Agent共通契約](llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。固定作者/モデルIDの追加をAPK更新の条件にせず、owner別のadmissionと失効で扱う。対応形式以外の任意コードの実行受入ではない。
+
 ## 家具・建築まで開くSkyの融合
 
 2026-10-15の本人指示で、**SkyはAgent・LLMのマーケットプレイス兼ハブであり、RockstarOSの外のソフト、機器、家具、インテリア、建築とも組み合わせ、暮らしの質を上げる基盤**とする。Pixelは最初の第一者si端末で、Sky全体の利用条件ではない。第三者app/Web/機器は自分の認証・sandbox・権限境界を保って接続する。RockstarOSは第一者runtime、Miniは空間での入力/表示/音声/有限処理を担う一つのhost、Pro/cloudは選べる計算先。全連携にMini/独自OSを購入させる契約にしない。

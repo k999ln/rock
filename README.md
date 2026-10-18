@@ -63,6 +63,8 @@ The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `
 
 > **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
 
+SkyでモデルやAgentを追加するには、Pixelの「Sky → LLM・Agentを追加」でHugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLを指定します。配布元・固定版・license・容量・作者署名なしの範囲を確認して追加し、モデルは別操作で取得/検証/導入、Agentは依頼と使用モデルを確認して開始します。[対応形式・状態・停止と復旧](docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。この変更の実機受入は進捗台帳で確認してください。
+
 ## The promise
 
 The product should feel like one continuous handoff:

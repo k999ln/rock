@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 22;
+    const int API_VERSION = 23;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -90,4 +90,12 @@ interface IShellApi {
     String cancelPublicModelDownload(String operationId) = 50;
     /** Owner consent and exact checkpoint CAS; one compact recovery of pure local ideation only. */
     void compactReplanIdeas(String workId, String expectedCheckpointDigest, boolean consent) = 51;
+    /** Public immutable metadata only; may return file choices or an owner-bound proposal. */
+    String inspectSkyAddon(String source) = 52;
+    String addSkyAddon(String proposalId, String expectedDigest, boolean consent) = 53;
+    String skyAddons() = 54;
+    /** Disable new use; model revocation is fenced by existing active-work pins. */
+    String revokeSkyAddon(String digest, boolean consent) = 55;
+    String prepareSkyAgent(String digest, String modelChoice, String request) = 56;
+    String submitSkyAgent(String digest, String requestId, String request, String expectedModelDigest, boolean consent) = 57;
 }

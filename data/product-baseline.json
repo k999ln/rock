@@ -2765,7 +2765,17 @@
     ],
     "pixelBundledCatalogScope": "physical_preview_tested_profiles_not_Sky_product_boundary",
     "dynamicNativeThirdPartyPluginAcceptance": "not_implemented",
-    "authority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤"
+    "authority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "dynamicPixelImplementationInstruction": {
+      "date": "2026-10-17",
+      "ownerQuote": "Skyで見つけたLLMやエージェントを、固定カタログに縛られず追加してPixelで実際に使えるようにして",
+      "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+      "scope": [
+        "owner_pinned_public_GGUF",
+        "declarative_local_text_agent"
+      ],
+      "physicalAcceptance": "pending"
+    }
   },
   "skyFusionDirection": {
     "decidedAt": "2026-10-15",

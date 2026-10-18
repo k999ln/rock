@@ -2,6 +2,10 @@
 
 # Android / Device / Local si
 
+## Pixelの動的追加（OS11主担当、SKY07/SKY21連携）
+
+ROCKは[動的LLM・Agent契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)のowner別admission/互換/hash/同意/失効と既存Zema保存を実装する。EXTERNALは公開metadata・weights・Agent定義の提供、OWNERは追加対象/導入/処理保存の選択。host境界試験と同一APKのPixel実推論を独立に記録し、全OS/任意コード/本番課金へ転用しない。
+
 ## Pixel si専用端末アプリの実装
 
 2026-10-16、OS11/O6/ROCK。本人の実装指示で[Pixelのアプリ実装](../native-os-integration.md#pixel-terminal-implementation)を開始し、4画面/Home候補、実行先の下書き、モデルなし実Tool、現v4表示、保存/停止/再開/書出し、依頼時scheduler、明示端末内音声adapterを実装する。台帳は[同一候補の証拠](../evidence/pixel-si-terminal-implementation.json)。既存原dirty表示部品だけを選別し、同ID/予算/本人/Provider/復旧の現mainを保持。host、emulator、GL066、全OSを別受入し、モデルなしToolをLLM推論へ昇格させない。次は現v4モデルprofile導入と推論一周、日本語音声、独自OS。Android build/lint/Core/SDK/JVM、TerminalHomeIntegrationTest、LocalAiServiceIntegrationTest、os/design/verifyで検証する。

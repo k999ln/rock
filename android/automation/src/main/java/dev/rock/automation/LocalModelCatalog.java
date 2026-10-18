@@ -12,7 +12,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Public model definitions authenticated by the Broker APK, never by an imported file. */
+/** Bundled publisher-signed definitions plus separately authenticated owner-admitted definitions. */
 final class LocalModelCatalog {
     static final String ASSET = "rock-local-model-catalog.json";
     static final class Entry {
@@ -44,13 +44,13 @@ final class LocalModelCatalog {
                 p.getString("runtimeComponentId"), p.getLong("runtimeVersionCode"), p.getInt("runtimeApiMin"),
                 p.getInt("runtimeApiMax"), p.getString("format"), p.getString("quantization"), p.getInt("contextTokens"),
                 p.getString("planSchemaId"), p.getLong("artifactBytes"), p.getLong("minRamBytes"));
-            if (!"Apache-2.0".equals(profile.licenseId) || !"GGUF".equals(profile.format)
+            if (!java.util.Set.of("Apache-2.0", "MIT", "BSD-3-Clause").contains(profile.licenseId) || !"GGUF".equals(profile.format)
                     || profile.artifactBytes > 4_294_967_296L)
                 throw new SecurityException("MODEL_LICENSE_OR_FORMAT_NOT_ACCEPTED");
         }
     }
     final Map<String, Entry> entries;
-    final TrustedModelPublisherVerifier verifier;
+    final dev.rock.core.platform.ModelProfileAuthenticator verifier;
 
     LocalModelCatalog(String text) throws Exception {
         Engine.bounded(text);
@@ -73,6 +73,16 @@ final class LocalModelCatalog {
             if (parsed.putIfAbsent(entry.profile.profileId, entry) != null) throw new SecurityException("DUPLICATE_MODEL_PROFILE");
         }
         entries = Collections.unmodifiableMap(parsed);
+    }
+
+    LocalModelCatalog(LocalModelCatalog bundled, Map<String, Entry> admitted,
+            dev.rock.core.platform.ModelProfileAuthenticator ownerVerifier) {
+        Map<String, Entry> all = new LinkedHashMap<>(bundled.entries);
+        for (Entry e : admitted.values()) {
+            if (all.putIfAbsent(e.profile.profileId, e) != null) throw new SecurityException("ADDON_PROFILE_COLLISION");
+        }
+        entries = Collections.unmodifiableMap(all);
+        verifier = profile -> profile.ownerPinned() ? ownerVerifier.verifySignature(profile) : bundled.verifier.verifySignature(profile);
     }
 
     Entry require(String profileId) {

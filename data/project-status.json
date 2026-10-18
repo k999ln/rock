@@ -7782,5 +7782,20 @@
   "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
   "productionBillingEnabled": false,
   "mainAuthenticatedUiAccepted": true
-}
+},
+  "pixelOpenAddons": {
+    "date": "2026-10-17",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "status": "implementation_started",
+    "scope": [
+      "owner_admitted_dynamic_model_profiles",
+      "declarative_local_agent_recipes",
+      "Pixel_same_artifact_acceptance"
+    ],
+    "baseMainSha": "f8a0217e6d9338a470fbf3dcdb9ed9451b8201e8",
+    "physicalAccepted": false,
+    "nextAction": "Implement versioned owner-scoped admission, selection, revocation and exact profile/recipe provenance; run boundary and actual Pixel tests."
+  }
 }

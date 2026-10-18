@@ -1221,6 +1221,10 @@ Skyの本人別保存済み成果を `/sky/outputs` で確認し、第一者同�
 
 承認・合格条件・未決定: ブラウザ内実行とSky保存を別操作にする。前者は外部送信・モデル料金なしで匿名の新規ブラウザから結果表示とMarkdown持出しを受け入れる。後者は本人A/Bの隔離、同一UUID再送、再訪後の成果読取、モバイル操作、公開Siteの同一SHAを受入条件とする。host単体試験・型・buildだけを公開実利用合格にしない。一般Cloud LLM AgentにはProvider資格情報、署名済み料金表、予算、使用量Receiptと停止/復旧が必要であり、この第一者Agentの成功で代替しない。外部アプリSDKと大学生6 MCP枠も別受入とする。
 
+## Pixelの動的LLM・Agent追加
+
+Skyはowner別の固定版定義を追加し、対応GGUFの導入と宣言型local Agentの依頼へ接続する。目的・体験・責任・入出力・状態・保存・失敗・復旧・承認・合格条件と未対応範囲は[動的追加の共通契約](llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。private Shell API 23、runtime Binder 4/package8。作者署名ありと本人による版/hash固定を区別し、platform鍵で第三者を署名しない。実機受入は専用証拠へ分離する。
+
 ## Pixelの公開モデルと有限下書き
 
 Native8/API4・private Shell22・Engine4/checkpoint6の詳細は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)。対応署名profileの公開検索/導入、手動/作業別選択、記事以外の要約/翻訳/コード/発想を既存仕事へ保存する。コードは実行せず、モデルへTool権限を付与しない。現APKの実300件、60生成+sealの保存連鎖とBroker再起動後同bytes、auto/実手動Coder5、実通知tap/公開検索・導入境界/SQLiteは[同artifactの証拠](evidence/pixel-discovered-models.json)で限定受入。30件compact復旧と220件通常retryが必要で、内容品質・独立事業性・無介入完走・一般background/全OSは未受入。Skyの全体方針は任意作者のaddプラグイン、現固定profileはPixel検証範囲として分ける。

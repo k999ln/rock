@@ -283,7 +283,7 @@
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
     "status": "implemented_configuration_required",
     "policyVersion": "pixel-local-work-model-choice/3",
-    "privateShellApiVersion": 22,
+    "privateShellApiVersion": 23,
     "automaticModel": "dev.rock.qwen25-15b-q4km",
     "manualSelection": true,
     "generalTaskQualityAccepted": false,

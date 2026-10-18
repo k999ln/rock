@@ -39,7 +39,7 @@ final class PublicModelDiscovery {
             JSONObject state = new JSONObject().put("source", source).put("requestedAt", now);
             if (now < retry) { sources.put(state.put("status", "rate_limited").put("retryAt", retry)); continue; }
             String url = "github".equals(source)
-                ? "https://api.github.com/search/repositories?q=" + encode(q + " GGUF") + "&sort=updated&order=desc&per_page=4"
+                ? "https://api.github.com/search/repositories?q=" + encode(q) + "&sort=updated&order=desc&per_page=4"
                 : "https://huggingface.co/api/models?search=" + encode(q) + "&filter=gguf&limit=4&sort=downloads&direction=-1&full=true";
             try {
                 Reply reply = transport.get(url);

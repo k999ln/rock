@@ -189,6 +189,48 @@ public final class RockShellService extends Service {
             catch (Exception unavailable) { return "{\"status\":\"unavailable\",\"executionStarted\":false,\"candidates\":[],\"sources\":[]}"; }
             finally { Binder.restoreCallingIdentity(identity); }
         }
+        private String addonCall(java.util.concurrent.Callable<String> action) {
+            enforceShellCaller(); long identity=Binder.clearCallingIdentity();
+            try{return action.call();}
+            catch(Exception failure){
+                String code=failure.getMessage();
+                if(code==null||!code.matches("[A-Z][A-Z0-9_]{2,100}"))code="ADDON_UNAVAILABLE";
+                try{return new JSONObject().put("status","blocked").put("code",code).put("executionStarted",false).toString();}
+                catch(Exception ignored){return "{\"status\":\"blocked\",\"code\":\"ADDON_UNAVAILABLE\"}";}
+            }finally{Binder.restoreCallingIdentity(identity);}
+        }
+        @Override public String inspectSkyAddon(String source){return addonCall(()->new SkyAddonResolver(RockShellService.this).inspect(source));}
+        @Override public String addSkyAddon(String proposal,String digest,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).add(proposal,digest,consent));}
+        @Override public String skyAddons(){return addonCall(()->new SkyAddonStore(RockShellService.this).list());}
+        @Override public String revokeSkyAddon(String digest,boolean consent){return addonCall(()->{
+            synchronized(ModelProfileOperationLock.LOCK){
+                if(!consent)throw new SecurityException("ADDON_CONSENT_REQUIRED");
+                if(getSystemService(android.app.KeyguardManager.class).isDeviceLocked())throw new SecurityException("DEVICE_LOCKED");
+                SkyAddonStore store=new SkyAddonStore(RockShellService.this);JSONObject d=store.require(digest);
+                if("model".equals(d.getString("kind"))){
+                    dev.rock.core.platform.ModelProfileManifest p=new LocalModelCatalog.Entry(d.getJSONObject("entry")).profile;
+                    // Existing Platform revocation fences future pinned inference; preserve saved work and artifacts.
+                    try { platform().revokeModelProfile(p.profileId,p.version,System.currentTimeMillis()); }
+                    catch(IllegalStateException absent) { if(!"MODEL_PROFILE_NOT_FOUND".equals(absent.getMessage()))throw absent; }
+                }
+                return store.revoke(digest,true);
+            }
+        });}
+        @Override public String prepareSkyAgent(String digest,String choice,String request){return addonCall(()->{
+            JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+            return new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),d.getJSONObject("recipe").getString("task"));
+        });}
+        @Override public String submitSkyAgent(String digest,String requestId,String request,String modelDigest,boolean consent){return addonCall(()->{
+            synchronized(zemaLock){ synchronized(ModelProfileOperationLock.LOCK){
+                JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+                String provenance=new JSONObject().put("schema","rock-sky-agent-use/1").put("addonDigest",digest).put("source",d.getString("source"))
+                    .put("request",request).put("recipe",d.getJSONObject("recipe")).toString();
+                String work=new ZemaOrchestrator(RockShellService.this,engine()).submitAgent(requestId,SkyAddonStore.render(d,request),provenance,modelDigest,
+                    d.getJSONObject("recipe").getString("task"),consent);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,work);
+                return zemaResponse("queued",null,work);
+            }}
+        });}
         @Override public String localModelCatalog() {
             enforceShellCaller();
             try { return boundedJson(new JSONObject(new LocalModelInstaller(RockShellService.this, platform()).catalogJson())); }

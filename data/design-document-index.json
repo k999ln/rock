@@ -2428,5 +2428,22 @@
   "evidence": "docs/evidence/sky-free-cloud-background.json",
   "productionBilling": false
 },
-"skyBackgroundPlanGates":{"document":"docs/sky-billing.md","implementation":"lib/sky-hosted-monthly.ts","evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false}
+"skyBackgroundPlanGates":{"document":"docs/sky-billing.md","implementation":"lib/sky-hosted-monthly.ts","evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false},
+  "pixelDynamicAddons": {
+    "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+    "taskId": "OS11",
+    "privateShellApiVersion": 23,
+    "modelAuthentication": [
+      "existing_publisher_Ed25519",
+      "explicit_unsigned_owner_digest_pin"
+    ],
+    "agentRunner": "local-text/1",
+    "physicalAcceptance": "pending",
+    "implementation": [
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonStore.java",
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonResolver.java",
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonNetwork.java",
+      "android/automation/src/main/java/dev/rock/automation/GgufMetadata.java"
+    ]
+  }
 }

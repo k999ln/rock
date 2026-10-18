@@ -117,6 +117,28 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 `lib/zema-local-agent.ts`と`/api/llm/local-agent`は、同じPCのOllama/OpenAI互換loopbackに限定した非信頼plannerを使う。閉じたJSON schema、最大3手、`sky_route`/`format_citations`/`coconala_check`だけを受け入れ、Tool結果・入力を命令として扱わない。shell、任意file、外部network、購入/投稿/送信/権限変更とCloud fallbackはない。local previewのqwen3:0.6b会話受入は本番公開・Tool選択品質・native Pixel受入と別。公開Workerは本人PCの127.0.0.1へ到達できず、companion/bridgeは未実装。local preview固定userはloopback hostだけに限定し、公開認証を迂回しない。model出力をBroker権限や未実行Tool成功へ昇格させない。
 
+## PixelでのLLM・Agentの動的追加
+
+目的は、APKへ作者やモデルIDを追加するリリースを待たず、Skyで見つけた能力を利用者自身が追加・選択・無効化すること。2026-10-17の本人指示を既存OS11/O6（ROCK主担当、SKY07/SKY21連携）で実装する。現段階はDeveloper Preview APKであり、全OS・一般公開・商用課金の受入ではない。
+
+**体験と入力。** Skyの公開検索またはURL欄から、Hugging Faceの公開・非gatedリポジトリ/単一GGUF、GitHubの宣言型Agent JSONを指定する。モデルは固定commitのファイル候補を選び、出典・版・license・容量・重みSHA-256・作者署名なし・品質未検証・自動選択への参加を確認して追加する。その後にWi-Fi取得と別の導入操作を行う。Agentは名前・公開元・固定版・指示・追加権限なしを確認して追加し、依頼と実モデル・処理/保存への同意を確認して開始する。モデルの手動指定はHomeの既存chooser、標準は作業別の自動選択を使う。
+
+**契約と責任。** private Shell API 23のinspect/add/list/revoke/prepare/submitだけを追加する。ROCKはorigin/path、応答量、timeout、owner、unlock、proposal期限30分、exact digest、同意、immutable版、保存、実行hostと失効を強制する。公開配布元はmetadata/weights/Agent定義を提供する。licenseは公開表記であり安全性・性能・法的適合の保証にしない。作者/モデルIDに固定allowlistや公式優遇はない。一方、実行形式はruntimeに対応する単一GGUF（4GiB以下、対応量子化/architecture、Apache-2.0/MIT/BSD-3-Clause）と`rock-sky-agent/1` / `local-text/1`に限定する。未対応形式や権限はadapter不足として拒否し、公開コードやREADMEの命令を実行しない。
+
+**真正性の区別。** 既存APK catalogのEd25519署名検証は維持する。動的モデルは`owner-pin:<owner hash>` / `owner-consent` / 空の作者署名を明示し、本人が固定した定義と一致するBroker私有のadmission receiptで認証する。作者の署名に見せかけず、既存の署名verifierはこの形式を拒否する。OS/platform鍵や第三者作者の鍵を生成/代用しない。公開元はHTTPS repository originであり、法的作者本人の身元確認ではない。GGUF v2/v3 headerから埋込tokenizer metadataとchat templateのdigestを得る。実導入では全weight SHA/lengthと実ファイルのmetadataを再照合し、既存runtimeの署名/API/RAM/空き容量・実load receiptを満たすまでreadyへ昇格しない。templateはデータとして扱う。
+
+**状態と保存。** `choose_file → prepared proposal → added → downloading/downloaded → verified/load → ready`、不足はblocked、本人による無効化はrevoked。proposalと最大32定義はowner別Broker私有保存。新しい版/出典/指示は新digestと新しい同意が必要で、同IDの内容を書き換えない。権限や費用をimport定義から増やさない。推論は既存model pinとZemaの仕事/検査/成果保存へ接続する。Agent provenance（定義digest、固定公開元、recipe、元依頼）を同じ仕事の入力とrequest digestへ保存し、再送は同じrequest IDで照合する。アプリ再起動後も定義を再読込みし、未確定の依頼を別IDで自動再送しない。
+
+**Agent実行。** Agentは独立した重みや任意コードではなく、版付きの役割/指示と作業種別を持つ宣言型local Agentである。指示は非信頼データとして既存の閉じた文章schemaへ渡す。新しいTool・shell/root・外部送信・有料能力を付与しない。指示と依頼の合計は既存2KB制限内。作業種別はBrokerが定義から検査した明示値を使い、引用された指示の語句で別Toolへ分類し直さない。remote A2A/MCPやPython等のAgent frameworkをそのまま実行する機能は含まれず、既存の個別adapter・本人同意・費用gateが必要である。
+
+**自動選択。** 追加モデルも導入・license同意・端末資源と対応taskを満たす時だけ候補になる。追加時に表示する汎用候補priorityは20（品質未検証のため既存の検証済み専門候補より低くする）で、記事の2 Toolには参加せず、writing/summary/translation/code/planningへ参加する。既存の専門profileの作業別priorityは保持する。これは資源・能力宣言を使う選択で、未知モデルのtask品質を実測評価したランキングではない。手動指定を黙って置換せず、不足時は停止する。task別の品質試験やownerによる候補除外は今後の改善である。
+
+**失敗・復旧・失効。** 不正source/秘密付きURL/redirect、metadata上限、未対応license/形式、期限切れproposal、別owner、hash/埋込metadata不一致は拒否する。検証/ロード失敗時は既存activation rollbackへ戻し、readyを偽らない。DownloadManagerの同operation/nonce/固定sourceで再取得を照合し、完了状態・取消を保持する。モデル無効化はPlatformのREVOKEDも記録し、次のpin推論を拒否する。Agentの無効化は新規依頼へ適用し、既に承認した仕事の停止は既存の仕事停止で扱う。保存済み仕事/成果は削除しない。無効化処理が途中で失敗した場合は状態を再取得し、成功と決めつけない。
+
+**合格条件。** 未署名owner pinが作者署名verifierを通らないこと、metadataの改変/重複key/巨大配列、別owner/別digest/期限切れ/失効、Agentの任意コード/未知field/追加権限を拒否することを試験する。PixelではAPK固定catalogに存在しない公開LLMの検索/追加/取得/実load/実生成/保存、非同梱Agent定義の追加/実生成/保存、同じ仕事の再送/再起動後のreadback、無効化後の新規拒否、元の仕事/全成果hash保持を同一APKで照合する。host、fixture、公開metadata通信、物理推論、全OS、本番は別に記録する。未決の形式は公開仕様と対象runtimeの試験を根拠にadapter単位で拡張し、1モデルの合格を全モデルへ転用しない。
+
+一次資料: [Hugging Face Hub API](https://huggingface.co/docs/hub/en/api)、[GGUF仕様](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md)。実装は任意の外部コードを取得・実行する仕組みではなく、これらのデータ形式を検証するadapterである。
+
 ## SkyでmodelとAgent実行先を選ぶ
 
 2026-10-15、本人はcloud Agentと端末内LLMの双方を使え、選択できること、そしてそのためにSkyがあると明示した。**Skyはmodel/Agent/Toolを探し、必要な能力を導入・接続し、実行先を選ぶ共通入口。** cloud固定や全機種local必須を製品方針にしない。先の専用端末設計の「cloudを標準候補」はこの明示判断で更新し、Pixel先行/iOS clientの提供順は維持する。これは既存registryを使う到達設計で、全選択肢の接続/実機/本番受入ではない。

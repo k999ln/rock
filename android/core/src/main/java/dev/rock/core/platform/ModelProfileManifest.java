@@ -25,7 +25,8 @@ public final class ModelProfileManifest {
         require(licenseId, "[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}", "INVALID_LICENSE_ID");
         require(publisherId, "[A-Za-z0-9][A-Za-z0-9._:-]{2,127}", "INVALID_PUBLISHER_ID");
         require(signingKeyId, "[A-Za-z0-9][A-Za-z0-9._:-]{2,127}", "INVALID_MODEL_SIGNING_KEY_ID");
-        require(manifestSignatureBase64Url, "[A-Za-z0-9_-]{86}", "INVALID_MODEL_MANIFEST_SIGNATURE");
+        if (!isOwnerPin(publisherId, signingKeyId, manifestSignatureBase64Url))
+            require(manifestSignatureBase64Url, "[A-Za-z0-9_-]{86}", "INVALID_MODEL_MANIFEST_SIGNATURE");
         require(runtimeComponentId, "[a-z0-9]+(?:[._-][a-z0-9]+){2,}", "INVALID_RUNTIME_ID");
         RuntimeManifest.requireApiRange(runtimeApiMin, runtimeApiMax);
         require(format, "[A-Z][A-Z0-9_]{0,31}", "INVALID_MODEL_FORMAT");
@@ -44,9 +45,9 @@ public final class ModelProfileManifest {
         this.planSchemaId = planSchemaId; this.artifactBytes = artifactBytes; this.minRamBytes = minRamBytes;
     }
 
-    /** Canonical signed bytes, excluding the detached Ed25519 signature itself. */
+    /** Canonical identity bytes; publisher profiles sign these, owner pins deliberately do not. */
     public String signedPayload() {
-        return String.join("\n", "rockstaros-model-profile/1", profileId, Long.toString(version), weightsSha256,
+        return String.join("\n", ownerPinned()?"rockstaros-owner-pinned-model-profile/1":"rockstaros-model-profile/1", profileId, Long.toString(version), weightsSha256,
             tokenizerSha256, templateSha256, licenseId, runtimeComponentId, Long.toString(runtimeVersionCode),
             publisherId, signingKeyId, runtimeApiMin + ":" + runtimeApiMax, format, quantization,
             Integer.toString(contextTokens), planSchemaId, Long.toString(artifactBytes), Long.toString(minRamBytes));
@@ -62,6 +63,13 @@ public final class ModelProfileManifest {
             && runtime.versionCode == runtimeVersionCode
             && runtime.apiMin <= runtimeApiMax && runtime.apiMax >= runtimeApiMin
             && runtime.modelFormats.contains(format) && runtime.planSchemas.contains(planSchemaId);
+    }
+
+    /** An owner pin is deliberately unsigned and must never pass publisher-signature verification. */
+    public boolean ownerPinned() { return isOwnerPin(publisherId, signingKeyId, manifestSignatureBase64Url); }
+    private static boolean isOwnerPin(String publisher, String key, String signature) {
+        return publisher != null && publisher.matches("owner-pin:[a-f0-9]{64}")
+            && "owner-consent".equals(key) && "".equals(signature);
     }
 
     private static void digest(String value, String error) { require(value, "[a-f0-9]{64}", error); }

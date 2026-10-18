@@ -31,15 +31,28 @@ final class ZemaOrchestrator {
         long identity = android.os.Binder.clearCallingIdentity();
         try {
             synchronized (ModelProfileOperationLock.LOCK) {
-                return submitLocked(requestId, selectionToken, prompt, contextJson, expectedModelDigest, consent);
+                return submitLocked(requestId, selectionToken, prompt, contextJson, expectedModelDigest, null, consent);
             }
         } finally { android.os.Binder.restoreCallingIdentity(identity); }
     }
 
+    private static String textInput(String task,String request,String prompt,String provenance) throws Exception {
+        org.json.JSONObject input=new org.json.JSONObject().put("task",task).put("request",request).put("prompt",prompt);
+        if(provenance!=null)input.put("agentProvenance",new org.json.JSONObject(provenance));
+        return input.toString();
+    }
+    String submitAgent(String requestId,String prompt,String provenance,String modelDigest,String task,boolean consent) throws Exception {
+        if(modelDigest==null||!modelDigest.matches("[a-f0-9]{64}")||!java.util.Set.of("writing","summary","translation","code","planning").contains(task))
+            throw new SecurityException("AGENT_MODEL_AND_TASK_REQUIRED");
+        long identity=android.os.Binder.clearCallingIdentity();
+        try{synchronized(ModelProfileOperationLock.LOCK){return submitLocked(requestId,null,prompt,provenance,modelDigest,task,consent);}}
+        finally{android.os.Binder.restoreCallingIdentity(identity);}
+    }
+
     private String submitLocked(String requestId, String selectionToken, String prompt, String contextJson,
-                                String expectedModelDigest, boolean consent) throws Exception {
+                                String expectedModelDigest, String forcedTask, boolean consent) throws Exception {
         if (!consent) throw new SecurityException("LOCAL_ARTIFACT_CONSENT_REQUIRED");
-        String task = ModelSelectionPolicy.task(prompt);
+        String task = forcedTask==null?ModelSelectionPolicy.task(prompt):forcedTask;
         boolean article = "article".equals(task);
         String toolId = article ? engine.requireSkySelection(selectionToken) : LocalWorkDraft.RECIPE;
         String planningPrompt = LocalWorkDraft.prompt(task, prompt);
@@ -60,9 +73,9 @@ final class ZemaOrchestrator {
         if (expectedModelDigest != null && !expectedModelDigest.equals(pin.manifestDigest))
             throw new SecurityException("MODEL_SELECTION_CHANGED");
         if (!article) {
-            int ideas = dev.rock.sdk.LocalIdeaBatch.requestedCount(prompt);
+            int ideas = forcedTask==null?dev.rock.sdk.LocalIdeaBatch.requestedCount(prompt):0;
             String input = ideas > 0 ? dev.rock.sdk.LocalIdeaBatch.start(prompt, ideas)
-                : new org.json.JSONObject().put("task", task).put("request", prompt).put("prompt", planningPrompt).toString();
+                : textInput(task,prompt,planningPrompt,forcedTask==null?null:contextJson);
             LocalPlanningFence.Attempt prepared = PLANNING.begin(engine::paused, () -> { });
             try { return PLANNING.commit(prepared, engine::paused, () -> ideas > 0
                 ? engine.submitPinnedIdeas(pin, requestId, input,

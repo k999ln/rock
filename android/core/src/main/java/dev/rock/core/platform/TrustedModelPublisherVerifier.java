@@ -11,7 +11,7 @@ import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
 
 /** Verifies detached Ed25519 model-manifest signatures against an OS-owned keyset. */
-public final class TrustedModelPublisherVerifier {
+public final class TrustedModelPublisherVerifier implements ModelProfileAuthenticator {
     public static final class PublisherKey {
         public final String publisherId;
         public final String keyId;
@@ -49,6 +49,7 @@ public final class TrustedModelPublisherVerifier {
     /** Verify signature and publisher/key binding; this does not verify model bytes or licensing. */
     public String verifySignature(ModelProfileManifest profile) {
         if (profile == null) throw new IllegalArgumentException("MODEL_PROFILE_REQUIRED");
+        if (profile.ownerPinned()) throw new SecurityException("MODEL_AUTHOR_SIGNATURE_ABSENT");
         PublisherKey key = keys.get(identity(profile.publisherId, profile.signingKeyId));
         if (key == null) throw new SecurityException("MODEL_PUBLISHER_KEY_UNTRUSTED");
         if (key.revoked) throw new SecurityException("MODEL_PUBLISHER_KEY_REVOKED");

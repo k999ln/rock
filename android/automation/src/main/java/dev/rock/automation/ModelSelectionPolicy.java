@@ -30,7 +30,10 @@ final class ModelSelectionPolicy {
         return "writing";
     }
     static String select(String choice, String prompt, List<Candidate> candidates) {
-        String task = task(prompt);
+        return selectTask(choice,task(prompt),candidates);
+    }
+    static String selectTask(String choice,String task,List<Candidate> candidates) {
+        if(!dev.rock.sdk.LocalWorkDraft.TASKS.contains(task))throw new IllegalArgumentException("INVALID_TASK");
         if ("auto".equals(choice)) {
             Candidate best = null;
             for (Candidate candidate : candidates) if (candidate.available() && candidate.priority > 0 && candidate.tasks.contains(task)

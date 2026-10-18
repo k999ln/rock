@@ -162,6 +162,7 @@ public final class MainActivity extends Activity {
         super.onCreate(state);
         zemaSubmission = localSubmission("zema_submission_recovery");
         articleSubmission = localSubmission("article_submission_recovery");
+        agentSubmission = localSubmission("sky_agent_submission_recovery");
         ui = new ShellUi(this);
         createShellFrame();
         heading(pageContent[1], "Sky", "能力と実行先を選ぶ");
@@ -327,7 +328,7 @@ public final class MainActivity extends Activity {
         LinearLayout discoveryCard = ui.card(pageContent[1]);
         pageContent[1].removeView(discoveryCard); pageContent[1].addView(discoveryCard, 2);
         label(discoveryCard, "公開LLMを探す", 18);
-        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GitHubは更新順、Hugging Faceはダウンロード数順でGGUF関連候補を探します。", 14);
+        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GitHubは更新順、Hugging Faceはダウンロード数順でモデルやAgentの関連候補を探します。", 14);
         discoveryQuery = field(discoveryCard, "モデル名・公開キーワード", "Qwen", false);
         discoverySearch = button(discoveryCard, "今の公開モデルを検索", this::searchPublicModels);
         discoveryStatus = label(discoveryCard, "未検索。公開情報は導入・動作・ライセンス適合の保証ではありません。", 14);
@@ -341,6 +342,7 @@ public final class MainActivity extends Activity {
         });
         modelDownloadPanel = new LinearLayout(this); modelDownloadPanel.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(modelDownloadPanel);
         button(discoveryCard, "ダウンロード状態を確認", this::refreshModelDownload); refreshModelDownload();
+        buildAddonPanel(form);
         discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
         form = composer;
         label(form, "依頼を確認", 20);
@@ -604,7 +606,7 @@ public final class MainActivity extends Activity {
         modelDownloadPanel.removeAllViews(); String state = result.optString("status");
         if ("idle".equals(state)) return;
         String name = result.optString("name", "モデル");
-        String label = "downloaded".equals(state) ? "取得済み。署名・ハッシュの検証と導入が必要です。"
+        String label = "downloaded".equals(state) ? "取得済み。出典・ハッシュ・実行runtimeの検証と導入が必要です。"
             : "installed".equals(state) ? "導入完了。作業に合わせて選択できます。"
             : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
             : "paused".equals(state) ? ("waiting_to_retry".equals(result.optString("pauseReason")) ? "通信が途切れたため、Androidの再接続を待っています。取得済みの位置から再開します。" : "取得は待機中です。Wi-Fi・保存容量を確認してください。")
@@ -616,6 +618,103 @@ public final class MainActivity extends Activity {
         if ("downloaded".equals(state)) button(modelDownloadPanel, "検証してPixelへ導入", () -> modelDownloadAction(c -> c.finishPublicModelInstall(operation, true)));
         if (java.util.Set.of("downloaded", "downloading", "paused").contains(state) || "profile_changed".equals(state) && !result.optBoolean("terminal"))
             button(modelDownloadPanel, "この取得を中止", () -> modelDownloadAction(c -> c.cancelPublicModelDownload(operation)));
+    }
+
+    private EditText addonSource;
+    private TextView addonStatus;
+    private LinearLayout addonList;
+    private LocalSubmission agentSubmission;
+    private Button agentRecovery;
+    private void buildAddonPanel(LinearLayout parent) {
+        LinearLayout panel=ui.card(parent);label(panel,"LLM・Agentを追加",19);
+        label(panel,"Hugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLから追加できます。作者署名の有無・互換性・版・容量・権限を確認します。",13);
+        addonSource=field(panel,"公開元のURL","https://huggingface.co/作者/モデル",false);
+        button(panel,"追加する内容を確認",()->inspectAddon(addonSource.getText().toString().trim()));
+        addonStatus=label(panel,"追加後、モデルは導入して手動・自動選択、Agentはここから依頼できます。",13);
+        button(panel,"追加したものを確認",this::refreshAddons);
+        agentRecovery=button(panel,"未確認のAgent依頼を履歴で確認",()->reviewPendingSubmission(agentSubmission,agentRecovery));
+        addonList=new LinearLayout(this);addonList.setOrientation(LinearLayout.VERTICAL);panel.addView(addonList);refreshAddons();
+    }
+    private void inspectAddon(String source) {
+        addonStatus.setText("公開元と固定版、対応形式を確認しています…");
+        worker.execute(()->{
+            try{JSONObject p=new JSONObject(new ShellConnection(this).inspectSkyAddon(source));
+                runOnUiThread(()->{
+                    if(isDestroyed())return;
+                    if("choose_file".equals(p.optString("status"))){
+                        JSONArray files=p.optJSONArray("files");if(files==null||files.length()==0){addonStatus.setText("この版に対応する単一GGUFファイルがありません。");return;}
+                        String[] names=new String[files.length()];for(int i=0;i<names.length;i++){JSONObject f=files.optJSONObject(i);names[i]=f.optString("name")+" · "+android.text.format.Formatter.formatFileSize(this,f.optLong("bytes"));}
+                        new AlertDialog.Builder(this).setTitle("導入するGGUFを選ぶ").setItems(names,(d,i)->inspectAddon(files.optJSONObject(i).optString("source"))).setNegativeButton("戻る",null).show();
+                    }else if("prepared".equals(p.optString("status")))confirmAddon(p);
+                    else addonStatus.setText("追加条件を満たしていません: "+p.optString("code","ADDON_UNAVAILABLE")+"\n対応外の形式は専用adapterが必要です。");
+                });
+            }catch(Exception failure){runOnUiThread(()->{if(!isDestroyed())addonStatus.setText("公開元を確認できません。URLと通信を確認して再試行してください。");});}
+        });
+    }
+    private void confirmAddon(JSONObject p) {
+        JSONObject d=p.optJSONObject("definition");if(d==null)return;
+        boolean model="model".equals(d.optString("kind"));JSONObject entry=d.optJSONObject("entry"),profile=entry==null?null:entry.optJSONObject("profile");
+        String details=d.optString("name")+"\n"+d.optString("source")+"\n定義SHA-256: "+p.optString("digest")
+            +"\n作者署名なし。公開リポジトリの版を利用者が選ぶ追加です。品質は未検証です。";
+        if(model&&profile!=null)details+="\n"+profile.optString("licenseId")+" · "+android.text.format.Formatter.formatFileSize(this,profile.optLong("artifactBytes"))
+            +"\n重みSHA-256: "+profile.optString("weightsSha256")+"\n対応作業の自動選択にも候補として加えます。導入・実行は別操作です。";
+        else details+="\n"+d.optJSONObject("recipe").optString("licenseId")+" · 端末内テキスト生成のみ・追加権限なし・通信なし\n指示: "+d.optString("instructions");
+        LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);label(view,details,13);
+        CheckBox agreed=new CheckBox(this);agreed.setText("配布元・版・ライセンス・未検証の範囲を確認し、この定義を追加する");styleCheckBox(agreed);view.addView(agreed);
+        ScrollView scroll=new ScrollView(this);scroll.addView(view);
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle(model?"モデル定義を追加":"Agentを追加").setView(scroll).setPositiveButton("追加する",null).setNegativeButton("戻る",null).create();
+        dialog.setOnShowListener(v->{dialog.getButton(-1).setEnabled(false);agreed.setOnCheckedChangeListener((b,c)->dialog.getButton(-1).setEnabled(c));
+            dialog.getButton(-1).setOnClickListener(b->{if(!agreed.isChecked())return;dialog.dismiss();worker.execute(()->{
+                try{JSONObject result=new JSONObject(new ShellConnection(this).addSkyAddon(p.optString("proposalId"),p.optString("digest"),true));
+                    runOnUiThread(()->{if(isDestroyed())return;addonStatus.setText("added".equals(result.optString("status"))?"追加しました。モデルの導入、またはAgentへの依頼へ進めます。":"追加できません: "+result.optString("code"));refreshAddons();refreshLocalModels();});
+                }catch(Exception failure){runOnUiThread(()->addonStatus.setText("追加結果を確認できません。「追加したものを確認」で照合してください。"));}
+            });});});dialog.show();
+    }
+    private void refreshAddons(){
+        if(addonList==null)return;worker.execute(()->{
+            try{JSONArray rows=new JSONObject(new ShellConnection(this).skyAddons()).getJSONArray("addons");
+                runOnUiThread(()->{if(isDestroyed())return;addonList.removeAllViews();updateSubmissionRecovery(agentSubmission,agentRecovery);
+                    for(int i=0;i<rows.length();i++){JSONObject row=rows.optJSONObject(i),d=row.optJSONObject("definition");if(d==null)continue;
+                        LinearLayout card=ui.card(addonList);label(card,d.optString("name"),16);label(card,(row.optBoolean("revoked")?"無効":"追加済み")+" · "+d.optString("kind")+"\n"+d.optString("source"),12);
+                        if(row.optBoolean("revoked"))continue;String digest=row.optString("digest");
+                        if("model".equals(d.optString("kind")))button(card,"このモデルをPixelへ導入",()->preparePublicModelInstall(d.optString("id")));
+                        else button(card,"このAgentに依頼",()->openAddonAgent(digest,d.optString("name")));
+                        button(card,"この追加を無効にする",()->new AlertDialog.Builder(this).setTitle("追加を無効にする")
+                            .setMessage("保存した仕事と成果は残ります。モデルを使う未完了の仕事は以後の推論が停止します。Agent設定の無効化は新規依頼に適用します。")
+                            .setPositiveButton("無効にする",(x,y)->worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).revokeSkyAddon(digest,true));runOnUiThread(()->{addonStatus.setText(result.optString("status")+" "+result.optString("code"));refreshAddons();refreshLocalModels();});}catch(Exception failure){runOnUiThread(()->addonStatus.setText("無効化の結果を確認できません。再読込みしてください。"));}})).setNegativeButton("戻る",null).show());
+                    }
+                });
+            }catch(Exception failure){runOnUiThread(()->{if(!isDestroyed())addonStatus.setText("追加一覧を取得できません。");});}
+        });
+    }
+    private void openAddonAgent(String digest,String name){
+        LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);content.setPadding(28,16,28,16);
+        EditText request=field(content,"このAgentへの依頼","",true);
+        button(content,"使うLLMを変更（標準は自動）",this::showModelChooser);
+        label(content,"端末内で文章を生成して保存します。Agent指示と依頼は合計2KBまでです。",13);
+        new AlertDialog.Builder(this).setTitle(name).setView(content).setPositiveButton("モデルと実行条件を確認",(d,w)->prepareAddonAgent(digest,request.getText().toString()))
+            .setNegativeButton("戻る",null).show();
+    }
+    private void prepareAddonAgent(String digest,String request){
+        String choice=getSharedPreferences("terminal_preferences",MODE_PRIVATE).getString("preferredLocalModel","auto");
+        worker.execute(()->{try{JSONObject p=new JSONObject(new ShellConnection(this).prepareSkyAgent(digest,choice,request));
+            runOnUiThread(()->{if(isDestroyed())return;if(!"prepared".equals(p.optString("status"))){addonStatus.setText("実行条件を確認してください: "+p.optString("code"));return;}
+                LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);
+                label(view,request+"\nモデル: "+p.optString("name")+"\n"+p.optString("reason")+"\n"+p.optString("warning"),14);
+                CheckBox consent=new CheckBox(this);consent.setText("このAgent設定と依頼を、このPixelのモデルで処理して成果を保存する");styleCheckBox(consent);view.addView(consent);
+                AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Agentへの依頼を確認").setView(view).setPositiveButton("開始する",null).setNegativeButton("戻る",null).create();
+                dialog.setOnShowListener(x->{Button start=dialog.getButton(-1);start.setEnabled(false);consent.setOnCheckedChangeListener((v,c)->start.setEnabled(c));
+                    start.setOnClickListener(v->{if(!consent.isChecked())return;submitAddonAgent(digest,request,p.optString("manifestDigest"),start,dialog);});});dialog.show();
+            });
+        }catch(Exception failure){runOnUiThread(()->addonStatus.setText("モデルの準備を確認できません。"));}});
+    }
+    private void submitAddonAgent(String digest,String request,String modelDigest,Button start,AlertDialog dialog){
+        LocalSubmission.Attempt attempt=beginSubmission(agentSubmission,start,LocalSubmission.fingerprint("sky-agent",digest,request,modelDigest));if(attempt==null)return;
+        worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).submitSkyAgent(digest,attempt.requestId,request,modelDigest,true));
+            String work=result.optString("workId");boolean queued="queued".equals(result.optString("status"))&&validLocalWorkId(work);
+            runOnUiThread(()->{if(isDestroyed())return;finishSubmission(agentSubmission,attempt,queued,start,agentRecovery);
+                if(queued){dialog.dismiss();openWork(work);perform(c->null);}else addonStatus.setText("依頼結果: "+result.optString("code")+"。未確定の依頼は履歴で確認し、同じ入力で照合してください。");});
+        }catch(Exception failure){runOnUiThread(()->{finishSubmission(agentSubmission,attempt,false,start,agentRecovery);addonStatus.setText("結果が未確認です。同じ依頼を再試行すると同じIDで照合します。");});}});
     }
 
     private void searchPublicModels() {
@@ -641,7 +740,7 @@ public final class MainActivity extends Activity {
                         status.append("\n").append(source.optString("source")).append(": ").append("ok".equals(source.optString("status")) ? "取得済み" : "rate_limited".equals(source.optString("status")) ? "API利用制限中" : "取得失敗");
                         if (source.optBoolean("incompleteResults")) status.append("（検索結果は一部）");
                     }
-                    status.append("\n対応確認済みの候補には導入ボタンを表示します。その他は適合未確認です。"); discoveryStatus.setText(status.toString());
+                    status.append("\n対応確認済みの候補には導入ボタンを表示します。その他も追加用の条件を確認できます。"); discoveryStatus.setText(status.toString());
                     JSONArray candidates = result.optJSONArray("candidates");
                     if (candidates != null) for (int i = 0; i < candidates.length(); i++) {
                         JSONObject candidate = candidates.optJSONObject(i); if (candidate == null) continue;
@@ -653,6 +752,8 @@ public final class MainActivity extends Activity {
                         String url = candidate.optString("url"); button(card, "公開元で詳細を見る（外部）", () -> openPublicModelUrl(url));
                         String installId = candidate.optString("installProfileId");
                         if (!installId.isEmpty()) button(card, "条件を確認してPixelへ導入", () -> preparePublicModelInstall(installId));
+                        if("huggingface".equals(candidate.optString("source")))button(card,"別のGGUFも選んで追加",()->inspectAddon(url));
+                        else button(card,"Agent定義を確認",()->inspectAddon(url+"/blob/HEAD/sky-addon.json"));
                     }
                 });
             } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) { discoverySearch.setEnabled(true); discoveryStatus.setText("検索できませんでした。通信とBrokerの接続を確認してください。"); } }); }
