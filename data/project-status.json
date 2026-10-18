@@ -7788,7 +7788,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "initial_physical_defects_found_API24_corrections_under_test",
+    "status": "host_verified_physical_corrections_waiting_for_owner_unlock",
     "scope": [
       "owner_admitted_dynamic_model_profiles",
       "declarative_local_agent_recipes",
@@ -7796,6 +7796,11 @@
     ],
     "baseMainSha": "f8a0217e6d9338a470fbf3dcdb9ed9451b8201e8",
     "physicalAccepted": false,
-    "nextAction": "Implement versioned owner-scoped admission, selection, revocation and exact profile/recipe provenance; run boundary and actual Pixel tests."
+    "nextAction": "After owner unlock, run isolated3 boundaries, retry the same held Agent request, verify real Agent/code outputs and task-specific auto admission; preserve initial rejected output and original65/248 hashes. Do not merge before physical acceptance and exact-head CI.",
+    "productionSource": "325150d77ce81b19a59bf7be9709c15de47f1be4",
+    "privateShellApiVersion": 24,
+    "hostVerify": "PASS_all_stages_exit0_test_file_concurrency2_no_assertions_weakened",
+    "evidence": "docs/evidence/pixel-open-addons.json",
+    "pullRequest": "https://github.com/k999ln/rock/pull/167"
   }
 }

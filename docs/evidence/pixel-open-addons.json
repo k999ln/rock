@@ -1,0 +1,106 @@
+{
+  "schema": "rock-pixel-open-addons-evidence/1",
+  "recordedOn": "2026-10-17",
+  "status": "HOST_VERIFIED_PHYSICAL_CORRECTIONS_WAITING_FOR_OWNER_UNLOCK",
+  "productionSource": "325150d77ce81b19a59bf7be9709c15de47f1be4",
+  "pullRequest": "https://github.com/k999ln/rock/pull/167",
+  "versions": {
+    "privateShellApi": 24,
+    "nativePackage": 8,
+    "nativeBinderApi": 4,
+    "platformApi": 1,
+    "engineDb": 4,
+    "modelSelectionPolicy": "pixel-local-work-model-choice/4"
+  },
+  "installedApks": {
+    "broker": {
+      "sha256": "e486292cf5a2612b900d5dcce978e12aa987eb14c9481450d6daafa54c31adb9",
+      "bytes": 7024905
+    },
+    "shell": {
+      "sha256": "2dc8bc7c8d5900768a7952b5a5cbab1bd8a76dc8be431881d16727e440be826e",
+      "bytes": 757492
+    }
+  },
+  "previewSignerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+  "nativeApkReinstalled": false,
+  "host": {
+    "unitCases": {
+      "core": 129,
+      "automation": 54,
+      "shell": 14,
+      "sdkDebug": 21
+    },
+    "sdkReleaseRepeatedCases": 21,
+    "buildLint": "PASS",
+    "fullVerify": "PASS_ALL_STAGES_EXIT0",
+    "testFileConcurrency": 2,
+    "assertionsWeakened": false,
+    "source": "325150d77ce81b19a59bf7be9709c15de47f1be4"
+  },
+  "initialPhysical": {
+    "source": "ffb7f1b08262822b3651b223d83cb8194f448b14",
+    "privateShellApi": 23,
+    "publicModel": {
+      "repository": "bartowski/Qwen2.5-0.5B-Instruct-GGUF",
+      "revision": "41ba88dbac95fed2528c92514c131d73eb5a174b",
+      "file": "Qwen2.5-0.5B-Instruct-Q4_K_M.gguf",
+      "bytes": 397808192,
+      "weightsSha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+      "liveSearch": "PASS",
+      "ownerAdmissionUi": "PASS",
+      "actualNetworkDownload": "PASS",
+      "fullHashEmbeddedMetadataAndRuntimeLoad": "PASS",
+      "generationAndStorage": "PASS_STRUCTURAL_ONLY",
+      "elapsedMs": 56823,
+      "artifactSha256": "192d26c1dc2f345a68d8fd31921cfb6f81522570acfd04aeca4e2f830fddd2d7",
+      "contentQuality": "REJECTED_TASK_DIRECTIVE_ECHO",
+      "automaticAdmissionUnderCurrentPolicy": false
+    },
+    "agent": {
+      "status": "FAILED_BEFORE_INFERENCE",
+      "reason": "LOCAL_REQUEST_REPLAN_REQUIRED",
+      "cause": "legacy three-field local input validator rejected fourth provenance field",
+      "sameWorkPreservedForExplicitRetry": true
+    },
+    "isolatedAdmissionCases": 2
+  },
+  "currentPhysical": {
+    "accepted": false,
+    "storeBoundaryAttempt": "NOT_ACCEPTED_DEVICE_LOCKED_3_CASES",
+    "agentAttempt": "NOT_RUN_LOCKED_PRECONDITION",
+    "pending": [
+      "same_work_Agent_explicit_retry_real_generation_and_storage",
+      "same_request_id_replay",
+      "Agent_disable_and_fresh_consent_reenable",
+      "non_bundled_model_real_code_draft",
+      "trial_gated_task_specific_auto_config_and_stale_revision_rejection",
+      "current_UI_notification_and_after_process_readback"
+    ]
+  },
+  "preservation": {
+    "originalWorks": 65,
+    "originalArtifacts": 248,
+    "allOriginalArtifactsPreserved": true,
+    "currentWorks": 67,
+    "currentArtifacts": 252,
+    "allCurrentBodyHashesVerified": true,
+    "oldWorkStatesUnchanged": true,
+    "scope": "read_only_device_SQLite_copy_while_locked_not_inference_acceptance"
+  },
+  "ci": {
+    "exactHeadAuthority": "current PR167 REST commit/check-runs",
+    "previous325150Prototype": "FAILED_TEST_FIXTURE_MUTATED_SHARED_CATALOG_JSON",
+    "testCorrection": "deep copy the test entry; publisher signature guard unchanged"
+  },
+  "scopeLimits": [
+    "Developer_Preview_APK_not_whole_OS",
+    "unsigned_owner_pins_not_publisher_signatures",
+    "declarative_local_text_Agent_not_arbitrary_code_or_framework",
+    "schema_trial_and_owner_auto_consent_not_general_quality_benchmark",
+    "no_cloud_paid_execution_or_production_billing"
+  ],
+  "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-open-addons-20261017",
+  "mainIntegratedAtEvidenceCommit": false,
+  "integrationAuthority": "GitHub PR167 mergedAt/mergeCommit and current main"
+}

@@ -311,9 +311,24 @@
       "operatorInterventions": 2,
       "sameSavedArtifactAfterBrokerRestart": true
     },
-    "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file",
+    "publicInstall": "explicit_publisher_signed_or_owner_pinned_definition_wifi_download_or_verified_readonly_file",
     "catalogScope": "tested_Pixel_preview_profiles_not_a_fixed_Sky_product_or_official_tier",
     "skyAddPluginAuthority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
-    "dynamicThirdPartyNativeAdmissionAccepted": false
+    "dynamicThirdPartyNativeAdmissionAccepted": false,
+    "dynamicDataAddons": {
+      "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+      "evidence": "docs/evidence/pixel-open-addons.json",
+      "implemented": true,
+      "physicalAccepted": false,
+      "source": "325150d77ce81b19a59bf7be9709c15de47f1be4",
+      "modelAuthorSet": "not_fixed",
+      "agentAuthorSet": "not_fixed",
+      "models": "public_single_GGUF_owner_digest_pin",
+      "agents": "declarative_local_text_no_added_permissions",
+      "defaultNewModelAutoPriority": 0,
+      "autoAdmission": "exact_schema_trial_task_plus_owner_consent_revision_CAS",
+      "generalQualityAccepted": false,
+      "bundledTaskMapMeaning": "existing_defaults_before_owner_admitted_task_candidates"
+    }
   }
 }

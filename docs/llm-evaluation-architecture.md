@@ -119,6 +119,8 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 ## PixelでのLLM・Agentの動的追加
 
+受入の現在地は[専用証拠](evidence/pixel-open-addons.json)。初回実機ではLLMの実取得/ロード/生成保存まで到達したが内容echoとAgent入力契約不一致を発見した。修正候補の実機再受入はロック解除待ちであり、host成功を物理成功へ換算しない。
+
 目的は、APKへ作者やモデルIDを追加するリリースを待たず、Skyで見つけた能力を利用者自身が追加・選択・無効化すること。2026-10-17の本人指示を既存OS11/O6（ROCK主担当、SKY07/SKY21連携）で実装する。現段階はDeveloper Preview APKであり、全OS・一般公開・商用課金の受入ではない。
 
 **体験と入力。** Skyの公開検索またはURL欄から、Hugging Faceの公開・非gatedリポジトリ/単一GGUF、GitHubの宣言型Agent JSONを指定する。モデルは固定commitのファイル候補を選び、出典・版・license・容量・重みSHA-256・作者署名なし・品質未検証・自動選択への参加を確認して追加する。その後にWi-Fi取得と別の導入操作を行う。Agentは名前・公開元・固定版・指示・追加権限なしを確認して追加し、依頼と実モデル・処理/保存への同意を確認して開始する。モデルの手動指定はHomeの既存chooser、標準は作業別の自動選択を使う。
@@ -127,7 +129,7 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 **真正性の区別。** 既存APK catalogのEd25519署名検証は維持する。動的モデルは`owner-pin:<owner hash>` / `owner-consent` / 空の作者署名を明示し、本人が固定した定義と一致するBroker私有のadmission receiptで認証する。作者の署名に見せかけず、既存の署名verifierはこの形式を拒否する。OS/platform鍵や第三者作者の鍵を生成/代用しない。公開元はHTTPS repository originであり、法的作者本人の身元確認ではない。GGUF v2/v3 headerから埋込tokenizer metadataとchat templateのdigestを得る。実導入では全weight SHA/lengthと実ファイルのmetadataを再照合し、既存runtimeの署名/API/RAM/空き容量・実load receiptを満たすまでreadyへ昇格しない。templateはデータとして扱う。
 
-**状態と保存。** `choose_file → prepared proposal → added → downloading/downloaded → verified/load → ready`、不足はblocked、本人による無効化はrevoked。proposalと最大32定義はowner別Broker私有保存。新しい版/出典/指示は新digestと新しい同意が必要で、同IDの内容を書き換えない。権限や費用をimport定義から増やさない。推論は既存model pinとZemaの仕事/検査/成果保存へ接続する。Agent provenance（定義digest、固定公開元、recipe、元依頼）を同じ仕事の入力とrequest digestへ保存する。実行時にもそのexact field集合・定義digest・作業種別・元依頼から再構成したpromptを照合する。仕事詳細へAgent名と固定公開元を表示し、再送は同じrequest IDで照合する。アプリ再起動後も定義を再読込みし、未確定の依頼を別IDで自動再送しない。
+**状態と保存。** `choose_file → prepared proposal → added → downloading/downloaded → verified/load → ready`、不足はblocked、本人による無効化はrevoked。proposalと最大32定義はowner別Broker私有保存。既存署名manifestのdigestは維持するが、新しいowner-pin形式はAPI24対応APKが必要で、旧APKへのdowngrade受入は未実施。backupからmodel rowだけを戻してもadmission receiptや導入同意の復元にはせず、再追加/再同意/再検証を要求する。新しい版/出典/指示は新digestと新しい同意が必要で、同IDの内容を書き換えない。権限や費用をimport定義から増やさない。推論は既存model pinとZemaの仕事/検査/成果保存へ接続する。Agent provenance（定義digest、固定公開元、recipe、元依頼）を同じ仕事の入力とrequest digestへ保存する。実行時にもそのexact field集合・定義digest・作業種別・元依頼から再構成したpromptを照合する。仕事詳細へAgent名と固定公開元を表示し、再送は同じrequest IDで照合する。アプリ再起動後も定義を再読込みし、未確定の依頼を別IDで自動再送しない。
 
 **Agent実行。** Agentは独立した重みや任意コードではなく、版付きの役割/指示と作業種別を持つ宣言型local Agentである。指示は非信頼データとして既存の閉じた文章schemaへ渡す。新しいTool・shell/root・外部送信・有料能力を付与しない。指示と依頼の合計は既存2KB制限内。作業種別はBrokerが定義から検査した明示値を使い、引用された指示の語句で別Toolへ分類し直さない。remote A2A/MCPやPython等のAgent frameworkをそのまま実行する機能は含まれず、既存の個別adapter・本人同意・費用gateが必要である。
 

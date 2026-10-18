@@ -2444,6 +2444,7 @@
       "android/automation/src/main/java/dev/rock/automation/SkyAddonResolver.java",
       "android/automation/src/main/java/dev/rock/automation/SkyAddonNetwork.java",
       "android/automation/src/main/java/dev/rock/automation/GgufMetadata.java"
-    ]
+    ],
+    "evidence": "docs/evidence/pixel-open-addons.json"
   }
 }
