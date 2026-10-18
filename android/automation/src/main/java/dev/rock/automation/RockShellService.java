@@ -201,6 +201,7 @@ public final class RockShellService extends Service {
         }
         @Override public String inspectSkyAddon(String source){return addonCall(()->new SkyAddonResolver(RockShellService.this).inspect(source));}
         @Override public String addSkyAddon(String proposal,String digest,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).add(proposal,digest,consent));}
+        @Override public String configureSkyModelAutomaticTasks(String digest,long revision,String tasks,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).configureAutomatic(digest,revision,tasks,consent));}
         @Override public String skyAddons(){return addonCall(()->new SkyAddonStore(RockShellService.this).list());}
         @Override public String revokeSkyAddon(String digest,boolean consent){return addonCall(()->{
             synchronized(ModelProfileOperationLock.LOCK){
@@ -1033,6 +1034,13 @@ public final class RockShellService extends Service {
                     runs.put(step);
                 }
                 item.put("runs", runs);
+                if(runs.length()>0&&"local-generate@1".equals(runs.getJSONObject(0).optString("tool")))try{
+                    JSONObject original=new JSONObject(engine().initialInput(work.get("id")));
+                    if(original.has("agentProvenance")&&SkyAddonStore.validWorkInput(original)){
+                        JSONObject provenance=original.getJSONObject("agentProvenance");item.put("agent",new JSONObject().put("name",provenance.getJSONObject("recipe").getString("name"))
+                            .put("digest",provenance.getString("addonDigest")).put("source",provenance.getString("source")));
+                    }
+                }catch(Exception invalidProvenance){ /* Never project an unverified Agent identity. */ }
                 if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {
                     item.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
                     try {

@@ -7788,7 +7788,7 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "implementation_started",
+    "status": "initial_physical_defects_found_API24_corrections_under_test",
     "scope": [
       "owner_admitted_dynamic_model_profiles",
       "declarative_local_agent_recipes",

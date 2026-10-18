@@ -2432,7 +2432,7 @@
   "pixelDynamicAddons": {
     "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
     "taskId": "OS11",
-    "privateShellApiVersion": 23,
+    "privateShellApiVersion": 24,
     "modelAuthentication": [
       "existing_publisher_Ed25519",
       "explicit_unsigned_owner_digest_pin"

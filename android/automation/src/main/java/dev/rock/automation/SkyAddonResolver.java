@@ -51,7 +51,7 @@ final class SkyAddonResolver {
         JSONObject entry=new JSONObject().put("name",SkyAddonStore.clean(repo+" · "+filename,120)).put("fileName",filename).put("source",url)
             .put("licenseUrl","https://huggingface.co/"+repo+"/blob/"+sha+"/README.md")
             .put("trustLabel","利用者が版とhashを指定。作者署名なし・品質未検証。公開元: "+repo)
-            .put("profile",p).put("tasks",new JSONArray(java.util.List.of("writing","summary","translation","code","planning"))).put("autoPriority",20);
+            .put("profile",p).put("tasks",new JSONArray(java.util.List.of("writing","summary","translation","code","planning"))).put("autoPriority",0);
         new LocalModelCatalog.Entry(entry);
         return new SkyAddonStore(context).propose(new JSONObject().put("kind","model").put("id",id).put("name",entry.getString("name"))
             .put("source",url).put("authorProof","repository_origin_not_author_signature").put("entry",entry).put("architecture",gguf.architecture).put("quality","unverified"));

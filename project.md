@@ -687,3 +687,6 @@ compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842
 ## Skyの動的追加とPixel実行（2026-10-17）
 
 OS11/O6/ROCK主担当、SKY07/SKY21連携。本人の「固定カタログに縛られず追加してPixelで実際に使う」指示で着手。main f8a0217eを基準に、owner別の版付きモデル定義/宣言型local Agent、同意・互換・hash・失効・既存Zema保存を実装する。実機受入は未実行。
+
+
+初回実機受入（source ffb7f1b0 / private API23）: 非同梱bartowski/Qwen2.5-0.5B-Instruct-GGUFの実検索→owner定義追加→397,808,192bytes実取得/全hash/埋込metadata/ロード→要約/保存は56.823秒。ただし本文が生成指示のechoで内容不合格。Agentは出典情報の4項目目を旧3項目validatorが拒否しLOCAL_REQUEST_REPLAN_REQUIREDで停止。どちらも完了/品質受入へ昇格しない。private API24候補で出典のexact再構成検査・SDKの指示echo拒否・形式試験と本人確認を経た作業別自動候補・revision競合拒否・Agent再同意有効化・仕事詳細のAgent名表示を追加する。元の仕事/成果は保持し、同じ失敗Agent仕事の明示retryと新モデルのコード実生成を次に検証する。

@@ -19,4 +19,14 @@ public final class SkyAgentDefinitionTest {
         for(String u:new String[]{"file:///tmp/model","http://huggingface.co/a/b","https://user:secret@huggingface.co/a/b","https://127.0.0.1/a/b","https://huggingface.co/a/b?token=secret","https://github.com/a/b/blob/main/../x.json"})
             assertThrows(Exception.class,()->resolver.inspect(u));
     }
+    @Test public void provenanceExtensionIsExactAndCannotChangeTaskOrPrompt()throws Exception {
+        String origin="https://github.com/author/repo/blob/"+"a".repeat(40)+"/sky-addon.json";
+        JSONObject d=SkyAddonStore.agent(recipe(),origin);String request="Write a useful note.",rendered=SkyAddonStore.render(d,request);
+        JSONObject provenance=new JSONObject().put("schema","rock-sky-agent-use/1").put("addonDigest",dev.rock.core.Engine.digest(d.toString())).put("source",origin).put("request",request).put("recipe",d.getJSONObject("recipe"));
+        JSONObject input=new JSONObject().put("task","writing").put("request",rendered).put("prompt",dev.rock.sdk.LocalWorkDraft.prompt("writing",rendered)).put("agentProvenance",provenance);
+        assertTrue(SkyAddonStore.validWorkInput(input));
+        assertFalse(SkyAddonStore.validWorkInput(new JSONObject(input.toString()).put("shell","bad")));
+        assertFalse(SkyAddonStore.validWorkInput(new JSONObject(input.toString()).put("task","code")));
+        JSONObject tampered=new JSONObject(input.toString());tampered.getJSONObject("agentProvenance").put("addonDigest","0".repeat(64));assertFalse(SkyAddonStore.validWorkInput(tampered));
+    }
 }

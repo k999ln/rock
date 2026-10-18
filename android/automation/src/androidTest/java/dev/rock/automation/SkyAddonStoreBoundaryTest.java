@@ -31,5 +31,24 @@ public final class SkyAddonStoreBoundaryTest {
         bad=new JSONObject(original.toString());bad.getJSONObject(key).getJSONObject("definition").put("instructions","tampered");prefs.edit().putString("records",bad.toString()).commit();assertThrows(SecurityException.class,()->store.require(digest));
         prefs.edit().putString("records",original.toString()).commit();assertEquals("revoked",new JSONObject(store.revoke(digest,true)).getString("status"));assertThrows(SecurityException.class,()->store.require(digest));
         assertEquals(1,new JSONObject(store.list()).getJSONArray("addons").length());
+        JSONObject again=new JSONObject(store.propose(definition()));assertEquals("added",new JSONObject(store.add(again.getString("proposalId"),digest,true)).getString("status"));
+        assertNotNull(store.require(digest));assertEquals(2,new JSONObject(store.list()).getJSONArray("addons").getJSONObject(0).getInt("admissionCount"));
+    }
+    @Test public void automaticParticipationNeedsExactOwnerModelTaskTrialAndConsent()throws Exception {
+        JSONObject root;try(java.io.InputStream in=context.getAssets().open(LocalModelCatalog.ASSET)){root=new JSONObject(new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8));}
+        JSONObject entry=root.getJSONArray("models").getJSONObject(0),profile=entry.getJSONObject("profile");
+        profile.put("profileId","sky.model.synthetic").put("publisherId","owner-pin:"+dev.rock.core.Engine.digest(AndroidOwner.current(context))).put("signingKeyId","owner-consent").put("manifestSignatureBase64Url","");
+        JSONObject d=new JSONObject().put("kind","model").put("id","sky.model.synthetic").put("entry",entry);
+        JSONObject p=new JSONObject(store.propose(d));String digest=p.getString("digest");store.add(p.getString("proposalId"),digest,true);
+        assertThrows(SecurityException.class,()->store.configureAutomatic(digest,0,"[\"code\"]",true));
+        String exact=new LocalModelCatalog.Entry(entry).profile.digest();store.recordTrial(exact,"summary","synthetic","a".repeat(64),true);
+        assertThrows(SecurityException.class,()->store.configureAutomatic(digest,0,"[\"code\"]",true));
+        store.recordTrial(exact,"code","synthetic","a".repeat(64),true);
+        assertThrows(SecurityException.class,()->store.configureAutomatic(digest,0,"[\"code\"]",false));
+        assertEquals("configured",new JSONObject(store.configureAutomatic(digest,0,"[\"code\"]",true)).getString("status"));
+        assertThrows(IllegalStateException.class,()->store.configureAutomatic(digest,0,"[\"code\"]",true));
+        LocalModelCatalog catalog=store.catalog(new LocalModelCatalog(root.toString()));assertEquals(60,catalog.require("sky.model.synthetic").autoPriority);
+        store.recordTrial(exact,"code","synthetic","b".repeat(64),false);
+        assertEquals(0,store.catalog(new LocalModelCatalog(root.toString())).require("sky.model.synthetic").autoPriority);
     }
 }

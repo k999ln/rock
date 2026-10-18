@@ -19,6 +19,13 @@ public final class LocalDraftTest {
         assertThrows(IllegalArgumentException.class, () -> LocalWorkDraft.verify("code", "```" + code));
         assertThrows(IllegalArgumentException.class, () -> LocalWorkDraft.prompt("code", "原稿".repeat(400)));
     }
+    @Test public void taskDirectiveEchoIsHeldRatherThanSavedAsAUsefulAnswer()throws Exception {
+        for(String text:new String[]{"a concise summary using only the supplied text, under 180 characters.","Body: a concise summary using only the supplied text, under 180 characters."}){
+            IllegalArgumentException e=assertThrows(IllegalArgumentException.class,()->LocalWorkDraft.verify("summary",draft("summary",text)));
+            assertEquals("LOCAL_DRAFT_INSTRUCTION_ECHO",e.getMessage());
+        }
+        assertNotNull(LocalWorkDraft.verify("summary",draft("summary","Sky connects models while Zema saves work.")));
+    }
     @Test public void countIsBoundedAndMissingIdeasNeverSeal() throws Exception {
         assertEquals(300, LocalIdeaBatch.requestedCount("RockstarOS・Skyのサービスアイデア300件"));
         assertThrows(IllegalArgumentException.class, () -> LocalIdeaBatch.requestedCount("アイデア301"));

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 final class ShellConnection {
     static final String BROKER_PACKAGE = "dev.rock.automation";
     static final String BROKER_SERVICE = BROKER_PACKAGE + ".RockShellService";
-    static final int API_VERSION = 23;
+    static final int API_VERSION = 24;
     private final Context context;
 
     ShellConnection(Context context) { this.context = context; }
@@ -142,6 +142,7 @@ final class ShellConnection {
     String prepareSkyAgent(String digest,String choice,String request) throws Exception {return withService(a->a.prepareSkyAgent(digest,choice,request));}
     String submitSkyAgent(String digest,String id,String request,String modelDigest,boolean consent) throws Exception {return withService(a->a.submitSkyAgent(digest,id,request,modelDigest,consent));}
 
+    String configureSkyModelAutomaticTasks(String digest,long revision,String tasks,boolean consent)throws Exception{return withService(a->a.configureSkyModelAutomaticTasks(digest,revision,tasks,consent));}
     private void requireTrustedBroker() throws Exception {
         PackageManager pm = context.getPackageManager();
         if (pm.getPackageInfo(BROKER_PACKAGE, 0).getLongVersionCode() != 1)

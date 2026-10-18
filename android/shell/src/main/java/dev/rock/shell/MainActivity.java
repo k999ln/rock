@@ -342,7 +342,7 @@ public final class MainActivity extends Activity {
         });
         modelDownloadPanel = new LinearLayout(this); modelDownloadPanel.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(modelDownloadPanel);
         button(discoveryCard, "ダウンロード状態を確認", this::refreshModelDownload); refreshModelDownload();
-        buildAddonPanel(form);
+        buildAddonPanel(pageContent[1]);
         discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
         form = composer;
         label(form, "依頼を確認", 20);
@@ -626,7 +626,7 @@ public final class MainActivity extends Activity {
     private LocalSubmission agentSubmission;
     private Button agentRecovery;
     private void buildAddonPanel(LinearLayout parent) {
-        LinearLayout panel=ui.card(parent);label(panel,"LLM・Agentを追加",19);
+        LinearLayout panel=ui.card(parent);parent.removeView(panel);parent.addView(panel,Math.min(3,parent.getChildCount()));label(panel,"LLM・Agentを追加",19);
         label(panel,"Hugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLから追加できます。作者署名の有無・互換性・版・容量・権限を確認します。",13);
         addonSource=field(panel,"公開元のURL","https://huggingface.co/作者/モデル",false);
         button(panel,"追加する内容を確認",()->inspectAddon(addonSource.getText().toString().trim()));
@@ -657,7 +657,7 @@ public final class MainActivity extends Activity {
         String details=d.optString("name")+"\n"+d.optString("source")+"\n定義SHA-256: "+p.optString("digest")
             +"\n作者署名なし。公開リポジトリの版を利用者が選ぶ追加です。品質は未検証です。";
         if(model&&profile!=null)details+="\n"+profile.optString("licenseId")+" · "+android.text.format.Formatter.formatFileSize(this,profile.optLong("artifactBytes"))
-            +"\n重みSHA-256: "+profile.optString("weightsSha256")+"\n対応作業の自動選択にも候補として加えます。導入・実行は別操作です。";
+            +"\n重みSHA-256: "+profile.optString("weightsSha256")+"\nまず手動で試せます。試験した作業を確認してから、自動選択への参加を別に設定できます。";
         else details+="\n"+d.optJSONObject("recipe").optString("licenseId")+" · 端末内テキスト生成のみ・追加権限なし・通信なし\n指示: "+d.optString("instructions");
         LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);label(view,details,13);
         CheckBox agreed=new CheckBox(this);agreed.setText("配布元・版・ライセンス・未検証の範囲を確認し、この定義を追加する");styleCheckBox(agreed);view.addView(agreed);
@@ -676,16 +676,38 @@ public final class MainActivity extends Activity {
                 runOnUiThread(()->{if(isDestroyed())return;addonList.removeAllViews();updateSubmissionRecovery(agentSubmission,agentRecovery);
                     for(int i=0;i<rows.length();i++){JSONObject row=rows.optJSONObject(i),d=row.optJSONObject("definition");if(d==null)continue;
                         LinearLayout card=ui.card(addonList);label(card,d.optString("name"),16);label(card,(row.optBoolean("revoked")?"無効":"追加済み")+" · "+d.optString("kind")+"\n"+d.optString("source"),12);
-                        if(row.optBoolean("revoked"))continue;String digest=row.optString("digest");
-                        if("model".equals(d.optString("kind")))button(card,"このモデルをPixelへ導入",()->preparePublicModelInstall(d.optString("id")));
+                        if(row.optBoolean("revoked")){
+                            if("agent".equals(d.optString("kind")))button(card,"内容を再確認して有効にする",()->inspectAddon(d.optString("source")));
+                            else label(card,"このモデル版は無効です。必要なら別の版を追加してください。",12);
+                            continue;
+                        }String digest=row.optString("digest");
+                        if("model".equals(d.optString("kind"))){
+                            button(card,"このモデルをPixelへ導入",()->preparePublicModelInstall(d.optString("id")));
+                            button(card,"自動選択で使う作業を設定",()->configureAddonAutomatic(row));
+                        }
                         else button(card,"このAgentに依頼",()->openAddonAgent(digest,d.optString("name")));
                         button(card,"この追加を無効にする",()->new AlertDialog.Builder(this).setTitle("追加を無効にする")
-                            .setMessage("保存した仕事と成果は残ります。モデルを使う未完了の仕事は以後の推論が停止します。Agent設定の無効化は新規依頼に適用します。")
+                            .setMessage("保存した仕事と成果は残ります。モデルのこの版は再導入できなくなり、未完了の仕事は以後の推論が停止します。Agent設定は新規依頼を停止し、内容の再確認後に有効化できます。")
                             .setPositiveButton("無効にする",(x,y)->worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).revokeSkyAddon(digest,true));runOnUiThread(()->{addonStatus.setText(result.optString("status")+" "+result.optString("code"));refreshAddons();refreshLocalModels();});}catch(Exception failure){runOnUiThread(()->addonStatus.setText("無効化の結果を確認できません。再読込みしてください。"));}})).setNegativeButton("戻る",null).show());
                     }
                 });
             }catch(Exception failure){runOnUiThread(()->{if(!isDestroyed())addonStatus.setText("追加一覧を取得できません。");});}
         });
+    }
+    private void configureAddonAutomatic(JSONObject row){
+        JSONArray trials=row.optJSONArray("schemaTrialTasks"),configured=row.optJSONArray("automaticTasks");
+        if(trials==null||trials.length()==0){addonStatus.setText("先にこのモデルを手動選択して実際に使い、保存した生成結果を確認してください。形式試験に成功した作業を候補にできます。");return;}
+        String[] names=new String[trials.length()];boolean[] checked=new boolean[names.length];
+        for(int i=0;i<names.length;i++){String task=trials.optString(i);names[i]=task.equals("code")?"コード下書き":task.equals("summary")?"要約":task.equals("translation")?"翻訳":task.equals("planning")?"計画・発想":"文章作成";
+            if(configured!=null)for(int j=0;j<configured.length();j++)checked[i]|=task.equals(configured.optString(j));}
+        new AlertDialog.Builder(this).setTitle("自動選択で使う作業")
+            .setMultiChoiceItems(names,checked,(dialog,which,value)->checked[which]=value)
+            .setPositiveButton("生成結果を確認して候補にする",(dialog,which)->{
+                JSONArray tasks=new JSONArray();for(int i=0;i<checked.length;i++)if(checked[i])tasks.put(trials.optString(i));
+                worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).configureSkyModelAutomaticTasks(row.optString("digest"),row.optLong("automaticRevision",0),tasks.toString(),true));
+                    runOnUiThread(()->{if(isDestroyed())return;addonStatus.setText("configured".equals(result.optString("status"))?"自動選択の候補を更新しました。形式試験は一般的な内容品質の保証ではありません。":"設定できません: "+result.optString("code"));refreshAddons();invalidateModelChoice();});
+                }catch(Exception failure){runOnUiThread(()->addonStatus.setText("設定結果を確認できません。再読込みしてください。"));}});
+            }).setNegativeButton("戻る",null).show();
     }
     private void openAddonAgent(String digest,String name){
         LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);content.setPadding(28,16,28,16);
@@ -3375,6 +3397,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = ui.card(jobs); card.setTag("work-detail-" + id);
         ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : ShellUi.ACCENT);
         label(card, work.optString("title", "端末内siの仕事"), 24);
+        JSONObject agent=work.optJSONObject("agent");if(agent!=null)label(card,"Agent: "+agent.optString("name")+"\n"+agent.optString("source"),12);
         int succeeded = workProgress(card, work);
         JSONArray runs = work.optJSONArray("runs"); int total = runs == null ? 0 : runs.length();
         boolean hasArtifact = ("review".equals(state) || "completed".equals(state)) && !failed && total > 0 && succeeded == total;

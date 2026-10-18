@@ -44,7 +44,8 @@ public final class SkyOpenAddonAcceptanceTest {
         save("live-search.json",search.toString());String source="https://huggingface.co/"+repo+"/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf";
         MainActivity activity=(MainActivity)ins.startActivitySync(new Intent(c(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));long start=SystemClock.elapsedRealtime();
         try{
-            ui(()->{((EditText)field(activity,"addonSource")).setText(source);Button inspect=(Button)find(activity.getWindow().getDecorView(),v->v instanceof Button&&"追加する内容を確認".contentEquals(((Button)v).getText()));assertNotNull(inspect);inspect.performClick();});
+            ui(()->{try{Method m=MainActivity.class.getDeclaredMethod("selectPage",int.class);m.setAccessible(true);m.invoke(activity,1);}catch(Exception e){throw new AssertionError(e);}
+                ((EditText)field(activity,"addonSource")).setText(source);Button inspect=(Button)find(activity.getWindow().getDecorView(),v->v instanceof Button&&"追加する内容を確認".contentEquals(((Button)v).getText()));assertNotNull(inspect);inspect.performClick();});
             consentThenClick("追加する","配布元・版",100_000);
             JSONObject d=null,row=null;long end=SystemClock.elapsedRealtime()+10_000;
             do{JSONArray addons=new JSONObject(b.skyAddons()).getJSONArray("addons");for(int i=0;i<addons.length();i++){JSONObject x=addons.getJSONObject(i);if(x.getJSONObject("definition").optString("source").contains(repo+"/resolve/")){row=x;d=x.getJSONObject("definition");break;}}if(d==null)SystemClock.sleep(200);}while(d==null&&SystemClock.elapsedRealtime()<end);
@@ -76,12 +77,32 @@ public final class SkyOpenAddonAcceptanceTest {
         JSONObject added=new JSONObject(b.addSkyAddon(proposal.getString("proposalId"),digest,true));assertEquals(added.toString(),"added",added.getString("status"));
         String request="Sky connects models and agents. Zema saves work and results. Summarize in one short English sentence.";
         JSONObject choice=new JSONObject(b.prepareSkyAgent(digest,"auto",request));assertEquals(choice.toString(),"prepared",choice.getString("status"));
-        String requestId=UUID.randomUUID().toString();long start=SystemClock.elapsedRealtime();
+        String resume=InstrumentationRegistry.getArguments().getString("rockResumeAgentWork");String requestId=InstrumentationRegistry.getArguments().getString("rockResumeAgentRequestId",UUID.randomUUID().toString());long start=SystemClock.elapsedRealtime();
         JSONObject sent=new JSONObject(b.submitSkyAgent(digest,requestId,request,choice.getString("manifestDigest"),true));assertEquals(sent.toString(),"queued",sent.getString("status"));String id=sent.getString("workId");
+        if(resume!=null){assertEquals(resume,id);JSONObject held=work(b,id);assertEquals("LOCAL_REQUEST_REPLAN_REQUIRED",held.getJSONArray("runs").getJSONObject(0).getString("error"));b.retry(id);}
         JSONObject w=awaitReview(b,id,start);String artifact=b.result(id);assertTrue(artifact.length()>20);
         JSONObject retry=new JSONObject(b.submitSkyAgent(digest,requestId,request,choice.getString("manifestDigest"),true));assertEquals(id,retry.getString("workId"));assertEquals(artifact,b.result(id));
         save("agent-artifact.md",artifact);save("agent-receipt.json",new JSONObject().put("proposal",proposal).put("choice",choice).put("work",w).put("sameRequestIdReturnedSameWork",true).put("artifactSha256",sha(artifact)).put("physicalInference",true).put("elapsedMs",SystemClock.elapsedRealtime()-start).toString());
         assertEquals("revoked",new JSONObject(b.revokeSkyAddon(digest,true)).getString("status"));assertEquals("blocked",new JSONObject(b.prepareSkyAgent(digest,"auto",request)).getString("status"));assertEquals(artifact,b.result(id));
+        JSONObject fresh=new JSONObject(b.inspectSkyAddon(source));assertEquals("added",new JSONObject(b.addSkyAddon(fresh.getString("proposalId"),fresh.getString("digest"),true)).getString("status"));
+        assertEquals("prepared",new JSONObject(b.prepareSkyAgent(digest,"auto",request)).getString("status"));
         save("agent-revocation.json",new JSONObject().put("newUseBlocked",true).put("savedArtifactPreserved",true).put("digest",digest).toString());
+    }
+    @Test public void currentNonBundledCodeAndTaskSpecificAutomaticAdmission()throws Exception {
+        physical();ShellConnection b=new ShellConnection(c());JSONArray rows=new JSONObject(b.skyAddons()).getJSONArray("addons");JSONObject row=null;
+        for(int i=0;i<rows.length();i++)if("model".equals(rows.getJSONObject(i).getJSONObject("definition").getString("kind")))row=rows.getJSONObject(i);
+        assertNotNull(row);String id=row.getJSONObject("definition").getString("id"),digest=row.getString("digest");
+        JSONObject refusal=new JSONObject(b.configureSkyModelAutomaticTasks(digest,row.optLong("automaticRevision",0),"[\"summary\"]",true));assertEquals("MODEL_TASK_TRIAL_REQUIRED",refusal.getString("code"));
+        String request="Python function sum_even(numbers): return the sum of even integers. Code only, no example usage.";
+        JSONObject choice=new JSONObject(b.prepareLocalModelChoice(id,request));assertEquals(choice.toString(),"prepared",choice.getString("status"));
+        long start=SystemClock.elapsedRealtime();JSONObject sent=new JSONObject(b.submitZemaSelected(UUID.randomUUID().toString(),null,request,"[]",choice.getString("manifestDigest"),true));assertEquals(sent.toString(),"queued",sent.getString("status"));
+        JSONObject w=awaitReview(b,sent.getString("workId"),start);String artifact=b.result(w.getString("id"));assertTrue(artifact.contains("sum_even"));assertTrue(artifact.contains("return"));
+        assertEquals("configured",new JSONObject(b.configureSkyModelAutomaticTasks(digest,row.optLong("automaticRevision",0),"[\"code\"]",true)).getString("status"));
+        JSONArray catalog=new JSONObject(b.localModelCatalog()).getJSONArray("models");JSONObject added=null;
+        for(int i=0;i<catalog.length();i++)if(id.equals(catalog.getJSONObject(i).getString("profileId")))added=catalog.getJSONObject(i);
+        assertNotNull(added);assertEquals(60,added.getInt("autoPriority"));assertEquals("code",added.getJSONArray("tasks").getString(0));
+        JSONObject automatic=new JSONObject(b.prepareLocalModelChoice("auto",request));assertEquals("dev.rock.qwen25-coder-15b-q4km",automatic.getString("profileId"));
+        save("current-code-artifact.md",artifact);save("current-code-receipt.json",new JSONObject().put("work",w).put("manualChoice",choice).put("automaticChoice",automatic).put("dynamicCandidate",added)
+            .put("untestedSummaryAutoRejected",true).put("artifactSha256",sha(artifact)).put("physicalInference",true).put("codeExecuted",false).put("elapsedMs",SystemClock.elapsedRealtime()-start).toString());
     }
 }

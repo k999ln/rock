@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 23;
+    const int API_VERSION = 24;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -98,4 +98,5 @@ interface IShellApi {
     String revokeSkyAddon(String digest, boolean consent) = 55;
     String prepareSkyAgent(String digest, String modelChoice, String request) = 56;
     String submitSkyAgent(String digest, String requestId, String request, String expectedModelDigest, boolean consent) = 57;
+    String configureSkyModelAutomaticTasks(String digest, long expectedRevision, String tasksJson, boolean consent) = 58;
 }
