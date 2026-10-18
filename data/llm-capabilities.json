@@ -17,9 +17,10 @@
   "schemaVersion": 1,
   "updatedAt": "2026-10-17",
   "product": {
-    "displayName": "avocadoOS",
+    "displayName": "RockstarOS",
     "internalId": "dev.rock",
-    "releaseStage": "Developer Preview"
+    "releaseStage": "Developer Preview",
+    "releaseName": "RockstarOS 1.0"
   },
   "statusVocabulary": [
     "designed_not_implemented",
@@ -34,7 +35,7 @@
       "tool": null,
       "role": "local_planner",
       "provider": "local",
-      "model": "Qwen2.5-1.5B-Instruct-Q4_K_M-GGUF (bounded auto/manual); Qwen3-0.6B-Q8_0-GGUF diagnostic manual alternative",
+      "model": "Qwen3-4B-Instruct-2507 Q4_K_M creative drafts; Qwen2.5-Coder-1.5B Q4_K_M code drafts; Qwen2.5-1.5B Q4_K_M article/summary/translation; 0.6B diagnostic only",
       "runtime": "llama.rn@0.12.9 / Local Action Assistant API v4 (current source)",
       "status": "device_apk_verified",
       "network": "prohibited",
@@ -68,6 +69,26 @@
         "evidence": "docs/evidence/pixel-intuitive-experience.json",
         "candidateSourceSha": "f4718e105ed7f9e1b9ebefd4c8b52c2b140c6460",
         "scope": "Pixel bounded article-preparation, exact auto/manual pin, actual notification tap and public metadata search; no general Agent/content acceptance"
+      },
+      "candidateImplementation": {
+        "privateShellApiVersion": 22,
+        "runtimePackageVersion": 8,
+        "runtimeApiVersion": 4,
+        "planSchema": "local-work@1/output-v1",
+        "modelCatalog": [
+          "dev.rock.qwen25-15b-q4km",
+          "dev.rock.qwen25-coder-15b-q4km",
+          "dev.rock.qwen3-4b-2507-q4km",
+          "dev.rock.qwen3-06b-q8"
+        ],
+        "scope": "bounded untrusted text drafts and durable service ideation; pure three-attempt batch repair only",
+        "physicalAccepted": false,
+        "codePreliminaryAccepted": true,
+        "serviceIdea300Accepted": false,
+        "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+        "ideaSchemaFamily": "local-work@1/ideas-N-v2 (N1..10 exact arrays; raw48 characters, Broker96 UTF-8 bytes; legacy v1 retained)",
+        "currentEvidence": "docs/evidence/pixel-discovered-models.json",
+        "ideaCheckpointVersion": 6
       }
     },
     {
@@ -242,32 +263,57 @@
     "status": "live_account_cloud_verified",
     "tests": "tests/sky-model-routing.test.mjs"
   },
-"skyFreeCloudAcceptance":{
-  "date": "2026-10-17",
-  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
-  "status": "live_account_real_cloud_accepted_synthetic_contract",
-  "implementation": [
-    "lib/sky-free-cloud.ts",
-    "lib/sky-model-selection.ts",
-    "lib/sky-free-cloud-http.ts",
-    "app/api/llm/free-cloud/route.ts",
-    "components/sky-free-cloud-panel.tsx"
-  ],
-  "evidence": "docs/evidence/sky-free-cloud-live.json",
-  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
-  "productionBillingEnabled": false,
-  "mainAuthenticatedUiAccepted": true
-},
+  "skyFreeCloudAcceptance": {
+    "date": "2026-10-17",
+    "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+    "status": "live_account_real_cloud_accepted_synthetic_contract",
+    "implementation": [
+      "lib/sky-free-cloud.ts",
+      "lib/sky-model-selection.ts",
+      "lib/sky-free-cloud-http.ts",
+      "app/api/llm/free-cloud/route.ts",
+      "components/sky-free-cloud-panel.tsx"
+    ],
+    "evidence": "docs/evidence/sky-free-cloud-live.json",
+    "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+    "productionBillingEnabled": false,
+    "mainAuthenticatedUiAccepted": true
+  },
   "pixelModelChoice": {
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
-    "status": "device_apk_verified",
-    "policyVersion": "pixel-article-model-choice/1",
-    "privateShellApiVersion": 20,
+    "status": "implemented_configuration_required",
+    "policyVersion": "pixel-local-work-model-choice/3",
+    "privateShellApiVersion": 22,
     "automaticModel": "dev.rock.qwen25-15b-q4km",
     "manualSelection": true,
     "generalTaskQualityAccepted": false,
     "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
     "discoveryGrantsExecution": false,
-    "xApiConfigured": false
+    "xApiConfigured": false,
+    "automaticModelsByTask": {
+      "code": "dev.rock.qwen25-coder-15b-q4km",
+      "article_summary_translation": "dev.rock.qwen25-15b-q4km",
+      "planning_writing": "dev.rock.qwen3-4b-2507-q4km"
+    },
+    "candidateAcceptance": {
+      "source": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
+      "codeTrial": "PASS_current_APKs_auto_and_manual_Coder5_real_text_saved_not_executed",
+      "requestedServiceIdeas": 300,
+      "ideasAccepted": false,
+      "earlyCompletionRuntime": "package8_API4_actual_build_signer_payload_and_Pixel_import_verified",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+      "evidence": "docs/evidence/pixel-discovered-models.json",
+      "testSource": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
+      "actualIdeas": 300,
+      "ideasStructuralAcceptance": true,
+      "semanticQualityAccepted": false,
+      "humanReviewAccepted": false,
+      "operatorInterventions": 2,
+      "sameSavedArtifactAfterBrokerRestart": true
+    },
+    "publicInstall": "explicit_signed_catalog_wifi_download_or_verified_readonly_file",
+    "catalogScope": "tested_Pixel_preview_profiles_not_a_fixed_Sky_product_or_official_tier",
+    "skyAddPluginAuthority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "dynamicThirdPartyNativeAdmissionAccepted": false
   }
 }

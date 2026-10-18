@@ -3,7 +3,7 @@
   "routeId": "local-action-assistant",
   "executionTarget": "local",
   "apiVersion": 4,
-  "packageVersionCode": 3,
+  "packageVersionCode": 8,
   "androidPackage": "com.localactionassistant",
   "androidService": "com.localactionassistant.RockLocalAiService",
   "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -88,5 +88,54 @@
     "evidence": "docs/evidence/pixel-local-jennifer.json",
     "signatureVerifier": "Bouncy Castle lightweight Ed25519; pinned shared JAR, no AndroidKeyStore public-key import",
     "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json"
+  },
+  "taskDraftSchema": {
+    "schemaId": "local-work@1/output-v1",
+    "fields": [
+      "task",
+      "title",
+      "body",
+      "summary"
+    ],
+    "tasks": [
+      "article",
+      "summary",
+      "translation",
+      "code",
+      "planning",
+      "writing"
+    ],
+    "additionalProperties": false,
+    "externalExecution": false,
+    "maxOutputTokens": 512,
+    "planningTimeoutSeconds": 180,
+    "maxTitleCharacters": 60,
+    "maxBodyCharacters": 600,
+    "maxSummaryCharacters": 120,
+    "ideationSubtypes": {
+      "schemaPattern": "local-work@1/ideas-N-v2",
+      "counts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "rawModelFields": [
+        "ideas"
+      ],
+      "exactArrayCardinality": true,
+      "metadataOwner": "runtime",
+      "brokerValidatesActualStringsAndUniqueness": true,
+      "legacySchemaPattern": "local-work@1/ideas-N-v1",
+      "maxRawCharacters": 48,
+      "legacyMaxRawCharacters": 24,
+      "brokerMaxIdeaUtf8Bytes": 96
+    }
   }
 }

@@ -1,3 +1,7 @@
+## SKY07/SKY21 — 開かれたaddプラグインの共通条件
+
+2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](../sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。 主担当ROCK、host接続はJOINT、導入/送信/外部作用/予算の選択はOWNER。既存package/SDK/registry/Connection Passportを再利用し、独立2作者の追加/交換・別host・更新/失効/取消を未実行の合格条件として持つ。検証入口は `npm run baseline:check`、`npm run design:check`、`npm run llm:architecture:check`、`npm run verify`。
+
 ## 2026-10-09 SKY20／ROCK — コードのタイムライン公開
 
 ## model・Agent・実行先の選択

@@ -68,6 +68,16 @@ public final class RockShellService extends Service {
         }
         @Override public String result(String workId) { enforceShellCaller(); validWorkId(workId); return engine().result(workId); }
         @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void compactReplanIdeas(String workId,String digest,boolean consent) {
+            enforceShellCaller();validWorkId(workId);long identity=Binder.clearCallingIdentity();
+            try {
+                if(!consent)throw new SecurityException("COMPACT_REPLAN_CONSENT_REQUIRED");
+                JSONObject saved=dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(workId));
+                if(!"local-ideas/5".equals(saved.optString("kind")))throw new IllegalStateException("COMPACT_REPLAN_SOURCE_INVALID");
+                engine().compactReplanIdeas(AndroidOwner.current(RockShellService.this),workId,digest,true);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,workId);
+            } finally {Binder.restoreCallingIdentity(identity);}
+        }
         @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public String localAiStatus() throws android.os.RemoteException {
@@ -105,7 +115,7 @@ public final class RockShellService extends Service {
             catch (Exception failure) {
                 String code = failure.getMessage();
                 if (!java.util.Set.of("TASK_REQUIRES_OTHER_CAPABILITY", "NO_SUITABLE_INSTALLED_MODEL", "SELECTED_MODEL_SETUP_REQUIRED",
-                        "MODEL_NOT_IN_TRUSTED_CATALOG", "INVALID_ZEMA_REQUEST").contains(code == null ? "" : code)) code = "MODEL_CHOICE_UNAVAILABLE";
+                        "MODEL_NOT_IN_TRUSTED_CATALOG", "INVALID_ZEMA_REQUEST", "TEXT_REQUEST_TOO_LONG", "IDEA_COUNT_LIMIT").contains(code == null ? "" : code)) code = "MODEL_CHOICE_UNAVAILABLE";
                 try { return new JSONObject().put("status", "blocked").put("code", code).put("executionStarted", false).toString(); }
                 catch (Exception invalid) { return "{\"status\":\"blocked\",\"code\":\"MODEL_CHOICE_UNAVAILABLE\"}"; }
             } finally { android.os.Binder.restoreCallingIdentity(identity); }
@@ -148,9 +158,34 @@ public final class RockShellService extends Service {
                 return zemaResponse("blocked", "LOCAL_AI_UNAVAILABLE", null);
             }
         }
+        private String modelDownloadCall(java.util.concurrent.Callable<String> call) {
+            enforceShellCaller(); long identity = Binder.clearCallingIdentity();
+            try { return call.call(); } catch (Exception failure) { return modelImportFailure(failure); }
+            finally { Binder.restoreCallingIdentity(identity); }
+        }
+        private PublicModelInstall downloads() { return new PublicModelInstall(RockShellService.this, platform()); }
+        @Override public String preparePublicModelInstall(String id) { return modelDownloadCall(() -> downloads().prepare(id)); }
+        @Override public String beginPublicModelDownload(String id, boolean consent) { return modelDownloadCall(() -> downloads().begin(id, consent)); }
+        @Override public String publicModelInstallStatus() { return modelDownloadCall(() -> downloads().status()); }
+        @Override public String finishPublicModelInstall(String id, boolean consent) { return modelDownloadCall(() -> downloads().finish(id, consent)); }
+        @Override public String cancelPublicModelDownload(String id) { return modelDownloadCall(() -> downloads().cancel(id)); }
         @Override public String searchPublicModels(String query) {
             enforceShellCaller(); long identity = Binder.clearCallingIdentity();
-            try { return discovery.search(query, System.currentTimeMillis()); }
+            try {
+                JSONObject result = new JSONObject(discovery.search(query, System.currentTimeMillis()));
+                JSONArray candidates = result.getJSONArray("candidates");
+                LocalModelCatalog catalog = new LocalModelInstaller(RockShellService.this, platform()).catalog();
+                for (int i = 0; i < candidates.length(); i++) {
+                    JSONObject candidate = candidates.getJSONObject(i);
+                    if (!"huggingface".equals(candidate.optString("source"))) continue;
+                    for (LocalModelCatalog.Entry e : catalog.entries.values()) {
+                        if (e.source.startsWith("https://huggingface.co/" + candidate.getString("id") + "/resolve/")) {
+                            candidate.put("installProfileId", e.profile.profileId); break;
+                        }
+                    }
+                }
+                return boundedJson(result);
+            }
             catch (Exception unavailable) { return "{\"status\":\"unavailable\",\"executionStarted\":false,\"candidates\":[],\"sources\":[]}"; }
             finally { Binder.restoreCallingIdentity(identity); }
         }
@@ -956,6 +991,21 @@ public final class RockShellService extends Service {
                     runs.put(step);
                 }
                 item.put("runs", runs);
+                if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {
+                    item.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+                    try {
+                        org.json.JSONObject checkpoint = dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(work.get("id")));
+                        JSONObject progress=new JSONObject().put("completed",checkpoint.getJSONArray("ideas").length()).put("target",checkpoint.getInt("target"));
+                        if("local-ideas/5".equals(checkpoint.optString("kind")) && engine().canCompactReplanIdeas(AndroidOwner.current(this),work.get("id")))progress.put("compactResumeAvailable",true).put("checkpointDigest",Engine.digest(engine().checkpoint(work.get("id"))));
+                        progress.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+                        item.put("ideaProgress",progress);
+                    } catch (RuntimeException sealed) {
+                        if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
+                            int count = engine().result(work.get("id")).split("(?m)^\\d+\\. ", -1).length - 1;
+                            item.put("ideaProgress", new JSONObject().put("completed", count).put("target", count));
+                        }
+                    }
+                }
                 if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
                     try {
                         String title = engine().result(work.get("id")).split("\n", 2)[0]
@@ -1057,7 +1107,10 @@ public final class RockShellService extends Service {
         Set<String> codes = Set.of("MODEL_IMPORT_CONSENT_REQUIRED", "DEVICE_UNLOCK_REQUIRED", "MODEL_FILE_LENGTH_MISMATCH",
             "MODEL_NOT_IN_TRUSTED_CATALOG", "READ_ONLY_REGULAR_MODEL_FILE_REQUIRED", "MODEL_MEMORY_UNAVAILABLE",
             "MODEL_STORAGE_UNAVAILABLE", "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK", "MODEL_ARTIFACT_HASH_MISMATCH",
-            "MODEL_PROFILE_RUNTIME_MISMATCH", "MODEL_LICENSE_RECEIPT_NOT_SAVED");
+            "MODEL_PROFILE_RUNTIME_MISMATCH", "MODEL_LICENSE_RECEIPT_NOT_SAVED", "DEVICE_LOCKED",
+            "MODEL_DOWNLOAD_ALREADY_PENDING", "MODEL_DOWNLOAD_STATE_UNCERTAIN", "MODEL_DOWNLOAD_STATE_NOT_SAVED",
+            "MODEL_DOWNLOAD_OPERATION_INVALID", "MODEL_DOWNLOAD_PROFILE_CHANGED", "MODEL_DOWNLOAD_NOT_COMPLETE",
+            "MODEL_DOWNLOAD_SOURCE_NOT_PINNED", "UNAPPROVED_LOCAL_AI_VERSION");
         String code = codes.contains(failure.getMessage()) ? failure.getMessage() : "MODEL_IMPORT_FAILED";
         return "{\"status\":\"failed\",\"code\":\"" + code + "\"}";
     }

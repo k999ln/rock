@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 168,
+  "distinctValues": 169,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 60,
+    "public-artifact-digest": 61,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2375,6 +2375,20 @@
         ]
       },
       "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "7212f0dd21584d4f90554b0fc274ec294a29c789202f136223cb79268d5e86d6",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of compact sorted-key UTF-8 tokenizer.* GGUF metadata excluding tokenizer.chat_template. Public Unsloth Qwen3-4B-Instruct-2507 Q4_K_M revision a06e946bb6b655725eafa393f4a9745d460374c9, full weights SHA-256 3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597. This is metadata, not a credential. Exact path AND value only.",
+      "source": {
+        "commit": "acca1942fbec9c8ff2d44f97f7e825162400bfe8",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 126,
+        "field": [
+          "/models/3/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 1
     }
   ],
   "supplementalReviews": [
@@ -2405,6 +2419,16 @@
       ],
       "basis": "One recomputed public tokenizer digest; exact value AND two exact paths. Historical snapshot counts remain historical.",
       "policySha256": "989dbf05352bd1395512a6af1bacdafe21be917148857882719579ab7e9f232e"
+    },
+    {
+      "head": "4f160cf0",
+      "recordedOn": "2026-10-17",
+      "addedDistinctValues": 1,
+      "exactPaths": [
+        "android/automation/src/debug/assets/rock-local-model-catalog.json"
+      ],
+      "basis": "Independently recomputed public GGUF tokenizer digest. Mutation or another path must remain detectable. Historical occurrence counts and reviewedHead unchanged.",
+      "policySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3"
     }
   ],
   "integratedReview": {

@@ -144,7 +144,7 @@ public final class TerminalHomeIntegrationTest {
         ShellConnection broker = new ShellConnection(context());
         JSONObject before = new JSONObject(broker.snapshot());
         JSONObject catalog = new JSONObject(broker.localModelCatalog());
-        assertEquals(2, catalog.getJSONArray("models").length());
+        assertEquals(4, catalog.getJSONArray("models").length());
         JSONObject model = catalog.getJSONArray("models").getJSONObject(0);
         assertEquals("dev.rock.qwen3-06b-q8", model.getString("profileId"));
         java.io.File file = java.io.File.createTempFile("unapproved-model-", ".gguf", context().getCacheDir());
@@ -248,8 +248,8 @@ public final class TerminalHomeIntegrationTest {
         int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         JSONObject invalid = new JSONObject(broker.prepareLocalModelChoice("github/untrusted", "記事"));
         assertEquals("blocked", invalid.getString("status")); assertFalse(invalid.getBoolean("executionStarted"));
-        JSONObject unsupported = new JSONObject(broker.prepareLocalModelChoice("auto", "deploy a server"));
-        assertEquals("TASK_REQUIRES_OTHER_CAPABILITY", unsupported.getString("code"));
+        JSONObject unsupported = new JSONObject(broker.prepareLocalModelChoice("auto", " "));
+        assertEquals("INVALID_ZEMA_REQUEST", unsupported.getString("code"));
         JSONObject denied = new JSONObject(broker.submitZemaSelected(UUID.randomUUID().toString(), "invalid-token", "記事", "{}", "not-a-digest", false));
         assertEquals("MODEL_SELECTION_REQUIRED", denied.getString("code"));
         assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));

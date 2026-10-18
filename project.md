@@ -33,6 +33,32 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+2026-10-17 OS11/O6/ROCK: 4BはPixel自身で全2,497,281,120bytesをWi-Fi取得→SHA/署名/読み込みまで104.912s成功（cachedSource=false）。手動選択UIも実選択。20件はAI表記拒否で0件のまま3回停止したため、限定direct診断で実5動作/82.626sとAI表記を確認。owner指定のAI→si整形に変更し、表記後の重複検査/旧データ不変を維持。part105s×最大2/lease240、2工程で正常Job継続・失敗backoff分離・pauseの4103取消を実装。Core126/automation47/SDK17/Shell14とbuild/lint合格、20件を新sourceで試験中。4B自動順位はまだ0、300件は未実行。
+
+2026-10-17 OS11/O6/ROCK: b33fe6a6の20件は形式・保存170.965s合格だが、分野名コピー/途中切れが多く内容品質不合格。General1.5Bのplanning/writingを自動候補から除外。Qwen3 4B Instruct 2507のUnsloth量子化（Apache2、固定rev/hash、2.497GB）をホスト全量SHA/実GGUF42metadata/tokenizer/templateで確認し、既存鍵でprofile1/runtime7へ追加。autoPriority0/8GiB RAM条件の手動試験だけとし、Pixelで実Wi-Fi全量取得を進めている（既に1.22GB受信、未導入）。新4Bの品質/300件は未受入。
+
+2026-10-17 OS11/O6/ROCK: single-topic runtime7試験は実10件保存まで進んだが再生成が多く、次の試験へ切替えて中止（保存prefix保持）。raw5へ異なる5分野を1案ずつ求め、30分野/10対象で多様化し、AI語は新規案だけsiへ再生成要求、旧AI checkpoint読取は維持。SDK17/host build/lint成功。新20件を再試験中。手動model試験は実ダイアログ選択を行い、手動route3102/自動3100を分離した。追加旧「記事準備のみ」表示も汎用説明へ訂正。300件は未着手。
+
+2026-10-17 OS11/O6/ROCK: package7 actual build CI39067064393/source96dd7c30をunsigned SHA4696a5cb…/署名後760c579c…/既存certとpayload一致で検査。非破壊更新し新profileの実導入/20件を受入中。旧6+新Shellの優先度実験では表示中fg/閉じた後bg、実10件保存と後半duplicate3回停止を確認し、合成20件仕事だけ明示中止、保存prefixは保持。300件は未実行。
+
+2026-10-17 OS11/O6/ROCK: 同一compact promptを直接呼ぶと23.467sで完了し、仕事経由は90s超。直接呼出し時の実processはforeground。返答は5件中4件が同一で、実仕事への保存は0のまま。package7はidea subtypeだけsamplingを変更し、通常taskは維持。Shell表示中は同署名BrokerへのbindingをonStart/onStopで保持/解放し、実行権限とは分離。source34試験/型/lint0、Python21、Android host build/lint成功。新profileGeneral v5/Coder v4を署名。native7 buildと実機20/300は未受入。
+
+2026-10-17 OS11/O6/ROCK: 共通説明の長いraw5も90s超を確認。owner依頼を切り捨てず、商品文脈をSky/Miniの最小説明・30視点・直近2案へ短縮。全prefixの重複検査はBrokerが維持。旧20件読取テストの表記差分を修正し、ビルド失敗後に旧APKへ進まないset-e/OK guard付き手順でhost試験→非破壊更新→再導入17.676s成功→新20件試験を開始。
+
+2026-10-17 OS11/O6/ROCK: package6のraw5案は実推論17.749sで正常完了（crash修正を受入）。raw10件は180s超のため、1保存工程をraw5件×最大2回・各90sへ分割。途中5件はメモリ上検査のみ、10件合格後にcheckpoint保存。IPC tokenは回ごとに新規、Engine ticket/model pin/240s leaseは不変。旧v1は20件読取検査を維持し再計画案内。SDK16/automation47/Shell14とhost build/lint成功。新しい20件の通常Home試験を実行中、300件は未完了。
+
+2026-10-17 OS11/O6/ROCK: package6 CI39064987817/source f96ca583のactual APK/署名payload照合が合格。実検索UIは再接続後4.313s合格、GitHub/HFともHTTP200、実通知tapも合格。モデル再導入は旧20件試験pinの保護で停止したため、その合成試験だけ明示中止し再試験中。失敗画面の空operation cancelを除き、状況更新と本人による仕事整理を案内する。実生成20/300はまだ未受入。
+
+2026-10-17 OS11/O6/ROCK: package5実機試験で10件は180秒timeout/保存0。5件の切分けでJSON完成後にJSI stopCompletionの実戻り値voidへ.catchを呼ぶcrashを確認。package6で停止戻り値を正規化し、実void/throw/rejectの回帰試験を追加。新profile署名/本人再同意で旧pinを保持し、実機受入は再実施する。
+
+2026-10-17 OS11/O6/ROCK: native package5/API4はCI 39063165913/source cbb48421で実APK build成功。unsigned SHA-256 90e50347…、既存署名後0ec8101e…、zip payload一致、INTERNETなしを検査しPixelへ非破壊更新。更新前SQLiteの24仕事・70成果を更新後DBからhash照合し全件保持。main dbf02cc6を保全統合（Android/runtime入力差分なし）。新profileの明示再同意・実推論を受入中、300件は未完了。
+
+OS11/O6/ROCK：Pixel Home→Coder自動選択→実推論→3段階→偶数合計Python関数の保存が139.344sで事前成功（d00867df/Broker、a9c35a37/runtime、コード実行なし）。20件probeはモデルが10件の要求へ1件だけ返したことを私有合成診断で確認し、0件のまま停止。package5/API4にexact N=1..10のideas配列schemaを追加し、task/title/summaryはruntimeメタデータ、実案は補填せずBrokerでも件数/重複を再検査する。完全JSONでdecodeを止め、readyをterminal callback前に公開。source31試験・型/lint成功（警告0）。General/Coderの旧job pinを黙って更新せず、署名済profileをそれぞれv3/v2へ更新、同じhashの既存weightを本人同意後に再検証する。Core126/automation47/SDK13/Shell14、host build/lint成功。旧合成20件仕事と重複途中downloadだけを明示中止。本人指定「RockstarOS・Skyのサービスアイデア300件」は未受入。次はnative5 build→実byte/signer→新profile導入→20/300実推論→同一source受入。main d6d7bd33のWeb無料Cloudを保全統合、全OS/正式署名/flash/有料cloud gate不変。
+
+
+
+
+
 2026-10-17 SKY07/ROCK・BIL02/JOINT: 公開Sky version61/source d4ad106bで実account→1時間合成無料契約→自動openai-fast→GPT-OSS20B実応答「3+4は7」、332/118 tokens/$0を受入。再押下も同一保存結果。旧50表144行不変。本番課金なし。最新main 5ea0bf67を保全統合し両系列文書を保持、統合後npm run verify全stage exit0（2286 pass/既存skip1、/private/tmp/sky-live-merged-verify.log）、匿名実要求401拒否も確認。同一head CI待ち。証拠 docs/evidence/sky-free-cloud-live.json。
 
 2026-10-17 SKY07/ROCK・BIL02/JOINT: 本人が既存データ保全を条件に公開Sky DB移行/無料Cloud配備を明示承認。50表144行の欠落なし退避、SQLite行再構成と追加移行の既存行不変を確認。実account認証＋1時間合成無料契約のowner限定試験を準備。本番課金なし。公開追加移行後の旧50表144行一致。実account限定合成契約で自動モデル選択成功。Workers redirect:error非対応をmanual/3xx拒否へ修正。生成は60秒timeout/未確認保存、自動再送なし。180秒上限で別依頼を検証中。回帰2286 pass/既存skip1（sky-live-edge-verify.log）。実応答/同一head CI/mainは証拠確認後に更新する。
@@ -113,6 +139,8 @@ DOC04の検証結果: Mermaid構文3/3、`npm run project:update`、`npm run mis
 Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整理Agentを起動する経路を追加。本人認証、入力上限、有限処理、既存workflowの完了遷移、本人別WorkJobへの成果保存・一覧再表示・コピー・Markdown保存を実装した。LLM推論、外部検索、出典の真偽判定、有料Provider/Apple Payは含まない。公開Sky Site v53（source `e09d4de4`）で`/os/sky`・Agent・成果・5大学の短い入口をHTTP 200で確認し、未認証のAgent APIが401で拒否されることを確認した。公開ブラウザで未認証→別タブのサインイン案内と元画面の入力保持を確認。合成Worker/D1の`npm run test:api`は仕事1381・CSV385 assertionに合格し、Agent作成・再送・入力競合・偽造拒否・保存済み一覧・別owner分離を含む。本人A/Bの公開実行・保存・再読込とスマホ実機は未受入。GitHub [PR #119](https://github.com/k999ln/rock/pull/119)はmain `c646d083`へ通常merge済み。PR #119のverify・SPIDERの6 checkは成功。追加CodeQLが試験コードのURL部分一致判定をhigh警告として報告したため、完全一致の検査へ変更し、[PR #120](https://github.com/k999ln/rock/pull/120)をmain `e99575b4`へ通常mergeした。PR #120のverify・SPIDER CodeQL両言語・追加CodeQL・secrets・回帰・Web securityは全成功。次は同じ公開artifactで本人A/Bの保存分離・再送・再読込を確認し、Cloud AgentのProvider資格情報、価格表、予算、Receipt、決済を別gateで進める。
 
 ## 現在の作業
+
+OS11/O6/ROCK、codex/pixel-discovered-modelsで検索候補からの検証済み導入と記事以外の作業別model選択を着手。基準main 5ea0bf67（PR157統合）を継承し、署名・license・hash・機種資源・job pin・同ID・停止を維持する。新しい推論結果schemaと既存Job/Artifactを接続し、Pixelで複数modelと要約/翻訳/code draftを検証する。検証は未実行。
 
 2026-10-16、OS11/O6/ROCKで本人の実装指示によりPixel si端末のAPK previewを実装。基準main `019c2231`の同SHA取得済み6 CI成功から `codex/pixel-si-terminal-implementation` を作成し、原dirtyの表示部品のみ回収、現mainのBroker/同ID/料金/復旧を保持した。HOME候補・4画面・3経路の下書き・実Toolの保存/review/停止/書出し・依頼時scheduler・現v4表示・明示端末内音声adapterを追加。GL066へ既存開発署名と一致するAPKをdata保持で更新し、最終Shell 5件、同Brokerのv4 service 4件、system保存355 bytesのhash一致、Shell/Broker実プロセス停止後の同成果、Home system選択画面/取消を確認。既定Homeは変更なし。host Android build/lintとCore122/Shell JVM11/automation JVM32/SDK7、Node22.23.3全体verify exit 0（2252 pass/既存skip1、API1381/CSV385、asset210/欠落0）。依存不足はnpm ciで修復、RoleManagerの結果付き呼出しを実機検証で修正した。証拠は `docs/evidence/pixel-si-terminal-implementation.json`、最終ログ `/private/tmp/pixel-si-final-acceptance-verify.log`。APK/復旧copyはGit外 `~/Library/RockstarOS/pixel-si-terminal-20261016/`。現v4モデル推論・署名済model導入・日本語音声・Jennifer native統括・実Provider/商用課金・全OS/flash/OTA/全損復旧は未受入。次は署名済profileと一推論、日本語音声。実装はPR #149のhead `b7e1b30f`で8 CI全成功、main `bd429699672f7433d8e50fac3a886d73c36fb994`へ通常merge済みでtree一致。main merge自体のCIと実装headのCIを区別する。 受入台帳同期後の全体verifyもexit 0（`/private/tmp/pixel-si-acceptance-verify-retry.log`）。先行試行は既存symlink試験のspawnSync timeoutで不合格、単独9件と全体を再合格しruntime変更なし。 main PR #148/60765fc3のStripe sandbox受入と修正を保全mergeし、Android差分0・固定8 source hash一致を確認。合成usage決済と実Cloud/継続契約は別。統合後のNode22全体verifyもexit 0（2252 pass/既存skip1、API1381/CSV385、asset210/欠落0）。ログは `/private/tmp/pixel-si-main148-verify.log`。
 
@@ -612,3 +640,45 @@ MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最�
 検証: 修正後のfresh合成DBでStripe test請求1 USD→テストカード全額入金→署名通知HTTP 200→Sky paidを確認。unit 10/10。旧失敗DBは保持。[同一source hashと証拠](docs/evidence/sky-cloud-monthly-test.json)。全体 `npm run verify` はNode 22.23.3 / WRANGLER_HIDE_BANNER=trueで全段階成功（exit 0、/private/tmp/sky-claimed-verify.log）。再起動後も同一請求paidを復元。再開は5223・claimed.sqlite・同じSandboxで行い、実Cloud予算・定額契約の受入を別に進める。
 
 2026-10-16 BIL02検証: Sky 140の2期間140 USD請求、枠内usage追加請求0、決済失敗/復旧、古いpaidだけで解除しない判定、署名通知を実Sandboxで確認（10項目）。最初の失敗用カードはattach時に拒否されたため、公式のattach成功後に失敗するテストカードへ変更し、既存invoice IDから再開した。6単体試験成功。Node22.23.3 / WRANGLER_HIDE_BANNER=trueで全体npm run verify全段階exit 0（/private/tmp/sky140-verify.log）。再起動後の報告復元とStripe請求が2件・各140 USDのまま不変を確認。顧客の実同意/自動月次回収/実Agent制限を完成扱いにしない。
+
+Pixel OS11/O6: 4Bの旧20件は形式・保存・正常Job継続合格だが、制御記号混入と重複隠蔽を検出し内容未受入。checkpoint v3を5件/保存・raw180秒・lease240秒へ変更し、混入は除去せず拒否。旧v1/v2読取・60生成+seal backup/停止を検証する。300件・自動選択・現行Coder実機受入は未完了。
+
+Pixel v3手動4B20案: 実機370.282秒、5工程すべてattempt1、実20件保存、制御記号/完全重複なし。洗濯と体調など関連性が弱い案もあり、有用性・一般品質は未保証。policy v3は発想/文章4B80、コードCoder90、記事/要約/翻訳General50。新規300件自動実行とruntime7 Coder受入を次に実施。
+
+OS11/O6連携Security: 公開4B tokenizer metadata digestを既定secret scannerがgeneric-api-keyとして誤検知。固定GGUF全hashとmetadata再計算で確認し、値+catalog一位置のAND例外を追加。実scannerの10例外/変異/別位置試験合格、全履歴scan候補0。policyを先にcommitし、そのcommitへcontrol pinを更新する。300件は現在自動生成中、未完了。
+
+Pixel300の途中20件読取りで旧24字schemaによる文末切断・大文字SIを発見し、当該仕事だけ実UI中止（保存25件保全）。package8/raw ideas-v2/headroom48字、Broker96bytes維持・checkpoint4・SI→si整形へ修正中。旧完了20件も一般品質に昇格させない。新しい実APK/20→300受入は未実行。
+
+package8実build受入: run39072982374/source31414985、unsigned SHA689bdfa94de242f7cef377d2351290ba554c34f74dcecd0e5460e91a00bc7242、signed SHA0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008。実bytes/arm64/noInternet/既存signer/payload一致合格。Pixel新profile2の再導入と20→300は未完了。
+
+package8最初の導入はBrokerのPACKAGE_VERSION_CODE旧値7が安全側で拒否し、新規取得前に停止。前回progressファイルの読違いを訂正。client/contract版照合をsource gateへ追加、開始失敗をUIから即検知し旧試験ファイルを使わないharnessへ修正。重み再利用機構は既存に存在し、修正後の実導入で確認する。
+
+Native8/raw-v2の実20件は397.822秒・5工程attempt1、文末/si表記/番号/完全重複/保存合格。ただし不要な家具・温度連動の弱い内容があり、実用性は保留。prompt契約v5でソフト単体を許し、分野の困りごとを助ける具体動作を求める。旧v4履歴保全・生成再開は明示再計画。General/Coder再受入と新20→自動300を継続。
+
+Git同期: main43cf290e（Sky無料Cloudのbounded自動続行/画面外継続、PR161/162）を統合。競合はPixel資料とCloud追記を双方保持して解消。Android/native入力へのmain新差分は0、実機APKの入力を変えていない。main統合済みはこの作業branchへの取込を指し、PR158のmain公開受入は未完了。
+
+Native8のauto General6 summaryは29.578秒で3工程保存が通るが英語本文のため日本語内容は不合格。指定言語を元依頼のdataとは別のprompt controlへ固定し、本文だけの日本語検査を実機harnessへ追加。auto Coder5は29.514秒、正しいsum_even本文を実保存・コード非実行。最新候補で再試験する。
+
+Native8/prompt5の手動20件は533.698秒、5工程attempt1、実20件/si表記/番号/完全重複/制御記号検査合格。限定draftとして発想auto80へ接続し、関連性/実現性/一般品質は本人確認を維持。現在8da版でCode40.923秒、導入境界/SQLite5実試験、UI14報告=13実/1optin skip、実通知tap/公開検索合格。日本語要約は言語/保存合格だがSky/Zemaの役割混同があり内容未受入。main43cf統合後の通常verifyは既存process timing3失敗、対象40試験は直列成功。同時数2で全体verify成功（assert/試験範囲は変更なし）。新auto300は次に実行。
+
+最終app source dba3389aの実機再検証: 導入境界/SQLite5実試験、UI14報告=13実/1skip（実通知tap/公開検索）、実DB全body hash/元24仕事70artifact保持が合格。新auto300を既存の一仕事として実行開始、実5件保存を確認。未完了のためphysicalAccepted/300Acceptedはfalse。実行中にBroker instrumentationを重ねず、完了後のreadbackと同一head CI/mainを続ける。
+
+LLM台帳の旧avocadoOS固定checkを現行product-identity正本のdisplayName/releaseName/internalIdentifier照合へ同期。内部dev.rockと過去証拠は維持し、版や名称を実機完了へ換算しない。実300ジョブは継続、code/APK更新なし。
+
+実auto300は30件でLOCAL_GENERATION_TIMED_OUT（生成step6、attempt1）により停止。v6短縮contextとShell22の一度だけの明示compact復旧を実装中。同owner/pin/同意/expected digest/純粋発想timeout/eventを検査し、旧30件artifactや成功runを書き換えない。新Root仕事を作らず続行し、復旧介入1件を記録する。完了・無介入自動完走とはしない。
+
+実機compact復旧: 同じ300件仕事を実UI確認dialogで一度承認し、35件まで新たに保存。旧30件/元依頼/目標をread-only DBコピーのhash検証後に比較して不変、human_compact_replan event1。最初のharnessは非同期受付前snapshotで停止と判定したが、実処理は受理済み。二度目の復旧を呼ばず既存running監視へ切替。将来用harnessへdurable ack待機を追加し、実機へ途中再インストールはしていない。300全完了は未受入。
+
+compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842a1e9e7d21296d716c76ba5b7cdb325077f6aacdef、Shell SHAccbea1131fd84e014f191befe979ead4302c743b17615607daaa43d203188002、Native8 SHA0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008。実機読戻しとhost build一致。旧30件はdba版、新しい残件はef20版のsegmentとして記録。45件まで保存、復旧1回、実行継続中。新API22に対する旧SIM entry source期待値21を22へ同期し、製品境界やassert範囲は維持。
+
+現行入口の整理: README/LLM正本/次プロンプトをNative8・Shell22・checkpoint6へ同期し、旧General発想候補と25件中止試験を現在の経路から分離。実300件は一度のcompact復旧後も同仕事で生成中。追加ソース変更や実機APK更新は行わず、終了後の境界/通知/readback受入を待つ。全体verify compact22-fixedは全stage exit0（ファイル並列2）、design:check合格。
+
+2026-10-17 OS11/O6/ROCK・SKY07/SKY21同期: 本人の最新Sky方針をbaseline・融合契約・全OS/Tool詳細・設計索引へ反映。機能/作者の固定と公式による優遇を製品条件にせず、作者共通の互換/権限/版/更新/失効を維持。現Pixel固定catalogの検証範囲と動的native導入未実装を分離。実行中300件のAPK/promptは変更しない。
+
+実auto300のv6監視は5,595.623秒で220件まで実保存した後、step44/attempt1のLOCAL_GENERATION_TIMED_OUTで失敗。step42の形式/重複等の拒否は自動2回目で成功。compact復旧は1回のまま、220件/旧30件/元依頼/pinを保全し、300件未受入。ロック解除待ちの間に、既存の通常再試行ボタンを一度だけ実UI操作するopt-in harnessへ変更する。監視だけの再開が黙ってretryする旧分岐を拒否し、ready/対象仕事/純粋発想timeoutを照合、操作のackを待つ。timeoutやleaseを延長せず、追加手動介入も受入記録へ残す。現時点では通常retry未実行。
+
+通常UI再試行: ownerのロック解除を実測で確認し、既存「止まった工程を再試行」を一度だけ操作。human_retry event1/compact event1、新規Rootなし、旧220件/元依頼/目標を保持し、実225件保存へ進んだ。モデル実行中のBroker instrumentation/更新は再び禁止。Mac全体verifyと該当D1 stageはwrangler spawn30秒timeoutで失敗、同一source b33024b2のGitHub全体verify run39085208518は成功。Sky本体と設計portalもaddプラグイン方針へ同期し、portalの旧入口文を現baselineへの参照へ直す。
+
+実機最終受入: 同じauto4B2の実300件がreviewに到達。60生成+sealの全prefix連鎖、最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6、番号/実数/si/完全重複/制御記号とBroker再起動後同bytesを照合。compact1/通常UI retry1/有限拒否再生成3、無介入完走とはしない。現EF APKでauto Coder5 48.189s、実手動chooser Coder5 41.258sの生成・保存、コード非実行。通知tap/公開検索を含むUI13 actual+既存skip1(24.24s)、境界/SQLite5 actual(0.729s)、元24仕事/70artifactを含む全248body hashが合格。内容の弱い関係・意味重複と一般background/全OSは未受入。Git保存/main統合はPR158のmergedAt/mergeCommit・current mainを正本に別確認する。
+
+最終main同期: c1ba4106（PR165）の公開Sandbox cap/未払い/翌月復旧と、cold D1 migrations起動budget修正を取り込む。3件の文書/進捗競合は双方を保持して解消。Android/Native入力差分0なので実機APK/source EFの証拠は維持し、Web Sandboxの受入をPixelへ転用しない。main側のD1起動修正があるため、最新同一headの全体verifyを再実行する。

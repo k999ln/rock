@@ -4,7 +4,7 @@
   "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "moduleName": "RockLocalActionAssistant",
   "packageName": "com.localactionassistant",
-  "versionCode": 3,
+  "versionCode": 8,
   "requiredAbis": [
     "arm64-v8a"
   ],
@@ -12,16 +12,17 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9",
-  "apkSizeBytes": 26416972,
+  "apkSha256": "689bdfa94de242f7cef377d2351290ba554c34f74dcecd0e5460e91a00bc7242",
+  "apkSizeBytes": 26420792,
   "imageIntegrated": false,
-  "notes": "Unsigned API v4/package version 3 APK built by GitHub Actions run 39043256663 at Rock source ff0518c7. Actual bytes and five ordered overlays are inspected. The fifth overlay fixes Broker-loaded planning and cold-start identity clearing. This unsigned OS staging artifact is separate from the same-payload developer-signed physical candidate; see docs/evidence/pixel-local-jennifer.json. No OS image integration, production signature, flash or release acceptance.",
+  "notes": "Actual unsigned package8/API4 APK from GitHub Actions39072982374, Rock source31414985. Preserves old raw-v1 limit and adds raw-v2 complete-phrase headroom. Existing preview signer and identical payload verified separately. Physical acceptance pending; no full OS image or production signing.",
   "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
   "extensionSha256": [
     "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
     "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
     "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
     "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
-    "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411"
+    "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
+    "1a434027298eaade5cda45535b378e99ab0b52a6b2c020267af0db3bdb5b03f8"
   ]
 }

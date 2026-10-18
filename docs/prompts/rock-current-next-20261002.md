@@ -1,12 +1,18 @@
 # RockstarOS service and Pixel: implementation handoff
 
-## 2026-10-17 Pixel操作性のcheckpoint
+## Skyの最新addプラグイン方針
 
-main f10b7309からcodex/pixel-intuitive-experience、PR #157。固定候補7b16d61bはデザイン/優先一覧/一件の詳細/通知の実装を含む。host/全体verify・同head CI8件成功。Pixel12試験は11成功・通知1失敗・skip0（docs/evidence/pixel-intuitive-experience.json）。background完了通知が90秒以内に見つからず、実System UI tapは未到達。foreground performのbaseline stamp更新による抑制競合は候補原因で未確定。receiver到達、fresh snapshot、dedup、channel postingを調べて修正し、同一APKで再試験する。成功ログへ書き換えたりCIで代替しない。
+本人の2026-10-17指示を `skyOpenAddPluginDirection` と `docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤` へ記録。機能/作者/接続先を固定せず、公式による優遇をしない。現Pixel固定catalogは検証範囲。任意作者の動的native導入は未実装で、既存package/作者同一性/互換/権限/更新/失効を実装・受入してから広げる。実行中300件のAPK/pin/promptを途中で変えない。
 
-本人が続けてLLMの手動選択と、作業に合うLLMを自動で選ぶdefaultを指示。data/product-baseline.jsonのautomaticLlmSelectionIntentとdocs/llm-evaluation-architecture.md#selectable-models-and-automatic-defaultを読む。実装待ち。Codex CLIのAgent executorと任意modelの文章生成を同一能力にしない。未接続/未許可/予算超過を除外し、選択理由・実model/host・pinを確認する。model選択から本人承認/有料gateを推測しない。
+## 現在のPixel公開モデル実装・受入
 
-本人の「ここまでGitに」指示でcheckpointを保存する。未完了の通知/LLM選択をmain完成扱いにしない。再開時は最新main/branch/PRと同SHA CIを再取得し、mainの新差分を保全する。
+主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runsと `docs/evidence/pixel-discovered-models.json` を読む。main c1ba4106のWeb無料Cloud継続・公開Sandbox停止/翌月復旧とbounded D1 cold-init修正は取込み済み。Android/Native runtime入力の追加差分は0。PRのGraphQL rollupだけで欠落/合格を決めず、REST commit check-runsを確認する。Git保存とmain統合は分ける。
+
+実機production APKはapp source ef20d8ae、最初の30案だけdba3389a。Native8/API4はsource31414985/run39072982374で実bytes/既存preview signer/payload一致、Shell22/Platform1/Engine4/checkpoint6。生成中のAPI変更や再インストールはしていない。署名profile General6/Coder5/Creative2は端末で検証済み。4Bの元の2.5GB取得はruntime7/profile1、runtime8/profile2は同weightのcache再検証/再同意であり、新downloadと読み替えない。production catalogは空、Sky全体の作者/機能固定とは区別する。
+
+本人指定の実300件は同じowner/request/pinで保存し、60生成+sealの全prefix/番号/実数/正規化完全重複/表記/byte/hashを検査。30件のtimeout後compactを一度、220件のtimeout後通常UI retryを一度、拒否返答の有限自動再生成3回。無介入完走ではない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同じ。現在APKのauto/実手動Coder5、実通知tap/公開検索を含むUI13 actual+既存optin skip1、境界/SQLite5 actualが成功。元24仕事/70artifactと全248body hashを保持確認。生成本文はGit外。全300に意味の重なりや不自然な連携が残り、事業性/独自性/内容品質は未受入。日本語summaryのSky/Zema混同も未解決。コードは下書きで実行しない。全OS image/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
+
+旧mainベースのMac verifyはWrangler D1起動30秒deadlineで失敗（focusedも同じ）。main c1baのbounded cold-init修正を取り込み、最新headで再検証する。従前Mac compact22全stage成功は履歴。同source b33024b2のGitHub `npm run verify` run39085208518とREST全14 checkは成功。最終commitのCI/main統合はGitHubで再取得する。モデルの結果をTool成功/本人承認/予算へ昇格しない。次は意味上の多様性/速度の検証と、開かれたaddプラグインの作者共通admission/互換/権限/更新/失効を既存SKY07/SKY21へ接続する。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 
@@ -18,7 +24,7 @@ Home候補・4画面、3経路の下書き、実Toolの保存/確認/停止/書�
 
 署名済debug catalog/SAF import/明示reload/有限Jennifer計画/stop fenceはprivate API 19。コードPR #154はhead `6c9a3083`のCI11件成功後、main `bf35f5f1`へ統合。`docs/evidence/pixel-local-jennifer.json`と現Gitを照合する。固定4 APKを実機から読戻して一致確認、API v4 runtimeの計画/冷起動profile不備は5番目のoverlayで修正。0.6Bの内容品質は失敗。既存15分model-pin gateを保ち、明示選択したQwen2.5 1.5BでHome→実計画→実2 Tool→確認待ち395-byte成果が64.625秒で機能合格。明示同意・二重tap1仕事・Broker process再起動同hash・system picker書出し同bytesを確認した。端末自体の再起動や全OSではない。
 
-次は (1) 本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を`docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback`で確認し、依頼/進行/確認/成果物/失敗復旧/停止の画面案を既存Shell/Brokerの状態へ結ぶ、(2) 文章が主題に沿っていても依頼の導入・3手順・出典未調査表示を欠く原因をSDK promptと実ToolのafterChars出力契約から調べ、同一candidateの実推論/生成物で改善を検証する。`afterChars=1`と`free-article@1`の有料抜粋契約は本文を切るため、見えている成果だけでモデル本文の品質を断定しない。草案全体の出力契約と原稿を確認してから改修する。見た目の変更やprompt変更だけで品質改善を宣言しない。通知は仕事正本への入口とし、本人承認や成功にしない。既存LocalSubmissionの同ID・revision・本人・保存/復旧・停止を維持する。
+当時の残項目（現在のPixel正本を優先）: (1) 本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を`docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback`で確認し、依頼/進行/確認/成果物/失敗復旧/停止の画面案を既存Shell/Brokerの状態へ結ぶ、(2) 文章が主題に沿っていても依頼の導入・3手順・出典未調査表示を欠く原因をSDK promptと実ToolのafterChars出力契約から調べ、同一candidateの実推論/生成物で改善を検証する。`afterChars=1`と`free-article@1`の有料抜粋契約は本文を切るため、見えている成果だけでモデル本文の品質を断定しない。草案全体の出力契約と原稿を確認してから改修する。見た目の変更やprompt変更だけで品質改善を宣言しない。通知は仕事正本への入口とし、本人承認や成功にしない。既存LocalSubmissionの同ID・revision・本人・保存/復旧・停止を維持する。
 
 0.6Bで停止ack6ms/遅延仕事0を確認したがnative ready待ち28.785秒、1.5B即時停止は未受入。日本語ASR/TTS、Jennifer Goal/AMC統括、production配布、普通の端末再起動、全OSは独立gate。model未準備時のLLMなし有限Tool受入や過去API v2試験を現v4へ転用せず、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
 

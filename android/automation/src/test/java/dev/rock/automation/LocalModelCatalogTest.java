@@ -10,7 +10,7 @@ public final class LocalModelCatalogTest {
     private String preview() throws Exception { return new String(Files.readAllBytes(Path.of("src/debug/assets/rock-local-model-catalog.json")), java.nio.charset.StandardCharsets.UTF_8); }
     @Test public void acceptsRealPreviewSignatureButProductionInventoryIsEmpty() throws Exception {
         LocalModelCatalog catalog = new LocalModelCatalog(preview());
-        assertEquals(2, catalog.entries.size());
+        assertEquals(4, catalog.entries.size());
         LocalModelCatalog.Entry entry = catalog.require("dev.rock.qwen3-06b-q8");
         assertEquals(639446688L, entry.profile.artifactBytes);
         assertEquals(4, entry.profile.runtimeApiMin);

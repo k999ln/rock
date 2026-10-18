@@ -669,3 +669,12 @@ Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧
 main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
 
 主担当OS11/O6、ROCKはAPK/Core/同ID・状態・停止・保存を実装する。AI04は署名済modelと日本語ASR/TTSのlicense/品質/資源、SKY21/BIL02はProvider/請求、RLS02は同imageの配布・復旧を受け持つ。OWNERのHome選択・model/外部送信/予算同意を保持する。検証は`os:check`、AndroidのCore/SDK/JVM/build/lint、`TerminalHomeIntegrationTest`、`LocalAiServiceIntegrationTest`、`design:check`、`npm run verify`。失敗は同じ候補の原因・修正・再検証と未実行欄へ残す。
+
+
+## Pixelの公開モデル導入と記事以外の仕事
+
+検索→対応署名profile照合→明示Wi-Fi取得または同weight再検証→作業別選択→実推論/保存の正本は[LLM設計](llm-evaluation-architecture.md#pixel-discovered-model-install)、同artifactの証拠は[実機台帳](evidence/pixel-discovered-models.json)。主担当OS11/O6/ROCK。現在はShell22・runtime package8/API4・Engine4・checkpoint6の非破壊Developer Preview APK受入。DB3→4と旧backup読取を維持し、一般品質やfull OSへ転用しない。
+
+本人指定のRockstarOS・Skyサービス案は、同じowner/request/model pinの実300件を5件ずつ60生成+sealで保存し、番号・実数・正規化完全重複・制御記号・全prefixのhash連鎖、Broker再起動後の同bytesを確認。各raw180秒/lease240秒、拒否返答の有限再生成3回、30件でcompact復旧1回と220件で通常UI retry1回が必要だった。旧v5だけ短い指示への明示compactを許し、新規v6の時間切れは保存済み案を保つ通常の再試行へ案内する。owner/同意/expected digest/pin/timeout/event/停止fenceを維持し、黙った旧本文の変更や無制限retryをしない。
+
+現APKでauto code→Coder5、実手動chooser→同profileの生成/保存、実通知tap/公開検索、導入境界/SQLite、元24仕事/70artifactと全248body hashを確認した。コードは実行しない。意味の近い案・弱い物理連携・前提条件不足は残る下書きで、owner確認待ちを維持する。旧package7の25件中止や旧checkpoint v1〜v5の失敗はLLM台帳の履歴へ集約し、現行と並列の候補にしない。動的な任意作者native導入は未実装で、[Skyのaddプラグイン方針](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)と現Pixel適合範囲を分ける。全OS image/正式署名/flash/OTA/全損復旧・一般backgroundは別gate。

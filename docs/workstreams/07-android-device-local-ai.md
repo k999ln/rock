@@ -374,3 +374,12 @@ ROCK／O3。`lib/llm-providers.ts`でOllama／Anthropic／Gemini／Chat Completi
 ### AI07: Jev receiptと期限のhost受入（2026-10-11）
 
 ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしていた境界を修正し、rubricの3回答・型・有限範囲とusage整合だけを受け入れる。Providerの任意metadataをReceiptへコピーせず、共通transportは20秒でabortし再送しない。合格条件は不正／欠落回答の拒否、正常なゼロ始まりscore・部分usageの保持、期限中止、advisory-onlyと既存privacy gateの維持。`node --experimental-strip-types --test tests/jev-evaluation.test.mjs tests/jev-receipt-boundary.test.mjs tests/jev-transport.test.mjs`で検査する。Provider契約、本課金、Android／実機への接続はこのhost検証に含めない。[契約](../llm-evaluation-architecture.md#5-jev-api契約)。
+
+
+### OS11 / O6: 公開モデル導入と有限文書生成
+
+本人指定の追加範囲は公開open weightのPixel導入、記事以外の仕事、手動/作業別既定model選択、RockstarOS・Skyサービス案300件。責任/入出力/保存/復旧/承認/合格条件は[LLM正本](../llm-evaluation-architecture.md#pixel-discovered-model-install)。現在はShell22/runtime8/API4/Engine4/checkpoint6。現実機の同production APKで実300件の保存・全prefix連鎖・Broker再起動後同bytes、auto/実手動Coder5、通知tap/公開検索、境界/SQLiteが合格。元24仕事/70artifactを保持。source/各APK hash/試験数/失敗/2回の明示復旧は[台帳](../evidence/pixel-discovered-models.json)を優先する。無介入完走や内容品質/全OSへ昇格しない。
+
+5件/保存、raw180秒/lease240秒、最大60生成+seal。旧checkpoint読取とデータを維持し、新契約へ旧未完了workを黙って再実行しない。コード/要約等はtask別exact promptをinputへ保存し、単一JSON fence以外の余分な文章/field/別taskは拒否する。発想は実数/Unicode完全重複/96 UTF-8 bytes/制御記号を検査し、純粋な不正返答だけ同じ範囲を最大3回再生成、durable attempt/event・lease/token/pause fenceを維持。他Tool/有料cloudを再送しない。明示合成probeだけdebug私有cacheへ診断でき、releaseでは無効、Git/ログ/正式成果/件数へ算入しない。
+
+今後は意味上の多様性/速度と、SKY07/SKY21の任意作者addプラグインの共通admission/互換/権限/更新/失効を別受入にする。現固定profileはPixel実機検証の範囲で公式専用枠ではない。検証は `npm run os:check`、Android Core/SDK/unit/build/lint、該当opt-in実機試験、`npm run llm:architecture:check`、`npm run design:check`、`npm run verify`。MacのD1起動deadline失敗と同一SHAのGitHub全体成功を分け、CI未実行を成功にしない。

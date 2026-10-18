@@ -186,7 +186,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(jsonResponse, /if \(output\.size\(\) > maximum - count\) throw new IOException\(errorPrefix \+ "_RESPONSE_TOO_LARGE"\)/);
   assert.match(deviceTransport, /taskDetailPath\(String kind, String id\)/);
   assert.match(deviceTransport, /DEVICE_HOME_TASK_REFERENCE_REJECTED/);
-  assert.match(shellApi, /const int API_VERSION = 20/);
+  assert.match(shellApi, /const int API_VERSION = 22/);
   assert.match(shellApi, /String claimRockstarServiceEntitlement\(String packageJson\)/);
   assert.match(shellApi, /String cloudA2AAgents\(\)/);
   assert.match(shellApi, /String requestCloudA2APriceQuote\(/);
@@ -208,7 +208,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(shellApi, /String enrollA2ABrokerDevice\(boolean requireStrongBox\)/);
   assert.match(shellApi, /String revokeA2ABrokerDevice\(String keyId\)/);
   assert.match(shellApi, /String syncA2AWalletSettlement\(String delegationId\)/);
-  assert.match(shellConnection, /static final int API_VERSION = 20/);
+  assert.match(shellConnection, /static final int API_VERSION = 22/);
   assert.match(shellConnection, /api\.claimRockstarServiceEntitlement\(packageJson\)/);
   assert.match(shellUi, /claimRedemptionAvailable/);
   assert.match(shellUi, /setSaveEnabled\(false\)/);

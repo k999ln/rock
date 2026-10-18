@@ -1,3 +1,5 @@
+2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+
 ## Skyコード公開の共通境界（2026-10-09）
 
 Sky 140の月次timerと既存Remote LLM/A2A予約・送信gateをopt-in Sandbox契約へ接続。Cloud usageの既存精算→100 USD枠表示・上限拒否も接続（合成受入、実Cloudは無料接続先未確認）。本番課金は無効。[契約・保存・停止復旧・未受入](sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。
@@ -48,7 +50,7 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 ## Skyの実行先選択と共通runtime
 
-Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.md#pixel-local-jennifer)に従う。2026-10-17の実機で見つかった旧単体model登録への誤参照は、検証済みロードhashだけを使う追加overlayで修正し構造的一周を実機確認。内容は0.6Bの雛形コピー/主題相違を検出したため、短い主題別promptと明示選択する署名済1.5Bの比較を進める。暗黙loadや別modelへの切替をせず、未load/別hashでは停止する。5 overlayの新unsigned APK固定はCI artifactの実検査後に更新し、開発署名APKの実機・内容・協調停止・全OSを別受入にする。
+Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.md#pixel-local-jennifer)と[公開モデル/作業別選択](llm-evaluation-architecture.md#pixel-discovered-model-install)に従う。旧0.6Bの内容不合格を保持し、Native8/API4の検証済みhashと署名profile General6/Coder5/Creative2を仕事ごとに固定する。現在APKの実300下書き/auto・手動Coder/通知・公開検索・保存readbackは[限定実機台帳](evidence/pixel-discovered-models.json)で確認する。内容品質・無介入/一般background・full OSは未受入。
 
 [選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、Skyでmodel/Agent/Toolと実hostを選び、Zemaの同Job/版/grant/見積へ固定する。model推論先とAgent runnerを分け、local/cloud/明示組合せを対応能力の範囲で提示する。全選択肢の実装/本番受入は未完了で、Brokerの承認/予算/停止と無断fallback禁止を維持する。
 
@@ -142,7 +144,9 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 
 ### Android／Pixel
 
-Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 20→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。実機の有限計画/2 Tool受入と一般品質・全OS受入を区別する。[手動/自動model選択と公開検索](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は同じBrokerへ接続し、公開候補へ実行権を付けない。公開検索はSky先頭に配置し、長い導入詳細を通らず探せる。API v2やLLMなしの過去合格を現v4へ転用しない。
+Pixelの端末内モデル導入とJennifer有限計画は[詳細契約](native-os-integration.md#pixel-local-jennifer)へ接続する。private Shell API 22→Broker→Local si API v4→既存Tool/成果保存を用い、署名catalog・明示導入/再読込み・job pin・停止fenceを追加する。実機の有限計画/2 Tool受入と一般品質・全OS受入を区別する。[手動/自動model選択と公開検索](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は同じBrokerへ接続し、公開候補へ実行権を付けない。公開検索はSky先頭に配置し、長い導入詳細を通らず探せる。API v2やLLMなしの過去合格を現v4へ転用しない。
+
+検索からの対応model導入と記事以外の文章成果はNative8/Binder API4のclosedな `local-work@1/output-v1` とideas-N-v2で実装。生成コードは文字列として保存し、実行しない。既存Job/停止/確認/成果契約を保ち、現APKの実300件・2回の明示復旧・同bytes readbackと内容上の不足は[限定実機証拠](evidence/pixel-discovered-models.json)を参照する。
 
 
 `dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local si、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。
@@ -669,6 +673,11 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 
 [Mini通信・月次請求](service-design/08-mini-connectivity-and-billing.md)に本人、場所scope、携帯電源、WAN能力、usage/請求/制限/復旧を統合。OSによる銀行口座凍結は行わず、本番gateと旧料金保留を維持する。
 
+
+## Pixelの公開モデル導入・有限文書生成
+
+[導入と実行契約](llm-evaluation-architecture.md#pixel-discovered-model-install)をOS local model componentの現行詳細とする。目的は公開open weightをPixelで使い、要約/翻訳/code下書き/計画/アイデアを同じ仕事管理で保存すること。入力は署名profile ID・owner同意・依頼、出力はhash検証済weightと非信頼の下書きartifact。Sky/Broker/既存runtimeの責任・入出力・状態・保存・失敗・停止/復旧・承認・合格条件・未対応modelの判断手順は同契約に従う。runtime package5/API4、Shell21、Engine schema4を区別し、3→4 migrationは既存job/artifactを保持する。最初の実利用は本人指定のサービスアイデア300件。新APKと実weightを照合する実機受入が必要であり、全OSや一般品質の成功にはしない。
+
 ## 作業別のモデル自動選択（2026-10-17）
 
 本人の明示変更「LLMを選べるように、デフォルトは作業に合うものを自動選択」により、Skyの会話モデルは自動を初期値とし、手動Provider/モデルID指定を残す。Codex専用の契約ではない。Toolの自動ルーティングとモデル選択は別で、Agent配置・権限・料金承認をモデル選択から昇格させない。
@@ -722,6 +731,10 @@ Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/�
 
 無料Cloudの402/429は契約未払いと区別し、Providerが数値Retry-Afterを返した場合だけ待機秒数を表示する。未指定なら無料枠の利用可否確認を案内する。同じ依頼IDは結果未確認のまま保持し、再送・有料切替をしない。検証はtests/sky-free-cloud.test.mjsのcooldown/refusal試験と公開UIで行う。
 
+Pixelの端末内モデル選定・導入・実機証拠は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)と[受入台帳](evidence/pixel-discovered-models.json)へ集約する。発想の1.5Bは内容不合格として自動対象外。Native8と4Bの固定定義を再受入中であり、一般品質や実300の完了を宣言しない。
+
+発想の現保存/prompt契約はcheckpoint v5、raw ideas-v2（48文字headroom、Broker各案96 UTF-8 bytes）、実5件ごとに保存、plan180秒/lease240秒、最大60生成+seal。旧checkpoint v1〜v4は本文を維持して読み、未完了の旧契約の再実行は明示再計画。制御記号/不足/完全重複は拒否・純粋発想だけ有限3再生成。Skyのソフト単体も含め、家具/環境との連動は課題解決に必要な案だけとする。過去の実300試験は内容不備を発見し25件保存で中止、最新実機受入は別に記録する。
+
 ## 無料Cloudの待機と自動続行（2026-10-17）
 
 本人の追加指示により、従来の「すべての402で自動再送なし」を限定更新する。依頼送信時の「無料枠の待機後、同じ依頼を自動で続行する」を有効にした場合、HTTP 402・error.code=FREE_LIMIT・1〜300秒の数値Retry-Afterがすべて確認できた生成前拒否だけをwaitingとして保存する。単なる402/429、通信切断、timeout、usage欠落、保存失敗はunconfirmedで停止し、再送しない。有料fallback・決済呼出しを追加しない。
@@ -745,6 +758,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 
 運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
 
+現行のNative8/API4・Shell22・checkpoint6は、同じ仕事の実300件を保存し、全prefix/hash連鎖・Broker再起動後同bytesを限定受入。30件compact復旧1回と220件通常UI retry1回、拒否返答の自動再生成3回が必要だった。内容品質・無介入完走・一般background・full OSは未受入。[現行契約](llm-evaluation-architecture.md#pixel-discovered-model-install)と[同artifactの実機証拠](evidence/pixel-discovered-models.json)を優先し、旧candidateの現在形を並列に保たない。
 
 ### 待機中の契約停止・翌月復旧のSandbox受入
 

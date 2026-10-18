@@ -1210,3 +1210,11 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
 regexes = ['''\Adb18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547\z''']
+
+# Public tokenizer metadata recomputed from the exact SHA-pinned Qwen3/Unsloth GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest 7212f0dd2158"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json)\z''']
+regexes = ['''\Aee28b958b28c088fc6713ddeb2257bbadacc406eb2b3cf76e395c1bfd1c2a54d\z''']

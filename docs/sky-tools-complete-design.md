@@ -1,3 +1,5 @@
+2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+
 ## 共通サービス体験と状態の読み分け
 
 Sky 140の月次timerと既存Remote LLM/A2A予約・送信gateをopt-in Sandbox契約へ接続。Cloud usageの既存精算→100 USD枠表示・上限拒否も接続（合成受入、実Cloudは無料接続先未確認）。本番課金は無効。[契約・保存・停止復旧・未受入](sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。
@@ -1219,13 +1221,17 @@ Skyの本人別保存済み成果を `/sky/outputs` で確認し、第一者同�
 
 承認・合格条件・未決定: ブラウザ内実行とSky保存を別操作にする。前者は外部送信・モデル料金なしで匿名の新規ブラウザから結果表示とMarkdown持出しを受け入れる。後者は本人A/Bの隔離、同一UUID再送、再訪後の成果読取、モバイル操作、公開Siteの同一SHAを受入条件とする。host単体試験・型・buildだけを公開実利用合格にしない。一般Cloud LLM AgentにはProvider資格情報、署名済み料金表、予算、使用量Receiptと停止/復旧が必要であり、この第一者Agentの成功で代替しない。外部アプリSDKと大学生6 MCP枠も別受入とする。
 
+## Pixelの公開モデルと有限下書き
+
+Native8/API4・private Shell22・Engine4/checkpoint6の詳細は[LLM正本](llm-evaluation-architecture.md#pixel-discovered-model-install)。対応署名profileの公開検索/導入、手動/作業別選択、記事以外の要約/翻訳/コード/発想を既存仕事へ保存する。コードは実行せず、モデルへTool権限を付与しない。現APKの実300件、60生成+sealの保存連鎖とBroker再起動後同bytes、auto/実手動Coder5、実通知tap/公開検索・導入境界/SQLiteは[同artifactの証拠](evidence/pixel-discovered-models.json)で限定受入。30件compact復旧と220件通常retryが必要で、内容品質・独立事業性・無介入完走・一般background/全OSは未受入。Skyの全体方針は任意作者のaddプラグイン、現固定profileはPixel検証範囲として分ける。
+
 ## 作業別のモデル自動選択（2026-10-17）
 
 本人の明示変更「LLMを選べるように、デフォルトは作業に合うものを自動選択」により、Skyの会話モデルは自動を初期値とし、手動Provider/モデルID指定を残す。Codex専用の契約ではない。Toolの自動ルーティングとモデル選択は別で、Agent配置・権限・料金承認をモデル選択から昇格させない。
 
 入力は依頼文と保存済み選択モード。サーバーで本人・利用権を確認し、設定済みloopbackのモデル一覧（Ollama tags / OpenAI互換models）を読み取る。モデル一覧にある候補のうちコード作業ならcoder系、その他なら一般系を優先する決定的な初期ヒューリスティック。性能比較による「世界で一番」の実証ではない。返すProvider/モデルID/理由を当該依頼に固定し、会話モデル設定に表示する。自動選択に失敗したら依頼文を保持し、接続設定後に再送する。別Providerへの実行時フォールバックは行わない。
 
-無料枠のみという現在の条件では自動対象をローカルに限定。Cloudの資格情報・無料利用権・料金契約は未確認で、自動Cloud送信は未受入。手動のOpenAI/Anthropic/Google/互換接続先とモデルIDは選択できるが、実行の料金gate・同意・対応coordinatorは別条件である。Cloud実利用が有効になる場合も既存Sky140の予約/確定usage/$100停止を経由し、選択API自体は予算や請求を変更しない。
+この初期local selector単体の対象はローカル。現在のWebは後述の送信同意・owner限定flag・有効Sandboxプランを満たす匿名無料Cloud selectorへ接続する。Pixel nativeの実機受入は端末内modelであり、WebのCloud受入を流用しない。手動のOpenAI/Anthropic/Google/互換接続先とモデルIDは選択できるが、実行の料金gate・同意・対応coordinatorは別条件である。Cloud実利用が有効になる場合も既存Sky140の予約/確定usage/$100停止を経由し、選択API自体は予算や請求を変更しない。
 
 選択モードと手動指定は既存provider draftへ本人別保存し、選択理由は画面内のみ。資格情報は応答・ログに出さない。一覧取得は2.5秒で停止し、redirectを拒否。未接続/不正一覧は候補に加えない。主担当Web/Sky（ROCK、SKY07）、Cloud利用権はEXTERNAL/OWNER、料金境界BIL02はJOINT。合格条件は作業別選択、一覧由来の候補のみ、未接続停止、外部URL除外、手動指定維持、型・全体試験。Cloud能力比較と無料利用権の接続は未解決で、確認済みの契約ごとに追加する。
 
