@@ -8,7 +8,7 @@
     "status": "physical_preview_300_drafts_saved_readback_and_current_auto_manual_models_notification_verified",
     "branch": "codex/pixel-discovered-models",
     "currentAppSource": "ef20d8ae125d4b24c2254b0beb0f318ac0b2995a",
-    "hostVerify": "GitHub same b330 source all14 checksPASS; Mac latest unchanged D1 process30s timeout, prior fullMacPASS retained",
+    "hostVerify": "GitHub b330 all14 checksPASS; earlier Mac D1 process30s timeout retained. Main c1ba cold-init fix merged; final exact-SHA CI is authoritative.",
     "baseMainSha": "5ea0bf67cd369bf3528ddb0009b7e48c0f31892d",
     "scope": [
       "search_to_verified_download_and_install",

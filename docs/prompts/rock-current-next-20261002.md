@@ -12,7 +12,7 @@
 
 本人指定の実300件は同じowner/request/pinで保存し、60生成+sealの全prefix/番号/実数/正規化完全重複/表記/byte/hashを検査。30件のtimeout後compactを一度、220件のtimeout後通常UI retryを一度、拒否返答の有限自動再生成3回。無介入完走ではない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同じ。現在APKのauto/実手動Coder5、実通知tap/公開検索を含むUI13 actual+既存optin skip1、境界/SQLite5 actualが成功。元24仕事/70artifactと全248body hashを保持確認。生成本文はGit外。全300に意味の重なりや不自然な連携が残り、事業性/独自性/内容品質は未受入。日本語summaryのSky/Zema混同も未解決。コードは下書きで実行しない。全OS image/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
 
-Macの最新verifyは未変更のWrangler D1起動30秒deadlineで失敗（focusedも同じ）。従前Mac compact22全stage成功は履歴。同source b33024b2のGitHub `npm run verify` run39085208518とREST全14 checkは成功。最終commitのCI/main統合はGitHubで再取得する。モデルの結果をTool成功/本人承認/予算へ昇格しない。次は意味上の多様性/速度の検証と、開かれたaddプラグインの作者共通admission/互換/権限/更新/失効を既存SKY07/SKY21へ接続する。
+旧mainベースのMac verifyはWrangler D1起動30秒deadlineで失敗（focusedも同じ）。main c1baのbounded cold-init修正を取り込み、最新headで再検証する。従前Mac compact22全stage成功は履歴。同source b33024b2のGitHub `npm run verify` run39085208518とREST全14 checkは成功。最終commitのCI/main統合はGitHubで再取得する。モデルの結果をTool成功/本人承認/予算へ昇格しない。次は意味上の多様性/速度の検証と、開かれたaddプラグインの作者共通admission/互換/権限/更新/失効を既存SKY07/SKY21へ接続する。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 

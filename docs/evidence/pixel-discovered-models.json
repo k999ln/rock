@@ -343,14 +343,6 @@
     "nativeSourceTests": 34,
     "pythonPrepareStageTests": 21,
     "androidBuildLint": "PASS",
-    "latestMacVerify": {
-      "status": "FAILED_UNCHANGED_WRANGLER_D1_STAGE_PROCESS_DEADLINE",
-      "stage": "sky:a2a:workflow:test",
-      "error": "spawnSync node ETIMEDOUT",
-      "timeoutMs": 30000,
-      "focusedRerun": "same_timeout",
-      "noAssertionsWeakened": true
-    },
     "ciFullVerify": {
       "source": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f",
       "run": 39085208518,
@@ -359,7 +351,19 @@
       "sameSourceChecks": 14,
       "sameSourceChecksAcceptedBy": "GitHub REST commit check-runs all14 success",
       "finalCommitCiAuthority": "current PR158 head check-runs"
-    }
+    },
+    "previousMacVerify": {
+      "status": "FAILED_UNCHANGED_WRANGLER_D1_STAGE_PROCESS_DEADLINE",
+      "stage": "sky:a2a:workflow:test",
+      "error": "spawnSync node ETIMEDOUT",
+      "timeoutMs": 30000,
+      "focusedRerun": "same_timeout",
+      "noAssertionsWeakened": true,
+      "source": "b33024b2dbe66aa58f1b8c74a0fcf095937fa97f"
+    },
+    "mergedMain": "c1ba4106147a99be7e818fb5a4142d4ad6f502d8",
+    "coldD1InitFixFromMain": true,
+    "finalVerificationAuthority": "Latest PR158/current main exact-SHA check-runs; acceptance snapshot records earlier b330 verification separately"
   },
   "generationSegments": [
     {
