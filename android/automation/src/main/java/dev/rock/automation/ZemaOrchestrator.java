@@ -42,7 +42,7 @@ final class ZemaOrchestrator {
         return input.toString();
     }
     String submitAgent(String requestId,String prompt,String provenance,String modelDigest,String task,boolean consent) throws Exception {
-        if(modelDigest==null||!modelDigest.matches("[a-f0-9]{64}")||!java.util.Set.of("writing","summary","translation","code","planning").contains(task))
+        if(modelDigest==null||!modelDigest.matches("[a-f0-9]{64}")||!java.util.Set.of("writing","summary","translation","code","planning","article").contains(task))
             throw new SecurityException("AGENT_MODEL_AND_TASK_REQUIRED");
         long identity=android.os.Binder.clearCallingIdentity();
         try{synchronized(ModelProfileOperationLock.LOCK){return submitLocked(requestId,null,prompt,provenance,modelDigest,task,consent);}}
@@ -53,8 +53,9 @@ final class ZemaOrchestrator {
                                 String expectedModelDigest, String forcedTask, boolean consent) throws Exception {
         if (!consent) throw new SecurityException("LOCAL_ARTIFACT_CONSENT_REQUIRED");
         String task = forcedTask==null?ModelSelectionPolicy.task(prompt):forcedTask;
-        boolean article = "article".equals(task);
-        String toolId = article ? engine.requireSkySelection(selectionToken) : LocalWorkDraft.RECIPE;
+        boolean agentTools=forcedTask!=null&&"local-tools/1".equals(new org.json.JSONObject(contextJson).getJSONObject("recipe").getString("runner"));
+        boolean article = forcedTask==null&&"article".equals(task);
+        String toolId = article ? engine.requireSkySelection(selectionToken) : agentTools ? dev.rock.core.AgentToolChain.RECIPE : LocalWorkDraft.RECIPE;
         String planningPrompt = LocalWorkDraft.prompt(task, prompt);
         Engine.bounded(prompt);
         Engine.bounded(contextJson);
@@ -76,10 +77,12 @@ final class ZemaOrchestrator {
             int ideas = forcedTask==null?dev.rock.sdk.LocalIdeaBatch.requestedCount(prompt):0;
             String input = ideas > 0 ? dev.rock.sdk.LocalIdeaBatch.start(prompt, ideas)
                 : textInput(task,prompt,planningPrompt,forcedTask==null?null:contextJson);
+            java.util.List<String> agentOperations=agentTools?dev.rock.sdk.AgentToolPayload.operations(new org.json.JSONObject(contextJson).getJSONObject("recipe")):java.util.List.of();
             LocalPlanningFence.Attempt prepared = PLANNING.begin(engine::paused, () -> { });
             try { return PLANNING.commit(prepared, engine::paused, () -> ideas > 0
                 ? engine.submitPinnedIdeas(pin, requestId, input,
                     (ideas + dev.rock.sdk.LocalIdeaBatch.BATCH_SIZE - 1) / dev.rock.sdk.LocalIdeaBatch.BATCH_SIZE, true)
+                : agentTools ? engine.submitPinnedAgentTools(pin,requestId,input,agentOperations,true)
                 : engine.submitPinnedText(pin, requestId, input, true)); }
             finally { PLANNING.finish(prepared); }
         }

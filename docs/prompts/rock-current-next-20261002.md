@@ -1,5 +1,11 @@
 # RockstarOS service and Pixel: implementation handoff
 
+## 追加Agentの実Tool実行: 現在の仕事
+
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main3d3e8f22からcodex/sky-agent-tools。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool appのBinder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)を先に照合する。
+
+現在はhost221単体/build/lint合格、実機未受入。まず同じ既存preview signerを検査してBroker/Shellだけを非破壊更新し、隔離admission/失効境界5件、その後に公開document-agent定義の追加と未チェックTool同意/二重tap1仕事、実General1.5B→citations/free-article→加工成果保存を確認する。推論中のBroker instrumentationは禁止。旧75仕事/276成果をprivate baselineとhash照合する。次にBroker process再起動後の同仕事/同artifact/同attempt、仕事画面、通知を確認。失敗はraw/同じ仕事を保持し、fixtureや文章を実Tool成功へ換算しない。全体verifyと同一head CIが揃ってから通常main統合。APK成功は全OS/任意framework/有料Cloudではない。
+
 ## Skyの動的追加: 現在の仕事
 
 本人の2026-10-17指示「固定カタログに縛られずLLMやAgentを追加してPixelで使う」をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装中。branch `codex/sky-open-addons`、PR #167、基準main f8a0217e。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runs、`data/project-status.json.pixelOpenAddons`、[動的追加契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)を読む。

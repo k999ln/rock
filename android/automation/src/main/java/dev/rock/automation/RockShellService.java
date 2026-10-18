@@ -219,7 +219,11 @@ public final class RockShellService extends Service {
         });}
         @Override public String prepareSkyAgent(String digest,String choice,String request){return addonCall(()->{
             JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
-            return new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),d.getJSONObject("recipe").getString("task"));
+            JSONObject recipe=d.getJSONObject("recipe");
+            JSONObject prepared=new JSONObject(new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),recipe.getString("task")));
+            prepared.put("agentRunner",recipe.getString("runner")).put("tools",recipe.optJSONArray("tools")==null?new JSONArray():recipe.getJSONArray("tools"));
+            prepared.put("toolScope","pure_local_document_transforms_only_no_publish_or_charge");
+            return prepared.toString();
         });}
         @Override public String submitSkyAgent(String digest,String requestId,String request,String modelDigest,boolean consent){return addonCall(()->{
             synchronized(zemaLock){ synchronized(ModelProfileOperationLock.LOCK){
@@ -1038,7 +1042,8 @@ public final class RockShellService extends Service {
                     JSONObject original=new JSONObject(engine().initialInput(work.get("id")));
                     if(original.has("agentProvenance")&&SkyAddonStore.validWorkInput(original)){
                         JSONObject provenance=original.getJSONObject("agentProvenance");item.put("agent",new JSONObject().put("name",provenance.getJSONObject("recipe").getString("name"))
-                            .put("digest",provenance.getString("addonDigest")).put("source",provenance.getString("source")));
+                            .put("digest",provenance.getString("addonDigest")).put("source",provenance.getString("source")).put("runner",provenance.getJSONObject("recipe").getString("runner"))
+                            .put("tools",provenance.getJSONObject("recipe").optJSONArray("tools")==null?new JSONArray():provenance.getJSONObject("recipe").getJSONArray("tools")));
                     }
                 }catch(Exception invalidProvenance){ /* Never project an unverified Agent identity. */ }
                 if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {

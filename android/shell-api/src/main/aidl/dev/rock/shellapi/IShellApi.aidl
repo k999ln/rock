@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 24;
+    const int API_VERSION = 25;
 
     int getApiVersion() = 0;
     String snapshot() = 1;

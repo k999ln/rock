@@ -1,0 +1,12 @@
+{
+  "schema": "rock-sky-agent/2",
+  "id": "example.sky.document-helper",
+  "version": 1,
+  "name": "Toolで文書を仕上げるAgent",
+  "instructions": "Create a short Japanese document on the supplied topic. Use only supplied facts. Return three tiny summary bullets. The declared Tools format a private draft; this does not authorize publication, sales or external actions.",
+  "task": "article",
+  "licenseId": "MIT",
+  "permissions": [],
+  "runner": "local-tools/1",
+  "tools": ["citations@1", "free-article@1"]
+}

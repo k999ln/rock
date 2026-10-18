@@ -7806,4 +7806,18 @@
     "testSource": "76b0a9a3",
     "mainSyncedThrough": "cf01d289"
   }
+,
+  "pixelAgentTools": {
+    "date": "2026-10-18",
+    "taskId": "OS11",
+    "primarySquad": "O6",
+    "primaryOwner": "ROCK",
+    "status": "implementation_and_host_acceptance",
+    "privateShellApiVersion": 25,
+    "physicalAccepted": false,
+    "baseMainSha": "3d3e8f22937f8a56a73074085770617c47574287",
+    "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+    "evidence": "docs/evidence/pixel-agent-tools.json",
+    "nextAction": "Build/test API25, admit public schema2 Tool Agent with explicit ordered-Tool consent, verify actual native generation and signed Tool Binder results, stop/revocation/idempotency/readback and original75/276 preservation."
+  }
 }

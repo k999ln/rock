@@ -658,7 +658,7 @@ public final class MainActivity extends Activity {
             +"\n作者署名なし。公開リポジトリの版を利用者が選ぶ追加です。品質は未検証です。";
         if(model&&profile!=null)details+="\n"+profile.optString("licenseId")+" · "+android.text.format.Formatter.formatFileSize(this,profile.optLong("artifactBytes"))
             +"\n重みSHA-256: "+profile.optString("weightsSha256")+"\nまず手動で試せます。試験した作業を確認してから、自動選択への参加を別に設定できます。";
-        else details+="\n"+d.optJSONObject("recipe").optString("licenseId")+" · 端末内テキスト生成のみ・追加権限なし・通信なし\n指示: "+d.optString("instructions");
+        else details+="\n"+d.optJSONObject("recipe").optString("licenseId")+" · "+("local-tools/1".equals(d.optJSONObject("recipe").optString("runner"))?"端末内Tool: "+d.optJSONObject("recipe").optJSONArray("tools")+" · 文書の下書きを作成・価格/URLは仮設定":"端末内テキスト生成のみ")+"・追加権限なし・通信なし\n指示: "+d.optString("instructions");
         LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);label(view,details,13);
         CheckBox agreed=new CheckBox(this);agreed.setText("配布元・版・ライセンス・未検証の範囲を確認し、この定義を追加する");styleCheckBox(agreed);view.addView(agreed);
         ScrollView scroll=new ScrollView(this);scroll.addView(view);
@@ -713,7 +713,7 @@ public final class MainActivity extends Activity {
         LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);content.setPadding(28,16,28,16);
         EditText request=field(content,"このAgentへの依頼","",true);
         button(content,"使うLLMを変更（標準は自動）",this::showModelChooser);
-        label(content,"端末内で文章を生成して保存します。Agent指示と依頼は合計2KBまでです。",13);
+        label(content,"対応モデルと宣言されたToolを確認して、成果物を端末内に保存します。Agent指示と依頼は合計2KBまでです。",13);
         new AlertDialog.Builder(this).setTitle(name).setView(content).setPositiveButton("モデルと実行条件を確認",(d,w)->prepareAddonAgent(digest,request.getText().toString()))
             .setNegativeButton("戻る",null).show();
     }
@@ -722,8 +722,10 @@ public final class MainActivity extends Activity {
         worker.execute(()->{try{JSONObject p=new JSONObject(new ShellConnection(this).prepareSkyAgent(digest,choice,request));
             runOnUiThread(()->{if(isDestroyed())return;if(!"prepared".equals(p.optString("status"))){addonStatus.setText("実行条件を確認してください: "+p.optString("code"));return;}
                 LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);
-                label(view,request+"\nモデル: "+p.optString("name")+"\n"+p.optString("reason")+"\n"+p.optString("warning"),14);
-                CheckBox consent=new CheckBox(this);consent.setText("このAgent設定と依頼を、このPixelのモデルで処理して成果を保存する");styleCheckBox(consent);view.addView(consent);
+                JSONArray operations=p.optJSONArray("tools");boolean usesTools=operations!=null&&operations.length()>0;
+                label(view,request+"\nモデル: "+p.optString("name")+"\n"+p.optString("reason")+"\n"+p.optString("warning")
+                    +(usesTools?"\n実行するTool（順番）: "+operations+"\n端末内の文書加工と成果保存。価格・URLは下書きの仮設定です。公開・販売・外部送信は行いません。":""),14);
+                CheckBox consent=new CheckBox(this);consent.setText(usesTools?"このAgent設定と依頼を、このPixelのモデルと表示したToolで処理して成果を保存する":"このAgent設定と依頼を、このPixelのモデルで処理して成果を保存する");styleCheckBox(consent);view.addView(consent);
                 AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Agentへの依頼を確認").setView(view).setPositiveButton("開始する",null).setNegativeButton("戻る",null).create();
                 dialog.setOnShowListener(x->{Button start=dialog.getButton(-1);start.setEnabled(false);consent.setOnCheckedChangeListener((v,c)->start.setEnabled(c));
                     start.setOnClickListener(v->{if(!consent.isChecked())return;submitAddonAgent(digest,request,p.optString("manifestDigest"),start,dialog);});});dialog.show();
@@ -3397,7 +3399,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = ui.card(jobs); card.setTag("work-detail-" + id);
         ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : ShellUi.ACCENT);
         label(card, work.optString("title", "端末内siの仕事"), 24);
-        JSONObject agent=work.optJSONObject("agent");if(agent!=null)label(card,"Agent: "+agent.optString("name")+"\n"+agent.optString("source"),12);
+        JSONObject agent=work.optJSONObject("agent");if(agent!=null)label(card,"Agent: "+agent.optString("name")+"\n"+agent.optString("source")+(agent.optJSONArray("tools")!=null&&agent.optJSONArray("tools").length()>0?"\n使用Tool: "+agent.optJSONArray("tools"):""),12);
         int succeeded = workProgress(card, work);
         JSONArray runs = work.optJSONArray("runs"); int total = runs == null ? 0 : runs.length();
         boolean hasArtifact = ("review".equals(state) || "completed".equals(state)) && !failed && total > 0 && succeeded == total;

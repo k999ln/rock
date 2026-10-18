@@ -1,0 +1,22 @@
+{
+  "schema": "rock-pixel-agent-tools-evidence/1",
+  "recordedOn": "2026-10-18",
+  "status": "HOST_VERIFIED_PHYSICAL_PENDING",
+  "privateShellApi": 25,
+  "physicalAccepted": false,
+  "scope": "Developer_Preview_APK",
+  "baselineWorks": 75,
+  "baselineArtifacts": 276,
+  "modelResultsGrantToolAuthority": false,
+  "wholeOsAccepted": false,
+  "host": {
+    "distinctUnitCases": 221,
+    "core": 130,
+    "automation": 54,
+    "shell": 14,
+    "sdk": 23,
+    "buildLint": "PASS",
+    "designBaselineLlm": "PASS"
+  },
+  "previewSignerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+}

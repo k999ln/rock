@@ -9,7 +9,7 @@ import java.util.*;
 
 /** Owner-scoped immutable definitions and explicit admission receipts, separate from APK publisher keys. */
 final class SkyAddonStore {
-    private static final Object LOCK=new Object();
+    static final Object LOCK=new Object();
     private final Context context;
     SkyAddonStore(Context c){context=c;}
     private String owner(){return AndroidOwner.current(context);}
@@ -79,10 +79,15 @@ final class SkyAddonStore {
         });
     }
     static JSONObject agent(JSONObject raw,String origin) throws Exception {
-        Set<String> fields=Set.of("schema","id","version","name","instructions","task","licenseId","permissions","runner");
-        if(!keys(raw).equals(fields)||!"rock-sky-agent/1".equals(raw.getString("schema"))||!"local-text/1".equals(raw.getString("runner"))
-            ||raw.getJSONArray("permissions").length()!=0||!Set.of("writing","summary","translation","code","planning").contains(raw.getString("task")))
+        boolean toolRunner="local-tools/1".equals(raw.optString("runner"));
+        Set<String> fields=new HashSet<>(Set.of("schema","id","version","name","instructions","task","licenseId","permissions","runner"));
+        if(toolRunner)fields.add("tools");
+        if(!keys(raw).equals(fields)||!(toolRunner?"rock-sky-agent/2":"rock-sky-agent/1").equals(raw.getString("schema"))
+            ||!(toolRunner?"local-tools/1":"local-text/1").equals(raw.getString("runner"))
+            ||raw.getJSONArray("permissions").length()!=0
+            ||!(toolRunner?Set.of("article"):Set.of("writing","summary","translation","code","planning")).contains(raw.getString("task")))
             throw new SecurityException("AGENT_RUNTIME_OR_PERMISSIONS_UNSUPPORTED");
+        if(toolRunner)dev.rock.sdk.AgentToolPayload.operations(raw);
         String name=clean(raw.getString("name"),120),instructions=clean(raw.getString("instructions"),2000);
         if(!raw.getString("id").matches("[a-z0-9]+(?:[._-][a-z0-9]+){2,}")||raw.getLong("version")<1
             ||!Set.of("Apache-2.0","MIT","BSD-3-Clause").contains(raw.getString("licenseId")))throw new SecurityException("AGENT_DEFINITION_INVALID");

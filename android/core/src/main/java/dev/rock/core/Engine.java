@@ -231,6 +231,11 @@ public final class Engine {
             new String[]{"local-generate@1", "local-text-validate@1", "local-text-seal@1"});
     }
 
+    /** Owner-consented pure Tool chain, using the same pin, leases, artifacts and stop fences. */
+    public String submitPinnedAgentTools(ModelProfilePin pin,String requestKey,String input,List<String> tools,boolean consent) {
+        return submitPinnedRecipe(pin,requestKey,input,false,consent,AgentToolChain.RECIPE,AgentToolChain.stages(tools));
+    }
+
     public String submitPinnedIdeas(ModelProfilePin pin, String requestKey, String input, int batches, boolean consent) {
         if (batches < 1 || batches > 60) throw new IllegalArgumentException("INVALID_IDEA_BATCH_COUNT");
         String[] stages = new String[batches + 1]; java.util.Arrays.fill(stages, "local-ideas-generate@1");
@@ -260,7 +265,8 @@ public final class Engine {
         if (requestKey == null || !requestKey.matches("[A-Za-z0-9_-]{1,80}")) throw new IllegalArgumentException("INVALID_REQUEST_KEY");
         if (!pin.workId.equals(modelWorkId(pin.owner, requestKey))) throw new SecurityException("MODEL_PROFILE_PIN_REQUEST_MISMATCH");
         bounded(input);
-        String requestHash = digest(recipe + "\n" + sample + "\n" + pin.requestDigest + "\n" + input);
+        String requestHash = digest(recipe + "\n" + sample + "\n" + pin.requestDigest + "\n" + input
+            + (AgentToolChain.RECIPE.equals(recipe)?"\ntools:"+String.join("\n",tools):""));
         return db.transaction(() -> {
             Map<String,String> pinRow = one(db.query("SELECT p.*,m.status,m.verified_receipt_digest FROM model_profile_job_pins p JOIN model_profiles m ON m.profile_id=p.profile_id AND m.version=p.profile_version WHERE p.owner=? AND p.work_id=?",
                 pin.owner, pin.workId), "MODEL_PROFILE_PIN_NOT_FOUND");
