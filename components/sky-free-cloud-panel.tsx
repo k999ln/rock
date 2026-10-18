@@ -15,6 +15,7 @@ export default function SkyFreeCloudPanel(){
   const r=await fetch('/api/llm/free-cloud/jobs',{cache:'no-store'});const data=await r.json() as {jobs?:Job[];enabled?:boolean;error?:string};
   if(r.status===429){retryReadAt.current=Date.now()+60000;throw Error('複数画面からの確認が集中しています。約1分後に自動更新します。依頼の再送は不要です。');}
   if(!r.ok)throw Error(data.error||'保存済みの依頼を読めません。');
+  setError(previous=>previous==='複数画面からの確認が集中しています。約1分後に自動更新します。依頼の再送は不要です。'?'':previous);
   setEnabled(data.enabled===true);setJobs(data.jobs??[]);setSelected(value=>value||(data.jobs?.[0]?.id??''));
   } finally {reading.current=false;}
  },[]);
