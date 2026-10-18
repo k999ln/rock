@@ -51,7 +51,7 @@ export default function SkyCodexBridgePanel() {
   }
 
   return <details className={styles.panel} aria-label="CodexからSkyを使う">
-    <summary className={styles.topline}><span><PlugZap size={14} /> CodexからSkyを使う</span><span className={styles.status} role="status" aria-live="polite">{failed ? 'Sky側を確認できません' : status ? `Sky側に${status.tools.length}機能を公開中` : 'Sky側を確認中…'}</span></summary>
+    <summary className={styles.topline}><span><PlugZap size={14} /> CodexからSkyを使う</span><output className={styles.status} aria-live="polite">{failed ? 'Sky側を確認できません' : status ? `Sky側に${status.tools.length}機能を公開中` : 'Sky側を確認中…'}</output></summary>
     <div className={styles.body}>
       <div className={styles.copy}>
         <h2 id="sky-codex-bridge-title">Skyの道具を、会話から使う。</h2>
@@ -61,7 +61,7 @@ export default function SkyCodexBridgePanel() {
           <Link href="/chat">Skyのチャットを開く <ArrowUpRight size={15} /></Link>
         </div>
         <div className={styles.example}><span>Codexに入力する文</span><p>{samplePrompt}</p></div>
-        {copyFailed && <p className={styles.copyError} role="status">コピーできませんでした。上の文を選択してコピーしてください。</p>}
+        {copyFailed && <output className={styles.copyError}>コピーできませんでした。上の文を選択してコピーしてください。</output>}
       </div>
       <div className={styles.capabilities} aria-label="Codexから呼べるSkyの機能">
         <span>いま呼べる範囲</span>

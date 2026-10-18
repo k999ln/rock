@@ -45,6 +45,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DeviceConnection } from '@/components/device-connection';
 import SkyMcpCenter from '@/components/sky-mcp-center';
 import SkyCodexBridgePanel from '@/components/sky-codex-bridge-panel';
+import SkyWorkLedger from '@/components/sky-work-ledger';
 import SkyActivationPanel from '@/components/sky-activation-panel';
 import SkyConnectionCenter from '@/components/sky-connection-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
@@ -758,6 +759,7 @@ export default function SkyWorkspace({
           <Link className={styles.marketLink} href="/sky/marketplace"><Store size={17} /> マーケット <ArrowUpRight size={15} /></Link>
           <Link className={styles.marketLink} href="/sky/outputs">Agentの成果 <ArrowUpRight size={15} /></Link>
         </nav>
+        <SkyWorkLedger />
         <SkyCodexBridgePanel />
         <section aria-labelledby="sky-feed-title">
           <h2 id="sky-feed-title" className={styles.feedHeading}>ツールを選ぶ</h2>
