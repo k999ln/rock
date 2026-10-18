@@ -253,3 +253,6 @@ O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証�
 
 
 無料Cloud画面外継続（SKY07/ROCK、WEB01/JOINT）: 永続WorkJob、毎分wake、本人別履歴を追加。正本はLLM設計の画面外継続。復旧/運用はservices/sky-free-cloud-wake/README.md、受入はdocs/evidence/sky-free-cloud-background.json。合成試験は `node --experimental-strip-types --test tests/sky-free-cloud.test.mjs`、全体は `npm run verify`。公開配備、Git保存、main統合を別記する。
+
+
+待機中プラン停止受入（2026-10-18、SKY07/BIL02）: 復旧済みSandboxの次周期試験を履歴保持で反復可能にする。上限到達と未払いで保存済みジョブの送信を止め、同意期限内の入金・翌月更新後に同IDを再開。実accountとStripe Sandboxの証拠はdocs/evidence/sky-background-plan-gates.json。合成27試験と全体verifyを実施。本番課金なし。
