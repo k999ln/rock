@@ -2739,6 +2739,33 @@
     "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
   },
+  "skyOpenAddPluginDirection": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "skyは全てのaddプラグインになる拡張機能、固定されたものやオフィシャルなものはなく、ただみんなが使いたいものがある、",
+    "role": "open_add_plugin_discovery_and_composition_across_hosts",
+    "fixedFeatureOrAuthorSet": false,
+    "officialStatusRequired": false,
+    "officialStatusSelectionPreference": false,
+    "pluginKinds": [
+      "model",
+      "agent",
+      "tool",
+      "recipe",
+      "output_view",
+      "host_adapter"
+    ],
+    "sharedAdmissionCriteria": [
+      "author_identity_and_version_digest",
+      "host_runtime_schema_compatibility",
+      "scoped_owner_consent",
+      "data_destination_and_cost",
+      "verification_stop_update_and_revocation"
+    ],
+    "pixelBundledCatalogScope": "physical_preview_tested_profiles_not_Sky_product_boundary",
+    "dynamicNativeThirdPartyPluginAcceptance": "not_implemented",
+    "authority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤"
+  },
   "skyFusionDirection": {
     "decidedAt": "2026-10-15",
     "source": "Owner explicitly defined Sky as an Agent/LLM marketplace and hub beyond RockstarOS, combining software, hardware, interiors and architecture to improve daily life; sofa weight observation is an example",

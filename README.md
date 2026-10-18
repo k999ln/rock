@@ -9,6 +9,8 @@ Skyの会話モデルは「自動（作業に合わせる）」が標準です�
 
 ### One account. More ways to play, make, and get things done.
 
+Skyは、みんなが使いたい機能を持ち寄り、さまざまなソフト・機器・家具・建築へ追加するaddプラグインの入口です。機能や作者を固定せず、公式という区分で優遇しません。現在のPixelモデル一覧は実機検証の範囲で、任意作者の動的native導入は未実装です。[共通の拡張契約](docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+
 [Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
 
 Pixel Android Developer Preview now includes a selectable Home, Home/Sky/Work/Settings navigation, explicit execution-route drafts, the real local two-Tool workflow without an LLM, review/cancel/export, and an on-device-only voice adapter. Open RockstarOS → prepare a draft → Work → review the inputs and consent. Select the default Home from Settings; it is never assigned automatically. Japanese voice needs installed on-device services; model planning needs a verified model profile. [Implementation, recovery and acceptance](docs/native-os-integration.md#pixel-terminal-implementation) and [same-candidate evidence](docs/evidence/pixel-si-terminal-implementation.json). This is an APK preview, separate from a full OS image.

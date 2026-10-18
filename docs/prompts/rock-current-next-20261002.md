@@ -1,5 +1,9 @@
 # RockstarOS service and Pixel: implementation handoff
 
+## Skyの最新addプラグイン方針
+
+本人の2026-10-17指示を `skyOpenAddPluginDirection` と `docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤` へ記録。機能/作者/接続先を固定せず、公式による優遇をしない。現Pixel固定catalogは検証範囲。任意作者の動的native導入は未実装で、既存package/作者同一性/互換/権限/更新/失効を実装・受入してから広げる。実行中300件のAPK/pin/promptを途中で変えない。
+
 ## 現在のPixel公開モデル実装・受入
 
 主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最新GitHub main/branch/同一SHA CIを取得し、`docs/evidence/pixel-discovered-models.json`、progress JSONのpixelDiscoveredModelsとLLM正本を優先する。main43cf290eのWeb無料Cloud継続は取込み済み。下段の古いcheckpointを現在の通知失敗/未実装へ転用しない。

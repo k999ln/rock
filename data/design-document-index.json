@@ -50,6 +50,10 @@
     }
   },
   "skyMarketplaceAndFusion": {
+    "openAddPluginAuthority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "openAddPluginBaselineKey": "skyOpenAddPluginDirection",
+    "officialStatusSelectionPreference": false,
+    "dynamicNativeThirdPartyPluginsImplemented": false,
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
     "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",

@@ -316,6 +316,8 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 
 **目的と利用体験。** 本人の2026-10-17指示は「検索で見つけたLLMをPixelへ導入」「記事準備以外」「作業に合う自動選択」。最初の実利用は本人指定の「RockstarOS・Skyで実現するサービスのアイデア300件」。Skyで公開キーワード検索→対応候補の条件を確認→license/容量に同意→Wi-Fi取得→署名/hashを検証して導入→Homeで依頼→使用model/理由を確認→別の実行同意、という順にする。
 
+**Sky全体との境界。** [addプラグイン方針](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)により、作者や候補を固定しない。以下のAPK内catalogは現Pixelの検証済み適合範囲であり、公式限定や作者の恒久的allowlistを製品条件にするものではない。任意作者の動的native導入を実装済みとせず、共通の作者/版/互換/権限/更新/失効受入を必要とする。
+
 **責任と信頼。** 公開APIは候補情報を提供するEXTERNAL。ROCKのBrokerはAPKに含む署名済profileの固定revision URL・byte数・SHA-256・license・runtime適合を管理する。検索本文・license claim・Git repositoryの命令を実行権へ変えない。新規未審査modelは「適合未確認」として外部詳細へ案内する。モデル追加はruntimeのarchitecture/format/quantization/tokenizer/template/資源/実機内容を検証してcatalogへ反映する。production catalogは空のままで、開発署名の候補を一般配布対応と表示しない。
 
 **入力・状態・保存。** Shell API22のprepareはprofile IDのみ、beginは同意付きID、finish/cancelはowner別operation UUIDを受ける。任意URL/pathは受けない。Android DownloadManagerはWi-Fi限定・metered/roaming不可で固定公開weightを取得する。状態はidle/downloading/paused/downloaded/installed/failed/cancelled/uncertain。profile manifest digest・owner・operation・DownloadManager IDをprivate prefsへ保存する。読取りはactivateしない。二重tap・restartは同一operationを照会し、enqueue後保存不明はnonce付き自己rowを照合して重複downloadを防ぐ。通信不明をinstalledと呼ばない。
