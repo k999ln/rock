@@ -44,6 +44,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DeviceConnection } from '@/components/device-connection';
 import SkyMcpCenter from '@/components/sky-mcp-center';
+import SkyCodexBridgePanel from '@/components/sky-codex-bridge-panel';
 import SkyActivationPanel from '@/components/sky-activation-panel';
 import SkyConnectionCenter from '@/components/sky-connection-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
@@ -732,6 +733,7 @@ export default function SkyWorkspace({
             </Link>
           </nav>
         </header>
+        <SkyCodexBridgePanel />
         <section className={styles.assistant} aria-labelledby="sky-assistant-title">
           <h2 id="sky-assistant-title">やりたいことから探す</h2>
           <form className={styles.composer} onSubmit={submitRequest}>
