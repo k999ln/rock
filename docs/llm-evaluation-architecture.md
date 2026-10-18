@@ -152,7 +152,7 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 **状態と保存。** `queued → local-generate → agent-tool-input → 宣言Tool各工程 → agent-tool-seal → review`。同じmodel pin、request ID、lease/token、SQLite artifact hash、pause/cancel、本人の最終reviewを再利用する。request hashはTool順も含み、同IDの再送で新仕事を増やさない。生成、各Tool出力、最終Markdownを別digestで保持し、仕事詳細にAgent・source・Toolと各工程を表示する。Engine DB4/Platform1/Native8/Binder4は変更しない。私有Shell API25の準備応答へTool宣言を追加し、古いShellでTool同意を省略しない。
 
-**失敗・失効・復旧。** provenance不一致、未知/並び替えTool、schema不正、Tool応答の改変、署名/API不適合で成果成功を作らない。Tool-chainの各dispatchと結果commit時に現ownerの有効な定義を再検査する。Agent失効と結果commitを同じlockで順序付け、失効後の遅延返答を保存/次工程へ進めずholdする。保存済みartifactは維持し、本人の再同意有効化と通常retryで止まった工程を再開する。既存schema1の新規依頼停止契約は維持する。process再起動は成功工程とhashを読み戻し、Toolの自動再実行や本人承認の復元としない。timeout/停止は既存fenceを維持し、Tool入力不正を自動で補完・再生成しない。
+**失敗・失効・復旧。** provenance不一致、未知/並び替えTool、schema不正、Tool応答の改変、署名/API不適合で成果成功を作らない。Tool-chainの各dispatchと結果commit時に現ownerの有効な定義を再検査する。Agent失効と結果commitを同じlockで順序付け、失効後の遅延返答を保存/次工程へ進めずholdする。保存済みartifactは維持し、本人の再同意有効化と通常retryで止まった工程を再開する。既存schema1の新規依頼停止契約は維持する。backupの既存schema2 readerは新しいadapter工程を含む正しい4〜5工程の並びだけを追加受入し、model pinなし・Tool逆順・未知工程を拒否する。復元後は既存pause/未検証model/再同意gateを維持し、ownerの実dataへ上書き復元する試験は行わない。process再起動は成功工程とhashを読み戻し、Toolの自動再実行や本人承認の復元としない。timeout/停止は既存fenceを維持し、Tool入力不正を自動で補完・再生成しない。
 
 **合格と残る条件。** 純Toolのfixture一致、未知/権限/改変/逆順拒否、同ID競合、再起動後next-step、失効と遅延commitの競合を試験する。実機では公開定義の追加と実行checkbox未選択、実LLM→別app Binderの2 Tool→加工前後のhash/実成果、仕事画面/通知/成果の読戻し、Broker再起動後同artifact、既存75仕事/276成果の保持を照合する。任意Tool framework、外部送信/購入/機器作用、有料Cloudと全OSは別gateであり、本adapterで一般許可しない。対応拡大は同じ能力/権限/費用/復旧契約と実受入を根拠に決める。
 

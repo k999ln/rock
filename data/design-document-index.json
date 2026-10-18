@@ -2450,7 +2450,7 @@
     "evidence": "docs/evidence/pixel-open-addons.json",
     "toolAgentAuthority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
     "toolAgentEvidence": "docs/evidence/pixel-agent-tools.json",
-    "toolAgentPhysicalAcceptance": "PASS_same_APKs_limited_document_Tools_see_evidence",
+    "toolAgentPhysicalAcceptance": "c37_pass_backup_correction_revalidating",
     "agentRunners": [
       "local-text/1",
       "local-tools/1"

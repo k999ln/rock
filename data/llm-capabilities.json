@@ -336,7 +336,7 @@
       "toolExecution": {
         "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
         "implemented": true,
-        "physicalAccepted": true,
+        "physicalAccepted": false,
         "runner": "local-tools/1",
         "definitionSchema": "rock-sky-agent/2",
         "supportedPureTools": [

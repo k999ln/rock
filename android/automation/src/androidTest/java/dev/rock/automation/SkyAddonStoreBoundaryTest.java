@@ -94,6 +94,13 @@ public final class SkyAddonStoreBoundaryTest {
             store.revoke(digest,true);SkyAgentExecution.finish(context,engine,ticket,"passed","synthetic late callback","fixture-boot",20);
             assertEquals("needs_review",engine.runs(id).get(0).get("state"));assertNull(engine.runs(id).get(0).get("output_digest"));
             assertEquals("AGENT_TOOL_AUTHORITY_INVALID",engine.runs(id).get(0).get("error"));assertEquals(input,engine.checkpoint(id));assertNull(engine.claim("fixture-boot",30,true));
+            byte[] backup=platform.exportRecoverableState(owner);java.io.File restoredFile=new java.io.File(context.getCacheDir(),"agent-restore-"+java.util.UUID.randomUUID()+".db");
+            Context restoreContext=new ContextWrapper(context){@Override public java.io.File getDatabasePath(String ignored){return restoredFile;}};
+            try(AndroidDatabase restoredDb=new AndroidDatabase(restoreContext)){
+                dev.rock.core.Engine restored=new dev.rock.core.Engine(restoredDb);new dev.rock.core.platform.PlatformStore(restoredDb).restoreRecoverableState(backup,owner,1000);
+                assertTrue(restored.paused());assertEquals(input,restored.checkpoint(id));assertEquals(4,restored.runs(id).size());assertEquals("needs_review",restored.runs(id).get(0).get("state"));
+            }finally{restoredFile.delete();new java.io.File(restoredFile+"-wal").delete();new java.io.File(restoredFile+"-shm").delete();}
+
         }finally{db.close();file.delete();new java.io.File(file+"-wal").delete();new java.io.File(file+"-shm").delete();}
     }
 

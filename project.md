@@ -47,6 +47,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+統合前の追加点検: 新Tool工程はbackup schema2のrestore allowlist/recipe検査へ未登録だったため、厳密な4〜5工程・model pin条件を追加。完了成果のhost復元、Tool逆順のatomic拒否、Pixel隔離SQLiteへ保留仕事を復元してpause/記録を保持する検査を追加する。実owner DBへの上書き復元や旧APK downgradeの受入とはしない。最終APK/実機を再照合する。
+
 API25の実機証拠とLLM/設計索引/担当入口/次プロンプト/README定義例を同期。project:update、design/baseline/LLM/mission checkとdiff検査が成功。Git保存・作業branch反映・main統合はPR169のlive mergedAt/mergeCommitを正本に分け、同じ最終headのCI成功後に通常統合する。
 
 API25/c37実機最終: auto4B2→実citations/free-article→seal全5工程attempt1、134.996秒/699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4。Binder/SQLite/失効境界11、Agent同意UI/同ID/二重tap/失効と再同意、process再起動後同hash/attempt/成果UI、通知tap/検索を含むUI13実+既存opt-in1未選択が合格。元75仕事/276成果/全状態と現80仕事296全body hash保持。実機4APK bytes/既存cert一致、Native8/Tool1無更新。main421b1029のWeb依頼フォーム改善を双方保持して統合、Android差分0。既定OpenSSL4による署名回帰の失敗後、既存OpenSSL3.6.3をPATH固定し、main同期後の全体verify全stage exit0（Node22/ファイル並列2）。最終CI/main統合はPR169のexact head/check-runs/mergedAt/mergeCommitで別確認する。

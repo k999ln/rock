@@ -2,6 +2,8 @@
 
 ## 追加Agentの実Tool実行: 現在の仕事
 
+統合前点検でbackup readerの新工程未登録を発見し、正しい4〜5工程だけの復元・Tool逆順拒否・復元後pauseを追加。host222/build/lint合格。c37の実機成功は保持し、修正APKで隔離SQLite復元/Binder11件と実Agentを再検証してから最終証拠とCIを更新する。owner DBへの上書き復元は実施しない。
+
 本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main3d3e8f22からcodex/sky-agent-tools。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool appのBinder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)を先に照合する。
 
 API25の実機再受入済み。source c37deb5c / auto4B2、生成→入力検査→citations→free-article→sealの全5工程attempt1、134.996秒、699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4。未チェック同意/Tool順・モデル表示/二重tap1仕事/同ID再送/失効・成果保持・再同意、Broker process再起動後同hash/同attempt/実UI表示が合格。境界と旧Binder/SQLite11件、通知tap/公開検索を含むUI13実+既存opt-in1未選択。元75仕事/276artifactと全状態を保持、現80仕事/296全body hash、実機4APKの既存署名/bytesを確認。Native8とTool1は再インストールしない。

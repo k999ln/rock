@@ -330,6 +330,20 @@ public class EngineTest {
         assertEquals("review",engine.work(id).get("state"));assertEquals("output4",engine.result(id));
         assertEquals(1,engine.runs(id).stream().filter(r->"citations@1".equals(r.get("tool"))).count());
         assertThrows(IllegalArgumentException.class,()->engine.complete(id," "));
+        byte[] backup=new PlatformStore(db).exportRecoverableState("owner:alice");
+        try(JdbcDatabase restoredDb=new JdbcDatabase(temp.newFile("agent-tools-restored.db").getPath())){
+            Engine restored=new Engine(restoredDb);new PlatformStore(restoredDb).restoreRecoverableState(backup,"owner:alice",1000);
+            assertEquals("output4",restored.result(id));assertEquals(5,restored.runs(id).size());assertTrue(restored.paused());
+            assertEquals("citations@1",restored.runs(id).get(2).get("tool"));assertEquals("free-article@1",restored.runs(id).get(3).get("tool"));
+        }
+        db.execute("UPDATE runs SET tool='free-article@1' WHERE work_id=? AND step=2",id);
+        db.execute("UPDATE runs SET tool='citations@1' WHERE work_id=? AND step=3",id);
+        byte[] changedOrder=new PlatformStore(db).exportRecoverableState("owner:alice");
+        try(JdbcDatabase invalidDb=new JdbcDatabase(temp.newFile("agent-tools-invalid.db").getPath())){
+            new Engine(invalidDb);assertThrows(IllegalArgumentException.class,()->new PlatformStore(invalidDb).restoreRecoverableState(changedOrder,"owner:alice",1000));
+            assertTrue(invalidDb.query("SELECT * FROM works").isEmpty());
+        }
+
     }
 
 }

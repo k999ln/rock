@@ -2,6 +2,7 @@ package dev.rock.core.platform;
 
 import dev.rock.core.Database;
 import dev.rock.core.Engine;
+import dev.rock.core.AgentToolChain;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -1329,7 +1330,7 @@ public final class PlatformStore {
             int attempt = integer(row, "attempt");
             String tool = required(row, "tool");
             if (!works.contains(workId) || step < 0 || step > 60 || attempt < 0 || attempt > 3 ||
-                !Set.of("citations@1", "free-article@1", "local-generate@1", "local-text-validate@1", "local-text-seal@1", "local-ideas-generate@1", "local-ideas-seal@1").contains(tool) ||
+                !Set.of("citations@1", "free-article@1", "local-generate@1", "local-text-validate@1", "local-text-seal@1", "local-ideas-generate@1", "local-ideas-seal@1", AgentToolChain.INPUT, AgentToolChain.SEAL).contains(tool) ||
                 !Set.of("pending", "queued", "running", "succeeded", "needs_review", "failed", "cancelled").contains(required(row, "state")) ||
                 !runs.add(workId + ":" + step)) {
                 throw new IllegalArgumentException("BACKUP_RUN");
@@ -1353,7 +1354,7 @@ public final class PlatformStore {
             boolean text = tools.equals(List.of("local-generate@1", "local-text-validate@1", "local-text-seal@1"));
             boolean ideas = tools.get(tools.size() - 1).equals("local-ideas-seal@1") &&
                 tools.subList(0, tools.size() - 1).stream().allMatch("local-ideas-generate@1"::equals);
-            if (!(article || ((text || ideas) && pinnedWorks.contains(workId))))
+            if (!(article || ((text || ideas || AgentToolChain.matchesStages(tools)) && pinnedWorks.contains(workId))))
                 throw new IllegalArgumentException("BACKUP_RUN_RECIPE");
         }
         for (Map<String,String> row : snapshot.events) {

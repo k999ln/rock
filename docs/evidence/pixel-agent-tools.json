@@ -1,11 +1,11 @@
 {
   "schema": "rock-pixel-agent-tools-evidence/1",
   "recordedOn": "2026-10-18",
-  "status": "PHYSICAL_PREVIEW_ACCEPTED",
+  "status": "C37_PHYSICAL_ACCEPTED_BACKUP_CORRECTION_REVALIDATING",
   "productionSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
   "testSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
   "privateShellApi": 25,
-  "physicalAccepted": true,
+  "physicalAccepted": false,
   "pullRequest": "https://github.com/k999ln/rock/pull/169",
   "scope": "Developer_Preview_APKs_only",
   "versions": {
@@ -213,5 +213,10 @@
   },
   "mainIntegratedAtEvidenceCommit": false,
   "integrationAuthority": "GitHub PR169 mergedAt/mergeCommit and current main",
-  "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-agent-tools-20261018"
+  "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-agent-tools-20261018",
+  "backupCorrection": {
+    "status": "strict_recipe_restore_validation_added_acceptance_pending",
+    "priorPhysicalSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+    "ownerDatabaseOverwritten": false
+  }
 }

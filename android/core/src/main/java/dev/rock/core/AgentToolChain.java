@@ -21,4 +21,11 @@ public final class AgentToolChain {
         List<String> stages=new ArrayList<>();stages.add("local-generate@1");stages.add(INPUT);
         stages.addAll(tools);stages.add(SEAL);return stages.toArray(new String[0]);
     }
+    /** Recovery accepts only the same typed chain admitted for a new work. */
+    public static boolean matchesStages(List<String> sequence) {
+        if(sequence==null||sequence.size()<4||sequence.size()>5)return false;
+        try {return java.util.Arrays.equals(stages(sequence.subList(2,sequence.size()-1)),sequence.toArray(new String[0]));}
+        catch(IllegalArgumentException invalid){return false;}
+    }
+
 }
