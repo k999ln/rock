@@ -393,6 +393,8 @@ Cloud jobs are intended to continue within prior authorization, budgets, and dea
 
 ### Skyの文章ツール
 
+**Sky → Codex のツール入口:** Siteの `/mcp` はSkyの既存Catalogを検索し、既存の決定的な処理をCodex/ChatGPTへ公開する小さなBridgeです。`sky_find_tools` は候補を `callable_here` と `catalog_only` に分けます。現時点でBridgeから実行できるのは依頼のルール振分け、出典整理、ココナラ応募前チェック、記事の無料版作成だけです。サインインなしのツール実行を拒否し、投稿・購入・外部送信・有料LLM・端末操作は公開しません。ほかのSky ToolをCatalogに表示しても実行器が接続された意味にはなりません。
+
 Sky／Marketで文章ツールを選び、サインインして実行します。「この端末に保存」で成果を同じツールから開き直せます。保存はこのブラウザだけ（全体20件）で、共有端末の他利用者も閲覧可能です。別端末へ移す場合はMarkdownで保存してください。本番配備は公開範囲の確定待ちです。
 
 ### Sky as a standalone app
