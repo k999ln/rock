@@ -136,5 +136,72 @@
     "finalReadbackUniquePeriods": 3,
     "finalReadbackUniqueInvoices": 3
   },
-  "mainIntegrated": false
+  "mainIntegrated": true,
+  "mainMerge": "f2a2fba894ac6ef7a6a3dd90af96ebca29344b6e",
+  "postMainAcceptance": {
+    "date": "2026-10-18",
+    "siteVersion": 70,
+    "sameMainRuntimeFiles": true,
+    "redeployed": false,
+    "jobId": "8188afe5-636b-402b-abe8-b2b57d3a595d",
+    "cap": {
+      "closedAt": "2026-10-18T00:55:24.919Z",
+      "cronTimestamp": 1792284994584,
+      "attemptsBefore": 0,
+      "attemptsAfter": 0
+    },
+    "unpaid": {
+      "closedAt": "2026-10-18T00:57:32.734Z",
+      "cronTimestamp": 1792285116795,
+      "attemptsBefore": 0,
+      "attemptsAfter": 0
+    },
+    "recovery": {
+      "closedAt": "2026-10-18T00:59:42.439Z",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-02-01",
+      "remainingMinor": 10000,
+      "state": "completed",
+      "attempts": 1,
+      "result": "91 + 92 の答えは183です。",
+      "model": "gpt-oss-20b",
+      "inputTokens": 335,
+      "outputTokens": 149,
+      "providerResponseId": "pllns_e3402a21386a725e5b0198f652dad4c9",
+      "chargeMinor": 0,
+      "closedCronTimestamp": 1792285232138,
+      "readbackUnchanged": true
+    },
+    "billing": {
+      "priorInvoices": 3,
+      "finalInvoices": 4,
+      "uniquePeriods": 4,
+      "uniqueInvoiceIds": 4,
+      "sameInvoicePaid": "in_1URiPRGfTgzUjVHJ97pZJIqt",
+      "allPaid": true,
+      "oldInvoicesRetained": true
+    },
+    "productionBilling": false,
+    "limitations": [
+      "Synthetic $100 cap, not real spend",
+      "Sandbox business clock, not elapsed calendar month",
+      "This cycle started queued; real402 cycle retained separately"
+    ],
+    "validation": {
+      "focusedTests": 11,
+      "focusedFailures": 0,
+      "projectUpdate": "passed",
+      "fullVerify": "exit 0; all stages through bot:check passed",
+      "log": "/private/tmp/sky-a2a-full-verify.log",
+      "priorFullVerify": "exit 1: sky:a2a:workflow:test local D1 migration spawnSync ETIMEDOUT; later stages not executed",
+      "a2aTimeoutRepair": {
+        "migrationTimeoutMs": 120000,
+        "queryTimeoutMs": 30000,
+        "measuredMigrationMs": 3415,
+        "standaloneA2a": "passed",
+        "positiveA2aTests": 14,
+        "causeBoundary": "Previous cold local D1 initialization exceeded 30 seconds twice; transient delay source not established. Initialization now has a separate bounded budget and includes captured diagnostics on failure."
+      }
+    }
+  }
 }
