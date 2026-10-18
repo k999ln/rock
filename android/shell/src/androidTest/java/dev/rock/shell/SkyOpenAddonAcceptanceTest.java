@@ -22,6 +22,12 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public final class SkyOpenAddonAcceptanceTest {
     final Instrumentation ins=InstrumentationRegistry.getInstrumentation();
+    MainActivity trialActivity;
+    @Before public void keepVisibleDuringPhysicalTrial(){
+        physical();trialActivity=(MainActivity)ins.startActivitySync(new Intent(c(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        ui(()->trialActivity.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+    }
+    @After public void restoreWindowPolicy(){if(trialActivity!=null)ui(()->{trialActivity.getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);trialActivity.finish();});}
     Context c(){return ins.getTargetContext();} void ui(Runnable r){ins.runOnMainSync(r);}
     void physical(){Assume.assumeTrue("explicit physical add-on acceptance only","true".equals(InstrumentationRegistry.getArguments().getString("rockOpenAddonPhysical")));assertEquals("frankel",Build.DEVICE);assertFalse(c().getSystemService(KeyguardManager.class).isDeviceLocked());}
     Object field(MainActivity a,String n){try{Field f=MainActivity.class.getDeclaredField(n);f.setAccessible(true);return f.get(a);}catch(Exception e){throw new AssertionError(e);}}
@@ -42,7 +48,7 @@ public final class SkyOpenAddonAcceptanceTest {
         JSONObject search=new JSONObject(b.searchPublicModels("Qwen2.5-0.5B-Instruct-GGUF"));boolean found=false;
         JSONArray candidates=search.getJSONArray("candidates");for(int i=0;i<candidates.length();i++)found|=repo.equals(candidates.getJSONObject(i).optString("id"));assertTrue("actual public search must find selected repo",found);
         save("live-search.json",search.toString());String source="https://huggingface.co/"+repo+"/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf";
-        MainActivity activity=(MainActivity)ins.startActivitySync(new Intent(c(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));long start=SystemClock.elapsedRealtime();
+        MainActivity activity=trialActivity;long start=SystemClock.elapsedRealtime();
         try{
             ui(()->{try{Method m=MainActivity.class.getDeclaredMethod("selectPage",int.class);m.setAccessible(true);m.invoke(activity,1);}catch(Exception e){throw new AssertionError(e);}
                 ((EditText)field(activity,"addonSource")).setText(source);Button inspect=(Button)find(activity.getWindow().getDecorView(),v->v instanceof Button&&"追加する内容を確認".contentEquals(((Button)v).getText()));assertNotNull(inspect);inspect.performClick();});

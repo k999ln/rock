@@ -36,7 +36,7 @@ public final class SkyAddonStoreBoundaryTest {
     }
     @Test public void automaticParticipationNeedsExactOwnerModelTaskTrialAndConsent()throws Exception {
         JSONObject root;try(java.io.InputStream in=context.getAssets().open(LocalModelCatalog.ASSET)){root=new JSONObject(new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8));}
-        JSONObject entry=root.getJSONArray("models").getJSONObject(0),profile=entry.getJSONObject("profile");
+        JSONObject entry=new JSONObject(root.getJSONArray("models").getJSONObject(0).toString()),profile=entry.getJSONObject("profile");
         profile.put("profileId","sky.model.synthetic").put("publisherId","owner-pin:"+dev.rock.core.Engine.digest(AndroidOwner.current(context))).put("signingKeyId","owner-consent").put("manifestSignatureBase64Url","");
         JSONObject d=new JSONObject().put("kind","model").put("id","sky.model.synthetic").put("entry",entry);
         JSONObject p=new JSONObject(store.propose(d));String digest=p.getString("digest");store.add(p.getString("proposalId"),digest,true);

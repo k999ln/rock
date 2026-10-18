@@ -690,3 +690,6 @@ OS11/O6/ROCK主担当、SKY07/SKY21連携。本人の「固定カタログに縛
 
 
 初回実機受入（source ffb7f1b0 / private API23）: 非同梱bartowski/Qwen2.5-0.5B-Instruct-GGUFの実検索→owner定義追加→397,808,192bytes実取得/全hash/埋込metadata/ロード→要約/保存は56.823秒。ただし本文が生成指示のechoで内容不合格。Agentは出典情報の4項目目を旧3項目validatorが拒否しLOCAL_REQUEST_REPLAN_REQUIREDで停止。どちらも完了/品質受入へ昇格しない。private API24候補で出典のexact再構成検査・SDKの指示echo拒否・形式試験と本人確認を経た作業別自動候補・revision競合拒否・Agent再同意有効化・仕事詳細のAgent名表示を追加する。元の仕事/成果は保持し、同じ失敗Agent仕事の明示retryと新モデルのコード実生成を次に検証する。
+
+
+API24候補325150d7: Android unit218件（SDK release同内容21件は別実行）、build/lint、全体npm run verify全段階exit0（test-file並列2、assert範囲不変）。実機は再ロックされ、境界3試験とAgent1試験がDEVICE_LOCKED/前提で拒否されたため未受入。解除依頼を一度提示し、試験中だけKEEP_SCREEN_ONを持つopt-inウィンドウを追加する。読取り専用DBコピーで元65仕事/248artifactの全保持・状態不変と現67仕事/252body hashを確認。CI prototypeは試験fixtureが署名catalogのJSONObjectを共有参照のまま改変したため署名不在を正しく拒否。fixtureをdeep copyへ修正し、実装の署名検査は保持する。
