@@ -58,7 +58,7 @@ final class ToolConnection {
                     return new Result("passed",next);
                 }
                 org.json.JSONObject input = new org.json.JSONObject(ticket.input);
-                if (input.length() != 3 || !input.has("prompt")) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
+                if (!SkyAddonStore.validWorkInput(input)) return new Result("held", "LOCAL_REQUEST_REPLAN_REQUIRED");
                 String task = input.getString("task");
                 if (!LocalWorkDraft.TASKS.contains(task)) throw new IllegalArgumentException("INVALID_LOCAL_REQUEST");
                 String prompt = input.getString("prompt"); Engine.bounded(prompt);
@@ -68,7 +68,14 @@ final class ToolConnection {
                 runtime.requireReadyForPlanning(pin);
                 if (!"completed".equals(result.event)) return new Result("held", "LOCAL_MODEL_RESPONSE_FAILED");
                 proposal = result.payload;
-                return new Result("passed", LocalWorkDraft.verify(task, proposal));
+                try {
+                    String verified=LocalWorkDraft.verify(task, proposal);
+                    new SkyAddonStore(context).recordTrial(pin.manifestDigest,task,ticket.workId,Engine.digest(proposal),true);
+                    return new Result("passed",verified);
+                } catch(IllegalArgumentException | SecurityException invalid) {
+                    new SkyAddonStore(context).recordTrial(pin.manifestDigest,task,ticket.workId,Engine.digest(proposal),false);
+                    throw invalid;
+                }
             } catch (IllegalArgumentException | SecurityException invalid) {
                 String code = invalid.getMessage();
                 if (proposal != null && BuildConfig.DEBUG && ticket.workId.equals(context.getSharedPreferences("synthetic-plan-probe", Context.MODE_PRIVATE).getString("workId", null))) {
@@ -78,8 +85,8 @@ final class ToolConnection {
                         java.nio.file.Files.write(new java.io.File(context.getCacheDir(), "synthetic-plan-probe.json").toPath(), observation.getBytes(java.nio.charset.StandardCharsets.UTF_8));
                     } catch (Exception ignored) { /* Diagnosis cannot change execution outcome. */ }
                 }
-                if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
-                boolean repairable=LocalIdeaBatch.GENERATE.equals(ticket.tool) && java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD").contains(code);
+                if (code == null || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "LOCAL_DRAFT_INSTRUCTION_ECHO", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD", "MODEL_PROFILE_RUNTIME_MISMATCH", "LOCAL_AI_NOT_READY").contains(code)) code = "LOCAL_DRAFT_INVALID";
+                boolean repairable=LocalIdeaBatch.GENERATE.equals(ticket.tool) && java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "LOCAL_DRAFT_INSTRUCTION_ECHO", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD").contains(code);
                 return new Result(repairable?"retryable_idea":"held", code);
             } catch (IllegalStateException unavailable) {
                 return new Result("held", "LOCAL_AI_INTERRUPTED".equals(unavailable.getMessage()) ? "LOCAL_GENERATION_TIMED_OUT" : "LOCAL_GENERATION_UNAVAILABLE");

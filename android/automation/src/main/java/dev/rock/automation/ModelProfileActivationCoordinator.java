@@ -17,10 +17,10 @@ final class ModelProfileActivationCoordinator {
     private final Context context;
     private final PlatformStore platform;
     private final ResumableModelArtifactStager stager;
-    private final TrustedModelPublisherVerifier publishers;
+    private final dev.rock.core.platform.ModelProfileAuthenticator publishers;
 
     ModelProfileActivationCoordinator(Context context, PlatformStore platform,
-        ResumableModelArtifactStager stager, TrustedModelPublisherVerifier publishers) {
+        ResumableModelArtifactStager stager, dev.rock.core.platform.ModelProfileAuthenticator publishers) {
         this.context = context.getApplicationContext();
         this.platform = platform;
         this.stager = stager;

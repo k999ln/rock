@@ -243,6 +243,9 @@ public final class Engine {
         return new ModelProfilePin(owner, workId, row.get("request_digest"), row);
     }
 
+    /** Broker-only provenance read; ownership is enforced by the caller before projecting a work. */
+    public String initialInput(String workId) {work(workId);return verifiedArtifact(workId,run(workId,0).get("input_digest"));}
+
     /** Read-only verified last checkpoint, used only by Broker to project numeric progress. */
     public String checkpoint(String workId) {
         work(workId); List<Map<String,String>> rows = db.query("SELECT output_digest FROM runs WHERE work_id=? AND state='succeeded' ORDER BY step DESC LIMIT 1", workId);

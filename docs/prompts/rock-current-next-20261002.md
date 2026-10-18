@@ -1,18 +1,20 @@
 # RockstarOS service and Pixel: implementation handoff
 
-## Skyの最新addプラグイン方針
+## Skyの動的追加: 現在の仕事
 
-本人の2026-10-17指示を `skyOpenAddPluginDirection` と `docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤` へ記録。機能/作者/接続先を固定せず、公式による優遇をしない。現Pixel固定catalogは検証範囲。任意作者の動的native導入は未実装で、既存package/作者同一性/互換/権限/更新/失効を実装・受入してから広げる。実行中300件のAPK/pin/promptを途中で変えない。
+本人の2026-10-17指示「固定カタログに縛られずLLMやAgentを追加してPixelで使う」をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装中。branch `codex/sky-open-addons`、PR #167、基準main f8a0217e。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runs、`data/project-status.json.pixelOpenAddons`、[動的追加契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)を読む。
 
-## 現在のPixel公開モデル実装・受入
+現在のproduction app sourceは325150d7、private Shell API24 / model policy4。Native8/Binder4/Platform1/EngineDB4は変更しない。公開HFの固定commit単一GGUFとGitHubの宣言型local-text Agentをowner別に追加する。作者署名なしのowner digest pinをEd25519作者署名と混同せず、OS/platform鍵で第三者を署名しない。未知形式/権限/任意コードはadapter不足として拒否する。
 
-主担当OS11/O6/ROCK、branch `codex/pixel-discovered-models`、PR #158。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runsと `docs/evidence/pixel-discovered-models.json` を読む。main c1ba4106のWeb無料Cloud継続・公開Sandbox停止/翌月復旧とbounded D1 cold-init修正は取込み済み。Android/Native runtime入力の追加差分は0。PRのGraphQL rollupだけで欠落/合格を決めず、REST commit check-runsを確認する。Git保存とmain統合は分ける。
+初回source ffb7f1b0では非同梱Qwen2.5 0.5Bの検索/実397,808,192bytes取得/hash/metadata/load/要約保存が56.823秒で成功したが、本文は生成指示のechoで内容不合格。Agent仕事はprovenanceを加えた入力が旧3項目検査に拒否されて停止した。修正候補はexactなprovenance再構成照合、指示echo拒否、形式試験receiptと本人確認を経たtask別auto参加、revision CAS、Agent再同意有効化と仕事詳細のAgent名表示を持つ。新規モデルはまず手動、未試験/失敗taskをautoに入れない。一般品質・性能順位の実証ではない。
 
-実機production APKはapp source ef20d8ae、最初の30案だけdba3389a。Native8/API4はsource31414985/run39072982374で実bytes/既存preview signer/payload一致、Shell22/Platform1/Engine4/checkpoint6。生成中のAPI変更や再インストールはしていない。署名profile General6/Coder5/Creative2は端末で検証済み。4Bの元の2.5GB取得はruntime7/profile1、runtime8/profile2は同weightのcache再検証/再同意であり、新downloadと読み替えない。production catalogは空、Sky全体の作者/機能固定とは区別する。
+2026-10-18に実機再受入済み。非同梱Coder1.5B Q5_K_Mの検索→新規1,125,050,656bytes取得→hash/metadata/load→実コード保存は97.250秒、追加のcode試験26.240秒。0.5Bコード試験はLOCAL_DRAFT_TASK_CHANGEDで拒否し、試験仕事だけ明示中止して保持。既存Agentの同じ仕事を一度だけretryして保存し、日本語別依頼は43.690秒で役割を正しく一文保存。Agent同ID再送/無効化/成果保持/再同意、未試験auto拒否/試験済codeだけ候補60、標準codeは既存Coder90、Broker process再起動後の同成果UI表示1件、実通知tap/検索を含むUI13実+既存opt-in1未選択が合格。元65仕事248artifact/旧状態不変、現75仕事276全body hash/実機3APK読戻し一致。raw生成物はGit外、一般品質や全OSは別gate。今後は対応形式/Agent adapterと作業品質評価を拡張し、公開コード/READMEを実行許可と扱わない。
 
-本人指定の実300件は同じowner/request/pinで保存し、60生成+sealの全prefix/番号/実数/正規化完全重複/表記/byte/hashを検査。30件のtimeout後compactを一度、220件のtimeout後通常UI retryを一度、拒否返答の有限自動再生成3回。無介入完走ではない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同じ。現在APKのauto/実手動Coder5、実通知tap/公開検索を含むUI13 actual+既存optin skip1、境界/SQLite5 actualが成功。元24仕事/70artifactと全248body hashを保持確認。生成本文はGit外。全300に意味の重なりや不自然な連携が残り、事業性/独自性/内容品質は未受入。日本語summaryのSky/Zema混同も未解決。コードは下書きで実行しない。全OS image/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
+ホストの単体/build/lintとbaseline/design/OS/LLMは成功。API24候補の全体 `npm run verify` は全段階exit0（test-file並列2、試験/assert範囲は変更なし）。main cf01d289のCloud並列polling修正も取り込み、同期後の全体verifyが再成功。CIは最終同一headで結果を確認する。325150d7のAndroid CIは隔離試験が署名catalogのJSONObjectを参照のまま変更したためMODEL_AUTHOR_SIGNATURE_ABSENTで正しく拒否されて失敗し、試験fixtureのdeep copyへ修正した。署名検査を緩めない。旧private API22を期待したNode契約試験はAPI24のexact照合へ同期。実機再試験でロックに拒否された試行は推論成功へ加えない。PR #167が未統合なら実機と最終head CIが揃ってから通常mergeする。統合済みならmergedAt/mergeCommitとmainを確認して次のadapter/品質評価へ進む。Git保存・main統合・本番公開は別に記録する。
 
-旧mainベースのMac verifyはWrangler D1起動30秒deadlineで失敗（focusedも同じ）。main c1baのbounded cold-init修正を取り込み、最新headで再検証する。従前Mac compact22全stage成功は履歴。同source b33024b2のGitHub `npm run verify` run39085208518とREST全14 checkは成功。最終commitのCI/main統合はGitHubで再取得する。モデルの結果をTool成功/本人承認/予算へ昇格しない。次は意味上の多様性/速度の検証と、開かれたaddプラグインの作者共通admission/互換/権限/更新/失効を既存SKY07/SKY21へ接続する。
+## 前段の300件とmain統合の確定証拠
+
+PR #158はmain f8a0217eへ通常merge済み、受入head e4d36e1cとmergeのtree一致、統合前23 check成功。実機source ef20d8ae / Native source31414985/run39072982374。本人指定300件は同じ仕事で60生成+sealを保存し、compact1回/通常UI retry1回/有限拒否再生成3回。無介入完走でも内容品質合格でもない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同一。詳細は`docs/evidence/pixel-discovered-models.json`を履歴の正本とし、新候補の証拠に置換しない。現在は300件の生成中ではない。全OS/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
 
 ## Pixel si端末の実装と次の受入（2026-10-17）
 

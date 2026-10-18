@@ -696,6 +696,10 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 ---
 
+## Skyへ利用者が追加するAgent
+
+PixelではGitHubの固定版`rock-sky-agent/1`定義から、作者/機能を固定せず宣言型`local-text/1` Agentを追加する。追加権限なしの文章生成・保存へ接続し、LLMは既存chooser/自動選択で選ぶ。汎用コード実行やremote framework導入とは区別する。[契約・未対応・受入](llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。
+
 ## 7. LLM・モデルの役割
 
 「どのモデルが、どこで、何の役で使われているか」の一覧です。どのモデルの結果も、Brokerの権限・本人承認・Toolの成功へは昇格しません。

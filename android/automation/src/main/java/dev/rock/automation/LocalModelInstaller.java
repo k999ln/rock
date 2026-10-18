@@ -29,7 +29,7 @@ final class LocalModelInstaller {
         try (InputStream input = context.getAssets().open(LocalModelCatalog.ASSET)) {
             byte[] bytes = input.readNBytes(32769);
             if (bytes.length > 32768) throw new SecurityException("MODEL_CATALOG_TOO_LARGE");
-            return new LocalModelCatalog(new String(bytes, StandardCharsets.UTF_8));
+            return new SkyAddonStore(context).catalog(new LocalModelCatalog(new String(bytes, StandardCharsets.UTF_8)));
         }
     }
 
@@ -46,7 +46,7 @@ final class LocalModelInstaller {
                 .put("activeProfile", active != null && p.digest().equals(active.digest())));
         }
         return new JSONObject().put("models", entries).put("activeProfileId", active == null ? JSONObject.NULL : active.profileId)
-            .put("automaticLoad", false).put("networkDownload", "explicit_wifi_only_signed_catalog").toString();
+            .put("automaticLoad", false).put("networkDownload", "explicit_wifi_only_signed_or_owner_pinned").toString();
     }
 
     String install(String profileId, ParcelFileDescriptor source, boolean consent) throws Exception {
@@ -88,7 +88,17 @@ final class LocalModelInstaller {
             if (memory.totalMem < profile.minRamBytes || memory.lowMemory) throw new IllegalStateException("MODEL_MEMORY_UNAVAILABLE");
             if (context.getNoBackupFilesDir().getUsableSpace() < 2 * profile.artifactBytes + 100_663_296L)
                 throw new IllegalStateException("MODEL_STORAGE_UNAVAILABLE");
-            if (owned != null) verifySelectedWeights(owned, profile);
+            if (owned != null) {
+                verifySelectedWeights(owned, profile);
+                if(profile.ownerPinned()) {
+                    Os.lseek(owned.getFileDescriptor(), 0, OsConstants.SEEK_SET);
+                    try(InputStream input=new ParcelFileDescriptor.AutoCloseInputStream(ParcelFileDescriptor.dup(owned.getFileDescriptor()))) {
+                        GgufMetadata metadata=GgufMetadata.read(input);
+                        if(!metadata.tokenizerHash.equals(profile.tokenizerSha256)||!metadata.templateHash.equals(profile.templateSha256))
+                            throw new SecurityException("MODEL_EMBEDDED_METADATA_CHANGED");
+                    }
+                }
+            }
             synchronized (ModelProfileOperationLock.LOCK) {
                 requireUnlocked();
                 LocalAiConnection runtime = new LocalAiConnection(context);

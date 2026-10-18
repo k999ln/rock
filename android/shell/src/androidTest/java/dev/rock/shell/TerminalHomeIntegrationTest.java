@@ -144,7 +144,18 @@ public final class TerminalHomeIntegrationTest {
         ShellConnection broker = new ShellConnection(context());
         JSONObject before = new JSONObject(broker.snapshot());
         JSONObject catalog = new JSONObject(broker.localModelCatalog());
-        assertEquals(4, catalog.getJSONArray("models").length());
+        Set<String> expected = new HashSet<>(Set.of("dev.rock.qwen3-06b-q8", "dev.rock.qwen25-15b-q4km",
+            "dev.rock.qwen25-coder-15b-q4km", "dev.rock.qwen3-4b-2507-q4km"));
+        JSONArray addons = new JSONObject(broker.skyAddons()).getJSONArray("addons");
+        for (int i=0;i<addons.length();i++) {
+            JSONObject row=addons.getJSONObject(i),definition=row.getJSONObject("definition");
+            if (!row.getBoolean("revoked") && "model".equals(definition.getString("kind")))
+                assertTrue(expected.add(definition.getString("id")));
+        }
+        Set<String> actual = new HashSet<>();
+        for (int i=0;i<catalog.getJSONArray("models").length();i++)
+            assertTrue("catalog IDs must be unique",actual.add(catalog.getJSONArray("models").getJSONObject(i).getString("profileId")));
+        assertEquals("bundled profiles plus exact active owner-admitted models",expected,actual);
         JSONObject model = catalog.getJSONArray("models").getJSONObject(0);
         assertEquals("dev.rock.qwen3-06b-q8", model.getString("profileId"));
         java.io.File file = java.io.File.createTempFile("unapproved-model-", ".gguf", context().getCacheDir());

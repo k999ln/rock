@@ -686,3 +686,23 @@ compact後の実機APKはapp source ef20d8ae、Broker SHA29e122b8dfca6c6703ca842
 実機最終受入: 同じauto4B2の実300件がreviewに到達。60生成+sealの全prefix連鎖、最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6、番号/実数/si/完全重複/制御記号とBroker再起動後同bytesを照合。compact1/通常UI retry1/有限拒否再生成3、無介入完走とはしない。現EF APKでauto Coder5 48.189s、実手動chooser Coder5 41.258sの生成・保存、コード非実行。通知tap/公開検索を含むUI13 actual+既存skip1(24.24s)、境界/SQLite5 actual(0.729s)、元24仕事/70artifactを含む全248body hashが合格。内容の弱い関係・意味重複と一般background/全OSは未受入。Git保存/main統合はPR158のmergedAt/mergeCommit・current mainを正本に別確認する。
 
 最終main同期: c1ba4106（PR165）の公開Sandbox cap/未払い/翌月復旧と、cold D1 migrations起動budget修正を取り込む。3件の文書/進捗競合は双方を保持して解消。Android/Native入力差分0なので実機APK/source EFの証拠は維持し、Web Sandboxの受入をPixelへ転用しない。main側のD1起動修正があるため、最新同一headの全体verifyを再実行する。
+
+
+## Skyの動的追加とPixel実行（2026-10-17）
+
+OS11/O6/ROCK主担当、SKY07/SKY21連携。本人の「固定カタログに縛られず追加してPixelで実際に使う」指示で着手。main f8a0217eを基準に、owner別の版付きモデル定義/宣言型local Agent、同意・互換・hash・失効・既存Zema保存を実装する。実機受入は未実行。
+
+
+初回実機受入（source ffb7f1b0 / private API23）: 非同梱bartowski/Qwen2.5-0.5B-Instruct-GGUFの実検索→owner定義追加→397,808,192bytes実取得/全hash/埋込metadata/ロード→要約/保存は56.823秒。ただし本文が生成指示のechoで内容不合格。Agentは出典情報の4項目目を旧3項目validatorが拒否しLOCAL_REQUEST_REPLAN_REQUIREDで停止。どちらも完了/品質受入へ昇格しない。private API24候補で出典のexact再構成検査・SDKの指示echo拒否・形式試験と本人確認を経た作業別自動候補・revision競合拒否・Agent再同意有効化・仕事詳細のAgent名表示を追加する。元の仕事/成果は保持し、同じ失敗Agent仕事の明示retryと新モデルのコード実生成を次に検証する。
+
+
+API24候補325150d7: Android unit218件（SDK release同内容21件は別実行）、build/lint、全体npm run verify全段階exit0（test-file並列2、assert範囲不変）。実機は再ロックされ、境界3試験とAgent1試験がDEVICE_LOCKED/前提で拒否されたため未受入。解除依頼を一度提示し、試験中だけKEEP_SCREEN_ONを持つopt-inウィンドウを追加する。読取り専用DBコピーで元65仕事/248artifactの全保持・状態不変と現67仕事/252body hashを確認。CI prototypeは試験fixtureが署名catalogのJSONObjectを共有参照のまま改変したため署名不在を正しく拒否。fixtureをdeep copyへ修正し、実装の署名検査は保持する。
+
+
+2026-10-18 API24実機再開: owner解除後の独立境界3件が成功。同じAgent仕事を通常retryで一度だけ再開し3工程成功/review、同request ID同仕事・失効時新規利用拒否/成果保持・再同意有効化を確認。ただし生成本文は役割説明として不十分で内容未受入。非同梱0.5Bの実コード生成はLOCAL_DRAFT_TASK_CHANGEDで停止し、自動候補化せず、試験仕事だけを明示中止して記録を保存。公開bartowski Coder1.5Bの別量子化Q5_K_Mを同じ汎用追加経路で試す。既存0.5B/旧仕事/成果は削除しない。実装source325の変更はなく、opt-in試験の入力指定と保存成果の再表示検査を追加。
+
+
+API24実機最終: 非同梱bartowski Qwen2.5-Coder1.5B Q5_K_M（固定1af47f78、1,125,050,656bytes）を公開検索→未チェック同意→実取得（cacheなし）→全hash/metadata/Native8 load→実コード保存まで97.250秒。追加モデルのコード再試験26.240秒で正しいsum_even本文を保存、コード非実行。codeのみ本人同意のauto候補60へ設定し、未試験summaryは拒否。標準codeは既存Coder90を選び、新候補の最良判定にはしない。宣言型Agentの日本語依頼は43.690秒でSky/Zema役割を正しく一文保存、同ID再送・無効化・成果保持・再同意が成功（一般品質は別）。Broker process再起動後の同artifact hash/UI表示1件、Agent同意未チェック/実モデル表示/新規仕事0を確認。通知tap/公開検索を含むUIは13実行+既存opt-in1未選択（JUnit14報告）。旧catalog4固定assertは既存4+owner追加全IDのexact集合・重複拒否へ同期、入力欄hintなしを考慮する試験修正のみで製品コードは不変。元65仕事/248artifactと旧状態を保持、現75仕事/276全body hashを確認。端末読戻し3APK hashも一致。main cf01d289の並列Cloud polling修正を取り込み、Android/Native入力差分0。同期後の全体npm run verifyは全stage exit0（Node22/ファイル並列2）。同一head CI/main統合は次に確認する。
+
+
+動的追加の証拠・LLM台帳・全体索引・担当入口・README操作方法・次プロンプトを実機結果へ同期。project:update、design:check、llm:architecture:check、baseline:checkとdiff検査が成功。最終CI/mainの正本はPR167のexact head/check-runs/mergedAt/mergeCommitであり、この文書commit時点の未統合と本番公開を混同しない。

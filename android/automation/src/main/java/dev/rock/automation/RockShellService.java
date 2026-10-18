@@ -189,6 +189,49 @@ public final class RockShellService extends Service {
             catch (Exception unavailable) { return "{\"status\":\"unavailable\",\"executionStarted\":false,\"candidates\":[],\"sources\":[]}"; }
             finally { Binder.restoreCallingIdentity(identity); }
         }
+        private String addonCall(java.util.concurrent.Callable<String> action) {
+            enforceShellCaller(); long identity=Binder.clearCallingIdentity();
+            try{return action.call();}
+            catch(Exception failure){
+                String code=failure.getMessage();
+                if(code==null||!code.matches("[A-Z][A-Z0-9_]{2,100}"))code="ADDON_UNAVAILABLE";
+                try{return new JSONObject().put("status","blocked").put("code",code).put("executionStarted",false).toString();}
+                catch(Exception ignored){return "{\"status\":\"blocked\",\"code\":\"ADDON_UNAVAILABLE\"}";}
+            }finally{Binder.restoreCallingIdentity(identity);}
+        }
+        @Override public String inspectSkyAddon(String source){return addonCall(()->new SkyAddonResolver(RockShellService.this).inspect(source));}
+        @Override public String addSkyAddon(String proposal,String digest,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).add(proposal,digest,consent));}
+        @Override public String configureSkyModelAutomaticTasks(String digest,long revision,String tasks,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).configureAutomatic(digest,revision,tasks,consent));}
+        @Override public String skyAddons(){return addonCall(()->new SkyAddonStore(RockShellService.this).list());}
+        @Override public String revokeSkyAddon(String digest,boolean consent){return addonCall(()->{
+            synchronized(ModelProfileOperationLock.LOCK){
+                if(!consent)throw new SecurityException("ADDON_CONSENT_REQUIRED");
+                if(getSystemService(android.app.KeyguardManager.class).isDeviceLocked())throw new SecurityException("DEVICE_LOCKED");
+                SkyAddonStore store=new SkyAddonStore(RockShellService.this);JSONObject d=store.require(digest);
+                if("model".equals(d.getString("kind"))){
+                    dev.rock.core.platform.ModelProfileManifest p=new LocalModelCatalog.Entry(d.getJSONObject("entry")).profile;
+                    // Existing Platform revocation fences future pinned inference; preserve saved work and artifacts.
+                    try { platform().revokeModelProfile(p.profileId,p.version,System.currentTimeMillis()); }
+                    catch(IllegalStateException absent) { if(!"MODEL_PROFILE_NOT_FOUND".equals(absent.getMessage()))throw absent; }
+                }
+                return store.revoke(digest,true);
+            }
+        });}
+        @Override public String prepareSkyAgent(String digest,String choice,String request){return addonCall(()->{
+            JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+            return new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),d.getJSONObject("recipe").getString("task"));
+        });}
+        @Override public String submitSkyAgent(String digest,String requestId,String request,String modelDigest,boolean consent){return addonCall(()->{
+            synchronized(zemaLock){ synchronized(ModelProfileOperationLock.LOCK){
+                JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+                String provenance=new JSONObject().put("schema","rock-sky-agent-use/1").put("addonDigest",digest).put("source",d.getString("source"))
+                    .put("request",request).put("recipe",d.getJSONObject("recipe")).toString();
+                String work=new ZemaOrchestrator(RockShellService.this,engine()).submitAgent(requestId,SkyAddonStore.render(d,request),provenance,modelDigest,
+                    d.getJSONObject("recipe").getString("task"),consent);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,work);
+                return zemaResponse("queued",null,work);
+            }}
+        });}
         @Override public String localModelCatalog() {
             enforceShellCaller();
             try { return boundedJson(new JSONObject(new LocalModelInstaller(RockShellService.this, platform()).catalogJson())); }
@@ -991,6 +1034,13 @@ public final class RockShellService extends Service {
                     runs.put(step);
                 }
                 item.put("runs", runs);
+                if(runs.length()>0&&"local-generate@1".equals(runs.getJSONObject(0).optString("tool")))try{
+                    JSONObject original=new JSONObject(engine().initialInput(work.get("id")));
+                    if(original.has("agentProvenance")&&SkyAddonStore.validWorkInput(original)){
+                        JSONObject provenance=original.getJSONObject("agentProvenance");item.put("agent",new JSONObject().put("name",provenance.getJSONObject("recipe").getString("name"))
+                            .put("digest",provenance.getString("addonDigest")).put("source",provenance.getString("source")));
+                    }
+                }catch(Exception invalidProvenance){ /* Never project an unverified Agent identity. */ }
                 if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {
                     item.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
                     try {
