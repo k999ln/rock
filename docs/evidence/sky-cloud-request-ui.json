@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-18",
+  "siteVersion": 73,
+  "siteSource": "226a995ba90e750d83773e3be6b33639f12e9857",
+  "deployment": "appgdep_6ad44fed035c8191b3575cebde1c20d9",
+  "scope": "Cloud request form usability; physical concurrent acceptance remains pending",
+  "ui": {
+    "emptyPromptSubmitDisabled": true,
+    "consentRequired": true,
+    "savedSubmitDisabled": true,
+    "anonymousChromeSigninLink": true,
+    "mobileViewportWidth": 390,
+    "documentScrollWidth": 390
+  },
+  "realAccountJob": {
+    "id": "6b314560-fa2c-426f-9b1d-80b8d4e593a4",
+    "state": "completed",
+    "attempts": 1,
+    "model": "gpt-oss-20b",
+    "inputTokens": 334,
+    "outputTokens": 1331,
+    "chargeMinor": 0,
+    "responseId": "pllns_fae7e7512c422c413c4b4f47f66a9da6",
+    "responseContentAccuracy": "not_evaluated",
+    "reloadSameIdAttemptsAndResponse": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "siteTypecheck": "passed",
+    "fullVerify": "exit 0 through bot:check",
+    "log": "/private/tmp/cloud-ui-verify.log"
+  },
+  "productionBilling": false,
+  "schemaChanges": false,
+  "githubMainIntegrated": false
+}

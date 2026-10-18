@@ -1,4 +1,5 @@
 {
+  "skyCloudRequestUi":{"authority":"docs/llm-evaluation-architecture.md","implementation":"components/sky-free-cloud-panel.tsx","productionBilling":false},
   "skyConcurrentReadback":{"authority":"docs/llm-evaluation-architecture.md","pollMs":30000,"rateLimitBackoffMs":60000,"productionBilling":false},
   "freeCloudRetryDiagnostics": {"automaticContinuation":"confirmed_FREE_LIMIT_only_same_id_CAS_5_attempts_10_minutes","date":"2026-10-17","authority":"docs/llm-evaluation-architecture.md","tests":"tests/sky-free-cloud.test.mjs","productionBilling":false},
   "skyHostedMonthly": {"design": "docs/sky-billing.md", "evidence": "docs/evidence/sky-hosted-monthly.json", "implementation": ["lib/sky-hosted-monthly.ts", "components/sky-hosted-monthly.tsx"], "tests": "tests/sky-recurring-sandbox.test.mjs", "productionBilling": false},
