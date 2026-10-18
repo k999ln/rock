@@ -319,7 +319,7 @@
       "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
       "evidence": "docs/evidence/pixel-open-addons.json",
       "implemented": true,
-      "physicalAccepted": false,
+      "physicalAccepted": true,
       "source": "325150d77ce81b19a59bf7be9709c15de47f1be4",
       "modelAuthorSet": "not_fixed",
       "agentAuthorSet": "not_fixed",
@@ -328,7 +328,11 @@
       "defaultNewModelAutoPriority": 0,
       "autoAdmission": "exact_schema_trial_task_plus_owner_consent_revision_CAS",
       "generalQualityAccepted": false,
-      "bundledTaskMapMeaning": "existing_defaults_before_owner_admitted_task_candidates"
+      "bundledTaskMapMeaning": "existing_defaults_before_owner_admitted_task_candidates",
+      "testSource": "76b0a9a3",
+      "acceptedPublicModelExample": "https://huggingface.co/bartowski/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/1af47f78b1f9b0c242fabe43f7a365d5a67f3207/Qwen2.5-Coder-1.5B-Instruct-Q5_K_M.gguf",
+      "acceptedAgentScope": "self_published_declarative_fixture_real_Pixel_execution",
+      "evidenceScope": "same_APKs_and_saved_artifacts_not_whole_OS_or_general_model_quality"
     }
   }
 }

@@ -8,9 +8,9 @@
 
 初回source ffb7f1b0では非同梱Qwen2.5 0.5Bの検索/実397,808,192bytes取得/hash/metadata/load/要約保存が56.823秒で成功したが、本文は生成指示のechoで内容不合格。Agent仕事はprovenanceを加えた入力が旧3項目検査に拒否されて停止した。修正候補はexactなprovenance再構成照合、指示echo拒否、形式試験receiptと本人確認を経たtask別auto参加、revision CAS、Agent再同意有効化と仕事詳細のAgent名表示を持つ。新規モデルはまず手動、未試験/失敗taskをautoに入れない。一般品質・性能順位の実証ではない。
 
-Pixelのロック解除後、既存の失敗Agent仕事を同じrequest/pinで明示retryし、実生成/保存/同ID再送/無効化/再同意を検証する。新規モデルのコード下書き実生成とtask別auto設定、未試験task/古いrevision拒否、元65仕事/248artifactと全body hash保持、同じ成果のBroker再起動後readbackを受入する。画面保持はopt-in試験ウィンドウだけで、端末lock設定を変えない。未実行を成功にせず、生成物はGit外、コードは非実行。公開LLMの一例、自己公開Agent定義の一例、任意framework/全モデルの受入を分ける。
+2026-10-18に実機再受入済み。非同梱Coder1.5B Q5_K_Mの検索→新規1,125,050,656bytes取得→hash/metadata/load→実コード保存は97.250秒、追加のcode試験26.240秒。0.5Bコード試験はLOCAL_DRAFT_TASK_CHANGEDで拒否し、試験仕事だけ明示中止して保持。既存Agentの同じ仕事を一度だけretryして保存し、日本語別依頼は43.690秒で役割を正しく一文保存。Agent同ID再送/無効化/成果保持/再同意、未試験auto拒否/試験済codeだけ候補60、標準codeは既存Coder90、Broker process再起動後の同成果UI表示1件、実通知tap/検索を含むUI13実+既存opt-in1未選択が合格。元65仕事248artifact/旧状態不変、現75仕事276全body hash/実機3APK読戻し一致。raw生成物はGit外、一般品質や全OSは別gate。今後は対応形式/Agent adapterと作業品質評価を拡張し、公開コード/READMEを実行許可と扱わない。
 
-ホストの単体/build/lintとbaseline/design/OS/LLMは成功。API24候補の全体 `npm run verify` は全段階exit0（test-file並列2、試験/assert範囲は変更なし）。CIは同一headで結果を確認する。325150d7のAndroid CIは隔離試験が署名catalogのJSONObjectを参照のまま変更したためMODEL_AUTHOR_SIGNATURE_ABSENTで正しく拒否されて失敗し、試験fixtureのdeep copyへ修正した。署名検査を緩めない。旧private API22を期待したNode契約試験はAPI24のexact照合へ同期。実機再試験でロックに拒否された試行は推論成功へ加えない。PR #167は実機とCIが揃ってから通常mergeし、Git保存・main統合・本番公開を別に記録する。
+ホストの単体/build/lintとbaseline/design/OS/LLMは成功。API24候補の全体 `npm run verify` は全段階exit0（test-file並列2、試験/assert範囲は変更なし）。main cf01d289のCloud並列polling修正も取り込み、同期後の全体verifyが再成功。CIは最終同一headで結果を確認する。325150d7のAndroid CIは隔離試験が署名catalogのJSONObjectを参照のまま変更したためMODEL_AUTHOR_SIGNATURE_ABSENTで正しく拒否されて失敗し、試験fixtureのdeep copyへ修正した。署名検査を緩めない。旧private API22を期待したNode契約試験はAPI24のexact照合へ同期。実機再試験でロックに拒否された試行は推論成功へ加えない。PR #167が未統合なら実機と最終head CIが揃ってから通常mergeする。統合済みならmergedAt/mergeCommitとmainを確認して次のadapter/品質評価へ進む。Git保存・main統合・本番公開は別に記録する。
 
 ## 前段の300件とmain統合の確定証拠
 

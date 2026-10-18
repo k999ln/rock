@@ -1,7 +1,7 @@
 {
   "schema": "rock-pixel-open-addons-evidence/1",
-  "recordedOn": "2026-10-17",
-  "status": "HOST_VERIFIED_PHYSICAL_CORRECTIONS_WAITING_FOR_OWNER_UNLOCK",
+  "recordedOn": "2026-10-18",
+  "status": "PHYSICAL_PREVIEW_ACCEPTED",
   "productionSource": "325150d77ce81b19a59bf7be9709c15de47f1be4",
   "pullRequest": "https://github.com/k999ln/rock/pull/167",
   "versions": {
@@ -36,7 +36,9 @@
     "fullVerify": "PASS_ALL_STAGES_EXIT0",
     "testFileConcurrency": 2,
     "assertionsWeakened": false,
-    "source": "325150d77ce81b19a59bf7be9709c15de47f1be4"
+    "source": "325150d77ce81b19a59bf7be9709c15de47f1be4",
+    "mainSyncFullVerify": "PASS_ALL_STAGES_EXIT0_Node22_test_file_concurrency2",
+    "mainSyncBase": "cf01d289"
   },
   "initialPhysical": {
     "source": "ffb7f1b08262822b3651b223d83cb8194f448b14",
@@ -66,32 +68,90 @@
     "isolatedAdmissionCases": 2
   },
   "currentPhysical": {
-    "accepted": false,
-    "storeBoundaryAttempt": "NOT_ACCEPTED_DEVICE_LOCKED_3_CASES",
-    "agentAttempt": "NOT_RUN_LOCKED_PRECONDITION",
-    "pending": [
-      "same_work_Agent_explicit_retry_real_generation_and_storage",
-      "same_request_id_replay",
-      "Agent_disable_and_fresh_consent_reenable",
-      "non_bundled_model_real_code_draft",
-      "trial_gated_task_specific_auto_config_and_stale_revision_rejection",
-      "current_UI_notification_and_after_process_readback"
-    ]
+    "accepted": true,
+    "scope": "Developer_Preview_APKs_only",
+    "isolatedStoreBoundaryCases": 3,
+    "sameHeldAgent": {
+      "sameWorkIdRecovered": true,
+      "explicitNormalRetry": 1,
+      "generationAndStorage": "PASS",
+      "artifactSha256": "904a367c05fd4430bba015231e82fef525e5a03afab907fdf8239cc98cda8eaa",
+      "elapsedMs": 32665,
+      "sameRequestIdSameWork": true,
+      "contentQuality": "NOT_ACCEPTED_META_SUMMARY"
+    },
+    "agentJapaneseTrial": {
+      "generationAndStorage": "PASS",
+      "elapsedMs": 43690,
+      "artifactSha256": "cc9ddd45c29af726d3f6225ad1fc79acf319207f555abee786d3ac30b5615842",
+      "observedContent": "Sky connects models and Agents; Zema stores work and results",
+      "limitedContentReview": "PASS_this_one_fact_fixture",
+      "generalQualityAccepted": false,
+      "disableBlocksNewUse": true,
+      "savedArtifactPreserved": true,
+      "freshConsentReenable": true
+    },
+    "nonBundledCoder": {
+      "source": "https://huggingface.co/bartowski/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/1af47f78b1f9b0c242fabe43f7a365d5a67f3207/Qwen2.5-Coder-1.5B-Instruct-Q5_K_M.gguf",
+      "profileId": "sky.model.4bab91d7fb5e3663aec3ee0d483759e622ca0cb562d7d771253c6d8805e57885",
+      "bytes": 1125050656,
+      "weightsSha256": "92440df3785a3caadbe744ee7d2cb1cb86dfe1c81140c8856739e1bd3561c8a9",
+      "liveSearchAndUncheckedOwnerConsentUi": "PASS",
+      "actualNetworkDownload": true,
+      "cachedSource": false,
+      "hashEmbeddedMetadataAndNativeLoad": "PASS",
+      "firstRealCodeAndInstallElapsedMs": 97250,
+      "secondRealCodeElapsedMs": 26240,
+      "artifactSha256": "678709dfa81c0d6e46b77be15abe899b0d78bd6b9494bea06e23be128a22e3dc",
+      "observedContent": "sum_even sums only even integers",
+      "codeExecuted": false,
+      "generalQualityAccepted": false
+    },
+    "automaticSelection": {
+      "untestedSummaryRejected": true,
+      "trialAndOwnerConsentCodeCandidatePriority": 60,
+      "configuredTasks": [
+        "code"
+      ],
+      "actualDefaultCodeProfile": "dev.rock.qwen25-coder-15b-q4km",
+      "actualDefaultCodePriority": 90,
+      "newCandidateChosenAsBest": false,
+      "staleRevisionRejectedInIsolatedCase": true
+    },
+    "brokerProcessRestartReadback": {
+      "sameTwoArtifactHashes": true,
+      "actualWorkDetailBodiesRendered": true,
+      "agentNameAndSourceShown": true,
+      "agentStartConsentInitiallyUnchecked": true,
+      "actualModelShownBeforeExecution": true,
+      "newWorkCreated": false
+    },
+    "currentUi": {
+      "junitReported": 14,
+      "actualCases": 13,
+      "existingOptInNotSelected": 1,
+      "actualSystemNotificationTap": true,
+      "tapOnlyNavigates": true,
+      "manuscriptInNotification": false,
+      "publicDiscovery": true
+    },
+    "pending": []
   },
   "preservation": {
     "originalWorks": 65,
     "originalArtifacts": 248,
     "allOriginalArtifactsPreserved": true,
-    "currentWorks": 67,
-    "currentArtifacts": 252,
+    "currentWorks": 75,
+    "currentArtifacts": 276,
     "allCurrentBodyHashesVerified": true,
     "oldWorkStatesUnchanged": true,
-    "scope": "read_only_device_SQLite_copy_while_locked_not_inference_acceptance"
+    "scope": "read_only_actual_device_SQLite_copy_after_final_UI_no_whole_device_reboot"
   },
   "ci": {
     "exactHeadAuthority": "current PR167 REST commit/check-runs",
     "previous325150Prototype": "FAILED_TEST_FIXTURE_MUTATED_SHARED_CATALOG_JSON",
-    "testCorrection": "deep copy the test entry; publisher signature guard unchanged"
+    "testCorrection": "deep copy the test entry; publisher signature guard unchanged",
+    "finalHeadStatus": "VERIFY_VIA_EXACT_HEAD_CHECK_RUNS_BEFORE_MERGE"
   },
   "scopeLimits": [
     "Developer_Preview_APK_not_whole_OS",
@@ -102,5 +162,17 @@
   ],
   "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-open-addons-20261017",
   "mainIntegratedAtEvidenceCommit": false,
-  "integrationAuthority": "GitHub PR167 mergedAt/mergeCommit and current main"
+  "integrationAuthority": "GitHub PR167 mergedAt/mergeCommit and current main",
+  "testSources": {
+    "initialCorrectionBoundaries": "3d12e08058ee7654f78b96e61c8164eeb00df81e",
+    "parameterizedModelTrials": "c8fa9a11",
+    "finalReadbackAndCatalogAssertions": "76b0a9a3"
+  },
+  "unacceptedEarlierCurrentAttempts": [
+    "DEVICE_LOCKED_3_boundary_cases",
+    "DEVICE_LOCKED_Agent_precondition",
+    "0.5B_code_LOCAL_DRAFT_TASK_CHANGED_held_then_explicit_synthetic_cancel",
+    "readback_test_null_hint_assumption_corrected_without_product_changes",
+    "legacy_UI_catalog_expected4_but_dynamic6_corrected_to_exact_bundled_plus_admitted_ID_set"
+  ]
 }

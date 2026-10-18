@@ -119,7 +119,7 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 ## PixelでのLLM・Agentの動的追加
 
-受入の現在地は[専用証拠](evidence/pixel-open-addons.json)。初回実機ではLLMの実取得/ロード/生成保存まで到達したが内容echoとAgent入力契約不一致を発見した。修正候補の実機再受入はロック解除待ちであり、host成功を物理成功へ換算しない。
+受入の現在地は[専用証拠](evidence/pixel-open-addons.json)。2026-10-18、API24の同一APKで非同梱Coder1.5B Q5_K_Mの公開検索・実取得・全hash/metadata/load・コード生成保存、宣言型Agentの実生成、同ID再送・失効・再同意、Broker process再起動後の同成果/UI表示、実通知tapを確認した。初回0.5Bのecho/コード形式不正とAgent入力契約不一致は履歴に残す。一般品質・任意Agent framework・全OS受入へ昇格しない。新モデルは試した作業だけ本人確認後に自動候補へ入り、今回の標準codeは既存Coder90を選んだ。追加モデルの最良判定ではない。
 
 目的は、APKへ作者やモデルIDを追加するリリースを待たず、Skyで見つけた能力を利用者自身が追加・選択・無効化すること。2026-10-17の本人指示を既存OS11/O6（ROCK主担当、SKY07/SKY21連携）で実装する。現段階はDeveloper Preview APKであり、全OS・一般公開・商用課金の受入ではない。
 

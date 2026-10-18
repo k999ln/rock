@@ -231,3 +231,6 @@ Local verification includes a forged-progress API regression (valid-shaped but n
 Legacy WorkJob payloads without a plan are read with a version-1 default, and altered/mismatched gate definitions are repaired to the server-derived requirements. Local Node/SQLite tests cover edit-before-start, edit rejection after work begins, unsupported version and client-supplied gate rejection, migration of legacy payloads, and persistence. Focused suite: `tests/workflow.test.mjs` and `tests/sim-service-entry.test.mjs`; TypeScript and product lint pass. This version only allows editing the goal; arbitrary step authoring, runtime A2A dispatch, Android acceptance and production Provider billing remain separate work.
 
 SKY07/WEB01: 無料Cloudの待機自動続行は[LLM設計](../llm-evaluation-architecture.md#無料cloudの待機と自動続行2026-10-17)。ROCKは同ID/CAS/上限、ProviderはFREE_LIMIT/待機時間/実応答を担当。対象試験と公開本人UIの証拠を分ける。
+
+
+SKY07/SKY21・OS11連携: Pixelでの公開GGUFと宣言型local-text Agentの動的追加は[共通admission契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)と[実機証拠](../evidence/pixel-open-addons.json)。ROCKはowner/unlock/同意/固定版/hash/資源/失効、配布元は定義と重みを担当。作者署名と本人pinを区別し、発見だけで実行せず、新モデルは試験後の作業別auto候補化。Web Cloud/MCP/任意Agent frameworkの受入へ転用しない。
