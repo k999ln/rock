@@ -44,10 +44,10 @@ public final class SkyOpenAddonAcceptanceTest {
         assertNotNull(w);assertEquals(w.toString(),"review",w.getString("state"));for(int i=0;i<w.getJSONArray("runs").length();i++)assertEquals("succeeded",w.getJSONArray("runs").getJSONObject(i).getString("state"));return w;
     }
     @Test public void searchAddDownloadLoadAndGenerateWithNonBundledPublicModel()throws Exception{
-        physical();ShellConnection b=new ShellConnection(c());String repo="bartowski/Qwen2.5-0.5B-Instruct-GGUF";
-        JSONObject search=new JSONObject(b.searchPublicModels("Qwen2.5-0.5B-Instruct-GGUF"));boolean found=false;
+        physical();ShellConnection b=new ShellConnection(c());String repo=InstrumentationRegistry.getArguments().getString("rockModelRepo","bartowski/Qwen2.5-0.5B-Instruct-GGUF");
+        JSONObject search=new JSONObject(b.searchPublicModels(repo.substring(repo.indexOf('/')+1)));boolean found=false;
         JSONArray candidates=search.getJSONArray("candidates");for(int i=0;i<candidates.length();i++)found|=repo.equals(candidates.getJSONObject(i).optString("id"));assertTrue("actual public search must find selected repo",found);
-        save("live-search.json",search.toString());String source="https://huggingface.co/"+repo+"/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf";
+        save("live-search.json",search.toString());String source="https://huggingface.co/"+repo+"/resolve/main/"+InstrumentationRegistry.getArguments().getString("rockModelFile","Qwen2.5-0.5B-Instruct-Q4_K_M.gguf");
         MainActivity activity=trialActivity;long start=SystemClock.elapsedRealtime();
         try{
             ui(()->{try{Method m=MainActivity.class.getDeclaredMethod("selectPage",int.class);m.setAccessible(true);m.invoke(activity,1);}catch(Exception e){throw new AssertionError(e);}
@@ -66,7 +66,7 @@ public final class SkyOpenAddonAcceptanceTest {
             Button finish=waitButton("検証してPixelへ導入",15_000);ui(finish::performClick);end=SystemClock.elapsedRealtime()+300_000;
             do{state=new JSONObject(b.publicModelInstallStatus());if("installed".equals(state.optString("status")))break;SystemClock.sleep(1000);}while(SystemClock.elapsedRealtime()<end);
             assertEquals(state.toString(),"installed",state.getString("status"));save("model-install.json",state.toString());
-            String request="Summarize this text in English: Sky connects models and agents. Zema saves work and results.";
+            String request=InstrumentationRegistry.getArguments().getString("rockModelRequest","Summarize this text in English: Sky connects models and agents. Zema saves work and results.");
             JSONObject choice=new JSONObject(b.prepareLocalModelChoice(id,request));assertEquals(choice.toString(),"prepared",choice.getString("status"));assertEquals(id,choice.getString("profileId"));
             JSONObject submitted=new JSONObject(b.submitZemaSelected(UUID.randomUUID().toString(),null,request,"[]",choice.getString("manifestDigest"),true));assertEquals(submitted.toString(),"queued",submitted.getString("status"));
             String workId=submitted.getString("workId");JSONObject w=awaitReview(b,workId,start);String artifact=b.result(workId);assertTrue(artifact.length()>20);assertFalse(artifact.contains("<think>"));
@@ -81,7 +81,7 @@ public final class SkyOpenAddonAcceptanceTest {
         assertEquals("blocked",new JSONObject(b.addSkyAddon(proposal.getString("proposalId"),"0".repeat(64),true)).getString("status"));
         assertEquals("blocked",new JSONObject(b.addSkyAddon(proposal.getString("proposalId"),digest,false)).getString("status"));
         JSONObject added=new JSONObject(b.addSkyAddon(proposal.getString("proposalId"),digest,true));assertEquals(added.toString(),"added",added.getString("status"));
-        String request="Sky connects models and agents. Zema saves work and results. Summarize in one short English sentence.";
+        String request=InstrumentationRegistry.getArguments().getString("rockAgentRequest","Sky connects models and agents. Zema saves work and results. Summarize in one short English sentence.");
         JSONObject choice=new JSONObject(b.prepareSkyAgent(digest,"auto",request));assertEquals(choice.toString(),"prepared",choice.getString("status"));
         String resume=InstrumentationRegistry.getArguments().getString("rockResumeAgentWork");String requestId=InstrumentationRegistry.getArguments().getString("rockResumeAgentRequestId",UUID.randomUUID().toString());long start=SystemClock.elapsedRealtime();
         JSONObject sent=new JSONObject(b.submitSkyAgent(digest,requestId,request,choice.getString("manifestDigest"),true));assertEquals(sent.toString(),"queued",sent.getString("status"));String id=sent.getString("workId");
@@ -111,4 +111,44 @@ public final class SkyOpenAddonAcceptanceTest {
         save("current-code-artifact.md",artifact);save("current-code-receipt.json",new JSONObject().put("work",w).put("manualChoice",choice).put("automaticChoice",automatic).put("dynamicCandidate",added)
             .put("untestedSummaryAutoRejected",true).put("artifactSha256",sha(artifact)).put("physicalInference",true).put("codeExecuted",false).put("elapsedMs",SystemClock.elapsedRealtime()-start).toString());
     }
+    @Test public void explicitlyStopOnlyFailedSyntheticCodeProbe()throws Exception {
+        String expected=InstrumentationRegistry.getArguments().getString("rockCleanupProbeId");assertNotNull(expected);
+        JSONObject progress=new JSONObject(new String(Files.readAllBytes(new File(c().getExternalFilesDir(null),"open-addon-work-progress.json").toPath()),StandardCharsets.UTF_8));
+        assertEquals(expected,progress.getString("id"));ShellConnection b=new ShellConnection(c());JSONObject current=work(b,expected);
+        assertEquals("needs_review",current.getJSONArray("runs").getJSONObject(0).getString("state"));
+        assertEquals("LOCAL_DRAFT_TASK_CHANGED",current.getJSONArray("runs").getJSONObject(0).getString("error"));
+        assertTrue(current.getJSONObject("planner").getString("profileId").startsWith("sky.model."));
+        save("failed-code-probe.json",current.toString());b.cancel(expected);assertEquals("cancelled",work(b,expected).getString("state"));
+    }
+    @Test public void savedAddonsAndArtifactsReopenWithoutSubmission()throws Exception {
+        ShellConnection b=new ShellConnection(c());int before=new JSONObject(b.snapshot()).getInt("totalWorkCount");
+        MainActivity a=trialActivity;
+        ui(()->{try{Method m=MainActivity.class.getDeclaredMethod("selectPage",int.class);m.setAccessible(true);m.invoke(a,1);}catch(Exception e){throw new AssertionError(e);}});
+        Button use=waitButton("このAgentに依頼",20_000);ui(use::performClick);
+        Button prepare=waitButton("モデルと実行条件を確認",5_000);
+        ui(()->{for(View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){
+            EditText input=(EditText)find(root,v->v instanceof EditText&&"このAgentへの依頼".contentEquals(((EditText)v).getHint()));
+            if(input!=null)input.setText("SkyとZemaの役割を短くまとめてください。");}prepare.performClick();});
+        Button start=waitButton("開始する",20_000);ui(()->{assertFalse(start.isEnabled());
+            boolean model=false,consent=false;for(View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){
+                model|=find(root,v->v instanceof TextView&&((TextView)v).getText().toString().contains("モデル: "))!=null;
+                CheckBox check=(CheckBox)find(root,v->v instanceof CheckBox&&((CheckBox)v).getText().toString().startsWith("このAgent設定と依頼"));
+                if(check!=null){consent=true;assertFalse(check.isChecked());}}
+            assertTrue(model);assertTrue(consent);});
+        Button back=waitButton("戻る",1000);ui(back::performClick);
+        JSONArray receipts=new JSONArray();
+        for(String name:new String[]{"agent-receipt.json","current-code-receipt.json"}){
+            JSONObject receipt=new JSONObject(new String(Files.readAllBytes(new File(c().getExternalFilesDir(null),"open-addon-"+name).toPath()),StandardCharsets.UTF_8));
+            String id=receipt.getJSONObject("work").getString("id"),artifact=b.result(id);assertEquals(receipt.getString("artifactSha256"),sha(artifact));
+            JSONObject w=work(b,id);assertEquals("review",w.getString("state"));
+            ui(()->call(a,"openWork",id));long end=SystemClock.elapsedRealtime()+15_000;AtomicReference<View> body=new AtomicReference<>();
+            do{ui(()->body.set(find((View)field(a,"jobs"),v->v instanceof TextView&&artifact.contentEquals(((TextView)v).getText()))));if(body.get()==null)SystemClock.sleep(200);}while(body.get()==null&&SystemClock.elapsedRealtime()<end);
+            assertNotNull("actual saved artifact rendered in work detail",body.get());
+            if(name.startsWith("agent"))ui(()->assertNotNull(find((View)field(a,"jobs"),v->v instanceof TextView&&((TextView)v).getText().toString().startsWith("Agent: "))));
+            receipts.put(new JSONObject().put("workId",id).put("artifactSha256",sha(artifact)).put("actualUiRendered",true));
+        }
+        assertEquals(before,new JSONObject(b.snapshot()).getInt("totalWorkCount"));
+        save("readback-ui.json",new JSONObject().put("artifacts",receipts).put("agentStartConsentUnchecked",true).put("modelShownBeforeExecution",true).put("newWorkCreated",false).toString());
+    }
+
 }
