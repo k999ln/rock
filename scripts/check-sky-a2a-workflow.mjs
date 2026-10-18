@@ -50,7 +50,12 @@ function runWrangler(args, { timeout = 30_000 } = {}) {
       WRANGLER_LOG_PATH: join(temporary, 'logs'),
     },
   });
-  if (result.error) throw result.error;
+  if (result.error) {
+    throw new Error(
+      `wrangler ${args.join(' ')} failed after timeout=${timeout}ms: ${result.error.message}\n${result.stdout ?? ''}\n${result.stderr ?? ''}`,
+      { cause: result.error },
+    );
+  }
   if (result.status !== 0)
     throw new Error(
       `wrangler ${args.join(' ')} failed (${result.status}):\n${result.stdout}\n${result.stderr}`,
@@ -343,6 +348,9 @@ try {
     ),
   };
   writeFileSync(configPath, JSON.stringify(baseConfig, null, 2));
+  // A fresh D1 database can need more than the ordinary query budget on a busy host.
+  // Keep this bounded separately; seed/read queries retain the 30-second limit.
+  const migrationStartedAt = performance.now();
   runWrangler([
     'd1',
     'migrations',
@@ -353,7 +361,8 @@ try {
     state,
     '--config',
     configPath,
-  ]);
+  ], { timeout: 120_000 });
+  console.log(`Local D1 migrations completed in ${Math.round(performance.now() - migrationStartedAt)}ms`);
   await seedFixtureRows(fixtures);
   await startServer();
 

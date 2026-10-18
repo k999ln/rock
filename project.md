@@ -1,5 +1,7 @@
 # 待機中のプラン停止・復旧
 
+2026-10-18 BIL02/SKY07: A2A local D1初期化の30秒タイムアウトを、初期化だけ120秒の有限budgetへ分離（通常query30秒維持）、失敗時stdout/stderr診断と初期化実測を追加。単独A2A成功、全体verify exit0でbot:checkまで完走、同実行の初期化3415ms・positive14件成功。公開Sandboxの既存受入記録を保存。runtime・配備・本番課金変更なし。次は同head CIと承認済みmain統合。
+
 2026-10-18 BIL02/JOINT・SKY07: main f2a2fba8後の公開v70（対象runtimeはmainと一致）で実account再受入。依頼8188afe5…は閉画面の上限/未払いcron後も送信0回、同invoice in_1URiPR…のSandbox入金・翌月更新後、閉画面で自動続行し送信1回・183の実応答・335/149 tokens/$0を保存。請求は旧3件保持＋当周期1件の計4件paid、period/invoice各一意。本番課金/再配備/DB移行なし。証拠 docs/evidence/sky-background-plan-gates.json。関連11試験成功、project:update成功。全体verifyはA2Aのlocal D1準備ETIMEDOUTで未完走（後続未実行）。検証記録のGit保存はmain統合とは別。
 
 

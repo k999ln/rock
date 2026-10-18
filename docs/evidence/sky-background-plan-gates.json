@@ -191,8 +191,17 @@
       "focusedTests": 11,
       "focusedFailures": 0,
       "projectUpdate": "passed",
-      "fullVerify": "exit 1: sky:a2a:workflow:test local D1 migration spawnSync ETIMEDOUT; later stages not executed",
-      "log": "/private/tmp/sky-post-main-verify.log"
+      "fullVerify": "exit 0; all stages through bot:check passed",
+      "log": "/private/tmp/sky-a2a-full-verify.log",
+      "priorFullVerify": "exit 1: sky:a2a:workflow:test local D1 migration spawnSync ETIMEDOUT; later stages not executed",
+      "a2aTimeoutRepair": {
+        "migrationTimeoutMs": 120000,
+        "queryTimeoutMs": 30000,
+        "measuredMigrationMs": 3415,
+        "standaloneA2a": "passed",
+        "positiveA2aTests": 14,
+        "causeBoundary": "Previous cold local D1 initialization exceeded 30 seconds twice; transient delay source not established. Initialization now has a separate bounded budget and includes captured diagnostics on failure."
+      }
     }
   }
 }
