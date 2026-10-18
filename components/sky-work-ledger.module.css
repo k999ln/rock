@@ -9,7 +9,10 @@
 .message button { margin-left: 8px; }
 .jobs { display: grid; gap: 0; margin: 16px 0; padding: 0; list-style: none; }
 .job { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 45px; padding: 9px 0; border-top: 1px solid #2b4452; font-size: 12px; }
-.title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+.title { display: inline-flex; min-width: 0; align-items: center; gap: 5px; overflow: hidden; color: #e7f0f4; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; text-decoration: none; }
+.title:hover { color: #bde9fb; }
+.title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.title svg { flex: 0 0 auto; }
 .state { padding: 5px 8px; border-radius: 6px; color: #d5edf7; background: #294553; white-space: nowrap; }
 .job small { color: #a9c2cf; white-space: nowrap; }
 .foot { padding-top: 12px; border-top: 1px solid #2b4452; }

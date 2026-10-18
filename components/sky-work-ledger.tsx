@@ -74,7 +74,9 @@ export default function SkyWorkLedger() {
         <ul className={styles.jobs}>
           {state.jobs.map((job) => (
             <li key={job.id} className={styles.job}>
-              <span className={styles.title}>{job.title}</span>
+              <Link className={styles.title} href={`/work?workJob=${encodeURIComponent(job.id)}`} aria-label={`${job.title}の詳細を見る`}>
+                <span>{job.title}</span> <ArrowRight size={14} aria-hidden="true" />
+              </Link>
               <span className={styles.state}>{statusFor(job)}</span>
               <small>手順の記録 {job.steps.filter((step) => step.passed).length}/{job.steps.length}</small>
             </li>
