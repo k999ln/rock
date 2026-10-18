@@ -220,8 +220,8 @@ public final class RockShellService extends Service {
         @Override public String prepareSkyAgent(String digest,String choice,String request){return addonCall(()->{
             JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
             JSONObject recipe=d.getJSONObject("recipe");
-            JSONObject prepared=new JSONObject(new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),recipe.getString("task")));
-            prepared.put("agentRunner",recipe.getString("runner")).put("tools",recipe.optJSONArray("tools")==null?new JSONArray():recipe.getJSONArray("tools"));
+            JSONObject prepared=new JSONObject(new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),"local-tools/1".equals(recipe.getString("runner"))?"writing":recipe.getString("task")));
+            prepared.put("agentTask",recipe.getString("task")).put("agentRunner",recipe.getString("runner")).put("tools",recipe.optJSONArray("tools")==null?new JSONArray():recipe.getJSONArray("tools"));
             prepared.put("toolScope","pure_local_document_transforms_only_no_publish_or_charge");
             return prepared.toString();
         });}

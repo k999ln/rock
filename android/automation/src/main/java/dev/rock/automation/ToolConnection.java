@@ -29,7 +29,7 @@ final class ToolConnection {
         catch(Exception invalid){return new Result("held","AGENT_TOOL_AUTHORITY_INVALID");}
         if(dev.rock.core.AgentToolChain.INPUT.equals(ticket.tool)||dev.rock.core.AgentToolChain.SEAL.equals(ticket.tool)) {
             if(cancelled.get())throw new InterruptedException();
-            try {return new Result("passed",dev.rock.core.AgentToolChain.INPUT.equals(ticket.tool)?AgentToolPayload.input(ticket.input):AgentToolPayload.seal(agentRecipe,ticket.input));}
+            try {return new Result("passed",dev.rock.core.AgentToolChain.INPUT.equals(ticket.tool)?AgentToolPayload.input(agentRecipe,ticket.input):AgentToolPayload.seal(agentRecipe,ticket.input));}
             catch(Exception invalid){return new Result("held","AGENT_TOOL_INPUT_INVALID");}
         }
         if ("local-generate@1".equals(ticket.tool) || LocalIdeaBatch.GENERATE.equals(ticket.tool)) {

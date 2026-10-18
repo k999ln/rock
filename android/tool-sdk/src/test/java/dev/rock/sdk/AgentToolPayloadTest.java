@@ -27,4 +27,10 @@ public final class AgentToolPayloadTest {
         assertTrue(sealed.contains("https://example.com/source"));assertTrue(sealed.contains("citations@1 → free-article@1"));
         assertThrows(Exception.class,()->AgentToolPayload.input(draft.replace("article","writing")));
     }
+    @Test public void citationOnlyAgentDoesNotRequireTheUnselectedPaidRemainderAdapter()throws Exception {
+        String draft=new JSONObject().put("task","article").put("title","文書").put("body","一段落だけの本文").put("summary","短い要点").toString();
+        assertNotNull(ArticlePayload.parse(AgentToolPayload.input(recipe("citations@1"),draft)));
+        assertThrows(IllegalArgumentException.class,()->AgentToolPayload.input(recipe("citations@1","free-article@1"),draft));
+    }
+
 }

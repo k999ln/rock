@@ -37,6 +37,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+API25初回実機: Generalの実生成45秒で下書き保存まで進むが、本文1段落と不十分なsummaryのためTool入力検査で停止、Tool実行0。rawと同じ仕事を保持し、合格としない。articleというToolデータ形式とモデルのwriting能力を分離して既存4B自動候補へ接続し、失敗した合成試験仕事だけ明示中止後に別試行する。引用整理だけのrecipeに未選択の無料版条件を課さないadapterも修正。全体verifyは旧API24固定のsource check1件で失敗し、exact25へ同期する。
+
 2026-10-18 OS11/O6/ROCK（SKY07/SKY21連携）: 本人の実Tool Agent指示でmain3d3e8f22からcodex/sky-agent-toolsに着手。schema2/local-tools runnerのowner別定義、順序/入力/結果照合、既存Broker/SQLite/別Tool app/停止/復旧を再利用する。model生成→Tool入力検査→承認済Tool→成果保存を一仕事で保持。元75仕事/276成果の読取り専用退避と全hashを確認。権限・外部送信・課金・全OSgateは増やさない。host221単体、build/lint、design/baseline/LLM整合が成功。API25の実機受入は未実行。
 
 2026-10-17 OS11/O6/ROCK: 4BはPixel自身で全2,497,281,120bytesをWi-Fi取得→SHA/署名/読み込みまで104.912s成功（cachedSource=false）。手動選択UIも実選択。20件はAI表記拒否で0件のまま3回停止したため、限定direct診断で実5動作/82.626sとAI表記を確認。owner指定のAI→si整形に変更し、表記後の重複検査/旧データ不変を維持。part105s×最大2/lease240、2工程で正常Job継続・失敗backoff分離・pauseの4103取消を実装。Core126/automation47/SDK17/Shell14とbuild/lint合格、20件を新sourceで試験中。4B自動順位はまだ0、300件は未実行。

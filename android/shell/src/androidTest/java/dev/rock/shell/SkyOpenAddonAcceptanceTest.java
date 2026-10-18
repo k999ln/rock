@@ -208,4 +208,15 @@ public final class SkyOpenAddonAcceptanceTest {
         save("agent-tools-readback.json",new JSONObject().put("workId",id).put("artifactSha256",sha(artifact)).put("sameRunAttempts",true).put("actualWorkUi",true).put("newWorkCreated",false).toString());
     }
 
+    @Test public void stopOnlyTheFailedSyntheticToolAgentBeforeChangingItsModel()throws Exception {
+        Assume.assumeTrue("explicit failed synthetic Tool Agent cleanup","true".equals(InstrumentationRegistry.getArguments().getString("rockAgentToolsPhysical")));
+        JSONObject receipt=new JSONObject(new String(Files.readAllBytes(new File(c().getExternalFilesDir(null),"open-addon-agent-tools-start.json").toPath()),StandardCharsets.UTF_8));
+        ShellConnection b=new ShellConnection(c());String id=receipt.getString("workId");JSONObject work=work(b,id);
+        assertEquals("AGENT_TOOL_INPUT_INVALID",work.getJSONArray("runs").getJSONObject(1).getString("error"));
+        assertEquals("agent-tool-input@1",work.getJSONArray("runs").getJSONObject(1).getString("tool"));
+        assertEquals("local-tools/1",work.getJSONObject("agent").getString("runner"));
+        for(int n=2;n<work.getJSONArray("runs").length();n++)assertEquals(0,work.getJSONArray("runs").getJSONObject(n).getInt("attempt"));
+        save("agent-tools-failed-first.json",work.toString());b.cancel(id);assertEquals("cancelled",work(b,id).getString("state"));
+    }
+
 }

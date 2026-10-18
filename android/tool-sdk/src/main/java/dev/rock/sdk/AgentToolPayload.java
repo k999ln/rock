@@ -20,6 +20,13 @@ public final class AgentToolPayload {
         AgentToolChain.stages(tools);return tools;
     }
     public static String input(String draft) {return LocalWorkDraft.articleInput(LocalWorkDraft.verify("article",draft));}
+    public static String input(JSONObject recipe,String draft)throws Exception {
+        if(operations(recipe).contains("free-article@1"))return input(draft);
+        JSONObject value=new JSONObject(LocalWorkDraft.verify("article",draft));
+        JSONObject payload=new JSONObject().put("markdown","# "+value.getString("title")+"\n\n"+value.getString("body"))
+            .put("summary",value.getString("summary")).put("afterChars",1).put("price",500).put("paidContents","未公開の下書き").put("noteUrl","https://note.com/example/n/example");
+        ArticlePayload.parse(payload.toString());ArticleTools.citations(payload.getString("markdown"));return payload.toString();
+    }
     public static void verifyResult(String tool,String input,String output) throws Exception {
         JSONObject before=ArticlePayload.parse(input);String expected;
         if("citations@1".equals(tool)) {
