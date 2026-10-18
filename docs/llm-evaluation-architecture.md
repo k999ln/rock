@@ -386,3 +386,6 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 最大5試行・開始から10分。待機秒数は次回確認の目安であり成功保証ではない。停止はqueued/waitingをCASでcancelledにする。送信中の取消は受理しない。通信断・結果不明・保存不明・期限切れは自動再送しない。sendingでプロセスが失われた場合も成果不明として手動確認し、勝手に送信権を戻さない。モデル出力はレビュー待ちでありTool成功や本人承認ではない。
 
 運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
+
+
+実402受入追記（2026-10-17）: 公開実accountで生成前FREE_LIMIT待機→タブ終了→cron再開→同ID実応答の再訪確認に成功。拒否1回/生成1回、再読込不変、Sandbox請求件数とinvoice不変。手動wakeや合成402は使っていない。証拠はdocs/evidence/sky-free-cloud-background.jsonのreal402Acceptance。本番課金は無効。
