@@ -9,7 +9,7 @@ export default function SkyHostedMonthly(){
  <button disabled={busy} onClick={()=>void run()}>月次契約を確認</button>
  {phase==='not_migrated'&&<button disabled={busy} onClick={()=>void run('migrate')}>同意して月次Sandboxへ切り替える</button>}
  {phase==='migrating'&&<button disabled={busy} onClick={()=>void run('migrate')}>契約移行を再開</button>}
- {phase==='active'&&<button disabled={busy} onClick={()=>void run('cap')}>合成100ドルで上限停止を検証</button>}
+ {(phase==='active'||phase==='restored')&&<button disabled={busy} onClick={()=>void run('cap')}>合成100ドルで上限停止を検証</button>}
  {phase==='capped'&&<button disabled={busy} onClick={()=>void run('close-month')}>テスト月締め・支払失敗を検証</button>}
  {phase==='unpaid'&&<button disabled={busy} onClick={()=>void run('pay')}>テスト入金して復旧を検証</button>}
  {error&&<p role="alert">{error}</p>}

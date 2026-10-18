@@ -2366,5 +2366,6 @@
   ],
   "evidence": "docs/evidence/sky-free-cloud-background.json",
   "productionBilling": false
-}
+},
+"skyBackgroundPlanGates":{"document":"docs/sky-billing.md","implementation":"lib/sky-hosted-monthly.ts","evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false}
 }

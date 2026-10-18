@@ -121,6 +121,41 @@ void test('hosted migration preserves original contract and gates synthetic cap 
  await service.action('owner','pay',HOSTED_MONTHLY_CONSENT);assert.equal(p.invoices.size,1);assert.equal(p.calls.filter(x=>x==='pay').length,2);
  assert.equal(db.sqlite.prepare('SELECT fixture_minor FROM sky_hosted_monthly_tests').get().fixture_minor,10000);
  assert.equal(db.sqlite.prepare('SELECT id FROM sky_recurring_contracts').get().id,before.id);
- await assert.rejects(service.action('owner','cap',HOSTED_MONTHLY_CONSENT));
+ await service.action('owner','cap',HOSTED_MONTHLY_CONSENT);await blockedCloud('quota_exhausted');assert.equal(p.invoices.size,1);
  assert.throws(()=>hostedMonthlyService(db,{...runtime,SKY_MONTHLY_STRIPE_KEY:'sk_live_forbidden'},p.client));
+});
+
+void test('persisted waiting job stops at cap and unpaid, resumes after paid renewal once, and preserves repeated-cycle invoices',async t=>{
+ const {hostedMonthlyService,HOSTED_MONTHLY_CONSENT}=await import('../lib/sky-hosted-monthly.ts');
+ const {runFreeCloudText}=await import('../lib/sky-free-cloud.ts');
+ const {tickBackground,backgroundJobs}=await import('../lib/sky-free-cloud-background.ts');
+ const {skyRecurringUsage}=await import('../lib/sky-recurring-plan.ts');
+ const {db,p,service,c}=await setup(t,'pm_fail');
+ const runtime={...env,SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_BACKGROUND_ENABLED:'true',SKY_HOSTED_MONTHLY_SANDBOX:'true'};
+ db.sqlite.prepare("INSERT INTO sky_hosted_monthly_tests(owner_id,id,contract_id,old_contract_json,stripe_account_id,created_at,period_start,period_end,phase,customer_id,fail_method_id,good_method_id) VALUES('owner','trial',?,'{\"preserved\":true}','acct_fixture',?,?,?,'active','cus_fixture','pm_fail','pm_good')").run(c.id,Date.now(),start,end);
+ const hosted=hostedMonthlyService(db,runtime,p.client);let sends=0;
+ const fetcher=async url=>{if(url.endsWith('/models'))return Response.json([{name:'openai-fast',tier:'anonymous',input_modalities:['text'],output_modalities:['text']}]);sends++;return sends===1?Response.json({error:{code:'FREE_LIMIT'}},{status:402,headers:{'Retry-After':'1'}}):Response.json({id:'once-after-renewal',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Recovered'}}],usage:{prompt_tokens:1,completion_tokens:1,total_tokens:2}});};
+ const clock=await hosted.refresh('owner');const id=crypto.randomUUID();const input={db,owner:'owner',id,prompt:'Synthetic plan-gate test',model:'openai-fast',consent:true,autoContinue:true,enqueue:true,runtime,fetcher,clock:()=>clock};
+ await runFreeCloudText(input);await tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher);assert.equal(sends,1);
+ db.sqlite.prepare("UPDATE work_jobs SET payload=json_set(payload,'$.freeCloud.retryAt',0) WHERE id=?").run(id);
+ await hosted.action('owner','cap',HOSTED_MONTHLY_CONSENT);
+ assert.equal((await skyRecurringUsage(db,'owner',await hosted.refresh('owner'))).reason,'quota_exhausted');
+ await tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher);await tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher);assert.equal(sends,1);
+ await hosted.action('owner','close-month',HOSTED_MONTHLY_CONSENT);
+ assert.equal((await service.contract(c.id)).status,'past_due');
+ await tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher);assert.equal(sends,1);assert.equal((await service.charges(c.id)).length,1);
+ const invoice=(await service.charges(c.id))[0].invoice_id;
+ await hosted.action('owner','pay',HOSTED_MONTHLY_CONSENT);await hosted.action('owner','pay',HOSTED_MONTHLY_CONSENT);
+ assert.equal((await skyRecurringUsage(db,'owner',await hosted.refresh('owner'))).remainingMinor,10000);
+ await Promise.all([tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher),tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher)]);
+ await tickBackground(db,runtime,()=>hosted.refresh('owner'),fetcher);await runFreeCloudText(input);assert.equal(sends,2);
+ assert.equal((await backgroundJobs(db,'owner'))[0].state,'completed');assert.equal((await service.charges(c.id))[0].invoice_id,invoice);
+ // A restored trial can test the next month without deleting the prior paid invoice.
+ await hosted.action('owner','cap',HOSTED_MONTHLY_CONSENT);await hosted.action('owner','cap',HOSTED_MONTHLY_CONSENT);
+ assert.equal((await skyRecurringUsage(db,'owner',await hosted.refresh('owner'))).reason,'quota_exhausted');
+ await hosted.action('owner','close-month',HOSTED_MONTHLY_CONSENT);assert.equal((await service.contract(c.id)).status,'past_due');
+ await hosted.action('owner','pay',HOSTED_MONTHLY_CONSENT);await hosted.action('owner','pay',HOSTED_MONTHLY_CONSENT);
+ const invoices=await service.charges(c.id);assert.equal(invoices.length,2);assert.equal(new Set(invoices.map(x=>x.invoice_id)).size,2);assert.ok(invoices.every(x=>x.status==='paid'));assert.equal(invoices[0].invoice_id,invoice);
+ assert.equal((await skyRecurringUsage(db,'owner',await hosted.refresh('owner'))).reason,'available');assert.equal(sends,2);
+ assert.equal(db.sqlite.prepare("SELECT old_contract_json FROM sky_hosted_monthly_tests WHERE owner_id='owner'").get().old_contract_json,'{"preserved":true}');
 });

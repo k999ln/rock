@@ -1,3 +1,7 @@
+# 待機中のプラン停止・復旧
+
+2026-10-18 SKY07/BIL02: 公開v70/source eedc50a2で次周期Sandbox試験を履歴保持で反復可能にした。実accountのqueued依頼でcap/未払いとも閉画面cron後送信0回。復旧後Provider timeout→unconfirmedで再送なし。別の実402 waiting依頼c14e2929…で、タブ終了後cap/未払いの各cronをまたいでも試行1回不変、同invoiceへの入金・翌月更新後に同ID completed「81 + 82 の答えは163です」、338/165 tokens/$0を保存。試行2回=拒否1+生成1。請求は旧1+試験2周期の各1=3件すべてpaid、旧履歴保持。本番課金なし。対象27試験、全体verify exit0（主2297 pass/既存skip1、全stage fail0）。証拠 docs/evidence/sky-background-plan-gates.json。次はGit保存と同head CI、main統合は別。
+
 # 実402の画面外継続受入
 
 2026-10-17 SKY07/ROCK・WEB01/JOINT: main 43cf290eの実accountで実FREE_LIMIT待機を確認。依頼50c364dc…をwaiting/試行1回で22:35:17Zにタブ終了。cronが22:35:38Zに自動続行し、再訪で同IDの実応答「61+62 の答えは123です。」、338/153 tokens、$0を確認。拒否1回＋生成1回で試行2回、再読込不変。Sandbox請求1→1、同invoice/status/period。本番課金・手動wake・fixture注入なし。証拠 docs/evidence/sky-free-cloud-background.json。コード変更・再配備は不要。今回の全体verifyは高負荷下で4 fail/3 cancelled（MCP/activation timeout等）、対象5ファイルの直列再試験は58/58合格。全体再実行合格とは扱わない。Git保存は受入記録として別PR、mainは未統合。

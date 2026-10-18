@@ -1,4 +1,5 @@
 {
+  "skyBackgroundPlanGates":{"status":"real_account_cap_unpaid_renewal_and_real402_resume_verified","siteVersion":70,"evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false,"mainIntegrated":false},
   "skyBackgroundReal402":{"taskId":"SKY07","status":"real_402_tab_closed_resume_revisit_verified","productionBilling":false},
   "skyFreeCloudBackground":{"taskId":"SKY07","status":"hosted_tab_closed_real_response_and_replay_verified","siteVersion":68,"productionBilling":false,"mainIntegrated":false,"evidence":"docs/evidence/sky-free-cloud-background.json"},
   "skyFreeCloudAutoContinue":{"taskId":"SKY07","status":"hosted_real_account_countdown_continuation_replay_passed","productionBilling":false,"branch":"codex/sky-free-cloud-auto-continue","siteVersion":65,"evidence":"docs/evidence/sky-free-cloud-auto-continue.json"},
