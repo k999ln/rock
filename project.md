@@ -1,3 +1,13 @@
+# Cloud依頼フォームの改善
+
+2026-10-18 SKY07/ROCK: 本人指摘に対応しCloud依頼欄を主画面へ移動、空入力・ログイン導線・送信不可理由・保存確認・日時履歴・回答表示を整理。Sandbox管理操作は折りたたみへ。既存API/台帳/CAS/予算を維持。公開v73/source226a995bへ配備。空入力/同意/未ログインChrome/390px幅のUI確認、実accountの依頼6b314560は自動選択→gpt-oss-20b→回答保存、送信1回・334/1331 tokens・$0。全文の内容正確性は未評価。全体verify exit0。証拠 docs/evidence/sky-cloud-request-ui.json。GitHub main統合は別。本番課金なし。
+
+# 公開版・実端末同時利用の再受入
+
+本人から「フロントとして機能していない」と指摘。通常Sky入口から無料Cloudへの導線、無料Cloudのログイン操作、依頼名での履歴表示、検証操作と通常操作の分離が不足していることをコードと公開UIで確認。実端末同時受入は未実行で保留。UI改修・公開はまだ行っていない。
+
+2026-10-18 BIL02/JOINT・SKY07: main cf01d289後の公開v72/source c097ab09を照合。Macの実account履歴を読取、USB Pixel 10接続確認。独立したPixel側ログインと同時操作は未確認。既存2タブの合格を複数実機へ転用しない。上限はSandbox合成100 USD、実無料Cloudは0 USDとして分け、本番課金なし。対象33試験と全体npm run verify（bot:checkまで）exit0。公開対象8ファイルはmainと一致。Mac契約active/残100 USD/既存paid請求5件を読取。端末側ログイン待ちで同時試験は未実行。証拠 docs/evidence/sky-postmerge-multidevice.json。
+
 # 待機中のプラン停止・復旧
 
 2026-10-18 SKY07/BIL02: 公開v72/source c097ab09へ複数画面poll修正配備。実account2タブから2依頼保存、同ID確認・cap/月締め/pay同時操作はleaseで排他。合成上限100 USDは両画面共有、請求4→5件（各期間一意）で全paid。Bは拒否1+生成1、207・332/169 tokens/$0保存。Aは402反復後5試行でunconfirmed自動再送停止、実応答成功扱いにしない。修正後2分の一覧10取得すべて200、429なし。関連33試験成功、最終全体verify exit0でbot:checkまで完走（初回は別2試験timeout、再実行）。残り1 USD競合はlocal合成であり実課金/複数物理端末の合格ではない。証拠 docs/evidence/sky-concurrent-sandbox.json。

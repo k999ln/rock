@@ -416,7 +416,7 @@ Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `no
 
 無料Cloudの確認画面は `/sky/free-cloud`。Macの独立検証は `node --experimental-strip-types scripts/sky-free-cloud-preview.mjs` を起動し `http://127.0.0.1:5227/` で依頼文・送信同意を確認して「自動選択して実行」。実応答とtoken usageを表示し、同じ依頼IDは再送しません。合成契約と実Cloudを使う試験で、Stripe接続・本番課金はありません。証拠は `docs/evidence/sky-free-cloud-live.json`。
 
-無料Cloudの実アカウント検証画面は `/os/sky/free-cloud`。本人接続を確認し、管理者が指定したownerだけが請求なし・1時間限定の合成契約に同意して検証します。これは月額プランの購入や本番請求ではありません。
+無料Cloudへの依頼は `/os/sky/free-cloud`。依頼内容を書き、送信・保存へ同意して「Cloudに依頼する」を押します。未ログイン時は別タブのログイン案内を使い、戻って「接続・結果を更新」。進捗と回答は同じ画面に保存されます。月次Sandboxの上限・入金等の検証操作は画面下の「Sandbox契約・検証用の操作」にあります。本番課金はありません。
 
 ### 月額140ドルプランの無料Cloud Sandbox
 
