@@ -37,7 +37,7 @@ public final class AutomationJobService extends JobService {
                     s.current = engine().claim(Integer.toString(boot), SystemClock.elapsedRealtime(), charging);
                     if (s.current == null) { reschedule = !charging && !engine().paused(); break; }
                     WorkChangeSignal.changed(this, s.current.workId);
-                    s.connection = new ToolConnection(this);
+                    s.connection = new ToolConnection(this,engine());
                     if (s.stopped.get()) { engine().interrupt(s.current); break; }
                     try {
                         ToolConnection.Result result = s.connection.execute(s.current);

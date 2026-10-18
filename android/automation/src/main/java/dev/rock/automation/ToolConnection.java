@@ -12,18 +12,19 @@ import java.util.concurrent.atomic.*;
 final class ToolConnection {
     static final String PACKAGE = "dev.rock.tools.article";
     private final Context context;
+    private final Engine engine;
     private volatile ITool tool;
     private volatile LocalAiConnection local;
     private volatile String token;
     private final AtomicBoolean cancelled = new AtomicBoolean();
-    ToolConnection(Context context) { this.context = context; }
+    ToolConnection(Context context,Engine engine) { this.context = context; this.engine = java.util.Objects.requireNonNull(engine); }
     static final class Result {
         final String outcome, output;
         Result(String outcome, String output) { this.outcome = outcome; this.output = output; }
     }
     Result execute(Engine.Ticket ticket) throws Exception {
         token = ticket.token;
-        Engine engineForAgent=((RockApplication)context.getApplicationContext()).engine();
+        Engine engineForAgent=engine;
         org.json.JSONObject agentRecipe;
         try {agentRecipe=SkyAgentExecution.recipe(context,engineForAgent,ticket);}
         catch(Exception invalid){return new Result("held","AGENT_TOOL_AUTHORITY_INVALID");}
@@ -34,7 +35,7 @@ final class ToolConnection {
         }
         if ("local-generate@1".equals(ticket.tool) || LocalIdeaBatch.GENERATE.equals(ticket.tool)) {
             if (cancelled.get()) throw new InterruptedException();
-            Engine engine = ((RockApplication) context.getApplicationContext()).engine();
+            Engine engine = this.engine;
             Engine.ModelProfilePin pin = engine.modelProfilePinForWork(AndroidOwner.current(context), ticket.workId);
             LocalAiConnection runtime = new LocalAiConnection(context); local = runtime; String proposal = null;
             try {

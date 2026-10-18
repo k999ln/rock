@@ -180,8 +180,11 @@ public final class SkyOpenAddonAcceptanceTest {
             assertTrue(checked);assertTrue(start.isEnabled());start.performClick();start.performClick();
             try{Field active=LocalSubmission.class.getDeclaredField("active");active.setAccessible(true);LocalSubmission.Attempt attempt=(LocalSubmission.Attempt)active.get(field(a,"agentSubmission"));assertNotNull(attempt);requestId.set(attempt.requestId);}catch(Exception e){throw new AssertionError(e);}
         });
-        AtomicReference<String> id=new AtomicReference<>();end=SystemClock.elapsedRealtime()+20_000;
-        do{ui(()->id.set((String)field(a,"focusedWorkId")));if(id.get()==null)SystemClock.sleep(200);}while(id.get()==null&&SystemClock.elapsedRealtime()<end);assertNotNull(id.get());
+        save("agent-tools-intent.json",new JSONObject().put("requestId",requestId.get()).put("definition",row).put("choice",prepared).put("beforeCount",before).toString());
+        AtomicReference<String> id=new AtomicReference<>();AtomicReference<String> submissionStatus=new AtomicReference<>("");end=SystemClock.elapsedRealtime()+180_000;
+        do{ui(()->{id.set((String)field(a,"focusedWorkId"));submissionStatus.set(((TextView)field(a,"addonStatus")).getText().toString());});
+            if(id.get()==null){save("agent-tools-submit-status.json",new JSONObject().put("status",submissionStatus.get()).toString());assertFalse(submissionStatus.get(),submissionStatus.get().startsWith("依頼結果:"));SystemClock.sleep(200);}}
+        while(id.get()==null&&SystemClock.elapsedRealtime()<end);assertNotNull("submission acknowledgement: "+submissionStatus.get(),id.get());
         save("agent-tools-start.json",new JSONObject().put("workId",id.get()).put("requestId",requestId.get()).put("definition",row).toString());
         long began=SystemClock.elapsedRealtime();JSONObject work=awaitReview(b,id.get(),began);String artifact=b.result(id.get());
         String[] operations={"local-generate@1","agent-tool-input@1","citations@1","free-article@1","agent-tool-seal@1"};assertEquals(5,work.getJSONArray("runs").length());

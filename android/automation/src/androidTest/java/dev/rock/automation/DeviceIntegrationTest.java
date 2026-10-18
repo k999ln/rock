@@ -155,7 +155,7 @@ public class DeviceIntegrationTest {
                 id = engine.submit(executionReceiptId, payload, false, true);
                 Engine.Ticket first = engine.claim("synthetic-boot", SystemClock.elapsedRealtime(), true);
                 assertNotNull(first);
-                ToolConnection.Result formatted = new ToolConnection(target).execute(first);
+                ToolConnection.Result formatted = new ToolConnection(target,engine).execute(first);
                 assertEquals("passed", formatted.outcome);
                 ArticlePayload.validateIntermediate(payload, formatted.output);
                 assertEquals(expectedCitations, new JSONObject(formatted.output).getString("markdown"));
@@ -166,7 +166,7 @@ public class DeviceIntegrationTest {
                 Engine engine = new Engine(db);
                 Engine.Ticket second = engine.claim("synthetic-boot", SystemClock.elapsedRealtime(), true);
                 assertEquals(1, second.step);
-                ToolConnection.Result free = new ToolConnection(target).execute(second);
+                ToolConnection.Result free = new ToolConnection(target,engine).execute(second);
                 assertEquals("passed", free.outcome);
                 assertTrue(free.output.contains("## 出典"));
                 assertTrue(engine.finish(second, free.outcome, free.output, "synthetic-boot", SystemClock.elapsedRealtime()));

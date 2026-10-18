@@ -37,6 +37,10 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+source8d83のPixel: 同じpending IDで受付を照合し、新規1仕事としてauto4B2→生成/入力検査/citations/free-article/seal全5工程attempt1、116.148秒、699bytesを保存。Tool順/モデル表示と未チェック同意、二重tap1仕事、同ID再送、失効/成果保持/再同意が合格。元のGeneral失敗は中止/保存済み。host222単体/build/lint、exactAPI25へ修正後の全体verify全stage exit0。CIのEngine注入修正を含む新APKの再試験と再起動readbackは次に実施する。
+
+CIの旧Binder受入は、試験専用Engineのticketを実appの既定Engineへ照合したためholdを返して失敗。ToolConnectionへ同じEngineを明示注入し、実schedulerと隔離/再起動試験の所有DBを一致させる。assertや署名/出典の検査は維持する。試験の受付上限だけ20→180秒へ変更して同じpending IDを照合、runtime推論/lease上限は不変。
+
 API25初回実機: Generalの実生成45秒で下書き保存まで進むが、本文1段落と不十分なsummaryのためTool入力検査で停止、Tool実行0。rawと同じ仕事を保持し、合格としない。articleというToolデータ形式とモデルのwriting能力を分離して既存4B自動候補へ接続し、失敗した合成試験仕事だけ明示中止後に別試行する。引用整理だけのrecipeに未選択の無料版条件を課さないadapterも修正。全体verifyは旧API24固定のsource check1件で失敗し、exact25へ同期する。
 
 2026-10-18 OS11/O6/ROCK（SKY07/SKY21連携）: 本人の実Tool Agent指示でmain3d3e8f22からcodex/sky-agent-toolsに着手。schema2/local-tools runnerのowner別定義、順序/入力/結果照合、既存Broker/SQLite/別Tool app/停止/復旧を再利用する。model生成→Tool入力検査→承認済Tool→成果保存を一仕事で保持。元75仕事/276成果の読取り専用退避と全hashを確認。権限・外部送信・課金・全OSgateは増やさない。host221単体、build/lint、design/baseline/LLM整合が成功。API25の実機受入は未実行。
