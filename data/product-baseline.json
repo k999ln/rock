@@ -2775,6 +2775,15 @@
         "declarative_local_text_agent"
       ],
       "physicalAcceptance": "pending"
+    },
+    "pixelToolAgentInstruction": {
+      "requestedAt": "2026-10-18",
+      "request": "Skyで追加したAgentが要約だけでなく実際にToolを動かして成果物を作り、Pixelで確認する",
+      "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+      "runner": "local-tools/1",
+      "scope": "existing_pure_document_Tools_with_explicit_owner_consent",
+      "executionPermissionFromModel": false,
+      "wholeOsOrPaidCloudAuthorized": false
     }
   },
   "skyFusionDirection": {

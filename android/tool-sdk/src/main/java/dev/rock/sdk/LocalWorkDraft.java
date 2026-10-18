@@ -36,7 +36,7 @@ public final class LocalWorkDraft {
             case "code": instruction = "Body: only the requested code, 1-5 lines, under 220 characters. No explanation or example usage."; break;
             case "summary": instruction = "Body: a concise summary using only the supplied text, under 180 characters."; break;
             case "translation": instruction = "Body: only the requested translation, under 200 characters."; break;
-            case "article": instruction = "Body: a short Japanese article draft under 240 characters. Do not invent sources."; break;
+            case "article": instruction = "Body: a short Japanese article draft under 240 characters. Use exactly three short paragraphs separated by two newline characters. Do not invent sources."; break;
             case "planning": instruction = "Body: a useful short plan, under 220 characters."; break;
             default: instruction = "Body: a useful concise answer, under 220 characters.";
         }
@@ -78,7 +78,7 @@ public final class LocalWorkDraft {
         try {
             JSONObject value = new JSONObject(verify("article", input));
             JSONObject article = new JSONObject().put("markdown", "# " + value.getString("title") + "\n\n" + value.getString("body"))
-                .put("summary", value.getString("summary")).put("afterChars", 100000).put("price", 500)
+                .put("summary", value.getString("summary")).put("afterChars", 1).put("price", 500)
                 .put("paidContents", "未公開の下書き").put("noteUrl", "https://note.com/example/n/example");
             ArticlePayload.validateExecutable(article.toString()); return article.toString();
         } catch (org.json.JSONException invalid) { throw new IllegalArgumentException("INVALID_LOCAL_DRAFT_JSON", invalid); }

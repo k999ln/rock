@@ -389,6 +389,10 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 今後は意味上の多様性/速度と、SKY07/SKY21の任意作者addプラグインの共通admission/互換/権限/更新/失効を別受入にする。現固定profileはPixel実機検証の範囲で公式専用枠ではない。検証は `npm run os:check`、Android Core/SDK/unit/build/lint、該当opt-in実機試験、`npm run llm:architecture:check`、`npm run design:check`、`npm run verify`。MacのD1起動deadline失敗と同一SHAのGitHub全体成功を分け、CI未実行を成功にしない。
 
 
+### OS11 / O6: 追加Agentの実Tool実行
+
+本人の2026-10-18指示。主担当ROCK/O6、Sky O4/O5連携。使用Toolの宣言・本人確認、生成/検査/Tool Binder/成果保存、失効時の遅延commit拒否、同ID/停止/再起動/旧75仕事276成果の保持を[共通契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)で管理する。実機は[同一artifact証拠](../evidence/pixel-agent-tools.json)で判定し、schema1とPR167の成功をAPI25の受入へ転用しない。
+
 ### OS11 / O6: Skyの動的LLM・宣言型Agent追加
 
 ROCK主担当、SKY07/SKY21連携。private Shell API24で作者/モデルID固定を外し、owner別の固定commit/hash/明示同意と既存pin/保存を維持する。[目的・責任・全状態・失敗/復旧・合格条件](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。非同梱Coder1.5B Q5_K_Mの実取得・生成保存、Agent実生成/同ID/失効/再同意、試験済taskだけauto候補、Broker process再起動後同成果/UI、通知tapと元65/248保持を[同一APK証拠](../evidence/pixel-open-addons.json)で受け入れる。0.5Bのecho/コード形式失敗を成功へ変えず、任意framework/nativeコード・一般品質・全OSは未受入。検証は既存Android unit/build/lint、SkyAddonStoreBoundaryTest、opt-in SkyOpenAddonAcceptanceTest、TerminalHomeIntegrationTest/WorkExperienceIntegrationTest、design/LLM/全体verify。Git保存とmain統合はPR167の実head/check-runs/mergedAt/mergeCommitへ照合する。

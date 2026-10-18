@@ -23,6 +23,8 @@ final class WorkPresentation {
             case "citations@1": return "出典を整理";
             case "free-article@1": return "記事を整える";
             case "local-generate@1": return "下書きを生成";
+            case "agent-tool-input@1": return "Toolへ渡す入力を検査";
+            case "agent-tool-seal@1": return "加工した成果物を保存";
             case "local-text-validate@1": return "下書きの形式を確認";
             case "local-text-seal@1": return "成果物を保存";
             case "local-ideas-generate@1": return "次のアイデアを生成・保存";
@@ -31,6 +33,8 @@ final class WorkPresentation {
         }
     }
     static String issue(String code) {
+        if ("AGENT_TOOL_AUTHORITY_INVALID".equals(code)) return "このAgentの設定・有効状態を確認できないため停止しました。Skyで内容を再確認してください。保存済みの成果は残っています。";
+        if ("AGENT_TOOL_INPUT_INVALID".equals(code)) return "生成結果がToolの入力条件を満たさず停止しました。モデルの下書きを確認し、止まった工程を再試行できます。";
         if ("LOCAL_REQUEST_REPLAN_REQUIRED".equals(code)) return "この旧試験版の依頼は、保存した条件を引き継いで再計画する必要があります。履歴を確認し、新しい依頼として準備してください。";
         if ("LOCAL_GENERATION_TIMED_OUT".equals(code)) return "生成に時間がかかったため停止しました。保存済みの内容は残っています。止まった工程から再試行できます。";
         if (java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA").contains(code))

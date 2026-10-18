@@ -316,4 +316,34 @@ public class EngineTest {
         engine.hold(continued,"LOCAL_GENERATION_TIMED_OUT");assertFalse(engine.canCompactReplanIdeas("owner:alice",id));
     }
 
+    @Test public void admittedAgentToolChainBindsExactStepsAndRestoresOnlyTheNextStep() throws Exception {
+        Engine.ModelProfilePin pin=localTextPin("agent-tools");List<String> tools=List.of("citations@1","free-article@1");
+        assertThrows(SecurityException.class,()->engine.submitPinnedAgentTools(pin,"agent-tools","request",tools,false));
+        assertThrows(IllegalArgumentException.class,()->engine.submitPinnedAgentTools(pin,"agent-tools","request",List.of("shell@1"),true));
+        String id=engine.submitPinnedAgentTools(pin,"agent-tools","request",tools,true);
+        assertEquals(id,engine.submitPinnedAgentTools(pin,"agent-tools","request",tools,true));
+        assertThrows(IllegalStateException.class,()->engine.submitPinnedAgentTools(pin,"agent-tools","request",List.of("citations@1"),true));
+        String[] stages=AgentToolChain.stages(tools);
+        for(int i=0;i<2;i++){Engine.Ticket t=claim(10+i*10);assertEquals(stages[i],t.tool);assertTrue(engine.finish(t,"passed","output"+i,"boot-1",11+i*10));}
+        db.close();db=new JdbcDatabase(file);engine=new Engine(db);
+        for(int i=2;i<stages.length;i++){Engine.Ticket t=claim(10+i*10);assertEquals(stages[i],t.tool);assertEquals("output"+(i-1),t.input);assertTrue(engine.finish(t,"passed","output"+i,"boot-1",11+i*10));}
+        assertEquals("review",engine.work(id).get("state"));assertEquals("output4",engine.result(id));
+        assertEquals(1,engine.runs(id).stream().filter(r->"citations@1".equals(r.get("tool"))).count());
+        assertThrows(IllegalArgumentException.class,()->engine.complete(id," "));
+        byte[] backup=new PlatformStore(db).exportRecoverableState("owner:alice");
+        try(JdbcDatabase restoredDb=new JdbcDatabase(temp.newFile("agent-tools-restored.db").getPath())){
+            Engine restored=new Engine(restoredDb);new PlatformStore(restoredDb).restoreRecoverableState(backup,"owner:alice",1000);
+            assertEquals("output4",restored.result(id));assertEquals(5,restored.runs(id).size());assertTrue(restored.paused());
+            assertEquals("citations@1",restored.runs(id).get(2).get("tool"));assertEquals("free-article@1",restored.runs(id).get(3).get("tool"));
+        }
+        db.execute("UPDATE runs SET tool='free-article@1' WHERE work_id=? AND step=2",id);
+        db.execute("UPDATE runs SET tool='citations@1' WHERE work_id=? AND step=3",id);
+        byte[] changedOrder=new PlatformStore(db).exportRecoverableState("owner:alice");
+        try(JdbcDatabase invalidDb=new JdbcDatabase(temp.newFile("agent-tools-invalid.db").getPath())){
+            new Engine(invalidDb);assertThrows(IllegalArgumentException.class,()->new PlatformStore(invalidDb).restoreRecoverableState(changedOrder,"owner:alice",1000));
+            assertTrue(invalidDb.query("SELECT * FROM works").isEmpty());
+        }
+
+    }
+
 }

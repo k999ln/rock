@@ -283,7 +283,7 @@
     "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
     "status": "implemented_configuration_required",
     "policyVersion": "pixel-local-work-model-choice/4",
-    "privateShellApiVersion": 24,
+    "privateShellApiVersion": 25,
     "automaticModel": "dev.rock.qwen25-15b-q4km",
     "manualSelection": true,
     "generalTaskQualityAccepted": false,
@@ -332,7 +332,26 @@
       "testSource": "76b0a9a3",
       "acceptedPublicModelExample": "https://huggingface.co/bartowski/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/1af47f78b1f9b0c242fabe43f7a365d5a67f3207/Qwen2.5-Coder-1.5B-Instruct-Q5_K_M.gguf",
       "acceptedAgentScope": "self_published_declarative_fixture_real_Pixel_execution",
-      "evidenceScope": "same_APKs_and_saved_artifacts_not_whole_OS_or_general_model_quality"
+      "evidenceScope": "same_APKs_and_saved_artifacts_not_whole_OS_or_general_model_quality",
+      "toolExecution": {
+        "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+        "implemented": true,
+        "physicalAccepted": true,
+        "runner": "local-tools/1",
+        "definitionSchema": "rock-sky-agent/2",
+        "supportedPureTools": [
+          "citations@1",
+          "free-article@1"
+        ],
+        "permissionFromModel": false,
+        "evidence": "docs/evidence/pixel-agent-tools.json",
+        "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+        "modelRoutingTask": "writing",
+        "toolPayloadTask": "article",
+        "acceptedDefaultProfile": "dev.rock.qwen3-4b-2507-q4km",
+        "generalQualityAccepted": false,
+        "backupRecipeRestoreAccepted": "host_and_isolated_Android_SQLite_only"
+      }
     }
   }
 }

@@ -125,7 +125,7 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 **体験と入力。** Skyの公開検索またはURL欄から、Hugging Faceの公開・非gatedリポジトリ/単一GGUF、GitHubの宣言型Agent JSONを指定する。モデルは固定commitのファイル候補を選び、出典・版・license・容量・重みSHA-256・作者署名なし・品質未検証・自動選択への参加を確認して追加する。その後にWi-Fi取得と別の導入操作を行う。Agentは名前・公開元・固定版・指示・追加権限なしを確認して追加し、依頼と実モデル・処理/保存への同意を確認して開始する。モデルの手動指定はHomeの既存chooser、標準は作業別の自動選択を使う。
 
-**契約と責任。** private Shell API 24のinspect/add/list/revoke/prepare/submit/automatic設定だけを追加する。ROCKはorigin/path、応答量、timeout、owner、unlock、proposal期限30分、exact digest、同意、immutable版、保存、実行hostと失効を強制する。公開配布元はmetadata/weights/Agent定義を提供する。licenseは公開表記であり安全性・性能・法的適合の保証にしない。作者/モデルIDに固定allowlistや公式優遇はない。一方、実行形式はruntimeに対応する単一GGUF（4GiB以下、対応量子化/architecture、Apache-2.0/MIT/BSD-3-Clause）と`rock-sky-agent/1` / `local-text/1`に限定する。未対応形式や権限はadapter不足として拒否し、公開コードやREADMEの命令を実行しない。
+**契約と責任。** private Shell API24の動的追加契約を維持し、API25でTool Agentの宣言と実行確認を加える。ROCKはorigin/path、応答量、timeout、owner、unlock、proposal期限30分、exact digest、同意、immutable版、保存、実行hostと失効を強制する。公開配布元はmetadata/weights/Agent定義を提供する。licenseは公開表記であり安全性・性能・法的適合の保証にしない。作者/モデルIDに固定allowlistや公式優遇はない。一方、実行形式はruntimeに対応する単一GGUF（4GiB以下、対応量子化/architecture、Apache-2.0/MIT/BSD-3-Clause）と`rock-sky-agent/1` / `local-text/1`、下記schema2の端末内Tool adapterに限定する。未対応形式や権限はadapter不足として拒否し、公開コードやREADMEの命令を実行しない。
 
 **真正性の区別。** 既存APK catalogのEd25519署名検証は維持する。動的モデルは`owner-pin:<owner hash>` / `owner-consent` / 空の作者署名を明示し、本人が固定した定義と一致するBroker私有のadmission receiptで認証する。作者の署名に見せかけず、既存の署名verifierはこの形式を拒否する。OS/platform鍵や第三者作者の鍵を生成/代用しない。公開元はHTTPS repository originであり、法的作者本人の身元確認ではない。GGUF v2/v3 headerから埋込tokenizer metadataとchat templateのdigestを得る。実導入では全weight SHA/lengthと実ファイルのmetadataを再照合し、既存runtimeの署名/API/RAM/空き容量・実load receiptを満たすまでreadyへ昇格しない。templateはデータとして扱う。
 
@@ -140,6 +140,21 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 **合格条件。** 未署名owner pinが作者署名verifierを通らないこと、metadataの改変/重複key/巨大配列、別owner/別digest/期限切れ/失効、Agentの任意コード/未知field/追加権限を拒否することを試験する。PixelではAPK固定catalogに存在しない公開LLMの検索/追加/取得/実load/実生成/保存、非同梱Agent定義の追加/実生成/保存、同じ仕事の再送/再起動後のreadback、無効化後の新規拒否、元の仕事/全成果hash保持を同一APKで照合する。host、fixture、公開metadata通信、物理推論、全OS、本番は別に記録する。未決の形式は公開仕様と対象runtimeの試験を根拠にadapter単位で拡張し、1モデルの合格を全モデルへ転用しない。
 
 一次資料: [Hugging Face Hub API](https://huggingface.co/docs/hub/en/api)、[GGUF仕様](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md)。実装は任意の外部コードを取得・実行する仕組みではなく、これらのデータ形式を検証するadapterである。
+
+
+### Pixelの追加Agentから実Toolを使う
+
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装する。目的はSkyから追加したAgentが、下書きを返すだけでなく、承認したToolで加工した成果物を同じZema仕事へ保存すること。2026-10-18の[同一APK証拠](evidence/pixel-agent-tools.json)で、backup修正を含む同一APKのauto4B2→実2 Tool→699bytesの保存（全5工程attempt1/115.675秒）、未チェック同意・同ID・失効・再同意、Broker process再起動後同hash/UI、元75/276保持を受け入れた。一般品質と全OSへは昇格しない。
+
+**体験と契約。** 既存schema1/local-textを維持し、`rock-sky-agent/2` / `local-tools/1`はtask=`article`、permissions=[]、1〜2件の順序付きtoolsを宣言する。現在対応するadapterは`citations@1`（引用整理）と`free-article@1`（無料版文書の組立）であり、重複・逆順・未知Tool・追加権限を拒否する。作者/Agent IDの固定はない。最初の同意で固定版/Tool一覧、その後の実行確認でモデル/Tool順/端末内加工・保存を示す。checkboxは未選択で、承認前に推論もToolも開始しない。free-articleの価格500/例示note URLは既存ABIの下書き仮設定で、公開・販売・請求を行わない。新しい能力は対応adapterと個別受入を追加して開く。
+
+**責任・入出力。** Brokerは定義digest/owner/source/元依頼からpromptとprovenanceを再構成し、使用Toolと順序を固定する。文書Toolのarticleはデータ形式であり、モデル選択はwriting能力を使う。短文向けGeneralの実機失敗を受け、既存の文章/発想向け4Bを標準条件で選べるようにする。文書Toolのarticleはデータ形式であり、モデル選択はwriting能力を使う。短文向けGeneralの実機失敗を受け、既存の文章/発想向け4Bを標準条件で選べるようにする。LLMは既存local-work schemaでarticleのtitle/body/summaryを返す非信頼生成器であり、Tool ID・価格・送信許可を決めない。SDKは3段落の下書きと3項目summaryを既存ArticlePayloadへ検査・変換する。短い本文にafterChars=100000を適用するとNO_PAID_REMAINDERで失敗する既存不整合を、最初の段落で区切るafterChars=1へ修正する。満たさないモデル結果を補完せず入力検査で停止する。引用整理だけのAgentには、未選択の無料版Toolが必要とする段落/summary条件を強制しない。引用整理だけのAgentには、未選択の無料版Toolが必要とする段落/summary条件を強制しない。既存Tool appのversion1/Binder1/同署名UIDを検査し、callback token/UIDと入力設定保持、実加工関数とのexact一致を確認して初めてTool成功にする。署名は安全性証明や第三者へのplatform鍵付与ではない。
+
+**状態と保存。** `queued → local-generate → agent-tool-input → 宣言Tool各工程 → agent-tool-seal → review`。同じmodel pin、request ID、lease/token、SQLite artifact hash、pause/cancel、本人の最終reviewを再利用する。request hashはTool順も含み、同IDの再送で新仕事を増やさない。生成、各Tool出力、最終Markdownを別digestで保持し、仕事詳細にAgent・source・Toolと各工程を表示する。Engine DB4/Platform1/Native8/Binder4は変更しない。私有Shell API25の準備応答へTool宣言を追加し、古いShellでTool同意を省略しない。
+
+**失敗・失効・復旧。** provenance不一致、未知/並び替えTool、schema不正、Tool応答の改変、署名/API不適合で成果成功を作らない。Tool-chainの各dispatchと結果commit時に現ownerの有効な定義を再検査する。Agent失効と結果commitを同じlockで順序付け、失効後の遅延返答を保存/次工程へ進めずholdする。保存済みartifactは維持し、本人の再同意有効化と通常retryで止まった工程を再開する。既存schema1の新規依頼停止契約は維持する。backupの既存schema2 readerは新しいadapter工程を含む正しい4〜5工程の並びだけを追加受入し、model pinなし・Tool逆順・未知工程を拒否する。復元後は既存pause/未検証model/再同意gateを維持し、ownerの実dataへ上書き復元する試験は行わない。process再起動は成功工程とhashを読み戻し、Toolの自動再実行や本人承認の復元としない。timeout/停止は既存fenceを維持し、Tool入力不正を自動で補完・再生成しない。
+
+**合格と残る条件。** 純Toolのfixture一致、未知/権限/改変/逆順拒否、同ID競合、再起動後next-step、失効と遅延commitの競合を試験する。実機では公開定義の追加と実行checkbox未選択、実LLM→別app Binderの2 Tool→加工前後のhash/実成果、仕事画面/通知/成果の読戻し、Broker再起動後同artifact、既存75仕事/276成果の保持を照合する。任意Tool framework、外部送信/購入/機器作用、有料Cloudと全OSは別gateであり、本adapterで一般許可しない。対応拡大は同じ能力/権限/費用/復旧契約と実受入を根拠に決める。
 
 ## SkyでmodelとAgent実行先を選ぶ
 

@@ -2434,7 +2434,7 @@
   "pixelDynamicAddons": {
     "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
     "taskId": "OS11",
-    "privateShellApiVersion": 24,
+    "privateShellApiVersion": 25,
     "modelAuthentication": [
       "existing_publisher_Ed25519",
       "explicit_unsigned_owner_digest_pin"
@@ -2447,6 +2447,13 @@
       "android/automation/src/main/java/dev/rock/automation/SkyAddonNetwork.java",
       "android/automation/src/main/java/dev/rock/automation/GgufMetadata.java"
     ],
-    "evidence": "docs/evidence/pixel-open-addons.json"
+    "evidence": "docs/evidence/pixel-open-addons.json",
+    "toolAgentAuthority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+    "toolAgentEvidence": "docs/evidence/pixel-agent-tools.json",
+    "toolAgentPhysicalAcceptance": "PASS_same_APKs_including_strict_backup_recipe_see_evidence",
+    "agentRunners": [
+      "local-text/1",
+      "local-tools/1"
+    ]
   }
 }

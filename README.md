@@ -63,7 +63,7 @@ The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `
 
 > **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
 
-SkyでモデルやAgentを追加するには、Pixelの「Sky → LLM・Agentを追加」でHugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLを指定します。配布元・固定版・license・容量・作者署名なしの範囲を確認して追加し、モデルは別操作で取得/検証/導入、Agentは依頼と使用モデルを確認して開始します。[対応形式・状態・停止と復旧](docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。標準は作業別の自動選択です。追加モデルはまず手動で試し、保存した結果を確認してから「自動選択で使う作業を設定」で試験済みの作業だけ候補にできます。[Pixel実機の受入と制限](docs/evidence/pixel-open-addons.json)を確認してください。
+SkyでモデルやAgentを追加するには、Pixelの「Sky → LLM・Agentを追加」でHugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLを指定します。配布元・固定版・license・容量・作者署名なしの範囲を確認して追加し、モデルは別操作で取得/検証/導入、Agentは依頼と使用モデルを確認して開始します。[対応形式・状態・停止と復旧](docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。Toolを使うAgent（schema2）は、追加・依頼時に使用Toolと順番を表示します。表示内容に同意すると、端末内モデル→入力検査→Tool加工→成果保存の順に進み、仕事画面で各工程と成果を確認できます。[対応Toolと失敗時の手順](docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、[Tool Agentの定義例](examples/sky/document-agent.json)、[Pixel実機の結果](docs/evidence/pixel-agent-tools.json)を参照してください。標準は作業別の自動選択です。追加モデルはまず手動で試し、保存した結果を確認してから「自動選択で使う作業を設定」で試験済みの作業だけ候補にできます。[Pixel実機の受入と制限](docs/evidence/pixel-open-addons.json)を確認してください。
 
 ## The promise
 

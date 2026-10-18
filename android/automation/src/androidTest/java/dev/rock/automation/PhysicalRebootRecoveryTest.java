@@ -69,14 +69,14 @@ public final class PhysicalRebootRecoveryTest {
 
             Engine.Ticket recovered = engine.claim(Integer.toString(boot), SystemClock.elapsedRealtime(), true);
             assertNotNull(recovered); assertEquals(0, recovered.step); assertEquals(2, recovered.attempt);
-            ToolConnection.Result first = new ToolConnection(target).execute(recovered);
+            ToolConnection.Result first = new ToolConnection(target,engine).execute(recovered);
             assertEquals("passed", first.outcome);
             assertTrue(engine.finish(recovered, first.outcome, first.output,
                 Integer.toString(boot), SystemClock.elapsedRealtime()));
 
             Engine.Ticket second = engine.claim(Integer.toString(boot), SystemClock.elapsedRealtime(), true);
             assertNotNull(second); assertEquals(1, second.step);
-            ToolConnection.Result last = new ToolConnection(target).execute(second);
+            ToolConnection.Result last = new ToolConnection(target,engine).execute(second);
             assertEquals("passed", last.outcome);
             assertTrue(engine.finish(second, last.outcome, last.output,
                 Integer.toString(boot), SystemClock.elapsedRealtime()));
