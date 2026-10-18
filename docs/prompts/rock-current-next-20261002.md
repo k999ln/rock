@@ -4,7 +4,11 @@
 
 本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main3d3e8f22からcodex/sky-agent-tools。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool appのBinder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)を先に照合する。
 
-現在はhost221単体/build/lint合格、実機未受入。まず同じ既存preview signerを検査してBroker/Shellだけを非破壊更新し、隔離admission/失効境界5件、その後に公開document-agent定義の追加と未チェックTool同意/二重tap1仕事、実General1.5B→citations/free-article→加工成果保存を確認する。推論中のBroker instrumentationは禁止。旧75仕事/276成果をprivate baselineとhash照合する。次にBroker process再起動後の同仕事/同artifact/同attempt、仕事画面、通知を確認。失敗はraw/同じ仕事を保持し、fixtureや文章を実Tool成功へ換算しない。全体verifyと同一head CIが揃ってから通常main統合。APK成功は全OS/任意framework/有料Cloudではない。
+API25の実機再受入済み。source c37deb5c / auto4B2、生成→入力検査→citations→free-article→sealの全5工程attempt1、134.996秒、699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4。未チェック同意/Tool順・モデル表示/二重tap1仕事/同ID再送/失効・成果保持・再同意、Broker process再起動後同hash/同attempt/実UI表示が合格。境界と旧Binder/SQLite11件、通知tap/公開検索を含むUI13実+既存opt-in1未選択。元75仕事/276artifactと全状態を保持、現80仕事/296全body hash、実機4APKの既存署名/bytesを確認。Native8とTool1は再インストールしない。
+
+Generalの最初の生成はTool入力不適合で保留し、試験仕事だけ中止、rawと出力を保持。Toolデータ形式articleとモデル能力writingを分離して4Bを自動選択した。受付待ち20秒で失敗した試験は同じpending IDを保持し、受付だけ180秒で照合（runtime/leaseは変更なし）。CIの旧Binderfixtureは別Engineを参照していたため明示注入へ修正。host222単体/build/lint、main421b1029同期後の全体verifyがexit0（Node22/OpenSSL3.6.3/ファイル並列2）。OpenSSL4既定PATHによる試験失敗を隠さず、v3契約を緩めず再実行した。
+
+PR169が未統合なら最終exact-head CIを確認して通常mergeし、mergedAt/mergeCommit/main treeを照合する。統合済みなら次のTool adapter/形式・品質評価へ進む。新しいToolは能力/権限/入出力/費用/失効/復旧を定義して受入し、任意コードや公開/購入を宣言だけで許可しない。生成物はGit外、価格/URLは既存Toolの下書き仮設定。全OS/端末自体の再起動/任意framework/有料Cloudは別gate。
 
 ## Skyの動的追加: 現在の仕事
 

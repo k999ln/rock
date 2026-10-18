@@ -47,6 +47,10 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+API25の実機証拠とLLM/設計索引/担当入口/次プロンプト/README定義例を同期。project:update、design/baseline/LLM/mission checkとdiff検査が成功。Git保存・作業branch反映・main統合はPR169のlive mergedAt/mergeCommitを正本に分け、同じ最終headのCI成功後に通常統合する。
+
+API25/c37実機最終: auto4B2→実citations/free-article→seal全5工程attempt1、134.996秒/699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4。Binder/SQLite/失効境界11、Agent同意UI/同ID/二重tap/失効と再同意、process再起動後同hash/attempt/成果UI、通知tap/検索を含むUI13実+既存opt-in1未選択が合格。元75仕事/276成果/全状態と現80仕事296全body hash保持。実機4APK bytes/既存cert一致、Native8/Tool1無更新。main421b1029のWeb依頼フォーム改善を双方保持して統合、Android差分0。既定OpenSSL4による署名回帰の失敗後、既存OpenSSL3.6.3をPATH固定し、main同期後の全体verify全stage exit0（Node22/ファイル並列2）。最終CI/main統合はPR169のexact head/check-runs/mergedAt/mergeCommitで別確認する。
+
 source8d83のPixel: 同じpending IDで受付を照合し、新規1仕事としてauto4B2→生成/入力検査/citations/free-article/seal全5工程attempt1、116.148秒、699bytesを保存。Tool順/モデル表示と未チェック同意、二重tap1仕事、同ID再送、失効/成果保持/再同意が合格。元のGeneral失敗は中止/保存済み。host222単体/build/lint、exactAPI25へ修正後の全体verify全stage exit0。CIのEngine注入修正を含む新APKの再試験と再起動readbackは次に実施する。
 
 CIの旧Binder受入は、試験専用Engineのticketを実appの既定Engineへ照合したためholdを返して失敗。ToolConnectionへ同じEngineを明示注入し、実schedulerと隔離/再起動試験の所有DBを一致させる。assertや署名/出典の検査は維持する。試験の受付上限だけ20→180秒へ変更して同じpending IDを照合、runtime推論/lease上限は不変。

@@ -144,7 +144,7 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 ### Pixelの追加Agentから実Toolを使う
 
-本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装する。目的はSkyから追加したAgentが、下書きを返すだけでなく、承認したToolで加工した成果物を同じZema仕事へ保存すること。受入は[同一APKの専用証拠](evidence/pixel-agent-tools.json)で区別する。
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装する。目的はSkyから追加したAgentが、下書きを返すだけでなく、承認したToolで加工した成果物を同じZema仕事へ保存すること。2026-10-18の[同一APK証拠](evidence/pixel-agent-tools.json)で、auto4B2→実2 Tool→699bytesの保存（全5工程attempt1/134.996秒）、未チェック同意・同ID・失効・再同意、Broker process再起動後同hash/UI、元75/276保持を受け入れた。一般品質と全OSへは昇格しない。
 
 **体験と契約。** 既存schema1/local-textを維持し、`rock-sky-agent/2` / `local-tools/1`はtask=`article`、permissions=[]、1〜2件の順序付きtoolsを宣言する。現在対応するadapterは`citations@1`（引用整理）と`free-article@1`（無料版文書の組立）であり、重複・逆順・未知Tool・追加権限を拒否する。作者/Agent IDの固定はない。最初の同意で固定版/Tool一覧、その後の実行確認でモデル/Tool順/端末内加工・保存を示す。checkboxは未選択で、承認前に推論もToolも開始しない。free-articleの価格500/例示note URLは既存ABIの下書き仮設定で、公開・販売・請求を行わない。新しい能力は対応adapterと個別受入を追加して開く。
 

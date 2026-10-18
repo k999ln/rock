@@ -7814,12 +7814,18 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "implementation_and_host_acceptance",
+    "status": "physical_preview_accepted_integration_via_PR169",
     "privateShellApiVersion": 25,
-    "physicalAccepted": false,
+    "physicalAccepted": true,
     "baseMainSha": "3d3e8f22937f8a56a73074085770617c47574287",
     "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
     "evidence": "docs/evidence/pixel-agent-tools.json",
-    "nextAction": "Build/test API25, admit public schema2 Tool Agent with explicit ordered-Tool consent, verify actual native generation and signed Tool Binder results, stop/revocation/idempotency/readback and original75/276 preservation."
+    "nextAction": "Read PR169 exact-head checks and mergedAt/mergeCommit for integration. Extend compatible Tool adapters/Agent formats and assess task quality; preserve owner consent, raw failures and original75/276. Whole OS, arbitrary framework and paid Cloud remain separate gates.",
+    "productionSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+    "testSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+    "hostDistinctUnitCases": 222,
+    "hostVerify": "PASS_all_stages_exit0_Node22_OpenSSL3_file_concurrency2",
+    "mainSyncedThrough": "421b1029",
+    "pullRequest": "https://github.com/k999ln/rock/pull/169"
   }
 }
