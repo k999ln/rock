@@ -109,6 +109,12 @@ const quickRoleIds = new Set([
   'mr-free-article',
   'mr-citations',
 ]);
+const roleExamples: Record<string, string> = {
+  'rockstar-csv-cleanup': 'CSVの列名と重複行を整えたい',
+  coconala: 'ココナラの案件に応募する前に確認したい',
+  'mr-free-article': '記事の無料版を作りたい',
+  'mr-citations': '文章の出典リンクを整理したい',
+};
 const providers: Record<
   string,
   { name: string; handle: string; initial: string }
@@ -268,6 +274,7 @@ export default function SkyWorkspace({
   const pendingPhoenixEvents = useRef<SkyPhoenixEvent[]>([]);
   const phoenixSyncTimer = useRef<number | null>(null);
   const impressedThisSession = useRef(new Set<string>());
+  const requestInput = useRef<HTMLTextAreaElement>(null);
 
   const flushPhoenixEvents = useCallback(() => {
     if (phoenixSyncTimer.current !== null) {
@@ -659,7 +666,7 @@ export default function SkyWorkspace({
     setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
-      `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
+      '入力した依頼を、この担当の専用画面へ引き継げます。',
     );
   }
 
@@ -672,7 +679,6 @@ export default function SkyWorkspace({
       return;
     }
     chooseRole(tool, request);
-    primaryAction(tool, request);
   }
 
   function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
@@ -680,7 +686,6 @@ export default function SkyWorkspace({
     const request = requestText.trim();
     if (!request) return;
     const role = routeSkyRequest(request);
-    setRequestText('');
     setLastRequest(request);
     if (role) {
       const tool = catalog.find((item) => item.id === role.toolId);
@@ -691,7 +696,7 @@ export default function SkyWorkspace({
     }
     setRoutedTool(null);
     setRouteMessage(
-      '近い役割を選んでください。選ぶと、その担当につながります。',
+      '合う担当を特定できませんでした。言い方を変えるか、下のツール一覧から選んでください。入力した内容は残しています。',
     );
   }
 
@@ -717,48 +722,45 @@ export default function SkyWorkspace({
         </section>}
         <header className={styles.heading}>
           <div>
-            <p className={styles.eyebrow}>YOUR TOOLS</p>
-            <h1 id="sky-feed-title">ツールを選ぶ</h1>
-            <p className={styles.intro}>アイコンで機能を確認。そのまま使い始められます。</p>
+            <p className={styles.eyebrow}>SKY / WORKSPACE</p>
+            <h1>何を進めたいですか？</h1>
+            <p className={styles.intro}>やりたいことを書くと、Skyが使える担当を提案します。</p>
           </div>
-          <nav className={styles.outputNav} aria-label="Skyの主要画面">
-            <Link className={styles.marketLink} href="/sky/agents/citations">
-              出典整理Agentを使う <ArrowUpRight size={15} />
-            </Link>
-            <Link className={styles.marketLink} href="/sky/marketplace">
-              <Store size={17} /> マーケット <ArrowUpRight size={15} />
-            </Link>
-            <Link className={styles.marketLink} href="/sky/outputs">
-              Agentの成果 <ArrowUpRight size={15} />
-            </Link>
-          </nav>
         </header>
-        <SkyCodexBridgePanel />
         <section className={styles.assistant} aria-labelledby="sky-assistant-title">
-          <h2 id="sky-assistant-title">やりたいことから探す</h2>
+          <h2 id="sky-assistant-title">依頼を書く</h2>
           <form className={styles.composer} onSubmit={submitRequest}>
-            <input value={requestText} onChange={(event) => setRequestText(event.target.value)} placeholder="例：CSVを整えたい" aria-label="Skyへの依頼" maxLength={2000} />
-            <button disabled={!requestText.trim()} aria-label="Skyへ依頼を送る"><ArrowRight size={19} /></button>
+            <textarea ref={requestInput} value={requestText} onChange={(event) => { setRequestText(event.target.value); setRoutedTool(null); setRouteMessage(''); }} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} placeholder="例：出典リンクを整理したい。どのツールで始めればいい？" aria-label="Skyへの依頼" maxLength={2000} rows={2} />
+            <button disabled={!requestText.trim()} aria-label="Skyで担当を探す">担当を探す <ArrowRight size={17} /></button>
           </form>
+          <p className={styles.composerHint}>Enterで探す · Shift+Enterで改行。ここでは実行や課金は始まりません。</p>
+          <p className={styles.exampleLabel}>入力例 — タップすると入力欄に入ります</p>
           <div className={styles.roles} aria-label="Skyの役割">
             {skyRoles.filter((role) => allRolesOpen || quickRoleIds.has(role.toolId)).map((role) => {
               const tool = catalog.find((item) => item.id === role.toolId)!;
               if (host && catalogHostMismatch(tool, host)) return null;
-              return <button key={role.toolId} onClick={() => openRole(tool, lastRequest || role.label)}>{role.label}</button>;
+              return <button key={role.toolId} type="button" onClick={() => { setRequestText(roleExamples[role.toolId] ?? `${role.label}に相談したい`); setRoutedTool(null); setRouteMessage(''); requestInput.current?.focus(); }}>{roleExamples[role.toolId] ?? role.label}</button>;
             })}
             <button type="button" aria-expanded={allRolesOpen} onClick={() => setAllRolesOpen((open) => !open)}>{allRolesOpen ? '閉じる' : 'ほかの用途'}</button>
           </div>
           {routeMessage && (
             <output className={styles.routeReply}>
-              {lastRequest && <p>{lastRequest}</p>}
+              <strong>{routedTool ? `提案: ${roleFor(routedTool)}` : '担当が見つかりませんでした'}</strong>
               <p>{routeMessage}</p>
-              {routedTool && <button onClick={() => primaryAction(routedTool, lastRequest)}>
-                {routedTool.runner === 'delivery-local' ? 'PC接続へ' : '専用画面へ'} <ArrowRight size={15} />
+              {routedTool && <button type="button" onClick={() => primaryAction(routedTool, lastRequest)}>
+                {routedTool.runner === 'delivery-local' ? 'PC接続へ進む' : `${roleFor(routedTool)}で始める`} <ArrowRight size={15} />
               </button>}
             </output>
           )}
         </section>
+        <nav className={styles.outputNav} aria-label="Skyの主要画面">
+          <Link className={styles.marketLink} href="/sky/agents/citations">出典整理Agent <ArrowUpRight size={15} /></Link>
+          <Link className={styles.marketLink} href="/sky/marketplace"><Store size={17} /> マーケット <ArrowUpRight size={15} /></Link>
+          <Link className={styles.marketLink} href="/sky/outputs">Agentの成果 <ArrowUpRight size={15} /></Link>
+        </nav>
+        <SkyCodexBridgePanel />
         <section aria-labelledby="sky-feed-title">
+          <h2 id="sky-feed-title" className={styles.feedHeading}>ツールを選ぶ</h2>
           <div className={styles.toolbar}>
             {query.trim() ? <p className={styles.searchScope}>全ツールから {visibleTools.length + visibleLocalServers.length}件</p> : <Tabs value={filter} onValueChange={(value) => setFilter(value as FeedFilter)}>
               <TabsList className={styles.tabs} aria-label="ツールの表示">

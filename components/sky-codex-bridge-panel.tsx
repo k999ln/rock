@@ -17,16 +17,26 @@ export default function SkyCodexBridgePanel() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/sky/codex-bridge', { cache: 'no-store', signal: controller.signal })
-      .then(async (response) => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let attempts = 0;
+    const check = async () => {
+      try {
+        const response = await fetch('/api/sky/codex-bridge', { cache: 'no-store', signal: controller.signal });
         if (!response.ok) throw new Error('status unavailable');
         const data: unknown = await response.json();
         if (!data || typeof data !== 'object' || !('status' in data) || data.status !== 'published' ||
             !('tools' in data) || !Array.isArray(data.tools)) throw new Error('invalid status');
         setStatus(data as BridgeStatus);
-      })
-      .catch((error: unknown) => { if (!controller.signal.aborted && error) setFailed(true); });
-    return () => controller.abort();
+        setFailed(false);
+      } catch {
+        if (controller.signal.aborted) return;
+        attempts += 1;
+        if (attempts < 5) timer = setTimeout(() => void check(), attempts * 2_000);
+        else setFailed(true);
+      }
+    };
+    void check();
+    return () => { controller.abort(); if (timer) clearTimeout(timer); };
   }, []);
 
   async function copyPrompt() {
@@ -40,8 +50,8 @@ export default function SkyCodexBridgePanel() {
     }
   }
 
-  return <section className={styles.panel} aria-labelledby="sky-codex-bridge-title">
-    <div className={styles.topline}><span><PlugZap size={14} /> SKY BRIDGE / CODEX</span><span className={styles.status} role="status" aria-live="polite">{failed ? 'Sky側を確認できません' : status ? `Sky側に${status.tools.length}機能を公開中` : 'Sky側を確認中…'}</span></div>
+  return <details className={styles.panel} aria-label="CodexからSkyを使う">
+    <summary className={styles.topline}><span><PlugZap size={14} /> CodexからSkyを使う</span><span className={styles.status} role="status" aria-live="polite">{failed ? 'Sky側を確認できません' : status ? `Sky側に${status.tools.length}機能を公開中` : 'Sky側を確認中…'}</span></summary>
     <div className={styles.body}>
       <div className={styles.copy}>
         <h2 id="sky-codex-bridge-title">Skyの道具を、会話から使う。</h2>
@@ -65,5 +75,5 @@ export default function SkyCodexBridgePanel() {
       </div>
     </div>
     <p className={styles.boundary}>Codex側で使えるかは、Codexの「Sky」プラグインのツール一覧で確認してください。このページにはCodexの接続状態を読む権限はありません。下に出る「MCP 0機能」はこのPCに接続したツールの数で、Sky Bridgeとは別です。</p>
-  </section>;
+  </details>;
 }
