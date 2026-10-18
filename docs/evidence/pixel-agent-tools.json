@@ -1,11 +1,11 @@
 {
   "schema": "rock-pixel-agent-tools-evidence/1",
   "recordedOn": "2026-10-18",
-  "status": "C37_PHYSICAL_ACCEPTED_BACKUP_CORRECTION_REVALIDATING",
-  "productionSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
-  "testSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+  "status": "PHYSICAL_PREVIEW_ACCEPTED",
+  "productionSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+  "testSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
   "privateShellApi": 25,
-  "physicalAccepted": false,
+  "physicalAccepted": true,
   "pullRequest": "https://github.com/k999ln/rock/pull/169",
   "scope": "Developer_Preview_APKs_only",
   "versions": {
@@ -20,7 +20,7 @@
   "installedApks": {
     "broker": {
       "package": "dev.rock.automation",
-      "sha256": "95e202109305aa748a750542b961ee61ef15028c396e6d6147ecefd6e2723b1b",
+      "sha256": "d20099d63ab82f592fc0c7de93ba5593d5f7c5a60dd06390d893b6c02e200697",
       "bytes": 7029505,
       "versionCode": 1,
       "previewSignerMatches": true,
@@ -59,8 +59,8 @@
     "shell": 14,
     "sdkDebug": 24,
     "buildLint": "PASS",
-    "fullVerify": "PASS_ALL_STAGES_EXIT0_after_main421b1029_merge",
-    "verifySource": "631fd9209f863f9e6d1fdf6602fbdebd2c4161db",
+    "fullVerify": "PASS_ALL_STAGES_EXIT0_backup_corrected_source",
+    "verifySource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
     "node": "22.23.3",
     "testFileConcurrency": 2,
     "openssl": "3.6.3_pinned_PATH",
@@ -69,7 +69,7 @@
   "physical": {
     "boundaryAndLegacyBinderSqliteCases": 11,
     "realToolAgentUiCases": 1,
-    "source": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+    "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
     "agentDefinitionSource": "https://github.com/k999ln/rock/blob/d7c6e6dae15e016b762df4c15544715b43a17977/examples/sky/document-agent.json",
     "agentSchema": "rock-sky-agent/2",
     "runner": "local-tools/1",
@@ -81,7 +81,7 @@
       "profileVersion": "2",
       "manifestDigest": "a4f63aa4666c3b2b4af749bf357ec536a21c26b0868aab7b4948329bbd8b89aa"
     },
-    "elapsedAfterQueueMs": 134996,
+    "elapsedAfterQueueMs": 115675,
     "artifactBytes": 699,
     "artifactSha256": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4",
     "workState": "review",
@@ -160,8 +160,8 @@
     "originalWorks": 75,
     "originalArtifacts": 276,
     "allOriginalStatesAndArtifactsPreserved": true,
-    "currentWorks": 80,
-    "currentArtifacts": 296,
+    "currentWorks": 83,
+    "currentArtifacts": 308,
     "allBodyHashesVerified": true,
     "scope": "read_only_device_SQLite_copy_no_device_reboot"
   },
@@ -196,6 +196,12 @@
       "source": "c37deb5c",
       "status": "HOST_VERIFY_ENVIRONMENT_OPENSSL4_REJECTED",
       "correction": "pin installed OpenSSL3.6.3 PATH, retain version3 contract; full verify rerun passed"
+    },
+    {
+      "source": "c37deb5c",
+      "status": "PASS_REAL_5_STAGE_TRIAL_BEFORE_BACKUP_CORRECTION",
+      "elapsedAfterQueueMs": 134996,
+      "artifactSha256": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4"
     }
   ],
   "modelResultsGrantToolAuthority": false,
@@ -215,8 +221,13 @@
   "integrationAuthority": "GitHub PR169 mergedAt/mergeCommit and current main",
   "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-agent-tools-20261018",
   "backupCorrection": {
-    "status": "strict_recipe_restore_validation_added_acceptance_pending",
-    "priorPhysicalSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
-    "ownerDatabaseOverwritten": false
+    "status": "PASS_strict_4_or_5_stage_recipe_restore",
+    "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+    "hostCompletedResultRoundtrip": true,
+    "reorderedToolAtomicRejection": true,
+    "androidIsolatedHeldWorkRoundtrip": true,
+    "restoredPaused": true,
+    "ownerDatabaseOverwritten": false,
+    "olderApkDowngradeAccepted": false
   }
 }

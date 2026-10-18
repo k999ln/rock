@@ -47,6 +47,8 @@
 
 # RockstarOS — 現在の作業と再開情報
 
+backup修正sourcea3a888bbの最終APKもPixelで全5工程attempt1/115.675秒、同意/同ID/失効/再同意/再起動readback/UIが合格。strict backupのhost完了復元とTool逆順atomic拒否、Pixel隔離DBの保留復元/pauseを含むBinder/SQLite11件とUI13実+既存skip1、host222/build/lint/全体verifyが成功。元75仕事276成果の全状態/内容、現83仕事308全body hash/実機4APKを確認。owner DBの上書き復元・旧APK downgrade・全OSの受入ではない。最終同一head CI/main統合はPR169を正本に別確認する。
+
 統合前の追加点検: 新Tool工程はbackup schema2のrestore allowlist/recipe検査へ未登録だったため、厳密な4〜5工程・model pin条件を追加。完了成果のhost復元、Tool逆順のatomic拒否、Pixel隔離SQLiteへ保留仕事を復元してpause/記録を保持する検査を追加する。実owner DBへの上書き復元や旧APK downgradeの受入とはしない。最終APK/実機を再照合する。
 
 API25の実機証拠とLLM/設計索引/担当入口/次プロンプト/README定義例を同期。project:update、design/baseline/LLM/mission checkとdiff検査が成功。Git保存・作業branch反映・main統合はPR169のlive mergedAt/mergeCommitを正本に分け、同じ最終headのCI成功後に通常統合する。

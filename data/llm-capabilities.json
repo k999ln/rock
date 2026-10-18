@@ -336,7 +336,7 @@
       "toolExecution": {
         "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
         "implemented": true,
-        "physicalAccepted": false,
+        "physicalAccepted": true,
         "runner": "local-tools/1",
         "definitionSchema": "rock-sky-agent/2",
         "supportedPureTools": [
@@ -345,11 +345,12 @@
         ],
         "permissionFromModel": false,
         "evidence": "docs/evidence/pixel-agent-tools.json",
-        "source": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+        "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
         "modelRoutingTask": "writing",
         "toolPayloadTask": "article",
         "acceptedDefaultProfile": "dev.rock.qwen3-4b-2507-q4km",
-        "generalQualityAccepted": false
+        "generalQualityAccepted": false,
+        "backupRecipeRestoreAccepted": "host_and_isolated_Android_SQLite_only"
       }
     }
   }

@@ -2,15 +2,13 @@
 
 ## 追加Agentの実Tool実行: 現在の仕事
 
-統合前点検でbackup readerの新工程未登録を発見し、正しい4〜5工程だけの復元・Tool逆順拒否・復元後pauseを追加。host222/build/lint合格。c37の実機成功は保持し、修正APKで隔離SQLite復元/Binder11件と実Agentを再検証してから最終証拠とCIを更新する。owner DBへの上書き復元は実施しない。
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main421b1029同期済み、codex/sky-agent-tools / PR169。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool app Binder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)と現Gitを先に照合する。
 
-本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main3d3e8f22からcodex/sky-agent-tools。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool appのBinder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)を先に照合する。
+backup readerの正しい4〜5工程受入・Tool逆順のatomic拒否・model pin・復元後pauseも修正し、host完了結果の復元/Pixel隔離SQLiteの保留復元が合格。ownerの実DBへ上書き復元せず、admission receipt/model再検証をbackupだけで復活させない。最終production source a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56 のPixelでauto4B2、全5工程attempt1、115.675秒、699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4を実保存。未チェック同意/Tool順/モデル表示/二重tap1仕事/同ID再送/失効・成果保持・再同意、Broker process再起動後同hash/同attempt/実UI、Binder/SQLite/失効/隔離復元11件、通知tap/検索を含むUI13実+既存opt-in1未選択を確認。元75仕事276artifactの全状態/内容を保持し、現83仕事/308全body hash/実機4APKを照合。Native8とTool1は再インストールしない。
 
-API25の実機再受入済み。source c37deb5c / auto4B2、生成→入力検査→citations→free-article→sealの全5工程attempt1、134.996秒、699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4。未チェック同意/Tool順・モデル表示/二重tap1仕事/同ID再送/失効・成果保持・再同意、Broker process再起動後同hash/同attempt/実UI表示が合格。境界と旧Binder/SQLite11件、通知tap/公開検索を含むUI13実+既存opt-in1未選択。元75仕事/276artifactと全状態を保持、現80仕事/296全body hash、実機4APKの既存署名/bytesを確認。Native8とTool1は再インストールしない。
+Generalの最初の生成はTool入力不適合で保留し、試験仕事だけ明示中止、rawは保持。articleデータ形式とwritingモデル能力を分離して4Bを自動選択。受付待ち20秒の試験失敗は同じpending IDで復旧し、受付だけ180秒、runtime/leaseは不変。CIの旧BinderfixtureはEngine明示注入で修正し、署名/assertを緩めない。source8d83の116.148秒、c37の134.996秒の別試行も履歴へ残す。host222単体/build/lintと最終全体verifyがexit0（Node22/OpenSSL3.6.3/ファイル並列2）。既定OpenSSL4による失敗も記録し、v3契約を変更せずPATHを固定した。
 
-Generalの最初の生成はTool入力不適合で保留し、試験仕事だけ中止、rawと出力を保持。Toolデータ形式articleとモデル能力writingを分離して4Bを自動選択した。受付待ち20秒で失敗した試験は同じpending IDを保持し、受付だけ180秒で照合（runtime/leaseは変更なし）。CIの旧Binderfixtureは別Engineを参照していたため明示注入へ修正。host222単体/build/lint、main421b1029同期後の全体verifyがexit0（Node22/OpenSSL3.6.3/ファイル並列2）。OpenSSL4既定PATHによる試験失敗を隠さず、v3契約を緩めず再実行した。
-
-PR169が未統合なら最終exact-head CIを確認して通常mergeし、mergedAt/mergeCommit/main treeを照合する。統合済みなら次のTool adapter/形式・品質評価へ進む。新しいToolは能力/権限/入出力/費用/失効/復旧を定義して受入し、任意コードや公開/購入を宣言だけで許可しない。生成物はGit外、価格/URLは既存Toolの下書き仮設定。全OS/端末自体の再起動/任意framework/有料Cloudは別gate。
+PR169が未統合なら最終exact-head CIを確認して通常mergeし、mergedAt/mergeCommit/main treeを照合する。統合済みなら次のTool adapter/形式・品質評価へ進む。新しいToolは能力/権限/入出力/費用/失効/復旧と受入を要し、任意コード/公開/購入を宣言だけで許可しない。生成物はGit外、価格/URLは既存Toolの下書き仮設定。全OS/端末自体の再起動/任意framework/有料Cloudは別gate。
 
 ## Skyの動的追加: 現在の仕事
 

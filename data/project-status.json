@@ -7814,18 +7814,19 @@
     "taskId": "OS11",
     "primarySquad": "O6",
     "primaryOwner": "ROCK",
-    "status": "revalidating_strict_backup_recipe_correction",
+    "status": "physical_preview_accepted_integration_via_PR169",
     "privateShellApiVersion": 25,
-    "physicalAccepted": false,
+    "physicalAccepted": true,
     "baseMainSha": "3d3e8f22937f8a56a73074085770617c47574287",
     "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
     "evidence": "docs/evidence/pixel-agent-tools.json",
     "nextAction": "Read PR169 exact-head checks and mergedAt/mergeCommit for integration. Extend compatible Tool adapters/Agent formats and assess task quality; preserve owner consent, raw failures and original75/276. Whole OS, arbitrary framework and paid Cloud remain separate gates.",
-    "productionSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
-    "testSource": "c37deb5cf1d6ed99e697b6bc8675e1463d63e6b0",
+    "productionSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+    "testSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
     "hostDistinctUnitCases": 222,
     "hostVerify": "PASS_all_stages_exit0_Node22_OpenSSL3_file_concurrency2",
     "mainSyncedThrough": "421b1029",
-    "pullRequest": "https://github.com/k999ln/rock/pull/169"
+    "pullRequest": "https://github.com/k999ln/rock/pull/169",
+    "backupRecipeAcceptance": "strict_host_completed_restore_atomic_reorder_refusal_and_Android_isolated_held_restore_pause"
   }
 }
