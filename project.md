@@ -700,3 +700,6 @@ API24候補325150d7: Android unit218件（SDK release同内容21件は別実行�
 
 
 2026-10-18 API24実機再開: owner解除後の独立境界3件が成功。同じAgent仕事を通常retryで一度だけ再開し3工程成功/review、同request ID同仕事・失効時新規利用拒否/成果保持・再同意有効化を確認。ただし生成本文は役割説明として不十分で内容未受入。非同梱0.5Bの実コード生成はLOCAL_DRAFT_TASK_CHANGEDで停止し、自動候補化せず、試験仕事だけを明示中止して記録を保存。公開bartowski Coder1.5Bの別量子化Q5_K_Mを同じ汎用追加経路で試す。既存0.5B/旧仕事/成果は削除しない。実装source325の変更はなく、opt-in試験の入力指定と保存成果の再表示検査を追加。
+
+
+API24実機最終: 非同梱bartowski Qwen2.5-Coder1.5B Q5_K_M（固定1af47f78、1,125,050,656bytes）を公開検索→未チェック同意→実取得（cacheなし）→全hash/metadata/Native8 load→実コード保存まで97.250秒。追加モデルのコード再試験26.240秒で正しいsum_even本文を保存、コード非実行。codeのみ本人同意のauto候補60へ設定し、未試験summaryは拒否。標準codeは既存Coder90を選び、新候補の最良判定にはしない。宣言型Agentの日本語依頼は43.690秒でSky/Zema役割を正しく一文保存、同ID再送・無効化・成果保持・再同意が成功（一般品質は別）。Broker process再起動後の同artifact hash/UI表示1件、Agent同意未チェック/実モデル表示/新規仕事0を確認。通知tap/公開検索を含むUIは13実行+既存opt-in1未選択（JUnit14報告）。旧catalog4固定assertは既存4+owner追加全IDのexact集合・重複拒否へ同期、入力欄hintなしを考慮する試験修正のみで製品コードは不変。元65仕事/248artifactと旧状態を保持、現75仕事/276全body hashを確認。端末読戻し3APK hashも一致。main cf01d289の並列Cloud polling修正を取り込み、Android/Native入力差分0。同期後の全体npm run verifyは全stage exit0（Node22/ファイル並列2）。同一head CI/main統合は次に確認する。

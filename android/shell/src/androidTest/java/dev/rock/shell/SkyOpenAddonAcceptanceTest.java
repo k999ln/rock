@@ -127,8 +127,8 @@ public final class SkyOpenAddonAcceptanceTest {
         Button use=waitButton("このAgentに依頼",20_000);ui(use::performClick);
         Button prepare=waitButton("モデルと実行条件を確認",5_000);
         ui(()->{for(View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){
-            EditText input=(EditText)find(root,v->v instanceof EditText&&"このAgentへの依頼".contentEquals(((EditText)v).getHint()));
-            if(input!=null)input.setText("SkyとZemaの役割を短くまとめてください。");}prepare.performClick();});
+            if(find(root,v->v instanceof TextView&&"このAgentへの依頼".contentEquals(((TextView)v).getText()))!=null){
+                EditText input=(EditText)find(root,v->v instanceof EditText);assertNotNull(input);input.setText("SkyとZemaの役割を短くまとめてください。");}}prepare.performClick();});
         Button start=waitButton("開始する",20_000);ui(()->{assertFalse(start.isEnabled());
             boolean model=false,consent=false;for(View root:android.view.inspector.WindowInspector.getGlobalWindowViews()){
                 model|=find(root,v->v instanceof TextView&&((TextView)v).getText().toString().contains("モデル: "))!=null;
@@ -148,6 +148,7 @@ public final class SkyOpenAddonAcceptanceTest {
             receipts.put(new JSONObject().put("workId",id).put("artifactSha256",sha(artifact)).put("actualUiRendered",true));
         }
         assertEquals(before,new JSONObject(b.snapshot()).getInt("totalWorkCount"));
+        try(FileOutputStream out=new FileOutputStream(new File(c().getExternalFilesDir(null),"open-addon-readback-ui.png"))){ins.getUiAutomation().takeScreenshot().compress(android.graphics.Bitmap.CompressFormat.PNG,100,out);}
         save("readback-ui.json",new JSONObject().put("artifacts",receipts).put("agentStartConsentUnchecked",true).put("modelShownBeforeExecution",true).put("newWorkCreated",false).toString());
     }
 
