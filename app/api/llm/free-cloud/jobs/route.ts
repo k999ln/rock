@@ -12,7 +12,7 @@ async function handle(request:Request){
    await cancelBackground(db,owner,value.id);
   }
   return Response.json({enabled:backgroundEnabled(env as unknown as BackgroundRuntime,owner),jobs:await backgroundJobs(db,owner)},{headers:{'Cache-Control':'no-store, private'}});
- }catch(error){return Response.json({error:error instanceof WorkError?error.message:'本人認証を確認してください。'},{status:error instanceof WorkError||error instanceof RemoteAiGuardError?error.status:400});}
+ }catch(error){return Response.json({error:error instanceof RemoteAiGuardError&&error.code==='RATE_LIMITED'?'確認が集中しています。約1分後に再確認してください。':error instanceof WorkError?error.message:'本人認証を確認してください。'},{status:error instanceof WorkError||error instanceof RemoteAiGuardError?error.status:400});}
 }
 export const GET=handle;
 export const POST=handle;

@@ -7,14 +7,21 @@ export default function SkyFreeCloudPanel(){
  const [enabled,setEnabled]=useState(false),[jobs,setJobs]=useState<Job[]>([]),[selected,setSelected]=useState('');
  const [error,setError]=useState(''),[selection,setSelection]=useState(''),[now,setNow]=useState(()=>Date.now());
  const lock=useRef(false),id=useRef(''),model=useRef('');
+ const reading=useRef(false),retryReadAt=useRef(0);
  const refresh=useCallback(async()=>{
+  if(reading.current||Date.now()<retryReadAt.current)return;
+  reading.current=true;
+  try {
   const r=await fetch('/api/llm/free-cloud/jobs',{cache:'no-store'});const data=await r.json() as {jobs?:Job[];enabled?:boolean;error?:string};
+  if(r.status===429){retryReadAt.current=Date.now()+60000;throw Error('複数画面からの確認が集中しています。約1分後に自動更新します。依頼の再送は不要です。');}
   if(!r.ok)throw Error(data.error||'保存済みの依頼を読めません。');
+  setError(previous=>previous==='複数画面からの確認が集中しています。約1分後に自動更新します。依頼の再送は不要です。'?'':previous);
   setEnabled(data.enabled===true);setJobs(data.jobs??[]);setSelected(value=>value||(data.jobs?.[0]?.id??''));
+  } finally {reading.current=false;}
  },[]);
  useEffect(()=>{
   const read=()=>{void refresh().catch(e=>setError(e instanceof Error?e.message:'読込失敗'));};read();
-  const poll=setInterval(read,5000),clock=setInterval(()=>setNow(Date.now()),1000);
+  const poll=setInterval(read,30000),clock=setInterval(()=>setNow(Date.now()),1000);
   return()=>{clearInterval(poll);clearInterval(clock);};
  },[refresh]);
  async function submit(){
