@@ -36,11 +36,12 @@
   "scopeCorrection": "User questioned Zoom as default. Planner and manual notes are first common adapters; Zoom is optional and unaccepted as a host.",
   "ci": {
     "mainVerify": "success at base SHA",
-    "sourceBranch": "source-preparation only"
+    "sourceBranch": "GitHub check-runs 0 and combined status pending at exact pushed SHA 4a1adac7f4aabae16e5ac724d6a68f802731b5e4; no CI success claim"
   },
   "integration": {
     "branch": "codex/agent-smith-development",
-    "githubSaved": false,
+    "githubSaved": true,
+    "firstSavedSha": "4a1adac7f4aabae16e5ac724d6a68f802731b5e4",
     "mainMerged": false,
     "deployed": false
   }
