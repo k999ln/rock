@@ -1,5 +1,7 @@
 ## SKY07/SKY21 — 開かれたaddプラグインの共通条件
 
+Agent Smithの本人用共通基盤は[全Tool詳細](../sky-tools-complete-design.md#sky-agent-smith--自分用agentをaddして仕事を扱う)を参照。主担当ROCK、外部host受入はJOINT、OS/host許可・保存・外部作用の選択はOWNER。`sky.private-agent/1`の作成/編集/失効、owner別Add版・digest、Zema成果CAS、本人読戻しをPlannerと手入力メモで検証中。Zoomは任意のadapter候補で、macOS Swiftは送信を持たない下書きprobe、実Zoom/同じjob/署名済みBroker leaseは未受入。検証入口: `node --experimental-strip-types --test tests/sky-private-agent*.test.mjs`、`npm run schema:check`、`npm run typecheck`、`npm run design:check`、`npm run verify`。
+
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](../sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。 主担当ROCK、host接続はJOINT、導入/送信/外部作用/予算の選択はOWNER。既存package/SDK/registry/Connection Passportを再利用し、独立2作者の追加/交換・別host・更新/失効/取消を未実行の合格条件として持つ。検証入口は `npm run baseline:check`、`npm run design:check`、`npm run llm:architecture:check`、`npm run verify`。
 
 ## Pixelの動的追加（OS11主担当、SKY07/SKY21連携）

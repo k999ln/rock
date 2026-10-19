@@ -109,6 +109,8 @@ Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Materi
 
 The fastest public preview is [Sky via RockstarOS Home](https://avoado.si/os/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. The browser stays on `avoado.si`. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
+The private Agent Smith preview runs with `npm run dev`. Open `http://localhost:3000/sky/apps/planner/lab` for a bounded Planner preparation Agent, or `http://localhost:3000/sky/agents/notes/lab` for the manual notes adapter. Both can create an owner-scoped private Agent and Add binding before saving a separate Zema job; the in-tab demo job is displayed separately. Saving requires the `drizzle/0020_sky_private_agents.sql` migration, an authenticated owner, the private `SKY_APP_WORK_PRIVATE_OWNERS` allowlist, and explicit settings/material consent; without that configuration, the API returns 404. Zoom is an optional host adapter candidate. Its macOS AX draft probe has not passed a real Zoom acceptance and never sends a message.
+
 In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
 
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
@@ -342,7 +344,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-15 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-19 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level

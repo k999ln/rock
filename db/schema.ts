@@ -9,6 +9,23 @@ import {
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
+export const skyPrivateAgents = sqliteTable('sky_private_agents', {
+  ownerUserId: text('owner_user_id').notNull(), id: text('id').notNull(),
+  revision: integer('revision').notNull(), digest: text('digest').notNull(),
+  status: text('status').notNull(), specJson: text('spec_json').notNull(),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, (table) => [primaryKey({ columns: [table.ownerUserId, table.id] }),
+  index('idx_sky_private_agents_owner_updated').on(table.ownerUserId, table.updatedAt)]);
+
+export const skyPrivateAgentAdds = sqliteTable('sky_private_agent_adds', {
+  ownerUserId: text('owner_user_id').notNull(), id: text('id').notNull(),
+  agentId: text('agent_id').notNull(), agentRevision: integer('agent_revision').notNull(),
+  agentDigest: text('agent_digest').notNull(), fitJson: text('fit_json').notNull(),
+  status: text('status').notNull(), createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, (table) => [primaryKey({ columns: [table.ownerUserId, table.id] }),
+  index('idx_sky_private_agent_adds_agent').on(table.ownerUserId, table.agentId, table.updatedAt)]);
+
 export const skyLibraryItems = sqliteTable('sky_library_items', {
   userId: text('user_id').notNull(),
   tool: text('tool').notNull(),

@@ -106,7 +106,7 @@ for (const [table, entries] of declarations) {
   if (entries.length === 1) continue;
   const repeated = entries.slice(1);
   for (const entry of repeated) {
-    if (entry.file !== '0004_union_bridge.sql' || !entry.idempotent)
+    if (!['0004_union_bridge.sql', '0020_sky_private_agents.sql'].includes(entry.file) || !entry.idempotent)
       throw new Error(
         `web schema: ${table}が意図しないmigrationで再定義されています: ${entry.file}`,
       );

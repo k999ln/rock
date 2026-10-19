@@ -1,4 +1,5 @@
 import { normalizeWorkJob, type WorkJob } from './workflow.ts';
+import type { SkyPrivateAgentBinding } from './sky-private-agent.ts';
 
 export function workStore(db: Pick<D1Database, 'prepare'>) {
   async function get(user: string, id: string): Promise<WorkJob | null> {
@@ -30,6 +31,13 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         )
         .bind(user)
         .all<{ payload: string }>();
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async listSkyApps(user: string) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'sky-app'
+        ORDER BY updated_at DESC, id DESC LIMIT 100`)
+        .bind(user).all<{ payload: string }>();
       return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
     },
     async listAmc(user: string) {
@@ -130,6 +138,23 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
           user,
           previousRevision,
         )
+        .run();
+      return result.meta.changes === 1;
+    },
+    /** Commit a private Agent result only while its exact Add and Agent version remain active. */
+    async updateSkyAppBound(user: string, job: WorkJob, previousRevision: number, binding: SkyPrivateAgentBinding) {
+      const result = await db.prepare(`UPDATE work_jobs SET payload = ?, revision = ?, updated_at = ?
+        WHERE id = ? AND user_id = ? AND revision = ?
+          AND EXISTS (
+            SELECT 1 FROM sky_private_agent_adds ad
+            JOIN sky_private_agents ag ON ag.owner_user_id = ad.owner_user_id AND ag.id = ad.agent_id
+            WHERE ad.owner_user_id = ? AND ad.id = ? AND ad.agent_id = ?
+              AND ad.agent_revision = ? AND ad.agent_digest = ? AND ad.fit_json = ? AND ad.status = 'added'
+              AND ag.revision = ? AND ag.digest = ? AND ag.status = 'active'
+          )`)
+        .bind(JSON.stringify(job), job.revision, job.updatedAt, job.id, user, previousRevision,
+          user, binding.id, binding.agentId, binding.agentRevision, binding.agentDigest,
+          JSON.stringify(binding.fit), binding.agentRevision, binding.agentDigest)
         .run();
       return result.meta.changes === 1;
     },

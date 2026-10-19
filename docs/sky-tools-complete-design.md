@@ -32,6 +32,18 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
+## Sky Agent Smith — 自分用AgentをAddして仕事を扱う
+
+**目的と体験。** SKY07/SKY21、ROCK主担当。本人が必要な機能を制限付きAgentとして作り、対応する画面へAddし、一件のZema仕事で実行、成果確認、停止、保存済み成果の読戻しと持出しを行う。最初の既知adapterはPlannerの作業準備と手入力メモの整理で、共通のAgent/Add/仕事境界を使う。メモadapterは固定の見出し抽出と先頭行の抜粋を使う。目的文やhostの本文からコード・Tool権限を生成しない。Zoomは任意のhost候補であり、製品の必須入口ではない。
+
+**責任と入出力。** 本人はAgent設定・入力・保存同意・成果確認を選ぶ。Skyは`sky.private-agent/1`のappId（`notes`、`planner`、任意の`zoom`）、必要なrecipe、使用できるhost surface/input/return slot、実行方式、宣言費用0、外部送信falseを正規化し、owner・revision・digest付きで保存する。`notes`と`planner`は手入力ブラウザーだけ、`zoom`は別のhost受入が必要なIDで、相互のAddを使い回せない。Addは同じowner、Agent版・digest、exact fitを保持する発見と導入候補であり、OSやhostの権限ではない。Zemaは`work_jobs`の同一owner/job/revisionに`sky.app-result/1`を保存する。Brokerまたはhost adapterは実行直前の権限、対象、本人承認を別に検証する。任意shell/root、外部送信、録音、参加者データ取得、未見積のCloud実行は対象外。
+
+**状態・保存・失敗・復旧。** Agentはactive/revoked、Addはadded/removed、仕事はactive/review/completed/cancelledを分ける。編集でAgent revision/digestが変われば旧Addは実行候補から外れる。D1の`sky_private_agents`、`sky_private_agent_adds`と既存`work_jobs`に本人別保存し、成果確定は仕事revisionと有効なAdd/Agentを同一SQL更新で照合する。別owner、旧版、別host、重複ID、停止競合は拒否する。通信結果不明は自動再実行せず、本人の仕事一覧から同IDを読戻す。仕事停止時は未確認成果を破棄し、確認済み仕事の成果はAdd解除後も保持してHTMLへ持ち出せる。実料金receiptは発生しない。費用0はこの制限付きローカル処理の宣言であり、OS許可や外部Provider費用の証明ではない。
+
+**macOS Zoom境界。** `sky-add-macos-ax.swift`は前景ZoomのPID/窓/AX path/role/title/identifierと60秒の観測時刻を照合し、本人が自己チャットを確認した後、空の非secure文字欄に一行の未送信下書きだけを設定する。書込み直後と独立コマンドで同欄のhashを読戻し、観測できたメッセージ列のhashと件数が変われば結果不明として止める。送信操作は存在しない。このCLI時刻は署名済みBroker leaseではなく、Zoom宛先の本人性も機械的には証明しない。実Zoomの起動、OS Accessibility許可、自己チャット選択、同じjobへのhost受入は未完了である。
+
+**承認と合格条件。** 本人用Web APIは環境のowner allowlistがないと404、サービス利用権gateと本人認証、保存同意を必須にする。UIはブラウザー内デモとサーバー保存済み仕事を別表示する。ROCKの合格はPlannerとメモでの別owner拒否、設定改版・Add解除で実行停止、旧成果維持、CAS競合、仕事の再訪読戻し、HTML持出しと実ブラウザー操作。JOINTの実host合格には、同じsource/job、host版、本人とOS/host許可、操作前後の対象と独立読戻しが必要。Zoom不在や許可なしでfixtureを実Zoom合格へ転用しない。公開Agentは既存`sky_tool_packages`の審査済みdigestを別に検査し、未審査packageをこのprivate Agent APIへ投入しない。対象hostの正式API、料金条件、二利用者、失効、Pixel/Windows/Android/他アプリは各adapterと本人選択が定まってから受け入れる。
+
 ## Sky Compute Grid — 固定lotの分散計算供給
 
 2026-10-10、利用者の明示指示により、未使用Androidの余剰計算を需要へmatchingする`GRID01`を追加した。これはcatalogの任意Toolではなく、Skyの供給・実行・検証・精算を結ぶplatform serviceである。初期SKUはpublic/synthetic text embedding、Android arm64、充電・idle・unmetered・thermal none/light、固定runtime/model/tokenizer、verified lot単価に限定する。任意code、個人情報、秘密、exact location／owner identity公開、無断cloud fallback、未検証Wallet収益を禁止する。

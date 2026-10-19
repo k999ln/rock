@@ -22,6 +22,8 @@ Skyは、ToBが少ない入力で自動化ツールを掲載し、ToCがタイ�
 
 Pixelの動的追加実装は[LLM・Agent共通契約](llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。固定作者/モデルIDの追加をAPK更新の条件にせず、owner別のadmissionと失効で扱う。対応形式以外の任意コードの実行受入ではない。
 
+**Agent Smithの共通経路。** 自分用Agentは[Tool詳細設計](sky-tools-complete-design.md#sky-agent-smith--自分用agentをaddして仕事を扱う)のappId、既知adapter、owner別のAgent版/digestとAdd、既存Zema仕事と成果を使う。最初はPlannerと手入力メモで検証する。Addは発見・選択であり、host起動、OS権限、本人の実行承認を代替しない。現行Webはブラウザー内デモと本人限定保存の契約、macOS AXは送信しないZoom下書き研究probeまで。外部hostの実操作はadapterごとに受け入れる。
+
 ## 家具・建築まで開くSkyの融合
 
 2026-10-15の本人指示で、**SkyはAgent・LLMのマーケットプレイス兼ハブであり、RockstarOSの外のソフト、機器、家具、インテリア、建築とも組み合わせ、暮らしの質を上げる基盤**とする。Pixelは最初の第一者si端末で、Sky全体の利用条件ではない。第三者app/Web/機器は自分の認証・sandbox・権限境界を保って接続する。RockstarOSは第一者runtime、Miniは空間での入力/表示/音声/有限処理を担う一つのhost、Pro/cloudは選べる計算先。全連携にMini/独自OSを購入させる契約にしない。

@@ -1,3 +1,5 @@
+import { parseSkyAppRequest, parseSkyAppResult, type SkyAppBinding, type SkyAppResult } from './sky-app-contract.ts';
+import { parseSkyPrivateAgentBinding } from './sky-private-agent.ts';
 import {
   parseCompositionPlan, reviseComposition, capabilityFor, runnableCompositionNodes,
   COMPOSITION_TEXT_LIMIT, type CompositionState, type CompositionArtifact,
@@ -133,6 +135,7 @@ export type WorkCommand =
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
+  skyApp?: SkyAppBinding;
   freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   composition?: CompositionState;
   id: string;
@@ -195,6 +198,13 @@ function defaultWorkPlan(templateId: string, objective: string): WorkPlan {
   };
 }
 export function normalizeWorkJob(job: WorkJob): WorkJob {
+  if (job.templateId === 'sky-app') {
+    if (!job.skyApp) throw new WorkError('Sky連携元がありません。');
+    const request = parseSkyAppRequest(job.skyApp.request);
+    if (job.skyApp.result) parseSkyAppResult(job.skyApp.result, job.id, request);
+    if (job.skyApp.privateAgent) parseSkyPrivateAgentBinding(job.skyApp.privateAgent);
+    return job;
+  }
   if (job.templateId === 'composition') {
     validateCompositionJob(job);
     return job;
@@ -343,6 +353,55 @@ export function createWorkJob(
     updatedAt: now,
     ...(coordination ? { coordination } : {}),
   };
+}
+/** Tab-local lab jobs deliberately have no public API/store creation path.
+ * Passing these steps certifies local text processing only, never a Zoom action. */
+export function createPrivateZoomWorkJob(
+  value: { id: string; title: string; objective: string },
+  now = new Date().toISOString(),
+): WorkJob {
+  return {
+    id: workId(value.id), title: boundedText(value.title, 120), templateId: 'sky-zoom-private-lab',
+    plan: { schemaVersion: 1, objective: boundedText(value.objective, 1000), approvalGates: [] },
+    revision: 0, status: 'active', events: [], createdAt: now, updatedAt: now,
+    steps: [
+      { id: 'extract', title: '手入力メモを整理', tool: 'sky-private-zoom-extract', runner: 'browser-private', passed: false },
+      { id: 'validate', title: '成果の形式を確認', tool: 'sky-private-zoom-validate', runner: 'browser-private', passed: false },
+    ],
+  };
+}
+
+/** Hidden from public createWorkJob templates; only the private Sky adapter endpoint creates these. */
+export function createSkyAppWorkJob(id: string, value: unknown, now = new Date().toISOString()): WorkJob {
+  const request = parseSkyAppRequest(value);
+  return { ...createPrivateZoomWorkJob({ id, title: request.title, objective: request.objective }, now),
+    templateId: 'sky-app', skyApp: { request, result: null },
+    steps: [
+      { id: 'extract', title: 'Skyの制限付き処理を実行', tool: 'sky-app-extract', runner: 'sky-app', passed: false },
+      { id: 'validate', title: '連携元と成果形式を確認', tool: 'sky-app-validate', runner: 'sky-app', passed: false },
+    ] };
+}
+
+/** Owner-local Linux adapter only. Not a public createWorkJob template. */
+export function createPrivateLinuxWorkJob(id: string, title: string, objective: string): WorkJob {
+  return { ...createPrivateZoomWorkJob({ id, title, objective }), templateId: 'sky-linux-private',
+    steps: [{ id: 'generate', title: 'Linuxで文章を作成', tool: 'sky-linux-text', runner: 'linux-private', passed: false }] };
+}
+
+export function recordSkyAppResult(job: WorkJob, result: SkyAppResult, revision: number, commandId: string): WorkJob {
+  if (job.templateId !== 'sky-app' || !job.skyApp) throw new WorkError('Sky連携の仕事ではありません。');
+  const parsed = parseSkyAppResult(result, job.id, job.skyApp.request);
+  if (job.events.some((event) => event.command.id === commandId)) {
+    if (JSON.stringify(parsed) !== JSON.stringify(job.skyApp.result)) throw new WorkError('同じ実行IDの成果が異なります。', 409);
+    return job;
+  }
+  if (job.revision !== revision || job.status !== 'active' || job.skyApp.result || job.steps.some((s) => s.passed))
+    throw new WorkError('仕事の版または実行状態が変わりました。', 409);
+  let next = job;
+  for (const [index, step] of job.steps.entries()) next = applyWorkCommand(next,
+    { id: index === 0 ? commandId : crypto.randomUUID(), action: 'record', stepId: step.id, tool: step.tool,
+      transport: 'browser', outcome: 'passed', sample: false, durationMs: 0 }, next.revision);
+  return { ...next, skyApp: { ...job.skyApp, result: parsed } };
 }
 function parseWorkPlan(value: unknown, templateId: string, fallbackObjective: string): WorkPlan {
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -552,8 +611,12 @@ export function applyWorkCommand(
     revision: job.revision + 1,
     updatedAt: now,
   };
-  if (command.action === 'cancel') next.status = 'cancelled';
+  if (command.action === 'cancel') {
+    next.status = 'cancelled';
+    if (job.skyApp) next.skyApp = { ...job.skyApp, result: null };
+  }
   else if (command.action === 'complete') {
+    if (job.skyApp && !job.skyApp.result) throw new WorkError('Skyの成果を確認してください。');
     if (job.composition && (job.composition.materialCleared || job.composition.plan.nodes.some((node) => job.composition!.artifacts[node.id]?.status !== 'passed')))
       throw new WorkError('最新の成果と完成条件をすべて検査してください。', 409);
     if (job.status !== 'review' || !job.steps.every((step) => step.passed))

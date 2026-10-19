@@ -1,0 +1,47 @@
+{
+  "schema": "agent-smith-base-reconciliation/1",
+  "baseMainSha": "70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a",
+  "sourceBranchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+  "sourceCheckout": "dirty; copied only listed paths; original preserved",
+  "copiedFileSha256": {
+    "lib/sky-add-host-contract.ts": "244570a040e928ea1a2291757d3116d1449987dfdb985816d132487381b36988",
+    "lib/sky-add-capability-envelope.ts": "e53544f3cd74bed0f4e13c42b8c462f8e5526f8350bfed426a091137b5c2b0dc",
+    "lib/sky-add-owner-binding.server.ts": "b850de57f3c8a04af7b2ec8f68a4c07a493402a07b33015da751083af5da6a8b",
+    "lib/sky-add-zoom-artifact.ts": "9da380593dc96ebc02041c0783afc472990018f3fba20b9176b04554fa82c949",
+    "lib/sky-add-zoom-demo.ts": "8b3e60a9698b2c6b2e146c9f562f37eabb74eceffe3c4bef62ea43bdd629593e",
+    "lib/sky-add-zoom-launch.server.ts": "319868ecb70741350586b6b007536fe244c60e2423ce021208e0462183b5b7fc",
+    "lib/sky-app-contract.ts": "d0f45843c7ca79a71eed2aa7e92bffd5683f329b65ae5cb32f657cb2b4c612c4",
+    "lib/sky-app-foundation.ts": "912f8a8d4571035599f3c6d2b8e2385f820b5b0c60a76bba2afbafda15e5eac0",
+    "lib/sky-zoom-recipe.ts": "e3b0cc03daead99bf148f0e6623698fbb7eafedaa72e25f778c833e277960655",
+    "lib/zoom-app-context.server.ts": "a9168078a9d7db8be7a6df6c9c3e2f88a8f240231ddce03213cb865682e300f5",
+    "lib/sky-private-zoom-lab.ts": "8690020e6f64e12457dabe3e58fb60708fb8d1f2b3b32c4c6919e9c60857605d",
+    "scripts/sky-zoom-local-runtime.mjs": "91f857625d02ebb826e474328ae7cbd78dff38f56599ed9f24af2169deb52b0d",
+    "scripts/sky-zoom-reader.swift": "7ab793eb1aa0686427737cfe8fb823411682b28412eee92a4b0248f91078cb8d",
+    "scripts/sky-add-macos-ax.swift": "4ec6f0d3d273a8ebac26dd56686ac2585d6dd52ef7df71b71a2e9aaab670a745",
+    "tests/sky-add-capability-envelope.test.mjs": "7da37034949b1fecafc5024f91478bbd7193b6c6ec9d81078d74332140e73ae9",
+    "tests/sky-add-owner-binding.test.mjs": "afdae84a2206b8abb22bd87560d35849f934841edba2f5ae00b1e51bc0c162ea",
+    "tests/sky-add-zoom-artifact.test.mjs": "2eff47a232ad21de11fc26e241af01d605d4960d4f97f55a794503ba2c6ae987",
+    "tests/sky-app-foundation.test.mjs": "8b8a8ddd878758ba529612b96301000ff554c4f8d04e5a23aa13b1c37d29f1e5",
+    "tests/sky-private-zoom-lab.test.mjs": "6d84bfe28165c582110a2f807094d7062791e094ac8b5c8423bd9b5d36e8313e",
+    "tests/sky-zoom-local-runtime.test.mjs": "cce43093e46b9458eac5efccee1b9b88442a975538ed8060c02b94ee4abdb0c2",
+    "docs/prompts/agent-smith-ten-hour-development.md": "164cf994f4d74e407d98617bd760d6cfb4c76e95b744b85bd2a531cbccf514bf"
+  },
+  "subsequentlyCopiedPaths": [
+    "app/sky/apps/planner/lab/page.tsx",
+    "app/api/sky/app-lab/route.ts"
+  ],
+  "workflowPort": "main workflow retained; only Sky app job creation/result/stop guards selectively added",
+  "workStore": "main work store retained; owner-scoped Sky list and Add-bound result CAS added",
+  "migrations": "new source 0019_sky_private_agents.sql and Sites append-only 0020_sky_private_agents.sql; root bridge, schema and journal synced; existing migrations preserved",
+  "scopeCorrection": "User questioned Zoom as default. Planner and manual notes are first common adapters; Zoom is optional and unaccepted as a host.",
+  "ci": {
+    "mainVerify": "success at base SHA",
+    "sourceBranch": "source-preparation only"
+  },
+  "integration": {
+    "branch": "codex/agent-smith-development",
+    "githubSaved": false,
+    "mainMerged": false,
+    "deployed": false
+  }
+}

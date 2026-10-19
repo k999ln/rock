@@ -128,6 +128,7 @@ export async function PATCH(request: Request) {
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
     if (current.templateId === 'sky-citation-agent') throw new WorkError('このAgentの完了記録は専用APIで管理します。', 409);
+    if (current.templateId === 'sky-app') throw new WorkError('Sky連携の仕事は専用APIで管理します。', 409);
     if (current.templateId === 'amc' || current.amcGoal)
       throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);

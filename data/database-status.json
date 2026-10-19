@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-15",
+  "updatedAt": "2026-10-19",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 170,
+    "tableCount": 172,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
-    "tableCount": 98,
+    "tableCount": 100,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -106,6 +106,8 @@
       "sky_monthly_sandbox_quotes",
       "sky_monthly_sandbox_usage",
       "sky_package_runtime_bindings",
+      "sky_private_agent_adds",
+      "sky_private_agents",
       "sky_provider_connections",
       "sky_recurring_charges",
       "sky_recurring_contracts",
@@ -119,10 +121,10 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 7,
-    "latestMigration": "0019_sky_hosted_monthly.sql",
+    "migrationCount": 8,
+    "latestMigration": "0020_sky_private_agents.sql",
     "accidentalDuplicateCount": 0,
-    "publishedConvergenceDeclarations": 0,
+    "publishedConvergenceDeclarations": 2,
     "marketplaceRelationGuardCount": 8,
     "skyReviewGuardCount": 2,
     "migrationJournalMatches": true,
@@ -194,6 +196,8 @@
           "sky_monthly_sandbox_quotes",
           "sky_monthly_sandbox_usage",
           "sky_package_runtime_bindings",
+          "sky_private_agent_adds",
+          "sky_private_agents",
           "sky_provider_connections",
           "sky_recurring_charges",
           "sky_recurring_contracts",
@@ -204,7 +208,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 47
+        "tableCount": 49
       },
       {
         "id": "marketplace",
@@ -359,6 +363,8 @@
         "sky_monthly_sandbox_quotes",
         "sky_monthly_sandbox_usage",
         "sky_package_runtime_bindings",
+        "sky_private_agent_adds",
+        "sky_private_agents",
         "sky_provider_connections",
         "sky_recurring_charges",
         "sky_recurring_contracts",
@@ -372,8 +378,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0019_sky_hosted_monthly.sql",
-      "tableCount": 98,
+      "expectedAppliedThrough": "0020_sky_private_agents.sql",
+      "tableCount": 100,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

@@ -1,3 +1,7 @@
+# エージェントスミス開発（正味600分目標）
+
+2026-10-19T07:05:48ZにSKY07/SKY21、ROCK主担当で着手。作業branchはcodex/agent-smith-development、基底はGitHub main 70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a。元のcodex/esim-cloud-access dirty checkoutは保全。08:32:50Z時点で正味73/600分（tool待機等を除外）。Agent Smithの中心を共通Agent/Add/Zema契約へ修正し、notesとplannerで本人別Agent/Add、保存・成果CASを接続。Zoom hostは任意・未受入。source0019/root0020のDB migrationとschema/journal/bridgeを同期。ローカルD1と実ブラウザーでメモ・Plannerの作成/保存/実行/確認/再読込を確認し、さらにタブ内デモを経ない直接Agent保存→Add→仕事作成→メモ実行/成果同ID読戻し、Planner停止/同ID読戻しを確認。詳細job IDと画面証拠はdocs/evidence/agent-smith-local-browser.json。Add解除後の旧成果読戻しと再利用防止、同一ID・操作IDの再試行と停止競合の対象試験も合格。直接導線変更前の全体npm run verifyはOpenSSL 3をPATH指定しexit0。直接導線変更後もOpenSSL 3をPATH指定した全体npm run verifyがexit0。外部host操作、GitHub保存、main統合、公開は未受入。
+
 # Cloud依頼フォームの改善
 
 2026-10-18 SKY07/ROCK: 本人指摘に対応しCloud依頼欄を主画面へ移動、空入力・ログイン導線・送信不可理由・保存確認・日時履歴・回答表示を整理。Sandbox管理操作は折りたたみへ。既存API/台帳/CAS/予算を維持。公開v73/source226a995bへ配備。空入力/同意/未ログインChrome/390px幅のUI確認、実accountの依頼6b314560は自動選択→gpt-oss-20b→回答保存、送信1回・334/1331 tokens・$0。全文の内容正確性は未評価。全体verify exit0。証拠 docs/evidence/sky-cloud-request-ui.json。GitHub main統合は別。本番課金なし。
@@ -235,7 +239,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-15 / 通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-19 / 通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

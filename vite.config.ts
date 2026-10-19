@@ -22,6 +22,8 @@ const localBindingConfig = {
     // This identity is accepted only for loopback request URLs. Public Sites
     // continue to require their authenticated gateway headers.
     ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: 'local-preview:rockstar-owner',
+    // Private Agent saving is opt-in even on localhost; no owner is enabled by default.
+    SKY_APP_WORK_PRIVATE_OWNERS: process.env.SKY_APP_WORK_PRIVATE_OWNERS ?? '',
   },
   d1_databases: d1
     ? [

@@ -1,0 +1,45 @@
+{
+  "schema": "agent-smith-local-browser/1",
+  "observedAtUtc": "2026-10-19T08:29:14Z",
+  "branch": "codex/agent-smith-development",
+  "scope": "isolated local D1 plus interactive browser on localhost:3000; synthetic owner and manually entered fixture text",
+  "testOwners": ["local-preview:rockstar-owner", "local_seedy"],
+  "cases": [
+    {
+      "appId": "planner",
+      "jobId": "057afa31-e541-4e6f-a959-42800a245f67",
+      "revision": 3,
+      "observed": ["Agent created and added", "separate server job created", "run result saved", "owner confirmed", "tab reload read the same job ID, revision and result"],
+      "screenCaptureOutsideGit": "/private/tmp/agent-smith-planner-readback.png"
+    },
+    {
+      "appId": "notes",
+      "jobId": "74c4a857-0603-49a1-bac0-541b2f125538",
+      "revision": 3,
+      "observed": ["Agent created and added", "separate server job created", "run result saved", "owner confirmed", "tab reload read the same job ID, revision and result", "Add removed while old result remained readable and reuse button became unavailable"],
+      "screenCaptureOutsideGit": "/private/tmp/agent-smith-notes-readback.png"
+    },
+    {
+      "appId": "notes",
+      "jobId": "1c72ca5c-bbb5-4f5b-ad4b-da42d3e1ac48",
+      "revision": 3,
+      "observed": ["Agent saved and added before any in-tab demo execution", "server job created directly", "result saved and confirmed", "page reload recovered the same ID, revision and result"],
+      "screenCaptureOutsideGit": "/private/tmp/agent-smith-direct-notes-readback.png"
+    },
+    {
+      "appId": "planner",
+      "jobId": "f210ebce-f67d-492d-9b15-1b5997678726",
+      "revision": 1,
+      "observed": ["Agent saved and added before any in-tab demo execution", "server job created directly", "job stopped before run", "page reload recovered the same cancelled job ID and revision with no result", "run and stop controls disabled"],
+      "screenCaptureOutsideGit": "/private/tmp/agent-smith-direct-planner-stop.png"
+    }
+  ],
+  "verification": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "exitCode": 0,
+    "localLogOutsideGit": "/private/tmp/agent-smith-verify-final.log",
+    "notes": "The root test suite, typecheck, lint, schema, design, build, bundle, API and project checks completed after the direct-path UI change. A test log line 'text llm failed UNKNOWN_LLM_PROVIDER' is part of the expected negative path; the command exit was zero."
+  },
+  "notAccepted": ["real external app host", "Zoom accessibility runner as a Broker-bound action", "physical device", "remote production D1 migration", "public deployment", "GitHub branch CI and main integration"],
+  "next": ["simulate unknown HTTP response in the UI", "test stop versus late result in a live browser or route test", "save branch to GitHub and confirm same-SHA CI before any main integration"]
+}

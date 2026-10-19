@@ -445,7 +445,7 @@
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/evidence/service-design-rebuild.json",
-  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "nextPrompt": "docs/prompts/agent-smith-ten-hour-development.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/service-design/06-consistency-contracts.md",
   "amcGoalOrchestration": {
