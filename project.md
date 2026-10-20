@@ -1,5 +1,7 @@
 # エージェントスミス開発（正味600分目標）
 
+2026-10-20: [次回の開発プロンプト](docs/prompts/agent-smith-ten-hour-development.md)を現状に合わせて改訂。10:11 UTCにGitHub main `70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a`（同一SHA checks 23件成功）とAgent Smith branch `f4723c5f57be00c29cb58d1bbce94cce6b770ae9`（同一SHA checks 0件、PRなし）を確認した。実装実績は正味77分のまま。次はこのbranchから、能力選択→Agent作成/Addの導線と、結果不明・実行中停止・別owner/失効の復旧を先に受け入れる。Zoomと他hostは任意の別gate。文書改訂は600分の実行、main統合、公開を意味しない。改訂後に`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`を実行し、10:18 UTCにexit 0。最初のsandbox試行はloopback listenのEPERMで中断し、ローカル接続可能な環境で再実行した。
+
 2026-10-19T07:05:48ZにSKY07/SKY21、ROCK主担当で着手。作業branchはcodex/agent-smith-development、基底はGitHub main 70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a。元のcodex/esim-cloud-access dirty checkoutは保全。08:38:19Z時点で正味77/600分（tool待機等を除外）。Agent Smithの中心を共通Agent/Add/Zema契約へ修正し、notesとplannerで本人別Agent/Add、保存・成果CASを接続。Zoom hostは任意・未受入。source0019/root0020のDB migrationとschema/journal/bridgeを同期。ローカルD1と実ブラウザーでメモ・Plannerの作成/保存/実行/確認/再読込を確認し、さらにタブ内デモを経ない直接Agent保存→Add→仕事作成→メモ実行/成果同ID読戻し、Planner停止/同ID読戻しを確認。詳細job IDと画面証拠はdocs/evidence/agent-smith-local-browser.json。Add解除後の旧成果読戻しと再利用防止、同一ID・操作IDの再試行と停止競合の対象試験も合格。直接導線変更前の全体npm run verifyはOpenSSL 3をPATH指定しexit0。直接導線変更後もOpenSSL 3をPATH指定した全体npm run verifyがexit0。GitHub作業branchは4a1adac7f4aabae16e5ac724d6a68f802731b5e4で保存済み。同SHAのcheck-runは0件でstatus pending、PRなし。10時間の実行プロンプトは保存済みだが、この作業で600分を完了したとは扱わない。外部host操作、main統合、公開は未受入。
 
 # Cloud依頼フォームの改善
