@@ -1,9 +1,28 @@
 plugins { id 'java-library' }
 java { sourceCompatibility = JavaVersion.VERSION_11; targetCompatibility = JavaVersion.VERSION_11 }
 dependencies {
+    implementation 'org.bouncycastle:bcprov-jdk15to18:1.86'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.xerial:sqlite-jdbc:3.49.1.0'
     testRuntimeOnly 'org.slf4j:slf4j-nop:2.0.17'
     testImplementation 'org.json:json:20250107'
 }
 test { testLogging { events 'passed', 'failed', 'skipped' } }
+
+// Pin the APK verifier to the same reviewed bytes staged for Soong.
+tasks.register('verifyModelCrypto') {
+    inputs.file('../../os/physical/model-crypto-artifact-lock.json')
+    doLast {
+        def lock = new groovy.json.JsonSlurper().parse(file('../../os/physical/model-crypto-artifact-lock.json'))
+        def artifacts = configurations.compileClasspath.resolvedConfiguration.resolvedArtifacts.findAll {
+            it.moduleVersion.id.group == 'org.bouncycastle' && it.name == 'bcprov-jdk15to18'
+        }
+        if (artifacts.size() != 1 || artifacts[0].moduleVersion.id.version != lock.version)
+            throw new GradleException('MODEL_CRYPTO_DEPENDENCY_MISMATCH')
+        def jar = artifacts[0].file
+        def hash = java.security.MessageDigest.getInstance('SHA-256').digest(jar.bytes).encodeHex().toString()
+        if (jar.length() != lock.bytes || hash != lock.sha256)
+            throw new GradleException('MODEL_CRYPTO_ARTIFACT_MISMATCH')
+    }
+}
+tasks.withType(JavaCompile).configureEach { dependsOn tasks.named('verifyModelCrypto') }

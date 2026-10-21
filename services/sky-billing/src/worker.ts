@@ -271,11 +271,9 @@ async function verifyRockWallet(request: Request, env: Env) {
     signature: input.signature,
   });
 
+  // A replay may pass the read above before another request consumes consent.
+  // Gate every mutation on unused consent and consume it last in this transaction.
   const result = await env.DB.batch([
-    env.DB.prepare(
-      `UPDATE rock_wallet_challenges SET consumed_at=?
-         WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?`,
-    ).bind(now, challenge.challengeId, token.sub, now),
     env.DB.prepare(
       `INSERT INTO rock_wallet_operators(
           provider_id,user_id,address,chain_id,network,asset_symbol,
@@ -283,6 +281,10 @@ async function verifyRockWallet(request: Request, env: Env) {
         ) SELECT ?,?,?,?,'base','USDC',?,'active',?,?,?,?
           WHERE NOT EXISTS(
             SELECT 1 FROM rock_wallet_operators WHERE provider_id=? AND user_id<>?
+          )
+          AND EXISTS(
+            SELECT 1 FROM rock_wallet_challenges
+             WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
           )
         ON CONFLICT(provider_id) DO UPDATE SET
           address=excluded.address,chain_id=excluded.chain_id,
@@ -302,16 +304,52 @@ async function verifyRockWallet(request: Request, env: Env) {
       now,
       ROCK_WALLET_PROVIDER_ID,
       token.sub,
+      challenge.challengeId,
+      token.sub,
+      now,
     ),
     env.DB.prepare(
       `UPDATE rock_fee_collection_instructions
          SET recipient_address=?,status='ready',updated_at=?
-         WHERE status='awaiting_wallet' AND amount_minor>0`,
-    ).bind(address, now),
+         WHERE status='awaiting_wallet' AND amount_minor>0
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_challenges
+              WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
+           )
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_operators
+              WHERE provider_id=? AND user_id=? AND address=? AND status='active'
+           )`,
+    ).bind(
+      address,
+      now,
+      challenge.challengeId,
+      token.sub,
+      now,
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+      address,
+    ),
+    env.DB.prepare(
+      `UPDATE rock_wallet_challenges SET consumed_at=?
+         WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_operators
+              WHERE provider_id=? AND user_id=? AND address=? AND status='active'
+           )`,
+    ).bind(
+      now,
+      challenge.challengeId,
+      token.sub,
+      now,
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+      address,
+    ),
   ]);
   if (
     (result[0].meta.changes ?? 0) !== 1 ||
-    (result[1].meta.changes ?? 0) !== 1
+    (result[2].meta.changes ?? 0) !== 1
   )
     throw new Error('ROCK_WALLET_OPERATOR_CONFLICT');
   return response(

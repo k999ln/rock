@@ -1,0 +1,41 @@
+{
+  "schema": "rock-research-archive-validation/1",
+  "archiveDate": "2026-10-05",
+  "integrationBaseCommit": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+  "researchDate": "2026-09-30",
+  "checks": {
+    "originalReportAndEvidenceByteEquality": "PASS",
+    "reportMatchesHistoricalSha256": "PASS",
+    "sourceCount": 66,
+    "localMachineReferencesInReport": "NONE",
+    "hardwareTaskRemainsPlanned": "PASS",
+    "baselineCheck": "PASS",
+    "projectUpdate": "BLOCKED_EXISTING_SIM01_EVIDENCE_NOT_MATERIALIZED_IN_SPARSE_CHECKOUT",
+    "fullVerify": "BLOCKED_AT_PROJECT_CHECK_EXISTING_SIM01_EVIDENCE_MISSING",
+    "fullVerifyExitCode": 1,
+    "newDocumentationRelativeLinks": "PASS"
+  },
+  "environmentLimitation": "Fetching existing sparse-checkout evidence failed with No space left on device. Removed only the failed-fetch temporary pack. No global caches or unrelated files deleted. No dependencies installed. Full verify is not claimed. MAT14 evidence link in project.md synchronized manually; task counts and other task states unchanged.",
+  "files": [
+    {
+      "path": "immersive-gta-research-2026-09-30.html",
+      "bytes": 93235,
+      "sha256": "f52461c39d15c33a740eff244f2fb5a001b214db35334b5de0d8324417a05720"
+    },
+    {
+      "path": "research-evidence.json",
+      "bytes": 42666,
+      "sha256": "320bd07663a3c0cf99c6f24566e609b0609f392d1360d65743a9fcddd4d50d05"
+    },
+    {
+      "path": "future-concept.png",
+      "bytes": 2541634,
+      "sha256": "4730506810a365ce9c1e5cca292c7509e1e17022b70596e75766e1a10ba33183"
+    }
+  ],
+  "runtimeChanged": false,
+  "gtaTested": false,
+  "physicalDisplayTested": false,
+  "publicSiteDeployed": false,
+  "remoteIntegration": "Confirmed by the resulting Git commit and remote main readback, not by this pre-commit record."
+}

@@ -52,7 +52,7 @@
     <text x="700" y="393" fill="#f8fafc">③ 新しい枝として保存・再計算</text>
     <path d="M890 414 V434" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
     <rect x="675" y="439" width="430" height="50" rx="14" fill="url(#core)"/>
-    <text x="700" y="471" fill="#07111f" font-weight="700">④ 比較・発明履歴・Patent AI</text>
+    <text x="700" y="471" fill="#07111f" font-weight="700">④ 比較・発明履歴・Patent si</text>
   </g>
 
   <rect x="45" y="555" width="1110" height="115" rx="20" fill="#0f172a" stroke="#ef4444" stroke-width="2"/>

@@ -50,4 +50,14 @@ public final class ZemaToolPlanTest {
             ZemaToolPlan.ARTICLE_TOOL, new JSONObject().put("toolId", ZemaToolPlan.ARTICLE_TOOL)
                 .put("input", notExecutable).toString()));
     }
+    @Test public void planningPromptDoesNotProvideAnArticleForTheModelToCopy() {
+        String prompt = ZemaToolPlan.planningPrompt(ZemaToolPlan.ARTICLE_TOOL, "靴の整理について書く");
+        assertTrue(prompt.contains("靴の整理について書く"));
+        assertTrue(prompt.endsWith("/no_think"));
+        assertTrue(prompt.contains("主題に沿う"));
+        assertFalse(prompt.contains("導入です。ここまで無料です。"));
+        assertFalse(prompt.contains("- 要点1"));
+        assertFalse(prompt.contains("# 原稿"));
+    }
+
 }

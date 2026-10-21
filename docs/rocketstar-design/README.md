@@ -4,14 +4,14 @@
 
 | 読みたい資料 | 保存先 |
 | --- | --- |
-| ロケット完全版 R1.0 | [PDF](outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [編集用本文](outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) · [全付録ZIP](outputs/rocketstar_Complete_Design_R1_0_package.zip) |
+| ロケット完全版 R1.0 | [PDF](outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [編集用本文](outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) · [全付録ZIP](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip) |
 | 機体の要求・接続・質量監査 | [R1.0付録案内](outputs/rocketstar_Complete_Design_R1_0/README.md) · [60要求](outputs/rocketstar_Complete_Design_R1_0/requirements.json) · [18接続](outputs/rocketstar_Complete_Design_R1_0/system_interfaces.json) |
-| RockstarOS完全版 v1.0と全付録 | [PDF](outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.pdf) · [本文・schema・DDL等](outputs/RockstarOS_Complete_Design_v1_0/README.md) · [ZIP](outputs/RockstarOS_Complete_Design_v1_0_package.zip) |
-| コロニー向け運用OSの設計・模型 | [C0.1案内](outputs/RockstarOS_Colony_C0_1/README.md) · [ZIP](outputs/RockstarOS_Colony_C0_1_package.zip) |
+| RockstarOS完全版 v1.0と全付録 | [PDF](outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.pdf) · [本文・schema・DDL等](outputs/RockstarOS_Complete_Design_v1_0/README.md) · [ZIP](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0_package.zip) |
+| コロニー向け運用OSの設計・模型 | [C0.1案内](outputs/RockstarOS_Colony_C0_1/README.md) · [ZIP](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1_package.zip) |
 | 衛星・地上受信・通信継続 | [自動接続設計PDF](outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) · [受信試作v0.4](outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) |
 | 洋ナシ形フィットボタン | [意匠図](outputs/Avokado_Fit_Button_v1/fit_button_concept.png) · [利用者の原画像](outputs/Avokado_Fit_Button_v1/pear_shape_reference.png) · [押し方・電源制御の設計](outputs/Avokado_Power_Button_Engineering_v1/README.md) |
-| C3と旧RETURN-1の履歴 | [rocketstar C3](outputs/rocketstar_C3_package/README.md) · [全成果物](outputs/) |
-| 設計の生成元と確認過程 | [work](work/) · [原本ファイル一覧・SHA-256](inventory.json) · [コピー・完全性の検証記録](verification.json) |
+| C3と旧RETURN-1の履歴 | [rocketstar C3](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rocketstar-design/outputs/rocketstar_C3_package/README.md) · [全成果物](outputs/) |
+| 設計の生成元と確認過程 | [work](https://github.com/k999ln/rock/tree/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rocketstar-design/work) · [原本ファイル一覧・SHA-256](inventory.json) · [コピー・完全性の検証記録](verification.json) |
 
 ## 保存範囲と原本
 

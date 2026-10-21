@@ -1,0 +1,46 @@
+{
+  "schema": "rock-esim-provider-order-correlation-research/1",
+  "date": "2026-10-01",
+  "sources": [
+    {
+      "provider": "esim-go",
+      "url": "https://docs.esim-go.com/api/v2_5/operations/orders/post/",
+      "finding": "The documented POST /orders transaction debits the organisation balance. The documented request schema has no client idempotency key or client order reference. Success returns orderReference."
+    },
+    {
+      "provider": "esim-go",
+      "url": "https://docs.esim-go.com/api/v2_5/operations/ordersorderreference/get/",
+      "finding": "GET /orders/{orderReference} needs the orderReference, so it cannot recover an accepted transaction when the POST response containing the reference was lost."
+    },
+    {
+      "provider": "esim-go",
+      "url": "https://docs.esim-go.com/api/v2_5/operations/orders/get/",
+      "finding": "GET /orders supports date-window filtering and pagination, but matching by time, bundle, amount and currency is not a unique job correlation guarantee."
+    },
+    {
+      "provider": "1global-connect",
+      "url": "https://docs.connect-api.1global.com/api/idempotency",
+      "finding": "General idempotency documentation describes Idempotency-Key, replay/retry headers and a default 24-hour retention period; it directs users to the API reference to identify supported endpoints."
+    },
+    {
+      "provider": "1global-connect",
+      "url": "https://docs.connect-api.1global.com/next/recipes/new-esim",
+      "finding": "The new-eSIM recipe creates an account/subscriber then a subscription activation order and receives asynchronous profile-ready and order-result events. Public docs reviewed do not yet prove that the exact activation-order endpoint accepts Idempotency-Key."
+    }
+  ],
+  "implementationState": {
+    "esimGoTransactionRetry": "NEVER; a durable one-shot dispatch marker is stored before POST",
+    "esimGoUnknownAcceptance": "reconciliation_required; no automatic resend and no read-only recovery without a known provider order reference",
+    "providerDebitDefault": false
+  },
+  "contractGate": [
+    "Confirm idempotency/correlation on the exact profile-issuing order operation, its account scope, retention, body mismatch behavior, concurrent request behavior, replay response, and lookup after the retention window.",
+    "Demonstrate a sandbox test where the provider accepts an order but the response is dropped; the same idempotency key must recover the same provider order/profile without a second debit.",
+    "If the exact order operation lacks durable idempotency or lookup by a persisted client reference, do not enable automatic eSIM issuance on that adapter."
+  ],
+  "notProven": [
+    "provider contract, account, sandbox credentials, Japanese long-term service rights, or a live order",
+    "1GLOBAL activation-order endpoint idempotency support",
+    "a safe automatic recovery path for an eSIM Go accepted-but-unanswered transaction"
+  ]
+}

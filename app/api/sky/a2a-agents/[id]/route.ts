@@ -1,4 +1,5 @@
-import { database, requestUser } from '@/lib/fund-store';
+import { database } from '@/lib/fund-store';
+import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import { a2aAgentDirectory } from '@/lib/a2a-agent-directory';
 
 type Context = { params: Promise<{ id: string }> };
@@ -7,7 +8,7 @@ const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-
 export async function DELETE(request: Request, context: Context) {
   const headers = { 'Cache-Control': 'no-store' };
   try {
-    const owner = await requestUser(request);
+    const owner = await requestRockstarUser(request, database());
     const { id } = await context.params;
     if (!uuid.test(id))
       return Response.json({ error: '接続IDが不正です。' }, { status: 400, headers });

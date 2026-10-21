@@ -1,3 +1,5 @@
+import { verifyA2AProviderSignature } from './a2a-provider-signature.ts';
+
 /** Provider-signed final usage proof for one A2A delegation. */
 export const A2A_USAGE_RECEIPT_SCHEMA =
   'rock-a2a-provider-usage-receipt/1' as const;
@@ -33,6 +35,9 @@ export type A2AUsageReceiptIntent = Pick<A2AUsageReceipt,
   'agentName' | 'agentVersion' | 'currency' | 'amountMinor' | 'issuedAt'> & {
   delegationCreatedAt: number;
   delegationLimitMinor: number;
+  /** Required by callers for quote-bound delegations; absent only for legacy records. */
+  providerId?: string;
+  pricingVersion?: string;
 };
 
 export type A2AUsageKeyResolver = (identity: { providerId: string; keyId: string; agentOrigin: string }) => Promise<Uint8Array | null>;
@@ -97,6 +102,8 @@ export async function verifyA2AUsageReceipt(
     if (!Number.isSafeInteger(lineTotal)) return false;
   }
   if (lineTotal !== receipt.amountMinor || receipt.amountMinor > intent.delegationLimitMinor ||
+    (intent.providerId !== undefined && receipt.providerId !== intent.providerId) ||
+    (intent.pricingVersion !== undefined && receipt.pricingVersion !== intent.pricingVersion) ||
     receipt.ownerUserId !== intent.ownerUserId || receipt.parentJobId !== intent.parentJobId ||
     receipt.delegationId !== intent.delegationId || receipt.taskId !== intent.taskId ||
     receipt.agentOrigin !== intent.agentOrigin || receipt.agentName !== intent.agentName ||
@@ -105,32 +112,37 @@ export async function verifyA2AUsageReceipt(
   let publicKey: Uint8Array | null;
   try { publicKey = await resolveKey({ providerId: receipt.providerId, keyId: receipt.keyId, agentOrigin: receipt.agentOrigin }); } catch { return false; }
   if (!(publicKey instanceof Uint8Array) || publicKey.length !== 32) return false;
-  try {
-    const rawKey = Uint8Array.from(publicKey);
-    const key = await crypto.subtle.importKey('raw', rawKey.buffer as ArrayBuffer, { name: 'Ed25519' }, false, ['verify']);
-    const signature = Uint8Array.from(atob(receipt.signature.replaceAll('-', '+').replaceAll('_', '/') + '=='), (character) => character.charCodeAt(0));
-    if (signature.length !== 64 || btoa(String.fromCharCode(...signature)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '') !== receipt.signature) return false;
-    const bytes = a2aUsageReceiptSigningBytes(receipt);
-    return await crypto.subtle.verify({ name: 'Ed25519' }, key, signature, bytes);
-  } catch { return false; }
+  return verifyA2AProviderSignature(publicKey, receipt, () => a2aUsageReceiptSigningBytes(receipt));
 }
 
 type TrustedUsageKey = { providerId: string; keyId: string; agentOrigin: string; publicKeyHex: string; status: 'active' | 'revoked' };
-export function trustedA2AUsageKeyResolver(configuration: unknown): A2AUsageKeyResolver {
-  if (typeof configuration !== 'string' || configuration.length > 65_536) return async () => null;
+function parseTrustedA2AUsageKeys(configuration: unknown) {
+  if (typeof configuration !== 'string' || configuration.length > 65_536) return null;
   let value: unknown;
-  try { value = JSON.parse(configuration); } catch { return async () => null; }
-  if (!Array.isArray(value) || value.length > 256) return async () => null;
+  try { value = JSON.parse(configuration); } catch { return null; }
+  if (!Array.isArray(value) || value.length > 256) return null;
   const entries = new Map<string, TrustedUsageKey>();
   for (const item of value) {
     if (!record(item) || Object.keys(item).length !== 5 || !safeId(item.providerId) || !safeId(item.keyId) ||
       typeof item.agentOrigin !== 'string' ||
       typeof item.publicKeyHex !== 'string' || !/^[a-f0-9]{64}$/i.test(item.publicKeyHex) ||
-      (item.status !== 'active' && item.status !== 'revoked')) return async () => null;
+      (item.status !== 'active' && item.status !== 'revoked')) return null;
     const key = `${item.providerId as string}\0${item.keyId as string}\0${item.agentOrigin}`;
-    if (entries.has(key)) return async () => null;
+    if (entries.has(key)) return null;
     entries.set(key, item as TrustedUsageKey);
   }
+  return entries;
+}
+
+export function hasActiveA2AUsageKeyForOrigin(configuration: unknown, agentOrigin: string) {
+  const entries = parseTrustedA2AUsageKeys(configuration);
+  if (!entries) return false;
+  return [...entries.values()].some((entry) => entry.status === 'active' && entry.agentOrigin === agentOrigin);
+}
+
+export function trustedA2AUsageKeyResolver(configuration: unknown): A2AUsageKeyResolver {
+  const entries = parseTrustedA2AUsageKeys(configuration);
+  if (!entries) return async () => null;
   return async ({ providerId, keyId, agentOrigin }) => {
     const entry = entries.get(`${providerId}\0${keyId}\0${agentOrigin}`);
     return entry?.status === 'active'

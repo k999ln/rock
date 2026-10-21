@@ -443,12 +443,15 @@ export function validateMaterialInventionRequest(
     ),
     '比率',
   ).sort((a, b) => a - b);
+  const process = validateProcess(input.process);
+  if (materials.some((material) => material.id === process.id))
+    throw new MaterialInventionError('duplicate_value', '工程IDと物質IDは重複できません。');
   return {
     schemaVersion: 1,
     goal: validateGoal(input.goal),
     materials,
     ratioPercentSteps,
-    process: validateProcess(input.process),
+    process,
   };
 }
 

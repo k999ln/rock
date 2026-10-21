@@ -1,6 +1,7 @@
 export type A2ADelegationRecoveryRequest = {
   id: string;
   parentJobId: string;
+  predecessorDelegationId?: string | null;
   idempotencyKey: string;
   messageId: string;
   targetOrigin: string;
@@ -17,6 +18,7 @@ export type A2ADelegationRecoveryRequest = {
 export type A2ADelegationRecoveryRecord = {
   id: string;
   parentJobId: string;
+  predecessorDelegationId?: string | null;
   idempotencyKey: string;
   messageId: string;
   targetOrigin: string;
@@ -42,6 +44,7 @@ export function matchesA2ADelegationRecovery(
     /^[a-f0-9]{64}$/.test(inputSha256) &&
     record.id === request.id &&
     record.parentJobId === request.parentJobId &&
+    (record.predecessorDelegationId ?? null) === (request.predecessorDelegationId ?? null) &&
     record.idempotencyKey === request.idempotencyKey &&
     record.messageId === request.messageId &&
     record.targetOrigin === request.targetOrigin &&

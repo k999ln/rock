@@ -1,8 +1,16 @@
 import type { TextGenerationResult, TextGenerationUsage } from './llm-providers.ts';
 import type { VerifiedRemoteAiRateCard } from './remote-ai-rate-card.ts';
-import { priceRemoteAiTextUsage, type RemoteAiTextQuote, type RemoteAiTextPriceResult } from './remote-ai-text-pricing.ts';
+import type { EncryptedRemoteAiTextInput } from './remote-ai-text-input.ts';
+import {
+  estimateRemoteAiTextLiveSpend,
+  priceRemoteAiTextUsage,
+  type RemoteAiTextLiveEstimate,
+  type RemoteAiTextQuote,
+  type RemoteAiTextPriceResult,
+} from './remote-ai-text-pricing.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
+export const REMOTE_AI_TEXT_MAX_QUEUE_AGE_MS = 24 * 60 * 60 * 1000;
 export type RemoteAiTextState = 'quoted' | 'reserved' | 'sending' | 'completed' | 'unreconciled' | 'cancelled' | 'expired';
 export type RemoteAiTextRecord = {
   id: string;
@@ -87,6 +95,62 @@ export class RemoteAiTextStore {
       .bind(owner, requestId).first<Row>();
     return row ? decode(row) : null;
   }
+  async listPrepared(limit = 50, now = Date.now()) {
+    const rows = await this.db.prepare(`SELECT e.owner_user_id AS ownerUserId, e.id
+      FROM remote_ai_text_executions e JOIN remote_ai_text_inputs i ON i.execution_id = e.id
+      WHERE e.state = 'reserved' AND i.expires_at > ?
+      ORDER BY e.updated_at, e.id LIMIT ?`).bind(now, Math.max(1, Math.min(100, limit)))
+      .all<{ ownerUserId: string; id: string }>();
+    return rows.results ?? [];
+  }
+  async saveInput(owner: string, id: string, approval: string, encrypted: EncryptedRemoteAiTextInput, now = Date.now()) {
+    const current = await this.get(owner, id);
+    if (!current) throw new RemoteAiTextStoreError('NOT_FOUND');
+    if (approval !== current.approvalDigest) throw new RemoteAiTextStoreError('APPROVAL_MISMATCH');
+    if (current.state !== 'reserved' || current.quote.expiresAt <= now ||
+      encrypted.keyVersion !== 'aes-256-gcm-v1' || !/^[a-f0-9]{64}$/.test(encrypted.inputSha256) ||
+      typeof encrypted.ciphertext !== 'string' || encrypted.ciphertext.length > 80_000 ||
+      typeof encrypted.nonce !== 'string' || encrypted.nonce.length > 64)
+      throw new RemoteAiTextStoreError('INVALID_STATE');
+    try {
+      const executionDeadlineAt = current.quote.expiresAt + REMOTE_AI_TEXT_MAX_QUEUE_AGE_MS;
+      const result = await this.db.prepare(`INSERT INTO remote_ai_text_inputs
+        (execution_id, owner_user_id, ciphertext, nonce, input_sha256, key_version, expires_at, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(execution_id) DO NOTHING`)
+        .bind(id, owner, encrypted.ciphertext, encrypted.nonce, encrypted.inputSha256,
+          encrypted.keyVersion, executionDeadlineAt, now).run();
+      const inserted = (result.meta?.changes ?? 0) === 1;
+      const saved = await this.getInput(owner, id);
+      if (!saved || saved.inputSha256 !== encrypted.inputSha256 || saved.expiresAt !== executionDeadlineAt)
+        throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
+      return { record: await this.get(owner, id), inserted };
+    } catch (error) {
+      if (error instanceof RemoteAiTextStoreError) throw error;
+      throw new RemoteAiTextStoreError('STORE_UNAVAILABLE');
+    }
+  }
+  async getInput(owner: string, id: string) {
+    return this.db.prepare(`SELECT execution_id AS executionId, owner_user_id AS ownerUserId,
+      ciphertext, nonce, input_sha256 AS inputSha256, key_version AS keyVersion,
+      expires_at AS expiresAt, created_at AS createdAt FROM remote_ai_text_inputs
+      WHERE owner_user_id = ? AND execution_id = ?`).bind(owner, id)
+      .first<EncryptedRemoteAiTextInput & { executionId: string; ownerUserId: string; expiresAt: number; createdAt: number }>();
+  }
+  async claimProviderSend(owner: string, id: string, now = Date.now()) {
+    // The input was committed during the approval window. Dispatch uses that
+    // durable input's fixed execution deadline, not the earlier quote expiry.
+    const result = await this.db.prepare(`INSERT INTO remote_ai_text_send_claims (execution_id, owner_user_id, claimed_at)
+      SELECT e.id, e.owner_user_id, ? FROM remote_ai_text_executions e
+      JOIN remote_ai_text_inputs i ON i.execution_id = e.id
+      WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending' AND i.expires_at > ?
+      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id, now).run();
+    return (result.meta?.changes ?? 0) === 1;
+  }
+  async deleteInputAfterTerminal(owner: string, id: string) {
+    await this.db.prepare(`DELETE FROM remote_ai_text_inputs WHERE owner_user_id = ? AND execution_id = ?
+      AND EXISTS (SELECT 1 FROM remote_ai_text_executions e WHERE e.owner_user_id = ? AND e.id = ?
+        AND e.state IN ('completed','unreconciled','cancelled','expired'))`).bind(owner, id, owner, id).run();
+  }
   async list(owner: string, parentJobId?: string, now = Date.now()) {
     const parentFilter = parentJobId === undefined ? '' : ' AND parent_job_id = ?';
     const values = parentJobId === undefined ? [owner] : [owner, parentJobId];
@@ -94,8 +158,10 @@ export class RemoteAiTextStore {
     // uncertain executions remain held, including during history readback.
     await this.db.prepare(`UPDATE remote_ai_text_executions
       SET state = 'expired', revision = revision + 1, updated_at = ?
-      WHERE owner_user_id = ?${parentFilter} AND state IN ('quoted','reserved') AND expires_at <= ?`)
-      .bind(now, ...values, now).run();
+      WHERE owner_user_id = ?${parentFilter} AND ((state = 'quoted' AND expires_at <= ?) OR
+        (state = 'reserved' AND COALESCE((SELECT i.expires_at FROM remote_ai_text_inputs i
+          WHERE i.execution_id = remote_ai_text_executions.id), expires_at) <= ?))`)
+      .bind(now, ...values, now, now).run();
     const rows = await this.db.prepare(`SELECT ${columns} FROM remote_ai_text_executions
       WHERE owner_user_id = ?${parentFilter} ORDER BY created_at DESC, id DESC LIMIT 50`).bind(...values).all<Row>();
     return (rows.results ?? []).map(decode);
@@ -160,17 +226,40 @@ export class RemoteAiTextStore {
     try {
       const result = await this.db.prepare(`UPDATE remote_ai_text_executions
         SET state = 'sending', revision = revision + 1, updated_at = ?
-        WHERE owner_user_id = ? AND id = ? AND approval_digest = ? AND state = 'reserved'`)
-        .bind(now, owner, id, approval).run();
+        WHERE owner_user_id = ? AND id = ? AND approval_digest = ? AND state = 'reserved'
+          AND EXISTS (SELECT 1 FROM remote_ai_text_inputs i WHERE i.execution_id = remote_ai_text_executions.id
+            AND i.owner_user_id = remote_ai_text_executions.owner_user_id AND i.expires_at > ?)`)
+        .bind(now, owner, id, approval, now).run();
       return (result.meta?.changes ?? 0) === 1;
     } catch { throw new RemoteAiTextStoreError('BUDGET_UNAVAILABLE'); }
   }
+  async updateLiveEstimate(owner: string, id: string, outputBytes: number, now = Date.now()) {
+    const current = await this.get(owner, id);
+    if (!current || current.state !== 'sending') return false;
+    const previous = current.observation?.liveMeter as RemoteAiTextLiveEstimate | undefined;
+    if (previous && outputBytes <= previous.observedOutputBytes) return false;
+    const liveMeter = estimateRemoteAiTextLiveSpend(
+      current.verifiedRate, current.quote.ceiling, outputBytes, now,
+    );
+    if (!liveMeter) throw new RemoteAiTextStoreError('USAGE_CONFLICT');
+    const observation = { ...current.observation, liveMeter };
+    const result = await this.db.prepare(`UPDATE remote_ai_text_executions
+      SET observation_json = ?, revision = revision + 1, updated_at = ?
+      WHERE owner_user_id = ? AND id = ? AND state = 'sending' AND revision = ?`)
+      .bind(JSON.stringify(observation), now, owner, id, current.revision).run();
+    return (result.meta?.changes ?? 0) === 1;
+  }
   async markUnreconciled(owner: string, id: string, code: string, now = Date.now(), observation: Record<string, unknown> | null = null) {
     const safeCode = /^[A-Z_]{1,64}$/.test(code) ? code : 'UPSTREAM_UNAVAILABLE';
+    const current = await this.get(owner, id);
+    const liveMeter = current?.observation?.liveMeter;
+    const nextObservation = observation
+      ? { ...observation, ...(liveMeter ? { liveMeter } : {}) }
+      : current?.observation ?? null;
     await this.db.prepare(`UPDATE remote_ai_text_executions
       SET state = 'unreconciled', error_code = ?, observation_json = ?, revision = revision + 1, updated_at = ?
       WHERE owner_user_id = ? AND id = ? AND state = 'sending'`)
-      .bind(safeCode, observation ? JSON.stringify(observation) : null, now, owner, id).run();
+      .bind(safeCode, nextObservation ? JSON.stringify(nextObservation) : null, now, owner, id).run();
     return this.get(owner, id);
   }
   async complete(owner: string, id: string, verified: VerifiedRemoteAiRateCard,
@@ -219,7 +308,10 @@ export class RemoteAiTextStore {
     const current = await this.get(owner, id);
     if (!current) throw new RemoteAiTextStoreError('NOT_FOUND');
     if (approval !== current.approvalDigest) throw new RemoteAiTextStoreError('APPROVAL_MISMATCH');
-    if (current.state === 'cancelled') return current;
+    if (current.state === 'cancelled') {
+      await this.deleteInputAfterTerminal(owner, id);
+      return current;
+    }
     if (!['quoted', 'reserved'].includes(current.state)) throw new RemoteAiTextStoreError('INVALID_STATE');
     await this.db.prepare(`UPDATE remote_ai_text_executions
       SET state = 'cancelled', revision = revision + 1, updated_at = ?
@@ -228,14 +320,28 @@ export class RemoteAiTextStore {
     // of treating its budget-pool update as a second cancellation.
     const row = await this.get(owner, id);
     if (!row || row.state !== 'cancelled') throw new RemoteAiTextStoreError('INVALID_STATE');
+    await this.deleteInputAfterTerminal(owner, id);
     return row;
   }
   async expireBeforeSend(owner: string, id: string, now = Date.now()) {
     await this.db.prepare(`UPDATE remote_ai_text_executions
       SET state = 'expired', revision = revision + 1, updated_at = ?
-      WHERE owner_user_id = ? AND id = ? AND state IN ('quoted','reserved') AND expires_at <= ?`)
-      .bind(now, owner, id, now).run();
-    return this.get(owner, id);
+      WHERE owner_user_id = ? AND id = ? AND ((state = 'quoted' AND expires_at <= ?) OR
+        (state = 'reserved' AND COALESCE((SELECT i.expires_at FROM remote_ai_text_inputs i WHERE i.execution_id = remote_ai_text_executions.id), expires_at) <= ?))`)
+      .bind(now, owner, id, now, now).run();
+    const row = await this.get(owner, id);
+    if (row?.state === 'expired') await this.deleteInputAfterTerminal(owner, id);
+    return row;
+  }
+  async expireAllBeforeSend(now = Date.now()) {
+    await this.db.prepare(`UPDATE remote_ai_text_executions
+      SET state = 'expired', revision = revision + 1, updated_at = ?
+      WHERE (state = 'quoted' AND expires_at <= ?) OR (state = 'reserved' AND
+        COALESCE((SELECT i.expires_at FROM remote_ai_text_inputs i WHERE i.execution_id = remote_ai_text_executions.id), expires_at) <= ?)`)
+      .bind(now, now, now).run();
+    await this.db.prepare(`DELETE FROM remote_ai_text_inputs WHERE expires_at <= ?
+      AND EXISTS (SELECT 1 FROM remote_ai_text_executions e WHERE e.id = remote_ai_text_inputs.execution_id
+        AND e.state IN ('completed','unreconciled','cancelled','expired'))`).bind(now).run();
   }
   async deleteSavedResult(owner: string, id: string, now = Date.now()) {
     await this.db.prepare(`UPDATE remote_ai_text_executions

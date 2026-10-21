@@ -71,7 +71,7 @@ adapterはWallet DB、秘密値、任意送金権限を受け取らない。予�
 
 Hub `/api/hub-mcp` の厳密command schemaから同じ機能を呼べる。host testはatomic hold、idempotency conflict、上限超過、dispatch後解放拒否、indeterminate hold保持、verifierなし拒否、trusted-verifier fixtureによる一回精算を検査する。
 
-**この追加は合成USD Wallet内の予約契約であり、A2A cloud D1のreservationとのwire/proof binding、実Wallet資金、実provider課金または署名鍵運用をつないだものではない。** `a2a_usage_receipt_verifier`は注入境界で、現在Hub起動時には未設定なので外部receiptを確定できない。production execution gateはWallet reservation proofがcloudへ伝わり検証されるまでdefault-offのままにする。
+**この追加は合成USD Wallet内の予約契約であり、A2A cloud D1のreservationとのwire/proof binding、実Wallet資金、実provider課金または署名鍵運用をつないだものではない。** Local DEVELOPMENT Hubは`ROCKSTAR_A2A_TRUSTED_USAGE_KEYS`が明示設定された場合のみEd25519 verifierを注入し、既定ではreceiptを確定できない。公開RFC test keyでHub経由のsigned-receipt settlementを検証するfixtureを追加した。本番execution gateと外部送信は引き続きdefault-off。
 
 ## Polymarket upstream監査
 

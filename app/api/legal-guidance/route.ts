@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
     if (input.immediateDanger)
       return Response.json(
         {
-          error: 'AI回答を待たず、安全な場所へ移動して911へ連絡してください。',
+          error: 'si回答を待たず、安全な場所へ移動して911へ連絡してください。',
         },
         { status: 409, headers: noStoreHeaders },
       );
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            '法令AIはまだ接続されていません。画面の公的案内と弁護士ルートは利用できます。',
+            '法令siはまだ接続されていません。画面の公的案内と弁護士ルートは利用できます。',
         },
         { status: 503, headers: noStoreHeaders },
       );

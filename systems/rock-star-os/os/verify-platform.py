@@ -13,22 +13,64 @@ import time
 from datetime import datetime, timezone
 
 
-def qmp(path, execute, arguments=None):
+QMP_MAX_FRAME = 1024 * 1024
+
+
+def qmp(path, execute, arguments=None, *, timeout=5):
+    # A socket idle timeout alone is reset by events or a slowly delivered line.
+    # Bound the entire greeting/negotiation/command exchange so the guest's
+    # outer boot deadline remains reachable even when its monitor is unhealthy.
+    deadline = time.monotonic() + timeout
+    pending = bytearray()
+
+    def remaining():
+        seconds = deadline - time.monotonic()
+        if seconds <= 0:
+            raise TimeoutError('QMP exchange deadline exceeded')
+        return seconds
+
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
-        connection.settimeout(5)
+        connection.settimeout(remaining())
         connection.connect(str(path))
-        stream = connection.makefile('rwb', buffering=0)
-        json.loads(stream.readline())
-        stream.write(b'{"execute":"qmp_capabilities"}\n')
-        while 'return' not in json.loads(stream.readline()):
-            pass
-        stream.write(json.dumps({'execute': execute, 'arguments': arguments or {}, 'id': 'rock'}).encode() + b'\n')
-        while True:
-            message = json.loads(stream.readline())
-            if message.get('id') == 'rock':
-                if 'error' in message:
-                    raise RuntimeError(str(message['error']))
-                return message['return']
+
+        def receive():
+            while True:
+                connection.settimeout(remaining())
+                end = pending.find(b'\n')
+                if end >= 0:
+                    if end >= QMP_MAX_FRAME:
+                        raise RuntimeError('QMP frame limit exceeded')
+                    raw = bytes(pending[:end])
+                    del pending[:end + 1]
+                    message = json.loads(raw)
+                    if not isinstance(message, dict):
+                        raise RuntimeError('QMP object required')
+                    return message
+                if len(pending) >= QMP_MAX_FRAME:
+                    raise RuntimeError('QMP frame limit exceeded')
+                chunk = connection.recv(min(4096, QMP_MAX_FRAME - len(pending)))
+                if not chunk:
+                    raise RuntimeError('QMP closed before its response')
+                pending.extend(chunk)
+
+        def request(command, request_id, args):
+            connection.settimeout(remaining())
+            connection.sendall(json.dumps({'execute': command, 'arguments': args, 'id': request_id}).encode() + b'\n')
+            while True:
+                message = receive()
+                # QMP echoes supplied IDs; asynchronous events and unknown IDs
+                # cannot complete our request. Parse errors may omit the ID.
+                if 'error' in message and message.get('id') in (None, request_id):
+                    raise RuntimeError('QMP command failed')
+                if message.get('id') == request_id:
+                    if 'return' not in message:
+                        raise RuntimeError('QMP response has no result')
+                    return message['return']
+
+        if not isinstance(receive().get('QMP'), dict):
+            raise RuntimeError('QMP greeting required')
+        request('qmp_capabilities', 'capabilities', {})
+        return request(execute, 'rock', arguments or {})
 
 
 def digest(path):

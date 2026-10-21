@@ -1,9 +1,9 @@
 import { createA2AIntentDigests, type A2AApprovalIntent } from './a2a-authorization.ts';
 
 export const A2A_BROKER_AUTHORIZATION_SCHEMA =
-  'rock-a2a-broker-authorization/1' as const;
+  'rock-a2a-broker-authorization/2' as const;
 const DOMAIN = new TextEncoder().encode(
-  'rock-a2a-broker-authorization-signature/1\0',
+  'rock-a2a-broker-authorization-signature/2\0',
 );
 const MAX_PROOF_LIFETIME_MS = 5 * 60_000;
 
@@ -22,6 +22,7 @@ export type A2ABrokerAuthorization = {
   inputSha256: string;
   budgetCurrency: string;
   budgetLimitMinor: number;
+  continueWhileDeviceOffline: boolean;
   deadlineAt: number;
   authorizationSha256: string;
   issuedAt: number;
@@ -64,6 +65,7 @@ const SIGNED_FIELDS = [
   'inputSha256',
   'budgetCurrency',
   'budgetLimitMinor',
+  'continueWhileDeviceOffline',
   'deadlineAt',
   'authorizationSha256',
   'issuedAt',
@@ -134,6 +136,7 @@ function proofMatchesIntent(
     proof.protocolVersion === intent.protocolVersion &&
     proof.budgetCurrency === intent.budgetCurrency &&
     proof.budgetLimitMinor === intent.budgetLimitMinor &&
+    proof.continueWhileDeviceOffline === intent.continueWhileDeviceOffline &&
     proof.deadlineAt === intent.deadlineAt
   );
 }
@@ -145,6 +148,7 @@ export async function verifyA2ABrokerAuthorization(
   resolveTrustedKey: A2ATrustedBrokerKeyResolver,
   now = Date.now(),
 ) {
+  if (intent.continueWhileDeviceOffline !== true) return false;
   if (!isRecord(value) || !exactShape(value)) return false;
   const proof = value as unknown as A2ABrokerAuthorization;
   if (
@@ -167,6 +171,7 @@ export async function verifyA2ABrokerAuthorization(
     !/^[A-Z]{3}$/.test(proof.budgetCurrency) ||
     !Number.isSafeInteger(proof.budgetLimitMinor) ||
     proof.budgetLimitMinor < 0 ||
+    typeof proof.continueWhileDeviceOffline !== 'boolean' ||
     !Number.isSafeInteger(proof.deadlineAt) ||
     !Number.isSafeInteger(proof.issuedAt) ||
     !Number.isSafeInteger(proof.expiresAt) ||
@@ -226,20 +231,21 @@ export async function verifyA2ABrokerAuthorization(
   } catch {
     return false;
   }
-  if (!(publicKey instanceof Uint8Array) || publicKey.length !== 32)
+  // Existing operator keys are raw Ed25519 (32 bytes). Android Key Attestation
+  // emits a P-256 public point; support that separately (65-byte uncompressed SEC1).
+  if (!(publicKey instanceof Uint8Array) || (publicKey.length !== 32 &&
+      !(publicKey.length === 65 && publicKey[0] === 4)))
     return false;
   const signature = decodeBase64Url(proof.signature);
   if (!signature) return false;
   try {
-    const key = await crypto.subtle.importKey(
-      'raw',
+    const p256 = publicKey.length === 65;
+    const key = await crypto.subtle.importKey('raw',
       new Uint8Array(publicKey).buffer as ArrayBuffer,
-      { name: 'Ed25519' },
-      false,
-      ['verify'],
-    );
+      p256 ? { name: 'ECDSA', namedCurve: 'P-256' } : { name: 'Ed25519' },
+      false, ['verify']);
     return await crypto.subtle.verify(
-      { name: 'Ed25519' },
+      p256 ? { name: 'ECDSA', hash: 'SHA-256' } : { name: 'Ed25519' },
       key,
       new Uint8Array(signature).buffer as ArrayBuffer,
       a2aBrokerAuthorizationSigningBytes(proof).buffer as ArrayBuffer,

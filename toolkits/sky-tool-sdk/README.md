@@ -68,7 +68,7 @@ await sky.start({ port: 8787 });
 
 ## 利用情報
 
-SDKが送る情報はPackage ID、MCP Tool名、匿名Installation ID、成功・失敗・拒否・不明、処理時間、実行時刻だけです。入力、出力、会話、APIキーは送信しません。イベント送信失敗でToolの結果を失敗に変えません。
+SDKが送る情報はランダムなEvent ID、Package ID、MCP Tool名、匿名Installation ID、成功・失敗・拒否・不明、処理時間、実行時刻だけです。入力、出力、会話、APIキーは送信しません。イベント送信は同じEvent IDで最大3回試みますが、プロセスをまたぐ永続保存は行いません。送信失敗でToolの結果を失敗に変えません。
 
 ## 外部変更と金融操作
 

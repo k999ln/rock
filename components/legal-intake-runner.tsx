@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type SyntheticEvent } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -32,6 +32,7 @@ import {
   getSelfHelpResources,
   legalIssueCategories,
   officialLegalResources,
+  primaryCounselFor,
   recommendLawyers,
   type LegalAssessment,
   type LegalContactPreference,
@@ -84,6 +85,10 @@ const emptyInput: LegalIntakeInput = {
   receivedOfficialDocument: false,
   contactPreference: 'email',
 };
+
+function counselLabel(lawyer: LawyerDirectoryEntry | undefined) {
+  return lawyer?.displayName ?? lawyer?.name ?? '担当弁護士';
+}
 
 function contactHref(
   lawyer: LawyerDirectoryEntry,
@@ -161,6 +166,13 @@ export function LegalIntakeRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [input, setInput] = useState<LegalIntakeInput>(emptyInput);
   const [understood, setUnderstood] = useState(false);
   const [remoteResearch, setRemoteResearch] = useState(false);
@@ -203,12 +215,14 @@ export function LegalIntakeRunner({
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
     if (!understood) {
       setNotice(
         '法的助言ではなく、入力内容を保存しないことを確認してください。',
       );
       return;
     }
+    execution.current.busy = true;
     onRunningChange?.(true);
     const next = assessLegalIntake(input);
     setAssessment(next);
@@ -218,12 +232,13 @@ export function LegalIntakeRunner({
     setNeedsSignin(false);
     setNotice(
       next.primaryCounselId
-        ? '刑事弁護の第一連絡候補として藤原茜弁護士を表示しました。連絡前に内容を確認してください。'
+        ? `第一連絡候補として${counselLabel(primaryCounselFor(input.issueType))}を表示しました。連絡前に内容を確認してください。`
         : next.lawyerRequired
           ? '弁護士へ渡す要約と候補を準備しました。連絡前に内容を確認してください。'
           : '一般情報を確認するための次の手順を整理しました。',
     );
     if (next.urgency === 'emergency') {
+      execution.current.busy = false;
       onOutcome?.({ ok: false, text: '緊急性が高い可能性があります。案内と連絡先をこのカードで確認してください。' });
       onRunningChange?.(false);
       return;
@@ -250,6 +265,7 @@ export function LegalIntakeRunner({
         setNotice('端末内のガイドを作成できませんでした。相談内容を修正して再実行してください。');
         onOutcome?.({ ok: false, text: '端末内のガイド作成に失敗しました。入力を確認してください。' });
       } finally {
+        execution.current.busy = false;
         setAiLoading(false);
         onRunningChange?.(false);
       }
@@ -266,7 +282,7 @@ export function LegalIntakeRunner({
         error?: string;
       };
       if (!response.ok)
-        throw new Error(payload.error || '法令AIを利用できません。');
+        throw new Error(payload.error || '法令siを利用できません。');
       setAiResult(payload);
       onOutcome?.({ ok: true, text: '公式情報の一次回答を取得しました。出典と引継ぎ内容をこのカードで確認してください。' });
       setNotice(
@@ -282,6 +298,7 @@ export function LegalIntakeRunner({
       );
       onOutcome?.({ ok: false, text: 'オンライン検索は利用できませんでした。端末内ガイドをこのカードで確認してください。' });
     } finally {
+      execution.current.busy = false;
       setAiLoading(false);
       onRunningChange?.(false);
     }
@@ -742,12 +759,12 @@ export function LegalIntakeRunner({
                   <p>分野＋地域で絞り込み</p>
                   <h3>
                     {assessment.primaryCounselId
-                      ? '刑事弁護：藤原茜弁護士へ引継ぎ'
+                      ? `第一連絡候補：${counselLabel(primaryCounselFor(input.issueType))}へ引継ぎ`
                       : '日本語対応の候補'}
                   </h3>
                   <small>
                     {assessment.primaryCounselId
-                      ? '藤原茜弁護士を第一連絡候補として表示します。自動送信・受任確定は行いません。'
+                      ? `${counselLabel(primaryCounselFor(input.issueType))}を第一連絡候補として表示します。自動送信・受任確定は行いません。`
                       : `在ニューヨーク日本国総領事館の公開リスト（${LEGAL_DIRECTORY_AS_OF}現在）を使用。推薦・斡旋ではありません。`}
                   </small>
                 </div>

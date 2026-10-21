@@ -7,6 +7,7 @@ root = Path(__file__).resolve().parents[1]
 output = root / 'public/toolkits/sky-mcp-connector.zip'
 sources = [
     root / 'toolkits/sky-mcp-connector',
+    root / 'toolkits/spider-guard',
     root / 'toolkits/mr',
     root / 'toolkits/fashion-brand-ops',
 ]

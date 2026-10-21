@@ -42,3 +42,8 @@
 .connectionFeedback { display:block; margin-top:16px; font-size:12px; color:var(--sky-muted); line-height:1.7; width:100%; overflow-wrap:anywhere; }
 .connectionFeedback .feedbackDetail { display:block; margin:5px 0; min-height:0; font-size:12px; }
 .connectionFeedback strong { color:#f0c8b5; font-weight:500; }
+
+.deviceDialog {
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}

@@ -35,6 +35,8 @@ from blackberryrock.packages import CURRENT_PROFILE, MAX_PACKAGE_BYTES, PUBLIC_T
 from blackberryrock.wallet import Wallet
 from registry_control import RegistryControl
 from runner_control import RunnerControl
+from sensitive_guard import SensitiveGuard, security_agent_summary
+from code_inspector import inspect_code
 from operations.device import DeviceActivation
 from wallet_view import WalletView
 from wallet_backend.client import READS as WALLET_READS
@@ -181,10 +183,18 @@ class DeviceHub(Hub):
 class Platform:
     def __init__(self, state, registry, wallet_socket=WALLET_SOCKET, wallet_uid=WALLET_UID,
                  remote_registry=None, start_registry=True, remote_clients=None, start_runner=True,
-                 service_status=None, async_wallet_view=False, mcp_client=None, mcp_status=None):
+                 service_status=None, async_wallet_view=False, mcp_client=None, mcp_status=None,
+                 start_security=False):
         if type(async_wallet_view) is not bool:
             raise ValueError('asynchronous Wallet view opt-in must be boolean')
+        if type(start_security) is not bool:
+            raise ValueError('security worker opt-in must be boolean')
         self.hub = DeviceHub(Path(state) / 'hub.db', {TEST_PUBLISHER: PUBLIC_TEST_KEY})
+        # The native entrypoint starts this worker. In-process test/inspection
+        # callers may omit it; synchronous egress inspection is always active.
+        # Scope stays in this service's data directory, never Wallet or a path
+        # supplied by an IPC caller.
+        self.security = SensitiveGuard(Path(state))
         self.registry = Path(registry)
         self.wallet_socket, self.wallet_uid = wallet_socket, wallet_uid
         self.catalog_lock = threading.RLock()
@@ -204,11 +214,18 @@ class Platform:
         runner_available = not (self.service_status.get('mode') == 'purchaser-fixture'
                                 and self.service_status.get('state') != 'configured')
         self.runner = (RunnerControl(self.hub, Path(state) / 'remote', registry_control=self.store,
-                                     clients=remote_clients, start=start_runner and runner_available)
+                                     clients=remote_clients, start=start_runner and runner_available,
+                                     sensitive_guard=self.security)
                        if remote_clients is not None else None)
         self.wallet_view = (WalletView(self._read_wallet_snapshot)
                             if async_wallet_view and self.service_status.get('mode') == 'purchaser-fixture' else None)
         self.activation = DeviceActivation(Path(state) / 'activation', wallet_snapshot=self.wallet_snapshot)
+        if start_security:
+            try:
+                self.security.start()
+            except BaseException:
+                self.close()
+                raise
 
     def _read_wallet_snapshot(self):
         reply = call(self.wallet_socket, {'v':1,'op':'snapshot'}, self.wallet_uid, return_errors=True)
@@ -225,15 +242,33 @@ class Platform:
     def close(self):
         # No background reader can survive a successful service close.
         try:
-            if self.wallet_view is not None:
-                self.wallet_view.close()
-        finally:
             try:
-                if self.runner is not None:
-                    self.runner.close()
+                if self.wallet_view is not None:
+                    self.wallet_view.close()
             finally:
-                if self.store is not None:
-                    self.store.close()
+                try:
+                    if self.runner is not None:
+                        self.runner.close()
+                finally:
+                    if self.store is not None:
+                        self.store.close()
+        finally:
+            self.security.close()
+
+    def security_summary(self):
+        status = self.security.status()
+        summary = {key: status.get(key) for key in (
+            'status', 'lastScanAt', 'intervalSeconds', 'filesScanned',
+            'candidateCount', 'secretCount', 'personalCount', 'blocked',
+            'inspections', 'coverageLimited')}
+        # A saved scan label is not proof of a live, current monitor. Missing
+        # fields from an older guard snapshot must never imply protection.
+        summary['workerAlive'] = status.get('workerAlive') is True
+        summary['fresh'] = status.get('fresh') is True
+        summary['agent'] = security_agent_summary(status)
+        summary['findings'] = status.get('findings', [])[:3]
+        summary['findingsTruncated'] = bool(status.get('findingsTruncated') or len(status.get('findings', [])) > 3)
+        return summary
 
     def catalog(self):
         # The initial embedded catalog is immutable. Downloaded catalog support
@@ -332,6 +367,7 @@ class Platform:
                 # The separate MCP page requests live status; ordinary Hub and
                 # offline local Tools never wait for the network here.
                 'mcp': dict(self.mcp_status),
+                'security': self.security_summary(),
                 'device_activation': self.activation.snapshot(wallet=wallet),
                 'registry': registry_view,
                 'device': {'name': 'Rock star os', 'version': CURRENT_PROFILE['os_version'], 'execution': 'device_local',
@@ -396,6 +432,18 @@ class Platform:
 
     def dispatch(self, request, *, peer_uid=None):
         op = request['op']
+        if isinstance(op, str) and op.startswith('security.'):
+            if peer_uid != UI_UID:
+                raise PermissionError('security status requires the OS owner channel')
+            if op == 'security.inspectCode':
+                if (set(request) != {'v', 'op', 'source', 'language'}
+                        or type(request.get('v')) is not int or request['v'] != 1):
+                    raise ValueError('CODE_INSPECTION_INVALID_INPUT')
+                return {'ok': True, 'result': inspect_code(request['source'], request['language'])}
+            if (op != 'security.status' or set(request) != {'v', 'op'}
+                    or type(request.get('v')) is not int or request['v'] != 1):
+                raise ValueError('security status accepts only its fixed read-only operation')
+            return {'ok': True, 'result': self.security.status()}
         if isinstance(op,str) and op.startswith('device.activation.'):
             return self.activation.dispatch(request, peer_uid=peer_uid)
         if isinstance(op, str) and op.startswith('atm.'):
@@ -424,6 +472,10 @@ class Platform:
                 raise PermissionError('MCP Hub requests require the OS owner channel')
             if self.mcp_client is None:
                 raise ServiceUnavailable('MCP接続の設定を確認してください。端末内の道具は利用できます。')
+            if op in ('mcp.prepare', 'mcp.submit'):
+                # Check before the device client constructs any outbound wire.
+                # Exact consent validation remains the client's responsibility.
+                self.security.inspect({key: value for key, value in request.items() if key != 'consent'}, op)
             # No Hub lock or reusable cached PAID grant around this network call.
             return {'ok': True, 'result': self.mcp_client.request(request)}
         if isinstance(op, str) and op.startswith('remote.'):
@@ -796,22 +848,26 @@ def main():
             '/etc/rock-platform/mcp-services.json', '/usr/share/rock/development-store-ca.pem')
         service = Platform('/data/platform', '/usr/share/rock/registry', remote_registry=remote_registry,
                            remote_clients=remote_clients, service_status=service_status, async_wallet_view=True,
-                           mcp_client=mcp_client, mcp_status=mcp_status)
-        server = Server(PLATFORM_SOCKET, service, {0, UI_UID}, UI_UID)
+                           mcp_client=mcp_client, mcp_status=mcp_status, start_security=True)
     else:
         service = device_wallet_service('/data/wallet', '/etc/rock-wallet/backend.json',
                                         provisioning_file='/usr/share/rock/development-device-handoff.json')
-        server = Server(WALLET_SOCKET, service, {0, PLATFORM_UID}, PLATFORM_UID)
-    def terminate(*_):
-        # serve_forever shutdown must run outside its serving thread.
-        threading.Thread(target=server.shutdown, daemon=True).start()
-    signal.signal(signal.SIGTERM, terminate)
-    with server:
-        print('ROCK_SERVICE_READY role=' + args.role, flush=True)
-        server.serve_forever(poll_interval=0.2)
-    if args.role == 'platform':
-        service.close()
-    if args.role == 'wallet':
+    try:
+        # Service constructors may start workers before socket binding. Close
+        # those workers even if binding/locking or serve_forever fails, so the
+        # supervisor can observe this process exit and restart it safely.
+        if args.role == 'platform':
+            server = Server(PLATFORM_SOCKET, service, {0, UI_UID}, UI_UID)
+        else:
+            server = Server(WALLET_SOCKET, service, {0, PLATFORM_UID}, PLATFORM_UID)
+        def terminate(*_):
+            # serve_forever shutdown must run outside its serving thread.
+            threading.Thread(target=server.shutdown, daemon=True).start()
+        signal.signal(signal.SIGTERM, terminate)
+        with server:
+            print('ROCK_SERVICE_READY role=' + args.role, flush=True)
+            server.serve_forever(poll_interval=0.2)
+    finally:
         service.close()
 
 

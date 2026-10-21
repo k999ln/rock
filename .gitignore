@@ -50,6 +50,8 @@ next-env.d.ts
 /android/**/build/
 /android/local.properties
 /android/.idea/
+**/.gradle/
+services/**/work/
 *.jks
 *.keystore
 /os/local/
@@ -57,3 +59,6 @@ next-env.d.ts
 # Python tool caches
 __pycache__/
 *.pyc
+
+# generated from encrypted private/ files; never commit
+/lib/generated/

@@ -6,6 +6,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { bindEsimGoIssuedProfile, esimGoProfileDigest, persistEsimGoWebhook, readEsimGoV3Request, verifyEsimGoV3Body } from '../lib/esimgo-webhook.ts';
 import { createEsimGoV25Client, EsimGoProviderError, issuePaidSkyEsimGoProfile, reconcilePaidSkyEsimGoProfile } from '../lib/esimgo-provider.ts';
 import { createEsimPricingSnapshot, parseEsimServerPlanCatalog } from '../lib/esim-plan-catalog.ts';
+import { fetchEsimInstallMaterial } from '../lib/esim-install-material.ts';
 
 const apiKey = 'provider-signing-key-fixture';
 const dedupeSecret = 'rockstar-private-dedupe-secret-fixture-rotate-independent';
@@ -20,6 +21,9 @@ async function testPricingSnapshot(manifestSha256, version = 'fixture-v1') {
     retailAmountMinor: 2000, providerMinorToRetailNumerator: 1,
     providerMinorToRetailDenominator: 1, providerFeeReserveRetailMinor: 100,
     minimumGrossMarginRetailMinor: 500,
+    starterAgentPack: { id: 'lifeline', version: '1.0.0', packages: [{
+      packageKey: 'dev.rockstar.offline-guide@1.0.0', manifestSha256: 'b'.repeat(64),
+    }] },
   }] }));
   return createEsimPricingSnapshot(catalog, catalog.plans[0]);
 }
@@ -157,8 +161,17 @@ void test('eSIM Go v2.5 uses validate-before-transaction, persists a one-shot cl
     );
   const requests = [];
   const fetcher = async (url, init) => {
-    assert.equal(url, 'https://api.esim-go.com/v2.5/orders');
     assert.equal(new Headers(init.headers).get('x-api-key'), 'esim-go-api-fixture-key');
+    if (url === 'https://api.esim-go.com/v2.5/esims/assignments?reference=provider-order-ref-1&additionalFields=installUrl') {
+      requests.push('install-assignments');
+      return Response.json({
+        iccid: '89445385320081602222', matchingId: 'MATCH-SECRET',
+        smdpAddress: 'smdp.example.test', profileStatus: 'Released',
+        appleInstallUrl: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24APPLE-CODE',
+        androidInstallUrl: 'https://esimsetup.android.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24ANDROID-CODE',
+      });
+    }
+    assert.equal(url, 'https://api.esim-go.com/v2.5/orders');
     const body = JSON.parse(init.body);
     requests.push(body.type);
     if (body.type === 'validate') return Response.json({
@@ -182,7 +195,7 @@ void test('eSIM Go v2.5 uses validate-before-transaction, persists a one-shot cl
   };
   const issued = await issuePaidSkyEsimGoProfile(db, client, input);
   assert.deepEqual(issued, { state: 'profile_bound', providerOrderReference: 'provider-order-ref-1' });
-  assert.deepEqual(requests, ['validate', 'transaction']);
+  assert.deepEqual(requests, ['validate', 'transaction', 'install-assignments']);
   assert.equal(JSON.stringify(issued).includes('89445385320081602222'), false);
   assert.equal(JSON.stringify(issued).includes('MATCH-SECRET'), false);
   assert.equal(JSON.stringify(issued).includes('smdp.example.test'), false);
@@ -194,6 +207,14 @@ void test('eSIM Go v2.5 uses validate-before-transaction, persists a one-shot cl
   assert.equal(storedProviderOrder.includes('89445385320081602222'), false);
   assert.equal(storedProviderOrder.includes('MATCH-SECRET'), false);
   assert.equal(storedProviderOrder.includes('smdp.example.test'), false);
+  assert.equal(storedProviderOrder.includes('APPLE-CODE'), false);
+  assert.equal(storedProviderOrder.includes('ANDROID-CODE'), false);
+  assert.deepEqual(await fetchEsimInstallMaterial(db, 'f'.repeat(64), 'alice', orderId,
+    '66666666-6666-4666-8666-666666666666'), {
+    iccid: '89445385320081602222', matchingId: 'MATCH-SECRET', smdpAddress: 'smdp.example.test',
+    appleInstallUrl: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24APPLE-CODE',
+    androidInstallUrl: 'https://esimsetup.android.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24ANDROID-CODE',
+  });
 
   const retry = await issuePaidSkyEsimGoProfile(db, client, { ...input, now: now + 1 });
   assert.deepEqual(retry, { state: 'profile_bound', providerOrderReference: 'provider-order-ref-1' });
@@ -326,7 +347,7 @@ void test('provider_completed resumes by read-only assignment lookup and binds w
   const client = createEsimGoV25Client('esim-go-api-fixture-key', async (url, init) => {
     calls.push({ url, method: init.method });
     assert.equal(init.method, undefined);
-    assert.equal(url, 'https://api.esim-go.com/v2.5/esims/assignments?reference=provider-order-ref-resume');
+    assert.equal(url, 'https://api.esim-go.com/v2.5/esims/assignments?reference=provider-order-ref-resume&additionalFields=installUrl');
     return Response.json({ iccid, matchingId: 'MATCH-SECRET', smdpAddress: 'smdp.example.test', profileStatus: 'Released' });
   });
   const result = await issuePaidSkyEsimGoProfile(db, client, {
@@ -382,7 +403,7 @@ void test('explicit reconciliation verifies provider order and assignment by GET
       }] }],
       total: 9.99, currency: 'USD', status: 'completed', orderReference: providerRef,
     });
-    if (url === `https://api.esim-go.com/v2.5/esims/assignments?reference=${providerRef}`) return Response.json({
+    if (url === `https://api.esim-go.com/v2.5/esims/assignments?reference=${providerRef}&additionalFields=installUrl`) return Response.json({
       iccid, matchingId: 'MATCH-SECRET', smdpAddress: 'smdp.example.test', profileStatus: 'Released',
     });
     assert.fail('Unexpected provider request');
@@ -397,7 +418,7 @@ void test('explicit reconciliation verifies provider order and assignment by GET
   assert.deepEqual(result, { state: 'profile_bound' });
   assert.deepEqual(calls.map(({ url }) => url), [
     `https://api.esim-go.com/v2.5/orders/${providerRef}`,
-    `https://api.esim-go.com/v2.5/esims/assignments?reference=${providerRef}`,
+    `https://api.esim-go.com/v2.5/esims/assignments?reference=${providerRef}&additionalFields=installUrl`,
   ]);
   assert.equal(db.sqlite.prepare('SELECT state FROM esim_provider_orders WHERE sky_order_id = ?').get(orderId).state, 'profile_bound');
   assert.equal(db.sqlite.prepare('SELECT sky_order_id FROM esim_provider_profile_bindings WHERE profile_digest = ?').get(profileDigest).sky_order_id, orderId);

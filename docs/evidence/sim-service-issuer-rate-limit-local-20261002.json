@@ -1,0 +1,44 @@
+{
+  "schema": "rockstar-sim-service-issuer-rate-limit-local/1",
+  "verifiedAt": "2026-10-02T20:08:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "Atomic per-issuer D1 rate limit for the internal seller entitlement delivery API",
+  "implemented": [
+    "Migration 0054 and Drizzle schema add one bounded counter row per issuer; the SQL upsert atomically starts/resets a minute window and increments request count.",
+    "Authenticated POST, GET and PATCH delivery calls share a fixed 120 requests/minute limit per issuer.",
+    "Over-limit calls return 429 with Retry-After; seller counters are isolated and a later minute resets the counter.",
+    "The limit is applied after seller authentication and idempotency-key validation, before any claim package is read or written."
+  ],
+  "results": {
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/rockstar-entitlement-delivery-http.test.mjs tests/rockstar-entitlement-issuer-store.test.mjs tests/rockstar-entitlement-issuer.test.mjs",
+      "exitCode": 0,
+      "tests": 19,
+      "passed": 19,
+      "rateLimitCase": "atomic boundary, Retry-After, per-seller isolation, next-minute reset"
+    },
+    "typecheck": { "command": "npm run typecheck", "exitCode": 0 },
+    "focusedLint": { "command": "npx oxlint lib/rockstar-entitlement-delivery-http.ts lib/rockstar-entitlement-issuer-store.ts app/api/internal/rockstar/entitlement-deliveries/route.ts tests/rockstar-entitlement-delivery-http.test.mjs", "exitCode": 0 },
+    "webSchema": { "command": "npm run schema:check", "exitCode": 0, "tables": 69 },
+    "database": { "command": "npm run database:status && npm run database:check", "exitCode": 0, "boundaries": 6, "tables": 124, "sourceReadback": "6/6", "productionReadback": "0/6" },
+    "projectStatus": { "command": "npm run project:update && npm run project:check", "exitCode": 0, "completed": "104/159" },
+    "baseline": { "command": "npm run baseline:check", "exitCode": 0 },
+    "build": { "command": "npm run build", "exitCode": 0, "route": "/api/internal/rockstar/entitlement-deliveries" },
+    "patchWhitespace": { "command": "git diff --check", "exitCode": 0 }
+  },
+  "acceptanceBoundaries": {
+    "productionD1MigrationOrReadback": false,
+    "sellerSandboxOrRealCheckout": false,
+    "productionCredentialCustody": false,
+    "carrierActivation": false,
+    "productionBilling": false,
+    "AndroidSDKOrDeviceAcceptance": false,
+    "RockstarOSInstallation": false
+  },
+  "next": [
+    "Run the existing pure-Java recovery-binding suite and Shell/Broker Wallet integration on an Android SDK CI host; the current host has no Java runtime, Gradle or SDK manager.",
+    "Integrate seller checkout/refund callbacks only after issuer contract and sandbox credentials are available.",
+    "Do not interpret local D1/schema/usage results as production purchase, carrier activation, billing, or OS-install acceptance."
+  ]
+}

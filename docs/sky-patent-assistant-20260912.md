@@ -15,10 +15,12 @@ Sky Agent Hubに、ソフトウェア・システム発明の整理から先行�
 5. 明示同意がある場合だけOpenAI Responses APIのweb searchを使い、JPO、INPIT、WIPO、EPOのドメインに限定して候補を調べる。
 6. 明細書、請求項、要約、図面指示、提出前チェックをMarkdownの提出準備パケットとして端末へ保存する。
 
-## データとAIの境界
+<a id="データとaiの境界"></a>
+
+## データとsiの境界
 
 - 発明内容、発明者、出願人、検索結果、ドラフトをD1、Git、Skyの実行履歴へ保存しない。
-- AI調査は利用者がチェックボックスで同意した場合だけ実行する。
+- si調査は利用者がチェックボックスで同意した場合だけ実行する。
 - OpenAIリクエストは`store: false`とし、APIキーはWorker側の`OPENAI_API_KEY`だけで扱う。
 - 特許調査用モデルは`OPENAI_PATENT_MODEL`で変更でき、未指定時は`gpt-5.4-nano`を使う。
 - 回答は許可ドメインのクリック可能な引用が一件もない場合に失敗とする。
@@ -41,4 +43,4 @@ Sky Agent Hubに、ソフトウェア・システム発明の整理から先行�
 
 ## 検証
 
-`tests/patent-assistant.test.mjs`で、ready商品登録、公開済み警告、検索入口、ドラフトの必須章、人の確認ゲート、AIの保存無効化と許可ドメイン、引用必須を検証する。全体は`npm run verify`で確認する。
+`tests/patent-assistant.test.mjs`で、ready商品登録、公開済み警告、検索入口、ドラフトの必須章、人の確認ゲート、siの保存無効化と許可ドメイン、引用必須を検証する。全体は`npm run verify`で確認する。

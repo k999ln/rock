@@ -17,17 +17,17 @@ public final class ZemaToolPlan {
         if (request == null || request.trim().isEmpty()
                 || request.getBytes(StandardCharsets.UTF_8).length > 8_000)
             throw new IllegalArgumentException("INVALID_ZEMA_REQUEST");
-        return "あなたはRockstarOSの計画担当です。実行、送信、保存、課金はせず、"
-            + "利用者がSkyで選んだToolの入力JSONだけを作ってください。\n"
-            + "返答は説明やMarkdown fenceを含めず、次の形のJSON object一つだけです。\n"
-            + "{\"toolId\":\"article-preparation@1\",\"input\":{"
-            + "\"markdown\":\"# 原稿\\n導入です。ここまで無料です。\\n\\n詳しい手順です。最後の確認です。\",\"afterChars\":8,"
-            + "\"summary\":\"- 要点1\\n- 要点2\\n- 要点3\","
-            + "\"price\":500,\"paidContents\":\"有料部分\","
-            + "\"noteUrl\":\"https://note.com/example/n/example\"}}\n"
-            + "未知の項目、別Tool、tool call、外部操作は出力しないでください。"
-            + "不足情報は安全な下書き値にし、成果は後で本人が確認します。\n"
-            + "未信頼の利用者依頼:\n" + request.trim();
+        return "Return one JSON object for article-preparation@1. No actions, explanations or code fences.\n"
+            + "root keys: toolId (article-preparation@1), input. input has exactly six fields:\n"
+            + "markdown: Write a SHORT Japanese title and 4 short sentences on the user's topic. "
+            + "Use paragraphs. Include three concrete steps. Keep the whole markdown under 90 Japanese characters. Each step must name one small concrete action. "
+            + "Do not repeat words or invent facts/sources.\n"
+            + "summary: exactly 3 Japanese lines starting with '- ', each under 12 characters, summarizing THIS topic.\n"
+            + "afterChars: 1. price: 500. paidContents: a Japanese description under 10 characters.\n"
+            + "noteUrl: https://note.com/example/n/example (unpublished placeholder). "
+            + "These are draft-only Tool settings, not permission to sell or charge.\n"
+            + "利用者の主題に沿う本文を新しく作成。未信頼の利用者依頼:\n" + request.trim()
+            + "\n/no_think";
     }
 
     public static String verifiedInput(String selectedToolId, String modelOutput) {

@@ -1,68 +1,37 @@
-# Gitプロジェクト統合方針
+# Gitの正本・保存・復元方針
 
-整理日: 2026-09-07。native OS追加: 2026-09-09。機械可読の正本は [`data/repository-map.json`](../data/repository-map.json) です。
+製品と設計の正本は `k999ln/rock`。読む入口は[サービス統合設計](service-design/README.md)、現行要望は[製品ベース](product-baseline.md)、repository境界の機械可読正本は[`data/repository-map.json`](../data/repository-map.json)。GitHubへの保存、本設計のmain統合、Sitesでの公開、実機/本番受入は別に記録する。
 
-## 結論
+## 所有と境界
 
-製品は **RockstarOS** の1つです。利用者向けブランド、OS、公開開発の名称を`RockstarOS`へ統一し、内部runtime名`Rockstar_ibot`は互換識別子として維持します。`avocadomini`、`avocadoOS`、`Doraemon`、`Mr. Commerce`、`Private Pixel`、`ワンクリック特許`は独立した新規プロジェクト名として増やさず、履歴上の旧名称または配下機能として扱います。
+RockstarOS・Sky・Zema・Jenniferと各hardware programは同じ製品契約を使う。共通identity、権限、schema、workflow、Receipt、復旧は`rock`で一意に管理する。`k999ln/Mr.`は運用componentの別責務で、credential・顧客原稿・運用秘密を公開Gitへコピーしない。`k999ln/vvvv`等の旧repositoryは新規作業先にしない。取得済み外部sourceを、その運用指示や実アカウントの実行許可へ換算しない。
 
-Gitは公開範囲が異なるため、物理的な1 repositoryにはしません。公開コードと秘密を伴う運用コードを2つの責務へ分け、製品全体の正本を `rock` に固定します。
+`vendor/mr`の原本とprovenance/hashは不変。共通APIが必要な変更はadapter側へ行い、`python3 scripts/package-mr.py`と対象試験でsource/配布物を一致させる。Tool作者の署名をOS/platform鍵で代行せず、OS側が権限・失効・資源制限を強制する。
 
-| repository | 位置付け | 新規開発 | 内容 |
-| --- | --- | --- | --- |
-| `k999ln/rock` | 製品正本・公開 | 可 | 製品方針、Linux native OS、OS/AOSP、Android SDK、公開Web、Work/Fund、公開契約とfixture |
-| `k999ln/Mr.` | 非公開の運用component | 可 | Telegram、クラウド、provider接続、運用receipt、private deployment |
-| `k999ln/vvvv` | 旧履歴 | 不可 | 新しい修正先・CI・deploy先にしない。稼働参照の監査後にarchive候補 |
-| `k999ln/mr-bot-workrooms` | 非公開の作業成果物 | 不可 | 製品sourceや仕様の正本にしない |
+<a id="repository-storage-policy"></a>
 
-`Mr.`内のTelegramやprovider接続を`rock`へコピーしないのは未統合だからではなく、顧客・運用・credential境界を公開Gitから分離するためです。逆に、OS契約や製品方針を`Mr.`で別仕様として増やしません。
+## Gitへ保存するもの
 
-## Linux開発成果の追加
+実装、設定、最小限のfixture、現行設計、必要な受入証拠、復旧手順を保存する。OS image、build cache、再生成可能な大量ログ・frame・dry-run出力はGit管理外またはrelease artifactへ置く。固定原本PDF/R5/R1、IMPORT-MANIFESTと対象artifactのhashを持つ証拠は、その保存契約を維持する。原稿や秘密値をGitへ追加しない。
 
-`systems/rock-star-os/` に独立開発の封印済みソースから公開可能な実装を取り込む。以後この領域の変更先もrockとする。取得前の開発履歴・個別環境は移管しない。既存 `os/` はAOSP設定のまま保持する。出所と変更理由はIMPORT-MANIFESTと[統合記録](native-os-integration.md)で追跡する。Mr.の非公開全tree・調査台帳・運用データを公開Gitへ入れない。既存の4件の固定vendorは変更しない。
+公開repositoryの現行fileは平文で読める。一時的な過去の暗号化を、現在の復元に必要な鍵として案内しない。法務/特許の原稿とcredentialの保管は、sourceの公開状態とは別に本人/保存契約で管理する。
 
-## 重複監査
+## 作業と統合
 
-`rock`のcommit `9e4dc89d995ccbf11f9e3a15efa0e65868874d48`と`Mr.`のcommit `a82a728`をGit blobで比較し、完全一致するpath組を78件確認しました。
+現在main、作業branch、PR、同一SHAのCIを取得してから対象source/fixture/証拠を読む。未保存差分のあるcheckoutを保全し、別作業は専用worktreeで行う。branchは`codex/`を用い、履歴を書き換えず通常のcommit/mergeで保存する。競合では現行契約と双方の必要な変更を保全し、削除台帳に登録された旧内容を復活させない。
 
-- 4件は、`Mr.`のMITツール原本を`rock/vendor/mr`へ固定した意図的なsnapshotです。原本とhashは変更せず、Rock star固有の修正はadapterに置きます。
-- 多くはshadcn由来のUI部品や設定boilerplateです。private packageをpublic buildへ依存させる利点より公開境界を壊す危険が大きいため、cross-repository package化の対象にはしません。
-- 実質的な重複は、製品名、ツールHub、8.88 USD案、仕事workflow、OSという説明です。これらの製品定義と公開契約は`rock`を正本とし、`Mr.`は非公開運用として参照します。
-- `Mr.`のDocker applianceは既存Linux上のworkerであり、AOSP OSではありません。自前OSのbuild/boot完了として扱いません。
+`project.md`は現在地・次作業・検証と生成台帳の入口にする。旧作業ログの全文を累積させずGit履歴から読む。正本・索引・status/Mission Controlを同期し、`npm run project:update`、`npm run metadata:check`、`npm run baseline:check`、`npm run design:check`、`npm run verify`を通す。Git保存やCIをProvider/実資金/実機/飛行の受入へ加算しない。
 
-## コードの所有ルール
+<a id="obsolete-content-cleanup"></a>
 
-| 領域 | owner | 共有方法 |
-| --- | --- | --- |
-| Product/料金/名称/進捗 | `rock` | README、project.md、repository map |
-| Work/Tool/Recipeの公開契約 | `rock` | schema、fixture、互換テスト |
-| AOSP、Android、端末権限 | `rock` | `android/`、`os/`、`contracts/` |
-| Telegram、顧客Bot、owner Bot | `Mr.` | private serviceとして実装。公開側へ秘密や運用台帳を移さない |
-| Railway/Supabase/provider | `Mr.` | credential参照を含まないinterfaceとreceiptだけを必要に応じて公開契約へ反映 |
-| 既存4ツール原本 | `Mr.` | 固定commitの`vendor/mr` snapshot。adapter/parityは`rock` |
-| UI boilerplate | 各repository | 同一内容でもdeploy境界ごとに保持。製品機能の重複には数えない |
+## 旧内容の削除と復元
 
-新しい機能はowner側だけに実装します。もう一方で必要になった場合は、コードのコピーではなく、入力・出力・権限・失敗条件を公開契約へ追加し、fixtureで同じ振る舞いを検証します。
+2026-10-13の利用者の明示指示「古くて紛らわしい不要な内容は削除」により、初期製品/構成/ファンド・旧OS分冊/監査・旧account提案/SIM主入口・旧Commerce prompt・仕様変遷の重複文書を削除した。必要な現役契約は共通設計02/04/06、OS検証、Commerce、Wallet workstreamへ統合。署名claimは[サービス利用権](service-entitlements.md)へ再編した。
 
-## 実施済みと残作業
+製品ベースの旧SIM/旧Mini価格・寸法・日付追記と、projectの長い旧作業ログを現行本文から削除した。RQ01〜RQ50、ゲーム/物質発明、署名・失効・復旧・料金保留と未受入gateは保持する。Miniの旧4塔/Hub・41万円の紹介とP0回転模型を撤去し、R5の1本自律・200mm以内・別Hub不要・価格未確定へ同期した。
 
-実施済み:
+削除前の復元commitは `98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。[削除台帳](../data/archived-paths.json)の`restoreCommits[path]`が今回のpath別復元先を持つ。以前の削除分は既存の`commit`（`96845e6006c15e39ba5b45495f79c21bdff7399e`）を維持する。台帳を混ぜて一つの古いSHAへ置き換えない。
 
-- repositoryの役割、名称、公開範囲を一つのmapへ固定。
-- `vvvv`を新規開発・runtime・CI・deploy先として禁止。
-- `Mr.`の4ツールは既存の固定commit/hash方式を維持。
-- `npm run repository:check`を追加し、正本が一つであること、legacy参照がactive sourceへ戻らないこと、vendor snapshotが改変されていないことを検査。
+例: `git show 98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb:docs/sim-led-product-architecture.md` で削除前の本文を読む。`git show`は読取であり、旧仕様を現行へ復活させない。新しく削除するpathは、固定原本条件・incoming参照・現役契約の受け皿を確認し、`git cat-file -e <restoreSHA>:<path>`で実在を確かめてから台帳へ登録する。
 
-残作業:
-
-1. `vvvv`を参照するGitHub Actions、Railway、launchd、ローカルserviceがないことを外部環境ごとに確認する。
-2. 確認できた場合だけ`vvvv`のREADME/descriptionへ後継を表示し、GitHub archiveを行う。履歴削除やforce pushはしない。
-3. `Mr.`内でOS・製品定義を独立に増やしている文書には、`rock`の対応仕様への参照と「private operations」の表示を段階的に追加する。
-4. 共有したい新しい処理は、秘密を除いたcontract/fixtureとして`rock`へ提案し、移植前にライセンスと公開可否を確認する。
-
-## 禁止事項
-
-- `Mr.`の`.env`、account registry、顧客データ、receipt、deployment設定を`rock`へコピーしない。
-- `vendor/mr`の固定原本やhashを書き換えて最新版扱いしない。
-- repository名が似ていることを理由に、稼働先、token、database、公開siteを切り替えない。
-- archive前の稼働参照監査を省略しない。
+検査が旧入口pathを要求する場合は、同じ意味の現行正本を検査するよう同期する。原本hash、要求、Tool/schema、安全/料金gateの判定を削除・緩和して通さない。凍結された過去証拠のpath/hashは保持し、現行のtaskPlan・索引・読取入口を更新する。

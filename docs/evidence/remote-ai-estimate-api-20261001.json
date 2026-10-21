@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-10-01",
+  "scope": "local implementation verification only",
+  "commands": {
+    "api": "npm run test:api",
+    "focused": "node --experimental-strip-types --test tests/remote-ai-rate-card.test.mjs tests/remote-ai-rate-card-registry.test.mjs tests/a2a-price-quote.test.mjs",
+    "migration": "node --experimental-strip-types --test tests/migration-union.test.mjs",
+    "typecheck": "npm run typecheck",
+    "lint": "npm run lint:product",
+    "build": "npm run build"
+  },
+  "results": {
+    "workerD1ApiAssertions": 572,
+    "rateCardAndQuoteFocusedTests": 9,
+    "migrationConvergenceCases": 9,
+    "typecheck": "passed",
+    "productLint": "passed",
+    "productionBuild": "passed"
+  },
+  "apiCases": [
+    "user without RockstarOS service entitlement cannot request an estimate",
+    "no configured trusted rate card fails closed",
+    "authenticated operator endpoint registers a synthetic provider-signed rate card into D1",
+    "same-card retry is idempotent and revocation prevents later estimate use",
+    "D1 card digest, Provider signature, current trust key, and validity window are rechecked for estimates",
+    "estimate response explicitly reports providerSubmission=not_performed and executionAuthorized=false",
+    "an estimate above the supplied per-request cap remains visible and is marked outside the cap"
+  ],
+  "limits": [
+    "rate card and key were generated for local tests and are not provider-supplied",
+    "D1 registration route was tested in a local Worker/D1 fixture, not deployed or connected to a production provider registry",
+    "the prompt was submitted only to the RockstarOS estimate route and was not sent to an LLM provider",
+    "UTF-8-byte token ceiling plus framing allowance requires acceptance for each provider tokenizer and billable meter",
+    "signed rate cards are persisted in D1; only the trust-root public-key environment list is bounded by Cloudflare's current 5 KB per-variable limit",
+    "no paid model execution, provider usage, wallet debit, invoice, or production billing was tested",
+    "no carrier activation, SIM fulfillment, or supported-device OS installation was tested"
+  ]
+}

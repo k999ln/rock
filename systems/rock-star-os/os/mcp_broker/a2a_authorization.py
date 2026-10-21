@@ -6,20 +6,20 @@ from urllib.parse import urlsplit
 
 from .http import MAX_INPUT, identifier
 
-SCHEMA = 'rock-a2a-broker-authorization/1'
-DOMAIN = b'rock-a2a-broker-authorization-signature/1\0'
+SCHEMA = 'rock-a2a-broker-authorization/2'
+DOMAIN = b'rock-a2a-broker-authorization-signature/2\0'
 MAX_PROOF_LIFETIME_MS = 5 * 60_000
 SIGNED_FIELDS = (
     'schema', 'authorityId', 'ownerUserId', 'deviceRef', 'delegationId',
     'parentJobId', 'messageId', 'targetOrigin', 'targetAgentName',
     'targetAgentVersion', 'protocolVersion', 'inputSha256', 'budgetCurrency',
-    'budgetLimitMinor', 'deadlineAt', 'authorizationSha256', 'issuedAt',
+    'budgetLimitMinor', 'continueWhileDeviceOffline', 'deadlineAt', 'authorizationSha256', 'issuedAt',
     'expiresAt', 'keyId',
 )
 INTENT_FIELDS = {
     'id', 'parentJobId', 'messageId', 'targetOrigin', 'targetAgentName',
     'targetAgentVersion', 'protocolVersion', 'budgetCurrency',
-    'budgetLimitMinor', 'parentBudgetLimitMinor', 'deadlineAt', 'message',
+    'budgetLimitMinor', 'parentBudgetLimitMinor', 'continueWhileDeviceOffline', 'deadlineAt', 'message',
 }
 
 
@@ -71,6 +71,8 @@ def build_authorization_proof(authority_id, owner_user_id, device_ref, intent,
         raise ValueError('parent budget must cover the child limit')
     if type(intent['deadlineAt']) is not int or not 0 <= intent['deadlineAt'] < 2**53:
         raise ValueError('millisecond deadline required')
+    if intent['continueWhileDeviceOffline'] is not True:
+        raise ValueError('explicit offline continuation consent required')
     if type(intent['message']) is not str or not intent['message'].strip() or len(intent['message'].encode()) > MAX_INPUT:
         raise ValueError('bounded nonempty delegation message required')
     if type(issued_at) is not int or type(expires_at) is not int or expires_at <= issued_at or expires_at - issued_at > MAX_PROOF_LIFETIME_MS:
@@ -93,6 +95,7 @@ def build_authorization_proof(authority_id, owner_user_id, device_ref, intent,
         'budgetCurrency': intent['budgetCurrency'],
         'budgetLimitMinor': intent['budgetLimitMinor'],
         'parentBudgetLimitMinor': intent['parentBudgetLimitMinor'],
+        'continueWhileDeviceOffline': intent['continueWhileDeviceOffline'],
         'deadlineAt': intent['deadlineAt'],
     }
     authorization_sha256 = hashlib.sha256(_canonical(authorization_payload)).hexdigest()
@@ -111,6 +114,7 @@ def build_authorization_proof(authority_id, owner_user_id, device_ref, intent,
         'inputSha256': input_sha256,
         'budgetCurrency': intent['budgetCurrency'],
         'budgetLimitMinor': intent['budgetLimitMinor'],
+        'continueWhileDeviceOffline': intent['continueWhileDeviceOffline'],
         'deadlineAt': intent['deadlineAt'],
         'authorizationSha256': authorization_sha256,
         'issuedAt': issued_at,

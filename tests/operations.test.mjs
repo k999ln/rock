@@ -12,9 +12,6 @@ function fixture() {
     sqlite.exec(
       readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
     );
-  // The deployed Site initializes its full schema through the packaged bootstrap.
-  for (const sql of JSON.parse(readFileSync(new URL('../sky-schema-bootstrap.json', import.meta.url), 'utf8')))
-    sqlite.exec(sql);
   let now = Date.parse('2026-09-05T12:00:00Z');
   const db = {
     prepare(sql) {
@@ -89,6 +86,66 @@ await test('legal and patent browser jobs persist owned metadata through the exi
       await rejects(() => b.changeJob(input.id, finish), 404);
     }
   } finally { sqlite.close(); }
+});
+
+await test('LiveKit setup persists per owner without requiring or enabling telephony', async () => {
+  const { a, b, sqlite } = fixture();
+  const config = { deployment: 'cloud', serverUrl: 'wss://example.livekit.cloud', agentName: 'ip-character' };
+  const saved = await a.saveSkyProviderConnection({ expectedRevision: 0, provider: 'livekit', status: 'ready', config });
+  assert.deepEqual(saved.config, config);
+  assert.equal(saved.secretRef, null);
+  assert.equal((await a.listSkyProviderConnections())[0].config.agentName, 'ip-character');
+  assert.deepEqual(await b.listSkyProviderConnections(), []);
+  assert.deepEqual(await a.listSkyConnections(), []);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM jobs').get().n, 0);
+  await b.saveSkyProviderConnection({ expectedRevision: 0, provider: 'livekit', status: 'ready', config: { ...config, agentName: 'other-character' } });
+  assert.equal((await a.listSkyProviderConnections())[0].config.agentName, 'ip-character');
+  sqlite.close();
+});
+
+await test('LiveKit metadata rejects credentials, unsafe endpoints and unknown fields even in drafts', async () => {
+  const { a, sqlite } = fixture();
+  const config = { deployment: 'cloud', serverUrl: 'wss://example.livekit.cloud', agentName: 'ip-character' };
+  for (const change of [
+    { apiKey: 'test-only' }, { token: 'test-only' }, { arbitrary: 'value' },
+    { deployment: 'unknown' }, { agentName: 'bad/name' },
+    { serverUrl: 'https://example.livekit.cloud' },
+    { serverUrl: 'ws://example.livekit.cloud' },
+    { serverUrl: 'wss://user:password@example.livekit.cloud' },
+    { serverUrl: 'wss://example.livekit.cloud?access_token=test-only' },
+    { serverUrl: 'wss://example.livekit.cloud/#test-only' },
+    { serverUrl: 'wss://example.livekit.cloud/token/test-only' },
+    { serverUrl: 'not-a-url' }, { sipTrunkId: '+1234567890' },
+  ]) {
+    await rejects(() => a.saveSkyProviderConnection({ expectedRevision: 0, provider: 'livekit', status: 'setup_required', config: { ...config, ...change } }), 400);
+  }
+  assert.deepEqual(await a.listSkyProviderConnections(), []);
+  sqlite.close();
+});
+
+await test('LiveKit incomplete drafts and self-hosted loopback are distinct from complete setup', async () => {
+  const { a, sqlite } = fixture();
+  await a.saveSkyProviderConnection({ expectedRevision: 0, provider: 'livekit', status: 'setup_required', config: { agentName: 'ip-character' } });
+  await rejects(() => a.saveSkyProviderConnection({ expectedRevision: 1, provider: 'livekit', status: 'ready', config: { agentName: 'ip-character' } }), 400);
+  const config = { deployment: 'self_hosted', serverUrl: 'ws://127.0.0.1:7880', agentName: 'ip-character', sipTrunkId: 'ST_test', sipDispatchRuleId: 'SDR_test' };
+  await a.saveSkyProviderConnection({ expectedRevision: 1, provider: 'livekit', status: 'ready', config });
+  await rejects(() => a.saveSkyProviderConnection({ expectedRevision: 1, provider: 'livekit', status: 'ready', config: { ...config, deployment: 'cloud' } }), 400);
+  assert.deepEqual((await a.listSkyProviderConnections())[0].config, config);
+  sqlite.close();
+});
+
+await test('existing routing saves without voice; selecting and clearing LiveKit is explicit', async () => {
+  const { a, sqlite } = fixture();
+  const initial = await a.saveSkyProviderConnection({ expectedRevision: 0, provider: 'routing', status: 'ready', config: {} });
+  assert.equal(initial.config.realtimeVoice, undefined);
+  assert.equal(initial.config.telephony, undefined);
+  const selected = await a.saveSkyProviderConnection({ expectedRevision: 1, provider: 'routing', status: 'ready', config: { realtimeVoice: 'livekit', telephony: '' } });
+  assert.equal(selected.config.realtimeVoice, 'livekit');
+  assert.equal(selected.config.telephony, '');
+  await rejects(() => a.saveSkyProviderConnection({ expectedRevision: 0, provider: 'routing', status: 'ready', config: { telephony: 'unknown-provider' } }), 400);
+  const cleared = await a.saveSkyProviderConnection({ expectedRevision: 2, provider: 'routing', status: 'ready', config: { realtimeVoice: '', telephony: '' } });
+  assert.equal(cleared.config.realtimeVoice, '');
+  sqlite.close();
 });
 
 await test('job lifecycle records completion and history exactly once; terminal state is immutable', async () => {
@@ -168,68 +225,6 @@ await test('Sky connections are one-tap, idempotent and isolated per user', asyn
     () => a.connectSky({ tool: 'coconala', personalNumber: 'hidden' }),
     400,
   );
-});
-await test('Sky Phoenix history requires consent, is replay-safe and stays owner-scoped', async () => {
-  const { a, b, sqlite } = fixture();
-  const at = Date.parse('2026-09-05T12:00:00Z');
-  const input = {
-    id: '00000000-0000-4000-8000-000000000001',
-    sessionId: '10000000-0000-4000-8000-000000000001',
-    toolId: 'mr-citations',
-    type: 'detail',
-    at,
-    position: 2,
-  };
-  try {
-    await rejects(() => a.recordSkyFeedEvents({ events: [input] }), 409);
-    await a.setSkyFeedPersonalization({ enabled: true });
-    await a.recordSkyFeedEvents({ events: [input] });
-    await a.recordSkyFeedEvents({ events: [input] });
-    assert.deepEqual(
-      (await a.skyFeedHistory()).events.map(({ toolId, type }) => ({ toolId, type })),
-      [{ toolId: 'mr-citations', type: 'detail' }],
-    );
-    assert.deepEqual((await b.skyFeedHistory()).events, []);
-    await a.clearSkyFeedHistory();
-    assert.deepEqual((await a.skyFeedHistory()).events, []);
-  } finally {
-    sqlite.close();
-  }
-});
-await test('Sky Phoenix rejects private fields and altered replays without granting authority', async () => {
-  const { a, sqlite } = fixture();
-  const at = Date.parse('2026-09-05T12:00:00Z');
-  const input = {
-    id: '00000000-0000-4000-8000-000000000001',
-    sessionId: '10000000-0000-4000-8000-000000000001',
-    toolId: 'mr-citations',
-    type: 'impression',
-    at,
-    dwellMs: 10_000,
-    position: 2,
-  };
-  try {
-    await a.setSkyFeedPersonalization({ enabled: true });
-    for (const invalid of [
-      { ...input, prompt: 'secret' },
-      { ...input, toolId: 'unknown' },
-      { ...input, type: 'scroll' },
-      { ...input, type: 'launch', dwellMs: 10_000 },
-    ])
-      await rejects(() => a.recordSkyFeedEvents({ events: [invalid] }), 400);
-    await a.recordSkyFeedEvents({ events: [input] });
-    await rejects(
-      () => a.recordSkyFeedEvents({ events: [{ ...input, position: 3 }] }),
-      409,
-    );
-    assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM jobs').get().n, 0);
-    assert.equal(
-      sqlite.prepare('SELECT COUNT(*) AS n FROM sky_connections').get().n,
-      0,
-    );
-  } finally {
-    sqlite.close();
-  }
 });
 await test('active slot, hourly limit and disabled tools are enforced before dispatch', async () => {
   const { a, advance } = fixture(),
@@ -401,4 +396,187 @@ await test('history failure rolls back completion so a report can safely be retr
   sqlite.exec('DROP TRIGGER reject_history');
   await a.changeJob(input.id, finish);
   assert.equal((await a.getJob(input.id)).status, 'completed');
+});
+
+await test('Sky library persists bookmarks idempotently and scopes reads and removal to the owner', async () => {
+  const { a, b, db, sqlite, advance } = fixture();
+  try {
+    assert.deepEqual(await a.listSkyLibrary(), []);
+    assert.deepEqual(await a.saveSkyLibrary({ tool: 'mr-citations', saved: true }), { tool: 'mr-citations', saved: true });
+    const first = await a.listSkyLibrary();
+    advance(1000);
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    assert.deepEqual(await a.listSkyLibrary(), first);
+    assert.deepEqual(await operations(db, 'a').listSkyLibrary(), first);
+    assert.deepEqual(await b.listSkyLibrary(), []);
+    await b.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    const other = await b.listSkyLibrary();
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    assert.deepEqual(await a.listSkyLibrary(), []);
+    assert.deepEqual(await b.listSkyLibrary(), other);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky library rejects invalid tools, save states and owner spoofing without writes', async () => {
+  const { a, sqlite } = fixture();
+  try {
+    for (const input of [null, [], {}, { tool: 'unknown', saved: true },
+      { tool: 'mr-citations', saved: 'true' }, { tool: 'mr-citations', saved: 1 },
+      { tool: 'mr-citations', saved: true, user: 'b' },
+      { tool: 'mr-citations', saved: true, user_id: 'b' }]) {
+      await rejects(() => a.saveSkyLibrary(input), 400);
+    }
+    assert.deepEqual(await a.listSkyLibrary(), []);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky library bookmarks never grant consent, entitlements or create work', async () => {
+  const { a, sqlite } = fixture();
+  try {
+    const tables = sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name <> 'sky_library_items'").all().map((row) => row.name);
+    const counts = () => tables.map((table) => [table, sqlite.prepare(`SELECT COUNT(*) AS n FROM "${String(table)}"`).get().n]);
+    const before = counts();
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    assert.deepEqual(counts(), before);
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    assert.deepEqual(counts(), before);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky Phoenix history requires consent, is replay-safe and stays owner-scoped', async () => {
+  const { a, b, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = { id: '00000000-0000-4000-8000-000000000001', sessionId: '10000000-0000-4000-8000-000000000001', toolId: 'mr-citations', type: 'detail', at, position: 2 };
+  try {
+    await rejects(() => a.recordSkyFeedEvents({ events: [input] }), 409);
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await a.recordSkyFeedEvents({ events: [input] });
+    await a.recordSkyFeedEvents({ events: [input] });
+    const mine = await a.skyFeedHistory();
+    assert.equal(mine.enabled, true);
+    assert.equal(mine.events.length, 1);
+    assert.equal(mine.events[0].toolId, 'mr-citations');
+    assert.deepEqual((await b.skyFeedHistory()).events, []);
+    await b.setSkyFeedPersonalization({ enabled: true });
+    await b.recordSkyFeedEvents({ events: [input] });
+    assert.equal((await b.skyFeedHistory()).events.length, 1);
+    await a.clearSkyFeedHistory();
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+    assert.equal((await b.skyFeedHistory()).events.length, 1);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky Phoenix rejects private fields, invalid events and altered replays', async () => {
+  const { a, sqlite } = fixture();
+  const at = Date.parse('2026-09-05T12:00:00Z');
+  const input = { id: '00000000-0000-4000-8000-000000000001', sessionId: '10000000-0000-4000-8000-000000000001', toolId: 'mr-citations', type: 'impression', at, dwellMs: 10_000, position: 2 };
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    for (const invalid of [
+      { ...input, prompt: 'secret' }, { ...input, user_id: 'b' },
+      { ...input, toolId: 'unknown' }, { ...input, type: 'scroll' },
+      { ...input, dwellMs: 300_001 }, { ...input, at: at + 30_001 },
+      { ...input, type: 'launch', dwellMs: 10_000 },
+    ]) await rejects(() => a.recordSkyFeedEvents({ events: [invalid] }), 400);
+    await a.recordSkyFeedEvents({ events: [input] });
+    await rejects(() => a.recordSkyFeedEvents({ events: [{ ...input, position: 3 }] }), 409);
+    assert.equal((await a.skyFeedHistory()).events.length, 1);
+  } finally { sqlite.close(); }
+});
+
+await test('disabling Sky Phoenix deletes only that owner history and grants no authority', async () => {
+  const { a, sqlite } = fixture();
+  const counts = () => sqlite.prepare(`SELECT
+      (SELECT COUNT(*) FROM jobs) AS jobs,
+      (SELECT COUNT(*) FROM sky_connections) AS connections,
+      (SELECT COUNT(*) FROM sky_library_items) AS library`).get();
+  const before = counts();
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await a.recordSkyFeedEvents({ events: [{
+      id: '00000000-0000-4000-8000-000000000001',
+      sessionId: '10000000-0000-4000-8000-000000000001',
+      toolId: 'mr-citations', type: 'launch',
+      at: Date.parse('2026-09-05T12:00:00Z'),
+    }] });
+    assert.deepEqual(counts(), before);
+    await a.setSkyFeedPersonalization({ enabled: false });
+    assert.deepEqual(counts(), before);
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky Phoenix learns owned terminal outcomes and reset keeps old outcomes forgotten', async () => {
+  const { a, b, sqlite, advance } = fixture();
+  const input = job();
+  try {
+    await a.setSkyFeedPersonalization({ enabled: true });
+    await b.setSkyFeedPersonalization({ enabled: true });
+    advance(1);
+    await a.createJob(input);
+    await a.changeJob(input.id, { action: 'start' });
+    await a.changeJob(input.id, finish);
+    const learned = await a.skyFeedHistory();
+    assert.deepEqual(learned.events.map(({ id, sessionId, toolId, type }) => ({ id, sessionId, toolId, type })), [{
+      id: input.id, sessionId: input.id, toolId: 'mr-citations', type: 'complete',
+    }]);
+    assert.deepEqual((await b.skyFeedHistory()).events, []);
+    advance(1);
+    await a.clearSkyFeedHistory();
+    assert.deepEqual((await a.skyFeedHistory()).events, []);
+  } finally { sqlite.close(); }
+});
+
+await test('provider CAS admits one creator/update and preserves owner, provider and secret reference', async () => {
+  const { a, b, sqlite, db } = fixture();
+  const value = { provider: 'instagram', status: 'setup_required', config: { account: 'first' }, expectedRevision: 0 };
+  try {
+    for (const revision of [undefined, null, -1, 0.5, '0', true, Number.MAX_SAFE_INTEGER])
+      await rejects(() => a.saveSkyProviderConnection({ ...value, expectedRevision: revision }), 400);
+    await rejects(() => a.saveSkyProviderConnection({ ...value, expectedRevision: 1 }), 409);
+    const creates = await Promise.allSettled([a.saveSkyProviderConnection(value), a.saveSkyProviderConnection(value)]);
+    assert.equal(creates.filter((item) => item.status === 'fulfilled').length, 1);
+    assert.equal(creates.find((item) => item.status === 'rejected').reason.status, 409);
+    sqlite.prepare("UPDATE sky_provider_connections SET secret_ref='fixture-vault-ref'").run();
+    const updates = await Promise.allSettled(['two', 'three'].map((account) => a.saveSkyProviderConnection({ ...value, expectedRevision: 1, config: { account } })));
+    const winner = updates.find((item) => item.status === 'fulfilled').value;
+    assert.equal(winner.revision, 2); assert.equal(winner.secretRef, 'fixture-vault-ref');
+    assert.equal(updates.find((item) => item.status === 'rejected').reason.status, 409);
+    const snapshot = () => JSON.stringify(sqlite.prepare('SELECT * FROM sky_provider_connections ORDER BY user_id,provider').all());
+    const before = snapshot();
+    for (const expectedRevision of [0, 1, 3]) await rejects(() => a.saveSkyProviderConnection({ ...value, expectedRevision }), 409);
+    await rejects(() => b.saveSkyProviderConnection({ ...value, expectedRevision: 2 }), 409);
+    await rejects(() => a.saveSkyProviderConnection({ ...value, provider: 'make', expectedRevision: 2 }), 409);
+    assert.equal(snapshot(), before);
+    await b.saveSkyProviderConnection(value);
+    await a.saveSkyProviderConnection({ ...value, provider: 'make' });
+    assert.equal((await a.listSkyProviderConnections()).find((item) => item.provider === 'instagram').revision, 2);
+    let prepared = 0;
+    const interleaved = operations({ prepare(sql) {
+      prepared++; const stmt = db.prepare(sql);
+      return { bind(...args) { stmt.bind(...args); return this; }, async first() {
+        const own = await stmt.first();
+        await a.saveSkyProviderConnection({ ...value, expectedRevision: 3, config: { account: 'later' } });
+        return own;
+      } };
+    } }, 'a');
+    const own = await interleaved.saveSkyProviderConnection({ ...value, expectedRevision: 2, config: { account: 'own' } });
+    assert.equal(prepared, 1); assert.equal(own.revision, 3); assert.equal(own.config.account, 'own');
+    assert.equal((await a.listSkyProviderConnections()).find((item) => item.provider === 'instagram').revision, 4);
+  } finally { sqlite.close(); }
+});
+
+await test('provider additive migration backfills old rows and enforces positive integer versions', () => {
+  const sqlite = new DatabaseSync(':memory:');
+  try {
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/post-site-bridge/0013_sky_provider_connections.sql', import.meta.url), 'utf8'));
+    sqlite.exec("INSERT INTO sky_provider_connections VALUES('legacy','instagram','ready','{\"account\":\"retained\"}','vault-reference',123,456)");
+    const old = { ...sqlite.prepare('SELECT * FROM sky_provider_connections').get() };
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/post-site-bridge/0062_sky_provider_revision.sql', import.meta.url), 'utf8'));
+    assert.deepEqual({ ...sqlite.prepare('SELECT * FROM sky_provider_connections').get() }, { ...old, revision: 1 });
+    for (const revision of [0, -1, 1.5, 'invalid', null])
+      assert.throws(() => sqlite.prepare('UPDATE sky_provider_connections SET revision=?').run(revision));
+  } finally { sqlite.close(); }
 });

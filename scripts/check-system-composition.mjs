@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { existsOrArchived } from './archived-paths.mjs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -56,7 +57,7 @@ for (const item of audit.fixedCombination) {
   fail(item.evidence.length > 0, `${item.id}: 証拠が必要です`);
   for (const path of item.evidence)
     fail(
-      existsSync(resolve(root, path)),
+      existsOrArchived(path, root),
       `${item.id}: 証拠が存在しません: ${path}`,
     );
 }

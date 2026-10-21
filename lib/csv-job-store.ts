@@ -143,11 +143,17 @@ async function event(
   name: string,
   detail: unknown = {},
 ) {
+  // A delayed append must not recreate history after removal or attach it to a
+  // new input incarnation that reused the same client id. Later revisions of
+  // this input may still append their already-committed transition history.
   await db
     .prepare(
-      'INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at) VALUES (?, ?, ?, ?, ?)',
+      "INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at) SELECT ?, ?, ?, ?, ? FROM csv_jobs WHERE id = ? AND user_id = ? AND input_key = ? AND revision >= ? AND status <> 'cleanup_pending'",
     )
-    .bind(row.id, row.user_id, name, JSON.stringify(detail), Date.now())
+    .bind(
+      row.id, row.user_id, name, JSON.stringify(detail), Date.now(),
+      row.id, row.user_id, row.input_key, row.revision,
+    )
     .run();
 }
 
@@ -281,9 +287,12 @@ async function processCsvJob(row: CsvJobRow) {
     .run();
   if ((claim.meta.changes ?? 0) !== 1)
     return view(await owned(db, row.user_id, row.id));
-  row = await owned(db, row.user_id, row.id);
-  await event(db, row, 'processing', { attempt: row.attempt });
+  // The successful conditional claim determines these fields even if its
+  // subsequent read fails. Keep that exact fence available to recovery.
+  row = { ...row, status: 'processing', attempt: row.attempt + 1, error_code: null, updated_at: now };
   try {
+    row = await owned(db, row.user_id, row.id);
+    await event(db, row, 'processing', { attempt: row.attempt });
     const inputObject = await bucket.get(row.input_key);
     if (!inputObject)
       throw new CsvJobError(
@@ -319,9 +328,9 @@ async function processCsvJob(row: CsvJobRow) {
       httpMetadata: { contentType: 'text/html; charset=utf-8' },
     });
     const completed = Date.now();
-    await db
+    const completion = await db
       .prepare(
-        `UPDATE csv_jobs SET status = 'completed', result_key = ?, safe_result_key = ?, report_json_key = ?, report_html_key = ?, output_sha256 = ?, validation_json = ?, revision = revision + 1, completed_at = ?, updated_at = ? WHERE id = ? AND user_id = ? AND status = 'processing'`,
+        `UPDATE csv_jobs SET status = 'completed', result_key = ?, safe_result_key = ?, report_json_key = ?, report_html_key = ?, output_sha256 = ?, validation_json = ?, revision = revision + 1, completed_at = ?, updated_at = ? WHERE id = ? AND user_id = ? AND status = 'processing' AND revision = ? AND attempt = ? AND input_key = ?`,
       )
       .bind(
         resultKey,
@@ -334,26 +343,40 @@ async function processCsvJob(row: CsvJobRow) {
         completed,
         row.id,
         row.user_id,
+        row.revision,
+        row.attempt,
+        row.input_key,
       )
       .run();
     row = await owned(db, row.user_id, row.id);
+    if ((completion.meta.changes ?? 0) !== 1) return view(row);
     await event(db, row, 'completed', {
       outputSha256: result.outputSha256,
       validation: result.report.validation,
     });
     return view(row);
   } catch (error) {
-    await bucket.delete(csvOutputKeys(row));
+    // A failed response (or event append) can follow a committed completion.
+    // Reconcile before changing state; never remove artifacts referenced by it.
+    const persisted = await owned(db, row.user_id, row.id);
+    if (persisted.input_key === row.input_key && persisted.status === 'completed')
+      return view(persisted);
+    if (persisted.input_key !== row.input_key || persisted.status !== 'processing' ||
+      persisted.revision !== row.revision || persisted.attempt !== row.attempt) throw error;
+    // Unreferenced partial outputs stay in this input incarnation. A retry
+    // overwrites them; explicit deletion/retention already removes every key.
+    // Deleting here could race a committed or resumed attempt after response loss.
     const code =
       error instanceof CsvError || error instanceof CsvJobError
         ? error.code
         : 'PROCESSING';
-    await db
+    const failed = await db
       .prepare(
-        `UPDATE csv_jobs SET status = 'quality_failed', error_code = ?, revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND status = 'processing'`,
+        `UPDATE csv_jobs SET status = 'quality_failed', error_code = ?, revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND status = 'processing' AND revision = ? AND attempt = ? AND input_key = ?`,
       )
-      .bind(code, Date.now(), row.id, row.user_id)
+      .bind(code, Date.now(), row.id, row.user_id, row.revision, row.attempt, row.input_key)
       .run();
+    if ((failed.meta.changes ?? 0) !== 1) throw error;
     row = await owned(db, row.user_id, row.id);
     await event(db, row, 'quality_failed', { code });
     throw error;
@@ -383,6 +406,9 @@ export async function acceptCsvJob(
       'REVISION',
       '別の画面で更新されています。再読込してください。',
     );
+  // The original acceptance already fixed the payment/consent decision. Resume
+  // only this owner and observed revision after an interrupted event append.
+  if (row.status === 'accepted') return processCsvJob(row);
   const sample = row.payment_status === 'sample';
   const method = input.paymentMethod?.trim().slice(0, 40) ?? '';
   const reference = input.paymentReference?.trim().slice(0, 120) ?? '';

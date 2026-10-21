@@ -1,0 +1,26 @@
+{
+  "schema": "rockstar-zema-agent-result-handoff-local/1",
+  "date": "2026-10-02",
+  "scope": "Prepare a completed external Agent result as a new separately authorized sibling delegation under the same Zema parent job",
+  "implementation": [
+    "Only results whose task is completed and whose text artifact capture is recorded may be used.",
+    "Non-text omissions, truncated documents, malformed parts and prompts over 8,000 characters are rejected.",
+    "The source Agent identity and artifact are serialized as JSON untrusted data with explicit no-instruction/no-authority/no-permission-transfer language.",
+    "The UI action prefills a new draft, clears the previous target, quote and prompt-sharing consent, and reuses the existing parent budget currency/cap. It does not send the next task.",
+    "The next task remains a direct sibling under the same parent, so existing child count/concurrency and shared atomic budget constraints apply; recursive Agent re-delegation remains disabled."
+  ],
+  "verification": {
+    "unitAndSourceContracts": "PASS: node --test tests/a2a-result-handoff.test.mjs (3/3)",
+    "typecheck": "PASS: npm run typecheck",
+    "productLint": "PASS: npm run lint:product",
+    "a2aInterop": "PASS: node --test tests/a2a-client.test.mjs (10/10), separate local sequential Node-to-Python protocol handoff",
+    "cloudWorkerTwoAgentHandoff": "PASS: npm run sky:a2a:workflow:positive (13/13); two distinct fixture Agent origins execute separately approved sibling tasks under one shared D1 parent cap, with encrypted artifact handoff and restart/no-replay checks. See a2a-two-agent-cloud-workflow-local-20261002.json.",
+    "fullRepositoryVerify": "PASS: npm run verify exited 0 after the two-Agent Worker/D1 workflow and install-proof idempotency fix; local verification only."
+  },
+  "notProven": [
+    "The Workbench follow-up draft has not been dispatched to an external Provider; quote/consent/approval are new required user actions.",
+    "No first-class parent controller automatically sequences both child workflows; the second delegation remains a separately approved sibling task. Both Worker/D1 child executions and cross-agent result handoff now have a local fixture test.",
+    "No real Provider interoperability, production invoice/funded settlement, Android app build or physical device acceptance."
+  ],
+  "boundary": "This adds a Zema-mediated user-reviewed draft handoff, not autonomous recursive delegation. Previous Agent output is untrusted and carries no permissions."
+}

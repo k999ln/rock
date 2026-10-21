@@ -2,17 +2,22 @@
 
 更新日: 2026-09-19
 
-このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、進捗の正本は [data/project-status.json](../../data/project-status.json) であり、ここでは内容を置き換えない。
+このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、task進捗の正本は [data/project-status.json](../../data/project-status.json)、部隊のGoal・段階・ルール・依存・次行動の正本は [avokado Mission Control](../mission-control.md) と [data/mission-control.json](../../data/mission-control.json) であり、ここでは内容を置き換えない。
 
-製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。
+製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。`docs/` 全体の地図は[docs/README.md](../README.md)、仕様の変遷は[現行製品方針](../product-baseline.md)、全Toolとエージェントの機能は[エージェント・Tool総覧](../agents-and-tools.md)にある。
+
+## 一つの作業に絞る入口
+
+[機能別の作業部屋](../../workspaces/README.md)は、既存AMCの32分野と全taskを使う作業用索引です。各部屋にソース、未完了task、前提、実行保留、検証コマンドをまとめています。[アイデア置き場](../../workspaces/IDEAS.md)では採用前の思いつきを分離します。
 
 ## 最初に確認するもの
 
 1. `git status --short --branch` でbranch、競合、未保存差分を確認する。
-2. [現在の開発状態](../current-state-20260911.md) と [製品ベース](../product-baseline.md) を読む。
-3. [進捗JSON](../../data/project-status.json) から担当するtask IDと依存gateを選ぶ。
-4. 下表の作業ストリームを一つ開き、対象、非対象、完了条件、検証コマンドを確認する。
-5. 完了時に `data/project-status.json`、`project.md`、必要な設計書と証拠を同期する。
+2. [製品ベース](../product-baseline.md)、最新Gitと進捗JSON・同一artifactの証拠を読む。[現在の開発状態](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/current-state-20260911.md) は履歴を含むため現在値へ置き換えない。
+3. [Mission Control](../mission-control.md) のtaskAssignmentsで一意の担当を確認し、対象範囲・残課題とtaskPlansの入力、手順、成果物、合格条件を読む。参考・旧版taskを担当実績に加算しない。
+4. [進捗JSON](../../data/project-status.json) から対応するtask IDと依存gateを選ぶ。
+5. 下表の作業ストリームを一つ開き、対象、非対象、完了条件、検証コマンドを確認する。
+6. 完了時に `data/mission-control.json`、`data/project-status.json`、`project.md`、必要な設計書と証拠を同期する。
 
 ## 状態の読み方
 
@@ -22,7 +27,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は157 task中104 done、33 in progress、19 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は393登録task（親32、子192、独立169。実行単位は親を除く361件）中114 done、48 in progress、230 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム
@@ -36,11 +41,11 @@
 | [Security / Identity / Compliance](04-security-identity-compliance.md) | 認証、秘密、署名、SBOM、法務、マイナンバー   | production鍵、license、独立審査             |
 | [Web / PWA / Sites](05-web-pwa-sites.md)                               | Web画面、PWA、D1、配備、本人限定Site         | sourceと配信版の同一commit化                |
 | [Native / QEMU / Release](06-native-qemu-release.md)                   | Buildroot/Linux、QEMU、更新、復旧、配布      | 正式署名後の同一候補再受入                  |
-| [Android / Device / Local AI](07-android-device-local-ai.md)           | AOSP、Pixel、BSP、実機、端末内AI             | 正確な機種選定、full build、flash、実機試験 |
+| [Android / Device / Local si](07-android-device-local-ai.md)           | AOSP、Pixel、BSP、実機、端末内si             | 正確な機種選定、full build、flash、実機試験 |
 | [Game / Market / Fund](08-game-market-fund.md)                         | ゲーム交換、作者SDK、PAPER市場、自律ファンド | 実ゲームsandboxとprovider境界               |
 | [Business Pilots](09-business-pilots.md)                               | CSV、メルカリ、Fashion Brand Ops             | 第三者の真正な有料取引と継続利用            |
 | [Git / CI / Operations](10-git-ci-operations.md)                       | branch、PR、CI、進捗同期、証拠               | 現在のmerge競合解消とmain統合               |
-| [Material Invention / avocadoMini](11-material-invention-avocado-mini.md) | 物質digital twin、空間操作、安全、再計算、Patent AI | 合成scene／pose実装と四方向prototype       |
+| [Material Invention / avocadoMini](11-material-invention-avocado-mini.md) | 物質digital twin、空間操作、安全、再計算、Patent si | 合成scene／pose実装と四方向prototype       |
 
 ## 分類ルール
 
@@ -59,3 +64,4 @@
 4. 配布候補または統合前は `npm run verify` と必要なOS固有試験を実行する。
 5. `npm run project:update` で進捗文書を同期する。
 6. 同じSHAのCI、配備、実機、provider受入を必要に応じて別々に確認する。
+

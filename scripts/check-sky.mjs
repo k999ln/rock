@@ -17,8 +17,8 @@ const candidateCount = catalog.filter(
   ({ status }) => status === 'candidate',
 ).length;
 requireValue(
-  readyCount === 12,
-  `Web/PC readyは12件です（実際: ${readyCount}）`,
+  readyCount === 16,
+  `Web/PC readyは16件です（実際: ${readyCount}）`,
 );
 requireValue(
   candidateCount === 22,
@@ -31,6 +31,11 @@ for (const tool of catalog)
     skyToolExecutionScope(tool) !== 'unavailable',
     `実装範囲の判定がありません: ${tool.id}`,
   );
+const amcTool = catalog.find(({ id }) => id === 'rockstar-amc');
+requireValue(
+  amcTool && skyToolExecutionScope(amcTool) === 'assisted-preparation',
+  'AMCの実装範囲は計画作成と手動の進捗記録です',
+);
 for (const tool of catalog.filter(({ status }) => status === 'candidate'))
   requireValue(
     jobTools.has(tool.id),
@@ -69,17 +74,17 @@ requireValue(
 
 const projectGuide = read('PROJECTS.md');
 requireValue(
-  projectGuide.includes('AI自動化チームのTool'),
+  projectGuide.includes('si自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',
 );
 const teamGuide =
   projectGuide
-    .split('## SkyのAI自動化チーム\n')[1]
+    .split('## Skyのsi自動化チーム\n')[1]
     ?.split('## 実装・配備単位\n')[0] ?? '';
 const commonGuide =
   projectGuide
-    .split('| AIチームを支える共通機能 |')[1]
-    ?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+    .split('| siチームを支える共通機能 |')[1]
+    ?.split('## Skyのsi自動化チーム\n')[0] ?? '';
 for (const name of [
   'CSV業務',
   'メルカリ収益ループ',
@@ -96,7 +101,7 @@ for (const name of [
   );
 }
 requireValue(
-  teamGuide.includes('操作画面とSky接続は未実装') &&
+  teamGuide.includes('2D候補比較とSky接続を実装') &&
     teamGuide.includes('Sky Tool SDKの開発者向け画面'),
   'Material Inventionの接続状態または/studioの用途が不明です',
 );
@@ -116,7 +121,7 @@ const readme = read('README.md');
 requireValue(
   readme.includes('R5 is the current design baseline') &&
     readme.includes(
-      'The Material Invention interface and Sky connection are not implemented',
+      'Simulation and laboratory connections are not implemented',
     ),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
@@ -177,6 +182,7 @@ const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
 const toolUiState = read('lib/sky-tool-ui.ts');
 const chat = read('components/sky-chat-workspace.tsx');
+const chatSession = read('components/use-sky-chat-session.ts');
 const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
 const workspaceCss = read('app/workspace.css');
@@ -204,6 +210,7 @@ for (const marker of [
   );
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
+const sharedMcpClient = read('lib/mcp-client.ts');
 for (const marker of [
   'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
@@ -212,7 +219,7 @@ for (const marker of [
   "'/disconnect'",
 ])
   requireValue(
-    fashionClient.includes(marker),
+    (fashionClient + sharedMcpClient).includes(marker),
     `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
   );
 requireValue(
@@ -250,12 +257,7 @@ for (const marker of [
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
 
 requireValue(
-  workspace.includes('<SkyToolOverview') &&
-    (workspace.match(/className=\{styles.utilityDialog\}/g) || []).length >=
-      2 &&
-    read('components/sky-workspace.module.css').includes(
-      'max-height: calc(100dvh',
-    ),
+  (workspace.match(/rock-tool-dialog sky-tool-dialog/g) || []).length >= 2,
   'Skyのツール・PC接続Dialogに統一外観が適用されていません',
 );
 for (const marker of [
@@ -274,13 +276,14 @@ for (const marker of [
   'aria-label="担当を選ぶ"',
   'handleComposerKeyDown',
   'messagesEndRef',
-  'maxLength={2000}',
+  'maxLength={composerLimit}',
+  'skyRequestLimit(composerToolId)',
   '<MrToolRunner',
   'sky-chat-workflow',
   'listMcpConnections',
   'zema-sidebar',
   'zema-model-settings',
-  'consumeSkyZemaHandoff',
+  'useSkyChatSession(',
   'SKY_ZEMA_JOB_EVENT',
   'sky-chat-launch-tool',
   '<McpBotRunner',
@@ -290,8 +293,13 @@ for (const marker of [
     `Zemaの会話操作に「${marker}」がありません`,
   );
 
+requireValue(
+  chatSession.includes('consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId)'),
+  'Zemaの会話sessionに対象threadへの一回引き継ぎがありません',
+);
+
 for (const marker of [
-  'sessionStorage',
+  'openZemaPrivateStorage(providedStorage)',
   'SKY_ZEMA_HANDOFF_TTL_MS',
   'removeItem(SKY_ZEMA_HANDOFF_KEY)',
   'MAX_REQUEST_LENGTH',
@@ -300,6 +308,11 @@ for (const marker of [
     skyZemaHandoff.includes(marker),
     `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
   );
+const privateStorage = read('lib/zema-private-storage.ts');
+for (const marker of ['window.sessionStorage', 'zemaPrivateStorageBlocked()', 'target.removeItem(key)', 'target.getItem(key) !== null'])
+  requireValue(privateStorage.includes(marker), `Zemaの共有保存・消去確認に「${marker}」がありません`);
+for (const file of ['lib/sky-zema-handoff.ts', 'lib/zema-chat-session.ts'])
+  requireValue(read(file).includes("from './zema-private-storage.ts'"), `${file}: 共有保存境界を利用してください`);
 for (const marker of [
   '.sky-chat-simple',
   '.sky-chat-messages',
@@ -327,6 +340,7 @@ for (const marker of [
     `ZemaのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
+  'rockstar-amc',
   'rockstar-csv-cleanup',
   'rockstar-markets-analysis',
   'mercari-revenue',

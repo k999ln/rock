@@ -1,5 +1,5 @@
 import { bindEsimGoIssuedProfile, esimGoProfileDigest } from './esimgo-webhook.ts';
-import { storeEsimInstallMaterial } from './esim-install-material.ts';
+import { storeEsimInstallMaterial, validEsimQuickInstallUrl } from './esim-install-material.ts';
 import { verifyEsimPricingSnapshot } from './esim-plan-catalog.ts';
 
 const API_ROOT = 'https://api.esim-go.com/v2.5';
@@ -18,6 +18,8 @@ export type EsimGoIssuedProfile = {
   matchingId: string;
   smdpAddress: string;
   profileStatus: string;
+  appleInstallUrl?: string;
+  androidInstallUrl?: string;
 };
 
 export type EsimGoIssuedOrder = {
@@ -87,9 +89,15 @@ function readProfile(value: unknown, bundleName: string): EsimGoIssuedProfile | 
     }) : []),
   ];
   const profile = profiles.length === 1 ? profiles[0] : null;
+  const appleInstallUrl = profile && profile.appleInstallUrl !== undefined
+    ? profile.appleInstallUrl : undefined;
+  const androidInstallUrl = profile && profile.androidInstallUrl !== undefined
+    ? profile.androidInstallUrl : undefined;
   if (!profile || typeof profile.iccid !== 'string' || !ICCID_PATTERN.test(profile.iccid) ||
       typeof profile.matchingId !== 'string' || profile.matchingId.length < 1 || profile.matchingId.length > 256 ||
       typeof profile.smdpAddress !== 'string' || profile.smdpAddress.length < 1 || profile.smdpAddress.length > 256 ||
+      (appleInstallUrl !== undefined && !validEsimQuickInstallUrl(appleInstallUrl, 'appleInstallUrl')) ||
+      (androidInstallUrl !== undefined && !validEsimQuickInstallUrl(androidInstallUrl, 'androidInstallUrl')) ||
       (profile.type !== undefined && profile.type !== 'bundle') ||
       (profile.item !== undefined && profile.item !== bundleName)) return null;
   return {
@@ -98,6 +106,8 @@ function readProfile(value: unknown, bundleName: string): EsimGoIssuedProfile | 
     smdpAddress: profile.smdpAddress,
     profileStatus: typeof profile.profileStatus === 'string' && profile.profileStatus.length <= 64
       ? profile.profileStatus : 'unknown',
+    ...(typeof appleInstallUrl === 'string' ? { appleInstallUrl } : {}),
+    ...(typeof androidInstallUrl === 'string' ? { androidInstallUrl } : {}),
   };
 }
 
@@ -189,9 +199,10 @@ export function createEsimGoV25Client(
       return request(`/orders/${encodeURIComponent(orderReference)}`);
     },
 
-    async readInstallAssignments(orderReference: string): Promise<unknown> {
+    async readInstallAssignments(orderReference: string, includeQuickInstallUrls = false): Promise<unknown> {
       if (!orderReference || orderReference.length > 256) throw new EsimGoProviderError('INVALID_RESPONSE');
       const query = new URLSearchParams({ reference: orderReference });
+      if (includeQuickInstallUrls) query.set('additionalFields', 'installUrl');
       return request(`/esims/assignments?${query.toString()}`);
     },
   };
@@ -367,15 +378,21 @@ function installationProfile(value: unknown): EsimGoIssuedProfile | null {
       : root ? [root] : [];
   if (profiles.length !== 1) return null;
   const profile = profiles[0];
+  const appleInstallUrl = profile?.appleInstallUrl;
+  const androidInstallUrl = profile?.androidInstallUrl;
   if (!profile || typeof profile.iccid !== 'string' || !ICCID_PATTERN.test(profile.iccid) ||
       typeof profile.matchingId !== 'string' || profile.matchingId.length < 1 || profile.matchingId.length > 256 ||
-      typeof profile.smdpAddress !== 'string' || profile.smdpAddress.length < 1 || profile.smdpAddress.length > 256)
+      typeof profile.smdpAddress !== 'string' || profile.smdpAddress.length < 1 || profile.smdpAddress.length > 256 ||
+      (appleInstallUrl !== undefined && !validEsimQuickInstallUrl(appleInstallUrl, 'appleInstallUrl')) ||
+      (androidInstallUrl !== undefined && !validEsimQuickInstallUrl(androidInstallUrl, 'androidInstallUrl')))
     return null;
   return {
     iccid: profile.iccid,
     matchingId: profile.matchingId,
     smdpAddress: profile.smdpAddress,
     profileStatus: typeof profile.profileStatus === 'string' && profile.profileStatus.length <= 64 ? profile.profileStatus : 'unknown',
+    ...(typeof appleInstallUrl === 'string' ? { appleInstallUrl } : {}),
+    ...(typeof androidInstallUrl === 'string' ? { androidInstallUrl } : {}),
   };
 }
 
@@ -419,7 +436,7 @@ export async function issuePaidSkyEsimGoProfile(
       return { state: 'profile_bound', providerOrderReference: existing.providerOrderReference ?? undefined };
     if (existing.state === 'provider_completed' && existing.providerOrderReference && existing.profileDigest) {
       try {
-        const profile = installationProfile(await client.readInstallAssignments(existing.providerOrderReference));
+        const profile = installationProfile(await client.readInstallAssignments(existing.providerOrderReference, true));
         if (profile && await esimGoProfileDigest(profile.iccid, input.profileHashSecret) === existing.profileDigest) {
           await storeEsimInstallMaterial(db, profile, input.installMaterialEncryptionKey,
             input.ownerUserId, input.skyOrderId, input.now);
@@ -469,7 +486,22 @@ export async function issuePaidSkyEsimGoProfile(
   try {
     profileDigest = await esimGoProfileDigest(issued.profile.iccid, input.profileHashSecret);
     await recordProviderCompletion(db, input.skyOrderId, issued.orderReference, profileDigest, input.now);
-    await storeEsimInstallMaterial(db, issued.profile, input.installMaterialEncryptionKey,
+    let installProfile = issued.profile;
+    try {
+      const assignment = installationProfile(await client.readInstallAssignments(issued.orderReference, true));
+      if (assignment && assignment.iccid === issued.profile.iccid &&
+          await esimGoProfileDigest(assignment.iccid, input.profileHashSecret) === profileDigest) {
+        installProfile = {
+          ...issued.profile,
+          ...(assignment.appleInstallUrl ? { appleInstallUrl: assignment.appleInstallUrl } : {}),
+          ...(assignment.androidInstallUrl ? { androidInstallUrl: assignment.androidInstallUrl } : {}),
+        };
+      }
+    } catch {
+      // Quick-install URLs are an optional convenience. Keep the verified
+      // activation material so the owner can use the QR/LPA fallback.
+    }
+    await storeEsimInstallMaterial(db, installProfile, input.installMaterialEncryptionKey,
       input.ownerUserId, input.skyOrderId, input.now);
   } catch {
     return { state: 'provider_completed' };
@@ -538,7 +570,7 @@ export async function reconcilePaidSkyEsimGoProfile(
         !quote || quote.currency !== input.expectedCurrency || quote.currency !== existing.quoteCurrency ||
         String(quote.total) !== existing.quoteTotal || !profile)
       return { state: 'provider_completed' };
-    const assignment = installationProfile(await client.readInstallAssignments(existing.providerOrderReference));
+    const assignment = installationProfile(await client.readInstallAssignments(existing.providerOrderReference, true));
     if (!assignment || await esimGoProfileDigest(assignment.iccid, input.profileHashSecret) !== existing.profileDigest ||
         assignment.iccid !== profile.iccid)
       return { state: 'provider_completed' };

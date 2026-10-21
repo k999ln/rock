@@ -1,15 +1,20 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import {
   a2aDelegationStore,
   A2ADelegationStoreError,
 } from '@/lib/a2a-delegation-store';
-import { database, requestUser } from '@/lib/fund-store';
+import { database } from '@/lib/fund-store';
+import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import {
   a2aDelegationExecutionEnabled,
   createA2AIntentDigests,
 } from '@/lib/a2a-authorization';
 import { encryptA2AInput } from '@/lib/a2a-input-crypto';
 import { verifyA2ABrokerAuthorization } from '@/lib/a2a-broker-authorization';
-import { trustedA2ABrokerKeyResolver } from '@/lib/a2a-broker-trust';
+import { a2aBrokerDeviceKeyResolver } from '@/lib/a2a-broker-trust';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { a2aPriceQuoteDigest, verifyA2APriceQuote } from '@/lib/a2a-price-quote';
+import { trustedA2AUsageKeyResolver } from '@/lib/a2a-usage-receipt';
 import { env } from 'cloudflare:workers';
 
 type Context = { params: Promise<{ id: string }> };
@@ -26,24 +31,9 @@ function json(value: unknown, status = 200) {
 async function readBody(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new Error('INVALID_BODY');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 12_000) {
-      await reader.cancel();
-      throw new Error('BODY_TOO_LARGE');
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 12_000, () =>
+    new Error('BODY_TOO_LARGE'),
+  );
   const value: unknown = JSON.parse(new TextDecoder().decode(bytes));
   if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new Error('INVALID_BODY');
@@ -76,19 +66,30 @@ function errorResponse(error: unknown) {
 
 export async function GET(request: Request, context: Context) {
   try {
-    const owner = await requestUser(request);
+    const owner = await requestRockstarUser(request, database());
     const { id } = await context.params;
     if (!uuid.test(id)) return json({ error: '委任IDが不正です。' }, 400);
     const store = a2aDelegationStore(database());
     const delegation = await store.get(owner, id);
     if (!delegation) return json({ error: '委任が見つかりません。' }, 404);
     const usage = await store.getUsageReceipt(owner, id);
+    const liveUsage = await store.getLatestLiveUsageSnapshot(owner, id);
+    const brokerAuthorization = await store.getBrokerAuthorization(owner, id);
     let usageDetails: unknown = null;
+    let liveUsageDetails: unknown = null;
     try { usageDetails = usage ? JSON.parse(usage.receiptJson) : null; } catch { usageDetails = null; }
+    try { liveUsageDetails = liveUsage ? JSON.parse(liveUsage.snapshotJson) : null; } catch { liveUsageDetails = null; }
     return json({
       delegation,
       events: await store.listEvents(owner, id),
       budgetReservation: await store.getBudgetReservation(owner, id),
+      brokerAuthorization: brokerAuthorization ? {
+        registered: true,
+        deviceRef: brokerAuthorization.deviceRef,
+        authorityId: brokerAuthorization.authorityId,
+        keyId: brokerAuthorization.keyId,
+        expiresAt: brokerAuthorization.expiresAt,
+      } : { registered: false },
       usageReceipt: usage ? {
         providerId: usage.providerId,
         providerReference: usage.providerReference,
@@ -96,6 +97,16 @@ export async function GET(request: Request, context: Context) {
         amountMinor: usage.amountMinor,
         issuedAt: usage.issuedAt,
         receipt: usageDetails,
+      } : null,
+      liveUsageSnapshot: liveUsage ? {
+        providerId: liveUsage.providerId,
+        sequence: liveUsage.sequence,
+        currency: liveUsage.currency,
+        cumulativeAmountMinor: liveUsage.cumulativeAmountMinor,
+        pricingVersion: liveUsage.pricingVersion,
+        issuedAt: liveUsage.issuedAt,
+        receivedAt: liveUsage.receivedAt,
+        snapshot: liveUsageDetails,
       } : null,
     });
   } catch (error) {
@@ -105,7 +116,7 @@ export async function GET(request: Request, context: Context) {
 
 export async function PATCH(request: Request, context: Context) {
   try {
-    const owner = await requestUser(request);
+    const owner = await requestRockstarUser(request, database());
     const { id } = await context.params;
     if (!uuid.test(id)) return json({ error: '委任IDが不正です。' }, 400);
     const input = await readBody(request);
@@ -120,6 +131,13 @@ export async function PATCH(request: Request, context: Context) {
       input.message.trim().length > 0 &&
       input.message.length <= 8_000
     ) {
+      if (!(await rockstarServiceScopeAllowed(
+        database(),
+        owner,
+        'agents',
+        (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+        env, request,
+      ))) return missingRockstarServiceScope('Agent');
       const executionEnabled = a2aDelegationExecutionEnabled(
         (env as unknown as { A2A_DELEGATION_EXECUTION_ENABLED?: string })
           .A2A_DELEGATION_EXECUTION_ENABLED,
@@ -146,8 +164,11 @@ export async function PATCH(request: Request, context: Context) {
         budgetCurrency: current.budgetCurrency,
         budgetLimitMinor: current.budgetLimitMinor,
         parentBudgetLimitMinor: current.parentBudgetLimitMinor,
+        continueWhileDeviceOffline: current.continueWhileDeviceOffline,
         deadlineAt: current.deadlineAt,
         message: input.message,
+        priceQuoteDigest: current.priceQuoteDigest || undefined,
+        packageRuntimeBindingDigest: current.packageRuntimeBindingDigest || undefined,
       });
       if (
         digests.inputSha256 !== current.inputSha256 ||
@@ -155,12 +176,28 @@ export async function PATCH(request: Request, context: Context) {
         input.authorizationSha256 !== current.authorizationSha256
       )
         return json({ error: '表示した依頼本文や条件が変わっています。内容を再確認してください。' }, 409);
+      if (((env as unknown as { A2A_PRICE_QUOTES_REQUIRED?: string }).A2A_PRICE_QUOTES_REQUIRED === 'true' ||
+        a2aDelegationExecutionEnabled((env as unknown as { A2A_DELEGATION_EXECUTION_ENABLED?: string }).A2A_DELEGATION_EXECUTION_ENABLED)) &&
+        !current.priceQuoteDigest)
+        return json({ error: '有料Agent実行にはProvider署名済みの価格見積が必要です。', code: 'PRICE_QUOTE_REQUIRED' }, 403);
+      if (current.priceQuoteDigest) {
+        const usageKeys = (env as unknown as { A2A_TRUSTED_USAGE_KEYS?: string }).A2A_TRUSTED_USAGE_KEYS;
+        if (!current.priceQuote || !usageKeys ||
+          await a2aPriceQuoteDigest(current.priceQuote) !== current.priceQuoteDigest ||
+          !(await verifyA2APriceQuote(current.priceQuote, {
+            agentOrigin: current.targetOrigin,
+            agentName: current.targetAgentName,
+            agentVersion: current.targetAgentVersion,
+            requestSha256: current.inputSha256,
+            currency: current.budgetCurrency,
+            maximumBudgetMinor: current.budgetLimitMinor,
+          }, trustedA2AUsageKeyResolver(usageKeys))))
+          return json({ error: 'Provider見積が変更または期限切れです。最新の見積を確認してください。', code: 'PRICE_QUOTE_INVALID' }, 409);
+      }
       const configuration = env as unknown as {
         A2A_INPUT_ENCRYPTION_KEY?: string;
         A2A_TRUSTED_BROKER_KEYS?: string;
       };
-      if (!configuration.A2A_TRUSTED_BROKER_KEYS)
-        return json({ error: 'RockstarOS Broker鍵の信頼設定がありません。', code: 'BROKER_TRUST_NOT_CONFIGURED' }, 503);
       const brokerAuthorization = await store.getBrokerAuthorization(owner, id);
       if (!brokerAuthorization)
         return json({ error: 'RockstarOS Brokerでこの依頼を承認してください。', code: 'BROKER_AUTHORIZATION_REQUIRED' }, 403);
@@ -179,10 +216,13 @@ export async function PATCH(request: Request, context: Context) {
           budgetCurrency: current.budgetCurrency,
           budgetLimitMinor: current.budgetLimitMinor,
           parentBudgetLimitMinor: current.parentBudgetLimitMinor,
+          continueWhileDeviceOffline: current.continueWhileDeviceOffline,
           deadlineAt: current.deadlineAt,
+          priceQuoteDigest: current.priceQuoteDigest || undefined,
+          packageRuntimeBindingDigest: current.packageRuntimeBindingDigest || undefined,
           message: input.message,
         },
-        trustedA2ABrokerKeyResolver(configuration.A2A_TRUSTED_BROKER_KEYS),
+        a2aBrokerDeviceKeyResolver(database(), configuration.A2A_TRUSTED_BROKER_KEYS),
       );
       if (!nativeApprovalValid)
         return json({ error: 'Broker証明が期限切れか、鍵または委任条件が無効です。', code: 'BROKER_AUTHORIZATION_INVALID' }, 403);

@@ -1,24 +1,112 @@
-import type { WorkJob } from './workflow';
+import { normalizeWorkJob, type WorkJob } from './workflow.ts';
 
-// SQL stays here so production D1 and real SQLite tests exercise identical queries.
 export function workStore(db: Pick<D1Database, 'prepare'>) {
   async function get(user: string, id: string): Promise<WorkJob | null> {
     const row = await db
       .prepare('SELECT payload FROM work_jobs WHERE user_id = ? AND id = ?')
       .bind(user, id)
       .first<{ payload: string }>();
-    return row ? (JSON.parse(row.payload) as WorkJob) : null;
+    return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
   }
   return {
     get,
-    async list(user: string) {
+    async listMaterial(user: string) {
+      const rows = await db.prepare(
+        `SELECT id, json_extract(payload, '$.title') AS title, revision,
+        json_extract(payload, '$.status') AS status, updated_at AS updatedAt
+        FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'material-invention'
+        ORDER BY updated_at DESC, id DESC LIMIT 100`,
+      ).bind(user).all<Pick<WorkJob, 'id' | 'title' | 'revision' | 'status' | 'updatedAt'>>();
+      return rows.results;
+    },
+    async list(user: string, excludeAmc = false) {
       const rows = await db
         .prepare(
-          'SELECT payload FROM work_jobs WHERE user_id = ? ORDER BY updated_at DESC, id DESC LIMIT 100',
+          'SELECT payload FROM work_jobs WHERE user_id = ?' +
+            (excludeAmc
+              ? " AND json_extract(payload, '$.templateId') != 'amc'"
+              : '') +
+            ' ORDER BY updated_at DESC, id DESC LIMIT 100',
         )
         .bind(user)
         .all<{ payload: string }>();
-      return rows.results.map((row) => JSON.parse(row.payload) as WorkJob);
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async listAmc(user: string) {
+      const rows = await db
+        .prepare(
+          `SELECT id, json_extract(payload, '$.title') AS title, revision,
+          json_extract(payload, '$.status') AS status,
+          json_extract(payload, '$.createdAt') AS createdAt, updated_at AS updatedAt
+          FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
+          ORDER BY updated_at DESC, id DESC LIMIT 100`,
+        )
+        .bind(user)
+        .all<
+          Pick<
+            WorkJob,
+            'id' | 'title' | 'revision' | 'status' | 'createdAt' | 'updatedAt'
+          >
+        >();
+      return rows.results.map(
+        (row): WorkJob => ({
+          ...row,
+          templateId: 'amc',
+          plan: { schemaVersion: 1, objective: row.title, approvalGates: [] },
+          steps: [],
+          events: [],
+        }),
+      );
+    },
+    async listJenniferAmc(user: string) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
+          AND json_extract(payload, '$.amcGoal.coordinationRef.schema') = 'rockstaros-jennifer-execution/1'
+        ORDER BY updated_at DESC, id DESC LIMIT 50`)
+        .bind(user).all<{ payload: string }>();
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async findAmcForJenniferPlan(user: string, planId: string) {
+      const row = await db
+        .prepare(
+          `SELECT payload FROM work_jobs
+          WHERE user_id = ?
+            AND json_extract(payload, '$.templateId') = 'amc'
+            AND json_extract(payload, '$.amcGoal.coordinationRef.schema') = 'rockstaros-jennifer-execution/1'
+            AND json_extract(payload, '$.amcGoal.coordinationRef.planId') = ?
+          ORDER BY updated_at DESC, id DESC LIMIT 1`,
+        )
+        .bind(user, planId)
+        .first<{ payload: string }>();
+      return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
+    },
+    async findJenniferTaskJob(user: string, coordination: {
+      rootJobId: string;
+      planId: string;
+      taskId: string;
+      role: 'worker' | 'reviewer';
+    }) {
+      const row = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ?
+          AND json_extract(payload, '$.coordination.schema') = 'rockstaros-jennifer-task-job/1'
+          AND json_extract(payload, '$.coordination.rootJobId') = ?
+          AND json_extract(payload, '$.coordination.planId') = ?
+          AND json_extract(payload, '$.coordination.taskId') = ?
+          AND json_extract(payload, '$.coordination.role') = ?
+          AND json_extract(payload, '$.status') != 'cancelled'
+        ORDER BY updated_at DESC, id DESC LIMIT 1`)
+        .bind(user, coordination.rootJobId, coordination.planId,
+          coordination.taskId, coordination.role).first<{ payload: string }>();
+      return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
+    },
+    async listJenniferTaskJobs(user: string, rootJobId: string) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ?
+          AND json_extract(payload, '$.coordination.schema') = 'rockstaros-jennifer-task-job/1'
+          AND json_extract(payload, '$.coordination.rootJobId') = ?
+        ORDER BY updated_at, id`)
+        .bind(user, rootJobId).all<{ payload: string }>();
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
     },
     async create(user: string, job: WorkJob) {
       await db

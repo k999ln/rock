@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
-import { database, requestUser } from '@/lib/fund-store';
+import { database } from '@/lib/fund-store';
+import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { decryptA2AArtifact } from '@/lib/a2a-input-crypto';
 
@@ -18,7 +19,7 @@ function json(value: unknown, status = 200) {
 
 export async function GET(request: Request, context: Context) {
   try {
-    const owner = await requestUser(request);
+    const owner = await requestRockstarUser(request, database());
     const { id } = await context.params;
     if (!uuid.test(id)) return json({ error: '委任IDが不正です。' }, 400);
     const store = a2aDelegationStore(database());

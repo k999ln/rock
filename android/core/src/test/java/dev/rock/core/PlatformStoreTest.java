@@ -200,9 +200,9 @@ public final class PlatformStoreTest {
     }
 
     @Test public void platformSchemaMismatchFailsClosedWithoutReset() {
-        db.execute("UPDATE platform_meta SET version=4");
+        db.execute("UPDATE platform_meta SET version=5");
         assertThrows(IllegalStateException.class, () -> new PlatformStore(db));
-        assertEquals("4", db.query("SELECT version FROM platform_meta").get(0).get("version"));
+        assertEquals("5", db.query("SELECT version FROM platform_meta").get(0).get("version"));
     }
 
     @Test public void platformSchemaMigratesV1ApprovalRowsTransactionally() throws Exception {
@@ -215,7 +215,7 @@ public final class PlatformStoreTest {
                 "owner:alice", "legacy:approval", "org.rockstar.tool.clean", "clean.write", PAYLOAD,
                 10, 1000, "ISSUED", 1, null);
             new PlatformStore(legacy);
-            assertEquals("3", legacy.query("SELECT version FROM platform_meta").get(0).get("version"));
+            assertEquals("4", legacy.query("SELECT version FROM platform_meta").get(0).get("version"));
             assertTrue(legacy.query("PRAGMA table_info(platform_approvals)").stream()
                 .anyMatch(row -> "confirmed_at".equals(row.get("name"))));
             assertEquals("STOPPED", legacy.query("SELECT state FROM platform_approvals").get(0).get("state"));
@@ -243,10 +243,31 @@ public final class PlatformStoreTest {
 
         ModelProfileManifest second = profile(2, "weights-two");
         store.registerModelProfile(second);
+        assertThrows(IllegalStateException.class, () -> store.activateModelProfile(second.profileId, second.version,
+            candidate -> { throw new AssertionError("must not replace a model while an old plan pin is live"); }, 12));
+        assertEquals("profile.lifeline.qwen", db.query("SELECT profile_id FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_id"));
+        assertThrows(IllegalStateException.class, () -> store.activateModelProfile(second.profileId, second.version,
+            candidate -> { throw new IllegalStateException("MODEL_RUNTIME_LOAD_FAILED"); }, 900_012));
+        assertEquals("profile.lifeline.qwen", db.query("SELECT profile_id FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_id"));
+        assertEquals("1", db.query("SELECT profile_version FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_version"));
+        assertEquals("ACTIVE", db.query("SELECT status FROM model_profiles WHERE profile_id=? AND version=1", first.profileId)
+            .get(0).get("status"));
         assertEquals(2, store.activateModelProfile(second.profileId, second.version,
-            candidate -> Engine.digest("fixture-verified-staging-receipt-" + candidate.version), 12));
+            candidate -> Engine.digest("fixture-verified-stage-and-runtime-receipt-" + candidate.version), 900_013));
         assertEquals("1", store.pinModelProfile("owner:alice", oldWork, oldRequest, 13).get("profile_version"));
         assertEquals("1", store.modelProfilePin("owner:alice", oldWork).get("profile_version"));
+        var pinnedProfile = store.modelProfileForPin("owner:alice", oldWork);
+        assertEquals(first.digest(), pinnedProfile.get("manifest_digest"));
+        assertEquals(first.weightsSha256, pinnedProfile.get("weights_sha256"));
+        assertEquals(first.tokenizerSha256, pinnedProfile.get("tokenizer_sha256"));
+        assertEquals(first.templateSha256, pinnedProfile.get("template_sha256"));
+        assertEquals(runtime.digest(), pinnedProfile.get("runtime_manifest_digest"));
+        assertEquals(SIGNER, pinnedProfile.get("runtime_signing_digest"));
+        assertEquals("CACHED", pinnedProfile.get("profile_status"));
+        assertThrows(IllegalStateException.class, () -> store.modelProfileForPin("owner:bob", oldWork));
         assertEquals("2", store.pinModelProfile("owner:alice", UUID.randomUUID().toString(),
             Engine.digest("job two"), 14).get("profile_version"));
         assertThrows(SecurityException.class, () -> store.pinModelProfile("owner:alice", oldWork,
@@ -256,9 +277,30 @@ public final class PlatformStoreTest {
         assertThrows(SecurityException.class, () -> store.modelProfilePin("owner:alice", oldWork));
     }
 
+    @Test public void runtimeBinderV4IsIndependentOfPlatformV1() {
+        ComponentManifest component = new ComponentManifest(ComponentManifest.Kind.TOOL,
+            "org.rockstar.runtime.localai", "com.localactionassistant", 3, 1, 1, 12003,
+            "rock_tool_app", SIGNER, List.of("local-ai.inference"), 1, 1);
+        install("register:binder-v4", component);
+        RuntimeManifest runtime = new RuntimeManifest(component.componentId, 3, SIGNER,
+            4, 4, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        assertEquals(runtime.digest(), store.registerRuntimeManifest(runtime));
+        ModelProfileManifest profile = new ModelProfileManifest("profile.pixel.qwen", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.preview", "key.preview", "A".repeat(86), component.componentId, 3, 4, 4,
+            "GGUF", "Q8_0", 2048, "article-preparation@1/input-v1", 1000, 1000);
+        assertEquals(profile.digest(), store.registerModelProfile(profile));
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(component.componentId,
+            1, SIGNER, 4, 3, List.of("GGUF"), List.of("article-preparation@1/input-v1")));
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(component.componentId,
+            1, SIGNER, 1, 65536, List.of("GGUF"), List.of("article-preparation@1/input-v1")));
+    }
+
     @Test public void runtimeAndProfileManifestRejectIdentityOrContractDrift() {
         ComponentManifest runtimeComponent = localAiRuntime();
         install("register:localai", runtimeComponent);
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(runtimeComponent.componentId,
+            1, SIGNER, 1, 1, List.of("GGUF"), List.of("../input-v1")));
         RuntimeManifest badSigner = new RuntimeManifest(runtimeComponent.componentId, 1, "b".repeat(64),
             1, 1, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
         assertThrows(SecurityException.class, () -> store.registerRuntimeManifest(badSigner));
@@ -387,6 +429,12 @@ public final class PlatformStoreTest {
             tool.componentId, "clean.write", PAYLOAD, 100, 10_000, 10);
         store.confirmApproval("owner:alice", approval, 11);
         byte[] plaintext = store.exportRecoverableState("owner:alice");
+        // Prior schema-3 backups share this exact two-stage wire shape and remain importable.
+        java.io.DataInputStream legacyHeader = new java.io.DataInputStream(new java.io.ByteArrayInputStream(plaintext));
+        legacyHeader.readUTF(); legacyHeader.readInt(); legacyHeader.readUTF();
+        int engineHeaderOffset = plaintext.length - legacyHeader.available();
+        java.nio.ByteBuffer.wrap(plaintext).putInt(engineHeaderOffset, 3);
+
 
         JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("restored.db").getPath());
         try {

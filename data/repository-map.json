@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-09",
+  "updatedAt": "2026-10-13",
   "product": {
     "canonicalName": "RockstarOS",
     "publicBrand": "RockstarOS",
@@ -18,7 +18,12 @@
         "Rock star OS: Linux native, Android SDK and device integration",
         "public web core, workflow and fund simulation",
         "public tool contracts, fixtures and release documentation"
-      ]
+      ],
+      "removedPaths": {
+        "list": "data/archived-paths.json",
+        "restoreCommit": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+        "note": "Removed files stay in Git history. Use data/archived-paths.json restoreCommits[path] when present, otherwise its original commit; history is never rewritten."
+      }
     },
     {
       "repository": "k999ln/Mr.",

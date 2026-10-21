@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/android/keyattestation",
+  "commit": "55c35040a1b5b72e6d63bfb150c5c68a175c1462",
+  "license": "Apache-2.0",
+  "reviewedAt": "2026-10-01",
+  "build": "Included Gradle composite from vendored source; no floating dependency or released Maven artifact"
+}

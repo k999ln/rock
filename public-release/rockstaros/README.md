@@ -149,3 +149,8 @@ The public RockstarOS code is released under the [MIT License](LICENSE), so appl
 ---
 
 **Avokado Mini. Powered by RockstarOS. Built by Avokado, Ink.**
+
+
+### Shared Sky / Zema contract
+
+The public package and the full Web host use the same `packages/sky-zema-core/src/handoff.js` contract. Public v1 keeps `executionProvider: "local"`; `normalizeSkyZemaHandoff` converts it to `local-model`, accepts the old omitted local field, and rejects remote providers and invalid envelopes. Hosts still enforce identity, expiry, single use, and approvals. Creating a session only makes it ready. Run `npm test` here, or `npm run test:public-preview` from the full-source repository; the latter is included in full verification.

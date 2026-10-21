@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-02",
+  "scope": "local source and test evidence for carrying a signed Sky Package runtime binding from quote acquisition into A2A approval and fail-closed pre-egress checks",
+  "implemented": [
+    "Package quote requests pin the exact currently reviewed Package key, manifest hash, and input/output schema hashes.",
+    "A Package quote requires a Provider-signed runtime binding verified against the connected Agent Card snapshot, exact Package/schema hashes, trusted Provider key, signed pricing version, and every required usage meter.",
+    "The verified binding is registered by immutable id/digest; delegation drafts persist the reference and include its digest in owner approval and Broker authorization intent hashes.",
+    "Migration 0056 adds binding reference columns without rebuilding agent_delegations, so existing SQLite triggers remain intact.",
+    "The Cloud Worker re-reads the active binding, current reviewed Package, current owner-connected Agent Card, configured Provider trust key, and quote meter/pricing requirements before discovery and again after live Agent Card discovery at the send authorization gate. Revoked, partial, mismatched, changed, or untrusted bindings fail closed.",
+    "The live discovered Agent Card hash now uses the same canonical SHA-256 function as the connected-Agent directory."
+  ],
+  "localVerification": {
+    "typecheck": "npm run typecheck passed after the Worker pre-egress check was added",
+    "lint": "focused oxlint passed for changed TypeScript and test files",
+    "schemaAndProgress": "70-table schema/journal check, database status check, and project:check passed; the status inventory still reports production readback 0/6",
+    "bindingDispatchUnitTests": "3 dedicated tests passed: valid current binding; revoked binding, changed live Agent Card, non-current Package, and missing required meter rejection; generic unbound A2A acceptance and partial-reference rejection",
+    "bindingVerifierTests": "4 existing Ed25519 binding tests passed",
+    "workerWorkflowTests": "11 local Cloudflare Worker/D1 Workflow tests passed after adding a Package-bound case: the test registers a synthetic signed binding, persists it in the delegation and Broker approval digest, revokes the binding, then verifies the Workflow rejects before remote-send claim and returns no remote task. The remaining ten scenarios cover generic A2A dispatch/recovery; all use controlled local fixtures.",
+    "migrationConvergence": "fresh, release, and sites migration fixtures converged without losing records",
+    "a2aClientInterop": "local Node/Python HTTP fixture interop passed"
+  },
+  "not_implemented_or_proven": [
+    "No positive Package-bound dispatch to a real or sandbox Provider and no cloud Provider executor invokes the bound Package operation; an A2A task submission is not proof that a Package operation ran.",
+    "No live Provider quote, signing-key custody, production billing, carrier activation, production D1 readback, or physical device/OS acceptance is established.",
+    "Local fixtures and test usage records are not evidence of production charges or carrier activation."
+  ],
+  "nextAction": "Implement the Provider adapter that invokes the exact signed Package operation, then add a positive Package-bound execution and receipt test against a Provider sandbox after contract access is available."
+}

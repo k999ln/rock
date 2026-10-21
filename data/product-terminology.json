@@ -1,0 +1,24 @@
+{
+  "schema": "rock-product-terminology/1",
+  "decidedAt": "2026-10-13",
+  "source": "User explicit instruction: 全部表記siに変えてai→si",
+  "productDisplay": "si",
+  "case": "literal_lowercase",
+  "appliesTo": [
+    "first-party UI and accessibility text",
+    "current design explanations",
+    "first-party product descriptions and diagrams",
+    "generated first-party help and result prose"
+  ],
+  "compatibilityPreserved": [
+    "API/schema/enum/error codes and environment variables",
+    "source paths/imports and package names including npm ai",
+    "task IDs such as AI05 and AI06",
+    "provider and external proper names: OpenAI, TypeSafe AI, Vercel AI Gateway, AI SDK",
+    "byte-preserved original design archives, vendor sources, signed/released artifacts and historical receipts"
+  ],
+  "meaning": "Terminology change only; no claim of superintelligence, performance, permissions, execution authority or acceptance.",
+  "runtimeLogicChanged": false,
+  "designEntry": "docs/service-design/README.md",
+  "integrationContracts": "docs/service-design/06-consistency-contracts.md"
+}

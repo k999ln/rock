@@ -1,0 +1,162 @@
+{
+  "schema": "commerce-reference-model-results/1",
+  "generatedAt": "2026-10-01T21:41:09.607Z",
+  "scope": "design reference model only; no production runtime or Stripe/D1 verification",
+  "nodeVersion": "v26.0.0",
+  "sourceSha256": {
+    "commerce-state-model.mjs": "caa618a0bde05cfd9979e92c66ad312220a8b9d7b41a533b266ee3542ea38d89",
+    "commerce-state-model.test.mjs": "c43e86466c873c2425eec3bf3828b09f4ea47f6a4875946011c5a6f1fe59b9a9"
+  },
+  "bounds": {
+    "orderPriceMinor": 10000,
+    "decisionTable": "4 payments x 9 refund profiles x 5 disputes x 2 review x 2 provider x 2 subject link",
+    "maxRefundsPerOrder": 4,
+    "maxOrdersPerPurchaseGroup": 2,
+    "maxCacheDecisionSchedule": 3,
+    "scheduleCoverage": "all permutations only for specified independent event sets; not unbounded state-space proof"
+  },
+  "counters": {
+    "decisionTableRows": 1440,
+    "permutations": 26,
+    "cacheSchedules": 6,
+    "negativeControls": 3
+  },
+  "tests": [
+    {
+      "name": "finite decision table preserves money, device linkage and all blockers",
+      "passed": true
+    },
+    {
+      "name": "partial refund + failed balance refund never restores purchase access",
+      "passed": true
+    },
+    {
+      "name": "pending to failed restores only after all refund outcomes and business case resolution",
+      "passed": true
+    },
+    {
+      "name": "independent refund observations converge across all 24 arrival permutations",
+      "passed": true
+    },
+    {
+      "name": "refund history requires correction evidence; internal over-reservation rejects atomically",
+      "passed": true
+    },
+    {
+      "name": "unknown local reservation never discards a confirmed external partial refund",
+      "passed": true
+    },
+    {
+      "name": "reservation admission compares both revisions and rejects concurrent excess",
+      "passed": true
+    },
+    {
+      "name": "fresh late bank failure compensates refund fact, retains history and requires manual resolution",
+      "passed": true
+    },
+    {
+      "name": "late bank return on old refund does not rewrite the new purchase entitlement",
+      "passed": true
+    },
+    {
+      "name": "old fenced correction cannot overwrite a newer refund observation",
+      "passed": true
+    },
+    {
+      "name": "failed refund with outstanding refund obligation cannot restore access",
+      "passed": true
+    },
+    {
+      "name": "non-card succeeded to requires_action correction is preserved but remains outside initial rail",
+      "passed": true
+    },
+    {
+      "name": "refund duplicate observation is idempotent; changed body conflicts",
+      "passed": true
+    },
+    {
+      "name": "expired worker cannot overwrite newer Provider observation",
+      "passed": true
+    },
+    {
+      "name": "same fence with stale order revision rejects after concurrent policy change",
+      "passed": true
+    },
+    {
+      "name": "refund + dispute order permutations preserve both independent facts",
+      "passed": true
+    },
+    {
+      "name": "same buyer/package/mode resumes current order across devices; mode and buyer isolate",
+      "passed": true
+    },
+    {
+      "name": "unknown refund retains active slot and cannot trigger new payment",
+      "passed": true
+    },
+    {
+      "name": "old order late events cannot release or revoke a paid repurchase",
+      "passed": true
+    },
+    {
+      "name": "selling paused leaves ownership intact; package review revocation stops execution",
+      "passed": true
+    },
+    {
+      "name": "unlinked buyer remains paid and does not make the seller ineligible",
+      "passed": true
+    },
+    {
+      "name": "provider integration not ready blocks both new sale and existing execution",
+      "passed": true
+    },
+    {
+      "name": "cache converges to greatest revision across all 6 deliveries; deny never regresses",
+      "passed": true
+    },
+    {
+      "name": "cache TTL anchors to checkedAt, not arrival, and cannot authorize financial actions",
+      "passed": true
+    },
+    {
+      "name": "repurchase revision advances through old negative; same-revision changed decision conflicts",
+      "passed": true
+    },
+    {
+      "name": "fresh recheck at unchanged revision may renew lease but old response cannot extend it",
+      "passed": true
+    },
+    {
+      "name": "closed case without explicit entitlement disposition never restores access",
+      "passed": true
+    },
+    {
+      "name": "alternative compensation closes the case while keeping terminated access revoked",
+      "passed": true
+    },
+    {
+      "name": "support decision requires scope, order and entitlement revisions, and evidence atomically",
+      "passed": true
+    },
+    {
+      "name": "verified contract reinstatement can restore latest order after late bank return",
+      "passed": true
+    },
+    {
+      "name": "old-case reinstatement cannot replace a newer order pointer",
+      "passed": true
+    },
+    {
+      "name": "new refund reopens a previously resolved case and discards old restore disposition",
+      "passed": true
+    }
+  ],
+  "passed": 32,
+  "failed": 0,
+  "nonClaims": [
+    "No D1 transaction implementation proof",
+    "No external Provider API compatibility proof",
+    "No live money or actual OAuth test",
+    "No exhaustive unbounded concurrency proof"
+  ]
+}

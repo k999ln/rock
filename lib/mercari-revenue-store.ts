@@ -5,6 +5,15 @@ import {
 
 const columns = 'payload, revision';
 
+// These normalized creation terms never change in a plan's state transitions.
+// Generated timestamps, draft wording and later approval/sale state are not
+// caller input and must not make a lost-response retry a different operation.
+function sameCreation(before: MercariRevenuePlan, after: MercariRevenuePlan) {
+  return (['id', 'channel', 'title', 'condition', 'facts', 'priceJPY',
+    'marketplaceFeeJPY', 'shippingJPY', 'itemCostJPY', 'otherCostJPY'] as const)
+    .every((key) => before[key] === after[key]);
+}
+
 export function mercariRevenueStore(db: D1Database, user: string) {
   if (!user) throw new MercariRevenueError('サインインしてください。', 401);
 
@@ -36,7 +45,7 @@ export function mercariRevenueStore(db: D1Database, user: string) {
   async function create(plan: MercariRevenuePlan) {
     const existing = await get(plan.id);
     if (existing) {
-      if (JSON.stringify(existing) === JSON.stringify(plan)) return existing;
+      if (sameCreation(existing, plan)) return existing;
       throw new MercariRevenueError(
         '同じ操作IDで異なる内容は保存できません。',
         409,
@@ -51,11 +60,16 @@ export function mercariRevenueStore(db: D1Database, user: string) {
       )
       .bind(plan.id, user, JSON.stringify(plan), plan.updatedAt, user)
       .all();
-    if (!result.results.length)
+    if (!result.results.length) {
+      // Another identical request may commit between the read and INSERT.
+      // Re-read through the owner boundary; never reveal another owner's row.
+      const winner = await get(plan.id);
+      if (winner && sameCreation(winner, plan)) return winner;
       throw new MercariRevenueError(
         '操作IDの重複または保存件数の上限です。',
         409,
       );
+    }
     return plan;
   }
 

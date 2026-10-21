@@ -29,9 +29,18 @@ class PlatformInstallInputsTests(unittest.TestCase):
             protocol = historical['preregistration.md']
             self.assertEqual((target / 'usr/lib/rock-benchmark/preregistration.md').read_bytes(), protocol)
             for path in ('usr/lib/rock-platform/service.py', 'usr/lib/rock-platform/wallet_auth/daemon.py',
+                         'usr/lib/rock-platform/sensitive_guard.py', 'usr/lib/rock-platform/code_inspector.py',
+                         'usr/lib/rock-platform/supervisor.py',
                          'usr/libexec/rock-wallet-evidence-auth.py', 'usr/libexec/rock-platform-health',
                          'usr/share/fonts/rock/NotoSansCJKjp-Regular.otf'):
                 self.assertGreater((target / path).stat().st_size, 0, path)
+            self.assertIn('rock-platform/supervisor.py', (target / 'usr/libexec/rock-platform-launch').read_text())
+            inspection = subprocess.run([sys.executable, '-I', '-B', '-c',
+                'import sys;sys.path.insert(0,sys.argv[1]);import code_inspector;'
+                'print(code_inspector.inspect_code("eval(user_input)","python")["counts"]["code"])',
+                str(target / 'usr/lib/rock-platform')], capture_output=True, text=True, timeout=30)
+            self.assertEqual(inspection.returncode, 0, inspection.stdout + inspection.stderr)
+            self.assertEqual(inspection.stdout.strip(), '1')
             # Resolve the installed guest's actual document path in an isolated
             # interpreter. Import does not run its guarded measurement main().
             probe = subprocess.run([sys.executable, '-I', '-B', '-c',

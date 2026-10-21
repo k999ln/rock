@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, useSyncExternalStore, useCallback, useMemo, type ReactNode } from 'react';
 import {
   readSkyResults,
   saveSkyResult,
@@ -34,17 +34,30 @@ import {
   MAX_TEXT,
   type CoconalaResult,
 } from '@/lib/mr-tools';
-import { DeliveryRunner } from '@/components/delivery-runner';
-import { SubscriptionLedgerRunner } from '@/components/subscription-ledger-runner';
-import { LegalIntakeRunner } from '@/components/legal-intake-runner';
-import { PatentAssistantRunner } from '@/components/patent-assistant-runner';
-import { JevEvaluationRunner } from '@/components/jev-evaluation-runner';
+const DeliveryRunner = lazy(() =>
+  import('@/components/delivery-runner').then((module) => ({ default: module.DeliveryRunner })),
+);
+const SubscriptionLedgerRunner = lazy(() =>
+  import('@/components/subscription-ledger-runner').then((module) => ({ default: module.SubscriptionLedgerRunner })),
+);
+const LegalIntakeRunner = lazy(() =>
+  import('@/components/legal-intake-runner').then((module) => ({ default: module.LegalIntakeRunner })),
+);
+const PatentAssistantRunner = lazy(() =>
+  import('@/components/patent-assistant-runner').then((module) => ({ default: module.PatentAssistantRunner })),
+);
+const JevEvaluationRunner = lazy(() =>
+  import('@/components/jev-evaluation-runner').then((module) => ({ default: module.JevEvaluationRunner })),
+);
 import {
   executeTracked,
   processedBytes,
   OperationRequestError,
 } from '@/lib/operations-client';
 import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
+import { createDeliveryRunnerState, hasDeliveryRunnerDraft, type DeliveryRunnerState, type DeliveryRunnerSession } from '@/lib/delivery-runner-state';
+import EnglishCitationsRunner from '@/components/english-citations-runner';
+import EnglishPatentAssistant from '@/components/english-patent-assistant';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -54,25 +67,99 @@ export type MrRunner =
   | 'legal-intake'
   | 'patent-assistant'
   | 'jev-evaluation';
+export type MrToolRunnerState = {
+  text: string; proposal: string; bucket: string; rate: string; after: string; price: string;
+  summary: string; contents: string; url: string; output: string; result: CoconalaResult | null;
+  delivery?: DeliveryRunnerState;
+  error: string; copied: boolean; editing: boolean; running: boolean; sampleInput: boolean;
+};
+export type MrToolRunnerSession = {
+  getSnapshot: () => Partial<MrToolRunnerState> | undefined;
+  subscribe: (listener: () => void) => () => void;
+  patch: (value: Partial<MrToolRunnerState>) => void;
+  isActive?: () => boolean;
+  onAuthenticationLost?: () => void;
+};
+function localSession(): MrToolRunnerSession {
+  let snapshot: Partial<MrToolRunnerState> = {};
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => snapshot,
+    subscribe(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
+    patch(value) { snapshot = { ...snapshot, ...value }; listeners.forEach((listener) => listener()); },
+  };
+}
+export function createMrToolRunnerState(initialText = ''): MrToolRunnerState {
+  return { text: initialText, proposal: '', bucket: 'single', rate: '', after: '40', price: '500',
+    summary: '', contents: '', url: '', output: '', result: null, error: '',
+    copied: false, editing: false, running: false, sampleInput: false, delivery: undefined };
+}
+export function hasMrToolRunnerDraft(value: Partial<MrToolRunnerState>): boolean {
+  const defaults = createMrToolRunnerState();
+  return Boolean(hasDeliveryRunnerDraft(value.delivery) || value.result || (['text', 'proposal', 'rate', 'summary', 'contents', 'url', 'output'] as const)
+    .some((key) => value[key]?.trim()) ||
+    (['bucket', 'after', 'price'] as const).some((key) => value[key] !== undefined && value[key]?.trim() !== defaults[key]));
+}
+function useRunnerState(session: MrToolRunnerSession | undefined, initialText: string) {
+  const [local] = useState(localSession);
+  const [initial] = useState(() => createMrToolRunnerState(initialText));
+  const store = session ?? local;
+  const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  const state = { ...initial, ...snapshot };
+  const patch = useCallback((value: Partial<MrToolRunnerState>) => store.patch(value), [store]);
+  const active = useCallback(() => store.isActive?.() !== false, [store]);
+  const runningNow = useCallback(() => store.getSnapshot()?.running === true, [store]);
+  return { state, patch, active, runningNow, store };
+}
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
-export function MrToolRunner({
-  tool,
-  initialText = '',
-  onRecord,
-  onRunningChange,
-  onOutcome,
-  onFailure,
-  executionDisabled = false,
-}: {
+export type MrToolRunnerProps = {
   tool: MrRunner;
   initialText?: string;
   onRecord?: RunRecorder;
+  recordErrorHandledByParent?: boolean;
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onFailure?: () => void;
   executionDisabled?: boolean;
-}) {
+  session?: MrToolRunnerSession;
+  language?: 'ja' | 'en';
+  entry?: string;
+};
+
+export function MrToolRunner(props: MrToolRunnerProps) {
+  const { tool, language = 'ja', entry, onOutcome, executionDisabled = false } = props;
+  if (language === 'en' && tool === 'citations')
+    return <EnglishCitationsRunner onOutcome={onOutcome} executionDisabled={executionDisabled} cardEntry={entry === 'columbia-card'} />;
+  if (language === 'en' && tool === 'patent-assistant')
+    return <EnglishPatentAssistant cardEntry={entry === 'columbia-card'} />;
+  return <MrToolRunnerCore {...props} />;
+}
+
+function MrToolRunnerCore({
+  tool,
+  initialText = '',
+  onRecord,
+  recordErrorHandledByParent = false,
+  onRunningChange,
+  onOutcome,
+  onFailure,
+  executionDisabled = false,
+  session,
+  language = 'ja',
+  entry,
+}: MrToolRunnerProps) {
+  const { state, patch, active, runningNow, store } = useRunnerState(session, initialText);
+  const deliverySession = useMemo<DeliveryRunnerSession>(() => ({
+    getSnapshot: () => store.getSnapshot()?.delivery,
+    subscribe: store.subscribe,
+    isActive: store.isActive,
+    onAuthenticationLost: store.onAuthenticationLost,
+    patch(value) {
+      const delivery = { ...createDeliveryRunnerState(), ...store.getSnapshot()?.delivery, ...value };
+      store.patch({ delivery, running: delivery.busy });
+    },
+  }), [store]);
   const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
   const [libraryNotice, setLibraryNotice] = useState('');
   useEffect(() => {
@@ -90,6 +177,7 @@ export function MrToolRunner({
     return () => window.removeEventListener('storage', load);
   }, []);
   function saveResult() {
+    if (!active()) return;
     try {
       setSavedResults(
         saveSkyResult(window.localStorage, {
@@ -117,6 +205,7 @@ export function MrToolRunner({
     }
   }
   function removeResult(id: string) {
+    if (!active()) return;
     try {
       setSavedResults(deleteSkyResult(window.localStorage, id));
       setLibraryNotice('削除しました。');
@@ -124,24 +213,28 @@ export function MrToolRunner({
       setLibraryNotice('削除できませんでした。');
     }
   }
-  const [text, setText] = useState(initialText),
-    [proposal, setProposal] = useState(''),
-    [bucket, setBucket] = useState('single'),
-    [rate, setRate] = useState('');
-  const [after, setAfter] = useState('40'),
-    [price, setPrice] = useState('500'),
-    [summary, setSummary] = useState(''),
-    [contents, setContents] = useState(''),
-    [url, setUrl] = useState('');
-  const [output, setOutput] = useState(''),
-    [result, setResult] = useState<CoconalaResult | null>(null),
-    [error, setError] = useState(''),
-    [copied, setCopied] = useState(false),
-    [editing, setEditing] = useState(false);
+  const { text, proposal, bucket, rate, after, price, summary, contents, url, output, result, error, copied, editing, running, sampleInput } = state;
+  const setText = (value: MrToolRunnerState['text']) => patch({ text: value });
+  const setProposal = (value: MrToolRunnerState['proposal']) => patch({ proposal: value });
+  const setBucket = (value: MrToolRunnerState['bucket']) => patch({ bucket: value });
+  const setRate = (value: MrToolRunnerState['rate']) => patch({ rate: value });
+  const setAfter = (value: MrToolRunnerState['after']) => patch({ after: value });
+  const setPrice = (value: MrToolRunnerState['price']) => patch({ price: value });
+  const setSummary = (value: MrToolRunnerState['summary']) => patch({ summary: value });
+  const setContents = (value: MrToolRunnerState['contents']) => patch({ contents: value });
+  const setUrl = (value: MrToolRunnerState['url']) => patch({ url: value });
+  const setOutput = (value: MrToolRunnerState['output']) => patch({ output: value });
+  const setResult = (value: MrToolRunnerState['result']) => patch({ result: value });
+  const setError = (value: MrToolRunnerState['error']) => patch({ error: value });
+  const setCopied = (value: MrToolRunnerState['copied']) => patch({ copied: value });
+  const setEditing = (value: MrToolRunnerState['editing']) => patch({ editing: value });
+  const setRunning = (value: MrToolRunnerState['running']) => patch({ running: value });
+  const setSampleInput = (value: MrToolRunnerState['sampleInput']) => patch({ sampleInput: value });
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
-  const [connected, setConnected] = useState(false),
-    [running, setRunning] = useState(false),
-    [sampleInput, setSampleInput] = useState(false);
+  useEffect(() => {
+    if (accessState === 'signin') store.onAuthenticationLost?.();
+  }, [accessState, store]);
+  const [connected, setConnected] = useState(false);
   useEffect(() => {
     const update = () => setConnected(!!deviceToken());
     update();
@@ -149,6 +242,7 @@ export function MrToolRunner({
     return () => window.removeEventListener('loop-device', update);
   }, []);
   const update = (action: () => void) => {
+    if (!active()) return;
     action();
     setSampleInput(false);
     setEditing(true);
@@ -158,6 +252,7 @@ export function MrToolRunner({
     setCopied(false);
   };
   function sample() {
+    if (!active()) return;
     setSampleInput(true);
     setError('');
     setOutput('');
@@ -187,8 +282,8 @@ export function MrToolRunner({
       setUrl('https://note.com/your_account/n/your_article');
     }
   }
-  async function run() {
-    if (running || executionDisabled) return;
+  async function run(started: number) {
+    if (!active() || runningNow() || running || executionDisabled) return;
     setRunning(true);
     onRunningChange?.(true);
     setError('');
@@ -196,8 +291,7 @@ export function MrToolRunner({
     setEditing(false);
     setOutput('');
     setResult(null);
-    const started = performance.now(),
-      local = !!deviceToken();
+    const local = !!deviceToken();
     const toolId =
       tool === 'coconala'
         ? 'coconala'
@@ -297,15 +391,18 @@ export function MrToolRunner({
       setResult(tracked.result.check);
       setOutput(tracked.result.output);
       setError(tracked.warning);
-      if (onRecord)
-        await onRecord(
-          toolId,
-          transport,
-          'completed',
-          started,
-          sampleInput,
-          tracked.result.outcome,
-        );
+      if (onRecord) {
+        try {
+          await onRecord(toolId, transport, 'completed', started, sampleInput, tracked.result.outcome);
+        } catch (recordError) {
+          if (!recordErrorHandledByParent) throw recordError;
+          // Workbench owns the pending command and clears its save notice only
+          // after matching readback. Keep actual Tool warnings/results here.
+          onFailure?.();
+          onOutcome?.({ ok: false, text: recordError instanceof Error ? recordError.message : '記録を保存できませんでした。' });
+          return;
+        }
+      }
       onOutcome?.({ ok: true, text: tracked.result.output });
     } catch (e) {
       if (executed && !completed && onRecord) {
@@ -322,8 +419,10 @@ export function MrToolRunner({
           /* Workbench retains the pending receipt. */
         }
       }
-      if (e instanceof OperationRequestError && e.status === 401)
+      if (e instanceof OperationRequestError && e.status === 401) {
         setNeedsSignin(true);
+        store.onAuthenticationLost?.();
+      }
       const message =
         e instanceof Error ? e.message : '入力を確認してください。';
       setError(message);
@@ -335,6 +434,7 @@ export function MrToolRunner({
     }
   }
   async function copy() {
+    if (!active()) return;
     try {
       await navigator.clipboard.writeText(output);
       setCopied(true);
@@ -344,9 +444,17 @@ export function MrToolRunner({
       );
     }
   }
+  const loadRunner = (runner: ReactNode) => (
+    <Suspense fallback={<output>ツールを読み込んでいます…</output>}>
+      {runner}
+    </Suspense>
+  );
+  if (accessState === 'signin' && store.onAuthenticationLost) return <ExecutionSignin state={accessState} />;
   if (tool === 'delivery-local')
-    return (
+    return loadRunner(
       <DeliveryRunner
+        session={deliverySession}
+        recordErrorHandledByParent={recordErrorHandledByParent}
         onRecord={onRecord}
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -354,7 +462,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'subscription-ledger')
-    return (
+    return loadRunner(
       <SubscriptionLedgerRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -362,7 +470,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'legal-intake')
-    return (
+    return loadRunner(
       <LegalIntakeRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -370,15 +478,17 @@ export function MrToolRunner({
       />
     );
   if (tool === 'patent-assistant')
-    return (
+    return loadRunner(
       <PatentAssistantRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
         executionDisabled={executionDisabled}
+        language={language}
+        entry={entry}
       />
     );
   if (tool === 'jev-evaluation')
-    return (
+    return loadRunner(
       <JevEvaluationRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -547,7 +657,7 @@ export function MrToolRunner({
         <button
           className="black-button bench-run"
           disabled={running}
-          onClick={() => void run()}
+          onClick={() => void run(performance.now())}
         >
           <Play size={16} />
           {running
@@ -616,6 +726,7 @@ export function MrToolRunner({
             <div key={item.id} className="bench-heading">
               <button
                 onClick={() => {
+                  if (!active()) return;
                   setOutput(item.output);
                   setEditing(false);
                   setResult(null);

@@ -3,9 +3,11 @@ import {
   A2AAgentDirectoryError,
   discoverA2AAgent,
 } from '@/lib/a2a-agent-directory';
-import { database, requestUser } from '@/lib/fund-store';
+import { database } from '@/lib/fund-store';
+import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import { authorizeRemoteAiRequest, RemoteAiGuardError } from '@/lib/remote-ai-guard';
-import { a2aEgressOriginAllowed } from '@/lib/a2a-authorization';
+import { a2aDelegationExecutionEnabled, a2aEgressOriginAllowed } from '@/lib/a2a-authorization';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { env } from 'cloudflare:workers';
 
 function json(value: unknown, status = 200) {
@@ -63,8 +65,36 @@ function errorResponse(error: unknown) {
 
 export async function GET(request: Request) {
   try {
-    const owner = await requestUser(request);
-    return json({ agents: await a2aAgentDirectory(database()).list(owner) });
+    const db = database();
+    const owner = await requestRockstarUser(request, db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
+    ))) return missingRockstarServiceScope('Sky');
+    const configuration = env as unknown as {
+      A2A_DELEGATION_EXECUTION_ENABLED?: string;
+      A2A_EGRESS_ALLOWED_ORIGINS?: string;
+      A2A_INPUT_ENCRYPTION_KEY?: string;
+      A2A_TRUSTED_BROKER_KEYS?: string;
+      A2A_TRUSTED_USAGE_KEYS?: string;
+    };
+    return json({
+      agents: await a2aAgentDirectory(db).list(owner),
+      execution: {
+        approvalGateEnabled: a2aDelegationExecutionEnabled(
+          configuration.A2A_DELEGATION_EXECUTION_ENABLED,
+        ),
+        serverConfigurationReady: Boolean(
+          configuration.A2A_EGRESS_ALLOWED_ORIGINS &&
+          configuration.A2A_INPUT_ENCRYPTION_KEY &&
+          configuration.A2A_TRUSTED_BROKER_KEYS &&
+          configuration.A2A_TRUSTED_USAGE_KEYS
+        ),
+      },
+    });
   } catch (error) {
     return errorResponse(error);
   }
@@ -74,6 +104,13 @@ export async function POST(request: Request) {
   try {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'sky-a2a-agent-discovery', db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
+    ))) return missingRockstarServiceScope('Sky');
     const origin = await readOrigin(request);
     const allowedOrigins = (env as unknown as { A2A_EGRESS_ALLOWED_ORIGINS?: string })
       .A2A_EGRESS_ALLOWED_ORIGINS;

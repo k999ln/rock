@@ -26,7 +26,36 @@ export function remoteAiTextPublicRecord(record: RemoteAiTextRecord) {
     sourceUrl: card.sourceUrl,
     unit: 'millionths_of_currency_minor_unit_per_million_tokens',
   };
-  return { ...rest, rateCard, invoiceVerified: false, budgetIsFundedWalletBalance: false };
+  const held = ['reserved', 'sending', 'unreconciled'].includes(record.state);
+  const priced = record.state === 'completed' && record.price?.status === 'priced';
+  const liveMeter = record.observation?.liveMeter && typeof record.observation.liveMeter === 'object'
+    ? record.observation.liveMeter as Record<string, unknown> : null;
+  return {
+    ...rest,
+    rateCard,
+    spending: {
+      status: priced ? 'itemized_usage_priced' : held ? 'usage_not_yet_final' : 'not_running',
+      currency: record.quote.ceiling.currency,
+      currentChargeMinor: priced ? record.settledMinor : null,
+      currentEstimateMinor: !priced && held && liveMeter && Number.isSafeInteger(liveMeter.estimatedChargeMinor)
+        ? liveMeter.estimatedChargeMinor : null,
+      estimateUpdatedAt: liveMeter && Number.isSafeInteger(liveMeter.observedAt) ? liveMeter.observedAt : null,
+      estimateBasis: liveMeter?.basis ?? null,
+      reservedMaximumMinor: held ? record.quote.ceiling.maximumChargeMinor : 0,
+      providerMeter: priced ? 'final_response_usage' : liveMeter ? 'stream_estimate' : 'not_reported',
+      invoiceVerified: false,
+    },
+    invoiceVerified: false,
+    budgetIsFundedWalletBalance: false,
+  };
+}
+export function remoteAiTextQueueState(record: RemoteAiTextRecord, inputAccepted: boolean) {
+  if (record.state === 'quoted') return 'awaiting_approval';
+  if (record.state === 'reserved') return inputAccepted ? 'queued' : 'approved_waiting_for_submission';
+  if (record.state === 'sending') return 'running_or_reconciling';
+  if (record.state === 'completed') return 'completed';
+  if (record.state === 'unreconciled') return 'usage_or_result_reconciliation_required';
+  return record.state;
 }
 export function remoteAiTextHttpError(error: unknown) {
   if (error instanceof RemoteAiGuardError || error instanceof LlmProviderError)

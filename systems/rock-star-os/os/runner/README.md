@@ -76,6 +76,12 @@ A successful `submit` returns an **acceptance receipt**, not completed output. I
 
 Queued cancellation prevents dispatch. Running cancellation first persists intent, then signals the actual process adapter to stop its process group; completion and cancellation serialize under the same journal lock. Terminal jobs retain request hash, receipt, bounded output and executor proof, and remove their raw input/package request column. SQLite secure deletion is enabled, but this is not a claim of encryption, secure physical erasure, or removal from filesystem backups. Output can itself contain user text and is retained for result recovery. No real sales, ledger entries or monthly debits are created.
 
+### OS cancellation after a send claim
+
+The OS `RunnerControl` treats a missing status as a point-in-time observation, not a durable rejection of an earlier submit still in transit. After a send claim, cancellation plus `found: false` retains `unknown`, the cancellation intent and the same job key across daemon restart. Bounded status polling continues without resubmitting text. A later observed queued/running job is cancelled; an already terminal job contributes its actual result. Input/package erasure occurs only after that terminal result is reconciled. Cancellation before any send claim still prevents submission locally.
+
+The current protocol has no cancellation tombstone for absent keys, so repeated absence alone cannot resolve this state. `tests/test_os_runner_control.py` uses actual Runner SQLite state and a deliberately delayed original envelope to verify both zero-execution cancellation and late one-execution success; this is host fixture evidence, not a new guest or public-provider acceptance.
+
 ## Actual process boundary
 
 `IsolatedRecipeExecutor` has no unisolated fallback. Its configured launcher, fixed recipe worker and fixed probe entry are service configuration, never wire-supplied executable paths. On Linux the C launcher uses a fixed bubblewrap invocation, separate user/mount/PID/network namespaces, read-only runtime files, empty `/data`, empty temporary home, no capabilities, no-new-privileges, a syscall filter denying sockets/process creation/namespace escape primitives, and fixed CPU (2 s), wall (3 s), address-space (256 MiB), file, descriptor and process limits. Input is at most 64 KiB UTF-8 and output at most 128 KiB UTF-8.

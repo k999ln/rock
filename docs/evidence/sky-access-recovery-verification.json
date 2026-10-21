@@ -47,7 +47,7 @@
     "explicitSaveAndReloadReturnsSameConfig": true,
     "oauthExecuted": false
   },
-  "publication": "not_yet",
+  "publication": "v33 succeeded; see sky-access-publication-verification.json",
   "validation": {
     "canonicalFullVerify": {
       "passed": true,

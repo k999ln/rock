@@ -5,6 +5,7 @@ import {
   index,
   uniqueIndex,
   check,
+  primaryKey,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
@@ -14,7 +15,40 @@ export const skyLibraryItems = sqliteTable('sky_library_items', {
   savedAt: integer('saved_at').notNull(),
 }, (table) => [uniqueIndex('idx_sky_library_owner_tool').on(table.userId, table.tool)]);
 
+export const skyFeedPersonalizationSettings = sqliteTable(
+  'sky_feed_personalization_settings',
+  {
+    userId: text('user_id').primaryKey(),
+    enabled: integer('enabled', { mode: 'boolean' }).notNull().default(false),
+    consentVersion: text('consent_version').notNull(),
+    algorithmVersion: text('algorithm_version').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+);
 
+export const skyFeedHistoryEvents = sqliteTable(
+  'sky_feed_history_events',
+  {
+    id: text('id').notNull(),
+    userId: text('user_id').notNull(),
+    sessionId: text('session_id').notNull(),
+    tool: text('tool').notNull(),
+    eventType: text('event_type').notNull(),
+    occurredAt: integer('occurred_at').notNull(),
+    dwellMs: integer('dwell_ms'),
+    position: integer('position'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.id] }),
+    index('idx_sky_feed_history_owner_time').on(table.userId, table.occurredAt),
+    index('idx_sky_feed_history_owner_tool').on(
+      table.userId,
+      table.tool,
+      table.occurredAt,
+    ),
+  ],
+);
 
 export const skyCommerceSellers = sqliteTable('sky_commerce_sellers', {
   id: text('id').primaryKey(),
@@ -200,12 +234,168 @@ export const workJobs = sqliteTable(
   ],
 );
 
+export const jenniferPlanRevisions = sqliteTable(
+  'jennifer_plan_revisions',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    rootJobId: text('root_job_id').notNull(),
+    planId: text('plan_id').notNull(),
+    revision: integer('revision').notNull(),
+    planDigest: text('plan_digest').notNull(),
+    parentPlanDigest: text('parent_plan_digest'),
+    planJson: text('plan_json').notNull(),
+    diffJson: text('diff_json').notNull().default('[]'),
+    resolutionJson: text('resolution_json').notNull().default('[]'),
+    state: text('state').notNull(),
+    approvedBy: text('approved_by'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_plan_root_revision').on(
+      table.ownerUserId,
+      table.rootJobId,
+      table.revision,
+    ),
+    uniqueIndex('idx_jennifer_plan_digest').on(
+      table.ownerUserId,
+      table.planDigest,
+    ),
+    index('idx_jennifer_plan_owner_updated').on(table.ownerUserId, table.updatedAt),
+  ],
+);
+
+export const jenniferPasskeyChallenges = sqliteTable(
+  'jennifer_passkey_challenges',
+  {
+    id: text('id').primaryKey(),
+    kind: text('kind').notNull(),
+    userId: text('user_id'),
+    challengeSha256: text('challenge_sha256').notNull(),
+    requestKeySha256: text('request_key_sha256').notNull(),
+    rpId: text('rp_id').notNull(),
+    origin: text('origin').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_challenge_hash').on(table.challengeSha256),
+    index('idx_jennifer_passkey_challenge_expiry').on(table.expiresAt),
+    check('jennifer_passkey_challenge_kind_check', sql`${table.kind} IN ('registration','authentication')`),
+    check('jennifer_passkey_challenge_hash_check', sql`length(${table.challengeSha256}) = 64`),
+    check('jennifer_passkey_challenge_request_key_check', sql`length(${table.requestKeySha256}) = 64`),
+    index('idx_jennifer_passkey_challenge_rate').on(table.requestKeySha256, table.createdAt),
+  ],
+);
+
+export const jenniferPasskeyCredentials = sqliteTable(
+  'jennifer_passkey_credentials',
+  {
+    credentialId: text('credential_id').primaryKey(),
+    userId: text('user_id').notNull(),
+    publicKeyCose: text('public_key_cose').notNull(),
+    signCount: integer('sign_count').notNull(),
+    transportsJson: text('transports_json').notNull().default('[]'),
+    label: text('label').notNull(),
+    deviceType: text('device_type').notNull(),
+    backedUp: integer('backed_up').notNull(),
+    rpId: text('rp_id').notNull(),
+    createdAt: integer('created_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_counter_check', sql`${table.signCount} >= 0`),
+    check('jennifer_passkey_transports_check', sql`json_valid(${table.transportsJson})`),
+    check('jennifer_passkey_device_type_check', sql`${table.deviceType} IN ('singleDevice','multiDevice')`),
+    check('jennifer_passkey_backed_up_check', sql`${table.backedUp} IN (0,1)`),
+  ],
+);
+
+export const jenniferPasskeySessions = sqliteTable(
+  'jennifer_passkey_sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    credentialId: text('credential_id').notNull(),
+    authMethod: text('auth_method').notNull(),
+    tokenSha256: text('token_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_session_token').on(table.tokenSha256),
+    index('idx_jennifer_passkey_session_owner').on(table.userId, table.createdAt),
+    index('idx_jennifer_passkey_session_credential').on(table.credentialId, table.createdAt),
+    check('jennifer_passkey_session_hash_check', sql`length(${table.tokenSha256}) = 64`),
+    check('jennifer_passkey_session_method_check', sql`${table.authMethod} = 'passkey'`),
+  ],
+);
+
+export const jenniferPasskeyEvents = sqliteTable(
+  'jennifer_passkey_events',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    eventType: text('event_type').notNull(),
+    credentialId: text('credential_id').notNull(),
+    detailsJson: text('details_json').notNull().default('{}'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_event_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_event_details_check', sql`json_valid(${table.detailsJson})`),
+  ],
+);
+
+export const jenniferTaskAttempts = sqliteTable(
+  'jennifer_task_attempts',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    rootJobId: text('root_job_id').notNull(),
+    planRevision: integer('plan_revision').notNull(),
+    taskId: text('task_id').notNull(),
+    attempt: integer('attempt').notNull(),
+    role: text('role').notNull(),
+    childJobId: text('child_job_id').notNull(),
+    delegationId: text('delegation_id').notNull(),
+    principal: text('principal').notNull(),
+    inputDigest: text('input_digest').notNull(),
+    artifactSetDigest: text('artifact_set_digest'),
+    usageReceiptDigest: text('usage_receipt_digest'),
+    reportDigest: text('report_digest'),
+    reportJson: text('report_json'),
+    state: text('state').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_attempt_identity').on(
+      table.ownerUserId,
+      table.rootJobId,
+      table.planRevision,
+      table.taskId,
+      table.attempt,
+      table.role,
+    ),
+    uniqueIndex('idx_jennifer_attempt_delegation').on(table.ownerUserId, table.delegationId),
+    index('idx_jennifer_attempt_root').on(table.ownerUserId, table.rootJobId, table.updatedAt),
+  ],
+);
+
 export const agentDelegations = sqliteTable(
   'agent_delegations',
   {
     id: text('id').primaryKey(),
     ownerUserId: text('owner_user_id').notNull(),
     parentJobId: text('parent_job_id').notNull(),
+    predecessorDelegationId: text('predecessor_delegation_id'),
     idempotencyKey: text('idempotency_key').notNull(),
     messageId: text('message_id').notNull(),
     targetOrigin: text('target_origin').notNull(),
@@ -214,9 +404,14 @@ export const agentDelegations = sqliteTable(
     protocolVersion: text('protocol_version').notNull(),
     inputSha256: text('input_sha256').notNull(),
     authorizationSha256: text('authorization_sha256').notNull(),
+    priceQuoteDigest: text('price_quote_digest').notNull().default(''),
+    priceQuoteJson: text('price_quote_json'),
+    packageRuntimeBindingId: text('package_runtime_binding_id').notNull().default(''),
+    packageRuntimeBindingDigest: text('package_runtime_binding_digest').notNull().default(''),
     budgetCurrency: text('budget_currency').notNull(),
     budgetLimitMinor: integer('budget_limit_minor').notNull(),
     parentBudgetLimitMinor: integer('parent_budget_limit_minor').notNull().default(0),
+    continueWhileDeviceOffline: integer('continue_while_device_offline').notNull().default(0),
     deadlineAt: integer('deadline_at').notNull(),
     state: text('state').notNull(),
     remoteTaskId: text('remote_task_id'),
@@ -230,6 +425,9 @@ export const agentDelegations = sqliteTable(
   (table) => [
     uniqueIndex('idx_agent_delegation_owner_key').on(table.ownerUserId, table.idempotencyKey),
     uniqueIndex('idx_agent_delegation_owner_message').on(table.ownerUserId, table.messageId),
+    uniqueIndex('idx_agent_delegation_price_quote_digest').on(table.priceQuoteDigest).where(sql`${table.priceQuoteDigest} <> ''`),
+    index('idx_agent_delegation_package_binding').on(table.packageRuntimeBindingId, table.packageRuntimeBindingDigest),
+    uniqueIndex('idx_agent_delegation_predecessor').on(table.predecessorDelegationId).where(sql`${table.predecessorDelegationId} IS NOT NULL`),
     index('idx_agent_delegation_parent_created').on(table.ownerUserId, table.parentJobId, table.createdAt),
     index('idx_agent_delegation_reconcile').on(table.state, table.updatedAt),
   ],
@@ -416,6 +614,7 @@ export const skyProviderConnections = sqliteTable(
   {
     userId: text('user_id').notNull(),
     provider: text('provider').notNull(),
+    revision: integer('revision').notNull().default(1),
     status: text('status').notNull().default('setup_required'),
     config: text('config').notNull().default('{}'),
     secretRef: text('secret_ref'),
@@ -423,6 +622,7 @@ export const skyProviderConnections = sqliteTable(
     updatedAt: integer('updated_at').notNull(),
   },
   (table) => [
+    check('sky_provider_revision_positive', sql`typeof(${table.revision}) = 'integer' AND ${table.revision} >= 1`),
     uniqueIndex('idx_sky_provider_connections_user_provider').on(
       table.userId,
       table.provider,
@@ -448,6 +648,114 @@ export const remoteAiRateLimits = sqliteTable(
       table.route,
     ),
     index('idx_remote_ai_rate_limits_window').on(table.windowStartedAt),
+  ],
+);
+
+export const remoteAiRateCards = sqliteTable(
+  'remote_ai_rate_cards',
+  {
+    providerId: text('provider_id').notNull(),
+    cardId: text('card_id').notNull(),
+    keyId: text('key_id').notNull(),
+    modelId: text('model_id').notNull(),
+    currency: text('currency').notNull(),
+    pricingVersion: text('pricing_version').notNull(),
+    effectiveAt: integer('effective_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    digest: text('digest').notNull(),
+    cardJson: text('card_json').notNull(),
+    status: text('status').notNull().default('active'),
+    createdAt: integer('created_at').notNull(),
+    createdBy: text('created_by').notNull(),
+    revokedAt: integer('revoked_at'),
+    revokedBy: text('revoked_by'),
+  },
+  (table) => [
+    primaryKey({ columns: [table.providerId, table.cardId], name: 'pk_remote_ai_rate_cards' }),
+    index('idx_remote_ai_rate_card_lookup').on(
+      table.providerId, table.modelId, table.currency, table.status, table.effectiveAt,
+    ),
+    uniqueIndex('idx_remote_ai_rate_card_digest').on(table.digest),
+    check('remote_ai_rate_card_digest_check', sql`length(${table.digest}) = 64`),
+    check('remote_ai_rate_card_currency_check', sql`${table.currency} GLOB '[A-Z][A-Z][A-Z]'`),
+    check('remote_ai_rate_card_validity_check', sql`${table.expiresAt} > ${table.effectiveAt}`),
+    check('remote_ai_rate_card_status_check', sql`${table.status} IN ('active', 'revoked')`),
+    check('remote_ai_rate_card_revocation_check', sql`(${table.status} = 'active' AND ${table.revokedAt} IS NULL AND ${table.revokedBy} IS NULL) OR (${table.status} = 'revoked' AND ${table.revokedAt} IS NOT NULL AND ${table.revokedBy} IS NOT NULL)`),
+  ],
+);
+
+export const remoteAiTextExecutions = sqliteTable(
+  'remote_ai_text_executions',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    requestId: text('request_id').notNull(),
+    parentJobId: text('parent_job_id').notNull(),
+    modelId: text('model_id').notNull(),
+    cardId: text('card_id').notNull(),
+    rateCardDigest: text('rate_card_digest').notNull(),
+    quoteDigest: text('quote_digest').notNull(),
+    approvalDigest: text('approval_digest').notNull(),
+    quoteJson: text('quote_json').notNull(),
+    rateCardJson: text('rate_card_json').notNull(),
+    currency: text('currency').notNull(),
+    maximumChargeMinor: integer('maximum_charge_minor').notNull(),
+    approvedCapMinor: integer('approved_cap_minor').notNull(),
+    parentBudgetLimitMinor: integer('parent_budget_limit_minor').notNull(),
+    saveResult: integer('save_result').notNull().default(0),
+    state: text('state').notNull().default('quoted'),
+    settledMinor: integer('settled_minor'),
+    usageJson: text('usage_json'),
+    observationJson: text('observation_json'),
+    priceJson: text('price_json'),
+    providerResponseId: text('provider_response_id'),
+    resultText: text('result_text'),
+    durationMs: integer('duration_ms'),
+    errorCode: text('error_code'),
+    revision: integer('revision').notNull().default(0),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_remote_ai_text_owner_request').on(table.ownerUserId, table.requestId),
+    uniqueIndex('idx_remote_ai_text_quote').on(table.quoteDigest),
+    uniqueIndex('idx_remote_ai_text_response').on(table.providerResponseId),
+    index('idx_remote_ai_text_owner_parent').on(table.ownerUserId, table.parentJobId, table.createdAt),
+    check('remote_ai_text_budget_check', sql`${table.maximumChargeMinor} >= 0 AND ${table.maximumChargeMinor} <= ${table.approvedCapMinor} AND ${table.approvedCapMinor} <= ${table.parentBudgetLimitMinor}`),
+    check('remote_ai_text_state_check', sql`${table.state} IN ('quoted','reserved','sending','completed','unreconciled','cancelled','expired')`),
+    check('remote_ai_text_save_check', sql`${table.saveResult} IN (0,1) AND (${table.saveResult} = 1 OR ${table.resultText} IS NULL)`),
+  ],
+);
+
+export const remoteAiTextInputs = sqliteTable(
+  'remote_ai_text_inputs',
+  {
+    executionId: text('execution_id').primaryKey().references(() => remoteAiTextExecutions.id),
+    ownerUserId: text('owner_user_id').notNull(),
+    ciphertext: text('ciphertext').notNull(),
+    nonce: text('nonce').notNull(),
+    inputSha256: text('input_sha256').notNull(),
+    keyVersion: text('key_version').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_remote_ai_text_input_owner_execution').on(table.ownerUserId, table.executionId),
+    check('remote_ai_text_input_digest_check', sql`length(${table.inputSha256}) = 64`),
+    check('remote_ai_text_input_key_version_check', sql`${table.keyVersion} = 'aes-256-gcm-v1'`),
+  ],
+);
+
+export const remoteAiTextSendClaims = sqliteTable(
+  'remote_ai_text_send_claims',
+  {
+    executionId: text('execution_id').primaryKey().references(() => remoteAiTextExecutions.id),
+    ownerUserId: text('owner_user_id').notNull(),
+    claimedAt: integer('claimed_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_remote_ai_text_send_claim_owner_execution').on(table.ownerUserId, table.executionId),
   ],
 );
 
@@ -746,6 +1054,101 @@ export const skyDeveloperTokens = sqliteTable(
   ],
 );
 
+export const rockstarDeviceAuthorizations = sqliteTable(
+  'rockstar_device_authorizations',
+  {
+    id: text('id').primaryKey(),
+    userCodeSha256: text('user_code_sha256').notNull(),
+    deviceCodeSha256: text('device_code_sha256').notNull(),
+    clientName: text('client_name').notNull(),
+    status: text('status').notNull(),
+    userId: text('user_id'),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    lastPolledAt: integer('last_polled_at'),
+    approvedAt: integer('approved_at'),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_rockstar_device_auth_user_code').on(table.userCodeSha256),
+    uniqueIndex('idx_rockstar_device_auth_device_code').on(table.deviceCodeSha256),
+    index('idx_rockstar_device_auth_expiry').on(table.status, table.expiresAt),
+  ],
+);
+
+export const rockstarDeviceSessions = sqliteTable(
+  'rockstar_device_sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    deviceName: text('device_name').notNull(),
+    tokenSha256: text('token_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_rockstar_device_session_token').on(table.tokenSha256),
+    index('idx_rockstar_device_session_owner').on(table.userId, table.revokedAt, table.expiresAt),
+  ],
+);
+
+export const rockstarA2ABrokerEnrollmentChallenges = sqliteTable(
+  'rockstar_a2a_broker_enrollment_challenges',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    nonceSha256: text('nonce_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    index('idx_rockstar_a2a_broker_challenge_owner').on(table.ownerUserId, table.deviceRef, table.createdAt),
+    index('idx_rockstar_a2a_broker_challenge_expiry').on(table.consumedAt, table.expiresAt),
+    check('rockstar_a2a_broker_challenge_nonce_check', sql`length(${table.nonceSha256}) = 64`),
+    check('rockstar_a2a_broker_challenge_expiry_check', sql`${table.expiresAt} > ${table.createdAt} AND ${table.expiresAt} <= ${table.createdAt} + 300000`),
+  ],
+);
+
+export const rockstarA2ABrokerDevices = sqliteTable(
+  'rockstar_a2a_broker_devices',
+  {
+    authorityId: text('authority_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    keyId: text('key_id').notNull(),
+    algorithm: text('algorithm').notNull(),
+    publicKeyHex: text('public_key_hex').notNull(),
+    publicKeySha256: text('public_key_sha256').notNull(),
+    applicationPackage: text('application_package').notNull(),
+    minimumApplicationVersion: text('minimum_application_version').notNull(),
+    signingCertificateSha256: text('signing_certificate_sha256').notNull(),
+    securityLevel: text('security_level').notNull(),
+    verifiedBootState: text('verified_boot_state').notNull(),
+    attestedAt: integer('attested_at').notNull(),
+    registeredAt: integer('registered_at').notNull(),
+    status: text('status').notNull().default('active'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    primaryKey({ columns: [table.ownerUserId, table.deviceRef, table.keyId], name: 'pk_rockstar_a2a_broker_devices' }),
+    uniqueIndex('idx_rockstar_a2a_broker_device_fingerprint').on(table.authorityId, table.keyId),
+    index('idx_rockstar_a2a_broker_device_owner').on(table.ownerUserId, table.deviceRef, table.status),
+    check('rockstar_a2a_broker_device_algorithm_check', sql`${table.algorithm} = 'ES256'`),
+    check('rockstar_a2a_broker_device_public_check', sql`length(${table.publicKeyHex}) = 130 AND substr(${table.publicKeyHex}, 1, 2) = '04'`),
+    check('rockstar_a2a_broker_device_fingerprint_check', sql`length(${table.publicKeySha256}) = 64 AND ${table.keyId} = ${table.publicKeySha256}`),
+    check('rockstar_a2a_broker_device_signer_check', sql`${table.applicationPackage} = 'dev.rock.automation' AND length(${table.signingCertificateSha256}) = 64`),
+    check('rockstar_a2a_broker_device_version_check', sql`${table.minimumApplicationVersion} <> '' AND ${table.minimumApplicationVersion} NOT GLOB '*[^0-9]*' AND length(${table.minimumApplicationVersion}) <= 9`),
+    check('rockstar_a2a_broker_device_security_check', sql`${table.securityLevel} IN ('TRUSTED_ENVIRONMENT', 'STRONG_BOX')`),
+    check('rockstar_a2a_broker_device_boot_check', sql`${table.verifiedBootState} = 'VERIFIED'`),
+    check('rockstar_a2a_broker_device_status_check', sql`${table.status} IN ('active', 'revoked')`),
+    check('rockstar_a2a_broker_device_revoked_check', sql`(${table.status} = 'active' AND ${table.revokedAt} IS NULL) OR (${table.status} = 'revoked' AND ${table.revokedAt} IS NOT NULL)`),
+  ],
+);
+
 export const skyToolPackages = sqliteTable(
   'sky_tool_packages',
   {
@@ -888,6 +1291,35 @@ export const skyA2aAgentConnections = sqliteTable(
   ],
 );
 
+export const skyPackageRuntimeBindings = sqliteTable(
+  'sky_package_runtime_bindings',
+  {
+    bindingId: text('binding_id').primaryKey(),
+    providerId: text('provider_id').notNull(),
+    keyId: text('key_id').notNull(),
+    agentOrigin: text('agent_origin').notNull(),
+    packageKey: text('package_key').notNull(),
+    manifestSha256: text('manifest_sha256').notNull(),
+    digest: text('digest').notNull(),
+    bindingJson: text('binding_json').notNull(),
+    status: text('status').notNull().default('active'),
+    createdAt: integer('created_at').notNull(),
+    createdBy: text('created_by').notNull(),
+    revokedAt: integer('revoked_at'),
+    revokedBy: text('revoked_by'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_package_runtime_binding_digest').on(table.digest),
+    index('idx_sky_package_runtime_binding_lookup').on(
+      table.agentOrigin, table.packageKey, table.manifestSha256, table.status,
+    ),
+    check('sky_package_runtime_binding_hash_check', sql`length(${table.manifestSha256}) = 64 AND length(${table.digest}) = 64`),
+    check('sky_package_runtime_binding_json_check', sql`json_valid(${table.bindingJson})`),
+    check('sky_package_runtime_binding_status_check', sql`${table.status} IN ('active', 'revoked')`),
+    check('sky_package_runtime_binding_revocation_check', sql`(${table.status} = 'active' AND ${table.revokedAt} IS NULL AND ${table.revokedBy} IS NULL) OR (${table.status} = 'revoked' AND ${table.revokedAt} IS NOT NULL AND ${table.revokedBy} IS NOT NULL)`),
+  ],
+);
+
 export const a2aUsageReceipts = sqliteTable(
   'a2a_usage_receipts',
   {
@@ -912,6 +1344,59 @@ export const a2aUsageReceipts = sqliteTable(
       table.parentJobId,
       table.receivedAt,
     ),
+  ],
+);
+
+export const a2aLiveUsageSnapshots = sqliteTable(
+  'a2a_live_usage_snapshots',
+  {
+    delegationId: text('delegation_id').notNull(),
+    sequence: integer('sequence').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    parentJobId: text('parent_job_id').notNull(),
+    providerId: text('provider_id').notNull(),
+    providerEventId: text('provider_event_id').notNull(),
+    snapshotJson: text('snapshot_json').notNull(),
+    currency: text('currency').notNull(),
+    cumulativeAmountMinor: integer('cumulative_amount_minor').notNull(),
+    pricingVersion: text('pricing_version').notNull(),
+    issuedAt: integer('issued_at').notNull(),
+    receivedAt: integer('received_at').notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.delegationId, table.sequence] }),
+    uniqueIndex('idx_a2a_live_usage_event').on(table.providerId, table.providerEventId),
+    index('idx_a2a_live_usage_owner_parent').on(
+      table.ownerUserId, table.parentJobId, table.delegationId, table.sequence,
+    ),
+  ],
+);
+
+export const a2aPriceQuoteConsentEvents = sqliteTable(
+  'a2a_price_quote_consent_events',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    quoteRequestId: text('quote_request_id').notNull(),
+    agentConnectionId: text('agent_connection_id').notNull(),
+    agentOrigin: text('agent_origin').notNull(),
+    agentName: text('agent_name').notNull(),
+    agentVersion: text('agent_version').notNull(),
+    agentCardSha256: text('agent_card_sha256').notNull(),
+    promptSha256: text('prompt_sha256').notNull(),
+    currency: text('currency').notNull(),
+    maximumBudgetMinor: integer('maximum_budget_minor').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consentVersion: text('consent_version').notNull(),
+    consentedAt: integer('consented_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_a2a_quote_consent_owner_request').on(table.ownerUserId, table.quoteRequestId),
+    index('idx_a2a_quote_consent_owner_time').on(table.ownerUserId, table.consentedAt),
+    check('a2a_quote_consent_hash_check', sql`length(${table.agentCardSha256}) = 64 AND length(${table.promptSha256}) = 64`),
+    check('a2a_quote_consent_currency_check', sql`${table.currency} GLOB '[A-Z][A-Z][A-Z]'`),
+    check('a2a_quote_consent_budget_check', sql`${table.maximumBudgetMinor} > 0 AND ${table.maximumBudgetMinor} <= 100000000`),
+    check('a2a_quote_consent_version_check', sql`${table.consentVersion} = 'a2a-price-quote-prompt-disclosure-v1'`),
   ],
 );
 
@@ -997,6 +1482,164 @@ export const esimProviderOrders = sqliteTable(
   ],
 );
 
+export const esimDeviceInstallChallenges = sqliteTable(
+  'esim_device_install_challenges',
+  {
+    id: text('id').primaryKey(),
+    skyOrderId: text('sky_order_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    nonceSha256: text('nonce_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    index('idx_esim_install_challenges_order').on(table.ownerUserId, table.skyOrderId, table.createdAt),
+    check('esim_install_challenge_profile_digest_check', sql`length(${table.profileDigest}) = 64`),
+    check('esim_install_challenge_nonce_check', sql`length(${table.nonceSha256}) = 64`),
+    check('esim_install_challenge_expiry_check', sql`${table.expiresAt} > ${table.createdAt}`),
+  ],
+);
+
+export const esimDeviceInstallReceipts = sqliteTable(
+  'esim_device_install_receipts',
+  {
+    challengeId: text('challenge_id').primaryKey(),
+    skyOrderId: text('sky_order_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    issuerId: text('issuer_id').notNull(),
+    keyId: text('key_id').notNull(),
+    receiptSha256: text('receipt_sha256').notNull(),
+    evidenceSource: text('evidence_source').notNull(),
+    observedAt: integer('observed_at').notNull(),
+    verifiedAt: integer('verified_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_esim_install_receipt_order').on(table.skyOrderId),
+    index('idx_esim_install_receipt_owner').on(table.ownerUserId, table.verifiedAt),
+    check('esim_install_receipt_profile_digest_check', sql`length(${table.profileDigest}) = 64`),
+    check('esim_install_receipt_hash_check', sql`length(${table.receiptSha256}) = 64`),
+    check('esim_install_receipt_source_check', sql`${table.evidenceSource} IN ('carrier_privileged', 'oem_euicc_controller')`),
+  ],
+);
+
+export const esimDeviceGatewayChallenges = sqliteTable(
+  'esim_device_gateway_challenges',
+  {
+    id: text('id').primaryKey(),
+    skyOrderId: text('sky_order_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    installReceiptSha256: text('install_receipt_sha256').notNull(),
+    starterPackId: text('starter_pack_id').notNull(),
+    starterPackVersion: text('starter_pack_version').notNull(),
+    starterPackManifestSha256: text('starter_pack_manifest_sha256').notNull(),
+    nonceSha256: text('nonce_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    index('idx_esim_gateway_challenge_order').on(table.ownerUserId, table.skyOrderId, table.createdAt),
+    check('esim_gateway_challenge_profile_check', sql`length(${table.profileDigest}) = 64`),
+    check('esim_gateway_challenge_install_receipt_check', sql`length(${table.installReceiptSha256}) = 64`),
+    check('esim_gateway_challenge_pack_hash_check', sql`length(${table.starterPackManifestSha256}) = 64`),
+    check('esim_gateway_challenge_nonce_check', sql`length(${table.nonceSha256}) = 64`),
+    check('esim_gateway_challenge_expiry_check', sql`${table.expiresAt} > ${table.createdAt}`),
+  ],
+);
+
+export const esimDeviceGatewayKeys = sqliteTable(
+  'esim_device_gateway_keys',
+  {
+    authorityId: text('authority_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    keyId: text('key_id').notNull(),
+    algorithm: text('algorithm').notNull(),
+    publicKeyHex: text('public_key_hex').notNull(),
+    publicKeySha256: text('public_key_sha256').notNull(),
+    applicationPackage: text('application_package').notNull(),
+    minimumApplicationVersion: text('minimum_application_version').notNull(),
+    signingCertificateSha256: text('signing_certificate_sha256').notNull(),
+    securityLevel: text('security_level').notNull(),
+    verifiedBootState: text('verified_boot_state').notNull(),
+    attestedAt: integer('attested_at').notNull(),
+    status: text('status').notNull().default('active'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    primaryKey({ columns: [table.ownerUserId, table.deviceRef, table.keyId], name: 'pk_esim_device_gateway_keys' }),
+    uniqueIndex('idx_esim_device_gateway_key_fingerprint').on(table.authorityId, table.keyId),
+    index('idx_esim_device_gateway_key_owner').on(table.ownerUserId, table.deviceRef, table.status),
+    check('esim_device_gateway_key_algorithm_check', sql`${table.algorithm} = 'ES256'`),
+    check('esim_device_gateway_key_public_check', sql`length(${table.publicKeyHex}) = 130 AND substr(${table.publicKeyHex}, 1, 2) = '04'`),
+    check('esim_device_gateway_key_fingerprint_check', sql`length(${table.publicKeySha256}) = 64 AND ${table.keyId} = ${table.publicKeySha256}`),
+    check('esim_device_gateway_key_signer_check', sql`length(${table.signingCertificateSha256}) = 64`),
+    check('esim_device_gateway_key_security_check', sql`${table.securityLevel} IN ('TRUSTED_ENVIRONMENT', 'STRONG_BOX')`),
+    check('esim_device_gateway_key_boot_check', sql`${table.verifiedBootState} = 'VERIFIED'`),
+    check('esim_device_gateway_key_status_check', sql`${table.status} IN ('active', 'revoked')`),
+    check('esim_device_gateway_key_revoked_check', sql`(${table.status} = 'active' AND ${table.revokedAt} IS NULL) OR (${table.status} = 'revoked' AND ${table.revokedAt} IS NOT NULL)`),
+  ],
+);
+
+export const esimDeviceEntitlements = sqliteTable(
+  'esim_device_entitlements',
+  {
+    challengeId: text('challenge_id').primaryKey(),
+    skyOrderId: text('sky_order_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    installReceiptSha256: text('install_receipt_sha256').notNull(),
+    authorityId: text('authority_id').notNull(),
+    keyId: text('key_id').notNull(),
+    signatureAlgorithm: text('signature_algorithm'),
+    devicePublicKeySha256: text('device_public_key_sha256'),
+    starterPackId: text('starter_pack_id').notNull(),
+    starterPackVersion: text('starter_pack_version').notNull(),
+    starterPackManifestSha256: text('starter_pack_manifest_sha256').notNull(),
+    receiptSha256: text('receipt_sha256').notNull(),
+    observedAt: integer('observed_at').notNull(),
+    activatedAt: integer('activated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_esim_device_entitlement_order').on(table.skyOrderId),
+    index('idx_esim_device_entitlement_owner').on(table.ownerUserId, table.activatedAt),
+    check('esim_device_entitlement_profile_check', sql`length(${table.profileDigest}) = 64`),
+    check('esim_device_entitlement_install_receipt_check', sql`length(${table.installReceiptSha256}) = 64`),
+    check('esim_device_entitlement_pack_hash_check', sql`length(${table.starterPackManifestSha256}) = 64`),
+    check('esim_device_entitlement_receipt_check', sql`length(${table.receiptSha256}) = 64`),
+  ],
+);
+
+export const esimCloudAccessKeys = sqliteTable('esim_cloud_access_keys', {
+  id: text('id').primaryKey(),
+  skyOrderId: text('sky_order_id').notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  deviceRef: text('device_ref').notNull(),
+  entitlementReceiptSha256: text('entitlement_receipt_sha256').notNull(),
+  tokenSha256: text('token_sha256').notNull(),
+  scopesJson: text('scopes_json').notNull(),
+  createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  revokedAt: integer('revoked_at'),
+  activeSlot: text('active_slot'),
+  replacedById: text('replaced_by_id'),
+}, (table) => [
+  uniqueIndex('idx_esim_cloud_token').on(table.tokenSha256),
+  uniqueIndex('idx_esim_cloud_active_order').on(table.activeSlot),
+  index('idx_esim_cloud_owner').on(table.ownerUserId, table.skyOrderId, table.createdAt),
+  check('esim_cloud_hash_check', sql`length(${table.tokenSha256})=64 AND length(${table.entitlementReceiptSha256})=64`),
+  check('esim_cloud_expiry_check', sql`${table.expiresAt}>${table.createdAt}`),
+  check('esim_cloud_active_check', sql`(${table.revokedAt} IS NULL AND ${table.activeSlot} IS NOT NULL AND ${table.activeSlot}=${table.skyOrderId}) OR (${table.revokedAt} IS NOT NULL AND ${table.activeSlot} IS NULL)`),
+]);
+
 export const csvTrialPayments = sqliteTable('csv_trial_payments', {
   id: text('id').primaryKey(),
   jobId: text('job_id').notNull(),
@@ -1004,6 +1647,266 @@ export const csvTrialPayments = sqliteTable('csv_trial_payments', {
   sessionId: text('session_id'),
   createdAt: integer('created_at').notNull(),
 }, (table) => [uniqueIndex('idx_csv_trial_session').on(table.sessionId)]);
+
+export const rockstarServiceEntitlements = sqliteTable('rockstar_service_entitlements', {
+  issuerId: text('issuer_id').notNull(),
+  claimId: text('claim_id').notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  offerId: text('offer_id').notNull(),
+  purchaseReferenceSha256: text('purchase_reference_sha256').notNull(),
+  claimCodeSha256: text('claim_code_sha256').notNull(),
+  formFactor: text('form_factor').notNull(),
+  scopesJson: text('scopes_json').notNull(),
+  issuerKeyId: text('issuer_key_id').notNull(),
+  claimSignature: text('claim_signature').notNull(),
+  status: text('status').notNull().default('active'),
+  claimedAt: integer('claimed_at').notNull(),
+  expiresAt: integer('expires_at'),
+  revokedAt: integer('revoked_at'),
+}, (table) => [
+  primaryKey({ columns: [table.issuerId, table.claimId] }),
+  index('idx_rockstar_entitlement_owner_status').on(table.ownerUserId, table.status, table.claimedAt),
+  uniqueIndex('idx_rockstar_entitlement_code').on(table.claimCodeSha256),
+  uniqueIndex('idx_rockstar_entitlement_purchase_ref').on(table.issuerId, table.purchaseReferenceSha256),
+  check('rockstar_entitlement_form_factor_check', sql`${table.formFactor} IN ('physical_sim', 'esim', 'service_only')`),
+  check('rockstar_entitlement_status_check', sql`${table.status} IN ('active', 'refunded', 'revoked', 'expired')`),
+  check('rockstar_entitlement_purchase_hash_check', sql`length(${table.purchaseReferenceSha256}) = 64`),
+  check('rockstar_entitlement_code_hash_check', sql`length(${table.claimCodeSha256}) = 64`),
+]);
+
+export const rockstarEntitlementEvents = sqliteTable('rockstar_entitlement_events', {
+  issuerId: text('issuer_id').notNull(),
+  eventId: text('event_id').notNull(),
+  claimId: text('claim_id').notNull(),
+  purchaseReferenceSha256: text('purchase_reference_sha256').notNull(),
+  eventType: text('event_type').notNull(),
+  issuerKeyId: text('issuer_key_id').notNull(),
+  eventSha256: text('event_sha256').notNull(),
+  signature: text('signature').notNull(),
+  receivedAt: integer('received_at').notNull(),
+  appliedAt: integer('applied_at'),
+}, (table) => [
+  primaryKey({ columns: [table.issuerId, table.eventId] }),
+  index('idx_rockstar_entitlement_event_claim').on(table.issuerId, table.claimId, table.receivedAt),
+  check('rockstar_entitlement_event_hash_check', sql`length(${table.purchaseReferenceSha256}) = 64 AND length(${table.eventSha256}) = 64`),
+  check('rockstar_entitlement_event_type_check', sql`${table.eventType} IN ('refunded', 'revoked')`),
+]);
+
+export const rockstarEntitlementIssuerDeliveries = sqliteTable('rockstar_entitlement_issuer_deliveries', {
+  issuerId: text('issuer_id').notNull(),
+  idempotencyKeySha256: text('idempotency_key_sha256').notNull(),
+  requestSha256: text('request_sha256').notNull(),
+  purchaseReferenceSha256: text('purchase_reference_sha256').notNull(),
+  claimId: text('claim_id').notNull(),
+  claimJson: text('claim_json').notNull(),
+  claimJsonSha256: text('claim_json_sha256').notNull(),
+  codeEncryptionKeyId: text('code_encryption_key_id').notNull().default('legacy'),
+  claimCodeCiphertext: text('claim_code_ciphertext'),
+  claimCodeNonce: text('claim_code_nonce'),
+  state: text('state').notNull().default('prepared'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  deliveredAt: integer('delivered_at'),
+}, (table) => [
+  primaryKey({ columns: [table.issuerId, table.idempotencyKeySha256] }),
+  uniqueIndex('idx_rockstar_entitlement_issuer_delivery_claim').on(table.issuerId, table.claimId),
+  index('idx_rockstar_entitlement_issuer_delivery_purchase').on(table.issuerId, table.purchaseReferenceSha256, table.createdAt),
+  check('rockstar_entitlement_issuer_delivery_hashes_check', sql`length(${table.idempotencyKeySha256}) = 64 AND length(${table.requestSha256}) = 64 AND length(${table.purchaseReferenceSha256}) = 64 AND length(${table.claimJsonSha256}) = 64`),
+  check('rockstar_entitlement_issuer_delivery_claim_json_check', sql`json_valid(${table.claimJson})`),
+  check('rockstar_entitlement_issuer_delivery_state_check', sql`(${table.state} = 'prepared' AND ${table.claimCodeCiphertext} IS NOT NULL AND ${table.claimCodeNonce} IS NOT NULL AND ${table.deliveredAt} IS NULL) OR (${table.state} = 'delivered' AND ${table.claimCodeCiphertext} IS NULL AND ${table.claimCodeNonce} IS NULL AND ${table.deliveredAt} IS NOT NULL)`),
+]);
+
+export const rockstarEntitlementIssuerRateLimits = sqliteTable('rockstar_entitlement_issuer_rate_limits', {
+  issuerId: text('issuer_id').primaryKey(),
+  windowStartedAt: integer('window_started_at').notNull(),
+  requestCount: integer('request_count').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, (table) => [
+  check('rockstar_entitlement_issuer_rate_limit_count_check', sql`${table.requestCount} >= 0`),
+]);
+
+
+export const skyCampusProfiles = sqliteTable(
+  'sky_campus_profiles',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    handle: text('handle').notNull(),
+    displayName: text('display_name').notNull(),
+    affiliation: text('affiliation').notNull(),
+    affiliationStatus: text('affiliation_status').notNull(),
+    headline: text('headline').notNull().default(''),
+    bio: text('bio').notNull().default(''),
+    skillsJson: text('skills_json').notNull().default('[]'),
+    interestsJson: text('interests_json').notNull().default('[]'),
+    lookingForJson: text('looking_for_json').notNull().default('[]'),
+    linksJson: text('links_json').notNull().default('[]'),
+    isPublic: integer('is_public').notNull().default(1),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_profile_user_campus').on(table.userId, table.campusId),
+    uniqueIndex('idx_sky_campus_profile_handle').on(table.campusId, table.handle),
+    index('idx_sky_campus_profile_public').on(table.campusId, table.isPublic, table.updatedAt),
+  ],
+);
+
+export const skyCampusItems = sqliteTable(
+  'sky_campus_items',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    kind: text('kind').notNull(),
+    title: text('title').notNull(),
+    summary: text('summary').notNull(),
+    tagsJson: text('tags_json').notNull().default('[]'),
+    detailsJson: text('details_json').notNull().default('{}'),
+    status: text('status').notNull().default('active'),
+    visibility: text('visibility').notNull().default('campus'),
+    startsAt: text('starts_at'),
+    endsAt: text('ends_at'),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_items_feed').on(table.campusId, table.kind, table.status, table.updatedAt),
+    index('idx_sky_campus_items_owner').on(table.ownerUserId, table.updatedAt),
+  ],
+);
+
+export const skyCampusEdges = sqliteTable(
+  'sky_campus_edges',
+  {
+    id: text('id').primaryKey(),
+    actorUserId: text('actor_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    edgeType: text('edge_type').notNull(),
+    targetType: text('target_type').notNull(),
+    targetId: text('target_id').notNull(),
+    note: text('note').notNull().default(''),
+    status: text('status').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_edge_unique').on(
+      table.actorUserId,
+      table.edgeType,
+      table.targetType,
+      table.targetId,
+    ),
+    index('idx_sky_campus_edge_target').on(table.campusId, table.targetType, table.targetId, table.status),
+  ],
+);
+
+export const skyCampusTags = sqliteTable(
+  'sky_campus_tags',
+  {
+    tagId: text('tag_id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    mode: text('mode').notNull(),
+    destination: text('destination').notNull(),
+    label: text('label').notNull().default(''),
+    placement: text('placement').notNull().default(''),
+    active: integer('active').notNull().default(1),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_tags_owner').on(table.ownerUserId, table.campusId, table.createdAt),
+    index('idx_sky_campus_tags_active').on(table.campusId, table.active),
+  ],
+);
+
+export const skyCampusTagEvents = sqliteTable(
+  'sky_campus_tag_events',
+  {
+    id: text('id').primaryKey(),
+    tagId: text('tag_id').notNull(),
+    source: text('source').notNull(),
+    occurredAt: text('occurred_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_tag_events_tag').on(table.tagId, table.occurredAt),
+    index('idx_sky_campus_tag_events_source').on(table.source, table.occurredAt),
+  ],
+);
+
+export const skyCampusReports = sqliteTable(
+  'sky_campus_reports',
+  {
+    id: text('id').primaryKey(),
+    reporterUserId: text('reporter_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    targetType: text('target_type').notNull(),
+    targetId: text('target_id').notNull(),
+    reason: text('reason').notNull(),
+    detail: text('detail').notNull().default(''),
+    status: text('status').notNull().default('open'),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_report_unique').on(
+      table.reporterUserId,
+      table.targetType,
+      table.targetId,
+    ),
+    index('idx_sky_campus_reports_target').on(table.campusId, table.targetType, table.targetId, table.status),
+  ],
+);
+
+
+export const skyCodeRepositories = sqliteTable('sky_code_repositories', {
+  id: text('id').primaryKey(), userId: text('user_id').notNull(),
+  revision: integer('revision').notNull().default(0), headId: text('head_id'),
+  hidden: integer('hidden').notNull().default(0), updatedAt: integer('updated_at').notNull(),
+}, table => [index('idx_sky_code_owner').on(table.userId)]);
+export const skyCodeCommits = sqliteTable('sky_code_commits', {
+  id: text('id').primaryKey(), repoId: text('repo_id').notNull().references(() => skyCodeRepositories.id),
+  revision: integer('revision').notNull(), parentId: text('parent_id'),
+  payload: text('payload').notNull(), createdAt: integer('created_at').notNull(),
+}, table => [uniqueIndex('idx_sky_code_repo_revision').on(table.repoId, table.revision)]);
+
+// Local monthly billing fixtures; never a real funded balance or payment authority.
+export const skyMonthlySandboxInvoices = sqliteTable('sky_monthly_sandbox_invoices', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), period: text('period').notNull(),
+  currency: text('currency').notNull().default('JPY'), status: text('status').notNull().default('draft'),
+  totalMinor: integer('total_minor').notNull().default(0), capMinor: integer('cap_minor').notNull().default(1000),
+  providerReceipt: text('provider_receipt'), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_owner_period').on(t.ownerId,t.period),
+  check('monthly_sandbox_currency',sql`${t.currency}='JPY'`),
+  check('monthly_sandbox_status',sql`${t.status} IN ('draft','issued','paid')`),
+  check('monthly_sandbox_total',sql`${t.totalMinor} BETWEEN 0 AND 1000`),
+  check('monthly_sandbox_cap',sql`${t.capMinor}=1000`)]);
+export const skyMonthlySandboxQuotes = sqliteTable('sky_monthly_sandbox_quotes', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), invoiceId: text('invoice_id').notNull(),
+  inputJson: text('input_json').notNull(), inputHash: text('input_hash').notNull(), rateVersion: text('rate_version').notNull(),
+  quantity: integer('quantity').notNull(), amountMinor: integer('amount_minor').notNull(),
+  expiresAt: integer('expires_at').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [check('monthly_sandbox_quantity',sql`${t.quantity} BETWEEN 1 AND 20`),check('monthly_sandbox_amount',sql`${t.amountMinor} BETWEEN 10 AND 200`)]);
+export const skyMonthlySandboxUsage = sqliteTable('sky_monthly_sandbox_usage', {
+  quoteId: text('quote_id').primaryKey(), ownerId: text('owner_id').notNull(),
+  invoiceId: text('invoice_id').notNull().references(() => skyMonthlySandboxInvoices.id),
+  jobId: text('job_id').notNull(), amountMinor: integer('amount_minor').notNull(), createdAt: integer('created_at').notNull(),
+}, t => [uniqueIndex('idx_sky_monthly_sandbox_job').on(t.jobId)]);
+
+export const skyCloudMonthlyInvoices = sqliteTable('sky_cloud_monthly_invoices', {
+ id:text('id').primaryKey(),ownerId:text('owner_id').notNull(),period:text('period').notNull(),currency:text('currency').notNull(),
+ stripeAccountId:text('stripe_account_id').notNull(),status:text('status').notNull().default('draft'),totalMinor:integer('total_minor').notNull().default(0),
+ stripeCustomerId:text('stripe_customer_id'),stripeInvoiceId:text('stripe_invoice_id'),stripeItemId:text('stripe_item_id'),
+ hostedInvoiceUrl:text('hosted_invoice_url'),submissionStartedAt:integer('submission_started_at'),createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_sky_cloud_monthly_contract').on(t.ownerId,t.period,t.currency,t.stripeAccountId),uniqueIndex('idx_sky_cloud_monthly_stripe_invoice').on(t.stripeInvoiceId),check('sky_cloud_monthly_total',sql`${t.totalMinor} BETWEEN 0 AND 1000000`),check('sky_cloud_monthly_state',sql`${t.status} IN ('draft','submitting','open','paid','attention')`)]);
+export const skyCloudMonthlyItems = sqliteTable('sky_cloud_monthly_items',{
+ sourceKind:text('source_kind').notNull(),sourceId:text('source_id').notNull(),invoiceId:text('invoice_id').notNull().references(()=>skyCloudMonthlyInvoices.id),ownerId:text('owner_id').notNull(),providerId:text('provider_id').notNull(),providerReference:text('provider_reference').notNull(),amountMinor:integer('amount_minor').notNull(),currency:text('currency').notNull(),pricingVersion:text('pricing_version').notNull(),usageJson:text('usage_json').notNull(),sourceDigest:text('source_digest').notNull(),occurredAt:integer('occurred_at').notNull(),
+},t=>[primaryKey({columns:[t.sourceKind,t.sourceId]}),uniqueIndex('idx_sky_cloud_monthly_provider_reference').on(t.providerId,t.providerReference),check('sky_cloud_monthly_source_kind',sql`${t.sourceKind} IN ('a2a','remote_llm')`),check('sky_cloud_monthly_item_amount',sql`${t.amountMinor}>=0`)]);
+export const skyCloudMonthlyEvents = sqliteTable('sky_cloud_monthly_events',{
+ eventId:text('event_id').primaryKey(),invoiceId:text('invoice_id').notNull(),type:text('type').notNull(),processedAt:integer('processed_at').notNull(),
+});
 
 // Sandbox-only, opt-in monthly collection and atomic execution restrictions.
 export const skyRecurringContracts = sqliteTable('sky_recurring_contracts', {

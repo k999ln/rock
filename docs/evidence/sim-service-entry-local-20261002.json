@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-02",
+  "scope": "SIM/eSIM-led RockstarOS service direction, onboarding links, and primary Home shortcuts",
+  "implemented": [
+    "Updated OS architecture and system map to position the physical SIM/eSIM-led service as the customer product and RockstarOS Core as its runtime foundation.",
+    "Marked the 2026-09-16 local-LLM-first product hypothesis as superseded and kept local inference as an optional device capability.",
+    "Preserved separate states for carrier activation, Rockstar account entitlement, supported native OS installation, and existing-OS app/browser access.",
+    "Added direct Home and /connect entry links to Sky, Zema, and Agent Workbench for tasks, progress, costs, results, and usage receipts.",
+    "Kept cloud paid execution fail-closed when accepted pricing, provider usage, invoice reconciliation, or funded Wallet acceptance is missing."
+  ],
+  "locallyVerified": {
+    "command": "npm run verify",
+    "result": "PASS",
+    "nodeTests": "669/669",
+    "fashionTests": "19/19",
+    "workerD1Assertions": 863,
+    "typecheck": "PASS",
+    "productLint": "PASS",
+    "productionBuild": "PASS",
+    "webBundleAndAssetChecks": "PASS",
+    "productDirectionTests": "tests/sim-service-entry.test.mjs and tests/web-route-style-contract.test.mjs: 15/15"
+  },
+  "notProven": [
+    "Production billing, live provider prices, provider meters, invoice reconciliation, or funded settlement.",
+    "Physical SIM sales/fulfillment or carrier activation; eSIM issuance through a contracted production provider.",
+    "Production durable Cloud execution or acceptance by an external agent provider.",
+    "RockstarOS installation or acceptance on a supported physical device."
+  ],
+  "executionSafety": {
+    "remotePaidExecutionGate": false,
+    "providerCallsMade": false,
+    "carrierTransactionsMade": false,
+    "productionDeploymentMade": false
+  }
+}

@@ -19,6 +19,7 @@ const base = {
   budgetCurrency: 'USD',
   budgetLimitMinor: 250,
   parentBudgetLimitMinor: 1000,
+  continueWhileDeviceOffline: true,
   deadlineAt: 1_800_000_000_000,
 };
 
@@ -33,6 +34,7 @@ void test('approval digest binds owner, exact instruction, agent identity, budge
     { targetAgentVersion: '1.0.1' },
     { budgetLimitMinor: 251 },
     { parentBudgetLimitMinor: 1001 },
+    { continueWhileDeviceOffline: false },
     { deadlineAt: base.deadlineAt + 1 },
   ]) {
     const candidate = await createA2AIntentDigests({ ...base, ...changed });

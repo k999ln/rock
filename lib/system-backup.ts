@@ -1,60 +1,21 @@
+import {
+  encryptBackupEnvelope,
+  decryptBackupEnvelope,
+} from './backup-crypto.ts';
+import { ADDONS_STORAGE_KEY } from './rockstar-addons.ts';
 export const SYSTEM_BACKUP_FORMAT = 'rockstaros-device-backup/1';
 export const HOME_PREFERENCES_KEY = 'rockstaros.home.preferences.v1';
-const ITERATIONS = 310_000;
 const MAX_BACKUP_BYTES = 256 * 1024;
-const ALLOWED_PREFERENCE_KEYS = new Set([HOME_PREFERENCES_KEY]);
+const ALLOWED_PREFERENCE_KEYS = new Set([
+  HOME_PREFERENCES_KEY,
+  ADDONS_STORAGE_KEY,
+]);
 
 type DeviceBackupPayload = {
   format: typeof SYSTEM_BACKUP_FORMAT;
   createdAt: string;
   records: Record<string, string>;
 };
-
-type EncryptedEnvelope = {
-  format: typeof SYSTEM_BACKUP_FORMAT;
-  cipher: 'AES-GCM-256';
-  kdf: 'PBKDF2-SHA256';
-  iterations: number;
-  salt: string;
-  iv: string;
-  ciphertext: string;
-};
-
-function cryptoApi() {
-  if (!globalThis.crypto?.subtle)
-    throw new Error('この環境では暗号化バックアップを利用できません。');
-  return globalThis.crypto;
-}
-
-function encodeBase64(bytes: Uint8Array) {
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary);
-}
-
-function decodeBase64(value: string) {
-  let binary: string;
-  try {
-    binary = atob(value);
-  } catch {
-    throw new Error('バックアップの形式が壊れています。');
-  }
-  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
-}
-
-function asArrayBuffer(bytes: Uint8Array) {
-  return bytes.buffer.slice(
-    bytes.byteOffset,
-    bytes.byteOffset + bytes.byteLength,
-  ) as ArrayBuffer;
-}
-
-function validatePassphrase(passphrase: string) {
-  if (passphrase.length < 10)
-    throw new Error('復旧パスフレーズは10文字以上にしてください。');
-  if (passphrase.length > 256)
-    throw new Error('復旧パスフレーズが長すぎます。');
-}
 
 function sanitizeRecords(value: unknown) {
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -70,29 +31,6 @@ function sanitizeRecords(value: unknown) {
   return records;
 }
 
-async function deriveKey(passphrase: string, salt: Uint8Array) {
-  const api = cryptoApi();
-  const material = await api.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(passphrase),
-    'PBKDF2',
-    false,
-    ['deriveKey'],
-  );
-  return api.subtle.deriveKey(
-    {
-      name: 'PBKDF2',
-      hash: 'SHA-256',
-      salt: asArrayBuffer(salt),
-      iterations: ITERATIONS,
-    },
-    material,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt', 'decrypt'],
-  );
-}
-
 export function collectDevicePreferences(storage: Storage) {
   const records: Record<string, string> = {};
   for (let index = 0; index < storage.length; index++) {
@@ -104,86 +42,31 @@ export function collectDevicePreferences(storage: Storage) {
   return sanitizeRecords(records);
 }
 
-
 export async function encryptDeviceBackup(
   records: Record<string, string>,
   passphrase: string,
   createdAt = new Date().toISOString(),
 ) {
-  validatePassphrase(passphrase);
-  const api = cryptoApi();
-  const salt = api.getRandomValues(new Uint8Array(16));
-  const iv = api.getRandomValues(new Uint8Array(12));
   const payload: DeviceBackupPayload = {
     format: SYSTEM_BACKUP_FORMAT,
     createdAt,
     records: sanitizeRecords(records),
   };
-  const encoded = new TextEncoder().encode(JSON.stringify(payload));
-  if (encoded.byteLength > MAX_BACKUP_BYTES)
-    throw new Error('バックアップ対象が大きすぎます。');
-  const key = await deriveKey(passphrase, salt);
-  const ciphertext = await api.subtle.encrypt(
-    {
-      name: 'AES-GCM',
-      iv: asArrayBuffer(iv),
-      additionalData: new TextEncoder().encode(SYSTEM_BACKUP_FORMAT),
-    },
-    key,
-    encoded,
+  return encryptBackupEnvelope(
+    new TextEncoder().encode(JSON.stringify(payload)),
+    passphrase,
+    SYSTEM_BACKUP_FORMAT,
+    MAX_BACKUP_BYTES,
   );
-  const envelope: EncryptedEnvelope = {
-    format: SYSTEM_BACKUP_FORMAT,
-    cipher: 'AES-GCM-256',
-    kdf: 'PBKDF2-SHA256',
-    iterations: ITERATIONS,
-    salt: encodeBase64(salt),
-    iv: encodeBase64(iv),
-    ciphertext: encodeBase64(new Uint8Array(ciphertext)),
-  };
-  return JSON.stringify(envelope, null, 2);
 }
 
-export async function decryptDeviceBackup(
-  source: string,
-  passphrase: string,
-) {
-  validatePassphrase(passphrase);
-  if (new TextEncoder().encode(source).byteLength > MAX_BACKUP_BYTES * 2)
-    throw new Error('バックアップファイルが大きすぎます。');
-  let envelope: EncryptedEnvelope;
-  try {
-    envelope = JSON.parse(source) as EncryptedEnvelope;
-  } catch {
-    throw new Error('バックアップのJSONを読み取れません。');
-  }
-  if (
-    envelope.format !== SYSTEM_BACKUP_FORMAT ||
-    envelope.cipher !== 'AES-GCM-256' ||
-    envelope.kdf !== 'PBKDF2-SHA256' ||
-    envelope.iterations !== ITERATIONS
-  )
-    throw new Error('対応していないバックアップ形式です。');
-  const api = cryptoApi();
-  const salt = decodeBase64(envelope.salt);
-  const iv = decodeBase64(envelope.iv);
-  if (salt.length !== 16 || iv.length !== 12)
-    throw new Error('バックアップの暗号情報が壊れています。');
-  const key = await deriveKey(passphrase, salt);
-  let plaintext: ArrayBuffer;
-  try {
-    plaintext = await api.subtle.decrypt(
-      {
-        name: 'AES-GCM',
-        iv: asArrayBuffer(iv),
-        additionalData: new TextEncoder().encode(SYSTEM_BACKUP_FORMAT),
-      },
-      key,
-      asArrayBuffer(decodeBase64(envelope.ciphertext)),
-    );
-  } catch {
-    throw new Error('パスフレーズが違うか、バックアップが改ざんされています。');
-  }
+export async function decryptDeviceBackup(source: string, passphrase: string) {
+  const plaintext = await decryptBackupEnvelope(
+    source,
+    passphrase,
+    SYSTEM_BACKUP_FORMAT,
+    MAX_BACKUP_BYTES,
+  );
   let payload: DeviceBackupPayload;
   try {
     payload = JSON.parse(new TextDecoder().decode(plaintext));
@@ -202,15 +85,125 @@ export async function decryptDeviceBackup(
   };
 }
 
+type PreferenceSnapshot = Readonly<Record<string, string | null>>;
+// Recovery is confined to this tab's Storage instance. No new persistent key,
+// login credential, Wallet data or server record is introduced.
+const pendingPreferenceRecovery = new WeakMap<Storage, PreferenceSnapshot>();
+
+export class DevicePreferenceRestoreError extends Error {
+  readonly recoveryPending: boolean;
+  readonly originalRecords: PreferenceSnapshot;
+  constructor(
+    message: string,
+    originalRecords: PreferenceSnapshot,
+    recoveryPending: boolean,
+  ) {
+    super(message);
+    this.name = 'DevicePreferenceRestoreError';
+    this.originalRecords = originalRecords;
+    // Retry can access the snapshot explicitly; ordinary error JSON must not
+    // accidentally disclose a user's saved preference values.
+    Object.defineProperty(this, 'originalRecords', { enumerable: false });
+    this.recoveryPending = recoveryPending;
+  }
+}
+
+function preferenceSnapshot(storage: Storage): PreferenceSnapshot {
+  const records: Record<string, string | null> = {};
+  try {
+    for (const key of ALLOWED_PREFERENCE_KEYS) {
+      const value = storage.getItem(key);
+      if (value !== null && typeof value !== 'string')
+        throw new Error('invalid Storage value');
+      records[key] = value;
+    }
+  } catch {
+    throw new Error(
+      '現在の端末設定を読み取れないため変更を始めていません。保存先の状態を確認して再試行してください。',
+    );
+  }
+  return Object.freeze(records);
+}
+
+function writePreference(storage: Storage, key: string, value: string | null) {
+  if (value === null) storage.removeItem(key);
+  else storage.setItem(key, value);
+}
+
+function rollBackPreferences(storage: Storage, snapshot: PreferenceSnapshot) {
+  let complete = true;
+  for (const key of ALLOWED_PREFERENCE_KEYS) {
+    try {
+      if (storage.getItem(key) !== snapshot[key])
+        writePreference(storage, key, snapshot[key]);
+      if (storage.getItem(key) !== snapshot[key]) complete = false;
+    } catch {
+      complete = false;
+    }
+  }
+  return complete;
+}
+
+/** Recover an interrupted restore in this tab before accepting another restore.
+ * Storage has no cross-key transaction or cross-tab CAS; callers must not claim
+ * those guarantees. Keep the original snapshot when Storage still refuses it. */
+export function recoverDevicePreferences(storage: Storage): boolean {
+  const original = pendingPreferenceRecovery.get(storage);
+  if (!original) return false;
+  if (!rollBackPreferences(storage, original))
+    throw new DevicePreferenceRestoreError(
+      '元の端末設定をまだ復旧できません。この画面を閉じず、保存先の空き容量・アクセスを確認して再試行してください。',
+      original,
+      true,
+    );
+  pendingPreferenceRecovery.delete(storage);
+  return true;
+}
+
+function replacePreferences(
+  storage: Storage,
+  next: PreferenceSnapshot,
+  operation: 'restore' | 'reset',
+) {
+  const original = preferenceSnapshot(storage);
+  const pendingOriginal = pendingPreferenceRecovery.get(storage);
+  try {
+    for (const key of ALLOWED_PREFERENCE_KEYS)
+      if (original[key] !== next[key]) writePreference(storage, key, next[key]);
+  } catch {
+    const recovered = rollBackPreferences(storage, original);
+    const protectedOriginal = pendingOriginal ?? original;
+    if (!recovered || pendingOriginal)
+      pendingPreferenceRecovery.set(storage, protectedOriginal);
+    else pendingPreferenceRecovery.delete(storage);
+    const pending = !recovered || Boolean(pendingOriginal);
+    const message = pending
+      ? '端末設定の変更と元設定の復旧が完了していません。元設定はこの画面で保持しています。画面を閉じず、保存先の空き容量・アクセスを確認して再試行してください。'
+      : `${operation === 'restore' ? 'バックアップの復元' : '端末設定の初期化'}に失敗したため、変更前の設定に戻しました。保存先の状態を確認して再試行してください。`;
+    throw new DevicePreferenceRestoreError(message, protectedOriginal, pending);
+  }
+  // An explicit successful reset is final: never revive an older failed restore.
+  pendingPreferenceRecovery.delete(storage);
+}
+
 export function restoreDevicePreferences(
   storage: Storage,
   records: Record<string, string>,
 ) {
+  // Validate every record before touching even an interrupted recovery snapshot.
   const safe = sanitizeRecords(records);
-  resetDevicePreferences(storage);
-  for (const [key, value] of Object.entries(safe)) storage.setItem(key, value);
+  recoverDevicePreferences(storage);
+  const next = Object.freeze(
+    Object.fromEntries(
+      [...ALLOWED_PREFERENCE_KEYS].map((key) => [key, safe[key] ?? null]),
+    ),
+  );
+  replacePreferences(storage, next, 'restore');
 }
 
 export function resetDevicePreferences(storage: Storage) {
-  for (const key of ALLOWED_PREFERENCE_KEYS) storage.removeItem(key);
+  const next = Object.freeze(
+    Object.fromEntries([...ALLOWED_PREFERENCE_KEYS].map((key) => [key, null])),
+  );
+  replacePreferences(storage, next, 'reset');
 }

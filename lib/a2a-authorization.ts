@@ -2,10 +2,13 @@ import type { A2ADelegationInput } from './a2a-delegation-store';
 
 export type A2AApprovalIntent = Omit<
   A2ADelegationInput,
-  'idempotencyKey' | 'inputSha256' | 'authorizationSha256'
+  | 'idempotencyKey' | 'inputSha256' | 'authorizationSha256' | 'priceQuoteDigest' | 'priceQuote'
+  | 'packageRuntimeBindingId' | 'packageRuntimeBindingDigest'
 > & {
   ownerUserId: string;
   message: string;
+  priceQuoteDigest?: string;
+  packageRuntimeBindingDigest?: string;
 };
 
 async function sha256(value: string) {
@@ -20,8 +23,7 @@ async function sha256(value: string) {
 
 export async function createA2AIntentDigests(intent: A2AApprovalIntent) {
   const inputSha256 = await sha256(intent.message);
-  const authorizationSha256 = await sha256(
-    JSON.stringify({
+  const authorizationIntent = {
       ownerUserId: intent.ownerUserId,
       id: intent.id,
       parentJobId: intent.parentJobId,
@@ -34,9 +36,13 @@ export async function createA2AIntentDigests(intent: A2AApprovalIntent) {
       budgetCurrency: intent.budgetCurrency,
       budgetLimitMinor: intent.budgetLimitMinor,
       parentBudgetLimitMinor: intent.parentBudgetLimitMinor,
+      continueWhileDeviceOffline: intent.continueWhileDeviceOffline,
       deadlineAt: intent.deadlineAt,
-    }),
-  );
+  } as Record<string, unknown>;
+  if (intent.priceQuoteDigest) authorizationIntent.priceQuoteDigest = intent.priceQuoteDigest;
+  if (intent.packageRuntimeBindingDigest)
+    authorizationIntent.packageRuntimeBindingDigest = intent.packageRuntimeBindingDigest;
+  const authorizationSha256 = await sha256(JSON.stringify(authorizationIntent));
   return { inputSha256, authorizationSha256 };
 }
 

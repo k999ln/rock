@@ -1,0 +1,437 @@
+{
+  "schema": "sky-pixel-service-acceptance/1",
+  "evaluatedAt": "2026-10-01",
+  "task": "SKY21",
+  "status": "pixel_csv_live_50_paid_download_hash_reload_and_cancel_verified_launch_incomplete",
+  "source": {
+    "canonicalHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "canonicalWorktree": "dirty_with_parallel_work",
+    "publicSkySource": "fd619cf9e4bb0f0b6fa7f96f2c255ac89d923cbd"
+  },
+  "device": {
+    "connectedDeviceCount": 1,
+    "adbState": "device",
+    "modelReadback": "passed",
+    "serialStored": false,
+    "physicalAcceptance": "partial_authenticated_web_csv_sample",
+    "model": "Pixel 10",
+    "device": "frankel",
+    "hardwareSku": "GL066",
+    "androidRelease": "17",
+    "apiLevel": 37,
+    "buildId": "CP3A.260905.009",
+    "securityPatch": "2026-09-01",
+    "verifiedBootState": "yellow",
+    "vbmetaDeviceState": "locked",
+    "flashLocked": "1",
+    "installedRockPackages": [
+      {
+        "package": "dev.rock.shell",
+        "versionCode": 1,
+        "versionName": "0.1.0"
+      },
+      {
+        "package": "dev.rock.automation",
+        "versionCode": 1,
+        "versionName": "0.1.0"
+      },
+      {
+        "package": "dev.rock.tools.article",
+        "versionCode": 1,
+        "versionName": "0.1.0"
+      }
+    ],
+    "installedRockInstrumentationRunners": 0
+  },
+  "checks": {
+    "skySourceWeb": {
+      "passed": 27,
+      "failed": 0
+    },
+    "skySourceCsv": {
+      "passed": 8,
+      "failed": 0
+    },
+    "deviceInspector": {
+      "passed": 3,
+      "failed": 0
+    },
+    "canonicalWorkerApi": {
+      "assertions": 376,
+      "result": "passed_after_rebuild",
+      "environment": "synthetic_local_users_and_temporary_D1"
+    },
+    "canonicalBuild": "passed",
+    "canonicalFullVerify": {
+      "result": "passed",
+      "nodeTests": 550,
+      "fashionTests": 19,
+      "workerApiAssertions": 376,
+      "environment": "host_and_synthetic_local_D1"
+    },
+    "pixelPublicSky": {
+      "authorization": "explicit_adb_sky_ui_permission",
+      "browser": "Vanadium",
+      "marketplaceOpen": "passed",
+      "androidFilter": "passed",
+      "csvSearch": {
+        "result": "passed",
+        "visibleResults": 1
+      },
+      "csvDedicatedNavigation": "passed",
+      "anonymousCsvSigninNotice": "passed",
+      "ownerSignin": "passed",
+      "processingSaveExportReload": "not_run",
+      "nativeOsIntegration": "not_run",
+      "screenshots": [
+        "sky-pixel-search.png",
+        "sky-pixel-tool.png",
+        "sky-pixel-csv.png",
+        "sky-pixel-csv-trial.png",
+        "sky-pixel-sample-completed.png",
+        "sky-pixel-sample-reloaded.png",
+        "sky-pixel-csv-download-confirmed.png"
+      ],
+      "csvSampleProcessing": "passed",
+      "validationUi": "passed",
+      "serverRefreshRestoresJob": "passed",
+      "artifactDownload": "browser_existing_result_csv_0.09_KB",
+      "downloadHash": "saved CSV SHA-256 equals server output_sha256",
+      "productionPaidTrial": "Stripe JPY 50 paid, signed webhook HTTP 200, stripe_verified completed",
+      "paymentCancel": "new unpaid trial returned; quoted/unpaid attempt 0",
+      "newCheckoutDisplay": "avokado Sky / JPY 50 only"
+    }
+  },
+  "initialFailure": {
+    "scope": "local-built-api-fixture",
+    "reason": "new eSIM device-entitlement receiptContext test was run against earlier build output",
+    "resolution": "rebuilt current worktree, reran same API suite successfully"
+  },
+  "nextSteps": [
+    "owner completes desktop sign-in and configures dedicated cloud AI provider secret",
+    "connect trusted pricing, funded spending limits and usage reconciliation; then accept actual cloud responses and failures",
+    "verify Apple Pay on supported hardware and live duplicate webhook replay without repeating the already successful JPY50 charge",
+    "accept active-case retention/deletion and real external Coconala workflow separately from verified synthetic draft create/edit/delete",
+    "accept PC/external integrations, OS/app identity and external OAuth without treating local drafts as external execution"
+  ],
+  "completeLaunchClaim": false,
+  "localGuideHistory": {
+    "records": [
+      {
+        "id": "91fced57-cdef-42c4-9221-49d8b7b5649f",
+        "tool": "rockstar-patent-assistant",
+        "status": "completed",
+        "transport": "browser",
+        "input_bytes": 539,
+        "output_bytes": 4650,
+        "duration_ms": 2,
+        "created_at": 1790896971055,
+        "finished_at": 1790896971983
+      },
+      {
+        "id": "fd1d69ae-424c-4c14-a83d-95eefc07d458",
+        "tool": "rockstar-legal-intake",
+        "status": "completed",
+        "transport": "browser",
+        "input_bytes": 406,
+        "output_bytes": 998,
+        "duration_ms": 3,
+        "created_at": 1790896044704,
+        "finished_at": 1790896045558
+      }
+    ],
+    "consent": "optional-default-off",
+    "bodySent": false,
+    "firstPatentSaveUnconfirmed": true,
+    "explicitRecoveryVerified": true,
+    "remoteExecutionVerified": false,
+    "testInputScope": "synthetic; patent metadata and recovery only"
+  },
+  "latestDeployment": {
+    "version": 24,
+    "sourceCommit": "fd619cf9e4bb0f0b6fa7f96f2c255ac89d923cbd",
+    "versionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_d9ad8dff2bd881919db3b282399c5577",
+    "deploymentId": "appgdep_6abf1439e8688191826eace3b1ff61c0",
+    "status": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "environmentRevision": 2,
+    "verifiedAt": "2026-10-02T02:17:40.480352+00:00"
+  },
+  "canonicalFullVerify": {
+    "result": "passed",
+    "scope": "dirty canonical checkout; not GitHub CI or all public integrations",
+    "nodeTests": 620,
+    "fashionTests": 19,
+    "workerApiAssertions": 540
+  },
+  "coconalaAcceptance": {
+    "syntheticSampleExecuted": true,
+    "externalApplicationExecuted": false,
+    "resultSavedInBrowser": true,
+    "resultRestoredInFreshPage": true,
+    "serverMetadata": {
+      "id": "be8238a5-027d-4274-b5a1-43ff748a67d0",
+      "tool": "coconala",
+      "status": "completed",
+      "transport": "browser",
+      "sample": true,
+      "inputBytes": 267,
+      "outputBytes": 180,
+      "durationMs": 8,
+      "errorCode": null,
+      "contentStored": false,
+      "createdAt": 1790898502616,
+      "finishedAt": 1790898503583
+    },
+    "serverCaseWorkflowVerified": false,
+    "desktopSigninRecovery": {
+      "inputRetainedAfterRecheck": true,
+      "saveDisabledWithoutAuthentication": true,
+      "separateTabReturnPath": "/sky/tools/coconala"
+    },
+    "mobileOutputButtonsVerified": true,
+    "restoredOutputContrastVerified": true,
+    "sourceVersion": 18,
+    "screenshot": "sky-pixel-coconala-restored.png",
+    "caseDraftAcceptance": {
+      "verifiedAt": "2026-10-02 01:17:36 UTC",
+      "sourceVersion": 21,
+      "sourceCommit": "659bb8667dc8d18afe4facb90859d9cb79f6576d",
+      "caseId": "1313b4f4-84e6-45d2-9e2f-bf7c3c469871",
+      "syntheticFixture": true,
+      "caseCount": 1,
+      "initialRevision": 0,
+      "finalRevision": 1,
+      "finalStatus": "draft",
+      "createVerified": true,
+      "initialReloadRestored": true,
+      "editVerified": true,
+      "editedReloadRestored": true,
+      "d1Readback": true,
+      "sameCaseUpdated": true,
+      "onlyTitleChanged": [
+        "title"
+      ],
+      "finalTitle": "TEST-ONLY-SKY-CASE-001-EDITED",
+      "inputFieldCount": 17,
+      "deliveryDate": "2026-10-15",
+      "inspectionDate": "2026-10-16",
+      "workerPaymentDate": "2026-10-30",
+      "grossYen": 10000,
+      "estimatedFeeYen": 2200,
+      "estimatedNetYen": 7800,
+      "workerFeeYen": 7566,
+      "estimatedOperatorMarginYen": 234,
+      "caseContentStoredInD1": true,
+      "moneyEntries": 0,
+      "events": [
+        "update_terms"
+      ],
+      "externalApplicationPerformed": false,
+      "externalContractPerformed": false,
+      "externalMessageSent": false,
+      "realPaymentPerformed": false,
+      "cloudAiExecuted": false,
+      "unverifiedProductionActions": [
+        "assign",
+        "deliver",
+        "accept",
+        "manual_customer_receipt",
+        "manual_refund",
+        "manual_worker_payment"
+      ],
+      "scope": "Sky internal synthetic draft create, reload, edit and reload only. This does not prove a real Coconala order or external execution.",
+      "screenshots": [
+        "sky-pixel-coconala-case-restored.png",
+        "sky-pixel-coconala-case-edited.png"
+      ],
+      "testFixtureCleanup": {
+        "removedInVersion": 22,
+        "d1FixtureAbsent": true
+      }
+    },
+    "serverCaseDraftWorkflowVerified": true,
+    "caseDataBoundary": "Owner-scoped D1 stores case content/history. Confirmed pre-assignment draft deletion removes that row. Pre-application checks store metadata only; active-case retention/deletion is not accepted.",
+    "caseDraftDeletionAcceptance": {
+      "verifiedAt": "2026-10-02 01:44:10 UTC",
+      "sourceVersion": 22,
+      "sourceCommit": "456b549886c531de9b8aff27b0ecd6baf18ffc09",
+      "caseId": "1313b4f4-84e6-45d2-9e2f-bf7c3c469871",
+      "syntheticFixture": true,
+      "confirmationVerified": true,
+      "cancellationRetainedSameRevision": true,
+      "revisionBeforeDelete": 1,
+      "explicitDeleteVerified": true,
+      "reloadDidNotRestoreDeletedCase": true,
+      "d1Readback": true,
+      "d1RowsAfterDelete": 0,
+      "d1FixtureAbsent": true,
+      "ownerIsolationAndOriginFixturesPassed": true,
+      "staleRevisionAndAssignedStateFixturesPassed": true,
+      "refreshDoesNotMutate": true,
+      "activeCaseRetentionAccepted": false,
+      "externalContractChanged": false,
+      "externalMessageSent": false,
+      "realPaymentPerformed": false,
+      "screenshots": [
+        "sky-pixel-coconala-delete-confirm.png",
+        "sky-pixel-coconala-delete-complete.png",
+        "sky-pixel-coconala-delete-reloaded.png"
+      ],
+      "scope": "Production Pixel acceptance deletes only the owned synthetic pre-assignment draft and its D1 content row. The API fixtures cover owner/origin/revision/state restrictions; this does not prove real Coconala transactions or active-case retention policy."
+    }
+  },
+  "latestFullVerify": {
+    "exitCode": 0,
+    "nodeTests": 639,
+    "nodePassed": 639,
+    "fashionTests": 19,
+    "fashionPassed": 19,
+    "workerD1ApiAssertions": 703,
+    "typecheck": true,
+    "lint": true,
+    "build": true,
+    "log": "work/sky-cloud-transport/verify-accepted.log",
+    "scope": "Current canonical local source, including concurrent device-session work. Not proof of all catalog external integrations or every production DB table."
+  },
+  "paperMarketAcceptance": {
+    "mode": "PAPER",
+    "liveMoneyMoved": false,
+    "externalServiceExecuted": false,
+    "initialBalanceMinor": 100000,
+    "currentBalanceMinor": 90400,
+    "completedProposals": 2,
+    "receipts": 2,
+    "positions": 2,
+    "receiptIds": [
+      "paper:fd72df08-d278-4593-a2a2-ec3f1795e315",
+      "paper:ec958f70-a295-4ffb-b281-a9d9c9cc7b18"
+    ],
+    "proposalIds": [
+      "proposal:83e459e9-efad-49ec-b80c-6d0c1ebd830d",
+      "proposal:d01d0a05-d557-4427-bcaf-bb23576e4aae"
+    ],
+    "receiptRetrievedAfterFreshPage": true,
+    "proposalSuccessClosedTicketAndMovedToApproval": true,
+    "approvalShowsSideQuantityAndUnitPrice": true,
+    "sampleClaimRemoved": true,
+    "mobileSearchAndBalanceDoNotOverlap": true,
+    "sourceVersion": 20,
+    "screenshot": "sky-pixel-market-history.png",
+    "headerScreenshot": "sky-pixel-market-mobile-header.png"
+  },
+  "latestSchemaCheck": {
+    "success": true,
+    "webTables": 61,
+    "databaseBoundaryTables": 116,
+    "latestMigration": "0045_rockstar_device_sessions.sql",
+    "scope": "Canonical source/fixtures. New device-session migration is not included in Site v24."
+  },
+  "mercariAcceptance": {
+    "planId": "2d197297-260b-4ea3-a60a-9ed70847316a",
+    "syntheticFixture": true,
+    "title": "TEST-SKY-001",
+    "priceJPY": 1500,
+    "feeJPY": 150,
+    "shippingJPY": 250,
+    "costJPY": 100,
+    "otherJPY": 50,
+    "expectedNetJPY": 950,
+    "createVerified": true,
+    "uncheckedConfirmationRejected": true,
+    "newPageRestored": true,
+    "d1Readback": true,
+    "finalStatus": "cancelled",
+    "finalRevision": 1,
+    "externalListingPerformed": false,
+    "realSaleVerified": false,
+    "settlementPerformed": false,
+    "screenshots": [
+      "outputs/sky-pixel-mercari-draft.png",
+      "outputs/sky-pixel-mercari-restored.png"
+    ]
+  },
+  "gigWorkflowAcceptance": {
+    "jobId": "00a2eb72-68f8-4845-99c8-0ab5e23552fe",
+    "status": "completed",
+    "transport": "browser",
+    "sample": true,
+    "inputBytes": 102,
+    "outputBytes": 430,
+    "durationMs": 3,
+    "visibleOutputVerified": true,
+    "downloadVerified": true,
+    "downloadSHA256": "f8ef8357f11ac20118fae0ab54db2a661cc0b81aa3d48ed8b7c7f207084b47f3",
+    "serverStores": "Operational metadata only; draft retrieved from explicit browser download",
+    "externalExecutionVerified": false,
+    "screenshot": "outputs/sky-pixel-gig-workflow-draft.png"
+  },
+  "ipStudioAcceptance": {
+    "pixelPcRequirementVisible": true,
+    "pixelLoopbackLaunchLinkAbsent": true,
+    "desktopLaunchConditionVisible": true,
+    "desktopLaunchLinkPreserved": true,
+    "localServiceListening": false,
+    "localPort": 18767,
+    "runtimeExecutionVerified": false,
+    "screenshots": [
+      "outputs/sky-pixel-ip-studio-boundary.png",
+      "outputs/sky-ip-studio-desktop.jpg"
+    ]
+  },
+  "jevRouterAcceptance": {
+    "pixelPcRequirementVisible": true,
+    "skyExecutionImplemented": false,
+    "externalExecutionVerified": false,
+    "screenshot": "outputs/sky-pixel-jev-router-boundary.png"
+  },
+  "catalogAcceptanceSummary": {
+    "working_end_to_end": 3,
+    "working_locally": 14,
+    "requiring_connection": 16,
+    "unavailable": 1
+  },
+  "candidateClassificationMeaning": "Planning-only executors and unconnected account/API integrations are requiring_connection; local template outlines do not prove advertised tool execution.",
+  "cloudTransportPreparation": {
+    "timeoutMs": 20000,
+    "redirect": "manual",
+    "store": false,
+    "automaticRetry": false,
+    "returnsProviderModel": true,
+    "returnsDuration": true,
+    "usage": "validated-provider-counts-or-null",
+    "webSearchCalls": "observed-output-items-not-invoice",
+    "pricingGateAccepted": false,
+    "productionProviderExecutionVerified": false,
+    "usageSettlementConnected": false,
+    "credentialConfigured": false,
+    "focusedResearchTests": 29,
+    "finalSiteTransportAndStatusTests": 18
+  },
+  "paymentStatusSeparationAcceptance": {
+    "deploymentVersion": 24,
+    "publicStatus": {
+      "version": 1,
+      "database": "available",
+      "csvStorageConfigured": true,
+      "legalAiConfigured": false,
+      "patentAiConfigured": false,
+      "jevConfigured": false,
+      "payments": "unconfigured",
+      "csvPayments": "live"
+    },
+    "pixelHelpScreenshot": "outputs/sky-pixel-payment-status-help-v24.png",
+    "existingPaidJobReadback": {
+      "jobId": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+      "status": "completed",
+      "paymentStatus": "stripe_verified",
+      "quoteMinor": 5000,
+      "currency": "JPY",
+      "attempt": 1,
+      "revision": 3
+    },
+    "additionalCharge": false,
+    "marketplaceSaleAccepted": false,
+    "applePayVerified": false
+  }
+}

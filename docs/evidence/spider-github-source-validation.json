@@ -1,0 +1,63 @@
+{
+  "schema": "rock-spider-github-source-validation/1",
+  "recordedAt": "2026-10-03T00:30:47.211672+00:00",
+  "repository": "https://github.com/k999ln/rock",
+  "controlCommit": "b6ab19889fa245f6060e22b0c7a0b641395fc3b1",
+  "sourceSha256": {
+    "scripts/spider-repository-scan.py": "d54fcf031956d8ca70d149f34599a8a3775277080f2f5c6673e8d0771dddfe72",
+    ".github/spider/gitleaks.toml": "1786aace5ae1b9fc12bf62641002c09f4dff01aad6b982736c6d580a2da5cb68",
+    ".github/workflows/spider.yml": "62fb24101e1fb3b9013d5fea3e727a032c2d206b98f69016f399a40b0096cccd",
+    ".github/workflows/spider-codeql.yml": "3eb766405c14c7cfbcaf59f28014729d801b2100cbfdb430e42edaff791b9377",
+    "tests/test_spider_repository_scan.py": "dd78e25de080f1ee2ae82d0748ef5867b0fa9e257e3d922cc88b2008b4c03db6",
+    "tests/test_spider_gitleaks_policy.py": "9ec082154b77237562c24dd998a475b4739d92c6f706fb6fa50d97fb7347ded0",
+    "tests/spider-codeql-workflow.test.mjs": "2eb5d9bf2cd73cf8b7ffe44258e76c538d37518794bafe456d6769f1b3420723"
+  },
+  "localTests": {
+    "scannerPrivacyAndFailure": {
+      "passed": 6,
+      "skipped": 0,
+      "realGitleaksUsed": true
+    },
+    "exactFixturePolicy": {
+      "passed": 6,
+      "skipped": 0
+    },
+    "codeqlWorkflow": {
+      "passed": 4
+    }
+  },
+  "localHistoryInspection": {
+    "targetHead": "beb99b0c20106aca1af2f11a053219239f33531d",
+    "reachableCommitCount": 637,
+    "status": "findings",
+    "totalFindings": 2357,
+    "historyScanCompleted": true,
+    "limitations": [
+      "Gitleaks text-pattern inspection of all commits reachable from the resolved HEAD; not other refs or uncommitted files.",
+      "Binary content and archive contents are not covered; archive traversal is disabled and decoding is limited to depth 2.",
+      "Detection is not proof of a valid credential; no findings does not establish safety or cover all vulnerabilities.",
+      "Counts are historical pattern matches and can repeat across commits or merges; they are not unique credentials.",
+      "This check does not intercept a running program or provide continuous runtime protection."
+    ]
+  },
+  "repositorySettingsReadback": {
+    "visibility": "public",
+    "secretScanning": "already_enabled",
+    "pushProtection": "already_enabled",
+    "dependabotAlerts": "enabled",
+    "dependabotSecurityUpdates": {
+      "enabled": true,
+      "paused": false
+    },
+    "mainProtection": "not_configured",
+    "mainSha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+  },
+  "githubExecution": "Pending initial integration-branch push; inspect live workflow runs and PR checks.",
+  "verification": {
+    "project": "passed",
+    "database": "passed",
+    "design": "passed",
+    "verify": "Existing baseline visual requirement fails at scripts/check-product-baseline.mjs:1057 after seven preceding checks; later gates not run."
+  },
+  "scope": "Source tests and repository settings only. Historical candidates are not confirmed valid secrets. No main merge, required check rule, full-OS deployment or 24-hour acceptance."
+}

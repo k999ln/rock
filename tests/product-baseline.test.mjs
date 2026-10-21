@@ -9,12 +9,51 @@ const source = JSON.parse(
 );
 void test('product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence', () => {
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
+  const osOnSim = structuredClone(source);
+  osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
+  assert.throws(() => validateBaseline(osOnSim), /Connectivity-bundled service access/);
+  const esimOnly = structuredClone(source);
+  esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
+  assert.throws(() => validateBaseline(esimOnly), /Connectivity-bundled service access/);
+  const offlineCloudLost = structuredClone(source);
+  offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
+    offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
+      (item) => !item.startsWith('accepted_cloud_tasks_continue_while_device_offline'),
+    );
+  assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
+  const billingGateOpened = structuredClone(source);
+  billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
+  assert.throws(() => validateBaseline(billingGateOpened), /Connectivity-bundled service access/);
+  const simRequired = structuredClone(source);
+  simRequired.serviceAccessModel.simRequiredForService = true;
+  assert.throws(() => validateBaseline(simRequired), /Connectivity-bundled service access/);
+  for (const [key, value] of [
+    ['autoFlashAllowed', true],
+    ['liveCloudDispatchEnabled', true],
+    ['liveIssuanceEnabled', true],
+    ['grantRequiresVerifiedPurchase', false],
+    ['profileIdentityIsNotAccount', false],
+    ['siUsageUnlimited', true],
+  ]) {
+    const invalidBundle = structuredClone(source);
+    invalidBundle.connectivityServiceBundleDecision[key] = value;
+    assert.throws(() => validateBaseline(invalidBundle), /Connectivity bundle decision/);
+  }
+  const storedBalance = structuredClone(source);
+  storedBalance.accountEntryDecision.billing.storedBalance = true;
+  assert.throws(() => validateBaseline(storedBalance), /accountEntryDecision/);
+  const liveBilling = structuredClone(source);
+  liveBilling.accountEntryDecision.liveBillingAccepted = true;
+  assert.throws(() => validateBaseline(liveBilling), /accountEntryDecision/);
+  const miniUndecided = structuredClone(source);
+  delete miniUndecided.miniCellularIntent.radio;
+  assert.throws(() => validateBaseline(miniUndecided), /miniCellularIntent/);
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ50/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ50/);
   const missingWholeDesign = structuredClone(source);
   missingWholeDesign.designDocumentation.tools = null;
   assert.throws(
@@ -68,21 +107,21 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   );
   const osLosesCoreRole = structuredClone(source);
   osLosesCoreRole.northStar.osIsProductCore = false;
-  assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);
+  assert.throws(() => validateBaseline(osLosesCoreRole), /siネイティブOS Core/);
   const gameBakedIntoCore = structuredClone(source);
   gameBakedIntoCore.northStar.applicationReleaseIndependence = false;
   assert.throws(
     () => validateBaseline(gameBakedIntoCore),
-    /AIネイティブOS Core/,
+    /siネイティブOS Core/,
   );
   const incomeGuarantee = structuredClone(source);
   incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
-  assert.throws(() => validateBaseline(incomeGuarantee), /AIネイティブOS Core/);
+  assert.throws(() => validateBaseline(incomeGuarantee), /siネイティブOS Core/);
   const blanketCollection = structuredClone(source);
   blanketCollection.northStar.dataCollection.categorySpecificConsentRequired = false;
   assert.throws(
     () => validateBaseline(blanketCollection),
-    /AIネイティブOS Core/,
+    /siネイティブOS Core/,
   );
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
@@ -176,6 +215,15 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const splitWebDelivery = structuredClone(source);
   splitWebDelivery.webDeliveryIntegrity.sourceAndPrivateSiteCommitMustMatch = false;
   assert.throws(() => validateBaseline(splitWebDelivery), /同一commit/);
+  const missingCampus = structuredClone(source);
+  delete missingCampus.campus;
+  assert.throws(() => validateBaseline(missingCampus), /Campusの大学別機能/);
+  const invasiveCampusAnalytics = structuredClone(source);
+  invasiveCampusAnalytics.campus.analyticsPrivacy = 'store_ip_and_user_agent';
+  assert.throws(
+    () => validateBaseline(invasiveCampusAnalytics),
+    /Campusの大学別機能/,
+  );
   const missingHome = structuredClone(source);
   delete missingHome.homeExperience;
   assert.throws(() => validateBaseline(missingHome), /ホームと設定アプリ/);
@@ -234,6 +282,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const fakeConnector = structuredClone(source);
   fakeConnector.skyNetworkEconomy.multiMcpConnector.skyUiConnected = false;
   assert.throws(() => validateBaseline(fakeConnector), /複数MCP Connector/);
+  const unsafeComputeGrid = structuredClone(source);
+  unsafeComputeGrid.skyComputeGrid.arbitraryCodeAllowed = true;
+  assert.throws(() => validateBaseline(unsafeComputeGrid), /Sky Compute Grid/);
+  const liveComputeSettlement = structuredClone(source);
+  liveComputeSettlement.skyComputeGrid.livePayoutEnabled = true;
+  assert.throws(() => validateBaseline(liveComputeSettlement), /Sky Compute Grid/);
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);
@@ -246,4 +300,11 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
       ),
     /AGENTS/,
   );
+});
+
+void test('the visual baseline preserves the existing pale-blue Web appearance', () => {
+  assert.equal(source.visualSystem.accent, 'ice_blue');
+  const oldTheme = structuredClone(source);
+  oldTheme.visualSystem.accent = 'acid_green';
+  assert.throws(() => validateBaseline(oldTheme), /共通visual system/);
 });

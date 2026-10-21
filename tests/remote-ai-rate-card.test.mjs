@@ -9,7 +9,12 @@ import {
   textInputTokenUpperBound,
   verifyRemoteAiRateCard,
 } from '../lib/remote-ai-rate-card.ts';
-import { prepareRemoteAiTextQuote, remoteAiTextQuoteMatches, priceRemoteAiTextUsage } from '../lib/remote-ai-text-pricing.ts';
+import {
+  estimateRemoteAiTextLiveSpend,
+  prepareRemoteAiTextQuote,
+  remoteAiTextQuoteMatches,
+  priceRemoteAiTextUsage,
+} from '../lib/remote-ai-text-pricing.ts';
 import { remoteAiTextRequestDigest } from '../lib/remote-ai-text-request.ts';
 
 const { publicKey, privateKey } = generateKeyPairSync('ed25519');
@@ -91,6 +96,24 @@ void test('v2 ceilings reserve the highest possible input-category rate', async 
   assert.equal(ceiling.maximumChargeMinor, 3);
   assert.equal(ceiling.pricingCoverage, 'text-token-categories');
   assert.equal(estimateRemoteAiCostCeiling(verified, 500, 1, 2, now), null);
+});
+
+void test('live estimate uses conservative quoted input and visible output bytes without becoming final usage', async () => {
+  const verified = await verifyRemoteAiRateCard(textCard(), intent, resolveKey, now);
+  const ceiling = estimateRemoteAiCostCeiling(verified, 500, 100, 3, now);
+  assert.ok(ceiling);
+  const initial = estimateRemoteAiTextLiveSpend(verified, ceiling, 0, now);
+  const progress = estimateRemoteAiTextLiveSpend(verified, ceiling, 80, now + 1);
+  assert.ok(initial && progress);
+  assert.equal(initial.estimatedInputTokens, 500);
+  assert.equal(initial.estimatedOutputTokens, 0);
+  assert.equal(progress.estimatedOutputTokens, 27);
+  assert.ok(progress.estimatedChargeMinor >= initial.estimatedChargeMinor);
+  assert.ok(progress.estimatedChargeMinor <= ceiling.maximumChargeMinor);
+  assert.equal(progress.finalProviderUsage, false);
+  assert.equal(progress.basis, 'quoted_input_upper_bound_plus_output_utf8_bytes_divided_by_3');
+  assert.equal(estimateRemoteAiTextLiveSpend(verified, ceiling, -1, now), null);
+  assert.equal(estimateRemoteAiTextLiveSpend({ ...verified, digest: '0'.repeat(64) }, ceiling, 10, now), null);
 });
 
 void test('browser and server share the same canonical quote-bound request digest', async () => {

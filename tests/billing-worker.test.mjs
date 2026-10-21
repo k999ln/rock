@@ -491,3 +491,106 @@ void test('legacy settlement fixture applies verified earnings once', async () =
     DB.close();
   }
 });
+
+void test('a concurrent consumed Wallet challenge cannot reactivate a revoked operator after returning conflict', async (t) => {
+  const DB = new TestD1();
+  t.after(() => DB.close());
+  const env = {
+    DB,
+    BILLING_SHARED_SECRET: sharedSecret,
+    SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
+    SKY_ORIGIN: origin,
+  };
+  const token = await createBillingToken('alice', sharedSecret);
+  const account = privateKeyToAccount(
+    '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+  );
+  const request = async (path, method, input) => {
+    const response = await legacyFixtureBillingWorker.fetch(
+      new Request(`https://settlement.example${path}`, {
+        method,
+        headers: { Origin: origin, Authorization: `Bearer ${token}` },
+        ...(input === undefined ? {} : { body: JSON.stringify(input) }),
+      }),
+      env,
+    );
+    return { status: response.status, body: await response.json() };
+  };
+  const challenge = await request('/v1/rock-wallet/challenge', 'POST', {
+    address: account.address,
+    chainId: 8453,
+  });
+  assert.equal(challenge.status, 201);
+  const input = {
+    challengeId: challenge.body.challengeId,
+    address: account.address,
+    signature: await account.signMessage({ message: challenge.body.message }),
+  };
+  const reached = Promise.withResolvers();
+  const resume = Promise.withResolvers();
+  const originalBatch = DB.batch.bind(DB);
+  let pauseNextVerify = true;
+  DB.batch = async (statements) => {
+    if (pauseNextVerify && statements.length === 3) {
+      pauseNextVerify = false;
+      reached.resolve();
+      await resume.promise;
+    }
+    return originalBatch(statements);
+  };
+  const delayedReplay = request('/v1/rock-wallet/verify', 'POST', input);
+  try {
+    await reached.promise;
+    assert.equal(
+      (await request('/v1/rock-wallet/verify', 'POST', input)).status,
+      200,
+    );
+    assert.equal((await request('/v1/rock-wallet', 'DELETE')).status, 200);
+    assert.equal(
+      DB.database.prepare('SELECT status FROM rock_wallet_operators').get()
+        .status,
+      'revoked',
+    );
+    const receipt = JSON.stringify({
+      receiptId: 'earn_after_revoke',
+      executionReceiptId: 'exec_after_revoke',
+      userId: 'alice',
+      beneficiaryRole: 'toc',
+      fundId: 'fund:test-one',
+      automationToolId: 'tool:test-one',
+      sourceProvider: 'stripe-connect',
+      providerReference: 'pi_after_revoke',
+      payoutAccountId: 'acct_alice',
+      evidenceSha256: 'a'.repeat(64),
+      currency: 'usd',
+      grossAmountMinor: 500,
+      operatingCostMinor: 100,
+      occurredAt: Math.floor(Date.now() / 1000),
+    });
+    const earned = await legacyFixtureBillingWorker.fetch(
+      new Request('https://settlement.example/v1/earnings', {
+        method: 'POST',
+        headers: { 'Sky-Receipt-Signature': signature(receipt) },
+        body: receipt,
+      }),
+      env,
+    );
+    assert.equal(earned.status, 201);
+  } finally {
+    resume.resolve();
+  }
+  assert.equal((await delayedReplay).status, 409);
+  assert.equal(
+    DB.database.prepare('SELECT status FROM rock_wallet_operators').get()
+      .status,
+    'revoked',
+  );
+  const collection = DB.database
+    .prepare(
+      "SELECT status,recipient_address FROM rock_fee_collection_instructions WHERE receipt_id='earn_after_revoke'",
+    )
+    .get();
+  assert.equal(collection.status, 'awaiting_wallet');
+  assert.equal(collection.recipient_address, null);
+});

@@ -1,13 +1,562 @@
 {
-  "version": "1.94",
-  "decidedAt": "2026-09-24",
+  "visualScribeIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "こんな感じでさ話した内容を自動的に図解するシステムskyに追加して",
+    "authority": "docs/sky-tools-complete-design.md#会話図解--visual-scribe",
+    "catalogId": "visual-scribe",
+    "catalogStatus": "ready",
+    "initialInput": ["pasted_transcript", "utf8_text_file"],
+    "automaticAfterTextInput": true,
+    "paragraphBoundary": "blank_line",
+    "execution": "browser_first_party_rules",
+    "modelInference": false,
+    "externalTransmission": false,
+    "serverStorage": false,
+    "outputs": ["interactive_flow", "text_copy", "current_paragraph_svg"],
+    "voiceTranscriptionImplemented": false,
+    "semanticBeatInferenceImplemented": false,
+    "ownerScopedSaveImplemented": false,
+    "publicSiteAccepted": false,
+    "futureAcceptance": ["final_transcript_segments", "speaker_and_timecode_provenance", "idempotent_merge_and_regenerate", "provider_data_cost_and_stop_boundary", "owner_scoped_save_and_reopen"]
+  },
+  "freeCloudAutomaticContinuationIntent":{"date":"2026-10-17","source":"direct_owner_instruction","confirmedPreGenerationRejectionOnly":true,"sameRequestId":true,"productionBilling":false,"authority":"docs/llm-evaluation-architecture.md"},
+  "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
+  "automaticLlmSelectionIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "ログインしてないcodex経由しか使えないんじゃなくてllm選べるようにして、デフォルトは勝手にその作業に一番いいのを選んで",
+    "status": "pixel_bounded_manual_and_automatic_device_verified",
+    "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+    "requirements": [
+      "Codex login is not the sole prerequisite or inference path",
+      "User may explicitly select an LLM",
+      "Default selects a suitable available LLM for the task before execution",
+      "Separate model inference from the Tool/Agent executor",
+      "Respect model readiness, task capability, data-sending permission and approved budget; selection does not grant execution authority",
+      "Do not claim universal model superiority or silently send to an unconfigured/paid provider"
+    ],
+    "newProviderProvisioned": false,
+    "executionHoldsChanged": false,
+    "followupRequest": {
+      "decidedAt": "2026-10-17",
+      "source": "direct_owner_instruction",
+      "intent": "Install a searched open LLM on Pixel and route non-article work to a suitable installed model",
+      "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
+      "status": "candidate_implementation_physical_pending",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+      "gatesChanged": false
+    }
+  },
+  "pixelSiReferenceDesignIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction_in_current_message",
+    "ownerQuote": "残りもコードから全部調べて、Pixelをsi専用端末にするために何をそのまま使って何を追加するのか、Skyやクラウドとの繋がりも辻褄を合わせて設計書にして",
+    "authority": "docs/native-os-integration.md#pixel-si専用端末の実装設計",
+    "evidence": "docs/evidence/grapheneos-source-audit.json",
+    "researchTag": "2026100600",
+    "compileInputTagUnchanged": "2026100200",
+    "modules": [
+      "PX-HOME",
+      "PX-VOICE",
+      "PX-SKY",
+      "PX-LOCAL",
+      "PX-LINK",
+      "PX-JOB",
+      "PX-COST",
+      "PX-RELEASE"
+    ],
+    "acceptanceIds": [
+      "PX01",
+      "PX02",
+      "PX03",
+      "PX04",
+      "PX05",
+      "PX06",
+      "PX07",
+      "PX08",
+      "PX09",
+      "PX10",
+      "PX11",
+      "PX12"
+    ],
+    "reuseExistingBrokerTransportsAndWorkflow": true,
+    "rootAuthorityFixedPerJob": true,
+    "speechServicesBundledTtsVerifiedStatically": true,
+    "japaneseAsrTtsAccepted": false,
+    "runtimeImplementedByThisChange": false,
+    "priceOrExecutionGateChanged": false,
+    "usabilityFeedback": {
+      "recordedAt": "2026-10-17",
+      "source": "direct_owner_memo",
+      "ownerQuote": "メモ　デザインがダサい、通知と、仕事の操作性が直感的じゃない、",
+      "status": "implementation_in_progress",
+      "areas": [
+        "visual_design",
+        "notifications",
+        "job_interaction"
+      ],
+      "authority": "docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback",
+      "reason": "実機利用中の本人指摘を次の体験改善へ引き継ぐ。機能試験の合格と使いやすさの受入は分ける。",
+      "newRqOrExecutionPermission": false,
+      "implementationRequest": {
+        "date": "2026-10-17",
+        "ownerQuote": "じゃあデザインと通知、仕事の操作性をちゃんと改善して、Pixelで直感的に使えるようにして",
+        "followUp": "操作性がもっと直感的にしてほしい",
+        "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+        "evidence": "docs/evidence/pixel-intuitive-experience.json"
+      }
+    }
+  },
+  "cloudServicePlanIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "なら料金プランはsiを使うクラウド代で通信事業者みたいな形にする",
+    "seller": "avokado",
+    "businessRole": "si_cloud_service_operator_with_plans_usage_caps_and_itemized_statements",
+    "analogy": "service_contract_and_metering_like_a_connectivity_provider_not_a_legal_carrier_classification",
+    "authority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
+    "billingBasis": "cloud_si_service_usage_with_versioned_plan_and_rate_card",
+    "planFieldsRequired": [
+      "plan_id_and_version",
+      "service_period",
+      "eligible_model_agent_and_workload",
+      "included_usage_if_any",
+      "overage_rule_and_unit_prices",
+      "per_run_quote_and_account_spend_cap",
+      "concurrent_reservations",
+      "pause_expiry_cancellation_and_in_progress_work",
+      "itemized_meter_and_reconciliation"
+    ],
+    "monthlyPriceDecided": true,
+    "requestedMonthlyPriceUsd": 140,
+    "priceDecisionQuote": "月額140ドルでプラン作成して、それでどのくらい使えるのか計算して",
+    "draftPlan": "sky-140-draft-v1",
+    "proposedUsageUsd": 100,
+    "proposedServiceUsd": 40,
+    "allocationApproved": true,
+    "allocationConfirmedAt": "2026-10-16",
+    "targetMarket": "US",
+    "contractBillingIntent": "versioned_consent_recurring_collection_and_service_access_control",
+    "collectionRuntimeAccepted": false,
+    "includedQuotaDecided": true,
+    "overageRateDecided": false,
+    "localOnlyInferenceCountsAsCloudUsage": false,
+    "networkToolDeviceAndCloudChargesSeparate": true,
+    "modelAndAgentComputeMeterSeparate": true,
+    "unlimitedUsagePromised": false,
+    "quotaIsStoredMoney": false,
+    "existingNumericBillingDecisionsChanged": false,
+    "liveBillingAccepted": false,
+    "paidExecutionGateChanged": false,
+    "commercialAcceptance": "pending_plan_terms_provider_meter_postpay_budget_and_invoice_acceptance"
+  },
+  "skyExecutionChoiceDecision": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuotes": [
+      "クラウドでエージェントを動かすのがいいのと、llmもローカルで入れるのが良い、でもこれは選択できる必要がある",
+      "だからskyがあるんだ"
+    ],
+    "authority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "selectionSurface": "Sky",
+    "modelExecutionChoices": [
+      "device_local_when_accepted",
+      "cloud_when_accepted",
+      "explicit_stepwise_hybrid"
+    ],
+    "agentRunnerIsSeparateFromModel": true,
+    "automaticFallback": false,
+    "localModelRequired": false,
+    "cloudRequiredForEveryTool": false,
+    "selectionIsNotExecutionApproval": true,
+    "perJobEffectiveRouteMustBePinned": true,
+    "unavailableChoicesMustExplainPrerequisites": true,
+    "adapterLocalityIsNotProofOfDataResidency": true,
+    "silentDataEgressAllowed": false,
+    "runtimeChanged": false,
+    "acceptanceCases": [
+      {
+        "id": "SC01",
+        "case": "same_supported_task_explicit_local_or_cloud_choice_with_honest_availability",
+        "status": "not_run"
+      },
+      {
+        "id": "SC02",
+        "case": "local_model_install_integrity_capacity_offline_reboot_and_safe_removal",
+        "status": "not_run"
+      },
+      {
+        "id": "SC03",
+        "case": "cloud_quote_budget_consent_usage_stop_and_reconcile",
+        "status": "not_run"
+      },
+      {
+        "id": "SC04",
+        "case": "provider_or_model_unavailable_no_implicit_fallback_or_hidden_data_egress",
+        "status": "not_run"
+      },
+      {
+        "id": "SC05",
+        "case": "explicit_hybrid_handoff_pinned_revision_grant_quote_and_no_duplicate_dispatch",
+        "status": "not_run"
+      }
+    ]
+  },
+  "pixelFirstIosPluginStrategy": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "端末はまずピクセルから攻めたい、完全にosを入れれるからで、iosとかはesimで機能プラグインとか考えてる",
+    "authority": "docs/device-support-architecture.md#pixel先行とiosへの機能追加",
+    "primaryDevice": "pixel-10-frankel",
+    "confirmedSku": "GL066",
+    "primaryDelivery": "native_os",
+    "nativeOsAcceptance": "pending",
+    "iosDelivery": "client_only",
+    "iosProductEntry": "connectivity_and_si_access_bundle",
+    "iosPluginMeaning": [
+      "account_scoped_Sky_remote_capabilities",
+      "native_client_actions_via_accepted_App_Intents",
+      "browser_service_access"
+    ],
+    "esimInstallsOsOrCode": false,
+    "esimAloneGrantsPlatformPermission": false,
+    "iosNativeAppImplemented": false,
+    "iosNativeIntegrationsAccepted": false,
+    "sharedContracts": [
+      "owner",
+      "Job",
+      "Artifact revision",
+      "grant",
+      "budget",
+      "Receipt"
+    ],
+    "iosCloudRouteRequiresPixelOnline": false,
+    "pixelRuntimeAuthorityDoesNotTransferToIos": true,
+    "iosPhase": "design_after_pixel_priority_not_parallel_release_commitment",
+    "minimumIosAndModel": "not_selected",
+    "distributionAndPaymentPolicy": "requires_region_product_and_channel_acceptance_no_esim_bypass_assumption",
+    "checkedAt": "2026-10-15",
+    "primarySources": [
+      {
+        "id": "I01",
+        "title": "Apple: Set up eSIM on iPhone",
+        "url": "https://support.apple.com/en-us/118669"
+      },
+      {
+        "id": "I02",
+        "title": "Apple: CTCellularPlanProvisioning",
+        "url": "https://developer.apple.com/documentation/coretelephony/ctcellularplanprovisioning"
+      },
+      {
+        "id": "I03",
+        "title": "Apple: App Intents",
+        "url": "https://developer.apple.com/documentation/appintents"
+      },
+      {
+        "id": "I04",
+        "title": "Apple: App Review Guidelines 2.5 / 3.1 / 4.7",
+        "url": "https://developer.apple.com/app-store/review/guidelines/"
+      },
+      {
+        "id": "I05",
+        "title": "Apple: Choosing background strategies",
+        "url": "https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app"
+      }
+    ],
+    "acceptanceCases": [
+      {
+        "id": "IP01",
+        "case": "purchase_profile_install_service_grant_and_client_states_are_independent",
+        "status": "not_run"
+      },
+      {
+        "id": "IP02",
+        "case": "same_owner_job_revision_ios_capability_and_permission_denial",
+        "status": "not_run"
+      },
+      {
+        "id": "IP03",
+        "case": "app_suspended_cloud_budget_stop_reconcile_without_duplicate_dispatch",
+        "status": "not_run"
+      },
+      {
+        "id": "IP04",
+        "case": "profile_change_service_expiry_device_revocation_and_owner_isolation",
+        "status": "not_run"
+      }
+    ]
+  },
+  "dedicatedSiTerminalIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "ai専用端末に変えたいんだよね",
+    "displayTerm": "si",
+    "authority": "docs/native-os-integration.md#si専用端末の利用体験と実装境界",
+    "scope": "pixel_reference_profile_and_shared_job_experience",
+    "targetDevice": "Pixel 10 GL066 / frankel",
+    "primaryEntry": "si_home_after_unlock",
+    "conversationSurface": "Jennifer",
+    "capabilityHub": "Sky",
+    "jobRecord": "Zema",
+    "enforcement": "RockstarOS Broker / Platform Core",
+    "defaultReasoning": "user_selected_local_cloud_or_explicit_hybrid",
+    "localModelRequired": false,
+    "appSelectionRequiredForRoutineJob": false,
+    "ambientMiniContinuesSameJob": true,
+    "generalAppPolicy": "undecided_keep_recovery_settings_and_manual_stop",
+    "runtimeImplemented": false,
+    "physicalAcceptance": "not_run",
+    "changesLiveExecutionGates": false,
+    "acceptanceCases": [
+      {
+        "id": "DT01",
+        "case": "boot_unlock_home_restart_restore_same_owner_and_job",
+        "status": "not_run"
+      },
+      {
+        "id": "DT02",
+        "case": "request_edit_review_save_resume_without_app_selection",
+        "status": "not_run"
+      },
+      {
+        "id": "DT03",
+        "case": "cloud_unavailable_offline_save_stop_no_hidden_fallback",
+        "status": "not_run"
+      },
+      {
+        "id": "DT04",
+        "case": "locked_other_person_mute_private_output_and_approval",
+        "status": "not_run"
+      },
+      {
+        "id": "DT05",
+        "case": "quote_budget_stop_uncertain_result_reconcile_without_duplicate_action",
+        "status": "not_run"
+      },
+      {
+        "id": "DT06",
+        "case": "mini_handoff_same_revision_grant_budget_and_device_recovery",
+        "status": "not_run"
+      }
+    ]
+  },
+  "connectivityServiceBundleDecision": {
+    "decidedAt": "2026-10-15",
+    "source": "Direct owner answer in this chat",
+    "ownerChoice": "通信とsi利用権をまとめて提供する商品の入口",
+    "authority": "docs/native-os-integration.md",
+    "primaryEntry": "connectivity_and_si_access_bundle",
+    "accountIsOwnerAndLedgerRoot": true,
+    "connectivityAndServiceHaveSeparateStates": true,
+    "grantRequiresVerifiedPurchase": true,
+    "osInstallationIsSeparate": true,
+    "profileIdentityIsNotAccount": true,
+    "siUsageUnlimited": false,
+    "autoFlashAllowed": false,
+    "liveIssuanceEnabled": false,
+    "liveCloudDispatchEnabled": false,
+    "pricingChanged": false,
+    "supersedes": "2026-10-10 account-only commercial entry and consumer-eSIM product-design hold; preserves account identity, previews and all unaccepted production gates",
+    "grapheneBase": "feasibility_audited_candidate_not_full_os_acceptance",
+    "audit": "docs/evidence/graphene-cloud-foundation.json"
+  },
+  "ambientCreationIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "User explicit instruction in this chat",
+    "ownerQuote": "pcのやリアルの物の前にたたなくてもものが作れる状態をつくる、携帯を持たなくてもやり取りができる状態を作る",
+    "purpose": "PCや対象の実物の前に拘束されず制作を進め、携帯を持たずに対話・確認・指示・許可した相手との連絡を続ける",
+    "authority": "docs/service-design/01-service-experience.md",
+    "relatedRequirements": [
+      "RQ37",
+      "RQ40",
+      "RQ42",
+      "RQ48",
+      "RQ49"
+    ],
+    "authoringSurface": "Miniまたは受入済みの空間host。音声を基本入口とし、対応する手/空間表示/固定表示で修正と比較を補う",
+    "systemResponsibilities": {
+      "jennifer": "会話/意図/版差分/確認の提示",
+      "sky": {
+        "displayName": "Sky",
+        "role": "agent_llm_marketplace_and_cross_host_capability_hub",
+        "definition": "An Agent/LLM marketplace and open hub across software, hardware, furniture and architecture: discover, install/connect and explicitly choose capabilities and execution targets; use Zema for work and scoped host/server enforcement for permissions.",
+        "inventory": "docs/sky.md",
+        "internalSurfaces": [
+          "/csv"
+        ],
+        "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
+        "legacyInternalName": "hub",
+        "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+        "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+        "fusionAuthority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合"
+      },
+      "zema": "既存Job/plan/artifact revision/進捗/停止/引継ぎ",
+      "core": "本人/資料grant/予算/版/宛先/失効/保存復旧を強制",
+      "mini": "電話なしの入力/応答/作品操作とlocal保存・停止",
+      "pro": "任意の離れた計算先。本人がPCの前に立つ必須条件にしない",
+      "externalProduction": "権限を持つ設備または製作者が同意済み図版・条件で実製作し、測定/納品を照合"
+    },
+    "creationStages": [
+      "意図/入力資料",
+      "案/編集/比較",
+      "検査済み版の保存",
+      "必要時の見積と本人承認",
+      "確定版の製作引渡し",
+      "製作/測定/受取の照合"
+    ],
+    "availabilityBoundary": "受入済みの部屋/音声到達範囲/端末/通信/能力を明示。どこでも常時利用可能とは約束しない",
+    "phoneRequiredForNormalInteraction": false,
+    "phoneRequiredForApprovalByDesign": false,
+    "identityBoundary": "声の一致や在室だけを本人承認にしない。初回登録/紛失復旧/実行承認までMini側/対応固定端末等の電話に依存しない強い本人確認を別受入し、未成立なら草案を保存して作用を保留",
+    "localAndCloudBoundary": "Mini単独の既存local基本動作を維持。自然文理解は選択modelの実能力次第。Pro/cloudを使う時は接続・送信内容・費用上限を別確認",
+    "physicalBoundary": "設計作成、製作引渡し、現物完成は別状態。製作する設備/専門家は必要。危険設備の現地安全確認や一般Agentから独立した停止系を省略しない",
+    "continuityBoundary": "部屋/端末を変えても同じJobとartifact版を照合。変更版の既存製作承認を失効し、重複製作/誤送信を防ぐ",
+    "privacyBoundary": "部屋の無断常時録音や他人の会話送信を前提にしない。mute/応答停止/私有内容の出力先と本人切替を受入",
+    "runtimeChangedByThisDecision": false,
+    "acceptanceStatus": "design_only_not_physical_or_provider_accepted",
+    "taskIds": [
+      "DOC04",
+      "WEB04",
+      "SKY21",
+      "MAT15"
+    ],
+    "acceptanceCases": [
+      {
+        "id": "AC01",
+        "case": "携帯を持たずPCの前にも座らず、音声で一作品の案→2回修正→比較→保存→再表示→停止/再開",
+        "passEvidence": "同じowner/Job/作品版。電話を取り出す回数0、PC前での必須操作0、時間/誤認/修正回数を実測",
+        "status": "not_run"
+      },
+      {
+        "id": "AC02",
+        "case": "対象物が目の前になくても、許可した図面/寸法/計測の版から部品や空間を設計",
+        "passEvidence": "単位/公差/出所/計測時刻を保持。不足・古い計測は確認待ちとし、形状生成を製造適合へ昇格させない",
+        "status": "not_run"
+      },
+      {
+        "id": "AC03",
+        "case": "電話への強制handoffなしで確定版/相手/金額/範囲を確認し、製作先への引渡しをsandboxで検証",
+        "passEvidence": "初回登録/紛失復旧を含む非電話の本人確認、版変更後の再承認、受領ID、応答喪失/取消/二重製作拒否。現物完成は別の測定/受取証拠",
+        "status": "not_run"
+      },
+      {
+        "id": "AC04",
+        "case": "騒音/誤起動/別人の発話/同居人/来客/離席/mute",
+        "passEvidence": "無断送信・注文・設備作用なし。私有内容を別人の部屋へ読み上げず、停止して保存",
+        "status": "not_run"
+      },
+      {
+        "id": "AC05",
+        "case": "通信断/電源断/部屋・端末の切替と再開",
+        "passEvidence": "同じ仕事/版/費用/未解決holdを照合し二重dispatchなし。移動先を確認するまで私有応答を保留。利用可能範囲を表示",
+        "status": "not_run"
+      },
+      {
+        "id": "AC06",
+        "case": "model/Pro/cloud/製作設備のどれかが未接続",
+        "passEvidence": "利用可能なlocal編集/保存/停止を維持。必要な能力を未接続と示し、携帯必須への暗黙切替や無断cloud fallbackを行わない",
+        "status": "not_run"
+      }
+    ]
+  },
+  "version": "2.08",
+  "decidedAt": "2026-10-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
-  "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
+  "audit": "docs/evidence/service-design-rebuild.json",
+  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
-  "designReview": "docs/os-sky-wallet-game-design.md",
+  "designReview": "docs/service-design/06-consistency-contracts.md",
+  "amcGoalOrchestration": {
+    "requestedAt": "2026-09-27",
+    "authority": "docs/amc-goal-orchestrator.md",
+    "ownerSquad": "H1",
+    "implementationTask": "AMC02",
+    "requestedWorkflow": [
+      "instruction",
+      "squad_assignment",
+      "problem_decomposition",
+      "process_and_goal",
+      "all_progress",
+      "ai_goal_handoff",
+      "verified_completion"
+    ],
+    "localImplementation": "candidate_backlog_compiler_progress_ledger_and_prompt_export",
+    "arbitraryInstructionAiPlanner": "not_connected",
+    "externalAiExecutor": "not_connected",
+    "persistentServerRunner": "not_implemented",
+    "authorityExpansionFromGoal": false,
+    "completionRequiresEvidence": true,
+    "note": "Goal駆動の開発管理ツールを求めた指示。既存の製品境界、料金保留、実機・外部操作の個別承認を変更しない。"
+  },
+  "jenniferExecution": {
+    "decidedAt": "2026-10-13",
+    "authority": "docs/jennifer-coordination.md",
+    "role": "project_chief_of_staff_in_front_of_zema",
+    "saveMeansApproval": false,
+    "colombiaSourceStatus": "awaiting_source",
+    "unresolvedQuestionPolicy": "answer_or_reasoned_deferral_before_inventory_approval",
+    "phases": [
+      "draft",
+      "inventory_approved",
+      "delivery_approved",
+      "owner_final_acceptance"
+    ],
+    "maximumConcurrentExternalDelegationsPerGoal": 1,
+    "durablePlanRevisions": true,
+    "semanticDiffInvalidatesApproval": true,
+    "typedServerReports": [
+      "zema-jennifer-task-report/1",
+      "zema-jennifer-review-report/1",
+      "jennifer_goal_receipt"
+    ],
+    "reviewRequiresDistinctPrincipal": true,
+    "reviewBindsPredecessorDelegationAndWorkerReportDigest": true,
+    "remoteCompletionAloneMeansAccepted": false,
+    "browserEvidenceCanAdvanceState": false,
+    "productionExternalDispatch": "configuration_and_owner_approval_gated"
+  },
+  "hardwareProductFamily": {
+    "decidedAt": "2026-09-26",
+    "products": [
+      {
+        "id": "avocado-mini",
+        "displayName": "avocadoMini",
+        "role": "autonomous_spatial_input_display_game_and_storage_hardware",
+        "currentDesign": "docs/avocado-mini-r5/README.md"
+      },
+      {
+        "id": "avokado-pro",
+        "displayName": "avokadoPro",
+        "role": "standalone_game_services_compute_and_storage_hardware",
+        "currentDefinition": "sites/avocado-mini/src/pages/pro/index.astro",
+        "integratedDesignStatus": "candidate_design_documented_physical_acceptance_pending",
+        "missionControlSquad": "P1",
+        "currentDesign": "docs/avokado-pro-pc-design.md",
+        "pcImplementationSquad": "P2"
+      },
+      {
+        "id": "rocketstar",
+        "displayName": "rocketstar",
+        "role": "reusable_launch_payload_communications_and_recovery_system",
+        "currentDesign": "docs/rocketstar-design/README.md"
+      }
+    ],
+    "sharedOperatingSystem": "RockstarOS",
+    "developmentTargetsAreNotProducts": [
+      "web_pc",
+      "linux_qemu",
+      "pixel_10"
+    ],
+    "historicalMiniProfilesAreNotCurrentProducts": [
+      "p0_2",
+      "mini200_e1",
+      "mini200_e2",
+      "tower20_e3"
+    ]
+  },
   "productIdentity": {
     "authority": "data/product-identity.json",
     "displayName": "RockstarOS",
@@ -37,7 +586,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ49 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ50 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
@@ -46,7 +595,7 @@
   "gameFirstLifeVision": {
     "recordedAt": "2026-09-21",
     "status": "design_direction_not_runtime_acceptance",
-    "document": "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md",
+    "document": "docs/avocado-mini-r5/README.md",
     "primaryExperience": "game_console_then_life_enrichment",
     "localAutonomySeparateFromConnectivity": true,
     "localGameLoopRequiresInternet": false,
@@ -68,39 +617,14 @@
     "mainMergeAuthorization": "user_explicitly_requested_this_design_update_only_2026-09-21"
   },
   "marketPositioning": {
-    "customerFacingFocus": "hardware_products",
+    "customerFacingFocus": "account_led_rockstaros_service_access",
     "leadHardwareConcept": "avocadoMini",
     "leadHardwareForm": "r5_200mm_autonomous_peer_minis_no_required_edge_hub",
-    "previousLeadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
-    "legacyReferencePriceAppliesTo": "historical_motion_tower_p0_kit_only",
     "brandLine": "考える時間を、つくる時間に。",
-    "avocadoMiniDesiredReferencePriceJpy": 410000,
-    "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
-    "referencePriceStatus": "historical_E3_user_proposed_preorder_prices_not_R5_price_or_live_sale",
     "legacyCommercialFields": {
-      "recordedFor": "P0_E2_E3_history_and_existing_site_compatibility",
       "appliesToCurrentR5": false,
-      "fields": [
-        "avocadoMiniDesiredReferencePriceJpy",
-        "avocadoMiniSingleTowerProposedExTaxPriceJpy",
-        "currentFourTowerBasePriceJpyExTax"
-      ],
-      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus"
-    },
-    "motionTowerP0Engineering": {
-      "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
-      "kitTowerCount": 4,
-      "kitEdgeHubCount": 1,
-      "stowedHeightMm": 850,
-      "freeStandingMaxHeightMm": 1200,
-      "dockedMaxHeightMm": 1800,
-      "fullHeightRequiresDockOrFloorLatchDetection": true,
-      "baseDiameterMm": 220,
-      "deployedFeetEnvelopeMm": 520,
-      "camerasPerTower": 3,
-      "arOutput": "external_display_device",
-      "llmCanAuthorizeMotionRecordingOrSafetyBypass": false,
-      "maturity": "P0_quotation_and_prototype_input_not_production_release"
+      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus",
+      "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
     },
     "highPerformanceLlmOs": "product_goal_not_current_production_capability",
     "customerEntrySurfaces": [
@@ -147,7 +671,7 @@
       "sameTypePeerExpansion": true,
       "separateEdgeHubRequired": false,
       "externalPcRequiredForCoreFunctions": false,
-      "externalPowerRequired": true,
+      "externalPowerRequired": false,
       "batteryAdopted": false,
       "displayRequirement": "naked_eye_particles_distributed_in_surrounding_real_space",
       "displayStatus": "unavailable_research_gate_not_room_scale_validated",
@@ -161,43 +685,20 @@
       "maturity": "integrated_basic_design_with_open_engineering_decisions",
       "replacesMandatoryE3HubConfiguration": true,
       "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
-      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
-    },
-    "mini200E2Integration": {
-      "document": "docs/avocado-mini-mini200-e2/README.md",
-      "role": "historical_E2_central_core_architecture_not_current_R5_topology",
-      "singleEnclosure198x178x198AdoptedAsCompleteProductExterior": false,
-      "osAndPermissionArchitectureAdopted": true,
-      "hardwareCandidatesRemainUnapproved": true,
-      "realDeviceTests": 0
-    },
-    "currentFourTowerBasePriceJpyExTax": 410000,
-    "tower20E3": {
-      "document": "docs/avocado-mini-tower20-e3/README.md",
-      "source": "User-provided RockstarOS Tower20 E3 OS Design and avocadoMini Tower20 E3 Hardware Design",
-      "role": "historical_E3_baseline_superseded_by_R5",
-      "towerCount": 4,
-      "edgeHubCount": 1,
-      "fixedHeight": true,
-      "maximumUsageHeightMm": 200,
-      "proposedNominalHeightMm": 199.5,
-      "proposedArithmeticMaximumHeightMm": 199.95,
-      "bodyOuterDiameterMm": 44,
-      "baseDiameterMm": 96,
-      "footContactCircleDiameterMm": 200,
-      "activeCameraCandidatesPerTower": 1,
-      "reservedDarkWindowsPerTower": 2,
-      "edgeHubEnvelopeMm": [
-        240,
-        200,
-        70
-      ],
-      "fourTowerCenterRoiPlanningBandwidthGbps": 2.260992,
-      "serialLatencyPlanningMs": 95.7,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true,
-      "maturity": "E3_engineering_proposal_not_physical_or_manufacturing_acceptance"
+      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24",
+      "externalPowerPolicy": "dock_power_for_installed_mode_portable_power_required_off_dock",
+      "portablePowerRequired": true,
+      "batterySelectionStatus": "internal_vs_detachable_under_design_not_selected",
+      "embeddedPortableConnectivity": {
+        "document": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "source": "2026-10-15 user image and explicit embedded/detachable/satellite/portable Wi-Fi request",
+        "embeddedDock": true,
+        "detachableCore": true,
+        "satelliteWanTarget": true,
+        "wifiHotspotTarget": true,
+        "directSatelliteAccepted": false,
+        "portablePowerAccepted": false
+      }
     }
   },
   "distributionPricingIntent": {
@@ -294,6 +795,146 @@
       "sitePublicationPerformed": false,
       "e3HubRequirementAppliesToR5": false,
       "r5DeviceProfileAndAdapterIntegrated": false
+    },
+    "serviceReconstruction": {
+      "entry": "docs/service-design/README.md",
+      "requestedAt": "2026-10-13",
+      "reason": "User explicitly requested rebuilding design documents from the beginning while preserving product goals; names Sky Zema Jenniffer OS Mini Pro rocketstar.",
+      "requirementsPreserved": [
+        "RQ01",
+        "RQ02",
+        "RQ03",
+        "RQ04",
+        "RQ05",
+        "RQ06",
+        "RQ07",
+        "RQ08",
+        "RQ09",
+        "RQ10",
+        "RQ11",
+        "RQ12",
+        "RQ13",
+        "RQ14",
+        "RQ15",
+        "RQ16",
+        "RQ17",
+        "RQ18",
+        "RQ19",
+        "RQ20",
+        "RQ21",
+        "RQ22",
+        "RQ23",
+        "RQ24",
+        "RQ25",
+        "RQ26",
+        "RQ27",
+        "RQ28",
+        "RQ29",
+        "RQ30",
+        "RQ31",
+        "RQ32",
+        "RQ33",
+        "RQ34",
+        "RQ35",
+        "RQ36",
+        "RQ37",
+        "RQ38",
+        "RQ39",
+        "RQ40",
+        "RQ41",
+        "RQ42",
+        "RQ43",
+        "RQ44",
+        "RQ45",
+        "RQ46",
+        "RQ47",
+        "RQ48",
+        "RQ49",
+        "RQ50"
+      ],
+      "commercialAndAuthorityPoliciesChanged": false,
+      "runtimeChanged": true,
+      "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
+      "originalDesignBytesPreserved": true,
+      "jenniferSource": {
+        "canonicalName": "Jennifer",
+        "userSpelling": "Jenniffer",
+        "branch": "codex/jennifer-zema-execution",
+        "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+        "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
+        "pullRequest": 113,
+        "mainIntegrated": true,
+        "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+        "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+        "mergedAt": "2026-10-13T18:21:19Z",
+        "branchDeleted": true
+      },
+      "books": [
+        "docs/service-design/README.md",
+        "docs/service-design/01-service-experience.md",
+        "docs/service-design/02-system-contracts.md",
+        "docs/service-design/03-product-profiles.md",
+        "docs/service-design/04-delivery-and-acceptance.md",
+        "docs/service-design/05-requirement-coverage.md",
+        "docs/service-design/06-consistency-contracts.md",
+        "docs/service-design/07-ecosystem-strategy-and-data.md"
+      ],
+      "runtimeLogicChanged": false,
+      "displayTextChanged": true,
+      "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
+      "explicitUpdates": [
+        {
+          "date": "2026-10-13",
+          "instruction": "それぞれ辻褄を合わせる",
+          "result": "Cross-system invariant contracts and 12 acceptance scenarios; implementation gaps remain explicit."
+        },
+        {
+          "date": "2026-10-13",
+          "instruction": "全部表記siに変えてai→si",
+          "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
+        }
+      ],
+      "latestMainSha": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b",
+      "obsoleteContentCleanup": {
+        "requestedAt": "2026-10-13",
+        "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+        "reason": "User explicitly requested deleting obsolete confusing content; consolidate current contracts and remove stale duplicate prose and product claims.",
+        "currentRequirementsPreserved": 50,
+        "status": "verified_and_github_saved",
+        "removedPaths": 13,
+        "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+        "mainIntegrated": true
+      },
+      "mainMergeAuthorization": {
+        "instruction": "mainへあげて",
+        "recordedDate": "2026-10-13",
+        "scope": "PR114 design/si/obsolete-content cleanup; preserve latest main; deployment and physical/financial acceptance remain separate"
+      },
+      "mainIntegrated": true,
+      "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
+    },
+    "ecosystemResearch": {
+      "authority": "docs/service-design/07-ecosystem-strategy-and-data.md",
+      "data": "data/ecosystem-research.json",
+      "requestedAt": "2026-10-14",
+      "instruction": "全ての関連性・稼働system・不足の補完・戦略・データ・取引を調査して設計する",
+      "sourceMainSha": "c6df4ca93e3b9cee9986755e0bf1f333effe54f6",
+      "coverage": {
+        "requirements": 50,
+        "domains": 19,
+        "catalogTools": 37
+      },
+      "commercialPolicyChanged": false,
+      "runtimeChanged": false
+    },
+    "cloudAndDeviceFoundation": {
+      "authority": "docs/native-os-integration.md",
+      "evidence": "docs/evidence/graphene-cloud-foundation.json",
+      "decision": "connectivityServiceBundleDecision",
+      "reviewDate": "2026-10-15",
+      "capabilityCount": 32,
+      "primarySourceCount": 21,
+      "runtimeChanged": false
     }
   },
   "northStar": {
@@ -303,7 +944,7 @@
     "designModel": "gpt-6-astra",
     "auditModel": "gpt-5.6-sol",
     "auditDocument": "docs/ai-native-os-design-audit.md",
-    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
+    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned si automation team and connecting verified outcomes to sustainable income opportunities",
     "productCore": "ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime",
     "osIsProductCore": true,
     "osIsUltimateSocialPurpose": false,
@@ -419,25 +1060,6 @@
     "hazardousSynthesisWithoutQualifiedReviewAllowed": false,
     "simulationIsExperimentalProof": false,
     "externalLabIsReplaceableProvider": true,
-    "mini200E1": {
-      "requested": true,
-      "recordedAt": "2026-09-21",
-      "status": "engineering_proposal_and_abstract_models_only",
-      "design": "docs/avocado-mini-mini200-e1/README.md",
-      "usageHeightLimitMm": 200,
-      "primaryUse": "game_then_creation_research_and_life",
-      "japaneseVoiceRequested": true,
-      "designSaveRequested": true,
-      "outerAppearanceConfirmed": false,
-      "proposedConfiguration": "single_body_local_compute_front_stereo_plus_rgb_four_mic",
-      "initialSpeechMode": "push_to_talk_local_japanese_candidate",
-      "legacyFourViewContractChanged": false,
-      "runtimeIntegrated": false,
-      "actualAsrTests": 0,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": false
-    },
     "spatialDevelopment": {
       "requested": true,
       "status": "design_approved_runtime_not_implemented",
@@ -456,49 +1078,24 @@
       "patentAiIntegrationPlanned": true,
       "physicalExecutionAllowed": false,
       "gestureIsPhysicalApproval": false,
-      "automaticPatentFilingAllowed": false
+      "automaticPatentFilingAllowed": false,
+      "role": "material_invention_research_profile_not_current_R5_sensor_topology"
     },
-    "mini200E2": {
-      "requested": true,
-      "recordedAt": "2026-09-21",
-      "status": "four_tower_exterior_confirmed_e2_central_core_integration_design",
-      "design": "docs/avocado-mini-mini200-e2/README.md",
-      "ownerConfirmedExterior": "four_silver_motion_towers_surrounding_one_low_central_unit",
-      "singleEnclosureMechanicalStudyAdoptedAsCompleteProductExterior": false,
-      "centralCoreUsesE2OsArchitecture": true,
-      "exactTowerCoreIntegrationResolved": false,
-      "runtimeIntegrated": false,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true
-    },
-    "tower20E3": {
-      "requested": true,
-      "recordedAt": "2026-09-22",
-      "status": "current_four_tower_and_separate_edge_hub_integration_design",
-      "design": "docs/avocado-mini-tower20-e3/README.md",
-      "ownerConfirmedExterior": "four_fixed_height_200mm_tower20_units_and_one_separate_low_edge_hub",
-      "telescopingMechanism": false,
-      "activeCameraCandidatesPerTower": 1,
-      "reservedWindowsPerTower": 2,
-      "runtimeIntegrated": false,
-      "physicalTests": 0,
-      "manufacturingReleased": false,
-      "publishedSiteUpdated": true
-    }
+    "currentMiniProduct": "docs/avocado-mini-r5/README.md"
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
     "displayName": "Sky",
     "role": "automation_discovery_connection_and_catalog",
-    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
+    "definition": "Discover, install or connect model/Agent/Tool capabilities; explicitly select accepted local or cloud execution with author/version/permissions/data destination/cost, and hand work control to Zema.",
     "inventory": "docs/sky.md",
     "internalSurfaces": [
       "/csv"
     ],
     "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
-    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
+    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+    "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ"
   },
   "baseApps": [
     {
@@ -519,6 +1116,11 @@
     {
       "id": "market",
       "role": "generic_paper_market_and_value_spend_runtime"
+    },
+    {
+      "id": "campus",
+      "route": "/campus",
+      "role": "university_context_social_and_project_network"
     }
   ],
   "homeExperience": {
@@ -567,8 +1169,8 @@
   "launchPage": {
     "domainSeparation": {
       "productSite": "separate_public_domain",
-      "productSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
-      "productSiteDeployment": "public_live_verified",
+      "productSiteUrl": "https://avocadomini.si",
+      "productSiteDeployment": "public_reference_site_custom_domain_https_verified",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": [
         "/",
@@ -577,19 +1179,26 @@
       ],
       "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
       "osWebAudience": "owner_only",
-      "osSiteAccessStatus": "pending_owner_account_connection"
+      "osSiteAccessStatus": "pending_owner_account_connection",
+      "requestedCustomDomain": "avocadomini.si",
+      "customDomainStatus": "active_ssl_active",
+      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
+      "productSiteReferenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
+      "productSitePresentation": "user_selected_mini_pro_public_site",
+      "productSiteFallbackUrl": "https://avocadomini.noellesugar1.chatgpt.site"
     },
     "route": "/rockstaros",
-    "role": "public_avocado_mini_product_home",
+    "role": "public_account_service_home",
     "osHomeRoute": "/",
     "installGuideRoute": "/rockstaros/guide",
     "directOsHomeLink": false,
-    "serviceDetailsLocation": "os_home_after_setup",
-    "primaryAction": "view_avocado_mini",
-    "secondaryAction": "developer_preview_install_guide",
-    "publicDownloadFallback": "/rockstaros/guide#install",
+    "serviceDetailsLocation": "public_service_home",
+    "primaryAction": "start_service_onboarding",
+    "secondaryAction": "view_avocado_mini_device",
+    "publicDownloadFallback": "/connect",
     "visualDirection": "light_product_showcase_with_scroll_tower",
-    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
+    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
+    "hardwareProgramRoute": "/avocado-mini"
   },
   "visualSystem": {
     "surfaces": [
@@ -608,6 +1217,7 @@
     "homePrimaryApps": [
       "sky",
       "chat",
+      "campus",
       "wallet",
       "market",
       "settings"
@@ -820,7 +1430,8 @@
     "RQ46",
     "RQ47",
     "RQ48",
-    "RQ49"
+    "RQ49",
+    "RQ50"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -834,7 +1445,8 @@
     "local-offline-ai-runtime",
     "os-platform-core",
     "single-operator-emergency-device-protection",
-    "material-invention-candidate-engine"
+    "material-invention-candidate-engine",
+    "sky-interruptible-mobile-compute-grid"
   ],
   "localAiRuntime": {
     "requested": true,
@@ -1121,7 +1733,10 @@
       "game.experience.publish",
       "social.publish",
       "reward.grant",
-      "analytics.read"
+      "analytics.read",
+      "voice.session",
+      "telephony.inbound",
+      "telephony.outbound"
     ],
     "selectionModes": [
       "ask",
@@ -1154,29 +1769,22 @@
       "Roblox",
       "YouTube",
       "Instagram",
-      "GTA_FiveM"
+      "GTA_FiveM",
+      "LiveKit"
     ],
     "architecture": "docs/sky-mcp-architecture.md",
-    "toolDesign": "docs/sky-tools-complete-design.md"
+    "toolDesign": "docs/sky-tools-complete-design.md",
+    "ipVoiceTelephony": {
+      "requestedAt": "2026-10-04",
+      "providerCandidate": "livekit",
+      "status": "setup_metadata_implemented_runtime_not_connected",
+      "recordingDefault": "off",
+      "separateVoiceAndTelephonyOptIn": true,
+      "outboundRequiresExactApproval": true,
+      "manusCue": "reference_only_api_unverified"
+    }
   },
   "commercialPolicy": "Sky Market charges a 10% commission on verified ToB tool sales. Registration, connection, publication and base usage remain free; third-party API, model, payment and cloud costs are separate. Stripe Connect one-time JPY checkout, seller onboarding, order reconciliation and refunds are implemented but unconfigured; provider sandbox and live acceptance remain pending. The USD 8.88 ToC revenue fee proposal remains on hold and its 888-cent values are historical regression fixtures. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
-  "skyMarketplacePayments": {
-    "status": "implemented_unconfigured_provider_acceptance_pending",
-    "provider": "stripe_connect_destination_charges",
-    "commissionBps": 1000,
-    "currency": "JPY",
-    "billing": "one_time_only",
-    "eligiblePackages": "verified_installable_external_contract_with_owner_offer",
-    "includesLlmPackages": true,
-    "buyerRoute": "/sky/purchases",
-    "sellerRoute": "/sky/sell",
-    "apiRoute": "/api/sky/commerce/[action]",
-    "providerSandboxVerified": false,
-    "livePaymentsVerified": false,
-    "bankPayoutVerified": false,
-    "externalMcpAccessEnforcement": "provider_responsibility_not_implemented_by_purchase_record",
-    "document": "docs/sky-billing.md"
-  },
   "skyNetworkEconomy": {
     "tobSkyFeeMinor": 0,
     "tobSkySalesCommissionBps": 1000,
@@ -1225,6 +1833,49 @@
     "persistentSidebarOnSky": false,
     "legacyRouteBehavior": "open_sky_with_mcp_manager",
     "record": "docs/sky-network-economy.md"
+  },
+  "skyComputeGrid": {
+    "requestedAt": "2026-10-10",
+    "status": "synthetic_host_fixture_android_runtime_not_connected",
+    "role": "match_unused_charging_android_capacity_to_bounded_interruptible_compute_lots",
+    "initialSupplyPlatform": "android_arm64",
+    "iosSupplyEnabled": false,
+    "initialSku": "public-text-embedding-v1",
+    "pricingUnit": "verified_compute_lot",
+    "cpuHourPricingAllowed": false,
+    "dataClasses": [
+      "public",
+      "synthetic"
+    ],
+    "personalDataAllowed": false,
+    "secretsAllowed": false,
+    "arbitraryCodeAllowed": false,
+    "exactLocationExposedToBuyer": false,
+    "ownerIdentityExposedToBuyer": false,
+    "ownerUsePreemptsCompute": true,
+    "requiredDeviceConditions": [
+      "charging",
+      "device_idle",
+      "unmetered_network",
+      "thermal_none_or_light"
+    ],
+    "verificationRequiredBeforeSettlement": true,
+    "validationMethods": [
+      "independent_reference",
+      "duplicate_quorum"
+    ],
+    "settlementAsset": "sky_test_credits",
+    "liveDispatchEnabled": false,
+    "liveBillingEnabled": false,
+    "livePayoutEnabled": false,
+    "cloudFallbackWithoutExplicitOrderAuthorization": false,
+    "architecture": "docs/sky-compute-grid.md",
+    "contract": "contracts/sky-compute-grid.json",
+    "fixture": "contracts/sky-compute-grid-fixture.json",
+    "runtime": "lib/sky-compute-grid.ts",
+    "tests": "tests/sky-compute-grid.test.mjs",
+    "demoRoute": "/sky/compute-grid",
+    "demoApi": "/api/sky/compute-grid/demo"
   },
   "skyMonthlyBilling": {
     "status": "retired",
@@ -1289,7 +1940,7 @@
       "sourceLock": "os/physical/frankel-source-lock.json",
       "dspSourceAndLayoutEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
     },
-    "sourceTag": "2026091000",
+    "sourceTag": "2026100200",
     "sourceTagSignatureVerified": true,
     "deviceLayoutReadOnlyVerified": true,
     "recoveryArtifactsHashed": false,
@@ -1463,6 +2114,21 @@
     "capabilityMatrix": "data/llm-capabilities.json",
     "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
     "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
+    "zemaWebLocalAgent": {
+      "status": "local_preview_conversation_verified_tool_selection_quality_limited",
+      "provider": "ollama",
+      "verifiedModel": "qwen3:0.6b",
+      "endpointBoundary": "loopback_only",
+      "plannerSchema": "zema-local-agent/1",
+      "maximumSteps": 3,
+      "allowlistedTools": [
+        "sky_route",
+        "format_citations",
+        "coconala_check"
+      ],
+      "publicSiteLoopbackBridge": false,
+      "cloudFallback": false
+    },
     "skyOpenAiConnections": [
       "rockstar-legal-intake",
       "rockstar-patent-assistant"
@@ -1475,6 +2141,18 @@
       "authority": "advisory_only",
       "status": "designed_not_implemented",
       "task": "AI07"
+    },
+    "avokadoPretraining": {
+      "decisionDate": "2026-10-05",
+      "reason": "Explicit user request: from-scratch pretraining, device and cloud, zero additional spending for prototype",
+      "initialization": "random_no_pretrained_weights",
+      "targets": [
+        "device",
+        "cloud"
+      ],
+      "additionalSpendLimit": 0,
+      "design": "docs/avokado-llm-pretraining.md",
+      "task": "AI02"
     }
   },
   "commercialPolicyRevision": {
@@ -1492,15 +2170,290 @@
     "collectionMethod": "pending",
     "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
   },
+  "avokadoProPcIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, si and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "nvidiaGpuRequired": true,
+    "standalonePc": true,
+    "miniDependency": false,
+    "salesPriceTargetJpy": 800000,
+    "priceTaxUndecided": true,
+    "candidateOnly": true,
+    "authority": "docs/avokado-pro-pc-design.md",
+    "specification": "data/avokado-pro-pc.json",
+    "aiPcClarification": {
+      "date": "2026-10-13",
+      "source": "User explicit clarification",
+      "description": "NVIDIA chip/GPU based high-performance si PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
+    }
+  },
+  "miniArchitecturalIntegration": {
+    "decisionDate": "2026-10-14",
+    "source": "User explicit instruction: integrate Mini into architecture from before construction, including ceiling-storage variants so it blends into daily life",
+    "authority": "docs/avocado-mini-r5/README.md",
+    "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
+    "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
+    "candidateCeilingTypes": [
+      "recessed",
+      "suspended",
+      "exposed_or_retrofit_cover"
+    ],
+    "standaloneMiniPreserved": true,
+    "proOrBuildingNetworkRequired": false,
+    "residentOwnsPrivateProfile": true,
+    "installedCeilingCompatibility": "per_property_unverified",
+    "constructionAndProductAcceptance": "not_completed"
+  },
+  "miniCellularIntent": {
+    "decisionDate": "2026-10-10",
+    "reason": "Owner-confirmed 2026-10-10: domestic LTE with an IoT data-only SIM; cellular is a separate model or option",
+    "simInsideMini": true,
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "externalPowerRequired": true,
+    "authority": "docs/avocado-mini-cellular.md",
+    "specification": "data/avocado-mini-cellular.json",
+    "coverage": "domestic",
+    "radio": "lte_only_no_5g",
+    "sim": "iot_data_only",
+    "prototypeSimForm": "card",
+    "productionSimForm": "embedded_chip",
+    "sgp32Capable": true,
+    "remoteProfileSwitching": "not_built_in_house",
+    "productForm": "separate_model_or_option"
+  },
+  "gtaViPlayIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction to enable GTA VI play after Mini/Pro discussion",
+    "authority": "docs/mini-game-client.md",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "pcSupportConfirmed": false,
+    "gameAccepted": false
+  },
+  "campus": {
+    "displayName": "Campus",
+    "route": "/campus",
+    "role": "university_context_people_projects_opportunities_events_communities_portfolio_resources_and_physical_entry",
+    "status": "web_runtime_implemented",
+    "campuses": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "affiliationVerification": "authenticated_email_domain_match_without_email_storage",
+    "publicClaimsBoundary": "community_posted_content_not_official_university_data_unless_external_source_states_otherwise",
+    "physicalEntry": "registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics",
+    "analyticsPrivacy": "tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent",
+    "dataControls": [
+      "profile_visibility",
+      "block_and_report",
+      "post_archive",
+      "tag_activate_deactivate",
+      "tag_analytics_delete",
+      "campus_data_delete"
+    ]
+  },
+  "skyMarketplacePayments": {
+    "status": "implemented_unconfigured_provider_acceptance_pending",
+    "provider": "stripe_connect_destination_charges",
+    "commissionBps": 1000,
+    "currency": "JPY",
+    "billing": "one_time_only",
+    "eligiblePackages": "verified_installable_external_contract_with_owner_offer",
+    "includesLlmPackages": true,
+    "buyerRoute": "/sky/purchases",
+    "sellerRoute": "/sky/sell",
+    "apiRoute": "/api/sky/commerce/[action]",
+    "providerSandboxVerified": false,
+    "livePaymentsVerified": false,
+    "bankPayoutVerified": false,
+    "externalMcpAccessEnforcement": "provider_responsibility_not_implemented_by_purchase_record",
+    "document": "docs/sky-billing.md"
+  },
+  "spiderGuard": {
+    "requestedAt": "2026-10-02",
+    "document": "docs/spider-guard.md",
+    "task": "SYS15",
+    "primaryOwner": "ROCK",
+    "status": "implementation_in_progress_acceptance_pending",
+    "requestedBehavior": "Run continuously inside RockstarOS itself, prioritize secrets and personal information within the fixed Platform scope, and connect native spider visualization to authenticated real findings and checks before supported outbound requests.",
+    "implementationScope": [
+      "native_platform_uid_1002_fixed_application_data_monitor",
+      "authenticated_sanitized_security_status_and_native_visualization",
+      "platform_mcp_prepare_and_submit_checks",
+      "runner_prepare_and_first_durable_send_claim_checks",
+      "os_package_boot_and_supervision_integration"
+    ],
+    "companionScope": [
+      "web_ai_guard",
+      "mcp_connector_guard"
+    ],
+    "deploymentTarget": "rockstaros_native_platform",
+    "platformUid": 1002,
+    "ownerUiUid": 1000,
+    "fixedStateRoot": "/data/platform",
+    "defaultInspectionIntervalSeconds": 30,
+    "rootPrivilegeAdded": false,
+    "sameImageBootVerified": false,
+    "pixelDeploymentVerified": false,
+    "sourceValidationEvidence": "docs/evidence/spider-guard-source-validation.json",
+    "linuxContainerUid": 1002,
+    "linuxNativeRegressionTestsPassed": 125,
+    "linuxSupervisorTestsPassed": 3,
+    "linuxInstallTestsPassed": 1,
+    "linuxPythonTestsPassed": 129,
+    "webGuardTestsPassed": 49,
+    "priorSourceValidationCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+    "nativeAnimationRevision": {
+      "requestedAt": "2026-10-02",
+      "status": "source_renderer_validated_os_acceptance_pending",
+      "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+      "references": [
+        "https://www.instagram.com/reel/DdhYiKdz-6t/",
+        "https://www.instagram.com/reel/DdmGyhRRQGi/",
+        "https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2"
+      ],
+      "visualIntent": "Thin luminous curved articulated legs, blue endpoint rings and a small pink/cyan square core moving toward actual findings and encircling the focused row.",
+      "eventResponse": "brief response only to a newly observed actual blocked counter increase",
+      "unhealthyState": "no motion on stale, dead, failed, missing or disconnected status",
+      "freshRendererTestsRecorded": true,
+      "priorTestCountsAreHistorical": true,
+      "protectionAuthorityChanged": false,
+      "currentSurface": "native security panel",
+      "globalOverlaySelected": false
+    },
+    "serviceInstalled": false,
+    "runtimeAcceptanceRecorded": false,
+    "productionDeploymentVerified": false,
+    "alwaysOnOperationVerified": false,
+    "osWideTrafficProtectionClaim": false,
+    "rawSensitiveValuesInDiagnosticsAllowed": false,
+    "existingRequirementsAndReleaseGatesPreserved": true,
+    "operatorDockAuthorityExpanded": false,
+    "securityAgentRole": {
+      "requestedAt": "2026-10-02",
+      "status": "source_validated_os_acceptance_pending",
+      "id": "spider",
+      "role": "security",
+      "stateSource": "actual worker liveness, freshness and findings",
+      "sensitiveFindingState": "sensitive_data_detected",
+      "lastActionSource": "sanitized metadata from actual latest blocked request",
+      "currentSurface": "native security panel",
+      "protectionAuthorityChanged": false,
+      "monitoringCadenceOrScopeChanged": false,
+      "freshValidationRecorded": true,
+      "scope": "platform-data",
+      "duties": [
+        "watch_platform_data",
+        "inspect_outbound",
+        "deny_sensitive_outbound",
+        "report_health"
+      ],
+      "states": [
+        "starting",
+        "stopped",
+        "unavailable",
+        "recent_block",
+        "sensitive_data_detected",
+        "watching"
+      ],
+      "recentBlockSeconds": 30,
+      "lastAction": {
+        "initial": null,
+        "action": "blocked",
+        "boundaries": [
+          "mcp.prepare",
+          "mcp.submit",
+          "remote.prepare",
+          "remote.send",
+          "unclassified"
+        ],
+        "countRange": [
+          0,
+          2001
+        ],
+        "kindAllowlist": [
+          "secret",
+          "personal"
+        ],
+        "maximumKinds": 2,
+        "time": "finite epoch seconds",
+        "retention": "in-memory until process restart; remains after 30 seconds and safe sends",
+        "limitDenialMayHaveNoCandidates": true,
+        "timeRange": [
+          0,
+          253402300799
+        ],
+        "countKindsConsistency": "count 0 requires kinds []; positive count requires one or two allowed kinds"
+      },
+      "monitoringCadenceOrOrderChanged": false,
+      "linuxBackendTestsPassed": 26,
+      "linuxNativeRendererPassed": true,
+      "pinReadinessTestsPassed": 11,
+      "pinSourceProfileTestsPassed": 1
+    },
+    "codeInspector": {
+      "requestedAt": "2026-10-02",
+      "status": "standalone_validated_native_linux_pending",
+      "intent": "Paste own source and inspect automatically after edits; spider visualizes actual findings.",
+      "deliverableOutsideRepository": "outputs/SPIDER.html",
+      "delivery": "offline standalone HTML",
+      "scope": "static analysis of explicitly supplied source",
+      "nativeOperation": "security.inspectCode",
+      "requiresSdk": false,
+      "requiresApiKey": false,
+      "executesInput": false,
+      "externalRequests": false,
+      "persistsInput": false,
+      "existingPlatformGuardChanged": false,
+      "runtimeInterceptionClaim": false,
+      "freshValidationRecorded": true,
+      "buildCommand": "node scripts/build-spider-inspector.mjs --output /absolute/path/SPIDER.html",
+      "source": "toolkits/spider-guard/inspector.html",
+      "detector": "toolkits/spider-guard/program-inspector.mjs",
+      "automaticDelayMs": 500,
+      "maxInputBytes": 65536,
+      "maxInputLines": 2000,
+      "maxFindings": 100,
+      "languages": [
+        "javascript",
+        "python",
+        "text"
+      ],
+      "reportExport": "optional metadata-only JSON, no source text",
+      "modifiesOriginalFiles": false,
+      "nativeModule": "systems/rock-star-os/os/platform/code_inspector.py",
+      "nativeOwnerUid": 1000,
+      "nativePythonAstNodeLimit": 20000,
+      "guardCountersChanged": false,
+      "helpOutsideRepository": "outputs/SPIDER-使い方.txt",
+      "findingPriority": [
+        "secret",
+        "personal",
+        "code"
+      ],
+      "countSemantics": "returned findings only; truncation marks coverageLimited",
+      "nodeTestsPassed": 14,
+      "nativeHostTestsPassed": 23,
+      "nativeLinuxValidationRecorded": false,
+      "browserValidation": "loopback HTTP serving generated HTML; direct file URL not tested",
+      "evidenceSection": "codeInspectorRevisions"
+    }
+  },
   "esimProductIntent": {
-    "decidedAt": "2026-09-30",
-    "source": "製品はesimで完結させたいから、開発だけしたい",
-    "distribution": "esim_only",
-    "currentScope": "development_only",
-    "physicalSimPurchase": false,
+    "decidedAt": "2026-10-02",
+    "source": "2026-10-02 authoritative product requirements: physical SIM or eSIM purchase includes RockstarOS service access across multiple distribution channels; OS is installed through a supported device path",
+    "supersededSource": "製品はesimで完結させたいから、開発だけしたい",
+    "distribution": "physical_sim_and_esim",
+    "currentScope": "bundle_product_contract_and_source_design_no_live_issuance",
+    "physicalSimPurchase": true,
     "liveServiceEnabled": false,
-    "implementation": "host_fixture",
-    "document": "toolkits/esim-bootstrap/README.md"
+    "implementation": "host_fixture_and_local_worker_d1",
+    "document": "docs/product-baseline.md",
+    "supersededBy": "connectivityServiceBundleDecision"
   },
   "cloudContinuationIntent": {
     "decidedAt": "2026-09-30",
@@ -1591,5 +2544,428 @@
     "operatorOriginAllowlistConfigured": false,
     "runtimeVPCBindingConfigured": false,
     "productionEgressTested": false
-  }
+  },
+  "serviceAccessModel": {
+    "status": "authoritative_product_direction_design_and_local_onboarding_only",
+    "primaryEntry": "connectivity_and_si_access_bundle",
+    "distributionChannels": [
+      "rockstar_direct",
+      "mobile_carrier",
+      "device_retailer",
+      "online_retailer"
+    ],
+    "osBinaryStoredOnSim": false,
+    "deviceDelivery": [
+      "signed_native_os_only_for_exact_supported_device_and_recovery_path",
+      "existing_os_app_or_shell",
+      "browser_client"
+    ],
+    "unifiedIdentity": "one_rockstar_account_across_sky_zema_agents",
+    "primaryReasonsToChoose": [
+      "fast_simple_access_to_cloud_llms_and_agents",
+      "transparent_usage_based_pricing_and_cost_estimates",
+      "integrated_rockstaros_sky_zema_access_with_minimal_setup"
+    ],
+    "deviceMinimumExperience": [
+      "short_activation_to_service_onboarding",
+      "direct_sky_zema_agent_entry_from_home",
+      "single_rockstar_identity_without_per_service_registration",
+      "submit_tasks_track_progress_and_retrieve_results",
+      "accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect",
+      "show_provider_rates_and_estimate_before_paid_execution",
+      "distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount",
+      "itemize_usage_after_completion",
+      "user_controlled_spending_limits_and_explicit_approval_to_raise_them"
+    ],
+    "cloudExecution": "usage_billed_with_preflight_quote_budget_approval_live_spend_and_itemized_receipt",
+    "dispatchPolicy": "fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted",
+    "carrierAndAiChargesSeparated": true,
+    "purchaseEnabled": false,
+    "productionBillingAccepted": false,
+    "carrierActivationAccepted": false,
+    "deviceOsInstallationAccepted": false,
+    "supersedes": [
+      "2026-10-10_account_only_product_entry_and_consumer_esim_design_hold"
+    ],
+    "simRequiredForService": false,
+    "deviceConnectivity": "bundle_line_or_authorized_wifi_transport; mini_iot_profile_remains_separate",
+    "consumerEsimSales": "bundle_product_design_live_issuance_disabled",
+    "decisionDate": "2026-10-15",
+    "decisionRecord": "docs/product-baseline.md",
+    "accountRole": "identity_contract_job_artifact_and_budget_owner",
+    "bundleDecision": "connectivityServiceBundleDecision"
+  },
+  "portableAddons": {
+    "requestedAt": "2026-10-06",
+    "authority": "docs/service-design/02-system-contracts.md",
+    "tasks": [
+      "HOME01",
+      "SYS01",
+      "WEB14"
+    ],
+    "entry": "/add",
+    "modules": [
+      "sky",
+      "data",
+      "llm"
+    ],
+    "dataScope": "explicitly_selected_files_and_note",
+    "llmEntry": "existing_zema_with_quote_and_approval",
+    "esimChipOs": false,
+    "newLocalModelInstalled": false
+  },
+  "spiderSkyIntent": {
+    "decidedAt": "2026-10-09",
+    "source": "利用者: セキュリティーで開発したい / skyでしたい",
+    "toolId": "rockstar-spider",
+    "entry": "Sky catalog → Zema tool workspace",
+    "initialScope": "explicit_input_browser_local_static_inspection",
+    "existingNativeGuardRetained": true,
+    "doesNotAuthorize": "full_device_surveillance_or_automatic_external_submission"
+  },
+  "skyCodeTimelineIntent": {
+    "decidedAt": "2026-10-09",
+    "requested": true,
+    "entry": "/sky",
+    "scope": "public_agent_source_with_immutable_commits_history_diff_and_copy",
+    "defaultProtector": "spider",
+    "ownerCanRemoveProtector": true,
+    "ownerCanReplaceProtector": true,
+    "sourceUploadRequiresExplicitPublication": true,
+    "standaloneSpiderRemainsMemoryOnly": true,
+    "doesNotAuthorize": "automatic_code_execution_or_tool_verification",
+    "record": "docs/sky-tools-complete-design.md"
+  },
+  "skyFeedIntent": {
+    "decidedAt": "2026-10-13",
+    "requested": true,
+    "layout": "single_column_social_timeline",
+    "primaryModes": [
+      "recommended",
+      "owner_saved_or_connected"
+    ],
+    "algorithm": "sky-usefulness-v2_with_sky-phoenix-v1",
+    "rankingSignals": [
+      "ephemeral_routed_tool_id",
+      "owner_saved_tool",
+      "owner_connected_tool",
+      "authoritative_current_availability",
+      "consented_semantic_feed_history",
+      "multi_action_probability_prediction",
+      "tool_and_category_affinity_with_recency_decay",
+      "repository_curated_fallback"
+    ],
+    "excludedSignals": [
+      "request_or_prompt_body",
+      "zema_conversation_or_result_body",
+      "device_token_or_account_identifier",
+      "raw_scroll_path_or_free_text_analytics",
+      "popularity_or_revenue"
+    ],
+    "categoryAffinityEnabled": true,
+    "historyConsentDefault": false,
+    "historyRetentionDays": 30,
+    "historyEventLimit": 800,
+    "historyEvents": [
+      "qualified_impression",
+      "detail",
+      "route",
+      "launch",
+      "save",
+      "unsave",
+      "connect",
+      "authoritative_job_complete_or_fail"
+    ],
+    "historyStorage": "tab_scoped_bounded_cache_and_authenticated_owner_scoped_d1",
+    "coldStartFallback": "sky-usefulness-v1",
+    "ownerCanPauseAndDeleteHistory": true,
+    "explicitFollowingImplemented": false,
+    "executionOwner": "zema",
+    "feedCreatesExecutionAuthority": false,
+    "record": "docs/sky.md"
+  },
+  "accountEntryDecision": {
+    "decidedAt": "2026-10-15",
+    "decidedBy": "owner",
+    "record": "docs/product-baseline.md",
+    "mainProduct": "connectivity_plus_si_access_bundle_with_account_owned_jobs_and_costs",
+    "simRole": "product_entry_connectivity_with_separate_account_identity",
+    "seller": "avokado",
+    "firstCustomers": "individuals_starting_with_solo_businesses_that_deliver_writing",
+    "billing": {
+      "account": "free",
+      "termPass": "prepaid_valid_for_less_than_6_months_auto_renew_on_by_default_shown_at_purchase_and_notified_before_renewal_no_mid_term_refund",
+      "usage": "postpaid_charged_when_cumulative_usage_reaches_threshold_or_at_month_end",
+      "usageThresholdJpyInitial": 1000,
+      "usageMarkupPercentInitial": 30,
+      "monthlyCap": "user_set_reserved_per_run_and_confirmed_by_actual_meter",
+      "deviceBaseFee": "monthly_for_devices_with_a_line",
+      "storedBalance": false,
+      "exits": [
+        "turn_off_auto_renew",
+        "set_monthly_cap_to_zero",
+        "cancel_device_line"
+      ]
+    },
+    "skyFee": {
+      "currentBps": 1000,
+      "targetBps": 0,
+      "zeroMeans": "sky_take_zero_payment_costs_at_actual",
+      "switchCondition": "usage_gross_margin_exceeds_fixed_costs_for_3_consecutive_months"
+    },
+    "payout": "monthly_close_at_month_end_paid_end_of_next_month",
+    "firstLineSupport": "avokado",
+    "skyHosting": {
+      "url": "https://avoado.si/os/sky",
+      "changedAt": "2026-10-13",
+      "changeReason": "Owner specified avoado.si/os for RockstarOS Home and avoado.si/os/sky for Sky on 2026-10-13; supersedes avoado.si/sky",
+      "currentDelivery": "same_origin_os_home_and_sky_active; old_sky_path_redirects; mini_pro_domains_verified; owner_ab_and_campus_nfc_not_accepted",
+      "signIn": "own_passkey",
+      "notifications": "web_push_first",
+      "osHomeUrl": "https://avoado.si/os"
+    },
+    "onHold": [
+      "self_built_remote_profile_switching",
+      "signed_quotes_from_external_agents",
+      "production_esim_issuance_until_partner_and_acceptance"
+    ],
+    "liveBillingAccepted": false,
+    "externalConfirmationsPending": [
+      "telecommunications_business_act_registration_or_notification",
+      "mobile_phone_improper_use_prevention_act_data_sim_identity_verification",
+      "payment_services_act_prepaid_instrument_applicability",
+      "specified_commercial_transactions_act_final_confirmation_screen",
+      "radio_certification_of_embedded_module",
+      "carrier_partner_third_party_use_and_sgp32_pricing",
+      "stripe_connect_configuration_and_threshold_billing",
+      "cloud_ai_provider_resale_terms"
+    ],
+    "entryDecisionSource": "connectivityServiceBundleDecision",
+    "cloudPlanAuthority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
+    "cloudPlanDesignStatus": "monthly_140_requested_quota_and_overage_terms_pending"
+  },
+  "skyCampusMainReconciliation": {
+    "decidedAt": "2026-10-14",
+    "source": "Owner requested reconciliation of columbia.avoado.si with avoado.si/os/sky while keeping their Home tabs distinct",
+    "canonicalSkyOrigin": "https://avoado.si",
+    "campusHome": "campus_specific_discovery_and_free_browser_drafts",
+    "mainHome": "agent_marketplace_execution_and_management",
+    "sharedDurableOwnership": [
+      "purchases",
+      "account_library",
+      "connections",
+      "zema_jobs",
+      "agent_outputs"
+    ],
+    "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
+    "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
+  },
+  "skyOpenAddPluginDirection": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "skyは全てのaddプラグインになる拡張機能、固定されたものやオフィシャルなものはなく、ただみんなが使いたいものがある、",
+    "role": "open_add_plugin_discovery_and_composition_across_hosts",
+    "fixedFeatureOrAuthorSet": false,
+    "officialProductTier": false,
+    "officialStatusRequired": false,
+    "officialStatusSelectionPreference": false,
+    "pluginKinds": [
+      "model",
+      "agent",
+      "tool",
+      "recipe",
+      "output_view",
+      "host_adapter"
+    ],
+    "sharedAdmissionCriteria": [
+      "author_identity_and_version_digest",
+      "host_runtime_schema_compatibility",
+      "scoped_owner_consent",
+      "data_destination_and_cost",
+      "verification_stop_update_and_revocation"
+    ],
+    "pixelBundledCatalogScope": "physical_preview_tested_profiles_not_Sky_product_boundary",
+    "dynamicNativeThirdPartyPluginAcceptance": "not_implemented",
+    "authority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "dynamicPixelImplementationInstruction": {
+      "date": "2026-10-17",
+      "ownerQuote": "Skyで見つけたLLMやエージェントを、固定カタログに縛られず追加してPixelで実際に使えるようにして",
+      "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+      "scope": [
+        "owner_pinned_public_GGUF",
+        "declarative_local_text_agent"
+      ],
+      "physicalAcceptance": "pending"
+    },
+    "pixelToolAgentInstruction": {
+      "requestedAt": "2026-10-18",
+      "request": "Skyで追加したAgentが要約だけでなく実際にToolを動かして成果物を作り、Pixelで確認する",
+      "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+      "runner": "local-tools/1",
+      "scope": "existing_pure_document_Tools_with_explicit_owner_consent",
+      "executionPermissionFromModel": false,
+      "wholeOsOrPaidCloudAuthorized": false
+    }
+  },
+  "skyFusionDirection": {
+    "decidedAt": "2026-10-15",
+    "source": "Owner explicitly defined Sky as an Agent/LLM marketplace and hub beyond RockstarOS, combining software, hardware, interiors and architecture to improve daily life; sofa weight observation is an example",
+    "role": "open_agent_llm_marketplace_and_capability_composition_hub",
+    "hosts": [
+      "web",
+      "apps",
+      "pc",
+      "games",
+      "appliances",
+      "robots",
+      "services",
+      "furniture",
+      "interiors",
+      "buildings"
+    ],
+    "agentComposition": "bounded_typed_delegation_tracked_by_zema_and_authorized_by_broker",
+    "interactionStages": [
+      "observe",
+      "propose",
+      "owner_review",
+      "act",
+      "reconcile"
+    ],
+    "nfcOrOsRequired": false,
+    "observationGrantsActuation": false,
+    "example": "refrigerator_inventory_to_reviewed_shopping_order",
+    "currentAcceptance": "design_only_no_sofa_refrigerator_building_or_multi_agent_production_acceptance",
+    "record": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
+    "rockstarOsRequired": false,
+    "miniRequiredForEveryIntegration": false,
+    "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
+    "examples": [
+      "refrigerator_inventory_to_reviewed_shopping_order",
+      "instrumented_sofa_load_to_consented_weight_trend"
+    ],
+    "sofaSensorImplemented": false,
+    "sofaWeightAccuracyValidated": false,
+    "healthObservationRequiresConsentedPersonAndValidMeasurement": true,
+    "healthDataAccessGrantedToFurnitureOrBuildingSeller": false,
+    "acceptanceCases": [
+      {
+        "id": "SF01",
+        "case": "third_party_host_without_RockstarOS_and_without_Mini_uses_scoped_catalog_job",
+        "status": "not_run"
+      },
+      {
+        "id": "SF02",
+        "case": "sofa_tare_calibration_known_load_posture_floor_and_invalid_measurement",
+        "status": "not_run"
+      },
+      {
+        "id": "SF03",
+        "case": "shared_sofa_multiple_people_pet_guest_and_no_weight_only_identification",
+        "status": "not_run"
+      },
+      {
+        "id": "SF04",
+        "case": "local_cloud_consent_retention_deletion_and_partner_owner_isolation",
+        "status": "not_run"
+      },
+      {
+        "id": "SF05",
+        "case": "sensor_or_Mini_offline_revocation_duplicate_event_and_recovery",
+        "status": "not_run"
+      }
+    ]
+  },
+  "productTerminology": "data/product-terminology.json",
+  "skyAppOutputPlugin": {
+    "decidedAt": "2026-10-12",
+    "source": "User requested a saved Agent output receptacle and Sky standalone host-app plugins, with Fitness as the first example",
+    "osWorkManager": "Zema",
+    "standaloneSkyOutputInbox": "/sky/outputs",
+    "firstPartyHostExample": "/fitness",
+    "typedOutputSchema": "sky.fitness.plan/1",
+    "authorization": "owner-scoped saved results; NFC and campus context confer no output access",
+    "outsideCurrentAcceptance": [
+      "cross-origin app SDK",
+      "real Fitness Agent",
+      "production Provider output"
+    ]
+  },
+  "agentMonthlyPostpaidIntent": {
+    "date": "2026-10-15",
+    "source": "携帯料金と同じシステムでAgent利用を毎月請求、強い支払義務",
+    "billingCycle": "monthly",
+    "settlementDirection": "postpaid",
+    "scope": "contract_account_agent_usage",
+    "serviceOwner": "Sky",
+    "standaloneEndToEndRequired": true,
+    "requiredCompanionProducts": [],
+    "optionalIntegratedServices": [
+      "Jennifer",
+      "Zema"
+    ],
+    "rockstarOsIntegratedServices": [
+      "Jennifer",
+      "Sky",
+      "Zema"
+    ],
+    "eachServiceStandaloneDesign": true,
+    "monthlyProviderAcceptance": "pending",
+    "quoteAndBudgetCapRequired": true,
+    "carrierBillIntegrationAccepted": false,
+    "bankAccountFreezeByOs": false,
+    "delinquencyPolicy": "notice_grace_dispute_paid_agent_restriction_reconciliation_and_lawful_collection_review",
+    "jurisdiction": "undecided",
+    "productionBillingEnabled": false,
+    "document": "docs/sky-billing.md"
+  },
+  "skyAutomaticModelSelection": {
+  "date": "2026-10-17",
+  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+  "default": "auto",
+  "manualProviderModelSupported": true,
+  "implementation": "lib/sky-model-routing.ts",
+  "document": "docs/llm-evaluation-architecture.md",
+  "cloudAutoAccepted": false,
+  "policy": "local_and_owner_enabled_consented_free_cloud",
+  "status": "live_account_cloud_verified",
+  "tests": "tests/sky-model-routing.test.mjs"
+},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "live_account_real_cloud_accepted_synthetic_contract",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": true
+},
+  "publicModelDiscoveryIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "今何が使えるのかとかリアルタイムでサーチできるようにしたい、xとかgitとかのopenllmを利用する形で",
+    "authority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+    "scope": [
+      "explicit_public_query_to_GitHub_and_HuggingFace",
+      "X_external_search_until_API_credentials_and_contract_ready",
+      "untrusted_candidates_separate_from_executable_catalog",
+      "no_silent_install_or_paid_fallback"
+    ],
+    "newPaidProviderProvisioned": false
+  },
+"freeCloudBackgroundIntent":{
+  "date": "2026-10-17",
+  "source": "direct_owner_instruction",
+  "persistConsentAndPrompt": true,
+  "continueAfterTabClose": true,
+  "ownerHistory": true,
+  "productionBilling": false,
+  "authority": "docs/llm-evaluation-architecture.md"
+}
 }

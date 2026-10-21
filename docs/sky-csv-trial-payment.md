@@ -30,3 +30,9 @@ Stripeの本番イベント送信先は `https://sky-marketplace.noellesugar1.ch
 支払い条件・JPY単位・本人分離・未払い・金額不一致・返金・紛争・通知署名・環境不一致・冪等性・未設定拒否を含む関連82試験がローカルfixtureで合格。型検査とlint合格。実StripeのApple Pay、本番Webhook到達、本番支払い・納品は未受入。Stripeログインと本番接続を本人と進める。
 
 参考: [Stripe Apple Pay](https://docs.stripe.com/apple-pay)、[JPYと最小決済額](https://docs.stripe.com/currencies)。
+
+
+2026-10-01追加受入: 公開Sky v8（632ac3eb…）でPixel本人ログイン、サンプルCSV処理、検査合格・納品可能の表示、サーバー再読込後の同受付復元を確認。result.csv 0.09KBの既存ダウンロード確認がブラウザに出た。CSVバイト/hash、別本人隔離、削除は未受入。50円試験の入口は公開済みだが、本番キー・CSV署名secretが未登録で無効。Stripe本番有効化は本人情報確認の途中で本人作業待ち。
+
+
+Stripe最新readback: 本番ダッシュボードへ到達したが支払いが一時停止。追加情報タスクはセキュリティ対策措置状況申告書で、担当者の本人確認書類タスクも残る。申告の実施者・実施済み対策は本人が確認し提出する。フォームを本人操作用に残し、未確認の対策や本人情報は代理入力していない。Sky非公開設定には本番API keyとCSV専用署名secretが未登録。実課金は未実施。

@@ -30,7 +30,10 @@
       "choice": "RockstarOS 1.x with immutable internal namespace dev.rock",
       "fit": "ALIGNED",
       "state": "SOURCE_INTEGRATED",
-      "evidence": ["data/product-identity.json", "docs/product-baseline.md"]
+      "evidence": [
+        "data/product-identity.json",
+        "docs/product-baseline.md"
+      ]
     },
     {
       "id": "device_architecture",

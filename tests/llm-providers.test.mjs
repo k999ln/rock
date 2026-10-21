@@ -20,7 +20,7 @@ const response = (value, status = 200) =>
 void test('text model registry exposes replaceable local and cloud adapters', () => {
   assert.deepEqual(
     textModelProviders.map((provider) => provider.id),
-    ['local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
+    ['pollinations', 'local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
   );
   assert.equal(isTextModelProvider('anthropic'), true);
   assert.equal(isTextModelProvider('unknown'), false);
@@ -62,9 +62,9 @@ void test('OpenAI adapter uses server credentials and returns normalized text', 
 
 void test('Anthropic, Gemini and OpenAI-compatible adapters share one contract', async () => {
   const providers = [
-    ['anthropic', { ANTHROPIC_API_KEY: 'a' }, { content: [{ type: 'text', text: 'claude' }] }],
-    ['google', { GOOGLE_GENERATIVE_AI_API_KEY: 'g' }, { candidates: [{ content: { parts: [{ text: 'gemini' }] } }] }],
-    ['openai-compatible', { SKY_LLM_COMPATIBLE_BASE_URL: 'http://127.0.0.1:1234/v1' }, { choices: [{ message: { content: 'compatible' } }] }],
+    ['anthropic', { ANTHROPIC_API_KEY: 'a' }, { stop_reason: 'end_turn', content: [{ type: 'text', text: 'claude' }] }],
+    ['google', { GOOGLE_GENERATIVE_AI_API_KEY: 'g' }, { candidates: [{ finishReason: 'STOP', content: { parts: [{ text: 'gemini' }] } }] }],
+    ['openai-compatible', { SKY_LLM_COMPATIBLE_BASE_URL: 'http://127.0.0.1:1234/v1' }, { choices: [{ finish_reason: 'stop', message: { content: 'compatible' } }] }],
   ];
   for (const [provider, runtimeEnv, payload] of providers) {
     const result = await generateText(
@@ -94,7 +94,7 @@ void test('local Qwen uses an explicitly configured loopback OpenAI-compatible b
     },
     async (url, init) => {
       seen = { url, init };
-      return response({ choices: [{ message: { content: 'local ok' } }] });
+      return response({ choices: [{ finish_reason: 'stop', message: { content: 'local ok' } }] });
     },
   );
   assert.equal(result.text, 'local ok');
@@ -120,6 +120,48 @@ void test('OpenAI returns measured duration and provider usage without inventing
     assert.deepEqual(result.usage, expected);
     assert.ok(Number.isSafeInteger(result.durationMs) && result.durationMs >= 0);
   }
+});
+
+void test('reserved OpenAI execution streams bounded progress and keeps final Provider usage authoritative', async () => {
+  const text = 'x'.repeat(700);
+  const events = [
+    { type: 'response.created', response: { id: 'resp_live' } },
+    { type: 'response.output_text.delta', delta: text },
+    { type: 'response.completed', response: {
+      id: 'resp_live', model: 'fixture-model', status: 'completed', service_tier: 'default',
+      output: [{ type: 'message', content: [{ type: 'output_text', text }] }],
+      usage: { input_tokens: 20, output_tokens: 7, total_tokens: 27 },
+    } },
+  ];
+  const stream = events.map((event) => `event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`).join('');
+  const progress = [];
+  const result = await generateText({ provider: 'openai', model: 'fixture-model', prompt: 'hello' },
+    { OPENAI_API_KEY: 'fixture-key' }, async (_url, init) => {
+      assert.equal(JSON.parse(init.body).stream, true);
+      assert.equal(JSON.parse(init.body).store, false);
+      assert.equal(init.redirect, 'manual');
+      return new Response(stream, { headers: { 'content-type': 'text/event-stream; charset=utf-8' } });
+    }, async (value) => progress.push(value));
+  assert.equal(result.text, text);
+  assert.equal(result.responseStatus, 'completed');
+  assert.equal(result.providerResponseId, 'resp_live');
+  assert.deepEqual(result.usage, {
+    inputTokens: 20, outputTokens: 7, totalTokens: 27,
+    cachedInputTokens: null, cacheWriteInputTokens: null,
+  });
+  assert.ok(progress.length >= 1);
+  assert.equal(progress.at(-1).outputBytes, 700);
+});
+
+void test('incomplete streamed Provider response is never promoted to a successful result', async () => {
+  const stream = [
+    { type: 'response.output_text.delta', delta: 'partial' },
+  ].map((event) => `data: ${JSON.stringify(event)}\n\n`).join('');
+  await assert.rejects(generateText({ provider: 'openai', prompt: 'hello' },
+    { OPENAI_API_KEY: 'fixture-key' }, async () => new Response(stream, {
+      headers: { 'content-type': 'text/event-stream' },
+    }), async () => {}),
+    (error) => error instanceof LlmProviderError && error.code === 'UPSTREAM_INVALID_RESPONSE');
 });
 
 void test('provider failures distinguish timeout, transport and invalid or incomplete responses', async () => {

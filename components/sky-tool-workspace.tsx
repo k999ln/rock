@@ -1,4 +1,7 @@
 'use client';
+import AmcWorkspace from '@/components/amc-workspace';
+import SpiderWorkspace from '@/components/spider-workspace';
+import MaterialInventionWorkspace from '@/components/material-invention-workspace';
 
 import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
@@ -9,12 +12,14 @@ import {
   CircleDashed,
 } from 'lucide-react';
 import { catalog } from '@/lib/catalog';
+import { capabilityFor } from '@/lib/work-composition';
 import type { JobTool } from '@/lib/operations';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { SkyCandidateRunner } from '@/components/sky-candidate-runner';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import WorkspaceShell from '@/components/workspace-shell';
 import { skyToolUiState } from '@/lib/sky-tool-ui';
+import { skyToolExecutionScope } from '@/lib/sky-tool-execution-scope';
 import { useSkyToolContext } from '@/lib/use-sky-tool-context';
 import { ToolIcon } from '@/components/tool-icon';
 import { Dialog } from '@/components/ui/dialog';
@@ -22,6 +27,7 @@ import SkyToolOverview from '@/components/sky-tool-overview';
 import SkyLibrarySave from '@/components/sky-library-save';
 import ZemaNavigation from '@/components/zema-navigation';
 import CoconalaTeamWorkspace from '@/components/coconala-team-workspace';
+import SkyConnectionCenter from '@/components/sky-connection-center';
 import CsvBusinessWorkspace from '@/components/csv-business-workspace';
 import {
   catalogHostMismatch,
@@ -35,14 +41,31 @@ const browserHost = (): SkyHostEnvironment =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const serverHost = (): null => null;
 
-export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId: string; workspace?: boolean }) {
+export default function SkyToolWorkspace({
+  toolId,
+  workspace = false,
+  language = 'ja',
+  entry,
+}: {
+  toolId: string;
+  workspace?: boolean;
+  language?: 'ja' | 'en';
+  entry?: string;
+}) {
   const runtimeContext = useSkyToolContext();
   const [infoOpen, setInfoOpen] = useState(false);
+  const [voiceSetupOpen, setVoiceSetupOpen] = useState(false);
   const tool = catalog.find((item) => item.id === toolId);
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
-  if (toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
-  if (toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
+  if (language === 'en') {
+    if (toolId === 'rockstar-amc') return <AmcWorkspace language="en" cardEntry={entry === 'columbia-card'} />;
+    if (toolId === 'mr-citations') return <MrToolRunner tool="citations" language="en" entry={entry} />;
+    if (toolId === 'rockstar-patent-assistant') return <MrToolRunner tool="patent-assistant" language="en" entry={entry} />;
+  }
+  if (workspace && toolId === 'rockstar-amc') return <AmcWorkspace />;
+  if (workspace && toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
+  if (workspace && toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
 
   if (!tool) {
     return (
@@ -70,6 +93,9 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
   const hostMismatch = host ? catalogHostMismatch(tool, host) : null;
   const pcAppUnavailable = isPcApp && (!host || host === 'unknown' || Boolean(hostMismatch));
   const routerHostMismatch = isJevRouter ? hostMismatch : null;
+  const executionScope = skyToolExecutionScope(tool);
+  const needsConnection = executionScope.startsWith('pc-') ||
+    executionScope === 'connection-required' || executionScope === 'connection-plan';
 
   return (
     <WorkspaceShell
@@ -119,7 +145,38 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
 
         <div className={styles.body}>
           {!workspace && <SkyLibrarySave key={tool.id} toolId={tool.id} />}
-          {isJevRouter ? (
+          {!workspace ? (
+            <section className={styles.openCard} aria-label="商品の利用条件">
+              <h2>Zemaで使う</h2>
+              <p>{tool.description}</p>
+              <dl>
+                <dt>利用環境</dt><dd>{tool.environment}</dd>
+                <dt>料金・実費</dt><dd>{tool.cost}</dd>
+                <dt>利用条件</dt><dd>{state.detail}</dd>
+              </dl>
+              {executionScope === 'browser-processing' && (
+                <p>ブラウザ内で処理できます。PC接続は必須ではありません。</p>
+              )}
+              {hostMismatch && <p>{hostMismatch}</p>}
+              {needsConnection && (
+                <Link className={styles.action} href="/sky/network">
+                  接続条件を確認する <ArrowUpRight size={16} />
+                </Link>
+              )}
+              <p>入力・実行・進捗の確認はZemaで行います。商品を開くことや保存することだけでは、購入や実行の承認は行いません。</p>
+              <Link className={styles.action} href={`/zema/tools/${encodeURIComponent(tool.id)}`}>
+                Zemaで開く <ArrowUpRight size={16} />
+              </Link>
+              {capabilityFor(tool.id)?.available && <Link className={styles.action} href={`/zema/compose?tool=${encodeURIComponent(tool.id)}`}>
+                このToolで仕事を組む <ArrowUpRight size={16} />
+              </Link>}
+              {tool.id === 'rockstar-csv-cleanup' && capabilityFor(tool.id)?.available && <p>仕事の組み立てでは小さなCSVの処理と検査を使えます。有料CSV受付の注文・決済・納品記録は作成しません。</p>}
+            </section>
+          ) : tool.id === 'rockstar-spider' ? (
+            <SpiderWorkspace />
+          ) : tool.id === 'rockstar-material-invention' ? (
+            <MaterialInventionWorkspace />
+          ) : isJevRouter ? (
             <section className={styles.openCard}>
               <h2>
                 {routerHostMismatch
@@ -178,6 +235,8 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
             <MrToolRunner
               tool={tool.runner}
               onRunningChange={() => undefined}
+              language={language}
+              entry={entry}
             />
           ) : tool.integration === 'fashion-brand-ops' ? (
             <FashionBrandOpsRunner />
@@ -192,6 +251,15 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
             </section>
           )}
         </div>
+        {workspace && tool.id === 'rockstar-ip-studio' && (
+          <section className={styles.openCard} aria-label="IPの音声・電話連携">
+            <p className={styles.eyebrow}>LIVEKIT AGENTS</p>
+            <h2>キャラクターと話す</h2>
+            <p>作ったIPとの音声会話や電話対応に使う接続先を登録できます。音声会話だけでも設定でき、電話回線は必要な場合に追加します。</p>
+            <p>現在は設定の保存まで利用できます。IP Studio本体との音声・通話接続は準備中です。</p>
+            <button type="button" className={styles.action} onClick={() => setVoiceSetupOpen(true)}>音声・電話の接続設定</button>
+          </section>
+        )}
         <details className={styles.guide}>
           <summary>使い方・ライセンス</summary>
           <ol>
@@ -220,6 +288,9 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
           hostMismatch={hostMismatch}
         />
       </Dialog>
+      {workspace && tool.id === 'rockstar-ip-studio' && voiceSetupOpen && (
+        <SkyConnectionCenter open={voiceSetupOpen} onOpenChange={setVoiceSetupOpen} initialProvider="livekit" />
+      )}
     </WorkspaceShell>
   );
 }

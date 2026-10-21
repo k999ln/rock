@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-17",
+  "taskId": "BIL02",
+  "sourceMain": "90d9a6d48a66edd0a3cf793d3713612e950d9d01",
+  "status": "boundary_passed_real_cloud_unavailable",
+  "sourceHashes": {
+    "lib/sky-recurring-usage.ts": "f4bb5ae13a339ef96a5f00e30595222f85be3f4bc53e1a6098b54401421cab16",
+    "tests/sky-recurring-usage.test.mjs": "a6c52c6c316a0cee20c281206b2c8441363d15177973494a0481911c9cff3ed2",
+    "scripts/sky-recurring-sandbox-server.mjs": "868dd6c2fdd293810ad6ead9bc88eb6c297954ca631f02730006095e3bcc42ae"
+  },
+  "providerSpendPolicy": "free_only",
+  "actualCloudRequests": 0,
+  "actualProviderSpendMinor": 0,
+  "productionBillingEnabled": false,
+  "realCloudAccepted": false,
+  "fixtureTests": 6,
+  "boundary": {
+    "settledMinor": 10000,
+    "nextProviderRequests": 0,
+    "concurrentFinalDollarWinners": 1,
+    "missingUsageKeepsHold": true
+  },
+  "freeProviderBlocker": "No Cloud API credentials in process or project env/dev vars; no verified free entitlement/account/model. User does not know credential location. No paid fallback authorized. OpenAI billing UI redirects to login; owner sign-in requested.",
+  "officialReferences": [
+    "https://developers.openai.com/api/docs/guides/token-counting",
+    "https://developers.openai.com/api/docs/pricing"
+  ],
+  "fullVerify": {
+    "result": "passed_all_stages",
+    "testsPassed": 2272,
+    "testsSkipped": 1,
+    "log": "/private/tmp/sky-usage-verify-final.log",
+    "initialRetryReason": "Unrelated fixture cleanup ENOTEMPTY; isolated rerun and full verify passed."
+  },
+  "uiVerified": true,
+  "screenshot": "/private/tmp/sky-plan-usage.png"
+}

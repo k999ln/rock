@@ -1,0 +1,58 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "A2A signed cumulative live usage snapshot, provisional Zema display, and final receipt reconciliation",
+  "sourceState": {
+    "baseCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "workingTree": "uncommitted; repository baseline and unrelated user changes preserved"
+  },
+  "environment": "local built Worker/D1 through Miniflare with synthetic users, synthetic Ed25519 Provider keys, and controlled A2A fixture agent",
+  "implementation": {
+    "snapshotSchema": "rock-a2a-provider-live-usage/1",
+    "callback": "POST /api/sky/a2a-delegations/{id}/usage-snapshots",
+    "persistence": "D1 append-only per-delegation sequence with unique Provider event ID",
+    "checks": [
+      "signature and active trust key",
+      "owner, parent job, task, agent version, currency, and signed price version binding",
+      "strict sequence and issued-time increase",
+      "cumulative amount and line totals are monotonic and within held reservation",
+      "exact event replay is idempotent; changed payload replay is rejected",
+      "final signed receipt must reconcile the Provider, price version, task, time, and at least the last provisional cumulative amount"
+    ],
+    "zema": "owner-authenticated task list polls every 10 seconds while a remote delegation remains active; displays Provider-reported cumulative amount as provisional, separate from final receipt and held reservation"
+  },
+  "verification": {
+    "snapshotSignatureAndBinding": {
+      "command": "node --experimental-strip-types --test tests/a2a-live-usage.test.mjs",
+      "result": "PASS",
+      "tests": 1
+    },
+    "repositoryNodeSuite": {
+      "command": "npm test",
+      "result": "PASS",
+      "tests": 632
+    },
+    "workerD1Api": {
+      "command": "npm run test:api",
+      "result": "PASS",
+      "assertions": 638
+    },
+    "cloudflareDurableWorkflow": {
+      "command": "npm run sky:a2a:workflow:positive",
+      "result": "PASS",
+      "tests": 9
+    },
+    "typecheck": "PASS",
+    "productLint": "PASS",
+    "productionBuild": "PASS",
+    "schemaCheck": "PASS; 59 tables and migrations/journal converge",
+    "migrationConvergence": "PASS; 9/9 including migration 0044"
+  },
+  "notProven": [
+    "real Provider quote or live usage callback acceptance",
+    "Provider-side stop guarantee at the authorized spending cap",
+    "funded owner Wallet reservation, external debit, refund, or payment",
+    "Provider invoice reconciliation or production billing",
+    "carrier activation, physical SIM fulfillment, eSIM installation, or native OS installation"
+  ]
+}

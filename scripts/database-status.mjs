@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { migrationSourceDirectory, webSchemaStatus } from './check-web-schema.mjs';
+import { webSchemaStatus } from './check-web-schema.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -27,17 +27,21 @@ function webDomains(tables) {
     'book_records',
     'work_jobs',
     'remote_ai_rate_limits',
+    'remote_ai_rate_cards',
+    'remote_ai_text_executions',
+    'remote_ai_text_inputs',
+    'remote_ai_text_send_claims',
   ]);
   const definitions = [
     {
       id: 'core',
       label: '仕事・実行・端末・基本台帳',
-      matches: (name) => core.has(name),
+      matches: (name) => core.has(name) || name.startsWith('jennifer_'),
     },
     {
       id: 'sky',
       label: 'Sky接続・Tool管理',
-      matches: (name) => name.startsWith('sky_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts',
+      matches: (name) => name.startsWith('sky_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
     },
     {
       id: 'marketplace',
@@ -49,7 +53,7 @@ function webDomains(tables) {
       id: 'business',
       label: '自動化ファンド・受託案件・事業補助',
       matches: (name) =>
-        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_') || name.startsWith('esim_'),
+        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_') || name.startsWith('esim_') || name.startsWith('rockstar_service_') || name.startsWith('rockstar_entitlement_') || name.startsWith('rockstar_device_') || name.startsWith('rockstar_a2a_broker_'),
     },
   ];
   const groups = definitions.map(({ id, label }) => ({
@@ -109,7 +113,7 @@ export function buildDatabaseStatus() {
       label: 'Web D1',
       engine: 'Cloudflare D1',
       authority: 'Webサービス状態',
-      sources: ['db/schema.ts', `${migrationSourceDirectory}/`],
+      sources: ['db/schema.ts', 'drizzle/'],
       tables: webSchemaStatus.tables,
       expectedAppliedThrough: webSchemaStatus.latestMigration,
     },
@@ -148,8 +152,20 @@ export function buildDatabaseStatus() {
       label: 'Android Work Engine SQLite',
       engine: 'SQLite',
       authority: 'Android work・artifact・run・event',
-      sources: ['android/core/src/main/resources/schema.sql'],
-      tables: collectTables(['android/core/src/main/resources/schema.sql']),
+      sources: [
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+        'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
+        'android/core/src/main/java/dev/rock/core/SkyExecutor.java',
+      ],
+      tables: collectTables([
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+        'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
+        'android/core/src/main/java/dev/rock/core/SkyExecutor.java',
+      ]),
       expectedAppliedThrough: null,
     },
     {

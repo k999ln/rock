@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, isAbsolute, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { isArchivedPath } from './archived-paths.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function validateBaseline(
@@ -37,12 +38,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 49 },
+    { length: 50 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ49の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ50の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -50,6 +51,67 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  const serviceAccess = data.serviceAccessModel;
+  requireValue(
+    serviceAccess?.status ===
+      'authoritative_product_direction_design_and_local_onboarding_only' &&
+      serviceAccess?.primaryEntry === 'connectivity_and_si_access_bundle' &&
+      serviceAccess?.simRequiredForService === false &&
+      serviceAccess?.consumerEsimSales === 'bundle_product_design_live_issuance_disabled' &&
+      JSON.stringify(serviceAccess?.distributionChannels) ===
+        JSON.stringify([
+          'rockstar_direct',
+          'mobile_carrier',
+          'device_retailer',
+          'online_retailer',
+        ]) &&
+      serviceAccess?.osBinaryStoredOnSim === false &&
+      serviceAccess?.purchaseEnabled === false &&
+      serviceAccess?.productionBillingAccepted === false &&
+      serviceAccess?.carrierActivationAccepted === false &&
+      serviceAccess?.deviceOsInstallationAccepted === false,
+    'Connectivity-bundled service access, separate account/line/device delivery, and unaccepted production states must remain explicit',
+  );
+  const bundle = data.connectivityServiceBundleDecision;
+  requireValue(
+    bundle?.decidedAt === '2026-10-15' &&
+      bundle?.primaryEntry === serviceAccess.primaryEntry &&
+      bundle?.accountIsOwnerAndLedgerRoot === true &&
+      bundle?.connectivityAndServiceHaveSeparateStates === true &&
+      bundle?.grantRequiresVerifiedPurchase === true &&
+      bundle?.osInstallationIsSeparate === true &&
+      bundle?.profileIdentityIsNotAccount === true &&
+      bundle?.siUsageUnlimited === false &&
+      bundle?.autoFlashAllowed === false &&
+      bundle?.liveIssuanceEnabled === false &&
+      bundle?.liveCloudDispatchEnabled === false &&
+      bundle?.pricingChanged === false,
+    'Connectivity bundle decision must preserve account ownership, verified purchase, separate OS installation, bounded usage and closed live gates',
+  );
+  requireValue(
+    JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
+      JSON.stringify([
+        'fast_simple_access_to_cloud_llms_and_agents',
+        'transparent_usage_based_pricing_and_cost_estimates',
+        'integrated_rockstaros_sky_zema_access_with_minimal_setup',
+      ]) &&
+      JSON.stringify(serviceAccess?.deviceMinimumExperience) ===
+        JSON.stringify([
+          'short_activation_to_service_onboarding',
+          'direct_sky_zema_agent_entry_from_home',
+          'single_rockstar_identity_without_per_service_registration',
+          'submit_tasks_track_progress_and_retrieve_results',
+          'accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect',
+          'show_provider_rates_and_estimate_before_paid_execution',
+          'distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount',
+          'itemize_usage_after_completion',
+          'user_controlled_spending_limits_and_explicit_approval_to_raise_them',
+        ]) &&
+      serviceAccess?.carrierAndAiChargesSeparated === true &&
+      serviceAccess?.dispatchPolicy ===
+        'fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted',
+    'SIM-led service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
+  );
   requireValue(
     data.productIdentity?.displayName === 'RockstarOS' &&
       data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
@@ -236,7 +298,7 @@ export function validateBaseline(
       spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
       spatialPolicy.patentAi?.automaticFilingAllowed === false &&
       spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
-    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+    'avocadoMiniの四方向sensor、XR、Patent si安全policyを維持してください',
   );
   requireValue(
     spatialSceneContract.$id ===
@@ -298,7 +360,7 @@ export function validateBaseline(
         !isAbsolute(path) &&
         !relative(root, resolve(root, path)).startsWith('..') &&
         existsSync(resolve(root, path)),
-      `AIネイティブOS Core: ${key}の正本が必要です`,
+      `siネイティブOS Core: ${key}の正本が必要です`,
     );
   }
   requireValue(
@@ -374,7 +436,7 @@ export function validateBaseline(
       data.northStar?.dataCollection?.defaultExcluded?.includes(
         'precise_location',
       ),
-    'AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
+    'siネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
   );
   for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(
@@ -795,7 +857,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える12件'),
+      read(skyInventory).includes('Web / PCで現在使える16件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -941,6 +1003,29 @@ export function validateBaseline(
     'Web画面と配備assetを同一commitへ固定してください',
   );
   requireValue(
+    data.campus?.displayName === 'Campus' &&
+      data.campus?.route === '/campus' &&
+      data.campus?.status === 'web_runtime_implemented' &&
+      JSON.stringify(data.campus?.campuses) ===
+        JSON.stringify(['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) &&
+      data.campus?.affiliationVerification ===
+        'authenticated_email_domain_match_without_email_storage' &&
+      data.campus?.publicClaimsBoundary ===
+        'community_posted_content_not_official_university_data_unless_external_source_states_otherwise' &&
+      data.campus?.physicalEntry ===
+        'registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics' &&
+      data.campus?.analyticsPrivacy ===
+        'tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent' &&
+      data.campus?.dataControls?.includes('block_and_report') &&
+      data.campus?.dataControls?.includes('tag_analytics_delete') &&
+      data.campus?.dataControls?.includes('campus_data_delete') &&
+      data.baseApps?.some?.(
+        (app) => app.id === 'campus' && app.route === '/campus',
+      ) &&
+      data.visualSystem?.homePrimaryApps?.includes('campus'),
+    'Campusの大学別機能・物理入口・privacy境界を維持してください',
+  );
+  requireValue(
     data.homeExperience?.defaultRoute === '/' &&
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
@@ -958,57 +1043,42 @@ export function validateBaseline(
     'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
-  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
+  const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_avocado_mini_product_home' &&
+      data.launchPage?.role === 'public_account_service_home' &&
       data.launchPage?.osHomeRoute === '/' &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
       data.launchPage?.directOsHomeLink === false &&
-      data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
-      data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
+      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
+      data.marketPositioning?.customerFacingFocus === 'account_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
-      data.marketPositioning?.previousLeadHardwareForm ===
-        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
-      data.marketPositioning?.legacyReferencePriceAppliesTo ===
-        'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
-      data.launchPage?.primaryAction === 'view_avocado_mini' &&
-      data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
-      data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
-      launchPageSource.includes('製品を見る') &&
-      launchPageSource.includes('実機の販売と一般向けOSインストーラーはまだ始まっていません') &&
-      launchPageSource.includes('OS導入ガイドを見る') &&
-      launchPageSource.includes('href="/rockstaros/guide"') &&
+      data.launchPage?.primaryAction === 'start_service_onboarding' &&
+      data.launchPage?.secondaryAction === 'view_avocado_mini_device' &&
+      data.launchPage?.publicDownloadFallback === '/connect' &&
+      launchPageSource.includes('アカウントひとつで、Sky・Zema・si Agentへ') &&
+      launchPageSource.includes('SIMは不要です') &&
+      !launchPageSource.includes('href="/sky/esim"') &&
+      launchPageSource.includes('href="/connect"') &&
+      hardwarePageSource.includes('avocadoMini R5') &&
+      hardwarePageSource.includes('200mm') &&
+      hardwarePageSource.includes('別Hubは不要') &&
+      hardwarePageSource.includes('価格は未確定') &&
+      !hardwarePageSource.includes('¥410,000') &&
+      !hardwarePageSource.includes('SIM/eSIMから') &&
+      hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
-      launchPageSource.includes('<AvocadoTurntable />') &&
-      turntableSource.includes('turn * Math.PI * 2') &&
-      turntableSource.includes('className={styles.designDetails}') &&
-      turntableSource.includes('className={styles.osSection}') &&
-      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
-      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
-      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
-      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
-      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
-      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
-      data.marketPositioning?.tower20E3?.document ===
-        'docs/avocado-mini-tower20-e3/README.md' &&
-      data.marketPositioning?.tower20E3?.role ===
-        'historical_E3_baseline_superseded_by_R5' &&
-      data.marketPositioning?.tower20E3?.towerCount === 4 &&
-      data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
-      data.marketPositioning?.tower20E3?.fixedHeight === true &&
-      data.marketPositioning?.tower20E3?.maximumUsageHeightMm === 200 &&
-      data.marketPositioning?.tower20E3?.activeCameraCandidatesPerTower === 1 &&
-      data.marketPositioning?.tower20E3?.physicalTests === 0 &&
-      data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
-      turntableSource.includes('¥410,000') &&
-      turntableSource.includes('購入する') &&
-      turntableSource.includes('/rockstaros/guide#install'),
+      data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
+      !['motionTowerP0Engineering', 'mini200E2Integration', 'tower20E3',
+        'avocadoMiniDesiredReferencePriceJpy', 'avocadoMiniSingleTowerProposedExTaxPriceJpy',
+        'currentFourTowerBasePriceJpyExTax'].some((key) => Object.hasOwn(data.marketPositioning, key)) &&
+      !['mini200E1', 'mini200E2', 'tower20E3'].some((key) => Object.hasOwn(data.materialInvention, key)),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const miniR5 = data.marketPositioning?.r5;
@@ -1021,7 +1091,10 @@ export function validateBaseline(
       miniR5?.sameTypePeerExpansion === true &&
       miniR5?.separateEdgeHubRequired === false &&
       miniR5?.externalPcRequiredForCoreFunctions === false &&
-      miniR5?.externalPowerRequired === true &&
+      miniR5?.externalPowerRequired === false &&
+      miniR5?.portablePowerRequired === true &&
+      miniR5?.externalPowerPolicy === "dock_power_for_installed_mode_portable_power_required_off_dock" &&
+      miniR5?.batterySelectionStatus === "internal_vs_detachable_under_design_not_selected" &&
       miniR5?.batteryAdopted === false &&
       miniR5?.displayRequirement === 'naked_eye_particles_distributed_in_surrounding_real_space' &&
       miniR5?.displayStatus === 'unavailable_research_gate_not_room_scale_validated' &&
@@ -1263,6 +1336,38 @@ export function validateBaseline(
       data.skyNetworkEconomy?.multiMcpConnector?.skyUiConnected === true,
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
+  const computeGrid = data.skyComputeGrid;
+  requireValue(
+    computeGrid?.status ===
+      'synthetic_host_fixture_android_runtime_not_connected' &&
+      computeGrid?.initialSupplyPlatform === 'android_arm64' &&
+      computeGrid?.iosSupplyEnabled === false &&
+      computeGrid?.initialSku === 'public-text-embedding-v1' &&
+      computeGrid?.pricingUnit === 'verified_compute_lot' &&
+      computeGrid?.cpuHourPricingAllowed === false &&
+      JSON.stringify(computeGrid?.dataClasses) ===
+        JSON.stringify(['public', 'synthetic']) &&
+      computeGrid?.personalDataAllowed === false &&
+      computeGrid?.secretsAllowed === false &&
+      computeGrid?.arbitraryCodeAllowed === false &&
+      computeGrid?.exactLocationExposedToBuyer === false &&
+      computeGrid?.ownerIdentityExposedToBuyer === false &&
+      computeGrid?.ownerUsePreemptsCompute === true &&
+      computeGrid?.verificationRequiredBeforeSettlement === true &&
+      computeGrid?.settlementAsset === 'sky_test_credits' &&
+      computeGrid?.liveDispatchEnabled === false &&
+      computeGrid?.liveBillingEnabled === false &&
+      computeGrid?.livePayoutEnabled === false &&
+      computeGrid?.cloudFallbackWithoutExplicitOrderAuthorization === false &&
+      [
+        computeGrid.architecture,
+        computeGrid.contract,
+        computeGrid.fixture,
+        computeGrid.runtime,
+        computeGrid.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Sky Compute Gridの固定lot、privacy、安全停止、検証前精算拒否、live停止境界を維持してください',
+  );
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
@@ -1275,7 +1380,8 @@ export function validateBaseline(
     );
     const resolved = resolve(root, path);
     requireValue(
-      !relative(root, resolved).startsWith('..') && read(resolved).length > 100,
+      !relative(root, resolved).startsWith('..') &&
+        (isArchivedPath(path, root) || read(resolved).length > 100),
       `releaseInstallation.${field}: repository内の本文が必要です`,
     );
   }
@@ -1328,7 +1434,7 @@ export function validateBaseline(
     '最初の物理端末readbackが確定値と一致しません',
   );
   requireValue(
-    devicePolicy.sourceTag === '2026091000' &&
+    devicePolicy.sourceTag === '2026100200' &&
       devicePolicy.sourceTagSignatureVerified === true &&
       devicePolicy.deviceLayoutReadOnlyVerified === true &&
       devicePolicy.recoveryArtifactsHashed === false &&
@@ -1356,14 +1462,45 @@ export function validateBaseline(
     devicePolicy.physicalFlashAuthorized === false,
     '実機flashは未承認です',
   );
+  // Pricing decisions originated on 2026-10-10; the product entry was updated on 2026-10-15. This script checks
+  // their shape and internal consistency without restating the decided values.
+  const entry = data.accountEntryDecision;
+  const nonEmpty = (value) => typeof value === 'string' && value.length > 0;
+  requireValue(
+    /^\d{4}-\d{2}-\d{2}$/.test(entry?.decidedAt ?? '') &&
+      nonEmpty(entry?.record) &&
+      nonEmpty(entry?.mainProduct) &&
+      nonEmpty(entry?.simRole) &&
+      entry?.billing?.storedBalance === false &&
+      Array.isArray(entry?.billing?.exits) &&
+      entry.billing.exits.length >= 3 &&
+      entry?.skyFee?.currentBps === data.skyMarketplacePayments?.commissionBps &&
+      Number.isInteger(entry?.skyFee?.targetBps) &&
+      entry.skyFee.targetBps <= entry.skyFee.currentBps &&
+      nonEmpty(entry?.skyFee?.switchCondition) &&
+      nonEmpty(entry?.skyHosting?.url) &&
+      entry?.liveBillingAccepted === false &&
+      Array.isArray(entry?.externalConfirmationsPending) &&
+      entry.externalConfirmationsPending.length > 0 &&
+      (serviceAccess?.simRequiredForService === false) === (entry.simRole !== 'required'),
+    'accountEntryDecision: 確定事項の記録（残高なし、出口、手数料の現在値と目標、本番課金未受入、外部確認）が欠けています',
+  );
+  requireValue(
+    nonEmpty(data.miniCellularIntent?.radio) &&
+      nonEmpty(data.miniCellularIntent?.sim) &&
+      typeof data.miniCellularIntent?.sgp32Capable === 'boolean' &&
+      nonEmpty(data.miniCellularIntent?.remoteProfileSwitching) &&
+      data.miniCellularIntent?.decisionDate === '2026-10-10',
+    'miniCellularIntent: Miniの回線の確定事項が欠けています',
+  );
   for (const file of [
     'AGENTS.md',
     'README.md',
     'project.md',
-    'docs/product.md',
-    'docs/architecture.md',
-    'docs/fund-and-mcp.md',
-    'docs/os-development-design.md',
+    'docs/service-design/README.md',
+    'docs/service-design/02-system-contracts.md',
+    'docs/service-design/06-consistency-contracts.md',
+    'docs/rockstaros-complete-design.md',
     'docs/os-prototype.md',
   ]) {
     requireValue(
@@ -1388,6 +1525,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ50、siネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

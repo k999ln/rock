@@ -1,0 +1,48 @@
+{
+  "schema": "rockstar-sim-led-product-correction-evidence/1",
+  "date": "2026-10-02",
+  "productDirection": "Multi-channel physical SIM/eSIM purchase includes access to RockstarOS services; the OS binary is delivered through an accepted device route and is not stored on the SIM.",
+  "architecture": "docs/sim-led-product-architecture.md",
+  "audit": {
+    "reused": [
+      "Channel-neutral signed entitlement claims and one-owner binding",
+      "Shared Rockstar identity and device authorization",
+      "Sky, Zema and Agent entry points",
+      "Durable cloud jobs, offline continuation consent and same-job recovery",
+      "Signed quotes, shared budget reservations, usage meters, receipts and itemized usage"
+    ],
+    "changed": [
+      "SIM/eSIM offer is the product access channel, not an eSIM store inside RockstarOS",
+      "Carrier activation, service entitlement, identity, OS/client installation, cloud work and AI billing are separate lifecycle states",
+      "Accepted-device install is optional; other devices use an existing-OS client/browser",
+      "Sky Package cloud dispatch now carries an explicit Provider-declared runtime invocation extension"
+    ],
+    "missing": [
+      "Seller channel purchase/claim delivery, physical fulfillment and actual carrier activation",
+      "Provider implementation and successful execution/receipt interoperability for the proposed Package extension",
+      "Final atomic Cloud/native Wallet dispatch handoff, production prices/meters/invoice/funded settlement",
+      "Android/APK/device and exact-SKU OS/client installation acceptance"
+    ]
+  },
+  "localVerification": {
+    "typecheck": "PASS: npm run typecheck",
+    "productLint": "PASS: npm run lint:product",
+    "projectAndBaseline": "PASS: npm run project:check and npm run baseline:check",
+    "schemaAndDatabase": "PASS: npm run schema:check and npm run database:check; production readback remains 0/6",
+    "a2aClient": "PASS: tests/a2a-client.test.mjs, 10/10 including the new invocation extension header/message.extensions/metadata and request digest contract. The local Node/Python fixture was run with loopback permission.",
+    "bindingAndQuote": "PASS: tests/sky-package-runtime-binding.test.mjs, tests/sky-package-runtime-binding-dispatch.test.mjs, tests/a2a-price-quote-acquisition.test.mjs, 11/11",
+    "workerWorkflow": "PASS: npm run sky:a2a:workflow:positive, 12/12 Cloudflare Worker/D1/Workflow tests. Includes a controlled local Package-runtime executor fixture, encrypted result capture, synthetic Provider-signed usage receipt verification and local logical budget settlement. The fixture does not call a real Provider.",
+    "fullVerify": "PASS: npm run verify completed with exit code 0 after the two-Agent Worker/D1 shared-budget handoff and concurrent install-proof idempotency fix. This is local repository verification only.",
+    "twoAgentInterop": "PASS: node --test tests/a2a-client.test.mjs, 10/10; Node result is independently read and passed as delimited untrusted input to a separate explicitly authorized Python task.",
+    "zemaResultHandoff": "PASS: node --test tests/a2a-result-handoff.test.mjs, 3/3; complete captured result becomes a new untrusted-data sibling draft only, clears target/quote consent, keeps the parent cap and refuses truncated/omitted/oversized output. npm run typecheck and npm run lint:product pass."
+  },
+  "notProven": [
+    "Production billing, invoice issuance, carrier activation, or physical SIM fulfillment",
+    "An external Provider supporting or executing the proposed Package invocation extension; external interoperability and production rates/meters",
+    "Production Wallet/funded settlement, despite local synthetic receipt verification and logical D1 settlement",
+    "Successful OS installation or acceptance on any exact hardware SKU",
+    "Production D1 migration/readback",
+    "A durable Cloudflare Worker/D1 parent job that orchestrates both child delegations with cross-agent artifact handoff and shared-budget recovery"
+  ],
+  "scopeNote": "Local source/fixture verification only. The controlled Worker/D1/Workflow Provider fixture exercises Package execution and synthetic signed usage settlement; this is not evidence of a real Provider, production billing or invoice, carrier activation, physical SIM fulfillment, successful exact-device OS installation, production D1 readback, or funded Wallet settlement. Synthetic usage records are not production invoices. A sequential Node-to-Python handoff is locally protocol-tested with distinct authorization per task; it does not prove one Cloud D1 orchestration record or production provider interoperability."
+}

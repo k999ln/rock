@@ -1,4 +1,6 @@
 import type { A2ATrustedBrokerKeyResolver } from './a2a-broker-authorization.ts';
+import { a2aBrokerDeviceStore } from './a2a-broker-device-store.ts';
+import { ANDROID_KEY_ATTESTATION_AUTHORITY } from './android-key-attestation-client.ts';
 
 type TrustedBrokerKey = {
   authorityId: string;
@@ -50,7 +52,7 @@ export function parseTrustedA2ABrokerKeys(configuration: unknown) {
       typeof record.keyId !== 'string' ||
       !identity.test(record.keyId) ||
       typeof record.publicKeyHex !== 'string' ||
-      !/^[a-f0-9]{64}$/i.test(record.publicKeyHex) ||
+      !/^(?:[a-f0-9]{64}|04[a-f0-9]{128})$/i.test(record.publicKeyHex) ||
       (record.status !== 'active' && record.status !== 'revoked')
     )
       return null;
@@ -80,5 +82,36 @@ export function trustedA2ABrokerKeyResolver(configuration: unknown): A2ATrustedB
     return Uint8Array.from(entry.publicKeyHex.match(/.{2}/g)!, (byte) =>
       Number.parseInt(byte, 16),
     );
+  };
+}
+
+/** Resolve owner-enrolled Android Broker keys first; a recorded revocation never falls back. */
+export function a2aBrokerDeviceKeyResolver(
+  db: Pick<D1Database, 'prepare' | 'batch'>,
+  configuration: unknown,
+): A2ATrustedBrokerKeyResolver {
+  const operatorResolver = trustedA2ABrokerKeyResolver(configuration);
+  const devices = a2aBrokerDeviceStore(db);
+  return async (requested) => {
+    let enrolled: Awaited<ReturnType<typeof devices.lookup>>;
+    try { enrolled = await devices.lookup(requested); }
+    catch { return null; }
+    if (enrolled) {
+      if (enrolled.status !== 'active' || enrolled.revokedAt !== null ||
+          enrolled.algorithm !== 'ES256' || requested.authorityId !== ANDROID_KEY_ATTESTATION_AUTHORITY ||
+          enrolled.publicKey.length !== 130 || !/^04[a-f0-9]{128}$/.test(enrolled.publicKey) ||
+          enrolled.publicKeySha256 !== requested.keyId ||
+          enrolled.applicationPackage !== 'dev.rock.automation' ||
+          !/^(0|[1-9][0-9]{0,8})$/.test(enrolled.minimumApplicationVersion) ||
+          !/^[a-f0-9]{64}$/.test(enrolled.signingCertificateSha256) ||
+          !['TRUSTED_ENVIRONMENT', 'STRONG_BOX'].includes(enrolled.securityLevel) ||
+          enrolled.verifiedBootState !== 'VERIFIED') return null;
+      const bytes = Uint8Array.from(enrolled.publicKey.match(/.{2}/g)!, (byte) =>
+        Number.parseInt(byte, 16));
+      const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer as ArrayBuffer));
+      const fingerprint = Array.from(digest, (byte) => byte.toString(16).padStart(2, '0')).join('');
+      return fingerprint === requested.keyId ? bytes : null;
+    }
+    return operatorResolver(requested);
   };
 }

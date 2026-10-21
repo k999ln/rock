@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-18",
+  "status": "real_account_queued_and_real402_cap_unpaid_renewal_verified",
+  "base": "0328c6e51acb764cf775d91d12889582c18e9acf",
+  "siteVersion": 70,
+  "siteSource": "eedc50a26506d29d46fb2bc193e3a36c6d6ac092",
+  "jobId": "b9f5cb5b-8bfb-41d9-b0f2-88aaed320090",
+  "jobTabClosedAt": "2026-10-18T00:12:09.839Z",
+  "allTrialTabsClosedAt": "2026-10-18T00:12:43.383Z",
+  "cap": {
+    "amountMinor": 10000,
+    "source": "explicit_synthetic_usage_fixture",
+    "state": "quota_exhausted",
+    "remainingMinor": 0,
+    "contract": "active",
+    "attempts": 0,
+    "afterClosedCronAttempts": 0,
+    "cronTimestamp": 1792282414420,
+    "cronHttpStatus": 200
+  },
+  "productionBilling": false,
+  "priorInvoicesRetained": [
+    "in_1URceVGfTgzUjVHJQ8ClIfny"
+  ],
+  "validation": {
+    "focused": 27,
+    "focusedFailed": 0,
+    "fullVerifyExit": 0
+  },
+  "limits": [
+    "Usage cap is simulated; no $100 real Cloud spend",
+    "Paid renewal advances Sandbox business clock; does not wait a calendar month",
+    "Queued/waiting consent expires after ten wall-clock minutes"
+  ],
+  "unpaid": {
+    "state": "past_due",
+    "reason": "payment_or_contract_blocked",
+    "invoice": "in_1URhkWGfTgzUjVHJ0dmxOEjK",
+    "invoiceMinor": 14000,
+    "invoiceStatus": "open",
+    "attempts": 0,
+    "tabClosedAt": "2026-10-18T00:15:12.024Z",
+    "signedFailedEventObserved": true,
+    "closedCronTimestamp": 1792282530520,
+    "closedCronResult": "blocked_or_unconfirmed",
+    "afterClosedCronAttempts": 0,
+    "newCycleCharges": 1,
+    "allChargesIncludingPrior": 2
+  },
+  "recovery": {
+    "contract": "active",
+    "reason": "available",
+    "phase": "restored",
+    "periodStart": "2026-11-01",
+    "periodEnd": "2026-12-01",
+    "remainingMinor": 10000,
+    "sameInvoice": "in_1URhkWGfTgzUjVHJ0dmxOEjK",
+    "invoiceStatus": "paid",
+    "signedPaidAndPaymentSucceededObserved": true,
+    "tabClosedAt": "2026-10-18T00:17:04.643Z",
+    "attemptsBeforeResume": 0,
+    "originalJobState": "unconfirmed",
+    "originalJobAttempts": 2,
+    "originalJobFirstAttempt": "confirmed_pre_generation_FREE_LIMIT",
+    "originalJobSecondAttempt": "provider_timeout_after_resume",
+    "originalJobAutomaticallyResent": false,
+    "sameJobResultAccepted": false,
+    "note": "Plan reopened and dispatch resumed while tab closed; do not claim successful generation for this uncertain request."
+  },
+  "real402Cycle": {
+    "jobId": "c14e2929-f0e2-46ed-8088-7da072705962",
+    "input": "復旧したSandbox契約の新しい検証です。81 + 82 の答えを日本語で一文だけ返してください。",
+    "initialState": "waiting",
+    "initialAttempts": 1,
+    "initialRejection": "real_provider_FREE_LIMIT",
+    "jobTabClosedAt": "2026-10-18T00:22:58.394Z",
+    "status": "completed_after_cap_unpaid_and_renewal",
+    "cap": {
+      "reason": "quota_exhausted",
+      "attemptsBefore": 1,
+      "attemptsAfterClosedCron": 1,
+      "allTabsClosedAt": "2026-10-18T00:23:49.665Z",
+      "closedCronTimestamp": 1792283070418,
+      "closedCronResult": "blocked_or_unconfirmed"
+    },
+    "unpaid": {
+      "invoice": "in_1URhuqGfTgzUjVHJJwI4jN19",
+      "status": "past_due",
+      "reason": "payment_or_contract_blocked",
+      "attempts": 1,
+      "allTabsClosedAt": "2026-10-18T00:25:53.130Z",
+      "closedCronTimestamp": 1792283190417,
+      "closedCronResult": "blocked_or_unconfirmed",
+      "attemptsAfterClosedCron": 1
+    },
+    "paymentLeaseConflictObserved": true,
+    "paymentConflictHandling": "UI rejected concurrent collector lease; retried the same Sandbox action after completion, no invoice replacement",
+    "recovery": {
+      "phase": "restored",
+      "status": "active",
+      "reason": "available",
+      "periodStart": "2026-12-01",
+      "periodEnd": "2027-01-01",
+      "remainingMinor": 10000,
+      "invoice": "in_1URhuqGfTgzUjVHJJwI4jN19",
+      "invoiceStatus": "paid",
+      "signedEvents": 9,
+      "allTabsClosedAt": "2026-10-18T00:28:24.500Z",
+      "attemptsBeforeResume": 1
+    },
+    "result": {
+      "state": "completed",
+      "attempts": 2,
+      "rejectedBeforeGeneration": 1,
+      "successfulGenerations": 1,
+      "text": "81 + 82 の答えは 163 です。",
+      "model": "gpt-oss-20b",
+      "inputTokens": 338,
+      "outputTokens": 165,
+      "chargeMinor": 0,
+      "providerResponseId": "pllns_aeba775fa50c058574000ad003955b4c",
+      "cronStartedAt": 1792283310497,
+      "cronCompletedAt": 1792283320392,
+      "readbackUnchanged": true
+    }
+  },
+  "billingFinal": {
+    "before": 1,
+    "after": 3,
+    "newTestCycles": 2,
+    "uniqueInvoicePerPeriod": true,
+    "allPaid": true,
+    "sameInvoicePaidOnRecovery": true,
+    "previousInvoicesRetained": true,
+    "productionBilling": false,
+    "finalReadbackUniquePeriods": 3,
+    "finalReadbackUniqueInvoices": 3
+  },
+  "mainIntegrated": true,
+  "mainMerge": "f2a2fba894ac6ef7a6a3dd90af96ebca29344b6e",
+  "postMainAcceptance": {
+    "date": "2026-10-18",
+    "siteVersion": 70,
+    "sameMainRuntimeFiles": true,
+    "redeployed": false,
+    "jobId": "8188afe5-636b-402b-abe8-b2b57d3a595d",
+    "cap": {
+      "closedAt": "2026-10-18T00:55:24.919Z",
+      "cronTimestamp": 1792284994584,
+      "attemptsBefore": 0,
+      "attemptsAfter": 0
+    },
+    "unpaid": {
+      "closedAt": "2026-10-18T00:57:32.734Z",
+      "cronTimestamp": 1792285116795,
+      "attemptsBefore": 0,
+      "attemptsAfter": 0
+    },
+    "recovery": {
+      "closedAt": "2026-10-18T00:59:42.439Z",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-02-01",
+      "remainingMinor": 10000,
+      "state": "completed",
+      "attempts": 1,
+      "result": "91 + 92 の答えは183です。",
+      "model": "gpt-oss-20b",
+      "inputTokens": 335,
+      "outputTokens": 149,
+      "providerResponseId": "pllns_e3402a21386a725e5b0198f652dad4c9",
+      "chargeMinor": 0,
+      "closedCronTimestamp": 1792285232138,
+      "readbackUnchanged": true
+    },
+    "billing": {
+      "priorInvoices": 3,
+      "finalInvoices": 4,
+      "uniquePeriods": 4,
+      "uniqueInvoiceIds": 4,
+      "sameInvoicePaid": "in_1URiPRGfTgzUjVHJ97pZJIqt",
+      "allPaid": true,
+      "oldInvoicesRetained": true
+    },
+    "productionBilling": false,
+    "limitations": [
+      "Synthetic $100 cap, not real spend",
+      "Sandbox business clock, not elapsed calendar month",
+      "This cycle started queued; real402 cycle retained separately"
+    ],
+    "validation": {
+      "focusedTests": 11,
+      "focusedFailures": 0,
+      "projectUpdate": "passed",
+      "fullVerify": "exit 0; all stages through bot:check passed",
+      "log": "/private/tmp/sky-a2a-full-verify.log",
+      "priorFullVerify": "exit 1: sky:a2a:workflow:test local D1 migration spawnSync ETIMEDOUT; later stages not executed",
+      "a2aTimeoutRepair": {
+        "migrationTimeoutMs": 120000,
+        "queryTimeoutMs": 30000,
+        "measuredMigrationMs": 3415,
+        "standaloneA2a": "passed",
+        "positiveA2aTests": 14,
+        "causeBoundary": "Previous cold local D1 initialization exceeded 30 seconds twice; transient delay source not established. Initialization now has a separate bounded budget and includes captured diagnostics on failure."
+      }
+    }
+  }
+}

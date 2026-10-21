@@ -6,7 +6,9 @@ import { authorizeRemoteAiRequest, RemoteAiGuardError } from '@/lib/remote-ai-gu
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { workStore } from '@/lib/work-store';
 import { WorkError, workId } from '@/lib/workflow';
-import { citationInputSha256, completedCitationAgentJob, parseCitationAgentInput } from '@/lib/sky-citation-agent';
+import {
+  citationInputSha256, completedCitationAgentJob, parseCitationAgentInput,
+} from '@/lib/sky-citation-agent';
 
 const json = (value: unknown, status = 200) => Response.json(value, {
   status, headers: { 'Cache-Control': 'no-store' },
@@ -21,7 +23,9 @@ export async function POST(request: Request) {
     if (!(await rockstarServiceScopeAllowed(
       db, owner, 'agents',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Agent');
+
     const reader = request.body?.getReader();
     if (!reader) throw new WorkError('入力がありません。');
     const bytes = await readBoundedStream(reader, 85_000, () => new WorkError('入力は85 KB以下にしてください。', 413));

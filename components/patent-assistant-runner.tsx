@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type SyntheticEvent } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -25,6 +25,7 @@ import type { PatentAiResult } from '@/lib/patent-ai';
 import { executeLocalGuide } from '@/lib/local-guide-history';
 import { processedBytes } from '@/lib/operations-client';
 import { LocalGuideHistoryConsent, LocalGuideSignin } from './local-guide-history-consent';
+import EnglishPatentAssistant from './english-patent-assistant';
 
 const emptyInput: PatentIntakeInput = {
   inventionTitle: '',
@@ -100,11 +101,22 @@ export function PatentAssistantRunner({
   onRunningChange,
   onOutcome,
   executionDisabled = false,
+  language = 'ja',
+  entry,
 }: {
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
+  language?: 'ja' | 'en';
+  entry?: string;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [input, setInput] = useState<PatentIntakeInput>(emptyInput);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [assessment, setAssessment] = useState<PatentAssessment | null>(null);
@@ -148,6 +160,8 @@ export function PatentAssistantRunner({
 
   async function analyze(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
+    execution.current.busy = true;
     const next = assessPatentReadiness(input);
     setAssessment(next);
     setStep(3);
@@ -180,6 +194,7 @@ export function PatentAssistantRunner({
         setNotice('技術内容を修正して再実行してください。');
         onOutcome?.({ ok: false, text: '端末内の書類作成に失敗しました。入力を確認してください。' });
       } finally {
+        execution.current.busy = false;
         setRunning(false);
         onRunningChange?.(false);
       }
@@ -216,6 +231,7 @@ export function PatentAssistantRunner({
       );
       onOutcome?.({ ok: false, text: 'オンライン調査は利用できませんでした。端末内の検索式とドラフトをこのカードで確認してください。' });
     } finally {
+      execution.current.busy = false;
       setRunning(false);
       onRunningChange?.(false);
     }
@@ -241,6 +257,8 @@ export function PatentAssistantRunner({
     );
   }
 
+  if (language === 'en')
+    return <EnglishPatentAssistant cardEntry={entry === 'columbia-card'} />;
   return (
     <section className="legal-runner patent-runner">
       <section className="legal-agent-chat" aria-label="特許出願アシスタント">

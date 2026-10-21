@@ -11,7 +11,7 @@ import threading
 import unittest
 
 from ai_routes import ComputeBudgetStore, Conflict, Denied, Unavailable
-from ai_routes.policy import digest, make_plan
+from ai_routes.policy import Denied as PolicyDenied, digest, make_plan
 from ai_routes.fixture import ALICE, BOB, FixtureIdentity, FixtureAccounting, public_routes, PUBLIC_SERVICE_TOKENS
 
 AUTHORITY = 'f1111111-1111-4111-8111-111111111111'
@@ -24,6 +24,7 @@ class PolicyBudgetTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)/'authority'
         self.now = 2000000000; self.identity = FixtureIdentity(AUTHORITY); self.provider = FixtureAccounting()
+        self.identity.clock = lambda: self.now
         self.routes = public_routes(); self.store = self.open()
         self.addCleanup(lambda: self.store.close())
 
@@ -77,6 +78,34 @@ class PolicyBudgetTests(unittest.TestCase):
         plan = self.plan(target='local'); self.reserve(plan); self.claim(plan)
         self.store.reconcile(self.provider.event(plan, cost=0))
         self.assertEqual(self.status()['budget']['available_microusd'], 1000)
+
+    def test_required_capabilities_fail_closed_when_false_or_unknown(self):
+        for state in (False, None):
+            self.identity.capability('feature:compute.local_inference', state)
+            with self.subTest(state=state), self.assertRaises(Denied): self.plan(target='local')
+        self.identity.capability('feature:compute.local_inference', True)
+        self.assertEqual(self.plan(target='local')['route']['required_features'],
+                         ['compute.local_inference', 'storage.model_install'])
+
+    def test_expired_and_future_capability_observations_are_denied(self):
+        args = dict(authority_id=AUTHORITY, owner_ref=ALICE, device_ref='fixture-device-a', key='pure',
+            selected_text=TEXT, selected_route=public_routes()[1], capability_evidence=self.identity.caps,
+            allow_external=True, max_cost_microusd=600, now=self.now)
+        for observed, expires in ((self.now-31, self.now-1), (self.now+1, self.now+31)):
+            stale = dict(self.identity.caps, observed_at=observed, expires_at=expires)
+            with self.subTest(observed=observed), self.assertRaises(PolicyDenied):
+                make_plan(**{**args, 'capability_evidence': stale})
+        boolean_version = dict(self.identity.caps, schema_version=True)
+        with self.assertRaises(ValueError):
+            make_plan(**{**args, 'capability_evidence': boolean_version})
+
+    def test_refreshed_capability_snapshot_requires_explicit_replan(self):
+        plan = self.plan(); self.reserve(plan)
+        self.now += 31
+        with self.assertRaisesRegex(Denied, 'capabilities changed or were refreshed'):
+            self.claim(plan)
+        refreshed = self.plan('job-after-refresh')
+        self.assertNotEqual(plan['capability_sha256'], refreshed['capability_sha256'])
 
     def test_exact_consent_changed_input_and_key_conflict(self):
         plan = self.plan()

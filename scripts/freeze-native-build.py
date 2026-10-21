@@ -19,6 +19,8 @@ import tarfile
 
 
 IMAGE_NAMES = ('Image', 'rootfs.ext4', 'stage0.cpio.gz')
+REGRESSION_INPUTS = ('scripts/test-native.py', 'scripts/select-native-artifacts.py',
+                     '.github/workflows/native-os.yml')
 
 
 def require(condition, reason):
@@ -79,10 +81,10 @@ def verify_regressions(source, report_path, source_files):
     require(type(count) is int and count > 0 and count == sum(check['tests'] for check in checks),
             'native test totals differ')
     inputs = report.get('input_sha256')
-    require(isinstance(inputs, dict) and 'scripts/test-native.py' in inputs and
-            '.github/workflows/native-os.yml' in inputs, 'native report lacks source inventory')
+    require(isinstance(inputs, dict) and all(name in inputs for name in REGRESSION_INPUTS),
+            'native report lacks source inventory')
     required_inputs = {name: value for name, value in source_files.items() if
-        name in ('scripts/test-native.py', '.github/workflows/native-os.yml') or
+        name in REGRESSION_INPUTS or
         (name.startswith('systems/rock-star-os/') and Path(name).suffix not in ('.pyc', '.o') and
          not any(part in ('artifacts', '__pycache__', '.venv', '.git', 'build') or
                  part.endswith('.egg-info') for part in Path(name).parts[2:]))}

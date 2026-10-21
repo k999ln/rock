@@ -1,0 +1,165 @@
+{
+  "schema": "sky-commerce-design-validation/1",
+  "status": "design_complete",
+  "sourceRepository": "https://github.com/k999ln/rock",
+  "sourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "designStartedAt": "2026-10-01T21:01:20Z",
+  "requestedDesignMinutes": 50,
+  "targetReviewEndAt": "2026-10-01T21:51:20Z",
+  "scope": "Design contracts, local regressions and finite reference models. No live or sandbox Provider transaction executed.",
+  "userInstructions": [
+    "Old USD 8.88 monthly proposal excluded",
+    "Wallet included in the same design"
+  ],
+  "existingTypeEvidence": {
+    "CommerceMode": {
+      "file": "lib/sky-commerce-store.ts",
+      "line": 4,
+      "values": [
+        "test",
+        "live"
+      ]
+    },
+    "CommerceStatus": {
+      "file": "lib/sky-commerce-store.ts",
+      "line": 5,
+      "values": [
+        "pending",
+        "paid",
+        "expired",
+        "failed",
+        "refund_pending",
+        "partially_refunded",
+        "refunded",
+        "disputed"
+      ]
+    },
+    "CommerceOffer": {
+      "file": "lib/sky-commerce-store.ts",
+      "line": 8,
+      "transportMismatch": {
+        "active": {
+          "database": "number 0|1",
+          "browser": "boolean",
+          "request": "boolean"
+        }
+      }
+    },
+    "CommerceOrder": {
+      "file": "lib/sky-commerce-store.ts",
+      "line": 12
+    },
+    "SkyStripeConfig": {
+      "file": "lib/sky-stripe.ts",
+      "line": 13
+    },
+    "SkyToolPackage": {
+      "file": "lib/sky-tool-package.ts",
+      "packageKeyAt": 645,
+      "keyFormat": "id@version"
+    }
+  },
+  "checks": {
+    "fullVerify": {
+      "status": "blocked_by_existing_baseline",
+      "command": "npm run verify",
+      "error": "product-baseline: RockstarOS全体の共通visual systemとフロント機能性改善を維持してください",
+      "location": "scripts/check-product-baseline.mjs:1057",
+      "passed": false
+    },
+    "existingRegression": {
+      "status": "passed",
+      "passed": 51,
+      "failed": 0,
+      "command": "node --experimental-strip-types --test tests/sky-commerce.test.mjs tests/sky-stripe.test.mjs tests/billing.test.mjs tests/billing-worker.test.mjs",
+      "scope": "Existing mock/SQLite regression, including historical billing fixtures; old fee policy is not adopted"
+    },
+    "referenceModel": {
+      "status": "passed",
+      "passed": 32,
+      "failed": 0,
+      "bounds": {
+        "orderPriceMinor": 10000,
+        "decisionTable": "4 payments x 9 refund profiles x 5 disputes x 2 review x 2 provider x 2 subject link",
+        "maxRefundsPerOrder": 4,
+        "maxOrdersPerPurchaseGroup": 2,
+        "maxCacheDecisionSchedule": 3,
+        "scheduleCoverage": "all permutations only for specified independent event sets; not unbounded state-space proof"
+      },
+      "counters": {
+        "decisionTableRows": 1440,
+        "permutations": 26,
+        "cacheSchedules": 6,
+        "negativeControls": 3
+      },
+      "evidence": "docs/evidence/sky-commerce-reference-model-results.json"
+    },
+    "sqliteDesign": {
+      "status": "passed",
+      "counts": {
+        "total": 103,
+        "pass": 103,
+        "fail": 0
+      },
+      "existingMigrations": 19,
+      "sidecarTables": 14,
+      "evidence": "docs/evidence/sky-commerce-sql-validation.json"
+    },
+    "typecheck": {
+      "status": "passed",
+      "command": "npm run typecheck"
+    },
+    "designIndex": {
+      "status": "passed",
+      "command": "npm run design:check"
+    },
+    "canvasTypecheck": {
+      "status": "passed",
+      "scope": "SDK declarations compile; app render was not independently confirmed"
+    },
+    "pdfLayout": {
+      "status": "passed",
+      "pages": 24,
+      "allPagesRendered": true,
+      "visualInspection": "All pages via contact sheets, representative full-size tables and final page",
+      "outOfBoundsCharacters": 0,
+      "pdfSha256": "ff9deff569440eef38532edd2ef3c0141647e5790e6557bfb7ddc52ffb25d14a"
+    },
+    "patchApplicability": {
+      "status": "passed",
+      "scope": "git apply --check against clean baseline copies of every modified tracked file; new paths checked absent"
+    },
+    "projectIndex": {
+      "status": "passed",
+      "command": "npm run project:check"
+    },
+    "webSchema": {
+      "status": "passed",
+      "command": "npm run schema:check",
+      "note": "Existing production schema unchanged; design DDL is separate"
+    }
+  },
+  "externalAcceptance": {
+    "stripeSandbox": "not_run",
+    "productionGateway": "not_verified",
+    "externalMcpAuthorization": "not_run",
+    "livePayment": "not_run",
+    "bankReceipt": "not_run"
+  },
+  "summary": [
+    "対象ソース: b3e2676abd8ae2a0b3f78f48483e067b429d9bc8。旧月額8.88 USD案は対象外。",
+    "既存決済・Stripe・Billing回帰: 51/51成功。ローカルmock/SQLiteでの検査。",
+    "有限状態モデル: 32/32成功。決定表1,440行、指定イベント順列26、cache順序6を検査。無制限の並行動作証明ではない。",
+    "DDL制約: 103/103成功。既存migration19件の後に14追加表の草案を一時SQLiteへ適用。D1本番での受入ではない。",
+    "共有TypeScript契約のtypecheck、設計台帳の整合を確認。設計文書、型、DDL、再現キットを同梱。",
+    "全体npm run verifyは既存visual baseline不一致で停止。全体合格とは記録しない。",
+    "本書の追加契約は未実装。実Stripe sandbox、外部MCP、配備gateway、live決済、銀行受取は未受入。"
+  ],
+  "artifactHashes": {
+    "docs/contracts/sky-commerce-v2.sql": "6200543a810fdb5d39fa855cd88fd2ff5d9508e4c334539d25a2726e743f0912",
+    "docs/contracts/sky-commerce-v2.ts": "8876a8c3eaafdc7e9ae1262c501b42cb7f30e9e2d6f62322f7f0ae9bcd428326",
+    "docs/contracts/sky-wallet-v2.ts": "b8caf9b702abf36d254936b7a3c3f5a82d9f2d29add24fd9e04608732186b133"
+  },
+  "designCompletedAt": "2026-10-01T21:51:45.398260+00:00",
+  "elapsedDesignSeconds": 3025.4
+}

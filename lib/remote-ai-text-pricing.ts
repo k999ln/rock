@@ -81,9 +81,10 @@ export async function remoteAiTextQuoteMatches(
   verified: VerifiedRemoteAiRateCard,
   intent: RemoteAiTextIntent,
   now = Date.now(),
+  reservedExecution = false,
 ) {
   if (quote.schema !== 'rockstar-remote-ai-text-quote/1' || quote.createdAt > now ||
-    quote.expiresAt <= now || quote.expiresAt > verified.card.expiresAt ||
+    (!reservedExecution && quote.expiresAt <= now) || quote.expiresAt > verified.card.expiresAt ||
     quote.ownerId !== intent.ownerId || quote.requestId !== intent.requestId ||
     quote.approvedCapMinor !== intent.maximumBudgetMinor ||
     quote.requestDigest !== await remoteAiTextRequestDigest(intent) ||
@@ -106,6 +107,55 @@ export type RemoteAiTextPriceResult =
     denominator: string;
     items: Array<{ category: 'ordinary-input' | 'cached-input' | 'cache-write' | 'output'; tokens: number; rateMinorMicrosPerMillionTokens: number; numerator: string }>;
   };
+
+export type RemoteAiTextLiveEstimate = {
+  currency: string;
+  estimatedChargeMinor: number;
+  estimatedInputTokens: number;
+  estimatedOutputTokens: number;
+  observedOutputBytes: number;
+  observedAt: number;
+  basis: 'quoted_input_upper_bound_plus_output_utf8_bytes_divided_by_3';
+  finalProviderUsage: false;
+};
+
+/**
+ * A live display estimate while OpenAI streams visible text. Input stays at the
+ * quote's conservative upper bound; output UTF-8 bytes / 3 is a rough token
+ * proxy. This is never used to settle or release a reservation.
+ */
+export function estimateRemoteAiTextLiveSpend(
+  verified: VerifiedRemoteAiRateCard,
+  ceiling: RemoteAiCostCeiling,
+  outputBytes: number,
+  observedAt = Date.now(),
+): RemoteAiTextLiveEstimate | null {
+  if (!Number.isSafeInteger(outputBytes) || outputBytes < 0 || outputBytes > 1_500_000 ||
+      !Number.isSafeInteger(observedAt) || observedAt < 0 ||
+      verified.digest !== ceiling.rateCardDigest || verified.card.currency !== ceiling.currency ||
+      verified.card.modelId !== ceiling.modelId) return null;
+  const card = verified.card;
+  const inputRate = card.schema === REMOTE_AI_TEXT_RATE_CARD_SCHEMA
+    ? Math.max(card.inputMinorMicrosPerMillionTokens, card.cachedInputMinorMicrosPerMillionTokens,
+      card.cacheWriteMinorMicrosPerMillionTokens)
+    : card.inputMinorMicrosPerMillionTokens;
+  const estimatedOutputTokens = Math.min(ceiling.outputTokenLimit, Math.ceil(outputBytes / 3));
+  const numerator = BigInt(ceiling.inputTokenUpperBound) * BigInt(inputRate) +
+    BigInt(estimatedOutputTokens) * BigInt(card.outputMinorMicrosPerMillionTokens);
+  const estimatedChargeMinor = Number((numerator + DENOMINATOR - BigInt(1)) / DENOMINATOR);
+  if (!Number.isSafeInteger(estimatedChargeMinor) || estimatedChargeMinor > ceiling.maximumChargeMinor)
+    return null;
+  return {
+    currency: ceiling.currency,
+    estimatedChargeMinor,
+    estimatedInputTokens: ceiling.inputTokenUpperBound,
+    estimatedOutputTokens,
+    observedOutputBytes: outputBytes,
+    observedAt,
+    basis: 'quoted_input_upper_bound_plus_output_utf8_bytes_divided_by_3',
+    finalProviderUsage: false,
+  };
+}
 
 /** Cost calculation only, not a payment or invoice assertion. Unknown charges keep the reservation held. */
 export function priceRemoteAiTextUsage(

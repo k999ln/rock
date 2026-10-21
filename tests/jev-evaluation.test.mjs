@@ -45,7 +45,7 @@ void test('Jev receipt hashes state and rubric without storing state', async () 
       answers: {
         grounded: { type: 'boolean', probability: 0.91 },
         safe: { type: 'boolean', probability: 0.97 },
-        usefulness: { type: 'score', score: 4 },
+        usefulness: { type: 'score', score: 1.5 },
       },
       usage: { inputTokens: 10, outputTokens: 2, totalTokens: 12 },
     },

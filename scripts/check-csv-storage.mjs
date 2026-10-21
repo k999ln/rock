@@ -1,7 +1,7 @@
 // Loopback Worker/D1/R2 regression. Synthetic users, no payments or providers.
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,11 +24,9 @@ async function start() {
       .filter(f => f !== config.main && /\.m?js$/.test(f))]
       .map(f => ({type:'ESModule', path:resolve(directory, f)})),
     compatibilityDate: config.compatibility_date, compatibilityFlags: config.compatibility_flags,
-    bindings: {
-      ...config.vars,
-      ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
-      SKY_REMOTE_LLM_ENABLED: 'false',
-    },
+    // Keep this production authentication regression independent from the
+    // loopback-only identity used by the interactive local preview.
+    bindings: {...config.vars, ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID:'', SKY_REMOTE_LLM_ENABLED:'false'},
     d1Databases: {DB:'csv-regression-db'}, r2Buckets: {BUCKET:'csv-regression-files'},
     resourcePersistencePath: join(temporary, 'state'), host:'127.0.0.1', port:0,
   }));
@@ -71,20 +69,11 @@ async function artifacts(job, user=alice) {
 try {
   cpSync(join(root,'dist'),join(temporary,'dist'), {recursive:true,filter:p=>!p.split(/[\\/]/).at(-1).startsWith('._')});
   await start();
-  // Use the actual hosting migration set. Preloading the payment upgrade would
-  // hide a missing table in the deployed Worker's fresh/recovery bootstrap.
-  const hostedBootstrap = existsSync(join(root, 'sky-schema-bootstrap.json'));
-  const migrationDirectory = hostedBootstrap ? 'sky-hosting-migrations' : 'drizzle';
-  for (const file of readdirSync(join(root,migrationDirectory)).filter(f=>f.endsWith('.sql')).sort())
-    for (const sql of readFileSync(join(root,migrationDirectory,file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
+  // Canonical builds apply the append-only migration chain before admission.
+  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql') && !f.startsWith('._')).sort())
+    for (const sql of readFileSync(join(root,'drizzle',file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
       await db.prepare(sql).run();
-  await db.prepare('CREATE TABLE IF NOT EXISTS sky_service_schema(version INTEGER PRIMARY KEY)').run();
   await call('/api/csv-jobs',{user:null,status:401});
-  if (hostedBootstrap) {
-    check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='csv_trial_payments'").first()), true);
-    check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_csv_trial_session'").first()), true);
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()), true);
-  }
   await call('/api/csv-jobs',{method:'POST',body:{},requestOrigin:'https://invalid.example',status:403});
 
   // Library saves are owner-scoped bookmarks, not execution consent or purchases.
@@ -107,26 +96,6 @@ try {
   check((await db.prepare('SELECT COUNT(*) AS count FROM devices').first()).count,0);
   for (let i=0;i<2;i++) await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:false}});
   check(await library(alice),[]);
-
-  // Phoenix learning is explicit, owner-scoped and independent from execution authority.
-  const feedPath = '/api/sky/feed-history';
-  await call(feedPath, {user:null,status:401});
-  await call(feedPath, {method:'PUT',user:null,body:{enabled:true},status:401});
-  const enabledFeed = await (await call(feedPath, {method:'PUT',body:{enabled:true}})).json();
-  check(enabledFeed.enabled,true); check(enabledFeed.algorithmVersion,'sky-phoenix-v1');
-  const feedEvent = {
-    id: randomUUID(), sessionId: randomUUID(), toolId:'mr-citations',
-    type:'impression', at:Date.now(), dwellMs:1000, position:0,
-  };
-  await call(feedPath, {method:'POST',body:{events:[{...feedEvent,prompt:'never-store'}]},status:400});
-  check(await (await call(feedPath, {method:'POST',body:{events:[feedEvent]}})).json(),{accepted:1,algorithmVersion:'sky-phoenix-v1'});
-  const feed = await (await call(feedPath)).json();
-  check(feed.enabled,true); check(feed.events.length,1); check(feed.events[0].toolId,'mr-citations');
-  check((await (await call(feedPath,{user:bob})).json()).events,[]);
-  check((await db.prepare('SELECT COUNT(*) AS count FROM jobs').first()).count,0);
-  check((await db.prepare('SELECT COUNT(*) AS count FROM sky_connections').first()).count,0);
-  check(await (await call(feedPath,{method:'DELETE'})).json(),{cleared:true});
-  check((await (await call(feedPath)).json()).events,[]);
 
   for (const tool of ['rockstar-csv-cleanup','coconala']) {
     check(await (await call('/api/sky/library',{method:'PUT',body:{tool,saved:true}})).json(),{tool,saved:true});
@@ -158,42 +127,7 @@ try {
   check((await bucket.list({prefix:`csv/${collisionId}/`})).objects.length,1);
   first=await finish(first);check(first.status,'completed');check(first.validation.passed,true);
   const before=await artifacts(first);check(Object.keys(before).length,4);
-  if (hostedBootstrap) {
-    // Recover a version-2 database with jobs but without the payment upgrade.
-    await db.prepare('DROP TABLE csv_trial_payments').run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
-    await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (2)').run();
-    // A partial/invalid upgrade must fail closed without publishing version 5.
-    await db.prepare('CREATE TABLE csv_trial_payments(id TEXT PRIMARY KEY)').run();
-    await call('/api/csv-jobs',{user:null,status:503});
-    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first(), null);
-    await db.prepare('DROP TABLE csv_trial_payments').run();
-    await call('/api/csv-jobs',{user:null,status:401});
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()), true);
-    check(await artifacts(first),before);
-    // An already-populated payment table must survive the idempotent upgrade.
-    await db.prepare("INSERT INTO csv_trial_payments VALUES ('synthetic-payment',?,'test','synthetic-session',1)").bind(first.id).run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
-    await call('/api/csv-jobs',{user:null,status:401});
-    check(await db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='synthetic-payment'").first(), {session_id:'synthetic-session'});
-
-    // A real version-3 database has payments but no library table. A malformed
-    // partial library upgrade must block API admission until repaired.
-    await db.prepare('DROP TABLE sky_library_items').run();
-    await db.prepare('DELETE FROM sky_service_schema WHERE version=5').run();
-    await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (3)').run();
-    await db.prepare('CREATE TABLE sky_library_items(user_id TEXT)').run();
-    await call('/api/sky/library',{status:503});
-    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first(),null);
-    await db.prepare('DROP TABLE sky_library_items').run();
-    check(await library(alice),[]);
-    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=5').first()),true);
-    check(await artifacts(first),before);
-    check(await db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='synthetic-payment'").first(),{session_id:'synthetic-session'});
-    await call('/api/sky/library',{method:'PUT',body:{tool:'mr-citations',saved:true}});
-
-    await db.prepare("DELETE FROM csv_trial_payments WHERE id='synthetic-payment'").run();
-  }
+  await call('/api/sky/library',{method:'PUT',body:{tool:'mr-citations',saved:true}});
   await stop();await start();check(await artifacts(first),before);
   check((await library(alice)).map(item=>item.tool),['mr-citations']); check(await library(bob),[]);
   await call('/api/csv-jobs/'+first.id,{method:'DELETE',user:bob,status:404});

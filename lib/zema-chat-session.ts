@@ -1,6 +1,15 @@
-import { isTextModelProvider, type TextModelProviderId } from './llm-providers.ts';
+import {
+  isTextModelProvider,
+  type TextModelProviderId,
+} from './llm-providers.ts';
+import { skyRequestLimit } from './sky-zema-handoff.ts';
+import {
+  isJenniferCoordinationPlan,
+  type JenniferCoordinationPlan,
+} from './jennifer-coordination.ts';
 
-export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
+import { ZEMA_CHAT_SESSION_KEY, openZemaPrivateStorage } from './zema-private-storage.ts';
+export { ZEMA_CHAT_SESSION_KEY, clearZemaPrivateSession } from './zema-private-storage.ts';
 export const ZEMA_CHAT_SESSION_TTL_MS = 10 * 60 * 1000;
 
 const MAX_SESSIONS = 8;
@@ -36,6 +45,7 @@ export type ZemaChatSession = {
   } | null;
   workflowStatus: 'ready' | 'running' | 'completed' | 'failed';
   outcome: { ok: boolean; text: string } | null;
+  coordination?: JenniferCoordinationPlan | null;
 };
 
 function validMessage(value: unknown): value is ZemaChatMessage {
@@ -46,7 +56,8 @@ function validMessage(value: unknown): value is ZemaChatMessage {
     message.id.length <= 100 &&
     (message.side === 'me' || message.side === 'sky') &&
     typeof message.text === 'string' &&
-    message.text.length <= MAX_MESSAGE_LENGTH &&
+    message.text.length <=
+      (message.tool === 'rockstar-amc' ? 8000 : MAX_MESSAGE_LENGTH) &&
     (message.tool === undefined ||
       (typeof message.tool === 'string' && TOOL_ID.test(message.tool))) &&
     (message.suggestedTool === undefined ||
@@ -78,17 +89,23 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
         typeof request?.id === 'string' &&
         request.id.length <= 100 &&
         typeof request.text === 'string' &&
-        request.text.length <= 2_000 &&
+        request.text.length <= skyRequestLimit(request.toolId) &&
         typeof request.toolId === 'string' &&
         TOOL_ID.test(request.toolId) &&
-        (request.executionProvider === undefined || request.executionProvider === 'local-model') &&
-        (request.plannerProvider === undefined || isTextModelProvider(request.plannerProvider)) &&
+        (request.executionProvider === undefined ||
+          request.executionProvider === 'local-model') &&
+        (request.plannerProvider === undefined ||
+          isTextModelProvider(request.plannerProvider)) &&
         (request.plannerModel === undefined ||
-          (typeof request.plannerModel === 'string' && request.plannerModel.length <= 120)))) &&
+          (typeof request.plannerModel === 'string' &&
+            request.plannerModel.length <= 120)))) &&
     (session.workflowStatus === 'ready' ||
       session.workflowStatus === 'running' ||
       session.workflowStatus === 'completed' ||
       session.workflowStatus === 'failed') &&
+    (session.coordination === undefined ||
+      session.coordination === null ||
+      isJenniferCoordinationPlan(session.coordination)) &&
     (outcome === null ||
       (Boolean(outcome) &&
         typeof outcome?.ok === 'boolean' &&
@@ -98,53 +115,79 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
 }
 
 export function readZemaChatSessions(
-  storage: SessionStorage = window.sessionStorage,
+  providedStorage?: SessionStorage,
   now = Date.now(),
 ): ZemaChatSession[] {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) return [];
   const raw = storage.getItem(ZEMA_CHAT_SESSION_KEY);
   if (!raw) return [];
+  let parsed: unknown[];
   try {
     if (raw.length > 1_000_000) throw new Error('oversized');
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) throw new Error('invalid');
-    const sessions = parsed
-      .filter((item) => validSession(item, now))
-      .slice(0, MAX_SESSIONS) as ZemaChatSession[];
-    if (sessions.length !== parsed.length)
-      storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions));
-    return sessions;
+    const value: unknown = JSON.parse(raw);
+    if (!Array.isArray(value)) throw new Error('invalid');
+    parsed = value;
   } catch {
     storage.removeItem(ZEMA_CHAT_SESSION_KEY);
     return [];
   }
+  const sessions = parsed
+    .filter((item) => validSession(item, now))
+    .slice(0, MAX_SESSIONS) as ZemaChatSession[];
+  if (sessions.length !== parsed.length) {
+    // Best-effort expiry cleanup is separate from parsing. A quota/security
+    // failure must not erase still-valid conversations along with expired ones.
+    try { storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions)); } catch { /* Retry cleanup on the next read. */ }
+  }
+  return sessions;
 }
 
 export function saveZemaChatSession(
   session: ZemaChatSession,
-  storage: SessionStorage = window.sessionStorage,
+  providedStorage?: SessionStorage,
   now = Date.now(),
 ): ZemaChatSession[] {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) throw new Error('会話の保存領域を確認してください。消去の再試行が必要な場合があります。');
+  if (
+    session.activeRequest?.toolId === 'rockstar-amc' &&
+    session.activeRequest.text.length > 8000
+  )
+    throw new Error('AMCへの依頼は8,000文字以内にしてください。');
   const bounded: ZemaChatSession = {
     ...session,
     messages: session.messages.slice(-MAX_MESSAGES).map((message) => ({
       ...message,
-      text: message.text.slice(0, MAX_MESSAGE_LENGTH),
+      text: message.text.slice(
+        0,
+        message.tool === 'rockstar-amc' ? 8000 : MAX_MESSAGE_LENGTH,
+      ),
     })),
     activeRequest: session.activeRequest
       ? {
           ...session.activeRequest,
-          text: session.activeRequest.text.slice(0, 2_000),
+          text: session.activeRequest.text.slice(
+            0,
+            skyRequestLimit(session.activeRequest.toolId),
+          ),
         }
       : null,
     outcome: session.outcome
-      ? { ...session.outcome, text: session.outcome.text.slice(0, MAX_RESULT_LENGTH) }
+      ? {
+          ...session.outcome,
+          text: session.outcome.text.slice(0, MAX_RESULT_LENGTH),
+        }
       : null,
+    coordination: session.coordination ?? undefined,
   };
   if (!validSession(bounded, now))
     throw new Error('Zemaのチャット状態を確認してください。');
   const sessions = [
     bounded,
-    ...readZemaChatSessions(storage, now).filter((item) => item.id !== bounded.id),
+    ...readZemaChatSessions(storage, now).filter(
+      (item) => item.id !== bounded.id,
+    ),
   ].slice(0, MAX_SESSIONS);
   storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions));
   return sessions;

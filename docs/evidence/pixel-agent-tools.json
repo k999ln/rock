@@ -1,0 +1,233 @@
+{
+  "schema": "rock-pixel-agent-tools-evidence/1",
+  "recordedOn": "2026-10-18",
+  "status": "PHYSICAL_PREVIEW_ACCEPTED",
+  "productionSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+  "testSource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+  "privateShellApi": 25,
+  "physicalAccepted": true,
+  "pullRequest": "https://github.com/k999ln/rock/pull/169",
+  "scope": "Developer_Preview_APKs_only",
+  "versions": {
+    "engineDb": 4,
+    "platformApi": 1,
+    "nativePackage": 8,
+    "nativeBinderApi": 4,
+    "toolPackage": 1,
+    "toolBinderApi": 1
+  },
+  "previewSignerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+  "installedApks": {
+    "broker": {
+      "package": "dev.rock.automation",
+      "sha256": "d20099d63ab82f592fc0c7de93ba5593d5f7c5a60dd06390d893b6c02e200697",
+      "bytes": 7029505,
+      "versionCode": 1,
+      "previewSignerMatches": true,
+      "internetPermissionDeclared": true
+    },
+    "shell": {
+      "package": "dev.rock.shell",
+      "sha256": "1676b66f9408222fa851c9911c62cb9a00addff501a3b0143fece36fdcd49f23",
+      "bytes": 759016,
+      "versionCode": 1,
+      "previewSignerMatches": true,
+      "internetPermissionDeclared": false
+    },
+    "tool": {
+      "package": "dev.rock.tools.article",
+      "sha256": "79461ab59d58e65a0b761d9a545d0988451273c43835fa3b5fbe1eebc90b55b8",
+      "bytes": 6372620,
+      "versionCode": 1,
+      "previewSignerMatches": true,
+      "internetPermissionDeclared": false
+    },
+    "native": {
+      "package": "com.localactionassistant",
+      "sha256": "0ec94d4270c87d33b17f65f37388d2f8f55cc923244ea1dbbef14b5197ed1008",
+      "bytes": 26465947,
+      "versionCode": 8,
+      "previewSignerMatches": true,
+      "internetPermissionDeclared": false
+    }
+  },
+  "nativeOrToolApkReinstalled": false,
+  "host": {
+    "distinctUnitCases": 222,
+    "core": 130,
+    "automation": 54,
+    "shell": 14,
+    "sdkDebug": 24,
+    "buildLint": "PASS",
+    "fullVerify": "PASS_ALL_STAGES_EXIT0_backup_corrected_source",
+    "verifySource": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+    "node": "22.23.3",
+    "testFileConcurrency": 2,
+    "openssl": "3.6.3_pinned_PATH",
+    "assertionsWeakened": false
+  },
+  "physical": {
+    "boundaryAndLegacyBinderSqliteCases": 11,
+    "realToolAgentUiCases": 1,
+    "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+    "agentDefinitionSource": "https://github.com/k999ln/rock/blob/d7c6e6dae15e016b762df4c15544715b43a17977/examples/sky/document-agent.json",
+    "agentSchema": "rock-sky-agent/2",
+    "runner": "local-tools/1",
+    "modelRoutingTask": "writing",
+    "toolPayloadTask": "article",
+    "selectedModel": {
+      "name": "Jennifer local",
+      "profileId": "dev.rock.qwen3-4b-2507-q4km",
+      "profileVersion": "2",
+      "manifestDigest": "a4f63aa4666c3b2b4af749bf357ec536a21c26b0868aab7b4948329bbd8b89aa"
+    },
+    "elapsedAfterQueueMs": 115675,
+    "artifactBytes": 699,
+    "artifactSha256": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4",
+    "workState": "review",
+    "allFiveStagesSucceededAttempt1": true,
+    "stages": [
+      {
+        "step": 0,
+        "tool": "local-generate@1",
+        "state": "succeeded",
+        "attempt": 1,
+        "inputDigest": "6a4ed86d92d2557b2623b9aa368af466961dd76d18d622c3da1615b10251ebd7",
+        "outputDigest": "4f099f250a0f2f66e0dc6250d9c2456598a9fb2ba72e825253538a871fac7065",
+        "outputBytes": 571
+      },
+      {
+        "step": 1,
+        "tool": "agent-tool-input@1",
+        "state": "succeeded",
+        "attempt": 1,
+        "inputDigest": "4f099f250a0f2f66e0dc6250d9c2456598a9fb2ba72e825253538a871fac7065",
+        "outputDigest": "c4d12c89bc7e6a05c21588fecb34c43aed3df850e3c32b48d93fab9faa1e7444",
+        "outputBytes": 671
+      },
+      {
+        "step": 2,
+        "tool": "citations@1",
+        "state": "succeeded",
+        "attempt": 1,
+        "inputDigest": "c4d12c89bc7e6a05c21588fecb34c43aed3df850e3c32b48d93fab9faa1e7444",
+        "outputDigest": "acb67abbdfbf851f1ecd1ee18a88cf8f8dff2df51830f36e6ba1e46cf7baf666",
+        "outputBytes": 673
+      },
+      {
+        "step": 3,
+        "tool": "free-article@1",
+        "state": "succeeded",
+        "attempt": 1,
+        "inputDigest": "acb67abbdfbf851f1ecd1ee18a88cf8f8dff2df51830f36e6ba1e46cf7baf666",
+        "outputDigest": "20e6993da46f1d3daf5e89f380785141f1cd166b069337f1f3dfca180fa536b1",
+        "outputBytes": 460
+      },
+      {
+        "step": 4,
+        "tool": "agent-tool-seal@1",
+        "state": "succeeded",
+        "attempt": 1,
+        "inputDigest": "20e6993da46f1d3daf5e89f380785141f1cd166b069337f1f3dfca180fa536b1",
+        "outputDigest": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4",
+        "outputBytes": 699
+      }
+    ],
+    "orderedToolsShownAndConsentInitiallyUnchecked": true,
+    "doubleTapOneWork": true,
+    "sameRequestIdSameWork": true,
+    "disableBlocksNewUseAndPreservesArtifact": true,
+    "freshConsentReenable": true,
+    "brokerProcessRestartSameHashAndAttempts": true,
+    "actualWorkDetailRendered": true,
+    "currentUiJunitReported": 14,
+    "currentUiActual": 13,
+    "existingOptInNotSelected": 1,
+    "actualSystemNotificationTap": true,
+    "notificationTapOnlyNavigates": true,
+    "notificationDoesNotIncludeManuscript": true,
+    "generatedCodeExecuted": false,
+    "publishedOrCharged": false,
+    "limitedFixtureContentReview": "roles_correct_for_this_document_fixture_only",
+    "generalModelQualityAccepted": false,
+    "pendingSubmissionRecovery": {
+      "source": "8d83b444",
+      "sameRequestIdOneWork": true,
+      "operatorReplayAfterHarnessAckTimeout": 1
+    }
+  },
+  "preservation": {
+    "originalWorks": 75,
+    "originalArtifacts": 276,
+    "allOriginalStatesAndArtifactsPreserved": true,
+    "currentWorks": 83,
+    "currentArtifacts": 308,
+    "allBodyHashesVerified": true,
+    "scope": "read_only_device_SQLite_copy_no_device_reboot"
+  },
+  "earlierAttempts": [
+    {
+      "source": "d7c6e6da",
+      "status": "FAILED_BEFORE_TOOL_EXECUTION",
+      "model": "General1.5B",
+      "reason": "one paragraph and insufficient summary; input adapter held",
+      "rawKeptOutsideGit": true,
+      "explicitSyntheticCancel": 1,
+      "toolAttempts": 0
+    },
+    {
+      "source": "8d83b444",
+      "status": "UI_HARNESS_ACK_WAIT20S_EXPIRED",
+      "newWorkObservedBeforeRecovery": false,
+      "recovery": "same pending ID retained; bounded180s acknowledgement wait, runtime/lease timeouts unchanged"
+    },
+    {
+      "source": "8d83b444",
+      "status": "PASS_REAL_5_STAGE_TRIAL",
+      "elapsedAfterQueueMs": 116148,
+      "artifactSha256": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4"
+    },
+    {
+      "source": "8d83b444",
+      "status": "CI_PROTOTYPE_FAILED_ISOLATED_ENGINE_MISMATCH",
+      "correction": "inject owning Engine in scheduler and isolated Binder/reboot fixture, retain all assertions and signature checks"
+    },
+    {
+      "source": "c37deb5c",
+      "status": "HOST_VERIFY_ENVIRONMENT_OPENSSL4_REJECTED",
+      "correction": "pin installed OpenSSL3.6.3 PATH, retain version3 contract; full verify rerun passed"
+    },
+    {
+      "source": "c37deb5c",
+      "status": "PASS_REAL_5_STAGE_TRIAL_BEFORE_BACKUP_CORRECTION",
+      "elapsedAfterQueueMs": 134996,
+      "artifactSha256": "5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4"
+    }
+  ],
+  "modelResultsGrantToolAuthority": false,
+  "scopeLimits": [
+    "existing_pure_document_Tool_adapters_only",
+    "declarative_Agent_not_arbitrary_native_or_framework_execution",
+    "article_price500_and_example_URL_are_private_draft_placeholders_not_sales",
+    "process_restart_not_whole_device_reboot",
+    "inflight_native_cancel_not_a_new_physical_acceptance_in_this_trial",
+    "whole_OS_flash_OTA_cloud_paid_execution_and_production_billing_unaccepted"
+  ],
+  "ci": {
+    "c37deb5c": "all8_success_via_REST",
+    "finalHeadAuthority": "PR169 exact head check-runs before normal merge"
+  },
+  "mainIntegratedAtEvidenceCommit": false,
+  "integrationAuthority": "GitHub PR169 mergedAt/mergeCommit and current main",
+  "privateArtifactDirectory": "/Users/kaiya/Library/RockstarOS/pixel-agent-tools-20261018",
+  "backupCorrection": {
+    "status": "PASS_strict_4_or_5_stage_recipe_restore",
+    "source": "a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56",
+    "hostCompletedResultRoundtrip": true,
+    "reorderedToolAtomicRejection": true,
+    "androidIsolatedHeldWorkRoundtrip": true,
+    "restoredPaused": true,
+    "ownerDatabaseOverwritten": false,
+    "olderApkDowngradeAccepted": false
+  }
+}

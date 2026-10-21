@@ -5,7 +5,7 @@
 
 ## 1. 何を加えるのか
 
-[Jev Ultrafast](https://github.com/browser-use/jev-ultrafast)は、Webページから操作できる要素を番号付きの候補へ変え、AIが`CLICK`、`TYPE_TEXT`、`SELECT`、scroll、wait、done、blockedのいずれかを選ぶbrowser agentである。AIにCSS selector、座標、shell、任意JavaScriptを作らせない点と、`DONE`の前に結果を独立検証する考え方をRockstarOSへ取り込む。
+[Jev Ultrafast](https://github.com/browser-use/jev-ultrafast)は、Webページから操作できる要素を番号付きの候補へ変え、siが`CLICK`、`TYPE_TEXT`、`SELECT`、scroll、wait、done、blockedのいずれかを選ぶbrowser agentである。siにCSS selector、座標、shell、任意JavaScriptを作らせない点と、`DONE`の前に結果を独立検証する考え方をRockstarOSへ取り込む。
 
 RockstarOSではJevを「何でもできるbrowser」にはしない。Skyで選び、Zemaで依頼を確認し、本人PCの隔離browserで、一つの許可siteと一つの仕事だけを操作するTool候補にする。
 

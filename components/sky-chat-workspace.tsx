@@ -1,22 +1,29 @@
 'use client';
 
+import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/zema-private-storage';
+import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
+
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent,
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { guardHistoryNavigation } from '@/lib/history-navigation-guard';
 import {
   ArrowRight,
   CheckCircle2,
   Grid2X2,
   House,
   ListChecks,
+  LogOut,
   MessageCircle,
   PanelLeft,
   Plus,
@@ -25,7 +32,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
-import { avocadoResultEnvelope, parseAvocadoBrief } from '@/lib/avocado-handoff';
 import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
 import {
@@ -37,9 +43,9 @@ import {
   localModelPresets,
   textModelProviderDefinition,
   textModelProviders,
-  type TextModelProviderId,
 } from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import ToolCharacterDetails from '@/components/tool-character';
 import characterStyles from '@/components/tool-character.module.css';
 import { MrToolRunner } from '@/components/mr-tool-runner';
@@ -48,8 +54,10 @@ import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
 import {
   ExecutionSignin,
+  requestExecutionAccessCheck,
   useExecutionAccess,
 } from '@/components/execution-access';
+import { JenniferAccess, useJenniferAccess } from '@/components/jennifer-access';
 import {
   operationRequest,
   OperationRequestError,
@@ -58,7 +66,7 @@ import type {
   Job,
   JobTool,
   SkyConnection,
-  SkyProviderConnection,
+
 } from '@/lib/operations';
 import { deviceToken } from '@/lib/device';
 import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
@@ -69,25 +77,43 @@ import type {
 import ChatLiveProgress from '@/components/chat-live-progress';
 import type { CsvJob } from '@/components/chat-live-progress';
 import {
-  consumeSkyZemaHandoff,
+  skyRequestLimit,
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
-import {
-  readZemaChatSessions,
-  saveZemaChatSession,
-  type ZemaChatSession,
-} from '@/lib/zema-chat-session';
+import { clearZemaPrivateSession } from '@/lib/zema-chat-session';
+import { useSkyChatSession, type ChatEntry, type WorkflowStatus } from '@/components/use-sky-chat-session';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
+import {
+  createJenniferCoordinationPlan,
+  isJenniferCoordinationPlan,
+  type JenniferCoordinationPlan,
+  type JenniferTaskEffect,
+} from '@/lib/jennifer-coordination';
+import {
+  parseJenniferProjectPortfolio,
+  type JenniferProject,
+} from '@/lib/jennifer-projects';
+import { parseJenniferKnowledgeRegistry } from '@/lib/jennifer-amc-decomposition';
+import jenniferProjectPortfolioSource from '@/data/jennifer-projects.json';
+import jenniferKnowledgeSource from '@/data/jennifer-knowledge.json';
+import { amcSummary } from '@/lib/amc-tool';
+import {
+  buildJenniferDispatchPrompt,
+  buildJenniferExecutionReport,
+  createJenniferTaskJobCoordination,
+  type JenniferExecutionReport,
+} from '@/lib/jennifer-amc-execution';
+import type { WorkJob } from '@/lib/workflow';
 
-type ChatEntry = {
-  id: string;
-  side: 'me' | 'sky';
-  text: string;
-  tool?: string;
-  suggestedTool?: string;
-};
+const jenniferProjectPortfolio = parseJenniferProjectPortfolio(
+  jenniferProjectPortfolioSource,
+);
+const jenniferKnowledge = parseJenniferKnowledgeRegistry(
+  jenniferKnowledgeSource,
+);
+const JENNIFER_AUTO_PROJECT = 'portfolio-auto';
 
 type RemoteAiEstimateResult = {
   currencies?: string[];
@@ -111,17 +137,6 @@ type RemoteAiEstimateResult = {
   executionAuthorized: false;
 };
 
-type ActiveRequest = {
-  id: string;
-  text: string;
-  toolId: string;
-  executionProvider: 'local-model';
-  plannerProvider: TextModelProviderId;
-  plannerModel: string;
-};
-
-type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
-
 type LocalAgentResult = {
   text?: string;
   code?: string;
@@ -141,8 +156,24 @@ type FundSnapshot = {
   analytics: Array<AutomationFundAnalytics & { fundId: string }>;
 };
 
+type JenniferExecutionState = {
+  rootJob: WorkJob | null;
+  taskJobs: WorkJob[];
+  report: JenniferExecutionReport | null;
+  projection: {
+    plan: { state: string; revision: number; planDigest: string; diffJson: string } | null;
+    attempts: Array<{ taskId: string; role: 'worker' | 'reviewer'; reportDigest: string | null; state: string }>;
+    costs: Array<{ currency: string; estimatedMinor: number; maximumMinor: number; reservedMinor: number; liveMinor: number; settledMinor: number; remainingMinor: number; unknownCount: number }>;
+    activeDelegations: Array<{ id: string; state: string }>;
+  } | null;
+  loading: boolean;
+};
+
 const AUTO_MODE = 'sky-auto';
 const MCP_PREFIX = 'mcp:';
+const AmcToolRunner = dynamic(() => import('@/components/amc-tool-runner'), {
+  loading: () => <output>AMCの計画画面を開いています…</output>,
+});
 function currentTimestamp() { return Date.now(); }
 const Workbench = dynamic(() => import('@/components/workbench'), {
   loading: () => (
@@ -159,12 +190,15 @@ const quickRequests = [
 const providerRoutingDefaults: Record<string, string> = {
   imageGeneration: 'higgsfield',
   videoGeneration: 'higgsfield',
+  textSelectionMode: 'auto',
   textGeneration: 'local-model',
   textGenerationModel: 'Qwen3-0.6B-Q8_0-GGUF',
   localLlmBaseUrl: 'http://127.0.0.1:4317/v1',
   workflow: 'make',
   socialPublish: 'make',
   gameDelivery: 'roblox',
+  realtimeVoice: '',
+  telephony: '',
 };
 
 const providerRoutingFields: Array<{
@@ -178,6 +212,8 @@ const providerRoutingFields: Array<{
   { id: 'workflow', label: 'ワークフロー', capability: 'workflow' },
   { id: 'socialPublish', label: 'SNS公開', capability: 'social_publish' },
   { id: 'gameDelivery', label: 'ゲーム導入', capability: 'game_delivery' },
+  { id: 'realtimeVoice', label: 'IPの音声会話', capability: 'realtime_voice' },
+  { id: 'telephony', label: 'IPの電話連携', capability: 'telephony' },
 ];
 
 function roleFor(tool: Automation) {
@@ -221,7 +257,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
     return '本体未接続';
   }
   if (tool.runner === 'jev-evaluation' && !latest)
-    return '外部AIの接続確認が必要';
+    return '外部siの接続確認が必要';
   return latest ? jobMessage(latest) : 'Sky登録済み';
 }
 
@@ -252,19 +288,81 @@ function readableChatResult(markdown: string) {
     .trim();
 }
 
+function jenniferDataLabel(dataClass: JenniferCoordinationPlan['steps'][number]['dataClass']) {
+  if (dataClass === 'public') return '公開情報';
+  if (dataClass === 'owner-private') return '本人の選択データ';
+  if (dataClass === 'confidential') return '機密・個別許可';
+  return '秘密情報・既定では渡さない';
+}
+
+function jenniferEffectLabel(effect: JenniferTaskEffect) {
+  if (effect === 'none') return '外部作用なし';
+  if (effect === 'artifact-draft') return '成果物案のみ';
+  if (effect === 'external-send') return '外部送信・承認必須';
+  if (effect === 'repository-write') return 'Repository変更・承認必須';
+  if (effect === 'production-deploy') return '公開・配備・承認必須';
+  if (effect === 'financial-transaction') return '支払・送金・承認必須';
+  if (effect === 'credential-change') return '認証情報変更・承認必須';
+  return '破壊的操作・承認必須';
+}
+
 export default function SkyChatWorkspace() {
+  const access = useExecutionAccess();
+  const jenniferAccess = useJenniferAccess();
+  const jenniferAccessState = jenniferAccess.state;
+  const refreshJenniferAccess = jenniferAccess.refresh;
+  const [admitted, setAdmitted] = useState(false);
+  const storageBlocked = useSyncExternalStore(subscribeZemaPrivateStorage, zemaPrivateStorageBlocked, () => false);
+  // Keep drafts through temporary connectivity checks, but never across a known sign-out.
+  if (jenniferAccessState === 'ready' && access.accessState === 'ready' && !storageBlocked && !admitted) setAdmitted(true);
+  if ((jenniferAccessState !== 'ready' || access.accessState === 'signin') && admitted) setAdmitted(false);
+  useEffect(() => {
+    if (access.accessState === 'signin') clearZemaPrivateSession();
+  }, [access.accessState]);
+  useEffect(() => {
+    if (access.accessState === 'signin' && jenniferAccessState === 'ready') void refreshJenniferAccess();
+  }, [access.accessState, jenniferAccessState, refreshJenniferAccess]);
+  if (jenniferAccessState !== 'ready') return <WorkspaceShell title="Jennifer" hideTopActions>
+    <JenniferAccess access={jenniferAccess} />
+  </WorkspaceShell>;
+  return <>
+    {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
+      <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} /></div>}
+    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Zema">
+      <ExecutionSignin state={access.accessState === 'signin' ? 'checking' : access.accessState} />
+      {storageBlocked && <section role="alert" aria-label="会話の保存領域を確認">
+        <p>前の会話と引き継ぎデータを消去できませんでした。古い内容の読み込みを止めています。</p>
+        <p>このサイトの保存領域を利用できる状態に戻し、消去を再試行してください。消去を確認するまで会話と仕事を開きません。</p>
+        <button type="button" className="rock-button" onClick={() => { clearZemaPrivateSession(); }}>保存領域の消去を再試行</button>
+      </section>}
+      {access.accessState === 'signin' && !storageBlocked && <p>利用者の切り替えに備え、このタブの会話と未送信入力を消去しました。保存済みの仕事はサインイン後に読み直します。</p>}
+    </WorkspaceShell>}
+  </>;
+}
+
+function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeedsSignin }: ReturnType<typeof useExecutionAccess>) {
   const router = useRouter();
+  const [signingOutJennifer, setSigningOutJennifer] = useState(false);
+
+  async function signOutJennifer() {
+    if (signingOutJennifer) return;
+    setSigningOutJennifer(true);
+    try {
+      const response = await fetch('/api/jennifer/access', { method: 'DELETE' });
+      if (!response.ok) return;
+      clearZemaPrivateSession();
+      window.location.assign('/chat');
+    } finally {
+      setSigningOutJennifer(false);
+    }
+  }
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
+  const preferredPackage = searchParams.get('package') ?? '';
   const requestedThreadId = searchParams.get('thread') ?? '';
   const preferredFund = searchParams.get('fund') ?? '';
   const workView = searchParams.get('view') === 'work';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
-  const [providerRouting, setProviderRouting] = useState<Record<string, string>>(
-    providerRoutingDefaults,
-  );
-  const providerRoutingRef = useRef(providerRoutingDefaults);
-  const providerSaveTimerRef = useRef<number | null>(null);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -273,75 +371,132 @@ export default function SkyChatWorkspace() {
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
-  const [avocadoHandoff, setAvocadoHandoff] = useState<{ kind: 'month' | 'amc'; targetId: string; token: string; requestId: string | null } | null>(null);
-  const [avocadoFeedback, setAvocadoFeedback] = useState('');
-  const [messages, setMessages] = useState<ChatEntry[]>([]);
-  const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
-    null,
-  );
-  const [requestStartedAt, setRequestStartedAt] = useState(0);
+  const draftRef = useRef('');
   const [running, setRunning] = useState(false);
-  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>('ready');
-  const [threadId, setThreadId] = useState('');
-  const [threadCreatedAt, setThreadCreatedAt] = useState(0);
-  const [sessionReady, setSessionReady] = useState(false);
-  const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [historyQuery, setHistoryQuery] = useState('');
   const [allBotsOpen, setAllBotsOpen] = useState(false);
-  const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
+  const [jenniferArmed, setJenniferArmed] = useState(false);
+  const [selectedJenniferProjectId, setSelectedJenniferProjectId] = useState(
+    JENNIFER_AUTO_PROJECT,
+  );
   const [chatLoading, setChatLoading] = useState(false);
   const [remoteEstimate, setRemoteEstimate] = useState<RemoteAiEstimateResult | null>(null);
   const [cloudWorkDraft, setCloudWorkDraft] = useState<{
-    prompt: string; currency: string; maximumBudgetInput: string; model?: string;
+    prompt: string;
+    currency: string;
+    maximumBudgetInput: string;
+    model?: string;
+    parentJobId?: string;
+    rootJobId?: string;
+    amcTaskId?: string;
+    specialistProfile?: string;
+    delegationRole?: 'worker' | 'reviewer';
+  } | null>(null);
+  const [jenniferExecution, setJenniferExecution] = useState<JenniferExecutionState>({
+    rootJob: null,
+    taskJobs: [],
+    report: null,
+    projection: null,
+    loading: false,
+  });
+  const [savedJenniferGoals, setSavedJenniferGoals] = useState<WorkJob[]>([]);
+  const [jenniferQuestionResolutions, setJenniferQuestionResolutions] = useState<Record<string, { disposition: 'answered' | 'deferred'; note: string }>>({});
+  const [jenniferExecutionBusy, setJenniferExecutionBusy] = useState(false);
+  const [jenniferExecutionError, setJenniferExecutionError] = useState('');
+  const [jenniferRevisionDraft, setJenniferRevisionDraft] = useState('');
+  const jenniferGoalSubmission = useRef<{
+    planId: string;
+    jobId: string;
+  } | null>(null);
+  const jenniferMutationSubmission = useRef<{
+    jobId: string;
+    operation: string;
+    body: Record<string, unknown>;
+    plan?: JenniferCoordinationPlan;
   } | null>(null);
   const [remoteCurrency, setRemoteCurrency] = useState('');
   const [remoteCurrencyOptions, setRemoteCurrencyOptions] = useState<string[]>([]);
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const { messages, setMessages, activeRequest, setActiveRequest, requestStartedAt, setRequestStartedAt,
+    workflowStatus, setWorkflowStatus, threadId, recentThreads, outcome, setOutcome,
+    coordinationPlan, setCoordinationPlan, resetSession, beginSession } =
+    useSkyChatSession({ loading, workView, preferredTool, requestedThreadId, setSelectedToolId, roleFor });
   const [error, setError] = useState('');
-  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
+  const routingDraft = useProviderDraft('routing', providerRoutingDefaults, !executionBlocked, true);
+  const providerRouting = routingDraft.state.config;
+  useEffect(() => { if (routingDraft.state.unauthorized) setNeedsSignin(true); }, [routingDraft.state.unauthorized, setNeedsSignin]);
+
+  const amcDirtyRef = useRef(false);
+  const [amcReplacement, setAmcReplacement] = useState<{ resume: () => void; draft?: boolean; amc?: boolean } | null>(null);
   const composerRef = useRef<HTMLTextAreaElement>(null);
+  const coordinationPlanRef = useRef<HTMLElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatAbortRef = useRef<AbortController | null>(null);
   const activeChatThreadRef = useRef('');
+  const submissionRef = useRef(false);
+  const estimateAbortRef = useRef<AbortController | null>(null);
+  const invalidateRemoteEstimate = useCallback(() => {
+    if (estimateAbortRef.current) {
+      estimateAbortRef.current.abort();
+      estimateAbortRef.current = null;
+      submissionRef.current = false;
+      setChatLoading(false);
+    }
+    setRemoteEstimate(null);
+  }, []);
+  useEffect(() => {
+    const previous = estimateAbortRef.current;
+    previous?.abort();
+    estimateAbortRef.current = null;
+    if (previous) submissionRef.current = false;
+    const frame = window.requestAnimationFrame(() => {
+      setRemoteEstimate(null);
+      if (previous) setChatLoading(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [preferredTool, requestedThreadId, workView]);
+  useEffect(() => () => {
+    chatAbortRef.current?.abort();
+    estimateAbortRef.current?.abort();
+    submissionRef.current = false;
+  }, []);
+  useEffect(() => {
+    if (!draft.trim()) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [draft]);
+  useEffect(() => guardHistoryNavigation(window, (resume) => {
+    if (running) return true;
+    const hasDraft = Boolean(draftRef.current.trim());
+    if (!hasDraft && !amcDirtyRef.current) return false;
+    setAmcReplacement({ resume, draft: hasDraft, amc: amcDirtyRef.current });
+    return true;
+  }), [running]);
+  const mcpRequestRef = useRef(0);
+  const mcpMountedRef = useRef(false);
+  const mcpTokenRef = useRef<string | null>(null);
+  const refreshConnectedMcp = useCallback(() => {
+    const request = ++mcpRequestRef.current;
+    const token = deviceToken();
+    if (!mcpMountedRef.current) return;
+    if (mcpTokenRef.current !== token || !token) setMcpServers([]);
+    mcpTokenRef.current = token;
+    if (!token) return;
+    const current = () => mcpMountedRef.current &&
+      mcpRequestRef.current === request && deviceToken() === token;
+    void listMcpConnections()
+      .then((servers) => { if (current()) setMcpServers(servers); })
+      .catch(() => { if (current()) setMcpServers([]); });
+  }, []);
   const hasActiveJob = jobs.some(
     (job) => job.status === 'queued' || job.status === 'running',
   );
   const hasActiveCsvJob = csvJobs.some(
     (job) => job.status === 'accepted' || job.status === 'processing',
   );
-
-  useEffect(() => {
-    const origin = 'https://avocado-princeton-progress.noellesugar1.chatgpt.site';
-    const receive = (event: MessageEvent) => {
-      if (event.origin !== origin || event.source !== window.opener) return;
-      const handoff = parseAvocadoBrief(event.data);
-      if (!handoff) return;
-      setDraft(handoff.brief);
-      setAvocadoHandoff({ kind: handoff.kind, targetId: handoff.targetId, token: handoff.token, requestId: null });
-      setAvocadoFeedback('個人プランから依頼の下書きを受け取りました。内容を確認してから送信してください。');
-      window.opener?.postMessage({ type: 'avocado.sky.accepted.v1', token: handoff.token }, origin);
-      requestAnimationFrame(() => composerRef.current?.focus());
-    };
-    window.addEventListener('message', receive);
-    window.opener?.postMessage({ type: 'avocado.sky.ready.v1' }, origin);
-    return () => window.removeEventListener('message', receive);
-  }, []);
-
-  const avocadoResult = avocadoHandoff?.requestId
-    ? outcome?.text || messages.find((message) =>
-        message.id === `${avocadoHandoff.requestId}-reply` && message.side === 'sky')?.text || ''
-    : '';
-  function returnAvocadoResult() {
-    if (!avocadoHandoff || !avocadoResult.trim()) return;
-    if (!window.opener || window.opener.closed) {
-      setAvocadoFeedback('個人プランのタブが閉じています。結果をコピーして記録してください。');
-      return;
-    }
-    window.opener.postMessage(avocadoResultEnvelope(avocadoHandoff, avocadoResult), 'https://avocado-princeton-progress.noellesugar1.chatgpt.site');
-    setAvocadoFeedback('結果を個人プランへ送りました。プラン側で保存状態を確認してください。');
-  }
 
   useEffect(() => {
     const smallScreen = window.matchMedia('(max-width: 767px)');
@@ -360,19 +515,14 @@ export default function SkyChatWorkspace() {
     void Promise.all([
       operationRequest<SkyConnection[]>('/api/sky/connections'),
       operationRequest<Job[]>('/api/jobs'),
-      operationRequest<SkyProviderConnection[]>('/api/sky/provider-connections'),
     ])
-      .then(([connections, recentJobs, providerConnections]) => {
+      .then(([connections, recentJobs]) => {
         if (!active) return;
         const ids = new Set<string>(connections.map(({ tool }) => tool));
         const preferred = catalog.find((tool) => tool.id === preferredTool)?.id
           ?? (preferredTool.startsWith(MCP_PREFIX) ? preferredTool : null);
         setConnectedTools([...ids]);
         setJobs(recentJobs);
-        const routing = providerConnections.find((item) => item.provider === 'routing');
-        const nextRouting = { ...providerRoutingDefaults, ...routing?.config };
-        providerRoutingRef.current = nextRouting;
-        setProviderRouting(nextRouting);
         setSelectedToolId(preferred ?? AUTO_MODE);
       })
       .catch((reason) => {
@@ -483,47 +633,36 @@ export default function SkyChatWorkspace() {
   }, []);
 
   useEffect(() => {
-    let active = true;
-    const refresh = () => {
-      if (!deviceToken()) {
-        if (active) setMcpServers([]);
-        return;
-      }
-      void listMcpConnections()
-        .then((servers) => {
-          if (active) setMcpServers(servers);
-        })
-        .catch(() => {
-          if (active) setMcpServers([]);
-        });
-    };
-    refresh();
-    window.addEventListener('focus', refresh);
-    window.addEventListener('loop-device', refresh);
-    window.addEventListener('sky-mcp-servers', refresh);
+    mcpMountedRef.current = true;
+    refreshConnectedMcp();
+    window.addEventListener('focus', refreshConnectedMcp);
+    window.addEventListener('loop-device', refreshConnectedMcp);
+    window.addEventListener('sky-mcp-servers', refreshConnectedMcp);
     return () => {
-      active = false;
-      window.removeEventListener('focus', refresh);
-      window.removeEventListener('loop-device', refresh);
-      window.removeEventListener('sky-mcp-servers', refresh);
+      mcpMountedRef.current = false;
+      window.removeEventListener('focus', refreshConnectedMcp);
+      window.removeEventListener('loop-device', refreshConnectedMcp);
+      window.removeEventListener('sky-mcp-servers', refreshConnectedMcp);
     };
-  }, []);
+  }, [refreshConnectedMcp]);
 
   useEffect(() => {
     if (messages.length === 0) return;
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
-    messagesEndRef.current?.scrollIntoView({
-      block: 'nearest',
+    const target = coordinationPlan ? coordinationPlanRef.current : messagesEndRef.current;
+    target?.scrollIntoView({
+      block: coordinationPlan ? 'start' : 'nearest',
       behavior: reduceMotion ? 'auto' : 'smooth',
     });
-  }, [messages]);
+  }, [messages, coordinationPlan]);
 
   useEffect(() => {
     if (chatAbortRef.current && activeChatThreadRef.current !== requestedThreadId) {
       chatAbortRef.current.abort();
       chatAbortRef.current = null;
+      submissionRef.current = false;
       setChatLoading(false);
     }
   }, [requestedThreadId]);
@@ -566,17 +705,21 @@ export default function SkyChatWorkspace() {
   );
   const selectedTool =
     modeApps.find((tool) => tool.id === selectedToolId) ?? null;
+  const composerToolId = selectedTool?.id ?? routeSkyRequest(draft)?.toolId;
+  const composerLimit = skyRequestLimit(composerToolId);
   const selectedMcpServer =
     connectedMcpServers.find(
       (server) => mcpMode(server.id) === selectedToolId,
     ) ?? null;
   const displayMessages = messages.filter((message) =>
     !message.id.startsWith('welcome-') && !message.id.startsWith('progress-'));
+  const [modelSelectionNote, setModelSelectionNote] = useState('');
+  const [allowFreeCloud, setAllowFreeCloud] = useState(false);
   const textProvider = isTextModelProvider(providerRouting.textGeneration)
     ? providerRouting.textGeneration
     : 'local-model';
   const textProviderDefinition = textModelProviderDefinition(textProvider);
-  const remoteTextProvider = textProviderDefinition.locality === 'remote';
+  const remoteTextProvider = providerRouting.textSelectionMode === 'manual' && textProvider !== 'pollinations' && textProviderDefinition.locality === 'remote';
   const activeTool = activeRequest
     ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
@@ -615,95 +758,6 @@ export default function SkyChatWorkspace() {
     : selectedBotApp && !compactBotApps.some((tool) => tool.id === selectedBotApp.id)
       ? [selectedBotApp, ...compactBotApps]
       : compactBotApps;
-  useEffect(() => {
-    if (loading || workView) return;
-    const frame = window.requestAnimationFrame(() => {
-    let sessions: ZemaChatSession[] = [];
-    try { sessions = readZemaChatSessions(); } catch { /* Private storage may be unavailable. */ }
-    setRecentThreads(sessions);
-    setSessionReady(false);
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
-    const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
-    if (saved) {
-      setThreadId(saved.id);
-      setThreadCreatedAt(saved.createdAt);
-      setSelectedToolId(saved.toolId);
-      setMessages(saved.messages);
-      setActiveRequest(saved.activeRequest
-        ? {
-            ...saved.activeRequest,
-            executionProvider: saved.activeRequest.executionProvider ?? 'local-model',
-            plannerProvider: saved.activeRequest.plannerProvider ?? 'local-model',
-            plannerModel: saved.activeRequest.plannerModel ??
-              textModelProviderDefinition(saved.activeRequest.plannerProvider ?? 'local-model').defaultModel,
-          }
-        : null);
-      setRequestStartedAt(saved.createdAt);
-      if (saved.workflowStatus === 'running') {
-        setWorkflowStatus('failed');
-        setMessages((current) => [...current, {
-          id: `resume-${saved.id}`,
-          side: 'sky',
-          text: '画面を開き直しました。直前の実行結果はここでは確認できません。履歴を確認してから再実行してください。',
-          tool: saved.toolId,
-        }]);
-      } else setWorkflowStatus(saved.workflowStatus);
-      setOutcome(saved.outcome);
-      setSessionReady(true);
-      return;
-    }
-    if (!preferredTool || !requestedThreadId) return;
-    let handoff;
-    try { handoff = consumeSkyZemaHandoff(preferredTool); } catch { return; }
-    if (!handoff || handoff.id !== requestedThreadId) return;
-    const tool = catalog.find((item) => item.id === handoff.toolId);
-    if (!tool) return;
-    const id = `handoff-${handoff.id}`;
-    setSelectedToolId(tool.id);
-    setThreadId(handoff.id);
-    setThreadCreatedAt(handoff.createdAt);
-    setMessages([
-      ...(handoff.request ? [{ id: `${id}-me`, side: 'me' as const, text: handoff.request, tool: tool.id }] : []),
-      { id: `${id}-sky`, side: 'sky', text: handoff.request
-        ? `${roleFor(tool)}へSkyから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
-        : `${roleFor(tool)}を開きました。下の入力欄に依頼を送ってください。`, tool: tool.id },
-    ]);
-    setActiveRequest(handoff.request ? {
-      id,
-      text: handoff.request,
-      toolId: tool.id,
-      executionProvider: handoff.executionProvider ?? 'local-model',
-      plannerProvider: 'local-model',
-      plannerModel: textModelProviderDefinition('local-model').defaultModel,
-    } : null);
-    setRequestStartedAt(handoff.createdAt);
-    setSessionReady(true);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [loading, preferredTool, requestedThreadId, workView]);
-
-  useEffect(() => {
-    if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
-    try {
-      const sessions = saveZemaChatSession({
-        version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
-        messages, activeRequest, workflowStatus, outcome,
-      });
-      const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
-      return () => window.cancelAnimationFrame(frame);
-    } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
-
-  useEffect(() => () => {
-    if (providerSaveTimerRef.current !== null)
-      window.clearTimeout(providerSaveTimerRef.current);
-  }, []);
 
   function recordWorkflowStatus(status: WorkflowStatus) {
     setWorkflowStatus(status);
@@ -712,9 +766,9 @@ export default function SkyChatWorkspace() {
   function recordOutcome(next: { ok: boolean; text: string }, toolId: string) {
     setOutcome(next);
     if (toolId !== 'jev-evaluation')
-      setWorkflowStatus(next.ok ? 'completed' : 'failed');
+      setWorkflowStatus(next.ok ? toolId === 'rockstar-amc' ? 'ready' : 'completed' : 'failed');
     const tool = catalog.find((item) => item.id === toolId);
-    const outcomeLabel = tool?.status === 'candidate'
+    const outcomeLabel = toolId === 'rockstar-amc' ? '計画・進捗の記録を保存しました' : tool?.status === 'candidate'
       ? tool.origin === 'mr' ? '下書きができました' : '接続条件を整理しました'
       : '結果ができました';
     setMessages((current) => [...current, {
@@ -727,80 +781,387 @@ export default function SkyChatWorkspace() {
     }]);
   }
 
+  function confirmAmcReplacement(resume: () => void) {
+    if (!amcDirtyRef.current) return true;
+    setAmcReplacement({ resume });
+    return false;
+  }
+
+  function confirmConversationReplacement(resume: () => void) {
+    if (draftRef.current.trim()) {
+      setAmcReplacement({ resume, draft: true, amc: amcDirtyRef.current });
+      return false;
+    }
+    return confirmAmcReplacement(resume);
+  }
+
+  function resetConversation(toolId: string, resetRequestTime: boolean, preserveDraft = false) {
+    chatAbortRef.current?.abort();
+    chatAbortRef.current = null;
+    submissionRef.current = false;
+    setChatLoading(false);
+    setSelectedToolId(toolId);
+    if (!preserveDraft) { draftRef.current = ''; setDraft(''); }
+    invalidateRemoteEstimate();
+    setRemoteCurrency('');
+    setRemoteCurrencyOptions([]);
+    setRemoteBudgetInput('');
+    setJenniferArmed(false);
+    if (resetRequestTime) setSelectedJenniferProjectId(JENNIFER_AUTO_PROJECT);
+    resetSession(resetRequestTime);
+  }
+
   function chooseMode(toolId: string) {
     setError('');
     if (toolId === selectedToolId) return;
-    chatAbortRef.current?.abort();
-    chatAbortRef.current = null;
-    setChatLoading(false);
-    setSelectedToolId(toolId);
-    setDraft('');
-    setMessages([]);
-    setActiveRequest(null);
-    setOutcome(null);
-    setWorkflowStatus('ready');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
+    if (running || !confirmAmcReplacement(() => chooseMode(toolId))) return;
+    // Preserve the existing distinction: mode changes retain the request time
+    // until the new route restores it; a new chat resets it immediately.
+    resetConversation(toolId, false, true);
     router.replace(`/chat?tool=${encodeURIComponent(toolId)}`, { scroll: false });
   }
 
   function startNewChat() {
-    chatAbortRef.current?.abort();
-    chatAbortRef.current = null;
-    setChatLoading(false);
-    setSelectedToolId(AUTO_MODE);
-    setDraft('');
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
+    if (running || !confirmConversationReplacement(startNewChat)) return;
+    resetConversation(AUTO_MODE, true);
     setError('');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
     closeSidebarOnSmallScreen();
+    router.push('/chat');
   }
 
   function changeProviderRoute(field: string, value: string) {
-    const next = { ...providerRoutingRef.current, [field]: value };
+    const next = { ...routingDraft.state.config, [field]: value };
+    if (field === 'textGeneration' || field === 'textGenerationModel') next.textSelectionMode = 'manual';
+    setModelSelectionNote('');
+    invalidateRemoteEstimate();
+    setRemoteCurrency('');
+    setRemoteBudgetInput('');
     if (field === 'textGeneration' && isTextModelProvider(value))
       next.textGenerationModel = textModelProviderDefinition(value).defaultModel;
-    providerRoutingRef.current = next;
-    setProviderRouting(next);
-    setError('');
-    if (providerSaveTimerRef.current !== null)
-      window.clearTimeout(providerSaveTimerRef.current);
-    providerSaveTimerRef.current = window.setTimeout(() => {
-      void operationRequest('/api/sky/provider-connections', 'PUT', {
-        provider: 'routing',
-        status: 'ready',
-        config: next,
-      }).catch((reason) => {
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : 'Provider設定を保存できませんでした。',
-        );
-      });
-    }, 250);
-  }
-
-  function refreshConnectedMcp() {
-    if (!deviceToken()) return setMcpServers([]);
-    void listMcpConnections()
-      .then(setMcpServers)
-      .catch(() => setMcpServers([]));
+    routingDraft.session.edit(next);
   }
 
   function updateDraft(value: string) {
+    draftRef.current = value;
     setDraft(value);
+    invalidateRemoteEstimate();
+    setRemoteBudgetInput('');
     setError('');
   }
 
   function chooseQuickRequest(value: string) {
     updateDraft(value);
+    requestAnimationFrame(() => composerRef.current?.focus());
+  }
+
+  function reviseJenniferPlan() {
+    if (!coordinationPlan || running || chatLoading) return;
+    const originalRequest = messages.find(
+      (message) => message.id === `${coordinationPlan.requestId}-me`,
+    );
+    updateDraft(originalRequest?.text ?? coordinationPlan.requestSummary);
+    setJenniferArmed(true);
+    setSelectedJenniferProjectId(
+      coordinationPlan.project?.id ?? JENNIFER_AUTO_PROJECT,
+    );
+    requestAnimationFrame(() => composerRef.current?.focus());
+  }
+
+  const refreshJenniferExecution = useCallback(async (
+    plan: JenniferCoordinationPlan,
+    showLoading = false,
+  ) => {
+    if (showLoading)
+      setJenniferExecution((current) => ({ ...current, loading: true }));
+    try {
+      const [goalResponse, jobsResponse] = await Promise.all([
+        fetch(`/api/amc?coordinationPlanId=${encodeURIComponent(plan.id)}`, {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(10000),
+        }),
+        fetch('/api/work-jobs', {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(10000),
+        }),
+      ]);
+      const goalPayload = await goalResponse.json() as { job?: WorkJob | null; projection?: JenniferExecutionState['projection']; error?: string };
+      const jobsPayload = await jobsResponse.json() as { jobs?: WorkJob[]; error?: string };
+      if (!goalResponse.ok)
+        throw new Error(goalPayload.error || 'JenniferのGoalを読み込めませんでした。');
+      if (!jobsResponse.ok)
+        throw new Error(jobsPayload.error || '担当siの仕事を読み込めませんでした。');
+      const rootJob = goalPayload.job?.amcGoal ? goalPayload.job : null;
+      const taskJobs = (jobsPayload.jobs ?? []).filter(
+        (job) => rootJob && job.coordination?.rootJobId === rootJob.id &&
+          job.coordination.planId === plan.id,
+      );
+      setJenniferExecution({
+        rootJob,
+        taskJobs,
+        report: rootJob?.amcGoal
+          ? buildJenniferExecutionReport(rootJob.amcGoal)
+          : null,
+        projection: goalPayload.projection ?? null,
+        loading: false,
+      });
+      setJenniferExecutionError('');
+      return { rootJob, taskJobs };
+    } catch (cause) {
+      setJenniferExecution((current) => ({ ...current, loading: false }));
+      setJenniferExecutionError(
+        cause instanceof Error ? cause.message : 'Jenniferの実行状態を確認できませんでした。',
+      );
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!coordinationPlan) {
+      let active = true;
+      void Promise.resolve().then(() => {
+        if (active)
+          setJenniferExecution({ rootJob: null, taskJobs: [], report: null, projection: null, loading: false });
+      });
+      return () => { active = false; };
+    }
+    if (workView) {
+      return;
+    }
+    let active = true;
+    void Promise.resolve().then(() => {
+      if (active) return refreshJenniferExecution(coordinationPlan, true);
+    });
+    const timer = window.setInterval(() => {
+      if (active) void refreshJenniferExecution(coordinationPlan);
+    }, 10000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [coordinationPlan, refreshJenniferExecution, workView]);
+
+  useEffect(() => {
+    if (workView) return;
+    const controller = new AbortController();
+    void fetch('/api/amc?jennifer=1', { cache: 'no-store', signal: controller.signal })
+      .then(async (response) => {
+        const payload = await response.json() as { jobs?: WorkJob[] };
+        if (response.ok) setSavedJenniferGoals(payload.jobs ?? []);
+      }).catch(() => {});
+    return () => controller.abort();
+  }, [workView]);
+
+  function restoreJenniferGoal(job: WorkJob) {
+    const reference = job.amcGoal?.coordinationRef as { planSnapshot?: unknown } | undefined;
+    if (!isJenniferCoordinationPlan(reference?.planSnapshot)) {
+      setJenniferExecutionError('この旧Jennifer記録には再構成用snapshotがありません。読み取り履歴として確認してください。');
+      return;
+    }
+    setCoordinationPlan(reference.planSnapshot);
+  }
+
+  async function confirmJenniferGoal() {
+    if (!coordinationPlan || jenniferExecutionBusy) return;
+    setJenniferExecutionBusy(true);
+    setJenniferExecutionError('');
+    let submission = jenniferGoalSubmission.current;
+    if (!submission || submission.planId !== coordinationPlan.id) {
+      submission = {
+        planId: coordinationPlan.id,
+        jobId: crypto.randomUUID(),
+      };
+      jenniferGoalSubmission.current = submission;
+    }
+    try {
+      const response = await fetch('/api/amc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: submission.jobId, jenniferPlan: coordinationPlan }),
+        signal: AbortSignal.timeout(20000),
+      });
+      const payload = await response.json() as { job?: WorkJob; error?: string };
+      if (!response.ok || !payload.job?.amcGoal)
+        throw new Error(payload.error || 'GoalをZemaへ保存できませんでした。');
+      jenniferGoalSubmission.current = null;
+      await refreshJenniferExecution(coordinationPlan);
+    } catch (cause) {
+      // Do not create another ID after a lost response. Reconcile the saved
+      // plan first; a retry keeps the same body and ID in the ref above.
+      const reconciled = await refreshJenniferExecution(coordinationPlan);
+      if (!reconciled?.rootJob)
+        setJenniferExecutionError(
+          cause instanceof Error ? cause.message : 'Goalの保存結果を確認できませんでした。',
+        );
+    } finally {
+      setJenniferExecutionBusy(false);
+    }
+  }
+
+  async function runJenniferOwnerAction(
+    operation: 'approve_inventory' | 'approve_delivery' | 'pause' | 'stop' | 'resume' | 'accept',
+  ) {
+    const rootJob = jenniferExecution.rootJob;
+    if (!coordinationPlan || !rootJob?.amcGoal || jenniferExecutionBusy) return;
+    const pending = jenniferMutationSubmission.current;
+    if (pending && (pending.jobId !== rootJob.id || pending.operation !== operation)) {
+      setJenniferExecutionError('前のJennifer操作の結果が未確認です。同じ操作を再試行してから別の操作へ進んでください。');
+      return;
+    }
+    setJenniferExecutionBusy(true);
+    setJenniferExecutionError('');
+    try {
+      const resolutions = coordinationPlan.amc.goalContract.unresolvedQuestions.map((question) => ({
+        question,
+        ...(jenniferQuestionResolutions[question] ?? { disposition: 'deferred' as const, note: '' }),
+      }));
+      const body = pending?.body ?? {
+        jobId: rootJob.id, revision: rootJob.revision,
+        jennifer: { id: crypto.randomUUID(), operation,
+          ...(operation === 'approve_inventory' ? { resolutions } : {}) },
+      };
+      jenniferMutationSubmission.current = { jobId: rootJob.id, operation, body };
+      const response = await fetch('/api/amc', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(20000),
+      });
+      const payload = await response.json() as { job?: WorkJob; error?: string };
+      if (!response.ok) {
+        jenniferMutationSubmission.current = null;
+        throw new Error(payload.error || 'Jenniferの操作をZemaへ保存できませんでした。');
+      }
+      if (!payload.job?.amcGoal)
+        throw new Error('Jenniferの操作結果を確認できませんでした。同じ操作を再試行してください。');
+      jenniferMutationSubmission.current = null;
+      await refreshJenniferExecution(coordinationPlan);
+    } catch (cause) {
+      setJenniferExecutionError(cause instanceof Error ? cause.message : 'Jenniferの操作結果を確認できませんでした。');
+    } finally { setJenniferExecutionBusy(false); }
+  }
+
+  async function reviseSavedJenniferGoal() {
+    const rootJob = jenniferExecution.rootJob;
+    if (!coordinationPlan || !rootJob?.amcGoal || rootJob.amcGoal.state !== 'paused' ||
+      !jenniferRevisionDraft.trim() || jenniferExecutionBusy) return;
+    const pending = jenniferMutationSubmission.current;
+    if (pending && (pending.jobId !== rootJob.id || pending.operation !== 'revise')) {
+      setJenniferExecutionError('前のJennifer操作の結果が未確認です。同じ操作を再試行してから計画を変更してください。');
+      return;
+    }
+    const revisedPlan = pending?.plan ?? createJenniferCoordinationPlan(
+        jenniferRevisionDraft,
+        `${coordinationPlan.requestId}-revision-${(jenniferExecution.projection?.plan?.revision ?? 1) + 1}`,
+        coordinationPlan.project,
+        jenniferKnowledge,
+      );
+    setJenniferExecutionBusy(true);
+    setJenniferExecutionError('');
+    try {
+      const body = pending?.body ?? { jobId: rootJob.id, revision: rootJob.revision,
+        jennifer: { id: crypto.randomUUID(), operation: 'revise', plan: revisedPlan } };
+      jenniferMutationSubmission.current = { jobId: rootJob.id, operation: 'revise', body, plan: revisedPlan };
+      const response = await fetch('/api/amc', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(20000),
+      });
+      const payload = await response.json() as { job?: WorkJob; error?: string };
+      if (!response.ok) {
+        jenniferMutationSubmission.current = null;
+        throw new Error(payload.error || '計画の差分revisionを保存できませんでした。');
+      }
+      if (!payload.job?.amcGoal)
+        throw new Error('計画revisionの保存結果を確認できませんでした。同じ操作を再試行してください。');
+      jenniferMutationSubmission.current = null;
+      setCoordinationPlan(revisedPlan);
+      setJenniferRevisionDraft('');
+      await refreshJenniferExecution(revisedPlan);
+    } catch (cause) {
+      setJenniferExecutionError(cause instanceof Error ? cause.message : '計画修正を確認できませんでした。');
+    } finally { setJenniferExecutionBusy(false); }
+  }
+
+  async function prepareJenniferTask(taskId: string) {
+    const rootJob = jenniferExecution.rootJob;
+    const goal = rootJob?.amcGoal;
+    if (!coordinationPlan || !rootJob || !goal || jenniferExecutionBusy)
+      return;
+    const task = goal.tasks.find(({ id }) => id === taskId);
+    const planState = jenniferExecution.projection?.plan?.state;
+    if (!task || !amcSummary(goal).readyTaskIds.includes(task.id) ||
+      (task.id === 'task-inventory' ? planState !== 'inventory_approved' : planState !== 'delivery_approved')) {
+      setJenniferExecutionError('このleaf taskは前提、lock、同時実行枠のためまだ開始できません。');
+      return;
+    }
+    setJenniferExecutionBusy(true);
+    setJenniferExecutionError('');
+    try {
+      let taskJob = jenniferExecution.taskJobs.find(
+        (job) => job.coordination?.taskId === task.id && job.coordination.role === 'worker' &&
+          job.status !== 'cancelled',
+      );
+      if (!taskJob) {
+        const response = await fetch('/api/work-jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: crypto.randomUUID(),
+            title: task.title.slice(0, 120),
+            templateId: 'cloud-agent',
+            coordination: createJenniferTaskJobCoordination(
+              rootJob.id,
+              coordinationPlan.id,
+              task,
+              'worker',
+            ),
+          }),
+          signal: AbortSignal.timeout(20000),
+        });
+        const payload = await response.json() as { job?: WorkJob; error?: string };
+        if (!response.ok || !payload.job)
+          throw new Error(payload.error || '担当si用のZema jobを作成できませんでした。');
+        taskJob = payload.job;
+      }
+      const prompt = buildJenniferDispatchPrompt(goal, task.id);
+      setCloudWorkDraft({
+        prompt,
+        currency: 'USD',
+        maximumBudgetInput: '',
+        parentJobId: taskJob.id,
+        rootJobId: rootJob.id,
+        amcTaskId: task.id,
+        specialistProfile:
+          typeof task.specialistProfile === 'string'
+            ? task.specialistProfile
+            : task.squadId,
+        delegationRole: 'worker',
+      });
+      router.push(`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`);
+    } catch (cause) {
+      setJenniferExecutionError(
+        cause instanceof Error ? cause.message : '担当siへの実行準備を作れませんでした。',
+      );
+    } finally {
+      setJenniferExecutionBusy(false);
+    }
+  }
+
+  async function acceptJenniferGoal() {
+    const rootJob = jenniferExecution.rootJob;
+    const goal = rootJob?.amcGoal;
+    if (!coordinationPlan || !rootJob || !goal || jenniferExecutionBusy)
+      return;
+    if (goal.state !== 'active' || goal.tasks.some(({ status }) => status !== 'done')) {
+      setJenniferExecutionError('全leaf taskの独立検収が終わるまでGoalを最終受入できません。');
+      return;
+    }
+    await runJenniferOwnerAction('accept');
+  }
+
+  function selectJenniferProject(projectId: string) {
+    setSelectedJenniferProjectId(projectId);
+    setJenniferArmed(projectId !== JENNIFER_AUTO_PROJECT);
+    setCoordinationPlan(null);
     requestAnimationFrame(() => composerRef.current?.focus());
   }
 
@@ -827,20 +1188,76 @@ export default function SkyChatWorkspace() {
     const text = draft.trim();
     if (!text) return;
 
-    if (chatLoading) return;
+    if (submissionRef.current || chatLoading || running) return;
     const targetMcp = selectedMcpServer;
-    const routedRole = selectedTool || targetMcp ? null : routeSkyRequest(text);
+    const id = `chat-${crypto.randomUUID()}`;
+    const selectedJenniferProject = jenniferProjectPortfolio.projects.find(
+      (project) => project.id === selectedJenniferProjectId,
+    ) ?? null;
+    const requestedJenniferPlan = jenniferArmed && !selectedTool && !targetMcp
+      ? createJenniferCoordinationPlan(
+          text,
+          id,
+          selectedJenniferProject
+            ? {
+                id: selectedJenniferProject.id,
+                displayName: selectedJenniferProject.displayName,
+                managerAgentId: selectedJenniferProject.managerAgentId,
+                managerLabel: selectedJenniferProject.managerLabel,
+                sourceRefs: selectedJenniferProject.sourceRefs,
+              }
+            : null,
+          jenniferKnowledge,
+        )
+      : null;
+    const routedRole = selectedTool || targetMcp || requestedJenniferPlan
+      ? null
+      : routeSkyRequest(text);
     const routedTool = routedRole
       ? (connectedApps.find((item) => item.id === routedRole.toolId) ?? null)
       : null;
     const tool = selectedTool ?? routedTool;
     const toolId = targetMcp ? mcpMode(targetMcp.id) : tool?.id;
     const suggestedToolId = routedRole?.toolId;
-    const id = `chat-${crypto.randomUUID()}`;
     const nextThreadId = threadId || crypto.randomUUID();
 
     const conversational = !toolId && !routedRole;
-    if (remoteTextProvider) {
+    const isAmc = toolId === 'rockstar-amc';
+    if (text.length > skyRequestLimit(toolId)) {
+      setError(`依頼は${skyRequestLimit(toolId).toLocaleString()}文字以内にしてください。`);
+      return;
+    }
+    if (!confirmAmcReplacement(() => { void sendMessage(event); })) return;
+    submissionRef.current = true;
+    let requestProvider = textProvider;
+    let requestModel = providerRouting.textGenerationModel || textProviderDefinition.defaultModel;
+    if (!requestedJenniferPlan && !isAmc && providerRouting.textSelectionMode !== 'manual') {
+      setChatLoading(true);
+      const selectionController = new AbortController();
+      chatAbortRef.current = selectionController;
+      activeChatThreadRef.current = requestedThreadId;
+      try {
+        const response = await fetch('/api/llm/select', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: text, allowCloud: allowFreeCloud, baseUrl: providerRouting.localLlmBaseUrl || undefined }),
+          signal: AbortSignal.any([selectionController.signal, AbortSignal.timeout(10000)]),
+        });
+        const result = await response.json() as { selection?: { provider: string; model: string; reason: string }; error?: string };
+        if (selectionController.signal.aborted) return;
+        if (!response.ok || !result.selection || !isTextModelProvider(result.selection.provider))
+          throw new Error(result.error || 'モデルを選択できませんでした。');
+        requestProvider = result.selection.provider;
+        requestModel = result.selection.model;
+        setModelSelectionNote(`${textModelProviderDefinition(requestProvider).name} / ${requestModel}: ${result.selection.reason}`);
+      } catch (reason) {
+        if (selectionController.signal.aborted) return;
+        setError(reason instanceof Error ? reason.message : 'モデルを選択できませんでした。');
+        submissionRef.current = false;
+        setChatLoading(false);
+        return;
+      }
+    }
+    if (!requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
         .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
@@ -851,6 +1268,9 @@ export default function SkyChatWorkspace() {
       const estimateSystem = tool
         ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
         : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
+      const controller = new AbortController();
+      estimateAbortRef.current = controller;
+      const isCurrent = () => estimateAbortRef.current === controller && !controller.signal.aborted;
       setChatLoading(true);
       setError('');
       try {
@@ -860,39 +1280,44 @@ export default function SkyChatWorkspace() {
         if (remoteBudgetInput.trim() && parsedBudget === null)
           throw new Error(`${remoteCurrency || '選択した通貨'}の上限額を確認してください。`);
         const result = await remoteAiTextRequest<RemoteAiEstimateResult>('/api/llm/estimate', 'POST', {
-          provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
+          provider: requestProvider,
+          model: requestModel,
           system: estimateSystem,
           prompt: estimatePrompt.slice(-20_000),
           maxOutputTokens: 1_200,
           currency: remoteCurrency || undefined,
           maximumBudgetMinor: parsedBudget ?? undefined,
-        });
+        }, 15_000, (path, options) => fetch(path, { ...options, signal: options?.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal }));
+        if (!isCurrent()) return;
         if (!result.estimate) throw new Error('料金見積を確認できませんでした。状態を更新してください。');
         setRemoteEstimate(result);
         setRemoteCurrency(result.estimate.currency);
         setRemoteCurrencyOptions([]);
         setError('料金上限を確認しました。現在は見積のみで、Providerへの実行は未接続です。');
       } catch (reason) {
+        if (!isCurrent()) return;
         setRemoteEstimate(null);
         if (reason instanceof RemoteAiTextClientError) {
           if (reason.status === 401) setNeedsSignin(true);
           if (reason.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteCurrencyOptions(reason.currencies);
         }
-        setError(reason instanceof Error ? reason.message : 'クラウドAIの料金見積を取得できませんでした。');
+        setError(reason instanceof Error ? reason.message : 'クラウドsiの料金見積を取得できませんでした。');
       } finally {
-        setChatLoading(false);
+        if (isCurrent()) {
+          estimateAbortRef.current = null;
+          submissionRef.current = false;
+          setChatLoading(false);
+        }
       }
       return;
     }
     setRemoteEstimate(null);
-    if (avocadoHandoff) {
-      setAvocadoHandoff({ ...avocadoHandoff, requestId: id });
-      setAvocadoFeedback('Skyの返答を確認し、プランに残す内容を選んでください。');
-    }
+    draftRef.current = '';
     setDraft('');
     setError('');
     setOutcome(null);
+    setCoordinationPlan(requestedJenniferPlan);
+    setJenniferArmed(false);
     const nextMessages: ChatEntry[] = [
       ...messages,
       {
@@ -901,7 +1326,11 @@ export default function SkyChatWorkspace() {
         text,
         tool: toolId,
       },
-      ...(!conversational ? [{
+      ...(requestedJenniferPlan ? [{
+        id: `${id}-route`,
+        side: 'sky',
+        text: 'Jenniferが複数工程の進め方を整理しました。これは提案だけで、データ閲覧・Tool実行・承認・完了判定は行っていません。',
+      } as ChatEntry] : !conversational ? [{
         id: `${id}-route`,
         side: 'sky',
         text: targetMcp
@@ -920,13 +1349,13 @@ export default function SkyChatWorkspace() {
           text,
           toolId,
           executionProvider: 'local-model' as const,
-          plannerProvider: textProvider,
+          plannerProvider: requestProvider,
           plannerModel:
-            providerRouting.textGenerationModel || textProviderDefinition.defaultModel,
+            requestModel,
         }
       : null;
     setMessages(nextMessages);
-    if (conversational || toolId) {
+    if (!requestedJenniferPlan && !isAmc && (conversational || toolId)) {
       const controller = new AbortController();
       chatAbortRef.current?.abort();
       chatAbortRef.current = controller;
@@ -939,24 +1368,25 @@ export default function SkyChatWorkspace() {
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      void fetch('/api/llm/local-agent', {
+      void fetch(requestProvider === 'pollinations' ? '/api/llm/free-cloud' : '/api/llm/local-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
-          baseUrl: textProvider === 'local-model'
+          id: id.replace(/^chat-/, ''), consent: allowFreeCloud,
+          provider: requestProvider,
+          model: requestModel,
+          baseUrl: requestProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
           context: tool
             ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
             : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
-          prompt: selectedToolPrompt.slice(-20_000),
+          prompt: requestProvider === 'pollinations' ? text : selectedToolPrompt.slice(-20_000),
         }),
         signal: controller.signal,
       }).then(async (response) => {
-        const result = await response.json() as LocalAgentResult;
-        if (!response.ok || !result.text) throw new Error(result.code || 'TEXT_GENERATION_FAILED');
+        const result = await response.json() as LocalAgentResult & {error?:string; usage?:{inputTokens:number;outputTokens:number;chargeMinor:number}; reportedModel?:string};
+        if (!response.ok || !result.text) throw new Error(result.error || result.code || 'TEXT_GENERATION_FAILED');
         const toolArtifacts = (result.artifacts ?? [])
           .filter((artifact) => artifact.tool !== 'sky_route')
           .map((artifact) => artifact.content.trim())
@@ -967,6 +1397,7 @@ export default function SkyChatWorkspace() {
           .join(' / ');
         return [
           result.text.trim(),
+          ...(result.usage ? [`無料Cloud: ${result.reportedModel || requestModel} · 入力 ${result.usage.inputTokens} / 出力 ${result.usage.outputTokens} tokens · $0.00`] : []),
           ...toolArtifacts,
           executionSummary ? `ローカルAgent実行記録: ${executionSummary}` : '',
         ].filter(Boolean).join('\n\n');
@@ -980,7 +1411,11 @@ export default function SkyChatWorkspace() {
       }).catch((reason) => {
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
-        const detail = textProvider === 'local-model'
+        const detail = requestProvider === 'pollinations' ? (code || '無料Cloudの結果を確認できません。') : code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
+          ? 'この接続先はクラウド扱いですが、信頼できる料金見積・予算予約・利用明細が未接続です。Providerへは送信していません。'
+          : code === 'EXPLICIT_REMOTE_CONSENT_REQUIRED'
+            ? '設定された接続先は外部サーバーです。料金確認と本人の明示承認が整うまで実行できません。Providerへは送信していません。'
+            : textProvider === 'local-model'
           ? code === 'LOCAL_LLM_BRIDGE_REQUIRED'
             ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
             : code === 'INVALID_AGENT_PLAN'
@@ -996,15 +1431,17 @@ export default function SkyChatWorkspace() {
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
           : current.map((message) => message.id === `${id}-route`
-            ? { ...message, text: `${message.text}\n\n会話AIは未接続です。Toolの入力と実行は下のカードから使えます。` }
+            ? { ...message, text: `${message.text}\n\n会話siは未接続です。Toolの入力と実行は下のカードから使えます。` }
             : message));
       }).finally(() => {
         if (chatAbortRef.current === controller) {
           chatAbortRef.current = null;
+          submissionRef.current = false;
           setChatLoading(false);
         }
       });
     } else {
+      queueMicrotask(() => { submissionRef.current = false; });
       setChatLoading(false);
     }
     if (toolId) {
@@ -1016,21 +1453,13 @@ export default function SkyChatWorkspace() {
       const createdAt = currentTimestamp();
       const sessionToolId = toolId ?? AUTO_MODE;
       try {
-        setRecentThreads(saveZemaChatSession({
-          version: 1,
-          id: nextThreadId,
-          toolId: sessionToolId,
-          createdAt,
-          messages: nextMessages,
-          activeRequest: nextRequest,
-          workflowStatus: 'ready',
-          outcome: null,
-        }));
-        setThreadId(nextThreadId);
-        setThreadCreatedAt(createdAt);
-        setSessionReady(true);
+        beginSession({
+          version: 1, id: nextThreadId, toolId: sessionToolId, createdAt,
+          messages: nextMessages, activeRequest: nextRequest, workflowStatus: 'ready', outcome: null,
+          coordination: requestedJenniferPlan,
+        });
         router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
-      } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
+      } catch { /* Keep the conversation available in this tab if storage or navigation is blocked. */ }
     }
   }
 
@@ -1064,17 +1493,48 @@ export default function SkyChatWorkspace() {
       title="Zema"
       contentClassName="sky-chat-page"
       running={running}
+        onClickCapture={(event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+          const href = link?.getAttribute('href');
+          if (link && href?.startsWith('/') && !href.startsWith('//') && !link.hasAttribute('data-zema-new-chat') &&
+            link.getAttribute('target') !== '_blank' && !link.hasAttribute('download') &&
+            (running || !confirmConversationReplacement(() => {
+            router.push(href);
+          }))) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
     >
+      <Dialog open={!!amcReplacement} onOpenChange={(open) => { if (!open) setAmcReplacement(null); }}>
+        <DialogContent>
+          <DialogTitle>{amcReplacement?.draft ? amcReplacement.amc ? '未送信の依頼とAMCの未保存入力があります' : '未送信の依頼があります' : 'AMCに未保存の入力があります'}</DialogTitle>
+          <DialogDescription>{amcReplacement?.draft ? `別の会話や画面に移ると、未送信の依頼${amcReplacement.amc ? 'とAMCの未保存入力' : ''}は消えます。入力を続けるか、破棄して進んでください。` : '別の依頼や画面に移ると、入力中の内容は消えます。保存済みのGoalは残ります。'}</DialogDescription>
+          <button type="button" className="rock-button" onClick={() => setAmcReplacement(null)}>入力を続ける</button>
+          <button type="button" className="rock-button" onClick={() => {
+            const pending = amcReplacement;
+            amcDirtyRef.current = false;
+            if (pending?.draft) { draftRef.current = ''; setDraft(''); }
+            setAmcReplacement(null);
+            pending?.resume();
+          }}>未保存の入力を破棄して進む</button>
+        </DialogContent>
+      </Dialog>
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
         aria-label="Zemaスレッド"
+
         >
         <aside className="zema-sidebar" aria-label="Zema Botと会話">
           <div className="zema-sidebar-top">
             <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Zema <small>WORKSPACE</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
-          <Link className="zema-new-chat" href="/chat" onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
+          <Link className="zema-new-chat" data-zema-new-chat href="/chat" onClick={(event) => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault(); startNewChat();
+          }}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">ツールと会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="ツール・会話を検索" /></label>
           <div className="zema-sidebar-section-title"><span>ツール</span><span>{visibleBotApps.length}</span></div>
           <div className="zema-character-list">
@@ -1136,13 +1596,17 @@ export default function SkyChatWorkspace() {
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/zema/compose"><Sparkles size={16} /><span>仕事を組み立てる</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
-            <div><span>AVOKADO / ROCKSTAROS</span><h1>Zema</h1></div>
+            <div>
+              <span>AVOKADO / ZEMA WORK SYSTEM · ROCKSTAROS</span>
+              <h1>Zema</h1>
+              <strong className="zema-jennifer-lead">Jennifer · Chief of Staff</strong>
+            </div>
           </div>
           {selectedTool || selectedMcpServer ? (
             <div className="zema-active-bot" title={selectedTool?.name ?? selectedMcpServer?.name}>
@@ -1150,7 +1614,7 @@ export default function SkyChatWorkspace() {
               <div><small>選択中のツール</small><strong>{selectedTool?.name ?? selectedMcpServer?.name}</strong></div>
             </div>
           ) : <span className="zema-auto-label">ツールは依頼に合わせて選択</span>}
-          <nav aria-label="Zemaナビゲーション">
+          <nav aria-label="Jenniferナビゲーション">
             <Link href="/" aria-label="ホームへ戻る">
               <House size={18} />
               <span>ホーム</span>
@@ -1162,7 +1626,7 @@ export default function SkyChatWorkspace() {
             <Link
               href="/chat"
               aria-current={!workView ? 'page' : undefined}
-              aria-label="Zemaの会話を開く"
+              aria-label="Jenniferの会話を開く"
             >
               <MessageCircle size={18} />
               <span>会話</span>
@@ -1170,11 +1634,12 @@ export default function SkyChatWorkspace() {
             <Link
               href="/chat?view=work"
               aria-current={workView ? 'page' : undefined}
-              aria-label="Zemaで仕事を管理する"
+              aria-label="Zemaの仕事管理を開く"
             >
               <ListChecks size={18} />
               <span>仕事</span>
             </Link>
+            <Link href="/zema/compose" aria-label="仕事を組み立てる"><Sparkles size={18} /><span>組み立てる</span></Link>
           </nav>
         </header>
 
@@ -1186,7 +1651,7 @@ export default function SkyChatWorkspace() {
             <header>
               <div>
                 <small>ZEMA WORK CONTROL</small>
-                <h2 id="chat-work-title">仕事をZemaで管理</h2>
+                <h2 id="chat-work-title">Zemaの仕事をJenniferから管理</h2>
               </div>
               <p>
                 作成、手順の実行、確認、中止、結果の記録をここに集約します。
@@ -1253,14 +1718,10 @@ export default function SkyChatWorkspace() {
                 </div>
               )}
             </section>
-            <Workbench embedded cloudDraft={cloudWorkDraft} />
+            <Workbench embedded cloudDraft={cloudWorkDraft} initialPackageKey={preferredPackage} packageRuntimeServers={mcpServers} />
           </section>
-        ) : executionBlocked ? (
-          <div className="sky-chat-centered">
-            <ExecutionSignin state={accessState} />
-          </div>
         ) : loading ? (
-          <div className="sky-chat-centered">Zemaを読み込んでいます…</div>
+          <div className="sky-chat-centered">Jenniferを読み込んでいます…</div>
         ) : (
           <>
             <div
@@ -1269,14 +1730,33 @@ export default function SkyChatWorkspace() {
               aria-live="polite"
               aria-relevant="additions"
             >
+              {executionBlocked && (
+                <output className="zema-plan-connection">
+                  <div>
+                    <strong>Jenniferの計画整理は使えます</strong>
+                    <p>
+                      {accessState === 'checking'
+                        ? 'Zemaの実行接続を確認中です。Goal整理とAMC分解はこのまま利用できます。'
+                        : 'Goal整理とAMC分解は端末内で使えます。Tool実行・Job・ReceiptはZemaの接続確認後に利用できます。'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={accessState === 'checking'}
+                    onClick={requestExecutionAccessCheck}
+                  >
+                    {accessState === 'checking' ? '確認中…' : '実行接続を再確認'}
+                  </button>
+                </output>
+              )}
               {displayMessages.length > 0 && <div className="sky-chat-day">今日</div>}
               {displayMessages.length === 0 && (
                 <section className="zema-empty" aria-labelledby="zema-empty-title">
-                  <span className="zema-empty-kicker">AVOKADO / ZEMA</span>
-                  <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : '次の一歩を、ここから。'}</h2>
+                  <span className="zema-empty-kicker">JENNIFER · POWERED BY ZEMA</span>
+                  <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : 'プロジェクト全体を、ここから。'}</h2>
                   <p className="zema-empty-lead">{selectedTool || selectedMcpServer
                     ? '依頼を整理し、使える範囲と次の手順をこの会話で確認できます。'
-                    : '目的をそのまま入力してください。使えるツールを探し、進め方を一緒に整理します。'}</p>
+                    : 'プロジェクトを選ぶか、目的をそのまま入力してください。担当siと現在の記録を確認し、Zemaの仕事として進めます。'}</p>
                   {selectedTool && (
                     <div className="zema-empty-next">
                       <div className="zema-empty-tool-heading">
@@ -1319,7 +1799,7 @@ export default function SkyChatWorkspace() {
                   >
                     {message.side === 'sky' && characterDetails(message.tool ?? 'zema', 48)}
                     <div>
-                      {message.side === 'sky' && <small>Zema</small>}
+                      {message.side === 'sky' && <small>Jennifer</small>}
                       <p className="zema-message-text">{message.text}</p>
                       {message.side === 'sky' && message.suggestedTool && (
                         <Link className="sky-chat-inline-action" href="/sky">
@@ -1330,6 +1810,308 @@ export default function SkyChatWorkspace() {
                   </div>
                 );
               })}
+
+              {!coordinationPlan && savedJenniferGoals.length > 0 && (
+                <section className="zema-jennifer-card" aria-label="保存済みJennifer Goals">
+                  <header>
+                    <span className="zema-jennifer-mark" aria-hidden="true"><Sparkles size={18} /></span>
+                    <div><small>ZEMA DURABLE HISTORY</small><h2>保存済みJennifer Goals</h2></div>
+                    <strong>{savedJenniferGoals.length}件</strong>
+                  </header>
+                  <p className="zema-jennifer-intro">sessionStorageではなく、ZemaのAMC・Receipt・実行台帳から再開します。</p>
+                  <ol className="zema-jennifer-steps">
+                    {savedJenniferGoals.slice(0, 12).map((job, index) => <li key={job.id}>
+                      <span>{index + 1}</span><div><strong>{job.title}</strong>
+                        <p>{job.amcGoal?.state ?? job.status} · revision {job.amcGoal?.revision ?? job.revision}</p>
+                        <button type="button" onClick={() => restoreJenniferGoal(job)}>開いて再開</button>
+                      </div>
+                    </li>)}
+                  </ol>
+                </section>
+              )}
+
+              {coordinationPlan && (
+                <section
+                  ref={coordinationPlanRef}
+                  className="zema-jennifer-plan"
+                  aria-labelledby={`jennifer-plan-${coordinationPlan.id}`}
+                >
+                  <header>
+                    <span className="zema-jennifer-mark" aria-hidden="true">
+                      <Sparkles size={18} />
+                    </span>
+                    <div>
+                      <small>JENNIFER COORDINATION</small>
+                      <h2 id={`jennifer-plan-${coordinationPlan.id}`}>
+                        Jenniferの進め方
+                      </h2>
+                    </div>
+                    <strong>
+                      {jenniferExecution.rootJob?.amcGoal?.state === 'accepted'
+                        ? '最終受入済み'
+                        : jenniferExecution.rootJob?.amcGoal?.state === 'draft'
+                          ? '草案保存済み・承認待ち'
+                          : jenniferExecution.rootJob?.amcGoal?.state === 'paused'
+                            ? '一時停止中'
+                        : jenniferExecution.rootJob?.amcGoal
+                          ? 'Zema実行管理中'
+                          : jenniferExecution.loading
+                            ? '保存状態を確認中'
+                            : 'Goal確認待ち'}
+                    </strong>
+                  </header>
+                  <p className="zema-jennifer-intro">
+                    {coordinationPlan.project
+                      ? `${coordinationPlan.project.displayName}を${coordinationPlan.project.managerLabel}が担当します。`
+                      : '全体依頼を複数工程に分けました。'}
+                    Jenniferは割当と確認を行い、実行・承認・ReceiptはZemaと既存Brokerが管理します。
+                  </p>
+                  <section className="zema-jennifer-goal" aria-label="Jenniferが言語化したGoal">
+                    <small>
+                      GOAL CONTRACT · {jenniferExecution.rootJob?.amcGoal ? 'ZEMA永続保存済み' : '草案未保存'}
+                    </small>
+                    <h3>{coordinationPlan.amc.goalContract.goal}</h3>
+                    <p>{coordinationPlan.amc.goalContract.intent}</p>
+                    {coordinationPlan.amc.goalContract.unresolvedQuestions.length > 0 && (
+                      <ul>
+                        {coordinationPlan.amc.goalContract.unresolvedQuestions.map((question) => (
+                          <li key={question}>
+                            <strong>{question}</strong>
+                            {jenniferExecution.rootJob?.amcGoal?.state === 'draft' && <>
+                              <select
+                                aria-label={`${question}の扱い`}
+                                value={jenniferQuestionResolutions[question]?.disposition ?? 'deferred'}
+                                onChange={(event) => setJenniferQuestionResolutions((current) => ({
+                                  ...current, [question]: { disposition: event.target.value as 'answered' | 'deferred', note: current[question]?.note ?? '' },
+                                }))}
+                              >
+                                <option value="answered">回答して解決</option>
+                                <option value="deferred">理由付きで延期</option>
+                              </select>
+                              <input
+                                value={jenniferQuestionResolutions[question]?.note ?? ''}
+                                placeholder="回答または延期理由"
+                                maxLength={500}
+                                onChange={(event) => setJenniferQuestionResolutions((current) => ({
+                                  ...current, [question]: { disposition: current[question]?.disposition ?? 'deferred', note: event.target.value },
+                                }))}
+                              />
+                            </>}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {!jenniferExecution.rootJob && (
+                      <button
+                        type="button"
+                        className="rock-button"
+                        disabled={jenniferExecutionBusy || jenniferExecution.loading}
+                        onClick={() => void confirmJenniferGoal()}
+                      >
+                        草案をZemaへ保存（まだ実行しない）
+                      </button>
+                    )}
+                    {jenniferExecution.rootJob?.amcGoal?.state === 'draft' && (
+                      <button type="button" className="rock-button"
+                        disabled={jenniferExecutionBusy || coordinationPlan.amc.goalContract.unresolvedQuestions.some((question) => !jenniferQuestionResolutions[question]?.note.trim())}
+                        onClick={() => void runJenniferOwnerAction('approve_inventory')}>
+                        Goal Contractを承認し、読み取り調査だけ開始可能にする
+                      </button>
+                    )}
+                    {jenniferExecution.rootJob?.amcGoal && (
+                      <p>
+                        AMC revision {jenniferExecution.rootJob.amcGoal.revision} ·{' '}
+                        {jenniferExecution.report?.completed.length ?? 0}/
+                        {jenniferExecution.rootJob.amcGoal.tasks.length}件を独立検収済み
+                      </p>
+                    )}
+                  </section>
+                  {jenniferExecution.projection?.plan && (
+                    <section className="zema-jennifer-goal" aria-label="Jennifer実行制御">
+                      <small>PLAN REVISION {jenniferExecution.projection.plan.revision} · {jenniferExecution.projection.plan.state}</small>
+                      <h3>実行制御と費用</h3>
+                      {jenniferExecution.projection.costs.length === 0 ? <p>委任費用はまだありません。</p> : (
+                        <ul>{jenniferExecution.projection.costs.map((cost) => <li key={cost.currency}>
+                          {cost.currency}: 見積 {formatCurrencyMinor(cost.estimatedMinor, cost.currency)} · 上限 {formatCurrencyMinor(cost.maximumMinor, cost.currency)} · 予約 {formatCurrencyMinor(cost.reservedMinor, cost.currency)} · 実行中 {formatCurrencyMinor(cost.liveMinor, cost.currency)} · 確定 {formatCurrencyMinor(cost.settledMinor, cost.currency)} · 残り {formatCurrencyMinor(cost.remainingMinor, cost.currency)}{cost.unknownCount ? ` · 結果不明 ${cost.unknownCount}件` : ''}
+                        </li>)}</ul>
+                      )}
+                      {jenniferExecution.rootJob?.amcGoal?.state === 'active' && <>
+                        {jenniferExecution.projection.plan.state === 'inventory_approved' &&
+                          jenniferExecution.rootJob.amcGoal.tasks.find(({ id }) => id === 'task-inventory')?.status === 'done' && (
+                          <button type="button" className="rock-button" disabled={jenniferExecutionBusy} onClick={() => void runJenniferOwnerAction('approve_delivery')}>
+                            調査結果を確認し、実装・検証leafを有効にする
+                          </button>
+                        )}
+                        <button type="button" disabled={jenniferExecutionBusy} onClick={() => void runJenniferOwnerAction('pause')}>新規dispatchを一時停止</button>
+                        <button type="button" disabled={jenniferExecutionBusy} onClick={() => void runJenniferOwnerAction('stop')}>停止し、実行中Agentに取消要求</button>
+                      </>}
+                      {jenniferExecution.rootJob?.amcGoal?.state === 'paused' && (
+                        <>
+                          <button type="button" disabled={jenniferExecutionBusy || Boolean(jenniferExecution.projection.activeDelegations.length)} onClick={() => void runJenniferOwnerAction('resume')}>同じplan digestで再開</button>
+                          <textarea value={jenniferRevisionDraft} maxLength={800}
+                            placeholder="修正後に作りたいものを入力。新revisionの差分を保存し、承認を無効化します。"
+                            onChange={(event) => setJenniferRevisionDraft(event.target.value)} />
+                          <button type="button" disabled={jenniferExecutionBusy || Boolean(jenniferExecution.projection.activeDelegations.length) || !jenniferRevisionDraft.trim()}
+                            onClick={() => void reviseSavedJenniferGoal()}>
+                            差分を新しいplan revisionとして保存
+                          </button>
+                        </>
+                      )}
+                    </section>
+                  )}
+                  <details className="zema-jennifer-breakdown" open>
+                      <summary>
+                        Zema内AMCの逆算分解 ·{' '}
+                        {coordinationPlan.amc.nodes.filter(({ kind }) => kind === 'task').length}件
+                      </summary>
+                      <p>
+                        Goalから逆算し、必要な専門担当をleaf task単位で割り当てます。担当は実行時だけ起動し、報告はZemaへ戻します。
+                      </p>
+                      <ol>
+                        {coordinationPlan.amc.nodes
+                          .filter(({ kind }) => kind === 'task')
+                          .map((node, index) => {
+                            const task = jenniferExecution.rootJob?.amcGoal?.tasks.find(
+                              ({ id }) => id === node.id,
+                            );
+                            const ready = Boolean(
+                              task && jenniferExecution.rootJob?.amcGoal &&
+                              amcSummary(jenniferExecution.rootJob.amcGoal).readyTaskIds.includes(task.id) &&
+                              (task.id === 'task-inventory'
+                                ? jenniferExecution.projection?.plan?.state === 'inventory_approved'
+                                : jenniferExecution.projection?.plan?.state === 'delivery_approved'),
+                            );
+                            const taskJob = jenniferExecution.taskJobs.find(
+                              (job) => job.coordination?.taskId === node.id &&
+                                job.coordination.role === 'worker' && job.status !== 'cancelled',
+                            );
+                            return <li key={node.id}>
+                              <span>{index + 1}</span>
+                              <div>
+                                <strong>{node.title}</strong>
+                                <p>{node.objective}</p>
+                              <small>
+                                {node.ownerRole} · 前提{' '}
+                                {node.dependsOn.length ? node.dependsOn.join(', ') : 'なし'}
+                                {task ? ` · Zema: ${task.status}` : ''}
+                              </small>
+                              <details>
+                                <summary>参照するコードと合格条件</summary>
+                                <p>確認対象: {node.contextRefs.join(', ')}</p>
+                                <p>変更候補: {node.allowedPaths.join(', ')}</p>
+                                <p>返却物: {node.expectedOutputs.join(' / ')}</p>
+                                <ul>
+                                  {node.acceptanceCriteria.map((criterion) => (
+                                    <li key={criterion}>{criterion}</li>
+                                  ))}
+                                </ul>
+                              </details>
+                              {taskJob ? (
+                                <Link href={`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`}>
+                                  担当siのjobを開く <ArrowRight size={14} aria-hidden="true" />
+                                </Link>
+                              ) : ready ? (
+                                <button
+                                  type="button"
+                                  disabled={jenniferExecutionBusy}
+                                  onClick={() => void prepareJenniferTask(node.id)}
+                                >
+                                  {node.id === 'task-goal-contract' ? '確認記録済み' : '担当siへ実行準備'}
+                                </button>
+                              ) : null}
+                            </div>
+                            </li>;
+                          })}
+                      </ol>
+                  </details>
+                  <ol className="zema-jennifer-steps">
+                    {coordinationPlan.steps.map((step, index) => (
+                      <li key={step.id}>
+                        <span>{index + 1}</span>
+                        <div>
+                          <strong>{step.label}</strong>
+                          <p>{step.objective}</p>
+                          <small>
+                            {step.target.kind === 'amc'
+                              ? 'AMCでGoal候補を準備'
+                              : '既存のSky Tool / A2A Agentから選択'}
+                            {' · '}
+                            {jenniferDataLabel(step.dataClass)}
+                            {' · '}
+                            {jenniferEffectLabel(step.effect)}
+                          </small>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  <details className="zema-jennifer-criteria">
+                    <summary>完了条件と権限境界</summary>
+                    <ul>
+                      {coordinationPlan.acceptanceCriteria.map((criterion) => (
+                        <li key={criterion}>{criterion}</li>
+                      ))}
+                    </ul>
+                    <p>{coordinationPlan.completionRule}</p>
+                  </details>
+                  {jenniferExecution.report && (
+                    <section className="zema-jennifer-goal" aria-label="Jenniferの統合報告">
+                      <small>JENNIFER FINAL INTEGRATION · {jenniferExecution.report.overallStatus}</small>
+                      <h3>Jenniferの統合報告</h3>
+                      <p>{jenniferExecution.report.summary}</p>
+                      {jenniferExecution.report.completed.length > 0 && (
+                        <details>
+                          <summary>検収済み成果 {jenniferExecution.report.completed.length}件</summary>
+                          <ul>
+                            {jenniferExecution.report.completed.map((item) => (
+                              <li key={item.taskId}>
+                                {item.title} · 証拠 {item.evidence.length}件 · Receipt参照 {item.receiptRefs.length}件
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
+                      {jenniferExecution.report.unresolved.length > 0 && (
+                        <details open>
+                          <summary>未完了・要確認 {jenniferExecution.report.unresolved.length}件</summary>
+                          <ul>
+                            {jenniferExecution.report.unresolved.map((item) => (
+                              <li key={item.taskId}>
+                                <strong>{item.title}</strong> · {item.state}<br />
+                                {item.reason} 次: {item.nextAction}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
+                      {jenniferExecution.report.ownerAcceptance.status === 'ready' && (
+                        <button
+                          type="button"
+                          className="rock-button"
+                          disabled={jenniferExecutionBusy}
+                          onClick={() => void acceptJenniferGoal()}
+                        >
+                          統合報告を確認してGoalを最終受入
+                        </button>
+                      )}
+                    </section>
+                  )}
+                  {jenniferExecutionError && (
+                    <p role="alert" className="sky-chat-work-error">{jenniferExecutionError}</p>
+                  )}
+                  <footer>
+                    <p>
+                      データは既定で共有しません。各工程で対象を選び、既存Brokerの確認と承認を通します。
+                    </p>
+                    <button
+                      type="button"
+                      disabled={Boolean(jenniferExecution.rootJob)}
+                      onClick={reviseJenniferPlan}
+                    >
+                      依頼を直して再整理
+                    </button>
+                  </footer>
+                </section>
+              )}
 
               {activeRequest && relevantJobs.length > 0 && <details className="zema-activity"><summary>実行の詳細を見る</summary><ChatLiveProgress
                 jobs={relevantJobs}
@@ -1365,7 +2147,7 @@ export default function SkyChatWorkspace() {
                       </h2>
                     </div>
                     <span className={`is-${workflowStatus}`}>
-                      {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
+                      {activeTool?.id === 'rockstar-amc' && outcome?.ok ? '記録あり・実作業の完了とは別' : activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
                         ? '実行器待ち'
                         : workflowStatus === 'running'
                           ? '処理中'
@@ -1381,13 +2163,13 @@ export default function SkyChatWorkspace() {
                     </span>
                   </header>
                   <p className="sky-chat-local-llm-note">
-                    {activeTool?.runner === 'candidate-local'
+                    {activeTool?.id === 'rockstar-amc' ? 'Goalと意図を確認して計画を保存します。実作業・検収は個別に記録します。' : activeTool?.runner === 'candidate-local'
                       ? activeTool.origin === 'mr'
                         ? 'ローカル下書きのみ利用できます。元サービスへの接続、応募、送信、予定登録は行いません。'
                         : '実行器の接続条件のみ確認できます。ツール本体や外部サービスは実行しません。'
                       : '入力を確認して実行してください。結果はこの会話に表示されます。'}
                   </p>
-                  {activeTool && (
+                  {activeTool && activeTool.id !== 'rockstar-amc' && (
                     <details className="sky-chat-provider-routing">
                       <summary>ツールの接続設定</summary>
                       <p>この設定はZemaの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
@@ -1397,8 +2179,9 @@ export default function SkyChatWorkspace() {
                             <span>{field.label}</span>
                             <select
                               value={providerRouting[field.id] ?? ''}
-                              onChange={(event) => changeProviderRoute(field.id, event.target.value)}
+                              disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute(field.id, event.target.value)}
                             >
+                              {(field.capability === 'realtime_voice' || field.capability === 'telephony') && <option value="">利用しない・未選択</option>}
                               {adaptersForCapability(field.capability).map((adapter) => (
                                 <option key={adapter.id} value={adapter.id}>
                                   {adapter.name}
@@ -1414,7 +2197,7 @@ export default function SkyChatWorkspace() {
                           value={providerRouting.textGenerationModel ?? ''}
                           list="zema-local-model-presets"
                           placeholder="例: qwen3:8b"
-                          onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)}
+                          disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)}
                         />
                         <datalist id="zema-local-model-presets">
                           {localModelPresets.map((model) => (
@@ -1422,9 +2205,11 @@ export default function SkyChatWorkspace() {
                           ))}
                         </datalist>
                       </label>
+                      <ProviderDraftFeedback session={routingDraft.session} />
+                      {routingDraft.state.manualSave && <button type="button" disabled={routingDraft.disabled || routingDraft.state.conflict} onClick={() => void routingDraft.session.save('ready')}>設定を再保存</button>}
                     </details>
                   )}
-                  {!(activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local') && <details className="zema-workflow-details"><summary>進行状況を見る</summary><ol
+                  {activeTool?.id !== 'rockstar-amc' && !(activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local') && <details className="zema-workflow-details"><summary>進行状況を見る</summary><ol
                     className="sky-chat-workflow-steps"
                     aria-label="処理の流れ"
                   >
@@ -1464,7 +2249,15 @@ export default function SkyChatWorkspace() {
                     </li>
                   </ol></details>}
                   <div className="sky-chat-workflow-body">
-                    {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local' ? (
+                    {activeTool?.id === 'rockstar-amc' ? (
+                      <AmcToolRunner
+                        key={activeRequest.id}
+                        initialText={activeRequest.text}
+                        onOutcome={(next) => recordOutcome(next, 'rockstar-amc')}
+                        onRunningChange={setRunning}
+                        onDirtyChange={(dirty) => { amcDirtyRef.current = dirty; }}
+                      />
+                    ) :activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local' ? (
                       <div className="sky-chat-launch-tool">
                         <div>
                           <strong>{activeTool.name}</strong>
@@ -1558,11 +2351,6 @@ export default function SkyChatWorkspace() {
             </div>
 
             <form className="sky-chat-composer" onSubmit={sendMessage}>
-              {avocadoHandoff && <div className="sky-avocado-handoff" aria-live="polite">
-                <strong>{avocadoHandoff.kind === 'amc' ? 'avocadoのAMC作業と接続中' : 'avocadoの4年プランと接続中'}</strong>
-                <span>{avocadoFeedback}</span>
-                {avocadoResult.trim() && <button type="button" onClick={returnAvocadoResult}>この結果をプランへ戻す</button>}
-              </div>}
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">
                 <textarea
@@ -1571,7 +2359,7 @@ export default function SkyChatWorkspace() {
                   onChange={(event) => updateDraft(event.target.value)}
                   onKeyDown={handleComposerKeyDown}
                   rows={1}
-                  maxLength={2000}
+                  maxLength={composerLimit}
                   aria-describedby="sky-chat-composer-help"
                   aria-label={
                     selectedTool
@@ -1583,13 +2371,13 @@ export default function SkyChatWorkspace() {
                   placeholder={selectedTool ? 'このツールでやりたいことを入力…' : '何を進めたいですか？'}
                 />
                 <button disabled={!draft.trim() || chatLoading || Boolean(remoteBudgetInput.trim() && remoteCurrency && parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency) === null)} aria-label={remoteTextProvider ? '料金を見積もる' : '送信'}>
-                  <Send size={18} />
+                  {remoteTextProvider ? '料金を見積もる' : <Send size={18} />}
                 </button>
               </div>
-              {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'ローカルAgentが安全な手順を組み立てています…'}</output>}
+              {chatLoading && <output className="zema-thinking">{remoteTextProvider ? '料金を確認しています…' : 'モデルを選択し、応答を確認しています…'}</output>}
               {remoteTextProvider && (
                 <section className="zema-remote-consent" aria-live="polite">
-                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
+                  <p>クラウドsiの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
                   {remoteEstimate && (
                     <dl>
                       <div><dt>最大費用</dt><dd>{formatCurrencyMinor(remoteEstimate.estimate.maximumChargeMinor, remoteEstimate.estimate.currency)}</dd></div>
@@ -1611,7 +2399,7 @@ export default function SkyChatWorkspace() {
                         value={remoteBudgetInput}
                         onChange={(event) => {
                           setRemoteBudgetInput(event.target.value);
-                          setRemoteEstimate(null);
+                          invalidateRemoteEstimate();
                         }}
                         aria-label={`支出上限 ${remoteCurrency}`}
                       />
@@ -1622,7 +2410,7 @@ export default function SkyChatWorkspace() {
                       <select value={remoteCurrency} onChange={(event) => {
                         setRemoteCurrency(event.target.value);
                         setRemoteBudgetInput('');
-                        setRemoteEstimate(null);
+                        invalidateRemoteEstimate();
                       }}>
                         <option value="">選択してください</option>
                         {remoteCurrencyOptions.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
@@ -1645,21 +2433,62 @@ export default function SkyChatWorkspace() {
                 </section>
               )}
               <details className="zema-model-settings">
-                <summary>会話モデル: {textProviderDefinition.name}</summary>
+                <summary>会話モデル: {providerRouting.textSelectionMode !== 'manual' ? '自動（作業に合わせる）' : textProviderDefinition.name}</summary>
+                <label><input type="checkbox" checked={allowFreeCloud} disabled={chatLoading} onChange={(event) => setAllowFreeCloud(event.target.checked)} />今回の会話で無料Cloudへの送信を許可（Pollinationsに入力した依頼文を送信）</label>
+                <label>モデルの選び方
+                  <select value={providerRouting.textSelectionMode === 'manual' ? 'manual' : 'auto'} disabled={routingDraft.disabled || chatLoading} onChange={(event) => changeProviderRoute('textSelectionMode', event.target.value)}>
+                    <option value="auto">自動（作業に合わせる）</option>
+                    <option value="manual">自分で選ぶ</option>
+                  </select>
+                </label>
+                <p>自動はローカルと、許可した無料Cloudのモデル一覧から作業に合わせて選びます。有料モデルへの切替はありません。</p>
+                {modelSelectionNote && <output>{modelSelectionNote}</output>}
                 <div>
                   <label>接続先
-                    <select value={textProvider} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
+                    <select value={textProvider} disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
                       {textModelProviders.map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}
                     </select>
                   </label>
                   <label>モデルID
-                    <input value={providerRouting.textGenerationModel ?? ''} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
+                    <input value={providerRouting.textGenerationModel ?? ''} disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
                     <datalist id="zema-chat-model-presets">{localModelPresets.map((model) => <option key={model.value} value={model.value}>{model.label}</option>)}</datalist>
                   </label>
                 </div>
                 <p>{textProviderDefinition.detail}</p>
+                <ProviderDraftFeedback session={routingDraft.session} />
+                      {routingDraft.state.manualSave && <button type="button" disabled={routingDraft.disabled || routingDraft.state.conflict} onClick={() => void routingDraft.session.save('ready')}>設定を再保存</button>}
               </details>
               <div className="zema-composer-toolbar" id="sky-chat-composer-help">
+                <label className="zema-project-picker">
+                  <ListChecks size={15} aria-hidden="true" />
+                  <span className="sr-only">管理するプロジェクト</span>
+                  <select
+                    aria-label="管理するプロジェクト"
+                    value={selectedJenniferProjectId}
+                    disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
+                    onChange={(event) => selectJenniferProject(event.target.value)}
+                  >
+                    <option value={JENNIFER_AUTO_PROJECT}>全体・自動判定</option>
+                    {jenniferProjectPortfolio.projects.map((project: JenniferProject) => (
+                      <option key={project.id} value={project.id}>
+                        {project.displayName} · {project.managerLabel}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  className="zema-jennifer-toggle"
+                  aria-pressed={jenniferArmed}
+                  disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
+                  title={selectedToolId === AUTO_MODE
+                    ? '複数工程の計画と担当siを、実行せずに整理します'
+                    : '計画を整理するには「自動で選ぶ」に戻してください'}
+                  onClick={() => setJenniferArmed((armed) => !armed)}
+                >
+                  <Sparkles size={15} aria-hidden="true" />
+                  <span>{jenniferArmed ? '計画モード中' : '計画を整理'}</span>
+                </button>
                 <label className="zema-tool-picker">
                   <Sparkles size={15} aria-hidden="true" />
                   <span className="sr-only">担当を選ぶ</span>
@@ -1681,7 +2510,7 @@ export default function SkyChatWorkspace() {
                   <Plus size={15} /> <span>ツールを追加</span>
                 </Link>
                 <span className="zema-composer-tip">Enterで送信 · Shift+Enterで改行</span>
-                <span className="zema-composer-count">{draft.length}/2000</span>
+                <span className="zema-composer-count">{draft.length}/{composerLimit}</span>
               </div>
             </form>
           </>

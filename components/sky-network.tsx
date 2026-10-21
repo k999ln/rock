@@ -89,13 +89,13 @@ export default function SkyNetwork() {
       </div>
       {message && connection!=='failed' && !busy && <output className={styles.notice}>{message}</output>}
       <section className={styles.service}>
-        <div className={styles.serviceIcon}><Link2 size={21}/></div><div><h2>外部サービス・AIモデル</h2><p>使うツールに必要なサービスだけ、あとから追加。</p></div><button className={styles.secondary} onClick={()=>setProviderOpen(true)}>接続を管理 <ArrowRight size={15}/></button>
+        <div className={styles.serviceIcon}><Link2 size={21}/></div><div><h2>外部サービス・siモデル</h2><p>使うツールに必要なサービスだけ、あとから追加。</p></div><button className={styles.secondary} onClick={()=>setProviderOpen(true)}>接続を管理 <ArrowRight size={15}/></button>
       </section>
       <footer className={styles.footer}><span>端末の判定は表示の案内に使います。機種名や購入権は自動判定しません。</span><button disabled={busy||connection==='checking'} onClick={()=>{setHint(networkDeviceHint(navigator.userAgent,navigator.maxTouchPoints));setBrowserOnline(navigator.onLine);controller.current?.pause();requestExecutionAccessCheck();}}><RefreshCw size={13}/>もう一度確認</button></footer>
       <details className={styles.advanced}><summary>その他の接続方法</summary><div><h2>Telegramから使う</h2><SkyActivationPanel/></div></details>
     </div>
     <SkyMcpCenter showStatusRail={false} open={mcpOpen} connected={connected} onOpenChange={setMcpOpen} onOpenDevice={()=>{setMcpOpen(false);setDeviceOpen(true);}}/>
     <SkyConnectionCenter open={providerOpen} onOpenChange={setProviderOpen}/>
-    <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}><DialogContent><DialogTitle>PCの接続を設定</DialogTitle><DialogDescription>接続できない場合の手順と詳細設定です。</DialogDescription><DeviceConnection connectionBlocked={access.executionBlocked}/></DialogContent></Dialog>
+    <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}><DialogContent className={styles.deviceDialog}><DialogTitle>PCの接続を設定</DialogTitle><DialogDescription>接続できない場合の手順と詳細設定です。</DialogDescription><DeviceConnection connectionBlocked={access.executionBlocked}/></DialogContent></Dialog>
   </WorkspaceShell></div>;
 }

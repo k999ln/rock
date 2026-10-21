@@ -1,10 +1,13 @@
+import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
   generateText,
   isTextModelProvider,
-  LlmProviderError,
   textModelProviderDefinition,
+  isLoopbackLlmEndpoint,
+  isRemoteLlmRequest,
+  LlmProviderError,
 } from '@/lib/llm-providers';
 import {
   authorizeRemoteAiRequest,
@@ -12,22 +15,13 @@ import {
 } from '@/lib/remote-ai-guard';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
-import { RemoteAiTextStore, RemoteAiTextStoreError } from '@/lib/remote-ai-text-store';
-import { executeReservedRemoteAiText } from '@/lib/remote-ai-text-execution';
+import { REMOTE_AI_TEXT_MAX_QUEUE_AGE_MS, RemoteAiTextStore, RemoteAiTextStoreError } from '@/lib/remote-ai-text-store';
+import { encryptRemoteAiTextInput } from '@/lib/remote-ai-text-input';
+import { remoteAiTextQuoteMatches } from '@/lib/remote-ai-text-pricing';
 import { loadVerifiedRemoteAiTextRate } from '@/lib/remote-ai-text-rate';
 import { remoteAiTextPublicRecord, remoteAiTextHttpError } from '@/lib/remote-ai-text-http';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
-
-function isLoopbackEndpoint(value: string | undefined) {
-  if (!value) return false;
-  try {
-    const hostname = new URL(value).hostname.toLowerCase();
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(request: Request) {
   try {
@@ -38,10 +32,11 @@ export async function POST(request: Request) {
       owner,
       'rockstaros_access',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('RockstarOS');
 
     const raw = await request.text();
-    if (raw.length > 28_000) throw new LlmProviderError('INVALID_INPUT', 400);
+    if (new TextEncoder().encode(raw).byteLength > 28_000) throw new LlmProviderError('INVALID_INPUT', 413);
     const value = JSON.parse(raw) as Record<string, unknown>;
     const provider = value.provider;
     if (!isTextModelProvider(provider))
@@ -75,25 +70,22 @@ export async function POST(request: Request) {
       SKY_LOCAL_LLM_BASE_URL?: string;
       SKY_LOCAL_LLM_API_KEY?: string;
       REMOTE_AI_TRUSTED_RATE_KEYS?: string;
+      REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string;
     };
     const definition = textModelProviderDefinition(provider);
-    const requestedBaseUrl = typeof value.baseUrl === 'string'
-      ? value.baseUrl.trim()
-      : '';
-    if (requestedBaseUrl &&
-      (provider !== 'local-model' || !isLoopbackEndpoint(requestedBaseUrl) ||
-        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol)))
+    const requestedBaseUrl =
+      typeof value.baseUrl === 'string' ? value.baseUrl.trim() : '';
+    if (
+      requestedBaseUrl &&
+      (provider !== 'local-model' ||
+        !isLoopbackLlmEndpoint(requestedBaseUrl) ||
+        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol))
+    )
       throw new LlmProviderError('LOCAL_ENDPOINT_REQUIRED', 400);
-    const configuredEndpoint = provider === 'local-model'
-      ? requestedBaseUrl || runtimeEnv.SKY_LOCAL_LLM_BASE_URL
-      : provider === 'ollama'
-        ? runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434'
-        : provider === 'openai-compatible'
-          ? runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL
-          : undefined;
-    const remote =
-      definition.locality === 'remote' ||
-      Boolean(configuredEndpoint && !isLoopbackEndpoint(configuredEndpoint));
+    const requestEnv = requestedBaseUrl
+      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
+      : runtimeEnv;
+    const remote = isRemoteLlmRequest(provider, requestEnv);
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
@@ -112,26 +104,33 @@ export async function POST(request: Request) {
         ? value.model.trim() : definition.defaultModel;
       const verified = await loadVerifiedRemoteAiTextRate(db, runtimeEnv.REMOTE_AI_TRUSTED_RATE_KEYS,
         model, current.quote.ceiling.currency);
-      const execution = await executeReservedRemoteAiText({
-        store, ownerId: owner, id: current.id, approvalDigest: value.approvalDigest,
-        verified, runtimeEnv,
-        intent: {
-          ownerId: owner, requestId: current.requestId, model,
-          prompt: value.prompt, system: typeof value.system === 'string' ? value.system : undefined,
-          maxOutputTokens: typeof value.maxOutputTokens === 'number' ? value.maxOutputTokens : 1_200,
-          maximumBudgetMinor: current.quote.approvedCapMinor,
-        },
-      });
+      const intent = {
+        ownerId: owner, requestId: current.requestId, model,
+        prompt: value.prompt, system: typeof value.system === 'string' ? value.system : undefined,
+        maxOutputTokens: typeof value.maxOutputTokens === 'number' ? value.maxOutputTokens : 1_200,
+        maximumBudgetMinor: current.quote.approvedCapMinor,
+      };
+      if (current.approvalDigest !== value.approvalDigest)
+        throw new RemoteAiTextStoreError('APPROVAL_MISMATCH');
+      if (current.state === 'completed' || current.state === 'unreconciled' || current.state === 'sending')
+        return Response.json({ execution: remoteAiTextPublicRecord(current),
+          result: current.saveResult ? current.resultText : null, providerSubmission: 'not_repeated' },
+          { status: 202, headers: noStoreHeaders });
+      if (current.state !== 'reserved' || !runtimeEnv.REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY)
+        throw new LlmProviderError('DURABLE_QUEUE_UNAVAILABLE', 503);
+      if (!await remoteAiTextQuoteMatches(current.quote, verified, intent))
+        throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
+      const encrypted = await encryptRemoteAiTextInput(intent,
+        runtimeEnv.REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY, owner, current.id);
+      const queued = await store.saveInput(owner, current.id, value.approvalDigest, encrypted);
       return Response.json({
-        ...(execution.result ?? { provider: 'openai', model, text: execution.record?.resultText ?? null }),
-        execution: execution.record ? remoteAiTextPublicRecord(execution.record) : null,
-        providerSubmission: execution.providerSubmission,
-      }, { status: execution.record?.state === 'completed' ? 200 : 202, headers: noStoreHeaders });
+        execution: queued.record ? remoteAiTextPublicRecord(queued.record) : null,
+        queue: { status: 'accepted', durable: true, inputEncryptedAtRest: true,
+          executionDeadlineAt: current.quote.expiresAt + REMOTE_AI_TEXT_MAX_QUEUE_AGE_MS },
+        providerSubmission: 'not_performed', inserted: queued.inserted,
+      }, { status: 202, headers: noStoreHeaders });
     }
 
-    const requestEnv = requestedBaseUrl
-      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
-      : runtimeEnv;
     const result = await generateText(
       {
         provider,
@@ -148,6 +147,17 @@ export async function POST(request: Request) {
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
     if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
+    if (error instanceof SensitiveDataBlockedError)
+      return Response.json(
+        {
+          error:
+            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+          code: error.code,
+          count: error.count,
+          kinds: error.kinds,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {
@@ -162,12 +172,13 @@ export async function POST(request: Request) {
         { status: error.status, headers: noStoreHeaders },
       );
     const status = error instanceof LlmProviderError ? error.status : 400;
-    const code = error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
+    const code =
+      error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
     console.error('text llm failed', code);
     return Response.json(
       {
         error: code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
-          ? 'クラウドAIの料金確認機能が接続されるまで外部LLMを利用できません。'
+          ? 'クラウドsiの料金確認機能が接続されるまで外部LLMを利用できません。'
           : '選択したLLMを利用できません。',
         code,
       },

@@ -14,4 +14,3 @@ docs/evidence/launch/cm/actual-final-whisper-base.srt whitespace=-blank-at-eof
 
 # Hash-bound task originals: preserve historical whitespace without rewriting.
 docs/rocketstar-design/outputs/** -whitespace
-docs/rocketstar-design/work/** -whitespace

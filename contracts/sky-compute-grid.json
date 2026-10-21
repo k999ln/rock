@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:sky-compute-grid:1",
+  "title": "Sky Compute Grid bounded mobile-compute exchange",
+  "description": "Closed contracts for matching interruptible Android capacity to fixed public-text embedding lots. This contract does not authorize arbitrary code, personal data, live payment, or cloud fallback.",
+  "oneOf": [
+    { "$ref": "#/$defs/capacityOffer" },
+    { "$ref": "#/$defs/computeOrder" },
+    { "$ref": "#/$defs/computeLease" },
+    { "$ref": "#/$defs/computeReceipt" }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,95}$" },
+    "region": { "type": "string", "pattern": "^[A-Z]{2}(-[A-Z0-9]{2,12})?$" },
+    "trustTier": { "enum": ["software", "play_integrity_device", "hardware_backed"] },
+    "thermalStatus": { "enum": ["none", "light", "moderate", "severe"] },
+    "lot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lotId", "inputSha256", "inputBytes"],
+      "properties": {
+        "lotId": { "$ref": "#/$defs/id" },
+        "inputSha256": { "$ref": "#/$defs/sha256" },
+        "inputBytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "capacityOffer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "offerId", "providerRefHash", "providerPseudonym", "platform", "abi", "region", "trustTier", "runtimeArtifactSha256", "modelSha256", "tokenizerSha256", "memoryMiB", "benchmarkLotsPerHour", "reliabilityBps", "availableFrom", "availableUntil", "maxLots", "priceMicrosPerLot", "settlementAsset", "workloadPolicy", "currentConditions"],
+      "properties": {
+        "schema": { "const": "sky-capacity-offer/1" },
+        "offerId": { "$ref": "#/$defs/id" },
+        "providerRefHash": { "$ref": "#/$defs/sha256" },
+        "providerPseudonym": { "type": "string", "minLength": 3, "maxLength": 40 },
+        "platform": { "const": "android" },
+        "abi": { "const": "arm64-v8a" },
+        "region": { "$ref": "#/$defs/region" },
+        "trustTier": { "$ref": "#/$defs/trustTier" },
+        "runtimeArtifactSha256": { "$ref": "#/$defs/sha256" },
+        "modelSha256": { "$ref": "#/$defs/sha256" },
+        "tokenizerSha256": { "$ref": "#/$defs/sha256" },
+        "memoryMiB": { "type": "integer", "minimum": 1, "maximum": 1048576 },
+        "benchmarkLotsPerHour": { "type": "integer", "minimum": 1 },
+        "reliabilityBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "availableFrom": { "type": "string", "format": "date-time" },
+        "availableUntil": { "type": "string", "format": "date-time" },
+        "maxLots": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "priceMicrosPerLot": { "type": "integer", "minimum": 0 },
+        "settlementAsset": { "const": "sky_test_credits" },
+        "workloadPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["dataClasses", "maxInputBytesPerLot", "permitsPersonalData", "permitsSecrets", "permitsArbitraryCode"],
+          "properties": {
+            "dataClasses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["public", "synthetic"] } },
+            "maxInputBytesPerLot": { "type": "integer", "minimum": 1 },
+            "permitsPersonalData": { "const": false },
+            "permitsSecrets": { "const": false },
+            "permitsArbitraryCode": { "const": false }
+          }
+        },
+        "currentConditions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["charging", "deviceIdle", "unmeteredNetwork", "thermalStatus"],
+          "properties": {
+            "charging": { "type": "boolean" },
+            "deviceIdle": { "type": "boolean" },
+            "unmeteredNetwork": { "type": "boolean" },
+            "thermalStatus": { "$ref": "#/$defs/thermalStatus" }
+          }
+        }
+      }
+    },
+    "computeOrder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "orderId", "buyerRefHash", "skuId", "dataClass", "runtimeArtifactSha256", "modelSha256", "tokenizerSha256", "regions", "minimumTrustTier", "minimumMemoryMiB", "maximumInputBytesPerLot", "maximumPriceMicrosPerLot", "budgetMicros", "deadline", "interruptible", "cloudFallbackAuthorized", "containsPersonalData", "containsSecrets", "validation", "lots"],
+      "properties": {
+        "schema": { "const": "sky-compute-order/1" },
+        "orderId": { "$ref": "#/$defs/id" },
+        "buyerRefHash": { "$ref": "#/$defs/sha256" },
+        "skuId": { "const": "public-text-embedding-v1" },
+        "dataClass": { "enum": ["public", "synthetic"] },
+        "runtimeArtifactSha256": { "$ref": "#/$defs/sha256" },
+        "modelSha256": { "$ref": "#/$defs/sha256" },
+        "tokenizerSha256": { "$ref": "#/$defs/sha256" },
+        "regions": { "type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": { "$ref": "#/$defs/region" } },
+        "minimumTrustTier": { "$ref": "#/$defs/trustTier" },
+        "minimumMemoryMiB": { "type": "integer", "minimum": 1 },
+        "maximumInputBytesPerLot": { "type": "integer", "minimum": 1 },
+        "maximumPriceMicrosPerLot": { "type": "integer", "minimum": 0 },
+        "budgetMicros": { "type": "integer", "minimum": 0 },
+        "deadline": { "type": "string", "format": "date-time" },
+        "interruptible": { "const": true },
+        "cloudFallbackAuthorized": { "const": false },
+        "containsPersonalData": { "const": false },
+        "containsSecrets": { "const": false },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "quorum"],
+          "properties": {
+            "method": { "enum": ["independent_reference", "duplicate_quorum"] },
+            "quorum": { "enum": [1, 2, 3] }
+          }
+        },
+        "lots": { "type": "array", "minItems": 1, "maxItems": 10000, "items": { "$ref": "#/$defs/lot" } }
+      }
+    },
+    "computeLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "leaseId", "orderId", "offerId", "providerPseudonym", "region", "trustTier", "skuId", "runtimeArtifactSha256", "modelSha256", "tokenizerSha256", "lots", "priceMicrosPerLot", "settlementAsset", "issuedAt", "expiresAt", "executionPolicy"],
+      "properties": {
+        "schema": { "const": "sky-compute-lease/1" },
+        "leaseId": { "$ref": "#/$defs/id" },
+        "orderId": { "$ref": "#/$defs/id" },
+        "offerId": { "$ref": "#/$defs/id" },
+        "providerPseudonym": { "type": "string", "minLength": 3, "maxLength": 40 },
+        "region": { "$ref": "#/$defs/region" },
+        "trustTier": { "$ref": "#/$defs/trustTier" },
+        "skuId": { "const": "public-text-embedding-v1" },
+        "runtimeArtifactSha256": { "$ref": "#/$defs/sha256" },
+        "modelSha256": { "$ref": "#/$defs/sha256" },
+        "tokenizerSha256": { "$ref": "#/$defs/sha256" },
+        "lots": { "type": "array", "minItems": 1, "maxItems": 10000, "items": { "$ref": "#/$defs/lot" } },
+        "priceMicrosPerLot": { "type": "integer", "minimum": 0 },
+        "settlementAsset": { "const": "sky_test_credits" },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "executionPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requiresCharging", "requiresDeviceIdle", "requiresUnmeteredNetwork", "maximumThermalStatus", "arbitraryCodeAllowed", "stopOnOwnerUse"],
+          "properties": {
+            "requiresCharging": { "const": true },
+            "requiresDeviceIdle": { "const": true },
+            "requiresUnmeteredNetwork": { "const": true },
+            "maximumThermalStatus": { "const": "light" },
+            "arbitraryCodeAllowed": { "const": false },
+            "stopOnOwnerUse": { "const": true }
+          }
+        }
+      }
+    },
+    "computeReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "receiptId", "leaseId", "orderId", "offerId", "providerRefHash", "runtimeArtifactSha256", "modelSha256", "tokenizerSha256", "startedAt", "completedAt", "deviceEvidence", "results"],
+      "properties": {
+        "schema": { "const": "sky-compute-receipt/1" },
+        "receiptId": { "$ref": "#/$defs/id" },
+        "leaseId": { "$ref": "#/$defs/id" },
+        "orderId": { "$ref": "#/$defs/id" },
+        "offerId": { "$ref": "#/$defs/id" },
+        "providerRefHash": { "$ref": "#/$defs/sha256" },
+        "runtimeArtifactSha256": { "$ref": "#/$defs/sha256" },
+        "modelSha256": { "$ref": "#/$defs/sha256" },
+        "tokenizerSha256": { "$ref": "#/$defs/sha256" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "deviceEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["trustTier", "chargingThroughout", "deviceIdleThroughout", "unmeteredThroughout", "maximumThermalStatus"],
+          "properties": {
+            "trustTier": { "$ref": "#/$defs/trustTier" },
+            "chargingThroughout": { "type": "boolean" },
+            "deviceIdleThroughout": { "type": "boolean" },
+            "unmeteredThroughout": { "type": "boolean" },
+            "maximumThermalStatus": { "$ref": "#/$defs/thermalStatus" }
+          }
+        },
+        "results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["lotId", "inputSha256", "outputSha256", "outputBytes", "status"],
+            "properties": {
+              "lotId": { "$ref": "#/$defs/id" },
+              "inputSha256": { "$ref": "#/$defs/sha256" },
+              "outputSha256": { "$ref": "#/$defs/sha256" },
+              "outputBytes": { "type": "integer", "minimum": 1 },
+              "status": { "const": "completed" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "hardBoundaries": {
+    "supplyPlatform": "android_arm64_only",
+    "initialSku": "public_text_embedding_fixed_runtime_only",
+    "personalDataAllowed": false,
+    "secretsAllowed": false,
+    "arbitraryCodeAllowed": false,
+    "cloudFallbackWithoutExplicitOrderAuthorization": false,
+    "liveSettlementEnabled": false,
+    "exactLocationExposedToBuyer": false,
+    "ownerIdentityExposedToBuyer": false
+  }
+}

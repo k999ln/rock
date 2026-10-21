@@ -3,6 +3,14 @@ import type { EsimGoIssuedProfile } from './esimgo-provider.ts';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ICCID = /^[0-9]{18,22}$/;
 
+export type EsimInstallMaterial = {
+  iccid: string;
+  matchingId: string;
+  smdpAddress: string;
+  appleInstallUrl?: string;
+  androidInstallUrl?: string;
+};
+
 type D1Store = Pick<D1Database, 'prepare'>;
 type StoredMaterial = {
   skyOrderId: string;
@@ -13,6 +21,29 @@ type StoredMaterial = {
   installMaterialDeliveryKeyHash: string | null;
   installMaterialDeliveredAt: number | null;
 };
+
+const QUICK_INSTALL_HOSTS = {
+  appleInstallUrl: 'esimsetup.apple.com',
+  androidInstallUrl: 'esimsetup.android.com',
+} as const;
+
+export function validEsimQuickInstallUrl(value: unknown, field: keyof typeof QUICK_INSTALL_HOSTS): value is string {
+  if (typeof value !== 'string' || value.length < 1 || value.length > 4096) return false;
+  try {
+    const url = new URL(value);
+    const cardData = url.searchParams.get('carddata');
+    return url.protocol === 'https:' && url.hostname === QUICK_INSTALL_HOSTS[field] &&
+      url.pathname === '/esim_qrcode_provisioning' && !url.username && !url.password && !url.hash &&
+      typeof cardData === 'string' && cardData.startsWith('LPA:1$') && cardData.length <= 2048;
+  } catch {
+    return false;
+  }
+}
+
+function optionalInstallUrl(value: unknown, field: keyof typeof QUICK_INSTALL_HOSTS): string | undefined | null {
+  if (value === undefined || value === null || value === '') return undefined;
+  return validEsimQuickInstallUrl(value, field) ? value : null;
+}
 
 export class EsimInstallMaterialError extends Error {
   readonly code: 'KEY_NOT_CONFIGURED' | 'INVALID_MATERIAL' | 'NOT_READY' | 'DELIVERY_KEY_CONFLICT' | 'ALREADY_ACKNOWLEDGED';
@@ -59,9 +90,12 @@ export async function encryptEsimInstallMaterial(
   ownerUserId: string,
   skyOrderId: string,
 ): Promise<{ ciphertext: string; nonce: string }> {
+  const appleInstallUrl = optionalInstallUrl(profile.appleInstallUrl, 'appleInstallUrl');
+  const androidInstallUrl = optionalInstallUrl(profile.androidInstallUrl, 'androidInstallUrl');
   if (!ICCID.test(profile.iccid) || typeof profile.matchingId !== 'string' ||
       profile.matchingId.length < 1 || profile.matchingId.length > 256 ||
       typeof profile.smdpAddress !== 'string' || profile.smdpAddress.length < 1 || profile.smdpAddress.length > 256 ||
+      appleInstallUrl === null || androidInstallUrl === null ||
       !ownerUserId || ownerUserId.length > 128 || !UUID.test(skyOrderId))
     throw new EsimInstallMaterialError('INVALID_MATERIAL');
   const key = await keyFromHex(encryptionKey);
@@ -70,6 +104,8 @@ export async function encryptEsimInstallMaterial(
     iccid: profile.iccid,
     matchingId: profile.matchingId,
     smdpAddress: profile.smdpAddress,
+    ...(appleInstallUrl ? { appleInstallUrl } : {}),
+    ...(androidInstallUrl ? { androidInstallUrl } : {}),
   }));
   const encrypted = await crypto.subtle.encrypt({
     name: 'AES-GCM', iv: bufferSource(nonce), additionalData: bufferSource(await aad(ownerUserId, skyOrderId)),
@@ -83,7 +119,7 @@ async function decryptEsimInstallMaterial(
   encryptionKey: string | undefined,
   ownerUserId: string,
   skyOrderId: string,
-): Promise<{ iccid: string; matchingId: string; smdpAddress: string }> {
+): Promise<EsimInstallMaterial> {
   const key = await keyFromHex(encryptionKey);
   const cleartext = await crypto.subtle.decrypt({
     name: 'AES-GCM',
@@ -98,11 +134,24 @@ async function decryptEsimInstallMaterial(
   }
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new EsimInstallMaterialError('INVALID_MATERIAL');
   const material = value as Record<string, unknown>;
-  if (Object.keys(material).length !== 3 || typeof material.iccid !== 'string' || !ICCID.test(material.iccid) ||
+  const keys = Object.keys(material);
+  const appleInstallUrl = optionalInstallUrl(material.appleInstallUrl, 'appleInstallUrl');
+  const androidInstallUrl = optionalInstallUrl(material.androidInstallUrl, 'androidInstallUrl');
+  if (keys.some((key) => !['iccid', 'matchingId', 'smdpAddress', 'appleInstallUrl', 'androidInstallUrl'].includes(key)) ||
+      keys.length < 3 || keys.length > 5 || typeof material.iccid !== 'string' || !ICCID.test(material.iccid) ||
       typeof material.matchingId !== 'string' || material.matchingId.length < 1 || material.matchingId.length > 256 ||
-      typeof material.smdpAddress !== 'string' || material.smdpAddress.length < 1 || material.smdpAddress.length > 256)
+      typeof material.smdpAddress !== 'string' || material.smdpAddress.length < 1 || material.smdpAddress.length > 256 ||
+      appleInstallUrl === null || androidInstallUrl === null ||
+      (Object.hasOwn(material, 'appleInstallUrl') && appleInstallUrl === undefined) ||
+      (Object.hasOwn(material, 'androidInstallUrl') && androidInstallUrl === undefined))
     throw new EsimInstallMaterialError('INVALID_MATERIAL');
-  return { iccid: material.iccid, matchingId: material.matchingId, smdpAddress: material.smdpAddress };
+  return {
+    iccid: material.iccid,
+    matchingId: material.matchingId,
+    smdpAddress: material.smdpAddress,
+    ...(appleInstallUrl ? { appleInstallUrl } : {}),
+    ...(androidInstallUrl ? { androidInstallUrl } : {}),
+  };
 }
 
 async function sha256(value: string): Promise<string> {
@@ -152,7 +201,7 @@ export async function fetchEsimInstallMaterial(
   ownerUserId: string,
   skyOrderId: string,
   deliveryRequestId: string,
-): Promise<{ iccid: string; matchingId: string; smdpAddress: string }> {
+): Promise<EsimInstallMaterial> {
   if (!UUID.test(deliveryRequestId)) throw new EsimInstallMaterialError('INVALID_MATERIAL');
   const requestHash = await sha256(`rock-esim-install-delivery-v1\n${ownerUserId}\n${skyOrderId}\n${deliveryRequestId}`);
   await db.prepare(`UPDATE esim_provider_orders

@@ -14,7 +14,7 @@
 - Provider: Creative、Social、Payment、Notificationを差し替え可能
 - 安全な初期値: 全Provider `mock`、本番接続・実請求・実投稿なし
 
-MCPは既存のブランド方針、Instagram、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38 toolとして公開する。Autopilotは売上・数量・粗利・期限・広告上限から優先操作を提示し、bounded runでは市場整理、投稿計画、投稿下書き、creative承認要求、制作計画など安全な内部作業だけを進める。外部作用は直接実行しない。Conciergeは返信を下書きに留め、Production Cockpitは検証済み入金後だけ制作計画を作る。
+MCPは既存のブランド方針、Instagram、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、si Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38 toolとして公開する。Autopilotは売上・数量・粗利・期限・広告上限から優先操作を提示し、bounded runでは市場整理、投稿計画、投稿下書き、creative承認要求、制作計画など安全な内部作業だけを進める。外部作用は直接実行しない。Conciergeは返信を下書きに留め、Production Cockpitは検証済み入金後だけ制作計画を作る。
 
 ## 承認境界
 
@@ -37,6 +37,8 @@ Instagram password、Cookie、raw tokenをDBへ保存しない。credentialは`e
 決済event反映は公開MCP toolにせず、署名検証済みWebhookだけが呼ぶ内部処理に限定した。公開MCPは読み取り専用`fashion.payment.status.get`を提供する。実Higgsfield、実Meta account、実Stripe、通知先は未接続であり、この検証による外部投稿・広告費・請求・返金・送信はない。
 
 ## Skyワンクリック接続
+
+2026-10-02のSPIDER修正で、ワンクリックsessionを「固定bearer未設定かつloopback bind」の構成に限定した。実peerもloopbackであることを検査する。固定bearer設定時は`/connect`を拒否し、Origin headerを付けても`/mcp`のbearerとtenant検査を回避できない。HTTP例外は固定codeへ変換し、JSON入力断片、DB／Providerエラー、stackを応答に含めない。認証・tenant・署名・秘密fixture非表示は`test/http-security.test.mjs`で回帰検査する。
 
 Fashion Brand Ops v0.3.0は、許可済みSky originからPCの`127.0.0.1:8787`へ接続するbrowser sessionを追加した。Skyの商品カードを開く1回の操作で、短期session発行、MCP 2025-11-25 initialize、initialized通知、40件のtools/list検査を行い、カード表示を「接続済み」へ同期する。再表示時はpingとtools/listで再検証し、失効・停止・tool不足ならbrowser側credentialを破棄する。解除操作はserver sessionも失効させる。
 

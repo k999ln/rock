@@ -1,0 +1,15 @@
+{
+  "schema": "rockstar-esim-install-proof-concurrency-local/1",
+  "date": "2026-10-02",
+  "scope": "Idempotent concurrent submission of one owner/order/device-bound eSIM installation receipt to the local Worker/D1 API fixture.",
+  "change": "The receipt store now uses the D1 INSERT OR IGNORE result to distinguish the single row creator from an exact concurrent replay. Both responses may confirm the same verified installation, but only one reports the new insert.",
+  "verification": {
+    "command": "npm run test:api",
+    "result": "PASS: 994 Work API assertions and 113 CSV Worker/D1/R2 assertions",
+    "assertion": "Concurrent identical install-proof submissions return one verified and one already_verified result; status reads one verified installed state."
+  },
+  "notProven": [
+    "Synthetic local Worker/D1 behavior is not a real eSIM provider activation, purchase or carrier connection.",
+    "A verified fixture install-proof record is not evidence that RockstarOS was installed on a physical device."
+  ]
+}

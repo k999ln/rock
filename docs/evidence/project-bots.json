@@ -1,0 +1,43 @@
+{
+  "taskId": "AMC03",
+  "date": "2026-10-09",
+  "scope": "developer_profiles_and_on_demand_cli",
+  "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "branch": "codex/feature-workspaces",
+  "pullRequest": "https://github.com/k999ln/rock/pull/95",
+  "bots": 10,
+  "localValidation": {
+    "targetedCommand": "node --test tests/project-bots.test.mjs tests/workspaces.test.mjs",
+    "passed": 16,
+    "failed": 0,
+    "nativeTomlParsed": 10,
+    "cliPreview": "pass: no spawn, canonical SKY07-01 context, GitHub output false",
+    "staticChecks": [
+      "bot:check",
+      "mission:check",
+      "project:check",
+      "database:check",
+      "design:check",
+      "baseline:check"
+    ],
+    "fullVerify": "blocked at llm:architecture:check: ai package not installed in isolated worktree; earlier DB progress inventory drift was synchronized"
+  },
+  "githubCI": {
+    "status": "success",
+    "previousSha": "dcf2616d42ce8e32dac9389046e1c2c7a2364bbd",
+    "previousVerify": "failed: test sort requires explicit comparator; fixed",
+    "previousOtherChecks": "7 success including CodeQL",
+    "verifiedImplementationSha": "4a8861b4beb11437d4bc08b47455e81f99cd12e1",
+    "checkRuns": 8,
+    "verifyRun": "https://github.com/k999ln/rock/actions/runs/37978274234",
+    "meaning": "All eight check-runs succeeded on the implementation SHA. Subsequent progress-only commit has its own CI."
+  },
+  "acceptance": {
+    "liveBotTaskAccepted": false,
+    "independentReview": false,
+    "githubAppCreated": false,
+    "alwaysRunning": false,
+    "mainIntegrated": false,
+    "productRuntimeChanged": false
+  }
+}

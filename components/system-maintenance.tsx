@@ -64,10 +64,10 @@ type Check = {
 type BackupMode = 'create' | 'restore';
 
 const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
-  'web-pwa-owner-preview': { short: '本人限定で稼働中。最新版の同期待ち', icon: <AppWindow /> },
-  'web-pwa-public-preview': { short: '一般公開の意思を確認済み。配信先の接続とライセンス条件が残る', icon: <AppWindow /> },
+  'web-pwa-owner-preview': { short: '旧本人限定版の受入記録。現在の公開版とは別', icon: <AppWindow /> },
+  'web-pwa-public-preview': { short: 'Web Previewは一般公開済み。本番認証と静的配信の受入は残る', icon: <AppWindow /> },
   'qemu-developer-preview': { short: 'rc2の基礎と部品表は合格。配布条件は未完了', icon: <HardDrive /> },
-  'android-physical-preview': { short: '対象機種未選択。端末固有の実測証拠が必要', icon: <Smartphone /> },
+  'android-physical-preview': { short: 'Pixel 10 GL066／frankelが対象。全OSの署名と実機受入は残る', icon: <Smartphone /> },
   'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
   'personal-number-identity': { short: '番号取得は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
 };
@@ -95,6 +95,8 @@ export default function SystemMaintenance() {
   const [backupBusy, setBackupBusy] = useState(false);
   const [waitingUpdate, setWaitingUpdate] = useState<ServiceWorker | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const backupGeneration = useRef(0);
+  useEffect(() => () => { backupGeneration.current++; }, []);
 
   const runDiagnostics = useCallback(async () => {
     setRunning(true);
@@ -344,11 +346,25 @@ export default function SystemMaintenance() {
   }
 
   function resetSettings() {
-    resetDevicePreferences(localStorage);
-    setMessage('ホームの外観と並び順を初期状態に戻しました。アカウント、Wallet、履歴は削除していません。');
+    backupGeneration.current++;
+    setBackupBusy(false);
+    try {
+      resetDevicePreferences(localStorage);
+      setMessage('ホームの外観と並び順を初期状態に戻しました。アカウント、Wallet、履歴は削除していません。');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '端末設定を初期化できませんでした。保存先の状態を確認してください。');
+    }
+  }
+
+  function closeBackup() {
+    backupGeneration.current++;
+    setBackupBusy(false);
+    setBackupMode(null);
   }
 
   function openBackup(mode: BackupMode) {
+    backupGeneration.current++;
+    setBackupBusy(false);
     setBackupMode(mode);
     setPassphrase('');
     setBackupFile(null);
@@ -356,6 +372,7 @@ export default function SystemMaintenance() {
   }
 
   async function createBackup() {
+    const generation = ++backupGeneration.current;
     setBackupBusy(true);
     setMessage('');
     try {
@@ -363,6 +380,7 @@ export default function SystemMaintenance() {
         collectDevicePreferences(localStorage),
         passphrase,
       );
+      if (generation !== backupGeneration.current) return;
       const url = URL.createObjectURL(
         new Blob([encrypted], { type: 'application/json' }),
       );
@@ -374,9 +392,10 @@ export default function SystemMaintenance() {
       setBackupMode(null);
       setMessage('暗号化バックアップを保存しました。パスフレーズは別の安全な場所に保管してください。');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'バックアップを作成できませんでした。');
+      if (generation === backupGeneration.current)
+        setMessage(error instanceof Error ? error.message : 'バックアップを作成できませんでした。');
     } finally {
-      setBackupBusy(false);
+      if (generation === backupGeneration.current) setBackupBusy(false);
     }
   }
 
@@ -385,20 +404,22 @@ export default function SystemMaintenance() {
       setMessage('復元するバックアップを選んでください。');
       return;
     }
+    const generation = ++backupGeneration.current;
     setBackupBusy(true);
     setMessage('');
     try {
-      const restored = await decryptDeviceBackup(
-        await backupFile.text(),
-        passphrase,
-      );
+      const source = await backupFile.text();
+      if (generation !== backupGeneration.current) return;
+      const restored = await decryptDeviceBackup(source, passphrase);
+      if (generation !== backupGeneration.current) return;
       restoreDevicePreferences(localStorage, restored.records);
       setBackupMode(null);
       setMessage(`端末設定を復元しました（保存日時 ${new Date(restored.createdAt).toLocaleString('ja-JP')}）。`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'バックアップを復元できませんでした。');
+      if (generation === backupGeneration.current)
+        setMessage(error instanceof Error ? error.message : 'バックアップを復元できませんでした。');
     } finally {
-      setBackupBusy(false);
+      if (generation === backupGeneration.current) setBackupBusy(false);
     }
   }
 
@@ -520,12 +541,12 @@ export default function SystemMaintenance() {
             })}
           </div>
           <p className={styles.boundary}>
-            緑はその配布方法の最低条件を満たした状態です。本人限定Webは安全に稼働中ですが最新版同期前で{ownerWebRelease.text}。QEMU rc2は{qemuRelease.text}。Android実機は対象端末未選択で{androidRelease.text}。マイナンバーは取得無効の境界だけ{personalNumberRelease.text}です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
+            この件数は必要な受入条件を満たした配布方法の数です。Web Developer Previewは一般公開済みです（公開版の最終確認はv{releaseReadiness.currentSiteObservation.version}、source {releaseReadiness.currentSiteObservation.sourceCommit.slice(0, 8)}）。本番本人認証の一周と静的配信のセキュリティヘッダーは未受入です。旧本人限定Webの記録は{ownerWebRelease.text}、QEMU rc2の記録は{qemuRelease.text}で、現在の公開WebやPixel全OSの受入とは別です。Androidの物理対象はPixel 10 GL066／frankelで確定しています。全OSの正式署名・実機flash・復旧の受入は残り、配布判定は{androidRelease.text}です。マイナンバーは取得無効の境界だけ{personalNumberRelease.text}です。一般公開ページの表示を、本番課金・実機OSの合格へ換算しません。
           </p>
         </details>
       </div>
 
-      <Dialog open={backupMode !== null} onOpenChange={(open) => !open && setBackupMode(null)}>
+      <Dialog open={backupMode !== null} onOpenChange={(open) => !open && closeBackup()}>
         <DialogContent className={styles.dialog}>
           <DialogTitle>{backupMode === 'create' ? '暗号化バックアップ' : '端末設定を復元'}</DialogTitle>
           <DialogDescription>
@@ -539,10 +560,11 @@ export default function SystemMaintenance() {
                 ref={fileInput}
                 className={styles.hiddenFile}
                 type="file"
+                disabled={backupBusy}
                 accept=".rockstarbackup,application/json"
                 onChange={(event) => setBackupFile(event.target.files?.[0] || null)}
               />
-              <button className={styles.fileButton} onClick={() => fileInput.current?.click()}>
+              <button className={styles.fileButton} disabled={backupBusy} onClick={() => fileInput.current?.click()}>
                 <Upload size={18} />{backupFile?.name || 'バックアップを選ぶ'}
               </button>
             </>
@@ -551,6 +573,7 @@ export default function SystemMaintenance() {
             <span>復旧パスフレーズ</span>
             <input
               type="password"
+              disabled={backupBusy}
               value={passphrase}
               onChange={(event) => setPassphrase(event.target.value)}
               autoComplete="new-password"
@@ -558,6 +581,7 @@ export default function SystemMaintenance() {
             />
           </label>
           <p className={styles.dialogNote}>PC接続トークン、ログイン情報、Wallet資金、サーバー上の実行履歴は書き出しません。</p>
+          {message && <output role="alert" className={styles.notice}>{message}</output>}
           <button
             className={styles.primary}
             disabled={backupBusy}

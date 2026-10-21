@@ -1,0 +1,96 @@
+{
+  "schema": "spider-observer-output-schema/1",
+  "cycle": 50,
+  "baseCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+  "primarySquad": "O1",
+  "taskId": "SYS02",
+  "primaryOwner": "ROCK",
+  "workstream": "Security / Identity / Compliance",
+  "status": "LOCAL_PASS_REMOTE_AFTER_PENDING",
+  "target": {
+    "number": 7,
+    "rule": "py/clear-text-logging-sensitive-data",
+    "path": "systems/rock-star-os/os/entitlement/guest_observer.py"
+  },
+  "rootCause": "Unexpected nested values in three service fields could flow unchanged to the diagnostic report; read exceptions could expose private text.",
+  "scope": "Malformed-response diagnostic hardening; no observed live secret exposure",
+  "localRegression": {
+    "newPrivacyMethods": 13,
+    "existingDeviceWalletMethods": 22,
+    "passed": 35,
+    "skipped": 0,
+    "commands": [
+      "python3 -B -W error::ResourceWarning systems/rock-star-os/os/entitlement/tests/test_guest_observer_privacy.py",
+      "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/entitlement/tests -p test_device_wallet.py -v"
+    ],
+    "boundary": "Host synthetic service responses and real SQLite Wallet; main guest loader/transport mocked, no guest or actual service invoked"
+  },
+  "negativeRegression": {
+    "baseSourceSha256": "e6538ebd9dcf442ff48dc7c839808b466753a133b28c8b0902c7a87f059c08e7",
+    "testMethods": 13,
+    "passingMethods": 5,
+    "failingOrErrorMethods": 8,
+    "failedSubtests": 29,
+    "errors": 39,
+    "skipped": 0
+  },
+  "baselineCodeql": {
+    "run": 37402839478,
+    "ref": "refs/heads/codex/spider-observer-output-schema",
+    "sourceCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "openAlerts": 42,
+    "targetOpen": true,
+    "analyses": [
+      {
+        "category": "/spider/language:python",
+        "commit_sha": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+        "error": "",
+        "id": 1897723847,
+        "ref": "refs/heads/codex/spider-observer-output-schema",
+        "results_count": 24,
+        "rules_count": 50
+      },
+      {
+        "category": "/spider/language:javascript-typescript",
+        "commit_sha": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+        "error": "",
+        "id": 1897721772,
+        "ref": "refs/heads/codex/spider-observer-output-schema",
+        "results_count": 18,
+        "rules_count": 103
+      }
+    ]
+  },
+  "sourceSha256": {
+    "systems/rock-star-os/os/entitlement/guest_observer.py": "1e9146ec998d0b3f158e9e1a802381626f57f321d063ff8eeebadc2ee97c3155",
+    "systems/rock-star-os/os/entitlement/tests/test_guest_observer_privacy.py": "df8475a3c35c61727ca5854c3090d8df9a7168c49429ed1cb1203192265aefee"
+  },
+  "independentReview": "No blocker; independent 13/13 privacy methods passed",
+  "unchanged": [
+    "three authenticated read operations",
+    "simulation-only historical 888 minor USD fixture",
+    "identity and registration-input restrictions",
+    "paid-bill and zero-ledger checks",
+    "fee execution holds",
+    "VNC credential transport"
+  ],
+  "boundaries": {
+    "actualServiceCalled": false,
+    "guestBooted": false,
+    "physicalDeviceModified": false,
+    "mainMerged": false,
+    "deployed": false,
+    "scannerWeakened": false,
+    "alertsDismissed": false
+  },
+  "checks": {
+    "mission:update": "pass",
+    "mission:check": "pass",
+    "project:update": "pass",
+    "project:check": "pass",
+    "diff:check": "pass",
+    "design:check": "failed: pre-existing duplicate Sky catalog IDs",
+    "verify": "failed: pre-existing stale database inventory; later gates not run"
+  },
+  "remoteAfter": "Same-SHA outcome will be recorded in PR and ignored work/spider-ci/cycle-50-after.json; no alert fix claimed at this source commit."
+}

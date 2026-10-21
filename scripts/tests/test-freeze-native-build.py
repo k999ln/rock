@@ -27,6 +27,7 @@ class FreezeProvenance(unittest.TestCase):
         self.lock = json.dumps({'linux': {'version': '6.18.50'}})
         for name, content in {
                 'scripts/test-native.py': '# original native runner\n',
+                'scripts/select-native-artifacts.py': '# original artifact selector\n',
                 '.github/workflows/native-os.yml': '# original workflow\n',
                 'systems/rock-star-os/os/source-lock.json': self.lock,
                 'systems/rock-star-os/src/runtime.py': 'VERSION = 1\n'}.items():
@@ -73,6 +74,8 @@ class FreezeProvenance(unittest.TestCase):
         self.assertEqual('NOT_RUN',result['qemu_boot'])
         self.assertEqual('NOT_RUN',result['acceptance_D0_D6'])
         self.assertEqual(3,result['source_tests']['python_executions'])
+        selector = 'scripts/select-native-artifacts.py'
+        self.assertEqual(freeze.digest(self.source/selector), result['source_files_sha256'][selector])
         for name in freeze.IMAGE_NAMES:
             self.assertEqual(0,(self.images/name).stat().st_mode & 0o222)
         with self.assertRaisesRegex(ValueError,'already exists'): self.run_freeze()
@@ -93,6 +96,28 @@ class FreezeProvenance(unittest.TestCase):
         (self.source/'systems/rock-star-os/src/added.py').write_text('ADDED = True\n')
         self.write_archive()
         with self.assertRaisesRegex(ValueError,'inventory does not cover'): self.run_freeze()
+
+    def test_selector_missing_from_regression_inventory_is_rejected(self):
+        del self.test_report['input_sha256']['scripts/select-native-artifacts.py']
+        self.report.write_text(json.dumps(self.test_report))
+        with self.assertRaisesRegex(ValueError,'lacks source inventory'): self.run_freeze()
+
+    def test_selector_missing_from_both_source_and_report_is_rejected(self):
+        selector = 'scripts/select-native-artifacts.py'
+        (self.source/selector).unlink()
+        self.write_archive()
+        del self.test_report['input_sha256'][selector]
+        self.report.write_text(json.dumps(self.test_report))
+        with self.assertRaisesRegex(ValueError,'lacks source inventory'): self.run_freeze()
+
+    def test_selector_report_digest_must_match_archived_source(self):
+        self.test_report['input_sha256']['scripts/select-native-artifacts.py'] = '0'*64
+        self.report.write_text(json.dumps(self.test_report))
+        with self.assertRaisesRegex(ValueError,'inventory does not cover'): self.run_freeze()
+
+    def test_selector_changed_after_archive_is_rejected(self):
+        (self.source/'scripts/select-native-artifacts.py').write_text('# changed selector\n')
+        with self.assertRaisesRegex(ValueError,'source changed'): self.run_freeze()
 
     def test_skipped_regression_is_not_a_pass(self):
         self.test_report['checks'][0]['skipped']=True

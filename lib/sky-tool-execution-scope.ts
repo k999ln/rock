@@ -19,6 +19,10 @@ export type SkyExecutionScope =
   | 'unavailable';
 
 const implemented: Record<string, SkyExecutionScope> = {
+  'visual-scribe': 'browser-processing',
+  'rockstar-material-invention': 'browser-processing',
+  'rockstar-spider': 'browser-processing',
+  'rockstar-amc': 'assisted-preparation',
   'rockstar-csv-cleanup': 'cloud-processing',
   'rockstar-markets-analysis': 'paper-simulation',
   'mercari-revenue': 'assisted-preparation',

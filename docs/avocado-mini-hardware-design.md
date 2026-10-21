@@ -1,6 +1,6 @@
 # avocadoMini Full-scale 空間発明台 — ハードウェア詳細設計書
 
-2026-09-21の設計分岐: 本書は以前の四方向Bench／Full-scale系統の設計資料であり、新しい使用時20cmゲーム機の加工・配線仕様ではない。[Mini200 E1](avocado-mini-mini200-e1/README.md)に本体内計算機・前面3眼・日本語音声の基本設計を保存した。本書11.2の「初期BOMにmicrophoneを含めない」は本書のprofile限定で、E1は4マイク候補と新しい同意・独立物理遮断要求を持つ。旧寸法・価格・追跡条件をE1へ転用しない。
+2026-09-21の設計分岐: 本書は以前の四方向Bench／Full-scale系統の設計資料であり、新しい使用時20cmゲーム機の加工・配線仕様ではない。[Mini200 E1](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md)に本体内計算機・前面3眼・日本語音声の基本設計を保存した。本書11.2の「初期BOMにmicrophoneを含めない」は本書のprofile限定で、E1は4マイク候補と新しい同意・独立物理遮断要求を持つ。旧寸法・価格・追跡条件をE1へ転用しない。
 
 - 文書ID: `AM-HW-001`
 - 版: 0.1 / 2026-09-18
@@ -27,7 +27,7 @@ avocadoMiniは、物質のdigital twinを1〜2人が手で選び、接続し、�
 - 設計開始時HEAD: `82a53f5`
 - 2026-09-18に`origin`をfetch済み。作業開始時は追跡branchより1 commit先行、worktreeはcleanだった。
 - 現状はMaterial Invention sandbox Coreと9 test、XR／interaction契約、Full-scale conceptまで存在する。
-- 四方向sensor実機、XR runtime、裸眼立体表示、simulation／Patent AI bridgeは未実装である。
+- 四方向sensor実機、XR runtime、裸眼立体表示、simulation／Patent si bridgeは未実装である。
 
 ### 2.2 Concept画像
 
@@ -411,7 +411,7 @@ Gate: HVT-01〜11をFull-scaleで再実行し、誤commitが0である。
 
 - RockstarOS Core、project vault、renderer、haptic、provider gatewayを接続
 - simulationは合成receiptから開始
-- Patent AIへsource-separated packetを作る
+- Patent siへsource-separated packetを作る
 
 Gate: HVT-01〜14、software contract test、復旧試験が同じhardware／software versionで合格する。
 

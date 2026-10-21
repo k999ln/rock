@@ -1,10 +1,15 @@
 import type { Job } from './operations';
+import { normalizeSkyZemaHandoff } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 
-export const SKY_ZEMA_HANDOFF_KEY = 'rockstaros.sky-zema-handoff.v1';
+import { SKY_ZEMA_HANDOFF_KEY, openZemaPrivateStorage } from './zema-private-storage.ts';
+export { SKY_ZEMA_HANDOFF_KEY } from './zema-private-storage.ts';
 export const SKY_ZEMA_JOB_EVENT = 'rockstaros:sky-zema-job';
 export const SKY_ZEMA_HANDOFF_TTL_MS = 10 * 60 * 1000;
 
 const MAX_REQUEST_LENGTH = 2000;
+export function skyRequestLimit(toolId?: string) {
+  return toolId === 'rockstar-amc' ? 8000 : MAX_REQUEST_LENGTH;
+}
 const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 
 type HandoffStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
@@ -30,8 +35,9 @@ function validHandoff(value: unknown): value is SkyZemaHandoff {
     typeof handoff.toolId === 'string' &&
     TOOL_ID.test(handoff.toolId) &&
     typeof handoff.request === 'string' &&
-    handoff.request.length <= MAX_REQUEST_LENGTH &&
-    (handoff.executionProvider === undefined || handoff.executionProvider === 'local-model') &&
+    handoff.request.length <= skyRequestLimit(handoff.toolId) &&
+    (handoff.executionProvider === undefined ||
+      handoff.executionProvider === 'local-model') &&
     typeof handoff.createdAt === 'number' &&
     Number.isFinite(handoff.createdAt)
   );
@@ -40,17 +46,24 @@ function validHandoff(value: unknown): value is SkyZemaHandoff {
 export function queueSkyZemaHandoff(
   toolId: string,
   request: string,
-  storage: HandoffStorage = window.sessionStorage,
+  providedStorage?: HandoffStorage,
   now = Date.now(),
 ): SkyZemaHandoff {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) throw new Error('会話の保存領域を確認してから、もう一度Zemaで開いてください。');
   if (!TOOL_ID.test(toolId))
     throw new Error('引き継ぐToolを確認してください。');
+  if (
+    toolId === 'rockstar-amc' &&
+    request.trim().length > skyRequestLimit(toolId)
+  )
+    throw new Error('AMCへの依頼は8,000文字以内にしてください。');
   const handoff: SkyZemaHandoff = {
     version: 1,
     id: crypto.randomUUID(),
     source: 'sky',
     toolId,
-    request: request.trim().slice(0, MAX_REQUEST_LENGTH),
+    request: request.trim().slice(0, skyRequestLimit(toolId)),
     executionProvider: 'local-model',
     createdAt: now,
   };
@@ -60,14 +73,18 @@ export function queueSkyZemaHandoff(
 
 export function consumeSkyZemaHandoff(
   expectedToolId: string,
-  storage: HandoffStorage = window.sessionStorage,
+  providedStorage?: HandoffStorage,
   now = Date.now(),
+  expectedThreadId?: string,
 ): SkyZemaHandoff | null {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) return null;
   const raw = storage.getItem(SKY_ZEMA_HANDOFF_KEY);
   if (!raw) return null;
   let value: unknown;
   try {
-    value = JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    value = parsed?.toolId === 'rockstar-amc' ? parsed : normalizeSkyZemaHandoff(parsed);
   } catch {
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
     return null;
@@ -80,7 +97,8 @@ export function consumeSkyZemaHandoff(
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
     return null;
   }
-  if (value.toolId !== expectedToolId) return null;
+  // A stale URL for the same Tool must not consume a newer pending request.
+  if (value.toolId !== expectedToolId || (expectedThreadId !== undefined && value.id !== expectedThreadId)) return null;
   storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
   return value;
 }

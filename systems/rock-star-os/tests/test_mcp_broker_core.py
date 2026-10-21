@@ -131,6 +131,7 @@ class BrokerTests(unittest.TestCase):
             'budgetCurrency': 'USD',
             'budgetLimitMinor': 500,
             'parentBudgetLimitMinor': 900,
+            'continueWhileDeviceOffline': True,
             'deadlineAt': 1600000,
             'message': 'Summarize public information.',
         }
@@ -139,15 +140,16 @@ class BrokerTests(unittest.TestCase):
         consent = {'approved': True, 'digest': unsigned['authorizationSha256']}
         proof = self.broker.authorize_a2a_delegation(intent, key='a2a-approval-1', consent=consent,
                                                      auth='PUBLIC-ALICE')
-        self.assertEqual(proof['schema'], 'rock-a2a-broker-authorization/1')
+        self.assertEqual(proof['schema'], 'rock-a2a-broker-authorization/2')
         self.assertEqual(proof['ownerUserId'], 'alice')
         self.assertEqual(proof['deviceRef'], 'device-a')
         self.assertEqual(proof['inputSha256'], unsigned['inputSha256'])
         self.assertEqual(len(proof['signature']), 86)
         self.assertEqual(proof['authorizationSha256'],
-                         '7f4e0473204b95832a667d3cca19b91a3664edc8c250045066cc97fb8027ed46')
+                         'f129e9e5d58f2bcd2ef78ba49a84de6625165670e88c4e1d3e57af424312a57c')
         self.assertEqual(hashlib.sha256(signer.calls[0][2]).hexdigest(),
-                         'b4a9154f5fbc0db50cc73d9495e5a7d8e40317bca3c70d9e28183772a1018738')
+                         '6f9b4c2aac8ffdfba80ed7c5f05ded620134892f65bdd9e1bab08ff7fe17160e')
+        self.assertTrue(proof['continueWhileDeviceOffline'])
         self.assertEqual(len(signer.calls), 1)
         self.assertEqual(signer.calls[0][2], signing_bytes(unsigned))
         self.assertEqual(len(reservation_calls), 1)
@@ -160,6 +162,10 @@ class BrokerTests(unittest.TestCase):
         with self.assertRaises(Conflict):
             self.broker.authorize_a2a_delegation({**intent, 'parentBudgetLimitMinor': 901}, key='a2a-approval-1',
                                                  consent=consent, auth='PUBLIC-ALICE')
+        with self.assertRaises(ValueError):
+            build_authorization_proof('fixture-rockstaros', 'alice', 'device-a',
+                                      {**intent, 'continueWhileDeviceOffline': False},
+                                      1000000, 1300000, 'fixture-device-key')
         with self.assertRaises(AccessDenied):
             self.broker.authorize_a2a_delegation(intent, key='a2a-approval-bob', consent=consent,
                                                  auth='PUBLIC-BOB')
@@ -189,7 +195,7 @@ class BrokerTests(unittest.TestCase):
             'messageId': 'message-1', 'targetOrigin': 'https://agent.example',
             'targetAgentName': 'Research Agent', 'targetAgentVersion': '2.1.0',
             'protocolVersion': '1.0', 'budgetCurrency': 'USD', 'budgetLimitMinor': 500,
-            'parentBudgetLimitMinor': 900, 'deadlineAt': 1600000,
+            'parentBudgetLimitMinor': 900, 'continueWhileDeviceOffline': True, 'deadlineAt': 1600000,
             'message': 'Summarize public information.',
         }
         unsigned = build_authorization_proof('fixture-rockstaros', 'alice', 'device-a', intent,
@@ -212,7 +218,7 @@ class BrokerTests(unittest.TestCase):
             'messageId': 'message-1', 'targetOrigin': 'https://agent.example',
             'targetAgentName': 'Research Agent', 'targetAgentVersion': '2.1.0',
             'protocolVersion': '1.0', 'budgetCurrency': 'USD', 'budgetLimitMinor': 500,
-            'parentBudgetLimitMinor': 900, 'deadlineAt': 1600000,
+            'parentBudgetLimitMinor': 900, 'continueWhileDeviceOffline': True, 'deadlineAt': 1600000,
             'message': 'Summarize public information.',
         }
         unsigned = build_authorization_proof('fixture-rockstaros', 'alice', 'device-a', intent,

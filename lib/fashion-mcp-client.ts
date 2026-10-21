@@ -1,11 +1,12 @@
 import { ensureLocalRuntime } from '@/lib/sky-local-runtime';
+import { connectMcpSession, McpClientError, mcpToolNames, requestMcp } from './mcp-client';
 
 export const FASHION_MCP_URL = 'http://127.0.0.1:8787';
 export const FASHION_MCP_TOOL_COUNT = 41;
 
 const TOKEN_KEY = 'sky.fashion-mcp.session';
 const PROTOCOL_KEY = 'sky.fashion-mcp.protocol';
-const SUPPORTED_PROTOCOLS = new Set(['2025-11-25', '2025-06-18']);
+const SUPPORTED_PROTOCOLS = ['2025-11-25', '2025-06-18'] as const;
 const REQUIRED_TOOLS = [
   'fashion.producer.start',
   'fashion.autopilot.run',
@@ -93,42 +94,27 @@ async function rpc(
   params: unknown = {},
   protocolVersion = stored(PROTOCOL_KEY),
 ) {
-  const response = await fetch(FASHION_MCP_URL + '/mcp', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: 'Bearer ' + token,
-      ...(protocolVersion ? { 'MCP-Protocol-Version': protocolVersion } : {}),
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: crypto.randomUUID(),
-      method,
-      params,
-    }),
-    cache: 'no-store',
-    signal: AbortSignal.timeout(5000),
-  }).catch(() => {
-    throw new Error('PCのブランド運営へ応答を確認できませんでした。接続を再確認してください。');
-  });
-  if (response.status === 401) {
-    clearStoredConnection();
-    throw new Error('PCへの接続期限が切れました。もう一度接続してください。');
-  }
-  const message = (await response.json()) as {
-    error?: { message?: string };
-    result?: McpResult;
-  };
-  if (!response.ok || message.error || !message.result)
+  const generation = connectionGeneration;
+  try {
+    return await requestMcp<McpResult>({
+      baseUrl: FASHION_MCP_URL, token, protocolVersion,
+      accept: 'application/json', cache: 'no-store',
+    }, method, params);
+  } catch (error) {
+    if (error instanceof McpClientError && error.status === 401) {
+      if (generation === connectionGeneration && stored(TOKEN_KEY) === token) clearStoredConnection();
+      throw new Error('PCへの接続期限が切れました。もう一度接続してください。');
+    }
+    if (error instanceof McpClientError && error.code === 'network')
+      throw new Error('PCのブランド運営へ応答を確認できませんでした。接続を再確認してください。');
     throw new Error('Fashion Brand Ops MCPから正常な応答がありません。');
-  return message.result;
+  }
 }
 
 function validateTools(tools: McpResult['tools']) {
   if (!Array.isArray(tools) || tools.length !== FASHION_MCP_TOOL_COUNT)
     throw new Error('41個の専用操作を確認できませんでした。');
-  const names = new Set(tools.map((tool) => tool?.name));
+  const names = mcpToolNames(tools);
   if (REQUIRED_TOOLS.some((name) => !names.has(name)))
     throw new Error('必要なInstagram運用操作を確認できませんでした。');
 }
@@ -140,77 +126,33 @@ export function fashionMcpConnected() {
 async function establishFashionMcpConnection() {
   const generation = ++connectionGeneration;
   await ensureLocalRuntime('fashion');
-  const response = await fetch(FASHION_MCP_URL + '/connect', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: '{}',
-    cache: 'no-store',
-    signal: AbortSignal.timeout(5000),
-  }).catch(() => {
-    throw new Error('PCのブランド運営を起動できていません。接続を再確認してください。');
+  const session = await connectMcpSession({
+    baseUrl: FASHION_MCP_URL,
+    accept: 'application/json', cache: 'no-store',
+    protocols: SUPPORTED_PROTOCOLS,
+    clientInfo: { name: 'rockstaros-sky', version: '0.3.0' },
+    minimumTokenLength: 40,
+    serverName: 'fashion-brand-ops-mcp',
+    initializedStatus: 202,
+  }).catch((error: unknown) => {
+    if (error instanceof McpClientError) {
+      if (error.code === 'protocol') throw new Error('対応するMCPバージョンを確認できませんでした。');
+      if (error.code === 'initialized') throw new Error('MCPの初期接続が完了しませんでした。');
+      if (error.phase === 'connect') throw new Error('Sky接続アプリを確認できませんでした。');
+      if (error.status === 401) throw new Error('PCへの接続期限が切れました。もう一度接続してください。');
+    }
+    throw new Error('Fashion Brand Ops MCPから正常な応答がありません。');
   });
-  const connection = (await response.json()) as {
-    token?: string;
-    server?: string;
-  };
-  if (
-    !response.ok ||
-    connection.server !== 'fashion-brand-ops-mcp' ||
-    typeof connection.token !== 'string' ||
-    connection.token.length < 40
-  )
-    throw new Error('Sky接続アプリを確認できませんでした。');
-
-  const initialized = await rpc(
-    connection.token,
-    'initialize',
-    {
-      protocolVersion: '2025-11-25',
-      capabilities: {},
-      clientInfo: { name: 'rockstaros-sky', version: '0.3.0' },
-    },
-    '',
-  );
-  if (
-    !initialized.protocolVersion ||
-    !SUPPORTED_PROTOCOLS.has(initialized.protocolVersion)
-  )
-    throw new Error('対応するMCPバージョンを確認できませんでした。');
-
-  const notification = await fetch(FASHION_MCP_URL + '/mcp', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: 'Bearer ' + connection.token,
-      'MCP-Protocol-Version': initialized.protocolVersion,
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'notifications/initialized',
-    }),
-    cache: 'no-store',
-    signal: AbortSignal.timeout(5000),
-  });
-  if (notification.status !== 202)
-    throw new Error('MCPの初期接続が完了しませんでした。');
-
-  const listed = await rpc(
-    connection.token,
-    'tools/list',
-    {},
-    initialized.protocolVersion,
-  );
-  validateTools(listed.tools);
+  validateTools(session.tools as McpResult['tools']);
   if (generation !== connectionGeneration)
     throw new Error('接続確認は取り消されました。');
 
-  sessionStorage.setItem(TOKEN_KEY, connection.token);
-  sessionStorage.setItem(PROTOCOL_KEY, initialized.protocolVersion);
+  sessionStorage.setItem(TOKEN_KEY, session.token);
+  sessionStorage.setItem(PROTOCOL_KEY, session.protocolVersion);
   window.dispatchEvent(new Event('sky-fashion-mcp'));
   return {
-    protocolVersion: initialized.protocolVersion,
-    toolCount: listed.tools!.length,
+    protocolVersion: session.protocolVersion,
+    toolCount: session.tools!.length,
   };
 }
 
@@ -226,13 +168,19 @@ export function connectFashionMcp() {
 export async function verifyFashionMcp() {
   const token = stored(TOKEN_KEY);
   if (!token) throw new Error('Fashion Brand Ops MCPは未接続です。');
+  const generation = connectionGeneration;
   try {
-    await rpc(token, 'ping');
-    const listed = await rpc(token, 'tools/list');
+    const protocolVersion = stored(PROTOCOL_KEY);
+    await rpc(token, 'ping', {}, protocolVersion);
+    if (generation !== connectionGeneration || stored(TOKEN_KEY) !== token)
+      throw new Error('PC接続が変更されました。もう一度確認してください。');
+    const listed = await rpc(token, 'tools/list', {}, protocolVersion);
+    if (generation !== connectionGeneration || stored(TOKEN_KEY) !== token)
+      throw new Error('PC接続が変更されました。もう一度確認してください。');
     validateTools(listed.tools);
     return { toolCount: listed.tools!.length };
   } catch (error) {
-    clearStoredConnection();
+    if (generation === connectionGeneration && stored(TOKEN_KEY) === token) clearStoredConnection();
     throw error;
   }
 }
@@ -281,7 +229,7 @@ export async function startFashionProducer(input: FashionProducerInput) {
 }
 
 export async function disconnectFashionMcp() {
-  connectionGeneration++;
+  const generation = ++connectionGeneration;
   const token = stored(TOKEN_KEY);
   try {
     if (token)
@@ -296,6 +244,6 @@ export async function disconnectFashionMcp() {
         signal: AbortSignal.timeout(3000),
       });
   } finally {
-    clearStoredConnection();
+    if (generation === connectionGeneration) clearStoredConnection();
   }
 }

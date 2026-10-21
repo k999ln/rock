@@ -116,20 +116,32 @@ export function hasActiveRockstarEntitlementIssuer(configuration: unknown) {
 
 type Database = Pick<D1Database, 'prepare'>;
 export function rockstarEntitlementStore(db: Database) {
+  async function isClaimRevoked(claim: RockstarEntitlementClaim) {
+    return Boolean(await db.prepare(`SELECT 1 AS revoked FROM rockstar_entitlement_events
+      WHERE issuer_id = ? AND claim_id = ? AND purchase_reference_sha256 = ?
+        AND event_type IN ('refunded','revoked') AND applied_at IS NOT NULL LIMIT 1`)
+      .bind(claim.issuerId, claim.claimId, claim.purchaseReferenceSha256)
+      .first<{ revoked: number }>());
+  }
   return {
     async claim(claim: RockstarEntitlementClaim, claimCode: string, ownerUserId: string, now = Date.now()) {
       const codeHash = await sha256Hex(claimCode);
+      if (await isClaimRevoked(claim)) throw new Error('CLAIM_REVOKED');
       const inserted = await db.prepare(`INSERT OR IGNORE INTO rockstar_service_entitlements
         (issuer_id,claim_id,owner_user_id,offer_id,purchase_reference_sha256,claim_code_sha256,
          form_factor,scopes_json,issuer_key_id,claim_signature,status,claimed_at,expires_at,revoked_at)
-        VALUES (?,?,?,?,?,?,?,?,?,?,'active',?,?,NULL)`)
+        SELECT ?,?,?,?,?,?,?,?,?,?,'active',?,?,NULL
+        WHERE NOT EXISTS (SELECT 1 FROM rockstar_entitlement_events e
+          WHERE e.issuer_id = ? AND e.claim_id = ? AND e.purchase_reference_sha256 = ?
+            AND e.event_type IN ('refunded','revoked') AND e.applied_at IS NOT NULL)`)
         .bind(claim.issuerId, claim.claimId, ownerUserId, claim.offerId, claim.purchaseReferenceSha256,
           codeHash, claim.formFactor, JSON.stringify(claim.scopes), claim.issuerKeyId, claim.signature,
-          now, claim.expiresAt).run();
+          now, claim.expiresAt, claim.issuerId, claim.claimId, claim.purchaseReferenceSha256).run();
       const row = await db.prepare(`SELECT issuer_id AS issuerId,claim_id AS claimId,owner_user_id AS ownerUserId,
         offer_id AS offerId,form_factor AS formFactor,scopes_json AS scopesJson,status,claimed_at AS claimedAt,
         expires_at AS expiresAt FROM rockstar_service_entitlements WHERE issuer_id = ? AND claim_id = ?`)
         .bind(claim.issuerId, claim.claimId).first<{ issuerId: string; claimId: string; ownerUserId: string; offerId: string; formFactor: string; scopesJson: string; status: string; claimedAt: number; expiresAt: number | null }>();
+      if (await isClaimRevoked(claim)) throw new Error('CLAIM_REVOKED');
       if (!row || row.ownerUserId !== ownerUserId) throw new Error('CLAIM_ALREADY_USED');
       return { ...row, scopes: JSON.parse(row.scopesJson) as string[], alreadyClaimed: inserted.meta.changes === 0 };
     },
@@ -142,16 +154,31 @@ export function rockstarEntitlementStore(db: Database) {
         .bind(Date.now(), ownerUserId).all<{ issuerId: string; claimId: string; offerId: string; formFactor: string; scopesJson: string; status: string; claimedAt: number; expiresAt: number | null }>();
       return rows.results.map(({ scopesJson, ...row }) => ({ ...row, scopes: JSON.parse(scopesJson) as string[] }));
     },
+    async activeOffers(ownerUserId: string, offers: { issuerId: string; offerId: string }[], now = Date.now()) {
+      // Eligibility is bounded by the configured offers, not the UI history page.
+      const rows = await db.prepare(`SELECT DISTINCT e.issuer_id AS issuerId,e.offer_id AS offerId
+        FROM rockstar_service_entitlements e
+        WHERE e.owner_user_id = ? AND e.status = 'active' AND (e.expires_at IS NULL OR e.expires_at > ?)
+          AND EXISTS (SELECT 1 FROM json_each(?) offer
+            WHERE e.issuer_id = json_extract(offer.value, '$.issuerId')
+              AND e.offer_id = json_extract(offer.value, '$.offerId'))`)
+        .bind(ownerUserId, now, JSON.stringify(offers.map(({ issuerId, offerId }) => ({ issuerId, offerId }))))
+        .all<{ issuerId: string; offerId: string }>();
+      return rows.results;
+    },
     async hasActiveScope(ownerUserId: string, scope: string, now = Date.now()) {
       if (!allowedScopes.has(scope)) return false;
-      const rows = await db.prepare(`SELECT scopes_json AS scopesJson FROM rockstar_service_entitlements
+      // Authorization must inspect matching grants, independent of UI history pages.
+      const row = await db.prepare(`SELECT 1 AS allowed FROM rockstar_service_entitlements
         WHERE owner_user_id = ? AND status = 'active' AND (expires_at IS NULL OR expires_at > ?)
-        ORDER BY claimed_at DESC LIMIT 100`)
-        .bind(ownerUserId, now).all<{ scopesJson: string }>();
-      return rows.results.some((row) => {
-        try { return (JSON.parse(row.scopesJson) as unknown[]).includes(scope); }
-        catch { return false; }
-      });
+          AND EXISTS (SELECT 1 FROM json_each(
+            CASE WHEN json_valid(scopes_json) THEN
+              CASE WHEN json_type(scopes_json) = 'array' THEN scopes_json ELSE '[]' END
+            ELSE '[]' END
+          ) grant_scope WHERE grant_scope.type = 'text' AND grant_scope.value = ?)
+        LIMIT 1`)
+        .bind(ownerUserId, now, scope).first<{ allowed: number }>();
+      return Boolean(row);
     },
   };
 }

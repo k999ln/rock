@@ -28,7 +28,7 @@ const samples: Record<string, string> = {
   'youtube-script-writer':
     'テーマ: Skyに仕事を登録して使えるようにする。5分動画の台本を作る。',
   'seo-blueprint':
-    'テーマ: ローカルAIツールを安全に仕事で使う方法。検索意図と記事構成を作る。',
+    'テーマ: ローカルsiツールを安全に仕事で使う方法。検索意図と記事構成を作る。',
   'landing-page-sprint':
     '商品: 小規模事業者向けのCSV整形サービス。販売ページの構成を作る。',
   'sales-objection-reply-builder':
@@ -40,7 +40,7 @@ const samples: Record<string, string> = {
   'telegram-notifications':
     '仕事が完了したら、本人確認後にTelegramへ通知する内容を作る。',
   'producthunt-discovery':
-    '候補: ローカルAI、業務自動化、クリエイター向けツール。調査条件を作る。',
+    '候補: ローカルsi、業務自動化、クリエイター向けツール。調査条件を作る。',
   'faster-whisper':
     '音声ファイルをローカル文字起こしする実行器の接続条件を確認する。',
   'transformers-js':
@@ -199,7 +199,7 @@ export function SkyCandidateRunner({
         </div>
         <p className="bench-helper">
           {isLocalDraft
-            ? '定型の記入用テンプレートです。AIによる分析ではありません。'
+            ? '定型の記入用テンプレートです。siによる分析ではありません。'
             : '接続計画のひな形です。ツール本体は実行しません。'}{' '}
           本文と結果はサーバーに保存せず、処理状態と入出力サイズを記録します。
         </p>

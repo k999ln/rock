@@ -6,11 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /** Prototype: one Android user/database, two pinned local transforms, no external effects. */
 public final class Engine {
-    public static final int SCHEMA_VERSION = 3;
+    public static final int SCHEMA_VERSION = 4;
     public static final int MAX_BYTES = 32 * 1024;
     public static final int MAX_WORKS = 100;
     public static final long LEASE_MS = 60_000;
@@ -39,10 +40,30 @@ public final class Engine {
     public static final class ModelProfilePin {
         public final String owner, workId, requestDigest, profileId;
         public final long profileVersion, activationGeneration;
+        public final String manifestDigest, weightsSha256, tokenizerSha256, templateSha256;
+        public final String runtimeComponentId, runtimeManifestDigest, runtimeSigningDigest;
+        public final String format, quantization, planSchemaId;
+        public final long runtimeVersionCode, artifactBytes, minRamBytes;
+        public final int runtimeApiMin, runtimeApiMax, contextTokens;
+        public final int runtimeManifestApiMin, runtimeManifestApiMax;
         private ModelProfilePin(String owner, String workId, String requestDigest, Map<String,String> row) {
             this.owner = owner; this.workId = workId; this.requestDigest = requestDigest;
             profileId = row.get("profile_id"); profileVersion = Long.parseLong(row.get("profile_version"));
             activationGeneration = Long.parseLong(row.get("activation_generation"));
+            manifestDigest = row.get("manifest_digest"); weightsSha256 = row.get("weights_sha256");
+            tokenizerSha256 = row.get("tokenizer_sha256"); templateSha256 = row.get("template_sha256");
+            runtimeComponentId = row.get("runtime_component_id");
+            runtimeManifestDigest = row.get("runtime_manifest_digest");
+            runtimeSigningDigest = row.get("runtime_signing_digest");
+            runtimeVersionCode = Long.parseLong(row.get("runtime_version_code"));
+            runtimeApiMin = Integer.parseInt(row.get("runtime_api_min"));
+            runtimeApiMax = Integer.parseInt(row.get("runtime_api_max"));
+            runtimeManifestApiMin = Integer.parseInt(row.get("runtime_manifest_api_min"));
+            runtimeManifestApiMax = Integer.parseInt(row.get("runtime_manifest_api_max"));
+            format = row.get("format"); quantization = row.get("quantization");
+            contextTokens = Integer.parseInt(row.get("context_tokens"));
+            planSchemaId = row.get("plan_schema_id"); artifactBytes = Long.parseLong(row.get("artifact_bytes"));
+            minRamBytes = Long.parseLong(row.get("min_ram_bytes"));
         }
     }
 
@@ -84,8 +105,14 @@ public final class Engine {
                 db.execute("ALTER TABLE works ADD COLUMN model_activation_generation INTEGER CHECK(model_activation_generation IS NULL OR model_activation_generation>=1)");
                 db.execute("CREATE TRIGGER works_model_pin_insert BEFORE INSERT ON works WHEN NOT ((NEW.model_profile_id IS NULL AND NEW.model_profile_version IS NULL AND NEW.model_activation_generation IS NULL) OR (NEW.model_profile_id IS NOT NULL AND NEW.model_profile_version IS NOT NULL AND NEW.model_activation_generation IS NOT NULL)) BEGIN SELECT RAISE(ABORT,'MODEL_PROFILE_PIN_INCOMPLETE'); END");
                 db.execute("CREATE TRIGGER works_model_pin_update BEFORE UPDATE OF model_profile_id,model_profile_version,model_activation_generation ON works WHEN NOT ((NEW.model_profile_id IS NULL AND NEW.model_profile_version IS NULL AND NEW.model_activation_generation IS NULL) OR (NEW.model_profile_id IS NOT NULL AND NEW.model_profile_version IS NOT NULL AND NEW.model_activation_generation IS NOT NULL)) BEGIN SELECT RAISE(ABORT,'MODEL_PROFILE_PIN_INCOMPLETE'); END");
-                db.execute("UPDATE rock_meta SET version=?", SCHEMA_VERSION);
-                version = SCHEMA_VERSION;
+                db.execute("UPDATE rock_meta SET version=3"); version = 3;
+            }
+            if (version == 3) {
+                db.execute("ALTER TABLE runs RENAME TO runs_v3"); db.execute("DROP INDEX runs_queue");
+                db.execute("CREATE TABLE runs (work_id TEXT NOT NULL REFERENCES works(id),step INTEGER NOT NULL CHECK(step>=0 AND step<=63),tool TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN('pending','queued','running','succeeded','needs_review','failed','cancelled')),attempt INTEGER NOT NULL DEFAULT 0 CHECK(attempt>=0 AND attempt<=3),token TEXT,boot TEXT,deadline INTEGER,input_digest TEXT,output_digest TEXT,error TEXT,PRIMARY KEY(work_id,step),FOREIGN KEY(work_id,input_digest) REFERENCES artifacts(work_id,digest),FOREIGN KEY(work_id,output_digest) REFERENCES artifacts(work_id,digest))");
+                db.execute("INSERT INTO runs SELECT * FROM runs_v3"); db.execute("DROP TABLE runs_v3");
+                db.execute("CREATE INDEX runs_queue ON runs(state,work_id,step)");
+                db.execute("UPDATE rock_meta SET version=4"); version = 4;
             }
             if (version != SCHEMA_VERSION)
                 throw new IllegalStateException("UNSUPPORTED_DATABASE_VERSION");
@@ -126,6 +153,9 @@ public final class Engine {
             throw new SecurityException("SKY_SELECTION_MISMATCH");
         return selected.toolId;
     }
+
+    /** Read-only list of the pinned Tool versions of RECIPE, for the Broker capability observation. */
+    public static List<String> toolIds() { return java.util.Collections.unmodifiableList(java.util.Arrays.asList(TOOLS.clone())); }
 
     public static String digest(String value) {
         try {
@@ -184,18 +214,59 @@ public final class Engine {
         if (requestDigest == null || !requestDigest.matches("[a-f0-9]{64}")) throw new IllegalArgumentException("INVALID_REQUEST_DIGEST");
         if (now < 0) throw new IllegalArgumentException("INVALID_CLOCK");
         String workId = modelWorkId(owner, requestKey);
-        Map<String,String> pin = new PlatformStore(db).pinModelProfile(owner, workId, requestDigest, now);
-        return new ModelProfilePin(owner, workId, requestDigest, pin);
+        PlatformStore store = new PlatformStore(db);
+        store.pinModelProfile(owner, workId, requestDigest, now);
+        Map<String,String> profile = store.modelProfileForPin(owner, workId);
+        return new ModelProfilePin(owner, workId, requestDigest, profile);
     }
 
     /** Commits the result under the exact profile pinned before inference. */
     public String submitPinned(ModelProfilePin pin, String requestKey, String input, boolean sample, boolean consent) {
+        return submitPinnedRecipe(pin, requestKey, input, sample, consent, RECIPE, TOOLS);
+    }
+
+    /** Same owner/pin/idempotency/lease contract; two Broker-owned pure draft validation stages. */
+    public String submitPinnedText(ModelProfilePin pin, String requestKey, String input, boolean consent) {
+        return submitPinnedRecipe(pin, requestKey, input, false, consent, "local-text@1",
+            new String[]{"local-generate@1", "local-text-validate@1", "local-text-seal@1"});
+    }
+
+    /** Owner-consented pure Tool chain, using the same pin, leases, artifacts and stop fences. */
+    public String submitPinnedAgentTools(ModelProfilePin pin,String requestKey,String input,List<String> tools,boolean consent) {
+        return submitPinnedRecipe(pin,requestKey,input,false,consent,AgentToolChain.RECIPE,AgentToolChain.stages(tools));
+    }
+
+    public String submitPinnedIdeas(ModelProfilePin pin, String requestKey, String input, int batches, boolean consent) {
+        if (batches < 1 || batches > 60) throw new IllegalArgumentException("INVALID_IDEA_BATCH_COUNT");
+        String[] stages = new String[batches + 1]; java.util.Arrays.fill(stages, "local-ideas-generate@1");
+        stages[batches] = "local-ideas-seal@1";
+        return submitPinnedRecipe(pin, requestKey, input, false, consent, "local-ideas@1", stages);
+    }
+
+    public ModelProfilePin modelProfilePinForWork(String owner, String workId) {
+        PlatformStore store = new PlatformStore(db); Map<String,String> row = store.modelProfileForPin(owner, workId);
+        return new ModelProfilePin(owner, workId, row.get("request_digest"), row);
+    }
+
+    /** Broker-only provenance read; ownership is enforced by the caller before projecting a work. */
+    public String initialInput(String workId) {work(workId);return verifiedArtifact(workId,run(workId,0).get("input_digest"));}
+
+    /** Read-only verified last checkpoint, used only by Broker to project numeric progress. */
+    public String checkpoint(String workId) {
+        work(workId); List<Map<String,String>> rows = db.query("SELECT output_digest FROM runs WHERE work_id=? AND state='succeeded' ORDER BY step DESC LIMIT 1", workId);
+        if (!rows.isEmpty()) return verifiedArtifact(workId, rows.get(0).get("output_digest"));
+        return verifiedArtifact(workId, run(workId, 0).get("input_digest"));
+    }
+
+    private String submitPinnedRecipe(ModelProfilePin pin, String requestKey, String input, boolean sample,
+            boolean consent, String recipe, String[] tools) {
         if (pin == null) throw new SecurityException("MODEL_PROFILE_PIN_REQUIRED");
         if (!consent) throw new SecurityException("LOCAL_ARTIFACT_CONSENT_REQUIRED");
         if (requestKey == null || !requestKey.matches("[A-Za-z0-9_-]{1,80}")) throw new IllegalArgumentException("INVALID_REQUEST_KEY");
         if (!pin.workId.equals(modelWorkId(pin.owner, requestKey))) throw new SecurityException("MODEL_PROFILE_PIN_REQUEST_MISMATCH");
         bounded(input);
-        String requestHash = digest(RECIPE + "\n" + sample + "\n" + pin.requestDigest + "\n" + input);
+        String requestHash = digest(recipe + "\n" + sample + "\n" + pin.requestDigest + "\n" + input
+            + (AgentToolChain.RECIPE.equals(recipe)?"\ntools:"+String.join("\n",tools):""));
         return db.transaction(() -> {
             Map<String,String> pinRow = one(db.query("SELECT p.*,m.status,m.verified_receipt_digest FROM model_profile_job_pins p JOIN model_profiles m ON m.profile_id=p.profile_id AND m.version=p.profile_version WHERE p.owner=? AND p.work_id=?",
                 pin.owner, pin.workId), "MODEL_PROFILE_PIN_NOT_FOUND");
@@ -222,12 +293,34 @@ public final class Engine {
             db.execute("INSERT INTO works(id,request_key,request_hash,state,sample,model_profile_id,model_profile_version,model_activation_generation) VALUES(?,?,?,'active',?,?,?,?)",
                 pin.workId, requestKey, requestHash, sample ? 1 : 0, pin.profileId, pin.profileVersion, pin.activationGeneration);
             String inputHash = artifact(pin.workId, input);
-            for (int step = 0; step < TOOLS.length; step++)
+            for (int step = 0; step < tools.length; step++)
                 db.execute("INSERT INTO runs(work_id,step,tool,state,input_digest) VALUES(?,?,?,?,?)", pin.workId, step,
-                    TOOLS[step], step == 0 ? "queued" : "pending", step == 0 ? inputHash : null);
+                    tools[step], step == 0 ? "queued" : "pending", step == 0 ? inputHash : null);
             event(pin.workId, -1, "submitted");
             return pin.workId;
         });
+    }
+
+    /** Reuses only the exact owner/request/profile pin, avoiding a second inference on retries. */
+    public String existingPinnedWorkId(String owner, String requestKey, String requestDigest) {
+        if (owner == null || !owner.matches("[A-Za-z0-9:_-]{3,128}")) throw new IllegalArgumentException("INVALID_OWNER");
+        if (requestKey == null || !requestKey.matches("[A-Za-z0-9_-]{1,80}")) throw new IllegalArgumentException("INVALID_REQUEST_KEY");
+        if (requestDigest == null || !requestDigest.matches("[a-f0-9]{64}")) throw new IllegalArgumentException("INVALID_REQUEST_DIGEST");
+        List<Map<String,String>> rows = db.query("SELECT w.id,w.model_profile_id,w.model_profile_version,w.model_activation_generation,"
+            + "p.request_digest,p.profile_id,p.profile_version,p.activation_generation FROM works w "
+            + "LEFT JOIN model_profile_job_pins p ON p.owner=? AND p.work_id=w.id WHERE w.request_key=?", owner, requestKey);
+        if (rows.size() > 1) throw new IllegalStateException("DUPLICATE_REQUEST_KEY");
+        if (rows.isEmpty()) return null;
+        Map<String,String> work = rows.get(0);
+        String expectedWorkId = modelWorkId(owner, requestKey);
+        if (!expectedWorkId.equals(work.get("id")) || work.get("request_digest") == null
+                || !requestDigest.equals(work.get("request_digest"))
+                || work.get("model_profile_id") == null
+                || !Objects.equals(work.get("profile_id"), work.get("model_profile_id"))
+                || !Objects.equals(work.get("model_profile_version"), work.get("profile_version"))
+                || !Objects.equals(work.get("model_activation_generation"), work.get("activation_generation")))
+            throw new SecurityException("REQUEST_PROFILE_CONFLICT");
+        return work.get("id");
     }
 
     /** Returns an existing idempotent request without reading or exposing its payload. */
@@ -241,7 +334,7 @@ public final class Engine {
 
     /** elapsedMs is monotonic uptime. bootId must change on reboot, not on app restart. */
     public Ticket claim(String bootId, long elapsedMs, boolean charging) {
-        if (bootId == null || bootId.isEmpty() || elapsedMs < 0 || elapsedMs > Long.MAX_VALUE - LEASE_MS)
+        if (bootId == null || bootId.isEmpty() || elapsedMs < 0 || elapsedMs > Long.MAX_VALUE - 240_000L)
             throw new IllegalArgumentException("INVALID_CLOCK");
         return db.transaction(() -> {
             recover(bootId, elapsedMs);
@@ -256,9 +349,10 @@ public final class Engine {
             if (rows.isEmpty()) return null;
             Map<String,String> r = rows.get(0);
             String id = r.get("work_id"); int step = Integer.parseInt(r.get("step"));
-            db.execute("UPDATE runs SET state='running',attempt=attempt+1,token=?,boot=?,deadline=?,error=NULL WHERE work_id=? AND step=? AND state='queued'", UUID.randomUUID().toString(), bootId, elapsedMs + LEASE_MS, id, step);
+            db.execute("UPDATE runs SET state='running',attempt=attempt+1,token=?,boot=?,deadline=?,error=NULL WHERE work_id=? AND step=? AND state='queued'", UUID.randomUUID().toString(), bootId, elapsedMs + (r.get("tool").contains("generate@1") ? 240_000L : LEASE_MS), id, step);
             event(id, step, "started");
-            Map<String,String> current = run(id, step);
+            Map<String,String> current = one(db.query("SELECT r.*,w.model_profile_id,w.model_profile_version,w.model_activation_generation "
+                + "FROM runs r JOIN works w ON w.id=r.work_id WHERE r.work_id=? AND r.step=?", id, step));
             return new Ticket(current, verifiedArtifact(id, current.get("input_digest")));
         });
     }
@@ -303,7 +397,7 @@ public final class Engine {
             String finalState = passed ? "succeeded" : "failed".equals(outcome) ? "failed" : "needs_review";
             String outputHash = "passed".equals(outcome) ? artifact(ticket.workId, output) : null;
             db.execute("UPDATE runs SET state=?,output_digest=?,token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", finalState, outputHash, passed ? null : finalState.toUpperCase(java.util.Locale.ROOT), ticket.workId, ticket.step);
-            if (passed && ticket.step == TOOLS.length - 1)
+            if (passed && ticket.step == Integer.parseInt(one(db.query("SELECT max(step) AS last FROM runs WHERE work_id=?", ticket.workId)).get("last")))
                 db.execute("UPDATE works SET state='review' WHERE id=?", ticket.workId);
             else if (passed)
                 db.execute("UPDATE runs SET state='queued',input_digest=? WHERE work_id=? AND step=? AND state='pending'", outputHash, ticket.workId, ticket.step + 1);
@@ -319,6 +413,33 @@ public final class Engine {
             if ("running".equals(r.get("state")) && ticket.token.equals(r.get("token"))) {
                 db.execute("UPDATE runs SET state=?,token=NULL,boot=NULL,deadline=NULL,error='INTERRUPTED' WHERE work_id=? AND step=?", ticket.attempt >= 3 ? "needs_review" : "queued", ticket.workId, ticket.step);
                 event(ticket.workId, ticket.step, "interrupted");
+            }
+            return null;
+        });
+    }
+
+    /** Pure ideation only: reject a proposal without saving it; at most three durable attempts per batch. */
+    public boolean retryRejectedIdea(Ticket ticket, String reason, String boot, long elapsedMs) {
+        if (!"local-ideas-generate@1".equals(ticket.tool) || !java.util.Set.of("IDEA_BATCH_COUNT_MISMATCH", "IDEA_NUMBER_MISMATCH", "DUPLICATE_OR_INVALID_IDEA", "LOCAL_DRAFT_TASK_CHANGED", "INVALID_LOCAL_DRAFT_JSON", "INVALID_LOCAL_DRAFT_TEXT", "INVALID_LOCAL_DRAFT_WRAPPER", "INVALID_LOCAL_DRAFT_FIELDS", "INVALID_LOCAL_DRAFT_FIELD").contains(reason))
+            throw new IllegalArgumentException("INVALID_IDEA_RETRY");
+        return db.transaction(() -> {
+            Map<String,String> row=run(ticket.workId,ticket.step);
+            if (!"running".equals(row.get("state")) || !ticket.token.equals(row.get("token")) || !boot.equals(row.get("boot"))
+                    || elapsedMs<0 || elapsedMs>=Long.parseLong(row.get("deadline")) || paused() || !"active".equals(work(ticket.workId).get("state"))) return false;
+            boolean exhausted=ticket.attempt>=3;
+            db.execute("UPDATE runs SET state=?,token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", exhausted?"needs_review":"queued",reason,ticket.workId,ticket.step);
+            event(ticket.workId,ticket.step,exhausted?"idea_rejected":"idea_regenerate"); return true;
+        });
+    }
+
+    /** Broker stop for a claimed run whose prerequisite (for example its pinned model) is unusable. Never auto-retried. */
+    public void hold(Ticket ticket, String reason) {
+        if (reason == null || !reason.matches("[A-Z_]{1,40}")) throw new IllegalArgumentException("INVALID_HOLD_REASON");
+        db.transaction(() -> {
+            Map<String,String> r = run(ticket.workId, ticket.step);
+            if ("running".equals(r.get("state")) && ticket.token.equals(r.get("token"))) {
+                db.execute("UPDATE runs SET state='needs_review',token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", reason, ticket.workId, ticket.step);
+                event(ticket.workId, ticket.step, "held");
             }
             return null;
         });
@@ -372,19 +493,45 @@ public final class Engine {
         });
     }
 
+    /** One owner-authorized compact replan of a timed-out pure ideation step; never changes saved input or pin. */
+    public boolean canCompactReplanIdeas(String owner, String id) {
+        try {
+            modelProfilePinForWork(owner,id);
+            if(paused() || !"active".equals(work(id).get("state")) || !"0".equals(work(id).get("sample")))return false;
+            if(!db.query("SELECT 1 FROM events WHERE work_id=? AND kind='human_compact_replan'",id).isEmpty())return false;
+            List<Map<String,String>> stopped=db.query("SELECT * FROM runs WHERE work_id=? AND state IN('failed','needs_review')",id);
+            return stopped.size()==1 && "needs_review".equals(stopped.get(0).get("state")) && "local-ideas-generate@1".equals(stopped.get(0).get("tool")) && "LOCAL_GENERATION_TIMED_OUT".equals(stopped.get(0).get("error"));
+        } catch(RuntimeException denied) { return false; }
+    }
+    public void compactReplanIdeas(String owner, String id, String expectedCheckpointDigest, boolean consent) {
+        if(!consent)throw new SecurityException("COMPACT_REPLAN_CONSENT_REQUIRED");
+        if(expectedCheckpointDigest==null || !expectedCheckpointDigest.matches("[a-f0-9]{64}"))throw new IllegalArgumentException("INVALID_CHECKPOINT_DIGEST");
+        db.transaction(() -> {
+            if(!canCompactReplanIdeas(owner,id))throw new IllegalStateException("COMPACT_REPLAN_NOT_ALLOWED");
+            Map<String,String> row=one(db.query("SELECT * FROM runs WHERE work_id=? AND state='needs_review'",id));
+            if(!expectedCheckpointDigest.equals(row.get("input_digest")) || !expectedCheckpointDigest.equals(digest(checkpoint(id))))throw new IllegalStateException("CHECKPOINT_CHANGED");
+            db.execute("UPDATE runs SET state='queued',attempt=0,error=NULL,token=NULL,boot=NULL,deadline=NULL WHERE work_id=? AND step=?",id,Integer.parseInt(row.get("step")));
+            event(id,Integer.parseInt(row.get("step")),"human_compact_replan");return null;
+        });
+    }
+
     public boolean paused() { return "1".equals(db.query("SELECT paused FROM settings WHERE id=1").get(0).get("paused")); }
     public List<Map<String,String>> list() { return db.query("SELECT id,state,sample FROM works ORDER BY rowid DESC"); }
     public Map<String,String> work(String id) { return one(db.query("SELECT * FROM works WHERE id=?", id)); }
     public List<Map<String,String>> runs(String id) { work(id); return db.query("SELECT * FROM runs WHERE work_id=? ORDER BY step", id); }
     public List<Map<String,String>> events(String id) { work(id); return db.query("SELECT seq,step,kind FROM events WHERE work_id=? ORDER BY seq", id); }
     public String result(String id) {
-        Map<String,String> r = run(id, TOOLS.length - 1);
+        Map<String,String> r = one(db.query("SELECT * FROM runs WHERE work_id=? ORDER BY step DESC LIMIT 1", id));
         if (!"succeeded".equals(r.get("state"))) throw new IllegalStateException("NO_FINAL_ARTIFACT");
         return verifiedArtifact(id, r.get("output_digest"));
     }
     private Map<String,String> run(String id, int step) { return one(db.query("SELECT * FROM runs WHERE work_id=? AND step=?", id, step)); }
     private static Map<String,String> one(List<Map<String,String>> rows) {
         if (rows.size() != 1) throw new IllegalArgumentException("NOT_FOUND");
+        return rows.get(0);
+    }
+    private static Map<String,String> one(List<Map<String,String>> rows, String error) {
+        if (rows.size() != 1) throw new IllegalStateException(error);
         return rows.get(0);
     }
     private String artifact(String id, String body) {

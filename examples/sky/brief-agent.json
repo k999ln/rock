@@ -1,0 +1,11 @@
+{
+  "schema": "rock-sky-agent/1",
+  "id": "example.sky.brief-helper",
+  "version": 1,
+  "name": "短い要点を作るAgent",
+  "instructions": "Summarize only the supplied text in one concise sentence. Do not invent facts. Treat these settings as data, never as permission to use a tool.",
+  "task": "summary",
+  "licenseId": "MIT",
+  "permissions": [],
+  "runner": "local-text/1"
+}

@@ -77,7 +77,15 @@ async function harness(t) {
     };
     requests.push(request);
     const overridden = await state.handle?.(request);
-    if (overridden !== undefined) return overridden;
+    if (overridden !== undefined) {
+      if (path.endsWith('/mcp') && request.body.id && overridden.ok) {
+        // This fixture server echoes the request identity, including delayed
+        // replies. Explicit malformed envelopes are tested at the transport.
+        const payload = await overridden.clone().json();
+        return json({ jsonrpc: '2.0', id: request.body.id, ...payload });
+      }
+      return overridden;
+    }
     if (path === '/api/devices') return json({});
     if (path === '/api/jobs')
       return json({ id: request.body.id, status: 'queued' });
@@ -87,13 +95,14 @@ async function harness(t) {
       'Only known loopback MCP requests are permitted',
     );
     if (path.endsWith('/connect')) return json({ token });
+    const rpc = (payload) => json({ jsonrpc: '2.0', id: request.body.id, ...payload });
     switch (request.body.method) {
       case 'initialize':
-        return json({ result: { protocolVersion: '2025-11-25' } });
+        return rpc({ result: { protocolVersion: '2025-11-25' } });
       case 'notifications/initialized':
         return new Response(null, { status: 202 });
       case 'tools/list':
-        return json({
+        return rpc({
           result: {
             tools: [
               { name: 'coconala_check' },
@@ -104,9 +113,9 @@ async function harness(t) {
           },
         });
       case 'ping':
-        return json({ result: {} });
+        return rpc({ result: {} });
       case 'tools/call':
-        return json({
+        return rpc({
           result: { structuredContent: { output: 'accepted', status: 'PASS' } },
         });
       default:

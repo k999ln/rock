@@ -1,0 +1,33 @@
+{
+  "schema": "rockstar-local-implementation-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Carry the browser-approved Rockstar account subject from one-time Android device authorization into protected Android session storage so device-local recovery and Wallet work can use the authenticated cloud owner identity.",
+  "implemented": [
+    "The one-time device authorization poll response returns the account subject attached to the browser-approved grant.",
+    "Android-independent authorization Core rejects a missing, oversized, or control-containing owner subject before saving the token.",
+    "Android session store format v2 encrypts and origin/package-binds the owner subject with the opaque bearer token and expiry.",
+    "The device API integration suite asserts the returned subject equals the synthetic authenticated test owner."
+  ],
+  "locallyVerified": {
+    "workerD1ApiAssertions": 863,
+    "workerD1Api": "PASS",
+    "typescript": "PASS",
+    "productionWebBuild": "PASS",
+    "androidArchitectureCheck": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "notVerified": [
+    "Android Core JVM tests and Android instrumentation were not run because the checkout has no Android Gradle wrapper/platform SDK.",
+    "No Android APK, Binder integration, supported-device session storage, or physical-device account link was accepted.",
+    "This does not enroll or authenticate an A2A Broker key/device on the server and does not complete Wallet settlement synchronization.",
+    "This is not proof of production authentication, carrier activation, production billing, provider execution, or RockstarOS installation."
+  ],
+  "sha256": {
+    "lib/rockstar-device-link.ts": "b44e35d89f9c469fb915fb6a589012cf1ba64733d62c63595bbaa43133d42485",
+    "android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java": "2ac11aa1852bcb075a49cca25d5491d14ff27c5bf8f5b75bc7cf386a9e5a1672",
+    "android/core/src/test/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlowTest.java": "41da4d262ecdd15fdfc4f3e05a6866873ab11efb44fd69e24cd70ddeb58c045e",
+    "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java": "a3c90362a3afc3ace5ec66031796da4ae166d65b75b27cec853dd98384889a43",
+    "android/automation/src/androidTest/java/dev/rock/automation/RockstarDeviceAccountLinkTest.java": "7c92438ac9ba71886f96c866592507d7f37a794a586c7d7e1eca5d9106d467d8",
+    "scripts/check-work-api.mjs": "9abc6f08cbc7d37edb130fc45e12eeaf38106db86f146f897d7090486d241eb4"
+  }
+}

@@ -1,3 +1,4 @@
+import { readBoundedStream } from './bounded-stream.ts';
 import { database, requestUser } from './fund-store';
 import { operations, OperationError } from './operations';
 export const json = (value: unknown, status = 200) =>
@@ -7,25 +8,12 @@ export async function body(request: Request) {
     throw new OperationError('JSONで送信してください。', 415);
   const reader = request.body?.getReader();
   if (!reader) throw new OperationError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let total = 0;
   try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      total += value.byteLength;
-      if (total > 4096) {
-        await reader.cancel();
-        throw new OperationError('入力サイズの上限を超えています。', 413);
-      }
-      chunks.push(value);
-    }
-    const bytes = new Uint8Array(total);
-    let offset = 0;
-    for (const chunk of chunks) {
-      bytes.set(chunk, offset);
-      offset += chunk.length;
-    }
+    const bytes = await readBoundedStream(
+      reader,
+      4096,
+      () => new OperationError('入力サイズの上限を超えています。', 413),
+    );
     return JSON.parse(
       new TextDecoder('utf-8', { fatal: true }).decode(bytes),
     ) as unknown;
@@ -38,11 +26,15 @@ export async function body(request: Request) {
 }
 export async function handle(
   request: Request,
-  action: (store: ReturnType<typeof operations>) => Promise<unknown>,
+  action: (
+    store: ReturnType<typeof operations>,
+    user: string,
+  ) => Promise<unknown>,
 ) {
   try {
     const user = await requestUser(request);
-    return json(await action(operations(database(), user)));
+    const result = await action(operations(database(), user), user);
+    return result instanceof Response ? result : json(result);
   } catch (error) {
     if (error instanceof OperationError)
       return json({ error: error.message }, error.status);

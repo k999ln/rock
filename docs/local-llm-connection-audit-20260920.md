@@ -9,7 +9,7 @@ Local Action Assistant は、端末内Qwenを動かすruntimeとして設計・�
 - `npm run typecheck`：合格
 - `npm run build`：合格
 - LLM provider / routing / handoffの対象テスト：9件合格
-- Local AI準備・APK stagingのPythonテスト：15件合格
+- Local si準備・APK stagingのPythonテスト：15件合格
 - `npm run llm:architecture:check`：合格
 - `npm run os:check`：合格
 - 現在の実行環境：Ollama `11434` は未起動、Sky `3001` は応答なし
@@ -39,6 +39,11 @@ Cloudflare Workerから端末の `localhost` やBinderへ直接アクセスす�
 ### 3. Routerの本番compositionが未接続
 
 `DecisionRouter`、`LocalQwenDecisionProvider`、`TypeSafeJevProvider` は実装済みだが、アプリの本番routeで `new DecisionRouter(...)` を構成する呼出しはなく、現状はfixtureとadapter境界まで。Providerを作っただけではSkyの全依頼は自動的にRouterを通らない。
+
+
+### 2026-09-27 Agent Control Plane追記
+
+`app/api/agent-control-plane` では、deterministic gate、公開メタデータに限定した明示同意付きJev判断、Cursor Cloud AgentのPR-only起動を一つのrouteへcompositionする実装を追加した。これはソフトウェア開発用の限定runtime sliceであり、Sky全依頼のgeneric `DecisionRouter` が接続済みになったことを意味しない。Local QwenのWeb/native bridge未接続、Jev/Cursorの実credential受入未実施という本監査の残課題も維持する。
 
 ### 4. Provider選択はモデルの導入・起動を行わない
 

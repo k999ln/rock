@@ -1,10 +1,22 @@
 # RockstarOS 全設計ポータル
 
-版: 1.4 / 2026-09-24
+通信・OS・LLM cloudの土台から読む場合は[GrapheneOS・eSIM・クラウド基盤設計](native-os-integration.md)を先に開く。2026-10-15の本人選択による通信＋si利用権商品、32改変項目、source/実機/本番の境界、独自署名/OTA/復旧の順を扱う。
+
+版: 2.0 / 2026-10-13
+
+## サービスを理解するために最初に読む設計
+
+[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。現行baselineの通信＋si利用権商品、無料account・単体client経路とRQ01〜RQ50を維持する。Jenniferの役割とsourceはmain統合済み（PR #113、`01d2e418`）、真正検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
+
+Skyは機能・作者・公式区分へ固定しない[addプラグイン基盤](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。現在の検証済みcatalogと、将来追加できる能力の範囲を分けて読む。
+
+原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。入口＋6章の7冊と[横断整合契約](service-design/06-consistency-contracts.md)で全体を照合し、製品表示は[si表記契約](../data/product-terminology.json)に統一する。実行ロジック・公開・実機の合格は更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
-このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMiniまで、全設計へ入る唯一の入口である。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
+> **この文書の役割** — **設計書の入口** です。`docs/` 全体の地図は [docs/README.md](README.md)、仕様がいつどう変わったかは [現行製品方針](product-baseline.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](agents-and-tools.md) にあります。
+
+このページは、RockstarOS本体、画面、si、Tool、Wallet、運用、avocadoMini、avokadoPro、rocketstarまで、全設計へ入る唯一の入口である。部隊別のGoal、進捗、rule、依存、証拠、次の作業は[avokado Mission Control](mission-control.md)を正本とする。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
 ## rocketstar 設計書完全版 R1.0と全履歴の保存
 
@@ -22,23 +34,23 @@ avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README
 
 原本PDF p4・17・30のavokado E3は4本＋別Hubを前提とする。OS共通運用・他profileの設計として原本を保持し、このE3配置をR5へ適用しない。R5単独mini用Device Profile・adapterとの統合は未完了。
 
-## 最初に読む8冊
+## 既存詳細と保存原本
 
 1. [RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf) — rocketstar、A-LINK、avokado、colonyを含む2026-09-24統合基準。
 2. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
 3. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — repository実装と既存詳細資料への入口。
-4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、12件をどう使い、どこで止めるか。
+4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — 使いたい能力をどう追加・交換し、仕事として使い、どこで止めるか。
 5. [avocadoMini R5 ハードウェア・OS統合基本設計](avocado-mini-r5/README.md) — 現行製品要求、51ページ、図面、計算、受入計画。既存[Material Invention研究仕様](rockstaros-avocado-mini-complete-design.md)は別profileとして保持する。
-6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
+6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ50と、その後の明示判断。
 7. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
 
 8. [rocketstar 設計書完全版 R1.0と全付録](rocketstar-design/README.md) — 両段再使用ロケット、A-LINK、OS、コロニー、ボタンの設計原本と計算・検証履歴。
 
 機械可読の被覆台帳は[`data/design-document-index.json`](../data/design-document-index.json)。`npm run design:check`は、利用可能・候補の全Toolが台帳と詳細設計に存在すること、正本へのlinkが存在すること、未決定を完成表示していないことを検査する。
 
-2026-09-21追加: [avocadoMini Mini200 E1](avocado-mini-mini200-e1/README.md)は、使用時20cm・本体内ゲーム処理・日本語音声の新しい基本設計profile。本文、SVG図7枚、算術と入力許可モデルを保存した。従来の四方向研究契約、Pixel/QEMU、Web公開とは別で、実機・実ASR・OS統合は未受入。
+2026-09-21追加: avocadoMini Mini200 E1（削除済み）は、使用時20cm・本体内ゲーム処理・日本語音声の新しい基本設計profile。本文、SVG図7枚、算術と入力許可モデルを保存した。従来の四方向研究契約、Pixel/QEMU、Web公開とは別で、実機・実ASR・OS統合は未受入。
 
-同日の最新製品方針は[ゲームを入口に生活全体を豊かにするOS](avocado-mini-mini200-e1/game-first-life-connectivity.md)。ローカル自律動作、生活機器の同意、衛星を含む通信経路と切断復旧を分離し、既存Coreへ接続する設計案として保存する。衛星網の所有や直接受信、生活機器接続は未実装・未受入。
+同日の最新製品方針はゲームを入口に生活全体を豊かにするOS（削除済み）。ローカル自律動作、生活機器の同意、衛星を含む通信経路と切断復旧を分離し、既存Coreへ接続する設計案として保存する。衛星網の所有や直接受信、生活機器接続は未実装・未受入。
 
 [Jev／TypeSafe + Local Qwen引き継ぎ原文](prompts/jev-typesafe-local-qwen-handoff-20260918.md)を要求の正本として保存し、その内容を[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)へ落とした。DecisionProvider契約と安全policyも機械可読化したが、Router／Harness、TypeSafe接続、Cloud接続、RAG runtimeが実装済みになったわけではない。
 
@@ -59,7 +71,7 @@ RockstarOS Platform Core
   ├─ ownerとcomponentのidentity
   ├─ capability・権限・本人承認
   ├─ work・step・event・artifact・receipt
-  ├─ Local AI・Agent runtime
+  ├─ Local si・Agent runtime
   ├─ Tool / MCP / Provider実行境界
   ├─ 保存・backup・復旧
   └─ update・rollback・監査・緊急保護
@@ -76,9 +88,9 @@ RockstarOS Platform Core
 
 | 環境              | 役割                                                          | 現在の到達点                               | 完成と呼ばないもの                         |
 | ----------------- | ------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
-| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | 12 ready Toolと主要画面がある              | スマホOS、native sandbox、本番Provider     |
+| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | AMCを含む13 ready Toolと主要画面がある     | スマホOS、native sandbox、本番Provider     |
 | Linux / QEMU      | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture     | Developer Preview候補の限定受入            | Pixel対応、一般配布、本番鍵                |
-| Android APK       | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
+| Android APK       | Broker、Shell、固定Tool、Local si、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
 | Pixel 10 OS image | 最初の物理RockstarOS対象                                      | sourceとbuild gateを設計・準備             | full build、flash、CTS/VTS、OTA、純正復旧  |
 | avocadoMini       | Material Inventionの標準操作端末                              | 統合設計とsandbox Core                     | XR runtime、四方向実機、新材料、特許、量産 |
 
@@ -88,7 +100,7 @@ RockstarOS Platform Core
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 製品目的・要求             | [製品ベース](product-baseline.md)                                                                                                                                  | [`data/product-baseline.json`](../data/product-baseline.json)                                                                                      |
 | 全体構成                   | [全体詳細設計](rockstaros-complete-design.md)                                                                                                                      | [`data/system-composition-audit.json`](../data/system-composition-audit.json)                                                                      |
-| AIネイティブCore           | [AIネイティブOS共通設計](ai-native-os-architecture.md)・[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)                                        | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json)・[`contracts/decision-provider.json`](../contracts/decision-provider.json) |
+| siネイティブCore           | [siネイティブOS共通設計](ai-native-os-architecture.md)・[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)                                        | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json)・[`contracts/decision-provider.json`](../contracts/decision-provider.json) |
 | Android / Pixel            | [Android production architecture](android-production-architecture.md)                                                                                              | [`data/android-release-architecture-policy.json`](../data/android-release-architecture-policy.json)                                                |
 | Linux / QEMU               | [native OS統合](native-os-integration.md)                                                                                                                          | [`data/qemu-release-audit.json`](../data/qemu-release-audit.json)                                                                                  |
 | Platform API               | [Platform Core](platform-core.md)                                                                                                                                  | [`contracts/platform-api.json`](../contracts/platform-api.json)                                                                                    |

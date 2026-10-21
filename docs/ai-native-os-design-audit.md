@@ -1,9 +1,11 @@
-# RockstarOS AIネイティブOS設計—Sol独立監査
+<a id="rockstaros-aiネイティブos設計sol独立監査"></a>
+
+# RockstarOS siネイティブOS設計—Sol独立監査
 
 監査日: 2026-09-16  
 監査範囲: 初回正本 v1.70、最終作業tree v1.71、基準source `678e9c9a14e8de9cd61dfd1cad8e71e342783c4f` からの今回作業差分  
 監査モデル: `gpt-5.6-sol`  
-分業: AstraがAIネイティブOSの共通設計を具体化し、Solが正本、契約、Android実装、進捗証拠との整合を独立監査した。
+分業: AstraがsiネイティブOSの共通設計を具体化し、Solが正本、契約、Android実装、進捗証拠との整合を独立監査した。
 
 ## 結論
 
@@ -42,7 +44,7 @@
    現行 `Engine` のlease回収と再queueは、副作用のない固定2工程の範囲で受入済みであり、現在の実証済み脆弱性とは判定しない。一方、外部変更Toolへそのまま一般化できない設計blockerである。新設計は `local-pure / remote-read / external-write`、outbox、`uncertain`、provider operation key、照会優先、保証がある場合のみ同一key再送を要求し、一般networkのexactly-onceを保証しない。
 
 4. **LLMへの過大な権限と更新途中のauthority**  
-   Brokerを唯一の権限判定者とし、Local AI adapterはBrokerがpinしたprofileのload・推論・plan生成だけを担う。profile activationはBrokerの管理transactionに限定し、非active領域へのstaging、署名/hash/容量/互換再検査、atomic pointer、journal、crash後resume/rollbackを必須化した。
+   Brokerを唯一の権限判定者とし、Local si adapterはBrokerがpinしたprofileのload・推論・plan生成だけを担う。profile activationはBrokerの管理transactionに限定し、非active領域へのstaging、署名/hash/容量/互換再検査、atomic pointer、journal、crash後resume/rollbackを必須化した。
 
 5. **Sky appとOS保証の混同**  
    SkyはOS専用UIではなく、スマホ、Web、PCの選択・接続面とした。OS Brokerの永続selection、SELinux/privapp、Device Owner、AVB/OTA/純正復旧はapp-only成功から推測しない。capability response、期限、generation、submit/claim時の再検査、単一authority device/writer epochが設計された。
@@ -76,4 +78,4 @@
 
 ## 最終判定条件
 
-Core 1.0のAI契約受入とDevice配布受入を別々に追跡し、製品配布には両方を要求する。app-onlyの合格をOS完成とせず、設計正本の追加を実装済みとせず、実収益・Fund・Game/IP・動画・VRを一本の必須完成順に戻さないことを継続条件とする。
+Core 1.0のsi契約受入とDevice配布受入を別々に追跡し、製品配布には両方を要求する。app-onlyの合格をOS完成とせず、設計正本の追加を実装済みとせず、実収益・Fund・Game/IP・動画・VRを一本の必須完成順に戻さないことを継続条件とする。

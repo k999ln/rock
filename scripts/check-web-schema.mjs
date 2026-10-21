@@ -1,15 +1,10 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-// Sites keeps original SQL apart from its bootstrap migrations. Validate the
-// original journal and guards, never the small hosting bootstrap as the schema.
-export const migrationSourceDirectory = existsSync(
-  resolve(root, 'drizzle-source/meta/_journal.json'),
-) ? 'drizzle-source' : 'drizzle';
-const migrationsDirectory = resolve(root, migrationSourceDirectory);
+const migrationsDirectory = resolve(root, 'drizzle');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 function unique(values, label) {
@@ -32,11 +27,27 @@ const canonicalTables = [
   ),
 ].map((match) => match[2]);
 const canonicalSet = unique(canonicalTables, 'db/schema.tsのtable名');
+const webOnlyTables = [
+  'csv_billing_account_events',
+  'csv_delivery_links',
+  'csv_delivery_revisions',
+  'csv_intake_controls',
+  'csv_job_costs',
+  'csv_monthly_fee_decisions',
+  'csv_operator_events',
+  'csv_operator_outbox',
+  'csv_operator_settings',
+  'csv_payment_events',
+];
+const expectedSet = unique(
+  [...canonicalSet, ...webOnlyTables],
+  'production web table名',
+);
 
 const sqlFiles = readdirSync(migrationsDirectory)
   .filter((name) => name.endsWith('.sql'))
   .sort((left, right) => left.localeCompare(right));
-const journal = JSON.parse(read(`${migrationSourceDirectory}/meta/_journal.json`)).entries;
+const journal = JSON.parse(read('drizzle/meta/_journal.json')).entries;
 const journalFiles = journal.map((entry) => `${entry.tag}.sql`);
 unique(journalFiles, 'migration journal entry');
 if (
@@ -82,7 +93,7 @@ const declarationPattern =
   /CREATE\s+TABLE\s+(IF\s+NOT\s+EXISTS\s+)?[`"]?([a-z][a-z0-9_]*)[`"]?/gi;
 const declarations = new Map();
 for (const file of sqlFiles) {
-  for (const match of read(`${migrationSourceDirectory}/${file}`).matchAll(declarationPattern)) {
+  for (const match of read(`drizzle/${file}`).matchAll(declarationPattern)) {
     const name = match[2];
     const entries = declarations.get(name) ?? [];
     entries.push({ file, idempotent: Boolean(match[1]) });
@@ -120,7 +131,7 @@ const requiredSkyReviewTriggers = [
 const database = new DatabaseSync(':memory:');
 try {
   for (const file of sqlFiles) {
-    for (const statement of read(`${migrationSourceDirectory}/${file}`)
+    for (const statement of read(`drizzle/${file}`)
       .split('--> statement-breakpoint')
       .filter((sql) => sql.trim()))
       database.exec(statement);
@@ -132,8 +143,8 @@ try {
     .all()
     .map(({ name }) => name);
   const migratedSet = new Set(migratedTables);
-  const missing = [...canonicalSet].filter((name) => !migratedSet.has(name));
-  const extra = [...migratedSet].filter((name) => !canonicalSet.has(name));
+  const missing = [...expectedSet].filter((name) => !migratedSet.has(name));
+  const extra = [...migratedSet].filter((name) => !expectedSet.has(name));
   if (missing.length || extra.length)
     throw new Error(
       `web schema: canonical schemaとmigration結果が不一致です\nmissing: ${missing.join(', ') || '-'}\nextra: ${extra.join(', ') || '-'}`,

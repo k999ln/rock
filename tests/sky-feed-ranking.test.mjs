@@ -12,7 +12,7 @@ const tool = (id) => {
 };
 
 const fixtures = [
-  tool('rockstar-patent-assistant'),
+  tool('rockstar-amc'),
   tool('rockstar-csv-cleanup'),
   tool('coconala'),
   tool('mr-citations'),
@@ -24,7 +24,7 @@ void test('recommended ranking is deterministic and independent of input order',
     now: 1_800_000_000_000,
     savedAt: { coconala: 1_799_999_000_000 },
     connectedAt: { 'mr-citations': 1_799_900_000_000 },
-    availableToolIds: new Set(['rockstar-patent-assistant', 'rockstar-csv-cleanup']),
+    availableToolIds: new Set(['rockstar-amc', 'rockstar-csv-cleanup']),
   };
   const ranked = rankSkyFeed(fixtures, 'recommended', signals);
   const reversed = rankSkyFeed([...fixtures].reverse(), 'recommended', signals);
@@ -40,7 +40,7 @@ void test('the current routed Tool wins without passing request text to the rank
   const ranked = rankSkyFeed(fixtures, 'recommended', {
     now: 1_800_000_000_000,
     routedToolId: 'faster-whisper',
-    availableToolIds: new Set(['rockstar-patent-assistant']),
+    availableToolIds: new Set(['rockstar-amc']),
   });
   assert.equal(ranked[0].tool.id, 'faster-whisper');
   assert.equal(ranked[0].reasonCode, 'current-request');
@@ -54,22 +54,22 @@ void test('my feed contains only saved or connected Tools, newest relationship f
     savedAt: { coconala: 300 },
     connectedAt: {
       'mr-citations': 500,
-      'rockstar-patent-assistant': 100,
+      'rockstar-amc': 100,
     },
   });
   assert.deepEqual(
     ranked.map(({ tool: item }) => item.id),
-    ['mr-citations', 'coconala', 'rockstar-patent-assistant'],
+    ['mr-citations', 'coconala', 'rockstar-amc'],
   );
 });
 
 void test('availability explanations require the authoritative availability input', () => {
-  const withoutRuntime = rankSkyFeed([tool('rockstar-patent-assistant')], 'recommended', {
+  const withoutRuntime = rankSkyFeed([tool('rockstar-amc')], 'recommended', {
     now: 1_800_000_000_000,
   });
-  const withRuntime = rankSkyFeed([tool('rockstar-patent-assistant')], 'recommended', {
+  const withRuntime = rankSkyFeed([tool('rockstar-amc')], 'recommended', {
     now: 1_800_000_000_000,
-    availableToolIds: new Set(['rockstar-patent-assistant']),
+    availableToolIds: new Set(['rockstar-amc']),
   });
   assert.notEqual(withoutRuntime[0].reasonCode, 'available');
   assert.equal(withRuntime[0].reasonCode, 'available');

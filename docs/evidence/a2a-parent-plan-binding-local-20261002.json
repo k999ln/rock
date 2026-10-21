@@ -1,0 +1,28 @@
+{
+  "schema": "rockstar-a2a-parent-plan-binding-local/1",
+  "date": "2026-10-02",
+  "scope": "Bind persisted Zema cloud-agent plan progress to exact owner/parent-scoped A2A delegation evidence.",
+  "implementation": {
+    "plan": "The existing WorkJob cloud-agent template persists ordered brief/quote and result-review steps with revisioned event records.",
+    "progressBinding": "Cloud-agent record commands retain a syntactically validated delegation ID. The authenticated work-jobs API verifies the referenced delegation belongs to the same owner and parent.",
+    "quoteStep": "Requires a persisted provider-signed quote object and matching stored quote digest.",
+    "resultStep": "Requires remote_completed, artifacts_captured, at least one persisted artifact row, and an owner/parent-bound usage receipt.",
+    "reviewGuard": "Previously recorded evidence is rechecked before every subsequent plan mutation, including final completion.",
+    "offlineExecution": "This links UI progress to existing durable cloud job state; it does not create new cloud work or auto-dispatch a successor."
+  },
+  "verification": {
+    "focused": "node --test tests/workflow.test.mjs tests/a2a-parent-controller.test.mjs: PASS, 15/15",
+    "api": "npm run test:api: PASS, 1,029 Worker/D1 assertions and 113 CSV assertions; includes forged Cloud Agent progress rejection.",
+    "typecheck": "npm run typecheck: PASS",
+    "lint": "npm run lint:product: PASS",
+    "build": "npm run build: PASS; existing large chunk and duplicate CSS filename warnings.",
+    "fullSuite": "npm run verify: PASS; Node tests 754/754, Fashion tests 19/19, production build, Worker/D1 API 1,029 assertions, CSV Worker/D1/R2 113 assertions.",
+    "boundaries": "All execution evidence is local/synthetic. Database status: source 6/6, current production readback 0/6."
+  },
+  "limitations": [
+    "The Cloud Agent plan is a fixed two-step template, not a user-authored or LLM-authored extensible plan schema.",
+    "Tests use local Worker/D1 fixtures and synthetic usage. Production D1 readback is 0/6.",
+    "A stored signed usage receipt is not an invoice or payment settlement proof.",
+    "Real provider task execution, carrier activation, hardware onboarding, and OS installation are not established."
+  ]
+}

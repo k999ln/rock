@@ -1,0 +1,37 @@
+{
+  "schema": "sky-csv-storage-publication/1",
+  "source": "c89a651d9e2cd29011f2f6153201a93a82033643",
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "savedVersionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_3d7ab0601fb081919d8ef37969f06552",
+  "version": 31,
+  "deploymentId": "appgdep_6abf90330634819184f3095d248bc118",
+  "status": "succeeded",
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "publishedAt": "2026-10-02T11:06:38.705334+00:00",
+  "environmentRevision": 2,
+  "nativeArchive": {
+    "archive_format": "tar",
+    "sediment_file_id": "file_0000000031b881f5a5c074b37930b5a2",
+    "content_hash": "sha256:4202e619d33548fdad3e82d4488aa603fec6957815dd0a1978b7e997311984b4",
+    "size_bytes": 14489600,
+    "file_count": 466
+  },
+  "paidTrialReadback": {
+    "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+    "status": "completed",
+    "paymentStatus": "stripe_verified",
+    "quoteInternalHundredthsOfMinor": 5000,
+    "stripeAmountJPY": 50,
+    "currency": "JPY",
+    "attempt": 1,
+    "revision": 3,
+    "outputSha256": "99fbb674efae7dd441a9e358ef544b114ace70903e33ea9ae4f1f48bd06819fb"
+  },
+  "cloudExecutionRows": 0,
+  "ownerSigninAccepted": false,
+  "pixelUnlocked": false,
+  "newPayments": 0,
+  "githubSourceChangesPushed": false,
+  "unrelatedRuntimeImported": false,
+  "releaseComplete": false
+}

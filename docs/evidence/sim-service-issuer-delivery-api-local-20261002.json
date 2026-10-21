@@ -1,0 +1,46 @@
+{
+  "schema": "rockstar-sim-service-issuer-delivery-api-local/1",
+  "verifiedAt": "2026-10-02T20:02:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "Authenticated channel-neutral issuer delivery API over the D1 encrypted idempotent delivery store",
+  "implemented": [
+    "POST registers or recovers an issuer-scoped idempotent signed entitlement package without returning the claim secret.",
+    "GET retrieves the exact pending package after seller authentication and same idempotency key; after acknowledgement it returns status only.",
+    "PATCH acknowledges the exact claim for the same seller/order key and clears encrypted claim-code material from D1.",
+    "The endpoint validates bounded JSON, content type, seller bearer token digest, issuer identity, signed claim/code, encryption keyring, and request idempotency; it fails closed when configuration is absent or mismatched.",
+    "Route is included in the Vinext production build at /api/internal/rockstar/entitlement-deliveries."
+  ],
+  "results": {
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/rockstar-entitlement-issuer.test.mjs tests/rockstar-entitlement-issuer-store.test.mjs tests/rockstar-entitlement-delivery-http.test.mjs",
+      "exitCode": 0,
+      "tests": 18,
+      "passed": 18
+    },
+    "typecheck": { "command": "npm run typecheck", "exitCode": 0 },
+    "focusedLint": {
+      "command": "npx oxlint lib/rockstar-entitlement-delivery-http.ts lib/rockstar-entitlement-issuer-store.ts app/api/internal/rockstar/entitlement-deliveries/route.ts tests/rockstar-entitlement-delivery-http.test.mjs",
+      "exitCode": 0
+    },
+    "build": { "command": "npm run build", "exitCode": 0, "includesRoute": "/api/internal/rockstar/entitlement-deliveries" },
+    "patchWhitespace": { "command": "git diff --check", "exitCode": 0 }
+  },
+  "acceptanceBoundaries": {
+    "sellerCheckoutOrWebhook": false,
+    "actualBuyerPurchaseOrNotification": false,
+    "productionIssuerTokenAndSigningKeyCustody": false,
+    "productionEncryptionKeyDeployment": false,
+    "productionD1DeploymentOrReadback": false,
+    "carrierActivation": false,
+    "productionBilling": false,
+    "physicalSIMFulfillment": false,
+    "AndroidSDKAPKOrDeviceAcceptance": false,
+    "RockstarOSInstallation": false
+  },
+  "next": [
+    "Integrate seller checkout, refunds, and delivery callbacks only after issuer contracts and sandbox credentials are available.",
+    "Run Android Broker/Shell recovery and Wallet integration tests on Android SDK CI, then accept one exact device route.",
+    "Keep SIM01 in progress; local endpoint tests are not proof of purchase, carrier activation, production billing, or device installation."
+  ]
+}

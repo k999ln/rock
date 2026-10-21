@@ -4,7 +4,9 @@ import { createEsimGoV25Client, EsimGoProviderError, issuePaidSkyEsimGoProfile }
 import {
   EsimPlanCatalogError,
   selectEsimOrderPricing,
+  verifyEsimStarterAgentPack,
 } from '@/lib/esim-plan-catalog';
+import { skyToolPackageStore } from '@/lib/sky-tool-package-store';
 
 type Runtime = Record<string, unknown>;
 type OrderRow = {
@@ -28,6 +30,7 @@ function failure(error: unknown) {
     if (error.code === 'CATALOG_NOT_CONFIGURED') return json({ error: 'esim_not_configured' }, 503);
     if (error.code === 'PLAN_UNAVAILABLE') return json({ error: 'plan_unavailable' }, 404);
     if (error.code === 'ORDER_NOT_ELIGIBLE') return json({ error: 'order_not_eligible' }, 409);
+    if (error.code === 'STARTER_PACK_UNAVAILABLE') return json({ error: 'starter_pack_unavailable' }, 409);
     return json({ error: 'plan_catalog_invalid' }, 503);
   }
   if (error instanceof EsimGoProviderError) {
@@ -73,6 +76,7 @@ export async function POST(request: Request, context: { params: Promise<{ orderI
       return json({ error: 'esim_not_configured' }, 503);
     if (config.ESIMGO_PROVIDER_DEBIT_ENABLED !== 'true')
       return json({ error: 'esim_issuance_disabled' }, 503);
+    await verifyEsimStarterAgentPack(plan, await skyToolPackageStore(db).verifiedRegistryPackages(plan.starterAgentPack.packages));
     const client = createEsimGoV25Client(config.ESIMGO_API_KEY);
     const result = await issuePaidSkyEsimGoProfile(db, client, {
       skyOrderId: order!.id,

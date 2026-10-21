@@ -1,0 +1,59 @@
+{
+  "schema": "rockstar-satellite-connectivity-research/1",
+  "researchedAt": "2026-10-01",
+  "scope": "Official public-source review for a Japan MVP path integrating RockstarOS with existing satellite connectivity; no provider contact, contract, test booking, or real connection was performed.",
+  "recommendation": {
+    "mvp": "Integrate with an existing mobile network operator direct-to-cell service and its approved handset/app path; keep the carrier responsible for connectivity contracting and billing unless reseller rights and APIs are explicitly contracted.",
+    "ownConstellation": "Keep as a separately funded and regulated long-term feasibility study; do not make it a prerequisite for the first product.",
+    "hardware": "Treat handset direct-to-cell and an external satellite terminal as separate connection adapters. An eSIM alone does not provide the RF front-end, antenna, network authorization, or service entitlement."
+  },
+  "findings": [
+    {
+      "topic": "KDDI au Starlink Direct consumer eligibility",
+      "source": "https://www.au.com/mobile/service/starlink-direct/exclusive-plan-plus/",
+      "confirmed": ["UQ/povo/other-carrier users may apply for the dedicated plan", "SIM or eSIM is required", "public consumer plan and its displayed prices are not wholesale/resale terms", "selected app data is supported and voice calling is not supported per current page"],
+      "notProven": ["bulk eSIM provisioning API", "Rockstar resale or wholesale rights", "Rockstar billing/usage callback", "RockstarOS compatibility"]
+    },
+    {
+      "topic": "KDDI supported device and developer path",
+      "source": "https://starlink-direct-support.au.com/TOP.html",
+      "confirmed": ["Android 16+ and iOS 26+ are listed for supported-app development", "eligible SIM/eSIM plan and supported handset are required", "Android app manifest declaration and satellite-aware behavior are documented", "app listing is application-based and may require a separate agreement/NDA", "published listing criteria include six months since app release", "mock tests cover latency/bandwidth/interruption but do not reproduce satellite-specific RF", "Pixel 10 is listed as a mock-test handset"],
+      "notProven": ["Pixel 10 GL066 field acceptance for Rockstar", "Rockstar app listing approval", "provider wholesale or API access", "real satellite RF/field behavior for Rockstar"]
+    },
+    {
+      "topic": "KDDI current supported handset list",
+      "source": "https://www.au.com/mobile/service/starlink-direct/enabled-device/",
+      "confirmed": ["Google Pixel 10 family appears in the public supported-device list as of research date"],
+      "notProven": ["exact unlocked/carrier SKU GL066 entitlement and field acceptance", "the complete RockstarOS software stack on this handset"]
+    },
+    {
+      "topic": "Android constrained satellite networks",
+      "source": "https://developer.android.com/develop/connectivity/satellite/constrained-networks?hl=ja",
+      "confirmed": ["apps do not use constrained satellite networks by default", "application manifest opt-in PROPERTY_SATELLITE_DATA_OPTIMIZED is required", "apps should adapt to lower throughput, higher latency, bursts, queueing, and data limits", "high-bandwidth media may be unsuitable"],
+      "implementationDecision": "Do not enable manifest opt-in until low-bandwidth flows, queue/retry semantics, status indication, size limits, and test coverage are implemented."
+    },
+    {
+      "topic": "ITU non-GSO filing",
+      "source": "https://www.itu.int/en/ITU-R/space/support/nonGSO/Pages/default.aspx",
+      "confirmed": ["filing requirements depend on coordination category and frequency/service rules", "filings contain orbital/network and antenna/interference parameters", "complete submission is made through the ITU system by an administration"],
+      "notProven": ["Japan-specific authorization pathway for a proposed Rockstar system", "any spectrum, orbit, financing, manufacturing, launch, or operations feasibility"]
+    }
+  ],
+  "mvpSequence": [
+    "Preserve local AI and already-accepted cloud jobs through total network loss.",
+    "Implement a connection-mode abstraction for terrestrial, constrained direct-to-cell, external terminal, and offline states.",
+    "Prioritize small status, cancellation, approval, and result-summary messages; queue and cap retries; exclude large model/artifact downloads on constrained links.",
+    "Implement and test Android low-bandwidth behavior before setting satellite manifest opt-in.",
+    "Verify exact handset SKU, Android version, service plan, account/billing ownership, and permitted application traffic with an operator.",
+    "Run mock-device/network tests, then contracted field tests. Do not treat mock results as satellite RF or Rockstar acceptance."
+  ],
+  "status": {
+    "sourceResearch": "complete for this checkpoint",
+    "docsUpdated": ["docs/sky-cloud-continuity.md", "docs/provider-contract-readiness-20260930.md"],
+    "hardwareAdapter": "not implemented",
+    "androidSatelliteManifestOptIn": "not implemented; intentionally gated on low-bandwidth behavior and provider review",
+    "providerContactOrContract": "not performed",
+    "mockOrFieldTest": "not performed",
+    "ownConstellationFeasibility": "not performed"
+  }
+}

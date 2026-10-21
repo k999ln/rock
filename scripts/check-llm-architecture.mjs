@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { skyRoles } from '../lib/sky-routing.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -10,8 +11,16 @@ const requireValue = (ok, message) => {
 
 const matrix = JSON.parse(read('data/llm-capabilities.json'));
 requireValue(matrix.schemaVersion === 1, 'schemaVersion must be 1');
-requireValue(matrix.product.displayName === 'avocadoOS', 'display name drift');
-requireValue(matrix.product.internalId === 'dev.rock', 'internal ID drift');
+const productIdentity = JSON.parse(read('data/product-identity.json'));
+requireValue(matrix.product.displayName === productIdentity.displayName, 'display name drift');
+requireValue(matrix.product.releaseName === productIdentity.releaseName, 'release name drift');
+requireValue(matrix.product.internalId === productIdentity.internalIdentifier, 'internal ID drift');
+
+const shellVersion = Number(read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl').match(/const int API_VERSION = (\d+)/)?.[1]);
+const pixelPolicy = read('android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java').match(/VERSION = "([^"]+)"/)?.[1];
+requireValue(matrix.pixelModelChoice.privateShellApiVersion === shellVersion, 'Pixel private API inventory must match source');
+requireValue(matrix.pixelModelChoice.policyVersion === pixelPolicy, 'Pixel model policy inventory must match source');
+requireValue(matrix.capabilities.find(entry => entry.id === 'native-local-planner').candidateImplementation.runtimePackageVersion === JSON.parse(read('contracts/local-ai-runtime.json')).packageVersionCode, 'Pixel runtime package inventory must match source');
 
 const ids = new Set(matrix.capabilities.map((entry) => entry.id));
 requireValue(
@@ -98,24 +107,34 @@ for (const marker of [
   'lib/jev-evaluation.ts',
   'lib/decision-layer.ts',
   'tests/decision-layer.test.mjs',
+  'app/api/agent-control-plane/route.ts',
+  'lib/agent-control-plane.ts',
+  'tests/agent-control-plane.test.mjs',
 ])
   requireValue(
     existsSync(resolve(root, marker)),
     `Jev implementation missing ${marker}`,
   );
 
-const routing = read('lib/sky-routing.ts');
-const roleCount = (
-  routing.slice(routing.indexOf('export const skyRoles')).match(/toolId:/g) ||
-  []
+const roleCount = skyRoles.length;
+const amcRoleCount = skyRoles.filter(
+  ({ toolId }) => toolId === 'rockstar-amc',
 ).length;
 requireValue(
-  roleCount === 12,
-  `Sky routing roles must be 12, found ${roleCount}`,
+  roleCount === 13 && amcRoleCount === 1 && roleCount - amcRoleCount === 12,
+  `Sky routing must retain 12 conversation roles plus one non-LLM AMC role, found ${roleCount} total / ${amcRoleCount} AMC`,
 );
 requireValue(
-  read('docs/sky-assistant-and-memory.md').includes('現在は次の12役'),
+  read('docs/sky-assistant-and-memory.md').includes(
+    '既存12会話役と、LLMを呼ばないAMC計画管理1役の計13役',
+  ),
   'Sky assistant document role count is stale',
+);
+requireValue(
+  read('components/sky-chat-workspace.tsx').includes(
+    'if (!requestedJenniferPlan && !isAmc && (conversational || toolId))',
+  ),
+  'Jennifer and AMC planning must not invoke the conversation LLM',
 );
 
 const architecture = read('docs/llm-evaluation-architecture.md');
@@ -128,6 +147,9 @@ for (const marker of [
   'implemented_configuration_required',
   'DecisionProvider',
   'local-action-assistant-binder-v2',
+  'Agent Control Plane',
+  'rockstar-amc',
+  'LLMを呼ばない計画・手動記録Tool',
 ])
   requireValue(architecture.includes(marker), `architecture missing ${marker}`);
 
@@ -149,7 +171,10 @@ for (const marker of [
   'app/api/llm/text/route.ts',
   'tests/llm-providers.test.mjs',
 ])
-  requireValue(existsSync(resolve(root, marker)), `text model registry missing ${marker}`);
+  requireValue(
+    existsSync(resolve(root, marker)),
+    `text model registry missing ${marker}`,
+  );
 
 for (const path of ['AGENTS.md', 'README.md', 'docs/prompt-playbook.md'])
   requireValue(

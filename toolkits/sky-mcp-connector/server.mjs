@@ -19,6 +19,8 @@ import {
   PILOT_ORIGIN, PILOT_TTL_MS, connectorAuthorizationValid,
   pilotToolList, validatePilotRegistry, validatePilotRpc,
 } from './pilot-policy.mjs';
+import { assertSafeOutbound } from '../spider-guard/detector.mjs';
+import { readPrivateLocalDescriptor } from './local-descriptor.mjs';
 
 export const PROTOCOL_VERSIONS = [
   '2025-11-25',
@@ -29,6 +31,8 @@ export const PROTOCOL_VERSIONS = [
 export const DEFAULT_PORT = 38479;
 const MAX_BODY = 2_000_000;
 const MAX_TOOLS = 2_000;
+const MAX_TOOL_PAGES = 5;
+const MAX_CURSOR_BYTES = 1_024;
 const REQUEST_TIMEOUT_MS = 15_000;
 const CALL_TIMEOUT_MS = 60_000;
 const APPROVAL_TTL_MS = 5 * 60_000;
@@ -44,6 +48,57 @@ const ORIGINS = new Set([
   'http://localhost:3001',
 ]);
 const here = dirname(fileURLToPath(import.meta.url));
+const LOCAL_ONLY_MR_TOOLS = new Set([
+  'coconala_check',
+  'format_citations',
+  'make_free_article',
+  'verify_delivery',
+]);
+
+function isBundledMrSpec(spec) {
+  // Only these fixed first-party processors have no external side effects.
+  // A name, readOnlyHint, localhost address, or stdio transport proves no such
+  // boundary for another Tool, including an independently installed SDK Tool.
+  return (
+    spec.id === 'rock-star-mr' &&
+    spec.transport === 'stdio' &&
+    spec.command === 'python3' &&
+    spec.cwd === resolve(here, '..') &&
+    spec.args?.length === 1 &&
+    resolve(spec.cwd, spec.args[0]) === resolve(here, '../mr/mcp_server.py') &&
+    spec.envNames?.length === 0
+  );
+}
+
+function isBundledLocalCall(spec, message) {
+  return (
+    isBundledMrSpec(spec) &&
+    message?.method === 'tools/call' &&
+    LOCAL_ONLY_MR_TOOLS.has(message.params?.name)
+  );
+}
+
+const LEGACY_MR_METHODS = new Set([
+  'initialize', 'notifications/initialized', 'ping', 'tools/list',
+]);
+
+function assertLegacyMrRequest(spec, message) {
+  // The old PC client supports only the bundled processors. Registry identity
+  // alone must not extend this compatibility exception to another server.
+  if (
+    !isBundledMrSpec(spec) ||
+    !(LEGACY_MR_METHODS.has(message?.method) || isBundledLocalCall(spec, message))
+  )
+    fail(
+      'この操作はserver IDの接続・確認・一回承認を使ってください。',
+      403,
+      'legacy_mcp_not_supported',
+    );
+}
+
+function assertMcpOutbound(spec, message) {
+  if (!isBundledLocalCall(spec, message)) assertSafeOutbound(message);
+}
 
 function fail(message, status = 400, code = 'invalid_request') {
   const error = new Error(message);
@@ -216,6 +271,12 @@ function validateLocalDescriptor(raw, file) {
     fail('PC Toolの接続キーを確認してください。');
   if (!Number.isSafeInteger(raw.pid) || raw.pid < 1)
     fail('PC ToolのプロセスIDを確認してください。');
+  if (!Array.isArray(raw.toolPricing) || raw.toolPricing.length > 100 ||
+      raw.toolPricing.some((item) => !item || typeof item !== 'object' ||
+        typeof item.name !== 'string' || !/^[a-zA-Z0-9_.-]{1,128}$/.test(item.name) ||
+        !['free', 'subscription', 'usage', 'external_contract'].includes(item.model)) ||
+      new Set(raw.toolPricing.map((item) => item.name)).size !== raw.toolPricing.length)
+    fail('PC Toolの料金情報を確認してください。');
   return {
     id,
     name: cleanText(raw.name, '名称', 80),
@@ -225,6 +286,7 @@ function validateLocalDescriptor(raw, file) {
     url: url.toString(),
     secret: raw.secret,
     pid: raw.pid,
+    toolPricing: Object.fromEntries(raw.toolPricing.map((item) => [item.name, item.model])),
   };
 }
 
@@ -240,9 +302,7 @@ async function discoverLocalTools(directory) {
   for (const file of files) {
     try {
       const path = join(directory, file);
-      const info = await lstat(path);
-      if (!info.isFile() || (info.mode & 0o077) || info.size > 4_096) continue;
-      const spec = validateLocalDescriptor(JSON.parse(await readFile(path, 'utf8')), file);
+      const spec = validateLocalDescriptor(await readPrivateLocalDescriptor(path), file);
       process.kill(spec.pid, 0);
       specs.push(spec);
     } catch { /* A damaged descriptor cannot become a connection. */ }
@@ -451,14 +511,19 @@ class HttpTransport {
     this.spec = spec;
     this.protocol = null;
     this.sessionId = null;
+    this.generation = 0;
   }
   reset() {
+    this.generation++;
     this.protocol = null;
     this.sessionId = null;
   }
   async request(message, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const generation = this.generation;
     const local = this.spec.transport === 'local_http';
     const remote = local ? null : await validateRemoteUrl(this.spec.url);
+    if (generation !== this.generation)
+      fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json, text/event-stream',
@@ -492,7 +557,9 @@ class HttpTransport {
     )
       fail('遠隔MCPへ接続できませんでした。', 502, 'upstream_failed');
     const session = response.headers['mcp-session-id'];
-    if (typeof session === 'string') this.sessionId = session;
+    // Preserve a completed Tool result, but never let an old response replace
+    // the newly negotiated session. connect() separately checks its attempt.
+    if (generation === this.generation && typeof session === 'string') this.sessionId = session;
     if (response.status === 202 || !('id' in message)) return null;
     const text = response.text;
     const type = response.headers['content-type'] ?? '';
@@ -544,7 +611,8 @@ export class McpHub {
     for (const spec of specs) {
       const current = this.entries.get(spec.id);
       if (current && current.spec.transport !== 'local_http') continue;
-      if (current && current.spec.url === spec.url && current.spec.secret === spec.secret) continue;
+      if (current && current.spec.url === spec.url && current.spec.secret === spec.secret &&
+          JSON.stringify(current.spec.toolPricing) === JSON.stringify(spec.toolPricing)) continue;
       this.entries.set(spec.id, {
         spec,
         transport: new HttpTransport(spec),
@@ -577,9 +645,14 @@ export class McpHub {
     return entry;
   }
   async rpc(id, method, params = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
-    if (this.entry(id).spec.pilot) validatePilotRpc({ method, params });
-    const response = await this.entry(id).transport.request(
-      { jsonrpc: '2.0', id: this.nextId++, method, params },
+    const entry = this.entry(id);
+    if (entry.spec.pilot) validatePilotRpc({ method, params });
+    const message = { jsonrpc: '2.0', id: this.nextId++, method, params };
+    // Check the complete message, including custom method parameters, before
+    // starting a process or opening an upstream connection.
+    assertMcpOutbound(entry.spec, message);
+    const response = await entry.transport.request(
+      message,
       timeoutMs,
     );
     if (
@@ -598,6 +671,17 @@ export class McpHub {
   }
   async connect(id) {
     const entry = this.entry(id);
+    const attempt = Symbol('MCP connection attempt');
+    entry.connectionAttempt = attempt;
+    const current = () => this.entries.get(id) === entry && entry.connectionAttempt === attempt;
+    const assertCurrent = () => {
+      if (!current())
+        fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
+    };
+    // Reinitialization must retire consent before any new authorization check.
+    // A failed reconnect cannot leave the previous Passport executable.
+    entry.passport = null;
+    this.approvals.clear();
     entry.state = 'connecting';
     entry.transport.reset();
     try {
@@ -606,6 +690,7 @@ export class McpHub {
         capabilities: {},
         clientInfo: { name: 'rockstaros-sky-connector', version: '1.0.0' },
       });
+      assertCurrent();
       if (!PROTOCOL_VERSIONS.includes(initialized.protocolVersion))
         fail(
           '対応するMCP protocol versionではありません。',
@@ -617,21 +702,35 @@ export class McpHub {
         jsonrpc: '2.0',
         method: 'notifications/initialized',
       });
+      assertCurrent();
       const tools = [];
+      const seenCursors = new Set();
+      let pages = 0;
       let cursor;
       do {
         const listed = await this.rpc(
           id,
           'tools/list',
-          cursor ? { cursor } : {},
+          cursor === undefined ? {} : { cursor },
         );
+        assertCurrent();
         if (!Array.isArray(listed.tools))
           fail('tools/listの応答が不正です。', 502, 'invalid_tools');
         tools.push(...listed.tools);
         cursor = listed.nextCursor;
         if (tools.length > MAX_TOOLS)
           fail('MCPの機能数が上限を超えています。', 409, 'too_many_tools');
-      } while (cursor);
+        pages++;
+        if (cursor !== undefined) {
+          if (typeof cursor !== 'string' || !cursor.length ||
+              Buffer.byteLength(cursor, 'utf8') > MAX_CURSOR_BYTES || seenCursors.has(cursor))
+            fail('tools/listの継続cursorが不正です。', 502, 'invalid_tools_cursor');
+          // Empty pages still consume the same bounded discovery budget.
+          if (pages >= MAX_TOOL_PAGES)
+            fail('MCPの機能一覧のページ数が上限を超えています。', 409, 'too_many_tool_pages');
+          seenCursors.add(cursor);
+        }
+      } while (cursor !== undefined);
       const safeTools = tools.map((tool) => ({
         name: cleanText(tool?.name, 'tool名', 128),
         title: typeof tool.title === 'string' ? tool.title.slice(0, 160) : null,
@@ -643,6 +742,10 @@ export class McpHub {
           tool.inputSchema && typeof tool.inputSchema === 'object'
             ? tool.inputSchema
             : { type: 'object' },
+        ...(tool.outputSchema && typeof tool.outputSchema === 'object' && !Array.isArray(tool.outputSchema)
+          ? { outputSchema: tool.outputSchema }
+          : {}),
+        pricing: this.pricingFor(entry, tool),
         approval: 'required',
       }));
       entry.passport = {
@@ -665,6 +768,8 @@ export class McpHub {
       entry.state = 'connected';
       return entry.passport;
     } catch (error) {
+      // A prior failure cannot downgrade a newer connection or undo a stop.
+      assertCurrent();
       entry.state =
         error.code === 'authorization_required'
           ? 'needs_authorization'
@@ -672,8 +777,25 @@ export class McpHub {
       throw error;
     }
   }
+  pricingFor(entry, tool) {
+    const localModel = entry.spec.transport === 'local_http'
+      ? entry.spec.toolPricing?.[tool.name]
+      : undefined;
+    const metadata = tool?._meta?.['rockstaros.dev/pricing'];
+    const model = localModel ?? metadata?.model;
+    const note = typeof metadata?.note === 'string' && metadata.note.length <= 300
+      ? metadata.note
+      : '';
+    if (!['free', 'subscription', 'usage', 'external_contract'].includes(model))
+      return { model: 'unknown', note: '提供元の料金条件を確認できません。' };
+    return {
+      model,
+      note: note || (model === 'free' ? '提供元の申告では実行ごとの追加料金はありません。' : '実行前の料金見積が必要です。'),
+    };
+  }
   disconnect(id) {
     const entry = this.entry(id);
+    entry.connectionAttempt = null;
     entry.transport.reset();
     entry.passport = null;
     entry.state = 'available';
@@ -692,8 +814,22 @@ export class McpHub {
     );
     if (!tool)
       fail('接続時に確認した機能ではありません。', 404, 'tool_not_found');
+    const remote = entry.spec.transport === 'streamable_http';
+    if (tool.pricing.model !== 'free' || remote)
+      fail(
+        remote && tool.pricing.model === 'free'
+          ? '遠隔MCPのfree申告は提供元の自己申告で、実行料金を独立確認できません。署名見積・予算予約が接続されるまで直接実行できません。'
+          : tool.pricing.model === 'unknown'
+          ? 'このMCP Toolの料金条件を確認できないため、実行を停止しました。料金付きAgentは署名見積に対応したA2A経路を使ってください。'
+          : '料金付きMCP Toolは、署名見積・予算予約・usage照合が接続されるまで直接実行できません。料金付きAgentはA2A経路を使ってください。',
+        409,
+        'paid_execution_requires_priced_a2a',
+      );
     if (!args || typeof args !== 'object' || Array.isArray(args))
       fail('tool引数を確認してください。');
+    assertMcpOutbound(entry.spec, {
+      method: 'tools/call', params: { name, arguments: args },
+    });
     const now = Date.now();
     for (const [nonce, approval] of this.approvals)
       if (approval.used || approval.expiresAt <= now)
@@ -724,6 +860,7 @@ export class McpHub {
       tool: tool.title || tool.name,
       toolId: tool.name,
       summary: `${entry.spec.name}の「${tool.title || tool.name}」を1回実行します。`,
+      pricing: { ...tool.pricing, declaration: 'provider_unverified' },
       approvalRequired: true,
     };
   }
@@ -746,6 +883,8 @@ export class McpHub {
     )
       fail('承認が無効または期限切れです。', 403, 'invalid_approval');
     const entry = this.entry(id);
+    if (!entry.passport || entry.state !== 'connected')
+      fail('先にMCPへ接続してください。', 409, 'not_connected');
     const payloadDigest = digest({
       id,
       name,
@@ -754,6 +893,10 @@ export class McpHub {
     });
     if (payloadDigest !== approval.payloadDigest)
       fail('承認後に操作内容が変わりました。', 409, 'approval_mismatch');
+    // A previously issued exact approval cannot bypass the current data guard.
+    assertMcpOutbound(entry.spec, {
+      method: 'tools/call', params: { name, arguments: args },
+    });
     approval.used = true;
     try {
       return await this.rpc(
@@ -863,9 +1006,14 @@ export async function createConnector({
           }, PILOT_TTL_MS);
           pilotTimer.unref();
         }
-        const existing = tokens.get(origin);
-        const grant = existing && connectorAuthorizationValid(`Bearer ${existing.token}`, existing)
-          ? existing : { token: randomBytes(32).toString('base64url'), expiresAt: pilotDeadline };
+        // These grants are issued and stored only by this Connector. The pilot
+        // deadline above controls their lifetime; ordinary grants do not expire.
+        // Reconnecting reuses that state, without authenticating a token against
+        // itself or extending the pilot. Requester authentication remains below.
+        const grant = tokens.get(origin) ?? {
+          token: randomBytes(32).toString('base64url'),
+          expiresAt: pilotDeadline,
+        };
         tokens.set(origin, grant);
         return send(
           response,
@@ -941,14 +1089,15 @@ export async function createConnector({
       if (request.method === 'POST' && request.url === '/mcp') {
         const input = await body(request);
         if (pilot) validatePilotRpc(input);
-        const result = await hub
-            .entry('rock-star-mr')
-            .transport.request(
-              input,
-              input.method === 'tools/call'
-                ? CALL_TIMEOUT_MS
-                : REQUEST_TIMEOUT_MS,
-            );
+        const entry = hub.entry('rock-star-mr');
+        assertLegacyMrRequest(entry.spec, input);
+        assertMcpOutbound(entry.spec, input);
+        const result = await entry.transport.request(
+          input,
+          input.method === 'tools/call'
+            ? CALL_TIMEOUT_MS
+            : REQUEST_TIMEOUT_MS,
+        );
         const scopedResult = pilot && input.method === 'tools/list' && result?.result
           ? { ...result, result: pilotToolList(result.result) } : result;
         return send(response, result === null ? 202 : 200, scopedResult, origin);

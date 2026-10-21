@@ -5,15 +5,15 @@ import { LlmProviderError } from '@/lib/llm-providers';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { RemoteAiTextStore, RemoteAiTextStoreError } from '@/lib/remote-ai-text-store';
 import { loadVerifiedRemoteAiTextRate } from '@/lib/remote-ai-text-rate';
-import { remoteAiTextJson, remoteAiTextHttpError, remoteAiTextPublicRecord, readRemoteAiTextInput } from '@/lib/remote-ai-text-http';
+import { remoteAiTextJson, remoteAiTextHttpError, remoteAiTextPublicRecord, remoteAiTextQueueState, readRemoteAiTextInput } from '@/lib/remote-ai-text-http';
 import { remoteAiTextExecutionAvailable } from '@/lib/remote-ai-pricing-gate';
 
 type Context = { params: Promise<{ id: string }> };
 async function access(request: Request, context: Context) {
   const db = database();
   const owner = await authorizeRemoteAiRequest(request, request.method === 'GET' ? 'llm-quote-status' : 'llm-quote-update', db);
-  const runtime = env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string; REMOTE_AI_TRUSTED_RATE_KEYS?: string; SKY_REMOTE_LLM_ENABLED?: string; OPENAI_API_KEY?: string };
-  const scoped = await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED);
+  const runtime = env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string; REMOTE_AI_TRUSTED_RATE_KEYS?: string; SKY_REMOTE_LLM_ENABLED?: string; OPENAI_API_KEY?: string; REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string };
+  const scoped = await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request);
   const { id } = await context.params;
   if (!/^[A-Za-z0-9._:-]{1,128}$/.test(id)) throw new LlmProviderError('INVALID_ID', 400);
   return { db, owner, id, runtime, scoped, store: new RemoteAiTextStore(db) };
@@ -29,14 +29,17 @@ export async function GET(request: Request, context: Context) {
         throw new RemoteAiTextStoreError('NOT_FOUND');
       return new Response(row.resultText, { headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
-        'Content-Disposition': `attachment; filename="sky-ai-${row.id.replace(/[^A-Za-z0-9._-]/g, '-')}.md"`,
+        'Content-Disposition': `attachment; filename="sky-si-${row.id.replace(/[^A-Za-z0-9._-]/g, '-')}.md"`,
         'Cache-Control': 'private, no-store',
         'X-Content-Type-Options': 'nosniff',
         'Referrer-Policy': 'no-referrer',
       } });
     }
-    return remoteAiTextJson({ execution: remoteAiTextPublicRecord(row), executionAvailable: remoteAiTextExecutionAvailable(
-      { SKY_REMOTE_LLM_ENABLED: runtime.SKY_REMOTE_LLM_ENABLED, OPENAI_API_KEY: runtime.OPENAI_API_KEY }) });
+    return remoteAiTextJson({ execution: remoteAiTextPublicRecord(row),
+      queueState: remoteAiTextQueueState(row, Boolean(await store.getInput(owner, id))),
+      executionAvailable: remoteAiTextExecutionAvailable(
+      { SKY_REMOTE_LLM_ENABLED: runtime.SKY_REMOTE_LLM_ENABLED, OPENAI_API_KEY: runtime.OPENAI_API_KEY,
+        REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY: runtime.REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY }) });
   } catch (error) { return remoteAiTextHttpError(error); }
 }
 export async function POST(request: Request, context: Context) {

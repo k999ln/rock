@@ -34,7 +34,7 @@ case "${1:-start}" in
         kill -0 "$service_pid" 2>/dev/null || break
         sleep 1
       done
-      if kill -0 "$service_pid" 2>/dev/null && tr '\000' ' ' < "/proc/$service_pid/cmdline" | grep -q 'rock-platform/service.py'; then
+      if kill -0 "$service_pid" 2>/dev/null && tr '\000' ' ' < "/proc/$service_pid/cmdline" | grep -Eq 'rock-platform/(service|supervisor).py'; then
         kill -KILL "$service_pid"
       fi
       rm -f "$pidfile"

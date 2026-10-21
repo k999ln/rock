@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-02",
+  "scope": "Local source and fixture verification for SIM/eSIM-led RockstarOS service access and Android Home pricing/status presentation.",
+  "implemented": [
+    "Android Shell presents signed per-million-token input/output rates in currency units, parses a user-entered major-unit cap exactly into ISO minor units, and reuses the same parsed amount when approving the quote.",
+    "Owner-authenticated device-home exposes each cloud LLM task queue state and spending status: current itemized amount only after a final provider usage response, reserved maximum while pending, and explicit providerMeter=not_reported before final usage.",
+    "Android Home translates task queue states for users, presents the authorized cap while provider usage is unreported, and labels final usage as not invoice verified.",
+    "Android task detail presents concise LLM/Agent state, usage and saved-result/artifact summaries; product audit and workstream backlog preserve SIM/eSIM-led access and separate carrier activation from service entitlement and OS/client installation."
+  ],
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 671,
+    "fashionToolkitTests": 19,
+    "workerD1ApiAssertions": 869,
+    "architectureTypecheckLintBuildAndBundleChecks": true,
+    "focusedTests": "node --experimental-strip-types --test tests/sim-service-entry.test.mjs tests/currency-format.test.mjs tests/remote-ai-text-public-record.test.mjs; 7/7 passed"
+  },
+  "notVerified": [
+    "Android Java compilation, APK/AIDL/Binder/instrumentation or physical-device acceptance: no usable Java runtime or Gradle wrapper is available in this checkout.",
+    "Production provider dispatch, live in-execution LLM meter, actual customer billing/invoice, funded Wallet, carrier purchase or activation, physical SIM fulfillment, issuer redemption contract, and exact-SKU OS/client installation."
+  ],
+  "interpretation": "These are local source and fixture results only. A reserved cap is not current provider spend. A locally itemized usage amount is not a production bill or invoice. This evidence does not prove carrier activation or successful OS installation."
+}

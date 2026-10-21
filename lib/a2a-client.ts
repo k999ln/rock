@@ -1,6 +1,6 @@
 /** Minimal A2A 1.0 JSON-RPC client boundary for approved agent delegation.
  *
- * This module deliberately does not retry `message/send`: A2A permits (but
+ * This module deliberately does not retry `SendMessage`: A2A permits (but
  * does not require) servers to deduplicate messageId, so a lost response is
  * indeterminate until the caller reconciles it with durable local state.
  */
@@ -18,7 +18,11 @@ export type A2AAgentCard = {
     protocolBinding: string;
     protocolVersion: string;
   }>;
-  capabilities?: { streaming?: boolean; pushNotifications?: boolean };
+  capabilities?: {
+    streaming?: boolean;
+    pushNotifications?: boolean;
+    extensions?: Array<{ uri: string; description?: string; required?: boolean; params?: unknown }>;
+  };
   skills?: Array<{
     id: string;
     name: string;
@@ -77,11 +81,27 @@ export class A2ARequestIndeterminateError extends A2AClientError {
   }
 }
 
+export class A2AQuoteRequestIndeterminateError extends A2AClientError {
+  readonly quoteRequestId: string;
+  constructor(quoteRequestId: string) {
+    super(
+      'Agentの価格見積要求の応答を確認できません。同じquoteRequestIdで照合し、再送しないでください。',
+      'a2a_quote_request_indeterminate',
+    );
+    this.quoteRequestId = quoteRequestId;
+    this.name = 'A2AQuoteRequestIndeterminateError';
+  }
+}
+
 export type A2AClientOptions = {
   /** Exact origins approved by the account owner for this connection. */
   allowedOrigins: string[];
   /** Credentials are provided per connection and are never persisted here. */
   bearerToken?: string;
+  /** Exact, operator-configured URI for the quote extension; absent means quote calls are disabled. */
+  priceQuoteExtensionUri?: string;
+  /** Provider-declared extension used for signed Sky Package invocations. */
+  packageRuntimeExtensionUri?: string;
   /** Must verify the persisted, owner-approved Broker snapshot before dispatch. */
   authorizeDelegation?: (intent: {
     messageId: string;
@@ -93,6 +113,33 @@ export type A2AClientOptions = {
   }) => Promise<void>;
   fetch?: typeof fetch;
   timeoutMs?: number;
+};
+
+export type A2APackageRuntimeInvocation = {
+  runtimeExtensionUri: string;
+  bindingId: string;
+  bindingDigest: string;
+  packageKey: string;
+  manifestSha256: string;
+  operationId: string;
+  inputSchemaSha256: string;
+  outputSchemaSha256: string;
+  pricingVersion: string;
+};
+
+/**
+ * Opaque accounting coordinates a Provider needs to issue the already
+ * owner-approved, signed usage receipt. These values are all part of the
+ * persisted delegation contract; they never grant another capability.
+ */
+export type A2ADelegationReceiptContext = {
+  schema: 'rockstar-a2a-delegation-context/1';
+  ownerUserId: string;
+  parentJobId: string;
+  delegationId: string;
+  currency: string;
+  budgetLimitMinor: number;
+  receiptCallbackUrl?: string;
 };
 
 function object(value: unknown): value is Record<string, unknown> {
@@ -142,6 +189,11 @@ async function readJson(response: Response, maximum: number): Promise<unknown> {
       }
       chunks.push(value);
     }
+  } catch (error) {
+    if (error instanceof A2AClientError) throw error;
+    // Fetch may resolve at headers and then fail while receiving its body.
+    // Preserve the same indeterminate send/quote contract as a fetch failure.
+    throw new A2AClientError('A2A応答の受信が中断されました。', 'a2a_transport_error');
   } finally {
     reader.releaseLock();
   }
@@ -158,7 +210,7 @@ async function readJson(response: Response, maximum: number): Promise<unknown> {
   }
 }
 
-export function parseA2AAgentCard(value: unknown): A2AAgentCard {
+export function parseA2AAgentCard(value: unknown, supportedRequiredExtensions: string[] = []): A2AAgentCard {
   if (
     !object(value) ||
     typeof value.name !== 'string' ||
@@ -192,7 +244,8 @@ export function parseA2AAgentCard(value: unknown): A2AAgentCard {
   if (object(capabilities) && Array.isArray(capabilities.extensions)) {
     if (capabilities.extensions.some((extension) => !object(extension) || typeof extension.uri !== 'string'))
       throw new A2AClientError('A2A Agent Cardのextensionsが不正です。', 'invalid_agent_card');
-    if (capabilities.extensions.some((extension) => extension.required === true))
+    if (capabilities.extensions.some((extension) =>
+      extension.required === true && !supportedRequiredExtensions.includes(String(extension.uri))))
       throw new A2AClientError(
         '未対応の必須A2A extensionが宣言されているため接続しません。',
         'unsupported_a2a_extension',
@@ -227,14 +280,17 @@ export function createA2AClient(options: A2AClientOptions) {
       throw new A2AClientError('A2A接続に失敗しました。', 'a2a_transport_error');
     }
   }
-  async function rpc<T>(endpoint: URL, method: string, params: Record<string, unknown>, id: string) {
+  async function rpc<T>(endpoint: URL, method: string, params: Record<string, unknown>, id: string,
+    additionalHeaders?: Record<string, string>) {
+    const rpcHeaders = new Headers({
+      ...Object.fromEntries(headers()),
+      'Content-Type': 'application/json',
+      'A2A-Version': A2A_PROTOCOL_VERSION,
+    });
+    for (const [name, value] of Object.entries(additionalHeaders ?? {})) rpcHeaders.set(name, value);
     const response = await request(endpoint, {
       method: 'POST',
-      headers: new Headers({
-        ...Object.fromEntries(headers()),
-        'Content-Type': 'application/json',
-        'A2A-Version': A2A_PROTOCOL_VERSION,
-      }),
+      headers: rpcHeaders,
       body: JSON.stringify({ jsonrpc: '2.0', id, method, params }),
     });
     const payload = await readJson(response, MAX_RESPONSE_BYTES);
@@ -242,10 +298,16 @@ export function createA2AClient(options: A2AClientOptions) {
       throw new A2AClientError('A2A相手が要求を受け付けませんでした。', 'a2a_http_error', response.status);
     if (!object(payload) || payload.jsonrpc !== '2.0' || payload.id !== id)
       throw new A2AClientError('A2A JSON-RPC応答のIDまたは形式が一致しません。', 'invalid_a2a_rpc_response');
-    if (object(payload.error))
+    // A contradictory or incomplete envelope cannot prove a definitive refusal.
+    // The send/quote callers retain their original IDs through the invalid-response path.
+    if (('result' in payload) === ('error' in payload))
+      throw new A2AClientError('A2A応答のresultとerrorが不正です。', 'invalid_a2a_rpc_response');
+    if ('error' in payload) {
+      if (!object(payload.error) || !Number.isInteger(payload.error.code) ||
+          typeof payload.error.message !== 'string')
+        throw new A2AClientError('A2Aエラー応答の形式が不正です。', 'invalid_a2a_rpc_response');
       throw new A2AClientError('A2A相手で要求が失敗しました。', 'a2a_remote_error');
-    if (!('result' in payload))
-      throw new A2AClientError('A2A応答にresultがありません。', 'invalid_a2a_rpc_response');
+    }
     return payload.result as T;
   }
 
@@ -255,27 +317,157 @@ export function createA2AClient(options: A2AClientOptions) {
       const response = await request(url, { method: 'GET' });
       if (!response.ok)
         throw new A2AClientError('A2A Agent Cardを取得できません。', 'agent_card_fetch_failed', response.status);
-      return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES));
+      return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES),
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri)));
     },
     async discoverAtOrigin(origin: string) {
       const url = safeUrl(new URL('/.well-known/agent-card.json', origin).toString(), options.allowedOrigins);
       const response = await request(url, { method: 'GET' });
       if (!response.ok)
         throw new A2AClientError('A2A Agent Cardを取得できません。', 'agent_card_fetch_failed', response.status);
-      return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES));
+      return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES),
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri)));
     },
-    async sendMessage(card: A2AAgentCard, messageId: string, text: string): Promise<A2AOutcome> {
+    async requestPriceQuote(card: A2AAgentCard, quoteRequestId: string, text: string,
+      currency: string, maximumBudgetMinor: number, expiresAt: number,
+      consentToSharePromptForQuote: boolean,
+      packageRuntimeTarget?: {
+        packageKey: string;
+        manifestSha256: string;
+        runtimeExtensionUri: string;
+        inputSchemaSha256: string;
+        outputSchemaSha256: string;
+      }) {
+      if (!/^[A-Za-z0-9._:-]{1,128}$/.test(quoteRequestId) || !text.trim() ||
+          new TextEncoder().encode(text).byteLength > 8_000 || !/^[A-Z]{3}$/.test(currency) ||
+          !Number.isSafeInteger(maximumBudgetMinor) || maximumBudgetMinor < 1 ||
+          !Number.isSafeInteger(expiresAt) || expiresAt <= Date.now() ||
+          expiresAt > Date.now() + 5 * 60_000)
+        throw new A2AClientError('A2A価格見積の依頼条件が不正です。', 'invalid_a2a_quote_request');
+      if (consentToSharePromptForQuote !== true)
+        throw new A2AClientError('価格見積のために依頼文をAgent Providerへ送る同意が必要です。', 'a2a_quote_input_consent_required');
+      const extensionUri = options.priceQuoteExtensionUri;
+      if (typeof extensionUri !== 'string' || extensionUri.length > 2_048)
+        throw new A2AClientError('運営が設定した価格見積extension URIがありません。', 'a2a_price_quote_extension_unconfigured');
+      let parsedExtension: URL;
+      try { parsedExtension = new URL(extensionUri); }
+      catch { throw new A2AClientError('価格見積extension URIが不正です。', 'a2a_price_quote_extension_unconfigured'); }
+      if (parsedExtension.protocol !== 'https:' || parsedExtension.username || parsedExtension.password || parsedExtension.hash)
+        throw new A2AClientError('価格見積extension URIが安全なURIではありません。', 'a2a_price_quote_extension_unconfigured');
+      const parsedCard = parseA2AAgentCard(card,
+        [extensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri)));
+      const supportedExtensions = object(parsedCard.capabilities) && Array.isArray(parsedCard.capabilities.extensions)
+        ? parsedCard.capabilities.extensions : [];
+      if (!supportedExtensions.some((extension) => object(extension) && extension.uri === extensionUri))
+        throw new A2AClientError('Agent Cardが運営設定済みの価格見積extensionを宣言していません。', 'a2a_price_quote_extension_unsupported');
+      const endpoint = endpointFor(parsedCard, options.allowedOrigins, [extensionUri]);
+      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      const requestSha256 = [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+      if (packageRuntimeTarget && (!/^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(packageRuntimeTarget.packageKey) ||
+          !/^[a-f0-9]{64}$/.test(packageRuntimeTarget.manifestSha256) ||
+          packageRuntimeTarget.runtimeExtensionUri !== options.packageRuntimeExtensionUri ||
+          !/^[a-f0-9]{64}$/.test(packageRuntimeTarget.inputSchemaSha256) ||
+          !/^[a-f0-9]{64}$/.test(packageRuntimeTarget.outputSchemaSha256)))
+        throw new A2AClientError('Package runtime binding対象が不正です。', 'invalid_package_runtime_target');
+      let result: unknown;
+      try {
+        result = await rpc<unknown>(endpoint, 'GetPriceQuote', {
+          schema: 'rock-a2a-price-quote-request/1',
+          quoteRequestId,
+          agentOrigin: endpoint.origin,
+          agentName: parsedCard.name,
+          agentVersion: parsedCard.version,
+          requestSha256,
+          message: { role: 'ROLE_USER', parts: [{ text }] },
+          currency,
+          maximumBudgetMinor,
+          expiresAt,
+          executionRequested: false,
+          ...(packageRuntimeTarget ? { packageRuntimeTarget } : {}),
+        }, quoteRequestId, { 'A2A-Extensions': extensionUri });
+      } catch (error) {
+        if (error instanceof A2AClientError &&
+            (['a2a_transport_error', 'invalid_a2a_json', 'invalid_a2a_rpc_response', 'a2a_response_too_large'].includes(error.code) ||
+             (error.code === 'a2a_http_error' && (error.status ?? 0) >= 500)))
+          throw new A2AQuoteRequestIndeterminateError(quoteRequestId);
+        throw error;
+      }
+      if (!object(result) || result.schema !== 'rock-a2a-price-quote-response/1' ||
+          result.quoteRequestId !== quoteRequestId || !object(result.priceQuote))
+        throw new A2AQuoteRequestIndeterminateError(quoteRequestId);
+      if (packageRuntimeTarget && !object(result.packageRuntimeBinding))
+        throw new A2AClientError('ProviderのPackage実行bindingがありません。', 'package_runtime_binding_missing');
+      return {
+        quoteRequestId,
+        requestSha256,
+        priceQuote: result.priceQuote,
+        ...(object(result.packageRuntimeBinding) ? { packageRuntimeBinding: result.packageRuntimeBinding } : {}),
+      };
+    },
+    async sendMessage(card: A2AAgentCard, messageId: string, text: string,
+      packageRuntimeInvocation?: A2APackageRuntimeInvocation,
+      receiptContext?: A2ADelegationReceiptContext): Promise<A2AOutcome> {
       if (!/^[A-Za-z0-9._:-]{1,128}$/.test(messageId) || !text.trim() || text.length > 32_000)
         throw new A2AClientError('A2A委任メッセージが不正です。', 'invalid_a2a_message');
       if (!options.authorizeDelegation)
         throw new A2AClientError('Broker承認を確認できないため、委任を送信しません。', 'delegation_authorization_required');
-      const parsed = parseA2AAgentCard(card);
+      const supportedExtensions = [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri]
+        .filter((uri): uri is string => Boolean(uri));
+      const parsed = parseA2AAgentCard(card, supportedExtensions);
+      let packageRuntimeHeader: Record<string, string> | undefined;
+      let packageRuntimeMetadata: Record<string, unknown> | undefined;
+      let packageRuntimeExtensions: string[] | undefined;
+      if (receiptContext) {
+        let callback: URL | undefined;
+        if (receiptContext.receiptCallbackUrl) {
+          try { callback = new URL(receiptContext.receiptCallbackUrl); }
+          catch { throw new A2AClientError('Receipt callback URLが不正です。', 'invalid_receipt_context'); }
+        }
+        if (receiptContext.schema !== 'rockstar-a2a-delegation-context/1' ||
+            !/^[A-Za-z0-9._:@+-]{1,256}$/.test(receiptContext.ownerUserId) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(receiptContext.parentJobId) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(receiptContext.delegationId) ||
+            !/^[A-Z]{3}$/.test(receiptContext.currency) ||
+            !Number.isSafeInteger(receiptContext.budgetLimitMinor) || receiptContext.budgetLimitMinor < 0 ||
+            (callback && (callback.protocol !== 'https:' || callback.username || callback.password || callback.hash)))
+          throw new A2AClientError('Receipt contextが不正です。', 'invalid_receipt_context');
+      }
+      if (packageRuntimeInvocation) {
+        const extensionUri = packageRuntimeInvocation.runtimeExtensionUri;
+        const declarations = parsed.capabilities?.extensions ?? [];
+        if (!extensionUri || extensionUri !== options.packageRuntimeExtensionUri ||
+            !declarations.some((extension) => extension.uri === extensionUri) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(packageRuntimeInvocation.bindingId) ||
+            !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.bindingDigest) ||
+            !/^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(packageRuntimeInvocation.packageKey) ||
+            !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.manifestSha256) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(packageRuntimeInvocation.operationId) ||
+            !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.inputSchemaSha256) ||
+            !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.outputSchemaSha256) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(packageRuntimeInvocation.pricingVersion))
+          throw new A2AClientError('Sky Package実行extensionまたはbindingがAgent Cardと一致しません。', 'package_runtime_extension_mismatch');
+        packageRuntimeHeader = { 'A2A-Extensions': extensionUri };
+        packageRuntimeExtensions = [extensionUri];
+      }
       const iface = parsed.supportedInterfaces.find(
         (item) => item.protocolBinding === 'JSONRPC' && item.protocolVersion === A2A_PROTOCOL_VERSION,
       )!;
       const endpoint = safeUrl(iface.url, options.allowedOrigins);
       const inputSha256 = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
       const digest = [...new Uint8Array(inputSha256)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+      const messageMetadata: Record<string, unknown> = {};
+      if (packageRuntimeInvocation) {
+        packageRuntimeMetadata = {
+          'org.rockstar.sky-package-runtime.v2': {
+          schema: 'rockstar-sky-package-invocation/1',
+          ...packageRuntimeInvocation,
+          requestSha256: digest,
+          },
+        };
+        Object.assign(messageMetadata, packageRuntimeMetadata);
+      }
+      if (receiptContext)
+        messageMetadata['org.rockstar.a2a-delegation.v1'] = receiptContext;
       await options.authorizeDelegation({
         messageId,
         targetOrigin: endpoint.origin,
@@ -288,12 +480,17 @@ export function createA2AClient(options: A2AClientOptions) {
       try {
         result = await rpc<unknown>(
           endpoint,
-          'message/send',
+          'SendMessage',
           {
-            message: { role: 'ROLE_USER', messageId, parts: [{ text }] },
+            message: {
+              role: 'ROLE_USER', messageId, parts: [{ text }],
+              ...(packageRuntimeExtensions ? { extensions: packageRuntimeExtensions } : {}),
+              ...(Object.keys(messageMetadata).length ? { metadata: messageMetadata } : {}),
+            },
             configuration: { returnImmediately: true },
           },
           messageId,
+          packageRuntimeHeader,
         );
       } catch (error) {
         if (
@@ -317,16 +514,18 @@ export function createA2AClient(options: A2AClientOptions) {
       throw new A2ARequestIndeterminateError(messageId);
     },
     async getTask(card: A2AAgentCard, taskId: string): Promise<A2ATask> {
-      return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins), 'tasks/get', { id: taskId, historyLength: 0 }, crypto.randomUUID()));
+      return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins,
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri))), 'GetTask', { id: taskId, historyLength: 0 }, crypto.randomUUID()));
     },
     async cancelTask(card: A2AAgentCard, taskId: string): Promise<A2ATask> {
-      return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins), 'tasks/cancel', { id: taskId }, crypto.randomUUID()));
+      return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins,
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri))), 'CancelTask', { id: taskId }, crypto.randomUUID()));
     },
   };
 }
 
-function endpointFor(card: A2AAgentCard, allowedOrigins: string[]) {
-  const parsed = parseA2AAgentCard(card);
+function endpointFor(card: A2AAgentCard, allowedOrigins: string[], supportedRequiredExtensions: string[] = []) {
+  const parsed = parseA2AAgentCard(card, supportedRequiredExtensions);
   const iface = parsed.supportedInterfaces.find(
     (item) => item.protocolBinding === 'JSONRPC' && item.protocolVersion === A2A_PROTOCOL_VERSION,
   )!;

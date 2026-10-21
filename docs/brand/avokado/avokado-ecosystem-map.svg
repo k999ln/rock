@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 840" role="img" aria-labelledby="ecosystem-title ecosystem-desc">
+  <title id="ecosystem-title">avokado account-led product ecosystem</title>
+  <desc id="ecosystem-desc">An avokado account opens the Home, Campus, Connect, Add, and Settings surfaces. Sky helps a person find an Agent or Tool, Zema turns a request into work, and Wallet explains usage and receipts. RockstarOS provides shared identity, permissions, work state, storage, and recovery. Agents and Tools run through local or cloud providers. Browser access and optional Mini, Pro, and SIM or eSIM connectivity sit beside the core loop. rocketstar is a separate design program.</desc>
+  <defs>
+    <marker id="ecosystem-arrow" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#587c72"/>
+    </marker>
+    <marker id="ecosystem-arrow-blue" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#377da6"/>
+    </marker>
+    <marker id="ecosystem-arrow-muted" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#8a9995"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="840" fill="#f7f7f4"/>
+  <rect x="24" y="22" width="824" height="796" rx="26" fill="#fbfaf7" stroke="#d8e0dc" stroke-width="2"/>
+  <path d="M875 40 V800" stroke="#d6ddd9" stroke-width="1" stroke-dasharray="3 7"/>
+
+  <g font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#26302f">
+    <text x="56" y="62" font-size="14" font-weight="700" letter-spacing="3.2" fill="#397a6c">AVOKADO / PRODUCT MAP</text>
+    <text x="820" y="62" text-anchor="end" font-size="12" letter-spacing="1.8" fill="#76827f">ACCOUNT-LED ECOSYSTEM</text>
+    <line x1="56" y1="84" x2="820" y2="84" stroke="#d3dbd7" stroke-width="1"/>
+    <text x="56" y="119" font-size="27" font-weight="700">Find tools. Get work done. Track the cost.</text>
+    <text x="56" y="145" font-size="16" fill="#5f6c69">Three core jobs sit on one shared foundation.</text>
+
+    <!-- Shared entry -->
+    <rect x="56" y="174" width="764" height="102" rx="16" fill="#e3f1ea" stroke="#8bb9a8" stroke-width="1.5"/>
+    <text x="80" y="201" font-size="12" font-weight="700" letter-spacing="2.2" fill="#397a6c">01 / SHARED ENTRY</text>
+    <text x="80" y="239" font-size="29" font-weight="700">avokado account</text>
+    <text x="80" y="262" font-size="16" fill="#4e625c">identity · access · consent · continuity</text>
+    <rect x="654" y="205" width="140" height="34" rx="17" fill="#fbfaf7" stroke="#9fc5b7"/>
+    <text x="724" y="227" text-anchor="middle" font-size="13" font-weight="700" fill="#397a6c">ONE LOGIN</text>
+
+    <!-- Account to service bus -->
+    <path d="M438 276 V296 M171 296 H683" fill="none" stroke="#8bb9a8" stroke-width="2"/>
+    <path d="M171 296 V316 M427 296 V316 M683 296 V316" fill="none" stroke="#8bb9a8" stroke-width="2" marker-end="url(#ecosystem-arrow)"/>
+
+    <!-- Core services -->
+    <rect x="56" y="316" width="230" height="154" rx="16" fill="#e3f0f8" stroke="#8ab8d4" stroke-width="1.5"/>
+    <text x="78" y="345" font-size="12" font-weight="700" letter-spacing="2" fill="#377da6">FIND / SKY</text>
+    <text x="78" y="383" font-size="29" font-weight="700">Sky</text>
+    <text x="78" y="411" font-size="16" fill="#50646b">find Agents + Tools</text>
+    <text x="78" y="443" font-size="13" fill="#377da6">catalog · compare · connect</text>
+
+    <rect x="321" y="316" width="230" height="154" rx="16" fill="#f8e8dc" stroke="#d9a67f" stroke-width="1.5"/>
+    <text x="343" y="345" font-size="12" font-weight="700" letter-spacing="2" fill="#a65f32">DO / ZEMA</text>
+    <text x="343" y="383" font-size="29" font-weight="700">Zema</text>
+    <text x="343" y="411" font-size="16" fill="#6e5b50">turn a request into work</text>
+    <text x="343" y="443" font-size="13" fill="#a65f32">plan · approve · resume</text>
+
+    <rect x="586" y="316" width="234" height="154" rx="16" fill="#eee9f8" stroke="#b4a4d6" stroke-width="1.5"/>
+    <text x="608" y="345" font-size="12" font-weight="700" letter-spacing="2" fill="#69579f">SEE / WALLET</text>
+    <text x="608" y="383" font-size="29" font-weight="700">Wallet</text>
+    <text x="608" y="411" font-size="16" fill="#5f5a72">understand cost + outcome</text>
+    <text x="608" y="443" font-size="13" fill="#69579f">estimate · usage · receipt</text>
+
+    <!-- Shared service bus: the supporting surfaces are context, not a sequential handoff. -->
+    <path d="M171 470 V484 H703 M436 484 V498" fill="none" stroke="#a7b6b0" stroke-width="2"/>
+
+    <!-- Supporting surfaces -->
+    <rect x="56" y="498" width="764" height="66" rx="14" fill="#f2f4f1" stroke="#d1d9d5"/>
+    <text x="78" y="524" font-size="11" font-weight="700" letter-spacing="1.7" fill="#71807b">SURFACES AROUND THE JOB</text>
+    <g font-size="14" font-weight="700" fill="#3e4d49">
+      <rect x="78" y="535" width="78" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="117" y="549" text-anchor="middle">Home</text>
+      <rect x="164" y="535" width="78" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="203" y="549" text-anchor="middle">Work</text>
+      <rect x="250" y="535" width="96" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="298" y="549" text-anchor="middle">Activity</text>
+      <rect x="354" y="535" width="90" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="399" y="549" text-anchor="middle">Campus</text>
+      <rect x="452" y="535" width="94" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="499" y="549" text-anchor="middle">Connect</text>
+      <rect x="554" y="535" width="66" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="587" y="549" text-anchor="middle">Add</text>
+      <rect x="628" y="535" width="94" height="19" rx="9.5" fill="#ffffff" stroke="#c8d3ce"/><text x="675" y="549" text-anchor="middle">Settings</text>
+      <text x="738" y="549" font-size="11" font-weight="400" fill="#71807b">orient · set up</text>
+    </g>
+
+    <!-- The context band rejoins the shared foundation through one centered trunk. -->
+    <path d="M436 564 V596" fill="none" stroke="#587c72" stroke-width="2" marker-end="url(#ecosystem-arrow)"/>
+
+    <!-- Foundation -->
+    <rect x="56" y="596" width="764" height="108" rx="16" fill="#e9f1ef" stroke="#91b8ad" stroke-width="1.5"/>
+    <text x="80" y="625" font-size="12" font-weight="700" letter-spacing="2.1" fill="#397a6c">02 / SHARED FOUNDATION</text>
+    <text x="80" y="662" font-size="29" font-weight="700">RockstarOS</text>
+    <text x="80" y="688" font-size="16" fill="#50635e">identity · permissions · work state · storage · recovery</text>
+    <rect x="651" y="636" width="144" height="34" rx="17" fill="#fbfaf7" stroke="#a9c5bc"/>
+    <text x="723" y="658" text-anchor="middle" font-size="13" font-weight="700" fill="#397a6c">BROKER + CORE</text>
+
+    <!-- Foundation to execution -->
+    <path d="M438 704 V734" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#ecosystem-arrow)"/>
+
+    <!-- Execution -->
+    <rect x="56" y="734" width="764" height="68" rx="16" fill="#ffffff" stroke="#c3d0ca" stroke-width="1.5"/>
+    <text x="78" y="760" font-size="11" font-weight="700" letter-spacing="1.7" fill="#71807b">03 / RUN + EXTEND</text>
+    <text x="78" y="786" font-size="16" font-weight="700">Agents + Tools</text>
+    <text x="276" y="786" font-size="16" font-weight="700" fill="#377da6">local / cloud providers</text>
+    <text x="574" y="786" font-size="16" font-weight="700" fill="#a65f32">create with Studio · SDK · MCP</text>
+
+    <!-- Adjacent surfaces and programs -->
+    <text x="900" y="62" font-size="14" font-weight="700" letter-spacing="2.2" fill="#76827f">CONNECT + PROGRAMS</text>
+    <text x="900" y="88" font-size="14" fill="#5f6c69">Same account · optional routes</text>
+    <text x="900" y="106" font-size="14" fill="#5f6c69">Separate programs · conditions vary</text>
+
+    <rect x="900" y="116" width="250" height="122" rx="16" fill="#e6f1f8" stroke="#9abed5" stroke-width="1.5"/>
+    <text x="922" y="144" font-size="11" font-weight="700" letter-spacing="1.8" fill="#377da6">ACCESS PATH</text>
+    <text x="922" y="175" font-size="19" font-weight="700">Browser + existing</text>
+    <text x="922" y="198" font-size="19" font-weight="700">devices</text>
+    <text x="922" y="222" font-size="14" fill="#50646b">same account on what you have</text>
+    <text x="922" y="236" font-size="12" fill="#377da6">available access route</text>
+
+    <rect x="900" y="264" width="250" height="158" rx="16" fill="#f8e9df" stroke="#d9aa84" stroke-width="1.5"/>
+    <text x="922" y="292" font-size="11" font-weight="700" letter-spacing="1.8" fill="#a65f32">OPTIONAL DEVICES</text>
+    <text x="922" y="326" font-size="19" font-weight="700">avocadoMini +</text>
+    <text x="922" y="349" font-size="19" font-weight="700">avokadoPro</text>
+    <text x="922" y="377" font-size="14" fill="#6e5b50">physical surfaces for play,</text>
+    <text x="922" y="396" font-size="14" fill="#6e5b50">making, and AI work</text>
+    <text x="922" y="413" font-size="12" fill="#a65f32">design programs · hardware unbuilt</text>
+
+    <rect x="900" y="448" width="250" height="112" rx="16" fill="#eef4f8" stroke="#a9c5d6" stroke-width="1.5"/>
+    <text x="922" y="476" font-size="11" font-weight="700" letter-spacing="1.8" fill="#377da6">OPTIONAL CONNECTIVITY</text>
+    <text x="922" y="511" font-size="22" font-weight="700">SIM / eSIM</text>
+    <text x="922" y="536" font-size="14" fill="#50646b">device connectivity, separate</text>
+    <text x="922" y="554" font-size="14" fill="#50646b">from OS install</text>
+
+    <rect x="900" y="608" width="250" height="128" rx="16" fill="#f0ecf8" stroke="#b7a8d6" stroke-width="1.5" stroke-dasharray="7 5"/>
+    <text x="922" y="636" font-size="11" font-weight="700" letter-spacing="1.8" fill="#69579f">SEPARATE PROGRAM</text>
+    <text x="922" y="673" font-size="24" font-weight="700">rocketstar</text>
+    <text x="922" y="699" font-size="15" fill="#625a70">reusable launch-vehicle design</text>
+    <text x="922" y="721" font-size="12" fill="#69579f">outside the everyday service loop</text>
+
+    <line x1="900" y1="772" x2="1150" y2="772" stroke="#d6ddd9"/>
+    <circle cx="912" cy="793" r="4" fill="#587c72"/>
+    <text x="924" y="798" font-size="12" fill="#687671">solid = core relation</text>
+    <circle cx="1030" cy="793" r="4" fill="#a4b2ad"/>
+    <text x="1042" y="798" font-size="12" fill="#687671">dashed outline = separate</text>
+  </g>
+</svg>

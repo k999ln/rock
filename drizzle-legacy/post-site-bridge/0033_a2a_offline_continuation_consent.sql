@@ -1,0 +1,1 @@
+ALTER TABLE `agent_delegations` ADD `continue_while_device_offline` integer DEFAULT 0 NOT NULL;

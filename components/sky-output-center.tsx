@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Copy, Download, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
 import type { WorkJob } from '@/lib/workflow';
 import { agentOutputExportable, agentOutputText, isSavedAgentDocument, type SavedAgentDocument } from '@/lib/sky-output-presenter';
 import { parseFitnessPlan } from '@/lib/sky-fitness-output';
@@ -55,8 +56,10 @@ const delegationState: Record<string, string> = {
 };
 
 export default function SkyOutputCenter({
+  campusId,
   initialWorkJobId,
 }: {
+  campusId?: CampusId;
   initialWorkJobId?: string;
 }) {
   const [jobs, setJobs] = useState<WorkJob[]>([]);
@@ -85,9 +88,9 @@ export default function SkyOutputCenter({
     setSourceError('');
     setSelectedId(id);
   }, []);
-  const home = '/sky';
-  const outputPath = '/sky/outputs';
-  const zema = '/chat?view=work';
+  const home = campusId ? `/sky/campus/${campusId}/hub` : '/sky';
+  const outputPath = campusId ? `/sky/campus/${campusId}/outputs` : '/sky/outputs';
+  const zema = campusId ? `/sky/campus/${campusId}/manage?view=work` : '/chat?view=work';
   const selected = jobs.find((job) => job.id === selectedId);
 
   useEffect(() => {
@@ -119,7 +122,7 @@ export default function SkyOutputCenter({
       if (answerResult.status === 'fulfilled') setAnswers(answerResult.value.executions ?? []);
       setSourceError([
         agentResult.status === 'rejected' ? 'Agent成果の照会' : '',
-        answerResult.status === 'rejected' ? 'Cloud AI回答の照会' : '',
+        answerResult.status === 'rejected' ? 'Cloud si回答の照会' : '',
       ].filter(Boolean).join('・'));
       const signedOut = [agentResult, answerResult].some((result) =>
         result.status === 'rejected' && result.reason instanceof Error && result.reason.message === 'SIGNED_OUT');
@@ -159,14 +162,14 @@ export default function SkyOutputCenter({
   }
 
   return <WorkspaceShell
-    title="Sky"
+    title={campusId ? `${CAMPUSES[campusId].shortName} Sky` : 'Sky'}
     contentClassName={styles.shell}
     tone="sky"
   >
     <main className={styles.page} aria-labelledby="sky-output-title">
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>SKY · OUTPUTS</p>
+          <p className={styles.eyebrow}>{campusId ? `${CAMPUSES[campusId].shortName.toUpperCase()} / SKY` : 'SKY'} · OUTPUTS</p>
           <h1 id="sky-output-title">成果</h1>
           <p>保存したAgent成果を確認し、形式が合うアプリへ渡せます。OS版ではZemaの仕事にも戻れます。</p>
         </div>
@@ -210,7 +213,7 @@ export default function SkyOutputCenter({
               </div>
             </div>
           </article>}
-          {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud AI回答がありません。実行中の状態はZemaで確認できます。</p>}
+          {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud si回答がありません。実行中の状態はZemaで確認できます。</p>}
           {detailState === 'ready' && delegations.map((delegation) => <article className={styles.output} key={delegation.id}>
             <div className={styles.outputHead}>
               <div><small>AGENT</small><h3>{delegation.targetAgentName}</h3><span>v{delegation.targetAgentVersion} · {delegationState[delegation.state] ?? delegation.state}</span></div>
@@ -238,12 +241,12 @@ export default function SkyOutputCenter({
             })}
           </article>)}
           {detailState === 'ready' && answers.map((answer) => <article className={styles.output} key={answer.id}>
-            <div className={styles.outputHead}><div><small>CLOUD AI</small><h3>{answer.quote.ceiling.modelId}</h3><span>{answer.state === 'completed' ? '処理完了' : '処理状態: ' + answer.state}</span></div></div>
+            <div className={styles.outputHead}><div><small>CLOUD si</small><h3>{answer.quote.ceiling.modelId}</h3><span>{answer.state === 'completed' ? '処理完了' : '処理状態: ' + answer.state}</span></div></div>
             {answer.resultText ? <div className={styles.document}>
               <pre>{answer.resultText}</pre>
               <div className={styles.actions}>
                 <button type="button" onClick={() => void copyText(answer.resultText!)}><Copy size={15} /> コピー</button>
-                <button type="button" onClick={() => downloadText(`sky-ai-${answer.id}.txt`, answer.resultText!)}><Download size={15} /> テキストを保存</button>
+                <button type="button" onClick={() => downloadText(`sky-si-${answer.id}.txt`, answer.resultText!)}><Download size={15} /> テキストを保存</button>
               </div>
             </div> : <p>{answer.state === 'completed' && !answer.saveResult ? 'この回答は保存しない設定で実行されました。履歴から本文を再取得できません。' : '保存された回答はまだありません。'}</p>}
           </article>)}

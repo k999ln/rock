@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string;
       REMOTE_AI_TRUSTED_RATE_KEYS?: string;
     };
-    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED)))
+    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request)))
       return missingRockstarServiceScope('RockstarOS');
 
     const raw = await request.text();
@@ -86,6 +86,14 @@ export async function POST(request: Request) {
     if (!estimate) return json({ code: 'ESTIMATE_OVERFLOW' }, 422);
     return json({
       estimate,
+      unitRates: [
+        { category: 'ordinary-input', rateMinorMicrosPerMillionTokens: verified.card.inputMinorMicrosPerMillionTokens },
+        ...(verified.card.schema === 'rockstar-remote-ai-rate-card/2' ? [
+          { category: 'cached-input', rateMinorMicrosPerMillionTokens: verified.card.cachedInputMinorMicrosPerMillionTokens },
+          { category: 'cache-write', rateMinorMicrosPerMillionTokens: verified.card.cacheWriteMinorMicrosPerMillionTokens },
+        ] : []),
+        { category: 'output', rateMinorMicrosPerMillionTokens: verified.card.outputMinorMicrosPerMillionTokens },
+      ],
       estimateOnly: true,
       userCapMinor: typeof value.maximumBudgetMinor === 'number' ? value.maximumBudgetMinor : null,
       withinUserCap: withinCap !== null,

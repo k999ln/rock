@@ -1,7 +1,8 @@
 {
   "environment": "production non-user platform service access",
   "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
-  "sourceExpected": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+  "sourceExpected": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+  "recordedAt": "2026-10-02T11:25:06.110Z",
   "ownerSigninVerified": false,
   "serviceCredentialIsUserIdentity": false,
   "requestsReadOnly": true,
@@ -13,7 +14,7 @@
       "status": 200,
       "pass": true,
       "responseBytes": 41007,
-      "responseSha256": "d6a5b22495fc0005c9ef82dbb563b90f46295258b1b74f24b5f43d426bb5b182",
+      "responseSha256": "3343520011615b4dbe910af0048b043e8dee309b33234dd7bfe0370346e3582c",
       "contentType": "text/html; charset=utf-8",
       "contentEncoding": null
     },

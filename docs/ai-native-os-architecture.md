@@ -1,28 +1,30 @@
-# RockstarOS — AIネイティブOSの共通設計
+<a id="rockstaros--simesim主導サービスを支えるaiネイティブos設計"></a>
 
-状態: RQ48を実装へ落とす到達設計。2026-09-19更新。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する主要systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
+# RockstarOS — アカウントサービスを支えるsi・Agent共通runtime設計
+
+状態: 2026-10-10確定の無料アカウント入口へ同期。利用者向けの主商品は**一つのavokadoアカウントで、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービス**である。Jenniferは会話窓口、Skyは能力の発見/接続、Zema/AMCは裏側の仕事管理。SIM/eSIMの購入は必須にせず、機器回線や署名claimを任意の独立契約として扱う。本書はそのサービスを支えるOS/Coreの技術設計であり、製品が端末内LLMを前提にするという意味ではない。SIM/eSIMの購入権・回線activation・OS/client導入・service entitlementは別状態とし、OS binaryをSIM/eUICCへ保存しない。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品の正本は[product baseline](product-baseline.md)と[サービス利用権の設計](service-entitlements.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Product / UX](workstreams/01-product-ux.md)および[Android / Device / Local si](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する応用systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
 
 ## 1. 固定する中核と依存方向
 
-製品中核は、交換可能な端末内LLMとoffline agentを備えたOSである。高性能とはmodelの大きさではなく、同じ端末・仕事・品質条件で、利用者の確認時間、完了率、待ち時間、電池と熱を改善することとする。最初の物理対象はPixel 10 GL066／`frankel`。GMS、カメラ品質、一般スマホのアプリ数競争はCoreの成立条件にしない。
+本OS/Coreの責任は、端末・アプリ・Agentの本人性、権限、端末適合、仕事の復旧、成果と利用明細を一貫して扱うこと。製品の主要価値である短いCloud LLM/Agent導線、従量料金の透明性、Sky/Zemaへの最小設定アクセスは、Cloud workflowとWeb/Android clientを通じて提供する。端末内LLMは対応端末で選べる補助能力で、cloud service accessやRockstarOS利用の必須条件ではない。OS binaryはSIM/eUICCへ格納しない。最初の物理OS受入対象はPixel 10 GL066／`frankel`だが、既存OS client/browser分岐を含む一般サービス提供の条件にはしない。
 
 | 層 | 責任・保存する正本 | 依存してよいもの／境界 |
 | --- | --- | --- |
 | Device Support Package | boot、driver、電源・熱、hardware-backed鍵、AVB、OTAと純正復旧 | 上流OSと正確なSKU。対応Core範囲を宣言。Tool、Fund、特定modelに依存しない |
 | Platform Core / Broker | owner・component認証、capability、承認、仕事・receipt・artifact参照、更新・復旧 | OSのUID/Keystore/SQLite等。唯一の実行権限判定者。UIやLLMの申告を権限に変換しない |
-| Local AI adapter | Brokerが選択・pinしたprofileのload、推論、plan生成・計測 | Brokerが渡した最小context。任意Tool呼出し、profile activation、台帳書込み、ネットワーク資格を持たない |
+| Local si adapter | Brokerが選択・pinしたprofileのload、推論、plan生成・計測 | Brokerが渡した最小context。任意Tool呼出し、profile activation、台帳書込み、ネットワーク資格を持たない |
 | Agent runtime | 計画検証、有限step実行、停止・再開、queue、記憶参照 | Broker管理下でTool契約を呼ぶ。LLM不在でも履歴・停止・復旧は動く。roleは権限ではない |
 | Tool / MCP / Provider | 個別業務・ゲーム・生成・外部照合 | 宣言された入力/出力とscopeだけ。独立署名・版・UID/隔離・quota。OS bootの必須依存にしない |
 | Sky app / OS接続層 | Tool/自動化Fund発見、導入・接続・実行端末選択 | appは複数端末の操作面、OS側はcapability検査と選択保存。appにBroker管理権限を渡さない |
 | Zema / 応用UI | 依頼、役割、進捗、承認案内、停止、成果 | 正本snapshotとeventだけを表示。Game/IP/動画/VRも同じ仕事・artifact契約を使う |
-| Material Invention / avocadoMini | 物質・工程・安全・証拠の版管理、四方向sensor操作、VR／AR／2D表示、差分再計算、Patent AI引継ぎ | 共通Coreの仕事・権限・Tool・receiptを使う。camera、gesture、simulation、Patent AIへ装置直接権限や最終判断権限を渡さない |
+| Material Invention / avocadoMini | 物質・工程・安全・証拠の版管理、四方向sensor操作、VR／AR／2D表示、差分再計算、Patent si引継ぎ | 共通Coreの仕事・権限・Tool・receiptを使う。camera、gesture、simulation、Patent siへ装置直接権限や最終判断権限を渡さない |
 | Wallet / 収益Provider | 確認済み収益・費用・資産の照合 | 完了receiptとは別のEarning Receipt。金融接続不在でもCoreと非金融Tool/Gameは動く |
 
 OSが保証する契約と更新可能な実装を分ける。Sky、Zema、LLM runtime、Tool、外部Providerのapp-only更新では原則OS imageを再buildしない。framework、SELinux、privapp/product構成、boot/vendor/AVBの変更はOS側の受入をやり直す。Operator Dockは別配備、端末Agentは既存の限定scopeに従い、agentの記憶やWalletへの裏口にしない。
 
 ## 2. 交換可能なローカルLLM
 
-新設する `ModelProfile` は、model ID/版、weight・tokenizer・chat templateのhash、license、runtime/API範囲、量子化/形式、context上限、plan schema、必要RAM/保存容量、測定端末/条件、品質結果を一組にする。GGUFは初期形式であり恒久的なCore依存にしない。runtime adapterを追加してもBrokerの承認・仕事契約は変えない。現在のLocal AI API v2を破壊せず、将来のprofile交渉は別version/capabilityとして追加する。
+新設する `ModelProfile` は、model ID/版、weight・tokenizer・chat templateのhash、license、runtime/API範囲、量子化/形式、context上限、plan schema、必要RAM/保存容量、測定端末/条件、品質結果を一組にする。GGUFは初期形式であり恒久的なCore依存にしない。runtime adapterを追加してもBrokerの承認・仕事契約は変えない。現在のLocal si API v2を破壊せず、将来のprofile交渉は別version/capabilityとして追加する。
 
 model更新は `download → hash/license/互換検査 → 隔離試験 → 待機状態で切替 → health確認` の順。進行中runは旧profileを固定し、途中でtokenizer/modelを差し替えない。切替失敗は互換性を検査した前profileへ戻す。無効・失効profileへは戻さず「model利用不可」で停止する。OS更新、runtime更新、weight更新を別のreceiptへ記録する。weightをbackupへ重複保存せず、profileとhashを保存して本人が再取得できるようにする。
 
@@ -48,6 +50,8 @@ claimはtransaction内でattempt、boot identity、単調時計期限、fencing 
 
 モデル非依存のcanonical memory案は `schemaVersion/ownerRef/projectRef/memoryId/kind/contentRef/provenance/createdAt/expiresAt/revision`。provenanceには本人確認かTool/model生成か、source work/artifactとモデルprofileを残す。model固有のtoken列・embedding・会話templateはprojection cacheとし、model変更時にcanonical記憶から作り直す。旧modelへ戻す時も旧token列を新モデルへ流用しない。schema移行はtransactionとreader互換検査、削除はcanonicalと全projectionの失効を伴う。1.0最小記憶は仕事・成果・本人確認済み設定の再構成まで、汎用vector検索や自律的な長期記憶獲得は拡張である。
 
+2026-10-01 first store implementation: [`CanonicalMemoryStore`](../systems/rock-star-os/src/blackberryrock/memory_store.py) provides bounded owner+project-scoped encrypted-content records, owner-confirmation-only persistence, optimistic revisions, expiry, content-free tombstones, and encrypted model-profile projections rebuilt from canonical text. A projection write rechecks the canonical revision after building, so a racing update cannot attach stale tokens. This is currently a host Python store contract with a required injected `MemoryCipher`; there is no production cipher, Android/rockd/Zema wiring, schema migration, backup integration, scoped Tool API, or physical-device acceptance. See [memory architecture and acceptance boundary](ai-memory-architecture.md).
+
 記憶の非互換移行はmigration journalと `copy → validate → atomic switch` を用い、commit前のsourceを保持する。失敗は元のreader/schemaへ戻せる場合だけ戻し、戻せなければ読取/復旧待ちで停止する。journal作成、copy途中、validation後、pointer切替前後のpower lossを試験する。SQLite内だけの互換移行は既存transactionで処理できるが、DB外artifact/projectionを含む切替を単なるDB transactionで保証したとしない。
 
 ## 4. Offlineと外部作用の境界
@@ -58,11 +62,19 @@ external-write用にoutboxと照合状態を追加する設計とする。実装
 
 送信直後の切断/killは「失敗だから再送」としない。provider referenceまたは同じkeyで照会し、署名/内容/金額/状態を照合する。Providerが冪等再送を保証する場合だけ同一keyを再送可能とし、保証も照会もなければuncertainで止め本人/Providerへ解決を求める。一般ネットワークでのexactly-onceは約束しない。取消要求後も既に外部成立した作用は取消完了とせず、別の補償操作とreceiptを作る。時刻変更、再起動、重複callback、承認失効、停止と完了の競合を試験する。
 
+### 2026-10-11 — 確定receiptの再照合（AI04、ROCK）
+
+既存Android Coreの`ExternalWriteOutbox`は、確定済みcallbackの重複をprovider referenceだけで受け入れていた。再起動後も、保存済みpayload hashと実際に確定した金額の両方が一致する場合だけ同じ結果を返す。承認上限1,000に対する確定額800なら、上限以内の799や1,000でも同一receiptではない。不一致は`RECONCILIATION_CONFLICT`で停止し、保存済みreceipt・確定額を変えず、元の作用を再送しない。既存schema、rejectedの非金融観測、権限・本人承認・予算の条件は変更しない。
+
+`ExternalWriteOutboxTest`の再起動fixtureで、正常再送、異なる/null hash、負数・0・確定額の前後・上限内外の異額を照合する。Core 122、Broker 32、SDK 7のhost単体試験とBroker/Shell/記事ToolのAPK build・lintが合格。これはCoreの注入adapter/SQLite境界で、実Provider、Binder接続による外部作用、実機・全OS受入ではない。
+
 ## 5. Sky appとOSのcapability交渉・保存
 
 Sky appはスマホ/Web/PC等の選択・接続UI、OS側Sky serviceはBrokerによる端末実行能力の提示と永続selection管理である。今のShell内Skyを将来の全端末版と呼ばない。既存Shellのno-INTERNET境界は保持し、遠隔版は認証済みgateway/端末接続adapter経由とする。任意ネットワークからBinderを公開しない。
 
 追加するcapability response案は `protocolVersion, deviceRef, coreApiRange, toolVersions, planSchemas, effects, storageSchemaRange, modelProfiles, limits, connectivity, observedAt, expiresAt, generation`。認証済みowner/deviceへ束縛し、app申告を根拠にしない。Toolの要求と端末の提供の共通部分だけを表示し、不明な必須capability、古い観測、範囲不一致は実行不可にする。選択時だけでなくsubmit/claim時にもOSが再検査する。modelを選べることと、そのmodelにTool権限があることは別である。
+
+Android ShellのBroker snapshot `deviceCapabilities` protocol v2は、eUICC状態に加えてAndroid公開APIが報告する機種文字列/API level、総・空きRAM、アプリ領域の空き容量、基本hardware feature、Brokerが署名・version・APIを確認したLocal si Binderのruntime状態を30秒だけ返す。Zemaは選択Toolの計画を始める前と完了後にready/modelLoadedを照合し、能力がなければ仕事をqueueしない。runtime状態にはモデル識別子が含まれないため、model profile/weight検証やLLM適合の証明とはしない。機種文字列はOS報告でhardware attestationではなく、RAM・空き容量も観測時の資源量である。eUICC featureと`EuiccManager.isEnabled()`も、端末全体のRockstarOS image適合やeSIM orderの利用可能性を証明しない。ICCID/EID、導入済みprofile、通信プラン適合、radio接続状態は取得・保存・クラウド送信しない。未知版・期限切れをShellは確認不能として扱う。Androidのpublic APIと制限は[EuiccManager](https://developer.android.com/reference/android/telephony/euicc/EuiccManager)、[PackageManager](https://developer.android.com/reference/android/content/pm/PackageManager)、[ActivityManager.MemoryInfo](https://developer.android.com/reference/android/app/ActivityManager.MemoryInfo.html)、[StatFs](https://developer.android.com/reference/android/os/StatFs.html)を参照する。profile有無を読む必要が出た場合は、permissions/carrier privilege、開示説明、本人選択が必要かを別設計・受入してから追加する。
 
 保存はOS Brokerが正本を持ち、Sky appは表示cacheを持つ。次版selectionはowner、選択Tool/Fund版、recipe hash、対象deviceRef、policy generation、revision、selection tokenを保存する。変更はexpected revisionで比較更新し、競合は再読込。Zemaへはtoken/refだけを渡し、原稿・credentialをURLへ入れない。現行Webの短命session handoffとnative SQLite selectionを、同期済みの同一保存と扱わない。
 
@@ -87,12 +99,22 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 移植時は[Web workflow](../lib/workflow.ts)のrevision競合・command冪等性・sample不合格・review必須をfixtureの共通期待値にする。Androidはowner別DBとBinder境界を持つが、汎用job revision/command集合がWebと完全一致する実装はまだない。将来のschema migrationは旧データを保持し、未知版をresetせず拒否し、rollback readerの互換性を検査する。
 
+### Android Shellからの同一依頼の再確認（2026-10-11、AI04）
+
+既存Binderへの送信前に依頼UUID、入力digest、Android user serialをprivate preferencesへ保存し、同期guardで二重tapを一度に制限する。依頼本文は保存しない。応答不明・再生成時は同じownerと入力digestに限り元UUIDを再利用し、異なる内容やownerには自動で引き継がない。長さを区切ったUTF-8入力のSHA-256を使い、文字列結合の衝突を避ける。
+
+有効なqueued応答、またはcommit前と確認済みの明確な拒否だけで保留IDを消す。Binder／scheduler例外は結果不明のまま保持する。履歴を取得して確認し、本人が警告を読んで破棄する操作はローカル再送IDの解除だけであり、Brokerの仕事取消ではない。破棄後に新規依頼すると重複する可能性を表示する。
+
+SharedPreferencesのcommit失敗はメモリだけ更新済みの場合があるため、Store adapterは元のpending metadataを保持し、同じ保存先を使う再生成Activityもdurableな復元が確認できるまで新規送信させない。clearの失敗を新規UUIDの発行条件にせず、再試行時のprecommit拒否も前の試行が未実行という証拠へ転用しない。
+
+受入はShell host回帰11件とAPK／lint／instrumentation APK compile、独立したmemory-before-disk-failureモデルの5復旧flow。実Activityの二重tap・応答喪失後再生成のinstrumentation試験は用意したが、emulator／実機で未実行。正式署名・全OS image・flash・物理Pixel受入を代替しない。
+
 ## 7. 同じCoreで複数の縦断を作る
 
 | 共通段階 | 便利機能: 原稿の整理・記事準備 | Game/IP: 本人所有の短編テキスト冒険を制作・試遊する案 |
 | --- | --- | --- |
 | Sky | 既存 `article-preparation@1` を選ぶ | 新規提案 `story-adventure` Toolを選ぶ。権利を確認できる自作素材だけを入力 |
-| Zema/Local AI | 依頼から既存の閉じたinput schemaへ計画 | 世界設定・分岐・台詞を閉じたschemaへ計画。ゲーム結果を権限に変換しない |
+| Zema/Local si | 依頼から既存の閉じたinput schemaへ計画 | 世界設定・分岐・台詞を閉じたschemaへ計画。ゲーム結果を権限に変換しない |
 | Broker/Tool | citations→free-articleの純粋な2変換 | 構造検査→ローカル試遊用package生成。追加adapterはsandbox/出力上限付き |
 | 記憶/成果 | 入力・成果hash、確認・修正履歴 | canon資料・script版・save stateをowner/work/gameで分離。失敗時も前版を保持 |
 | 停止/復旧 | 同一workを再起動してreviewへ回収 | 生成途中の停止、再開、試遊save復元、他game/ownerへの参照拒否 |
@@ -103,7 +125,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 ゲーム点数・進行度はgame側の非金融data、Provider確認済み販売収益はEarning Receipt、交換可能な資産はWallet/Providerの別台帳で管理する。点数→実資金の暗黙換算や動画再生数→収益の推定記帳は禁止。交換を追加するときだけGX01のquote/予約/両台帳/照合、方向・rate・手数料・本人承認を独立受入する。Game/IPの制作と試遊はWallet/Fundの完成を待たない。
 
-Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と制約を仕事にし、Skyで材料DB、simulation、Patent AI、外部ラボを選び、四方向sensorまたは2D操作からCoreへ版付き仮説を渡す。Safety Gateの後だけsimulationを実行し、人、AI、文献、予測、実測を分離したInvention Event Ledgerを成果とする。gestureは物理実験、外部共有、出願の承認にならない。詳細と役割別入口は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)に従う。
+Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と制約を仕事にし、Skyで材料DB、simulation、Patent si、外部ラボを選び、四方向sensorまたは2D操作からCoreへ版付き仮説を渡す。Safety Gateの後だけsimulationを実行し、人、si、文献、予測、実測を分離したInvention Event Ledgerを成果とする。gestureは物理実験、外部共有、出願の承認にならない。詳細と役割別入口は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)に従う。
 
 ## 8. 既存実装との対応と不足
 
@@ -112,10 +134,10 @@ Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と�
 | identity/許可/更新 | `android/core/.../platform/PlatformStore.java`、`android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl`、[Core](platform-core.md) | APK signer/UID、approval generation、台帳、update/rollback schema検査あり。AI02でruntime/model manifestの候補登録、Broker切替、job pin保存を追加中 |
 | local plan | `android/local-ai-api/.../ILocalAiService.aidl`、`android/tool-sdk/.../ZemaToolPlan.java`、`android/automation/.../ZemaOrchestrator.java` | API v2、固定article plan、closed fieldsを実装。複数model profile・汎用plan registry未実装 |
 | 仕事/再起動 | `android/core/.../Engine.java`、`android/core/src/main/resources/schema.sql`、`Scheduler`、`PhysicalRebootRecoveryTest` | 単一Android user/DB・固定2工程・外部作用なし。上記汎用記憶/outbox/多端末調停は未実装 |
-| Sky/Zema | `android/shell-api/.../IShellApi.aidl` v4、`lib/sky-zema-handoff.ts`、`lib/workflow.ts` | native selection schema v2、Webの短命handoff/本人別jobが存在。app横断同期・一般Tool選択は未実装 |
+| Sky/Zema / capability | `android/shell-api/.../IShellApi.aidl` v4、`android/automation/.../DeviceCapabilitySnapshot.java`、`lib/sky-zema-handoff.ts`、`lib/workflow.ts` | Android Broker snapshot v3はeUICC・OS報告identity/resource/featureに加えて、このBrokerのAndroid 15 managed-subscription管理適格性と組織所有端末での自動有効化適格性を短期read-only観測。profile/plan適合や導入成功は未確認。独立Linux `ai_routes`にはsource/platform/expiry付きsynthetic capability snapshot、routeのrequired feature検査、fresh digest再確認を追加（[contract](../contracts/compute-device-capabilities.json)）。Android一般Capability Registry、Sky selection/submit enforcement、app横断同期と実機計測は未接続 |
 | 収益/Wallet | `lib/earning-bridge.ts`、`lib/earning-receipt.ts`、既存Billing Worker、PlatformStore | Rock所有fixtureでToolと署名収益の相関・冪等照合。外部sandbox/返金/chargeback/払出し未受入 |
 | Game/作者 | `systems/rock-star-os/os/wallet_backend/runtime_contracts.py`、[GX01](gx01-contract-implementation-plan.md)、[SDK契約](game-api-contract-draft.md) | Linux fixture/SDKの限定受入。正式ゲーム・Android port・本書のstory Toolは未実装 |
-| Material Invention／avocadoMini | `lib/material-invention.ts`、`contracts/material-invention*.json`、`contracts/avocado-mini-spatial-interaction.json` | 装置非接続sandbox Coreと統合設計は完成。決定的scene、合成pose、四方向sensor実機、simulation／Patent AI bridgeは未実装 |
+| Material Invention／avocadoMini | `lib/material-invention.ts`、`contracts/material-invention*.json`、`contracts/avocado-mini-spatial-interaction.json` | 装置非接続sandbox Coreと統合設計は完成。決定的scene、合成pose、四方向sensor実機、simulation／Patent si bridgeは未実装 |
 | backup/運用 | `RecoverableBackupManager`、`PlatformStore`、`android/operator-agent/` | backup v2と制限付きOperatorのsource/試験あり。物理wipe復元、production credential、StrongBox登録、Device Owner、最終SELinuxは未受入 |
 
 `...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。RockstarOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
@@ -126,7 +148,9 @@ Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と�
 
 Encrypted recoverable state v2にはjobのprofile ID/version/generationとowner-scoped job pinだけを保存する。weight、本体artifact、verified receipt、active pointer/trust stateは端末を越えて移さない。復元先はpausedで、新しい端末でregistry/artifactを再取得・再検証する前にjobを実行しない。現在はprofile registry再登録と同一jobの再開経路が未実装のため、対応profileを確認できないjobはEngineがreviewへ止め、新規pinで再計画する必要がある。
 
-これはOS内のmanifest・保存契約とhost fixture用のsource実装である。`ZemaOrchestrator`はまだpre-pin/`submitPinned`へ接続されず、Local AI API v2もprofile IDを受け取らないため、現行実行経路ではprofile固定を保証しない。publisher署名鍵の信頼root/resolver、実ファイルのhash/license/空き容量を検証するAndroid verifier、backup/wipe restore時のjob pin保持、runtimeへのprofile load、二つ目のモデルの取得と同一端末推論、切替失敗後の実機rollbackは未受入。Java/Android testは2026-09-30の作業環境にJava runtimeとGradle executableがないため未実行であり、コードの合格根拠として扱わない。
+これはOS内のmanifest・保存契約とhost fixture用のsource実装である。2026-10-01にCoreの事前pin objectがprofile manifest digest、weight/tokenizer/template hash、runtime component/version/signer/API、resource要件を返すようにした。これで後続のprofile-aware Local si APIが比較すべき期待値はCoreから得られる。まだ`ZemaOrchestrator`はpre-pin/`submitPinned`へ接続されず、Local si API v2もprofile identityを報告しないため、現行実行経路ではprofile固定を保証しない。
+
+Recoverable state v2はowner-scoped job pinをexport/restoreするが、profile registry・runtime trust・verified receipt・model bytesは端末を越えて移さない。したがって復元先でpin metadataを保持できても、profile/runtimeを再取得して再検証するまで再実行できない。次段階は復元profile再照合と同一job再開経路を閉じること。publisher署名鍵の信頼root/resolver、実ファイルのhash/license/空き容量を検証するAndroid verifier、runtimeへのprofile load、二つ目のモデルの取得と同一端末推論、切替失敗後の実機rollbackは未受入。Java/Android testはこの環境に利用可能なJava runtimeとGradle executableがないため未実行であり、コードの合格根拠として扱わない。
 
 ## 9. Core 1.0と応用の独立受入
 
@@ -134,13 +158,13 @@ Encrypted recoverable state v2にはjobのprofile ID/version/generationとowner-
 
 | track | 完了条件 | 他trackとの関係 |
 | --- | --- | --- |
-| Core 1.0 / AI契約 | 一runtime adapter上で少なくとも二つの互換ModelProfileの機内モードplan/切替、旧job pin、拒否/停止、local-pure再起動、model更新失敗、限定memoryの再構成/移行、容量/電池/熱を受入。性能profileの数値予算を固定して測定 | app-onlyの契約実装を先に検証できる。汎用vector検索、別runtime二実装、多端末移送、実収益を必須にしない |
-| Core 1.0 / Device配布 | 同じGL066 OS候補でboot/権限分離、上のAI契約、backup/鍵喪失復元、OTA失敗/rollback/純正復旧と既存release gateを受入 | Core配布にはAI契約とDevice配布の両方が必要。GMS、カメラ、Game/動画/VRを必須にしない。APK合格だけでは未達 |
+| Core 1.0 / si契約 | 一runtime adapter上で少なくとも二つの互換ModelProfileの機内モードplan/切替、旧job pin、拒否/停止、local-pure再起動、model更新失敗、限定memoryの再構成/移行、容量/電池/熱を受入。性能profileの数値予算を固定して測定 | app-onlyの契約実装を先に検証できる。汎用vector検索、別runtime二実装、多端末移送、実収益を必須にしない |
+| Core 1.0 / Device配布 | 同じGL066 OS候補でboot/権限分離、上のsi契約、backup/鍵喪失復元、OTA失敗/rollback/純正復旧と既存release gateを受入 | Core配布にはsi契約とDevice配布の両方が必要。GMS、カメラ、Game/動画/VRを必須にしない。APK合格だけでは未達 |
 | Sky/Zema初期 | 一台の永続selection、依頼→許可→実行→review→成果、snapshot復旧、不正token/owner/重複拒否 | Coreの最初の利用経路。複数端末版の合格とは別 |
 | Sky複数端末 | capability非互換・古いcache拒否、端末選択、競合revision、再接続、二重writer拒否・移送 | 初期一台Coreを待たせずadapter/fixtureを開発。受入前は対応表示しない |
 | 便利Tool | 上の原稿縦断を同一入力/品質で比較し、確認時間と失敗復旧を測定 | 売上なしでも便益を合格にできる |
 | Game/IP | 上の制作→試遊→save復旧とowner分離を実証 | Core/APIを共有して並行開発。金融交換、動画、VRはそれぞれ別受入 |
-| Material Invention／avocadoMini | 合成graph→決定的scene→合成pose操作→安全gate→差分simulation receipt→Patent AI packetを受入。実機は四方向校正、誤操作、privacy、accessibilityを別受入 | Core/APIを共有して並行開発。simulation、実材料、外部ラボ、特許性、量産は互いを代替しない |
+| Material Invention／avocadoMini | 合成graph→決定的scene→合成pose操作→安全gate→差分simulation receipt→Patent si packetを受入。実機は四方向校正、誤操作、privacy、accessibilityを別受入 | Core/APIを共有して並行開発。simulation、実材料、外部ラボ、特許性、量産は互いを代替しない |
 | 実収益/Wallet | 外部sandboxで成果→署名receipt→Wallet、重複、返金/chargeback、結果不明、払出しを照合。LIVEは対象条件に従う | Core合格で代替不可。未合格ならlive収益表示・収益利用の公開は不可 |
 | Fund改善 | 複数Toolの役割/順序/予算/停止、反復した確認済み費用/収益、旧構成との比較 | 実績不足はPAPER。非金融の構成試験は並行可能、利回り保証なし |
 
@@ -148,6 +172,6 @@ Encrypted recoverable state v2にはjobのprofile ID/version/generationとowner-
 
 段階3（JOINT/OWNER、DSP01/RLS02）は既存full build入力と[初回flash gate](android-first-flash-gate-20260916.md)を満たした同一OS候補でCore物理受入を行う。インフラ契約、鍵管理、wipe/flashは本設計更新では実行しない。段階4は応用ごとの受入を独立に進め、実収益ProviderはJOINT/OWNER、Tool/Game adapterはROCKを主担当にする。実名の運用責任者や外部契約が必要なgateは公開前に確定する。
 
-実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06は計画で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
+実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06はhost／fixtureと一部Android sourceの実装が進行中で、実装・試験への参照を2026-10-11に台帳へ復旧した。既存OS07〜OS11/DSP01/RLS02の実機・同一artifact受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
 
 直近の未確定事項は、比較採用するmodelと性能/電池予算、長期記憶の保持期間、一般Tool manifestのcapability schema、遠隔device enrollmentとwriter移送の具体transport、story候補の素材/成果schema、外部Providerの照会・冪等性契約である。これらは設計/fixture作業を進めながら具体化し、未確定を実装済み・高性能達成・本番対応と表示しない。

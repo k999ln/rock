@@ -12,7 +12,7 @@ Spatial Invention Studioは、物質、配合、工程、simulation、実測、�
 
 画面、マウス、キーボードでも同じ情報を確認できる2D fallbackを必須にし、XR機器をMaterial Invention Coreの利用条件にはしない。
 
-最初のreference device conceptは[`avocadoMini`](avocado-mini-spatial-invention.md)とする。四方向のsensor／cameraで手の動きを捉え、Invention Volume内の物質digital twinを接続・分離して候補を再計算し、Patent AIへ発明履歴を引き継ぐ。`avocadoMini`はhardware名で、搭載OSの正式名はRockstarOSのまま維持する。
+最初のreference device conceptは[`avocadoMini`](avocado-mini-spatial-invention.md)とする。四方向のsensor／cameraで手の動きを捉え、Invention Volume内の物質digital twinを接続・分離して候補を再計算し、Patent siへ発明履歴を引き継ぐ。`avocadoMini`はhardware名で、搭載OSの正式名はRockstarOSのまま維持する。
 
 ## 2. 空間ワークスペース
 
@@ -21,7 +21,7 @@ Spatial Invention Studioは、物質、配合、工程、simulation、実測、�
 - **Matter Space**: 物質をnode、候補をcomposition node、工程をtimelineとして配置する。候補を選ぶと物質lot、比率、工程版、安全状態を同時表示する。
 - **Ratio Morph**: 二物質の比率候補を連続した帯として見せる。ただし未計算の中間値を予測済みデータとして補間しない。
 - **Process Tunnel**: 混合、保持、加工、冷却などを時間軸に沿ってたどる。温度、圧力、雰囲気、設備条件を単位付きで表示する。
-- **Evidence Layers**: AI仮説、文献、supplier、simulation、実験receiptを別layerにし、同じ色や確度として混ぜない。
+- **Evidence Layers**: si仮説、文献、supplier、simulation、実験receiptを別layerにし、同じ色や確度として混ぜない。
 - **Ghost Compare**: 最大4候補を同じ基準座標へ重ね、差分だけを表示する。表示倍率や色の意味を常時legendへ出す。
 - **Failure Museum**: 失敗候補を削除せず、停止理由、測定差、次の仮説とともに再利用する。
 

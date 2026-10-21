@@ -1,0 +1,26 @@
+.avokado-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.avokado-brand-icon {
+  width: 29px;
+  height: 29px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 1px 8px #ffffff2e);
+}
+
+.avokado-nav-back .avokado-brand-icon {
+  width: 22px;
+  height: 22px;
+  margin: -4px 0;
+}
+
+@media (max-width: 800px) {
+  .product-header .avokado-brand-icon {
+    width: 26px;
+    height: 26px;
+  }
+}

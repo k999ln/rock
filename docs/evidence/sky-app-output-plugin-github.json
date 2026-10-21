@@ -1,0 +1,36 @@
+{
+  "schema": "sky-app-output-plugin-github/1",
+  "date": "2026-10-13",
+  "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+  "observedMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+  "branch": "codex/sky-app-outputs-20261013",
+  "scope": "saved owner-scoped Sky output inbox and first-party Fitness typed rendering example",
+  "focusedTests": "2/2 passed",
+  "typecheck": "passed",
+  "fullVerify": "exit 0; Node 2149 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+  "browserPreview": "Public /os Home, /os/sky, guest outputs and Mini/Pro domain navigation inspected; signed-in owner A/B not tested",
+  "realProviderOutputTested": false,
+  "externalCrossOriginSdkAccepted": false,
+  "githubSaved": true,
+  "mainIntegrated": false,
+  "deployed": true,
+  "skySite": {
+    "version": 45,
+    "sourceSha": "77563e5d84f555e2930ddfa49213e17c0f6a9194",
+    "deploymentId": "appgdep_6ace768ce80c8191ad6843a96a8ad2b5",
+    "url": "https://avoado.si/os/sky"
+  },
+  "avoadoSkyEntry": {
+    "mode": "Sky Site native at custom domain; /os Home and /os/sky canonical Sky; Mini public pages and preorder API proxied server-side",
+    "miniSiteVersion": 15,
+    "miniSiteSourceSha": "9c6b0387c681682081d393ee2461e4e589422d78",
+    "deploymentId": "appgdep_6ace780abec0819191a88694db3c4b94",
+    "entryUrl": "https://avoado.si/os/sky",
+    "customDomainId": "appgdom_6ace718f2d3c8191a114b3ed015be9f9",
+    "customDomainStatus": "active; SSL active",
+    "readback": "HTTP 200 for /, /os, /os/sky, /os/sky/outputs, /os/manifest.webmanifest, /os/sky/manifest.webmanifest, /preorder/, /api/preorders/offer. /sky gives 308 to /os/sky. Browser Home→Sky→Home keeps avoado.si; guest outputs links to same-origin sign-in. Homepage Mini and Pro links clicked through to avocadomini.si and avocadopro.si; public HTML has three RockstarOS /os links and no /install link. Signed-in A/B and real preorder payment not tested. HTML manifest links resolve to the OS and Sky /os-prefixed manifest URLs.",
+    "osHomeUrl": "https://avoado.si/os"
+  },
+  "verifyLogSha256": "8689c1f0914b61112a9128307de61261d7ca1c132b1a3ba3eaec428ae1c90290",
+  "amcTestAdjustment": "timeout fixture increased from 5ms/50ms block to 1000ms/1050ms block to avoid pre-dispatch scheduling race under full parallel suite"
+}

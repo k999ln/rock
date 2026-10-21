@@ -1,0 +1,44 @@
+{
+  "schema": "rockstar-sim-service-replacement-ack-local/1",
+  "verifiedAt": "2026-10-02T19:35:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "baseRevision": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "Channel-neutral issuer SDK callbacks with synthetic signing keys; no seller/provider network connection",
+  "implementation": [
+    "Replacement package material can be prepared and retained by a seller adapter for exact retry.",
+    "The handoff helper submits the signed cancellation event with its event ID as the idempotency key and validates the exact event ID, revoked status, and response shape before calling replacement delivery.",
+    "Replacement delivery receives the signed claim code package and stable claim ID as its idempotency key; the adapter contract requires durable secret-safe storage before external delivery.",
+    "Mismatched, absent, or wrong-status acknowledgement fails closed without invoking the delivery callback."
+  ],
+  "results": {
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/rockstar-entitlement-issuer.test.mjs",
+      "exitCode": 0,
+      "tests": 7,
+      "passed": 7,
+      "includes": [
+        "exact signed cancellation acknowledgement precedes replacement delivery",
+        "missing, mismatched event ID and wrong status do not deliver",
+        "retrying the same retained package reuses stable cancellation and delivery idempotency keys",
+        "non-extractable Ed25519 signing key requirement"
+      ]
+    },
+    "typecheck": { "command": "npm run typecheck", "exitCode": 0 },
+    "lint": { "command": "npx oxlint lib/rockstar-entitlement-issuer.ts tests/rockstar-entitlement-issuer.test.mjs", "exitCode": 0 },
+    "patchWhitespace": { "command": "git diff --check", "exitCode": 0 }
+  },
+  "verifiedBoundaries": {
+    "sellerOrderRegistry": false,
+    "durablePackageStore": false,
+    "externalCancellationWebhook": false,
+    "sellerKeyCustody": false,
+    "realPurchaseOrRefund": false,
+    "productionDatabase": false
+  },
+  "next": [
+    "Implement channel-neutral durable seller order and delivery state with encrypted claim code recovery, then add channel adapters against it.",
+    "Connect actual seller checkout and refund webhooks only after issuer contracts and key custody are accepted.",
+    "Run the full repository and API suites in a runner that permits local HTTP listeners."
+  ]
+}

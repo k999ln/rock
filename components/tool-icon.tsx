@@ -2,16 +2,19 @@
 
 import {
   AudioLines, BarChart3, BookOpenCheck, BrainCircuit, CalendarDays,
-  Clapperboard, ClipboardCheck, Compass, FileSpreadsheet, GitPullRequest,
+  Clapperboard, ClipboardCheck, Compass, FileSpreadsheet, FlaskConical, GitPullRequest,
   Globe, Inbox, LayoutTemplate, Lightbulb, ListChecks, MessageSquare,
   MessagesSquare, Monitor, MousePointer2, PackageCheck, Palette, PenLine,
   Radar, Receipt, Route, Scale, Search, Send, Shirt, ShoppingBag,
-  Smartphone, Sparkles, TrendingUp, Users, Workflow,
+  Smartphone, Sparkles, TrendingUp, Users, Waypoints, Workflow, ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 
 // One stable, task-specific symbol per catalog entry. Unknown IDs keep a neutral icon.
 export const toolIcons: Record<string, LucideIcon> = {
+  'visual-scribe': Waypoints,
+  'rockstar-spider': ShieldCheck,
+  'rockstar-material-invention': FlaskConical,
   'rockstar-csv-cleanup': FileSpreadsheet,
   'rockstar-markets-analysis': BarChart3,
   'mercari-revenue': ShoppingBag,
@@ -46,6 +49,7 @@ export const toolIcons: Record<string, LucideIcon> = {
   'calendar-coordination': CalendarDays,
   'telegram-notifications': Send,
   'producthunt-discovery': Radar,
+  'rockstar-amc': ListChecks,
 };
 
 export function ToolIcon({ id, size = 24, className }: { id: string; size?: number; className?: string }) {

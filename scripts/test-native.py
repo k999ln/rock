@@ -84,7 +84,8 @@ def run_process(argv, *, cwd, env, stream, timeout, stack_path=None):
 
 
 def inventory():
-    files = [ROOT / 'scripts/test-native.py', ROOT / '.github/workflows/native-os.yml']
+    files = [ROOT / 'scripts/test-native.py', ROOT / 'scripts/select-native-artifacts.py',
+             ROOT / '.github/workflows/native-os.yml']
     for path in NATIVE.rglob('*'):
         relative = path.relative_to(NATIVE)
         if any(part in {'artifacts', '__pycache__', '.venv', '.git', 'build'}

@@ -1,6 +1,8 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-2026-09-18現行設計: RQ48に基づく中核は交換可能な端末内LLM＋offline agentを持つAIネイティブOS。層別責任、model/runtime更新、記憶、仕事、外部作用の照合、Sky app/OS能力交渉、Zema共通契約、便利機能、Material Invention／avocadoMini、Game/IPの縦断、Core/応用別受入は [AIネイティブOS共通設計](ai-native-os-architecture.md) を正本とする。空間発明systemの共有用正本は[完成設計書](rockstaros-avocado-mini-complete-design.md)。本書のLinux/QEMU資産一覧は再利用対象であり、スマホ版の全機能実装済みを意味しない。
+2026-10-15確定方針: 商品入口はeSIMの通信＋si利用権bundle。accountは本人/契約/仕事/成果/予算の正本で、無料試用とclient/browserを維持する。GrapheneOS派生は対応Pixel向け候補、Mini IoT LTEとProは別profile。[基盤設計](native-os-integration.md)の6層と32項目を優先し、既存の署名/本人/見積/予算/失効/Provider trustを通す。実発行・有料cloud・正式OS/flash/OTA/復旧は未受入。
+
+本書のLinux/QEMU資産一覧は再利用対象であり、スマートフォンの全機能実装済み、契約済みservice access、物理SIM/eSIMの販売・開通、実機OS導入を意味しない。
 
 RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。現在のスマホOS開発主軸はPixel 10／GL066／`frankel`で、QEMU Developer Previewは独立した配布候補として維持する。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 
@@ -8,7 +10,7 @@ RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとし
 
 ## 全体構造
 
-2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
+2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／現在の区分（削除済み）／[スマホ版](phone-preview-20260911.md)。
 
 以下はLinux/QEMU資産の構造である。利用者はnative UIからHub、Wallet、Game、端末操作を行い、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存し、A/B slotとbackupで復旧する。Androidの現行到達設計は共通設計のCore→Sky/Zema→応用の責任分離に従う。Game契約のhost実装と、個々の配布imageに搭載された範囲を混同しない。
 
@@ -50,7 +52,7 @@ ToolをOSへ直書きせず、署名manifestと有限recipeを持つ独立商品
 
 ## 7. Wallet・本人資格
 
-Linux/QEMU資産は整数USD centsのSQLite台帳でAVAILABLE、hold、費用、請求、売上、settlement、receiptを管理する。本人確認と同一ownerの複数端末重複防止を持つ。月888 cents固定の試作契約は履歴であり、現行RQ20は検証済み収益の実費後残額から月最大888 cents、先払い・未達債務化なしとする。GX00 runtimeはowner契約ごとに台帳を分離し、認証principalからだけ対象contractを選ぶ。
+Linux/QEMU資産は整数USD centsのSQLite台帳でAVAILABLE、hold、費用、請求、売上、settlement、receiptを管理する。本人確認と同一ownerの複数端末重複防止を持つ。月888 cents固定の試作契約は履歴であり、旧RQ20の回帰契約は検証済み収益の実費後残額から月最大888 cents、先払い・未達債務化なし。現在の成功報酬実行は保留を維持し、account後払いへ混ぜない。GX00 runtimeはowner契約ごとに台帳を分離し、認証principalからだけ対象contractを選ぶ。
 
 Wallet会社とファンド会社の機能は交換可能な外部Provider Adapterで受ける。RockstarOSはcapability発見、本人同意、指図、状態、receipt、照合を共通化し、資金保管、運用、約定、払出し、KYC/AML、地域・税務判断を代行しない。Providerはversion付きmanifestで対応機能だけを宣言し、OSは未宣言機能を擬似実装しない。Providerの追加・差替えは通常OS再buildを必要とせず、二次事業者が参加できる境界を維持する。[外部Provider境界](external-wallet-fund-provider-boundary-20260913.md)。
 
@@ -72,9 +74,11 @@ Web版の最初の本番受取レールはBase Mainnet / USDCとする。本人�
 
 進化余地は、一般MCP server、OAuth、SSE/Streamable HTTP相互運用、provider別scope、rate limit、資格失効、複数組織、public endpointの防御である。
 
-## 10. AI Routes
+<a id="10-ai-routes"></a>
 
-local、cloud、PCを別の処理先として扱い、許可、送信データ、予算、実行結果を分離する。Linux/QEMUのAI routeはpolicy/合成accounting fixtureの受入範囲。Androidは固定Local AI API v2と実GGUFによる機内モードplanをPixel単体APKで確認済みだが、汎用runtime交換、model比較benchmark、OS image受入は未完了である。
+## 10. si Routes
+
+local、cloud、PCを別の処理先として扱い、許可、送信データ、予算、実行結果を分離する。Linux/QEMUのsi routeはpolicy/合成accounting fixtureの受入範囲。Androidは固定Local si API v2と実GGUFによる機内モードplanをPixel単体APKで確認済みだが、汎用runtime交換、model比較benchmark、OS image受入は未完了である。
 
 次はmodel/runtime manifest、旧jobのprofile固定、互換切替とrollback、品質・遅延・電池・熱予算を受け入れる。外部fallbackは独立した本人同意を通す。詳細は共通設計第2節を参照する。
 
@@ -98,27 +102,27 @@ A/B slot、署名bundle、stage0、起動health、mark-good、失敗rollbackを�
 
 ## 14. Game接続・交換
 
-Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。認証TLS、複数owner/game分離、current-copy引継ぎに加え、GX01の合成quote・予約・両台帳・返金／照合、native UI、DX01のSDK・サンプルを実装し、限定受入を記録した。正式ゲームGX02、実資金、Androidへの移植は未完了。[契約／SDKと実OSの確認範囲](rc2-remaining-acceptance-20260911.md)。
+Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。認証TLS、複数owner/game分離、current-copy引継ぎに加え、GX01の合成quote・予約・両台帳・返金／照合、native UI、DX01のSDK・サンプルを実装し、限定受入を記録した。正式ゲームGX02、実資金、Androidへの移植は未完了。契約／SDKと実OSの確認範囲（削除済み）。
 
 進化余地は、正式ゲームのsandbox、複数engine adapter、公式ゲーム接続、スマホでの同じ契約・利用体験の検証である。
 
 ## 15. Desktop導入
 
-以前のMac launcherは既存Lima VMと固定imageを使う方式だった。現在は専用VM作成・image検証・起動・保存・再開・backup／復旧・削除のDeveloper Preview導入処理があり、b7/rc2でfresh導入と同一VM中断復旧を内部確認した。受入はmacOS 15.7.4／Apple Silicon／Lima 2.2.0の範囲。正式署名・一般公開と他host対応は未完了。[導入手順](preview-installation-ja.md)／[受入](os-acceptance-b7d819c-20260911.md)。
+以前のMac launcherは既存Lima VMと固定imageを使う方式だった。現在は専用VM作成・image検証・起動・保存・再開・backup／復旧・削除のDeveloper Preview導入処理があり、b7/rc2でfresh導入と同一VM中断復旧を内部確認した。受入はmacOS 15.7.4／Apple Silicon／Lima 2.2.0の範囲。正式署名・一般公開と他host対応は未完了。[導入手順](preview-installation-ja.md)／受入（削除済み）。
 
 進化余地は、正式署名release、対応hostの拡大、仮想化backend選択、自動update、保存データのある端末での追加削除受入、診断bundleである。
 
 ## 16. Web・Android P1・スマホOS
 
-WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。AndroidはBroker／Shell／Toolに分離し、Local AIとOperator Agentも別APKにする。GL066向けsource/build入口、native Sky selection、Zema計画、固定2工程、合成Wallet、実再起動、backup非破壊exportは[既存OS上の試験署名APKで受入済み](evidence/android-pixel-10-prefull-physical-20260916.json)。一般Tool registry、多端末Sky、GameのAndroid接続、外部Provider、OS全体build/正式署名/flash/OTA/鍵喪失復旧は未完了。WebやAPKの成功をスマホOSの合格にしない。
+WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。AndroidはBroker／Shell／Toolに分離し、Local siとOperator Agentも別APKにする。GL066向けsource/build入口、native Sky selection、Zema計画、固定2工程、合成Wallet、実再起動、backup非破壊exportは[既存OS上の試験署名APKで受入済み](evidence/android-pixel-10-prefull-physical-20260916.json)。一般Tool registry、多端末Sky、GameのAndroid接続、外部Provider、OS全体build/正式署名/flash/OTA/鍵喪失復旧は未完了。WebやAPKの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 
 ## 17. Material Invention／avocadoMini
 
-avocadoMiniは、RockstarOS上で物質digital twinを手で接続・分離し、新しい材料・用途・工程の候補を考える標準製品体験である。north／east／south／westの四方向sensorで中央の操作空間を捉え、Material Invention Coreが候補graph、安全制約、工程、根拠、版を管理する。VR／AR headsetがなくても同じ仕事を2D画面で完了できる。
+avocadoMiniの現行製品profileはR5の使用時200mm以内・銀色円筒1本・外部給電・別Hub不要で、[R5正本](avocado-mini-r5/README.md)を優先する。物質digital twinの接続・分離と材料・用途・工程候補はMaterial Invention Coreの応用体験として維持する。north／east／south／west四方向sensorや外部2D画面への代替は旧研究profileの契約で、R5の実sensor・表示完成を意味しない。
 
-現在は、二物質・複数比率・工程条件から再現可能な候補を作る装置非接続sandbox Coreと、XR、四方向sensor、Patent AIまでの統合設計がある。決定的なscene projection、合成pose、四方向sensor実機、simulation Provider、Patent AI bridge、外部ラボは未実装または未受入である。cameraやgestureは実物を動かさず、物理実験、外部共有、出願を承認しない。simulationは実測、Patent AIは法律判断の代わりにならない。
+現在は、二物質・複数比率・工程条件から再現可能な候補を作る装置非接続sandbox Coreと、XR、四方向sensor、Patent siまでの研究設計がある。R5 Display HALはunavailable、実機試験は未実施。決定的なscene projection、合成pose、四方向sensor実機、simulation Provider、Patent si bridge、外部ラボは未実装または未受入である。cameraやgestureは実物を動かさず、物理実験、外部共有、出願を承認しない。simulationは実測、Patent siは法律判断の代わりにならない。
 
 全体像、用語、利用体験、安全境界、役割別の参加入口、実装順、合格条件は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)、担当作業は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)を参照する。
 

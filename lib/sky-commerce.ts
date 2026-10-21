@@ -4,6 +4,9 @@ import { skyCommerceStore, type CommerceOrder, type CommerceStatus } from './sky
 import { readSkyStripeConfig, skyStripe, SkyPaymentError, type SkyStripeConfig, type StripeAccount, type StripeCheckoutSession, type StripePaymentIntent } from './sky-stripe.ts';
 import { verifyStripeSignature } from '../services/sky-billing/src/stripe-signature.ts';
 import type { SkyToolPackage } from './sky-tool-package.ts';
+import { rockstarEntitlementStore } from './rockstar-entitlement-claim.ts';
+import { describeRockstarServiceOfferProfile, parseRockstarServiceOfferProfiles } from './rockstar-service-offers.ts';
+import { skyToolPackageStore } from './sky-tool-package-store.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 type Runtime = Record<string, unknown>;
@@ -40,7 +43,12 @@ async function body(request: Request) {
   return value;
 }
 
-export function skyCommerce(db: Database, config: SkyStripeConfig, fetcher: typeof fetch = fetch) {
+export function skyCommerce(
+  db: Database,
+  config: SkyStripeConfig,
+  fetcher: typeof fetch = fetch,
+  serviceOfferProfiles?: string,
+) {
   const store = skyCommerceStore(db);
   const stripe = skyStripe(config, fetcher);
 
@@ -48,6 +56,34 @@ export function skyCommerce(db: Database, config: SkyStripeConfig, fetcher: type
     const item = await store.package(packageKey);
     if (!item?.installable) throw new SkyPaymentError('このツールは現在販売されていません。', 409);
     return { ...item, definition: JSON.parse(item.manifest) as SkyToolPackage };
+  }
+  async function isIncludedInActiveServiceOffer(userId: string, packageKey: string) {
+    if (!serviceOfferProfiles) return false;
+    let profiles;
+    try { profiles = parseRockstarServiceOfferProfiles(serviceOfferProfiles).profiles; }
+    catch { throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503); }
+    const entitlements = await rockstarEntitlementStore(db).activeOffers(userId, profiles);
+    if (!entitlements.length) return false;
+    // Purchase eligibility must use the owner's exact offer pins, independent
+    // of the paginated public registry and unrelated newer publications.
+    const references = profiles.filter((profile) => entitlements.some((entitlement) =>
+      entitlement.issuerId === profile.issuerId && entitlement.offerId === profile.offerId,
+    )).flatMap((profile) => profile.packages);
+    const registry = await skyToolPackageStore(db).verifiedRegistryPackages(references);
+    for (const entitlement of entitlements) {
+      const profile = await describeRockstarServiceOfferProfile(
+        entitlement.issuerId,
+        entitlement.offerId,
+        serviceOfferProfiles,
+        registry,
+      );
+      if (profile.state === 'catalog_unavailable')
+        throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503);
+      if (profile.packages.some((item) =>
+        item.state === 'ready' && item.packageKey === packageKey,
+      )) return true;
+    }
+    return false;
   }
   async function purchaseView(order: CommerceOrder, seller = false) {
     const manifest = await store.access(order);
@@ -140,6 +176,9 @@ export function skyCommerce(db: Database, config: SkyStripeConfig, fetcher: type
       return stripe.createAccountLink(attached.accountId!);
     },
     async saveOffer(userId: string, input: Record<string, unknown>) {
+      if (!Number.isSafeInteger(input.expectedRevision) || (input.expectedRevision as number) < 0 ||
+        (input.expectedRevision as number) >= Number.MAX_SAFE_INTEGER)
+        throw new SkyPaymentError('販売条件の版が必要です。画面を再読み込みして確認してください。', 400);
       const packageKey = string(input.packageKey);
       const item = await validPackage(packageKey);
       if (item.userId !== userId) throw new SkyPaymentError('自分のツールだけ販売設定できます。', 403);
@@ -153,12 +192,16 @@ export function skyCommerce(db: Database, config: SkyStripeConfig, fetcher: type
       const seller = await store.seller(userId, config.mode);
       if (!seller?.accountId || !ready(await stripe.retrieveAccount(seller.accountId)))
         throw new SkyPaymentError('先に売上の受取先登録を完了してください。', 409);
-      return store.saveOffer({ packageKey, sellerUserId: userId, mode: config.mode, manifestSha256: item.manifestSha256,
-        amountMinor: input.amountMinor as number, currency: 'jpy', active: input.active ? 1 : 0, termsUrl, refundPolicy });
+      const offer = await store.saveOffer({ packageKey, sellerUserId: userId, mode: config.mode, manifestSha256: item.manifestSha256,
+        amountMinor: input.amountMinor as number, currency: 'jpy', active: input.active ? 1 : 0, termsUrl, refundPolicy }, input.expectedRevision as number);
+      if (!offer) throw new SkyPaymentError('販売条件が更新されています。最新版を確認してから再保存してください。', 409);
+      return offer;
     },
     async checkout(userId: string, input: Record<string, unknown>) {
       const packageKey = string(input.packageKey);
       const item = await validPackage(packageKey);
+      if (await isIncludedInActiveServiceOffer(userId, packageKey))
+        throw new SkyPaymentError('このPackageは有効なSIM/eSIM利用権に含まれています。別購入は不要です。Cloud実行等に別料金がかかる場合は、依頼前に見積を確認してください。', 409);
       const offer = await store.offer(packageKey, config.mode);
       if (!offer?.active || offer.manifestSha256 !== item.manifestSha256 || offer.sellerUserId !== item.userId)
         throw new SkyPaymentError('このツールの販売は停止中です。', 409);
@@ -271,7 +314,14 @@ export async function handleSkyCommerce(request: Request, action: string, db: Da
         return json({ configured: false, mode: null, offers: [], packages: [], seller: null, sales: [], purchases: [] });
       throw error;
     }
-    const commerce = skyCommerce(db, config, fetcher);
+    const commerce = skyCommerce(
+      db,
+      config,
+      fetcher,
+      typeof runtime.ROCKSTAR_SERVICE_OFFER_PROFILES === 'string'
+        ? runtime.ROCKSTAR_SERVICE_OFFER_PROFILES
+        : undefined,
+    );
     if (action === 'webhook' && request.method === 'POST') {
       const raw = await request.text();
       if (new TextEncoder().encode(raw).length > 262_144) throw new SkyPaymentError('通知が長すぎます。', 413);

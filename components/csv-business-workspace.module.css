@@ -114,6 +114,7 @@
   margin-top: 3px;
 }
 .file {
+  position: relative;
   border: 2px dashed #bac5bd;
   border-radius: 14px;
   min-height: 128px;
@@ -132,8 +133,15 @@
   font-size: 12px;
   color: #737d77;
 }
+.file:focus-within {
+  outline: 2px solid #286b64;
+  outline-offset: 3px;
+}
 .file input {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   pointer-events: none;
 }
@@ -344,6 +352,15 @@ button:disabled {
 }
 .footer a {
   text-decoration: underline;
+}
+.notice {
+  display: block;
+  background: #eaf3f7;
+  color: #244f62;
+  border: 1px solid #cddfe7;
+  border-radius: 11px;
+  padding: 14px 17px;
+  margin-bottom: 18px;
 }
 .error {
   background: #fff0ec;

@@ -1,5 +1,16 @@
 # Local Action AssistantのRockstarOS導入
 
+
+## APKとoverlay版の一致（2026-10-05）
+
+現行API v4 / package version 3のunsigned arm64 APKをCI `37279537731`で生成した。実ファイルは26,416,892 bytes、SHA-256 `1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02`。CIと手元のaapt2でpackage/ABI/権限を照合し、実APKのstage・再実行・verifyが一致した。[build証拠](evidence/local-ai-apk-v4-build.json)。署名・実機・全OS imageは未受入で、以下の9月の実機結果は旧v2 artifactに限る。
+
+上流の同じcommitからv2/v3/v4の異なるAPKを作れるため、upstream commitとAPK hashだけでは現在のBroker契約との一致を証明できない。OS組込みの目的は、レビューした同じ差分と同じAPKだけをstageすること。ROCKのbuild担当が`rockstaros-overlay.json`の`sourceCommit`、`overlaySha256`、適用順の`extensionSha256`とAPK検査結果を照合し、artifact lockへ保存する。利用者のモデル・Tool権限はこの検査で増えない。
+
+`stage-local-ai-apk.py stage`と`verify`はartifact lockのoverlay列を現行source lockと比較し、追加/削除/並替え/欠落/変更があればAPK保存前またはbuild前に拒否する。stageの`artifact.json`もAPKのpackage/version/ABI/permission、source、overlay、署名用途と一致させ、metadataだけの貼替えを拒否する。旧v2の合格記録は履歴として維持し、v4に書換えない。
+
+不一致からの復旧は、固定sourceに現行overlayを適用→unsigned arm64 APKを再build→ABI/permission/hashとoverlay証拠をレビュー→lock更新→stage/verify再実行。hashだけを手で現在版へ付け替えて進めない。合格条件はこの一致とstagingの回帰試験で、正式署名・Soong全OS・実機import/offline inference/再起動は独立した受入として残す。未決定の物理受入は接続可能な対象Pixelで同じAPKを使って決定する。
+
 導入段階は`PHYSICAL_STANDALONE_ACCEPTED_NOT_IN_IMAGE`。`local-action-assistant`をRockstarOSのローカルLLM実装として固定し、arm64 release APKのnative build、Android emulatorのBinder結合、所有Pixel 10 GL066上のGGUFオフライン推論・再起動復元・33分22秒の熱試験まで確認した。これは正式署名、Soong／OS image搭載、SELinux、OTA、rollback、復旧の完了を意味しない。
 
 ## 今回接続した範囲
@@ -8,7 +19,7 @@
 - `scripts/prepare-phone-build.py manifest`がRock本体とLocal Action Assistantの2 repositoryを完全なcommitでGrapheneOSのlocal manifestへ出力する。
 - `prepare`はLocal Action Assistantのrevision、clean worktree、主要ファイルhash、package/runtime版、release variantの`INTERNET` permission除去、GGUF未同梱を検査する。
 - source同期後は`python3 external/rockstaros/scripts/prepare-phone-build.py verify-local-ai <OS-tree>`だけでも同じ読取り専用検査を実行できる。
-- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v2、通常会話、6 tool、stream event、変更系toolの確認必須条件に加え、`article-preparation@1/input-v1`計画専用callを機械可読にした。計画callはJSON Schema constrained decodingを使い、Local AIからのTool callを許可しない。
+- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v2、通常会話、6 tool、stream event、変更系toolの確認必須条件に加え、`article-preparation@1/input-v1`計画専用callを機械可読にした。計画callはJSON Schema constrained decodingを使い、Local siからのTool callを許可しない。
 - `RockAutomationPrototype`へ固定package・同一署名・version 1を要求する呼出しclientと接続診断を追加した。応答は32 KiB、90秒で打ち切り、未知eventを拒否する。
 - 固定commit上で`npm run verify`を実行し、TypeScript、Jest 4 suite／10 test、ESLint、offline manifest source検査を合格した。結果は`docs/evidence/local-ai-source-validation-20260915.json`へ記録した。
 - `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なし、`WAKE_LOCK`、署名限定Binder権限を検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。artifact lockにはplan v2を含むレビュー済みunsigned APKのSHA-256 `b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c`と26,395,708 bytesを固定した。

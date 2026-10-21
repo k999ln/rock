@@ -11,7 +11,7 @@ import {
   registryHostMismatch,
 } from '../lib/sky-tool-compatibility.ts';
 
-const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell, toolRoute, freeArticleDetailPage, freeArticleOrder] = await Promise.all([
+const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell, esimPurchase] = await Promise.all([
   readFile(new URL('../app/sky/marketplace/page.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-marketplace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-workspace.tsx', import.meta.url), 'utf8'),
@@ -22,10 +22,30 @@ const [page, marketplace, sky, registry, detail, publisher, overview, coconala, 
   readFile(new URL('../components/coconala-team-workspace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-commerce.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/workspace-shell.tsx', import.meta.url), 'utf8'),
-  readFile(new URL('../app/sky/tools/[toolId]/page.tsx', import.meta.url), 'utf8'),
-  readFile(new URL('../components/sky-free-article-detail-page.tsx', import.meta.url), 'utf8'),
-  readFile(new URL('../components/sky-free-article-order.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../components/esim-purchase-setup.tsx', import.meta.url), 'utf8'),
 ]);
+
+void test('Sky paid-order eSIM setup is owner-driven, does not issue profiles, and protects install material', () => {
+  assert.match(commerce, /order\.status === 'paid' && <EsimPurchaseSetup/);
+  assert.match(esimPurchase, /body \? 'install-material' : 'status'/);
+  assert.match(esimPurchase, /action: 'fetch'/);
+  assert.match(esimPurchase, /action: 'acknowledge'/);
+  assert.match(esimPurchase, /sessionStorage/);
+  assert.ok(esimPurchase.includes("'esimsetup.apple.com'"));
+  assert.ok(esimPurchase.includes("'esimsetup.android.com'"));
+  assert.match(esimPurchase, /referrerPolicy="no-referrer"/);
+  assert.match(esimPurchase, /導入情報を表示/);
+  assert.match(esimPurchase, /サーバーから消去/);
+  assert.match(esimPurchase, /active_on_authenticated_device/);
+  assert.match(esimPurchase, /revoked_or_stale/);
+  assert.match(esimPurchase, /署名付き証明でeSIM導入を確認しました/);
+  assert.match(esimPurchase, /OSの追加確認が表示される場合があります/);
+  assert.match(esimPurchase, /無人で導入・有効化できるかは/);
+  assert.match(esimPurchase, /署名付き証明が届くまでは/);
+  assert.match(esimPurchase, /各Toolの権限・本人承認は別途必要です/);
+  assert.doesNotMatch(esimPurchase, /\/issue/);
+  assert.doesNotMatch(esimPurchase, /dangerouslySetInnerHTML/);
+});
 
 void test('commerce uses the workspace main landmark without nesting a second main', () => {
   assert.equal([...workspaceShell.matchAll(/<main(?:\s|>)/g)].length, 1);
@@ -49,7 +69,7 @@ void test('checkout preserves the server reason for a conflict after refreshing 
   assert.doesNotMatch(checkout, /販売条件を更新しました/);
 });
 
-void test('Sky exposes a separate AI and automation marketplace from its main app view', () => {
+void test('Sky exposes a separate si and automation marketplace from its main app view', () => {
   assert.match(page, /SkyMarketplace/);
   assert.match(sky, /href="\/sky\/marketplace"/);
   assert.match(marketplace, /href="\/studio"/);
@@ -67,7 +87,7 @@ void test('publisher can reuse owner-scoped details without an assumed free pric
 });
 
 void test('all catalog tools remain individually discoverable without claiming candidates are operational', () => {
-  assert.equal(catalog.length, 34);
+  assert.equal(catalog.length, 38);
   assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 22);
   assert.match(marketplace, /catalog\.filter/);
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);
@@ -92,30 +112,10 @@ void test('catalog icons reveal capabilities without starting or connecting a to
   assert.match(overview, /<dd>\{tool\.cost\}<\/dd>/);
 });
 
-void test('free article CTA opens the zero-cost card and connects only after confirmation', () => {
-  assert.match(marketplace, /tool\.id === 'mr-free-article' \? '開いて使う'/);
-  assert.match(marketplace, /onAction=\{tool\.id === 'mr-free-article' \? \(\) => setSelectedCatalog\(tool\)/);
-  assert.match(marketplace, /selectedCatalog\.id === 'mr-free-article' \? <SkyFreeArticleOrder/);
-  assert.match(freeArticleOrder, /0円 · 決済なし/);
-  assert.match(freeArticleOrder, /onClick=\{\(\) => void confirmOrder\(\)\}/);
-  assert.match(freeArticleOrder, /operationRequest<SkyConnection>\('\/api\/sky\/connections', 'PUT', \{ tool: toolId \}\)/);
-  assert.match(freeArticleOrder, /\/zema\/tools\/mr-free-article/);
-  assert.doesNotMatch(freeArticleOrder, /\/api\/sky\/commerce|checkout|stripe/i);
-});
-
-void test('direct free article URL uses the same order card instead of the old Sky workspace', () => {
-  assert.match(toolRoute, /toolId === 'mr-free-article'\) return <SkyFreeArticleDetailPage \/>/);
-  assert.match(freeArticleDetailPage, /<SkyToolOverview tool=\{articleTool\} state=\{skyToolUiState\(articleTool, context\)\} standalone>/);
-  assert.match(freeArticleDetailPage, /<SkyFreeArticleOrder \/>/);
-  assert.doesNotMatch(freeArticleDetailPage, /SkyLibrarySave|MrToolRunner|<form/);
-  assert.match(overview, /standalone \? <h1 className=\{styles\.title\}>/);
-  assert.match(toolRoute, /return <SkyToolWorkspace toolId=\{toolId\}/);
-});
-
 void test('Sky home icon opens a single overview with the next action', () => {
-  assert.match(sky, /<SkyToolCard/);
-  assert.match(sky, /onInspect=\{\(\) => \{[^}]*setSelected\(tool\)/);
-  assert.match(sky, /state=\{skyToolUiState\(selected,/);
+  assert.match(sky, /aria-haspopup="dialog"[\s\S]*?recordPhoenix\(tool\.id, 'detail'\);[\s\S]*?setInspected\(tool\);/);
+  assert.match(sky, /<Dialog[\s\S]*?open=\{inspected !== null\}/);
+  assert.match(sky, /state=\{skyToolUiState\(inspected,/);
   assert.match(sky, /手順・提供元を詳しく見る/);
   assert.doesNotMatch(sky, /<ToolCharacterDetails/);
 });
@@ -129,10 +129,11 @@ void test('third-party marketplace entries come only from the verified public Re
 });
 
 void test('Sky Market treats LLMs as MCP-routable marketplace entries', () => {
-  assert.equal(skyAiMarketplaceEntries.length, 6);
+  assert.equal(skyAiMarketplaceEntries.length, 7);
+  assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'pollinations'));
   assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'local-model'));
   assert.ok(skyAiMarketplaceEntries.every((entry) => entry.mcpRoute.includes('MCP')));
-  assert.match(marketplace, /LLM・AIモデル/);
+  assert.match(marketplace, /LLM・siモデル/);
   assert.match(marketplace, /選んだLLMはSky BrokerからMCP Toolを呼び出します/);
   assert.match(marketplace, /接続設定を開く/);
 });

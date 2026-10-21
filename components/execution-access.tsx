@@ -22,10 +22,8 @@ export function useExecutionAccess() {
   }, []);
   useEffect(() => {
     let active = true;
-    const discardCheck = () => {
-      requestVersion.current++;
-      pendingVersion.current = null;
-    };
+    const requestVersionRef = requestVersion;
+    const pendingVersionRef = pendingVersion;
     async function check() {
       if (pendingVersion.current !== null) return;
       const version = ++requestVersion.current;
@@ -48,7 +46,8 @@ export function useExecutionAccess() {
     window.addEventListener(accessCheckEvent, recheck);
     return () => {
       active = false;
-      discardCheck();
+      requestVersionRef.current++;
+      pendingVersionRef.current = null;
       window.removeEventListener(accessCheckEvent, recheck);
     };
   }, []);

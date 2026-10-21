@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-02T19:17:30.501Z",
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "version": 33,
+  "sourceCommit": "00109c6adccc7b1aa4ff3f72d740d18e1de8ec94",
+  "savedVersion": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_95fcbc962bb08191b6597df8d4435103",
+  "archive": {
+    "archive_format": "tar",
+    "sediment_file_id": "file_0000000088b8822fad25f78661fd45eb",
+    "content_hash": "sha256:d0915223220c0e04941ecfe403e253c2b406a3cdcaaee81969ace496e47f99e7",
+    "size_bytes": 14499840,
+    "file_count": 466
+  },
+  "deployment": {
+    "id": "appgdep_6ac002988c8c8191a64bdcaac683870b",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "title": "Sky — ツールとAIのマーケットプレイス",
+    "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_95fcbc962bb08191b6597df8d4435103",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6abdfad4c5648191bcae957913bd02fa",
+    "failure_message": null,
+    "env_set_revision": 2,
+    "updated_at": "2026-10-02T19:14:45.176378+00:00"
+  },
+  "audience": "public",
+  "runtimeEnvRevision": 2,
+  "runtimeEnvKeys": [
+    "SKY_CSV_STRIPE_WEBHOOK_SECRET",
+    "SKY_PAYMENTS_MODE",
+    "SKY_PAYMENT_ORIGIN",
+    "SKY_STRIPE_SECRET_KEY"
+  ],
+  "paidCsvReadback": {
+    "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+    "status": "completed",
+    "payment_status": "stripe_verified",
+    "payment_method": "Stripe",
+    "quote_minor": 5000,
+    "currency": "JPY",
+    "attempt": 1,
+    "revision": 3
+  },
+  "newPayments": 0,
+  "productionOwnerJourneyAccepted": false,
+  "cloudProviderExecutionAccepted": false,
+  "pixelAvailable": false,
+  "applePayAccepted": false,
+  "githubMainUpdated": false,
+  "verification": "outputs/sky-access-recovery-verification.json",
+  "remaining": [
+    "OpenAI Developers plugin and provider credentials, trusted rate card and authorized usage budget",
+    "Owner desktop and reconnected Pixel end-to-end journey",
+    "Apple Pay on supported owner device",
+    "External OAuth and actual service execution; existing connections currently store configuration only",
+    "Resolve pre-existing partial Site verification references and bootstrap-specific API harness"
+  ],
+  "productionReadOnlyAuthChecks": {
+    "environment": "production non-user platform service access",
+    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "sourceExpected": "00109c6adccc7b1aa4ff3f72d740d18e1de8ec94",
+    "recordedAt": "2026-10-02T19:15:44.754Z",
+    "ownerSigninVerified": false,
+    "serviceCredentialIsUserIdentity": false,
+    "requestsReadOnly": true,
+    "newPayment": false,
+    "checks": [
+      {
+        "name": "public-entry",
+        "path": "/sky",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 41007,
+        "responseSha256": "32ce13c040613a8b5c290e9dda17cba059064a11eda66c4c0002b2590f2c47f8",
+        "contentType": "text/html; charset=utf-8",
+        "contentEncoding": null
+      },
+      {
+        "name": "public-health",
+        "path": "/api/health",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 15,
+        "responseSha256": "a29ee2b15c494311c52521766e44af56a3ad2248e7a8ab465e5206463c13d288",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-jobs",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-csv-history",
+        "path": "/api/csv-jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-result",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/result",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-report",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/report-json",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-coconala",
+        "path": "/api/coconala-team",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 66,
+        "responseSha256": "9333b5cf4d0432a406b05ec22b91b143a2c3453357eb57e7a2d628693a51ca10",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-mercari",
+        "path": "/api/revenue/mercari",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      }
+    ],
+    "allPassed": true
+  }
+}

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash, generateKeyPairSync, sign } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   a2aBrokerAuthorizationSigningBytes,
@@ -12,6 +13,20 @@ import {
   parseTrustedA2ABrokerKeys,
   trustedA2ABrokerKeyResolver,
 } from '../lib/a2a-broker-trust.ts';
+
+void test('accepts the shared Java-native signed Broker proof with the exact quote-bound terms', async () => {
+  const fixture = JSON.parse(readFileSync(new URL('../android/core/src/test/resources/a2a-broker-authorization-v2.json', import.meta.url), 'utf8'));
+  const publicKey = Buffer.from('d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a', 'hex');
+  assert.equal(await verifyA2ABrokerAuthorization(
+    fixture.proof, fixture.intent, async () => Uint8Array.from(publicKey), fixture.proof.issuedAt,
+  ), true);
+  assert.equal(createHash('sha256').update(a2aBrokerAuthorizationSigningBytes(fixture.proof)).digest('hex'),
+    '4367aaa4121c8cbbdfad6bce5e425fccd792f748f56d2cc808e18cad376ddb0b');
+  assert.equal(await verifyA2ABrokerAuthorization(
+    fixture.proof, { ...fixture.intent, priceQuoteDigest: 'd'.repeat(64) },
+    async () => Uint8Array.from(publicKey), fixture.proof.issuedAt,
+  ), false);
+});
 
 function rawPublicKey(key) {
   return new Uint8Array(key.export({ type: 'spki', format: 'der' }).subarray(-32));
@@ -34,6 +49,7 @@ function intent(now) {
     budgetCurrency: 'USD',
     budgetLimitMinor: 500,
     parentBudgetLimitMinor: 900,
+    continueWhileDeviceOffline: true,
     deadlineAt: now + 10 * 60_000,
     message: 'Summarize public information.',
   };
@@ -56,6 +72,7 @@ async function signedProof(approvalIntent, privateKey, now) {
     inputSha256: digests.inputSha256,
     budgetCurrency: approvalIntent.budgetCurrency,
     budgetLimitMinor: approvalIntent.budgetLimitMinor,
+    continueWhileDeviceOffline: approvalIntent.continueWhileDeviceOffline,
     deadlineAt: approvalIntent.deadlineAt,
     authorizationSha256: digests.authorizationSha256,
     issuedAt: now,
@@ -63,7 +80,11 @@ async function signedProof(approvalIntent, privateKey, now) {
     keyId: 'fixture-device-key',
     signature: '',
   };
-  proof.signature = sign(null, a2aBrokerAuthorizationSigningBytes(proof), privateKey).toString('base64url');
+  proof.signature = privateKey.asymmetricKeyType === 'ec'
+    ? sign('sha256', a2aBrokerAuthorizationSigningBytes(proof), {
+        key: privateKey, dsaEncoding: 'ieee-p1363',
+      }).toString('base64url')
+    : sign(null, a2aBrokerAuthorizationSigningBytes(proof), privateKey).toString('base64url');
   return proof;
 }
 
@@ -109,10 +130,10 @@ void test('native Broker authorization verifies only for the exact owner, device
     resolveTrustedKey,
     now,
   ), false);
-  assert.equal(proof.authorizationSha256, '7f4e0473204b95832a667d3cca19b91a3664edc8c250045066cc97fb8027ed46');
+  assert.equal(proof.authorizationSha256, 'f129e9e5d58f2bcd2ef78ba49a84de6625165670e88c4e1d3e57af424312a57c');
   assert.equal(
     createHash('sha256').update(a2aBrokerAuthorizationSigningBytes(proof)).digest('hex'),
-    'b4a9154f5fbc0db50cc73d9495e5a7d8e40317bca3c70d9e28183772a1018738',
+    '6f9b4c2aac8ffdfba80ed7c5f05ded620134892f65bdd9e1bab08ff7fe17160e',
   );
   assert.equal(await verifyA2ABrokerAuthorization(proof, approvalIntent, async () => null, now), false);
   assert.equal(await verifyA2ABrokerAuthorization(proof, approvalIntent, resolveTrustedKey, now + 6 * 60_000), false);
@@ -121,12 +142,32 @@ void test('native Broker authorization verifies only for the exact owner, device
   assert.equal(await verifyA2ABrokerAuthorization(proof, changedBudget, resolveTrustedKey, now), false);
   const changedParentBudget = { ...approvalIntent, parentBudgetLimitMinor: 901 };
   assert.equal(await verifyA2ABrokerAuthorization(proof, changedParentBudget, resolveTrustedKey, now), false);
+  const disabledOfflineContinuation = { ...approvalIntent, continueWhileDeviceOffline: false };
+  assert.equal(await verifyA2ABrokerAuthorization(proof, disabledOfflineContinuation, resolveTrustedKey, now), false);
   const changedOwner = { ...approvalIntent, ownerUserId: 'owner-bob' };
   assert.equal(await verifyA2ABrokerAuthorization(proof, changedOwner, resolveTrustedKey, now), false);
   const extended = { ...proof, budgetLimitMinor: 50_000 };
   assert.equal(await verifyA2ABrokerAuthorization(extended, approvalIntent, resolveTrustedKey, now), false);
   const extraField = { ...proof, approved: true };
   assert.equal(await verifyA2ABrokerAuthorization(extraField, approvalIntent, resolveTrustedKey, now), false);
+});
+
+void test('hardware-attestable P-256 Broker signatures verify alongside legacy Ed25519 keys', async () => {
+  const now = 1_000_000;
+  const approvalIntent = intent(now);
+  const pair = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const jwk = pair.publicKey.export({ format: 'jwk' });
+  const publicBytes = Buffer.concat([
+    Buffer.from([4]), Buffer.from(jwk.x, 'base64url'), Buffer.from(jwk.y, 'base64url'),
+  ]);
+  const proof = await signedProof(approvalIntent, pair.privateKey, now);
+  assert.equal(Buffer.from(proof.signature, 'base64url').length, 64);
+  assert.equal(await verifyA2ABrokerAuthorization(
+    proof, approvalIntent, async () => new Uint8Array(publicBytes), now,
+  ), true);
+  assert.equal(await verifyA2ABrokerAuthorization(
+    proof, approvalIntent, async () => new Uint8Array(32), now,
+  ), false);
 });
 
 void test('Broker proof rejects signatures from untrusted keys and unsafe origins', async () => {
@@ -194,4 +235,17 @@ void test('deployment trust inventory binds active keys to one authority, owner 
     deviceRef: 'device-a', keyId: 'fixture-device-key',
   }), null);
   assert.equal(parseTrustedA2ABrokerKeys('{malformed'), null);
+
+  const ecPair = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const ecJwk = ecPair.publicKey.export({ format: 'jwk' });
+  const ecRaw = Buffer.concat([Buffer.from([4]), Buffer.from(ecJwk.x, 'base64url'), Buffer.from(ecJwk.y, 'base64url')]);
+  const ecInventory = JSON.stringify([{
+    authorityId: 'fixture-rockstaros', ownerUserId: 'alice', deviceRef: 'pixel-10',
+    keyId: createHash('sha256').update(ecRaw).digest('hex'), publicKeyHex: ecRaw.toString('hex'), status: 'active',
+  }]);
+  const ecResolver = trustedA2ABrokerKeyResolver(ecInventory);
+  assert.deepEqual(await ecResolver({
+    authorityId: 'fixture-rockstaros', ownerUserId: 'alice', deviceRef: 'pixel-10',
+    keyId: createHash('sha256').update(ecRaw).digest('hex'),
+  }), new Uint8Array(ecRaw));
 });

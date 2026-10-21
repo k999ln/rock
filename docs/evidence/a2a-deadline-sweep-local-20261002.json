@@ -1,0 +1,24 @@
+{
+  "schema": "rockstar-a2a-deadline-sweep-local/1",
+  "date": "2026-10-02",
+  "scope": "Local D1-compatible store behavior and scheduled Cloudflare Worker wiring for expired A2A delegation deadlines.",
+  "implementation": {
+    "schedule": "services/sky-agent-runtime/wrangler.jsonc configures a one-minute cron trigger.",
+    "preSend": "Overdue awaiting-approval, prepared and dispatching rows transition to expired. Existing D1 reservation trigger releases held child budget exactly once.",
+    "remote": "Overdue tasks with a known remote task ID, plus in-flight dispatch_submitting tasks, transition to cancel_requested and use the existing one-shot cancel/reconciliation workflow.",
+    "invariant": "A requested remote cancellation is not reported as confirmed; uncertain remote usage retains the reservation pending reconciliation."
+  },
+  "verification": {
+    "command": "node --test tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs",
+    "result": "PASS: 32/32 tests, including deadline expiry, hold release, overdue remote selection, and non-release pending confirmed cancellation.",
+    "additional": [
+      "npm run typecheck: PASS",
+      "npm run lint:product: PASS",
+      "npm run verify: PASS, including 752 main Node tests, Worker dry-runs, production build, 1021 API assertions and 113 CSV assertions"
+    ]
+  },
+  "notProven": [
+    "Provider deadline guarantees, remote cancellation semantics, or post-cancellation usage metering/invoicing.",
+    "Production cron execution, production D1 deployment/readback, provider sandbox acceptance, carrier activation, or device OS installation."
+  ]
+}

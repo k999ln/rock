@@ -1,0 +1,6 @@
+{
+  "challengeNonce": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+  "now": 1800000000000,
+  "challengeExpiresAt": 1800000060000,
+  "expectedCanonicalPayload": "{\"schema\":\"rock-esim-device-entitlement-receipt/1\",\"signatureAlgorithm\":\"ES256\",\"authorityId\":\"oem-fixture\",\"keyId\":\"p256-key-1\",\"ownerUserId\":\"owner-1\",\"orderId\":\"order-1\",\"profileDigest\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"challengeId\":\"challenge-1\",\"challengeNonceSha256\":\"6920b95e9f8736c294d2541181f2a9b3bd2f174178a0301cd0b6ebc6e0128cea\",\"deviceRef\":\"pixel-10-device\",\"installReceiptSha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"starterPackId\":\"lifeline\",\"starterPackVersion\":\"1.0.0\",\"starterPackManifestSha256\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"activationState\":\"installed_enabled\",\"observedAt\":1800000000000,\"expiresAt\":1800000060000}"
+}

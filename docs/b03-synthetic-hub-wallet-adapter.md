@@ -12,7 +12,7 @@
   - 実資金操作・課金・外部送信は所有者の明示承認があるまで行わない
   - `realValueEnabled=false` を維持する。合成合格を実資金準備完了と呼ばない
 
-関連: [次の実行プロンプト](prompts/hub-wallet-next.md) 段階3（GAP03 / B03）、[製品ベース](product-baseline.md) RQ05〜RQ06 / RQ08。
+関連: 次の実行プロンプト（削除済み） 段階3（GAP03 / B03）、[製品ベース](product-baseline.md) RQ05〜RQ06 / RQ08。
 
 ## 0. 目的と非目的
 
@@ -24,7 +24,7 @@
 - 新料金・新手数料、または月額888の変更
 - ToB `os/settlement` と個人Walletの接続（現状の `personal_wallet_link=NOT_CONNECTED` を維持）
 - Game交換契約（Game担当）および接続transport実装（接続担当）
-- AI compute予算（micro-USD / `simulation_only`）をWallet科目へ混在させること
+- si compute予算（micro-USD / `simulation_only`）をWallet科目へ混在させること
 - 実provider・実資金・KYC・本番ATM
 
 ## 1. 再利用する既存物

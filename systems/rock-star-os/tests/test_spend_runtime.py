@@ -133,7 +133,7 @@ class SpendRuntimeTest(unittest.TestCase):
 
     def a2a_broker_proof(self, reservation, **changes):
         proof = {
-            "schema": "rock-a2a-broker-authorization/1", "authorityId": "fixture-rockstaros",
+            "schema": "rock-a2a-broker-authorization/2", "authorityId": "fixture-rockstaros",
             "ownerUserId": reservation["owner_id"], "deviceRef": "device-a",
             "delegationId": reservation["delegation_id"], "parentJobId": reservation["parent_job_id"],
             "messageId": "message-1", "targetOrigin": "https://agent.example",
@@ -141,6 +141,7 @@ class SpendRuntimeTest(unittest.TestCase):
             "protocolVersion": "1.0", "inputSha256": "b" * 64,
             "budgetCurrency": reservation["currency"],
             "budgetLimitMinor": reservation["budget_limit_minor"],
+            "continueWhileDeviceOffline": True,
             "deadlineAt": reservation["deadline_at"],
             "authorizationSha256": reservation["approval_sha256"],
             "issuedAt": self.now * 1000, "expiresAt": self.now * 1000 + 5 * 60_000,
@@ -185,6 +186,9 @@ class SpendRuntimeTest(unittest.TestCase):
             key="a2a-broker-auth-wrong-cap"))
         self.assertFalse(self.authorize_a2a_reservation(
             reserved, {**proof, "deviceRef": "device-b"}, key="a2a-broker-auth-wrong-device"))
+        self.assertFalse(self.authorize_a2a_reservation(
+            reserved, {**proof, "continueWhileDeviceOffline": False},
+            key="a2a-broker-auth-no-offline-consent"))
         self.now += 301
         self.assertEqual(self.runtime.release_a2a_budget(
             reserved["delegation_id"], "a2a-expired-proof-release")["state"], "RELEASED")
@@ -211,13 +215,13 @@ class SpendRuntimeTest(unittest.TestCase):
                 receipt.get("delegation_id") == hold["delegation_id"] and
                 receipt.get("owner_id") == hold["owner_id"] and
                 receipt.get("currency") == hold["currency"] and
-                receipt.get("amount_minor") <= hold["budget_limit_minor"]
+                receipt.get("amountMinor") <= hold["budget_limit_minor"]
             ),
             clock=lambda: self.now,
         )
         runtime.mark_a2a_dispatched(reserve["delegation_id"], "a2a-dispatch-settle")
         receipt = {"delegation_id": reserve["delegation_id"], "owner_id": "alice",
-                   "currency": "USD", "amount_minor": 650, "signature_valid": True}
+                   "currency": "USD", "amountMinor": 650, "signature_valid": True}
         settled = runtime.settle_a2a_budget(reserve["delegation_id"], receipt, "a2a-settle")
         self.assertEqual(settled["state"], "SETTLED")
         self.assertEqual(settled["settled_minor"], 650)

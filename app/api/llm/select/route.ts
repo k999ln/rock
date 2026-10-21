@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'llm-select', db);
     const runtime = env as unknown as LlmRuntimeEnv & FreeCloudRuntime & { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string };
-    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED)))
+    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request)))
       return missingRockstarServiceScope('RockstarOS');
     const raw = await request.text();
     if (new TextEncoder().encode(raw).byteLength > 28000) return Response.json({ error: '依頼が長すぎます。' }, { status: 413, headers });
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       ...(typeof value.baseUrl === 'string' ? { SKY_LOCAL_LLM_BASE_URL: value.baseUrl } : {}),
     }});
     return Response.json(result.selection ? result : { ...result,
-      error: `利用可能なモデルがありません。Cloud状態: ${result.cloudStatus}`, 
+      error: `利用可能なモデルがありません。Cloud状態: ${result.cloudStatus}`,
     }, { status: result.selection ? 200 : 409, headers });
   } catch (error) {
     return Response.json({ error: error instanceof RemoteAiGuardError ? 'サインイン・操作権限を確認してください。' : 'モデル接続を確認できませんでした。' }, {

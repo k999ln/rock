@@ -1,0 +1,95 @@
+{
+  "schema": "rockstar-cloud-execution-local-verification/1",
+  "verifiedAt": "2026-10-02T20:36:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "baseRevision": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "loopback-only synthetic Worker/D1/Workflow fixtures, SQLite-backed unit tests and independent Node/Python A2A HTTP fixtures",
+  "results": {
+    "apiIntegration": {
+      "command": "npm run test:api",
+      "exitCode": 0,
+      "assertions": 960,
+      "scope": "Worker/D1 API and synthetic service/provider transports; real provider network calls: 0"
+    },
+    "csvRegression": {
+      "command": "npm run test:api",
+      "exitCode": 0,
+      "assertions": 113,
+      "scope": "synthetic Worker/D1/R2 only"
+    },
+    "workflowIntegration": {
+      "command": "npm run sky:a2a:workflow:positive",
+      "exitCode": 0,
+      "tests": 10,
+      "testFiles": 2,
+      "diagnostics": "Expected Workerd engine-abort diagnostics were emitted by injected restart/ambiguous-send cases; Vitest exit code was 0.",
+      "coverage": [
+        "A2A controlled-agent dispatch, restart/reconciliation, cancellation races and ambiguous-send hold",
+        "Remote AI Workflow fails closed while the hard pricing gate is disabled and creates zero provider-send claims"
+      ]
+    },
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/remote-ai-text-input.test.mjs tests/remote-ai-text-store.test.mjs tests/remote-ai-text-public-record.test.mjs tests/a2a-client.test.mjs",
+      "exitCode": 0,
+      "tests": 23,
+      "includes": [
+        "independent Node and Python A2A HTTP fixture interoperability",
+        "immediate encrypted prompt deletion after queued-job cancellation"
+      ]
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    "runtimeDryRun": {
+      "command": "npm run sky:agent-runtime:check",
+      "exitCode": 0,
+      "uploadedBundleKiB": 251.35,
+      "verifiedBindings": [
+        "REMOTE_AI_TEXT_WORKFLOW",
+        "A2A_DELEGATION_WORKFLOW",
+        "D1"
+      ],
+      "deployed": false
+    },
+    "repositoryContracts": {
+      "commands": [
+        "npm run baseline:check",
+        "npm run schema:check",
+        "npm run project:check",
+        "npx oxlint scripts/check-work-api.mjs services/sky-agent-runtime/test/remote-ai-workflow-gate.positive.test.mjs",
+        "git diff --check"
+      ],
+      "exitCode": 0
+    }
+  },
+  "syntheticHarnessUpdate": "check-work-api persists owner/execution-bound encrypted prompt material before directly testing the synthetic execution coordinator; it does not enable the public paid route or production pricing gate",
+  "privacyFix": "cancelBeforeSend now deletes owner-bound encrypted prompt material immediately after cancellation, including idempotent cancellation recovery; the shared budget hold remains released exactly once",
+  "verifiedBoundaries": {
+    "hardRemoteAiPricingGateAccepted": false,
+    "remoteAiWorkflowOutcomeWithGateClosed": "execution_disabled",
+    "remoteAiProviderSendClaimsInGateTest": 0,
+    "externalProviderCalls": 0,
+    "a2aExternalProviderCalls": 0,
+    "cloudflareProductionD1OrWorkflow": false,
+    "productionBillingOrInvoice": false,
+    "carrierActivationOrSimFulfillment": false,
+    "androidApkBinderOrDeviceAcceptance": false,
+    "rockstarOsInstallation": false
+  },
+  "sourceSha256": {
+    "scripts/check-work-api.mjs": "a9f29eac0997eca57b398921213ae38bd557666b4a2a6bf3b37c22dda89949e8",
+    "services/sky-agent-runtime/src/worker.ts": "2c0cb30e0ac3721950ec22ab47d328f978e8ec91dfe50cc403be147b3a604eeb",
+    "services/sky-agent-runtime/test/remote-ai-workflow-gate.positive.test.mjs": "d83028d31a6f8fefabff5cd0f736d3e3f8c9d7fcdba8bdd0781d70d01c9197ea",
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "28e4f50ffa7b74617d995e2db2dbcad6dea7fb0ae5cc5162ead392e44b37261a",
+    "lib/remote-ai-pricing-gate.ts": "afa1cf375d630166e23302046f518b4af051caf7eb7db7cba1f581b8682e2c70",
+    "lib/remote-ai-text-store.ts": "909fd687add638263813f04a011deea7521ce9b1275ecf67f1099dc73f18a6a7",
+    "tests/remote-ai-text-store.test.mjs": "27a7697d08ad84b0bc99b66affb65d09220264b013a663f226511f5add16f149"
+  },
+  "next": [
+    "Exercise the full approved-input-to-durable-queue and Remote AI Workflow lifecycle with provider sends still hard-disabled; test pre-send cancel, expiry cleanup and restart-safe idempotency.",
+    "Complete provider usage, price and invoice reconciliation only against an accepted provider contract/sandbox; keep the production gate closed until then.",
+    "Continue Android settlement transport and supported-device acceptance separately; no SDK/device evidence is implied by these host tests."
+  ]
+}

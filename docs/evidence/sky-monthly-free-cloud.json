@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-17",
+  "taskId": "BIL02",
+  "scope": "isolated local monthly Stripe Sandbox contract with real anonymous Cloud; hosted account unchanged",
+  "status": "provider_and_cloud_passed",
+  "monthlyFeeMinor": 14000,
+  "includedMinor": 10000,
+  "currency": "USD",
+  "productionBilling": false,
+  "oneHourSyntheticContractUsed": false,
+  "syntheticClock": true,
+  "syntheticQuotaMinor": 10000,
+  "quotaWasRealSpend": false,
+  "existingHostedDataModified": false,
+  "invoice": {
+    "id": "in_1URcFHGfTgzUjVHJxyDeHNlJ",
+    "total": 14000,
+    "paid": 14000,
+    "livemode": false
+  },
+  "verifiedEvents": [
+    {
+      "id": "evt_1URcFKGfTgzUjVHJ03eVEc0Q",
+      "type": "invoice.payment_failed",
+      "objectId": "in_1URcFHGfTgzUjVHJxyDeHNlJ"
+    },
+    {
+      "id": "evt_1URcFNGfTgzUjVHJP5MEnpCI",
+      "type": "invoice.payment_succeeded",
+      "objectId": "in_1URcFHGfTgzUjVHJxyDeHNlJ"
+    },
+    {
+      "id": "evt_1URcFMGfTgzUjVHJTAllOupp",
+      "type": "invoice.paid",
+      "objectId": "in_1URcFHGfTgzUjVHJxyDeHNlJ"
+    }
+  ],
+  "checks": [
+    "月次Sandbox契約で自動選択・無料Cloud実応答・再送なし",
+    "100ドル到達後は無料Cloudの選択・送信とも外部通信ゼロで停止",
+    "月締め140ドルのテスト支払失敗で未払い停止",
+    "同じ請求の入金照合・次月更新で100ドル枠と無料Cloud実応答を復旧",
+    "実Stripe署名通知の失敗・入金を照合、請求は140ドルの1件だけ"
+  ],
+  "realCloudPosts": 3,
+  "beforeCap": {
+    "model": "openai-fast",
+    "reportedModel": "gpt-oss-20b",
+    "inputTokens": 331,
+    "outputTokens": 182,
+    "chargeMinor": 0,
+    "providerResponseId": "pllns_0fde13dc9e425afa5cf82d1ca2adc9f9"
+  },
+  "afterPayment": {
+    "model": "openai-fast",
+    "reportedModel": "gpt-oss-20b",
+    "inputTokens": 331,
+    "outputTokens": 182,
+    "chargeMinor": 0,
+    "providerResponseId": "pllns_0fde13dc9e425afa5cf82d1ca2adc9f9"
+  },
+  "providerCacheNote": "Same synthetic prompt returned the same Provider reference across two distinct POSTs. Fresh underlying inference is not asserted. UI used a different prompt and received a different reference.",
+  "ui": {
+    "url": "http://127.0.0.1:5228/",
+    "verified": true,
+    "inputTokens": 331,
+    "outputTokens": 118,
+    "chargeMinor": 0,
+    "reference": "pllns_31202e6cd43bb3d85da7cf807d38a988",
+    "replayAdditionalPosts": 0,
+    "screenshot": "/private/tmp/sky-monthly-free-cloud-success.png"
+  },
+  "tests": {
+    "focusedPassed": 23,
+    "fullVerify": "all_stages_passed",
+    "passed": 2287,
+    "skipped": 1,
+    "log": "/private/tmp/sky-monthly-free-verify.log"
+  },
+  "sourceHashes": {
+    "lib/sky-free-cloud.ts": "d759161b55b3b3f9263867848652c8668733fdaa73a5014c285b84f8d4574697",
+    "lib/sky-model-selection.ts": "b452bcbeb48a465e71a50a178714d39617a36b2f022223b91a57894953f50baa",
+    "lib/sky-recurring-plan.ts": "bc1b6a50e5270836fb3f4a21f7762490ad0d86efd1bb8245c8a70ab8cc747a33",
+    "scripts/check-sky-monthly-free-cloud.mjs": "97dd61a41af0a263cac7b9e952147062fcbb61feee4c85f34c54f705818280f8",
+    "scripts/sky-recurring-sandbox-server.mjs": "eb6a1981581bcb9dc53569e833d12dc6512e394d1dc149007e17812cc30239ce",
+    "tests/sky-recurring-sandbox.test.mjs": "a648436fec3bc47163165a7766bc0022976e4528667df633b616a4833eab8b9c"
+  },
+  "limitations": [
+    "Local test-owner account; hosted avoado.si real-account contract remains separate",
+    "UTC month boundary simulated; not a month of operational uptime",
+    "Production contract/tax/credit and hosted recurring scheduler are not accepted",
+    "Free Cloud availability and provider rate limits remain external conditions"
+  ],
+  "restart": {
+    "verified": true,
+    "stripeInvoices": 1,
+    "preservedPriorSyntheticMinor": 10000,
+    "savedFreeCloudJobs": 3,
+    "additionalCloudPosts": 0
+  },
+  "httpGuards": {
+    "crossOriginStatus": 403,
+    "unsignedWebhookStatus": 400
+  }
+}

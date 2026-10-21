@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { phaseGateEvidencePaths, renderPhaseGates, validatePhaseGates } from '../scripts/project-phase-gates.mjs';
 
 const tasks = [{ id: 'B04' }, { id: 'V01' }, { id: 'GX01' }];
-const evidence = 'docs/prompts/os-operational-base-next.md';
+const evidence = 'docs/workstreams/06-native-qemu-release.md';
 const existing = new Set([evidence]);
 const gate = (id = 'B04-INTEGRATED', overrides = {}) => ({
   id, task: 'B04', status: 'planned', dependsOn: [], evidence: [evidence], title: '統合', ...overrides,
@@ -87,4 +87,10 @@ void test('phase rendering includes task, dependency, status and evidence withou
   assert.match(output, /V01-BOOT \| V01 \| 起動\\\|基礎 検証 \| 未合格 \| B04-INTEGRATED/);
   assert.ok(output.includes(`[記録](${evidence})`));
   assert.ok(!output.includes('件完了'));
+});
+
+void test('phase rendering can point evidence for removed files at a fixed history link', () => {
+  const output = renderPhaseGates([gate(undefined, { status: 'done' })], (file) => `https://example.test/blob/abc/${file}`).join('\n');
+  assert.ok(output.includes(`[記録](https://example.test/blob/abc/${evidence})`));
+  assert.ok(!output.includes(`[記録](${evidence})`));
 });

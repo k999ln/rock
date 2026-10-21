@@ -131,7 +131,7 @@ export function buildFashionQuickPlan({
     ],
     producerFlow: [
       { label: 'あなた', detail: '世界観と商品を決める' },
-      { label: 'AI', detail: '市場・広告・投稿・接客を組む' },
+      { label: 'si', detail: '市場・広告・投稿・接客を組む' },
       { label: 'あなた', detail: '公開日・価格・受注上限だけ確認' },
       { label: 'Sky', detail: '承認後にMCPで運用し、反応を次案へ戻す' },
     ],

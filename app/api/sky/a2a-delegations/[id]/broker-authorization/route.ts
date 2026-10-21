@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import {
   a2aDelegationStore,
   A2ADelegationStoreError,
@@ -7,8 +8,10 @@ import {
   type A2ABrokerAuthorization,
 } from '@/lib/a2a-broker-authorization';
 import { createA2AIntentDigests } from '@/lib/a2a-authorization';
-import { trustedA2ABrokerKeyResolver } from '@/lib/a2a-broker-trust';
-import { database, requestUser } from '@/lib/fund-store';
+import { a2aBrokerDeviceKeyResolver } from '@/lib/a2a-broker-trust';
+import { database } from '@/lib/fund-store';
+import { requestRockstarUser } from '@/lib/rockstar-device-link';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { env } from 'cloudflare:workers';
 
 type Context = { params: Promise<{ id: string }> };
@@ -25,24 +28,9 @@ function json(value: unknown, status = 200) {
 async function readBody(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new Error('INVALID_BODY');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 12_000) {
-      await reader.cancel();
-      throw new Error('BODY_TOO_LARGE');
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 12_000, () =>
+    new Error('BODY_TOO_LARGE'),
+  );
   const value: unknown = JSON.parse(new TextDecoder().decode(bytes));
   if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new Error('INVALID_BODY');
@@ -67,7 +55,15 @@ function errorResponse(error: unknown) {
 
 export async function POST(request: Request, context: Context) {
   try {
-    const owner = await requestUser(request);
+    const owner = await requestRockstarUser(request, database());
+    const db = database();
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'agents',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
+    ))) return missingRockstarServiceScope('Agent');
     const { id } = await context.params;
     if (!uuid.test(id)) return json({ error: '委任IDが不正です。' }, 400);
     const input = await readBody(request);
@@ -83,10 +79,7 @@ export async function POST(request: Request, context: Context) {
     const configuration = (env as unknown as {
       A2A_TRUSTED_BROKER_KEYS?: string;
     });
-    if (!configuration.A2A_TRUSTED_BROKER_KEYS)
-      return json({ error: 'Broker鍵信頼設定を確認できません。', code: 'TRUST_NOT_CONFIGURED' }, 503);
-
-    const store = a2aDelegationStore(database());
+    const store = a2aDelegationStore(db);
     const delegation = await store.get(owner, id);
     if (!delegation) return json({ error: '委任が見つかりません。' }, 404);
     if (delegation.state !== 'awaiting_approval')
@@ -107,8 +100,11 @@ export async function POST(request: Request, context: Context) {
       budgetCurrency: delegation.budgetCurrency,
       budgetLimitMinor: delegation.budgetLimitMinor,
       parentBudgetLimitMinor: delegation.parentBudgetLimitMinor,
+      continueWhileDeviceOffline: delegation.continueWhileDeviceOffline,
       deadlineAt: delegation.deadlineAt,
       message: input.message,
+      priceQuoteDigest: delegation.priceQuoteDigest || undefined,
+      packageRuntimeBindingDigest: delegation.packageRuntimeBindingDigest || undefined,
     };
     const digests = await createA2AIntentDigests(intent);
     if (
@@ -119,7 +115,7 @@ export async function POST(request: Request, context: Context) {
     const valid = await verifyA2ABrokerAuthorization(
       input.proof,
       intent,
-      trustedA2ABrokerKeyResolver(configuration.A2A_TRUSTED_BROKER_KEYS),
+      a2aBrokerDeviceKeyResolver(db, configuration.A2A_TRUSTED_BROKER_KEYS),
     );
     if (!valid)
       return json({ error: '署名、鍵の信頼、本人、端末または承認条件が一致しません。', code: 'BROKER_PROOF_INVALID' }, 403);
@@ -132,7 +128,7 @@ export async function POST(request: Request, context: Context) {
       keyId: proof.keyId,
       expiresAt: proof.expiresAt,
     });
-    return json({ accepted: true, expiresAt: proof.expiresAt });
+    return json({ accepted: true, deviceRef: proof.deviceRef, expiresAt: proof.expiresAt });
   } catch (error) {
     return errorResponse(error);
   }

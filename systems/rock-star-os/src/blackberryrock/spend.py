@@ -724,10 +724,12 @@ class ValueSpendRuntime:
             "schema", "authorityId", "ownerUserId", "deviceRef", "delegationId",
             "parentJobId", "messageId", "targetOrigin", "targetAgentName",
             "targetAgentVersion", "protocolVersion", "inputSha256", "budgetCurrency",
-            "budgetLimitMinor", "deadlineAt", "authorizationSha256", "issuedAt",
+            "budgetLimitMinor", "continueWhileDeviceOffline", "deadlineAt", "authorizationSha256", "issuedAt",
             "expiresAt", "keyId",
         }
-        if set(proof) != expected_fields or proof.get("schema") != "rock-a2a-broker-authorization/1":
+        if (set(proof) != expected_fields or
+                proof.get("schema") != "rock-a2a-broker-authorization/2" or
+                proof.get("continueWhileDeviceOffline") is not True):
             return False
         owner_id = getattr(principal, "subject", None)
         device_ref = getattr(principal, "device_ref", None)
@@ -898,7 +900,8 @@ class ValueSpendRuntime:
             raise SpendError("A2A usage receipt verification failed") from error
         if accepted is not True:
             raise SpendError("A2A usage receipt is not trusted for this Wallet hold")
-        amount = receipt.get("amount_minor")
+        # Keep the signed Cloud A2A extension field name unchanged.
+        amount = receipt.get("amountMinor")
         if type(amount) is not int or not 0 <= amount <= observed_binding["budget_limit_minor"]:
             raise SpendError("verified usage amount exceeds the A2A Wallet reservation")
         with self.wallet._transaction() as db:

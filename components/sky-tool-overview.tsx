@@ -16,7 +16,6 @@ export default function SkyToolOverview({
   className = '',
   wide = false,
   initialFocus,
-  standalone = false,
 }: {
   tool: Automation;
   state: SkyToolUiState;
@@ -25,21 +24,23 @@ export default function SkyToolOverview({
   className?: string;
   wide?: boolean;
   initialFocus?: boolean;
-  standalone?: boolean;
 }) {
   const headingRef = useRef<HTMLDivElement>(null);
-  const content = (
-    <>
+  return (
+    <DialogContent
+      initialFocus={initialFocus === false ? false : headingRef}
+      className={`${styles.dialog} ${wide ? styles.wide : ''} ${className}`}
+    >
       <div ref={headingRef} tabIndex={-1} className={styles.heading}>
         <span className={`${styles.icon} rock-icon-${tool.color}`} aria-hidden="true">
           <ToolIcon id={tool.id} size={28} />
         </span>
         <div>
           <span className={styles.category}>{tool.category}</span>
-          {standalone ? <h1 className={styles.title}>{tool.name}</h1> : <DialogTitle className={styles.title}>{tool.name}</DialogTitle>}
+          <DialogTitle className={styles.title}>{tool.name}</DialogTitle>
         </div>
       </div>
-      {standalone ? <p className={styles.description}>{tool.description}</p> : <DialogDescription className={styles.description}>{tool.description}</DialogDescription>}
+      <DialogDescription className={styles.description}>{tool.description}</DialogDescription>
       <dl className={styles.facts}>
         <div><dt>現在の状態</dt><dd>{state.label}</dd></div>
         <div><dt>利用環境</dt><dd>{tool.environment}</dd></div>
@@ -54,15 +55,6 @@ export default function SkyToolOverview({
       ) : (
         <span className={styles.source}>提供元：{tool.source}</span>
       )}
-    </>
-  );
-  if (standalone) return <article className={`${styles.frame} ${styles.standalone} ${className}`}>{content}</article>;
-  return (
-    <DialogContent
-      initialFocus={initialFocus === false ? false : headingRef}
-      className={`${styles.frame} ${styles.dialog} ${wide ? styles.wide : ''} ${className}`}
-    >
-      {content}
     </DialogContent>
   );
 }

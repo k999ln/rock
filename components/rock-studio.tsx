@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 const skyOrigin = 'https://rockstaros-kaiya.noellesugar1.chatgpt.site';
-const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.2.tgz`;
+const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz`;
 const integrationCode = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
 import { run } from './your-tool.js'; // あなたの既存処理
 

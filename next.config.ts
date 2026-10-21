@@ -6,14 +6,6 @@ export const WEB_SECURITY_RESPONSE_HEADERS = Object.entries(
 ).map(([key, value]) => ({ key, value }));
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return {
-      beforeFiles: [
-        { source: '/os/sky', destination: '/sky' },
-        { source: '/os/sky/:path*', destination: '/sky/:path*' },
-      ],
-    };
-  },
   async headers() {
     return [
       {

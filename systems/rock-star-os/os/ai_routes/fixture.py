@@ -27,6 +27,8 @@ def public_routes():
             'retention_policy': 'fixture-hash-only-no-input-storage',
             'cancellation_policy': 'status-only-no-provider-cancel', 'simulation_only': True}
     return [{**base, 'route_id': target, 'target': target,
+             'required_features': {'local': ['compute.local_inference', 'storage.model_install'],
+                                   'pc_usb': ['compute.remote_pc'], 'cloud': ['network.internet']}[target],
              'max_cost_microusd': 0 if target == 'local' else 600} for target in ('local', 'cloud', 'pc_usb')]
 
 
@@ -34,8 +36,21 @@ class FixtureIdentity:
     def __init__(self, authority_id):
         self.authority_id, self.mutex = authority_id, threading.RLock()
         self.active = set(DEVICES)
-        self.caps = {'online': True, 'pc_connected': True, 'memory_mib': 512, 'storage_mib': 256,
-                     'local_models': ['fixture-text-model@revision-1'], 'evidence_id': 'synthetic-capability-v1'}
+        self.clock = lambda: 2000000000
+        self.observation = 1
+        self.caps = self._snapshot()
+
+    def _snapshot(self, *, online=True, pc_connected=True, memory_mib=512, storage_mib=256,
+                  local_models=None, features=None):
+        now = self.clock()
+        return {'schema_version': 1, 'source': 'public-fixture-adapter', 'platform': 'linux',
+                'observed_at': now, 'expires_at': now + 30, 'online': online,
+                'pc_connected': pc_connected,
+                'features': features or {'compute.local_inference': True, 'storage.model_install': True,
+                                         'compute.remote_pc': True, 'network.internet': True},
+                'memory_mib': memory_mib, 'storage_mib': storage_mib,
+                'local_models': local_models if local_models is not None else ['fixture-text-model@revision-1'],
+                'evidence_id': 'synthetic-capability-v%d' % self.observation}
 
     def descriptor(self):
         return {'kind': 'public-compute-identity-fixture/1', 'authority_id': self.authority_id,
@@ -49,6 +64,10 @@ class FixtureIdentity:
             if alias is None or alias not in self.active: raise Denied('device authentication or current eligibility denied')
             if action not in ('prepare', 'reserve', 'claim', 'recover'): raise Denied('unknown compute action')
             owner, device = DEVICES[alias]
+            if self.clock() >= self.caps['expires_at']:
+                self.observation += 1
+                self.caps = self._snapshot(**{name: self.caps[name] for name in
+                    ('online', 'pc_connected', 'memory_mib', 'storage_mib', 'local_models', 'features')})
             yield {'authority_id': self.authority_id, 'owner_ref': owner, 'device_ref': device,
                    'capabilities': json.loads(canonical(self.caps))}
 
@@ -56,7 +75,17 @@ class FixtureIdentity:
         with self.mutex: self.active.discard(alias)
 
     def capability(self, name, value):
-        with self.mutex: self.caps[name] = value
+        with self.mutex:
+            current = dict(self.caps)
+            if name in ('online', 'pc_connected', 'memory_mib', 'storage_mib', 'local_models'):
+                current[name] = value
+            elif name.startswith('feature:'):
+                current['features'] = dict(current['features'])
+                current['features'][name.split(':', 1)[1]] = value
+            else: raise ValueError('unknown synthetic capability')
+            self.observation += 1
+            self.caps = self._snapshot(**{field: current[field] for field in
+                ('online', 'pc_connected', 'memory_mib', 'storage_mib', 'local_models', 'features')})
 
 
 class FixtureAccounting:

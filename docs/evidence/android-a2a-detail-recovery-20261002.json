@@ -1,0 +1,37 @@
+{
+  "schema": "rockstar-android-a2a-detail-recovery/1",
+  "date": "2026-10-02",
+  "scope": "Same-delegation Cloud and persistent device Wallet readback from Android task detail after client restart",
+  "implementation": {
+    "shell": "Agent task detail exposes an explicit read-only same-ID recovery action. A confirmed Cloud pre-dispatch terminal state exposes a separate explicit Wallet reservation release action.",
+    "broker": "Before reconciliation, the Broker rebuilds the v2 native Wallet reservation digest from the authenticated Cloud record's owner, delegation, parent job, agent origin/name/version, currency, input hash, quote digest/version/time, child/parent caps and deadline, then compares it with the owner-scoped durable local Wallet row.",
+    "unknown": "Missing or mismatched local reservation returns recovery-required/unknown without changing the hold or resubmitting the Cloud task.",
+    "billing": "No provider call, dispatch, invoice, or payment is performed by this readback path."
+  },
+  "verification": {
+    "commands": [
+      "npm run os:check",
+      "node --test tests/sim-service-entry.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-workflow.test.mjs",
+      "npm run project:check",
+      "npm run typecheck",
+      "npm run lint:product",
+      "git diff --check"
+    ],
+    "results": {
+      "osContract": "PASS; source/contract consistency only",
+      "focusedNodeTests": "PASS 22/22",
+      "projectStatus": "PASS 104/159 done; SIM01 remains in_progress",
+      "typecheck": "PASS",
+      "productLint": "PASS",
+      "diffCheck": "PASS",
+      "pureJavaJUnit": "AUTHORED_NOT_EXECUTED: A2ARecoveryBindingTest.java; no Java runtime or Gradle is available"
+    }
+  },
+  "notAccepted": [
+    "Android Core JUnit execution, JDK/Gradle/SDK compilation and instrumentation",
+    "Physical-device reconnect or process-death acceptance",
+    "Production Cloud provider task reconciliation or billing",
+    "Carrier/SIM activation or RockstarOS installation"
+  ],
+  "hostLimitation": "No Java runtime, Gradle installation/wrapper, or Android SDK is available in the current host environment."
+}

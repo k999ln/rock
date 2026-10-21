@@ -1,7 +1,7 @@
 import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
-import { defineConfig } from 'vite';
+import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
 import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
@@ -15,7 +15,7 @@ const { d1, r2 } = hostingConfig;
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
 const localBindingConfig = {
-  main: './sky-service-worker.ts',
+  main: './web-worker.ts',
   compatibility_flags: ['nodejs_compat'],
   vars: {
     A2A_EGRESS_ALLOWED_ORIGINS: '',
@@ -29,7 +29,7 @@ const localBindingConfig = {
           binding: d1,
           database_name: 'site-creator-d1',
           database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
-          migrations_dir: 'sky-hosting-migrations',
+          migrations_dir: 'drizzle',
         },
       ]
     : [],
@@ -41,6 +41,19 @@ const localBindingConfig = {
         },
       ]
     : [],
+};
+
+const clientCloudflareWorkersStub = {
+  name: 'rockstar-client-cloudflare-workers-stub',
+  enforce: 'pre' as const,
+  resolveId(this: { environment?: { name?: string } }, source: string) {
+    if (source === 'cloudflare:workers' && this.environment?.name === 'client')
+      return '\0rockstar:cloudflare-workers-client-stub';
+  },
+  load(id: string) {
+    if (id === '\0rockstar:cloudflare-workers-client-stub')
+      return 'export const env = Object.freeze({});';
+  },
 };
 
 export default defineConfig(async () => {
@@ -59,8 +72,11 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
     plugins: [
+      // Worker dependencies need ESM imports for Node builtins.
+      esmExternalRequirePlugin(),
       createSkyLocalRuntimePlugin(),
       createWebBundleInventoryPlugin(),
+      clientCloudflareWorkersStub,
       vinext(),
       sites(),
       cloudflare({

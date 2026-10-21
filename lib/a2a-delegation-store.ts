@@ -1,124 +1,47 @@
 import type { A2AUsageReceipt } from './a2a-usage-receipt.ts';
+import type { A2ALiveUsageSnapshot } from './a2a-live-usage.ts';
+import {
+  A2ADelegationStoreError,
+  A2A_MAX_REDELEGATION_DEPTH,
+  delegationDigestPattern as hash,
+  validateDelegationInput as validate,
+  sameDelegationIntent as sameIntent,
+  type A2ADelegationState,
+  type A2ADelegation,
+  type A2ADelegationInput,
+  type A2AStoredInput,
+  type StoredA2ABrokerAuthorization,
+  type A2AParentBudget,
+  type A2ABudgetReservation,
+  type A2AUsageReceiptRecord,
+  type A2ALiveUsageSnapshotRecord,
+} from './a2a-delegation-contract.ts';
+import {
+  a2aDelegationColumns,
+  a2aDelegationReconciliationColumns,
+  normalizeDelegation,
+  type A2ADelegationRow,
+} from './a2a-delegation-row.ts';
 
-export type A2ADelegationState =
-  | 'awaiting_approval'
-  | 'prepared'
-  | 'dispatching'
-  | 'dispatch_submitting'
-  | 'indeterminate'
-  | 'submitted'
-  | 'working'
-  | 'awaiting_remote_input'
-  | 'cancel_requested'
-  | 'cancel_submitting'
-  | 'cancel_unconfirmed'
-  | 'cancelled_before_dispatch'
-  | 'expired'
-  | 'remote_cancelled'
-  | 'remote_completed'
-  | 'remote_failed'
-  | 'remote_rejected';
-
-export type A2ADelegation = {
-  id: string;
-  ownerUserId: string;
-  parentJobId: string;
-  idempotencyKey: string;
-  messageId: string;
-  targetOrigin: string;
-  targetAgentName: string;
-  targetAgentVersion: string;
-  protocolVersion: '1.0';
-  inputSha256: string;
-  authorizationSha256: string;
-  budgetCurrency: string;
-  budgetLimitMinor: number;
-  parentBudgetLimitMinor: number;
-  deadlineAt: number;
-  state: A2ADelegationState;
-  remoteTaskId: string | null;
-  remoteContextId: string | null;
-  remoteState: string | null;
-  artifactsCaptured: number;
-  revision: number;
-  createdAt: number;
-  updatedAt: number;
-};
-
-export type A2ADelegationInput = Omit<
+// Preserve the public store entry point for callers and deployed Worker code.
+export {
+  A2ADelegationStoreError,
+  A2A_MAX_DELEGATIONS_PER_PARENT_JOB,
+  A2A_MAX_ACTIVE_DELEGATIONS_PER_PARENT_JOB,
+  A2A_MAX_REDELEGATION_DEPTH,
+} from './a2a-delegation-contract.ts';
+export type {
+  A2ADelegationState,
   A2ADelegation,
-  | 'ownerUserId'
-  | 'state'
-  | 'remoteTaskId'
-  | 'remoteContextId'
-  | 'remoteState'
-  | 'artifactsCaptured'
-  | 'revision'
-  | 'createdAt'
-  | 'updatedAt'
->;
+  A2ADelegationInput,
+  A2AStoredInput,
+  StoredA2ABrokerAuthorization,
+  A2AParentBudget,
+  A2ABudgetReservation,
+  A2AUsageReceiptRecord,
+  A2ALiveUsageSnapshotRecord,
+} from './a2a-delegation-contract.ts';
 
-export type A2AStoredInput = {
-  ciphertext: string;
-  nonce: string;
-  inputSha256: string;
-  keyVersion: string;
-};
-
-export type StoredA2ABrokerAuthorization = {
-  proofJson: string;
-  deviceRef: string;
-  authorityId: string;
-  keyId: string;
-  expiresAt: number;
-};
-
-export type A2AParentBudget = {
-  ownerUserId: string;
-  parentJobId: string;
-  currency: string;
-  budgetLimitMinor: number;
-  reservedMinor: number;
-  settledMinor: number;
-  revision: number;
-  createdAt: number;
-  updatedAt: number;
-};
-
-export type A2ABudgetReservation = {
-  delegationId: string;
-  ownerUserId: string;
-  parentJobId: string;
-  currency: string;
-  reservedMinor: number;
-  settledMinor: number | null;
-  state: 'held' | 'released' | 'settled';
-  createdAt: number;
-  updatedAt: number;
-};
-
-export type A2AUsageReceiptRecord = {
-  delegationId: string;
-  ownerUserId: string;
-  parentJobId: string;
-  providerId: string;
-  providerReference: string;
-  receiptJson: string;
-  currency: string;
-  amountMinor: number;
-  issuedAt: number;
-  receivedAt: number;
-};
-
-export class A2ADelegationStoreError extends Error {
-  readonly code: string;
-  constructor(message: string, code: string) {
-    super(message);
-    this.code = code;
-  }
-}
-
-const hash = /^[a-f0-9]{64}$/i;
 const terminal = new Set<A2ADelegationState>([
   'cancelled_before_dispatch',
   'expired',
@@ -139,120 +62,49 @@ const remoteToLocal: Record<string, A2ADelegationState> = {
   TASK_STATE_REJECTED: 'remote_rejected',
 };
 
-function validate(input: A2ADelegationInput) {
-  if (
-    !/^[0-9a-f-]{36}$/i.test(input.id) ||
-    !/^[0-9a-f-]{36}$/i.test(input.parentJobId)
-  )
-    throw new A2ADelegationStoreError(
-      '親jobまたは委任IDの形式が不正です。',
-      'invalid_id',
-    );
-  if (
-    !/^[A-Za-z0-9._:-]{1,128}$/.test(input.idempotencyKey) ||
-    !/^[A-Za-z0-9._:-]{1,128}$/.test(input.messageId)
-  )
-    throw new A2ADelegationStoreError(
-      '重複防止IDの形式が不正です。',
-      'invalid_idempotency_key',
-    );
-  let origin: URL;
-  try {
-    origin = new URL(input.targetOrigin);
-  } catch {
-    throw new A2ADelegationStoreError(
-      '接続先originが不正です。',
-      'invalid_target_origin',
-    );
-  }
-  if (
-    origin.protocol !== 'https:' ||
-    origin.origin !== input.targetOrigin ||
-    origin.username ||
-    origin.password
-  )
-    throw new A2ADelegationStoreError(
-      '接続先はHTTPS originで指定してください。',
-      'invalid_target_origin',
-    );
-  if (
-    !input.targetAgentName.trim() ||
-    input.targetAgentName.length > 120 ||
-    !input.targetAgentVersion.trim() ||
-    input.targetAgentVersion.length > 80
-  )
-    throw new A2ADelegationStoreError(
-      '委任先agentの識別情報が不正です。',
-      'invalid_agent_identity',
-    );
-  if (
-    input.protocolVersion !== '1.0' ||
-    !hash.test(input.inputSha256) ||
-    !hash.test(input.authorizationSha256)
-  )
-    throw new A2ADelegationStoreError(
-      'protocol版またはdigestが不正です。',
-      'invalid_delegation_digest',
-    );
-  if (
-    !/^[A-Z]{3}$/.test(input.budgetCurrency) ||
-    !Number.isSafeInteger(input.budgetLimitMinor) ||
-    input.budgetLimitMinor < 0
-  )
-    throw new A2ADelegationStoreError(
-      '予算上限の通貨または金額が不正です。',
-      'invalid_budget_limit',
-    );
-  if (
-    !Number.isSafeInteger(input.parentBudgetLimitMinor) ||
-    input.parentBudgetLimitMinor < input.budgetLimitMinor
-  )
-    throw new A2ADelegationStoreError(
-      '親jobの共通予算は子Agentの上限以上にしてください。',
-      'invalid_parent_budget_limit',
-    );
-  if (!Number.isSafeInteger(input.deadlineAt) || input.deadlineAt <= 0)
-    throw new A2ADelegationStoreError(
-      '委任期限が不正です。',
-      'invalid_deadline',
-    );
-}
-
-function sameIntent(existing: A2ADelegation, input: A2ADelegationInput) {
-  return (
-    existing.id === input.id &&
-    existing.parentJobId === input.parentJobId &&
-    existing.messageId === input.messageId &&
-    existing.targetOrigin === input.targetOrigin &&
-    existing.targetAgentName === input.targetAgentName &&
-    existing.targetAgentVersion === input.targetAgentVersion &&
-    existing.protocolVersion === input.protocolVersion &&
-    existing.inputSha256.toLowerCase() === input.inputSha256.toLowerCase() &&
-    existing.authorizationSha256.toLowerCase() ===
-      input.authorizationSha256.toLowerCase() &&
-    existing.budgetCurrency === input.budgetCurrency &&
-    existing.budgetLimitMinor === input.budgetLimitMinor &&
-    existing.parentBudgetLimitMinor === input.parentBudgetLimitMinor &&
-    existing.deadlineAt === input.deadlineAt
-  );
-}
-
 export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
   async function get(ownerUserId: string, id: string) {
     return db
-      .prepare(`SELECT id, owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
-      idempotency_key AS idempotencyKey, message_id AS messageId, target_origin AS targetOrigin,
-      target_agent_name AS targetAgentName, target_agent_version AS targetAgentVersion,
-      protocol_version AS protocolVersion, input_sha256 AS inputSha256,
-      authorization_sha256 AS authorizationSha256, budget_currency AS budgetCurrency,
-      budget_limit_minor AS budgetLimitMinor,
-      parent_budget_limit_minor AS parentBudgetLimitMinor, deadline_at AS deadlineAt, state,
-      remote_task_id AS remoteTaskId, remote_context_id AS remoteContextId,
-      remote_state AS remoteState, artifacts_captured AS artifactsCaptured,
-      revision, created_at AS createdAt, updated_at AS updatedAt
-      FROM agent_delegations WHERE owner_user_id = ? AND id = ?`)
+      .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations WHERE owner_user_id = ? AND id = ?`)
       .bind(ownerUserId, id)
-      .first<A2ADelegation>();
+      .first<A2ADelegationRow>()
+      .then(normalizeDelegation);
+  }
+
+  async function getPredecessorDepth(ownerUserId: string, delegation: A2ADelegation) {
+    let depth = 0;
+    let current = delegation;
+    const seen = new Set([delegation.id]);
+    while (current.predecessorDelegationId) {
+      depth += 1;
+      if (depth > A2A_MAX_REDELEGATION_DEPTH || seen.has(current.predecessorDelegationId))
+        return A2A_MAX_REDELEGATION_DEPTH + 1;
+      seen.add(current.predecessorDelegationId);
+      const previous = await get(ownerUserId, current.predecessorDelegationId);
+      if (!previous || previous.parentJobId !== delegation.parentJobId)
+        return A2A_MAX_REDELEGATION_DEPTH + 1;
+      current = previous;
+    }
+    return depth;
+  }
+
+  async function getByIdempotency(
+    ownerUserId: string,
+    parentJobId: string,
+    idempotencyKey: string,
+    inputSha256: string,
+  ) {
+    if (
+      !/^[A-Za-z0-9._:-]{1,128}$/.test(idempotencyKey) ||
+      !hash.test(inputSha256)
+    )
+      return null;
+    return db
+      .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations
+      WHERE owner_user_id = ? AND parent_job_id = ? AND idempotency_key = ? AND input_sha256 = ?`)
+      .bind(ownerUserId, parentJobId, idempotencyKey, inputSha256.toLowerCase())
+      .first<A2ADelegationRow>()
+      .then(normalizeDelegation);
   }
 
   async function getBrokerAuthorization(ownerUserId: string, id: string) {
@@ -299,6 +151,18 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       WHERE owner_user_id = ? AND delegation_id = ?`)
       .bind(ownerUserId, id)
       .first<A2AUsageReceiptRecord>();
+  }
+
+  async function getLatestLiveUsageSnapshot(ownerUserId: string, id: string) {
+    return db.prepare(`SELECT delegation_id AS delegationId, sequence,
+      owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
+      provider_id AS providerId, provider_event_id AS providerEventId,
+      snapshot_json AS snapshotJson, currency,
+      cumulative_amount_minor AS cumulativeAmountMinor,
+      pricing_version AS pricingVersion, issued_at AS issuedAt,
+      received_at AS receivedAt FROM a2a_live_usage_snapshots
+      WHERE owner_user_id = ? AND delegation_id = ? ORDER BY sequence DESC LIMIT 1`)
+      .bind(ownerUserId, id).first<A2ALiveUsageSnapshotRecord>();
   }
 
   async function listBudgetReservations(ownerUserId: string, parentJobId: string) {
@@ -401,10 +265,59 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
 
   return {
     get,
+    getByIdempotency,
     getBudget,
     getBudgetReservation,
     listBudgetReservations,
     getUsageReceipt,
+    getLatestLiveUsageSnapshot,
+    async getLiveUsageSnapshotByEvent(providerId: string, eventId: string) {
+      return db.prepare(`SELECT delegation_id AS delegationId, sequence,
+        owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
+        provider_id AS providerId, provider_event_id AS providerEventId,
+        snapshot_json AS snapshotJson, currency,
+        cumulative_amount_minor AS cumulativeAmountMinor,
+        pricing_version AS pricingVersion, issued_at AS issuedAt,
+        received_at AS receivedAt FROM a2a_live_usage_snapshots
+        WHERE provider_id = ? AND provider_event_id = ?`)
+        .bind(providerId, eventId).first<A2ALiveUsageSnapshotRecord>();
+    },
+    async recordLiveUsageSnapshot(ownerUserId: string, id: string, snapshot: A2ALiveUsageSnapshot, now = Date.now()) {
+      const current = await get(ownerUserId, id);
+      const previous = await getLatestLiveUsageSnapshot(ownerUserId, id);
+      const reservation = await getBudgetReservation(ownerUserId, id);
+      const terminalStates = new Set<A2ADelegationState>([
+        'cancelled_before_dispatch', 'expired', 'remote_cancelled', 'remote_completed', 'remote_failed', 'remote_rejected',
+      ]);
+      if (!current || current.ownerUserId !== snapshot.ownerUserId || current.parentJobId !== snapshot.parentJobId ||
+        current.remoteTaskId !== snapshot.taskId || terminalStates.has(current.state) ||
+        current.deadlineAt <= now ||
+        !current.priceQuote || current.priceQuote.providerId !== snapshot.providerId ||
+        current.priceQuote.pricingVersion !== snapshot.pricingVersion ||
+        current.budgetCurrency !== snapshot.currency || !reservation || reservation.state !== 'held' ||
+        snapshot.sequence !== (previous?.sequence ?? 0) + 1 ||
+        snapshot.cumulativeAmountMinor > reservation.reservedMinor ||
+        snapshot.cumulativeAmountMinor < (previous?.cumulativeAmountMinor ?? 0) ||
+        snapshot.issuedAt <= (previous?.issuedAt ?? 0))
+        throw new A2ADelegationStoreError('実行中の利用量snapshotが委任・価格・予約条件と一致しません。', 'live_usage_snapshot_mismatch');
+      const snapshotJson = JSON.stringify(snapshot);
+      try {
+        await db.prepare(`INSERT INTO a2a_live_usage_snapshots (
+          delegation_id, sequence, owner_user_id, parent_job_id, provider_id,
+          provider_event_id, snapshot_json, currency, cumulative_amount_minor,
+          pricing_version, issued_at, received_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+          .bind(id, snapshot.sequence, ownerUserId, current.parentJobId, snapshot.providerId,
+            snapshot.eventId, snapshotJson, snapshot.currency, snapshot.cumulativeAmountMinor,
+            snapshot.pricingVersion, snapshot.issuedAt, now).run();
+      } catch {
+        throw new A2ADelegationStoreError('利用量snapshotが重複したか、予約額・順序条件を超えています。', 'live_usage_snapshot_conflict');
+      }
+      const stored = await getLatestLiveUsageSnapshot(ownerUserId, id);
+      if (!stored || stored.sequence !== snapshot.sequence || stored.providerEventId !== snapshot.eventId || stored.snapshotJson !== snapshotJson)
+        throw new A2ADelegationStoreError('利用量snapshotを一意に保存できませんでした。', 'live_usage_snapshot_conflict');
+      return stored;
+    },
     getBrokerAuthorization,
     async settleUsageReceipt(
       ownerUserId: string,
@@ -415,6 +328,8 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       const current = await get(ownerUserId, id);
       if (!current || !current.remoteTaskId ||
         !['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected'].includes(current.state) ||
+        (current.priceQuoteDigest && (!current.priceQuote ||
+          receipt.providerId !== current.priceQuote.providerId || receipt.pricingVersion !== current.priceQuote.pricingVersion)) ||
         !/^[A-Za-z0-9._:-]{1,128}$/.test(receipt.providerId) ||
         !/^[A-Za-z0-9._:-]{1,128}$/.test(receipt.receiptId) ||
         !/^[A-Z]{3}$/.test(receipt.currency) || receipt.currency !== current.budgetCurrency ||
@@ -423,6 +338,17 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
         typeof receipt.signature !== 'string' || !/^[A-Za-z0-9_-]{86}$/.test(receipt.signature))
         throw new A2ADelegationStoreError('確定済み委任に対応する利用量receiptが不正です。', 'invalid_usage_receipt');
       const receiptJson = JSON.stringify(receipt);
+      const latestLiveUsage = await getLatestLiveUsageSnapshot(ownerUserId, id);
+      if (latestLiveUsage) {
+        let liveSnapshot: A2ALiveUsageSnapshot;
+        try { liveSnapshot = JSON.parse(latestLiveUsage.snapshotJson) as A2ALiveUsageSnapshot; }
+        catch { throw new A2ADelegationStoreError('保存済み実行中meter記録を読めません。', 'live_usage_snapshot_invalid'); }
+        if (latestLiveUsage.providerId !== receipt.providerId || latestLiveUsage.currency !== receipt.currency ||
+          latestLiveUsage.pricingVersion !== receipt.pricingVersion ||
+          latestLiveUsage.cumulativeAmountMinor > receipt.amountMinor || latestLiveUsage.issuedAt > receipt.issuedAt ||
+          liveSnapshot.taskId !== receipt.taskId)
+          throw new A2ADelegationStoreError('最終receiptが実行中meterの確定値と矛盾します。', 'usage_receipt_live_meter_mismatch');
+      }
       try {
         await db.batch([
           db.prepare(`INSERT INTO a2a_usage_receipts (
@@ -554,42 +480,69 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
     },
     async listPrepared(limit = 25) {
       const rows = await db
-        .prepare(`SELECT id, owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
-        idempotency_key AS idempotencyKey, message_id AS messageId, target_origin AS targetOrigin,
-        target_agent_name AS targetAgentName, target_agent_version AS targetAgentVersion,
-        protocol_version AS protocolVersion, input_sha256 AS inputSha256,
-        authorization_sha256 AS authorizationSha256, budget_currency AS budgetCurrency,
-        budget_limit_minor AS budgetLimitMinor,
-        parent_budget_limit_minor AS parentBudgetLimitMinor, deadline_at AS deadlineAt, state,
-        remote_task_id AS remoteTaskId, remote_context_id AS remoteContextId,
-        remote_state AS remoteState, artifacts_captured AS artifactsCaptured,
-        revision, created_at AS createdAt, updated_at AS updatedAt
-        FROM agent_delegations WHERE state = 'prepared' AND deadline_at > ?
+      .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations WHERE state = 'prepared' AND deadline_at > ?
         ORDER BY created_at, id LIMIT ?`)
         .bind(Date.now(), Math.min(Math.max(Math.trunc(limit), 1), 100))
-        .all<A2ADelegation>();
-      return rows.results;
+        .all<A2ADelegationRow>();
+      return rows.results.map((row) => normalizeDelegation(row)!);
+    },
+    async expireOverdueBeforeDispatch(now = Date.now(), limit = 50) {
+      const rows = await db.prepare(`SELECT id, owner_user_id AS ownerUserId, revision
+        FROM agent_delegations
+        WHERE deadline_at <= ? AND (
+          state IN ('awaiting_approval','prepared','dispatching')
+          OR (state = 'indeterminate' AND remote_task_id IS NULL)
+        )
+        ORDER BY deadline_at, id LIMIT ?`)
+        .bind(now, Math.min(Math.max(Math.trunc(limit), 1), 100))
+        .all<{ id: string; ownerUserId: string; revision: number }>();
+      let expired = 0;
+      for (const row of rows.results) {
+        try {
+          await update(row.ownerUserId, row.id, row.revision,
+            ['awaiting_approval', 'prepared', 'dispatching', 'indeterminate'], 'deadline_expired',
+            { state: 'expired', updatedAt: now });
+          expired += 1;
+        } catch (error) {
+          if (!(error instanceof A2ADelegationStoreError) ||
+            error.code !== 'delegation_revision_conflict') throw error;
+          // A concurrent approval, dispatch or cancellation owns the newer state.
+        }
+      }
+      return expired;
+    },
+    async listOverdueRemoteTasks(now = Date.now(), limit = 50) {
+      const rows = await db.prepare(`SELECT ${a2aDelegationReconciliationColumns} FROM agent_delegations WHERE deadline_at <= ? AND (
+          (remote_task_id IS NOT NULL AND state IN ('indeterminate','submitted','working','awaiting_remote_input'))
+          OR state = 'dispatch_submitting'
+        )
+        ORDER BY deadline_at, id LIMIT ?`)
+        .bind(now, Math.min(Math.max(Math.trunc(limit), 1), 100))
+        .all<A2ADelegationRow>();
+      return rows.results.map((row) => normalizeDelegation(row)!);
     },
     async listForReconciliation(limit = 25) {
       const rows = await db
-        .prepare(`SELECT id, owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
-        idempotency_key AS idempotencyKey, message_id AS messageId, target_origin AS targetOrigin,
-        target_agent_name AS targetAgentName, target_agent_version AS targetAgentVersion,
-        protocol_version AS protocolVersion, input_sha256 AS inputSha256,
-        authorization_sha256 AS authorizationSha256, budget_currency AS budgetCurrency,
-        budget_limit_minor AS budgetLimitMinor,
-        parent_budget_limit_minor AS parentBudgetLimitMinor, deadline_at AS deadlineAt, state,
-        remote_task_id AS remoteTaskId, remote_context_id AS remoteContextId,
-        remote_state AS remoteState, artifacts_captured AS artifactsCaptured,
-        revision, created_at AS createdAt, updated_at AS updatedAt
-        FROM agent_delegations WHERE remote_task_id IS NOT NULL AND (
+        .prepare(`SELECT ${a2aDelegationReconciliationColumns} FROM agent_delegations WHERE remote_task_id IS NOT NULL AND (
           state IN ('indeterminate','submitted','working','awaiting_remote_input','cancel_requested','cancel_submitting','cancel_unconfirmed')
-          OR (artifacts_captured = 0 AND state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected'))
+          OR (state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected') AND (
+            artifacts_captured = 0 OR EXISTS (SELECT 1 FROM agent_delegation_budget_reservations r
+              WHERE r.owner_user_id = agent_delegations.owner_user_id
+                AND r.delegation_id = agent_delegations.id AND r.state = 'held')
+          ))
         )
         ORDER BY updated_at, id LIMIT ?`)
         .bind(Math.min(Math.max(Math.trunc(limit), 1), 100))
-        .all<A2ADelegation>();
-      return rows.results;
+        .all<A2ADelegationRow>();
+      return rows.results.map((row) => normalizeDelegation(row)!);
+    },
+    async noteTerminalReconciliationAttempt(ownerUserId: string, id: string, remoteTaskId: string, now = Date.now()) {
+      // Rotate unresolved terminal reads through the bounded scheduler scan.
+      // This observation timestamp changes no state, revision, or budget fact.
+      await db.prepare(`UPDATE agent_delegations SET updated_at = MAX(updated_at, ?)
+        WHERE owner_user_id = ? AND id = ? AND remote_task_id = ?
+          AND state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected')`)
+        .bind(now, ownerUserId, id, remoteTaskId).run();
     },
     async listEvents(ownerUserId: string, id: string) {
       const rows = await db
@@ -718,21 +671,11 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
     },
     async listForParent(ownerUserId: string, parentJobId: string) {
       const rows = await db
-        .prepare(`SELECT id, owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
-        idempotency_key AS idempotencyKey, message_id AS messageId, target_origin AS targetOrigin,
-        target_agent_name AS targetAgentName, target_agent_version AS targetAgentVersion,
-        protocol_version AS protocolVersion, input_sha256 AS inputSha256,
-        authorization_sha256 AS authorizationSha256, budget_currency AS budgetCurrency,
-        budget_limit_minor AS budgetLimitMinor,
-        parent_budget_limit_minor AS parentBudgetLimitMinor, deadline_at AS deadlineAt, state,
-        remote_task_id AS remoteTaskId, remote_context_id AS remoteContextId,
-        remote_state AS remoteState, artifacts_captured AS artifactsCaptured,
-        revision, created_at AS createdAt, updated_at AS updatedAt
-        FROM agent_delegations WHERE owner_user_id = ? AND parent_job_id = ?
+        .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations WHERE owner_user_id = ? AND parent_job_id = ?
         ORDER BY created_at, id LIMIT 100`)
         .bind(ownerUserId, parentJobId)
-        .all<A2ADelegation>();
-      return rows.results;
+        .all<A2ADelegationRow>();
+      return rows.results.map((row) => normalizeDelegation(row)!);
     },
     async getInput(ownerUserId: string, id: string) {
       return db
@@ -770,17 +713,32 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       now = Date.now(),
     ) {
       validate(input);
+      if (input.predecessorDelegationId) {
+        const predecessor = await get(ownerUserId, input.predecessorDelegationId);
+        if (!predecessor || predecessor.parentJobId !== input.parentJobId ||
+          predecessor.state !== 'remote_completed' || predecessor.artifactsCaptured !== 1)
+          throw new A2ADelegationStoreError(
+            '前段Agentの同一親job成果が確認できません。',
+            'a2a_predecessor_conflict',
+          );
+        if (await getPredecessorDepth(ownerUserId, predecessor) + 1 > A2A_MAX_REDELEGATION_DEPTH)
+          throw new A2ADelegationStoreError(
+            `Agent間の再委任は${A2A_MAX_REDELEGATION_DEPTH}段階までです。別の独立した依頼として作成してください。`,
+            'a2a_predecessor_depth_exceeded',
+          );
+      }
       let created = false;
       try {
         const statements = [
           db
             .prepare(`INSERT INTO agent_delegations (
-          id, owner_user_id, parent_job_id, idempotency_key, message_id, target_origin,
+          id, owner_user_id, parent_job_id, predecessor_delegation_id, idempotency_key, message_id, target_origin,
           target_agent_name, target_agent_version, protocol_version, input_sha256,
-          authorization_sha256, budget_currency, budget_limit_minor,
-          parent_budget_limit_minor, deadline_at,
+          authorization_sha256, price_quote_digest, price_quote_json,
+          package_runtime_binding_id, package_runtime_binding_digest, budget_currency, budget_limit_minor,
+          parent_budget_limit_minor, continue_while_device_offline, deadline_at,
           state, revision, created_at, updated_at
-        ) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'awaiting_approval', 0, ?, ?
+        ) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'awaiting_approval', 0, ?, ?
           WHERE EXISTS (SELECT 1 FROM work_jobs w WHERE w.id = ? AND w.user_id = ?
             AND json_extract(w.payload, '$.status') IN ('active', 'review')) AND ? > ?
           ON CONFLICT(owner_user_id, idempotency_key) DO NOTHING`)
@@ -788,6 +746,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
               input.id,
               ownerUserId,
               input.parentJobId,
+              input.predecessorDelegationId ?? null,
               input.idempotencyKey,
               input.messageId,
               input.targetOrigin,
@@ -796,9 +755,14 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
               input.protocolVersion,
               input.inputSha256.toLowerCase(),
               input.authorizationSha256.toLowerCase(),
+              input.priceQuoteDigest ?? '',
+              input.priceQuote ? JSON.stringify(input.priceQuote) : null,
+              input.packageRuntimeBindingId ?? '',
+              input.packageRuntimeBindingDigest ?? '',
               input.budgetCurrency,
               input.budgetLimitMinor,
               input.parentBudgetLimitMinor,
+              input.continueWhileDeviceOffline ? 1 : 0,
               input.deadlineAt,
               now,
               now,
@@ -818,6 +782,27 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
         const results = await db.batch(statements);
         created = results[0]?.meta.changes === 1;
       } catch (error) {
+        if (String(error).includes('A2A_DELEGATION_CONCURRENCY_LIMIT'))
+          throw new A2ADelegationStoreError(
+            'この親jobでは同時に実行・承認できるAgent委任の上限（4件）に達しました。',
+            'a2a_delegation_concurrency_limit',
+          );
+        if (String(error).includes('A2A_DELEGATION_COUNT_LIMIT'))
+          throw new A2ADelegationStoreError(
+            'この親jobで作成できるAgent委任の上限（8件）に達しました。',
+            'a2a_delegation_count_limit',
+          );
+        if (String(error).includes('A2A_PARENT_PREDECESSOR_NOT_REVIEWABLE'))
+          throw new A2ADelegationStoreError(
+            '前段Agentの同一親job成果が確認できないか、すでに次の委任へ接続されています。',
+            'a2a_predecessor_conflict',
+          );
+        if (String(error).includes('idx_agent_delegation_predecessor') ||
+          String(error).includes('agent_delegations.predecessor_delegation_id'))
+          throw new A2ADelegationStoreError(
+            'この前段Agent成果から作成できる後続委任は1件までです。',
+            'a2a_predecessor_conflict',
+          );
         if (
           String(error).includes('idx_agent_delegation_owner_message') ||
           String(error).includes('UNIQUE constraint failed')
@@ -829,19 +814,10 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
         throw error;
       }
       const existing = await db
-        .prepare(`SELECT id, owner_user_id AS ownerUserId, parent_job_id AS parentJobId,
-        idempotency_key AS idempotencyKey, message_id AS messageId, target_origin AS targetOrigin,
-        target_agent_name AS targetAgentName, target_agent_version AS targetAgentVersion,
-        protocol_version AS protocolVersion, input_sha256 AS inputSha256,
-        authorization_sha256 AS authorizationSha256, budget_currency AS budgetCurrency,
-        budget_limit_minor AS budgetLimitMinor,
-        parent_budget_limit_minor AS parentBudgetLimitMinor, deadline_at AS deadlineAt, state,
-        remote_task_id AS remoteTaskId, remote_context_id AS remoteContextId,
-        remote_state AS remoteState, artifacts_captured AS artifactsCaptured,
-        revision, created_at AS createdAt, updated_at AS updatedAt
-        FROM agent_delegations WHERE owner_user_id = ? AND idempotency_key = ?`)
+        .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations WHERE owner_user_id = ? AND idempotency_key = ?`)
         .bind(ownerUserId, input.idempotencyKey)
-        .first<A2ADelegation>();
+        .first<A2ADelegationRow>()
+        .then(normalizeDelegation);
       if (existing) {
         if (!sameIntent(existing, input))
           throw new A2ADelegationStoreError(

@@ -45,15 +45,15 @@
         "sha256": "8aba1eeffc474c3932f1f35e08f665cec6b0a2d71cb83594e79d9879702cfdf7"
       },
       {
-        "path": "dist/.openai/drizzle/meta/0000_snapshot.json",
+        "path": "dist/.openai/drizzle-legacy/post-site-bridge/meta/0000_snapshot.json",
         "sha256": "4dd3a282c51c7bf268d051569fb2f61295428b20f88e809aa15c34749c21efbf"
       },
       {
-        "path": "dist/.openai/drizzle/meta/0001_snapshot.json",
+        "path": "dist/.openai/drizzle-legacy/post-site-bridge/meta/0001_snapshot.json",
         "sha256": "57a4dc2a3d33d49981fa666a9f0ff099d036c51f4889f49428fd8f0e7b797521"
       },
       {
-        "path": "dist/.openai/drizzle/meta/_journal.json",
+        "path": "dist/.openai/drizzle-legacy/post-site-bridge/meta/_journal.json",
         "sha256": "013bee0380277750425bfa84823c2b6e656391aca7ce39c855e064c699e17575"
       },
       {
@@ -333,15 +333,15 @@
         "sha256": "8aba1eeffc474c3932f1f35e08f665cec6b0a2d71cb83594e79d9879702cfdf7"
       },
       {
-        "path": "drizzle/meta/0000_snapshot.json",
+        "path": "drizzle-legacy/post-site-bridge/meta/0000_snapshot.json",
         "sha256": "4dd3a282c51c7bf268d051569fb2f61295428b20f88e809aa15c34749c21efbf"
       },
       {
-        "path": "drizzle/meta/0001_snapshot.json",
+        "path": "drizzle-legacy/post-site-bridge/meta/0001_snapshot.json",
         "sha256": "57a4dc2a3d33d49981fa666a9f0ff099d036c51f4889f49428fd8f0e7b797521"
       },
       {
-        "path": "drizzle/meta/_journal.json",
+        "path": "drizzle-legacy/post-site-bridge/meta/_journal.json",
         "sha256": "013bee0380277750425bfa84823c2b6e656391aca7ce39c855e064c699e17575"
       },
       {

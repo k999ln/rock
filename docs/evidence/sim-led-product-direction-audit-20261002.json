@@ -1,0 +1,82 @@
+{
+  "schema": "rockstar-sim-led-product-direction-audit/1",
+  "date": "2026-10-02",
+  "scope": "Authoritative SIM/eSIM-led product audit, service onboarding architecture, usage pricing and consent-event acceptance",
+  "audit": {
+    "reusable": [
+      "channel-neutral signed service entitlement claims and owner binding",
+      "single Rockstar account/device authorization and device capability/attestation contracts",
+      "Sky, Zema and agent task entry points with cloud job persistence/recovery",
+      "signed rate cards/quotes, shared budget reservations, meter snapshots, usage receipts and itemized cost UI"
+    ],
+    "changed": [
+      "SIM/eSIM catalog demoted from primary onboarding call to secondary technical reference",
+      "physical SIM/eSIM and multi-channel purchase explicitly represented alongside carrier activation, service entitlement and device installation as separate states",
+      "canonical OS architecture now identifies SIM/eSIM-led service access as the product direction while retaining OS/native work as an independent supported-device acceptance track",
+      "older device-LLM-first OS development priority marked as historical, and the eSIM bootstrap toolkit explicitly scoped as an eSIM-only fixture rather than the product distribution model",
+      "Android Provider receipt trust keys are sourced only from an operator build inventory with strict schema and empty fail-closed default"
+    ],
+    "missing": [
+      "the quote-bound native Wallet hold → Broker proof → explicit Cloud approval/recovery path is now wired in Android Shell/AIDL source and covered by local source/contract checks; there is no cross-provider atomic transaction, and production Cloud/Wallet reconciliation, Android runtime acceptance, provider billing, and funded-balance settlement remain unaccepted, so paid dispatch stays fail closed",
+      "real seller purchase claim/link issuance, carrier activation and physical SIM fulfillment",
+      "production provider pricing/live meter/invoice reconciliation and funded usage billing",
+      "Android APK/Binder/device acceptance and exact-SKU native OS or client acceptance across device families"
+    ]
+  },
+  "minimumExperienceStatus": {
+    "shortActivationToAccess": "Local /connect flow, seller-neutral claim envelope and one Rockstar identity are implemented; signed issuer verification and atomic owner binding are locally covered. Seller delivery, sales checkout, carrier activation and real purchase handoff remain external acceptance gates.",
+    "directSkyZemaAgentAccess": "Web Home and Android Shell source expose direct entry points; Android APK/device behavior is not accepted.",
+    "unifiedAuthentication": "Rockstar device authorization and owner-scoped service APIs are implemented in source; real account and device acceptance remain open.",
+    "taskProgressAndResults": "Cloud task status, result/artifact and itemized usage endpoints/UI exist; Android source refreshes on validated network reconnect and allows manual refresh. Android runtime acceptance remains open.",
+    "cloudContinuesWhileOffline": "Durable Workflow/recovery and same-job reconciliation have local Worker/D1 fixture coverage; no production Cloud/provider SLA is accepted.",
+    "transparentUsageAndBudget": "Signed rates/quotes, cap-bound reservation, meter/receipt validation and itemized displays exist locally. Paid direct LLM execution remains fail-closed; provider invoice and funded Wallet acceptance are outstanding.",
+    "spendingLimitAndExplicitApproval": "Quote-bound cap and explicit consent are source implemented; no execution may exceed the approved reservation without a new authorization. Production billing is not enabled."
+  },
+  "backlog": [
+    "Complete the final Cloud approval/dispatch handoff with an atomic Cloud/native Wallet state comparison, then add Android CI/device acceptance. Keep the Cloud dispatch gate closed until provider pricing, metering, receipts, and funded-balance acceptance.",
+    "Run Android CI compile/instrumentation for Shell AIDL v12 quote review, P-256 enrollment/revocation, Provider trust parsing, no-backup device identity and same-job reconnect/result readback. Current host source checks do not replace Android execution.",
+    "Run Android compile, instrumentation and offline-to-online same-job/result/receipt acceptance on supported hardware.",
+    "Contract seller/channel claim issuance, expiry, recovery, refund and physical/eSIM fulfillment; separately accept carrier activation and service access.",
+    "Contract cloud providers, provision verified public receipt keys, accept live meter/invoice reconciliation and funded Wallet debit before enabling paid execution.",
+    "Accept exact-SKU native OS installation or existing-OS client/browser path across supported device families."
+  ],
+  "latestLocalWork": {
+    "androidServiceEntitlementVisibility": "Android Shell service-home renders the owner-scoped signed entitlement offer, physical SIM/eSIM/service-only form factor, status and scopes; an empty list points the signed-in user to /connect for claim registration. Verified by source regression and local Node checks only; Android compile and device acceptance remain open.",
+    "androidReconnect": "Source now observes Android validated-network regain while Shell is foregrounded and performs a read-only owner-scoped cloud-home refresh; full repository source/contract checks pass, but Android Java/APK/Binder and device execution remain unverified.",
+    "a2aWorkflowFixture": "Vitest D1 setup now includes broker-enrollment migration 0048 required by current authorization resolver.",
+    "androidProviderTrustConfig": "Android `RockApplication` injects an A2A receipt verifier sourced exclusively from build property `a2aProviderUsageKeysJson`. Strict exact-field parsing, canonical Base64, active/revoked keys and duplicate tuple checks are instrumented in source; empty configuration denies receipt sync. The Android SDK/instrumentation suite was not run.",
+    "androidA2AApprovalBridge": "Shell API v18 source carries an owner-approved signed quote through a device-credential Wallet cap hold, Broker proof, distinct explicit Cloud approval, and same-delegation read-only recovery. Local source/canonical-vector and Worker/D1 contract tests pass; no Android Java/AIDL/APK/Binder/device runtime or production cross-ledger settlement is accepted.",
+    "quoteBoundNativeReservationCore": "Native Core binds the exact request hash, signed provider quote digest, task/parent caps, and stable delegation ID into Wallet approval. It signs the Cloud Broker proof only after the exact reservation is found HELD. Shell API v14/v15 now wires owner-visible approval, exact local reservation, explicit offline-continuation consent, proof signing/upload, safe owner-scoped metadata readback, same-hold idempotent recovery and pre-dispatch release guard. Cloud execution remains awaiting_approval and disabled.",
+    "androidWalletApprovalAndHold": "Shell UI/API exposes the distinct device-credential-gated cap reservation and explicit Cloud/offline consent. Core signs only from the exact HELD row; Broker proof registration is owner-scoped and returns status metadata only. Uncertain upload recovery reads back without automatic resend. Source/static/API tests and full verify pass; Android compile, Binder/APK and device acceptance remain unverified.",
+    "a2aQuoteOnlyRequest": "Authenticated POST /api/sky/a2a-price-quotes loads an owner-connected Agent, enforces the operator egress allowlist and per-owner request limits, refuses to send the prompt until an active Provider usage key exists for that exact origin, and verifies the returned signed quote against the exact request. Before egress, migration 0049 now stores an append-only, owner/request-bound consent event with Agent/card identity, prompt SHA-256, currency, budget cap, expiry and disclosure-policy version; it does not store prompt text. Same-ID retries never call the Provider again. The event is local source only; synthetic SQLite tests cover immutability, owner separation, changed-term conflicts and replay refusal. No Provider extension is accepted.",
+    "androidA2AQuoteReview": "Shell API v12 and main Shell UI now list owner-connected Sky Agents and request quote-only pricing after separate prompt-disclosure consent. Broker verifies the Provider signature and binds the returned quote to the selected Agent origin/name/version, exact prompt hash, currency, maximum cap, and expiry using the operator-provisioned trust inventory before the UI renders itemized usage. Quote response must remain quoteOnly=true and executionAuthorized=false; this path creates no delegation, Wallet hold, Broker execution proof, or Cloud task. Source contracts pass; Android runtime and real Provider remain unverified.",
+    "androidSameJobRecovery": "The task-detail readback now requires an exact Cloud-to-native Wallet binding. Android-independent Core recomputes the native v2 reservation payload digest from the authenticated Cloud terms and compares owner, IDs, agent, currency, pricing version, cap, issue time, deadline and recoverable Wallet state. Mismatch remains unknown/held and cannot resubmit. Seven JUnit cases are authored, not executed without a JDK/Gradle/Android SDK.",
+    "webToolRunnerCodeSplit": "Shared MrToolRunner now dynamically imports the five specialized runners and renders a semantic loading output; unrelated tool journeys no longer statically include legal, patent, delivery, subscription-ledger and Jev runner code. In the latest build, the mr-tool-runner chunk fell from 662,710 bytes to 91,268 bytes, while the specialized legal runner is a separate 40,560-byte chunk. Build, typecheck, product lint, bundle inventory, web asset closure (135 references, 0 missing) and focused UI/runner tests 33/33 passed. This does not remove the separate >500kB chunks or shared sky-commerce CSS output collision warning.",
+    "purchaseClaimReplayProtection": "New migration 0050 adds a unique index on issuer plus purchase-reference SHA-256. Local tests prove exact same-package same-owner redemption remains idempotent, a different claim ID for an already-consumed purchase is rejected, and two concurrent different claims for the same purchase result in exactly one account binding. Signed cancellation tombstones can now be recorded before redemption, block the delayed old claim, and permit a seller-issued replacement claim for the same purchase hash. Same migration bytes and fresh/release/sites filename/Drizzle histories converge. This is source/local-D1 evidence only; no production preflight/deploy or seller registry/webhook integration is accepted."
+  },
+  "localVerification": {
+    "fullVerify": "PASS: npm run verify completed exit 0 after the Android Broker proof signing/upload wiring, including repository/project/schema/release/source checks, typecheck, product lint, npm tests, package checks, Fashion Brand Ops tests, production build, web bundle/assets, Worker/D1 API (948 assertions), and CSV Worker/D1/R2 regression (95 assertions). Android Java/AIDL/APK/device execution, production billing, carrier activation, Provider acceptance, and exact-SKU OS installation remain unverified.",
+    "projectCheck": "PASS: npm run project:update + npm run project:check; 104/159 completed tasks, and generated database status now matches canonical project progress.",
+    "baselineCheck": "PASS: npm run baseline:check, including new invariant checks for multiple SIM/eSIM distribution channels, OS binary not stored on SIM, minimum experience/offline continuation, distinct carrier/AI charges, and paid-dispatch fail-closed policy.",
+    "databaseSnapshot": "PASS: npm run database:check; 6/6 source boundaries, 122 inventory tables, latest migration 0049_a2a_price_quote_consent_events.sql, 50 migration journal entries, production readback 0/6. Generated progress is synchronized (104/159 complete).",
+    "a2aWorkflowFixture": "PASS: npm run sky:a2a:workflow:positive, 10/10 after including migration 0048 in test D1 setup",
+    "a2aNodePythonInterop": "PASS: node --experimental-strip-types --test tests/a2a-client.test.mjs, 7/7",
+    "androidArchitecture": "PASS: npm run android:architecture:check and npm run android:first-flash:check report truthful blockers; Android Java/APK build itself was not performed",
+    "diffCheck": "PASS: git diff --check",
+    "currentTurn": "PASS: npm run verify after issuer SDK and entitlement lifecycle changes (all 696 Node tests, Fashion 19/19, Worker/D1 API 959 assertions, CSV Worker/D1/R2 113 assertions, migration convergence 9/9, schema/database checks, typecheck, lint, production build and asset closure). Local D1 tests cover concurrent competing claims, pre-redemption signed cancellation tombstones, delayed old-code rejection and replacement redemption; issuer SDK tests verify signed claim/event generation and malformed input rejection. Production database readback remains 0/6, so migration preflight/deployment remains unperformed. Android Core JUnit is authored but unexecuted without JDK/Gradle/SDK; no Provider billing, carrier activation, SIM/eSIM issuance or OS installation was tested.",
+    "androidTrustConfigSource": "Source only: Android instrumentation cases cover empty inventory, exact active tuple, revoked key, extra/missing fields, duplicate tuple and invalid key length. No Android SDK/Gradle/JDK runtime is available to compile or run them.",
+    "a2aQuoteOnlyRequest": "PASS: node --experimental-strip-types --test tests/a2a-client.test.mjs (9/9 including Node/Python local fixture interoperability) and npm run typecheck. Loopback fixture test needed local network permission.",
+    "a2aQuoteAcquisitionApi": "PASS: npm run test:api (938 assertions, including quote endpoint auth/input/consent-denial); acquisition/signed quote/trusted-origin focused tests 13/13; full Node suite 683/683 and A2A client interop 9/9 with loopback enabled; typecheck, lint and build pass. No real Provider called.",
+    "a2aQuoteConsentEvent": "PASS: Node consent-store tests 2/2; D1 migration convergence 9/9; API suite 938 assertions including quote endpoint authentication, invalid input and missing-consent refusal; typecheck/lint/build/full verify pass. Same-ID consent replay never dispatches again and the event row is append-only, owner-scoped and prompt-content-free.",
+    "migration0049": "PASS: fresh/release/sites schema histories under filename and Drizzle migrators, 9/9; latest migration is 0049_a2a_price_quote_consent_events.sql and the journal has 50 entries; production readback remains 0/6 boundaries.",
+    "androidA2AQuoteReview": "PASS: npm run os:check; npm run android:architecture:check; node --test tests/sim-service-entry.test.mjs (1/1); git diff --check. Source/contract checks only; Android Java/AIDL/APK/instrumentation/device execution not run.",
+    "androidWalletApprovalAndHold": "PASS: full npm run verify after Shell API v15, including Worker/D1 API (948 assertions), typecheck and product lint. Android Core JUnit and Java/AIDL/APK/device acceptance were unavailable (no Java runtime/Gradle/Android SDK)."
+  },
+  "limits": [
+    "This audit and local test do not prove production billing or an issued invoice.",
+    "This audit does not prove an actual carrier/SIM activation or physical SIM fulfillment.",
+    "This audit does not prove Android APK/Binder/device acceptance or successful OS installation.",
+    "The Provider public-key build configuration is only a source boundary; no provider contract key, signed customer invoice, or paid execution is configured.",
+    "The consent audit row records a user authorization attempt before dispatch; its presence is not proof that a Provider received the prompt, returned a quote, approved paid work, or billed usage."
+  ]
+}

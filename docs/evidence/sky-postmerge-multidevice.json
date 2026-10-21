@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-18",
+  "main": "cf01d289daf783f11deb04a0cbd577ecc1a65302",
+  "siteVersion": 72,
+  "siteSource": "c097ab096a2692106ba6260137f9a6f29e409d25",
+  "matchedSources": {
+    "components/sky-hosted-monthly.tsx": true,
+    "lib/sky-free-cloud-background.ts": true,
+    "lib/sky-free-cloud.ts": true,
+    "lib/sky-free-cloud-http.ts": true,
+    "lib/sky-recurring-sandbox.ts": true,
+    "lib/sky-recurring-plan.ts": true,
+    "components/sky-free-cloud-panel.tsx": true,
+    "app/api/llm/free-cloud/jobs/route.ts": true
+  },
+  "physicalDevicesDetected": [
+    "Mac",
+    "Pixel 10"
+  ],
+  "secondDeviceLogin": "not_confirmed",
+  "physicalConcurrentTest": "not_run",
+  "macAccountReadback": {
+    "planMonthlyUsd": 140,
+    "allowanceUsd": 100,
+    "remainingUsd": 100,
+    "status": "active",
+    "paidSandboxInvoices": 5,
+    "signedNotifications": 15,
+    "oldJobsRetained": true
+  },
+  "focusedSyntheticTests": {
+    "pass": 33,
+    "fail": 0
+  },
+  "currentTrialCapMutation": false,
+  "currentTrialProviderCalls": 0,
+  "productionBilling": false,
+  "next": "Confirm independent login on Pixel, then perform coordinated same-account requests/cap and compare job attempts/usage/invoices; do not treat two Mac tabs as two physical devices.",
+  "fullVerify": {
+    "exitCode": 0,
+    "lastStage": "bot:check",
+    "log": "/private/tmp/sky-postmerge-verify.log"
+  },
+  "status": "physical_test_deferred_frontend_usability_feedback",
+  "ownerFeedback": "ちゃんとフロントしての機能を果たしてない",
+  "frontendFindings": [
+    "Sky primary navigation has no free-cloud entry",
+    "Free-cloud page has no sign-in action for unauthenticated visitors",
+    "Execution form defaults to a synthetic arithmetic prompt",
+    "History navigation labels use UUID rather than task titles",
+    "Sandbox mutation controls appear above normal execution UI"
+  ]
+}

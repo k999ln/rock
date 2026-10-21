@@ -1,0 +1,24 @@
+{
+  "schema": "rockstar-a2a-two-agent-handoff-local/1",
+  "date": "2026-10-02",
+  "scope": "Sequential local A2A result handoff between distinct Node and Python server implementations",
+  "scenario": [
+    "Discover the Node agent and authorize an exact first task by message ID and input SHA-256.",
+    "Send once, read its completed task and retrieve its output artifact.",
+    "Keep the first output marked as untrusted data; no authority or budget transfers with it.",
+    "Obtain a distinct authorization intent for the Python agent, with a new message ID and digest.",
+    "Send the user-approved second task to Python, read submitted progress and completed result."
+  ],
+  "verification": {
+    "command": "node --test tests/a2a-client.test.mjs",
+    "result": "PASS 10/10; Node HTTP and Python stdlib A2A 1.0 fixtures ran on loopback with explicit permission",
+    "twoAgentChain": "Node result was retrieved, passed as delimited untrusted input to a separately authorized Python task, and its result was retrieved",
+    "safety": "Distinct target origins and message IDs; exact per-stage input hashes; no automatic send of task two from task one"
+  },
+  "notProven": [
+    "A single Cloud D1 parent-job orchestration record across both agents or atomic shared-budget reservation across the chain",
+    "Cloudflare Workflow persistence/restart for this two-agent chain, encrypted cross-agent result transfer, or production external egress",
+    "Commercial Providers, signed invoices, funded Wallet settlement, Android UI/device/offline acceptance"
+  ],
+  "evidenceBoundary": "Local protocol interoperability fixture only. The independent Cloudflare Worker/D1/Workflow success fixture remains separately recorded."
+}

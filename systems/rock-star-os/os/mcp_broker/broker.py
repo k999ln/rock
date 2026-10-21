@@ -218,6 +218,10 @@ class Broker:
             raise AccessDenied('verified Principal required')
         return principal.validate()
 
+    def authenticated_principal(self, auth):
+        """Return the Broker-verified identity for trusted in-process adapters."""
+        return self._principal(auth)
+
     def _now(self, db):
         value = self.clock()
         if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value < 2**62:

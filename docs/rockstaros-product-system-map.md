@@ -1,201 +1,193 @@
 # RockstarOS 製品・サービス・システム関係図
 
-版: 1.0 / 2026-09-19
+## RockstarOSへの統合と各サービスの単体利用
 
-状態: **正本補助設計**。製品、サービス、内部システム、`Mr.` 由来Tool、MR（Mixed Reality）端末の関係を一つの図で確認するための文書。各コンポーネントのfield単位の契約は表中のリンク先を正本とする。
+2026-10-15の本人指示により、**RockstarOSにはJennifer・Sky・Zemaを統合する。同時に3つはそれぞれ単体でも利用できる設計とする。** Jenniferは話しかける窓口、SkyはAgent/LLM/Toolの選択・接続・利用と月次請求、Zemaは仕事・進捗・承認・停止・成果・使用額の管理を担う。
 
-対外的な製品紹介ではavocadoMiniを主役にし、RockstarOSとLLMを製品を動かす技術基盤として示す。avocadoMiniは設計段階で、実機試作と販売は未実施である。
-
-利用者への入口は、製品紹介とOS導入を兼ねるホームページ、Webアプリ、OS本体の三つ。SkyなどはアプリとOSの中で使うサービスであり、独立した最上位製品入口として並べない。
-
-| 入口 | 現在のURL・状態 | 内側にあるもの |
-| --- | --- | --- |
-| 製品・導入ホームページ | `/rockstaros`。avocadoMiniとRockstarOSの紹介、OS導入案内への導線 | 製品構想、対応環境、導入情報 |
-| Webアプリ | `/`。本人限定Siteで作業画面を提供中、一般公開と最新版同期は未反映 | App Home、Sky、Zema、Wallet、Sky Tool SDK用Rock Studioなど |
-| OS本体 | `/rockstaros/guide`でDeveloper Previewの導入条件を案内。完成スマートフォンOSは未配布 | App Homeと同じ役割のサービスをOS契約で接続する計画 |
-
-avocadoMiniは「考える時間を、つくる時間に」を製品メッセージとし、希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSは製品目標で、現行の実機検証は固定モデルのDeveloper Preview段階である。41万円は確定販売価格でもOS従量料金でもない。
-
-この文書を読めば、次の三つを混同しない。
-
-- RockstarOSは、AIを使うためのOSと共通基盤。
-- SkyはAI自動化チームの仕事とToolを選ぶ入口、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
-- avocadoMiniはMaterial Invention Studioを手で扱う専用デバイス。OSそのものではない。
-
-## 1. 会社が提供するもの
+**SkyだけでAgent利用から月次請求まで完結する。** JenniferやZema、native OS、Mini、SIMの導入を必須にしない。Zemaの使用額表示はSkyの同じ明細を参照し、請求の成立条件にならない。共通の本人・権限・Job/Run・成果・usage契約をadapter経由で利用し、全サービスの同一DB化や全経路の実装完了を意味しない。[請求責任・状態・保存・復旧・合格条件](sky-billing.md)を正本とする。
 
 ```mermaid
 flowchart TB
-  U[利用者]
-  D[外部Tool開発者 / ToB]
-  P[外部Provider]
-
-  subgraph PRODUCTS[利用者が触る製品]
-    OS[RockstarOS\nAI-native OS]
-    SKY[Sky\nToolを探す・接続する]
-    ZEMA[Zema\nAIへ仕事を頼む・止める・確認する]
-    WALLET[Wallet\n費用と確認済み収益を見る]
-    AM[avocadoMini\nMR空間発明デバイス]
+  subgraph OS[RockstarOS 統合利用]
+    J[Jennifer 会話の窓口]
+    S[Sky 選択・接続・Agent利用・月次請求]
+    Z[Zema 仕事・進捗・成果・使用額]
+    R[共通runtime 本人・権限・実行・保存・復旧]
+    J --> R
+    S --> R
+    Z --> R
   end
-
-  subgraph SKY_TEAM[Skyで編成するAI自動化チーム]
-    CSV[CSV業務\n整形・検査・納品]
-    MERCARI[メルカリ収益ループ\n出品準備・入金確認待ち]
-    MIS[Material Invention Studio\n発明案の操作・比較を設計中]
-  end
-
-  subgraph SERVICES[継続提供するサービス]
-    MODELS[LLMモデル提供・切替\n既存モデル + 自社LLM]
-    TOOLS[Tool配布・更新・接続]
-    SYNC[同期・保存・復旧]
-    SETTLE[収益・費用の照合・精算]
-    SDK[開発者SDK・審査・サポート]
-  end
-
-  subgraph CORE[共通システム]
-    PLATFORM[Platform Core / Broker]
-    RUNTIME[LLM Runtime + Agent Runtime]
-    AUTH[Identity / Capability / Approval]
-    JOBS[Work / Step / Event / Artifact / Receipt]
-    CONNECT[MCP / Provider Connector]
-    DATA[DB / Backup / Update / Recovery]
-    MATERIAL[Material Invention Core]
-    PATENT[Patent AI Bridge]
-  end
-
-  U --> OS
-  U --> AM
-  D --> SDK
-  P --> CONNECT
-  OS --> SKY & ZEMA & WALLET
-  AM --> MIS
-  MODELS --> RUNTIME
-  TOOLS --> SKY
-  SKY --> CSV & MERCARI & MIS
-  SYNC --> DATA
-  SETTLE --> WALLET
-  SDK --> TOOLS
-  SKY --> PLATFORM
-  ZEMA --> PLATFORM
-  WALLET --> PLATFORM
-  MIS --> MATERIAL
-  PLATFORM --> RUNTIME & AUTH & JOBS & CONNECT & DATA
-  AM --> MATERIAL
-  MATERIAL --> PATENT
+  U[既存OS・browserから単体利用] --> J
+  U --> S
+  U --> Z
 ```
 
-矢印は「機能を呼び出す／契約を通して接続する」関係を表す。製品アプリがDB、Wallet台帳、外部Providerへ直接書き込むことは許可しない。すべてPlatform Core／Connectorを通す。
+図は論理的な統合と利用入口を示す。単体利用時は必要な共通backend/adapterへ接続し、native RockstarOSのインストールは要求しない。独立配布・認証・実Provider連携の受入は各経路で別に行う。
 
-図の実線は通常の契約接続、点線は参照関係または「境界があり直接接続しない」関係を表す。
 
-## 2. 何と何が関係するか
+版: 2.2 / 2026-10-15 / 全体接続と実行状態を明示
 
-| 起点 | 接続先 | 関係 | 接続を担当する正本 | 現在地 |
-| --- | --- | --- | --- | --- |
-| RockstarOS | Sky / Zema / Wallet | OSが共通の画面、権限、仕事、保存を提供 | [OS全体詳細設計](rockstaros-complete-design.md) | Web / APKの限定検証 |
-| Sky | Tool / MCP | Toolの発見、作者・版・権限・実行先の確認、接続 | [全Tool詳細設計](sky-tools-complete-design.md) | ready Tool 12件、provider接続は段階導入 |
-| Sky | CSV業務 / メルカリ収益ループ | `rockstar-csv-cleanup`と`mercari-revenue`をチーム担当として選び、専用画面へ進む | [全Tool詳細設計](sky-tools-complete-design.md) / [Business Pilots](workstreams/09-business-pilots.md) | catalogはready。外部市場の操作とProvider入金照合は別受入 |
-| Sky | Material Invention Studio | Core、simulation、Patent AIなどを発明チームとして組み合わせる構想。Studio自体は単体Toolに数えない | [Material Core](material-invention-core.md) / [空間発明設計](rockstaros-avocado-mini-complete-design.md) | Core sandboxのみ実装。操作画面とSky接続は未実装 |
-| Zema | Platform Core | 依頼、計画、承認、実行、停止、結果確認を一つのworkにする | [Platform Core](platform-core.md) | 共通契約と一部実装 |
-| Wallet | Settlement Worker / Provider | 完了した仕事と確定入金を分離し、Receiptで照合する | [Sky billing](sky-billing.md) | fixture / sandbox、実払出しは未接続 |
-| LLM Runtime | Agent Runtime | 選択されたLLMがplanを返し、Agentが許可済み手順だけを実行 | [AI-native OS設計](ai-native-os-architecture.md) / [Decision Fabric](jev-local-qwen-decision-fabric-design.md) | Qwen機内モードと固定runtimeを検証中 |
-| Platform Core | Local LLM / Cloud LLM / 自社LLM | モデルは交換可能。権限付与とTool実行はモデルの外に残す | [Local AI契約](../contracts/local-ai-runtime.json) | 既存モデルを先に搭載、自社LLMは追加接続 |
-| avocadoMini | Material Invention Studio | センサーと表示でdigital twinを操作する専用入力・表示機器 | [avocadoMini設計](rockstaros-avocado-mini-complete-design.md) | 設計 / Bench試作前 |
-| Material Invention Studio | Material Invention Core | 発明チームの将来の操作画面から物質候補、制約、安全状態、simulation結果をCoreへ渡す | [Material Core](material-invention-core.md) | Core sandbox実装、Studio操作画面と物理設備は未接続 |
-| Material Invention Core | Patent AI Bridge | 人・AI・文献・予測・実測を分けて発明資料へ整理 | [空間発明設計](rockstaros-avocado-mini-complete-design.md) | 接続設計、特許性・出願の自動判断はしない |
+**商品入口は、eSIMの通信とsi利用権をまとめて提供するサービス。** 2026-10-15の本人選択に基づく。accountは本人・契約・仕事・成果・予算の正本、OS導入は対応機種ごとの別工程。無料試用/client/browser経路を維持する。[6層の基盤とGrapheneOSの改変可能性](native-os-integration.md)から読む。
 
-## 3. `Mr.` 由来Toolの位置づけ
+データの取得・保存・共有・削除、契約相手と費用、異種規格の役割、不足の補完と改修順は[関連・戦略・データ・取引の調査設計](service-design/07-ecosystem-strategy-and-data.md)を参照する。一次資料39件とrepository sourceを区別し、線があることを接続完了にしない。
 
-`Mr.` はRockstarOSそのものではない。`k999ln/Mr.` の固定snapshotから一部Toolを取り込み、RockstarOSのSky商品として接続している。`Mr.` の運用設定、認証情報、旧Hub全体をOSへ移植していない。
+2026-10-15の[制作と対話の要件](service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を全体へ適用する。制作の入口はMini/対応host、計算先は任意のPro/cloud等、現物の製作先は権限を持つ設備/製作者で分ける。案の保存・製作引渡し・現物完成を同じ成功にしない。
+
+## 利用者が出会うもの
+
+Jenniferは利用者が話す全体の統括窓口。Skyは能力を見つけて接続する場所。ZemaはJenniferの裏で依頼・進捗・確認・停止・成果・使用額を管理する仕事system。RockstarOSは本人、有限権限、実行、保存、復旧を守る共通runtimeと、対応機種向けnative OSである。
+
+Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIAのGPU/chipを使う独立高性能si PC（PCゲームも保持）、rocketstarは独立した衛星輸送・回収・再使用の工学program。JennifferのGit表記はJennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113からmainへ統合済み（`01d2e418`）。Jevとは別system。
+
+### 1. 製品・サービス・端末の全体図
+
+```mermaid
+flowchart TB
+  U["本人の目的<br/>PC・対象物の前にいない制作 / 携帯なしの対話"] --> ACCOUNT["avokadoアカウント<br/>通信＋si商品と本人・利用権・端末は別記録"]
+  U --> WEB["Web / PWA / 既存OS client"]
+  WEB --> ACCOUNT
+  WEB --> GUEST["無登録の有限処理・下書き<br/>保存・課金・本人権限なし"]
+  NFC["NFC / QR<br/>SkyへのURLだけ"] -.-> WEB
+  ACCOUNT --> J["Jenniffer<br/>Git正本: Jennifer<br/>Goalと最終報告"]
+  ACCOUNT --> SKY["Sky<br/>Agent・Toolの発見と接続"]
+  GUEST --> SKY
+  J --> SKY
+  J --> Z["Zema<br/>仕事・承認・停止・成果・使用額"]
+  SKY --> Z
+  Z --> AMC["AMC<br/>有限taskへの分解・担当・独立検収"]
+  Z --> CORE["RockstarOS Core / Broker<br/>本人・権限・予算・版・失効"]
+  AMC --> CORE
+  SKY -. "対応アプリへ能力を渡す" .-> APPS["仕事・創作・Game・生活アプリ"]
+  APPS --> CORE
+  CORE --> JOB["Job・Artifact・Receipt<br/>保存・再照合・復旧"]
+  CORE --> RUN["許可済み実行先<br/>端末内 / PC / cloud / self-host"]
+  RUN --> JOB
+  JOB --> Z
+  JOB --> APPS
+  JOB -->|"usage・確認済み収益だけ"| WALLET["Wallet / Commerce<br/>購入・usage・費用・確認済み収益"]
+  AUTHOR["Tool・Agent作者"] --> STUDIO["Rock Studio / SDK<br/>宣言・審査・Package"]
+  STUDIO -->|"審査後に掲載"| SKY
+  MINI["avocadoMini R5<br/>単独で入力・遊び・保存"] --> CORE
+  PRO["avokadoPro<br/>NVIDIA si・ゲームPC"] --> CORE
+  MINI <-. "本人が許可した任意接続" .-> PRO
+  SIM["国内IoT data SIM<br/>Miniの任意通信option"] -.-> MINI
+  RS["rocketstar専用地上Gateway<br/>工程・観測・記録"] -.-> CORE
+  FLIGHT["機上制御・独立飛行安全系"] -->|"観測のみ"| RS
+```
+
+実線は責任上の接続、点線は任意・限定の接続であり、線の存在を本番接続済みの証拠にしない。Sky直接操作や対応アプリの有限処理にはJennifferとの会話を必須にしない。MiniはProやSIMなしで基本動作を成立させる。rocketstarの機上制御へ一般Agentから命令を送る経路はない。Web、Android、QEMU、native OSが同じDBを共有済みという意味でもない。
+
+## 入口の設計
+
+- 通常URL、Web/PWA、既存OS clientから同じサービスへ入る。Skyの最新公開URLは `https://avoado.si/os/sky`、本人確認は自前passkey、通知はWeb Pushを先に作る確定方針。実装・公開・復旧は個別受入。
+- NFC/QRはSkyへのHTTPS URL。mainはColumbia英語の出典整理・AMC・特許アシスタントを先に扱う。NFCから本人性・学生資格・利用権を作らない。5大学共用候補は元作業コピーと比較して受け入れる。
+- native OSは正確な機種へ署名済みimage、boot、権限、保存、復旧が合格した時だけ案内する。Pixel試験APK、QEMU、browserをfull OSへ換算しない。
+- consumer eSIM発行/販売は保留。Miniの国内LTE/IoT data SIMは任意通信optionで、回線なしMiniも保持する。回線・service entitlement・本人・OS/client導入は独立状態。
+
+Jenniferの会話方式は共通だが、社内portfolioと一般利用者の案件は別の認証/保存領域。Sky直接操作・host appも同じZema仕事へ接続し、会話画面への迂回を必須にしない。記録正本、参照ID、予算階層、停止/精算/削除は[横断整合契約](service-design/06-consistency-contracts.md)へ固定する。
+
+## 実行と成果の流れ
+
+本人の依頼→JenniferのGoal整理→SkyのTool/Agent選択→裏側Zema/AMCまたは対応アプリで条件確認→Coreで本人/版/権限/見積/上限を再検査→adapter実行→結果schema/receipt照合→成果保存→本人検収/取得→項目別usage/決済照合。
+
+### 2. LLM・Agent・Toolがつながる実行経路
 
 ```mermaid
 flowchart LR
-  MR[k999ln/Mr.\n外部 / upstream]
-  SNAP[vendor/mr\n固定snapshot + provenance]
-  ADAPTER[Rock adapter\nlib/mr-tools.ts\ntoolkits/mr/]
-  SKY[Sky catalog\nmr-free-article\nmr-citations\nmr-delivery]
-  ZEMA[Zema work\n入力・実行・停止・成果]
-  CORE[Platform Core\n権限・receipt・保存]
-  WALLET[Wallet台帳\n直接書込不可]
-  MR -. 原本の取得・hash照合 .-> SNAP
-  SNAP --> ADAPTER --> SKY --> ZEMA --> CORE
-  MR -. 運用設定・認証・任意shellは接続しない .-> CORE
-  ADAPTER -. Tool固有処理 .-> CORE
+  GUEST["無登録のSky有限処理"] --> GUESTOUT["画面内の未保存結果<br/>コピー・持出し"]
+  IN["Zema / 対応アプリの依頼"] --> B["Broker<br/>本人・選択・版・同意・上限を検査"]
+  B -->|"LLM不要"| CODE["有限の決定論的処理"]
+  B -->|"端末内で計画"| LOCAL["端末内LLM<br/>plan候補のみ"]
+  LOCAL --> CHECK["Brokerがplan schema・Tool・権限を再検査"]
+  CHECK --> ENGINE["Engine<br/>許可済みstepだけ実行"]
+  CODE --> ENGINE
+  ENGINE --> TOOL["Tool / MCP adapter<br/>端末内・本人PC・Pro・self-host"]
+  TOOL -. "接続・scope・失効を個別確認" .-> MCP["外部MCP / 業務Provider"]
+  MR["Mr.固定原本 vendor/mr"] --> ADAPTER["Rock adapter<br/>原本とは別の実行契約"]
+  ADAPTER --> TOOL
+  B -->|"有料cloud・外部Agent"| QUOTE["送信内容・単価・見積・期限・予算"]
+  QUOTE --> APPROVAL["本人のexact承認・予算予約"]
+  APPROVAL --> CLOUD["Cloud job / A2A runtime<br/>送信・停止・結果不明照合"]
+  CLOUD --> PROVIDER["契約した外部LLM / Agent Provider<br/>本人がモデルを所有する必要なし"]
+  PROVIDER --> CLOUD
+  TOOL --> VERIFY["出力schema・hash・実行Receiptを照合"]
+  CLOUD --> VERIFY
+  VERIFY --> STORE["本人別Artifact・履歴・usage保存"]
+  STORE --> REVIEW["別担当の検収・本人の成果確認"]
+  STORE --> Z["Zema進捗・成果 / Sky成果一覧 / 対応アプリ表示"]
+  STORE --> BILL["Wallet / Billing<br/>署名済みusageと外部実費を照合"]
+  SKYJ["SkyでJev Toolを明示選択"] --> JEV["Jev任意評価"]
+  JEV -. "助言のみ・権限ではない" .-> REVIEW
 ```
 
-取り込んだToolはRockstarOSの契約、権限、resource制限、成果schema、receiptを通す。`Mr.` の原本とRock adapterはsource、license、hash、入出力が一致しない限り同一実装・同一商品と表示しない。詳細は[Mr.取り込み](mr-integration.md)と[Gitプロジェクト統合方針](git-consolidation.md)を参照する。
+ここでいうAgentは、目標を有限の仕事へ分け、許可された実行先へ渡し、停止・再取得・検収まで追う仕事の仕組みである。LLMはその一部で、自然文からの計画や文章生成に必要な経路だけで使う。決定論的ToolはLLMなしで実行できる。無登録のSky有限処理は画面内の未保存出力に止まり、本人別Job保存や有料Agent実行へ自動昇格しない。LLM、Jev、外部Agentの自己申告をTool成功・本人承認・Wallet確定へ変換しない。Cloud ProviderはRock側の契約・設定を使う想定で、利用者が自前のLLMを持つことを開始条件にしない。BYOKは任意の別設定である。
 
-## 4. MR（Mixed Reality）とOSの関係
-
-MRはRockstarOSの全体名称ではなく、avocadoMiniの操作方式である。AR、VR、2Dは同じMaterial Invention projectを別の見方で扱う。MR表示が候補を作っても、候補の確定、安全判定、simulation、履歴保存はMaterial Invention Coreだけが行う。
+### 3. 応用領域と物理作用の境界
 
 ```mermaid
-flowchart TB
-  HAND[利用者の手]
-  SENSOR[avocadoMini\n4方向sensor / calibration]
-  MRUI[MR interaction layer\nAR / VR / 2D fallback\npreview / commit / cancel]
-  GATE[Material Invention Core\nschema / safety / lot / unit / branch]
-  SIM[Simulation Orchestrator\nPREDICTED結果]
-  LEDGER[Invention Event Ledger\n操作・根拠・digest]
-  PATENT[Patent AI Bridge\n専門家向けpacket]
-  LAB[外部ラボ\n資格・設備・別承認]
-  HAND --> SENSOR --> MRUI --> GATE
-  GATE --> SIM --> GATE
-  GATE --> LEDGER --> PATENT
-  GATE -. 物理実験の自動実行は禁止 .-> LAB
-  MRUI -. 表示だけ。Coreを迂回して保存しない .-> LEDGER
+flowchart LR
+  SKY["Sky / Zema / Brokerの共通契約"] --> WORK["CSV・出典・記事・Coconala・Mercari<br/>有限の仕事と本人による外部操作"]
+  SKY --> LIVING["暮らしの案件<br/>住まい・インテリア・音響の案と費用を整理"]
+  HOME["家電などのhost<br/>観測・提案・実行を別capabilityに分離"] -. "対応adapterの受入後" .-> LIVING
+  LIVING -. "契約・資格・現場判断は別" .-> EXPERT["専門家・店舗・施工者<br/>外部契約と実作業"]
+  ARCH["新築前の建築・設備・内装計画<br/>天井・給電・点検条件"] -. "物件別の専門設計" .-> BUILTIN["建築一体型Mini設置profile<br/>R5 coreを収納・展開・取外し"]
+  BUILTIN -. "居住者が許可する空間入力" .-> LIVING
+  SKY --> GAME["Game / IP Studio<br/>制作・試遊・作者SDK"]
+  GAME -. "実交換は別のWallet gate" .-> WALLET["Wallet / Provider台帳"]
+  SKY --> MARKET["Market<br/>現行はPAPER試験"]
+  MARKET -. "実注文は別Provider gate" .-> WALLET
+  SKY --> FUND["Automation Fund<br/>収益検証前の構想・fixture"]
+  FUND -. "検証済み収益だけ" .-> WALLET
+  SKY --> GRID["Compute Grid<br/>固定lotの合成仲介"]
+  SKY --> MAT["Material Invention Core<br/>候補・版・安全・証拠"]
+  MINI["Mini R5<br/>手・声・空間入力"] -. "採用済みDevice Profileで接続" .-> MAT
+  MINI -. "同じcoreの任意設置" .-> BUILTIN
+  MAT --> VIEW["MR / AR / VR / 2D<br/>表示と候補操作"]
+  MAT -. "別資格・別承認" .-> LAB["外部lab / 物理実験"]
+  MAT -. "専門家確認" .-> PATENT["Patent si・出願支援"]
+  PRO["Pro<br/>private si推論・制作・PC game"] -. "許可済みadapter" .-> SKY
+  SKY -. "工学記録だけ" .-> GROUND["rocketstar地上Gateway"]
+  FLIGHT["機上制御・飛行安全系"] -->|"観測のみ"| GROUND
 ```
 
-| MRでできること | MRでできないこと |
-| --- | --- |
-| digital twinを選ぶ、近付ける、接続previewを出す | 実物の材料を混ぜる、加熱する、装置を動かす |
-| 候補branchを作る、比率・工程条件を比較する | simulationを実測と表示する |
-| 2D fallbackで同じprojectを確認する | gestureだけで特許性、発明者、出願を確定する |
+`Mr.`は旧repository由来のTool原本、`MR`はMixed Realityの入力・表示方式であり別物。Gameの点数は実資金、材料simulationは実測、地上でのsi提案は飛行許可にならない。外部納品・公開・課金・実資金・物理作用・飛行は、それぞれ個別の承認と受入を通す。
 
-## 5. 利用者の一周とデータの流れ
+**暮らしへの接続**は、住まいの間取り・インテリア・音響を一つの案件として、Skyで必要なToolや専門家を探し、Zemaで案・資料・見積・本人の判断・成果を追うこと。新築前からMiniの収納/展開と給電/点検を建築・設備・内装計画に組み込み、居住者が許可した空間入力へつなぐ構想を加えた。これはR5 coreの任意設置profileで、建物/Pro/cloudをMini単体の必須条件にしない。対象天井の適合、施工、安全、保守と居住者のprivacyは別受入である。家電は「観測→提案→本人確認→実行→結果照合」を別capabilityとして設計する。現在の公開Skyには対応冷蔵庫・店舗の本番adapterはなく、発注や機器操作、建築判断・施工を図の矢印だけで実行できるとは扱わない。[Mini建築一体型の設計条件](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)と[異種hostの契約](sky-mcp-architecture.md#異種hostと複数agentの融合契約)に接続条件を定める。
 
-```mermaid
-sequenceDiagram
-  participant User as 利用者
-  participant Sky as Sky
-  participant Zema as Zema
-  participant Core as Platform Core
-  participant Model as 選択LLM
-  participant Tool as Tool / Provider
-  participant Wallet as Wallet
+### 4. 2026-10-14の接続状態
 
-  User->>Sky: Toolとモデルを選ぶ
-  Sky->>Core: selection（版・権限・実行先）
-  User->>Zema: 仕事を依頼
-  Zema->>Model: 閉じたplan schemaで相談
-  Model-->>Zema: plan候補
-  Zema->>Core: plan検証・承認要求
-  Core->>Tool: 許可済みstepを実行
-  Tool-->>Core: artifact + execution receipt
-  Core-->>Zema: 進捗・停止・結果
-  Core->>Wallet: Provider確認済みearning receipt
-  Wallet-->>User: 費用・確定収益・未確定状態
-```
+| 経路 | 確認できた範囲 | まだ接続・受入していない範囲 |
+| --- | --- | --- |
+| Skyの有限処理 | 出典整理等の決まったWeb処理と成果保存のsource。Pixelの17項目テストは8実処理・9模擬 | テスト結果をAgent実行、外部検索、Provider成果へ換算しない |
+| Pixelの端末内LLM | 以前の試験署名APKで固定Qwen profileを実証 | 今回の端末読取は`no_model`。現行PixelのZema自然文依頼→モデル→Toolの一周は未受入 |
+| Jennifer / Zema / AMC | Goal草案、限定分解、本人承認、仕事・A2Aのsourceとfixture | COLOMBIA原本、本番Provider配備・資格情報、月予算/後払い、native同等UIの受入 |
+| Cloud LLM / A2A | 見積、予算、委任、usage Receiptのsourceと局所fixture | 本番model/Agent Provider、実meter・請求・取消・復旧の同一環境受入 |
+| 暮らし・建築・異種host | Skyの能力宣言・読取/提案/実行分離、Zemaの仕事管理、Miniの建築一体型設置profileと空間入力を設計 | 天井別の実寸適合、実施工・点検・復旧、住まいの専門家連携、対応家電・店舗adapter、実注文や機器動作の受入 |
+| Mini / Pro / rocketstar | R5、Pro P0、rocketstar R1.0の設計と個別のprototype/試験記録 | Mini・Pro製品実機、全OS image、製造・販売、rocketstarの製造・飛行受入 |
 
-この一周で、LLMの提案、Toolの実行、成果物、Providerの入金、Walletの精算を別イベントとして保持する。仕事が完了しただけでは売上にしない。
+この表は設計書・source・2026-10-14のPixel読取を区別した現在地である。`ready`というcatalog表示、図の矢印、過去の別環境試験だけで本番利用可能とは表示しない。[実現順と受入](service-design/04-delivery-and-acceptance.md)と[LLMの現在地](llm-evaluation-architecture.md)で次の合格証拠を確認する。
 
-## 6. 正本の読み分け
+仕事状態は既存Webの`active/review/completed/cancelled`を使う。承認待ち・通信待ち・外部結果不明は子処理と画面の状態で説明する。保存応答が不明なら同じIDを照合し、自動再送しない。親の取消と外部停止確認は別である。
 
-| 知りたいこと | 正本 |
-| --- | --- |
-| 会社の製品構成と関係 | 本書（この関係図） |
-| OS全体の責任・状態・復旧 | [RockstarOS全体詳細設計](rockstaros-complete-design.md) |
-| Sky / Zema / Toolの契約 | [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) |
-| LLMの交換・判断・権限境界 | [Decision Fabric](jev-local-qwen-decision-fabric-design.md) / [Local AI契約](../contracts/local-ai-runtime.json) |
-| `Mr.` からの取り込み範囲 | [Mr.取り込み](mr-integration.md) |
-| MR / avocadoMiniの操作・筐体 | [空間発明設計](rockstaros-avocado-mini-complete-design.md) / [Hardware詳細](avocado-mini-hardware-design.md) |
-| 発明候補と安全境界 | [Material Invention Core](material-invention-core.md) |
-| 費用・収益・払出し | [Sky billing](sky-billing.md) / [Rock Wallet](rock-wallet-production-rail-20260913.md) |
+外部納品・公開・課金・実資金・物理作用・飛行は、生成やファイル取得と別の承認/受入。Game交換、作者SDK、Material digital twin、Wallet/ファンドの既存要求を維持する。非金融Game/創作を金融完成待ちにはしない。
 
-## 7. 設計上の禁止される短絡
+## 料金の関係
 
-- `avocadoMini = RockstarOS` と表示しない。avocadoMiniはOSを搭載する専用デバイス。
-- `LLM = Agent = Tool` と表示しない。LLMは提案、Agentは手順、Toolは個別処理を担当する。
-- `Mr. = RockstarOS` と表示しない。Mr.は一部Toolの原本・参照元。
-- `Tool完了 = 売上` と表示しない。Provider確認済みReceiptが必要。
-- `MR表示 = 物理実験` と表示しない。物理設備は別Provider、別資格、別承認。
+アカウント無料、期間パス、従量のしきい値後払い・本人月上限、回線つき機器の基本料という[アカウント入口の確定方針](product-baseline.md)を継承する。残高は持たない。商品代・si原価/上乗せ・外部実費・回線・税等を別に説明する。しきい値1,000円は決済時点で、無条件の実行予算ではない。
+
+Tool売上のSky feeは当面10%。0%の定義と切替条件、作者払出しはbaselineへ従う。旧888 cents成功報酬系はexecutionHoldsを維持する。現行funded Wallet gateと後払いの移行契約、passkey、実meter/請求/返金は未受入。文書でpaid gateを解除しない。
+
+## Mr.由来ToolとMR研究を分ける
+
+`Mr.`は固定原本`vendor/mr`をadapterで接続する既存Tool系列。原本とhashを変更せず、adapter変更時に `python3 scripts/package-mr.py` で配布物を更新する。類似名のWeb/Android/native Toolを同一実体と決めつけない。
+
+MRはMixed Realityの表現・入力profile。Material Invention Studioは同じproject/Asset/候補をAR/VR/2D等で扱う研究系で、catalogの単一商品実体と混同しない。R5の全空間裸眼表示と単独mini要求を、旧四方向台・E3の4本/別Hubへ戻さない。
+
+## 正本と詳しい契約
+
+- サービス全体は[統合設計](service-design/README.md)、要望は[baseline](product-baseline.md)と[JSON](../data/product-baseline.json)。
+- OS/componentは[全体詳細](rockstaros-complete-design.md)、Toolは[全Tool詳細](sky-tools-complete-design.md)、LLM/Jevは[LLM正本](llm-evaluation-architecture.md)。
+- Miniは[R5](avocado-mini-r5/README.md)と[通信option](avocado-mini-cellular.md)、Proは[P0](avokado-pro-pc-design.md)、rocketstarは[R1.0原本](rocketstar-design/README.md)。
+- 実現順と未決事項は[受入計画](service-design/04-delivery-and-acceptance.md)、進捗と担当は[project status](../data/project-status.json)と[Mission Control](mission-control.md)。
+
+設計を共有することと、実装・配備・物理端末・本番Providerを合格させることは別である。

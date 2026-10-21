@@ -2,9 +2,9 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "6deaff4c9810526cc425ea6fa2583343ffbfb0acd073245ac6b91f70b3f9e4ae",
-  "packageEntries": 948,
-  "uniqueComponents": 911,
+  "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
+  "packageEntries": 983,
+  "uniqueComponents": 940,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -14,12 +14,12 @@
     },
     {
       "expression": "0BSD",
-      "uniqueComponents": 1,
+      "uniqueComponents": 2,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
       "expression": "Apache-2.0",
-      "uniqueComponents": 47,
+      "uniqueComponents": 54,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -44,7 +44,7 @@
     },
     {
       "expression": "BSD-3-Clause",
-      "uniqueComponents": 9,
+      "uniqueComponents": 10,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 758,
+      "uniqueComponents": 777,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "expression": "MIT OR Apache-2.0",
-      "uniqueComponents": 6,
+      "uniqueComponents": 7,
       "reviewClass": "license-choice-review"
     },
     {
@@ -94,9 +94,9 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 862,
+    "standard-license-text-and-notice": 890,
     "reciprocal-source-terms-review": 41,
-    "license-choice-review": 7,
+    "license-choice-review": 8,
     "attribution-review": 1
   },
   "reviewComponents": [
@@ -122,105 +122,105 @@
       "optional": false
     },
     {
-      "purl": "pkg:npm/%40cloudflare%2Fworkers-types@5.20260811.1",
+      "purl": "pkg:npm/%40cloudflare%2Fworkers-types@5.20261005.1",
       "license": "MIT OR Apache-2.0",
       "reviewClass": "license-choice-review",
       "lockScope": "production-reachable",
       "optional": false
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-arm64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-arm64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-x64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-x64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-ppc64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-ppc64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-riscv64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-riscv64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-s390x@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-s390x@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-x64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-x64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-arm64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-arm64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-x64@1.3.3",
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-x64@1.3.4",
       "license": "LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-wasm32@0.35.4",
+      "purl": "pkg:npm/%40img%2Fsharp-wasm32@0.35.5",
       "license": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-win32-arm64@0.35.4",
+      "purl": "pkg:npm/%40img%2Fsharp-win32-arm64@0.35.5",
       "license": "Apache-2.0 AND LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-win32-ia32@0.35.4",
+      "purl": "pkg:npm/%40img%2Fsharp-win32-ia32@0.35.5",
       "license": "Apache-2.0 AND LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
       "optional": true
     },
     {
-      "purl": "pkg:npm/%40img%2Fsharp-win32-x64@0.35.4",
+      "purl": "pkg:npm/%40img%2Fsharp-win32-x64@0.35.5",
       "license": "Apache-2.0 AND LGPL-3.0-or-later",
       "reviewClass": "reciprocal-source-terms-review",
       "lockScope": "development-only",
@@ -442,6 +442,13 @@
       "reviewClass": "license-choice-review",
       "lockScope": "development-only",
       "optional": false
+    },
+    {
+      "purl": "pkg:npm/wrangler@4.147.0",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
     }
   ],
   "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
@@ -449,7 +456,7 @@
   "reviewScopeSummary": {
     "production-reachable-required": 7,
     "production-reachable-optional": 11,
-    "development-only-required": 6,
+    "development-only-required": 7,
     "development-only-optional": 25
   }
 }

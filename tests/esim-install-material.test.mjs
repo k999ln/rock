@@ -89,9 +89,33 @@ void test('install material rejects weak keys, invalid profile data and cipherte
     (error) => error.code === 'KEY_NOT_CONFIGURED');
   await assert.rejects(encryptEsimInstallMaterial({ ...profile, iccid: 'bad' }, key, owner, orderId),
     (error) => error.code === 'INVALID_MATERIAL');
+  await assert.rejects(encryptEsimInstallMaterial({ ...profile,
+    androidInstallUrl: 'https://attacker.example/steal?carddata=LPA%3A1%24smdp%24secret',
+  }, key, owner, orderId), (error) => error.code === 'INVALID_MATERIAL');
   await storeEsimInstallMaterial(db, profile, key, owner, orderId, 10);
   db.sqlite.prepare(`UPDATE esim_provider_orders SET install_material_ciphertext = ? WHERE sky_order_id = ?`)
     .run('tampered', orderId);
   await assert.rejects(fetchEsimInstallMaterial(db, key, owner, orderId,
     '88888888-8888-4888-8888-888888888888'));
+});
+
+void test('platform quick-install links stay encrypted and are returned only as provider-approved deep links', async (t) => {
+  const db = database(t);
+  const withLinks = {
+    ...profile,
+    appleInstallUrl: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24APPLE-SECRET',
+    androidInstallUrl: 'https://esimsetup.android.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24ANDROID-SECRET',
+  };
+  await storeEsimInstallMaterial(db, withLinks, key, owner, orderId, 10);
+  const stored = JSON.stringify(db.sqlite.prepare('SELECT * FROM esim_provider_orders WHERE sky_order_id = ?').get(orderId));
+  assert.equal(stored.includes('APPLE-SECRET'), false);
+  assert.equal(stored.includes('ANDROID-SECRET'), false);
+  const deliveryId = '99999999-9999-4999-8999-999999999999';
+  assert.deepEqual(await fetchEsimInstallMaterial(db, key, owner, orderId, deliveryId), {
+    iccid: profile.iccid,
+    matchingId: profile.matchingId,
+    smdpAddress: profile.smdpAddress,
+    appleInstallUrl: withLinks.appleInstallUrl,
+    androidInstallUrl: withLinks.androidInstallUrl,
+  });
 });

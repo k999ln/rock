@@ -20,6 +20,7 @@ class PinSourceProfile(unittest.TestCase):
         self.assertEqual(set(guard.profiles()), {'enroll', 'atm'})
         manifest = json.loads((UI / 'pin-readiness.json').read_text())
         required = {'os/ui/ui.c', 'os/ui/main.c', 'os/assets/NotoSansCJKjp-Regular.otf'}
+        required.update({'os/ui/spider-motion.c', 'os/ui/spider-motion.h'})
         required.update('os/ui/' + name for name in re.findall(
             r'^#include "([^"]+)"', (UI / 'ui.c').read_text(), re.M))
         self.assertLessEqual(required, set(manifest['sources']))

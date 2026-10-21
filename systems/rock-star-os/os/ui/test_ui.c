@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include "spider-motion.h"
 
 /* Explicit test fixtures. No test data is linked into the installed rock-ui. */
 static json_object *last_request;
@@ -182,6 +184,369 @@ static void test_image(struct rock_ui *ui, const char *name)
     require(snprintf(path, sizeof(path), "%s/%s.png", test_image_directory, name) < (int)sizeof(path), "test image path fits");
     rock_ui_draw(ui);
     require(cairo_surface_write_to_png(ui->surface, path) == CAIRO_STATUS_SUCCESS, "unit renderer image saved");
+}
+
+static uint64_t image_region(struct rock_ui *ui, int x, int y, int width, int height)
+{
+    require(ui->scale == 1 && ui->offset_x == 0 && ui->offset_y == 0,
+            "renderer comparison uses native test geometry");
+    require(x >= 0 && y >= 0 && x + width <= ui->width && y + height <= ui->height,
+            "renderer comparison stays inside image");
+    cairo_surface_flush(ui->surface);
+    const unsigned char *pixels = cairo_image_surface_get_data(ui->surface);
+    int stride = cairo_image_surface_get_stride(ui->surface);
+    uint64_t hash = UINT64_C(14695981039346656037);
+    for (int row = y; row < y + height; row++)
+        for (int col = x * 4; col < (x + width) * 4; col++) {
+            hash ^= pixels[row * stride + col];
+            hash *= UINT64_C(1099511628211);
+        }
+    return hash;
+}
+
+static int security_panel(struct rock_ui *ui)
+{
+    rock_ui_draw(ui);
+    rock_ui_scroll(ui, 10000);
+    rock_ui_draw(ui);
+    int top = (int)(ui->content_top + ui->content_height - ui->scroll - 474);
+    require(top >= ui->content_top && top + 454 <= 856,
+            "complete Spider Guard panel fits below existing power controls");
+    return top;
+}
+
+static void spider_motion_test(void)
+{
+    struct rock_spider_motion motion = {0};
+    struct rock_spider_input input = {.active = 1, .blocked_valid = 1, .blocked = 4};
+    double now = 1;
+    rock_spider_step(&motion, &input, now);
+    require(motion.active && motion.target == -1 && motion.alert == 0,
+            "initial monitor count starts patrol without fabricating a finding or block event");
+    double x = motion.x, y = motion.y;
+    rock_spider_step(&motion, &input, now);
+    require(motion.x == x && motion.y == y && motion.alert == 0,
+            "same timestamp is deterministic and does not advance patrol");
+    int planted = 0;
+    for (int frame = 0; frame < 100; frame++) {
+        struct rock_spider_foot previous[8];
+        memcpy(previous, motion.feet, sizeof(previous));
+        x = motion.x; y = motion.y; now += .05;
+        rock_spider_step(&motion, &input, now);
+        require(isfinite(motion.x) && isfinite(motion.y) && isfinite(motion.phase) &&
+                hypot(motion.x - x, motion.y - y) < 15,
+                "fixed-step patrol stays finite and moves smoothly without teleporting");
+        for (int leg = 0; leg < 8; leg++) {
+            require(isfinite(motion.feet[leg].x) && isfinite(motion.feet[leg].y) &&
+                    isfinite(motion.feet[leg].lift), "all eight articulated feet stay finite");
+            if (!previous[leg].stepping && !motion.feet[leg].stepping) {
+                require(previous[leg].x == motion.feet[leg].x && previous[leg].y == motion.feet[leg].y,
+                        "planted supporting feet do not slide between gait steps");
+                planted++;
+            }
+        }
+    }
+    require(planted > 20, "articulated gait retains supporting feet across patrol frames");
+    input.count = 1; input.ids[0] = 101; input.secret[0] = 1;
+    for (int frame = 0; frame < 160; frame++) {
+        now += .05;
+        rock_spider_step(&motion, &input, now);
+    }
+    require(motion.target == 0 && hypot(motion.x - 135, motion.y - 149) < 55,
+            "spider approaches the real finding instead of remaining in unrelated patrol");
+    require(motion.alert == 0, "finding arrival alone does not fabricate an outbound block");
+
+    input.blocked = 5; now += .05;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert > 0 && motion.alert <= 1, "actual blocked-counter increase starts a bounded reaction");
+    double alert = motion.alert, remaining = motion.alert_left;
+    now += .05;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert > 0 && motion.alert <= alert && motion.alert_left < remaining,
+            "unchanged blocked counter decays instead of retriggering the reaction");
+    for (int frame = 0; frame < 80; frame++) {
+        now += .05;
+        rock_spider_step(&motion, &input, now);
+    }
+    require(motion.alert == 0, "outbound block reaction expires while normal motion continues");
+    input.blocked = 1; now += .05;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert == 0, "counter reset does not fabricate a new block");
+    input.active = 0; input.blocked = 2; now += .05;
+    rock_spider_step(&motion, &input, now);
+    x = motion.x; y = motion.y;
+    require(!motion.active && motion.alert == 0, "unavailable worker clears the active reaction");
+    now += 1;
+    rock_spider_step(&motion, &input, now);
+    require(motion.x == x && motion.y == y, "inactive controller does not patrol");
+    input.active = 1; input.blocked = 3; now += .05;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert == 0, "resume baselines historical blocks without replaying them");
+    input.blocked = 4; now += 60;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert == 0, "long observation gap does not replay historical block events");
+    input.blocked_valid = 0; input.blocked = 999; now += .05;
+    rock_spider_step(&motion, &input, now);
+    require(motion.alert == 0, "invalid block count never becomes a reaction");
+
+    struct rock_spider_motion selected = {0};
+    struct rock_spider_input nodes = {.active = 1, .count = 3,
+        .ids = {301, 302, 303}, .secret = {0, 1, 0}};
+    rock_spider_step(&selected, &nodes, 1);
+    require(selected.target == 1 && selected.target_id == 302,
+            "real secret finding receives first inspection priority");
+    nodes.ids[0] = 302; nodes.ids[1] = 301;
+    nodes.secret[0] = 1; nodes.secret[1] = 0;
+    rock_spider_step(&selected, &nodes, 1.05);
+    require(selected.target == 0 && selected.target_id == 302,
+            "reordered findings preserve target identity instead of following the wrong row");
+    nodes.count = 0;
+    rock_spider_step(&selected, &nodes, 1.1);
+    require(selected.target == -1 && selected.target_id == 0,
+            "removed findings cannot remain as fabricated targets");
+}
+
+static json_object *security_fixture(void)
+{
+    return json_tokener_parse(
+        "{\"status\":\"watching\",\"workerAlive\":true,\"fresh\":true,"
+        "\"intervalSeconds\":30,\"filesScanned\":4,\"candidateCount\":3,"
+        "\"secretCount\":2,\"personalCount\":1,\"blocked\":4,\"coverageLimited\":true,"
+        "\"agent\":{\"id\":\"spider\",\"role\":\"security\",\"scope\":\"platform-data\","
+        "\"duties\":[\"watch_platform_data\",\"inspect_outbound\",\"deny_sensitive_outbound\",\"report_health\"],"
+        "\"state\":\"sensitive_data_detected\",\"lastAction\":null},"
+        "\"findings\":[{\"id\":\"fixture-a\",\"kind\":\"secret\",\"label\":\"API credential\",\"path\":\"local.env\",\"line\":2},"
+        "{\"id\":\"fixture-b\",\"kind\":\"personal\",\"label\":\"Email address\",\"path\":\"notes.txt\",\"line\":5},"
+        "{\"id\":\"fixture-c\",\"kind\":\"secret\",\"label\":\"Private key\",\"path\":\"draft.txt\",\"line\":9}]}");
+}
+
+static void security_fixture_block(json_object *guard, int blocked)
+{
+    json_object *agent;
+    json_object_object_get_ex(guard, "agent", &agent);
+    json_object_object_add(guard, "blocked", json_object_new_int(blocked));
+    json_object_object_add(agent, "state", json_object_new_string("recent_block"));
+    json_object_object_add(agent, "lastAction", json_tokener_parse(
+        "{\"action\":\"blocked\",\"boundary\":\"mcp.submit\",\"count\":1,\"kinds\":[\"secret\"],\"time\":1790971203}"));
+}
+
+static void security_ui_test(struct rock_ui *ui)
+{
+    ui->busy = ui->editing = ui->pointer_visible = 0;
+    ui->message[0] = '\0';
+    if (ui->retry_request) { json_object_put(ui->retry_request); ui->retry_request = NULL; }
+    snapshot(ui, 0, 0);
+    ui->page = PAGE_SYSTEM;
+    json_object *guard = security_fixture();
+    json_object_object_add(ui->snapshot, "security", guard);
+    int before = request_count;
+    int top = security_panel(ui);
+    int64_t frame_ms = 1000;
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    uint64_t active_status = image_region(ui, 56, top + 49, 596, 25);
+    uint64_t agent_identity = image_region(ui, 56, top + 13, 390, 28);
+    uint64_t no_agent_action = image_region(ui, 56, top + 321, 596, 26);
+    uint64_t spider = image_region(ui, 56, top + 114, 173, 212);
+    uint64_t counts = image_region(ui, 56, top + 82, 596, 25);
+    uint64_t rows = image_region(ui, 235, top + 126, 410, 204);
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    require(spider == image_region(ui, 56, top + 114, 173, 212),
+            "same native tick renders an identical spider frame");
+    int moving = 0;
+    for (int retry = 0; retry < 10 && !moving; retry++) {
+        frame_ms += 50;
+        rock_ui_spider_tick(ui, frame_ms);
+        rock_ui_draw(ui);
+        moving = spider != image_region(ui, 56, top + 114, 173, 212);
+    }
+    require(moving, "fresh connected living worker animates native spider");
+    for (int frame = 0; frame < 60; frame++) {
+        frame_ms += 50;
+        rock_ui_spider_tick(ui, frame_ms);
+    }
+    rock_ui_draw(ui);
+    require(ui->spider.target == 0 && ui->spider.settled && ui->spider.alert == 0,
+            "native metadata tick reaches the first real secret without a fake block reaction");
+    test_image(ui, "unit-spider-guard-active");
+    rows = image_region(ui, 235, top + 126, 410, 204);
+    json_object *agent;
+    json_object_object_get_ex(guard, "agent", &agent);
+    require(!strcmp(value(agent, "id"), "spider") && !strcmp(value(agent, "role"), "security"),
+            "native fixture uses the fixed security-agent identity contract");
+    json_object_object_add(agent, "state", json_object_new_string("watching"));
+    rock_ui_draw(ui);
+    uint64_t watching_status = image_region(ui, 56, top + 49, 596, 25);
+    require(watching_status != active_status,
+            "actual agent state distinguishes watching from detected sensitive information");
+    json_object_object_add(agent, "state", json_object_new_string("unknown-test-state"));
+    json_object_object_add(agent, "lastAction", json_tokener_parse(
+        "{\"action\":\"unknown-test-action\",\"boundary\":\"untrusted-test-description\",\"kinds\":[\"secret\"]}"));
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    uint64_t unknown_status = image_region(ui, 56, top + 49, 596, 25);
+    require(unknown_status != active_status && unknown_status != watching_status &&
+            no_agent_action == image_region(ui, 56, top + 321, 596, 26) && ui->spider.alert == 0,
+            "unknown agent state and action cannot fabricate detection or response claims");
+    require(agent_identity == image_region(ui, 56, top + 13, 390, 28),
+            "security-agent identity remains visible while its reported activity changes");
+    json_object_object_add(agent, "state", json_object_new_string("sensitive_data_detected"));
+    json_object_object_add(agent, "lastAction", NULL);
+    rock_ui_draw(ui);
+    require(active_status == image_region(ui, 56, top + 49, 596, 25),
+            "recognized agent detection state restores the metadata-derived focus line");
+
+    json_object *findings, *first;
+    json_object_object_get_ex(guard, "findings", &findings);
+    first = json_object_array_get_idx(findings, 0);
+    json_object_object_add(first, "label", json_object_new_string("Password assignment"));
+    json_object_object_add(first, "path", json_object_new_string("changed.txt"));
+    json_object_object_add(first, "line", json_object_new_int(17));
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    require(ui->spider.alert == 0, "finding metadata update alone does not announce a block");
+    require(rows != image_region(ui, 235, top + 126, 410, 204),
+            "actual finding label path and line change rendered metadata");
+    security_fixture_block(guard, 23);
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    require(ui->spider.alert > 0, "native snapshot blocked-counter increase triggers the rendered reaction");
+    require(counts != image_region(ui, 56, top + 82, 596, 25),
+            "actual block count changes rendered count");
+    uint64_t blocked_action = image_region(ui, 56, top + 321, 596, 26);
+    uint64_t blocked_status = image_region(ui, 56, top + 49, 596, 25);
+    require(blocked_action != no_agent_action,
+            "actual sanitized last action renders the security agent's outbound refusal");
+    json_object_object_add(agent, "lastAction", json_tokener_parse(
+        "{\"action\":\"blocked\",\"boundary\":\"remote.send\",\"count\":1,\"kinds\":[\"personal\"],\"time\":1790971203}"));
+    double prior_reaction = ui->spider.alert_left;
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    rock_ui_draw(ui);
+    require(blocked_action != image_region(ui, 56, top + 321, 596, 26) &&
+            ui->spider.alert_left < prior_reaction,
+            "last-action boundary and kind update the description without inventing another block");
+    json_object_object_add(agent, "lastAction", json_tokener_parse(
+        "{\"action\":\"blocked\",\"boundary\":\"mcp.submit\",\"count\":0,\"kinds\":[],\"time\":1790971203}"));
+    rock_ui_draw(ui);
+    uint64_t limit_action = image_region(ui, 56, top + 321, 596, 26);
+    require(limit_action != no_agent_action && limit_action != blocked_action &&
+            blocked_status == image_region(ui, 56, top + 49, 596, 25),
+            "inspection-limit refusal reports an actual safety rejection without claiming sensitive-data detection");
+    test_image(ui, "unit-spider-guard-limit-blocked");
+    const char *inconsistent_actions[] = {
+        "{\"action\":\"blocked\",\"boundary\":\"mcp.submit\",\"count\":0,\"kinds\":[\"secret\"]}",
+        "{\"action\":\"blocked\",\"boundary\":\"mcp.submit\",\"count\":1,\"kinds\":[]}"
+    };
+    for (size_t i = 0; i < sizeof(inconsistent_actions) / sizeof(inconsistent_actions[0]); i++) {
+        json_object_object_add(agent, "lastAction", json_tokener_parse(inconsistent_actions[i]));
+        rock_ui_draw(ui);
+        require(no_agent_action == image_region(ui, 56, top + 321, 596, 26),
+                "inconsistent refusal count and kinds cannot fabricate an agent action description");
+    }
+    security_fixture_block(guard, 23);
+    rock_ui_draw(ui);
+    test_image(ui, "unit-spider-guard-blocked");
+    rows = image_region(ui, 235, top + 126, 410, 204);
+    json_object_array_add(findings, json_tokener_parse(
+        "{\"kind\":\"secret\",\"label\":\"FOURTH ROW MUST NOT RENDER\",\"path\":\"extra.txt\",\"line\":4}"));
+    rock_ui_draw(ui);
+    require(rows == image_region(ui, 235, top + 126, 410, 204),
+            "native finding preview is bounded to three metadata rows");
+    json_object_array_del_idx(findings, 3, 1);
+    ui->page = PAGE_HUB;
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    require(!ui->spider.active && ui->spider.alert == 0,
+            "leaving the security page stops visual motion without retaining a block flash");
+    json_object_object_add(guard, "blocked", json_object_new_int(24));
+    ui->page = PAGE_SYSTEM;
+    frame_ms += 50;
+    rock_ui_spider_tick(ui, frame_ms);
+    require(ui->spider.active && ui->spider.alert == 0,
+            "returning to the page does not present an unseen historical counter increase as live");
+
+    const char *states[] = {"stale", "dead", "failed", "missing-health", "disconnected", "invalid-alive", "invalid-fresh", "missing"};
+    uint64_t stopped_spider = 0;
+    for (size_t i = 0; i < sizeof(states) / sizeof(states[0]); i++) {
+        json_object_object_add(guard, "status", json_object_new_string(i == 2 ? "error" : "watching"));
+        json_object_object_add(guard, "workerAlive", json_object_new_boolean(i != 1));
+        json_object_object_add(guard, "fresh", json_object_new_boolean(i != 0));
+        if (i == 3) {
+            json_object_object_del(guard, "workerAlive");
+            json_object_object_del(guard, "fresh");
+        }
+        if (i == 5) json_object_object_add(guard, "workerAlive", json_object_new_int(1));
+        if (i == 6) json_object_object_add(guard, "fresh", json_object_new_string("true"));
+        ui->connected = i != 4;
+        if (i == 7) json_object_object_del(ui->snapshot, "security");
+        top = security_panel(ui);
+        frame_ms += 50;
+        rock_ui_spider_tick(ui, frame_ms);
+        rock_ui_draw(ui);
+        require(active_status != image_region(ui, 56, top + 49, 596, 25),
+                "unavailable guard never renders the active service claim");
+        uint64_t current_spider = image_region(ui, 60, top + 128, 125, 171);
+        if (!i) stopped_spider = current_spider;
+        require(stopped_spider == current_spider,
+                "stale dead failed missing and disconnected workers share inactive spider");
+        frame_ms += 500;
+        rock_ui_spider_tick(ui, frame_ms);
+        rock_ui_draw(ui);
+        require(current_spider == image_region(ui, 60, top + 128, 125, 171),
+                "unavailable guard does not animate between frames");
+        char name[80];
+        snprintf(name, sizeof(name), "unit-spider-guard-%s", states[i]);
+        test_image(ui, name);
+    }
+    require(request_count == before, "Spider Guard display and animation perform no IPC or mutation");
+    snapshot(ui, 0, 0);
+    ui->scroll = 0;
+}
+
+/* Opt-in motion evidence: explicit synthetic metadata, never installed. */
+static void security_frame_evidence(struct rock_ui *ui)
+{
+    const char *directory = getenv("ROCK_SPIDER_FRAMES");
+    if (!directory || !directory[0]) return;
+    const char *saved_directory = test_image_directory;
+    test_image_directory = directory;
+    snapshot(ui, 0, 0);
+    ui->page = PAGE_SYSTEM;
+    ui->busy = ui->editing = ui->pointer_visible = 0;
+    ui->message[0] = '\0';
+    memset(&ui->spider, 0, sizeof(ui->spider));
+    json_object *guard = security_fixture();
+    json_object_object_add(ui->snapshot, "security", guard);
+    (void)security_panel(ui);
+    int before = request_count;
+    for (int tick = 0; tick < 160; tick++) {
+        if (tick == 60) security_fixture_block(guard, 5);
+        if (tick == 120) {
+            json_object_object_add(guard, "findings", json_object_new_array());
+            json_object_object_add(guard, "candidateCount", json_object_new_int(0));
+            json_object_object_add(guard, "secretCount", json_object_new_int(0));
+            json_object_object_add(guard, "personalCount", json_object_new_int(0));
+        }
+        rock_ui_spider_tick(ui, 1000 + tick * 50);
+        if (tick < 60 || tick >= 108)
+            require(ui->spider.alert == 0, "motion fixture only reacts during the observed block event");
+        if (tick == 60) require(ui->spider.alert > 0, "motion fixture counter increase creates one real reaction");
+        if (tick >= 120) require(ui->spider.target == -1, "motion fixture resumes patrol after findings disappear");
+        if (!(tick % 2)) {
+            char name[80];
+            snprintf(name, sizeof(name), "fixture-spider-%03d", tick / 2);
+            test_image(ui, name);
+        }
+    }
+    require(request_count == before, "motion evidence cannot trigger IPC or security mutations");
+    test_image_directory = saved_directory;
+    snapshot(ui, 0, 0);
+    ui->scroll = 0;
 }
 
 static void remote_wallet_cache_test(struct rock_ui *ui)
@@ -664,6 +1029,9 @@ int main(int argc, char **argv)
     membership_test(&ui);
     wallet_geometry_test(&ui);
     remote_wallet_cache_test(&ui);
+    spider_motion_test();
+    security_ui_test(&ui);
+    security_frame_evidence(&ui);
     power_ui_test(&ui);
     remote_ui_test(&ui);
     read_queue_test(&ui);

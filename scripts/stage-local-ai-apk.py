@@ -15,6 +15,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_LOCK = ROOT / "os/physical/local-action-assistant-source-lock.json"
 ARTIFACT_LOCK = ROOT / "os/physical/local-action-assistant-artifact-lock.json"
+RUNTIME_CONTRACT = ROOT / "contracts/local-ai-runtime.json"
 STAGE_PATH = Path("vendor/rockstaros-local-ai")
 APK_NAME = "LocalActionAssistant-unsigned.apk"
 
@@ -27,13 +28,20 @@ def sha256(path):
     return digest.hexdigest()
 
 
+def expected_version_code():
+    value = json.loads(RUNTIME_CONTRACT.read_text()).get("packageVersionCode")
+    if type(value) is not int or value < 1:
+        raise ValueError("invalid local-AI runtime package version")
+    return value
+
+
 def artifact_config(lock, source_lock):
     if (not isinstance(lock, dict) or lock.get("schema") != "rock-local-ai-apk/1"
             or lock.get("stage") not in ("APK_NOT_BUILT", "APK_REVIEWED_NOT_IN_IMAGE")
             or lock.get("sourceCommit") != source_lock.get("commit")
             or lock.get("moduleName") != "RockLocalActionAssistant"
             or lock.get("packageName") != "com.localactionassistant"
-            or lock.get("versionCode") != 1
+            or lock.get("versionCode") != expected_version_code()
             or lock.get("requiredAbis") != ["arm64-v8a"]
             or lock.get("internetPermission") is not False
             or lock.get("wakeLockPermission") is not True
@@ -48,7 +56,30 @@ def artifact_config(lock, source_lock):
     elif (not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None
           or not isinstance(size, int) or size <= 0 or size > 2 * 1024 ** 3):
         raise ValueError("reviewed local-AI APK lock requires a bounded hash and size")
+    if lock["stage"] == "APK_REVIEWED_NOT_IN_IMAGE":
+        overlay = source_lock.get("overlay", {})
+        if not isinstance(overlay, dict):
+            raise ValueError("invalid local-AI source overlay")
+        extensions = overlay.get("extensions", [])
+        if not isinstance(extensions, list) or any(not isinstance(item, dict) for item in extensions):
+            raise ValueError("invalid local-AI source overlay extensions")
+        hashes = [overlay.get("sha256")] + [item.get("sha256") for item in extensions]
+        if (not hashes or any(not isinstance(value, str) or
+                re.fullmatch(r"[0-9a-f]{64}", value) is None for value in hashes)
+                or lock.get("overlaySha256") != hashes[0]
+                or lock.get("extensionSha256") != hashes[1:]):
+            raise ValueError("APK overlay differs from the current source lock; rebuild and review the APK")
     return lock
+
+
+def expected_metadata(lock):
+    return {"schema": "rock-local-ai-staged-apk/1", "sourceCommit": lock["sourceCommit"],
+            "moduleName": lock["moduleName"], "aospCertificate": lock["aospCertificate"],
+            "packageName": lock["packageName"], "versionCode": lock["versionCode"],
+            "sha256": lock["apkSha256"], "sizeBytes": lock["apkSizeBytes"],
+            "requiredAbis": lock["requiredAbis"], "internetPermission": lock["internetPermission"],
+            "wakeLockPermission": lock["wakeLockPermission"], "binderPermission": lock["binderPermission"],
+            "overlaySha256": lock["overlaySha256"], "extensionSha256": lock["extensionSha256"]}
 
 
 def inspect_apk(apk, aapt2):
@@ -85,7 +116,7 @@ def inspect_apk(apk, aapt2):
         [str(aapt2.resolve(strict=True)), "dump", "badging", str(apk)],
         stderr=subprocess.PIPE, timeout=30).decode("utf-8", "strict")
     package = re.search(r"^package: name='([^']+)' versionCode='([^']+)'", output, re.MULTILINE)
-    if package is None or package.group(1) != "com.localactionassistant" or package.group(2) != "1":
+    if package is None or package.group(1) != "com.localactionassistant" or package.group(2) != str(expected_version_code()):
         raise ValueError("APK package/version differs from the integration contract")
     if re.search(r"^uses-permission(?:-[^:]+)?: name='android\.permission\.INTERNET'", output,
                  re.MULTILINE):
@@ -96,7 +127,7 @@ def inspect_apk(apk, aapt2):
     if re.search(r"^uses-permission(?:-[^:]+)?: name='dev\.rock\.permission\.USE_LOCAL_AI'", output,
                  re.MULTILINE) is None:
         raise ValueError("release APK must request the signed Binder permission")
-    return {"packageName": package.group(1), "versionCode": 1,
+    return {"packageName": package.group(1), "versionCode": int(package.group(2)),
             "sha256": sha256(apk), "sizeBytes": apk.stat().st_size,
             "requiredAbis": ["arm64-v8a"], "internetPermission": False,
             "wakeLockPermission": True,
@@ -139,8 +170,7 @@ def stage_apk(tree, apk, aapt2):
     metadata = inspect_apk(apk, aapt2)
     if metadata["sha256"] != lock["apkSha256"] or metadata["sizeBytes"] != lock["apkSizeBytes"]:
         raise ValueError("local-AI APK differs from the reviewed artifact lock")
-    metadata.update({"schema": "rock-local-ai-staged-apk/1", "sourceCommit": lock["sourceCommit"],
-                     "moduleName": lock["moduleName"], "aospCertificate": lock["aospCertificate"]})
+    metadata = expected_metadata(lock)
     stage = safe_stage_directory(tree)
     expected = generated_files(metadata)
     existing = {path.name for path in stage.iterdir()}
@@ -179,7 +209,11 @@ def verify_stage(tree):
     if lock["stage"] != "APK_REVIEWED_NOT_IN_IMAGE":
         raise ValueError("local-AI APK is not reviewed")
     stage = safe_stage_directory(tree)
+    if any(path.is_symlink() or not path.is_file() for path in stage.iterdir()):
+        raise ValueError("local-AI staged files must be regular files, not symlinks")
     metadata = json.loads((stage / "artifact.json").read_text())
+    if metadata != expected_metadata(lock):
+        raise ValueError("staged local-AI metadata differs from the reviewed source and artifact lock")
     expected = generated_files(metadata)
     if {path.name for path in stage.iterdir()} != set(expected) | {APK_NAME}:
         raise ValueError("local-AI stage directory differs from the generated contract")

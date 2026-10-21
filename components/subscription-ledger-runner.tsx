@@ -292,7 +292,7 @@ export function SubscriptionLedgerRunner({
             value={question}
           />
           <footer>
-            <span>外部AIへ送信しません</span>
+            <span>外部siへ送信しません</span>
             <button
               aria-label="質問を送信"
               disabled={!question.trim()}

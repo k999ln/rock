@@ -45,6 +45,9 @@ void test('scheduled reconciler bounds read-only provider polls and skips unknow
     providerCurrency: 'USD', maximumWholesaleMinor: 1000, retailCurrency: 'jpy', retailAmountMinor: 2000,
     providerMinorToRetailNumerator: 1, providerMinorToRetailDenominator: 1,
     providerFeeReserveRetailMinor: 100, minimumGrossMarginRetailMinor: 500,
+    starterAgentPack: { id: 'lifeline', version: '1.0.0', packages: [{
+      packageKey: 'dev.rockstar.offline-guide@1.0.0', manifestSha256: 'b'.repeat(64),
+    }] },
   }] }));
   const pricing = await createEsimPricingSnapshot(catalog, catalog.plans[0]);
   db.sqlite.prepare(`INSERT INTO sky_tool_packages
@@ -95,8 +98,9 @@ void test('scheduled reconciler bounds read-only provider polls and skips unknow
         iccid: '89445385320081602226', matchingId: 'MATCH-SECRET', smdpAddress: 'smdp.example.test',
       }] }], total: 9.99, currency: 'USD', status: 'completed', orderReference: reference,
     });
-    if (url === `https://api.esim-go.com/v2.5/esims/assignments?reference=${reference}`) return Response.json({
+    if (url === `https://api.esim-go.com/v2.5/esims/assignments?reference=${reference}&additionalFields=installUrl`) return Response.json({
       iccid: '89445385320081602226', matchingId: 'MATCH-SECRET', smdpAddress: 'smdp.example.test', profileStatus: 'Released',
+      androidInstallUrl: 'https://esimsetup.android.com/esim_qrcode_provisioning?carddata=LPA%3A1%24rsp.example.test%24ANDROID-RECOVERY',
     });
     assert.fail('Unexpected provider request');
   }

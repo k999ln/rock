@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1040" role="img" aria-labelledby="journey-title journey-desc">
+  <title id="journey-title">one CSV cleanup job across Sky, Zema, RockstarOS, and Wallet</title>
+  <desc id="journey-desc">A readable six-step work journey. A person finds a CSV cleanup Tool in Sky, describes the job in Zema, approves access and a budget through RockstarOS, runs the approved plan locally or in the cloud, reviews the result and history in Zema, and sees the cost and receipt in Wallet. Availability varies by provider and environment.</desc>
+  <defs>
+    <marker id="journey-arrow" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#587c72"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="1040" fill="#f7f7f4"/>
+  <rect x="24" y="22" width="852" height="996" rx="26" fill="#fbfaf7" stroke="#d8e0dc" stroke-width="2"/>
+
+  <g font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#26302f">
+    <text x="56" y="62" font-size="14" font-weight="700" letter-spacing="3.1" fill="#a65f32">ZEMA / ONE PIECE OF WORK</text>
+    <text x="844" y="62" text-anchor="end" font-size="12" letter-spacing="1.8" fill="#76827f">A CSV EXAMPLE</text>
+    <line x1="56" y1="84" x2="844" y2="84" stroke="#d3dbd7" stroke-width="1"/>
+    <text x="56" y="119" font-size="27" font-weight="700">From “clean this file” to result + receipt.</text>
+    <text x="56" y="145" font-size="16" fill="#5f6c69">One account keeps the request, approval, result, and cost easy to follow.</text>
+
+    <rect x="56" y="166" width="788" height="58" rx="14" fill="#e3f1ea" stroke="#9bc2b4"/>
+    <text x="80" y="190" font-size="11" font-weight="700" letter-spacing="1.9" fill="#397a6c">SHARED CONTEXT</text>
+    <text x="80" y="212" font-size="17" font-weight="700">avokado account</text>
+    <text x="273" y="212" font-size="15" fill="#536760">identity · consent · one work history</text>
+    <text x="820" y="193" text-anchor="end" font-size="12" font-weight="700" fill="#397a6c">FOLLOW 1 → 6</text>
+    <text x="820" y="213" text-anchor="end" font-size="12" fill="#5f6c69">a useful result, then a receipt</text>
+
+    <!-- step 1 -->
+    <rect x="56" y="248" width="788" height="100" rx="16" fill="#e3f0f8" stroke="#8ab8d4" stroke-width="1.5"/>
+    <rect x="56" y="248" width="8" height="100" rx="4" fill="#377da6"/>
+    <circle cx="104" cy="298" r="20" fill="#377da6"/><text x="104" y="305" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">1</text>
+    <text x="144" y="279" font-size="11" font-weight="700" letter-spacing="1.8" fill="#377da6">FIND / SKY</text>
+    <text x="144" y="310" font-size="23" font-weight="700">Choose a Tool</text>
+    <text x="375" y="284" font-size="15" fill="#50646b">Compare where the CSV Tool runs, what it may access,</text>
+    <text x="375" y="306" font-size="15" fill="#50646b">and the estimate before choosing it.</text>
+    <text x="820" y="326" text-anchor="end" font-size="12" font-weight="700" fill="#377da6">find the right capability</text>
+
+    <path d="M450 348 V366" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#journey-arrow)"/>
+
+    <!-- step 2 -->
+    <rect x="56" y="366" width="788" height="100" rx="16" fill="#f8e8dc" stroke="#d9a67f" stroke-width="1.5"/>
+    <rect x="56" y="366" width="8" height="100" rx="4" fill="#a65f32"/>
+    <circle cx="104" cy="416" r="20" fill="#a65f32"/><text x="104" y="423" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">2</text>
+    <text x="144" y="397" font-size="11" font-weight="700" letter-spacing="1.8" fill="#a65f32">REQUEST / ZEMA</text>
+    <text x="144" y="428" font-size="23" font-weight="700">Describe the job</text>
+    <text x="375" y="402" font-size="15" fill="#6e5b50">Attach one file and name the columns, duplicates, order,</text>
+    <text x="375" y="424" font-size="15" fill="#6e5b50">and output format you want.</text>
+    <text x="820" y="444" text-anchor="end" font-size="12" font-weight="700" fill="#a65f32">make a clear request</text>
+
+    <path d="M450 466 V484" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#journey-arrow)"/>
+
+    <!-- step 3 -->
+    <rect x="56" y="484" width="788" height="100" rx="16" fill="#e3f1ea" stroke="#8bb9a8" stroke-width="1.5"/>
+    <rect x="56" y="484" width="8" height="100" rx="4" fill="#397a6c"/>
+    <circle cx="104" cy="534" r="20" fill="#397a6c"/><text x="104" y="541" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">3</text>
+    <text x="144" y="515" font-size="11" font-weight="700" letter-spacing="1.6" fill="#397a6c">APPROVE / ROCKSTAROS</text>
+    <text x="144" y="546" font-size="23" font-weight="700">Approve access + budget</text>
+    <text x="440" y="520" font-size="15" fill="#536760">Review what the job may read, where it runs,</text>
+    <text x="440" y="542" font-size="15" fill="#536760">and the upper budget before anything starts.</text>
+    <text x="820" y="562" text-anchor="end" font-size="12" font-weight="700" fill="#397a6c">choose the limit</text>
+
+    <path d="M450 584 V602" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#journey-arrow)"/>
+
+    <!-- step 4 -->
+    <rect x="56" y="602" width="788" height="100" rx="16" fill="#eee9f8" stroke="#b4a4d6" stroke-width="1.5"/>
+    <rect x="56" y="602" width="8" height="100" rx="4" fill="#69579f"/>
+    <circle cx="104" cy="652" r="20" fill="#69579f"/><text x="104" y="659" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">4</text>
+    <text x="144" y="633" font-size="11" font-weight="700" letter-spacing="1.8" fill="#69579f">RUN / AGENT</text>
+    <text x="144" y="664" font-size="23" font-weight="700">Run</text>
+    <text x="375" y="638" font-size="15" fill="#625a70">The approved Agent follows the chosen instructions</text>
+    <text x="375" y="660" font-size="15" fill="#625a70">on a local device or through a cloud provider.</text>
+    <text x="820" y="680" text-anchor="end" font-size="12" font-weight="700" fill="#69579f">work within the limit</text>
+
+    <path d="M450 702 V720" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#journey-arrow)"/>
+
+    <!-- step 5 -->
+    <rect x="56" y="720" width="788" height="100" rx="16" fill="#f8e8dc" stroke="#d9a67f" stroke-width="1.5"/>
+    <rect x="56" y="720" width="8" height="100" rx="4" fill="#a65f32"/>
+    <circle cx="104" cy="770" r="20" fill="#a65f32"/><text x="104" y="777" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">5</text>
+    <text x="144" y="751" font-size="11" font-weight="700" letter-spacing="1.8" fill="#a65f32">REVIEW / ZEMA</text>
+    <text x="144" y="782" font-size="23" font-weight="700">Review the result</text>
+    <text x="375" y="756" font-size="15" fill="#6e5b50">Open the cleaned CSV, change report,</text>
+    <text x="375" y="778" font-size="15" fill="#6e5b50">and the same job’s history.</text>
+    <text x="820" y="798" text-anchor="end" font-size="12" font-weight="700" fill="#a65f32">result + history</text>
+
+    <path d="M450 820 V838" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#journey-arrow)"/>
+
+    <!-- step 6 -->
+    <rect x="56" y="838" width="788" height="100" rx="16" fill="#eee9f8" stroke="#b4a4d6" stroke-width="1.5"/>
+    <rect x="56" y="838" width="8" height="100" rx="4" fill="#69579f"/>
+    <circle cx="104" cy="888" r="20" fill="#69579f"/><text x="104" y="895" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">6</text>
+    <text x="144" y="869" font-size="11" font-weight="700" letter-spacing="1.8" fill="#69579f">RECEIPT / WALLET</text>
+    <text x="144" y="900" font-size="23" font-weight="700">See the cost</text>
+    <text x="375" y="874" font-size="15" fill="#625a70">See the estimate, itemized usage, receipt,</text>
+    <text x="375" y="896" font-size="15" fill="#625a70">and what is confirmed.</text>
+    <text x="820" y="916" text-anchor="end" font-size="12" font-weight="700" fill="#69579f">cost + status</text>
+
+    <rect x="56" y="958" width="788" height="42" rx="13" fill="#ffffff" stroke="#ccd6d1"/>
+    <text x="78" y="984" font-size="13" font-weight="700" fill="#536760">A usable result, a history you can reopen, and a receipt you can understand.</text>
+    <text x="820" y="984" text-anchor="end" font-size="12" fill="#71807b">Illustrative experience · readiness varies</text>
+  </g>
+</svg>

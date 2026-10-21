@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros-jennifer-knowledge-registry/1",
+  "updatedAt": "2026-10-09",
+  "sources": [
+    {
+      "id": "colombia",
+      "displayName": "COLOMBIA",
+      "purpose": "goal-shaping",
+      "status": "awaiting-source",
+      "authority": "advisory-only",
+      "version": null,
+      "contentHash": null,
+      "sourceRefs": [],
+      "note": "利用者指定のJennifer上位context。原本または参照先が未登録のため、内容を推測せずGoalへ適用しない。"
+    }
+  ]
+}

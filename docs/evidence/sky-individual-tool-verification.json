@@ -818,8 +818,68 @@
   ],
   "patchedSourceHashes": {
     "components/sky-candidate-runner.tsx": "d9cd7195ce6ce797aa40ad3055fd07da582ef8b51dc0e16e55b1ebd659c651de",
-    "lib/sky-tool-labels.ts": "dacc09924e301056d4e0146946c5daafca085ac3bfc6cf5ddcc3b2325edf5ec3"
+    "lib/sky-tool-labels.ts": "dacc09924e301056d4e0146946c5daafca085ac3bfc6cf5ddcc3b2325edf5ec3",
+    "components/execution-access.tsx": "b2cfe7232388e3c4e30e017a2a0cb4680d5cc216df76d5900b6dd44d54a86d2d"
   },
-  "patchBrowserAcceptance": "pending rebuild",
-  "releaseDecision": "Focused production release incomplete: actual cloud provider/pricing, owner desktop+Pixel recovery journey and Apple Pay not accepted."
+  "patchBrowserAcceptance": {
+    "sourceCommit": "5cb248a0a69bbe3647b60508ffad0546519b1711",
+    "environment": "loopback synthetic Worker/D1",
+    "candidateRecordsMatched": 20,
+    "customInputRegressionsPassed": 2,
+    "sampleFlagsCorrect": true,
+    "resultBytesMatchPersistedMetadata": true,
+    "completedRecords": 22,
+    "noAiAnalysisOrExternalExecutionClaim": true,
+    "providerKeyConfigured": false,
+    "productionAcceptance": false
+  },
+  "releaseDecision": "Focused production release incomplete: actual cloud provider/pricing, owner desktop+Pixel recovery journey and Apple Pay not accepted.",
+  "signinRecovery": {
+    "source": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+    "inputPreserved": true,
+    "separateTabSignin": true,
+    "access503KeepsExecutionBlocked": true,
+    "recheckDoesNotExecute": true,
+    "manualExecutionReturned": true,
+    "articleInputPreserved": true,
+    "articleManualResultReturned": true,
+    "persistence": {
+      "completedJobs": 2,
+      "tools": [
+        {
+          "tool": "mr-free-article",
+          "id": "cb329b54-e140-4833-8261-9f851557280b",
+          "status": "completed",
+          "inputBytes": 735,
+          "outputBytes": 586
+        },
+        {
+          "tool": "seo-blueprint",
+          "id": "e1d37846-45ab-4eba-a761-15e05c893118",
+          "status": "completed",
+          "inputBytes": 57,
+          "outputBytes": 520
+        }
+      ],
+      "signinAndRecheckCreatedJobs": 0,
+      "duplicateExecutions": 0
+    }
+  },
+  "publishedVersion": 30,
+  "publishedSource": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+  "publicAnonymousUiVerified": {
+    "separateTabSignin": true,
+    "templateScopeVisible": true,
+    "executionDisabled": true
+  },
+  "checks": {
+    "canonicalFullVerify": {
+      "exitCode": 0,
+      "node": 692,
+      "fashion": 19,
+      "workerD1": 948
+    },
+    "siteTypeLintBuildBundleAssets": true,
+    "siteFullDesignCheck": "Preexisting v28 missing design/eSIM references; not green. Canonical design check passed."
+  }
 }

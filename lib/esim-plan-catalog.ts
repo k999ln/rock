@@ -1,3 +1,5 @@
+import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from './sky-tool-package.ts';
+
 export type EsimServerPlan = {
   packageKey: string;
   manifestSha256: string;
@@ -10,6 +12,11 @@ export type EsimServerPlan = {
   providerMinorToRetailDenominator: number;
   providerFeeReserveRetailMinor: number;
   minimumGrossMarginRetailMinor: number;
+  starterAgentPack: {
+    id: string;
+    version: string;
+    packages: Array<{ packageKey: string; manifestSha256: string }>;
+  };
 };
 
 export type EsimServerPlanCatalog = {
@@ -40,7 +47,7 @@ export type SkyEsimOrder = {
 };
 
 export class EsimPlanCatalogError extends Error {
-  readonly code: 'CATALOG_NOT_CONFIGURED' | 'CATALOG_INVALID' | 'PLAN_UNAVAILABLE' | 'ORDER_NOT_ELIGIBLE';
+  readonly code: 'CATALOG_NOT_CONFIGURED' | 'CATALOG_INVALID' | 'PLAN_UNAVAILABLE' | 'ORDER_NOT_ELIGIBLE' | 'STARTER_PACK_UNAVAILABLE';
 
   constructor(code: EsimPlanCatalogError['code']) {
     super(code);
@@ -51,6 +58,7 @@ export class EsimPlanCatalogError extends Error {
 
 const CATALOG_LIMIT = 16 * 1024;
 const PACKAGE_KEY = /^[A-Za-z0-9._:-]{1,160}$/;
+const SKY_PACKAGE_KEY = /^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const HASH = /^[a-f0-9]{64}$/;
 const BUNDLE = /^[A-Za-z0-9._-]{1,128}$/;
 const CURRENCY = /^[A-Z]{3}$/;
@@ -83,7 +91,7 @@ export function parseEsimServerPlanCatalog(raw: string | undefined): EsimServerP
   const plans: EsimServerPlan[] = [];
   for (const item of root.plans) {
     const plan = object(item);
-    if (!plan || Object.keys(plan).length !== 11 ||
+    if (!plan || Object.keys(plan).length !== 12 ||
         typeof plan.packageKey !== 'string' || !PACKAGE_KEY.test(plan.packageKey) ||
         typeof plan.manifestSha256 !== 'string' || !HASH.test(plan.manifestSha256) ||
         typeof plan.providerBundleName !== 'string' || !BUNDLE.test(plan.providerBundleName) ||
@@ -96,6 +104,22 @@ export function parseEsimServerPlanCatalog(raw: string | undefined): EsimServerP
         !validMinor(plan.providerFeeReserveRetailMinor) ||
         !validMinor(plan.minimumGrossMarginRetailMinor))
       throw new EsimPlanCatalogError('CATALOG_INVALID');
+    const starterAgentPack = object(plan.starterAgentPack);
+    if (!starterAgentPack || Object.keys(starterAgentPack).length !== 3 ||
+        typeof starterAgentPack.id !== 'string' || !/^[a-z0-9][a-z0-9-]{0,47}$/.test(starterAgentPack.id) ||
+        typeof starterAgentPack.version !== 'string' || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(starterAgentPack.version) ||
+        !Array.isArray(starterAgentPack.packages) || starterAgentPack.packages.length < 1 || starterAgentPack.packages.length > 12)
+      throw new EsimPlanCatalogError('CATALOG_INVALID');
+    const starterPackageKeys = new Set<string>();
+    const starterPackages: EsimServerPlan['starterAgentPack']['packages'] = [];
+    for (const value of starterAgentPack.packages) {
+      const item = object(value);
+      if (!item || Object.keys(item).length !== 2 || typeof item.packageKey !== 'string' ||
+          !SKY_PACKAGE_KEY.test(item.packageKey) || typeof item.manifestSha256 !== 'string' || !HASH.test(item.manifestSha256) ||
+          starterPackageKeys.has(item.packageKey)) throw new EsimPlanCatalogError('CATALOG_INVALID');
+      starterPackageKeys.add(item.packageKey);
+      starterPackages.push({ packageKey: item.packageKey, manifestSha256: item.manifestSha256 });
+    }
     const convertedWholesale = (BigInt(plan.maximumWholesaleMinor) * BigInt(plan.providerMinorToRetailNumerator) +
       BigInt(plan.providerMinorToRetailDenominator) - BigInt(1)) / BigInt(plan.providerMinorToRetailDenominator);
     if (convertedWholesale + BigInt(plan.providerFeeReserveRetailMinor) +
@@ -116,9 +140,73 @@ export function parseEsimServerPlanCatalog(raw: string | undefined): EsimServerP
       providerMinorToRetailDenominator: plan.providerMinorToRetailDenominator,
       providerFeeReserveRetailMinor: plan.providerFeeReserveRetailMinor,
       minimumGrossMarginRetailMinor: plan.minimumGrossMarginRetailMinor,
+      starterAgentPack: {
+        id: starterAgentPack.id,
+        version: starterAgentPack.version,
+        packages: starterPackages,
+      },
     });
   }
   return { version: root.version, plans };
+}
+
+/**
+ * Verify that every package pinned into the order's initial agent pack is still
+ * the exact reviewed Sky package version. This only validates package identity;
+ * it does not grant execution permission or activate tools on a device.
+ */
+export type EsimStarterAgentPackageDisplay = {
+  packageKey: string;
+  name: string | null;
+  summary: string | null;
+  reviewState: 'active' | 'unavailable';
+};
+
+export async function describeEsimStarterAgentPack(
+  starterAgentPack: EsimServerPlan['starterAgentPack'],
+  registry: Array<{
+    packageKey: string;
+    manifest: unknown;
+    manifestSha256: string;
+    status: string;
+    installable: boolean;
+  }>,
+): Promise<EsimStarterAgentPackageDisplay[]> {
+  return Promise.all(starterAgentPack.packages.map(async (reference) => {
+    const matches = registry.filter((item) => item.packageKey === reference.packageKey);
+    let display: { name: string; summary: string } | null = null;
+    if (matches.length === 1 && matches[0].status === 'verified' && matches[0].installable &&
+        matches[0].manifestSha256 === reference.manifestSha256) {
+      const candidate = matches[0];
+      try {
+        const manifest = parseSkyToolPackage(candidate.manifest);
+        if (skyToolPackageKey(manifest) === reference.packageKey &&
+            await skyToolPackageSha256(manifest) === reference.manifestSha256)
+          display = { name: manifest.name, summary: manifest.summary };
+      } catch { /* An unavailable or altered package has no public metadata. */ }
+    }
+    return {
+      packageKey: reference.packageKey,
+      name: display?.name ?? null,
+      summary: display?.summary ?? null,
+      reviewState: display ? 'active' as const : 'unavailable' as const,
+    };
+  }));
+}
+
+export async function verifyEsimStarterAgentPack(
+  plan: EsimServerPlan,
+  registry: Array<{
+    packageKey: string;
+    manifest: unknown;
+    manifestSha256: string;
+    status: string;
+    installable: boolean;
+  }>,
+): Promise<void> {
+  const display = await describeEsimStarterAgentPack(plan.starterAgentPack, registry);
+  if (display.some((item) => item.reviewState !== 'active'))
+    throw new EsimPlanCatalogError('STARTER_PACK_UNAVAILABLE');
 }
 
 async function sha256(value: string): Promise<string> {

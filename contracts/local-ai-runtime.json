@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "routeId": "local-action-assistant",
   "executionTarget": "local",
-  "apiVersion": 2,
+  "apiVersion": 4,
+  "packageVersionCode": 8,
   "androidPackage": "com.localactionassistant",
   "androidService": "com.localactionassistant.RockLocalAiService",
   "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -12,6 +13,23 @@
   "engineVersion": "0.12.9",
   "modelFormat": "GGUF",
   "modelBundled": false,
+  "modelHandoff": {
+    "operation": "installAndLoadModel",
+    "transport": "read_only_ParcelFileDescriptor",
+    "sourcePathAccepted": false,
+    "remoteUrlAccepted": false,
+    "expectedFields": [
+      "profileId",
+      "weightsSha256",
+      "artifactBytes"
+    ],
+    "runtimeCopiesToPrivateStorage": true,
+    "runtimeRehashesBeforeLoad": true,
+    "runtimeReportsLoadedProfile": true,
+    "maxArtifactBytes": 4294967296,
+    "requiredFreeSpaceReserveBytes": 33554432,
+    "timeoutSeconds": 900
+  },
   "releaseNetwork": "none",
   "tools": [
     "get_current_datetime",
@@ -49,9 +67,75 @@
   "aospModule": "RockLocalActionAssistant",
   "aospStagingPath": "vendor/rockstaros-local-ai",
   "aospSigning": "testkey_then_release_key_mapping",
-  "sourceStatus": "pinned_overlay_extensions_native_apk_built",
-  "osBridgeStatus": "plan_v2_emulator_and_physical_pixel_verified",
-  "signedApkStatus": "unsigned_release_plan_v2_reviewed_test_signed_emulator_and_physical_pixel",
+  "sourceStatus": "pinned_v4_unsigned_apk_built_not_device_verified",
+  "osBridgeStatus": "model_profile_hash_bound_v4_fd_handoff_native_compiled_not_device_verified",
+  "signedApkStatus": "v4_unsigned_release_apk_reviewed_not_signed",
   "imageStatus": "not_built",
-  "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_not_os_image"
+  "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_api_v2_not_v3_not_os_image",
+  "profileV3Validation": "docs/evidence/local-ai-profile-v3-validation-20261001.json",
+  "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
+  "nativeBuildValidation": "docs/evidence/local-ai-apk-v4-build.json",
+  "modelCatalogImport": {
+    "catalog": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+    "productionCatalog": "empty_by_default",
+    "privateShellApiVersion": 19,
+    "platformComponentApiVersion": 1,
+    "runtimeBinderApiVersion": 4,
+    "weightImport": "owner_selected_readonly_regular_descriptor_exact_length_sha256",
+    "licenseConsent": "explicit_owner_profile_digest_receipt_in_private_preferences",
+    "reload": "explicit_verified_cached_profile_only",
+    "physicalInferenceAccepted": false,
+    "evidence": "docs/evidence/pixel-local-jennifer.json",
+    "signatureVerifier": "Bouncy Castle lightweight Ed25519; pinned shared JAR, no AndroidKeyStore public-key import",
+    "cryptoArtifactLock": "os/physical/model-crypto-artifact-lock.json"
+  },
+  "taskDraftSchema": {
+    "schemaId": "local-work@1/output-v1",
+    "fields": [
+      "task",
+      "title",
+      "body",
+      "summary"
+    ],
+    "tasks": [
+      "article",
+      "summary",
+      "translation",
+      "code",
+      "planning",
+      "writing"
+    ],
+    "additionalProperties": false,
+    "externalExecution": false,
+    "maxOutputTokens": 512,
+    "planningTimeoutSeconds": 180,
+    "maxTitleCharacters": 60,
+    "maxBodyCharacters": 600,
+    "maxSummaryCharacters": 120,
+    "ideationSubtypes": {
+      "schemaPattern": "local-work@1/ideas-N-v2",
+      "counts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "rawModelFields": [
+        "ideas"
+      ],
+      "exactArrayCardinality": true,
+      "metadataOwner": "runtime",
+      "brokerValidatesActualStringsAndUniqueness": true,
+      "legacySchemaPattern": "local-work@1/ideas-N-v1",
+      "maxRawCharacters": 48,
+      "legacyMaxRawCharacters": 24,
+      "brokerMaxIdeaUtf8Bytes": 96
+    }
+  }
 }

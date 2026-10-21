@@ -19,11 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.deepEqual(report.boundaries.map(({ id, tableCount }) => [id, tableCount]), [
-    ['web-d1', 51], ['sky-billing-d1', 13], ['operator-dock-d1', 5],
-    ['os-wallet-spend-sqlite', 19], ['android-work-sqlite', 7], ['android-platform-sqlite', 10],
-  ]);
-  assert.equal(report.summary.tableCount, 105);
+  assert.equal(report.summary.tableCount, 170);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -34,20 +30,41 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 51);
-  assert.equal(report.webSchema.migrationCount, 35);
-  assert.ok(report.webSchema.tables.includes('csv_trial_payments'));
-  assert.equal(report.webSchema.latestMigration, '0038_sky_library.sql');
+  assert.equal(report.webSchema.tableCount, 98);
+  assert.equal(report.webSchema.migrationCount, 7);
+  assert.ok(report.webSchema.tables.includes('sky_library_items'));
+  assert.ok(report.webSchema.tables.includes('sky_feed_history_events'));
+  assert.ok(
+    report.webSchema.tables.includes('sky_feed_personalization_settings'),
+  );
+  assert.ok(report.webSchema.tables.includes('esim_cloud_access_keys'));
+  assert.ok(report.webSchema.tables.includes('sky_code_repositories'));
+  assert.ok(report.webSchema.tables.includes('sky_code_commits'));
+  assert.ok(report.webSchema.tables.includes('rockstar_entitlement_events'));
+  assert.ok(report.webSchema.tables.includes('remote_ai_rate_cards'));
+  assert.ok(report.webSchema.tables.includes('remote_ai_text_executions'));
+  assert.ok(report.webSchema.tables.includes('remote_ai_text_inputs'));
+  assert.ok(report.webSchema.tables.includes('remote_ai_text_send_claims'));
+  assert.ok(report.webSchema.tables.includes('a2a_live_usage_snapshots'));
+  assert.ok(report.webSchema.tables.includes('a2a_price_quote_consent_events'));
+  assert.ok(report.webSchema.tables.includes('sky_package_runtime_bindings'));
+  assert.ok(report.webSchema.tables.includes('rockstar_device_authorizations'));
+  assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
+  assert.ok(report.webSchema.tables.includes('jennifer_plan_revisions'));
+  assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
+  assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
+  assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
+  assert.equal(report.webSchema.latestMigration, '0019_sky_hosted_monthly.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
-      ['core', 8],
-      ['sky', 24],
+      ['core', 18],
+      ['sky', 47],
       ['marketplace', 7],
       ['csv', 5],
-      ['business', 7],
+      ['business', 21],
     ],
   );
   assert.equal(

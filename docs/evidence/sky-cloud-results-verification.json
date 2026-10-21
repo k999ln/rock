@@ -26,12 +26,22 @@
     "bytes": 135,
     "sha256": "d1e428bde1d9c99cb2f5388d0440772a2087be5f98215bcc245ee5687102fbca"
   },
-  "published": false,
+  "published": true,
   "productionProviderExecutionVerified": false,
   "newPaymentPerformed": false,
   "actualOwnerSignInVerified": false,
-  "canonicalFullVerify": "pending",
+  "canonicalFullVerify": {
+    "exitCode": 0,
+    "nodeTests": 681,
+    "fashionTests": 19,
+    "workerD1Assertions": 938
+  },
   "screenshots": [
-    "sky-cloud-handoff-local.jpg"
-  ]
+    "sky-cloud-handoff-local.jpg",
+    "sky-cloud-saved-answer-local.jpg"
+  ],
+  "sourceCommit": "cb55411549649bd57429fa1afeb974139fc024da",
+  "version": 28,
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "codeHashDriftAfterRecording": []
 }

@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { createDeliveryRunnerState, createDeliveryRunnerSession, type DeliveryRunnerSession } from '@/lib/delivery-runner-state';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -19,22 +20,38 @@ import {
 } from '@/lib/device';
 export function DeliveryRunner({
   onRecord,
+  recordErrorHandledByParent = false,
+  session,
   onRunningChange,
   onOutcome,
   executionDisabled = false,
 }: {
   onRecord?: RunRecorder;
+  recordErrorHandledByParent?: boolean;
+  session?: DeliveryRunnerSession;
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
-  const [connected, setConnected] = useState(false),
-    [review, setReview] = useState(''),
-    [files, setFiles] = useState<File[]>([]),
-    [output, setOutput] = useState(''),
-    [error, setError] = useState(''),
-    [busy, setBusy] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [local] = useState(createDeliveryRunnerSession);
+  const [initial] = useState(createDeliveryRunnerState);
+  const store = session ?? local;
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot) ?? initial;
+  const { review, files, output, error, busy } = state;
+  const permission = useRef({ mounted: true, executionDisabled, executionBlocked });
+  useLayoutEffect(() => {
+    permission.current = { mounted: true, executionDisabled, executionBlocked };
+    return () => { permission.current.mounted = false; };
+  }, [executionDisabled, executionBlocked]);
+  const active = () => permission.current.mounted && store.isActive?.() !== false;
+  const mayExecute = () => active() && !permission.current.executionDisabled && !permission.current.executionBlocked;
+  const canEdit = () => mayExecute() && !store.getSnapshot()?.busy;
+  const setError = (value: string) => store.patch({ error: value });
+  useEffect(() => {
+    if (accessState === 'signin') store.onAuthenticationLost?.();
+  }, [accessState, store]);
   useEffect(() => {
     const update = () => setConnected(!!deviceToken());
     update();
@@ -42,11 +59,9 @@ export function DeliveryRunner({
     return () => window.removeEventListener('loop-device', update);
   }, []);
   async function run(sample = false) {
-    if (busy || executionDisabled) return;
-    setBusy(true);
+    if (!canEdit()) return;
+    store.patch({ busy: true, error: '', output: '' });
     onRunningChange?.(true);
-    setError('');
-    setOutput('');
     const started = performance.now();
     let completed = false,
       executed = false;
@@ -74,13 +89,16 @@ export function DeliveryRunner({
         }
         args = { review: JSON.parse(review), files: entries };
       }
+      if (!mayExecute()) return;
       if (!deviceToken()) await connectDevice();
+      if (!mayExecute()) return;
       const tracked = await executeTracked({
         tool: 'mr-delivery',
         transport: 'local-mcp',
         sample,
         inputBytes: processedBytes(args),
         task: () => {
+          if (!mayExecute()) throw new Error('本人または仕事の状態が変わったため、実行を停止しました。入力は保持されています。');
           executed = true;
           return runDevice('verify_delivery', args);
         },
@@ -88,23 +106,30 @@ export function DeliveryRunner({
       const result = tracked.result;
       setError(tracked.warning);
       completed = true;
-      setOutput(result.output);
-      if (onRecord)
-        await onRecord(
+      store.patch({ output: result.output });
+      if (!active()) return;
+      if (onRecord) {
+        try { await onRecord(
           'mr-delivery',
           'local-mcp',
           'completed',
           started,
           sample,
           result.status === 'PASS' ? 'passed' : 'needs_review',
-        );
+        ); } catch (recordError) {
+          if (!recordErrorHandledByParent) throw recordError;
+          return;
+        }
+      }
       onOutcome?.({
         ok: result.status === 'PASS',
         text: result.output,
       });
     } catch (e) {
-      if (e instanceof OperationRequestError && e.status === 401)
+      if (active() && e instanceof OperationRequestError && e.status === 401) {
         setNeedsSignin(true);
+        store.onAuthenticationLost?.();
+      }
       const message =
         e instanceof TypeError
           ? 'このPCの実行機能に接続できませんでした。Skyの接続設定を確認してください。'
@@ -112,8 +137,8 @@ export function DeliveryRunner({
             ? e.message
             : '入力を確認してください。';
       setError(message);
-      onOutcome?.({ ok: false, text: message });
-      if (executed && !completed && onRecord)
+      if (active()) onOutcome?.({ ok: false, text: message });
+      if (active() && executed && !completed && onRecord)
         try {
           await onRecord(
             'mr-delivery',
@@ -125,7 +150,7 @@ export function DeliveryRunner({
           );
         } catch {}
     } finally {
-      setBusy(false);
+      store.patch({ busy: false });
       onRunningChange?.(false);
     }
   }
@@ -157,8 +182,7 @@ export function DeliveryRunner({
             maxLength={1000000}
             rows={5}
             onChange={(e) => {
-              setReview(e.target.value);
-              setOutput('');
+              if (canEdit()) store.patch({ review: e.target.value, output: '' });
             }}
             placeholder="レビュー記録のJSONを貼り付ける"
           />
@@ -171,8 +195,7 @@ export function DeliveryRunner({
             multiple
             {...({ webkitdirectory: '' } as Record<string, string>)}
             onChange={(e) => {
-              setFiles(Array.from(e.target.files || []));
-              setOutput('');
+              if (canEdit()) store.patch({ files: Array.from(e.target.files || []), output: '' });
             }}
           />
         </label>
@@ -210,15 +233,16 @@ export function DeliveryRunner({
             <h3>PCから結果が届きました</h3>
             <button
               className="text-link"
-              onClick={() =>
+              onClick={() => {
+                if (!active()) return;
                 void navigator.clipboard
                   .writeText(output)
                   .catch(() =>
                     setError(
                       'コピーできませんでした。結果欄から選択してください。',
                     ),
-                  )
-              }
+                  );
+              }}
             >
               <Copy size={15} />
               コピー

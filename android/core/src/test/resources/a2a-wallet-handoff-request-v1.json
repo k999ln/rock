@@ -1,0 +1,16 @@
+{
+  "request": {
+    "schema": "rock-a2a-wallet-handoff-request/1",
+    "authorityId": "rock-authority",
+    "ownerUserId": "owner-alice",
+    "deviceRef": "device-pixel-10",
+    "delegationId": "123e4567-e89b-42d3-a456-426614174000",
+    "requestId": "123e4567-e89b-42d3-a456-426614174001",
+    "requestedAt": 1790000000000,
+    "keyId": "broker-key-1",
+    "signature": "t9ty_rdQrJUhGwJYwsJpsbU41BxMn9sCnCCldcnE-6Sz8KU1jV3xA0puePg45bOTbFONAf0dMPLpO4n0zxjdBw"
+  },
+  "testPrivateKeySeedHex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+  "signingBytesSha256": "fabb7fca845ad1a5a494f4e7189713d3a72aea958630184da11b51de23df0b24",
+  "notice": "RFC 8032 test key only; not a production Broker key."
+}

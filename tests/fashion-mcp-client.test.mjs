@@ -75,15 +75,16 @@ async function harness(t, listedTools = tools, callTool) {
     if (url.endsWith('/disconnect'))
       return Response.json({ disconnected: true });
     if (body.method === 'initialize')
-      return Response.json({ result: { protocolVersion: '2025-11-25' } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { protocolVersion: '2025-11-25' } });
     if (body.method === 'notifications/initialized')
       return new Response(null, { status: 202 });
     if (body.method === 'tools/list')
-      return Response.json({ result: { tools: listedTools } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { tools: listedTools } });
     if (body.method === 'tools/call' && callTool)
-      return Response.json({ result: { structuredContent: await callTool(body.params.name, body.params.arguments) } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { structuredContent: await callTool(body.params.name, body.params.arguments) } });
     if (body.method === 'tools/call')
       return Response.json({
+        jsonrpc: '2.0', id: body.id,
         result: {
           structuredContent:
             body.params.name === 'instagram.accounts.candidates.list'
@@ -98,7 +99,7 @@ async function harness(t, listedTools = tools, callTool) {
               : {},
         },
       });
-    if (body.method === 'ping') return Response.json({ result: {} });
+    if (body.method === 'ping') return Response.json({ jsonrpc: '2.0', id: body.id, result: {} });
     assert.fail('Unexpected request: ' + url);
   };
   t.after(() => {
@@ -180,4 +181,67 @@ await test('producer client does not claim saved success when readback is missin
   }), /保存した下書きを確認できません/);
   assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM producer_runs').count, 1);
   assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM effect_runs').count, 0);
+});
+
+await test('an old unauthorized verification cannot erase the replacement session', async (t) => {
+  const h = await harness(t);
+  await h.client.connectFashionMcp();
+  const fetcher = globalThis.fetch;
+  let resolvePing;
+  const ping = new Promise((resolve) => { resolvePing = resolve; });
+  globalThis.fetch = (url, init) => JSON.parse(init.body).method === 'ping' ? ping : fetcher(url, init);
+  const oldVerification = assert.rejects(h.client.verifyFashionMcp(), /接続期限/);
+  await h.client.disconnectFashionMcp();
+  await h.client.connectFashionMcp();
+  resolvePing(Response.json({ error: 'expired' }, { status: 401 }));
+  await oldVerification;
+  assert.equal(h.client.fashionMcpConnected(), true);
+  assert.equal(h.storage.get('sky.fashion-mcp.session'), token);
+});
+
+for (const pendingMethod of ['ping', 'tools/list']) {
+  await test(`a stale successful ${pendingMethod} cannot verify a replacement Fashion session`, async (t) => {
+    const h = await harness(t);
+    await h.client.connectFashionMcp();
+    const fetcher = globalThis.fetch;
+    let resolvePending;
+    let resolveStarted;
+    const pending = new Promise((resolve) => { resolvePending = resolve; });
+    const started = new Promise((resolve) => { resolveStarted = resolve; });
+    let intercepted = false, pendingId;
+    globalThis.fetch = (url, init) => {
+      if (!intercepted && JSON.parse(init.body).method === pendingMethod) {
+        intercepted = true;
+        pendingId = JSON.parse(init.body).id;
+        resolveStarted();
+        return pending;
+      }
+      return fetcher(url, init);
+    };
+    const oldVerification = assert.rejects(h.client.verifyFashionMcp(), /PC接続が変更/);
+    await started;
+    await h.client.disconnectFashionMcp();
+    await h.client.connectFashionMcp();
+    const requestCount = h.requests.length;
+    resolvePending(Response.json({ jsonrpc: '2.0', id: pendingId, result: pendingMethod === 'ping' ? {} : { tools } }));
+    await oldVerification;
+    assert.equal(h.requests.length, requestCount);
+    assert.equal(h.client.fashionMcpConnected(), true);
+    assert.equal(h.storage.get('sky.fashion-mcp.session'), token);
+  });
+}
+
+await test('a delayed disconnect cannot clear a newer Fashion connection', async (t) => {
+  const h = await harness(t);
+  await h.client.connectFashionMcp();
+  const fetcher = globalThis.fetch;
+  let resolveDisconnect;
+  const disconnected = new Promise((resolve) => { resolveDisconnect = resolve; });
+  globalThis.fetch = (url, init) => (typeof url === 'string' ? url : url instanceof URL ? url.href : url.url).endsWith('/disconnect') ? disconnected : fetcher(url, init);
+  const oldDisconnect = h.client.disconnectFashionMcp();
+  await h.client.connectFashionMcp();
+  resolveDisconnect(Response.json({ disconnected: true }));
+  await oldDisconnect;
+  assert.equal(h.client.fashionMcpConnected(), true);
+  assert.equal(h.storage.get('sky.fashion-mcp.protocol'), '2025-11-25');
 });

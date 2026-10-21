@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type SyntheticEvent } from 'react';
+import { useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import { Check, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
 import type { JevEvaluationReceipt } from '@/lib/jev-evaluation';
 
@@ -13,6 +13,13 @@ export function JevEvaluationRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [state, setState] = useState('');
   const [consent, setConsent] = useState(false);
   const [receipt, setReceipt] = useState<JevEvaluationReceipt | null>(null);
@@ -21,10 +28,12 @@ export function JevEvaluationRunner({
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
     if (!consent) {
       setError('送信先と料金・保持条件を確認して同意してください。');
       return;
     }
+    execution.current.busy = true;
     setRunning(true);
     onRunningChange?.(true);
     setError('');
@@ -55,6 +64,7 @@ export function JevEvaluationRunner({
       setError(message);
       onOutcome?.({ ok: false, text: message });
     } finally {
+      execution.current.busy = false;
       setRunning(false);
       onRunningChange?.(false);
     }
@@ -126,7 +136,7 @@ export function JevEvaluationRunner({
         <button
           className="black-button legal-runner-submit"
           type="submit"
-          disabled={running}
+          disabled={executionDisabled || running}
         >
           <Sparkles size={17} /> {running ? '評価中…' : 'Jevで評価する'}
         </button>

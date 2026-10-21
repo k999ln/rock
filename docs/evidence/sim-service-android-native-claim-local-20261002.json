@@ -1,0 +1,32 @@
+{
+  "schema": "rockstar-sim-service-android-native-claim-local/1",
+  "verifiedAt": "2026-10-02T20:30:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "Native Android Shell path for registering an already purchased SIM/eSIM service entitlement",
+  "implemented": [
+    "Device-home returns a boolean capability indicating whether owner-bound claim redemption is enabled; it does not expose issuer configuration.",
+    "Shell API v18 and the Broker expose an owner-session-authenticated claim method. The transport accepts only the configured same-origin claim endpoint, a bounded package envelope, and no automatic retry.",
+    "The Shell displays the claim form only when the server advertises redemption, disables saved-state persistence for the input, asks the owner to confirm binding to the current Rockstar ID, and clears the package after success.",
+    "The existing server signature, expiry, offer/scope, and single-owner purchase checks remain authoritative. Entitlement, carrier activation, and device OS installation remain separate statuses."
+  ],
+  "locallyVerified": {
+    "sourceTest": { "command": "node --test tests/sim-service-entry.test.mjs", "exitCode": 0, "tests": 1, "passed": 1 },
+    "claimPackageAndStoreTests": { "command": "node --test tests/rockstar-entitlement-claim.test.mjs", "exitCode": 0, "tests": 5, "passed": 5 },
+    "osContract": { "command": "npm run os:check", "exitCode": 0 },
+    "androidArchitecture": { "command": "npm run android:architecture:check", "exitCode": 0 },
+    "typecheck": { "command": "npm run typecheck", "exitCode": 0 },
+    "productionWebBuild": { "command": "npm run build", "exitCode": 0, "route": "/api/rockstar/device-home" },
+    "workerD1Api": { "command": "npm run test:api", "exitCode": 0, "assertions": 960, "entitlementCases": ["signed first redemption", "same-owner retry", "cross-owner rejection", "wrong-code rejection", "tampered-signature rejection", "device-home redemption capability"] },
+    "csvWorkerD1R2Regression": { "command": "npm run test:api", "exitCode": 0, "assertions": 113 }
+  },
+  "notVerified": [
+    "Android Java/AIDL compilation, APK build, instrumentation, and physical-device interaction were not run; this host has no usable Android SDK/JDK toolchain.",
+    "No seller purchase/fulfillment, physical SIM delivery, carrier/eSIM activation, production billing, production deployment, or supported-device RockstarOS installation was performed or proven."
+  ],
+  "safetyBoundary": { "productionDeployed": false, "purchaseOrCarrierTransactionMade": false, "paidCloudExecutionEnabled": false, "automaticClaimRetry": false },
+  "next": [
+    "Compile and run the Shell/Broker claim flow on Android SDK CI, then accept it on a named supported device.",
+    "Connect seller-issued claim delivery and carrier activation only after their external contracts and sandbox credentials are available."
+  ]
+}

@@ -1,3 +1,5 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { database, requestUser } from '@/lib/fund-store';
 import { coconalaTeamStore } from '@/lib/coconala-team-store';
 import { applyTeamAction, createTeamCase, teamId, TeamCaseError } from '@/lib/coconala-team';
@@ -21,31 +23,16 @@ async function body(request: Request): Promise<unknown> {
     throw new TeamCaseError('JSONで送信してください。', 415);
   const reader = request.body?.getReader();
   if (!reader) throw new TeamCaseError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 16_000) {
-      await reader.cancel();
-      throw new TeamCaseError('入力は16 KB以下にしてください。', 413);
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 16_000, () =>
+    new TeamCaseError('入力は16 KB以下にしてください。', 413),
+  );
   return JSON.parse(new TextDecoder().decode(bytes)) as unknown;
 }
 
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ cases: await coconalaTeamStore(database()).list(user) });
+    return json({ cases: await coconalaTeamStore(database()).list(user), ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return failure(error);
   }
@@ -54,9 +41,11 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const candidate = createTeamCase(await body(request));
     const saved = await coconalaTeamStore(database()).create(user, candidate);
-    if (!saved || JSON.stringify(saved.terms) !== JSON.stringify(candidate.terms))
+    if (!saved || JSON.stringify(saved.creationTerms ?? saved.terms) !== JSON.stringify(candidate.terms))
       throw new TeamCaseError('同じ案件IDで別の内容は登録できません。', 409);
     return json({ caseFile: saved }, 201);
   } catch (error) {
@@ -67,6 +56,8 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const value = await body(request);
     if (!value || typeof value !== 'object' || Array.isArray(value))
       throw new TeamCaseError('入力を確認してください。');
@@ -77,7 +68,7 @@ export async function PATCH(request: Request) {
     const current = await store.get(user, teamId(input.caseId));
     if (!current) throw new TeamCaseError('案件が見つかりません。', 404);
     const next = applyTeamAction(current, input.command, input.revision);
-    if (!(await store.update(user, next, current.revision)))
+    if (next !== current && !(await store.update(user, next, current.revision)))
       throw new TeamCaseError('別の操作で更新されています。再読込してください。', 409);
     return json({ caseFile: next });
   } catch (error) {
@@ -88,6 +79,8 @@ export async function PATCH(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const value = await body(request);
     if (!value || typeof value !== 'object' || Array.isArray(value))
       throw new TeamCaseError('入力を確認してください。');

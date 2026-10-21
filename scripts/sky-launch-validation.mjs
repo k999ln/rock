@@ -1,11 +1,14 @@
-// Acceptance records bind actual observations to one immutable release candidate.
-// This validates the records; it does not execute or certify a customer journey.
+import { auditSkyLaunch } from './lib/sky-launch-audit.mjs';
+
+// Historical acceptance remains in the report. A release-stage check additionally
+// requires actual observations bound to one immutable candidate.
 export const launchStages = {
   basic: [],
   marketplace: ['basic'],
   paid: ['marketplace'],
   clients: ['basic'],
-  complete: ['paid', 'clients'],
+  focused: ['basic'],
+  complete: ['paid', 'clients', 'focused'],
 };
 export const launchGateStages = {
   'public-entry': 'basic',
@@ -20,129 +23,78 @@ export const launchGateStages = {
   'paid-tool-entitlement': 'paid',
   'cross-client-identity': 'clients',
   'mini-device-acceptance': 'clients',
+  'focused-csv-payment': 'focused',
+  'focused-cloud-ai': 'focused',
+  'focused-customer-journey': 'focused',
+  'focused-tool-inventory': 'focused',
+  'focused-apple-pay': 'focused',
 };
-const candidateKeys = [
-  'sourceCommit',
-  'buildSha256',
-  'deploymentId',
-  'siteVersion',
-];
+const candidateKeys = ['sourceCommit', 'buildSha256', 'deploymentId', 'siteVersion'];
 const fail = (condition, message) => {
   if (!condition) throw new Error(message);
 };
 function candidateValid(candidate) {
-  return (
-    candidate &&
-    /^[a-f0-9]{40}$/.test(candidate.sourceCommit) &&
-    /^[a-f0-9]{64}$/.test(candidate.buildSha256) &&
-    typeof candidate.deploymentId === 'string' &&
-    candidate.deploymentId.length > 0 &&
-    Number.isSafeInteger(candidate.siteVersion) &&
-    candidate.siteVersion > 0
-  );
+  return candidate &&
+    typeof candidate.sourceCommit === 'string' && /^[a-f0-9]{40}$/.test(candidate.sourceCommit) &&
+    typeof candidate.buildSha256 === 'string' && /^[a-f0-9]{64}$/.test(candidate.buildSha256) &&
+    typeof candidate.deploymentId === 'string' && candidate.deploymentId.trim().length > 0 &&
+    Number.isSafeInteger(candidate.siteVersion) && candidate.siteVersion > 0;
 }
-export function validateSkyLaunchReport(
-  report,
-  { evidenceExists, readEvidence },
-) {
-  fail(
-    report.schema === 'sky-service-launch/1' &&
-      report.completeLaunchScope === 'web-os-app-paid-marketplace',
-    'Sky complete-launch scope must include Web, OS and app clients.',
-  );
-  fail(
-    report.stageDependencies &&
-      Object.keys(report.stageDependencies).length ===
-        Object.keys(launchStages).length &&
-      Object.entries(launchStages).every(([stage, dependencies]) => {
-        const actual = report.stageDependencies[stage];
-        return (
-          Object.hasOwn(report.stageDependencies, stage) &&
-          Array.isArray(actual) &&
-          actual.length === dependencies.length &&
-          dependencies.every((dependency) => actual.includes(dependency))
-        );
-      }),
-    'Sky stage dependencies must preserve complete -> paid + clients.',
-  );
-  fail(
-    Array.isArray(report.gates) &&
-      report.gates.length === Object.keys(launchGateStages).length,
-    'Sky launch report must preserve all acceptance gates.',
-  );
-  const ids = new Set();
-  for (const gate of report.gates) {
-    fail(
-      Object.hasOwn(launchGateStages, gate.id) &&
-        !ids.has(gate.id) &&
-        gate.stage === launchGateStages[gate.id] &&
-        ['passed', 'in_progress', 'not_verified', 'blocked'].includes(
-          gate.status,
-        ) &&
-        ['ROCK', 'JOINT', 'OWNER', 'EXTERNAL'].includes(gate.owner) &&
-        typeof gate.acceptance === 'string' &&
-        gate.acceptance.trim() &&
-        typeof gate.environment === 'string' &&
-        gate.environment.trim() &&
-        Array.isArray(gate.evidence),
-      `Invalid launch gate: ${gate.id}`,
-    );
-    ids.add(gate.id);
-    for (const path of gate.evidence)
-      fail(
-        typeof path === 'string' && evidenceExists(path),
-        `Missing launch evidence file: ${path}`,
-      );
-    if (gate.status !== 'passed') continue;
-    fail(
-      candidateValid(report.candidate),
-      `Missing immutable candidate binding: ${gate.id}`,
-    );
-    fail(
-      typeof gate.acceptanceEvidence === 'string' &&
-        gate.evidence.includes(gate.acceptanceEvidence),
-      `Missing actual acceptance record: ${gate.id}`,
-    );
-    const proof = readEvidence(gate.acceptanceEvidence);
-    fail(
-      proof &&
-        proof.schema === 'sky-launch-acceptance/1' &&
-        proof.gateId === gate.id &&
-        proof.result === 'passed' &&
-        proof.execution === 'actual' &&
-        proof.environment === gate.environment &&
-        typeof proof.observedAt === 'string' &&
-        Number.isFinite(Date.parse(proof.observedAt)),
-      `Not an actual accepted observation: ${gate.id}`,
-    );
-    fail(
-      candidateValid(proof.candidate) &&
-        candidateKeys.every(
-          (key) => proof.candidate[key] === report.candidate[key],
-        ),
-      `Acceptance candidate mismatch: ${gate.id}`,
-    );
+
+export function validateSkyLaunchReport(report, { evidenceExists, readEvidence }) {
+  // Keep canonical focused/standalone scope and its existing historical evidence
+  // audit. Do not replace this with the Site branch's older twelve-gate report.
+  const historical = auditSkyLaunch(report, evidenceExists);
+  const reportStages = Object.keys(report.stageDependencies);
+  fail((reportStages.length === 5 || reportStages.length === 6) &&
+    reportStages.every((stage) => Object.hasOwn(launchStages, stage)),
+    'Sky stage dependencies must preserve focused, paid and client acceptance.');
+  for (const [stage, dependencies] of Object.entries(launchStages)) {
+    if (stage === 'complete' && !Object.hasOwn(report.stageDependencies, stage)) continue;
+    const actual = report.stageDependencies[stage];
+    fail(Object.hasOwn(report.stageDependencies, stage) && Array.isArray(actual) &&
+      actual.length === dependencies.length && dependencies.every((dependency) => actual.includes(dependency)),
+    `Sky stage dependencies must preserve ${stage} acceptance.`);
   }
-  const requiredStages = (stage, visited = new Set()) => {
+  fail(report.gates.length === Object.keys(launchGateStages).length,
+    'Sky launch report must preserve all seventeen acceptance gates.');
+  fail(report.candidate == null || candidateValid(report.candidate),
+    'Missing immutable candidate binding.');
+  const accepted = new Set();
+  const historicalOnly = [];
+  for (const gate of report.gates) {
+    fail(Object.hasOwn(launchGateStages, gate.id) && gate.stage === launchGateStages[gate.id],
+      `Invalid launch gate: ${gate.id}`);
+    fail(typeof gate.acceptance === 'string' && gate.acceptance.trim() &&
+      typeof gate.environment === 'string' && gate.environment.trim(),
+    `Invalid launch gate: ${gate.id}`);
+    if (gate.status !== 'passed') continue;
+    if (gate.acceptanceEvidence === undefined) {
+      historicalOnly.push(gate);
+      continue;
+    }
+    fail(candidateValid(report.candidate), `Missing immutable candidate binding: ${gate.id}`);
+    fail(typeof gate.acceptanceEvidence === 'string' && gate.evidence.includes(gate.acceptanceEvidence),
+      `Missing actual acceptance record: ${gate.id}`);
+    const proof = readEvidence(gate.acceptanceEvidence);
+    fail(proof && proof.schema === 'sky-launch-acceptance/1' && proof.gateId === gate.id &&
+      proof.result === 'passed' && proof.execution === 'actual' && proof.environment === gate.environment &&
+      typeof proof.observedAt === 'string' && Number.isFinite(Date.parse(proof.observedAt)),
+    `Not an actual accepted observation: ${gate.id}`);
+    fail(candidateValid(proof.candidate) && candidateKeys.every((key) => proof.candidate[key] === report.candidate[key]),
+      `Acceptance candidate mismatch: ${gate.id}`);
+    accepted.add(gate.id);
+  }
+  const requiredStages = (stage) => {
     fail(Object.hasOwn(launchStages, stage), `Unknown launch stage: ${stage}`);
-    fail(!visited.has(stage), 'Launch stage dependency cycle.');
-    const next = new Set(visited).add(stage);
-    return new Set([
-      stage,
-      ...launchStages[stage].flatMap((dependency) => [
-        ...requiredStages(dependency, next),
-      ]),
-    ]);
+    return new Set([stage, ...launchStages[stage].flatMap((dependency) => [...requiredStages(dependency)])]);
   };
   const missing = (stage) => {
     const needed = requiredStages(stage);
-    return report.gates.filter(
-      (gate) => needed.has(gate.stage) && gate.status !== 'passed',
-    );
+    return report.gates.filter((gate) => needed.has(gate.stage) && !accepted.has(gate.id));
   };
-  fail(
-    report.completeLaunchClaim === (missing('complete').length === 0),
-    'Complete-launch claim disagrees with integrated acceptance.',
-  );
-  return { missing, stages: Object.keys(launchStages) };
+  if (report.integratedLaunchClaim !== undefined)
+    fail(report.integratedLaunchClaim === (missing('complete').length === 0),
+      'Integrated-launch claim disagrees with candidate acceptance.');
+  return { stages: Object.keys(launchStages), missing, historical, historicalOnly };
 }

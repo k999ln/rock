@@ -75,7 +75,7 @@ export function outputFor(tool: string, input: string) {
   const value = input.trim();
   if (!value) throw new Error('入力を1行以上入れてください。');
   const header = (title: string) =>
-    `# ${title}\n\n> 端末内で入力を添えた定型テンプレートです。AIによる分析・外部サービスの実行はしていません。\n\n入力:\n${value}\n`;
+    `# ${title}\n\n> 端末内で入力を添えた定型テンプレートです。siによる分析・外部サービスの実行はしていません。\n\n入力:\n${value}\n`;
   switch (tool) {
     case 'coconala-proposal-draft':
       return `${header('ココナラ提案文の下書き')}\n## 提案文\nご依頼内容を確認しました。要件・納期・納品形式を確認したうえで、対応範囲と進め方を整理してご提案します。\n\n## 送信前確認\n- 納期と成果物の形式\n- 修正回数と追加作業の扱い\n- 面談・外部連絡の要否\n- 送信前に本人が元ページの条件を確認\n\n※応募・送信は行っていません。`;
@@ -98,7 +98,7 @@ export function outputFor(tool: string, input: string) {
     case 'telegram-notifications':
       return `${header('Telegram通知・承認')}\n## 通知下書き\nSkyの仕事が完了しました。結果を確認し、必要なら次の操作を本人が承認してください。\n\n## 接続境界\nBot接続と送信先の確認が済むまで、Telegramへは送信しません。`;
     case 'producthunt-discovery':
-      return `${header('外部ツール候補の発見')}\n## 調査条件\n- 分野: ローカルAI・業務自動化・クリエイター向け\n- 確認: 公式URL、ライセンス、更新日、料金、権限、導入条件\n- 判定: Sky接続候補 / 要確認 / 対象外\n\n公式API未接続のため、候補条件の作成までです。`;
+      return `${header('外部ツール候補の発見')}\n## 調査条件\n- 分野: ローカルsi・業務自動化・クリエイター向け\n- 確認: 公式URL、ライセンス、更新日、料金、権限、導入条件\n- 判定: Sky接続候補 / 要確認 / 対象外\n\n公式API未接続のため、候補条件の作成までです。`;
     default: {
       const check = Object.hasOwn(connectionChecks, tool)
         ? connectionChecks[tool]

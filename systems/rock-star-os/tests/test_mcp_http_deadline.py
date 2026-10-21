@@ -116,6 +116,16 @@ class MCPDeadlineTests(unittest.TestCase):
         self.assertNotIn(TOKEN, str(caught.exception))
         self.assertNotIn('chosen text', str(caught.exception))
 
+    def test_https_requires_nonempty_ca_before_network(self):
+        with patch('mcp_broker.http.socket.create_connection') as connect:
+            for ca_file in (None, '', False, 0, [], {}):
+                with self.subTest(ca_type=type(ca_file).__name__):
+                    with self.assertRaisesRegex(ValueError, 'explicit CA required'):
+                        MCPHttpClient('https://127.0.0.1:19747', [POLICY],
+                            authorization='Bearer '+TOKEN, ca_file=ca_file,
+                            upstream_principal='PUBLIC-DEADLINE-OWNER')
+            connect.assert_not_called()
+
     def test_normal_http_and_tls_preserve_rpc_headers_and_business_identity(self):
         for tls in (False, True):
             with self.subTest(tls=tls):

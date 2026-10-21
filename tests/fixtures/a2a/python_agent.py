@@ -52,13 +52,13 @@ class Handler(BaseHTTPRequestHandler):
             params = request.get("params")
             if not isinstance(params, dict):
                 raise ValueError("invalid params")
-            if method == "message/send":
+            if method == "SendMessage":
                 message = params.get("message", {})
                 task_id = f"py-task-{len(self.server.tasks) + 1}"
                 text = " ".join(part.get("text", "") for part in message.get("parts", []))
                 self.server.tasks[task_id] = {"text": text, "messageId": message.get("messageId")}
                 result = {"task": {"id": task_id, "contextId": "py-context-1", "status": {"state": "TASK_STATE_SUBMITTED"}}}
-            elif method == "tasks/get":
+            elif method == "GetTask":
                 task = self.server.tasks.get(params.get("id"))
                 if task is None:
                     raise KeyError("task not found")
@@ -67,7 +67,7 @@ class Handler(BaseHTTPRequestHandler):
                     "status": {"state": "TASK_STATE_COMPLETED"},
                     "artifacts": [{"name": "summary", "parts": [{"text": f"Python received: {task['text']}"}]}],
                 }
-            elif method == "tasks/cancel":
+            elif method == "CancelTask":
                 if params.get("id") not in self.server.tasks:
                     raise KeyError("task not found")
                 result = {"id": params["id"], "contextId": "py-context-1", "status": {"state": "TASK_STATE_CANCELED"}}

@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-17",
+  "scope": "Sky conversation manual provider/model and default auto local discovery",
+  "sourceMain": "f10b7309fd5a5099e7cc3cfe0a74c6092205ad12",
+  "mainIntegrated": false,
+  "focusedTestsPassed": 25,
+  "verify": "all_stages_exit_0",
+  "testsPassed": 2277,
+  "existingSkipped": 1,
+  "log": "/private/tmp/sky-auto-verify-complete.log",
+  "ui": "authentication_blocked_not_accepted",
+  "uiUrl": "http://localhost:5226/chat",
+  "realCloudRequests": 0,
+  "providerSpendUsd": 0,
+  "productionBillingEnabled": false,
+  "limitations": [
+    "Cloud free entitlement unverified; no auto Cloud candidate enabled",
+    "Task fit uses coder/general heuristic, not measured best-model ranking",
+    "Default local Ollama endpoint unreachable",
+    "Provider discovery is a model list, not inference acceptance"
+  ]
+}

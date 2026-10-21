@@ -1,10 +1,48 @@
 # Rock star OS — P1 実装と検証手順
 
-現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
+現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [進捗・再開条件](../project.md)。Android/AOSPとLinux nativeの実績を分けます。
 
-対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。初期製品端末の優先候補はBlackBerryへ更新し、以下のPixel計画は比較候補として保持する。
+対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。最初の物理対象はPixel 10 GL066／frankel。BlackBerry-firstは退役済みで、Linux/QEMU Developer Previewは独立した受入系列として保持する。
 
-2026-09-05。状態: OS部品を組み始めた試作。**OSイメージのビルド/起動、Pixel実機、第三者Storeは未検証。** [基本設計](os-development-design.md) の一般構想と、本書の実装範囲を区別する。
+## Pixel si端末アプリの実装（2026-10-16）
+
+Home候補・4画面・実行先別の下書き・明示音声adapter・成果書出しと、Brokerの依頼時one-shot schedulerを[Pixel実装正本](native-os-integration.md#pixel-terminal-implementation)へ同期する。通常の署名済APK更新で、OS flashではない。[同一候補の台帳](evidence/pixel-si-terminal-implementation.json)にhost/emulator/GL066/全OSを分けて記録する。`gradle -p android :core:test :shell:testDebugUnitTest :automation:testDebugUnitTest :tool-sdk:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :automation:assembleDebug :automation:assembleDebugAndroidTest :article-tool:assembleDebug :shell:lintDebug :automation:lintDebug`、接続先を固定した`TerminalHomeIntegrationTest`と`LocalAiServiceIntegrationTest`を使う。既存開発署名との一致と復旧用APK退避を先に確認し、`adb install -r`でdataを保持する。既定Homeの自動変更、app data clear、OS署名鍵生成、bootloader操作は含めない。
+
+このpreviewの戻し方: まずAndroidの「デフォルトのアプリ→ホームアプリ」で元のLauncherを選ぶ。APKは `~/Library/RockstarOS/pixel-si-terminal-20261016/candidate/`、更新前は同directoryの`before/`、hashは`artifact-manifest.json`へ保存する。画面だけを戻す場合も、既存署名/versionとShell API 18が一致することを確認してから`before/dev.rock.shell.apk`を`adb install -r`する。Broker/DBを消去せず、Broker/Tool全体の巻戻しはschema/契約の互換確認を別に行う。旧APK退避と署名照合は実施、旧版への実rollbackは未試験。Developer Previewの試験署名であり、本番配布用の鍵やOS imageではない。
+
+<a id="pixel-local-model-acceptance"></a>
+
+### Pixelの端末内LLM・Jennifer候補を受け入れる
+
+署名検証ライブラリはGradleが`os/physical/model-crypto-artifact-lock.json`のSHA-256/sizeをcompile前に照合する。Soongは同じJARを`ROCK_MODEL_CRYPTO_JAR`からstageする別経路で、専用Linuxでの全OS compileは未実行。
+
+[モデル導入と有限計画の契約](native-os-integration.md#pixel-local-jennifer)と[候補台帳](evidence/pixel-local-jennifer.json)を読む。Shell/Brokerはprivate API 20の組で更新する。現行Local Action AssistantはversionCode 3 / Binder API 4 / 同じ開発signer、記事Toolは従来のAPIを使う。release catalogは空で、Developer Preview APKの署名済一modelだけを対象とする。2026-10-17に対象Pixelへ6候補APK更新と固定GGUF転送が成功。その後ADB接続が切れ、現v4推論試験は再接続待ち。
+
+1. 再接続したPixelの`frankel`/GL066・OS・空き容量・解除状態、現在のAPK/Signerを読み取り確認する。既存APKを退避し、same signerを確認してからShell/Brokerを`adb install -r`で更新する。`-d`/uninstall/data clear/OS flashは使わない。UI/Brokerは同じAPI 20、runtimeは承認済みAPI 4であることを確認する。
+2. 公式固定版の`Qwen3-0.6B-Q8_0.gguf`（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`）を端末へコピーする。Sky → 端末内モデル → license/hash/容量を確認 → 同意 → system pickerで該当GGUFを選ぶ。ready receiptとstatusを読む。任意modelや外部URLをruntimeへ直接渡さない。
+3. Homeで「端末内LLM」を選び、syntheticな記事下書きを依頼する。仕事画面で選択Toolと端末処理/保存の同意を確認し、Jenniferの計画を開始する。充電・停止・熱のgateを維持し、実2工程がreviewへ進むこと、成果の内容・保存先picker・再読込み・同ID二重作成防止を確認する。modelの提案本文とTool成果を分ける。
+4. 依頼中の全停止→再開で古い計画が遅れて実行されないこと、壊れたfile/未知profile/署名不一致/容量不足で旧仕事・成果が残ることを確認する。再起動後は自動推論せず、Skyから保存済みモデルを明示して再読込みする。実アプリ/端末再起動と全損復旧を分ける。
+
+通常のAndroid CIは`LocalModelImportBoundaryTest`（実署名/descriptor/同意/小容量hash fixture）とShellのcatalog Binder試験を行う。実GGUFの推論試験は自動で走らせず、未実行ならskipとして表示する。専用Pixelでの明示受入時だけ、Broker自身のexternal filesへ同hash weightを置き、次を実行する（合成入力の一仕事だけを作る）。
+
+```sh
+adb shell am instrument -w \
+  -e class dev.rock.automation.LocalModelPlanningAcceptanceTest \
+  -e rockPhysicalModelAcceptance true \
+  dev.rock.automation.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+この試験は`frankel`・充電・全停止でない状態を必須とし、本人の停止状態を変更しない。外部file名は`getExternalFilesDir(null)/Qwen3-0.6B-Q8_0.gguf`。`local-jennifer-acceptance.json`へjob/profile/weight/artifact hashを保存し、最後に自分が作った合成jobだけを中止する。system picker操作、UIでの本人review、再起動、文章品質は別に確認する。このcommandやビルド成功を実機実行済みと記載しない。
+
+## 現行の再開入口（2026-10-11）
+
+現行の段階と同SHAの証拠は[Android workstreamの表](workstreams/07-android-device-local-ai.md#現行の検証段階と再開条件2026-10-11)を優先する。既存JDK 17／SDK 35を使ったhostの実SQLite・AIDL／Java compileに加え、`19ef1020`の[Android API 35 CI](https://github.com/k999ln/rock/actions/runs/38153378733)が成功した。Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationのautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件とAPK build／lintが対象で、RockstarOS imageの起動試験ではない。
+
+後続`57f63413`の精算済み同ID照合はCore 121件＋automation JVM 16件のhost合格まで確認済み。これを含む候補`7f5ed361`の[Android CI](https://github.com/k999ln/rock/actions/runs/38155308883)も成功し、artifact XMLでCore 121、automation JVM 16、SDK 7、emulator automation 43合格／2物理skip、Shell 7、Operator 6を確認した。追加の精算Core 5ケースとShell表示1ケースが実行されている。[2026-09-16のPixel非破壊再起動23/23](evidence/android-pixel-10-prefull-physical-20260916.json)は当時の試験署名APKの証拠として保持し、今回の変更や全OSの受入へ加算しない。全OS build／正式署名／flash・boot／OTA・rollback／data・Keystore喪失復元は未受入。
+
+以下のP1設計、2026-09-05の到達点と試験記録は履歴を含む。再開作業は末尾の現行手順を使い、過去の「未実施」や件数を現状の集計へ流用しない。
+
+2026-09-05。状態: OS部品を組み始めた試作。**OSイメージのビルド/起動、Pixel実機、第三者Storeは未検証。** [基本設計](rockstaros-complete-design.md) の一般構想と、本書の実装範囲を区別する。
 
 ## 1. 今回の到達目標
 
@@ -74,7 +112,9 @@ gradle -p android :tool-sdk:testDebugUnitTest
 # adb installは選択した仮想端末に試作Toolをインストールする。
 adb -s <エミュレーターのserial> install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
 # 他の端末を切り離したテスト環境で、BrokerとテストAPKを導入して実行する。
-gradle -p android :automation:connectedDebugAndroidTest
+gradle -p android :automation:connectedDebugAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.rockAcceptanceTarget=emulator \
+  -Pandroid.testInstrumentationRunnerArguments.notClass=dev.rock.automation.LocalAiServiceIntegrationTest
 
 # 既存Web/PCの回帰検証は別に継続
 npm run verify
@@ -83,6 +123,8 @@ npm run verify
 macOS/外付けExFATではAppleDouble補助ファイルがGradleの生成物削除と衝突した。生成物だけをローカルAPFS等へ移す場合は `-ProckBuildRoot=/絶対パス/生成物専用ディレクトリ` を付け、`node --experimental-strip-types scripts/check-os-parity.mjs /同じディレクトリ/core/classes/java/main` を使う。ソース/履歴は移動しない。
 
 GitHubの `.github/workflows/android.yml` は共通コアテスト、Broker／Shell／Toolの3 APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートを7日保存し、全試験成功時だけ署名とhashを照合した3 APKを[Pixel 10向けのP1アプリ試験](android-trial.md)の成果物として7日保存する。APKのストア公開や正式OS配布ではない。
+
+試験引数 `rockAcceptanceTarget` の既定値は `physical` で、backupの2つのhardware-backed鍵とeSIM/A2Aのhardware attestation受入を要求する。GitHubの使い捨て端末では `emulator` を明示し、Androidのhardware名が `ranchu` / `goldfish` の場合だけ、backupのsoftware Keystore観測と同期済み暗号化ファイルを検査する。同じprofileでeSIM/A2Aのhardware必須鍵の発行拒否・alias残留なしを検査し、実機合格へ換算しない。Shell・automation・operatorの3suiteは `--continue` で全て実行し、1件でも失敗した場合はCIを失敗にする。
 
 2026-09-05、commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4・端末接続2テスト、2APKのbuild/lint、Java↔TypeScriptの36項目照合が成功した。端末試験では実Tool APKのBinder呼出、Android SQLiteを閉じて開き直した後の次工程、成果物の保存、二重結果の拒否、本人確認を検証。もう1件は充電必須・永続周期ジョブの登録と権限設定を確認した。実際の周期発火・画面OFF・OS再起動・不正署名/UIDの拒否はまだ検証していない。
 
@@ -116,12 +158,12 @@ Gradleはpackage/versionをbuild設定から補うが、Soongではその設定�
 
 参照したr4のrelease mapでは `aosp_current` は `bp4a` のalias。選択するlunchは `rock_cf_x86_64_phone-aosp_current-userdebug`。[固定版のrelease map](https://android.googlesource.com/platform/build/release/+/refs/tags/android-16.0.0_r4/release_config_map.textproto)
 
-## 7. 次に埋めるべき穴
+## 7. 次の作業と受入条件（2026-10-11）
 
-1. Android実行環境で不正署名/UID・充電断・画面OFF・再起動・停止の受入試験。正常なBinder/SQLite接続2テストは成功済み。
-2. Linux上でSoongの実ビルドとCuttlefish起動。成功後にOS03を更新する。
-3. 任意コードを許可する前に専用隔離・強制資源制御・capability設計を実装/否定試験。
-4. 別作者鍵、正式manifest schema、署名catalog、導入・更新・失効と第三者のサンプル。
-5. ファイル取込、保持/削除/export、通知Inbox、実業務の外部接続と費用計測。決済・分配は別途確定する。
+1. `7f5ed361`のAndroid CIとJUnit／instrumentationは確認済み。さらにsourceを変更する場合は新しいSHAのCIを確認し、配布前には対象APK hashを固定する。以前の合格を後続修正や実機へ転記しない。
+2. 同一候補の合成Cloud Agentで見積→native hold→明示承認→切断→再接続→同jobの進捗・結果・精算receiptを接続検証する。実Provider鍵・契約・請求・fundingを未受入のまま本番executionを有効化しない。
+3. 現行APKを対象にPixel 10 GL066の画面ロック／unlock、プロセス終了・再起動、セッション失効／再連携、同一ID復旧を非破壊で受け入れる。過去のPixel合格とAPI 35 emulatorの物理専用skipは別に扱う。
+4. 全OSは[Device Preview手順](phone-preview-20260911.md)に従い、専用Linux x86_64・source／vendor inventory・同一imageのbuild検査条件を満たしてから進める。正式署名・純正復旧artifact・backup復元・rollbackのgateが揃うまでflashを行わない。CuttlefishとLinux/QEMUの成功もPixel full OSへ転用しない。
+5. 第三者作者の導入／失効、強制資源隔離、ファイル保持／export、通知、実業務接続・費用計測は[進捗・再開条件](../project.md)と各workstreamの残課題から選ぶ。既存のPlatform Core／SDK／backup契約を再利用し、旧P1の未実装一覧だけで作り直さない。
 
 作業進捗: [project.md](../project.md)。検証した範囲と残課題: [検証記録](validation.md)。

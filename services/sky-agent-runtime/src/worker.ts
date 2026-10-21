@@ -4,18 +4,26 @@ import {
   type WorkflowStep,
 } from 'cloudflare:workers';
 import { NonRetryableError } from 'cloudflare:workflows';
+import { decryptRemoteAiTextInput } from '../../../lib/remote-ai-text-input';
+import { RemoteAiTextStore } from '../../../lib/remote-ai-text-store';
+import { executeReservedRemoteAiText } from '../../../lib/remote-ai-text-execution';
+import { loadVerifiedRemoteAiTextRate } from '../../../lib/remote-ai-text-rate';
+import { remoteAiPricingGateAccepted, remoteAiTextExecutionAvailable } from '../../../lib/remote-ai-pricing-gate';
 import {
   a2aDelegationStore,
+  A2ADelegationStoreError,
   type A2ADelegation,
 } from '../../../lib/a2a-delegation-store';
 import {
   a2aDelegationExecutionEnabled,
   a2aEgressOriginAllowed,
 } from '../../../lib/a2a-authorization';
+import { a2aAgentCardSha256, a2aAgentDirectory } from '../../../lib/a2a-agent-directory';
 import {
   createA2AClient,
   parseA2AAgentCard,
   type A2AAgentCard,
+  type A2APackageRuntimeInvocation,
   type A2ATask,
   type A2ATaskState,
 } from '../../../lib/a2a-client';
@@ -28,19 +36,35 @@ import { normalizeA2AArtifacts } from '../../../lib/a2a-artifacts';
 import {
   verifyStoredA2ABrokerAuthorization,
 } from '../../../lib/a2a-broker-authorization';
-import { trustedA2ABrokerKeyResolver } from '../../../lib/a2a-broker-trust';
+import { a2aBrokerDeviceKeyResolver } from '../../../lib/a2a-broker-trust';
 import { trustedA2AUsageKeyResolver, verifyA2AUsageReceipt } from '../../../lib/a2a-usage-receipt';
+import { a2aPriceQuoteDigest, verifyA2APriceQuote } from '../../../lib/a2a-price-quote';
+import { verifySkyPackageRuntimeBindingForDispatch } from '../../../lib/sky-package-runtime-binding-dispatch';
+import { parseStoredSkyPackageRuntimeBinding, SkyPackageRuntimeBindingStore } from '../../../lib/sky-package-runtime-binding-store';
+import { skyToolPackageStore } from '../../../lib/sky-tool-package-store';
 import { reconcileKnownEsimProviderOrders } from '../../../lib/esim-reconciliation-worker';
+import { rockstarEntitlementStore } from '../../../lib/rockstar-entitlement-claim';
 
 type DelegationParams = {
   ownerUserId: string;
   delegationId: string;
   operation?: 'dispatch' | 'reconcile';
 };
+type RemoteAiTextParams = { ownerUserId: string; executionId: string };
 type AgentCardSnapshot = {
   name: string;
   description: string;
   version: string;
+  cardSha256: string;
+  capabilities?: {
+    streaming?: boolean;
+    pushNotifications?: boolean;
+    extensions?: Array<{
+      uri: string;
+      description?: string;
+      required?: boolean;
+    }>;
+  };
   supportedInterfaces: Array<{
     url: string;
     protocolBinding: string;
@@ -72,6 +96,9 @@ const terminalRemoteStates = new Set<A2ATaskState>([
   'TASK_STATE_FAILED',
   'TASK_STATE_CANCELED',
   'TASK_STATE_REJECTED',
+]);
+const terminalDelegationStates = new Set<A2ADelegation['state']>([
+  'remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected',
 ]);
 
 async function captureTaskArtifacts(
@@ -121,13 +148,120 @@ interface Env {
   DB: D1Database;
   A2A_INPUT_ENCRYPTION_KEY?: string;
   A2A_DELEGATION_EXECUTION_ENABLED?: string;
+  ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string;
   A2A_EGRESS_ALLOWED_ORIGINS?: string;
   A2A_TRUSTED_BROKER_KEYS?: string;
   A2A_TRUSTED_USAGE_KEYS?: string;
+  A2A_PRICE_QUOTES_REQUIRED?: string;
+  SKY_PACKAGE_RUNTIME_BINDING_TRUSTED_KEYS?: string;
+  SKY_PACKAGE_RUNTIME_EXTENSION_URI?: string;
+  ROCKSTAR_PUBLIC_ORIGIN?: string;
   ESIMGO_API_KEY?: string;
   ESIMGO_PROFILE_HASH_SECRET?: string;
   ESIMGO_INSTALL_MATERIAL_KEY?: string;
   A2A_DELEGATION_WORKFLOW: Workflow<DelegationParams>;
+  REMOTE_AI_TEXT_WORKFLOW: Workflow<RemoteAiTextParams>;
+  REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string;
+  REMOTE_AI_TRUSTED_RATE_KEYS?: string;
+  SKY_REMOTE_LLM_ENABLED?: string;
+  OPENAI_API_KEY?: string;
+}
+
+function validRemoteAiTextParams(value: unknown): value is RemoteAiTextParams {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const candidate = value as Record<string, unknown>;
+  return typeof candidate.ownerUserId === 'string' && candidate.ownerUserId.length > 0 &&
+    candidate.ownerUserId.length <= 128 && typeof candidate.executionId === 'string' &&
+    /^[A-Za-z0-9._:-]{1,128}$/.test(candidate.executionId);
+}
+
+async function cancelUnsentRemoteAiText(
+  store: RemoteAiTextStore,
+  ownerUserId: string,
+  executionId: string,
+  approvalDigest: string,
+) {
+  try {
+    const row = await store.cancelBeforeSend(ownerUserId, executionId, approvalDigest);
+    await store.deleteInputAfterTerminal(ownerUserId, executionId);
+    return row?.state === 'cancelled';
+  } catch { return false; }
+}
+
+/** Runs only previously approved, reserved requests with encrypted prompt material. */
+export class RemoteAiTextWorkflow extends WorkflowEntrypoint<Env, RemoteAiTextParams> {
+  async run(event: WorkflowEvent<RemoteAiTextParams>, step: WorkflowStep) {
+    if (!validRemoteAiTextParams(event.payload))
+      throw new NonRetryableError('Remote LLM workflow payload is invalid.');
+    const { ownerUserId, executionId } = event.payload;
+    const store = new RemoteAiTextStore(this.env.DB);
+    if (!remoteAiPricingGateAccepted() || !remoteAiTextExecutionAvailable(this.env))
+      return { outcome: 'execution_disabled' };
+    const record = await store.get(ownerUserId, executionId);
+    if (!record || record.state !== 'reserved')
+      return { outcome: 'not_dispatchable' };
+    if (this.env.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED === 'true' &&
+      !(await rockstarEntitlementStore(this.env.DB).hasActiveScope(ownerUserId, 'rockstaros_access'))) {
+      await cancelUnsentRemoteAiText(store, ownerUserId, executionId, record.approvalDigest);
+      return { outcome: 'service_entitlement_required' };
+    }
+    const encrypted = await store.getInput(ownerUserId, executionId);
+    if (!encrypted || encrypted.expiresAt <= Date.now() || !this.env.REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY)
+      return { outcome: 'encrypted_input_unavailable' };
+    let intent;
+    try {
+      intent = await step.do('decrypt-and-validate-approved-input', async () => {
+        const current = await store.get(ownerUserId, executionId);
+        if (!current || current.state !== 'reserved' || current.approvalDigest !== record.approvalDigest)
+          return null;
+        const input = await decryptRemoteAiTextInput(encrypted, this.env.REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY!, ownerUserId, executionId);
+        if (input.requestId !== current.requestId || input.maximumBudgetMinor !== current.quote.approvedCapMinor ||
+          input.model !== current.quote.ceiling.modelId) return null;
+        return input;
+      });
+    } catch {
+      await cancelUnsentRemoteAiText(store, ownerUserId, executionId, record.approvalDigest);
+      return { outcome: 'approved-input-unavailable' };
+    }
+    if (!intent) {
+      await cancelUnsentRemoteAiText(store, ownerUserId, executionId, record.approvalDigest);
+      return { outcome: 'approved-input-mismatch' };
+    }
+    let verified;
+    try {
+      verified = await loadVerifiedRemoteAiTextRate(
+        this.env.DB, this.env.REMOTE_AI_TRUSTED_RATE_KEYS, intent.model, record.quote.ceiling.currency,
+      );
+    } catch {
+      await cancelUnsentRemoteAiText(store, ownerUserId, executionId, record.approvalDigest);
+      return { outcome: 'signed-rate-card-unavailable' };
+    }
+    let result;
+    try {
+      result = await step.do('send-approved-remote-llm-once',
+        { retries: { limit: 1, delay: '1 second' }, timeout: '5 minutes' },
+        async () => executeReservedRemoteAiText({
+          store, ownerId: ownerUserId, id: executionId, approvalDigest: record.approvalDigest,
+          intent, verified, runtimeEnv: this.env,
+          onOutputProgress: async ({ outputBytes, observedAt }) => {
+            await store.updateLiveEstimate(ownerUserId, executionId, outputBytes, observedAt);
+          },
+        }).then(({ record: current, providerSubmission }) => ({ state: current?.state ?? 'missing', providerSubmission })),
+      );
+    } catch {
+      const current = await store.get(ownerUserId, executionId);
+      if (current?.state === 'reserved')
+        await cancelUnsentRemoteAiText(store, ownerUserId, executionId, record.approvalDigest);
+      else if (current?.state === 'sending')
+        await store.markUnreconciled(ownerUserId, executionId, 'WORKFLOW_DISPATCH_INTERRUPTED');
+      else if (current?.state === 'unreconciled')
+        await store.deleteInputAfterTerminal(ownerUserId, executionId);
+      return { outcome: current?.state === 'sending' ? 'usage_or_result_reconciliation_required' : 'dispatch_preflight_failed' };
+    }
+    if (result.state === 'completed' || result.state === 'unreconciled')
+      await store.deleteInputAfterTerminal(ownerUserId, executionId);
+    return { outcome: result.state, providerSubmission: result.providerSubmission };
+  }
 }
 
 function providerUsageReceipt(task: A2ATask) {
@@ -154,6 +288,7 @@ async function settleProviderUsage(
   if (!current || current.remoteTaskId !== taskId ||
     !['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected'].includes(current.state))
     return 'not_terminal';
+  if (current.priceQuoteDigest && !current.priceQuote) return 'rejected';
   let value: unknown;
   try { value = JSON.parse(serializedReceipt); } catch { return 'rejected'; }
   if (!value || typeof value !== 'object' || Array.isArray(value)) return 'rejected';
@@ -171,6 +306,8 @@ async function settleProviderUsage(
     issuedAt: receipt?.issuedAt as number,
     delegationCreatedAt: current.createdAt,
     delegationLimitMinor: current.budgetLimitMinor,
+    providerId: current.priceQuote?.providerId,
+    pricingVersion: current.priceQuote?.pricingVersion,
   }, trustedA2AUsageKeyResolver(env.A2A_TRUSTED_USAGE_KEYS));
   if (!valid) return 'rejected';
   await store.settleUsageReceipt(ownerUserId, delegationId, value as import('../../../lib/a2a-usage-receipt').A2AUsageReceipt);
@@ -192,8 +329,51 @@ async function verifyNativeApproval(
     inputSha256: string;
     protocolVersion: string;
   },
+  expectedLiveAgentCardSha256?: string,
 ) {
-  if (!env.A2A_TRUSTED_BROKER_KEYS) return false;
+  if (delegation.continueWhileDeviceOffline !== true) return false;
+  if (env.A2A_PRICE_QUOTES_REQUIRED === 'true' && !delegation.priceQuoteDigest) return false;
+  if (delegation.priceQuoteDigest) {
+    const quote = delegation.priceQuote;
+    if (!quote || !env.A2A_TRUSTED_USAGE_KEYS ||
+      quote.maxAmountMinor !== delegation.budgetLimitMinor ||
+      quote.currency !== delegation.budgetCurrency ||
+      await a2aPriceQuoteDigest(quote) !== delegation.priceQuoteDigest ||
+      !(await verifyA2APriceQuote(quote, {
+        agentOrigin: delegation.targetOrigin,
+        agentName: delegation.targetAgentName,
+        agentVersion: delegation.targetAgentVersion,
+        requestSha256: delegation.inputSha256,
+        currency: delegation.budgetCurrency,
+        maximumBudgetMinor: delegation.budgetLimitMinor,
+      }, trustedA2AUsageKeyResolver(env.A2A_TRUSTED_USAGE_KEYS)))) return false;
+  }
+  if (delegation.packageRuntimeBindingId || delegation.packageRuntimeBindingDigest) {
+    const bindingStore = new SkyPackageRuntimeBindingStore(env.DB);
+    const bindingRow = delegation.packageRuntimeBindingId
+      ? await bindingStore.get(delegation.packageRuntimeBindingId)
+      : null;
+    const [agent, currentPackage] = await Promise.all([
+      a2aAgentDirectory(env.DB).list(ownerUserId).then((agents) => agents.find((candidate) =>
+        candidate.origin === delegation.targetOrigin &&
+        candidate.agentName === delegation.targetAgentName &&
+        candidate.agentVersion === delegation.targetAgentVersion) ?? null),
+      bindingRow?.status === 'active'
+        ? skyToolPackageStore(env.DB).verifiedRegistryPackage(bindingRow.packageKey, bindingRow.manifestSha256)
+        : Promise.resolve(null),
+    ]);
+    if (!(await verifySkyPackageRuntimeBindingForDispatch({
+      bindingRow,
+      bindingId: delegation.packageRuntimeBindingId,
+      bindingDigest: delegation.packageRuntimeBindingDigest,
+      agent,
+      package: currentPackage,
+      priceQuote: delegation.priceQuote,
+      trustedKeys: env.SKY_PACKAGE_RUNTIME_BINDING_TRUSTED_KEYS,
+      runtimeExtensionUri: env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
+      expectedLiveAgentCardSha256,
+    }))) return false;
+  }
   const [budget, reservation] = await Promise.all([
     store.getBudget(ownerUserId, delegation.parentJobId),
     store.getBudgetReservation(ownerUserId, delegationId),
@@ -236,10 +416,13 @@ async function verifyNativeApproval(
       budgetCurrency: delegation.budgetCurrency,
       budgetLimitMinor: delegation.budgetLimitMinor,
       parentBudgetLimitMinor: delegation.parentBudgetLimitMinor,
+      continueWhileDeviceOffline: delegation.continueWhileDeviceOffline,
       deadlineAt: delegation.deadlineAt,
+      priceQuoteDigest: delegation.priceQuoteDigest || undefined,
+      packageRuntimeBindingDigest: delegation.packageRuntimeBindingDigest || undefined,
       message,
     },
-    trustedA2ABrokerKeyResolver(env.A2A_TRUSTED_BROKER_KEYS),
+    a2aBrokerDeviceKeyResolver(env.DB, env.A2A_TRUSTED_BROKER_KEYS),
   );
 }
 
@@ -269,6 +452,9 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
       return this.reconcile(ownerUserId, delegationId, step);
     if (!a2aDelegationExecutionEnabled(this.env.A2A_DELEGATION_EXECUTION_ENABLED))
       return { outcome: 'execution_disabled' };
+    if (this.env.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED === 'true' &&
+      !(await rockstarEntitlementStore(this.env.DB).hasActiveScope(ownerUserId, 'agents')))
+      return { outcome: 'service_entitlement_required' };
     const initial = await store.get(ownerUserId, delegationId);
     if (
       !initial ||
@@ -285,6 +471,8 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
         );
       return { outcome: 'egress_origin_not_allowed' };
     }
+    if (!initial.priceQuoteDigest || !initial.priceQuote)
+      return { outcome: 'price_quote_required' };
     const claimed = await step.do('claim-approved-delegation', async () => {
       const current = await store.get(ownerUserId, delegationId);
       if (!current) return null;
@@ -356,6 +544,7 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
     }
 
     let card: A2AAgentCard;
+    let cardSnapshot: AgentCardSnapshot;
     try {
       const cardValue = await step.do(
         'discover-approved-agent',
@@ -408,6 +597,7 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
             throw new NonRetryableError('Broker proof expired or was revoked before discovery.');
           const client = createA2AClient({
             allowedOrigins: [current.targetOrigin],
+            packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
             fetch: a2aFetchFor(this.env),
           });
           const discovered = await client.discoverAtOrigin(current.targetOrigin);
@@ -420,6 +610,22 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
             name: discovered.name,
             description: discovered.description,
             version: discovered.version,
+            cardSha256: await a2aAgentCardSha256(discovered),
+            ...(discovered.capabilities ? {
+              capabilities: {
+                ...(discovered.capabilities.streaming !== undefined
+                  ? { streaming: discovered.capabilities.streaming } : {}),
+                ...(discovered.capabilities.pushNotifications !== undefined
+                  ? { pushNotifications: discovered.capabilities.pushNotifications } : {}),
+                ...(discovered.capabilities.extensions ? {
+                  extensions: discovered.capabilities.extensions.map(({ uri, description, required }) => ({
+                    uri,
+                    ...(description !== undefined ? { description } : {}),
+                    ...(required !== undefined ? { required } : {}),
+                  })),
+                } : {}),
+              },
+            } : {}),
             supportedInterfaces: discovered.supportedInterfaces.map(
               ({ url, protocolBinding, protocolVersion }) => ({
                 url,
@@ -431,7 +637,13 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
           return snapshot;
         },
       );
-      card = parseA2AAgentCard(cardValue);
+      cardSnapshot = cardValue as AgentCardSnapshot;
+      card = parseA2AAgentCard(
+        cardValue,
+        this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI
+          ? [this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI]
+          : [],
+      );
     } catch (error) {
       const current = await store.get(ownerUserId, delegationId);
       if (current?.state === 'dispatching')
@@ -518,6 +730,8 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
           delegationId,
           current,
           message,
+          undefined,
+          cardSnapshot.cardSha256,
         ))) {
           await store.markPreflightFailed(ownerUserId, delegationId, current.revision);
           throw new NonRetryableError('A fresh trusted RockstarOS Broker proof is required.');
@@ -534,6 +748,7 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
         try {
           const client = createA2AClient({
             allowedOrigins: [current.targetOrigin],
+            packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
             fetch: a2aFetchFor(this.env),
             authorizeDelegation: async (intent) => {
               const latest = await store.get(ownerUserId, delegationId);
@@ -549,15 +764,52 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
                   latest,
                   message,
                   intent,
+                  cardSnapshot.cardSha256,
                 ))
               )
                 throw new Error('PERSISTED_APPROVAL_MISMATCH');
             },
           });
+          let packageRuntimeInvocation: A2APackageRuntimeInvocation | undefined;
+          if (current.packageRuntimeBindingId && current.packageRuntimeBindingDigest) {
+            const row = await new SkyPackageRuntimeBindingStore(this.env.DB).get(current.packageRuntimeBindingId);
+            const binding = row?.status === 'active' && row.digest === current.packageRuntimeBindingDigest
+              ? parseStoredSkyPackageRuntimeBinding(row) : null;
+            if (!row || !binding || binding.runtimeExtensionUri !== this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI)
+              throw new NonRetryableError('The approved Package runtime binding is no longer available.');
+            packageRuntimeInvocation = {
+              runtimeExtensionUri: binding.runtimeExtensionUri,
+              bindingId: binding.bindingId,
+              bindingDigest: row.digest,
+              packageKey: binding.packageKey,
+              manifestSha256: binding.manifestSha256,
+              operationId: binding.operationId,
+              inputSchemaSha256: binding.inputSchemaSha256,
+              outputSchemaSha256: binding.outputSchemaSha256,
+              pricingVersion: binding.pricingVersion,
+            };
+          }
           const outcome = await client.sendMessage(
             card,
             current.messageId,
             message,
+            packageRuntimeInvocation,
+            {
+              schema: 'rockstar-a2a-delegation-context/1',
+              ownerUserId: current.ownerUserId,
+              parentJobId: current.parentJobId,
+              delegationId: current.id,
+              currency: current.budgetCurrency,
+              budgetLimitMinor: current.budgetLimitMinor,
+              ...(this.env.ROCKSTAR_PUBLIC_ORIGIN &&
+                /^https:\/\/[^/?#]+(?:\/[^?#]*)?$/u.test(this.env.ROCKSTAR_PUBLIC_ORIGIN)
+                ? {
+                    receiptCallbackUrl:
+                      `${this.env.ROCKSTAR_PUBLIC_ORIGIN.replace(/\/+$/u, '')}` +
+                      `/api/sky/a2a-delegations/${current.id}/usage-receipt`,
+                  }
+                : {}),
+            },
           );
           if (outcome.kind !== 'task') {
             const latest = await store.get(ownerUserId, delegationId);
@@ -647,6 +899,9 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
       await store.markCancelUnconfirmed(ownerUserId, delegationId, current.revision);
       return { outcome: 'cancel_unconfirmed_after_retry' };
     }
+    if (terminalDelegationStates.has(current.state) && current.artifactsCaptured &&
+      (await store.getBudgetReservation(ownerUserId, delegationId))?.state !== 'held')
+      return { outcome: 'not_dispatchable' };
     if (
       !a2aEgressOriginAllowed(
         current.targetOrigin,
@@ -654,6 +909,9 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
       )
     )
       return { outcome: 'egress_origin_not_allowed' };
+
+    if (terminalDelegationStates.has(current.state))
+      await store.noteTerminalReconciliationAttempt(ownerUserId, delegationId, current.remoteTaskId!);
 
     const cardValue = await step.do(
       'discover-agent-for-reconciliation',
@@ -671,6 +929,7 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
           throw new NonRetryableError('Remote task is no longer reconcilable.');
         const client = createA2AClient({
           allowedOrigins: [latest.targetOrigin],
+          packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
           fetch: a2aFetchFor(this.env),
         });
         const discovered = await client.discoverAtOrigin(latest.targetOrigin);
@@ -683,6 +942,22 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
           name: discovered.name,
           description: discovered.description,
           version: discovered.version,
+          cardSha256: await a2aAgentCardSha256(discovered),
+          ...(discovered.capabilities ? {
+            capabilities: {
+              ...(discovered.capabilities.streaming !== undefined
+                ? { streaming: discovered.capabilities.streaming } : {}),
+              ...(discovered.capabilities.pushNotifications !== undefined
+                ? { pushNotifications: discovered.capabilities.pushNotifications } : {}),
+              ...(discovered.capabilities.extensions ? {
+                extensions: discovered.capabilities.extensions.map(({ uri, description, required }) => ({
+                  uri,
+                  ...(description !== undefined ? { description } : {}),
+                  ...(required !== undefined ? { required } : {}),
+                })),
+              } : {}),
+            },
+          } : {}),
           supportedInterfaces: discovered.supportedInterfaces.map(
             ({ url, protocolBinding, protocolVersion }) => ({
               url,
@@ -694,9 +969,11 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
         return snapshot;
       },
     );
-    const card = parseA2AAgentCard(cardValue);
+    const card = parseA2AAgentCard(cardValue,
+      this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI ? [this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI] : []);
     const client = createA2AClient({
       allowedOrigins: [current.targetOrigin],
+      packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
       fetch: a2aFetchFor(this.env),
     });
 
@@ -803,13 +1080,11 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
         if (!latest?.remoteTaskId)
           throw new NonRetryableError('Remote task ID is unavailable.');
         const task = await client.getTask(card, latest.remoteTaskId);
-        await captureTaskArtifacts(
-          this.env,
-          store,
-          ownerUserId,
-          delegationId,
-          task,
-        );
+        // A terminal state can precede artifact/receipt persistence. Read the
+        // known task again, but never reopen it or accept conflicting results.
+        if (!latest.artifactsCaptured && (!terminalDelegationStates.has(latest.state) ||
+          latest.remoteState === task.status.state))
+          await captureTaskArtifacts(this.env, store, ownerUserId, delegationId, task);
         const snapshot: TaskSnapshot = {
           id: task.id,
           contextId: task.contextId,
@@ -821,7 +1096,10 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
     );
     const latest = await store.get(ownerUserId, delegationId);
     if (!latest) return { outcome: 'delegation_missing' };
-    const reconciled = await store.reconcileRemoteTask(
+    const terminal = terminalDelegationStates.has(latest.state);
+    if (terminal && latest.remoteState !== task.state)
+      return { outcome: 'terminal_task_state_mismatch', state: latest.state };
+    const reconciled = terminal ? latest : await store.reconcileRemoteTask(
       ownerUserId,
       delegationId,
       latest.revision,
@@ -846,14 +1124,49 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
 }
 
 async function startReadyDelegations(env: Env) {
+  const textStore = new RemoteAiTextStore(env.DB);
+  await textStore.expireAllBeforeSend(Date.now());
+  if (remoteAiPricingGateAccepted() && remoteAiTextExecutionAvailable(env)) {
+    const preparedText = await textStore.listPrepared(25, Date.now());
+    for (const execution of preparedText) {
+      const id = `llm-${execution.id}`;
+      try {
+        await env.REMOTE_AI_TEXT_WORKFLOW.create({
+          id,
+          params: { ownerUserId: execution.ownerUserId, executionId: execution.id },
+        });
+      } catch {
+        // The D1 record and deterministic Workflow ID make repeated scans safe.
+        await env.REMOTE_AI_TEXT_WORKFLOW.get(id).catch(() => undefined);
+      }
+    }
+  }
   const store = a2aDelegationStore(env.DB);
-  await store.purgeExpiredInputs(Date.now());
+  const scheduledAt = Date.now();
+  await store.purgeExpiredInputs(scheduledAt);
+  await store.expireOverdueBeforeDispatch(scheduledAt, 50);
+  const overdueRemoteTasks = await store.listOverdueRemoteTasks(scheduledAt, 50);
+  for (const delegation of overdueRemoteTasks) {
+    try {
+      // A deadline triggers a cancellation request. The task remains unresolved
+      // until the Agent reports a terminal state and usage is reconciled.
+      await store.requestCancel(delegation.ownerUserId, delegation.id, scheduledAt);
+    } catch (error) {
+      if (!(error instanceof A2ADelegationStoreError) ||
+        error.code !== 'delegation_revision_conflict') throw error;
+      // A concurrent completion/cancel owns the newer revision; the next scan
+      // will reconcile whatever state the durable store now contains.
+    }
+  }
   if (
     a2aDelegationExecutionEnabled(env.A2A_DELEGATION_EXECUTION_ENABLED) &&
     env.A2A_INPUT_ENCRYPTION_KEY
   ) {
     const prepared = await store.listPrepared(50);
     for (const delegation of prepared) {
+      if (env.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED === 'true' &&
+        !(await rockstarEntitlementStore(env.DB).hasActiveScope(delegation.ownerUserId, 'agents')))
+        continue;
       if (
         !a2aEgressOriginAllowed(
           delegation.targetOrigin,
@@ -871,10 +1184,16 @@ async function startReadyDelegations(env: Env) {
             operation: 'dispatch',
           },
         });
-      } catch {
-        // Deterministic IDs make repeat scans harmless; a live or completed
-        // instance keeps its identity and the D1 state remains authoritative.
-        await env.A2A_DELEGATION_WORKFLOW.get(id).catch(() => undefined);
+      } catch (createError) {
+        // Only treat a failed create as an idempotent duplicate when the
+        // deterministic instance can actually be retrieved. Surface storage,
+        // binding, and configuration failures so scheduled dispatch is not
+        // silently reported as successful while work remains queued.
+        try {
+          await env.A2A_DELEGATION_WORKFLOW.get(id);
+        } catch {
+          throw createError;
+        }
       }
     }
   }

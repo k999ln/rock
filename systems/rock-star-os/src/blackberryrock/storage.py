@@ -162,14 +162,28 @@ class Store:
                 return _decode_job(row)
             if status not in ALLOWED_TRANSITIONS[current_status]:
                 raise ValueError(f"cannot transition job from {current_status} to {status}")
-            connection.execute(
-                "UPDATE jobs SET status = ?, result_json = ?, updated_at = ? WHERE id = ?",
+            # The read above does not start sqlite3's implicit write transaction.
+            # Compare the observed version so a concurrent callback cannot overwrite
+            # a saved terminal result or a cancellation while waiting for the writer lock.
+            changed = connection.execute(
+                """UPDATE jobs SET status = ?, result_json = ?, updated_at = ?
+                   WHERE id = ? AND status = ? AND result_json IS ? AND updated_at = ?""",
                 (
                     status,
                     json.dumps(result, separators=(",", ":")) if result is not None else None,
                     _now(),
                     job_id,
+                    current_status,
+                    row["result_json"],
+                    row["updated_at"],
                 ),
-            )
+            ).rowcount
             updated = connection.execute("SELECT * FROM jobs WHERE id = ?", (job_id,)).fetchone()
+            if not changed:
+                # An identical response lost in transit is still safe to acknowledge.
+                if updated is not None and updated["status"] == status:
+                    saved_result = json.loads(updated["result_json"]) if updated["result_json"] else None
+                    if saved_result == result:
+                        return _decode_job(updated)
+                raise ValueError("job changed while transition was being applied")
         return _decode_job(updated)

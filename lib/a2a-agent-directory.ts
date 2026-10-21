@@ -33,6 +33,14 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value);
 }
 
+export async function a2aAgentCardSha256(card: A2AAgentCard) {
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(canonicalJson(card)),
+  );
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
 function approvedOrigin(value: string) {
   let url: URL;
   try {
@@ -105,10 +113,7 @@ export async function discoverA2AAgent(
       'A2A endpointがAgent Cardのoriginと異なるため登録しません。接続先を別途本人が許可してください。',
       'interface_origin_mismatch',
     );
-  const digest = await crypto.subtle.digest('SHA-256', bytes);
-  const cardSha256 = Array.from(new Uint8Array(digest), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('');
+  const cardSha256 = await a2aAgentCardSha256(card);
   return {
     origin,
     cardUrl: `${origin}/.well-known/agent-card.json`,
@@ -171,6 +176,6 @@ export function a2aAgentDirectory(db: Pick<D1Database, 'prepare'>) {
   };
 }
 
-export function parseStoredA2AAgent(cardJson: string) {
-  return parseA2AAgentCard(JSON.parse(cardJson) as unknown);
+export function parseStoredA2AAgent(cardJson: string, supportedRequiredExtensions: string[] = []) {
+  return parseA2AAgentCard(JSON.parse(cardJson) as unknown, supportedRequiredExtensions);
 }

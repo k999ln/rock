@@ -14,6 +14,8 @@
 
 0.1起動基盤は2boot・権限・永続化PASSです。0.2ではnative Sky（C/Cairo、直接framebuffer）、UID分離したplatformとWallet simulator、bubblewrap/seccompの有限Tool隔離、署名HTTPS取得、実TLS runner、A/B stage0を実装し、Linux6.18.50のguest統合・native入力・A/B8+13boot・Wallet/ATMを限定条件で実証しています。実行入口は`verify-platform.py`、`update/verify-qemu.py`、`ui/`のGUI検証です。最新PASS/FAILは実reportを参照し、実装済みと実証済みを区別します。BlackBerry用BSP、実Wallet・ATMは未完了。Toolの成功を収益として扱いません。
 
+Platform検証は上記host入口で専用guestを起動してください。搭載された `platform/guest-test.py` はroot／ARM64でもkernelの `rock.platform.verify=1` が正確に1個ない限り副作用前に拒否します。flagの自動補完はせず、host入口は新しい検証用userdataを作ります。[現行の起動条件とsource試験範囲](../../../docs/native-os-validation.md#platform検証guestの起動条件sys152026-10-03)。
+
 現在の文章整形は、IPC・入力上限・永続化を検証する診断用処理です。製品のToolをOSへ大量に直接組み込む方針ではありません。製品のToolは独立した配布パッケージとし、標準Skyから導入するという要求を維持します。
 
 ## ビルド

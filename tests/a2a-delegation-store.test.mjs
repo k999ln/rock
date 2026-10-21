@@ -21,6 +21,7 @@ function makeDb(t) {
       readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'),
     );
   return {
+    sqlite,
     prepare(sql) {
       return {
         bind(...values) {
@@ -74,6 +75,7 @@ const baseInput = {
   budgetCurrency: 'USD',
   budgetLimitMinor: 500,
   parentBudgetLimitMinor: 900,
+  continueWhileDeviceOffline: true,
   deadlineAt: 2_000,
 };
 const encryptedInput = (input = baseInput) => ({
@@ -109,6 +111,20 @@ async function approved(store, input = baseInput, now = 1_050) {
   };
 }
 
+async function completedAndCaptured(store, input, now = 1_100) {
+  const prepared = await approved(store, input, now - 50);
+  const claimed = await store.claimDispatch('alice', prepared.delegation.id, now);
+  const sending = await store.beginRemoteSend('alice', claimed.id, claimed.revision, now + 1);
+  const completed = await store.recordTaskReceipt('alice', sending.id, sending.revision,
+    { id: `remote-${input.id}`, state: 'TASK_STATE_COMPLETED' }, now + 2);
+  await store.saveArtifact('alice', completed.id, completed.remoteTaskId, {
+    ciphertext: 'fixture-ciphertext', nonce: 'fixture-nonce',
+    artifactSha256: 'e'.repeat(64), keyVersion: 'aes-256-gcm-v1',
+  }, 24, now + 3);
+  return store.markArtifactsCaptured('alice', completed.id, completed.remoteTaskId,
+    completed.revision, now + 4);
+}
+
 function childInput(sequence, overrides = {}) {
   const suffix = String(sequence).padStart(12, '0');
   return {
@@ -121,6 +137,137 @@ function childInput(sequence, overrides = {}) {
     ...overrides,
   };
 }
+
+void test('delegation read paths preserve quote, binding, predecessor and legacy normalization', async (t) => {
+  const { db, store } = await setup(t);
+  const predecessor = await completedAndCaptured(store, childInput(30, {
+    deadlineAt: 5_000, budgetLimitMinor: 100,
+  }));
+  const quote = JSON.parse(readFileSync(new URL('../android/core/src/test/resources/a2a-price-quote-v1.json', import.meta.url), 'utf8'));
+  const input = childInput(31, {
+    deadlineAt: Date.now() + 60_000, budgetLimitMinor: 200,
+    predecessorDelegationId: predecessor.id,
+    priceQuote: quote, priceQuoteDigest: 'c'.repeat(64),
+    packageRuntimeBindingId: 'fixture-package-binding', packageRuntimeBindingDigest: 'd'.repeat(64),
+  });
+  const draft = (await store.prepare('alice', input, 1_200)).delegation;
+  assert.deepEqual(draft.priceQuote, quote);
+  assert.equal(draft.packageRuntimeBindingId, input.packageRuntimeBindingId);
+  assert.equal(draft.packageRuntimeBindingDigest, input.packageRuntimeBindingDigest);
+  assert.equal(draft.continueWhileDeviceOffline, true);
+  assert.equal(draft.predecessorDelegationId, predecessor.id);
+  assert.deepEqual(await store.get('alice', input.id), draft);
+  assert.deepEqual(await store.getByIdempotency('alice', parentId, input.idempotencyKey, input.inputSha256), draft);
+  assert.deepEqual((await store.listForParent('alice', parentId)).find(({ id }) => id === input.id), draft);
+  assert.deepEqual((await store.prepare('alice', input, 1_201)).delegation, draft);
+  const prepared = await store.approve('alice', input.id, input.authorizationSha256, encryptedInput(input), 1_250);
+  assert.deepEqual((await store.listPrepared()).find(({ id }) => id === input.id), prepared);
+  const claimed = await store.claimDispatch('alice', input.id, 1_300);
+  const sending = await store.beginRemoteSend('alice', input.id, claimed.revision, 1_301);
+  const running = await store.recordTaskReceipt('alice', input.id, sending.revision,
+    { id: 'fixture-readback-task', state: 'TASK_STATE_WORKING' }, 1_302);
+  // These existing scheduler projections omit predecessor; refactoring must
+  // not silently change their output or drop any other persisted field.
+  const scheduled = { ...running, predecessorDelegationId: null };
+  assert.deepEqual((await store.listOverdueRemoteTasks(input.deadlineAt)).find(({ id }) => id === input.id), scheduled);
+  assert.deepEqual((await store.listForReconciliation()).find(({ id }) => id === input.id), scheduled);
+  assert.equal(await store.get('bob', input.id), null);
+  assert.equal(await store.getByIdempotency('bob', parentId, input.idempotencyKey, input.inputSha256), null);
+  assert.deepEqual(await store.listForParent('bob', parentId), []);
+
+  // Legacy or damaged stored quote data remains a null quote for dispatch to
+  // reject; it is not converted into a usable provider authorization here.
+  db.sqlite.prepare('UPDATE agent_delegations SET price_quote_json = ? WHERE id = ?').run('{invalid', input.id);
+  assert.equal((await store.get('alice', input.id)).priceQuote, null);
+  db.sqlite.prepare("UPDATE agent_delegations SET price_quote_json = NULL, price_quote_digest = '' WHERE id = ?").run(input.id);
+  const legacy = await store.get('alice', input.id);
+  assert.equal(legacy.priceQuote, null); assert.equal(legacy.priceQuoteDigest, '');
+});
+
+void test('cloud delegation cannot be queued without affirmative offline-continuation consent', async (t) => {
+  const { store } = await setup(t);
+  await assert.rejects(
+    store.prepare('alice', childInput(8, { continueWhileDeviceOffline: false }), 1_000),
+    (error) => error instanceof A2ADelegationStoreError &&
+      error.code === 'invalid_offline_continuation_consent',
+  );
+});
+
+void test('lost draft responses can be recovered only by owner, parent, key, and input hash', async (t) => {
+  const { store } = await setup(t);
+  const input = childInput(1);
+  const prepared = await store.prepare('alice', input, 1_000);
+  assert.equal(
+    (await store.getByIdempotency('alice', parentId, input.idempotencyKey, input.inputSha256)).id,
+    prepared.delegation.id,
+  );
+  assert.equal(await store.getByIdempotency('alice', parentId, input.idempotencyKey, 'f'.repeat(64)), null);
+  assert.equal(await store.getByIdempotency('bob', parentId, input.idempotencyKey, input.inputSha256), null);
+  assert.equal(await store.getByIdempotency('alice', '00000000-0000-4000-8000-000000000099', input.idempotencyKey, input.inputSha256), null);
+});
+
+void test('Zema persists a reviewed result-to-successor edge once under the same owner and parent', async (t) => {
+  const { db, store } = await setup(t);
+  const predecessor = await completedAndCaptured(store, childInput(16, { deadlineAt: 5_000 }));
+  const successorInput = childInput(17, {
+    deadlineAt: 6_000,
+    predecessorDelegationId: predecessor.id,
+  });
+  const successor = await store.prepare('alice', successorInput, 1_200);
+  assert.equal(successor.created, true);
+  assert.equal(successor.delegation.predecessorDelegationId, predecessor.id);
+  assert.equal((await store.listForParent('alice', parentId))
+    .find((item) => item.id === successor.delegation.id).predecessorDelegationId, predecessor.id);
+  const recovered = await store.prepare('alice', successorInput, 1_201);
+  assert.equal(recovered.created, false);
+  assert.equal(recovered.delegation.id, successor.delegation.id);
+
+  await assert.rejects(
+    store.prepare('alice', childInput(18, {
+      deadlineAt: 6_000,
+      predecessorDelegationId: predecessor.id,
+    }), 1_202),
+    (error) => error instanceof A2ADelegationStoreError && error.code === 'a2a_predecessor_conflict',
+  );
+  const unreviewed = await store.prepare('alice', childInput(19), 1_203);
+  await assert.rejects(
+    store.prepare('alice', childInput(20, {
+      deadlineAt: 6_000,
+      predecessorDelegationId: unreviewed.delegation.id,
+    }), 1_204),
+    (error) => error instanceof A2ADelegationStoreError && error.code === 'a2a_predecessor_conflict',
+  );
+
+  const root = await completedAndCaptured(store, childInput(21, {
+    deadlineAt: 8_000, budgetLimitMinor: 100,
+  }), 1_300);
+  const middle = await completedAndCaptured(store, childInput(22, {
+    deadlineAt: 9_000,
+    budgetLimitMinor: 100,
+    predecessorDelegationId: root.id,
+  }), 1_400);
+  await assert.rejects(
+    store.prepare('alice', childInput(23, {
+      deadlineAt: 10_000,
+      budgetLimitMinor: 100,
+      predecessorDelegationId: middle.id,
+    }), 1_500),
+    (error) => error instanceof A2ADelegationStoreError && error.code === 'a2a_predecessor_depth_exceeded',
+  );
+  assert.throws(() => db.sqlite.prepare(`INSERT INTO agent_delegations (
+    id, owner_user_id, parent_job_id, predecessor_delegation_id, idempotency_key,
+    message_id, target_origin, target_agent_name, target_agent_version, protocol_version,
+    input_sha256, authorization_sha256, budget_currency, budget_limit_minor,
+    parent_budget_limit_minor, continue_while_device_offline, deadline_at, state,
+    revision, created_at, updated_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`)
+    .run('00000000-0000-4000-8000-000000000023', 'alice', parentId, middle.id,
+      'zema:parent-1:child-23-raw', 'child-message-23-raw', 'https://agent.example.test',
+      'Fixture agent', '2.1', '1.0', 'f'.repeat(64), 'e'.repeat(64), 'USD', 500,
+      900, 1, 10_000, 'awaiting_approval', 1_500, 1_500),
+    /A2A_PARENT_PREDECESSOR_NOT_REVIEWABLE/,
+  );
+});
 
 void test('approvals reserve child caps from one owner-scoped parent budget', async (t) => {
   const { store } = await setup(t);
@@ -212,6 +359,10 @@ void test('final provider usage receipt settles the held child cap once and keep
     id: 'remote-task-9', state: 'TASK_STATE_COMPLETED',
   }, 1_120);
   assert.equal(received.state, 'remote_completed');
+  const captured = await store.markArtifactsCaptured('alice', received.id, received.remoteTaskId, received.revision, 1_121);
+  assert.equal(captured.artifactsCaptured, 1);
+  assert.ok((await store.listForReconciliation()).some(row => row.id === captured.id),
+    'a terminal task with captured artifacts still needs its held usage receipt reconciled');
   const receipt = {
     schema: 'rock-a2a-provider-usage-receipt/1', providerId: 'provider-x', keyId: 'usage-key',
     receiptId: 'usage-9', ownerUserId: 'alice', parentJobId: parentId,
@@ -236,6 +387,32 @@ void test('final provider usage receipt settles the held child cap once and keep
     (error) => error instanceof A2ADelegationStoreError && error.code === 'usage_receipt_conflict',
   );
   assert.equal(await store.getUsageReceipt('bob', prepared.delegation.id), null);
+  assert.equal((await store.listForReconciliation()).some(row => row.id === captured.id), false,
+    'a terminal task leaves the scan only once both artifacts and usage have been reconciled');
+});
+
+void test('unresolved terminal reads rotate through the bounded scan without changing state or held budgets', async t => {
+  const { store } = await setup(t);
+  const first = await approved(store, childInput(21, { budgetLimitMinor: 100 }));
+  const claim = await store.claimDispatch('alice', first.delegation.id, 1_100);
+  const sending = await store.beginRemoteSend('alice', claim.id, claim.revision, 1_101);
+  const terminal = await store.recordTaskReceipt('alice', sending.id, sending.revision,
+    { id: 'terminal-to-reconcile', state: 'TASK_STATE_COMPLETED' }, 1_102);
+  await store.markArtifactsCaptured('alice', terminal.id, terminal.remoteTaskId, terminal.revision, 1_103);
+  const second = await approved(store, childInput(22, { budgetLimitMinor: 100 }));
+  const otherClaim = await store.claimDispatch('alice', second.delegation.id, 1_110);
+  const otherSending = await store.beginRemoteSend('alice', otherClaim.id, otherClaim.revision, 1_111);
+  await store.recordTaskReceipt('alice', otherSending.id, otherSending.revision,
+    { id: 'working-to-reconcile', state: 'TASK_STATE_WORKING' }, 1_112);
+  assert.equal((await store.listForReconciliation(1))[0].id, terminal.id);
+  const before = await store.get('alice', terminal.id);
+  await store.noteTerminalReconciliationAttempt('bob', terminal.id, terminal.remoteTaskId, 1_120);
+  await store.noteTerminalReconciliationAttempt('alice', terminal.id, 'wrong-task', 1_120);
+  assert.equal((await store.listForReconciliation(1))[0].id, terminal.id);
+  await store.noteTerminalReconciliationAttempt('alice', terminal.id, terminal.remoteTaskId, 1_120);
+  assert.equal((await store.listForReconciliation(1))[0].id, otherSending.id);
+  assert.deepEqual(await store.get('alice', terminal.id), { ...before, updatedAt: 1_120 });
+  assert.equal((await store.getBudget('alice', parentId)).reservedMinor, 200);
 });
 
 void test('budget cannot be settled without a persisted matching usage receipt or above the reservation', async (t) => {
@@ -501,7 +678,38 @@ void test('durable reconciliation polls remote tasks and sends cancellation once
     1_206,
   );
   assert.equal(captured.artifactsCaptured, 1);
-  assert.deepEqual(await store.listForReconciliation(), []);
+  assert.equal((await store.getBudgetReservation('alice', captured.id)).state, 'held');
+  assert.equal((await store.listForReconciliation()).length, 1, 'usage receipt remains unresolved');
+});
+
+void test('scheduled deadline cleanup expires pre-send work and releases its held budget', async (t) => {
+  const { store } = await setup(t);
+  const overdueApproval = await store.prepare('alice', childInput(13, { deadlineAt: 1_100 }), 1_000);
+  const overduePrepared = await approved(store, childInput(14, { deadlineAt: 1_100, budgetLimitMinor: 200 }), 1_050);
+  assert.equal((await store.getBudget('alice', parentId)).reservedMinor, 200);
+
+  assert.equal(await store.expireOverdueBeforeDispatch(1_100), 2);
+  assert.equal((await store.get('alice', overdueApproval.delegation.id)).state, 'expired');
+  assert.equal((await store.get('alice', overduePrepared.delegation.id)).state, 'expired');
+  assert.equal((await store.getBudgetReservation('alice', overduePrepared.delegation.id)).state, 'released');
+  assert.equal((await store.getBudget('alice', parentId)).reservedMinor, 0);
+  assert.equal(await store.expireOverdueBeforeDispatch(1_101), 0);
+});
+
+void test('deadline scan requests cancellation for overdue remote work without claiming it stopped', async (t) => {
+  const { store } = await setup(t);
+  const prepared = await approved(store, childInput(15, { deadlineAt: 2_000 }), 1_050);
+  const claimed = await store.claimDispatch('alice', prepared.delegation.id, 1_100);
+  const sending = await store.beginRemoteSend('alice', claimed.id, claimed.revision, 1_101);
+  const running = await store.recordTaskReceipt('alice', sending.id, sending.revision,
+    { id: 'remote-deadline-task', state: 'TASK_STATE_WORKING' }, 1_102);
+  const overdue = await store.listOverdueRemoteTasks(2_000);
+  assert.deepEqual(overdue.map((item) => item.id), [running.id]);
+
+  const requested = await store.requestCancel('alice', running.id, 2_000);
+  assert.equal(requested.state, 'cancel_requested');
+  assert.equal(requested.remoteState, 'TASK_STATE_WORKING');
+  assert.equal((await store.getBudgetReservation('alice', running.id)).state, 'held');
 });
 
 void test('terminal remote tasks stay reconcilable until their encrypted result is captured', async (t) => {
@@ -558,7 +766,8 @@ void test('terminal remote tasks stay reconcilable until their encrypted result 
     1_105,
   );
   assert.equal(captured.artifactsCaptured, 1);
-  assert.deepEqual(await store.listForReconciliation(), []);
+  assert.equal((await store.getBudgetReservation('alice', captured.id)).state, 'held');
+  assert.equal((await store.listForReconciliation()).length, 1, 'usage receipt remains unresolved');
   assert.equal(
     (await store.listEvents('alice', completed.id)).at(-1).eventType,
     'remote_artifacts_captured',

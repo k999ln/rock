@@ -1,0 +1,441 @@
+diff --git a/App.tsx b/App.tsx
+index ed312d0..6713a66 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
+ import {
+   ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform,
+   Pressable, ScrollView, StatusBar, StyleSheet, Text,
+-  TextInput, View,
++  NativeModules, TextInput, View,
+ } from 'react-native';
+ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+ import {executeTool, parseNativeToolCall, proposalFor} from './src/core/toolBroker';
+@@ -83,13 +83,29 @@ function AssistantApp() {
+ 
+   const handleLoad = useCallback(async () => {
+     if (!model) return;
+-    try { setBusy(true); await modelRuntime.load(model.uri); setModelLoaded(true); await repository.appendAudit('model_loaded', model.name); await refreshData(); }
+-    catch (error) { const detail = error instanceof Error ? error.message : String(error); await repository.appendAudit('error', `model load: ${detail}`); Alert.alert('ロード失敗', detail); }
++    try {
++      setBusy(true);
++      NativeModules.RockLocalAiBridge?.setStatus('loading', false);
++      const identity = await modelRuntime.load(model.uri, model.sha256);
++      NativeModules.RockLocalAiBridge?.setModelIdentity(identity.sha256, identity.bytes);
++      NativeModules.RockLocalAiBridge?.setStatus('ready', true);
++      setModelLoaded(true); await repository.appendAudit('model_loaded', model.name); await refreshData();
++    }
++    catch (error) {
++      NativeModules.RockLocalAiBridge?.setStatus('error', false);
++      setModelLoaded(false);
++      const detail = error instanceof Error ? error.message : String(error);
++      await repository.appendAudit('error', `model load: ${detail}`); Alert.alert('ロード失敗', detail);
++    }
+     finally { setBusy(false); }
+   }, [model, refreshData]);
+ 
+   const handleUnload = useCallback(async () => {
+-    setBusy(true); try { await modelRuntime.unload(); setModelLoaded(false); await repository.appendAudit('model_unloaded', model?.name ?? 'unknown'); await refreshData(); } finally { setBusy(false); }
++    setBusy(true); try {
++      await modelRuntime.unload();
++      NativeModules.RockLocalAiBridge?.setStatus('no_model', false);
++      setModelLoaded(false); await repository.appendAudit('model_unloaded', model?.name ?? 'unknown'); await refreshData();
++    } finally { setBusy(false); }
+   }, [model, refreshData]);
+ 
+   const handleDeleteModel = useCallback(() => {
+@@ -97,7 +113,11 @@ function AssistantApp() {
+     Alert.alert('モデルを削除', `${model.name} のアプリ内コピーを削除します。元ファイルは削除しません。`, [
+       {text: 'キャンセル', style: 'cancel'},
+       {text: '削除', style: 'destructive', onPress: () => void (async () => {
+-        try { setBusy(true); await modelRuntime.unload(); await deleteModelFile(model.uri); await repository.saveModel(null); await repository.appendAudit('model_deleted', model.name); setModel(null); setModelLoaded(false); await refreshData(); }
++        try {
++          setBusy(true); await modelRuntime.unload();
++          NativeModules.RockLocalAiBridge?.setStatus('no_model', false);
++          await deleteModelFile(model.uri); await repository.saveModel(null); await repository.appendAudit('model_deleted', model.name); setModel(null); setModelLoaded(false); await refreshData();
++        }
+         catch (error) { Alert.alert('削除失敗', error instanceof Error ? error.message : String(error)); }
+         finally { setBusy(false); }
+       })()},
+@@ -136,7 +156,12 @@ function AssistantApp() {
+   const deleteEverything = useCallback(() => Alert.alert('全データを削除', '会話、メモ、予定、ログ、アプリ内モデルを完全に削除します。元のGGUFは残ります。', [
+     {text: 'キャンセル', style: 'cancel'},
+     {text: 'すべて削除', style: 'destructive', onPress: () => void (async () => {
+-      setBusy(true); try { await modelRuntime.unload(); if (model) await deleteModelFile(model.uri); await repository.clearAll(); setMessages([]); setNotes([]); setReminders([]); setAudit([]); setModel(null); setModelLoaded(false); setPending(null); setStats(null); }
++      setBusy(true); try {
++        await modelRuntime.unload();
++        NativeModules.RockLocalAiBridge?.setStatus('no_model', false);
++        if (model) await deleteModelFile(model.uri);
++        await repository.clearAll(); setMessages([]); setNotes([]); setReminders([]); setAudit([]); setModel(null); setModelLoaded(false); setPending(null); setStats(null);
++      }
+       catch (error) { Alert.alert('削除失敗', error instanceof Error ? error.message : String(error)); }
+       finally { setBusy(false); }
+     })()},
+diff --git a/android/app/build.gradle b/android/app/build.gradle
+index f55cdef..e9513f8 100644
+--- a/android/app/build.gradle
++++ b/android/app/build.gradle
+@@ -86,8 +86,8 @@ android {
+         applicationId "com.localactionassistant"
+         minSdkVersion rootProject.ext.minSdkVersion
+         targetSdkVersion rootProject.ext.targetSdkVersion
+-        versionCode 1
+-        versionName "1.0"
++        versionCode 2
++        versionName "1.1"
+     }
+     buildTypes {
+         debug {
+diff --git a/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl b/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl
+index d83fc2f..51ae4a5 100644
+--- a/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl
++++ b/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl
+@@ -1,12 +1,13 @@
+ package dev.rock.localai;
+ import dev.rock.localai.ILocalAiCallback;
+ 
+-// Local-only v2 API. It accepts text, never file paths, model paths, URLs or credentials.
++// Local-only v3 API. It accepts text, never file paths, model paths, URLs or credentials.
+ interface ILocalAiService {
+     int getApiVersion() = 0;
+     String getStatus() = 1;
+     oneway void complete(String requestToken, String prompt, String contextJson, ILocalAiCallback callback) = 2;
+     oneway void confirm(String requestToken, String proposalId, boolean approved, ILocalAiCallback callback) = 3;
+     oneway void cancel(String requestToken) = 4;
+-    oneway void completePlan(String requestToken, String schemaId, String prompt, String contextJson, ILocalAiCallback callback) = 5;
++    oneway void completePlanForModel(String requestToken, String schemaId, String expectedWeightsSha256,
++                                     String prompt, String contextJson, ILocalAiCallback callback) = 6;
+ }
+diff --git a/android/app/src/main/java/com/localactionassistant/MainApplication.kt b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+index d19e9e7..3b44468 100644
+--- a/android/app/src/main/java/com/localactionassistant/MainApplication.kt
++++ b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+@@ -22,6 +22,9 @@ class MainApplication : Application(), ReactApplication {
+ 
+   override fun onCreate() {
+     super.onCreate()
++    getSharedPreferences("rock-local-ai", 0).edit()
++        .putString("state", "no_model").putBoolean("modelLoaded", false)
++        .remove("weightsSha256").remove("modelBytes").apply()
+     loadReactNative(this)
+   }
+ }
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt
+index 51a94f2..74b460e 100644
+--- a/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt
+@@ -15,7 +15,16 @@ class RockLocalAiBridgeModule(context: ReactApplicationContext) : ReactContextBa
+   @ReactMethod
+   fun setStatus(state: String, modelLoaded: Boolean) {
+     if (state !in setOf("ready", "no_model", "loading", "busy", "error")) return
++    val edit = reactApplicationContext.getSharedPreferences("rock-local-ai", 0).edit()
++        .putString("state", state).putBoolean("modelLoaded", modelLoaded)
++    if (!modelLoaded) edit.remove("weightsSha256").remove("modelBytes")
++    edit.apply()
++  }
++
++  @ReactMethod
++  fun setModelIdentity(weightsSha256: String, modelBytes: Double) {
++    if (!Regex("[a-f0-9]{64}").matches(weightsSha256) || modelBytes < 1 || modelBytes > 4_294_967_296.0) return
+     reactApplicationContext.getSharedPreferences("rock-local-ai", 0).edit()
+-        .putString("state", state).putBoolean("modelLoaded", modelLoaded).apply()
++        .putString("weightsSha256", weightsSha256).putLong("modelBytes", modelBytes.toLong()).apply()
+   }
+ }
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+index 835490e..00a3f65 100644
+--- a/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+@@ -29,6 +29,7 @@ class RockLocalAiService : HeadlessJsTaskService() {
+ 
+   private fun start(kind: String, requestToken: String, callback: ILocalAiCallback,
+                     prompt: String = "", contextJson: String = "", schemaId: String = "",
++                    expectedWeightsSha256: String = "",
+                     proposalId: String = "",
+                     approved: Boolean = false) {
+     token(requestToken)
+@@ -36,6 +37,7 @@ class RockLocalAiService : HeadlessJsTaskService() {
+     val data = Arguments.createMap().apply {
+       putString("kind", kind); putString("requestToken", requestToken); putString("prompt", prompt)
+       putString("contextJson", contextJson); putString("schemaId", schemaId)
++      putString("expectedWeightsSha256", expectedWeightsSha256)
+       putString("proposalId", proposalId); putBoolean("approved", approved)
+     }
+     UiThreadUtil.runOnUiThread {
+@@ -45,13 +47,15 @@ class RockLocalAiService : HeadlessJsTaskService() {
+   }
+ 
+   private val binder = object : ILocalAiService.Stub() {
+-    override fun getApiVersion(): Int { authenticate(); return 2 }
++    override fun getApiVersion(): Int { authenticate(); return 3 }
+     override fun getStatus(): String {
+       authenticate()
+       val preferences = getSharedPreferences("rock-local-ai", 0)
+       return JSONObject().put("state", preferences.getString("state", "error"))
+           .put("modelLoaded", preferences.getBoolean("modelLoaded", false))
+-          .put("runtime", "llama.rn").put("apiVersion", 2).toString()
++          .put("runtime", "llama.rn").put("apiVersion", 3)
++          .put("weightsSha256", preferences.getString("weightsSha256", null) ?: JSONObject.NULL)
++          .put("modelBytes", preferences.getLong("modelBytes", 0)).toString()
+     }
+     override fun complete(requestToken: String?, prompt: String?, contextJson: String?, callback: ILocalAiCallback?) {
+       authenticate(); token(requestToken)
+@@ -70,14 +74,16 @@ class RockLocalAiService : HeadlessJsTaskService() {
+       val data = Arguments.createMap().apply { putString("kind", "cancel"); putString("requestToken", requestToken) }
+       UiThreadUtil.runOnUiThread { startTask(HeadlessJsTaskConfig("RockLocalAi", data, 10_000, true)) }
+     }
+-    override fun completePlan(requestToken: String?, schemaId: String?, prompt: String?,
+-                              contextJson: String?, callback: ILocalAiCallback?) {
++    override fun completePlanForModel(requestToken: String?, schemaId: String?, expectedWeightsSha256: String?,
++                                      prompt: String?, contextJson: String?, callback: ILocalAiCallback?) {
+       authenticate(); token(requestToken)
+       if (callback == null || schemaId != "article-preparation@1/input-v1"
++          || expectedWeightsSha256 == null || !Regex("[a-f0-9]{64}").matches(expectedWeightsSha256)
+           || prompt.isNullOrBlank() || prompt.toByteArray().size > 8000
+           || contextJson == null || contextJson.toByteArray().size > 32768)
+-        throw IllegalArgumentException("INVALID_PLAN_REQUEST")
+-      start("plan", requestToken!!, callback, prompt, contextJson, schemaId = schemaId)
++        throw IllegalArgumentException("INVALID_PROFILE_PLAN_REQUEST")
++      start("plan", requestToken!!, callback, prompt, contextJson,
++            schemaId = schemaId, expectedWeightsSha256 = expectedWeightsSha256)
+     }
+   }
+ 
+diff --git a/src/native/__tests__/modelFiles.test.ts b/src/native/__tests__/modelFiles.test.ts
+index 9f96948..ce7f7b2 100644
+--- a/src/native/__tests__/modelFiles.test.ts
++++ b/src/native/__tests__/modelFiles.test.ts
+@@ -1,4 +1,5 @@
+ import {
++  assertModelWeightsHash,
+   MAX_MODEL_BYTES,
+   MIN_MODEL_BYTES,
+   validateModelSize,
+@@ -18,3 +19,17 @@ describe('model size validation', () => {
+     expect(() => validateModelSize(MAX_MODEL_BYTES + 1)).toThrow();
+   });
+ });
++
++describe('model profile weight hash binding', () => {
++  const digest = 'a'.repeat(64);
++
++  it('accepts only an exact SHA-256 match', () => {
++    expect(() => assertModelWeightsHash(digest, digest)).not.toThrow();
++    expect(() => assertModelWeightsHash(digest, digest.toUpperCase())).not.toThrow();
++  });
++
++  it('rejects malformed and mismatched model identities', () => {
++    expect(() => assertModelWeightsHash('not-a-hash', digest)).toThrow('MODEL_HASH_MISMATCH');
++    expect(() => assertModelWeightsHash(digest, 'b'.repeat(64))).toThrow('MODEL_HASH_MISMATCH');
++  });
++});
+diff --git a/src/native/modelFiles.ts b/src/native/modelFiles.ts
+index 67207d6..756362c 100644
+--- a/src/native/modelFiles.ts
++++ b/src/native/modelFiles.ts
+@@ -19,6 +19,13 @@ export function validateModelSize(size: number): void {
+   }
+ }
+ 
++export function assertModelWeightsHash(expected: string, actual: string): void {
++  if (!/^[a-f0-9]{64}$/.test(expected) || !/^[A-Fa-f0-9]{64}$/.test(actual)
++      || actual.toLowerCase() !== expected) {
++    throw new Error('MODEL_HASH_MISMATCH');
++  }
++}
++
+ export async function importGguf(source: string, license: string): Promise<ModelRecord | null> {
+   const [file] = await pick({type: ['*/*']});
+   if (!file) return null;
+diff --git a/src/native/modelRuntime.ts b/src/native/modelRuntime.ts
+index 64475aa..71c0b99 100644
+--- a/src/native/modelRuntime.ts
++++ b/src/native/modelRuntime.ts
+@@ -1,7 +1,9 @@
+ import {Platform} from 'react-native';
++import ReactNativeBlobUtil from 'react-native-blob-util';
+ import {initLlama, type CompletionResponseFormat, type LlamaContext} from 'llama.rn';
+ import {toolDefinitions} from '../core/toolBroker';
+ import type {ChatMessage, RuntimeStats} from '../types';
++import {assertModelWeightsHash} from './modelFiles';
+ import {strictPlanText, visibleAssistantText} from './modelOutput';
+ 
+ const systemPrompt = `あなたは端末内だけで動く日本語優先のアシスタントです。
+@@ -21,28 +23,69 @@ function numberOrNull(value: unknown): number | null {
+ class ModelRuntime {
+   private context: LlamaContext | null = null;
+   private path: string | null = null;
++  private activeWeightsSha256: string | null = null;
++  private queue: Promise<void> = Promise.resolve();
+ 
+   get loaded(): boolean {
+     return this.context !== null;
+   }
+ 
+-  async load(uri: string): Promise<void> {
+-    if (this.path === uri && this.context) return;
+-    await this.unload();
+-    this.context = await initLlama({
+-      model: uri,
+-      use_mlock: true,
+-      n_ctx: 2048,
+-      n_batch: 256,
+-      n_gpu_layers: Platform.OS === 'ios' ? 99 : 0,
+-    });
+-    this.path = uri;
++  get weightsSha256(): string | null {
++    return this.context ? this.activeWeightsSha256 : null;
+   }
+ 
+-  async unload(): Promise<void> {
++  private async exclusive<T>(operation: () => Promise<T>): Promise<T> {
++    const previous = this.queue;
++    let release!: () => void;
++    this.queue = new Promise<void>(resolve => { release = resolve; });
++    await previous;
++    try { return await operation(); } finally { release(); }
++  }
++
++  private localPath(uri: string): string {
++    return decodeURIComponent(uri.replace(/^file:\/\//, ''));
++  }
++
++  private async unloadWithinQueue(): Promise<void> {
+     if (this.context) await this.context.release();
+     this.context = null;
+     this.path = null;
++    this.activeWeightsSha256 = null;
++  }
++
++  async load(uri: string, expectedWeightsSha256: string): Promise<{sha256: string; bytes: number}> {
++    if (!/^[a-f0-9]{64}$/.test(expectedWeightsSha256)) throw new Error('INVALID_MODEL_HASH');
++    return this.exclusive(async () => {
++      if (this.path === uri && this.context && this.activeWeightsSha256 === expectedWeightsSha256) {
++        const stat = await ReactNativeBlobUtil.fs.stat(this.localPath(uri));
++        return {sha256: expectedWeightsSha256, bytes: Number(stat.size)};
++      }
++      await this.unloadWithinQueue();
++      const path = this.localPath(uri);
++      const before = (await ReactNativeBlobUtil.fs.hash(path, 'sha256')).toLowerCase();
++      assertModelWeightsHash(expectedWeightsSha256, before);
++      const stat = await ReactNativeBlobUtil.fs.stat(path);
++      const context = await initLlama({
++        model: uri,
++        use_mlock: true,
++        n_ctx: 2048,
++        n_batch: 256,
++        n_gpu_layers: Platform.OS === 'ios' ? 99 : 0,
++      });
++      const after = (await ReactNativeBlobUtil.fs.hash(path, 'sha256')).toLowerCase();
++      try { assertModelWeightsHash(before, after); } catch {
++        await context.release();
++        throw new Error('MODEL_CHANGED_DURING_LOAD');
++      }
++      this.context = context;
++      this.path = uri;
++      this.activeWeightsSha256 = after;
++      return {sha256: after, bytes: Number(stat.size)};
++    });
++  }
++
++  async unload(): Promise<void> {
++    await this.exclusive(() => this.unloadWithinQueue());
+   }
+ 
+   async stop(): Promise<void> {
+@@ -52,6 +95,13 @@ class ModelRuntime {
+   async complete(
+     messages: ChatMessage[],
+     onToken: (token: string) => void,
++  ): Promise<Completion> {
++    return this.exclusive(() => this.completeWithinQueue(messages, onToken));
++  }
++
++  private async completeWithinQueue(
++    messages: ChatMessage[],
++    onToken: (token: string) => void,
+   ): Promise<Completion> {
+     if (!this.context) throw new Error('先にGGUFモデルを読み込んでください');
+     await this.context.clearCache();
+@@ -95,6 +145,21 @@ class ModelRuntime {
+     system: string,
+     messages: ChatMessage[],
+     responseFormat: CompletionResponseFormat,
++    expectedWeightsSha256: string,
++  ): Promise<string> {
++    return this.exclusive(async () => {
++      if (!this.context || this.activeWeightsSha256 === null) {
++        throw new Error('MODEL_PROFILE_MISMATCH');
++      }
++      assertModelWeightsHash(expectedWeightsSha256, this.activeWeightsSha256);
++      return this.planWithinQueue(system, messages, responseFormat);
++    });
++  }
++
++  private async planWithinQueue(
++    system: string,
++    messages: ChatMessage[],
++    responseFormat: CompletionResponseFormat,
+   ): Promise<string> {
+     if (!this.context) throw new Error('先にGGUFモデルを読み込んでください');
+     await this.context.clearCache();
+diff --git a/src/native/osBridge.ts b/src/native/osBridge.ts
+index 8004cd5..aaed212 100644
+--- a/src/native/osBridge.ts
++++ b/src/native/osBridge.ts
+@@ -13,6 +13,7 @@ type BridgeData = {
+   prompt?: unknown;
+   contextJson?: unknown;
+   schemaId?: unknown;
++  expectedWeightsSha256?: unknown;
+   proposalId?: unknown;
+   approved?: unknown;
+ };
+@@ -20,6 +21,7 @@ type BridgeData = {
+ type NativeBridge = {
+   emitEvent(requestToken: string, event: string, payload: string): void;
+   setStatus(state: string, modelLoaded: boolean): void;
++  setModelIdentity(weightsSha256: string, modelBytes: number): void;
+ };
+ 
+ type StoredProposal = {
+@@ -62,14 +64,17 @@ function parseContext(raw: unknown): ChatMessage[] {
+   });
+ }
+ 
+-async function ensureModel(): Promise<void> {
++async function ensureModel(expectedWeightsSha256?: string): Promise<void> {
+   const model = await repository.model();
+   if (!model) {
+     bridge?.setStatus('no_model', false);
+     throw new Error('NO_MODEL');
+   }
++  if (expectedWeightsSha256 !== undefined && model.sha256 !== expectedWeightsSha256)
++    throw new Error('MODEL_PROFILE_MISMATCH');
+   bridge?.setStatus('loading', false);
+-  await modelRuntime.load(model.uri);
++  const identity = await modelRuntime.load(model.uri, model.sha256);
++  bridge?.setModelIdentity(identity.sha256, identity.bytes);
+   bridge?.setStatus('ready', true);
+ }
+ 
+@@ -101,7 +106,9 @@ async function complete(data: BridgeData, token: string): Promise<void> {
+ }
+ 
+ async function plan(data: BridgeData, token: string): Promise<void> {
+-  await ensureModel();
++  const expectedWeightsSha256 = requiredText(data.expectedWeightsSha256, 'expected_weights_sha256', 64);
++  if (!/^[a-f0-9]{64}$/.test(expectedWeightsSha256)) throw new Error('INVALID_EXPECTED_MODEL_HASH');
++  await ensureModel(expectedWeightsSha256);
+   bridge?.setStatus('busy', true);
+   const schemaId = requiredText(data.schemaId, 'schema_id', 80);
+   const prompt = requiredText(data.prompt, 'prompt', 8000);
+@@ -109,7 +116,7 @@ async function plan(data: BridgeData, token: string): Promise<void> {
+   const messages = parseContext(data.contextJson);
+   messages.push({id: `os-plan-${token}`, role: 'user', content: prompt,
+                  createdAt: new Date().toISOString()});
+-  const output = await modelRuntime.plan(spec.systemPrompt, messages, spec.responseFormat);
++  const output = await modelRuntime.plan(spec.systemPrompt, messages, spec.responseFormat, expectedWeightsSha256);
+   emit(token, 'completed', requiredText(output, 'plan_output'));
+ }
+ 

@@ -1,0 +1,522 @@
+{
+  "schema": "rock-pixel-readiness/1",
+  "checkedAt": "2026-10-15T19:35:13Z",
+  "sourceMainSha": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+  "scope": "current Git/code/evidence audit and delivery order; no runtime change or live acceptance",
+  "mainCi": {
+    "headSha": "1cb16d06dd2e9621f58e14a5de19938a5ed4961a",
+    "checks": 7,
+    "allSuccessful": true,
+    "command": "gh api repos/k999ln/rock/commits/1cb16d06dd2e9621f58e14a5de19938a5ed4961a/check-runs"
+  },
+  "deviceObservation": {
+    "command": "adb devices -l",
+    "entries": 0,
+    "authorizedDevices": 0,
+    "currentInstalledOsAndApps": "not_observed",
+    "stateChanged": false
+  },
+  "localCandidate": {
+    "path": "/Users/kaiya/Documents/ChatGPT/avokdo",
+    "branch": "codex/esim-cloud-access",
+    "evidencePath": "docs/evidence/pixel-native-testing.json",
+    "evidenceSha256": "ddf09e1b57fe563ff86fa383ed40edbadc6bb31c9c78cc9148e1a18c61f5f31e",
+    "recordedAt": "2026-10-09",
+    "notCommittedAndNotMain": true,
+    "sourceFileCount": 12,
+    "sourceMatches": true,
+    "sourceFiles": [
+      {
+        "path": "android/core/src/main/java/dev/rock/core/OutputTestTools.java",
+        "recordedSha256": "f6001a9e2fc4e1432d1f99b4a2b05b9ace7e5c0f5a9d8e5daf63ae98387f3d11",
+        "observedSha256": "f6001a9e2fc4e1432d1f99b4a2b05b9ace7e5c0f5a9d8e5daf63ae98387f3d11",
+        "matches": true
+      },
+      {
+        "path": "android/core/src/test/java/dev/rock/core/OutputTestToolsTest.java",
+        "recordedSha256": "a0cf4b9189832450c2916c7ad52922f286d8714b6811c05ee2c69713e59326ce",
+        "observedSha256": "a0cf4b9189832450c2916c7ad52922f286d8714b6811c05ee2c69713e59326ce",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/TestModeActivity.java",
+        "recordedSha256": "9e4bc3856d8a5850879f49e60d1f6277eb2a5662135ef9c825dc328e28a8b096",
+        "observedSha256": "9e4bc3856d8a5850879f49e60d1f6277eb2a5662135ef9c825dc328e28a8b096",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "recordedSha256": "bbb471f4d391a80dfb6266141c961291c46aed243ed9cdee051a08ad4c0644d3",
+        "observedSha256": "bbb471f4d391a80dfb6266141c961291c46aed243ed9cdee051a08ad4c0644d3",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+        "recordedSha256": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7",
+        "observedSha256": "88d4aa6b84716ea47002f77007a4d97af26c3bc873d5a5133212de7ee372c0b7",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/androidTest/java/dev/rock/shell/NativeOutputTest.java",
+        "recordedSha256": "c22b3cb8e63b3a7253f87b945450f8c1c5944b6413446295695640e3e1b46436",
+        "observedSha256": "c22b3cb8e63b3a7253f87b945450f8c1c5944b6413446295695640e3e1b46436",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/androidTest/java/dev/rock/shell/ShellNavigationTest.java",
+        "recordedSha256": "e42e3ef236b9a68834871a74e76c0141e20863c0b7c4b814674f6a82169e9eb0",
+        "observedSha256": "e42e3ef236b9a68834871a74e76c0141e20863c0b7c4b814674f6a82169e9eb0",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/main/AndroidManifest.xml",
+        "recordedSha256": "46ac6388307dbdc2c4e6e1abd0760a51c0d185f58fc481141efc11e6d0c419b7",
+        "observedSha256": "46ac6388307dbdc2c4e6e1abd0760a51c0d185f58fc481141efc11e6d0c419b7",
+        "matches": true
+      },
+      {
+        "path": "android/shell/src/aosp/AndroidManifest.xml",
+        "recordedSha256": "e0bfd49e72faae7d7ed0da8b4167b1714feaa2c523787a4b6e5825392c6d7429",
+        "observedSha256": "e0bfd49e72faae7d7ed0da8b4167b1714feaa2c523787a4b6e5825392c6d7429",
+        "matches": true
+      },
+      {
+        "path": "android/shell/build.gradle",
+        "recordedSha256": "9052adab09c9da55fccd50e8bdc2373fce082d8bba560b052357755e2e9668f3",
+        "observedSha256": "9052adab09c9da55fccd50e8bdc2373fce082d8bba560b052357755e2e9668f3",
+        "matches": true
+      },
+      {
+        "path": "android/Android.bp",
+        "recordedSha256": "ae3be690d00299e4fbca1ac3962e5530234ced3397b097c4077df799c5b17978",
+        "observedSha256": "ae3be690d00299e4fbca1ac3962e5530234ced3397b097c4077df799c5b17978",
+        "matches": true
+      },
+      {
+        "path": "tests/native-output-testing.test.mjs",
+        "recordedSha256": "24fa3f9f590facf525fcb720f633730900a12d66e9c78351fd7f13bdfbad924d",
+        "observedSha256": "24fa3f9f590facf525fcb720f633730900a12d66e9c78351fd7f13bdfbad924d",
+        "matches": true
+      }
+    ],
+    "recordedApkSha256": "9cdb428de6a144fc7a47ed0244dc81e62b4386b78d8976db38e942eeb9e2b1d4",
+    "recordedOsBuild": "2026100200",
+    "physicalTestsRecorded": 11,
+    "realScenarios": 8,
+    "simulatedScenarios": 9,
+    "localAiStateThen": "no_model",
+    "deviceRecheckedToday": false
+  },
+  "branchAudit": {
+    "compileBranch": "codex/pixel10-compile-bringup-20260917",
+    "compileHead": "771770d08457f46f06a2d4db7c1098daeccdbc74",
+    "compileAheadOfMain": 0,
+    "compileBehindMain": 938,
+    "openRelatedPr": 130,
+    "openRelatedHead": "3a805132c7d85c50ca76eb9de960c90b5b3e77da",
+    "relatedPrChecks": 0,
+    "relatedPrAhead": 2,
+    "relatedPrBehind": 23,
+    "pr130BlocksPixel": false
+  },
+  "items": [
+    {
+      "id": "A01",
+      "name": "Sky / Webの有限Tool",
+      "state": "source_ci_verified",
+      "scope": "main / host・CI",
+      "works": "catalog、接続管理、出典整理/記事等の有限処理、本人別成果のsourceがある。",
+      "gap": "今日の公開Site/本人操作は再受入していない。Sky全能力のnative移植は未完了。",
+      "nextAction": "一仕事を選び、同sourceの端末受入へ固定する。",
+      "references": [
+        "docs/sky.md",
+        "lib/catalog.ts",
+        "lib/workflow.ts"
+      ]
+    },
+    {
+      "id": "A02",
+      "name": "Jennifer / Zema",
+      "state": "source_ci_verified",
+      "scope": "main / server・fixture",
+      "works": "Goal/仕事/成果の版、承認/停止、委任/報告/Receiptの相関sourceがある。",
+      "gap": "Pixel専用の統合対話UX、真正Providerでの一周、全ての独立reviewは別受入。",
+      "nextAction": "会話から一つの有限Toolと保存/再開へ接続する。",
+      "references": [
+        "lib/jennifer-amc-execution.ts",
+        "lib/jennifer-execution-reports.ts",
+        "app/api/amc/route.ts"
+      ]
+    },
+    {
+      "id": "A03",
+      "name": "Pixelの固定local LLM",
+      "state": "historical_device_verified",
+      "scope": "2026-09-16 / 試験署名APK・API v2系",
+      "works": "Qwen3-0.6B Q8_0の機内モード推論、実再起動、33分22秒の温度試験が合格。",
+      "gap": "過去の特定APK/modelの証拠。現API v4、現在の端末、複数model・全OSの合格ではない。",
+      "nextAction": "現行v4 runtimeと同署名/権限の候補で再受入する。",
+      "references": [
+        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+        "contracts/local-ai-runtime.json"
+      ]
+    },
+    {
+      "id": "A04",
+      "name": "現行Local si API v4",
+      "state": "built_not_device_verified",
+      "scope": "2026-10-05 / unsigned build・stage",
+      "works": "現行API v4のAPK build、AAPT検査、stage/hash照合の証拠がある。",
+      "gap": "unsigned候補を実機合格と呼べない。Brokerとの実Binder/model/再起動受入が未完了。",
+      "nextAction": "runtime/Broker/Toolを同じ候補・許可された署名で揃えて固定する。",
+      "references": [
+        "docs/evidence/local-ai-apk-v4-build.json",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java"
+      ]
+    },
+    {
+      "id": "A05",
+      "name": "Pixelの仕事/Tool/保存・再起動",
+      "state": "historical_device_verified",
+      "scope": "2026-09-16 / 試験署名APK 23ケース",
+      "works": "Sky選択→有限Tool→結果/review/履歴、実再起動の仕事回収、暗号化backup書出しが合格。",
+      "gap": "全損・Keystore喪失復元、正式OS/署名/OTA、実Wallet資金の証拠ではない。",
+      "nextAction": "同じ現行候補で保存/停止/再起動/再取得を再試験する。",
+      "references": [
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+      ]
+    },
+    {
+      "id": "A06",
+      "name": "Pixelの17項目テストモード",
+      "state": "local_candidate_not_main",
+      "scope": "2026-10-09 / 手元の未コミットsourceと実機記録",
+      "works": "17項目中8実処理・9明示模擬。11実機試験の記録があり、12 source hashは今回全一致。",
+      "gap": "mainにActivity/実行器がない。記録当時はno_model、AI/mic/cloud等は模擬。今日の端末は未確認。",
+      "nextAction": "mainの現行変更を保ちながら必要な差分と証拠を選別し、候補をcommit/CI固定する。",
+      "references": [
+        "local-candidate:docs/evidence/pixel-native-testing.json",
+        "local-candidate:android/shell/src/main/java/dev/rock/shell/TestModeActivity.java"
+      ]
+    },
+    {
+      "id": "A07",
+      "name": "Skyのlocal/cloud選択",
+      "state": "partial_source_design",
+      "scope": "Web registryと選択UI / native共通契約は設計",
+      "works": "6 model adapterとWeb側選択、native固定modelの境界がある。",
+      "gap": "6定義は6実接続の合格ではない。model/Agentを別軸で選びJobへ固定する全host共通体験は未受入。",
+      "nextAction": "一つのlocal経路と一つのcloud経路の実host・版・送信・費用を同じJobへ固定する。",
+      "references": [
+        "lib/llm-providers.ts",
+        "docs/llm-evaluation-architecture.md"
+      ]
+    },
+    {
+      "id": "A08",
+      "name": "si専用Home / 音声",
+      "state": "design_not_integrated",
+      "scope": "main Shell manifestはMAIN/LAUNCHER",
+      "works": "通常のShell APK画面はある。",
+      "gap": "HOME category / VoiceInteractionService未宣言。専用Home、待受音声、native Jennifer統合は未受入。",
+      "nextAction": "owner選択/解除可能なHome、まず押して話す/文字、crash/lock/再起動復帰を実装する。",
+      "references": [
+        "android/shell/src/main/AndroidManifest.xml",
+        "android/shell/src/aosp/AndroidManifest.xml"
+      ]
+    },
+    {
+      "id": "A09",
+      "name": "cloud Agent / cloud LLM",
+      "state": "source_disabled_not_production",
+      "scope": "workflow/adapter source・repo既定無効",
+      "works": "見積/承認/暗号化入力/予算/usage/Receiptを扱うworkflow sourceがある。",
+      "gap": "remoteAiPricingGateAcceptedはfalse固定。runtime設定のD1 IDはplaceholder。実deployment/請求/Providerの受入は確認できない。",
+      "nextAction": "C1→C2で一Provider、一仕事、上限つきsandbox→実Providerを別々に受け入れる。",
+      "references": [
+        "lib/remote-ai-pricing-gate.ts",
+        "services/sky-agent-runtime/src/worker.ts",
+        "services/sky-agent-runtime/wrangler.jsonc"
+      ]
+    },
+    {
+      "id": "A10",
+      "name": "通信＋si利用権 / 料金プラン",
+      "state": "partial_source_commercial_pending",
+      "scope": "eSIM/order/grant source、cloud料金設計",
+      "works": "購入claim/利用権/scope等のsourceと既存の見積・予約契約がある。",
+      "gap": "実発行/課金は未受入。previewのscope緩和、親Job単位予算、funded Walletと後払い/残高なしの差が残る。",
+      "nextAction": "回線・service・client状態を分け、plan版/利用枠/見積/account月上限/明細を受け入れる。",
+      "references": [
+        "lib/rockstar-service-access.ts",
+        "lib/a2a-delegation-store.ts",
+        "docs/service-design/02-system-contracts.md"
+      ]
+    },
+    {
+      "id": "A11",
+      "name": "GrapheneOS派生の全OS build",
+      "state": "source_prepared_not_built",
+      "scope": "固定source 2026100200 / compile-only入口",
+      "works": "source署名/lock、Soong設定、compile runner、target-files/otatools検査のsourceがある。",
+      "gap": "全source sync/vendor inventory/Soong full buildの合格なし。専用Linux/予算は未確定。",
+      "nextAction": "P5でprefull候補をfreezeし、承認済み専用Linuxでcompile-onlyを行う。",
+      "references": [
+        "os/physical/frankel-source-lock.json",
+        "scripts/build-phone-bringup.sh",
+        "scripts/verify-phone-artifacts.py"
+      ]
+    },
+    {
+      "id": "A12",
+      "name": "正式署名 / flash / 復旧",
+      "state": "gates_blocked",
+      "scope": "初回flash 4 gate、全てblocked",
+      "works": "手順・検査・policyのsourceがある。",
+      "gap": "正式鍵、rollback運用、純正factory/full OTA実byte、Keystore喪失復元の4 gateは0/4。",
+      "nextAction": "P6でrelease前条件を閉じ、P7で同imageのboot/OTA/rollback/純正復旧を検証する。",
+      "references": [
+        "data/android-first-flash-gate.json",
+        "docs/templates/os-acceptance-report.md"
+      ]
+    },
+    {
+      "id": "A13",
+      "name": "iOS / Mini / 家具・建築",
+      "state": "design_and_independent_tracks",
+      "scope": "後続client / R5 / host融合",
+      "works": "共通能力契約・製品設計と各受入ケースがある。",
+      "gap": "iOS native/家具計測/建築施工/R5実機を完成とする証拠はない。",
+      "nextAction": "Pixel一仕事の完成待ちと混ぜず、独立したhost/機器gateで後続検証する。",
+      "references": [
+        "docs/device-support-architecture.md",
+        "docs/sky-mcp-architecture.md",
+        "docs/avocado-mini-r5/README.md"
+      ]
+    }
+  ],
+  "pixelSequence": [
+    {
+      "id": "P0",
+      "title": "mainと手元候補を同期・固定",
+      "taskId": "RLS02",
+      "primarySquad": "O7",
+      "dependsOn": [],
+      "action": "手元の12 hashと未反映diffを選別し、mainの現行API/本人/料金gateを保持した単一候補をcommitする。dirty全体の一括mergeはしない。",
+      "acceptance": "source SHA、APK/model hash、署名identity、CI、復旧先を同じ候補で追跡可能。",
+      "unresolved": "手元の17項目実装は未コミット。既存署名/配布条件と依存diffの確認が必要。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P1",
+      "title": "現行v4を非破壊でPixel再受入",
+      "taskId": "OS11",
+      "primarySquad": "O6",
+      "dependsOn": [
+        "P0"
+      ],
+      "action": "対象GL066を読取り確認し、同候補のBroker/Tool/runtimeと一modelを試験する。",
+      "acceptance": "API v4実Binder、推論、機内モード、保存、停止、実再起動後の同Job回収。",
+      "unresolved": "現在ADB端末0件。APK署名・runtime/profile・model導入の適合を先に確認。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P2",
+      "title": "一件の実用仕事を通す",
+      "taskId": "AI04",
+      "primarySquad": "O2",
+      "dependsOn": [
+        "P1"
+      ],
+      "action": "既存の記事/出典処理一件を、依頼→local plan→権限確認→Tool→成果review→保存/再開へつなぐ。",
+      "acceptance": "自然文候補とTool成功を分離し、編集、誤計画拒否、停止、重複拒否、同Artifact版の再取得を実測。",
+      "unresolved": "17項目テストのZema/LLM模擬結果を実Agent受入に流用しない。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P3",
+      "title": "Skyの実行先選択を一仕事へ固定",
+      "taskId": "SKY07",
+      "primarySquad": "O4",
+      "dependsOn": [
+        "P2"
+      ],
+      "action": "model推論先とAgent runnerを別に選び、実host/版/grant/見積をJobへ固定。cloud未接続は理由を表示。",
+      "acceptance": "localを選んだ処理の無断cloud送信なし。C2合格後は同じ仕事でcloud経路も比較。",
+      "unresolved": "全model導入市場や任意hybridを一度に完成させない。native bridge/資源/料金の適合が必要。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P4",
+      "title": "専用Home・対話入口を成立",
+      "taskId": "OS11",
+      "primarySquad": "O6",
+      "dependsOn": [
+        "P3"
+      ],
+      "action": "owner選択/解除可能なHomeとJennifer/仕事導線、文字/押して話す入力、設定/停止/復旧を接続。",
+      "acceptance": "unlock/lock、home crash、再起動、誤入力/他人/mute、同Job復帰を同候補で検証。",
+      "unresolved": "常時待受/DSP音声は機種/電池/privacyの別受入。最初の一仕事の必須条件にしない。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P5",
+      "title": "全OSをcompile-onlyで生成",
+      "taskId": "OS11",
+      "primarySquad": "O6",
+      "dependsOn": [
+        "P4"
+      ],
+      "action": "ANDROID-PREFULLと同候補freeze後、承認済みx86_64 Linuxへ固定source/vendor/現行APKを揃えbringup build。",
+      "acceptance": "同build numberのtarget-files/otatools、必須APK、image構造、hash、release禁止propertyを検査。",
+      "unresolved": "現repo要件はRAM64GiB/空き400GiB。専用環境/予算未確定。compile合格はflash許可ではない。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P6",
+      "title": "署名・純正復旧・全損復元のgateを閉じる",
+      "taskId": "RLS02",
+      "primarySquad": "O7",
+      "dependsOn": [
+        "P5"
+      ],
+      "action": "鍵管理/rotation、rollback運用、適合する純正factory+full OTA実byte、owner復元を各gateの証拠へ固定。",
+      "acceptance": "初回flash checkerが4/4を受理。実行前/後のrollback試験境界と復旧手順を具体化。",
+      "unresolved": "現在0/4。初期化/鍵生成/支出は条件と対象を揃えた個別操作であり、この監査では行わない。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "P7",
+      "title": "同じOS imageを実機で受け入れる",
+      "taskId": "RLS02",
+      "primarySquad": "O7",
+      "dependsOn": [
+        "P6"
+      ],
+      "action": "対象/backup/書込み条件を満たして導入し、boot、権限、通信、保存、再起動、更新、失敗復旧を実測。",
+      "acceptance": "同image hashのboot/SQLite/Keystore/一仕事/OTA/rollback/純正復旧をOS受入reportへ記録。",
+      "unresolved": "source/APK/QEMUの証拠を転用しない。本番金融/実回線商用/一般公開は別gate。",
+      "status": "not_run_in_this_audit"
+    }
+  ],
+  "parallelCloud": [
+    {
+      "id": "C1",
+      "title": "siクラウドの料金プラン契約を定義",
+      "taskId": "BIL02",
+      "primarySquad": "O5",
+      "dependsOn": [],
+      "action": "plan版・期間・対象model/Agent・含む枠・超過扱い・停止上限・通信/Tool別明細を既存料金契約へ対応。",
+      "acceptance": "token/計算時間等の実meter、見積、account月上限と並列予約、後払いadapter/失効/請求のfixtureが一致。",
+      "unresolved": "月額・quota・超過単価の数値、partner条件、cloud契約/予算は未確定。",
+      "status": "not_run_in_this_audit"
+    },
+    {
+      "id": "C2",
+      "title": "一つのcloud Agent/LLMを受け入れる",
+      "taskId": "SKY21",
+      "primarySquad": "O5",
+      "dependsOn": [
+        "C1",
+        "P0"
+      ],
+      "action": "既存workflowでsandbox→承認済み一Providerの順に、同意/見積/予約/実行/停止/usage/Receiptを一周。",
+      "acceptance": "同Jobの送信先、モデル/Agent版、見積、許可上限と実usage/請求が一致。通信断の二重dispatchなし。",
+      "unresolved": "gateをenvだけで開けない。D1/workflow/secret/trust/価格/予算/実Provider受入が必要。",
+      "status": "not_run_in_this_audit"
+    }
+  ],
+  "currentStatusMismatch": {
+    "projectStatusCompileSourceTagBeforeAudit": "2026091000",
+    "authoritativeCompileSourceTag": "2026100200",
+    "authority": "os/physical/frankel-source-lock.json",
+    "meaning": "historical physical observation and current compile input must be separate"
+  },
+  "repositoryEvidence": [
+    {
+      "path": "android/shell/src/main/AndroidManifest.xml",
+      "sha256": "ce7990dd9222c74acad4229824fc60b2a50734fc507f10cf09474d760e86dd71"
+    },
+    {
+      "path": "android/shell/src/aosp/AndroidManifest.xml",
+      "sha256": "0aea9cb456475217e3ae4193aced529807455d4bf62ecb5aa15946d4c97ef8ff"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+      "sha256": "3023fc4f7b52ff496c51a6414e606d37decbe457d975d8b3527f6f7d77d8c58c"
+    },
+    {
+      "path": "contracts/local-ai-runtime.json",
+      "sha256": "b451b34dcb1051e5d8dcc9da5c7049c24a33a5b5c42f00e75ac6693566f96338"
+    },
+    {
+      "path": "lib/llm-providers.ts",
+      "sha256": "6f73347a58ca7e794efd60054237abf4c1d5ae4786a731f11f40bd800e7b98e7"
+    },
+    {
+      "path": "lib/remote-ai-pricing-gate.ts",
+      "sha256": "b4f0f29bd9f504e606c82fe81b36f5a80f06dba13d3b29ff34e82f9da6276032"
+    },
+    {
+      "path": "lib/rockstar-service-access.ts",
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09"
+    },
+    {
+      "path": "lib/a2a-delegation-store.ts",
+      "sha256": "23ba06b8e2dd75fccc1983612bb6693e59301095d69d706b2da107730744ffb5"
+    },
+    {
+      "path": "services/sky-agent-runtime/wrangler.jsonc",
+      "sha256": "84e9d13bd4bee76399c2b28d321f56287e58ad202e604c088982f9eddee56a15"
+    },
+    {
+      "path": "os/physical/frankel-source-lock.json",
+      "sha256": "20218b0e26303416c2cd9c8a7bf2c6ed4e3efb4eb899014c7db7a3b85a6d2cfe"
+    },
+    {
+      "path": "data/android-first-flash-gate.json",
+      "sha256": "48db9232b150687ed5f59b16fa8be3f7661d563fc916f833a35d1dd25ad73ae5"
+    },
+    {
+      "path": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+      "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+    },
+    {
+      "path": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+      "sha256": "c48538a6e253c9a8d7d9fd6234afdbfc907946d34ac5208a788cb24564d4cc5b"
+    },
+    {
+      "path": "docs/evidence/local-ai-apk-v4-build.json",
+      "sha256": "946062281666c6026f2388cbbc540d393eb97f57e4b755e68c03868413e43ea0"
+    }
+  ],
+  "verification": {
+    "runtimeRetested": false,
+    "deviceRetested": false,
+    "fullVerify": "pass_locally",
+    "log": "/private/tmp/rock-pixel-readiness-verify.log",
+    "node": "22.23.3",
+    "unitTests": {
+      "tests": 2235,
+      "pass": 2234,
+      "skip": 1,
+      "fail": 0,
+      "cancelled": 0
+    },
+    "workApiAssertions": 1381,
+    "csvAssertions": 385,
+    "webAssetReferences": 208,
+    "missingAssets": 0,
+    "frozenSourceHashes": 14,
+    "localSourceHashesMatched": 12,
+    "canvasTypecheck": "pass",
+    "focusedChecks": [
+      "baseline:check",
+      "design:check",
+      "device-support:check",
+      "llm:architecture:check",
+      "android:first-flash:check"
+    ],
+    "flashGateResult": "valid_config_but_all_4_blocked_not_flash_accepted"
+  }
+}

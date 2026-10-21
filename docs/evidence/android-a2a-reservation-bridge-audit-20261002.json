@@ -1,0 +1,60 @@
+{
+  "schema": "rockstar-local-source-audit/1",
+  "date": "2026-10-02",
+  "scope": "Current source boundary between native A2A Wallet reservation and Cloud execution authorization",
+  "inspection": {
+    "shellApiVersion": 18,
+    "shellA2AOperations": [
+      "attested device enrollment and server-side key revocation",
+      "owner-scoped quote verification and Cloud delegation draft create/recovery",
+      "separate paid-execution consent and device-credential-gated Wallet approval",
+      "exact quote-bound Wallet reservation after owner confirmation",
+      "Broker proof signing/upload only from the matching HELD reservation",
+      "separate explicit Cloud approval and same-delegation read-only recovery",
+      "one-shot Cloud cancellation and owner-scoped Wallet settlement handoff sync"
+    ],
+    "reservationCreationOperation": "present in IShellApi API v18 and RockShellService; request proposes a Wallet approval, confirm creates the local reservation only after state ISSUED",
+    "cloudGate": "PATCH approve requires a registered-device Broker proof; Cloud A2A execution remains separately disabled unless the operator enables A2A_DELEGATION_EXECUTION_ENABLED=true",
+    "coreReservation": "PlatformStore.reserveA2ABudget consumes the exact confirmed wallet.a2a.reserve approval and a quote-bound hold; authorizeHeldA2ADelegation signs only while the matching owner hold is HELD",
+    "preDispatchIdentity": "stable Cloud delegation UUID is assigned before dispatch and used as the native hold task/correlation ID; signed receipt binds it to the later Provider remote task ID",
+    "quoteDigestState": "signed Provider quote is reverified against current Agent identity/request/currency/cap; its canonical digest and parent cap are bound into the native approval/reservation and Broker proof"
+  },
+  "authoritativeFiles": [
+    "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+    "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+    "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+    "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
+    "app/api/sky/a2a-delegations/[id]/route.ts",
+    "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
+    "lib/a2a-broker-authorization.ts",
+    "lib/a2a-delegation-store.ts",
+    "android/automation/src/main/java/dev/rock/automation/AndroidA2AWalletHandoffSource.java",
+    "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java",
+    "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+    "tests/sim-service-entry.test.mjs"
+  ],
+  "requiredNextProtocol": [
+    "Source contract is now wired end-to-end through the stable delegation ID and exact quote-bound Wallet hold",
+    "Keep approval/dispatch fail-closed until Android compilation and runtime acceptance are available",
+    "Run Android AIDL/Java Core/Shell build plus device-credential and restart/reconnect instrumentation in Android CI",
+    "Exercise the enabled Cloud dispatch branch only with contracted Provider sandbox, production trust keys and funded Wallet gates"
+  ],
+  "limits": [
+    "Android Core Java/JUnit, AIDL generation, APK build, instrumentation and device UI were not compiled/run; no usable Java runtime/Gradle/Android SDK is configured on this host",
+    "The Node source-contract test checks source ordering and fail-closed strings; it is not Android runtime proof",
+    "No production Cloud dispatch, real Provider execution/rates/invoice, funded Wallet settlement, carrier activation, SIM fulfillment, or exact-SKU OS installation"
+  ],
+  "status": "source_flow_present_local_contract_tested_android_unverified",
+  "verification": {
+    "sourceContract": "PASS: node --test tests/sim-service-entry.test.mjs (2/2), including native Wallet approval -> hold -> Broker proof -> Cloud approval ordering and no-resend recovery source checks",
+    "coreCanonicalVectors": "PASS: node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs tests/a2a-wallet-reservation.test.mjs tests/a2a-price-quote.test.mjs (12/12); verifies shared quote/authorization digests and Cloud TypeScript verification",
+    "wholeRepository": "PASS: npm run verify after prior Package runtime fix; current source-contract test was run separately afterward",
+    "runtimeScope": "Cloudflare Worker/D1/Workflow Package fixture passes 12/12; synthetic local Provider only"
+  },
+  "followUpVerification": {
+    "date": "2026-10-02",
+    "sourceAndBuild": "PASS: Android architecture/OS contract checks; focused SIM/A2A/Wallet/workflow Node tests 20/20; full Node suite; typecheck; lint; Fashion 19/19; production build; web bundle/assets.",
+    "apiIntegration": "PASS: npm run verify completed Worker/D1 API (1,028 assertions) and CSV Worker/D1/R2 (113 assertions). The API harness hard-links its immutable build output into the isolated Miniflare root; only its temporary databases are writable.",
+    "limits": "Local fixtures are not production D1 readback (still 0/6), Android runtime/device acceptance, provider invoices/billing, carrier activation, or exact-SKU OS installation."
+  }
+}

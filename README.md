@@ -1,432 +1,428 @@
-
-個人用のavocado建築プランは、Skyの所有者専用画面 `/sky/avocado` で読取同期できます。達成状況・次の一歩・Skyの試行証拠を表示し、個人プランの制作メモは複製しません。選んだ月、または3か月AMCの着手可能なAI担当作業の依頼をSky Chatの未送信下書きへ渡せます。Skyからの回答は本人が確認してプランへ戻す操作で、月の試行メモまたはAMC作業の未検証下書きとして保存されます。AMC作業は本人の採用まで完了扱いになりません。両タブを開いた手動の受け渡しであり、原本の編集、SkyのTool実行、実行証拠の認定、タブを閉じた後の自動同期とは別です。
-
-<!-- sky-access-recovery:start -->
-Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
-<!-- sky-access-recovery:end -->
-## Skyの回答取得・会話引継ぎ（公開受入前）
-
-OpenAIを選んだ会話で「この依頼文を仕事へ引き継ぐ」を押し、仕事を選んで見積を確認します。この操作だけではAI送信や課金は始まりません。保存した回答にはMarkdown取得と本文削除の確認画面を用意しました。未送信の依頼文はreloadで消えるため、必要な内容は手元に保持してください。実AIの接続は準備中です。
-
-<!-- sky-cloud-text-preview:start -->
-Zemaの「仕事」からクラウドAIの依頼準備・見積履歴を確認できます。仕事は再読込後も同じURLへ戻り、認証期限切れは同じ仕事へのサインインを案内します。回答のクラウド保存は初期offです。現在、実Provider資格情報・信頼済み料金・請求照合は未受入のため、AI実行は準備中です。入力してもAIへの送信や課金は始まりません。料金未設定時は見積もりも保存できません。
-<!-- sky-cloud-text-preview:end -->
-
-PAPER市場は検証用です。提案後に同じ画面で内容を承認し、実行したレシートは「PAPER実行履歴」から再読込後も確認できます。サンプル価格は実売買の実績ではありません。
-ココナラの案件管理では、サインイン切れ時も開いている入力画面を保持します。ダイアログの別タブでサインインし、「サインイン後に接続を確認」してから保存します。再確認だけで案件を再送しません。
-<!-- sky-service-recovery:start -->
-CSV受付の完了結果・検査・ダウンロードは `/csv` の同じ画面で確認できます。認証が切れた場合はサインイン表示から `/csv` へ戻り、保存済み受付を再取得してください。Stripe診断はHTTP status・許可済みerror code・request IDのみを記録し、秘密値・入力本文・Provider messageを記録しません。50円本番CSV試験は支払い照合・成果物保存・再取得まで確認済みです。クラウドAIの実接続は未受入です。
-法務・特許の端末内処理は、任意チェックで本文を含まない実行履歴を保存できます。未ログインや履歴保存失敗でもローカル結果を保持し、別タブのサインインから復旧します。
-履歴保存の失敗時は固定の診断コードと、完了通知の場合は受付IDを表示します。本文や元例外の内容を診断へ送らず、ローカル計算の例外を自動再実行しません。
-IP StudioはPCで起動してから専用画面を開きます。スマートフォンからPCへの接続は準備中のため、PC内アドレスへのボタンは表示しません。
-ココナラの案件管理は、17項目の案件内容と変更履歴を本人別にサーバーへ保存します。実機で下書きの作成・編集・再読込を確認済みですが、ココナラへの契約送信や送金を代行しません。
-発注前の案件は「下書きを削除」で対象を確認してから削除できます。担当開始後の案件は削除せず、通信失敗時は一覧を再読込して結果を確認します。
-クラウドAIは料金見積・支出上限・利用明細の接続まで実行を停止します。オンライン法務・特許には20秒の通信上限を用意し、結果不明時に自動再送しません。実Providerの応答・使用額は未受入です。
-接続状態は一般商品の購入・販売とCSV専用50円試験を分けて表示します。CSV決済の設定を、一般商品の販売開始とみなしません。
-クラウド文章生成の料金表v2は通常入力・キャッシュ読込・キャッシュ作成・出力を分けます。見積は最高入力単価を使い、実使用量やtierが不明なら費用確定を止めます。本文を含まないrequest-bound quote、親jobで共有する予算予約、一度だけの送信claim、利用明細と任意成果保存は正本ローカルで接続しました。会話UI・公開環境への接続と実Provider受入は残り、クラウド実送信は無効です。内部予算は入金済みWallet残高ではありません。
-<!-- sky-service-recovery:end -->
-
 <div align="center">
 
-<img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
+無料Cloudは送信・保存・画面外続行に同意して依頼を保存すると、タブを閉じてもサーバー側で待機・自動続行します（最大5試行・10分）。再訪すると本人の保存結果を確認できます。待機中は「自動続行を停止」で停止できます。結果不明の再送・有料切替は行いません。
+
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと月額140ドル・利用枠100ドルのSandbox契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。Sandboxは復旧後も「合成100ドルで上限停止を検証」から次周期の試験を繰り返せます。過去の請求は保持します。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
+
 
 # avokado
 
-### One SIM/eSIM. One Rockstar account. Cloud AI and agents with clear usage costs.
+### One account. More ways to play, make, and get things done.
 
-Our primary service is SIM/eSIM-led access to **RockstarOS**, **Sky**, **Zema**, and integrated agents. A SIM purchase is intended to include service access; the OS binary itself is installed only through a supported device path and is not stored on the SIM.<br>
-The dedicated **avocadoMini R5** and small-satellite launch vehicle **rocketstar** are separate design programs, not prerequisites for using RockstarOS services.
+Skyは、みんなが使いたい機能を持ち寄り、さまざまなソフト・機器・家具・建築へ追加するaddプラグインの入口です。機能や作者を固定せず、公式専用枠を設けません。現在のPixelモデル一覧は実機検証の範囲で、任意作者の動的native導入は未実装です。[共通の拡張契約](docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
-[Start RockstarOS service access](app/connect/page.tsx) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
+[Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
+
+Pixel Android Developer Preview now includes a selectable Home, Home/Sky/Work/Settings navigation, explicit execution-route drafts, the real local two-Tool workflow without an LLM, review/cancel/export, and an on-device-only voice adapter. Open RockstarOS → prepare a draft → Work → review the inputs and consent. Select the default Home from Settings; it is never assigned automatically. Japanese voice needs installed on-device services; model planning needs a verified model profile. [Implementation, recovery and acceptance](docs/native-os-integration.md#pixel-terminal-implementation) and [same-candidate evidence](docs/evidence/pixel-si-terminal-implementation.json). This is an APK preview, separate from a full OS image.
+
+Pixel Developer Previewの追加実装では、Skyの公開モデル検索から対応する署名済みモデルを選び、容量・ライセンスへ同意して取得し、「検証してPixelへ導入」を押します。Homeでは「自動」が標準で、発想・計画向けQwen3 4B、コード向けCoder 1.5B、記事・要約・翻訳向けGeneral 1.5Bを作業別に選び、開始前にモデルと理由を表示します。手動指定も可能です。要約・翻訳・コード下書き・アイデアの有限生成を既存の仕事へ保存します。コードは実行しません。5件ずつ保存し、時間切れには仕事の詳細から保存済み案を残して再試行できます。旧v5指示の仕事には一度の「N件を残して続ける」復旧もあります。Pixel 10で実300件の下書き・番号・件数・完全重複検査・再起動したBrokerからの同じ成果の読戻し、現APKの自動/手動Coder選択・通知タップ・公開検索を確認しました。300件では30件時のcompact復旧と220件時の通常再試行が必要でした。意味の近い案や不自然な関連が残り、内容品質・無人完走・全OSの合格ではありません。未検証モデルや検索結果を自動で導入・信頼しません。
+
+The developer APK connects Sky's signed local-model catalog/import/reload to Jennifer's bounded local planning and the existing two-Tool article workflow. In the developer build, open Sky → Local model → review the license/hash → select the matching GGUF, then Home → Local LLM → prepare and explicitly approve the request. Model weights are separate; the release catalog is empty. On 2026-10-17, the actual API v4 model → Broker → two Tools → artifact path passed on Pixel 10 GL066 after fixing model handoff and restart identity. Qwen3 0.6B content quality failed; a signed Qwen2.5 1.5B option passed an earlier functional trial and saved-artifact readback. The frozen compact-prompt candidate passed Home submission, two real Tools, one-job double tap, process readback and system-picker export on that Pixel. Draft quality remains unaccepted: the output is sparse and misses the requested structure. The Pixel UI now separates a review-first work list from each job detail. Home → confirm request → explicit consent starts a job; open its card to inspect, save, review or cancel. Settings → work notifications requests Android permission; tapping a notification only opens the saved job and rereads the Broker. [UX contract and acceptance](docs/native-os-integration.md#pixel-intuitive-experience), [device evidence](docs/evidence/pixel-intuitive-experience.json). The notification failure was reproduced as ReceiverCallNotAllowedException and fixed by binding with application Context. On the same frozen APKs, Pixel passed 15 tests with no failures or skips: actual background notification tap, live GitHub/Hugging Face discovery, and real auto/manual 1.5B planning with exact model pins, two Tools and saved artifacts. Home defaults to Automatic for supported article preparation; use Choose LLM to pin a signed, installed model, then review its name and explicitly consent. Sky → Search public LLMs fetches GGUF candidates using a separate public keyword. Results are unverified and never automatically installed or executed. X opens an explicit external search; its API is not configured. This is developer APK acceptance, separate from the full OS. [Contract and device acceptance steps](docs/native-os-integration.md#pixel-local-jennifer), [candidate evidence](docs/evidence/pixel-local-jennifer.json).
+
+
+公開モデルの導入と有限生成の契約・互換性・受入状況は[LLM設計](docs/llm-evaluation-architecture.md#pixel-discovered-model-install)と[実機証拠](docs/evidence/pixel-discovered-models.json)を参照してください。
+
+
+The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. US Sky 140 is designed at 140 USD monthly with 100 USD included usage; commercial acceptance and overage rules follow the billing authority. Local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
+
+The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
+
+RockstarOS integrates Jennifer, Sky and Zema; each service is also designed for standalone use. Sky alone owns the journey from Agent selection and usage to monthly billing, without requiring Jennifer, Zema, Mini, SIM or native OS installation. Shared billing infrastructure is reused; monthly provider acceptance is still pending. [Standalone service and billing contract](docs/sky-billing.md).
+
+Local monthly billing test: run `npm run sky:monthly:sandbox`, then open [Sky billing](http://127.0.0.1:5220/sky/billing). It runs the citation Agent, saves outputs and usage, closes a simulated month and reconciles a mock payment. No external model or real payment is used. State persists under `work/sky-monthly-sandbox/`. [Scope and recovery](docs/sky-billing.md#sky単体の月次請求ローカル実装2026-10-15).
+
+Sky is an Agent/LLM marketplace and open hub across software, hardware, furniture, interiors and architecture. RockstarOS is a first-party runtime and Mini is an optional spatial host. An instrumented sofa could provide validated, consented observations to a weight-trend Agent; this remains a design example, not a working sensor product. [Fusion contract](docs/sky-mcp-architecture.md#家具建築まで開くskyの融合).
+
+Sky is where the user chooses accepted model, Agent and Tool capabilities and their local or cloud execution targets. Model inference and the Agent runner are separate choices; explicit mixed workflows retain the same job, permissions and budget. Unavailable targets require a new choice rather than silent fallback. [Execution choice contract](docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ).
+
+Pixel 10 GL066 / frankel is the first physical product target for a GrapheneOS-based RockstarOS image. iOS follows through the connectivity-and-si-access bundle, with client/Web access and accepted native integrations such as App Intents. eSIM activation, account access, client installation and platform permissions remain separate. [Delivery strategy](docs/device-support-architecture.md#pixel先行とiosへの機能追加).
+
+The Pixel reference device is intended to become a dedicated si terminal: after unlock, Jennifer is the primary surface for requests, progress, artifacts, costs and stop controls. Mini can continue the same work without carrying the phone. The APK offers a selectable Home and an on-device voice adapter; Japanese voice, full native Jennifer orchestration and full-OS device acceptance remain pending. [Terminal experience and acceptance](docs/native-os-integration.md#si専用端末の利用体験と実装境界).
+
+Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
+
+The intended experience is to keep making things without standing at a PC or in front of the object, and to interact without holding a phone. Mini or an accepted ambient host provides the conversation and authoring surface; Pro/cloud can supply optional remote compute. Physical production still needs a capable maker or machine, an approved design revision, and separate completion evidence. [Experience and acceptance](docs/service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験) are design requirements, not claims of working hands-free hardware or fabrication.
+
+Sky is designed to connect many specialist Agents with the capabilities of apps, services, games, and eventually appliances. A refrigerator that reads its inventory and prepares a reviewed shopping order is a design example, not a connected product today. Each new host must declare what it can observe or do; Zema tracks the work, and external actions require the owner's scoped approval. See [the fusion contract](docs/sky-mcp-architecture.md#異種hostと複数agentの融合契約).
+
+[Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.
+
+[Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)
+
+[Columbia Sky](https://columbia.avoado.si/) is a campus-specific discovery Home. Its free card drafts and “Save here” list stay in that browser. Explore, Work, account library, purchases, connections, and saved Agent results belong on the main `avoado.si` Sky service; the two hosted Sites currently have separate databases, and old campus data has not been migrated.
+
+Skyの第一者[出典整理Agent](app/sky/agents/citations/page.tsx)は、サインイン前でもブラウザ内で引用を整理し、結果をコピーまたはMarkdownで持ち出せる。結果はその画面限りで、再訪できる[成果一覧](app/sky/outputs/page.tsx)への保存には別の保存操作とサインインが必要。無料の有限処理であり、LLM推論・外部検索・リンク先の真偽判定は行わない。Cloud Agentの本番実行と一般Marketplace決済は別受入。[詳細設計](docs/sky-tools-complete-design.md#sky単体の第一者agent縦断経路2026-10-13)。
+
+The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. RockstarOS Home is at `avoado.si/os`, and Sky stays under `avoado.si/os/sky`. The product homepage at `/` links to `avocadomini.si` and `avocadopro.si`. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
+
+[The promise](#the-promise) · [System map](#system-map) · [From a request to a result](#from-a-request-to-a-result) · [Service atlas](#service-atlas) · [Tool catalog](#sky-tool-catalog) · [Status](#where-it-stands) · [Develop](#start-developing)
 
 </div>
 
-> **About the image** — The R5 visual above is concept art based on the intended industrial design. The animated lines are a brand treatment, not a photograph of working hardware or proof of a spatial display.
+> **Current direction** — avokado starts with an account, not a device. Sign in once and carry identity, work, permissions, results, and usage across a browser, PC, supported device, or cloud job. A physical SIM or eSIM is optional device connectivity for products such as avocadoMini; it is not where the OS is stored.
 
-**Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
+> **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
 
-**Campus entry:** [`https://avoado.si/columbia`](https://avoado.si/columbia) is the stable public shortcut to the Columbia Campus experience. NFC and campaign query parameters are preserved while the campus remains fixed to Columbia.
+SkyでモデルやAgentを追加するには、Pixelの「Sky → LLM・Agentを追加」でHugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLを指定します。配布元・固定版・license・容量・作者署名なしの範囲を確認して追加し、モデルは別操作で取得/検証/導入、Agentは依頼と使用モデルを確認して開始します。[対応形式・状態・停止と復旧](docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。Toolを使うAgent（schema2）は、追加・依頼時に使用Toolと順番を表示します。表示内容に同意すると、端末内モデル→入力検査→Tool加工→成果保存の順に進み、仕事画面で各工程と成果を確認できます。[対応Toolと失敗時の手順](docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、[Tool Agentの定義例](examples/sky/document-agent.json)、[Pixel実機の結果](docs/evidence/pixel-agent-tools.json)を参照してください。標準は作業別の自動選択です。追加モデルはまず手動で試し、保存した結果を確認してから「自動選択で使う作業を設定」で試験済みの作業だけ候補にできます。[Pixel実機の受入と制限](docs/evidence/pixel-open-addons.json)を確認してください。
 
-<!-- sky-cloud-text-preview:start -->
-Zemaの「仕事」からクラウドAIの依頼準備・見積履歴を確認できます。仕事は再読込後も同じURLへ戻り、認証期限切れは同じ仕事へのサインインを案内します。回答のクラウド保存は初期offです。現在、実Provider資格情報・信頼済み料金・請求照合は未受入のため、AI実行は準備中です。入力してもAIへの送信や課金は始まりません。料金未設定時は見積もりも保存できません。
-<!-- sky-cloud-text-preview:end -->
+## The promise
 
-PAPER市場は検証用です。提案後に同じ画面で内容を承認し、実行したレシートは「PAPER実行履歴」から再読込後も確認できます。サンプル価格は実売買の実績ではありません。
-<!-- sky-service-recovery:start -->
-CSV受付の完了結果・検査・ダウンロードは `/csv` の同じ画面で確認できます。認証が切れた場合はサインイン表示から `/csv` へ戻り、保存済み受付を再取得してください。Stripe診断はHTTP status・許可済みerror code・request IDのみを記録し、秘密値・入力本文・Provider messageを記録しません。50円本番CSV試験は支払い照合・成果物保存・再取得まで確認済みです。クラウドAIの実接続は未受入です。
-ココナラの案件管理では、サインイン切れ時も開いている入力画面を保持します。ダイアログの別タブでサインインし、「サインイン後に接続を確認」してから保存します。再確認だけで案件を再送しません。
-法務・特許の端末内処理は、任意チェックで本文を含まない実行履歴を保存できます。未ログインや履歴保存失敗でもローカル結果を保持し、別タブのサインインから復旧します。
-履歴保存の失敗時は固定の診断コードと、完了通知の場合は受付IDを表示します。本文や元例外の内容を診断へ送らず、ローカル計算の例外を自動再実行しません。
-IP StudioはPCで起動してから専用画面を開きます。スマートフォンからPCへの接続は準備中のため、PC内アドレスへのボタンは表示しません。
-発注前の案件は「下書きを削除」で対象を確認してから削除できます。担当開始後の案件は削除せず、通信失敗時は一覧を再読込して結果を確認します。
-クラウドAIは料金見積・支出上限・利用明細の接続まで実行を停止します。オンライン法務・特許には20秒の通信上限を用意し、結果不明時に自動再送しません。実Providerの応答・使用額は未受入です。
-接続状態は一般商品の購入・販売とCSV専用50円試験を分けて表示します。CSV決済の設定を、一般商品の販売開始とみなしません。
-<!-- sky-service-recovery:end -->
+The product should feel like one continuous handoff:
 
-<div align="center">
+1. Sign in once with an avokado account.
+2. Ask for an outcome in ordinary language, or find a matching Agent or Tool in Sky.
+3. Let Zema keep the request, plan, approvals, progress, stop state, result, and history together.
+4. See the estimate before paid cloud work, approve a limit, watch usage while it runs, and read the receipt in Wallet.
 
-<img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
+Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
 
-# avokado
+The implemented coordination path is:
 
-### From playing to making. Spend less time thinking and more time creating.
+`Owner → Jennifer (COLOMBIA + Goal Contract) → Zema / AMC decomposition → specialist A2A Agent → artifact + signed Receipt → independent reviewer → Jennifer final report → owner acceptance`
 
-A product concept that begins with games and connects creation, learning, and everyday action to enrich life as a whole.<br>
-We are designing the compact dedicated **avocadoMini R5** device and **RockstarOS v1.0**, the current operating-system design that supports work, AI, creative assets, and permissions.
-The fully recoverable and reusable small-satellite launch vehicle **rocketstar** is a separate, active design program.
+Open `/chat`, choose a project, enable **計画を整理**, and send the desired outcome. Jennifer first presents the Goal and decomposition without executing anything. Saving creates a durable **draft only**. The owner must answer or explicitly defer every unresolved COLOMBIA question and approve the Goal Contract before the single inventory leaf can run. After its typed report passes an independent review, a second owner approval unlocks the remaining delivery leaves, one external delegation at a time. Actual remote dispatch still requires a connected Agent, a verified quote, a Broker authorization proof, a budget reservation, and explicit owner approval. A remote “completed” state is not enough: Zema accepts only server-bound artifacts, signed usage Receipts, a reviewer linked to the exact worker report, and finally the owner's Goal acceptance. See [Jennifer coordination and execution](docs/jennifer-coordination.md).
 
-[Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
+`/chat`の私用project workspaceは **Jennifer Access** で保護する。最初の登録または端末紛失からの復旧時だけ、既存Sites accountをownerとの結び付けに使い、普段は`columbia.avoado.si`に固定したdiscoverable passkeyと端末のロック解除で開く。登録時のattestation、利用時のassertion、challenge、counter、user verificationをserverで検証し、passkey sessionはSecure／HttpOnly／SameSite=Strictのhost-only cookieに保存する。復旧登録は以前のJennifer passkeyとsessionをすべて失効させてauditへ残す。これはColumbia/Jenniferに限定した入口で、native端末の`rock_session_...`、親domain全体の共通account、課金・dispatch承認を置き換えない。
 
-</div>
+## System map
 
-> **About the image** — The R5 visual above is concept art based on the intended industrial design. The animated lines are a brand treatment, not a photograph of working hardware or proof of a spatial display.
+Clean a file, prepare a listing, develop a material idea, find a community, or build a Tool someone else can use. The breadth is deliberate; the same account and permission boundary should make each path understandable.
 
-**Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
+The map is deliberately drawn from the largest promise down to the smallest implementation unit. A Tool is useful because it participates in the same account, work, permission, and receipt contract.
 
-## The business avokado is building
+[Open the researched system, data and transaction design](docs/service-design/07-ecosystem-strategy-and-data.md) for all 19 system contracts, 25 connections, 13 data classes, 15 transaction paths, evidence and remaining acceptance work.
 
-avokado aims to create a family of products that lets people choose their own experiences and AI teams, play, make things, and complete the work and everyday procedures they need. The business goal is **not to stop at selling a device or displaying an AI answer, but to make choosing, acting, saving, correcting, and resuming one coherent experience**.
+[Open the complete Mermaid system map](docs/rockstaros-product-system-map.md) for the product connections, model-dependent and model-free execution paths, hardware boundaries, and verified versus pending connections.
 
-![Intended relationship between avocadoMini R5, RockstarOS v1.0, Sky, and Zema](docs/brand/avokado/avokado-system-map.svg)
+<img src="docs/brand/avokado/avokado-ecosystem-map.svg" alt="avokado account-led ecosystem map: one account opens Home, Campus, Connect, Add, and Settings; Sky finds Tools, Zema runs work, Wallet explains usage, RockstarOS provides the shared foundation, and Agents and Tools run locally or in the cloud" width="100%">
 
-| Audience | Intended value | Product or system |
+| Zoom level | What a person should understand | The named pieces |
 | --- | --- | --- |
-| Players and families | Play in a way that fits them—using body movement, hands, Japanese voice input, and other methods—and resume later | avocadoMini game experiences and RockstarOS |
-| Creators and learners | Change rules and works, compare conditions, sources, and versions, and preserve invention candidates with evidence | Game creation, learning, Material Invention, and the Asset Registry |
-| People getting work done | Find tools, ask AI teams for help, and keep track of results, costs, and failures | Sky, Zema, Tools, and Wallet |
-| Tool developers and businesses | Deliver capabilities with explicit versions, permissions, execution locations, and outcomes | Sky catalog, SDK, and MCP/provider connections |
+| **1 / Account** | One identity and one history follow the person across surfaces and devices. | Account, Home, Connect, Add, Settings, Campus |
+| **2 / Work** | A request becomes visible work with an owner, a boundary, a result, and a receipt. | Jennifer → Zema / AMC → specialist si → reviewer → Wallet |
+| **3 / Foundation** | Every execution path checks the same identity, permission, storage, recovery, and stop rules. | RockstarOS Core, Broker, Runner, Storage, Recovery |
+| **4 / Capability** | A bounded Agent or Tool performs one useful job where it is allowed to run. | Local, PC/MCP, Cloud, Provider, native registry |
 
-**Delivery is staged.** The web app, Linux/QEMU Developer Preview, and test-signed Pixel APK running on an existing OS are separate validation tracks. The dedicated R5 device remains at the basic-design stage and has not been approved for manufacturing, sale, or general distribution. The business goals and validation order are documented in the [product north star](docs/product-north-star-20260915.md) and [product and business strategy](docs/rockstaros-1.0-strategy.md).
+Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Material Invention uses the service stack for digital candidate work, with physical and laboratory extensions still in development. rocketstar is a separate design program.
 
-### Revenue and participation
+## Try it now
 
-- First, we measure whether useful games, creation tasks, and work actually complete. Tool completion, delivery, revenue, and provider-confirmed payment are separate events.
-- Sky keeps registration, connection, publication, and base usage free for developers and businesses. When a verified Tool sale occurs, Sky's marketplace commission is 10%; external payment, model, cloud, and other pass-through costs are shown separately.
-- **The proposed USD 8.88 user revenue fee is on hold.** No new fee will be accrued or billed until the revenue path, fee basis, calculation, cap, collection method, and consent are defined. Earlier USD 8.88 calculations are historical design and test records, not current pricing. Live billing and live payouts have not started.
-- The R5 hardware price, release date, and reservation terms are undecided. Pricing from the older Tower20 E3 design does not carry over to R5.
+The fastest public preview is [Sky via RockstarOS Home](https://avoado.si/os/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. The browser stays on `avoado.si`. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
-See [Sky Tool teams and economy design](docs/sky-network-economy.md) and [Wallet/provider responsibility boundaries](docs/external-wallet-fund-provider-boundary-20260913.md).
+In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
 
-## Product experience
+The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
-| 01 — PLAY | 02 — MAKE | 03 — LIVE |
+For a local Zema conversation, run Ollama on `127.0.0.1:11434`, install `qwen3:0.6b`, build and start this repository, then open `http://localhost:8787/chat`. Choose **Ollama** and model ID `qwen3:0.6b` in the conversation-model panel. The model is an untrusted planner: only three bounded, side-effect-free local functions are allowlisted, and there is no cloud fallback. The public `chatgpt.site` Worker cannot reach a model on your PC loopback; a future companion/bridge is required for that path.
+
+## From a request to a result
+
+Here is the smallest useful mental model: “Please clean this CSV and show me exactly what changed.” The same shape also applies to writing, a security inspection, a market PAPER check, or a material candidate comparison. **This illustrates the intended end-to-end experience; individual Tools and provider connections are at different stages.**
+
+<img src="docs/brand/avokado/avokado-work-journey.svg" alt="six-step CSV job journey: find in Sky, request in Zema, approve the boundary and budget, run locally or in the cloud, review the result, and read the Wallet receipt" width="100%">
+
+| Step | What the person does | What they get back |
 | --- | --- | --- |
-| Select, move, collide, combine, and separate particles. Undo recognition errors, save, and continue later. | Edit game rules and creative work. Compare scientific-model conditions and preserve versioned invention candidates and evidence. | Extend the same interaction model to lower-risk everyday assistance such as procedures, timers, interruption and resumption, and the last observed time and location of an object. |
+| **Find** | Open the CSV Tool in Sky and check its target, permissions, and estimate. | A clear choice about what will run and where. |
+| **Request** | Give Zema one file and the column, whitespace, duplicate, ordering, and encoding rules. | A visible request with an owner and a defined boundary. |
+| **Approve** | Review the plan, data boundary, price range, and spending limit. | An explicit go/no-go decision before paid cloud work. |
+| **Run** | Let a bounded local, PC, or cloud runner transform the file; stop or reconnect when needed. | A transformed file with progress and a known stop or completion state. |
+| **Review** | Open the output, change report, independent check, and history. | Confidence about what changed and whether it passed. |
+| **Receipt** | Read usage and confirmed amounts separately from a self-reported or PAPER result. | A plain-language explanation of cost, status, and next action. |
 
-This is the **planned order of experience development**. It does not mean that all three stages already work on physical R5 hardware. The product is not designed to release physical particles or manufacture physical compounds.
+The current CSV Tool already has a bounded local/Web path for one file and an explicit change report. Cloud dispatch and live billing are not yet live.
 
-### avocadoMini R5 — current product requirements
+When a Wallet or CSV save has an unknown result, keep the page open and use its same-operation recovery action. Signing in opens a separate tab so the original operation can be retained; a different account cannot retry it. Wallet and CSV hide private drafts until the original account is confirmed again. Unsubmitted input is protected during in-app navigation; only the confirmed original account can explicitly discard it. The pending input is held in memory, so it is not a backup against closing the browser. CSV work abandoned in `processing` after a server process stops still requires operator investigation.
 
-**R5 is the current design baseline.** It begins with a single unit capable of the basic functions.
+Workbench, Material, Mercari and Coconala also keep private draft recovery tied to the original account. In Coconala, closing and reopening the editor retains unsaved terms. If someone else changes the case while you edit, saving stops with the original input intact; review the newer case before starting a replacement edit. Use the explicit discard action only when you no longer need that account’s unsaved input. No external orders, payments or messages are sent by these recovery controls. Material also protects incomplete local JSON and title edits before they can be exported; save or explicitly discard the current draft before leaving. Empty or unchanged saved work does not block navigation.
 
-![R5 envelope comparison; dimensions and component placement are not final manufacturing drawings](docs/avocado-mini-r5/package/drawings/R5-M01-envelope.png)
+If a Zema Tool finishes but its progress record is unconfirmed, use the record’s recovery controls instead of running the Tool again. A failed state reload keeps the original command; it is cleared only after the same account’s saved history confirms it. An unsent Cloud si prompt also blocks accidental navigation until it is saved or explicitly discarded. The existing citation, free-article and Coconala checker inputs and generated results, plus Mr. Delivery’s review JSON, selected files and result, remain in memory for the same account, job and step while the Workbench reconnects. These Tool drafts also block accidental same-tab navigation. Save or export any result you need, then use the per-Tool discard action shown with its job and step to leave; it clears only that Tool’s in-memory input and generated output, not saved Library results or job records. The original confirmed account can discard a retained draft even after its job is cancelled or another step is selected. Forced reload or tab closure can still lose unsaved memory. For Mr. Delivery, an expired sign-in hides private inputs until the Workbench confirms the original account again; reconnect in a separate tab, then reload the work list. A child connection check alone cannot restore the old account’s inputs. This does not cover the internal state of other specialized runners.
 
-| Area | R5 design baseline |
-| --- | --- |
-| Appearance | No more than 200 mm tall in use; a slim silver cylinder with a black camera band and low circular base. Final dimensions, mechanisms, and hole locations are undecided. |
-| Stand-alone operation | One unit handles input, local compute, game state, storage, voice, and stopping. A separate Edge Hub, PC, or continuous internet connection is not a basic-function requirement. |
-| Expansion | Additional identical minis may collaborate after owner approval, device authentication, and clock and coordinate calibration. Performance will be measured separately with one, two, and four units. |
-| Power | External power is required. The current design does not use a battery. The connector, rating, and thermal design will be finalized together with the display method. |
-| Display | The requirement is to show particles in the surrounding real space without glasses, but the method and safety remain research topics. Infrared sensing light, a television, AR glasses, or wall projection do not count as proof that this requirement is met. |
+Zema asks before discarding unsent text when changing conversations or following an internal link. Back/Forward uses the same check in browsers with the Navigation API; older browsers retain only the existing link and unload protection.
 
-The [51-page integrated R5 basic design](docs/avocado-mini-r5/README.md) ([PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) · [complete ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip)) contains requirements, candidate components, comparative calculations, drawings, and assembly and acceptance plans. Fourteen automated checks reproduce arithmetic and decision conditions; **zero physical-device tests have been completed, and manufacturing approval is on hold**. The “four units plus a separate hub” Tower20 E3 material still visible on the public product site is classified as a [historical design](docs/avocado-mini-tower20-e3/README.md).
+## Service atlas
 
-## Feature details
+The names below are organized by how a person meets them: core surfaces, supporting surfaces, separately deployed services, and independent programs. A route or folder is an implementation location; its stage is shown beside it.
 
-### 1. Input, Japanese voice, and accessibility
+### The core loop
 
-The design translates hand and body position, short Japanese commands, and physical input into semantic operations: select, move, confirm, cancel, and stop. Nearby targets use hand position; distant targets use direction. Multiple candidates are never confirmed automatically. If tracking is lost, the system does not misinterpret the loss as a release; it cancels the hold or pauses instead.
-
-- From first-run setup, users can choose seated operation, one-handed operation, small movements, or non-voice input. Body calibration is not a condition of participation.
-- Voice validation begins with short local commands. Recognition and execution approval remain separate; an ambiguous “yes” never authorizes billing or an external action.
-- Camera and microphone indicators, a physical stop control, and guest settings are part of the design. Raw image and audio storage and external transmission are off by default.
-
-[Interaction states and error prevention](docs/avocado-mini-r5/package/integrated_design.md#17a-%E7%A9%BA%E9%96%93%E3%81%AE%E4%B8%AD%E3%81%A7%E9%81%B8%E3%82%93%E3%81%A7%E5%8B%95%E3%81%8B%E3%81%99%E6%93%8D%E4%BD%9C) / [Startup and input-selection diagram](docs/avocado-mini-r5/package/drawings/R5-U01-startup.png)
-
-### 2. Games
-
-The default particle sandbox uses the smallest loop of “select → move → release → collide/combine/separate → undo → save/resume.” It preserves rules, random seeds, and work versions so a state can be reproduced. Shared use accounts for clock and coordinate drift, disconnection, and one participant stopping. The author SDK receives semantic operations so a game does not automatically gain raw-image or payment authority.
-
-**Commercial-game support is evaluated title by title.** This input design alone does not mean that games such as GTA run, can be modified, or have official integration. [Game features and acceptance conditions](docs/avocado-mini-r5/package/integrated_design.md#03-%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%A8%E5%88%B6%E4%BD%9C%E3%81%AE%E5%9F%BA%E6%9C%AC%E6%A9%9F%E8%83%BD) / [Game and Wallet workstream](docs/workstreams/08-game-market-fund.md)
-
-### 3. Creation, learning, and asset management
-
-The concept supports editing a game's appearance, rules, and stages and saving the result as a versioned work that can be rolled back. Learning use distinguishes an interesting result from a scientifically correct one and shows the model, units, initial conditions, and limits. Before a work leaves the system, the Asset Registry records its author, source material, generation and edit history, version, license basis, cost, and publication scope. Generation completion and publication success are separate states.
-
-### 4. Material Invention
-
-This application track creates reproducible digital candidates from two or more materials, ratios, and processes; checks hazardous conditions and evidence; and hands candidates to simulation or Patent AI. Material Invention Core manages the candidate graph, versions, and provenance. What exists today is an **equipment-disconnected sandbox Core and an integrated design**. **The Material Invention interface and Sky connection are not implemented**; R5 physical sensors, the spatial interface, simulation providers, and external laboratories are not connected. A candidate is not proof of a material's physical performance or patentability.
-
-[Material Invention system design](docs/rockstaros-avocado-mini-complete-design.md) / [Core design](docs/material-invention-core.md) / [Ownership and acceptance](docs/workstreams/11-material-invention-avocado-mini.md)
-
-### 5. Everyday assistance
-
-Short interactions learned through games are extended gradually to next/back steps, timers, interruption and resumption, and the last observed time and location of an object. Compatible device actions such as lighting are accepted individually only after checking the target device, effect, authority, and result. The product does not promise the current location of an unseen object, physical completion of household chores, medical judgment, or unattended operation of locks or heating devices.
-
-### 6. RockstarOS / Local AI
-
-![R5 functional stack; this is a logical design, not a claim of implementation](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.png)
-
-RockstarOS centralizes user and component authentication, capabilities, approvals, work, receipts, storage, and recovery in the Platform Core and Broker. The on-device LLM is an **untrusted planner that returns plan candidates**; it does not decide whether a Tool may run. An Agent advances only through finite procedures allowed by the Broker and handles stopping, awaiting confirmation, and safe recovery after a restart. Models and runtimes are designed to be replaceable in the future, but general replacement is not complete.
-
-[Current OS v1.0 source and appendices](#rockstaros-v10--current-os-design) / [Complete OS design](docs/rockstaros-complete-design.md) / [Shared AI-native OS architecture](docs/ai-native-os-architecture.md) / [LLM implementation and open work](docs/llm-evaluation-architecture.md)
-
-### 7. Sky, Zema, and Tools
-
-**Sky** is the entry point for discovering Tools and AI teams and comparing their author, version, permissions, execution location, and cost before connecting. **Zema** takes a request and manages input confirmation, planning, progress, stopping, user approval, deliverables, and history as one unit of work. Chat text and AI answers are not themselves approvals.
-
-[Sky Market](/sky/marketplace) is the searchable AI and automation Tool storefront, including LLM entries. It separates the 12 built-in catalog entries, 22 integration candidates, and externally reviewed Registry packages, and links built-in entries to their individual Sky pages. A listing is not proof of connection or production operation. Third-party packages appear only after a valid `verified` review. Eligible reviewed packages can now use the Stripe Checkout integration described below; one-click external installation remains a separate integration.
-
-Sky home and Market use the same Tool cards and keep search visible. Select a Tool's icon or “機能・利用条件” to see its purpose, connection state, supported environment, and cost. On Sky home, the action for a built-in browser Tool opens its dedicated app or input page without a separate Sky registration step; required sign-in and execution checks remain in that page. PC-only Tools retain their PC connection step, while integration candidates distinguish Sky registration from a working external runtime. Market actions open the individual Sky page. The icon there opens the same overview, and “使い方・ライセンス” expands the full instructions. Opening an overview does not install or run the Tool.
-
-Sky home and the market hide only tools that are clearly incompatible with the browser's device class by default; in the market, expand the environment details to review the filter and reveal excluded tools with reasons. This does not verify installed software or external accounts. In particular, Jev Router remains a PC CLI candidate, not a Sky one-click connection.
-
-Tool providers can open [Sky registration](/sky/register) directly from the market. Previous provider name and support URL can be reused from their own submissions, and remote MCP inspection can fill the server name for review. Pricing must be selected and described explicitly; the market shows the pricing model before opening a package. [Rock Studio](/sky/publish) remains the separate SDK setup flow. No checkout or developer payout is activated by registration.
-
-**Sky Market payments:** providers use [Sell](/sky/sell) to register a Stripe Express receiving account, then set a JPY price, sale terms and refund policy for their own reviewed `external_contract` package. Buyers select the package, check its terms, pay on Stripe, and return to [Purchased tools](/sky/purchases). Sky verifies Stripe's payment before showing purchased access and connection information. This supports one-time purchases of eligible automation or LLM packages; listing a built-in Tool or model provider does not automatically make it purchasable. Sky takes a 10% application fee; payment-provider costs are separate, so that fee is not Sky's net profit. Card and bank details stay with Stripe. Providers can refund the remaining unrefunded amount from their sales page.
-
-The implementation and local mocked-provider tests are present. Stripe credentials, provider sandbox acceptance, live payments and deployment have not been completed. Configure the four server-only `SKY_PAYMENTS_MODE`, `SKY_STRIPE_SECRET_KEY`, `SKY_STRIPE_WEBHOOK_SECRET` and `SKY_PAYMENT_ORIGIN` settings and apply Web D1 migration `0018_sky_commerce.sql` following the [payment setup and acceptance guide](docs/sky-billing.md#sky-market決済2026-09-27実装). Test and live data are isolated. Purchase access is a Sky record; a third-party paid MCP service must enforce its own access and revocation. The live Web server relies on the trusted Sites identity gateway, while Stripe's signed webhook path must be publicly reachable. This purchase flow does not enable the retired USD 8.88 revenue fee or prove bank payout completion.
-
-Zema lists the 22 catalog candidates as separate, searchable Bots with distinct icons. The sidebar shows a short selection first; use search or “すべて表示” to open the full list. The selected Tool's actual connection state and next action appear before sending a message. The 11 former Mr. candidates can produce local drafts; 10 external research candidates produce only tool-specific connection plans; IP Studio opens its local app when available. These entries are not evidence that an external runtime or provider is connected.
-
-**Managed local runtime — first local milestone verified; overall work in progress.** The goal covers usable Tools across Sky, Zema, and the OS without users starting each server separately, with local inference preferred. The local Web runtime now starts the bundled MCP Connector and Fashion service when needed. Browser checks confirmed a synthetic Fashion Producer plan saved to the database and matched by readback, plus a Zema delivery sample automatically connecting and returning a real verification `PASS`; nothing was delivered externally. The 34-entry source inventory contains 6 browser-deterministic base functions, 3 Web API/database applications, 2 separate-PC-service Tools, 1 external-AI Tool, and 22 candidates (11 template drafts, 10 connection guides, and 1 separate-app launch). An LLM does not implement their missing adapters. Fashion's four providers remain mock/unconnected, and restoring its result after a page reload is not implemented. No local model was installed; installation awaits the owner's response. Ledger, IP Studio, individual adapters, real providers, hosted-Web-to-PC relay, and native OS acceptance remain open. Focused runtime tests passed 35/35 and isolated API regression passed 172 assertions; the full suite remains 378/389 passing and full verification stops at the existing visual baseline. [Executor inventory, evidence, and remaining scope](docs/sky-tools-complete-design.md#13-%E5%85%A8tool%E3%81%AE%E5%AE%9F%E8%A1%8C%E5%99%A8%E6%A3%9A%E5%8D%B8%E3%81%97%E3%81%A8%E7%AE%A1%E7%90%86runtime%E9%80%B2%E8%A1%8C%E4%B8%AD)
-
-The Web Preview uses avokado's graphite, silver, and pale-blue appearance across Home, Sky, Zema, Studio, Wallet, Market, Settings, and CSV. Home's former default lime accent is migrated to pale blue; other colors chosen in Home settings remain yours. This visual update does not change Tool availability, native OS builds, or the published product site.
-
-| Representative Tool or team | Function | Boundary |
+| Service / source | What a person does and why it matters | Stage |
 | --- | --- | --- |
-| CSV Operations | Clean CSV data, run an independent review, and generate delivery artifacts | Sales, customer sharing, and payment are separate |
-| Mercari Revenue Starter | Draft listings for owned items and organize costs and expected net proceeds | The owner lists, communicates, and ships; revenue is real only after provider confirmation |
-| Fashion Brand Ops | Prepare campaigns, DM and quote drafts, post-order production, and analysis | Posting, advertising, sending DMs, billing, and refunds require action-specific approval |
-| Citation Organizer / Free Article | Organize URLs and produce a free introduction from the user's draft | Does not perform fact-checking, autonomous writing, or external posting |
-| Legal Intake / Patent Assistant | Organize information and prepare drafts based on official sources for experts or filings | Does not make legal determinations, determine patentability, or file automatically |
-| Market Scanner / Fund | Estimate prices and demand, record PAPER activity, and compare configurations against evidence | Live orders, returns, and live-fund operation require separate acceptance |
+| [**Account / Home**](app/page.tsx) · [RockstarOS service](app/rockstaros/) | Signs in once, sees the next useful action, and enters the same service from a browser or device. | Web source + local checks |
+| [**Sky**](app/sky/) · [guide](docs/sky.md) | Finds, compares, connects, publishes, or changes a Tool or Agent. | Web source + bounded Tool paths |
+| [**Zema / Work**](app/zema/) · [Work route](app/work/) | Describes a job, approves it, watches progress, stops it, and opens the result. | Web source + local checks |
+| [**Activity**](app/activity/) | Reopens what happened and checks the timeline. | Web source |
+| [**Wallet**](app/wallet/) · [`lib/rock-wallet.ts`](lib/rock-wallet.ts) | Understands estimates, reservations, usage, receipts, refunds, and confirmed earnings. | Source + fixtures; no live billing |
+| [**RockstarOS Core**](systems/rock-star-os/) · [`contracts/`](contracts/) | Explains why a job was allowed or stopped, with shared identity, permission, storage, update, and recovery rules. | Linux/QEMU preview + web/native source |
 
-The catalog also includes Tools for checking Coconala opportunities, reconciling delivery records, and subscription advisory work. A candidate Tool is not considered operational merely because it is listed. [Complete Tool inputs, outputs, storage, and failure behavior](docs/sky-tools-complete-design.md) / [Project guide](PROJECTS.md)
+### The surrounding surfaces
 
-[Coconala in Sky](/sky/tools/coconala) combines the pre-application check with an owner-scoped record for prime-contractor orders and separately agreed worker compensation. Its 3% helper is an estimate; it neither contracts on Coconala nor verifies receipts or sends payments.
+| Surface | What it is for | Stage | Source |
+| --- | --- | --- | --- |
+| **Connect** | Start an account/device connection and, in the retained onboarding flow, keep carrier/SIM entitlement separate from client/OS install state. | Source + fixtures; no carrier or service-offer launch is accepted | [`app/connect/`](app/connect/) |
+| **Add** | Add Sky, selected data recovery, or LLM entry points to an existing OS client or PWA. | Source path; device and provider acceptance separate | [`app/add/`](app/add/) |
+| **Settings** | Manage account, devices, providers, model choices, and recovery settings. | Web source | [`app/settings/`](app/settings/) |
+| **Jennifer / Chat** | Turn a broad outcome into a Goal Contract and bounded AMC leaf tasks, dispatch ready leaves through Zema, and integrate verified results and unfinished work. | Web source + owner-gated A2A path; production Provider setup remains separate | [`app/chat/`](app/chat/) · [`docs/jennifer-coordination.md`](docs/jennifer-coordination.md) |
+| **Library** | Reopen saved results and private work artifacts. | Web source + owner-scoped storage rules | [`app/zema/library/`](app/zema/library/) |
+| **Campus** | Find people, projects, opportunities, events, communities, portfolios, resources, and NFC/QR entry points. The five generic campus Sky hubs open at `https://avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub`. The separate Columbia card pilot keeps its stable resolver at `https://avocadomini.si/t/<tagId>` and opens the English three-tool entry on `columbia.avoado.si`; its browser saves and optional personalization do not create identity, jobs, entitlement, or charges. | Web source + published route check; physical tag writing/readback remains separate | [`app/campus/`](app/campus/), [`docs/sky-nfc-columbia.md`](docs/sky-nfc-columbia.md) |
+| **AMC** | Turns Jennifer's Goal Contract into dependency-ordered leaf tasks and records start, submission, independent review, and owner acceptance. | Catalog `ready`; Jennifer can create the Goal and A2A jobs, while every remote dispatch remains explicitly gated | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
+| **Rock Studio** | Authors a Tool, declares its inputs and permissions, packages it with SDK/MCP, and prepares publication to Sky. | Authoring source; publication and execution still have separate gates | [`app/studio/`](app/studio/) · [`app/sky/publish/`](app/sky/publish/) |
+| **Sky Marketplace / Network / Purchases / Sell** | Finds published Tools, manages connections, and separates buying, selling, and refunds from execution. | Source + fixtures; provider and commercial acceptance are separate | [`app/sky/marketplace/`](app/sky/marketplace/) · [`app/sky/network/`](app/sky/network/) · [`app/sky/purchases/`](app/sky/purchases/) · [`app/sky/sell/`](app/sky/sell/) |
+| **CSV** | Handles one bounded file from request through transformation, inspection, and delivery. | Ready bounded Web path; cloud dispatch and live billing are not live | [`app/csv/`](app/csv/) · [`rockstar-csv-cleanup`](lib/catalog.ts) |
+| **Market** | Registers value units and walks through a simulated market's proposal, approval, PAPER execution, and receipt without real orders or funds. | PAPER (simulated market) only | [`app/market/`](app/market/) |
+| **Automation Fund** | Groups ready Tools into a user-owned fund view and shows how revenue sharing is intended to work. | Revenue pricing and external payout are on hold | [`app/fund/`](app/fund/) |
+| **Compute Grid** | Matches fixed, short compute lots to eligible idle Android hosts and independently verifies the result. | Synthetic host fixture; workers, cluster, and real settlement are not connected | [`app/sky/compute-grid/`](app/sky/compute-grid/) · [`lib/sky-compute-grid.ts`](lib/sky-compute-grid.ts) |
+| **Coconala / Mercari** | Keeps opportunity, listing, delivery, and proceeds preparation in named Tools while the person performs official external actions. | Bounded Tool paths; external Provider acceptance is separate | [`app/coconala-team/`](app/coconala-team/) · [`app/income/mercari/`](app/income/mercari/) |
 
-### 8. External AI, IP, games, and destinations
+The creator side follows the same contract as the user side:
 
-The design does not lock creation or game destinations to a single service. Providers are selected by capability, destination, commercial terms, cost, region, and quality. Image, video, 3D, and audio generation; social publication; game submission; and reward assignment are separate effects. External transmission, publication, and purchases require owner approval that fixes the target, content, and spending limit. If the result is unknown, the system queries and stops.
+<img src="docs/brand/avokado/avokado-maker-loop.svg" alt="creator loop from Rock Studio through SDK and MCP to Sky discovery, Zema request, RockstarOS permission boundary, and Wallet receipt" width="100%">
 
-Higgsfield, Roblox, YouTube, and GTA are examples of possible destinations. **This is not a list of supported products, official partnerships, or guaranteed compatibility.** [IP Studio connection contract](docs/sky-tools-complete-design.md#85-ip-studio--%E4%BA%A4%E6%8F%9B%E5%8F%AF%E8%83%BD%E3%81%AA%E5%88%B6%E4%BD%9C%E9%85%8D%E4%BF%A1%E3%82%B2%E3%83%BC%E3%83%A0%E5%B1%95%E9%96%8B)
+Rock Studio is the developer-facing Tool SDK surface. **Material Invention Studio** is a separate composite application that combines material candidate work, safety, XR, simulation, patent, and lab capabilities; its 2D candidate comparison and Sky connection are implemented, while the broader physical and laboratory system remains unfinished.
 
-### 9. Wallet, costs, and verified earnings
+<details>
+<summary><strong>Implementation atlas</strong> · separately deployed services and execution environments</summary>
 
-Wallet treats cost estimation, reservation, and finalization; signed Earning Receipts; and refunds and reconciliation as separate concerns. Finishing work alone does not create displayed earnings. Owner assets and external-provider payment, custody, and identity verification remain external responsibilities under the shared contract. Game-currency exchange, ATM, Fund, and live payouts each have their own gates; PAPER or fixture success is never treated as live-money acceptance.
+### Separately deployed services
 
-[Wallet, billing, and provider workstream](docs/workstreams/03-wallet-billing-providers.md) / [Game-exchange boundary](docs/game-wallet-release-checkpoint-20260910.md)
+These live under `services/` and have their own runtime or deployment boundary. They are support services for the core loop, not extra user-facing products to count as additional Tools.
 
-## Current status
-
-| Track | Verified | Incomplete |
+| Service | Role | Current deployment state |
 | --- | --- | --- |
-| avocadoMini R5 | Integrated basic design, 51 pages, eight design-study diagrams, and 14 calculation checks | Zero physical-device tests; unaided full-space display, precise 3D input, final enclosure, thermal and power design, manufacturing drawings, and safety acceptance |
-| RockstarOS v1.0 | Current 41-page, 32-chapter OS/system-software design; five deployment profiles, 13 logical services, 60 requirements; 43/43 appendix structure and DDL checks | New OS image, R5 Device Profile and adapter, and physical-device, onboard, and field acceptance. Document checks are not operational tests. |
-| rocketstar R1.0 | Current 44-page, 35-chapter integrated rocket design with 60 requirements and 18 system interfaces | Manufacturing drawings, physical performance, and flight certification. Comparative calculations are not final performance. |
-| Web / Sky / Zema | Source for screens, catalog, work, approvals, history, and the Tool foundation | Current-version readback for each deployment, external providers, and production commercial acceptance |
-| Pixel 10 GL066 | Pre-tests on an existing OS with a test-signed APK for offline planning, limited Tools, storage, and restart | Full RockstarOS image build, production signing, first flash and boot, OTA, and total-loss recovery |
-| Linux / QEMU | Independent Developer Preview implementation and acceptance records | Release gates for the current artifact; not transferable to Pixel physical-device acceptance |
-| Material Invention | Reproducible sandbox Core and integrated design | R5 input/display adapter, interface, physical sensors, and simulation/Patent AI connections |
+| [`sky-agent-runtime/`](services/sky-agent-runtime/) | Cloud Agent text work, A2A delegation, and one-minute expiry sweep. | Local Workflow fixtures; production D1, secrets, and cron are not configured. |
+| [`sky-billing/`](services/sky-billing/) | Fee and revenue reconciliation and billing boundary. | Real sales, payment, and payout Providers are not connected. |
+| [`sky-web/`](services/sky-web/) | Deployment adapter for the dedicated Sky site and authenticated API. | Adapter source and launch documentation; it does not replace the OS database. |
+| [`operator-dock/`](services/operator-dock/) | Operations-only device management, separated from user OS screens and data. | Owner-controlled hostname, Access, D1, and WebAuthn remain to be configured. |
+| [`android-attestation-verifier/`](services/android-attestation-verifier/) | Verifies Android Key Attestation before a device gateway registers a key. | Independent JVM service source and guide; device production acceptance is separate. |
 
-R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
+### Where work can run
+
+| Environment | What it means | What it does not prove |
+| --- | --- | --- |
+| **Browser / PWA** | Sky, Zema, Wallet, Campus, and bounded local Tools. | A browser result is not an OS or production acceptance. |
+| **PC / MCP** | Explicitly connected local tools such as Fashion Brand Ops, Ledger, and delivery checks. | A connector or mock does not authorize third-party external actions. |
+| **Cloud / Worker** | Queueing, remote si, A2A, and continuity after explicit estimate and approval. | Local Worker fixtures are not live Provider billing. |
+| **Linux / QEMU** | RockstarOS Developer Preview and native registry packages. | QEMU acceptance does not transfer to a Pixel or physical device. |
+| **Android / Pixel 10** | Test-signed app, Broker/Shell, limited offline planning, storage, and restart experiments. | It is not a flashed, production-signed RockstarOS image. |
+
+</details>
+
+### Devices and independent programs
+
+<img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avocadoMini R5 concept art with PLAY, MAKE, and LIVE visual treatment" width="100%">
+
+| Program | Intended role | Current stage |
+| --- | --- | --- |
+| **avocadoMini R5** | A 200 mm stand-alone spatial-input, display, game, and everyday-help device. An optional removable ceiling installation is designed for planning with architects before construction, while the stand-alone form remains available. | **R5 is the current design baseline.** Ceiling variants are design candidates; no building compatibility, installation, physical-device tests, manufacturing drawings, or manufacturing approval are complete. |
+| **avokadoPro** | A compact NVIDIA desktop for local si, services, and PC games, optionally paired with Mini. | Candidate design and planning only; no purchase or assembly. |
+| **Material Invention** | Reproducible digital candidate comparison, then a larger path toward XR, sensors, simulation, patent, and lab work. | 2D candidate comparison and Sky/Zema connection exist. Simulation and laboratory connections are not implemented. |
+| **rocketstar** | A separate reusable small-satellite launch-vehicle and A-LINK design program. | Design archive only; no manufacturing, launch, or flight acceptance. |
+
+## Sky Tool catalog
+
+The catalog source is [`lib/catalog.ts`](lib/catalog.ts). At this commit it contains **38 entries**: **16 `ready`** entries that have a Sky path or bounded local fallback, and **22 `candidate`** entries that are listed for future integration. `ready` does not mean external credentials, production payments, live Provider contracts, physical-device acceptance, or autonomous execution are complete. A candidate is not an executable standard Tool.
+
+### The 16 ready entries
+
+| Tool | ID | What a person uses it for | Where to look |
+| --- | --- | --- | --- |
+| **Visual Scribe** | `visual-scribe` | Turn pasted conversation or transcript paragraphs into bounded browser-local flow diagrams and export one as SVG. | [`lib/conversation-diagram.ts`](lib/conversation-diagram.ts) |
+| **Material Invention** | `rockstar-material-invention` | Compare deterministic material candidates, missing safety conditions, and owner-scoped saved work. | [`lib/material-invention.ts`](lib/material-invention.ts) |
+| **SPIDER** | `rockstar-spider` | Inspect pasted code or text for secret, personal-data, and dangerous-processing candidates in the browser without sending or saving the source. | [`toolkits/spider-guard/`](toolkits/spider-guard/) |
+| **AMC** | `rockstar-amc` | Prepare a Goal plan and record manual work, submission, review, and acceptance. | [`app/amc/`](app/amc/) |
+| **CSV Cleanup** | `rockstar-csv-cleanup` | Transform, inspect, and deliver one bounded CSV with a change report and independent check. | [`app/csv/`](app/csv/) |
+| **Market Scanner** | `rockstar-markets-analysis` | Register typed value objects and inspect avocadoOS Market PAPER history. | [`app/market/`](app/market/) |
+| **Mercari Revenue** | `mercari-revenue` | Prepare a listing and estimate net proceeds from owned inventory; the person completes official selling actions. | [`app/income/mercari/`](app/income/mercari/) |
+| **Fashion Brand Ops** | `fashion-brand-ops` | Plan an approval-gated brand workflow across content, conversations, orders, production, and improvement. | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) |
+| **Coconala** | `coconala` | Check a Coconala opportunity and keep representative order, delivery, and payment records. | [`app/coconala-team/`](app/coconala-team/) |
+| **Mr. Free Article** | `mr-free-article` | Turn an owned long article into a free introduction while keeping the person in control of publication. | [`vendor/mr/`](vendor/mr/) |
+| **Mr. Citations** | `mr-citations` | Collect Markdown source links into a readable reference list. | [`vendor/mr/`](vendor/mr/) |
+| **Mr. Delivery** | `mr-delivery` | Compare contract conditions, artifacts, production notes, and a separate review before delivery. | [`vendor/mr/`](vendor/mr/) |
+| **Rockstar Ledger** | `rockstar-ledger` | Inspect subscriptions, renewal dates, failed payments, and recurring-charge candidates in a local ledger. | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) |
+| **Jev Evaluation** | `jev-evaluation` | Request an explicitly approved remote evaluation receipt for a minimized output. | [`lib/jev-evaluation.ts`](lib/jev-evaluation.ts) |
+| **Legal Intake** | `rockstar-legal-intake` | Organize a legal situation and point to official information or free help; it does not provide legal advice. | [`lib/legal-intake.ts`](lib/legal-intake.ts) |
+| **Patent Assistant** | `rockstar-patent-assistant` | Organize an invention, research prior-art candidates, and draft material for expert review. | [`lib/patent-assistant.ts`](lib/patent-assistant.ts) |
+
+### The 22 candidate entries
+
+These are useful ideas, existing source inventories, or third-party candidates with a catalog identity. They need their own source, permissions, storage, external-action, result, and acceptance boundary before they become executable through Sky.
+
+<details>
+<summary><strong>Rock candidate</strong> · 1 entry</summary>
+
+- **IP Studio** (`rockstar-ip-studio`) — character/skin production, social and game expansion, and optional LiveKit connection setup. The main call and phone integration are not connected.
+
+</details>
+
+<details>
+<summary><strong>Mr. inventory</strong> · 11 entries</summary>
+
+- **Coconala Proposal Draft** (`coconala-proposal-draft`) — draft a proposal and check list from an opportunity.
+- **Gig Workflow** (`gig-workflow`) — move through application, negotiation, production, delivery, and sales confirmation.
+- **Coconala Inbox** (`coconala-inbox`) — organize a person’s request text and attachments.
+- **YouTube Script Writer** (`youtube-script-writer`) — create title options, hooks, scripts, and filming cues.
+- **SEO Blueprint** (`seo-blueprint`) — organize search intent, keywords, and an article outline.
+- **Landing Page Sprint** (`landing-page-sprint`) — plan information architecture, copy, screens, and pre-publication checks.
+- **Sales Objection Reply Builder** (`sales-objection-reply-builder`) — draft a reply and questions from confirmed product conditions.
+- **User Interview Synthesizer** (`user-interview-synthesizer`) — turn interview statements into themes, evidence, hypotheses, and next tests.
+- **Calendar Coordination** (`calendar-coordination`) — interpret schedules and connect an authorized calendar.
+- **Telegram Notifications** (`telegram-notifications`) — connect a verified Bot to notifications, progress, and approvals.
+- **Product Hunt Discovery** (`producthunt-discovery`) — search Product Hunt candidates through its official API boundary.
+
+</details>
+
+<details>
+<summary><strong>Third-party research candidates</strong> · 10 entries</summary>
+
+- **Faster Whisper** (`faster-whisper`) — local speech-to-text on a PC.
+- **Transformers.js** (`transformers-js`) — browser model execution for tasks such as classification or summarization.
+- **Playwright** (`playwright`) — permitted browser automation and repeatable tests.
+- **Jev Ultrafast** (`jev-ultrafast`) — choose one permitted browser action from structured options.
+- **Jev Trader** (`jev-trader`) — evaluate market decisions in RockstarOS PAPER/replay only.
+- **TypeSafe Computer Use** (`typesafe-computer-use`) — deterministic Mac observation with separately controlled actions.
+- **Jev Review** (`jev-review`) — staged Jev-assisted code review for a fixed repository scope.
+- **Jev Router** (`jev-router`) — route turns to an allowed fast or strong model while preserving CLI permissions.
+- **Jev Browser** (`jev-browser`) — choose page elements inside a brokered browser observation loop.
+- **Mobile Jev** (`mobile-jev`) — research candidate for controlled Android test-device actions.
+
+</details>
+
+The three research references **OpenJev**, **Jevlike**, and **Awesome Jev by TypeSafe** appear in design material but are not catalog entries. They are not included in the 37.
+
+<details>
+<summary><strong>Native OS package inventory</strong> · six families, nine development versions</summary>
+
+### Native OS packages are a separate inventory
+
+Linux/QEMU has **six package families and nine development versions** in [`systems/rock-star-os/examples/registry/`](systems/rock-star-os/examples/registry/). They use public RFC test keys and only text input/output permissions; they are not extra Sky catalog entries:
+
+- `org.example.action-checklist`
+- `org.rockstar.citation-organizer`
+- `org.rockstar.proposal-draft`
+- `org.rockstar.text-tidy`
+- `org.rockstar.unique-list`
+- `org.rockstar.utf8-sha256`
+
+The Android `article-tool` and native `hello` example are implementation examples, not additional catalog IDs. The [full Tool and Agent inventory](docs/agents-and-tools.md) has the detailed inputs, limits, and role boundaries.
+
+</details>
+
+<details>
+<summary><strong>Toolkits and implementation pieces</strong> · reusable packages and adapters</summary>
+
+## Toolkits and implementation pieces
+
+The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded experiments. They are not automatically separate products or separate members of the si team.
+
+| Toolkit | Role | Stage |
+| --- | --- | --- |
+| [`amc-agent/`](toolkits/amc-agent/) | Codex commander, executor, and independent verifier for explicit development Goals. | Local CLI; autonomous Web execution is not connected. |
+| [`avokado-llm/`](toolkits/avokado-llm/) | Random-init CPU training, save, and resume host experiment. | Research/host prototype; not the product model. |
+| [`esim-bootstrap/`](toolkits/esim-bootstrap/) | eSIM provider host fixture and adapter. | Integration fixture; it does not define a physical-SIM or carrier boundary. |
+| [`fashion-brand-ops/`](toolkits/fashion-brand-ops/) | Independent approval-gated brand MCP service. | Mock/browser path; external Provider acceptance is separate. |
+| [`mini-game-client/`](toolkits/mini-game-client/) | Explicit launcher into an official Remote Play path. | Diagnostic launcher; game/console acceptance is separate. |
+| [`mr/`](toolkits/mr/) | Adapter for the fixed `Mr.` source snapshot. | Source and local adapters; third-party external actions remain manual. |
+| [`rockstar-ledger/`](toolkits/rockstar-ledger/) | Local subscription ledger used by the Ledger Tool. | Read-only local package. |
+| [`sky-mcp-connector/`](toolkits/sky-mcp-connector/) | Manage MCP servers, connection, preparation, execution, and permissions. | PC connector source; each external action needs its own approval. |
+| [`sky-tool-sdk/`](toolkits/sky-tool-sdk/) | Packages, examples, and contracts for Tool authors. | Public SDK source and examples. |
+| [`spider-guard/`](toolkits/spider-guard/) | Shared secret/data inspection and pre-send protection component. | Bounded inspection; not whole-device surveillance or a guarantee of safety. |
+
+</details>
+
+## Where it stands
+
+| Track | Verified or present | Still open |
+| --- | --- | --- |
+| **Web / Sky / Zema / Wallet** | Source for screens, catalog, work, approvals, history, Wallet boundaries, and Tool runners. | Current-version readback for each deployment, external Providers, and production commercial acceptance. |
+| **Pixel 10 GL066** | Existing-OS pre-tests with a test-signed app for offline planning, limited Tools, storage, and restart. | Full RockstarOS image, production signing, first flash/boot, OTA, and total-loss recovery; all four first-flash gates are failing. |
+| **Linux / QEMU** | Independent RockstarOS Developer Preview and acceptance records. | Release gates for the current artifact; results do not transfer to Android or a physical device. |
+| **avocadoMini R5** | R5 is the current design baseline, with integrated design and calculation checks ([R5 design and optional architectural installation](docs/avocado-mini-r5/README.md)). | Zero physical-device tests have been completed, and manufacturing approval is **on hold**. Ceiling-specific fit, safe motion, access for maintenance, input/display, thermal/power, and manufacturing drawings remain open. |
+| **Material Invention** | Sandbox core, candidate comparison in Sky/Zema, owner-scoped saved work, and digest-checked recovery. | Physical R5 adapter and sensors. Simulation and laboratory connections are not implemented. |
+| **avokadoPro / rocketstar** | Public source includes product pages and design-program boundaries. | Purchase, assembly, manufacturing, flight, and physical acceptance. |
+
+Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-01 / 158 tasks: 104 done, 35 in progress, 18 planned, 1 blocked
+Updated: 2026-10-15 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
-[All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
+## Find the next level
 
-## Design library
-
-**The current device design is avocadoMini R5, the current OS/system-software design is RockstarOS v1.0, and the current rocket design is rocketstar R1.0.** Their source documents and appendices are linked below. The existence of a design document does not prove physical operation, manufacturing approval, or flight certification.
-
-[Device R5](#avocadomini-r5--source-and-verification-materials) · [OS v1.0](#rockstaros-v10--current-os-design) · [Rocket R1.0](#rocketstar-r10--current-rocket-design) · [Design domains](#rockstaros-and-services--all-design-domains) · [Historical designs](#historical-and-alternate-research-profiles)
-
-### avocadoMini R5 — source and verification materials
-
-| What to read | File |
+| If you want to… | Open |
 | --- | --- |
-| Overview and reading order | [R5 design entry point](docs/avocado-mini-r5/README.md) / [Package guide](docs/avocado-mini-r5/package/README.md) |
-| Read, edit, or download everything | [51-page PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) / [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) / [Complete ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip) |
-| Full text, requirements, prototypes, and acceptance conditions | [Integrated design Markdown](docs/avocado-mini-r5/package/integrated_design.md) |
-| Comparative calculations | [Results](docs/avocado-mini-r5/package/calculation_results.json) / [Verification program](docs/avocado-mini-r5/package/verify_calculations.py) |
-| References | [Reference index](docs/avocado-mini-r5/package/reference_index.json) / [Everyday requirements](docs/avocado-mini-r5/package/references/01-life-needs.md) / [Interaction studies](docs/avocado-mini-r5/package/references/02-interaction-studies.md) / [Compute and display](docs/avocado-mini-r5/package/references/03-platform-and-display.md) |
-| Research history | [Research report](docs/avocado-mini-r5/research/README.md) / [Research audit](docs/avocado-mini-r5/research/RESEARCH_AUDIT.md) |
-| Source verification | [Package SHA-256 ledger](docs/avocado-mini-r5/package/package_manifest.json) / [Preservation and verification record](docs/avocado-mini-r5/verification.json) |
+| understand Sky and Zema as a user | [Sky guide](docs/sky.md) |
+| see every Tool, Agent, native package, and toolkit | [Agent and Tool inventory](docs/agents-and-tools.md) |
+| find source code by product or implementation unit | [Project guide](PROJECTS.md) |
+| find a document without scanning the repository | [Public document map](docs/README.md) |
+| author a Tool | [Sky Tool SDK](docs/sky-tool-sdk.md) · [Rock Studio](app/studio/page.tsx) |
+| inspect public RockstarOS packages | [Public release](public-release/rockstaros/README.md) · [native OS guide](systems/rock-star-os/README.md) |
+| inspect the separately deployed Workers | [services/README.md](services/README.md) |
+| see the product preview site | [avocadomini.si](https://avocadomini.si) |
+| try the public Sky preview | [Sky via RockstarOS Home](https://avoado.si/os/sky) |
+| read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [Current product direction](docs/product-baseline.md) |
 
-The **eight design-study diagrams** are viewable as PNGs in a browser and scalable as SVGs. They explain layout and behavior; they are not manufacturing CAD or final circuit diagrams.
-
-| ID | Subject | Open |
-| --- | --- | --- |
-| M01 | Overall height and envelope comparison | [PNG](docs/avocado-mini-r5/package/drawings/R5-M01-envelope.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-M01-envelope.svg) |
-| M02 | Functional zones inside the device | [PNG](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.svg) |
-| V01 | Camera field-of-view and depth comparison | [PNG](docs/avocado-mini-r5/package/drawings/R5-V01-camera-geometry.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-V01-camera-geometry.svg) |
-| E01 | Power and independent stopping | [PNG](docs/avocado-mini-r5/package/drawings/R5-E01-power-safety.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-E01-power-safety.svg) |
-| S01 | Adding identical minis and dividing regions | [PNG](docs/avocado-mini-r5/package/drawings/R5-S01-scaling.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-S01-scaling.svg) |
-| U01 | Startup, input selection, and shutdown | [PNG](docs/avocado-mini-r5/package/drawings/R5-U01-startup.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-U01-startup.svg) |
-| O01 | OS service architecture | [PNG](docs/avocado-mini-r5/package/drawings/R5-O01-services.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O01-services.svg) |
-| O02 | Owner approval and external jobs | [PNG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.svg) |
-
-### RockstarOS v1.0 — current OS design
-
-The attached `RockstarOS_Complete_Design_v1.0.pdf` has the same SHA-256 as the source preserved in the repository. This **41-page, 32-chapter document is the current OS design baseline**. It covers identity, state, work, evidence, and versions shared by rocketstar, A-LINK, avokado, and a future colony. Device-specific control and independent protection remain on each device.
-
-![RockstarOS v1.0 command states, kept separate from Work states and reconciled when the result is unknown](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg)
-
-| What to read | File |
-| --- | --- |
-| Complete version and editable text | [41-page source PDF](docs/rockstaros-complete-design-v1.0.pdf) / [Editable text](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.md) / [Full-text search extract](docs/rockstaros-complete-design-v1.0.txt) / [Appendix ZIP](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0_package.zip) |
-| What deploys where | [Five deployment profiles and 13 logical services](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/design_catalog.json) / [Architecture](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/architecture.svg) / [60 requirements and acceptance conditions](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/requirements.csv) |
-| Command, storage, and connection contracts | [Seven schema types, composition examples, and five-table DDL](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [Command state diagram](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg) / [Capacity assumptions](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/capacity_example.json) |
-| Verification and implementation mapping | [43/43 structure and DDL checks](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/evidence/contract_checks.json) / [Source and appendix integrity](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) / [Existing implementation mapping](docs/rockstaros-complete-design.md) / [Appendix guide](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) |
-
-**Relationship to R5:** The source `EDGE-HUB-v1` material and architecture diagram retain the historical avokado E3 layout of “four units plus a separate hub.” That is not the current avocadoMini R5 envelope, unit-count, or hub requirement. R5 takes precedence: **one unit must provide basic functionality, and a separate Edge Hub is not required**. Integration of the R5 Device Profile and adapter is incomplete. The 43/43 result covers document and contract checks, not completion of a new OS image, physical-device acceptance, flight acceptance, or habitat operational certification.
-
-### rocketstar R1.0 — current rocket design
-
-The attached **rocketstar_Complete_Design_R1_0.pdf** has the same SHA-256 as the source preserved in the repository. R1.0 is the current 44-page, 35-chapter integrated design for uncrewed small-satellite transport with **recovery of both stages and reuse of the same vehicle**. It covers the vehicle, propulsion, thermal protection, flight dynamics, avionics, payload integration, ground systems, maintenance, and reuse.
-
-![Schematic rocketstar R1.0 vehicle arrangement; not a final vehicle-count or dimension drawing](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_system.svg)
-
-| What to read | File |
-| --- | --- |
-| Complete version | [Source PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [Searchable and editable text](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) / [All appendices ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip) |
-| Overview and contents | [R1.0 package guide](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/README.md) / [Archive entry point](docs/rocketstar-design/README.md) |
-| Requirements and interfaces | [60 requirements](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/requirements.json) / [18 system interfaces](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/system_interfaces.json) / [Mission profile](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/mission_profile.json) |
-| Inherited material and audits | [40 C3 design items](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/design_register.md) / [13 payload interfaces](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/payload_interfaces.md) / [Mass and performance audit](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/mass_audit/mass_performance.md) |
-| Diagrams and integrity | [Vehicle arrangement](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_system.svg) / [Functional layout](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_functional_layout.svg) / [Appendix ledger](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json) / [Complete file ledger](docs/rocketstar-design/inventory.json) / [Verification record](docs/rocketstar-design/verification.json) |
-| Related communications and operations designs | [A-LINK auto-connect PDF](docs/rocketstar-design/outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) / [Receiver prototype](docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) / [Colony operations](docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md) / [Device button design](docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md) |
-
-**Current status:** Integrated system design only. Manufacturing drawings, physical performance, and flight certification are incomplete. The 618.6 t and 819.7 t values in the PDF are historical comparative calculations, not final launch capability or vehicle dimensions. Rocket R1.0 and device R5 are separate product design baselines.
-
-### RockstarOS and services — all design domains
-
-The [complete design portal](docs/rockstaros-design-portal.md) covers 17 domains, and the [machine-readable design index](data/design-document-index.json) lists their documents. Because the complete OS source includes the historical E3 device layout, **R5 takes precedence for avocadoMini's envelope, unit count, and hub requirements**.
-
-| Domain | Designs, contracts, and records |
-| --- | --- |
-| Product requirements and business | [Product baseline](docs/product-baseline.md) / [Requirements JSON](data/product-baseline.json) / [Product north star](docs/product-north-star-20260915.md) / [Business strategy](docs/rockstaros-1.0-strategy.md) / [Product/service/system map](docs/rockstaros-product-system-map.md) |
-| Complete OS source | [PDF](docs/rockstaros-complete-design-v1.0.pdf) / [Search extract](docs/rockstaros-complete-design-v1.0.txt) / [Integrity record](data/rockstaros-complete-design-v1.0.json) / [Schema, DDL, and appendix guide](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) / [Appendix contracts](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [Appendix ledger](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) |
-| OS architecture and implementation mapping | [Complete design](docs/rockstaros-complete-design.md) / [Shared AI-native architecture](docs/ai-native-os-architecture.md) / [1.0 architecture](docs/rockstaros-1.0-architecture.md) |
-| Platform Core and work | [Platform Core](docs/platform-core.md) / [Platform API contract](contracts/platform-api.json) |
-| Web and PC | [Web architecture](docs/architecture.md) / [Backend design](docs/backend-design.md) |
-| Linux and QEMU | [Native integration](docs/native-os-integration.md) / [Validation](docs/native-os-validation.md) / [Release audit](data/qemu-release-audit.json) |
-| Android and Pixel | [Production OS architecture](docs/android-production-architecture.md) / [Device Preview](docs/phone-preview-20260911.md) / [Device support design](docs/device-support-architecture.md) / [Release policy](data/android-release-architecture-policy.json) |
-| Local AI and memory | [Shared AI-native architecture](docs/ai-native-os-architecture.md) / [Decision Fabric](docs/jev-local-qwen-decision-fabric-design.md) / [On-device AI integration](docs/local-ai-os-integration-20260915.md) / [Runtime contract](contracts/local-ai-runtime.json) / [Provider contract](contracts/decision-provider.json) / [Decision policy](data/decision-fabric-policy.json) |
-| Sky, Zema, and Tools | [Complete Tool design](docs/sky-tools-complete-design.md) / [Sky](docs/sky.md) / [Tool SDK](docs/sky-tool-sdk.md) / [Conversation and MCP control](docs/chat-mcp-control-room-20260913.md) / [Jev ecosystem](docs/jev-ecosystem-integration-design.md) / [Jev Ultrafast](docs/jev-ultrafast-integration-design.md) |
-| MCP and external providers | [MCP architecture](docs/sky-mcp-architecture.md) / [MCP Connector](docs/sky-mcp-connector.md) / [External-provider boundary](docs/external-wallet-fund-provider-boundary-20260913.md) |
-| Storage, backup, and recovery | [Storage boundaries](docs/data-storage-boundaries.md) / [Android backup and recovery](docs/android-backup-recovery.md) / [Recovery policy](data/android-backup-recovery-policy.json) |
-| Wallet, Market, and Fund | [External-provider boundary](docs/external-wallet-fund-provider-boundary-20260913.md) / [Market and Fund](docs/everything-market-and-autonomous-fund-20260913.md) / [Wallet production rail](docs/rock-wallet-production-rail-20260913.md) |
-| Safety, operations, and distribution | [Incident response](docs/security-incident-response.md) / [Release gates](docs/release-minimum-gates.md) / [Emergency-action policy](data/device-emergency-access-policy.json) / [Release decision](data/release-readiness.json) |
-| Game and IP | [Game API draft](docs/game-api-contract-draft.md) / [GX01 plan](docs/gx01-contract-implementation-plan.md) / [SDK sandbox](docs/gx01-reference-sdk-sandbox-20260910.md) |
-| Material Invention and spatial interaction | [Integrated design](docs/rockstaros-avocado-mini-complete-design.md) / [Core](docs/material-invention-core.md) / [XR](docs/material-invention-xr.md) / [Spatial invention](docs/avocado-mini-spatial-invention.md) / [Full-scale hardware design](docs/avocado-mini-hardware-design.md) |
-| Validation and operations | [Validation policy](docs/validation.md) / [Database status](docs/database-status.md) / [Progress JSON](data/project-status.json) |
-
-### Historical and alternate research profiles
-
-Historical designs remain available to preserve the design history. They do not override R5 requirements.
-
-| Track | Design material |
-| --- | --- |
-| Mini200 E1 | [Entry point](docs/avocado-mini-mini200-e1/README.md) / [Design text](docs/avocado-mini-mini200-e1/design.md) / [Game-to-life expansion](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
-| Mini200 E2 | [Four-unit plus central-unit integration record](docs/avocado-mini-mini200-e2/README.md) |
-| Tower20 E3 | [Four-unit plus separate Edge Hub design record](docs/avocado-mini-tower20-e3/README.md). The source PDF/DOCX is not included in this repository, so the full source document cannot be read here. |
-| Alternate research profile | [Four-direction, full-scale hardware design](docs/avocado-mini-hardware-design.md) / [Spatial invention](docs/avocado-mini-spatial-invention.md) |
-
-## Design and code entry points
-
-| Goal | Entry point |
-| --- | --- |
-| Read business and product decisions | [Product baseline](docs/product-baseline.md) / [Product north star](docs/product-north-star-20260915.md) / [System map](docs/rockstaros-product-system-map.md) |
-| Read avokado hardware and OS material | [Complete R5 design](docs/avocado-mini-r5/README.md) / [Searchable text](docs/avocado-mini-r5/package/integrated_design.md) / [Drawings](docs/avocado-mini-r5/package/drawings/) |
-| Read the complete RockstarOS design | [Design portal](docs/rockstaros-design-portal.md) / [Complete v1.0 source PDF](docs/rockstaros-complete-design-v1.0.pdf) / [Implementation mapping](docs/rockstaros-complete-design.md) |
-| Find Tools and development areas | [Complete Sky, Zema, and Tool design](docs/sky-tools-complete-design.md) / [Project guide](PROJECTS.md) / [Workstream guide](docs/workstreams/README.md) |
-| Read the current rocket design | [rocketstar R1.0 source PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [Appendix entry point](docs/rocketstar-design/README.md) / [Public HTML reader](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/design/). Manufacturing and flight acceptance are separate. |
-
-| Source | Role |
-| --- | --- |
-| [app/](app/), [components/](components/), and [lib/](lib/) | Web screens, shared UI, Tools, work, and Wallet |
-| [services/](services/) | Separated Sky Billing and Operator Dock services |
-| [android/](android/) and [os/](os/) | Android app/Broker and Pixel configuration |
-| [systems/rock-star-os/](systems/rock-star-os/) | Native OS for Linux/QEMU |
-| [toolkits/](toolkits/) and [contracts/](contracts/) | SDKs, connectors, and shared contracts |
-| [sites/avocado-mini/](sites/avocado-mini/) | Product-site source, distinct from a public deployment |
+Most design and work documents are written in Japanese. The README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.
 
 ## Start developing
 
-Use Node.js 22.13 or later and npm. The following starts the web app locally. Pixel, QEMU, Workers, and the product site have separate instructions and gates.
+Use Node.js 22.13 or later and npm.
 
-    npm ci
-    npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
-    npm run dev
+```sh
+npm ci
+npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
+npm run dev
+```
 
-The public avocadoMini site is built with Astro; its reservation and payment API is staged separately as a Cloudflare Worker.
+To preview the built Worker locally:
 
-    cd sites/avocado-mini
-    npm ci
-    npm run dev
-    npm test
-    npm run build
+```sh
+npm run build
+npm start
+```
 
-After updating documents or progress, run the following checks. The final calculation command regenerates JSON; it does not represent physical-device acceptance.
+`npm start` applies local D1 migrations and starts the preview only after migration succeeds. Migrations and the preview use the same project-root `.wrangler/state` directory, outside generated build output. Choose a port with `npm start -- --port 8788`, or a separate complete local store with `npm start -- --persist-to /absolute/local-store --port 8788`. Both stages receive that store; rebuilds retain its D1 and R2 data. `--env`/`-e` and `--config`/`-c` select the same environment and configuration for both stages. Change projects with `cd /path/to/project && npm start`; the wrapper rejects `--cwd` and remote mode before migrations. This does not deploy the Worker or run remote migrations. The Operator Dock uses the same local runtime through its separate command: `npm run operator-dock:dev`.
 
-    npm run project:update
-    npm run verify
-    python3 scripts/verify-avocado-r5-package.py
-    python3 docs/avocado-mini-r5/package/verify_calculations.py
+Sky Web/Sites is the sole migration owner for the shared production `site-creator-d1`. Its build and local preview use [`services/sky-web/migrations/`](services/sky-web/migrations/), which preserves the filenames and exact SQL bytes from the last successful RockstarOS Site source. The separate Sky Agent Runtime binds that database but has no production `migrations_dir`; repository-root [`drizzle/`](drizzle/) remains the application-schema and isolated-test history. Do not let two services apply independent histories to one physical database, renumber published Web migrations, or point the Web build back at the root lineage. Add each production schema change as a forward-only Web migration and keep the root schema history compatible for tests and generation.
 
-[Linux/QEMU](docs/workstreams/06-native-qemu-release.md) / [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) / [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md)
+The preview uses the builder’s lockfile-pinned Wrangler, which may differ from the root CLI used by direct `npx wrangler` commands. `node scripts/spider-web-runtime.mjs cli` prints the selected preview CLI; this selection does not install a newer version.
+
+If an older preview left data in `dist/server/.wrangler/state`, build and start stop before changing it. Stop the preview, back up that **whole directory** outside `dist` (including D1, R2, SQLite WAL/SHM and blobs), then move it to an unused persistent directory and select it with `--persist-to`. If `.wrangler/state` already exists, preserve both stores and choose one; do not merge or overwrite database files. The diagnostic prints the exact paths. The guard cannot recover data already deleted by an earlier rebuild.
+
+To diagnose CSV process interruption on POSIX, run `node scripts/check-csv-process-crashes.mjs`. It uses synthetic input and temporary persisted local D1/R2, kills its own Node/workerd process group, and restarts against the same store. Logs default to a temporary directory outside Git; set `CSV_CRASH_ARTIFACT_DIR` to choose a parent directory outside the repository. Each run creates a new private randomly named child directory and prints the exact summary path when it finishes. A passing diagnostic confirms the observed contract, **not recovery of abandoned processing**: the three processing checkpoints still cannot resume or delete through the current API, and expired processing is excluded from cleanup. Completed output readback and interrupted-cleanup retry are checked separately. This does not test production authentication, Providers or payments.
+
+Before opening a pull request, run all checks:
+
+```sh
+npm ci --prefix sites/avocado-mini
+npm run verify
+```
+
+After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and si coding agents are in [AGENTS.md](AGENTS.md).
+
+`npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. Encryption is currently disabled; if encrypted records are restored in a future change, these commands stop before reading or writing locked records.
 
 ## Safety, rights, and images
 
-Purpose-specific permission is designed for recording, external publication, appliance operation, purchasing, and payment. Information about housemates or visitors is not stored based only on the purchaser's consent. Medical decisions, emergency monitoring, and unattended operation of locks or heating appliances are not initial targets. RockstarOS 1.0 is a Developer Preview, and the reuse license for proprietary code has not been selected. Bundled open-source software, models, and external services each have their own terms. [Distribution requirements](docs/release-minimum-gates.md) / [Sources and licenses](docs/mr-integration.md)
+Recording, external publication, appliance operation, purchasing, and payment each need their own permission. RockstarOS 1.0 is a Developer Preview. Packages in `public-release/rockstaros/` are MIT-licensed; a reuse license for the rest of the proprietary code has not been selected. Bundled open-source software, models, and external services keep their own terms. Images and GIFs are concept material, not product photographs or evidence of a working spatial display, manufacturing approval, safety performance, carrier availability, live billing, or production integration. [Distribution requirements](docs/release-minimum-gates.md) · [Sources and licenses](docs/mr-integration.md)
 
-Images and GIFs are concept material for explaining the product. They are not product photographs or evidence of a working spatial display, manufacturing approval, or safety performance.
+[Miniの建築埋込・着脱・衛星Wi-FiとAgent月次請求](docs/service-design/08-mini-connectivity-and-billing.md)を統合設計へ追加。携帯電源・直接衛星通信・月次収納は設計段階で、実機/本番受入は未完了。
 
-## eSIM development preview
+### Cloud使用量→月次請求のProviderテスト
 
-The eSIM-only product has a host fixture, a signed eSIM Go Callback V3 inbox, Sky paid-order/profile binding, a provider API v2.5 adapter contract, and authenticated owner-only issue, status, install-material delivery, and read-only reconciliation endpoints backed by a server-owned plan catalog. Reconciliation uses the original order's pricing snapshot and known provider reference; it does not create another carrier order. Install material is AES-GCM encrypted at rest, owner/order bound, returned only through an authenticated delivery request, and erased after matching acknowledgement; retrying the same request key is idempotent. Provider debit remains disabled unless an operator explicitly enables it. Local SQLite and mocked-response tests do not contact a carrier or debit a provider balance. Live provider credentials, real eSIM, RockstarOS installation, and hardware LLM acceptance are not connected. Run `npm run esim:demo` or `npm run esim:test` with Node.js 22.13+. See the [development guide](toolkits/esim-bootstrap/README.md) and [provider contract readiness](docs/provider-contract-readiness-20260930.md).
+既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。合成usage 1 USDのStripe sandbox請求・テスト決済・署名通知・Sky paid再取得は受入済み。実Cloud実行は接続先/予算待ち。テスト顧客は予約ドメインの架空emailを使用し、実メール送信は行いません。本番課金は無効です。
 
-Cloud jobs are intended to continue within prior authorization, budgets, and deadlines while the device is offline. The [continuity contract](docs/sky-cloud-continuity.md) defines acceptance receipts, approval waits, stop acknowledgment, and reconnect reconciliation. This is a development requirement; cloud execution acceptance has not been completed.
+米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。
 
-### Skyの文章ツール
+Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sandbox.mjs` で明示実行するテスト専用harnessです。[起動・復旧・未実装範囲](docs/sky-billing.md#sky-140の固定請求失敗復旧sandbox)。旧判定harnessのMac表示は5224。新しい月次timerと既存Agent予約/送信gateのSandbox受入は `scripts/check-sky-recurring-provider.mjs`（5225）です。[起動・保存・復旧手順](docs/sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。本番課金は無効です。
 
-**Sky → Codex のツール入口:** Siteの `/mcp` はSkyの既存Catalogを検索し、既存の決定的な処理をCodex/ChatGPTへ公開する小さなBridgeです。`sky_find_tools` は候補を `callable_here` と `catalog_only` に分けます。現時点でBridgeから実行できるのは依頼のルール振分け、出典整理、ココナラ応募前チェック、記事の無料版作成だけです。サインインなしのツール実行を拒否し、投稿・購入・外部送信・有料LLM・端末操作は公開しません。ほかのSky ToolをCatalogに表示しても実行器が接続された意味にはなりません。
+Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`。5225に確定/予約/残り枠を表示します。現在は合成応答で100 USD到達・並列競合時の送信拒否を確認、無料Cloud接続先と資格情報は未確認で実Cloud実行は未受入です。[再開条件](docs/sky-billing.md#cloud-usageから100-usd枠への接続)。
 
-Sky／Marketで文章ツールを選び、サインインして実行します。「この端末に保存」で成果を同じツールから開き直せます。保存はこのブラウザだけ（全体20件）で、共有端末の他利用者も閲覧可能です。別端末へ移す場合はMarkdownで保存してください。本番配備は公開範囲の確定待ちです。
+無料Cloudの確認画面は `/sky/free-cloud`。Macの独立検証は `node --experimental-strip-types scripts/sky-free-cloud-preview.mjs` を起動し `http://127.0.0.1:5227/` で依頼文・送信同意を確認して「自動選択して実行」。実応答とtoken usageを表示し、同じ依頼IDは再送しません。合成契約と実Cloudを使う試験で、Stripe接続・本番課金はありません。証拠は `docs/evidence/sky-free-cloud-live.json`。
 
-### Sky as a standalone app
+無料Cloudへの依頼は `/os/sky/free-cloud`。依頼内容を書き、送信・保存へ同意して「Cloudに依頼する」を押します。未ログイン時は別タブのログイン案内を使い、戻って「接続・結果を更新」。進捗と回答は同じ画面に保存されます。月次Sandboxの上限・入金等の検証操作は画面下の「Sandbox契約・検証用の操作」にあります。本番課金はありません。
 
-Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pages provide their own install manifest, which launches the marketplace; installing the OS is not required. Sign-in and each tool’s connection requirements still apply. Public deployment and device installation acceptance remain separate from local development.
+### 月額140ドルプランの無料Cloud Sandbox
 
-## Skyサービスの利用とローンチ設計
+`http://127.0.0.1:5228/`では既存Stripe Sandboxの月次契約・100ドル枠・無料Cloudの自動選択/実応答を一緒に確認できます。合成利用量で上限停止し、テスト入金と次月更新後に復旧します。1時間の合成契約を使わず、既存公開アカウントは変更しません。起動/復旧/署名通知の設定は[請求設計](docs/sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。本番課金は無効です。
 
-Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)・[運用と作者/決済の受入手順](docs/sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
-
-Sky接続復帰の未配備候補: `/sky/network` で端末案内・サインイン確認・待機・失敗・明示再試行をまとめます。端末判定は権限ではなく、接続確認だけではPC接続を開始しません。Zemaの公開版入口は `/chat` を保持します。実PC権限・公開認証・本番配備/復旧の受入は未完了です。詳細は `docs/sky-tools-complete-design.md` のSky公開候補の端末接続・復帰を参照してください。
-
-未配備候補では、新しい環境と旧版からの復旧時もCSV試験の支払い記録を保持する初期化を追加しました。ローカルの合成データで検証済みです。本番への配備・復旧受入は未完了です。
-
-未配備候補の全34件に実装範囲を定義しました。PAPER検証・出品準備・定型テンプレート・接続計画を実売買、実出品、AI分析、接続成功と区別します。分類とローカル試験は本番の本人導線や外部実行の受入を意味しません。
-
-Skyの最終ローンチ判定は、既存12 gateをWeb・有料市場・OS/他アプリへまとめ、同じsource/build/deployment/versionの実受入記録を照合します。`npm run sky:launch:check -- --require-stage complete`は未受入の間は失敗します。過去の部分確認とローカル試験は保持し、全体完成には数えません。
-
-未配備候補ではSkyのToolをZemaライブラリへ保存し、保存一覧から起動できます。保存は本人別のTool IDと日時だけで、購入・実行許可・PC接続を行いません。既存の会話入口と配色を保持しています。合成localhostの保存・再読込・出典整理・端末保存成果の復元を確認し、実Workerの完了metadataと一致しました。ファイルdownload・clipboard・本人の公開受入は未完了です。
-
-未配備候補のMR成果保存は、通常のMarkdownリンクから手元のUTF-8結果を取得する方式です。表示とリンク内容、実Workerの処理量を照合しました。実ファイル受取・clipboard・本番本人の受入は保留し、配備・復旧条件は `docs/sky-launch-operations.md` に記載しています。
-
-未配備候補では、CSVの削除失敗を「削除待ち」として保持し、同じ本人から再試行できます。処理中の削除と、別の仕事のファイル削除を拒否します。期限切れの取得は停止します。本番での定期削除・停止した処理の復旧・運用通知は未受入です。
-
-CSVの受付番号を再利用しても、成果の保存先は作成ごとに分離します。旧仕事の遅い削除から新しい成果を保護します。
-
-Skyの上部「PCを接続」とPCツール管理の接続案内は、共通の接続画面 `/sky/network` を開きます。端末の表示判定、サインイン確認、待機・失敗・復帰の案内を同じ画面で確認できます。画面を開くだけでは接続権限を発行しません。
-
-CSVとココナラはSkyからライブラリに保存し、Zemaのライブラリから同じ専用画面を開けます。保存するのはToolのIDで、購入・接続権限や仕事の複製は作りません。CSVのサインインは別タブで行い、元画面の入力を残して接続を確認します。
-
-CSVとココナラはSkyの専用画面でライブラリへ保存できます。Zemaのライブラリから同じ専用画面を開き、会話・仕事へ移れます。CSVのサインインは別タブで行い、戻って接続を確認すると入力を保持したまま保存済み受付を再取得します。保存や再確認だけでは処理・購入・接続権限の発行を行いません。
-
-Mac接続の限定試験用に配布パックへ `Sky 限定試験.command` を用意しました。指定Skyと基本自動化4機能だけを対象にし、初回発行から30分の停止条件を持つ候補です。接続コード発行・実再接続・実行・期限到来の受入は承認待ちです。通常の全Tool接続が受入済みという意味ではありません。
-
-Sky接続画面はブラウザのonLineを通信設定のhintとして扱い、Sky APIの応答と本人認証で接続可否を判定する。401応答はSkyへ到達した証拠だが、サインイン完了・PC接続・利用権の証拠ではない。認証待ち/再確認/取得失敗中は接続操作を停止し、再確認はGETだけ。認証再確認中の古い接続応答は成功へ昇格させない。外観と接続コード発行の承認境界は維持する。
+公開実アカウントの月次Sandbox移行は[無料Cloud画面](https://avoado.si/os/sky/free-cloud)で本人限定操作を提供します。旧契約を保持し、合成100ドル上限・テスト月締め/入金後復旧を検証します。本番課金なし。[設計と再開手順](docs/sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。

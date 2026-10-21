@@ -14,6 +14,7 @@ import {
   buildLegalAiRequest,
   parseLegalAiResponse,
 } from '../lib/legal-ai.ts';
+import { lockedSkip } from './private-locked.mjs';
 
 const baseInput = {
   issueType: 'criminal',
@@ -67,7 +68,7 @@ void test('arrest or a deadline within seven days routes to urgent counsel', () 
   assert.equal(deadline.urgency, 'urgent');
 });
 
-void test('criminal matters prioritize the supplied criminal-law contact', () => {
+void test('criminal matters prioritize the supplied criminal-law contact', { skip: lockedSkip('private/legal/lawyer-directory.json') }, () => {
   const matches = recommendLawyers('criminal', 'nyc');
   assert.equal(matches[0]?.id, 'akane-fujiwara');
   const assessment = assessLegalIntake(
@@ -156,7 +157,7 @@ void test('offline legal guidance uses only the local official-entry registry', 
   assert.ok(result.citations.every((citation) => citation.url.startsWith('https://')));
 });
 
-void test('directory preserves all public entries from the supplied consulate list', () => {
+void test('directory preserves all public entries from the supplied consulate list', { skip: lockedSkip('private/legal/lawyer-directory.json') }, () => {
   assert.equal(lawyerDirectory.length, 33);
   assert.equal(
     new Set(lawyerDirectory.map((lawyer) => lawyer.id)).size,

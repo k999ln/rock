@@ -1,0 +1,21 @@
+{
+  "name": "avocado-mini-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build:client": "astro build",
+    "build": "npm run build:client && node scripts/stage-worker.mjs",
+    "preview": "astro preview",
+    "test": "node --test tests/*.test.mjs",
+    "pretest": "npm run build"
+  },
+  "dependencies": {
+    "astro": "7.3.5",
+    "http-cache-semantics": "file:vendor/http-cache-semantics"
+  },
+  "overrides": {
+    "http-cache-semantics": "$http-cache-semantics"
+  }
+}

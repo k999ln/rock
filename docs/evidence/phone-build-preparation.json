@@ -1,0 +1,41 @@
+{
+  "schema": "rock-phone-build-preparation/1",
+  "scope": "Build preparation code and Android APK/emulator validation; not a full OS image",
+  "pullRequest": "https://github.com/k999ln/rock/pull/86",
+  "testedCommit": "fd4108e943cd7d58426039d6c6fd897a12650b47",
+  "mainMergeCommit": "1d8af61528683f4f13b720c2eeb3e387635da80a",
+  "sourceTag": "2026100200",
+  "checksPassed": 10,
+  "checksTotal": 10,
+  "runs": {
+    "fullVerify": 37509248851,
+    "androidBuildAndEmulator": 37509248872,
+    "phonePreparation": 37509248931,
+    "secrets": 37509248879,
+    "codeql": 37509248845,
+    "repairRegressionsAndWebMeasurement": 37509248856
+  },
+  "local": {
+    "phoneHostFixtureTests": 41,
+    "realGitleaksPolicyTests": 9,
+    "shellSyntax": "PASS",
+    "deviceSupport": "PASS",
+    "baseline": "PASS",
+    "design": "PASS",
+    "fullVerify": "BLOCKED_MISSING_AI_DEPENDENCY_USE_GITHUB_RESULT"
+  },
+  "wholeOs": {
+    "compiled": false,
+    "productionSigned": false,
+    "flashed": false,
+    "bootVerified": false,
+    "destructiveRestoreVerified": false
+  },
+  "remaining": [
+    "OWNER: provide dedicated x86_64 Linux or approve cloud spending limit; recorded Scaleway account/draft exists but approvedBudget is null",
+    "ROCK: run compile bringup with fixed source, generated vendor inventory and reviewed Local AI APK; retain output/input receipts",
+    "JOINT/OWNER: complete production signing, stock recovery artifacts, rollback and data/Keystore restore gates before first flash"
+  ],
+  "cloudProvisioned": false,
+  "deviceAttached": false
+}

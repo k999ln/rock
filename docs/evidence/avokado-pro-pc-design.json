@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-05",
+  "baseSha": "9f64aee3de9cc74e6b6e7eae34052780e000c296",
+  "task": "MAT16",
+  "scope": "design and component candidate only",
+  "sources": [
+    {
+      "url": "https://rog.asus.com/me-en/desktops/mini-pc/rog-nuc-16/spec/",
+      "kind": "manufacturer specification",
+      "accessed": "2026-10-05"
+    },
+    {
+      "url": "https://www.nvidia.com/en-us/geforce/laptops/50-series/",
+      "kind": "GPU manufacturer",
+      "accessed": "2026-10-05"
+    }
+  ],
+  "artifactSha256": {
+    "data/avokado-pro-pc.json": "d60c55eaa8ed4c586210f25311061e04836d8d705a149acc2d42a2e87387e937",
+    "docs/avokado-pro-pc-design.md": "c3bf78e5b913d37f7f0f26764b30ba0d1c7ddfb43e871e0bbdbb7dffa0b4196e",
+    "docs/assets/avokado-pro-pc-concept.svg": "966c2c2a93059ec939ec717d22d1ed08fa88582fcf491a6a6f9d016d0f91931e"
+  },
+  "verification": {
+    "repository": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 870,
+    "workApiAssertions": 1048,
+    "csvAssertions": 113,
+    "specArithmetic": "RAM modules and target volume checked",
+    "svg": "XML parsed, PNG rendered and visually inspected"
+  },
+  "acceptance": {
+    "physicalAssembly": false,
+    "oemQuote": false,
+    "ramQvl": false,
+    "customEnclosureFit": false,
+    "thermal": false,
+    "ai": false,
+    "pcGames": false,
+    "production": false,
+    "publicPageUpdated": false
+  }
+}

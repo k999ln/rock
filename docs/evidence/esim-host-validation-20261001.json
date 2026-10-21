@@ -1,0 +1,69 @@
+{
+  "schema": "rockstaros-esim-host-validation/1",
+  "date": "2026-10-01",
+  "command": "node --test tests/esim*.test.mjs",
+  "result": {
+    "passed": 51,
+    "failed": 0,
+    "skipped": 0
+  },
+  "workerApiIntegration": {
+    "command": "npm run test:api",
+    "result": {
+      "passedAssertions": 376,
+      "failed": 0
+    },
+    "coverage": [
+      "paid Sky provider-profile binding is reported separately from device installation",
+      "provider profile binding stays unverified until a trusted signed carrier/OEM receipt; device entitlement remains not_connected until a separate trusted device-gateway receipt",
+      "ordinary paid Sky packages are not treated as eSIM orders",
+      "owner-scoped install-material retrieval, erasure acknowledgement and duplicate-safe status",
+      "owner-scoped order status resolves pinned Package name and summary only for the exact active reviewed manifest; missing or altered manifest remains unavailable",
+      "public purchase catalog shows starter package name and summary only for exact active reviewed manifest; modified or unavailable package is labeled unavailable",
+      "issuer-signed installation receipt binds owner, order, provider profile digest, one-shot challenge, device and trusted key",
+      "duplicate installation receipt submissions converge idempotently and do not enable OS entitlement without authenticated device gateway",
+      "operator-provisioned device Ed25519 or ES256 receipt activates exact owner/order/profile/install proof/starter pack once",
+      "authenticated challenge exposes only the owner/order/profile/install/starter-pack fields required by the native receipt signer",
+      "owner mismatch, modified package hash, concurrent duplicate activation, install-issuer and device-gateway key revocation, and changed packages fail closed"
+    ],
+    "scope": "Local Worker/D1 API bundle with synthetic accounts, profile data, keys and zero external provider requests. It does not prove Android LPA installation or RockstarOS device entitlement activation."
+  },
+  "repositoryVerification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "date": "2026-10-01",
+    "results": {
+      "nodeTests": "550 passed, 0 failed",
+      "fashionBrandOpsTests": "19 passed, 0 failed",
+      "workerD1ApiAssertions": 376,
+      "productionBuild": "passed",
+      "webBundleInventory": "passed",
+      "webAssetClosure": "passed"
+    },
+    "scope": "Repository checks and local fixtures only; not production, provider-sandbox, signed-in-browser, LPA, or physical-device acceptance."
+  },
+  "coverage": [
+    "eSIM bootstrap pack defaults and owner/device binding",
+    "offline capability lease verification, expiry and revocation",
+    "duplicate-safe issue claim and unknown-outcome reconciliation without reissue",
+    "eSIM Go Callback V3 raw-body HMAC verification and privacy-preserving callback correlation",
+    "Sky order eligibility, immutable server-owned pricing snapshot and provider wholesale cap",
+    "starter-pack ID/version and exact Sky Package manifest hash are pinned into the immutable eSIM order snapshot",
+    "provider issue fails closed unless every pinned starter package remains verified and review-active",
+    "eSIM Go v2.5 validate-before-transaction and one-shot debit boundary",
+    "provider-completed restart recovery by read-only order and assignment lookup",
+    "encrypted, owner/order-bound installation material and one-shot acknowledgement deletion",
+    "Ed25519 issuer-signed installation proof with owner/order/profile/challenge/device binding and separate device-gateway entitlement boundary",
+    "Ed25519 and ES256 authenticated-device gateway receipts with one-time owner/order/profile/install-proof/starter-pack entitlement activation; synthetic local trust keys only",
+    "Android-independent Java receipt builder and TypeScript signer share the exact canonical P-256 signing vector",
+    "public catalog projection is contract-pending and purchase-disabled"
+  ],
+  "scope": "Node host tests, Android-independent Java Core JVM tests, and local Worker/D1 provider-contract fixtures only. No provider API request, credential, eSIM issue, Sky live checkout, payment, LPA/eUICC installation, production trust key, or physical-device entitlement activation was used.",
+  "remaining": [
+    "seller identity, Japanese resale and billing responsibility, actual retail/wholesale terms and support contract",
+    "provider sandbox credential and duplicate/timeout/callback/status acceptance",
+    "signed-in UI acceptance for purchase history and install-material delivery",
+    "representative Android/iOS eUICC installation and network attachment",
+    "real OEM/carrier hardware-backed device-key enrollment, OS-build binding, signed eUICC install receipt, Android Binder gateway, production trust key and device acceptance"
+  ]
+}

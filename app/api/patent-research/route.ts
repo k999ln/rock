@@ -12,11 +12,26 @@ import {
 } from '@/lib/remote-ai-guard';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
+import { isColumbiaCardEntry } from '@/lib/sky-campus';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
+function cardEntryResponse() {
+  return Response.json(
+    { error: 'Online research is not available from this card entry.', code: 'card_entry_restricted' },
+    { status: 403, headers: noStoreHeaders },
+  );
+}
+
 export async function POST(request: Request) {
   try {
+    // The entry marker is part of the card's API URL contract. Reject it
+    // before reading a body or initializing auth, pricing, or the provider so
+    // an unauthenticated request cannot make this guard buffer request data.
+    const requestUrl = new URL(request.url);
+    const language = requestUrl.searchParams.get('lang') === 'en' ? 'en' : 'ja';
+    if (requestUrl.searchParams.getAll('entry').some(isColumbiaCardEntry))
+      return cardEntryResponse();
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'patent-research', db);
     if (!(await rockstarServiceScopeAllowed(
@@ -24,6 +39,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
@@ -47,14 +63,14 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            '特許調査AIはまだ接続されていません。検索式、データベース入口、書類ドラフトは利用できます。',
+            '特許調査siはまだ接続されていません。検索式、データベース入口、書類ドラフトは利用できます。',
         },
         { status: 503, headers: noStoreHeaders },
       );
 
     const searchedAt = new Date().toISOString();
     const result = await createOpenAiResponse(
-      buildPatentAiRequest(input, searchedAt.slice(0, 10), runtimeEnv.OPENAI_PATENT_MODEL),
+      buildPatentAiRequest(input, searchedAt.slice(0, 10), runtimeEnv.OPENAI_PATENT_MODEL, language),
       runtimeEnv,
     );
     let guidance;

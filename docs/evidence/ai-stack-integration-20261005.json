@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-05",
+  "baseCommit": "aa7f2b41",
+  "scope": "Local integration of pending AI stack pull requests; no deployment, billing, device, or production-provider acceptance.",
+  "pullRequests": [
+    { "number": 41, "mergeCommit": "6bf43c23", "unresolvedReviewThreads": 0 },
+    { "number": 42, "mergeCommit": "01eb6db6", "unresolvedReviewThreads": 0 },
+    { "number": 44, "mergeCommit": "130c486b", "unresolvedReviewThreads": 0 },
+    { "number": 45, "mergeCommit": "868b50de", "unresolvedReviewThreads": 0 },
+    { "number": 46, "mergeCommit": "be8718a4", "unresolvedReviewThreads": 0 },
+    { "number": 43, "mergeCommit": "64acc829", "unresolvedReviewThreads": 0 },
+    { "number": 25, "mergeCommit": "ea2728ec", "unresolvedReviewThreads": 0 },
+    { "number": 47, "mergeCommit": "981b3a46", "unresolvedReviewThreads": 0 }
+  ],
+  "integrationDecisions": [
+    "Preserve current SIM/eSIM-led Cloud product policy, current generated ledgers, release boundaries, shared foundations, and signed PlatformStore authority where old PR text conflicts.",
+    "Keep the older AI02 ModelProfiles host fixture in five fixture_model_* tables. Production model_profiles remains the signed composite-key registry owned by PlatformStore. Fixture runtime API metadata follows the current contracted API version.",
+    "Outbox, bounded memory, single-executor, and nonfinancial particle-game additions remain host/fixture implementations; they do not replace current Broker authority or establish runtime/device acceptance.",
+    "Keep the current Broker INTERNET permission required by its authenticated Cloud session. Optional Jev preview/provider remains excluded from the default product image; Shell, LocalAI, and Tool remain network-denied.",
+    "Agent control-plane HTTP access remains authenticated and repository-allowlisted. Only explicit dryRun=true is accepted, using deterministic local planning. Remote dispatch returns 503 until quote, durable Wallet budget, idempotency, and usage-receipt integration is complete. No provider keys are read by this route.",
+    "Remote Cursor adapter redirects are rejected and requests have a 15-second timeout. Adapter implementation is retained for mock/injected tests, not enabled by the route."
+  ],
+  "verification": {
+    "focusedNodeTests": { "status": "pass", "uniqueTests": 54, "note": "53 original focused tests plus one SQLite schema-coexistence regression. The four relay cases passed with authorized local loopback access after the sandbox denied listening." },
+    "typescriptNoEmit": "pass",
+    "targetedOxlintDenyWarnings": "pass",
+    "osContracts": "pass",
+    "androidReleaseArchitecture": "pass",
+    "llmArchitecture": "pass",
+    "javaHostTests": "not-run: no installed JDK; required in Android CI",
+    "androidBuild": "not-run: required in Android CI",
+    "deviceOrProductionExecution": "not-run"
+  },
+  "remainingIntegrationWork": [
+    "Regenerate global database/status inventories and reconcile current workstream ledgers in the final combined branch.",
+    "Run combined repository verification and Android/Linux CI after integration."
+  ]
+}

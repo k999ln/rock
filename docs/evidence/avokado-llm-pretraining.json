@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-05",
+  "baseSha": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+  "status": "host_synthetic_prototype",
+  "task": "AI02",
+  "training": {
+    "format": "avokado-pretraining-report/1",
+    "research_only": true,
+    "production_ready": false,
+    "initialization": "random",
+    "pretrained_weights_used": false,
+    "runtime": "host_cpu",
+    "device_accepted": false,
+    "cloud_deployed": false,
+    "additional_paid_compute": 0,
+    "config": {
+      "width": 64,
+      "layers": 2,
+      "heads": 4,
+      "context": 128
+    },
+    "parameters": 124800,
+    "torch": "2.14.1",
+    "seed": 41,
+    "records": {
+      "train": 64,
+      "validation": 16
+    },
+    "corpus_sha256": "664f53e847a528aa4744e29d5fafbd4fe449a72edf63d12cd19504d2c81cbdda",
+    "checkpoint_sha256": "0210ec09aad1320afd398db50fef8456c8e206882310a5dbe451c0ab2442ef70",
+    "parent_checkpoint_sha256": null,
+    "total_steps": 1000,
+    "run_steps": 1000,
+    "run_tokens": 1024000,
+    "unique_split_tokens": {
+      "train": 12544,
+      "validation": 3136
+    },
+    "loss_before": {
+      "train": 5.556883636696016,
+      "validation": 5.556156227805397
+    },
+    "loss_after": {
+      "train": 0.05667747670380225,
+      "validation": 0.11258172334856584
+    },
+    "seconds": 7.835,
+    "limits": [
+      "Synthetic fixture metrics only; no general language, product knowledge or safety acceptance.",
+      "UTF-8 byte tokenizer may generate invalid UTF-8, decoded with replacement characters.",
+      "No Android/GGUF export, Mini physical acceptance or cloud deployment."
+    ]
+  },
+  "tests": {
+    "command": "python -m unittest discover -s toolkits/avokado-llm -p test_*.py -v",
+    "passed": 6,
+    "failed": 0,
+    "scope": [
+      "Unicode tokenizer roundtrip",
+      "causal attention cannot see future tokens",
+      "corpus provenance and exact normalized leakage rejection",
+      "real learning / checkpoint reload / bit-exact CPU resume",
+      "generation resource bounds",
+      "loopback HTTP parity and invalid-request rejection"
+    ]
+  },
+  "sourceSha256": {
+    "toolkits/avokado-llm/fixture.jsonl": "664f53e847a528aa4744e29d5fafbd4fe449a72edf63d12cd19504d2c81cbdda",
+    "toolkits/avokado-llm/infer.py": "ec9b934a151af12a8d88002ce5647ac23a3f859ed7a918799f8bab6bfb70ce15",
+    "toolkits/avokado-llm/model.py": "d596fcb97fd846c2aa5f00fe394e2deeabb98ddb061f977183734f5b201fe950",
+    "toolkits/avokado-llm/requirements.txt": "cb4c768c4b63fc20b154157c1985323973f5d1a5fc45a134beec628e0d803b97",
+    "toolkits/avokado-llm/test_pretraining.py": "2e8789fe47f2ed32db4fd0f7298678a339f4b039cedbb7fefa0e2297998f2829",
+    "toolkits/avokado-llm/train.py": "202c64696e54b47ef172f66bb9124c80fdab3a1472e57b085af9059656323bbb"
+  },
+  "repositoryVerification": {
+    "status": "passed",
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 802,
+    "workApiAssertions": 1048,
+    "csvAssertions": 113,
+    "note": "Generated database status refreshed and new toolkit registered in PROJECTS.md before final successful run."
+  },
+  "acceptance": {
+    "usefulLanguageModel": false,
+    "miniHardware": false,
+    "androidRuntimeExport": false,
+    "cloudDeployment": false,
+    "production": false
+  },
+  "next": "Fix rights-cleared corpus, independent evaluation, target Mini memory/latency and runtime/export before full training. Zero additional compute spend remains in force."
+}

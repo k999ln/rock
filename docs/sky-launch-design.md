@@ -1,14 +1,28 @@
+## Sky focused公開判定の修正（2026-10-02）
+
+ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実siの証明にしない。
+
+`focused` stageを追加し、既存basic条件に実Cloud siの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
+
 # Sky サービス設計とローンチ受入 v1.0
 
 設計日: 2026-10-01。対象: `k999ln/rock` のSky。公開先: `https://sky-marketplace.noellesugar1.chatgpt.site`。利用者の指示に基づき、既存デザインを維持する。これはサービスの実装・受入設計であり、全機能の本番合格を宣言する文書ではない。
 
+## ソフト・家具・建築へ開くマーケットプレイスとハブ
+
+2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
+
 ## 1. 結論と製品の中心
 
-Skyは、利用者がTool・LLMを探し、利用条件を確認し、接続して成果を受け取るマーケットプレイスである。作者には既存の自動化を登録・試験・公開・更新する入口を提供する。OS・Mini・他のアプリはSkyの顧客であり、Skyの利用にOSの導入を要求しない。
+Skyは、利用者がAgent・LLM・Toolを探し、利用条件と実行先を選び、接続して成果を受け取るマーケットプレイス兼ハブである。作者には既存の自動化を登録・試験・公開・更新する入口を提供する。OS・Mini・他のアプリはSkyの顧客であり、Skyの利用にOSの導入を要求しない。
+
+2026-10-15の確定方針は通信＋si利用権の商品入口と、本人/契約/仕事/費用を持つavokadoアカウント。無料試用と既存client/Webは維持し、実発行/販売/有料実行はpartner・配布・課金の受入まで開始しない。Mini回線は任意機器option。Skyは独立Web/PWA、OS内、対応アプリの文脈へ同じ能力契約を届ける。サービス全体は[統合設計](service-design/README.md)、料金/状態/保存/復旧/承認は[共通契約](service-design/02-system-contracts.md)、実現順と合格証拠は[受入計画](service-design/04-delivery-and-acceptance.md)を参照する。下記の公開先と2026-10-01/02の検証はその時点の履歴で、目標domainの現在readbackや新しい課金受入へ転用しない。
 
 最初の価値は、文章・出典・案件条件・CSV等の具体的な仕事を、利用者が数分で完了して成果を持ち帰れること。その上で、作者のToolを同じ条件で使える市場を成立させる。掲載件数や接続先の多さを、実行可能数・収益・需要の証拠にしない。
 
 採用する構成は、既存のWeb・API・D1・R2を用いたモジュール分割。カタログ、作者公開、実行契約、購入権限を同じサービス内で扱い、外部実行先だけadapterで分ける。初期段階でマイクロサービスへ全面分割すると本人性・権限・履歴の不整合と運用負担が増えるため、既存の境界と試験を維持する。Cloudの長時間実行は既存A2A Workerへ別接続し、短い文章処理をそれに依存させない。
+
+会話の窓口はJennifer、Zemaは裏の仕事system。Sky直接操作/host appの有限処理は会話を必須にせず同じ業務/承認契約へつなぐ。Jenniferの社内8projectはtenant案件と別の権限領域。[正本/参照/予算/取消/検収/保存を照合する横断契約](service-design/06-consistency-contracts.md)を全入口に適用する。
 
 ## 2. 入口と責任の構成
 
@@ -34,6 +48,18 @@ flowchart TD
 Skyは選択・公開・アクセス判断の正本。Zemaは既存APIに結び付いた依頼・進捗画面。Walletは購入・費用・確定した金融記録を扱い、実行成功を売上へ換算しない。LLMは処理の提案と生成を行い、本人権限、審査合格、購入済み、外部操作の成功を決めない。
 
 WebとOSに同じコードがあることと、同じDB・履歴・購入権限を共有することは別である。公開Skyは独立したSite/DBを持つ。OS側の既存DBを無断移行しない。同一originにマウントされたWeb入口は既存APIを使う。別origin・nativeクライアントの共通利用は、下記の本人確認契約の実装・受入後に有効にする。
+
+Columbia公開入口と本体Skyも別Sites project・別D1である。大学Homeは英語の発見フィードと無料ブラウザ内下書きを維持し、本体Sky Homeはマーケット、実行、成果・接続管理を担う。大学HomeのExplore／Work／Youと本人別操作への入口は正規origin `https://avoado.si` へ遷移させる。これで新規操作の保存先を選べるが、既存のColumbia D1履歴やbrowser localStorageを自動移行したことにはならない。Columbiaのlocal card処理と任意の推薦履歴は大学Home固有と明示する。本体Siteの古い`0000/0001` migration lineageとColumbia Siteの`0013`以降のlineageを単純に置換しない。本体公開版のソース更新はDB backup・互換migration・既存rowの読取/書込・復旧試験に合格してから行う。
+
+## 異種hostへの融合とAgent構成
+
+Skyの対象はOSとWebだけに閉じない。アプリ、家電、ゲーム、ロボット、外部サービスもhostとして参加し、それぞれが提供する観測・表示・操作能力を宣言する。利用者の目的に対してSkyが適合するAgent/Toolを発見・接続し、必要なら複数の専門Agentを一つの仕事へ組み合わせる。Zemaは依頼、委任、進捗、成果、費用、停止を同一ownerのjobで追い、Brokerは各境界の権限を強制する。「何でも対応」は新しいhost/Agentを契約で追加できる拡張性であり、未知の機器を自動操作できるという稼働表示ではない。
+
+最小host契約は、host identity/版、能力名と入出力schema、データ由来・鮮度・不確かさ、read/propose/actの区分、必要scope、実行先、送信先、費用、timeout、取消と結果不明時の照会、成果の型と保持先を明示する。Skyはmanifestと実接続を別に確認し、対応しない機能は候補として表示する。Agent間の引継ぎは型付き成果とowner-scoped job IDを使い、Agentの文章を次のAgentの権限や成功証明へ昇格させない。委任数、時間、費用は本人が承認した上限内へ閉じ、停止/失効を下流にも伝える。
+
+冷蔵庫の例: 承認済みadapterが在庫と観測時刻を読み、在庫Agentが不足候補を理由と不確かさ付きで出す。献立Agentが希望やアレルギー条件を参照し、買い物Agentが店舗の実在商品、価格、配達条件を照合してカート案を作る。本人は品目・数量・店舗・総額上限・送信先を確認し、注文ごとに承認する。決済Providerの確定応答/receiptを照合して初めて購入完了とし、timeoutや応答喪失は結果不明のまま照会する。冷蔵庫内の物体認識、店舗接続、自動決済は現在の公開Skyの機能ではなく、対象機器とProviderを決めた別のJOINT受入が必要である。
+
+最初の実装順は、(1)既存の同一originアプリ成果型をhost能力/成果契約のfixtureへ拡張、(2)別originの本人・scope・失効を検証するSDK、(3)二Agent間の型付き委任とZemaでの取消/費用/成果照合、(4)読取専用の実host一件、(5)個別承認を伴う実作用一件とする。ROCKは契約、registry、委任/復旧、監査を担当し、EXTERNALは機器・店舗の正規APIと操作結果を提供し、OWNERは接続先・送信・注文を承認する。合格は別本人拒否、schema不一致、データ鮮度切れ、接続失効、重複注文、取消未確認、費用超過を実接続で拒否できること。既存の出典整理Agent、Fitness表示例、NFC入口を家電/複数Agent/購入の受入に転用しない。
 
 ## 3. 利用者の体験
 
@@ -71,7 +97,7 @@ WebとOSに同じコードがあることと、同じDB・履歴・購入権限�
 
 設定があるだけで「本番稼働」と表示しない。公開の状態APIは秘密、キー名・値、本人ID、私有データを返さず、DB利用可否と必要接続の設定有無のみを返す。疎通・資格情報・商品権限は実行時に再確認する。状態APIに到達できなければ未知のまま扱い、成功状態へ補完しない。
 
-法務・特許は外部AIがなくても標準ガイド／決定論的整理が利用できるので、全停止にせず「標準ガイドのみ・AI接続待ち」と表示する。Jevは接続と明示同意が必要。CSVはDBとファイル保存の条件が必要。PC接続はheartbeatと同じdevice sessionを確認し、登録済みというだけで接続中にしない。
+法務・特許は外部siがなくても標準ガイド／決定論的整理が利用できるので、全停止にせず「標準ガイドのみ・si接続待ち」と表示する。Jevは接続と明示同意が必要。CSVはDBとファイル保存の条件が必要。PC接続はheartbeatと同じdevice sessionを確認し、登録済みというだけで接続中にしない。
 
 ## 6. 本人認証と他アプリの接続
 
@@ -128,7 +154,7 @@ DBバックアップは本人データの取得権限と保管先を決め、最
 
 重要な不足は有料Tool側のアクセス強制。購入済み表示だけではMCP/APIへの権限は付与されない。提供者が短命の購入権限または公式のentitlement照会を検証し、本人・商品・版・期限・返金/紛争失効を反映する必要がある。提供者との受入がない有料商品は販売開始しない。
 
-testとliveの設定・データ・通知を分離する。sandboxで支払い成功・取消・認証失敗・通知不達/再送/順序逆転・受取先停止・返金・購入者違いを試験し、その後に本人の実決済受入へ進む。契約・本人確認・課金はAIだけで完了できない。
+testとliveの設定・データ・通知を分離する。sandboxで支払い成功・取消・認証失敗・通知不達/再送/順序逆転・受取先停止・返金・購入者違いを試験し、その後に本人の実決済受入へ進む。契約・本人確認・課金はsiだけで完了できない。
 
 ## 10. 運用と安全
 
@@ -170,7 +196,7 @@ OWNER: 本番サインイン操作、外部アカウント契約/本人確認、
 
 未決定事項は担当・条件・試験を持つ: 有料Tool1件は権利/提供者認証/価格/返金条件を満たす作者を選ぶ。クラウド成果保存の保持期間は利用者の扱うデータと削除/復元試験で決める。外部モデルの予算はjobあたり/日あたりの上限と超過停止を決める。私有問い合わせは運営者が読める宛先を設定して疎通する。これらを仮の値で一般契約へしない。
 
-運用担当が実行する手順と現在の在庫は [ローンチ運用・受入](sky-launch-operations.md) にまとめた。機械判定は `npm run sky:launch:check`。`--require-stage basic` 等を付けた判定は未合格で終了し、未受入の公開を完成扱いにしない。2026-10-02の利用者指定を反映し、最終`completeLaunchClaim`は有料市場とOS/Mini/他アプリ共通利用の両stageを必要とする。Webだけの初回公開判断は`basic`・`paid`で別途行い、全体完成へ転用しない。
+運用担当が実行する手順と現在の在庫は [ローンチ運用・受入](sky-launch-operations.md) にまとめた。機械判定は `npm run sky:launch:check`。`--require-stage basic` 等を付けた判定は必要な同一候補の受入が不足すると失敗し、未受入の公開を完成扱いにしない。既存の`completeLaunchClaim`はstandalone Webの`paid`段階に対する履歴判定として保持する。全体の最終判定は`--require-stage complete`で有料市場・OS/Mini/他アプリ共通利用・focused顧客導線の3段階を要求し、任意の`integratedLaunchClaim`もこの同一候補の判定と照合する。Webだけの初回公開判断は`basic`・`paid`で別途行い、全体完成へ転用しない。
 
 ## 14. 根拠
 
@@ -180,10 +206,19 @@ OWNER: 本番サインイン操作、外部アカウント契約/本人確認、
 
 ## 同一候補の最終受入と履歴試験の分離
 
-既存の12 gateを保持し、`complete` stageは`paid`と`clients`の両方に依存する。既存の技術・初回公開判断の分割、未完了の親task、r46の22項目再評価は変更しない。`scripts/sky-launch-validation.mjs`はgateの削除や依存削除による完成扱いを拒否する。
+既存の17 gate（基本・市場・有料・clientの12件とfocusedの5件）を保持し、`complete` stageは`paid`・`clients`・`focused`のすべてに依存する。既存の技術・初回公開判断の分割、未完了の親task、r46の22項目再評価は変更しない。`scripts/sky-launch-validation.mjs`は既存の履歴監査に加えて、gateの削除や依存削除による完成扱いを拒否する。
 
-現在の候補には本番受入用の`candidate`をまだ設定しない。過去の公開入口・runtime部分確認は各gateの`historicalAcceptance`へ保持し、同一候補の完成状態を`in_progress`とする。過去の合格証拠を捨てたり、現在の本人認証・実接続を推測したりしない。
+現在の候補には本番受入用の`candidate`をまだ設定しない。過去の公開入口・runtime部分確認・限定CSV決済のstatusとevidenceは既存reportのまま保持し、移動・再分類しない。`acceptanceEvidence`で同一候補へ結び付いていないpassed記録は履歴のみとして表示し、候補の合格件数には含めない。通常の構造検査は未完了reportでも成功するが、`--require-stage`による受入要求は不足があれば失敗する。過去の合格証拠を捨てたり、現在の本人認証・実接続を推測したりしない。
 
-最終gateをpassedにするには、gateのevidenceに含まれるJSON実受入記録を`acceptanceEvidence`へ指定する。記録はschema `sky-launch-acceptance/1`、対象gateId、result `passed`、execution `actual`、実試験environment、observedAtを持ち、sourceCommit・buildSha256・deploymentId・siteVersionの4項目すべてが候補と一致する。mock/fixture、別環境、別gate、古いsource/build/deployment/versionは拒否する。文書や試験ソースの存在だけではpassedにしない。この構造検査は実顧客導線を実行・認定するものではなく、記録が示す受入範囲の独立確認も必要である。
+passedのgateを同一候補の合格へ算入するには、gateのevidenceに含まれるJSON実受入記録を`acceptanceEvidence`へ指定する。記録はschema `sky-launch-acceptance/1`、対象gateId、result `passed`、execution `actual`、実試験environment、observedAtを持ち、sourceCommit・buildSha256・deploymentId・siteVersionの4項目すべてがreportの`candidate`と一致する。mock/fixture、別環境、別gate、候補と異なるsource/build/deployment/versionは拒否する。文書や試験ソースの存在だけでは候補の合格にしない。この構造検査は実顧客導線を実行・認定するものではなく、宣言した候補が実際の配備対象であることと、記録が示す受入範囲の独立確認も必要である。
 
 保存済みR1の監査試験fixture修正は、実配備設定と記録済みの旧本人限定監査を混同しないため、テスト内だけへ限定統合する。現在のpackage-lockに対応する948/911/49の検査は保持。実設定を読むrelease CLI、validator、本番Sites identity、既存アクセス制御は変更しない。35単体試験の合格は本番readbackではなく、公開判定は引き続き未合格。
+## Sky App Output Plugins
+
+OS版ではZemaが依頼・承認・停止・費用を統合する。Sky単体はAgent/Toolを選び、本人が保存した成果を公開Webの `/os/sky/outputs`（内部route `/sky/outputs`）から確認できる。第一者同一originアプリは `SkyAppOutputSlot` で既存のowner-scoped成果APIを読み、アプリの型付きschemaを検証してからそのアプリの画面へ表示する。Fitness例は `sky.fitness.plan/1` のみを運動プランとして扱い、任意の文章や別schemaを変換しない。
+
+公開Webの正規入口はRockstarOS Homeが `https://avoado.si/os`、Skyが `https://avoado.si/os/sky`、成果が `https://avoado.si/os/sky/outputs`。旧 `/sky` 配下は正規パスへ転送する。内部の既存 `/sky` routeとowner-scoped APIは維持し、Sky Siteが同ドメインの本人認証と保存を担当する。Miniのトップ・予約ページは別Siteからサーバー内で代理取得し、Skyのcookie・本人headerを渡さない。NFCの大学名は表示文脈であり、本人・購入・MCP接続権限へ昇格しない。
+
+入力は既存Zema親job、本人認証済み委任ID、暗号化保存済み成果。出力はAgent名・状態・テキスト部分、対応アプリへの型付き表示。保存と復旧は既存job・委任・成果と、保存を選んだCloud AI回答を正本にし、新たな成果DBを作らない。未ログイン、取得失敗、未保存、ファイル部分の省略、truncated、schema不一致を区別する。完全なテキストだけをコピー・保存対象とし、別Agentへの引継ぎや外部送信には改めて権限・費用・本人承認を要する。
+
+ROCKは第一者表示枠と本人別読取りを担当。外部Providerの実行、外部アプリの認証・origin・scope・失効は別受入である。合格条件は本人A/Bで他人の成果を拒否し、保存していない回答を復元せず、部分・大型・異なるschemaの出力を安全に扱い、同じ親jobへ停止・費用を戻せること。現状はsourceと局所試験のみで、実Providerと本番A/Bは未受入。
