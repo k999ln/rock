@@ -28,7 +28,7 @@ void test('conversation diagram exports faithful text and escaped SVG', () => {
   const svg = conversationDiagramToSvg(result.paragraphs[0]);
   assert.match(text, /元の段落:/);
   assert.match(svg, /^<svg/);
-  assert.doesNotMatch(svg, /<script>/);
+  assert.doesNotMatch(svg, /<script>/iu);
   assert.match(svg, /&lt;script&gt;/);
 });
 
