@@ -41,6 +41,13 @@ mainのRQ50と作業ブランチのRQ49、両者の月額案には差があり�
 
 サイトの表示、DNS/TLS、配備、実Provider、一般公開はそれぞれの読戻しで判定します。本人用localhost Labや秘密情報は公開サイトへ移しません。
 
+## 周辺製品の現在地
+
+| 系統 | 現在地 |
+| --- | --- |
+| [avocadoMini R5](docs/avocado-mini-r5/README.md) | R5 is the current design baseline. 天井設置案は設計候補で、実機試験・製造図面・製造承認は未完了。 |
+| [Material Invention](docs/rockstaros-avocado-mini-complete-design.md) | 2D候補比較とSky/Zema接続がある。Simulation and laboratory connections are not implemented. |
+
 ## 開発と検証
 
 Node.js 22.13以降とnpmを使用します。Webのローカル起動:
