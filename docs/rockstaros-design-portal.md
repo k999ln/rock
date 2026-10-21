@@ -1,5 +1,9 @@
 # RockstarOS 全設計ポータル
 
+## 2026-10-21 最新のOS設計入口
+
+本人は[指定チャット](codex://threads/01a14d54-daee-7c30-87a8-faea84641a40)の設計をRockstarOS本体の大元と明示した。[全体設計](rockstaros-complete-design.md#redesign-thread-home-sky-eve)から、共通runtime→投稿型Home/Sky→Eve→利用者/コミュニティーのOS版→端末profileの順に読む。eSIMは本人用Cloud Sky/Eve/Linuxサービスへの入口で、OS binaryの格納先ではない。旧GrapheneOS/Buildroot/QEMU設計は適合する部分を再利用し、Pixel full OSとQEMU Developer Previewの受入は分離する。以前の通信＋利用権bundleや料金の記述は、今回のOS設計と照合するまで歴史的経緯として扱う。実eSIM、全OS、公開の達成は主張しない。
+
 通信・OS・LLM cloudの土台から読む場合は[GrapheneOS・eSIM・クラウド基盤設計](native-os-integration.md)を先に開く。2026-10-15の本人選択による通信＋si利用権商品、32改変項目、source/実機/本番の境界、独自署名/OTA/復旧の順を扱う。
 
 版: 2.0 / 2026-10-13

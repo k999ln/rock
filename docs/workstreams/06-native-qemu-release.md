@@ -1,5 +1,7 @@
 # Native / QEMU / Release
 
+2026-10-21の[最新OS本体設計](../rockstaros-complete-design.md#redesign-thread-home-sky-eve)を共通runtimeの入口とする。Buildroot/Linux/QEMUの既存資産は適合する部分を再利用し、QEMU Developer PreviewのRQ12受入は独立に維持する。Home/Sky/EveやコミュニティーOS版のWeb合格をQEMU imageのboot/権限/保存/復旧成功へ換算しない。
+
 ## 目的
 
 Buildroot/LinuxのRockstarOSをQEMU Developer Previewとして再現可能にbuildし、起動、保存、更新、rollback、backup、復旧、削除を同じ候補で受け入れる。

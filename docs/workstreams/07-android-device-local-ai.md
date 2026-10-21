@@ -2,6 +2,8 @@
 
 # Android / Device / Local si
 
+2026-10-21の[最新OS本体設計](../rockstaros-complete-design.md#redesign-thread-home-sky-eve)をPixel profileの前提にする。Pixel 10 GL066/frankel向け全OSは、共通runtime、投稿型Home/Sky、Eve、owner別OS版を同一の署名済みimageへ適合させ、boot・権限・保存/再起動・復旧で受け入れる。Web版、試験APK、QEMU、別X画面の合格はこの全OS受入へ転用しない。実eSIM/Cloud、正式署名、flashは個別gate。
+
 ## Pixelの動的追加（OS11主担当、SKY07/SKY21連携）
 
 ROCKは[動的LLM・Agent契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)のowner別admission/互換/hash/同意/失効と既存Zema保存を実装する。EXTERNALは公開metadata・weights・Agent定義の提供、OWNERは追加対象/導入/処理保存の選択。host境界試験と同一APKのPixel実推論を独立に記録し、全OS/任意コード/本番課金へ転用しない。

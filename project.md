@@ -1,6 +1,6 @@
 ## 2026-10-21 — 最新RockstarOS本体設計とGitHub mainの差分監査（G04 / ROCK）
 
-本人は参照チャットの設計をRockstarOS本体の大元と明示した。Home/Sky投稿型frontend、Eve履歴、鍵付きコミュニティーOS、eSIMから本人Cloudサービスへの接続、X投稿API/MCP受け皿を確認した。GitHub main 01b6aecd8b4d8bd2385665232dfb4b57029f991f と作業branch 951d82d5a491a284aed4e0d4d280171d835d4b43 は652 behind/3 ahead、ローカルは564項目dirty。mainのRQ50/v2.08/月額140 USD案と作業版RQ49/v1.120/月額16 USD案は未統合。現行設計差分と統合順を[Web](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)・[Git](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)へ記録。今回の別branch保存は監査/設計のみ。共有checkout、実装、実Provider、Pixel、公開、mainは未変更。次担当はmainを先に同期し、料金/RQの選択根拠を確定したうえで小PRごとに同一SHA検証する。
+本人は参照チャットの設計をRockstarOS本体の大元と明示した。Home/Sky投稿型frontend、Eve履歴、鍵付きコミュニティーOS、eSIMから本人Cloudサービスへの接続、X投稿API/MCP受け皿を確認した。GitHub main 01b6aecd8b4d8bd2385665232dfb4b57029f991f と作業branch 951d82d5a491a284aed4e0d4d280171d835d4b43 は652 behind/3 ahead、ローカルは564項目dirty。mainのRQ50/v2.08/月額140 USD案と作業版RQ49/v1.120/月額16 USD案は未統合。OS設計の入口を設計portal・1.0構成・native/Pixel/QEMU担当へ同期し、現行設計差分と統合順を[Web](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)・[Git](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)へ記録。今回の別branch保存は監査/設計のみ。共有checkout、実装、実Provider、Pixel、公開、mainは未変更。次担当はmainを先に同期し、料金/RQの選択根拠を確定したうえで小PRごとに同一SHA検証する。
 
 # Cloud依頼フォームの改善
 
