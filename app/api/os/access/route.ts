@@ -6,6 +6,7 @@ import {
   jenniferPasskeyStore,
 } from '@/lib/jennifer-passkey';
 import { readBoundedStream } from '@/lib/bounded-stream';
+import { rockstarPasswordStore, rockstarPasswordCookie, hasRockstarPasswordCookie } from '@/lib/rockstar-password';
 
 export const dynamic = 'force-dynamic';
 const headers = {
@@ -62,6 +63,11 @@ function failure(error: unknown) {
     'ACCOUNT_ALREADY_SIGNED_IN',
     'CREDENTIAL_NOT_REMOVABLE',
     'PASSKEY_REAUTH_REQUIRED',
+    'ACCOUNT_NAME_INVALID',
+    'ACCOUNT_NAME_UNAVAILABLE',
+    'ACCOUNT_LOGIN_ALREADY_CONFIGURED',
+    'PASSWORD_INVALID',
+    'ACCOUNT_BUSY',
   ];
   const safe = allowed.includes(code) ? code : 'AUTH_UNAVAILABLE';
   const status =
@@ -71,7 +77,7 @@ function failure(error: unknown) {
             safe,
           )
         ? 403
-        : safe === 'PASSKEY_RATE_LIMITED'
+        : ['PASSKEY_RATE_LIMITED', 'ACCOUNT_BUSY'].includes(safe)
           ? 429
           : safe === 'AUTH_UNAVAILABLE'
             ? 503
@@ -84,6 +90,7 @@ export async function GET(request: Request) {
     if (!userId) return Response.json({ signedIn: false }, { headers });
     const db = database();
     let method = 'gateway';
+    if (hasRockstarPasswordCookie(request)) method = 'password';
     try {
       if (
         (await jenniferPasskeyStore(db).authenticateSession(request)) === userId
@@ -106,6 +113,7 @@ export async function GET(request: Request) {
         method,
         storageScope: scope,
         credentials: await rockstarAccountStore(db).listCredentials(userId),
+        passwordLogin: await rockstarPasswordStore(db).status(userId),
         recoveryConfigured: Boolean(
           await db
             .prepare('SELECT user_id FROM rockstar_accounts WHERE user_id = ?')
@@ -125,6 +133,16 @@ export async function POST(request: Request) {
     const db = database();
     const userId = await owner(request);
     const store = rockstarAccountStore(db);
+    if (input.action === 'password') {
+      const passwords = rockstarPasswordStore(db);
+      const session = input.mode === 'login'
+        ? await passwords.login(request, input, userId)
+        : await passwords.enroll(request, input, userId);
+      const response = Response.json({ signedIn: true, recoveryCode: session.recoveryCode, expiresAt: session.expiresAt }, { headers });
+      response.headers.append('Set-Cookie', session.cookie);
+      response.headers.append('Set-Cookie', clearJenniferSessionCookie(new URL(request.url).protocol === 'https:'));
+      return response;
+    }
     if (input.action === 'options') {
       const { cookie, ...options } = await store.begin(request, input, userId);
       return Response.json(options, {
@@ -143,6 +161,7 @@ export async function POST(request: Request) {
       );
       response.headers.append('Set-Cookie', session.cookie);
       response.headers.append('Set-Cookie', session.clearBinding);
+      response.headers.append('Set-Cookie', rockstarPasswordCookie(request));
       return response;
     }
     if (input.action === 'revokeCredential') {
@@ -159,12 +178,13 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     await jenniferPasskeyStore(database()).revokeSession(request);
+    await rockstarPasswordStore(database()).logout(request);
     let gatewaySignout = false;
     try {
       await requestGatewayUser(request);
       gatewaySignout = true;
     } catch {}
-    return Response.json(
+    const response = Response.json(
       { signedOut: true, gatewaySignout },
       {
         headers: {
@@ -175,6 +195,8 @@ export async function DELETE(request: Request) {
         },
       },
     );
+    response.headers.append('Set-Cookie', rockstarPasswordCookie(request));
+    return response;
   } catch (error) {
     return failure(error);
   }

@@ -2070,3 +2070,15 @@ export const rockstarAccountEnrollments = sqliteTable('rockstar_account_enrollme
 export const rockstarAccountRateLimits = sqliteTable('rockstar_account_rate_limits', {
   requestKey: text('request_key').notNull(), window: integer('window').notNull(), attempts: integer('attempts').notNull(),
 }, t => [primaryKey({ columns: [t.requestKey, t.window] }), check('rockstar_account_rate_attempts', sql`${t.attempts} > 0`)]);
+
+export const rockstarAccountPasswords = sqliteTable('rockstar_account_passwords', {
+  userId: text('user_id').primaryKey(), handle: text('handle').notNull().unique(),
+  salt: text('salt').notNull(), verifier: text('verifier').notNull(), accountRevision: integer('account_revision').notNull(),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [check('rockstar_password_verifier', sql`length(${t.verifier}) = 64`), check('rockstar_password_revision', sql`${t.accountRevision} >= 1`)]);
+
+export const rockstarAccountSessions = sqliteTable('rockstar_account_sessions', {
+  id: text('id').primaryKey(), userId: text('user_id').notNull(), accountRevision: integer('account_revision').notNull(),
+  tokenSha256: text('token_sha256').notNull().unique(), createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(), lastUsedAt: integer('last_used_at').notNull(), revokedAt: integer('revoked_at'),
+}, t => [index('idx_rockstar_account_session_owner').on(t.userId), check('rockstar_account_session_hash', sql`length(${t.tokenSha256}) = 64`)]);

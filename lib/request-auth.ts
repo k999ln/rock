@@ -57,7 +57,8 @@ export function requestUsesEsimCloudIdentity(request: Request) {
   if (
     authorization.startsWith('Bearer rock_session_') ||
     request.headers.get('oai-authenticated-user-id')?.trim() ||
-    request.headers.get('cookie')?.includes('jennifer_access=')
+    request.headers.get('cookie')?.includes('jennifer_access=') ||
+    request.headers.get('cookie')?.includes('rockstar_account_access=')
   )
     return false;
   const email =
@@ -151,6 +152,15 @@ export async function requestUser(request: Request): Promise<string> {
     return sessions
       .rockstarDeviceLinkStore(db)
       .authenticate(authorization.slice('Bearer '.length));
+  }
+  if (request.headers.get('cookie')?.includes('rockstar_account_access=')) {
+    sameOrigin(request);
+    const [{ env }, passwords] = await Promise.all([
+      import('cloudflare:workers'), import('./rockstar-password.ts'),
+    ]);
+    const db = (env as unknown as { DB?: D1Database }).DB;
+    if (!db) throw new Error('AUTH_UNAVAILABLE');
+    return passwords.rockstarPasswordStore(db).authenticate(request);
   }
   if (request.headers.get('cookie')?.includes('jennifer_access=')) {
     sameOrigin(request);

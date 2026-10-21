@@ -226,3 +226,25 @@
     border-radius: 22px;
   }
 }
+
+.form label { display: block; color: #344e3d; font-size: 14px; margin: 18px 0; }
+.form input:not([type='checkbox']) { width: 100%; box-sizing: border-box; background: #fffefa; color: #25382e; border: 1px solid #cfd8ca; border-radius: 14px; padding: 14px 16px; font: inherit; margin-top: 8px; outline: 0; transition: border-color 160ms, box-shadow 160ms; }
+.form input:focus-visible { border-color: #42664f; box-shadow: 0 0 0 4px #42664f14; }
+.form small { display: block; color: #73806f; font-size: 12px; margin-top: 7px; }
+.card { animation: account-arrive 360ms cubic-bezier(.16,1,.3,1) both; }
+.step, .notice, .success { animation: account-step 240ms cubic-bezier(.16,1,.3,1) both; }
+.primary { display: flex; align-items: center; justify-content: center; gap: 9px; transition: transform 180ms cubic-bezier(.2,.8,.2,1), background-color 180ms, box-shadow 180ms; }
+.primary:hover:not(:disabled) { background: #214b38; box-shadow: 0 5px 16px #2855411b; }
+.primary:active:not(:disabled) { transform: scale(.975); }
+.primary:focus-visible { outline: 3px solid #927256; outline-offset: 4px; }
+.tabs button, .links button { transition: background-color 160ms, transform 160ms; }
+.tabs button:active:not(:disabled), .links button:active:not(:disabled) { transform: scale(.97); }
+.success { padding: 8px 0; line-height: 1.8; }
+.success h2 { font-size: 21px; margin: 12px 0 4px; }
+.success path { stroke-dasharray: 34; stroke-dashoffset: 34; animation: account-check 360ms 100ms ease-out forwards; }
+.spinner { width: 16px; height: 16px; border: 2px solid #ffffff50; border-top-color: #fff; border-radius: 50%; animation: account-spin 700ms linear infinite; }
+@keyframes account-arrive { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: none; } }
+@keyframes account-step { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes account-check { to { stroke-dashoffset: 0; } }
+@keyframes account-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .card, .step, .notice, .success, .success path, .spinner { animation: none; } .success path { stroke-dashoffset: 0; } .primary, .tabs button, .links button, .form input { transition: none; } .primary:active:not(:disabled), .tabs button:active:not(:disabled), .links button:active:not(:disabled) { transform: none; } }
