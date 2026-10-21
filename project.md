@@ -1,3 +1,7 @@
+## 2026-10-21 — Mini/Proの新規製品ビジュアルを制作（DOC04 / G04、ROCK）
+
+本人の画像品質改善指示により、内蔵image_genでMini R5とPro Studioの既存形状を参照した横長製品画像2枚を新規制作。Miniは自然光の建築空間、Proは暗色スタジオと金属質感を中心とする。READMEのみ差替え、既存画像と公開サイトは保持。生成元PNGを非破壊で複製し、concept captionとプロンプト記録を保存する。画像2件の整合性・参照・公開Git属性とREADMEのブラウザ表示を確認。初回verifyで既存MR PC試験の子process終了確認が1件失敗したが、単独19caseと全体再実行は成功。最終npm run verify exit0（Node2515成功/2skip、API1678、CSV385）。mainへ通常commit/fast-forwardで保存する。
+
 ## 2026-10-21 — READMEに製品画像とGIFを追加（DOC04 / G04、ROCK）
 
 本人のビジュアル改善指示により、共通SVGヘッダー、Mini/Proの既存コンセプト画像、OS/Skyの既存GIF、Eveの概念フローSVGを配置。前回の広い余白と説明、製品順を維持。画像ごとにconcept/実画面の区別を記載。新しい重い生成物やruntime/製品の受入追加はない。画像6参照、SVG2件のXML/非script、OS/Sky GIF各24frameを確認。暗色ブラウザでヘッダーとEve図を表示検査し、npm run verify exit0（Node2515成功/2skip、API1678、CSV385）。mainへ通常commit/fast-forwardで保存する。

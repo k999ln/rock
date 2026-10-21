@@ -9478,22 +9478,29 @@
       "development_status"
     ],
     "scope": "README navigation, matching Japanese documentation gate, progress record; no runtime or deployment change",
-    "baseMainSha": "48459cab28afe3f143d828e091ded7b4cce9f502",
+    "baseMainSha": "bfe2db9695f0f037a34dd0cd04eb48f407a47fa6",
     "verification": {
-      "sourceLinksAndSvg": "PASS: six image sources; two valid non-script SVGs",
-      "gifFrames": "24 frames each",
-      "browserPreview": "header and Eve diagram inspected at 1280px; all five visual elements present",
-      "fullVerify": "exit0; Node2515 passed/2skipped; API1678, CSV385"
+      "newImages": "two PNGs, 1672x941; integrity, reference links and public Git attributes PASS",
+      "browserPreview": "Both Mini and Pro landscape heroes inspected in README at 1280px",
+      "fullVerify": "final npm run verify exit0; Node2515 passed/2skipped; API1678, CSV385",
+      "initialVerify": "existing mr-pc-adapter child-cleanup assertion failed once; standalone19 cases and final full suite passed"
     },
     "mainPublication": "normal commit and fast-forward push to main",
     "layout": "Spacious product sections with brand SVG, concept photography, existing GIFs and Eve workflow SVG",
     "visuals": {
       "header": "docs/assets/readme/avokado-header.svg",
-      "mini": "existing R5 concept image",
+      "mini": "docs/assets/readme/mini-architectural-hero-v1.png",
       "os": "existing 24-frame concept GIF",
       "eve": "docs/assets/readme/eve-workflow.svg",
       "sky": "existing 24-frame concept GIF",
-      "pro": "existing Studio concept image"
+      "pro": "docs/assets/readme/pro-studio-hero-v1.png"
+    },
+    "newProductImagery": {
+      "mini": "docs/assets/readme/mini-architectural-hero-v1.png",
+      "pro": "docs/assets/readme/pro-studio-hero-v1.png",
+      "method": "built-in image_gen with existing product-form references",
+      "publicSitesChanged": false,
+      "prompts": "docs/assets/readme/product-imagery-prompts.md"
     }
   }
 }

@@ -23,10 +23,10 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 ## Mini — 暮らしとまちづくり
 
 <p align="center">
-  <img src="sites/avocado-mini/public/images/avocadomini-r5-slim-home-concept.png" alt="Mini R5を暮らしの中で使う写真風コンセプト" width="100%" />
+  <img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="石と木のある建築空間になじむMini R5の製品コンセプト" width="100%" />
 </p>
 
-<p align="center"><sub>Mini R5のコンセプトビジュアル。実機写真ではなく、空間表示・通話の成立を示すものではありません。</sub></p>
+<p align="center"><sub>Mini R5の形状を踏まえて制作したコンセプトビジュアル。実機写真や性能の受入証拠ではありません。</sub></p>
 
 <br>
 
@@ -275,7 +275,7 @@ Skyを使うためにMiniやProの購入、native OSの導入を必須にはし�
 ## Pro — AI専用PCと半導体・関連部品の確保
 
 <p align="center">
-  <img src="sites/avocado-mini/public/images/avocado-pro-studio-concept.webp" alt="銀色のAI専用PC avocadoProのStudio筐体コンセプト" width="100%" />
+  <img src="docs/assets/readme/pro-studio-hero-v1.png" alt="銀色のAI専用PC avocadoProのStudio筐体コンセプト" width="100%" />
 </p>
 
 <p align="center"><sub>Studio筐体のコンセプトビジュアル。最初の試作候補A4-H2Oの実機写真ではありません。</sub></p>
