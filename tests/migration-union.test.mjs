@@ -212,6 +212,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0022_sky_recurring_send_guard.sql',
     '0023_jennifer_schema_guard.sql',
     '0024_remote_ai_send_claims_recovery.sql',
+    '0025_remote_ai_send_claims_watermark.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -494,4 +495,30 @@ await test('fresh and current production D1 databases converge without losing re
       });
     }
   }
+  const tables = (
+    await db
+      .prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name != '__drizzle_migrations'",
+      )
+      .all()
+  ).results;
+  for (const { name } of tables)
+    await db.prepare(`DROP TABLE "${String(name)}"`).run();
+  await db.prepare('DELETE FROM __drizzle_migrations').run();
+  await db.prepare(
+    'CREATE TABLE remote_ai_text_executions (id text PRIMARY KEY NOT NULL, owner_user_id text NOT NULL, state text NOT NULL)',
+  ).run();
+  await db.prepare(
+    'CREATE TABLE sky_recurring_contracts (owner_id text NOT NULL, status text NOT NULL, access_until integer NOT NULL, period_start integer NOT NULL, period_end integer NOT NULL)',
+  ).run();
+  await db.prepare(
+    "INSERT INTO __drizzle_migrations (hash, created_at) VALUES ('newer-than-midnight', 1792558068000)",
+  ).run();
+  await migrate(drizzle(db), { migrationsFolder: mainFolder });
+  assert.ok(await db.prepare(
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
+  ).first());
+  assert.equal(Number((await db.prepare(
+    'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
+  ).first()).created_at), 4102444800000);
 });

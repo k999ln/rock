@@ -65,6 +65,7 @@ await test('main packaging replaces the plugin default instead of mixing lineage
   await writeFile(join(root, 'drizzle-main', '0022_sky_recurring_send_guard.sql'), 'main-22');
   await writeFile(join(root, 'drizzle-main', '0023_jennifer_schema_guard.sql'), 'main-23');
   await writeFile(join(root, 'drizzle-main', '0024_remote_ai_send_claims_recovery.sql'), 'main-24');
+  await writeFile(join(root, 'drizzle-main', '0025_remote_ai_send_claims_watermark.sql'), 'main-25');
   await writeFile(join(root, 'dist', '.openai', 'drizzle', '0020_sites_schema_convergence.sql'), 'stale-root');
 
   const result = await syncSitesMigrationLineage({
@@ -77,6 +78,7 @@ await test('main packaging replaces the plugin default instead of mixing lineage
     '0022_sky_recurring_send_guard.sql',
     '0023_jennifer_schema_guard.sql',
     '0024_remote_ai_send_claims_recovery.sql',
+    '0025_remote_ai_send_claims_watermark.sql',
   ]);
   assert.deepEqual(
     (await readdir(join(root, 'dist', '.openai', 'drizzle'))).sort(),
