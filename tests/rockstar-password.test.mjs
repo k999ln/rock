@@ -20,7 +20,7 @@ function fixture(t) {
   return {sql,store:rockstarPasswordStore(db)};
 }
 const signup=(store,name='fixture_one')=>store.enroll(request(),{mode:'signup',handle:name,password:secret},null,now);
-test('password signup creates server owner, salted scrypt hash and host-only session without gateway',async t=>{
+void test('password signup creates server owner, salted scrypt hash and host-only session without gateway',async t=>{
   const {sql,store}=fixture(t);const result=await signup(store);
   assert.match(result.cookie,/^__Host-rockstar_account_access=rock_account_/);assert.match(result.cookie,/HttpOnly; SameSite=Strict/);assert.match(result.cookie,/; Secure$/);
   const owner=await store.authenticate(signed(result),now);assert.match(owner,/^rockstar:[0-9a-f-]{36}$/);
@@ -28,24 +28,24 @@ test('password signup creates server owner, salted scrypt hash and host-only ses
   assert.match(result.recoveryCode,/^rock_recovery_[A-Za-z0-9_-]{43}$/);assert.ok(!JSON.stringify(sql.prepare('SELECT * FROM rockstar_accounts').get()).includes(result.recoveryCode));
   assert.equal((await store.status(owner)).handle,'fixture_one');
 });
-test('existing gateway owner can add first login while retaining old owner, grant and history',async t=>{
+void test('existing gateway owner can add first login while retaining old owner, grant and history',async t=>{
   const {sql,store}=fixture(t);sql.prepare('INSERT INTO rockstar_device_sessions VALUES(?,?,NULL)').run('device','legacy-owner');sql.prepare('INSERT INTO retained_history VALUES(?,?)').run('legacy-owner','private fixture');
   const r=await store.enroll(request(),{mode:'add',handle:'legacy_one',password:secret},'legacy-owner',now);
   assert.equal(await store.authenticate(signed(r),now),'legacy-owner');assert.equal(sql.prepare('SELECT revoked_at FROM rockstar_device_sessions').get().revoked_at,null);assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM retained_history').get().n,1);
   await assert.rejects(store.enroll(request(),{mode:'add',handle:'other_name',password:secret},'legacy-owner',now),/ACCOUNT_LOGIN_ALREADY_CONFIGURED/);
 });
-test('password login preserves owner and rejects wrong password or silent owner switch',async t=>{
+void test('password login preserves owner and rejects wrong password or silent owner switch',async t=>{
   const {store}=fixture(t);const first=await signup(store);const owner=await store.authenticate(signed(first),now);
   const login=await store.login(request(),{mode:'login',handle:'FIXTURE_ONE',password:secret},null,now+1);assert.equal(await store.authenticate(signed(login),now+1),owner);
   await assert.rejects(store.login(request(),{mode:'login',handle:'fixture_one',password:secret+'x'},null,now),/UNAUTHORIZED/);
   await assert.rejects(store.login(request(),{mode:'login',handle:'fixture_one',password:secret},'another-owner',now),/UNAUTHORIZED/);
   await assert.rejects(store.login(request(),{mode:'login',handle:'unknown_user',password:secret},null,now),/UNAUTHORIZED/);
 });
-test('logout, expiry and invalid cookies cannot reuse password sessions',async t=>{
+void test('logout, expiry and invalid cookies cannot reuse password sessions',async t=>{
   const {store}=fixture(t);const r=await signup(store);await store.logout(signed(r),now+1);await assert.rejects(store.authenticate(signed(r),now+1),/UNAUTHORIZED/);
   const l=await store.login(request(),{handle:'fixture_one',password:secret},null,now+2);await assert.rejects(store.authenticate(signed(l),now+31*86400000),/UNAUTHORIZED/);await assert.rejects(store.authenticate(request('__Host-rockstar_account_access=bad'),now),/UNAUTHORIZED/);
 });
-test('recovery invalidates old password, passkeys, sessions, device grants and pending enrollment; history remains',async t=>{
+void test('recovery invalidates old password, passkeys, sessions, device grants and pending enrollment; history remains',async t=>{
   const {sql,store}=fixture(t);const first=await signup(store);const owner=await store.authenticate(signed(first),now);
   for(const name of ['jennifer_passkey_credentials','jennifer_passkey_sessions','rockstar_device_sessions'])sql.prepare(`INSERT INTO ${name} VALUES(?,?,NULL)`).run(name,owner);
   sql.prepare('INSERT INTO rockstar_device_authorizations VALUES(?,?,?)').run('approved',owner,'approved');sql.prepare('INSERT INTO retained_history VALUES(?,?)').run(owner,'private fixture');
@@ -55,13 +55,13 @@ test('recovery invalidates old password, passkeys, sessions, device grants and p
   assert.equal(sql.prepare('SELECT status FROM rockstar_device_authorizations').get().status,'denied');assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM retained_history').get().n,1);
   await assert.rejects(store.enroll(request(),{mode:'recover',handle:'fixture_one',password:secret+' other',recoveryCode:first.recoveryCode,confirmRevoke:true},null,now+2),/UNAUTHORIZED/);
 });
-test('CSRF, client-selected owner, weak passwords and duplicate handles fail without owner transfer',async t=>{
+void test('CSRF, client-selected owner, weak passwords and duplicate handles fail without owner transfer',async t=>{
   const {sql,store}=fixture(t);
   await assert.rejects(store.enroll(request('',{origin:'https://attacker.invalid'}),{mode:'signup',handle:'fixture_one',password:secret},null,now),/ORIGIN/);
   await assert.rejects(store.enroll(request(),{mode:'signup',handle:'fixture_one',password:secret,userId:'victim'},null,now),/PASSKEY_INVALID/);
   await assert.rejects(store.enroll(request(),{mode:'signup',handle:'fixture_one',password:'short'},null,now),/PASSWORD_INVALID/);
   await signup(store);await assert.rejects(signup(store),/ACCOUNT_NAME_UNAVAILABLE/);assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM rockstar_accounts').get().n,1);
 });
-test('account revision fencing invalidates old password after passkey-side recovery',async t=>{
+void test('account revision fencing invalidates old password after passkey-side recovery',async t=>{
   const {sql,store}=fixture(t);const r=await signup(store);sql.exec('UPDATE rockstar_accounts SET revision=revision+1');await assert.rejects(store.authenticate(signed(r),now),/UNAUTHORIZED/);await assert.rejects(store.login(request(),{handle:'fixture_one',password:secret},null,now),/UNAUTHORIZED/);
 });

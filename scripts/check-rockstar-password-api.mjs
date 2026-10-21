@@ -14,7 +14,7 @@ class Browser{
 }
 const a=new Browser(),b=new Browser();const name='fixture_'+randomUUID().slice(0,8),password='fixture correct horse battery 2026';
 const signup=await a.call('POST','/api/os/access',{action:'password',mode:'signup',handle:name,password});
-check(signup.status===200,'password signup on actual Worker');check(/^rock_recovery_/.test(signup.body.recoveryCode),'one-time recovery code');
+check(signup.status===200,'password signup on actual Worker');check(signup.body.recoveryCode.startsWith('rock_recovery_'),'one-time recovery code');
 const first=await a.call('GET','/api/os/access');check(first.body.signedIn&&first.body.method==='password','independent identity without gateway');check(first.body.passwordLogin.handle===name,'own login handle');const scope=first.body.storageScope;
 const thread=randomUUID();const saved=await a.call('PUT','/api/eve/history',{session:{version:1,id:thread,toolId:'sky-auto',createdAt:Date.now(),messages:[{id:'fixture',side:'me',text:'[合成API試験] password continuation'}],activeRequest:null,workflowStatus:'ready',outcome:null},revision:0,remember:true});check(saved.status===200,'encrypted Eve history saved');
 const signupB=await b.call('POST','/api/os/access',{action:'password',mode:'signup',handle:name+'_b',password});check(signupB.status===200,'second owner');check((await b.call('GET','/api/eve/history?id='+thread)).status===404,'second owner cannot read first history');
@@ -24,6 +24,8 @@ const login=await a.call('POST','/api/os/access',{action:'password',mode:'login'
 const cross=await a.call('POST','/api/os/access',{action:'password',mode:'login',handle:name,password},{Origin:'https://attacker.invalid'});check(cross.status===403,'cross-origin denied');
 const recovered=await a.call('POST','/api/os/access',{action:'password',mode:'recover',handle:name,password:password+' new',recoveryCode:signup.body.recoveryCode,confirmRevoke:true});check(recovered.status===200,'recovery');check((await a.call('GET','/api/os/access')).body.storageScope===scope,'recovery owner preserved');check((await a.call('GET','/api/eve/history?id='+thread)).status===200,'history retained after recovery');
 const old=new Browser();old.cookies=oldCookie;check((await old.call('GET','/api/eve/history')).status===401,'old session revoked');
-check((await a.call('DELETE','/api/eve/history?id='+thread)).status===200,'fixture history tombstoned');
+const current=await a.call('GET','/api/eve/history?id='+thread);
+check((await a.call('DELETE','/api/eve/history',{id:thread,revision:current.body.revision,confirm:'delete-history'})).status===200,'fixture history tombstoned');
+const bad=new Browser();bad.cookies.set('rockstar_account_access','bad');check((await bad.call('GET','/api/os/access',null,{'oai-authenticated-user-id':'fixture-legacy'})).body.signedIn===false,'invalid password cookie cannot fall through to gateway');
 check((await a.call('DELETE','/api/os/access')).status===200,'final logout');
 console.log('PASS password Worker/D1: '+checks+' assertions. Synthetic loopback only.');

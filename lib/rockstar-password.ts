@@ -1,4 +1,5 @@
 import { scrypt, timingSafeEqual } from 'node:crypto';
+import { Buffer } from 'node:buffer';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 type PasswordRow = { userId: string; handle: string; salt: string; verifier: string; revision: number };
@@ -28,7 +29,7 @@ function handle(value: unknown) {
   return value.toLowerCase();
 }
 function password(value: unknown) {
-  if (typeof value !== 'string' || [...value].length < 15 || [...value].length > 128 || encoder.encode(value).length > 512) throw new Error('PASSWORD_INVALID');
+  if (typeof value !== 'string' || Array.from(value).length < 15 || Array.from(value).length > 128 || encoder.encode(value).length > 512) throw new Error('PASSWORD_INVALID');
   if (/^(.)\1+$/.test(value) || ['passwordpassword', '123456789012345', 'qwertyuiopasdfgh', 'password123456789'].includes(value.toLowerCase())) throw new Error('PASSWORD_INVALID');
   return value;
 }
