@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-15",
+  "updatedAt": "2026-10-21",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -14,7 +14,7 @@
     "in_progress": 48,
     "planned": 230,
     "blocked": 1,
-    "milestone": "通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる",
+    "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
