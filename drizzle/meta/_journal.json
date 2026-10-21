@@ -1,54 +1,33 @@
 {
-  "version": "7",
+  "version": "6",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "6",
-      "when": 1789884503747,
-      "tag": "0013_sky_provider_connections",
+      "when": 1790836800000,
+      "tag": "0000_sky_service_bootstrap",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1791907200000,
-      "tag": "0014_jennifer_execution_integrity",
+      "when": 1790866131057,
+      "tag": "0001_csv_trial_payments",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "6",
-      "when": 1791999443299,
-      "tag": "0015_jennifer_passkey_access",
+      "when": 1792259007921,
+      "tag": "0002_lush_enchantress",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "6",
-      "when": 1792080000000,
-      "tag": "0016_sky_monthly_sandbox",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1792080000001,
-      "tag": "0017_sky_cloud_monthly_test",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1792200000000,
-      "tag": "0018_sky_recurring_sandbox",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1792262293555,
-      "tag": "0019_sky_hosted_monthly",
+      "when": 1792262463039,
+      "tag": "0003_lowly_baron_zemo",
       "breakpoints": true
     }
   ]
