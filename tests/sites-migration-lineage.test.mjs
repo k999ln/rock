@@ -7,6 +7,7 @@ import {
   CANONICAL_MAIN_SITE_PROJECT_ID,
   COLUMBIA_SITE_PROJECT_ID,
   siteMigrationsDirectoryFor,
+  syncSitesPackageSourceLineage,
   syncSitesMigrationLineage,
 } from '../scripts/sites-migration-lineage.mjs';
 
@@ -20,6 +21,32 @@ await test('Sites migration selection is explicit and fails closed', () => {
   assert.throws(
     () => siteMigrationsDirectoryFor(undefined),
     /project \(missing\)/,
+  );
+});
+
+await test('main package source is replaced with the selected lineage', async (t) => {
+  const root = await mkdtemp(join(tmpdir(), 'sites-package-source-lineage-'));
+  t.after(async () => {
+    const { rm } = await import('node:fs/promises');
+    await rm(root, { recursive: true, force: true });
+  });
+  await mkdir(join(root, 'drizzle'), { recursive: true });
+  await mkdir(join(root, 'drizzle-main'), { recursive: true });
+  await writeFile(join(root, 'drizzle', '0020_sites_schema_convergence.sql'), 'root');
+  await writeFile(join(root, 'drizzle-main', '0020_main_legacy_columns.sql'), 'main-20');
+  await writeFile(join(root, 'drizzle-main', '0021_sites_schema_convergence.sql'), 'main-21');
+
+  const result = await syncSitesPackageSourceLineage({
+    root,
+    projectId: CANONICAL_MAIN_SITE_PROJECT_ID,
+  });
+  assert.deepEqual(result.sqlFiles, [
+    '0020_main_legacy_columns.sql',
+    '0021_sites_schema_convergence.sql',
+  ]);
+  assert.deepEqual(
+    (await readdir(join(root, 'drizzle'))).sort(),
+    result.sqlFiles,
   );
 });
 

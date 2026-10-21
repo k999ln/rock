@@ -11,6 +11,7 @@
     "sky:monthly:sandbox": "node --experimental-strip-types scripts/start-sky-monthly-sandbox.mjs",
     "prebuild": "node scripts/local-web-state.mjs && node scripts/generate-private-modules.mjs",
     "build": "vinext build && node scripts/stage-sky-domain-router.mjs && node scripts/stage-sites-migration-lineage.mjs",
+    "site:prepare-package": "node scripts/prepare-sites-package-lineage.mjs",
     "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",

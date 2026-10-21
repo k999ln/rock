@@ -48,3 +48,30 @@ export async function syncSitesMigrationLineage({
     sourceDirectory,
   };
 }
+
+export async function syncSitesPackageSourceLineage({ root, projectId }) {
+  const migrationDirectory = siteMigrationsDirectoryFor(projectId);
+  const sourceDirectory = resolve(root, migrationDirectory);
+  const packageSourceDirectory = resolve(root, 'drizzle');
+
+  // The Sites packager deliberately stages project/drizzle after the build.
+  // Main therefore keeps a Site-specific source commit whose root drizzle is
+  // the selected main lineage; Columbia already uses root drizzle and is a
+  // no-op. The GitHub repository retains both canonical source directories.
+  if (sourceDirectory !== packageSourceDirectory) {
+    await rm(packageSourceDirectory, { recursive: true, force: true });
+    await cp(sourceDirectory, packageSourceDirectory, { recursive: true });
+  }
+
+  const expected = await sqlFiles(sourceDirectory);
+  const packaged = await sqlFiles(packageSourceDirectory);
+  if (JSON.stringify(packaged) !== JSON.stringify(expected))
+    throw new Error(`Sites package source does not match ${migrationDirectory}`);
+
+  return {
+    migrationDirectory,
+    packageSourceDirectory,
+    sqlFiles: packaged,
+    sourceDirectory,
+  };
+}

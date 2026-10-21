@@ -2,68 +2,9 @@
   "version": "7",
   "dialect": "sqlite",
   "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1789884503747,
-      "tag": "0013_sky_provider_connections",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1791907200000,
-      "tag": "0014_jennifer_execution_integrity",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1791999443299,
-      "tag": "0015_jennifer_passkey_access",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1792080000000,
-      "tag": "0016_sky_monthly_sandbox",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1792080000001,
-      "tag": "0017_sky_cloud_monthly_test",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1792200000000,
-      "tag": "0018_sky_recurring_sandbox",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1792262293555,
-      "tag": "0019_sky_hosted_monthly",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1792555200000,
-      "tag": "0020_sites_schema_convergence",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "6",
-      "when": 1792555200001,
-      "tag": "0021_sky_recurring_send_guard",
-      "breakpoints": true
-    }
+    { "idx": 0, "version": "6", "when": 1792555200000, "tag": "0020_main_legacy_columns", "breakpoints": true },
+    { "idx": 1, "version": "6", "when": 1792555200001, "tag": "0021_sites_schema_convergence", "breakpoints": true },
+    { "idx": 2, "version": "6", "when": 1792555200002, "tag": "0022_sky_recurring_send_guard", "breakpoints": true },
+    { "idx": 3, "version": "6", "when": 1792555200003, "tag": "0023_jennifer_schema_guard", "breakpoints": true }
   ]
 }
