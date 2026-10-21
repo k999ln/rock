@@ -196,3 +196,10 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 1. 上の表から対象プロジェクトの入口を開く。
 2. [workstream案内](docs/workstreams/README.md)から主担当を一つ選び、[進捗JSON](data/project-status.json)の既存task ID、完了条件、証拠を確認する。
 3. 変更後は対象の小さい検証を実行し、配布・統合候補では`npm run verify`と対象OS固有の受入を実施する。結果は`project.md`と進捗JSONへ記録する。
+
+## 統合した開発用adapter
+
+- [`toolkits/android-branding/`](toolkits/android-branding/): Pixelのブランド資産と検査。全OS受入は別。
+- [`toolkits/sky-app-client/`](toolkits/sky-app-client/): 本人用アプリ連携。公開ドメインへ移さない。
+- [`toolkits/sky-linux-local/`](toolkits/sky-linux-local/): 本人用Linux/Pixel接続・保存・復旧の開発手順。
+- [`toolkits/sky-linux-service/`](toolkits/sky-linux-service/): 署名付きLinux実行先・使用量の接続候補。実Provider/契約受入は別。
