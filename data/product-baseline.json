@@ -1,4 +1,25 @@
 {
+  "visualScribeIntent": {
+    "decidedAt": "2026-10-15",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "こんな感じでさ話した内容を自動的に図解するシステムskyに追加して",
+    "authority": "docs/sky-tools-complete-design.md#会話図解--visual-scribe",
+    "catalogId": "visual-scribe",
+    "catalogStatus": "ready",
+    "initialInput": ["pasted_transcript", "utf8_text_file"],
+    "automaticAfterTextInput": true,
+    "paragraphBoundary": "blank_line",
+    "execution": "browser_first_party_rules",
+    "modelInference": false,
+    "externalTransmission": false,
+    "serverStorage": false,
+    "outputs": ["interactive_flow", "text_copy", "current_paragraph_svg"],
+    "voiceTranscriptionImplemented": false,
+    "semanticBeatInferenceImplemented": false,
+    "ownerScopedSaveImplemented": false,
+    "publicSiteAccepted": false,
+    "futureAcceptance": ["final_transcript_segments", "speaker_and_timecode_provenance", "idempotent_merge_and_regenerate", "provider_data_cost_and_stop_boundary", "owner_scoped_save_and_reopen"]
+  },
   "freeCloudAutomaticContinuationIntent":{"date":"2026-10-17","source":"direct_owner_instruction","confirmedPreGenerationRejectionOnly":true,"sameRequestId":true,"productionBilling":false,"authority":"docs/llm-evaluation-architecture.md"},
   "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
   "automaticLlmSelectionIntent": {

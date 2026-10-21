@@ -12895,6 +12895,11 @@
           "path": "docs/evidence/integrated-development-20261011.json",
           "section": "SKY21",
           "description": "対象source、環境、再現操作、合否と未受入条件"
+        },
+        {
+          "path": "docs/evidence/sky-visual-scribe-local-20261015.json",
+          "section": "local source and browser acceptance",
+          "description": "会話図解Toolのsource、catalog件数、local browser操作、検証結果と公開前の未受入条件"
         }
       ],
       "steps": [

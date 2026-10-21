@@ -58,12 +58,14 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 
 ### si自動化チームのTool
 
-Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 14件（AMC・SPIDERを含むRock側で作成10件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）の計36件。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
+Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 16件（Visual Scribe・AMC・SPIDER・Materialを含むRock側で作成12件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）の計38件。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
 
 ### Rock側で作成・登録したTool
 
 | Sky ID | Tool | catalog状態 | 主な実装・入口 |
 | --- | --- | --- | --- |
+| `visual-scribe` | 会話図解 · Visual Scribe | ready | [`app/sky/visual-scribe/`](app/sky/visual-scribe/)・[`lib/conversation-diagram.ts`](lib/conversation-diagram.ts) |
+| `rockstar-material-invention` | Material Invention · 物質候補の比較 | ready | [`components/material-invention-workspace.tsx`](components/material-invention-workspace.tsx)・[`lib/material-invention.ts`](lib/material-invention.ts) |
 | `rockstar-spider` | SPIDER — ブラウザ内セキュリティ検査 | ready | [`components/spider-workspace.tsx`](components/spider-workspace.tsx)・[`toolkits/spider-guard/`](toolkits/spider-guard/) |
 | `rockstar-amc` | AMC — 部隊とGoalの管理 | ready | [`app/amc/`](app/amc/)・[`app/api/amc/`](app/api/amc/)・[`lib/amc-tool.ts`](lib/amc-tool.ts) |
 | `rockstar-csv-cleanup` | CSV整形・検査・納品 | ready | [`app/csv/`](app/csv/)・[`lib/csv-transform.ts`](lib/csv-transform.ts) |

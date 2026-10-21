@@ -1,6 +1,6 @@
 # エージェント・Tool総覧 — 何があって、それぞれ何をするか
 
-時点: 2026-10-06（main `0fbf688b`）／ 作成: 2026-10-07
+時点: 2026-10-15（基準main `a3e7a8ca`）／ 作成: 2026-10-07、更新: 2026-10-15
 
 このプロジェクトにある **Tool・エージェント・部隊を全部並べて、それぞれの機能を一か所で読める** ようにした一覧です。
 
@@ -11,7 +11,7 @@
 **目次**
 
 1. [まず用語：「エージェント」は5種類ある](#1-まず用語エージェントは5種類ある)
-2. [SkyのTool 37件](#2-skyのtool-37件)
+2. [SkyのTool 38件](#2-skyのtool-38件)
 3. [Skyの役割エージェント（担当）](#3-skyの役割エージェント担当)
 4. [Toolの中にあるサブシステム](#4-toolの中にあるサブシステム)
 5. [OSに入っているsiとAgent](#5-osに入っているsiとagent)
@@ -31,7 +31,7 @@
 
 | 呼び名 | 何か | 数 | 利用者から見えるか | この文書の章 |
 | --- | --- | ---: | --- | --- |
-| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 37（ready 15＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-37件) |
+| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 38（ready 16＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-38件) |
 | **役割エージェント**（担当） | 「サブスク顧問」「法務受付」のように、役割を持って会話で仕事を進める担当。許可されたToolだけを使う | 7（実装3＋構成案4） | 見える。Sky／Zemaで話す | [第3章](#3-skyの役割エージェント担当) |
 | **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているsiとagent) |
 | **クラウドのAgent** | 端末が圏外でも仕事を続ける、クラウド側の実行者。外部のAgentへ委任する経路（A2A）を含む | — | 見える。見積と承認のあとに動く | [第6章](#6-クラウドのagent) |
@@ -55,18 +55,20 @@
 
 ---
 
-## 2. SkyのTool 37件
+## 2. SkyのTool 38件
 
-Skyに登録されているToolは **37件** です。使い始められる `ready` が15件、まだ実行できない導入候補 `candidate` が22件あります。
+Skyに登録されているToolは **38件** です。使い始められる `ready` が16件、まだ実行できない導入候補 `candidate` が22件あります。
 
 | 区分 | 件数 | 内訳 |
 | --- | ---: | --- |
-| ready | 15 | Rock側で作成 11件（AMCを含む）＋ `Mr.` 由来 4件 |
+| ready | 16 | Rock側で作成 12件（AMCとVisual Scribeを含む）＋ `Mr.` 由来 4件 |
 | candidate | 22 | Rock構想 1件 ＋ `Mr.` 由来 11件 ＋ 第三者 10件 |
 
 Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外部サービスの[接続情報の登録とProviderの差し替え](sky.md#接続情報の登録と再利用)、[Telegramから自作Toolを有効化するコード](sky.md#telegramからの有効化)、[サインイン切れや公開判定などの利用時の注意](sky.md#利用時の注意と復旧readmeに置かれていた案内)。
 
-### 2.1 使い始められる15件（ready）
+### 2.1 使い始められる16件（ready）
+
+追加（2026-10-15）: **会話図解 · Visual Scribe**（`visual-scribe`）。会話・文字起こしを貼ると、空行ごとの段落を発言に忠実なフローへブラウザ内で自動変換する。外部送信・モデル推論・サーバー保存は行わず、全段落のテキストコピーと選択中の図のSVG保存を提供する。[詳細設計](sky-tools-complete-design.md#会話図解--visual-scribe)。
 
 追加: **SPIDER · セキュリティ検査**（`rockstar-spider`）。Sky → Zemaで本人が入力したコード・テキストの秘密／個人情報／危険処理候補をローカル検査。該当行・理由・対処方法と値を含まないreportを返す。原文送信・保存なし。既存番号1〜35は参照互換のため維持し、SPIDERは追加36番。[設計](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
 
@@ -119,7 +121,20 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 | 34 | [`jev-browser`](#jev-browser) | Jev Browser | ブラウザ操作si | 第三者 | 既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。 |
 | 35 | [`mobile-jev`](#mobile-jev) | Mobile Jev | Android操作si | 第三者 | Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。 |
 
-### 2.3 各Toolの機能（ready 14件）
+### 2.3 各Toolの機能（ready 16件）
+
+<a id="visual-scribe"></a>
+#### 追加. 会話図解 · Visual Scribe — `visual-scribe`
+
+- **状態・由来**：ready／Rock／分類「会議・文章整理」
+- **何をするか**：貼り付けた会話やUTF-8テキストを空行ごとに分け、各段落を話題・背景・理由・転換・判断・着地のフローへ自動変換します。
+- **どこで動くか**：ブラウザ内。サインイン、外部API、モデル、サーバー保存は使いません。
+- **費用**：無料。外部モデル・API費用は発生しません。
+- **使い方の流れ**：1) 会話を貼るかtxtを開く → 2) 自動生成された段落を切り替える → 3) 元段落と照合する → 4) テキストをコピーするかSVGを保存する
+- **やらないこと・注意**：意味推論、事実確認、意図の補完、話者分離、音声文字起こしはしません。入力と結果は再読み込みで消えます。
+- **開く場所**：`/sky/visual-scribe`
+- **実装**：[`lib/conversation-diagram.ts`](../lib/conversation-diagram.ts)・[`components/conversation-diagram-workspace.tsx`](../components/conversation-diagram-workspace.tsx)
+- **詳細設計**：[会話図解 · Visual Scribe](sky-tools-complete-design.md#会話図解--visual-scribe)
 
 <a id="rockstar-amc"></a>
 #### 1. AMC · Goalと部隊の進捗 — `rockstar-amc`
@@ -573,7 +588,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 
 ### 2.5 catalogにはないが、設計書に出てくる3件
 
-[全Tool詳細設計](sky-tools-complete-design.md) と [Jev ecosystem設計](jev-ecosystem-integration-design.md) には、次の3件も研究・参考対象として書かれています。現行の `lib/catalog.ts` には登録されていないため、上の36件には含めません。
+[全Tool詳細設計](sky-tools-complete-design.md) と [Jev ecosystem設計](jev-ecosystem-integration-design.md) には、次の3件も研究・参考対象として書かれています。現行の `lib/catalog.ts` には登録されていないため、上の38件には含めません。
 
 | 名前 | 何か | 扱い |
 | --- | --- | --- |
@@ -871,9 +886,9 @@ Webアプリ本体とは別に配備する単位です。
 
 ### 数えるときの決まり
 
-- `ready` 15件はSky catalog上の状態。外部Providerや本番決済まで接続済みという意味ではない。
+- `ready` 16件はSky catalog上の状態。外部Providerや本番決済まで接続済みという意味ではない。
 - `candidate` 22件を、稼働中の担当・対応機能・収益機会へ数えない。
-- Fashion Brand Opsの41操作、nativeの6種類9版、AndroidのToolを、Sky catalogの37件へ足さない。
+- Fashion Brand Opsの41操作、nativeの6種類9版、AndroidのToolを、Sky catalogの38件へ足さない。
 - 一覧にある全Toolが同時に稼働するという意味ではない。チームの構成は利用者の選択と受入状態で変わる。
 - Toolの完了は、販売・入金・法的有効性・特許・実世界の成果を保証しない。
 
@@ -889,7 +904,7 @@ Webアプリ本体とは別に配備する単位です。
 | 4 | [全Tool詳細設計 §21](sky-tools-complete-design.md#21-現在の共通未完成点) | 「candidate 13件の採否」とあるが、現在の候補は22件 |
 | 5 | [製品ベース](product-baseline.md) の並び | 新しい判断を上へ足してきたため、H1が2つあり、日付順でもない。検査（`npm run baseline:check`）が本文と結び付いているので並べ替えず、冒頭に読み方の案内だけ足した。[`sky.md`](sky.md) と [進捗ログ](../project.md) にあった「題名より上の追記」は2026-10-07に本文へ移した |
 | 6 | [`sky.md`](sky.md)「Skyに表示する導入候補22件」 | 見出しは22件だが、従来の表は13行で、catalogにない資料・研究用の3件を含み、`Mr.` 由来11件とIP Studioが無かった。2026-10-07に、統合で落ちていたID付きの22行の表を復元して並べた。従来の表は残してある |
-| 7 | 復元した2026-10-01〜10-05の記述 | [全Tool詳細設計 §1.3](sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中) やREADMEの復元箇所には「全34件」「built-in 12件」とある。AMC（`rockstar-amc`）が13件目のreadyとして入る前の数で、現在はMaterial候補比較を含む37件・ready 15件 |
+| 7 | 復元した2026-10-01〜10-05の記述 | [全Tool詳細設計 §1.3](sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中) やREADMEの復元箇所には「全34件」「built-in 12件」とある。AMC（`rockstar-amc`）が13件目のreadyとして入る前の数で、現在はVisual ScribeとMaterial候補比較を含む38件・ready 16件 |
 | 8 | avokadoProの価格 | 2026-09-25の本人決定と公開Siteは「From ¥880,000」、2026-10-05の[Pro PC設計](avokado-pro-pc-design.md)とREADMEは「販売目標80万円／台」。どちらが現行かの記録がない |
 | 9 | task台帳と設計台帳 | [`data/project-status.json`](../data/project-status.json) にSIM/eSIMを題名に持つtaskが無い（`main` にあった `SIM01` などが2026-10-05の統合で消えた）。[`data/design-document-index.json`](../data/design-document-index.json) もToolごとの実装・試験の対応が大きく減っている。詳細は[統合で失われた情報の監査](merge-loss-audit-20261007.md) |
 

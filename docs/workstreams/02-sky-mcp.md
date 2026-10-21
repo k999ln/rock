@@ -24,6 +24,10 @@ SKY07/SKY21（ROCK）は[local/cloud/明示組合せの選択契約](../llm-eval
 
 # Sky / MCP
 
+## 2026-10-15 SKY21 / ROCK — 会話を段落ごとに自動図解
+
+Skyのready Toolとして「会話図解 · Visual Scribe」を追加する。会話または文字起こしを貼るかUTF-8 `.txt`で読み込み、空行ごとに分けて各段落を短い流れ図へ即時変換する。処理はbrowser内の決定的ルールだけで、外部送信、model推論、account保存を行わない。元段落の確認、全段落のtextコピー、現在図のSVG保存を持出し境界とする。基準mainのcatalog 37件（ready 15 / candidate 22）にready 1件を加え、このbranchは38件（ready 16 / candidate 22）。公開Site、音声取得・文字起こし、意味要約、本人別保存、mobile実機は別受入。[local証拠](../evidence/sky-visual-scribe-local-20261015.json)にsource、検証、未受入条件を記録する。
+
 ## 2026-10-14 SKY21 / ROCK — 無料第一者Agentを保存前に実行
 
 公開Skyで出典整理Agentの入力後に匿名401となり、有限の引用整理さえ試せないことを確認した。ブラウザ内の第一者ルール処理を実行とし、結果のコピー・Markdown持出しをサインイン前に提供する。Skyへの本人別保存は別ボタンから既存owner scope、利用権、冪等WorkJobを通す。未保存の結果は再読込で消え、保存401／503でも画面上の結果と入力を保持する。これはCloud LLM、外部MCP、購入、学生枠の受入ではない。ROCKがUIと第一者処理を担当し、保存先の認証／D1は既存契約を利用する。本体Site v54/source `0c1cc72ee10d8ea6174974d6997ad22ab0bf6625`を公開し、匿名Chromeで出典1件の結果と未保存表示、保存401の案内、入力と結果の保持を確認。ブラウザdownload eventは確認できず、本人保存/再訪とA/B分離は未受入。合格条件は匿名ブラウザで実出力と持出し、保存401の明示、本人保存と再訪、失敗時非喪失、同一公開artifactのreadback。検証: `node --test tests/sky-citation-agent.test.mjs`、`npm run typecheck`、`npm run build`、公開ブラウザ操作と`npm run verify`。

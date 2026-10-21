@@ -28,9 +28,27 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 # Sky／Zema／全Tool詳細設計
 
 版: 1.2 / 2026-09-27
-対象: Skyにある15件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある16件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
+
+## 会話図解 · Visual Scribe
+
+2026-10-15の本人指示「話した内容を自動的に図解するシステムをSkyに追加」により、`visual-scribe`をready Toolとして追加する。初版は貼付けまたはUTF-8 txt入力を空行ごとの段落へ分け、発言を短く区切る決定的ルールでフロー図を表示する。モデル推論や外部送信を伴う意味要約、リアルタイム音声文字起こし、継続保存は本版に含めない。
+
+| 必須項目 | 契約 |
+| --- | --- |
+| 目的・利用者 | 会話・面談・考えを文字にした利用者が、段落ごとの話の流れを見て確認・共有できるようにする。 |
+| 端から端の体験 | SkyでToolを選ぶ→会話を貼るかtxtを開く→入力中に段落別フローを自動生成→段落を切替→元の発言と照合→全段落をテキストコピーまたは現在の図をSVG保存する。 |
+| 責任・禁止権限 | ROCK/O5がcatalog、有限ルール、描画、持出しを担当。事実認定、話者の意図・因果の推論、議事録の承認、外部送信、音声取得、保存済み成果の主張を行わない。 |
+| 入出力・版・上限 | 入力は最大50,000文字・50段落のUTF-8 text。出力は`sky.conversation-diagram/1`、各段落の見出し、最大6 node、元段落、警告。node種別は話題・問い・背景・理由・転換・判断・展開・着地。 |
+| 状態と失敗 | 空入力は待機、入力中は同期的に再生成、上限超過・非UTF-8 fileは入力を保持して明示エラー、copy/download失敗は図を失わず通知する。 |
+| 保存・保持・削除・backup | 入力と結果はReact page memoryのみ。サーバー、localStorage、Cookie、analyticsへ本文を保存しない。clear・再読込・tab終了で消え、backup・別端末再開はない。downloadしたSVGは本人の端末管理。 |
+| offline・retry・重複・不明結果 | 初回bundle取得後の処理はネットワーク不要。同じ入力は同じJSONと図へ収束する。copy/downloadは外部作用を再送せず、失敗時は同じ画面から本人が再操作する。 |
+| 更新・互換・rollback・復旧 | schema版とcatalog IDを固定し、renderer更新時も元段落を保持する。停止時はcatalog entry・route・実装・件数文書を同じ版で戻す。将来保存機能を足す場合も初版の非保存を暗黙に変更しない。 |
+| safety・privacy・承認 | HTMLを実行せずReact textとXML escape済みSVGとして描画する。図は発言の表現であり事実確認済みではない。外部送信・費用・購入・実行権を作らないため追加承認は不要。共有前に元段落との照合を促す。 |
+| 受入環境・証拠 | parser、50,000文字拒否、段落分割、6 node上限、XML escape、catalog 38件とbrowser-processing分類をhost試験し、typecheck・lint・buildを確認する。公開Site、mobile実機、SVG download完了、音声入力は別受入。 |
+| 未決定・決め方 | リアルタイム音声、speaker/timecode、意味beat、編集・merge、本人別保存、AI図解は未決定。faster-whisperやcloud modelをready扱いせず、送信範囲・料金・取消・出典span・重複防止を別の本人指示と受入試験で決める。 |
 
 ## Sky Compute Grid — 固定lotの分散計算供給
 
@@ -344,6 +362,7 @@ catalogued → selected → connected → ready → running → review → compl
 
 | ID                          | 表示名                            | 状態      | 実行場所               | effect                                    |
 | --------------------------- | --------------------------------- | --------- | ---------------------- | ----------------------------------------- |
+| `visual-scribe`             | 会話図解 · Visual Scribe          | ready     | Web browser            | local-pure。copy／SVG持出しのみ            |
 | `rockstar-amc`             | AMC — Goal・部隊・進捗            | ready     | Web / 本人別D1         | 計画生成＋本人の台帳保存。Webからsi直接起動なし。ローカルCodex CLIは別入口 |
 | `rockstar-csv-cleanup`      | CSV整形・検査・納品               | ready     | Sky Cloud / Web        | local-pure相当。販売・共有は別作用        |
 | `rockstar-markets-analysis` | RockstarOS Market Scanner         | ready     | Web / offline backtest | remote-read＋PAPER記録                    |
@@ -1029,13 +1048,13 @@ GitHub正本は既存の追記式 `drizzle/` migration chainを使用する。CS
 
 正本の受入は同じcompiled Worker・使い捨てD1/R2・合成ユーザーで、既存migrationの適用、支払いsessionの保持、CSV処理・保存・再起動後の成果物取得を確認する。本番D1への適用、公開配備、新規実Stripe/Apple Pay、Pixelの受入は別条件である。
 
-## 全36件の実行範囲と誤表示防止（GitHub統合候補）
+## 全38件の実行範囲と誤表示防止
 
-Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-execution-scope.ts`へ定義する。これは現在の実装範囲であり、利用者の認証・利用権・実Provider・実PCの接続済み判定ではない。36件の内訳はブラウザ処理4（SPIDERを含む）、クラウドCSV1、PAPER市場1、本人操作を要する準備・手動管理2（出品準備、AMC）、簡易プラン1、標準ガイド2、PC納品照合1、PC専用台帳1、接続待ち評価1、定型テンプレート11、接続計画9、PC CLIのみ1、別PCアプリ入口1とする。Jev Routerは接続計画関数があっても画面ではCLI条件案内のため、計画9件と別に数える。
+Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-execution-scope.ts`へ定義する。これは現在の実装範囲であり、利用者の認証・利用権・実Provider・実PCの接続済み判定ではない。38件の内訳はブラウザ処理6（Visual Scribe、SPIDER、Materialを含む）、クラウドCSV1、PAPER市場1、本人操作を要する準備・手動管理2（出品準備、AMC）、簡易プラン1、標準ガイド2、PC納品照合1、PC専用台帳1、接続待ち評価1、定型テンプレート11、接続計画9、PC CLIのみ1、別PCアプリ入口1とする。Jev Routerは接続計画関数があっても画面ではCLI条件案内のため、計画9件と別に数える。
 
 ホーム・Marketの共通状態表示はPAPER市場を「PAPER検証のみ」、メルカリを「出品準備・本人操作が必要」とし、DB利用不可では両者も実行記録サービス待ちに止める。未知のready Toolを自動的に「今使える」としない。定型候補の説明は自動抽出・検索・si分析・外部送信を約束しない。入力本文や結果の保存範囲、既存登録・認証・決済条件は変更しない。
 
-候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。36件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
+候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。38件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
 
 証拠は`docs/evidence/sky-tool-execution-boundaries.json`に候補のsource hash、実行した試験、未検証を記録する。局所試験の合格を全体verify、実接続、本人公開受入へ転用しない。初回公開判断・公開gate・親taskは未完了。
 

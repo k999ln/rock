@@ -4,7 +4,7 @@
 
 **共通の商品は、本人の目的を有限の仕事へ変え、成果と費用と復旧を本人の手に残すこと。** その共通契約を、Webの仕事、専門家の制作、Miniの生活空間へ広げる。rocketstarは同じ記録・検収思想を地上支援に使う独立工学programとして育てる。共通化するのは本人・権限・仕事・版・証拠・費用で、全製品を一つのprocess、DB、controllerへまとめる設計にはしない。
 
-本章は[現行製品方針](../product-baseline.md)、[共通契約](02-system-contracts.md)、[横断整合契約](06-consistency-contracts.md)、各固定原本を具体的な関係へつなぐ。新しい料金、データ販売、契約、施工、実資金取引の実行許可ではない。機械可読台帳は[ecosystem-research.json](../../data/ecosystem-research.json)。全7製品・19設計領域・37 catalog Tool・RQ01〜RQ50を対応し、19系統・25接続・13データ種・15取引・14外部候補・14 gap・39一次資料を記録した。件数は完成率ではない。
+本章は[現行製品方針](../product-baseline.md)、[共通契約](02-system-contracts.md)、[横断整合契約](06-consistency-contracts.md)、各固定原本を具体的な関係へつなぐ。新しい料金、データ販売、契約、施工、実資金取引の実行許可ではない。機械可読台帳は[ecosystem-research.json](../../data/ecosystem-research.json)。全7製品・19設計領域・38 catalog Tool・RQ01〜RQ50を対応し、19系統・25接続・13データ種・15取引・14外部候補・14 gap・39一次資料を記録した。件数は完成率ではない。
 
 2026-10-15の商品入口の更新とGrapheneOSの再調査は[基盤設計](../native-os-integration.md)を優先する。以下の10-14外部調査とhashは当時のsnapshotで、consumer eSIM保留の記載は当時の方針。新方針でも実発行・有料実行・独自OSは未受入である。
 
@@ -168,7 +168,7 @@ flowchart LR
 
 既存catalog/connection/package、同意時だけfeed履歴。本文を推薦学習へ流さない。 業務状態はZema、権限はCore、外部固有処理はadapter、作者の品質は審査/検収。
 
-現在地: 37 catalog、有限Web処理、feed、大学別入口、SDK/接続管理のsource。 残る条件: 全Tool実行器、外部hostの認証SDK、有料Marketplaceの公開受入。 合格証拠: 同一owner/Tool版で発見→条件→接続/購入→仕事→成果→失効/削除。
+現在地: 38 catalog、有限Web処理、feed、大学別入口、SDK/接続管理のsource。 残る条件: 全Tool実行器、外部hostの認証SDK、有料Marketplaceの公開受入。 合格証拠: 同一owner/Tool版で発見→条件→接続/購入→仕事→成果→失効/削除。
 
 実装/設計参照: [lib/catalog.ts](../../lib/catalog.ts)、[docs/sky-launch-design.md](../../docs/sky-launch-design.md)、[docs/sky-tool-sdk.md](../../docs/sky-tool-sdk.md)。外部照合資料: [S01 MCP Authorization 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)、[S34 Product Hunt API](https://api.producthunt.com/v2/docs)。
 
@@ -740,7 +740,7 @@ pilotで測る値は、成果までの時間（秒/分）、検収差分（件�
 
 - **I03** LLM不要/端末内/cloudの経路は既存図にある → **経路別の送信data・費用・保持・不足時の待機と補完先を対応**。確認方法: 利用者LLM非所有でも無料有限処理の経路がある。限界: 一般自然文Agentの本番供給は未受入。
 
-- **I04** 既存受入表はあるが全catalogを横断する一覧は分散 → **37 Toolをsource/fixture/実機/本番/未統合の境界へ対応**。確認方法: 37 Toolの掲載分類と実行条件を別記録。限界: Tool数で完成率を出さない。
+- **I04** 既存受入表はあるが全catalogを横断する一覧は分散 → **38 Toolをsource/fixture/実機/本番/未統合の境界へ対応**。確認方法: 38 Toolの掲載分類と実行条件を別記録。限界: Tool数で完成率を出さない。
 
 - **I05** 独立検収が未実装という古い説明 → **現AMC APIのreport相関を再利用し文書訂正**。確認方法: worker/reviewer digest/Receipt/sourceを照合。限界: Providerの運用独立性を自動保証しない。
 
@@ -756,7 +756,9 @@ pilotで測る値は、成果までの時間（秒/分）、検収差分（件�
 
 RQ01〜RQ50は[既存の要望対応](05-requirement-coverage.md)を維持し、JSONのrequirementCoverageで全件を具体systemへ対応する。全19設計領域もdomainCoverageへ対応し、本文の新しい見出しで元の正本を置き換えない。
 
-以下の37 Toolは基準mainのcatalogを全件読んだ在庫。readyは掲載分類、candidate-localは接続済み実行器ではない。data/取引の対応はJSON/対話資料で比較できる。OSS license labelは既存catalog値で、重み/外部API/商用取引の新しい許諾審査ではない。
+以下の38 Toolは現行catalogを全件読んだ在庫。readyは掲載分類、candidate-localは接続済み実行器ではない。data/取引の対応はJSON/対話資料で比較できる。OSS license labelは既存catalog値で、重み/外部API/商用取引の新しい許諾審査ではない。
+
+- **会話図解 · Visual Scribe** (`visual-scribe`) — catalog ready。系統: Sky。data D02/D05。ブラウザ内の発言分割で、意味推論・事実確認・外部送信・保存は行わない。
 
 - **Material Invention · 物質候補の比較** (`rockstar-material-invention`) — catalog ready。系統: Material Invention / Patent / Lab。data D09/D05。本人scope/版/recipient/費用/権利と実行先の個別受入。
 - **SPIDER · セキュリティ検査** (`rockstar-spider`) — catalog ready。系統: SPIDER / Identity / Operator / Release。data D03/D11。本人scope/版/recipient/費用/権利と実行先の個別受入。

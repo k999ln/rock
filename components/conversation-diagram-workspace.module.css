@@ -1,0 +1,42 @@
+.shell { background: #071117; }
+.page { max-width: 1320px; margin: 0 auto; padding: 28px 24px 76px; color: #eef8f5; }
+.breadcrumb { display: flex; align-items: center; gap: 10px; color: #8faab1; font-size: 13px; margin-bottom: 40px; }
+.breadcrumb a { color: #b5dbe1; text-decoration: none; }
+.header { max-width: 850px; margin-bottom: 34px; }
+.header p { margin: 0; color: #8fd1a4; font-size: 11px; letter-spacing: .18em; font-weight: 800; }
+.header h1 { font-size: clamp(35px, 5vw, 64px); line-height: 1.08; margin: 14px 0 17px; letter-spacing: -.045em; }
+.header div { color: #b5cbd0; font-size: 16px; line-height: 1.75; }
+.grid { display: grid; grid-template-columns: minmax(300px, .78fr) minmax(440px, 1.22fr); gap: 20px; align-items: start; }
+.inputPanel, .outputPanel { min-width: 0; padding: 25px; border-radius: 23px; background: #11212a; border: 1px solid #2c4652; box-shadow: 0 14px 34px #02080c4d; }
+.panelHead { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 24px; color: #8eafb7; font-size: 11px; letter-spacing: .12em; }
+.panelHead strong { color: #c9f1d2; letter-spacing: 0; font-size: 12px; }
+.inputPanel > label { display: block; font-size: 13px; font-weight: 750; margin-bottom: 9px; }
+.inputPanel textarea { box-sizing: border-box; width: 100%; min-height: 365px; resize: vertical; padding: 15px 16px; border-radius: 14px; color: #eef8f5; background: #07141b; border: 1px solid #3c5b66; font: 14px/1.75 inherit; }
+.inputPanel textarea:focus, .diagramNav select:focus { outline: 2px solid #95d5a8; outline-offset: 2px; }
+.inputMeta { display: flex; justify-content: space-between; gap: 20px; margin: 9px 2px 16px; color: #96adb2; font-size: 11px; }
+.inputActions, .outputActions { display: flex; flex-wrap: wrap; gap: 9px; }
+.inputActions button, .fileButton, .outputActions button, .diagramNav button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 12px; border: 1px solid #4b6973; border-radius: 10px; color: #e7f6f1; background: #18333d; font: inherit; font-size: 12px; cursor: pointer; }
+.fileButton input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.terms { margin-top: 18px; padding: 12px 14px; border-radius: 11px; color: #d0e9d5; background: #18342b; font-size: 11px; line-height: 1.65; }
+.diagramNav { display: grid; grid-template-columns: 42px 1fr 42px; gap: 9px; margin-bottom: 16px; }
+.diagramNav select { min-width: 0; width: 100%; padding: 10px 12px; color: #eaf6f2; background: #09171e; border: 1px solid #42616d; border-radius: 10px; font: inherit; font-size: 13px; }
+.diagramNav button { padding: 0; }
+.diagramNav button:disabled { opacity: .35; cursor: default; }
+.diagramCard { padding: clamp(20px, 4vw, 34px); border-radius: 18px; background: radial-gradient(circle at 50% -15%, #1d4a46 0, #0a1820 45%, #08141a 100%); border: 1px solid #365764; }
+.diagramCard > p { margin: 0; color: #82b7a0; font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+.diagramCard h2 { margin: 8px 0 25px; color: white; font-size: clamp(21px, 3vw, 31px); line-height: 1.35; }
+.flow { max-width: 690px; margin: 0 auto; }
+.flowItem article { padding: 17px 19px; border-radius: 14px; border: 1px solid #416371; background: #122630e8; box-shadow: 0 8px 22px #02090d52; }
+.flowItem article span { display: block; margin-bottom: 7px; color: #9ad4aa; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+.flowItem article div { color: #f1f8f6; font-size: 14px; line-height: 1.68; overflow-wrap: anywhere; }
+.arrow { height: 34px; display: grid; place-items: center; color: #86bea0; font-size: 19px; }
+.original { margin-top: 14px; border: 1px solid #36515c; border-radius: 12px; background: #0b1920; }
+.original summary { padding: 12px 14px; color: #b6ced1; cursor: pointer; font-size: 12px; }
+.original p { margin: 0; padding: 0 14px 15px; color: #aebfc2; font-size: 12px; line-height: 1.75; white-space: pre-wrap; }
+.outputActions { margin-top: 14px; }
+.empty { min-height: 520px; display: grid; place-content: center; gap: 8px; text-align: center; color: #a3bdc2; border: 1px dashed #3b5b67; border-radius: 17px; background: #0a1820; padding: 20px; }
+.empty small { color: #78959d; }
+.notice { color: #ffd0b5; font-size: 12px; line-height: 1.6; }
+.footer { margin: 24px 2px 0; color: #8fa6ac; font-size: 12px; line-height: 1.7; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .inputPanel textarea { min-height: 250px; } .empty { min-height: 300px; } }
+@media (max-width: 560px) { .page { padding: 20px 14px 56px; } .breadcrumb { margin-bottom: 26px; } .inputPanel, .outputPanel { padding: 17px; border-radius: 18px; } .header h1 { font-size: 37px; } .outputActions button { width: 100%; } }
