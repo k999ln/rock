@@ -17,7 +17,6 @@ export function siteMigrationsDirectoryFor(projectId) {
     throw new Error(`No Sites D1 migration lineage is registered for project ${projectId || '(missing)'}`);
   return directory;
 }
-
 const sqlFiles = async (directory) =>
   (await readdir(directory))
     .filter((name) => name.endsWith('.sql'))
@@ -47,23 +46,5 @@ export async function syncSitesMigrationLineage({
     outputDirectory,
     sqlFiles: packaged,
     sourceDirectory,
-  };
-}
-
-export function createSitesMigrationLineagePlugin(projectId) {
-  let root = process.cwd();
-  // Resolve eagerly so missing or unknown project IDs fail before a build can
-  // produce a deployable artifact with the wrong database lineage.
-  siteMigrationsDirectoryFor(projectId);
-  return {
-    name: 'rockstar-sites-migration-lineage',
-    apply: 'build',
-    enforce: 'post',
-    configResolved(config) {
-      root = config.root;
-    },
-    async closeBundle() {
-      await syncSitesMigrationLineage({ root, projectId });
-    },
   };
 }
