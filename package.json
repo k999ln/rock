@@ -101,7 +101,12 @@
     "postinstall": "node scripts/generate-private-modules.mjs",
     "private:generate": "node scripts/generate-private-modules.mjs",
     "private:check": "node scripts/private-files.mjs check",
-    "research:check": "node --experimental-strip-types scripts/check-ecosystem-research.mjs"
+    "research:check": "node --experimental-strip-types scripts/check-ecosystem-research.mjs",
+    "amc": "node scripts/amc-agent.mjs",
+    "test:meme-intelligence": "npm --prefix toolkits/meme-intelligence-sandbox test",
+    "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
+    "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
+    "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
@@ -109,6 +114,7 @@
     "@simplewebauthn/server": "14.0.2",
     "@streamdown/cjk": "^1.0.3",
     "@types/three": "^0.186.0",
+    "@zoom/appssdk": "0.16.42",
     "ai": "^7.0.107",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
@@ -155,7 +161,8 @@
     "typescript": "5.9.3",
     "vite": "8.2.2",
     "vitest": "4.1.11",
-    "wrangler": "4.122.0"
+    "wrangler": "4.122.0",
+    "esbuild": "0.28.1"
   },
   "type": "module",
   "overrides": {

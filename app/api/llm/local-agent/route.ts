@@ -1,3 +1,4 @@
+import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -83,7 +84,8 @@ export async function POST(request: Request) {
     const raw = await request.text();
     if (new TextEncoder().encode(raw).byteLength > 18_000)
       throw new ZemaLocalAgentError('INVALID_AGENT_REQUEST', 413);
-    const value = JSON.parse(raw) as Record<string, unknown>;
+    const value = await bindSkyAgentLlmInput(db, owner, JSON.parse(raw) as Record<string, unknown>);
+    if (typeof value.agentId === 'string') value.context = value.system;
     if (!isTextModelProvider(value.provider))
       throw new LlmProviderError('UNKNOWN_LLM_PROVIDER', 400);
     const provider = value.provider;

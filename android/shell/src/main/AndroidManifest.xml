@@ -9,7 +9,8 @@
         <intent><action android:name="android.intent.action.TTS_SERVICE" /></intent>
         <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent>
     </queries>
-    <application android:icon="@drawable/ic_rockstar" android:label="RockstarOS" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.NoActionBar">
+    <application android:icon="@drawable/ic_rockstar" android:label="@string/rockstaros_brand_name" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name=".ServiceSetupActivity" android:enabled="@bool/rockstar_service_setup_enabled" android:exported="false"><intent-filter><action android:name="dev.rock.action.START_SERVICE_SETUP" /><category android:name="android.intent.category.DEFAULT" /></intent-filter></activity>
         <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.HOME" /><category android:name="android.intent.category.DEFAULT" /></intent-filter>

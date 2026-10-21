@@ -7,19 +7,15 @@ import { createHash, generateKeyPairSync, randomUUID, sign, webcrypto } from 'no
 import {
   mkdtempSync,
   cpSync,
-  copyFileSync,
-  linkSync,
-  mkdirSync,
   readFileSync,
-  readlinkSync,
   readdirSync,
   rmSync,
-  symlinkSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+import { copyWorkerBuildFixture } from './worker-build-fixture.mjs';
 import {
   ANDROID_KEY_ATTESTATION_AUTHORITY,
   ANDROID_KEY_ATTESTATION_VERIFIER_COMMIT,
@@ -260,6 +256,13 @@ function check(actual, expected) {
 }
 async function call(method = 'GET', body, options = {}) {
   const url = `${base}${options.path ?? '/api/work-jobs'}`;
+  const historyHeaders = {};
+  if (options.path === '/api/eve/history' && method !== 'GET' && options.user !== null) {
+    const probe = await fetch(`${base}/api/eve/history`, { headers: { 'oai-authenticated-user-id': options.user ?? alice } });
+    const binding = probe.headers.get('x-rock-eve-owner');
+    if (binding) historyHeaders['x-rock-eve-owner'] = binding;
+  }
+
   const requestBody = body === undefined ? undefined : options.raw ? body : JSON.stringify(body);
   let response;
   try {
@@ -275,6 +278,7 @@ async function call(method = 'GET', body, options = {}) {
             Origin: options.origin ?? base,
             'Content-Type': 'application/json',
           }),
+        ...historyHeaders,
         ...options.headers,
       },
       ...(requestBody === undefined ? {} : { body: requestBody }),
@@ -370,7 +374,7 @@ async function start() {
       modules: [
         config.main,
         ...readdirSync(directory, { recursive: true, encoding: 'utf8' }).filter(
-          (file) => file !== config.main && /\.m?js$/.test(file),
+          (file) => file !== config.main && !file.split(/[\\/]/).some((part) => part.startsWith('._')) && /\.m?js$/.test(file),
         ),
       ].map((file) => ({ type: 'ESModule', path: resolve(directory, file) })),
       compatibilityDate: config.compatibility_date,
@@ -384,6 +388,7 @@ async function start() {
         // generated bundle can also carry the loopback-only local preview
         // identity, so explicitly disable that convenience binding here.
         ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
+        EVE_HISTORY_KEYRING: JSON.stringify({current:'fixture',keys:{fixture:'12'.repeat(32)}}),
         SKY_REMOTE_LLM_ENABLED: remoteLlmEnabled ? 'true' : 'false',
         SKY_OLLAMA_BASE_URL: remoteModelEndpoint,
         SKY_LOCAL_LLM_BASE_URL: remoteModelEndpoint,
@@ -502,35 +507,24 @@ async function start() {
   database = await worker.getD1Database('DB');
 }
 try {
-  // Workerd discovers extra *.js modules, including ExFAT AppleDouble metadata.
-  // Hard-link the immutable build bytes into the isolated test root while
-  // excluding metadata files. This retains byte-for-byte input isolation
-  // without duplicating the entire generated bundle on disk.
-  function linkBuildTree(source, destination) {
-    mkdirSync(destination, { recursive: true });
-    for (const entry of readdirSync(source, { withFileTypes: true })) {
-      if (entry.name.startsWith('._')) continue;
-      const sourcePath = join(source, entry.name);
-      const destinationPath = join(destination, entry.name);
-      if (entry.isDirectory()) linkBuildTree(sourcePath, destinationPath);
-      else if (entry.isFile()) {
-        try {
-          linkSync(sourcePath, destinationPath);
-        } catch (error) {
-          if (!['EXDEV', 'EPERM', 'EACCES', 'EMLINK'].includes(error?.code)) throw error;
-          copyFileSync(sourcePath, destinationPath);
-        }
-      }
-      else if (entry.isSymbolicLink()) symlinkSync(readlinkSync(sourcePath), destinationPath);
-      else throw new Error(`Unsupported build artifact type: ${sourcePath}`);
-    }
-  }
-  linkBuildTree(join(root, 'dist'), join(temporary, 'dist'));
+  copyWorkerBuildFixture(join(root, 'dist'), join(temporary, 'dist'));
   cpSync(join(root, 'drizzle'), join(temporary, 'migrations'), {
     recursive: true,
     filter: (source) => !source.split(/[\\/]/).at(-1).startsWith('._'),
   });
   await start();
+  // A loopback request and an owner header still cannot open the lab in production.
+  const privateLab = await fetch(`${base}/sky/add/zoom/lab`, {
+    headers: { 'oai-authenticated-user-id': alice }, signal: AbortSignal.timeout(10000),
+  });
+  check(privateLab.status, 404);
+  check((await privateLab.text()).includes('このLabでできること'), false);
+  check((await fetch(`${base}/sky/apps/planner/lab`)).status, 404);
+  check((await fetch(`${base}/sky/add/zoom/device`)).status, 404);
+  check((await fetch(`${base}/__sky/zoom-local`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'status' }) })).status, 404);
+  const closedLocalChannel = await fetch(`${base}/api/sky/app-lab`, { headers: { Origin: 'http://localhost:5197' } });
+  check(closedLocalChannel.status, 404);
+  check(closedLocalChannel.headers.get('access-control-allow-origin'), null);
   const statusBeforeSchema = await call('GET', undefined, {
     path: '/api/sky/service-status', user: null,
   });
@@ -548,7 +542,7 @@ try {
     'unavailable',
   );
   for (const file of readdirSync(join(temporary, 'migrations'))
-    .filter((file) => file.endsWith('.sql'))
+    .filter((file) => !file.startsWith('._') && file.endsWith('.sql'))
     .sort()) {
     for (const sql of readFileSync(join(temporary, 'migrations', file), 'utf8')
       .split('--> statement-breakpoint')
@@ -865,6 +859,139 @@ try {
   const deniedMcp = await call('POST', {}, { path: '/api/sky/mcp/inspect', user: bob, status: 403 });
   check(deniedMcp.code, 'SERVICE_ENTITLEMENT_REQUIRED');
   await call('POST', {}, { path: '/api/sky/mcp/inspect', user: alice, status: 400 });
+  // Owner history persists on the Worker, and social publishing remains separate.
+  const historyPath='/api/eve/history',socialPath='/api/sky/social';
+  await call('GET',undefined,{path:historyPath,user:null,status:401});
+  const eveThread=randomUUID(),eveSession={version:1,id:eveThread,toolId:'sky-auto',createdAt:1,messages:[{id:'fixture-color',side:'me',text:'検証用の好きな色は藤紫です。'}],activeRequest:null,workflowStatus:'ready',outcome:null};
+  await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,origin:'https://other.invalid',status:403});
+  await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,headers:{'x-rock-eve-owner':'wrong-account'},status:409});
+  check((await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath})).revision,1);
+  check((await call('GET',undefined,{path:`${historyPath}?id=${eveThread}`})).session.messages[0].text,eveSession.messages[0].text);
+  check((await call('GET',undefined,{path:historyPath,user:bob})).items,[]);
+  await call('GET',undefined,{path:`${historyPath}?id=${eveThread}`,user:bob,status:404});
+  check((await call('POST',{query:'好きな色'},{path:historyPath})).sources[0].messageId,'fixture-color');
+  check((await call('POST',{query:'好きな色'},{path:historyPath,user:bob})).sources,[]);
+  await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,status:409});
+  await call('PUT',{session:eveSession,revision:1,remember:true,biometricTemplate:'rejected'},{path:historyPath,status:400});
+  await call('DELETE',{id:eveThread,revision:1,confirm:'delete-history'},{path:historyPath});
+  check((await call('POST',{query:'好きな色'},{path:historyPath})).sources,[]);
+  await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,status:410});
+  await call('GET',undefined,{path:socialPath,user:null,status:401});
+  await call('POST',{action:'profile',name:'Fixture creator'},{path:socialPath,origin:'https://other.invalid',status:403});
+  await call('POST',{action:'profile',name:'Fixture creator'},{path:socialPath});
+  await call('POST',{action:'profile',name:'Fixture visitor'},{path:socialPath,user:bob});
+  const fixtureCommunity=randomUUID(),creatorKey='a1'.repeat(32),visitorKey='b2'.repeat(32);
+  const creatorHeaders={'x-rock-community-keys':JSON.stringify({[fixtureCommunity]:creatorKey})},visitorHeaders={'x-rock-community-keys':JSON.stringify({[fixtureCommunity]:visitorKey})};
+  await call('POST',{action:'createCommunity',id:fixtureCommunity,name:'Fixture private community',description:'Synthetic local only',rules:'Share synthetic works only',visibility:'members',accessKey:creatorKey,recoveryKey:'c3'.repeat(32)},{path:socialPath});
+  const fixturePost={action:'post',id:randomUUID(),communityId:fixtureCommunity,content:'Synthetic private creation'};
+  await call('POST',fixturePost,{path:socialPath,status:403});
+  await call('POST',fixturePost,{path:socialPath,headers:creatorHeaders});
+  check((await call('GET',undefined,{path:socialPath,user:bob})).posts,[]);
+  check((await call('GET',undefined,{path:socialPath,user:bob})).communities,[]);
+  await call('POST',{action:'join',id:fixtureCommunity,confirmRules:true,accessKey:visitorKey,rulesVersion:0},{path:socialPath,user:bob,status:403});
+  const fixtureInvite=(await call('POST',{action:'invite',id:fixtureCommunity},{path:socialPath,headers:creatorHeaders})).invite;
+  check((await call('POST',{action:'previewInvite',...fixtureInvite},{path:socialPath,user:bob})).community.rules,'Share synthetic works only');
+  await call('POST',{action:'join',...fixtureInvite,confirmRules:true,accessKey:visitorKey,rulesVersion:0},{path:socialPath,user:bob});
+  check((await call('GET',undefined,{path:socialPath,user:bob})).posts,[]);
+  check((await call('GET',undefined,{path:socialPath,user:bob,headers:visitorHeaders})).posts[0].content,fixturePost.content);
+  // Timeline interactions share exactly the current account + dedicated-key boundary.
+  await call('POST',{action:'reaction',id:fixturePost.id,reaction:'like',enabled:true},{path:socialPath,user:null,status:401});
+  await call('POST',{action:'reaction',id:fixturePost.id,reaction:'like',enabled:true},{path:socialPath,headers:creatorHeaders,origin:'https://other.invalid',status:403});
+  await call('POST',{action:'reaction',id:fixturePost.id,reaction:'like',enabled:true},{path:socialPath,user:bob,status:404});
+  const socialLike=await call('POST',{action:'reaction',id:fixturePost.id,reaction:'like',enabled:true},{path:socialPath,user:bob,headers:visitorHeaders});
+  check(socialLike.post.likes,1);check(socialLike.post.liked,true);
+  check((await call('POST',{action:'reaction',id:fixturePost.id,reaction:'like',enabled:true},{path:socialPath,user:bob,headers:visitorHeaders})).post.likes,1);
+  await call('POST',{action:'reaction',id:fixturePost.id,reaction:'bookmark',enabled:true},{path:socialPath,user:bob,headers:visitorHeaders});
+  check((await call('GET',undefined,{path:socialPath+'?mode=bookmarks',user:bob,headers:visitorHeaders})).posts.length,1);
+  check((await call('GET',undefined,{path:socialPath+'?mode=bookmarks',headers:creatorHeaders})).posts.length,0);
+  const timelineReply=randomUUID();
+  await call('POST',{action:'post',id:timelineReply,replyTo:fixturePost.id,content:'Synthetic keyed reply'},{path:socialPath,user:bob,headers:visitorHeaders});
+  const socialThread=await call('GET',undefined,{path:socialPath+'?thread='+fixturePost.id,user:bob,headers:visitorHeaders});
+  check(socialThread.thread.replies,1);check(socialThread.posts[0].community.id,fixtureCommunity);check(socialThread.posts[0].replyTo,fixturePost.id);
+  await call('GET',undefined,{path:socialPath+'?thread='+fixturePost.id,user:bob,status:404});
+  const editionPath='/api/sky/community-os',editionDraft={name:'Fixture OS',rules:'Synthetic community rules',postMode:'members',design:{background:'#f8f8f5',foreground:'#252d25',accent:'#456842',layout:'cards',corners:'round'},llm:{provider:'ollama',model:'qwen2.5:1.5b'},agents:[]};
+  await call('GET',undefined,{path:editionPath,user:null,status:401});
+  await call('POST',{action:'publish',communityId:fixtureCommunity,draft:editionDraft,expectedVersion:0},{path:editionPath,headers:creatorHeaders,origin:'https://other.invalid',status:403});
+  await call('POST',{action:'publish',communityId:fixtureCommunity,draft:editionDraft,expectedVersion:0},{path:editionPath,status:403});
+  const edition=(await call('POST',{action:'publish',communityId:fixtureCommunity,draft:editionDraft,expectedVersion:0},{path:editionPath,headers:creatorHeaders}));
+  await call('GET',undefined,{path:`${editionPath}?community=${fixtureCommunity}`,user:bob,status:403});
+  check((await call('GET',undefined,{path:`${editionPath}?community=${fixtureCommunity}`,user:bob,headers:visitorHeaders})).edition.manifest.name,'Fixture OS');
+  const installInput={action:'apply',communityId:fixtureCommunity,version:1,digest:edition.digest,revision:0,expectedActive:'',approve:true};
+  const addedOs=await call('POST',installInput,{path:editionPath,user:bob,headers:visitorHeaders});
+  check(addedOs.active.manifest.design.layout,'cards');check(addedOs.active.agents[0].agent.provider,'ollama');check(addedOs.active.agents[0].agent.model,'qwen2.5:1.5b');
+  check((await call('POST',installInput,{path:editionPath,user:bob,headers:visitorHeaders})).active.revision,addedOs.active.revision);
+  check((await call('GET',undefined,{path:editionPath,user:bob})).active,null);
+  await call('POST',{action:'archiveCommunity',id:fixtureCommunity},{path:socialPath,user:bob,headers:visitorHeaders,status:403});
+  await call('POST',{action:'leave',id:fixtureCommunity},{path:socialPath,user:bob,headers:visitorHeaders});
+  check((await call('GET',undefined,{path:socialPath,user:bob,headers:visitorHeaders})).posts,[]);
+  check((await call('GET',undefined,{path:editionPath,user:bob,headers:visitorHeaders})).active,null);
+  await call('POST',{action:'archiveCommunity',id:fixtureCommunity},{path:socialPath,headers:creatorHeaders});
+  check((await call('GET',undefined,{path:socialPath,headers:creatorHeaders})).communities,[]);
+
+  // Synthetic X source consent exercises only owner settings, never external scripts.
+  await call('GET', undefined, { path: '/api/sky/hub', user: null, status: 401 });
+  check((await call('GET', undefined, { path: '/api/sky/hub' })).plugins, []);
+  const publicXPlugin = { kind: 'x', resource: 'https://x.com/huggingface', enabled: true, revision: 0 };
+  await call('PUT', publicXPlugin, { path: '/api/sky/hub', status: 400 });
+  const consentedXPlugin = { ...publicXPlugin, consentVersion: 'x-public-timeline-v1' };
+  await call('PUT', consentedXPlugin, { path: '/api/sky/hub', origin: 'https://another.invalid', status: 403 });
+  const savedXPlugin = await call('PUT', consentedXPlugin, { path: '/api/sky/hub' });
+  check(savedXPlugin.plugins[0].metadata.skyFeeMinor, 0);
+  check(savedXPlugin.plugins[0].resource, publicXPlugin.resource);
+  check((await call('GET', undefined, { path: '/api/sky/hub', user: bob })).plugins, []);
+  await call('GET', undefined, { path: '/api/sky/x-feed?source=https%3A%2F%2Fx.com%2Fhuggingface', user: null, status: 401 });
+  await call('GET', undefined, { path: '/api/sky/x-feed?source=https%3A%2F%2Fx.com%2Fhuggingface', user: bob, status: 404 });
+  const xApiDisabled = await call('GET', undefined, { path: '/api/sky/x-feed?source=https%3A%2F%2Fx.com%2Fhuggingface' });
+  check(xApiDisabled.status, 'api-not-configured');
+  check(xApiDisabled.posts, []);
+  await call('POST', { source:publicXPlugin.resource, revision:1 }, { path:'/api/sky/x-feed', origin:'https://other.invalid', status:403 });
+  await call('POST', { source:publicXPlugin.resource, revision:0 }, { path:'/api/sky/x-feed', status:409 });
+  check((await call('POST', { source:publicXPlugin.resource, revision:1 }, { path:'/api/sky/x-feed' })).status, 'api-not-configured');
+  await call('PUT', consentedXPlugin, { path: '/api/sky/hub', status: 409 });
+  await call('PUT', { ...consentedXPlugin, revision: 1, metadata: { ready: true } }, { path: '/api/sky/hub', status: 400 });
+  check((await call('PUT', { ...publicXPlugin, revision: 1, enabled: false }, { path: '/api/sky/hub' })).plugins[0].enabled, false);
+  await call('POST', { source:publicXPlugin.resource, revision:2 }, { path:'/api/sky/x-feed', status:404 });
+  await call('GET', undefined, { path: '/api/sky/huggingface?kind=x', status: 400 });
+  await call('GET', undefined, { path: '/api/sky/huggingface', user: null, status: 401 });
+  await call('GET', undefined, { path:'/api/sky/x-account', user:null, status:401 });
+  const xAccountUnconfigured = await call('GET', undefined, { path:'/api/sky/x-account' });
+  check(xAccountUnconfigured.setupRequired,true);
+  check(xAccountUnconfigured.connected,false);
+  check(xAccountUnconfigured.posts.length,0);
+  check(xAccountUnconfigured.xForYouAvailable,false);
+  await call('POST',{action:'begin',consent:'x-account-read-v1'},{path:'/api/sky/x-account',origin:'https://other.invalid',status:403});
+  await call('POST',{action:'begin',consent:'x-account-read-v1'},{path:'/api/sky/x-account',status:503});
+  await call('POST',{action:'refresh'},{path:'/api/sky/x-account',status:503});
+  await call('DELETE',{revision:99},{path:'/api/sky/x-account',status:409});
+  check((await call('GET',undefined,{path:'/api/sky/x-account',user:bob})).posts.length,0);
+  await call('GET', undefined, { path: '/api/sky/features', user: null, status: 401 });
+  check((await call('GET', undefined, { path: '/api/sky/features' })).features.some(f => f.enabled), false);
+  const featureInput = { id: 'wallet', purpose: 'records', enabled: true, revision: 0 };
+  await call('PUT', featureInput, { path: '/api/sky/features', origin: 'https://another.invalid', status: 403 });
+  check((await call('PUT', featureInput, { path: '/api/sky/features' })).features.find(f => f.id === 'wallet').enabled, true);
+  check((await call('GET', undefined, { path: '/api/sky/features', user: bob })).features.some(f => f.enabled), false);
+  await call('PUT', featureInput, { path: '/api/sky/features', status: 409 });
+  await call('PUT', { ...featureInput, revision: 1, purpose: 'LIVE' }, { path: '/api/sky/features', status: 400 });
+  check((await call('PUT', { ...featureInput, enabled: false, revision: 1 }, { path: '/api/sky/features' })).features.find(f => f.id === 'wallet').enabled, false);
+  // Saved Sky profile settings remain owner-scoped and cannot bypass model/pricing gates.
+  await call('GET', undefined, { path: '/api/sky/agents', user: null, status: 401 });
+  const libraryId = randomUUID();
+  const librarySettings = { name: 'Synthetic editor', instructions: '文'.repeat(1200), provider: 'local-model', model: 'fixture-local-model', enabled: true };
+  const libraryCreate = { id: libraryId, revision: 0, settings: librarySettings, create: true };
+  await call('PUT', libraryCreate, { path: '/api/sky/agents', origin: 'https://another.invalid', status: 403 });
+  const librarySaved = await call('PUT', libraryCreate, { path: '/api/sky/agents' });
+  check(librarySaved.agent.revision, 1);
+  check((await call('GET', undefined, { path: `/api/sky/agents?id=${libraryId}` })).agent.instructions.length, 1200);
+  await call('GET', undefined, { path: `/api/sky/agents?id=${libraryId}`, user: bob, status: 404 });
+  await call('PUT', { ...libraryCreate, create: false, revision: 1 }, { path: '/api/sky/agents', user: bob, status: 404 });
+  await call('PUT', { ...libraryCreate, create: false, revision: 0 }, { path: '/api/sky/agents', status: 409 });
+  await call('PUT', { ...libraryCreate, owner: bob }, { path: '/api/sky/agents', status: 400 });
+  await call('PUT', 'x'.repeat(12001), { path: '/api/sky/agents', raw: true, status: 413 });
+  const libraryLlm = { provider: librarySettings.provider, model: librarySettings.model, prompt: 'fixture', agentId: libraryId, agentRevision: 0 };
+  check((await call('POST', libraryLlm, { path: '/api/llm/text', status: 409 })).code, 'AGENT_SETTINGS_CHANGED');
+  await call('POST', { ...libraryLlm, provider: 'openai', agentRevision: 1 }, { path: '/api/llm/estimate', status: 409 });
+  await call('PUT', { id: libraryId, revision: 1, settings: { ...librarySettings, enabled: false } }, { path: '/api/sky/agents' });
+  await call('POST', { ...libraryLlm, agentRevision: 2 }, { path: '/api/llm/text', status: 409 });
   const deniedLlm = await call('POST', {}, { path: '/api/llm/text', user: bob, status: 403 });
   check(deniedLlm.code, 'SERVICE_ENTITLEMENT_REQUIRED');
   await call('POST', {}, { path: '/api/llm/text', user: alice, status: 400 });
@@ -2314,6 +2441,41 @@ try {
   const resultResponse = await call('GET', undefined, { path: artifactPath });
   check(resultResponse.captured, true);
   check(resultResponse.artifacts[0].document, resultDocument);
+  // Owner-selected, read-only recovery; this path must not dispatch or change the job/budget.
+  const exportParent = (await call()).jobs.find((item) => item.id === a2aParent.id);
+  const exportPath = `/api/sky/exports/${a2aParent.id}?revision=${exportParent.revision}`;
+  await call('GET', undefined, { path: exportPath, user: null, status: 401 });
+  await call('GET', undefined, { path: exportPath, user: bob, status: 404 });
+  await call('GET', undefined, { path: exportPath.replace(/revision=\d+$/, 'revision=999999'), status: 409 });
+  await call('GET', undefined, { path: `${exportPath}&ownerUserId=${encodeURIComponent(bob)}`, status: 400 });
+  await call('GET', undefined, { path: exportPath, headers: { Origin: 'https://other.example' }, status: 403 });
+  await call('GET', undefined, { path: exportPath, headers: { 'Sec-Fetch-Site': 'cross-site' }, status: 403 });
+  const exportStore = a2aDelegationStore(database);
+  const exportBefore = await exportStore.get(alice, delegation.id);
+  const exportBudgetBefore = await exportStore.getBudget(alice, a2aParent.id);
+  const exported = await fetch(`${base}${exportPath}`, { headers: { 'oai-authenticated-user-id': alice } });
+  check(exported.status, 200);
+  check(exported.headers.get('cache-control'), 'no-store');
+  check(exported.headers.get('content-type'), 'text/html; charset=utf-8');
+  check(exported.headers.get('x-content-type-options'), 'nosniff');
+  check(exported.headers.get('content-disposition').includes('attachment;'), true);
+  check(exported.headers.get('content-security-policy').includes("default-src 'none'"), true);
+  const exportHtml = await exported.text();
+  check(exportHtml.includes('fixture result'), true);
+  check(/<script|<img|<iframe/.test(exportHtml), false);
+  check(exportHtml.includes(encryptedResult.ciphertext), false);
+  check(exportHtml.includes(delegation.authorizationSha256), false);
+  const decodeExportText = (value) => value.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+  const exportManifest = JSON.parse(decodeExportText(exportHtml.match(/<pre id="export-manifest">([\s\S]*?)<\/pre>/)[1]));
+  check(exportManifest.schema, 'sky.owner-work-export/1');
+  check(exportManifest.scope.jobId, a2aParent.id);
+  for (const exportedFile of exportManifest.files) {
+    const fileText = decodeExportText(exportHtml.match(new RegExp(`<pre data-export-file="${exportedFile.name.replaceAll('.', '\\.')}">([\\s\\S]*?)</pre>`))[1]);
+    check(Buffer.byteLength(fileText), exportedFile.byteLength);
+    check(createHash('sha256').update(fileText).digest('hex'), exportedFile.sha256);
+  }
+  check(await exportStore.get(alice, delegation.id), exportBefore);
+  check(await exportStore.getBudget(alice, a2aParent.id), exportBudgetBefore);
   parentController = (await call('GET', undefined, {
     path: `${a2aPath}?parentJobId=${a2aParent.id}`,
   })).controller;

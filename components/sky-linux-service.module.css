@@ -1,0 +1,115 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px;
+  display: grid;
+  gap: 24px;
+  color: var(--foreground, #202124);
+}
+.page header,
+.page section,
+.page details {
+  border: 1px solid #ddd;
+  border-radius: 22px;
+  background: var(--background, #fff);
+  padding: 24px;
+}
+.price {
+  font-size: 36px;
+  font-weight: 700;
+}
+.price span {
+  font-size: 15px;
+  font-weight: 400;
+}
+.page h1,
+.page h2,
+.page h3 {
+  margin: 0 0 12px;
+}
+.page p {
+  line-height: 1.7;
+}
+.page form,
+.page label {
+  display: grid;
+  gap: 10px;
+}
+.page form {
+  margin-top: 18px;
+  gap: 18px;
+}
+.page input,
+.page textarea,
+.page select {
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 12px;
+  background: inherit;
+  color: inherit;
+}
+.page textarea {
+  min-height: 110px;
+}
+.page button {
+  font: inherit;
+  background: #222;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 16px;
+  cursor: pointer;
+  margin: 8px 8px 0 0;
+}
+.page button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.page .check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.check input {
+  width: auto;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 15px;
+  margin-top: 18px;
+}
+.page article {
+  padding: 18px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  margin-top: 12px;
+}
+.page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  line-height: 1.6;
+}
+.notice {
+  padding: 15px;
+  border-radius: 12px;
+  background: #fff5df;
+  color: #694500;
+}
+@media (max-width: 600px) {
+  .page {
+    padding: 12px;
+  }
+  .page header,
+  .page section,
+  .page details {
+    padding: 17px;
+  }
+  .price {
+    font-size: 29px;
+  }
+}

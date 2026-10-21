@@ -5,7 +5,7 @@ export type RockstarPackageHandoff = {
   summary: string;
 };
 
-/** Build explicit Zema/A2A request context without claiming the Package is itself executable. */
+/** Build explicit Eve/A2A request context without claiming the Package is itself executable. */
 export function rockstarPackageHandoffMessage(
   handoff: RockstarPackageHandoff,
   task: string,

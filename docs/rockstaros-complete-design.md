@@ -11,7 +11,7 @@
 
 承認・合格・未決定: PC/スマホの同一版表示と投稿からEveまでの実操作、owner A/B分離、鍵なし・失効鍵・revision競合の拒否、停止と読戻し、実MCP投稿の出典照合、X本人投稿の実取得を別々に記録する。ローカル合成MCPとPixelの別X画面はnative HomeのX実投稿合格ではない。X For Youと自動同期も未受入。料金、実投稿供給元、OS版公開範囲は実Provider・契約・本人承認の証拠で決める。
 
-2026-10-21 Web実装対応: `components/home-screen.tsx`を投稿型Homeとし、`/api/sky/social`、`/api/sky/community-os`、`/api/sky/hub`、`/api/sky/x-account`、`/api/sky/x-feed`がowner別の保存・取得を担う。DB 0022〜0029は設計上の保存契約であり、本番適用済みではない。X本人連携はread-only OAuthと明示した日次読取上限、取得不能時の失効/再接続を持つ。MCP投稿は署名・権限を自動付与せず、出典・期限・scopeを検査して表示する。既存Eveの会話保存は端末内限定で、別端末履歴は今回のruntime受入に含めない。旧X埋め込みwidgetはHomeから撤去する。合格根拠は合成試験と同一候補の全体verifyで、実Provider、別端末、公開、native OSの合格には転用しない。
+2026-10-21 Web実装対応: `components/home-screen.tsx`を投稿型Homeとし、`/api/sky/social`、`/api/sky/community-os`、`/api/sky/hub`、`/api/sky/x-account`、`/api/sky/x-feed`がowner別の保存・取得を担う。DB 0022〜0029は設計上の保存契約であり、本番適用済みではない。X本人連携はread-only OAuthと明示した日次読取上限、取得不能時の失効/再接続を持つ。MCP投稿は署名・権限を自動付与せず、出典・期限・scopeを検査して表示する。Eveは既存の端末内会話保存に加え、本人認証と暗号鍵設定を条件とするアカウント履歴APIを持つ。実アカウントの別端末受入は別gate。旧X埋め込みwidgetはHomeから撤去する。合格根拠は合成試験と同一候補の全体verifyで、実Provider、別端末、公開、native OSの合格には転用しない。
 
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
@@ -784,3 +784,17 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
 
 保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。
+
+
+<a id="unmerged-runtime-integration"></a>
+## 未統合runtimeの現行設計への統合
+
+目的・利用体験: Homeで能力を発見し、Skyの担当設定からEveへ渡す。Eveの「アカウントに保存した会話」で明示保存・一覧・再表示・削除を行い、成果画面から本人の仕事をHTMLへ持ち出す。履歴を開くだけで仕事・送信・課金を再実行しない。
+
+責任・入出力: ROCKは既存mainのworkflow、owner認証、revision、費用上限を保持する。履歴はowner/thread/message、暗号化envelope、revision、記憶対象の同意を受け取り、保存版・一覧・検索引用を返す。成果exportはowner/job/revisionと既存の保存成果だけを読み、CSP付きHTMLを返す。EXTERNALのLLM/実行Linux/決済とOWNERの鍵・接続・予算設定は別。モデルや履歴を承認へ昇格させない。
+
+状態・保存: 履歴は未設定→本人確認→保存→版競合/再読込→削除。EVE_HISTORY_KEYRINGが未設定なら503で保存済みと表示しない。owner別HKDF派生鍵とAES-GCM、検索語のHMACを使う。書込みは読取り時のopaque account bindingを照合し、保存途中のアカウント変更を409で拒否する。明示保存以外は既存tab保存を維持し、アカウント変更時にprivate cacheを破棄する。読戻しは記録だけであり、activeRequest/coordinationの実行権限を復元しない。
+
+失敗・復旧・承認: owner不一致は読めず、競合は409、削除後は410、鍵不足は503。入力と既存成果を保持して再認証・同じ履歴の再読込・鍵復旧へ戻す。削除は本人確認操作を通す。Linux service/setupは署名、本人、契約、予算、使用量を既存workflowへ結び、実運営受入まで既定無効。mainの月140 USD案と旧branch月16 USD案の相違は未解決であり、本統合で料金を決定しない。
+
+合格条件: 暗号化・owner分離・版競合・削除・再送・権限非復元、成果hashとexport拒否条件、fresh/main DBの移行、全verifyと同一SHA CI。Pixel/AVFコードとLabは開発sourceとして保存し、host合格を実機・全OS・provider・一般公開へ転用しない。未決定は個別workstreamで対象/料金/鍵/実Providerの証拠を揃えて決める。

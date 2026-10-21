@@ -1,3 +1,5 @@
+2026-10-20の現行位置づけ：本系列はRockstarOS再設計への選択再利用元。以下のBuildroot/BlackBerry手順は履歴を含み、最新版の商品全体やPixel導入の前提にしない。[現行正本](../../docs/device-support-architecture.md#current-device-adaptation)。
+
 # Rock star OS — Linux native開発
 
 [製品ベース](../../docs/product-baseline.md)、[最新の進捗](../../data/project-status.json)、[QEMU担当作業](../../docs/workstreams/06-native-qemu-release.md)に従い、最新mainと対象branchのSHAを確認して独立したQEMU受入を進める。以下の実行例は環境・対象profile確認後に使う。

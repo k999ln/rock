@@ -1,0 +1,70 @@
+.page { color: var(--os-text); max-width: 1180px; margin: auto; }
+.hero { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 12px 0 28px; }
+.back { display: inline-flex; align-items: center; gap: 7px; min-height: 48px; color: var(--os-muted); font-size: 13px; text-decoration: none; }
+.eyebrow { font-size: 10px; letter-spacing: .1em; font-weight: 600; color: var(--os-muted); margin: 20px 0 8px; }
+.hero h1 { font-size: clamp(28px, 3.5vw, 40px); line-height: 1.4; letter-spacing: -.04em; margin: 0 0 12px; font-weight: 650; }
+.hero p:last-child { margin: 0; color: var(--os-muted); font-size: 15px; }
+.page button, .page input, .page textarea, .page select { font: inherit; }
+.page button, .page a { -webkit-tap-highlight-color: transparent; }
+.page button { cursor: pointer; }
+.page button:disabled { cursor: default; opacity: .5; }
+.page :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--os-focus); outline-offset: 3px; }
+.page button, .actions a, .notice a { min-height: 48px; padding: 10px 16px; border: 1px solid var(--os-line); border-radius: 14px; background: var(--os-panel); color: var(--os-text); display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+.page .primary { background: var(--os-accent); color: var(--os-accent-ink); border-color: var(--os-accent); font-weight: 600; }
+.links { display: flex; align-items: center; gap: 24px; padding: 14px 0; border-block: 1px solid var(--os-line); flex-wrap: wrap; }
+.links > span { margin-right: auto; display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.links strong { font-size: 12px; padding: 2px 7px; border-radius: 8px; background: var(--os-raised); }
+.links a { display: inline-flex; gap: 6px; align-items: center; min-height: 48px; font-size: 13px; color: var(--os-muted); text-decoration: none; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.618fr); gap: 28px; padding-top: 28px; align-items: start; }
+.library { min-width: 0; }
+.sectionTitle { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+.sectionTitle h2 { font-size: 17px; font-weight: 600; margin: 0; }
+.sectionTitle button { padding: 0; width: 48px; flex-shrink: 0; border-radius: 50%; background: transparent; }
+.search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--os-line); border-radius: 14px; padding: 0 14px; background: var(--os-panel); }
+.search input { min-width: 0; width: 100%; border: 0; background: transparent; font-size: 16px; min-height: 48px; color: var(--os-text); }
+.list { margin-top: 16px; display: grid; gap: 10px; }
+.page .agent { width: 100%; padding: 16px; text-align: left; justify-content: start; gap: 12px; background: var(--os-panel); border-radius: 18px; }
+.agent[aria-pressed='true'] { border-color: var(--os-text); outline: 1px solid var(--os-text); }
+.agent > svg { margin-left: auto; flex-shrink: 0; }
+.avatar { width: 40px; min-width: 40px; height: 40px; background: var(--os-raised); border-radius: 13px; display: grid; place-items: center; }
+.agentCopy { display: grid; gap: 3px; min-width: 0; overflow-wrap: anywhere; }
+.agentCopy strong { font-size: 14px; font-weight: 600; }
+.agentCopy small { font-size: 12px; color: var(--os-muted); }
+.agentCopy > span { font-size: 11px; color: var(--os-muted); }
+.editor { min-width: 0; background: var(--os-panel); border: 1px solid var(--os-line); border-radius: 24px; padding: 28px; }
+.editorHeading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 12px; }
+.editorHeading .eyebrow { margin-top: 0; }
+.editor h2 { font-size: 23px; line-height: 1.5; letter-spacing: -.03em; margin: 0; }
+.editor fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 20px; min-width: 0; }
+.editor label { display: grid; gap: 8px; font-size: 13px; font-weight: 600; }
+.editor :is(input:not([type='checkbox']),textarea,select) { min-width: 0; width: 100%; border: 1px solid #b5b3b0; padding: 12px; border-radius: 12px; min-height: 48px; background: var(--os-panel); color: var(--os-text); font-size: 16px; font-weight: 400; box-sizing: border-box; }
+.editor textarea { resize: vertical; line-height: 1.75; }
+.modelBox { padding: 20px; background: var(--os-bg); border-radius: 18px; display: grid; gap: 16px; }
+.modelBox h3 { display: flex; align-items: center; gap: 8px; font-size: 15px; margin: 0; }
+.modelBox p { font-size: 12px; line-height: 1.8; color: var(--os-muted); margin: 0; }
+.editor .check { display: flex; align-items: center; gap: 12px; min-height: 48px; font-weight: 500; }
+.check input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--os-accent); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--os-line); }
+.actions .eve { border-color: var(--os-text); }
+.boundary { font-size: 12px; color: var(--os-muted); line-height: 1.8; margin: 16px 0 0; }
+.welcome, .empty { padding: 42px 12px; color: var(--os-muted); }
+.welcome { min-height: 340px; display: flex; flex-direction: column; align-items: start; justify-content: center; gap: 16px; }
+.welcome h2, .empty h3 { color: var(--os-text); margin: 0; }
+.welcome p, .empty p { font-size: 14px; line-height: 1.8; margin: 0; }
+.empty { display: grid; gap: 14px; }
+.empty h3 { font-size: 17px; }
+.notice { padding: 20px; margin-top: 24px; border-radius: 16px; background: var(--os-raised); }
+.notice p { font-size: 14px; }
+.error, .success { padding: 14px 18px; border-radius: 14px; font-size: 14px; line-height: 1.7; }
+.error { color: var(--os-error); background: var(--os-error-bg); }
+.success { color: var(--os-success); background: var(--os-success-bg); display: flex; gap: 8px; align-items: center; }
+@media(max-width: 800px) {
+  .hero { align-items: start; flex-direction: column; }
+  .hero h1 { font-size: 29px; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .editor { padding: 20px; border-radius: 20px; }
+  .links { gap: 8px 20px; }
+  .links > span { width: 100%; }
+  .modelBox { padding: 16px; }
+}
+@media(prefers-reduced-motion: reduce) { .page * { scroll-behavior: auto; } }

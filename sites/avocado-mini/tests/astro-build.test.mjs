@@ -204,7 +204,14 @@ test('current Pro summaries match the canonical intent without opening an order 
     const html = built(route);
     assert.match(html, /¥800,000 design target/);
     assert.doesNotMatch(html, /data-price-(?:jpy|usd)="From/);
-    assert.doesNotMatch(html, /<form|action="[^"]*checkout|href="https:\/\/checkout\.stripe/);
+    assert.doesNotMatch(html, /action="[^"]*checkout|href="https:\/\/checkout\.stripe/);
+    if (route === 'client/pro/index.html') {
+      const forms = [...html.matchAll(/<form\b([^>]*)>/g)];
+      assert.equal(forms.length, 1);
+      assert.match(forms[0][1], /data-pro-interest-form/);
+      assert.doesNotMatch(forms[0][1], /action=/);
+      assert.match(html, /No payment|no payment|not an order/);
+    } else assert.doesNotMatch(html, /<form/);
   }
 });
 

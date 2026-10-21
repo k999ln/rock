@@ -1,0 +1,47 @@
+{
+  "schema": "rockstar.service-setup-integration/1",
+  "status": "source_development_deferred_integration_until_os_acceptance",
+  "target": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel"
+  },
+  "server": {
+    "ROCKSTAR_SERVICE_SETUP_ENABLED": "false",
+    "ROCKSTAR_OS_SERVICE_ACCEPTANCE_JSON": "",
+    "entry": "/connect/service",
+    "webhook": "/api/rockstar/service-setup/webhook"
+  },
+  "android": {
+    "component": "dev.rock.shell/.ServiceSetupActivity",
+    "callerPermission": "dev.rock.permission.START_SERVICE_SETUP",
+    "installedOnPixel": true,
+    "rockstar_service_setup_enabled": false,
+    "rockstar_service_setup_origin": "",
+    "enablement": "Product resource overlay after OS acceptance; Gradle and Soong share the same disabled resources/manifest",
+    "installedState": "disabled_code_only_with_branding_update_no_signup_acceptance"
+  },
+  "acceptanceRecordTemplate": {
+    "schema": "rockstar.os-service-acceptance/1",
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel",
+    "status": "pending",
+    "buildId": null,
+    "evidenceSha256": null,
+    "capabilities": []
+  },
+  "monthlyBilling": "USD 16 with agreed allowance and approved metered overage; use existing month-end invoices",
+  "signupChargeMinor": 0,
+  "billingSetupMeansPaymentReceived": false,
+  "providerContractsOrKeysConfigured": false,
+  "realEsimProvisioned": false,
+  "productionEnabled": false,
+  "integrationRule": "After actual OS acceptance, bind its exact build and evidence, configure trusted issuer, Stripe/webhook/customer and worker, accept the same Pixel flow, then enable the module. Do not fabricate acceptance or bypass existing eSIM proof gates.",
+  "osAcceptanceMeaning": "current shared RockstarOS Core/runtime release acceptance; legacy Buildroot/QEMU completion is not a prerequisite; a native OS image remains an independent gate",
+  "integration": {
+    "status": "source_only_default_disabled",
+    "pricing": "Legacy 16 USD prototype; main 140 USD terms remain authoritative pending owner reconciliation. No live enablement in this integration.",
+    "physicalAcceptanceTransferred": false
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "schema": "rockstaros.device-adaptation/1",
+  "status": "current_design_contract_with_pixel_branding_implementation_in_progress",
+  "designAuthority": "current RockstarOS redesign; legacy Buildroot is a selective reuse source, never the current product baseline",
+  "brand": {
+    "product": "RockstarOS",
+    "release": "1.0 Developer Preview",
+    "companyLogo": "public/company-mark.png",
+    "logoSource": "sites/avocado-mini/public/images/avokado-metallic-mark.png",
+    "logoSha256": "014113778f7513ed0724c16c251f8b95f1c7192c4f0ded41993d3c16f938bb42",
+    "surfaces": [
+      "launcher",
+      "application_header",
+      "web_pwa",
+      "native_boot_candidate",
+      "device_display_or_physical_mark"
+    ],
+    "doNotSpoof": [
+      "hardware model/SKU",
+      "verified boot state",
+      "security patch",
+      "attestation identity"
+    ]
+  },
+  "shared": [
+    "owner_and_guardian_roles",
+    "service_entitlement_and_revocation_epoch",
+    "job_revision_and_idempotency",
+    "approved_scope_budget_and_deadline",
+    "model_tool_package_identity",
+    "artifacts_and_usage_receipts",
+    "export_restore_stop",
+    "versioned_contract_and_invoice"
+  ],
+  "billing": {
+    "monthlyBaseMinor": 1600,
+    "currency": "USD",
+    "timing": "monthly_arrears",
+    "includedAllowance": "amount and scope undecided",
+    "oneEntitlementAcrossDevices": true,
+    "duplicateBaseFeePerDevice": false,
+    "extraComputeRequiresQuoteCapAndVerifiedUsage": true,
+    "onUnpaid": "restrict new managed SI execution; retain existing data per accepted retention terms",
+    "safetyIndependent": true,
+    "carrierCollectionGuarantee": false
+  },
+  "profiles": [
+    {
+      "id": "pixel-10-frankel",
+      "role": "phone client and accepted limited local Linux text executor",
+      "input": [
+        "touch",
+        "approved microphone"
+      ],
+      "output": [
+        "screen",
+        "file",
+        "approved audio"
+      ],
+      "acceptanceAdditions": [
+        "Android permission grant denial and revocation",
+        "existing-OS Shell to scoped on-device Linux result",
+        "local model version hash inference and owner-scoped persistence after restart",
+        "continuous-load thermal battery and safe-stop measurements"
+      ],
+      "nativeOsAccepted": false,
+      "serviceSignupAccepted": false,
+      "evidence": "docs/evidence/sky-multi-model-pixel.json"
+    },
+    {
+      "id": "avocado-mini-r5",
+      "role": "self-contained spatial and sensing endpoint; capable local execution only after hardware acceptance",
+      "input": [
+        "voice",
+        "spatial sensor",
+        "explicit physical control"
+      ],
+      "output": [
+        "spatial display",
+        "audio",
+        "versioned CAD/BIM artifact"
+      ],
+      "mustPreserve": [
+        "single self-contained unit",
+        "no external compute hub requirement",
+        "own satellite WAN/Wi-Fi and optical safety gates"
+      ],
+      "acceptanceAdditions": [
+        "voice sensing and identity rejection on the same enclosure",
+        "spatial display and per-location permission re-evaluation",
+        "attach detach state and grant expiry",
+        "integrated optical RF battery charging and thermal safety"
+      ],
+      "physicalAccepted": false,
+      "document": "docs/rockstaros-avocado-mini-complete-design.md"
+    },
+    {
+      "id": "avocado-pro",
+      "role": "dedicated PC client and candidate heavier local executor",
+      "input": [
+        "keyboard",
+        "pointer",
+        "approved voice",
+        "creator tools"
+      ],
+      "output": [
+        "desktop",
+        "game window",
+        "files",
+        "audio"
+      ],
+      "acceptanceAdditions": [
+        "measured compute memory storage and model placement on a fixed PC build",
+        "versioned creator and game output from the same job",
+        "peripheral connect deny disconnect and recovery"
+      ],
+      "hardwareSpecsConfirmed": false,
+      "physicalAccepted": false,
+      "document": "docs/device-support-architecture.md"
+    },
+    {
+      "id": "avocado-schoolbag-safety-p0",
+      "role": "hanging detachable voice companion endpoint; executor selected from accepted Pixel/PC/cloud capabilities",
+      "input": [
+        "explicit conversation control",
+        "microphone",
+        "physical SOS"
+      ],
+      "output": [
+        "speaker",
+        "eyes or accepted compact display",
+        "local alarm"
+      ],
+      "mustPreserve": [
+        "guardian authorization and child role separation",
+        "school mode",
+        "recording and location off by default",
+        "local SOS/alarm independent of LLM network and subscription",
+        "no purchase/payment/send authority from child voice"
+      ],
+      "acceptanceAdditions": [
+        "measured low-power standby and alarm operation",
+        "guardian pairing and revocation",
+        "physical control and false-activation handling",
+        "independent local alarm and SOS during network AI and billing outage"
+      ],
+      "physicalAccepted": false,
+      "document": "docs/avocado-schoolbag-safety-device.md"
+    }
+  ],
+  "existingOsClients": {
+    "families": ["iPhone", "general PC"],
+    "delivery": "existing OS Web or client attachment",
+    "acceptanceAdditions": [
+      "same owner job artifact stop and restore on exact OS and browser or app version",
+      "only individually granted OS camera microphone notification and file capabilities",
+      "denial and revocation readback; no eSIM-implied automatic app install or OS permission"
+    ],
+    "acceptedAsUniversal": false
+  },
+  "capabilityAdapters": {
+    "families": ["watch", "TV", "robot", "other declared device"],
+    "rule": "declare observed input output power network permission and expiry per exact model and firmware; absent camera display or sensor is unavailable",
+    "acceptanceAdditions": [
+      "same job allowed action and output versus absent capability",
+      "disconnect reconnect and revocation",
+      "separate physical safety stop and site acceptance for robot motion"
+    ],
+    "universallyAccepted": false
+  },
+  "capabilityContract": "contracts/compute-device-capabilities.json",
+  "runtimeRule": "select execution by fresh measured capabilities and explicit authorization; unsupported capability stays unavailable; a profile entry is not hardware acceptance",
+  "failureRecovery": "retain job/operation IDs; reconnect to same owner workspace; reconcile unknown result without replay; revoke one child independently and parent across children",
+  "acceptance": [
+    "per-target install/pairing/authentication and logo readback",
+    "same job/revision/artifact across accepted endpoints",
+    "concurrent device budget reservation without duplicate billing",
+    "child role and guardian separation negative tests",
+    "disconnect/restart/parent and child revocation/restore",
+    "alarm works offline and while SI billing is restricted"
+  ],
+  "hardwareAcceptanceTransferred": false,
+  "newRuntimeAdapterImplemented": false,
+  "linkedThreads": [
+    "01a15026-972f-7f32-945a-2c2045c1f14e",
+    "01a15027-87c3-74b0-a840-ba8e97ea4265",
+    "01a13c4a-aa87-75c0-b427-1b888a42bf96"
+  ]
+}

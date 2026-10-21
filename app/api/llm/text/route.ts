@@ -1,4 +1,6 @@
 import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
+import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
+import { SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -37,7 +39,9 @@ export async function POST(request: Request) {
 
     const raw = await request.text();
     if (new TextEncoder().encode(raw).byteLength > 28_000) throw new LlmProviderError('INVALID_INPUT', 413);
-    const value = JSON.parse(raw) as Record<string, unknown>;
+    const input: unknown = JSON.parse(raw);
+    if (!input || typeof input !== 'object' || Array.isArray(input)) throw new LlmProviderError('INVALID_INPUT', 400);
+    const value = await bindSkyAgentLlmInput(db, owner, input as Record<string, unknown>);
     const provider = value.provider;
     if (!isTextModelProvider(provider))
       throw new LlmProviderError('UNKNOWN_LLM_PROVIDER', 400);
@@ -146,6 +150,7 @@ export async function POST(request: Request) {
     );
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
+    if (error instanceof SkyAgentLibraryError) return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message }, { status: error.status, headers: noStoreHeaders });
     if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
     if (error instanceof SensitiveDataBlockedError)
       return Response.json(

@@ -1,10 +1,10 @@
-# RockstarOS Sky + Zema Core
+# RockstarOS Sky + Eve Core
 
-This public package contains a small, runnable part of the Sky and Zema flow:
+This public package contains a small, runnable part of the Sky and Eve flow:
 
 1. Sky validates a local catalog of tools.
 2. Sky creates an explicit handoff for the selected tool.
-3. Zema keeps the request, messages, run state, and outcome distinct.
+3. Eve keeps the request, messages, run state, and outcome distinct.
 4. Anonymous tool events can be sent only after explicit consent.
 
 It is a public preview, not the complete RockstarOS source tree.
@@ -31,6 +31,6 @@ separately and must use HTTPS, except for local development.
 
 ## Private boundary
 
-The full Sky marketplace, Zema UI, production integrations, hardware
+The full Sky marketplace, Eve UI, production integrations, hardware
 implementation, local LLM design, account data, and private APIs remain in the
 restricted `k999ln/rock` repository.

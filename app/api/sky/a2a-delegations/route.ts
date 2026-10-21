@@ -368,7 +368,7 @@ export async function POST(request: Request) {
       const predecessor = await store.get(owner, predecessorDelegationId as string);
       if (!predecessor || predecessor.parentJobId !== parentJobId ||
         predecessor.state !== 'remote_completed' || predecessor.artifactsCaptured !== 1)
-        return json({ error: '前段Agentの完了済み成果をこのZema jobで確認できません。', code: 'A2A_PREDECESSOR_NOT_REVIEWABLE' }, 409);
+        return json({ error: '前段Agentの完了済み成果をこのEve jobで確認できません。', code: 'A2A_PREDECESSOR_NOT_REVIEWABLE' }, 409);
       if (predecessor.predecessorDelegationId && A2A_MAX_REDELEGATION_DEPTH <= 1)
         return json({ error: `Agent間の再委任は${A2A_MAX_REDELEGATION_DEPTH}段階までです。新しい独立jobを作成してください。`, code: 'A2A_PREDECESSOR_DEPTH_EXCEEDED' }, 409);
     }

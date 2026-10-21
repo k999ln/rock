@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, CircleHelp, RadioTower, Smartphone } from 'lucide-react';
 import styles from '@/components/sky-commerce.module.css';
 import { RockstarEntitlementClaim } from '@/components/rockstar-entitlement-claim';
+import { ProductDomainNavigation } from '@/components/product-domain-navigation';
 
 export const metadata: Metadata = {
   title: 'RockstarOSをはじめる',
@@ -32,7 +33,7 @@ export default function ConnectPage() {
         <ul>
           <li><CheckCircle2 size={16} />クラウドLLMとAgentへすばやくアクセス</li>
           <li><CheckCircle2 size={16} />実行前見積、利用中の支出、完了後の項目別明細</li>
-          <li><CheckCircle2 size={16} />RockstarOS HomeからSky、Zema、Agentを共通ログインで利用</li>
+          <li><CheckCircle2 size={16} />RockstarOS HomeからSky、Eve、Agentを共通ログインで利用</li>
         </ul>
       </section>
       <section className={styles.esimCatalog} aria-labelledby="onboarding-steps">
@@ -59,7 +60,7 @@ export default function ConnectPage() {
       <section className={styles.esimCatalog} aria-labelledby="device-account-link">
         <div className={styles.esimCatalogTitle}>
           <h2 id="device-account-link">RockstarOS端末のアカウント接続</h2>
-          <p>端末に表示された一時コードをこのRockstar IDで承認すると、端末専用セッションでSky、Zema、クラウド作業へ接続できます。接続後はいつでも取り消せます。</p>
+          <p>端末に表示された一時コードをこのRockstar IDで承認すると、端末専用セッションでSky、Eve、クラウド作業へ接続できます。接続後はいつでも取り消せます。</p>
         </div>
         <Link className={styles.esimPlanCard} href="/connect/device"><strong>端末コードを承認・管理する</strong><span>ログインと端末接続をひとつのRockstar IDにまとめる <ArrowRight size={15} /></span></Link>
       </section>
@@ -89,6 +90,7 @@ export default function ConnectPage() {
         <p className={styles.esimDeviceNote}>物理SIMの流通、eSIM開通、アカウントへの購入権連携、実請求、各端末でのOS/client導入は、それぞれ契約・実機受入が必要です。eSIMプランカタログは契約・販売条件の調査用で、RockstarOSサービスの購入窓口ではありません。</p>
         <Link className={styles.back} href="/sky/esim">eSIM対応プランの技術・提供条件を見る（調査用カタログ）</Link>
       </section>
+      <ProductDomainNavigation />
     </div>
   </main>;
 }

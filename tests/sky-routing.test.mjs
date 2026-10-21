@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
+import { eveDispatchMode, routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
+
+void test('Eve opens a Sky Tool run even when a remote conversation model is selected', () => {
+  assert.equal(eveDispatchMode(true, true), 'tool');
+  assert.equal(eveDispatchMode(true, false), 'estimate');
+  assert.equal(eveDispatchMode(false, true), 'tool');
+  assert.equal(eveDispatchMode(false, false), 'conversation');
+});
 
 await test('Sky routes a plain-language request to each available role', () => {
   const cases = [

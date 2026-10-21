@@ -44,7 +44,7 @@ RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 | --- | --- |
 | **Home** | A clear starting point for every part of the system. |
 | **Sky** | Find AI tools and understand what they can do before connecting them. |
-| **Zema** | Turn a request into a guided flow of decisions, actions, and results. |
+| **Eve** | Turn a request into a guided flow of decisions, actions, and results. |
 | **Wallet** | Separate costs, verified earnings, and unresolved states. |
 | **Market** | Explore typed value in a paper-only environment. |
 | **Settings** | See connection health, storage, updates, diagnostics, and recovery. |
@@ -74,11 +74,11 @@ RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 The public repository includes runnable, deliberately bounded parts of RockstarOS:
 
 - [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
-- [**Sky + Zema Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Zema handoff, workflow state, and consent-gated anonymous tool events.
+- [**Sky + Eve Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Eve handoff, workflow state, and consent-gated anonymous tool events.
 - [**Sky SDK**](packages/sky-sdk) -- an embeddable package for registering, discovering, approving, and running Sky tools inside another application.
 - [**Fitness + Sky Example**](examples/fitness-sky) -- a working example with permission-gated HealthKit and Health Connect adapter support.
 - [**Anonymous Event Receiver**](examples/tool-event-receiver) -- a token-protected receiver that validates the six-field event and stores aggregate counts only.
-- [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
+- [**Sky + Eve Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
 - [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
 
 Install the published Sky SDK from npm:
@@ -127,7 +127,7 @@ The development source of record is the private [`k999ln/rock`](https://github.c
 | --- | --- |
 | Web App / Home | [`app`](https://github.com/k999ln/rock/tree/main/app) |
 | Sky | [`app/sky`](https://github.com/k999ln/rock/tree/main/app/sky) |
-| Zema / Chat | [`app/chat`](https://github.com/k999ln/rock/tree/main/app/chat) |
+| Eve / Chat | [`app/chat`](https://github.com/k999ln/rock/tree/main/app/chat) |
 | Wallet | [`app/wallet`](https://github.com/k999ln/rock/tree/main/app/wallet) |
 | Market | [`app/market`](https://github.com/k999ln/rock/tree/main/app/market) |
 | Settings / System | [`app/settings`](https://github.com/k999ln/rock/tree/main/app/settings) |
@@ -140,7 +140,7 @@ The development source of record is the private [`k999ln/rock`](https://github.c
 
 ## Public boundary
 
-This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, public visual material, Control Core, and the bounded Sky + Zema public preview. Engineering specifications, hardware implementation, local AI design, account data, credentials, production integrations, native OS images, internal operations, and the restricted source tree remain private.
+This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, public visual material, Control Core, and the bounded Sky + Eve public preview. Engineering specifications, hardware implementation, local AI design, account data, credentials, production integrations, native OS images, internal operations, and the restricted source tree remain private.
 
 ## License
 
@@ -151,6 +151,6 @@ The public RockstarOS code is released under the [MIT License](LICENSE), so appl
 **Avokado Mini. Powered by RockstarOS. Built by Avokado, Ink.**
 
 
-### Shared Sky / Zema contract
+### Shared Sky / Eve contract
 
 The public package and the full Web host use the same `packages/sky-zema-core/src/handoff.js` contract. Public v1 keeps `executionProvider: "local"`; `normalizeSkyZemaHandoff` converts it to `local-model`, accepts the old omitted local field, and rejects remote providers and invalid envelopes. Hosts still enforce identity, expiry, single use, and approvals. Creating a session only makes it ready. Run `npm test` here, or `npm run test:public-preview` from the full-source repository; the latter is included in full verification.

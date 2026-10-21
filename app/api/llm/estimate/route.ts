@@ -1,3 +1,5 @@
+import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
+import { SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import { authorizeRemoteAiRequest, RemoteAiGuardError } from '@/lib/remote-ai-guard';
@@ -31,8 +33,8 @@ export async function POST(request: Request) {
     if (new TextEncoder().encode(raw).byteLength > 28_000) return json({ code: 'BODY_TOO_LARGE' }, 413);
     const input: unknown = JSON.parse(raw);
     if (!input || typeof input !== 'object' || Array.isArray(input)) return json({ code: 'INVALID_INPUT' }, 400);
-    const value = input as Record<string, unknown>;
-    const allowed = new Set(['provider', 'model', 'system', 'prompt', 'maxOutputTokens', 'currency', 'maximumBudgetMinor']);
+    let value = input as Record<string, unknown>;
+    const allowed = new Set(['provider', 'model', 'system', 'prompt', 'maxOutputTokens', 'currency', 'maximumBudgetMinor', 'agentId', 'agentRevision']);
     if (Object.keys(value).some((key) => !allowed.has(key)) ||
       !isTextModelProvider(value.provider) || typeof value.prompt !== 'string' || !value.prompt.trim() ||
       (value.system !== undefined && typeof value.system !== 'string') ||
@@ -40,7 +42,9 @@ export async function POST(request: Request) {
       (value.currency !== undefined && (typeof value.currency !== 'string' || !/^[A-Z]{3}$/.test(value.currency))) ||
       (value.maximumBudgetMinor !== undefined && (!Number.isSafeInteger(value.maximumBudgetMinor) || (value.maximumBudgetMinor as number) < 0)))
       return json({ code: 'INVALID_INPUT' }, 400);
+    value = await bindSkyAgentLlmInput(db, owner, value);
     const provider = value.provider;
+    if (!isTextModelProvider(provider) || typeof value.prompt !== 'string') return json({ code: 'INVALID_INPUT' }, 400);
     if (textModelProviderDefinition(provider).locality !== 'remote') return json({ code: 'REMOTE_PROVIDER_REQUIRED' }, 400);
     const modelId = typeof value.model === 'string' && value.model.trim()
       ? value.model.trim()
@@ -104,6 +108,7 @@ export async function POST(request: Request) {
       effectiveAt: verified.card.effectiveAt,
     });
   } catch (error) {
+    if (error instanceof SkyAgentLibraryError) return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message }, { status: error.status, headers: noStoreHeaders });
     if (error instanceof RemoteAiGuardError) return json({ code: error.code }, error.status);
     if (error instanceof SyntaxError) return json({ code: 'INVALID_INPUT' }, 400);
     console.error('remote ai estimate failed', error instanceof Error ? error.message : 'unknown');

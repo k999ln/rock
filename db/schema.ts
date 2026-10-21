@@ -1932,6 +1932,25 @@ export const skyHostedMonthlyEvents=sqliteTable('sky_hosted_monthly_events',{
 });
 
 // Sky Home, community OS and connected source persistence.
+export const skyLinuxServiceDocuments = sqliteTable('sky_linux_service_documents', {
+  id:text('id').primaryKey(),ownerUserId:text('owner_user_id').notNull(),kind:text('kind').notNull(),
+  revision:integer('revision').notNull().default(0),payload:text('payload').notNull(),updatedAt:integer('updated_at').notNull(),
+}, table=>[index('idx_sky_linux_service_owner').on(table.ownerUserId,table.kind,table.updatedAt)]);
+export const skyLinuxServiceReceipts = sqliteTable('sky_linux_service_receipts', {
+  id:text('id').primaryKey(),workspaceId:text('workspace_id').notNull(),digest:text('digest').notNull(),
+  kind:text('kind').notNull(),payload:text('payload').notNull(),createdAt:integer('created_at').notNull(),
+}, table=>[index('idx_sky_linux_receipt_workspace').on(table.workspaceId,table.createdAt)]);
+
+export const rockstarServiceSetups = sqliteTable('rockstar_service_setups', {
+  id: text('id').primaryKey(),
+  ownerUserId: text('owner_user_id').notNull().unique(),
+  revision: integer('revision').notNull().default(0),
+  payload: text('payload').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [
+  uniqueIndex('idx_rockstar_service_setup_session').on(sql`json_extract(${table.payload},'$.billing.sessionId')`),
+]);
+
 export const skyAgentSettings = sqliteTable('sky_agent_settings', {
   ownerUserId: text('owner_user_id').notNull(),
   id: text('id').notNull(),
@@ -1965,6 +1984,22 @@ export const skyHubPlugins = sqliteTable('sky_hub_plugins', {
 }, table=>[uniqueIndex('idx_sky_hub_plugins_owner_key').on(table.ownerUserId,table.pluginKey)]);
 
 // Public X post cache and a global API request window; never stores credentials.
+export const eveConversations = sqliteTable('eve_conversations', {
+  ownerId: text('owner_id').notNull(), id: text('id').notNull(),
+  revision: integer('revision').notNull(), remember: integer('remember').notNull(),
+  envelope: text('envelope').notNull(), updatedAt: integer('updated_at').notNull(),
+  saveToken: text('save_token').notNull(),
+  deletedAt: integer('deleted_at').notNull().default(0),
+}, table => [primaryKey({columns:[table.ownerId,table.id]})]);
+export const eveMessages = sqliteTable('eve_messages', {
+  seq: integer('seq').primaryKey({autoIncrement:true}),ownerId:text('owner_id').notNull(),
+  threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+  envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+}, table => [uniqueIndex('eve_messages_identity').on(table.ownerId,table.threadId,table.messageId)]);
+export const eveMemoryTerms = sqliteTable('eve_memory_terms', {
+  ownerId:text('owner_id').notNull(),token:text('token').notNull(),threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+}, table => [primaryKey({columns:[table.ownerId,table.token,table.threadId,table.messageId]})]);
+
 export const skyXFeedState = sqliteTable('sky_x_feed_state', {
   key: text('key').primaryKey(),
   payload: text('payload').notNull().default('[]'),

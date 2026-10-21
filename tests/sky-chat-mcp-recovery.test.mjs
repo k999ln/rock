@@ -1,3 +1,4 @@
+import { skyAgentSystem } from '../lib/sky-agent-library.ts';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -30,6 +31,7 @@ function harness() {
   const noop = () => {};
   const session = { id: 'fixture-thread', toolId: 'mcp:initial', createdAt: 1, messages: [], activeRequest: { id: 'fixture-request', text: 'Synthetic request', toolId: 'mcp:initial' }, workflowStatus: 'ready', outcome: null };
   const modules = {
+    '@/lib/sky-agent-library': { skyAgentSystem },
     '@/lib/history-navigation-guard': historyNavigation,
     'react': react,
     'react/jsx-runtime': { jsx, jsxs: jsx },

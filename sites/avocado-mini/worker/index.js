@@ -1,4 +1,6 @@
 import { stripeRequest, verifyStripeSignature } from './shared/stripe.mjs';
+import { availability as participationAvailability, submit as submitParticipation, remove as removeParticipation } from './participation.mjs';
+import { availability as proInterestAvailability, submit as submitProInterest, remove as removeProInterest } from './pro-interest.mjs';
 
 const products = {
   r5: { name: 'avocadoMini R5', baseJpy: null, amountKey: 'PREORDER_R5_TOTAL_JPY', capacityKey: 'PREORDER_R5_CAPACITY' },
@@ -328,6 +330,12 @@ export default {
       if (path === '/api/preorders/status' && request.method === 'GET') return status(request, env);
       if (path === '/api/admin/preorders' && request.method === 'GET') return adminOrders(request, env);
       if (path === '/api/admin/reconcile' && request.method === 'POST') return adminReconcile(request, env);
+      if (path === '/api/participation/availability' && request.method === 'GET') return participationAvailability(env);
+      if (path === '/api/participation/submissions' && request.method === 'POST') return submitParticipation(request, env);
+      if (path === '/api/participation/submissions' && request.method === 'DELETE') return removeParticipation(request, env);
+      if (path === '/api/pro-interest/availability' && request.method === 'GET') return proInterestAvailability(env);
+      if (path === '/api/pro-interest/submissions' && request.method === 'POST') return submitProInterest(request, env);
+      if (path === '/api/pro-interest/submissions' && request.method === 'DELETE') return removeProInterest(request, env);
       if (path.startsWith('/api/')) return json({ error: 'not_found' }, 404);
       return env.ASSETS ? env.ASSETS.fetch(request) : new Response('Assets unavailable', { status: 503 });
     } catch (error) {

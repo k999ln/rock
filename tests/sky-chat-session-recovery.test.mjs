@@ -1,3 +1,4 @@
+import { skyAgentSystem } from '../lib/sky-agent-library.ts';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -39,6 +40,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   const jsx = (type, props) => ({ type, props });
   const noop = () => {};
   const modules = {
+    '@/lib/sky-agent-library': { skyAgentSystem },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx },
     'next/dynamic': { default: (load) => String(load).includes('amc-tool-runner') ? 'AMC' : 'Workbench' },
     'next/link': { default: 'a' },

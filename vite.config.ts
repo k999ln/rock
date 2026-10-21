@@ -6,6 +6,8 @@ import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 import { siteMigrationsDirectoryFor } from './scripts/sites-migration-lineage.mjs';
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
 import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
+import { createSkyZoomLocalPlugin } from './scripts/sky-zoom-local-runtime.mjs';
+import { createSkyLinuxLocalPlugin } from './scripts/sky-linux-local-runtime.mjs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -69,13 +71,16 @@ export default defineConfig(async () => {
 
   return {
     css: { postcss: { plugins: [tailwindcss()] } },
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server: {
+      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+      ...(process.env.SKY_LINUX_PRIVATE_PREVIEW === '1' ? { host: '127.0.0.1' } : {}),
+    },
     plugins: [
       // Worker dependencies need ESM imports for Node builtins.
       esmExternalRequirePlugin(),
+      createSkyLinuxLocalPlugin(),
       createSkyLocalRuntimePlugin(),
+      createSkyZoomLocalPlugin(),
       createWebBundleInventoryPlugin(),
       clientCloudflareWorkersStub,
       vinext(),

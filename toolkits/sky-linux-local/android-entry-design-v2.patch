@@ -1,0 +1,342 @@
+--- /dev/null
++++ b/android/shell/src/debug/java/dev/rock/shell/SkyLinuxActivity.java
+@@ -0,0 +1,208 @@
++package dev.rock.shell;
++
++import android.app.Activity;
++import android.app.Notification;
++import android.app.NotificationChannel;
++import android.app.NotificationManager;
++import android.app.PendingIntent;
++import android.app.AlertDialog;
++import android.content.Intent;
++import android.graphics.Color;
++import android.net.Uri;
++import android.os.Bundle;
++import android.os.Handler;
++import android.os.Looper;
++import android.view.View;
++import android.widget.*;
++import org.json.*;
++import java.net.*;
++import java.io.*;
++import java.nio.charset.StandardCharsets;
++import java.util.*;
++import java.util.concurrent.*;
++import java.security.MessageDigest;
++
++/** Owner-only view of the same Pixel-local Sky workflow. No shell or remote URL input. */
++public final class SkyLinuxActivity extends Activity {
++    private static final String ENDPOINT="http://127.0.0.1:5199/__sky/linux";
++    private static final int SAVE=5199, DARK=ShellUi.BACKGROUND;
++    private final Handler main=new Handler(Looper.getMainLooper());
++    private final ExecutorService io=Executors.newSingleThreadExecutor();
++    private volatile boolean fetching, destroyed;
++    private boolean commandBusy, starting, prepareAfterConnect, prepareSent, returningFromLauncher;
++    private static final int NOTIFY_PERMISSION=5200, START_NOTICE=5201;
++    private long startupDeadline;
++    private ShellUi ui;
++    private ScrollView scroll;
++    private LinearLayout composer, settings;
++    private TextView status, notice, model, agentHint, agentLabel, resultHeading;
++    private Button start, addModel, addAgent, run, stop;
++    private EditText name, instructions, request;
++    private Spinner agents;
++    private CheckBox license, consent;
++    private LinearLayout results;
++    private JSONObject latest;
++    private AlertDialog jobDialog;
++    private String agentFingerprint="", resultFingerprint="", selectedAgent="", pendingRequestId, pendingRequestKey;
++    private byte[] pendingSave;
++    private boolean saving;
++    private final Runnable refresh=new Runnable(){public void run(){if(destroyed)return;poll();main.postDelayed(this,1500);}};
++
++    @Override public void onCreate(Bundle state){
++        super.onCreate(state);
++        ui=new ShellUi(this); getWindow().setStatusBarColor(DARK); getWindow().setNavigationBarColor(DARK);
++        scroll=new ScrollView(this); scroll.setFillViewport(true); scroll.setBackgroundColor(DARK);
++        LinearLayout body=ui.column(); body.setPadding(ui.dp(18),ui.dp(8),ui.dp(18),ui.dp(24)); scroll.addView(body);
++        scroll.setOnApplyWindowInsetsListener((view,insets)->{
++            android.graphics.Insets bars=insets.getInsets(android.view.WindowInsets.Type.systemBars()|android.view.WindowInsets.Type.displayCutout());
++            android.graphics.Insets keyboard=insets.getInsets(android.view.WindowInsets.Type.ime());
++            view.setPadding(bars.left,bars.top,bars.right,Math.max(bars.bottom,keyboard.bottom));return android.view.WindowInsets.CONSUMED;
++        });setContentView(scroll);
++        LinearLayout bar=new LinearLayout(this);bar.setGravity(android.view.Gravity.CENTER_VERTICAL);body.addView(bar);
++        Button back=button(bar,"‹ Sky",this::finish);back.setLayoutParams(new LinearLayout.LayoutParams(0,ui.dp(48),1));ui.quiet(back);
++        ui.badge(bar,"本人用の試用",ShellUi.MUTED);
++        label(body,"何を進めますか？",26);
++        status=label(body,"起動すると、このPixelで依頼できます。",14);status.setTag("pixel-sky-status");
++        notice=label(body,"",15);notice.setTextIsSelectable(true);notice.setVisibility(View.GONE);
++        stop=button(body,"AIを停止する（成果は残す）",()->action(object("action","stop-environment")));stop.setTag("pixel-sky-stop");ui.quiet(stop);stop.setVisibility(View.GONE);
++        composer=card(body);
++        request=field(composer,"例：avokadoのAI担当を増やしたい",true);request.setTag("pixel-sky-request");request.setMinLines(3);request.setMaxLines(7);
++        agentLabel=label(composer,"任せる担当",13);agentLabel.setVisibility(View.GONE);
++        agents=new Spinner(this);agents.setMinimumHeight(ui.dp(48));agents.setPopupBackgroundDrawable(ui.surface(ShellUi.SURFACE,ShellUi.LINE,12));composer.addView(agents);
++        agentHint=label(composer,"担当は起動後に選べます。",13);
++        agents.setVisibility(View.GONE);
++        agents.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){
++            public void onNothingSelected(android.widget.AdapterView<?> p){}
++            public void onItemSelected(android.widget.AdapterView<?> p,View v,int i,long id){try{selectedAgent=latest.getJSONArray("agents").getJSONObject(i).getString("id");getSharedPreferences("pixel_linux_ui",0).edit().putString("agent",selectedAgent).apply();}catch(Exception ignored){selectedAgent="";}}
++        });
++        TextView price=label(composer,"このPixelで処理 · クラウド使用料 0円",14);price.setTextColor(ShellUi.SUCCESS);
++        label(composer,"電気代・機器代は未計測です。",12);
++        consent=new CheckBox(this);consent.setTextColor(ShellUi.INK);consent.setTextSize(14);consent.setButtonTintList(android.content.res.ColorStateList.valueOf(ShellUi.ACCENT));
++        consent.setText("料金と実行先を確認し、端末へ保存して実行する");consent.setVisibility(View.GONE);composer.addView(consent);
++        run=button(composer,"Skyを起動する",this::primaryAction);run.setTag("pixel-sky-run");ui.primary(run);
++        resultHeading=label(body,"最近の仕事",19);resultHeading.setVisibility(View.GONE);results=ui.column();body.addView(results);
++        settings=disclosure(body,"担当・実行の設定");
++        label(settings,"使っているAI",18);model=label(settings,"このPixelのAIを確認します。",14);
++        license=new CheckBox(this);license.setTextColor(ShellUi.INK);license.setText("配布元の利用条件を確認して、このAIを追加する");settings.addView(license);
++        addModel=button(settings,"このAIを追加する",()->{
++            if(!license.isChecked()){message("利用条件の確認にチェックしてください。");return;}
++            try{action(new JSONObject().put("action","add-model").put("modelId",latest.getJSONObject("candidate").getString("id")).put("accepted",true));}
++            catch(Exception e){message("AIの状態を確認してから追加してください。");}
++        });
++        button(settings,"AIの利用条件を見る",()->startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct"))));
++        start=button(settings,"実行機能を準備し直す",this::startSky);start.setTag("pixel-sky-start");
++        LinearLayout create=disclosure(settings,"自分の担当を追加する");
++        name=field(create,"担当の名前",false);instructions=field(create,"何を任せる担当か",true);
++        addAgent=button(create,"この担当を追加する",()->{
++            if(name.getText().toString().trim().isEmpty()||name.length()>80||instructions.getText().toString().trim().isEmpty()||instructions.length()>1200){message("担当名は80文字、任せる内容は1200文字以内で書いてください。");return;}
++            try{action(new JSONObject().put("action","add-agent").put("agent",new JSONObject().put("name",name.getText().toString()).put("instructions",instructions.getText().toString()).put("modelId",latest.getJSONObject("candidate").getString("id"))));}
++            catch(Exception e){message("AIを追加してから担当を作ってください。");}
++        });
++        button(settings,"料金と保存について",()->new AlertDialog.Builder(this).setTitle("このPixelでの実行")
++            .setMessage("依頼と成果はこのPixel内に保存します。クラウドへの送信とクラウド使用料はありません。自作の担当代は0円です。電気代・機器代は未計測です。月額契約や請求は開始しません。成果は文章として持ち出せます。")
++            .setPositiveButton("閉じる",null).show());
++        button(settings,"接続できないとき",()->new AlertDialog.Builder(this).setTitle("Skyへの接続")
++            .setMessage("起動用の画面が開いたら入力は不要です。Skyの準備通知を押して戻ってください。接続できない場合は、このアプリの「権限」でNetworkを許可してください。端末内の接続にも必要です。")
++            .setPositiveButton("アプリの設定を開く",(d,w)->startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+getPackageName())))).setNegativeButton("閉じる",null).show());
++        label(settings,"画面を閉じるだけでは計算の停止になりません。止めるときは停止ボタンを使ってください。",13);
++        selectedAgent=getSharedPreferences("pixel_linux_ui",0).getString("agent","");
++        pendingRequestId=getSharedPreferences("pixel_linux_pending",0).getString("id",null);pendingRequestKey=getSharedPreferences("pixel_linux_pending",0).getString("key",null);
++        if(state!=null){request.setText(state.getString("request",""));pendingRequestId=state.getString("requestId");pendingRequestKey=state.getString("requestKey");}
++        main.post(refresh);
++    }
++    private void primaryAction(){
++        if(commandBusy||starting){message("操作が終わるまでお待ちください。");return;}
++        if(latest==null){startSky();return;}
++        JSONArray models=latest.optJSONArray("models");
++        if(models==null||models.length()==0){openSettings();message("使うAIの利用条件を確認して、追加してください。");return;}
++        if(!"ready".equals(latest.optString("phase"))){startSky();return;}
++        JSONArray list=latest.optJSONArray("agents");
++        if(list==null||list.length()==0){openSettings();message("任せたい内容を書いて、自分の担当を追加してください。");return;}
++        runWork();
++    }
++    private void newRequest(){closeJobDialog();if(latest!=null){JSONArray jobs=latest.optJSONArray("runs");if(jobs!=null)for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){message("今の仕事を止めるか、終わるまでお待ちください。");scroll.smoothScrollTo(0,0);return;}}pendingRequestId=null;pendingRequestKey=null;getSharedPreferences("pixel_linux_pending",0).edit().clear().apply();request.setText("");consent.setChecked(false);scroll.smoothScrollTo(0,0);request.requestFocus();}
++    private LinearLayout disclosure(LinearLayout parent,String title){
++        LinearLayout box=card(parent),contents=ui.column();contents.setVisibility(View.GONE);
++        Button toggle=button(box,title+"  ＋",()->{});ui.quiet(toggle);box.setPadding(ui.dp(16),0,ui.dp(16),ui.dp(8));toggle.setLayoutParams(new LinearLayout.LayoutParams(-1,ui.dp(52)));toggle.setStateDescription("折りたたみ");
++        toggle.setOnClickListener(v->{boolean open=contents.getVisibility()!=View.VISIBLE;contents.setVisibility(open?View.VISIBLE:View.GONE);toggle.setText(title+(open?"  −":"  ＋"));toggle.setStateDescription(open?"展開中":"折りたたみ");});box.addView(contents);contents.setTag(toggle);return contents;
++    }
++    private void openSettings(){settings.setVisibility(View.VISIBLE);Button toggle=(Button)settings.getTag();toggle.setText("担当・実行の設定  −");toggle.setStateDescription("展開中");settings.requestRectangleOnScreen(new android.graphics.Rect(0,0,settings.getWidth(),ui.dp(120)),true);}
++    private JSONObject object(String key,String value){JSONObject j=new JSONObject();try{j.put(key,value);}catch(JSONException ignored){}return j;}
++    private TextView label(LinearLayout into,String text,int size){return ui.text(into,text,size);}
++    private Button button(LinearLayout into,String text,Runnable click){return ui.button(into,text,click);}
++    private EditText field(LinearLayout into,String hint,boolean many){EditText e=new EditText(this);e.setHint(hint);e.setSingleLine(!many);if(many)e.setMinLines(2);ui.input(e);LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,-2);params.topMargin=ui.dp(8);into.addView(e,params);return e;}
++    private LinearLayout card(LinearLayout parent){return ui.card(parent);}
++    private void message(String text){notice.setText(text);notice.setVisibility(text.isEmpty()?View.GONE:View.VISIBLE);if(!text.isEmpty())notice.announceForAccessibility(text);}
++    private JSONObject call(JSONObject command)throws Exception{
++        HttpURLConnection c=(HttpURLConnection)new URL(ENDPOINT).openConnection();c.setConnectTimeout(1500);c.setReadTimeout(20000);c.setInstanceFollowRedirects(false);c.setRequestMethod("POST");c.setDoOutput(true);c.setRequestProperty("Content-Type","application/json");c.setRequestProperty("Origin","http://127.0.0.1:5199");
++        try{byte[] bytes=command.toString().getBytes(StandardCharsets.UTF_8);c.setFixedLengthStreamingMode(bytes.length);try(OutputStream out=c.getOutputStream()){out.write(bytes);}int code=c.getResponseCode();InputStream in=code==200?c.getInputStream():c.getErrorStream();if(in==null)throw new IOException();ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[8192];int n;try(InputStream input=in){while((n=input.read(b))!=-1){out.write(b,0,n);if(out.size()>5_000_000)throw new IOException();}}JSONObject result=new JSONObject(out.toString("UTF-8"));if(code!=200)throw new IOException();if(!"sky.private-linux-deployment/1".equals(result.optString("schema"))&&!"export".equals(command.optString("action")))throw new IOException();return result;}finally{c.disconnect();}
++    }
++    private void poll(){if(fetching||commandBusy||destroyed)return;fetching=true;io.execute(()->{try{JSONObject s=call(object("action","status"));main.post(()->{if(destroyed)return;starting=false;startupNotice(true);render(s);if(prepareAfterConnect&&!prepareSent&&s.optJSONArray("models")!=null&&s.optJSONArray("models").length()>0&&!"ready".equals(s.optString("phase"))&&!"preparing".equals(s.optString("phase"))){prepareSent=true;JSONObject q=object("action","prepare");try{q.put("accepted",true);}catch(Exception ignored){}action(q);}});}catch(Exception e){main.post(()->{if(destroyed)return;if(starting&&System.currentTimeMillis()<startupDeadline){status.setText("Skyを起動しています。少しお待ちください。");}else{starting=false;startupNotice(false);latest=null;status.setText(prepareAfterConnect?"起動を確認できません。入力は残っています。設定で接続を確認してください。":"起動すると、このPixelで依頼できます。");start.setEnabled(true);run.setText("Skyを起動する");run.setEnabled(true);stop.setVisibility(View.GONE);addAgent.setEnabled(false);addModel.setEnabled(false);}});}finally{fetching=false;}});}
++    private void action(JSONObject command){if(commandBusy||destroyed)return;commandBusy=true;message("操作しています…");io.execute(()->{try{JSONObject s=call(command);main.post(()->{if(destroyed)return;message("");render(s);});}catch(Exception e){main.post(()->{if(!destroyed)message("操作の結果を確認できません。重ねて依頼せず、状態が更新されるのを待ってください。");});}finally{commandBusy=false;}});}
++    private void startSky(){if(starting||commandBusy)return;if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},NOTIFY_PERMISSION);return;}prepareAfterConnect=true;prepareSent=false;if(latest!=null){JSONObject q=object("action","prepare");try{q.put("accepted",true);}catch(Exception ignored){}prepareSent=true;action(q);return;}starting=true;startupDeadline=System.currentTimeMillis()+60000;start.setEnabled(false);run.setEnabled(false);status.setText("起動用の画面が開きます。準備の通知を押してSkyへ戻ってください。");try{
++        returningFromLauncher=true;Intent terminal=new Intent();terminal.setClassName("com.android.virtualization.terminal","com.android.virtualization.terminal.LauncherActivity");terminal.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);startActivity(terminal);
++        main.postDelayed(()->{if(!destroyed&&returningFromLauncher)startupNotice(false);},60000);
++    }catch(Exception e){starting=false;start.setEnabled(true);message("この端末の実行機能を開けませんでした。導入状態を確認してください。");}}
++    private void startupNotice(boolean connected){if(!returningFromLauncher)return;returningFromLauncher=false;
++        NotificationManager manager=getSystemService(NotificationManager.class);manager.createNotificationChannel(new NotificationChannel("pixel_sky_start","Skyの起動",NotificationManager.IMPORTANCE_HIGH));
++        Intent back=new Intent(this,SkyLinuxActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
++        PendingIntent open=PendingIntent.getActivity(this,START_NOTICE,back,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
++        Notification notification=new Notification.Builder(this,"pixel_sky_start").setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle(connected?"Skyにつながりました":"Skyの起動を確認してください").setContentText("ここを押してSkyへ戻る。入力は不要です。").setContentIntent(open).setAutoCancel(true).build();manager.notify(START_NOTICE,notification);
++    }
++    @Override public void onRequestPermissionsResult(int code,String[] permissions,int[] grants){super.onRequestPermissionsResult(code,permissions,grants);if(code==NOTIFY_PERMISSION){if(grants.length>0&&grants[0]==android.content.pm.PackageManager.PERMISSION_GRANTED)startSky();else message("起動後にSkyへ戻る通知を使います。通知を許可して、もう一度起動してください。");}}
++    @Override protected void onResume(){super.onResume();getSystemService(NotificationManager.class).cancel(START_NOTICE);}
++    private void runWork(){if(!consent.isChecked()){message("料金と保存の確認にチェックしてください。");return;}String input=request.getText().toString();if(input.trim().isEmpty()||input.length()>4000||selectedAgent.isEmpty()){message("担当を選び、依頼を4000文字以内で書いてください。");return;}String key;try{byte[] hash=MessageDigest.getInstance("SHA-256").digest((selectedAgent+"\n"+input).getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte b:hash)h.append(String.format("%02x",b));key=h.toString();}catch(Exception e){message("依頼の確認ができませんでした。");return;}if(!key.equals(pendingRequestKey)){pendingRequestId=UUID.randomUUID().toString();pendingRequestKey=key;getSharedPreferences("pixel_linux_pending",0).edit().putString("id",pendingRequestId).putString("key",key).commit();}try{action(new JSONObject().put("action","run").put("agentId",selectedAgent).put("input",input).put("requestId",pendingRequestId).put("accepted",true));}catch(Exception ignored){}}
++    private boolean isWorking(JSONObject r){return r!=null&&(r.optJSONObject("job").optString("status").equals("active")||"requested".equals(r.optString("stop"))||"unconfirmed".equals(r.optString("stop")));}
++    private void render(JSONObject s){
++        latest=s;String phase=s.optString("phase");boolean ready="ready".equals(phase),preparing="preparing".equals(phase),active=false;
++        JSONArray jobs=s.optJSONArray("runs");if(jobs==null)jobs=new JSONArray();int current=0;
++        for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){active=true;current=i;break;}
++        JSONArray models=s.optJSONArray("models");boolean added=models!=null&&models.length()>0;
++        JSONArray list=s.optJSONArray("agents");if(list==null)list=new JSONArray();
++        status.setText(active?"依頼を進めています。ここで止められます。":preparing?"準備しています。依頼はまだ実行していません。":ready?"このPixelで処理します。依頼を送れます。":"stopped".equals(phase)?"計算は停止中です。必要なときに起動できます。":"failed".equals(phase)?"準備できませんでした。入力は残っています。":"使うAIを追加してください。");
++        start.setEnabled(!active&&!preparing);run.setEnabled(!active&&!preparing&&!commandBusy);
++        run.setText(preparing?"準備しています…":!added?"使うAIを追加する":!ready?"Skyを起動する":list.length()==0?"自分の担当を作る":"この担当に依頼する");
++        composer.setVisibility(active?View.GONE:View.VISIBLE);consent.setVisibility(ready&&list.length()>0&&!active?View.VISIBLE:View.GONE);
++        stop.setVisibility(ready||active?View.VISIBLE:View.GONE);stop.setEnabled(!preparing);
++        model.setText("Qwen2.5 1.5B · 文章の下書き · 約1GB\n利用条件：Apache-2.0"+(added?"\n追加済み":""));
++        license.setVisibility(added?View.GONE:View.VISIBLE);addModel.setVisibility(added?View.GONE:View.VISIBLE);addModel.setEnabled(!added);addAgent.setEnabled(added);
++        agentLabel.setVisibility(list.length()>0?View.VISIBLE:View.GONE);agents.setVisibility(list.length()>0?View.VISIBLE:View.GONE);agentHint.setVisibility(list.length()>0?View.GONE:View.VISIBLE);agentHint.setText(added?"任せたい内容を決めて、担当を追加できます。":"担当は起動後に選べます。");
++        String fingerprint=list.toString();if(!fingerprint.equals(agentFingerprint)){
++            agentFingerprint=fingerprint;List<String> names=new ArrayList<>();int chosen=0;
++            for(int i=0;i<list.length();i++){JSONObject a=list.optJSONObject(i);names.add(a.optString("name"));if(a.optString("id").equals(selectedAgent))chosen=i;}
++            ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,names){
++                @Override public View getView(int position,View convert,android.view.ViewGroup parent){TextView v=(TextView)super.getView(position,convert,parent);v.setTextColor(ShellUi.INK);v.setTextSize(15);v.setPadding(ui.dp(8),ui.dp(10),ui.dp(8),ui.dp(10));return v;}
++                @Override public View getDropDownView(int position,View convert,android.view.ViewGroup parent){TextView v=(TextView)super.getDropDownView(position,convert,parent);v.setTextColor(ShellUi.INK);v.setBackgroundColor(ShellUi.SURFACE);v.setPadding(ui.dp(12),ui.dp(16),ui.dp(12),ui.dp(16));return v;}
++            };agents.setAdapter(adapter);agents.setSelection(chosen);
++        }
++        resultHeading.setVisibility(jobs.length()>0?View.VISIBLE:View.GONE);
++        String jf=jobs.toString();if(jf.equals(resultFingerprint))return;resultFingerprint=jf;results.removeAllViews();
++        if(jobs.length()==0){label(results,"まだ仕事はありません。上の欄に依頼を書いて始められます。",14);return;}
++        renderJob(results,jobs.optJSONObject(current));
++        if(jobs.length()>1){LinearLayout history=disclosure(results,"以前の仕事（"+(jobs.length()-1)+"件）");
++            for(int i=0;i<jobs.length();i++){if(i==current)continue;final JSONObject r=jobs.optJSONObject(i);button(history,requestTitle(r)+"\n"+jobTime(r)+" · "+r.optString("stateLabel","状態を確認"),()->showJob(r));}
++        }
++    }
++    private String jobTime(JSONObject r){try{return java.time.format.DateTimeFormatter.ofPattern("M/d HH:mm",Locale.JAPAN).format(java.time.Instant.parse(r.getJSONObject("job").getString("createdAt")).atZone(java.time.ZoneId.systemDefault()));}catch(Exception e){return "日時を確認できません";}}
++    private String requestTitle(JSONObject r){String text=r.optString("input","").replaceAll("\\s+"," ").trim();return text.length()>36?text.substring(0,36)+"…":text.isEmpty()?r.optJSONObject("agent").optString("name","保存した仕事"):text;}
++    private void renderJob(LinearLayout parent,JSONObject r){
++        JSONObject job=r.optJSONObject("job");String id=job.optString("id"),text=r.optString("text","");LinearLayout c=card(parent);
++        label(c,requestTitle(r),18);label(c,jobTime(r)+" · "+r.optString("stateLabel","状態を確認できません"),14);
++        if(isWorking(r)){
++            if("active".equals(job.optString("status")))label(c,"文章を作っています。終わると、ここに表示します。",15);
++            Button cancel=button(c,"この仕事を停止する",()->{JSONObject q=object("action","stop");try{q.put("jobId",id);}catch(Exception ignored){}closeJobDialog();action(q);});cancel.setEnabled(!"requested".equals(r.optString("stop")));
++        }else if(!text.isEmpty()&&!"null".equals(text)){
++            if("review".equals(job.optString("status")))label(c,"下書きです。内容を確認してください。",13);
++            TextView output=label(c,text,16);output.setTextColor(ShellUi.INK);output.setTextIsSelectable(true);
++            Button export=button(c,"成果を文章で保存",()->save(id));ui.primary(export);
++            if("review".equals(job.optString("status")))ui.quiet(button(c,"内容を確認した",()->{JSONObject q=object("action","confirm");try{q.put("jobId",id);}catch(Exception ignored){}closeJobDialog();action(q);}));
++        }else label(c,"cancelled".equals(job.optString("status"))?"この仕事は停止しました。途中の文章は成果として保存していません。":"この仕事の成果はありません。依頼を書き直して始められます。",14);
++        if(!isWorking(r))ui.quiet(button(c,"新しい依頼を書く",this::newRequest));
++    }
++    private void showJob(JSONObject r){ScrollView area=new ScrollView(this);area.setBackgroundColor(DARK);LinearLayout content=ui.column();content.setPadding(ui.dp(16),0,ui.dp(16),ui.dp(16));area.addView(content);renderJob(content,r);jobDialog=new AlertDialog.Builder(this).setTitle("保存した仕事").setView(area).setNegativeButton("閉じる",null).create();jobDialog.setOnDismissListener(d->jobDialog=null);jobDialog.show();}
++    private void closeJobDialog(){if(jobDialog!=null){jobDialog.dismiss();jobDialog=null;}}
++    private void save(String id){if(saving||commandBusy)return;closeJobDialog();saving=true;io.execute(()->{try{JSONObject q=object("action","export");q.put("jobId",id);JSONObject x=call(q);byte[] bytes=x.getString("text").getBytes(StandardCharsets.UTF_8);if(bytes.length>100000)throw new IOException();main.post(()->{if(destroyed)return;pendingSave=bytes;Intent picker=new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("text/plain").putExtra(Intent.EXTRA_TITLE,"Skyの成果.txt");startActivityForResult(picker,SAVE);});}catch(Exception e){saving=false;main.post(()->message("保存する文章を確認できません。成果は端末内に残っています。"));}});}
++    @Override protected void onActivityResult(int code,int result,Intent data){super.onActivityResult(code,result,data);if(code!=SAVE)return;byte[] bytes=pendingSave;pendingSave=null;saving=false;if(result!=RESULT_OK||data==null||data.getData()==null||bytes==null){message("保存を取りやめました。成果は残っています。");return;}Uri uri=data.getData();io.execute(()->{try{try(OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new IOException();out.write(bytes);}ByteArrayOutputStream check=new ByteArrayOutputStream();try(InputStream in=getContentResolver().openInputStream(uri)){if(in==null)throw new IOException();byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){check.write(b,0,n);if(check.size()>100000)throw new IOException();}}if(!Arrays.equals(bytes,check.toByteArray()))throw new IOException();main.post(()->message("文章を保存しました。Skyを終了しても読めます。"));}catch(Exception e){main.post(()->message("保存内容を確認できませんでした。成果はSky内に残っています。"));}});}
++    @Override protected void onSaveInstanceState(Bundle b){b.putString("request",request.getText().toString());b.putString("requestId",pendingRequestId);b.putString("requestKey",pendingRequestKey);super.onSaveInstanceState(b);}
++    @Override protected void onDestroy(){destroyed=true;main.removeCallbacksAndMessages(null);io.shutdown();super.onDestroy();}
++}
+--- /dev/null
++++ b/android/shell/src/debug/res/xml/sky_linux_network.xml
+@@ -0,0 +1,7 @@
++<network-security-config>
++    <base-config cleartextTrafficPermitted="false" />
++    <domain-config cleartextTrafficPermitted="true">
++        <domain includeSubdomains="false">127.0.0.1</domain>
++        <domain includeSubdomains="false">localhost</domain>
++    </domain-config>
++</network-security-config>
+--- /dev/null
++++ b/android/shell/src/debug/AndroidManifest.xml
+@@ -0,0 +1,9 @@
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <!-- Owner-only Linux preview. Release Shell keeps its no-network Binder contract. -->
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
++    <queries><package android:name="com.android.virtualization.terminal" /></queries>
++    <application android:networkSecurityConfig="@xml/sky_linux_network">
++        <activity android:name=".SkyLinuxActivity" android:exported="false" android:launchMode="singleTop" />
++    </application>
++</manifest>
+--- a/android/shell/src/main/java/dev/rock/shell/MainActivity.java
++++ b/android/shell/src/main/java/dev/rock/shell/MainActivity.java
+@@ -166,8 +166,8 @@
+         agentSubmission = localSubmission("sky_agent_submission_recovery");
+         ui = new ShellUi(this);
+         createShellFrame();
+-        heading(pageContent[1], "Sky", "能力と実行先を選ぶ");
+-        LinearLayout toolCard = ui.card(pageContent[1]);
++        heading(pageContent[1], "Sky", "やりたいことから、必要な担当へ。");
++        LinearLayout toolCard = ui.card(pageContent[1]); toolCard.setTag("sky-tools-card");
+         heading(pageContent[2], "仕事", "いまの状態と、次にすること");
+         workOverview = label(pageContent[2], "保存した仕事を確認しています…", 15);
+         newWorkButton = button(pageContent[2], "＋ 新しい依頼", () -> { selectPage(0); homePrompt.requestFocus(); }); ui.primary(newWorkButton);
+@@ -320,13 +320,13 @@
+         }));
+         label(form, "出典整理と無料記事の準備。自動計画には対応する端末内モデルが必要です。", 14);
+         button(form, "このツールで依頼を準備", () -> { selectPage(0); homePrompt.requestFocus(); });
+-        LinearLayout modelCard = ui.card(pageContent[1]);
++        LinearLayout modelCard = ui.card(pageContent[1]); modelCard.setTag("sky-models-card");
+         label(modelCard, "端末内モデル", 18);
+         label(modelCard, "対応するGGUFを選び、ライセンス・容量・署名・ハッシュを確認して導入します。検索で見つけた対応モデルは、同意後にWi-Fiで取得できます。", 14);
+         localModelMessage = label(modelCard, "未確認。導入や再読込みは本人操作で開始します。", 14);
+         button(modelCard, "モデルの導入状態を確認", this::refreshLocalModels);
+         localModels = new LinearLayout(this); localModels.setOrientation(LinearLayout.VERTICAL); modelCard.addView(localModels);
+-        LinearLayout discoveryCard = ui.card(pageContent[1]);
++        LinearLayout discoveryCard = ui.card(pageContent[1]); discoveryCard.setTag("sky-discovery-card");
+         pageContent[1].removeView(discoveryCard); pageContent[1].addView(discoveryCard, 2);
+         label(discoveryCard, "公開siを探す", 18);
+         label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GitHubは更新順、Hugging Faceはダウンロード数順でモデルやエージェントの関連候補を探します。", 14);
+@@ -344,6 +344,11 @@
+         modelDownloadPanel = new LinearLayout(this); modelDownloadPanel.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(modelDownloadPanel);
+         button(discoveryCard, "ダウンロード状態を確認", this::refreshModelDownload); refreshModelDownload();
+         buildAddonPanel(pageContent[1]);
++        if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
++            Button pixelLinuxEntry = button(pageContent[1], "このPixelで依頼する", () -> startActivity(new Intent().setClassName(this, "dev.rock.shell.SkyLinuxActivity")));
++            pixelLinuxEntry.setTag("sky-private-request-entry");
++            pageContent[1].removeView(pixelLinuxEntry); pageContent[1].addView(pixelLinuxEntry, 2);
++        }
+         discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
+         form = composer;
+         label(form, "依頼を確認", 20);
+@@ -411,6 +416,7 @@
+         button(advancedPanel, "全停止（保存した仕事は残す）", () -> changeLocalPause(true));
+         button(advancedPanel, "自動実行を再開", () -> changeLocalPause(false));
+         button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
++        organizeSkyPage();
+         buildHomePage();
+         Object retained = getLastNonConfigurationInstance();
+         if (retained instanceof String[]) {
+@@ -629,7 +635,7 @@
+     private LocalSubmission agentSubmission;
+     private Button agentRecovery;
+     private void buildAddonPanel(LinearLayout parent) {
+-        LinearLayout panel=ui.card(parent);parent.removeView(panel);parent.addView(panel,Math.min(3,parent.getChildCount()));label(panel,"si社員・エージェント",19);
++        LinearLayout panel=ui.card(parent);panel.setTag("sky-agents-card");parent.removeView(panel);parent.addView(panel,Math.min(3,parent.getChildCount()));label(panel,"si社員・エージェント",19);
+         ui.primary(button(panel,"自分用の担当を作る",this::showOwnedAgentCreator));
+         label(panel,"名前と役割を決めて保存し、実際の依頼を渡せます。作成しただけでは作業を始めません。",13);
+         label(panel,"Hugging Faceの公開モデルURL、またはGitHubのエージェント定義JSONのURLから追加できます。作者署名の有無・互換性・版・容量・権限を確認します。",13);
+@@ -1018,10 +1024,36 @@
+         label(parent, title, 26); label(parent, subtitle, 14);
+     }
+ 
++    private void organizeSkyPage() {
++        LinearLayout page = pageContent[1];
++        java.util.List<View> content = new java.util.ArrayList<>();
++        Button requestEntry = null;
++        for (int i = 2; i < page.getChildCount(); i++) {
++            View view = page.getChildAt(i);
++            if ("sky-private-request-entry".equals(view.getTag())) requestEntry = (Button) view;
++            else content.add(view);
++        }
++        while (page.getChildCount() > 2) page.removeViewAt(2);
++        LinearLayout entry = ui.column(); page.addView(entry);
++        if (requestEntry == null) requestEntry = button(entry, "仕事を依頼する", () -> { selectPage(0); homePrompt.requestFocus(); });
++        else entry.addView(requestEntry, new LinearLayout.LayoutParams(-1, -2));
++        ui.primary(requestEntry);
++        LinearLayout tools = disclosure(page, "自分の担当と道具");
++        LinearLayout models = disclosure(page, "モデル・接続");
++        for (View view : content) {
++            view.setBackground(null); view.setPadding(0, ui.dp(6), 0, ui.dp(8));
++            Object tag = view.getTag();
++            LinearLayout destination = "sky-models-card".equals(tag) || "sky-discovery-card".equals(tag) ? models : tools;
++            destination.addView(view, new LinearLayout.LayoutParams(-1, -2));
++        }
++    }
++
+     private LinearLayout disclosure(LinearLayout parent, String title) {
+         LinearLayout card = ui.card(parent);
+         LinearLayout contents = ui.column(); contents.setVisibility(View.GONE);
+         Button toggle = button(card, title + "  ＋", () -> {});
++        ui.quiet(toggle); card.setPadding(ui.dp(16), 0, ui.dp(16), ui.dp(8));
++        toggle.setLayoutParams(new LinearLayout.LayoutParams(-1, ui.dp(52)));
+         toggle.setOnClickListener(view -> {
+             boolean expanded = contents.getVisibility() != View.VISIBLE;
+             contents.setVisibility(expanded ? View.VISIBLE : View.GONE);
+--- a/android/shell/src/main/java/dev/rock/shell/ShellUi.java
++++ b/android/shell/src/main/java/dev/rock/shell/ShellUi.java
+@@ -89,6 +89,11 @@
+         view.setTextColor(SURFACE);
+         view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), surface(ACCENT, 0, 14), null));
+     }
++    void quiet(Button view) {
++        view.setTextColor(MUTED); view.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
++        view.setMinHeight(dp(48)); view.setPadding(dp(8), dp(8), dp(8), dp(8));
++        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), null, surface(INK, 0, 10)));
++    }
+     TextView badge(LinearLayout parent, String text, int color) {
+         TextView view = text(parent, text, 12);
+         view.setTextColor(color); view.setPadding(dp(12), dp(6), dp(12), dp(6));

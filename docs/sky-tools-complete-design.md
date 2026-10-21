@@ -1330,3 +1330,8 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
 
 保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。
+
+
+## 未統合Tool/runtimeの接続境界
+
+Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのinstructionsは非信頼の役割設定であり、Tool権限・外部送信・支払同意は既存Broker/workflowが強制する。成果持出しは読み取り専用で、有料実行利用権を復旧の前提にしない。本人用Planner/Zoom/Linux Labはloopback・開発環境・明示設定の境界を維持し、公開環境で有効化しない。契約・入出力・状態・保存・失敗復旧・承認・合格条件は[統合runtime](rockstaros-complete-design.md#unmerged-runtime-integration)に従う。実Zoom、任意API/MCP、実Linux provider、本番請求は個別受入が必要。

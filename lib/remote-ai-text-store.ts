@@ -151,6 +151,13 @@ export class RemoteAiTextStore {
       AND EXISTS (SELECT 1 FROM remote_ai_text_executions e WHERE e.owner_user_id = ? AND e.id = ?
         AND e.state IN ('completed','unreconciled','cancelled','expired'))`).bind(owner, id, owner, id).run();
   }
+  /** Recovery/export must not expire approvals, mutate reservations or require paid access. */
+  async listForExport(owner: string, parentJobId: string) {
+    const rows = await this.db.prepare(`SELECT ${columns} FROM remote_ai_text_executions
+      WHERE owner_user_id = ? AND parent_job_id = ? ORDER BY created_at DESC, id DESC LIMIT 51`)
+      .bind(owner, parentJobId).all<Row>();
+    return (rows.results ?? []).map(decode);
+  }
   async list(owner: string, parentJobId?: string, now = Date.now()) {
     const parentFilter = parentJobId === undefined ? '' : ' AND parent_job_id = ?';
     const values = parentJobId === undefined ? [owner] : [owner, parentJobId];

@@ -1,3 +1,4 @@
+import { SkyFeatureGate } from '@/components/sky-optional-features';
 import type { Metadata } from 'next';
 import EverythingMarket from '@/components/everything-market';
 
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function MarketPage() {
-  return <EverythingMarket />;
+  return <SkyFeatureGate feature="market"><EverythingMarket /></SkyFeatureGate>;
 }

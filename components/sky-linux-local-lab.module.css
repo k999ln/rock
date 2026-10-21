@@ -1,0 +1,18 @@
+.page { max-width: 880px; min-height: 100vh; margin: 0 auto; padding: 32px 20px 80px; color: #ededed; background: #101010; }
+.page h1 { font-size: 28px; margin: 22px 0 12px; }
+.page h2 { font-size: 20px; margin-bottom: 12px; }
+.page p { margin: 10px 0; line-height: 1.75; overflow-wrap: anywhere; }
+.page section { padding: 24px; margin: 22px 0; border: 1px solid #424242; border-radius: 12px; background: #181818; }
+.page label { display: block; margin: 14px 0; line-height: 1.7; }
+.page input:not([type=checkbox]), .page textarea, .page select { display: block; width: 100%; margin-top: 6px; border: 1px solid #777; border-radius: 6px; padding: 10px; background: #242424; color: #fff; box-sizing: border-box; font: inherit; }
+.page textarea { min-height: 110px; resize: vertical; }
+.page input[type=checkbox] { margin-right: 9px; }
+.page button { border: 1px solid #888; background: #e5e5e5; color: #181818; border-radius: 6px; padding: 10px 14px; margin: 8px 10px 8px 0; font: inherit; cursor: pointer; }
+.page button:disabled { opacity: .45; cursor: default; }
+.page a { text-decoration: underline; color: inherit; }
+.page pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.8; padding: 14px; background: #242424; }
+.page details { margin-top: 16px; }
+.error { color: #ffb4ab; }
+.run { border-top: 1px solid #505050; padding: 18px 0; }
+.result { padding: 14px; background: #242424; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 540px) { .page { padding: 20px 12px 50px; } .page section { padding: 16px; } }

@@ -1,11 +1,12 @@
 // Loopback Worker/D1/R2 regression. Synthetic users, no payments or providers.
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+import { copyWorkerBuildFixture } from './worker-build-fixture.mjs';
 import { removeCsvJobStorage, purgeExpiredCsvJobs, CSV_RETENTION_CRON } from '../lib/csv-retention.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -21,7 +22,7 @@ async function start() {
   worker = new Miniflare(convertV4MiniflareOptions({
     name: config.name, rootPath: directory, modulesRoot: directory,
     modules: [config.main, ...readdirSync(directory, {recursive:true, encoding:'utf8'})
-      .filter(f => f !== config.main && /\.m?js$/.test(f))]
+      .filter(f => f !== config.main && !f.split(/[\\/]/).some(part => part.startsWith('._')) && /\.m?js$/.test(f))]
       .map(f => ({type:'ESModule', path:resolve(directory, f)})),
     compatibilityDate: config.compatibility_date, compatibilityFlags: config.compatibility_flags,
     // Keep this production authentication regression independent from the
@@ -67,7 +68,7 @@ async function artifacts(job, user=alice) {
   return result;
 }
 try {
-  cpSync(join(root,'dist'),join(temporary,'dist'), {recursive:true,filter:p=>!p.split(/[\\/]/).at(-1).startsWith('._')});
+  copyWorkerBuildFixture(join(root,'dist'),join(temporary,'dist'));
   await start();
   // Canonical builds apply the append-only migration chain before admission.
   for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql') && !f.startsWith('._')).sort())

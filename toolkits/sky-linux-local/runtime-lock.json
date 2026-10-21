@@ -1,0 +1,19 @@
+{
+  "schema": "sky.private-linux-runtime/1",
+  "version": "b11723",
+  "architecture": "aarch64",
+  "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11723/llama-b11723-bin-ubuntu-arm64.tar.gz",
+  "sha256": "681fe84f4e7a321315bdb616d88a1e89354bd9945b538acc85c36cbf99f9d93f",
+  "bytes": 14022718,
+  "directory": "llama-b11723",
+  "model": {
+    "id": "qwen2.5-1.5b-local",
+    "name": "Qwen2.5 1.5B（文章作成）",
+    "sha256": "183715c435899236895da3869489cc30ac241476b4971a20285b1a462818a5b4",
+    "bytes": 986048512,
+    "license": "Apache-2.0",
+    "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct",
+    "cacheBlob": "sha256-183715c435899236895da3869489cc30ac241476b4971a20285b1a462818a5b4"
+  },
+  "scope": "Owner-private trusted text inference only; not arbitrary package or shell execution, full OS or production billing acceptance."
+}

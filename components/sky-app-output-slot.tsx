@@ -51,11 +51,11 @@ export default function SkyAppOutputSlot({
     return () => controller.abort();
   }, [delegationId, validDelegationId]);
 
-  if (!validDelegationId) return <p role="alert">Agent成果の指定が正しくありません。Skyから開き直してください。</p>;
+  if (!validDelegationId) return <p role="alert">エージェント成果の指定が正しくありません。Skyから開き直してください。</p>;
   const state = snapshot.id === delegationId ? snapshot.state : 'loading';
   if (state === 'loading') return <p>Skyの成果を読み込んでいます…</p>;
-  if (state === 'signed_out') return <p><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`}>サインイン</Link>して、自分のAgent成果を開いてください。</p>;
+  if (state === 'signed_out') return <p><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`}>サインイン</Link>して、自分のエージェント成果を開いてください。</p>;
   if (state === 'unavailable') return <p role="alert">この成果を確認できません。Skyで保存状態と本人アカウントを確認してください。</p>;
-  if (snapshot.documents.length === 0) return <p>このAgentの保存済み成果はまだありません。</p>;
+  if (snapshot.documents.length === 0) return <p>このエージェントの保存済み成果はまだありません。</p>;
   return <>{children(snapshot.documents)}</>;
 }

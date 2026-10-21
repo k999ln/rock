@@ -1,0 +1,19 @@
+// Configure only after same-contract issuer/Linux/Stripe sandbox acceptance. This file is not deployed.
+{
+  "name": "sky-linux-billing-controller",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "triggers": { "crons": ["15 0 * * *"] },
+  "vars": {
+    "SKY_LINUX_SERVICE_ENABLED": "false",
+    "SKY_LINUX_BILLING_ENABLED": "false",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "site-creator-d1",
+      "database_id": "REPLACE_WITH_ACCEPTED_DATABASE_ID",
+    },
+  ],
+}

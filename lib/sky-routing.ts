@@ -32,6 +32,12 @@ export const skyRoles: readonly SkyRole[] = [
   { label: 'Goal・部隊管理役', toolId: 'rockstar-amc' },
 ];
 
+/** Sky Tool execution is independent of the selected conversation model. */
+export function eveDispatchMode(remoteTextProvider: boolean, hasToolRoute: boolean) {
+  if (hasToolRoute) return 'tool' as const;
+  return remoteTextProvider ? 'estimate' as const : 'conversation' as const;
+}
+
 export function routeSkyRequest(request: string): SkyRole | null {
   const value = request.trim().toLowerCase();
   if (!value) return null;

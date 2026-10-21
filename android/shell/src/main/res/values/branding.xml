@@ -1,0 +1,4 @@
+<resources>
+    <string name="rockstaros_brand_name">RockstarOS</string>
+    <color name="company_launcher_background">#FFFFFFFF</color>
+</resources>

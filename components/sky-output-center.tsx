@@ -1,8 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { SkyNotice } from '@/components/sky-feedback';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Copy, Download, RefreshCw } from 'lucide-react';
+import { SkyAppResultView } from '@/components/sky-app-result-view';
+import { SkyWorkProgress } from '@/components/sky-feedback';
+import { skyError, skyProgress } from '@/lib/sky-presentation';
 import WorkspaceShell from '@/components/workspace-shell';
 import { CAMPUSES, type CampusId } from '@/lib/campus';
 import type { WorkJob } from '@/lib/workflow';
@@ -46,14 +51,6 @@ function downloadText(filename: string, content: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-const delegationState: Record<string, string> = {
-  remote_completed: '成果の確認ができます',
-  remote_failed: 'Agent側で失敗',
-  remote_cancelled: '停止済み',
-  awaiting_approval: '承認待ち',
-  prepared: '実行待ち',
-  running: '実行中',
-};
 
 export default function SkyOutputCenter({
   campusId,
@@ -73,13 +70,22 @@ export default function SkyOutputCenter({
   const [artifactError, setArtifactError] = useState('');
   const [sourceError, setSourceError] = useState('');
   const [copyMessage, setCopyMessage] = useState('');
+  const [exportBusy, setExportBusy] = useState(false);
+  const [exportMessage, setExportMessage] = useState('');
+  const exportRequest = useRef<AbortController | null>(null);
   const [revision, setRevision] = useState(0);
   const refresh = useCallback(() => {
+    exportRequest.current?.abort();
+    setExportBusy(false);
+    setExportMessage('');
     setListState('loading');
     setDetailState('loading');
     setRevision((value) => value + 1);
   }, []);
   const selectJob = useCallback((id: string) => {
+    exportRequest.current?.abort();
+    setExportBusy(false);
+    setExportMessage('');
     setDetailState('loading');
     setDelegations([]);
     setAnswers([]);
@@ -92,6 +98,47 @@ export default function SkyOutputCenter({
   const outputPath = campusId ? `/sky/campus/${campusId}/outputs` : '/sky/outputs';
   const zema = campusId ? `/sky/campus/${campusId}/manage?view=work` : '/chat?view=work';
   const selected = jobs.find((job) => job.id === selectedId);
+
+  useEffect(() => () => exportRequest.current?.abort(), []);
+
+  async function exportWork() {
+    if (!selected || exportBusy) return;
+    const job = selected;
+    const controller = new AbortController();
+    exportRequest.current?.abort();
+    exportRequest.current = controller;
+    setExportBusy(true);
+    setExportMessage('');
+    try {
+      const response = await fetch(`/api/sky/exports/${encodeURIComponent(job.id)}?revision=${job.revision}`, {
+        cache: 'no-store', credentials: 'same-origin', signal: controller.signal,
+      });
+      if (!response.ok) {
+        const error = await response.json() as { error?: string };
+        throw new Error(error.error ?? "持出しファイルを作成できませんでした。更新して再試行してください。");
+      }
+      if (!response.headers.get('content-type')?.startsWith('text/html'))
+        throw new Error("持出しファイルの形式を確認できませんでした。");
+      const blob = await response.blob();
+      if (controller.signal.aborted) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Skyの成果.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setExportMessage(response.headers.get('x-sky-export-completeness') === 'partial'
+        ? "保存を開始しました。省略・未確認の項目があるため、ファイル内の案内も確認してください。"
+        : '保存を開始しました。保存したHTMLをブラウザで開くと、Skyへの接続なしで読めます。');
+    } catch (error) {
+      if (!controller.signal.aborted)
+        setExportMessage(skyError(error).message + ' ' + skyError(error).next);
+    } finally {
+      if (exportRequest.current === controller) setExportBusy(false);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -146,7 +193,7 @@ export default function SkyOutputCenter({
         [id]: response.artifacts as SavedArtifact[],
       }));
     } catch {
-      setArtifactError('保存済み成果を確認できませんでした。Zemaで状態を更新してから再試行してください。');
+      setArtifactError('保存済み成果を確認できませんでした。Eveで状態を更新してから再試行してください。');
     } finally {
       setArtifactBusy('');
     }
@@ -169,37 +216,50 @@ export default function SkyOutputCenter({
     <main className={styles.page} aria-labelledby="sky-output-title">
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>{campusId ? `${CAMPUSES[campusId].shortName.toUpperCase()} / SKY` : 'SKY'} · OUTPUTS</p>
+          <p className={styles.eyebrow}>{campusId ? `${CAMPUSES[campusId].shortName.toUpperCase()} / SKY` : 'SKY'} · 成果</p>
           <h1 id="sky-output-title">成果</h1>
-          <p>保存したAgent成果を確認し、形式が合うアプリへ渡せます。OS版ではZemaの仕事にも戻れます。</p>
+          <p>保存したエージェント成果を確認し、形式が合うアプリへ渡せます。OS版ではEveの仕事にも戻れます。</p>
         </div>
         <button type="button" onClick={refresh}><RefreshCw size={16} /> 更新</button>
       </header>
       <nav className={styles.nav} aria-label="Skyの移動先">
-        <Link href={home}>SkyでAgentを探す</Link>
+        <Link href={home}>Skyでエージェントを探す</Link>
         <Link href="/fitness">Fitnessアプリの例 <ArrowRight size={15} /></Link>
-        <Link href={zema}>OS版のZemaで仕事を見る</Link>
+        <Link href={zema}>OS版のEveで仕事を見る</Link>
       </nav>
       {listState === 'loading' && <p className={styles.notice}>本人の仕事を読み込んでいます…</p>}
       {listState === 'signed_out' && <p className={styles.notice}><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(outputPath)}`}>サインイン</Link>すると、自分の成果を確認できます。</p>}
       {listState === 'unavailable' && <p className={styles.notice} role="alert">仕事を読み込めませんでした。接続を確認して更新してください。</p>}
-      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>Skyで保存されたAgent成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>Skyを開く <ArrowRight size={15} /></Link></div>}
+      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>Skyで保存されたエージェント成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>Skyを開く <ArrowRight size={15} /></Link></div>}
       {listState === 'ready' && jobs.length > 0 && <div className={styles.layout}>
         <section className={styles.list} aria-label="仕事一覧">
           <div className={styles.sectionHead}><h2>仕事</h2><span>{jobs.length}件</span></div>
           {jobs.map((job) => <button type="button" key={job.id} className={job.id === selectedId ? styles.selected : ''} aria-pressed={job.id === selectedId} onClick={() => selectJob(job.id)}>
             <strong>{job.title}</strong>
-            <span>{job.status === 'completed' ? '仕事は完了' : job.status === 'cancelled' ? '中止' : '作業中・確認待ち'} · {new Date(job.updatedAt).toLocaleDateString('ja-JP')}</span>
+            <span>{skyProgress(job.status).label} · {new Date(job.updatedAt).toLocaleDateString('ja-JP')}</span>
           </button>)}
         </section>
         <section className={styles.detail} aria-label="選択した仕事の成果">
           <div className={styles.sectionHead}>
-            <div><small>WORK OUTPUT</small><h2>{selected?.title ?? '仕事を選択'}</h2></div>
-            {selected && <Link href={`${zema}&workJob=${encodeURIComponent(selected.id)}`}>Zemaで開く <ArrowRight size={15} /></Link>}
+            <div><small>保存した成果</small><h2>{selected?.title ?? '仕事を選択'}</h2></div>
+            {selected && <Link href={`${zema}&workJob=${encodeURIComponent(selected.id)}`}>Eveで開く <ArrowRight size={15} /></Link>}
           </div>
+          {selected && <section className={styles.exportPanel} aria-label="仕事のデータ持出し">
+            <div className={styles.actions}>
+              <button type="button" disabled={exportBusy} onClick={() => void exportWork()}><Download size={15} /> {exportBusy ? "持出しファイルを作成中…" : 'この仕事を持ち出す'}</button>
+            </div>
+            <p>この仕事の記録、保存済みの文章成果、利用額の要約をファイルに保存します。保存したファイルを開けば、Skyを使わずに読めます。</p>
+            <p>添付ファイル、CSVの元ファイル、保存しなかった回答、アカウント全体は対象外です。個人情報を含むため保存先・共有先を確認してください。</p>
+            {exportMessage && <output>{exportMessage}</output>}
+          </section>}
+          {selected && <SkyWorkProgress job={selected} />}
+          {selected?.skyApp && <section className={styles.notice}>
+            <h3>{selected.skyApp.request.appId === 'zoom' ? '会議のまとめ' : 'プランナーの作業準備'}</h3>
+            <SkyAppResultView binding={selected.skyApp} />
+          </section>}
           {detailState === 'loading' && <p className={styles.notice}>保存済み成果を確認しています…</p>}
           {detailState === 'signed_out' && <p className={styles.notice}>サインインが切れました。再ログインしてから更新してください。</p>}
-          {detailState === 'unavailable' && <p className={styles.notice} role="alert">成果の状態を取得できません。Zemaの仕事履歴からも確認できます。</p>}
+          {detailState === 'unavailable' && <p className={styles.notice} role="alert">成果の状態を取得できません。Eveの仕事履歴からも確認できます。</p>}
           {detailState === 'ready' && sourceError && <p className={styles.notice} role="alert">{sourceError}を確認できません。未確認の結果は「なし」と扱わず、更新後にもう一度確認してください。</p>}
           {selected?.standaloneAgent && <article className={styles.output}>
             <div className={styles.outputHead}><div><small>SKY FIRST-PARTY AGENT</small><h3>出典整理Agent</h3><span>完了 · 第一者処理 · 無料</span></div></div>
@@ -216,7 +276,7 @@ export default function SkyOutputCenter({
           {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud si回答がありません。実行中の状態はZemaで確認できます。</p>}
           {detailState === 'ready' && delegations.map((delegation) => <article className={styles.output} key={delegation.id}>
             <div className={styles.outputHead}>
-              <div><small>AGENT</small><h3>{delegation.targetAgentName}</h3><span>v{delegation.targetAgentVersion} · {delegationState[delegation.state] ?? delegation.state}</span></div>
+              <div><small>エージェント</small><h3>{delegation.targetAgentName}</h3><span>v{delegation.targetAgentVersion} · {skyProgress(delegation.state, 'execution').label}</span></div>
               {delegation.artifactsCaptured === 1 && <button type="button" disabled={artifactBusy === delegation.id} onClick={() => void loadArtifacts(delegation.id)}>{artifactBusy === delegation.id ? '読込中…' : '成果を見る'}</button>}
             </div>
             {delegation.artifactsCaptured !== 1 && <p>保存済み成果はまだありません。相手側の完了と成果の保存を別々に確認します。</p>}
@@ -250,9 +310,9 @@ export default function SkyOutputCenter({
               </div>
             </div> : <p>{answer.state === 'completed' && !answer.saveResult ? 'この回答は保存しない設定で実行されました。履歴から本文を再取得できません。' : '保存された回答はまだありません。'}</p>}
           </article>)}
-          {artifactError && <p className={styles.notice} role="alert">{artifactError}</p>}
+          {artifactError && <SkyNotice className={styles.notice} message={artifactError} />}
           {copyMessage && <output className={styles.notice}>{copyMessage}</output>}
-          <p className={styles.footnote}>Agentの文章は未検証の出力です。外部送信や次のAgentへの引継ぎはZemaで内容・権限・費用を確認してください。</p>
+          <p className={styles.footnote}>エージェントの文章は未検証の出力です。外部送信や次のエージェントへの引継ぎはEveで内容・権限・費用を確認してください。</p>
         </section>
       </div>}
     </main>
