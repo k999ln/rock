@@ -4,6 +4,6 @@
 
 - The live database has already recorded its historical `0000`-`0019` migrations; those files intentionally remain in its migration ledger instead of being replayed from this directory.
 - `0020_main_legacy_columns.sql` adds only columns confirmed missing from the live main D1, with defaults for every new non-null value.
-- `0021_sites_schema_convergence.sql` is the idempotent full-schema snapshot, and `0022` restores the recurring send guard after its prerequisite table exists.
+- `0021_sites_schema_convergence.sql` is the idempotent full-schema snapshot, `0022` restores the recurring send guard after its prerequisite table exists, and `0023` idempotently guarantees Jennifer execution/passkey tables even after a partially applied failed deployment.
 
 This directory is append-only and is not an empty-database bootstrap. Restore an empty main database from backup before continuing this lineage. Do not reuse it for Columbia or another database.
