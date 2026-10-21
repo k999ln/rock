@@ -5,6 +5,7 @@
     { "idx": 0, "version": "6", "when": 1792555200000, "tag": "0020_main_legacy_columns", "breakpoints": true },
     { "idx": 1, "version": "6", "when": 1792555200001, "tag": "0021_sites_schema_convergence", "breakpoints": true },
     { "idx": 2, "version": "6", "when": 1792555200002, "tag": "0022_sky_recurring_send_guard", "breakpoints": true },
-    { "idx": 3, "version": "6", "when": 1792555200003, "tag": "0023_jennifer_schema_guard", "breakpoints": true }
+    { "idx": 3, "version": "6", "when": 1792555200003, "tag": "0023_jennifer_schema_guard", "breakpoints": true },
+    { "idx": 4, "version": "6", "when": 1792555200004, "tag": "0024_remote_ai_send_claims_recovery", "breakpoints": true }
   ]
 }
