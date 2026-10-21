@@ -102,11 +102,15 @@ for (const file of sqlFiles) {
 }
 
 let convergenceDeclarations = 0;
+const permittedConvergenceFiles = new Set([
+  '0004_union_bridge.sql',
+  '0020_sites_schema_convergence.sql',
+]);
 for (const [table, entries] of declarations) {
   if (entries.length === 1) continue;
   const repeated = entries.slice(1);
   for (const entry of repeated) {
-    if (entry.file !== '0004_union_bridge.sql' || !entry.idempotent)
+    if (!permittedConvergenceFiles.has(entry.file) || !entry.idempotent)
       throw new Error(
         `web schema: ${table}が意図しないmigrationで再定義されています: ${entry.file}`,
       );

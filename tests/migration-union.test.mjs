@@ -145,6 +145,8 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
     '0017_sky_cloud_monthly_test.sql',
     '0018_sky_recurring_sandbox.sql',
     '0019_sky_hosted_monthly.sql',
+    '0020_sites_schema_convergence.sql',
+    '0021_sky_recurring_send_guard.sql',
   ]);
   assert.match(read('0013_sky_provider_connections.sql'), /CREATE TABLE IF NOT EXISTS `sky_provider_connections`/);
   assert.doesNotMatch(read('0013_sky_provider_connections.sql'), /^ALTER TABLE/m);
@@ -156,6 +158,9 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
   assert.match(read('0018_sky_recurring_sandbox.sql'), /CREATE TRIGGER IF NOT EXISTS sky_recurring_a2a_send/);
   assert.match(read('0019_sky_hosted_monthly.sql'), /CREATE TABLE IF NOT EXISTS `sky_hosted_monthly_events`/);
   assert.match(read('0019_sky_hosted_monthly.sql'), /CREATE UNIQUE INDEX IF NOT EXISTS `sky_hosted_monthly_tests_id_unique`/);
+  assert.match(read('0020_sites_schema_convergence.sql'), /CREATE TABLE IF NOT EXISTS `remote_ai_text_send_claims`/);
+  assert.doesNotMatch(read('0018_sky_recurring_sandbox.sql'), /sky_recurring_llm_send/);
+  assert.match(read('0021_sky_recurring_send_guard.sql'), /CREATE TRIGGER IF NOT EXISTS sky_recurring_llm_send/);
   assert.deepEqual(
     journal.map((entry) => entry.tag + '.sql'),
     names,
@@ -179,6 +184,8 @@ await test('late Sites migrations tolerate objects left by an earlier deployment
     for (const name of names) execute(name);
     execute('0018_sky_recurring_sandbox.sql');
     execute('0019_sky_hosted_monthly.sql');
+    execute('0020_sites_schema_convergence.sql');
+    execute('0021_sky_recurring_send_guard.sql');
     assert.ok(sqlite.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sky_recurring_contracts'",
     ).get());

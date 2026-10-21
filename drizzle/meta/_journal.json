@@ -50,6 +50,20 @@
       "when": 1792262293555,
       "tag": "0019_sky_hosted_monthly",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1792555200000,
+      "tag": "0020_sites_schema_convergence",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1792555200001,
+      "tag": "0021_sky_recurring_send_guard",
+      "breakpoints": true
     }
   ]
 }
