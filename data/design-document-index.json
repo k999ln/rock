@@ -1,4 +1,5 @@
 {
+  "latestRockstarOsDesign": {"authority":"docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve","sourceThread":"codex://threads/01a14d54-daee-7c30-87a8-faea84641a40","scope":"RockstarOS OS design foundation","status":"current_design_authority_runtime_integration_pending","linkedWorkstream":"docs/workstreams/05-web-pwa-sites.md#redesign-thread-web","pixelFullOsAccepted":false,"qemuDeveloperPreviewSeparate":true},
   "skyCloudRequestUi":{"authority":"docs/llm-evaluation-architecture.md","implementation":"components/sky-free-cloud-panel.tsx","productionBilling":false},
   "skyConcurrentReadback":{"authority":"docs/llm-evaluation-architecture.md","pollMs":30000,"rateLimitBackoffMs":60000,"productionBilling":false},
   "freeCloudRetryDiagnostics": {"automaticContinuation":"confirmed_FREE_LIMIT_only_same_id_CAS_5_attempts_10_minutes","date":"2026-10-17","authority":"docs/llm-evaluation-architecture.md","tests":"tests/sky-free-cloud.test.mjs","productionBilling":false},

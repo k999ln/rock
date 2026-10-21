@@ -1,10 +1,10 @@
 # RockstarOS — 現行製品方針と確定要望
 
-## 2026-10-21 参照チャットの再設計要望（統合待ち）
+## 2026-10-21 RockstarOS本体の最新設計方針
 
-[「RockstarOSを再設計」チャット](codex://threads/01a14d54-daee-7c30-87a8-faea84641a40)で本人が明示した方向を、既存RQ01〜RQ50に対する差分として記録する。Sky/Homeは投稿を情報・発見・追加・依頼の単位にする。Skyは外部API/MCPから投稿を受ける入口とし、Xの投稿取得に利用者ごとのdeveloper app契約を要求しない。Eveは会話・仕事・成果を本人別に引き継ぐ。利用者とコミュニティーはルール・見た目・モデル・Agentを版として作り、鍵で参加を制御する。eSIMは本人のCloud Sky/Eve/Linuxサービスへの入口であり、OS binaryの格納先ではない。
+[「RockstarOSを再設計」チャット](codex://threads/01a14d54-daee-7c30-87a8-faea84641a40)で本人が明示した内容を、RockstarOS本体の最新設計の大元として採用する。OS以外の既存RQと料金契約は分けて照合する。Sky/Homeは投稿を情報・発見・追加・依頼の単位にする。Skyは外部API/MCPから投稿を受ける入口とし、Xの投稿取得に利用者ごとのdeveloper app契約を要求しない。Eveは会話・仕事・成果を本人別に引き継ぐ。利用者とコミュニティーはルール・見た目・モデル・Agentを版として作り、鍵で参加を制御する。eSIMは本人のCloud Sky/Eve/Linuxサービスへの入口であり、OS binaryの格納先ではない。
 
-これは明示要望の保存であり、GitHub mainへの実装統合、X本人の実投稿・X独自のFor You、外部MCP実接続、別端末復元、Pixel全OS、一般公開の合格ではない。mainのRQ50・月額140 USD案と作業branchのRQ49・月額16 USD案は未照合として保持し、料金契約とRQを一括上書きしない。[Web担当](workstreams/05-web-pwa-sites.md#redesign-thread-web)と[Git担当](workstreams/10-git-ci-operations.md#redesign-thread-git)に実装順・合格証拠を記録する。
+この更新はOS設計の正本化であり、GitHub mainへの実装統合、X本人の実投稿・X独自のFor You、外部MCP実接続、別端末復元、Pixel全OS、一般公開の合格ではない。mainのRQ50・月額140 USD案と作業branchのRQ49・月額16 USD案は未照合として保持し、料金契約とRQを一括上書きしない。[Web担当](workstreams/05-web-pwa-sites.md#redesign-thread-web)と[Git担当](workstreams/10-git-ci-operations.md#redesign-thread-git)に実装順・合格証拠を記録する。
 
 2026-10-17追加指示: 1時間の合成契約とは別に、月額140ドル・利用枠100ドルの月次プランへ無料Cloud自動選択を接続し、上限停止と入金後復旧をSandboxで検証する。本番課金は無効。仕様と受入範囲は[請求設計](sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。
 

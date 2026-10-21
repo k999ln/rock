@@ -1,9 +1,9 @@
 # Web / PWA / Sites
 
 <a id="redesign-thread-web"></a>
-## 参照チャットのHome/Sky設計差分
+## 最新RockstarOS設計のHome/Sky実装境界
 
-主担当: Web / PWA / Sites、ROCK。既存HOME01・WEB04・SKY21を使用する。[全体差分](../rockstaros-complete-design.md#redesign-thread-home-sky-eve)が入口。2026-10-21の本人指示はHome全体を投稿型frontendにし、Sky marketplaceを投稿から発見・追加・設定・Eve依頼まで一周させること。XはSkyのAPI/MCP受け皿の一接続先で、利用者個別の開発者契約を前提にしない。本人X実投稿・For You・自動同期は実供給元未接続のため未受入。鍵付きコミュニティーOSとEve履歴はCore/Broker契約を維持する。
+主担当: Web / PWA / Sites、ROCK。既存HOME01・WEB04・SKY21を使用する。[全体差分](../rockstaros-complete-design.md#redesign-thread-home-sky-eve)が入口。指定チャットをOS本体の最新設計正本とする。2026-10-21の本人指示はHome全体を投稿型frontendにし、Sky marketplaceを投稿から発見・追加・設定・Eve依頼まで一周させること。XはSkyのAPI/MCP受け皿の一接続先で、利用者個別の開発者契約を前提にしない。本人X実投稿・For You・自動同期は実供給元未接続のため未受入。鍵付きコミュニティーOSとEve履歴はCore/Broker契約を維持する。
 
 修正順: Git mainのRQ50・料金・状態遷移を作業差分と照合→投稿/機能schemaと出典・費用・権限を固定→追加/購入/実行を分離→既存Connectorから実投稿を受信→Eveへ同一job引継ぎ→コミュニティーOSの鍵と版復帰→PC/mobile/別owner/別端末受入。ROCKはsource/UI/host試験、EXTERNALは投稿provider、OWNERは契約/予算/公開範囲、JOINTは実接続と実端末を担当。合格は投稿出典、実データ、owner A/B拒否、revision競合、429/失効/再接続、料金上限、版復帰を同一artifactで示す。検証は npm run design:check、npm run verify、PC/mobile操作。GitHub保存・main統合・Sites公開は別記する。
 
