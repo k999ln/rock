@@ -3,17 +3,17 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
+import {
+  createSitesMigrationLineagePlugin,
+  siteMigrationsDirectoryFor,
+} from './scripts/sites-migration-lineage.mjs';
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
 import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
-const CANONICAL_MAIN_SITE_PROJECT_ID =
-  'appgprj_6abdfad4c5648191bcae957913bd02fa';
-
 const { d1, r2, project_id: siteProjectId } = hostingConfig;
-const siteMigrationsDirectory =
-  siteProjectId === CANONICAL_MAIN_SITE_PROJECT_ID ? 'drizzle-main' : 'drizzle';
+const siteMigrationsDirectory = siteMigrationsDirectoryFor(siteProjectId);
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
@@ -83,6 +83,7 @@ export default defineConfig(async () => {
       clientCloudflareWorkersStub,
       vinext(),
       sites(),
+      createSitesMigrationLineagePlugin(siteProjectId),
       cloudflare({
         inspectorPort: false,
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },

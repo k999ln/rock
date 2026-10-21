@@ -37,9 +37,9 @@ const original = {
 await test('local production start applies the published migrations before serving', (t) => {
   const f = localStartFixture(t);
   const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
-  assert.match(viteConfig, /CANONICAL_MAIN_SITE_PROJECT_ID/);
-  assert.match(viteConfig, /siteProjectId === CANONICAL_MAIN_SITE_PROJECT_ID \? 'drizzle-main' : 'drizzle'/);
+  assert.match(viteConfig, /siteMigrationsDirectoryFor\(siteProjectId\)/);
   assert.match(viteConfig, /migrations_dir: siteMigrationsDirectory/);
+  assert.match(viteConfig, /createSitesMigrationLineagePlugin\(siteProjectId\)/);
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
@@ -209,6 +209,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0020_main_legacy_columns.sql',
     '0021_sites_schema_convergence.sql',
     '0022_sky_recurring_send_guard.sql',
+    '0023_jennifer_schema_guard.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -228,6 +229,15 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     }
     for (const name of names.filter((name) => name >= '0014_' && name <= '0019_'))
       for (const statement of split(read(name))) sqlite.exec(statement);
+    // The main guard must also repair a deployment where the Jennifer tables
+    // were not committed before an earlier Sites build failed.
+    sqlite.exec('DROP INDEX idx_work_jobs_jennifer_coordination');
+    sqlite.exec('DROP TABLE jennifer_plan_revisions');
+    sqlite.exec('DROP TABLE jennifer_task_attempts');
+    sqlite.exec('DROP TABLE jennifer_passkey_challenges');
+    sqlite.exec('DROP TABLE jennifer_passkey_credentials');
+    sqlite.exec('DROP TABLE jennifer_passkey_sessions');
+    sqlite.exec('DROP TABLE jennifer_passkey_events');
     sqlite.exec(`INSERT INTO agent_delegations (
       id, owner_user_id, parent_job_id, idempotency_key, message_id,
       target_origin, target_agent_name, target_agent_version, protocol_version,
@@ -239,6 +249,18 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
       'input', 'authorization', 'USD', 100,
       200, 'draft', 0, 100, 100, 0
     )`);
+    sqlite.exec(`INSERT INTO csv_billing_accounts (
+      user_id, billing_account_id, contract_id, policy_version, status,
+      created_at, updated_at
+    ) VALUES ('saved-owner', 'billing', 'contract', 'v1', 'active', 100, 100)`);
+    sqlite.exec(`INSERT INTO csv_jobs (
+      id, user_id, status, payment_status, input_name, input_key, input_bytes,
+      input_sha256, input_encoding, specification_json, quote_minor, currency,
+      expires_at, created_at, updated_at
+    ) VALUES (
+      'saved-csv', 'saved-owner', 'queued', 'paid', 'input.csv', 'input-key', 12,
+      'sha256', 'utf-8', '{}', 100, 'USD', 200, 100, 100
+    )`);
     assert.ok(!sqlite.prepare("PRAGMA table_info(agent_delegations)").all()
       .some(({ name }) => name === 'package_runtime_binding_id'));
     for (const name of mainNames)
@@ -249,6 +271,10 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
       .map(({ name }) => name));
     const csvColumns = new Set(sqlite
       .prepare('PRAGMA table_info(csv_jobs)')
+      .all()
+      .map(({ name }) => name));
+    const billingColumns = new Set(sqlite
+      .prepare('PRAGMA table_info(csv_billing_accounts)')
       .all()
       .map(({ name }) => name));
     for (const column of [
@@ -276,6 +302,17 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
       'cancellation_reason',
       'files_purged_at',
     ]) assert.ok(csvColumns.has(column), column);
+    assert.ok(billingColumns.has('cancel_at_month'));
+    for (const table of [
+      'jennifer_plan_revisions',
+      'jennifer_task_attempts',
+      'jennifer_passkey_challenges',
+      'jennifer_passkey_credentials',
+      'jennifer_passkey_sessions',
+      'jennifer_passkey_events',
+    ]) assert.ok(sqlite.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
+    ).get(table), table);
     assert.equal(
       sqlite.prepare("SELECT owner_user_id FROM agent_delegations WHERE id = 'saved-delegation'").get().owner_user_id,
       'owner',
@@ -284,6 +321,20 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
       sqlite.prepare("SELECT package_runtime_binding_id FROM agent_delegations WHERE id = 'saved-delegation'").get().package_runtime_binding_id,
       '',
     );
+    assert.equal(
+      sqlite.prepare("SELECT status FROM csv_billing_accounts WHERE user_id = 'saved-owner'").get().status,
+      'active',
+    );
+    assert.equal(
+      sqlite.prepare("SELECT cancel_at_month FROM csv_billing_accounts WHERE user_id = 'saved-owner'").get().cancel_at_month,
+      null,
+    );
+    const savedCsv = sqlite.prepare(
+      "SELECT status, product_version, delivery_revision FROM csv_jobs WHERE id = 'saved-csv'",
+    ).get();
+    assert.equal(savedCsv.status, 'queued');
+    assert.equal(savedCsv.product_version, 'catalog-csv-clean@0.1.0');
+    assert.equal(savedCsv.delivery_revision, 0);
   } finally {
     sqlite.close();
   }
