@@ -11,11 +11,13 @@ import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
 
 const folder = new URL('../drizzle/', import.meta.url).pathname;
+const mainFolder = new URL('../drizzle-main/', import.meta.url).pathname;
 const legacyFolder = new URL('../drizzle-legacy/pre-site-bridge/', import.meta.url).pathname;
 const names = readdirSync(folder)
   .filter((name) => name.endsWith('.sql'))
   .sort();
 const read = (name) => readFileSync(folder + name, 'utf8');
+const readMain = (name) => readFileSync(mainFolder + name, 'utf8');
 const readLegacy = (name) => readFileSync(legacyFolder + name, 'utf8');
 const hashLegacy = (name) => createHash('sha256').update(readLegacy(name)).digest('hex');
 const journal = JSON.parse(
@@ -35,7 +37,9 @@ const original = {
 await test('local production start applies the published migrations before serving', (t) => {
   const f = localStartFixture(t);
   const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
-  assert.match(viteConfig, /migrations_dir: 'drizzle'/);
+  assert.match(viteConfig, /CANONICAL_MAIN_SITE_PROJECT_ID/);
+  assert.match(viteConfig, /siteProjectId === CANONICAL_MAIN_SITE_PROJECT_ID \? 'drizzle-main' : 'drizzle'/);
+  assert.match(viteConfig, /migrations_dir: siteMigrationsDirectory/);
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
@@ -104,7 +108,7 @@ await test('the shared production D1 has exactly one migration owner', () => {
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
   );
-  assert.match(webConfig, /migrations_dir: 'drizzle'/);
+  assert.match(webConfig, /migrations_dir: siteMigrationsDirectory/);
   assert.doesNotMatch(runtimeConfig, /migrations_dir/);
   assert.match(runtimeConfig, /"database_name": "site-creator-d1"/);
 });
@@ -192,6 +196,94 @@ await test('late Sites migrations tolerate objects left by an earlier deployment
     assert.ok(sqlite.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sky_hosted_monthly_events'",
     ).get());
+  } finally {
+    sqlite.close();
+  }
+});
+
+await test('the canonical main Site uses its live-D1 additive lineage without losing legacy rows', () => {
+  const mainNames = readdirSync(mainFolder)
+    .filter((name) => name.endsWith('.sql'))
+    .sort();
+  assert.deepEqual(mainNames, [
+    '0020_main_legacy_columns.sql',
+    '0021_sites_schema_convergence.sql',
+    '0022_sky_recurring_send_guard.sql',
+  ]);
+  const sqlite = new DatabaseSync(':memory:');
+  const split = (sql) => sql
+    .split('--> statement-breakpoint')
+    .map((statement) => statement.trim())
+    .filter(Boolean);
+  try {
+    for (let statement of split(read('0013_sky_provider_connections.sql'))) {
+      if (!/^CREATE TABLE/i.test(statement)) continue;
+      if (/CREATE TABLE IF NOT EXISTS `agent_delegations`/.test(statement))
+        statement = statement.replace(/, `parent_budget_limit_minor`[\s\S]*, `predecessor_delegation_id` text\);$/, ');');
+      if (/CREATE TABLE IF NOT EXISTS `csv_billing_accounts`/.test(statement))
+        statement = statement.replace(/\n, `cancel_at_month` text\);$/, '\n);');
+      if (/CREATE TABLE IF NOT EXISTS `csv_jobs`/.test(statement))
+        statement = statement.replace(/\n, `product_version`[\s\S]*, `files_purged_at` integer\);$/, '\n);');
+      sqlite.exec(statement);
+    }
+    for (const name of names.filter((name) => name >= '0014_' && name <= '0019_'))
+      for (const statement of split(read(name))) sqlite.exec(statement);
+    sqlite.exec(`INSERT INTO agent_delegations (
+      id, owner_user_id, parent_job_id, idempotency_key, message_id,
+      target_origin, target_agent_name, target_agent_version, protocol_version,
+      input_sha256, authorization_sha256, budget_currency, budget_limit_minor,
+      deadline_at, state, revision, created_at, updated_at, artifacts_captured
+    ) VALUES (
+      'saved-delegation', 'owner', 'job', 'key', 'message',
+      'https://provider.example', 'worker', '1', 'a2a/1',
+      'input', 'authorization', 'USD', 100,
+      200, 'draft', 0, 100, 100, 0
+    )`);
+    assert.ok(!sqlite.prepare("PRAGMA table_info(agent_delegations)").all()
+      .some(({ name }) => name === 'package_runtime_binding_id'));
+    for (const name of mainNames)
+      for (const statement of split(readMain(name))) sqlite.exec(statement);
+    const delegationColumns = new Set(sqlite
+      .prepare('PRAGMA table_info(agent_delegations)')
+      .all()
+      .map(({ name }) => name));
+    const csvColumns = new Set(sqlite
+      .prepare('PRAGMA table_info(csv_jobs)')
+      .all()
+      .map(({ name }) => name));
+    for (const column of [
+      'parent_budget_limit_minor',
+      'continue_while_device_offline',
+      'price_quote_digest',
+      'price_quote_json',
+      'package_runtime_binding_id',
+      'package_runtime_binding_digest',
+      'predecessor_delegation_id',
+    ]) assert.ok(delegationColumns.has(column), column);
+    for (const column of [
+      'product_version',
+      'seller_id',
+      'channel',
+      'terms_version',
+      'available_at',
+      'lease_id',
+      'lease_expires_at',
+      'delivery_revision',
+      'approved_at',
+      'revision_requested_at',
+      'revision_reason',
+      'canceled_at',
+      'cancellation_reason',
+      'files_purged_at',
+    ]) assert.ok(csvColumns.has(column), column);
+    assert.equal(
+      sqlite.prepare("SELECT owner_user_id FROM agent_delegations WHERE id = 'saved-delegation'").get().owner_user_id,
+      'owner',
+    );
+    assert.equal(
+      sqlite.prepare("SELECT package_runtime_binding_id FROM agent_delegations WHERE id = 'saved-delegation'").get().package_runtime_binding_id,
+      '',
+    );
   } finally {
     sqlite.close();
   }
