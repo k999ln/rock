@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-21T12:15:49.997457+00:00",
+  "readback": [
+    {
+      "url": "https://avocadomini.si/",
+      "status": 200,
+      "purposePresent": true,
+      "sha256": "159fdbabc4086e26ef8704176a7a9a8a5cf7af6ae8960801f39ec579e4cd41b7"
+    },
+    {
+      "url": "https://avocadopro.si/",
+      "status": 200,
+      "purposePresent": true,
+      "sha256": "8d85345fd74f1c28e2533e8f3d494993a193b43a13ed6141ed421262ea4d8261"
+    },
+    {
+      "url": "https://avocadomini.si/api/preorders/offer",
+      "status": 200,
+      "purposePresent": true,
+      "sha256": "942ec7c552466fd150071835c03fb043ca449436cd8c0570632d0294c2b06d37"
+    }
+  ],
+  "projectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+  "siteVersion": 42,
+  "siteSourceSha": "ef42496c543c08b8ace91b030310cc70899a918a",
+  "deploymentId": "appgdep_6ad8acd5e12481918bb22f95b3689b1a",
+  "archiveSha256": "cc35c4c822cc1417f6edd4d2dc602e85736aa8dfecc9625a505234c69b42899c",
+  "rollbackVersion": 41,
+  "mainBaseSha": "6ff253c9a5d3a7701fb620bb245d2ef8f94320c6",
+  "decision": {
+    "mini": "暮らし・まちづくりへの貢献",
+    "pro": "AI専用PCと事業を通じた半導体・関連部品の確保"
+  },
+  "verification": {
+    "siteTests": 38,
+    "siteFailed": 0,
+    "designCheck": "PASS",
+    "fullVerify": "exit0",
+    "browser": "Both official-domain #purpose pages visible; desktop layouts inspected before publication"
+  },
+  "limits": [
+    "Community uses are proposed, not validated field results",
+    "No semiconductor inventory, supply allocations or supplier contracts newly secured",
+    "Sales stay disabled; no procurement, contract or paid order was executed"
+  ]
+}

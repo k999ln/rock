@@ -58,6 +58,8 @@ Node.js 22.13以降とnpmを使用します。Webのローカル起動:
     npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
     npm run dev
 
+Miniは暮らし・まちづくりへの貢献、ProはAI専用PCと、その事業を通じた半導体・関連部品の確保を目的とします。地域での実証・部品の調達実績は未受入です。[製品目的と責任](docs/service-design/03-product-profiles.md#mini-pro-purpose)。
+
 Mini/ProのWebソースは `sites/avocado-mini` に共通で保存します。正式ドメインのrootはWorkerで各製品へ振り分け、旧 `/mini/`・`/pro/` は正式URLへ転送します。MiniはR5設計、Proは構成検討と購入希望受付で、販売・決済は停止中です。
 
 変更の検証:

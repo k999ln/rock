@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## Mini/Proの目的を明示（2026-10-21、WEB13 / WEB06、ROCK）
+
+本人指示によりMiniは暮らし・まちづくり、ProはAI専用PCと事業を通じた半導体/関連部品確保を設計と両製品のPurposeへ明示する。ROCKはコピーと正本・配備、EXTERNALは供給/施設、OWNERは用途/予算/契約を担当。現行R5/Pro単独性と販売停止を維持し、供給・住民向けの機能を実装済みにしない。正本は製品profileの `mini-pro-purpose` 節。合格はサイト試験、root verify、正式URLのPurpose読戻し、main保存。Sites v42/source `ef42496c543c08b8ace91b030310cc70899a918a`を公開し、両正式domainのHTTPS200とブラウザPurpose表示を確認。サイト38試験、design:check、root verifyが成功。証拠は `data/mini-pro-purpose-publication.json`。施設・供給・有料注文の受入は未追加。
+
 ## Mini/Pro公開ソース同期（2026-10-21、WEB13 / WEB06、JOINT）
 
 本人が公開サイトへの最新版反映を指示。GitHub main `390a0754` のR5/Pro設計を採用し、Sites v40固有の独自ドメインroot振分け・asset-first対策・Sky/Columbia導線を保持する。旧E3価格と構成は現行R5販売条件へ戻さない。既存public audience、D1 bindingと適用済みmigrationを保持し、新規Siteを作らない。検証はMini/Pro `npm test`、root `npm run verify`、同一archiveの配備成功、正式2ドメインのHTTPSとUI読戻し。販売/決済・実機・一般サービスの受入とは分ける。復旧候補はSites v40。結果は `data/mini-pro-deployment.json` と進捗JSONへ記録する。 v41/source `3d4af1635b4684bdf97c90beb34b244cb5a95a14`を公開し、両正式ドメインとcreate/status/APIのHTTPS200、Mini/Proブラウザ表示、公開ゲームのscore増加を確認。サイト38試験とroot verifyが成功。投稿・購入希望受付はopen、販売ready=false。公開済みR5/Pro UIがmain一部より新しかったため正本へ逆同期し、R5通信は任意LTE/IoT SIMへ揃えた。

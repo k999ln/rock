@@ -1,3 +1,7 @@
+## 製品目的の本人確定（2026-10-21）
+
+Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと半導体・関連部品確保を目指す事業。共通OSの本人性・権限・仕事・保存/復旧に接続し、地域導入・供給契約は別受入とする。 [体験・責任・保存・失敗/復旧・承認・合格条件](service-design/03-product-profiles.md#mini-pro-purpose)。
+
 <a id="redesign-thread-home-sky-eve"></a>
 ## RockstarOS本体の最新設計: Home/Sky/Eve
 

@@ -2659,5 +2659,14 @@
     "sourceHead": "8fc8027cd149d2486bcfc2be03863200c87d2c1e",
     "localSyntheticAccepted": true,
     "crossDeviceAccountAccepted": false
+  },
+  "miniProPurpose": {
+    "authority": "docs/service-design/03-product-profiles.md#mini-pro-purpose",
+    "decisionDate": "2026-10-21",
+    "mini": "daily life and community/place-making",
+    "pro": "AI-dedicated PC and sustained semiconductor/component access",
+    "status": "design_and_public_copy_update",
+    "physicalAcceptance": false,
+    "supplySecured": false
   }
 }

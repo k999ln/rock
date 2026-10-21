@@ -1,5 +1,31 @@
 {
-  "redesignThreadReview": {"recordedAt":"2026-10-21","sourceThread":"codex://threads/01a14d54-daee-7c30-87a8-faea84641a40","status":"latest_os_design_authority_recorded_for_reconciliation","directions":["post_native_home_and_sky_marketplace","sky_api_mcp_timeline_source_sink","owner_and_keyed_community_os_editions","eve_owner_history_cross_device","esim_as_personal_cloud_service_attachment"],"taskIds":["HOME01","WEB04","SKY21","G04"],"mainRequirementCount":50,"localWorkingBranchRequirementCount":49,"pricingConflict":"main_140_usd_100_usd_included_vs_working_branch_16_usd_unresolved","runtimeAccepted":false,"providerAccepted":false,"pixelFullOsAccepted":false,"publicAccepted":false,"authorityScope":"RockstarOS OS design; non-OS pricing and RQ contracts reconciled separately","osDesignIsCurrentAuthority":true},
+  "redesignThreadReview": {
+    "recordedAt": "2026-10-21",
+    "sourceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40",
+    "status": "latest_os_design_authority_recorded_for_reconciliation",
+    "directions": [
+      "post_native_home_and_sky_marketplace",
+      "sky_api_mcp_timeline_source_sink",
+      "owner_and_keyed_community_os_editions",
+      "eve_owner_history_cross_device",
+      "esim_as_personal_cloud_service_attachment"
+    ],
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21",
+      "G04"
+    ],
+    "mainRequirementCount": 50,
+    "localWorkingBranchRequirementCount": 49,
+    "pricingConflict": "main_140_usd_100_usd_included_vs_working_branch_16_usd_unresolved",
+    "runtimeAccepted": false,
+    "providerAccepted": false,
+    "pixelFullOsAccepted": false,
+    "publicAccepted": false,
+    "authorityScope": "RockstarOS OS design; non-OS pricing and RQ contracts reconciled separately",
+    "osDesignIsCurrentAuthority": true
+  },
   "visualScribeIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",
@@ -7,22 +33,52 @@
     "authority": "docs/sky-tools-complete-design.md#会話図解--visual-scribe",
     "catalogId": "visual-scribe",
     "catalogStatus": "ready",
-    "initialInput": ["pasted_transcript", "utf8_text_file"],
+    "initialInput": [
+      "pasted_transcript",
+      "utf8_text_file"
+    ],
     "automaticAfterTextInput": true,
     "paragraphBoundary": "blank_line",
     "execution": "browser_first_party_rules",
     "modelInference": false,
     "externalTransmission": false,
     "serverStorage": false,
-    "outputs": ["interactive_flow", "text_copy", "current_paragraph_svg"],
+    "outputs": [
+      "interactive_flow",
+      "text_copy",
+      "current_paragraph_svg"
+    ],
     "voiceTranscriptionImplemented": false,
     "semanticBeatInferenceImplemented": false,
     "ownerScopedSaveImplemented": false,
     "publicSiteAccepted": false,
-    "futureAcceptance": ["final_transcript_segments", "speaker_and_timecode_provenance", "idempotent_merge_and_regenerate", "provider_data_cost_and_stop_boundary", "owner_scoped_save_and_reopen"]
+    "futureAcceptance": [
+      "final_transcript_segments",
+      "speaker_and_timecode_provenance",
+      "idempotent_merge_and_regenerate",
+      "provider_data_cost_and_stop_boundary",
+      "owner_scoped_save_and_reopen"
+    ]
   },
-  "freeCloudAutomaticContinuationIntent":{"date":"2026-10-17","source":"direct_owner_instruction","confirmedPreGenerationRejectionOnly":true,"sameRequestId":true,"productionBilling":false,"authority":"docs/llm-evaluation-architecture.md"},
-  "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
+  "freeCloudAutomaticContinuationIntent": {
+    "date": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "confirmedPreGenerationRejectionOnly": true,
+    "sameRequestId": true,
+    "productionBilling": false,
+    "authority": "docs/llm-evaluation-architecture.md"
+  },
+  "monthlyFreeCloudIntent": {
+    "date": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "monthlyUsd": 140,
+    "includedUsd": 100,
+    "freeCloudSharesContractAndCap": true,
+    "sandboxOnly": true,
+    "productionBilling": false,
+    "authority": "docs/sky-billing.md",
+    "evidence": "docs/evidence/sky-monthly-free-cloud.json"
+  },
   "automaticLlmSelectionIntent": {
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",
@@ -2199,6 +2255,12 @@
       "date": "2026-10-13",
       "source": "User explicit clarification",
       "description": "NVIDIA chip/GPU based high-performance si PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
+    },
+    "purposeDecision": {
+      "date": "2026-10-21",
+      "product": "AI-dedicated PC",
+      "businessPurpose": "Secure semiconductors and related components through the PC business",
+      "supplySecured": false
     }
   },
   "miniArchitecturalIntegration": {
@@ -2933,33 +2995,33 @@
     "document": "docs/sky-billing.md"
   },
   "skyAutomaticModelSelection": {
-  "date": "2026-10-17",
-  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
-  "default": "auto",
-  "manualProviderModelSupported": true,
-  "implementation": "lib/sky-model-routing.ts",
-  "document": "docs/llm-evaluation-architecture.md",
-  "cloudAutoAccepted": false,
-  "policy": "local_and_owner_enabled_consented_free_cloud",
-  "status": "live_account_cloud_verified",
-  "tests": "tests/sky-model-routing.test.mjs"
-},
-"skyFreeCloudAcceptance":{
-  "date": "2026-10-17",
-  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
-  "status": "live_account_real_cloud_accepted_synthetic_contract",
-  "implementation": [
-    "lib/sky-free-cloud.ts",
-    "lib/sky-model-selection.ts",
-    "lib/sky-free-cloud-http.ts",
-    "app/api/llm/free-cloud/route.ts",
-    "components/sky-free-cloud-panel.tsx"
-  ],
-  "evidence": "docs/evidence/sky-free-cloud-live.json",
-  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
-  "productionBillingEnabled": false,
-  "mainAuthenticatedUiAccepted": true
-},
+    "date": "2026-10-17",
+    "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+    "default": "auto",
+    "manualProviderModelSupported": true,
+    "implementation": "lib/sky-model-routing.ts",
+    "document": "docs/llm-evaluation-architecture.md",
+    "cloudAutoAccepted": false,
+    "policy": "local_and_owner_enabled_consented_free_cloud",
+    "status": "live_account_cloud_verified",
+    "tests": "tests/sky-model-routing.test.mjs"
+  },
+  "skyFreeCloudAcceptance": {
+    "date": "2026-10-17",
+    "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+    "status": "live_account_real_cloud_accepted_synthetic_contract",
+    "implementation": [
+      "lib/sky-free-cloud.ts",
+      "lib/sky-model-selection.ts",
+      "lib/sky-free-cloud-http.ts",
+      "app/api/llm/free-cloud/route.ts",
+      "components/sky-free-cloud-panel.tsx"
+    ],
+    "evidence": "docs/evidence/sky-free-cloud-live.json",
+    "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+    "productionBillingEnabled": false,
+    "mainAuthenticatedUiAccepted": true
+  },
   "publicModelDiscoveryIntent": {
     "decidedAt": "2026-10-17",
     "source": "direct_owner_instruction",
@@ -2973,13 +3035,25 @@
     ],
     "newPaidProviderProvisioned": false
   },
-"freeCloudBackgroundIntent":{
-  "date": "2026-10-17",
-  "source": "direct_owner_instruction",
-  "persistConsentAndPrompt": true,
-  "continueAfterTabClose": true,
-  "ownerHistory": true,
-  "productionBilling": false,
-  "authority": "docs/llm-evaluation-architecture.md"
-}
+  "freeCloudBackgroundIntent": {
+    "date": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "persistConsentAndPrompt": true,
+    "continueAfterTabClose": true,
+    "ownerHistory": true,
+    "productionBilling": false,
+    "authority": "docs/llm-evaluation-architecture.md"
+  },
+  "miniProPurposeIntent": {
+    "decisionDate": "2026-10-21",
+    "source": "User explicit instruction in this chat: miniは暮らしやまちづくり、proはAI専用PCと半導体確保",
+    "miniPurpose": "Contribute to daily life and community/place-making through a standalone spatial device",
+    "proPurpose": "An AI-dedicated PC business intended to build sustained access to semiconductors and related components",
+    "miniStandalone": true,
+    "proStandalone": true,
+    "supplySecured": false,
+    "procurementAuthorizedByThisDecision": false,
+    "authority": "docs/service-design/03-product-profiles.md#mini-pro-purpose",
+    "scope": "Purpose and public communication; no new RQ or physical/sales/procurement acceptance"
+  }
 }

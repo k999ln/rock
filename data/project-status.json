@@ -9422,10 +9422,10 @@
       "https://avocadopro.si/"
     ],
     "salesEnabled": false,
-    "acceptance": "HTTPS 200 both roots/create/status/APIs; browser Mini R5, Pro UI and creator game score update; physical hardware and paid orders not accepted",
-    "siteVersion": 41,
-    "siteSourceSha": "3d4af1635b4684bdf97c90beb34b244cb5a95a14",
-    "deploymentId": "appgdep_6ad8a7edf93c81919f0ef3716eda8202",
+    "acceptance": "Purpose update HTTPS/browser verified; previous route/game acceptance retained; physical/supplier/paid-sales acceptance unchanged",
+    "siteVersion": 42,
+    "siteSourceSha": "ef42496c543c08b8ace91b030310cc70899a918a",
+    "deploymentId": "appgdep_6ad8acd5e12481918bb22f95b3689b1a",
     "siteTests": {
       "passed": 38,
       "failed": 0
@@ -9433,5 +9433,28 @@
     "hostVerify": "npm run verify exit0; Node 2515 passed / 2 skipped; Work API 1678 assertions; CSV 385 assertions",
     "miniParticipationOpen": true,
     "proInterestOpen": true
+  },
+  "miniProPurposeUpdate": {
+    "status": "published_and_verified",
+    "decisionDate": "2026-10-21",
+    "taskIds": [
+      "WEB13",
+      "WEB06",
+      "MAT15",
+      "MAT16"
+    ],
+    "mainBaseSha": "6ff253c9a5d3a7701fb620bb245d2ef8f94320c6",
+    "mini": "暮らし・まちづくり",
+    "pro": "AI専用PCと事業を通じた半導体・関連部品の確保",
+    "supplySecured": false,
+    "physicalAccepted": false,
+    "paidSalesEnabled": false,
+    "siteVersion": 42,
+    "siteSourceSha": "ef42496c543c08b8ace91b030310cc70899a918a",
+    "deploymentId": "appgdep_6ad8acd5e12481918bb22f95b3689b1a",
+    "siteTests": "38 passed",
+    "hostVerify": "npm run verify exit0",
+    "readback": "Both official domains HTTPS200 and browser Purpose verified",
+    "evidence": "data/mini-pro-purpose-publication.json"
   }
 }

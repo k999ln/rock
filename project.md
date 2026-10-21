@@ -1,3 +1,9 @@
+## 2026-10-21 — Mini/Pro目的の確定と公開反映（WEB13 / WEB06、ROCK）
+
+本人の明示指示を正本へ記録。Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連部品確保。R5単独性、共通OS権限、供給/施設導入の別受入を維持。製品baseline/全体設計/R5/Pro/profile/indexと公開Purposeを更新した。
+
+Sites v42/source `ef42496c543c08b8ace91b030310cc70899a918a`を公開。正式2ドメインでPurposeのHTTPS200と実ブラウザ表示を確認。サイト38試験・design:check・root verify exit0。販売ready=false、施設実証・部品供給実績・契約・発注は追加受入なし。復旧候補v41。証拠は `data/mini-pro-purpose-publication.json`。次は対象施設/課題とPro部品/必要量/予算を実証・見積に基づき決める。公開配備とmain保存は別記録で追跡する。
+
 ## 2026-10-21 — Mini/Pro公開サイト更新（WEB13 / WEB06 / JOINT）
 
 本人指示によりSites v41/source `3d4af1635b4684bdf97c90beb34b244cb5a95a14`を公開。`https://avocadomini.si/` は単独R5・任意LTE/IoT data SIM・制作入口、`https://avocadopro.si/` は構成検討・購入希望受付・未確定の設計目標価格を表示。Sites側のR5/Pro UIがmain一部より新しかったため、domain router/asset-first対策とともにmainへ逆同期し、古いE3主体の導線を整理した。公開範囲とD1/migrationを維持。既存rocketstar配布資料はSitesで保持しGitへ生成物を追加しない。

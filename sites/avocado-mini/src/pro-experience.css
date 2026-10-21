@@ -438,3 +438,6 @@
   .pro-assembly-scene-top span:first-child{max-width:54%;font-size:9px;line-height:1.2}
   .pro-assembly-watch{min-height:30px;padding:5px 8px;font-size:8px}
 }
+
+/* Product purpose: shared reading rhythm with the existing product layouts. */
+.product-purpose{max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,112px) clamp(24px,5vw,64px);scroll-margin-top:90px}.product-purpose h2{font-size:clamp(34px,5vw,64px);line-height:1.08;letter-spacing:-.04em;margin:18px 0 24px}.product-purpose>p:not(.eyebrow):not(.pro-kicker){max-width:850px;line-height:1.75}.purpose-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin:36px 0}.purpose-grid article{border-top:1px solid currentColor;padding-top:20px}.purpose-grid h3{font-size:22px;margin:0 0 12px}.purpose-grid p{font-size:16px;line-height:1.7}.purpose-note{font-size:14px;opacity:.8}@media(max-width:760px){.purpose-grid{grid-template-columns:1fr;gap:20px}}
