@@ -78,7 +78,7 @@ function webhookRequest(event) {
 test('legacy RockstarOS path redirects at the HTTP layer', async () => {
   const response = await worker.fetch(new Request(`${origin}/rockstaros/`), env(database()));
   assert.equal(response.status, 308);
-  assert.equal(response.headers.get('location'), `${origin}/`);
+  assert.equal(response.headers.get('location'), 'https://avoado.si/');
 });
 
 test('avoado.si/sky opens the live Sky app and keeps its path and query', async () => {
@@ -90,6 +90,25 @@ test('avoado.si/sky opens the live Sky app and keeps its path and query', async 
   }
   const otherHost = await worker.fetch(new Request('https://avocadomini.si/sky'), env(database()));
   assert.notEqual(otherHost.status, 302);
+});
+
+test('avoado.si/columbia opens the Columbia campus and preserves campaign parameters', async () => {
+  const response = await worker.fetch(
+    new Request('https://avoado.si/columbia?source=nfc&utm_campaign=campus-poster'),
+    env(database(), { SKY_TAG_ORIGIN: 'https://sky.example.test/' }),
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.equal(
+    response.headers.get('location'),
+    'https://sky.example.test/campus?campus=columbia&source=nfc&utm_campaign=campus-poster',
+  );
+});
+
+test('avoado.si/columbia fails closed until the Sky origin is configured', async () => {
+  const response = await worker.fetch(new Request('https://avoado.si/columbia'), env(database()));
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /This card is not available yet/);
 });
 
 test('Sky tag links redirect to the configured origin and preserve source query', async () => {
@@ -246,7 +265,6 @@ test('expired checkout releases its capacity for another order', async () => {
     assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock WHERE sku = ?').get('r5').reserved, 0);
   } finally { globalThis.fetch = originalFetch; }
 });
-
 
 test('Pro design targets cannot create a reservation or payment', async (t) => {
   const db = database();

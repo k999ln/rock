@@ -1,6 +1,7 @@
 import { stripeRequest, verifyStripeSignature } from './shared/stripe.mjs';
 import { availability as participationAvailability, submit as submitParticipation, remove as removeParticipation } from './participation.mjs';
 import { availability as proInterestAvailability, submit as submitProInterest, remove as removeProInterest } from './pro-interest.mjs';
+import { serveSite } from './shared/domains.mjs';
 
 const products = {
   r5: { name: 'avocadoMini R5', baseJpy: null, amountKey: 'PREORDER_R5_TOTAL_JPY', capacityKey: 'PREORDER_R5_CAPACITY' },
@@ -43,27 +44,50 @@ function skyTagUnavailable() {
   });
 }
 
+function configuredSkyOrigin(env) {
+  if (typeof env.SKY_TAG_ORIGIN !== 'string' || !env.SKY_TAG_ORIGIN.trim()) return null;
+  try {
+    const configured = new URL(env.SKY_TAG_ORIGIN);
+    if (!['http:', 'https:'].includes(configured.protocol) || configured.username || configured.password || configured.search || configured.hash) {
+      return null;
+    }
+    return {
+      origin: configured.origin,
+      pathname: configured.pathname.replace(/\/+$/, ''),
+    };
+  } catch {
+    return null;
+  }
+}
+
 function skyTagRedirect(request, env) {
   const url = new URL(request.url);
   const match = url.pathname.match(/^\/t\/([^/]+)$/);
   if (!match) return new Response('Not found', { status: 404 });
   const tagId = match[1];
   if (!SKY_TAG_ID.test(tagId)) return new Response('Not found', { status: 404 });
-  if (typeof env.SKY_TAG_ORIGIN !== 'string' || !env.SKY_TAG_ORIGIN.trim()) {
-    return skyTagUnavailable();
+  const target = configuredSkyOrigin(env);
+  if (!target) return skyTagUnavailable();
+  return Response.redirect(`${target.origin}${target.pathname}/t/${tagId}${url.search}`, 302);
+}
+
+function skyCampusRedirect(request, env, campusId) {
+  const target = configuredSkyOrigin(env);
+  if (!target) return skyTagUnavailable();
+  const source = new URL(request.url);
+  const destination = new URL(`${target.origin}${target.pathname}/campus`);
+  destination.searchParams.set('campus', campusId);
+  for (const [key, value] of source.searchParams) {
+    if (key !== 'campus') destination.searchParams.append(key, value);
   }
-  let origin;
-  let pathname;
-  try {
-    const configured = new URL(env.SKY_TAG_ORIGIN);
-    if (!['http:', 'https:'].includes(configured.protocol) || configured.username || configured.password || configured.search || configured.hash)
-      return skyTagUnavailable();
-    origin = configured.origin;
-    pathname = configured.pathname.replace(/\/+$/, '');
-  } catch {
-    return skyTagUnavailable();
-  }
-  return Response.redirect(`${origin}${pathname}/t/${tagId}${url.search}`, 302);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: destination.toString(),
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
+    },
+  });
 }
 
 function positiveInteger(value) {
@@ -316,10 +340,12 @@ export default {
     const path = new URL(request.url).pathname;
     try {
       if (path === '/rockstaros' || path === '/rockstaros/') {
-        return Response.redirect(new URL('/', request.url), 308);
+        return Response.redirect('https://avoado.si/', 308);
       }
       if (new URL(request.url).hostname === 'avoado.si' && (path === '/sky' || path.startsWith('/sky/')) && ['GET', 'HEAD'].includes(request.method))
         return skyAppRedirect(request);
+      if (new URL(request.url).hostname === 'avoado.si' && (path === '/columbia' || path === '/columbia/') && ['GET', 'HEAD'].includes(request.method))
+        return skyCampusRedirect(request, env, 'columbia');
       if (path.startsWith('/t/')) return skyTagRedirect(request, env);
       if (path === '/api/preorders/offer' && request.method === 'GET') {
         const { ready, products: offeredProducts, terms } = offer(env);
@@ -337,7 +363,7 @@ export default {
       if (path === '/api/pro-interest/submissions' && request.method === 'POST') return submitProInterest(request, env);
       if (path === '/api/pro-interest/submissions' && request.method === 'DELETE') return removeProInterest(request, env);
       if (path.startsWith('/api/')) return json({ error: 'not_found' }, 404);
-      return env.ASSETS ? env.ASSETS.fetch(request) : new Response('Assets unavailable', { status: 503 });
+      return serveSite(request, env);
     } catch (error) {
       console.error('preorder_request_failed', { path, error: String(error) });
       return json({ error: 'service_unavailable' }, 503);

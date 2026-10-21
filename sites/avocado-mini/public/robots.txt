@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://avocadomini.si/sitemap.xml
+Sitemap: https://avoado.si/sitemap.xml

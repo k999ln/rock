@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-21T11:55:00Z",
+  "projectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+  "siteVersion": 41,
+  "siteSourceSha": "3d4af1635b4684bdf97c90beb34b244cb5a95a14",
+  "deploymentId": "appgdep_6ad8a7edf93c81919f0ef3716eda8202",
+  "archiveSha256": "9093420ee0a1054a20142f44b89e3772bdc90738357af2770224821bd1a4588e",
+  "mainBaseSha": "390a0754be37d3b437520127a5199720fc6b3d47",
+  "rollbackVersion": 40,
+  "audience": "public (unchanged)",
+  "readback": [
+    {
+      "url": "https://avocadomini.si/",
+      "status": 200,
+      "sha256": "d0959706086ceb2e178503e92473af78e75cd21725419ce2fb875c8bcaa3e118",
+      "markerPresent": true,
+      "canonical": [
+        "https://avocadomini.si/"
+      ]
+    },
+    {
+      "url": "https://avocadomini.si/create/",
+      "status": 200,
+      "sha256": "7edfc18d2bea9a4f51969035ff375bc6728ddf80562bcfe6d5279c92d59d2fac",
+      "markerPresent": true,
+      "canonical": [
+        "https://avocadomini.si/create/"
+      ]
+    },
+    {
+      "url": "https://avocadomini.si/preorder/",
+      "status": 200,
+      "sha256": "9c81e5a8f82e4700a1795110e2b92c59915fd8c60377769973b38af2814c31a3",
+      "markerPresent": true,
+      "canonical": [
+        "https://avocadomini.si/preorder/"
+      ]
+    },
+    {
+      "url": "https://avocadopro.si/",
+      "status": 200,
+      "sha256": "4d2af0bcdf77c0889ce7d7fb10a8f12883346917bfc80bb85d7351d5b418eb0c",
+      "markerPresent": true,
+      "canonical": [
+        "https://avocadopro.si/"
+      ]
+    },
+    {
+      "url": "https://avocadomini.si/api/preorders/offer",
+      "status": 200,
+      "sha256": "942ec7c552466fd150071835c03fb043ca449436cd8c0570632d0294c2b06d37",
+      "body": {
+        "ready": false,
+        "products": {
+          "r5": {
+            "name": "avocadoMini R5",
+            "baseJpy": null,
+            "totalJpy": null
+          }
+        },
+        "terms": null
+      }
+    },
+    {
+      "url": "https://avocadopro.si/api/pro-interest/availability",
+      "status": 200,
+      "sha256": "f2fb0fd4c4245a6569856b8560915c8d41cd4d6089d6972ed7a72f5f6d981b32",
+      "body": {
+        "open": true,
+        "consentVersion": "2026-10-19.1"
+      }
+    },
+    {
+      "url": "https://avocadomini.si/api/participation/availability",
+      "status": 200,
+      "sha256": "aafd2a5c49ca8c215e08c7d143310f4e2a9aaf3ac4d83688a5d00d062bcfe24e",
+      "body": {
+        "open": true,
+        "types": [
+          "idea",
+          "game"
+        ]
+      }
+    }
+  ],
+  "tests": {
+    "site": {
+      "passed": 38,
+      "failed": 0
+    },
+    "verify": "exit0; OpenSSL 3 on PATH; Node2515 pass/2skip, API1678, CSV385"
+  },
+  "browser": {
+    "mini": "R5, one-unit, <=200mm, optional LTE/IoT SIM, hardware not accepted; creator navigation verified",
+    "pro": "official domain builder and canonical design target visible; local preview 128GB choice confirmed",
+    "creator": "public browser game started; click incremented score 0 to 1"
+  },
+  "sourceReconciliation": "Retain Sites v40 R5/Pro UI and domain routing; synchronize main safety contracts and Pro design target. Existing rocketstar page/PDF/ZIP remain on Sites without adding generated binaries to Git.",
+  "limits": [
+    "No paid order, payment, shipment or physical Mini/Pro acceptance",
+    "Interest/idea intake open; no test submission containing personal data was created",
+    "Cloudflare adds a browser-challenge script to HTML; raw live HTML hashes differ from archive HTML",
+    "Vite dev launch-editor Windows advisory remains; dev server is not deployed"
+  ],
+  "nextAction": "Maintain Mini/Pro sources and site routing together; prototype, supplier, pricing/payment/shipping gates remain separate."
+}

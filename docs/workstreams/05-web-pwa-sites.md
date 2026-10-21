@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## Mini/Pro公開ソース同期（2026-10-21、WEB13 / WEB06、JOINT）
+
+本人が公開サイトへの最新版反映を指示。GitHub main `390a0754` のR5/Pro設計を採用し、Sites v40固有の独自ドメインroot振分け・asset-first対策・Sky/Columbia導線を保持する。旧E3価格と構成は現行R5販売条件へ戻さない。既存public audience、D1 bindingと適用済みmigrationを保持し、新規Siteを作らない。検証はMini/Pro `npm test`、root `npm run verify`、同一archiveの配備成功、正式2ドメインのHTTPSとUI読戻し。販売/決済・実機・一般サービスの受入とは分ける。復旧候補はSites v40。結果は `data/mini-pro-deployment.json` と進捗JSONへ記録する。 v41/source `3d4af1635b4684bdf97c90beb34b244cb5a95a14`を公開し、両正式ドメインとcreate/status/APIのHTTPS200、Mini/Proブラウザ表示、公開ゲームのscore増加を確認。サイト38試験とroot verifyが成功。投稿・購入希望受付はopen、販売ready=false。公開済みR5/Pro UIがmain一部より新しかったため正本へ逆同期し、R5通信は任意LTE/IoT SIMへ揃えた。
+
 <a id="redesign-thread-web"></a>
 ## 最新RockstarOS設計のHome/Sky実装境界
 

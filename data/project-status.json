@@ -9410,5 +9410,28 @@
     "mergeCommit": "9b5ce641e0a947e4b4106f2ffca09d5feee237b2",
     "pullRequest": "https://github.com/k999ln/rock/pull/185",
     "recordedAt": "2026-10-21T11:31:14.541790+00:00"
+  },
+  "miniProPublicDeployment": {
+    "status": "deployed_and_readback_verified",
+    "mainSourceSha": "390a0754be37d3b437520127a5199720fc6b3d47",
+    "siteProjectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+    "previousVersion": 40,
+    "previousSiteSource": "10c42c69b3b8b6e503f72f908e8b66b690ac4810",
+    "domains": [
+      "https://avocadomini.si/",
+      "https://avocadopro.si/"
+    ],
+    "salesEnabled": false,
+    "acceptance": "HTTPS 200 both roots/create/status/APIs; browser Mini R5, Pro UI and creator game score update; physical hardware and paid orders not accepted",
+    "siteVersion": 41,
+    "siteSourceSha": "3d4af1635b4684bdf97c90beb34b244cb5a95a14",
+    "deploymentId": "appgdep_6ad8a7edf93c81919f0ef3716eda8202",
+    "siteTests": {
+      "passed": 38,
+      "failed": 0
+    },
+    "hostVerify": "npm run verify exit0; Node 2515 passed / 2 skipped; Work API 1678 assertions; CSV 385 assertions",
+    "miniParticipationOpen": true,
+    "proInterestOpen": true
   }
 }

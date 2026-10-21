@@ -1,3 +1,9 @@
+## 2026-10-21 — Mini/Pro公開サイト更新（WEB13 / WEB06 / JOINT）
+
+本人指示によりSites v41/source `3d4af1635b4684bdf97c90beb34b244cb5a95a14`を公開。`https://avocadomini.si/` は単独R5・任意LTE/IoT data SIM・制作入口、`https://avocadopro.si/` は構成検討・購入希望受付・未確定の設計目標価格を表示。Sites側のR5/Pro UIがmain一部より新しかったため、domain router/asset-first対策とともにmainへ逆同期し、古いE3主体の導線を整理した。公開範囲とD1/migrationを維持。既存rocketstar配布資料はSitesで保持しGitへ生成物を追加しない。
+
+サイト38試験成功、root `npm run verify` exit0（Node2515成功/2skip、API1678、CSV385）。両正式domain、create/status、受付APIはHTTPS200。実ブラウザでMini R5・Pro表示、local Proの128GB選択確認、公開ゲームscore 0→1を確認。投稿/購入希望受付はopen、販売APIはready=false。有料注文・決済・実機受入なし。復旧候補v40、詳細は `data/mini-pro-deployment.json`。次は製造・部品調達・価格・決済/配送gateを個別受入する。GitHub保存/main同期とSites公開はこの証拠を分けて追跡する。
+
 ## 2026-10-21 — 未統合runtimeをmainへ統合（G04 / ROCK）
 
 PR #185でEveアカウント履歴、owner成果HTML持出し、Linux/service、Pixel/Lab adapter、Mini/Pro追加sourceを統合。merge `9b5ce641e0a947e4b4106f2ffca09d5feee237b2`、検証head `8fc8027cd149d2486bcfc2be03863200c87d2c1e`。`npm run verify` exit0（Node2515成功/2skip、仕事API1678、CSV385）、同一headのGitHub checks成功。旧UI・生成物・重複migrationを再投入せず、RQ50とmainの権限/料金/復旧修正を保持。root0030〜0032/main Site0026はadditive。共有dirty685件と途中候補は保全した。
