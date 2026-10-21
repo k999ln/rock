@@ -257,6 +257,13 @@ function check(actual, expected) {
 }
 async function call(method = 'GET', body, options = {}) {
   const url = `${base}${options.path ?? '/api/work-jobs'}`;
+  const historyHeaders = {};
+  if (options.path === '/api/eve/history' && method !== 'GET' && options.user !== null) {
+    const probe = await fetch(`${base}/api/eve/history`, { headers: { 'oai-authenticated-user-id': options.user ?? alice } });
+    const binding = probe.headers.get('x-rock-eve-owner');
+    if (binding) historyHeaders['x-rock-eve-owner'] = binding;
+  }
+
   const requestBody = body === undefined ? undefined : options.raw ? body : JSON.stringify(body);
   let response;
   try {
@@ -272,6 +279,7 @@ async function call(method = 'GET', body, options = {}) {
             Origin: options.origin ?? base,
             'Content-Type': 'application/json',
           }),
+        ...historyHeaders,
         ...options.headers,
       },
       ...(requestBody === undefined ? {} : { body: requestBody }),
@@ -381,6 +389,7 @@ async function start() {
         // generated bundle can also carry the loopback-only local preview
         // identity, so explicitly disable that convenience binding here.
         ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
+        EVE_HISTORY_KEYRING: JSON.stringify({current:'fixture',keys:{fixture:'12'.repeat(32)}}),
         SKY_REMOTE_LLM_ENABLED: remoteLlmEnabled ? 'true' : 'false',
         SKY_OLLAMA_BASE_URL: remoteModelEndpoint,
         SKY_LOCAL_LLM_BASE_URL: remoteModelEndpoint,
@@ -856,6 +865,7 @@ try {
   await call('GET',undefined,{path:historyPath,user:null,status:401});
   const eveThread=randomUUID(),eveSession={version:1,id:eveThread,toolId:'sky-auto',createdAt:1,messages:[{id:'fixture-color',side:'me',text:'検証用の好きな色は藤紫です。'}],activeRequest:null,workflowStatus:'ready',outcome:null};
   await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,origin:'https://other.invalid',status:403});
+  await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath,headers:{'x-rock-eve-owner':'wrong-account'},status:409});
   check((await call('PUT',{session:eveSession,revision:0,remember:true},{path:historyPath})).revision,1);
   check((await call('GET',undefined,{path:`${historyPath}?id=${eveThread}`})).session.messages[0].text,eveSession.messages[0].text);
   check((await call('GET',undefined,{path:historyPath,user:bob})).items,[]);

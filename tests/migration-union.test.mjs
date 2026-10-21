@@ -224,6 +224,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0023_jennifer_schema_guard.sql',
     '0024_remote_ai_send_claims_recovery.sql',
     '0025_remote_ai_send_claims_watermark.sql',
+    '0026_home_eve_linux_runtime.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql

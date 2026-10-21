@@ -6,12 +6,21 @@ export class EveHistoryClientError extends Error {
   constructor(message:string,status:number){super(message);this.status=status;}
 }
 export class EveHistoryClient {
+  private ownerBinding = '';
   private revisions=new Map<string,number>();
   private known=new Map<string,Map<string,string>>();
   private queue:Promise<unknown>=Promise.resolve();
   private blocked=new Set<string>();
   private async request<T>(url:string,init?:RequestInit):Promise<T>{
-    const response=await fetch(url,{...init,cache:'no-store',credentials:'same-origin'});
+    if (init?.method && init.method !== 'GET' && !this.ownerBinding) await this.request('/api/eve/history');
+    const headers = new Headers(init?.headers);
+    if (this.ownerBinding) headers.set('x-rock-eve-owner', this.ownerBinding);
+    const response=await fetch(url,{...init,headers,cache:'no-store',credentials:'same-origin'});
+    const binding = response.headers.get('x-rock-eve-owner');
+    if (binding) {
+      if (this.ownerBinding && binding !== this.ownerBinding) throw new EveHistoryClientError('アカウントが変わりました。履歴を開き直してください。', 409);
+      this.ownerBinding = binding;
+    }
     const value=await response.json() as T&{error?:string};
     if(!response.ok)throw new EveHistoryClientError(value.error??'履歴を保存できません。',response.status);
     return value;

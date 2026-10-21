@@ -1,8 +1,8 @@
 import { env } from 'cloudflare:workers';
 import { database, requestUser } from '@/lib/fund-store';
-import { EveHistoryError, eveHistoryKeys, eveHistoryStore, eveThreadId } from '@/lib/eve-history';
+import { EveHistoryError, eveHistoryKeys, eveHistoryStore, eveThreadId, eveHistoryOwnerBinding } from '@/lib/eve-history';
 
-const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+const json=(value:unknown,status=200,binding?:string)=>Response.json(value,{status,headers:{...(binding?{'X-Rock-Eve-Owner':binding}:{}),...{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}}});
 async function input(request:Request) {
   if(!request.headers.get('content-type')?.startsWith('application/json'))throw new EveHistoryError('JSONで送信してください。',415);
   const reader=request.body?.getReader();if(!reader)throw new EveHistoryError('入力がありません。');
@@ -17,10 +17,12 @@ async function handle(request:Request,method:'GET'|'PUT'|'POST'|'DELETE') {
     const owner=await requestUser(request);
     if(method!=='GET'&&request.headers.get('origin')!==new URL(request.url).origin)throw new Error('ORIGIN');
     const keys=eveHistoryKeys((env as unknown as {EVE_HISTORY_KEYRING?:string}).EVE_HISTORY_KEYRING);
+    const binding = await eveHistoryOwnerBinding(owner, keys);
+    if (method !== 'GET' && request.headers.get('x-rock-eve-owner') !== binding) throw new EveHistoryError('アカウントが変わりました。履歴を読み直してから保存してください。', 409);
     const store=eveHistoryStore(database(),owner,keys),query=new URL(request.url).searchParams;
     if(method==='GET') {
       const id=query.get('id');
-      return json(id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??''));
+      return json(id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??''),200,binding);
     }
     const value=await input(request);
     if(method==='PUT')return json(await store.save(value));

@@ -186,3 +186,10 @@ export function eveHistoryStore(db: Database, owner: string, keys: EveHistoryKey
   }
   return {list,get,save,recall,remove};
 }
+
+
+/** Opaque account binding, not an authentication credential or execution grant. */
+export async function eveHistoryOwnerBinding(owner: string, keys: EveHistoryKeys) {
+  const digest = await crypto.subtle.digest('SHA-256', encoder.encode(`${owner}:eve-history:${keys.keys[keys.current]}`));
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}

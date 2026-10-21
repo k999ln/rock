@@ -793,7 +793,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 
 責任・入出力: ROCKは既存mainのworkflow、owner認証、revision、費用上限を保持する。履歴はowner/thread/message、暗号化envelope、revision、記憶対象の同意を受け取り、保存版・一覧・検索引用を返す。成果exportはowner/job/revisionと既存の保存成果だけを読み、CSP付きHTMLを返す。EXTERNALのLLM/実行Linux/決済とOWNERの鍵・接続・予算設定は別。モデルや履歴を承認へ昇格させない。
 
-状態・保存: 履歴は未設定→本人確認→保存→版競合/再読込→削除。EVE_HISTORY_KEYRINGが未設定なら503で保存済みと表示しない。owner別HKDF派生鍵とAES-GCM、検索語のHMACを使う。明示保存以外は既存tab保存を維持し、アカウント変更時にprivate cacheを破棄する。読戻しは記録だけであり、activeRequest/coordinationの実行権限を復元しない。
+状態・保存: 履歴は未設定→本人確認→保存→版競合/再読込→削除。EVE_HISTORY_KEYRINGが未設定なら503で保存済みと表示しない。owner別HKDF派生鍵とAES-GCM、検索語のHMACを使う。書込みは読取り時のopaque account bindingを照合し、保存途中のアカウント変更を409で拒否する。明示保存以外は既存tab保存を維持し、アカウント変更時にprivate cacheを破棄する。読戻しは記録だけであり、activeRequest/coordinationの実行権限を復元しない。
 
 失敗・復旧・承認: owner不一致は読めず、競合は409、削除後は410、鍵不足は503。入力と既存成果を保持して再認証・同じ履歴の再読込・鍵復旧へ戻す。削除は本人確認操作を通す。Linux service/setupは署名、本人、契約、予算、使用量を既存workflowへ結び、実運営受入まで既定無効。mainの月140 USD案と旧branch月16 USD案の相違は未解決であり、本統合で料金を決定しない。
 

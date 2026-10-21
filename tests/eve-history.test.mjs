@@ -63,7 +63,7 @@ void test('Eve client sends all changed messages in bounded batches and latches 
  const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original;});let revision=0,conflict=false,calls=0;const batches=[];
  globalThis.fetch=async(_url,init)=>{
   if(init?.method==='PUT'){calls++;const value=JSON.parse(init.body);batches.push(value.session.messages.length);if(conflict)return Response.json({error:'conflict'},{status:409});assert.equal(value.revision,revision);return Response.json({revision:++revision});}
-  return Response.json({session:session(),revision,remember:true,before:null});
+  return Response.json({session:session(),revision,remember:true,before:null},{headers:{'X-Rock-Eve-Owner':'fixture-owner-binding'}});
  };
  const client=new EveHistoryClient(),s=session(id,Array.from({length:33},(_,i)=>({id:`m${i}`,side:'me',text:`記録${i}`})));
  await client.save(s,true);assert.deepEqual(batches,[16,16,1]);conflict=true;
@@ -76,7 +76,25 @@ void test('Eve recalled context stays within prompt budget without losing its in
 });
 void test('Eve client splits long UTF-8 conversations by bytes as well as message count',async t=>{
  const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original;});let revision=0,total=0;
- globalThis.fetch=async(_url,init)=>{assert.ok(new TextEncoder().encode(init.body).length<=640000);total+=JSON.parse(init.body).session.messages.length;return Response.json({revision:++revision});};
+ globalThis.fetch=async(_url,init)=>{if (!init?.method) return Response.json({}, {headers:{'X-Rock-Eve-Owner':'fixture-owner-binding'}}); assert.equal(new Headers(init.headers).get('x-rock-eve-owner'),'fixture-owner-binding');assert.ok(new TextEncoder().encode(init.body).length<=640000);total+=JSON.parse(init.body).session.messages.length;return Response.json({revision:++revision});};
  await new EveHistoryClient().save(session(id,Array.from({length:16},(_,i)=>({id:`large${i}`,side:'me',text:'文'.repeat(32000)}))),true);
  assert.equal(total,16);assert.ok(revision>1);
+});
+
+void test('Eve client pins queued batches to the original account and blocks an account transition', async t => {
+ const original = globalThis.fetch; t.after(() => { globalThis.fetch = original; });
+ let writes = 0;
+ globalThis.fetch = async (_url, init) => {
+  if (!init?.method) return Response.json({}, {headers:{'X-Rock-Eve-Owner':'alice-binding'}});
+  assert.equal(new Headers(init.headers).get('x-rock-eve-owner'), 'alice-binding');
+  writes++;
+  if (writes === 1) return Response.json({revision:1});
+  return Response.json({error:'account changed'}, {status:409});
+ };
+ const client = new EveHistoryClient();
+ const value = session(id, Array.from({length:17}, (_,i)=>({id:`fenced-${i}`,side:'me',text:'synthetic'})));
+ await assert.rejects(client.save(value,false), error => error.status === 409);
+ assert.equal(writes,2);
+ await assert.rejects(client.save(value,false), error => error.status === 409);
+ assert.equal(writes,2);
 });
