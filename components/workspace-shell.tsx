@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, type MouseEventHandler, type ReactNode } from 'react';
+import { useEffect, type ReactNode, type MouseEventHandler } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
+import OSHeader from './os-header';
+import { ArrowUpRight, Cable, CircleHelp } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
 import skyStyles from '@/components/sky-surface.module.css';
@@ -11,19 +12,23 @@ export default function WorkspaceShell({
   children,
   title,
   contentClassName,
-  onConnect,
   onClickCapture,
+  onConnect,
   running = false,
   hideTopActions = false,
+  standaloneSky = false,
+  standaloneHomeHref = '/sky',
   tone,
 }: {
   children: ReactNode;
   title: string;
   contentClassName?: string;
-  onConnect?: () => void;
   onClickCapture?: MouseEventHandler<HTMLDivElement>;
+  onConnect?: () => void;
   running?: boolean;
   hideTopActions?: boolean;
+  standaloneSky?: boolean;
+  standaloneHomeHref?: string;
   tone?: 'sky';
 }) {
   useEffect(() => {
@@ -41,14 +46,15 @@ export default function WorkspaceShell({
   return (
     <div
       onClickCapture={(event) => {
+        onClickCapture?.(event);
         if (
           running &&
           event.target instanceof Element &&
           event.target.closest('a[href]')
         )
           event.preventDefault();
-        onClickCapture?.(event);
       }}
+      data-os-frame
       className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
@@ -57,20 +63,10 @@ export default function WorkspaceShell({
         メインコンテンツへ
       </a>
       <div className="rock-main-column rock-main-column-full">
-        <header className="rock-topbar">
-          <Link
-            href={tone === 'sky' ? '/os' : '/'}
-            className="rock-home-link"
-            aria-label="ホームへ戻る"
-            aria-disabled={running || undefined}
-          >
-            <House size={17} />
-            <span>ホーム</span>
-          </Link>
-          <div className="rock-breadcrumb">
-            <strong>{title}</strong>
-            <em>DEVELOPER PREVIEW</em>
-          </div>
+        {standaloneSky ? <header className={skyStyles.standaloneHeader}>
+          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="Sky home">avocado <span>/ Sky</span></Link>
+          <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
+        </header> : <OSHeader title={title} running={running}>
           {!hideTopActions && (
             <div className="rock-topbar-actions">
               {running && (
@@ -78,7 +74,7 @@ export default function WorkspaceShell({
                   処理中 · 完了まで画面を開いてください
                 </output>
               )}
-              <span className="rock-web-label">{tone === 'sky' ? 'WEB / PHONE / PC' : 'WEB / PC'}</span>
+              <span className="rock-web-label">WEB / PC</span>
               {onConnect ? (
                 <button
                   className="rock-button rock-button-subtle"
@@ -100,7 +96,7 @@ export default function WorkspaceShell({
               )}
             </div>
           )}
-        </header>
+        </OSHeader>}
         <main
           id="workspace-main"
           className={`rock-main ${contentClassName ?? ''}`}
@@ -111,7 +107,9 @@ export default function WorkspaceShell({
         <div className="rock-bottom-note">
           <span>{tone === 'sky' ? 'Sky' : PRODUCT_RELEASE_NAME}</span>
           <Link
-            href={tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'}
+            href={
+              tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'
+            }
             aria-disabled={running || undefined}
           >
             対応環境と既知の制限 <ArrowUpRight size={13} />

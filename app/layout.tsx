@@ -3,6 +3,7 @@ import './globals.css';
 import './app.css';
 import './workspace.css';
 import './work/work.css';
+import './os-shell.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:

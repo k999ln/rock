@@ -20,7 +20,7 @@ async function handle(request:Request,method:'GET'|'PUT'|'POST'|'DELETE') {
     const store=eveHistoryStore(database(),owner,keys,true),query=new URL(request.url).searchParams;
     if(method==='GET') {
       const id=query.get('id');
-      return json(id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??''));
+      const result=id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??'');return json({...result,ownerUserId:owner});
     }
     const value=await input(request);
     if(method==='PUT')return json(await store.save(value));

@@ -28,5 +28,5 @@ export type LinuxLocalRun = {
 
 export function linuxRunExport(run: LinuxLocalRun) {
   if (!run.text || !['review', 'completed'].includes(run.job.status)) throw new Error('保存できる成果がまだありません。');
-  return `# ${run.agent.name}\n\n${run.job.status === 'review' ? '下書きです。内容を確認してください。' : '本人が確認した文章です。'}\n\n${run.text}\n\n## 使ったAI\n${run.modelName ?? run.agent.modelId}\n\n## この仕事の料金\nクラウドAI使用料: 0円（クラウドへ送っていません）\n自作の担当代: 0円\n${run.usage.resources}\n${run.usage.subscription}\n\nこの文章はSkyなしで読めます。\n`;
+  return `# ${run.agent.name}\n\n${run.job.status === 'review' ? '下書きです。内容を確認してください。' : '本人が確認した文章です。'}\n\n${run.text}\n\n## 使ったAI\n${run.modelName ?? run.agent.modelId}\n\n## この仕事の料金\nクラウドAI使用料: 0円（端末内で推論）\n自作の担当代: 0円\n${run.usage.resources}\n${run.usage.subscription}\n\nこの文章はSkyなしで読めます。\n`;
 }
