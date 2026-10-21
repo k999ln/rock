@@ -166,6 +166,16 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      // Owner-approved retirement of duplicate screens; keep installation guidance.
+      if (source.hostname === MINI_PUBLIC_HOST) {
+        const retired = new Map([['/rockstaros', '/os'], ['/rockstaros/crowdfunding', '/os']]);
+        const destination = retired.get(path.replace(/\/$/, ''));
+        if (destination && ['GET', 'HEAD'].includes(request.method)) {
+          source.pathname = destination;
+          return Response.redirect(source.href, 308);
+        }
+        if (isPath(path, '/rockstaros/guide')) return skyWorker.fetch(request, env, context);
+      }
       if (source.hostname.endsWith(GENERATED_SITE_SUFFIX) &&
           (isJenniferPrivateUi(path) || isJenniferPrivateApi(path))) {
         if (['GET', 'HEAD'].includes(request.method) && isJenniferPrivateUi(path)) {

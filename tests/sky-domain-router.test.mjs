@@ -293,3 +293,9 @@ void test('OS and Sky documents point to their own install manifests', async () 
     /href="\/os\/sky\/campus\/nyu\/manifest\.webmanifest"/,
   );
 });
+
+void test('retired duplicate OS pages redirect before Mini proxy and preserve the guide', async () => {
+ let proxied=0;const app=withMiniSite({fetch:async()=>new Response('native-guide')},async()=>{proxied++;return new Response('mini');});
+ for(const path of ['/rockstaros','/rockstaros/','/rockstaros/crowdfunding']) {const r=await app.fetch(new Request(`https://avoado.si${path}?entry=legacy`));assert.equal(r.status,308);assert.equal(r.headers.get('location'),'https://avoado.si/os?entry=legacy');}
+ assert.equal(await(await app.fetch(new Request('https://avoado.si/rockstaros/guide'))).text(),'native-guide');assert.equal(proxied,0);
+});
