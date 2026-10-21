@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites auth endpoints require top-level gateway navigation. */
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
