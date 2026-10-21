@@ -45,8 +45,10 @@ mainのRQ50と作業ブランチのRQ49、両者の月額案には差があり�
 
 | 系統 | 現在地 |
 | --- | --- |
-| [avocadoMini R5](docs/avocado-mini-r5/README.md) | R5 is the current design baseline. 天井設置案は設計候補で、実機試験・製造図面・製造承認は未完了。 |
+| [avocadoMini R5](docs/avocado-mini-r5/README.md) | R5 is the current design baseline. Zero physical-device tests have been completed, and manufacturing approval is **on hold**. 天井設置案と製造図面は未受入。 |
 | [Material Invention](docs/rockstaros-avocado-mini-complete-design.md) | 2D候補比較とSky/Zema接続がある。Simulation and laboratory connections are not implemented. |
+
+作業数は製品の完成率を表しません。[All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [受入証拠](docs/evidence/)。
 
 ## 開発と検証
 
