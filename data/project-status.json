@@ -9456,5 +9456,36 @@
     "hostVerify": "npm run verify exit0",
     "readback": "Both official domains HTTPS200 and browser Purpose verified",
     "evidence": "data/mini-pro-purpose-publication.json"
+  },
+  "readmeProductEntry": {
+    "status": "verified",
+    "decisionDate": "2026-10-21",
+    "taskIds": [
+      "DOC04",
+      "G04"
+    ],
+    "order": [
+      "Mini",
+      "OS",
+      "Eve",
+      "Sky",
+      "Pro"
+    ],
+    "fields": [
+      "purpose",
+      "design",
+      "code",
+      "development_status"
+    ],
+    "scope": "README navigation, matching Japanese documentation gate, progress record; no runtime or deployment change",
+    "baseMainSha": "3457a8ea167a70578ae71f4f87366f23028f7436",
+    "verification": {
+      "readmeOrderAndFourFields": "PASS for Mini, OS, Eve, Sky, Pro",
+      "localLinksAndAnchors": "PASS; repaired missing release plan link",
+      "r5DocumentationTests": "3 passed",
+      "metadataCheck": "PASS",
+      "fullVerify": "exit0; Node 2515 passed / 2 skipped; Work API1678, CSV385"
+    },
+    "mainPublication": "commit and normal fast-forward push to main; no Site deployment"
   }
 }

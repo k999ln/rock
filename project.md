@@ -1,3 +1,7 @@
+## 2026-10-21 — avokado全体のREADME入口を再構成（DOC04 / G04、ROCK）
+
+本人指定のMini→OS→Eve→Sky→Pro順に目的・設計・コード・開発状況を整理。OS中心の見出しと「周辺製品」の扱いを改め、各製品を同じ階層で案内。既存の公開/実機/Provider/供給/料金の受入境界と開発手順を保持。READMEの既存状態検査は同じ未実装状態の日本語表記も受け入れるよう調整。READMEの5項目順・各4説明・ローカル参照先・anchorを確認。R5文書3試験、metadata:check、npm run verify exit0（Node2515成功/2skip、API1678、CSV385）。通常commitとfast-forwardでmainへ保存する。サイト本文やruntimeの変更はない。
+
 ## 2026-10-21 — Mini/Pro目的の確定と公開反映（WEB13 / WEB06、ROCK）
 
 本人の明示指示を正本へ記録。Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連部品確保。R5単独性、共通OS権限、供給/施設導入の別受入を維持。製品baseline/全体設計/R5/Pro/profile/indexと公開Purposeを更新した。

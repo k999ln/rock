@@ -119,10 +119,8 @@ for (const path of [
   );
 const readme = read('README.md');
 requireValue(
-  readme.includes('R5 is the current design baseline') &&
-    readme.includes(
-      'Simulation and laboratory connections are not implemented',
-    ),
+  (readme.includes('R5 is the current design baseline') || readme.includes('R5を現行設計')) &&
+    (readme.includes('Simulation and laboratory connections are not implemented') || readme.includes('シミュレーション・実験室接続は未実装')),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
 requireValue(

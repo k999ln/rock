@@ -1,5 +1,9 @@
 # Git / CI / Operations
 
+## avokado全体のREADME入口（2026-10-21、DOC04 / G04、ROCK）
+
+本人指定のMini→OS→Eve→Sky→Proを同階層に並べ、各項目へ目的・設計正本・既存コード・開発状況を記載する。ROCKは正本/コード/既存公開証拠の照合とmain保存を担当し、外部依存はGitHubの保存/表示。既存公開サイト、OS/runtime、物理・Provider・供給の受入状態は変更しない。完了条件はREADME内の順序/4項目/ローカル参照先/明示anchor、metadata同期とnpm run verifyの成功、mainのREADME読戻し。既存のR5/Material未実装チェックは日本語の同義表記も受理する。READMEの5項目順・各4説明・参照先・anchor、R5文書3試験、metadata同期と全体verify exit0を確認した。
+
 <a id="redesign-thread-git"></a>
 ## 最新RockstarOS本体設計のGit統合監査
 
