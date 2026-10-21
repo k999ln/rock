@@ -1130,7 +1130,7 @@
     "defaultRoute": "/",
     "skyRoute": "/sky",
     "returnPolicy": "os_routes_return_to_os_home_public_routes_return_to_product_home",
-    "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
+    "workspaceNavigation": "sky_timeline_shell_with_responsive_primary_navigation",
     "smartphoneLayout": {
       "supportedCssWidthPx": [
         320,
@@ -1141,7 +1141,8 @@
       "minimumPrimaryTouchTargetPx": 44,
       "pageHorizontalOverflow": "forbidden"
     },
-    "visualBasis": "iphone_inspired_app_launcher",
+    "visualBasis": "native_post_timeline",
+    "legacyPreferences": "prior_launcher_preferences_preserved_in_device_storage_not_exposed_on_new_home",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": [
@@ -1213,6 +1214,8 @@
     "background": "near_black",
     "productHomeAppearance": "light_scroll_product_showcase",
     "accent": "ice_blue",
+    "skyHomeAccent": "forest_green",
+    "skyHomeAppearance": "light_native_post_timeline",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",

@@ -11,6 +11,8 @@
 
 承認・合格・未決定: PC/スマホの同一版表示と投稿からEveまでの実操作、owner A/B分離、鍵なし・失効鍵・revision競合の拒否、停止と読戻し、実MCP投稿の出典照合、X本人投稿の実取得を別々に記録する。ローカル合成MCPとPixelの別X画面はnative HomeのX実投稿合格ではない。X For Youと自動同期も未受入。料金、実投稿供給元、OS版公開範囲は実Provider・契約・本人承認の証拠で決める。
 
+2026-10-21 Web実装対応: `components/home-screen.tsx`を投稿型Homeとし、`/api/sky/social`、`/api/sky/community-os`、`/api/sky/hub`、`/api/sky/x-account`、`/api/sky/x-feed`がowner別の保存・取得を担う。DB 0022〜0029は設計上の保存契約であり、本番適用済みではない。X本人連携はread-only OAuthと明示した日次読取上限、取得不能時の失効/再接続を持つ。MCP投稿は署名・権限を自動付与せず、出典・期限・scopeを検査して表示する。既存Eveの会話保存は端末内限定で、別端末履歴は今回のruntime受入に含めない。旧X埋め込みwidgetはHomeから撤去する。合格根拠は合成試験と同一候補の全体verifyで、実Provider、別端末、公開、native OSの合格には転用しない。
+
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
 ## Skyコード公開の共通境界（2026-10-09）

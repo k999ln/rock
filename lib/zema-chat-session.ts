@@ -33,6 +33,7 @@ export type ZemaChatSession = {
   version: 1;
   id: string;
   toolId: string;
+  agent?: { id: string; revision: number };
   createdAt: number;
   messages: ZemaChatMessage[];
   activeRequest: {
@@ -103,6 +104,11 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
       session.workflowStatus === 'running' ||
       session.workflowStatus === 'completed' ||
       session.workflowStatus === 'failed') &&
+    (session.agent === undefined ||
+      (typeof session.agent?.id === 'string' &&
+        ID.test(session.agent.id) &&
+        Number.isSafeInteger(session.agent.revision) &&
+        session.agent.revision >= 0)) &&
     (session.coordination === undefined ||
       session.coordination === null ||
       isJenniferCoordinationPlan(session.coordination)) &&
