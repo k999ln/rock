@@ -1,11 +1,11 @@
-CREATE TABLE `sky_hosted_monthly_events` (
+CREATE TABLE IF NOT EXISTS `sky_hosted_monthly_events` (
 	`id` text PRIMARY KEY NOT NULL,
 	`type` text NOT NULL,
 	`invoice_id` text NOT NULL,
 	`processed_at` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `sky_hosted_monthly_tests` (
+CREATE TABLE IF NOT EXISTS `sky_hosted_monthly_tests` (
 	`owner_id` text PRIMARY KEY NOT NULL,
 	`id` text NOT NULL,
 	`contract_id` text NOT NULL,
@@ -25,4 +25,4 @@ CREATE TABLE `sky_hosted_monthly_tests` (
 	CONSTRAINT "sky_hosted_phase" CHECK("sky_hosted_monthly_tests"."phase" IN ('migrating','active','capped','unpaid','restored'))
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `sky_hosted_monthly_tests_id_unique` ON `sky_hosted_monthly_tests` (`id`);
+CREATE UNIQUE INDEX IF NOT EXISTS `sky_hosted_monthly_tests_id_unique` ON `sky_hosted_monthly_tests` (`id`);
