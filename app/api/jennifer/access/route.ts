@@ -4,13 +4,24 @@ import { requestGatewayUser } from '@/lib/request-auth';
 
 const headers = { 'Cache-Control': 'no-store, private', Vary: 'Cookie' };
 
+function canUseInternalPortfolio(userId: string) {
+  const configured = (env as unknown as {
+    JENNIFER_PORTFOLIO_OWNER_ID?: string;
+  }).JENNIFER_PORTFOLIO_OWNER_ID?.trim();
+  return Boolean(configured && configured === userId);
+}
+
 export async function GET(request: Request) {
   const db = (env as unknown as { DB?: D1Database }).DB;
   if (!db) return Response.json({ error: 'AUTH_UNAVAILABLE' }, { status: 503, headers });
   const store = jenniferPasskeyStore(db);
   try {
-    await store.authenticateSession(request);
-    return Response.json({ authenticated: true, method: 'passkey' }, { headers });
+    const owner = await store.authenticateSession(request);
+    return Response.json({
+      authenticated: true,
+      method: 'passkey',
+      portfolioAccess: canUseInternalPortfolio(owner),
+    }, { headers });
   } catch {}
   try {
     const owner = await requestGatewayUser(request);
@@ -18,6 +29,7 @@ export async function GET(request: Request) {
       authenticated: false,
       setupAvailable: true,
       recovery: await store.hasCredential(owner),
+      portfolioAccess: canUseInternalPortfolio(owner),
     }, { headers });
   } catch {
     return Response.json({ authenticated: false, setupAvailable: false, recovery: false }, { headers });

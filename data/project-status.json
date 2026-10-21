@@ -848,6 +848,7 @@
         "scripts/amc-sky-observe.mjs",
         "tests/amc-sky-observe.test.mjs",
         "docs/evidence/spider-observation-source-read.json",
+        "docs/evidence/jennifer-surface-architecture.json",
         "scripts/amc-agent.mjs",
         "tests/amc-agent-preflight.test.mjs",
         "docs/evidence/spider-agent-preflight-read.json",
@@ -7479,7 +7480,8 @@
     "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
     "jenniferSource": {
       "canonicalName": "Jennifer",
-      "userSpelling": "Jenniffer",
+      "userSpelling": "Jennifer",
+      "legacySpelling": "Jenniffer",
       "branch": "codex/jennifer-zema-execution",
       "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
       "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",

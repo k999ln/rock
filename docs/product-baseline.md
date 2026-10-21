@@ -83,7 +83,7 @@ eSIMへOS binary/LLMを格納せず、回線開通、本人/利用権、OS/clien
 
 ### Jennifer、Sky、Zema、OSの役割
 
-Jennifer（利用者表記Jenniffer）は利用者が話す全体のプロジェクト統括窓口。SkyはAgent/Toolの発見・掲載・購入・接続、ZemaはJenniferの裏で依頼・計画・進捗・承認・停止・成果・費用・Receipt・履歴を持つ仕事system、RockstarOSは本人・権限・実行・保存・復旧の共通runtimeである。JevはSkyから明示利用するremote evaluatorで、Jenniferとは別system。
+Jenniferは利用者が話す全体のプロジェクト統括窓口。第一者の製品表示は`Jennifer`へ統一し、過去資料の`Jenniffer`は検索・履歴用の旧表記としてだけ保持する。SkyはAgent/Toolの発見・掲載・購入・接続、ZemaはJenniferの裏で依頼・計画・進捗・承認・停止・成果・費用・Receipt・履歴を持つ仕事system、RockstarOSは本人・権限・実行・保存・復旧の共通runtimeである。JevはSkyから明示利用するremote evaluatorで、Jenniferとは別system。
 
 Jennifer sourceはPR #113のhead `3349c2475468443bc7ecd94a4e3782343f514a8f`からmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合済み。[Jennifer Coordination](jennifer-coordination.md)に従い、8projectは運営の内部portfolioとし、一般利用者のtenant案件と権限・保存を分ける。計画や担当profileに実行権を与えず、Brokerの本人・権限・費用境界を通す。COLOMBIA原本、資料grant、native UI、実Providerは未受入条件として残る。
 
@@ -91,7 +91,7 @@ Jenniferは依頼、COLOMBIA、project正本からGoal Contractを作り、AMC�
 
 Zemaは版付きplan、semantic diff、task attempt、artifact hash、署名済みusage Receipt、費用状態、停止、取消未確認、独立review、Goal受入をowner別D1へ保持する。ブラウザのactor名、evidence文字列、合否ボタンだけではAMC状態を進めない。workerの`TaskReport`とreviewerの`ReviewReport`はサーバーが既存A2A台帳から生成し、reviewerはworkerと異なるprincipal、同じpredecessor委任、正確なworker report digestへ結び付ける。計画とGoalの状態遷移は同じD1 batchでrevision guardする。remote完了だけを完成扱いせず、全leafの独立検収とownerの最終受入を必要とする。実Provider送信はoperator flag、暗号化鍵、信頼鍵、allowlist、見積、Broker証明、owner個別承認が揃うまで無効のままにする。
 
-会話はJenniferを窓口に統一するが、Sky直接操作・host app・ゲストの純粋処理に会話を強制しない。各入口から同じ仕事・権限契約を使う。親WorkJobは`active / review / completed / cancelled`の四状態を維持し、AMC・A2A・金融・review・削除の状態を混ぜない。
+`/chat`の製品名と会話はJenniferを窓口に統一し、Zemaは同じ画面の`仕事`表示と裏側のwork controlとして示す。AMCはZema内の逆算分解engineで、担当siは作業実行時だけ起動する。Sky直接操作・host app・ゲストの純粋処理に会話は強制せず、各入口から同じ仕事・権限契約を使う。親WorkJobは`active / review / completed / cancelled`の四状態を維持し、AMC・A2A・金融・review・削除の状態を混ぜない。Jennifer Accessの唯一の正本origin/RPは`https://avoado.si` / `avoado.si`とし、Sites accountはpasskey登録・復旧後に実行権へ暗黙昇格しない。Columbiaと生成Site hostの共有work画面は正本へ転送し、private APIを別D1へ書かない。
 
 ### Skyをさまざまな製品・環境へ融合させる
 

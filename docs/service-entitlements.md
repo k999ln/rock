@@ -1,6 +1,6 @@
 # Rockstarサービス利用権と任意claim
 
-Rockstarの無料アカウントを基本の入口とし、同じ本人認証でSky、Zema、Jennifer（利用者表記Jenniffer）と対応するOS/clientへ進む。利用開始にSIM/eSIM購入を要求しない。機器、招待、店頭販売、サービスofferに付帯する追加利用権が必要な場合だけ、既存の署名claimを本人のaccountへ結び付ける。SIM/eSIMは任意の通信・販売adapterとして扱い、OS binaryをSIMへ格納しない。消費者向けeSIMの発行・販売は保留、既定で無効の互換経路として保持する。
+Rockstarの無料アカウントを基本の入口とし、同じ本人認証でSky、Zema、Jenniferと対応するOS/clientへ進む。利用開始にSIM/eSIM購入を要求しない。機器、招待、店頭販売、サービスofferに付帯する追加利用権が必要な場合だけ、既存の署名claimを本人のaccountへ結び付ける。SIM/eSIMは任意の通信・販売adapterとして扱い、OS binaryをSIMへ格納しない。消費者向けeSIMの発行・販売は保留、既定で無効の互換経路として保持する。
 
 本書は利用権の契約を定める。無料account、通信契約/profile、追加利用権、OS/client導入、Package導入、仕事の実行承認、予算・請求はそれぞれ独立した状態である。利用権取得だけでTool実行、端末操作、有料si、回線開通、OS導入を承認しない。既存技術ID・API・schema名は互換のため保持する。
 

@@ -2430,7 +2430,8 @@
     "originalBytesPreserved": true,
     "jenniferSource": {
       "canonicalName": "Jennifer",
-      "userSpelling": "Jenniffer",
+      "userSpelling": "Jennifer",
+      "legacySpelling": "Jenniffer",
       "branch": "codex/jennifer-zema-execution",
       "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
       "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
