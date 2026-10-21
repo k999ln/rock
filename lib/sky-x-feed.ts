@@ -2,7 +2,7 @@ import { xTimelineUrl } from './sky-hub.ts';
 
 export type XPost = { id: string; text: string; author: string; name: string; createdAt: string; url: string };
 export type XFeedSettings = { token: string; sources: string[]; dailyRequests: number } | null;
-export type XFeedSnapshot = { mode:'api'|'embed'; posts:XPost[]; fetchedAt:number; retryAt:number; status:string };
+export type XFeedSnapshot = { mode:'api'; posts:XPost[]; fetchedAt:number; retryAt:number; status:string };
 type Database = Pick<D1Database,'prepare'>;
 type Row = { payload:string; remote_user_id:string|null; fetched_at:number; next_refresh_at:number; retry_after:number; error_code:string|null };
 const GLOBAL='__api__',FRESH_MS=15*60_000,RETENTION_MS=24*60*60_000;
@@ -44,7 +44,7 @@ export function skyXFeed(db:Database,settings:XFeedSettings,fetcher:typeof fetch
   const row=async(key:string)=>db.prepare('SELECT payload,remote_user_id,fetched_at,next_refresh_at,retry_after,error_code FROM sky_x_feed_state WHERE key=?').bind(key).first<Row>();
   function sourceAllowed(input:string){const source=xTimelineUrl(input);if(settings&&!settings.sources.includes(source))throw new Error('X_SOURCE_NOT_APPROVED');return source;}
   async function snapshot(input:string):Promise<XFeedSnapshot>{
-    const source=sourceAllowed(input);if(!settings)return{mode:'embed',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'};
+    const source=sourceAllowed(input);if(!settings)return{mode:'api',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'};
     const [cached,global]=await Promise.all([row(source),row(GLOBAL)]),now=clock();
     const posts=cached&&now-cached.fetched_at<RETENTION_MS?JSON.parse(cached.payload) as XPost[]:[];
     return{mode:'api',posts,fetchedAt:cached?.fetched_at??0,retryAt:Math.max(cached?.next_refresh_at??0,cached?.retry_after??0,global?.retry_after??0),status:cached?.error_code??(cached?.fetched_at?'ready':'not-fetched')};
@@ -65,7 +65,7 @@ export function skyXFeed(db:Database,settings:XFeedSettings,fetcher:typeof fetch
     try{return JSON.parse(body+decoder.decode());}catch{throw new XFeedError('invalid-response',now+FRESH_MS);}
   }
   async function refresh(input:string):Promise<XFeedSnapshot>{
-    const source=sourceAllowed(input);if(!settings)return{mode:'embed',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'};
+    const source=sourceAllowed(input);if(!settings)return{mode:'api',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'};
     await ensure(source);const now=clock(),lease=crypto.randomUUID();
     const acquired=await db.prepare('UPDATE sky_x_feed_state SET lease_id=?,lease_until=? WHERE key=? AND lease_until<=? AND retry_after<=? AND next_refresh_at<=?').bind(lease,now+60000,source,now,now,now).run();
     if(acquired.meta.changes!==1)return snapshot(source);

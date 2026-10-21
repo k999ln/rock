@@ -23,6 +23,7 @@ import {
 import SkySocialTimeline from './sky-social-timeline';
 import SkyDiscoveryFeed from './sky-discovery-feed';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
+import SkyPublicXTimeline from './sky-public-x-timeline';
 import {
   useTimelineConnector,
   SkyTimelineConnector,
@@ -280,6 +281,7 @@ export default function HomeScreen() {
                 <>
                   <SkyMcpTimeline receiver={timelineReceiver} />
                   <SkyXAccountTimeline />
+                  <SkyPublicXTimeline />
                 </>
               }
             />

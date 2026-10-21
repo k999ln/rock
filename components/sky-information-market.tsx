@@ -357,7 +357,7 @@ export default function SkyInformationMarket({
             <span>PLUG IN YOUR SOURCES</span>
             <h2 id="news-plugins-title">いつもの配信元を、つなごう。</h2>
             <p>
-              Xの公開アカウントやリストを保存できます。本人のフォロー・おすすめ投稿の取り込みは未接続です。
+              Xの公開アカウントやリストを保存できます。APIが有効な配信元はHomeで本人操作により取得します。XのFor Youそのものは未接続です。
             </p>
           </div>
         </header>
@@ -415,7 +415,7 @@ export default function SkyInformationMarket({
             が適用されることを確認しました。
           </label>
           <p className={styles.note}>
-            Xの埋込みを読み込むと、Xへ通信が発生します。SkyがXのパスワードを受け取ることはありません。
+            公開投稿APIの設定と配信元の承認後、Homeで「投稿を取得」を押した時だけXへ通信します。SkyがXのパスワードを受け取ることはありません。
           </p>
           <button
             className={styles.primary}
@@ -432,7 +432,7 @@ export default function SkyInformationMarket({
               <strong>{p.metadata.title}</strong>
               <span>
                 {p.enabled
-                  ? '配信元を保存済み・投稿の取り込みは未接続'
+                  ? '配信元を保存済み・HomeでAPI接続状態を確認'
                   : '表示停止中'}
               </span>
               {p.enabled ? (

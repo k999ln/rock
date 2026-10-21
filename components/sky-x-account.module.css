@@ -10,6 +10,10 @@
     Meiryo,
     sans-serif;
 }
+.publicSource { border-bottom: 1px solid #dedfd6; padding: 14px 20px; }
+.publicHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.publicHeader strong { margin-right: auto; }
+.publicSource > p { color: #778077; font-size: 13px; }
 .connection {
   padding: 24px 20px;
   border-bottom: 1px solid #dedfd6;

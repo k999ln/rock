@@ -6,6 +6,7 @@ void test('Home is the native timeline frontend with preserved optional navigati
   const home = read('components/home-screen.tsx');
   assert.match(home, /data-sky-home/);
   assert.match(home, /<SkySocialTimeline/);
+  assert.match(home, /<SkyPublicXTimeline/);
   assert.match(home, /fullHome/);
   assert.match(home, /discovery=\{<SkyDiscoveryFeed/);
   assert.doesNotMatch(
@@ -70,4 +71,11 @@ void test('following private communities and threads do not acquire catalog reco
   assert.match(css, /min-height: 100dvh/);
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(css, /@media \(max-width: 700px\)/);
+});
+void test('public X sources use manual native API reception without an embedded widget', () => {
+  const source = read('components/sky-public-x-timeline.tsx');
+  assert.match(source, /fetch\('\/api\/sky\/x-feed'/);
+  assert.match(source, /revision: source\.revision/);
+  assert.match(source, /onClick=\{\(\) => void refresh\(source\)\}/);
+  assert.doesNotMatch(source, /iframe|widgets\.js|dangerouslySetInnerHTML/);
 });

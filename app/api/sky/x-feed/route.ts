@@ -16,7 +16,7 @@ async function handle(request:Request,refresh:boolean) {
     if(!plugin)return json({error:'Skyで配信元を追加してください。'},404);
     if(refresh&&v.revision!==plugin.revision)return json({error:'配信設定が変わっています。再読み込みしてください。'},409);
     const settings=xFeedSettings(env as unknown as Record<string,unknown>);
-    if(!settings)return json({mode:'embed',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'});
+    if(!settings)return json({mode:'api',posts:[],fetchedAt:0,retryAt:0,status:'api-not-configured'});
     const service=skyXFeed(db,settings);
     return json(await(refresh?service.refresh(source):service.snapshot(source)));
   }catch(error){

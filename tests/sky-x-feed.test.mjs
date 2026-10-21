@@ -14,6 +14,11 @@ void test('X API is disabled unless credentials, approved sources and bounded ca
  assert.deepEqual(xFeedSettings(env),{token,sources:[source],dailyRequests:2});
  assert.equal(xFeedSettings({...env,SKY_X_API_SOURCES:'["https://private.invalid"]'}),null);assert.equal(xFeedSettings({...env,SKY_X_MAX_REQUESTS_PER_DAY:'99999'}),null);
 });
+void test('unconfigured public X API has no embedded fallback or upstream read',async t=>{
+ const {db}=fixture(t);let reads=0;const service=skyXFeed(db,null,async()=>{reads++;throw new Error('unexpected');});
+ const snapshot=await service.snapshot(source);
+ assert.equal(snapshot.mode,'api');assert.equal(snapshot.status,'api-not-configured');assert.deepEqual(snapshot.posts,[]);assert.equal(reads,0);
+});
 void test('X refresh uses only official fixed endpoints, stores real response fields and reuses fresh cache',async t=>{
  const {db}=fixture(t),seen=[];const service=skyXFeed(db,settings,async(url,init)=>{seen.push({url:new URL(url),init});return Response.json(seen.length===1?publicUser:posts);});
  const value=await service.refresh(source);assert.equal(value.status,'ready');assert.equal(value.posts[0].url,'https://x.com/huggingface/status/456');assert.equal(seen.length,2);assert.equal(seen[1].url.searchParams.get('max_results'),'5');
