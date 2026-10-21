@@ -11,12 +11,12 @@ export function readMonthlyStripeConfig(env:Record<string,unknown>):MonthlyStrip
 export function monthlyStripeTest(config:MonthlyStripeConfig, client?:Stripe) {
   // The same validation is enforced for direct callers and scripts.
   readMonthlyStripeConfig({SKY_CLOUD_MONTHLY_MODE:'stripe-test',SKY_MONTHLY_STRIPE_KEY:config.secretKey,SKY_MONTHLY_STRIPE_ACCOUNT:config.accountId,SKY_MONTHLY_STRIPE_WEBHOOK_SECRET:config.webhookSecret});
-  const stripe=client??new Stripe(config.secretKey,{maxNetworkRetries:0,timeout:15000});
+  const stripe=client??new Stripe(config.secretKey,{httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:0,timeout:15000});
   const key=(row:CloudMonthlyInvoice,operation:string)=>`sky-monthly:${config.accountId}:${row.id}:${operation}`;
   function testObject<T extends {livemode?:boolean}>(value:T):T {if(value.livemode!==false)throw new WorkError('本番オブジェクトを拒否しました。',409);return value;}
   async function account(){const value=await stripe.accounts.retrieve(null);if(value.id!==config.accountId)throw new WorkError('Stripe sandboxが一致しません。',409);}
   return {
-    async customer(row:CloudMonthlyInvoice){await account();return testObject(await stripe.customers.create({description:'Sky monthly usage test',metadata:{sky_monthly:row.id}},{idempotencyKey:key(row,'customer')})).id;},
+    async customer(row:CloudMonthlyInvoice){await account();return testObject(await stripe.customers.create({description:'Sky monthly usage test',email:'sky-monthly-test@example.com',metadata:{sky_monthly:row.id}},{idempotencyKey:key(row,'customer')})).id;},
     async invoice(row:CloudMonthlyInvoice){await account();const value=testObject(await stripe.invoices.create({customer:row.stripe_customer_id!,currency:row.currency.toLowerCase(),collection_method:'send_invoice',days_until_due:30,auto_advance:false,pending_invoice_items_behavior:'exclude',metadata:{sky_monthly:row.id,sky_period:row.period}},{idempotencyKey:key(row,'invoice')}));return value.id;},
     async item(row:CloudMonthlyInvoice){await account();const value=testObject(await stripe.invoiceItems.create({customer:row.stripe_customer_id!,invoice:row.stripe_invoice_id!,amount:row.total_minor,currency:row.currency.toLowerCase(),description:`Sky Agent usage ${row.period} (test only)`,discountable:false,metadata:{sky_monthly:row.id}},{idempotencyKey:key(row,'item')}));return value.id;},
     async finalize(row:CloudMonthlyInvoice){await account();return testObject(await stripe.invoices.finalizeInvoice(row.stripe_invoice_id!,{auto_advance:false},{idempotencyKey:key(row,'finalize')}));},

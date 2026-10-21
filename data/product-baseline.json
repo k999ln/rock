@@ -20,6 +20,34 @@
     "publicSiteAccepted": false,
     "futureAcceptance": ["final_transcript_segments", "speaker_and_timecode_provenance", "idempotent_merge_and_regenerate", "provider_data_cost_and_stop_boundary", "owner_scoped_save_and_reopen"]
   },
+  "freeCloudAutomaticContinuationIntent":{"date":"2026-10-17","source":"direct_owner_instruction","confirmedPreGenerationRejectionOnly":true,"sameRequestId":true,"productionBilling":false,"authority":"docs/llm-evaluation-architecture.md"},
+  "monthlyFreeCloudIntent": {"date": "2026-10-17", "source": "direct_owner_instruction", "monthlyUsd": 140, "includedUsd": 100, "freeCloudSharesContractAndCap": true, "sandboxOnly": true, "productionBilling": false, "authority": "docs/sky-billing.md", "evidence": "docs/evidence/sky-monthly-free-cloud.json"},
+  "automaticLlmSelectionIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "ログインしてないcodex経由しか使えないんじゃなくてllm選べるようにして、デフォルトは勝手にその作業に一番いいのを選んで",
+    "status": "pixel_bounded_manual_and_automatic_device_verified",
+    "authority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+    "requirements": [
+      "Codex login is not the sole prerequisite or inference path",
+      "User may explicitly select an LLM",
+      "Default selects a suitable available LLM for the task before execution",
+      "Separate model inference from the Tool/Agent executor",
+      "Respect model readiness, task capability, data-sending permission and approved budget; selection does not grant execution authority",
+      "Do not claim universal model superiority or silently send to an unconfigured/paid provider"
+    ],
+    "newProviderProvisioned": false,
+    "executionHoldsChanged": false,
+    "followupRequest": {
+      "decidedAt": "2026-10-17",
+      "source": "direct_owner_instruction",
+      "intent": "Install a searched open LLM on Pixel and route non-article work to a suitable installed model",
+      "firstRequestedWork": "RockstarOS・Skyで実現するサービスのアイデア300件",
+      "status": "candidate_implementation_physical_pending",
+      "authority": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+      "gatesChanged": false
+    }
+  },
   "pixelSiReferenceDesignIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction_in_current_message",
@@ -57,7 +85,28 @@
     "speechServicesBundledTtsVerifiedStatically": true,
     "japaneseAsrTtsAccepted": false,
     "runtimeImplementedByThisChange": false,
-    "priceOrExecutionGateChanged": false
+    "priceOrExecutionGateChanged": false,
+    "usabilityFeedback": {
+      "recordedAt": "2026-10-17",
+      "source": "direct_owner_memo",
+      "ownerQuote": "メモ　デザインがダサい、通知と、仕事の操作性が直感的じゃない、",
+      "status": "implementation_in_progress",
+      "areas": [
+        "visual_design",
+        "notifications",
+        "job_interaction"
+      ],
+      "authority": "docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback",
+      "reason": "実機利用中の本人指摘を次の体験改善へ引き継ぐ。機能試験の合格と使いやすさの受入は分ける。",
+      "newRqOrExecutionPermission": false,
+      "implementationRequest": {
+        "date": "2026-10-17",
+        "ownerQuote": "じゃあデザインと通知、仕事の操作性をちゃんと改善して、Pixelで直感的に使えるようにして",
+        "followUp": "操作性がもっと直感的にしてほしい",
+        "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+        "evidence": "docs/evidence/pixel-intuitive-experience.json"
+      }
+    }
   },
   "cloudServicePlanIntent": {
     "decidedAt": "2026-10-15",
@@ -2144,7 +2193,11 @@
     "authority": "docs/avocado-mini-r5/README.md",
     "profile": "optional_removable_building_integrated_mount_for_same_r5_core",
     "designEntry": "preconstruction_architecture_equipment_and_interior_coordination",
-    "candidateCeilingTypes": ["recessed", "suspended", "exposed_or_retrofit_cover"],
+    "candidateCeilingTypes": [
+      "recessed",
+      "suspended",
+      "exposed_or_retrofit_cover"
+    ],
     "standaloneMiniPreserved": true,
     "proOrBuildingNetworkRequired": false,
     "residentOwnsPrivateProfile": true,
@@ -2697,9 +2750,62 @@
     "canonicalSkyOrigin": "https://avoado.si",
     "campusHome": "campus_specific_discovery_and_free_browser_drafts",
     "mainHome": "agent_marketplace_execution_and_management",
-    "sharedDurableOwnership": ["purchases", "account_library", "connections", "zema_jobs", "agent_outputs"],
+    "sharedDurableOwnership": [
+      "purchases",
+      "account_library",
+      "connections",
+      "zema_jobs",
+      "agent_outputs"
+    ],
     "currentDelivery": "campus_navigation_to_main_in_progress; separate_site_databases_not_migrated",
     "migrationGate": "backup_schema_compatibility_owner_ab_and_recovery_before_existing_data_transfer"
+  },
+  "skyOpenAddPluginDirection": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "skyは全てのaddプラグインになる拡張機能、固定されたものやオフィシャルなものはなく、ただみんなが使いたいものがある、",
+    "role": "open_add_plugin_discovery_and_composition_across_hosts",
+    "fixedFeatureOrAuthorSet": false,
+    "officialProductTier": false,
+    "officialStatusRequired": false,
+    "officialStatusSelectionPreference": false,
+    "pluginKinds": [
+      "model",
+      "agent",
+      "tool",
+      "recipe",
+      "output_view",
+      "host_adapter"
+    ],
+    "sharedAdmissionCriteria": [
+      "author_identity_and_version_digest",
+      "host_runtime_schema_compatibility",
+      "scoped_owner_consent",
+      "data_destination_and_cost",
+      "verification_stop_update_and_revocation"
+    ],
+    "pixelBundledCatalogScope": "physical_preview_tested_profiles_not_Sky_product_boundary",
+    "dynamicNativeThirdPartyPluginAcceptance": "not_implemented",
+    "authority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "dynamicPixelImplementationInstruction": {
+      "date": "2026-10-17",
+      "ownerQuote": "Skyで見つけたLLMやエージェントを、固定カタログに縛られず追加してPixelで実際に使えるようにして",
+      "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+      "scope": [
+        "owner_pinned_public_GGUF",
+        "declarative_local_text_agent"
+      ],
+      "physicalAcceptance": "pending"
+    },
+    "pixelToolAgentInstruction": {
+      "requestedAt": "2026-10-18",
+      "request": "Skyで追加したAgentが要約だけでなく実際にToolを動かして成果物を作り、Pixelで確認する",
+      "authority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+      "runner": "local-tools/1",
+      "scope": "existing_pure_document_Tools_with_explicit_owner_consent",
+      "executionPermissionFromModel": false,
+      "wholeOsOrPaidCloudAuthorized": false
+    }
   },
   "skyFusionDirection": {
     "decidedAt": "2026-10-15",
@@ -2793,8 +2899,15 @@
     "serviceOwner": "Sky",
     "standaloneEndToEndRequired": true,
     "requiredCompanionProducts": [],
-    "optionalIntegratedServices": ["Jennifer", "Zema"],
-    "rockstarOsIntegratedServices": ["Jennifer", "Sky", "Zema"],
+    "optionalIntegratedServices": [
+      "Jennifer",
+      "Zema"
+    ],
+    "rockstarOsIntegratedServices": [
+      "Jennifer",
+      "Sky",
+      "Zema"
+    ],
     "eachServiceStandaloneDesign": true,
     "monthlyProviderAcceptance": "pending",
     "quoteAndBudgetCapRequired": true,
@@ -2804,5 +2917,55 @@
     "jurisdiction": "undecided",
     "productionBillingEnabled": false,
     "document": "docs/sky-billing.md"
-  }
+  },
+  "skyAutomaticModelSelection": {
+  "date": "2026-10-17",
+  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+  "default": "auto",
+  "manualProviderModelSupported": true,
+  "implementation": "lib/sky-model-routing.ts",
+  "document": "docs/llm-evaluation-architecture.md",
+  "cloudAutoAccepted": false,
+  "policy": "local_and_owner_enabled_consented_free_cloud",
+  "status": "live_account_cloud_verified",
+  "tests": "tests/sky-model-routing.test.mjs"
+},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "live_account_real_cloud_accepted_synthetic_contract",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": true
+},
+  "publicModelDiscoveryIntent": {
+    "decidedAt": "2026-10-17",
+    "source": "direct_owner_instruction",
+    "ownerQuote": "今何が使えるのかとかリアルタイムでサーチできるようにしたい、xとかgitとかのopenllmを利用する形で",
+    "authority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+    "scope": [
+      "explicit_public_query_to_GitHub_and_HuggingFace",
+      "X_external_search_until_API_credentials_and_contract_ready",
+      "untrusted_candidates_separate_from_executable_catalog",
+      "no_silent_install_or_paid_fallback"
+    ],
+    "newPaidProviderProvisioned": false
+  },
+"freeCloudBackgroundIntent":{
+  "date": "2026-10-17",
+  "source": "direct_owner_instruction",
+  "persistConsentAndPrompt": true,
+  "continueAfterTabClose": true,
+  "ownerHistory": true,
+  "productionBilling": false,
+  "authority": "docs/llm-evaluation-architecture.md"
+}
 }

@@ -283,9 +283,11 @@ SKY_MONTHLY_PROVIDER_TEST=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/conf
 node --experimental-strip-types --test tests/sky-cloud-monthly.test.mjs
 ```
 
-Mac画面は `http://127.0.0.1:5222/sky/billing`。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+テスト専用顧客は `sky-monthly-test@example.com` を設定する。send_invoiceがemailを要求するためで、本人の連絡先ではなく予約ドメインのfixtureである。請求書メールの送信APIは呼ばず、auto_advance=falseを維持する。旧email欠落で失敗した請求はDBごと保持し、idempotency key変更や金額改変で再発行せず、fresh合成DBで修正版を検証した。
 
-合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。最後の2項目は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
+Mac画面は `http://127.0.0.1:5222/sky/billing`。`SKY_MONTHLY_TEST_PORT=5223`で今回の受入画面へ変更でき、CLIの転送portも合わせる。DBは `work/sky-cloud-monthly-test/state.sqlite`（Git管理外）、`SKY_MONTHLY_TEST_DB`で指定可。fixture seed関数は明示的な合成データ専用であり、通常起動時には投入しない。再起動は同一DB・同一sandboxを維持する。料金未確定の実Cloud実行は新規に送らず、接続先/予算を利用者が確定してから既存実行経路で取得する。
+
+合格条件: 保存済み確定usageの取込、本人分離/改ざん/再送/上限/締め後追加拒否、署名通知/金額不一致/本番拒否、実Stripe sandboxで請求・テスト決済・署名通知・再取得の往復、実Cloud実行のusageとの同一ID照合。2026-10-16に合成usage 1 USDの実Stripe sandbox往復を受入済み。実Cloud実行との同一ID照合は未完了。[最新証拠](evidence/sky-cloud-monthly-test.json)を正本とし、unit mockと外部受入を区別する。
 
 ### Sky 140 の料金案と利用量試算
 
@@ -339,6 +341,107 @@ Solで軽い仕事入力10,000/出力2,000を1,000件（40 USD）、標準200件
 
 現コードは確定usage取込・従量test invoice・署名通知の再照合と料金試算まで。定額契約、SetupIntent、月次Subscription、未払い制限をAgent実行の権限として強制する接続、通知、返金/異議復旧は未実装/未受入。今回の画面の手順表示をruntime成功とはしない。
 
-2026-10-16に既存sandbox account APIを再確認し403。未claim/制限付きキーの権限不足を回避せず、既存sandboxを引き取り、同じaccountに対するtest鍵をserver設定へ安全に更新してから再照合する。鍵やclaim URLをチャット/Gitへ貼らない。Cloud Providerのcredentialと実試験の小額予算も別に必要で、月額売価140 USDを試験支出上限に転用しない。
+2026-10-16、本人承認で既存sandboxを引き取り、同じaccountのtest鍵へ更新しaccount APIの403を解消。合成usage 1 USDを請求し、テストカード決済・署名付きinvoice.paid・Stripe再照合・Sky paid表示まで確認した。鍵やclaim URLをチャット/Gitへ貼らない。Cloud Providerのcredentialと実試験の小額予算も別に必要で、月額売価140 USDを試験支出上限に転用しない。
 
 合格条件は同意なし拒否、初回後払い期間の有限上限、月境界と予約、140 USDの1回請求と枠内usageの追加請求0、テストカード成功/失敗/要認証、重複通知、逆順通知、異議中/解約済み復旧拒否、過去未払いの残存、未払い停止中の成果export、入金後の正しい復旧、再起動後の同一状態。実Stripe testで同じcontract/invoice/usage IDを記録し、本番カード/引落し/回収/銀行制限は実施しない。
+
+
+### Sky 140の固定請求・失敗復旧Sandbox
+
+BIL02/O5（JOINT）、2026-10-16。`lib/sky-140-collection-test.ts`と`scripts/sky-140-collection-sandbox.mjs`は、既存Sky 140の価格定義とStripe test設定・署名検証を使う受入harnessである。実利用の月次サービスではない。既存Wallet/RemoteAiTextStore/A2A予算台帳を複製せず、合成の確定原価100 cents・予約0を判定入力にして、後のserver統合で要求する契約を検証する。純粋判定関数へ渡す残高/予約/契約/請求集合はserver正本が必要で、browser申告やLLM出力を本番権限として使わない。
+
+- 目的・体験: 過去の2026-08/09を合成サービス期間として月末操作を明示実行し、各140 USDを請求。初月成功→翌月失敗→同じ翌月請求の復旧を、Macの5224画面で確認する。実際に2か月待った証拠やschedulerの証拠ではない。
+- 条件: fixture専用の同意版と与信140 USDを使う。顧客の契約同意、本人確認、後払い与信承認を取得したとは扱わない。100 USD枠の残額は預金ではない。月末前・未確定予約・原価枠超過は請求確定を拒否し、枠内usageの追加請求は0。
+- 入出力・状態: account一致→全請求をStripeから再取得→ID/customer/metadata/版/期間/USD/140 USD/test modeを照合。全請求が全額paidかつ残額0の場合だけSandbox利用判定を許す。前月paidで翌月未払いを隠さず、契約取消/異議・同意不足・枠超過・結果不明では拒否。成果exportと支払入口の許可は保持する。これは実Agent送信gateの強制ではない。
+- 保存: Git外0600 JSONへrun ID、操作ごとの冪等keyに対応するProvider ID、チェック済み段階、署名通知を保存。秘密鍵は別の0600設定だけ。原稿・カード番号は保存しない。完了後再起動は保存済み報告の復元のみで、新規課金しない。
+- 失敗・復旧: 23時間を超える未完操作は再送せず照合へ止める。既存invoice IDを維持し、失敗カードから成功カードへ明示的に試験を進める。キー/設定が変わる場合もaccount一致必須。署名通知は重複を記録せず、現在の全請求を再取得して判定する。新しい試験には別の`SKY140_TEST_STATE`を明示し、旧記録を消して再実行しない。
+- 承認・実費: 利用者の「次」と既存Sandbox試験許可の範囲。`SKY140_SANDBOX_ACCEPTANCE=1`とtest鍵が必要。`charge_automatically`の請求を作るがauto_advance=falseで、harnessがテストカードのpay APIを呼ぶ。自動月次回収・Subscriptionの実装/受入ではない。実Cloud、本番鍵/カード/銀行引落しは使わない。
+- 合格: 6ローカル試験、外部Sandbox10項目、署名通知5件、UIのpassedを確認。[同じsource hashの証拠](evidence/sky-140-collection-sandbox.json)。実Agentの事前予約/送信箇所へ利用判定を原子的に組み込むこと、契約同意保存、月次scheduler、要認証カード、返金/chargeback、税、州別条件は未受入。与信/期日/猶予の製品条件はOWNERが確定し、今回のfixture値を自動採用しない。
+
+```sh
+# 同じSandboxのCLI listenを127.0.0.1:5224/webhookへ向け、署名secretをprivate configに設定
+SKY140_SANDBOX_ACCEPTANCE=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-140-collection-sandbox.mjs
+node --experimental-strip-types --test tests/sky-140-collection.test.mjs
+```
+
+
+## Sky 140の月次自動請求とAgent停止復旧Sandbox
+
+2026-10-17 BIL02/O5（JOINT）、設計同期DOC04/H1。本人の追加指示により、旧5224の純粋判定harnessを拡張し、`lib/sky-recurring-sandbox.ts`と`0018_sky_recurring_sandbox.sql`を実装する。目的はSky単体で月締め後の140 USD自動回収と未払い時の既存Agent利用制限を一周させること。Jennifer/Zema/物理SIMは必須ではない。本番課金を有効にせず、明示登録したSandbox契約ownerだけを対象とする。
+
+- 体験・料金: UTC暦月の終了後、固定140 USDを保存済みテスト支払方法に自動請求。100 USD相当のAgent利用枠を含み、従量明細をもう一度加算しない。未使用枠繰越/超過自動請求なし。入会時の前払いなし、未払いは次月の新規有料予約と外部送信を停止。既存成果の閲覧・保存と送信済み処理の精算は保持する。実行済みの外部処理を遡って取消すものではない。
+- 責任: ROCKが契約projection、scheduler、照合、既存AgentのDB gateを担当。Stripeがテスト決済結果を担当。OWNERはSandbox検証を承認済み。本番提供の契約同意UX、更新日/期日/猶予、税・与信・返金条件は未受入で、fixtureのUTC暦月や即時停止を商用条件と扱わない。銀行口座や他サービスを凍結する機能はない。
+- 入出力・保存: server専用登録でowner/account/customer/PaymentMethod/テスト同意版を保存。`sky_recurring_contracts`は契約期間・状態・確認有効期限・排他lease、`sky_recurring_charges`は期間一意のStripe請求ID・明細ID・再送revisionを保存する。これは回収projectionであり、WalletやAgent精算台帳を作り直さない。既存未確定実行があるownerの新規登録は照合完了まで拒否。
+- 予約/送信: RemoteAiTextStoreの予約・dispatch・最終send claim、A2Aの予約INSERT・dispatch・remote send直前をSQL triggerで原子的に検査する。既存の本人/承認digest/親予算/取消/重複防止は維持。USDの既存確定額と未確定予約を両系統で合算し10000 centsを超える予約を拒否。旧期間の未確定予約も保守的に加算する。無料local処理や未登録ownerへ新規請求は発生しない。
+- 状態: active → collecting → active/past_due。請求処理中、未払い、Provider照合失敗、確認期限切れは送信を許可しない。照合結果は最大5分で失効しtimerが更新。cancelled/disputedは自動復旧しない。返金/dispute通知は署名検証とProvider再取得後に停止する。過去の未払いが残れば新しい月だけ払っても復旧しない。
+- 自動回収: loopback5225のserverが30秒毎に期限到来を確認する。Stripe Subscriptionの前払いを使わず、独自の永続月次schedulerから`charge_automatically`/`auto_advance:false`の請求を作成してpayする。期間unique制約、120秒lease、アカウント別idempotency key、保存済みIDで再起動と重複を防ぐ。支払失敗後は自動で無限に再試行せず、明示的なテスト支払方法更新を新revisionとして同じ請求に再試行する。
+- 失敗/復旧: 不明な作成・支払結果は同じkeyで23時間以内のみ再送、期限超過は照合待ちで停止し人が保存IDを確認。raw webhook署名、test mode、account、customer、通貨、固定総額、期間metadata、paid/残額を再取得して照合後だけ復旧する。HTTPはreadonlyレポートと署名webhookのみで、登録や支払方法変更の公開APIは設けない。
+- 検証: 合成LLM/A2A仕事を既存storeへ通すローカル8件と、Stripe実Sandboxでのタイマー月締め・失敗停止・同一請求の支払復旧・翌月請求・署名通知・再起動を区別して記録する。[同一sourceの証拠](evidence/sky-recurring-sandbox.json)。実Cloud APIの実行/消費、顧客の本番契約、公開scheduler運用・監視、SCA対応UX、長期運用の受入は別gate。
+
+Node22での起動と受入:
+
+```sh
+node --experimental-strip-types --test tests/sky-recurring-sandbox.test.mjs
+# private configはsk_test/account/CLI listenerの署名secretのみ。Gitへ保存しない。
+SKY_RECURRING_SANDBOX=1 SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/check-sky-recurring-provider.mjs
+# 受入driverは検証時計を進める。実際の月待ちを省略し、既存予約・送信gateのみ動かす。
+# 通常の時計を使うcollector（DBは事前にテスト登録済みのもの）
+SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/config.json node --experimental-strip-types scripts/sky-recurring-sandbox-server.mjs
+```
+
+受入driverの作業ディレクトリは`work/sky-recurring-sandbox`（Git外）、5225は読み取りレポート。Stripe CLIで`invoice.paid,invoice.payment_failed,invoice.payment_succeeded,charge.refunded,charge.dispute.created`を5225へforwardする。検証完了状態からの再起動は新しい請求を作らない。途中失敗時は保存済みDB/請求IDを照合し、未払い状態を消してやり直さない。本番移行時の未決条件はBIL02/OWNERが確定するまでgateを閉じる。
+
+### Cloud usageから100 USD枠への接続
+
+2026-10-17 BIL02/O5。本人の追加指示で実CloudのusageをSky 140へつなぐ。検証費用は「無料枠のみ」と指定されたため、有料API実行は許可しない。projectの環境変数、`.env`、`.dev.vars`でCloud資格情報を確認できず、無料Providerの本人account/残高/対象modelも未確定。実Cloud受入は未完了で、既存Stripe Sandbox合格を転用しない。
+
+`lib/sky-recurring-usage.ts`のserver専用入口は、同一owner・Sandbox accountの契約と承認済み入力digestを検査し、既存のquote→予約→暗号化入力保存→`executeReservedRemoteAiText`→Provider最終usage→`cloudMonthlySource`の照合へ接続する。別owner、別account、live決済設定は拒否する。既存の公開paid gateを開かず、現段階は受入用の明示呼出しだけ。入力は完了時に既存削除処理で破棄する。
+
+- 確定料金は既存の署名済み単価版と最終token usageから計算する。表示中の文字数やbrowser申告料金を精算に使わない。usage/response ID/単価版/所有者を保持し、再送は同じ記録を読む。Sky月額140 USDへ同じusageを加算しない。
+- 読取projectionはRemote LLM/A2Aの既存確定額と未確定予約を合算して`settledMinor`、`reservedMinor`、`remainingMinor`、停止理由を返す。新たな金融台帳は作らない。予約可否の権限正本は0018の同DB triggerであり、画面に表示した残額は実行許可ではない。
+- 100 USDちょうどで次の有料予約は拒否。到達直前でも最大見積が残額を超える仕事は送信前に拒否する。並列予約を含み、既に送信済みの処理は許可済み上限内の結果を照合する。timeoutや最終usage不明は予約を保持して、無料/0円扱いで枠を戻さない。
+- `tests/sky-recurring-usage.test.mjs`は合成単価と合成HTTP応答を使用する。99 USD＋1 USD→次のfetch 0件、最後の1 USDの並列競合、usage欠落のhold保持、重複/owner/account/live拒否、送信前取消、A2A/LLM共通枠の計6件を確認する。実際に100 USD消費したという証拠ではない。
+- Macの5225レポートは保存済み台帳から確定・予約・残りを表示する。既存データは合成であり、実Cloudの利用明細とは表示しない。
+
+公式の[usage/token契約](https://developers.openai.com/api/docs/guides/token-counting)と[料金表](https://developers.openai.com/api/docs/pricing)を2026-10-17に確認。最終usageのoutputには見えない生成tokenも含まれるため、出力文の文字数から確定料金を作らない。今回は新たなmodelの選定・実単価の固定・無料枠の承認をしていない。
+
+再開条件は、本人の無料利用権を確認できるProvider/account、接続鍵、対象modelと受入済み単価、無料枠を超えて請求されない条件。揃えば少量の実応答を同じ経路へ通し、response IDとtoken明細・精算額・枠の差分を記録する。100 USD境界は独立した合成試験として表示し続ける。追加課金・自動購入・上限解除は行わない。
+
+## 月額プランと無料Cloudの統合Sandbox（2026-10-17）
+
+本人指示により、BIL02/O5（JOINT）で月額140 USD・利用枠100 USDの既存月次契約へ無料Cloud自動選択を結ぶ。1時間の合成契約を月次購入として扱わない。ROCKは契約/usage/送信gate/保存、EXTERNALはStripe Sandboxの決済とPollinations匿名無料API、OWNERは本番契約条件を担当する。
+
+利用体験は「月次契約・残枠表示 → 外部送信への同意 → 自動選択 → 無料Cloud実応答 → トークンと0 USD表示」。`skyRecurringUsage`が本人の契約、期間内の確定usage、期間をまたぐ未確定予約を合算する。無料応答は0 USDであり100 USDを架空に減らさない。枠切れでは無料Cloudも新規選択/送信を停止する。未払い/照合期限切れも停止し、Stripeの署名イベントを受けたinvoice再取得・140 USD一致・入金確認で復旧する。
+
+入金と枠の更新は別条件。消費済み枠は同じ月内の照合/入金では戻さず、過去の請求が入金済みで次の期間へ進んだ時だけ新しい100 USD枠になる。未確定予約は翌月にも残す。停止中でも保存済み結果は再送せず参照できる。Provider失敗/usage不明は結果未確認として保存し自動再送しない。429/402で有料fallbackや追加購入をしない。
+
+独立SQLiteと既存Stripe Sandboxで検証し、既存の公開D1/実アカウント/1時間契約を上書きしない。公開アカウントの月次契約移行・常設schedulerは別の配備受入。画面は月次契約と補助の1時間合成契約を区別する。clockはserver内のテスト依存注入だけに限定し、HTTP bodyから指定させない。
+
+合格条件は月次契約での実応答、合成100 USD上限のネットワークゼロ停止、140 USDの実Sandbox支払失敗、署名通知と同一請求入金再取得、次月更新後の実応答、過去usage保持、再押下で外部POST追加ゼロ。証拠は[統合受入](evidence/sky-monthly-free-cloud.json)。本番税/与信/契約条件は未決で、この試験は決定しない。
+
+再現はNode 22で `node --experimental-strip-types --test tests/sky-free-cloud.test.mjs tests/sky-recurring-sandbox.test.mjs tests/sky-recurring-usage.test.mjs`。実Provider試験は `SKY_MONTHLY_FREE_CLOUD=1 SKY_MONTHLY_FREE_DIR=/absolute/private/run SKY_CLOUD_MONTHLY_CONFIG_FILE=/absolute/private/test-config.json node --experimental-strip-types scripts/check-sky-monthly-free-cloud.mjs`。Stripe CLIでinvoice.paid/payment_failed/payment_succeededを`http://127.0.0.1:5228/webhook`へ転送し、その署名秘密を同configへ設定する。test鍵/account一致のみ許可する。終了/再開は同runのDB/acceptance.jsonを保持し、曖昧な送信・23時間を超えた未完了決済を自動再実行しない。新しい試験は別ディレクトリを指定する。検証画面は`http://127.0.0.1:5228/`。
+
+## 公開実アカウントの月次Sandbox移行（2026-10-17）
+
+本人の追加指示で、公開avoado.siの既存1時間合成契約を月額140 USD・利用枠100 USDのStripe Sandboxへ移行する。BIL02/O5（JOINT）、ROCKは移行履歴/本人限定UI/停止判定、Stripeはテスト請求/入金通知を担当する。本番課金・有料Cloudは有効化しない。
+
+`sky_hosted_monthly_tests`に旧契約JSONと検証期間、合成利用額、Stripeテスト参照、処理leaseを保存する。旧契約のid/created_at、成果物と明細を残し、本人限定・明示同意・旧fixture口座/同意版一致・更新時刻CASを満たす場合だけ契約の接続先を変更する。既存の請求や未確定予約がある契約は移行拒否。外部処理は永続id由来のidempotency keyと23時間の再送期限で保護する。移行が中断された時は履歴から再開し、契約を新規作成し直さない。
+
+画面は `月次契約を確認 → 同意して移行 → 無料Cloud実応答 → 合成100ドルで上限停止 → テスト月締め/支払失敗 → テスト入金/復旧`。合成usageは専用表に明示し、実usageへ捏造挿入しない。無料Cloudの共通projectionだけがこの本人・契約・口座・旧検証期間に結びつく合成額を集計する。新しい実有料Agent経路の受入ではない。合成額を消去せず次期間へ更新することで新しい枠に進み、未確定の実予約は既存集計で持ち越す。
+
+初期phaseは前月末の検証時計、未払いphaseは月初境界、復旧後は現在時刻を使う。時計・金額・owner・Stripe接続先はHTTP入力で指定できない。課金には既存Stripe Sandbox collectorを使い、test鍵、account一致、livemode=false、14000 centsのinvoice照合を強制する。署名通知は専用endpointで検証・再取得し、event idを保存する。本人の画面確認/実行時にも照合を更新する。常設の無人月次schedulerの運用受入は含めず、照合が途切れた際は5分lease満了で停止する。
+
+合格条件は旧契約・既存データ保持、実アカウントの月次移行、画面からの自動選択/実応答、枠切れ/未払い時の送信拒否、同一invoice入金照合と次月更新後の復旧、署名通知と再読込み保持。証拠は[evidence](evidence/sky-hosted-monthly.json)。元の公開50表148行はGit外へ保全し、追加DDL配備直後に同じ148行の一致を確認した。これは閲覧APIが列挙した表の行保全で、全D1のatomic物理snapshotではない。
+
+安全な停止はSKY_HOSTED_MONTHLY_SANDBOXとSKY_FREE_CLOUD_ENABLEDを無効化して再配備する。過去契約/試験明細を削除・上書きして戻さず、請求はStripe test objectを再照合する。旧source version 61へ戻す場合も追加表を残す。必要なキーはSKY_CLOUD_MONTHLY_MODE=stripe-test、SKY_MONTHLY_STRIPE_KEY/ACCOUNT/WEBHOOK_SECRET、既存の本人限定SKY_FREE_CLOUD_OWNER_ID。旧stripe販売設定と公開範囲を変更しない。本番契約・税・与信・無人運用は未受入。
+
+公開version62で移行・自動選択・合成上限停止・未払い停止・同一140 USDテスト請求の入金/契約復旧を確認した。旧契約snapshotも一致。生成は移行直後と復旧後の2回とも無料Provider HTTP 402で停止し、実応答の合格条件は未達。本番課金や有料fallbackは行わない。全体verifyは2288 pass/既存skip1、全stage成功。main統合は実応答の残条件を確認してから行う。
+
+2026-10-17追検証: version63でProvider Retry-After 25秒を確認し、26秒以上待機後に新しい依頼を送信。月次契約の実accountで自動openai-fast→GPT-OSS20B実応答「14 + 15 は 29」、337/104 tokens/$0を受入。上記version62の実応答未達はこの追検証で解消。無料Providerの待機制限自体を解除したわけではなく、再発時は同じ待機案内と送信停止を維持する。
+
+
+### 待機中の契約停止・翌月復旧のSandbox受入
+
+本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
+
+保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。

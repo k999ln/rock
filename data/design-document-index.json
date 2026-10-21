@@ -1,10 +1,16 @@
 {
+  "skyCloudRequestUi":{"authority":"docs/llm-evaluation-architecture.md","implementation":"components/sky-free-cloud-panel.tsx","productionBilling":false},
+  "skyConcurrentReadback":{"authority":"docs/llm-evaluation-architecture.md","pollMs":30000,"rateLimitBackoffMs":60000,"productionBilling":false},
+  "freeCloudRetryDiagnostics": {"automaticContinuation":"confirmed_FREE_LIMIT_only_same_id_CAS_5_attempts_10_minutes","date":"2026-10-17","authority":"docs/llm-evaluation-architecture.md","tests":"tests/sky-free-cloud.test.mjs","productionBilling":false},
+  "skyHostedMonthly": {"design": "docs/sky-billing.md", "evidence": "docs/evidence/sky-hosted-monthly.json", "implementation": ["lib/sky-hosted-monthly.ts", "components/sky-hosted-monthly.tsx"], "tests": "tests/sky-recurring-sandbox.test.mjs", "productionBilling": false},
+  "skyMonthlyFreeCloud": {"taskId": "BIL02", "primaryOwner": "JOINT", "status": "sandbox_provider_cloud_ui_and_verify_passed", "branch": "codex/sky-monthly-free-cloud", "productionBilling": false, "evidence": "docs/evidence/sky-monthly-free-cloud.json", "design": "docs/sky-billing.md", "implementation": ["lib/sky-recurring-plan.ts", "lib/sky-free-cloud.ts", "scripts/check-sky-monthly-free-cloud.mjs"], "nextAction": "Same-head CI and Git integration; hosted account monthly migration remains separate"},
+  "skyLiveMigration": {"status": "deployed_real_account_cloud_accepted", "version": 61, "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},
   "standaloneServiceBillingDesign": {
     "document": "docs/sky-billing.md",
     "composition": "docs/service-design/README.md",
     "owner": "Sky",
     "requiredCompanionProducts": [],
-    "status": "cloud_usage_adapter_implemented_external_acceptance_pending",
+    "status": "synthetic_usage_stripe_sandbox_roundtrip_accepted_real_cloud_pending",
     "implementation": [
       "lib/sky-monthly-sandbox.ts",
       "lib/sky-monthly-sandbox-http.ts",
@@ -17,9 +23,40 @@
     "cloudTests": "tests/sky-cloud-monthly.test.mjs",
     "planEstimate": "lib/sky-plan-estimate.ts",
     "usContractBilling": "docs/sky-billing.md#米国向けの契約に基づく月次請求",
-    "collectionRuntimeAccepted": false
+    "collectionRuntimeAccepted": false,
+    "providerEvidence": "docs/evidence/sky-cloud-monthly-test.json",
+    "fixedPlanSandbox": {
+      "implementation": "lib/sky-140-collection-test.ts",
+      "harness": "scripts/sky-140-collection-sandbox.mjs",
+      "tests": "tests/sky-140-collection.test.mjs",
+      "evidence": "docs/evidence/sky-140-collection-sandbox.json",
+      "productionAgentEnforcement": false,
+      "scheduledCollectionAccepted": false
+    },
+    "recurringSandbox": {
+      "implementation": "lib/sky-recurring-sandbox.ts",
+      "migration": "drizzle/0018_sky_recurring_sandbox.sql",
+      "scheduler": "scripts/sky-recurring-sandbox-server.mjs",
+      "acceptance": "scripts/check-sky-recurring-provider.mjs",
+      "tests": "tests/sky-recurring-sandbox.test.mjs",
+      "evidence": "docs/evidence/sky-recurring-sandbox.json",
+      "productionBillingEnabled": false,
+      "status": "sandbox_scheduler_and_agent_fences_accepted",
+      "usageConnection": {
+        "implementation": "lib/sky-recurring-usage.ts",
+        "tests": "tests/sky-recurring-usage.test.mjs",
+        "evidence": "docs/evidence/sky-real-cloud-quota.json",
+        "status": "boundary_passed_real_cloud_unavailable",
+        "realCloudAccepted": false
+      }
+    }
   },
   "skyMarketplaceAndFusion": {
+    "openAddPluginAuthority": "docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤",
+    "openAddPluginBaselineKey": "skyOpenAddPluginDirection",
+    "officialProductTier": false,
+    "officialStatusSelectionPreference": false,
+    "dynamicNativeThirdPartyPluginsImplemented": false,
     "authority": "docs/sky-mcp-architecture.md#家具建築まで開くskyの融合",
     "baselineKey": "skyFusionDirection",
     "executionChoiceAuthority": "docs/llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ",
@@ -94,12 +131,87 @@
         "PX11",
         "PX12"
       ],
-      "runtimeImplemented": false
+      "runtimeImplemented": false,
+      "apkImplementation": {
+        "authority": "docs/native-os-integration.md#pixel-terminal-implementation",
+        "evidence": "docs/evidence/pixel-si-terminal-implementation.json",
+        "taskId": "OS11",
+        "status": "implemented_partial_acceptance",
+        "components": [
+          "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+          "android/shell/src/main/java/dev/rock/shell/ShellUi.java",
+          "android/shell/src/main/java/dev/rock/shell/TerminalVoice.java",
+          "android/shell/src/main/AndroidManifest.xml",
+          "android/shell/src/aosp/AndroidManifest.xml",
+          "android/automation/src/main/java/dev/rock/automation/Scheduler.java",
+          "android/automation/src/main/java/dev/rock/automation/AutomationJobService.java",
+          "android/shell/src/androidTest/java/dev/rock/shell/TerminalHomeIntegrationTest.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkPresentation.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotifications.java",
+          "android/shell/src/main/java/dev/rock/shell/WorkNotificationReceiver.java",
+          "android/shell/src/main/res/drawable/ic_rockstar.xml",
+          "android/shell/src/main/res/drawable/ic_work_notification.xml",
+          "android/automation/src/main/java/dev/rock/automation/WorkChangeSignal.java",
+          "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+          "android/automation/src/main/AndroidManifest.xml",
+          "android/automation/src/aosp/AndroidManifest.xml",
+          "android/shell/src/androidTest/java/dev/rock/shell/WorkExperienceIntegrationTest.java",
+          "android/shell/src/test/java/dev/rock/shell/WorkPresentationTest.java"
+        ],
+        "fullSiTerminalAccepted": false,
+        "fullOsAccepted": false,
+        "localModelPlanning": {
+          "authority": "docs/native-os-integration.md#pixel-local-jennifer",
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "bounded_auto_manual_pipeline_device_verified_content_quality_pending",
+          "privateShellApiVersion": 20,
+          "runtimeBinderApiVersion": 4,
+          "platformApiVersion": 1,
+          "debugOnlyModelCatalog": true,
+          "components": [
+            "android/automation/src/main/java/dev/rock/automation/LocalModelCatalog.java",
+            "android/automation/src/main/java/dev/rock/automation/LocalModelInstaller.java",
+            "android/automation/src/main/java/dev/rock/automation/LocalPlanningFence.java",
+            "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+            "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+            "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+            "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+            "android/core/build.gradle",
+            "android/Android.bp",
+            "os/physical/model-crypto-artifact-lock.json",
+            "scripts/stage-model-crypto.py",
+            "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+            "android/automation/src/debug/assets/rock-local-model-catalog.json",
+            "os/physical/local-ai-loaded-profile-v4.patch",
+            "android/automation/src/main/java/dev/rock/automation/LocalModelChoice.java",
+            "android/automation/src/main/java/dev/rock/automation/ModelSelectionPolicy.java",
+            "android/automation/src/main/java/dev/rock/automation/PublicModelDiscovery.java"
+          ],
+          "physicalInferenceAccepted": true,
+          "fullJenniferGoalAccepted": false,
+          "nextRuntimePackageVersionCode": 4,
+          "nextTaskDraftSchema": "local-work@1/output-v1",
+          "newRuntimeBuildAccepted": false
+        },
+        "workExperience": {
+          "authority": "docs/native-os-integration.md#pixel-intuitive-experience",
+          "evidence": "docs/evidence/pixel-intuitive-experience.json",
+          "status": "bounded_apk_device_verified_general_quality_pending",
+          "notificationsScope": "local_broker_jobs_only",
+          "notificationDoesNotExecute": true,
+          "fullOsAccepted": false,
+          "modelChoiceAuthority": "docs/llm-evaluation-architecture.md#selectable-models-and-automatic-default",
+          "publicDiscoveryAuthority": "docs/llm-evaluation-architecture.md#public-model-discovery",
+          "privateShellApiVersion": 20,
+          "discoveryGrantsExecution": false,
+          "publicDiscoveryEntry": "sky_top_after_heading"
+        }
+      }
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.18",
-  "updatedAt": "2026-10-15",
+  "version": "1.19",
+  "updatedAt": "2026-10-17",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -558,7 +670,10 @@
         "scripts/stage-local-ai-apk.py",
         "tests/test_stage_local_ai_apk.py",
         "systems/rock-star-os/src/blackberryrock/memory_access.py",
-        "systems/rock-star-os/tests/test_memory_access.py"
+        "systems/rock-star-os/tests/test_memory_access.py",
+        "android/automation/src/main/java/dev/rock/automation/PublicModelInstall.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/LocalWorkDraft.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/LocalIdeaBatch.java"
       ],
       "outboxReceiptReplay": {
         "implementation": [
@@ -580,6 +695,56 @@
           "android/shell/src/androidTest/java/dev/rock/shell/LocalSubmissionIntegrationTest.java"
         ],
         "limits": "Host tests and APK compile only; instrumentation/device execution pending."
+      },
+      "publicModelInstallationAndTaskDrafts": {
+        "taskId": "OS11",
+        "ownerSquad": "O6",
+        "primaryOwner": "ROCK",
+        "design": "docs/llm-evaluation-architecture.md#pixel-discovered-model-install",
+        "privateShellApi": 22,
+        "runtimePackageVersion": 8,
+        "localBinderApi": 4,
+        "engineSchema": 4,
+        "status": "LIMITED_DEVELOPER_APK_PHYSICAL_ACCEPTED_DRAFTS_WITH_EXPLICIT_RECOVERY",
+        "firstRequestedTask": "300 RockstarOS/Sky service ideas",
+        "physicalEvidence": "docs/evidence/pixel-discovered-models.json",
+        "actualSavedIdeas": 300,
+        "humanReviewAccepted": false,
+        "fullOsAccepted": false,
+        "creativeModelTrial": "Qwen3 4B Instruct 2507 / Unsloth Q4_K_M fixed artifact; 8GiB RAM minimum; package8/profile2/checkpoint6; auto priority80 planning/writing; actual300 saved and read back after one compact and one UI retry; semantic quality unaccepted",
+        "schedulerContinuation": "two stages per healthy job, fresh alternating immediate IDs without failure backoff; charge/thermal/pause/lease gates retained",
+        "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
+        "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; requested standalone AI term formatted as si; actual count unchanged, alias duplicates rejected, historical text readable",
+        "ideaGeneration": {"checkpointVersion":6,"rawPartLimit":5,"partsPerSavedStage":1,"partTimeoutSeconds":180,"savedBatch":5,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
+        "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
+        "limits": [
+          "signed APK catalog only",
+          "explicit Wi-Fi acquisition and license consent",
+          "untrusted text drafts only",
+          "exact immutable job model pin",
+          "no code execution or paid cloud",
+          "full OS gates unchanged"
+        ],
+        "ideationSubschemas": {
+          "counts": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "rawFields": [
+            "ideas"
+          ],
+          "exactCardinality": true,
+          "retryLimit": 3,
+          "modelChoosesTaskOrTool": false
+        }
       }
     },
     {
@@ -2282,5 +2447,71 @@
     "mainIntegrated": true,
     "mainMergeCommit": "59412c04ac37a9aa0a7cb6e488b842b1b98c869b"
   },
-  "productTerminology": "data/product-terminology.json"
+  "productTerminology": "data/product-terminology.json",
+  "skyAutomaticModelSelection": {
+  "date": "2026-10-17",
+  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+  "default": "auto",
+  "manualProviderModelSupported": true,
+  "implementation": "lib/sky-model-routing.ts",
+  "document": "docs/llm-evaluation-architecture.md",
+  "cloudAutoAccepted": false,
+  "policy": "local_and_owner_enabled_consented_free_cloud",
+  "status": "live_account_cloud_verified",
+  "tests": "tests/sky-model-routing.test.mjs"
+},
+"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"},
+"skyFreeCloudAcceptance":{
+  "date": "2026-10-17",
+  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+  "status": "live_account_real_cloud_accepted_synthetic_contract",
+  "implementation": [
+    "lib/sky-free-cloud.ts",
+    "lib/sky-model-selection.ts",
+    "lib/sky-free-cloud-http.ts",
+    "app/api/llm/free-cloud/route.ts",
+    "components/sky-free-cloud-panel.tsx"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-live.json",
+  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+  "productionBillingEnabled": false,
+  "mainAuthenticatedUiAccepted": true
+},
+"skyFreeCloudBackground":{
+  "document": "docs/llm-evaluation-architecture.md",
+  "implementation": [
+    "lib/sky-free-cloud-background.ts",
+    "services/sky-free-cloud-wake/worker.ts",
+    "app/api/llm/free-cloud/jobs/route.ts",
+    "app/api/llm/free-cloud/tick/route.ts"
+  ],
+  "evidence": "docs/evidence/sky-free-cloud-background.json",
+  "productionBilling": false
+},
+"skyBackgroundPlanGates":{"document":"docs/sky-billing.md","implementation":"lib/sky-hosted-monthly.ts","evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false},
+  "pixelDynamicAddons": {
+    "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
+    "taskId": "OS11",
+    "privateShellApiVersion": 25,
+    "modelAuthentication": [
+      "existing_publisher_Ed25519",
+      "explicit_unsigned_owner_digest_pin"
+    ],
+    "agentRunner": "local-text/1",
+    "physicalAcceptance": "PASS_limited_Pixel_APK_scope_see_evidence",
+    "implementation": [
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonStore.java",
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonResolver.java",
+      "android/automation/src/main/java/dev/rock/automation/SkyAddonNetwork.java",
+      "android/automation/src/main/java/dev/rock/automation/GgufMetadata.java"
+    ],
+    "evidence": "docs/evidence/pixel-open-addons.json",
+    "toolAgentAuthority": "docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う",
+    "toolAgentEvidence": "docs/evidence/pixel-agent-tools.json",
+    "toolAgentPhysicalAcceptance": "PASS_same_APKs_including_strict_backup_recipe_see_evidence",
+    "agentRunners": [
+      "local-text/1",
+      "local-tools/1"
+    ]
+  }
 }

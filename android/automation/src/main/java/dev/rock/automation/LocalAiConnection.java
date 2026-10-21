@@ -30,11 +30,13 @@ final class LocalAiConnection {
     static final String PACKAGE = "com.localactionassistant";
     static final String SERVICE = PACKAGE + ".RockLocalAiService";
     static final String RUNTIME_COMPONENT_ID = "org.rockstar.runtime.localai";
-    static final int PACKAGE_VERSION_CODE = 3;
+    static final int PACKAGE_VERSION_CODE = 8;
     static final int API_VERSION = 4;
     private static final Set<String> TERMINAL_EVENTS = Set.of("proposal", "completed", "failed");
     private final Context context;
     private volatile ILocalAiService service;
+    private volatile CountDownLatch exchangeLatch;
+    private final java.util.concurrent.atomic.AtomicBoolean connectionLost = new java.util.concurrent.atomic.AtomicBoolean();
 
     static final class Result {
         final String event;
@@ -117,13 +119,20 @@ final class LocalAiConnection {
 
     Result plan(String requestToken, Engine.ModelProfilePin pin, String schemaId,
                 String prompt, String contextJson) throws Exception {
+        return plan(requestToken,pin,schemaId,prompt,contextJson,180);
+    }
+    Result plan(String requestToken, Engine.ModelProfilePin pin, String schemaId,
+                String prompt, String contextJson, long timeoutSeconds) throws Exception {
+        if(timeoutSeconds<1 || timeoutSeconds>180)throw new IllegalArgumentException("INVALID_PLAN_TIMEOUT");
         validToken(requestToken);
         if (pin == null) throw new SecurityException("MODEL_PROFILE_PIN_REQUIRED");
-        if (!dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA.equals(schemaId))
+        boolean exactSchema = java.util.Set.of(dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA, dev.rock.sdk.LocalWorkDraft.SCHEMA).contains(schemaId) && schemaId.equals(pin.planSchemaId);
+        boolean ideaSubtype = dev.rock.sdk.LocalWorkDraft.SCHEMA.equals(pin.planSchemaId) && schemaId != null && schemaId.matches("local-work@1/ideas-([1-9]|10)-v[12]");
+        if (!(exactSchema || ideaSubtype))
             throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
         Engine.bounded(prompt); Engine.bounded(contextJson);
         return exchange(requestToken, (remote, callback) ->
-            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback));
+            remote.completePlanForModel(requestToken, schemaId, pin.weightsSha256, prompt, contextJson, callback), timeoutSeconds, true);
     }
 
     /** Transfers a verified staged artifact through a read-only descriptor, never a broker path or URL. */
@@ -191,7 +200,7 @@ final class LocalAiConnection {
         return result;
     }
 
-    private void requireReadyForProfile(ModelProfileManifest profile, String expectedRuntimeSignerDigest) throws Exception {
+    void requireReadyForProfile(ModelProfileManifest profile, String expectedRuntimeSignerDigest) throws Exception {
         JSONObject status = withService((remote, ignoredUid) -> validatedStatus(remote));
         if (!"ready".equals(status.optString("state")) || !status.optBoolean("modelLoaded")
                 || !profile.profileId.equals(status.optString("modelProfileId"))
@@ -233,7 +242,7 @@ final class LocalAiConnection {
     private Result exchange(String requestToken, Request request, long timeoutSeconds,
                             boolean cancelOnTimeout) throws Exception {
         return withService((remote, expectedUid) -> {
-            CountDownLatch finished = new CountDownLatch(1);
+            CountDownLatch finished = new CountDownLatch(1); exchangeLatch = finished;
             AtomicReference<Result> result = new AtomicReference<>();
             StringBuilder text = new StringBuilder();
             ILocalAiCallback callback = new ILocalAiCallback.Stub() {
@@ -264,6 +273,7 @@ final class LocalAiConnection {
             };
             request.start(remote, callback);
             if (!finished.await(timeoutSeconds, TimeUnit.SECONDS) || result.get() == null) {
+                if (connectionLost.get()) throw new IllegalStateException("LOCAL_AI_DISCONNECTED");
                 if (cancelOnTimeout) remote.cancel(requestToken);
                 throw new IllegalStateException("LOCAL_AI_INTERRUPTED");
             }
@@ -272,6 +282,14 @@ final class LocalAiConnection {
     }
 
     private synchronized <T> T withService(BoundCall<T> call) throws Exception {
+        // Shell authentication happens in RockShellService; runtime IPC uses the Broker identity.
+        long identity = Binder.clearCallingIdentity();
+        try { return withTrustedService(call); }
+        finally { Binder.restoreCallingIdentity(identity); }
+    }
+
+    private <T> T withTrustedService(BoundCall<T> call) throws Exception {
+        connectionLost.set(false);
         PackageManager pm = context.getPackageManager();
         int expectedUid = pm.getPackageUid(PACKAGE, 0);
         if (pm.getPackageInfo(PACKAGE, 0).getLongVersionCode() != PACKAGE_VERSION_CODE)
@@ -283,8 +301,8 @@ final class LocalAiConnection {
             @Override public void onServiceConnected(ComponentName name, IBinder binder) {
                 service = ILocalAiService.Stub.asInterface(binder); connected.countDown();
             }
-            @Override public void onServiceDisconnected(ComponentName name) { service = null; }
-            @Override public void onBindingDied(ComponentName name) { service = null; connected.countDown(); }
+            @Override public void onServiceDisconnected(ComponentName name) { disconnected(); }
+            @Override public void onBindingDied(ComponentName name) { disconnected(); connected.countDown(); }
             @Override public void onNullBinding(ComponentName name) { connected.countDown(); }
         };
         boolean bound = context.bindService(new Intent().setComponent(new ComponentName(PACKAGE, SERVICE)),
@@ -297,13 +315,23 @@ final class LocalAiConnection {
                 throw new IllegalStateException("INCOMPATIBLE_LOCAL_AI_API");
             return call.run(service, expectedUid);
         } finally {
-            context.unbindService(connection); service = null;
+            context.unbindService(connection); service = null; exchangeLatch = null;
         }
+    }
+
+    private void disconnected() {
+        connectionLost.set(true); service = null;
+        CountDownLatch waiting = exchangeLatch; if (waiting != null) waiting.countDown();
     }
 
     private static void validToken(String token) {
         if (token == null || !token.matches("[a-f0-9-]{36}"))
             throw new IllegalArgumentException("INVALID_REQUEST_TOKEN");
+    }
+
+    String trustedInstalledSigningDigest() throws Exception {
+        status();
+        return installedSigningDigest();
     }
 
     private String installedSigningDigest() throws Exception {

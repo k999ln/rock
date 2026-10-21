@@ -4,7 +4,7 @@ import android.os.ParcelFileDescriptor;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 18;
+    const int API_VERSION = 25;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -70,4 +70,33 @@ interface IShellApi {
     String cancelCloudA2ADelegation(String delegationId) = 38;
     /** Registers a seller-signed physical-SIM/eSIM service claim for the linked device-session owner. */
     String claimRockstarServiceEntitlement(String packageJson) = 39;
+    /** Reads only APK-authenticated model definitions; never downloads or activates weights. */
+    String localModelCatalog() = 40;
+    /** Explicit consent, fixed catalog profile and read-only file; all verification/activation stays in Broker. */
+    String importLocalModel(String profileId, in ParcelFileDescriptor source, boolean consent) = 41;
+    /** Explicitly reload one previously verified cached catalog model; no auto-load on boot. */
+    String reloadLocalModel(String profileId, boolean consent) = 42;
+    /** Read-only task-aware selection from signed, cached, owner-consented local profiles. */
+    String prepareLocalModelChoice(String choice, String prompt) = 43;
+    /** Executes only the displayed exact model digest; no implicit substitute or cloud fallback. */
+    String submitZemaSelected(String requestId, String selectionToken, String prompt, String contextJson,
+        String expectedModelDigest, boolean consent) = 44;
+    /** Explicit public-keyword search only; returned metadata never becomes a trusted executable profile. */
+    String searchPublicModels(String query) = 45;
+    String preparePublicModelInstall(String profileId) = 46;
+    String beginPublicModelDownload(String profileId, boolean consent) = 47;
+    String publicModelInstallStatus() = 48;
+    String finishPublicModelInstall(String operationId, boolean consent) = 49;
+    String cancelPublicModelDownload(String operationId) = 50;
+    /** Owner consent and exact checkpoint CAS; one compact recovery of pure local ideation only. */
+    void compactReplanIdeas(String workId, String expectedCheckpointDigest, boolean consent) = 51;
+    /** Public immutable metadata only; may return file choices or an owner-bound proposal. */
+    String inspectSkyAddon(String source) = 52;
+    String addSkyAddon(String proposalId, String expectedDigest, boolean consent) = 53;
+    String skyAddons() = 54;
+    /** Disable new use; model revocation is fenced by existing active-work pins. */
+    String revokeSkyAddon(String digest, boolean consent) = 55;
+    String prepareSkyAgent(String digest, String modelChoice, String request) = 56;
+    String submitSkyAgent(String digest, String requestId, String request, String expectedModelDigest, boolean consent) = 57;
+    String configureSkyModelAutomaticTasks(String digest, long expectedRevision, String tasksJson, boolean consent) = 58;
 }

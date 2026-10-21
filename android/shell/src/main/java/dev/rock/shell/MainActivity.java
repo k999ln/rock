@@ -16,6 +16,12 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.view.View;
+import android.view.Gravity;
+import android.view.WindowInsets;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ViewFlipper;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,9 +40,55 @@ import org.json.JSONObject;
 /** Unprivileged RockstarOS shell. Persistent work and execution remain in the Platform Broker. */
 public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
+    static final int LOCAL_AI_STATUS_API_VERSION = 4;
+    private ShellUi ui;
+    private AutoCloseable visibleBrokerBinding;
+    private ViewFlipper pages;
+    private final TextView[] navigation = new TextView[4];
+    private final LinearLayout[] pageContent = new LinearLayout[4];
+    private TextView homeWorkSummary, homeConnectionStatus, localAiStatus;
+    private EditText homePrompt;
+    private RadioGroup homeExecutionChoice;
+    private TextView homeModelChoice, modelChoiceStatus, discoveryStatus;
+    private EditText discoveryQuery;
+    private LinearLayout discoveryResults;
+    private Button discoverySearch;
+    private String preparedModelDigest, preparedModelPrompt;
+    private int modelChoiceRevision;
+    private final Runnable refreshModelChoice = this::prepareModelChoice;
+    private LinearLayout cloudLlmPanel, manualToolPanel;
+    private TerminalVoice voice;
+    private int selectedPage;
+    private LinearLayout workComposer, workFilters;
+    private Button newWorkButton, zemaStopButton;
+    private TextView workOverview, notificationStatus;
+    private Button homeNextAction, pauseWorkButton;
+    private JSONArray latestWorks = new JSONArray();
+    private String workFilter = "all", focusedWorkId;
+    private boolean localWorkPaused;
+    private static final int REQUEST_NOTIFICATIONS = 711;
+    private final android.window.OnBackInvokedCallback backToHome = this::navigateBack;
+    private boolean backToHomeRegistered;
     private static final int CREATE_BACKUP_DOCUMENT = 201;
     private static final int OPEN_BACKUP_DOCUMENT = 202;
+    private static final int CREATE_ARTIFACT_DOCUMENT = 203;
+    private static final int REQUEST_HOME_ROLE = 204;
+    private static final int OPEN_MODEL_DOCUMENT = 205;
+    private LinearLayout localModels;
+    private TextView localModelMessage;
+    private LinearLayout modelDownloadPanel;
+    private String modelImportProfileId;
+    private boolean modelImportBusy;
+    private TextView homeRoleStatus;
+    private String artifactExportWorkId;
+    private final Handler localTaskHandler = new Handler(Looper.getMainLooper());
+    private JSONObject lastAccountPresentation = new JSONObject();
+    private JSONObject lastLocalPresentation;
+    private final Runnable localTaskRefresh = this::refreshLocalJobs;
+    private final java.util.Map<String, String> reviewDrafts = new java.util.HashMap<>();
+    private String renderedWorkState;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
+    private final ExecutorService controlWorker = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Handler deviceLinkHandler = new Handler(Looper.getMainLooper());
     private final Handler cloudTaskHandler = new Handler(Looper.getMainLooper());
@@ -110,16 +162,53 @@ public final class MainActivity extends Activity {
         super.onCreate(state);
         zemaSubmission = localSubmission("zema_submission_recovery");
         articleSubmission = localSubmission("article_submission_recovery");
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.rgb(10, 15, 20));
-        form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
-        form.setBackgroundColor(Color.rgb(10, 15, 20));
-        int padding = (int)(24 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
-        scroll.addView(form); setContentView(scroll);
-
-        label(form, "RockstarOS  /  Sky  /  Zema", 13);
-        label(form, "siサービスを使う", 30);
-        label(form, "Rockstarアカウントを一度連携します。サービスごとの利用権・接続状態は個別に確認します。", 16);
+        agentSubmission = localSubmission("sky_agent_submission_recovery");
+        ui = new ShellUi(this);
+        createShellFrame();
+        heading(pageContent[1], "Sky", "能力と実行先を選ぶ");
+        LinearLayout toolCard = ui.card(pageContent[1]);
+        heading(pageContent[2], "仕事", "いまの状態と、次にすること");
+        workOverview = label(pageContent[2], "保存した仕事を確認しています…", 15);
+        newWorkButton = button(pageContent[2], "＋ 新しい依頼", () -> { selectPage(0); homePrompt.requestFocus(); }); ui.primary(newWorkButton);
+        LinearLayout filters = new LinearLayout(this); workFilters = filters;
+        String[] filterNames = {"すべて", "確認待ち", "進行中", "履歴"};
+        String[] filterKeys = {"all", "review", "active", "history"};
+        for (int i = 0; i < filterNames.length; i++) {
+            final String filter = filterKeys[i];
+            Button chip = ui.button(filters, filterNames[i], () -> {
+                workFilter = filter; focusedWorkId = null; renderedWorkState = null; render(latestWorks); scrollPageTop(2);
+            });
+            chip.setTextSize(12); chip.setPadding(0, ui.dp(8), 0, ui.dp(8));
+            LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(0, -2, 1);
+            layout.setMargins(ui.dp(2), 0, ui.dp(2), 0); chip.setLayoutParams(layout); chip.setTag("filter-" + filter);
+        }
+        pageContent[2].addView(filters);
+        workComposer = ui.card(pageContent[2]); workComposer.setVisibility(View.GONE);
+        LinearLayout composer = workComposer;
+        jobs = ui.column(); pageContent[2].addView(jobs);
+        button(pageContent[2], "進捗を更新", () -> perform(connection -> null));
+        pauseWorkButton = button(pageContent[2], "端末の仕事を一時停止", () -> changeLocalPause(!localWorkPaused));
+        label(pageContent[2], "端末の停止とクラウドの取消は別です。保存した成果は残ります。", 12);
+        heading(pageContent[3], "設定", "本人・端末・保存と復旧");
+        form = ui.card(pageContent[3]);
+        label(form, "仕事のお知らせ", 18);
+        notificationStatus = label(form, "通知状態を確認しています…", 14);
+        button(form, "仕事の通知を受け取る", this::enableWorkNotifications);
+        button(form, "通知の種類・音を変更", () -> {
+            Intent settings = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getPackageName());
+            startActivity(settings);
+        });
+        button(form, "仕事の通知を止める", () -> {
+            WorkNotifications.disable(this); updateNotificationStatus();
+        });
+        label(form, "ホームと端末の設定", 18);
+        homeRoleStatus = label(form, "ホームはAndroidの選択画面で変更・解除できます。", 14);
+        button(form, "このアプリをホームに選ぶ", this::chooseDefaultHome);
+        button(form, "Androidの設定を開く", () -> openSystemSettings(android.provider.Settings.ACTION_SETTINGS));
+        button(form, "アプリを開く", this::showInstalledApps);
+        label(form, "Rockstarアカウント", 18);
+        label(form, "連携するとクラウドの利用権・仕事を確認できます。端末内Toolの利用には不要です。", 14);
         accountLinkStatus = label(form, "アカウント状態を確認中…", 15);
         accountLinkCode = label(form, "", 26); accountLinkCode.setTextIsSelectable(true);
         button(form, "Rockstarアカウントを連携", this::beginDeviceLink);
@@ -127,7 +216,8 @@ public final class MainActivity extends Activity {
         accountLinkApprovalButton.setVisibility(View.GONE);
         accountLinkCheckButton = button(form, "承認状態を確認", this::pollDeviceLink);
         accountLinkCheckButton.setVisibility(View.GONE);
-        label(form, "Sky・Zema・クラウドエージェント", 20);
+        form = disclosure(pageContent[2], "クラウドの仕事");
+        label(form, "クラウドの仕事", 20);
         cloudServiceHomeStatus = label(form, "アカウント連携後に、利用権とクラウド作業をここで確認できます。", 14);
         button(form, "クラウドの状態・作業結果を更新", this::refreshCloudServiceHome);
         entitlementClaimPanel = new LinearLayout(this); entitlementClaimPanel.setOrientation(LinearLayout.VERTICAL);
@@ -155,6 +245,7 @@ public final class MainActivity extends Activity {
         cloudTaskDetailStatus.setTextIsSelectable(true);
         cloudTaskDetailActions = new LinearLayout(this); cloudTaskDetailActions.setOrientation(LinearLayout.VERTICAL);
         form.addView(cloudTaskDetailActions);
+        form = disclosure(pageContent[1], "クラウドAgentを選ぶ・見積を確認");
         label(form, "Sky Agentを探して見積を確認", 20);
         label(form, "接続済みAgentの自己申告情報を確認し、依頼文を見積のためProviderへ送る場合は明示同意します。ここでは見積だけを取得し、有料実行は開始しません。", 14);
         cloudA2aPrompt = field(form, "Agentへ依頼する内容", "", true);
@@ -196,6 +287,8 @@ public final class MainActivity extends Activity {
         cloudA2aFinalApprovalButton.setVisibility(View.GONE);
         cloudA2aExecutionRecoveryButton = button(form, "同じCloud委任IDの状態を再確認", this::recoverCloudA2AExecution);
         cloudA2aExecutionRecoveryButton.setVisibility(View.GONE);
+        cloudLlmPanel = disclosure(pageContent[2], "クラウドLLMへの依頼・見積");
+        form = cloudLlmPanel;
         label(form, "クラウドLLMへの依頼", 20);
         label(form, "見積依頼では入力をRockstarOSのサービスへ送ります。LLM Providerへの実行送信は行いません。上限は表示通貨の金額で入力してください。", 14);
         cloudLlmPrompt = field(form, "クラウドLLMに依頼する内容", "", true);
@@ -212,30 +305,68 @@ public final class MainActivity extends Activity {
         cloudLlmExecuteButton = button(form, "上限を承認してクラウド実行", this::executeCloudLlmQuote);
         cloudLlmExecuteButton.setVisibility(View.GONE);
         label(form, "このShellのToolは端末内で動作します。有料クラウド作業は見積・上限承認・利用明細の経路が接続するまで開始しません。", 15);
+        form = ui.card(pageContent[3]);
         label(form, "この端末の対応状況", 18);
         deviceCapabilityStatus = label(form, "端末機能を確認中…", 14);
         button(form, "端末対応を再確認", () -> perform(connection -> null));
+        localAiStatus = label(form, "端末内siの準備状態は確認待ちです。", 14);
+        button(form, "端末内siの接続を確認", this::checkLocalAi);
+        form = toolCard;
         label(form, "使うTool", 13);
         skyStatus = label(form, "Skyの選択を確認中…", 16);
         button(form, "出典整理 → 無料記事 　変更", () -> perform(connection -> {
             connection.selectSkyTool(ARTICLE_TOOL); return null;
         }));
-        label(form, "依頼内容", 13);
+        label(form, "出典整理と無料記事の準備。自動計画には対応する端末内モデルが必要です。", 14);
+        button(form, "このToolで依頼を準備", () -> { selectPage(0); homePrompt.requestFocus(); });
+        LinearLayout modelCard = ui.card(pageContent[1]);
+        label(modelCard, "端末内モデル", 18);
+        label(modelCard, "対応するGGUFを選び、ライセンス・容量・署名・ハッシュを確認して導入します。検索で見つけた対応モデルは、同意後にWi-Fiで取得できます。", 14);
+        localModelMessage = label(modelCard, "未確認。導入や再読込みは本人操作で開始します。", 14);
+        button(modelCard, "モデルの導入状態を確認", this::refreshLocalModels);
+        localModels = new LinearLayout(this); localModels.setOrientation(LinearLayout.VERTICAL); modelCard.addView(localModels);
+        LinearLayout discoveryCard = ui.card(pageContent[1]);
+        pageContent[1].removeView(discoveryCard); pageContent[1].addView(discoveryCard, 2);
+        label(discoveryCard, "公開LLMを探す", 18);
+        label(discoveryCard, "検索語だけをGitHub・Hugging Faceへ送ります。依頼や原稿は送りません。GitHubは更新順、Hugging Faceはダウンロード数順でモデルやAgentの関連候補を探します。", 14);
+        discoveryQuery = field(discoveryCard, "モデル名・公開キーワード", "Qwen", false);
+        discoverySearch = button(discoveryCard, "今の公開モデルを検索", this::searchPublicModels);
+        discoveryStatus = label(discoveryCard, "未検索。公開情報は導入・動作・ライセンス適合の保証ではありません。", 14);
+        button(discoveryCard, "Xで最新の投稿を探す（外部）", () -> {
+            String q = discoveryQuery.getText().toString().trim();
+            if (q.isEmpty() || q.length() > 80) { discoveryQuery.setError("1〜80文字で入力してください"); return; }
+            new AlertDialog.Builder(this).setTitle("Xで検索")
+                .setMessage("検索語「" + q + " open LLM」をXへ渡し、外部ブラウザを開きます。X APIは未接続のため、投稿をSky内で取得・検証はしません。")
+                .setPositiveButton("Xを開く", (d, w) -> openPublicModelUrl("https://x.com/search?q=" + android.net.Uri.encode(q + " open LLM") + "&f=live"))
+                .setNegativeButton("戻る", null).show();
+        });
+        modelDownloadPanel = new LinearLayout(this); modelDownloadPanel.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(modelDownloadPanel);
+        button(discoveryCard, "ダウンロード状態を確認", this::refreshModelDownload); refreshModelDownload();
+        buildAddonPanel(pageContent[1]);
+        discoveryResults = new LinearLayout(this); discoveryResults.setOrientation(LinearLayout.VERTICAL); discoveryCard.addView(discoveryResults);
+        form = composer;
+        label(form, "依頼を確認", 20);
+        button(form, "依頼を閉じて仕事を見る", () -> { workComposer.setVisibility(View.GONE); scrollPageTop(2); });
+        label(form, "要約・翻訳・コードの下書き・計画・アイデア生成に対応します。記事は既存の2 Toolへ接続します。生成したコードは文章として保存します。", 14);
         zemaPrompt = field(form, "何をしたいですか？", "", true);
-        zemaConsent = new CheckBox(this); zemaConsent.setText("この端末内で処理することを許可"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
+        modelChoiceStatus = label(form, "モデルは実行前に確認します。", 14);
+        button(form, "使うモデルを変更", this::showModelChooser);
+        button(form, "Skyでモデルを導入・接続", () -> selectPage(1));
+        zemaConsent = new CheckBox(this); zemaConsent.setText("この依頼を端末内LLMで計画し、検査に通ったToolの実行と成果物保存を許可する"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
-        zemaSubmitButton = button(form, "このToolで実行", this::submitZema);
+        zemaSubmitButton = button(form, "Jenniferに計画と実行を依頼", this::submitZema); ui.primary(zemaSubmitButton);
+        zemaSubmitButton.setEnabled(false);
+        zemaPrompt.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence value, int start, int count, int after) { }
+            public void onTextChanged(CharSequence value, int start, int before, int count) { invalidateModelChoice(); }
+            public void afterTextChanged(android.text.Editable value) { }
+        });
+        zemaStopButton = button(form, "端末の実行を一時停止", () -> changeLocalPause(true)); zemaStopButton.setVisibility(View.GONE);
         zemaRecoveryButton = button(form, "未確認の依頼を履歴で確認", () -> reviewPendingSubmission(zemaSubmission, zemaRecoveryButton));
         updateSubmissionRecovery(zemaSubmission, zemaRecoveryButton);
         button(form, "端末内siの接続を確認", this::checkLocalAi);
 
-        jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
-
-        button(form, "詳細設定（開発者向け）", () -> {
-            advancedPanel.setVisibility(advancedPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-        });
-        advancedPanel = new LinearLayout(this); advancedPanel.setOrientation(LinearLayout.VERTICAL);
-        advancedPanel.setVisibility(View.GONE); form.addView(advancedPanel);
+        advancedPanel = disclosure(pageContent[3], "バックアップと復元");
         label(advancedPanel, "バックアップと復元", 22);
         label(advancedPanel, "通常は触る必要ありません。復元用の情報は端末外へ送信しません。", 16);
         recoveryStatus = label(advancedPanel, "復元設定を確認中…", 16);
@@ -247,6 +378,7 @@ public final class MainActivity extends Activity {
         button(advancedPanel, "暗号化バックアップを書き出す", this::chooseBackupDestination);
         recoveryPhraseInput = field(advancedPanel, "復元時だけ24単語を入力", "", true);
         button(advancedPanel, "バックアップから復元", this::chooseBackupSource);
+        advancedPanel = disclosure(pageContent[3], "開発者向けの接続・端末鍵");
         label(advancedPanel, "Sky Agent連携とWallet受取", 22);
         label(advancedPanel, "端末鍵登録は認証済みRockstarアカウントとhardware-backed Keystoreを使います。強い保護が利用できない端末は登録できません。Cloud成果のWallet反映は、同じAgent依頼の端末内承認・予約が存在する場合だけ行い、未承認の依頼を実行しません。", 15);
         a2aBrokerStatus = label(advancedPanel, "Agent用端末鍵は未確認です。", 14);
@@ -260,7 +392,10 @@ public final class MainActivity extends Activity {
         esimChallengeInput = field(advancedPanel, "challenge JSON", "", true);
         esimGatewayResult = label(advancedPanel, "", 13); esimGatewayResult.setTextIsSelectable(true);
         button(advancedPanel, "端末認証鍵を準備", this::provisionEsimGatewayKey);
-        label(advancedPanel, "手動入力（開発用）", 22);
+        manualToolPanel = disclosure(pageContent[2], "LLMなしで記事を整える");
+        advancedPanel = manualToolPanel;
+        label(advancedPanel, "原稿を確認して端末内Toolで処理", 18);
+        label(advancedPanel, "LLMは使いません。入力した原稿・要約・条件を、出典整理と無料記事の2工程で処理して保存します。", 14);
         markdown = field(advancedPanel, "原稿（Markdown）", "", true);
         summary = field(advancedPanel, "まとめ（- で始まる3〜5項目）", "", true);
         cutoff = field(advancedPanel, "無料範囲の文字数", "40", false);
@@ -272,9 +407,621 @@ public final class MainActivity extends Activity {
         articleSubmitButton = button(advancedPanel, "仕事を保存して自動実行を予約", this::submitArticle);
         articleRecoveryButton = button(advancedPanel, "未確認の手動依頼を履歴で確認", () -> reviewPendingSubmission(articleSubmission, articleRecoveryButton));
         updateSubmissionRecovery(articleSubmission, articleRecoveryButton);
-        button(advancedPanel, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
-        button(advancedPanel, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
+        button(advancedPanel, "全停止（保存した仕事は残す）", () -> changeLocalPause(true));
+        button(advancedPanel, "自動実行を再開", () -> changeLocalPause(false));
         button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
+        buildHomePage();
+        Object retained = getLastNonConfigurationInstance();
+        if (retained instanceof String[]) {
+            String[] drafts = (String[]) retained;
+            homePrompt.setText(drafts[0]); zemaPrompt.setText(drafts[1]);
+        }
+        focusedWorkId = state == null ? null : state.getString("focusedWorkId");
+        selectPage(state == null ? 0 : state.getInt("selectedPage", 0));
+        openNotificationIntent(getIntent());
+        updateNotificationStatus();
+        refreshLocalModels();
+    }
+
+    private void createShellFrame() {
+        getWindow().setStatusBarColor(ShellUi.BACKGROUND);
+        getWindow().setNavigationBarColor(ShellUi.BACKGROUND);
+        getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        LinearLayout root = ui.column(); root.setBackgroundColor(ShellUi.BACKGROUND);
+        root.setFocusableInTouchMode(true);
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            android.graphics.Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            android.graphics.Insets keyboard = insets.getInsets(WindowInsets.Type.ime());
+            view.setPadding(bars.left, bars.top, bars.right, Math.max(bars.bottom, keyboard.bottom));
+            return WindowInsets.CONSUMED;
+        });
+        LinearLayout header = new LinearLayout(this); header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(ui.dp(22), ui.dp(12), ui.dp(22), ui.dp(12));
+        TextView brand = new TextView(this); brand.setText("RockstarOS"); brand.setTextSize(18);
+        brand.setTextColor(ShellUi.INK); brand.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1f));
+        TextView preview = new TextView(this); preview.setText("Developer Preview"); preview.setTextSize(10);
+        preview.setTextColor(ShellUi.MUTED); preview.setPadding(ui.dp(8), ui.dp(5), ui.dp(8), ui.dp(5));
+        preview.setBackground(ui.surface(ShellUi.SURFACE, ShellUi.LINE, 7)); header.addView(preview);
+        root.addView(header);
+        View topLine = new View(this); topLine.setBackgroundColor(ShellUi.LINE);
+        root.addView(topLine, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        pages = new ViewFlipper(this); pages.setTag("pages");
+        for (int index = 0; index < pageContent.length; index++) {
+            ScrollView scroll = new ScrollView(this); scroll.setFillViewport(true);
+            scroll.setClipToPadding(false); scroll.setVerticalScrollBarEnabled(false);
+            pageContent[index] = ui.column(); pageContent[index].setTag("page-" + index);
+            pageContent[index].setPadding(ui.dp(20), ui.dp(12), ui.dp(20), ui.dp(28));
+            scroll.addView(pageContent[index]); pages.addView(scroll);
+        }
+        root.addView(pages, new LinearLayout.LayoutParams(-1, 0, 1f));
+        View line = new View(this); line.setBackgroundColor(ShellUi.LINE);
+        root.addView(line, new LinearLayout.LayoutParams(-1, ui.dp(1)));
+        LinearLayout bar = new LinearLayout(this); bar.setBackgroundColor(ShellUi.BACKGROUND);
+        bar.setPadding(ui.dp(8), ui.dp(6), ui.dp(8), ui.dp(6));
+        String[] names = {"ホーム", "Sky", "仕事", "設定"};
+        for (int index = 0; index < names.length; index++) {
+            final int destination = index;
+            navigation[index] = ui.navigation(bar, names[index], index, () -> selectPage(destination));
+        }
+        root.addView(bar); setContentView(root); root.requestFocus(); root.requestApplyInsets();
+    }
+
+    private void buildHomePage() {
+        LinearLayout home = pageContent[0];
+        heading(home, "Jennifer", "つくりたいことを、ここから。");
+        LinearLayout resume = ui.card(home);
+        homeWorkSummary = label(resume, "保存された仕事を確認中…", 16);
+        homeNextAction = button(resume, "仕事を見る", () -> selectPage(2)); ui.primary(homeNextAction);
+        LinearLayout compose = ui.card(home);
+        label(compose, "何を進めますか？", 21);
+        homePrompt = field(compose, "例：部屋の片づけを始める記事をつくる", "", true);
+        homePrompt.setTag("home-prompt"); homePrompt.setMinLines(3);
+        label(compose, "実行する場所", 13);
+        homeExecutionChoice = new RadioGroup(this);
+        String[] choices = {"自動 · 作業に合う導入済みモデル", "このPixelのToolで整える · モデル不要", "このPixelのsiに依頼する · モデルを指定", "クラウドに依頼する · まず見積"};
+        for (int index = 0; index < choices.length; index++) {
+            RadioButton option = new RadioButton(this);
+            option.setId(3100 + index); option.setText(choices[index]); option.setTextColor(ShellUi.INK); option.setTextSize(14);
+            option.setButtonTintList(new android.content.res.ColorStateList(
+                new int[][]{new int[]{android.R.attr.state_checked}, new int[]{}}, new int[]{ShellUi.ACCENT, ShellUi.MUTED}));
+            option.setMinHeight(ui.dp(48)); homeExecutionChoice.addView(option);
+        }
+        android.content.SharedPreferences choicesStore = getSharedPreferences("terminal_preferences", MODE_PRIVATE);
+        int selected = choicesStore.getBoolean("modelChoiceDefaultV1", false) ? choicesStore.getInt("executionChoice", 3100) : 3100;
+        choicesStore.edit().putBoolean("modelChoiceDefaultV1", true).apply();
+        homeExecutionChoice.check(selected >= 3100 && selected <= 3103 ? selected : 3100);
+        homeExecutionChoice.setOnCheckedChangeListener((group, id) -> {
+            choicesStore.edit().putInt("executionChoice", id).apply(); updateModelChoiceLabel(); invalidateModelChoice();
+        });
+        compose.addView(homeExecutionChoice);
+        homeModelChoice = label(compose, "", 13); updateModelChoiceLabel();
+        button(compose, "LLMを自分で選ぶ", this::showModelChooser);
+        ui.primary(button(compose, "依頼の内容を確認", this::prepareHomeRequest));
+        label(compose, "確認した後に開始します。入力だけでは実行しません。", 12);
+        LinearLayout voicePanel = disclosure(home, "音声で入力・読み上げ");
+        TextView voiceStatus = label(voicePanel, "対応する端末内の音声サービスを使います。", 13);
+        voiceStatus.setTag("voice-status"); voice = new TerminalVoice(this, homePrompt, voiceStatus);
+        button(voicePanel, "話して入力", voice::start);
+        button(voicePanel, "音声を止める", voice::stop);
+        button(voicePanel, "依頼を読み上げる", () -> voice.speak(homePrompt.getText().toString()));
+        LinearLayout connections = disclosure(home, "能力と接続の状態");
+        homeConnectionStatus = label(connections, "準備状態を確認中…", 13);
+        button(connections, "Skyで能力を選ぶ", () -> selectPage(1));
+        button(connections, "接続・端末の設定", () -> selectPage(3));
+        button(home, "アプリ・電話・カメラを開く", this::showInstalledApps);
+        zemaPrompt.setTag("work-prompt"); zemaConsent.setTag("work-consent");
+        articleSubmitButton.setTag("manual-submit"); consent.setTag("manual-consent");
+    }
+
+    private String selectedModelChoice() {
+        int route = homeExecutionChoice == null ? 3100 : homeExecutionChoice.getCheckedRadioButtonId();
+        return route == 3100 ? "auto"
+            : getSharedPreferences("terminal_preferences", MODE_PRIVATE).getString("preferredLocalModel", "auto");
+    }
+
+    private void updateModelChoiceLabel() {
+        if (homeModelChoice == null) return;
+        String choice = selectedModelChoice();
+        homeModelChoice.setText("auto".equals(choice) ? "標準は自動。使うモデルと理由を、開始前に表示します。"
+            : "指定中: " + ("dev.rock.qwen25-15b-q4km".equals(choice) ? "Qwen2.5 1.5B" : "dev.rock.qwen25-coder-15b-q4km".equals(choice) ? "Qwen2.5 Coder 1.5B" : "dev.rock.qwen3-4b-2507-q4km".equals(choice) ? "Qwen3 4B Instruct" : "dev.rock.qwen3-06b-q8".equals(choice) ? "Qwen3 0.6B（診断用）" : "選択したモデル") + " · 別モデルへ自動で変更しません。");
+    }
+
+    private void showModelChooser() {
+        worker.execute(() -> {
+            try {
+                JSONArray models = new JSONObject(new ShellConnection(this).localModelCatalog()).getJSONArray("models");
+                java.util.List<String> names = new ArrayList<>(), ids = new ArrayList<>();
+                names.add("自動 — 作業に合う導入済みモデル"); ids.add("auto");
+                for (int i = 0; i < models.length(); i++) {
+                    JSONObject model = models.getJSONObject(i);
+                    names.add(model.getString("name") + ("dev.rock.qwen25-15b-q4km".equals(model.optString("profileId")) ? " · 発想は内容品質不合格" : "") + ("dev.rock.qwen3-06b-q8".equals(model.optString("profileId")) ? " · 品質不合格/診断用" : "") + (model.optBoolean("cached") && model.optBoolean("licenseAccepted") ? " · 導入済み" : " · Skyで準備が必要"));
+                    ids.add(model.getString("profileId"));
+                }
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    new AlertDialog.Builder(this).setTitle("使うLLMを選ぶ")
+                        .setItems(names.toArray(new String[0]), (dialog, index) -> {
+                            String choice = ids.get(index);
+                            getSharedPreferences("terminal_preferences", MODE_PRIVATE).edit().putString("preferredLocalModel", choice).apply();
+                            homeExecutionChoice.check("auto".equals(choice) ? 3100 : 3102);
+                            updateModelChoiceLabel(); invalidateModelChoice();
+                        }).setNegativeButton("戻る", null).show();
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) homeModelChoice.setText("モデル一覧を読めません。Skyで状態を確認してください。"); }); }
+        });
+    }
+
+    private void openPublicModelUrl(String value) {
+        android.net.Uri uri = android.net.Uri.parse(value);
+        if (!"https".equals(uri.getScheme()) || uri.getUserInfo() != null || uri.getPort() != -1
+            || !java.util.Set.of("github.com", "huggingface.co", "x.com").contains(uri.getHost())) return;
+        try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)); }
+        catch (android.content.ActivityNotFoundException missing) { discoveryStatus.setText("ブラウザが見つかりません。端末の設定を確認してください。"); }
+    }
+
+    private void preparePublicModelInstall(String id) {
+        worker.execute(() -> {
+            try {
+                JSONObject prepared = new JSONObject(new ShellConnection(this).preparePublicModelInstall(id));
+                if (!"prepared".equals(prepared.optString("status"))) throw new IllegalStateException();
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    LinearLayout content = new LinearLayout(this); content.setOrientation(LinearLayout.VERTICAL); content.setPadding(32, 16, 32, 16);
+                    label(content, prepared.optString("name") + "\n" + prepared.optString("licenseId")
+                        + "\n容量: " + android.text.format.Formatter.formatFileSize(this,prepared.optLong("bytes")) + "\n" + prepared.optString("source")
+                        + "\nSHA-256: " + prepared.optString("sha256")
+                        + (prepared.optBoolean("reusableCache") ? "\n保存済みの同一重みを再検証できます。" : "\nWi-Fi接続時に取得します。"), 13);
+                    button(content, "ライセンスを見る", () -> openPublicModelUrl(prepared.optString("licenseUrl")));
+                    CheckBox consent = new CheckBox(this); consent.setText("ライセンスと容量を確認し、このモデルの取得と導入準備に同意する"); styleCheckBox(consent); content.addView(consent);
+                    AlertDialog dialog = new AlertDialog.Builder(this).setTitle("モデルを取得") .setView(content)
+                        .setPositiveButton("取得を始める", null).setNegativeButton("戻る", null).create();
+                    dialog.setOnShowListener(d -> {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        consent.setOnCheckedChangeListener((b, checked) -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(checked));
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                            if (!consent.isChecked()) return; dialog.dismiss();
+                            modelDownloadAction(c -> c.beginPublicModelDownload(id, true));
+                        });
+                    }); dialog.show();
+                });
+            } catch (Exception failure) { runOnUiThread(() -> { if (!isDestroyed()) discoveryStatus.setText("導入条件を確認できません。対応モデルとBrokerの版を確認してください。"); }); }
+        });
+    }
+    private interface ModelDownloadCall { String run(ShellConnection connection) throws Exception; }
+    private void modelDownloadAction(ModelDownloadCall call) {
+        if (modelDownloadPanel != null) { modelDownloadPanel.removeAllViews(); label(modelDownloadPanel, "モデルの状態を確認しています…", 14); }
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(call.run(new ShellConnection(this)));
+                runOnUiThread(() -> { if (!isDestroyed()) {
+                    renderModelDownload(result);
+                    if ("installed".equals(result.optString("status"))) { refreshLocalModels(); checkLocalAi(); invalidateModelChoice(); }
+                } });
+            } catch (Exception failure) { runOnUiThread(() -> { if (!isDestroyed()) { modelDownloadPanel.removeAllViews(); label(modelDownloadPanel, "状態を取得できません。再確認できます。", 14); } }); }
+        });
+    }
+    private void refreshModelDownload() { modelDownloadAction(ShellConnection::publicModelInstallStatus); }
+    private void renderModelDownload(JSONObject result) {
+        modelDownloadPanel.removeAllViews(); String state = result.optString("status");
+        if ("idle".equals(state)) return;
+        String name = result.optString("name", "モデル");
+        String label = "downloaded".equals(state) ? "取得済み。出典・ハッシュ・実行runtimeの検証と導入が必要です。"
+            : "installed".equals(state) ? "導入完了。作業に合わせて選択できます。"
+            : "downloading".equals(state) ? "Wi-Fiで取得中 " + result.optLong("bytesDownloaded") + " / " + result.optLong("bytesTotal") + " bytes"
+            : "paused".equals(state) ? ("waiting_to_retry".equals(result.optString("pauseReason")) ? "通信が途切れたため、Androidの再接続を待っています。取得済みの位置から再開します。" : "取得は待機中です。Wi-Fi・保存容量を確認してください。")
+            : "profile_changed".equals(state) ? "モデルの導入条件が更新されています。以前の取得があれば中止し、現行の条件を確認してください。"
+            : "cancelled".equals(state) ? "取得を中止しました。" : "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK".equals(result.optString("code")) ? "以前のモデルを使う仕事が残っています。その仕事を完了または中止してから、取得状況を更新してもう一度導入してください。" : "取得・導入を確認できません: " + result.optString("code", state);
+        label(modelDownloadPanel, name + "\n" + label, 14);
+        String operation = result.optString("operationId");
+        if ("failed".equals(state)) button(modelDownloadPanel, "取得状況を更新", this::refreshModelDownload);
+        if ("downloaded".equals(state)) button(modelDownloadPanel, "検証してPixelへ導入", () -> modelDownloadAction(c -> c.finishPublicModelInstall(operation, true)));
+        if (java.util.Set.of("downloaded", "downloading", "paused").contains(state) || "profile_changed".equals(state) && !result.optBoolean("terminal"))
+            button(modelDownloadPanel, "この取得を中止", () -> modelDownloadAction(c -> c.cancelPublicModelDownload(operation)));
+    }
+
+    private EditText addonSource;
+    private TextView addonStatus;
+    private LinearLayout addonList;
+    private LocalSubmission agentSubmission;
+    private Button agentRecovery;
+    private void buildAddonPanel(LinearLayout parent) {
+        LinearLayout panel=ui.card(parent);parent.removeView(panel);parent.addView(panel,Math.min(3,parent.getChildCount()));label(panel,"LLM・Agentを追加",19);
+        label(panel,"Hugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLから追加できます。作者署名の有無・互換性・版・容量・権限を確認します。",13);
+        addonSource=field(panel,"公開元のURL","https://huggingface.co/作者/モデル",false);
+        button(panel,"追加する内容を確認",()->inspectAddon(addonSource.getText().toString().trim()));
+        addonStatus=label(panel,"追加後、モデルは導入して手動・自動選択、Agentはここから依頼できます。",13);
+        button(panel,"追加したものを確認",this::refreshAddons);
+        agentRecovery=button(panel,"未確認のAgent依頼を履歴で確認",()->reviewPendingSubmission(agentSubmission,agentRecovery));
+        addonList=new LinearLayout(this);addonList.setOrientation(LinearLayout.VERTICAL);panel.addView(addonList);refreshAddons();
+    }
+    private void inspectAddon(String source) {
+        addonStatus.setText("公開元と固定版、対応形式を確認しています…");
+        worker.execute(()->{
+            try{JSONObject p=new JSONObject(new ShellConnection(this).inspectSkyAddon(source));
+                runOnUiThread(()->{
+                    if(isDestroyed())return;
+                    if("choose_file".equals(p.optString("status"))){
+                        JSONArray files=p.optJSONArray("files");if(files==null||files.length()==0){addonStatus.setText("この版に対応する単一GGUFファイルがありません。");return;}
+                        String[] names=new String[files.length()];for(int i=0;i<names.length;i++){JSONObject f=files.optJSONObject(i);names[i]=f.optString("name")+" · "+android.text.format.Formatter.formatFileSize(this,f.optLong("bytes"));}
+                        new AlertDialog.Builder(this).setTitle("導入するGGUFを選ぶ").setItems(names,(d,i)->inspectAddon(files.optJSONObject(i).optString("source"))).setNegativeButton("戻る",null).show();
+                    }else if("prepared".equals(p.optString("status")))confirmAddon(p);
+                    else addonStatus.setText("追加条件を満たしていません: "+p.optString("code","ADDON_UNAVAILABLE")+"\n対応外の形式は専用adapterが必要です。");
+                });
+            }catch(Exception failure){runOnUiThread(()->{if(!isDestroyed())addonStatus.setText("公開元を確認できません。URLと通信を確認して再試行してください。");});}
+        });
+    }
+    private void confirmAddon(JSONObject p) {
+        JSONObject d=p.optJSONObject("definition");if(d==null)return;
+        boolean model="model".equals(d.optString("kind"));JSONObject entry=d.optJSONObject("entry"),profile=entry==null?null:entry.optJSONObject("profile");
+        String details=d.optString("name")+"\n"+d.optString("source")+"\n定義SHA-256: "+p.optString("digest")
+            +"\n作者署名なし。公開リポジトリの版を利用者が選ぶ追加です。品質は未検証です。";
+        if(model&&profile!=null)details+="\n"+profile.optString("licenseId")+" · "+android.text.format.Formatter.formatFileSize(this,profile.optLong("artifactBytes"))
+            +"\n重みSHA-256: "+profile.optString("weightsSha256")+"\nまず手動で試せます。試験した作業を確認してから、自動選択への参加を別に設定できます。";
+        else details+="\n"+d.optJSONObject("recipe").optString("licenseId")+" · "+("local-tools/1".equals(d.optJSONObject("recipe").optString("runner"))?"端末内Tool: "+d.optJSONObject("recipe").optJSONArray("tools")+" · 文書の下書きを作成・価格/URLは仮設定":"端末内テキスト生成のみ")+"・追加権限なし・通信なし\n指示: "+d.optString("instructions");
+        LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);label(view,details,13);
+        CheckBox agreed=new CheckBox(this);agreed.setText("配布元・版・ライセンス・未検証の範囲を確認し、この定義を追加する");styleCheckBox(agreed);view.addView(agreed);
+        ScrollView scroll=new ScrollView(this);scroll.addView(view);
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle(model?"モデル定義を追加":"Agentを追加").setView(scroll).setPositiveButton("追加する",null).setNegativeButton("戻る",null).create();
+        dialog.setOnShowListener(v->{dialog.getButton(-1).setEnabled(false);agreed.setOnCheckedChangeListener((b,c)->dialog.getButton(-1).setEnabled(c));
+            dialog.getButton(-1).setOnClickListener(b->{if(!agreed.isChecked())return;dialog.dismiss();worker.execute(()->{
+                try{JSONObject result=new JSONObject(new ShellConnection(this).addSkyAddon(p.optString("proposalId"),p.optString("digest"),true));
+                    runOnUiThread(()->{if(isDestroyed())return;addonStatus.setText("added".equals(result.optString("status"))?"追加しました。モデルの導入、またはAgentへの依頼へ進めます。":"追加できません: "+result.optString("code"));refreshAddons();refreshLocalModels();});
+                }catch(Exception failure){runOnUiThread(()->addonStatus.setText("追加結果を確認できません。「追加したものを確認」で照合してください。"));}
+            });});});dialog.show();
+    }
+    private void refreshAddons(){
+        if(addonList==null)return;worker.execute(()->{
+            try{JSONArray rows=new JSONObject(new ShellConnection(this).skyAddons()).getJSONArray("addons");
+                runOnUiThread(()->{if(isDestroyed())return;addonList.removeAllViews();updateSubmissionRecovery(agentSubmission,agentRecovery);
+                    for(int i=0;i<rows.length();i++){JSONObject row=rows.optJSONObject(i),d=row.optJSONObject("definition");if(d==null)continue;
+                        LinearLayout card=ui.card(addonList);label(card,d.optString("name"),16);label(card,(row.optBoolean("revoked")?"無効":"追加済み")+" · "+d.optString("kind")+"\n"+d.optString("source"),12);
+                        if(row.optBoolean("revoked")){
+                            if("agent".equals(d.optString("kind")))button(card,"内容を再確認して有効にする",()->inspectAddon(d.optString("source")));
+                            else label(card,"このモデル版は無効です。必要なら別の版を追加してください。",12);
+                            continue;
+                        }String digest=row.optString("digest");
+                        if("model".equals(d.optString("kind"))){
+                            button(card,"このモデルをPixelへ導入",()->preparePublicModelInstall(d.optString("id")));
+                            button(card,"自動選択で使う作業を設定",()->configureAddonAutomatic(row));
+                        }
+                        else button(card,"このAgentに依頼",()->openAddonAgent(digest,d.optString("name")));
+                        button(card,"この追加を無効にする",()->new AlertDialog.Builder(this).setTitle("追加を無効にする")
+                            .setMessage("保存した仕事と成果は残ります。モデルのこの版は再導入できなくなり、未完了の仕事は以後の推論が停止します。Agent設定は新規依頼を停止し、内容の再確認後に有効化できます。")
+                            .setPositiveButton("無効にする",(x,y)->worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).revokeSkyAddon(digest,true));runOnUiThread(()->{addonStatus.setText(result.optString("status")+" "+result.optString("code"));refreshAddons();refreshLocalModels();});}catch(Exception failure){runOnUiThread(()->addonStatus.setText("無効化の結果を確認できません。再読込みしてください。"));}})).setNegativeButton("戻る",null).show());
+                    }
+                });
+            }catch(Exception failure){runOnUiThread(()->{if(!isDestroyed())addonStatus.setText("追加一覧を取得できません。");});}
+        });
+    }
+    private void configureAddonAutomatic(JSONObject row){
+        JSONArray trials=row.optJSONArray("schemaTrialTasks"),configured=row.optJSONArray("automaticTasks");
+        if(trials==null||trials.length()==0){addonStatus.setText("先にこのモデルを手動選択して実際に使い、保存した生成結果を確認してください。形式試験に成功した作業を候補にできます。");return;}
+        String[] names=new String[trials.length()];boolean[] checked=new boolean[names.length];
+        for(int i=0;i<names.length;i++){String task=trials.optString(i);names[i]=task.equals("code")?"コード下書き":task.equals("summary")?"要約":task.equals("translation")?"翻訳":task.equals("planning")?"計画・発想":"文章作成";
+            if(configured!=null)for(int j=0;j<configured.length();j++)checked[i]|=task.equals(configured.optString(j));}
+        new AlertDialog.Builder(this).setTitle("自動選択で使う作業")
+            .setMultiChoiceItems(names,checked,(dialog,which,value)->checked[which]=value)
+            .setPositiveButton("生成結果を確認して候補にする",(dialog,which)->{
+                JSONArray tasks=new JSONArray();for(int i=0;i<checked.length;i++)if(checked[i])tasks.put(trials.optString(i));
+                worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).configureSkyModelAutomaticTasks(row.optString("digest"),row.optLong("automaticRevision",0),tasks.toString(),true));
+                    runOnUiThread(()->{if(isDestroyed())return;addonStatus.setText("configured".equals(result.optString("status"))?"自動選択の候補を更新しました。形式試験は一般的な内容品質の保証ではありません。":"設定できません: "+result.optString("code"));refreshAddons();invalidateModelChoice();});
+                }catch(Exception failure){runOnUiThread(()->addonStatus.setText("設定結果を確認できません。再読込みしてください。"));}});
+            }).setNegativeButton("戻る",null).show();
+    }
+    private void openAddonAgent(String digest,String name){
+        LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);content.setPadding(28,16,28,16);
+        EditText request=field(content,"このAgentへの依頼","",true);
+        button(content,"使うLLMを変更（標準は自動）",this::showModelChooser);
+        label(content,"対応モデルと宣言されたToolを確認して、成果物を端末内に保存します。Agent指示と依頼は合計2KBまでです。",13);
+        new AlertDialog.Builder(this).setTitle(name).setView(content).setPositiveButton("モデルと実行条件を確認",(d,w)->prepareAddonAgent(digest,request.getText().toString()))
+            .setNegativeButton("戻る",null).show();
+    }
+    private void prepareAddonAgent(String digest,String request){
+        String choice=getSharedPreferences("terminal_preferences",MODE_PRIVATE).getString("preferredLocalModel","auto");
+        worker.execute(()->{try{JSONObject p=new JSONObject(new ShellConnection(this).prepareSkyAgent(digest,choice,request));
+            runOnUiThread(()->{if(isDestroyed())return;if(!"prepared".equals(p.optString("status"))){addonStatus.setText("実行条件を確認してください: "+p.optString("code"));return;}
+                LinearLayout view=new LinearLayout(this);view.setOrientation(LinearLayout.VERTICAL);view.setPadding(28,16,28,16);
+                JSONArray operations=p.optJSONArray("tools");boolean usesTools=operations!=null&&operations.length()>0;
+                label(view,request+"\nモデル: "+p.optString("name")+"\n"+p.optString("reason")+"\n"+p.optString("warning")
+                    +(usesTools?"\n実行するTool（順番）: "+operations+"\n端末内の文書加工と成果保存。価格・URLは下書きの仮設定です。公開・販売・外部送信は行いません。":""),14);
+                CheckBox consent=new CheckBox(this);consent.setText(usesTools?"このAgent設定と依頼を、このPixelのモデルと表示したToolで処理して成果を保存する":"このAgent設定と依頼を、このPixelのモデルで処理して成果を保存する");styleCheckBox(consent);view.addView(consent);
+                AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Agentへの依頼を確認").setView(view).setPositiveButton("開始する",null).setNegativeButton("戻る",null).create();
+                dialog.setOnShowListener(x->{Button start=dialog.getButton(-1);start.setEnabled(false);consent.setOnCheckedChangeListener((v,c)->start.setEnabled(c));
+                    start.setOnClickListener(v->{if(!consent.isChecked())return;submitAddonAgent(digest,request,p.optString("manifestDigest"),start,dialog);});});dialog.show();
+            });
+        }catch(Exception failure){runOnUiThread(()->addonStatus.setText("モデルの準備を確認できません。"));}});
+    }
+    private void submitAddonAgent(String digest,String request,String modelDigest,Button start,AlertDialog dialog){
+        LocalSubmission.Attempt attempt=beginSubmission(agentSubmission,start,LocalSubmission.fingerprint("sky-agent",digest,request,modelDigest));if(attempt==null)return;
+        worker.execute(()->{try{JSONObject result=new JSONObject(new ShellConnection(this).submitSkyAgent(digest,attempt.requestId,request,modelDigest,true));
+            String work=result.optString("workId");boolean queued="queued".equals(result.optString("status"))&&validLocalWorkId(work);
+            runOnUiThread(()->{if(isDestroyed())return;finishSubmission(agentSubmission,attempt,queued,start,agentRecovery);
+                if(queued){dialog.dismiss();openWork(work);perform(c->null);}else addonStatus.setText("依頼結果: "+result.optString("code")+"。未確定の依頼は履歴で確認し、同じ入力で照合してください。");});
+        }catch(Exception failure){runOnUiThread(()->{finishSubmission(agentSubmission,attempt,false,start,agentRecovery);addonStatus.setText("結果が未確認です。同じ依頼を再試行すると同じIDで照合します。");});}});
+    }
+
+    private void searchPublicModels() {
+        String query = discoveryQuery.getText().toString().trim();
+        if (query.isEmpty() || query.length() > 80 || query.codePoints().anyMatch(Character::isISOControl)) {
+            discoveryQuery.setError("公開キーワードを1〜80文字で入力してください"); return;
+        }
+        discoverySearch.setEnabled(false); discoveryResults.removeAllViews();
+        discoveryStatus.setText("公開情報を検索しています。モデルは導入・実行しません。");
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(new ShellConnection(this).searchPublicModels(query));
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    discoverySearch.setEnabled(true);
+                    StringBuilder status = new StringBuilder("検索語: ").append(query).append(" · ");
+                    String state = result.optString("status");
+                    status.append("ok".equals(state) ? "両方の取得に成功" : "partial".equals(state) ? "一部だけ取得" : "rate_limited".equals(state) ? "少し待って再検索してください" : "取得できませんでした。通信を確認して再検索できます");
+                    if (result.optLong("fetchedAt") > 0) status.append("\n照会: ").append(java.time.Instant.ofEpochMilli(result.optLong("fetchedAt")).toString());
+                    JSONArray sources = result.optJSONArray("sources");
+                    if (sources != null) for (int i = 0; i < sources.length(); i++) {
+                        JSONObject source = sources.optJSONObject(i); if (source == null) continue;
+                        status.append("\n").append(source.optString("source")).append(": ").append("ok".equals(source.optString("status")) ? "取得済み" : "rate_limited".equals(source.optString("status")) ? "API利用制限中" : "取得失敗");
+                        if (source.optBoolean("incompleteResults")) status.append("（検索結果は一部）");
+                    }
+                    status.append("\n対応確認済みの候補には導入ボタンを表示します。その他も追加用の条件を確認できます。"); discoveryStatus.setText(status.toString());
+                    JSONArray candidates = result.optJSONArray("candidates");
+                    if (candidates != null) for (int i = 0; i < candidates.length(); i++) {
+                        JSONObject candidate = candidates.optJSONObject(i); if (candidate == null) continue;
+                        LinearLayout card = ui.card(discoveryResults);
+                        label(card, candidate.optString("id"), 16);
+                        label(card, candidate.optString("source") + " · 更新: " + candidate.optString("updatedAt")
+                            + "\nライセンスの公開表記: " + candidate.optString("licenseClaim", "unknown")
+                            + "\n未導入・未検証 · Pixelへの適合は未確認", 13);
+                        String url = candidate.optString("url"); button(card, "公開元で詳細を見る（外部）", () -> openPublicModelUrl(url));
+                        String installId = candidate.optString("installProfileId");
+                        if (!installId.isEmpty()) button(card, "条件を確認してPixelへ導入", () -> preparePublicModelInstall(installId));
+                        if("huggingface".equals(candidate.optString("source")))button(card,"別のGGUFも選んで追加",()->inspectAddon(url));
+                        else button(card,"Agent定義を確認",()->inspectAddon(url+"/blob/HEAD/sky-addon.json"));
+                    }
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed()) { discoverySearch.setEnabled(true); discoveryStatus.setText("検索できませんでした。通信とBrokerの接続を確認してください。"); } }); }
+        });
+    }
+
+    private void invalidateModelChoice() {
+        modelChoiceRevision++; preparedModelDigest = null; preparedModelPrompt = null;
+        if (zemaConsent != null) zemaConsent.setChecked(false);
+        if (zemaSubmitButton != null) zemaSubmitButton.setEnabled(false);
+        if (modelChoiceStatus != null) modelChoiceStatus.setText("依頼に合うモデルを確認します。まだ実行していません。");
+        mainHandler.removeCallbacks(refreshModelChoice);
+        if (zemaPrompt != null && !zemaPrompt.getText().toString().trim().isEmpty()) mainHandler.postDelayed(refreshModelChoice, 250);
+    }
+
+    private void prepareModelChoice() {
+        if (isDestroyed()) return;
+        final String prompt = zemaPrompt.getText().toString(), choice = selectedModelChoice();
+        final int revision = modelChoiceRevision;
+        worker.execute(() -> {
+            try {
+                JSONObject result = new JSONObject(new ShellConnection(this).prepareLocalModelChoice(choice, prompt));
+                runOnUiThread(() -> {
+                    if (isDestroyed() || revision != modelChoiceRevision || !prompt.equals(zemaPrompt.getText().toString())) return;
+                    if ("prepared".equals(result.optString("status"))) {
+                        preparedModelDigest = result.optString("manifestDigest"); preparedModelPrompt = prompt;
+                        modelChoiceStatus.setText("使うモデル: " + result.optString("name") + "\n" + result.optString("reason")
+                            + (result.optInt("ideaTarget") > 0 ? "\nアイデア " + result.optInt("ideaTarget") + " 件を分割生成・保存。重複・不足の回だけ最大3回生成し直します" : "") + "\n端末内で実行 · クラウド利用料なし" + (result.optString("warning").isEmpty() ? "" : "\n" + result.optString("warning")));
+                        zemaConsent.setChecked(false); zemaSubmitButton.setEnabled(!zemaSubmission.inFlight());
+                    } else {
+                        String code = result.optString("code");
+                        modelChoiceStatus.setText("TASK_REQUIRES_OTHER_CAPABILITY".equals(code)
+                            ? "この作業に必要な能力をSkyで選んでください。対応する実行先を確認してから進められます。実行はしていません。"
+                            : "モデルの導入・利用条件・端末の余裕を確認してください。Skyで準備してから再入力できます（" + code + "）。");
+                    }
+                });
+            } catch (Exception unavailable) { runOnUiThread(() -> { if (!isDestroyed() && revision == modelChoiceRevision) modelChoiceStatus.setText("モデルの選択結果を確認できません。自動で実行・送信はしません。"); }); }
+        });
+    }
+
+    private void prepareHomeRequest() {
+        String draft = homePrompt.getText().toString().trim();
+        if (draft.isEmpty()) { homePrompt.setError("依頼・原稿を入力してください"); return; }
+        int requestedRoute = homeExecutionChoice.getCheckedRadioButtonId();
+        int route = requestedRoute == 3100 ? 3102 : requestedRoute;
+        EditText destination = route == 3101 ? markdown : route == 3102 ? zemaPrompt : cloudLlmPrompt;
+        Runnable transfer = () -> {
+            destination.setText(draft);
+            if (route == 3102) invalidateModelChoice();
+            // Preparing a draft never carries an earlier execution or disclosure approval.
+            zemaConsent.setChecked(false); consent.setChecked(false); cloudLlmExecutionConsent.setChecked(false);
+            focusedWorkId = null;
+            workComposer.setVisibility(route == 3102 ? View.VISIBLE : View.GONE);
+            selectPage(2);
+            if (route == 3101) reveal(manualToolPanel);
+            else if (route == 3103) reveal(cloudLlmPanel);
+            destination.requestFocus();
+            destination.post(() -> destination.requestRectangleOnScreen(
+                new android.graphics.Rect(0, 0, destination.getWidth(), destination.getHeight()), true));
+            message.setText(route == 3101 ? "LLMは使いません。原稿・条件・保存への同意を確認してください。"
+                : route == 3102 ? "Skyで選んだToolと端末内モデルを確認してください。まだ実行していません。"
+                : "見積の後に上限・送信先を確認します。まだクラウドへ送信していません。");
+        };
+        String current = destination.getText().toString().trim();
+        if (!current.isEmpty() && !current.equals(draft)) {
+            new AlertDialog.Builder(this).setTitle("入力中の下書きを置き換えますか？")
+                .setMessage("仕事画面に別の内容が入力されています。保存済みの仕事は変更しません。")
+                .setNegativeButton("戻る", null).setPositiveButton("置き換える", (dialog, which) -> transfer.run()).show();
+        } else transfer.run();
+    }
+
+    private void reveal(LinearLayout contents) {
+        contents.setVisibility(View.VISIBLE);
+        Object control = contents.getTag();
+        if (control instanceof Button) ((Button) control).setStateDescription("展開中");
+    }
+
+    private void showInstalledApps() {
+        Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+        List<android.content.pm.ResolveInfo> apps = new ArrayList<>(getPackageManager().queryIntentActivities(launcher, 0));
+        apps.removeIf(info -> info.activityInfo == null || getPackageName().equals(info.activityInfo.packageName));
+        apps.sort(new android.content.pm.ResolveInfo.DisplayNameComparator(getPackageManager()));
+        String[] labels = new String[apps.size()];
+        for (int index = 0; index < apps.size(); index++) labels[index] = apps.get(index).loadLabel(getPackageManager()).toString();
+        new AlertDialog.Builder(this).setTitle("アプリを開く").setItems(labels, (dialog, index) -> {
+            android.content.pm.ActivityInfo app = apps.get(index).activityInfo;
+            try { startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(new android.content.ComponentName(app.packageName, app.name)));
+            } catch (android.content.ActivityNotFoundException | SecurityException unavailable) {
+                message.setText("このアプリを開けません。Androidの設定から確認してください。");
+            }
+        }).setNegativeButton("閉じる", null).show();
+    }
+
+    private void refreshLocalJobs() {
+        if (!activityResumed || isDestroyed()) return;
+        worker.execute(() -> {
+            try {
+                JSONObject snapshot = new JSONObject(new ShellConnection(this).snapshot());
+                runOnUiThread(() -> {
+                    if (!activityResumed || isDestroyed()) return;
+                    localWorkPaused = snapshot.optBoolean("paused");
+                    render(snapshot.optJSONArray("works") == null ? new JSONArray() : snapshot.optJSONArray("works"));
+                    updateHome(snapshot, lastAccountPresentation);
+                    scheduleLocalRefresh(snapshot);
+                });
+            } catch (Exception unavailable) {
+                runOnUiThread(() -> { if (activityResumed && !isDestroyed())
+                    homeWorkSummary.setText("最新の仕事状態を確認できません。進捗を更新してください。"); });
+            }
+        });
+    }
+
+    private void scheduleLocalRefresh(JSONObject snapshot) {
+        localTaskHandler.removeCallbacks(localTaskRefresh);
+        if (!activityResumed || snapshot.optBoolean("paused")) return;
+        JSONArray works = snapshot.optJSONArray("works");
+        if (works != null) for (int index = 0; index < works.length(); index++) {
+            JSONObject work = works.optJSONObject(index);
+            if (work != null && "active".equals(work.optString("state"))) {
+                localTaskHandler.postDelayed(localTaskRefresh, 5_000); return;
+            }
+        }
+    }
+
+    private void updateHome(JSONObject snapshot, JSONObject account) {
+        lastLocalPresentation = snapshot;
+        localWorkPaused = snapshot.optBoolean("paused");
+        pauseWorkButton.setText(localWorkPaused ? "端末の自動実行を再開" : "端末の仕事を一時停止");
+        JSONArray works = snapshot.optJSONArray("works");
+        int active = 0, review = 0, complete = 0;
+        if (works != null) for (int i = 0; i < works.length(); i++) {
+            JSONObject work = works.optJSONObject(i); if (work == null) continue;
+            String state = work.optString("state");
+            if ("active".equals(state)) active++;
+            else if ("review".equals(state)) review++;
+            else if ("completed".equals(state)) complete++;
+        }
+        homeWorkSummary.setText((snapshot.optBoolean("paused") ? "端末の実行を全停止中\n" : "")
+            + "最近の仕事：進行中 " + active + " ・確認待ち " + review + " ・完了 " + complete
+            + (snapshot.optBoolean("truncated") ? "\n最新25件を表示しています。" : ""));
+        workOverview.setText((localWorkPaused ? "一時停止中 · " : "") + "確認待ち " + review + "　進行中 " + active + "　完了 " + complete);
+        navigation[2].setText(review > 0 ? "仕事 · " + review : "仕事");
+        String nextReview = null;
+        if (works != null) for (int i = 0; i < works.length(); i++) {
+            JSONObject work = works.optJSONObject(i);
+            if (work != null && "review".equals(work.optString("state"))) { nextReview = work.optString("id"); break; }
+        }
+        final String reviewId = nextReview;
+        homeNextAction.setText(review > 0 ? "確認が必要な仕事を見る" : active > 0 ? "進み具合を見る" : "保存した仕事を見る");
+        homeNextAction.setOnClickListener(view -> { if (reviewId != null) openWork(reviewId); else selectPage(2); });
+        JSONObject capabilities = snapshot.optJSONObject("deviceCapabilities");
+        JSONObject profile = capabilities == null ? null : capabilities.optJSONObject("deviceProfile");
+        JSONObject inference = profile == null ? null : profile.optJSONObject("localInferenceObservation");
+        String local = validLocalInferenceObservation(inference) ? localInferenceSummary(inference) : "未確認";
+        localAiStatus.setText("端末内si：" + local);
+        homeConnectionStatus.setText("端末内si：" + local
+            + "\nクラウド：" + ("linked".equals(account.optString("state")) ? "本人連携済み。利用権・見積を別途確認。" : "本人連携が必要")
+            + "\nモデル未準備でも、入力を確認して端末内Toolを使えます。");
+    }
+
+    private void showUnlinkedCloudHome() {
+        try { applyCloudServiceHome(new JSONObject().put("state", "not_linked")); }
+        catch (org.json.JSONException invalid) { throw new IllegalStateException(invalid); }
+    }
+
+    private void chooseDefaultHome() {
+        android.app.role.RoleManager roles = getSystemService(android.app.role.RoleManager.class);
+        if (roles != null && roles.isRoleAvailable(android.app.role.RoleManager.ROLE_HOME)) {
+            if (roles.isRoleHeld(android.app.role.RoleManager.ROLE_HOME)) {
+                openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS); return;
+            }
+            try { startActivityForResult(roles.createRequestRoleIntent(android.app.role.RoleManager.ROLE_HOME), REQUEST_HOME_ROLE); }
+            catch (android.content.ActivityNotFoundException unavailable) { openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS); }
+        } else openSystemSettings(android.provider.Settings.ACTION_HOME_SETTINGS);
+    }
+
+    private void openSystemSettings(String action) {
+        try { startActivity(new Intent(action)); }
+        catch (android.content.ActivityNotFoundException unavailable) {
+            new AlertDialog.Builder(this).setMessage("この端末では設定画面を開けません。Androidの設定から確認してください。")
+                .setPositiveButton("閉じる", null).show();
+        }
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent); setIntent(intent);
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasCategory(Intent.CATEGORY_HOME)) { focusedWorkId = null; selectPage(0); }
+        else openNotificationIntent(intent);
+    }
+
+    private void heading(LinearLayout parent, String title, String subtitle) {
+        label(parent, title, 26); label(parent, subtitle, 14);
+    }
+
+    private LinearLayout disclosure(LinearLayout parent, String title) {
+        LinearLayout card = ui.card(parent);
+        LinearLayout contents = ui.column(); contents.setVisibility(View.GONE);
+        Button toggle = button(card, title + "  ＋", () -> {});
+        toggle.setOnClickListener(view -> {
+            boolean expanded = contents.getVisibility() != View.VISIBLE;
+            contents.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            toggle.setText(title + (expanded ? "  −" : "  ＋"));
+            toggle.setStateDescription(expanded ? "展開中" : "折りたたみ");
+        });
+        toggle.setStateDescription("折りたたみ"); card.addView(contents);
+        contents.setTag(toggle);
+        return contents;
+    }
+
+    private void selectPage(int index) {
+        if (voice != null) voice.stop();
+        selectedPage = Math.max(0, Math.min(index, pageContent.length - 1));
+        View focused = getCurrentFocus();
+        if (focused != null) {
+            InputMethodManager keyboard = getSystemService(InputMethodManager.class);
+            if (keyboard != null) keyboard.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+            focused.clearFocus();
+        }
+        pages.setDisplayedChild(selectedPage);
+        for (int tab = 0; tab < navigation.length; tab++) ui.selectNavigation(navigation[tab], tab, tab == selectedPage);
+        if (selectedPage != 0 && !backToHomeRegistered) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, backToHome);
+            backToHomeRegistered = true;
+        } else if (selectedPage == 0 && backToHomeRegistered) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
+            backToHomeRegistered = false;
+        }
+    }
+
+    // Drafts survive configuration changes in memory only; consent is always reset.
+    @Override public Object onRetainNonConfigurationInstance() {
+        return new String[]{homePrompt.getText().toString(), zemaPrompt.getText().toString()};
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putInt("selectedPage", selectedPage);
+        state.putString("focusedWorkId", focusedWorkId);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override public void onBackPressed() {
+        if (selectedPage != 0) navigateBack(); else super.onBackPressed();
     }
 
     private void provisionEsimGatewayKey() {
@@ -375,8 +1122,22 @@ public final class MainActivity extends Activity {
         });
     }
 
+    @Override protected void onStart() {
+        super.onStart();
+        try { visibleBrokerBinding=new ShellConnection(this).bindWhileVisible(); }
+        catch(Exception unavailable) { visibleBrokerBinding=null; /* Ordinary authenticated RPC still reports availability. */ }
+    }
+    @Override protected void onStop() {
+        if(visibleBrokerBinding!=null) {
+            try { visibleBrokerBinding.close(); } catch(Exception disconnected) { /* Already unbound/dead. */ }
+            visibleBrokerBinding=null;
+        }
+        super.onStop();
+    }
+
     @Override protected void onResume() {
         super.onResume();
+        updateNotificationStatus();
         activityResumed = true;
         restoreA2ARecovery();
         observeCloudReconnect();
@@ -384,7 +1145,10 @@ public final class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
+        if (voice != null) voice.stop();
         activityResumed = false;
+        mainHandler.removeCallbacks(refreshModelChoice);
+        localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
         cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
@@ -437,23 +1201,34 @@ public final class MainActivity extends Activity {
         input.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12));
         input.setPadding(16, 14, 16, 14);
         input.setInputType(InputType.TYPE_CLASS_TEXT | (multi ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0));
-        input.setSingleLine(!multi); if (multi) input.setMinLines(3); container.addView(input); return input;
+        input.setSingleLine(!multi); if (multi) input.setMinLines(3); ui.input(input); input.setSaveEnabled(false); container.addView(input); return input;
     }
-    private TextView label(LinearLayout container, String text, int size) {
-        TextView value = new TextView(this); value.setText(text); value.setTextSize(size);
-        value.setTextColor(size >= 22 ? Color.WHITE : Color.rgb(190, 202, 214));
-        value.setPadding(0, size >= 22 ? 20 : 12, 0, size >= 22 ? 10 : 8); container.addView(value); return value;
+    private TextView label(LinearLayout container, String text, int size) { return ui.text(container, text, size); }
+    private Button button(LinearLayout container, String text, Runnable action) { return ui.button(container, text, action); }
+    private void styleCheckBox(CheckBox box) {
+        box.setTextColor(ShellUi.INK); box.setPadding(0, ui.dp(10), 0, ui.dp(10));
+        box.setButtonTintList(new android.content.res.ColorStateList(
+            new int[][]{new int[]{android.R.attr.state_checked}, new int[]{}}, new int[]{ShellUi.ACCENT, ShellUi.MUTED}));
     }
-    private Button button(LinearLayout container, String text, Runnable action) {
-        Button value = new Button(this); value.setText(text); value.setTextColor(Color.WHITE); value.setTextSize(15);
-        value.setAllCaps(false); value.setPadding(18, 12, 18, 12);
-        value.setBackground(background(Color.rgb(27, 42, 54), Color.rgb(95, 151, 183), 14));
-        value.setOnClickListener(view -> action.run()); container.addView(value); return value;
-    }
-    private void styleCheckBox(CheckBox box) { box.setTextColor(Color.rgb(205, 216, 226)); box.setPadding(0, 12, 0, 12); }
     private GradientDrawable background(int fill, int stroke, int radius) {
         GradientDrawable drawable = new GradientDrawable(); drawable.setColor(fill); drawable.setCornerRadius(radius * getResources().getDisplayMetrics().density);
         drawable.setStroke((int)(1 * getResources().getDisplayMetrics().density), stroke); return drawable;
+    }
+
+    private void changeLocalPause(boolean paused) {
+        controlWorker.execute(() -> {
+            try {
+                new ShellConnection(this).setPaused(paused);
+                runOnUiThread(() -> {
+                    if (!isDestroyed()) {
+                        message.setText(paused ? "端末の実行を停止しました。計画中の依頼も実行へ進めません。" : "自動実行を再開しました。停止済みの計画は自動再開しません。");
+                        perform(connection -> null);
+                    }
+                });
+            } catch (Exception failure) {
+                runOnUiThread(() -> { if (!isDestroyed()) message.setText("停止・再開の結果を確認できません。状態を再確認してください。"); });
+            }
+        });
     }
 
     private void perform(Action action) {
@@ -462,12 +1237,12 @@ public final class MainActivity extends Activity {
                 ShellConnection connection = new ShellConnection(this);
                 action.run(connection);
                 JSONObject snapshot = new JSONObject(connection.snapshot());
+                WorkNotifications.sync(this, snapshot, null, false);
                 JSONObject deviceCapabilities = snapshot.optJSONObject("deviceCapabilities");
                 JSONObject selection = new JSONObject(connection.skySelection());
                 JSONObject recovery = new JSONObject(connection.recoveryStatus());
                 JSONObject account = new JSONObject(connection.rockstarDeviceLinkStatus());
-                JSONObject cloudHome = "linked".equals(account.optString("state"))
-                    ? new JSONObject(connection.cloudServiceHome()) : new JSONObject("{\"state\":\"not_linked\"}");
+
                 boolean paused = snapshot.getBoolean("paused");
                 JSONArray workItems = snapshot.getJSONArray("works");
                 runOnUiThread(() -> {
@@ -476,9 +1251,14 @@ public final class MainActivity extends Activity {
                         applySkySelection(selection);
                         applyRecoveryStatus(recovery);
                         applyDeviceLinkStatus(account);
-                        applyCloudServiceHome(cloudHome);
+                        if ("linked".equals(account.optString("state"))) refreshCloudServiceHome();
+                        else showUnlinkedCloudHome();
                         message.setText(paused ? "全停止中" : "予約済みの仕事は充電中に実行します。原稿・成果物はBroker側だけに保存します。");
+                        localWorkPaused = paused;
                         render(workItems);
+                        lastAccountPresentation = account;
+                        updateHome(snapshot, account);
+                        scheduleLocalRefresh(snapshot);
                     }
                 });
             } catch (Exception error) {
@@ -1831,6 +2611,8 @@ public final class MainActivity extends Activity {
 
     private void applyDeviceLinkStatus(JSONObject status) {
         if (accountLinkStatus == null || status == null) return;
+        lastAccountPresentation = status;
+        if (lastLocalPresentation != null && homeConnectionStatus != null) updateHome(lastLocalPresentation, status);
         String state = status.optString("state", "blocked");
         if ("linked".equals(state)) {
             deviceLinkFlowId = null; deviceLinkApprovalUri = null;
@@ -2013,7 +2795,7 @@ public final class MainActivity extends Activity {
             && observation.optInt("apiVersion", -1) == 0;
         if (!"approved_package_signature_and_binder_api".equals(trust)
                 || !"llama.rn".equals(observation.optString("runtime"))
-                || observation.optInt("apiVersion", -1) != 2
+                || observation.optInt("apiVersion", -1) != LOCAL_AI_STATUS_API_VERSION
                 || !(observation.opt("modelLoaded") instanceof Boolean)) return false;
         return ("ready".equals(state) && observation.optBoolean("modelLoaded"))
             || ("no_model".equals(state) && !observation.optBoolean("modelLoaded"))
@@ -2117,6 +2899,40 @@ public final class MainActivity extends Activity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == OPEN_MODEL_DOCUMENT) {
+            String profileId = modelImportProfileId; modelImportProfileId = null;
+            if (resultCode != RESULT_OK || data == null || data.getData() == null || profileId == null) return;
+            Uri selected = data.getData();
+            runModelImport(profileId, selected);
+            return;
+        }
+        if (requestCode == REQUEST_HOME_ROLE) {
+            android.app.role.RoleManager roles = getSystemService(android.app.role.RoleManager.class);
+            boolean held = roles != null && roles.isRoleHeld(android.app.role.RoleManager.ROLE_HOME);
+            homeRoleStatus.setText(held ? "RockstarOSをホームに選択しました。Androidのホーム設定で変更できます。"
+                : "ホームは変更していません。必要なときにAndroidの選択画面から選べます。");
+            return;
+        }
+        if (requestCode == CREATE_ARTIFACT_DOCUMENT) {
+            String workId = artifactExportWorkId; artifactExportWorkId = null;
+            if (resultCode != RESULT_OK || data == null || data.getData() == null || workId == null) return;
+            Uri destination = data.getData();
+            worker.execute(() -> {
+                try {
+                    byte[] artifact = new ShellConnection(this).result(workId).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                    try (ParcelFileDescriptor output = getContentResolver().openFileDescriptor(destination, "wt")) {
+                        if (output == null) throw new java.io.IOException("DESTINATION_UNAVAILABLE");
+                        try (java.io.FileOutputStream stream = new ParcelFileDescriptor.AutoCloseOutputStream(output)) {
+                            stream.write(artifact); stream.flush(); stream.getFD().sync();
+                        }
+                    }
+                    runOnUiThread(() -> { if (!isDestroyed()) message.setText("確認した保存先へ成果を書き出しました。"); });
+                } catch (Exception unavailable) {
+                    runOnUiThread(() -> { if (!isDestroyed()) message.setText("書込みを確認できません。元の成果は保存されています。保存先を確認してください。"); });
+                }
+            });
+            return;
+        }
         if (resultCode != RESULT_OK || data == null || data.getData() == null) {
             if (requestCode == OPEN_BACKUP_DOCUMENT) restorePhraseForPicker = null;
             return;
@@ -2157,10 +2973,92 @@ public final class MainActivity extends Activity {
     private void checkLocalAi() {
         worker.execute(() -> {
             String status;
-            try { status = "ローカルsi: " + new ShellConnection(this).localAiStatus(); }
+            try {
+                String state = new ShellConnection(this).localAiStatus();
+                status = "ready".equals(state) ? "端末内モデルは読込済みです。実行時に選択したprofileを照合します。"
+                    : "no_model".equals(state) ? "端末内サービスは接続済みですが、モデルは未読込です。LLMなしのTool処理は使えます。"
+                    : "端末内siは準備中または利用できません。少し待って再確認してください。";
+            }
             catch (Exception error) { status = "ローカルsi: 未接続（アプリ、モデル、署名、APIを確認）"; }
             String result = status;
-            runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
+            runOnUiThread(() -> { if (!isDestroyed()) { message.setText(result); localAiStatus.setText(result); } });
+        });
+    }
+
+    private void refreshLocalModels() {
+        worker.execute(() -> {
+            try {
+                JSONObject catalog = new JSONObject(new ShellConnection(this).localModelCatalog());
+                runOnUiThread(() -> {
+                    if (isDestroyed() || modelImportBusy) return;
+                    localModels.removeAllViews();
+                    JSONArray models = catalog.optJSONArray("models");
+                    if (models == null || models.length() == 0) {
+                        localModelMessage.setText("この配布版に導入可能なモデルはありません。署名済み配布設定が必要です。");
+                        return;
+                    }
+                    for (int i = 0; i < models.length(); i++) {
+                        JSONObject model = models.optJSONObject(i); if (model == null) continue;
+                        String profileId = model.optString("profileId");
+                        label(localModels, model.optString("name") + " / " + model.optString("licenseId")
+                            + " / " + (model.optLong("bytes") / (1024 * 1024)) + " MiB", 16);
+                        label(localModels, model.optString("trustLabel"), 12);
+                        label(localModels, "取得元: " + model.optString("source"), 12).setTextIsSelectable(true);
+                        button(localModels, "Wi-Fiで取得・導入", () -> preparePublicModelInstall(model.optString("profileId")));
+                        button(localModels, "GGUFを選んで導入・読込み", () -> confirmModelImport(model, false));
+                        if (model.optBoolean("activeProfile")) {
+                            label(localModels, "設定済み。実行時には読込み状態とモデルの一致を再確認します。", 13);
+                            button(localModels, "保存済みモデルを再読込み", () -> confirmModelImport(model, true));
+                        }
+                    }
+                    localModelMessage.setText("モデル導入と仕事の実行承認は別です。起動時の自動読込みは行いません。");
+                });
+            } catch (Exception failure) {
+                runOnUiThread(() -> { if (!isDestroyed()) localModelMessage.setText("モデル情報を確認できません。ShellとBrokerの版・署名を確認してください。"); });
+            }
+        });
+    }
+
+    private void confirmModelImport(JSONObject model, boolean cached) {
+        if (modelImportBusy || modelImportProfileId != null) return;
+        String profileId = model.optString("profileId");
+        new AlertDialog.Builder(this).setTitle(cached ? "端末内モデルを再読込み" : "端末内モデルの導入")
+            .setMessage(model.optString("name") + "\n" + model.optString("licenseId") + "\n"
+                + model.optString("licenseUrl") + "\n約" + (model.optLong("bytes") / (1024 * 1024)) + " MiB\n"
+                + "ハッシュ: " + model.optString("sha256") + "\n"
+                + "内容を確認して利用条件に同意すると、検証・コピー・読込みを開始します。画面を閉じても処理は継続する場合があります。仕事の実行やクラウド送信はしません。")
+            .setNegativeButton("戻る", null).setPositiveButton("同意して進む", (dialog, which) -> {
+                if (cached) { runModelImport(profileId, null); return; }
+                modelImportProfileId = profileId;
+                try { startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
+                    .addCategory(Intent.CATEGORY_OPENABLE), OPEN_MODEL_DOCUMENT); }
+                catch (Exception unavailable) { modelImportProfileId = null; localModelMessage.setText("ファイル選択を開けませんでした。"); }
+            }).show();
+    }
+
+    private void runModelImport(String profileId, Uri uri) {
+        if (modelImportBusy) return;
+        modelImportBusy = true;
+        localModelMessage.setText("モデルの署名・容量・ハッシュを検証し、端末内へ読み込んでいます…");
+        worker.execute(() -> {
+            String result;
+            try (ParcelFileDescriptor descriptor = uri == null ? null : getContentResolver().openFileDescriptor(uri, "r")) {
+                ShellConnection connection = new ShellConnection(this);
+                if (uri != null && descriptor == null) throw new java.io.IOException("MODEL_FILE_REQUIRED");
+                JSONObject response = new JSONObject(uri == null ? connection.reloadLocalModel(profileId, true)
+                    : connection.importLocalModel(profileId, descriptor, true));
+                result = "ready".equals(response.optString("status"))
+                    ? "端末内モデルを読み込みました。ホームで「端末内LLM」を選び、依頼を準備できます。"
+                    : "導入できませんでした（" + response.optString("code", "MODEL_IMPORT_FAILED")
+                        + "）。対応GGUF・空き容量・端末のロック状態を確認してください。保存済みの仕事は残っています。";
+            } catch (Exception failure) {
+                result = "導入結果を確認できません。モデル状態を確認し、同じモデルを明示して再読込みしてください。保存済みの仕事は残っています。";
+            }
+            String text = result;
+            runOnUiThread(() -> {
+                modelImportBusy = false;
+                if (!isDestroyed()) { localModelMessage.setText(text); checkLocalAi(); }
+            });
         });
     }
 
@@ -2169,16 +3067,20 @@ public final class MainActivity extends Activity {
         final String selectionToken = skySelectionToken;
         final boolean allowed = zemaConsent.isChecked();
         if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
-        if (selectionToken == null) { message.setText("先にSkyで使用するToolを選択してください。"); return; }
         if (!allowed) { message.setText("端末内での処理と保存への同意を確認してください。"); return; }
+        final String modelDigest = preparedModelDigest;
+        if (modelDigest == null || !prompt.equals(preparedModelPrompt)) {
+            message.setText("使うモデルを確認しています。モデル名が表示された後に同意して開始してください。"); return;
+        }
         final LocalSubmission.Attempt attempt = beginSubmission(zemaSubmission, zemaSubmitButton,
-            LocalSubmission.fingerprint("zema", selectionToken, prompt, "[]", Boolean.toString(allowed)));
+            LocalSubmission.fingerprint("zema", selectionToken == null ? "local-draft" : selectionToken, prompt, "[]", modelDigest, Boolean.toString(allowed)));
         if (attempt == null) return;
-        message.setText("Zemaが端末内で計画しています…");
+        message.setText("JenniferがこのPixelで計画しています。まだToolは実行していません…");
+        zemaStopButton.setVisibility(View.VISIBLE);
         worker.execute(() -> {
             try {
-                JSONObject response = new JSONObject(new ShellConnection(this).submitZema(
-                    attempt.requestId, selectionToken, prompt, "[]", allowed));
+                JSONObject response = new JSONObject(new ShellConnection(this).submitZemaSelected(
+                    attempt.requestId, selectionToken, prompt, "[]", modelDigest, allowed));
                 String status = response.getString("status");
                 String workId = response.isNull("workId") ? null : response.getString("workId");
                 String code = response.isNull("code") ? null : response.getString("code");
@@ -2187,7 +3089,8 @@ public final class MainActivity extends Activity {
                 runOnUiThread(() -> {
                     if (isDestroyed() || !finishSubmission(zemaSubmission, attempt, known, zemaSubmitButton, zemaRecoveryButton)) return;
                     if (queued) {
-                        message.setText("Zemaが仕事を保存しました: " + workId.substring(0, 8));
+                        workComposer.setVisibility(View.GONE); focusedWorkId = workId; renderedWorkState = null;
+                        message.setText("依頼を受け付けました。仕事で進み具合を確認できます。"); scrollPageTop(2);
                         perform(connection -> null);
                     } else message.setText(known ? zemaBlockedMessage(code) : uncertainSubmissionMessage());
                 });
@@ -2218,7 +3121,7 @@ public final class MainActivity extends Activity {
                     if (!validLocalWorkId(workId)) throw new IllegalStateException("INVALID_WORK_RESPONSE");
                     runOnUiThread(() -> {
                         if (isDestroyed() || !finishSubmission(articleSubmission, attempt, true, articleSubmitButton, articleRecoveryButton)) return;
-                        message.setText("仕事を保存しました: " + workId.substring(0, 8));
+                        message.setText("依頼を保存しました。進み具合を仕事で確認できます。"); focusedWorkId = workId; renderedWorkState = null;
                         perform(connection -> null);
                     });
                 } catch (Exception failure) {
@@ -2279,7 +3182,8 @@ public final class MainActivity extends Activity {
             message.setText(uncertainSubmissionMessage());
             return false;
         } finally {
-            submit.setEnabled(!guard.inFlight());
+            submit.setEnabled(!guard.inFlight() && (guard != zemaSubmission || preparedModelDigest != null));
+            if (guard == zemaSubmission) zemaStopButton.setVisibility(guard.inFlight() ? View.VISIBLE : View.GONE);
             updateSubmissionRecovery(guard, recovery);
         }
     }
@@ -2330,6 +3234,10 @@ public final class MainActivity extends Activity {
     }
 
     private static String zemaBlockedMessage(String code) {
+        if ("MODEL_SELECTION_REQUIRED".equals(code) || "MODEL_SELECTION_CHANGED".equals(code)) return "開始していません。使うモデルをもう一度確認し、同意して実行してください。";
+        if ("MODEL_SELECTION_SETUP_REQUIRED".equals(code)) return "開始していません。Skyで選んだモデルを導入してください。";
+        if ("MODEL_PROFILE_SWITCH_HAS_PINNED_WORK".equals(code)) return "開始していません。進行中の仕事や計画の保持が解除されてからモデルを切り替えられます。";
+        if ("LOCAL_EXECUTION_PAUSED".equals(code)) return "停止しました。この計画からToolを開始していません。再開後に新しく依頼してください。";
         if ("DENIED".equals(code)) return "開始していません。保存への同意を確認してください。";
         if ("SKY_SELECTION_REQUIRED".equals(code)) return "開始していません。SkyのTool選択を更新してください。";
         if ("INVALID_PLAN".equals(code)) return "開始していません。端末内siの計画が安全確認を通りませんでした。";
@@ -2357,41 +3265,216 @@ public final class MainActivity extends Activity {
         } else recoveryStatus.setText("復元用24単語: 未設定");
     }
 
-    private void render(JSONArray workItems) {
-        jobs.removeAllViews(); label(jobs, "最近の仕事", 22);
-        int visibleJobs = 0;
-        for (int index = 0; index < workItems.length(); index++) {
-            JSONObject work = workItems.optJSONObject(index);
-            if (work == null) continue;
-            String id = work.optString("id"), state = work.optString("state");
-            // Old cancelled test runs are developer history, not user work.
-            if ("cancelled".equals(state)) continue;
-            visibleJobs++;
-            LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
-            card.setPadding(16, 14, 16, 14); card.setBackground(background(Color.rgb(19, 28, 36), Color.rgb(48, 66, 80), 14)); jobs.addView(card);
-            label(card, friendlyState(state), 18);
-            JSONArray runs = work.optJSONArray("runs");
-            int succeeded = 0, total = runs == null ? 0 : runs.length();
-            if (runs != null) for (int runIndex = 0; runIndex < runs.length(); runIndex++) {
-                JSONObject run = runs.optJSONObject(runIndex); if (run != null && "succeeded".equals(run.optString("state"))) succeeded++;
-            }
-            if (total > 0) label(card, succeeded + " / " + total + " 工程が完了", 16);
-            if (state.equals("review") || state.equals("completed")) {
-                TextView artifact = label(card, "", 16); artifact.setTextIsSelectable(true);
-                button(card, "成果物を表示", () -> worker.execute(() -> {
-                    try { String output = new ShellConnection(this).result(id); runOnUiThread(() -> artifact.setText(output)); }
-                    catch (Exception error) { runOnUiThread(() -> artifact.setText("成果物の整合性を確認できません。")); }
-                }));
-            }
-            if (state.equals("review")) {
-                EditText note = new EditText(this); note.setHint("確認メモ（任意）"); note.setTextColor(Color.WHITE); note.setHintTextColor(Color.rgb(146, 161, 174));
-                note.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12)); note.setPadding(16, 14, 16, 14); card.addView(note);
-                button(card, "確認して完了", () -> { String value = note.getText().toString(); perform(connection -> { connection.complete(id, value); return null; }); });
-            }
-            if (state.equals("active") && !work.optBoolean("sample"))
-                button(card, "失敗した工程だけを再試行", () -> perform(connection -> { connection.retry(id); return null; }));
+    private void scrollPageTop(int page) {
+        View parent = (View) pageContent[page].getParent();
+        if (parent instanceof ScrollView) parent.post(() -> ((ScrollView) parent).smoothScrollTo(0, 0));
+    }
+
+    private void navigateBack() {
+        if (selectedPage == 2 && focusedWorkId != null) {
+            focusedWorkId = null; renderedWorkState = null; render(latestWorks); scrollPageTop(2);
+        } else selectPage(0);
+    }
+
+    private void openWork(String id) {
+        if (!WorkPresentation.validId(id)) return;
+        focusedWorkId = id; renderedWorkState = null; workComposer.setVisibility(View.GONE);
+        selectPage(2); render(latestWorks); scrollPageTop(2);
+        getSystemService(android.app.NotificationManager.class).cancel(id, 1);
+    }
+
+    private void openNotificationIntent(Intent intent) {
+        if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction())) return;
+        String id = intent.getStringExtra(WorkNotifications.EXTRA_WORK_ID);
+        if (WorkPresentation.validId(id)) { openWork(id); perform(connection -> null); }
+        // Navigation is the only effect. Unknown or external IDs never call submit/approve/retry.
+    }
+
+    private void updateNotificationStatus() {
+        if (notificationStatus == null) return;
+        notificationStatus.setText(WorkNotifications.enabled(this)
+            ? "通知はオンです。確認待ち・対応が必要な仕事をお知らせします。原稿は通知に表示しません。"
+            : "通知はオフです。通知がなくても、仕事は画面から確認できます。");
+    }
+
+    private void enableWorkNotifications() {
+        if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATIONS); return;
         }
-        if (visibleJobs == 0) label(jobs, "まだ仕事はありません。ここから実行できます。", 16);
+        if (!getSystemService(android.app.NotificationManager.class).areNotificationsEnabled()) {
+            notificationStatus.setText("Android側で通知がオフです。「通知の種類・音を変更」から許可してください。"); return;
+        }
+        notificationStatus.setText("通知の開始状態を確認しています…");
+        final String enableRequest = UUID.randomUUID().toString();
+        WorkNotifications.preferences(this).edit().putString("enableRequest", enableRequest).commit();
+        worker.execute(() -> {
+            try {
+                JSONObject snapshot = new JSONObject(new ShellConnection(this).snapshot());
+                WorkNotifications.sync(this, snapshot, null, true); // No burst of old notifications.
+                WorkNotifications.activate(this, enableRequest);
+                runOnUiThread(() -> { if (!isDestroyed()) updateNotificationStatus(); });
+            } catch (Exception unavailable) {
+                runOnUiThread(() -> { if (!isDestroyed()) notificationStatus.setText("仕事の状態を確認できません。通知を開始せず、再試行を待っています。"); });
+            }
+        });
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) enableWorkNotifications();
+            else updateNotificationStatus();
+        }
+    }
+
+    private static boolean failedRuns(JSONObject work) {
+        JSONArray runs = work.optJSONArray("runs");
+        if (runs != null) for (int i = 0; i < runs.length(); i++) {
+            String state = runs.optJSONObject(i).optString("state");
+            if ("failed".equals(state) || "needs_review".equals(state)) return true;
+        }
+        return false;
+    }
+
+    private void render(JSONArray workItems) {
+        latestWorks = workItems;
+        boolean detail = focusedWorkId != null;
+        workOverview.setVisibility(detail ? View.GONE : View.VISIBLE);
+        workFilters.setVisibility(detail ? View.GONE : View.VISIBLE);
+        newWorkButton.setVisibility(detail ? View.GONE : View.VISIBLE);
+        pauseWorkButton.setVisibility(detail ? View.GONE : View.VISIBLE);
+        String stateKey = workItems.toString() + workFilter + focusedWorkId + localWorkPaused;
+        if (stateKey.equals(renderedWorkState)) return;
+        renderedWorkState = stateKey; jobs.removeAllViews();
+        if (focusedWorkId != null) {
+            button(jobs, "‹ 仕事の一覧へ", () -> { focusedWorkId = null; renderedWorkState = null; render(latestWorks); scrollPageTop(2); });
+            for (int i = 0; i < workItems.length(); i++) {
+                JSONObject work = workItems.optJSONObject(i);
+                if (work != null && focusedWorkId.equals(work.optString("id"))) { renderWorkDetail(work); return; }
+            }
+            label(jobs, "この仕事は表示範囲にありません。最新の状態を更新するか、一覧から確認してください。", 15);
+            return;
+        }
+        label(jobs, "確認待ちの仕事から表示", 14);
+        java.util.List<JSONObject> ordered = new ArrayList<>();
+        for (int i = 0; i < workItems.length(); i++) {
+            JSONObject work = workItems.optJSONObject(i);
+            if (work != null && WorkPresentation.matches(workFilter, work.optString("state"))) ordered.add(work);
+        }
+        ordered.sort(java.util.Comparator.comparingInt(work -> WorkPresentation.priority(work.optString("state"), failedRuns(work))));
+        for (JSONObject work : ordered) {
+            String id = work.optString("id"), state = work.optString("state");
+            if (!WorkPresentation.validId(id)) continue;
+            boolean failed = failedRuns(work);
+            LinearLayout card = ui.card(jobs); card.setTag("work-card-" + id);
+            ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : "review".equals(state) ? ShellUi.ACCENT : ShellUi.SUCCESS);
+            label(card, work.optString("title", "端末内siの仕事") + (work.optBoolean("sample") ? " · サンプル" : ""), 21);
+            label(card, "仕事 " + id.substring(0, 8), 12);
+            workProgress(card, work);
+            String action = failed ? "止まっている工程を確認" : "review".equals(state) ? "成果を確認する"
+                : "completed".equals(state) ? "保存した成果を開く" : "cancelled".equals(state) ? "中止した記録を見る" : "進み具合を見る";
+            Button open = button(card, action, () -> openWork(id));
+            if ("review".equals(state) || failed) ui.primary(open);
+        }
+        if (ordered.isEmpty()) label(jobs, "review".equals(workFilter) ? "確認待ちの仕事はありません。" : "active".equals(workFilter)
+            ? "進行中の仕事はありません。" : "まだ仕事はありません。「新しい依頼」から始めましょう。", 16);
+    }
+
+    private int workProgress(LinearLayout card, JSONObject work) {
+        JSONArray runs = work.optJSONArray("runs"); int succeeded = 0, total = runs == null ? 0 : runs.length();
+        if (runs != null) for (int i = 0; i < runs.length(); i++) if ("succeeded".equals(runs.optJSONObject(i).optString("state"))) succeeded++;
+        JSONObject ideaProgress = work.optJSONObject("ideaProgress");
+        if (ideaProgress != null) label(card, "アイデア " + ideaProgress.optInt("completed") + " / " + ideaProgress.optInt("target") + " 件を保存", 16);
+        if (total > 0) {
+            label(card, succeeded + " / " + total + " 工程が完了", 14);
+            android.widget.ProgressBar bar = new android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+            bar.setMax(total); bar.setProgress(succeeded); bar.setProgressTintList(android.content.res.ColorStateList.valueOf(ShellUi.ACCENT));
+            bar.setContentDescription(total + "工程中" + succeeded + "工程が完了"); card.addView(bar, new LinearLayout.LayoutParams(-1, ui.dp(6)));
+        }
+        return succeeded;
+    }
+
+    private void renderWorkDetail(JSONObject work) {
+        String id = work.optString("id"), state = work.optString("state"); boolean failed = failedRuns(work);
+        LinearLayout card = ui.card(jobs); card.setTag("work-detail-" + id);
+        ui.badge(card, WorkPresentation.state(state, failed, localWorkPaused), failed ? ShellUi.WARNING : ShellUi.ACCENT);
+        label(card, work.optString("title", "端末内siの仕事"), 24);
+        JSONObject agent=work.optJSONObject("agent");if(agent!=null)label(card,"Agent: "+agent.optString("name")+"\n"+agent.optString("source")+(agent.optJSONArray("tools")!=null&&agent.optJSONArray("tools").length()>0?"\n使用Tool: "+agent.optJSONArray("tools"):""),12);
+        int succeeded = workProgress(card, work);
+        JSONArray runs = work.optJSONArray("runs"); int total = runs == null ? 0 : runs.length();
+        boolean hasArtifact = ("review".equals(state) || "completed".equals(state)) && !failed && total > 0 && succeeded == total;
+        String hint = failed ? "途中で進められない工程があります。成功した工程はやり直しません。"
+            : "review".equals(state) ? "成果ができました。内容を読んでから、確認メモを残してください。"
+            : "completed".equals(state) ? "確認した成果は保存されています。いつでも表示・持出しできます。"
+            : "cancelled".equals(state) ? "この仕事は中止しています。これまでの記録は残っています。"
+            : localWorkPaused ? "端末の実行は一時停止中です。再開は一覧のボタンから行えます。"
+            : "端末内で進めています。待機中の工程は充電中に実行します。画面を離れても保存した仕事は残ります。";
+        label(card, hint, 15);
+        if (failed && runs != null) for (int i=0;i<runs.length();i++) {
+            JSONObject run = runs.optJSONObject(i);
+            if (java.util.Set.of("failed", "needs_review").contains(run.optString("state"))) {
+                label(card, WorkPresentation.issue(run.optString("error")), 14); break;
+            }
+        }
+        if (hasArtifact) {
+            label(card, "成果物", 18);
+            TextView artifact = label(card, "読み込んでいます…", 16); artifact.setTextIsSelectable(true); artifact.setMaxLines(12);
+            Runnable load = () -> worker.execute(() -> {
+                try {
+                    String output = new ShellConnection(this).result(id);
+                    runOnUiThread(() -> { if (!isDestroyed() && id.equals(focusedWorkId)) artifact.setText(output); });
+                } catch (Exception unavailable) { runOnUiThread(() -> artifact.setText("成果物を読み込めません。もう一度表示してください。元の記録は残っています。")); }
+            });
+            load.run();
+            Button expand = button(card, "全文を表示", () -> {});
+            expand.setOnClickListener(view -> {
+                boolean collapsed = artifact.getMaxLines() == 12;
+                artifact.setMaxLines(collapsed ? Integer.MAX_VALUE : 12); expand.setText(collapsed ? "短く表示" : "全文を表示");
+            });
+            button(card, "ファイルに保存", () -> {
+                artifactExportWorkId = id;
+                try { startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("text/markdown")
+                    .addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE, "rockstaros-" + id.substring(0, 8) + ".md"), CREATE_ARTIFACT_DOCUMENT); }
+                catch (android.content.ActivityNotFoundException unavailable) { artifactExportWorkId = null; message.setText("保存先を選ぶアプリを利用できません。"); }
+            });
+            if ("review".equals(state)) {
+                EditText note = field(card, "確認メモ（必須）", reviewDrafts.getOrDefault(id, ""), false);
+                note.setSaveEnabled(false);
+                note.addTextChangedListener(new android.text.TextWatcher() {
+                    public void beforeTextChanged(CharSequence value, int start, int count, int after) { }
+                    public void onTextChanged(CharSequence value, int start, int before, int count) { reviewDrafts.put(id, value.toString()); }
+                    public void afterTextChanged(android.text.Editable value) { }
+                });
+                Button complete = button(card, "確認して完了", () -> {
+                    String value = note.getText().toString();
+                    if (value.trim().isEmpty()) { note.setError("確認した内容を入力してください"); return; }
+                    perform(connection -> { connection.complete(id, value); return null; });
+                }); ui.primary(complete);
+            }
+        }
+        if ("active".equals(state) || "review".equals(state)) button(card, "この仕事を中止", () ->
+            new AlertDialog.Builder(this).setTitle("この仕事を中止しますか？")
+                .setMessage("この端末の仕事だけを中止します。保存した記録は残ります。クラウドの仕事は取り消しません。")
+                .setNegativeButton("続ける", null).setPositiveButton("中止する", (dialog, which) -> perform(connection -> { connection.cancel(id); return null; })).show());
+        if ("active".equals(state) && failed && !work.optBoolean("sample")) {
+            JSONObject progress=work.optJSONObject("ideaProgress");
+            if(progress!=null && progress.optBoolean("compactResumeAvailable")) {
+                String label=progress.optInt("completed")+"件を残して続ける";String digest=progress.optString("checkpointDigest");
+                ui.primary(button(card,label,() -> new AlertDialog.Builder(this).setTitle("保存した案を残して続けますか？")
+                    .setMessage("保存済み"+progress.optInt("completed")+"件と同じモデルを保ち、指示を短くして次の工程から再開します。")
+                    .setNegativeButton("戻る",null).setPositiveButton("続ける",(dialog,which) -> perform(connection -> {connection.compactReplanIdeas(id,digest,true);return null;})).show()));
+            } else ui.primary(button(card, "止まった工程を再試行", () -> perform(connection -> { connection.retry(id); return null; })));
+        }
+        LinearLayout technical = disclosure(card, "工程と詳細");
+        label(technical, "仕事ID: " + id, 12);
+        JSONObject planner = work.optJSONObject("planner");
+        label(technical, planner == null ? "端末内Tool · モデル不使用" : "Jennifer · " + planner.optString("profileId"), 12);
+        if (runs != null) for (int i = 0; i < runs.length(); i++) {
+            JSONObject run = runs.optJSONObject(i); String step = run.optString("state");
+            String label = "succeeded".equals(step) ? "完了" : "running".equals(step) ? "実行中"
+                : "failed".equals(step) || "needs_review".equals(step) ? "対応が必要" : "cancelled".equals(step) ? "中止" : "待機中";
+            label(technical, (i + 1) + ". " + WorkPresentation.stageLabel(run.optString("tool")) + " · " + label, 14);
+        }
     }
 
     private static String friendlyState(String state) {
@@ -2406,14 +3489,19 @@ public final class MainActivity extends Activity {
 
     @Override public void onDestroy() {
         activityResumed = false;
+        mainHandler.removeCallbacks(refreshModelChoice);
+        localTaskHandler.removeCallbacks(localTaskRefresh);
         stopObservingCloudReconnect();
         deviceLinkHandler.removeCallbacks(deviceLinkPoll);
         cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
         recoverySetupToken = null; restorePhraseForPicker = null;
+        artifactExportWorkId = null; reviewDrafts.clear();
         clearDeviceCapabilityExpiry();
         if (recoveryPhraseView != null) recoveryPhraseView.setText("");
         if (recoveryPhraseInput != null) recoveryPhraseInput.setText("");
-        worker.shutdownNow(); super.onDestroy();
+        if (voice != null) voice.close();
+        if (backToHomeRegistered) getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backToHome);
+        controlWorker.shutdownNow(); worker.shutdownNow(); super.onDestroy();
     }
     private interface Action { Object run(ShellConnection connection) throws Exception; }
 }

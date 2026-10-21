@@ -1,0 +1,483 @@
+{
+  "schema": "rock-pixel-local-jennifer/1",
+  "date": "2026-10-17",
+  "taskId": "OS11",
+  "primarySquad": "O6",
+  "primaryOwner": "ROCK",
+  "status": "physical_pipeline_pass_content_quality_pending",
+  "authority": "docs/native-os-integration.md#pixel-local-jennifer",
+  "baseMainSha": "0d39fddc591befa79ccde97632687a9e322cb49d",
+  "baseSameShaSuccessfulChecks": 6,
+  "branch": "codex/pixel-local-inference-20261017",
+  "userRequest": "Install a local LLM and connect Pixel Jennifer planning to real Tools and an artifact; verify on the physical device",
+  "physical": {
+    "initialAdbDeviceCount": 0,
+    "ownerReply": "実機接続できた (2026-10-17)",
+    "newApkInstalled": true,
+    "realV4InferenceRun": true,
+    "realToolArtifactFromThisModelObserved": true,
+    "deviceRebootTested": false,
+    "defaultHomeChanged": false,
+    "deviceSerialStored": false,
+    "modelTransferred": true,
+    "connectionLostAfterInstallation": true,
+    "installationDate": "2026-10-17",
+    "installedCandidateSourceSha": "6c9a30830e3b07e49de29902ec63f2d9abb5515c",
+    "allSixInstallCommandsSucceeded": true,
+    "previousFourApksBackedUpWithMatchingSigner": true,
+    "modelTransferBytes": 639446688,
+    "inferenceStarted": true,
+    "reconnectedAfterOwnerAllowedDebugging": true,
+    "installedFourApkByteReadback": "all_four_match_frozen_candidate",
+    "deviceGgufSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+    "initialAttempt": {
+      "modelImportAndLoad": "pass",
+      "planning": "LOCAL_AI_PLAN_FAILED",
+      "toolsExecuted": false,
+      "repeatImport": "INVALID_LOCAL_AI_STATUS",
+      "uiFilePicker": "operated_import_failed_due_to_invalid_runtime_status"
+    },
+    "runtimeCorrection": "Broker-loaded hash planning without standalone repository lookup; cold-start clears profile ID as well as hash/bytes",
+    "fixedRuntimeAccepted": true,
+    "uiFilePickerImport": "passed_after_runtime_fix",
+    "contentQuality": "0.6B failed; 1.5B is on topic but too sparse and misses requested structure/source disclaimer; general quality unaccepted",
+    "stopAcceptance": {
+      "actualRuntimeBusyObserved": true,
+      "stopThenResume": true,
+      "lateWorkCreated": false,
+      "runtimeReadyAfterStop": true,
+      "stopMillis": 6,
+      "runtimeReadyWaitMillis": 28785,
+      "workCountBefore": 5,
+      "workCountAfter": 5
+    },
+    "modelSwitchGate": "existing reservation expiry respected; explicit 1.5B activation",
+    "previous15bPipeline": {
+      "receipt": {
+        "workId": "44dad0e7-0112-3158-b891-9796606ec88d",
+        "profileId": "dev.rock.qwen25-15b-q4km",
+        "weightsSha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+        "artifactSha256": "ad4ae4843c53343312623d42265267214a8f41d2579224378dd8209fb5a56dd0",
+        "stepsSucceeded": 2,
+        "reviewRequired": true,
+        "deviceRebootAccepted": false
+      },
+      "seconds": 80.811,
+      "savedArtifactReadbackPassed": true,
+      "artifactBytes": 389,
+      "sameCurrentCompactPromptApk": false,
+      "scope": "Functional trial before the latest prompt reduction; not final-candidate acceptance"
+    },
+    "currentCompactCandidatePhysicalAccepted": true,
+    "ownerScreenUnlockRequired": false,
+    "screenLockObserved": true,
+    "finalHomeTrial": {
+      "seconds": 64.625,
+      "screenUnlocked": true,
+      "testWindowKeptAwake": true,
+      "receipt": {
+        "workId": "2bfefd11-a0a9-358f-8262-216b13f52d6d",
+        "state": "review",
+        "draftPreparationCreatedNoWork": true,
+        "explicitConsent": true,
+        "doubleTapCreatedOneWork": true,
+        "bytes": 395,
+        "humanReviewAccepted": false
+      },
+      "artifactSha256": "f6e93a0d60b746aaa97b4a571dfa968b13522f089dc7ff50374956c9c58ac0aa",
+      "profileId": "dev.rock.qwen25-15b-q4km",
+      "log": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/physical-ui-awake-frozen.log",
+      "contentAcceptance": "topic_match_and_non_example_only; inadequate requested structure and source disclaimer",
+      "humanReviewAccepted": false,
+      "systemExportAccepted": true,
+      "processReadbackAccepted": true,
+      "systemExportSameBytes": true,
+      "systemExportBytes": 395,
+      "processReadbackReceipt": {
+        "mode": "existing_artifact_readback_only",
+        "workId": "2bfefd11-a0a9-358f-8262-216b13f52d6d",
+        "profileId": "dev.rock.qwen25-15b-q4km",
+        "artifactSha256": "f6e93a0d60b746aaa97b4a571dfa968b13522f089dc7ff50374956c9c58ac0aa",
+        "artifactBytes": 395,
+        "deviceReboot": false
+      },
+      "uiArtifactDisplayed": true,
+      "contentLimitationCause": {
+        "verifiedSource": "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java + android/core/src/main/java/dev/rock/core/ArticleTools.java",
+        "known": "Planner asks for afterChars=1; free-article@1 intentionally truncates the body and requires a paid remainder. Visible artifact cannot establish the full raw model draft quality.",
+        "next": "Separate raw model draft quality from the existing paid-excerpt Tool output; choose a suitable existing draft-output contract before claiming full requested article acceptance."
+      }
+    }
+  },
+  "implementation": {
+    "scope": "one catalog-pinned model and one existing article-preparation recipe; not full native Goal/AMC orchestration",
+    "privateShellApi": 19,
+    "platformComponentApi": 1,
+    "localRuntimeBinderApi": 4,
+    "runtimePackage": "com.localactionassistant",
+    "runtimeVersionCode": 3,
+    "productionCatalogEmpty": true,
+    "automaticWeightDownload": false,
+    "automaticReload": false,
+    "cloudFallback": false,
+    "ownerLicenseAndExecutionConsentsSeparate": true,
+    "stopFencesLatePlanningAfterResume": true,
+    "modelBytesCopiedByReadOnlyDescriptor": true
+  },
+  "model": {
+    "source": {
+      "repository": "Qwen/Qwen3-0.6B-GGUF",
+      "revision": "23749fefcc72300e3a2ad315e1317431b06b590a",
+      "file": {
+        "rfilename": "Qwen3-0.6B-Q8_0.gguf",
+        "blobId": "11bf194c8059f3b03e4454376ac67813a1e0eb52",
+        "size": 639446688,
+        "lfs": {
+          "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+          "size": 639446688,
+          "pointerSize": 134
+        }
+      }
+    },
+    "profile": {
+      "profileId": "dev.rock.qwen3-06b-q8",
+      "version": 1,
+      "weightsSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+      "tokenizerSha256": "27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d",
+      "templateSha256": "57f1fd00f0013a2be96aa79b857391f27e23df5b5f847072b524c897e24d0361",
+      "licenseId": "Apache-2.0",
+      "publisherId": "dev.rock.preview",
+      "signingKeyId": "dev.rock.preview.20261016",
+      "runtimeComponentId": "org.rockstar.runtime.localai",
+      "runtimeVersionCode": 3,
+      "runtimeApiMin": 4,
+      "runtimeApiMax": 4,
+      "format": "GGUF",
+      "quantization": "Q8_0",
+      "contextTokens": 2048,
+      "planSchemaId": "article-preparation@1/input-v1",
+      "artifactBytes": 639446688,
+      "minRamBytes": 2147483648,
+      "manifestSignatureBase64Url": "zPyXxxJMXrALn1qWYLkZ0D_TnLXfzMcL1TPx-ATGz3iu9QSsoTC-DDcx_p1o0rs7TXTtuV2axGZj9TgSdOy0AQ"
+    },
+    "signatureAuthority": "Rock Developer Preview model-definition publisher, not Qwen authorship or OS signing",
+    "weightsInGit": false,
+    "privateKeyInGit": false,
+    "tokenizerDigestEncoding": "sorted-key compact UTF-8 JSON of GGUF tokenizer.* except tokenizer.chat_template",
+    "templateDigestEncoding": "UTF-8 GGUF tokenizer.chat_template",
+    "hostDownloadedLengthAndSha256Verified": true,
+    "license": "Apache-2.0",
+    "savedWeightPath": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/models/Qwen3-0.6B-Q8_0.gguf",
+    "comparisonCandidate": {
+      "repository": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+      "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+      "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "bytes": 1117320736,
+      "license": "Apache-2.0",
+      "tokenizerHashEncoding": "sorted-key UTF-8 compact JSON of tokenizer.* excluding tokenizer.chat_template",
+      "templateHashEncoding": "UTF-8 tokenizer.chat_template",
+      "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
+      "templateSha256": "d5495a1e5db0611132a97e46a65dbb64a642a499421228b9c8b93229097fa9a4",
+      "profileId": "dev.rock.qwen25-15b-q4km",
+      "qualityAccepted": false
+    }
+  },
+  "sources": [
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/LocalModelCatalog.java",
+      "sha256": "4f153e66c52f12f36e87ed1ed9dca85f46a47e4687c5e8fa557d0922df6b2274"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/LocalModelInstaller.java",
+      "sha256": "28c2de7c8f4882a12590377fe70a4077f16913a9fba617f0c903387a5484ca14"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/LocalPlanningFence.java",
+      "sha256": "a972c01828dc4af1749ddcd31381a5d97ba647c645ad01cfc9c84e40c1cdd85a"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+      "sha256": "9b606c2b98016e505e080f306c5c5b976d7dc4adcbf480eb80d056e28617cafc"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+      "sha256": "02ded9d38d0de3345e274c3dedb0c251fd480a82452719ab5dd396af67ca808c"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+      "sha256": "d51a10053d22d17cba7d79c9b94142c0686c8f2c6c37e287c0ed9b06d069e2e5"
+    },
+    {
+      "path": "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+      "sha256": "1cdfa4c4a57192296ffdb3644abcf23c6da4878ec2862f5db6f183146cfbae61"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "sha256": "77854f906eb8eb2c67c8f3bc65d60574c8a5eeda7e379e11b6b1fa7b1566e429"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
+      "sha256": "e384cab2a94d2bdf9d5a05239e5c75347e54588712232bf77d5fb7768de3895a"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/LocalSubmission.java",
+      "sha256": "b69586aea2a163157861056731b93317bf11faa93fddb89757b820ec7424650f"
+    },
+    {
+      "path": "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+      "sha256": "1d26842507c52b8e1d6decf49cb3ca5c4fd466095b7e5926226f24525cb9a19c"
+    },
+    {
+      "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+      "sha256": "e788f52ef730be2eaa7b8fa860df42e4c4353e2e3ed533a834fdb22a2a411bc9"
+    },
+    {
+      "path": "android/automation/src/main/assets/rock-local-model-catalog.json",
+      "sha256": "c7e5306554ec4499d2447f8c42927c8c1666b9bfbbc18960a8f7870d18300ce9"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/ComponentManifest.java",
+      "sha256": "fa0df55dc0312f55fea5b804034cc9e535f1339d68ebf1d554df963742e71581"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java",
+      "sha256": "b4e47c6661f37b4de340f069f2b9800b4b6f46a7c9492455afa947cf7e7268e4"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/RuntimeManifest.java",
+      "sha256": "6170911faf3b2b8b6fbcf421fbc0eecc6f723ed2d3bf24669e1cdbfef53c53b0"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+      "sha256": "e434c3098161837c12bb71e47df9dc478afaf95212c1dcbce3907c6d56b1e0fd"
+    },
+    {
+      "path": "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+      "sha256": "69b2d86ad1a54a06ce9ccb742fb84aea51f6103157a061ea41882d77a61a1116"
+    },
+    {
+      "path": "android/core/build.gradle",
+      "sha256": "f49747f0b5dd03088cca7619952d4dd6e51889e9dac6881851865f4187dd0f75"
+    },
+    {
+      "path": "android/Android.bp",
+      "sha256": "4af42552996733e09793f833ea0b5eec3590eab0255fe51618b48cad94c37a28"
+    },
+    {
+      "path": "os/physical/model-crypto-artifact-lock.json",
+      "sha256": "121a24db08d1ad62c9eabc4fca0bbc86fbbc7af5da04254f3e4bbc8cdc0fbe9a"
+    },
+    {
+      "path": "scripts/stage-model-crypto.py",
+      "sha256": "5323e154e933f0321df2dcce1dd257dbcec2d612ea16d5d15d5ee17d6d4c1fda"
+    },
+    {
+      "path": "scripts/build-phone-bringup.sh",
+      "sha256": "546dc76c69372c20fe79ae1d4594efb773c2e924dcd8864c7effba21fa472008"
+    }
+  ],
+  "verification": {
+    "hostBuildAndLint": "pass",
+    "hostTestCounts": {
+      "core": 123,
+      "automation": 38,
+      "shell": 11,
+      "toolSdk": 8
+    },
+    "hostTestsFailed": 0,
+    "hostTestsSkipped": 0,
+    "instrumentationApksCompiled": true,
+    "androidBuildLog": "/private/tmp/pixel-local-jennifer/android-crypto-final.log",
+    "fullVerify": "pass_all_stages",
+    "physicalInference": "pass_frozen_6c9a_Home_real_model_and_two_Tools",
+    "physicalOptInTest": "dev.rock.automation.LocalModelPlanningAcceptanceTest; requires rockPhysicalModelAcceptance=true; default skip is not inference acceptance",
+    "releaseApkCatalogInspection": "release empty; debug contains two signed model definitions",
+    "candidateApkSignatures": "all six frozen candidates match existing development certificate; installed four production APK bytes read back match",
+    "fullVerifyBeforeFinalIdentityGuard": "pass_all_stages; /private/tmp/pixel-local-jennifer/verify.log",
+    "fullVerifyLog": "/private/tmp/pixel-local-physical-20261017/verify-final-evidence.log",
+    "nodeTests": {
+      "tests": 2267,
+      "pass": 2266,
+      "fail": 0,
+      "skipped": 1,
+      "cancelled": 0
+    },
+    "repairs": [
+      "Separated Platform API v1 from actual Binder runtime API v4 and accepted the real two-segment Android package under existing identity gates",
+      "Android test helpers use compileSdk35-compatible byte read/write instead of unavailable Files.readString/writeString",
+      "Runtime/activation IPC clears and restores caller identity after the exact Shell gate",
+      "Rejected a different historical APK-lock hash; reused only the verified frozen CI payload and existing signed copy without changing OS artifact locks"
+    ],
+    "secretScanReview": {
+      "initialResult": "two generic-api-key detections of the same public tokenizerSha256 digest; not a private key",
+      "classification": "public GGUF metadata SHA-256",
+      "candidateSha256": "d130682d1942226b7eeb8dda0e3e5489c384e4685af1007ce0c383fcd7801e6d",
+      "exactPaths": [
+        "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "docs/evidence/pixel-local-jennifer.json"
+      ],
+      "scope": "one literal at two exact paths; scanner defaults and actual credential detection remain enabled",
+      "policy": ".github/spider/gitleaks.toml",
+      "provenance": ".github/spider/public-value-provenance.json",
+      "reviewedControlCommit": "75832b7b783d27d1ca32ad40c866fbc33e738b2b",
+      "realGitleaksRegressionTestsPassed": 16,
+      "reachableHistoryCandidatesAfterExactException": 0,
+      "log": "/private/tmp/pixel-local-jennifer/secrets-history.log"
+    },
+    "initialAndroidCiFailure": {
+      "head": "fb7067141326837d259cdd30015380e3acae4bcc",
+      "url": "https://github.com/k999ln/rock/actions/runs/38946258728",
+      "cause": "JCA Ed25519 selected AndroidKeyStore, which refused the software public X509 key",
+      "fix": "Pinned Bouncy Castle 1.86 lightweight Ed25519 verifier; no global provider registration or signature bypass"
+    },
+    "modelCryptoStagerAndPhoneTestsPassed": 23,
+    "modelCryptoPinnedJarStage": "pass_host_stage_and_verify_not_Soong_compile",
+    "fullVerifyBeforeSoftwareCrypto": "/private/tmp/pixel-local-jennifer/verify-final.log",
+    "securityAndStagerRegressionTestsPassed": 39,
+    "gitDiffCheck": "pass",
+    "sourcePreparationFixtureRepair": "Existing fake build-runner fixture now supplies the newly required crypto JAR input and staged receipt; real JAR hash verification remains in stage-model-crypto and Gradle",
+    "diagnosticTrials": [
+      "Initial readback command omitted 1.5B profile flag and failed expected-profile assertion; corrected explicit-profile command passed and produced fresh receipt",
+      "Earlier UI failures preceded awake fixed-candidate pass; observed auto-lock is not proof of the sole failure cause"
+    ]
+  },
+  "gitEvidence": {
+    "pullRequest": "https://github.com/k999ln/rock/pull/154",
+    "initialImplementationPullRequest": "https://github.com/k999ln/rock/pull/152",
+    "installationRecordPullRequest": "https://github.com/k999ln/rock/pull/153",
+    "mergedMain": "bf35f5f1592942dd0c22b4e3b8cd69cffaed4eea",
+    "note": "Keep new Sky 140 sandbox changes, phase gates and account/provider boundaries.",
+    "verifiedCodeHead": "6c9a30830e3b07e49de29902ec63f2d9abb5515c",
+    "verifiedCodeHeadSuccessfulChecks": 11,
+    "codeMerged": true,
+    "evidenceBranch": "codex/pixel-physical-evidence-20261017",
+    "evidenceMerged": false
+  },
+  "remaining": [
+    "1.5B generated draft misses requested introduction/three-step/source-disclaimer structure; general content quality remains unaccepted",
+    "0.6B stop acknowledgement 6ms, native ready wait 28.785s; 1.5B native stop latency not accepted",
+    "Owner feedback: visual design, notifications and job interaction need redesign; recorded, not implemented",
+    "Device reboot, Japanese voice, production model catalog, full native Goal/AMC and full OS remain unaccepted"
+  ],
+  "boundaries": {
+    "osFlash": false,
+    "osSigningKeyGenerated": false,
+    "paidCloudOrBillingEnabled": false,
+    "externalAccountOrServiceCreated": false,
+    "untrustedModelResultGrantsPermissions": false
+  },
+  "runtimeArtifact": {
+    "ci": {
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "ff0518c715d3c1cd8a143e0f7e665d78e3460a70",
+      "url": "https://github.com/k999ln/rock/actions/runs/39043256663"
+    },
+    "unsignedSha256": "2da4a1d7da4ad2bfa5a7544a8d9e3650b9826eaae4f5608715eed050e4a3dff9",
+    "signedSha256": "19a8cd67d7d84960326e01c67c8bb1b151111c9be3bbda369c5c68ec8cc097b4",
+    "pinnedSourceAndAllOverlaysMatch": true,
+    "signedPayloadEntriesUnchanged": true,
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "artifactLockUpdatedToInspectedFiveOverlayBuild": true,
+    "signingPerformedThisTurn": true,
+    "osSigningKeyGenerated": false
+  },
+  "cryptoArtifact": {
+    "schema": "rock-model-crypto-artifact/1",
+    "library": "Bouncy Castle lightweight Ed25519 verifier",
+    "coordinate": "org.bouncycastle:bcprov-jdk15to18:1.86",
+    "version": "1.86",
+    "license": "MIT",
+    "url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.86/bcprov-jdk15to18-1.86.jar",
+    "sha256": "fc50334d4d87b4272e72fa95ca748ead05bdef02ef760a5b13f64ffee317cd81",
+    "bytes": 7177698,
+    "moduleName": "rock-model-crypto",
+    "stagingPath": "vendor/rockstaros-model-crypto",
+    "verificationScope": "Same pinned library for Gradle APK and full-OS Soong source; no global JCA provider registration",
+    "licenseNoticeSha256": "782703fcd39c06fcfba0e23d1cdc65c3f219d58b5a5ffa632a5b37008cfec956",
+    "globalProviderRegistration": false
+  },
+  "priorCandidateApks": {
+    "automation-debug.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/automation-debug.apk",
+      "bytes": 6829809,
+      "sha256": "2e49283df191cd7b0bfdf5bf3ac6c91114b32591c67e4528643709998efb0de0",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "shell-debug.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/shell-debug.apk",
+      "bytes": 561943,
+      "sha256": "885c5a408391da4e6a5886fc8f03b227b7a234630f001c8c17c0b3566ca93069",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "shell-debug-androidTest.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/shell-debug-androidTest.apk",
+      "bytes": 4519789,
+      "sha256": "017805555c8023f2c7b35503d1477f777e28491d0f877bd8c17ac094797e09f3",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "automation-debug-androidTest.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/automation-debug-androidTest.apk",
+      "bytes": 4581249,
+      "sha256": "d26b72fc295ea8147967ebae0bb8bb390180c10e6d90b0c6b9a53aa676395724",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "article-tool-debug.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/article-tool-debug.apk",
+      "bytes": 6372620,
+      "sha256": "79461ab59d58e65a0b761d9a545d0988451273c43835fa3b5fbe1eebc90b55b8",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    },
+    "local-ai-v4-preview.apk": {
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-jennifer-20261016/candidate/local-ai-v4-preview.apk",
+      "bytes": 26461851,
+      "sha256": "d197b5fbfc252ae41e51eeadd20d7188a8ab360962b005c91bd9580cf4bde242",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810"
+    }
+  },
+  "candidateApks": {
+    "automation-debug.apk": {
+      "file": "automation-debug.apk",
+      "bytes": 7052033,
+      "sha256": "cf6a94a9002b8f824e7125860aa2b634a0671b0e402c57a5388174e631da132b",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/automation-debug.apk"
+    },
+    "automation-debug-androidTest.apk": {
+      "file": "automation-debug-androidTest.apk",
+      "bytes": 4587933,
+      "sha256": "97185e412c2b328730af7d6b38ed1edbd3942da4f1a563ac3bff398fcf12e032",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/automation-debug-androidTest.apk"
+    },
+    "shell-debug-androidTest.apk": {
+      "file": "shell-debug-androidTest.apk",
+      "bytes": 4526649,
+      "sha256": "0e6debd68c1d6b5600f2d88c75fa9d1d395d98237e880ec2b6a03abdc22a8a66",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/shell-debug-androidTest.apk"
+    },
+    "shell-debug.apk": {
+      "file": "shell-debug.apk",
+      "bytes": 561943,
+      "sha256": "885c5a408391da4e6a5886fc8f03b227b7a234630f001c8c17c0b3566ca93069",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/shell-debug.apk"
+    },
+    "article-tool-debug.apk": {
+      "file": "article-tool-debug.apk",
+      "bytes": 6372620,
+      "sha256": "79461ab59d58e65a0b761d9a545d0988451273c43835fa3b5fbe1eebc90b55b8",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/article-tool-debug.apk"
+    },
+    "local-ai-v4-loaded-profile.apk": {
+      "file": "local-ai-v4-loaded-profile.apk",
+      "bytes": 26461851,
+      "sha256": "19a8cd67d7d84960326e01c67c8bb1b151111c9be3bbda369c5c68ec8cc097b4",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "path": "/Users/kaiya/Library/RockstarOS/pixel-local-physical-20261017/final-candidate/local-ai-v4-loaded-profile.apk"
+    }
+  }
+}

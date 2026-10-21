@@ -150,7 +150,7 @@ public final class ShellBrokerIntegrationTest {
         selectedArticleTool(broker);
         int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(), "This must not reach Local AI.", "[]", true));
+            UUID.randomUUID().toString(), "Article preparation: this must not reach Local AI.", "[]", true));
         assertEquals("blocked", response.getString("status"));
         assertEquals("SKY_SELECTION_REQUIRED", response.getString("code"));
         assertTrue(response.isNull("workId"));

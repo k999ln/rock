@@ -4,6 +4,7 @@
     <permission android:name="dev.rock.permission.MANAGE_PLATFORM" android:protectionLevel="signature" />
     <permission android:name="dev.rock.permission.USE_SHELL_API" android:protectionLevel="signature" />
     <uses-permission android:name="dev.rock.permission.RUN_TOOL" />
+    <uses-permission android:name="dev.rock.permission.USE_SHELL_API" />
     <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
     <uses-permission android:name="dev.rock.permission.MANAGE_PLATFORM" />
     <uses-permission android:name="android.permission.INTERNET" />

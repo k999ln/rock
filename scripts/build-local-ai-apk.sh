@@ -16,6 +16,7 @@ python3 "$rock_local_ai_root/scripts/prepare-local-ai-runtime.py" "$rock_local_a
 rock_local_ai_output="$(cd -- "$rock_local_ai_output" && pwd -P)"
 cd -- "$rock_local_ai_output"
 npm ci
+npm run verify
 npm run prepare:native
 (cd android && ./gradlew --no-daemon :app:assembleRelease -PreactNativeArchitectures=arm64-v8a)
 release_dir="$rock_local_ai_output/android/app/build/outputs/apk/release"

@@ -1,24 +1,17 @@
 package dev.rock.core.platform;
 
 import dev.rock.core.Engine;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
+import org.bouncycastle.crypto.signers.Ed25519Signer;
 
 /** Verifies detached Ed25519 model-manifest signatures against an OS-owned keyset. */
-public final class TrustedModelPublisherVerifier {
-    private static final byte[] ED25519_X509_PREFIX = new byte[] {
-        0x30, 0x2a, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x03, 0x21, 0x00
-    };
-
+public final class TrustedModelPublisherVerifier implements ModelProfileAuthenticator {
     public static final class PublisherKey {
         public final String publisherId;
         public final String keyId;
@@ -36,12 +29,6 @@ public final class TrustedModelPublisherVerifier {
             this.keyId = keyId;
             this.rawPublicKey = rawPublicKey.clone();
             this.revoked = revoked;
-        }
-
-        private PublicKey publicKey() throws Exception {
-            byte[] encoded = ByteBuffer.allocate(ED25519_X509_PREFIX.length + rawPublicKey.length)
-                .put(ED25519_X509_PREFIX).put(rawPublicKey).array();
-            return KeyFactory.getInstance("Ed25519").generatePublic(new X509EncodedKeySpec(encoded));
         }
     }
 
@@ -62,6 +49,7 @@ public final class TrustedModelPublisherVerifier {
     /** Verify signature and publisher/key binding; this does not verify model bytes or licensing. */
     public String verifySignature(ModelProfileManifest profile) {
         if (profile == null) throw new IllegalArgumentException("MODEL_PROFILE_REQUIRED");
+        if (profile.ownerPinned()) throw new SecurityException("MODEL_AUTHOR_SIGNATURE_ABSENT");
         PublisherKey key = keys.get(identity(profile.publisherId, profile.signingKeyId));
         if (key == null) throw new SecurityException("MODEL_PUBLISHER_KEY_UNTRUSTED");
         if (key.revoked) throw new SecurityException("MODEL_PUBLISHER_KEY_REVOKED");
@@ -70,10 +58,13 @@ public final class TrustedModelPublisherVerifier {
             if (signatureBytes.length != 64 || !Base64.getUrlEncoder().withoutPadding()
                     .encodeToString(signatureBytes).equals(profile.manifestSignatureBase64Url))
                 throw new SecurityException("INVALID_MODEL_MANIFEST_SIGNATURE");
-            Signature signature = Signature.getInstance("Ed25519");
-            signature.initVerify(key.publicKey());
-            signature.update(profile.signedPayload().getBytes(StandardCharsets.UTF_8));
-            if (!signature.verify(signatureBytes)) throw new SecurityException("MODEL_MANIFEST_SIGNATURE_MISMATCH");
+            // A fixed software verifier works on Android 35 and JVM without importing a public
+            // model-distribution key into AndroidKeyStore or registering a global crypto provider.
+            Ed25519Signer signature = new Ed25519Signer();
+            signature.init(false, new Ed25519PublicKeyParameters(key.rawPublicKey, 0));
+            byte[] payload = profile.signedPayload().getBytes(StandardCharsets.UTF_8);
+            signature.update(payload, 0, payload.length);
+            if (!signature.verifySignature(signatureBytes)) throw new SecurityException("MODEL_MANIFEST_SIGNATURE_MISMATCH");
             return Engine.digest("rockstaros-model-profile-signature-verified/1\n" + profile.digest());
         } catch (SecurityException failure) {
             throw failure;

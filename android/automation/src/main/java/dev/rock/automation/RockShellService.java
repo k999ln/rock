@@ -37,6 +37,7 @@ public final class RockShellService extends Service {
     static final String SHELL_PACKAGE = "dev.rock.shell";
     private static final int MAX_SNAPSHOT_WORKS = 25;
     private static final long RECOVERY_SETUP_MS = 10 * 60 * 1000L;
+    private static final PublicModelDiscovery discovery = new PublicModelDiscovery(PublicModelDiscovery::https);
     private final Object zemaLock = new Object();
     private final Object deviceLinkLock = new Object();
     private final Object a2aBrokerDeviceLock = new Object();
@@ -58,16 +59,27 @@ public final class RockShellService extends Service {
         }
         @Override public String submit(String requestId, String inputJson, boolean sample, boolean consent) {
             enforceShellCaller(); ArticlePayload.parse(inputJson);
-            String id = engine().submit(requestId, inputJson, sample, consent); Scheduler.schedule(RockShellService.this); return id;
+            String id = engine().submit(requestId, inputJson, sample, consent); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, id); return id;
         }
         @Override public void setPaused(boolean paused) {
-            enforceShellCaller(); engine().setPaused(paused);
+            enforceShellCaller(); ZemaOrchestrator.setPaused(engine(), paused);
             if (paused) Scheduler.stop(RockShellService.this); else Scheduler.schedule(RockShellService.this);
+            WorkChangeSignal.changed(RockShellService.this, null);
         }
         @Override public String result(String workId) { enforceShellCaller(); validWorkId(workId); return engine().result(workId); }
-        @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); }
-        @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); }
-        @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); }
+        @Override public void complete(String workId, String note) { enforceShellCaller(); validWorkId(workId); engine().complete(workId, note); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void compactReplanIdeas(String workId,String digest,boolean consent) {
+            enforceShellCaller();validWorkId(workId);long identity=Binder.clearCallingIdentity();
+            try {
+                if(!consent)throw new SecurityException("COMPACT_REPLAN_CONSENT_REQUIRED");
+                JSONObject saved=dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(workId));
+                if(!"local-ideas/5".equals(saved.optString("kind")))throw new IllegalStateException("COMPACT_REPLAN_SOURCE_INVALID");
+                engine().compactReplanIdeas(AndroidOwner.current(RockShellService.this),workId,digest,true);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,workId);
+            } finally {Binder.restoreCallingIdentity(identity);}
+        }
+        @Override public void retry(String workId) { enforceShellCaller(); validWorkId(workId); engine().retry(workId); Scheduler.schedule(RockShellService.this); WorkChangeSignal.changed(RockShellService.this, workId); }
+        @Override public void cancel(String workId) { enforceShellCaller(); validWorkId(workId); engine().cancel(workId); WorkChangeSignal.changed(RockShellService.this, workId); }
         @Override public String localAiStatus() throws android.os.RemoteException {
             enforceShellCaller();
             try { return new LocalAiConnection(RockShellService.this).status(); }
@@ -88,12 +100,34 @@ public final class RockShellService extends Service {
         }
         @Override public String submitZema(String requestId, String selectionToken, String prompt,
                 String contextJson, boolean consent) {
+            enforceShellCaller(); return submitZemaResponse(requestId, selectionToken, prompt, contextJson, null, consent);
+        }
+        @Override public String submitZemaSelected(String requestId, String selectionToken, String prompt,
+                String contextJson, String expectedModelDigest, boolean consent) {
             enforceShellCaller();
+            if (expectedModelDigest == null || !expectedModelDigest.matches("[a-f0-9]{64}"))
+                return zemaResponse("blocked", "MODEL_SELECTION_REQUIRED", null);
+            return submitZemaResponse(requestId, selectionToken, prompt, contextJson, expectedModelDigest, consent);
+        }
+        @Override public String prepareLocalModelChoice(String choice, String prompt) {
+            enforceShellCaller(); long identity = android.os.Binder.clearCallingIdentity();
+            try { return new LocalModelChoice(RockShellService.this, platform()).prepare(choice, prompt); }
+            catch (Exception failure) {
+                String code = failure.getMessage();
+                if (!java.util.Set.of("TASK_REQUIRES_OTHER_CAPABILITY", "NO_SUITABLE_INSTALLED_MODEL", "SELECTED_MODEL_SETUP_REQUIRED",
+                        "MODEL_NOT_IN_TRUSTED_CATALOG", "INVALID_ZEMA_REQUEST", "TEXT_REQUEST_TOO_LONG", "IDEA_COUNT_LIMIT").contains(code == null ? "" : code)) code = "MODEL_CHOICE_UNAVAILABLE";
+                try { return new JSONObject().put("status", "blocked").put("code", code).put("executionStarted", false).toString(); }
+                catch (Exception invalid) { return "{\"status\":\"blocked\",\"code\":\"MODEL_CHOICE_UNAVAILABLE\"}"; }
+            } finally { android.os.Binder.restoreCallingIdentity(identity); }
+        }
+        private String submitZemaResponse(String requestId, String selectionToken, String prompt,
+                String contextJson, String expectedDigest, boolean consent) {
             try {
                 synchronized (zemaLock) {
                     String id = new ZemaOrchestrator(RockShellService.this, engine())
-                        .submit(requestId, selectionToken, prompt, contextJson, consent);
+                        .submitSelected(requestId, selectionToken, prompt, contextJson, expectedDigest, consent);
                     Scheduler.schedule(RockShellService.this);
+                    WorkChangeSignal.changed(RockShellService.this, id);
                     return zemaResponse("queued", null, id);
                 }
             } catch (SecurityException denied) {
@@ -102,6 +136,8 @@ public final class RockShellService extends Service {
                 if ("LOCAL_ARTIFACT_CONSENT_REQUIRED".equals(reason)) code = "DENIED";
                 else if ("LOCAL_AI_NOT_READY".equals(reason)) code = "LOCAL_AI_NOT_READY";
                 else if ("MODEL_PROFILE_RUNTIME_MISMATCH".equals(reason)) code = "MODEL_PROFILE_RUNTIME_MISMATCH";
+                else if ("MODEL_SELECTION_REQUIRED".equals(reason) || "MODEL_SELECTION_CHANGED".equals(reason)
+                        || "MODEL_SELECTION_SETUP_REQUIRED".equals(reason)) code = reason;
                 else if ("SKY_SELECTION_REQUIRED".equals(reason)
                         || "SKY_SELECTION_MISMATCH".equals(reason))
                     code = "SKY_SELECTION_REQUIRED";
@@ -114,12 +150,106 @@ public final class RockShellService extends Service {
                 return zemaResponse("blocked", "INVALID_PLAN", null);
             } catch (IllegalStateException unavailable) {
                 String reason = unavailable.getMessage();
-                String code = "MODEL_PROFILE_NOT_ACTIVE".equals(reason)
-                    ? "MODEL_PROFILE_NOT_ACTIVE" : "LOCAL_AI_UNAVAILABLE";
+                String code = "MODEL_PROFILE_NOT_ACTIVE".equals(reason) ? "MODEL_PROFILE_NOT_ACTIVE"
+                    : "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK".equals(reason) ? reason
+                    : "LOCAL_EXECUTION_PAUSED".equals(reason) ? "LOCAL_EXECUTION_PAUSED" : "LOCAL_AI_UNAVAILABLE";
                 return zemaResponse("blocked", code, null);
             } catch (Exception failed) {
                 return zemaResponse("blocked", "LOCAL_AI_UNAVAILABLE", null);
             }
+        }
+        private String modelDownloadCall(java.util.concurrent.Callable<String> call) {
+            enforceShellCaller(); long identity = Binder.clearCallingIdentity();
+            try { return call.call(); } catch (Exception failure) { return modelImportFailure(failure); }
+            finally { Binder.restoreCallingIdentity(identity); }
+        }
+        private PublicModelInstall downloads() { return new PublicModelInstall(RockShellService.this, platform()); }
+        @Override public String preparePublicModelInstall(String id) { return modelDownloadCall(() -> downloads().prepare(id)); }
+        @Override public String beginPublicModelDownload(String id, boolean consent) { return modelDownloadCall(() -> downloads().begin(id, consent)); }
+        @Override public String publicModelInstallStatus() { return modelDownloadCall(() -> downloads().status()); }
+        @Override public String finishPublicModelInstall(String id, boolean consent) { return modelDownloadCall(() -> downloads().finish(id, consent)); }
+        @Override public String cancelPublicModelDownload(String id) { return modelDownloadCall(() -> downloads().cancel(id)); }
+        @Override public String searchPublicModels(String query) {
+            enforceShellCaller(); long identity = Binder.clearCallingIdentity();
+            try {
+                JSONObject result = new JSONObject(discovery.search(query, System.currentTimeMillis()));
+                JSONArray candidates = result.getJSONArray("candidates");
+                LocalModelCatalog catalog = new LocalModelInstaller(RockShellService.this, platform()).catalog();
+                for (int i = 0; i < candidates.length(); i++) {
+                    JSONObject candidate = candidates.getJSONObject(i);
+                    if (!"huggingface".equals(candidate.optString("source"))) continue;
+                    for (LocalModelCatalog.Entry e : catalog.entries.values()) {
+                        if (e.source.startsWith("https://huggingface.co/" + candidate.getString("id") + "/resolve/")) {
+                            candidate.put("installProfileId", e.profile.profileId); break;
+                        }
+                    }
+                }
+                return boundedJson(result);
+            }
+            catch (Exception unavailable) { return "{\"status\":\"unavailable\",\"executionStarted\":false,\"candidates\":[],\"sources\":[]}"; }
+            finally { Binder.restoreCallingIdentity(identity); }
+        }
+        private String addonCall(java.util.concurrent.Callable<String> action) {
+            enforceShellCaller(); long identity=Binder.clearCallingIdentity();
+            try{return action.call();}
+            catch(Exception failure){
+                String code=failure.getMessage();
+                if(code==null||!code.matches("[A-Z][A-Z0-9_]{2,100}"))code="ADDON_UNAVAILABLE";
+                try{return new JSONObject().put("status","blocked").put("code",code).put("executionStarted",false).toString();}
+                catch(Exception ignored){return "{\"status\":\"blocked\",\"code\":\"ADDON_UNAVAILABLE\"}";}
+            }finally{Binder.restoreCallingIdentity(identity);}
+        }
+        @Override public String inspectSkyAddon(String source){return addonCall(()->new SkyAddonResolver(RockShellService.this).inspect(source));}
+        @Override public String addSkyAddon(String proposal,String digest,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).add(proposal,digest,consent));}
+        @Override public String configureSkyModelAutomaticTasks(String digest,long revision,String tasks,boolean consent){return addonCall(()->new SkyAddonStore(RockShellService.this).configureAutomatic(digest,revision,tasks,consent));}
+        @Override public String skyAddons(){return addonCall(()->new SkyAddonStore(RockShellService.this).list());}
+        @Override public String revokeSkyAddon(String digest,boolean consent){return addonCall(()->{
+            synchronized(ModelProfileOperationLock.LOCK){
+                if(!consent)throw new SecurityException("ADDON_CONSENT_REQUIRED");
+                if(getSystemService(android.app.KeyguardManager.class).isDeviceLocked())throw new SecurityException("DEVICE_LOCKED");
+                SkyAddonStore store=new SkyAddonStore(RockShellService.this);JSONObject d=store.require(digest);
+                if("model".equals(d.getString("kind"))){
+                    dev.rock.core.platform.ModelProfileManifest p=new LocalModelCatalog.Entry(d.getJSONObject("entry")).profile;
+                    // Existing Platform revocation fences future pinned inference; preserve saved work and artifacts.
+                    try { platform().revokeModelProfile(p.profileId,p.version,System.currentTimeMillis()); }
+                    catch(IllegalStateException absent) { if(!"MODEL_PROFILE_NOT_FOUND".equals(absent.getMessage()))throw absent; }
+                }
+                return store.revoke(digest,true);
+            }
+        });}
+        @Override public String prepareSkyAgent(String digest,String choice,String request){return addonCall(()->{
+            JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+            JSONObject recipe=d.getJSONObject("recipe");
+            JSONObject prepared=new JSONObject(new LocalModelChoice(RockShellService.this,platform()).prepare(choice,SkyAddonStore.render(d,request),"local-tools/1".equals(recipe.getString("runner"))?"writing":recipe.getString("task")));
+            prepared.put("agentTask",recipe.getString("task")).put("agentRunner",recipe.getString("runner")).put("tools",recipe.optJSONArray("tools")==null?new JSONArray():recipe.getJSONArray("tools"));
+            prepared.put("toolScope","pure_local_document_transforms_only_no_publish_or_charge");
+            return prepared.toString();
+        });}
+        @Override public String submitSkyAgent(String digest,String requestId,String request,String modelDigest,boolean consent){return addonCall(()->{
+            synchronized(zemaLock){ synchronized(ModelProfileOperationLock.LOCK){
+                JSONObject d=new SkyAddonStore(RockShellService.this).agentFor(digest);
+                String provenance=new JSONObject().put("schema","rock-sky-agent-use/1").put("addonDigest",digest).put("source",d.getString("source"))
+                    .put("request",request).put("recipe",d.getJSONObject("recipe")).toString();
+                String work=new ZemaOrchestrator(RockShellService.this,engine()).submitAgent(requestId,SkyAddonStore.render(d,request),provenance,modelDigest,
+                    d.getJSONObject("recipe").getString("task"),consent);
+                Scheduler.schedule(RockShellService.this);WorkChangeSignal.changed(RockShellService.this,work);
+                return zemaResponse("queued",null,work);
+            }}
+        });}
+        @Override public String localModelCatalog() {
+            enforceShellCaller();
+            try { return boundedJson(new JSONObject(new LocalModelInstaller(RockShellService.this, platform()).catalogJson())); }
+            catch (Exception failure) { return "{\"models\":[],\"code\":\"MODEL_CATALOG_UNAVAILABLE\"}"; }
+        }
+        @Override public String importLocalModel(String profileId, ParcelFileDescriptor source, boolean consent) {
+            enforceShellCaller();
+            try { return new LocalModelInstaller(RockShellService.this, platform()).install(profileId, source, consent); }
+            catch (Exception failure) { return modelImportFailure(failure); }
+        }
+        @Override public String reloadLocalModel(String profileId, boolean consent) {
+            enforceShellCaller();
+            try { return new LocalModelInstaller(RockShellService.this, platform()).reload(profileId, consent); }
+            catch (Exception failure) { return modelImportFailure(failure); }
         }
         @Override public String skySelection() {
             enforceShellCaller(); return skySelectionResponse(engine().skySelection());
@@ -860,6 +990,7 @@ public final class RockShellService extends Service {
         synchronized (deviceLinkLock) { clearPendingDeviceLink(); }
         super.onDestroy();
     }
+    private PlatformStore platform() { return ((RockApplication) getApplication()).platform(); }
     private Engine engine() { return ((RockApplication) getApplication()).engine(); }
     private RecoverableBackupManager backupManager() { return new RecoverableBackupManager(this); }
 
@@ -892,6 +1023,12 @@ public final class RockShellService extends Service {
                 Map<String,String> work = workItems.get(index);
                 JSONObject item = new JSONObject();
                 item.put("id", work.get("id")); item.put("state", work.get("state")); item.put("sample", "1".equals(work.get("sample")));
+                try {
+                    Map<String,String> pin = platform().modelProfileForPin(AndroidOwner.current(this), work.get("id"));
+                    item.put("planner", new JSONObject().put("name", "Jennifer local")
+                        .put("profileId", pin.get("profile_id")).put("profileVersion", pin.get("profile_version"))
+                        .put("manifestDigest", pin.get("manifest_digest")));
+                } catch (RuntimeException noReadablePin) { /* Manual and legacy jobs have no model pin. */ }
                 JSONArray runs = new JSONArray();
                 for (Map<String,String> run : engine().runs(work.get("id"))) {
                     JSONObject step = new JSONObject();
@@ -900,7 +1037,38 @@ public final class RockShellService extends Service {
                     step.put("error", run.get("error") == null ? JSONObject.NULL : run.get("error"));
                     runs.put(step);
                 }
-                item.put("runs", runs); works.put(item);
+                item.put("runs", runs);
+                if(runs.length()>0&&"local-generate@1".equals(runs.getJSONObject(0).optString("tool")))try{
+                    JSONObject original=new JSONObject(engine().initialInput(work.get("id")));
+                    if(original.has("agentProvenance")&&SkyAddonStore.validWorkInput(original)){
+                        JSONObject provenance=original.getJSONObject("agentProvenance");item.put("agent",new JSONObject().put("name",provenance.getJSONObject("recipe").getString("name"))
+                            .put("digest",provenance.getString("addonDigest")).put("source",provenance.getString("source")).put("runner",provenance.getJSONObject("recipe").getString("runner"))
+                            .put("tools",provenance.getJSONObject("recipe").optJSONArray("tools")==null?new JSONArray():provenance.getJSONObject("recipe").getJSONArray("tools")));
+                    }
+                }catch(Exception invalidProvenance){ /* Never project an unverified Agent identity. */ }
+                if (runs.length() > 0 && dev.rock.sdk.LocalIdeaBatch.GENERATE.equals(runs.getJSONObject(0).getString("tool"))) {
+                    item.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+                    try {
+                        org.json.JSONObject checkpoint = dev.rock.sdk.LocalIdeaBatch.state(engine().checkpoint(work.get("id")));
+                        JSONObject progress=new JSONObject().put("completed",checkpoint.getJSONArray("ideas").length()).put("target",checkpoint.getInt("target"));
+                        if("local-ideas/5".equals(checkpoint.optString("kind")) && engine().canCompactReplanIdeas(AndroidOwner.current(this),work.get("id")))progress.put("compactResumeAvailable",true).put("checkpointDigest",Engine.digest(engine().checkpoint(work.get("id"))));
+                        progress.put("compactReplanCount",engine().events(work.get("id")).stream().filter(e -> "human_compact_replan".equals(e.get("kind"))).count());
+                        item.put("ideaProgress",progress);
+                    } catch (RuntimeException sealed) {
+                        if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
+                            int count = engine().result(work.get("id")).split("(?m)^\\d+\\. ", -1).length - 1;
+                            item.put("ideaProgress", new JSONObject().put("completed", count).put("target", count));
+                        }
+                    }
+                }
+                if ("review".equals(work.get("state")) || "completed".equals(work.get("state"))) {
+                    try {
+                        String title = engine().result(work.get("id")).split("\n", 2)[0]
+                            .replaceFirst("^#{1,6}\\s+", "").replaceAll("[\\p{Cntrl}]", "").trim();
+                        if (!title.isEmpty()) item.put("title", title.substring(0, Math.min(60, title.length())));
+                    } catch (RuntimeException noVerifiedArtifact) { /* Incomplete review is not a ready artifact. */ }
+                }
+                works.put(item);
             }
             root.put("works", works); String result = root.toString(); Engine.bounded(result); return result;
         } catch (JSONException invalid) {
@@ -988,6 +1156,18 @@ public final class RockShellService extends Service {
 
     private static void validWorkId(String value) {
         if (value == null || !value.matches("[0-9a-f-]{36}")) throw new IllegalArgumentException("INVALID_WORK_ID");
+    }
+
+    private static String modelImportFailure(Exception failure) {
+        Set<String> codes = Set.of("MODEL_IMPORT_CONSENT_REQUIRED", "DEVICE_UNLOCK_REQUIRED", "MODEL_FILE_LENGTH_MISMATCH",
+            "MODEL_NOT_IN_TRUSTED_CATALOG", "READ_ONLY_REGULAR_MODEL_FILE_REQUIRED", "MODEL_MEMORY_UNAVAILABLE",
+            "MODEL_STORAGE_UNAVAILABLE", "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK", "MODEL_ARTIFACT_HASH_MISMATCH",
+            "MODEL_PROFILE_RUNTIME_MISMATCH", "MODEL_LICENSE_RECEIPT_NOT_SAVED", "DEVICE_LOCKED",
+            "MODEL_DOWNLOAD_ALREADY_PENDING", "MODEL_DOWNLOAD_STATE_UNCERTAIN", "MODEL_DOWNLOAD_STATE_NOT_SAVED",
+            "MODEL_DOWNLOAD_OPERATION_INVALID", "MODEL_DOWNLOAD_PROFILE_CHANGED", "MODEL_DOWNLOAD_NOT_COMPLETE",
+            "MODEL_DOWNLOAD_SOURCE_NOT_PINNED", "UNAPPROVED_LOCAL_AI_VERSION");
+        String code = codes.contains(failure.getMessage()) ? failure.getMessage() : "MODEL_IMPORT_FAILED";
+        return "{\"status\":\"failed\",\"code\":\"" + code + "\"}";
     }
 
     private static String zemaResponse(String status, String code, String workId) {

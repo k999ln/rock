@@ -6,10 +6,13 @@
 
 ```sh
 ROCK_LOCAL_AI_APK=/absolute/path/to/reviewed-unsigned.apk \
+ROCK_MODEL_CRYPTO_JAR=/absolute/path/to/bcprov-jdk15to18-1.86.jar \
 ROCK_ANDROID_AAPT2=/absolute/path/to/aapt2 \
 bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup \
   /absolute/path/to/os-tree /absolute/path/to/grapheneos_allowed_signers
 ```
+
+モデル配布定義の署名検証JARも`os/physical/model-crypto-artifact-lock.json`へ固定する。`ROCK_MODEL_CRYPTO_JAR`で既取得の同hash JARを渡し、build入口がvendor module/NOTICEをstage・verifyしてreceiptを保存する。Gradle APKも同じhashをcompile前に確認する。これは新しいbuild入力で、OS署名鍵やflash許可ではない。
 
 bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した上流source/tag、生成vendor inventory、現行overlayと一致するレビュー済みLocal si APKが必要。Operator公開設定がなければ明示除外する。出力は試験用で、OS署名・flash・一般公開を許可しない。release用の入口は`--mode release`で、初回flashの4 gateも維持する。
 

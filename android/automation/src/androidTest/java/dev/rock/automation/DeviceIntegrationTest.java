@@ -54,8 +54,11 @@ public class DeviceIntegrationTest {
             db.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
             db.execute("INSERT INTO rock_meta VALUES(1)");
             db.execute("CREATE TABLE works(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL,state TEXT NOT NULL,sample INTEGER NOT NULL,review_note TEXT NOT NULL DEFAULT '')");
+            db.execute("CREATE TABLE artifacts(work_id TEXT NOT NULL,digest TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(work_id,digest))");
+            db.execute("CREATE TABLE runs(work_id TEXT NOT NULL,step INTEGER,tool TEXT,state TEXT,attempt INTEGER,token TEXT,boot TEXT,deadline INTEGER,input_digest TEXT,output_digest TEXT,error TEXT,PRIMARY KEY(work_id,step))");
+            db.execute("CREATE INDEX runs_queue ON runs(state,work_id,step)");
             Engine engine = new Engine(db);
-            assertEquals("3", db.query("SELECT version FROM rock_meta").get(0).get("version"));
+            assertEquals("4", db.query("SELECT version FROM rock_meta").get(0).get("version"));
             token = engine.selectSkyTool(Engine.RECIPE).token;
             assertEquals(Engine.RECIPE, engine.requireSkySelection(token));
         }
@@ -152,7 +155,7 @@ public class DeviceIntegrationTest {
                 id = engine.submit(executionReceiptId, payload, false, true);
                 Engine.Ticket first = engine.claim("synthetic-boot", SystemClock.elapsedRealtime(), true);
                 assertNotNull(first);
-                ToolConnection.Result formatted = new ToolConnection(target).execute(first);
+                ToolConnection.Result formatted = new ToolConnection(target,engine).execute(first);
                 assertEquals("passed", formatted.outcome);
                 ArticlePayload.validateIntermediate(payload, formatted.output);
                 assertEquals(expectedCitations, new JSONObject(formatted.output).getString("markdown"));
@@ -163,7 +166,7 @@ public class DeviceIntegrationTest {
                 Engine engine = new Engine(db);
                 Engine.Ticket second = engine.claim("synthetic-boot", SystemClock.elapsedRealtime(), true);
                 assertEquals(1, second.step);
-                ToolConnection.Result free = new ToolConnection(target).execute(second);
+                ToolConnection.Result free = new ToolConnection(target,engine).execute(second);
                 assertEquals("passed", free.outcome);
                 assertTrue(free.output.contains("## 出典"));
                 assertTrue(engine.finish(second, free.outcome, free.output, "synthetic-boot", SystemClock.elapsedRealtime()));

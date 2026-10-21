@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 166,
+    "tableCount": 170,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
-    "tableCount": 94,
+    "tableCount": 98,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -99,12 +99,16 @@
       "sky_developer_tokens",
       "sky_feed_history_events",
       "sky_feed_personalization_settings",
+      "sky_hosted_monthly_events",
+      "sky_hosted_monthly_tests",
       "sky_library_items",
       "sky_monthly_sandbox_invoices",
       "sky_monthly_sandbox_quotes",
       "sky_monthly_sandbox_usage",
       "sky_package_runtime_bindings",
       "sky_provider_connections",
+      "sky_recurring_charges",
+      "sky_recurring_contracts",
       "sky_remote_ai_rate_limits",
       "sky_tool_events",
       "sky_tool_grants",
@@ -115,8 +119,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 5,
-    "latestMigration": "0017_sky_cloud_monthly_test.sql",
+    "migrationCount": 7,
+    "latestMigration": "0019_sky_hosted_monthly.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 0,
     "marketplaceRelationGuardCount": 8,
@@ -183,12 +187,16 @@
           "sky_developer_tokens",
           "sky_feed_history_events",
           "sky_feed_personalization_settings",
+          "sky_hosted_monthly_events",
+          "sky_hosted_monthly_tests",
           "sky_library_items",
           "sky_monthly_sandbox_invoices",
           "sky_monthly_sandbox_quotes",
           "sky_monthly_sandbox_usage",
           "sky_package_runtime_bindings",
           "sky_provider_connections",
+          "sky_recurring_charges",
+          "sky_recurring_contracts",
           "sky_remote_ai_rate_limits",
           "sky_tool_events",
           "sky_tool_grants",
@@ -196,7 +204,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 43
+        "tableCount": 47
       },
       {
         "id": "marketplace",
@@ -344,12 +352,16 @@
         "sky_developer_tokens",
         "sky_feed_history_events",
         "sky_feed_personalization_settings",
+        "sky_hosted_monthly_events",
+        "sky_hosted_monthly_tests",
         "sky_library_items",
         "sky_monthly_sandbox_invoices",
         "sky_monthly_sandbox_quotes",
         "sky_monthly_sandbox_usage",
         "sky_package_runtime_bindings",
         "sky_provider_connections",
+        "sky_recurring_charges",
+        "sky_recurring_contracts",
         "sky_remote_ai_rate_limits",
         "sky_tool_events",
         "sky_tool_grants",
@@ -360,8 +372,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0017_sky_cloud_monthly_test.sql",
-      "tableCount": 94,
+      "expectedAppliedThrough": "0019_sky_hosted_monthly.sql",
+      "tableCount": 98,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

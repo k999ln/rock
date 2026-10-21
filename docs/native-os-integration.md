@@ -36,7 +36,7 @@ Homeの中心は会話、進行中、確認待ち、成果、費用、停止。�
 
 ### 現在の差分と順番
 
-現sourceの`android/shell/src/aosp/AndroidManifest.xml`はMAIN/LAUNCHERで、HOME categoryやVoiceInteractionServiceを宣言していない。現在のShell APKをsi Home/OS常駐音声として完成扱いしない。①既存OS上で非破壊に一仕事の対話/成果導線を検証 → ②ownerが選択/解除できるHome候補とcrash復帰を検証 → ③必要なら音声role/機種の入力経路を検証 → ④独自署名OSへ統合し同imageのboot/更新/復旧を受け入れる。app試作とprivileged OS統合は別成果にする。音声roleの可能性は調査G14〜16、独自build/OTAはG01/G05に従う。
+2026-10-15の調査基点では`android/shell/src/aosp/AndroidManifest.xml`はMAIN/LAUNCHERのみだった。10-16の[アプリ実装](#pixel-terminal-implementation)でHOME/DEFAULT候補と明示音声adapterを追加した。VoiceInteractionService・常時待受・全OSの受入は別に残す。①既存OS上で非破壊に一仕事の対話/成果導線を検証 → ②ownerが選択/解除できるHome候補とcrash復帰を検証 → ③必要なら音声role/機種の入力経路を検証 → ④独自署名OSへ統合し同imageのboot/更新/復旧を受け入れる。app試作とprivileged OS統合は別成果にする。音声roleの可能性は調査G14〜16、独自build/OTAはG01/G05に従う。
 
 **合格条件**はbaselineのDT01〜DT06。DT01はboot/unlock/Home/再起動と同owner/Job復元、DT02はapp選択なしの依頼→改訂→確認→保存→再開、DT03はcloud/通信断、DT04はロック/他人/mute/私有出力、DT05は見積/上限/停止/応答喪失の重複防止、DT06はMini引継ぎと端末復旧。所要時間、誤認識、再開時間、電池/熱、費用を同じ候補artifactで測り、値の合否基準は試作briefで定める。全6件は未実行。既存AC01〜06、OS受入report、DEVICE-INSTALL等のgateを省略しない。
 
@@ -80,9 +80,9 @@ flowchart TB
 
 ### C01 独自Home / Launcher — 通常app/role
 
-可能性/責任: 独自Home appで入口をまとめる。現source: RockShellはLAUNCHER activityで、HOME role宣言は見つからない。
+可能性/責任: 独自Home appで入口をまとめる。現source: 10-16の実装でLAUNCHERとHOME/DEFAULTを宣言し、RoleManagerの本人選択と既定Home設定への導線を追加した。
 
-不足: Home roleと既定選択を設計する。合格証拠: 起動/戻る/再起動/更新後も本人の選択を保持。
+不足: 独自OS同imageでのboot/更新受入は残る。アプリの起動/戻る/本人選択/再開は[同じ候補の証拠](evidence/pixel-si-terminal-implementation.json)で追跡する。
 
 根拠: [android/shell/src/aosp/AndroidManifest.xml](../android/shell/src/aosp/AndroidManifest.xml) / [G04](https://grapheneos.org/source)。
 
@@ -490,7 +490,7 @@ flowchart TB
 
 | ID / 担当 | 再利用するsource | 具体的な差分・責任 |
 | --- | --- | --- |
-| PX-HOME / OS11・O6、表示WEB04・O5 | `android/shell`、`ShellConnection`、既存device-home API | HOME候補/本人による既定選択、Jennifer入力、仕事/確認/成果/費用/停止。戻る/解除/再起動/crash/更新後の復帰を追加。現在はLAUNCHERのみ |
+| PX-HOME / OS11・O6、表示WEB04・O5 | `android/shell`、`ShellConnection`、既存device-home API | HOME候補/本人による既定選択、Jennifer入力、仕事/確認/成果/費用/停止。戻る/解除/再起動/crash/更新後の復帰を追加。10-16にHOME候補と4画面のAPK実装を追加。OS受入は別 |
 | PX-VOICE / OS11・O6、AI04・O2 | Android音声API、TalkBack/TTS、既存LLM境界 | 明示収音、日本語ASR、読み上げ、通話競合、音声出力先、mute。LLMへの入力とTool承認を分離し、ロック中の秘密出力を拒否 |
 | PX-SKY / SKY07・O4 | catalog、接続、Device Capability、model registry | model/Agent/Toolの作者・版・license・能力・実host・資源・送信先・見積をnativeへ投影。modelのdownload/検証/導入とAPI接続を区別 |
 | PX-LOCAL / AI04・O2、OS11・O6 | Local si API v4、GGUF/llama.rn、Engine、有限Tool SDK | 同一signer/API/型を照合した一仕事。model更新・容量不足・hash不一致・熱/低電池・読込み失敗・停止・再起動後の再読込みを受入 |
@@ -536,7 +536,7 @@ rootの`authorityRealm + job ID`、delegation/operation、artifact ID/revision/h
 
 cloud APIはdevice sessionからownerを決め、scope/期限/失効、plan、対象model/Agent、data grant、quoteと支出承認を再検査する。端末の承認記録だけを信頼してpaid gateを迂回しない。Provider秘密鍵はserverの秘密管理、本人BYOKは既存暗号化保管と失効を使い、ROM/model/catalogへ埋め込まない。
 
-料金は[既存plan契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)に従い、plan ID/版/期間/対象能力/含む量/超過単価/上限/終了条件を見積へ固定する。含む量も並列予約で引当て、model token、Agent計算、Tool、通信、端末、外部実費を区別。自己host modelとrunnerを二重計上せず、Provider実meter/取消実費と一致させる。月額/含む量/超過単価は未決定、既存30%/10%/1,000円等を変更しない。未実測のGPU原価を利益へ換算しない。
+料金は[既存plan契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)に従い、plan ID/版/期間/対象能力/含む量/超過単価/上限/終了条件を見積へ固定する。含む量も並列予約で引当て、model token、Agent計算、Tool、通信、端末、外部実費を区別。自己host modelとrunnerを二重計上せず、Provider実meter/取消実費と一致させる。米国向けSky 140の月額140 USD/利用枠100 USDは既存mainの確定設計に従う。超過扱い・商用受入と他商品の料金は請求正本を参照し、このPixel実装で既存率や課金gateを変更しない。未実測のGPU原価を利益へ換算しない。
 
 Agent利用の請求周期と未払い/異議/入金復旧は[Sky月次後払いの正本](sky-billing.md#agent利用料の月次後払いと未払い対応2026-10-15)へ従う。旧しきい値や既存fixtureの記載は互換・保全であり、このPixel追補から月途中徴収や本番与信を開始しない。Skyが単独で同じ契約accountのusage/明細を照会でき、Pixel/Zemaの利用有無で請求が失われないことをPX07の条件に含める。
 
@@ -586,3 +586,95 @@ Agent利用の請求周期と未払い/異議/入金復旧は[Sky月次後払い
 未決事項の決め方: 一般app/kioskの強さ・音声待受はOWNERが通常操作と復旧の比較で決める。日本語ASR/TTS/modelはAI04/OS11がlicense・品質・資源・offline benchを提示して決める。cloud事業者/契約・料金額・枠はBIL02/SKY21が承認対象となる原価/見積/保持/停止/請求の資料を準備しOWNERが決める。調査版へのsource更新はOS11/RLS02が差分/署名/vendor/復旧互換を示して選ぶ。これらは不足を隠すためのfixture、任意のAPI key要求、無断の契約/flashでは補わない。
 
 設計の検証は`npm run baseline:check`、`npm run design:check`、`npm run device-support:check`、`npm run llm:architecture:check`、`npm run android:first-flash:check`、`npm run verify`。実装後は[Android試作手順](os-prototype.md)と[OS受入report](templates/os-acceptance-report.md)を使い、host/fixture/provider sandbox/実機/本番の欄を分ける。文書保存・branch/CI・main統合と、OS導入・契約・本番利用は別々に記録する。
+
+<a id="pixel-terminal-implementation"></a>
+
+## Pixelのアプリ実装と受入
+
+2026-10-16、本人の「この設計でPixelで実際にsi専用端末として使えるように実装を進めて」に基づくOS11/O6/ROCKの第一段階。最新main `019c2231`を土台に、原dirty候補から表示部品と画面遷移だけを選別し、初回APKのBinder API 18（次段のモデル導入は19）、Local si API v4、LocalSubmissionの同ID照合、仕事/予算/復旧契約を保持する。実装と同一APKの証拠は[実装台帳](evidence/pixel-si-terminal-implementation.json)を正本にする。
+
+### 使う体験と責任
+
+`MainActivity`はHome／Sky／仕事／設定の4画面を持つ。HomeのJennifer欄は依頼を準備する入口で、自然文を理解するLLMやJenniferのGoal統括が未接続でも、それらを実行済みと表示しない。`端末内Tool（LLMなし）`、`端末内LLMで計画→Tool`、`クラウドLLMの見積`を明示的に選ぶ。準備ボタンは編集可能な入力先へ移すだけで、以前の保存/送信承認を解除し、Job作成・外部送信・課金を行わない。入力先に別の下書きがある時は置換確認をする。実行先の好みだけを保存し、未送信原稿はActivity内のmemory、承認は再取得とする。
+
+LLMなしの経路も`ShellConnection.submit`→既存Broker/Engine→`citations@1`→`free-article@1`→review→本人の確認メモ→completedを通る。原稿・条件・端末保存への同意が必要で、模擬Agent回答へ置き換えない。自然文計画の経路は従来どおり署名済runtime・登録model profile・入力schema・Sky tokenを検査し、不足なら開始しない。cloudは既存本人連携・利用権・見積・予算承認・pricing/Provider gateを通す。mode選択をgrantや有料実行許可にしない。
+
+### 状態・保存・失敗・復旧
+
+仕事は既存Broker SQLiteと保護fileが正本。ShellはDBやProvider秘密鍵を持たない。foregroundの実行中仕事を5秒間隔で再取得し、pause/背景化ではpollを止め、復帰時は同じ記録を読む。クラウドHomeの取得失敗より先にlocalの状態を描画する。中止履歴を隠さず、個別中止と端末全停止、cloud取消を区別する。reviewメモは入力必須で、他の工程の状態更新でも入力途中のメモをmemoryに保持する。
+
+本人が選んだ成果の書出しは`ACTION_CREATE_DOCUMENT`へ渡し、結果をBrokerから再取得し、UTF-8で保存・同期する。取消や保存先/書込み失敗で元の成果を消さず、確認できない書込みを成功表示しない。process喪失で未送信下書きや保存先選択中の未確定要求を自動再送しない。通常のアプリ再開と端末再起動、userdata/Keystore全損は別受入。
+
+BrokerのSchedulerは既存充電必須・熱・pause・lease・有限Tool制限を維持し、15分の保守jobに加えて依頼時のone-shot jobを登録する。全停止は両jobを停止し、JobServiceはjob ID別のsessionを保持して取消対象を混同しない。Job完了、成果review、本人の完了承認を分ける。
+
+<a id="pixel-local-jennifer"></a>
+
+### 端末内モデル導入とJenniferの有限計画
+
+本人の2026-10-16の追加指示「端末内LLMを入れて、Pixelで依頼したらJenniferが考えて実Toolを動かして成果物ができるところまで」に対応するOS11/O6/ROCKの実装。コードとビルド、Android境界試験、Pixelの実推論を[別の受入台帳](evidence/pixel-local-jennifer.json)へ記録する。2026-10-17に本人が接続し、GL066/frankelと同signerを照合、既存4 APKを退避して6候補APKの非破壊更新と固定GGUF転送に成功した。一時ADB接続が切れたが本人許可後に再接続。現v4の実2 Tool/保存一周は合格したが、0.6Bの内容は雛形コピーや主題の取違えがあり品質未合格。署名済1.5Bを追加し、同一固定APKのHome一周まで機能確認した。PR #149のLLMなし実機合格を転用しない。
+
+**利用体験と範囲。** Skyの「端末内モデル」で対応GGUFと取得元・license・容量・配布定義の署名を確認し、本人が同意してsystem file pickerから選ぶ。導入後、Homeの「端末内LLM」から依頼を準備し、仕事画面でSkyの選択と処理/保存を承認する。Jenniferの端末内計画は既存`ZemaOrchestrator`の有限経路であり、この版は記事準備一件だけ。`LLM入力案 → Brokerの厳格schema検査 → citations@1 → free-article@1 → review → 本人の確認メモ → completed`を使う。投稿・送信・課金は含まず、Goal Contract/COLOMBIA/AMC全体のnative統括を実装済みとはしない。
+
+**責任と入力。** ShellはUI、選んだread-only descriptor、profile ID、明示同意だけを渡す。Brokerの`LocalModelCatalog`/`LocalModelInstaller`が配布定義・モデル・license同意・資源・登録を管理し、既存`ModelProfileActivationCoordinator`が実runtimeへの読込みとactive pointerを確定する。UI/Brokerのprivate APIは20（model choice/discoveryをappend、既存transaction保持）、共通Platform APIは1、Local si Binder APIは4。各番号を別の契約として検査する。`com.localactionassistant`の実package/version/same signer/UID/APIを検証し、モデル名やファイル名から信頼を作らない。
+
+**配布定義。** 初期Developer Previewの一候補は[Qwen公式のQwen3 0.6B Q8_0 GGUF](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/tree/23749fefcc72300e3a2ad315e1317431b06b590a)、639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、[Apache-2.0](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/blob/23749fefcc72300e3a2ad315e1317431b06b590a/LICENSE)。contextはruntimeの2,048 token。tokenizerはGGUFの`tokenizer.*`（chat_template以外）のsorted-key/UTF-8/compact JSON、templateはGGUFの`tokenizer.chat_template` UTF-8のSHA-256をprofileへ固定する。両方は同じ検証済みGGUF内にあり、外部assetを追加取得しない。2 GiBの最小総RAMは導入条件で、実機の速度/品質/安全な空きRAMの受入証拠ではない。
+
+Ed25519の署名はRockの**開発preview配布定義**を認証する。Qwen本人の署名、安全性・文章品質の保証、OS/platform署名ではない。公開鍵・署名済profileはBrokerの署名APK内debug assetに固定し、読み込むGGUFから鍵やmanifestを受け取らない。release/Soong用の既定catalogは空、productionの配布設定は別gate。private model keyとweightはGit外、OS署名鍵は生成しない。
+
+Android 15の初回CIではJCAの`Ed25519`がAndroidKeyStoreを選び、software公開鍵のSPKI取込に失敗した。署名検証を省略せず、[Bouncy Castle公式配布](https://www.bouncycastle.org/download/bouncy-castle-java/)のlightweight Ed25519 verifier（`bcprov-jdk15to18:1.86`）へ統一する。providerのglobal登録や鍵生成はしない。GradleとSoongは`os/physical/model-crypto-artifact-lock.json`の同じJAR hash/sizeを検査する。full OSの専用Linuxでは`ROCK_MODEL_CRYPTO_JAR`を渡し、既存build入口が`stage-model-crypto.py`でvendorの`rock-model-crypto` moduleとlicense NOTICEを固定配置・再検証する。JARやcacheはGitに入れない。これはhost/Android候補であり、Soong全OS compileは未実行。
+
+
+**検証・状態・保存。** 未導入/確認待ち/検証中/読込み中/ready/失敗を分け、ファイル選択や登録だけでreadyにしない。readonlyかつregularなPFD、exact length、選択ファイルのSHA-256を先に確認する。既存stagerでBroker-private no-backup領域へコピー・再hash・atomic昇格し、runtimeがreadonly PFDから再コピー・再hashして返すprofile/hash/byte receiptとstatusを照合する。全て成功した時だけPlatformStoreのactive pointerを確定する。2コピーとreserveの容量、RAM/low-memory、解除状態を検査する。license同意はowner/profile digest/license/timeをBroker-private preferencesへ保存し、実行承認とは別にする。原稿と成果の正本は既存Broker DB/保護fileのまま。
+
+2026-10-17の実機初回試験ではimport/loadは通ったが、計画時に旧単体appの`repository.model()`を参照して失敗した。追加overlay `local-ai-loaded-profile-v4.patch`では計画を現在ロード済みの検証hashだけへ結び、単体appのmodel登録・暗黙load・profile再ラベルへ進めない。冷起動時は旧profile IDもhash/sizeとともに消してno_model状態を整合させる。未load/別hashを拒否し、runtime内部の排他hash再照合とBrokerの前後照合を保持する。hostのbridge回帰3ケースを含む26 Jest・型・lint・offline source検査が成功。CI 39043256663の同source/5 overlay APKを実検査しOS用unsigned lockへ更新、同payloadの開発署名copyで現v4の構造的一周を確認した。内容品質と全OSの合格は別である。
+
+**失敗と復旧。** 不明profile・未知key/失効key・改変署名・別weight・writable/pipe descriptor・容量不足・lock・version/signer/API不一致では停止し、仕事や旧active pointerを消さない。検証済cache/partialが残る場合は同じcatalog候補だけ明示再試行する。起動時autoloadや別model/cloudへのfallbackはなく、Skyから「保存済みモデルを再読込み」を選ぶ。runtime読込み後にactivationが失敗した時は既存coordinatorの旧profile復帰を試み、失敗を成功扱いにしない。失効・非互換profileへ戻さない。
+
+**モデル比較と内容品質。** 完成文の入力例をモデルがコピーしたため、`ZemaToolPlan.planningPrompt`は完成原稿を含めず短い主題別の入力条件を渡す。構造・Tool成功と内容の妥当性を分け、実機の合成依頼で主題との一致・雛形の不使用を検査する。0.6Bは一般利用の品質を未受入とし、追加のQwen公式Qwen2.5 1.5B Instruct Q4_K_M（revision `91cad51170dc346986eccefdc2dd33a9da36ead9`、1,117,320,736 bytes、SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e`、Apache-2.0、総RAM 4 GiB条件）を同じ開発publisher keyで認証する。license/size/hashを本人が確認して明示選択し、別profileへの無断fallbackはしない。debug catalogは2候補、release catalogは空。既存の未確定planに対する15分の固定予約とactive jobの切替禁止を保持する。 予約期限後に1.5Bの構造的一周（80.811秒）と保存済artifactのprocess再起動readbackを確認。その後のHome試験失敗と自動lock観測を経て、本人解除後に試験windowだけ点灯を維持し、固定候補`6c9a3083`のHome試験が64.625秒で合格した。準備だけでは仕事0、明示同意後に二重tapでも仕事1、実2工程成功、1.5B pinの395-byte成果物を確認待ちで保存。Broker process再起動後も同SHA-256を読み戻し、画面で成果表示、system保存先pickerから書出した395 bytesも一致した。内容は主題一致・完成文見本の不使用を確認したにとどまり、導入/3手順/出典未調査の依頼構成を満たさない。SDKは`afterChars=1`を指定し、既存`free-article@1`は有料部分を残して本文を切る契約のため、表示成果だけでrawモデル本文の不足原因を断定できない。次はraw本文の品質と抜粋Toolの出力目的を分け、依頼した草案全体に合う既存成果契約を選ぶ。一般的な文章品質や全Agent統括を合格にしない。
+
+実機の全停止→再開ではack 6 ms/遅延仕事0を確認したが、runtimeがreadyへ戻るまで28.785秒を要した。これは協調停止の現状であり、計算の即時終了を受入済みとしない。
+
+**仕事・停止・合格条件。** 依頼は既存LocalSubmissionの同owner/同ID、Sky token、署名profile/weights/runtime pinへ固定し、モデル結果を成功や権限にしない。モデル計画中も停止ボタンは別control executorからBrokerへ届き、`LocalPlanningFence`がstopと最終submitを直列化する。停止→再開後に旧計画が届いても新しい仕事を作らない。保存済み仕事、成果、本人review、工程claim時の電源/熱/停止制約を維持する。hostではv4とPlatform v1の分離・実2セグメントpackage、catalog改変/失効/未知項目、停止→再開の遅延結果拒否を検査する。Androidでは実署名検証、同意なし・writable・長さ不一致でactive/job不変を検査する。Pixelでは同一APK/同一GGUFでimport→実推論→2 Tool→review artifact→同ID再試行→再開/再読込みを確認し、未実行を合格へ換算しない。詳細手順は[Android prototype](os-prototype.md#pixel-local-model-acceptance)。
+
+<a id="pixel-intuitive-experience"></a>
+
+### Pixelの直感的な仕事操作と通知
+
+2026-10-17の本人の改善指示をOS11/O6/ROCKで実装する。目的は依頼・進行・確認・成果物・停止を探さず扱うこと。Shellの表示を刷新し、仕事/工程/保存/承認の正本は既存Brokerのままにする。全OS、cloud push、文章品質の受入を追加したとはしない。
+
+**利用体験と入出力。** Homeで依頼と実行先を選び「依頼の内容を確認」へ進む。準備だけでは仕事を作らず同意を外す。明示同意後だけ既存の同ID送信を行い、受付後は一つの仕事の詳細へ進む。Homeの確認待ちボタン、仕事タブの件数、一覧のカード、通知は同じ仕事へ戻る入口。確認待ちを優先し、進行中/履歴で絞れる。詳細は最新snapshotの工程数から進捗を示し、完了率・残り時間を推測しない。成果は全工程成功のreview/completedだけ自動読込みし、全文表示・system picker保存・確認メモ付き完了を用意する。失敗/needs_reviewを成果完成と表示せず、activeで失敗した工程だけ再試行を案内する。中止は対象仕事の確認dialog、全停止は端末全体の独立操作とする。計画中のフォームには端末の一時停止を置く。
+
+**通知の不具合修正。** receiver制限ContextでBinder接続していたため、Pixelで `ReceiverCallNotAllowedException` を再現。application Contextへ修正し、通常snapshot更新をbaseline扱いしないよう変更した。初回通知ON時だけbaselineを作る。診断はexception classと受信/読取り時刻だけをprivate保存し、本文/原稿は記録しない。
+
+**通知と責任。** Shell設定の「仕事の通知を受け取る」からAndroid通知許可を求め、既存仕事をbaseline化してから通知を開始する。拒否/失効/アプリ側OFFでも仕事は変えない。進行は静かなchannel、確認/対応は独立channelで種類と音を本人が変更できる。Brokerはsubmit/状態変更/JobScheduler工程の後、explicit componentとsignature permissionでIDだけの更新hintを送る。Shell receiverは既存のexact-package/signer Binderでsnapshotを読み直して通知を作る。hintのstate、原稿、成果を採用しない。通知はgenericな状態/工程数のみ、lockscreenはprivate/public版で原稿やtitleを見せない。同じ仕事/状態は再通知せず、中止は通知を除く。通知を押してもsubmit/retry/complete/承認/課金は実行せず、immutable PendingIntentのIDを最新25件と照合して詳細を開く。外部の未知IDでも表示照合に限る。通知の状態は最後の観測であり、タップ後のBroker正本を優先する。
+
+**保存・失敗・復旧。** 原稿/成果/同ID/本人メモは既存Broker、表示中の下書きは既存メモリ、フィルタ/詳細IDはActivity状態、通知のON/OFFと状態stampはShell-private preferences。通知stampはReceipt/完了証拠ではない。読取り失敗は通知を作らず、画面再開で正本を再取得する。通知許可の処理中にOFFにした場合は遅延のON要求を破棄する。通知停止/読取り失敗をTool failureへ変換しない。タイトルは検証できた既存成果の先頭行だけ、技術ID/モデル名/工程内訳は詳細の折りたたみに置く。先頭25件外の通知IDは不明と示し、仕事を作り直さない。
+
+**モデルと検索。** [選択/公開検索の詳細契約](llm-evaluation-architecture.md#selectable-models-and-automatic-default)に従う。Homeは自動が初期値、署名済LLMを手動指定可能。準備したexact digestを実行時pinと照合する。Skyの公開検索は別の明示操作であり、未検証candidateを自動選択対象にしない。
+
+**合格条件。** 同じAPKのPixel GL066で (PXUX01) 自動を含む4経路の準備に実行/同意継承0、(PXUX02) 優先一覧→一件の詳細→戻る、(PXUX03) 不完全reviewの成果/完了を禁止しempty確認を拒否、(PXUX04) 実Tool二重送信1仕事と成果保存/読戻し、(PXUX05) 許可/拒否/OFFで仕事を変更しない、(PXUX06) background実Tool→通知→実System UI tap→同じ仕事と成果、追加実行0、(PXUX07) 中止/停止/再開と失敗時の再試行表示、(PXUX08) 大きな文字・画面幅・戻る・process再起動の操作を検証する。fixture、host、emulator、実機は別に[台帳](evidence/pixel-intuitive-experience.json)へ記録する。
+
+未決定: 通知音の好みはAndroid channel設定で本人が選ぶ。cloud通知/多端末引継ぎ/25件を超える検索は対応adapterとowner-scoped paginationの別受入を必要とする。機種やSKU間でPixelの証拠を転用しない。
+
+### Home・音声・一般アプリ
+
+main/aosp双方でHOME/DEFAULT候補を宣言する。既定HomeはRoleManagerのsystem画面で選択・変更でき、自動設定しない。Homeへ戻る操作で新しい仕事を実行しない。Android設定と、LAUNCHERとして公開された一般appへの入口を残し、QUERY_ALL_PACKAGES・任意shell/root・他appの私有data取得を追加しない。
+
+`TerminalVoice`は明示操作から`createOnDeviceSpeechRecognizer`を使い、マイク許可、解除状態、20秒上限、停止、背景化、遅延callbackと編集中原稿の保護を扱う。認識結果は編集可能な下書きだけで、Tool承認にしない。端末内の日本語認識がなければ文字へ戻し、cloudへfallbackしない。TTSはinstalledの日本語・network不要voiceだけを選び、依頼文の先頭2,000文字までを明示操作で読む。日本語voiceがなければ不足表示し、lock/背景化/停止で中止する。SpeechServices英語TTSの同梱を日本語会話の合格にしない。ShellのINTERNET/MANAGE_PLATFORM権限は引き続きなし。RECORD_AUDIOは本人操作時だけruntime許可を求める。
+
+### 合格条件と残る実装
+
+Home候補・権限境界、3経路の下書きと承認解除、v4 statusと旧v2の拒否、中止履歴/空review拒否、実Toolの二重送信防止/保存/Activity再開をinstrumentationで受け入れる。実機、emulator、署名済APK hash、保存先picker、Home選択、実再起動、日本語音声の利用可否を台帳で別記録する。PX01の現v4実機一周は下記の限定recipe/APKで確認済み。production配布設定、Jennifer Goal統括のnative統合、実cloud/商用請求、混合realm、全OS/正式署名/flash/OTA/全損復旧、Mini/iOS継続は未完了で、今回の有限Tool受入へ加算しない。
+
+main PR #148 (`60765fc3`) のStripe sandbox実往復も保全する。合成usage 1 USDの請求/テスト決済/署名通知/再照合は当該証拠で受入済み。実Cloud Agentのusage、140 USDの継続契約/有限後払い/権限制限、本番課金は別であり、Pixelの有料実行を自動で有効にしない。
+
+主担当OS11/O6、ROCKはAPK/Core/同ID・状態・停止・保存を実装する。AI04は署名済modelと日本語ASR/TTSのlicense/品質/資源、SKY21/BIL02はProvider/請求、RLS02は同imageの配布・復旧を受け持つ。OWNERのHome選択・model/外部送信/予算同意を保持する。検証は`os:check`、AndroidのCore/SDK/JVM/build/lint、`TerminalHomeIntegrationTest`、`LocalAiServiceIntegrationTest`、`design:check`、`npm run verify`。失敗は同じ候補の原因・修正・再検証と未実行欄へ残す。
+
+
+## Pixelの公開モデル導入と記事以外の仕事
+
+検索→対応署名profile照合→明示Wi-Fi取得または同weight再検証→作業別選択→実推論/保存の正本は[LLM設計](llm-evaluation-architecture.md#pixel-discovered-model-install)、同artifactの証拠は[実機台帳](evidence/pixel-discovered-models.json)。主担当OS11/O6/ROCK。現在はShell22・runtime package8/API4・Engine4・checkpoint6の非破壊Developer Preview APK受入。DB3→4と旧backup読取を維持し、一般品質やfull OSへ転用しない。
+
+本人指定のRockstarOS・Skyサービス案は、同じowner/request/model pinの実300件を5件ずつ60生成+sealで保存し、番号・実数・正規化完全重複・制御記号・全prefixのhash連鎖、Broker再起動後の同bytesを確認。各raw180秒/lease240秒、拒否返答の有限再生成3回、30件でcompact復旧1回と220件で通常UI retry1回が必要だった。旧v5だけ短い指示への明示compactを許し、新規v6の時間切れは保存済み案を保つ通常の再試行へ案内する。owner/同意/expected digest/pin/timeout/event/停止fenceを維持し、黙った旧本文の変更や無制限retryをしない。
+
+現APKでauto code→Coder5、実手動chooser→同profileの生成/保存、実通知tap/公開検索、導入境界/SQLite、元24仕事/70artifactと全248body hashを確認した。コードは実行しない。意味の近い案・弱い物理連携・前提条件不足は残る下書きで、owner確認待ちを維持する。旧package7の25件中止や旧checkpoint v1〜v5の失敗はLLM台帳の履歴へ集約し、現行と並列の候補にしない。動的な任意作者native導入は未実装で、[Skyのaddプラグイン方針](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)と現Pixel適合範囲を分ける。全OS image/正式署名/flash/OTA/全損復旧・一般backgroundは別gate。

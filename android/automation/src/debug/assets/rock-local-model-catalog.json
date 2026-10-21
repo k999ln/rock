@@ -1,0 +1,150 @@
+{
+  "schema": "rock-local-model-catalog/1",
+  "keys": [
+    {
+      "publisherId": "dev.rock.preview",
+      "keyId": "dev.rock.preview.20261016",
+      "publicKeyBase64Url": "KhLKwWneSBVB1G4B78JNCIrGaWjOlM8i-Lo8E7SBNCI",
+      "revoked": false
+    }
+  ],
+  "models": [
+    {
+      "name": "Qwen3 0.6B Q8_0",
+      "fileName": "Qwen3-0.6B-Q8_0.gguf",
+      "source": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf",
+      "licenseUrl": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/blob/23749fefcc72300e3a2ad315e1317431b06b590a/LICENSE",
+      "trustLabel": "内容品質は未合格：入力例のコピーや主題相違を確認。構造の動作試験向け。Rock Developer Previewの検証済み配布定義。Qwenによる署名ではありません。",
+      "profile": {
+        "profileId": "dev.rock.qwen3-06b-q8",
+        "version": 6,
+        "weightsSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+        "tokenizerSha256": "27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d",
+        "templateSha256": "57f1fd00f0013a2be96aa79b857391f27e23df5b5f847072b524c897e24d0361",
+        "licenseId": "Apache-2.0",
+        "publisherId": "dev.rock.preview",
+        "signingKeyId": "dev.rock.preview.20261016",
+        "runtimeComponentId": "org.rockstar.runtime.localai",
+        "runtimeVersionCode": 8,
+        "runtimeApiMin": 4,
+        "runtimeApiMax": 4,
+        "format": "GGUF",
+        "quantization": "Q8_0",
+        "contextTokens": 2048,
+        "planSchemaId": "local-work@1/output-v1",
+        "artifactBytes": 639446688,
+        "minRamBytes": 2147483648,
+        "manifestSignatureBase64Url": "gJ-uyHpoi-vEC9xB2wbR01tB6fYUbTJKU1c_ou7SvRaUXPLPow7GkKzqYA91aakMJAN2dhtVJPogKwCsriuTCA"
+      },
+      "tasks": [
+        "article",
+        "summary",
+        "translation",
+        "code",
+        "planning",
+        "writing"
+      ],
+      "autoPriority": 0
+    },
+    {
+      "name": "Qwen2.5 1.5B Instruct Q4_K_M",
+      "fileName": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "source": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/91cad51170dc346986eccefdc2dd33a9da36ead9/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "licenseUrl": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/blob/91cad51170dc346986eccefdc2dd33a9da36ead9/LICENSE",
+      "trustLabel": "Rock Developer Previewの検証済み配布定義。Qwenによる署名ではありません。 発想案は分野名のコピーや途中切れを確認し、内容品質不合格。発想の自動選択から除外。",
+      "profile": {
+        "profileId": "dev.rock.qwen25-15b-q4km",
+        "version": 6,
+        "weightsSha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+        "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
+        "templateSha256": "d5495a1e5db0611132a97e46a65dbb64a642a499421228b9c8b93229097fa9a4",
+        "licenseId": "Apache-2.0",
+        "publisherId": "dev.rock.preview",
+        "signingKeyId": "dev.rock.preview.20261016",
+        "runtimeComponentId": "org.rockstar.runtime.localai",
+        "runtimeVersionCode": 8,
+        "runtimeApiMin": 4,
+        "runtimeApiMax": 4,
+        "format": "GGUF",
+        "quantization": "Q4_K_M",
+        "contextTokens": 2048,
+        "planSchemaId": "local-work@1/output-v1",
+        "artifactBytes": 1117320736,
+        "minRamBytes": 4294967296,
+        "manifestSignatureBase64Url": "fZiOyOlo5WfR5HaIL2DvUffqLO_BNIfoBr3yvCrwZ9Yh8Om3TJTugpGxyIbsIDn6bVtJNmBPngGkQ0CotiYPAQ"
+      },
+      "tasks": [
+        "article",
+        "summary",
+        "translation",
+        "code"
+      ],
+      "autoPriority": 50
+    },
+    {
+      "name": "Qwen2.5 Coder 1.5B Instruct Q4_K_M",
+      "fileName": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "source": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/f86cb2c1fa58255f8052cc32aeede1b7482d4361/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+      "licenseUrl": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/blob/f86cb2c1fa58255f8052cc32aeede1b7482d4361/LICENSE",
+      "trustLabel": "Rock Developer Previewの固定配布定義。コード下書き向け候補。生成コードは実行せず、内容は本人が確認します。Qwenによる署名ではありません。",
+      "profile": {
+        "profileId": "dev.rock.qwen25-coder-15b-q4km",
+        "version": 5,
+        "weightsSha256": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+        "tokenizerSha256": "db18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547",
+        "templateSha256": "24f79a69401549da90b4da8477caf9cab6fc0a58929b81767003df310a513e33",
+        "licenseId": "Apache-2.0",
+        "publisherId": "dev.rock.preview",
+        "signingKeyId": "dev.rock.preview.20261016",
+        "runtimeComponentId": "org.rockstar.runtime.localai",
+        "runtimeVersionCode": 8,
+        "runtimeApiMin": 4,
+        "runtimeApiMax": 4,
+        "format": "GGUF",
+        "quantization": "Q4_K_M",
+        "contextTokens": 2048,
+        "planSchemaId": "local-work@1/output-v1",
+        "artifactBytes": 1117320768,
+        "minRamBytes": 4294967296,
+        "manifestSignatureBase64Url": "DPWgFfLti9GHe51-bHxqjl9qfhgK1PyNERyNyDX3tKnxZx8aCaMhRZ8kJk-To3aXzgD1mvFyFBSI1FCSFiRADg"
+      },
+      "tasks": [
+        "code"
+      ],
+      "autoPriority": 90
+    },
+    {
+      "name": "Qwen3 4B Instruct 2507 Q4_K_M",
+      "fileName": "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+      "source": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/a06e946bb6b655725eafa393f4a9745d460374c9/Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+      "licenseUrl": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/blob/a06e946bb6b655725eafa393f4a9745d460374c9/README.md",
+      "trustLabel": "Qwenの元モデル、Unslothの量子化。Apache-2.0の公開定義を固定hashで確認。Rock Developer Previewが配布定義を署名。Qwen/Unslothによる署名ではありません。Pixelで短文20案の生成・保存を限定確認。発想の自動候補。内容・実現手段・関連性の確認が必要。",
+      "profile": {
+        "profileId": "dev.rock.qwen3-4b-2507-q4km",
+        "version": 2,
+        "weightsSha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+        "tokenizerSha256": "ee28b958b28c088fc6713ddeb2257bbadacc406eb2b3cf76e395c1bfd1c2a54d",
+        "templateSha256": "c979e0e71a3e21b8f208e6ab120d5cb29327885f29d2a8b18fda67a723798e18",
+        "licenseId": "Apache-2.0",
+        "publisherId": "dev.rock.preview",
+        "signingKeyId": "dev.rock.preview.20261016",
+        "runtimeComponentId": "org.rockstar.runtime.localai",
+        "runtimeVersionCode": 8,
+        "runtimeApiMin": 4,
+        "runtimeApiMax": 4,
+        "format": "GGUF",
+        "quantization": "Q4_K_M",
+        "contextTokens": 2048,
+        "planSchemaId": "local-work@1/output-v1",
+        "artifactBytes": 2497281120,
+        "minRamBytes": 8589934592,
+        "manifestSignatureBase64Url": "Uh8VJqLf6DhKB12DeM6wOoEsFKsMruahK2MK46x_Yu0NGZNhrhEClU88oyODgccNXhqJGxnc13Tak9U7SYXQBg"
+      },
+      "tasks": [
+        "planning",
+        "writing"
+      ],
+      "autoPriority": 80
+    }
+  ]
+}

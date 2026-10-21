@@ -1,5 +1,10 @@
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-17追加指示: 1時間の合成契約とは別に、月額140ドル・利用枠100ドルの月次プランへ無料Cloud自動選択を接続し、上限停止と入金後復旧をSandboxで検証する。本番課金は無効。仕様と受入範囲は[請求設計](sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。
+
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと1時間限定の合成検証契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。詳しくは [LLM設計](llm-evaluation-architecture.md)を参照。
+
+
 2026-10-15確定: RockstarOSはJennifer・Sky・Zemaを統合し、各サービスは単体でも利用できる。Sky単体でAgentの選択・接続・実行・usage計測・月次請求・入金確認まで成立させ、Jennifer/Zema/native OS/Mini/SIMを必須にしない。Zemaは同じ明細を参照する。[責任・保存・復旧・独立利用の受入](sky-billing.md)は設計であり、本番課金受入ではない。
 
 更新: 2026-10-15。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
@@ -13,6 +18,8 @@
 ## 現行製品方針
 
 ### 公開コードを根拠にPixel si専用端末を設計する
+
+2026-10-17の本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を、[Pixelの体験改善項目](workstreams/07-android-device-local-ai.md#pixel-usability-feedback)として記録する。続く本人の「改善して、Pixelで直感的に使えるように」「操作性がもっと直感的に」の実装指示により、[一覧/詳細/通知の導線](native-os-integration.md#pixel-intuitive-experience)を改修する。同一APKの実機成績は[専用台帳](evidence/pixel-intuitive-experience.json)で確認し、設計だけで改善受入済みにしない。機能が動くことを操作性の合格に置き換えず、既存RQの体験改善として扱う。
 
 2026-10-15、本人の追加依頼により[Pixel実装設計](native-os-integration.md#pixel-si専用端末の実装設計)を具体化する。GrapheneOSの公開構成/差分を根拠に、既存OSの防御・回線・標準appを引き継ぎ、Home/音声/能力選択/仕事/費用/復旧を既存Rock実装へ接続する。端末とcloudの仕事正本を分け、混合工程には同root authorityのadapter受入を必要とする。SpeechServicesの正しいremoteとv3 TTSを確認し、日本語ASR/TTSの不足を別途扱う。調査版2026100600で採用lock2026100200を自動更新しない。機械可読判断は`pixelSiReferenceDesignIntent`、調査根拠は[コード台帳](evidence/grapheneos-source-audit.json)。新しいRQ/価格/実行許可を増やさず、PX01〜12は未実行の受入条件とする。
 
@@ -30,11 +37,21 @@
 
 本人の追加指示によりSkyの月額140 USDプランを設計する。2026-10-16の本人指示で米国向け・利用枠100 USD（差額40 USD）を確定。携帯契約のように契約同意・継続回収・未払い時の利用権制限を結ぶ。税、超過単価、州別の販売条件は未確定で、本指示だけで旧30%/1,000円等の数値を変更しない。無制限利用やconsumer stored balanceを作らず、見積・並列予約・account上限・usage/請求照合・停止/解約を同じplan版へ結ぶ。[料金契約](service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン)と`cloudServicePlanIntent`が具体化の正本。本番課金/paid実行gateは未受入のまま。
 
+### 使いたい能力を追加・交換するSky
+
+2026-10-18本人の追加指示により、Skyで追加したAgentから実Toolを実行して成果物を作る経路を実装する。使用Tool・順序・モデル・保存範囲を本人が確認し、Brokerが宣言と実行/結果を検査する。まず既存の端末内文書ToolでPixel受入し、モデルの文章やAgentの宣言を権限・Tool成功に昇格しない。[実Tool契約](llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)。
+
+2026-10-17本人の実装指示「Skyで見つけたLLMやエージェントを、固定カタログに縛られず追加してPixelで実際に使えるように」により、[owner別の動的追加](llm-evaluation-architecture.md#pixelでのllmagentの動的追加)を実装する。固定作者/モデルIDを持たず、対応GGUFと宣言型local Agentから拡張する。未知形式・任意コード・追加権限・実課金を自動許可せず、実機の可否は同一APKの証拠で判定する。
+
+2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+
 ### ソフト・家具・建築へ開くマーケットプレイスとハブ
 
 2026-10-15の本人指示でSkyはAgent/LLMのマーケットプレイス兼ハブを製品の中心定義とする。RockstarOS以外のapp/Web/機器/家具/インテリア/建築へ、共通の能力宣言と本人/データ/費用/停止契約で接続する。Miniは空間の任意host、Pixelは第一者端末、Pro/cloudは選べる計算先。ソファー例は実センサー→荷重adapter→Sky→有効性/本人確認→ヘルスケアAgentの記録/傾向表示とし、計測・校正・共有同意を分ける。[詳細・責任・未実行SF01〜05](sky-mcp-architecture.md#家具建築まで開くskyの融合)を参照。catalog掲載や製品名だけで実機接続・健康計測・協業契約の成立にしない。
 
 ### Skyでlocal・cloud・明示した組合せを選ぶ
+
+2026-10-17の追加指示により、LLMを手動でも選べるようにし、通常は作業に適合する利用可能なmodelを自動選択する。Codex loginを唯一の前提にしない。[要求・現在の不足・合格条件](llm-evaluation-architecture.md#selectable-models-and-automatic-default)は実装待ち。モデルの自動選択と、本人の実行承認・外部送信許可・費用上限を分ける。
 
 2026-10-15、本人はcloud Agentの利用とlocal LLM導入の双方を選択可能にし、「だからskyがある」と明示した。Skyをmodel/Agent/Toolの発見・導入/接続・実行先選択の入口とし、cloud固定や全機種local必須にしない。modelの推論先とAgent runnerを区別し、準備状態・実host・送信範囲・費用・必要資源を提示する。選んだ経路は同じZemaのJob/成果/上限へ結び、未接続時の自動fallbackや無断送信を行わない。[詳細と未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)および`skyExecutionChoiceDecision`を正本にする。既存6 adapter/固定local modelの証拠は保持し、全選択肢の利用可能・本番合格を宣言しない。
 
@@ -466,3 +483,8 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 ## 2026-10-15 Mini着脱・衛星Wi-FiとAgent月次請求
 
 利用者が建築/家具へ埋め込む着脱Mini、衛星WANによる携帯Wi-Fi、携帯料金に近いAgent利用の月次後払いを明示。R5の1本自律を維持し、外部給電のみの前提を設置中給電＋携帯電源へ更新。battery部品・衛星方式・料金数値は未確定。未払い時は通知/異議/有料実行制限/適法な回収で扱い、OSに銀行口座凍結権を与えない。[統合設計](service-design/08-mini-connectivity-and-billing.md)。
+
+2026-10-17追加指示: 無料Cloudの402待機時間を表示し、無料枠回復後に自動続行する。生成前拒否の確認・同一ID/CAS・本人同意・有限回数/期限を条件とし、結果不明の再送と本番課金は無効。[実装契約](llm-evaluation-architecture.md#無料cloudの待機と自動続行2026-10-17)。
+
+
+2026-10-17の明示指示: 無料Cloudは画面を閉じても待機・自動続行し、再訪で結果確認。本人同意を永続保存、同ID/CASで二重実行を防止、実アカウントのSandbox請求不変を検証。本番課金はしない。従来の画面内限定を更新する。仕様はdocs/llm-evaluation-architecture.mdの画面外継続。

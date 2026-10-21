@@ -19,7 +19,7 @@ public final class RuntimeManifest {
         require(componentId, "[a-z0-9]+(?:[._-][a-z0-9]+){2,}", "INVALID_RUNTIME_ID");
         if (versionCode < 1) throw new IllegalArgumentException("INVALID_RUNTIME_VERSION");
         require(signingDigest, "[a-f0-9]{64}", "INVALID_RUNTIME_SIGNER");
-        PlatformApi.requireCompatible(apiMin, apiMax);
+        requireApiRange(apiMin, apiMax);
         this.componentId = componentId;
         this.versionCode = versionCode;
         this.signingDigest = signingDigest;
@@ -32,6 +32,12 @@ public final class RuntimeManifest {
     public String digest() {
         return Engine.digest(String.join("\n", componentId, Long.toString(versionCode), signingDigest,
             apiMin + ":" + apiMax, String.join(",", modelFormats), String.join(",", planSchemas)));
+    }
+
+    /** Runtime Binder versions are independent from the Platform component API. */
+    static void requireApiRange(int minimum, int maximum) {
+        if (minimum < 1 || maximum < minimum || maximum > 65_535)
+            throw new IllegalArgumentException("INVALID_RUNTIME_API_RANGE");
     }
 
     private static List<String> values(List<String> values, String error, String pattern) {

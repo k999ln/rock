@@ -1,12 +1,12 @@
 # RockstarOS — LLM・評価モデル設計
 
-更新日: 2026-10-15（Pixel実装設計への接続を追補）。対象: `RockstarOS 1.0` / `dev.rock`。
+更新日: 2026-10-17（Pixelのモデル選択と公開モデル検索を実装）。対象: `RockstarOS 1.0` / `dev.rock`。
 
 この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [siネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
 ## 1. 結論
 
-- 現行の端末内LLMは、Pixel 10上の `Qwen3-0.6B Q8_0` と `llama.rn 0.12.9` による固定profileの試験署名APK実証である。交換可能な複数profileやOS image搭載は未実装。
+- 現行の端末内LLMはPixel 10の署名済2 profile（Qwen2.5 1.5B / Qwen3 0.6B）と `llama.rn 0.12.9` / Binder v4を使うDeveloper Preview APK。手動指定と記事準備向け自動選択を実装した。全OS image搭載と一般品質は未受入。
 - 端末内LLMは**非信頼planner**である。Toolを実行せず、許可を発行せず、台帳や仕事状態を書き換えない。
 - Brokerが唯一の実行権限判定者、Engineが検証済みToolの決定論的実行者、Zemaが依頼・進捗・承認・停止・結果の窓口である。
 - WebのOpenAI接続はSkyの `法務受付` と `特許アシスタント` のオンライン検索オプション内部だけにある。標準経路は端末内の決定論的ガイド／ドラフトで、通信断時もSkyの受付・整理・引継ぎを止めない。
@@ -65,7 +65,38 @@ Web／native共通の判断境界は [`lib/decision-layer.ts`](../lib/decision-l
 
 Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確認へ、local-only要求をLocal Qwenへ、複雑かつremote許可済みの要求だけをJev／cloud候補へ送る。Local runtime未接続時に秘密データをcloudへ送らない。Jevのchoice結果も `advisory-only` であり、Brokerの権限、Wallet、MCP、Tool成功を決めない。
 
+<a id="selectable-models-and-automatic-default"></a>
+
+## LLMの明示選択と、作業に応じる自動選択
+
+2026-10-17、本人が「Codex経由しか使えない形にせずLLMを選べるように、defaultは作業に一番良いものを自動で選ぶ」と指示。これを次の実装要件として記録する。現在のPixelはCodex loginを使わない端末内Qwenの有限Tool経路を持ち、Webに6 provider adapterがあるが、選択肢の登録を接続・credential・本番利用可能と扱わない。AMCの一部実作業はCodex CLIへの個別引渡しであり、任意LLMと同等のTool実行を持つわけではない。
+
+model推論先とAgent/Tool runnerを分離する。PixelのHomeの通常値は「自動」、LLM名の手動指定は別の選択として実装した。候補のready状態、対応作業/入出力、privacy/外部送信許可、必要資源、事前見積/予算で適合候補を選び、理由と実際に使うmodel/hostを実行前に表示する。「世界で一番優れる」という未検証の保証をしない。手動指定を黙って別modelへ替えず、実行中の無断fallback、未導入weightの無断取得、Codex/OAuth sessionの転用、未承認の有料cloud実行は行わない。利用者の自動選択指示はmodelの選択方針であり、Broker権限・本人承認・既存の本番課金gateを解除しない。
+
+**Pixelの実装範囲。** 新候補の `ModelSelectionPolicy` v3は記事・要約・翻訳・コード下書き・計画・文章を区別する。署名catalog、owner別license同意、検証済private cache、RAM条件を満たす候補から選ぶ。記事・要約・翻訳はQwen2.5 1.5B、コードは導入済Qwen2.5 Coder 1.5B、発想・計画・文章はQwen3 4B Instruct 2507を優先する。1.5Bは発想の内容試験不合格でplanning/writingから除外。4Bは短文20案の限定生成・保存試験であり、関連性が弱い案もあるため有用性・事業性の保証ではない。0.6Bは文章品質不合格のため自動候補に入れない。手動指定はexact digestを固定し、無断切替・cloud fallbackはしない。私有Shell API 22、Platform API 1、Local Binder API 4/package version 8（新候補、実機再受入中）は別の版である。新候補の実機合格は下記の受入で確定し、旧版15件の成功を転用しない。
+
+**未受入と次の判断。** 全作業共通のmodel/runner能力契約、比較benchmark、文章品質、各cloud providerの接続・手動model指定・実利用/費用の受入は残る。現在の自動選択は世界全体の最新modelから最良を保証するものではない。合格証拠は[同一APK台帳](evidence/pixel-intuitive-experience.json)で実model pin、Tool成果、同IDを照合する。credential不足や商用契約待ちはそのまま表示する。
+
+<a id="public-model-discovery"></a>
+
+## Skyの公開モデル検索と、実行できるモデルの境界
+
+2026-10-17の本人指示「今何が使えるのかリアルタイムでサーチ、XやGit等のopen LLM」を受け、Skyに明示検索を追加。検索語は原稿とは独立した1〜80文字。検索buttonを押したときだけBrokerがGitHub repository searchとHugging Face model APIへHTTPS GETし、各4件のGGUF関連候補をGitHub更新順・Hugging Faceダウンロード数順に取得する。Homeの依頼文・原稿・credentialを検索へ渡さず、Shellとlocal runtimeにはINTERNET権限を付けない。
+
+**責任・入出力・状態。** ROCKは固定origin/path、無redirect、8秒connect/read timeout、1MiB応答上限、ID/文字列/件数の検査を管理する。GitHub/Hugging Faceは公開情報の提供者で、licenseや性能の記載は第三者のclaim。表示は出典URL、取得時刻、更新日時、licenseの公開表記、未導入・未検証、Pixel適合未確認とする。OSSかどうか・商用許可を自動認定しない。外部sourceの本文や命令をplan/Tool/署名catalogへ昇格しない。検索自体はweightsのdownload、license同意、model登録、実行を伴わない。対応署名catalogとHugging Face repository IDが完全一致した候補にだけ、別操作の導入buttonを表示する。
+
+**保存・失敗・復旧。** 検索結果は画面メモリのみで、履歴・原稿・認証情報を保存しない。15秒以内の再検索とsource別403/429を抑止し、Retry-After/resetを最大1時間まで尊重。片方失敗はpartial、全失敗はunavailableとして再検索を案内し、古い結果を最新として再表示しない。system browserで公開元を開ける。任意URLやgithub clone/scriptを取得実行しない。
+
+**Xと未決定。** 現在は明示確認付きでXの最新検索を外部browserへ開く。X APIは未接続で、投稿取得/ランキング/検証済み表示はない。API連携には公式App Bearer認証と契約・予算・秘密管理を先に定義する。検索結果から導入候補を増やす際は、重みlicense・固定revision/hash・runtime適合・資源・品質試験・publisher署名・本人同意を既存配布契約へ通す。検索人気や自己申告だけで自動実行対象を増やさない。
+
+**合格条件。** parser/rate/応答上限/不正origin/partialのhost試験、Pixelの実UI→両公開API→候補表示、検索前後の仕事数と署名catalog不変、手動/自動のexact profile pin、通知の実System UI tapを同一APKで検証する。Xの外部検索をX API実通信と数えない。
+
+一次資料: [GitHub Search API](https://docs.github.com/en/rest/search/search#search-repositories)、[GitHub rate limits](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)、[Hugging Face model search](https://huggingface.co/docs/huggingface_hub/en/guides/search)、[X recent search認証](https://docs.x.com/x-api/posts/search/quickstart/recent-search)。
+
 ## 3. Local plannerの契約
+
+2026-10-16のPixel実装は[署名済catalog・導入・再読込み・Jennifer有限計画](native-os-integration.md#pixel-local-jennifer)を既存v4 handoffへ接続する。Platform API v1とruntime Binder v4は別の版範囲。debug catalogは署名済み2候補、production catalogは空。2026-10-17、固定候補`6c9a3083`とQwen2.5 1.5BでPixel 10 GL066のHome→実v4計画→実2 Tool→確認待ち成果物保存を64.625秒の試験で確認した。生成文は主題に沿うが短く、依頼した構成や出典未調査表示を満たさず一般品質は未受入。機能・内容・全OSの受入を分ける。
+
 
 現在のsource契約は `Sky selection → Zema request → Broker → Local AI plan-only API v4 → Broker validation → Engine → review`。`contracts/local-ai-runtime.json`を正本とし、9月のAPI v2実機証拠を現v4実機合格へ転用しない。transport識別子等に残るv2は互換IDとして扱い、実際に照合するAPI版と混ぜない。
 
@@ -85,6 +116,45 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 ### Zema Webの有限local Agent（最新mainの別profile）
 
 `lib/zema-local-agent.ts`と`/api/llm/local-agent`は、同じPCのOllama/OpenAI互換loopbackに限定した非信頼plannerを使う。閉じたJSON schema、最大3手、`sky_route`/`format_citations`/`coconala_check`だけを受け入れ、Tool結果・入力を命令として扱わない。shell、任意file、外部network、購入/投稿/送信/権限変更とCloud fallbackはない。local previewのqwen3:0.6b会話受入は本番公開・Tool選択品質・native Pixel受入と別。公開Workerは本人PCの127.0.0.1へ到達できず、companion/bridgeは未実装。local preview固定userはloopback hostだけに限定し、公開認証を迂回しない。model出力をBroker権限や未実行Tool成功へ昇格させない。
+
+## PixelでのLLM・Agentの動的追加
+
+受入の現在地は[専用証拠](evidence/pixel-open-addons.json)。2026-10-18、API24の同一APKで非同梱Coder1.5B Q5_K_Mの公開検索・実取得・全hash/metadata/load・コード生成保存、宣言型Agentの実生成、同ID再送・失効・再同意、Broker process再起動後の同成果/UI表示、実通知tapを確認した。初回0.5Bのecho/コード形式不正とAgent入力契約不一致は履歴に残す。一般品質・任意Agent framework・全OS受入へ昇格しない。新モデルは試した作業だけ本人確認後に自動候補へ入り、今回の標準codeは既存Coder90を選んだ。追加モデルの最良判定ではない。
+
+目的は、APKへ作者やモデルIDを追加するリリースを待たず、Skyで見つけた能力を利用者自身が追加・選択・無効化すること。2026-10-17の本人指示を既存OS11/O6（ROCK主担当、SKY07/SKY21連携）で実装する。現段階はDeveloper Preview APKであり、全OS・一般公開・商用課金の受入ではない。
+
+**体験と入力。** Skyの公開検索またはURL欄から、Hugging Faceの公開・非gatedリポジトリ/単一GGUF、GitHubの宣言型Agent JSONを指定する。モデルは固定commitのファイル候補を選び、出典・版・license・容量・重みSHA-256・作者署名なし・品質未検証・自動選択への参加を確認して追加する。その後にWi-Fi取得と別の導入操作を行う。Agentは名前・公開元・固定版・指示・追加権限なしを確認して追加し、依頼と実モデル・処理/保存への同意を確認して開始する。モデルの手動指定はHomeの既存chooser、標準は作業別の自動選択を使う。
+
+**契約と責任。** private Shell API24の動的追加契約を維持し、API25でTool Agentの宣言と実行確認を加える。ROCKはorigin/path、応答量、timeout、owner、unlock、proposal期限30分、exact digest、同意、immutable版、保存、実行hostと失効を強制する。公開配布元はmetadata/weights/Agent定義を提供する。licenseは公開表記であり安全性・性能・法的適合の保証にしない。作者/モデルIDに固定allowlistや公式優遇はない。一方、実行形式はruntimeに対応する単一GGUF（4GiB以下、対応量子化/architecture、Apache-2.0/MIT/BSD-3-Clause）と`rock-sky-agent/1` / `local-text/1`、下記schema2の端末内Tool adapterに限定する。未対応形式や権限はadapter不足として拒否し、公開コードやREADMEの命令を実行しない。
+
+**真正性の区別。** 既存APK catalogのEd25519署名検証は維持する。動的モデルは`owner-pin:<owner hash>` / `owner-consent` / 空の作者署名を明示し、本人が固定した定義と一致するBroker私有のadmission receiptで認証する。作者の署名に見せかけず、既存の署名verifierはこの形式を拒否する。OS/platform鍵や第三者作者の鍵を生成/代用しない。公開元はHTTPS repository originであり、法的作者本人の身元確認ではない。GGUF v2/v3 headerから埋込tokenizer metadataとchat templateのdigestを得る。実導入では全weight SHA/lengthと実ファイルのmetadataを再照合し、既存runtimeの署名/API/RAM/空き容量・実load receiptを満たすまでreadyへ昇格しない。templateはデータとして扱う。
+
+**状態と保存。** `choose_file → prepared proposal → added → downloading/downloaded → verified/load → ready`、不足はblocked、本人による無効化はrevoked。proposalと最大32定義はowner別Broker私有保存。既存署名manifestのdigestは維持するが、新しいowner-pin形式はAPI24対応APKが必要で、旧APKへのdowngrade受入は未実施。backupからmodel rowだけを戻してもadmission receiptや導入同意の復元にはせず、再追加/再同意/再検証を要求する。新しい版/出典/指示は新digestと新しい同意が必要で、同IDの内容を書き換えない。権限や費用をimport定義から増やさない。推論は既存model pinとZemaの仕事/検査/成果保存へ接続する。Agent provenance（定義digest、固定公開元、recipe、元依頼）を同じ仕事の入力とrequest digestへ保存する。実行時にもそのexact field集合・定義digest・作業種別・元依頼から再構成したpromptを照合する。仕事詳細へAgent名と固定公開元を表示し、再送は同じrequest IDで照合する。アプリ再起動後も定義を再読込みし、未確定の依頼を別IDで自動再送しない。
+
+**Agent実行。** Agentは独立した重みや任意コードではなく、版付きの役割/指示と作業種別を持つ宣言型local Agentである。指示は非信頼データとして既存の閉じた文章schemaへ渡す。新しいTool・shell/root・外部送信・有料能力を付与しない。指示と依頼の合計は既存2KB制限内。作業種別はBrokerが定義から検査した明示値を使い、引用された指示の語句で別Toolへ分類し直さない。remote A2A/MCPやPython等のAgent frameworkをそのまま実行する機能は含まれず、既存の個別adapter・本人同意・費用gateが必要である。
+
+**自動選択。** policy v4では新規モデルはまず手動試験用（effective priority 0）。Brokerが実runtimeの返答を閉じたschemaで検査し、owner/profile digest/task/work/output digestへ結ぶ形式試験receiptを保存する。指示文そのものを本文へ繰り返した返答は`LOCAL_DRAFT_INSTRUCTION_ECHO`として保留し、自動候補に使わない。利用者が生成結果を読んで「自動選択で使う作業」を明示した時だけ、その試験済みtaskをpriority 60の候補にする。設定はowner・定義digest・revision CASへ束縛し、未試験/失敗task、同意なし、古いrevisionを拒否する。後続の形式失敗はそのtaskを候補から除外する。既存専門profileのpriorityは保持し、追加モデルを公式/非公式で優遇しない。これは形式適合と本人の判断を使う候補設定であり、一般的な内容品質や世界全体の性能順位の合格ではない。手動指定を黙って置換せず、不足時は停止する。
+
+**失敗・復旧・失効。** 不正source/秘密付きURL/redirect、metadata上限、未対応license/形式、期限切れproposal、別owner、hash/埋込metadata不一致は拒否する。検証/ロード失敗時は既存activation rollbackへ戻し、readyを偽らない。DownloadManagerの同operation/nonce/固定sourceで再取得を照合し、完了状態・取消を保持する。モデル無効化はPlatformのREVOKEDも記録し、次のpin推論を拒否する。Agentの無効化は新規依頼へ適用し、既に承認した仕事の停止は既存の仕事停止で扱う。Agentは同じ固定版を再確認して再同意すれば有効化でき、無効化時刻と再同意回数を保持する。PlatformのREVOKEDにしたモデル版は再導入できない。保存済み仕事/成果は削除しない。無効化処理が途中で失敗した場合は状態を再取得し、成功と決めつけない。
+
+**合格条件。** 未署名owner pinが作者署名verifierを通らないこと、metadataの改変/重複key/巨大配列、別owner/別digest/期限切れ/失効、Agentの任意コード/未知field/追加権限を拒否することを試験する。PixelではAPK固定catalogに存在しない公開LLMの検索/追加/取得/実load/実生成/保存、非同梱Agent定義の追加/実生成/保存、同じ仕事の再送/再起動後のreadback、無効化後の新規拒否、元の仕事/全成果hash保持を同一APKで照合する。host、fixture、公開metadata通信、物理推論、全OS、本番は別に記録する。未決の形式は公開仕様と対象runtimeの試験を根拠にadapter単位で拡張し、1モデルの合格を全モデルへ転用しない。
+
+一次資料: [Hugging Face Hub API](https://huggingface.co/docs/hub/en/api)、[GGUF仕様](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md)。実装は任意の外部コードを取得・実行する仕組みではなく、これらのデータ形式を検証するadapterである。
+
+
+### Pixelの追加Agentから実Toolを使う
+
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装する。目的はSkyから追加したAgentが、下書きを返すだけでなく、承認したToolで加工した成果物を同じZema仕事へ保存すること。2026-10-18の[同一APK証拠](evidence/pixel-agent-tools.json)で、backup修正を含む同一APKのauto4B2→実2 Tool→699bytesの保存（全5工程attempt1/115.675秒）、未チェック同意・同ID・失効・再同意、Broker process再起動後同hash/UI、元75/276保持を受け入れた。一般品質と全OSへは昇格しない。
+
+**体験と契約。** 既存schema1/local-textを維持し、`rock-sky-agent/2` / `local-tools/1`はtask=`article`、permissions=[]、1〜2件の順序付きtoolsを宣言する。現在対応するadapterは`citations@1`（引用整理）と`free-article@1`（無料版文書の組立）であり、重複・逆順・未知Tool・追加権限を拒否する。作者/Agent IDの固定はない。最初の同意で固定版/Tool一覧、その後の実行確認でモデル/Tool順/端末内加工・保存を示す。checkboxは未選択で、承認前に推論もToolも開始しない。free-articleの価格500/例示note URLは既存ABIの下書き仮設定で、公開・販売・請求を行わない。新しい能力は対応adapterと個別受入を追加して開く。
+
+**責任・入出力。** Brokerは定義digest/owner/source/元依頼からpromptとprovenanceを再構成し、使用Toolと順序を固定する。文書Toolのarticleはデータ形式であり、モデル選択はwriting能力を使う。短文向けGeneralの実機失敗を受け、既存の文章/発想向け4Bを標準条件で選べるようにする。文書Toolのarticleはデータ形式であり、モデル選択はwriting能力を使う。短文向けGeneralの実機失敗を受け、既存の文章/発想向け4Bを標準条件で選べるようにする。LLMは既存local-work schemaでarticleのtitle/body/summaryを返す非信頼生成器であり、Tool ID・価格・送信許可を決めない。SDKは3段落の下書きと3項目summaryを既存ArticlePayloadへ検査・変換する。短い本文にafterChars=100000を適用するとNO_PAID_REMAINDERで失敗する既存不整合を、最初の段落で区切るafterChars=1へ修正する。満たさないモデル結果を補完せず入力検査で停止する。引用整理だけのAgentには、未選択の無料版Toolが必要とする段落/summary条件を強制しない。引用整理だけのAgentには、未選択の無料版Toolが必要とする段落/summary条件を強制しない。既存Tool appのversion1/Binder1/同署名UIDを検査し、callback token/UIDと入力設定保持、実加工関数とのexact一致を確認して初めてTool成功にする。署名は安全性証明や第三者へのplatform鍵付与ではない。
+
+**状態と保存。** `queued → local-generate → agent-tool-input → 宣言Tool各工程 → agent-tool-seal → review`。同じmodel pin、request ID、lease/token、SQLite artifact hash、pause/cancel、本人の最終reviewを再利用する。request hashはTool順も含み、同IDの再送で新仕事を増やさない。生成、各Tool出力、最終Markdownを別digestで保持し、仕事詳細にAgent・source・Toolと各工程を表示する。Engine DB4/Platform1/Native8/Binder4は変更しない。私有Shell API25の準備応答へTool宣言を追加し、古いShellでTool同意を省略しない。
+
+**失敗・失効・復旧。** provenance不一致、未知/並び替えTool、schema不正、Tool応答の改変、署名/API不適合で成果成功を作らない。Tool-chainの各dispatchと結果commit時に現ownerの有効な定義を再検査する。Agent失効と結果commitを同じlockで順序付け、失効後の遅延返答を保存/次工程へ進めずholdする。保存済みartifactは維持し、本人の再同意有効化と通常retryで止まった工程を再開する。既存schema1の新規依頼停止契約は維持する。backupの既存schema2 readerは新しいadapter工程を含む正しい4〜5工程の並びだけを追加受入し、model pinなし・Tool逆順・未知工程を拒否する。復元後は既存pause/未検証model/再同意gateを維持し、ownerの実dataへ上書き復元する試験は行わない。process再起動は成功工程とhashを読み戻し、Toolの自動再実行や本人承認の復元としない。timeout/停止は既存fenceを維持し、Tool入力不正を自動で補完・再生成しない。
+
+**合格と残る条件。** 純Toolのfixture一致、未知/権限/改変/逆順拒否、同ID競合、再起動後next-step、失効と遅延commitの競合を試験する。実機では公開定義の追加と実行checkbox未選択、実LLM→別app Binderの2 Tool→加工前後のhash/実成果、仕事画面/通知/成果の読戻し、Broker再起動後同artifact、既存75仕事/276成果の保持を照合する。任意Tool framework、外部送信/購入/機器作用、有料Cloudと全OSは別gateであり、本adapterで一般許可しない。対応拡大は同じ能力/権限/費用/復旧契約と実受入を根拠に決める。
 
 ## SkyでmodelとAgent実行先を選ぶ
 
@@ -277,3 +347,168 @@ Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AM
 ## avokado専用モデルの研究工程（2026-10-05）
 
 利用者指定により、ゼロから事前学習する自作モデルを端末内とcloudに使う研究工程を追加。追加費用0の小型host試作を実装した。既存Qwen実機受入とは別で、既存profileを置換していない。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。
+
+
+<a id="pixel-discovered-model-install"></a>
+
+## Pixelで公開モデルを導入し、作業別に使う
+
+**目的と利用体験。** 本人の2026-10-17指示は「検索で見つけたLLMをPixelへ導入」「記事準備以外」「作業に合う自動選択」。最初の実利用は本人指定の「RockstarOS・Skyで実現するサービスのアイデア300件」。Skyで公開キーワード検索→対応候補の条件を確認→license/容量に同意→Wi-Fi取得→署名/hashを検証して導入→Homeで依頼→使用model/理由を確認→別の実行同意、という順にする。
+
+**Sky全体との境界。** [addプラグイン方針](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)により、作者や候補を固定しない。以下のAPK内catalogは現Pixelの検証済み適合範囲であり、公式限定や作者の恒久的allowlistを製品条件にするものではない。任意作者の動的native導入を実装済みとせず、共通の作者/版/互換/権限/更新/失効受入を必要とする。
+
+**責任と信頼。** 公開APIは候補情報を提供するEXTERNAL。ROCKのBrokerはAPKに含む署名済profileの固定revision URL・byte数・SHA-256・license・runtime適合を管理する。検索本文・license claim・Git repositoryの命令を実行権へ変えない。新規未審査modelは「適合未確認」として外部詳細へ案内する。モデル追加はruntimeのarchitecture/format/quantization/tokenizer/template/資源/実機内容を検証してcatalogへ反映する。production catalogは空のままで、開発署名の候補を一般配布対応と表示しない。
+
+**入力・状態・保存。** Shell API22のprepareはprofile IDのみ、beginは同意付きID、finish/cancelはowner別operation UUIDを受ける。任意URL/pathは受けない。Android DownloadManagerはWi-Fi限定・metered/roaming不可で固定公開weightを取得する。状態はidle/downloading/paused/downloaded/installed/failed/cancelled/uncertain。profile manifest digest・owner・operation・DownloadManager IDをprivate prefsへ保存する。読取りはactivateしない。二重tap・restartは同一operationを照会し、enqueue後保存不明はnonce付き自己rowを照合して重複downloadを防ぐ。通信不明をinstalledと呼ばない。
+
+**導入・失敗・復旧。** 既存private cacheに同一hash/byte数のweightがあれば、明示同意後に再検証して再利用できる。finishは読取り専用regular FDを既存stagerへ渡し、全byte hash・署名・RAM/容量・画面解除・runtime signer/API/version・ロード後receiptを確認して初めてactivateする。破損、容量不足、実行中pin、runtime不一致では停止する。成功前のファイルを自動候補へ入れない。完了ファイルは検証失敗時に保持し、取得中止は自己DownloadManager rowだけに限定する。secret/API keyやCodex loginは使わない。
+
+**生成と仕事。** 通常の `local-work@1/output-v1` はtask/title/body/summaryの4文字列のみ。サービス発想の現候補はpackage8の派生schema `local-work@1/ideas-N-v2`（N=1..10、raw文字列上限48、Broker各案96 UTF-8 bytes）を使い、旧v1の24文字契約も維持する。モデルの生出力を `ideas` 文字列配列ひとつへ限定し、minItems/maxItemsをNに固定する。runtimeは実在するN文字列を検査してbodyへそのまま配列JSONとして格納し、task=planning・title・注意summaryはruntime側のメタデータとして付ける。モデルのtaskを付け替える処理や、不足案の補填はしない。Brokerでも実件数と全仕事の重複を再検査する。modelは非信頼な下書きを返し、Brokerがtask・型・byte上限を検査する。単一の正確なJSON code fenceは表示上の包みとしてだけ除去し、後続の文章・未知field・別taskは拒否する。taskはBroker側の決定と一致しなければならず、モデルの誤分類を付け替えて通さない。新runtimeはtitle60/body600/summary120文字のschema制限と最大512 output tokens、plan180秒を用い、Brokerのgeneration lease240秒と分ける。通常文書は生成→検査→保存の3段階、記事は既存2 Tool。コードは文章として保存し、shell/外部実行へ渡さない。新規の第三者Tool権限や本番課金を追加しない。通常文書の最初の入力artifactにはowner依頼と生成promptそのものを保存し、開始時のrequest digestへ結び付ける。保存promptのない旧試験入力は明示再計画を求め、更新した指示を黙って適用しない。各仕事は開始前のexact profile pinを保持し、各推論の前後に実weight hashとruntimeを再照合する。
+
+**300件のアイデア。** planningの有限subtypeとして最大300件をcheckpoint v6で5件ずつ生成・保存する。raw5件を1回（plan180秒以内）、generation lease240秒で扱う。旧v1（20件）/v2（10件）/v3（5件・raw v1）/v4〜v5（5件・raw v2）の保存本文・読取契約を保持し、新しい生成契約で再実行する旧未完了workは明示再計画を要する。空行と単一のJSON表示fenceだけを正規化し、一貫した全体番号/回内番号、箇条書き、または文字列配列のactual itemsを同じ検査へ通す。全体の番号はBrokerが付ける。各回の実件数、文字数、Unicode正規化後の完全重複を検査してからcheckpointをhash付きartifactへ保存する。途中の件数を300と表示せず、目標件数が揃って最後のsealが成功した場合だけ確認待ちにする。意味上の類似・事業性・独自性は別の人による確認事項。停止・プロセス終了は既存lease/token fenceを使い、確定済みprefixを保持する。件数・重複・形式の不正は同じ5件範囲を最大3回まで再生成し、揃わなければ保存済みprefixを残して停止する。これは端末内の純粋な発想生成だけで、他のTool・有料cloud・権限不足を自動再試行しない。run attemptと再生成eventを永続化し、再起動で上限を巻き戻さない。欠けた案をfixtureで補完しない。
+
+**互換性と受入。** Engine DBは3→4のtransactionで既存runsを保存し、有限stageを最大61（生成60回+seal）に拡張する。旧schema3の二工程backupを受け入れ、new backupのstage列は既存記事・3段階文書・最大60batch+sealのclosed形だけを許す。restoreは既存のpause/権限失効を維持する。更新前のAPKとprivate DB退避はGit外へ保存し、旧schema3 BrokerへDB4をそのまま戻さない。旧model profile/versionと成果物は書き換えない。
+
+合格条件はhostのschema/選択/重複拒否/migration/backup/停止fence、同一source APKのbuild/lint、Pixelの実公開検索→実download→hash検証/導入→codeでCoder・planningで4Bのexact pin→実推論→成果readback。300件は実保存した番号と件数を検査し、実機のcheckpoint/persistenceと最終成果を照合する。全OS image、正式署名/flash/OTA、X API、有料cloud、一般的な品質保証は別受入。実機未実行や失敗は進捗台帳へそのまま残す。
+
+## 作業別のモデル自動選択（2026-10-17）
+
+本人の明示変更「LLMを選べるように、デフォルトは作業に合うものを自動選択」により、Skyの会話モデルは自動を初期値とし、手動Provider/モデルID指定を残す。Codex専用の契約ではない。Toolの自動ルーティングとモデル選択は別で、Agent配置・権限・料金承認をモデル選択から昇格させない。
+
+入力は依頼文と保存済み選択モード。サーバーで本人・利用権を確認し、設定済みloopbackのモデル一覧（Ollama tags / OpenAI互換models）を読み取る。モデル一覧にある候補のうちコード作業ならcoder系、その他なら一般系を優先する決定的な初期ヒューリスティック。性能比較による「世界で一番」の実証ではない。返すProvider/モデルID/理由を当該依頼に固定し、会話モデル設定に表示する。自動選択に失敗したら依頼文を保持し、接続設定後に再送する。別Providerへの実行時フォールバックは行わない。
+
+初期local selector単体の対象はローカル。現在のWebは後述の同意・本人限定flag・有効Sandboxプランを満たす匿名無料Cloud selectorを使う。Pixel native実機はlocalで受け入れ、Web Cloudと混同しない。手動のOpenAI/Anthropic/Google/互換接続先とモデルIDは選択できるが、実行の料金gate・同意・対応coordinatorは別条件である。Cloud実利用が有効になる場合も既存Sky140の予約/確定usage/$100停止を経由し、選択API自体は予算や請求を変更しない。
+
+選択モードと手動指定は既存provider draftへ本人別保存し、選択理由は画面内のみ。資格情報は応答・ログに出さない。一覧取得は2.5秒で停止し、redirectを拒否。未接続/不正一覧は候補に加えない。主担当Web/Sky（ROCK、SKY07）、Cloud利用権はEXTERNAL/OWNER、料金境界BIL02はJOINT。合格条件は作業別選択、一覧由来の候補のみ、未接続停止、外部URL除外、手動指定維持、型・全体試験。Cloud能力比較と無料利用権の接続は未解決で、確認済みの契約ごとに追加する。
+
+実装: `lib/sky-model-routing.ts`、`app/api/llm/select/route.ts`、`components/sky-chat-workspace.tsx`。試験: `tests/sky-model-routing.test.mjs`。
+
+
+## 無料Cloud拡張の途中保存（2026-10-17）
+
+本人の「Cloudも自動選択、無料枠で実応答検証」に基づきSKY07/ROCKを主担当、BIL02/JOINTの既存契約停止に接続する試作を追加。続く「ここまでをGitへ」により途中保存する。`lib/sky-free-cloud.ts` はPollinations Classicの匿名モデル一覧を取得し、同意・owner限定flag・有効なSandboxプランを確認して一回だけ送信する。入力は依頼ID/本文/選択モデル、出力は本文/Provider参照/実token usage/無料費用0。既存workStoreの本人別保存・revision CASとworkflowのreview状態を使い、独立した金銭台帳は作らない。資格情報・Wallet・x402支払い・有料APIへのfallbackは使わず、402/429・欠落usage・未知の完了はunconfirmedに保持して再送しない。モデル結果はTool成功や本人の承認に昇格させない。
+
+公式仕様 https://raw.githubusercontent.com/pollinations/pollinations/master/APIDOCS.md は無料/匿名・30秒間隔・best effortを記載。2026-10-17の実モデル一覧はopenai-fast（GPT-OSS 20B）。実POSTは1件行ったが完了/usageの厳密検査で停止したため、実応答受入は未合格。これはProviderへの接続と完了を区別する記録。次はProvider実応答形式の確認、使用量整合、select APIと会話UIのCloud同意/実行配線、100 USD停止/並列/再送試験、認証済みUI受入。API/画面へのCloud候補接続はまだない。`tests/sky-free-cloud.test.mjs`の合成試験を実応答成功に転用しない。本番課金・公開gateは閉じたまま。
+
+
+## 無料Cloudの自動選択と実応答受入（2026-10-17）
+
+本人の継続指示により、前項の途中保存からCloud候補・実行API・画面を接続した。`tool_calls: []`をTool実行と誤判定した原因を修正し、匿名tier/stop/本文/Provider ID/実token usageの整合を確認する。非空Tool呼出し・usage欠落・有料tierは拒否する。
+
+`selectSkyModel`はローカル一覧に、本人がCloud送信に同意し、owner限定flagと既存Sky140契約の有効性・残り枠を満たすときだけ公式匿名Cloud一覧を加える。選択はコード向け/一般向けの初期ヒューリスティック。現在の匿名Cloud候補は1モデルで、複数Cloud間の最適性能を実証した意味ではない。会話のチェックボックスはその会話画面内だけ保持し、送信するのは現在の依頼文のみ（過去会話/Tool成果を追加しない）。手動指定にも同じ無料coordinatorを使い、既存有料料金gateは開けない。
+
+入力は依頼ID・選択モデル・本文・同意。`/api/llm/free-cloud`は既存認証・origin/rate limit・service scopeを通す。owner限定環境変数 `SKY_FREE_CLOUD_ENABLED=true` / `SKY_FREE_CLOUD_OWNER_ID` と既存Sandbox契約が必要。送信直前にもプランを確認し、$100枠到達や未払い時に停止する。workflowの本人別仕事とrevision CASを一回送信の根拠にし、Provider参照・本文・token usage・費用0を保存する。モデル結果はreviewに留めて本人承認やTool成功へ昇格しない。無料0円の試験で$100を実消費したとしない。
+
+402/429、タイムアウト、usage欠落、保存競合では結果未確認を保持し、同じIDでは再送しない。画面の「新しい依頼」で本人が明示的に再試行する。x402支払い、Wallet接続、クレジット購入、有料APIへのfallbackは実装しない。無料プランはbest effort/待機制限あり。
+
+`/sky/free-cloud`は共通React確認画面。`node --experimental-strip-types scripts/sky-free-cloud-preview.mjs`は127.0.0.1:5227限定で同じReact panel/selector/HTTP handlerを動かすMac専用harness。合成Sandbox契約をGit管理外SQLiteへ置き、Host/Origin/HttpOnlyセッションcookieでPOSTを制限し、Stripeには接続しない。実Cloudの応答「2 + 3 は 5 です。」、入力331/出力118 tokens、無料$0.00をブラウザで確認。同一依頼再押下の追加POST0。証拠は `docs/evidence/sky-free-cloud-live.json`。認証済み本体会話UIはcomponent回帰で確認、実パスキーsessionでの受入は別条件。
+
+主担当SKY07/ROCK、BIL02/JOINT。`tests/sky-free-cloud.test.mjs` は未払い、$100予約到達、同意なし/別owner、並列一回送信、未知結果の再送防止を確認し、`tests/sky-chat-session-recovery.test.mjs` は会話から無料APIへの同意付きUUID送信と表示を確認する。Cloud利用権/匿名APIの提供継続はEXTERNAL、実アカウントのパスキーはOWNER。一般公開/本番課金のgateは別受入を必要とする。
+
+
+### 実アカウントでの無料Cloud検証と公開Sky互換移行
+
+公開Sky (`appgprj_6abdfad4c5648191bcae957913bd02fa`) はColumbiaとは別のsource/DB/0000・0001 migration系列である。既存50テーブル144行を読み取り退避し、ローカルSQLiteへの行再構成と追加migration後の全行一致・integrity_checkを検証する。非原子的な行snapshotを物理D1 backupと呼ばない。既存SQLを変更せず、未作成work_jobsとsandbox契約表だけを追加し、配備後に既存行を再照合する。失敗時はversion 56へWorkerを戻し、追加表は残す。既存表をdrop/restoreで上書きしない。
+
+`/sky/free-cloud` は実ログインの本人IDを確認し、明示同意で1時間の合成契約を開始する。`/api/llm/free-cloud/account` のGETは本人と接続・プラン状態を返す。POSTは `SKY_FREE_CLOUD_ENABLED=true`、完全一致 `SKY_FREE_CLOUD_OWNER_ID`、`SKY_FREE_CLOUD_SANDBOX_SETUP=true` と `synthetic-free-only-v1` 同意をすべて要求する。既存契約は上書きも延長もしない。Stripe/支払いAPIは呼ばず、月額契約の成立としない。期限切れは停止し、継続は新たな検証判断とする。
+
+モデル候補取得・実行・保存・再送防止は共通コードを使う。公開Sky adapterは既存Sites認証/4引数scope検査を保持し、mainはdevice/passkeyも含む既存認証/6引数scope検査を保持する。read-only利用枠projectionを `lib/sky-recurring-plan.ts` へ分離し、無料配備へ有料実行/請求adapterを持ち込まない。owner以外・同意なし・設定なし・期限切れ・枠不足はCloud送信前に停止する。合格証拠は同一公開source/versionの実アカウントUI→自動候補選択→実Cloud応答→token/$0保存→再送0と既存行照合。実アカウントでも合成契約であることを表示し、本番課金・実契約受入へ転用しない。
+
+Cloudflare Workersではfetchのredirect:errorが未対応のため、metadata/生成ともredirect:manualを使い、3xxを不成功として停止する。リダイレクト先へ再送しないことを試験する。
+
+### 月次契約の無料Cloud統合Sandbox
+
+月額140 USD・利用枠100 USDの月次契約を無料Cloud自動選択/実行の共通gateへ接続する。枠切れ・未払いで停止し、入金照合と期間更新を区別して復旧する。目的/体験/入力/状態/保存/失敗/復旧/承認/受入/未決条件は[月次Cloud統合契約](sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)、証拠は[Sandbox受入](evidence/sky-monthly-free-cloud.json)。公開アカウント移行と本番課金の受入には転用しない。
+
+公開実アカウントの月次Sandbox移行では、旧契約履歴・専用合成usage・本人限定操作・署名通知・送信前照合を追加する。[目的/体験/責任/入出力/状態/保存/失敗/復旧/承認/合格/未決条件](sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。本番課金/無人schedulerは未受入。
+
+無料Cloudの402/429は契約未払いと区別し、Providerが数値Retry-Afterを返した場合だけ待機秒数を表示する。未指定なら無料枠の利用可否確認を案内する。同じ依頼IDは結果未確認のまま保持し、再送・有料切替をしない。検証はtests/sky-free-cloud.test.mjsのcooldown/refusal試験と公開UIで行う。
+
+### 過去の候補試験（現行候補への合格転用なし）
+
+package6は実機で発見したllama.rnのJSI `stopCompletion()` が型宣言に反してvoidを返す経路にも対応する。停止の戻り値をPromiseへ正規化し、同期throw/非同期rejectをtoken callbackの外へ漏らさない。package5の5件試験はJSON完成後に`.catch`参照でcrashしたため未受入、10件試験は180秒で停止し0件保持。旧runtime pinを更新せず新profileへ明示再同意する。
+
+導入失敗時は取得状況を読み直して回復する。旧model pinを持つ未完了仕事があれば、本人にその仕事の完了/中止を案内し、自動中止・自動repinをしない。失敗応答にoperationIdがない場合、空の取得IDで中止要求を送らず「取得状況を更新」を表示する。
+
+過去のpackage6試験では、raw10件schemaが180秒を超え、raw5件が17.749秒で完了したため、当時のv2の1保存工程を最大2回のraw5件生成（各105秒上限）へ分割した。各回は新しいIPC tokenを使い、Engine ticket/model pin/leaseは不変。メモリ上の5件も重複・実数検査し、2回とも合格した10件だけを元の工程checkpointへ保存する。不完全な回の5件を保存済みと表示しない。再生成上限は元の保存工程あたり3回、通常Toolや有料処理へ適用しない。旧v1 checkpointの20件検査・backup読取は維持し、新runtimeでの再実行は明示再計画を求める。
+
+端末内1.5Bで長い共通説明の付いた5件依頼も90秒を超えたため、生成promptはowner依頼を保持し、Sky/Miniの最小文脈、30の具体的な視点、対象、直近2案へ絞る。履歴全体の重複判定はBrokerの全prefix照合で維持する。短縮は依頼文そのものの切捨てではない。長い依頼で時間を超えれば保存済みprefixを保持して停止する。
+
+package7はclosed idea subtypeだけtemperature0.7/top_p0.9/top_k40/repeat_penalty1.12とし、実機で発見したgreedy同一案の反復を減らす。文字列の実数/重複検査は緩和しない。他taskのsamplingと権限は不変。ShellはonStartからonStopまで既存の同署名Brokerへ空のbindingを保持し、画面表示中の実行をforegroundの優先度へつなぐ。binding自体は仕事の作成・再開・承認ではない。画面外では解放し、JobScheduler/lease/checkpointへ戻る。一般backgroundモデル品質/完走をこの受入へ流用しない。
+
+発想の重複対策として各raw5件へ異なる分野を1つずつ割り当て、30分野と10対象を切り替える。これは入力の視点であり、成果の案を固定文言で補填する処理ではない。owner依頼は保持する。新しい案のAI表記はsiを要求し、append時に明示指定の用語AIをsiへ整形し、その後で重複を検査する。旧checkpointのAI表記は改変せず読み取れる。意味上の新規性・類似は引き続き人による確認が必要。
+
+小型General1.5Bは20件保存/形式検査は通ったが、分野名コピー・途中切れが多く内容品質不合格。planning/writingの自動候補から除外する。上位候補Qwen3-4B-Instruct-2507（Qwen元モデル、Unsloth Q4_K_M、Apache-2.0、revision a06e946bb6b655725eafa393f4a9745d460374c9、2497281120 bytes、SHA256 3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597）を既存runtime7/API4へ署名定義として追加し、8GiB未満の端末を自動候補にしない。当時のv3のPixel手動選択20件で実生成/保存/5工程すべて1回目成功を確認した。後述の制御記号問題と文末切断によりその試験を内容受入へ転用せず、Native8/profile2のv5実20件で再検証してからplanning/writingの限定自動候補（priority80）とした。用途の関連性が弱い案は残り、一般品質を合格扱いにしない。実tokenizer/template metadataを固定hashから抽出検査し、作者/量子化者/配布定義署名者を分ける。元モデルと量子化の根拠はhttps://huggingface.co/Qwen/Qwen3-4B-Instruct-2507 およびhttps://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF 。
+
+4Bの実返答を限定診断で確認したところ、具体的な5動作は返るがAI表記で拒否されていた。本人の表記指定を決定的なAI→si整形として新規案へ適用する。要素数は不変で、表記整形後の全prefix重複を検査し、URL/作者名のliteral識別子と旧保存本文は変えない。動作の完成した短文を求める。当時のv2は各raw105秒×2回/lease240秒だったが、現行v3はraw180秒×1回/5件保存へ置き換える。長いworkは1Jobあたり最大2工程とし、正常な継続は新しい即時Job IDへ渡す。失敗backoffを正常な分割へ累積せず、充電/熱/停止/lease/token gateを保持し、pauseは継続IDも取り消す。
+
+package7当時のcheckpoint v3は生成5件が合格した時点で保存し、300件は60生成+sealの61工程とする。新規案にモデル制御記号（`<|`、`|>`、code fence、JSON終端断片）が混入した場合は除去して通さず拒否・有限再生成する。旧保存本文は読取り時に書き換えない。SkyはAgent/Tool hub、Miniは家具・建築へ埋め込む端末であることをpromptへ含める。4Bの旧20件試験は形式・保存・正常Job継続が成功したが、終了記号が1件に混入して重複を隠したため内容受入に算入しない。
+
+旧v4〜v5の長い仕事では、同じ分野が別対象へ再登場するため、promptへ関連分野の過去最大6案と直近2案を上限付きで含めた。現v6は関連2案+直近1案へ縮小する（後述）。いずれも対象の暮らしに即した1分野の動作を求める。全prefixの重複拒否はBrokerで維持し、modelの記憶やpromptだけに依存しない。意味上の類似はdraft確認事項。
+
+### 発想の途中切れを受けたpackage8候補
+
+package7/旧raw v1の300件試験は、保存prefixで文末切断と大文字SIを発見したため、実25件を保持して当該仕事だけ中止した。未受入であり、実20件の限定試験を一般品質へ転用しない。旧24文字上限で文章を閉じる圧力を除くため、新raw `ideas-N-v2` は48文字の余裕を設ける。旧v1は24文字契約のまま、新checkpoint v4だけv2を使い、旧checkpointは読取維持・生成再開に明示再計画を要する。Brokerの各案96 UTF-8 bytes/Engine32KiB上限は維持し、長過ぎる返答を切って合格にせず拒否する。promptは20字程度の完結した動作、見出し/反復主語/途中切れ不可を指定。新規AI/SIはsiへ決定的整形し、要素数不変・alias重複検査・URL/作者識別子/旧本文の保全を維持。runtime8向けprofileは新version/既存publisher署名で再同意し、同じ重みを再検証して再利用する。package8実APKはrun39072982374/source31414985から実bytesを検証済み、同一preview signer/payload一致。Pixel再受入20→300は未完了。
+
+### 過去のprompt契約v5とNative8再検証
+
+package8/raw-v2の20件は実生成/保存/表記/通し番号/完全重複検査が合格（397.822秒、5工程attempt1）。文末切断は見つからないが、家具・温度等を無関係な分野へ結ぶ弱い案が残った。新checkpoint v5は、Skyをソフト/機器のhub、Miniを埋込端末と明示し、ソフト単体の案を許し、家具/環境連動は課題解決に必要な時だけと指定する。各分野の困りごとを解く具体動作が単独で分かる短文を求める。旧v4を新promptで自動再開せず、read-only履歴を保つ。raw-v2/Native8/署名profile/byte上限/件数/重複/停止/有限再生成は不変。prompt5の実手動20件は533.698秒で5工程すべてattempt1、実20件/番号/si表記/制御記号なし/完全重複なしを確認。弱い関連性や粗い説明は残るため、限定draftとしてpriority80 planning/writingへ接続し、一般品質合格とはしない。実自動300件は未完了。
+
+## 無料Cloudの待機と自動続行（2026-10-17）
+
+本人の追加指示により、従来の「すべての402で自動再送なし」を限定更新する。依頼送信時の「無料枠の待機後、同じ依頼を自動で続行する」を有効にした場合、HTTP 402・error.code=FREE_LIMIT・1〜300秒の数値Retry-Afterがすべて確認できた生成前拒否だけをwaitingとして保存する。単なる402/429、通信切断、timeout、usage欠落、保存失敗はunconfirmedで停止し、再送しない。有料fallback・決済呼出しを追加しない。
+
+既存WorkJobのowner/id/requestDigest/modelを固定し、revision CASでwaiting→sendingを一人だけが獲得する。retryAtまでは外部呼出しなし。再開前に同意・無料接続設定・月次契約・残枠・モデル無料対象を再確認する。最大5送信試行（拒否を含む）、最初の依頼から10分以内に限定。待機記録の永続化失敗では再送不可。同じ完了IDは保存済み応答だけを返す。請求明細は増やさず、成功時も匿名無料の実トークン/$0を記録する。
+
+画面は残り秒数、依頼ID、試行回数、同じモデルの結果を表示する。チェック解除で自動続行を停止できる。旧version65ではタブ終了で停止した。現行の画面外継続は下記の永続ジョブ仕様に従う。未確定要求の解放や別IDへの自動置換はしない。最大回数・期限到達は手動調査へ進み、成功を偽装しない。
+
+受入はtests/sky-free-cloud.test.mjsで同時再開・早期再送拒否・同意撤回・未払い・期限・回数・異常応答・一仕事/請求追加0を確認する。公開実accountでは実FREE_LIMIT→カウントダウン→同ID実応答、再押下同じ応答ID/試行回数、既存月次請求維持を検証する。Providerの無料枠が回復しなければその条件を未受入と記録する。
+
+公開実accountの待機・停止/再開・同ID実応答・再押下・請求件数不変の受入は[自動続行の証拠](evidence/sky-free-cloud-auto-continue.json)。本番課金と無人queueの受入ではない。
+
+
+## 無料Cloudの画面外継続
+
+2026-10-17の本人指示により、画面内タイマー限定を永続ジョブに変更する。目的は、本人が送信・保存・画面外続行へ同意した依頼を、タブを閉じても待機・実行し、再訪時に同じアカウントで成果を読むこと。Sky（SKY07/ROCK）がジョブと無料モデル実行を所有し、Web（WEB01/JOINT）が認証・保存・公開UIを担当する。
+
+入力は依頼ID、prompt、選択済み無料model、送信/保存/画面外続行の明示同意。D1の既存WorkJob JSONにprompt・同意・期限を追加保存する。DB移行や既存行の書換えは不要。GET /api/llm/free-cloud/jobs は本人の最新20件と保存成果を返し、promptを返さず、実行もしない。再訪はGETだけ。POSTの再押下は同一ID/同一digestなら既存記録を返す。
+
+queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認できた場合だけwaiting → sending。1分周期の専用Cloudflare Workerが署名付きwakeを送り、Siteは固定ownerの保存済み依頼から1件を処理する。Workerにはprompt・本人情報を渡さない。timestamp/HMAC/固定bodyでwakeを検証し、owner/revision CASを唯一の送信権とする。複数wakeの重複配信でも送信権は1件。各送信前にservice scope、月次契約、100 USD利用枠、無料model eligibilityを再確認する。有料切替はない。
+
+最大5試行・開始から10分。待機秒数は次回確認の目安であり成功保証ではない。停止はqueued/waitingをCASでcancelledにする。送信中の取消は受理しない。通信断・結果不明・保存不明・期限切れは自動再送しない。sendingでプロセスが失われた場合も成果不明として手動確認し、勝手に送信権を戻さない。モデル出力はレビュー待ちでありTool成功や本人承認ではない。
+
+運用設定はservices/sky-free-cloud-wake/README.md。secretはGit外。enabled flagは配備設定であり常設Worker稼働の証明とは区別する。合格条件は実アカウントでタブを閉じた期間のcron処理、再訪成果、同ID再押下で試行不変、Sandbox請求の件数/invoice不変。合成の並列・停止・期限・署名試験と実Provider結果を分けて docs/evidence/sky-free-cloud-background.json に記録する。本番課金は無効のまま。
+
+Generic summaryの実機試験は生成/保存が通っても、日本語指定への英語返答を不合格として分離する。明示した日/英の要約言語を有限のtrusted prompt controlへ抽出し、コピーした依頼本文の後で指定する。既存仕事は保存promptをそのまま使い、新規仕事だけへ適用。codeの本文/識別子や翻訳先をこの修正で書き換えない。実機harnessはruntime所有のtitle/footerを除いた本文の日本語も検査する。
+
+### 長い発想仕事の明示的なcompact復旧（契約v6 / Shell22）
+
+実auto300は30件保存後、関連する過去案が増えた入力で180秒の推論上限に到達し、6番目の生成工程をneeds_reviewで保持した。上限を延長して成功にせず、保存済み30件・旧artifact・元依頼・モデルpinを保つ。現v6は重複抑制の例を関連2案+直近1案へ上限化し、冗長な指示を短縮する。全prefixの件数/byte/完全重複検査はBrokerで維持し、未生成案の補完はしない。
+
+Shell22のcompactReplanIdeasは本人同意、同じowner/pin、activeかつneeds_reviewの純粋発想工程、LOCAL_GENERATION_TIMED_OUT、停止中でないこと、expected checkpoint digest一致、同仕事でcompact復旧未実施をtransactionで確認する。成功済みrun/旧input/output/artifactは更新しない。停止工程だけqueuedへ戻し、human_compact_replan eventを同じtransactionで一度記録。次のticketは当該stepのeventがある場合だけv5入力をメモリ上でv6へ変換し、新しい実5件が合格した後に新checkpointを保存する。旧v5を通常の自動継続で書き換えない。他Tool/cloud/費用/権限不足/失敗一般の再送へ広げない。
+
+画面は「N件を残して続ける」と確認dialogを提示し、進捗/モデルを保つことを説明する。外部intentは仕事を開くだけで、復旧を承認しない。取消/全停止/遅延callback fenceを維持する。false consent・別owner・古いdigest・二重復旧・pause・遅延finish・再起動をhostで検査する。実機は同じ300件仕事の30件を引き継ぐ一度の明示復旧を別記録し、ゼロ介入の自動完走と呼ばない。runtime8/モデル2/raw-v2/180秒/lease240秒/DB4は不変。この時点の実300は未完了。最終の限定受入は次節で別記録する。
+
+### 現Pixelの限定機能受入
+
+Native8/API4・Shell22・checkpoint6の同preview署名APKで、本人指定の実300件を60生成+sealの61工程から保存。番号/実数/正規化完全重複/si表記/制御記号/全保存prefixのhash連鎖と、Broker processを開き直した同bytes読戻しを確認した。16,274bytes、SHA256 `5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6`。元の24仕事/70artifactを保持し、全248 artifactのhashを検査。30件で一度のcompact復旧、220件で通常の再試行を一度、形式等の拒否には計3回の有限自動再生成が必要だった。v6新規仕事は既に短い入力なので、時間切れには通常の再試行を使い、旧v5向けcompactを重ねない。無介入完走や一般background信頼性へ転用しない。
+
+現在のAPKで、auto code→Coder5の実3段階保存と、実際の手動chooser→同profileの生成保存も確認。コードは実行しない。実通知タップ/公開GitHub・Hugging Face検索を含むUI13件、既存opt-in未選択1件、導入境界/SQLite5件を分けて記録する。全300の本文には意味の近い案、不自然な物理連携、前提条件の不足があり、300の独立した事業案・一般的なモデル品質・医療/計測/外部通知の能力を合格扱いにしない。owner確認待ちを維持する。[artifact・各source・失敗と復旧・同一APKの詳細証拠](evidence/pixel-discovered-models.json)を正本とする。
+
+実402受入追記（2026-10-17）: 公開実accountで生成前FREE_LIMIT待機→タブ終了→cron再開→同ID実応答の再訪確認に成功。拒否1回/生成1回、再読込不変、Sandbox請求件数とinvoice不変。手動wakeや合成402は使っていない。証拠はdocs/evidence/sky-free-cloud-background.jsonのreal402Acceptance。本番課金は無効。
+
+
+### 待機中の契約停止・翌月復旧のSandbox受入
+
+本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
+
+保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。
+
+複数画面の結果確認: 公開実accountで5秒pollが共有20回/分の上限に達することを確認したため、結果一覧は30秒間隔、同一画面の並行読取は一件、429後は60秒待って読取だけ再開する。依頼ID・送信claim・費用権限は変更しない。429を認証失敗と表示しない。複数画面は同一Mac上の操作であり複数物理端末の受入とは区別する。
+
+
+### Cloud依頼フォームの利用導線（2026-10-18）
+
+本人の「cloudの依頼のとこ」という指摘により、公開free-cloudの主操作を依頼入力・送信・結果へ整理する。空の依頼欄と例示placeholder、無料モデル自動選択、明示的な外部送信/保存同意を表示。未ログインは既存Sites signinへ案内し、通信/入力/利用不可の理由を示す。保存後は入力を固定し、同じIDの保存確認を使い、保存不明時に新規IDへ逃がさない。モデル選択失敗で送信前と確定した場合だけ入力編集へ戻す。新規依頼は本文と同意をクリアする。本人別GET・30秒poll・429後60秒待機、CAS・上限・5試行/10分は変更しない。履歴は作成日時と状態、本文は既存保存結果を表示し、ID/token/送信試行は詳細へ配置する。promptを返さない既存APIと保存契約は維持する。月次Sandbox操作は下部の折りたたみへ移し、実契約購入/本番課金としない。
+
+合格条件は空入力/同意なしの送信不可、未ログインの案内、既存成果の読取、保存後の重複送信防止、モバイル幅での操作性。実端末同時利用の受入は別で未完了。

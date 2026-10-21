@@ -154,6 +154,8 @@ public final class LocalSubmissionTest {
         assertEquals(first.requestId, retry.requestId);
         assertFalse(LocalSubmission.knownZemaRefusal(retry, "SKY_SELECTION_REQUIRED"));
         assertFalse(LocalSubmission.knownZemaRefusal(retry, "DENIED"));
+        assertFalse(LocalSubmission.knownZemaRefusal(retry, "MODEL_SELECTION_CHANGED"));
+        assertFalse(LocalSubmission.knownZemaRefusal(retry, "MODEL_PROFILE_SWITCH_HAS_PINNED_WORK"));
         assertTrue(restarted.finish(retry, OWNER, false));
         assertEquals(first.requestId, restarted.pending(OWNER).requestId);
     }

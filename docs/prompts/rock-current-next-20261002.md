@@ -1,18 +1,50 @@
 # RockstarOS service and Pixel: implementation handoff
 
-## Pixel si実装設計の追補
+## 追加Agentの実Tool実行: 現在の仕事
 
-`docs/native-os-integration.md#pixel-si専用端末の実装設計`と`docs/evidence/grapheneos-source-audit.json`を読む。調査版2026100600と採用lock2026100200は別。129構成/公開差分/独立appのsource検索を全image実機合格にしない。SpeechServicesはGitLabの固定v3 APK/TTSで、source tag 3のvoiceはen_US、日本語ASR/TTSは別受入。Brokerには既存INTERNET/device transportがあり、ShellはHOME/voice role未対応。PX-HOME〜PX-RELEASEの8 module、PX01〜12を既存P0〜P7/C1/C2へ対応し、端末/cloud二重正本・parentJob予算の月上限読み替え・文書によるpaid gate解除を禁止する。P0同期/固定を先に行い、local一仕事をcloud契約待ちにしない。
+本人の2026-10-18指示をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装。main421b1029同期済み、codex/sky-agent-tools / PR169。private Shell API25、EngineDB4/Platform1/Native8/Binder4は維持。schema2/local-toolsが宣言した対応Toolを、実LLM生成→入力検査→別Tool app Binder→結果検査→成果保存の一仕事で実行する。[契約](../llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、data/project-status.json.pixelAgentTools、[証拠](../evidence/pixel-agent-tools.json)と現Gitを先に照合する。
 
-## 2026-10-15: Pixel現在地からの優先入口
+backup readerの正しい4〜5工程受入・Tool逆順のatomic拒否・model pin・復元後pauseも修正し、host完了結果の復元/Pixel隔離SQLiteの保留復元が合格。ownerの実DBへ上書き復元せず、admission receipt/model再検証をbackupだけで復活させない。最終production source a3a888bb755ade3ec5c3f5b2e1ca097cc9768e56 のPixelでauto4B2、全5工程attempt1、115.675秒、699bytes/SHA5f3314d2409fed960de9951c494d149369886f56ab4b3936777c72d0d134bbb4を実保存。未チェック同意/Tool順/モデル表示/二重tap1仕事/同ID再送/失効・成果保持・再同意、Broker process再起動後同hash/同attempt/実UI、Binder/SQLite/失効/隔離復元11件、通知tap/検索を含むUI13実+既存opt-in1未選択を確認。元75仕事276artifactの全状態/内容を保持し、現83仕事/308全body hash/実機4APKを照合。Native8とTool1は再インストールしない。
 
-最初にmain/branch/同SHA CIと`docs/evidence/pixel-readiness.json`を再取得する。`docs/native-os-integration.md#pixelの現在地と実用化の順番`のP0を最優先とし、手元`codex/esim-cloud-access`の17項目候補（未commit/main未反映）をmainの現行API/権限/料金gateへ選別同期する。12 hashが一致する過去候補でも、現在の端末状態とはしない。P1で現行v4と一modelの非破壊Pixel受入、P2/P3で一仕事とSky選択、P4 Home、P5 compile-only、P6/P7のrelease/同image受入へ進む。mainのベース未反映を先に解消し、旧compile branchを未実装機能の隠れた最新版と扱わない。
+Generalの最初の生成はTool入力不適合で保留し、試験仕事だけ明示中止、rawは保持。articleデータ形式とwritingモデル能力を分離して4Bを自動選択。受付待ち20秒の試験失敗は同じpending IDで復旧し、受付だけ180秒、runtime/leaseは不変。CIの旧BinderfixtureはEngine明示注入で修正し、署名/assertを緩めない。source8d83の116.148秒、c37の134.996秒の別試行も履歴へ残す。host222単体/build/lintと最終全体verifyがexit0（Node22/OpenSSL3.6.3/ファイル並列2）。既定OpenSSL4による失敗も記録し、v3契約を変更せずPATHを固定した。
 
-cloudはC1/C2の独立系列。本人の「料金プランはsiを使うクラウド代で通信事業者みたいな形」を、`cloudServicePlanIntent`と共通契約へ対応する。月額/quota/超過単価は未決、回線/Tool/local/cloudの明細を分け、実料金gateを環境変数だけで開けない。local一仕事/Homeの実装をcloud契約待ちで止めない。今日の監査ではADB 0件で実機再試験を行っていない。各段階は原因/修正順/同artifactの証拠/未解決条件を残し、保存・branch反映・main統合・公開・実機を別々に報告する。
+PR169が未統合なら最終exact-head CIを確認して通常mergeし、mergedAt/mergeCommit/main treeを照合する。統合済みなら次のTool adapter/形式・品質評価へ進む。新しいToolは能力/権限/入出力/費用/失効/復旧と受入を要し、任意コード/公開/購入を宣言だけで許可しない。生成物はGit外、価格/URLは既存Toolの下書き仮設定。全OS/端末自体の再起動/任意framework/有料Cloudは別gate。
+
+## Skyの動的追加: 現在の仕事
+
+本人の2026-10-17指示「固定カタログに縛られずLLMやAgentを追加してPixelで使う」をOS11/O6/ROCK主担当、SKY07/SKY21連携で実装中。branch `codex/sky-open-addons`、PR #167、基準main f8a0217e。最初にGitHub main/branch/PR mergedAt/mergeCommit/同一SHA check-runs、`data/project-status.json.pixelOpenAddons`、[動的追加契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)を読む。
+
+現在のproduction app sourceは325150d7、private Shell API24 / model policy4。Native8/Binder4/Platform1/EngineDB4は変更しない。公開HFの固定commit単一GGUFとGitHubの宣言型local-text Agentをowner別に追加する。作者署名なしのowner digest pinをEd25519作者署名と混同せず、OS/platform鍵で第三者を署名しない。未知形式/権限/任意コードはadapter不足として拒否する。
+
+初回source ffb7f1b0では非同梱Qwen2.5 0.5Bの検索/実397,808,192bytes取得/hash/metadata/load/要約保存が56.823秒で成功したが、本文は生成指示のechoで内容不合格。Agent仕事はprovenanceを加えた入力が旧3項目検査に拒否されて停止した。修正候補はexactなprovenance再構成照合、指示echo拒否、形式試験receiptと本人確認を経たtask別auto参加、revision CAS、Agent再同意有効化と仕事詳細のAgent名表示を持つ。新規モデルはまず手動、未試験/失敗taskをautoに入れない。一般品質・性能順位の実証ではない。
+
+2026-10-18に実機再受入済み。非同梱Coder1.5B Q5_K_Mの検索→新規1,125,050,656bytes取得→hash/metadata/load→実コード保存は97.250秒、追加のcode試験26.240秒。0.5Bコード試験はLOCAL_DRAFT_TASK_CHANGEDで拒否し、試験仕事だけ明示中止して保持。既存Agentの同じ仕事を一度だけretryして保存し、日本語別依頼は43.690秒で役割を正しく一文保存。Agent同ID再送/無効化/成果保持/再同意、未試験auto拒否/試験済codeだけ候補60、標準codeは既存Coder90、Broker process再起動後の同成果UI表示1件、実通知tap/検索を含むUI13実+既存opt-in1未選択が合格。元65仕事248artifact/旧状態不変、現75仕事276全body hash/実機3APK読戻し一致。raw生成物はGit外、一般品質や全OSは別gate。今後は対応形式/Agent adapterと作業品質評価を拡張し、公開コード/READMEを実行許可と扱わない。
+
+ホストの単体/build/lintとbaseline/design/OS/LLMは成功。API24候補の全体 `npm run verify` は全段階exit0（test-file並列2、試験/assert範囲は変更なし）。main cf01d289のCloud並列polling修正も取り込み、同期後の全体verifyが再成功。CIは最終同一headで結果を確認する。325150d7のAndroid CIは隔離試験が署名catalogのJSONObjectを参照のまま変更したためMODEL_AUTHOR_SIGNATURE_ABSENTで正しく拒否されて失敗し、試験fixtureのdeep copyへ修正した。署名検査を緩めない。旧private API22を期待したNode契約試験はAPI24のexact照合へ同期。実機再試験でロックに拒否された試行は推論成功へ加えない。PR #167が未統合なら実機と最終head CIが揃ってから通常mergeする。統合済みならmergedAt/mergeCommitとmainを確認して次のadapter/品質評価へ進む。Git保存・main統合・本番公開は別に記録する。
+
+## 前段の300件とmain統合の確定証拠
+
+PR #158はmain f8a0217eへ通常merge済み、受入head e4d36e1cとmergeのtree一致、統合前23 check成功。実機source ef20d8ae / Native source31414985/run39072982374。本人指定300件は同じ仕事で60生成+sealを保存し、compact1回/通常UI retry1回/有限拒否再生成3回。無介入完走でも内容品質合格でもない。最終16,274bytes/SHA5418343ae39cc80f2d9659eb72aa3f8d489472d8814ff4c3842e894ca9c8b2e6はBroker再起動後も同一。詳細は`docs/evidence/pixel-discovered-models.json`を履歴の正本とし、新候補の証拠に置換しない。現在は300件の生成中ではない。全OS/正式署名/flash/OTA/全損復旧/一般backgroundは別gate。
+
+## Pixel si端末の実装と次の受入（2026-10-17）
+
+最初にGitHub main/対象branch/同SHA CIと`docs/evidence/pixel-si-terminal-implementation.json`を再取得する。実装正本は`docs/native-os-integration.md#pixel-terminal-implementation`。OS11/O6のbranch `codex/pixel-si-terminal-implementation`はmain `019c2231`から開始し、原dirty候補のShellUiと画面遷移を選別し、現行LocalSubmission/Broker API 18/Local si API v4/料金/復旧を保持した。原dirtyの全体取込や模擬17項目を実Agentへ昇格させない。
+
+実装はPR #149、受入head `b7e1b30f`の8 CI全成功後、main `bd429699`へ通常merge済み（tree一致）。現在のmainと同SHA CIは再取得する。
+
+Home候補・4画面、3経路の下書き、実Toolの保存/確認/停止/書出しと依頼時scheduler、現v4状態表示、明示端末内音声adapterを実装。host/実機/CI/本番の合格範囲と同APK hashは台帳で確認する。端末はPixel 10 GL066/frankel、読取りOS incrementalは2026100601、採用compile lockは2026100200のまま。10-15のADB 0件やHOMEなしは旧調査基点で、現在の実装未着手と読み替えない。
+
+署名済debug catalog/SAF import/明示reload/有限Jennifer計画/stop fenceはprivate API 19。コードPR #154はhead `6c9a3083`のCI11件成功後、main `bf35f5f1`へ統合。`docs/evidence/pixel-local-jennifer.json`と現Gitを照合する。固定4 APKを実機から読戻して一致確認、API v4 runtimeの計画/冷起動profile不備は5番目のoverlayで修正。0.6Bの内容品質は失敗。既存15分model-pin gateを保ち、明示選択したQwen2.5 1.5BでHome→実計画→実2 Tool→確認待ち395-byte成果が64.625秒で機能合格。明示同意・二重tap1仕事・Broker process再起動同hash・system picker書出し同bytesを確認した。端末自体の再起動や全OSではない。
+
+当時の残項目（現在のPixel正本を優先）: (1) 本人メモ「デザインがダサい、通知と、仕事の操作性が直感的じゃない」を`docs/workstreams/07-android-device-local-ai.md#pixel-usability-feedback`で確認し、依頼/進行/確認/成果物/失敗復旧/停止の画面案を既存Shell/Brokerの状態へ結ぶ、(2) 文章が主題に沿っていても依頼の導入・3手順・出典未調査表示を欠く原因をSDK promptと実ToolのafterChars出力契約から調べ、同一candidateの実推論/生成物で改善を検証する。`afterChars=1`と`free-article@1`の有料抜粋契約は本文を切るため、見えている成果だけでモデル本文の品質を断定しない。草案全体の出力契約と原稿を確認してから改修する。見た目の変更やprompt変更だけで品質改善を宣言しない。通知は仕事正本への入口とし、本人承認や成功にしない。既存LocalSubmissionの同ID・revision・本人・保存/復旧・停止を維持する。
+
+0.6Bで停止ack6ms/遅延仕事0を確認したがnative ready待ち28.785秒、1.5B即時停止は未受入。日本語ASR/TTS、Jennifer Goal/AMC統括、production配布、普通の端末再起動、全OSは独立gate。model未準備時のLLMなし有限Tool受入や過去API v2試験を現v4へ転用せず、無断cloud fallbackをしない。混合realm/他hostはadapter個別受入、全OSはP5専用Linux compile-only→P6署名/復旧4 gate→P7同imageで受け入れる。APK更新をOS flash/boot/全損復旧へ転用しない。
+
+cloud C1/C2は独立系列。米国向けSky 140（月額140 USD・利用枠100 USD）の既存確定設計と実行保留を保持し、`docs/sky-billing.md`、statusのusSkyContractBilling/skyCloudMonthlyTest、executionHoldsを読む。実Provider/料金版/予算/後払い/収納は個別受入。本人・支出・scope・root authorityを維持し、envだけでpaid gateを解除しない。文書保存・branch/CI・main統合・端末更新・公開を別々に記録する。
 
 Updated 2026-10-15. Read `docs/service-design/README.md`, `docs/service-design/06-consistency-contracts.md` and `data/product-terminology.json` first, then the product baseline, project status, Mission Control and the relevant workstream. Preserve RQ01–RQ49 and main's existing RQ50. This handoff organizes the existing goals; it does not authorize new pricing, funds movement, device flashing or flight operations.
 
-The current product entry is the OWNER-confirmed 2026-10-15 connectivity-and-si-access bundle, with a free account as the identity/contract/job/artifact/budget root and free preview/client paths retained. Sky is the open Agent/LLM marketplace and hub with explicit local/cloud choices. avokado intends to provide cloud service plans, metering, caps and itemized statements; monthly prices, quotas and overage rates are undecided. Live carrier issuance, billing and paid cloud remain gated. Mini's domestic LTE IoT data SIM stays optional. Pixel 10 GL066/frankel is the first physical native-OS target; iOS is a client integration path. Exact-device signing, boot and recovery acceptance remain required.
+The current product entry is the OWNER-confirmed 2026-10-15 connectivity-and-si-access bundle, with a free account as the identity/contract/job/artifact/budget root and free preview/client paths retained. Sky is the open Agent/LLM marketplace and hub with explicit local/cloud choices. avokado intends to provide cloud service plans, metering, caps and itemized statements; US Sky 140 is designed at 140 USD monthly with 100 USD included usage; overage and commercial acceptance follow the billing authority. Live carrier issuance, billing and paid cloud remain gated. Mini's domestic LTE IoT data SIM stays optional. Pixel 10 GL066/frankel is the first physical native-OS target; iOS is a client integration path. Exact-device signing, boot and recovery acceptance remain required.
 
 ## Verified inputs and boundaries
 

@@ -20,7 +20,7 @@ const response = (value, status = 200) =>
 void test('text model registry exposes replaceable local and cloud adapters', () => {
   assert.deepEqual(
     textModelProviders.map((provider) => provider.id),
-    ['local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
+    ['pollinations', 'local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
   );
   assert.equal(isTextModelProvider('anthropic'), true);
   assert.equal(isTextModelProvider('unknown'), false);

@@ -277,3 +277,18 @@ BIL02は[決済詳細の実装順](../sky-commerce-design.md#16-実装の分割�
 BIL02/O5の[請求設計](../sky-billing.md)へ2026-10-15の利用者要求を追加。usage/予算/明細/収納/権限制限を分け、与信とProvider受入後に有効化。旧ToC収益料金のexecutionHoldsは解除しない。
 
 BIL02/O5: Sky月次請求local fixtureを実装。既存citation workflowを再利用し、見積承認・usage・月締め・模擬入金・再送/復旧を検証する。`npm run sky:monthly:sandbox`、`node --experimental-strip-types --test tests/sky-monthly-sandbox.test.mjs`。[責任と残条件](../sky-billing.md#sky単体の月次請求ローカル実装2026-10-15)。実Provider受入とは別。
+
+BIL02/O5（JOINT）2026-10-16: 合成usage 1 USDでStripe sandbox請求→テストカード→署名通知HTTP 200→Sky paidを受入。[証拠](../evidence/sky-cloud-monthly-test.json)。send_invoice用のfixture email不足を修正。実Cloud、定額140 USD回収、未払い制限、本番課金は未受入。
+
+BIL02/O5（JOINT）: Sky 140の140 USD固定請求2期間・枠内usage追加0・失敗/復旧の外部Sandbox判定10項目を受入。[証拠](../evidence/sky-140-collection-sandbox.json)。本番Agent送信gate・月次scheduler・契約同意は別実装。既存予算台帳を再実装せず、純粋判定と保存済みテスト操作を先に検証する。
+
+
+### BIL02 月次timerと既存Agent停止・復旧（2026-10-17）
+
+JOINT/O5、同期DOC04/H1。[Sky月次自動請求Sandbox](../sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)を正本とする。ROCKは永続契約/請求projection・既存予約/送信の原子的gate、EXTERNALはStripe決済、OWNERは本番契約条件を担当。合格条件は月額140の自動請求、失敗時のRemote LLM/A2A拒否、同一請求入金照合後復旧、重複/再起動/100 USD枠。検証は`node --experimental-strip-types --test tests/sky-recurring-sandbox.test.mjs`と明示Sandbox driver、`npm run verify`。本番課金・実Cloud呼出し・実機受入へ転用しない。
+
+BIL02/O5追補: [Cloud usageと100 USD枠](../sky-billing.md#cloud-usageから100-usd枠への接続)。ROCK側の既存実行経路・usage projection・境界6試験を追加。EXTERNAL/OWNER側の無料Provider本人account/鍵/単価/無料上限が未確認のため実応答は未実行。検証 `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`、全体 `npm run verify`。合成金額を実消費へ転用しない。
+
+BIL02/O5（JOINT）: [月次契約と無料Cloudの統合](../sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。既存契約/台帳/Stripe署名通知を再利用し、ローカル月次Sandboxで無料Cloudの実応答・合成100 USD停止・テスト入金後復旧を検証する。公開D1や実アカウントの変更は含まない。
+
+BIL02/O5（JOINT）公開実アカウント追補: [本人限定月次Sandbox移行](../sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。検証は既存24対象試験、Sites型/build、公開UI/Stripe test invoice/署名通知、全体verify。既存データと旧契約JSON保持を必須とする。

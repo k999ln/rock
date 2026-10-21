@@ -1,12 +1,29 @@
 <div align="center">
 
+無料Cloudは送信・保存・画面外続行に同意して依頼を保存すると、タブを閉じてもサーバー側で待機・自動続行します（最大5試行・10分）。再訪すると本人の保存結果を確認できます。待機中は「自動続行を停止」で停止できます。結果不明の再送・有料切替は行いません。
+
+Skyの会話モデルは「自動（作業に合わせる）」が標準です。「自分で選ぶ」からProviderとモデルIDを指定できます。自動候補はローカルと、送信同意・プラン確認済みの匿名無料Cloudです。公開Skyの実アカウントと月額140ドル・利用枠100ドルのSandbox契約で、自動選択・実Cloud応答・使用量表示を確認しました。本番課金は無効です。Sandboxは復旧後も「合成100ドルで上限停止を検証」から次周期の試験を繰り返せます。過去の請求は保持します。詳しくは [LLM設計](docs/llm-evaluation-architecture.md)を参照。
+
+
 # avokado
 
 ### One account. More ways to play, make, and get things done.
 
+Skyは、みんなが使いたい機能を持ち寄り、さまざまなソフト・機器・家具・建築へ追加するaddプラグインの入口です。機能や作者を固定せず、公式専用枠を設けません。現在のPixelモデル一覧は実機検証の範囲で、任意作者の動的native導入は未実装です。[共通の拡張契約](docs/sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
+
 [Pixel si implementation design](docs/native-os-integration.md#pixel-si専用端末の実装設計) maps the fixed GrapheneOS source audit to what RockstarOS keeps, adapts and adds: Home, Japanese voice, Sky selection, local/cloud jobs, plans and recovery. Eight modules and twelve unexecuted acceptance cases reuse the current Broker transports and workflow. [Source evidence](docs/evidence/grapheneos-source-audit.json) separates public code, prebuilts and device acceptance; the compile source lock remains unchanged.
 
-The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. Monthly prices, included quotas and overage rates are undecided; local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
+Pixel Android Developer Preview now includes a selectable Home, Home/Sky/Work/Settings navigation, explicit execution-route drafts, the real local two-Tool workflow without an LLM, review/cancel/export, and an on-device-only voice adapter. Open RockstarOS → prepare a draft → Work → review the inputs and consent. Select the default Home from Settings; it is never assigned automatically. Japanese voice needs installed on-device services; model planning needs a verified model profile. [Implementation, recovery and acceptance](docs/native-os-integration.md#pixel-terminal-implementation) and [same-candidate evidence](docs/evidence/pixel-si-terminal-implementation.json). This is an APK preview, separate from a full OS image.
+
+Pixel Developer Previewの追加実装では、Skyの公開モデル検索から対応する署名済みモデルを選び、容量・ライセンスへ同意して取得し、「検証してPixelへ導入」を押します。Homeでは「自動」が標準で、発想・計画向けQwen3 4B、コード向けCoder 1.5B、記事・要約・翻訳向けGeneral 1.5Bを作業別に選び、開始前にモデルと理由を表示します。手動指定も可能です。要約・翻訳・コード下書き・アイデアの有限生成を既存の仕事へ保存します。コードは実行しません。5件ずつ保存し、時間切れには仕事の詳細から保存済み案を残して再試行できます。旧v5指示の仕事には一度の「N件を残して続ける」復旧もあります。Pixel 10で実300件の下書き・番号・件数・完全重複検査・再起動したBrokerからの同じ成果の読戻し、現APKの自動/手動Coder選択・通知タップ・公開検索を確認しました。300件では30件時のcompact復旧と220件時の通常再試行が必要でした。意味の近い案や不自然な関連が残り、内容品質・無人完走・全OSの合格ではありません。未検証モデルや検索結果を自動で導入・信頼しません。
+
+The developer APK connects Sky's signed local-model catalog/import/reload to Jennifer's bounded local planning and the existing two-Tool article workflow. In the developer build, open Sky → Local model → review the license/hash → select the matching GGUF, then Home → Local LLM → prepare and explicitly approve the request. Model weights are separate; the release catalog is empty. On 2026-10-17, the actual API v4 model → Broker → two Tools → artifact path passed on Pixel 10 GL066 after fixing model handoff and restart identity. Qwen3 0.6B content quality failed; a signed Qwen2.5 1.5B option passed an earlier functional trial and saved-artifact readback. The frozen compact-prompt candidate passed Home submission, two real Tools, one-job double tap, process readback and system-picker export on that Pixel. Draft quality remains unaccepted: the output is sparse and misses the requested structure. The Pixel UI now separates a review-first work list from each job detail. Home → confirm request → explicit consent starts a job; open its card to inspect, save, review or cancel. Settings → work notifications requests Android permission; tapping a notification only opens the saved job and rereads the Broker. [UX contract and acceptance](docs/native-os-integration.md#pixel-intuitive-experience), [device evidence](docs/evidence/pixel-intuitive-experience.json). The notification failure was reproduced as ReceiverCallNotAllowedException and fixed by binding with application Context. On the same frozen APKs, Pixel passed 15 tests with no failures or skips: actual background notification tap, live GitHub/Hugging Face discovery, and real auto/manual 1.5B planning with exact model pins, two Tools and saved artifacts. Home defaults to Automatic for supported article preparation; use Choose LLM to pin a signed, installed model, then review its name and explicitly consent. Sky → Search public LLMs fetches GGUF candidates using a separate public keyword. Results are unverified and never automatically installed or executed. X opens an explicit external search; its API is not configured. This is developer APK acceptance, separate from the full OS. [Contract and device acceptance steps](docs/native-os-integration.md#pixel-local-jennifer), [candidate evidence](docs/evidence/pixel-local-jennifer.json).
+
+
+公開モデルの導入と有限生成の契約・互換性・受入状況は[LLM設計](docs/llm-evaluation-architecture.md#pixel-discovered-model-install)と[実機証拠](docs/evidence/pixel-discovered-models.json)を参照してください。
+
+
+The cloud service plan is intended to provide si usage allowances, metering, spend caps and itemized statements. US Sky 140 is designed at 140 USD monthly with 100 USD included usage; commercial acceptance and overage rules follow the billing authority. Local-only inference is not cloud usage. [Cloud plan contract](docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン) and [Pixel readiness / delivery order](docs/native-os-integration.md#pixelの現在地と実用化の順番).
 
 The product entry is a connectivity-and-si-access bundle, selected by the owner on 2026-10-15. The account owns the contract, work and costs; eSIM activation, OS installation and cloud execution have separate acceptance gates. [Read the GrapheneOS / eSIM / cloud foundation audit](docs/native-os-integration.md). Live issuance, paid model execution and custom OS flashing remain unaccepted.
 
@@ -20,7 +37,7 @@ Sky is where the user chooses accepted model, Agent and Tool capabilities and th
 
 Pixel 10 GL066 / frankel is the first physical product target for a GrapheneOS-based RockstarOS image. iOS follows through the connectivity-and-si-access bundle, with client/Web access and accepted native integrations such as App Intents. eSIM activation, account access, client installation and platform permissions remain separate. [Delivery strategy](docs/device-support-architecture.md#pixel先行とiosへの機能追加).
 
-The Pixel reference device is intended to become a dedicated si terminal: after unlock, Jennifer is the primary surface for requests, progress, artifacts, costs and stop controls. Mini can continue the same work without carrying the phone. The current Shell is an ordinary launchable app; dedicated Home, voice integration and full-OS device acceptance remain to be implemented. [Terminal experience and acceptance](docs/native-os-integration.md#si専用端末の利用体験と実装境界).
+The Pixel reference device is intended to become a dedicated si terminal: after unlock, Jennifer is the primary surface for requests, progress, artifacts, costs and stop controls. Mini can continue the same work without carrying the phone. The APK offers a selectable Home and an on-device voice adapter; Japanese voice, full native Jennifer orchestration and full-OS device acceptance remain pending. [Terminal experience and acceptance](docs/native-os-integration.md#si専用端末の利用体験と実装境界).
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
 
@@ -45,6 +62,8 @@ The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `
 > **Current direction** — avokado starts with an account, not a device. Sign in once and carry identity, work, permissions, results, and usage across a browser, PC, supported device, or cloud job. A physical SIM or eSIM is optional device connectivity for products such as avocadoMini; it is not where the OS is stored.
 
 > **Where it stands** — this repository contains web app source, selected runnable Tools, software previews, and device designs. There is no live billing, carrier contract, full phone OS flash, or manufactured avocadoMini yet.
+
+SkyでモデルやAgentを追加するには、Pixelの「Sky → LLM・Agentを追加」でHugging Faceの公開モデルURL、またはGitHubのAgent定義JSONのURLを指定します。配布元・固定版・license・容量・作者署名なしの範囲を確認して追加し、モデルは別操作で取得/検証/導入、Agentは依頼と使用モデルを確認して開始します。[対応形式・状態・停止と復旧](docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。Toolを使うAgent（schema2）は、追加・依頼時に使用Toolと順番を表示します。表示内容に同意すると、端末内モデル→入力検査→Tool加工→成果保存の順に進み、仕事画面で各工程と成果を確認できます。[対応Toolと失敗時の手順](docs/llm-evaluation-architecture.md#pixelの追加agentから実toolを使う)、[Tool Agentの定義例](examples/sky/document-agent.json)、[Pixel実機の結果](docs/evidence/pixel-agent-tools.json)を参照してください。標準は作業別の自動選択です。追加モデルはまず手動で試し、保存した結果を確認してから「自動選択で使う作業を設定」で試験済みの作業だけ候補にできます。[Pixel実機の受入と制限](docs/evidence/pixel-open-addons.json)を確認してください。
 
 ## The promise
 
@@ -390,6 +409,20 @@ Recording, external publication, appliance operation, purchasing, and payment ea
 
 ### Cloud使用量→月次請求のProviderテスト
 
-既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。実Provider往復はsandbox claim待ち、実Cloud実行は接続先/予算待ち。本番課金は無効です。
+既存の確定済みRemote LLM/A2A usageを月次明細へ取り込むStripe test専用adapterを追加。Mac起動・秘密設定・webhook・再試行は[Sky請求設計](docs/sky-billing.md#cloud使用量とstripe-test接続)を参照。合成usage 1 USDのStripe sandbox請求・テスト決済・署名通知・Sky paid再取得は受入済み。実Cloud実行は接続先/予算待ち。テスト顧客は予約ドメインの架空emailを使用し、実メール送信は行いません。本番課金は無効です。
 
 米国向けSky 140は月額140 USD・Agent利用枠100 USDを確定。契約同意・継続回収・未払い時の有料利用停止・入金後復旧は[設計と未受入条件](docs/sky-billing.md#米国向けの契約に基づく月次請求)を参照。料金試算画面の説明は自動回収/停止の実装完了を意味せず、本番課金は無効です。
+
+Sky 140の固定請求・決済失敗/復旧は `scripts/sky-140-collection-sandbox.mjs` で明示実行するテスト専用harnessです。[起動・復旧・未実装範囲](docs/sky-billing.md#sky-140の固定請求失敗復旧sandbox)。旧判定harnessのMac表示は5224。新しい月次timerと既存Agent予約/送信gateのSandbox受入は `scripts/check-sky-recurring-provider.mjs`（5225）です。[起動・保存・復旧手順](docs/sky-billing.md#sky-140の月次自動請求とagent停止復旧sandbox)。本番課金は無効です。
+
+Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `node --experimental-strip-types --test tests/sky-recurring-usage.test.mjs`。5225に確定/予約/残り枠を表示します。現在は合成応答で100 USD到達・並列競合時の送信拒否を確認、無料Cloud接続先と資格情報は未確認で実Cloud実行は未受入です。[再開条件](docs/sky-billing.md#cloud-usageから100-usd枠への接続)。
+
+無料Cloudの確認画面は `/sky/free-cloud`。Macの独立検証は `node --experimental-strip-types scripts/sky-free-cloud-preview.mjs` を起動し `http://127.0.0.1:5227/` で依頼文・送信同意を確認して「自動選択して実行」。実応答とtoken usageを表示し、同じ依頼IDは再送しません。合成契約と実Cloudを使う試験で、Stripe接続・本番課金はありません。証拠は `docs/evidence/sky-free-cloud-live.json`。
+
+無料Cloudへの依頼は `/os/sky/free-cloud`。依頼内容を書き、送信・保存へ同意して「Cloudに依頼する」を押します。未ログイン時は別タブのログイン案内を使い、戻って「接続・結果を更新」。進捗と回答は同じ画面に保存されます。月次Sandboxの上限・入金等の検証操作は画面下の「Sandbox契約・検証用の操作」にあります。本番課金はありません。
+
+### 月額140ドルプランの無料Cloud Sandbox
+
+`http://127.0.0.1:5228/`では既存Stripe Sandboxの月次契約・100ドル枠・無料Cloudの自動選択/実応答を一緒に確認できます。合成利用量で上限停止し、テスト入金と次月更新後に復旧します。1時間の合成契約を使わず、既存公開アカウントは変更しません。起動/復旧/署名通知の設定は[請求設計](docs/sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。本番課金は無効です。
+
+公開実アカウントの月次Sandbox移行は[無料Cloud画面](https://avoado.si/os/sky/free-cloud)で本人限定操作を提供します。旧契約を保持し、合成100ドル上限・テスト月締め/入金後復旧を検証します。本番課金なし。[設計と再開手順](docs/sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。

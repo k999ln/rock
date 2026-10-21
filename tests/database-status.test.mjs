@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 166);
+  assert.equal(report.summary.tableCount, 170);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,8 +30,8 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 94);
-  assert.equal(report.webSchema.migrationCount, 5);
+  assert.equal(report.webSchema.tableCount, 98);
+  assert.equal(report.webSchema.migrationCount, 7);
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('sky_feed_history_events'));
   assert.ok(
@@ -54,14 +54,14 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0017_sky_cloud_monthly_test.sql');
+  assert.equal(report.webSchema.latestMigration, '0019_sky_hosted_monthly.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 18],
-      ['sky', 43],
+      ['sky', 47],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 21],

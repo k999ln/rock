@@ -6,7 +6,9 @@
 
 ## サービスを理解するために最初に読む設計
 
-[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。2026-10-10確定の無料アカウント入口とRQ01〜RQ50を維持し、古いSIM主入口へ戻さない。Jenniferの役割とsourceはmain統合済み（PR #113、`01d2e418`）、真正検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
+[avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。現行baselineの通信＋si利用権商品、無料account・単体client経路とRQ01〜RQ50を維持する。Jenniferの役割とsourceはmain統合済み（PR #113、`01d2e418`）、真正検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
+
+Skyは機能・作者・公式区分へ固定しない[addプラグイン基盤](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。現在の検証済みcatalogと、将来追加できる能力の範囲を分けて読む。
 
 原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。入口＋6章の7冊と[横断整合契約](service-design/06-consistency-contracts.md)で全体を照合し、製品表示は[si表記契約](../data/product-terminology.json)に統一する。実行ロジック・公開・実機の合格は更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
 
@@ -37,7 +39,7 @@ avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README
 1. [RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf) — rocketstar、A-LINK、avokado、colonyを含む2026-09-24統合基準。
 2. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
 3. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — repository実装と既存詳細資料への入口。
-4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、AMCを含む13件をどう使い、どこで止めるか。
+4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — 使いたい能力をどう追加・交換し、仕事として使い、どこで止めるか。
 5. [avocadoMini R5 ハードウェア・OS統合基本設計](avocado-mini-r5/README.md) — 現行製品要求、51ページ、図面、計算、受入計画。既存[Material Invention研究仕様](rockstaros-avocado-mini-complete-design.md)は別profileとして保持する。
 6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ50と、その後の明示判断。
 7. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。

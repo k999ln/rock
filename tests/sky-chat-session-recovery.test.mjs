@@ -17,8 +17,8 @@ const session = (patch = {}) => ({ version: 1, id, toolId: 'rockstar-amc', creat
   activeRequest: { id: 'request-1', text: 'Synthetic retained brief', toolId: 'rockstar-amc' },
   workflowStatus: 'ready', outcome: null, ...patch });
 
-function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pendingHandoff = null, storageFails = false, routerThrows = false, remote = false } = {}) {
-  const slots = [], effects = [], requests = [], routes = [], consumed = [], estimates = [];
+function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pendingHandoff = null, storageFails = false, routerThrows = false, remote = false, auto = false } = {}) {
+  const slots = [], effects = [], requests = [], routes = [], consumed = [], estimates = [], selections = [];
   let routingConfig = null;
   const values = new Map([[sessions.ZEMA_CHAT_SESSION_KEY, JSON.stringify(saved)]]);
   if (pendingHandoff) values.set(handoffs.SKY_ZEMA_HANDOFF_KEY, JSON.stringify(pendingHandoff));
@@ -49,7 +49,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
     '@/lib/device': { deviceToken: () => '' }, '@/lib/mcp-hub': { listMcpConnections: async () => [] },
     '@/lib/operations-client': { operationRequest: async (url) => url === '/api/sky/connections' ? [{ tool: 'mr-citations' }, { tool: 'rockstar-amc' }] : [], OperationRequestError: Error },
     '@/components/provider-draft': { useProviderDraft: (_id, config) => {
-      routingConfig ??= { ...config, ...(remote ? { textGeneration: 'openai' } : {}) };
+      routingConfig ??= { ...config, textSelectionMode: auto ? 'auto' : 'manual', ...(remote ? { textGeneration: 'openai' } : {}) };
       return { state: { config: routingConfig }, session: { edit(next) { routingConfig = next; } } };
     } },
     '@/lib/currency-format': currency,
@@ -81,8 +81,9 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   }
   const context = { Error, Event, Element: FixtureElement, queueMicrotask, window, crypto, AbortController, AbortSignal,
     fetch: async (url, init) => {
+      if (url === '/api/llm/select') { const pending = Promise.withResolvers(); selections.push({ ...pending, signal: init.signal }); return pending.promise; }
       if (url === '/api/llm/estimate') { estimates.at(-1).signal = init.signal; return { ok: true, json: async () => ({}) }; }
-      if (url === '/api/llm/local-agent') { const pending = Promise.withResolvers(); requests.push({ ...pending, signal: init.signal }); return pending.promise; }
+      if (url === '/api/llm/local-agent' || url === '/api/llm/free-cloud') { const pending = Promise.withResolvers(); requests.push({ ...pending, signal: init.signal, url, body: JSON.parse(init.body) }); return pending.promise; }
       return { ok: true, json: async () => url === '/api/csv-jobs' ? { jobs: [] } : { funds: [], membership: null, analytics: [] } };
     },
     require(name) { if (modules[name]) return { __esModule: true, ...modules[name] }; if (name.startsWith('@/components/') || name === 'lucide-react') return {}; if (['@/lib/zema-private-storage','@/lib/currency-format','@/lib/remote-ai-text-client'].includes(name)) return {}; throw Error(`Unexpected module ${name}`); },
@@ -113,7 +114,8 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   function submit() { nodes(tree).find((x) => x.type === 'form' && x.props.onSubmit).props.onSubmit({ preventDefault() {} }); }
   async function send(brief) { input(brief); submit(); render(); await flush(); }
   render();
-  return { flush, routes, requests, estimates, values, consumed, input, submit, render, window, nodes: () => nodes(tree), text: () => text(tree), conversation: () => text(nodes(tree).find(n => n.props?.className === "sky-chat-messages")), click, send,
+  return { flush, routes, requests, estimates, selections, values, consumed, input, submit, render, window, nodes: () => nodes(tree), text: () => text(tree), conversation: () => text(nodes(tree).find(n => n.props?.className === "sky-chat-messages")), click, send,
+    consentCloud() { const label=nodes(tree).find(n=>n.type==='label'&&text(n).includes('今回の会話で無料Cloud'));nodes(label).find(n=>n.type==='input').props.onChange({target:{checked:true}});render(); },
     stored: () => sessions.readZemaChatSessions(storage),
     async shellLink(href, options = {}) {
       const event = { target: new FixtureElement({ href, ...options }), button: 0,
@@ -363,4 +365,26 @@ void test('discard confirmation names both unsent composer text and unsaved AMC 
   await h.click('入力を続ける');
   assert.ok(h.nodes().some((n) => n.type === 'AMC'));
   assert.equal(h.nodes().find((n) => n.type === 'textarea').props.value, 'Synthetic composer and AMC edits');
+});
+
+void test('auto model is frozen into execution and exposes its selection reason', async () => {
+  const h = harness({query:'tool=sky-auto', auto:true}); await h.flush(); await h.send('コードを作成');
+  assert.equal(h.selections.length,1); assert.equal(h.requests.length,0);
+  h.selections[0].resolve({ok:true,json:async()=>({selection:{provider:'ollama',model:'fixture-coder',reason:'コード向け'}})});
+  await h.flush(); assert.equal(h.requests.length,1); assert.equal(h.requests[0].body.model,'fixture-coder');
+  assert.equal(h.requests[0].body.provider,'ollama'); assert.ok(h.text().includes('コード向け'));
+});
+void test('late auto discovery cannot execute after changing conversation', async () => {
+  const h=harness({query:'tool=sky-auto',auto:true}); await h.flush(); await h.send('hello');
+  await h.choose('mr-citations'); assert.equal(h.selections[0].signal.aborted,true);
+  h.selections[0].resolve({ok:true,json:async()=>({selection:{provider:'ollama',model:'fixture',reason:'test'}})});
+  await h.flush(); assert.equal(h.requests.length,0);
+});
+
+void test('conversation routes selected free Cloud with consent and UUID, never to paid estimate', async () => {
+ const h=harness({query:'tool=sky-auto',auto:true});await h.flush();h.consentCloud();await h.send('Synthetic free request');
+ h.selections[0].resolve({ok:true,json:async()=>({selection:{provider:'pollinations',model:'openai-fast',reason:'free'}})});await h.flush();
+ assert.equal(h.estimates.length,0);assert.equal(h.requests.length,1);const req=h.requests[0];
+ assert.equal(req.url,'/api/llm/free-cloud');assert.match(req.body.id,/^[0-9a-f-]{36}$/);assert.equal(req.body.consent,true);assert.equal(req.body.prompt,'Synthetic free request');
+ req.resolve({ok:true,json:async()=>({text:'Cloud fixture reply',reportedModel:'fixture',usage:{inputTokens:2,outputTokens:3,chargeMinor:0}})});await h.flush();assert.ok(h.text().includes('Cloud fixture reply'));assert.ok(h.text().includes('$0.00'));
 });

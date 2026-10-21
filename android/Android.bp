@@ -1,6 +1,7 @@
 // Source-build integration for the virtual OS prototype; not yet Soong-build verified.
 java_library {
     name: "rock-automation-core",
+    static_libs: ["rock-model-crypto"],
     srcs: ["core/src/main/java/**/*.java"],
     java_resource_dirs: ["core/src/main/resources"],
     sdk_version: "current",
@@ -55,6 +56,7 @@ android_app {
 android_app {
     name: "RockShell",
     manifest: "shell/src/aosp/AndroidManifest.xml",
+    resource_dirs: ["shell/src/main/res"],
     srcs: ["shell/src/main/java/**/*.java"],
     static_libs: ["rock-shell-api"],
     sdk_version: "current",

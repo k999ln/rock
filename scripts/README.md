@@ -24,6 +24,7 @@
 | `mission:check` | 部隊・担当・親子task・段階の整合 | `data/mission-control.json` |
 | `sky:check` | Sky catalogとプロジェクト別ガイドの網羅、旧名称の残り | `lib/catalog.ts`・`PROJECTS.md` |
 | `sky:launch:check` | Skyサービスのローンチgate | `data/sky-service-launch.json` |
+| `python3 scripts/stage-model-crypto.py stage/verify` | 同hash署名検証JARとNOTICEをSoongのvendor moduleへ配置・再検証 | `os/physical/model-crypto-artifact-lock.json` |
 | `llm:architecture:check` | LLMの役割表と実装・文書の整合 | `data/llm-capabilities.json` |
 | `system:composition:check` | 全体構成監査 | `data/system-composition-audit.json` |
 | `csv:check` | CSV仕事の契約とtask | `data/csv-business-tasks.json` |

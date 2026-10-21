@@ -1194,3 +1194,27 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
 regexes = ['''\A502ae8861ba3decf5b2dfe0a6ed8d3566de2b643caa497262b653749033b305e\z''']
+
+# Public tokenizer metadata digest recomputed from the official pinned GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest d130682d1942"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
+regexes = ['''\A27b1fe636a04016514d2aa83b89792da06437beef1fcb9cfda669ddfd94b784d\z''']
+
+# Public tokenizer metadata digest independently recomputed from the pinned official Qwen2.5 GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest f6fcc71149d2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json|docs/evidence/pixel\-local\-jennifer\.json)\z''']
+regexes = ['''\Adb18a59f5f900ded3a1973ad90dabce36a3ef6df8b833779b0fa3bc74f0a5547\z''']
+
+# Public tokenizer metadata recomputed from the exact SHA-pinned Qwen3/Unsloth GGUF.
+[[rules.allowlists]]
+description = "public-artifact-digest 7212f0dd2158"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json)\z''']
+regexes = ['''\Aee28b958b28c088fc6713ddeb2257bbadacc406eb2b3cf76e395c1bfd1c2a54d\z''']

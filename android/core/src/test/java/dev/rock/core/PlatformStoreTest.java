@@ -277,6 +277,25 @@ public final class PlatformStoreTest {
         assertThrows(SecurityException.class, () -> store.modelProfilePin("owner:alice", oldWork));
     }
 
+    @Test public void runtimeBinderV4IsIndependentOfPlatformV1() {
+        ComponentManifest component = new ComponentManifest(ComponentManifest.Kind.TOOL,
+            "org.rockstar.runtime.localai", "com.localactionassistant", 3, 1, 1, 12003,
+            "rock_tool_app", SIGNER, List.of("local-ai.inference"), 1, 1);
+        install("register:binder-v4", component);
+        RuntimeManifest runtime = new RuntimeManifest(component.componentId, 3, SIGNER,
+            4, 4, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        assertEquals(runtime.digest(), store.registerRuntimeManifest(runtime));
+        ModelProfileManifest profile = new ModelProfileManifest("profile.pixel.qwen", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.preview", "key.preview", "A".repeat(86), component.componentId, 3, 4, 4,
+            "GGUF", "Q8_0", 2048, "article-preparation@1/input-v1", 1000, 1000);
+        assertEquals(profile.digest(), store.registerModelProfile(profile));
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(component.componentId,
+            1, SIGNER, 4, 3, List.of("GGUF"), List.of("article-preparation@1/input-v1")));
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(component.componentId,
+            1, SIGNER, 1, 65536, List.of("GGUF"), List.of("article-preparation@1/input-v1")));
+    }
+
     @Test public void runtimeAndProfileManifestRejectIdentityOrContractDrift() {
         ComponentManifest runtimeComponent = localAiRuntime();
         install("register:localai", runtimeComponent);
@@ -410,6 +429,12 @@ public final class PlatformStoreTest {
             tool.componentId, "clean.write", PAYLOAD, 100, 10_000, 10);
         store.confirmApproval("owner:alice", approval, 11);
         byte[] plaintext = store.exportRecoverableState("owner:alice");
+        // Prior schema-3 backups share this exact two-stage wire shape and remain importable.
+        java.io.DataInputStream legacyHeader = new java.io.DataInputStream(new java.io.ByteArrayInputStream(plaintext));
+        legacyHeader.readUTF(); legacyHeader.readInt(); legacyHeader.readUTF();
+        int engineHeaderOffset = plaintext.length - legacyHeader.available();
+        java.nio.ByteBuffer.wrap(plaintext).putInt(engineHeaderOffset, 3);
+
 
         JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("restored.db").getPath());
         try {

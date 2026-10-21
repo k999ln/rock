@@ -17,11 +17,11 @@ public final class TrustedModelArtifactPipeline implements PlatformStore.ModelAr
         String installAndLoad(ModelProfileManifest profile, String stagedArtifactReceipt);
     }
 
-    private final TrustedModelPublisherVerifier publisherVerifier;
+    private final ModelProfileAuthenticator publisherVerifier;
     private final StagedArtifactVerifier artifactVerifier;
     private final RuntimeModelLoader runtimeModelLoader;
 
-    public TrustedModelArtifactPipeline(TrustedModelPublisherVerifier publisherVerifier,
+    public TrustedModelArtifactPipeline(ModelProfileAuthenticator publisherVerifier,
         StagedArtifactVerifier artifactVerifier, RuntimeModelLoader runtimeModelLoader) {
         this.publisherVerifier = Objects.requireNonNull(publisherVerifier, "MODEL_PUBLISHER_VERIFIER_REQUIRED");
         this.artifactVerifier = Objects.requireNonNull(artifactVerifier, "MODEL_ARTIFACT_VERIFIER_REQUIRED");
@@ -30,6 +30,8 @@ public final class TrustedModelArtifactPipeline implements PlatformStore.ModelAr
 
     @Override public String verifyAndLoad(ModelProfileManifest profile) {
         String publisherReceipt = publisherVerifier.verifySignature(profile);
+        if (publisherReceipt == null || !publisherReceipt.matches("[a-f0-9]{64}"))
+            throw new SecurityException("MODEL_AUTHENTICATION_RECEIPT_REQUIRED");
         String artifactReceipt = artifactVerifier.verifyAndStage(profile);
         if (artifactReceipt == null || !artifactReceipt.matches("[a-f0-9]{64}"))
             throw new SecurityException("MODEL_ARTIFACT_VERIFICATION_REQUIRED");

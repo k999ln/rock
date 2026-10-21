@@ -55,6 +55,16 @@
         "path": "os/physical/local-ai-build-v4.patch",
         "sha256": "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
         "purpose": "api_v4_binder_handshake_and_long_headless_timeout_build_fix"
+      },
+      {
+        "path": "os/physical/local-ai-loaded-profile-v4.patch",
+        "sha256": "8c6097608b9cf2678efcde4c1b581fe36330910cdbb05b9b15b6283705be0411",
+        "purpose": "plan_only_with_authenticated_already_loaded_profile_without_standalone_repository_autoload; clear_all_model_identity_fields_on_process_restart"
+      },
+      {
+        "path": "os/physical/local-ai-task-drafts-v4.patch",
+        "sha256": "1a434027298eaade5cda45535b378e99ab0b52a6b2c020267af0db3bdb5b03f8",
+        "purpose": "package8_closed_drafts_legacy_ideas_v1_and_complete_phrase_headroom_v2_no_tool_authority"
       }
     ]
   },
