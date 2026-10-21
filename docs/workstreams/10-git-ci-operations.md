@@ -1,4 +1,14 @@
 # Git / CI / Operations
+
+<a id="redesign-thread-git"></a>
+## 参照チャットの設計統合監査
+
+2026-10-21、指定チャット[「RockstarOSを再設計」](codex://threads/01a14d54-daee-7c30-87a8-faea84641a40)とGitHub k999ln/rock を照合。main 01b6aecd8b4d8bd2385665232dfb4b57029f991f に対し、作業branch codex/esim-cloud-access は 951d82d5a491a284aed4e0d4d280171d835d4b43、merge base 9f64aee3de9cc74e6b6e7eae34052780e000c296、GitHub比較はmainから652 behind/3 ahead。ローカルは監査時564項目dirtyで、別チャットが同じcheckoutを編集中。mainはRQ50・製品ベースv2.08、作業branchはRQ49・v1.120。mainの月額140 USD/100 USD利用枠と作業版の月額16 USD案も未照合。GitHub mainの公開状態へ作業中の設計/実装を換算しない。
+
+原因: 長期作業branchとmainの文書・料金・RQ体系が分岐し、新しい設計は共有checkoutの未commit差分へ蓄積。修正順: (1) mainを基準にRQ50・料金・契約・CIを読み直す、(2) 作業branchの未commit差分を対象pathごとに固定して重複編集を避ける、(3) 最新の本人指示を該当workstreamと全体設計・baselineへ理由付きで移す、(4) 投稿→追加→Eve、コミュニティー版、実MCP、eSIM導線を小PRへ分ける、(5) 同一SHAのCIとUI/Provider/Pixelを別々に受け入れる。force pushや設計文書だけによるruntime合格は行わない。
+
+今回の合格証拠はGitHub ref比較と設計差分の記録。本人X実投稿、X For You、実eSIM/Cloud、Pixel全OS、実課金、公開、main統合の証拠ではない。再検証: git rev-list --left-right --count origin/main...HEAD、npm run baseline:check、npm run design:check、npm run project:update、npm run verify。GitHub保存、作業branch反映、main mergeは別記する。
+
 ## 2026-10-13 品質改善・仕事compositionのmain統合（G04 / H1、ROCK）
 
 ## 全系統の調査設計（DOC04 / H1、ROCK）

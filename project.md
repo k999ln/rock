@@ -1,3 +1,7 @@
+## 2026-10-21 — 指定チャットの設計とGitHub mainの差分監査（G04 / ROCK）
+
+参照チャットのHome/Sky投稿型frontend、Eve履歴、鍵付きコミュニティーOS、eSIMから本人Cloudサービスへの接続、X投稿API/MCP受け皿を確認した。GitHub main 01b6aecd8b4d8bd2385665232dfb4b57029f991f と作業branch 951d82d5a491a284aed4e0d4d280171d835d4b43 は652 behind/3 ahead、ローカルは564項目dirty。mainのRQ50/v2.08/月額140 USD案と作業版RQ49/v1.120/月額16 USD案は未統合。現行設計差分と統合順を[Web](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)・[Git](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)へ記録。今回の別branch保存は監査/設計のみ。共有checkout、実装、実Provider、Pixel、公開、mainは未変更。次担当はmainを先に同期し、料金/RQの選択根拠を確定したうえで小PRごとに同一SHA検証する。
+
 # Cloud依頼フォームの改善
 
 2026-10-18 SKY07/ROCK: 本人指摘に対応しCloud依頼欄を主画面へ移動、空入力・ログイン導線・送信不可理由・保存確認・日時履歴・回答表示を整理。Sandbox管理操作は折りたたみへ。既存API/台帳/CAS/予算を維持。公開v73/source226a995bへ配備。空入力/同意/未ログインChrome/390px幅のUI確認、実accountの依頼6b314560は自動選択→gpt-oss-20b→回答保存、送信1回・334/1331 tokens・$0。全文の内容正確性は未評価。全体verify exit0。証拠 docs/evidence/sky-cloud-request-ui.json。GitHub main統合は別。本番課金なし。
