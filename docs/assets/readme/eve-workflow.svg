@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="540" viewBox="0 0 1440 540" role="img" aria-labelledby="title desc">
+<title id="title">Eve — 会話から仕事と成果へ</title><desc id="desc">会話、本人の承認、仕事、成果をつなぐ設計の概念図。実際の画面や実行成功を示す画像ではありません。</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#171829"/><stop offset="1" stop-color="#111b22"/></linearGradient><linearGradient id="flow"><stop stop-color="#b9a8ef"/><stop offset="1" stop-color="#9cd7cb"/></linearGradient></defs>
+<rect width="1440" height="540" rx="24" fill="url(#bg)"/>
+<g font-family="Arial,Helvetica,sans-serif"><text x="72" y="72" fill="#b9a8ef" font-size="15" letter-spacing="5">EVE / FROM INTENT TO OUTCOME</text><text x="67" y="170" fill="#f2eff8" font-size="70" font-weight="700" letter-spacing="-2">A conversation. A clear next step.</text><text x="72" y="217" fill="#b0afbe" font-size="23">Your context, your approval, your work, your results.</text>
+<path d="M145 350h1150" stroke="url(#flow)" stroke-opacity=".7" stroke-width="2"/>
+<g fill="#191e30" stroke="#66647e"><rect x="72" y="286" width="270" height="138" rx="18"/><rect x="414" y="286" width="270" height="138" rx="18"/><rect x="756" y="286" width="270" height="138" rx="18"/><rect x="1098" y="286" width="270" height="138" rx="18"/></g>
+<g fill="#b9a8ef" font-size="13" letter-spacing="3"><text x="102" y="324">01 / CONVERSATION</text><text x="444" y="324">02 / APPROVAL</text><text x="786" y="324">03 / WORK</text><text x="1128" y="324">04 / RESULTS</text></g>
+<g fill="#f1eef9" font-size="29" font-weight="600"><text x="102" y="379">Ask &amp; clarify</text><text x="444" y="379">Review &amp; decide</text><text x="786" y="379">Track &amp; control</text><text x="1128" y="379">Save &amp; continue</text></g>
+<text x="72" y="484" fill="#989aaa" font-size="16" letter-spacing="2">CONCEPT DIAGRAM · NOT A PRODUCT SCREENSHOT</text></g>
+</svg>

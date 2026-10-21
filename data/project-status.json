@@ -9478,15 +9478,22 @@
       "development_status"
     ],
     "scope": "README navigation, matching Japanese documentation gate, progress record; no runtime or deployment change",
-    "baseMainSha": "d9c8a85dbbbefed75b7d07d2adb35e5a429c90cf",
+    "baseMainSha": "48459cab28afe3f143d828e091ded7b4cce9f502",
     "verification": {
-      "orderAndSubsections": "PASS: Mini OS Eve Sky Pro, four subsections each",
-      "localLinksAndAnchors": "PASS",
-      "r5DocumentationTests": "3 passed",
-      "metadataCheck": "PASS",
-      "fullVerify": "exit0; Node2515 passed/2skipped; Work API1678, CSV385"
+      "sourceLinksAndSvg": "PASS: six image sources; two valid non-script SVGs",
+      "gifFrames": "24 frames each",
+      "browserPreview": "header and Eve diagram inspected at 1280px; all five visual elements present",
+      "fullVerify": "exit0; Node2515 passed/2skipped; API1678, CSV385"
     },
     "mainPublication": "normal commit and fast-forward push to main",
-    "layout": "Four separate subsections per product; short explanatory paragraphs; spaced source links and product separators"
+    "layout": "Spacious product sections with brand SVG, concept photography, existing GIFs and Eve workflow SVG",
+    "visuals": {
+      "header": "docs/assets/readme/avokado-header.svg",
+      "mini": "existing R5 concept image",
+      "os": "existing 24-frame concept GIF",
+      "eve": "docs/assets/readme/eve-workflow.svg",
+      "sky": "existing 24-frame concept GIF",
+      "pro": "existing Studio concept image"
+    }
   }
 }

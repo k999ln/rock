@@ -1,3 +1,7 @@
+## 2026-10-21 — READMEに製品画像とGIFを追加（DOC04 / G04、ROCK）
+
+本人のビジュアル改善指示により、共通SVGヘッダー、Mini/Proの既存コンセプト画像、OS/Skyの既存GIF、Eveの概念フローSVGを配置。前回の広い余白と説明、製品順を維持。画像ごとにconcept/実画面の区別を記載。新しい重い生成物やruntime/製品の受入追加はない。画像6参照、SVG2件のXML/非script、OS/Sky GIF各24frameを確認。暗色ブラウザでヘッダーとEve図を表示検査し、npm run verify exit0（Node2515成功/2skip、API1678、CSV385）。mainへ通常commit/fast-forwardで保存する。
+
 ## 2026-10-21 — READMEの説明と余白を拡充（DOC04 / G04、ROCK）
 
 本人の「詰めず、幅を開けてちゃんと説明」の指示により、Mini→OS→Eve→Sky→Pro順を維持し、4項目を小見出し・短い段落・独立したリンクへ展開。使う場面と製品同士の関係を説明し、製品間に区切りと余白を追加。確定した機能や受入状態の追加はない。製品順・各4小見出し・ローカル参照/anchorを確認し、R5文書3試験とnpm run verifyが成功（Node2515成功/2skip、API1678、CSV385）。mainへ通常commit/fast-forwardで保存する。

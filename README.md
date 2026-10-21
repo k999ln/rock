@@ -1,5 +1,9 @@
 # avokado
 
+<p align="center">
+  <img src="docs/assets/readme/avokado-header.svg" alt="avokado — Mini / OS / Eve / Sky / Pro" width="100%" />
+</p>
+
 avokadoは、暮らしや空間で使うMini、共通の実行基盤となるOS、会話と仕事をつなぐEve、情報や機能に出会うSky、AI専用PCのProを開発しています。
 
 Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを使うためのPCを届け、その事業を通じて半導体や関連部品を確保できる基盤づくりを目指します。OS・Eve・Skyは、それぞれの製品やサービスを本人の権限と仕事につなぐ役割を持ちます。
@@ -17,6 +21,15 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 <a id="mini"></a>
 
 ## Mini — 暮らしとまちづくり
+
+<p align="center">
+  <img src="sites/avocado-mini/public/images/avocadomini-r5-slim-home-concept.png" alt="Mini R5を暮らしの中で使う写真風コンセプト" width="100%" />
+</p>
+
+<p align="center"><sub>Mini R5のコンセプトビジュアル。実機写真ではなく、空間表示・通話の成立を示すものではありません。</sub></p>
+
+<br>
+
 
 ### 目的と使う場面
 
@@ -71,6 +84,15 @@ Material Inventionは2D候補比較とSky/Zema接続がある段階で、シミ�
 <a id="os"></a>
 
 ## OS — RockstarOS
+
+<p align="center">
+  <img src="public-release/rockstaros/rockstaros-motion.gif" alt="RockstarOSの共通基盤を表したコンセプトアニメーション" width="100%" />
+</p>
+
+<p align="center"><sub>RockstarOSの世界観を表す既存GIF。OSの動作録画や実機受入の証拠ではありません。</sub></p>
+
+<br>
+
 
 ### 目的と使う場面
 
@@ -132,6 +154,15 @@ eSIMは本人用Cloud Sky・Eve・Linuxサービスへの入口です。OS binar
 
 ## Eve — 会話から仕事と成果へ
 
+<p align="center">
+  <img src="docs/assets/readme/eve-workflow.svg" alt="Eveの会話・承認・仕事・成果をつなぐ概念図" width="100%" />
+</p>
+
+<p align="center"><sub>Eveの仕事の流れを表した設計図。実際の画面や自動実行の成功を示す画像ではありません。</sub></p>
+
+<br>
+
+
 ### 目的と使う場面
 
 会話、依頼、承認、進捗、停止、成果、利用額を同じ本人・同じ仕事に結び付け、対応端末へ引き継ぐ窓口です。
@@ -184,6 +215,15 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 
 ## Sky — 情報とAgent・Toolの発見・接続
 
+<p align="center">
+  <img src="docs/assets/cover-sky.gif" alt="Sky — 役に立つAIを見つけるコンセプトアニメーション" width="340" />
+</p>
+
+<p align="center"><sub>発見と接続を表す既存GIF。実際の画面録画ではありません。</sub></p>
+
+<br>
+
+
 ### 目的と使う場面
 
 Skyは、情報やModel・Agent・Toolを投稿から見つけ、追加・接続するサービスです。仕事の依頼はEveへ引き継げます。Sky単体でも利用できる設計です。
@@ -233,6 +273,15 @@ Skyを使うためにMiniやProの購入、native OSの導入を必須にはし�
 <a id="pro"></a>
 
 ## Pro — AI専用PCと半導体・関連部品の確保
+
+<p align="center">
+  <img src="sites/avocado-mini/public/images/avocado-pro-studio-concept.webp" alt="銀色のAI専用PC avocadoProのStudio筐体コンセプト" width="100%" />
+</p>
+
+<p align="center"><sub>Studio筐体のコンセプトビジュアル。最初の試作候補A4-H2Oの実機写真ではありません。</sub></p>
+
+<br>
+
 
 ### 目的と使う場面
 

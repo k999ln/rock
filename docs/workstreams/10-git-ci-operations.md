@@ -2,6 +2,8 @@
 
 ## avokado全体のREADME入口（2026-10-21、DOC04 / G04、ROCK）
 
+ビジュアル更新: 共通ブランドSVG、既存Mini/Proコンセプト画像、既存OS/Sky GIF、Eveの仕事フローSVGをREADMEへ追加。素材参照先、GIFの24frame、SVGのXML/非script、暗色プレビューの表示を確認し、実機写真・動作録画とは区別してcaptionを付ける。重複する大画像や新しい受入証拠は追加しない。
+
 追加指示により、4項目の密な箇条書きを小見出し・短い段落・余白へ展開。生活/地域での使い方、製品間の仕事の流れ、Pro事業と調達の関係、コードの実装範囲を文章で説明する。製品順と未受入条件を維持し、地域実証・実機・供給などの成果を追加しない。
 
 本人指定のMini→OS→Eve→Sky→Proを同階層に並べ、各項目へ目的・設計正本・既存コード・開発状況を記載する。ROCKは正本/コード/既存公開証拠の照合とmain保存を担当し、外部依存はGitHubの保存/表示。既存公開サイト、OS/runtime、物理・Provider・供給の受入状態は変更しない。完了条件はREADME内の順序/4項目/ローカル参照先/明示anchor、metadata同期とnpm run verifyの成功、mainのREADME読戻し。既存のR5/Material未実装チェックは日本語の同義表記も受理する。READMEの5項目順・各4説明・参照先・anchor、R5文書3試験、metadata同期と全体verify exit0を確認した。
