@@ -9478,14 +9478,15 @@
       "development_status"
     ],
     "scope": "README navigation, matching Japanese documentation gate, progress record; no runtime or deployment change",
-    "baseMainSha": "3457a8ea167a70578ae71f4f87366f23028f7436",
+    "baseMainSha": "d9c8a85dbbbefed75b7d07d2adb35e5a429c90cf",
     "verification": {
-      "readmeOrderAndFourFields": "PASS for Mini, OS, Eve, Sky, Pro",
-      "localLinksAndAnchors": "PASS; repaired missing release plan link",
+      "orderAndSubsections": "PASS: Mini OS Eve Sky Pro, four subsections each",
+      "localLinksAndAnchors": "PASS",
       "r5DocumentationTests": "3 passed",
       "metadataCheck": "PASS",
-      "fullVerify": "exit0; Node 2515 passed / 2 skipped; Work API1678, CSV385"
+      "fullVerify": "exit0; Node2515 passed/2skipped; Work API1678, CSV385"
     },
-    "mainPublication": "commit and normal fast-forward push to main; no Site deployment"
+    "mainPublication": "normal commit and fast-forward push to main",
+    "layout": "Four separate subsections per product; short explanatory paragraphs; spaced source links and product separators"
   }
 }

@@ -1,3 +1,7 @@
+## 2026-10-21 — READMEの説明と余白を拡充（DOC04 / G04、ROCK）
+
+本人の「詰めず、幅を開けてちゃんと説明」の指示により、Mini→OS→Eve→Sky→Pro順を維持し、4項目を小見出し・短い段落・独立したリンクへ展開。使う場面と製品同士の関係を説明し、製品間に区切りと余白を追加。確定した機能や受入状態の追加はない。製品順・各4小見出し・ローカル参照/anchorを確認し、R5文書3試験とnpm run verifyが成功（Node2515成功/2skip、API1678、CSV385）。mainへ通常commit/fast-forwardで保存する。
+
 ## 2026-10-21 — avokado全体のREADME入口を再構成（DOC04 / G04、ROCK）
 
 本人指定のMini→OS→Eve→Sky→Pro順に目的・設計・コード・開発状況を整理。OS中心の見出しと「周辺製品」の扱いを改め、各製品を同じ階層で案内。既存の公開/実機/Provider/供給/料金の受入境界と開発手順を保持。READMEの既存状態検査は同じ未実装状態の日本語表記も受け入れるよう調整。READMEの5項目順・各4説明・ローカル参照先・anchorを確認。R5文書3試験、metadata:check、npm run verify exit0（Node2515成功/2skip、API1678、CSV385）。通常commitとfast-forwardでmainへ保存する。サイト本文やruntimeの変更はない。
