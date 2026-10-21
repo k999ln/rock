@@ -14544,6 +14544,156 @@
     transition: none;
   }
 }
+
+/* Jennifer is the conversation surface; Zema stays visible as its work-control layer. */
+.sky-chat-page .zema-sidebar-identity {
+  align-items: flex-start;
+}
+.sky-chat-page .zema-sidebar-brand {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #b8dce8;
+  border-radius: 12px;
+  color: #122027;
+  background: #b8dce8;
+  font-size: 15px;
+  letter-spacing: -.03em;
+}
+.sky-chat-page .zema-sidebar-identity strong {
+  display: block;
+  margin-top: 1px;
+  color: #f3f5f6;
+  font-size: 15px;
+}
+.sky-chat-page .zema-sidebar-identity strong small {
+  display: block;
+  margin: 4px 0 0;
+  color: #8ebac9;
+  font-size: 9px;
+  letter-spacing: .13em;
+}
+.sky-chat-page .jennifer-sidebar-section-title {
+  margin-top: 3px;
+  color: #8ebac9;
+}
+.sky-chat-page .jennifer-project-list {
+  display: grid;
+  gap: 3px;
+}
+.sky-chat-page .jennifer-project-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 5px 7px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #dfe8eb;
+  background: transparent;
+  text-align: left;
+}
+.sky-chat-page .jennifer-project-row:hover:not(:disabled),
+.sky-chat-page .jennifer-project-row:focus-visible,
+.sky-chat-page .jennifer-project-row.is-current {
+  border-color: #405760;
+  background: #1c262c;
+}
+.sky-chat-page .jennifer-project-row:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+.sky-chat-page .jennifer-project-mark {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #4c6872;
+  border-radius: 8px;
+  color: #b8dce8;
+  background: #182228;
+  font-size: 10px;
+  font-weight: 800;
+}
+.sky-chat-page .jennifer-project-row.is-current .jennifer-project-mark {
+  border-color: #b8dce8;
+  color: #122027;
+  background: #b8dce8;
+}
+.sky-chat-page .jennifer-project-copy {
+  min-width: 0;
+  flex: 1;
+}
+.sky-chat-page .jennifer-project-copy strong,
+.sky-chat-page .jennifer-project-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sky-chat-page .jennifer-project-copy strong {
+  color: #e8eef0;
+  font-size: 11px;
+  font-weight: 700;
+}
+.sky-chat-page .jennifer-project-copy small {
+  margin-top: 2px;
+  color: #84969e;
+  font-size: 9px;
+}
+.sky-chat-page .zema-room-heading h1 {
+  letter-spacing: -.075em;
+}
+.sky-chat-page .zema-jennifer-lead {
+  color: #b8dce8;
+  letter-spacing: .02em;
+}
+.sky-chat-page .jennifer-flow-card {
+  display: grid;
+  gap: 11px;
+  width: 100%;
+  margin-top: 5px;
+  padding: 14px;
+  border: 1px solid #344a53;
+  border-radius: 16px;
+  background: linear-gradient(140deg, #172228, #10171b 78%);
+}
+.sky-chat-page .jennifer-flow-steps {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.sky-chat-page .jennifer-flow-steps > span {
+  display: grid;
+  min-width: max-content;
+  gap: 2px;
+  padding: 7px 9px;
+  border: 1px solid #38515b;
+  border-radius: 10px;
+  background: #142026;
+}
+.sky-chat-page .jennifer-flow-steps strong {
+  color: #e8f2f4;
+  font-size: 10px;
+}
+.sky-chat-page .jennifer-flow-steps small {
+  color: #8cabb5;
+  font-size: 9px;
+}
+.sky-chat-page .jennifer-flow-steps > svg {
+  flex: 0 0 auto;
+  color: #8ebac9;
+}
+.sky-chat-page .jennifer-flow-card > p {
+  color: #9fb2b9;
+  font-size: 11px;
+  line-height: 1.55;
+}
 .sky-activation-panel {
   display: grid;
   gap: 14px;

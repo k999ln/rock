@@ -858,7 +858,8 @@
       "originalDesignBytesPreserved": true,
       "jenniferSource": {
         "canonicalName": "Jennifer",
-        "userSpelling": "Jenniffer",
+        "userSpelling": "Jennifer",
+        "legacySpelling": "Jenniffer",
         "branch": "codex/jennifer-zema-execution",
         "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
         "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
@@ -1104,10 +1105,11 @@
     },
     {
       "id": "chat",
-      "displayName": "Zema",
+      "displayName": "Jennifer",
       "legacyDisplayName": "Chat",
       "route": "/chat",
-      "role": "request_create_approve_stop_status_results_and_work_history"
+      "role": "conversation_goal_contract_project_coordination_and_integrated_reporting",
+      "workSystem": "Zema"
     },
     {
       "id": "wallet",
@@ -1300,13 +1302,21 @@
     "externalProviders": "excluded_from_first_os_full_build_required_before_public_earning_launch"
   },
   "chatInteraction": {
-    "displayName": "Zema",
+    "displayName": "Jennifer",
     "legacyDisplayName": "Chat",
     "compatibilityRoute": "/chat",
+    "workSystem": "Zema",
+    "planningEngine": "AMC_inside_Zema",
     "defaultRouting": "sky_auto",
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
-    "controlSurface": "zema_thread_and_work_center",
+    "controlSurface": "jennifer_conversation_front_with_zema_thread_and_work_center",
+    "access": {
+      "canonicalOrigin": "https://avoado.si",
+      "canonicalRpId": "avoado.si",
+      "nonCanonicalPrivateRoutes": "redirect_ui_and_reject_private_api_without_d1_access",
+      "sitesAccountUse": "bootstrap_and_recovery_only_after_passkey_enrollment"
+    },
     "skyHandoff": {
       "transport": "same_tab_session_storage",
       "selectedToolDeepLink": "/chat?tool={toolId}",

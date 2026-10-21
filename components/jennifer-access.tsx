@@ -10,6 +10,7 @@ type AccessStatus = {
   method?: string;
   setupAvailable?: boolean;
   recovery?: boolean;
+  portfolioAccess?: boolean;
 };
 
 function bytes(value: string) {
@@ -66,6 +67,7 @@ function message(error: unknown) {
 export function useJenniferAccess() {
   const [state, setState] = useState<AccessState>('checking');
   const [recovery, setRecovery] = useState(false);
+  const [portfolioAccess, setPortfolioAccess] = useState(false);
   const [error, setError] = useState('');
   const refresh = useCallback(async () => {
     setState('checking'); setError('');
@@ -74,15 +76,16 @@ export function useJenniferAccess() {
       const status = await response.json() as AccessStatus;
       if (!response.ok) throw new Error('AUTH_UNAVAILABLE');
       setRecovery(status.recovery === true);
+      setPortfolioAccess(status.portfolioAccess === true);
       setState(status.authenticated && status.method === 'passkey'
         ? 'ready' : status.setupAvailable ? 'setup' : 'signed-out');
-    } catch { setState('unavailable'); }
+    } catch { setPortfolioAccess(false); setState('unavailable'); }
   }, []);
   useEffect(() => {
     const timer = window.setTimeout(() => { void refresh(); }, 0);
     return () => window.clearTimeout(timer);
   }, [refresh]);
-  return { state, recovery, error, setError, setState, refresh };
+  return { state, recovery, portfolioAccess, error, setError, setState, refresh };
 }
 
 export function JenniferAccess({ access }: { access: ReturnType<typeof useJenniferAccess> }) {
@@ -113,7 +116,7 @@ export function JenniferAccess({ access }: { access: ReturnType<typeof useJennif
           },
         },
       });
-      access.setState('ready'); requestExecutionAccessCheck();
+      await access.refresh(); requestExecutionAccessCheck();
     } catch (cause) { access.setError(message(cause)); }
     finally { setBusy(false); }
   }
@@ -141,7 +144,7 @@ export function JenniferAccess({ access }: { access: ReturnType<typeof useJennif
           },
         },
       });
-      access.setState('ready'); requestExecutionAccessCheck();
+      await access.refresh(); requestExecutionAccessCheck();
     } catch (cause) { access.setError(message(cause)); }
     finally { setBusy(false); }
   }
@@ -153,7 +156,7 @@ export function JenniferAccess({ access }: { access: ReturnType<typeof useJennif
     <p className="jennifer-access-kicker">JENNIFER · PRIVATE ACCESS</p>
     <h1 id="jennifer-access-title">Jenniferを開く</h1>
     <p className="jennifer-access-lead">
-      プロジェクト、担当AI、Zemaの証拠は本人の領域です。この端末のパスキーで開きます。
+      プロジェクト、担当si、Zemaの証拠は本人の領域です。この端末のパスキーで開きます。
     </p>
     <div className="jennifer-access-points" aria-label="保護内容">
       <span><LockKeyhole size={16} /> パスワードを保存しない</span>

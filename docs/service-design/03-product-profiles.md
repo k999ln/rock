@@ -16,7 +16,7 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 失敗・認証切れ・接続不明は保存済み仕事を照合し、実行や購入を自動で再送しない。更新は旧仕事のTool版と入力を保持する。受入は本人A/B、desktop/mobile、保存・再取得・停止・費用の一周。外部host app認証・成果連携は独立受入とする。[Sky設計](../sky-launch-design.md)、[全Tool正本](../sky-tools-complete-design.md)、[共通契約](02-system-contracts.md)へ接続する。
 
-## Jennifer（利用者表記 Jenniffer）
+## Jennifer
 
 **会話を選ぶ利用者の、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 

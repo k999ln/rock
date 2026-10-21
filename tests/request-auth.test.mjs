@@ -33,6 +33,22 @@ void test('request auth prefers the stable gateway user id', async () => {
   assert.equal(await requestGatewayUser(request), 'owner-1');
 });
 
+void test('the canonical avoado.si host accepts only the Sites-dispatched stable id', async () => {
+  const accepted = new Request('https://avoado.si/api/jobs', {
+    headers: {
+      'oai-authenticated-user-id': ' owner-1 ',
+      'x-dispatched-app': 'site---verified-project',
+    },
+  });
+  assert.equal(await requestGatewayUser(accepted), 'owner-1');
+  await assert.rejects(
+    requestGatewayUser(new Request('https://avoado.si/api/jobs', {
+      headers: { 'oai-authenticated-user-id': 'forged-owner' },
+    })),
+    /UNAUTHORIZED/,
+  );
+});
+
 void test('the platform-owned generated Sites host keeps its stable gateway id', async () => {
   const request = new Request('https://rockstaros-kaiya.noellesugar1.chatgpt.site/api/jobs', {
     headers: { 'oai-authenticated-user-id': 'owner-1' },
