@@ -8,7 +8,7 @@ import { spawnSync } from 'node:child_process';
 import { isLocalRuntimeHost, isLocalRuntimeRequest } from '../lib/sky-private-loopback.mjs';
 import { beginLinuxRun, finishLinuxRun, cancelLinuxRun, confirmLinuxRun, linuxRunExport, parseLinuxAgent } from '../lib/sky-linux-local.ts';
 import { createWorkJob } from '../lib/workflow.ts';
-import { createLinuxLocalManager, createSkyLinuxLocalPlugin } from '../scripts/sky-linux-local-runtime.mjs';
+import { createLinuxLocalManager, createSkyLinuxLocalPlugin, linuxRuntimeDownloadUrl } from '../scripts/sky-linux-local-runtime.mjs';
 
 const modelSha256 = 'a'.repeat(64);
 const agent = { id: randomUUID(), name: '担当', instructions: '文章を整理する', modelId: 'local', sha256: 'b'.repeat(64) };
@@ -218,4 +218,12 @@ void test('Pixel memory failure cannot become ready, and a changed guest boot re
     assert.equal(manager.snapshot().phase, 'stopped'); assert.match(manager.snapshot().error, /再起動/);
     assert.equal(manager.snapshot().models.length, 1);
   } finally { await manager.close(); await rm(dir, { recursive: true, force: true }); }
+});
+
+void test('runtime lock files cannot redirect a download or send local file values to arbitrary endpoints', () => {
+  const pinned = 'https://github.com/ggml-org/llama.cpp/releases/download/b11723/llama-b11723-bin-ubuntu-arm64.tar.gz';
+  assert.equal(linuxRuntimeDownloadUrl(pinned), pinned);
+  for (const url of ['http://127.0.0.1/private','https://attacker.invalid/collect?secret=local-file', pinned+'?token=private', pinned.replace('github.com','github.com.attacker.invalid'), undefined]) {
+    assert.throws(() => linuxRuntimeDownloadUrl(url), /取得元/);
+  }
 });

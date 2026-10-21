@@ -12,6 +12,13 @@ import { inspectLinuxModelLink } from './sky-linux-model-link.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const VM = 'sky-private';
+const PINNED_RUNTIME_URL = 'https://github.com/ggml-org/llama.cpp/releases/download/b11723/llama-b11723-bin-ubuntu-arm64.tar.gz';
+/** Local lock files may select only the reviewed public runtime, never a network destination. */
+export function linuxRuntimeDownloadUrl(value) {
+  if (value !== PINNED_RUNTIME_URL) throw new Error('実行環境の取得元が確認済みの版と一致しません。');
+  return PINNED_RUNTIME_URL;
+}
+
 const PHASES = { none: 'モデルを追加してください', added: 'モデルを追加しました。Linuxの環境を準備してください', preparing: 'Linuxの環境を準備しています', ready: '使えます', stopped: 'Linuxは停止しています。再開するには環境を準備してください', failed: '準備できませんでした' };
 const STATES = { active: '文章を作っています', review: '成果の確認待ち', completed: '確認済み', cancelled: '停止済み' };
 async function sha(path) { const h = createHash('sha256'); for await (const c of createReadStream(path)) h.update(c); return h.digest('hex'); }
@@ -150,7 +157,7 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     let cached = false;
     try { cached = (await stat(archive)).size === lock.bytes && await sha(archive) === lock.sha256; } catch { /* Fetch the exact pinned public file. */ }
     if (!cached) {
-      const response = await fetch(lock.url, { signal: AbortSignal.timeout(120000) });
+      const response = await fetch(linuxRuntimeDownloadUrl(lock.url), { signal: AbortSignal.timeout(120000) });
       if (!response.ok || !response.body) throw new Error('実行環境を取得できませんでした。');
       const file = await open(archive + '.part', 'w', 0o600);
       let size = 0;

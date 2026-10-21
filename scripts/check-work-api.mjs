@@ -2477,7 +2477,6 @@ try {
   }
   check(await exportStore.get(alice, delegation.id), exportBefore);
   check(await exportStore.getBudget(alice, a2aParent.id), exportBudgetBefore);
-  writeFileSync(join(tmpdir(), 'sky-owner-export-accepted.html'), exportHtml);
   parentController = (await call('GET', undefined, {
     path: `${a2aPath}?parentJobId=${a2aParent.id}`,
   })).controller;
