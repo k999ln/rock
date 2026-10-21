@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-15
+更新日: 2026-10-21
 
 ## 全体
 
@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
-- 現在milestone: 通信＋si利用権商品を入口に、account・端末OS・cloud実行・透明な料金・保存復旧を分離して受け入れる
+- 現在milestone: RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する
 
 ## 保存境界と配備状態
 
