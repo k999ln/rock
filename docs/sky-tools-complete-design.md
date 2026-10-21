@@ -1,3 +1,19 @@
+<a id="eve-cross-device-sync"></a>
+
+## EveのPixel/Web同一アカウント同期（eve-cross-device-sync）
+
+1. **目的**: `https://avoado.si/os/eve`と本人Pixelで、同じ会話ID・仕事ID・成果を参照し、別端末から続きを依頼する。既存Sky/Linuxの仕事を複製実行しない。
+2. **利用体験**: WebはSitesのChatGPTサインイン。Pixelの「Webと同じ履歴・仕事を使う」で端末コードを表示し、本人がWebで承認。以後のEve仕事を同期。過去の20件は自動送信せず、本人が選んだものだけ追加。Webは会話選択→接続中Pixel/担当/モデル版確認→内容と端末への文脈転送を確認→実行→同じ履歴と成果を読む。
+3. **責任**: Web/PWA/Sites、ROCK、OS10/SKY21/WEB04。Sites認証/配備基盤はEXTERNAL、Pixel/実アカウントの往復はJOINT、端末コード承認・過去仕事の送信・依頼実行はOWNER。ニュースは別担当の公開版v90を保持する。
+4. **入出力**: 固定`/api/eve/history`と`/api/eve/device-sync`。Bearer端末sessionのowner/deviceをサーバーで照合。同期DTOは既存Linux job、threadId、revision、SHA、成果・usage。Web→PixelはUUID付きの明示依頼、2000文字以内、最大1200文字の過去文脈、担当/モデルSHA、10分期限を固定。任意shell/API権限は付与しない。
+5. **状態**: 未サインイン/コード待ち/承認/接続中/期限切れ/失効、端末準備/処理中/停止/確認待ちを区別。30秒以上古いpresenceではWebから新規実行できない。端末のアプリが動作している間のpreviewで、常時バックグラウンド実行は未受入。
+6. **保存**: D1のowner別AES-GCM、HKDF/AAD、server専用keyring。元会話へ安定message IDを追記し、既存Webメッセージは変更しない。Pixel tokenはKeystoreで暗号化したnoBackup領域。リンク済み端末の報告は`linked-device-report`であり、決済台帳・Tool成功・本人承認へ昇格させない。
+7. **失敗**: 401で別人のキャッシュ表示を止め、再接続を案内。Origin/形式/量/失効/別writer/古いrevision/違う本文やモデルへの同じID再利用を拒否。通信断は入力と端末成果を残す。公開DBは新6テーブルだけ追加し、旧テーブル/台帳は変更しない。
+8. **復旧**: 同じoperation ID・入力hashで再試行し、二重起動しない。再読込みで同じjob/成果を取得。会話削除はrevisionとtombstoneで検証し、replica/待機依頼も削除してoffline端末から復活させない。ローカル端末の元成果は本人が別途管理する。
+9. **承認/料金**: SSO、端末コード、過去記録の個別送信、Web→Pixel文脈送信を分ける。ローカル推論のCloud usageは0として表示し、月16ドル契約/課金失効/実請求の合格と混同しない。既存一般ローンチ保留・非金融gateを維持。
+10. **合格条件**: owner分離・暗号化・競合・失効・削除復活拒否・重複依頼拒否のfixture/実HTTP、公開sourceとarchive同一SHA、旧URLredirect、実アカウントSSO/端末コード承認、Web依頼→Pixel実推論→Web同じ成果→Pixel続き→同じWeb会話。host/fixture/公開/実機を証拠で分ける。
+11. **未決定/次**: 旧Toolsチャットは`?mode=tools`で保持するが全既存チャットの自動移行はしない。多数仕事の一覧上限、常駐/複数実行端末の自動割当、E2EE鍵の端末間復旧は未受入。まず同じ実アカウントと同じPixelの往復を検証してから拡張する。
+
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
 ## 共通サービス体験と状態の読み分け

@@ -33,6 +33,7 @@ export type ZemaChatSession = {
   version: 1;
   id: string;
   toolId: string;
+  agent?: {id:string;revision:number};
   createdAt: number;
   messages: ZemaChatMessage[];
   activeRequest: {

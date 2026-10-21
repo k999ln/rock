@@ -53,7 +53,7 @@ const STORAGE_KEY = 'rockstaros.home.preferences.v1';
 const apps: HomeApp[] = [
   { id: 'add', name: '機能を追加', description: 'Sky・データ回収・LLMを追加', href: '/add', Icon: Plus, color: 'settings' },
   { id: 'data', name: 'データ回収', description: '選んだデータを暗号化して持ち運ぶ', href: '/add/data', Icon: FolderArchive, color: 'sky' },
-  { id: 'llm', name: 'LLM', description: '接続先を選んでZemaで相談', href: '/chat', Icon: Bot, color: 'chat' },
+  { id: 'llm', name: 'LLM', description: '接続先を選んでZemaで相談', href: '/os/eve', Icon: Bot, color: 'chat' },
   { id: 'news', name: 'ニュース', description: '取得した原文リンクを読む', href: '/os#news', Icon: Newspaper, color: 'sky' },
   {
     id: 'sky',
@@ -67,7 +67,7 @@ const apps: HomeApp[] = [
     id: 'chat',
     name: 'Zema',
     description: 'ツールを選ぶ・頼む・結果を確認',
-    href: '/chat',
+    href: '/os/eve',
     Icon: MessageCircle,
     color: 'chat',
   },
@@ -294,7 +294,7 @@ export default function HomeScreen() {
 
         <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
           <Link href="/os/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
-          <Link href="/chat"><MessageCircle size={16} /><strong>Jennifer</strong><span>目的を相談</span></Link>
+          <Link href="/os/eve"><MessageCircle size={16} /><strong>Jennifer</strong><span>目的を相談</span></Link>
           <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
         </nav>
 

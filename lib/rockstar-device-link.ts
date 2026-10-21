@@ -68,6 +68,14 @@ function validOwnerId(value: string) {
 
 export function rockstarDeviceLinkStore(db: Database) {
   return {
+    async identity(token: string, now = Date.now()) {
+      if (!SESSION_TOKEN.test(token)) throw new Error('UNAUTHORIZED');
+      const row = await db.prepare(`SELECT id, user_id AS userId FROM rockstar_device_sessions
+        WHERE token_sha256 = ? AND revoked_at IS NULL AND expires_at > ?`)
+        .bind(await sha256(token), now).first<{id:string;userId:string}>();
+      if (!row) throw new Error('UNAUTHORIZED');
+      return row;
+    },
     async lookup(codeInput: unknown, now = Date.now()) {
       const code = typeof codeInput === 'string' ? codeInput.trim().toUpperCase() : '';
       if (!USER_CODE.test(code)) throw new Error('DEVICE_AUTHORIZATION_CODE_INVALID');

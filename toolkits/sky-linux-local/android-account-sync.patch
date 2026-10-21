@@ -1,0 +1,702 @@
+--- a/shell/src/debug/java/dev/rock/shell/SkyLinuxActivity.java
++++ b/shell/src/debug/java/dev/rock/shell/SkyLinuxActivity.java
+@@ -49,6 +49,7 @@
+     private JSONObject latest;
+     private AlertDialog jobDialog;
+     private String agentFingerprint="", resultFingerprint="", selectedAgent="", pendingRequestId, pendingRequestKey;
++    private String conversationThread="", conversationContext="";
+     private byte[] pendingSave;
+     private boolean saving;
+     private final Runnable refresh=new Runnable(){public void run(){if(destroyed)return;poll();main.postDelayed(this,1500);}};
+@@ -69,6 +70,7 @@
+         Button back=button(bar,"‹ Sky",this::finish);back.setLayoutParams(new LinearLayout.LayoutParams(0,ui.dp(48),1));ui.quiet(back);
+         ui.badge(bar,"本人用の試用",ShellUi.MUTED);
+         label(body,isEve()?"Eve · 何を進めますか？":"Sky · 担当を選ぶ",26);
++        button(body,"Webと同じ履歴・仕事を使う",()->startActivity(new Intent(this,EveAccountActivity.class)));
+         status=label(body,"起動すると、このPixelで依頼できます。",14);status.setTag("pixel-sky-status");
+         notice=label(body,"",15);notice.setTextIsSelectable(true);notice.setVisibility(View.GONE);
+         stop=button(body,"AIを停止する（成果は残す）",()->action(object("action","stop-environment")));stop.setTag("pixel-sky-stop");ui.quiet(stop);stop.setVisibility(View.GONE);
+@@ -127,6 +129,7 @@
+         selectedAgent=getSharedPreferences("pixel_linux_ui",0).getString("agent","");
+         pendingRequestId=getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).getString("id",null);pendingRequestKey=getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).getString("key",null);
+         if(state!=null){request.setText(state.getString("request",""));importKind=state.getString("importKind","");pendingSave=state.getByteArray("pendingSave");saving=pendingSave!=null;pendingRequestId=state.getString("requestId");pendingRequestKey=state.getString("requestKey");}
++        conversationThread=getIntent().getStringExtra("threadId");if(conversationThread==null)conversationThread="";conversationContext=getIntent().getStringExtra("context");if(conversationContext==null)conversationContext="";if(state!=null){conversationThread=state.getString("conversationThread",conversationThread);conversationContext=state.getString("conversationContext",conversationContext);}
+         if(isEve()){settings.setVisibility(View.GONE);String chosen=getIntent().getStringExtra("agent");if(chosen!=null)selectedAgent=chosen;}
+         main.post(refresh);
+     }
+@@ -141,7 +144,7 @@
+         if(isEve())runWork();else openEve();
+     }
+     private void openEve(){if(selectedAgent.isEmpty()){message("担当を選んでください。");return;}startActivity(new Intent(this,EveLinuxActivity.class).putExtra("agent",selectedAgent));}
+-    private void newRequest(){closeJobDialog();if(latest!=null){JSONArray jobs=latest.optJSONArray("runs");if(jobs!=null)for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){message("今の仕事を止めるか、終わるまでお待ちください。");scroll.smoothScrollTo(0,0);return;}}pendingRequestId=null;pendingRequestKey=null;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().clear().apply();request.setText("");consent.setChecked(false);scroll.smoothScrollTo(0,0);request.requestFocus();}
++    private void newRequest(){closeJobDialog();if(latest!=null){JSONArray jobs=latest.optJSONArray("runs");if(jobs!=null)for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){message("今の仕事を止めるか、終わるまでお待ちください。");scroll.smoothScrollTo(0,0);return;}}pendingRequestId=null;pendingRequestKey=null;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().clear().apply();request.setText("");conversationThread="";conversationContext="";consent.setChecked(false);scroll.smoothScrollTo(0,0);request.requestFocus();}
+     private LinearLayout disclosure(LinearLayout parent,String title){
+         LinearLayout box=card(parent),contents=ui.column();contents.setVisibility(View.GONE);
+         Button toggle=button(box,title+"  ＋",()->{});ui.quiet(toggle);box.setPadding(ui.dp(16),0,ui.dp(16),ui.dp(8));toggle.setLayoutParams(new LinearLayout.LayoutParams(-1,ui.dp(52)));toggle.setStateDescription("折りたたみ");
+@@ -159,7 +162,7 @@
+         HttpURLConnection c=(HttpURLConnection)new URL(ENDPOINT).openConnection();c.setConnectTimeout(1500);c.setReadTimeout(20000);c.setInstanceFollowRedirects(false);c.setRequestMethod("POST");c.setDoOutput(true);c.setRequestProperty("Content-Type","application/json");c.setRequestProperty("Origin","http://127.0.0.1:5199");
+         try{byte[] bytes=command.toString().getBytes(StandardCharsets.UTF_8);c.setFixedLengthStreamingMode(bytes.length);try(OutputStream out=c.getOutputStream()){out.write(bytes);}int code=c.getResponseCode();InputStream in=code==200?c.getInputStream():c.getErrorStream();if(in==null)throw new IOException();ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[8192];int n;try(InputStream input=in){while((n=input.read(b))!=-1){out.write(b,0,n);if(out.size()>5_000_000)throw new IOException();}}JSONObject result=new JSONObject(out.toString("UTF-8"));if(code!=200)throw new IOException(result.optString("error","操作できませんでした。状態を確認してください。"));if(!"sky.private-linux-deployment/1".equals(result.optString("schema"))&&!command.optString("action").startsWith("export"))throw new IOException();return result;}finally{c.disconnect();}
+     }
+-    private void poll(){if(fetching||commandBusy||destroyed)return;fetching=true;io.execute(()->{try{JSONObject s=call(object("action","status"));main.post(()->{if(destroyed)return;connectionReady=true;starting=false;startupNotice(true);render(s);if(prepareAfterConnect&&!prepareSent&&s.optJSONArray("models")!=null&&s.optJSONArray("models").length()>0&&!"ready".equals(s.optString("phase"))&&!"preparing".equals(s.optString("phase"))){prepareSent=true;JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}action(q);}});}catch(Exception e){main.post(()->{if(destroyed)return;connectionReady=false;if(starting&&android.os.SystemClock.elapsedRealtime()<startupDeadline){status.setText("Skyを起動しています。少しお待ちください。");}else{starting=false;startupNotice(false);status.setText(latest!=null?"接続を確認できません。入力と最後の記録は残っています。停止や実行結果は再接続後に確認します。":"起動すると、このPixelで依頼できます。");start.setEnabled(true);run.setText("接続を確認する");run.setEnabled(true);stop.setEnabled(false);addAgent.setEnabled(false);addModel.setEnabled(false);}});}finally{fetching=false;}});}
++    private void poll(){if(fetching||commandBusy||destroyed)return;fetching=true;io.execute(()->{try{JSONObject s=call(object("action","status"));EveAccountSync.tick(this,s);main.post(()->{if(destroyed)return;connectionReady=true;starting=false;startupNotice(true);render(s);if(prepareAfterConnect&&!prepareSent&&s.optJSONArray("models")!=null&&s.optJSONArray("models").length()>0&&!"ready".equals(s.optString("phase"))&&!"preparing".equals(s.optString("phase"))){prepareSent=true;JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}action(q);}});}catch(Exception e){main.post(()->{if(destroyed)return;connectionReady=false;if(starting&&android.os.SystemClock.elapsedRealtime()<startupDeadline){status.setText("Skyを起動しています。少しお待ちください。");}else{starting=false;startupNotice(false);status.setText(latest!=null?"接続を確認できません。入力と最後の記録は残っています。停止や実行結果は再接続後に確認します。":"起動すると、このPixelで依頼できます。");start.setEnabled(true);run.setText("接続を確認する");run.setEnabled(true);stop.setEnabled(false);addAgent.setEnabled(false);addModel.setEnabled(false);}});}finally{fetching=false;}});}
+     private void action(JSONObject command){if(commandBusy||destroyed)return;commandBusy=true;message("操作しています…");io.execute(()->{try{JSONObject s=call(command);main.post(()->{if(destroyed)return;message("");if("add-model".equals(command.optString("action"))){pickedModel=s.optString("selectedModelId",pickedModel);modelFingerprint="";}render(s);if("prepare".equals(command.optString("action"))||"run".equals(command.optString("action")))scroll.smoothScrollTo(0,0);if("inspect-model".equals(command.optString("action"))&&s.optJSONObject("inspectedModel")!=null)reviewImport("model",s.optJSONObject("inspectedModel"));});}catch(Exception e){main.post(()->{if(!destroyed)message(e.getMessage()!=null&&e.getMessage().matches(".*[ぁ-んァ-ヶ一-龯].*")?e.getMessage():"操作の結果を確認できません。重ねて依頼せず、状態が更新されるのを待ってください。");});}finally{commandBusy=false;}});}
+     private void startSky(){if(starting||commandBusy)return;if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},NOTIFY_PERMISSION);return;}prepareAfterConnect=true;prepareSent=false;if(connectionReady&&latest!=null){JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}prepareSent=true;action(q);return;}starting=true;startupDeadline=android.os.SystemClock.elapsedRealtime()+60000;start.setEnabled(false);run.setEnabled(false);status.setText("起動用の画面が開きます。準備の通知を押してSkyへ戻ってください。");try{
+         returningFromLauncher=true;Intent terminal=new Intent();terminal.setClassName("com.android.virtualization.terminal","com.android.virtualization.terminal.LauncherActivity");terminal.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);startActivity(terminal);
+@@ -173,7 +176,7 @@
+     }
+     @Override public void onRequestPermissionsResult(int code,String[] permissions,int[] grants){super.onRequestPermissionsResult(code,permissions,grants);if(code==NOTIFY_PERMISSION){if(grants.length>0&&grants[0]==android.content.pm.PackageManager.PERMISSION_GRANTED)startSky();else message("起動後にSkyへ戻る通知を使います。通知を許可して、もう一度起動してください。");}}
+     @Override protected void onResume(){super.onResume();getSystemService(NotificationManager.class).cancel(START_NOTICE);poll();}
+-    private void runWork(){if(!connectionReady){message("接続の回復を待って同じ仕事を確認してください。");return;}if(!consent.isChecked()){message("料金と保存の確認にチェックしてください。");return;}String input=request.getText().toString();if(input.trim().isEmpty()||input.length()>4000||selectedAgent.isEmpty()){message("担当を選び、依頼を4000文字以内で書いてください。");return;}String key;try{byte[] hash=MessageDigest.getInstance("SHA-256").digest((selectedAgent+"\n"+input).getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte b:hash)h.append(String.format("%02x",b));key=h.toString();}catch(Exception e){message("依頼の確認ができませんでした。");return;}if(!key.equals(pendingRequestKey)){pendingRequestId=UUID.randomUUID().toString();pendingRequestKey=key;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().putString("id",pendingRequestId).putString("key",key).commit();}try{JSONObject command=new JSONObject().put("action","run").put("agentId",selectedAgent).put("input",input).put("requestId",pendingRequestId).put("accepted",true);if(isEve()){JSONObject chosen=null;JSONArray items=latest.getJSONArray("agents");for(int i=0;i<items.length();i++)if(selectedAgent.equals(items.getJSONObject(i).optString("id")))chosen=items.getJSONObject(i);if(chosen==null)throw new IllegalStateException();String sha="";JSONArray models=latest.getJSONArray("models");for(int i=0;i<models.length();i++)if(chosen.optString("modelId").equals(models.getJSONObject(i).optString("id")))sha=models.getJSONObject(i).optString("sha256");command.put("surface","eve").put("agentSha256",chosen.getString("sha256")).put("modelSha256",sha);}action(command);}catch(Exception ignored){}}
++    private void runWork(){if(!connectionReady){message("接続の回復を待って同じ仕事を確認してください。");return;}if(!consent.isChecked()){message("料金と保存の確認にチェックしてください。");return;}String input=request.getText().toString();if(input.trim().isEmpty()||input.length()>4000||selectedAgent.isEmpty()){message("担当を選び、依頼を4000文字以内で書いてください。");return;}String key;try{byte[] hash=MessageDigest.getInstance("SHA-256").digest((selectedAgent+"\n"+conversationThread+"\n"+conversationContext+"\n"+input).getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte b:hash)h.append(String.format("%02x",b));key=h.toString();}catch(Exception e){message("依頼の確認ができませんでした。");return;}if(!key.equals(pendingRequestKey)){pendingRequestId=UUID.randomUUID().toString();pendingRequestKey=key;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().putString("id",pendingRequestId).putString("key",key).commit();}try{JSONObject command=new JSONObject().put("action","run").put("agentId",selectedAgent).put("input",input).put("requestId",pendingRequestId).put("accepted",true);if(isEve()){JSONObject chosen=null;JSONArray items=latest.getJSONArray("agents");for(int i=0;i<items.length();i++)if(selectedAgent.equals(items.getJSONObject(i).optString("id")))chosen=items.getJSONObject(i);if(chosen==null)throw new IllegalStateException();String sha="";JSONArray models=latest.getJSONArray("models");for(int i=0;i<models.length();i++)if(chosen.optString("modelId").equals(models.getJSONObject(i).optString("id")))sha=models.getJSONObject(i).optString("sha256");command.put("surface","eve").put("agentSha256",chosen.getString("sha256")).put("modelSha256",sha);if(!conversationThread.isEmpty())command.put("threadId",conversationThread).put("context",conversationContext);EveAccountSync.register(this,pendingRequestId,conversationThread.isEmpty()?pendingRequestId:conversationThread);}action(command);}catch(Exception e){message("実行を開始できませんでした。アカウント接続を確認して、同じ依頼をもう一度実行してください。");}}
+     private boolean isWorking(JSONObject r){return r!=null&&(r.optJSONObject("job").optString("status").equals("active")||"requested".equals(r.optString("stop"))||"unconfirmed".equals(r.optString("stop")));}
+     private void render(JSONObject s){
+         latest=s;String phase=s.optString("phase");boolean ready="ready".equals(phase),preparing="preparing".equals(phase),active=false;
+@@ -219,6 +222,7 @@
+             if("review".equals(job.optString("status")))label(c,"下書きです。内容を確認してください。",13);
+             TextView output=label(c,text,16);output.setTextColor(ShellUi.INK);output.setTextIsSelectable(true);
+             Button export=button(c,"成果を文章で保存",()->save(id));ui.primary(export);
++            if(isEve())button(c,"この会話を続ける",()->{newRequest();conversationThread=r.optString("threadId",id);String past="本人: "+r.optString("input")+"\nEve: "+r.optString("text");conversationContext=past.substring(Math.max(0,past.length()-1200));message("同じ会話の続きを入力してください（2000文字まで）。");});
+             if("review".equals(job.optString("status")))ui.quiet(button(c,"内容を確認した",()->{JSONObject q=object("action","confirm");try{q.put("jobId",id);}catch(Exception ignored){}closeJobDialog();action(q);}));
+         }else label(c,"cancelled".equals(job.optString("status"))?"この仕事は停止しました。途中の文章は成果として保存していません。":"この仕事の成果はありません。依頼を書き直して始められます。",14);
+         if(!isWorking(r))ui.quiet(button(c,"新しい依頼を書く",this::newRequest));
+@@ -240,6 +244,6 @@
+     private void importFile(String kind){if(latest==null){message("Skyを起動してから追加してください。");return;}importKind=kind;startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*"),IMPORT);}
+     private void reviewImport(String kind,JSONObject config){if(destroyed)return;boolean modelFile="model".equals(kind);String summary=modelFile?config.optString("name")+"\n約"+Math.round(config.optLong("bytes")/1000000.0)+" MB\n利用条件："+config.optString("license")+"\n配布元："+config.optString("repository")+"\n文章を作るAI本体です。初回の準備で取得し、Sky内部で再利用します。取得時は通信を使います。":config.optString("name")+"\n使うAI："+displayModel(config.optString("modelId"))+"\n任せる内容："+config.optString("instructions")+"\n文章作成の担当として追加します。外部操作の権限は付きません。";new AlertDialog.Builder(this).setTitle(modelFile?"このAIを追加しますか？":"この担当を追加しますか？").setMessage(summary).setNegativeButton("取りやめる",null).setPositiveButton("確認して追加",(d,w)->{try{action(new JSONObject().put("action",modelFile?"add-model":"import-agent").put(modelFile?"model":"agentFile",config).put("accepted",true));}catch(Exception ignored){}}).show();}
+     private void saveDefinition(){if(latest==null||selectedAgent.isEmpty()||saving)return;saving=true;io.execute(()->{try{JSONObject x=call(new JSONObject().put("action","export-agent").put("agentId",selectedAgent));byte[] bytes=x.getString("text").getBytes(StandardCharsets.UTF_8);main.post(()->{if(destroyed)return;pendingSave=bytes;startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("application/json").putExtra(Intent.EXTRA_TITLE,"Skyの担当.json"),SAVE);});}catch(Exception e){saving=false;main.post(()->message("担当の設定を保存できませんでした。担当はSky内に残っています。"));}});}
+-    @Override protected void onSaveInstanceState(Bundle b){b.putString("request",request.getText().toString());b.putString("importKind",importKind);if(pendingSave!=null)b.putByteArray("pendingSave",pendingSave);b.putString("requestId",pendingRequestId);b.putString("requestKey",pendingRequestKey);super.onSaveInstanceState(b);}
++    @Override protected void onSaveInstanceState(Bundle b){b.putString("request",request.getText().toString());b.putString("conversationThread",conversationThread);b.putString("conversationContext",conversationContext);b.putString("importKind",importKind);if(pendingSave!=null)b.putByteArray("pendingSave",pendingSave);b.putString("requestId",pendingRequestId);b.putString("requestKey",pendingRequestKey);super.onSaveInstanceState(b);}
+     @Override protected void onDestroy(){destroyed=true;main.removeCallbacksAndMessages(null);io.shutdown();super.onDestroy();}
+ }
+--- a/shell/src/debug/AndroidManifest.xml
++++ b/shell/src/debug/AndroidManifest.xml
+@@ -5,6 +5,7 @@
+     <queries><package android:name="com.android.virtualization.terminal" /></queries>
+     <application android:networkSecurityConfig="@xml/sky_linux_network">
+         <activity android:name=".EveLinuxActivity" android:exported="false" />
++        <activity android:name=".EveAccountActivity" android:exported="false" />
+         <activity android:name=".SkyLinuxActivity" android:exported="false" android:launchMode="singleTop" />
+     </application>
+ </manifest>
+--- /dev/null
++++ b/shell/src/debug/java/dev/rock/shell/EveAccountActivity.java
+@@ -0,0 +1,36 @@
++package dev.rock.shell;
++import android.app.*;
++import android.content.*;
++import android.net.Uri;
++import android.os.*;
++import android.widget.*;
++import org.json.*;
++import java.util.concurrent.*;
++
++/** Account code approval and shared history. Never collects the owner's password. */
++public final class EveAccountActivity extends Activity {
++    private final ExecutorService io=Executors.newSingleThreadExecutor();
++    private final Handler main=new Handler(Looper.getMainLooper());
++    private LinearLayout body,history,jobs;private TextView status,code;private EditText site;private String approveUrl="";private boolean busy,closed;private ShellUi ui;
++    private final Runnable refresh=new Runnable(){public void run(){if(closed)return;if(EveAccountSync.linked(EveAccountActivity.this))read();main.postDelayed(this,5000);}};
++    private TextView text(LinearLayout parent,String s,int size){return ui.text(parent,s,size);}
++    private Button button(LinearLayout parent,String s,Runnable task){Button b=new Button(this);b.setText(s);b.setAllCaps(false);b.setOnClickListener(v->task.run());parent.addView(b);return b;}
++    @Override public void onCreate(Bundle saved){super.onCreate(saved);ui=new ShellUi(this);ScrollView scroll=new ScrollView(this);scroll.setBackgroundColor(ShellUi.BACKGROUND);body=ui.column();body.setPadding(ui.dp(20),ui.dp(48),ui.dp(20),ui.dp(40));scroll.addView(body);setContentView(scroll);
++        button(body,"‹ Eveへ戻る",this::finish);text(body,"Eve · どこからでも続きを",26);text(body,"同じアカウントで会話・選んだ仕事・成果を引き継ぎます。既存の仕事は下で選んだものだけを送信します。接続後にEveで実行する新しい依頼は同期します。",15);
++        site=new EditText(this);site.setSingleLine(true);site.setText(EveAccountSync.endpoint(this));site.setTag("eve-sync-origin");body.addView(site);
++        status=text(body,EveAccountSync.notice,14);status.setTag("eve-sync-status");code=text(body,"",23);code.setTextIsSelectable(true);code.setTag("eve-sync-code");
++        button(body,"アカウントへ接続する",()->work(()->{JSONObject r=EveAccountSync.begin(this,site.getText().toString().trim());main.post(()->{code.setText(r.optString("userCode"));approveUrl=r.optString("url");status.setText("Webで同じアカウントにサインインし、このコードの端末を承認してください。");});}));
++        button(body,"Webの承認画面を開く",()->{if(!approveUrl.isEmpty())startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(approveUrl)));});
++        button(body,"承認後、接続を確認",()->work(()->{boolean ready=EveAccountSync.poll(this);main.post(()->status.setText(ready?EveAccountSync.notice:"Webでの承認を待っています。少し待って確認してください。"));}));
++        button(body,"WebのEveを開く",()->startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(EveAccountSync.endpoint(this)+"/os/eve"))));
++        button(body,"このPixelのアカウント接続を解除",()->new AlertDialog.Builder(this).setMessage("このPixelからの同期を止めます。端末内とWebの成果は削除しません。").setPositiveButton("接続を解除",(d,w)->{EveAccountSync.disconnect(this);status.setText(EveAccountSync.notice);history.removeAllViews();jobs.removeAllViews();}).setNegativeButton("戻る",null).show());
++        text(body,"同じアカウントの会話",21);history=ui.column();body.addView(history);text(body,"既存の仕事を選んで同期",21);jobs=ui.column();body.addView(jobs);main.post(refresh);
++    }
++    interface Task{void run()throws Exception;}
++    private void work(Task task){if(busy||closed)return;busy=true;io.execute(()->{try{task.run();}catch(Exception e){main.post(()->status.setText(e.getMessage()!=null&&e.getMessage().matches(".*[ぁ-んァ-ヶ一-龯].*")?e.getMessage():"接続を確認できません。端末内のデータは保持しています。"));}finally{busy=false;}});}
++    private void read(){work(()->{JSONObject local=SkyLinuxBridge.request(this,new JSONObject().put("action","status"));EveAccountSync.tick(this,local);JSONObject remote=EveAccountSync.request(this,"/api/eve/history","GET",null,true);main.post(()->{if(closed)return;site.setEnabled(false);status.setText(EveAccountSync.notice);history.removeAllViews();jobs.removeAllViews();JSONArray list=remote.optJSONArray("items");if(list!=null)for(int i=0;i<list.length();i++){JSONObject session=list.optJSONObject(i).optJSONObject("session");JSONArray messages=session.optJSONArray("messages");String title=messages!=null&&messages.length()>0?messages.optJSONObject(0).optString("text"):"保存した会話";final String id=session.optString("id");button(history,title.substring(0,Math.min(60,title.length())),()->openThread(id));}
++            JSONArray runs=local.optJSONArray("runs");if(runs!=null)for(int i=0;i<runs.length();i++){JSONObject r=runs.optJSONObject(i);String input=r.optString("input");button(jobs,input.substring(0,Math.min(50,input.length()))+" · Webにも保存",()->work(()->{String id=r.getJSONObject("job").getString("id");EveAccountSync.register(this,id,r.optString("threadId",id));EveAccountSync.sync(this,local);main.post(()->status.setText("同じ仕事IDでWebへ保存しました。"));}));}
++        });});}
++    private void openThread(String id){work(()->{JSONObject t=EveAccountSync.request(this,"/api/eve/history?id="+id,"GET",null,true);JSONArray messages=t.getJSONObject("session").getJSONArray("messages");StringBuilder full=new StringBuilder(),context=new StringBuilder();for(int i=0;i<messages.length();i++){JSONObject m=messages.getJSONObject(i);full.append("me".equals(m.getString("side"))?"あなた: ":"Eve: ").append(m.getString("text")).append("\n\n");if(i>=messages.length()-4)context.append(m.getString("side")).append(": ").append(m.getString("text")).append("\n");}String quoted=context.toString();if(quoted.length()>1200)quoted=quoted.substring(quoted.length()-1200);final String carry=quoted;main.post(()->new AlertDialog.Builder(this).setTitle("保存した会話").setMessage(full.toString()).setPositiveButton("この会話をEveで続ける",(d,w)->{startActivity(new Intent(this,EveLinuxActivity.class).putExtra("threadId",id).putExtra("context",carry));finish();}).setNegativeButton("閉じる",null).show());});}
++    @Override protected void onDestroy(){closed=true;main.removeCallbacks(refresh);io.shutdown();super.onDestroy();}
++}
+--- /dev/null
++++ b/shell/src/debug/java/dev/rock/shell/EveAccountSessionStore.java
+@@ -0,0 +1,264 @@
++package dev.rock.shell;
++
++import android.content.Context;
++import android.security.keystore.KeyGenParameterSpec;
++import android.security.keystore.KeyProperties;
++import android.util.AtomicFile;
++import dev.rock.core.platform.RockstarDeviceAuthorizationFlow;
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.DataInputStream;
++import java.io.DataOutputStream;
++import java.io.File;
++import java.io.FileOutputStream;
++import java.nio.charset.StandardCharsets;
++import java.security.KeyStore;
++import java.security.SecureRandom;
++import java.util.Arrays;
++import java.util.regex.Pattern;
++import javax.crypto.Cipher;
++import javax.crypto.KeyGenerator;
++import javax.crypto.SecretKey;
++import javax.crypto.spec.GCMParameterSpec;
++
++/** No-backup, AndroidKeyStore-encrypted storage for the opaque Rockstar device session. */
++final class EveAccountSessionStore implements RockstarDeviceAuthorizationFlow.SessionStore {
++    private static final String FORMAT = "rockstar-device-session-store/2";
++    private static final String ALIAS = "eve-account-session-aes-v1";
++    private static final String FILE_NAME = "eve-account-session-v2.bin";
++    private static final Pattern TOKEN = Pattern.compile("rock_session_[A-Za-z0-9_-]{43}");
++    private static final int NONCE_BYTES = 12;
++    private static final int TAG_BITS = 128;
++    // Binder calls create separate store objects for the same file. AtomicFile supplies no lock.
++    private static final Object STORAGE_LOCK = new Object();
++    private final AtomicFile file;
++    private final String packageName;
++    private final String serviceOrigin;
++    private final KeySource keySource;
++
++    interface KeySource { SecretKey key() throws Exception; }
++
++    EveAccountSessionStore(Context context, String origin) {
++        this(context, origin, null);
++    }
++
++    EveAccountSessionStore(Context context, String origin, AtomicFile storage) {
++        if (context == null) throw new IllegalArgumentException("DEVICE_SESSION_CONTEXT_REQUIRED");
++        String canonical = EveAccountSync.origin(origin);
++        if (origin.length() > 255 || !canonical.equals(origin))
++            throw new IllegalArgumentException("DEVICE_SESSION_ORIGIN_INVALID");
++        Context app = context.getApplicationContext();
++        this.packageName = app.getPackageName();
++        this.serviceOrigin = origin;
++        File directory = new File(app.getNoBackupFilesDir(), "account");
++        if (!directory.isDirectory() && !directory.mkdirs())
++            throw new IllegalStateException("DEVICE_SESSION_DIRECTORY");
++        this.file = storage == null ? new AtomicFile(new File(directory, FILE_NAME)) : storage;
++        this.keySource = EveAccountSessionStore::key;
++    }
++
++    EveAccountSessionStore(AtomicFile storage, String packageName, String origin, KeySource keySource) {
++        String canonical = EveAccountSync.origin(origin);
++        if (origin.length() > 255 || !canonical.equals(origin))
++            throw new IllegalArgumentException("DEVICE_SESSION_ORIGIN_INVALID");
++        this.file = java.util.Objects.requireNonNull(storage);
++        this.packageName = java.util.Objects.requireNonNull(packageName);
++        this.serviceOrigin = origin;
++        this.keySource = java.util.Objects.requireNonNull(keySource);
++    }
++
++    @Override public void save(String accessToken, long expiresAt, String ownerUserId) throws java.io.IOException {
++        synchronized (STORAGE_LOCK) { saveLocked(accessToken, expiresAt, ownerUserId); }
++    }
++
++    private void saveLocked(String accessToken, long expiresAt, String ownerUserId) throws java.io.IOException {
++        if (accessToken == null || !TOKEN.matcher(accessToken).matches() ||
++                !validOwnerId(ownerUserId) ||
++                expiresAt <= System.currentTimeMillis() ||
++                expiresAt - System.currentTimeMillis() > 90L * 24 * 60 * 60_000L)
++            throw new java.io.IOException("DEVICE_SESSION_INVALID");
++        if (load() != null) throw new java.io.IOException("DEVICE_SESSION_ALREADY_LINKED");
++        byte[] plaintext = null;
++        byte[] encrypted = null;
++        byte[] envelopeBytes = null;
++        byte[] committed = null;
++        FileOutputStream pending = null;
++        try {
++            ByteArrayOutputStream clear = new ByteArrayOutputStream();
++            try (DataOutputStream data = new DataOutputStream(clear)) {
++                data.writeUTF(FORMAT);
++                data.writeUTF(packageName);
++                data.writeUTF(serviceOrigin);
++                data.writeLong(expiresAt);
++                data.writeUTF(ownerUserId);
++                data.writeUTF(accessToken);
++            }
++            plaintext = clear.toByteArray();
++            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
++            cipher.init(Cipher.ENCRYPT_MODE, keySource.key(), new SecureRandom());
++            cipher.updateAAD(aad());
++            byte[] nonce = cipher.getIV();
++            if (nonce == null || nonce.length != NONCE_BYTES) throw new java.io.IOException("DEVICE_SESSION_NONCE_INVALID");
++            encrypted = cipher.doFinal(plaintext);
++            ByteArrayOutputStream envelope = new ByteArrayOutputStream();
++            try (DataOutputStream data = new DataOutputStream(envelope)) {
++                data.writeUTF(FORMAT);
++                data.writeInt(nonce.length); data.write(nonce);
++                data.writeInt(encrypted.length); data.write(encrypted);
++            }
++            envelopeBytes = envelope.toByteArray();
++            pending = file.startWrite();
++            pending.write(envelopeBytes);
++            pending.getFD().sync();
++            file.finishWrite(pending);
++            pending = null;
++            // AtomicFile.finishWrite logs rename failures instead of throwing them.
++            committed = file.readFully();
++            if (!java.security.MessageDigest.isEqual(envelopeBytes, committed))
++                throw new java.io.IOException("DEVICE_SESSION_COMMIT_UNCONFIRMED");
++        } catch (Exception failure) {
++            if (pending != null) file.failWrite(pending);
++            if (failure instanceof java.io.IOException) throw (java.io.IOException) failure;
++            throw new java.io.IOException("DEVICE_SESSION_STORE_FAILED", failure);
++        } finally {
++            if (plaintext != null) Arrays.fill(plaintext, (byte) 0);
++            if (encrypted != null) Arrays.fill(encrypted, (byte) 0);
++            if (envelopeBytes != null) Arrays.fill(envelopeBytes, (byte) 0);
++            if (committed != null) Arrays.fill(committed, (byte) 0);
++        }
++    }
++
++    String authorizationHeader() throws java.io.IOException {
++        synchronized (STORAGE_LOCK) {
++            Session session = load();
++            return session == null ? null : "Bearer " + session.token;
++        }
++    }
++
++    long activeExpiry() throws java.io.IOException {
++        synchronized (STORAGE_LOCK) {
++            Session session = load();
++            return session == null ? 0 : session.expiresAt;
++        }
++    }
++
++    String ownerUserId() throws java.io.IOException {
++        synchronized (STORAGE_LOCK) {
++            Session session = load();
++            return session == null ? null : session.ownerUserId;
++        }
++    }
++
++    void clearLocal() {
++        synchronized (STORAGE_LOCK) { file.delete(); }
++    }
++
++    void clearIfAuthorizationMatches(String authorization) throws java.io.IOException {
++        synchronized (STORAGE_LOCK) {
++            Session current = load();
++            if (current == null || authorization == null ||
++                    !java.security.MessageDigest.isEqual(("Bearer " + current.token).getBytes(StandardCharsets.UTF_8),
++                        authorization.getBytes(StandardCharsets.UTF_8))) return;
++            file.delete();
++            if (file.getBaseFile().exists()) throw new java.io.IOException("DEVICE_SESSION_DELETE_UNCONFIRMED");
++        }
++    }
++
++    private Session load() throws java.io.IOException {
++        if (!file.getBaseFile().isFile()) return null;
++        byte[] envelope = null;
++        byte[] encrypted = null;
++        byte[] plaintext = null;
++        try {
++            envelope = file.readFully();
++            if (envelope.length > 4_096) throw new InvalidSessionException("DEVICE_SESSION_FILE_TOO_LARGE");
++            byte[] nonce;
++            try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(envelope))) {
++                if (!FORMAT.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_FORMAT");
++                int nonceLength = data.readInt();
++                if (nonceLength != NONCE_BYTES) throw new java.io.IOException("DEVICE_SESSION_NONCE_INVALID");
++                nonce = data.readNBytes(nonceLength);
++                int encryptedLength = data.readInt();
++                if (encryptedLength < 32 || encryptedLength > 2_048 || data.available() != encryptedLength)
++                    throw new java.io.IOException("DEVICE_SESSION_CIPHERTEXT_INVALID");
++                encrypted = data.readNBytes(encryptedLength);
++            } catch (java.io.IOException malformed) {
++                throw new InvalidSessionException(malformed);
++            }
++            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
++            cipher.init(Cipher.DECRYPT_MODE, keySource.key(), new GCMParameterSpec(TAG_BITS, nonce));
++            cipher.updateAAD(aad());
++            plaintext = cipher.doFinal(encrypted);
++            try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(plaintext))) {
++                if (!FORMAT.equals(data.readUTF()) || !packageName.equals(data.readUTF()) ||
++                        !serviceOrigin.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_BINDING_MISMATCH");
++                long expiresAt = data.readLong();
++                String ownerUserId = data.readUTF();
++                String token = data.readUTF();
++                if (data.available() != 0 || !TOKEN.matcher(token).matches() ||
++                        !validOwnerId(ownerUserId) ||
++                        expiresAt - System.currentTimeMillis() > 90L * 24 * 60 * 60_000L)
++                    throw new java.io.IOException("DEVICE_SESSION_CONTENT_INVALID");
++                if (expiresAt <= System.currentTimeMillis()) { file.delete(); return null; }
++                return new Session(token, expiresAt, ownerUserId);
++            } catch (java.io.IOException malformed) {
++                throw new InvalidSessionException(malformed);
++            }
++        } catch (Exception failure) {
++            // A locked device or a transient storage/Keystore failure is not revocation.
++            // Refuse this operation, but preserve the account for a later unlocked read.
++            if (failure instanceof InvalidSessionException || failure instanceof javax.crypto.AEADBadTagException ||
++                    failure instanceof android.security.keystore.KeyPermanentlyInvalidatedException)
++                file.delete();
++            if (failure instanceof java.io.IOException) throw (java.io.IOException) failure;
++            throw new java.io.IOException("DEVICE_SESSION_READ_FAILED", failure);
++        } finally {
++            if (plaintext != null) Arrays.fill(plaintext, (byte) 0);
++            if (encrypted != null) Arrays.fill(encrypted, (byte) 0);
++            if (envelope != null) Arrays.fill(envelope, (byte) 0);
++        }
++    }
++
++    private static SecretKey key() throws Exception {
++        KeyStore store = KeyStore.getInstance("AndroidKeyStore");
++        store.load(null);
++        if (store.containsAlias(ALIAS)) return (SecretKey) store.getKey(ALIAS, null);
++        KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
++        generator.init(new KeyGenParameterSpec.Builder(ALIAS,
++            KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
++            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
++            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
++            .setKeySize(256)
++            .setRandomizedEncryptionRequired(true)
++            .setUnlockedDeviceRequired(true)
++            .build());
++        return generator.generateKey();
++    }
++
++    private byte[] aad() {
++        return (FORMAT + "\0" + packageName + "\0" + serviceOrigin).getBytes(StandardCharsets.UTF_8);
++    }
++
++    private static boolean validOwnerId(String value) {
++        if (value == null || value.isEmpty() || value.length() > 256) return false;
++        for (int index = 0; index < value.length(); index++) {
++            int code = value.charAt(index);
++            if (code < 32 || code == 127) return false;
++        }
++        return true;
++    }
++
++    private static final class InvalidSessionException extends java.io.IOException {
++        InvalidSessionException(String message) { super(message); }
++        InvalidSessionException(java.io.IOException cause) { super(cause.getMessage(), cause); }
++    }
++
++    private static final class Session {
++        final String token;
++        final long expiresAt;
++        final String ownerUserId;
++        Session(String token, long expiresAt, String ownerUserId) {
++            this.token = token; this.expiresAt = expiresAt; this.ownerUserId = ownerUserId;
++        }
++    }
++}
+--- /dev/null
++++ b/shell/src/debug/java/dev/rock/shell/EveAccountSync.java
+@@ -0,0 +1,81 @@
++package dev.rock.shell;
++
++import android.content.Context;
++import android.content.SharedPreferences;
++import dev.rock.core.platform.RockstarDeviceAuthorizationFlow;
++import org.json.*;
++import java.net.*;
++import java.io.*;
++import java.nio.charset.StandardCharsets;
++import java.security.MessageDigest;
++import java.util.*;
++import java.util.concurrent.*;
++
++/** Owner-linked account replication. The Linux manager remains the sole executor. */
++final class EveAccountSync {
++    private static final ExecutorService IO=Executors.newSingleThreadExecutor();
++    private static volatile boolean syncing;
++    private static long lastTick;
++    static volatile String notice="アカウントは未接続です。端末内の成果は残ります。";
++    private static RockstarDeviceAuthorizationFlow flow;
++    private static RockstarDeviceAuthorizationFlow.DeviceAuthorization pending;
++    static String origin(String value) {
++        try {URI u=new URI(value);boolean local="http".equals(u.getScheme())&&("127.0.0.1".equals(u.getHost())||"localhost".equals(u.getHost()));
++            if((!"https".equals(u.getScheme())&&!local)||u.getHost()==null||u.getRawUserInfo()!=null||u.getRawQuery()!=null||u.getRawFragment()!=null||u.getPath()!=null&&!u.getPath().isEmpty())throw new Exception();return value;
++        }catch(Exception e){throw new IllegalArgumentException("接続先はHTTPSのサイト名だけを入力してください。");}
++    }
++    static SharedPreferences prefs(Context c){return c.getSharedPreferences("eve_account_sync",0);}
++    static String endpoint(Context c){return prefs(c).getString("origin","https://avoado.si");}
++    static EveAccountSessionStore sessions(Context c){return new EveAccountSessionStore(c,endpoint(c));}
++    static boolean linked(Context c){try{return sessions(c).activeExpiry()>0;}catch(Exception e){return false;}}
++    static String ownerScope(Context c)throws Exception{return sha(endpoint(c)+"\n"+sessions(c).ownerUserId());}
++    static String sha(String s)throws Exception{StringBuilder b=new StringBuilder();for(byte x:MessageDigest.getInstance("SHA-256").digest(s.getBytes(StandardCharsets.UTF_8)))b.append(String.format("%02x",x));return b.toString();}
++    static JSONObject request(Context c,String path,String method,JSONObject body,boolean authenticated)throws Exception {
++        if(!path.startsWith("/api/eve/")&&!path.startsWith("/api/rockstar/device-authorizations"))throw new IOException("Unsupported account operation");
++        String base=endpoint(c);origin(base);HttpURLConnection http=(HttpURLConnection)new URL(base+path).openConnection();http.setInstanceFollowRedirects(false);http.setConnectTimeout(10000);http.setReadTimeout(15000);http.setRequestMethod(method);http.setRequestProperty("Origin",base);http.setRequestProperty("Accept","application/json");
++        String auth=authenticated?sessions(c).authorizationHeader():null;if(authenticated&&auth==null)throw new IOException("Account not linked");if(auth!=null)http.setRequestProperty("Authorization",auth);
++        try {if(body!=null){byte[] bytes=body.toString().getBytes(StandardCharsets.UTF_8);if(bytes.length>180000)throw new IOException("Account payload too large");http.setDoOutput(true);http.setRequestProperty("Content-Type","application/json");http.setFixedLengthStreamingMode(bytes.length);try(OutputStream out=http.getOutputStream()){out.write(bytes);}}
++            int code=http.getResponseCode();InputStream stream=code>=400?http.getErrorStream():http.getInputStream();if(stream==null)throw new IOException("Account unavailable");ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=stream){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){if(out.size()+n>5000000)throw new IOException("Account response too large");out.write(b,0,n);}}
++            if(code==401&&auth!=null){sessions(c).clearIfAuthorizationMatches(auth);notice="アカウント接続が失効しました。端末内データを保持して再接続してください。";throw new IOException("Account authorization expired");}
++            JSONObject result=new JSONObject(out.toString("UTF-8"));if(code<200||code>=300)throw new IOException(result.optString("error","Account request failed"));return result;
++        }finally{http.disconnect();}
++    }
++    static synchronized JSONObject begin(Context c,String site)throws Exception {
++        if(linked(c))throw new IOException("先に今のアカウント接続を解除してください。");
++        origin(site);prefs(c).edit().putString("origin",site).commit();
++        flow=new RockstarDeviceAuthorizationFlow(new RockstarDeviceAuthorizationFlow.HttpTransport(){
++            public String serviceOrigin(){return site;}
++            public Map<String,Object> post(String path,Map<String,Object> body)throws IOException {try{return map(request(c,path,"POST",new JSONObject(body),false));}catch(Exception e){throw new IOException("接続コードを取得できません。",e);}}
++        },sessions(c));pending=flow.begin("RockstarOS Pixel Eve",System.currentTimeMillis());return new JSONObject().put("userCode",pending.userCode).put("url",pending.verificationUriComplete);
++    }
++    static synchronized boolean poll(Context c)throws Exception {
++        if(flow==null||pending==null)throw new IOException("新しい接続コードを表示してください。");
++        RockstarDeviceAuthorizationFlow.PollResult r=flow.poll(pending,System.currentTimeMillis());
++        if(r.state==RockstarDeviceAuthorizationFlow.PollState.AUTHORIZED){pending=null;flow=null;notice="アカウントに接続しました。選んだ仕事と今後のEveの依頼を同期します。";return true;}
++        if(r.state==RockstarDeviceAuthorizationFlow.PollState.DENIED||r.state==RockstarDeviceAuthorizationFlow.PollState.EXPIRED){pending=null;flow=null;throw new IOException("接続コードが期限切れか拒否されました。");}return false;
++    }
++    private static Map<String,Object> map(JSONObject j)throws JSONException {Map<String,Object> m=new LinkedHashMap<>();Iterator<String> keys=j.keys();while(keys.hasNext()){String k=keys.next();m.put(k,j.get(k));}return m;}
++    static void disconnect(Context c){sessions(c).clearLocal();notice="このPixelの接続を解除しました。サーバー側の端末失効はWebの端末管理から行えます。";}
++    static synchronized void register(Context c,String job,String thread)throws Exception {
++        if(!linked(c))return;String key="jobs_"+ownerScope(c);JSONObject jobs=new JSONObject(prefs(c).getString(key,"{}"));jobs.put(job,thread);if(!prefs(c).edit().putString(key,jobs.toString()).commit())throw new IOException("同期対象を保存できません。");
++    }
++    static void tick(Context context,JSONObject snapshot){Context c=context.getApplicationContext();synchronized(EveAccountSync.class){if(syncing||!linked(c)||android.os.SystemClock.elapsedRealtime()-lastTick<3500)return;syncing=true;lastTick=android.os.SystemClock.elapsedRealtime();}
++        IO.execute(()->{try{sync(c,snapshot);notice="同期済み。同じアカウントでWebから続きを使えます。";}catch(Exception e){if(linked(c))notice="同期は未完了です。端末内の成果を残し、再接続後に同じ仕事を照合します。";}finally{syncing=false;}});
++    }
++    static void sync(Context c,JSONObject snapshot)throws Exception {
++        JSONObject jobs=new JSONObject(prefs(c).getString("jobs_"+ownerScope(c),"{}"));
++        JSONArray agents=new JSONArray(),models=new JSONArray();JSONArray aa=snapshot.getJSONArray("agents"),mm=snapshot.getJSONArray("models");
++        for(int i=0;i<aa.length();i++){JSONObject a=aa.getJSONObject(i);agents.put(new JSONObject().put("id",a.getString("id")).put("name",a.getString("name")).put("modelId",a.getString("modelId")).put("sha256",a.getString("sha256")));}
++        for(int i=0;i<mm.length();i++){JSONObject m=mm.getJSONObject(i);models.put(new JSONObject().put("id",m.getString("id")).put("name",m.getString("name")).put("sha256",m.getString("sha256")));}
++        request(c,"/api/eve/device-sync","PUT",new JSONObject().put("action","presence").put("presence",new JSONObject().put("name","Pixel · Linux").put("phase",snapshot.getString("phase")).put("agents",agents).put("models",models).put("preparedModels",snapshot.getJSONArray("preparedModels"))),true);
++        JSONObject remote=request(c,"/api/eve/device-sync","GET",null,true);JSONArray replicas=remote.getJSONArray("jobs"),runs=snapshot.getJSONArray("runs");Map<String,JSONObject> known=new HashMap<>();for(int i=0;i<replicas.length();i++){JSONObject r=replicas.getJSONObject(i);known.put(r.getJSONObject("run").getJSONObject("job").getString("id"),r);}
++        for(int i=0;i<runs.length();i++){JSONObject r=runs.getJSONObject(i);String id=r.getJSONObject("job").getString("id");if(!jobs.has(id))continue;JSONObject old=known.get(id);request(c,"/api/eve/device-sync","PUT",new JSONObject().put("run",r).put("threadId",jobs.getString(id)).put("revision",old==null?0:old.getInt("revision")),true);}
++        JSONArray commands=remote.optJSONArray("commands");if(commands==null)return;
++        for(int i=0;i<commands.length();i++){JSONObject entry=commands.getJSONObject(i);if(entry.getLong("expiresAt")<=System.currentTimeMillis())continue;JSONObject command=entry.getJSONObject("command");String id=command.getString("requestId"),thread=command.getString("threadId");register(c,id,thread);
++            // Manager enforces the same request ID, exact model/agent pins and resource limits on every retry.
++            JSONObject result=SkyLinuxBridge.request(c,command);JSONObject created=null;JSONArray saved=result.getJSONArray("runs");for(int k=0;k<saved.length();k++)if(id.equals(saved.getJSONObject(k).getJSONObject("job").getString("id")))created=saved.getJSONObject(k);if(created==null)throw new IOException("Dispatch unconfirmed");
++            request(c,"/api/eve/device-sync","PUT",new JSONObject().put("run",created).put("threadId",thread).put("revision",known.containsKey(id)?known.get(id).getInt("revision"):0),true);
++            request(c,"/api/eve/device-sync","PUT",new JSONObject().put("action","ack").put("id",id),true);
++        }
++    }
++}
+--- /dev/null
++++ b/shell/src/debug/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java
+@@ -0,0 +1,230 @@
++package dev.rock.core.platform;
++
++import java.io.IOException;
++import java.net.URI;
++import java.util.LinkedHashMap;
++import java.util.Map;
++import java.util.regex.Pattern;
++
++/**
++ * Android-independent client protocol for linking one Rockstar account to one device.
++ * The injected HTTP transport must use HTTPS to the configured service origin, reject
++ * redirects, bound response sizes, and send no browser cookies. SessionStore must use
++ * platform-protected storage; this class never persists the one-time codes.
++ */
++public final class RockstarDeviceAuthorizationFlow {
++    public static final String AUTHORIZATION_PATH = "/api/rockstar/device-authorizations";
++    private static final String USER_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
++    private static final Pattern USER_CODE = Pattern.compile("[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}");
++    private static final Pattern DEVICE_CODE = Pattern.compile("rock_device_[A-Za-z0-9_-]{43}");
++    private static final Pattern SESSION_TOKEN = Pattern.compile("rock_session_[A-Za-z0-9_-]{43}");
++    private static final long MAX_LINK_LIFETIME_MS = 15 * 60_000L;
++    private static final long MAX_SESSION_LIFETIME_MS = 90L * 24 * 60 * 60_000L;
++
++    public interface HttpTransport {
++        /** Canonical service origin, for example https://rockstar.example. */
++        String serviceOrigin();
++        /** POST JSON and return a parsed JSON object; implementations must enforce HTTPS. */
++        Map<String,Object> post(String path, Map<String,Object> json) throws IOException;
++    }
++
++    public interface SessionStore {
++        /** Store the opaque token with its expiry in Android Keystore-backed protected storage. */
++        void save(String accessToken, long expiresAt, String ownerUserId) throws IOException;
++    }
++
++    public enum PollState { AUTHORIZATION_PENDING, SLOW_DOWN, DENIED, EXPIRED, AUTHORIZED }
++
++    public static final class DeviceAuthorization {
++        public final String userCode;
++        public final String verificationUri;
++        public final String verificationUriComplete;
++        public final long expiresAt;
++        public int intervalSeconds;
++        private final String deviceCode;
++        private long nextPollAt;
++        private boolean finished;
++
++        private DeviceAuthorization(String userCode, String verificationUri,
++                String verificationUriComplete, String deviceCode, long expiresAt,
++                int intervalSeconds, long nextPollAt) {
++            this.userCode = userCode;
++            this.verificationUri = verificationUri;
++            this.verificationUriComplete = verificationUriComplete;
++            this.deviceCode = deviceCode;
++            this.expiresAt = expiresAt;
++            this.intervalSeconds = intervalSeconds;
++            this.nextPollAt = nextPollAt;
++        }
++    }
++
++    public static final class PollResult {
++        public final PollState state;
++        public final long nextPollAt;
++        public final int intervalSeconds;
++
++        private PollResult(PollState state, long nextPollAt, int intervalSeconds) {
++            this.state = state;
++            this.nextPollAt = nextPollAt;
++            this.intervalSeconds = intervalSeconds;
++        }
++    }
++
++    private final HttpTransport http;
++    private final SessionStore sessions;
++
++    public RockstarDeviceAuthorizationFlow(HttpTransport http, SessionStore sessions) {
++        if (http == null || sessions == null) throw new IllegalArgumentException("INVALID_DEVICE_AUTH_CLIENT");
++        this.http = http;
++        this.sessions = sessions;
++    }
++
++    public DeviceAuthorization begin(String deviceName, long now) throws IOException {
++        if (deviceName == null || deviceName.trim().isEmpty() || deviceName.trim().length() > 64 ||
++            hasControl(deviceName)) throw new IllegalArgumentException("DEVICE_NAME_INVALID");
++        Map<String,Object> input = new LinkedHashMap<>();
++        input.put("action", "begin");
++        input.put("deviceName", deviceName.trim());
++        Map<String,Object> response = http.post(AUTHORIZATION_PATH, input);
++        exactKeys(response, "deviceCode", "userCode", "expiresIn", "interval",
++            "verificationUri", "verificationUriComplete");
++        String deviceCode = string(response, "deviceCode");
++        String userCode = string(response, "userCode");
++        long lifetimeSeconds = integer(response, "expiresIn");
++        long interval = integer(response, "interval");
++        String verify = string(response, "verificationUri");
++        String complete = string(response, "verificationUriComplete");
++        if (!DEVICE_CODE.matcher(deviceCode).matches() || !USER_CODE.matcher(userCode).matches() ||
++            lifetimeSeconds < 60 || lifetimeSeconds * 1000L > MAX_LINK_LIFETIME_MS ||
++            interval < 1 || interval > 60 || now <= 0 || now > Long.MAX_VALUE - lifetimeSeconds * 1000L)
++            throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++        URI expected = uri(http.serviceOrigin());
++        URI verifyUri = uri(verify);
++        URI completeUri = uri(complete);
++        if (!sameOrigin(expected, verifyUri) || !"/connect/device".equals(verifyUri.getPath()) ||
++            verifyUri.getQuery() != null || verifyUri.getFragment() != null ||
++            !sameOrigin(expected, completeUri) || !"/connect/device".equals(completeUri.getPath()) ||
++            !("user_code=" + userCode).equals(completeUri.getQuery()) || completeUri.getFragment() != null)
++            throw new IOException("DEVICE_AUTH_VERIFICATION_URI_INVALID");
++        long expiresAt = now + lifetimeSeconds * 1000L;
++        return new DeviceAuthorization(userCode, verify, complete, deviceCode,
++            expiresAt, (int) interval, now);
++    }
++
++    public PollResult poll(DeviceAuthorization authorization, long now) throws IOException {
++        if (authorization == null || authorization.finished)
++            throw new IllegalStateException("DEVICE_AUTHORIZATION_FINISHED");
++        if (now <= 0) throw new IllegalArgumentException("INVALID_DEVICE_AUTH_TIME");
++        if (now >= authorization.expiresAt) {
++            authorization.finished = true;
++            return finish(PollState.EXPIRED, authorization);
++        }
++        if (now < authorization.nextPollAt)
++            throw new IllegalStateException("DEVICE_AUTH_POLL_TOO_EARLY");
++
++        Map<String,Object> input = new LinkedHashMap<>();
++        input.put("action", "poll");
++        input.put("deviceCode", authorization.deviceCode);
++        Map<String,Object> response = http.post(AUTHORIZATION_PATH, input);
++        String status = string(response, "status");
++        if ("authorization_pending".equals(status)) {
++            exactKeys(response, "status");
++            authorization.nextPollAt = now + authorization.intervalSeconds * 1000L;
++            return result(PollState.AUTHORIZATION_PENDING, authorization);
++        }
++        if ("slow_down".equals(status)) {
++            exactKeys(response, "status");
++            authorization.intervalSeconds = Math.min(60, authorization.intervalSeconds + 5);
++            authorization.nextPollAt = now + authorization.intervalSeconds * 1000L;
++            return result(PollState.SLOW_DOWN, authorization);
++        }
++        if ("access_denied".equals(status)) {
++            exactKeys(response, "status"); authorization.finished = true;
++            return finish(PollState.DENIED, authorization);
++        }
++        if ("expired_token".equals(status)) {
++            exactKeys(response, "status"); authorization.finished = true;
++            return finish(PollState.EXPIRED, authorization);
++        }
++        if (!"authorized".equals(status)) throw new IOException("DEVICE_AUTH_POLL_RESPONSE_INVALID");
++        exactKeys(response, "status", "accessToken", "expiresAt", "ownerUserId");
++        String token = string(response, "accessToken");
++        long expiresAt = integer(response, "expiresAt");
++        String ownerUserId = string(response, "ownerUserId");
++        if (!SESSION_TOKEN.matcher(token).matches() || expiresAt <= now ||
++            expiresAt - now > MAX_SESSION_LIFETIME_MS || !validOwnerId(ownerUserId))
++            throw new IOException("DEVICE_AUTH_SESSION_INVALID");
++        sessions.save(token, expiresAt, ownerUserId);
++        authorization.finished = true;
++        return finish(PollState.AUTHORIZED, authorization);
++    }
++
++    private static PollResult finish(PollState state, DeviceAuthorization authorization) {
++        return result(state, authorization);
++    }
++
++    private static PollResult result(PollState state, DeviceAuthorization authorization) {
++        return new PollResult(state, authorization.nextPollAt, authorization.intervalSeconds);
++    }
++
++    private static URI uri(String value) throws IOException {
++        try {
++            URI uri = URI.create(value);
++            if (!"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null ||
++                uri.getUserInfo() != null || uri.getPort() != -1 && uri.getPort() != 443)
++                throw new IOException("DEVICE_AUTH_URI_INVALID");
++            return uri;
++        } catch (IllegalArgumentException invalid) {
++            throw new IOException("DEVICE_AUTH_URI_INVALID", invalid);
++        }
++    }
++
++    private static boolean sameOrigin(URI left, URI right) {
++        return left.getScheme().equalsIgnoreCase(right.getScheme()) &&
++            left.getHost().equalsIgnoreCase(right.getHost()) &&
++            effectivePort(left) == effectivePort(right);
++    }
++
++    private static int effectivePort(URI uri) {
++        return uri.getPort() == -1 ? 443 : uri.getPort();
++    }
++
++    private static void exactKeys(Map<String,Object> value, String... expected) throws IOException {
++        if (value == null || value.size() != expected.length)
++            throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++        for (String key : expected) if (!value.containsKey(key))
++            throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++    }
++
++    private static String string(Map<String,Object> value, String key) throws IOException {
++        Object item = value == null ? null : value.get(key);
++        if (!(item instanceof String)) throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++        return (String) item;
++    }
++
++    private static long integer(Map<String,Object> value, String key) throws IOException {
++        Object item = value == null ? null : value.get(key);
++        if (!(item instanceof Number)) throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++        double number = ((Number) item).doubleValue();
++        long integer = ((Number) item).longValue();
++        if (!Double.isFinite(number) || number != integer) throw new IOException("DEVICE_AUTH_RESPONSE_INVALID");
++        return integer;
++    }
++
++    private static boolean hasControl(String value) {
++        for (int index = 0; index < value.length(); index++) {
++            int code = value.charAt(index);
++            if (code < 32 || code == 127) return true;
++        }
++        return false;
++    }
++
++    private static boolean validOwnerId(String value) {
++        if (value == null || value.isEmpty() || value.length() > 256) return false;
++        for (int index = 0; index < value.length(); index++) {
++            int code = value.charAt(index);
++            if (code < 32 || code == 127) return false;
++        }
++        return true;
++    }
++}

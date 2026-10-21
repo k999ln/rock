@@ -1930,3 +1930,33 @@ export const skyHostedMonthlyTests = sqliteTable('sky_hosted_monthly_tests', {
 export const skyHostedMonthlyEvents=sqliteTable('sky_hosted_monthly_events',{
  id:text('id').primaryKey(),type:text('type').notNull(),invoiceId:text('invoice_id').notNull(),processedAt:integer('processed_at').notNull(),
 });
+
+export const eveDeviceJobs = sqliteTable('eve_device_jobs', {
+  ownerId:text('owner_id').notNull(),jobId:text('job_id').notNull(),threadId:text('thread_id').notNull(),deviceId:text('device_id').notNull(),
+  revision:integer('revision').notNull(),digest:text('digest').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},table=>[uniqueIndex('idx_eve_device_job_owner_id').on(table.ownerId,table.jobId),index('idx_eve_device_jobs_thread').on(table.ownerId,table.threadId,table.updatedAt)]);
+export const eveDevicePresence = sqliteTable('eve_device_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_presence_owner_id').on(t.ownerId,t.deviceId)]);
+export const eveDeviceCommands = sqliteTable('eve_device_commands', {
+  ownerId:text('owner_id').notNull(),id:text('id').notNull(),deviceId:text('device_id').notNull(),threadId:text('thread_id').notNull(),
+  digest:text('digest').notNull(),envelope:text('envelope').notNull(),state:text('state').notNull(),createdAt:integer('created_at').notNull(),expiresAt:integer('expires_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_command_owner_id').on(t.ownerId,t.id),index('idx_eve_device_command_pending').on(t.ownerId,t.deviceId,t.state)]);
+
+
+export const eveConversations = sqliteTable('eve_conversations', {
+  ownerId: text('owner_id').notNull(), id: text('id').notNull(),
+  revision: integer('revision').notNull(), remember: integer('remember').notNull(),
+  envelope: text('envelope').notNull(), updatedAt: integer('updated_at').notNull(),
+  saveToken: text('save_token').notNull(),
+  deletedAt: integer('deleted_at').notNull().default(0),
+}, table => [primaryKey({columns:[table.ownerId,table.id]})]);
+export const eveMessages = sqliteTable('eve_messages', {
+  seq: integer('seq').primaryKey({autoIncrement:true}),ownerId:text('owner_id').notNull(),
+  threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+  envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+}, table => [uniqueIndex('eve_messages_identity').on(table.ownerId,table.threadId,table.messageId)]);
+export const eveMemoryTerms = sqliteTable('eve_memory_terms', {
+  ownerId:text('owner_id').notNull(),token:text('token').notNull(),threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+}, table => [primaryKey({columns:[table.ownerId,table.token,table.threadId,table.messageId]})]);
+

@@ -1054,42 +1054,62 @@ export function validateBaseline(
     'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const canonicalOsEntry = data.obsoletePageCleanup?.approved === true &&
+    data.obsoletePageCleanup?.canonicalOs === '/os' && data.obsoletePageCleanup?.canonicalEve === '/os/eve' &&
+    launchPageSource.includes("redirect('/os')") && read(resolve(root, 'app/os/eve/page.tsx')).includes('EveSyncWorkspace');
   const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
+  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
-    data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_account_service_home' &&
-      data.launchPage?.osHomeRoute === '/' &&
+    data.launchPage?.route === (canonicalOsEntry ? '/os' : '/rockstaros') &&
+      data.launchPage?.role === (canonicalOsEntry ? 'canonical_os_workspace_entry' : 'public_sim_esim_service_home') &&
+      data.launchPage?.osHomeRoute === (canonicalOsEntry ? '/os' : '/') &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
-      data.launchPage?.directOsHomeLink === false &&
-      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.directOsHomeLink === canonicalOsEntry &&
+      data.launchPage?.serviceDetailsLocation === (canonicalOsEntry ? 'service_settings_and_connect' : 'public_service_home') &&
       data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
-      data.marketPositioning?.customerFacingFocus === 'account_led_rockstaros_service_access' &&
+      data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
+      data.marketPositioning?.previousLeadHardwareForm ===
+        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
+      data.marketPositioning?.legacyReferencePriceAppliesTo ===
+        'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
-      data.launchPage?.primaryAction === 'start_service_onboarding' &&
-      data.launchPage?.secondaryAction === 'view_avocado_mini_device' &&
+      data.launchPage?.primaryAction === (canonicalOsEntry ? 'open_os_workspace' : 'start_service_onboarding') &&
+      data.launchPage?.secondaryAction === (canonicalOsEntry ? 'connect_account_or_device' : 'view_sim_esim_plans') &&
       data.launchPage?.publicDownloadFallback === '/connect' &&
-      launchPageSource.includes('アカウントひとつで、Sky・Zema・si Agentへ') &&
-      launchPageSource.includes('SIMは不要です') &&
-      !launchPageSource.includes('href="/sky/esim"') &&
-      launchPageSource.includes('href="/connect"') &&
-      hardwarePageSource.includes('avocadoMini R5') &&
-      hardwarePageSource.includes('200mm') &&
-      hardwarePageSource.includes('別Hubは不要') &&
-      hardwarePageSource.includes('価格は未確定') &&
-      !hardwarePageSource.includes('¥410,000') &&
-      !hardwarePageSource.includes('SIM/eSIMから') &&
+      (canonicalOsEntry || (launchPageSource.includes('SIM/eSIMをつないで、Sky・Eve・AI Agentへ') &&
+      launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
+      launchPageSource.includes('href="/connect"'))) &&
+      hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
-      data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
-      !['motionTowerP0Engineering', 'mini200E2Integration', 'tower20E3',
-        'avocadoMiniDesiredReferencePriceJpy', 'avocadoMiniSingleTowerProposedExTaxPriceJpy',
-        'currentFourTowerBasePriceJpyExTax'].some((key) => Object.hasOwn(data.marketPositioning, key)) &&
-      !['mini200E1', 'mini200E2', 'tower20E3'].some((key) => Object.hasOwn(data.materialInvention, key)),
+      turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('className={styles.designDetails}') &&
+      turntableSource.includes('className={styles.osSection}') &&
+      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
+      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
+      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
+      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
+      data.marketPositioning?.tower20E3?.document ===
+        'docs/avocado-mini-tower20-e3/README.md' &&
+      data.marketPositioning?.tower20E3?.role ===
+        'historical_E3_baseline_superseded_by_R5' &&
+      data.marketPositioning?.tower20E3?.towerCount === 4 &&
+      data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
+      data.marketPositioning?.tower20E3?.fixedHeight === true &&
+      data.marketPositioning?.tower20E3?.maximumUsageHeightMm === 200 &&
+      data.marketPositioning?.tower20E3?.activeCameraCandidatesPerTower === 1 &&
+      data.marketPositioning?.tower20E3?.physicalTests === 0 &&
+      data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
+      turntableSource.includes('¥410,000') &&
+      turntableSource.includes('購入する') &&
+      turntableSource.includes('/rockstaros/guide#install'),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const miniR5 = data.marketPositioning?.r5;
