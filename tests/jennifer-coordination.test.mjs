@@ -108,9 +108,14 @@ void test("Jennifer is the visible coordinator while Zema remains the work syste
     resolve(import.meta.dirname, "../components/sky-chat-workspace.tsx"),
     "utf8",
   );
-  assert.match(chat, /Jennifer · Chief of Staff/);
-  assert.match(chat, /ZEMA WORK SYSTEM/);
+  assert.match(chat, /Chief of Staff · Zemaが実行を管理/);
+  assert.match(chat, /ZEMA WORK CONTROL/);
   assert.match(chat, /管理するプロジェクト/);
   assert.match(chat, /Jenniferは割当と確認を行い/);
-  assert.match(chat, /<h1>Zema<\/h1>/);
+  assert.match(chat, /<h1>Jennifer<\/h1>/);
+  assert.match(chat, /jennifer-project-list/);
+  assert.match(chat, /あなたはJenniferです/);
+  assert.match(chat, /Jenniferの中で動く/);
+  assert.match(chat, /実行・承認・利用明細・停止はZema/);
+  assert.doesNotMatch(chat, /あなたはZemaです/);
 });

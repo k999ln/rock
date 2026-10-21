@@ -2,6 +2,10 @@ const SITE_HOST_SUFFIX = '.chatgpt.site';
 const SITE_DISPATCH_PREFIX = 'site---';
 const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const RESERVED_FIXTURE_SUFFIXES = ['.invalid', '.test'];
+const TRUSTED_SITES_CUSTOM_HOSTS = new Set([
+  'avoado.si',
+  'columbia.avoado.si',
+]);
 
 function localOrFixtureHost(hostname: string) {
   return LOOPBACK_HOSTS.has(hostname) || RESERVED_FIXTURE_SUFFIXES.some((suffix) => hostname.endsWith(suffix));
@@ -77,14 +81,14 @@ export async function requestGatewayUser(request: Request): Promise<string> {
   }
   const dispatch = request.headers.get('x-dispatched-app') ?? '';
   const generatedSitesHost = hostname.endsWith(SITE_HOST_SUFFIX);
-  const columbiaHost = hostname === 'columbia.avoado.si';
-  if (!columbiaHost && !generatedSitesHost)
+  const customSitesHost = TRUSTED_SITES_CUSTOM_HOSTS.has(hostname);
+  if (!customSitesHost && !generatedSitesHost)
     throw new Error('UNAUTHORIZED');
   const id = request.headers.get('oai-authenticated-user-id')?.trim();
   if (id) {
     // The generated Sites hostname is itself a platform-owned dispatch surface.
-    // The custom Columbia hostname additionally requires the Sites dispatch marker.
-    if (columbiaHost && !dispatch.startsWith(SITE_DISPATCH_PREFIX)) throw new Error('UNAUTHORIZED');
+    // Every custom hostname additionally requires the Sites dispatch marker.
+    if (customSitesHost && !dispatch.startsWith(SITE_DISPATCH_PREFIX)) throw new Error('UNAUTHORIZED');
     if (id.length > 256) throw new Error('UNAUTHORIZED');
     return id;
   }
@@ -126,14 +130,14 @@ export async function requestUser(request: Request): Promise<string> {
   try {
     const gatewayUser = await requestGatewayUser(request);
     const hostname = new URL(request.url).hostname.toLowerCase();
-    if (localOrFixtureHost(hostname) || hostname !== 'columbia.avoado.si') return gatewayUser;
+    if (localOrFixtureHost(hostname) || hostname !== 'avoado.si') return gatewayUser;
     const [{ env }, passkeys] = await Promise.all([
       import('cloudflare:workers'), import('./jennifer-passkey.ts'),
     ]);
     const db = (env as unknown as { DB?: D1Database }).DB;
     if (!db) throw new Error('AUTH_UNAVAILABLE');
-    // Once this owner opts into Jennifer Access, Sites is recovery-only and can
-    // no longer silently authorize project or execution APIs.
+    // Once this owner opts into Jennifer Access, Sites is recovery-only on the
+    // canonical Jennifer host. Other hosts cannot reach Jennifer private APIs.
     if (await passkeys.jenniferPasskeyStore(db).hasCredential(gatewayUser))
       throw new Error('UNAUTHORIZED');
     return gatewayUser;

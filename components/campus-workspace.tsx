@@ -701,7 +701,7 @@ export default function CampusWorkspace({
         </Link>
         <div className={styles.toplinks}>
           <Link href="/sky">Sky</Link>
-          <Link href="/chat">Zema</Link>
+          <Link href="/chat">Jennifer</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />
           </Link>

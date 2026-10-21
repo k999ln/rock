@@ -46,7 +46,7 @@ Jenniferの根拠は[PR #113のJennifer設計・SHA `3349c247`](https://github.c
 ## 2. 名前が体験のどこに現れるか
 
 - **avokado**：サービス全体とアカウントの入口。利用者が毎回system名を選び直さなくても仕事を始められる。
-- **Jennifer（利用者表記Jenniffer）**：Rockstar全体のプロジェクト統括窓口。依頼をGoal・意図・成功条件へ整理し、projectと担当を選び、確認待ちと成果受領をまとめる。実行権限を持たず、計画作成だけで仕事や費用を発生させない。
+- **Jennifer**：Rockstar全体のプロジェクト統括窓口。第一者表示はJenniferへ統一し、過去資料のJennifferは旧表記としてだけ保持する。依頼をGoal・意図・成功条件へ整理し、projectと担当を選び、確認待ちと成果受領をまとめる。実行権限を持たず、計画作成だけで仕事や費用を発生させない。
 - **Sky**：目的に合うAgent / Toolを探し、作者・版・範囲・費用・接続条件を確認する場所。Jenniferから必要な能力を選び、Zemaの同じ仕事へ渡す。直接探す入口も残す。
 - **Zema**：Jenniferの裏で依頼、計画、承認、進捗、停止、成果、利用額、Receipt、履歴を保持する仕事system。利用者と話す競合人格にはしない。
 - **RockstarOS**：実行条件と本人境界を守るruntime。Broker / Platform Coreがowner・権限・上限・入力digest・期限・失効を強制する。Webにないnative能力は端末適合と受入が済んだ範囲だけ追加する。

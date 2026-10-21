@@ -70,7 +70,7 @@ export default function ConnectPage() {
         </div>
         <div className={styles.esimPlanList}>
           <Link className={styles.esimPlanCard} href="/sky"><strong>Sky — Agentとツールを探す</strong><span>利用可能なAgentや接続先を確認します <ArrowRight size={15} /></span></Link>
-          <Link className={styles.esimPlanCard} href="/chat"><strong>Zema — 仕事を依頼する</strong><span>依頼内容を整理し、仕事の管理を始めます <ArrowRight size={15} /></span></Link>
+          <Link className={styles.esimPlanCard} href="/chat"><strong>Jennifer — 目的を相談する</strong><span>Goalを整理し、担当siとZemaの仕事につなぎます <ArrowRight size={15} /></span></Link>
           <Link className={styles.esimPlanCard} href="/work"><strong>Agent Workbench — 依頼・進捗・費用</strong><span>Agentを選んで依頼し、見積・上限・実行状態・成果・利用明細を確認します <ArrowRight size={15} /></span></Link>
         </div>
       </section>
@@ -84,7 +84,7 @@ export default function ConnectPage() {
           <div className={styles.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>Sky・Zema・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
           <div className={styles.esimPlanCard}><strong>端末への導入</strong><span>対応機種は署名済みOS、それ以外は既存OSのアプリまたはブラウザを使います。</span></div>
           <Link className={styles.esimPlanCard} href="/sky"><strong>Skyを開く</strong><span> AgentやToolを探す <ArrowRight size={15} /></span></Link>
-          <Link className={styles.esimPlanCard} href="/chat"><strong>Zemaを開く</strong><span> 依頼・進捗・成果を確認する <ArrowRight size={15} /></span></Link>
+          <Link className={styles.esimPlanCard} href="/chat"><strong>Jenniferを開く</strong><span> 相談・進捗・成果をまとめて確認する <ArrowRight size={15} /></span></Link>
         </div>
         <p className={styles.esimDeviceNote}>物理SIMの流通、eSIM開通、アカウントへの購入権連携、実請求、各端末でのOS/client導入は、それぞれ契約・実機受入が必要です。eSIMプランカタログは契約・販売条件の調査用で、RockstarOSサービスの購入窓口ではありません。</p>
         <Link className={styles.back} href="/sky/esim">eSIM対応プランの技術・提供条件を見る（調査用カタログ）</Link>

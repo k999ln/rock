@@ -54,7 +54,7 @@ flowchart TB
 - **Sky** — 自分に必要なAgentとToolを見つけ、条件を確かめ、購入・接続し、使う場所へ届けるplatform。
 - **Zema** — 依頼を仕事にし、計画・進捗・確認・停止・成果・使用額を見渡す管理役。
 - **RockstarOS** — UIやsiの主張から独立して、本人・有限権限・実行・保存・復旧を強制する共通runtime。対応する機種ではnative OSとしても提供する。
-- **Jennifer（利用者表記 Jenniffer）** — 利用者が話す全体のプロジェクト統括窓口。目的をGoalへ整理し、担当siと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113でmain統合済み。本番受入は別。
+- **Jennifer** — 利用者が話す全体のプロジェクト統括窓口。第一者表示はJenniferへ統一し、過去資料のJennifferは旧表記としてだけ保持する。目的をGoalへ整理し、担当siと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md)はPR #113でmain統合済み。本番受入は別。
 - **avocadoMini** — 身体・手・日本語音声で遊び、作り、暮らしへ広げる独立した空間端末。現行はR5。
 - **avokadoPro** — NVIDIAのGPU/chipを使う高性能si PC。PCゲームも維持する独立据置PCで、Miniへの接続は任意。
 - **rocketstar** — 衛星輸送・帰還・回収・再使用を目指す独立工学program。一般のAgentから機体管制を行わない。

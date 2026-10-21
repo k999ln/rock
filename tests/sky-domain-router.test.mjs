@@ -217,6 +217,30 @@ void test('Columbia keeps its campus Home while shared Sky and work routes use t
     assert.equal(response.headers.get('location'), `https://avoado.si${path}`);
   }
 
+  for (const path of [
+    '/api/jennifer/access',
+    '/api/jennifer/passkeys/register',
+    '/api/amc',
+    '/api/jobs',
+    '/api/work-jobs',
+    '/api/sky/a2a-delegations',
+  ]) {
+    const response = await app.fetch(new Request(`https://columbia.avoado.si${path}`, {
+      method: path.endsWith('/register') ? 'POST' : 'GET',
+      ...(path.endsWith('/register') ? {
+        headers: { origin: 'https://columbia.avoado.si' },
+        body: '{}',
+      } : {}),
+    }));
+    assert.equal(response.status, 409, path);
+    assert.deepEqual(await response.json(), {
+      error: 'canonical_origin_required',
+      canonicalOrigin: 'avoado.si',
+      path,
+    });
+  }
+  assert.deepEqual(seen, ['/', '/sky/campus/columbia', '/sky/tools/mr-citations']);
+
   const old = await app.fetch(
     new Request('https://columbia.avoado.si/sky/outputs?source=nfc'),
   );
@@ -225,6 +249,29 @@ void test('Columbia keeps its campus Home while shared Sky and work routes use t
     old.headers.get('location'),
     'https://columbia.avoado.si/os/sky/outputs?source=nfc',
   );
+});
+
+void test('generated Sites hosts cannot become a second Jennifer origin', async () => {
+  let skyCalls = 0;
+  const app = withMiniSite({
+    fetch: () => {
+      skyCalls++;
+      return new Response('sky');
+    },
+  });
+  const chat = await app.fetch(new Request(
+    'https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat?thread=fixture',
+  ));
+  assert.equal(chat.status, 307);
+  assert.equal(chat.headers.get('location'), 'https://avoado.si/chat?thread=fixture');
+
+  for (const path of ['/api/jennifer/access', '/api/amc', '/api/work-jobs']) {
+    const response = await app.fetch(new Request(
+      `https://rockstaros-kaiya.noellesugar1.chatgpt.site${path}`,
+    ));
+    assert.equal(response.status, 409, path);
+  }
+  assert.equal(skyCalls, 0);
 });
 
 void test('OS and Sky documents point to their own install manifests', async () => {

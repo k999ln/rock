@@ -58,7 +58,7 @@ CLIは`data/project-status.json`をprojectへ集計するだけで、Agent起動
 
 ## Web Previewでの使い方
 
-1. `https://columbia.avoado.si/chat`を開く。通常はJennifer専用passkeyと端末のロック解除で本人領域へ入る。最初の登録または端末紛失時だけ「本人用データを引き継いで設定」から既存Sites accountを一度照合する。復旧登録が成功すると以前のJennifer passkeyとsessionはすべて失効する。
+1. `https://avoado.si/chat`を開く。通常はJennifer専用passkeyと端末のロック解除で本人領域へ入る。最初の登録または端末紛失時だけ「本人用データを引き継いで設定」から既存Sites accountを一度照合する。復旧登録が成功すると以前のJennifer passkeyとsessionはすべて失効する。
 2. Jenniferを開き、担当を「自動で選ぶ」にする。
 3. 「管理するプロジェクト」から8件のprojectまたは「全体・自動判定」を選ぶ。
 4. 複数工程を先に確認したい場合は「計画を整理」を有効にする。
@@ -79,7 +79,7 @@ CLIは`data/project-status.json`をprojectへ集計するだけで、Agent起動
 
 - 既定のデータアクセスは`none`。計画中の「本人の選択データ」は、実行時に本人が対象を指定することを意味し、Jenniferが全データを読めることを意味しない。
 - 未保存の会話previewは既存Zema session境界を使う。Zemaへ保存したJennifer Goalは`work_jobs`、`jennifer_plan_revisions`、`jennifer_task_attempts`へowner別に永続化し、別browser／deviceでも再構成する。計画変更は親digestとsemantic diffを持つ新revisionにし、旧版を`superseded`にする。
-- Jennifer Accessは`jennifer_passkey_challenges`、`jennifer_passkey_credentials`、`jennifer_passkey_sessions`、`jennifer_passkey_events`へchallenge、server検証済みcredential、hash化session、登録／復旧auditをowner別に保存する。RPとoriginは`columbia.avoado.si`へ固定し、Sites accountは初回登録と復旧だけに使う。native端末sessionとは混在させない。
+- Jennifer Accessは`jennifer_passkey_challenges`、`jennifer_passkey_credentials`、`jennifer_passkey_sessions`、`jennifer_passkey_events`へchallenge、server検証済みcredential、hash化session、登録／復旧auditをowner別に保存する。唯一の正本RPとoriginは`avoado.si`、`https://avoado.si`へ固定する。Columbiaと生成`chatgpt.site` hostの共有work画面は正本へ転送し、Jennifer・AMC・Job・A2Aのprivate APIは別D1へ書かずfail closedにする。Sites accountは初回登録と復旧だけに使い、native端末sessionとは混在させない。
 - 計画schemaは未知field、権限昇格、未知の担当・effect、前工程を参照しない依存を拒否する。approval token、credential、秘密鍵、成果物本文は計画schemaに持たせない。
 - project一覧と担当siはGit管理する。taskの状態は既存`data/project-status.json`と`data/mission-control.json`を使い、Jennifer専用の重複台帳を作らない。
 - credential、秘密鍵、artifact本文は計画台帳へ保存しない。A2A入力とartifactは既存暗号化保存、署名Receipt、owner bindingを使う。
@@ -107,7 +107,7 @@ text artifactだけを32 KiB以下の正規化documentにして暗号化保存�
 - 既存Agent Control Planeと共通のdata class、危険effectの分類
 - 8projectと各project一つの担当si profile、task prefixの一意な対応
 - Codexで使うrepo-local Jennifer skillとread-only portfolio CLI
-- Jenniferを表にしたWeb、project picker、計画カード、Zema session復元、再編集
+- Jenniferを製品名・会話窓口として表にしたWeb、project picker、構造説明、計画カード、Zema session復元、再編集。`仕事`表示では裏側のZema work controlへ切り替える
 - 単一Tool routingとの分離、権限境界と未完了表示
 - pathと固定keywordで検査深度を上げるmetadata-only Spider risk plan
 - owner確認から既存AMC Goalへの永続化、依存順leaf状態、per-leaf Cloud Agent job相関

@@ -1,6 +1,18 @@
 const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const MINI_PUBLIC_HOST = 'avoado.si';
 const COLUMBIA_HOST = 'columbia.avoado.si';
+const GENERATED_SITE_SUFFIX = '.chatgpt.site';
+
+const JENNIFER_PRIVATE_API_PREFIXES = [
+  '/api/jennifer',
+  '/api/amc',
+  '/api/jobs',
+  '/api/work-jobs',
+  '/api/runs',
+  '/api/operations',
+  '/api/agent-control-plane',
+  '/api/sky/a2a-delegations',
+];
 
 const SKY_PREFIXES = [
   '/_next',
@@ -32,6 +44,21 @@ const isPath = (path, prefix) =>
   path === prefix || path.startsWith(`${prefix}/`);
 const usesCanonicalSkyPrefix = (hostname) =>
   hostname === MINI_PUBLIC_HOST || hostname.endsWith(`.${MINI_PUBLIC_HOST}`);
+const isJenniferPrivateApi = (path) =>
+  JENNIFER_PRIVATE_API_PREFIXES.some((prefix) => isPath(path, prefix));
+const isJenniferPrivateUi = (path) =>
+  isPath(path, '/chat') || isPath(path, '/work') || isPath(path, '/zema');
+
+function canonicalPrivateResponse(source) {
+  return Response.json({
+    error: 'canonical_origin_required',
+    canonicalOrigin: MINI_PUBLIC_HOST,
+    path: source.pathname,
+  }, {
+    status: 409,
+    headers: { 'cache-control': 'no-store' },
+  });
+}
 
 function columbiaSkyDestination(source) {
   if (source.hostname !== COLUMBIA_HOST) return null;
@@ -139,6 +166,18 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      if (source.hostname.endsWith(GENERATED_SITE_SUFFIX) &&
+          (isJenniferPrivateUi(path) || isJenniferPrivateApi(path))) {
+        if (['GET', 'HEAD'].includes(request.method) && isJenniferPrivateUi(path)) {
+          source.hostname = MINI_PUBLIC_HOST;
+          source.protocol = 'https:';
+          source.port = '';
+          return Response.redirect(source.href, 307);
+        }
+        return canonicalPrivateResponse(source);
+      }
+      if (source.hostname === COLUMBIA_HOST && isJenniferPrivateApi(path))
+        return canonicalPrivateResponse(source);
       const columbiaDestination = columbiaSkyDestination(source);
       if (columbiaDestination && ['GET', 'HEAD'].includes(request.method))
         return Response.redirect(columbiaDestination, 307);

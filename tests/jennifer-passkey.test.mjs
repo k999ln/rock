@@ -25,10 +25,14 @@ class OptionsDatabase {
 const request = (url = 'https://columbia.avoado.si/api/jennifer/passkeys/register') =>
   new Request(url, { method: 'POST', headers: { origin: new URL(url).origin } });
 
-void test('Jennifer registration options are fixed to the Columbia RP and require user verification', async () => {
+void test('Jennifer registration options use the canonical avoado.si RP and require user verification', async () => {
   const database = new OptionsDatabase();
-  const result = await jenniferPasskeyStore(database).registrationOptions('owner-1', request(), 1000);
-  assert.equal(result.publicKey.rp.id, 'columbia.avoado.si');
+  const result = await jenniferPasskeyStore(database).registrationOptions(
+    'owner-1',
+    request('https://avoado.si/api/jennifer/passkeys/register'),
+    1000,
+  );
+  assert.equal(result.publicKey.rp.id, 'avoado.si');
   assert.equal(result.publicKey.authenticatorSelection?.residentKey, 'required');
   assert.equal(result.publicKey.authenticatorSelection?.userVerification, 'required');
   assert.deepEqual(result.publicKey.pubKeyCredParams.map(({ alg }) => alg), [-7, -257]);
@@ -37,6 +41,10 @@ void test('Jennifer registration options are fixed to the Columbia RP and requir
 
 void test('Jennifer authentication rejects preview hosts and rate-limits challenge creation', async () => {
   await assert.rejects(
+    jenniferPasskeyStore(new OptionsDatabase()).authenticationOptions(request(), 1000),
+    /PASSKEY_HOST_INVALID/,
+  );
+  await assert.rejects(
     jenniferPasskeyStore(new OptionsDatabase()).authenticationOptions(
       request('https://example.chatgpt.site/api/jennifer/passkeys/authenticate'),
       1000,
@@ -44,7 +52,10 @@ void test('Jennifer authentication rejects preview hosts and rate-limits challen
     /PASSKEY_HOST_INVALID/,
   );
   await assert.rejects(
-    jenniferPasskeyStore(new OptionsDatabase(10)).authenticationOptions(request(), 1000),
+    jenniferPasskeyStore(new OptionsDatabase(10)).authenticationOptions(
+      request('https://avoado.si/api/jennifer/passkeys/authenticate'),
+      1000,
+    ),
     /PASSKEY_RATE_LIMITED/,
   );
 });

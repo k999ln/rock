@@ -859,7 +859,7 @@ export default function SkyWorkspace({
             <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
             <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
             <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
-            <Link href="/chat" style={{color: 'white'}}>Zemaで仕事を管理</Link>
+            <Link href="/chat" style={{color: 'white'}}>Jenniferに相談</Link>
           </nav>
         </section>
       )}

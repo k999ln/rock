@@ -1,6 +1,0 @@
-{
-  "feature": "sky-visual-scribe",
-  "build": "2026-10-21",
-  "migration_source": "drizzle/0000-0003",
-  "note": "Site archive rebuilt after removing stale generated migrations from dist/.openai/drizzle."
-}

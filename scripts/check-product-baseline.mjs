@@ -946,14 +946,25 @@ export function validateBaseline(
     '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
-    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Zema' &&
+    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Jennifer' &&
       data.baseApps?.find?.((app) => app.id === 'chat')?.route === '/chat' &&
-      data.chatInteraction?.displayName === 'Zema' &&
+      data.baseApps?.find?.((app) => app.id === 'chat')?.workSystem === 'Zema' &&
+      data.chatInteraction?.displayName === 'Jennifer' &&
+      data.chatInteraction?.workSystem === 'Zema' &&
+      data.chatInteraction?.planningEngine === 'AMC_inside_Zema' &&
       data.chatInteraction?.legacyDisplayName === 'Chat' &&
       data.chatInteraction?.compatibilityRoute === '/chat' &&
       data.chatInteraction?.connectedMcpPresentation ===
         'one_bot_per_connected_server_or_ready_product' &&
-      data.chatInteraction?.controlSurface === 'zema_thread_and_work_center' &&
+      data.chatInteraction?.controlSurface ===
+        'jennifer_conversation_front_with_zema_thread_and_work_center' &&
+      data.chatInteraction?.access?.canonicalOrigin ===
+        'https://avoado.si' &&
+      data.chatInteraction?.access?.canonicalRpId === 'avoado.si' &&
+      data.chatInteraction?.access?.nonCanonicalPrivateRoutes ===
+        'redirect_ui_and_reject_private_api_without_d1_access' &&
+      data.chatInteraction?.access?.sitesAccountUse ===
+        'bootstrap_and_recovery_only_after_passkey_enrollment' &&
       data.chatInteraction?.skyHandoff?.transport ===
         'same_tab_session_storage' &&
       data.chatInteraction?.skyHandoff?.selectedToolDeepLink ===
@@ -993,7 +1004,7 @@ export function validateBaseline(
       data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
-    'Zemaの接続bot管理契約が必要です',
+    'Jennifer窓口とZemaの接続bot管理契約が必要です',
   );
   requireValue(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&

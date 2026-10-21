@@ -187,6 +187,32 @@ const quickRequests = [
   '特許を調べて',
 ];
 
+function conversationIdentityFor(tool: Automation | null) {
+  if (tool) {
+    return `あなたはJenniferの中で動く${tool.name}専門siです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。実行・承認・利用明細・停止はZemaが管理します。`;
+  }
+  return 'あなたはJenniferです。利用者の目的を日本語で自然に整理し、必要なときだけSkyの能力やプロジェクト担当siを案内してください。実行していない作業を完了したと主張せず、実行・承認・利用明細・停止はZemaの既存契約で管理されると説明してください。';
+}
+
+function jenniferStateLabel(state: string | undefined) {
+  const labels: Record<string, string> = {
+    draft: '草案・承認待ち',
+    planned: '計画済み',
+    active: '進行中',
+    inventory_approved: '事前確認を承認済み',
+    delivery_approved: '実行段階を承認済み',
+    review: '検収中',
+    paused: '一時停止中',
+    completed: '完了',
+    accepted: '最終受入済み',
+    cancelled: '停止済み',
+    failed: '確認が必要',
+    queued: '開始待ち',
+    running: '実行中',
+  };
+  return state ? labels[state] ?? '状態を確認中' : '状態を確認中';
+}
+
 const providerRoutingDefaults: Record<string, string> = {
   imageGeneration: 'higgsfield',
   videoGeneration: 'higgsfield',
@@ -327,8 +353,8 @@ export default function SkyChatWorkspace() {
   </WorkspaceShell>;
   return <>
     {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
-      <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} /></div>}
-    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Zema">
+      <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} portfolioAccess={jenniferAccess.portfolioAccess} /></div>}
+    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Jennifer">
       <ExecutionSignin state={access.accessState === 'signin' ? 'checking' : access.accessState} />
       {storageBlocked && <section role="alert" aria-label="会話の保存領域を確認">
         <p>前の会話と引き継ぎデータを消去できませんでした。古い内容の読み込みを止めています。</p>
@@ -340,7 +366,7 @@ export default function SkyChatWorkspace() {
   </>;
 }
 
-function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeedsSignin }: ReturnType<typeof useExecutionAccess>) {
+function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeedsSignin, portfolioAccess }: ReturnType<typeof useExecutionAccess> & { portfolioAccess: boolean }) {
   const router = useRouter();
   const [signingOutJennifer, setSigningOutJennifer] = useState(false);
 
@@ -748,6 +774,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
     return !query || `${roleFor(tool)} ${tool.name}`.toLocaleLowerCase('ja-JP').includes(query);
   });
+  const visibleProjects = (portfolioAccess ? jenniferProjectPortfolio.projects : []).filter((project) => {
+    const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
+    return !query || `${project.displayName} ${project.managerLabel} ${project.mission}`
+      .toLocaleLowerCase('ja-JP')
+      .includes(query);
+  });
   const compactBotApps = [
     ...visibleBotApps.filter((tool) => tool.status === 'ready'),
     ...visibleBotApps.filter((tool) => tool.status !== 'ready'),
@@ -1090,7 +1122,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     const planState = jenniferExecution.projection?.plan?.state;
     if (!task || !amcSummary(goal).readyTaskIds.includes(task.id) ||
       (task.id === 'task-inventory' ? planState !== 'inventory_approved' : planState !== 'delivery_approved')) {
-      setJenniferExecutionError('このleaf taskは前提、lock、同時実行枠のためまだ開始できません。');
+      setJenniferExecutionError('この作業は前提、ロック、同時実行枠のためまだ開始できません。');
       return;
     }
     setJenniferExecutionBusy(true);
@@ -1152,7 +1184,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (!coordinationPlan || !rootJob || !goal || jenniferExecutionBusy)
       return;
     if (goal.state !== 'active' || goal.tasks.some(({ status }) => status !== 'done')) {
-      setJenniferExecutionError('全leaf taskの独立検収が終わるまでGoalを最終受入できません。');
+      setJenniferExecutionError('すべての作業の独立検収が終わるまでゴールを最終受入できません。');
       return;
     }
     await runJenniferOwnerAction('accept');
@@ -1260,14 +1292,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (!requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Jennifer'}: ${message.text}`)
         .join('\n\n');
       const estimatePrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      const estimateSystem = tool
-        ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
-        : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
+      const estimateSystem = conversationIdentityFor(tool);
       const controller = new AbortController();
       estimateAbortRef.current = controller;
       const isCurrent = () => estimateAbortRef.current === controller && !controller.signal.aborted;
@@ -1363,7 +1393,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       setChatLoading(true);
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Jennifer'}: ${message.text}`)
         .join('\n\n');
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
@@ -1378,9 +1408,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           baseUrl: requestProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
-          context: tool
-            ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
-            : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
+          context: conversationIdentityFor(tool),
           prompt: requestProvider === 'pollinations' ? text : selectedToolPrompt.slice(-20_000),
         }),
         signal: controller.signal,
@@ -1480,7 +1508,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     const latest = [...jobs].filter((job) => job.tool === id).sort((a, b) => b.createdAt - a.createdAt)[0];
     const current = activeRequest?.toolId === id;
     const result = [...messages].reverse().find((message) => message.tool === id && message.id.startsWith('result-'));
-    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Zema'}
+    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Jennifer'}
       description={tool?.description ?? server?.description ?? '会話しながら、やりたいことを整理して接続済みの道具につなぎます。'}
       status={current ? (workflowStatus === 'running' ? '処理中' : workflowStatus === 'completed' ? '結果があります' : workflowStatus === 'failed' ? '確認が必要です' : '入力・実行の確認待ち') : latest ? `直近の仕事：${jobMessage(latest)}` : tool?.status === 'candidate' ? '本体の接続待ち' : 'この会話ではまだ作業を始めていません'}
       result={result?.text}
@@ -1490,7 +1518,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
 
   return (
     <WorkspaceShell
-      title="Zema"
+      title="Jennifer"
       contentClassName="sky-chat-page"
       running={running}
         onClickCapture={(event) => {
@@ -1523,12 +1551,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       </Dialog>
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
-        aria-label="Zemaスレッド"
+        aria-label="Jenniferスレッド"
 
         >
-        <aside className="zema-sidebar" aria-label="Zema Botと会話">
+        <aside className="zema-sidebar" aria-label="Jenniferのプロジェクトと専門si">
           <div className="zema-sidebar-top">
-            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Zema <small>WORKSPACE</small></strong></div>
+            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">J</span><strong>Jennifer <small>CHIEF OF STAFF</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
           <Link className="zema-new-chat" data-zema-new-chat href="/chat" onClick={(event) => {
@@ -1536,7 +1564,34 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
             event.preventDefault(); startNewChat();
           }}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">ツールと会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="ツール・会話を検索" /></label>
-          <div className="zema-sidebar-section-title"><span>ツール</span><span>{visibleBotApps.length}</span></div>
+          <div className="zema-sidebar-section-title jennifer-sidebar-section-title"><span>プロジェクト</span><span>{portfolioAccess ? jenniferProjectPortfolio.projects.length : 0}</span></div>
+          <div className="jennifer-project-list" aria-label="Jenniferが管理するプロジェクト">
+            <button
+              type="button"
+              className={`jennifer-project-row${selectedJenniferProjectId === JENNIFER_AUTO_PROJECT ? ' is-current' : ''}`}
+              aria-pressed={selectedJenniferProjectId === JENNIFER_AUTO_PROJECT}
+              disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
+              onClick={() => selectJenniferProject(JENNIFER_AUTO_PROJECT)}
+            >
+              <span className="jennifer-project-mark" aria-hidden="true">J</span>
+              <span className="jennifer-project-copy"><strong>全体・自動判定</strong><small>Jennifer portfolio</small></span>
+            </button>
+            {visibleProjects.map((project) => (
+              <button
+                type="button"
+                className={`jennifer-project-row${selectedJenniferProjectId === project.id ? ' is-current' : ''}`}
+                aria-pressed={selectedJenniferProjectId === project.id}
+                disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
+                key={`jennifer-project-${project.id}`}
+                onClick={() => selectJenniferProject(project.id)}
+                title={project.mission}
+              >
+                <span className="jennifer-project-mark" aria-hidden="true">{project.displayName.slice(0, 1)}</span>
+                <span className="jennifer-project-copy"><strong>{project.displayName}</strong><small>{project.managerLabel}</small></span>
+              </button>
+            ))}
+          </div>
+          <div className="zema-sidebar-section-title jennifer-sidebar-section-title"><span>専門si・Tool</span><span>{visibleBotApps.length + connectedMcpServers.length}</span></div>
           <div className="zema-character-list">
             {sidebarBotApps.map((tool) => {
               const latest = jobs.find((job) => job.tool === tool.id);
@@ -1596,16 +1651,16 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/zema/compose"><Sparkles size={16} /><span>仕事を組み立てる</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>成果ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyで能力を追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>Zema · 仕事を管理</span></Link><Link href="/zema/amc"><Sparkles size={16} /><span>仕事の実行計画</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
             <div>
-              <span>AVOKADO / ZEMA WORK SYSTEM · ROCKSTAROS</span>
-              <h1>Zema</h1>
-              <strong className="zema-jennifer-lead">Jennifer · Chief of Staff</strong>
+              <span>AVOKADO / JENNIFER · ZEMA WORK CONTROL · ROCKSTAROS</span>
+              <h1>Jennifer</h1>
+              <strong className="zema-jennifer-lead">Chief of Staff · Zemaが実行を管理</strong>
             </div>
           </div>
           {selectedTool || selectedMcpServer ? (
@@ -1639,7 +1694,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <ListChecks size={18} />
               <span>仕事</span>
             </Link>
-            <Link href="/zema/compose" aria-label="仕事を組み立てる"><Sparkles size={18} /><span>組み立てる</span></Link>
+            <Link href="/zema/amc" aria-label="Zemaの実行計画を開く"><Sparkles size={18} /><span>実行計画</span></Link>
           </nav>
         </header>
 
@@ -1736,8 +1791,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     <strong>Jenniferの計画整理は使えます</strong>
                     <p>
                       {accessState === 'checking'
-                        ? 'Zemaの実行接続を確認中です。Goal整理とAMC分解はこのまま利用できます。'
-                        : 'Goal整理とAMC分解は端末内で使えます。Tool実行・Job・ReceiptはZemaの接続確認後に利用できます。'}
+                        ? 'Zemaの実行接続を確認中です。ゴール整理と実行計画はこのまま利用できます。'
+                        : 'ゴール整理と実行計画は端末内で使えます。Tool実行・仕事・利用明細はZemaの接続確認後に利用できます。'}
                     </p>
                   </div>
                   <button
@@ -1752,11 +1807,25 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {displayMessages.length > 0 && <div className="sky-chat-day">今日</div>}
               {displayMessages.length === 0 && (
                 <section className="zema-empty" aria-labelledby="zema-empty-title">
-                  <span className="zema-empty-kicker">JENNIFER · POWERED BY ZEMA</span>
+                  <span className="zema-empty-kicker">JENNIFER · CHIEF OF STAFF</span>
                   <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : 'プロジェクト全体を、ここから。'}</h2>
                   <p className="zema-empty-lead">{selectedTool || selectedMcpServer
                     ? '依頼を整理し、使える範囲と次の手順をこの会話で確認できます。'
-                    : 'プロジェクトを選ぶか、目的をそのまま入力してください。担当siと現在の記録を確認し、Zemaの仕事として進めます。'}</p>
+                    : 'Jenniferに目的を話してください。ゴールと成功条件へ整理し、Zemaの実行計画からプロジェクト担当siと専門siへつなぎます。'}</p>
+                  {!selectedTool && !selectedMcpServer && <div className="jennifer-flow-card" aria-label="JenniferからZemaへの仕事の流れ">
+                    <div className="jennifer-flow-steps">
+                      <span><strong>Jennifer</strong><small>目的を整理</small></span>
+                      <ArrowRight size={15} aria-hidden="true" />
+                      <span><strong>Zema / AMC</strong><small>仕事へ分解</small></span>
+                      <ArrowRight size={15} aria-hidden="true" />
+                      <span><strong>プロジェクトsi</strong><small>全体を担当</small></span>
+                      <ArrowRight size={15} aria-hidden="true" />
+                      <span><strong>専門si</strong><small>作業を実行</small></span>
+                      <ArrowRight size={15} aria-hidden="true" />
+                      <span><strong>Jennifer</strong><small>成果を統合</small></span>
+                    </div>
+                    <p>Zemaは進捗、承認、利用明細、証拠、検収、停止、履歴を管理します。実行・承認・検収はそれぞれ別に確認できます。</p>
+                  </div>}
                   {selectedTool && (
                     <div className="zema-empty-next">
                       <div className="zema-empty-tool-heading">
@@ -1818,11 +1887,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     <div><small>ZEMA DURABLE HISTORY</small><h2>保存済みJennifer Goals</h2></div>
                     <strong>{savedJenniferGoals.length}件</strong>
                   </header>
-                  <p className="zema-jennifer-intro">sessionStorageではなく、ZemaのAMC・Receipt・実行台帳から再開します。</p>
+                  <p className="zema-jennifer-intro">一時保存ではなく、Zemaの実行計画・利用明細・実行台帳から再開します。</p>
                   <ol className="zema-jennifer-steps">
                     {savedJenniferGoals.slice(0, 12).map((job, index) => <li key={job.id}>
                       <span>{index + 1}</span><div><strong>{job.title}</strong>
-                        <p>{job.amcGoal?.state ?? job.status} · revision {job.amcGoal?.revision ?? job.revision}</p>
+                        <p>{jenniferStateLabel(job.amcGoal?.state ?? job.status)} · 計画 第{job.amcGoal?.revision ?? job.revision}版</p>
                         <button type="button" onClick={() => restoreJenniferGoal(job)}>開いて再開</button>
                       </div>
                     </li>)}
@@ -1857,18 +1926,18 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           ? 'Zema実行管理中'
                           : jenniferExecution.loading
                             ? '保存状態を確認中'
-                            : 'Goal確認待ち'}
+                            : 'ゴール確認待ち'}
                     </strong>
                   </header>
                   <p className="zema-jennifer-intro">
                     {coordinationPlan.project
                       ? `${coordinationPlan.project.displayName}を${coordinationPlan.project.managerLabel}が担当します。`
                       : '全体依頼を複数工程に分けました。'}
-                    Jenniferは割当と確認を行い、実行・承認・ReceiptはZemaと既存Brokerが管理します。
+                    Jenniferは割当と確認を行い、実行・承認・利用明細はZemaと既存Brokerが管理します。
                   </p>
                   <section className="zema-jennifer-goal" aria-label="Jenniferが言語化したGoal">
                     <small>
-                      GOAL CONTRACT · {jenniferExecution.rootJob?.amcGoal ? 'ZEMA永続保存済み' : '草案未保存'}
+                      ゴールと成功条件 · {jenniferExecution.rootJob?.amcGoal ? 'ZEMA永続保存済み' : '草案未保存'}
                     </small>
                     <h3>{coordinationPlan.amc.goalContract.goal}</h3>
                     <p>{coordinationPlan.amc.goalContract.intent}</p>
@@ -1915,12 +1984,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       <button type="button" className="rock-button"
                         disabled={jenniferExecutionBusy || coordinationPlan.amc.goalContract.unresolvedQuestions.some((question) => !jenniferQuestionResolutions[question]?.note.trim())}
                         onClick={() => void runJenniferOwnerAction('approve_inventory')}>
-                        Goal Contractを承認し、読み取り調査だけ開始可能にする
+                        ゴールと成功条件を承認し、事前確認だけ開始可能にする
                       </button>
                     )}
                     {jenniferExecution.rootJob?.amcGoal && (
                       <p>
-                        AMC revision {jenniferExecution.rootJob.amcGoal.revision} ·{' '}
+                        計画 第{jenniferExecution.rootJob.amcGoal.revision}版 ·{' '}
                         {jenniferExecution.report?.completed.length ?? 0}/
                         {jenniferExecution.rootJob.amcGoal.tasks.length}件を独立検収済み
                       </p>
@@ -1928,7 +1997,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   </section>
                   {jenniferExecution.projection?.plan && (
                     <section className="zema-jennifer-goal" aria-label="Jennifer実行制御">
-                      <small>PLAN REVISION {jenniferExecution.projection.plan.revision} · {jenniferExecution.projection.plan.state}</small>
+                      <small>計画 第{jenniferExecution.projection.plan.revision}版 · {jenniferStateLabel(jenniferExecution.projection.plan.state)}</small>
                       <h3>実行制御と費用</h3>
                       {jenniferExecution.projection.costs.length === 0 ? <p>委任費用はまだありません。</p> : (
                         <ul>{jenniferExecution.projection.costs.map((cost) => <li key={cost.currency}>
@@ -1939,7 +2008,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         {jenniferExecution.projection.plan.state === 'inventory_approved' &&
                           jenniferExecution.rootJob.amcGoal.tasks.find(({ id }) => id === 'task-inventory')?.status === 'done' && (
                           <button type="button" className="rock-button" disabled={jenniferExecutionBusy} onClick={() => void runJenniferOwnerAction('approve_delivery')}>
-                            調査結果を確認し、実装・検証leafを有効にする
+                            事前確認の結果を確認し、残りの実装・検証作業を有効にする
                           </button>
                         )}
                         <button type="button" disabled={jenniferExecutionBusy} onClick={() => void runJenniferOwnerAction('pause')}>新規dispatchを一時停止</button>
@@ -1947,13 +2016,13 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       </>}
                       {jenniferExecution.rootJob?.amcGoal?.state === 'paused' && (
                         <>
-                          <button type="button" disabled={jenniferExecutionBusy || Boolean(jenniferExecution.projection.activeDelegations.length)} onClick={() => void runJenniferOwnerAction('resume')}>同じplan digestで再開</button>
+                          <button type="button" disabled={jenniferExecutionBusy || Boolean(jenniferExecution.projection.activeDelegations.length)} onClick={() => void runJenniferOwnerAction('resume')}>同じ計画内容で再開</button>
                           <textarea value={jenniferRevisionDraft} maxLength={800}
                             placeholder="修正後に作りたいものを入力。新revisionの差分を保存し、承認を無効化します。"
                             onChange={(event) => setJenniferRevisionDraft(event.target.value)} />
                           <button type="button" disabled={jenniferExecutionBusy || Boolean(jenniferExecution.projection.activeDelegations.length) || !jenniferRevisionDraft.trim()}
                             onClick={() => void reviseSavedJenniferGoal()}>
-                            差分を新しいplan revisionとして保存
+                            差分を新しい計画版として保存
                           </button>
                         </>
                       )}
@@ -1961,11 +2030,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   )}
                   <details className="zema-jennifer-breakdown" open>
                       <summary>
-                        Zema内AMCの逆算分解 ·{' '}
+                        仕事の実行計画（Zema / AMC） ·{' '}
                         {coordinationPlan.amc.nodes.filter(({ kind }) => kind === 'task').length}件
                       </summary>
                       <p>
-                        Goalから逆算し、必要な専門担当をleaf task単位で割り当てます。担当は実行時だけ起動し、報告はZemaへ戻します。
+                        ゴールから逆算し、必要な専門担当を作業単位で割り当てます。担当は実行時だけ起動し、報告はZemaへ戻します。
                       </p>
                       <ol>
                         {coordinationPlan.amc.nodes
@@ -1993,7 +2062,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                               <small>
                                 {node.ownerRole} · 前提{' '}
                                 {node.dependsOn.length ? node.dependsOn.join(', ') : 'なし'}
-                                {task ? ` · Zema: ${task.status}` : ''}
+                                {task ? ` · Zema: ${jenniferStateLabel(task.status)}` : ''}
                               </small>
                               <details>
                                 <summary>参照するコードと合格条件</summary>
@@ -2055,7 +2124,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   </details>
                   {jenniferExecution.report && (
                     <section className="zema-jennifer-goal" aria-label="Jenniferの統合報告">
-                      <small>JENNIFER FINAL INTEGRATION · {jenniferExecution.report.overallStatus}</small>
+                      <small>JENNIFER FINAL INTEGRATION · {jenniferStateLabel(jenniferExecution.report.overallStatus)}</small>
                       <h3>Jenniferの統合報告</h3>
                       <p>{jenniferExecution.report.summary}</p>
                       {jenniferExecution.report.completed.length > 0 && (
@@ -2064,7 +2133,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           <ul>
                             {jenniferExecution.report.completed.map((item) => (
                               <li key={item.taskId}>
-                                {item.title} · 証拠 {item.evidence.length}件 · Receipt参照 {item.receiptRefs.length}件
+                                {item.title} · 証拠 {item.evidence.length}件 · 利用明細・実行証明 {item.receiptRefs.length}件
                               </li>
                             ))}
                           </ul>
@@ -2076,7 +2145,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           <ul>
                             {jenniferExecution.report.unresolved.map((item) => (
                               <li key={item.taskId}>
-                                <strong>{item.title}</strong> · {item.state}<br />
+                                <strong>{item.title}</strong> · {jenniferStateLabel(item.state)}<br />
                                 {item.reason} 次: {item.nextAction}
                               </li>
                             ))}
@@ -2366,7 +2435,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       ? `${roleFor(selectedTool)}への依頼`
                       : selectedMcpServer
                         ? `${selectedMcpServer.name}への指示`
-                        : 'Zemaへの依頼'
+                        : 'Jenniferへの依頼'
                   }
                   placeholder={selectedTool ? 'このツールでやりたいことを入力…' : '何を進めたいですか？'}
                 />
@@ -2469,7 +2538,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     onChange={(event) => selectJenniferProject(event.target.value)}
                   >
                     <option value={JENNIFER_AUTO_PROJECT}>全体・自動判定</option>
-                    {jenniferProjectPortfolio.projects.map((project: JenniferProject) => (
+                    {(portfolioAccess ? jenniferProjectPortfolio.projects : []).map((project: JenniferProject) => (
                       <option key={project.id} value={project.id}>
                         {project.displayName} · {project.managerLabel}
                       </option>

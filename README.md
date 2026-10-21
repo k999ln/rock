@@ -74,7 +74,22 @@ The product should feel like one continuous handoff:
 3. Let Zema keep the request, plan, approvals, progress, stop state, result, and history together.
 4. See the estimate before paid cloud work, approve a limit, watch usage while it runs, and read the receipt in Wallet.
 
-Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff and the visible `/chat` product: she turns a broad request into a Goal Contract, asks the AMC engine inside Zema to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. **Zema is not a second assistant in that conversation.** It is the backstage work system and the explicit **仕事** view for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+
+```mermaid
+flowchart TD
+  Owner[Owner] --> Jennifer[Jennifer · visible chief of staff]
+  Jennifer --> Goal[COLOMBIA + Goal Contract]
+  Goal --> Zema[Zema · backstage work control]
+  Zema --> AMC[AMC · bounded backcasting]
+  AMC --> Leads[Project managers]
+  Leads --> Specialists[Specialist si / A2A Agents]
+  Specialists --> Evidence[Artifacts + signed Receipts + incomplete work]
+  Evidence --> Review[Independent reviewer]
+  Review --> Zema
+  Zema --> Jennifer
+  Jennifer --> Report[Integrated final report + owner acceptance]
+```
 
 The implemented coordination path is:
 
@@ -82,7 +97,7 @@ The implemented coordination path is:
 
 Open `/chat`, choose a project, enable **計画を整理**, and send the desired outcome. Jennifer first presents the Goal and decomposition without executing anything. Saving creates a durable **draft only**. The owner must answer or explicitly defer every unresolved COLOMBIA question and approve the Goal Contract before the single inventory leaf can run. After its typed report passes an independent review, a second owner approval unlocks the remaining delivery leaves, one external delegation at a time. Actual remote dispatch still requires a connected Agent, a verified quote, a Broker authorization proof, a budget reservation, and explicit owner approval. A remote “completed” state is not enough: Zema accepts only server-bound artifacts, signed usage Receipts, a reviewer linked to the exact worker report, and finally the owner's Goal acceptance. See [Jennifer coordination and execution](docs/jennifer-coordination.md).
 
-`/chat`の私用project workspaceは **Jennifer Access** で保護する。最初の登録または端末紛失からの復旧時だけ、既存Sites accountをownerとの結び付けに使い、普段は`columbia.avoado.si`に固定したdiscoverable passkeyと端末のロック解除で開く。登録時のattestation、利用時のassertion、challenge、counter、user verificationをserverで検証し、passkey sessionはSecure／HttpOnly／SameSite=Strictのhost-only cookieに保存する。復旧登録は以前のJennifer passkeyとsessionをすべて失効させてauditへ残す。これはColumbia/Jenniferに限定した入口で、native端末の`rock_session_...`、親domain全体の共通account、課金・dispatch承認を置き換えない。
+`/chat`の私用project workspaceは **Jennifer Access** で保護する。唯一の正本は`https://avoado.si/chat`で、最初の登録または端末紛失からの復旧時だけ既存Sites accountをownerとの結び付けに使い、普段は`avoado.si` RPのdiscoverable passkeyと端末のロック解除で開く。Columbiaと生成`chatgpt.site` hostの共有work画面は正本へ転送し、Jennifer・AMC・Job・A2Aのprivate APIは別D1へ書かずfail closedにする。登録時のattestation、利用時のassertion、challenge、counter、user verificationをserverで検証し、passkey sessionはSecure／HttpOnly／SameSite=Strictのhost-only cookieに保存する。復旧登録は同じSiteデータ内の以前のJennifer passkeyとsessionをすべて失効させてauditへ残す。Jennifer Accessはnative端末の`rock_session_...`、課金・dispatch承認を置き換えない。
 
 ## System map
 

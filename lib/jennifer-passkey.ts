@@ -9,8 +9,9 @@ import {
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 
-const PRODUCTION_RP_ID = 'columbia.avoado.si';
-const PRODUCTION_ORIGIN = 'https://columbia.avoado.si';
+const PRODUCTION_IDENTITIES = new Map([
+  ['avoado.si', { rpId: 'avoado.si', origin: 'https://avoado.si' }],
+]);
 const CHALLENGE_TTL_MS = 5 * 60_000;
 const SESSION_TTL_MS = 30 * 24 * 60 * 60_000;
 const SESSION_IDLE_TTL_MS = 7 * 24 * 60 * 60_000;
@@ -77,7 +78,9 @@ function changes(result: D1Result | undefined) {
 function requestIdentity(request: Request) {
   const url = new URL(request.url);
   const hostname = url.hostname.toLowerCase();
-  if (url.origin === PRODUCTION_ORIGIN) return { rpId: PRODUCTION_RP_ID, origin: PRODUCTION_ORIGIN, secure: true };
+  const production = PRODUCTION_IDENTITIES.get(hostname);
+  if (production && url.origin === production.origin)
+    return { ...production, secure: true };
   if ((hostname === 'localhost' || hostname === '127.0.0.1') && url.protocol === 'http:')
     return { rpId: hostname, origin: url.origin, secure: false };
   throw new Error('PASSKEY_HOST_INVALID');

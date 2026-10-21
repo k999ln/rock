@@ -292,7 +292,7 @@ export default function HomeScreen() {
 
         <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
           <Link href="/os/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
-          <Link href="/chat"><MessageCircle size={16} /><strong>Zema</strong><span>仕事を依頼</span></Link>
+          <Link href="/chat"><MessageCircle size={16} /><strong>Jennifer</strong><span>目的を相談</span></Link>
           <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
         </nav>
 

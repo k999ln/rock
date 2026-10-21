@@ -1,7 +1,0 @@
-.shell { min-height: calc(100dvh - 70px); color: #eaf3f7; background: #090d12; }
-.page { width: min(760px, calc(100% - 32px)); margin: 0 auto; padding: clamp(24px, 5vw, 58px) 0 80px; }
-.navigation { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 22px; color: #819baa; font-size: 12px; }
-.navigation a { display: inline-flex; min-height: 40px; align-items: center; gap: 7px; color: #c5dfeb; text-decoration: none; }
-.navigation a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
-.navigation a:focus-visible { outline: 2px solid #c3e1f0; outline-offset: 3px; }
-@media (max-width: 600px) { .page { padding-top: 20px; } .navigation span { display: none; } }

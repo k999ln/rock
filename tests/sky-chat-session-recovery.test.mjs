@@ -105,7 +105,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       defaultPrevented: false, propagationStopped: false,
       preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
     // Real React capture runs before the Link's own click handler.
-    nodes(tree).find((x) => x.props?.title === 'Zema').props.onClickCapture(event);
+    nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
     if (!event.propagationStopped) n.props.onClick?.(event);
     if (n.type === 'a' && !event.defaultPrevented && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) routes.push(n.props.href);
     render(); await flush();
@@ -121,7 +121,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       const event = { target: new FixtureElement({ href, ...options }), button: 0,
         defaultPrevented: false, propagationStopped: false,
         preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
-      nodes(tree).find((x) => x.props?.title === 'Zema').props.onClickCapture(event);
+      nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
       render(); await flush(); return event;
     },
     unmount() { mounted = false; slots.forEach((slot) => slot?.cleanup?.()); },

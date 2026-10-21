@@ -208,6 +208,43 @@
   background: #eef8f2;
   border-color: #bddbca;
 }
+.work-plan {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.65rem;
+  background: #f8fafe;
+}
+.work-plan h3,
+.work-plan p { margin: 0; }
+.work-plan > p,
+.work-plan small { color: #536478; }
+.work-plan ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.work-plan li { padding-left: 0.2rem; }
+.work-plan li strong,
+.work-plan li small { display: block; }
+.work-plan label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.work-plan form { display: grid; gap: 0.65rem; }
+.work-plan textarea { width: 100%; font: inherit; }
+.work-plan form button {
+  justify-self: start;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  background: white;
+}
 .work-runner {
   margin-top: 1.5rem;
   border-top: 1px solid #dbe2ed;

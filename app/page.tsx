@@ -7,7 +7,7 @@ import { campusForHost } from '@/lib/campus-host';
 const homeMetadata: Metadata = {
   title: 'ホーム — RockstarOS',
   description:
-    'Sky、Zema、Wallet、Market、Fundを開く、カスタマイズ可能なRockstarOSホーム画面。',
+    'Jennifer、Sky、Zema、Wallet、Market、Fundを開く、カスタマイズ可能なRockstarOSホーム画面。',
 };
 
 const columbiaMetadata: Metadata = {

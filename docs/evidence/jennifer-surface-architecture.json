@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-21",
+  "sourceBaseline": "70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a",
+  "branch": "codex/jennifer-surface-architecture",
+  "scope": {
+    "visibleCoordinator": "Jennifer",
+    "workSystem": "Zema",
+    "planningEngine": "AMC inside Zema",
+    "executionChain": [
+      "Jennifer creates the goal and success conditions",
+      "Zema and AMC create the execution plan",
+      "one project si owns project context",
+      "specialist si and Tools perform bounded work",
+      "Zema records progress, evidence, review and unfinished work",
+      "Jennifer presents the integrated result"
+    ]
+  },
+  "securityBoundaries": {
+    "canonicalPrivateOrigin": "https://avoado.si",
+    "passkeyRpId": "avoado.si",
+    "nonCanonicalPrivateApis": "fail_closed",
+    "internalPortfolio": "owner_id_gated",
+    "externalA2AProductionDispatch": "disabled_until_provider_trust_and_runtime_approval"
+  },
+  "localAcceptance": {
+    "focusedTests": "67 passed, 0 failed",
+    "typecheck": "passed",
+    "oxlint": "passed",
+    "localUi": "Jennifer Access rendered at /chat; protected workspace remains behind passkey as designed"
+  },
+  "productionReadbackBeforeDeployment": {
+    "mainSite": "Jennifer D1 tables were not present on the existing avoado.si deployment",
+    "columbiaSite": "Jennifer D1 tables were present but its private APIs are now routed fail-closed to prevent a shadow source of truth",
+    "acceptance": "not production-accepted until the new main deployment exposes the Jennifer tables and live route readback passes"
+  }
+}
