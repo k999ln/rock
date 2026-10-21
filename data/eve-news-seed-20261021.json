@@ -1,0 +1,79 @@
+{
+  "source": "GDELT DOC 2.0",
+  "query": "politics sourcelang:english",
+  "fetchedAt": "2026-10-21T11:11:09.725Z",
+  "articles": [
+    {
+      "id": "https://www.tradersmagazine.com/xtra/nextpredict-summit-to-examine-the-future-of-prediction-markets/",
+      "title": "NEXTPredict Summit to Examine the Future of Prediction Markets",
+      "url": "https://www.tradersmagazine.com/xtra/nextpredict-summit-to-examine-the-future-of-prediction-markets/",
+      "publisher": "tradersmagazine.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://economictimes.indiatimes.com/news/international/world-news/us-midterm-elections-2026-could-michigan-elect-americas-first-muslim-senator-in-abdul-el-sayed/articleshow/135088263.cms",
+      "title": "Could America elect its first Muslim senator ? Michigan high - stakes race may make history",
+      "url": "https://economictimes.indiatimes.com/news/international/world-news/us-midterm-elections-2026-could-michigan-elect-americas-first-muslim-senator-in-abdul-el-sayed/articleshow/135088263.cms",
+      "publisher": "economictimes.indiatimes.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.christianpost.com/voices/4-election-issues-every-pastor-should-address-before-nov-3.html",
+      "title": "4 election issues every pastor should address before Nov . 3",
+      "url": "https://www.christianpost.com/voices/4-election-issues-every-pastor-should-address-before-nov-3.html",
+      "publisher": "christianpost.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.canberratimes.com.au/story/9372827/act-senator-david-pocock-wants-a-minority-government-power-returned-to-people/",
+      "title": "ACT senator David Pocock wants a minority government , power returned to people | The Canberra Times",
+      "url": "https://www.canberratimes.com.au/story/9372827/act-senator-david-pocock-wants-a-minority-government-power-returned-to-people/",
+      "publisher": "canberratimes.com.au",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "Australia"
+    },
+    {
+      "id": "https://www.hindustantimes.com/india-news/retired-indore-teacher-invites-minors-for-kanya-bhoj-beats-them-up-on-suspicion-of-stealing-rs-500-101792574997229.html",
+      "title": "Retired Indore teacher invites minors for  kanya bhoj , beats them up on suspicion of stealing ₹500",
+      "url": "https://www.hindustantimes.com/india-news/retired-indore-teacher-invites-minors-for-kanya-bhoj-beats-them-up-on-suspicion-of-stealing-rs-500-101792574997229.html",
+      "publisher": "hindustantimes.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.premiumtimesng.com/news/headlines/918609-updated-afenifere-leader-reuben-fasoranti-dies-at-100.html",
+      "title": "UPDATED : Afenifere leader Reuben Fasoranti dies at 100",
+      "url": "https://www.premiumtimesng.com/news/headlines/918609-updated-afenifere-leader-reuben-fasoranti-dies-at-100.html",
+      "publisher": "premiumtimesng.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "Nigeria"
+    },
+    {
+      "id": "https://ktbb.com/post/?p=1551080",
+      "title": "Taxpayers are funding private school tuition . It helping classical Christian schools expand – KTBB News , Weather , Talk",
+      "url": "https://ktbb.com/post/?p=1551080",
+      "publisher": "ktbb.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://time.com/article/2026/10/21/how-america-s-ai-trust-issues-could-impact-the-midterms/",
+      "title": "How America AI Trust Issues Could Impact the Midterms",
+      "url": "https://time.com/article/2026/10/21/how-america-s-ai-trust-issues-could-impact-the-midterms/",
+      "publisher": "time.com",
+      "seenAt": "2026-10-21T10:45:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    }
+  ]
+}

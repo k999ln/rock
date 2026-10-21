@@ -11,6 +11,7 @@ import {
   Cloud,
   GraduationCap,
   MessageCircle,
+  Newspaper,
   RadioTower,
   RotateCcw,
   Settings2,
@@ -53,6 +54,7 @@ const apps: HomeApp[] = [
   { id: 'add', name: '機能を追加', description: 'Sky・データ回収・LLMを追加', href: '/add', Icon: Plus, color: 'settings' },
   { id: 'data', name: 'データ回収', description: '選んだデータを暗号化して持ち運ぶ', href: '/add/data', Icon: FolderArchive, color: 'sky' },
   { id: 'llm', name: 'LLM', description: '接続先を選んでZemaで相談', href: '/chat', Icon: Bot, color: 'chat' },
+  { id: 'news', name: 'ニュース', description: '取得した原文リンクを読む', href: '/os#news', Icon: Newspaper, color: 'sky' },
   {
     id: 'sky',
     name: 'Sky',
