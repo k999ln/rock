@@ -142,7 +142,7 @@ async function canonicalManifest(response, path) {
   const campus = path.match(
     /^\/os\/sky\/campus\/(nyu|fit|columbia|fordham|johnjay)(?:\/|$)/,
   );
-  const manifest = campus
+  const manifest = path === '/' ? '/manifest.webmanifest' : campus
     ? `/os/sky/campus/${campus[1]}/manifest.webmanifest`
     : isPath(path, '/os/sky')
       ? '/os/sky/manifest.webmanifest'
@@ -213,7 +213,8 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
             },
           },
         );
-      if (path === '/os')
+      // Main domain runs WebOS; /os remains compatible with existing devices.
+      if (path === '/' || path === '/os')
         return Promise.resolve(skyWorker.fetch(request, env, context)).then(
           (response) => canonicalManifest(response, path),
         );

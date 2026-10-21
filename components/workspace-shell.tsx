@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode, type MouseEventHandler } from 'react';
 import Link from 'next/link';
 import OSHeader from './os-header';
+import OsAccountAccess from './os-account-access';
 import { ArrowUpRight, Cable, CircleHelp } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
@@ -97,6 +98,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
+        {!standaloneSky && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"
           className={`rock-main ${contentClassName ?? ''}`}

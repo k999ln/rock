@@ -5,9 +5,9 @@ import HomeScreen from '@/components/home-screen';
 import { campusForHost } from '@/lib/campus-host';
 
 const homeMetadata: Metadata = {
-  title: 'ホーム — RockstarOS',
+  title: 'RockstarOS — 自分のSI環境を、どこからでも',
   description:
-    'Jennifer、Sky、Zema、Wallet、Market、Fundを開く、カスタマイズ可能なRockstarOSホーム画面。',
+    '会員登録・ログインしてSkyの能力を追加し、Eveの会話・仕事・成果を同じアカウントで引き継ぐWebOS。',
 };
 
 const columbiaMetadata: Metadata = {

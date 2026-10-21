@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import OSHeader from './os-header';
 import OsAppNavigation from './os-app-navigation';
+import OsAccountAccess from './os-account-access';
 import { osRouteHref } from '@/lib/os-navigation';
 import {
   Radio,
@@ -227,6 +228,7 @@ export default function HomeScreen() {
         </aside>
         <main className={styles.main} id="home-content">
           <h1 className={styles.srOnly}>Sky ホーム</h1>
+          <OsAccountAccess />
           <div className={styles.mobileHeader}>
             <OSHeader title="Sky" hideNavigation>
             <div className={styles.mobileActions}>

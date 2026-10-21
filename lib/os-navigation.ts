@@ -8,11 +8,13 @@ export const osNavigationItems = [
   { id: 'communities', href: '/#communities', label: 'コミュニティー' },
 ] as const;
 
-/** Public /os is a mounted application; localhost retains its existing routes. */
+/** avoado.si/ is the WebOS home; /os remains a compatible entrance. */
 export function osRouteHref(pathname: string, href: string, local = false): string {
-  if (local || !(pathname === '/os' || pathname.startsWith('/os/'))) return href;
-  if (href === '/') return '/os';
-  if (href.startsWith('/#')) return '/os' + href.slice(1);
+  if (local) return href;
+  const inOs = pathname === '/' || pathname === '/chat' || pathname === '/os' || pathname.startsWith('/os/') || pathname === '/sky' || pathname.startsWith('/sky/');
+  if (!inOs) return href;
+  if (href === '/') return '/';
+  if (href.startsWith('/#')) return href;
   if (href === '/chat') return '/os/eve';
   if (href.startsWith('/chat?')) return '/os/eve?mode=tools&' + href.slice(6);
   if (/^\/sky(?:\/|\?|$)/.test(href)) return '/os' + href;

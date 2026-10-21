@@ -5,7 +5,7 @@ import {
   withMiniSite,
 } from '../services/sky-web/domain-router.mjs';
 
-void test('Sky, assets and APIs stay native while Mini keeps its home and preorder paths', () => {
+void test('Sky assets and APIs stay native while Mini keeps preorder paths', () => {
   for (const path of [
     '/sky',
     '/sky/outputs',
@@ -298,4 +298,15 @@ void test('retired duplicate OS pages redirect before Mini proxy and preserve th
  let proxied=0;const app=withMiniSite({fetch:async()=>new Response('native-guide')},async()=>{proxied++;return new Response('mini');});
  for(const path of ['/rockstaros','/rockstaros/','/rockstaros/crowdfunding']) {const r=await app.fetch(new Request(`https://avoado.si${path}?entry=legacy`));assert.equal(r.status,308);assert.equal(r.headers.get('location'),'https://avoado.si/os?entry=legacy');}
  assert.equal(await(await app.fetch(new Request('https://avoado.si/rockstaros/guide'))).text(),'native-guide');assert.equal(proxied,0);
+});
+
+void test('main-domain root runs WebOS and preserves the existing authenticated request', async () => {
+  const request = new Request('https://avoado.si/', {headers: {cookie: 'fixture-session=1'}});
+  let observed;
+  const app = withMiniSite({fetch: async (value) => {observed = value; return new Response('webos-home');}}, async () => {throw new Error('Root must not proxy Mini');});
+  const result = await app.fetch(request, {}, {});
+  assert.equal(result.status, 200);
+  assert.equal(await result.text(), 'webos-home');
+  assert.equal(observed, request);
+  assert.equal(observed.headers.get('cookie'), 'fixture-session=1');
 });
