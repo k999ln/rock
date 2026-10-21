@@ -1,5 +1,7 @@
 # RockstarOS — Pixel si専用端末とSky・クラウドの設計
 
+2026-10-21の本人明示により、[最新RockstarOS本体設計](rockstaros-complete-design.md#redesign-thread-home-sky-eve)を先に適用する。eSIMは本人用Cloud Sky/Eve/Linuxサービスへの入口であり、既存OSのclient/browser経路も対象とする。Pixel 10 GL066/frankel向けnativeは端末適合・署名・boot/復旧が同一imageで受け入れられた場合の追加profile。以下のGrapheneOS/通信bundleの2026-10-15調査は再利用候補と履歴であり、2026-10-21設計の完成や実機合格へ転用しない。QEMU Developer Previewは別系列。
+
 **Pixelの具体的な実装方針は[Pixel si専用端末の実装設計](#pixel-si専用端末の実装設計)を参照。** 2026-10-15の追加依頼に基づき、GrapheneOSの固定構成・公開差分・同梱app・kernel/vendorの確認範囲を[コード調査台帳](evidence/grapheneos-source-audit.json)へ記録する。前の73項目は説明用の分類で、全機能数や全ソース精読の証拠ではない。以下の32項目は改変可能性、追加節は採用・改変・追加の実装判断として読む。
 
 更新: 2026-10-15 / OS11（O6、ROCK）・DOC04（H1、設計同期）。基準main `8b374cfc7838d3a751faf5e28b367c860ddbcd0d`。利用者の「通信とsi利用権をまとめる商品入口」「GrapheneOSをもとに、書換え可能性とできることを全部調べる」に対する調査設計。機械可読根拠は[調査台帳](evidence/graphene-cloud-foundation.json)。

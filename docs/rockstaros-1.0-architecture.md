@@ -1,6 +1,8 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-2026-10-15確定方針: 商品入口はeSIMの通信＋si利用権bundle。accountは本人/契約/仕事/成果/予算の正本で、無料試用とclient/browserを維持する。GrapheneOS派生は対応Pixel向け候補、Mini IoT LTEとProは別profile。[基盤設計](native-os-integration.md)の6層と32項目を優先し、既存の署名/本人/見積/予算/失効/Provider trustを通す。実発行・有料cloud・正式OS/flash/OTA/復旧は未受入。
+2026-10-21の最新本人指示により、[指定チャットのOS設計](rockstaros-complete-design.md#redesign-thread-home-sky-eve)を本体構成の大元とする。共通runtimeが本人性・権限・費用上限・保存/復旧を担い、Home/Skyの投稿を能力発見と追加の入口、Eveを会話・仕事・成果の受け皿、利用者/コミュニティーOS版を権限を越えない設定層とする。eSIMは本人用Cloud Sky/Eve/Linuxサービスへの入口であり、同じ設計を既存OS client/browserとPixel nativeへ能力別に接続する。以下の2026-10-15の商品bundle記述は旧判断の履歴として読み、料金・RQなどOS以外の契約は別途照合する。Pixel full OS、QEMU Developer Preview、実eSIM、実Providerは別受入。
+
+2026-10-15時点の方針（上記の2026-10-21 OS設計で更新）: 商品入口はeSIMの通信＋si利用権bundle。accountは本人/契約/仕事/成果/予算の正本で、無料試用とclient/browserを維持する。GrapheneOS派生は対応Pixel向け候補、Mini IoT LTEとProは別profile。[基盤設計](native-os-integration.md)の6層と32項目を優先し、既存の署名/本人/見積/予算/失効/Provider trustを通す。実発行・有料cloud・正式OS/flash/OTA/復旧は未受入。
 
 本書のLinux/QEMU資産一覧は再利用対象であり、スマートフォンの全機能実装済み、契約済みservice access、物理SIM/eSIMの販売・開通、実機OS導入を意味しない。
 
