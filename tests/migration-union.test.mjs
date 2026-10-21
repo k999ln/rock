@@ -152,6 +152,10 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
   assert.match(read('0014_jennifer_execution_integrity.sql'), /CREATE TABLE `jennifer_task_attempts`/);
   assert.match(read('0015_jennifer_passkey_access.sql'), /CREATE TABLE `jennifer_passkey_credentials`/);
   assert.match(read('0015_jennifer_passkey_access.sql'), /CREATE TABLE `jennifer_passkey_sessions`/);
+  assert.match(read('0018_sky_recurring_sandbox.sql'), /CREATE TABLE IF NOT EXISTS sky_recurring_contracts/);
+  assert.match(read('0018_sky_recurring_sandbox.sql'), /CREATE TRIGGER IF NOT EXISTS sky_recurring_a2a_send/);
+  assert.match(read('0019_sky_hosted_monthly.sql'), /CREATE TABLE IF NOT EXISTS `sky_hosted_monthly_events`/);
+  assert.match(read('0019_sky_hosted_monthly.sql'), /CREATE UNIQUE INDEX IF NOT EXISTS `sky_hosted_monthly_tests_id_unique`/);
   assert.deepEqual(
     journal.map((entry) => entry.tag + '.sql'),
     names,
@@ -161,6 +165,29 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
     encoding: 'utf8',
   });
   assert.equal(generated.status, 0, generated.stderr);
+});
+
+await test('late Sites migrations tolerate objects left by an earlier deployment attempt', () => {
+  const sqlite = new DatabaseSync(':memory:');
+  const execute = (name) => {
+    for (const statement of read(name)
+      .split('--> statement-breakpoint')
+      .filter((sql) => sql.trim()))
+      sqlite.exec(statement);
+  };
+  try {
+    for (const name of names) execute(name);
+    execute('0018_sky_recurring_sandbox.sql');
+    execute('0019_sky_hosted_monthly.sql');
+    assert.ok(sqlite.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sky_recurring_contracts'",
+    ).get());
+    assert.ok(sqlite.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sky_hosted_monthly_events'",
+    ).get());
+  } finally {
+    sqlite.close();
+  }
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
