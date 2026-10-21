@@ -6,6 +6,7 @@
 - `0020_main_legacy_columns.sql` adds only columns confirmed missing from the live main D1, with defaults for every new non-null value.
 - `0021_sites_schema_convergence.sql` is the idempotent full-schema snapshot, `0022` restores the recurring send guard after its prerequisite table exists, and `0023` idempotently guarantees Jennifer execution/passkey tables even after a partially applied failed deployment.
 - `0024_remote_ai_send_claims_recovery.sql` uses a fresh migration number to restore the exactly-once external-AI send ledger and its immutable/binding guards when an earlier failed Sites deployment recorded a partial migration.
+- `0025_remote_ai_send_claims_watermark.sql` repeats that idempotent recovery at the reserved 2100 watermark because Sites can retain a deployment-time mark newer than the original midnight entries. Every later entry in this lineage must use a strictly greater `when` value.
 
 This directory is append-only and is not an empty-database bootstrap. Restore an empty main database from backup before continuing this lineage. Do not reuse it for Columbia or another database.
 
