@@ -41,6 +41,7 @@ await test('local production start applies the published migrations before servi
   assert.match(viteConfig, /migrations_dir: siteMigrationsDirectory/);
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.match(packageJson.scripts.build, /stage-sky-domain-router\.mjs && node scripts\/stage-sites-migration-lineage\.mjs$/);
+  assert.equal(packageJson.scripts['site:prepare-package'], 'node scripts/prepare-sites-package-lineage.mjs');
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',

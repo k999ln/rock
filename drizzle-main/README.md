@@ -7,3 +7,5 @@
 - `0021_sites_schema_convergence.sql` is the idempotent full-schema snapshot, `0022` restores the recurring send guard after its prerequisite table exists, and `0023` idempotently guarantees Jennifer execution/passkey tables even after a partially applied failed deployment.
 
 This directory is append-only and is not an empty-database bootstrap. Restore an empty main database from backup before continuing this lineage. Do not reuse it for Columbia or another database.
+
+The Sites packager always reads root `drizzle/` after the application build. The publish workflow therefore runs `npm run site:prepare-package` in the main Site checkout before saving source and packaging; that creates a Site-specific source commit whose root `drizzle/` is an exact copy of this directory. Columbia is a no-op because its selected lineage already is root `drizzle/`.
