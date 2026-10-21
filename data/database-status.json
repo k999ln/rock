@@ -119,10 +119,10 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 7,
-    "latestMigration": "0019_sky_hosted_monthly.sql",
+    "migrationCount": 9,
+    "latestMigration": "0021_sky_recurring_send_guard.sql",
     "accidentalDuplicateCount": 0,
-    "publishedConvergenceDeclarations": 0,
+    "publishedConvergenceDeclarations": 92,
     "marketplaceRelationGuardCount": 8,
     "skyReviewGuardCount": 2,
     "migrationJournalMatches": true,
@@ -372,7 +372,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0019_sky_hosted_monthly.sql",
+      "expectedAppliedThrough": "0021_sky_recurring_send_guard.sql",
       "tableCount": 98,
       "sourceStatus": "VERIFIED",
       "deployment": {

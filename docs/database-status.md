@@ -25,10 +25,10 @@
 
 ## Web D1
 
-- expected latest migration: 0019_sky_hosted_monthly.sql
-- migration files: 7
+- expected latest migration: 0021_sky_recurring_send_guard.sql
+- migration files: 9
 - accidental duplicate: 0
-- published convergence definitions: 0
+- published convergence definitions: 92
 - Marketplace relation guards: 8
 
 | 分野 | table | 内訳 |
