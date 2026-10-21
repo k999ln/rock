@@ -1,3 +1,9 @@
+## 2026-10-21 — 未統合runtimeをmainへ統合（G04 / ROCK）
+
+PR #185でEveアカウント履歴、owner成果HTML持出し、Linux/service、Pixel/Lab adapter、Mini/Pro追加sourceを統合。merge `9b5ce641e0a947e4b4106f2ffca09d5feee237b2`、検証head `8fc8027cd149d2486bcfc2be03863200c87d2c1e`。`npm run verify` exit0（Node2515成功/2skip、仕事API1678、CSV385）、同一headのGitHub checks成功。旧UI・生成物・重複migrationを再投入せず、RQ50とmainの権限/料金/復旧修正を保持。root0030〜0032/main Site0026はadditive。共有dirty685件と途中候補は保全した。
+
+GitHub保存・main統合は完了。公開・実Provider・別端末アカウント・Pixel全OS・本番課金は追加受入していない。旧branch16 USD案とmain料金の相違は未解決で、setupは既定無効。並行チャットがsnapshot後に進めたPixel/Web同期は別作業として保持。次は最新mainを基準に、当該同期のsourceと同一artifactの受入を照合する。詳細: `data/runtime-integration-audit.json`。
+
 ## 2026-10-21 — 投稿型Home/Skyのmain統合（HOME01 / WEB04 / SKY21 / ROCK）
 
 指定チャットの設計をもとに、旧Homeランチャーを投稿型Sky Homeへ置き換えた。owner別の投稿・フォロー・反応・コミュニティーOS版/鍵、任意のX本人API接続とMCP/API投稿受信、Agent/Model/Tool発見を既存Webへ接続した。既存mainの料金/RQ50/Wallet/業務契約は維持。新規migrationは0022〜0029で既存0013〜0021の後に適用する。合成DB移行と対象機能試験を確認。最終head `20faad5d`のGitHub CI 4件は成功し、PR #183をmain `6e8b3934`へ統合した。ローカル最終全体verifyは既存activation試験1件が10秒でタイムアウトしたが、単独再実行4/4は成功。初回候補の全体verifyはexit 0。Sites配備・実X/MCP Provider・Eve別端末履歴・Pixel全OSは未受入。次は実Provider/owner A-B/別端末の受入を個別に記録する。[Web担当](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)。
@@ -754,4 +760,4 @@ AMC02主担当、G04連携。Jenniferを利用者に見える唯一の統括窓�
 
 ## 未統合runtimeの整理
 
-G04 / ROCK。main 8a95ee6f起点の専用cloneでEve履歴・Linux/service・成果持出しとadapterを現行設計へ統合中。共有dirty685件と途中96変更をGit外へ保全。root0030〜0032とmain Site0026はadditive。旧UI/生成物/重複migrationを除き、現行mainの権限・料金・復旧修正を維持する。全verify、同一SHA CI、main読戻しは検証後に追記する。公開・実機・実課金は別gate。
+G04 / ROCK。main 8a95ee6f起点の専用cloneでEve履歴・Linux/service・成果持出しとadapterを現行設計へ統合中。共有dirty685件と途中96変更をGit外へ保全。root0030〜0032とmain Site0026はadditive。旧UI/生成物/重複migrationを除き、現行mainの権限・料金・復旧修正を維持する。全verify・同一SHA CI・main統合の結果は冒頭と統合台帳へ記録済み。公開・実機・実課金は別gate。

@@ -201,3 +201,5 @@ ROCK担当。利用者のmain反映指示により、034/035で限定検収さ�
 新migrationはroot0030〜0032、canonical Siteはadditive0026。既存SQLは書き換えない。実施一覧は`data/runtime-integration-audit.json`。完了には全verify・同一SHA CI・main読戻しを要する。共有dirty treeをmainへresetせず、未公開/実機/料金の個別gateを維持する。
 
 PR185のCodeQL指摘に対応し、検査済みHTMLを共有temp固定名へ保存する不要なdebug writeを撤去。Linux runtimeのdownload URLは固定した公開artifactへ照合し、lockfile値を任意送信先へ使わせない。URL変造拒否の回帰試験を追加。
+
+統合結果: PR #185 / merge `9b5ce641e0a947e4b4106f2ffca09d5feee237b2`、source `8fc8027cd149d2486bcfc2be03863200c87d2c1e`。全verify exit0、同一head checks成功。保存→branch→main統合を確認。共有checkoutの進行中差分と公開・実機・実Providerは別。検証詳細は統合台帳。

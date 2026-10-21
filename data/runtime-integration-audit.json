@@ -721,8 +721,30 @@
   "verification": {
     "focusedRuntime": "58 tests passed",
     "designCheck": "passed",
-    "wholeVerify": "pending",
-    "sameHeadCI": "pending"
+    "wholeVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "sourceHead": "8fc8027cd149d2486bcfc2be03863200c87d2c1e",
+      "exitCode": 0,
+      "node": {
+        "tests": 2517,
+        "passed": 2515,
+        "failed": 0,
+        "skipped": 2
+      },
+      "workApiAssertions": 1678,
+      "csvAssertions": 385,
+      "localProductionHeaders": "pass",
+      "assetClosureMissing": 0,
+      "logSha256": "533f62230e5eb512fa3d934da82f15a93bee0cac129b981b804a2df6221eb50e",
+      "logStoredOutsideGit": true
+    },
+    "sameHeadCI": {
+      "sourceHead": "8fc8027cd149d2486bcfc2be03863200c87d2c1e",
+      "status": "all_completed_checks_success",
+      "evidence": "https://github.com/k999ln/rock/pull/185/checks",
+      "checkCount": 16,
+      "fixedCodeQLFindings": 3
+    }
   },
   "acceptanceBoundaries": {
     "realProvider": false,
@@ -730,5 +752,12 @@
     "pixelFullOS": false,
     "productionDeployment": false,
     "pricingConflictResolved": false
-  }
+  },
+  "mainIntegration": {
+    "pullRequest": 185,
+    "mergeCommit": "9b5ce641e0a947e4b4106f2ffca09d5feee237b2",
+    "recordedAt": "2026-10-21T11:31:14.541790+00:00",
+    "treeMatchesVerifiedSource": true
+  },
+  "snapshotBoundary": "685-file snapshot at task start. A separate design chat continued Pixel/Web synchronization after the snapshot; its uncompleted edits were not overwritten or presented as accepted."
 }

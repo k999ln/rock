@@ -15,11 +15,13 @@
   "android": {
     "component": "dev.rock.shell/.ServiceSetupActivity",
     "callerPermission": "dev.rock.permission.START_SERVICE_SETUP",
-    "installedOnPixel": true,
+    "installedOnPixel": false,
     "rockstar_service_setup_enabled": false,
     "rockstar_service_setup_origin": "",
     "enablement": "Product resource overlay after OS acceptance; Gradle and Soong share the same disabled resources/manifest",
-    "installedState": "disabled_code_only_with_branding_update_no_signup_acceptance"
+    "installedState": "disabled_code_only_with_branding_update_no_signup_acceptance",
+    "historicalWorkingTreeInstalledOnPixel": true,
+    "candidateAcceptance": "Adapted integration source has not been installed by this task. Historical installation is not transferred."
   },
   "acceptanceRecordTemplate": {
     "schema": "rockstar.os-service-acceptance/1",

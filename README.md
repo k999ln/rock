@@ -25,7 +25,7 @@ eSIMは本人用のCloud Sky・Eve・Linuxサービスへ接続する入口で�
 | 対象 | 確認済み | まだ必要な受入 |
 | --- | --- | --- |
 | GitHub main | RQ01〜RQ50の製品ベースと指定チャットのOS設計、投稿型Home/SkyとコミュニティーOSのWeb runtime（PR #183、main `6e8b3934`）。 | 実X/MCP Provider、Eve別端末履歴、公開版の実操作。 |
-| 再設計の作業ブランチ | Eveの永続履歴などmain未統合のローカル候補と試験記録。 | 他の開発中コードを機能単位で照合し、必要なものだけmainへ取り込む。 |
+| 再設計の実装整理 | Eveの暗号化履歴・Linux/service・成果持出しをPR185でmainへ統合。 | snapshot後のPixel/Web同期と実環境受入は別作業。 |
 | Pixel 10 GL066 / frankel | 純正OS上の試験署名APKで非破壊の実再起動受入23/23。 | 全OS build、正式署名、flash/boot、dataとKeystore全損後の復元。[実機の境界](docs/phone-preview-20260911.md)。 |
 | QEMU Developer Preview | 既存の独立したLinux/Buildroot系列と過去候補の受入証拠。 | 最新候補の同一imageでの起動・保存・更新・復旧と配布gate。[担当](docs/workstreams/06-native-qemu-release.md)。 |
 | eSIM・Cloud・料金 | 導入、権限、見積、上限の設計と合成/限定試験。 | 実発行元、契約/利用枠、実Provider、端末間受取、本番請求を個別に受け入れる。 |
@@ -81,3 +81,6 @@ RockstarOS 1.0の最初の配布ラベルはDeveloper Previewです。端末初�
 Eveの「アカウントに保存した会話」から、今の会話を明示保存・読戻し・削除できます。本人認証と運営側の`EVE_HISTORY_KEYRING`設定が必要です。設定不足は未保存と表示します。履歴を開いても仕事は再実行しません。成果画面では本人の仕事をHTMLへ書き出せます。実アカウントの別端末試験、Pixel全OS、実Provider、本番公開・課金は別受入です。
 
 開発用Linux/Pixel adapterと本人用Labの手順は[Linux toolkit](toolkits/sky-linux-local/README.md)を参照してください。サービス利用開始は既定無効で、旧branch料金を本番へ採用した意味ではありません。コードの整理・移行範囲は[統合台帳](data/runtime-integration-audit.json)で確認できます。
+
+
+未統合runtimeの照合・整理は[PR #185](https://github.com/k999ln/rock/pull/185)でmainへ統合しました。Node2515成功/2skip、仕事API1678、CSV385を含む全verifyに合格。新しいPixel/Web同期と実Provider・本番公開は別受入です。

@@ -2653,6 +2653,11 @@
     ],
     "realProviderAccepted": false,
     "pixelFullOsAccepted": false,
-    "productionDeployed": false
+    "productionDeployed": false,
+    "githubMainIntegrated": true,
+    "mergeCommit": "9b5ce641e0a947e4b4106f2ffca09d5feee237b2",
+    "sourceHead": "8fc8027cd149d2486bcfc2be03863200c87d2c1e",
+    "localSyntheticAccepted": true,
+    "crossDeviceAccountAccepted": false
   }
 }
