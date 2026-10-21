@@ -504,6 +504,7 @@ export function jenniferPasskeyStore(db: Database) {
       request: Request,
       body: Record<string, unknown>,
       now = Date.now(),
+      expectedOwner?: string,
     ) {
       sameOrigin(request);
       const challengeRow = await readChallenge(
@@ -522,7 +523,11 @@ export function jenniferPasskeyStore(db: Database) {
         FROM jennifer_passkey_credentials WHERE credential_id = ? AND revoked_at IS NULL`)
         .bind(credentialId)
         .first<CredentialRow>();
-      if (!credential || credential.rpId !== challengeRow.rpId)
+      if (
+        !credential ||
+        credential.rpId !== challengeRow.rpId ||
+        (expectedOwner !== undefined && credential.userId !== expectedOwner)
+      )
         throw new Error('UNAUTHORIZED');
       const expectedUserHandle = bytesToBase64Url(
         await sha256Bytes(credential.userId),

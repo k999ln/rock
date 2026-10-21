@@ -3,7 +3,7 @@
   "publicAccepted": false,
   "physicalAccepted": false,
   "softwareAuthenticatorTests": {
-    "passed": 9,
+    "passed": 10,
     "failed": 0
   },
   "localWorkerD1Assertions": 31,
@@ -16,18 +16,22 @@
   "siteMigration": "drizzle-main/0028_rockstar_accounts.sql",
   "preservation": "Additive enrollment retains owner, existing passkeys, sessions and Pixel grants; recovery explicitly revokes old access without deleting history.",
   "implementationFileSha256": {
-    "lib/rockstar-account.ts": "d78ad83e0e60132974c20c70f572fa595c9dcb49a1c3d1ecc2318d8df38faa83",
-    "lib/jennifer-passkey.ts": "a35bf62d65a2bdd6ab71d23de3f1e3e59ad153a8dad96a41e4a21e6738a3fce8",
+    "lib/rockstar-account.ts": "8c0de2beb481a09d1bd42833d947f20a6a8f98b4fb9db980eebccdd5387d1e1a",
+    "lib/jennifer-passkey.ts": "5a3d6b87346bc19fc80c6665d2b3f8dcf1695d857655b0def98d086f3ddeb18f",
     "lib/request-auth.ts": "63b9c4f5f920f964ae19433b6e464d6e335a932fbd6941a83623e2f65d8fcc23",
     "lib/passkey-browser.ts": "ac6a369b95e823ed44a83d1eba6f8ecf484faabd9174348842d1bfa1e3b8c855",
+    "lib/account-handoff.ts": "8eab357d2ee49a6b6c0de4b55a772d613c997328d44f641d71bac843a73a0114",
     "app/api/os/access/route.ts": "10311d7c01ad0cd7026bcb62ad17f84bc1f28c8c1e27170b0021ce1273986b7f",
     "app/account/page.tsx": "62ea827c1686707a49e4e846b27318d7274dc90c15d64903e3853b7444d216f9",
-    "components/rockstar-account.tsx": "f1fe1a5c47b69e15a9d4365d3e8136b9a73189c596c518eb2fec26642246cc5f",
+    "components/rockstar-account.tsx": "754786ee39fbad039a81dd32a696c075504b9666c41693102eb470d232fdd780",
     "components/rockstar-account.module.css": "db7fd8bdf66328ff0a391f8f02009d109deeaa20ab815df7e3eb9365237c2f83",
     "components/os-account-access.tsx": "47cd95f5d806be9285af1926b462606b73b97835b82e6e1db38ee48ddc21147d",
-    "scripts/check-rockstar-account-api.mjs": "080fac362ec88b67998f2381a9e165dfbe96af9a67a96268da81d069887021fb"
+    "scripts/check-rockstar-account-api.mjs": "080fac362ec88b67998f2381a9e165dfbe96af9a67a96268da81d069887021fb",
+    "tests/rockstar-account.test.mjs": "05fcea7e4da50d3425aea94b0baaf9a9c5f8591667f4efef7eda014c9ede5429",
+    "tests/account-handoff.test.mjs": "9db0e8ebecd8bbeca74d8bf0f97e7f82751879edd93024ed754f9aca2f0ea267"
   },
   "noIndependentPentest": true,
   "noLiveSyntheticAccount": true,
-  "siteFullCanonicalCheck": "preexisting timestamp order error at 0026; focused/build/runtime acceptance tracked separately"
+  "siteFullCanonicalCheck": "preexisting timestamp order error at 0026; focused/build/runtime acceptance tracked separately",
+  "extraSecurity": "Authenticated reauthentication stays bound to its owner; logout/recovery resets only unsent tab handoffs."
 }

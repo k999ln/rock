@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createPasskey, getPasskeyAssertion } from '@/lib/passkey-browser';
+import { resetAccountHandoffs } from '@/lib/account-handoff';
 import styles from './rockstar-account.module.css';
 
 type Mode = 'signup' | 'add' | 'recover' | 'login';
@@ -124,6 +125,7 @@ export default function RockstarAccount() {
         challengeId: options.challengeId,
         credential,
       });
+      if (mode === 'recover') resetAccountHandoffs(window.sessionStorage);
       setRecoveryCode(result.recoveryCode ?? null);
       setComplete(true);
       setSaved(false);
@@ -145,6 +147,7 @@ export default function RockstarAccount() {
       });
       if (!response.ok) throw new Error('AUTH_UNAVAILABLE');
       const result = (await response.json()) as { gatewaySignout?: boolean };
+      resetAccountHandoffs(window.sessionStorage);
       window.location.assign(
         result.gatewaySignout ? '/signout-with-chatgpt?return_to=%2F' : '/',
       );

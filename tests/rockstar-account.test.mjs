@@ -37,8 +37,16 @@ function fixture(t) {
   )
     ? '0077_jennifer_passkey_base.sql'
     : '0023_jennifer_schema_guard.sql';
-  const historyMigration = existsSync(new URL('../drizzle/0070_eve_durable_history.sql', import.meta.url)) ? '0070_eve_durable_history.sql' : '0026_eve_account_sync.sql';
-  const accountMigration = existsSync(new URL('../drizzle/0078_rockstar_accounts.sql', import.meta.url)) ? '0078_rockstar_accounts.sql' : '0028_rockstar_accounts.sql';
+  const historyMigration = existsSync(
+    new URL('../drizzle/0070_eve_durable_history.sql', import.meta.url),
+  )
+    ? '0070_eve_durable_history.sql'
+    : '0026_eve_account_sync.sql';
+  const accountMigration = existsSync(
+    new URL('../drizzle/0078_rockstar_accounts.sql', import.meta.url),
+  )
+    ? '0078_rockstar_accounts.sql'
+    : '0028_rockstar_accounts.sql';
   for (const file of [historyMigration, legacy, accountMigration]) {
     const sql = readFileSync(
       new URL('../drizzle/' + file, import.meta.url),
@@ -504,6 +512,34 @@ void test('invalid signatures, RP origin and absent user verification never crea
     ),
   );
 });
+void test('reauthentication cannot silently switch an already authenticated owner', async (t) => {
+  const f = fixture(t),
+    a = await enroll(f),
+    b = await enroll(f);
+  const options = await f.account.begin(
+    request(),
+    { mode: 'login' },
+    a.user,
+    at + 4,
+  );
+  await assert.rejects(
+    f.account.finish(
+      bindingRequest(options),
+      {
+        challengeId: options.challengeId,
+        credential: assertion(options, b.auth),
+      },
+      a.user,
+      at + 5,
+    ),
+    /UNAUTHORIZED/,
+  );
+  assert.equal(
+    await f.passkeys.authenticateSession(sessionRequest(a.session), at + 6),
+    a.user,
+  );
+});
+
 void test('logout and recent-auth requirements are enforced by the server', async (t) => {
   const f = fixture(t),
     a = await enroll(f);

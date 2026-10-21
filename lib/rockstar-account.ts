@@ -136,7 +136,7 @@ export function rockstarAccountStore(db: Database) {
       let userId =
         mode === 'signup'
           ? 'rockstar:' + crypto.randomUUID()
-          : mode === 'add'
+          : mode === 'add' || mode === 'login'
             ? authenticatedOwner
             : null;
       let recoveryHash: string | null = null;
@@ -214,8 +214,15 @@ export function rockstarAccountStore(db: Database) {
       if (pending.mode === 'signup' && authenticatedOwner)
         throw new Error('ACCOUNT_ALREADY_SIGNED_IN');
       if (pending.mode === 'login') {
+        if (pending.userId && authenticatedOwner !== pending.userId)
+          throw new Error('UNAUTHORIZED');
         // The WebAuthn verifier consumes its one-use challenge before issuing a session.
-        const session = await passkeys.authenticatePasskey(request, body, now);
+        const session = await passkeys.authenticatePasskey(
+          request,
+          body,
+          now,
+          pending.userId ?? authenticatedOwner ?? undefined,
+        );
         await db
           .prepare(
             `UPDATE rockstar_account_enrollments SET consumed_at = ? WHERE id = ? AND consumed_at IS NULL`,
