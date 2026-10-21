@@ -24,13 +24,13 @@ eSIMは本人用のCloud Sky・Eve・Linuxサービスへ接続する入口で�
 
 | 対象 | 確認済み | まだ必要な受入 |
 | --- | --- | --- |
-| GitHub main | RQ01〜RQ50の製品ベース、指定チャットのOS設計文書、既存Web・Android・QEMUのソース/証拠。 | 投稿型Home/Skyのruntime候補を同一SHA CIで検証して統合。 |
-| 再設計の作業ブランチ | 投稿型Home/Sky、Eve履歴、コミュニティーOS版、API/MCP受信口のローカル実装・試験記録。 | 未統合のEve履歴、実X投稿供給元、X自身のFor You、自動同期、別端末復元、公開版の実操作。 |
+| GitHub main | RQ01〜RQ50の製品ベースと指定チャットのOS設計、投稿型Home/SkyとコミュニティーOSのWeb runtime（PR #183、main `6e8b3934`）。 | 実X/MCP Provider、Eve別端末履歴、公開版の実操作。 |
+| 再設計の作業ブランチ | Eveの永続履歴などmain未統合のローカル候補と試験記録。 | 他の開発中コードを機能単位で照合し、必要なものだけmainへ取り込む。 |
 | Pixel 10 GL066 / frankel | 純正OS上の試験署名APKで非破壊の実再起動受入23/23。 | 全OS build、正式署名、flash/boot、dataとKeystore全損後の復元。[実機の境界](docs/phone-preview-20260911.md)。 |
 | QEMU Developer Preview | 既存の独立したLinux/Buildroot系列と過去候補の受入証拠。 | 最新候補の同一imageでの起動・保存・更新・復旧と配布gate。[担当](docs/workstreams/06-native-qemu-release.md)。 |
 | eSIM・Cloud・料金 | 導入、権限、見積、上限の設計と合成/限定試験。 | 実発行元、契約/利用枠、実Provider、端末間受取、本番請求を個別に受け入れる。 |
 
-mainのRQ50と作業ブランチのRQ49、両者の月額案には差があります。OS本体は指定チャットの最新版に合わせ、料金とOS以外の要件は[Git統合監査](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)で別に照合します。設計文書はmainへ統合済みです。投稿型Home/Skyはこの実装候補で合成試験と全体verifyを通過し、GitHub mainへのコード統合とSites配備は別に確認します。実X投稿、Eveの別端末履歴、実機OSは未受入です。
+mainのRQ50と作業ブランチのRQ49、両者の月額案には差があります。OS本体は指定チャットの最新版に合わせ、料金とOS以外の要件は[Git統合監査](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)で別に照合します。設計文書はmainへ統合済みです。投稿型Home/Skyは同一SHAのGitHub CI 4件を通過してmainへ統合済みです。Sitesへの配備と実Providerの受入は別に確認します。実X投稿、Eveの別端末履歴、実機OSは未受入です。
 
 ## プロジェクトとサイト
 
