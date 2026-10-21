@@ -1158,9 +1158,14 @@ export function validateBaseline(
       !homeSource.includes("id: 'csv'") &&
       !skySource.includes('href="/work"') &&
       !skySource.includes('href="/csv"') &&
-      homeSource.includes('WEB / LOCAL') &&
+      homeSource.includes('data-sky-home') &&
+      homeSource.includes('<SkySocialTimeline') &&
+      !homeSource.includes('<SkyHomeTimeline') &&
+      data.visualSystem?.skyHomeAccent === 'forest_green' &&
+      data.visualSystem?.skyHomeAppearance === 'light_native_post_timeline' &&
+      data.homeExperience?.visualBasis === 'native_post_timeline' &&
       data.homeExperience?.workspaceNavigation ===
-        'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
+        'sky_timeline_shell_with_responsive_primary_navigation' &&
       data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
       data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[1] === 767 &&
       data.homeExperience?.smartphoneLayout?.safeAreas === true &&

@@ -1930,3 +1930,105 @@ export const skyHostedMonthlyTests = sqliteTable('sky_hosted_monthly_tests', {
 export const skyHostedMonthlyEvents=sqliteTable('sky_hosted_monthly_events',{
  id:text('id').primaryKey(),type:text('type').notNull(),invoiceId:text('invoice_id').notNull(),processedAt:integer('processed_at').notNull(),
 });
+
+// Sky Home, community OS and connected source persistence.
+export const skyAgentSettings = sqliteTable('sky_agent_settings', {
+  ownerUserId: text('owner_user_id').notNull(),
+  id: text('id').notNull(),
+  sourceTool: text('source_tool'),
+  settings: text('settings').notNull(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [uniqueIndex('idx_sky_agent_settings_owner_id').on(table.ownerUserId,table.id),
+  index('idx_sky_agent_settings_owner_updated').on(table.ownerUserId,table.updatedAt)]);
+
+export const skyFeatureAdditions = sqliteTable('sky_feature_additions', {
+  ownerUserId: text('owner_user_id').notNull(),
+  feature: text('feature').notNull(),
+  enabled: integer('enabled').notNull(),
+  purpose: text('purpose').notNull(),
+  revision: integer('revision').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [uniqueIndex('idx_sky_feature_additions_owner_feature').on(table.ownerUserId, table.feature)]);
+
+export const skyHubPlugins = sqliteTable('sky_hub_plugins', {
+  ownerUserId: text('owner_user_id').notNull(),
+  pluginKey: text('plugin_key').notNull(),
+  kind: text('kind').notNull(),
+  resource: text('resource').notNull(),
+  enabled: integer('enabled').notNull(),
+  revision: integer('revision').notNull(),
+  metadata: text('metadata').notNull(),
+  consentVersion: text('consent_version'),
+  updatedAt: integer('updated_at').notNull(),
+}, table=>[uniqueIndex('idx_sky_hub_plugins_owner_key').on(table.ownerUserId,table.pluginKey)]);
+
+// Public X post cache and a global API request window; never stores credentials.
+export const skyXFeedState = sqliteTable('sky_x_feed_state', {
+  key: text('key').primaryKey(),
+  payload: text('payload').notNull().default('[]'),
+  remoteUserId: text('remote_user_id'),
+  fetchedAt: integer('fetched_at').notNull().default(0),
+  nextRefreshAt: integer('next_refresh_at').notNull().default(0),
+  retryAfter: integer('retry_after').notNull().default(0),
+  leaseId: text('lease_id'),
+  leaseUntil: integer('lease_until').notNull().default(0),
+  windowDay: text('window_day').notNull().default(''),
+  requestCount: integer('request_count').notNull().default(0),
+  errorCode: text('error_code'),
+});
+
+export const skySocialProfiles = sqliteTable('sky_social_profiles', {
+  id:text('id').primaryKey(), ownerId:text('owner_id').notNull().unique(),
+  name:text('name').notNull(), createdAt:integer('created_at').notNull(),
+});
+export const skyCommunities = sqliteTable('sky_communities', {
+  id:text('id').primaryKey(), ownerId:text('owner_id').notNull(), name:text('name').notNull(),
+  description:text('description').notNull(), rules:text('rules').notNull(),
+  visibility:text('visibility').notNull(), inviteHash:text('invite_hash'),
+  recoveryHash:text('recovery_hash'), osRevision:integer('os_revision').notNull().default(0),
+  postMode:text('post_mode').notNull().default('members'),
+  createdAt:integer('created_at').notNull(), archivedAt:integer('archived_at').notNull().default(0),
+});
+export const skyCommunityMembers = sqliteTable('sky_community_members', {
+  communityId:text('community_id').notNull(), profileId:text('profile_id').notNull(),
+  joinedAt:integer('joined_at').notNull(),
+}, table=>[primaryKey({columns:[table.communityId,table.profileId]})]);
+export const skySocialFollows = sqliteTable('sky_social_follows', {
+  followerId:text('follower_id').notNull(), followingId:text('following_id').notNull(), createdAt:integer('created_at').notNull(),
+}, table=>[primaryKey({columns:[table.followerId,table.followingId]})]);
+export const skySocialPosts = sqliteTable('sky_social_posts', {
+  id:text('id').primaryKey(), authorId:text('author_id').notNull(), communityId:text('community_id'),
+  content:text('content').notNull(), attachment:text('attachment'), createdAt:integer('created_at').notNull(),
+  replyTo:text('reply_to'),
+}, table=>[index('sky_social_posts_created').on(table.createdAt,table.id),index('sky_social_posts_community').on(table.communityId,table.createdAt),index('sky_social_posts_reply').on(table.replyTo,table.createdAt)]);
+
+export const skySocialReactions = sqliteTable('sky_social_reactions', {
+  profileId:text('profile_id').notNull(),postId:text('post_id').notNull(),
+  kind:text('kind').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.profileId,t.postId,t.kind]}),index('sky_social_reactions_post').on(t.postId,t.kind)]);
+
+export const skyCommunityKeys = sqliteTable('sky_community_keys', {
+  communityId:text('community_id').notNull(),profileId:text('profile_id').notNull(),keyHash:text('key_hash').notNull(),
+  revokedAt:integer('revoked_at').notNull().default(0),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.communityId,t.profileId]})]);
+export const skyCommunityEditions = sqliteTable('sky_community_editions', {
+  communityId:text('community_id').notNull(),version:integer('version').notNull(),
+  manifest:text('manifest').notNull(),digest:text('digest').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.communityId,t.version]})]);
+export const skyCommunityInstalls = sqliteTable('sky_community_installs', {
+  ownerId:text('owner_id').notNull(),communityId:text('community_id').notNull(),version:integer('version').notNull(),
+  revision:integer('revision').notNull(),manifest:text('manifest').notNull(),agentRefs:text('agent_refs').notNull(),
+  active:integer('active').notNull().default(0),saveToken:text('save_token').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[primaryKey({columns:[t.ownerId,t.communityId]}),uniqueIndex('sky_community_install_active').on(t.ownerId).where(sql`${t.active}=1`)]);
+
+export const skyXAccounts = sqliteTable('sky_x_accounts', {
+  ownerId:text('owner_id').primaryKey(),remoteId:text('remote_id'),username:text('username'),displayName:text('display_name'),tokens:text('tokens'),cache:text('cache'),
+  status:text('status').notNull().default('disconnected'),revision:integer('revision').notNull().default(0),
+  fetchedAt:integer('fetched_at').notNull().default(0),nextRefreshAt:integer('next_refresh_at').notNull().default(0),retryAt:integer('retry_at').notNull().default(0),
+  leaseId:text('lease_id'),leaseUntil:integer('lease_until').notNull().default(0),windowDay:text('window_day').notNull().default(''),requestCount:integer('request_count').notNull().default(0),errorCode:text('error_code'),
+});
+export const skyXOAuthStates = sqliteTable('sky_x_oauth_states', {
+  stateHash:text('state_hash').primaryKey(),ownerId:text('owner_id').notNull(),cookieHash:text('cookie_hash').notNull(),verifier:text('verifier').notNull(),accountRevision:integer('account_revision').notNull(),expiresAt:integer('expires_at').notNull(),usedAt:integer('used_at').notNull().default(0),
+}, t=>[index('sky_x_oauth_owner_expiry').on(t.ownerId,t.expiresAt)]);

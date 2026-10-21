@@ -152,6 +152,14 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
     '0019_sky_hosted_monthly.sql',
     '0020_sites_schema_convergence.sql',
     '0021_sky_recurring_send_guard.sql',
+    '0022_sky_agent_settings.sql',
+    '0023_sky_optional_features.sql',
+    '0024_sky_hub_plugins.sql',
+    '0025_sky_x_feed_state.sql',
+    '0026_sky_communities.sql',
+    '0027_community_os_keys.sql',
+    '0028_sky_timeline_interactions.sql',
+    '0029_sky_x_account_oauth.sql',
   ]);
   assert.match(read('0013_sky_provider_connections.sql'), /CREATE TABLE IF NOT EXISTS `sky_provider_connections`/);
   assert.doesNotMatch(read('0013_sky_provider_connections.sql'), /^ALTER TABLE/m);
@@ -459,7 +467,7 @@ await test('fresh and current production D1 databases converge without losing re
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 108);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 123);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history === 'current') {

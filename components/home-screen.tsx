@@ -1,492 +1,408 @@
 'use client';
-
+import { useEffect, useState, type SyntheticEvent } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
-  ChartNoAxesCombined,
-  Plus,
-  FolderArchive,
-  Bot,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Cloud,
-  GraduationCap,
+  Radio,
+  Search,
   MessageCircle,
-  RadioTower,
-  RotateCcw,
+  Layers2,
+  Users,
+  Bookmark,
   Settings2,
-  ShieldCheck,
+  Plus,
+  ArrowUpRight,
   WalletCards,
-  X,
+  ChartNoAxesCombined,
+  Newspaper,
+  GraduationCap,
+  MoreHorizontal,
+  Cable,
   type LucideIcon,
 } from 'lucide-react';
-import Link from 'next/link';
+import SkySocialTimeline from './sky-social-timeline';
+import SkyDiscoveryFeed from './sky-discovery-feed';
+import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
+import SkyPublicXTimeline from './sky-public-x-timeline';
 import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from 'react';
+  useTimelineConnector,
+  SkyTimelineConnector,
+  SkyMcpTimeline,
+} from './sky-timeline-connector';
+import { SkyNewsConnections } from './sky-information-market';
+import { useSkyFeatures } from '@/lib/use-sky-features';
+import type { WorkJob } from '@/lib/workflow';
 import styles from './home-screen.module.css';
-import { ADDONS_CHANGED_EVENT, readAddons, type AddonId } from '@/lib/rockstar-addons';
 
-type Wallpaper = 'aurora' | 'sky' | 'night' | 'ember';
-type IconSize = 'small' | 'medium' | 'large';
-type Preferences = {
-  wallpaper: Wallpaper;
-  iconSize: IconSize;
-  showLabels: boolean;
-  accent: string;
-  appOrder: string[];
-};
-type HomeApp = {
-  id: string;
-  name: string;
-  description: string;
-  href: string;
-  Icon: LucideIcon;
-  color: string;
-};
-
-const STORAGE_KEY = 'rockstaros.home.preferences.v1';
-const apps: HomeApp[] = [
-  { id: 'add', name: '機能を追加', description: 'Sky・データ回収・LLMを追加', href: '/add', Icon: Plus, color: 'settings' },
-  { id: 'data', name: 'データ回収', description: '選んだデータを暗号化して持ち運ぶ', href: '/add/data', Icon: FolderArchive, color: 'sky' },
-  { id: 'llm', name: 'LLM', description: '接続先を選んでZemaで相談', href: '/chat', Icon: Bot, color: 'chat' },
+type View = 'home' | 'discover' | 'sources' | 'bookmarks' | 'communities';
+const apps: { href: string; name: string; Icon: LucideIcon; view?: View }[] = [
+  { href: '/#timeline', name: 'Sky', Icon: Radio, view: 'home' },
+  { href: '/#catalog', name: '見つける', Icon: Search, view: 'discover' },
+  { href: '/chat', name: 'Eve', Icon: MessageCircle },
+  { href: '/sky/agents', name: '自分のSky', Icon: Layers2 },
   {
-    id: 'sky',
-    name: 'Sky',
-    description: '自動化アプリを探して接続',
-    href: '/os/sky',
-    Icon: Cloud,
-    color: 'sky',
+    href: '/#communities',
+    name: 'コミュニティー',
+    Icon: Users,
+    view: 'communities',
   },
   {
-    id: 'chat',
-    name: 'Zema',
-    description: 'ツールを選ぶ・頼む・結果を確認',
-    href: '/chat',
-    Icon: MessageCircle,
-    color: 'chat',
+    href: '/#bookmarks',
+    name: 'ブックマーク',
+    Icon: Bookmark,
+    view: 'bookmarks',
   },
-  {
-    id: 'campus',
-    name: 'Campus',
-    description: '大学の人・プロジェクト・機会をつなぐ',
-    href: '/campus',
-    Icon: GraduationCap,
-    color: 'campus',
-  },
-  {
-    id: 'wallet',
-    name: 'Wallet',
-    description: '収支と資金を管理',
-    href: '/wallet',
-    Icon: WalletCards,
-    color: 'wallet',
-  },
-  {
-    id: 'market',
-    name: 'Market',
-    description: 'あらゆる価値をPAPER取引',
-    href: '/market',
-    Icon: ChartNoAxesCombined,
-    color: 'market',
-  },
-  {
-    id: 'settings',
-    name: '設定',
-    description: '接続・権限・更新・外観',
-    href: '/settings',
-    Icon: Settings2,
-    color: 'settings',
-  },
+  { href: '/wallet', name: 'Wallet', Icon: WalletCards },
+  { href: '/market', name: 'Market', Icon: ChartNoAxesCombined },
+  { href: '/campus', name: 'Campus', Icon: GraduationCap },
+  { href: '/settings', name: '設定', Icon: Settings2 },
 ];
-const appIds = apps.map(({ id }) => id);
-const defaults: Preferences = {
-  wallpaper: 'aurora',
-  iconSize: 'medium',
-  showLabels: true,
-  accent: '#bedce6',
-  appOrder: appIds,
-};
-const wallpaperOptions: { id: Wallpaper; label: string }[] = [
-  { id: 'aurora', label: 'オーロラ' },
-  { id: 'sky', label: 'スカイ' },
-  { id: 'night', label: 'ナイト' },
-  { id: 'ember', label: 'サンセット' },
-];
-const sizeOptions: { id: IconSize; label: string }[] = [
-  { id: 'small', label: '小' },
-  { id: 'medium', label: '標準' },
-  { id: 'large', label: '大' },
-];
-
-function normalizePreferences(value: unknown): Preferences {
-  if (!value || typeof value !== 'object') return defaults;
-  const candidate = value as Partial<Preferences>;
-  const order = Array.isArray(candidate.appOrder)
-    ? candidate.appOrder.filter((id) => appIds.includes(id))
-    : [];
-  for (const id of appIds) if (!order.includes(id)) order.push(id);
-  return {
-    wallpaper: wallpaperOptions.some(({ id }) => id === candidate.wallpaper)
-      ? (candidate.wallpaper as Wallpaper)
-      : defaults.wallpaper,
-    iconSize: sizeOptions.some(({ id }) => id === candidate.iconSize)
-      ? (candidate.iconSize as IconSize)
-      : defaults.iconSize,
-    showLabels:
-      typeof candidate.showLabels === 'boolean'
-        ? candidate.showLabels
-        : defaults.showLabels,
-    accent:
-      typeof candidate.accent === 'string' &&
-      /^#[0-9a-f]{6}$/i.test(candidate.accent)
-        ? candidate.accent.toLowerCase() === '#c8ff2e'
-          ? defaults.accent
-          : candidate.accent
-        : defaults.accent,
-    appOrder: order,
-  };
+function viewForHash(fragment: string): View {
+  const hash = fragment.replace(/^#/, '');
+  return hash === 'catalog' || hash === 'optional-features'
+    ? 'discover'
+    : hash === 'news-plugins' || hash === 'external-sources'
+      ? 'sources'
+      : hash === 'bookmarks' || hash === 'communities'
+        ? hash
+        : 'home';
 }
-
 export default function HomeScreen() {
-  const [now, setNow] = useState<Date | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [addons, setAddons] = useState<AddonId[]>([]);
-  const [preferences, setPreferences] = useState(defaults);
-  const closeEditorButton = useRef<HTMLButtonElement>(null);
-
+  const timelineReceiver = useTimelineConnector();
+  const [view, setView] = useState<View>('home');
+  const [query, setQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [featureOnly, setFeatureOnly] = useState(false);
+  const [jobs, setJobs] = useState<WorkJob[]>([]);
+  const { enabled } = useSkyFeatures();
   useEffect(() => {
-    const initialize = window.setTimeout(() => {
-      setNow(new Date());
-      try {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (stored) setPreferences(normalizePreferences(JSON.parse(stored)));
-      } catch {
-        // Broken or unavailable device-local settings fall back to defaults.
+    const sync = () => {
+      setView(viewForHash(window.location.hash));
+      setFeatureOnly(window.location.hash === '#optional-features');
+    };
+    const frame = requestAnimationFrame(sync);
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        window.location.hash = 'catalog';
       }
-      if (new URLSearchParams(window.location.search).get('edit') === '1')
-        setEditing(true);
-      setLoaded(true);
-    }, 0);
-    const timer = window.setInterval(() => setNow(new Date()), 30_000);
+      if (
+        event.key === 'Escape' &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes(
+          (event.target as HTMLElement)?.tagName,
+        )
+      )
+        window.location.hash = 'timeline';
+    };
+    window.addEventListener('hashchange', sync);
+    window.addEventListener('popstate', sync);
+    window.addEventListener('keydown', onKey);
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
+    const controller = new AbortController();
+    void fetch('/api/work-jobs', {
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then(async (r) =>
+        r.ok ? ((await r.json()) as { jobs: WorkJob[] }) : null,
+      )
+      .then((v) => {
+        if (!controller.signal.aborted && Array.isArray(v?.jobs))
+          setJobs(
+            v.jobs
+              .slice()
+              .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+              .slice(0, 3),
+          );
+      })
+      .catch(() => {});
     return () => {
-      window.clearTimeout(initialize);
-      window.clearInterval(timer);
+      cancelAnimationFrame(frame);
+      controller.abort();
+      window.removeEventListener('hashchange', sync);
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener('keydown', onKey);
     };
   }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
-    } catch {
-      // Private browsing and locked-down devices can reject local writes.
-    }
-  }, [loaded, preferences]);
-
-  useEffect(() => {
-    if (!editing) return;
-    closeEditorButton.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setEditing(false);
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [editing]);
-
-  useEffect(() => {
-    const read = () => { try { setAddons(readAddons(localStorage)); } catch { setAddons([]); } };
-    const timer = window.setTimeout(read, 0);
-    window.addEventListener(ADDONS_CHANGED_EVENT, read);
-    window.addEventListener('storage', read);
-    return () => { window.clearTimeout(timer); window.removeEventListener(ADDONS_CHANGED_EVENT, read); window.removeEventListener('storage', read); };
-  }, []);
-
-  const orderedApps = useMemo(
-    () =>
-      preferences.appOrder
-        .map((id) => apps.find((app) => app.id === id))
-        .filter((app): app is HomeApp => Boolean(app))
-        .filter(app => !['data', 'llm'].includes(app.id) || addons.includes(app.id as AddonId)),
-    [preferences.appOrder, addons],
-  );
-
-  function moveApp(id: string, direction: -1 | 1) {
-    setPreferences((current) => {
-      const order = [...current.appOrder];
-      const from = order.indexOf(id);
-      const visible = order.filter(key => !['data', 'llm'].includes(key) || addons.includes(key as AddonId));
-      const neighbor = visible[visible.indexOf(id) + direction];
-      const to = order.indexOf(neighbor);
-      if (from < 0 || to < 0) return current;
-      [order[from], order[to]] = [order[to], order[from]];
-      return { ...current, appOrder: order };
-    });
+  function search(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSearchQuery(query.trim());
+    window.location.hash = 'catalog';
+    setView('discover');
   }
-
-  const time = now
-    ? new Intl.DateTimeFormat('ja-JP', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }).format(now)
-    : '--:--';
-  const date = now
-    ? new Intl.DateTimeFormat('ja-JP', {
-        month: 'long',
-        day: 'numeric',
-        weekday: 'short',
-      }).format(now)
-    : 'RockstarOS';
-
+  const visibleApps = apps.filter(
+    (app) =>
+      (app.href !== '/wallet' && app.href !== '/market') ||
+      enabled(app.href === '/wallet' ? 'wallet' : 'market'),
+  );
   return (
-    <main
+    <div
       className={styles.home}
-      data-wallpaper={preferences.wallpaper}
-      data-icon-size={preferences.iconSize}
-      data-editing={editing ? 'true' : 'false'}
-      style={{ '--home-accent': preferences.accent } as CSSProperties}
+      data-sky-home
+      data-timeline-skin="x"
+      onClickCapture={(event) => {
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        )
+          return;
+        const anchor = (event.target as Element).closest('a[href]');
+        if (!anchor) return;
+        const target = new URL(
+          anchor.getAttribute('href')!,
+          window.location.href,
+        );
+        if (
+          target.origin === window.location.origin &&
+          target.pathname === '/' &&
+          target.hash
+        ) {
+          setView(viewForHash(target.hash));
+          setFeatureOnly(target.hash === '#optional-features');
+        }
+      }}
     >
-      <div className={styles.noise} aria-hidden="true" />
-      <header className={styles.statusBar}>
-        <strong>{time}</strong>
-        <span className={styles.statusName}>RockstarOS</span>
-        <span className={styles.statusIcons} aria-label="Web版・端末内設定">
-          <ShieldCheck size={15} />
-          <span>WEB / LOCAL</span>
-        </span>
-      </header>
-
-      <section className={styles.desktop} aria-label="RockstarOSホーム">
-        <div className={styles.homeHeading}>
-          <div>
-            <p>{date}</p>
-            <h1>{time}</h1>
-          </div>
-          <button
-            className={styles.editButton}
-            onClick={() => setEditing(true)}
-            aria-label="ホーム画面を編集"
-          >
-            <Settings2 size={17} />
-            編集
-          </button>
-        </div>
-
-        <Link href="/os/sky" className={styles.skyWidget}>
-          <span className={styles.widgetMark} aria-hidden="true">
-            <ShieldCheck size={22} />
-          </span>
-          <span className={styles.widgetCopy}>
-            <small>SKY AUTO</small>
-            <strong>どのアプリを使う？</strong>
-            <span>Skyからツールを選び、専用画面で入力・実行できます</span>
-          </span>
-          <span className={styles.widgetAction}>Skyを開く</span>
-        </Link>
-
-        <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
-          <Link href="/os/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
-          <Link href="/chat"><MessageCircle size={16} /><strong>Jennifer</strong><span>目的を相談</span></Link>
-          <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
-        </nav>
-
-        <Link className={styles.serviceSetupLink} href="/connect">
-          <RadioTower size={16} />
-          <span>アカウント・端末の接続を確認する</span>
-          <ChevronRight size={16} />
-        </Link>
-
-        <div className={styles.appGrid} aria-label="ホームアプリ">
-          {orderedApps.map(({ id, name, description, href, Icon, color }) => (
-            <div className={styles.appSlot} key={id}>
-              <Link
-                className={styles.appLink}
-                href={href}
-                aria-label={`${name} — ${description}`}
-                onClick={(event) => {
-                  if (editing) event.preventDefault();
-                }}
-              >
-                <span className={`${styles.appIcon} ${styles[color]}`}>
-                  <Icon size={34} strokeWidth={1.7} />
-                </span>
-                {preferences.showLabels && <span>{name}</span>}
-              </Link>
-              {editing && (
-                <div
-                  className={styles.orderControls}
-                  aria-label={`${name}の並び順`}
-                >
-                  <button
-                    onClick={() => moveApp(id, -1)}
-                    disabled={orderedApps[0]?.id === id}
-                    aria-label={`${name}を前へ`}
-                  >
-                    <ChevronLeft size={15} />
-                  </button>
-                  <button
-                    onClick={() => moveApp(id, 1)}
-                    disabled={orderedApps.at(-1)?.id === id}
-                    aria-label={`${name}を後ろへ`}
-                  >
-                    <ChevronRight size={15} />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.pageDots} aria-label="ホーム画面 1ページ目">
-          <span />
-          <i />
-        </div>
-      </section>
-
-      <footer className={styles.homeIndicator} aria-hidden="true">
-        <span />
-      </footer>
-
-      {editing && (
-        <div
-          className={styles.editorBackdrop}
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setEditing(false);
-          }}
-        >
-          <dialog
-            open
-            className={styles.editor}
-            aria-labelledby="home-editor-title"
-            aria-modal="true"
-          >
-            <header>
-              <div>
-                <small>この端末だけに保存</small>
-                <h2 id="home-editor-title">ホーム画面を編集</h2>
-              </div>
-              <button
-                ref={closeEditorButton}
-                onClick={() => setEditing(false)}
-                aria-label="編集を閉じる"
-              >
-                <X size={20} />
-              </button>
-            </header>
-
-            <div className={styles.editorSection}>
-              <strong>壁紙</strong>
-              <div className={styles.wallpaperChoices}>
-                {wallpaperOptions.map(({ id, label }) => (
-                  <button
-                    key={id}
-                    data-choice={id}
-                    aria-pressed={preferences.wallpaper === id}
-                    onClick={() =>
-                      setPreferences((current) => ({
-                        ...current,
-                        wallpaper: id,
-                      }))
-                    }
-                  >
-                    <span>
-                      {preferences.wallpaper === id && <Check size={17} />}
-                    </span>
-                    <small>{label}</small>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.editorRow}>
-              <span>
-                <strong>アイコン</strong>
-                <small>大きさ</small>
-              </span>
-              <div className={styles.segmented}>
-                {sizeOptions.map(({ id, label }) => (
-                  <button
-                    key={id}
-                    aria-pressed={preferences.iconSize === id}
-                    onClick={() =>
-                      setPreferences((current) => ({
-                        ...current,
-                        iconSize: id,
-                      }))
-                    }
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <label
-              className={styles.editorRow}
-              htmlFor="show-app-labels"
-              aria-label="アプリ名の表示"
+      <a className={styles.skip} href="#home-content">
+        ホームの内容へ
+      </a>
+      <div className={styles.layout}>
+        <aside className={styles.navigation} aria-label="RockstarOS">
+          <div className={styles.navInner}>
+            <Link
+              className={styles.brand}
+              href="/#timeline"
+              aria-label="RockstarOS ホーム"
             >
-              <span>
-                <strong>アプリ名</strong>
-                <small>アイコンの下に表示</small>
-              </span>
-              <input
-                id="show-app-labels"
-                className={styles.switch}
-                type="checkbox"
-                checked={preferences.showLabels}
-                onChange={(event) =>
-                  setPreferences((current) => ({
-                    ...current,
-                    showLabels: event.target.checked,
-                  }))
-                }
+              <Image
+                src="/company-mark.png"
+                alt=""
+                width={32}
+                height={32}
+                unoptimized
               />
-            </label>
-
-            <label className={styles.editorRow} htmlFor="home-accent-color">
-              <span>
-                <strong>アクセント</strong>
-                <small>ボタンと選択色</small>
-              </span>
-              <input
-                id="home-accent-color"
-                className={styles.colorInput}
-                type="color"
-                value={preferences.accent}
-                onChange={(event) =>
-                  setPreferences((current) => ({
-                    ...current,
-                    accent: event.target.value,
-                  }))
-                }
-                aria-label="アクセントカラー"
+              <span>RockstarOS</span>
+            </Link>
+            <nav aria-label="主要メニュー">
+              {visibleApps.map(({ href, name, Icon, view: target }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={target === view ? 'page' : undefined}
+                  aria-label={name}
+                >
+                  <Icon size={26} strokeWidth={target === view ? 2.5 : 1.7} />
+                  <span>{name}</span>
+                </Link>
+              ))}
+            </nav>
+            <button
+              className={styles.postButton}
+              onClick={() => {
+                window.location.hash = 'timeline';
+                window.setTimeout(() => {
+                  document.getElementById('sky-post')?.focus();
+                }, 0);
+              }}
+            >
+              <Plus size={22} />
+              <span>ポストする</span>
+            </button>
+            <Link className={styles.access} href="/connect">
+              <Cable size={21} />
+              <span>利用環境をつなぐ</span>
+            </Link>
+            <span className={styles.preview}>DEVELOPER PREVIEW</span>
+          </div>
+        </aside>
+        <main className={styles.main} id="home-content">
+          <h1 className={styles.srOnly}>Sky ホーム</h1>
+          <header className={styles.mobileHeader}>
+            <Link href="/#timeline" aria-label="RockstarOS ホーム">
+              <Image
+                src="/company-mark.png"
+                alt=""
+                width={25}
+                height={25}
+                unoptimized
               />
-            </label>
-
-            <p className={styles.reorderHint}>
-              ホーム上の矢印で、アプリの順番も変更できます。
-            </p>
-            <div className={styles.editorActions}>
-              <button onClick={() => setPreferences(defaults)}>
-                <RotateCcw size={16} />
-                初期状態に戻す
-              </button>
-              <button onClick={() => setEditing(false)}>
-                完了
-                <Check size={17} />
-              </button>
+              <strong>Sky</strong>
+            </Link>
+            <div className={styles.mobileActions}>
+              <Link href="/chat">
+                Eve <MessageCircle size={20} />
+              </Link>
+              <details>
+                <summary aria-label="その他のメニュー">
+                  <MoreHorizontal size={22} />
+                </summary>
+                <nav aria-label="追加メニュー">
+                  <Link href="/#bookmarks">ブックマーク</Link>
+                  <Link href="/#news-plugins">ニュースの配信元</Link>
+                  <Link href="/#optional-features">機能を追加</Link>
+                  <Link href="/campus">Campus</Link>
+                  <Link href="/connect">利用環境をつなぐ</Link>
+                  <Link href="/settings">設定</Link>
+                  {enabled('wallet') && <Link href="/wallet">Wallet</Link>}
+                  {enabled('market') && <Link href="/market">Market</Link>}
+                </nav>
+              </details>
             </div>
-          </dialog>
-        </div>
-      )}
-    </main>
+          </header>
+          {view === 'discover' ? (
+            <SkyDiscoveryFeed
+              key={`${featureOnly ? 'features' : 'discover'}:${searchQuery}`}
+              query={searchQuery}
+              initialFilter={featureOnly ? 'features' : 'all'}
+              standalone
+            />
+          ) : view === 'sources' ? (
+            <section className={styles.sources}>
+              <header className={styles.pageTitle}>
+                <h1>配信元をつなぐ</h1>
+                <Link href="/#timeline">ホームへ</Link>
+              </header>
+              <SkyTimelineConnector receiver={timelineReceiver} />
+              <details className={styles.providerSettings}>
+                <summary>個別APIの接続設定（任意）</summary>
+                <SkyXAccountConnection />
+              </details>
+              <SkyNewsConnections />
+            </section>
+          ) : (
+            <SkySocialTimeline
+              key={view}
+              fullHome
+              initialView={view}
+              discovery={<SkyDiscoveryFeed />}
+              externalFeed={
+                <>
+                  <SkyMcpTimeline receiver={timelineReceiver} />
+                  <SkyXAccountTimeline />
+                  <SkyPublicXTimeline />
+                </>
+              }
+            />
+          )}
+        </main>
+        <aside className={styles.explore} aria-label="発見と自分の仕事">
+          <div className={styles.exploreInner}>
+            <form className={styles.search} onSubmit={search}>
+              <Search size={20} />
+              <input
+                aria-label="Skyを検索"
+                placeholder="Skyを検索"
+                maxLength={80}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button type="submit" aria-label="検索する">
+                <ArrowUpRight size={18} />
+              </button>
+            </form>
+            <section className={styles.sideSection}>
+              <h2>今日、何をつくる？</h2>
+              <p>見つけた力を追加して、Eveと形に。</p>
+              <Link href="/chat" className={styles.eveLink}>
+                Eveに依頼する <ArrowUpRight size={17} />
+              </Link>
+            </section>
+            <section className={styles.sideSection}>
+              <h2>自分のSky</h2>
+              <Link href="/sky/agents">
+                <Layers2 size={20} />
+                <span>
+                  <strong>AgentとLLM</strong>
+                  <small>追加した担当・モデル・設定</small>
+                </span>
+              </Link>
+              <Link href="/#news-plugins">
+                <Newspaper size={20} />
+                <span>
+                  <strong>ニュースの配信元</strong>
+                  <small>好きな情報をつなぐ</small>
+                </span>
+              </Link>
+              <Link href="/#optional-features">
+                <Plus size={20} />
+                <span>
+                  <strong>機能を追加</strong>
+                  <small>Wallet・Marketを自分のOSへ</small>
+                </span>
+              </Link>
+            </section>
+            <section className={styles.sideSection}>
+              <h2>仕事と成果</h2>
+              {jobs.map((job) => (
+                <Link
+                  key={job.id}
+                  href={`/chat?view=work&workJob=${encodeURIComponent(job.id)}`}
+                >
+                  <span>
+                    <strong>{job.title}</strong>
+                    <small>
+                      {
+                        (
+                          {
+                            active: '進行中',
+                            review: '確認待ち',
+                            completed: '完了',
+                            cancelled: '取消済み',
+                          } as const
+                        )[job.status]
+                      }
+                    </small>
+                  </span>
+                  <ArrowUpRight size={16} />
+                </Link>
+              ))}
+              <Link href="/chat?view=work">
+                {jobs.length
+                  ? 'すべての仕事をEveで見る'
+                  : 'Eveで進捗と成果を見る'}{' '}
+                <ArrowUpRight size={16} />
+              </Link>
+            </section>
+            <footer className={styles.footer}>
+              <Link href="/campus">Campus</Link>
+              <Link href="/connect">利用環境</Link>
+              <Link href="/settings">設定</Link>
+              <span>RockstarOS 1.0 · Developer Preview</span>
+            </footer>
+          </div>
+        </aside>
+      </div>
+      <nav className={styles.mobileNav} aria-label="モバイルメニュー">
+        <Link
+          href="/#timeline"
+          aria-label="Skyのストリーム"
+          aria-current={view === 'home' ? 'page' : undefined}
+        >
+          <Radio size={25} />
+        </Link>
+        <Link
+          href="/#catalog"
+          aria-label="見つける"
+          aria-current={view === 'discover' ? 'page' : undefined}
+        >
+          <Search size={25} />
+        </Link>
+        <Link href="/chat" aria-label="Eve">
+          <MessageCircle size={25} />
+        </Link>
+        <Link href="/sky/agents" aria-label="自分のSky">
+          <Layers2 size={25} />
+        </Link>
+        <Link
+          href="/#communities"
+          aria-label="コミュニティー"
+          aria-current={view === 'communities' ? 'page' : undefined}
+        >
+          <Users size={25} />
+        </Link>
+      </nav>
+    </div>
   );
 }

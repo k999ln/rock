@@ -84,7 +84,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(onboarding, /アカウントでサインインする/);
   assert.match(onboarding, /Web版を使うためにSIM\/eSIMを購入する必要はありません/);
   assert.match(onboarding, /新しい消費者向けeSIMの発行・販売は現在保留中/);
-  assert.match(home, /アカウント・端末の接続を確認する/);
+  assert.match(home, /利用環境をつなぐ/);
   assert.match(onboarding, /署名済み購入claim/);
   assert.match(onboarding, /見積と上限を承認したCloud作業は端末がオフラインでも続き/);
   assert.match(onboarding, /<RockstarEntitlementClaim \/>/);
@@ -150,11 +150,10 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(claimUI, /signin-with-chatgpt\?return_to=%2Fconnect/);
   assert.match(launch, /署名済み導入経路/);
   assert.match(home, /href="\/connect"/);
-  assert.match(home, /aria-label="RockstarOSの主要サービス"/);
-  assert.match(home, /href="\/os\/sky"><Cloud/);
-  assert.match(home, /href="\/chat"><MessageCircle/);
-  assert.match(home, /href="\/work"><Bot/);
-  assert.match(home, /href="\/work"><Bot[^]*?<strong>Agent<\/strong><span>依頼・進捗・費用・成果<\/span>/);
+  assert.match(home, /aria-label="主要メニュー"/);
+  assert.match(home, /<SkySocialTimeline/);
+  assert.match(home, /href: '\/chat'/);
+  assert.match(home, /\/chat\?view=work/);
   assert.match(deviceHome, /requestRockstarUser\(request, db\)/);
   assert.match(deviceHome, /recentAgents/);
   assert.match(deviceHome, /recentLlm/);

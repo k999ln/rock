@@ -1,3 +1,7 @@
+## 2026-10-21 — 投稿型Home/Skyの実装統合候補（HOME01 / WEB04 / SKY21 / ROCK）
+
+指定チャットの設計をもとに、旧Homeランチャーを投稿型Sky Homeへ置き換えた。owner別の投稿・フォロー・反応・コミュニティーOS版/鍵、任意のX本人API接続とMCP/API投稿受信、Agent/Model/Tool発見を既存Webへ接続した。既存mainの料金/RQ50/Wallet/業務契約は維持。新規migrationは0022〜0029で既存0013〜0021の後に適用する。合成DB移行、対象機能試験、全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit 0を確認。ローカル候補の確認であり、GitHub main反映・Sites配備・実X/MCP Provider・Eve別端末履歴・Pixel全OSの合格ではない。次に同一SHA CIとmain統合を確認し、実Provider/owner A-B/別端末の受入を個別に記録する。[Web担当](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)。
+
 ## 2026-10-21 — 最新RockstarOS本体設計とGitHub mainの差分監査（G04 / ROCK）
 
 本人は参照チャットの設計をRockstarOS本体の大元と明示した。Home/Sky投稿型frontend、Eve履歴、鍵付きコミュニティーOS、eSIMから本人Cloudサービスへの接続、X投稿API/MCP受け皿を確認した。GitHub main 01b6aecd8b4d8bd2385665232dfb4b57029f991f と作業branch 951d82d5a491a284aed4e0d4d280171d835d4b43 は652 behind/3 ahead、ローカルは564項目dirty。mainのRQ50/v2.08/月額140 USD案と作業版RQ49/v1.120/月額16 USD案は未統合。OS設計の入口を設計portal・1.0構成・native/Pixel/QEMU担当とREADMEへ同期し、現行設計差分と統合順を[Web](docs/workstreams/05-web-pwa-sites.md#redesign-thread-web)・[Git](docs/workstreams/10-git-ci-operations.md#redesign-thread-git)へ記録。今回の別branch保存は監査/設計のみ。共有checkout、実装、実Provider、Pixel、公開、mainは未変更。次担当はmainを先に同期し、料金/RQの選択根拠を確定したうえで小PRごとに同一SHA検証する。

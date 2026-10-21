@@ -68,7 +68,7 @@ void test('module-styled home, Campus and settings keep their stylesheet binding
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
 
-void test('primary apps share the avokado graphite, silver and ice-blue system', () => {
+void test('Sky Home has its own post timeline theme while other OS surfaces retain the common shell', () => {
   const homeStyles = readFileSync(
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
@@ -87,8 +87,8 @@ void test('primary apps share the avokado graphite, silver and ice-blue system',
   );
   assert.match(workspace, /RockstarOS 1\.0 — unified app surfaces/);
   assert.match(workspace, /avokado OS: the product's graphite shell/);
-  assert.match(homeStyles, /\.home \{[\s\S]*--home-accent: #bedce6/);
-  assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#e1e8eb/);
+  assert.match(homeStyles, /\.home \{[\s\S]*--tl-bg: #f6f4ef/);
+  assert.match(homeStyles, /\.home \{[\s\S]*--tl-blue: #315b4d/);
   assert.match(csvStyles, /\.primary \{[\s\S]*#172631/);
   assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#bedce6/);
   assert.doesNotMatch(sky, /showSidebar/);
@@ -111,32 +111,17 @@ void test('Sky feed stays explainable and hands work to the existing Zema path',
   assert.doesNotMatch(sky, /rankSkyFeed\([^)]*requestText/);
 });
 
-void test('OS home keeps Work and CSV inside Sky without fake device telemetry', () => {
-  const home = readFileSync(
-    resolve(root, 'components/home-screen.tsx'),
-    'utf8',
-  );
-  const homeStyles = readFileSync(
-    resolve(root, 'components/home-screen.module.css'),
-    'utf8',
-  );
-  for (const route of ['/os/sky', '/chat', '/campus', '/wallet', '/market', '/settings']) {
-    assert.match(
-      home,
-      new RegExp(`href: '${route}'`),
-      `${route} is missing from the OS home`,
-    );
-  }
-  assert.doesNotMatch(home, /href: '\/work'/);
-  assert.doesNotMatch(home, /href: '\/csv'/);
-  assert.match(home, /WEB \/ LOCAL/);
+void test('Sky Home uses native posts and keeps Work and CSV in their own flows', () => {
+  const home = readFileSync(resolve(root, 'components/home-screen.tsx'), 'utf8');
+  const homeStyles = readFileSync(resolve(root, 'components/home-screen.module.css'), 'utf8');
+  for (const route of ['/chat', '/campus', '/wallet', '/market', '/settings'])
+    assert.match(home, new RegExp(`href: '${route}'`));
+  assert.match(home, /<SkySocialTimeline/);
+  assert.match(home, /<SkyDiscoveryFeed/);
+  assert.match(home, /\/api\/work-jobs/);
+  assert.doesNotMatch(home, /href: '\/work'|href: '\/csv'|iframe/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
-  assert.match(home, /closeOnEscape/);
-  assert.match(home, /localStorage\.setItem/);
-  assert.match(
-    homeStyles,
-    /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/,
-  );
+  assert.match(homeStyles, /grid-template-columns: 260px minmax\(0, 600px\) minmax\(0, 350px\)/);
 });
 
 void test('workspace shell stays sidebar-free and preserves running-state affordances', () => {

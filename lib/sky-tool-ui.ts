@@ -166,3 +166,45 @@ export function skyToolDetailActionLabel(tool: Automation) {
   if (tool.status === 'candidate') return '利用条件を見る';
   return '利用画面へ';
 }
+
+const simpleDescriptions: Record<string, string> = {
+  'fashion-brand-ops': '目標からSNSの投稿準備、注文、制作、発送までを整理します。外部への投稿や決済には接続と確認が必要です。',
+  'rockstar-ip-studio': 'キャラクターや作品の制作、SNS運用、音声でのやり取りに必要な接続を確認します。',
+  'rockstar-markets-analysis': '保存された相場データで仮想の取引を試します。実際のお金や注文は扱いません。',
+  'rockstar-ledger': 'PCに保存した契約と明細を読み、毎月の支払いを確認します。',
+  'jev-evaluation': '文章や案の品質を外部AIに確認する機能です。料金の確認が使えるまで送信を止めています。',
+  'faster-whisper': 'PCで音声を文字にするための準備と利用条件を確認します。',
+  'transformers-js': 'ブラウザの中でAIを動かすための準備と利用条件を確認します。',
+  playwright: '自分が許可したサイトを、ブラウザで読み取って確認するための準備をします。',
+  'jev-ultrafast': '画面から次の操作の候補を選ぶための準備をします。ここでは実際の操作は行いません。',
+  'jev-trader': '仮想取引の試験に必要な準備を確認します。実際の売買は行いません。',
+  'typesafe-computer-use': '許可したPC画面を読むための準備を確認します。入力や設定変更は行いません。',
+  'jev-review': 'コードの変更内容を確認するための準備と利用条件を整理します。',
+  'jev-router': '仕事に合うAIを選ぶためのPC用ツールです。Skyからの実行は準備中です。',
+  'jev-browser': '自分のサイトを読み取って確認するための準備と利用条件を整理します。',
+  'mobile-jev': '試験用Android端末の画面を読むための準備と利用条件を整理します。',
+  'coconala-proposal-draft': '案件の条件から、送る前に確認できる提案文の下書きを作ります。',
+  'gig-workflow': '応募から納品と売上確認まで、次に必要な作業を整理します。',
+  'coconala-inbox': '依頼文から、納期・報酬・確認することを整理します。',
+  'youtube-script-writer': 'テーマと長さに合わせた動画台本の下書きを作ります。',
+  'seo-blueprint': '読者と検索したい言葉に合わせて、記事の構成を整理します。',
+  'landing-page-sprint': '商品の紹介ページに載せる内容と確認することを整理します。',
+  'sales-objection-reply-builder': '相手の質問や懸念に合わせて、返信と見積りの下書きを作ります。',
+  'user-interview-synthesizer': '顧客の発言を残して、気づきや仮説の記入欄を作ります。自動分析は準備中です。',
+  'calendar-coordination': '依頼文を残して、日時や場所の記入欄を作ります。自動抽出とカレンダー接続は準備中です。',
+  'telegram-notifications': 'Telegramへ送る通知文を作ります。接続先を確認するまで送信しません。',
+  'producthunt-discovery': '欲しいツールの用途、料金、権限など、調べる条件を整理します。',
+};
+export function skyToolDescription(tool: Automation): string {
+  return simpleDescriptions[tool.id] ?? tool.description;
+}
+
+export function skyToolEnvironment(tool: Automation): string {
+  if (tool.status === 'candidate') return '下書きや接続条件を確認できます。ツール本体の実行は準備中です。';
+  if (tool.runner === 'delivery-local' || tool.runner === 'subscription-ledger') return '自分のPCをSkyにつないで使います。';
+  if (tool.id === 'rockstar-csv-cleanup') return 'サインインして使います。入力と成果は自分だけが見られる場所へ保存します。';
+  if (tool.integration === 'fashion-brand-ops') return 'ブラウザの簡易版と、接続したPCで使う版があります。外部操作には別の接続が必要です。';
+  if (tool.runner === 'jev-evaluation') return '外部AIの接続と料金確認を準備しています。';
+  if (tool.runner === 'legal-intake' || tool.runner === 'patent-assistant') return 'ブラウザで案内や下書きを作れます。外部AIは料金確認の準備ができるまで停止しています。';
+  return tool.environment.replace('ブラウザ内', 'このブラウザ').replace('Sky Cloud', 'Skyのサーバー');
+}

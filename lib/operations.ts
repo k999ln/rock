@@ -81,7 +81,7 @@ export type SkyProviderConnection = {
   connectedAt: number | null;
   updatedAt: number;
 };
-const SKY_CONSENT_VERSION = '2026-09-12';
+export const SKY_CONSENT_VERSION = '2026-09-12';
 const SKY_FEED_CONSENT_VERSION = '2026-10-13';
 const SKY_FEED_EVENT_TYPES = new Set<SkyPhoenixEventType>([
   'impression',
@@ -137,7 +137,7 @@ function toolName(value: unknown): JobTool {
     throw new OperationError('対応していないツールです。');
   return value as JobTool;
 }
-function skyConnectionToolName(value: unknown): SkyConnectionTool {
+export function skyConnectionToolName(value: unknown): SkyConnectionTool {
   if (!SKY_CONNECTION_TOOLS.includes(value as SkyConnectionTool))
     throw new OperationError('対応していないSkyアプリです。');
   return value as SkyConnectionTool;
