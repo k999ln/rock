@@ -1,1 +1,0 @@
-ALTER TABLE `tool_runs` ADD `sample` integer DEFAULT false NOT NULL;
