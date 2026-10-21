@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers';
 import { database, requestUser } from '@/lib/fund-store';
 import { EveHistoryError, eveHistoryKeys, eveHistoryStore, eveThreadId, eveHistoryOwnerBinding } from '@/lib/eve-history';
 
-const json=(value:unknown,status=200,binding?:string)=>Response.json(value,{status,headers:{...(binding?{'X-Rock-Eve-Owner':binding}:{}),...{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}}});
+const json=(value:unknown,status=200,binding?:string)=>Response.json(value,{status,headers:{...(binding?{'X-Rock-Eve-Owner':binding}:{}),'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 async function input(request:Request) {
   if(!request.headers.get('content-type')?.startsWith('application/json'))throw new EveHistoryError('JSONで送信してください。',415);
   const reader=request.body?.getReader();if(!reader)throw new EveHistoryError('入力がありません。');
