@@ -3,6 +3,8 @@
 <a id="redesign-thread-git"></a>
 ## 最新RockstarOS本体設計のGit統合監査
 
+統合結果（2026-10-21）: 指定チャットの設計文書はPR #182でmain `883e311e`、投稿型Home/SkyのWeb runtimeはPR #183でmain `6e8b3934`へ統合。PR #183のhead `20faad5d`ではRock star verification、SPIDER repository security、SPIDER repair regressions、SPIDER CodeQL securityの4 CIが成功した。元の共有checkoutは触れず、既存mainのRQ50と料金/Wallet/Work契約を維持した。以下のSHA比較とdirty件数は統合前の監査snapshotとして読む。Eve永続履歴、実X/MCP Provider、別端末、Sites公開、Pixel全OSは別途受入。
+
 2026-10-21、指定チャット[「RockstarOSを再設計」](codex://threads/01a14d54-daee-7c30-87a8-faea84641a40)とGitHub k999ln/rock を照合。main 01b6aecd8b4d8bd2385665232dfb4b57029f991f に対し、作業branch codex/esim-cloud-access は 951d82d5a491a284aed4e0d4d280171d835d4b43、merge base 9f64aee3de9cc74e6b6e7eae34052780e000c296、GitHub比較はmainから652 behind/3 ahead。ローカルは監査時564項目dirtyで、別チャットが同じcheckoutを編集中。mainはRQ50・製品ベースv2.08、作業branchはRQ49・v1.120。mainの月額140 USD/100 USD利用枠と作業版の月額16 USD案も未照合。GitHub mainの公開状態へ作業中の設計/実装を換算しない。
 
 本人の追加明示により、指定チャットのOS設計を本体の大元として優先する。RQ数と料金の差分はOS以外の契約照合として保持し、OS設計の着手をそれだけで止めない。
