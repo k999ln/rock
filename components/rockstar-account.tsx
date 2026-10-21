@@ -173,7 +173,7 @@ export default function RockstarAccount() {
     <main className={styles.page}>
       <nav className={styles.top}>
         <Link href="/">
-          <img src="/rock-icon-192.png" alt="" width="28" height="28" />
+          <img src="/company-mark.png" alt="" width="28" height="28" />
           RockstarOS
         </Link>
         <Link href="/os/eve">Eve</Link>
@@ -184,7 +184,7 @@ export default function RockstarAccount() {
           {complete
             ? '自分のSkyとEveへ。'
             : signedIn
-              ? 'この場所を、ずっと自分のものに。'
+              ? '自分のSkyとEveへ。'
               : 'あなたのRockstarOSを、ここから。'}
         </h1>
         <p className={styles.description}>
