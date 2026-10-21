@@ -211,6 +211,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0021_sites_schema_convergence.sql',
     '0022_sky_recurring_send_guard.sql',
     '0023_jennifer_schema_guard.sql',
+    '0024_remote_ai_send_claims_recovery.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -239,6 +240,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     sqlite.exec('DROP TABLE jennifer_passkey_credentials');
     sqlite.exec('DROP TABLE jennifer_passkey_sessions');
     sqlite.exec('DROP TABLE jennifer_passkey_events');
+    sqlite.exec('DROP TABLE remote_ai_text_send_claims');
     sqlite.exec(`INSERT INTO agent_delegations (
       id, owner_user_id, parent_job_id, idempotency_key, message_id,
       target_origin, target_agent_name, target_agent_version, protocol_version,
@@ -311,9 +313,22 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
       'jennifer_passkey_credentials',
       'jennifer_passkey_sessions',
       'jennifer_passkey_events',
+      'remote_ai_text_send_claims',
     ]) assert.ok(sqlite.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
     ).get(table), table);
+    // Reproduce the exact live-D1 partial-migration state: the earlier
+    // convergence migration is already recorded, but its send-claim table is
+    // absent. Only the fresh recovery number is available on the next deploy.
+    sqlite.exec('DROP TABLE remote_ai_text_send_claims');
+    for (const statement of split(readMain('0024_remote_ai_send_claims_recovery.sql')))
+      sqlite.exec(statement);
+    assert.ok(sqlite.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
+    ).get());
+    assert.ok(sqlite.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'trigger' AND name = 'remote_ai_text_send_claim_binding_guard'",
+    ).get());
     assert.equal(
       sqlite.prepare("SELECT owner_user_id FROM agent_delegations WHERE id = 'saved-delegation'").get().owner_user_id,
       'owner',
