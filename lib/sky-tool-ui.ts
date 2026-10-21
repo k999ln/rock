@@ -166,3 +166,6 @@ export function skyToolDetailActionLabel(tool: Automation) {
   if (tool.status === 'candidate') return '利用条件を見る';
   return '利用画面へ';
 }
+
+export function skyToolDescription(tool: Automation): string { return tool.description; }
+export function skyToolEnvironment(tool: Automation): string { return tool.environment; }

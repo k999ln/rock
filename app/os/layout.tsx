@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import '../os-design-tokens.css';
+import '../community-os.css';
 
 export const metadata: Metadata = {
   applicationName: 'RockstarOS',
