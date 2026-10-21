@@ -192,3 +192,10 @@ PR #85のsource `f9c85870`はGitHub全7チェック成功。全体verify内のNo
 ## Sky／Zemaの検証済み修正統合（2026-10-08 UTC、G04）
 
 ROCK担当。利用者のmain反映指示により、034/035で限定検収された保存競合・会話復旧・bundle修正を最新mainへ統合する。[今回の証拠と未受入範囲](../evidence/sky-zema-main-integration.json)を参照。同一commitのCIを確認し、未完了の隣接表示試験や本番公開を完了扱いにしない。
+
+
+## 2026-10-21 未統合runtimeと旧差分の整理（G04 / ROCK）
+
+本人指示によりmain `8a95ee6f230b351e802574acc4c7e36c3b90939e`起点の専用cloneで統合。共有checkoutの685件をGit外へ保全し、統合途中96変更も別backupでバイト一致を確認。main既存修正と旧dirty差分を三者比較し、履歴・Linux/service・owner export・Lab/Pixel adapterを回収する。mainで退役したUI、再生成可能なdist/ログ、既統合DB移行は再投入しない。旧UI差分はmainのowner/料金/復旧修正を優先する。RQ50を維持し、旧RQ49監査には追加要求を明記する。
+
+新migrationはroot0030〜0032、canonical Siteはadditive0026。既存SQLは書き換えない。実施一覧は`data/runtime-integration-audit.json`。完了には全verify・同一SHA CI・main読戻しを要する。共有dirty treeをmainへresetせず、未公開/実機/料金の個別gateを維持する。

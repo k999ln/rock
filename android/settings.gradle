@@ -5,3 +5,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = 'RockStarOS'
 include ':core', ':tool-sdk', ':local-ai-api', ':shell-api', ':automation', ':shell', ':article-tool', ':operator-agent', ':jev-preview', ':jev-provider'
+include ':x-session'

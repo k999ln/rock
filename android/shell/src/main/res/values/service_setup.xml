@@ -1,0 +1,10 @@
+<resources>
+    <bool name="rockstar_service_setup_enabled">false</bool>
+    <string name="rockstar_service_setup_origin" translatable="false"></string>
+    <overlayable name="RockstarServiceSetupConfig">
+        <policy type="product">
+            <item type="bool" name="rockstar_service_setup_enabled" />
+            <item type="string" name="rockstar_service_setup_origin" />
+        </policy>
+    </overlayable>
+</resources>

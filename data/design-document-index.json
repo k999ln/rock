@@ -1,12 +1,99 @@
 {
-  "latestRockstarOsDesign": {"authority":"docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve","sourceThread":"codex://threads/01a14d54-daee-7c30-87a8-faea84641a40","scope":"RockstarOS OS design foundation","status":"current_design_authority_home_sky_runtime_main_integrated","linkedWorkstream":"docs/workstreams/05-web-pwa-sites.md#redesign-thread-web","pixelFullOsAccepted":false,"qemuDeveloperPreviewSeparate":true},
-  "homeSkyPostRuntime": {"authority":"docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve","taskIds":["HOME01","WEB04","SKY21"],"implementation":["components/home-screen.tsx","components/sky-social-timeline.tsx","components/sky-discovery-feed.tsx","components/sky-public-x-timeline.tsx","lib/sky-social-store.ts","lib/community-os-store.ts","app/api/sky/social/route.ts","app/api/sky/community-os/route.ts"],"migrations":"drizzle/0022_sky_agent_settings.sql through drizzle/0029_sky_x_account_oauth.sql","tests":["tests/home-timeline-frontend.test.mjs","tests/sky-social.test.mjs","tests/community-os.test.mjs","tests/sky-timeline-provider.test.mjs","tests/sky-x-account.test.mjs"],"localSyntheticAccepted":true,"githubMainIntegrated":true,"mainSha":"6e8b393416d5b6488a7ac083312b7ebaa2c2ceb2","realProviderAccepted":false,"crossDeviceEveAccepted":false,"pixelFullOsAccepted":false,"productionDeployed":false},
-  "skyCloudRequestUi":{"authority":"docs/llm-evaluation-architecture.md","implementation":"components/sky-free-cloud-panel.tsx","productionBilling":false},
-  "skyConcurrentReadback":{"authority":"docs/llm-evaluation-architecture.md","pollMs":30000,"rateLimitBackoffMs":60000,"productionBilling":false},
-  "freeCloudRetryDiagnostics": {"automaticContinuation":"confirmed_FREE_LIMIT_only_same_id_CAS_5_attempts_10_minutes","date":"2026-10-17","authority":"docs/llm-evaluation-architecture.md","tests":"tests/sky-free-cloud.test.mjs","productionBilling":false},
-  "skyHostedMonthly": {"design": "docs/sky-billing.md", "evidence": "docs/evidence/sky-hosted-monthly.json", "implementation": ["lib/sky-hosted-monthly.ts", "components/sky-hosted-monthly.tsx"], "tests": "tests/sky-recurring-sandbox.test.mjs", "productionBilling": false},
-  "skyMonthlyFreeCloud": {"taskId": "BIL02", "primaryOwner": "JOINT", "status": "sandbox_provider_cloud_ui_and_verify_passed", "branch": "codex/sky-monthly-free-cloud", "productionBilling": false, "evidence": "docs/evidence/sky-monthly-free-cloud.json", "design": "docs/sky-billing.md", "implementation": ["lib/sky-recurring-plan.ts", "lib/sky-free-cloud.ts", "scripts/check-sky-monthly-free-cloud.mjs"], "nextAction": "Same-head CI and Git integration; hosted account monthly migration remains separate"},
-  "skyLiveMigration": {"status": "deployed_real_account_cloud_accepted", "version": 61, "backupTables": 50, "backupRows": 144, "syntheticSandbox": true, "productionBilling": false, "planProjection": "lib/sky-recurring-plan.ts", "setup": "owner_only_synthetic_free_only_v1_one_hour"},
+  "latestRockstarOsDesign": {
+    "authority": "docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve",
+    "sourceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40",
+    "scope": "RockstarOS OS design foundation",
+    "status": "current_design_authority_home_sky_runtime_main_integrated",
+    "linkedWorkstream": "docs/workstreams/05-web-pwa-sites.md#redesign-thread-web",
+    "pixelFullOsAccepted": false,
+    "qemuDeveloperPreviewSeparate": true
+  },
+  "homeSkyPostRuntime": {
+    "authority": "docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "implementation": [
+      "components/home-screen.tsx",
+      "components/sky-social-timeline.tsx",
+      "components/sky-discovery-feed.tsx",
+      "components/sky-public-x-timeline.tsx",
+      "lib/sky-social-store.ts",
+      "lib/community-os-store.ts",
+      "app/api/sky/social/route.ts",
+      "app/api/sky/community-os/route.ts"
+    ],
+    "migrations": "drizzle/0022_sky_agent_settings.sql through drizzle/0029_sky_x_account_oauth.sql",
+    "tests": [
+      "tests/home-timeline-frontend.test.mjs",
+      "tests/sky-social.test.mjs",
+      "tests/community-os.test.mjs",
+      "tests/sky-timeline-provider.test.mjs",
+      "tests/sky-x-account.test.mjs"
+    ],
+    "localSyntheticAccepted": true,
+    "githubMainIntegrated": true,
+    "mainSha": "6e8b393416d5b6488a7ac083312b7ebaa2c2ceb2",
+    "realProviderAccepted": false,
+    "crossDeviceEveAccepted": false,
+    "pixelFullOsAccepted": false,
+    "productionDeployed": false
+  },
+  "skyCloudRequestUi": {
+    "authority": "docs/llm-evaluation-architecture.md",
+    "implementation": "components/sky-free-cloud-panel.tsx",
+    "productionBilling": false
+  },
+  "skyConcurrentReadback": {
+    "authority": "docs/llm-evaluation-architecture.md",
+    "pollMs": 30000,
+    "rateLimitBackoffMs": 60000,
+    "productionBilling": false
+  },
+  "freeCloudRetryDiagnostics": {
+    "automaticContinuation": "confirmed_FREE_LIMIT_only_same_id_CAS_5_attempts_10_minutes",
+    "date": "2026-10-17",
+    "authority": "docs/llm-evaluation-architecture.md",
+    "tests": "tests/sky-free-cloud.test.mjs",
+    "productionBilling": false
+  },
+  "skyHostedMonthly": {
+    "design": "docs/sky-billing.md",
+    "evidence": "docs/evidence/sky-hosted-monthly.json",
+    "implementation": [
+      "lib/sky-hosted-monthly.ts",
+      "components/sky-hosted-monthly.tsx"
+    ],
+    "tests": "tests/sky-recurring-sandbox.test.mjs",
+    "productionBilling": false
+  },
+  "skyMonthlyFreeCloud": {
+    "taskId": "BIL02",
+    "primaryOwner": "JOINT",
+    "status": "sandbox_provider_cloud_ui_and_verify_passed",
+    "branch": "codex/sky-monthly-free-cloud",
+    "productionBilling": false,
+    "evidence": "docs/evidence/sky-monthly-free-cloud.json",
+    "design": "docs/sky-billing.md",
+    "implementation": [
+      "lib/sky-recurring-plan.ts",
+      "lib/sky-free-cloud.ts",
+      "scripts/check-sky-monthly-free-cloud.mjs"
+    ],
+    "nextAction": "Same-head CI and Git integration; hosted account monthly migration remains separate"
+  },
+  "skyLiveMigration": {
+    "status": "deployed_real_account_cloud_accepted",
+    "version": 61,
+    "backupTables": 50,
+    "backupRows": 144,
+    "syntheticSandbox": true,
+    "productionBilling": false,
+    "planProjection": "lib/sky-recurring-plan.ts",
+    "setup": "owner_only_synthetic_free_only_v1_one_hour"
+  },
   "standaloneServiceBillingDesign": {
     "document": "docs/sky-billing.md",
     "composition": "docs/service-design/README.md",
@@ -717,7 +804,15 @@
         "schedulerContinuation": "two stages per healthy job, fresh alternating immediate IDs without failure backoff; charge/thermal/pause/lease gates retained",
         "visibleRuntimeBinding": "same-signer Broker binding only while Activity started; no execution authority; release onStop",
         "ideationDiversity": "one actual model idea per distinct input topic, 30 topics and 10 audiences; requested standalone AI term formatted as si; actual count unchanged, alias duplicates rejected, historical text readable",
-        "ideaGeneration": {"checkpointVersion":6,"rawPartLimit":5,"partsPerSavedStage":1,"partTimeoutSeconds":180,"savedBatch":5,"stageLeaseSeconds":240,"incompletePartIsNotSaved":true},
+        "ideaGeneration": {
+          "checkpointVersion": 6,
+          "rawPartLimit": 5,
+          "partsPerSavedStage": 1,
+          "partTimeoutSeconds": 180,
+          "savedBatch": 5,
+          "stageLeaseSeconds": 240,
+          "incompletePartIsNotSaved": true
+        },
         "importFailureRecovery": "Read status again; explain existing pinned work; no empty-operation cancel, no automatic job cancellation or repin",
         "limits": [
           "signed APK catalog only",
@@ -2452,46 +2547,63 @@
   },
   "productTerminology": "data/product-terminology.json",
   "skyAutomaticModelSelection": {
-  "date": "2026-10-17",
-  "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
-  "default": "auto",
-  "manualProviderModelSupported": true,
-  "implementation": "lib/sky-model-routing.ts",
-  "document": "docs/llm-evaluation-architecture.md",
-  "cloudAutoAccepted": false,
-  "policy": "local_and_owner_enabled_consented_free_cloud",
-  "status": "live_account_cloud_verified",
-  "tests": "tests/sky-model-routing.test.mjs"
-},
-"skyFreeCloudCheckpoint":{"date": "2026-10-17", "status": "in_progress_saved_at_owner_request", "implementation": "lib/sky-free-cloud.ts", "tests": "tests/sky-free-cloud.test.mjs", "provider": "Pollinations Classic anonymous", "realPosts": 1, "realResponseAccepted": false, "failure": "completion_or_usage_validation_failed", "productionBilling": false, "uiWired": false, "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"},
-"skyFreeCloudAcceptance":{
-  "date": "2026-10-17",
-  "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
-  "status": "live_account_real_cloud_accepted_synthetic_contract",
-  "implementation": [
-    "lib/sky-free-cloud.ts",
-    "lib/sky-model-selection.ts",
-    "lib/sky-free-cloud-http.ts",
-    "app/api/llm/free-cloud/route.ts",
-    "components/sky-free-cloud-panel.tsx"
-  ],
-  "evidence": "docs/evidence/sky-free-cloud-live.json",
-  "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
-  "productionBillingEnabled": false,
-  "mainAuthenticatedUiAccepted": true
-},
-"skyFreeCloudBackground":{
-  "document": "docs/llm-evaluation-architecture.md",
-  "implementation": [
-    "lib/sky-free-cloud-background.ts",
-    "services/sky-free-cloud-wake/worker.ts",
-    "app/api/llm/free-cloud/jobs/route.ts",
-    "app/api/llm/free-cloud/tick/route.ts"
-  ],
-  "evidence": "docs/evidence/sky-free-cloud-background.json",
-  "productionBilling": false
-},
-"skyBackgroundPlanGates":{"document":"docs/sky-billing.md","implementation":"lib/sky-hosted-monthly.ts","evidence":"docs/evidence/sky-background-plan-gates.json","productionBilling":false},
+    "date": "2026-10-17",
+    "reason": "Explicit user request: selectable LLM and task-based auto default, not Codex-only",
+    "default": "auto",
+    "manualProviderModelSupported": true,
+    "implementation": "lib/sky-model-routing.ts",
+    "document": "docs/llm-evaluation-architecture.md",
+    "cloudAutoAccepted": false,
+    "policy": "local_and_owner_enabled_consented_free_cloud",
+    "status": "live_account_cloud_verified",
+    "tests": "tests/sky-model-routing.test.mjs"
+  },
+  "skyFreeCloudCheckpoint": {
+    "date": "2026-10-17",
+    "status": "in_progress_saved_at_owner_request",
+    "implementation": "lib/sky-free-cloud.ts",
+    "tests": "tests/sky-free-cloud.test.mjs",
+    "provider": "Pollinations Classic anonymous",
+    "realPosts": 1,
+    "realResponseAccepted": false,
+    "failure": "completion_or_usage_validation_failed",
+    "productionBilling": false,
+    "uiWired": false,
+    "next": "inspect Provider response contract; wire select API and consent UI; verify plan cap and real response"
+  },
+  "skyFreeCloudAcceptance": {
+    "date": "2026-10-17",
+    "source": "explicit_owner_request_free_cloud_auto_and_live_ui_test",
+    "status": "live_account_real_cloud_accepted_synthetic_contract",
+    "implementation": [
+      "lib/sky-free-cloud.ts",
+      "lib/sky-model-selection.ts",
+      "lib/sky-free-cloud-http.ts",
+      "app/api/llm/free-cloud/route.ts",
+      "components/sky-free-cloud-panel.tsx"
+    ],
+    "evidence": "docs/evidence/sky-free-cloud-live.json",
+    "cloudAutoAccepted": "live_account_synthetic_plan_real_provider",
+    "productionBillingEnabled": false,
+    "mainAuthenticatedUiAccepted": true
+  },
+  "skyFreeCloudBackground": {
+    "document": "docs/llm-evaluation-architecture.md",
+    "implementation": [
+      "lib/sky-free-cloud-background.ts",
+      "services/sky-free-cloud-wake/worker.ts",
+      "app/api/llm/free-cloud/jobs/route.ts",
+      "app/api/llm/free-cloud/tick/route.ts"
+    ],
+    "evidence": "docs/evidence/sky-free-cloud-background.json",
+    "productionBilling": false
+  },
+  "skyBackgroundPlanGates": {
+    "document": "docs/sky-billing.md",
+    "implementation": "lib/sky-hosted-monthly.ts",
+    "evidence": "docs/evidence/sky-background-plan-gates.json",
+    "productionBilling": false
+  },
   "pixelDynamicAddons": {
     "authority": "docs/llm-evaluation-architecture.md#pixelでのllmagentの動的追加",
     "taskId": "OS11",
@@ -2516,5 +2628,31 @@
       "local-text/1",
       "local-tools/1"
     ]
+  },
+  "unmergedRuntimeIntegration": {
+    "authority": "docs/rockstaros-complete-design.md#unmerged-runtime-integration",
+    "implementation": [
+      "lib/eve-history.ts",
+      "components/eve-history-panel.tsx",
+      "app/api/eve/history/route.ts",
+      "lib/sky-linux-service.ts",
+      "lib/rockstar-service-setup.ts",
+      "lib/sky-owner-export.server.ts"
+    ],
+    "migrations": [
+      "drizzle/0030_sky_linux_service.sql",
+      "drizzle/0031_rockstar_service_setup.sql",
+      "drizzle/0032_eve_durable_history.sql",
+      "drizzle-main/0026_home_eve_linux_runtime.sql"
+    ],
+    "tests": [
+      "tests/eve-history.test.mjs",
+      "tests/sky-linux-service.test.mjs",
+      "tests/rockstar-service-setup.test.mjs",
+      "tests/sky-owner-export-store.test.mjs"
+    ],
+    "realProviderAccepted": false,
+    "pixelFullOsAccepted": false,
+    "productionDeployed": false
   }
 }

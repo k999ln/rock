@@ -1,4 +1,6 @@
 'use client';
+import { skyAgentSystem, type SkyLibraryAgent } from '@/lib/sky-agent-library';
+import { EveHistoryPanel } from '@/components/eve-history-panel';
 
 import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/zema-private-storage';
 import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
@@ -386,6 +388,25 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const preferredTool = searchParams.get('tool') ?? '';
   const preferredPackage = searchParams.get('package') ?? '';
   const requestedThreadId = searchParams.get('thread') ?? '';
+  const requestedAgentId = searchParams.get('agent') ?? '';
+  const requestedAgentRevision = Number(searchParams.get('agentRevision') ?? -1);
+  const [libraryAgent, setLibraryAgent] = useState<SkyLibraryAgent | null>(null);
+  const [agentError, setAgentError] = useState('');
+  const activeAgent = libraryAgent?.id === requestedAgentId && libraryAgent.revision === requestedAgentRevision ? libraryAgent : null;
+  useEffect(() => {
+    if (!requestedAgentId) return;
+    const controller = new AbortController();
+    void fetch(`/api/sky/agents?id=${encodeURIComponent(requestedAgentId)}`, { cache: 'no-store', signal: controller.signal })
+      .then(async response => {
+        const value = await response.json() as { agent?: SkyLibraryAgent; error?: string };
+        if (!response.ok || !value.agent || value.agent.revision !== requestedAgentRevision || !value.agent.enabled)
+          throw new Error(value.error || 'Skyで担当の最新設定と有効状態を確認してください。');
+        return value.agent;
+      }).then(agent => { if (!controller.signal.aborted) { setLibraryAgent(agent); setAgentError(''); } })
+      .catch(error => { if (!controller.signal.aborted) { setLibraryAgent(null); setAgentError(error instanceof Error ? error.message : '担当を取得できません。'); } });
+    return () => controller.abort();
+  }, [requestedAgentId, requestedAgentRevision]);
+
   const preferredFund = searchParams.get('fund') ?? '';
   const workView = searchParams.get('view') === 'work';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
@@ -446,7 +467,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
   const { messages, setMessages, activeRequest, setActiveRequest, requestStartedAt, setRequestStartedAt,
-    workflowStatus, setWorkflowStatus, threadId, recentThreads, outcome, setOutcome,
+    workflowStatus, setWorkflowStatus, threadId, threadCreatedAt, recentThreads, outcome, setOutcome,
     coordinationPlan, setCoordinationPlan, resetSession, beginSession } =
     useSkyChatSession({ loading, workView, preferredTool, requestedThreadId, setSelectedToolId, roleFor });
   const [error, setError] = useState('');
@@ -741,9 +762,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     !message.id.startsWith('welcome-') && !message.id.startsWith('progress-'));
   const [modelSelectionNote, setModelSelectionNote] = useState('');
   const [allowFreeCloud, setAllowFreeCloud] = useState(false);
-  const textProvider = isTextModelProvider(providerRouting.textGeneration)
+  const textProvider = activeAgent?.provider ?? (isTextModelProvider(providerRouting.textGeneration)
     ? providerRouting.textGeneration
-    : 'local-model';
+    : 'local-model');
   const textProviderDefinition = textModelProviderDefinition(textProvider);
   const remoteTextProvider = providerRouting.textSelectionMode === 'manual' && textProvider !== 'pollinations' && textProviderDefinition.locality === 'remote';
   const activeTool = activeRequest
@@ -1219,6 +1240,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     event.preventDefault();
     const text = draft.trim();
     if (!text) return;
+    if (requestedAgentId && !activeAgent) { setError(agentError || '担当を確認しています。設定の確認後に依頼してください。'); return; }
 
     if (submissionRef.current || chatLoading || running) return;
     const targetMcp = selectedMcpServer;
@@ -1262,8 +1284,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (!confirmAmcReplacement(() => { void sendMessage(event); })) return;
     submissionRef.current = true;
     let requestProvider = textProvider;
-    let requestModel = providerRouting.textGenerationModel || textProviderDefinition.defaultModel;
-    if (!requestedJenniferPlan && !isAmc && providerRouting.textSelectionMode !== 'manual') {
+    let requestModel = activeAgent?.model || providerRouting.textGenerationModel || textProviderDefinition.defaultModel;
+    if (!activeAgent && !requestedJenniferPlan && !isAmc && providerRouting.textSelectionMode !== 'manual') {
       setChatLoading(true);
       const selectionController = new AbortController();
       chatAbortRef.current = selectionController;
@@ -1289,7 +1311,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         return;
       }
     }
-    if (!requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
+    if (!toolId && !routedRole && !requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
         .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Jennifer'}: ${message.text}`)
@@ -1297,7 +1319,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const estimatePrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      const estimateSystem = conversationIdentityFor(tool);
+      const estimateSystem = activeAgent ? skyAgentSystem(activeAgent) : conversationIdentityFor(tool);
       const controller = new AbortController();
       estimateAbortRef.current = controller;
       const isCurrent = () => estimateAbortRef.current === controller && !controller.signal.aborted;
@@ -1313,6 +1335,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           provider: requestProvider,
           model: requestModel,
           system: estimateSystem,
+          ...(activeAgent ? { agentId: activeAgent.id, agentRevision: activeAgent.revision } : {}),
           prompt: estimatePrompt.slice(-20_000),
           maxOutputTokens: 1_200,
           currency: remoteCurrency || undefined,
@@ -1408,7 +1431,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           baseUrl: requestProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
-          context: conversationIdentityFor(tool),
+          context: activeAgent ? skyAgentSystem(activeAgent) : conversationIdentityFor(tool),
+          ...(activeAgent && requestProvider !== 'pollinations' ? { agentId: activeAgent.id, agentRevision: activeAgent.revision } : {}),
           prompt: requestProvider === 'pollinations' ? text : selectedToolPrompt.slice(-20_000),
         }),
         signal: controller.signal,
@@ -1644,6 +1668,22 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {allBotsOpen ? '一覧を閉じる' : `すべて表示（${visibleBotApps.length}）`}
             </button>
           )}
+          <EveHistoryPanel
+            session={threadId && threadCreatedAt ? { version: 1, id: threadId, toolId: preferredTool || AUTO_MODE,
+              createdAt: threadCreatedAt, messages, activeRequest: null, workflowStatus, outcome } : null}
+            disabled={loading || executionBlocked || running || chatLoading}
+            onRestore={saved => {
+              const restore = () => {
+                resetSession();
+                const restored = { ...saved, activeRequest: null, coordination: undefined,
+                  workflowStatus: saved.workflowStatus === 'running' ? 'failed' as const : saved.workflowStatus };
+                beginSession(restored);
+                router.push(`/chat?tool=${encodeURIComponent(saved.toolId)}&thread=${encodeURIComponent(saved.id)}`);
+                closeSidebarOnSmallScreen();
+              };
+              if (confirmConversationReplacement(restore)) restore();
+            }}
+          />
           <div className="zema-sidebar-section-title"><span>最近の会話</span></div>
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {

@@ -1,0 +1,55 @@
+{
+  "schema": "sky.plain-language/1",
+  "work": [
+    {
+      "state": "active",
+      "label": "作業中"
+    },
+    {
+      "state": "review",
+      "label": "成果の確認待ち"
+    },
+    {
+      "state": "completed",
+      "label": "確認済み"
+    },
+    {
+      "state": "cancelled",
+      "label": "停止済み"
+    },
+    {
+      "state": "future_state",
+      "label": "結果を確認できません"
+    }
+  ],
+  "execution": [
+    {
+      "state": "completed",
+      "label": "処理が終了"
+    },
+    {
+      "state": "remote_completed",
+      "label": "相手側の処理が終了"
+    },
+    {
+      "state": "running",
+      "label": "作業中"
+    },
+    {
+      "state": "awaiting_approval",
+      "label": "あなたの確認待ち"
+    },
+    {
+      "state": "prepared",
+      "label": "実行待ち"
+    },
+    {
+      "state": "remote_failed",
+      "label": "相手側で作業が失敗"
+    },
+    {
+      "state": "future_state",
+      "label": "結果を確認できません"
+    }
+  ]
+}

@@ -1,33 +1,35 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-10-21T02:30:52Z",
+  "observedAt": "2026-10-21T11:03:09Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
     "origin": "http://127.0.0.1:8787",
     "productionBuild": true
   },
-  "sourceCommit": "70a8c8eb7e1364f0042285f27dd688a1167fe86f",
+  "sourceCommit": "8a95ee6f230b351e802574acc4c7e36c3b90939e",
   "measurement": {
     "githubRunId": null,
     "githubRunAttempt": null,
-    "nodeVersion": "v25.2.1",
-    "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
-    "servedWorkerSha256": "c9875ac4218849512f66bbf986f54414c3dd833bd47fb3e7fdd77fd1f5993691"
+    "nodeVersion": "v26.0.0",
+    "packageLockSha256": "539ba4006b336adb6624c797103a6c1822576a4f4933cd8a1dec0556e96f3a52",
+    "servedWorkerSha256": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d"
   },
   "inputs": {
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
     "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
     "scripts/check-web-security-response.mjs": "98f3b59cfcd1d873e222d7a269d22ecdf297a6cfad1e3618faceb4760d5cd605",
-    "public/sw.js": "c9875ac4218849512f66bbf986f54414c3dd833bd47fb3e7fdd77fd1f5993691",
+    "public/sw.js": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d",
     "app/manifest.ts": "dc046e459bf78ca380fd0ec7032c708ea10dd1eb21e5b61800f84587018a8556",
     "public/rock-icon-192.png": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
     "public/rock-icon-512.png": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
     "public/rock-icon-maskable.svg": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735"
   },
   "result": {
+    "schema": "rockstaros-web-security-response-check/1",
     "status": "PASS",
+    "baseOrigin": "http://127.0.0.1:8787",
     "universalHeaders": 8,
     "routes": [
       "/",
@@ -37,11 +39,12 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-cFJK2cvF.js"
+      "/_next/static/chunks/index-Dex-vLqJ.js"
     ]
   },
   "boundary": {
     "sitesDeploymentVerified": false,
     "nextAction": "同じsource SHAを本人限定Sitesへ同期した後、本人認証済みresponseから同じ8 headerを再読取りする"
-  }
+  },
+  "sourceScope": "isolated integration candidate based on sourceCommit; exact security inputs below"
 }

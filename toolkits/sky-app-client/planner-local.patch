@@ -1,0 +1,59 @@
+--- a/public/app.js
++++ b/public/app.js
+@@ -8,8 +8,13 @@
+   }
+ 
+   const KEY = "avocado-princeton-progress-v1";
+-  const SKY_ORIGIN = "https://avoado.si";
++  // Local-only foundation pilot. Hosted Planner keeps its existing production handoff.
++  const privateSkyLab = location.protocol === "http:" && ["localhost", "127.0.0.1"].includes(location.hostname) && ["5173", "5197"].includes(location.port);
++  const SKY_ORIGIN = privateSkyLab ? "http://localhost:3000" : "https://avoado.si";
++  const SKY_CHAT_URL = privateSkyLab ? `${SKY_ORIGIN}/sky/apps/planner/lab` : `${SKY_ORIGIN}/chat`;
+   const skyHandoffs = new Map();
++  const privateSkyTasks = new Set();
++  const privateSkyFingerprint = (task) => JSON.stringify({ base: amcTaskFingerprint(task), deliverable: task.deliverable, acceptance: task.acceptance, steps: task.steps, role: task.role, date: task.date });
+   const SYNC_KEY = "avocado-princeton-progress-pending-v1";
+   const BASE_KEY = "avocado-princeton-progress-base-revision-v1";
+   const LEGACY_KEY = "avocado-princeton-progress-legacy-v1";
+@@ -1489,7 +1494,29 @@
+       return;
+     }
+     const brief = `avocado planの3か月AMCからの依頼です。これは送信前の下書きです。月の支出上限は0円。有料実行を行わず、内容を本人がSkyで確認してから送信します。目標：${state.amc.goal}。完成物：${state.amc.answers[0] || "未確定"}。相手：${state.amc.answers[1] || "未確定"}。使える時間・判断条件：${state.amc.answers[2] || "未確定"}。担当作業：${task.title}。成果物：${task.deliverable}。手順：${task.steps.join(" / ")}。完了条件：${task.acceptance}。実際に調査・制作・連絡したと装わず、未確認事項と人間が判断する点を分けて、下書きを返してください。`.slice(0, 2000);
+-    const target = window.open(`${SKY_ORIGIN}/chat`, "_blank");
++    if (privateSkyLab) {
++      if (privateSkyTasks.has(taskId)) { showAmcSkyStatus("この作業は本人用Skyへ受渡し中です。"); return; }
++      privateSkyTasks.add(taskId);
++      const fingerprint = privateSkyFingerprint(task);
++      import("/sky-foundation-private.js").then(({ sendPrivatePlannerTask }) => sendPrivatePlannerTask({
++        taskId, fingerprint, brief,
++        onStatus(message) { showAmcSkyStatus(message); if (!message.startsWith("本人用Skyへ依頼")) privateSkyTasks.delete(taskId); },
++        onResult(result) {
++          privateSkyTasks.delete(taskId);
++          const current = state.amc.tasks.find((item) => item.id === taskId);
++          if (!current || current.role !== "agent" || current.status === "done" || current.artifact || privateSkyFingerprint(current) !== fingerprint || !amcEngine.readiness(state.amc.tasks, current).ready) {
++            showAmcSkyStatus("計画が変わりました。Skyの成果は上書きせず、Sky側で確認してください。"); return;
++          }
++          current.artifact = `Skyから戻した回答（未検証）\n${result.body}\nSky job: ${result.jobId} / revision ${result.revision}`;
++          current.evidence = ""; current.status = "waiting";
++          state.amc.tasks = buildAmcTasks(state.amc); syncAmcCalendar();
++          state.amc.messages = [...messagesForAmc(state.amc), { role: "assistant", text: `Skyの成果を「${current.title}」の確認待ちに戻しました。採用までは完了にしません。` }].slice(-24);
++          save(); renderDaily(); renderCoach(); showAmcSkyStatus("共通Skyの成果を確認待ちへ保存しました。本人が内容を確認して採用してください。");
++        },
++      })).catch((cause) => { privateSkyTasks.delete(taskId); showAmcSkyStatus(cause.message); });
++      return;
++    }
++    const target = window.open(SKY_CHAT_URL, "_blank");
+     if (!target) {
+       showAmcSkyStatus("Skyを開けませんでした。ポップアップの許可を確認してください。");
+       return;
+@@ -1499,8 +1526,9 @@
+     showAmcSkyStatus(`「${task.title}」の依頼をSkyの未送信下書きへ渡します。Sky側で確認してから送信してください。`);
+   }
+   $("sendSkyBrief").addEventListener("click", () => {
++    if (privateSkyLab) { $("skyCopyMessage").textContent = "本人用の共通Sky試作は、目標から作ったAMCの個別タスクで試せます。月全体の受渡しは従来の公開版経路を維持しています。"; return; }
+     const monthId = state.focusId;
+-    const target = window.open(`${SKY_ORIGIN}/chat`, "_blank");
++    const target = window.open(SKY_CHAT_URL, "_blank");
+     if (!target) {
+       $("skyCopyMessage").textContent = "Skyを開けませんでした。文章をコピーして手動で貼り付けてください。";
+       return;

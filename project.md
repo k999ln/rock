@@ -750,3 +750,8 @@ AMC02主担当、G04連携。Jenniferを利用者に見える唯一の統括窓�
 本人領域の正本は`https://avoado.si`へ固定し、passkey RPも`avoado.si`のみとした。Columbiaと生成Sites hostのJennifer/AMC/Job/A2A private APIは別D1へ書かずfail closed、画面GETは正本へ転送する。内部8プロジェクト一覧は`JENNIFER_PORTFOLIO_OWNER_ID`一致時のみ表示し、外部A2A本番送信はprovider trustと実行承認が揃うまで無効を維持する。
 
 ローカル受入はJennifer契約・host routing・passkey・owner auth・session recovery・visual contractの67件、typecheck、oxlintが合格。既存本番readbackではmain SiteにJennifer D1表が未反映、Columbia側には存在することを確認したため、mainへのmigration付き配備と再readbackを完了条件に残す。証拠は`docs/evidence/jennifer-surface-architecture.json`。
+
+
+## 未統合runtimeの整理
+
+G04 / ROCK。main 8a95ee6f起点の専用cloneでEve履歴・Linux/service・成果持出しとadapterを現行設計へ統合中。共有dirty685件と途中96変更をGit外へ保全。root0030〜0032とmain Site0026はadditive。旧UI/生成物/重複migrationを除き、現行mainの権限・料金・復旧修正を維持する。全verify、同一SHA CI、main読戻しは検証後に追記する。公開・実機・実課金は別gate。

@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-21",
+  "market": "US",
+  "seller": {
+    "name": "avokado LLC",
+    "source": "owner stated 2026-10-21",
+    "ownerStatedContactCityState": "New York, NY",
+    "contactAddressUsageOwnerStated": "correspondence only; not assembly or returns receiving",
+    "registrationState": "NY",
+    "registrationStateSource": "owner stated; state record not checked",
+    "assemblyState": null,
+    "returnsReceivingState": null,
+    "legalIdentityVerified": false,
+    "publicContactVerified": false
+  },
+  "model": "one-unit-at-a-time build to order",
+  "candidateSku": "pro-studio-16",
+  "candidateOnly": true,
+  "firstPrototypeEnclosureOwnerSelected": "Lian Li A4-H2O silver; physical fit and supply not yet accepted",
+  "paymentProviderSelected": false,
+  "paymentProviderDecision": "Compare Stripe, Square and PayPal for US orders; owner selected comparison, not a provider, 2026-10-21",
+  "components": [
+    { "role": "CPU", "candidate": "AMD Ryzen 7 9700X", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "GPU", "candidate": "ASUS Dual GeForce RTX 5060 Ti 16GB OC Edition", "manufacturerPartNumberCandidate": "DUAL-RTX5060TI-O16G", "manufacturerDimensionsMm": [229, 120, 50], "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "motherboard", "candidate": "ASUS ROG STRIX B850-I GAMING WIFI", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "memory", "candidate": "2 × 32GB DDR5, exact board-QVL kit to freeze", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "storage", "candidate": "2TB NVMe, exact model to freeze", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "enclosure", "candidate": "Lian Li A4-H2O silver, provisional off-the-shelf first-run chassis", "manufacturerPartNumberCandidate": "A4 H2OA5 SILVER", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "power", "candidate": "750W SFX PSU, exact model and cable path to freeze", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false },
+    { "role": "cooling", "candidate": "55mm-clearance-compatible CPU cooler, exact model to freeze", "supplierSku": null, "writtenQuote": null, "physicalFitAccepted": false }
+  ],
+  "gates": {
+    "exactBomFrozen": false,
+    "supplierQuoteAndAllocationConfirmed": false,
+    "singlePhysicalPrototypePassed": false,
+    "assemblyAndBurnInProcedurePassed": false,
+    "shippingPackagingDropTestPassed": false,
+    "usDeliveryWindowEvidence": false,
+    "sellerTaxAndResaleSetupVerified": false,
+    "customerTermsAndWarrantyApproved": false,
+    "returnsAndRefundReserveFunded": false,
+    "merchantLiveAccountConnected": false,
+    "checkoutWebhookRefundReconciliationPassed": false,
+    "orderToDeliveryDryRunPassed": false
+  },
+  "economics": {
+    "priceCentsExcludingSalesTax": null,
+    "partsCents": null,
+    "inboundFreightCents": null,
+    "assemblyAndTestCents": null,
+    "packagingCents": null,
+    "outboundShippingCents": null,
+    "supportReserveCents": null,
+    "warrantyReserveCents": null,
+    "returnsReserveCents": null,
+    "paymentFeeRateBasisPoints": 290,
+    "paymentFeeFixedCents": 30,
+    "paymentFeeAssumption": "Stripe US domestic online card comparison only; provider not selected",
+    "availableWorkingCapitalCents": null,
+    "confirmedSupplierCreditCents": null
+  },
+  "proposedInternalThresholds": {
+    "approvedByOwner": false,
+    "minimumContributionCents": 20000,
+    "minimumContributionRateBasisPoints": 1500
+  },
+  "salesEnabled": false,
+  "actualPaidOrders": 0,
+  "actualShippedOrders": 0
+}

@@ -1,5 +1,7 @@
 ---
 import "../../style.css";
+import "../../pro-experience.css";
+import ProAssemblyWorkbench from "../../components/ProAssemblyWorkbench.astro";
 import { proDesign } from "../../pro-design.js";
 ---
 <!doctype html>
@@ -28,6 +30,7 @@ import { proDesign } from "../../pro-design.js";
   </header>
 
   <main>
+    <section id="pro-build" aria-label="avocadoPro build concept"><ProAssemblyWorkbench /></section>
     <section id="pro-overview" class="pro-hero" aria-labelledby="pro-title">
       <figure class="pro-design-figure"><img src={proDesign.image} alt="Existing Pro design study: compact silver PC enclosure and candidate hardware, not an assembled product" fetchpriority="high" /><figcaption>2026-10-05 design study. Enclosure fit and cooling are unvalidated. <a href={proDesign.image}>Open full-size concept ↗</a></figcaption></figure>
       <div class="pro-hero-shade" aria-hidden="true"></div>
@@ -108,5 +111,6 @@ import { proDesign } from "../../pro-design.js";
       .pro-highlight-card > div { padding: 28px; }
     }
   </style>
+  <script>import "../../pro-experience.js";</script>
 </body>
 </html>

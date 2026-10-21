@@ -1,0 +1,58 @@
+{
+  "schema": "execution-si-model-source-catalog/1",
+  "observedAt": "2026-10-21",
+  "status": "metadata_research_only",
+  "authority": "docs/llm-evaluation-architecture.md#execution-si-owned-model",
+  "meaning": "Publisher model cards and upstream documentation were read; no model, dataset, or third-party code was downloaded or accepted for training or runtime.",
+  "modelFieldsToPinBeforeAcquisition": [
+    "publisher_identity",
+    "exact_revision_and_file_hashes",
+    "weight_and_code_license_text",
+    "base_model_and_training_data_provenance",
+    "tokenizer_chat_template_and_tool_schema",
+    "runtime_and_target_hardware_fit",
+    "job_quality_resource_and_cost_measurements"
+  ],
+  "models": [
+    {"id":"Qwen/Qwen3-0.6B","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/Qwen/Qwen3-0.6B","comparisonRole":"existing_pixel_series_baseline"},
+    {"id":"Qwen/Qwen3.5-2B","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/Qwen/Qwen3.5-2B","comparisonRole":"small_candidate"},
+    {"id":"Qwen/Qwen3.5-2B-Base","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/Qwen/Qwen3.5-2B-Base","comparisonRole":"continued_training_candidate"},
+    {"id":"Qwen/Qwen3.5-4B","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/Qwen/Qwen3.5-4B","comparisonRole":"small_to_medium_candidate"},
+    {"id":"Qwen/Qwen3.5-9B","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/Qwen/Qwen3.5-9B","comparisonRole":"managed_linux_candidate"},
+    {"id":"google/gemma-4-E2B","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/google/gemma-4-E2B","comparisonRole":"small_multimodal_candidate"},
+    {"id":"google/gemma-4-E4B","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/google/gemma-4-E4B","comparisonRole":"multimodal_candidate"},
+    {"id":"microsoft/Phi-4-mini-instruct","kind":"post_trained","licenseTagObserved":"mit","url":"https://huggingface.co/microsoft/Phi-4-mini-instruct","comparisonRole":"small_text_candidate"},
+    {"id":"mistralai/Ministral-3-3B-Instruct-2512","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512","comparisonRole":"small_text_candidate"},
+    {"id":"mistralai/Ministral-3-3B-Base-2512","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/mistralai/Ministral-3-3B-Base-2512","comparisonRole":"continued_training_candidate"},
+    {"id":"ibm-granite/granite-4.0-micro","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/ibm-granite/granite-4.0-micro","comparisonRole":"small_tool_candidate"},
+    {"id":"ibm-granite/granite-4.0-micro-base","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/ibm-granite/granite-4.0-micro-base","comparisonRole":"continued_training_candidate"},
+    {"id":"openai/gpt-oss-20b","kind":"post_trained","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/openai/gpt-oss-20b","comparisonRole":"managed_linux_candidate"},
+    {"id":"deepseek-ai/DeepSeek-V4.1-Flash","kind":"post_trained","licenseTagObserved":"mit","url":"https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash","comparisonRole":"large_cloud_reference"},
+    {"id":"xai-org/grok-1","kind":"base","licenseTagObserved":"apache-2.0","url":"https://huggingface.co/xai-org/grok-1","upstreamCode":"https://github.com/xai-org/grok-1","comparisonRole":"large_cloud_reference"}
+  ],
+  "datasets": [
+    {"id":"HuggingFaceFW/fineweb-edu","url":"https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu","licenseTagObserved":"odc-by","trainingEligibility":"source_rights_and_provenance_review_required"},
+    {"id":"HuggingFaceTB/smoltalk","url":"https://huggingface.co/datasets/HuggingFaceTB/smoltalk","licenseTagObserved":"not_confirmed_for_all_components","trainingEligibility":"component_rights_review_required"},
+    {"id":"bigcode/the-stack-v2","url":"https://huggingface.co/datasets/bigcode/the-stack-v2","licenseTagObserved":"other","trainingEligibility":"gated_bulk_agreement_and_per_repository_license_review_required"}
+  ],
+  "upstreamTools": [
+    {"id":"huggingface/trl","role":"post_training","url":"https://github.com/huggingface/trl"},
+    {"id":"huggingface/nanotron","role":"pretraining","url":"https://github.com/huggingface/nanotron"},
+    {"id":"EleutherAI/lm-evaluation-harness","role":"evaluation","url":"https://github.com/EleutherAI/lm-evaluation-harness"},
+    {"id":"deepseek-ai/DeepInfer","role":"large_scale_inference","url":"https://github.com/deepseek-ai/DeepInfer"}
+  ],
+  "x": {
+    "developerAgreement": "https://docs.x.com/developer-terms/agreement",
+    "sourceUse": "announcement_links_and_firsthand_hypotheses_only",
+    "foundationModelTrainingFromXApiOrContentAllowed": false,
+    "accessOrTrainingAgreementExecuted": false
+  },
+  "acquisitionState": {
+    "exactRevisionsPinned": false,
+    "weightsDownloaded": false,
+    "datasetsDownloaded": false,
+    "trainingMethodSelected": false,
+    "candidateBenchmarked": false,
+    "modelAcceptedForExecutionSi": false
+  }
+}

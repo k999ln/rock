@@ -190,6 +190,9 @@ public final class MainActivity extends Activity {
         pauseWorkButton = button(pageContent[2], "端末の仕事を一時停止", () -> changeLocalPause(!localWorkPaused));
         label(pageContent[2], "端末の停止とクラウドの取消は別です。保存した成果は残ります。", 12);
         heading(pageContent[3], "設定", "本人・端末・保存と復旧");
+        if (getResources().getBoolean(R.bool.rockstar_service_setup_enabled)) {
+            button(pageContent[3], "Sky・Eveの利用開始", () -> startActivity(new Intent(this, ServiceSetupActivity.class)));
+        }
         form = ui.card(pageContent[3]);
         label(form, "仕事のお知らせ", 18);
         notificationStatus = label(form, "通知状態を確認しています…", 14);
@@ -437,6 +440,11 @@ public final class MainActivity extends Activity {
         });
         LinearLayout header = new LinearLayout(this); header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(ui.dp(22), ui.dp(12), ui.dp(22), ui.dp(12));
+        android.widget.ImageView companyMark = new android.widget.ImageView(this);
+        companyMark.setImageResource(R.drawable.company_mark);
+        companyMark.setContentDescription("avokado 会社ロゴ");
+        companyMark.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        header.addView(companyMark, new LinearLayout.LayoutParams(ui.dp(30), ui.dp(30)));
         TextView brand = new TextView(this); brand.setText("RockstarOS"); brand.setTextSize(18);
         brand.setTextColor(ShellUi.INK); brand.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1f));

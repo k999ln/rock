@@ -4,22 +4,11 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
+import { isLocalRuntimeRequest } from '../lib/sky-private-loopback.mjs';
+export { isLocalRuntimeRequest };
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
 const SERVICES = new Set(['connector', 'fashion']);
-
-export function isLocalRuntimeRequest(request, port) {
-  if (!LOOPBACK.has(request.socket?.remoteAddress)) return false;
-  const origin = request.headers.origin;
-  if (typeof origin !== 'string' || request.headers['sec-fetch-site'] === 'cross-site') return false;
-  try {
-    const url = new URL(origin);
-    return url.protocol === 'http:' && url.origin === origin &&
-      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) &&
-      url.port === String(port) && url.host === request.headers.host;
-  } catch { return false; }
-}
 
 function portOccupied(port) {
   return new Promise((done) => {

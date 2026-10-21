@@ -15,6 +15,20 @@
       "when": 1790025258149,
       "tag": "0001_nifty_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792364607362,
+      "tag": "0002_whole_madripoor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1792394400000,
+      "tag": "0003_pro_purchase_interest",
+      "breakpoints": true
     }
   ]
 }

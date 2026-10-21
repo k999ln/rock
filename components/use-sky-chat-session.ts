@@ -134,6 +134,6 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
 
   return { messages, setMessages, activeRequest, setActiveRequest,
     requestStartedAt, setRequestStartedAt, workflowStatus, setWorkflowStatus,
-    threadId, recentThreads, outcome, setOutcome, coordinationPlan, setCoordinationPlan,
+    threadId, threadCreatedAt, recentThreads, outcome, setOutcome, coordinationPlan, setCoordinationPlan,
     resetSession, beginSession };
 }

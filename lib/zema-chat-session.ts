@@ -78,6 +78,7 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
     ID.test(session.id) &&
     typeof session.toolId === 'string' &&
     TOOL_ID.test(session.toolId) &&
+    (session.agent === undefined || (typeof session.agent === 'object' && session.agent !== null && typeof session.agent.id === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,119}$/.test(session.agent.id) && Number.isSafeInteger(session.agent.revision) && session.agent.revision >= 0)) &&
     typeof session.createdAt === 'number' &&
     Number.isFinite(session.createdAt) &&
     session.createdAt <= now + 30_000 &&
@@ -188,7 +189,7 @@ export function saveZemaChatSession(
     coordination: session.coordination ?? undefined,
   };
   if (!validSession(bounded, now))
-    throw new Error('Zemaのチャット状態を確認してください。');
+    throw new Error('Eveのチャット状態を確認してください。');
   const sessions = [
     bounded,
     ...readZemaChatSessions(storage, now).filter(

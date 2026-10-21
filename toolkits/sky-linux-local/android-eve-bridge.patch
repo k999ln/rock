@@ -1,0 +1,245 @@
+--- a/android/shell/src/debug/java/dev/rock/shell/SkyLinuxActivity.java
++++ b/android/shell/src/debug/java/dev/rock/shell/SkyLinuxActivity.java
+@@ -23,14 +23,15 @@
+ import java.security.MessageDigest;
+ 
+ /** Owner-only view of the same Pixel-local Sky workflow. No shell or remote URL input. */
+-public final class SkyLinuxActivity extends Activity {
++public class SkyLinuxActivity extends Activity {
++    protected boolean isEve(){return false;}
+     private static final String ENDPOINT="http://127.0.0.1:5199/__sky/linux";
+     private static final int SAVE=5199, IMPORT=5202;
+     private int DARK;
+     private final Handler main=new Handler(Looper.getMainLooper());
+     private final ExecutorService io=Executors.newSingleThreadExecutor();
+     private volatile boolean fetching, destroyed;
+-    private boolean commandBusy, starting, prepareAfterConnect, prepareSent, returningFromLauncher;
++    private boolean connectionReady, commandBusy, starting, prepareAfterConnect, prepareSent, returningFromLauncher;
+     private static final int NOTIFY_PERMISSION=5200, START_NOTICE=5201;
+     private long startupDeadline;
+     private ShellUi ui;
+@@ -54,6 +55,7 @@
+ 
+     @Override public void onCreate(Bundle state){
+         super.onCreate(state);
++        try{SkyLinuxBridge.start(this);}catch(Exception e){/* Legacy connection stays available before pairing. */}
+         ui=new ShellUi(this); DARK=ShellUi.BACKGROUND; getWindow().setStatusBarColor(DARK); getWindow().setNavigationBarColor(DARK);
+         scroll=new ScrollView(this); scroll.setFillViewport(true); scroll.setBackgroundColor(DARK);
+         LinearLayout body=ui.column(); body.setPadding(ui.dp(18),ui.dp(8),ui.dp(18),ui.dp(24)); scroll.addView(body);
+@@ -66,12 +68,12 @@
+         LinearLayout bar=new LinearLayout(this);bar.setGravity(android.view.Gravity.CENTER_VERTICAL);body.addView(bar);
+         Button back=button(bar,"‹ Sky",this::finish);back.setLayoutParams(new LinearLayout.LayoutParams(0,ui.dp(48),1));ui.quiet(back);
+         ui.badge(bar,"本人用の試用",ShellUi.MUTED);
+-        label(body,"何を進めますか？",26);
++        label(body,isEve()?"Eve · 何を進めますか？":"Sky · 担当を選ぶ",26);
+         status=label(body,"起動すると、このPixelで依頼できます。",14);status.setTag("pixel-sky-status");
+         notice=label(body,"",15);notice.setTextIsSelectable(true);notice.setVisibility(View.GONE);
+         stop=button(body,"AIを停止する（成果は残す）",()->action(object("action","stop-environment")));stop.setTag("pixel-sky-stop");ui.quiet(stop);stop.setVisibility(View.GONE);
+         composer=card(body);
+-        request=field(composer,"例：avokadoのAI担当を増やしたい",true);request.setTag("pixel-sky-request");request.setMinLines(3);request.setMaxLines(7);
++        request=field(composer,"例：avokadoのAI担当を増やしたい",true);request.setTag("pixel-sky-request");request.setMinLines(3);request.setMaxLines(7);request.setVisibility(isEve()?View.VISIBLE:View.GONE);
+         agentLabel=label(composer,"任せる担当",13);agentLabel.setVisibility(View.GONE);
+         agents=new Spinner(this);agents.setTag("pixel-sky-agents");agents.setMinimumHeight(ui.dp(48));agents.setPopupBackgroundDrawable(ui.surface(ShellUi.SURFACE,ShellUi.LINE,12));composer.addView(agents);
+         agentHint=label(composer,"担当は起動後に選べます。",13);
+@@ -123,21 +125,23 @@
+             .setPositiveButton("アプリの設定を開く",(d,w)->startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+getPackageName())))).setNegativeButton("閉じる",null).show());
+         label(settings,"画面を閉じるだけでは計算の停止になりません。止めるときは停止ボタンを使ってください。",13);
+         selectedAgent=getSharedPreferences("pixel_linux_ui",0).getString("agent","");
+-        pendingRequestId=getSharedPreferences("pixel_linux_pending",0).getString("id",null);pendingRequestKey=getSharedPreferences("pixel_linux_pending",0).getString("key",null);
++        pendingRequestId=getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).getString("id",null);pendingRequestKey=getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).getString("key",null);
+         if(state!=null){request.setText(state.getString("request",""));importKind=state.getString("importKind","");pendingSave=state.getByteArray("pendingSave");saving=pendingSave!=null;pendingRequestId=state.getString("requestId");pendingRequestKey=state.getString("requestKey");}
++        if(isEve()){settings.setVisibility(View.GONE);String chosen=getIntent().getStringExtra("agent");if(chosen!=null)selectedAgent=chosen;}
+         main.post(refresh);
+     }
+     private void primaryAction(){
+         if(commandBusy||starting){message("操作が終わるまでお待ちください。");return;}
+-        if(latest==null){startSky();return;}
++        if(!connectionReady||latest==null){startSky();return;}
+         JSONArray models=latest.optJSONArray("models");
+         if(models==null||models.length()==0){openSettings();message("使うAIの利用条件を確認して、追加してください。");return;}
+         if(!agentReady()){if(selectedAgent.isEmpty())prepareModel(pickedModel);else prepareModel(agentModel());return;}
+         JSONArray list=latest.optJSONArray("agents");
+         if(list==null||list.length()==0){openSettings();message("任せたい内容を書いて、自分の担当を追加してください。");return;}
+-        runWork();
+-    }
+-    private void newRequest(){closeJobDialog();if(latest!=null){JSONArray jobs=latest.optJSONArray("runs");if(jobs!=null)for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){message("今の仕事を止めるか、終わるまでお待ちください。");scroll.smoothScrollTo(0,0);return;}}pendingRequestId=null;pendingRequestKey=null;getSharedPreferences("pixel_linux_pending",0).edit().clear().apply();request.setText("");consent.setChecked(false);scroll.smoothScrollTo(0,0);request.requestFocus();}
++        if(isEve())runWork();else openEve();
++    }
++    private void openEve(){if(selectedAgent.isEmpty()){message("担当を選んでください。");return;}startActivity(new Intent(this,EveLinuxActivity.class).putExtra("agent",selectedAgent));}
++    private void newRequest(){closeJobDialog();if(latest!=null){JSONArray jobs=latest.optJSONArray("runs");if(jobs!=null)for(int i=0;i<jobs.length();i++)if(isWorking(jobs.optJSONObject(i))){message("今の仕事を止めるか、終わるまでお待ちください。");scroll.smoothScrollTo(0,0);return;}}pendingRequestId=null;pendingRequestKey=null;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().clear().apply();request.setText("");consent.setChecked(false);scroll.smoothScrollTo(0,0);request.requestFocus();}
+     private LinearLayout disclosure(LinearLayout parent,String title){
+         LinearLayout box=card(parent),contents=ui.column();contents.setVisibility(View.GONE);
+         Button toggle=button(box,title+"  ＋",()->{});ui.quiet(toggle);box.setPadding(ui.dp(16),0,ui.dp(16),ui.dp(8));toggle.setLayoutParams(new LinearLayout.LayoutParams(-1,ui.dp(52)));toggle.setStateDescription("折りたたみ");
+@@ -151,12 +155,13 @@
+     private LinearLayout card(LinearLayout parent){return ui.card(parent);}
+     private void message(String text){notice.setText(text);notice.setVisibility(text.isEmpty()?View.GONE:View.VISIBLE);if(!text.isEmpty())notice.announceForAccessibility(text);}
+     private JSONObject call(JSONObject command)throws Exception{
++        if(SkyLinuxBridge.paired(this))return SkyLinuxBridge.request(this,command);
+         HttpURLConnection c=(HttpURLConnection)new URL(ENDPOINT).openConnection();c.setConnectTimeout(1500);c.setReadTimeout(20000);c.setInstanceFollowRedirects(false);c.setRequestMethod("POST");c.setDoOutput(true);c.setRequestProperty("Content-Type","application/json");c.setRequestProperty("Origin","http://127.0.0.1:5199");
+         try{byte[] bytes=command.toString().getBytes(StandardCharsets.UTF_8);c.setFixedLengthStreamingMode(bytes.length);try(OutputStream out=c.getOutputStream()){out.write(bytes);}int code=c.getResponseCode();InputStream in=code==200?c.getInputStream():c.getErrorStream();if(in==null)throw new IOException();ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[8192];int n;try(InputStream input=in){while((n=input.read(b))!=-1){out.write(b,0,n);if(out.size()>5_000_000)throw new IOException();}}JSONObject result=new JSONObject(out.toString("UTF-8"));if(code!=200)throw new IOException(result.optString("error","操作できませんでした。状態を確認してください。"));if(!"sky.private-linux-deployment/1".equals(result.optString("schema"))&&!command.optString("action").startsWith("export"))throw new IOException();return result;}finally{c.disconnect();}
+     }
+-    private void poll(){if(fetching||commandBusy||destroyed)return;fetching=true;io.execute(()->{try{JSONObject s=call(object("action","status"));main.post(()->{if(destroyed)return;starting=false;startupNotice(true);render(s);if(prepareAfterConnect&&!prepareSent&&s.optJSONArray("models")!=null&&s.optJSONArray("models").length()>0&&!"ready".equals(s.optString("phase"))&&!"preparing".equals(s.optString("phase"))){prepareSent=true;JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}action(q);}});}catch(Exception e){main.post(()->{if(destroyed)return;if(starting&&System.currentTimeMillis()<startupDeadline){status.setText("Skyを起動しています。少しお待ちください。");}else{starting=false;startupNotice(false);latest=null;status.setText(prepareAfterConnect?"起動を確認できません。入力は残っています。設定で接続を確認してください。":"起動すると、このPixelで依頼できます。");start.setEnabled(true);run.setText("Skyを起動する");run.setEnabled(true);stop.setVisibility(View.GONE);addAgent.setEnabled(false);addModel.setEnabled(false);}});}finally{fetching=false;}});}
++    private void poll(){if(fetching||commandBusy||destroyed)return;fetching=true;io.execute(()->{try{JSONObject s=call(object("action","status"));main.post(()->{if(destroyed)return;connectionReady=true;starting=false;startupNotice(true);render(s);if(prepareAfterConnect&&!prepareSent&&s.optJSONArray("models")!=null&&s.optJSONArray("models").length()>0&&!"ready".equals(s.optString("phase"))&&!"preparing".equals(s.optString("phase"))){prepareSent=true;JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}action(q);}});}catch(Exception e){main.post(()->{if(destroyed)return;connectionReady=false;if(starting&&android.os.SystemClock.elapsedRealtime()<startupDeadline){status.setText("Skyを起動しています。少しお待ちください。");}else{starting=false;startupNotice(false);status.setText(latest!=null?"接続を確認できません。入力と最後の記録は残っています。停止や実行結果は再接続後に確認します。":"起動すると、このPixelで依頼できます。");start.setEnabled(true);run.setText("接続を確認する");run.setEnabled(true);stop.setEnabled(false);addAgent.setEnabled(false);addModel.setEnabled(false);}});}finally{fetching=false;}});}
+     private void action(JSONObject command){if(commandBusy||destroyed)return;commandBusy=true;message("操作しています…");io.execute(()->{try{JSONObject s=call(command);main.post(()->{if(destroyed)return;message("");if("add-model".equals(command.optString("action"))){pickedModel=s.optString("selectedModelId",pickedModel);modelFingerprint="";}render(s);if("prepare".equals(command.optString("action"))||"run".equals(command.optString("action")))scroll.smoothScrollTo(0,0);if("inspect-model".equals(command.optString("action"))&&s.optJSONObject("inspectedModel")!=null)reviewImport("model",s.optJSONObject("inspectedModel"));});}catch(Exception e){main.post(()->{if(!destroyed)message(e.getMessage()!=null&&e.getMessage().matches(".*[ぁ-んァ-ヶ一-龯].*")?e.getMessage():"操作の結果を確認できません。重ねて依頼せず、状態が更新されるのを待ってください。");});}finally{commandBusy=false;}});}
+-    private void startSky(){if(starting||commandBusy)return;if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},NOTIFY_PERMISSION);return;}prepareAfterConnect=true;prepareSent=false;if(latest!=null){JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}prepareSent=true;action(q);return;}starting=true;startupDeadline=System.currentTimeMillis()+60000;start.setEnabled(false);run.setEnabled(false);status.setText("起動用の画面が開きます。準備の通知を押してSkyへ戻ってください。");try{
++    private void startSky(){if(starting||commandBusy)return;if(android.os.Build.VERSION.SDK_INT>=33&&checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS},NOTIFY_PERMISSION);return;}prepareAfterConnect=true;prepareSent=false;if(connectionReady&&latest!=null){JSONObject q=object("action","prepare");try{q.put("accepted",true);q.put("modelId",agentModel().isEmpty()?pickedModel:agentModel());}catch(Exception ignored){}prepareSent=true;action(q);return;}starting=true;startupDeadline=android.os.SystemClock.elapsedRealtime()+60000;start.setEnabled(false);run.setEnabled(false);status.setText("起動用の画面が開きます。準備の通知を押してSkyへ戻ってください。");try{
+         returningFromLauncher=true;Intent terminal=new Intent();terminal.setClassName("com.android.virtualization.terminal","com.android.virtualization.terminal.LauncherActivity");terminal.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);startActivity(terminal);
+         main.postDelayed(()->{if(!destroyed&&returningFromLauncher)startupNotice(false);},60000);
+     }catch(Exception e){starting=false;start.setEnabled(true);message("この端末の実行機能を開けませんでした。導入状態を確認してください。");}}
+@@ -167,8 +172,8 @@
+         Notification notification=new Notification.Builder(this,"pixel_sky_start").setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle(connected?"Skyにつながりました":"Skyの起動を確認してください").setContentText("ここを押してSkyへ戻る。入力は不要です。").setContentIntent(open).setAutoCancel(true).build();manager.notify(START_NOTICE,notification);
+     }
+     @Override public void onRequestPermissionsResult(int code,String[] permissions,int[] grants){super.onRequestPermissionsResult(code,permissions,grants);if(code==NOTIFY_PERMISSION){if(grants.length>0&&grants[0]==android.content.pm.PackageManager.PERMISSION_GRANTED)startSky();else message("起動後にSkyへ戻る通知を使います。通知を許可して、もう一度起動してください。");}}
+-    @Override protected void onResume(){super.onResume();getSystemService(NotificationManager.class).cancel(START_NOTICE);}
+-    private void runWork(){if(!consent.isChecked()){message("料金と保存の確認にチェックしてください。");return;}String input=request.getText().toString();if(input.trim().isEmpty()||input.length()>4000||selectedAgent.isEmpty()){message("担当を選び、依頼を4000文字以内で書いてください。");return;}String key;try{byte[] hash=MessageDigest.getInstance("SHA-256").digest((selectedAgent+"\n"+input).getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte b:hash)h.append(String.format("%02x",b));key=h.toString();}catch(Exception e){message("依頼の確認ができませんでした。");return;}if(!key.equals(pendingRequestKey)){pendingRequestId=UUID.randomUUID().toString();pendingRequestKey=key;getSharedPreferences("pixel_linux_pending",0).edit().putString("id",pendingRequestId).putString("key",key).commit();}try{action(new JSONObject().put("action","run").put("agentId",selectedAgent).put("input",input).put("requestId",pendingRequestId).put("accepted",true));}catch(Exception ignored){}}
++    @Override protected void onResume(){super.onResume();getSystemService(NotificationManager.class).cancel(START_NOTICE);poll();}
++    private void runWork(){if(!connectionReady){message("接続の回復を待って同じ仕事を確認してください。");return;}if(!consent.isChecked()){message("料金と保存の確認にチェックしてください。");return;}String input=request.getText().toString();if(input.trim().isEmpty()||input.length()>4000||selectedAgent.isEmpty()){message("担当を選び、依頼を4000文字以内で書いてください。");return;}String key;try{byte[] hash=MessageDigest.getInstance("SHA-256").digest((selectedAgent+"\n"+input).getBytes(StandardCharsets.UTF_8));StringBuilder h=new StringBuilder();for(byte b:hash)h.append(String.format("%02x",b));key=h.toString();}catch(Exception e){message("依頼の確認ができませんでした。");return;}if(!key.equals(pendingRequestKey)){pendingRequestId=UUID.randomUUID().toString();pendingRequestKey=key;getSharedPreferences(isEve()?"pixel_linux_pending_eve":"pixel_linux_pending",0).edit().putString("id",pendingRequestId).putString("key",key).commit();}try{JSONObject command=new JSONObject().put("action","run").put("agentId",selectedAgent).put("input",input).put("requestId",pendingRequestId).put("accepted",true);if(isEve()){JSONObject chosen=null;JSONArray items=latest.getJSONArray("agents");for(int i=0;i<items.length();i++)if(selectedAgent.equals(items.getJSONObject(i).optString("id")))chosen=items.getJSONObject(i);if(chosen==null)throw new IllegalStateException();String sha="";JSONArray models=latest.getJSONArray("models");for(int i=0;i<models.length();i++)if(chosen.optString("modelId").equals(models.getJSONObject(i).optString("id")))sha=models.getJSONObject(i).optString("sha256");command.put("surface","eve").put("agentSha256",chosen.getString("sha256")).put("modelSha256",sha);}action(command);}catch(Exception ignored){}}
+     private boolean isWorking(JSONObject r){return r!=null&&(r.optJSONObject("job").optString("status").equals("active")||"requested".equals(r.optString("stop"))||"unconfirmed".equals(r.optString("stop")));}
+     private void render(JSONObject s){
+         latest=s;String phase=s.optString("phase");boolean ready="ready".equals(phase),preparing="preparing".equals(phase),active=false;
+@@ -179,8 +184,8 @@
+         status.setText(active?"依頼を進めています。ここで止められます。":preparing?"準備しています。依頼はまだ実行していません。":ready?"このPixelで処理します。依頼を送れます。":"stopped".equals(phase)?"計算は停止中です。必要なときに起動できます。":"failed".equals(phase)?"準備できませんでした。入力は残っています。":"使うAIを追加してください。");
+         if("failed".equals(phase)&&!s.isNull("error"))status.append("\n"+s.optString("error"));
+         start.setEnabled(!active&&!preparing);run.setEnabled(!active&&!preparing&&!commandBusy);
+-        run.setText(preparing?"準備しています…":!added?"使うAIを追加する":!ready?"Skyを起動する":list.length()==0?"自分の担当を作る":"この担当に依頼する");
+-        composer.setVisibility(active?View.GONE:View.VISIBLE);consent.setVisibility(ready&&list.length()>0&&!active?View.VISIBLE:View.GONE);
++        run.setText(preparing?"準備しています…":!added?"使うAIを追加する":!ready?"Skyを起動する":list.length()==0?"自分の担当を作る":isEve()?"この担当に依頼する":"Eveでこの担当に依頼する");
++        composer.setVisibility(active?View.GONE:View.VISIBLE);consent.setVisibility(isEve()&&ready&&list.length()>0&&!active?View.VISIBLE:View.GONE);
+         stop.setVisibility(ready||active||preparing?View.VISIBLE:View.GONE);stop.setEnabled(true);stop.setText(preparing?"準備を停止する":"AIを停止する（成果は残す）");
+         if(preparing){JSONObject progress=s.optJSONObject("preparation");if(progress!=null){long got=progress.optLong("receivedBytes"),total=progress.optLong("totalBytes");status.setText(progress.optString("label","準備しています")+(got>0?"\n"+(got/1000000)+" / "+(total/1000000)+" MB":""));}}
+         refreshModels();updateModelDetails();addAgent.setEnabled(isModelAdded(pickedModel)&&!active&&!preparing);
+@@ -228,7 +233,7 @@
+     private String agentModel(){JSONArray a=latest==null?null:latest.optJSONArray("agents");if(a!=null)for(int i=0;i<a.length();i++)if(selectedAgent.equals(a.optJSONObject(i).optString("id")))return a.optJSONObject(i).optString("modelId");return "";}
+     private boolean modelReady(String id){JSONArray a=latest==null?null:latest.optJSONArray("preparedModels");if(a!=null)for(int i=0;i<a.length();i++)if(id.equals(a.optString(i)))return true;return false;}
+     private boolean agentReady(){return latest!=null&&"ready".equals(latest.optString("phase"))&&modelReady(agentModel().isEmpty()?pickedModel:agentModel());}
+-    private void updatePrimary(){if(latest==null)return;String used=agentModel();if(!used.isEmpty()){String display=used;for(int i=0;i<availableModels.length();i++){JSONObject m=availableModels.optJSONObject(i);if(used.equals(m.optString("id")))display=m.optString("name");}String download="";if(!modelReady(used)){for(int i=0;i<availableModels.length();i++){JSONObject m=availableModels.optJSONObject(i);if(used.equals(m.optString("id")))download="\n初回 約"+Math.round(m.optLong("bytes")/1000000.0)+" MB。文章を作るためSky内部に保存し、再利用します。";}}agentHint.setText("この担当が使うAI："+display+(modelReady(used)?" · 準備済み":download));agentHint.setVisibility(View.VISIBLE);}String phase=latest.optString("phase");if("preparing".equals(phase))return;boolean added=isModelAdded(agentModel().isEmpty()?pickedModel:agentModel());run.setText(!added?"使うAIを追加する":!agentReady()?"担当が使うAIを準備する":selectedAgent.isEmpty()?"自分の担当を作る":"この担当に依頼する");consent.setVisibility(agentReady()&&!selectedAgent.isEmpty()&&composer.getVisibility()==View.VISIBLE?View.VISIBLE:View.GONE);}
++    private void updatePrimary(){if(latest==null)return;String used=agentModel();if(!used.isEmpty()){String display=used;for(int i=0;i<availableModels.length();i++){JSONObject m=availableModels.optJSONObject(i);if(used.equals(m.optString("id")))display=m.optString("name");}String download="";if(!modelReady(used)){for(int i=0;i<availableModels.length();i++){JSONObject m=availableModels.optJSONObject(i);if(used.equals(m.optString("id")))download="\n初回 約"+Math.round(m.optLong("bytes")/1000000.0)+" MB。文章を作るためSky内部に保存し、再利用します。";}}agentHint.setText("この担当が使うAI："+display+(modelReady(used)?" · 準備済み":download));agentHint.setVisibility(View.VISIBLE);}String phase=latest.optString("phase");if("preparing".equals(phase))return;boolean added=isModelAdded(agentModel().isEmpty()?pickedModel:agentModel());run.setText(!added?"使うAIを追加する":!agentReady()?"担当が使うAIを準備する":selectedAgent.isEmpty()?"自分の担当を作る":isEve()?"この担当に依頼する":"Eveでこの担当に依頼する");consent.setVisibility(isEve()&&agentReady()&&!selectedAgent.isEmpty()&&composer.getVisibility()==View.VISIBLE?View.VISIBLE:View.GONE);}
+     private void refreshModels(){JSONArray all=new JSONArray();Set<String> ids=new HashSet<>();for(String key:new String[]{"candidates","models"}){JSONArray a=latest.optJSONArray(key);if(a!=null)for(int i=0;i<a.length();i++){JSONObject m=a.optJSONObject(i);if(ids.add(m.optString("id")))all.put(m);}}String fingerprint=all.toString();availableModels=all;if(fingerprint.equals(modelFingerprint))return;modelFingerprint=fingerprint;List<String> labels=new ArrayList<>();int chosen=0;for(int i=0;i<all.length();i++){JSONObject m=all.optJSONObject(i);labels.add(m.optString("name"));if(m.optString("id").equals(pickedModel))chosen=i;}ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,labels){@Override public View getView(int i,View old,android.view.ViewGroup p){TextView v=(TextView)super.getView(i,old,p);v.setTextColor(ShellUi.INK);return v;}@Override public View getDropDownView(int i,View old,android.view.ViewGroup p){TextView v=(TextView)super.getDropDownView(i,old,p);v.setTextColor(ShellUi.INK);v.setBackgroundColor(ShellUi.SURFACE);v.setPadding(ui.dp(10),ui.dp(16),ui.dp(10),ui.dp(16));return v;}};modelChoices.setAdapter(adapter);modelChoices.setSelection(chosen);if(all.length()>0)pickedModel=all.optJSONObject(chosen).optString("id");}
+     private void updateModelDetails(){JSONObject m=chosenModel();if(m==null)return;boolean added=isModelAdded(pickedModel);model.setText(m.optString("name")+"\n約"+Math.round(m.optLong("bytes")/1000000.0)+" MB · 利用条件："+m.optString("license")+"\n"+(modelReady(pickedModel)?"準備済み":added?"追加済み。準備すると使えます":"追加前")+"\n配布元："+m.optString("repository","Qwen")+"\n文章を作るAI本体です。初回の準備で取得し、Sky内部に保存します。保存済みなら確認して再利用します。取得時は通信を使います。");license.setVisibility(added?View.GONE:View.VISIBLE);addModel.setVisibility(added?View.GONE:View.VISIBLE);addModel.setEnabled(latest!=null);start.setEnabled(added&&!"preparing".equals(latest.optString("phase")));addAgent.setEnabled(added);}
+     private void prepareModel(String id){if(latest==null){startSky();return;}if(!isModelAdded(id)){message("使うAIを追加してから準備してください。");return;}try{prepareSent=true;action(new JSONObject().put("action","prepare").put("modelId",id).put("accepted",true));}catch(Exception ignored){}}
+--- /dev/null
++++ b/android/shell/src/debug/java/dev/rock/shell/EveLinuxActivity.java
+@@ -0,0 +1,6 @@
++package dev.rock.shell;
++
++/** Eve work desk over the same owner-local Sky/Linux jobs. */
++public final class EveLinuxActivity extends SkyLinuxActivity {
++    @Override protected boolean isEve(){return true;}
++}
+--- /dev/null
++++ b/android/shell/src/debug/java/dev/rock/shell/SkyLinuxBridge.java
+@@ -0,0 +1,104 @@
++package dev.rock.shell;
++
++import android.content.Context;
++import android.security.keystore.KeyGenParameterSpec;
++import android.security.keystore.KeyProperties;
++import org.json.JSONObject;
++import javax.net.ssl.*;
++import javax.security.auth.x500.X500Principal;
++import java.io.*;
++import java.net.*;
++import java.nio.charset.StandardCharsets;
++import java.security.*;
++import java.security.cert.X509Certificate;
++import java.util.*;
++import java.util.concurrent.*;
++
++/** Owner preview: mutual TLS on the AVF tap only; no public service or shell. */
++public final class SkyLinuxBridge {
++    private static final int PORT=5198, LIMIT=5*1024*1024;
++    private static final String ALIAS="sky-linux-bridge-ec-v1";
++    private static SkyLinuxBridge instance;
++    private final Context context;
++    private final BlockingQueue<Call> queue=new ArrayBlockingQueue<>(8);
++    private volatile String peer="",stage="starting",lastError="",protocol="";
++    private static final class Call { final String id=UUID.randomUUID().toString(); final JSONObject command; final CompletableFuture<JSONObject> done=new CompletableFuture<>(); Call(JSONObject c){command=c;} }
++    private SkyLinuxBridge(Context c)throws Exception{context=c.getApplicationContext();identity();Thread worker=new Thread(this::serve,"sky-linux-bridge");worker.setDaemon(true);worker.start();}
++    public static synchronized void start(Context c)throws Exception{if(instance==null)instance=new SkyLinuxBridge(c);}
++    public static boolean paired(Context c){return new File(c.getFilesDir(),"pixel-linux-bridge-peer.json").isFile();}
++    public static JSONObject request(Context c,JSONObject command)throws Exception{
++        start(c);if(!paired(c))throw new IOException("Linuxとの本人接続を準備してください。");
++        Call task=new Call(command);if(!instance.queue.offer(task))throw new IOException("接続の確認中です。少しお待ちください。");
++        try{return task.done.get(15,TimeUnit.SECONDS);}catch(Exception e){instance.queue.remove(task);throw new IOException("Linuxへの接続が途切れました。実行結果は再接続後に同じ仕事で確認します。",e);}
++    }
++    public static synchronized JSONObject diagnostics(){JSONObject value=new JSONObject();try{if(instance!=null)value.put("stage",instance.stage).put("errorClass",instance.lastError).put("authenticated",!instance.peer.isEmpty()).put("protocol",instance.protocol).put("queued",instance.queue.size());}catch(Exception ignored){}return value;}
++    private void identity()throws Exception{
++        KeyStore ks=KeyStore.getInstance("AndroidKeyStore");ks.load(null);
++        if(!ks.containsAlias(ALIAS)){
++            KeyPairGenerator gen=KeyPairGenerator.getInstance("EC","AndroidKeyStore");Calendar end=Calendar.getInstance(TimeZone.getTimeZone("UTC"));end.add(Calendar.YEAR,1);
++            gen.initialize(new KeyGenParameterSpec.Builder(ALIAS,KeyProperties.PURPOSE_SIGN|KeyProperties.PURPOSE_VERIFY)
++                .setAlgorithmParameterSpec(new java.security.spec.ECGenParameterSpec("secp256r1"))
++                .setDigests(KeyProperties.DIGEST_NONE,KeyProperties.DIGEST_SHA256,KeyProperties.DIGEST_SHA512)
++                .setCertificateSubject(new X500Principal("CN=RockstarOS Pixel Linux"))
++                .setCertificateNotBefore(new Date(System.currentTimeMillis()-86400000)).setCertificateNotAfter(end.getTime()).build());gen.generateKeyPair();
++        }
++        String pem="-----BEGIN CERTIFICATE-----\n"+android.util.Base64.encodeToString(ks.getCertificate(ALIAS).getEncoded(),android.util.Base64.NO_WRAP)+"\n-----END CERTIFICATE-----\n";
++        try(FileOutputStream out=context.openFileOutput("pixel-linux-bridge-server.pem",Context.MODE_PRIVATE)){out.write(pem.getBytes(StandardCharsets.US_ASCII));}
++    }
++    private static String sha(byte[] bytes)throws Exception{StringBuilder out=new StringBuilder();for(byte b:MessageDigest.getInstance("SHA-256").digest(bytes))out.append(String.format(Locale.ROOT,"%02x",b));return out.toString();}
++    private String configuredPeer()throws Exception{
++        try(InputStream in=context.openFileInput("pixel-linux-bridge-peer.json")){JSONObject config=new JSONObject(new String(in.readAllBytes(),StandardCharsets.UTF_8));
++            if(!"sky.pixel-linux-peer/1".equals(config.optString("schema"))||!config.optString("clientSha256").matches("[a-f0-9]{64}"))throw new IOException("接続先の確認が必要です。");return config.getString("clientSha256");}
++    }
++    private SSLContext tls(String expected)throws Exception{
++        KeyStore ks=KeyStore.getInstance("AndroidKeyStore");ks.load(null);
++        X509TrustManager trust=new X509TrustManager(){public X509Certificate[] getAcceptedIssuers(){return new X509Certificate[0];}
++            public void checkServerTrusted(X509Certificate[] chain,String auth)throws java.security.cert.CertificateException{throw new java.security.cert.CertificateException("Client only");}
++            public void checkClientTrusted(X509Certificate[] chain,String auth)throws java.security.cert.CertificateException{try{
++                if(chain==null||chain.length!=1)throw new GeneralSecurityException();chain[0].checkValidity();
++                if(!MessageDigest.isEqual(expected.getBytes(StandardCharsets.US_ASCII),sha(chain[0].getEncoded()).getBytes(StandardCharsets.US_ASCII)))throw new GeneralSecurityException();
++            }catch(Exception e){throw new java.security.cert.CertificateException("Unpaired Linux",e);}}
++        };
++        X509ExtendedKeyManager identity=new X509ExtendedKeyManager(){
++            public String[] getClientAliases(String type,Principal[] issuers){return null;}
++            public String chooseClientAlias(String[] types,Principal[] issuers,Socket socket){return null;}
++            public String[] getServerAliases(String type,Principal[] issuers){return "EC".equals(type)?new String[]{ALIAS}:null;}
++            public String chooseServerAlias(String type,Principal[] issuers,Socket socket){return "EC".equals(type)?ALIAS:null;}
++            public String chooseEngineServerAlias(String type,Principal[] issuers,SSLEngine engine){return "EC".equals(type)?ALIAS:null;}
++            public X509Certificate[] getCertificateChain(String alias){try{return ALIAS.equals(alias)?new X509Certificate[]{(X509Certificate)ks.getCertificate(ALIAS)}:null;}catch(Exception e){return null;}}
++            public PrivateKey getPrivateKey(String alias){try{return ALIAS.equals(alias)?(PrivateKey)ks.getKey(ALIAS,null):null;}catch(Exception e){return null;}}
++        };
++        SSLContext ssl=SSLContext.getInstance("TLS");ssl.init(new KeyManager[]{identity},new TrustManager[]{trust},new SecureRandom());return ssl;
++    }
++    private static InetAddress gateway()throws Exception{
++        NetworkInterface tap=NetworkInterface.getByName("avf_tap_fixed");if(tap==null||!tap.isUp())return null;
++        for(InterfaceAddress iface:tap.getInterfaceAddresses()){InetAddress a=iface.getAddress();if(a instanceof Inet4Address&&a.isSiteLocalAddress()&&iface.getNetworkPrefixLength()==24)return a;}return null;
++    }
++    private static JSONObject read(InputStream in)throws Exception{
++        ByteArrayOutputStream bytes=new ByteArrayOutputStream();int next;while((next=in.read())!=-1){if(next=='\n')return new JSONObject(bytes.toString("UTF-8"));if(bytes.size()>=LIMIT)throw new IOException("Frame too large");bytes.write(next);}throw new EOFException();
++    }
++    private static void write(OutputStream out,JSONObject value)throws Exception{byte[] bytes=(value.toString()+"\n").getBytes(StandardCharsets.UTF_8);if(bytes.length>LIMIT)throw new IOException("Frame too large");out.write(bytes);out.flush();}
++    private void serve(){
++        for(;;){try{
++            if(!paired(context)){Thread.sleep(500);continue;}
++            String expected=configuredPeer();InetAddress address=gateway();if(address==null){stage="waiting-avf-interface";Thread.sleep(500);continue;}
++            SSLContext ssl=tls(expected);
++            try(SSLServerSocket server=(SSLServerSocket)ssl.getServerSocketFactory().createServerSocket()){
++                stage="binding-avf";server.setReuseAddress(true);server.bind(new InetSocketAddress(address,PORT),2);server.setEnabledProtocols(new String[]{"TLSv1.3","TLSv1.2"});server.setNeedClientAuth(true);server.setSoTimeout(1000);stage="listening";
++                while(expected.equals(configuredPeer())&&address.equals(gateway())){
++                    try(SSLSocket socket=(SSLSocket)server.accept()){
++                        stage="tls-handshake";socket.setSoTimeout(10000);socket.startHandshake();peer=expected;protocol=socket.getSession().getProtocol();lastError="";stage="authenticated";
++                        JSONObject hello=read(socket.getInputStream());if(!"sky.pixel-linux-bridge/1".equals(hello.optString("schema")))throw new IOException("Protocol mismatch");
++                        while(expected.equals(configuredPeer())&&address.equals(gateway())){
++                            Call task=queue.poll(3,TimeUnit.SECONDS);String id=task==null?UUID.randomUUID().toString():task.id;
++                            try{if(!expected.equals(configuredPeer())||!address.equals(gateway()))throw new IOException("Connection revoked");write(socket.getOutputStream(),new JSONObject().put("id",id).put("command",task==null?new JSONObject().put("action","status"):task.command));
++                                JSONObject result=read(socket.getInputStream());if(!id.equals(result.optString("id")))throw new IOException("Response mismatch");
++                                if(task!=null){if(!result.isNull("error")&&result.has("error"))task.done.completeExceptionally(new IOException("実行結果の照会が必要です。"));else {JSONObject value=result.getJSONObject("result");if(!task.command.optString("action").startsWith("export")&&!"sky.private-linux-deployment/1".equals(value.optString("schema")))throw new IOException("Response schema mismatch");task.done.complete(value);}}
++                            }catch(Exception e){if(task!=null)task.done.completeExceptionally(e);throw e;}
++                        }
++                    }catch(SocketTimeoutException idle){/* Recheck VM address and revocation. */}catch(Exception connectionLost){peer="";lastError=connectionLost.getClass().getSimpleName();stage="connection-failed";Thread.sleep(150);}finally{peer="";}
++                }
++            }
++        }catch(Exception unavailable){peer="";lastError=unavailable.getClass().getSimpleName();stage="unavailable";try{Thread.sleep(1000);}catch(InterruptedException ignored){Thread.currentThread().interrupt();return;}}}
++    }
++}
+--- a/android/shell/src/debug/AndroidManifest.xml
++++ b/android/shell/src/debug/AndroidManifest.xml
+@@ -4,6 +4,7 @@
+     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+     <queries><package android:name="com.android.virtualization.terminal" /></queries>
+     <application android:networkSecurityConfig="@xml/sky_linux_network">
++        <activity android:name=".EveLinuxActivity" android:exported="false" />
+         <activity android:name=".SkyLinuxActivity" android:exported="false" android:launchMode="singleTop" />
+     </application>
+ </manifest>

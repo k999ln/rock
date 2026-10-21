@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import './community-os.css';
+import CommunityOsRuntime from '@/components/community-os-runtime';
 import './app.css';
 import './workspace.css';
 import './work/work.css';
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'RockstarOS',
   },
-  icons: { icon: '/favicon.svg', apple: '/rock-icon-192.png' },
+  icons: { icon: '/favicon.svg', apple: '/company-mark.png' },
 };
 export const viewport: Viewport = {
   width: 'device-width',
@@ -27,7 +29,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body><CommunityOsRuntime />{children}</body>
     </html>
   );
 }

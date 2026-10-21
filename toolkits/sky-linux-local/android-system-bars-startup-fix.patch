@@ -1,0 +1,29 @@
+--- a/android/shell/src/main/java/dev/rock/shell/MainActivity.java
++++ b/android/shell/src/main/java/dev/rock/shell/MainActivity.java
+@@ -432,11 +432,6 @@
+     private void createShellFrame() {
+         getWindow().setStatusBarColor(ShellUi.SURFACE);
+         getWindow().setNavigationBarColor(ShellUi.SURFACE);
+-        getWindow().getInsetsController().setSystemBarsAppearance(
+-            android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+-                | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+-            android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+-                | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+         getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+         LinearLayout root = ui.column(); root.setBackgroundColor(ShellUi.BACKGROUND);
+         root.setFocusableInTouchMode(true);
+@@ -477,6 +472,14 @@
+             navigation[index] = ui.navigation(bar, names[index], index, () -> selectPage(destination));
+         }
+         root.addView(bar); setContentView(root); root.requestFocus(); root.requestApplyInsets();
++        root.post(() -> {
++            android.view.WindowInsetsController controller = getWindow().getInsetsController();
++            if (controller != null) controller.setSystemBarsAppearance(
++                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
++                    | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
++                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
++                    | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
++        });
+     }
+ 
+     private void buildHomePage() {

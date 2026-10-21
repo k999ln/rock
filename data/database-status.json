@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 185,
+    "tableCount": 191,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
-    "tableCount": 113,
+    "tableCount": 119,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -49,6 +49,9 @@
       "esim_provider_orders",
       "esim_provider_profile_bindings",
       "esim_provider_webhook_inbox",
+      "eve_conversations",
+      "eve_memory_terms",
+      "eve_messages",
       "fund_plans",
       "jennifer_passkey_challenges",
       "jennifer_passkey_credentials",
@@ -78,6 +81,7 @@
       "rockstar_entitlement_issuer_deliveries",
       "rockstar_entitlement_issuer_rate_limits",
       "rockstar_service_entitlements",
+      "rockstar_service_setups",
       "sky_a2a_agent_connections",
       "sky_activation_codes",
       "sky_agent_settings",
@@ -110,6 +114,8 @@
       "sky_hosted_monthly_tests",
       "sky_hub_plugins",
       "sky_library_items",
+      "sky_linux_service_documents",
+      "sky_linux_service_receipts",
       "sky_monthly_sandbox_invoices",
       "sky_monthly_sandbox_quotes",
       "sky_monthly_sandbox_usage",
@@ -134,8 +140,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 17,
-    "latestMigration": "0029_sky_x_account_oauth.sql",
+    "migrationCount": 20,
+    "latestMigration": "0032_eve_durable_history.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 92,
     "marketplaceRelationGuardCount": 8,
@@ -148,6 +154,9 @@
         "tables": [
           "book_records",
           "devices",
+          "eve_conversations",
+          "eve_memory_terms",
+          "eve_messages",
           "fund_plans",
           "jennifer_passkey_challenges",
           "jennifer_passkey_credentials",
@@ -165,7 +174,7 @@
           "tool_runs",
           "work_jobs"
         ],
-        "tableCount": 18
+        "tableCount": 21
       },
       {
         "id": "sky",
@@ -213,6 +222,8 @@
           "sky_hosted_monthly_tests",
           "sky_hub_plugins",
           "sky_library_items",
+          "sky_linux_service_documents",
+          "sky_linux_service_receipts",
           "sky_monthly_sandbox_invoices",
           "sky_monthly_sandbox_quotes",
           "sky_monthly_sandbox_usage",
@@ -234,7 +245,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 62
+        "tableCount": 64
       },
       {
         "id": "marketplace",
@@ -286,9 +297,10 @@
           "rockstar_entitlement_events",
           "rockstar_entitlement_issuer_deliveries",
           "rockstar_entitlement_issuer_rate_limits",
-          "rockstar_service_entitlements"
+          "rockstar_service_entitlements",
+          "rockstar_service_setups"
         ],
-        "tableCount": 21
+        "tableCount": 22
       }
     ]
   },
@@ -332,6 +344,9 @@
         "esim_provider_orders",
         "esim_provider_profile_bindings",
         "esim_provider_webhook_inbox",
+        "eve_conversations",
+        "eve_memory_terms",
+        "eve_messages",
         "fund_plans",
         "jennifer_passkey_challenges",
         "jennifer_passkey_credentials",
@@ -361,6 +376,7 @@
         "rockstar_entitlement_issuer_deliveries",
         "rockstar_entitlement_issuer_rate_limits",
         "rockstar_service_entitlements",
+        "rockstar_service_setups",
         "sky_a2a_agent_connections",
         "sky_activation_codes",
         "sky_agent_settings",
@@ -393,6 +409,8 @@
         "sky_hosted_monthly_tests",
         "sky_hub_plugins",
         "sky_library_items",
+        "sky_linux_service_documents",
+        "sky_linux_service_receipts",
         "sky_monthly_sandbox_invoices",
         "sky_monthly_sandbox_quotes",
         "sky_monthly_sandbox_usage",
@@ -417,8 +435,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0029_sky_x_account_oauth.sql",
-      "tableCount": 113,
+      "expectedAppliedThrough": "0032_eve_durable_history.sql",
+      "tableCount": 119,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

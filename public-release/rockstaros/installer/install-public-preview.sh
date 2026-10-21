@@ -38,7 +38,7 @@ cp -R "$source_root/packages/sky-zema-core" "$install_root/packages/"
 cp "$script_dir/rockstaros-public-preview" "$install_root/bin/rockstaros-public-preview"
 chmod 755 "$install_root/bin/rockstaros-public-preview"
 
-printf '%s\n' "Installed the RockstarOS Sky + Zema public preview."
+printf '%s\n' "Installed the RockstarOS Sky + Eve public preview."
 printf '%s\n' "Run: $install_root/bin/rockstaros-public-preview"
 printf '%s\n' "Open: http://127.0.0.1:4173"
 printf '%s\n' "Telemetry is off unless a receiving endpoint is configured and the user opts in."

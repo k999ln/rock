@@ -64,7 +64,7 @@ function sendMessage(harness, overrides = {}) {
 
 void test('a waiting worker activates only for an explicit update from a same-origin window', async () => {
   const harness = workerHarness();
-  assert.equal(harness.listeners.has('install'), false);
+  assert.equal(harness.listeners.has('install'), true);
   const unrelated = sendMessage(harness, { data: { type: 'UNRELATED' } });
   assert.equal(harness.skipWaitingCalls, 0);
   assert.equal(unrelated, undefined);
@@ -161,6 +161,7 @@ void test('activation keeps only the selected shell cache and removes prior Rock
     'loop-app-v3',
     'rockstaros-shell-v3',
     'rockstaros-shell-v4',
+    'rockstaros-shell-v5',
     'another-product-cache',
   ]);
   let work;
@@ -169,6 +170,7 @@ void test('activation keeps only the selected shell cache and removes prior Rock
   assert.deepEqual(harness.deleted.sort((left, right) => left.localeCompare(right)), [
     'loop-app-v3',
     'rockstaros-shell-v3',
+    'rockstaros-shell-v4',
   ]);
 });
 

@@ -74,3 +74,10 @@ Updated: 2026-10-21 / 393 task records (32 parents, 192 children, 169 standalone
 ## 権利と安全
 
 RockstarOS 1.0の最初の配布ラベルはDeveloper Previewです。端末初期化・bootloader解除・flash、公開、実契約、実資金、外部送信には対象ごとの条件を確認します。Gitへ秘密鍵、原稿、本人データを保存しません。[配布計画](docs/release-installation-plan-20260909.md) / [権利と配布物](public-release/rockstaros/README.md)。
+
+
+## 保存した会話と成果を持ち出す
+
+Eveの「アカウントに保存した会話」から、今の会話を明示保存・読戻し・削除できます。本人認証と運営側の`EVE_HISTORY_KEYRING`設定が必要です。設定不足は未保存と表示します。履歴を開いても仕事は再実行しません。成果画面では本人の仕事をHTMLへ書き出せます。実アカウントの別端末試験、Pixel全OS、実Provider、本番公開・課金は別受入です。
+
+開発用Linux/Pixel adapterと本人用Labの手順は[Linux toolkit](toolkits/sky-linux-local/README.md)を参照してください。サービス利用開始は既定無効で、旧branch料金を本番へ採用した意味ではありません。コードの整理・移行範囲は[統合台帳](data/runtime-integration-audit.json)で確認できます。

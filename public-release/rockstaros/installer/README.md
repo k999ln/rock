@@ -1,6 +1,6 @@
 # RockstarOS Public Preview Installer
 
-This installer sets up the runnable Sky + Zema public preview on the local
+This installer sets up the runnable Sky + Eve public preview on the local
 computer. It does not install or replace the host operating system.
 
 The native QEMU image is not included. Its current release candidate has not

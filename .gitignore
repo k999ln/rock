@@ -30,7 +30,6 @@ yarn-error.log*
 
 # local environment
 .env*
-!.env.example
 !**/.env.example
 
 # deployment and generated files
@@ -62,3 +61,6 @@ __pycache__/
 
 # generated from encrypted private/ files; never commit
 /lib/generated/
+
+# Local replay diagnostics are regenerated and never belong in source history.
+replay_pid*.log
