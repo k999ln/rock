@@ -6,6 +6,7 @@ import {
 } from '../services/sky-web/domain-router.mjs';
 
 void test('Sky assets and APIs stay native while Mini keeps preorder paths', () => {
+  assert.equal(routesToSky('/company-mark.png'), true);
   for (const path of [
     '/sky',
     '/sky/outputs',
