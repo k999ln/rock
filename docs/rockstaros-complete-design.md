@@ -785,3 +785,18 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
 
 保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。
+
+<a id="independent-rockstar-account"></a>
+## ChatGPT不要の会員登録と共通Coreの開発
+
+1. **目的**: 本人の2026-10-21追加指示により、ChatGPTなしの登録から自分のSky/Eveを使い、Pixelと同じアカウントで継続する。共通本体一つと端末別adapterの既存設計を開発順へ落とす。
+2. **体験**: メインドメインで独立登録/ログイン→Skyで担当とLLMを設定→Eve依頼→Pixel内Linux→同じWeb/Pixelの会話・成果。既存利用者は本人確認した同じownerのデータを保って独立したログインを追加する。
+3. **責任**: Web/PWA/SitesのROCKが主担当。Security/Android/Native/Sky/Billingへ接続する。EXTERNALは認証器・OS/driver・Provider、JOINTは実機/実接続、OWNERは新credential/端末承認・外部作用/費用。
+4. **入出力**: 入力ownerは認証serverで確定する。新規登録はserver採番、既存accountへの認証方法追加は本人確認を要求する。出力は同一owner/thread/job/artifact/usageと、版付きの端末能力/実行契約。
+5. **状態**: 匿名、登録待ち、本人確認済み、session有効/失効、端末承認待ち/有効/失効、executor準備/実行/停止/不明を区別。独立登録・ログイン・追加・復旧のAPI/画面とD1 migrationを実装中。実署名8件、既存認証/履歴/端末同期を含むfocused検査は合格。公開と実認証器/Pixelは未受入。
+6. **保存**: 既存owner別保存・暗号化履歴・revision・台帳を維持する。新しい認証方法だけで別ownerへデータを移さず、メール一致で統合しない。復旧コードは256bit乱数を初回だけ表示し、DBにはSHA256のみ保存する。秘密・顔/指紋templateは会話/Git/ログに保存しない。
+7. **失敗**: RP/origin/challenge/期限/user verification/一回消費/rate limit/Cookie/CSRFを検査し、偽userId、並行登録、session固定化、再送、アカウント越境を拒否する。ログアウト後に別のSSOへ暗黙に切り替えない。
+8. **復旧**: credential・session・端末の失効範囲と回復手順を定義し、既存履歴を保持する。端末断とLinux停止を分け、同じjob/予約を照合してから再実行を判断する。通常の鍵追加では旧鍵/セッション/Pixel grantを保持する。コードによる復旧では旧鍵・セッション・device grant・承認済み接続コードを失効させ、履歴は保持する。鍵全損の実機受入は未完了。
+9. **承認**: 実装は既存承認を使う。新しい鍵の最終登録や別ownerへの権限付与は本人が実機で確認する。登録を本番課金・機微情報保管・全OS/全hardware合格の承認へ拡張しない。
+10. **合格条件**: ChatGPT sessionなしの新規登録と再login、二owner分離、Sky設定→Eve→実Pixel→Webの同一成果、継続/失効/再送/復旧、旧22件とモデル2/Agent6の保全を同一候補で記録する。host/公開/実機/本番は別々に扱う。
+11. **残作業の決め方**: [共通Coreの開発プロンプト](prompts/rockstaros-common-core-development.md)のCORE01〜12を既存RQ/taskと照合し、本人認証と実機一周を先に受け入れる。Mini/Pro/MCUは実在能力と個別driver/安全/更新復旧で追加する。料金未確定値や未知のhardware能力を作らない。

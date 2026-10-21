@@ -2615,5 +2615,32 @@
     "publicEntry": "https://avoado.si/os/eve",
     "generalLaunchAllowed": false,
     "productionBillingAccepted": false
+  },
+  "independentRockstarAccount": {
+    "status": "implementation_candidate",
+    "authority": "docs/rockstaros-complete-design.md#independent-rockstar-account",
+    "skyDesign": "docs/sky-tools-complete-design.md#independent-rockstar-account",
+    "prompt": "docs/prompts/rockstaros-common-core-development.md",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "SKY21"
+    ],
+    "newPublicRegistrationAccepted": false,
+    "runtimePaths": [
+      "lib/rockstar-account.ts",
+      "lib/jennifer-passkey.ts",
+      "lib/request-auth.ts",
+      "app/api/os/access/route.ts",
+      "app/account/page.tsx",
+      "components/rockstar-account.tsx"
+    ],
+    "rootMigrations": [
+      "drizzle/0077_jennifer_passkey_base.sql",
+      "drizzle/0078_rockstar_accounts.sql"
+    ],
+    "siteMigration": "Sites source: drizzle-main/0028_rockstar_accounts.sql",
+    "physicalAccepted": false,
+    "publicAccepted": false
   }
 }

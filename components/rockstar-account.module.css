@@ -1,0 +1,228 @@
+.page {
+  min-height: 100dvh;
+  background: #f7f5ef;
+  color: #25382e;
+  padding: 24px 20px 60px;
+  font-family: inherit;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1050px;
+  margin: 0 auto 48px;
+  gap: 20px;
+}
+.top a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 650;
+}
+.card {
+  max-width: 520px;
+  margin: auto;
+  background: #fffdf8;
+  border: 1px solid #dce0d4;
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 20px 70px #25382e08;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #927256;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+.card h1 {
+  text-wrap: balance;
+  font-size: clamp(27px, 4vw, 36px);
+  line-height: 1.4;
+  letter-spacing: -0.04em;
+  margin: 0 0 20px;
+  font-weight: 650;
+}
+.description {
+  color: #617064;
+  line-height: 1.9;
+  margin: 0 0 28px;
+}
+.tabs {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background: #edf0e7;
+  border-radius: 14px;
+  margin: 20px 0;
+}
+.tabs button {
+  flex: 1;
+  border: 0;
+  padding: 12px;
+  background: transparent;
+  border-radius: 10px;
+  color: #5b6d60;
+  cursor: pointer;
+  font: inherit;
+}
+.tabs button[aria-pressed='true'] {
+  background: #fffdf8;
+  color: #254d3b;
+  box-shadow: 0 2px 6px #25382e0a;
+}
+.hint {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #617064;
+}
+.primary {
+  display: block;
+  width: 100%;
+  background: #285541;
+  color: #fffdf8;
+  border: 0;
+  border-radius: 16px;
+  padding: 16px 20px;
+  min-height: 52px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  margin: 22px 0 0;
+}
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 24px;
+}
+.links button,
+.credentials button {
+  font: inherit;
+  font-size: 13px;
+  color: #4e6e5b;
+  background: transparent;
+  border: 0;
+  padding: 5px 0;
+  cursor: pointer;
+}
+.links button:disabled,
+.credentials button:disabled {
+  opacity: 0.45;
+}
+.notice {
+  display: block;
+  border: 1px solid #d5ddce;
+  border-radius: 18px;
+  padding: 20px;
+  background: #f2f4eb;
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.notice h2,
+.recovery h2 {
+  font-size: 18px;
+  margin-top: 0;
+}
+.notice textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fffdf8;
+  border: 1px solid #cfd8ca;
+  padding: 12px;
+  border-radius: 10px;
+  font-family: monospace;
+  resize: none;
+  font-size: 13px;
+  margin: 10px 0;
+}
+.recovery {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.recovery input[type='password'] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #cfd8ca;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 8px 0 20px;
+  font: inherit;
+}
+.notice label,
+.recovery label {
+  display: block;
+}
+.notice input,
+.recovery input[type='checkbox'] {
+  margin-right: 8px;
+  accent-color: #285541;
+}
+.error {
+  color: #95472e;
+  background: #fbefea;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.credentials {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #dce0d4;
+  font-size: 14px;
+  color: #617064;
+  line-height: 1.8;
+}
+.credentials summary {
+  cursor: pointer;
+}
+.credentials a {
+  color: #285541;
+  text-underline-offset: 4px;
+}
+.credentials ul {
+  list-style: none;
+  padding: 0;
+}
+.credentials li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  gap: 16px;
+}
+.credentials small {
+  display: block;
+}
+.footer {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  color: #819083;
+  margin-top: 30px;
+}
+:is(.page button, .page a, .page input, .page textarea):focus-visible {
+  outline: 3px solid #a57b50;
+  outline-offset: 4px;
+}
+@media (max-width: 540px) {
+  .page {
+    padding: 20px 16px 40px;
+  }
+  .top {
+    margin-bottom: 30px;
+  }
+  .card {
+    padding: 26px 22px;
+    border-radius: 22px;
+  }
+}

@@ -77,24 +77,19 @@ export default function OsAccountAccess() {
             <summary aria-label="アカウントメニュー">•••</summary>
             <nav>
               <Link href="/connect">端末をつなぐ</Link>
-              <a href="/signout-with-chatgpt?return_to=%2F" target="_top">
-                ログアウト
-              </a>
+              <Link href="/account">アカウント・パスキー・ログアウト</Link>
             </nav>
           </details>
         </div>
       ) : state === 'error' ? (
         <button onClick={() => setRetry((value) => value + 1)}>再確認</button>
       ) : state === 'guest' ? (
-        <a
+        <Link
           className={styles.primary}
-          href={
-            '/signin-with-chatgpt?return_to=' + encodeURIComponent(returnTo)
-          }
-          target="_top"
+          href={'/account?returnTo=' + encodeURIComponent(returnTo)}
         >
           登録・ログイン
-        </a>
+        </Link>
       ) : (
         <output className={styles.loading}>確認中…</output>
       )}

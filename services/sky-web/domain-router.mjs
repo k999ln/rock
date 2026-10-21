@@ -18,6 +18,7 @@ const SKY_PREFIXES = [
   '/_next',
   '/api',
   '/activity',
+  '/account',
   '/chat',
   '/coconala-team',
   '/connect',
