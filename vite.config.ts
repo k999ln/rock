@@ -3,10 +3,7 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
-import {
-  createSitesMigrationLineagePlugin,
-  siteMigrationsDirectoryFor,
-} from './scripts/sites-migration-lineage.mjs';
+import { siteMigrationsDirectoryFor } from './scripts/sites-migration-lineage.mjs';
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
 import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
 
@@ -83,7 +80,6 @@ export default defineConfig(async () => {
       clientCloudflareWorkersStub,
       vinext(),
       sites(),
-      createSitesMigrationLineagePlugin(siteProjectId),
       cloudflare({
         inspectorPort: false,
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },

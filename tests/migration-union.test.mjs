@@ -39,7 +39,8 @@ await test('local production start applies the published migrations before servi
   const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
   assert.match(viteConfig, /siteMigrationsDirectoryFor\(siteProjectId\)/);
   assert.match(viteConfig, /migrations_dir: siteMigrationsDirectory/);
-  assert.match(viteConfig, /createSitesMigrationLineagePlugin\(siteProjectId\)/);
+  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.match(packageJson.scripts.build, /stage-sky-domain-router\.mjs && node scripts\/stage-sites-migration-lineage\.mjs$/);
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
@@ -52,7 +53,6 @@ await test('local production start applies the published migrations before servi
   assert.match(localConfig, /"migrations_dir": "drizzle"/);
   // Execute the same runner as npm start; failure and signal boundaries live
   // in start-local-web.test.mjs using this shared fixture.
-  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   assert.equal(packageJson.scripts.start, 'node scripts/start-local-web.mjs');
   const result = spawnSync(process.execPath, [...f.command, '--port', '8788', '--ip', '127.0.0.1'], {
     cwd: f.root, env: f.env, encoding: 'utf8', timeout: 5000,
