@@ -34,6 +34,8 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 ## Sky Agent Smith — 自分用AgentをAddして仕事を扱う
 
+**2026-10-22の参照像と次の受入（AS06、未実装）。** 本人が示した映画『マトリックス』のエージェント・スミスが複数現れる画像により、名称の意図を「一つの本人用Agentが複数の場所に現れ、同じ目的の下で協調する」と明確化した。既存のメモとPlannerは共通schemaを使う別仕事であり、この複数インスタンス体験の受入ではない。最初は本人が同じAgent ID・revisionから最大2体を作り、それぞれのhost別Add・入力範囲・期限・費用上限を承認する。共通の親jobが2体のattemptと型付き成果の引継ぎ、統合結果、個別/一括停止を保持し、メモの許可済み整理結果をPlannerの計画案へ渡す。owner別D1、revision競合、重複拒否、再訪読戻しを既存Zema契約に合わせる。片方の失効・停止・結果不明で無断の再生成/再送をせず、親画面から状態照会・確認・復旧する。ROCKは同一Agent/親job/2体の実browser、別owner拒否、停止と遅延結果の競合を検証する。外部hostはJOINTの別受入、対象・権限・費用の決定はOWNER。2体を超える数、同時並列性、外部host、公開名称と独自の視覚表現は、この2体の使用性・費用・復旧を計測してから決める。画像の映画素材を製品assetへ取り込まない。
+
 **目的と体験。** SKY07/SKY21、ROCK主担当。本人が必要な機能を制限付きAgentとして作り、対応する画面へAddし、一件のZema仕事で実行、成果確認、停止、保存済み成果の読戻しと持出しを行う。最初の既知adapterはPlannerの作業準備と手入力メモの整理で、共通のAgent/Add/仕事境界を使う。メモadapterは固定の見出し抽出と先頭行の抜粋を使う。目的文やhostの本文からコード・Tool権限を生成しない。Zoomは任意のhost候補であり、製品の必須入口ではない。
 
 **責任と入出力。** 本人はAgent設定・入力・保存同意・成果確認を選ぶ。Skyは`sky.private-agent/1`のappId（`notes`、`planner`、任意の`zoom`）、必要なrecipe、使用できるhost surface/input/return slot、実行方式、宣言費用0、外部送信falseを正規化し、owner・revision・digest付きで保存する。`notes`と`planner`は手入力ブラウザーだけ、`zoom`は別のhost受入が必要なIDで、相互のAddを使い回せない。Addは同じowner、Agent版・digest、exact fitを保持する発見と導入候補であり、OSやhostの権限ではない。Zemaは`work_jobs`の同一owner/job/revisionに`sky.app-result/1`を保存する。Brokerまたはhost adapterは実行直前の権限、対象、本人承認を別に検証する。任意shell/root、外部送信、録音、参加者データ取得、未見積のCloud実行は対象外。
