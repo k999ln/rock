@@ -9605,7 +9605,7 @@
     "finalResponseCount": 12
   },
   "homeAddManage": {
-    "status": "local_accepted_publication_approval_pending",
+    "status": "published_v112_owner_ui_accepted",
     "primaryOwner": "ROCK",
     "workstream": "Product / UX",
     "taskIds": [
@@ -9615,14 +9615,33 @@
       "UXRS01"
     ],
     "previousGoalTurn": "Pixel same-account login and prepared-model readback accepted; backend presence full/Worker restart accepted but unpublished",
-    "next": "Await explicit approval required by auto-review for this prepared candidate; Source save/push/deploy and public readback; then Pixel common execution. Existing public v111 and main308e/data retained.",
+    "next": "Published Home Add/manage and presence separation accepted by owner UI; next refresh the accepted Pixel host and send one explicit bounded Web common job; native stop work stays separate.",
     "focusedPass": 33,
-    "publicChanged": false,
+    "publicChanged": true,
     "wholeGoalComplete": false,
     "evidence": "docs/evidence/home-add-manage.json",
     "rootFullVerifyExitCode": 0,
     "sourceFullVerifyExitCode": 0,
     "sameFinalBuildUiAccepted": true,
-    "draftPackageSha256": "bc8f2c0b68f396923eda822fbd6bd65fd0fa447831f8efea90d2546e623c36c7"
+    "draftPackageSha256": "bc8f2c0b68f396923eda822fbd6bd65fd0fa447831f8efea90d2546e623c36c7",
+    "publicVersion": 112,
+    "sourceCommit": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+    "publicUiAccepted": true,
+    "publicResponseChecks": "terminal_403_not_accepted"
+  },
+  "pixelTargetSelection": {
+    "status": "local_candidate_under_verification",
+    "primaryOwner": "ROCK",
+    "workstream": "Android / Device / Local AI",
+    "taskIds": [
+      "OS10",
+      "DSP01",
+      "SKY21"
+    ],
+    "evidence": "docs/evidence/pixel-target-selection.json",
+    "publicChanged": false,
+    "newJobs": 0,
+    "newInference": 0,
+    "next": "Full verify and same-build Worker/UI, then required new Source/publication approval and bounded actual Pixel job."
   }
 }

@@ -14,6 +14,9 @@ import {
   skyEveDeviceState,
   skyEveSelectionMatches,
   skyEveConsentKey,
+  skyEveTargetKey,
+  skyEveSelectionTargetKey,
+  skyEveExecutionTargets,
   isEveRuntimePresence,
   type EveExecutionPresence,
   type EveRuntimePresence,
@@ -65,11 +68,7 @@ export default function EveSyncWorkspace({
     [jobs, setJobs] = useState<EveDeviceJob[]>([]),
     [devices, setDevices] = useState<EveExecutionPresence[]>([]);
   const [input, setInput] = useState(''),
-    [deviceId, setDeviceId] = useState(
-      initialSelection.kind === 'device' || initialSelection.kind === 'runtime'
-        ? initialSelection.deviceId
-        : '',
-    ),
+    [targetId, setTargetId] = useState(skyEveSelectionTargetKey(initialSelection)),
     [agentId, setAgentId] = useState(
       initialSelection.kind === 'device' || initialSelection.kind === 'runtime'
         ? initialSelection.agentId
@@ -136,7 +135,7 @@ export default function EveSyncWorkspace({
         );
         if (ownerChanged) {
           expanded.current = false;
-          setDeviceId('');
+          setTargetId('');
           setAgentId('');
           setPinnedSelection({ kind: 'invalid' });
           activeThread.current = '';
@@ -253,8 +252,9 @@ export default function EveSyncWorkspace({
       window.removeEventListener('offline', offline);
     };
   }, []);
-  const device = devices.find(
-      (d) => d.deviceId === (deviceId || devices[0]?.deviceId),
+  const executionTargets = skyEveExecutionTargets(devices, targetId);
+  const device = executionTargets.find(
+      (d) => skyEveTargetKey(d) === (targetId || (executionTargets[0] ? skyEveTargetKey(executionTargets[0]) : '')),
     ),
     agent = device?.agents.find(
       (a) => a.id === (agentId || device.agents[0]?.id),
@@ -723,9 +723,9 @@ export default function EveSyncWorkspace({
                     実行先
                     <select
                       disabled={busy}
-                      value={device?.deviceId ?? ''}
+                      value={device ? skyEveTargetKey(device) : ''}
                       onChange={(e) => {
-                        setDeviceId(e.target.value);
+                        setTargetId(e.target.value);
                         setAgentId('');
                         setPinnedSelection({ kind: 'none' });
                         setConsent(false);
@@ -738,8 +738,8 @@ export default function EveSyncWorkspace({
                             : '実行先を接続してください'}
                         </option>
                       )}
-                      {devices.map((d) => (
-                        <option key={d.deviceId} value={d.deviceId}>
+                      {executionTargets.map((d) => (
+                        <option key={skyEveTargetKey(d)} value={skyEveTargetKey(d)}>
                           {d.name}
                         </option>
                       ))}

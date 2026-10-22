@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.home-add-manage-evidence/1",
   "recordedAt": "2026-10-22T19:49:44.131431+00:00",
-  "status": "local_ui_exact_build_full_gates_accepted_publication_approval_pending",
+  "status": "published_v112_owner_ui_accepted",
   "authority": "2026-10-22 owner says /#catalog and /os/sky/agents are redundant, screenshot points to their separate bottom tabs",
   "taskIds": [
     "HOME01",
@@ -303,6 +303,8 @@
   "remainingLinkUpdates": [
     "components/sky-information-market.tsx",
     "components/sky-agent-eve-profile.tsx",
+    "components/sky-chat-workspace.tsx",
+    "components/sky-workspace.tsx",
     "components/sky-discovery-feed.tsx",
     "components/sky-social-timeline.tsx"
   ],
@@ -334,5 +336,77 @@
       "proof": "home-add-manage-ui-preview/build-proof.json",
       "cause": "Initial UI build application hash differed from the subsequent full-verify build. Retained initial build and reaccepted the exact final application with saved settings/server restart/draft/keyboard/Eve readback."
     }
-  ]
+  ],
+  "publication": {
+    "schema": "rockstaros.home-add-manage-publication/1",
+    "approval": "この候補を公開して進める",
+    "source": {
+      "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+      "checkout_path": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/source-billing-recovery",
+      "commit_sha": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+      "archive": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/home-add-manage-publication-candidate/site-source-saved.tar.gz"
+    },
+    "savedVersion": {
+      "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_702966f1bfd481918df24217f73c44cd",
+      "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+      "version_number": 112,
+      "source": {
+        "commit_sha": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3"
+      },
+      "archive_storage": {
+        "archive_format": "tar",
+        "sediment_file_id": "file_0000000027c881f78d513d87c5df94e3",
+        "content_hash": "sha256:8cf023b4d861fd51e6670c7a3f2e3b014c8c4e71732d41171fed4267c737c154",
+        "size_bytes": 20992000,
+        "file_count": 822
+      },
+      "screenshot_url": null,
+      "deployment_id": null
+    },
+    "deployment": {
+      "id": "appgdep_6ada7c8e80688191a303bc27e1608439",
+      "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+      "title": "RockstarOS — 自分のSI環境を、どこからでも",
+      "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_702966f1bfd481918df24217f73c44cd",
+      "type": "publish",
+      "status": "succeeded",
+      "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+      "has_mcp": true,
+      "screenshot_asset_pointer": null,
+      "provider_deployment_id": "site---6abdfad4c5648191bcae957913bd02fa",
+      "failure_message": null,
+      "env_set_revision": 8,
+      "updated_at": "2026-10-22T21:14:10.424865+00:00"
+    },
+    "siteReadback": {
+      "id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+      "version": 112,
+      "role": "owner",
+      "access": "public",
+      "url": "https://avoado.si",
+      "status": "active"
+    },
+    "ui": {
+      "origin": "https://avoado.si",
+      "accepted": [
+        "old /os/sky/agents → /#sky-manage",
+        "old /#catalog opens Home Add dialog",
+        "Add/manage switch inside Home",
+        "existing stopped agent and openai-fast setting preserved without saving",
+        "six connected Pixel agents retained",
+        "Home primary navigation: Sky/Eve/community"
+      ],
+      "newJobs": 0,
+      "newInference": 0,
+      "newCharges": 0,
+      "agentSettingsChanged": false,
+      "screenshot": "home-add-manage-publication-candidate/public-home-final.png"
+    },
+    "httpReadback": {
+      "status": "not_accepted",
+      "cause": "Unauthenticated terminal reads of both custom and generated origins returned upstream text/plain403; no asset/hash/header public claim",
+      "diagnostic": "home-add-manage-publication-candidate/public-response-initial-diagnostic.json"
+    },
+    "at": "2026-10-22T21:17:26.216733+00:00"
+  }
 }

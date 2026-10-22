@@ -2769,7 +2769,7 @@
       "publicChanged": false
     },
     "homeAddManage": {
-      "status": "local_exact_build_accepted_publication_pending",
+      "status": "published_v112_owner_ui_accepted",
       "authority": "2026-10-22 owner says /#catalog and /os/sky/agents are redundant, screenshot points to their separate bottom tabs",
       "documents": [
         "docs/rockstaros-complete-design.md#home-add-manage",
@@ -2800,7 +2800,9 @@
         "eve",
         "communities"
       ],
-      "publicAccepted": false
+      "publicAccepted": true,
+      "publicVersion": 112,
+      "sourceCommit": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3"
     }
   },
   "sourceReadinessAlignment": {
@@ -2911,5 +2913,27 @@
     "negotiatedExtension": "X-Rockstar-Device-Binding: owner-device/v1",
     "legacyStrictResponsePreserved": true,
     "sdkVersion": "1.0.0-dev.7"
+  },
+  "pixelTargetSelection": {
+    "status": "local_candidate_verification_pending",
+    "tasks": [
+      "OS10",
+      "DSP01",
+      "SKY21",
+      "HOME01"
+    ],
+    "design": [
+      "docs/rockstaros-complete-design.md",
+      "docs/sky-tools-complete-design.md"
+    ],
+    "sources": [
+      "lib/sky-eve-connections.ts",
+      "components/eve-sync-workspace.tsx",
+      "components/sky-device-agent-connections.tsx",
+      "tests/sky-eve-connections.test.mjs"
+    ],
+    "evidence": "docs/evidence/pixel-target-selection.json",
+    "publicAccepted": false,
+    "sameDeviceContractsMergedForDisplayOnly": true
   }
 }

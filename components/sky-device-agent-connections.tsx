@@ -5,6 +5,7 @@ import {
   skyEveDevicePath,
   skyEveDeviceState,
   isEveRuntimePresence,
+  skyEveExecutionTargets,
   type EveExecutionPresence,
   type EveRuntimePresence,
 } from '@/lib/sky-eve-connections';
@@ -66,7 +67,7 @@ export default function SkyDeviceAgentConnections({
             data.error ||
               '端末の担当を確認できません。接続を確認してください。',
           );
-        const connected = [...data.devices, ...(runtime?.devices ?? [])];
+        const connected = skyEveExecutionTargets([...data.devices, ...(runtime?.devices ?? [])]);
         setDevices(connected);
         setObservedAt(Date.now());
         setNotice(

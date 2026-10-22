@@ -1,3 +1,7 @@
+## v112からの端末接続選択の修正候補
+
+OS10/DSP01/SKY21・ROCK。Eve/Skyの同一device UUIDが旧/共通で衝突する問題を、UI契約keyと単一端末選択で修正。owner/旧URL指定/同意/期限/能力と元APIを保持する。Native5abbの実機受入はRoot側の別候補、配信SourceはWeb4ファイルと契約/証拠を更新する。Sourceの最終full・同build Worker/UI・公開・実1仕事を個別に記録する。[契約](../rockstaros-complete-design.md)・[証拠](../evidence/pixel-target-selection.json)。
+
 <a id="android--device--local-ai"></a>
 
 # Android / Device / Local si

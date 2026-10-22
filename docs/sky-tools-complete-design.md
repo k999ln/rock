@@ -1507,3 +1507,17 @@ main Siteの配信Sourceはroot drizzleをdrizzle-mainへ置換するため、Co
 9. **承認**: 可逆なUI整理は今回の本人指摘に沿う。新モデル実行・送信先・費用・端末権限は各既存gateで確認。既存public Previewの次版配備は自動承認審査が要求した明示承認を別に待つ。
 10. **合格**: 3つの主タブ/旧URL/既存library API・CAS・Eve設定、dialog内draft/scroll/キーボードを集中試験と実UIで確認。同一Root/Source候補の型・lint・full verify、archive/公開response/実機を環境別に記録する。
 11. **次/未決定**: 集中33/33、Root全verify（Node1449中1448pass/1skip、API2061/CSV113）、Source全verify（Node2430中2429pass/1skip、API1530/CSV385）と同一buildの実UIを確認。draft保持/矢印キー/保存と再表示/旧URL/Eveの同agent・revision・model、12配信応答と梱包13SQLが合格。公開v111は未変更で、自動承認審査が求めた次版の明示公開承認を待つ。Pixelの共通実行試験は接続共存の次版配備後。独立した管理機能を捨てた、全OS完成、実課金合格とはしない。[証拠](evidence/home-add-manage.json)。
+
+### 同じ端末の旧接続と共通接続の選択
+
+1. **目的**: CORE02/03/05、OS10/DSP01/SKY21。v112の実機観測で、同じdevice UUIDの旧/共通接続が同じ選択値を使い、共通接続を選べない問題を修正する。
+2. **体験**: EveとSky管理の一覧で同じ端末を1台にまとめ、共通接続を優先する。保存された旧形式のURLで明示された接続は保持する。
+3. **責任**: ROCKが表示/選択/同意を実装、JOINTが同じSourceと実機を受け入れる。OWNERはSource公開の明示承認、EXTERNALはOS/AVF/配信基盤を担当。Nativeのidle通知修正はRoot側の別APK5abbの証拠を参照し、この配信SourceのNative同梱版は従前の版とする。
+4. **入出力**: serverの元device IDは維持し、UI選択だけdevice/runtimeの種類を含むkeyにする。Agent/LLM digest、同意、元APIと予算上限を維持する。
+5. **状態**: 共通接続指定が消えた時は旧接続へ自動で切替えず、選び直しに戻る。接続種類の変更で以前の同意を利用しない。
+6. **保存**: 既存owner/device/grant、暗号化presence、履歴/仕事/成果を使う。DBと実行API、料金/台帳の変更はない。
+7. **失敗**: 異なるowner、停止、未準備、期限切れ、非対応能力は既存検査で拒否。未送信の依頼文を残し、実行ボタンを無効にする。
+8. **復旧**: 旧URL互換を保持。公開前の候補失敗ではv112を維持し、保存済みSource/assetを復旧基準にする。端末の再登録/鍵再作成を要求しない。
+9. **承認**: 自動審査が新候補のSource操作を拒否したため、外部remoteのないローカルv112コピーで先に検証する。公開Sourceへは明示承認と同一候補のgate確認後に適用する。
+10. **合格**: 集中11件、owner検査の前後関係、単一端末、旧/共通pin、同意失効、消失時の再選択を検証。同じ候補の全verify、実Worker/D1、実UI、梱包、公開readbackとPixel実仕事は別々に記録する。
+11. **現在/次**: Rootの合成実UIと集中試験は受入済み。隔離v112コピーの全verifyとその同じbuildのUIを最終確認し、Source公開の承認へ進む。実仕事/推論/課金は0。[証拠](evidence/pixel-target-selection.json)。

@@ -33,6 +33,30 @@ export type SkyEveSelection =
   | { kind: 'invalid' }
   | ({ kind: 'device' } & SkyEveDeviceSelection)
   | ({ kind: 'runtime' } & SkyEveRuntimeSelection);
+
+/** UI identity includes the execution contract; the server keeps the original device ID. */
+export function skyEveTargetKey(device: EveExecutionPresence): string {
+  return `${isEveRuntimePresence(device) ? 'runtime' : 'device'}:${device.deviceId}`;
+}
+export function skyEveSelectionTargetKey(selection: SkyEveSelection): string {
+  return selection.kind === 'device' || selection.kind === 'runtime'
+    ? `${selection.kind}:${selection.deviceId}`
+    : '';
+}
+/** One physical target, preferring the common contract unless an exact old URL was selected. */
+export function skyEveExecutionTargets(
+  devices: EveExecutionPresence[],
+  selectedKey = '',
+): EveExecutionPresence[] {
+  const targets = new Map<string, EveExecutionPresence>();
+  for (const device of devices) {
+    const previous = targets.get(device.deviceId);
+    if (!previous || skyEveTargetKey(device) === selectedKey ||
+      (skyEveTargetKey(previous) !== selectedKey && !isEveRuntimePresence(previous) && isEveRuntimePresence(device)))
+      targets.set(device.deviceId, device);
+  }
+  return [...targets.values()];
+}
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const hash = /^[a-f0-9]{64}$/;
 
@@ -124,7 +148,7 @@ export function skyEveDeviceState(
   )
     return { available: false, label: '端末との接続を確認してください' };
   if (device.phase === 'stopped')
-    return { available: false, label: '端末のAIは停止中です' };
+    return { available: false, label: isEveRuntimePresence(device) ? '実行先の受付は停止中です' : '端末のAIは停止中です' };
   if (device.phase === 'preparing')
     return { available: false, label: '端末でAIを準備しています' };
   if (device.phase !== 'ready' || !device.preparedModels.includes(model.id))

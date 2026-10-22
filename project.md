@@ -1,3 +1,7 @@
+## Pixelの接続選択をv112の隔離候補で修正
+
+公開v112/source160ffを基準に、UI選択keyへ契約種類を含め、Eve/Skyで同じ端末を1台へ統合。owner/旧pin/能力/期限/同意と元device UUID/実行APIを維持。集中11・環境67・Mini25試験、前Node2432pass/1skipを確認。外部Source操作の審査拒否後は、外部remoteなしの隔離コピーで準備し、Native5abbの別受入とSource同梱Nativeを区別。次は全verify/同build UI/承認後のSource公開と実1仕事。
+
 ## Home統合：同一buildの実UI・全体gate・梱包一致を受入
 
 集中33/33、Root固定sourceのfull exit0（Node1449/1448pass/1skip、API2061/CSV113、assets212欠損0）、Source full exit0（Node2430/2429pass/1skip、API1530/CSV385、assets213欠損0）。旧3/2試験は新しい本人の3タブ/旧URL互換へ期待値を訂正し、既存auth/CAS/model/偽telemetry拒否は保持。初回UI buildと後続full buildのapplication hash差を検出して初回artifactを保全、最終application13c09e50…と同じbuildへ再受入。合成ownerで担当1件/版1、Ollamaとqwen2.5:1.5b保存、旧URL/サーバー再起動後の同設定、未保存draft切替/閉じ再開/矢印キー、Eveへの同agent/版/modelを確認。実行先未接続を正しく表示し、仕事/推論/課金0。12配信応答/JS bytes/ヘッダー、822ファイル/13SQL/AppleDouble0のdraft bc8f2c0b…を確認。既存公開v111/Pixel308e/26jobsを保持し、自動審査の明示承認不足による最終Source保存/配備は本人へ具体候補で確認中。GitHub/main/公開/Pixel新共通実行/全Goal完成ではない。証拠docs/evidence/home-add-manage.json。

@@ -8,6 +8,9 @@ import {
   skyEveDeviceState,
   skyEveSelectionMatches,
   skyEveConsentKey,
+  skyEveTargetKey,
+  skyEveSelectionTargetKey,
+  skyEveExecutionTargets,
 } from '../lib/sky-eve-connections.ts';
 import { describeAdapter } from '../lib/rockstar-adapters.ts';
 const fixture = () => {
@@ -76,6 +79,41 @@ const runtimeFixture = () => {
   f.reference.modelScheme = f.model.scheme;
   return f;
 };
+void test('one Pixel can expose both contracts without duplicate options or selecting legacy by the common ID', () => {
+  const f = runtimeFixture(), runtime = f.device;
+  const legacy = { ...runtime }; delete legacy.schema;
+  const legacyKey = skyEveTargetKey(legacy), runtimeKey = skyEveTargetKey(runtime);
+  assert.notEqual(legacyKey, runtimeKey);
+  assert.equal(skyEveSelectionTargetKey({kind:'runtime',...f.reference}), runtimeKey);
+  assert.equal(skyEveSelectionTargetKey({kind:'device',...f.reference}), legacyKey);
+  assert.equal(skyEveSelectionTargetKey({kind:'none'}), '');
+  for (const list of [[legacy,runtime],[runtime,legacy]]) {
+    assert.deepEqual(skyEveExecutionTargets(list), [runtime]);
+    assert.deepEqual(skyEveExecutionTargets(list, runtimeKey), [runtime]);
+    assert.deepEqual(skyEveExecutionTargets(list, legacyKey), [legacy]);
+  }
+  const remaining = skyEveExecutionTargets([legacy], runtimeKey);
+  assert.equal(remaining.find(d=>skyEveTargetKey(d)===runtimeKey), undefined);
+  assert.notEqual(skyEveConsentKey('owner',runtime,f.agent.id),skyEveConsentKey('owner',legacy,f.agent.id));
+  const stale = {...runtime,updatedAt:1};
+  assert.deepEqual(skyEveExecutionTargets([legacy,stale]),[stale]);
+  assert.equal(skyEveDeviceState(stale,f.agent.id,100001).available,false);
+});
+void test('Eve select and lookup use the full target contract while requests retain the server device ID',async()=>{
+  const view=await readFile(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');
+  assert.match(view,/skyEveExecutionTargets\(devices, targetId\)/);
+  assert.match(view,/value=\{skyEveTargetKey\(d\)\}/);
+  assert.match(view,/skyEveTargetKey\(d\) === \(targetId/);
+  assert.match(view,/deviceId: device\.deviceId/);
+  assert.doesNotMatch(view,/\[deviceId, setDeviceId\]|<option key=\{d\.deviceId\} value=\{d\.deviceId\}/);
+});
+void test('Sky management uses the same single-target choice and preserves owner validation before merging',async()=>{
+  const view=await readFile(new URL('../components/sky-device-agent-connections.tsx',import.meta.url),'utf8');
+  assert.match(view,/skyEveExecutionTargets\(\[\.\.\.data\.devices, \.\.\.\(runtime\?\.devices \?\? \[\]\)\]\)/);
+  assert.match(view,/runtime\.ownerUserId !== ownerUserId/);
+  assert.match(view,/data\.ownerUserId !== ownerUserId/);
+  assert.ok(view.indexOf('runtime.ownerUserId !== ownerUserId')<view.indexOf('const connected = skyEveExecutionTargets'));
+});
 void test('runtime references pin digest scheme into the same Eve URL and reject protocol substitution', () => {
   const f = runtimeFixture();
   const url = new URL(skyEveDevicePath(f.reference), 'https://fixture.invalid');
