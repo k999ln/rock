@@ -128,3 +128,7 @@ export function cachedNewsForTopic(articles: EveNewsLink[], topic: string) {
       ? articles.filter((article) => patterns[topic].test(article.title))
       : [];
 }
+
+export function newsSourceHandoff(article: {url:string;title:string;seenAt:string}, stale=false) {
+  return '/os/eve?'+new URLSearchParams({newsSource:article.url,sourceTitle:article.title.slice(0,240),sourceSeenAt:article.seenAt,sourceStale:String(stale)}).toString();
+}

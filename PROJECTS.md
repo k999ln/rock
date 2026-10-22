@@ -201,3 +201,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 ### 保持したPixelアカウント同期差分
 
 [`toolkits/sky-linux-local/`](toolkits/sky-linux-local/)には、配信Sourceへ取り込んだ既存account同期のAndroid差分を保持します。このSourceに残るのは`android-account-sync.patch`で、全Linux runtimeやinstallerの同梱・全OS/実機受入を意味しません。Pixel APK/AVFと実grantの受入はRootのAndroid workstreamと同一artifactの証拠を参照し、private credentialや本人履歴を公開Sourceへ入れません。
+
+## Eveの資料付きNews
+
+`toolkits/eve-news/` は出典packet・草稿・架空fixtureを扱う開発用ToolKit。Eveで資料メモ/草稿取込→参照検査→本人修正/訂正→個別準備同意/撤回→同意済みデータ集約を行う。モデル提案は真偽・掲載・権限を確定しない。

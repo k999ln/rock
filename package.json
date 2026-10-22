@@ -17,7 +17,7 @@
     "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
     "pretest": "node scripts/generate-private-modules.mjs",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test": "node --experimental-strip-types --test --test-concurrency=2 tests/*.test.mjs",
     "test:api": "node scripts/check-work-api.mjs && node scripts/check-csv-storage.mjs",
     "test:fashion-brand-ops": "npm --prefix toolkits/fashion-brand-ops test",
     "mcp:connector": "node toolkits/sky-mcp-connector/server.mjs",

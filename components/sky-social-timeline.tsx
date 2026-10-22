@@ -1,4 +1,5 @@
 'use client';
+import { newsSourceHandoff } from '@/lib/eve-news-feed';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway. */
 import {
   useCallback,
@@ -648,6 +649,7 @@ export default function SkySocialTimeline({
               >
                 この話題をもっと
               </button>
+              <a href={newsSourceHandoff(article, item.stale)}>Eveで資料メモを作る</a>
               <button
                 onClick={() => {
                   writeHomeIntent(

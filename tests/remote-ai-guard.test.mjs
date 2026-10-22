@@ -75,7 +75,8 @@ await test('remote AI guard requires the trusted same-origin user context', asyn
   );
 });
 
-await test('remote AI guard stops the 21st request in one minute', async () => {
+await test('remote AI guard stops the 21st request in one minute', async t => {
+  let now=Date.UTC(2026,9,22,12,0,0);t.mock.method(Date,'now',()=>now);
   const db = fakeDb();
   for (let index = 0; index < 20; index += 1)
     await authorizeRemoteAiRequest(request(), 'llm-text', db);
@@ -83,4 +84,6 @@ await test('remote AI guard stops the 21st request in one minute', async () => {
     authorizeRemoteAiRequest(request(), 'llm-text', db),
     (error) => error instanceof RemoteAiGuardError && error.status === 429,
   );
+  now+=60000;
+  await authorizeRemoteAiRequest(request(), 'llm-text', db);
 });

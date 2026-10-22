@@ -2935,5 +2935,94 @@
     "evidence": "docs/evidence/pixel-target-selection.json",
     "publicAccepted": false,
     "sameDeviceContractsMergedForDisplayOnly": true
+  },
+  "eveNewsSourceIntegration": {
+    "status": "local_candidate_validation_in_progress",
+    "baselineVersion": 112,
+    "baselineSource": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-newsの公開source統合候補",
+      "docs/sky-tools-complete-design.md#eve-newsの公開source統合候補"
+    ],
+    "source": [
+      "app/api/eve/news-work/route.ts",
+      "components/eve-news-workspace.tsx",
+      "lib/eve-news-work.ts",
+      "lib/workflow.ts",
+      "lib/work-store.ts",
+      "lib/eve-history.ts"
+    ],
+    "trainingStarted": false,
+    "publicDeployed": false
+  },
+  "eveToolConversationFence": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-tool作成時の会話削除競合",
+      "docs/sky-tools-complete-design.md#eve-tool作成時の会話削除競合"
+    ],
+    "source": [
+      "lib/eve-tool-work.ts",
+      "lib/work-store.ts",
+      "tests/eve-tool-work.test.mjs"
+    ],
+    "status": "focused_pass_v113_full_pending",
+    "publicDeployed": false
+  },
+  "eveToolSourceIntegration": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eveから既存sky-toolを実行するsource候補",
+      "docs/sky-tools-complete-design.md#eveから既存sky-toolを実行するsource候補"
+    ],
+    "source": [
+      "app/api/eve/tool-work/route.ts",
+      "components/eve-tool-workspace.tsx",
+      "components/eve-sync-workspace.tsx",
+      "lib/eve-tool-work.ts",
+      "lib/eve-planner-inference.ts",
+      "lib/eve-planner-state.ts",
+      "lib/eve-plan-candidate.ts"
+    ],
+    "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+    "publicDeployed": false,
+    "evidence": "docs/evidence/eve-source-integration.json",
+    "v113Adaptation": {
+      "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+      "baseVersion": 113,
+      "baseSource": "1f4d3904b3d62113673577b4fd52c068bd08afd3",
+      "previousBaseVersion": 112,
+      "upstreamChangedFiles": 13,
+      "unresolvedConflicts": 0,
+      "focusedTests": 37,
+      "typecheck": "passed",
+      "sourceGuardsSameBytes": [
+        "components/home-screen.tsx",
+        "components/sky-device-agent-connections.tsx",
+        "lib/sky-eve-connections.ts",
+        "tests/sky-eve-connections.test.mjs",
+        ".openai/hosting.json",
+        "lib/request-auth.ts",
+        "lib/rockstar-service-access.ts",
+        "lib/fund-store.ts"
+      ],
+      "fullAccepted": false,
+      "uiAccepted": false,
+      "saved": false,
+      "deployed": false
+    }
+  },
+  "evePlannerStructuredOutput": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#計画用モデルへの構造化出力の指示",
+      "docs/sky-tools-complete-design.md#計画用モデルへの構造化出力の指示"
+    ],
+    "source": [
+      "lib/eve-plan-candidate.ts",
+      "lib/eve-planner-inference.ts",
+      "tests/eve-planner-inference.test.mjs"
+    ],
+    "status": "live_local_single_case_empty_http_usage_and_full_accepted_not_published",
+    "publicDeployed": false,
+    "localTimeoutMs": 40000,
+    "emptyResponseUsage": "trusted normalized Ollama report preserved; no candidate/result/payment authority"
   }
 }

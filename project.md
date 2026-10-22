@@ -1,6 +1,46 @@
+## Eve v113候補：使用量修正を含む最終full成功
+
+Root verify exit0（1487/1486pass/1skip、API2061/CSV113/assets212欠損0）、Source verify exit0（2514/2513pass/1skip、API1530/CSV385/assets214欠損0）。実Qwen単一caseの計画→元条件採用→実Tool/URL検査→同会話保存/再起動と、本文空応答のusage17/8保持/停止/6job復旧を限定受入。正しいprojectの公開版はv113のままと最新get_siteで確認、外部Source保存/公開は未実施。現在の候補はNews+引用Tool+localhost限定Plannerの65ファイルで、前のNews49ファイル案は固定して別保存。次はこの具体候補の保存/公開条件とSource Agent統合（既存A2A/請求を再利用）。一般SI/実機/Provider/精算/学習は未受入。
+
+## Eveの空本文usage：実HTTP/画面/再起動で保持を受入
+
+制御HTTPのdone/stop空本文+入力17/出力8を実Source adapter/APIへ通し、候補なし/Tool0のままusage/未確定金額を保存。同試行409・provider再呼出なし。実UIの明細→停止→同byte Worker/ブラウザ再起動で6job全体一致、空応答の停止版4/usage17・8保持、追加provider0/実モデル0。Root集中12/12、Source39/39・型/build成功。最終fullはこれからで、先行の構造化Planner full合格と分離。一般Providerや支払い/公開の合格ではない。
+
+## Eve Planner：本文空応答のusage脱落を修正
+
+直前の構造化Planner fullはRoot/Sourceともexit0（1485/1484pass/1skip、2512/2511pass/1skip）。その後、adapterが空本文errorと共に返す報告済みusageをPlannerがnullへ落とすことを隔離回帰で再現。信頼したLLM/Ollama正規化報告を保持し、候補/Tool成功や課金へ昇格せず、停止後も再送せず保存する修正でRoot集中12/12・Source39/39。transport timeoutのusage nullは維持。次は実HTTP fixtureと最終full、公開は別gate。
+
+## Eve構造化Planner：実Qwen1試行→実Tool→同会話保存/再起動を限定受入
+
+構造化指示だけの初回はcandidate_invalidではなく20秒timeout/応答未確認（usage null）。2回目は形式合格だが不要な参考文献文言を追加したため未採用で停止。既存Toolの実出力「## 出典」と不要条件を作らない指示を追加し、localhostだけ40秒上限（90秒lease/600token/2試行保持）へ。新しい合成仕事は実Qwen2.5の1試行/9.1秒で元のmin1/必須語なしを返し、検証→テスト本人操作の採用→実Tool→URL保持検査→版7完了。入力466/出力241/cache82、前後digest一致、金額未確定/契約未結合を保持。実UI読戻しと同byte再起動で過去の停止も含む5job全体一致、旧試行409、追加推論0。Schema前v113 full exit0（2512/2511pass/1skip、API1530/CSV385/assets214missing0）、最終変更後fullは次gate。一般能力/公開/実機/実課金/学習の合格ではない。
+
+## 公開v113の端末選択変更を保持した候補へ更新
+
+正しいSites projectのv113 Source1f4d3904と取得checkout一致を公式version metadataで確認。上流13ファイルを3-way統合、独立した追記を保持し未解決0。Home/端末選択helper/同試験/認証/料金等8対象はv113同byte。型検査とTool/Pixel集中37/37成功。v112全体/UI証拠は履歴として保持し、v113合格へ転用しない。次はv113全体verifyと同artifact UI。外部保存/公開は未実施。
+
 ## Pixelの接続選択をv112の隔離候補で修正
 
 公開v112/source160ffを基準に、UI選択keyへ契約種類を含め、Eve/Skyで同じ端末を1台へ統合。owner/旧pin/能力/期限/同意と元device UUID/実行APIを維持。集中11・環境67・Mini25試験、前Node2432pass/1skipを確認。外部Source操作の審査拒否後は、外部remoteなしの隔離コピーで準備し、Native5abbの別受入とSource同梱Nativeを区別。次は全verify/同build UI/承認後のSource公開と実1仕事。
+
+## Eve Tool最終候補：全verify成功、実Qwen候補は不合格として停止
+
+一覧修正後Root full exit0（1485/1484pass/1skip、API2061/CSV113/assets212欠損0）、Source full exit0（2509/2508pass/1skip、API1530/CSV385/assets214欠損0）。最終同byte Workerで既存Qwen2.5を600token上限で1回試験。前後digest一致、入力381/出力234/cache0を報告したがcandidate_invalidで採用/Tool実行を拒否。実モデル成功とせず、別モデル/recipe/Cloudへ自動切替なし。実UIで不合格/使用量/停止を確認し、再起動後は完成2仕事+停止1仕事全体が一致、旧試行409、追加モデル呼出0。次は構造化出力の指示を改善して同じ検査で実計画を再評価。News49ファイルは固定、外部保存/公開は未実施・確認待ち。
+
+## Eve Tool：先行Source full成功、一覧修正後の最終gateへ
+
+先行Source verify exit0（主要2508/2507pass/1skip、API1530/CSV385/assets214欠損0）。その後、非Tool101仕事で再開対象が押し出される実不具合をRootで再現し修正、SourceのAMC除外boolを保持してTool型/会話条件をSQL LIMIT前へ追加。修正後集中26/26。先行成功を修正後へ流用せず、Root/Source fullを順に再実行する。
+
+## Eve Tool：Source別候補の実Worker/UIと同byte再起動を受入
+
+合成原稿で固定手順と制御モデル候補の2仕事を実画面から完了。モデル候補は採用前Tool未実行、入力37/出力61tokensを同会話で表示、既存引用ToolとURL独立検査、本人完了。制御モデル1回/実モデル0/課金0。Worker再起動後の全job2件一致、同会話の成果/usageと完了版3/7を実UIで読戻し、再起動後モデル呼出0。旧mode衝突と再mountを修正、元の49ファイルNews候補は別に固定。Source full・公開・実モデル/Provider/実機は未受入。
+
+## Eve Tool接続の別候補に着手
+
+News49ファイル候補は固定し、別work/eve-v112-tool-integrationでTool API/計画/保存/限定修正を移植。Sourceのrecipe save/deleteを保持してfailure reducerだけ追加、型検査と集中16/16。最初の試験はRoot migration0002参照で失敗、Source既存sandbox restoreへ合わせ再試験。会話削除競合では既存live-thread INSERT fenceで仕事0を確認。UIは未接続、model inference/全体gate未完、外部保存/公開なし。
+
+## Eve Newsのv112統合候補へ着手
+
+Sky/MCP・ROCK。RootのNews改修をv112/source160ff13dへ限定移植。AMC/Jennifer/Material/既存認証・provider/hostingを維持。News58/58合格、型検査は構造化出力/usageのSource互換修正後通過。初回Source fullはPROJECTS ToolKit入口不足で停止し、入口を追加。外部書込資格情報によるGit接続は自動審査が承認不足として拒否、ローカルのみ。
 
 ## Home統合：同一buildの実UI・全体gate・梱包一致を受入
 

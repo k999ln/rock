@@ -1,5 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import EveNewsWorkspace from './eve-news-workspace';
+import EveToolWorkspace from './eve-tool-workspace';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import SkyAgentEveProfile,{useSkyAgentProfileRequested} from './sky-agent-eve-profile';
 import SkyFreeCloudPanel from './sky-free-cloud-panel';
@@ -52,6 +54,7 @@ const label = (s: string) =>
     completed: '確認済み',
     cancelled: '停止済み',
   })[s] ?? s;
+const subscribeNewsSourceRequest=()=>()=>{};
 export default function EveSyncWorkspace({
   initialThreadId = '',
   initialSelection = { kind: 'none' },
@@ -61,6 +64,12 @@ export default function EveSyncWorkspace({
 }) {
   const profileRequested=useSkyAgentProfileRequested();
   const [cloudHistoryOpen,setCloudHistoryOpen]=useState(false);
+  const newsSourceRequested=useSyncExternalStore(subscribeNewsSourceRequest,()=>new URL(window.location.href).searchParams.has('newsSource'),()=>false);
+  const [newsWorkExpanded,setNewsWorkOpen]=useState<boolean|null>(null);
+  const newsWorkOpen=newsWorkExpanded??newsSourceRequested;
+  const toolRequested=useSyncExternalStore(subscribeNewsSourceRequest,()=>new URL(window.location.href).searchParams.get('mode')==='tool-work',()=>false);
+  const [toolExpanded,setToolExpanded]=useState<boolean|null>(null);
+  const toolOpen=toolExpanded??toolRequested;
   const [pinnedSelection, setPinnedSelection] = useState(initialSelection);
   const [threads, setThreads] = useState<EveHistoryItem[]>([]),
     [selected, setSelected] = useState(initialThreadId),
@@ -528,11 +537,13 @@ export default function EveSyncWorkspace({
             )}
           </nav>
           <Link href="/connect/device">端末を接続・解除</Link>
-          <Link href="/os/eve?mode=tools">SkyのToolを使う</Link>
+          <Link href="/os/eve?mode=tool-work">SkyのToolを使う</Link>
           <Link href="/#sky-manage">担当とLLMを管理</Link>
           <Link href="/#sky">能力を追加</Link>
         </aside>
         <section className={styles.desk}>
+          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>SkyのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
+          {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner}/>}
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
           <header>

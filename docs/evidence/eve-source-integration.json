@@ -1,0 +1,407 @@
+{
+  "status": "v113_news_tool_local_planner_full_accepted_agent_source_port_and_public_pending",
+  "baselineSource": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "domain": "https://avoado.si",
+  "requirements": [
+    "SI01",
+    "SI02",
+    "SI04",
+    "T01",
+    "T06",
+    "T08",
+    "T09",
+    "T12"
+  ],
+  "sourceFull": {
+    "exitCode": 0,
+    "nodeTests": 2509,
+    "passed": 2508,
+    "failed": 0,
+    "skipped": 1,
+    "workApiAssertions": 1530,
+    "csvAssertions": 385,
+    "assetReferences": 214,
+    "missingAssets": 0
+  },
+  "rootFull": {
+    "exitCode": 0,
+    "nodeTests": 1485,
+    "passed": 1484,
+    "failed": 0,
+    "skipped": 1,
+    "workApiAssertions": 2061,
+    "csvAssertions": 113,
+    "assetReferences": 212,
+    "missingAssets": 0
+  },
+  "focusedTests": 26,
+  "sourceListScope": "owner/type/thread SQL before LIMIT100; regression reproduced and fixed; Source AMC bool preserved",
+  "actualLocalModel": {
+    "jobId": "aebacb23-7677-4027-aaa8-78c0ad3f8418",
+    "threadId": "6e19c7c8-3d4b-41ba-a753-9ec15445e3e8",
+    "model": {
+      "name": "qwen2.5:1.5b",
+      "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+      "bytes": 986061892
+    },
+    "elapsedMs": 18343,
+    "planningStatus": "draft",
+    "attempts": 1,
+    "observation": {
+      "state": "reported",
+      "startedAt": 1792709243442,
+      "finishedAt": 1792709261624,
+      "usage": {
+        "schema": "sky-usage-observation/1",
+        "source": "llm",
+        "providerId": "ollama",
+        "resourceId": "qwen2.5:1.5b",
+        "reportedResourceId": "qwen2.5:1.5b",
+        "basis": "provider_response",
+        "status": "reported",
+        "metrics": [
+          {
+            "meter": "input_tokens",
+            "unit": "tokens",
+            "quantity": 381,
+            "relationship": "independent"
+          },
+          {
+            "meter": "output_tokens",
+            "unit": "tokens",
+            "quantity": 234,
+            "relationship": "independent"
+          },
+          {
+            "meter": "cached_input_tokens",
+            "unit": "tokens",
+            "quantity": 0,
+            "relationship": "subset"
+          }
+        ],
+        "currency": null,
+        "amountMinor": null,
+        "pricingVersion": null,
+        "providerReference": null,
+        "invoiceVerified": false,
+        "developerPayment": {
+          "status": "contract_not_bound",
+          "amountMinor": null
+        }
+      },
+      "outputSha256": "acb4af7a1e5a1e17e47bf53e96e47ff93b2239fb0793a6b0db6ffde457f7c7bf",
+      "modelIdentity": {
+        "beforeDigest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+        "afterDigest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+        "status": "observed_match"
+      }
+    },
+    "toolExecutedBeforeAdoption": false,
+    "scope": "one actual local model planner call; synthetic source; no general quality/remote/native/billing acceptance",
+    "finalStatus": "active",
+    "notAcceptedReason": "Model did not produce a validated adoptable plan; no automatic recipe/cloud fallback.",
+    "finalAfterOwnerStop": "cancelled",
+    "acceptedAsPlanner": false,
+    "totalCalls": 1,
+    "fallback": false,
+    "toolArtifacts": 0
+  },
+  "restart": {
+    "sameWholeJobsAfterRestart": 3,
+    "states": [
+      "completed",
+      "completed",
+      "cancelled"
+    ],
+    "oldAttemptStatus": 409,
+    "totalActualLocalModelCalls": 1,
+    "duplicateModelCallsAfterRestart": 0,
+    "cloudCalls": 0,
+    "realBilling": false
+  },
+  "screenshots": [],
+  "externalSaved": false,
+  "publicDeployed": false,
+  "goalComplete": false,
+  "remaining": [
+    "Structured planner output guidance and same acceptance checks; current Qwen2.5 result is invalid",
+    "Actual validated model plan through Source not yet accepted",
+    "Agent/Provider/device/settlement/public release and full SI/T scope remain",
+    "News49-file save/publication approval pending; combined Tool candidate separate"
+  ],
+  "v113Adaptation": {
+    "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+    "baseVersion": 113,
+    "baseSource": "1f4d3904b3d62113673577b4fd52c068bd08afd3",
+    "previousBaseVersion": 112,
+    "upstreamChangedFiles": 13,
+    "unresolvedConflicts": 0,
+    "focusedTests": 37,
+    "typecheck": "passed",
+    "sourceGuardsSameBytes": [
+      "components/home-screen.tsx",
+      "components/sky-device-agent-connections.tsx",
+      "lib/sky-eve-connections.ts",
+      "tests/sky-eve-connections.test.mjs",
+      ".openai/hosting.json",
+      "lib/request-auth.ts",
+      "lib/rockstar-service-access.ts",
+      "lib/fund-store.ts"
+    ],
+    "fullAccepted": false,
+    "uiAccepted": false,
+    "saved": false,
+    "deployed": false
+  },
+  "scope": "v112 acceptance below is historical; not v113 full/UI acceptance",
+  "structuredPlanner": {
+    "status": "v113_live_local_structured_planner_tool_worker_ui_restart_accepted_full_pending",
+    "baseSource": "1f4d3904b3d62113673577b4fd52c068bd08afd3",
+    "model": {
+      "name": "qwen2.5:1.5b",
+      "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+      "bytes": 986061892
+    },
+    "jobId": "0e02406b-043a-4d08-a665-15414611e717",
+    "threadId": "f0e88bf2-5456-49f5-9aff-120de37e0ad3",
+    "revision": 7,
+    "statusAfterOwnerTestAdoption": "completed",
+    "sourceContext": "synthetic owner account and authored source; private localhost Worker/D1/Ollama",
+    "executionActor": "test script adopts only after checking the synthetic goal criteria; actual browser reads result/usage/reload",
+    "elapsedMs": 9131,
+    "attempts": 1,
+    "criteria": {
+      "minChars": 1,
+      "requiredText": []
+    },
+    "checks": [
+      {
+        "name": "成果あり",
+        "passed": true,
+        "detail": "76文字"
+      },
+      {
+        "name": "出典URL保持",
+        "passed": true,
+        "detail": "1件のリンク先を比較（内容の真偽は未検証）"
+      }
+    ],
+    "observation": {
+      "state": "reported",
+      "startedAt": 1792711464005,
+      "finishedAt": 1792711473070,
+      "usage": {
+        "schema": "sky-usage-observation/1",
+        "source": "llm",
+        "providerId": "ollama",
+        "resourceId": "qwen2.5:1.5b",
+        "reportedResourceId": "qwen2.5:1.5b",
+        "basis": "provider_response",
+        "status": "reported",
+        "metrics": [
+          {
+            "meter": "input_tokens",
+            "unit": "tokens",
+            "quantity": 466,
+            "relationship": "independent"
+          },
+          {
+            "meter": "output_tokens",
+            "unit": "tokens",
+            "quantity": 241,
+            "relationship": "independent"
+          },
+          {
+            "meter": "cached_input_tokens",
+            "unit": "tokens",
+            "quantity": 82,
+            "relationship": "subset"
+          }
+        ],
+        "currency": null,
+        "amountMinor": null,
+        "pricingVersion": null,
+        "providerReference": null,
+        "invoiceVerified": false,
+        "developerPayment": {
+          "status": "contract_not_bound",
+          "amountMinor": null
+        }
+      },
+      "outputSha256": "73541197bad16e8be4a3d71c0ab5490e3d0814c1a854108a1d32850b57c42aed",
+      "modelIdentity": {
+        "beforeDigest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+        "afterDigest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+        "status": "observed_match"
+      }
+    },
+    "limits": {
+      "maxOutputTokens": 600,
+      "localTimeoutMs": 40000,
+      "attemptLeaseMs": 90000,
+      "maxAttempts": 2
+    },
+    "restart": {
+      "sameWholeJobsAfterRestart": 5,
+      "states": [
+        "completed",
+        "completed",
+        "cancelled",
+        "cancelled",
+        "completed"
+      ],
+      "oldAttemptStatus": 409,
+      "currentExperimentActualCalls": 1,
+      "allSchemaExperimentCalls": 3,
+      "duplicateCallsAfterRestart": 0,
+      "cloudCalls": 0,
+      "finalRevision": 7
+    },
+    "screenshots": [
+      "outputs/eve-v113-qwen-planner-completed.png",
+      "outputs/eve-v113-qwen-planner-restart.png"
+    ],
+    "previousExperiments": [
+      {
+        "configuration": "unstructured v112",
+        "result": "candidate_invalid; stopped; usage381/234 retained"
+      },
+      {
+        "configuration": "schema only,20s",
+        "result": "first inference unknown/upstream_timeout; not candidate_invalid; usage null. Second explicit bounded trial passed syntax but added unwanted reference phrases; not adopted, stopped; usage400/189 retained"
+      }
+    ],
+    "changes": [
+      "context-bound JSON Schema guidance, existing independent parser unchanged",
+      "tool output metadata states actual ## 出典 heading and no invented literal criteria",
+      "40s bounded local call under existing90s lease after observed20s timeout; no CLI/runtime/provider billing timeout changed"
+    ],
+    "notProven": [
+      "general model intelligence or semantic/truth/neutrality quality",
+      "physical/native/remote Provider/public owner acceptance",
+      "author collection/payment or training",
+      "full SI00–08/T01–12 completion"
+    ],
+    "cloudCalls": 0,
+    "payment": false,
+    "training": false,
+    "saved": false,
+    "deployed": false,
+    "baselineFull": {
+      "exitCode": 0,
+      "nodeTests": 2512,
+      "passed": 2511,
+      "failed": 0,
+      "skipped": 1,
+      "apiAssertions": 1530,
+      "csvAssertions": 385,
+      "assetReferences": 214,
+      "missingAssets": 0,
+      "scope": "v113 merged baseline before structured planner change"
+    }
+  },
+  "plannerEmptyResponseUsage": {
+    "status": "controlled_http_worker_ui_restart_accepted_final_full_pending",
+    "rootFocused": 12,
+    "sourceFocused": 39,
+    "http": {
+      "jobId": "3157c90d-87d2-448b-bf16-aaed06656179",
+      "threadId": "69a90350-8b9d-4fe7-9ae6-0e6be5b590c8",
+      "attemptId": "e006a4d7-16d4-4a36-8433-8e8e3c28b559",
+      "reportedUsage": {
+        "schema": "sky-usage-observation/1",
+        "source": "llm",
+        "providerId": "ollama",
+        "resourceId": "tool-planner-fixture",
+        "reportedResourceId": "tool-planner-fixture",
+        "basis": "provider_response",
+        "status": "partial",
+        "metrics": [
+          {
+            "meter": "input_tokens",
+            "unit": "tokens",
+            "quantity": 17,
+            "relationship": "independent"
+          },
+          {
+            "meter": "output_tokens",
+            "unit": "tokens",
+            "quantity": 8,
+            "relationship": "independent"
+          },
+          {
+            "meter": "cached_input_tokens",
+            "unit": "tokens",
+            "quantity": null,
+            "relationship": "subset"
+          }
+        ],
+        "currency": null,
+        "amountMinor": null,
+        "pricingVersion": null,
+        "providerReference": null,
+        "invoiceVerified": false,
+        "developerPayment": {
+          "status": "contract_not_bound",
+          "amountMinor": null
+        }
+      },
+      "inferenceError": "provider_failed",
+      "candidate": false,
+      "toolArtifacts": 0,
+      "replayStatus": 409,
+      "scope": "controlled HTTP provider; actual Source Worker/D1; no actual model/Cloud/billing"
+    },
+    "restart": {
+      "sameWholeJobsAfterRestart": 6,
+      "emptyJobStatus": "cancelled",
+      "emptyJobRevision": 4,
+      "inputTokens": 17,
+      "outputTokens": 8,
+      "oldAttemptStatus": 409,
+      "duplicateFixtureCalls": 0,
+      "newActualModelCalls": 0
+    },
+    "screenshots": [
+      "outputs/eve-v113-empty-response-usage.png",
+      "outputs/eve-v113-empty-response-restart.png"
+    ],
+    "scope": "controlled HTTP Ollama-format response; actual local Source adapter/Worker/D1/UI, no actual model/Cloud/billing in this test",
+    "invariants": [
+      "reported counters retained without candidate or Tool artifacts",
+      "stopped WorkJob remains cancelled",
+      "old attempt rejected before provider call",
+      "transport loss without a report remains unknown/null",
+      "amount/invoice/collection/author payment not verified"
+    ],
+    "next": "final Root/Source verify after empty-response usage correction",
+    "externalSaved": false,
+    "publicDeployed": false
+  },
+  "finalVerifyIncludingEmptyUsageFix": {
+    "status": "passed",
+    "root": {
+      "exitCode": 0,
+      "nodeTests": 1487,
+      "passed": 1486,
+      "failed": 0,
+      "skipped": 1,
+      "apiAssertions": 2061,
+      "csvAssertions": 113,
+      "assetReferences": 212,
+      "missingAssets": 0
+    },
+    "source": {
+      "exitCode": 0,
+      "nodeTests": 2514,
+      "passed": 2513,
+      "failed": 0,
+      "skipped": 1,
+      "apiAssertions": 1530,
+      "csvAssertions": 385,
+      "assetReferences": 214,
+      "missingAssets": 0
+    }
+  }
+}

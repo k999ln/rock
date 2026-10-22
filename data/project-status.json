@@ -9643,5 +9643,311 @@
     "newJobs": 0,
     "newInference": 0,
     "next": "Full verify and same-build Worker/UI, then required new Source/publication approval and bounded actual Pixel job."
+  },
+  "eveNewsSourceIntegration": {
+    "status": "local_candidate_full_verification_in_progress",
+    "baselineVersion": 112,
+    "baselineSource": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+    "focusedTests": "58/58 pass",
+    "publicDeployed": false,
+    "externalSourceSaved": false
+  },
+  "eveToolSourceIntegration": {
+    "status": "v113_news_tool_local_planner_full_accepted_agent_source_port_and_public_pending",
+    "base": "v112 + fixed 49-file News candidate",
+    "focusedTests": 26,
+    "typecheck": "passed before creation-fence change; full pending",
+    "preserved": [
+      "Source recipe save/delete",
+      "Source auth/service gates",
+      "fixed mr vendor",
+      "News candidate remains separate"
+    ],
+    "next": "Source save/publication authorization and fresh drift check; keep local LLM private-localhost boundary; port Agent contracts to Source while preserving existing billing",
+    "saved": false,
+    "deployed": false,
+    "sourceTypecheck": "passed",
+    "sourceBuild": "passed",
+    "workerUi": {
+      "sameWholeJobsAfterRestart": 2,
+      "ids": [
+        "66fde0e0-e549-4244-8041-fed42ec110d1",
+        "009354a5-69fb-4ba3-aadf-37e7eaed781e"
+      ],
+      "threadIds": [
+        "6c11f218-3e7f-4fa2-9501-ef35540a8e23",
+        "1be50fa6-a33b-40a3-8550-ba45f10c56eb"
+      ],
+      "revisions": [
+        3,
+        7
+      ],
+      "fixtureModelCallsBeforeRestart": 1,
+      "fixtureModelCallsAfterRestart": 0,
+      "realModelCalls": 0,
+      "buildPath": "/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/eve-v112-tool-ui-1oxt2u9r/dist-refresh-1792708133942"
+    },
+    "previousSourceFull": {
+      "exitCode": 0,
+      "nodeTests": 2508,
+      "passed": 2507,
+      "failed": 0,
+      "skipped": 1,
+      "workApiAssertions": 1530,
+      "csvAssertions": 385,
+      "webAssetReferences": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/eve-v112-tool-source-full2.log",
+      "scope": "before Tool list scope correction"
+    },
+    "rootFull": {
+      "exitCode": 0,
+      "nodeTests": 1485,
+      "passed": 1484,
+      "failed": 0,
+      "skipped": 1,
+      "workApiAssertions": 2061,
+      "csvAssertions": 113,
+      "assetReferences": 212,
+      "missingAssets": 0,
+      "log": "/private/tmp/eve-tool-list-scope-root-full.log"
+    },
+    "sourceFull": {
+      "exitCode": 0,
+      "nodeTests": 2509,
+      "passed": 2508,
+      "failed": 0,
+      "skipped": 1,
+      "workApiAssertions": 1530,
+      "csvAssertions": 385,
+      "assetReferences": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/eve-tool-list-scope-source-full.log"
+    },
+    "actualLocalModel": {
+      "acceptedAsPlanner": false,
+      "reason": "candidate_invalid",
+      "calls": 1,
+      "inputTokens": 381,
+      "outputTokens": 234,
+      "statusAfterStop": "cancelled",
+      "ToolArtifacts": 0,
+      "noFallback": true
+    },
+    "finalRestart": {
+      "sameWholeJobsAfterRestart": 3,
+      "states": [
+        "completed",
+        "completed",
+        "cancelled"
+      ],
+      "oldAttemptStatus": 409,
+      "totalActualLocalModelCalls": 1,
+      "duplicateModelCallsAfterRestart": 0,
+      "cloudCalls": 0,
+      "realBilling": false,
+      "buildPath": "/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/eve-v112-tool-ui-1oxt2u9r/dist-refresh-1792709231821"
+    },
+    "v112Acceptance": {
+      "sourceFull": {
+        "exitCode": 0,
+        "nodeTests": 2509,
+        "passed": 2508,
+        "failed": 0,
+        "skipped": 1,
+        "workApiAssertions": 1530,
+        "csvAssertions": 385,
+        "assetReferences": 214,
+        "missingAssets": 0,
+        "log": "/private/tmp/eve-tool-list-scope-source-full.log"
+      },
+      "workerUi": {
+        "sameWholeJobsAfterRestart": 2,
+        "ids": [
+          "66fde0e0-e549-4244-8041-fed42ec110d1",
+          "009354a5-69fb-4ba3-aadf-37e7eaed781e"
+        ],
+        "threadIds": [
+          "6c11f218-3e7f-4fa2-9501-ef35540a8e23",
+          "1be50fa6-a33b-40a3-8550-ba45f10c56eb"
+        ],
+        "revisions": [
+          3,
+          7
+        ],
+        "fixtureModelCallsBeforeRestart": 1,
+        "fixtureModelCallsAfterRestart": 0,
+        "realModelCalls": 0,
+        "buildPath": "/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/eve-v112-tool-ui-1oxt2u9r/dist-refresh-1792708133942"
+      },
+      "actualLocalModel": {
+        "acceptedAsPlanner": false,
+        "reason": "candidate_invalid",
+        "calls": 1,
+        "inputTokens": 381,
+        "outputTokens": 234,
+        "statusAfterStop": "cancelled",
+        "ToolArtifacts": 0,
+        "noFallback": true
+      },
+      "finalRestart": {
+        "sameWholeJobsAfterRestart": 3,
+        "states": [
+          "completed",
+          "completed",
+          "cancelled"
+        ],
+        "oldAttemptStatus": 409,
+        "totalActualLocalModelCalls": 1,
+        "duplicateModelCallsAfterRestart": 0,
+        "cloudCalls": 0,
+        "realBilling": false,
+        "buildPath": "/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/eve-v112-tool-ui-1oxt2u9r/dist-refresh-1792709231821"
+      }
+    },
+    "v113Adaptation": {
+      "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+      "baseVersion": 113,
+      "baseSource": "1f4d3904b3d62113673577b4fd52c068bd08afd3",
+      "previousBaseVersion": 112,
+      "upstreamChangedFiles": 13,
+      "unresolvedConflicts": 0,
+      "focusedTests": 37,
+      "typecheck": "passed",
+      "sourceGuardsSameBytes": [
+        "components/home-screen.tsx",
+        "components/sky-device-agent-connections.tsx",
+        "lib/sky-eve-connections.ts",
+        "tests/sky-eve-connections.test.mjs",
+        ".openai/hosting.json",
+        "lib/request-auth.ts",
+        "lib/rockstar-service-access.ts",
+        "lib/fund-store.ts"
+      ],
+      "fullAccepted": false,
+      "uiAccepted": false,
+      "saved": false,
+      "deployed": false
+    },
+    "structuredPlannerOutput": {
+      "status": "v113_live_local_structured_planner_tool_worker_ui_restart_accepted_full_pending",
+      "jobId": "0e02406b-043a-4d08-a665-15414611e717",
+      "realModelSingleCaseAccepted": true,
+      "limits": {
+        "maxOutputTokens": 600,
+        "localTimeoutMs": 40000,
+        "attemptLeaseMs": 90000,
+        "maxAttempts": 2
+      },
+      "sourceBaselineFull": {
+        "exitCode": 0,
+        "nodeTests": 2512,
+        "passed": 2511,
+        "failed": 0,
+        "skipped": 1,
+        "apiAssertions": 1530,
+        "csvAssertions": 385,
+        "assetReferences": 214,
+        "missingAssets": 0,
+        "log": "/private/tmp/eve-v113-tool-source-full.log",
+        "scope": "v113 merged baseline before structured planner change"
+      },
+      "fullAfterChange": "pending",
+      "scope": "synthetic local API path + actual UI readback; not public/native/general intelligence"
+    },
+    "emptyResponseUsageFix": {
+      "status": "controlled_http_worker_ui_restart_and_full_accepted_not_published",
+      "before": "reported usage replaced with null; isolated regression failed",
+      "rootFocused": 12,
+      "sourceFocused": 39,
+      "preserves": [
+        "stopped state",
+        "no candidate or Tool",
+        "unknown timeout remains null",
+        "money/invoice/payment unverified"
+      ],
+      "previousStructuredFull": {
+        "rootExit": 0,
+        "rootNodeTests": 1485,
+        "rootPass": 1484,
+        "rootSkip": 1,
+        "sourceExit": 0,
+        "sourceNodeTests": 2512,
+        "sourcePass": 2511,
+        "sourceSkip": 1
+      },
+      "http": {
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "candidate": false,
+        "toolArtifacts": 0,
+        "replayStatus": 409
+      },
+      "restart": {
+        "sameWholeJobsAfterRestart": 6,
+        "emptyJobStatus": "cancelled",
+        "emptyJobRevision": 4,
+        "inputTokens": 17,
+        "outputTokens": 8,
+        "oldAttemptStatus": 409,
+        "duplicateFixtureCalls": 0,
+        "newActualModelCalls": 0
+      },
+      "next": "final Root/Source verify after empty-response usage correction",
+      "finalVerify": {
+        "status": "passed",
+        "root": {
+          "exitCode": 0,
+          "nodeTests": 1487,
+          "passed": 1486,
+          "failed": 0,
+          "skipped": 1,
+          "apiAssertions": 2061,
+          "csvAssertions": 113,
+          "assetReferences": 212,
+          "missingAssets": 0,
+          "log": "/private/tmp/eve-empty-usage-root-full.log"
+        },
+        "source": {
+          "exitCode": 0,
+          "nodeTests": 2514,
+          "passed": 2513,
+          "failed": 0,
+          "skipped": 1,
+          "apiAssertions": 1530,
+          "csvAssertions": 385,
+          "assetReferences": 214,
+          "missingAssets": 0,
+          "log": "/private/tmp/eve-empty-usage-source-full.log"
+        }
+      }
+    },
+    "latestFullVerify": {
+      "status": "passed",
+      "root": {
+        "exitCode": 0,
+        "nodeTests": 1487,
+        "passed": 1486,
+        "failed": 0,
+        "skipped": 1,
+        "apiAssertions": 2061,
+        "csvAssertions": 113,
+        "assetReferences": 212,
+        "missingAssets": 0,
+        "log": "/private/tmp/eve-empty-usage-root-full.log"
+      },
+      "source": {
+        "exitCode": 0,
+        "nodeTests": 2514,
+        "passed": 2513,
+        "failed": 0,
+        "skipped": 1,
+        "apiAssertions": 1530,
+        "csvAssertions": 385,
+        "assetReferences": 214,
+        "missingAssets": 0,
+        "log": "/private/tmp/eve-empty-usage-source-full.log"
+      }
+    }
   }
 }

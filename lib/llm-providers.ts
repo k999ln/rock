@@ -207,6 +207,9 @@ export type TextGenerationRequest = {
   jsonOutput?: boolean;
   /** Optional JSON Schema for local runtimes with native structured-output support. */
   jsonSchema?: Record<string, unknown>;
+  /** Bounded loopback News requests; legacy jsonSchema remains supported. */
+  ollamaSchema?: Record<string,unknown>;
+  ollamaLocalTimeoutMs?: number;
   /** Disable reasoning traces on local runtimes for short, bounded planner turns. */
   disableThinking?: boolean;
   clientRequestId?: string;
@@ -252,6 +255,7 @@ export class LlmProviderError extends Error {
   readonly code: string;
   readonly status: number;
   providerRequestId?: string;
+  metering?: SkyUsageObservation;
 
   constructor(code: string, status = 502) {
     super(code);
@@ -619,6 +623,8 @@ async function generateTextRequest(
     system: request.system,
     model: request.model,
   });
+  if(request.ollamaSchema!==undefined&&(request.provider!=='ollama'||!request.ollamaSchema||Array.isArray(request.ollamaSchema)||typeof request.ollamaSchema!=='object'||JSON.stringify(request.ollamaSchema).length>16000||request.jsonSchema!==undefined))throw new LlmProviderError('INVALID_PROMPT',400);
+  if(request.ollamaLocalTimeoutMs!==undefined){const base=new URL(runtimeEnv.SKY_OLLAMA_BASE_URL||'http://127.0.0.1:11434');if(request.provider!=='ollama'||!Number.isInteger(request.ollamaLocalTimeoutMs)||request.ollamaLocalTimeoutMs<1000||request.ollamaLocalTimeoutMs>40000||!['127.0.0.1','localhost','[::1]'].includes(base.hostname)||!['http:','https:'].includes(base.protocol)||base.username||base.password||base.search||base.hash)throw new LlmProviderError('INVALID_PROMPT',400);}
   const model = modelFor(request);
   const maxOutputTokens = limitFor(request);
   const messages = messagesFor(request);
@@ -664,13 +670,13 @@ async function generateTextRequest(
         model,
         messages,
         stream: false,
-        ...(request.jsonSchema
-          ? { format: request.jsonSchema }
+        ...((request.ollamaSchema??request.jsonSchema)
+          ? { format: request.ollamaSchema??request.jsonSchema }
           : request.jsonOutput ? { format: 'json' } : {}),
         ...(request.disableThinking ? { think: false } : {}),
         options: { num_predict: maxOutputTokens },
       }),
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+      signal: AbortSignal.timeout(request.ollamaLocalTimeoutMs??PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
     if (payload.done !== true || payload.done_reason !== 'stop' ||
@@ -680,8 +686,7 @@ async function generateTextRequest(
       payload && typeof payload.message === 'object' && payload.message
         ? (payload.message as { content?: unknown }).content
         : undefined;
-    if (typeof text !== 'string' || !text.trim())
-      throw new LlmProviderError('EMPTY_RESPONSE');
+    if (typeof text !== 'string' || !text.trim()){const error=new LlmProviderError('EMPTY_RESPONSE');error.metering={...observeLlmUsage(request.provider,payload),resourceId:model};throw error;}
     return { provider: request.provider, model, text: text.trim(), metering:observeLlmUsage(request.provider,payload) };
   }
 

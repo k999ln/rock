@@ -1521,3 +1521,38 @@ main Siteの配信Sourceはroot drizzleをdrizzle-mainへ置換するため、Co
 9. **承認**: 自動審査が新候補のSource操作を拒否したため、外部remoteのないローカルv112コピーで先に検証する。公開Sourceへは明示承認と同一候補のgate確認後に適用する。
 10. **合格**: 集中11件、owner検査の前後関係、単一端末、旧/共通pin、同意失効、消失時の再選択を検証。同じ候補の全verify、実Worker/D1、実UI、梱包、公開readbackとPixel実仕事は別々に記録する。
 11. **現在/次**: Rootの合成実UIと集中試験は受入済み。隔離v112コピーの全verifyとその同じbuildのUIを最終確認し、Source公開の承認へ進む。実仕事/推論/課金は0。[証拠](evidence/pixel-target-selection.json)。
+
+## Eve Newsの公開Source統合候補
+
+目的/体験：公開v112のHome・追加管理・本人設定を保持し、既存Eve会話へ資料付きNews仕事を接続する。ROCKは既存WorkJob/workflow/historyと認証・Origin・revision/CAS・history projectionを使い、News専用の新DBや金融台帳を作らない。OWNERは素材の利用権・保存・ローカルモデル送信・準備用途への個別同意を明示する。EXTERNALのmodel品質や権利は未検証、JOINTのWorker/UI/復旧はこの候補で受入する。
+
+入力/状態/保存：権利を申告したsource packetと草稿を96,000文字/HTTP128KiBに制限し、同owner/thread/jobに保存する。主張台帳と本文の参照検査は文字一致で真偽確認ではない。active/review/cancelledを既存workflowで遷移し、汎用completeで掲載成功へ昇格しない。本人修正は最大2回、追加資料3回/全12件、旧資料・旧稿・検査・使用量を保持する。source linkは原文自動取得や学習権を与えない。
+
+モデル/失敗/復旧：loopback Ollamaだけの限定修正/資料照合は40秒/上限token/各2試行。明示送信同意と実digest照合、永続attemptを用い、応答不明で再送しない。公開Source既存のdone/done_reason/tool-call検査を保持し、空final textにも報告済みusageがあれば保存する。モデル結果は非信頼提案、truth/politicalFairness/掲載は未受入。停止後の遅着usageは保持し仕事を復活しない。
+
+準備同意：保存/rememberとは別に、data/contentSHA・用途・rights/secret確認を個別grantし、停止/鍵停止/利用権失効時も認証とOrigin/CAS下でwithdraw可能。既知評価素材および同ownerの過去評価grantとhash一致した内容は候補化不可。候補grantと最終exportは同一SQLで評価割当を再確認する。他ownerは照合しない。撤回・資料変更・会話削除で新規出力を拒否し、旧command再送で復活させない。
+
+集約/出力：同じ用途に同意した最大20仕事を選択し、記録全体SHAの完全一致だけ統合して全provenanceを保持。1件でも無効なら全体拒否、全仕事/live会話/評価割当を最終単一SELECTで照合し後続awaitなし。保存用JSON128KiB、datasetSHA付き、trainingAllowed=false。秘密scanは既知patternのみ。近似重複・外部dataset・model license/config/独立品質・実学習/重み切替は別gate。コピー済みファイルを回収できない。
+
+合格条件：News host試験、同candidate Worker/UIの取込/修正/準備/撤回/保存/再起動/他owner/CAS/上限/競合、既存Sourceの全verifyと保存導線・auth/provider/AMC/Jennifer/Materialの維持。未合格条件は出力/送信を保留して読戻しと復旧操作を示す。外部Source保存・公開は具体候補への承認とSites配備結果を別記録する。
+
+## Eve Tool作成時の会話削除競合
+
+目的は同じ本人・会話の仕事だけを保存すること。入力は既存Tool依頼とthreadId、出力は同じWorkJobと暗号化会話で、新台帳は作らない。会話同期後の仕事INSERTにも既存WorkStoreのlive conversation条件を渡し、owner一致・deleted_at=0を原子的に再確認する。会話が削除された競合では仕事を作成せず失敗を返し、復旧時も同じ削除済みIDを再作成しない。権限/費用/Tool実行の承認を追加せず、失敗を成功へ変えない。集中試験は同期とINSERTの間へ削除を注入し、仕事行0と削除保持を確認。公開/実端末受入は別。
+
+## Eveから既存Sky Toolを実行するSource候補
+
+利用者はEveの「SkyのToolを使う」から同じ会話内で目的と引用原稿を入力し、素材保存へ個別同意する。mode=tool-workは既存Eve内を開き、従来mode=toolsの保護画面は維持する。固定手順かlocalhost限定の導入済みOllama候補を選び、候補は検証後の本人採用が必要。モデル出力は権限/予算/Tool成功にならない。ROCKの既存WorkJob/CAS/composition/暗号化historyを使い、mr-citationsとURL集合の独立比較、compose-check、本人完了へ進む。予算0円で外部副作用は認めず、URL内容の真偽は評価しない。入力48KB、既存計画/出力/操作/試行上限を保持。モデル名/digest前後観測/usageは未報告と0を区別し、金額/請求/入金/作者精算へ昇格しない。停止と結果不明は保存状態から照合し再送しない。会話同期後のINSERTもlive-thread条件を再確認し、削除競合は仕事0。Sourceのrecipe保存/削除、auth、料金、既存端末選択を保持。失敗分類と限定修正は元成果と完成条件を保持する。UIはowner固定keyで会話切替の不要な再mountを避け、完了後のWorker/ブラウザ再読込で同じ仕事・出典・usageを確認する。初期受入は合成原稿と制御モデル応答、実モデル/remote Provider/実機/公開/全体gateは別。未知のToolはadapter/schema/権限/料金/復旧の検証が済むまで接続しない。
+
+### Tool一覧の本人・種類・会話スコープ
+
+Tool再開一覧はownerとeve.tool-work/1、指定会話をSQLで絞ってから直近100件を返す。他種の仕事が多い場合も再開対象を押し出さない。既存の全仕事一覧とNews一覧の契約は維持し、別owner/別会話は返さない。101件の非Tool仕事を追加する回帰試験で修正前は対象が消えることを再現し、修正後は本人の同じTool仕事だけを読めることを確認する。
+
+### 計画用モデルへの構造化出力の指示
+
+計画用localhost Ollama呼出では、保存したjobId/objective/sourceSha256をconstにしたJSON Schemaを送る。許可Toolはmr-citations/compose-check/compose-joinのみ、未知のフィールドは禁止し、step/入力/検査条件/未決事項の長さ・件数を制限する。これは返答形式の指示であり、既存parseEvePlanCandidateの本人仕事/素材/権限/予算/グラフ/出典/完成条件の検査や本人採用を代替しない。600token、2試行、停止/重複排除を保持する。実測の20秒応答未確認を受けてlocalhost推論だけ40秒上限（既存90秒lease内）とし、CLIや外部課金の上限は変更しない。実Toolの出力は「## 出典」で、目的が明示しない必須文言を作らないよう指示する。構造化指示があっても不正候補は拒否、失敗usageを残し自動fallbackしない。実モデルの合格は同候補の実応答とTool縦断で別に受け入れる。
+
+
+### 本文を使えない応答の使用量
+
+Plannerの信頼したOllama adapterがEMPTY_RESPONSEと共に正規化済みusageを返した場合、LLM/provider一致を確認して同じ仕事/試行へ記録する。本文が使えないことと使用量未報告を分け、応答が失敗でも報告済みtokenをnullや0へ置き換えない。モデル名/digestは前後照合し、不一致は候補採用を拒否する。報告の保存で計画/Tool成功、本人承認、金額/請求/入金/作者精算を作らない。停止後の報告も同じ試行に保持し、再送しない。usageのないtransport timeoutは引き続きunknown/nullである。合成回帰試験は空本文+入力17/出力8を返し、通常/停止後の保存、候補なし・Tool0、同試行拒否と会話明細を確認する。

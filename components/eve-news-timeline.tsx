@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { EveNewsLink } from '@/lib/eve-news-feed';
+import { newsSourceHandoff, type EveNewsLink } from '@/lib/eve-news-feed';
 import styles from './eve-news-timeline.module.css';
 
 type Feed = { source: string; query: string; fetchedAt: string; articles: EveNewsLink[]; stale: boolean };
@@ -54,6 +54,7 @@ export default function EveNewsTimeline() {
         <ol className={styles.list}>
           {feed.articles.map((article) => <li key={article.id}>
             <a href={article.url} target="_blank" rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">{article.title}</a>
+            <a href={newsSourceHandoff(article, feed.stale)}>Eveで資料メモを作る</a>
             <div className={styles.byline}>{article.publisher} · GDELT検出 {new Date(article.seenAt).toLocaleString('ja-JP')} · {article.language}</div>
           </li>)}
         </ol>
