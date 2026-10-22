@@ -3,3 +3,5 @@
 .notice { display:block; }
 
 .modelIdentity{margin-bottom:20px;padding:0 0 18px;border-bottom:1px solid var(--line)}.modelIdentity>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px}.modelIdentity>div>span,.modelIdentity small,.modelIdentity dt{font-size:11px;color:var(--muted)}.modelIdentity strong{font-size:25px;letter-spacing:-.04em}.modelIdentity dl{display:flex;flex-wrap:wrap;gap:4px 12px;margin:10px 0}.modelIdentity dd{font-size:12px;margin:0;overflow-wrap:anywhere}.modelIdentity details{font-size:11px;color:var(--muted)}.modelIdentity summary{cursor:pointer}.modelIdentity p{max-width:66ch;margin-bottom:0}
+
+.results small{overflow-wrap:anywhere}.results article{animation:eve-result-arrival .22s ease-out}@keyframes eve-result-arrival{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.results article{animation:none}}

@@ -864,6 +864,7 @@ export default function SkyWorkspace({
         </section>
       )}
       <nav aria-label="Skyの主要画面">
+        <Link className="sky-marketplace-link" href="/sky/devices">接続した担当・実行先</Link>
         <Link className="sky-marketplace-link" href="/sky/agents/citations">
           出典整理Agentを使う · 無料
         </Link>

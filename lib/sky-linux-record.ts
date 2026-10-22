@@ -30,3 +30,15 @@ export function linuxRunExport(run: LinuxLocalRun) {
   if (!run.text || !['review', 'completed'].includes(run.job.status)) throw new Error('保存できる成果がまだありません。');
   return `# ${run.agent.name}\n\n${run.job.status === 'review' ? '下書きです。内容を確認してください。' : '本人が確認した文章です。'}\n\n${run.text}\n\n## 使ったAI\n${run.modelName ?? run.agent.modelId}\n\n## この仕事の料金\nクラウドAI使用料: 0円（端末内で推論）\n自作の担当代: 0円\n${run.usage.resources}\n${run.usage.subscription}\n\nこの文章はSkyなしで読めます。\n`;
 }
+
+export const linuxRecordText = (v: unknown, limit: number) => {
+  if (typeof v !== 'string' || !v.trim() || v.length > limit || Array.from(v).some(c => c.charCodeAt(0) < 32 && !['\t', '\n', '\r'].includes(c)))
+    throw new Error(`文字を入力してください（${limit}文字まで）。`);
+  return v.trim();
+};
+export function parseLinuxAgent(v: unknown) {
+  if (!v || typeof v !== 'object' || Array.isArray(v) || Object.keys(v).some(k => !['name', 'instructions', 'modelId'].includes(k)))
+    throw new Error('担当の設定を確認してください。');
+  const value = v as Record<string, unknown>;
+  return { name: linuxRecordText(value.name, 80), instructions: linuxRecordText(value.instructions, 1200), modelId: linuxRecordText(value.modelId, 100) };
+}

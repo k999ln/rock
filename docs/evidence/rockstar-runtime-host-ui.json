@@ -1,0 +1,124 @@
+{
+  "schema": "rockstaros.runtime-host-ui-evidence/1",
+  "status": "local_implementation_checks_pending_public_acceptance",
+  "predecessor": "docs/evidence/rockstar-runtime-service-bridge.json",
+  "scope": "existing Eve/Sky owner-scoped generic host selection and receipts; optional Node software credential vault",
+  "taskIds": [
+    "WEB04",
+    "OS10",
+    "SKY21"
+  ],
+  "owner": "ROCK",
+  "sourcePaths": [
+    "lib/eve-device-replicas.ts",
+    "lib/eve-device-sync.ts",
+    "lib/rockstar-adapters.ts",
+    "lib/rockstar-linked-execution.ts",
+    "lib/eve-runtime-sync.ts",
+    "lib/sky-eve-connections.ts",
+    "app/api/eve/runtime/route.ts",
+    "app/os/eve/page.tsx",
+    "components/eve-sync-workspace.tsx",
+    "components/eve-sync-workspace.module.css",
+    "components/sky-device-agent-connections.tsx",
+    "packages/rockstaros-runtime/src/credential-vault.mjs",
+    "lib/sky-linux-record.ts",
+    "lib/sky-linux-local.ts",
+    "packages/rockstaros-runtime/src/executor.mjs",
+    "components/sky-connected-runtime.tsx",
+    "components/sky-device-agent-connections.module.css",
+    "app/sky/devices/page.tsx",
+    "components/sky-workspace.tsx"
+  ],
+  "sourceSha256": {
+    "lib/eve-device-replicas.ts": "d91d41def996334ac0fc2cb2a57d0f00415e50a65fa1ba72e0029f9701340cd8",
+    "lib/eve-device-sync.ts": "a499831a9246abf8572ab9dfc0ba8c24e251647f31401e82e79a6c596ddc581a",
+    "lib/rockstar-adapters.ts": "647e80a21533d9b93a1d4749c4481419ff4e8a3be82f1c2dc989bb1928419e07",
+    "lib/rockstar-linked-execution.ts": "e2cb89e26a771541e65529bdd8fa0ab291203d90a435462581659de3d1648635",
+    "lib/eve-runtime-sync.ts": "ada1b30f53296008ab98087840f50fbcc97312dae542728b5a510f0c7afc48d9",
+    "lib/sky-eve-connections.ts": "a5a1f2a5d40e87f138cf257c6f6d9a6a42e53f55081474aa6cbbd6a6456e7cac",
+    "app/api/eve/runtime/route.ts": "19b94737fd8b3c67ba7bb4fe3049bd73dc7629b88d5124b1ae81f6747b6fba43",
+    "app/os/eve/page.tsx": "3e9955bb646e3eb233f8ac31314ed4b863c904b7b8842650232b141d9cae9e20",
+    "components/eve-sync-workspace.tsx": "0bab36cfb9b0cca929575a0220ae0cd74610e2086e1b7af2d30d6e5184fadb93",
+    "components/eve-sync-workspace.module.css": "64fab40d21cd1a62287ba17a47a3bb9d0a0d4709e9da7e80baba575cac408f5a",
+    "components/sky-device-agent-connections.tsx": "ef42499785e3afb10fe6c313628b78f89d3359d277af9e6dd739f476cbaf9e00",
+    "packages/rockstaros-runtime/src/credential-vault.mjs": "9d044ae51d9167b422742802da382972f94caff49e7601aa552a16cbffe964f6",
+    "lib/sky-linux-record.ts": "fab3ac6119ace5b648a5afe312645f5c1293addc3574b9b1ddcefac2f998700d",
+    "lib/sky-linux-local.ts": "506843dd02181092b66d5121b8e2176e0fa71014936a550eb17397601fcb2298",
+    "packages/rockstaros-runtime/src/executor.mjs": "77bfd688e83b668db20dcc12852a67b4e7ef7afbc135082b2b7f3d29305ef24b",
+    "components/sky-connected-runtime.tsx": "25bc576cb300dc87dda45d605ff31854446cdc68699080b3e36f2f8ec5f49427",
+    "components/sky-device-agent-connections.module.css": "f300072ca4eab274ab20654e084273b882df3fbde3e88abed205423985f80cfd",
+    "app/sky/devices/page.tsx": "cf2bfc13ed463ed3e0d057238b2e1878b508d404688b9676643b48472deba4aa",
+    "components/sky-workspace.tsx": "c7c326036c7fb30757584bae36ee6aade4a696621fb4e8c07c27455fdf536c77"
+  },
+  "focusedTests": {
+    "tests": 23,
+    "failed": 0
+  },
+  "packageTests": {
+    "tests": 50,
+    "failed": 0
+  },
+  "newRealModelInferenceJobs": 0,
+  "newPixelJobs": 0,
+  "newActualMacGrant": false,
+  "actualBiometricVaultAccepted": false,
+  "independentSecurityReviewAccepted": false,
+  "fullVerify": {
+    "status": "pending"
+  },
+  "publicDeployment": {
+    "status": "pending"
+  },
+  "remaining": [
+    "host setup/launch interface using protected storage and explicit unlock",
+    "final new Mac owner grant and same public Eve thread acceptance",
+    "new Pixel common protocol and CORE03-12",
+    "prior real model copy fixture mismatch remains unresolved",
+    "Root custom Sky AgentLibrary is not yet in public source; public /sky/agents remains the citations entry. Generic connected agents use /sky/devices."
+  ],
+  "portabilityFix": "Moved the existing pure recipe parser into sky-linux-record; the public service does not import localhost Lab implementation.",
+  "hostCredentialVault": {
+    "packageVersion": "1.0.0-dev.4",
+    "publishedToSite": false,
+    "scope": "software encrypted disk storage, explicitly unlocked per process",
+    "independentSecurityReview": false
+  },
+  "recordedAt": "2026-10-22T02:19:01.321448+00:00",
+  "siteSourceSha256": {
+    "lib/eve-device-replicas.ts": "d91d41def996334ac0fc2cb2a57d0f00415e50a65fa1ba72e0029f9701340cd8",
+    "lib/eve-device-sync.ts": "a499831a9246abf8572ab9dfc0ba8c24e251647f31401e82e79a6c596ddc581a",
+    "lib/rockstar-adapters.ts": "647e80a21533d9b93a1d4749c4481419ff4e8a3be82f1c2dc989bb1928419e07",
+    "lib/rockstar-linked-execution.ts": "e2cb89e26a771541e65529bdd8fa0ab291203d90a435462581659de3d1648635",
+    "lib/eve-runtime-sync.ts": "ada1b30f53296008ab98087840f50fbcc97312dae542728b5a510f0c7afc48d9",
+    "lib/sky-eve-connections.ts": "a5a1f2a5d40e87f138cf257c6f6d9a6a42e53f55081474aa6cbbd6a6456e7cac",
+    "app/api/eve/runtime/route.ts": "19b94737fd8b3c67ba7bb4fe3049bd73dc7629b88d5124b1ae81f6747b6fba43",
+    "app/os/eve/page.tsx": "3e9955bb646e3eb233f8ac31314ed4b863c904b7b8842650232b141d9cae9e20",
+    "components/eve-sync-workspace.tsx": "0bab36cfb9b0cca929575a0220ae0cd74610e2086e1b7af2d30d6e5184fadb93",
+    "components/eve-sync-workspace.module.css": "64fab40d21cd1a62287ba17a47a3bb9d0a0d4709e9da7e80baba575cac408f5a",
+    "components/sky-device-agent-connections.tsx": "ef42499785e3afb10fe6c313628b78f89d3359d277af9e6dd739f476cbaf9e00",
+    "lib/sky-linux-record.ts": "fab3ac6119ace5b648a5afe312645f5c1293addc3574b9b1ddcefac2f998700d",
+    "components/sky-connected-runtime.tsx": "25bc576cb300dc87dda45d605ff31854446cdc68699080b3e36f2f8ec5f49427",
+    "components/sky-device-agent-connections.module.css": "f300072ca4eab274ab20654e084273b882df3fbde3e88abed205423985f80cfd",
+    "app/sky/devices/page.tsx": "cf2bfc13ed463ed3e0d057238b2e1878b508d404688b9676643b48472deba4aa",
+    "components/sky-workspace.tsx": "5437c29cd761b138f79a18c47ef85b838ef3f4e6c31b2ad303a1c5955f3dc000"
+  },
+  "sourceChecks": {
+    "typecheckExitCode": 0,
+    "selectorTests": 7,
+    "failures": 0,
+    "scope": "fresh v102 source plus bounded host UI/API patch"
+  },
+  "rootPreviousGate": {
+    "exitCode": 0,
+    "node": {
+      "tests": 1225,
+      "pass": 1224,
+      "fail": 0,
+      "skip": 1
+    },
+    "workApiAssertions": 1694,
+    "csvAssertions": 113,
+    "scope": "before adding the connected Sky page; final gate pending"
+  }
+}

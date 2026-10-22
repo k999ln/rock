@@ -820,3 +820,19 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 11. **合格/未決定**: 純ranking・append・backoff・key失効・cursor fixture、公開source build、公開UIの続きを確認し証拠へ別記録。意味embedding/政治的中立実証、X本人おすすめ供給、新Pixel OS/生体vault/実課金の合格へ換算しない。実データの増加後に比較評価して係数・window virtualizationを改良する。
 
 証拠: [継続timeline](evidence/sky-continuous-timeline.json)。実装: `lib/sky-continuous-ranking.ts` / `components/use-sky-continuous-feed.ts` / 既存social store。検証: `node --experimental-strip-types --test tests/sky-continuous-*.test.mjs tests/sky-social.test.mjs tests/sky-timeline-interactions.test.mjs tests/eve-news-feed.test.mjs tests/home-timeline-frontend.test.mjs`。
+
+<a id="portable-runtime-host-ui"></a>
+
+## 共通runtimeの実行先選択と接続情報保管
+
+1. **目的**: 既存Sky/Eveの同じ会話で、legacy Pixelと版付き追加hostを選べるようにする。
+2. **利用体験**: Skyの接続した担当→Eve、実行先/担当/基盤モデル/版/送信先/0円preview確認→受領待ち→保存済み下書き/UNKNOWN→同じ会話・文章持出し。モデル品質の検収とは分ける。
+3. **責任**: ROCK WebがUI/owner照合/既存API、Node hostが保護storage/共通kernel、JOINTが実機と独立security、OWNERが新host grantと起動時解除を担う。WEB04/OS10/SKY21。
+4. **入力**: 既存URLのdevice/agent/model hashに`runtime=1`とmodelSchemeを加える。legacyとの取り違え、scheme変更、期限切れ/未知capability/版不一致は実行前に拒否する。
+5. **出力**: 同じownerのpending/received、review/unknown、原依頼、job ID、model pin、成果hash、使用料。受領を実行完了や停止証拠に昇格しない。
+6. **状態**: UIの同意はowner/端末/担当/hash/scheme/adapter版/能力へ束縛。送信中は選択を固定する。既知の受付成功後は操作IDを解放し、応答不明時は同じIDで照合する。画面非表示/通信断ではread pollingを止め、復帰時に再確認する。
+7. **保存**: 仕事/履歴は既存Eve store。Nodeの任意保管は0700 directory/0600 ciphertext、UUID profile/UID binding、固定scryptとAES-256-GCM。平文token/解除句を成果やpackageへ混ぜない。既存profileは上書きしない。
+8. **失敗**: owner混在401、旧/新protocolの置換、model digest scheme変更、adapter失効、保存改変/不正mode/symlink、解除失敗/期限切れを拒否する。自動cloud切替・model取得・新grant再発行はしない。
+9. **復旧**: 同じprofileは起動時に本人が解除し、確認済みowner/deviceでjournalを開く。既存の同じjob/hashを照合する。画面の再読で再推論しない。生体vault、同user process侵害、鍵全損・常時自律稼働は未受入。
+10. **承認/合格**: API/selector/storage fixture、実Workerと同一build、公開本人UI、新Mac grant/推論、新Pixel ABI、独立Securityを別受入にする。Macモデルの既存逐語copy不一致は未合格のまま。
+11. **未決定/次**: 保護storageを使うhost設定・起動導線を完成させ、具体的な新hostだけ本人に最終承認してもらう。旧Pixel24件を再実行しない。証拠は[host UI](evidence/rockstar-runtime-host-ui.json)。

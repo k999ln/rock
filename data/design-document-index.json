@@ -2677,5 +2677,32 @@
       "evidence": "docs/evidence/sky-continuous-timeline.json",
       "status": "local_verified_public_pending"
     }
+  },
+  "portableRuntimeHostUI": {
+    "status": "local_implemented_checks_pending",
+    "authority": "docs/rockstaros-complete-design.md#portable-runtime-host-ui",
+    "skyDesign": "docs/sky-tools-complete-design.md#portable-runtime-host-ui",
+    "sourcePaths": [
+      "lib/eve-device-replicas.ts",
+      "lib/eve-device-sync.ts",
+      "lib/rockstar-adapters.ts",
+      "lib/rockstar-linked-execution.ts",
+      "lib/eve-runtime-sync.ts",
+      "lib/sky-eve-connections.ts",
+      "app/api/eve/runtime/route.ts",
+      "app/os/eve/page.tsx",
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css",
+      "components/sky-device-agent-connections.tsx",
+      "components/sky-connected-runtime.tsx",
+      "components/sky-device-agent-connections.module.css",
+      "app/sky/devices/page.tsx",
+      "components/sky-workspace.tsx",
+      "lib/sky-linux-record.ts"
+    ],
+    "evidence": "docs/evidence/rockstar-runtime-host-ui.json",
+    "publicAccepted": false,
+    "newActualMacGrant": false,
+    "newPixelProtocolAccepted": false
   }
 }

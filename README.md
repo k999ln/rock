@@ -1,3 +1,5 @@
+Eveの同じ画面で、接続した版付きruntimeの担当/モデル/送信先を確認できるAPIと選択UIを追加しました。新しいMacの起動導線と本人grant、実機受入は準備中です。[受入範囲](docs/evidence/rockstar-runtime-host-ui.json)。
+
 Eve画面は使用LLM「Eve」、担当、基盤モデル、実行先を分けて表示します。専用重みは未学習です。[機械学習の開始要件](docs/llm-evaluation-architecture.md#eve-training-prerequisites)。
 
 独立登録の実装候補は`/account`です。パスキーで登録/ログインし、既存アカウントの同じownerへログイン方法を追加できます。公開・実認証器・Pixelの受入は個別証拠で管理します。
