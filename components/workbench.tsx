@@ -2,6 +2,8 @@
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import SkyUsageDetails from './sky-usage-details';
+import type {SkyUsageObservation} from '@/lib/sky-usage-observation';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
   workflowTemplates,
@@ -60,6 +62,7 @@ type PendingUpdate = Update & { ownerScope: string };
 type Creation = { ownerScope: string; id: string; title: string; templateId: string };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
+  usageStatement?:SkyUsageObservation|null;
   id: string;
   parentJobId: string;
   predecessorDelegationId: string | null;
@@ -2089,6 +2092,7 @@ export default function Workbench({
                               ) : <p>署名済み確定receiptはまだ届いていません。暫定meterと予約上限は実際の確定請求額として扱いません。</p>}
                             </section>
                           )}
+                          {delegation.usageStatement&&<SkyUsageDetails observation={delegation.usageStatement}/>}
                           {delegation.artifactsCaptured !== 1 && delegation.remoteTaskId && (
                             <small>成果を相手側から照合中です。停止状態や成果の取得を完了とは扱いません。</small>
                           )}

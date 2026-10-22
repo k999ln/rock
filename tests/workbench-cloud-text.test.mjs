@@ -75,6 +75,7 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
   modules['@/components/use-pending-save-navigation'] = compile('components/use-pending-save-navigation.ts');
   modules['@/components/use-owner-memory-state'] = compile('components/use-owner-memory-state.ts');
   const childPath = 'components/workbench-cloud-text.tsx';
+  modules['./sky-usage-details'] = compile('components/sky-usage-details.tsx');
   const child = compile(childPath);
   modules['@/components/workbench-cloud-text'] = child;
   const component = compile('components/workbench.tsx').default;

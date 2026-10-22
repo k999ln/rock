@@ -1,3 +1,4 @@
+import type {SkyUsageObservation} from '@/lib/sky-usage-observation';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -42,7 +43,7 @@ const plannerSchema = {
   ],
 } satisfies Record<string, unknown>;
 
-function failure(error: unknown) {
+function failure(error: unknown,meteringObservations:SkyUsageObservation[]=[]) {
   if (error instanceof RemoteAiGuardError)
     return Response.json({
       error: error.code === 'RATE_LIMITED'
@@ -60,6 +61,7 @@ function failure(error: unknown) {
     : 'INVALID_INPUT';
   console.error('local agent failed', code);
   return Response.json({
+    meteringObservations,
     error: code === 'AGENT_STEP_LIMIT'
       ? '安全な手順上限に達しました。依頼を小さく分けてください。'
       : 'ローカルAgentを実行できません。',
@@ -68,6 +70,7 @@ function failure(error: unknown) {
 }
 
 export async function POST(request: Request) {
+  const meteringObservations:SkyUsageObservation[]=[];
   try {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'llm-local-agent', db);
@@ -128,13 +131,14 @@ export async function POST(request: Request) {
           jsonSchema: provider === 'ollama' ? plannerSchema : undefined,
           disableThinking: provider === 'ollama',
         }, requestEnv);
+        if(response.metering)meteringObservations.push(response.metering);
         return response.text;
       },
     });
-    return Response.json({ ...result, provider, model: typeof value.model === 'string'
+    return Response.json({ ...result, meteringObservations, provider, model: typeof value.model === 'string'
       ? value.model
       : textModelProviderDefinition(provider).defaultModel }, { headers: noStoreHeaders });
   } catch (error) {
-    return failure(error);
+    return failure(error,meteringObservations);
   }
 }

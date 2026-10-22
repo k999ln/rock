@@ -1,3 +1,4 @@
+import {readSkyUsageObservation,type SkyUsageObservation} from './sky-usage-observation.ts';
 import type { TextGenerationUsage } from './llm-providers.ts';
 const messages: Record<string, string> = {
   UNAUTHORIZED: 'サインインの有効期限が切れました。再度サインインして続けてください。',
@@ -52,6 +53,7 @@ export async function remoteAiTextRequest<T>(path: string, method = 'GET', body?
 }
 
 export type RemoteTextExecution = {
+  metering?:SkyUsageObservation;
   id: string;
   parentJobId: string;
   parentBudgetLimitMinor: number;
@@ -166,7 +168,10 @@ export function readRemoteTextExecution(value: unknown, expected: { parentJobId:
     record.quote.createdAt !== previous.quote.createdAt || record.quote.expiresAt !== previous.quote.expiresAt ||
     record.saveResult !== previous.saveResult || Object.keys(previous.quote.ceiling).some((key) =>
       record.quote.ceiling[key as keyof typeof record.quote.ceiling] !== previous.quote.ceiling[key as keyof typeof previous.quote.ceiling]))) invalid();
-  return record;
+  if(record.metering===undefined)return record;
+  const metering=readSkyUsageObservation(record.metering);
+  const {metering:discarded,...rest}=record;void discarded;
+  return {...rest,...(metering?{metering}:{})};
 }
 export function readRemoteTextList(value: unknown, parentJobId: string): { executions: RemoteTextExecution[]; executionAvailable: boolean } {
   if (!object(value) || !Array.isArray(value.executions) || typeof value.executionAvailable !== 'boolean') invalid();

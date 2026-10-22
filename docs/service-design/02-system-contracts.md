@@ -108,6 +108,18 @@ BIL02/SIM01/SKY21（ROCK、O5）が既存後払い/利用権/Agent workflow契�
 
 現在の実装は旧利用料を`legacyFixture`に限定し、通常試算のfeeは0としている。歴史式を保存しても旧月額の徴収や投資受付を再開しない。旧個人モデルは別の試算として保持し、未回収費用・仮定為替・未実測電力を実収益や請求へ換算しない。
 
+### 保存した共通使用量の表示（U01）
+
+目的は、Eve/仕事/無料Cloudの結果で提供元・指定モデル/Agent・応答モデル・計量内訳・未確定額を同じ意味で読むこと。ROCK/O5（SKY21/BIL02）は既存owner/job/receiptへ投影し、Providerは原始応答、作者契約/入金/送金は別gateを担う。
+
+入力はLLM応答counter、owner-scopedの保存済みremote AI、既存署名検証済みA2A receipt、free Cloud WorkJob。出力sky-usage-observation/1はinput/output/cache/reasoning/totalの包含関係、requested/reported model、出典reference、reported/partial/not_reported/invalidを持つ。未報告はnull、amount未確定は0円にしない。観測表示は実行権限・請求・入金・作者支払いの証明ではない。
+
+free Cloudは既存work_jobs JSONへ保存し、同一ownerの再訪/同一ID再送で同じ観測を読む。応答後に完了検査が失敗したunconfirmedも観測だけを保持し、新規送信・成功・金額確定へ昇格させない。古い仕事にないtotal/cache/reasoningを推測しない。直接chatの表示は会話を切り替えるとclearし、多Providerの全attempt永続台帳はU02で接続する。
+
+障害時は同じjob/receiptを再取得し、結果不明を再送で解消しない。owner/revision/外部送信同意、既存budget・Spider Guard・停止を保持する。原稿/API keyを計量へ入れない。表示追加だけで課金・権限・作者債務を作らない。
+
+合格は既存adapterの合成応答、欠落/0/不整合、cache/thinking二重加算拒否、owner/receipt不一致、queue再開・応答不明・再送なし、同じsource build/公開/本人UIを別々に記録すること。検証はtests/sky-usage-observation.test.mjs等。Provider料金/Invoice/作者契約は未決を保持し、現段階は独自料金や入金/送金を追加しない。証拠docs/evidence/sky-usage-public-integration.json。
+
 ## 7. 本人と複数端末
 
 到達設計はひとつのavokado accountと自前passkey。現行認証を移行済みとせず、登録、端末追加、紛失、credential失効、復旧、owner A/Bの分離を受け入れる。端末内の顔候補、NFC、SIM、modelの返答だけで本人確認を済ませない。

@@ -2,8 +2,10 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import styles from './sky-free-cloud-panel.module.css';
 import {SkyNotice} from './sky-feedback';
+import SkyUsageDetails from './sky-usage-details';
+import type {SkyUsageObservation} from '@/lib/sky-usage-observation';
 import type {SkyLibraryAgent} from '@/lib/sky-agent-library';
-type Job={agentBinding?:{id:string;revision:number};id:string;createdAt:string;state:string;model:string;retryAt?:number;retryDeadline?:number;attempts:number;text?:string;reportedModel?:string;providerResponseId?:string;inputTokens?:number;outputTokens?:number;chargeMinor?:number;error?:string};
+type Job={metering?:SkyUsageObservation|null;agentBinding?:{id:string;revision:number};id:string;createdAt:string;state:string;model:string;retryAt?:number;retryDeadline?:number;attempts:number;text?:string;reportedModel?:string;providerResponseId?:string;inputTokens?:number;outputTokens?:number;chargeMinor?:number;error?:string};
 export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
  const [prompt,setPrompt]=useState('');
  const [consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[submitted,setSubmitted]=useState(false);
@@ -79,6 +81,7 @@ export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
    {job.state==='waiting'&&<output>無料枠まであと {Math.max(0,Math.ceil(((job.retryAt??now)-now)/1000))} 秒。その後のサーバー確認で自動続行します。</output>}
    {['queued','waiting'].includes(job.state)&&<button type="button" onClick={()=>{void cancel(job);}}>この依頼を停止する</button>}
    {job.error&&<SkyNotice message={job.error}/>}
+   {job.metering&&<SkyUsageDetails observation={job.metering}/>}
    {job.text&&<><h3>回答</h3><p className={styles.answer}>{job.text}</p><p>使用額：{job.chargeMinor===undefined?'未確定':`$${(job.chargeMinor/100).toFixed(2)}`} · モデル：{job.reportedModel}</p></>}
    <details><summary>依頼の詳細</summary><p>依頼ID：{job.id}</p><p>送信試行：{job.attempts} 回（生成前の待機拒否を含む）</p><p>入力 {job.inputTokens??'未報告'} / 出力 {job.outputTokens??'未報告'} tokens</p>{job.providerResponseId&&<p>応答参照：{job.providerResponseId}</p>}</details>
   </article>}

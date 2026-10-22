@@ -2708,5 +2708,13 @@
     "newActualMacGrant": false,
     "newPixelProtocolAccepted": false,
     "ownerUiReadbackAccepted": true
+  },
+  "crossProviderUsage": {
+    "authority": "docs/sky-billing.md#cross-provider-usage-observation",
+    "evidence": "docs/evidence/sky-usage-public-integration.json",
+    "publicIntegrationEvidence": "docs/evidence/sky-usage-public-integration.json",
+    "publicDeployed": false,
+    "developerPayoutEnabled": false,
+    "gpuRented": false
   }
 }

@@ -1,3 +1,4 @@
+import {observeLlmUsage,type SkyUsageObservation} from './sky-usage-observation.ts';
 import { assertSafeOutbound, SensitiveDataBlockedError } from '../toolkits/spider-guard/detector.mjs';
 
 export type TextModelProviderId =
@@ -220,6 +221,7 @@ export type TextGenerationUsage = {
 };
 
 export type TextGenerationResult = {
+  metering?: SkyUsageObservation;
   provider: TextModelProviderId;
   model: string;
   text: string;
@@ -593,7 +595,7 @@ export async function generateText(
     fetchImpl(input, { ...init, redirect: 'manual' });
   try {
     const result = await generateTextRequest(request, runtimeEnv, guardedFetch, onProgress);
-    return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
+    return { ...result, metering:{...(result.metering??observeLlmUsage(request.provider,{})),resourceId:result.model}, durationMs: Math.max(0, Date.now() - startedAt) };
   } catch (error) {
     if (error instanceof LlmProviderError || error instanceof SensitiveDataBlockedError) throw error;
     if (error instanceof Error &&
@@ -646,11 +648,8 @@ async function generateTextRequest(
       }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
-    return {
-      provider: request.provider,
-      model,
-      text: textFromChatResponse(await jsonResponse(response)),
-    };
+    const payload=await jsonResponse(response);
+    return {provider:request.provider,model,text:textFromChatResponse(payload),metering:observeLlmUsage(request.provider,payload)};
   }
 
   if (request.provider === 'ollama') {
@@ -683,7 +682,7 @@ async function generateTextRequest(
         : undefined;
     if (typeof text !== 'string' || !text.trim())
       throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text: text.trim() };
+    return { provider: request.provider, model, text: text.trim(), metering:observeLlmUsage(request.provider,payload) };
   }
 
   if (request.provider === 'openai') {
@@ -704,6 +703,7 @@ async function generateTextRequest(
       model: result.model,
       text: textFromOpenAiResponse(result.payload),
       usage: result.usage,
+      metering:observeLlmUsage(request.provider,result.payload),
       serviceTier: result.serviceTier,
       webSearchCalls: result.webSearchCalls,
       textOnlyOutput: result.textOnlyOutput,
@@ -750,7 +750,7 @@ async function generateTextRequest(
           .trim()
       : '';
     if (!text) throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text };
+    return { provider: request.provider, model, text, metering:observeLlmUsage(request.provider,payload) };
   }
 
   if (request.provider === 'google') {
@@ -801,7 +801,7 @@ async function generateTextRequest(
           .trim()
       : '';
     if (!text) throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text };
+    return { provider: request.provider, model, text, metering:observeLlmUsage(request.provider,payload) };
   }
 
   const base = runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL?.trim();
@@ -824,9 +824,6 @@ async function generateTextRequest(
     }),
     signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
-  return {
-    provider: request.provider,
-    model,
-    text: textFromChatResponse(await jsonResponse(response)),
-  };
+  const payload=await jsonResponse(response);
+  return {provider:request.provider,model,text:textFromChatResponse(payload),metering:observeLlmUsage(request.provider,payload)};
 }

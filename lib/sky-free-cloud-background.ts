@@ -1,10 +1,11 @@
+import {observeSavedFreeCloudUsage} from './sky-usage-observation.ts';
 import {freeCloudEnabled,runFreeCloudText,type FreeCloudRuntime} from './sky-free-cloud.ts';
 import {workStore} from './work-store.ts';
 import {WorkError,type WorkJob} from './workflow.ts';
 type DB=Pick<D1Database,'prepare'|'batch'>;
 export type BackgroundRuntime=FreeCloudRuntime & {SKY_FREE_CLOUD_BACKGROUND_ENABLED?:string;SKY_FREE_CLOUD_WAKE_KEY?:string};
 export function backgroundEnabled(env:BackgroundRuntime,owner:string){return env.SKY_FREE_CLOUD_BACKGROUND_ENABLED==='true' && freeCloudEnabled(env,owner);}
-export function backgroundView(job:WorkJob){const r=job.freeCloud!;return {agentBinding:r.agentBinding,id:job.id,createdAt:job.createdAt,state:r.state,model:r.model,retryAt:r.retryAt,retryDeadline:r.retryDeadline,attempts:r.attempts??0,text:r.text,reportedModel:r.reportedModel,providerResponseId:r.providerResponseId,inputTokens:r.inputTokens,outputTokens:r.outputTokens,chargeMinor:r.chargeMinor,error:r.error,background:!!r.backgroundConsent};}
+export function backgroundView(job:WorkJob){const r=job.freeCloud!;return {metering:observeSavedFreeCloudUsage(r),agentBinding:r.agentBinding,id:job.id,createdAt:job.createdAt,state:r.state,model:r.model,retryAt:r.retryAt,retryDeadline:r.retryDeadline,attempts:r.attempts??0,text:r.text,reportedModel:r.reportedModel,providerResponseId:r.providerResponseId,inputTokens:r.inputTokens,outputTokens:r.outputTokens,chargeMinor:r.chargeMinor,error:r.error,background:!!r.backgroundConsent};}
 export async function backgroundJobs(db:DB,owner:string){return (await workStore(db).list(owner)).filter(j=>typeof j.freeCloud?.backgroundPrompt==='string').slice(0,20).map(backgroundView);}
 export async function cancelBackground(db:DB,owner:string,id:string){
  const store=workStore(db),job=await store.get(owner,id);

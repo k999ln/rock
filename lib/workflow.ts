@@ -1,3 +1,4 @@
+import type {SkyUsageObservation} from './sky-usage-observation.ts';
 import {
   parseCompositionPlan, reviseComposition, capabilityFor, runnableCompositionNodes,
   COMPOSITION_TEXT_LIMIT, type CompositionState, type CompositionArtifact,
@@ -133,7 +134,7 @@ export type WorkCommand =
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
-  freeCloud?: {agentBinding?:{id:string;revision:number};requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
+  freeCloud?: {metering?:SkyUsageObservation;agentBinding?:{id:string;revision:number};requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   composition?: CompositionState;
   id: string;
   title: string;

@@ -1,5 +1,9 @@
 <a id="eve-cross-device-sync"></a>
 
+## 共通の使用量と結果不明の保存
+
+共通の使用量表示は[計量表示と保存](sky-billing.md#cross-provider-usage-observation)へ接続する。無料Cloudは既存jobへ観測を保存し、結果不明でも同じjobから読み、再送・支払い確定にはしない。直接chatの一時表示と永続明細を区別する。公開/本人UI/請求/実機は別受入。
+
 ## EveのPixel/Web同一アカウント同期（eve-cross-device-sync）
 
 1. **目的**: `https://avoado.si/os/eve`と本人Pixelで、同じ会話ID・仕事ID・成果を参照し、別端末から続きを依頼する。既存Sky/Linuxの仕事を複製実行しない。

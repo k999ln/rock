@@ -1,3 +1,4 @@
+import {observeLlmUsage} from './sky-usage-observation.ts';
 import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import { applyWorkCommand, createWorkJob, WorkError, type WorkJob } from './workflow.ts';
 import { workStore } from './work-store.ts';
@@ -62,6 +63,7 @@ export async function runFreeCloudText(input: {
   const claimed: WorkJob = {...created,revision:created.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...created.freeCloud,state:'sending',attempts:(created.freeCloud.attempts??0)+1,retryAt:undefined,error:undefined}};
   // Existing owner/revision CAS is the one-time send claim; a crash leaves an uncertain job, not a retry.
   if (!await store.update(input.owner,claimed,created.revision)) return (await store.get(input.owner,input.id))!;
+  let observedUsage: ReturnType<typeof observeLlmUsage> | undefined;
   try {
     const currentPlan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
@@ -94,6 +96,7 @@ export async function runFreeCloudText(input: {
         : 'Cloudの実行結果を確認できません。',response.status);
     }
     const body = await response.json() as {id?: unknown; model?: unknown; user_tier?: unknown; choices?: {finish_reason?: unknown;message?: {content?: unknown;tool_calls?: unknown}}[]; usage?:{prompt_tokens?:unknown;completion_tokens?:unknown;total_tokens?:unknown}};
+    observedUsage={...observeLlmUsage('pollinations',body),resourceId:input.model};
     const choice=body.choices?.[0], usage=body.usage;
     if (body.user_tier!=='anonymous' || choice?.finish_reason!=='stop' ||
       (choice.message?.tool_calls !== undefined && (!Array.isArray(choice.message.tool_calls) || choice.message.tool_calls.length!==0)) || typeof choice.message?.content!=='string' || !choice.message.content.trim() || choice.message.content.length>24000 ||
@@ -101,13 +104,15 @@ export async function runFreeCloudText(input: {
       !usage || !Number.isSafeInteger(usage.prompt_tokens) || !Number.isSafeInteger(usage.completion_tokens) ||
       (usage.prompt_tokens as number)<0 || (usage.completion_tokens as number)<0 || usage.total_tokens!==(usage.prompt_tokens as number)+(usage.completion_tokens as number))
       throw new WorkError('Cloudの完了・使用量を確認できません。再送せず確認してください。',502);
+    const metering=observedUsage;
+    if(metering.status==='invalid')throw new WorkError('使用量の内訳を照合できません。再送せず確認してください。',502);
     const completed = applyWorkCommand(claimed,{id:crypto.randomUUID(),action:'record',stepId:'generate',tool:'sky-free-cloud-text',transport:'browser',outcome:'passed',sample:false,durationMs:Math.max(0,Date.now()-startedAt)},claimed.revision);
-    completed.freeCloud={...claimed.freeCloud!,state:'completed',text:choice.message.content,providerResponseId:body.id,reportedModel:body.model,
+    completed.freeCloud={...claimed.freeCloud!,state:'completed',metering,text:choice.message.content,providerResponseId:body.id,reportedModel:body.model,
       inputTokens:usage.prompt_tokens as number,outputTokens:usage.completion_tokens as number,chargeMinor:0};
     if (!await store.update(input.owner,completed,claimed.revision)) throw new WorkError('成果の保存を確認できません。再送せず確認してください。',409);
     return completed; // Work remains in review; model output is not Tool success or user approval.
   } catch(error) {
-    const uncertain:WorkJob={...claimed,revision:claimed.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...claimed.freeCloud!,state:'unconfirmed',error:error instanceof WorkError ? error.message : 'Cloud実行の結果が不明です。再送しません。'}};
+    const uncertain:WorkJob={...claimed,revision:claimed.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...claimed.freeCloud!,state:'unconfirmed',...(observedUsage?{metering:observedUsage}:{}),error:error instanceof WorkError ? error.message : 'Cloud実行の結果が不明です。再送しません。'}};
     await store.update(input.owner,uncertain,claimed.revision);
     throw error;
   }

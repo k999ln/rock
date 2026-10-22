@@ -14,6 +14,8 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import SkyUsageDetails from './sky-usage-details';
+import {readSkyUsageObservation,type SkyUsageObservation} from '@/lib/sky-usage-observation';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { guardHistoryNavigation } from '@/lib/history-navigation-guard';
@@ -450,6 +452,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     coordinationPlan, setCoordinationPlan, resetSession, beginSession } =
     useSkyChatSession({ loading, workView, preferredTool, requestedThreadId, setSelectedToolId, roleFor });
   const [error, setError] = useState('');
+  const [lastLlmUsage,setLastLlmUsage]=useState<{threadId:string;observations:SkyUsageObservation[]}|null>(null);
   const routingDraft = useProviderDraft('routing', providerRoutingDefaults, !executionBlocked, true);
   const providerRouting = routingDraft.state.config;
   useEffect(() => { if (routingDraft.state.unauthorized) setNeedsSignin(true); }, [routingDraft.state.unauthorized, setNeedsSignin]);
@@ -479,6 +482,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (previous) submissionRef.current = false;
     const frame = window.requestAnimationFrame(() => {
       setRemoteEstimate(null);
+      setLastLlmUsage(null);
       if (previous) setChatLoading(false);
     });
     return () => window.cancelAnimationFrame(frame);
@@ -1413,7 +1417,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         }),
         signal: controller.signal,
       }).then(async (response) => {
-        const result = await response.json() as LocalAgentResult & {error?:string; usage?:{inputTokens:number;outputTokens:number;chargeMinor:number}; reportedModel?:string};
+        const result = await response.json() as LocalAgentResult & {metering?:unknown;meteringObservations?:unknown[];error?:string; usage?:{inputTokens:number;outputTokens:number;chargeMinor:number}; reportedModel?:string};
+        const observations=[result.metering,...(result.meteringObservations??[])].map(readSkyUsageObservation).filter((item):item is SkyUsageObservation=>item!==null);
+        if(!controller.signal.aborted&&activeChatThreadRef.current===nextThreadId&&observations.length)setLastLlmUsage({threadId:nextThreadId,observations});
         if (!response.ok || !result.text) throw new Error(result.error || result.code || 'TEXT_GENERATION_FAILED');
         const toolArtifacts = (result.artifacts ?? [])
           .filter((artifact) => artifact.tool !== 'sky_route')
@@ -2419,6 +2425,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <div ref={messagesEndRef} aria-hidden="true" />
             </div>
 
+            {lastLlmUsage?.threadId===threadId&&lastLlmUsage.observations.map((observation,index)=><SkyUsageDetails key={index} observation={observation}/>)}
             <form className="sky-chat-composer" onSubmit={sendMessage}>
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">

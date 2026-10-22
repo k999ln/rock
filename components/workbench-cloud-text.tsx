@@ -1,6 +1,7 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import SkyUsageDetails from './sky-usage-details';
 import { RefreshCw } from 'lucide-react';
 import type { WorkJob } from '@/lib/workflow';
 import { formatCurrencyMinor, formatCurrencyRatePerMillionTokens, parseCurrencyInputToMinor } from '@/lib/currency-format';
@@ -510,6 +511,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
             <ul>{execution.price.items.map((item) => <li key={item.category}>{item.category}: {item.tokens.toLocaleString('ja-JP')} tokens · {item.rateMinorMicrosPerMillionTokens.toLocaleString('ja-JP')} minor-unit micro / 1M tokens</li>)}</ul>
             <small>これはProvider利用量に基づく計算記録であり、請求書・決済照合済みを意味しません。</small>
           </section>}
+          {execution.metering&&<SkyUsageDetails observation={execution.metering}/>}
           {execution.resultText && <>
             <details><summary>保存した回答を表示</summary><pre>{execution.resultText}</pre></details>
             <div className="work-delegation-actions">
