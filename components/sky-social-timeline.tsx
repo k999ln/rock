@@ -28,6 +28,8 @@ import {
   Link2,
   X,
   LoaderCircle,
+  Newspaper,
+  Radio,
 } from 'lucide-react';
 import { catalog } from '@/lib/catalog';
 import { useSkyHub } from '@/lib/use-sky-hub';
@@ -40,6 +42,11 @@ import type {
 import styles from './sky-social-timeline.module.css';
 import CommunityOsWorkbench from './community-os-workbench';
 import {
+  useSkyContinuousFeed,
+  type ContinuousItem,
+} from './use-sky-continuous-feed';
+import { feedPollDelay } from '@/lib/sky-continuous-ranking';
+import {
   communityFetch,
   prepareCommunityKey,
   setCommunityKeyProfile,
@@ -50,7 +57,11 @@ const empty: SkySocialState = {
   posts: [],
   cursor: null,
 };
-async function request<T>(path: string, input?: unknown): Promise<T> {
+async function request<T>(
+  path: string,
+  input?: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
   let body = input;
   if (
     input &&
@@ -65,7 +76,7 @@ async function request<T>(path: string, input?: unknown): Promise<T> {
     )
       body = { ...v, ...prepareCommunityKey(v.id, v.action !== 'join') };
   }
-  return communityFetch<T>(path, body);
+  return communityFetch<T>(path, body, signal);
 }
 export default function SkySocialTimeline({
   fullHome = false,
@@ -103,6 +114,31 @@ export default function SkySocialTimeline({
     [pendingReactions, setPendingReactions] = useState<Record<string, boolean>>(
       {},
     );
+  const [live, setLive] = useState(true);
+  const [refreshedAt, setRefreshedAt] = useState(0);
+  const [liveError, setLiveError] = useState('');
+  const continuousEnabled =
+    fullHome &&
+    mode === 'recommended' &&
+    !communityId &&
+    !threadId &&
+    initialView !== 'communities';
+  const continuous = useSkyContinuousFeed(
+    data.posts,
+    `${data.profile?.id ?? 'guest'}:${mode}:${communityId}:${threadId}`,
+    continuousEnabled,
+    live,
+  );
+  const feedRef = useRef(continuous);
+  useEffect(() => {
+    feedRef.current = continuous;
+  }, [continuous]);
+  const dataRef = useRef(data);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+  const loadController = useRef<AbortController | null>(null);
+  const lastLoad = useRef(0);
   const pendingReactionIds = useRef(new Set<string>()),
     sentinel = useRef<HTMLDivElement>(null),
     paging = useRef(false);
@@ -138,36 +174,98 @@ export default function SkySocialTimeline({
     return () => window.clearTimeout(timer);
   }, [notice]);
   const load = useCallback(
-    async (cursor = '') => {
+    async (cursor = '', quiet = false) => {
+      if (
+        quiet &&
+        (loadController.current || Date.now() - lastLoad.current < 20_000)
+      )
+        return;
+      loadController.current?.abort();
+      const controller = new AbortController();
+      loadController.current = controller;
+      let timedOut = false;
+      const timeout = window.setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+      }, 16_000);
+      const checked = quiet
+        ? dataRef.current.posts
+            .slice(0, 200)
+            .map((p) => p.id)
+            .join(',')
+        : '';
       const seq = ++sequence.current;
-      setLoading(true);
+      if (!quiet) setLoading(true);
       try {
         let value = await request<SkySocialState>(
-          `/api/sky/social?${new URLSearchParams({ mode, community: communityId, cursor, thread: threadId })}`,
+          `/api/sky/social?${new URLSearchParams({ mode, community: communityId, cursor, thread: threadId, check: checked })}`,
+          undefined,
+          controller.signal,
         );
         if (seq !== sequence.current) return;
         if (value.profile && setCommunityKeyProfile(value.profile.id))
           value = await request<SkySocialState>(
-            `/api/sky/social?${new URLSearchParams({ mode, community: communityId, cursor, thread: threadId })}`,
+            `/api/sky/social?${new URLSearchParams({ mode, community: communityId, cursor, thread: threadId, check: checked })}`,
+            undefined,
+            controller.signal,
           );
         if (seq !== sequence.current) return;
         setData((old) =>
-          cursor
+          quiet && old.profile?.id === value.profile?.id
             ? {
                 ...value,
+                cursor: old.cursor,
                 posts: [
-                  ...old.posts,
+                  ...old.posts
+                    .filter(
+                      (p) =>
+                        !value.checkedIds?.includes(p.id) ||
+                        value.visibleIds?.includes(p.id),
+                    )
+                    .map((p) => value.posts.find((v) => v.id === p.id) ?? p),
                   ...value.posts.filter(
-                    (p) => !old.posts.some((oldPost) => oldPost.id === p.id),
+                    (p) => !old.posts.some((v) => v.id === p.id),
                   ),
-                ],
+                ].slice(0, 200),
               }
-            : value,
+            : cursor
+              ? {
+                  ...value,
+                  posts: [
+                    ...old.posts,
+                    ...value.posts.filter(
+                      (p) => !old.posts.some((oldPost) => oldPost.id === p.id),
+                    ),
+                  ],
+                }
+              : value,
         );
         setSignedOut(false);
         setError('');
+        setLiveError('');
+        lastLoad.current = Date.now();
+        setRefreshedAt(lastLoad.current);
       } catch (e) {
         if (seq !== sequence.current) return;
+        if (controller.signal.aborted && !timedOut) return;
+        if (timedOut) {
+          if (quiet) {
+            setLiveError('更新の応答を待っています。自動で再試行します。');
+            throw e;
+          }
+          setError('接続に時間がかかっています。再読み込みしてください。');
+          return;
+        }
+        const authError = Boolean(
+          e &&
+          typeof e === 'object' &&
+          'status' in e &&
+          (e.status === 401 || e.status === 403),
+        );
+        if (quiet && !authError) {
+          setLiveError('更新を待っています。接続が戻ると再開します。');
+          throw e;
+        }
         setError(e instanceof Error ? e.message : '読み込めませんでした。');
         if (
           e &&
@@ -185,13 +283,19 @@ export default function SkySocialTimeline({
           setData(empty);
         }
       } finally {
-        if (seq === sequence.current) setLoading(false);
+        window.clearTimeout(timeout);
+        if (seq === sequence.current) {
+          loadController.current = null;
+          setLoading(false);
+        }
       }
     },
     [mode, communityId, threadId],
   );
   const cancelLoad = useCallback(() => {
     sequence.current++;
+    loadController.current?.abort();
+    loadController.current = null;
   }, []);
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -346,30 +450,81 @@ export default function SkySocialTimeline({
       setBusy(false);
     }
   }
+  const canPage =
+    Boolean(data.cursor) && data.posts.length < 200 && !continuous.atLimit;
+  const moreAvailable = continuousEnabled
+    ? continuous.hasMore || canPage
+    : canPage;
+  const pageHandler = useRef<() => Promise<void>>(async () => {});
+  useEffect(() => {
+    pageHandler.current = async () => {
+      if (paging.current) return;
+      paging.current = true;
+      try {
+        if (feedRef.current.enabled && feedRef.current.append()) return;
+        if (dataRef.current.cursor && dataRef.current.posts.length < 200)
+          await load(dataRef.current.cursor);
+      } finally {
+        paging.current = false;
+      }
+    };
+  }, [load]);
+  const loadMore = useCallback(() => pageHandler.current(), []);
   useEffect(() => {
     const node = sentinel.current;
-    if (!node || !data.cursor || loading || error) return;
+    if (!node || !moreAvailable || ((loading || error) && !continuous.hasMore))
+      return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting) && !paging.current) {
-          paging.current = true;
-          void load(data.cursor!).finally(() => {
-            paging.current = false;
-          });
-        }
+        if (entries.some((e) => e.isIntersecting)) void loadMore();
       },
-      { rootMargin: '400px' },
+      { rootMargin: '500px' },
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [data.cursor, loading, error, load]);
+  }, [
+    moreAvailable,
+    loading,
+    error,
+    loadMore,
+    continuous.items,
+    continuous.hasMore,
+  ]);
   useEffect(() => {
-    const refresh = () => {
-      if (document.visibilityState === 'visible') void load();
+    if (!live || !data.profile || threadId || management) return;
+    let stopped = false,
+      failures = 0,
+      pollingNow = false,
+      timer: ReturnType<typeof setTimeout>;
+    async function poll() {
+      if (stopped || pollingNow) return;
+      pollingNow = true;
+      if (document.visibilityState === 'visible' && navigator.onLine) {
+        try {
+          await load('', true);
+          failures = 0;
+        } catch {
+          failures++;
+        }
+      }
+      pollingNow = false;
+      if (!stopped)
+        timer = setTimeout(() => void poll(), feedPollDelay(failures));
+    }
+    timer = setTimeout(() => void poll(), feedPollDelay(0));
+    const wake = () => {
+      clearTimeout(timer);
+      void poll();
     };
-    window.addEventListener('focus', refresh);
-    return () => window.removeEventListener('focus', refresh);
-  }, [load]);
+    document.addEventListener('visibilitychange', wake);
+    window.addEventListener('online', wake);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', wake);
+      window.removeEventListener('online', wake);
+    };
+  }, [live, data.profile, threadId, management, load]);
   async function reactTo(
     item: SkySocialPost,
     reaction: 'like' | 'repost' | 'bookmark',
@@ -440,6 +595,73 @@ export default function SkySocialTimeline({
               month: 'short',
               day: 'numeric',
             });
+  }
+  function renderNews(item: Extract<ContinuousItem, { kind: 'news' }>) {
+    const article = item.article;
+    return (
+      <article
+        key={item.key}
+        className={`${styles.post} ${styles.newsPost}`}
+        data-news-post
+        data-feed-key={item.key}
+      >
+        <div className={styles.postRow}>
+          <span className={styles.avatar} aria-hidden="true">
+            <Newspaper size={21} />
+          </span>
+          <div className={styles.postMain}>
+            <header className={styles.postHeader}>
+              <strong>{article.publisher}</strong>
+              <span className={styles.handle}>ニュース</span>
+              <span className={styles.dot}>·</span>
+              <time
+                dateTime={article.seenAt}
+                title={`GDELT検出 ${new Date(article.seenAt).toLocaleString('ja-JP')}`}
+              >
+                {relativeTime(item.createdAt)}
+              </time>
+            </header>
+            <a
+              className={styles.newsHeadline}
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              referrerPolicy="no-referrer"
+              onClick={() => continuous.remember(article.title)}
+            >
+              {article.title}
+              <ArrowUpRight size={16} />
+            </a>
+            <div className={styles.newsMeta}>
+              媒体の原文 · GDELT検出{item.stale ? ' · 前回取得分' : ''}
+            </div>
+            <div className={styles.newsActions}>
+              <button
+                onClick={() => {
+                  continuous.remember(article.title);
+                  setNotice(
+                    'このニュースに関連する話題を、次の投稿選びに反映します。',
+                  );
+                }}
+              >
+                この話題をもっと
+              </button>
+              <button
+                onClick={() => {
+                  writeHomeIntent(
+                    window.sessionStorage,
+                    `この記事について原文・出典を確認して一緒に考えたい。\n${article.title}\n${article.url}`,
+                  );
+                  router.push('/chat');
+                }}
+              >
+                Eveと話す <MessageCircle size={15} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    );
   }
   function renderPost(post: SkySocialPost, detail = false) {
     const attachmentAdded =
@@ -767,7 +989,10 @@ export default function SkySocialTimeline({
           className={styles.topIcon}
           aria-label="タイムラインを更新"
           disabled={loading}
-          onClick={() => void load()}
+          onClick={() => {
+            continuous.restart();
+            void load();
+          }}
         >
           <RefreshCw
             size={18}
@@ -783,6 +1008,84 @@ export default function SkySocialTimeline({
           <SlidersHorizontal size={18} />
         </button>
       </div>
+      {continuousEnabled && (
+        <div className={styles.liveControls}>
+          <div className={styles.liveLine}>
+            <span className={live ? styles.liveDot : styles.pausedDot} />
+            <span>
+              {live ? 'LIVE · 新着を待っています' : '自動更新を停止中'}
+            </span>
+            <button aria-pressed={live} onClick={() => setLive((v) => !v)}>
+              {live ? '一時停止' : '再開'}
+            </button>
+          </div>
+          <div className={styles.topicChips} aria-label="読みたい話題">
+            {[
+              ['all', 'すべて'],
+              ['technology', 'テクノロジー'],
+              ['world', '世界'],
+              ['business', 'ビジネス'],
+              ['science', '科学'],
+              ['games', 'ゲーム'],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                aria-pressed={continuous.topic === id}
+                onClick={() => continuous.chooseTopic(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <details className={styles.rankingNote}>
+            <summary>この流れについて</summary>
+            <p>
+              フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。閲覧の話題はこの画面を閉じると消えます。ニュースはGDELTの媒体原文リンクです。検出時刻を表示し、内容の正確さを保証する判定には使いません。
+            </p>
+            {refreshedAt > 0 && (
+              <small>
+                投稿の確認 {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
+              </small>
+            )}
+          </details>
+          {liveError && (
+            <output className={styles.feedStatus}>{liveError}</output>
+          )}
+          {continuous.newsError && (
+            <output className={styles.feedStatus}>
+              {continuous.newsError}
+              <button onClick={continuous.retry}>再試行</button>
+            </output>
+          )}
+          {continuous.stale && (
+            <output className={styles.feedStatus}>
+              ニュースは前回取得分を表示しています。
+            </output>
+          )}
+          {continuous.newsLoading && !continuous.items.length && (
+            <output className={styles.feedStatus}>
+              ニュースを受信しています…
+            </output>
+          )}
+        </div>
+      )}
+      {continuousEnabled && continuous.pending > 0 && (
+        <button
+          className={styles.newPosts}
+          onClick={() => {
+            continuous.acceptUpdates();
+            document.getElementById('timeline')?.scrollIntoView({
+              block: 'start',
+              behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+                .matches
+                ? 'instant'
+                : 'smooth',
+            });
+          }}
+        >
+          <Radio size={15} /> 新着 {continuous.pending} 件を見る
+        </button>
+      )}
       {error && (
         <p className={styles.error} role="alert">
           {error}
@@ -1353,33 +1656,83 @@ export default function SkySocialTimeline({
                 }
                 aria-busy={loading}
               >
-                {data.posts.slice(0, 2).map((post) => renderPost(post))}
+                {continuousEnabled
+                  ? continuous.items.map((item) =>
+                      item.kind === 'post'
+                        ? renderPost(item.post)
+                        : renderNews(item),
+                    )
+                  : data.posts.map((post) => renderPost(post))}
                 {!threadId &&
                   !communityId &&
                   mode !== 'bookmarks' &&
                   externalFeed}
-                {!threadId &&
-                  !communityId &&
-                  mode === 'recommended' &&
-                  discovery}
-                {data.posts.slice(2).map((post) => renderPost(post))}
               </div>
               <div
                 ref={sentinel}
                 className={styles.sentinel}
                 aria-hidden="true"
               />
-              {data.cursor && (
+              {moreAvailable && (
                 <button
+                  className={styles.moreButton}
                   disabled={loading}
-                  onClick={() => void load(data.cursor!)}
+                  onClick={() => void loadMore()}
                 >
-                  さらに読む
+                  続きを見る
                 </button>
               )}
+              {continuousEnabled && !loading && !moreAvailable && (
+                <div className={styles.feedEnd}>
+                  <Radio size={20} />
+                  <strong>
+                    {continuous.atLimit
+                      ? 'ここまでの投稿を読み終えました'
+                      : 'いま届いている投稿は、ここまで'}
+                  </strong>
+                  <p>
+                    {live
+                      ? '新しい投稿が届くと、上にお知らせします。'
+                      : '自動更新は停止中です。いつでも再開できます。'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      continuous.restart();
+                      void load();
+                    }}
+                  >
+                    新しい流れを読む
+                  </button>
+                </div>
+              )}
+              {!threadId &&
+                !communityId &&
+                mode === 'recommended' &&
+                discovery && (
+                  <details className={styles.discoveryMore}>
+                    <summary>LLM・Agent・機能を見つける</summary>
+                    {discovery}
+                  </details>
+                )}
             </div>
           </div>
         </>
+      )}
+      {!data.profile && continuousEnabled && (
+        <div role="feed" aria-label="公開ニュース">
+          {continuous.items.map((item) =>
+            item.kind === 'news' ? renderNews(item) : null,
+          )}
+          <div ref={sentinel} className={styles.sentinel} />
+          {continuous.hasMore && (
+            <button
+              className={styles.moreButton}
+              onClick={() => continuous.append()}
+            >
+              続きを見る
+            </button>
+          )}
+        </div>
       )}
       {!data.profile && externalFeed}
       {!data.profile && discovery}

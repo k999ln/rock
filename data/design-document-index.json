@@ -2642,5 +2642,20 @@
     "siteMigration": "Sites source: drizzle-main/0028_rockstar_accounts.sql",
     "physicalAccepted": false,
     "publicAccepted": false
+  },
+  "homeTimelineFrontend": {
+    "continuousFeed": {
+      "authority": "docs/rockstaros-complete-design.md#sky-continuous-timeline",
+      "toolAuthority": "docs/sky-tools-complete-design.md#sky-continuous-timeline",
+      "source": [
+        "lib/sky-continuous-ranking.ts",
+        "components/use-sky-continuous-feed.ts",
+        "components/sky-social-timeline.tsx",
+        "app/api/news/feed/route.ts",
+        "lib/sky-social-store.ts"
+      ],
+      "evidence": "docs/evidence/sky-continuous-timeline.json",
+      "status": "local_verified_public_pending"
+    }
   }
 }

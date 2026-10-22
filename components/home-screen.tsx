@@ -26,7 +26,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import SkySocialTimeline from './sky-social-timeline';
-import EveNewsTimeline from './eve-news-timeline';
 import SkyDiscoveryFeed from './sky-discovery-feed';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
 import {
@@ -74,7 +73,8 @@ function viewForHash(fragment: string): View {
 }
 export default function HomeScreen() {
   const pathname = usePathname();
-  const route = (href: string) => osRouteHref(pathname, href, process.env.NODE_ENV === 'development');
+  const route = (href: string) =>
+    osRouteHref(pathname, href, process.env.NODE_ENV === 'development');
   const homePath = route('/');
   const timelineReceiver = useTimelineConnector();
   const [view, setView] = useState<View>('home');
@@ -231,27 +231,31 @@ export default function HomeScreen() {
           <OsAccountAccess />
           <div className={styles.mobileHeader}>
             <OSHeader title="Sky" hideNavigation>
-            <div className={styles.mobileActions}>
-              <Link href={route('/chat')}>
-                Eve <MessageCircle size={20} />
-              </Link>
-              <details>
-                <summary aria-label="その他のメニュー">
-                  <MoreHorizontal size={22} />
-                </summary>
-                <nav aria-label="追加メニュー">
-                  <Link href={route('/#bookmarks')}>ブックマーク</Link>
-                  <Link href={route('/#news-plugins')}>ニュースの配信元</Link>
-                  <Link href={route('/#optional-features')}>機能を追加</Link>
-                  <Link href={route('/campus')}>Campus</Link>
-                  <Link href={route('/connect')}>利用環境をつなぐ</Link>
-                  <Link href={route('/settings')}>設定</Link>
-                  {enabled('wallet') && <Link href={route('/wallet')}>Wallet</Link>}
-                  {enabled('market') && <Link href={route('/market')}>Market</Link>}
-                </nav>
-              </details>
-            </div>
-                      </OSHeader>
+              <div className={styles.mobileActions}>
+                <Link href={route('/chat')}>
+                  Eve <MessageCircle size={20} />
+                </Link>
+                <details>
+                  <summary aria-label="その他のメニュー">
+                    <MoreHorizontal size={22} />
+                  </summary>
+                  <nav aria-label="追加メニュー">
+                    <Link href={route('/#bookmarks')}>ブックマーク</Link>
+                    <Link href={route('/#news-plugins')}>ニュースの配信元</Link>
+                    <Link href={route('/#optional-features')}>機能を追加</Link>
+                    <Link href={route('/campus')}>Campus</Link>
+                    <Link href={route('/connect')}>利用環境をつなぐ</Link>
+                    <Link href={route('/settings')}>設定</Link>
+                    {enabled('wallet') && (
+                      <Link href={route('/wallet')}>Wallet</Link>
+                    )}
+                    {enabled('market') && (
+                      <Link href={route('/market')}>Market</Link>
+                    )}
+                  </nav>
+                </details>
+              </div>
+            </OSHeader>
           </div>
           {view === 'discover' ? (
             <SkyDiscoveryFeed
@@ -283,7 +287,6 @@ export default function HomeScreen() {
                 <>
                   <SkyMcpTimeline receiver={timelineReceiver} />
                   <SkyXAccountTimeline />
-                  <EveNewsTimeline />
                 </>
               }
             />
@@ -376,8 +379,17 @@ export default function HomeScreen() {
           </div>
         </aside>
       </div>
-      <OsAppNavigation className={`${styles.mobileNav} os-home-navigation`} aria-label="モバイルメニュー"
-        active={view === 'discover' ? 'discover' : view === 'communities' ? 'communities' : 'stream'} />
+      <OsAppNavigation
+        className={`${styles.mobileNav} os-home-navigation`}
+        aria-label="モバイルメニュー"
+        active={
+          view === 'discover'
+            ? 'discover'
+            : view === 'communities'
+              ? 'communities'
+              : 'stream'
+        }
+      />
     </div>
   );
 }

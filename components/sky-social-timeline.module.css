@@ -971,3 +971,180 @@
   background: #f8ebe5;
   color: #974e40;
 }
+
+/* Continuous feed: preserve the existing ivory / forest Sky palette. */
+.liveControls {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--tl-line);
+}
+.liveLine {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--tl-muted);
+}
+.liveLine button {
+  margin-left: auto;
+  font-size: 11px;
+  border: 1px solid var(--tl-line);
+  border-radius: 20px;
+  padding: 0 12px;
+  min-height: 28px;
+  letter-spacing: 0;
+}
+.liveDot,
+.pausedDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tl-blue);
+}
+.liveDot {
+  animation: sky-live-breathe 2.8s ease-in-out infinite;
+}
+.pausedDot {
+  opacity: 0.35;
+}
+.topicChips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 0 5px;
+  scrollbar-width: none;
+}
+.topicChips button {
+  border: 1px solid var(--tl-line);
+  border-radius: 20px;
+  padding: 0 12px;
+  min-height: 32px;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.topicChips button[aria-pressed='true'] {
+  background: var(--tl-blue);
+  border-color: var(--tl-blue);
+  color: var(--tl-bg);
+}
+.rankingNote {
+  color: var(--tl-muted);
+  font-size: 11px;
+  line-height: 1.6;
+  padding-top: 3px;
+}
+.rankingNote summary {
+  cursor: pointer;
+}
+.feedStatus {
+  display: block;
+  color: var(--tl-muted);
+  font-size: 12px;
+  padding: 7px 0;
+}
+.feedStatus button {
+  text-decoration: underline;
+  margin-left: 6px;
+}
+.shell .newPosts {
+  position: sticky;
+  top: 62px;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 10px auto;
+  border-radius: 24px;
+  padding: 8px 18px;
+  background: var(--tl-blue);
+  color: var(--tl-bg);
+  box-shadow: 0 4px 18px #0002;
+}
+.shell .newsHeadline {
+  display: block;
+  color: var(--tl-text);
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.5;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.newsHeadline svg {
+  display: inline;
+  margin-left: 5px;
+  color: var(--tl-muted);
+}
+.newsMeta {
+  color: var(--tl-muted);
+  font-size: 11px;
+  margin-top: 12px;
+}
+.newsActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 7px;
+}
+.newsActions button {
+  color: var(--tl-blue);
+  font-size: 12px;
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 0 6px;
+}
+.newsPost time {
+  color: var(--tl-muted);
+  font-size: 12px;
+}
+.shell .moreButton {
+  display: block;
+  width: 100%;
+  color: var(--tl-blue);
+  border-bottom: 1px solid var(--tl-line);
+  padding: 12px;
+}
+.feedEnd {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--tl-muted);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.feedEnd strong {
+  color: var(--tl-text);
+}
+.feedEnd p {
+  margin: 0;
+}
+.feedEnd button {
+  border: 1px solid var(--tl-line);
+  border-radius: 22px;
+  padding: 0 16px;
+}
+.discoveryMore {
+  border-top: 1px solid var(--tl-line);
+}
+.discoveryMore > summary {
+  cursor: pointer;
+  padding: 20px 16px;
+  color: var(--tl-blue);
+  font-size: 13px;
+}
+@keyframes sky-live-breathe {
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 4px #5d897418;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liveDot {
+    animation: none;
+  }
+}

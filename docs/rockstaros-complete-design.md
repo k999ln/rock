@@ -800,3 +800,20 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 9. **承認**: 実装は既存承認を使う。新しい鍵の最終登録や別ownerへの権限付与は本人が実機で確認する。登録を本番課金・機微情報保管・全OS/全hardware合格の承認へ拡張しない。
 10. **合格条件**: ChatGPT sessionなしの新規登録と再login、二owner分離、Sky設定→Eve→実Pixel→Webの同一成果、継続/失効/再送/復旧、旧22件とモデル2/Agent6の保全を同一候補で記録する。host/公開/実機/本番は別々に扱う。
 11. **残作業の決め方**: [共通Coreの開発プロンプト](prompts/rockstaros-common-core-development.md)のCORE01〜12を既存RQ/taskと照合し、本人認証と実機一周を先に受け入れる。Mini/Pro/MCUは実在能力と個別driver/安全/更新復旧で追加する。料金未確定値や未知のhardware能力を作らない。
+
+<a id="sky-continuous-timeline"></a>
+## Skyの継続タイムライン（HOME01 / WEB04 / SKY21）
+
+1. **目的**: 本人の「もっと動的に、関連しながら更新されるtimeline」を既存Homeへ実装する。
+2. **利用体験**: 投稿とニュース原文リンクを同じstreamに並べ、12件ずつscrollで追加。6話題の切替、関連する話題、Eveへの引継ぎ、新着通知、更新停止/再開を提供する。
+3. **責任**: ROCK Web/PWAが並び順・重複・cursor・owner/key再確認を担当。EXTERNALはGDELT/API/MCPの供給。JOINTは実投稿/実画面、OWNERは接続先と共有を選ぶ。
+4. **入力**: 既存social APIの閲覧許可済み投稿、follow/community、loaded投稿のlike/bookmark、画面内で選択したnewsの語、GDELT固定6query。会話/生体情報をrankingへ送らない。
+5. **出力**: native投稿/原文headline、媒体/検出時刻/前回分表示。外部本文の転載や自動LLM生成による投稿補充を行わない。Eve handoffは原文URLと題名を既存入口へ渡す。
+6. **状態**: 初回/追加読込/live/一時停止/新着待機/通信待ち/前回取得/読み終わり。表示済みの順序を保ち、new headは本人操作で挿入。1画面200件を上限に再開入口を提示する。
+7. **保存**: posts/reactions/followは既存owner DB。追加のクリック話題は画面memoryのみ、owner変更では使わない。news共有cacheはquery別15分、同時取得を合流。cold fallbackは日時付き実取得見出しを24時間だけ前回分と表示。新DB migrationなし。
+8. **アルゴリズム**: freshness=14/(1+ageHours/6)、語一致=6×一致語数（最大18）、follow=8、community=5。直近6件で同じsourceごと8減点。5件目ごとfreshness中心で探索。candidate keyでdedupe。serverはfollow/communityに72時間のrecency bucketを加え、cursorにreference時刻を固定。rankingは許可を付与しない。
+9. **失敗/復旧**: visible時social25秒、news60秒（cache15分）の確認。非表示/offlineでは取得を止め、50/100/120秒へbackoff。旧項目は消さずnew候補へ追加。private投稿最大200 IDを既存account/key境界で再確認し、削除/失効を表示から除く。通信断で判定済みにしない。取得可能データの終端を表示し同一記事を無限再掲しない。
+10. **承認**: 自動閲覧更新のみ。source追加、外部投稿、実行/課金、端末grantの既存承認境界を保つ。新規費用/credentialなし。GDELT検出は真偽判定ではない。
+11. **合格/未決定**: 純ranking・append・backoff・key失効・cursor fixture、公開source build、公開UIの続きを確認し証拠へ別記録。意味embedding/政治的中立実証、X本人おすすめ供給、新Pixel OS/生体vault/実課金の合格へ換算しない。実データの増加後に比較評価して係数・window virtualizationを改良する。
+
+証拠: [継続timeline](evidence/sky-continuous-timeline.json)。実装: `lib/sky-continuous-ranking.ts` / `components/use-sky-continuous-feed.ts` / 既存social store。検証: `node --experimental-strip-types --test tests/sky-continuous-*.test.mjs tests/sky-social.test.mjs tests/sky-timeline-interactions.test.mjs tests/eve-news-feed.test.mjs tests/home-timeline-frontend.test.mjs`。

@@ -11,12 +11,20 @@ export type EveNewsLink = {
 export const EVE_NEWS_QUERY = 'politics sourcelang:english';
 export const EVE_NEWS_PROVIDER = 'GDELT DOC 2.0';
 
-export function gdeltNewsUrl() {
+export const EVE_NEWS_TOPICS: Record<string, string> = {
+  all: '(technology OR science OR politics OR business OR gaming) sourcelang:english',
+  technology: '(technology OR software OR robotics) sourcelang:english',
+  world: 'politics sourcelang:english',
+  business: '(business OR economy) sourcelang:english',
+  science: 'science sourcelang:english',
+  games: '(gaming OR videogames) sourcelang:english',
+};
+export function gdeltNewsUrl(topic = '') {
   const url = new URL('https://api.gdeltproject.org/api/v2/doc/doc');
   url.search = new URLSearchParams({
-    query: EVE_NEWS_QUERY,
+    query: EVE_NEWS_TOPICS[topic] ?? EVE_NEWS_QUERY,
     mode: 'artlist',
-    maxrecords: '20',
+    maxrecords: '80',
     timespan: '24h',
     sort: 'datedesc',
     format: 'json',
@@ -31,19 +39,51 @@ function seenAt(value: unknown) {
 }
 
 export function parseGdeltArticles(input: unknown): EveNewsLink[] {
-  if (!input || typeof input !== 'object' || !Array.isArray((input as { articles?: unknown }).articles)) throw Error('News provider returned an invalid article list');
+  if (
+    !input ||
+    typeof input !== 'object' ||
+    !Array.isArray((input as { articles?: unknown }).articles)
+  )
+    throw Error('News provider returned an invalid article list');
   const seen = new Set<string>();
   const result: EveNewsLink[] = [];
-  for (const raw of (input as { articles: unknown[] }).articles.slice(0, 40)) {
+  for (const raw of (input as { articles: unknown[] }).articles.slice(0, 100)) {
     if (!raw || typeof raw !== 'object') continue;
     const article = raw as Record<string, unknown>;
-    if (typeof article.url !== 'string' || typeof article.title !== 'string') continue;
+    if (typeof article.url !== 'string' || typeof article.title !== 'string')
+      continue;
     let url: URL;
-    try { url = new URL(article.url); } catch { continue; }
-    if (url.protocol !== 'https:' || url.username || url.password || seen.has(url.href)) continue;
-    if (/(^|\/)(author|authors|by|tag|tags|category|search|profile)(\/|$)/i.test(url.pathname)) continue;
-    const archivedYear = url.pathname.match(/\/(20\d{2})\/(?:0?[1-9]|1[0-2])(?:\/|$)/);
-    if (archivedYear && Number(archivedYear[1]) < new Date().getUTCFullYear() - 1) continue;
+    try {
+      url = new URL(article.url);
+    } catch {
+      continue;
+    }
+    url.hash = '';
+    const tracking = Array.from(url.searchParams.keys()).filter((key) =>
+      /^(utm_|fbclid$|gclid$)/i.test(key),
+    );
+    for (const key of tracking) url.searchParams.delete(key);
+    if (
+      url.protocol !== 'https:' ||
+      url.username ||
+      url.password ||
+      seen.has(url.href)
+    )
+      continue;
+    if (
+      /(^|\/)(author|authors|by|tag|tags|category|search|profile)(\/|$)/i.test(
+        url.pathname,
+      )
+    )
+      continue;
+    const archivedYear = url.pathname.match(
+      /\/(20\d{2})\/(?:0?[1-9]|1[0-2])(?:\/|$)/,
+    );
+    if (
+      archivedYear &&
+      Number(archivedYear[1]) < new Date().getUTCFullYear() - 1
+    )
+      continue;
     const title = article.title.trim();
     const date = seenAt(article.seendate);
     if (!title || title.length > 400 || !date) continue;
@@ -54,10 +94,16 @@ export function parseGdeltArticles(input: unknown): EveNewsLink[] {
       url: url.href,
       publisher: url.hostname.replace(/^www\./, ''),
       seenAt: date,
-      language: typeof article.language === 'string' ? article.language.slice(0, 50) : 'unknown',
-      sourceCountry: typeof article.sourcecountry === 'string' ? article.sourcecountry.slice(0, 80) : 'unknown',
+      language:
+        typeof article.language === 'string'
+          ? article.language.slice(0, 50)
+          : 'unknown',
+      sourceCountry:
+        typeof article.sourcecountry === 'string'
+          ? article.sourcecountry.slice(0, 80)
+          : 'unknown',
     });
-    if (result.length === 20) break;
+    if (result.length === 80) break;
   }
   return result;
 }

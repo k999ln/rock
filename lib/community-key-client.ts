@@ -58,6 +58,7 @@ export function prepareCommunityKey(id: string, creator = false) {
 export async function communityFetch<T>(
   path: string,
   input?: unknown,
+  signal?: AbortSignal,
 ): Promise<T> {
   if (!/^\/api\/sky\/(social|community-os)(\?|$)/.test(path))
     throw new Error(
@@ -65,6 +66,7 @@ export async function communityFetch<T>(
     );
   const response = await fetch(path, {
     cache: 'no-store',
+    signal,
     headers: {
       ...communityRequestHeaders(),
       ...(input ? { 'Content-Type': 'application/json' } : {}),
