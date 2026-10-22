@@ -1,4 +1,24 @@
 {
+  "eveModelIdentityAndTraining": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "implementing_display_training_not_started",
+    "authority": "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+    "trainingRequirements": "docs/llm-evaluation-architecture.md#eve-training-prerequisites",
+    "source": [
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css"
+    ],
+    "modelWeightsCreated": false,
+    "trainingStarted": false,
+    "publicDeployment": null
+  },
   "visualScribeIntent": {
     "decidedAt": "2026-10-15",
     "source": "direct_owner_instruction",

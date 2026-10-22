@@ -512,3 +512,23 @@ Native8/API4・Shell22・checkpoint6の同preview署名APKで、本人指定の�
 本人の「cloudの依頼のとこ」という指摘により、公開free-cloudの主操作を依頼入力・送信・結果へ整理する。空の依頼欄と例示placeholder、無料モデル自動選択、明示的な外部送信/保存同意を表示。未ログインは既存Sites signinへ案内し、通信/入力/利用不可の理由を示す。保存後は入力を固定し、同じIDの保存確認を使い、保存不明時に新規IDへ逃がさない。モデル選択失敗で送信前と確定した場合だけ入力編集へ戻す。新規依頼は本文と同意をクリアする。本人別GET・30秒poll・429後60秒待機、CAS・上限・5試行/10分は変更しない。履歴は作成日時と状態、本文は既存保存結果を表示し、ID/token/送信試行は詳細へ配置する。promptを返さない既存APIと保存契約は維持する。月次Sandbox操作は下部の折りたたみへ移し、実契約購入/本番課金としない。
 
 合格条件は空入力/同意なしの送信不可、未ログインの案内、既存成果の読取、保存後の重複送信防止、モバイル幅での操作性。実端末同時利用の受入は別で未完了。
+
+<a id="eve-training-prerequisites"></a>
+## Eveの機械学習を始める必要要件（2026-10-21）
+
+本人の必要要件の依頼に対し、最初の実験案を既存0.5B〜4B級の公開重みへのSFT + LoRA/QLoRAとする。採用や有料計算の開始は未実施であり、一からの事前学習は別の計算量/データ設計が必要。
+
+- **学習目的**: 日本語での依頼整理・出典付き下書き・Sky Toolの型付き引数候補のうち最初の一用途と失敗条件を固定。ニュース最新事実は取得系から渡し、重みだけに最新性を期待しない。
+- **基盤モデル**: 発行元、revision/hash、商用利用/改変/配布の条件、tokenizer/chat templateと対象runtimeの適合を確認。現在端末で推論するGGUFとは別に、対応する学習用checkpoint（通常safetensors）を用意する。
+- **学習データ**: 許諾済みの依頼→望ましい返答、Tool呼出しと実結果、停止/不明/誤り訂正の例をJSONL等に整理。原文出所、許諾scope、個人情報除去、重複除去を記録。最初の計画値は高品質1,000〜5,000例だが普遍的な最低件数ではなく、learning curveで増減を決める。私有会話は自動投入しない。
+- **独立評価**: 訓練と別の出所/話題単位で分離した200例程度を最初の計画値とし、未学習基盤との比較で事実根拠、Tool schema、未知/停止、日本語品質、漏洩/注入を評価。政治ニュースは立場・地域・話題別の非対称な誤りも計測し、思想影響ゼロを宣言しない。
+- **計算機**: 0.5B〜4B QLoRAの試験計画として対応NVIDIA GPUのVRAM 16〜24GB、host RAM 32〜64GB、空SSD 100〜200GBを目安に実測。これは保証最小値ではなく、token長、batch、optimizer、architectureで変わる。Apple Siliconでは対応MLX/LoRAを別検証し、Pixelは初期学習の標準実行先にしない。
+- **学習環境**: 選択hardware対応のdriver/runtime、Python/PyTorch/Transformers/Datasets/PEFT/TRL等を固定。まず少量でforward/backward・保存・再読込・VRAM峰値を確認してから拡大。Macなら選んだMLX系構成を固定する。
+- **実行設定**: seed、学習率、LoRA rank/対象層、最大token長、batch/gradient accumulation、epoch、checkpoint頻度、早期停止、最大時間/費用を設定。学習lossだけで合格を決めない。
+- **保存/復旧**: 許諾付きdataset版/hash、元model hash、設定、adapter/checkpoint、optimizer状態、評価記録、使用GPU時間を非公開のartifact storageに保存。大きな重みや秘密原稿はGitへ入れない。中断再開と元modelへの復帰を確認。
+- **費用/外部送信**: 手元計算機の適合を先に確認し、cloudを使う場合はアカウント、送信データ、時間上限、料金上限を確定してから開始する。停止条件と計量を実行中も強制。
+- **Eveへの搭載**: 改善が確認されたadapterを固定し、base/adapter/tokenizer/版/hashをEve ModelProfileへ登録。必要に応じてmerge/量子化/GGUF化した後、同じ評価を再実行し、PixelのRAM/速度/熱・既存Sky権限境界を受け入れてから切替。旧profileを復旧用に保持する。
+
+一次資料: [PEFT quantization/QLoRA](https://huggingface.co/docs/peft/main/en/developer_guides/quantization)、[TRL SFTTrainerのdataset形式と学習](https://huggingface.co/docs/trl/main/en/sft_trainer)。hardware/件数はこのプロジェクトの初期計画値であり、これらの資料が保証する値ではない。
+
+手元機確認: Apple M4、unified memory 16 GiBを読取り確認。初回の候補は0.5B〜1.5B級の対応モデルをMLX-LMのLoRA/QLoRAで少量検証する。これはメモリ適合/学習速度の受入ではない。NVIDIA機やcloud契約は小規模試験の必須条件にせず、実測OOM時にtoken長・batch・対象層を調整する。公式手順は[MLX-LM LoRA](https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/LORA.md)。

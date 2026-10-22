@@ -1,3 +1,5 @@
+Eve画面は使用LLM「Eve」、担当、基盤モデル、実行先を分けて表示します。専用重みは未学習です。[機械学習の開始要件](docs/llm-evaluation-architecture.md#eve-training-prerequisites)。
+
 独立登録の実装候補は`/account`です。パスキーで登録/ログインし、既存アカウントの同じownerへログイン方法を追加できます。公開・実認証器・Pixelの受入は個別証拠で管理します。
 
 ## EveのPixel/Web同期（2026-10-21）
