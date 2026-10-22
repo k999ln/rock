@@ -1,8 +1,9 @@
 'use client';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import styles from './sky-free-cloud-panel.module.css';
-type Job={id:string;createdAt:string;state:string;model:string;retryAt?:number;retryDeadline?:number;attempts:number;text?:string;reportedModel?:string;providerResponseId?:string;inputTokens?:number;outputTokens?:number;chargeMinor?:number;error?:string};
-export default function SkyFreeCloudPanel(){
+import type {SkyLibraryAgent} from '@/lib/sky-agent-library';
+type Job={agentBinding?:{id:string;revision:number};id:string;createdAt:string;state:string;model:string;retryAt?:number;retryDeadline?:number;attempts:number;text?:string;reportedModel?:string;providerResponseId?:string;inputTokens?:number;outputTokens?:number;chargeMinor?:number;error?:string};
+export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
  const [prompt,setPrompt]=useState('');
  const [consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[submitted,setSubmitted]=useState(false);
  const [enabled,setEnabled]=useState(false),[jobs,setJobs]=useState<Job[]>([]),[selected,setSelected]=useState('');
@@ -10,6 +11,7 @@ export default function SkyFreeCloudPanel(){
  const [access,setAccess]=useState<'checking'|'ready'|'signin'|'unavailable'>('checking');
  const [saved,setSaved]=useState(false),[readError,setReadError]=useState('');
  const lock=useRef(false),id=useRef(''),model=useRef('');
+ const profileId=agent?.id;
  const reading=useRef(false),retryReadAt=useRef(0);
  const refresh=useCallback(async()=>{
   if(reading.current||Date.now()<retryReadAt.current)return;
@@ -30,33 +32,35 @@ export default function SkyFreeCloudPanel(){
  },[refresh]);
  async function submit(){
   if(lock.current||!consent||!enabled||!prompt.trim())return;
-  lock.current=true;setBusy(true);setError('');id.current ||=crypto.randomUUID();setSelected(id.current);setSubmitted(true);
+  const firstAttempt=!id.current;lock.current=true;setBusy(true);setError('');id.current ||=crypto.randomUUID();setSelected(id.current);setSubmitted(true);
   try{
+   if(!model.current&&agent){model.current=agent.model;setSelection(`${agent.name} / ${agent.model} · 設定の版 ${agent.revision}`);}
    if(!model.current){
     const r=await fetch('/api/llm/select',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,allowCloud:true}),signal:AbortSignal.timeout(12000)});
     const d=await r.json() as {selection?:{provider:string;model:string;reason:string};error?:string};
     if(!r.ok||d.selection?.provider!=='pollinations')throw Error(d.error||'無料Cloudを選べません。');
     model.current=d.selection.model;setSelection(`pollinations / ${d.selection.model} — ${d.selection.reason}`);
    }
-   const r=await fetch('/api/llm/free-cloud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id.current,prompt,model:model.current,consent:true,autoContinue:true,background:true}),signal:AbortSignal.timeout(20000)});
-   const d=await r.json() as {error?:string};if(!r.ok)throw Error(d.error||'保存を確認できません。同じ依頼IDを保持します。');
+   const r=await fetch('/api/llm/free-cloud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id.current,prompt,provider:agent?.provider,agentId:agent?.id,agentRevision:agent?.revision,model:model.current,consent:true,autoContinue:true,background:true}),signal:AbortSignal.timeout(20000)});
+   const d=await r.json() as {error?:string;preSend?:boolean};if(!r.ok){if(firstAttempt&&d.preSend===true){id.current='';model.current='';setSubmitted(false);}throw Error(d.error||'保存を確認できません。同じ依頼IDを保持します。');}
    setSaved(true);await refresh();
   }catch(e){if(!model.current){setSubmitted(false);id.current='';}setError(e instanceof Error?e.message:'保存を確認できません。同じ依頼の確認を押してください。');}finally{lock.current=false;setBusy(false);}
  }
  async function cancel(job:Job){
   try{const r=await fetch('/api/llm/free-cloud/jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:job.id,action:'cancel'})});const d=await r.json() as {error?:string};if(!r.ok)throw Error(d.error);await refresh();}catch(e){setError(e instanceof Error?e.message:'停止を確認できません。');}
  }
- const job=jobs.find(j=>j.id===selected);
+ const visibleJobs=jobs.filter(j=>!profileId||j.agentBinding?.id===profileId);
+ const job=visibleJobs.find(j=>j.id===selected)??visibleJobs[0];
  const labels:Record<string,string>={queued:'サーバーの開始待ち',waiting:'無料枠の回復待ち',sending:'Cloud実行中',completed:'結果を保存済み',unconfirmed:'確認が必要・自動再送なし',cancelled:'停止済み'};
  const blockedReason=access==='checking'?'接続を確認しています…':access==='signin'?'ログインすると依頼できます。':!enabled?'このアカウントでは無料Cloudを利用できません。接続・契約状態を確認してください。':!prompt.trim()?'依頼したいことを入力してください。':!consent?'送信先と保存について確認し、同意してください。':'';
  return <section className={styles.panel} aria-label="Cloudへの依頼">
   <header><span className={styles.badge}>Sky Cloud · 無料Cloud / Sandbox</span><h1>何を手伝いましょうか？</h1><p>依頼に合う利用可能な無料モデルを自動で選びます。画面を閉じても続き、結果はここに保存されます。</p></header>
-  {access==='signin'&&<div className={styles.notice}><strong>続けるにはログインしてください</strong><p>この画面を残してログインできます。戻ったら「接続・結果を更新」を押してください。</p><a href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Ffree-cloud" target="_blank" rel="noreferrer">別タブでログイン</a></div>}
+  {access==='signin'&&<div className={styles.notice}><strong>続けるにはログインしてください</strong><p>この画面を残してログインできます。戻ったら「接続・結果を更新」を押してください。</p><a href="/account?returnTo=%2Fos%2Feve" target="_blank" rel="noreferrer">別タブでログイン</a></div>}
   <form onSubmit={event=>{event.preventDefault();void submit();}}>
    <label className={styles.label} htmlFor="sky-cloud-request">依頼したいこと</label>
    <textarea id="sky-cloud-request" className={styles.input} rows={6} maxLength={12000} placeholder="例：新しいサービスの紹介文を考えて。対象は初めて使う人で、200字程度。" value={prompt} disabled={busy||submitted} onChange={e=>setPrompt(e.target.value)} aria-describedby="sky-cloud-help"/>
-   <div className={styles.meta}><span>モデル：自動選択</span><span>{prompt.length.toLocaleString()} / 12,000文字</span></div>
-   <label className={styles.consent}><input type="checkbox" checked={consent} disabled={busy||submitted} onChange={e=>setConsent(e.target.checked)}/><span>依頼をアカウントに保存し、Pollinationsの匿名無料Cloudへ送信することに同意します。画面を閉じた後も自動続行します。秘密情報は入力しません。</span></label>
+   <div className={styles.meta}><span>モデル：{agent?agent.model:'自動選択'}</span><span>{prompt.length.toLocaleString()} / 12,000文字</span></div>
+   <label className={styles.consent}><input type="checkbox" checked={consent} disabled={busy||submitted} onChange={e=>setConsent(e.target.checked)}/><span>依頼をアカウントに保存し、Pollinationsの匿名無料Cloudへ送信することに同意します。画面を閉じた後も自動続行します。担当の役割もモデルへ送信します。秘密情報は入力しません。</span></label>
    <p id="sky-cloud-help" className={styles.help}>本番課金・有料モデルへの切り替えはありません。契約の利用枠切れ・未払い時は停止します。</p>
    <div className={styles.actions}><button className={styles.primary} type="submit" disabled={busy||!consent||!enabled||!prompt.trim()||saved}>{busy?'依頼を保存しています…':saved?'依頼を保存しました':submitted?'同じ依頼の保存を確認':'Cloudに依頼する'}</button>
     <button type="button" disabled={busy||(submitted&&!saved&&!job)} onClick={()=>{id.current='';model.current='';setSubmitted(false);setSaved(false);setPrompt('');setConsent(false);setError('');setSelection('');setSelected('');}}>新しい依頼を書く</button>
@@ -68,8 +72,8 @@ export default function SkyFreeCloudPanel(){
   {selection&&<details><summary>選ばれたモデル</summary><p>{selection}</p></details>}
   <h2>依頼と結果</h2>
   {jobs.length===0&&access==='ready'&&<p>まだ保存された依頼はありません。上の欄から始められます。</p>}
-  <ul className={styles.jobs}>{jobs.map(j=><li key={j.id}><button type="button" aria-pressed={selected===j.id} onClick={()=>setSelected(j.id)}><span>{new Date(j.createdAt).toLocaleString('ja-JP')} の依頼</span><strong>{labels[j.state]??j.state}</strong></button></li>)}</ul>
-  {job&&<article className={styles.result} aria-label="選択した依頼の結果"><h3>{labels[job.state]??job.state}</h3>
+  <ul className={styles.jobs}>{visibleJobs.map(j=><li key={j.id}><button type="button" aria-pressed={job?.id===j.id} onClick={()=>setSelected(j.id)}><span>{new Date(j.createdAt).toLocaleString('ja-JP')} の依頼</span><strong>{labels[j.state]??j.state}</strong></button></li>)}</ul>
+  {job&&<article className={styles.result} aria-label="選択した依頼の結果"><h3>{labels[job.state]??job.state}</h3>{job.agentBinding&&<p>担当設定の版 {job.agentBinding.revision} · 基盤モデル {job.model}</p>}
    {job.state==='queued'&&<p>サーバーが順番に開始します。ページを閉じても依頼は残ります。</p>}
    {job.state==='waiting'&&<output>無料枠まであと {Math.max(0,Math.ceil(((job.retryAt??now)-now)/1000))} 秒。その後のサーバー確認で自動続行します。</output>}
    {['queued','waiting'].includes(job.state)&&<button type="button" onClick={()=>{void cancel(job);}}>この依頼を停止する</button>}

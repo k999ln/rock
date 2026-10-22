@@ -23,7 +23,7 @@ export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Pr
 }
 
 export async function runFreeCloudText(input: {
-  db: DB; owner: string; id: string; prompt: string; model: string;
+  db: DB; owner: string; id: string; prompt: string; model: string; agentBinding?: {id:string;revision:number};
   consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number; autoContinue?: boolean; enqueue?: boolean; retryClock?: () => number;
 }) {
   if (!freeCloudEnabled(input.runtime, input.owner) || input.consent !== true)
@@ -31,7 +31,7 @@ export async function runFreeCloudText(input: {
   if (!/^[a-zA-Z0-9-]{1,100}$/.test(input.id) || !input.prompt.trim() || input.prompt.length > 12000)
     throw new WorkError('依頼の形式を確認してください。', 400);
   assertSafeOutbound({ prompt: input.prompt });
-  const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify({model:input.model,prompt:input.prompt})))), b=>b.toString(16).padStart(2,'0')).join('');
+  const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify({model:input.model,prompt:input.prompt,...(input.agentBinding?{agentBinding:input.agentBinding}:{})})))), b=>b.toString(16).padStart(2,'0')).join('');
   const store = workStore(input.db);
   const retryNow=input.retryClock ?? Date.now;
   const saved = await store.get(input.owner, input.id);
@@ -50,7 +50,7 @@ export async function runFreeCloudText(input: {
   const candidates = await discoverFreeCloudModels(fetcher);
   if (!candidates.some(m=>m.model===input.model)) throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
   const fresh = createWorkJob({id:input.id,templateId:'free-cloud-text',title:'無料Cloudの文章生成'});
-  fresh.freeCloud = { requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
+  fresh.freeCloud = { agentBinding:input.agentBinding,requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
   const created = saved ?? await store.create(input.owner,fresh);
   if (!created || created.freeCloud?.requestDigest!==digest) throw new WorkError('依頼IDが競合しています。',409);
   if(input.enqueue)return created;

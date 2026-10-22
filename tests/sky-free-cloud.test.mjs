@@ -136,3 +136,18 @@ void test('wake requires a fresh signature and fixed body',async()=>{
  const request=body=>new Request('https://example.test/api/llm/free-cloud/tick',{method:'POST',headers:{'x-sky-time':stamp,'x-sky-signature':sig},body});
  assert.equal(await verifyWake(request('{}'),key),true);assert.equal(await verifyWake(request('{"owner":"other"}'),key),false);assert.equal(await verifyWake(request('{}'),key,Number(stamp)+120001),false);assert.equal(await verifyWake(request('{}'),'wrong'),false);
 });
+
+void test('owner role survives queue, worker resume and same-id replay without changing execution rights',async t=>{
+ const db=setup(t),{skyAgentLibraryStore}=await import('../lib/sky-agent-library-store.ts');
+ const {freeCloudTextHttp}=await import('../lib/sky-free-cloud-http.ts');
+ const {backgroundJobs,tickBackground}=await import('../lib/sky-free-cloud-background.ts');
+ const profile=await skyAgentLibraryStore(db,'owner').save(crypto.randomUUID(),0,{name:'合成担当',instructions:'合成の依頼を短くまとめる',provider:'pollinations',model:'openai-fast',enabled:true},true);
+ const id=crypto.randomUUID(),runtime={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_BACKGROUND_ENABLED:'true'};let sends=0;
+ const fetcher=async(url,init)=>{if(url.endsWith('/models'))return catalog();sends++;assert.ok(JSON.parse(init.body).messages[0].content.includes(profile.instructions));return Response.json({id:'synthetic-profile',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Synthetic role result'}}],usage:{prompt_tokens:1,completion_tokens:1,total_tokens:2}});};
+ const body={id,prompt:'合成依頼',provider:profile.provider,model:profile.model,agentId:profile.id,agentRevision:profile.revision,consent:true,background:true};
+ const response=await freeCloudTextHttp(new Request('https://fixture.invalid/api/llm/free-cloud',{method:'POST',body:JSON.stringify(body)}),db,'owner',runtime,fetcher);assert.equal(response.status,202);assert.equal(sends,0);
+ const queued=await workStore(db).get('owner',id);assert.deepEqual(queued.freeCloud.agentBinding,{id:profile.id,revision:1});
+ await tickBackground(db,runtime,async()=>Date.now(),fetcher);const saved=await workStore(db).get('owner',id);assert.equal(saved.freeCloud.state,'completed');assert.equal(saved.status,'review');assert.equal(sends,1);
+ assert.deepEqual((await backgroundJobs(db,'owner'))[0].agentBinding,{id:profile.id,revision:1});assert.deepEqual(await backgroundJobs(db,'other-owner'),[]);
+ await tickBackground(db,runtime,async()=>Date.now(),fetcher);assert.equal(sends,1);
+});

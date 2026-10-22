@@ -586,6 +586,7 @@ export async function generateText(
   fetchImpl: FetchLike = fetch,
   onProgress?: OpenAiOutputProgress,
 ): Promise<TextGenerationResult> {
+  if(request.provider==='pollinations')throw new LlmProviderError('FREE_CLOUD_SERVICE_REQUIRED',503);
   const startedAt = Date.now();
   // Edge Workers support manual redirects. Never forward provider credentials.
   const guardedFetch: FetchLike = (input, init) =>

@@ -839,3 +839,12 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 9. **復旧**: 同じprofileは起動時に本人が解除し、確認済みowner/deviceでjournalを開く。既存の同じjob/hashを照合する。画面の再読で再推論しない。生体vault、同user process侵害、鍵全損・常時自律稼働は未受入。
 10. **承認/合格**: API/selector/storage fixture、実Workerと同一build、公開本人UI、新Mac grant/推論、新Pixel ABI、独立Securityを別受入にする。Macモデルの既存逐語copy不一致は未合格のまま。
 11. **未決定/次**: 保護storageを使うhost設定・起動導線を完成させ、具体的な新hostだけ本人に最終承認してもらう。旧Pixel24件を再実行しない。証拠は[host UI](evidence/rockstar-runtime-host-ui.json)。
+
+### 公開入口の責務と担当設定の接続（2026-10-22、WEB04/HOME01/SKY21）
+
+- **目的・体験**: `/#catalog`はホーム上の検索・追加ダイアログとして開き、閉じると同じタイムラインに戻る。既存URLと検索/分類/追加を保つ。`/sky/agents`を引用Toolへ転送せず、自分の担当・LLM・設定の一覧へ接続する。引用Tool本体と既存仕事は保持する。
+- **責任・入力・出力**: 既存owner別`sky_agent_settings`とCASを再利用。設定保存は実行/購入/権限付与を開始しない。Eveへ担当ID/版を渡し、本人・enabled・現在版・provider/modelをサーバーで照合する。Free Cloudでは役割を非信頼のモデル入力にし、仕事のdigestと`agentBinding`に版を固定する。Tool receipt・本人承認には昇格させない。
+- **状態・保存**: 設定済み、接続未確認、実行先未接続、queued/waiting/completed/unconfirmedを区別。同じEveから無料Cloudの既存owner別仕事を読む。結果がモデル応答を得てもworkflowはreview。端末内の固定recipeとは別の設定であり、独自ローカル役割をPixelへ配布したとは表示しない。
+- **失敗・復旧・承認**: stale版/別owner/停止/違うLLMは送信前に拒否。再送には同じIDを使い、曖昧な送信を自動再実行しない。無料Cloudは既存の明示同意と利用枠を通し、有料fallbackはない。受理済み仕事の版は固定し、停止はEveの個別停止で確認する。設定/仕事のデータは削除しない。
+- **合格条件・範囲**: owner/CAS/モデル/役割、queue再開と再読込みでの版保持、1回の送信・review維持を合成試験する。公開画面の同一owner保存と再表示は別に確認する。新しい実推論は0件で開始し、PixelのCloud仕事統合、任意ローカル役割、他の有料Providerと本番請求の合格には転用しない。
+- **未決条件**: Source v108の金融回帰試験9件は、今回の変更を外した同一Sourceに修正済み合成DB初期化を適用しても同じ9件が失敗した。本番金融/一般公開合格にはせず、CORE09で原因と台帳/枠/照合の証拠を修復する。Source-only無料Cloud backendとRootの統合も独立した未完了項目。

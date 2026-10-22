@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import SkySocialTimeline from './sky-social-timeline';
 import SkyDiscoveryFeed from './sky-discovery-feed';
+import SkyDiscoveryDialog from './sky-discovery-dialog';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
 import {
   useTimelineConnector,
@@ -257,14 +258,10 @@ export default function HomeScreen() {
               </div>
             </OSHeader>
           </div>
-          {view === 'discover' ? (
-            <SkyDiscoveryFeed
-              key={`${featureOnly ? 'features' : 'discover'}:${searchQuery}`}
-              query={searchQuery}
-              initialFilter={featureOnly ? 'features' : 'all'}
-              standalone
-            />
-          ) : view === 'sources' ? (
+          <SkyDiscoveryDialog open={view==='discover'} onClose={()=>{window.location.hash='timeline';setView('home');}}>
+            <SkyDiscoveryFeed key={`${featureOnly?'features':'discover'}:${searchQuery}`} query={searchQuery} initialFilter={featureOnly?'features':'all'} standalone />
+          </SkyDiscoveryDialog>
+          {view === 'sources' ? (
             <section className={styles.sources}>
               <header className={styles.pageTitle}>
                 <h1>配信元をつなぐ</h1>
@@ -279,9 +276,9 @@ export default function HomeScreen() {
             </section>
           ) : (
             <SkySocialTimeline
-              key={view}
+              key={view==='discover'?'home':view}
               fullHome
-              initialView={view}
+              initialView={view==='discover'?'home':view}
               discovery={<SkyDiscoveryFeed />}
               externalFeed={
                 <>

@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import SkyAgentEveProfile,{useSkyAgentProfileRequested} from './sky-agent-eve-profile';
+import SkyFreeCloudPanel from './sky-free-cloud-panel';
 import type { EveHistoryItem } from '@/lib/eve-history';
 import type { EveDeviceJob } from '@/lib/eve-device-sync';
 import type {
@@ -54,6 +56,8 @@ export default function EveSyncWorkspace({
   initialThreadId?: string;
   initialSelection?: SkyEveSelection;
 }) {
+  const profileRequested=useSkyAgentProfileRequested();
+  const [cloudHistoryOpen,setCloudHistoryOpen]=useState(false);
   const [pinnedSelection, setPinnedSelection] = useState(initialSelection);
   const [threads, setThreads] = useState<EveHistoryItem[]>([]),
     [selected, setSelected] = useState(initialThreadId),
@@ -529,6 +533,8 @@ export default function EveSyncWorkspace({
           <Link href="/os/sky">Skyで能力を追加</Link>
         </aside>
         <section className={styles.desk}>
+          {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner}/>}
+          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
           <header>
             <div>
               <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
@@ -690,7 +696,7 @@ export default function EveSyncWorkspace({
               {runtimeNotice && (
                 <output className={styles.notice}>{runtimeNotice}</output>
               )}
-              <section className={styles.composer} aria-label="Eveへ依頼">
+              <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
                 <div className={styles.modelIdentity} aria-label="使用するLLM">
                   <div>
                     <span>使用するLLM</span>
