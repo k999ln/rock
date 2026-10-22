@@ -800,3 +800,6 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 9. **承認**: 実装は既存承認を使う。新しい鍵の最終登録や別ownerへの権限付与は本人が実機で確認する。登録を本番課金・機微情報保管・全OS/全hardware合格の承認へ拡張しない。
 10. **合格条件**: ChatGPT sessionなしの新規登録と再login、二owner分離、Sky設定→Eve→実Pixel→Webの同一成果、継続/失効/再送/復旧、旧22件とモデル2/Agent6の保全を同一候補で記録する。host/公開/実機/本番は別々に扱う。
 11. **残作業の決め方**: [共通Coreの開発プロンプト](prompts/rockstaros-common-core-development.md)のCORE01〜12を既存RQ/taskと照合し、本人認証と実機一周を先に受け入れる。Mini/Pro/MCUは実在能力と個別driver/安全/更新復旧で追加する。料金未確定値や未知のhardware能力を作らない。
+
+
+**LLMの表示（2026-10-21明示指示）**: 使用LLMはEveと表示し、担当選択は役割名だけ、基盤モデルは選択した端末のmodel inventoryとagent.modelIdから読取り表示、実行先は別selectとする。新しい推論IDや架空のEve重みを作らず既存deviceId/agentId/jobの入力・状態・保存・承認を使用する。基盤が不明ならmodelIdまたは未選択を表示し、別モデルで穴埋めしない。Eve専用の学習重み未作成を説明欄に表示。失敗/復旧は既存の再接続・同一ID再試行に従う。合格条件はEve名の表示、担当切替に伴う実基盤表示の一致、未接続の空状態、既存履歴/権限/入力不変、公開同一source readback。UIの変更を追加学習・実推論合格へ換算しない。

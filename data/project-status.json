@@ -1,4 +1,24 @@
 {
+  "eveModelIdentityAndTraining": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "implementing_display_training_not_started",
+    "authority": "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+    "trainingRequirements": "docs/llm-evaluation-architecture.md#eve-training-prerequisites",
+    "source": [
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css"
+    ],
+    "modelWeightsCreated": false,
+    "trainingStarted": false,
+    "publicDeployment": null
+  },
   "skyCloudRequestUi":{"status":"public_v73_ui_and_real_response_verified","evidence":"docs/evidence/sky-cloud-request-ui.json","productionBilling":false},
   "skyPostMergeMultiDevice":{"evidence":"docs/evidence/sky-postmerge-multidevice.json","status":"physical_test_deferred_frontend_usability_feedback","main":"cf01d289daf783f11deb04a0cbd577ecc1a65302","siteVersion":72,"devicesDetected":["Mac","Pixel 10"],"physicalConcurrentAccepted":false,"productionBilling":false},
   "skyConcurrentSandbox":{"status":"two_tab_safety_verified_one_provider_402_stop","evidence":"docs/evidence/sky-concurrent-sandbox.json","siteVersion":72,"productionBilling":false},

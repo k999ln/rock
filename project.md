@@ -1,3 +1,7 @@
+## Eve表示の整理（2026-10-21・WEB04/OS10/AI02）
+
+使用LLMをEveとして表示し、担当/実基盤model/実行先を分ける。専用重み未作成を明示。APIや実行の承認、保存データを変更しない。ML開始要件を既存LLM設計へ追加。公開v99を基底に検証・配備する。
+
 # Cloud依頼フォームの改善
 
 2026-10-18 SKY07/ROCK: 本人指摘に対応しCloud依頼欄を主画面へ移動、空入力・ログイン導線・送信不可理由・保存確認・日時履歴・回答表示を整理。Sandbox管理操作は折りたたみへ。既存API/台帳/CAS/予算を維持。公開v73/source226a995bへ配備。空入力/同意/未ログインChrome/390px幅のUI確認、実accountの依頼6b314560は自動選択→gpt-oss-20b→回答保存、送信1回・334/1331 tokens・$0。全文の内容正確性は未評価。全体verify exit0。証拠 docs/evidence/sky-cloud-request-ui.json。GitHub main統合は別。本番課金なし。
