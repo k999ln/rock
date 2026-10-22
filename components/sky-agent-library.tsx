@@ -84,7 +84,7 @@ export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntim
       const result = await response.json() as { agent?: SkyLibraryAgent; error?: string };
       if (!response.ok || !result.agent) throw new Error(result.error || '保存できませんでした。入力は残っています。');
       const saved = result.agent;
-      setAgents(current => [saved, ...current.filter(a => a.id !== saved.id)]); open(saved); setNotice('設定を保存しました。Eveへ渡せます。');
+      setAgents(current => [saved, ...current.filter(a => a.id !== saved.id)]); open(saved); setNotice(value.enabled?'設定を保存しました。Eveへ渡せます。':'設定を保存しました。この担当の新しい依頼は停止中です。');
     } catch (e) { setError(e instanceof Error ? e.message : '保存できませんでした。入力は残っています。'); }
     finally { setBusy(false); }
   };
@@ -124,7 +124,7 @@ export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntim
           {loading && <p aria-live="polite">追加済みの担当を読み込んでいます…</p>}
           {!loading && !signedOut && !visible.length && <div className={styles.empty}><Bot size={32} strokeWidth={1.4} /><h3>{query ? '一致する担当がありません' : '最初のエージェントを作ろう。'}</h3><p>{query ? '名前やモデルを変えて検索してください。' : '用途を選ぶところから始められます。接続済みToolの担当もここに並びます。'}</p></div>}
           <div className={styles.list}>{visible.map(agent => <button key={agent.id} className={styles.agent} aria-pressed={selected?.id === agent.id} disabled={busy || dirty} onClick={() => open(agent)}>
-            <span className={styles.avatar}><Bot size={22} /></span><span className={styles.agentCopy}><strong>{agent.name}</strong><small>{agent.model}</small><span>{agent.source === 'personal' ? '自分の文章担当' : 'Skyで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</span></span><ChevronRight size={16} />
+            <span className={styles.avatar}><Bot size={22} /></span><span className={styles.agentCopy}><strong>{agent.name}</strong><small>{agent.model}</small><span>{agent.source === 'personal' ? '自分の担当' : 'Skyで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</span></span><ChevronRight size={16} />
           </button>)}</div>
           <p className={styles.boundary}>ここにはSkyに保存した担当が並びます。接続した端末の担当は下で確認できます。接続先の稼働と費用は、Eveで依頼する前に確認します。</p>
         </section>
