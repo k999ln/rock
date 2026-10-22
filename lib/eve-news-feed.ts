@@ -107,3 +107,24 @@ export function parseGdeltArticles(input: unknown): EveNewsLink[] {
   }
   return result;
 }
+
+/** Recovery selection only: headline words are not an article accuracy judgement. */
+export function cachedNewsForTopic(articles: EveNewsLink[], topic: string) {
+  const patterns: Record<string, RegExp> = {
+    technology:
+      /\b(technology|software|robot|ai|quantum|data center|hardware|model|cyber|digital)\b/i,
+    world:
+      /\b(politic|government|election|senator|minister|president|war|diploma|parliament)/i,
+    business:
+      /\b(business|econom|market|trade|accountan|invest|finance|compan|industr|price|bank)/i,
+    science:
+      /\b(science|scientific|research|clinical|cancer|drug|space|physics|biolog|medical|quantum)/i,
+    games:
+      /\b(gaming|videogame|game|games|esports|nintendo|playstation|xbox|bioware)/i,
+  };
+  return topic === 'all'
+    ? articles
+    : Object.hasOwn(patterns, topic)
+      ? articles.filter((article) => patterns[topic].test(article.title))
+      : [];
+}

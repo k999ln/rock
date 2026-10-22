@@ -16,7 +16,12 @@ export type ContinuousItem = FeedCandidate &
     | { kind: 'post'; post: SkySocialPost }
     | { kind: 'news'; article: EveNewsLink; stale: boolean }
   );
-type NewsFeed = { articles: EveNewsLink[]; fetchedAt: string; stale: boolean };
+type NewsFeed = {
+  selection?: string;
+  articles: EveNewsLink[];
+  fetchedAt: string;
+  stale: boolean;
+};
 export function useSkyContinuousFeed(
   posts: SkySocialPost[],
   scope: string,
@@ -269,6 +274,7 @@ export function useSkyContinuousFeed(
           ]),
         ].slice(0, 24),
       })),
+    selection: news?.selection,
     newsLoading,
     newsError,
     fetchedAt: news?.fetchedAt,

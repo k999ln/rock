@@ -5,6 +5,7 @@ import {
   EVE_NEWS_TOPICS,
   gdeltNewsUrl,
   parseGdeltArticles,
+  cachedNewsForTopic,
   type EveNewsLink,
 } from '@/lib/eve-news-feed';
 import seed from '@/data/eve-news-seed-20261021.json';
@@ -98,13 +99,21 @@ export async function GET(request?: Request) {
         { headers: { 'Cache-Control': 'public, s-maxage=60' } },
       );
     }
-    const fallback = topic === 'all' ? liveSeed : seed;
+    const fallback = !topic || topic === 'world' ? seed : liveSeed;
+    const articles = !topic
+      ? fallback.articles
+      : cachedNewsForTopic(fallback.articles, topic);
     if (
-      (!topic || topic === 'world' || topic === 'all') &&
+      articles.length &&
       now - Date.parse(fallback.fetchedAt) < 24 * 60 * 60_000
     ) {
       return NextResponse.json(
-        { ...fallback, stale: true },
+        {
+          ...fallback,
+          articles,
+          stale: true,
+          selection: topic && topic !== 'all' ? 'headline-keywords' : 'all',
+        },
         { headers: { 'Cache-Control': 'public, s-maxage=60' } },
       );
     }

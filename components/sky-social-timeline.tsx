@@ -1059,7 +1059,9 @@ export default function SkySocialTimeline({
           )}
           {continuous.stale && (
             <output className={styles.feedStatus}>
-              ニュースは前回取得分を表示しています。
+              {continuous.selection === 'headline-keywords'
+                ? '接続待ちのため、前回のニュースを見出しの言葉で絞り込んでいます。'
+                : 'ニュースは前回取得分を表示しています。'}
             </output>
           )}
           {continuous.newsLoading && !continuous.items.length && (

@@ -1371,7 +1371,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 4. **入力**: 既存social APIの閲覧許可済み投稿、follow/community、loaded投稿のlike/bookmark、画面内で選択したnewsの語、GDELT固定6query。会話/生体情報をrankingへ送らない。
 5. **出力**: native投稿/原文headline、媒体/検出時刻/前回分表示。外部本文の転載や自動LLM生成による投稿補充を行わない。Eve handoffは原文URLと題名を既存入口へ渡す。
 6. **状態**: 初回/追加読込/live/一時停止/新着待機/通信待ち/前回取得/読み終わり。表示済みの順序を保ち、new headは本人操作で挿入。1画面200件を上限に再開入口を提示する。
-7. **保存**: posts/reactions/followは既存owner DB。追加のクリック話題は画面memoryのみ、owner変更では使わない。news共有cacheはquery別15分、同時取得を合流。cold fallbackは日時付き実取得見出しを24時間だけ前回分と表示。新DB migrationなし。
+7. **保存**: posts/reactions/followは既存owner DB。追加のクリック話題は画面memoryのみ、owner変更では使わない。news共有cacheはquery別15分、同時取得を合流。cold fallbackは日時付き実取得見出しを24時間だけ前回分と表示。話題別取得が失敗した場合は保存済み見出しの語で絞り込み、その旨を表示する。新DB migrationなし。
 8. **アルゴリズム**: freshness=14/(1+ageHours/6)、語一致=6×一致語数（最大18）、follow=8、community=5。直近6件で同じsourceごと8減点。5件目ごとfreshness中心で探索。candidate keyでdedupe。serverはfollow/communityに72時間のrecency bucketを加え、cursorにreference時刻を固定。rankingは許可を付与しない。
 9. **失敗/復旧**: visible時social25秒、news60秒（cache15分）の確認。非表示/offlineでは取得を止め、50/100/120秒へbackoff。旧項目は消さずnew候補へ追加。private投稿最大200 IDを既存account/key境界で再確認し、削除/失効を表示から除く。通信断で判定済みにしない。取得可能データの終端を表示し同一記事を無限再掲しない。
 10. **承認**: 自動閲覧更新のみ。source追加、外部投稿、実行/課金、端末grantの既存承認境界を保つ。新規費用/credentialなし。GDELT検出は真偽判定ではない。
