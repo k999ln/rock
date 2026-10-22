@@ -2,7 +2,9 @@
 
 Agent Smithの本人用共通基盤は[全Tool詳細](../sky-tools-complete-design.md#sky-agent-smith--自分用agentをaddして仕事を扱う)を参照。主担当ROCK、外部host受入はJOINT、OS/host許可・保存・外部作用の選択はOWNER。`sky.private-agent/1`の作成/編集/失効、owner別Add版・digest、Zema成果CAS、本人読戻しをPlannerと手入力メモで検証中。Zoomは任意のadapter候補で、macOS Swiftは送信を持たない下書きprobe、実Zoom/同じjob/署名済みBroker leaseは未受入。検証入口: `node --experimental-strip-types --test tests/sky-private-agent*.test.mjs`、`npm run schema:check`、`npm run typecheck`、`npm run design:check`、`npm run verify`。
 
-2026-10-22本人提示画像でAgent Smithの参照像を映画『マトリックス』の複数個体と確認。AS06は同一Agentの2体をメモ/Plannerへ本人が配置し、一つの親jobで引継ぎ・統合成果・個別/一括停止・再訪読戻しを行う未実装の次段階。現行の単独job2件をAS06合格にしない。ROCKが共通契約を実装し、外部hostはJOINT、配置・権限・費用はOWNERが選ぶ。
+2026-10-22本人提示画像でAgent Smithの参照像を映画『マトリックス』の複数個体と確認。AS06は同一Agentの2体をメモ/Plannerへ本人が配置し、一つの親jobで引継ぎ・統合成果・個別/一括停止・再訪読戻しを行う未実装の後続案。現行の単独job2件をAS06合格にしない。ROCKが共通契約を実装し、外部hostはJOINT、配置・権限・費用はOWNERが選ぶ。
+
+同日追加明確化: 次の実行優先はAS07の**本人が許可した仮想avatar間の同一Agent移動**。二つの仮想roomを使い、host受入、文脈引継ぎ、旧avatar停止、別owner拒否、中断復旧を実browserと同一job/revisionで検証する。AS06の同時2体は別の後続能力。AS08の音・空間・社会的影響は一次資料に基づく、本人参加/退出可能な支援体験の研究に限定し、標的化や意思の乗っ取りを設計しない。ROCK主担当、実hostはJOINT、対象・権限・費用はOWNER。検証入口は`npm run design:check`、`npm run baseline:check`、`npm run verify`。
 
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](../sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。 主担当ROCK、host接続はJOINT、導入/送信/外部作用/予算の選択はOWNER。既存package/SDK/registry/Connection Passportを再利用し、独立2作者の追加/交換・別host・更新/失効/取消を未実行の合格条件として持つ。検証入口は `npm run baseline:check`、`npm run design:check`、`npm run llm:architecture:check`、`npm run verify`。
 
