@@ -151,3 +151,10 @@ void test('owner role survives queue, worker resume and same-id replay without c
  assert.deepEqual((await backgroundJobs(db,'owner'))[0].agentBinding,{id:profile.id,revision:1});assert.deepEqual(await backgroundJobs(db,'other-owner'),[]);
  await tickBackground(db,runtime,async()=>Date.now(),fetcher);assert.equal(sends,1);
 });
+
+void test('new unsupported model reports pre-send refusal and never creates or dispatches a job',async t=>{
+ const db=setup(t),{freeCloudTextHttp}=await import('../lib/sky-free-cloud-http.ts');let sends=0;
+ const request=new Request('https://fixture.invalid/api/llm/free-cloud',{method:'POST',body:JSON.stringify({id:crypto.randomUUID(),model:'not-in-free-catalog',prompt:'Synthetic',consent:true})});
+ const response=await freeCloudTextHttp(request,db,'owner',{SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner'},async(url)=>{if(url.endsWith('/models'))return catalog();sends++;throw Error('must not send');});
+ assert.equal(response.status,409);assert.equal((await response.json()).preSend,true);assert.equal(sends,0);assert.deepEqual(await workStore(db).list('owner'),[]);
+});

@@ -1,6 +1,6 @@
 import {bindSkyAgentFreeCloud} from './sky-agent-free-cloud.ts';
 import {SkyAgentLibraryError} from './sky-agent-library.ts';
-import { runFreeCloudText, type FreeCloudRuntime } from './sky-free-cloud.ts';
+import { runFreeCloudText, FreeCloudPreSendError, type FreeCloudRuntime } from './sky-free-cloud.ts';
 import {backgroundEnabled} from './sky-free-cloud-background.ts';
 import { WorkError } from './workflow.ts';
 export async function freeCloudTextHttp(request: Request, db: Pick<D1Database,'prepare'|'batch'>, owner: string, runtime: FreeCloudRuntime, fetcher?: typeof fetch, clock?: () => number) {
@@ -19,5 +19,5 @@ export async function freeCloudTextHttp(request: Request, db: Pick<D1Database,'p
     if(record?.state!=='completed') return Response.json({error:record?.error || '実行中または結果未確認です。同じ依頼を再送しません。',id:job.id,state:record?.state},{status:409,headers});
     return Response.json({id:job.id,text:record.text,model:record.model,reportedModel:record.reportedModel,providerResponseId:record.providerResponseId,attempts:record.attempts,
       usage:{inputTokens:record.inputTokens,outputTokens:record.outputTokens,chargeMinor:0,currency:'USD',basis:'anonymous-classic-free-tier'}},{headers});
-  }catch(error){return Response.json({preSend:error instanceof SkyAgentLibraryError,error:(error instanceof WorkError || error instanceof SkyAgentLibraryError)?error.message:'無料Cloudの結果を確認できません。'},{status:(error instanceof WorkError || error instanceof SkyAgentLibraryError)?error.status:400,headers});}
+  }catch(error){return Response.json({preSend:error instanceof SkyAgentLibraryError || error instanceof FreeCloudPreSendError,error:(error instanceof WorkError || error instanceof SkyAgentLibraryError)?error.message:'無料Cloudの結果を確認できません。'},{status:(error instanceof WorkError || error instanceof SkyAgentLibraryError)?error.status:400,headers});}
 }

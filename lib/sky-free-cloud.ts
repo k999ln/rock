@@ -6,6 +6,7 @@ import type { ModelCandidate } from './sky-model-routing.ts';
 
 const ORIGIN = 'https://text.pollinations.ai';
 export const CLASSIC_FREE_SOURCE = 'https://raw.githubusercontent.com/pollinations/pollinations/master/APIDOCS.md';
+export class FreeCloudPreSendError extends WorkError {}
 export type FreeCloudRuntime = { SKY_FREE_CLOUD_ENABLED?: string; SKY_FREE_CLOUD_OWNER_ID?: string };
 type DB = Pick<D1Database, 'prepare' | 'batch'>;
 export function freeCloudEnabled(runtime: FreeCloudRuntime, owner: string) {
@@ -48,7 +49,10 @@ export async function runFreeCloudText(input: {
   if (plan.reason !== 'available') throw new WorkError(`Skyプランで停止しています: ${plan.reason}`,403);
   const fetcher = input.fetcher ?? fetch;
   const candidates = await discoverFreeCloudModels(fetcher);
-  if (!candidates.some(m=>m.model===input.model)) throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
+  if (!candidates.some(m=>m.model===input.model)) {
+    if(!saved)throw new FreeCloudPreSendError('選択モデルは現在の無料対象ではありません。',409);
+    throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
+  }
   const fresh = createWorkJob({id:input.id,templateId:'free-cloud-text',title:'無料Cloudの文章生成'});
   fresh.freeCloud = { agentBinding:input.agentBinding,requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
   const created = saved ?? await store.create(input.owner,fresh);

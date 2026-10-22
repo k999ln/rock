@@ -1,6 +1,7 @@
 'use client';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import styles from './sky-free-cloud-panel.module.css';
+import {SkyNotice} from './sky-feedback';
 import type {SkyLibraryAgent} from '@/lib/sky-agent-library';
 type Job={agentBinding?:{id:string;revision:number};id:string;createdAt:string;state:string;model:string;retryAt?:number;retryDeadline?:number;attempts:number;text?:string;reportedModel?:string;providerResponseId?:string;inputTokens?:number;outputTokens?:number;chargeMinor?:number;error?:string};
 export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
@@ -68,18 +69,18 @@ export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
    {!submitted&&blockedReason&&<output className={styles.help}>{blockedReason}</output>}
   </form>
   {submitted&&<output>{saved?'依頼を保存しました。開始まで通常約1分かかります。':'保存を確認しています。通信が途切れた場合も同じ依頼として確認します。'}</output>}
-  {error&&<p role="alert" className={styles.notice}>{error}</p>}{readError&&access!=='signin'&&<p role="alert" className={styles.notice}>{readError}</p>}
+  {error&&<SkyNotice className={styles.notice} message={error}/>}{readError&&access!=='signin'&&<SkyNotice className={styles.notice} message={readError}/>}
   {selection&&<details><summary>選ばれたモデル</summary><p>{selection}</p></details>}
   <h2>依頼と結果</h2>
-  {jobs.length===0&&access==='ready'&&<p>まだ保存された依頼はありません。上の欄から始められます。</p>}
+  {visibleJobs.length===0&&access==='ready'&&<p>まだ保存された依頼はありません。上の欄から始められます。</p>}
   <ul className={styles.jobs}>{visibleJobs.map(j=><li key={j.id}><button type="button" aria-pressed={job?.id===j.id} onClick={()=>setSelected(j.id)}><span>{new Date(j.createdAt).toLocaleString('ja-JP')} の依頼</span><strong>{labels[j.state]??j.state}</strong></button></li>)}</ul>
   {job&&<article className={styles.result} aria-label="選択した依頼の結果"><h3>{labels[job.state]??job.state}</h3>{job.agentBinding&&<p>担当設定の版 {job.agentBinding.revision} · 基盤モデル {job.model}</p>}
    {job.state==='queued'&&<p>サーバーが順番に開始します。ページを閉じても依頼は残ります。</p>}
    {job.state==='waiting'&&<output>無料枠まであと {Math.max(0,Math.ceil(((job.retryAt??now)-now)/1000))} 秒。その後のサーバー確認で自動続行します。</output>}
    {['queued','waiting'].includes(job.state)&&<button type="button" onClick={()=>{void cancel(job);}}>この依頼を停止する</button>}
-   {job.error&&<p>{job.error}</p>}
-   {job.text&&<><h3>回答</h3><p className={styles.answer}>{job.text}</p><p>使用額：${((job.chargeMinor??0)/100).toFixed(2)} · モデル：{job.reportedModel}</p></>}
-   <details><summary>依頼の詳細</summary><p>依頼ID：{job.id}</p><p>送信試行：{job.attempts} 回（生成前の待機拒否を含む）</p><p>入力 {job.inputTokens??0} / 出力 {job.outputTokens??0} tokens</p>{job.providerResponseId&&<p>応答参照：{job.providerResponseId}</p>}</details>
+   {job.error&&<SkyNotice message={job.error}/>}
+   {job.text&&<><h3>回答</h3><p className={styles.answer}>{job.text}</p><p>使用額：{job.chargeMinor===undefined?'未確定':`$${(job.chargeMinor/100).toFixed(2)}`} · モデル：{job.reportedModel}</p></>}
+   <details><summary>依頼の詳細</summary><p>依頼ID：{job.id}</p><p>送信試行：{job.attempts} 回（生成前の待機拒否を含む）</p><p>入力 {job.inputTokens??'未報告'} / 出力 {job.outputTokens??'未報告'} tokens</p>{job.providerResponseId&&<p>応答参照：{job.providerResponseId}</p>}</details>
   </article>}
  </section>;
 }

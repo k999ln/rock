@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from 'react';
 import Link from 'next/link';
+import {SkyNotice} from './sky-feedback';
 import {useSearchParams} from 'next/navigation';
 import type {SkyLibraryAgent} from '@/lib/sky-agent-library';
 import SkyFreeCloudPanel from './sky-free-cloud-panel';
@@ -26,7 +27,7 @@ export default function SkyAgentEveProfile(){
  const state=loaded?.key===key?loaded:null,agent=state?.agent;
  return <section aria-label="Skyから選んだ担当"><h2>{agent?.name??'選んだ担当を確認'}</h2>
  <Link href="/sky/agents">Skyで担当・LLMを管理</Link>{!state&&<output aria-live="polite">設定を読み込んでいます…</output>}
- {state?.error&&<p role="alert">{state.error}</p>}{agent&&<><p>基盤モデル：{agent.model} · 設定の版 {agent.revision}</p>
+ {state?.error&&<SkyNotice message={state.error}/>}{agent&&<><p>基盤モデル：{agent.model} · 設定の版 {agent.revision}</p>
  <p>担当の役割は依頼を整理するための設定です。Toolの実行権限・支払いの承認は追加されません。</p>
  {agent.sourceTool&&<p>Tool本体の操作は別に権限を確認します。<Link href={`/os/eve?mode=tools&tool=${encodeURIComponent(agent.sourceTool)}`}>接続済みToolを使う（この担当のLLM設定は適用されません）</Link></p>}
  {agent.provider==='pollinations'?<SkyFreeCloudPanel key={key} agent={agent}/>:<output aria-live="polite">この担当設定を使うモデルの実行先はまだ接続されていません。<Link href="/sky/devices">接続した端末の担当を選ぶ</Link>と、その端末に登録された設定でEveを使えます。</output>}</>}
