@@ -510,13 +510,13 @@
       }
     ]
   },
-  "version": "2.08",
-  "decidedAt": "2026-10-15",
+  "version": "2.09",
+  "decidedAt": "2026-10-22",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/evidence/service-design-rebuild.json",
-  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "nextPrompt": "docs/prompts/rockstaros-common-core-development.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/service-design/06-consistency-contracts.md",
   "amcGoalOrchestration": {
@@ -1177,7 +1177,7 @@
   ],
   "homeExperience": {
     "defaultRoute": "/",
-    "skyRoute": "/sky",
+    "skyRoute": "/",
     "returnPolicy": "os_routes_return_to_os_home_public_routes_return_to_product_home",
     "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
     "smartphoneLayout": {
@@ -1190,7 +1190,7 @@
       "minimumPrimaryTouchTargetPx": 44,
       "pageHorizontalOverflow": "forbidden"
     },
-    "visualBasis": "iphone_inspired_app_launcher",
+    "visualBasis": "native_post_information_marketplace_shared_os_frame",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": [
@@ -1216,7 +1216,8 @@
       "sanitized_diagnostic_export",
       "allowlisted_device_reset",
       "release_readiness"
-    ]
+    ],
+    "legacySkyRoute": "/sky"
   },
   "launchPage": {
     "domainSeparation": {
@@ -1259,7 +1260,7 @@
     ],
     "background": "near_black",
     "productHomeAppearance": "light_scroll_product_showcase",
-    "accent": "ice_blue",
+    "accent": "forest_green_bronze",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",
@@ -1282,7 +1283,8 @@
       "mobile_header_overflow"
     ],
     "businessFunctionalityChanged": false,
-    "interactionFunctionalityImproved": true
+    "interactionFunctionalityImproved": true,
+    "previousAccent": "ice_blue"
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -1488,8 +1490,7 @@
     "RQ46",
     "RQ47",
     "RQ48",
-    "RQ49",
-    "RQ50"
+    "RQ49"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -3051,5 +3052,20 @@
       "avocadoPro",
       "/rockstaros/guide"
     ]
-  }
+  },
+  "sourceCompatibilityExtensions": {
+    "canonicalAuthority": "Owner master prompt dated 2026-10-22; Root RQ01-RQ49",
+    "canonicalRequirementCount": 49,
+    "retained": [
+      {
+        "formerRequirementId": "RQ50",
+        "feature": "Sky Compute Grid",
+        "contract": "skyComputeGrid",
+        "status": "retained_source_extension_not_deleted_or_promoted_to_public_acceptance",
+        "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf"
+      }
+    ],
+    "financialHoldsPreserved": true
+  },
+  "previousNextPrompt": "docs/prompts/rock-current-next-20261002.md"
 }

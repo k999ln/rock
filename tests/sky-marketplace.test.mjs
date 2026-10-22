@@ -129,8 +129,10 @@ void test('third-party marketplace entries come only from the verified public Re
 });
 
 void test('Sky Market treats LLMs as MCP-routable marketplace entries', () => {
-  assert.equal(skyAiMarketplaceEntries.length, 7);
-  assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'pollinations'));
+  assert.deepEqual(skyAiMarketplaceEntries.map(entry => entry.id),
+    ['local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible']);
+  // Dedicated free Cloud does not implement this generic MCP generation route.
+  assert.ok(!skyAiMarketplaceEntries.some((entry) => entry.id === 'pollinations'));
   assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'local-model'));
   assert.ok(skyAiMarketplaceEntries.every((entry) => entry.mcpRoute.includes('MCP')));
   assert.match(marketplace, /LLM・siモデル/);

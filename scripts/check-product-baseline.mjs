@@ -38,12 +38,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 50 },
+    { length: 49 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ50の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ49の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -51,6 +51,19 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  requireValue(
+    data.nextPrompt === 'docs/prompts/rockstaros-common-core-development.md' &&
+      documents.nextPrompt.includes('CORE01〜CORE12') && documents.nextPrompt.includes('RQ01〜RQ49'),
+    '現行の全体開発マスターを次回入口へ保持してください',
+  );
+  const sourceExtensions = data.sourceCompatibilityExtensions;
+  requireValue(
+    sourceExtensions?.canonicalRequirementCount === 49 && sourceExtensions?.financialHoldsPreserved === true &&
+      sourceExtensions.retained?.length === 1 && sourceExtensions.retained[0].formerRequirementId === 'RQ50' &&
+      sourceExtensions.retained[0].feature === 'Sky Compute Grid' && sourceExtensions.retained[0].contract === 'skyComputeGrid' &&
+      sourceExtensions.retained[0].status === 'retained_source_extension_not_deleted_or_promoted_to_public_acceptance',
+    '保持するSource拡張と現行49項目を分け、既存契約・金融保留を維持してください',
+  );
   const serviceAccess = data.serviceAccessModel;
   requireValue(
     serviceAccess?.status ===
@@ -1038,7 +1051,8 @@ export function validateBaseline(
   );
   requireValue(
     data.homeExperience?.defaultRoute === '/' &&
-      data.homeExperience?.skyRoute === '/sky' &&
+      data.homeExperience?.skyRoute === '/' &&
+      data.homeExperience?.legacySkyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
       data.homeExperience?.preferencesStorage === 'device_local' &&
       data.homeExperience?.customizable?.includes('app_order') &&
@@ -1058,7 +1072,18 @@ export function validateBaseline(
     data.obsoletePageCleanup?.canonicalOs === '/os' && data.obsoletePageCleanup?.canonicalEve === '/os/eve' &&
     launchPageSource.includes("redirect('/os')") && read(resolve(root, 'app/os/eve/page.tsx')).includes('EveSyncWorkspace');
   const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
-  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
+  const retiredHardware = isArchivedPath('components/avocado-turntable.tsx');
+  const turntableSource = retiredHardware ? '' : read(resolve(root, 'components/avocado-turntable.tsx'));
+  const currentR5Entry = retiredHardware &&
+    hardwarePageSource.includes('AVOCADOMINI R5 / DESIGN PROGRAM') &&
+    hardwarePageSource.includes('使用時200mm以内') && hardwarePageSource.includes('別Hubは不要') &&
+    hardwarePageSource.includes('価格は未確定') && hardwarePageSource.includes('実機試験・製造・一般販売は未承認') &&
+    hardwarePageSource.includes('携帯電源') && hardwarePageSource.includes('電池方式は未選定') &&
+    hardwarePageSource.includes('https://avocadomini.si/mini/') &&
+    data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
+    data.marketPositioning?.legacyCommercialFields?.currentR5PriceAuthority === 'marketPositioning.r5.priceStatus' &&
+    data.marketPositioning?.r5?.priceStatus === 'not_confirmed_for_R5_do_not_inherit_E3_prices' &&
+    ['tower20E3', 'mini200E2Integration', 'avocadoMiniDesiredReferencePriceJpy'].every(key => !Object.hasOwn(data.marketPositioning, key));
   requireValue(
     data.launchPage?.route === (canonicalOsEntry ? '/os' : '/rockstaros') &&
       data.launchPage?.role === (canonicalOsEntry ? 'canonical_os_workspace_entry' : 'public_sim_esim_service_home') &&
@@ -1067,14 +1092,13 @@ export function validateBaseline(
       data.launchPage?.directOsHomeLink === canonicalOsEntry &&
       data.launchPage?.serviceDetailsLocation === (canonicalOsEntry ? 'service_settings_and_connect' : 'public_service_home') &&
       data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
-      data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
+      data.marketPositioning?.customerFacingFocus === (retiredHardware ? 'account_led_rockstaros_service_access' : 'sim_esim_led_rockstaros_service_access') &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
-      data.marketPositioning?.previousLeadHardwareForm ===
-        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
-      data.marketPositioning?.legacyReferencePriceAppliesTo ===
-        'historical_motion_tower_p0_kit_only' &&
+      (retiredHardware ? data.marketPositioning?.legacyCommercialFields?.restoreCommit === '98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb' :
+        data.marketPositioning?.previousLeadHardwareForm === 'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
+        data.marketPositioning?.legacyReferencePriceAppliesTo === 'historical_motion_tower_p0_kit_only') &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === (canonicalOsEntry ? 'open_os_workspace' : 'start_service_onboarding') &&
@@ -1083,7 +1107,7 @@ export function validateBaseline(
       (canonicalOsEntry || (launchPageSource.includes('SIM/eSIMをつないで、Sky・Eve・AI Agentへ') &&
       launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
       launchPageSource.includes('href="/connect"'))) &&
-      hardwarePageSource.includes('<AvocadoTurntable />') &&
+      (currentR5Entry || (!retiredHardware && hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
@@ -1109,7 +1133,7 @@ export function validateBaseline(
       data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
       turntableSource.includes('¥410,000') &&
       turntableSource.includes('購入する') &&
-      turntableSource.includes('/rockstaros/guide#install'),
+      turntableSource.includes('/rockstaros/guide#install'))),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const miniR5 = data.marketPositioning?.r5;
@@ -1158,12 +1182,17 @@ export function validateBaseline(
   const skySource = read(resolve(root, 'components/sky-workspace.tsx'));
   const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
   const workspaceStyles = read(resolve(root, 'app/workspace.css'));
+  const osHeaderSource = read(resolve(root, 'components/os-header.tsx'));
+  const osFrameSource = read(resolve(root, 'app/os-shell.css'));
   requireValue(
     data.visualSystem?.surfaces?.includes('/') &&
       data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
-      data.visualSystem?.accent === 'ice_blue' &&
+      data.visualSystem?.accent === 'forest_green_bronze' &&
+      data.visualSystem?.previousAccent === 'ice_blue' &&
+      osFrameSource.includes('--os-shell-accent: #315b4d') &&
+      osFrameSource.includes('--os-shell-focus: #a9754f') &&
       data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
@@ -1178,7 +1207,7 @@ export function validateBaseline(
       !homeSource.includes("id: 'csv'") &&
       !skySource.includes('href="/work"') &&
       !skySource.includes('href="/csv"') &&
-      homeSource.includes('WEB / LOCAL') &&
+      /DEVELOPER\s+PREVIEW/.test(homeSource) &&
       data.homeExperience?.workspaceNavigation ===
         'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
       data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
@@ -1191,7 +1220,10 @@ export function validateBaseline(
       !shellSource.includes('Sidebar') &&
       !shellSource.includes('rock-sidebar') &&
       shellSource.includes('rock-main-column rock-main-column-full') &&
-      shellSource.includes('className="rock-home-link"') &&
+      shellSource.includes('<OSHeader title={title} running={running}>') &&
+      osHeaderSource.includes('href={homeHref}') &&
+      osHeaderSource.includes('aria-label="RockstarOS ホーム"') &&
+      osHeaderSource.includes('aria-disabled={running || undefined}') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
         'RockstarOS / Studio — shared dark launch system',
@@ -1556,6 +1588,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ50、siネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ49、siネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

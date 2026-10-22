@@ -1,4 +1,6 @@
+import { sourceSandboxRestoreStatements } from './sky-monthly-sandbox-db.mjs';
 import { prepareSkyGoal } from './amc-sky-plan.mjs';
+import { checkRuntimeDeviceApi } from './runtime-device-api-acceptance.mjs';
 // Protocol checks only. Synthetic identity headers simulate the Sites gateway on
 // a loopback-only Worker; never send these headers to a deployed site.
 import assert from 'node:assert/strict';
@@ -6,7 +8,6 @@ import { spawn, spawnSync } from 'node:child_process';
 import { createHash, generateKeyPairSync, randomUUID, sign, webcrypto } from 'node:crypto';
 import {
   mkdtempSync,
-  cpSync,
   copyFileSync,
   linkSync,
   mkdirSync,
@@ -79,6 +80,7 @@ import { RemoteAiTextStore } from '../lib/remote-ai-text-store.ts';
 import { encryptRemoteAiTextInput } from '../lib/remote-ai-text-input.ts';
 import { executeReservedRemoteAiText } from '../lib/remote-ai-text-execution.ts';
 import { rockstarDeviceLinkStore } from '../lib/rockstar-device-link.ts';
+import { checkLegacyDeviceBindingApi } from './device-binding-api-acceptance.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = mkdtempSync(join(tmpdir(), 'rock-api-check-'));
@@ -384,6 +386,7 @@ async function start() {
         // generated bundle can also carry the loopback-only local preview
         // identity, so explicitly disable that convenience binding here.
         ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
+        EVE_HISTORY_KEYRING: JSON.stringify({ current: 'api-runtime', keys: { 'api-runtime': 'b'.repeat(64) } }),
         SKY_REMOTE_LLM_ENABLED: remoteLlmEnabled ? 'true' : 'false',
         SKY_OLLAMA_BASE_URL: remoteModelEndpoint,
         SKY_LOCAL_LLM_BASE_URL: remoteModelEndpoint,
@@ -526,10 +529,6 @@ try {
     }
   }
   linkBuildTree(join(root, 'dist'), join(temporary, 'dist'));
-  cpSync(join(root, 'drizzle'), join(temporary, 'migrations'), {
-    recursive: true,
-    filter: (source) => !source.split(/[\\/]/).at(-1).startsWith('._'),
-  });
   await start();
   const statusBeforeSchema = await call('GET', undefined, {
     path: '/api/sky/service-status', user: null,
@@ -547,14 +546,11 @@ try {
     ).status,
     'unavailable',
   );
-  for (const file of readdirSync(join(temporary, 'migrations'))
-    .filter((file) => file.endsWith('.sql'))
-    .sort()) {
-    for (const sql of readFileSync(join(temporary, 'migrations', file), 'utf8')
-      .split('--> statement-breakpoint')
-      .filter((sql) => sql.trim()))
-      await database.prepare(sql).run();
-  }
+  // Local protocol checks start from an empty, synthetic restored schema.
+  // Published main 0020 upgrades an existing database; it is not a fresh bootstrap.
+  // Filename/Drizzle upgrade acceptance remains in migration-union tests.
+  for (const sql of sourceSandboxRestoreStatements())
+    await database.prepare(sql).run();
   const serviceStatus = await call('GET', undefined, {
     path: '/api/sky/service-status', user: null,
   });
@@ -570,13 +566,15 @@ try {
   check(initialEntitlements.claimRedemptionAvailable, true);
   check(initialEntitlements.entitlements, []);
   const deviceAuthorizationPath = '/api/rockstar/device-authorizations';
+  const deviceBindingHeaders = { 'X-Rockstar-Device-Binding': 'owner-device/v1' };
   const deviceAuthorization = await call('POST', {
     action: 'begin', deviceName: 'Synthetic Android device',
-  }, { path: deviceAuthorizationPath, user: null, status: 201 });
+  }, { path: deviceAuthorizationPath, user: null, status: 201, headers: deviceBindingHeaders });
   assert.match(deviceAuthorization.userCode, /^[A-HJ-NP-Z2-9]{8}$/);
   assert.match(deviceAuthorization.deviceCode, /^rock_device_[A-Za-z0-9_-]{43}$/);
   check(deviceAuthorization.expiresIn, 600);
   check(deviceAuthorization.interval, 5);
+  check(deviceAuthorization.sessionBinding, 'owner-device/v1');
   check(new URL(deviceAuthorization.verificationUriComplete).origin, base);
   const deviceApprovalPath = '/api/rockstar/device-authorizations/approve';
   const deviceDetails = await call('GET', undefined, {
@@ -594,9 +592,11 @@ try {
   });
   const deviceGrant = await call('POST', {
     action: 'poll', deviceCode: deviceAuthorization.deviceCode,
-  }, { path: deviceAuthorizationPath, user: null });
+  }, { path: deviceAuthorizationPath, user: null, headers: deviceBindingHeaders });
   check(deviceGrant.status, 'authorized');
   check(deviceGrant.ownerUserId, alice);
+  assert.match(deviceGrant.deviceId, /^[a-f0-9-]{36}$/);
+  check((await rockstarDeviceLinkStore(database).identity(deviceGrant.accessToken)).id, deviceGrant.deviceId);
   assert.match(deviceGrant.accessToken, /^rock_session_[A-Za-z0-9_-]{43}$/);
   check(deviceGrant.expiresAt > Date.now(), true);
   const persistedDeviceToken = await database.prepare(
@@ -610,7 +610,19 @@ try {
   );
   await call('POST', { action: 'poll', deviceCode: deviceAuthorization.deviceCode }, {
     path: deviceAuthorizationPath, user: null,
-  }).then((result) => check(result.status, 'access_denied'));
+  }).then((result) => {
+    check(result.status, 'access_denied');
+    check(Object.hasOwn(result, 'reason'), false);
+  });
+  const deniedAuthorization = await call('POST', {
+    action: 'begin', deviceName: 'Synthetic denied Node host',
+  }, { path: deviceAuthorizationPath, user: null, status: 201, headers: deviceBindingHeaders });
+  const sessionsBeforeDenial = await database.prepare('SELECT COUNT(*) AS n FROM rockstar_device_sessions').first();
+  await call('POST', { action: 'deny', userCode: deniedAuthorization.userCode }, { path: deviceApprovalPath });
+  const deniedPoll = await call('POST', { action: 'poll', deviceCode: deniedAuthorization.deviceCode }, { path: deviceAuthorizationPath, user: null, headers: deviceBindingHeaders });
+  check(deniedPoll, { status: 'access_denied', reason: 'owner_denied' });
+  check(await database.prepare('SELECT COUNT(*) AS n FROM rockstar_device_sessions').first(), sessionsBeforeDenial);
+  await checkLegacyDeviceBindingApi({ call, check, database });
   const bearerEntitlements = await call('GET', undefined, {
     path: entitlementPath, user: null,
     headers: { Authorization: `Bearer ${deviceGrant.accessToken}` },
@@ -706,6 +718,7 @@ try {
   check(activeDeviceSessions.sessions.length, 1);
   check(activeDeviceSessions.sessions[0].deviceName, 'Synthetic Android device');
   check('token' in activeDeviceSessions.sessions[0], false);
+  const runtimeAcceptance = await checkRuntimeDeviceApi({ call, check, database, getDatabase: () => database, grant: deviceGrant, bob, stop, start });
   const entitlementCode = `rsk_${Buffer.alloc(32, 42).toString('base64url')}`;
   const entitlementClaim = {
     schema: ROCKSTAR_ENTITLEMENT_CLAIM_SCHEMA,
@@ -1927,6 +1940,9 @@ try {
     headers: { Authorization: `Bearer ${deviceGrant.accessToken}` },
   })).agents, []);
   await call('DELETE', { id: activeDeviceSessions.sessions[0].id }, { path: deviceSessionsPath });
+  await call('GET', undefined, { ...runtimeAcceptance.device, status: 401 });
+  await call('PUT', { action: 'report', value: { report: runtimeAcceptance.report, revision: 0 } }, { ...runtimeAcceptance.device, status: 401 });
+  check((await call('GET', undefined, { path: `${runtimeAcceptance.path}?id=${runtimeAcceptance.id}` })).execution.report, runtimeAcceptance.report);
   await call('GET', undefined, {
     path: a2aAgentsPath, user: null,
     headers: { Authorization: `Bearer ${deviceGrant.accessToken}` }, status: 401,

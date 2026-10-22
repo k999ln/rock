@@ -2,7 +2,7 @@
 .hero { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 12px 0 28px; }
 .back { display: inline-flex; align-items: center; gap: 7px; min-height: 48px; color: var(--os-muted); font-size: 13px; text-decoration: none; }
 .eyebrow { font-size: 10px; letter-spacing: .1em; font-weight: 600; color: var(--os-muted); margin: 20px 0 8px; }
-.hero h1 { font-size: clamp(28px, 3.5vw, 40px); line-height: 1.4; letter-spacing: -.04em; margin: 0 0 12px; font-weight: 650; }
+.hero :is(h1,h3) { font-size: clamp(28px, 3.5vw, 40px); line-height: 1.4; letter-spacing: -.04em; margin: 0 0 12px; font-weight: 650; }
 .hero p:last-child { margin: 0; color: var(--os-muted); font-size: 15px; }
 .page button, .page input, .page textarea, .page select { font: inherit; }
 .page button, .page a { -webkit-tap-highlight-color: transparent; }
@@ -83,7 +83,7 @@
 .success { color: var(--os-success); background: var(--os-success-bg); display: flex; gap: 8px; align-items: center; }
 @media(max-width: 800px) {
   .hero { align-items: start; flex-direction: column; }
-  .hero h1 { font-size: 29px; }
+  .hero :is(h1,h3) { font-size: 29px; }
   .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .editor { padding: 20px; border-radius: 20px; }
   .links { gap: 8px 20px; }

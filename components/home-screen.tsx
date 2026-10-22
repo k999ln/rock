@@ -1,12 +1,12 @@
 'use client';
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { lazy, Suspense, useEffect, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import OSHeader from './os-header';
 import OsAppNavigation from './os-app-navigation';
 import OsAccountAccess from './os-account-access';
-import { osRouteHref } from '@/lib/os-navigation';
+import { osRouteHref, skyHomePanelForHash } from '@/lib/os-navigation';
 import {
   Radio,
   Search,
@@ -39,12 +39,12 @@ import { useSkyFeatures } from '@/lib/use-sky-features';
 import type { WorkJob } from '@/lib/workflow';
 import styles from './home-screen.module.css';
 
-type View = 'home' | 'discover' | 'sources' | 'bookmarks' | 'communities';
+const SkyAgentLibrary = lazy(() => import('./sky-agent-library'));
+type View = 'home' | 'discover' | 'manage' | 'sources' | 'bookmarks' | 'communities';
 const apps: { href: string; name: string; Icon: LucideIcon; view?: View }[] = [
   { href: '/#timeline', name: 'Sky', Icon: Radio, view: 'home' },
-  { href: '/#catalog', name: '見つける', Icon: Search, view: 'discover' },
+  { href: '/#sky', name: '追加・管理', Icon: Plus, view: 'discover' },
   { href: '/chat', name: 'Eve', Icon: MessageCircle },
-  { href: '/sky/agents', name: '自分のSky', Icon: Layers2 },
   {
     href: '/#communities',
     name: 'コミュニティー',
@@ -64,13 +64,13 @@ const apps: { href: string; name: string; Icon: LucideIcon; view?: View }[] = [
 ];
 function viewForHash(fragment: string): View {
   const hash = fragment.replace(/^#/, '');
-  return hash === 'catalog' || hash === 'optional-features'
-    ? 'discover'
-    : hash === 'news-plugins' || hash === 'external-sources'
+  return skyHomePanelForHash('#' + hash)
+    ?? (hash === 'news-plugins' || hash === 'external-sources'
       ? 'sources'
       : hash === 'bookmarks' || hash === 'communities'
         ? hash
-        : 'home';
+        : 'home');
+
 }
 export default function HomeScreen() {
   const pathname = usePathname();
@@ -79,6 +79,7 @@ export default function HomeScreen() {
   const homePath = route('/');
   const timelineReceiver = useTimelineConnector();
   const [view, setView] = useState<View>('home');
+  const [panelVisited, setPanelVisited] = useState(false);
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [featureOnly, setFeatureOnly] = useState(false);
@@ -86,14 +87,16 @@ export default function HomeScreen() {
   const { enabled } = useSkyFeatures();
   useEffect(() => {
     const sync = () => {
-      setView(viewForHash(window.location.hash));
+      const next = viewForHash(window.location.hash);
+      setView(next);
+      if (next === 'discover' || next === 'manage') setPanelVisited(true);
       setFeatureOnly(window.location.hash === '#optional-features');
     };
     const frame = requestAnimationFrame(sync);
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        window.location.hash = 'catalog';
+        window.location.hash = 'sky';
       }
       if (
         event.key === 'Escape' &&
@@ -136,7 +139,7 @@ export default function HomeScreen() {
   function search(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setSearchQuery(query.trim());
-    window.location.hash = 'catalog';
+    window.location.hash = 'sky';
     setView('discover');
   }
   const visibleApps = apps.filter(
@@ -170,7 +173,9 @@ export default function HomeScreen() {
           target.pathname === homePath &&
           target.hash
         ) {
-          setView(viewForHash(target.hash));
+          const next = viewForHash(target.hash);
+          setView(next);
+          if (next === 'discover' || next === 'manage') setPanelVisited(true);
           setFeatureOnly(target.hash === '#optional-features');
         }
       }}
@@ -236,6 +241,7 @@ export default function HomeScreen() {
                 <Link href={route('/chat')}>
                   Eve <MessageCircle size={20} />
                 </Link>
+                <Link href={route('/#sky')} aria-label="追加・管理"><Plus size={21} /></Link>
                 <details>
                   <summary aria-label="その他のメニュー">
                     <MoreHorizontal size={22} />
@@ -258,8 +264,15 @@ export default function HomeScreen() {
               </div>
             </OSHeader>
           </div>
-          <SkyDiscoveryDialog open={view==='discover'} onClose={()=>{window.location.hash='timeline';setView('home');}}>
-            <SkyDiscoveryFeed key={`${featureOnly?'features':'discover'}:${searchQuery}`} query={searchQuery} initialFilter={featureOnly?'features':'all'} standalone />
+          <SkyDiscoveryDialog open={view==='discover'||view==='manage'} mode={view==='manage'?'manage':'discover'} onModeChange={mode=>{window.location.hash=mode==='manage'?'sky-manage':'sky';}} onClose={()=>{window.location.hash='timeline';setView('home');}}>
+            {panelVisited && <>
+              <section id="sky-add-panel" role="tabpanel" aria-labelledby="sky-add-tab" hidden={view!=='discover'}>
+                <SkyDiscoveryFeed key={`${featureOnly?'features':'discover'}:${searchQuery}`} query={searchQuery} initialFilter={featureOnly?'features':'all'} standalone />
+              </section>
+              <section id="sky-manage-panel" role="tabpanel" aria-labelledby="sky-manage-tab" hidden={view!=='manage'}>
+                <Suspense fallback={<output>担当とLLMの設定を読み込んでいます…</output>}><SkyAgentLibrary embedded /></Suspense>
+              </section>
+            </>}
           </SkyDiscoveryDialog>
           {view === 'sources' ? (
             <section className={styles.sources}>
@@ -276,9 +289,9 @@ export default function HomeScreen() {
             </section>
           ) : (
             <SkySocialTimeline
-              key={view==='discover'?'home':view}
+              key={view==='discover'||view==='manage'?'home':view}
               fullHome
-              initialView={view==='discover'?'home':view}
+              initialView={view==='discover'||view==='manage'?'home':view}
               discovery={<SkyDiscoveryFeed />}
               externalFeed={
                 <>
@@ -312,8 +325,8 @@ export default function HomeScreen() {
               </Link>
             </section>
             <section className={styles.sideSection}>
-              <h2>自分のSky</h2>
-              <Link href={route('/sky/agents')}>
+              <h2>追加・管理</h2>
+              <Link href={route('/#sky-manage')}>
                 <Layers2 size={20} />
                 <span>
                   <strong>AgentとLLM</strong>
@@ -380,11 +393,7 @@ export default function HomeScreen() {
         className={`${styles.mobileNav} os-home-navigation`}
         aria-label="モバイルメニュー"
         active={
-          view === 'discover'
-            ? 'discover'
-            : view === 'communities'
-              ? 'communities'
-              : 'stream'
+          view === 'communities' ? 'communities' : 'stream'
         }
       />
     </div>

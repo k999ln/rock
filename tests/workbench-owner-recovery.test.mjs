@@ -1,5 +1,6 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
@@ -13,10 +14,7 @@ const root = new URL('../', import.meta.url);
 async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualDelivery = false, actualTracking = false, actualAccess = false, trackingFetch, deviceFixture, actualNavigation = false, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('drizzle/', root))
-    .filter((n) => n.endsWith('.sql') && !n.startsWith('._'))
-    .sort())
-    sqlite.exec(readFileSync(new URL(`drizzle/${name}`, root), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   class Statement {
     constructor(sql, args = []) {
       Object.assign(this, { sql, args });
@@ -377,6 +375,11 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
       { ...context, exports: navigationExports });
     Object.assign(modules['@/components/use-pending-save-navigation'], navigationExports);
   }
+  const usageExports = {};
+  runInNewContext(ts.transpileModule(readFileSync(new URL('components/sky-usage-details.tsx', root), 'utf8'),
+    { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }
+  ).outputText, { ...context, exports: usageExports });
+  modules['./sky-usage-details'] = usageExports;
   const cloudExports = {};
   runInNewContext(ts.transpileModule(
     readFileSync(new URL('components/workbench-cloud-text.tsx', root), 'utf8'),

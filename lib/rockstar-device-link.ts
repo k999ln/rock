@@ -66,6 +66,18 @@ function validOwnerId(value: string) {
   return true;
 }
 
+export function negotiatedDeviceBinding(value: string | null) {
+  if (value !== null && value !== 'owner-device/v1') throw new Error('DEVICE_BINDING_INVALID');
+  return value === 'owner-device/v1';
+}
+
+/** Strict legacy Android clients must receive their original response fields. */
+export function deviceAuthorizationResponse(value: object, bound: boolean) {
+  const response: Record<string, unknown> = { ...value };
+  if (!bound) for (const key of ['sessionBinding', 'deviceId', 'reason']) delete response[key];
+  return response;
+}
+
 export function rockstarDeviceLinkStore(db: Database) {
   return {
     async identity(token: string, now = Date.now()) {
@@ -103,6 +115,7 @@ export function rockstarDeviceLinkStore(db: Database) {
           return {
             deviceCode,
             userCode: code,
+            sessionBinding: 'owner-device/v1' as const,
             expiresIn: Math.floor(LINK_TTL_MS / 1000),
             interval: 5,
           };
@@ -147,7 +160,9 @@ export function rockstarDeviceLinkStore(db: Database) {
         .bind(codeHash).first<AuthorizationRow>();
       if (!row) throw new Error('DEVICE_CODE_INVALID');
       if (row.status === 'consumed') return { status: 'access_denied' as const };
-      if (row.status === 'denied') return { status: 'access_denied' as const };
+      // A terminal owner denial never minted a session. A consumed code can
+      // also return access_denied, but must remain unresolved on the host.
+      if (row.status === 'denied') return { status: 'access_denied' as const, reason: 'owner_denied' as const };
       if (row.expiresAt <= now || row.status === 'expired') {
         await db.prepare(`UPDATE rockstar_device_authorizations SET status = 'expired'
           WHERE id = ? AND status IN ('pending', 'approved')`).bind(row.id).run();
@@ -167,13 +182,14 @@ export function rockstarDeviceLinkStore(db: Database) {
       const token = `rock_session_${bytesToBase64Url(randomBytes(32))}`;
       const tokenHash = await sha256(token);
       const expiresAt = now + SESSION_TTL_MS;
+      const deviceId = crypto.randomUUID();
       const [inserted] = await db.batch([
         db.prepare(`INSERT INTO rockstar_device_sessions
           (id, user_id, device_name, token_sha256, created_at, expires_at, last_used_at, revoked_at)
           SELECT ?, user_id, ?, ?, ?, ?, NULL, NULL
           FROM rockstar_device_authorizations
           WHERE id = ? AND status = 'approved' AND expires_at > ? AND user_id IS NOT NULL`)
-          .bind(crypto.randomUUID(), row.clientName, tokenHash, now, expiresAt, row.id, now),
+          .bind(deviceId, row.clientName, tokenHash, now, expiresAt, row.id, now),
         db.prepare(`UPDATE rockstar_device_authorizations SET status = 'consumed', consumed_at = ?
           WHERE id = ? AND status = 'approved' AND expires_at > ?`)
           .bind(now, row.id, now),
@@ -182,7 +198,7 @@ export function rockstarDeviceLinkStore(db: Database) {
       // The one-time device code is the proof of possession for this grant. Return
       // the account subject with the opaque session so native clients can bind
       // local owner-scoped data without inventing a second identity.
-      return { status: 'authorized' as const, accessToken: token, expiresAt, ownerUserId: row.userId };
+      return { status: 'authorized' as const, accessToken: token, expiresAt, ownerUserId: row.userId, deviceId };
     },
 
     async authenticate(tokenInput: string, now = Date.now()) {

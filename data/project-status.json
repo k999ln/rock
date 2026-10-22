@@ -1073,7 +1073,7 @@
         "app/api/sky/a2a-delegations/route.ts",
         "components/sky-chat-workspace.tsx",
         "components/workbench.tsx",
-        "drizzle/0014_jennifer_execution_integrity.sql",
+        "tests/fixtures/sites-columbia-migrations/0014_jennifer_execution_integrity.sql",
         "tests/jennifer-amc-decomposition.test.mjs",
         "tests/jennifer-amc-execution.test.mjs",
         "tests/jennifer-execution-reports.test.mjs",
@@ -9329,5 +9329,300 @@
     "realPaidCalls": 0,
     "gpuRented": false,
     "next": "same-source package/deploy; owner UI when CUA is restored; U02 durable itemized usage and Source financial failures"
+  },
+  "commonCoreSourceRecovery": {
+    "primaryOwner": "ROCK",
+    "primarySquad": "O5",
+    "taskIds": [
+      "BIL02",
+      "SKY21",
+      "WEB04"
+    ],
+    "status": "source_append_only_owner_schema_recovery_local_checks_in_progress",
+    "publicUpdated": false,
+    "realStripeCalls": 0,
+    "paidProviderCalls": 0,
+    "newDeviceGrants": 0,
+    "next": "Complete retained Source regression and package review; apply the latest canonical Pixel UI without losing local runtime functions."
+  },
+  "sourceSiteLineageRepair": {
+    "status": "focused_27_passed_full_source_25_failures_remain",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB04",
+      "RLS02"
+    ],
+    "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+    "sourceLegacyFixture": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+    "newGuardFailuresReproduced": 2,
+    "focusedTests": 27,
+    "focusedPass": 27,
+    "existingLegacyConvergenceAssertionsRetained": true,
+    "publishedMainSqlBytesChanged": false,
+    "productionDatabaseChanges": 0,
+    "publicChangedByThisWork": false,
+    "next": "Source full Node, type/lint/build; current UI contract and release evidence failures",
+    "fullSourceNode": {
+      "total": 2387,
+      "pass": 2361,
+      "fail": 25,
+      "skip": 1,
+      "cancelled": 0,
+      "exitCode": 1
+    },
+    "typecheckExitCode": 0,
+    "lintProductExitCode": 0,
+    "buildExitCode": 0,
+    "packagedMainSqlCount": 12,
+    "packageSqlAndJournalByteMatch": true,
+    "fullVerify": {
+      "exitCode": 1,
+      "stage": "project:check",
+      "reason": "AMC02 historical evidence file missing"
+    }
+  },
+  "sourceCommonUiAlignment": {
+    "status": "local_ui_and_focus_passed_root_verify_passed_source_17_failures_remain",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB04",
+      "WEB06",
+      "SKY21"
+    ],
+    "scope": [
+      "CORE01",
+      "CORE08",
+      "CORE12"
+    ],
+    "evidence": "docs/evidence/common-os-entry-alignment.json",
+    "sourceFullNode": {
+      "total": 2394,
+      "pass": 2376,
+      "fail": 17,
+      "cancelled": 0,
+      "skip": 1,
+      "exitCode": 1,
+      "log": "/private/tmp/rock-source-common-ui-node-candidate-final.log",
+      "failureGroups": {
+        "avocado-r5-docs.test.mjs": 2,
+        "product-baseline.test.mjs": 2,
+        "release-readiness.test.mjs": 13
+      },
+      "testTimeoutsChanged": false
+    },
+    "pixelUnlockObserved": false,
+    "pixelAcceptanceExecuted": false,
+    "productionChanges": 0,
+    "fullGoalComplete": false,
+    "rootVerify": {
+      "exitCode": 0,
+      "nodeTotal": 1327,
+      "nodePass": 1326,
+      "nodeFail": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 2000,
+      "csvAssertions": 113,
+      "webAssets": 212,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-common-ui-root-verify-final.log",
+      "scope": "Observed command in shared dirty checkout, not a frozen CI proof for unrelated concurrent edits."
+    },
+    "browserCandidateAccepted": true
+  },
+  "sourceReadinessAlignment": {
+    "status": "local_source_full_verify_and_same_build_response_browser_passed_public_and_pixel_pending",
+    "taskIds": [
+      "WEB04",
+      "WEB06",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "scope": [
+      "CORE05",
+      "CORE08",
+      "CORE09",
+      "CORE12"
+    ],
+    "publicChanged": false,
+    "pixelChanged": false,
+    "fullGoalComplete": false,
+    "evidence": "docs/evidence/source-readiness-alignment.json",
+    "legacy17FocusedResolved": true,
+    "fullSourceVerifyPassed": true,
+    "wholeGoalComplete": false,
+    "latestNode": {
+      "total": 2404,
+      "pass": 2403,
+      "fail": 0,
+      "skip": 1
+    },
+    "localApi": {
+      "assertions": 1381,
+      "exitCode": 0
+    },
+    "localCsv": {
+      "assertions": 385,
+      "exitCode": 0
+    },
+    "sourceRestoredSchemaOnly": true,
+    "miniContrastFinalAccepted": true,
+    "sourceVerify": {
+      "exitCode": 0,
+      "nodeTotal": 2404,
+      "nodePass": 2403,
+      "nodeFail": 0,
+      "nodeCancelled": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssets": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-source-readiness-mini-final-verify.log",
+      "scope": "Retained local Sites Source candidate; synthetic restored D1/Worker/R2, not public or financial acceptance."
+    },
+    "rootVerify": {
+      "exitCode": 0,
+      "nodeTotal": 1344,
+      "nodePass": 1343,
+      "nodeFail": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 2018,
+      "csvAssertions": 113,
+      "webAssets": 212,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-root-readiness-full-verify-final.log",
+      "scope": "Observed command in shared dirty checkout; not a frozen CI proof for unrelated concurrent edits."
+    },
+    "publicRuntimeAccepted": false,
+    "pixelUnlockedSyncAccepted": false
+  },
+  "sourcePackageEvidenceRelocations": [
+    {
+      "taskId": "AMC02",
+      "originalPath": "drizzle/0014_jennifer_execution_integrity.sql",
+      "retainedEvidencePath": "tests/fixtures/sites-columbia-migrations/0014_jennifer_execution_integrity.sql",
+      "sourceCommit": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+      "sha256": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907",
+      "reason": "Main package replaces active root drizzle with main lineage; immutable legacy fixture preserves the original SQL for historical regression only.",
+      "newRuntimeAcceptance": false
+    }
+  ],
+  "sourceAssetSecurity": {
+    "status": "local_verified_source_save_and_public_deploy_awaiting_explicit_approval",
+    "primaryOwner": "ROCK",
+    "workstream": "Web/PWA/Sites",
+    "taskIds": [
+      "WEB04",
+      "WEB06"
+    ],
+    "scope": [
+      "CORE05",
+      "CORE10",
+      "CORE12"
+    ],
+    "publicVersion": 111,
+    "publicChanged": false,
+    "pixelSyncAccepted": false,
+    "wholeGoalComplete": false,
+    "next": "Explicit Worker-first asset routing and real no-_headers negative/positive tests; public deployment readback remains independent",
+    "evidence": "docs/evidence/source-asset-security.json",
+    "localProductionStaticBindingAccepted": true,
+    "publicRuntimeAccepted": false,
+    "sourceNode": {
+      "total": 2419,
+      "pass": 2418,
+      "fail": 0,
+      "skip": 1
+    },
+    "sourceApiAssertions": 1381,
+    "sourceCsvAssertions": 385,
+    "packageDraftAccepted": true,
+    "approvalOwner": "OWNER",
+    "autoReviewRejected": true,
+    "sourceCommitSaved": false,
+    "packageGuard": {
+      "tests": 9,
+      "pass": 9,
+      "filesCompared": 823,
+      "sqlFiles": 12,
+      "publicAcceptance": false
+    },
+    "proposedLocalArchive": {
+      "sha256": "10082a86059aebb05554449fabc0ece7a11715e44924fc442474ece019e1e44d",
+      "sourceCommitSaved": false
+    }
+  },
+  "sourceRuntimeDeviceBinding": {
+    "status": "in_progress",
+    "taskIds": [
+      "OS10",
+      "DSP01",
+      "SKY21",
+      "WEB06"
+    ],
+    "primaryOwner": "ROCK",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "sourcePrimarySquad": "O6",
+    "previousGoalTurn": "progress: actual Pixel existing-account sync/preservation and Native controlled TLS/restart/revocation test passed; same new candidate Pixel still pending",
+    "cause": "Retained Source device-link omits owner-device/v1 binding declaration, authorized deviceId and terminal owner-denial distinction; Source API tests omit common runtime route",
+    "next": "Prepare updated guest and unchanged reviewed Native candidate for existing Pixel grant real common ABI execution, same job/history/artifact, restart and stop. Existing read-only Pixel preflight is accepted; Source publishing/new Node grant remains a separate owner gate.",
+    "publicChanged": false,
+    "physicalChanged": false,
+    "wholeGoalComplete": false,
+    "sourceActualWorkerContractAccepted": true,
+    "sourceFullVerify": {
+      "exitCode": 0,
+      "nodePass": 2419,
+      "nodeSkip": 1,
+      "apiAssertions": 1506,
+      "csvAssertions": 385
+    },
+    "existingPixelRuntimeReadAccepted": true,
+    "existingPixelLinuxCommunicationRecovered": true,
+    "pixelLinuxPhase": "stopped",
+    "newNativeCandidateInstalled": false,
+    "evidence": "docs/evidence/source-runtime-device-binding.json",
+    "compatibilityFix": "Strict legacy response retained by explicit X-Rockstar-Device-Binding negotiation; SDK dev.7",
+    "sourceFullVerifyCurrentCandidate": true,
+    "rootFullVerify": {
+      "exitCode": 0,
+      "nodePass": 1405,
+      "nodeSkip": 1,
+      "apiAssertions": 2059,
+      "csvAssertions": 113
+    },
+    "sdk": {
+      "version": "1.0.0-dev.7",
+      "tests": 60,
+      "pass": 60,
+      "artifactSha256": "80c98adceb2ead74560e1f353575a8ce3cdd3469f5f05ffd4806533dd29947b4"
+    },
+    "nativeHostRegressionAccepted": true,
+    "sameNewNativePhysicalAccepted": false,
+    "currentBuildPackageSha256": "cbee9a70d180114402d1b185470da463553bd8f700645d7b74f7c8e9b6b3e904",
+    "finalResponseCount": 12
+  },
+  "homeAddManage": {
+    "status": "local_accepted_publication_approval_pending",
+    "primaryOwner": "ROCK",
+    "workstream": "Product / UX",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21",
+      "UXRS01"
+    ],
+    "previousGoalTurn": "Pixel same-account login and prepared-model readback accepted; backend presence full/Worker restart accepted but unpublished",
+    "next": "Await explicit approval required by auto-review for this prepared candidate; Source save/push/deploy and public readback; then Pixel common execution. Existing public v111 and main308e/data retained.",
+    "focusedPass": 33,
+    "publicChanged": false,
+    "wholeGoalComplete": false,
+    "evidence": "docs/evidence/home-add-manage.json",
+    "rootFullVerifyExitCode": 0,
+    "sourceFullVerifyExitCode": 0,
+    "sameFinalBuildUiAccepted": true,
+    "draftPackageSha256": "bc8f2c0b68f396923eda822fbd6bd65fd0fa447831f8efea90d2546e623c36c7"
   }
 }

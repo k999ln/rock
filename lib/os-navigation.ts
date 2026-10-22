@@ -1,10 +1,8 @@
-export type OsNavigationId = 'stream' | 'discover' | 'eve' | 'agents' | 'communities';
+export type OsNavigationId = 'stream' | 'eve' | 'communities';
 
 export const osNavigationItems = [
   { id: 'stream', href: '/#timeline', label: 'Skyのストリーム' },
-  { id: 'discover', href: '/#catalog', label: '見つける' },
   { id: 'eve', href: '/chat', label: 'Eve' },
-  { id: 'agents', href: '/sky/agents', label: '自分のSky' },
   { id: 'communities', href: '/#communities', label: 'コミュニティー' },
 ] as const;
 
@@ -14,6 +12,7 @@ export function osRouteHref(pathname: string, href: string, local = false): stri
   const inOs = pathname === '/' || pathname === '/chat' || pathname === '/os' || pathname.startsWith('/os/') || pathname === '/sky' || pathname.startsWith('/sky/');
   if (!inOs) return href;
   if (href === '/') return '/';
+  if (href === '/sky/agents') return '/#sky-manage';
   if (href.startsWith('/#')) return href;
   if (href === '/chat') return '/os/eve';
   if (href.startsWith('/chat?')) return '/os/eve?mode=tools&' + href.slice(6);
@@ -24,10 +23,17 @@ export function osRouteHref(pathname: string, href: string, local = false): stri
 export function activeOsNavigation(pathname: string, hash = ''): OsNavigationId | null {
   const path = pathname.replace(/^\/os(?=\/|$)/, '') || '/';
   if (path === '/chat' || path === '/eve' || path.startsWith('/eve/')) return 'eve';
-  if (path === '/sky/agents' || path.startsWith('/sky/agents/')) return 'agents';
-  if (path === '/sky') return 'discover';
+  if (path === '/sky/agents' || path.startsWith('/sky/agents/')) return 'stream';
+  if (path === '/sky') return 'stream';
   if (path !== '/') return null;
-  if (hash === '#catalog' || hash === '#optional-features') return 'discover';
+  if (hash === '#catalog' || hash === '#optional-features') return 'stream';
   if (hash === '#communities' || hash.startsWith('#community=')) return 'communities';
   return 'stream';
+}
+
+/** Old catalog links and saved agent URLs open one panel on Home. */
+export function skyHomePanelForHash(hash: string): 'discover' | 'manage' | null {
+  if (hash === '#sky-manage') return 'manage';
+  if (['#sky', '#catalog', '#optional-features'].includes(hash)) return 'discover';
+  return null;
 }

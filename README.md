@@ -1,3 +1,22 @@
+## Homeから追加と管理を開く
+
+主メニューはSky・Eve・コミュニティーです。Homeの「追加・管理」で能力を探して追加し、「追加済み・設定」で担当やLLMを変更できます。旧catalog/agents URLもこのHome内画面へつながります。既存アカウント・設定・成果は保持します。この変更はローカルの同一ビルドで検証済みです。公開v111への反映は承認待ちです。
+
+<!-- source-asset-security:start -->
+配信用Sourceの静的ファイルも、同じ応答保護を通すローカル候補を検証しました。全verify（Node2419中2418pass/1skip、API1381/CSV385）、_headersなしの実応答と同じWorker bytesの梱包を確認。現行公開v111への反映は別です。[契約と受入条件](docs/rockstaros-complete-design.md#source-asset-security)。
+MacからSitesへ梱包する場合は正規helperを`COPYFILE_DISABLE=1`で実行し、archiveに`._`/`__MACOSX`がないこと、Worker/SQLのbyte一致を確認します。
+<!-- source-asset-security:end -->
+
+<!-- source-readiness-alignment:start -->
+端末登録は、SDK dev.7の`X-Rockstar-Device-Binding: owner-device/v1`要求時だけ拡張し、旧Androidの厳密な応答fieldを保持します。Source全verifyはNode2419pass/1skip・API1506/CSV385、同一build12応答/823file・12SQL梱包を確認。既存Pixelの読取り受入と新Native/実LLM受入、公開v111は別に扱います。[現在の証拠](docs/evidence/source-runtime-device-binding.json)。
+
+保持Sourceの開発入口は[全体マスタープロンプト](docs/prompts/rockstaros-common-core-development.md)です。確定49要望と、旧Sky Compute Gridの保存拡張を分けて追跡します。現行サービスの入口は `https://avoado.si/`、会話・仕事は `/os/eve`、独立登録・ログインは `/account`。Skyで追加しEveへ依頼する流れを共通画面で扱います。Sourceの試験DBは合成の復元schemaで、本番migration・課金・実機の合格を示しません。最終候補は全verify合格（Node2404中2403pass/1skip・API1381/CSV385）、同じbuildの8応答・Mini表示を確認。公開v111の旧URL/SW/JS保護不足とPixel解除後の同期受入は残っています。[検証と残条件](docs/evidence/source-readiness-alignment.json)。
+<!-- source-readiness-alignment:end -->
+
+<!-- common-os-entry-alignment:start -->
+共通画面のローカル候補では、Home・Eve・自分のSkyの色と主要導線を揃え、`/os/sky/agents`をlocalhostでも開けるようにしました。利用権claimで再ログインが必要なときは、独立アカウントの登録・ログイン画面へ戻ります。公開v111への配備とPixelの同一account同期受入は別です。[変更と受入範囲](docs/evidence/common-os-entry-alignment.json)。
+<!-- common-os-entry-alignment:end -->
+
 Eveの同じ画面で、接続した版付きruntimeの担当/モデル/送信先を確認できるAPIと選択UIを追加しました。新しいMacの起動導線と本人grant、実機受入は準備中です。[受入範囲](docs/evidence/rockstar-runtime-host-ui.json)。
 
 Eve画面は使用LLM「Eve」、担当、基盤モデル、実行先を分けて表示します。専用重みは未学習です。[機械学習の開始要件](docs/llm-evaluation-architecture.md#eve-training-prerequisites)。
@@ -57,7 +76,7 @@ The intended experience is to keep making things without standing at a PC or in 
 
 Sky is designed to connect many specialist Agents with the capabilities of apps, services, games, and eventually appliances. A refrigerator that reads its inventory and prepares a reviewed shopping order is a design example, not a connected product today. Each new host must declare what it can observe or do; Zema tracks the work, and external actions require the owner's scoped approval. See [the fusion contract](docs/sky-mcp-architecture.md#異種hostと複数agentの融合契約).
 
-[Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.
+[Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, 49 canonical requirements, one retained Source extension, and 12 cross-system acceptance scenarios.
 
 [Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)
 
@@ -457,3 +476,10 @@ Cloud usageの受入入口は `lib/sky-recurring-usage.ts`、境界検証は `no
 ### Skyの継続タイムライン
 
 Homeの「あなたへ」で話題を選ぶと、投稿とニュースの続きをscrollで読み込めます。「この話題をもっと」は次の選択へ反映し、「新着を見る」で新しい流れを取り込みます。自動更新は一時停止できます。ニュースは原文リンク/媒体/GDELT検出時刻を表示します。[仕様と検証](docs/rockstaros-complete-design.md#sky-continuous-timeline)。
+
+## Canonical main Site database recovery
+
+The main Site's migration lineage requires a restored database. Source recovery 0031 repairs owner workspace tables skipped by the published timestamp watermark while preserving saved data. Review [the main migration prerequisites](drizzle-main/README.md) before local or hosted updates; do not apply this lineage to an empty database or Columbia. Verify locally with `node --experimental-strip-types --test tests/sites-owner-workspace-recovery.test.mjs` and `node scripts/check-web-schema.mjs`. These checks do not update the public database.
+
+
+main用のSource packageはroot drizzleもmain系列です。Columbiaには元の専用Sourceを使ってください。別Site/欠落/混在のSQL集合は梱包前に拒否し、既存出力を保持します。固定した旧系列fixtureは回帰試験用で、本番の移行先ではありません。集中27/27、全Nodeの残25失敗は別途解消が必要です。

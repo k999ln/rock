@@ -1,3 +1,7 @@
+## 2026-10-22 — 本人指定の全体開発マスターへ再整合
+
+現行の確定要望はRootと同じRQ01〜RQ49、入口は[全体開発マスター](prompts/rockstaros-common-core-development.md)。旧SourceのRQ50/Sky Compute Gridは既存拡張として保全し、固定lot/公開・合成text/テストcredit/実払出し保留の検証を継続する。削除や新規課金の指示ではない。Homeは投稿型の情報marketplace、Eveと自分のSkyは共通frameのアイボリー・深緑・ブロンズを使う。Mini R5は単体自律・200mm・携帯電源を設計条件とし、未選定の電池/未受入の裸眼表示/実機/製造/価格を旧E3へ巻き戻さない。旧版の説明は履歴であり、現在の配備・実機成功へ転用しない。理由は2026-10-22の本人指定マスターと現行実装へ引継ぎを揃えるため。料金/金融/公開の既存gateを維持する。
+
 # RockstarOS — 現行製品方針と確定要望
 
 2026-10-17追加指示: 1時間の合成契約とは別に、月額140ドル・利用枠100ドルの月次プランへ無料Cloud自動選択を接続し、上限停止と入金後復旧をSandboxで検証する。本番課金は無効。仕様と受入範囲は[請求設計](sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。
@@ -9,7 +13,7 @@ Skyの会話モデルは「自動（作業に合わせる）」が標準です�
 
 更新: 2026-10-15。利用者が確定した製品要望の正本。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)、読み進める入口は[サービス統合設計](service-design/README.md)である。実装・配備・受入の現在値は[`project.md`](../project.md)、[進捗JSON](../data/project-status.json)、同一artifactの証拠で判断する。
 
-利用者は「やりたいことは変わっていない。設計書を最初から組み直したい」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」「古く紛らわしい不要な内容は削除」と明示した。このため本書を**現行方針 → RQ01〜RQ50 → 現在の未受入gate**へ再構成する。旧SIM購入入口、旧Mini構成・価格、日付付き変更ログは現行本文から削除し、Git履歴へ残す。復元先は[Git整理方針](git-consolidation.md)で管理する。固定原本・vendor・受入証拠は変更しない。
+利用者は「やりたいことは変わっていない。設計書を最初から組み直したい」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」「古く紛らわしい不要な内容は削除」と明示した。このため本書を**現行方針 → RQ01〜RQ49 → 現在の未受入gate**へ再構成する。旧SIM購入入口、旧Mini構成・価格、日付付き変更ログは現行本文から削除し、Git履歴へ残す。復元先は[Git整理方針](git-consolidation.md)で管理する。固定原本・vendor・受入証拠は変更しない。
 
 新しい明示指示がある場合だけ、理由と根拠を正本へ記録する。優先順位は新しい利用者の明示指示、本書の現行方針と要望、対象sourceの検証済み契約の順。過去の要望を更新する決定は該当RQへ明示し、旧本文を現在の料金・対応・許可として重複掲載しない。
 
@@ -165,7 +169,7 @@ Campus所属は認証済みemail domainとの一致を`domain_verified`として
 
 既存OSへのSky・本人が選ぶfile/メモ回収・LLM追加、IP Studioの音声/電話は既存adapterへ接続する。録音、発着信、外部Tool作用、送信先・権利・費用は別承認とする。通常の会話やsource実装を全データ閲覧・実通話・端末内model導入の受入にしない。
 
-## 確定要望 RQ01〜RQ50
+## 確定要望 RQ01〜RQ49
 
 番号は変更しない。以下は要望の意味と現在有効な契約を一つの場所へ整理したもの。完了判定は末尾gateと現物証拠を使い、要望の掲載を実装済み表示にしない。
 
@@ -459,7 +463,7 @@ Asset ID、入力/生成条件、model/版、hash、権利、費用、Receipt、
 
 四方向sensor・Invention Volume・物質digital twin・差分再計算・VR/ARは研究profileとして保持し、現在のMini R5製品profileと混同しない。操作・si提案・simulation・文献・実験を分けてPatent siへ発明開示/先行技術/専門家packetを渡す。gestureやcameraを実験/共有/出願承認にせず、特許性・侵害・発明者/帰属・支払/出願を自動確定しない。[XR契約](material-invention-xr.md)を使う。
 
-## RQ50 使われていないスマートフォンの計算余力をSkyで仲介する
+## 保持するSource拡張：旧RQ50 — 使われていないスマートフォンの計算余力
 
 CapacityOffer、ComputeOrder、短命ComputeLeaseで余剰端末と固定workloadをmatchingする。capability、hash、benchmark、availability、粗い地域、trust、price/data policy、期限/予算/検証条件をhard filterし、ownerの使用を優先する。
 

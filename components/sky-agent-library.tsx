@@ -17,7 +17,7 @@ const starters = [
   { id: 'writing', title: '文章を作る', detail: '目的と読み手に合わせて下書き', name: '文章担当', instructions: '目的と読み手を確認し、分かりやすい文章の下書きを作ってください。曖昧な点は質問し、事実と提案を区別してください。' },
   { id: 'planning', title: '仕事を進める', detail: '作業の順番と確認事項を整理', name: '計画担当', instructions: '目的、期限、使える資料と予算を確認し、作業の順番、必要な承認、完了条件を提案してください。実行していない作業を完了と書かないでください。' },
 ] as const;
-export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntime?: boolean } = {}) {
+export default function SkyAgentLibrary({ publicRuntime = true, embedded = false }: { publicRuntime?: boolean; embedded?: boolean } = {}) {
   const [agents, setAgents] = useState<SkyLibraryAgent[]>([]);
   const [ownerUserId, setOwnerUserId] = useState('');
   const [selected, setSelected] = useState<SkyLibraryAgent | null>(null);
@@ -100,17 +100,17 @@ export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntim
   };
   const visible = agents.filter(a => `${a.name} ${a.instructions} ${a.model}`.toLowerCase().includes(query.toLowerCase()));
   const definition = textModelProviderDefinition(settings.provider);
-  return <WorkspaceShell title="自分のSky">
-    <div className={styles.page}>
+  const Heading = embedded ? 'h3' : 'h1';
+  const content = <div className={styles.page} data-sky-agent-management>
       <header className={styles.hero}>
         <div><Link className={styles.back} href="/#timeline">Sky <ChevronRight size={13} /> マイエージェント</Link>
-          <p className={styles.eyebrow}>YOUR AGENTS, YOUR WAY</p><h1>あなたのエージェント。</h1>
+          <p className={styles.eyebrow}>YOUR AGENTS, YOUR WAY</p><Heading>あなたのエージェント。</Heading>
           <p>やってほしいことに合う担当を作り、使うSIや端末につなぎます。依頼と成果の確認はEveで進められます。</p></div>
         <button className={styles.primary} onClick={() => open(null)} disabled={loading || busy || dirty || signedOut}><Plus size={17} /> エージェントを作る</button>
       </header>
       <nav className={styles.links} aria-label="エージェントの管理">
         <span><Bot size={17} /> 追加したエージェント <strong>{loading ? '—' : agents.length}</strong></span>
-        <Link href="/#catalog">Sky Market <ArrowUpRight size={15} /></Link>
+        <Link href="/#sky">Sky Market <ArrowUpRight size={15} /></Link>
         <Link href="/os/eve">Eveの仕事と成果 <ArrowUpRight size={15} /></Link>
       </nav>
       {!publicRuntime && <details><summary>購入と利用権の状態を確認</summary><SkyOwnedAgents /></details>}
@@ -136,7 +136,7 @@ export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntim
             </ol>}
             <fieldset disabled={busy || signedOut}>
               {(!creating || creationStep === 0) && <>
-              {creating && !selected?.sourceTool && <div className={styles.toolChoice}><h3>Sky Toolを使うなら</h3><p>接続済みToolを選ぶと、そのTool専用の担当として設定できます。</p><div>{agents.filter(agent => agent.source === 'sky-tool').slice(0, 4).map(agent => <button type="button" key={agent.id} onClick={() => startToolSetup(agent)}>{agent.name} <ArrowRight size={14} /></button>)}</div><Link href="/#catalog">SkyでToolを探す <ArrowUpRight size={14} /></Link></div>}
+              {creating && !selected?.sourceTool && <div className={styles.toolChoice}><h3>Sky Toolを使うなら</h3><p>接続済みToolを選ぶと、そのTool専用の担当として設定できます。</p><div>{agents.filter(agent => agent.source === 'sky-tool').slice(0, 4).map(agent => <button type="button" key={agent.id} onClick={() => startToolSetup(agent)}>{agent.name} <ArrowRight size={14} /></button>)}</div><Link href="/#sky">SkyでToolを探す <ArrowUpRight size={14} /></Link></div>}
               {creating && <div className={styles.starters}><h3>まず、何を任せたい？</h3><p>近いものを選んでから、名前や役割を書き換えられます。</p><div className={styles.starterGrid}>{starters.map(starter => <button type="button" key={starter.id} aria-pressed={starterId === starter.id} onClick={() => applyStarter(starter)}><strong>{starter.title}</strong><span>{starter.detail}</span></button>)}</div></div>}
               <label>名前<input required maxLength={80} value={settings.name} placeholder="例：文章を整える担当" onChange={e => change('name', e.target.value)} /></label>
               <label>何をしてほしい？<textarea required maxLength={1200} rows={4} value={settings.instructions} placeholder="例：資料の出典を示し、要点と分からない点を分けて返す" onChange={e => change('instructions', e.target.value)} /></label>
@@ -170,6 +170,6 @@ export default function SkyAgentLibrary({ publicRuntime = true }: { publicRuntim
         </section>
       </div>
       {ownerUserId && <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} />}
-    </div>
-  </WorkspaceShell>;
+    </div>;
+  return embedded ? content : <WorkspaceShell title="自分のSky">{content}</WorkspaceShell>;
 }

@@ -1,0 +1,203 @@
+{
+  "schema": "rockstaros-sites-current-public-observation/1",
+  "observedAt": "2026-10-22T12:10:00Z",
+  "site": {
+    "id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "title": "RockstarOS — 自分のSI環境を、どこからでも",
+    "slug": "sky-marketplace",
+    "status": "active",
+    "latest_version_number": 111,
+    "current_preview_url": null,
+    "current_live_url": "https://avoado.si",
+    "expected_url": null,
+    "current_user_role": "owner",
+    "access_mode": "public",
+    "external_visitor_invites_enabled": true,
+    "updated_at": "2026-10-22T07:34:04.472786+00:00"
+  },
+  "version": {
+    "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_e36b643c6b40819188319a9f5b481734",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "version_number": 111,
+    "source": {
+      "commit_sha": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf"
+    },
+    "deployment_id": "appgdep_6ad9bbd08d848191aed739e95acaa4e1"
+  },
+  "deployment": {
+    "id": "appgdep_6ad9bbd08d848191aed739e95acaa4e1",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "status": "succeeded",
+    "type": "publish",
+    "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_e36b643c6b40819188319a9f5b481734",
+    "updated_at": "2026-10-22T07:34:03.995559+00:00",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "failure_message": null
+  },
+  "readOnly": true,
+  "currentPublicSite": {
+    "observedAt": "2026-10-22T12:10:00Z",
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "url": "https://avoado.si",
+    "providerUrl": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "version": 111,
+    "sourceCommit": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+    "access": "public",
+    "deployed": true,
+    "versionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_e36b643c6b40819188319a9f5b481734",
+    "deploymentId": "appgdep_6ad9bbd08d848191aed739e95acaa4e1",
+    "mainMerged": false,
+    "authenticatedProductionAcceptance": "not_run_in_this_metadata_readback",
+    "commercialCloudAgents": "not_accepted",
+    "physicalOsRelease": "not_accepted"
+  },
+  "deliveryAcceptance": {
+    "status": "not_accepted",
+    "reason": "Metadata readback is separate from all-route headers, authenticated journey, independent security, billing and physical OS acceptance.",
+    "observedHeaderGaps": [
+      "/sky",
+      "/sw.js",
+      "/_next/static/chunks/index-CxUCMpZg.js"
+    ]
+  },
+  "newDeployment": false,
+  "newAccessGrant": false,
+  "publicSourceChanged": false,
+  "publicHeaders": {
+    "schema": "rockstaros-public-header-observation/1",
+    "observedAt": "2026-10-22T12:13:30Z",
+    "origin": "https://avoado.si",
+    "authenticated": false,
+    "dataMutationPerformed": false,
+    "routes": [
+      {
+        "path": "/",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "headers": {
+          "Content-Security-Policy": "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Resource-Policy": "same-origin",
+          "Referrer-Policy": "no-referrer",
+          "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+          "X-Content-Type-Options": "nosniff",
+          "X-Frame-Options": "DENY",
+          "Permissions-Policy": "bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()"
+        },
+        "exactHeaders": true,
+        "missingOrDifferent": [],
+        "cacheControl": "no-store, must-revalidate",
+        "location": null,
+        "bodySha256": "c67c66efcf30b40a6228c05f09c71f919b537f028915c25a00ad37e9ed016bbc"
+      },
+      {
+        "path": "/sky",
+        "status": 308,
+        "contentType": null,
+        "headers": {
+          "Content-Security-Policy": null,
+          "Cross-Origin-Opener-Policy": null,
+          "Cross-Origin-Resource-Policy": null,
+          "Referrer-Policy": null,
+          "Strict-Transport-Security": null,
+          "X-Content-Type-Options": null,
+          "X-Frame-Options": null,
+          "Permissions-Policy": null
+        },
+        "exactHeaders": false,
+        "missingOrDifferent": [
+          "Content-Security-Policy",
+          "Cross-Origin-Opener-Policy",
+          "Cross-Origin-Resource-Policy",
+          "Referrer-Policy",
+          "Strict-Transport-Security",
+          "X-Content-Type-Options",
+          "X-Frame-Options",
+          "Permissions-Policy"
+        ],
+        "cacheControl": null,
+        "location": "https://avoado.si/os/sky",
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/sw.js",
+        "status": 200,
+        "contentType": "text/javascript",
+        "headers": {
+          "Content-Security-Policy": null,
+          "Cross-Origin-Opener-Policy": null,
+          "Cross-Origin-Resource-Policy": null,
+          "Referrer-Policy": null,
+          "Strict-Transport-Security": null,
+          "X-Content-Type-Options": null,
+          "X-Frame-Options": null,
+          "Permissions-Policy": null
+        },
+        "exactHeaders": false,
+        "missingOrDifferent": [
+          "Content-Security-Policy",
+          "Cross-Origin-Opener-Policy",
+          "Cross-Origin-Resource-Policy",
+          "Referrer-Policy",
+          "Strict-Transport-Security",
+          "X-Content-Type-Options",
+          "X-Frame-Options",
+          "Permissions-Policy"
+        ],
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "location": null,
+        "bodySha256": "c9875ac4218849512f66bbf986f54414c3dd833bd47fb3e7fdd77fd1f5993691"
+      },
+      {
+        "path": "/api/eve/history",
+        "status": 401,
+        "contentType": "application/json",
+        "headers": {
+          "Content-Security-Policy": "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Resource-Policy": "same-origin",
+          "Referrer-Policy": "no-referrer",
+          "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+          "X-Content-Type-Options": "nosniff",
+          "X-Frame-Options": "DENY",
+          "Permissions-Policy": "bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()"
+        },
+        "exactHeaders": true,
+        "missingOrDifferent": [],
+        "cacheControl": "no-store",
+        "location": null,
+        "bodySha256": "be8896a069d9e1c71338946ea4ea30cd26f840c1efbcbe2b9712ee3d2f861495"
+      },
+      {
+        "path": "/_next/static/chunks/index-CxUCMpZg.js",
+        "status": 200,
+        "contentType": "text/javascript",
+        "headers": {
+          "Content-Security-Policy": null,
+          "Cross-Origin-Opener-Policy": null,
+          "Cross-Origin-Resource-Policy": null,
+          "Referrer-Policy": null,
+          "Strict-Transport-Security": null,
+          "X-Content-Type-Options": null,
+          "X-Frame-Options": null,
+          "Permissions-Policy": null
+        },
+        "exactHeaders": false,
+        "missingOrDifferent": [
+          "Content-Security-Policy",
+          "Cross-Origin-Opener-Policy",
+          "Cross-Origin-Resource-Policy",
+          "Referrer-Policy",
+          "Strict-Transport-Security",
+          "X-Content-Type-Options",
+          "X-Frame-Options",
+          "Permissions-Policy"
+        ],
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "location": null,
+        "bodySha256": "42e31729db2e4c8c1ecc97612816d66eda6a31c86d7b605ff60d1845aa592483"
+      }
+    ],
+    "scope": "Anonymous public response observation; independent metadata identifies public version111. No authenticated journey, billing, canonical security acceptance or physical OS release."
+  }
+}

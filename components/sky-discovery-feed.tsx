@@ -261,7 +261,7 @@ export default function SkyDiscoveryFeed({
                 <Check size={14} />
                 追加済み
               </span>
-              <Link href="/sky/agents">担当とLLMを設定</Link>
+              <Link href="/#sky-manage">担当とLLMを設定</Link>
               <button onClick={() => prepareTool(tool)}>
                 Eveに依頼 <ArrowUpRight size={15} />
               </button>
@@ -434,7 +434,7 @@ export default function SkyDiscoveryFeed({
         </p>
       )}
       {!standalone && (
-        <Link className={styles.more} href="/#catalog">
+        <Link className={styles.more} href="/#sky">
           もっと見つける <ArrowUpRight size={16} />
         </Link>
       )}

@@ -1,7 +1,8 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { createWorkJob, applyWorkCommand } from '../lib/workflow.ts';
 import { workStore } from '../lib/work-store.ts';
@@ -509,13 +510,7 @@ await test('all 32 existing squads remain a distinct importable canonical plan w
 await test('AMC jobs use the same real SQLite ownership and revision CAS boundary as other work', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((name) => name.endsWith('.sql') && !name.startsWith('._'))
-    .sort()) {
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'),
-    );
-  }
+  applySourceSandboxSchema(sqlite);
   const store = workStore({
     prepare(sql) {
       return {

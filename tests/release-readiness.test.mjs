@@ -1,7 +1,8 @@
+import { tmpdir } from 'node:os';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   createCurrentNativeSbom,
@@ -26,7 +27,7 @@ const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
 // Validate the recorded audit independently of the developer's deployment.
 // The release CLI still reads the actual .openai/hosting.json.
-const sitesHosting = read('tests/fixtures/sites-owner-preview-hosting.json');
+const sitesHosting = read('tests/fixtures/sites-current-public-hosting.json');
 const webSecurityPolicy = read('data/web-security-policy.json');
 const webLicenseAudit = read('data/web-third-party-license-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
@@ -164,7 +165,7 @@ void test('Web security source policy is exact and current deployment must prove
   target.declaredStatus = 'ready';
   assert.throws(
     () =>
-      validateOwnerPrivateSitesAudit({
+      validateOwnerPrivateSitesAudit({ root,
         audit: falselyCurrent,
         hosting: sitesHosting,
         readiness: changed,
@@ -180,14 +181,14 @@ void test('owner-private delivery stays safe while latest source sync remains bl
   target.gates.find(({ id }) => id === 'latest-approved-source-sync').status = 'pass';
   target.declaredStatus = 'ready';
   assert.throws(
-    () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting: sitesHosting, readiness: changed, webSecurityPolicy }),
+    () => validateOwnerPrivateSitesAudit({ root, audit: sitesAudit, hosting: sitesHosting, readiness: changed, webSecurityPolicy }),
     /未同期状態または必要な所有者行動/,
   );
 });
 
 void test('owner approval and owner-workspace access remain separate launch gates', () => {
   assert.deepEqual(
-    validateOwnerPrivateSitesAudit({
+    validateOwnerPrivateSitesAudit({ root,
       audit: sitesAudit,
       hosting: sitesHosting,
       readiness,
@@ -204,7 +205,7 @@ void test('owner approval and owner-workspace access remain separate launch gate
   delete missingObservation.access.evidence;
   assert.throws(
     () =>
-      validateOwnerPrivateSitesAudit({
+      validateOwnerPrivateSitesAudit({ root,
         audit: missingObservation,
         hosting: sitesHosting,
         readiness,
@@ -218,7 +219,7 @@ void test('owner-private delivery rejects public or external access readback', (
   const changed = structuredClone(sitesAudit);
   changed.site.externalVisitors = 1;
   assert.throws(
-    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+    () => validateOwnerPrivateSitesAudit({ root, audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
     /本人1名限定/,
   );
 });
@@ -226,15 +227,15 @@ void test('owner-private delivery rejects public or external access readback', (
 void test('recorded Sites audit rejects missing or mismatched deployment identity', () => {
   for (const hosting of [undefined, {}, { project_id: 'different-project' }]) {
     assert.throws(
-      () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting, readiness, webSecurityPolicy }),
-      /本人1名限定/,
+      () => validateOwnerPrivateSitesAudit({ root, audit: sitesAudit, hosting, readiness, webSecurityPolicy }),
+      /歴史的な本人限定Siteと現行公開Siteの境界/,
     );
   }
   const changed = structuredClone(sitesAudit);
   changed.site.projectId = 'different-project';
   assert.throws(
-    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
-    /本人1名限定/,
+    () => validateOwnerPrivateSitesAudit({ root, audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+    /歴史的な本人限定Siteと現行公開Siteの境界/,
   );
 });
 
@@ -249,7 +250,7 @@ void test('recorded Sites audit rejects broader access even with matching identi
     const changed = structuredClone(sitesAudit);
     Object.assign(changed.site, fields);
     assert.throws(
-      () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+      () => validateOwnerPrivateSitesAudit({ root, audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
       /本人1名限定/,
     );
   }
@@ -714,4 +715,44 @@ void test('historical native SBOM is labeled as evidence-only and keeps target a
   } finally {
     unlinkSync(resolve(root, outputPath));
   }
+});
+
+void test('current public metadata binds the Site, saved version and successful deployment independently', () => {
+  const directory = mkdtempSync(resolve(tmpdir(), 'rock-public-metadata-'));
+  const path = resolve(directory, 'docs/evidence/sites-current-public-observation.json');
+  mkdirSync(resolve(directory, 'docs/evidence'), { recursive: true });
+  const original = read('docs/evidence/sites-current-public-observation.json');
+  const check = proof => { writeFileSync(path, JSON.stringify(proof)); return validateCurrentPublicSiteObservation({ root: directory, readiness, hosting: sitesHosting }); };
+  try {
+    assert.equal(check(original).status, 'BLOCKED_OBSERVED_PUBLIC_PREVIEW');
+    for (const mutation of [
+      proof => { proof.site.id = 'different'; },
+      proof => { proof.site.access_mode = 'custom'; },
+      proof => { proof.site.latest_version_number += 1; },
+      proof => { proof.version.source.commit_sha = '0'.repeat(40); },
+      proof => { proof.deployment.project_id = 'different'; },
+      proof => { proof.deployment.version_id = 'different'; },
+      proof => { proof.deployment.status = 'failed'; },
+      proof => { proof.deployment.type = 'preview'; },
+      proof => { proof.readOnly = false; },
+      proof => { proof.newDeployment = true; },
+      proof => { proof.newAccessGrant = true; },
+      proof => { proof.currentPublicSite.url = 'https://different.example/'; },
+    ]) {
+      const changed = structuredClone(original); mutation(changed);
+      assert.throws(() => check(changed), /同じproject\/version\/SHA\/access|同一Site公開URL/);
+    }
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+void test('historical private delivery cannot be promoted to current public or owner-private acceptance', () => {
+  const missingScope = structuredClone(readiness);
+  delete missingScope.policy.ownerPrivateSitesAuditScope;
+  assert.throws(() => validateMatrix({ matrix: missingScope }), /本人1名限定/);
+  const missingBoundary = structuredClone(readiness);
+  delete missingBoundary.targets.find(target => target.id === 'web-pwa-owner-preview').gates.find(gate => gate.id === 'secure-delivery').acceptanceScope;
+  assert.throws(() => validateMatrix({ matrix: missingBoundary }), /本人限定配備readbackへの参照/);
+  const wrongOrigin = structuredClone(readiness);
+  wrongOrigin.policy.ownerPrivateSitesHosting = '.openai/hosting.json';
+  assert.throws(() => validateMatrix({ matrix: wrongOrigin }), /歴史的な本人限定Siteと現行公開Siteの境界/);
 });

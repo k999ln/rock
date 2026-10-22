@@ -1243,7 +1243,7 @@ export default function SkySocialTimeline({
               >
                 招待鍵で参加する
               </button>
-              <Link href="/sky/agents">担当とLLMを設定 →</Link>
+              <Link href="/#sky-manage">担当とLLMを設定 →</Link>
             </aside>
             <div className={styles.stream}>
               {communityForm && (

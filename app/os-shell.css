@@ -4,7 +4,7 @@
   --os-shell-panel: #fffdf8;
   --os-shell-raised: #e9ecdf;
   --os-shell-text: #252b28;
-  --os-shell-muted: #778077;
+  --os-shell-muted: #626e65;
   --os-shell-line: #dedfd6;
   --os-shell-accent: #315b4d;
   --os-shell-accent-ink: #fffdf8;
@@ -72,3 +72,14 @@
 @media (min-width: 1280px) { .os-home-navigation { display: none !important; } }
 
 .rock-workspace .rock-main.eve-sync-main { padding: 0; max-width: var(--os-content); }
+
+/* The same frame also covers older packaged workspace styles. */
+.rock-workspace.rock-workspace :is(.rock-main-column, .rock-main) {
+  color: var(--os-text);
+  background: var(--os-bg);
+}
+.rock-workspace.rock-workspace .rock-bottom-note {
+  color: var(--os-shell-muted);
+  border-color: var(--os-shell-line);
+  background: var(--os-shell-panel);
+}

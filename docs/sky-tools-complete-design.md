@@ -1410,3 +1410,100 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 - **失敗・復旧・承認**: stale版/別owner/停止/違うLLMは送信前に拒否。再送には同じIDを使い、曖昧な送信を自動再実行しない。無料Cloudは既存の明示同意と利用枠を通し、有料fallbackはない。受理済み仕事の版は固定し、停止はEveの個別停止で確認する。設定/仕事のデータは削除しない。
 - **合格条件・範囲**: owner/CAS/モデル/役割、queue再開と再読込みでの版保持、1回の送信・review維持を合成試験する。公開画面の同一owner保存と再表示は別に確認する。新しい実推論は0件で開始し、PixelのCloud仕事統合、任意ローカル役割、他の有料Providerと本番請求の合格には転用しない。
 - **未決条件**: Source v108の金融回帰試験9件は、今回の変更を外した同一Sourceに修正済み合成DB初期化を適用しても同じ9件が失敗した。本番金融/一般公開合格にはせず、CORE09で原因と台帳/枠/照合の証拠を修復する。Source-only無料Cloud backendとRootの統合も独立した未完了項目。
+
+
+## 配信Sourceのowner workspace移行修復（CORE01/06/08/09・WEB04/SKY21）
+
+公開済みmain系列0026〜0028の時刻が0025のwatermarkより小さく、Drizzleによる既存DB更新ではEve履歴・Sky timeline/community・本人accountの23表が未適用となる経路を隔離D1で再現した。既存0020〜0030のSQLと時刻は固定し、Source-onlyの0031_owner_workspace_schema_recoveryを4102444800003で追加する。新規作成はIF NOT EXISTSのtable/indexのみで、既存仕事・金額・暗号化envelopeを更新/削除しない。
+
+入力は復元済みmain DBと既存の移行台帳、出力は欠けたschemaと新watermarkである。途中再試行と二ownerの同じthread IDを保持する。sky_communitiesのrecovery_hash/os_revision/post_mode、sky_social_postsのreply_toが既存tableに不足する場合はzero-row queryで失敗し、移行完了を記録せずoperatorのbackup/明示修復へ戻す。空DBのproduction bootstrapでも、所有者API/復号・生体vaultの受入でもない。
+
+同じSourceのdb/schemaへ既存0030のSky Agent設定定義を取り込み、schema検査は固定した復元前提と明示した既存timestamp例外だけを検証する。新しい時刻逆行、公開SQL改変、root/drizzleとmainの不一致は拒否する。実D1のupgrade/再読/拒否試験と、schema inventoryを別々に記録する。新しい公開配備・実DB更新は未実行。Source-only差分と環境は docs/evidence/sky-source-regression-repair.json を参照。
+
+
+### main Sourceの梱包境界と旧系列の試験維持（CORE06/08/09・WEB04/RLS02）
+
+main Siteの配信Sourceはroot drizzleをdrizzle-mainへ置換するため、Columbiaの元root系列を持たない。登録済みproject IDであることだけをSQL適合の証明にせず、`sites-migration-lineage.mjs`でcopy/remove前にmain/Columbiaの必須ファイルと混在を確認し、別SiteのSourceを拒否する。適合しない場合は元の梱包出力も保つ。本番DBへの照会・適用は行わない。
+
+旧系列のempty/current・filename/Drizzle・保存row・SQL byteの回帰は、公開Source686fd5ab78015f6d8dc29030bfd4f76fb912a920のSQL9本とjournalの固定fixtureで全条件を保持する。fixture原本hash/生成物一致を検査し、main packageからの再生成を拒否する。fixtureをmainのbootstrapやColumbiaの新規配備へ使わない。mainは現行12本、0031のwatermark、restored DB前提と6件の実D1保全/拒否を引き続き別に検査する。正しいColumbia sourceの梱包と、欠落/混在での出力保全も含め集中27/27。公開/本番DB受入とは区別する。
+
+
+## 共通画面の色・導線・独立アカウント入口（CORE01/08/12・WEB04/WEB06/SKY21） {#common-os-entry-alignment}
+
+- 目的・利用体験: Home、見つける、自分のSky、Eveを移動しても同じOSとして使う。共通frameはアイボリーの背景/面、深緑の主操作、ブロンズのfocus。主要5導線と仕事中の遷移制限を保持する。既存Toolの入力順や実行契約は変更しない。
+- 責任: 主担当Web/PWA/Sites・ROCK。EXTERNALは配信基盤/ブラウザ、JOINTは同一配備候補の実端末表示、OWNERは登録・認可・公開を担う。Root、保持したSite Source、公開v111、Pixelの表示/実行受入は別に記録する。
+- 入出力: `os-design-tokens.css`と`os-shell.css`の9色を一致させ、Home/timelineの補助文字に同じ色を使う。旧workspace CSSが持つ青系面は共通frameが上書きする。文字色#626e65と背景#f6f4efの計算比は約4.85、面#fffdf8では約5.25。通常文字4.5、focus3以上を対象色で検査し、全UIのWCAG認証とは扱わない。
+- 導線: ガイドのブランドは`/os`、Mini製品リンクは`https://avocadomini.si/`へ戻す。利用権claimの認証切れは`/account?returnTo=%2Fconnect`を別タブで開く。ChatGPTを必須の登録方法にしない。リンクを開くだけでclaim登録/購入/課金しない。
+- 状態・保存: 画面の検索、Agentの本人別一覧/設定/revision、会話/仕事/成果は既存保存/APIを使う。外観/URL修正だけで新しい仕事、履歴、credentials、device grant、台帳を作らない。認証切れ後の再確認はGETのみ、以前の入力と冪等性を保つ。
+- 失敗・復旧: localhostの共通ナビが`/os/sky/agents`を404へ送っていたため、公開hostとloopbackのalias処理を同じにする。書換えでもhost/query/method/body/origin/cookieを保持し、Miniへ転送しない。任意の外部hostをalias対象へ追加せず、認証/許可originは緩めない。配備前は現行公開版を保ち、local候補は既存sourceから再buildできる。
+- 承認: Add/モデル取得/Provider接続/実行/購入/新端末承認を表示確認に含めない。公開は同一Source/build/DB受入と本人の配備承認を別に通す。Pixelのアプリ更新はWeb候補の配備と同一視しない。
+- 合格条件: 共通6契約、既存navigation/router/現行Agent一覧/認証切れclaimの試験、型/lint/build、実browserのHome→catalog→Eve→自分のSky→guideを確認する。Sourceの旧試験が強制citations転送や旧ChatGPT URLを期待した場合は、現行の本人別設定/APIと独立登録へ保護条件を移し、金融/同意/冪等性/入力保全のassertionを残す。
+- 今回の観測: 隔離local DBの候補画面でHome/catalog/Eve/自分のSky/guideを確認。暗号化会話の秘密設定や本人データは入れていないため、空一覧/保存未設定表示は本人アカウントの同期合格ではない。Sourceの残る履歴/公開readiness試験と公開/Pixelの縦断は別gate。[証拠](evidence/common-os-entry-alignment.json)。
+- 未決定の決め方: 初見操作の実測、全Toolの細部/動作、モバイル/実Pixelでの読みやすさは本人操作と同一候補で検証する。黄金比の普遍的優越、未配備の共通UI、全機種対応、生体情報保護の完成を宣言しない。
+
+
+
+
+## 配信用Sourceの端末bindingと共通仕事API {#source-runtime-device-binding}
+
+1. **目的**: CORE02/03/05/06/07、RQ04/07/12/41/42/48、OS10/DSP01/SKY21/WEB06。RootとSourceの端末登録契約差を閉じ、共通runtimeの同じjob/thread/reportを実Worker/D1で検証する。
+2. **体験**: 既存device-code登録と本人のbrowser承認を使う。`X-Rockstar-Device-Binding: owner-device/v1`を明示した新hostにだけbeginのbinding宣言、authorizedの実session deviceId、未消費owner拒否のreasonを返す。未指定の旧Androidには元の厳密な応答fieldを保持する。SDK dev.7がbegin/pollだけで交渉し、body形式やAndroid parserの保護は緩めない。利用者の登録手順や新しいUI、実行権限を追加しない。公開版の更新とは別のローカル候補である。
+3. **責任**: ROCK/Android Device Local AI、Source AMCはO6/OS10・DSP01が主担当、O5/SKY21・O7/WEB06と接続。OWNERは具体的な新端末承認、JOINTは同一公開候補/実機、EXTERNALはhosting/OS。合成ownerの試験を本人のgrantへ昇格させない。
+4. **入力**: 既存beginのdeviceName、one-time deviceCode/userCode、browserのowner、runtime presenceと固定GGUF/Agent/hash、job/thread/claim UUID。 拡張headerは未指定か厳密なowner-device/v1だけとし、不明値はcode/session作成前に400。新しい任意shell、scopeや課金項目は受け付けない。合成の履歴暗号鍵はlocal Workerの試験bindingだけに設定する。
+5. **出力**: 既存ランダムBearerに対応するowner/device ID、拒否状態、共通仕事/履歴/usage。Ownerによる未消費codeの拒否だけ`reason=owner_denied`を返し、消費後のaccess_deniedはreasonなしで保持。token応答喪失を「権限が作られていない」へ誤変換しない。
+6. **状態**: pending→approved/denied→consumedと既存expiry/poll制限は維持。runtimeのpresence→pending→claim→authorize→report→ackを再利用。重複enqueue/reportは同じ仕事を照合、別claimは409。device Bearerによるbrowser発注は403。
+7. **保存**: 既存auth/session/command/replica/history table、token SHA256、暗号化envelopeを使う。新しい顧客・料金DB/migrationを追加しない。報告本文やBearerがreplica暗号文へ平文で出ないことを検査する。過去のarchiveはその版のまま保全する。
+8. **失敗**: 未認証401、悪いOrigin403、別ownerの発注/読取り、任意field、二重claim、失効済みBearerを拒否する。明示拒否と消費済み応答不明を区別し、勝手な再登録を許可しない。serverの保護・既存Guard・金融gateを弱めない。
+9. **復旧**: 実Workerを停止/再起動し、同じD1のreport/hashと同threadの2発言を再読する。ack後に旧queueやlegacy device-syncへ残さず、device失効後の遅着reportは拒否し、本人の保存済み成果は読めるまま保持する。
+10. **検証**: 旧Androidの厳密な6-field begin/4-field authorized/1-field deniedを保った実Worker試験、未知headerで認可row非増加、SDK headerと旧bodyの一致を検証する。新hostでの原始使用量や権限・費用の契約は変えない。`scripts/check-work-api.mjs`に既存SDKと同じbinding応答の照合、`runtime-device-api-acceptance.mjs`に実Worker/D1・Source本体のAPI経路を追加。build/型/lint合格、API1506 assertionsを確認。生成結果は手動の合成reportで実LLM/Native実行ではない。Source full verifyはNode2419pass/1skip・API1506/CSV385、RootはNode1405pass/1skip・API2059/CSV113、SDK60/60と別に記録。823file/12SQLの最終build梱包、_headersなし12応答/実JSbyte/8headerも一致。local proxyのLocation書換えは実公開redirectの証拠へ転用しない。
+別途17:25 UTCのPixel読取り受入: 旧APK24b443c0の既存account/deviceで公開`/api/eve/runtime`を照合し、pending0と既存26jobs/2models/6agents/鍵alias保全を確認。最初のLinux接続timeoutは保持し、Terminal通常起動だけでmTLS statusの読戻しが復帰した。ただしphaseはstoppedで、新Nativeの能力・実推論は未受入。元試験APKへ復旧しメイン不変、端末の点灯設定15は保持。既存Pixelの継続試験はSource公開待ちを前提にしない。
+
+11. **未完/次**: 同じ新Sourceの保存/公開は保留中の明示承認と正規helperのgateを通す。新Native APK/guestの実Android TLS/Keystore/AVF・実job・再起動/停止、Node packageの実本人grantは別受入。既存APKのPixel同期合格をここへ転用しない。[Source同一候補証拠](evidence/source-runtime-device-binding.json)。
+
+## 配信用Sourceの応答保護・現行仕様・証拠参照（CORE05/08/09/12・WEB04/WEB06/SKY21） {#source-readiness-alignment}
+
+- 目的/体験: 実行/認証に進む前に、Home・旧URL・エラー・独自SWが同じ保護方針で応答し、次担当が現行マスターと同じ機能/資料から再開できるようにする。
+- 責任: 主担当Web/PWA/Sites・ROCKはrouter/stage/検査/資料の整合。配信基盤はEXTERNAL、同一Sourceの公開応答はJOINT、配備/本人認可/費用はOWNER。Rootのrouter契約試験とSites専用stage/実測を混ぜない。
+- 入出力: `withMiniSite`の外側で、既存security policyのCSP/COOP/CORP/Referrer/HSTS/nosniff/X-Frame/Permissionsの8 headerをResponseへ強制する。status、既存private/no-store、cookie/認可境界、本文stream、WebSocket付属情報を保ち、本文を先読みしない。独自SWはscope`/`とno-cache/no-store/must-revalidateを返す。
+- 状態/保存: Source buildはapplicationとouter routerを別ファイルでstage。既にwrapperがある再stageでもrouterだけ最新へ更新し、application bytesを保持する。未知のentryは元出力を変更せず拒否する。runtimeのowner/job/契約/金融台帳を変更しない。
+- 検証/復旧: `/sky`互換は同originの正確な308先と8 headerを確認する。現在のmanifest/アイコン/hash付きJS/cacheをlocal production8応答で実測し、11入力hashとapplication/routerのbuild hashへ結ぶ。旧観測は元commit/旧hashで追跡する。検査の期待値だけを新hashへ変更しない。公開失敗は同じversion/responseを照合して復旧し、別配備を増やさない。
+- scope: localhostで測ったSW asset分岐と、canonical public hostの独自SW分岐は別。Host headerの上書きだけではWranglerのURL hostが変わらなかったので、後者のruntime成功へ換算しない。独自SW/拒否/redirectはunitで確認し、本番のcache/更新/offline/本人データ保護は別gateに残す。
+- 証拠の参照: main梱包で除外された旧`0014_jennifer_execution_integrity.sql`は、既存9本の不変fixture/原本hash/元commit686fd5ab…へAMC02の参照を移す。active migrationへ古いSQLを戻さず、履歴の合格を捏造しない。
+- 現行仕様: Sourceも確定要望49と本人指定の全体マスターを入口にする。旧RQ50/Sky Compute Gridは追加拡張としてコード・固定lot・金融保留・負例を保持する。旧Turntable/E3の価格・4塔/Hubを現行R5へ要求しない。R5は単体/200mm/携帯電源の設計、電池方式・表示・実機・製造・価格は未受入。Homeは投稿stream、主要frameはアイボリー/深緑/ブロンズ。 R5専用CSSは旧dark campaignから残る薄い本文を共通OS tokenへ局所overrideし、他製品CSSを変更しない。導入リンクは`/os`へ直接開く。
+- 承認: 以上の整合で実Cloud、署名/契約、課金、作者配賦、OS flash、実機/一般公開を開始しない。新しい本文/credentials/秘密鍵を証拠へ入れない。
+- 合格条件: 変更前の保護header/stage負例、変更後のrouter/SSE/未知entry拒否、real local8応答、公開readinessのblock維持、baselineの49/拡張保持/旧価格拒否/未受入拒否、全Source verifyと同じ候補の表示確認を別に記録する。
+- 現行公開と歴史証拠: Sites read-only metadataで現行project6abdf…/public v111/source6f32…/成功deploymentを同じIDで結ぶ。旧6aa…の本人限定auditとv53の合格は、固定した歴史identity/原証拠hash/範囲として保持し、現行publicへ転用しない。現行proofのsite/version/deployment/URL/sha/role/read-onlyを照合し、公開runtime gateはblocked必須とする。新配備/権限付与/本人journey受入は0。[読戻し](evidence/sites-current-public-observation.json)。
+- 公開応答の不足: v111の匿名読取りではHome200/API401に8 header、旧URL308/独自SW/JS assetには8 headerがなかった。Sourceのwrapper修正とlocalhost実測だけでpublic解消としない。assetがWorkerの前で配信される場合の基盤対応、同一配備での再読取りをJOINT gateへ残す。
+- 設計coverage: ecosystemの確定49項目と保存Source拡張1項目をそれぞれ完全照合する。旧RQ50のCompute Grid coverageを追加拡張として原文/参照/金融保留ごと移設し、設計coverageを実装や収益の達成率へ換算しない。
+- 試験用DB: Sourceのmain0020は既存D1のALTERで、空DB導入の証明ではない。local Workflow/API/CSVの試験は、現行12 SQLと固定歴史fixtureから作る空の復元schemaを前提にする。table/index/trigger全定義を保持し、row/本人データ/filename・Drizzle migration receiptを出力しない。複文triggerを壊さずstatement単位でD1へ適用し、移行のfresh/current/中断/原本byte/誤Site拒否は独立試験で維持する。
+- 未決定/次: Source全体の合格後も公開gate・同一account Pixel・共通ABI・storage/機微保護・一般SI・料金/入金/作者・各機種受入を続ける。全体goal完了とはしない。[同一sourceの証拠](evidence/source-readiness-alignment.json)。
+
+## 静的assetとWorkerを同じ応答保護へ通す（CORE05・WEB04/WEB06） {#source-asset-security}
+
+- 目的/体験: JS/CSS/icon、旧URL、サービスワーカー、API拒否を同じ保護方針で返す。静的ファイルの先行配信で認証や応答保護を飛ばさず、画面の読込み・更新・cache効率を保つ。
+- 責任: ROCK WebはSource buildのstageと検査。EXTERNALはSites/Cloudflareのasset配信。JOINTは同一package/配備の実応答、OWNERは既存audience/認可・公開の条件。RootにはSites専用stageを作らない。
+- 入出力: Sourceの生成wrangler設定で元assets directory/他設定を保持し、binding=ASSETS、run_worker_first=trueを固定する。実frameworkはビルド済みJSを404としたため、GET/HEADの`/_next/static/`だけouter routerからASSETSへ渡し、8headerを付ける。API/POST/画像最適化/Miniは元の経路、binding不在は既存frameworkへ委譲。正常200/206/304の公開assetには既定immutable cacheを適用し、private/no-store/Set-Cookie/404は昇格しない。本文は先読みせずETag/型/状態を保つ。
+- 状態: 元app→既存router wrapper→保護された配信。再stageはbuilt app bytesを変えず、routerとassets設定を更新する。既にWorker先行でも同じ設定になる。
+- 保存: 元SQL/DB/claim/usage/本人データは変更しない。build config、application/router bytes、入力hash、実測のURL/status/header/cache/本文hashを証拠へ束縛する。
+- 失敗: assets directory欠落、異なるbinding、未知のentrypointを変異前に拒否する。ASSETS配線不明やpublic応答不一致を、local合格や_headersの存在だけで成功にしない。
+- 復旧: 元Source/packageの固定hashを保持し、同じ版の再読取り/rollbackを使う。Sites配備結果不明で別配備を乱発しない。旧public v111の観測は修正後へ転用しない。
+- 承認: 新しい公開範囲・device grant・model実行・課金は作らない。既存認証/Origin/owner/host/query/body/機微cacheの境界を保つ。
+- 合格: 実asset serviceで_headersなし・Worker存在/API401保護済みでもasset-firstのJS/SWが迂回する負例、stage後のGET/HEAD/304/404/旧URL308/canonicalSW/API401を確認。実production buildのstatic bytes/type/cacheと画面読込み、packageがWorker先行設定を保持することを独立確認する。
+- 梱包検査: Sites Source内の`python3 scripts/check-sites-package.py /absolute/path/site.tar.gz`で全file集合/各byte・Site identity・ASSETS設定・選択済みSQL集合/byteを読取り比較する。追加/欠落/改変、._/__MACOSX、重複、危険path、link/特殊file、上限超過を拒否し、diskへ展開しない。Macの正規helperはCOPYFILE_DISABLE=1で実行する。検査合格だけでSource commit保存/配備/公開受入としない。
+- 未決定: 同梱toolのconfig解釈、実Sites配備、canonical hostでのreadbackが残る間はpublic runtime gateをblockedへ保つ。Worker invocation増加による遅延/CPU費用は未測定であり性能優位を宣言しない。
+- 参照/次: [一次資料: asset binding](https://developers.cloudflare.com/workers/static-assets/binding/)、[headers](https://developers.cloudflare.com/workers/static-assets/headers/)。Source候補の実測→Source全verify→package→同じversion/deploymentの公開読戻しを別々に進め、全Goalの合格に換算しない。
+
+
+## Home内の「追加・管理」への統合 {#home-add-manage}
+
+1. **目的**: 2026-10-22の本人指摘「/#catalog と /os/sky/agents は要らない」に対応。HOME01/WEB04/SKY21/UXRS01、RQ02/04/26/39/40/48。検索と管理の独立タブを廃し、必要な能力へ進む入口をHomeへまとめる。以前の共通5タブ指定は今回の本人指示により3タブへ改訂する。
+2. **体験**: 主ナビゲーションはSky/Eve/コミュニティー。Homeの「追加・管理」から「探して追加」「追加済み・設定」を切替。投稿からのAdd、既存担当の設定、使うLLM、Eveへの依頼を継続する。
+3. **責任**: ROCK/Product UXが導線・状態・互換を実装、Webが同一候補を配備、JOINTが実ブラウザ/Pixelを確認。OWNERは使いやすさと公開条件を判断。外部catalog/モデル稼働は提供元の責任と別に検証する。
+4. **入力/出力**: Home hash/#sky/#sky-manage、検索語、既存本人agent ID/revision/modelが入力。検索/Add/管理UIと既存Eve URLが出力。管理画面を開くだけで仕事・支払い・grantを開始しない。
+5. **状態**: Homeのdiscover/manageを同じdialogで表示、キーボードtab/矢印/Home/End、Escape/閉じるを扱う。主ナビではいずれもSky選択。初回表示時に管理componentを遅延読込する。
+6. **保存**: 既存/api/sky/agents、本人別保存、revision/CAS、担当停止、端末接続とSky→Eveの固定ID/版を保持。同じHome内ではpanel/タブを閉じても未保存editorとtimelineをunmountしない。page離脱/再読込を未保存draftの永続化と呼ばない。
+7. **失敗**: signed-out、取得失敗、競合、非対応modelは既存表示/保護を維持。画面統合で本人照合や権限/費用検査を省略しない。
+8. **復旧/互換**: 旧/#catalogと/#optional-featuresはHome内検索へ、旧/sky/agentsと/os/sky/agentsは/#sky-manageへ戻す。既存APIと保存データを削除しない。Tool専用の下位URLは個別契約を保持する。
+9. **承認**: 可逆なUI整理は今回の本人指摘に沿う。新モデル実行・送信先・費用・端末権限は各既存gateで確認。既存public Previewの次版配備は自動承認審査が要求した明示承認を別に待つ。
+10. **合格**: 3つの主タブ/旧URL/既存library API・CAS・Eve設定、dialog内draft/scroll/キーボードを集中試験と実UIで確認。同一Root/Source候補の型・lint・full verify、archive/公開response/実機を環境別に記録する。
+11. **次/未決定**: 集中33/33、Root全verify（Node1449中1448pass/1skip、API2061/CSV113）、Source全verify（Node2430中2429pass/1skip、API1530/CSV385）と同一buildの実UIを確認。draft保持/矢印キー/保存と再表示/旧URL/Eveの同agent・revision・model、12配信応答と梱包13SQLが合格。公開v111は未変更で、自動承認審査が求めた次版の明示公開承認を待つ。Pixelの共通実行試験は接続共存の次版配備後。独立した管理機能を捨てた、全OS完成、実課金合格とはしない。[証拠](evidence/home-add-manage.json)。

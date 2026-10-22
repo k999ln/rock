@@ -4,6 +4,8 @@
 
 ## Pixelの動的追加（OS11主担当、SKY07/SKY21連携）
 
+共通host向けのSource本人bindingをRootと整合する。O6/OS10・DSP01主担当、ROCK。実Worker/D1では同job/thread/report・暗号化・再起動・失効を検査し、実Pixel/LLM・新owner grant・公開は別。[11項目契約](../rockstaros-complete-design.md#source-runtime-device-binding)、[証拠](../evidence/source-runtime-device-binding.json)。検証は `npm run build`、`npm run test:api`、`npm run verify` と `npm run mission:check`。
+
 ROCKは[動的LLM・Agent契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)のowner別admission/互換/hash/同意/失効と既存Zema保存を実装する。EXTERNALは公開metadata・weights・Agent定義の提供、OWNERは追加対象/導入/処理保存の選択。host境界試験と同一APKのPixel実推論を独立に記録し、全OS/任意コード/本番課金へ転用しない。
 
 ## Pixel si専用端末アプリの実装

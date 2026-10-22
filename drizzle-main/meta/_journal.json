@@ -78,6 +78,20 @@
       "when": 4102444800002,
       "tag": "0030_sky_agent_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 4102444800003,
+      "tag": "0031_owner_workspace_schema_recovery",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 4102444800004,
+      "tag": "0032_eve_runtime_presence",
+      "breakpoints": true
     }
   ]
 }

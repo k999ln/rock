@@ -1,0 +1,3 @@
+# Published Columbia lineage regression fixture
+
+Exact SQL and journal from Site Source `686fd5ab78015f6d8dc29030bfd4f76fb912a920`, pinned in provenance.json. Keeps the original empty/historical database, partial attempt, unchanged SQL and ledger assertions executable after the main Site packager replaces root drizzle with drizzle-main. This is a synthetic test input; the main Site is still a restored-database additive lineage. Neither this folder nor the pre/post-site development archives are deployment sources for the main Site. Do not regenerate or rewrite this fixture to make a failing schema assertion pass.

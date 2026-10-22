@@ -99,7 +99,7 @@ export function eveRuntimeSyncStore(
   async function devices() {
     const rows = await db
       .prepare(
-        'SELECT p.device_id,p.envelope,p.updated_at FROM eve_device_presence p JOIN rockstar_device_sessions s ON s.id=p.device_id AND s.user_id=p.owner_id WHERE p.owner_id=? AND s.revoked_at IS NULL AND s.expires_at>? ORDER BY p.updated_at DESC LIMIT 50',
+        'SELECT p.device_id,p.envelope,p.updated_at FROM eve_runtime_presence p JOIN rockstar_device_sessions s ON s.id=p.device_id AND s.user_id=p.owner_id WHERE p.owner_id=? AND s.revoked_at IS NULL AND s.expires_at>? ORDER BY p.updated_at DESC LIMIT 50',
       )
       .bind(owner, Date.now())
       .all<{ device_id: string; envelope: string; updated_at: number }>();
@@ -109,7 +109,7 @@ export function eveRuntimeSyncStore(
     for (const row of rows.results) {
       const value = await history.unsealRecord<LinkedPresence>(
         row.envelope,
-        `presence:${row.device_id}`,
+        `runtime-presence:${row.device_id}`,
       );
       if (value.schema === 'rockstaros.runtime-presence/1')
         result.push({
@@ -125,12 +125,12 @@ export function eveRuntimeSyncStore(
     const value = await parseLinkedPresence(raw, Date.now());
     await db
       .prepare(
-        'INSERT INTO eve_device_presence(owner_id,device_id,envelope,updated_at) VALUES(?,?,?,?) ON CONFLICT(owner_id,device_id) DO UPDATE SET envelope=excluded.envelope,updated_at=excluded.updated_at',
+        'INSERT INTO eve_runtime_presence(owner_id,device_id,envelope,updated_at) VALUES(?,?,?,?) ON CONFLICT(owner_id,device_id) DO UPDATE SET envelope=excluded.envelope,updated_at=excluded.updated_at',
       )
       .bind(
         owner,
         deviceId,
-        await history.sealRecord(value, `presence:${deviceId}`),
+        await history.sealRecord(value, `runtime-presence:${deviceId}`),
         Date.now(),
       )
       .run();

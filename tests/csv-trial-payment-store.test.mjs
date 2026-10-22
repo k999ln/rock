@@ -1,18 +1,14 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { csvTrialPayments } from '../lib/csv-trial-payment.ts';
 const jobId = 'ab123456-1234-1234-1234-123456789012';
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((n) => n.endsWith('.sql'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   sqlite
     .prepare(
       `INSERT INTO csv_jobs (id,user_id,status,payment_status,input_name,input_key,input_bytes,input_sha256,input_encoding,specification_json,quote_minor,currency,expires_at,created_at,updated_at) VALUES (?, 'alice', 'quoted', 'unpaid', 'trial.csv', 'fixture-input', 10, 'hash', 'utf8', '{}', 5000, 'JPY', ?, ?, ?)`,

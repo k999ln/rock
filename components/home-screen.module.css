@@ -2,7 +2,7 @@
   --home-accent: var(--os-accent);
   --tl-bg: #f6f4ef;
   --tl-text: #252b28;
-  --tl-muted: #778077;
+  --tl-muted: var(--os-shell-muted, #626e65);
   --tl-line: #dedfd6;
   --tl-blue: #315b4d;
   min-height: 100dvh;
@@ -126,7 +126,7 @@
 }
 .preview {
   font-size: 9px;
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   padding: 10px 12px;
   letter-spacing: 0.08em;
 }
@@ -155,7 +155,7 @@
   border: 1px solid #dedfd6;
   border-radius: 30px;
   padding: 0 14px;
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   background: #eeeee6;
   margin-bottom: 16px;
 }
@@ -199,7 +199,7 @@
   letter-spacing: -0.03em;
 }
 .sideSection p {
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   font-size: 14px;
   margin: 8px 0 16px;
 }
@@ -222,7 +222,7 @@
 }
 .sideSection a small {
   display: block;
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   margin-top: 3px;
   font-size: 12px;
 }
@@ -244,7 +244,7 @@
   flex-wrap: wrap;
   gap: 7px 12px;
   font-size: 11px;
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   padding: 0 12px;
 }
 .footer a:hover {
@@ -295,7 +295,7 @@
   font-size: 22px;
 }
 .sources p {
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
 }
 .sources :is(input, button) {
   color: inherit;
@@ -397,7 +397,7 @@
     background: rgba(246, 244, 239, 0.96);
     border-top: 1px solid #dedfd6;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     padding-bottom: env(safe-area-inset-bottom);
   }
   .mobileNav a {
@@ -478,7 +478,7 @@
 }
 :global(body:has([data-sky-home]) .community-os-runtime) {
   background: #f6f4ef;
-  color: #778077;
+  color: var(--os-shell-muted, #626e65);
   border-bottom: 1px solid #dedfd6;
 }
 :global(body:has([data-sky-home]) .community-os-runtime strong) {
@@ -532,7 +532,7 @@
 }
 
 .providerSettings {border-bottom:1px solid #dedfd6;background:#fffdf8}
-.providerSettings>summary {padding:18px 20px;cursor:pointer;color:#778077;font-size:13px}
+.providerSettings>summary {padding:18px 20px;cursor:pointer;color:var(--os-shell-muted, #626e65);font-size:13px}
 
 /* The compact header is shared with every workspace. */
 .home .mobileHeader { padding: 0; border: 0; }

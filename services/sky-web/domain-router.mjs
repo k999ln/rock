@@ -1,3 +1,41 @@
+// Keep outer-router responses under the same policy as application responses.
+// The exact values are checked against data/web-security-policy.json.
+const UNIVERSAL_RESPONSE_HEADERS = Object.freeze({
+  "Content-Security-Policy": "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Referrer-Policy": "no-referrer",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Permissions-Policy": "bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()"
+});
+
+// This is the existing /_next/static/* policy, independent of _headers parsing.
+async function fetchBuildAsset(request, assets) {
+  const response = await assets.fetch(request);
+  const headers = new Headers(response.headers);
+  if ([200, 206, 304].includes(response.status) &&
+      !headers.has('set-cookie') &&
+      !/\b(?:private|no-store)\b/i.test(headers.get('cache-control') || ''))
+    headers.set('cache-control', 'public, max-age=31536000, immutable');
+  return new Response(response.body, {
+    status: response.status, statusText: response.statusText, headers,
+  });
+}
+
+function secureResponse(response) {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(UNIVERSAL_RESPONSE_HEADERS))
+    headers.set(name, value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+    ...(response.webSocket ? { webSocket: response.webSocket } : {}),
+  });
+}
+
 const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const MINI_PUBLIC_HOST = 'avoado.si';
 const COLUMBIA_HOST = 'columbia.avoado.si';
@@ -46,6 +84,11 @@ const isPath = (path, prefix) =>
   path === prefix || path.startsWith(`${prefix}/`);
 const usesCanonicalSkyPrefix = (hostname) =>
   hostname === MINI_PUBLIC_HOST || hostname.endsWith(`.${MINI_PUBLIC_HOST}`);
+// Shared OS navigation uses /os/sky on the isolated local preview as well.
+// This changes routing only; authentication and allowed origins remain enforced.
+const supportsOsSkyAlias = (hostname) =>
+  usesCanonicalSkyPrefix(hostname) ||
+  ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
 const isJenniferPrivateApi = (path) =>
   JENNIFER_PRIVATE_API_PREFIXES.some((prefix) => isPath(path, prefix));
 const isJenniferPrivateUi = (path) =>
@@ -164,7 +207,7 @@ async function canonicalManifest(response, path) {
 }
 
 export function withMiniSite(skyWorker, upstreamFetch = fetch) {
-  return {
+  const routedWorker = {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
@@ -193,11 +236,17 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       const columbiaDestination = columbiaSkyDestination(source);
       if (columbiaDestination && ['GET', 'HEAD'].includes(request.method))
         return Response.redirect(columbiaDestination, 307);
-      if (usesCanonicalSkyPrefix(source.hostname) && isPath(path, '/sky')) {
+      // Worker-first delivery must serve build assets through the configured
+      // binding; the framework treats already-built static requests as missing.
+      // Keep all other routes and methods under their existing application rules.
+      if (path.startsWith('/_next/static/') &&
+          ['GET', 'HEAD'].includes(request.method) && env?.ASSETS?.fetch)
+        return fetchBuildAsset(request, env.ASSETS);
+      if (supportsOsSkyAlias(source.hostname) && isPath(path, '/sky')) {
         source.pathname = `/os${path}`;
         return Response.redirect(source.href, 308);
       }
-      if (usesCanonicalSkyPrefix(source.hostname) && isPath(path, '/os/sky')) {
+      if (supportsOsSkyAlias(source.hostname) && isPath(path, '/os/sky')) {
         source.pathname = path.slice(3);
         return Promise.resolve(
           skyWorker.fetch(new Request(source, request), env, context),
@@ -211,7 +260,8 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
           {
             headers: {
               'content-type': 'application/javascript; charset=utf-8',
-              'cache-control': 'no-store',
+              'cache-control': 'no-cache, no-store, must-revalidate',
+              'Service-Worker-Allowed': '/',
             },
           },
         );
@@ -226,6 +276,14 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     },
     scheduled(event, env, context) {
       return skyWorker.scheduled?.(event, env, context);
+    },
+  };
+  return {
+    async fetch(request, env, context) {
+      return secureResponse(await routedWorker.fetch(request, env, context));
+    },
+    scheduled(event, env, context) {
+      return routedWorker.scheduled(event, env, context);
     },
   };
 }

@@ -10,6 +10,7 @@ import * as handoffs from '../lib/sky-zema-handoff.ts';
 import * as providers from '../lib/llm-providers.ts';
 import * as remoteClient from '../lib/remote-ai-text-client.ts';
 import * as currency from '../lib/currency-format.ts';
+import * as usageObservation from '../lib/sky-usage-observation.ts';
 
 const id = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee';
 const session = (patch = {}) => ({ version: 1, id, toolId: 'rockstar-amc', createdAt: Date.now(),
@@ -53,6 +54,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       return { state: { config: routingConfig }, session: { edit(next) { routingConfig = next; } } };
     } },
     '@/lib/currency-format': currency,
+    '@/lib/sky-usage-observation': usageObservation,
     '@/lib/remote-ai-text-client': { ...remoteClient, remoteAiTextRequest(path, method, body, _timeout, fetchImpl) { const pending = Promise.withResolvers(); estimates.push({ ...pending, path, method, body }); if (fetchImpl) void fetchImpl(path, { method, signal: new AbortController().signal }); return pending.promise; } },
     '@/lib/llm-providers': providers,
     '@/lib/sky-zema-handoff': { ...handoffs, consumeSkyZemaHandoff(tool, _storage, _now, thread) { consumed.push({ tool, thread }); return handoffs.consumeSkyZemaHandoff(tool, storage, undefined, thread); } },
@@ -94,6 +96,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
     runInNewContext(compiled + suffix, { ...context, exports }, { filename: path }); return exports;
   }
   modules['@/components/use-sky-chat-session'] = compile('components/use-sky-chat-session.ts');
+  modules['./sky-usage-details'] = compile('components/sky-usage-details.tsx');
   const component = compile('components/sky-chat-workspace.tsx', '\nexports.Authenticated = AuthenticatedSkyChatWorkspace;').Authenticated;
   function render() { cursor = 0; tree = component({ executionBlocked: false, accessState: 'ready', setNeedsSignin: noop }); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) { if (Array.isArray(node)) node.forEach((x) => nodes(x, result)); else if (node && typeof node === 'object') { result.push(node); if (node.type !== 'Dialog' || node.props.open) nodes(node.props?.children, result); } return result; }

@@ -21,8 +21,10 @@
     ],
     "catalogCount": 38,
     "designDomainCount": 19,
-    "requirementCount": 50,
-    "coverageMeaning": "各項目を読取/調査/関連契約へ対応した設計coverage。実装/実機/契約/収益の達成率ではない。"
+    "requirementCount": 49,
+    "coverageMeaning": "各項目を読取/調査/関連契約へ対応した設計coverage。実装/実機/契約/収益の達成率ではない。",
+    "historicalRequirementCount": 50,
+    "sourceExtensionCount": 1
   },
   "researchLimits": [
     "網羅範囲は本repositoryの現行製品/全catalog/全RQ/設計領域。全世界のprovider/法令/特許を調べ尽くした意味ではない。",
@@ -2776,13 +2778,6 @@
         "material"
       ],
       "authority": "docs/product-baseline.md"
-    },
-    {
-      "id": "RQ50",
-      "systemIds": [
-        "grid"
-      ],
-      "authority": "docs/product-baseline.md"
     }
   ],
   "domainCoverage": [
@@ -4321,5 +4316,20 @@
       "sha256": "d98c799e39c5dd973ad426d9facd55f9099d3d60d916fb9c32f4c394d1ab1443",
       "scope": "P0 design / Pixel browser limited-rule preview; not merged main physical or Provider evidence"
     }
-  ]
+  ],
+  "sourceExtensionCoverage": [
+    {
+      "id": "RQ50",
+      "systemIds": [
+        "grid"
+      ],
+      "authority": "docs/product-baseline.md"
+    }
+  ],
+  "masterAlignment": {
+    "date": "2026-10-22",
+    "reason": "Owner master requires canonical RQ01-RQ49; existing Source Compute Grid remains a separately covered extension.",
+    "newResearchPerformed": false,
+    "originalSourcesAndRuntimeBoundariesPreserved": true
+  }
 }

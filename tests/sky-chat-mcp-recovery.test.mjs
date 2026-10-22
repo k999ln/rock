@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import ts from 'typescript';
+import * as usageObservation from '../lib/sky-usage-observation.ts';
+import * as currency from '../lib/currency-format.ts';
 import * as historyNavigation from '../lib/history-navigation-guard.ts';
 
 const source = readFileSync(new URL('../components/sky-chat-workspace.tsx', import.meta.url), 'utf8');
@@ -30,6 +32,8 @@ function harness() {
   const noop = () => {};
   const session = { id: 'fixture-thread', toolId: 'mcp:initial', createdAt: 1, messages: [], activeRequest: { id: 'fixture-request', text: 'Synthetic request', toolId: 'mcp:initial' }, workflowStatus: 'ready', outcome: null };
   const modules = {
+    '@/lib/sky-usage-observation': usageObservation,
+    '@/lib/currency-format': currency,
     '@/lib/history-navigation-guard': historyNavigation,
     'react': react,
     'react/jsx-runtime': { jsx, jsxs: jsx },
@@ -72,6 +76,11 @@ function harness() {
   }).outputText;
   runInNewContext(sessionCompiled, { ...context, exports: sessionExports });
   modules['@/components/use-sky-chat-session'] = sessionExports;
+  const usageExports = {};
+  runInNewContext(ts.transpileModule(readFileSync(new URL('../components/sky-usage-details.tsx', import.meta.url), 'utf8'), {
+    compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
+  }).outputText, { ...context, exports: usageExports });
+  modules['./sky-usage-details'] = usageExports;
   runInNewContext(compiled, { ...context, exports });
   const props = { executionBlocked: false, accessState: 'ready', setNeedsSignin: noop };
   function render() { cursor = 0; tree = exports.Authenticated(props); effects.splice(0).forEach((effect) => effect()); }

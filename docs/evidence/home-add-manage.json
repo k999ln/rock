@@ -1,0 +1,338 @@
+{
+  "schema": "rockstaros.home-add-manage-evidence/1",
+  "recordedAt": "2026-10-22T19:49:44.131431+00:00",
+  "status": "local_ui_exact_build_full_gates_accepted_publication_approval_pending",
+  "authority": "2026-10-22 owner says /#catalog and /os/sky/agents are redundant, screenshot points to their separate bottom tabs",
+  "taskIds": [
+    "HOME01",
+    "WEB04",
+    "SKY21",
+    "UXRS01"
+  ],
+  "primaryOwner": "ROCK / Product UX",
+  "change": {
+    "primaryNavigation": [
+      "stream",
+      "eve",
+      "communities"
+    ],
+    "homePanel": [
+      "探して追加",
+      "追加済み・設定"
+    ],
+    "entry": "/#sky",
+    "management": "/#sky-manage",
+    "oldCatalog": "compatible Home panel alias",
+    "oldAgentsPage": "redirect to /#sky-manage",
+    "ownerLibraryStoreReplaced": false,
+    "executionApiReplaced": false,
+    "draftPreservedWithinMountedHome": true,
+    "timelinePreservedAcrossPanel": true
+  },
+  "rootSha256": {
+    "app/sky/agents/page.tsx": "7812dd144fa711daf7a0a8c73ffcec326394f0c8d68ef7ed97bdbbef0ddebfdb",
+    "components/eve-sync-workspace.tsx": "20042bc62daf8d160a0785b159939723d97e8bc2e6d1bccbff14ed7404c549ee",
+    "components/home-screen.module.css": "d26fba3eeb2a8812d3be1b0b3104e4c07dafe93e67bf6bef15572b0b11e72b18",
+    "components/home-screen.tsx": "2dacb72b4a9a5376495012acc522f7446372b7c35a09e594bc44ea4db5d50a61",
+    "components/os-app-navigation.tsx": "341190c585a331990d7aadb4d2607a0e027ffc937d416620bf6fda033ef3eb6b",
+    "components/sky-agent-eve-profile.tsx": "42beb4795abd5076a874aca5ab015a6e9d690172ec0a980dbf3c2056e32ff8f4",
+    "components/sky-agent-library.module.css": "52c225a64b40d35f65a7235ef8fd03d6db18da4974911333f26395f2a27f92e7",
+    "components/sky-agent-library.tsx": "8e7267e6f3f77a992f977b12034721aa2917d0cbfcfb2711b7737df27c05e03b",
+    "components/sky-chat-workspace.tsx": "b838d9891ba820be9c0be34fe02ca608112b9a625c993609f2b7af31bd137c0e",
+    "components/sky-discovery-dialog.module.css": "91c9069e8520d15ba5b1b6c0db90fca51ebcb938ea3d65523e0bedfe760e4d1b",
+    "components/sky-discovery-dialog.tsx": "b254ea0c3a16c9d7482b148cb37cd829cffc3675d7b504e23a18954bef35b22d",
+    "components/sky-discovery-feed.tsx": "561590aef22fb3cee004affe4e9b8ec873d0418845d82c3fe1041f4ca8df1a26",
+    "components/sky-information-market.tsx": "ac18d83baa0a65a45786254f4d472119b43eac4fb5263df35155f3fedafdae3a",
+    "components/sky-social-timeline.tsx": "698ff6f03e3ce35423fc23e9993d556e4d432e969a8e63b014b3d2b452952e37",
+    "components/sky-workspace.tsx": "b24732432aa68c8a6a6bfeaa2a99a33d80a64e9dbf1788ed76f0e840836d82c1",
+    "lib/os-navigation.ts": "711678f1d03a66c325fe0a2ca97729c511e47a4edb9df44c3309fcbc9732c884",
+    "tests/common-os-entry-contract.test.mjs": "36e46030e14a5860f732c2d49e929532d976019434ef038697275db904f7bd29",
+    "tests/home-sky-panel.test.mjs": "822fd66fd4a348f284689ed33357da45233539df124d884d5c609153f3156a2d",
+    "tests/os-shell-navigation.test.mjs": "aaf9e5a1b8582757d3fc472380ecb76d7c17737c8d3dd1185008288817a90dc3",
+    "tests/sim-service-entry.test.mjs": "e47c2e64daa62391676e5bd6002f205396bb2ea359d7c465bea3b4ff9bbbea9a",
+    "tests/web-route-style-contract.test.mjs": "87676bf76fc605f4d34baa8c84cba156a29aa6510b85b79286bea2dd2d779994"
+  },
+  "sourceSha256": {
+    "app/sky/agents/page.tsx": "7812dd144fa711daf7a0a8c73ffcec326394f0c8d68ef7ed97bdbbef0ddebfdb",
+    "components/eve-sync-workspace.tsx": "162394945375d52afcc4f0430cd48f59624ad1e8d0b361f7ea4751bfb2722f98",
+    "components/home-screen.module.css": "d26fba3eeb2a8812d3be1b0b3104e4c07dafe93e67bf6bef15572b0b11e72b18",
+    "components/home-screen.tsx": "2dacb72b4a9a5376495012acc522f7446372b7c35a09e594bc44ea4db5d50a61",
+    "components/os-app-navigation.tsx": "341190c585a331990d7aadb4d2607a0e027ffc937d416620bf6fda033ef3eb6b",
+    "components/sky-agent-eve-profile.tsx": "42beb4795abd5076a874aca5ab015a6e9d690172ec0a980dbf3c2056e32ff8f4",
+    "components/sky-agent-library.module.css": "52c225a64b40d35f65a7235ef8fd03d6db18da4974911333f26395f2a27f92e7",
+    "components/sky-agent-library.tsx": "8e7267e6f3f77a992f977b12034721aa2917d0cbfcfb2711b7737df27c05e03b",
+    "components/sky-chat-workspace.tsx": "814699dbaa400dacd6db63c04fd9cd9605d6bce04be2550764b0b02e039f9b1d",
+    "components/sky-discovery-dialog.module.css": "91c9069e8520d15ba5b1b6c0db90fca51ebcb938ea3d65523e0bedfe760e4d1b",
+    "components/sky-discovery-dialog.tsx": "b254ea0c3a16c9d7482b148cb37cd829cffc3675d7b504e23a18954bef35b22d",
+    "components/sky-discovery-feed.tsx": "561590aef22fb3cee004affe4e9b8ec873d0418845d82c3fe1041f4ca8df1a26",
+    "components/sky-information-market.tsx": "ac18d83baa0a65a45786254f4d472119b43eac4fb5263df35155f3fedafdae3a",
+    "components/sky-social-timeline.tsx": "dd52bc9a877fb5cdfcec3e357d734ec3fa8bc4b1def2234859a2f768c6fb6697",
+    "components/sky-workspace.tsx": "5437c29cd761b138f79a18c47ef85b838ef3f4e6c31b2ad303a1c5955f3dc000",
+    "lib/os-navigation.ts": "711678f1d03a66c325fe0a2ca97729c511e47a4edb9df44c3309fcbc9732c884",
+    "tests/common-os-entry-contract.test.mjs": "36e46030e14a5860f732c2d49e929532d976019434ef038697275db904f7bd29",
+    "tests/home-sky-panel.test.mjs": "822fd66fd4a348f284689ed33357da45233539df124d884d5c609153f3156a2d",
+    "tests/os-shell-navigation.test.mjs": "aaf9e5a1b8582757d3fc472380ecb76d7c17737c8d3dd1185008288817a90dc3",
+    "tests/sim-service-entry.test.mjs": "528253b11e7420ae3a605082d4e4098d021b2509052faeeb6c0b6e1d26dcac3e",
+    "tests/web-route-style-contract.test.mjs": "c214ecf1217fa9ebce6d21065053446671e2119d706e3022b4dd9a92630b2e69"
+  },
+  "checks": {
+    "rootFocused": {
+      "pass": 33,
+      "fail": 0,
+      "log": "/private/tmp/rock-home-add-manage-extended-focused.log"
+    },
+    "sourceTypecheck": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-home-add-manage-source-typecheck.log"
+    },
+    "ui": {
+      "status": "accepted_exact_final_build",
+      "origin": "http://127.0.0.1:3016",
+      "fixtureOwnerOnly": true,
+      "productionOwnerDataUsed": false,
+      "finalApplicationSha256": "13c09e5066a50ae2e8ad09b727632f043896ca12ab19c483af2c744512a94d75",
+      "sameAsFullVerifyAndDraftPackage": true,
+      "accepted": [
+        "same Home Add/manage panel",
+        "switching retains unsaved editor",
+        "closing/reopening retains unsaved editor",
+        "arrow-key tab switching and selection",
+        "saved Ollama/model configuration reread after route navigation and server restart",
+        "old /os/sky/agents redirects to /#sky-manage",
+        "same agent id/revision/model passed to Eve",
+        "unavailable execution host accurately reported, no job sent",
+        "Eve shared navigation has only Sky/Eve/community",
+        "unsaved test edit explicitly discarded to saved settings"
+      ],
+      "fixtureAgentRowsCreated": 1,
+      "fixtureAgentRevision": 1,
+      "newInference": 0,
+      "newWorkJobs": 0,
+      "newCharges": 0,
+      "screenshot": "home-add-manage-ui-preview/manage-final.png",
+      "earlierScreenshot": "home-add-manage-ui-preview/manage-saved.png"
+    },
+    "rootFull": {
+      "exitCode": 0,
+      "node": {
+        "total": 1449,
+        "pass": 1448,
+        "fail": 0,
+        "skip": 1
+      },
+      "apiAssertions": 2061,
+      "csvAssertions": 113,
+      "assets": {
+        "references": 212,
+        "missing": 0
+      },
+      "log": "/private/tmp/rock-home-add-manage-root-final-verify.log",
+      "fixedSnapshot": "home-add-manage-root-verification",
+      "inventory": "home-add-manage-root-final-inventory.json",
+      "scope": "Fixed Root runtime source plus two explicit navigation-contract test amendments; not later concurrent edits"
+    },
+    "sourceFull": {
+      "exitCode": 0,
+      "node": {
+        "total": 2430,
+        "pass": 2429,
+        "fail": 0,
+        "skip": 1
+      },
+      "apiAssertions": 1530,
+      "csvAssertions": 385,
+      "assets": {
+        "references": 213,
+        "missing": 0
+      },
+      "log": "/private/tmp/rock-home-add-manage-source-final-verify.log"
+    },
+    "sourceResponses": {
+      "schema": "rockstaros.source-presence-response/1",
+      "at": "2026-10-22T19:44:24.430661+00:00",
+      "workerSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+      "applicationSha256": "13c09e5066a50ae2e8ad09b727632f043896ca12ab19c483af2c744512a94d75",
+      "headersFileAbsent": true,
+      "localIdentityDisabled": true,
+      "logicalOrigin": "https://avoado.si",
+      "transport": "loopback-only actual local Worker/ASSETS; Wrangler rewrites logical-origin redirects to local transport",
+      "canonicalPublicRedirectAccepted": false,
+      "responses": [
+        {
+          "path": "/",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-store, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "4819464a27673615adcd3e68197527d225b3d104a3bde61f0894bbdd5cfbda06",
+          "missingHeaders": []
+        },
+        {
+          "path": "/sky",
+          "method": "GET",
+          "status": 308,
+          "cacheControl": null,
+          "location": "http://127.0.0.1:8798/os/sky",
+          "etag": null,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/sw.js",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-cache, no-store, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "538fbb6a9aa568cb06e800cad36f5772899b1fb98d3ed010af8e28b352ddac1e",
+          "missingHeaders": []
+        },
+        {
+          "path": "/manifest.webmanifest",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-cache, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "7e8200a3bdcad18beee3610a9a18fbc1b515621490a0fa234919e55927f170b1",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-192.png",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"c1723db36e3408ee4d5839bc9512bb40\"",
+          "bodySha256": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-512.png",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"d9d96e69638aca072dea9a58dc5a541d\"",
+          "bodySha256": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-maskable.svg",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"390f312b31bfef8fb341926f4c473690\"",
+          "bodySha256": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-C2PqLUVW.js",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"2823ceefc8f54f221e69daedbc77d430\"",
+          "bodySha256": "a30744ee24789e0fcca4ab62a194b9abbc886eaf48ad92746f53cf34ce6de4c7",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/missing-fixture.js",
+          "method": "GET",
+          "status": 404,
+          "cacheControl": null,
+          "location": null,
+          "etag": null,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/api/eve/runtime",
+          "method": "GET",
+          "status": 401,
+          "cacheControl": "no-store",
+          "location": null,
+          "etag": null,
+          "bodySha256": "d82f0b847c16e0ef15b9994b0478429ca9bfe8ab64101ce3546886c76dfc5499",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-C2PqLUVW.js",
+          "method": "HEAD",
+          "status": 200,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"2823ceefc8f54f221e69daedbc77d430\"",
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-C2PqLUVW.js",
+          "method": "GET",
+          "status": 304,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"2823ceefc8f54f221e69daedbc77d430\"",
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        }
+      ],
+      "jsByteMatched": true,
+      "publicChanged": false,
+      "realInference": 0
+    }
+  },
+  "boundaries": {
+    "publicChanged": false,
+    "newInference": 0,
+    "newGrant": 0,
+    "newKey": 0,
+    "newCharge": 0,
+    "savedToGitHub": false,
+    "mergedToMain": false,
+    "wholeGoalComplete": false
+  },
+  "remaining": [
+    "Explicit publication approval requested after auto-review rejection; preserve audience and exact runtime/SQL build",
+    "Save/push Source and deploy same saved version, read back actual public responses",
+    "Pixel common execution on existing grant/prepared model, same job/thread/artifact/history plus stop/restart/UNKNOWN",
+    "Broader master/security/biometric/full-OS/billing/other-device gates remain active"
+  ],
+  "remainingLinkUpdates": [
+    "components/sky-information-market.tsx",
+    "components/sky-agent-eve-profile.tsx",
+    "components/sky-discovery-feed.tsx",
+    "components/sky-social-timeline.tsx"
+  ],
+  "draftPackage": {
+    "schema": "rockstaros.home-add-manage-package/1",
+    "at": "2026-10-22T19:45:31.209436+00:00",
+    "archive": "/private/tmp/rockstaros-home-add-manage-draft.tar.gz",
+    "archiveSha256": "bc8f2c0b68f396923eda822fbd6bd65fd0fa447831f8efea90d2546e623c36c7",
+    "files": 822,
+    "sqlCount": 13,
+    "appleDoubleFiles": 0,
+    "workerSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+    "applicationSha256": "13c09e5066a50ae2e8ad09b727632f043896ca12ab19c483af2c744512a94d75",
+    "uiReadbackPendingOnExactBuild": false,
+    "responses": 12,
+    "publicChanged": false,
+    "savedToSource": false
+  },
+  "failuresRetained": [
+    {
+      "log": "/private/tmp/rock-home-add-manage-source-full-verify.log",
+      "cause": "Three old tests required standalone catalog/agents destinations; revised to assert latest explicit Home panel, three primary tabs and old-URL compatibility; existing auth/CAS/model/no-telemetry checks preserved."
+    },
+    {
+      "log": "/private/tmp/rock-home-add-manage-root-full-verify.log",
+      "cause": "Two old route/style assertions still expected catalog and five bottom tabs. Same production source passed full verification with those contract expectations updated."
+    },
+    {
+      "proof": "home-add-manage-ui-preview/build-proof.json",
+      "cause": "Initial UI build application hash differed from the subsequent full-verify build. Retained initial build and reaccepted the exact final application with saved settings/server restart/draft/keyboard/Eve readback."
+    }
+  ]
+}

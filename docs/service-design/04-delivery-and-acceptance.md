@@ -48,6 +48,8 @@ Jennifer/Columbia限定の自前passkey登録、assertion検証、session、復�
 
 合格証拠: 同一job/quote/owner、上限0、並列予算競合、期限切れ、料金改定、通信断、停止要求と確認、遅い結果、請求失敗、月境界、項目別usage。credential設定済みや自然な返答だけを合格にしない。
 
+端末本人bindingのSource差は[共通仕事API契約](../rockstaros-complete-design.md#source-runtime-device-binding)へ統合。実Worker/D1でbeginのbinding宣言、実session deviceId、未消費拒否と消費済み応答不明、同job/threadの暗号化保存/再起動/失効を検証する。合成reportの検査であり、実Native/AVF/LLM・公開受入は別gateを維持する。
+
 ## 3. Skyを場所が変わっても使えるようにする
 
 担当: O5/WEB06、Core/AI05、ROCK/JOINT。まず通常SkyとmainのColumbia NFC英語入口を同じsource/実responseで受け入れる。カードにURLだけを書き、NFCを本人・利用権・鍵にしない。

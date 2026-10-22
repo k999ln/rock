@@ -1938,6 +1938,10 @@ export const eveDeviceJobs = sqliteTable('eve_device_jobs', {
 export const eveDevicePresence = sqliteTable('eve_device_presence', {
   ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
 },t=>[uniqueIndex('idx_eve_device_presence_owner_id').on(t.ownerId,t.deviceId)]);
+// Common runtime observations coexist with legacy Pixel sync; neither is an execution grant.
+export const eveRuntimePresence = sqliteTable('eve_runtime_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_runtime_presence_owner_id').on(t.ownerId,t.deviceId)]);
 export const eveDeviceCommands = sqliteTable('eve_device_commands', {
   ownerId:text('owner_id').notNull(),id:text('id').notNull(),deviceId:text('device_id').notNull(),threadId:text('thread_id').notNull(),
   digest:text('digest').notNull(),envelope:text('envelope').notNull(),state:text('state').notNull(),createdAt:integer('created_at').notNull(),expiresAt:integer('expires_at').notNull(),
@@ -2082,3 +2086,14 @@ export const rockstarAccountSessions = sqliteTable('rockstar_account_sessions', 
   tokenSha256: text('token_sha256').notNull().unique(), createdAt: integer('created_at').notNull(),
   expiresAt: integer('expires_at').notNull(), lastUsedAt: integer('last_used_at').notNull(), revokedAt: integer('revoked_at'),
 }, t => [index('idx_rockstar_account_session_owner').on(t.userId), check('rockstar_account_session_hash', sql`length(${t.tokenSha256}) = 64`)]);
+
+export const skyAgentSettings = sqliteTable('sky_agent_settings', {
+  ownerUserId: text('owner_user_id').notNull(),
+  id: text('id').notNull(),
+  sourceTool: text('source_tool'),
+  settings: text('settings').notNull(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [uniqueIndex('idx_sky_agent_settings_owner_id').on(table.ownerUserId,table.id),
+  index('idx_sky_agent_settings_owner_updated').on(table.ownerUserId,table.updatedAt)]);

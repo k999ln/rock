@@ -2,6 +2,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
+import { applySourceSandboxSchema } from './sky-monthly-sandbox-db.mjs';
+import { auditSitesOwnerWorkspaceRecovery } from './sites-owner-workspace-recovery.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const migrationsDirectory = resolve(root, 'drizzle');
@@ -48,6 +50,8 @@ const sqlFiles = readdirSync(migrationsDirectory)
   .filter((name) => name.endsWith('.sql'))
   .sort((left, right) => left.localeCompare(right));
 const journal = JSON.parse(read('drizzle/meta/_journal.json')).entries;
+const packagedMain = journal[0]?.tag === '0020_main_legacy_columns';
+const publishedTimestampExceptions = packagedMain ? auditSitesOwnerWorkspaceRecovery(root, journal) : new Set();
 const journalFiles = journal.map((entry) => `${entry.tag}.sql`);
 unique(journalFiles, 'migration journal entry');
 if (
@@ -59,15 +63,17 @@ if (
     `web schema: SQLとjournalが一致しません\nSQL: ${sqlFiles.join(', ')}\njournal: ${journalFiles.join(', ')}`,
   );
 
+let highestTimestamp = -Infinity;
 for (let index = 0; index < journal.length; index += 1) {
   if (journal[index].idx !== index)
     throw new Error(
       `web schema: migration idxが連続していません: ${journal[index].tag}`,
     );
-  if (index > 0 && journal[index - 1].when >= journal[index].when)
+  if (highestTimestamp >= journal[index].when && !publishedTimestampExceptions.has(journal[index].tag))
     throw new Error(
       `web schema: migration timestampが昇順ではありません: ${journal[index].tag}`,
     );
+  highestTimestamp = Math.max(highestTimestamp, journal[index].when);
 }
 
 const ordinalGroups = new Map();
@@ -105,6 +111,7 @@ let convergenceDeclarations = 0;
 const permittedConvergenceFiles = new Set([
   '0004_union_bridge.sql',
   '0020_sites_schema_convergence.sql',
+  ...(packagedMain ? ['0021_sites_schema_convergence.sql', '0023_jennifer_schema_guard.sql', '0024_remote_ai_send_claims_recovery.sql', '0025_remote_ai_send_claims_watermark.sql', '0031_owner_workspace_schema_recovery.sql'] : []),
 ]);
 for (const [table, entries] of declarations) {
   if (entries.length === 1) continue;
@@ -134,7 +141,11 @@ const requiredSkyReviewTriggers = [
 ];
 const database = new DatabaseSync(':memory:');
 try {
-  for (const file of sqlFiles) {
+  if (packagedMain) {
+    // Verify the documented restored-DB precondition with pinned published
+    // historical SQL. Real Drizzle watermark upgrades are tested separately.
+    applySourceSandboxSchema(database);
+  } else for (const file of sqlFiles) {
     for (const statement of read(`drizzle/${file}`)
       .split('--> statement-breakpoint')
       .filter((sql) => sql.trim()))
@@ -190,6 +201,8 @@ export const webSchemaStatus = Object.freeze({
   marketplaceRelationGuardCount: requiredMarketplaceTriggers.length,
   skyReviewGuardCount: requiredSkyReviewTriggers.length,
   migrationJournalMatches: true,
+  initialization: packagedMain ? 'synthetic_restored_main_schema' : 'empty_database',
+  recoveredPublishedTimestamps: [...publishedTimestampExceptions],
 });
 
 if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url))

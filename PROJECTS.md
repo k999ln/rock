@@ -143,7 +143,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録36件すべてを上に記載。ready 14件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 13ディレクトリを下表で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、PAPER試作を区別 |
+| [`toolkits/`](toolkits/) | 現在のディレクトリを下表で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、PAPER試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -196,3 +196,8 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 1. 上の表から対象プロジェクトの入口を開く。
 2. [workstream案内](docs/workstreams/README.md)から主担当を一つ選び、[進捗JSON](data/project-status.json)の既存task ID、完了条件、証拠を確認する。
 3. 変更後は対象の小さい検証を実行し、配布・統合候補では`npm run verify`と対象OS固有の受入を実施する。結果は`project.md`と進捗JSONへ記録する。
+
+
+### 保持したPixelアカウント同期差分
+
+[`toolkits/sky-linux-local/`](toolkits/sky-linux-local/)には、配信Sourceへ取り込んだ既存account同期のAndroid差分を保持します。このSourceに残るのは`android-account-sync.patch`で、全Linux runtimeやinstallerの同梱・全OS/実機受入を意味しません。Pixel APK/AVFと実grantの受入はRootのAndroid workstreamと同一artifactの証拠を参照し、private credentialや本人履歴を公開Sourceへ入れません。

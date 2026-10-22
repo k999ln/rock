@@ -22,13 +22,32 @@ const sqlFiles = async (directory) =>
     .filter((name) => name.endsWith('.sql'))
     .sort();
 
+// A main Site Source intentionally mirrors main into root drizzle for packaging.
+// That archive no longer contains Columbia's root lineage. Refuse cross-Site reuse
+// before touching an existing package output; selecting a registered ID is not proof
+// that its migration source is present in this checkout.
+async function selectedSourceLineage(root, projectId) {
+  const migrationDirectory = siteMigrationsDirectoryFor(projectId);
+  const sourceDirectory = resolve(root, migrationDirectory);
+  const files = await sqlFiles(sourceDirectory);
+  if (projectId === COLUMBIA_SITE_PROJECT_ID && files.includes('0020_main_legacy_columns.sql'))
+    throw new Error('This main Site package cannot supply the Columbia migration lineage');
+  if (projectId === CANONICAL_MAIN_SITE_PROJECT_ID &&
+      (!files.includes('0020_main_legacy_columns.sql') || !files.includes('0021_sites_schema_convergence.sql') ||
+       files.includes('0013_sky_provider_connections.sql')))
+    throw new Error('The canonical main migration source is absent or mixes Site lineages');
+  if (projectId === COLUMBIA_SITE_PROJECT_ID &&
+      (!files.includes('0013_sky_provider_connections.sql') || !files.includes('0020_sites_schema_convergence.sql')))
+    throw new Error('The Columbia migration source is absent; use the matching Site source checkout');
+  return { migrationDirectory, sourceDirectory, files };
+}
+
 export async function syncSitesMigrationLineage({
   root,
   projectId,
   outputDirectory = resolve(root, 'dist', '.openai', 'drizzle'),
 }) {
-  const migrationDirectory = siteMigrationsDirectoryFor(projectId);
-  const sourceDirectory = resolve(root, migrationDirectory);
+  const { migrationDirectory, sourceDirectory, files: expected } = await selectedSourceLineage(root, projectId);
 
   // @openai/sites-vite-plugin currently copies root drizzle unconditionally.
   // Replace it after that plugin finishes so an archive contains one lineage.
@@ -36,7 +55,6 @@ export async function syncSitesMigrationLineage({
   await mkdir(dirname(outputDirectory), { recursive: true });
   await cp(sourceDirectory, outputDirectory, { recursive: true });
 
-  const expected = await sqlFiles(sourceDirectory);
   const packaged = await sqlFiles(outputDirectory);
   if (JSON.stringify(packaged) !== JSON.stringify(expected))
     throw new Error(`Packaged Sites migrations do not match ${migrationDirectory}`);
@@ -50,8 +68,7 @@ export async function syncSitesMigrationLineage({
 }
 
 export async function syncSitesPackageSourceLineage({ root, projectId }) {
-  const migrationDirectory = siteMigrationsDirectoryFor(projectId);
-  const sourceDirectory = resolve(root, migrationDirectory);
+  const { migrationDirectory, sourceDirectory, files: expected } = await selectedSourceLineage(root, projectId);
   const packageSourceDirectory = resolve(root, 'drizzle');
 
   // The Sites packager deliberately stages project/drizzle after the build.
@@ -63,7 +80,6 @@ export async function syncSitesPackageSourceLineage({ root, projectId }) {
     await cp(sourceDirectory, packageSourceDirectory, { recursive: true });
   }
 
-  const expected = await sqlFiles(sourceDirectory);
   const packaged = await sqlFiles(packageSourceDirectory);
   if (JSON.stringify(packaged) !== JSON.stringify(expected))
     throw new Error(`Sites package source does not match ${migrationDirectory}`);

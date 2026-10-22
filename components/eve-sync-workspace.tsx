@@ -529,8 +529,8 @@ export default function EveSyncWorkspace({
           </nav>
           <Link href="/connect/device">端末を接続・解除</Link>
           <Link href="/os/eve?mode=tools">SkyのToolを使う</Link>
-          <Link href="/sky/devices">接続した担当をSkyで見る</Link>
-          <Link href="/os/sky">Skyで能力を追加</Link>
+          <Link href="/#sky-manage">担当とLLMを管理</Link>
+          <Link href="/#sky">能力を追加</Link>
         </aside>
         <section className={styles.desk}>
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner}/>}

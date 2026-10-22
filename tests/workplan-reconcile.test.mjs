@@ -1,3 +1,4 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import * as boundedStream from '../lib/bounded-stream.ts';
 import test from 'node:test';
@@ -5,7 +6,7 @@ import * as amcSkyWeb from '../lib/amc-sky-web.ts';
 import assert from 'node:assert/strict';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 import * as workflow from '../lib/workflow.ts';
@@ -27,8 +28,7 @@ import { createJenniferCoordinationPlan } from '../lib/jennifer-coordination.ts'
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const queries = [];
   const db = { prepare(sql) {
     queries.push(sql);

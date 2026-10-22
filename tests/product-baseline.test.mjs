@@ -50,10 +50,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(miniUndecided), /miniCellularIntent/);
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ50/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ50/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
   const missingWholeDesign = structuredClone(source);
   missingWholeDesign.designDocumentation.tools = null;
   assert.throws(
@@ -302,9 +302,23 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   );
 });
 
-void test('the visual baseline preserves the existing pale-blue Web appearance', () => {
-  assert.equal(source.visualSystem.accent, 'ice_blue');
+void test('the visual baseline preserves the current shared forest-green and bronze frame', () => {
+  assert.equal(source.visualSystem.accent, 'forest_green_bronze');
+  assert.equal(source.visualSystem.previousAccent, 'ice_blue');
   const oldTheme = structuredClone(source);
-  oldTheme.visualSystem.accent = 'acid_green';
+  oldTheme.visualSystem.accent = 'ice_blue';
   assert.throws(() => validateBaseline(oldTheme), /共通visual system/);
+});
+
+void test('canonical 49 requirements and the existing Source extension retain separate authority', () => {
+  assert.equal(source.requirements.length, 49);
+  const extraRequirement = structuredClone(source);
+  extraRequirement.requirements.push('RQ50');
+  assert.throws(() => validateBaseline(extraRequirement), /RQ01〜RQ49/);
+  const droppedExtension = structuredClone(source);
+  droppedExtension.sourceCompatibilityExtensions.retained = [];
+  assert.throws(() => validateBaseline(droppedExtension), /保持するSource拡張/);
+  const wrongPrompt = structuredClone(source);
+  wrongPrompt.nextPrompt = source.previousNextPrompt;
+  assert.throws(() => validateBaseline(wrongPrompt), /現行の全体開発マスター/);
 });

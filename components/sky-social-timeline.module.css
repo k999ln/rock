@@ -871,7 +871,7 @@
 .shell[data-full-home='true'] {
   --tl-bg: #fffdf8;
   --tl-text: #252b28;
-  --tl-muted: #778077;
+  --tl-muted: var(--os-shell-muted, #626e65);
   --tl-line: #dedfd6;
   --tl-blue: #315b4d;
   color-scheme: light;
@@ -904,7 +904,7 @@
 }
 .shell[data-full-home='true'] .timelineTop .topIcon {
   margin: 5px 0;
-  color: #778077;
+  color: var(--tl-muted);
 }
 .shell[data-full-home='true'] .post:hover {
   background: #f6f7ef;

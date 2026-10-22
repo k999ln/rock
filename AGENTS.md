@@ -1,10 +1,14 @@
+# 現行マスターとの整合（2026-10-22）
+
+現在の本人指定入口は`docs/prompts/rockstaros-common-core-development.md`、製品正本の確定要望はRQ01〜RQ49。Sourceの旧RQ50（Sky Compute Grid）は既存拡張としてコード・契約・負例・金融保留を保持する。旧番号を理由に現行49項目を上書きせず、拡張の存在を公開/実機/精算合格にしない。
+
 # Rock star 開発の継続ルール
 
 > 2026-10-13の明示指示で、旧仕様・重複設計・長い旧作業ログを現行本文から削除した。設計を読む入口は `docs/service-design/README.md`。現行RQ・安全/料金gate・固定原本は保持し、旧内容の復元commitは `data/archived-paths.json` のpath別記録を使う。
 
 > 2026-10-11に、使わなくなった資料を削除した（履歴は書き換えていない）。削除したpathと復元元のcommitは [`data/archived-paths.json`](data/archived-paths.json)。一時的に使ったgit-cryptの暗号化は同日にやめた。すべてのファイルは公開で、読むのに鍵はいらない。
 
-- 最初に docs/service-design/README.md、docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json、docs/mission-control.md、data/mission-control.json を読む。確定要望はRQ01〜RQ50。OSから全Toolまでの入口はdocs/rockstaros-design-portal.md、OS全体詳細はdocs/rockstaros-complete-design.md、全Tool詳細はdocs/sky-tools-complete-design.md、物質発明とavocadoMiniはdocs/rockstaros-avocado-mini-complete-design.mdを正本とする。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。9月前半の作業記録（docs/current-state-20260911.md など）は削除した（commit `96845e6` に残る）。現在のGitと進捗JSON・同一artifactの証拠を優先する。
+- 最初に docs/service-design/README.md、docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json、docs/mission-control.md、data/mission-control.json を読む。確定要望はRQ01〜RQ49。OSから全Toolまでの入口はdocs/rockstaros-design-portal.md、OS全体詳細はdocs/rockstaros-complete-design.md、全Tool詳細はdocs/sky-tools-complete-design.md、物質発明とavocadoMiniはdocs/rockstaros-avocado-mini-complete-design.mdを正本とする。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。9月前半の作業記録（docs/current-state-20260911.md など）は削除した（commit `96845e6` に残る）。現在のGitと進捗JSON・同一artifactの証拠を優先する。
 - 作業開始時に avokado Mission Control（AMC）のtaskAssignmentsで一意の主担当を確認し、goal、stageAssessmentの対象範囲と残課題、rules、nextTaskIds、taskPlansの手順・成果物・合格条件を読む。ID prefixで担当を推測せず、参考task・旧版・公開説明を現行製品の実績へ加算しない。段階は対象範囲の証拠で判定し、件数から完成率を算出しない。変更後は `npm run mission:update` と `npm run mission:check` を通す。料金のexecutionHoldsは既存statusに優先する。
 - 正本5ファイルを確認した後、作業分野の入口として docs/workstreams/README.md と docs/workstreams/00-responsibility-boundaries.md を読む。Security、MCP、Wallet、Web、QEMU、Android、Game、Material Invention／avocadoMini、事業pilot、Git運用のうち主担当を一つ決め、ROCK／EXTERNAL／JOINT／OWNERの責任、既存task ID、完了条件、検証コマンドを使う。新しい日付付き文書を入口として乱立させず、該当workstreamの関連資料へ追加する。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。

@@ -1,3 +1,11 @@
+## Home統合：同一buildの実UI・全体gate・梱包一致を受入
+
+集中33/33、Root固定sourceのfull exit0（Node1449/1448pass/1skip、API2061/CSV113、assets212欠損0）、Source full exit0（Node2430/2429pass/1skip、API1530/CSV385、assets213欠損0）。旧3/2試験は新しい本人の3タブ/旧URL互換へ期待値を訂正し、既存auth/CAS/model/偽telemetry拒否は保持。初回UI buildと後続full buildのapplication hash差を検出して初回artifactを保全、最終application13c09e50…と同じbuildへ再受入。合成ownerで担当1件/版1、Ollamaとqwen2.5:1.5b保存、旧URL/サーバー再起動後の同設定、未保存draft切替/閉じ再開/矢印キー、Eveへの同agent/版/modelを確認。実行先未接続を正しく表示し、仕事/推論/課金0。12配信応答/JS bytes/ヘッダー、822ファイル/13SQL/AppleDouble0のdraft bc8f2c0b…を確認。既存公開v111/Pixel308e/26jobsを保持し、自動審査の明示承認不足による最終Source保存/配備は本人へ具体候補で確認中。GitHub/main/公開/Pixel新共通実行/全Goal完成ではない。証拠docs/evidence/home-add-manage.json。
+
+## Home：独立した検索/管理タブを「追加・管理」へ統合
+
+2026-10-22本人指摘によりProduct UX/ROCK、HOME01/WEB04/SKY21/UXRS01。主ナビSky/Eve/コミュニティーの3つとし、Home内dialogで探して追加/追加済み設定を切替。既存owner store/CAS/model/端末接続/Eve URL、旧URL互換、同一Home内draft/timeline保持を継続。Root集中16/16、Source型合格。実UI/full/公開は次段階。接続共存はSource全verify exit0（Node2427中2426pass/1skip、API1530/CSV385、assets214欠損0）と実Worker再起動/12配信応答を受入済み、UI追補後は再検証。旧draft tarのAppleDoubleはCOPYFILE_DISABLE=1で除外し13SQL/Worker/applicationの梱包一致を確認、保存/公開なし。既存v111/Pixel26jobsを保持し追加推論0。証拠home-add-manage.json/eve-presence-coexistence.json。
+
 ## Eve表示の整理（2026-10-21・WEB04/OS10/AI02）
 
 使用LLMをEveとして表示し、担当/実基盤model/実行先を分ける。専用重み未作成を明示。APIや実行の承認、保存データを変更しない。ML開始要件を既存LLM設計へ追加。公開v99を基底に検証・配備する。
@@ -247,7 +255,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| AMC02 | AMC Goal OrchestratorとJenniferの段階承認・本人別Web台帳・専門siへの設定gate付きA2A実dispatch・独立検収を整える | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) · [記録](docs/evidence/jennifer-surface-architecture.json) · [記録](scripts/amc-agent.mjs) · [記録](tests/amc-agent-preflight.test.mjs) · [記録](docs/evidence/spider-agent-preflight-read.json) · [記録](docs/jennifer-coordination.md) · [記録](lib/jennifer-amc-execution.ts) · [記録](lib/jennifer-execution-store.ts) · [記録](lib/jennifer-execution-reports.ts) · [記録](app/api/sky/a2a-delegations/route.ts) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workbench.tsx) · [記録](drizzle/0014_jennifer_execution_integrity.sql) · [記録](tests/jennifer-amc-decomposition.test.mjs) · [記録](tests/jennifer-amc-execution.test.mjs) · [記録](tests/jennifer-execution-reports.test.mjs) · [記録](tests/jennifer-execution-store.test.mjs) · [記録](docs/evidence/amc/jennifer-execution-integrity.json) |
+| AMC02 | AMC Goal OrchestratorとJenniferの段階承認・本人別Web台帳・専門siへの設定gate付きA2A実dispatch・独立検収を整える | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) · [記録](docs/evidence/jennifer-surface-architecture.json) · [記録](scripts/amc-agent.mjs) · [記録](tests/amc-agent-preflight.test.mjs) · [記録](docs/evidence/spider-agent-preflight-read.json) · [記録](docs/jennifer-coordination.md) · [記録](lib/jennifer-amc-execution.ts) · [記録](lib/jennifer-execution-store.ts) · [記録](lib/jennifer-execution-reports.ts) · [記録](app/api/sky/a2a-delegations/route.ts) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workbench.tsx) · [記録](tests/fixtures/sites-columbia-migrations/0014_jennifer_execution_integrity.sql) · [記録](tests/jennifer-amc-decomposition.test.mjs) · [記録](tests/jennifer-amc-execution.test.mjs) · [記録](tests/jennifer-execution-reports.test.mjs) · [記録](tests/jennifer-execution-store.test.mjs) · [記録](docs/evidence/amc/jennifer-execution-integrity.json) |
 | LCH07-01 | 子作業（LCH07）: 再受入する配布platform・候補SHA・archive hashを固定する | 未着手 | — |
 | LCH07-02 | 子作業（LCH07）: 同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する | 未着手 | — |
 | LCH07-03 | 子作業（LCH07）: 候補のproduction署名・公開trust・失効/rotation証拠を結合する | 未着手 | — |
@@ -748,3 +756,73 @@ AMC02主担当、G04連携。Jenniferを利用者に見える唯一の統括窓�
 本人領域の正本は`https://avoado.si`へ固定し、passkey RPも`avoado.si`のみとした。Columbiaと生成Sites hostのJennifer/AMC/Job/A2A private APIは別D1へ書かずfail closed、画面GETは正本へ転送する。内部8プロジェクト一覧は`JENNIFER_PORTFOLIO_OWNER_ID`一致時のみ表示し、外部A2A本番送信はprovider trustと実行承認が揃うまで無効を維持する。
 
 ローカル受入はJennifer契約・host routing・passkey・owner auth・session recovery・visual contractの67件、typecheck、oxlintが合格。既存本番readbackではmain SiteにJennifer D1表が未反映、Columbia側には存在することを確認したため、mainへのmigration付き配備と再readbackを完了条件に残す。証拠は`docs/evidence/jennifer-surface-architecture.json`。
+
+CORE09 Source P0: remaining seven store/schema cases use the fixed restored-schema initializer, retaining business assertions. Real D1 reproduced skipped owner tables after published timestamps. Append-only 0031 recovers23 tables without rewriting0020-0030; repeat/partial/two-owner data and incompatible-column failure are checked. Public/source/Git main acceptance remain separate. Pixel legacy UI must be aligned to the adopted canonical design while preserving local execution/save/stop/sync; no app or OS update has been performed by this Source repair.
+
+
+## main Siteの移行系列保護を継続（2026-10-22 / WEB04・RLS02）
+
+前turnはPixel共通UI/APKのbuild検査とSource復旧保全を進めたためprogress。今回はPixel解除待ちに依存しない配信Sourceの残33回帰を、Web / PWA / Sites・ROCKで継続。Root全体Goal/RQ49は維持。mainパッケージはroot drizzleをmainへ置換するが、Columbiaを選んでも拒否せずmain SQLを別DB用に梱包できる問題を2つの失敗試験で再現した。copy/remove前に選択Siteの最低移行集合と混在を検査して拒否する修正を追加。旧系列の8失敗は、公開Source686fd5ab…から原本SQL9本/元journalを固定fixtureへ移し、旧fresh/current・二migrator・保存row・SQL byteの全条件を保持。mainの12本と0031復旧watermarkは別に実D1照合を維持。追加の原本hash/再生成拒否/正しいColumbia/欠落・混在出力保全も含め集中27/27合格。公開版/本番DB/料金変更は0。Source全体の再実行・型/lint/buildと残る画面/metadata/releaseの相違は次のgate。
+
+
+Source移行修復の全Node再実行は2387中2361pass/25fail/0cancel/1skip、exit1。旧33失敗から移行8件を解消し、新たに5検査を追加した。元のfresh/current二migratorとrow保持条件・原本SQLを維持、型/lint合格。本番用buildは実行中。GitHub取得は制限内で失敗し、制限外読取りで10:36:26Z liveMetadataVerified=true/main7304e449…/branch951d82d5…/21branch/11open PRを確認。dirty追加機能のCIではない。次はSource残25と実機の解除後同期/正規UI。全体Goalは継続。
+
+
+Source本番用build exit0、dist/.openai/drizzleのSQL12本とjournalはdrizzle-mainとbyte一致、旧fixtureはruntimeへ混入0。Source design/research checkはexit0、全verifyはAMC02の歴史的根拠ファイル欠落でproject:check停止（Node残25と別）。型/lintもexit0。正しい最新Source patchをRootへ保存し、公開DB/課金/配備は実行しない。Pixelは更新/保全合格の本体を保持し、元試験APK d21e9442…だけ復旧・hash照合済み。解除後は新しいbaseline/仕事を作らず、保存済み検証candidateで継続する。
+
+
+## 共通OSの画面・入口をSourceへ整合（2026-10-22 / WEB04・WEB06・SKY21、ROCK）
+
+前turnは実Pixel更新/保全とSource移行系列修復のprogress。今回はWeb / PWA / Sites・ROCKで、CORE08/12と最新の5タブ・投稿Home・自分のAgent一覧・Eve・正式3ドメインをSourceの実装/検査へ照合する。古い青色・三列Home・citationsへの強制redirect・旧製品landingの期待で機能を退行させない。保護条件を現行component/状態/権限の観測へ移し、実際の色token継承とguide導線も修正・表示確認する。Pixelは更新済み24b443c0…を保全、再ロック中。新しいbaseline/仕事/推論/端末grant/実課金/配備は作らない。Source25残差のうち現在UI契約を先行し、歴史的証拠/安全gateは別に保持する。
+
+
+## 共通OSの画面・独立登録入口をSourceへ整合（検証中）
+
+Root/保持Sourceの既定9色を同値、補助文字#626e65、guideのOS/Mini導線、claimの独立account入口を修正。Source旧UI契約8残差とclaim再認証harness2件を現行機能へ合わせ、金融/入力保全/冪等性を保持。全Source Nodeは2392中2374pass/17fail/1skip（local HTTP許可再試験）、未完了は旧docs2/baseline2/readiness13。実browserでHome/catalog/Eve→Agent管理のlocalhost404を再現し、loopback限定aliasを修正して再build/再起動で管理一覧の表示を確認。Agent管理に残った旧青系面は共通frameへ寄せ、最終build表示/全体verifyは続行中。Pixelは接続/更新済みhash24b443c0…一致、画面OFF/再ロックを確認。解除検知5分間では解除されず、新推論/新grant/同期instrumentation0、追加の本人解除依頼は一回のみ。公開/commit/merge/実課金なし。
+
+
+### 共通OS画面・入口の最終local受入
+
+共通frameの旧青系面を上書きした最終Source buildでAgent管理画面を表示確認。Root集中37/37、Source集中70/70、Source型/lint/build/design exit0。Root全verify exit0（Node1327中1326pass/1skip、API2000/CSV113、assets212missing0）。共有dirty treeの観測であり、同時更新された別機能の全freeze/CIへ転用しない。Source全Nodeは2394中2376pass/17fail/1skip、残差は旧Mini文書2/baseline2/readiness13。Source全verifyはAMC02歴史的根拠不足のproject:checkで停止。歴史的根拠を捏造せずgateを維持。Pixel最終読戻しは画面OFF/keyguardあり、更新APK24b443c0…と元testAPK d21e9442…の完全hash一致、foreground host停止。5分の解除検知では未解除、同期instrumentation未実行。専用local tab/previewは証拠保存後に終了。次は本人解除後の保存済みtestAPKによる同一account/既存replica/履歴/foreground同期停止の受入、新しいbaselineやmain APK更新は不要。公開/新grant/新推論/実課金/commit/main統合なし。証拠docs/evidence/common-os-entry-alignment.json。
+
+
+## Sourceのセキュリティー応答・readiness再整合に着手（WEB04/WEB06/SKY21・ROCK）
+
+前turnは共通UI/localhost aliasの実装修正・実表示・全体検証を進めたprogress。保持Sourceの未合格17のうち13はapp/manifest.ts更新に対する旧local response証拠のinput hash不一致が先行していた。outer routerのredirect/独自SW/拒否応答も既存8保護headerへ揃える負例を追加し、実production候補で再計測する。未検証のhashだけを更新せず、公開gateと過去試験は保持する。残4件のbaselineは旧Turntable読取りと現行R5/色/入口の不一致。Source AMC02は梱包で除いた旧SQLへの参照なので、保存済み原本fixtureの実在/hashから移設を判断する。Pixel解除質問はpending、再質問/実機変更なし。全CORE/RQ/研究/SI/U goalを維持。
+
+
+### Sourceの17残差を集中試験で解消、全体検証へ
+
+Source13件のreadinessは古いmanifest hashに加えouter redirect/SWの保護不足を修正し、local production8応答/8header・manifest/icons/JS/cacheを実測して37/37。stage再実行が古いrouterを保持する問題を原版で1/2再現し、application bytesを変えずrouter再stage、未知entry拒否を検査。Rootはrouter契約のみ、Sites stageはSource固有として分離し、誤って作ったRoot専用stage testは同一hashを照合して撤回した。SourceのAMC02は実在する旧0014固定fixtureへ参照を移しproject:update0。現在master49へ入口/番号を同期しCompute Gridは拡張として全guard維持。旧Turntable/E3 price/4塔を要求する検査をcurrent R5未受入/価格未確定/携帯電源と共通frameへ移し、baseline5/5＋追加の入口/拡張保持負例を受入。Source全verify/最終buildとMini表示は次。Host headerだけのpublic SW実測はasset分岐だったため成功に含めない。公開/実機/新grant/実推論/実課金/commitなし。
+
+## Sourceの公開identity・試験schemaの整合（WEB04/WEB06/SKY21・ROCK）
+
+元の17件は集中試験で解消。Source全verifyはNode2402中2401pass/1skip・型/lint・各site・build・assets213missing0まで進み、local API空DBへ既存本番用ALTER0020を直接適用して停止した。Workflowと同じ復元schema前提へAPI/CSVを修正し、全table/index/triggerの復元・無row/無migration receiptを検査。API1381/CSV385 assertionsは実local Worker/D1/R2で合格、保護assertionは維持。本番移行受入はfresh/current filename/Drizzle等と別管理。Mini依存不足は固定lockのoffline npm ciで解消し、公開/有料Provider/本番DB変更なし。次は更新後全verify、同一buildのresponse再測定・Mini実表示、Sourcepatch回収とPixel解除後の保存済み同期試験。
+
+Source全verify初回完走: Node2403中2402pass/1skip、API1381/CSV385、assets213missing0、mission/work/bot合格。次の実表示でR5本文が旧dark campaign色のまま薄い不具合を発見し、Source専用CSSへ共通OS tokenを適用、導入を直接/osへ変更。保護・状態・価格/未実証の文面を維持し、集中10/10・lint合格。表示修正後の全verifyと同じbuildのresponse/browserを再確認する。Root全verifyはexit0で完走（別artifact）。公開/Pixel実機同期/Goal完成へ転用しない。
+
+## Source全体修復・最終実表示の検証完了（WEB04/WEB06/SKY21・ROCK）
+
+最終の互換性修正: 旧Android parserがextra fieldを拒否するため、無条件拡張は未公開のまま破棄し、専用header交渉へ変更。旧6/4/1field・新binding/deviceId・未知headerでrow非増加を両Workerで検証。SDK dev.7は60/60、別JVM実TLS/再起動/失効も合格。Source全verify exit0（Node2420中2419pass/1skip、API1506/CSV385、assets214欠損0）、Root全verify exit0（Node1406中1405pass/1skip、API2059/CSV113、assets212欠損0）。最終SDK10file/tgzはsource byte一致、Source823file/12SQL archiveは全byte一致、同buildの_headersなし12応答/8header/JS/API401/HEAD/304合格。一度のLocation検査失敗はlocal proxy書換えの範囲を訂正し保存、実公開redirect合格にしない。旧pack/不合格Pixel接続/互換前Sourceを保全。既存Pixel readは合格だが新Native/guest/実推論は未受入、公開/新grant/実課金0。次はSource公開を待たず、既存Pixelgrantで更新guestと同Nativeの実仕事/保存・再起動/停止を受入。全体Goalは継続。[証拠](docs/evidence/source-runtime-device-binding.json)。
+
+後続最終受入: Source full verify exit0（Node2418pass/1skip、API1476/CSV385、asset214欠損0）、823file/12SQLのbuild梱包はWorker/SQL全byte一致、旧archive保持。別途旧APKのPixelは通常Terminal起動後に既存account/runtime GETとLinux通信を確認、実行環境stopped/新候補未導入を保持。メイン/元test/26jobs/2models/6agents/鍵を保全し、新実grant/推論/公開/課金0。Source公開待ちを既存Pixel次試験の停止理由にしない。
+
+後続2026-10-22: 主担当Android/O6・ROCK、OS10/DSP01/SKY21/WEB06。device binding宣言/deviceId/owner_deniedをRoot正本へ整合し、Sourceの実Worker/D1で共通runtimeの同job/report/thread・暗号化・二重claim・restart/失効/遅着拒否を受入（API1476 assertions）。[同一source証拠](docs/evidence/source-runtime-device-binding.json)。公開承認は保留、既存封印archiveを保全し、新Native/Pixel/実推論/課金は未実施。Source/Rootの最終全体検証を別々に行う。
+
+最終Sourceは全verify exit0: Node2404中2403pass/1skip、API1381/CSV385、assets214missing0、型/lint/build/design/mission/work/bot合格。Rootも別に全verify exit0: Node1344中1343pass/1skip/API2018/CSV113/assets212missing0。Sourceの同じ最終production buildをlocal8796で8応答/8header実測し、R5本文の薄色を共通tokenへ直した表示、携帯電源/電池未選定/価格・実機未承認の文、直接/osへの導線を実browserで確認。新しいaccount/grant/Provider/inferenceは0、専用tab/serverは終了。現行public111のsite/version/source/deploymentと旧owner-private歴史auditを区別し、public旧URL/SW/JSのheader不足を解消済みとしない。Pixelは最新5分の解除検知で未解除、最終APK/元test完全hash一致・foreground停止。同期instrumentation0、既存26job/2model/6agentの前回local保全をremote合格へ転用しない。次はSourcepatchの回収確認、公開static経路の保護と同一候補受入、本人解除後の保存済み実機同期試験。全CORE/RQ/研究/SI/U Goalは継続、未公開/未commit/未main統合/実課金0。[証拠](docs/evidence/source-readiness-alignment.json)。
+
+## 配信assetが保護処理を迂回する経路の修復に着手（WEB04/WEB06・ROCK）
+
+前turnはSource全体修復/全verify/同一buildのresponse・Mini実表示を進めたprogress。全CORE/RQ/研究/SI/U Goalを維持。現行publicはreadonly get_siteでv111/publicを再確認、Pixelは接続/keyguardありで同期instrumentation未実行。Sourceの生成assets設定はdirectoryだけで、既定asset-firstがouter security wrapperを迂回し得る。Cloudflare一次資料と同梱frameworkのASSETS対応を確認し、配信SourceのみstageでASSETS binding/run_worker_firstを固定、元app/未知entry/他bindingを保持する負例を作る。実local asset serviceで_headersなしの迂回再現と修正後8header/404/HEAD/旧URL/canonicalSW、実production buildを区別して受入する。Rootには存在しないstage pipelineを追加しない。公開/料金/権限/本番DB変更は準備・同一version受入の別工程、全Goal完成ではない。
+
+asset修復の実経路: stage負例は修正前3中2fail、実asset serviceはWorker/APIが動く条件でもJS/SWがasset-firstで迂回することを再現。Worker先行へ固定しただけでは実アプリJSが404だったため、GET/HEADの/_next/static/だけASSETSへ渡す局所修正をRoot/Sourceへ追加。現行Sourceの実8応答検査は合格、JS/CSSを読むHomeのhydrationと操作有効化を実browser確認。canonical originをlocal-upstreamで模擬した同一production buildでは_headersなしでも12応答の8保護header/JSbyte一致/canonicalSW/API401/HEAD/304を確認したが、JScacheがmax-age0だったため既定immutable方針を正常公開assetだけへ適用。private/no-store/Set-Cookie/404拒否を含む21集中試験は合格。最初のfixture日付新しすぎ、MiniflareのWorker存在指定不足、旧Wrangler選択の試験設定不備も証拠へ残す。実配信や性能の合格へ転用しない。
+
+## 静的配信の同一候補を検証（WEB04/WEB06・ROCK）
+
+Root全verify再実行exit0（Node1361中1360pass/1skip、API2018/CSV113、assets212missing0）、Source全verify exit0（Node2410中2409pass/1skip、API1381/CSV385、assets214missing0）。同じ最終Workerの通常8応答と、_headersなし/ローカル本人補助なし/canonical local-upstreamの12応答を再計測し、8保護header、SW正確byte、JSbyte、HEAD/304/404/API401、公開JS immutableを確認。ローカルproxyのLocation書換えを公開先と混同しない。Homeのhydration/共通frame/操作有効化を最終browserで確認、旧cacheニュースを新着受信/真偽合格としない。公開v111は未変更。初回Macarchiveに._SQLが混入したためCOPYFILE_DISABLE=1で再梱包、余分metadata0・SQL12本/Worker/ASSETS設定一致。正規Sites source helperで同projectのremote/base6f32を開き、Root Git変更なし。次は固定Sourcecommitと同じpackage/versionの保存・配備・実公開応答を別受入する。Pixel解除待ちと全Goal残差を維持。
+
+Source保存の最終操作は自動承認審査でprocess作成前に拒否された。理由は既存公開SitesのSource保存helperが後続入力次第で本番版保存・配備へ進み得て、条件付き承認のみでは足りないという判断。明示承認をasyncで1件依頼。別コマンド/直接Git等で迂回せず、Source HEAD6f32、公開v111、saved version/deploymentは変更しない。候補runtime/全verify/同一artifact実測/梱包検査は保存し、全Goalは継続。本人承認後はCOPYFILE_DISABLE=1の正規helperで全verify→同じSourcecommit/自動メタデータを含むarchive→Native保存/配備→同じ版の公開実応答を受け入れる。承認待ちはこの配備工程に限定し、他Coreの独立開発を止めない。
+
+公開承認待ちの独立作業としてSourceへpackage検査CLIと合成負例を追加。実draftの823 fileを全集合/全byte照合し、Worker先行・同Site・SQL12本/原本byte一致を確認。初回の._混入archiveは自動拒否。Metadata/worker改変/他Site/Worker先行無効/欠落asset/SQL改変/linkの合成負例も対象。展開や外部接続を行わず、Source保存拒否を迂回しない。新検査込みのSource全verifyを続ける。
+
+最終ローカルcheckpoint: package guard9件を含むSource全verify exit0（Node2419中2418pass/1skip、API1381/CSV385、assets214missing0）。最終Workerの通常8応答/headersなし12応答を再実測、CLIで同じ配布物823file/SQL12本を照合。新draft sha10082a86…、元Source HEAD6f32、GitHub main/公開v111/実機/本番DBは変更なし。最終Homeの共通frame/表示を同じlocal buildで再確認し、ニュース受信や本人の新account受入へ転用しない。専用tab/preview終了。Source保存・配備は自動承認審査拒否に対する本人の明示承認待ち。ローカルのコード・証拠・復元patchを維持し、全Goalを継続。

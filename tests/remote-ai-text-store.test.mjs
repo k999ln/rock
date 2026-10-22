@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import { generateKeyPairSync, sign, randomUUID } from 'node:crypto';
 import { REMOTE_AI_TEXT_RATE_CARD_SCHEMA, remoteAiRateCardSigningBytes, verifyRemoteAiRateCard } from '../lib/remote-ai-rate-card.ts';
@@ -16,8 +17,7 @@ const owner = 'synthetic-owner';
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(file => file.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const db = {
     prepare(sql) { return {
       bind(...values) { return {

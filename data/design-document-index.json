@@ -2716,5 +2716,200 @@
     "publicDeployed": false,
     "developerPayoutEnabled": false,
     "gpuRented": false
+  },
+  "sourceOwnerWorkspaceRecovery": {
+    "scope": "Retained canonical main Sites Source only; no Root migration replacement or public DB change",
+    "requirementIds": [
+      "CORE01",
+      "CORE06",
+      "CORE08",
+      "CORE09"
+    ],
+    "taskIds": [
+      "WEB04",
+      "SKY21",
+      "BIL02"
+    ],
+    "migration": "drizzle-main/0031_owner_workspace_schema_recovery.sql (Source only)",
+    "evidence": "docs/evidence/sky-source-regression-repair.json#ownerWorkspaceRecovery",
+    "status": "local_D1_acceptance_in_progress_public_not_deployed",
+    "contracts": [
+      "Published SQL and times immutable",
+      "restored main DB prerequisite",
+      "owner data preserved",
+      "incompatible existing columns reject before watermark acceptance"
+    ],
+    "packageLineageProtection": {
+      "status": "local_focused_27_passed_full_source_25_failures_remain",
+      "source": "scripts/sites-migration-lineage.mjs (retained main Site Source)",
+      "legacyFixtureSource": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+      "legacyAssertionsRetained": true,
+      "rejectsWrongSiteBeforeMutation": true,
+      "publishedMainSqlChanged": false
+    }
+  },
+  "sharedOsFrame": {
+    "status": "local_candidate_alignment",
+    "generalLaunchAccepted": false,
+    "candidateAlignment": {
+      "design": "docs/rockstaros-complete-design.md#common-os-entry-alignment",
+      "source": [
+        "app/os-design-tokens.css",
+        "app/os-shell.css",
+        "app/rockstaros/guide/page.tsx",
+        "components/rockstar-entitlement-claim.tsx",
+        "services/sky-web/domain-router.mjs"
+      ],
+      "tests": [
+        "tests/common-os-entry-contract.test.mjs",
+        "tests/sky-domain-router.test.mjs"
+      ],
+      "status": "local_ui_and_focus_passed_root_verify_passed_source_17_failures_remain",
+      "evidence": "docs/evidence/common-os-entry-alignment.json",
+      "publicChanged": false
+    },
+    "homeAddManage": {
+      "status": "local_exact_build_accepted_publication_pending",
+      "authority": "2026-10-22 owner says /#catalog and /os/sky/agents are redundant, screenshot points to their separate bottom tabs",
+      "documents": [
+        "docs/rockstaros-complete-design.md#home-add-manage",
+        "docs/sky-tools-complete-design.md#home-add-manage"
+      ],
+      "sources": [
+        "app/sky/agents/page.tsx",
+        "components/eve-sync-workspace.tsx",
+        "components/home-screen.module.css",
+        "components/home-screen.tsx",
+        "components/os-app-navigation.tsx",
+        "components/sky-agent-eve-profile.tsx",
+        "components/sky-agent-library.module.css",
+        "components/sky-agent-library.tsx",
+        "components/sky-discovery-dialog.module.css",
+        "components/sky-discovery-dialog.tsx",
+        "components/sky-discovery-feed.tsx",
+        "components/sky-information-market.tsx",
+        "components/sky-social-timeline.tsx",
+        "lib/os-navigation.ts",
+        "tests/common-os-entry-contract.test.mjs",
+        "tests/home-sky-panel.test.mjs",
+        "tests/os-shell-navigation.test.mjs"
+      ],
+      "evidence": "docs/evidence/home-add-manage.json",
+      "primaryNavigation": [
+        "stream",
+        "eve",
+        "communities"
+      ],
+      "publicAccepted": false
+    }
+  },
+  "sourceReadinessAlignment": {
+    "design": "docs/rockstaros-complete-design.md#source-readiness-alignment",
+    "source": [
+      "services/sky-web/domain-router.mjs",
+      "scripts/stage-sky-domain-router.mjs",
+      "scripts/check-web-security-response.mjs",
+      "scripts/check-product-baseline.mjs"
+    ],
+    "tests": [
+      "tests/sky-domain-router.test.mjs",
+      "tests/sky-domain-staging.test.mjs",
+      "tests/product-baseline.test.mjs"
+    ],
+    "status": "local_source_full_verify_and_same_build_response_browser_passed_public_and_pixel_pending",
+    "evidence": "docs/evidence/source-readiness-alignment.json",
+    "publicChanged": false,
+    "retainedSiteSource": {
+      "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+      "paths": [
+        "scripts/stage-sky-domain-router.mjs",
+        "scripts/check-web-security-response.mjs",
+        "scripts/check-product-baseline.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "scripts/check-ecosystem-research.mjs",
+        "scripts/sky-monthly-sandbox-db.mjs",
+        "scripts/check-sky-a2a-workflow.mjs",
+        "scripts/check-work-api.mjs",
+        "scripts/check-csv-storage.mjs",
+        "app/avocado-mini/page.tsx",
+        "app/avocado-mini/design.module.css"
+      ],
+      "tests": [
+        "tests/sky-domain-staging.test.mjs",
+        "tests/product-baseline.test.mjs",
+        "tests/release-readiness.test.mjs",
+        "tests/sky-monthly-sandbox-bootstrap.test.mjs",
+        "tests/avocado-r5-docs.test.mjs"
+      ],
+      "integrationPatch": "docs/evidence/sky-source-regression-repair.patch"
+    },
+    "publicMetadataEvidence": "docs/evidence/sites-current-public-observation.json"
+  },
+  "sourceAssetSecurity": {
+    "design": "docs/rockstaros-complete-design.md#source-asset-security",
+    "status": "local_verified_source_save_and_public_deploy_awaiting_explicit_approval",
+    "taskIds": [
+      "WEB04",
+      "WEB06"
+    ],
+    "retainedSiteSource": {
+      "base": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+      "source": [
+        "scripts/stage-sky-domain-router.mjs",
+        "scripts/check-sites-package.py"
+      ],
+      "tests": [
+        "tests/sky-domain-staging.test.mjs",
+        "tests/sky-asset-routing.test.mjs",
+        "tests/sites-package.test.mjs"
+      ]
+    },
+    "publicChanged": false,
+    "source": [
+      "services/sky-web/domain-router.mjs"
+    ],
+    "tests": [
+      "tests/sky-domain-router.test.mjs"
+    ],
+    "evidence": "docs/evidence/source-asset-security.json"
+  },
+  "sourceRuntimeDeviceBinding": {
+    "tasks": [
+      "OS10",
+      "DSP01",
+      "SKY21",
+      "WEB06"
+    ],
+    "design": [
+      "docs/rockstaros-complete-design.md#source-runtime-device-binding",
+      "docs/sky-tools-complete-design.md#source-runtime-device-binding"
+    ],
+    "source": [
+      "lib/rockstar-device-link.ts",
+      "app/api/rockstar/device-authorizations/route.ts",
+      "app/api/rockstar/device-authorizations/approve/route.ts",
+      "app/api/eve/runtime/route.ts",
+      "lib/eve-runtime-sync.ts",
+      "lib/rockstar-linked-execution.ts",
+      "lib/rockstar-adapters.ts",
+      "lib/eve-history.ts",
+      "scripts/check-work-api.mjs",
+      "scripts/runtime-device-api-acceptance.mjs",
+      "scripts/sky-monthly-sandbox-db.mjs",
+      "drizzle-main/meta/_journal.json",
+      "scripts/device-binding-api-acceptance.mjs",
+      "tests/device-link-response.test.mjs"
+    ],
+    "sourceOnlyAcceptanceHelper": true,
+    "evidence": "docs/evidence/source-runtime-device-binding.json",
+    "status": "negotiated_source_worker_and_sdk_accepted_new_native_execution_pending",
+    "actualSourceWorkerContractAccepted": true,
+    "realInferenceAccepted": false,
+    "publicAccepted": false,
+    "sameCandidatePixelAccepted": false,
+    "existingPixelRuntimeReadOnlyAccepted": true,
+    "negotiatedExtension": "X-Rockstar-Device-Binding: owner-device/v1",
+    "legacyStrictResponsePreserved": true,
+    "sdkVersion": "1.0.0-dev.7"
   }
 }

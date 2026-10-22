@@ -366,7 +366,7 @@ export default function SkyInformationMarket({
                 <span>YOUR ADDED CAPABILITIES</span>
                 <h2 id="your-agents-title">追加した力を、仕事へ。</h2>
               </div>
-              <Link href="/sky/agents">
+              <Link href="/#sky-manage">
                 担当とLLMを設定 <ArrowRight size={15} />
               </Link>
             </header>

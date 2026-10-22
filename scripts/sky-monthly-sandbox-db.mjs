@@ -1,9 +1,13 @@
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
-export function openMonthlySandboxDatabase(path = ':memory:') {
-  const sqlite = new DatabaseSync(path);
-  sqlite.exec('PRAGMA foreign_keys=ON');
-  sqlite.exec('CREATE TABLE IF NOT EXISTS local_sandbox_migrations(name TEXT PRIMARY KEY)');
+/** Synthetic restored-schema precondition, for local test databases only.
+ * Existing-production ALTER 0020 is intentionally not an empty-DB bootstrap.
+ * Neither this initializer nor its historical fixture is a production migration.
+ */
+export function applySourceSandboxSchema(sqlite, { persistMigrationJournal = false } = {}) {
+  // Generic store fixtures count every application table. Keep this test-only
+  // bookkeeping outside sqlite_master; file-backed monthly sandboxes opt in.
+  sqlite.exec(`CREATE ${persistMigrationJournal ? '' : 'TEMP '}TABLE IF NOT EXISTS local_sandbox_migrations(name TEXT PRIMARY KEY)`);
   // Exercise the retained Sites deployment lineage; retired SQL files are not ordered migrations.
   const migrationRoot=new URL('../drizzle-main/',import.meta.url);
   const entries=JSON.parse(readFileSync(new URL('meta/_journal.json',migrationRoot),'utf8')).entries;
@@ -21,21 +25,16 @@ export function openMonthlySandboxDatabase(path = ':memory:') {
       sqlite.exec('COMMIT');
     } catch(error) { sqlite.exec('ROLLBACK'); throw error; }
   }
-  // Test/Sandbox-only bootstrap from retained Drizzle metadata. These ten tables
-  // predate the Sites bridge and are absent from its migration payload. This is
-  // not a production migration and never changes the hosted D1 database.
-  const snapshot=JSON.parse(readFileSync(new URL('../drizzle-main/meta/0006_snapshot.json',import.meta.url),'utf8'));
-  const quote=value=>'"'+value.replaceAll('"','""')+'"';
-  for(const name of ['sky_recurring_contracts','sky_recurring_charges','sky_cloud_monthly_invoices','sky_cloud_monthly_items','sky_cloud_monthly_events','sky_hosted_monthly_events','sky_hosted_monthly_tests','sky_monthly_sandbox_invoices','sky_monthly_sandbox_quotes','sky_monthly_sandbox_usage']){
-    const table=snapshot.tables[name];if(!table)throw Error('Retained Sandbox schema missing: '+name);
-    const fields=Object.values(table.columns).map(c=>`${quote(c.name)} ${c.type}${c.primaryKey?' PRIMARY KEY':''}${c.notNull?' NOT NULL':''}${c.default!==undefined?' DEFAULT '+c.default:''}`);
-    for(const constraint of Object.values(table.compositePrimaryKeys??{}))fields.push(`PRIMARY KEY (${constraint.columns.map(quote).join(',')})`);
-    for(const constraint of Object.values(table.uniqueConstraints??{}))fields.push(`UNIQUE (${constraint.columns.map(quote).join(',')})`);
-    for(const check of Object.values(table.checkConstraints??{}))fields.push(`CONSTRAINT ${quote(check.name)} CHECK (${check.value})`);
-    for(const fk of Object.values(table.foreignKeys??{}))fields.push(`FOREIGN KEY (${fk.columnsFrom.map(quote).join(',')}) REFERENCES ${quote(fk.tableTo)} (${fk.columnsTo.map(quote).join(',')}) ON UPDATE ${fk.onUpdate} ON DELETE ${fk.onDelete}`);
-    sqlite.exec(`CREATE TABLE IF NOT EXISTS ${quote(name)} (${fields.join(',')})`);
-    for(const index of Object.values(table.indexes??{}))sqlite.exec(`CREATE ${index.isUnique?'UNIQUE ':''}INDEX IF NOT EXISTS ${quote(index.name)} ON ${quote(name)} (${index.columns.map(quote).join(',')})${index.where?' WHERE '+index.where:''}`);
-  }
+  sqlite.exec('BEGIN IMMEDIATE');
+  try {
+    sqlite.exec(readFileSync(new URL('../tests/fixtures/sky-monthly-historical-schema.sql', import.meta.url), 'utf8'));
+    sqlite.exec('COMMIT');
+  } catch (error) { sqlite.exec('ROLLBACK'); throw error; }
+}
+export function openMonthlySandboxDatabase(path = ':memory:') {
+  const sqlite = new DatabaseSync(path);
+  try { sqlite.exec('PRAGMA foreign_keys=ON'); applySourceSandboxSchema(sqlite, { persistMigrationJournal: true }); }
+  catch (error) { sqlite.close(); throw error; }
   class Statement {
     constructor(sql, values = []) { this.sql = sql; this.values = values; }
     bind(...values) { return new Statement(this.sql, values); }
@@ -48,4 +47,23 @@ export function openMonthlySandboxDatabase(path = ':memory:') {
     try { const results = statements.map(s => s.run()); sqlite.exec('COMMIT'); return Promise.resolve(results); }
     catch(error) { sqlite.exec('ROLLBACK'); return Promise.reject(error); }
   }, close: () => sqlite.close() };
+}
+
+/** Build an empty local restored-schema fixture for real D1 integration tests.
+ * No application rows, filename migration receipts, owner data or production
+ * migration are exported. Published-main upgrade acceptance is tested separately.
+ */
+export function sourceSandboxRestoreStatements() {
+  const database = new DatabaseSync(':memory:');
+  try {
+    applySourceSandboxSchema(database);
+    const definitions = database.prepare(`SELECT type,name,sql FROM sqlite_master
+      WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%'
+      ORDER BY CASE type WHEN 'table' THEN 0 WHEN 'index' THEN 1 ELSE 2 END,name`).all();
+    return definitions.map(({ sql }) => sql.replace(/;\s*$/, ''));
+  } finally { database.close(); }
+}
+
+export function sourceSandboxRestoreSql() {
+  return sourceSandboxRestoreStatements().map(sql => sql + ';').join('\n');
 }

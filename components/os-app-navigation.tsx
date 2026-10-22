@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Radio, Search, MessageCircle, Layers2, Users } from 'lucide-react';
+import { Radio, MessageCircle, Users } from 'lucide-react';
 import { activeOsNavigation, osNavigationItems, osRouteHref, type OsNavigationId } from '@/lib/os-navigation';
 
-const icons = { stream: Radio, discover: Search, eve: MessageCircle, agents: Layers2, communities: Users };
+const icons = { stream: Radio, eve: MessageCircle, communities: Users };
 
-/** The same five destinations and footprint on Home and every OS workspace. */
+/** The same three destinations and footprint on Home and every OS workspace. */
 export default function OsAppNavigation({
   className = '', active, running = false, 'aria-label': label = 'RockstarOSの主要サービス',
 }: { className?: string; active?: OsNavigationId; running?: boolean; 'aria-label'?: string }) {

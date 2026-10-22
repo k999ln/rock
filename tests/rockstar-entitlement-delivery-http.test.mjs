@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import { createHash, generateKeyPairSync } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { issueRockstarEntitlementClaim } from '../lib/rockstar-entitlement-issuer.ts';
@@ -29,8 +30,7 @@ const idem = 'web-shop-order-line-20261002-0007';
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const db = { prepare(sql) { return { bind(...values) { return {
     async first() { return sqlite.prepare(sql).get(...values) ?? null; },
     async run() { const result = sqlite.prepare(sql).run(...values); return { meta: { changes: Number(result.changes) } }; },

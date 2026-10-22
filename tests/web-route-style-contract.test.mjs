@@ -68,7 +68,7 @@ void test('module-styled home, Campus and settings keep their stylesheet binding
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
 
-void test('primary apps share the avokado graphite, silver and ice-blue system', () => {
+void test('primary apps share the current OS tokens and preserve reduced motion', () => {
   const homeStyles = readFileSync(
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
@@ -87,10 +87,10 @@ void test('primary apps share the avokado graphite, silver and ice-blue system',
   );
   assert.match(workspace, /RockstarOS 1\.0 — unified app surfaces/);
   assert.match(workspace, /avokado OS: the product's graphite shell/);
-  assert.match(homeStyles, /\.home \{[\s\S]*--home-accent: #bedce6/);
-  assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#e1e8eb/);
-  assert.match(csvStyles, /\.primary \{[\s\S]*#172631/);
-  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#bedce6/);
+  assert.match(homeStyles, /\.home \{[\s\S]*--home-accent: var\(--os-accent\)/);
+  assert.match(homeStyles, /prefers-reduced-motion: reduce/);
+  assert.match(csvStyles, /\.primary \{[\s\S]*var\(--os-/);
+  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*var\(--os-/);
   assert.doesNotMatch(sky, /showSidebar/);
 });
 
@@ -120,7 +120,7 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
-  for (const route of ['/os/sky', '/chat', '/campus', '/wallet', '/market', '/settings']) {
+  for (const route of ['/#timeline', '/#sky', '/chat', '/#communities', '/campus', '/wallet', '/market', '/settings']) {
     assert.match(
       home,
       new RegExp(`href: '${route}'`),
@@ -129,10 +129,13 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
   }
   assert.doesNotMatch(home, /href: '\/work'/);
   assert.doesNotMatch(home, /href: '\/csv'/);
-  assert.match(home, /WEB \/ LOCAL/);
+  assert.match(home, /DEVELOPER\s+PREVIEW/);
+  assert.match(home, /<SkySocialTimeline/);
+  assert.match(home, /discovery=\{<SkyDiscoveryFeed/);
+  assert.doesNotMatch(home, /<SkyInformationMarket|<SkyOptionalFeatures|styles\.hero/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
-  assert.match(home, /closeOnEscape/);
-  assert.match(home, /localStorage\.setItem/);
+  assert.match(home, /event.key === 'Escape'/);
+  assert.match(home, /data-sky-home/);
   assert.match(
     homeStyles,
     /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/,
@@ -146,7 +149,7 @@ void test('workspace shell stays sidebar-free and preserves running-state afford
   );
   assert.doesNotMatch(shell, /Sidebar|rock-sidebar|rock-navigation/);
   assert.match(shell, /rock-main-column rock-main-column-full/);
-  assert.match(shell, /className="rock-home-link"/);
+  assert.match(shell, /<OSHeader title=\{title\} running=\{running\}/);
   assert.match(shell, /aria-disabled=\{running \|\| undefined\}/);
   assert.match(workspace, /data-running='true'/);
 });
@@ -271,7 +274,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
     [
       'workspace shell',
       'components/workspace-shell.tsx',
-      /className="rock-home-link"[\s\S]{0,120}aria-label="ホームへ戻る"/,
+      /<OSHeader title=\{title\} running=\{running\}/,
     ],
     [
       'mobile chat command bar',
@@ -296,7 +299,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
     [
       'legacy fund',
       'app/fund/legacy/page.tsx',
-      /<Link href="\/">⌂ ホーム<\/Link>/,
+      /redirect\('\/fund'\)/,
     ],
     [
       'rock studio',
@@ -310,7 +313,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
   }
 });
 
-void test('public product and install guide stay outside the OS home', () => {
+void test('retired product forwards to the OS while the installation guide remains available', () => {
   const product = readFileSync(
     resolve(root, 'app/rockstaros/page.tsx'),
     'utf8',
@@ -320,10 +323,10 @@ void test('public product and install guide stay outside the OS home', () => {
     'utf8',
   );
   assert.doesNotMatch(product, /href="\/"/);
-  assert.match(product, /href="\/rockstaros\/guide"/);
+  assert.match(product, /redirect\('\/os'\)/);
   assert.match(
     guide,
-    /<Link href="\/rockstaros" className=\{styles\.brand\} aria-label="製品ホームへ戻る"/,
+    /<Link href="\/os" className=\{styles\.brand\} aria-label="RockstarOS ホームへ戻る"/,
   );
 });
 

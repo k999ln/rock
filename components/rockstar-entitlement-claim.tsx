@@ -161,7 +161,7 @@ export function RockstarEntitlementClaim() {
     </div>
     {loadError === 'signin' ? <div className={styles.notice}>
       <p>利用権を確認するにはRockstar IDでサインインしてください。</p>
-      <Link href="/signin-with-chatgpt?return_to=%2Fconnect" target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
+      <Link href="/account?returnTo=%2Fconnect" target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
       <p>別タブでサインイン後、この画面で利用権を再確認してください。読み込んだ購入データはこの画面で保持しています。</p>
       <button type="button" disabled={busy} onClick={() => void refresh()}>利用権を再確認</button>
     </div> : loadError === 'unavailable' ? <div className={styles.error}>

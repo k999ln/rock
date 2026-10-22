@@ -1,0 +1,277 @@
+{
+  "schema": "rockstaros.common-os-entry-alignment/1",
+  "recordedAt": "2026-10-22T11:43:49.139320+00:00",
+  "status": "local_ui_and_focus_passed_root_verify_passed_source_17_failures_remain",
+  "scope": [
+    "CORE01",
+    "CORE08",
+    "CORE12"
+  ],
+  "tasks": [
+    "WEB04",
+    "WEB06",
+    "SKY21"
+  ],
+  "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "publicVersionUnchanged": 111,
+  "changes": [
+    "matching default/frame palette",
+    "shared readable muted text",
+    "Source CSV/settings color declarations only",
+    "guide OS/Mini destinations",
+    "independent account claim login",
+    "Eve naming in connect",
+    "loopback canonical Sky alias retaining origin/body/session",
+    "common frame overrides legacy workspace blue surface"
+  ],
+  "checks": {
+    "rootFocusBeforeAlias": {
+      "pass": 22,
+      "total": 22
+    },
+    "sourceUiEntry": {
+      "pass": 38,
+      "total": 38
+    },
+    "sourceClaimUi": {
+      "pass": 17,
+      "total": 17
+    },
+    "rootRouterNavBeforeSurface": {
+      "pass": 19,
+      "total": 19
+    },
+    "sourceRouterNavBeforeSurface": {
+      "pass": 19,
+      "total": 19
+    },
+    "sourceNodeBeforeAlias": {
+      "total": 2392,
+      "pass": 2374,
+      "fail": 17,
+      "cancelled": 0,
+      "skip": 1,
+      "log": "/private/tmp/rock-source-common-ui-full-node-final-escalated.log"
+    },
+    "typecheck": {
+      "exitCode": 0
+    },
+    "lintProduct": {
+      "exitCode": 0
+    },
+    "buildBeforeSurface": {
+      "exitCode": 0
+    },
+    "rootFocusFinal": {
+      "pass": 37,
+      "total": 37,
+      "log": "/private/tmp/rock-common-ui-all-focus-root.log"
+    },
+    "sourceFocusFinal": {
+      "pass": 70,
+      "total": 70,
+      "log": "/private/tmp/rock-common-ui-all-focus-source.log"
+    },
+    "rootVerify": {
+      "exitCode": 0,
+      "nodeTotal": 1327,
+      "nodePass": 1326,
+      "nodeFail": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 2000,
+      "csvAssertions": 113,
+      "webAssets": 212,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-common-ui-root-verify-final.log",
+      "scope": "Observed command in shared dirty checkout, not a frozen CI proof for unrelated concurrent edits."
+    },
+    "sourceFullNodeFinal": {
+      "total": 2394,
+      "pass": 2376,
+      "fail": 17,
+      "cancelled": 0,
+      "skip": 1,
+      "exitCode": 1,
+      "log": "/private/tmp/rock-source-common-ui-node-candidate-final.log",
+      "failureGroups": {
+        "avocado-r5-docs.test.mjs": 2,
+        "product-baseline.test.mjs": 2,
+        "release-readiness.test.mjs": 13
+      },
+      "testTimeoutsChanged": false
+    },
+    "typecheckFinal": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-common-ui-type-final.log"
+    },
+    "lintProductFinal": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-common-ui-lint-final.log"
+    },
+    "buildFinal": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-common-ui-build-final.log"
+    },
+    "sourceDesignFinal": {
+      "exitCode": 0
+    },
+    "sourceFullVerifyFinal": {
+      "exitCode": 1,
+      "stage": "project:check",
+      "reason": "AMC02 historical evidence missing",
+      "log": "/private/tmp/rock-source-common-ui-verify-candidate-final.log"
+    }
+  },
+  "initialFailures": [
+    {
+      "case": "loopback owner Agent library",
+      "observed": "browser 404 at /os/sky/agents",
+      "cause": "alias rewrite applied only to canonical domain",
+      "fixed": "loopback allowlist + preserving request test + browser list after restart"
+    },
+    {
+      "case": "legacy Source workspace colors",
+      "observed": "blue background remained after fixing root tokens",
+      "fix": "higher specificity common frame surfaces",
+      "finalVisualPending": false,
+      "finalVisualAccepted": true
+    },
+    {
+      "case": "unprivileged Source full Node",
+      "observed": "loopback EPERM",
+      "scope": "environment failure; subsequent permitted run retained 17 real failures"
+    }
+  ],
+  "sourceSha256": {
+    "app/os-design-tokens.css": "bb01ef8b2cd0275deb9cf013423cacb7e6e014fc17e370ba49219593f3929ed4",
+    "app/os-shell.css": "9cf8c72fd144984cdb38e018b770310fe72d55d7bef3424ca564e3033b79dcca",
+    "app/rockstaros/guide/page.tsx": "6a18d4ddfcc32717e4300fa16626474cf707f4561f76d98cfe7c8f162c1bc7c3",
+    "app/connect/page.tsx": "7496ac28649264f67231b0bbb6654e1b41ff346097883a103364c2d16ec53409",
+    "components/home-screen.module.css": "f288d1b126f1f867202e0a7f4808becda84a6a101075c83a3d8c3158686fb673",
+    "components/sky-social-timeline.module.css": "dd17e4cb90e5e0462c9f8c75e7bf58a8dc05a2172cdd1df889ea3b3a35aa65d1",
+    "components/rockstar-entitlement-claim.tsx": "28c40e63d558b3ce179c292ea0de24fa7c43e18a69602a43829492ff2d63e77d",
+    "services/sky-web/domain-router.mjs": "375b6c98c5b3e3d4771cb3e8853aedc0c33f98459709788bbcbf5eb728efa22a",
+    "tests/common-os-entry-contract.test.mjs": "1223b9035cf799f6496d2bb89b5418362b1731cc4f975d2fc1245cd8602b69e3",
+    "tests/sky-domain-router.test.mjs": "19c0103f586985bfff500da9fdc2d08c598202178dcf378f1b699214689847f4"
+  },
+  "browser": {
+    "origin": "http://127.0.0.1:8796",
+    "isolation": "empty canonical schema plus historical financial fixture; no owner history or secrets",
+    "views": [
+      "Home",
+      "Discover dialog and close",
+      "Eve",
+      "own Agent library",
+      "guide canonical OS and Mini links",
+      "Final Agent library after common legacy-surface override"
+    ],
+    "accountAcceptance": false,
+    "addOrRunActions": 0,
+    "newCredentials": 0,
+    "newGrants": 0,
+    "screenshots": [
+      {
+        "name": "source-common-ui-home.png",
+        "sha256": "20bd8416a9e74a8a2a7c73a655f46fee36357caf057888c1fa6e2e01063e4f3f",
+        "bytes": 80260,
+        "containsOwnerHistory": false
+      },
+      {
+        "name": "source-common-ui-catalog.png",
+        "sha256": "ee3d546b26d09aed707178e752f884003bcfd9e15ab7ce6ff28f1d57bc1eeb89",
+        "bytes": 60787,
+        "containsOwnerHistory": false
+      },
+      {
+        "name": "source-common-ui-eve.png",
+        "sha256": "9475bac7a68e524d0e1951ae5f462aff4138009538009ad2a674f67eeffb0659",
+        "bytes": 45415,
+        "containsOwnerHistory": false
+      },
+      {
+        "name": "source-common-ui-agents.png",
+        "sha256": "971b4d29042a5549446cad64d0cd2e609af0683e283eee6c76622c9ce1529436",
+        "bytes": 52525,
+        "containsOwnerHistory": false
+      },
+      {
+        "name": "source-common-ui-agents-final.png",
+        "sha256": "b1b5963aa8fc183867624f6265557c632255d62cfc200a19311910dc22ac9a29",
+        "bytes": 51947,
+        "containsOwnerHistory": false,
+        "finalSurface": true
+      }
+    ],
+    "previewClosedAfterAcceptance": true
+  },
+  "pixel": {
+    "connected": true,
+    "updatedApkMatches": true,
+    "keyguardShowingAtRead": true,
+    "screenOffAtRead": true,
+    "unlockObservedWithinFiveMinutes": false,
+    "instrumentationExecuted": false,
+    "existingApplicationUnchanged": true,
+    "lastReadback": {
+      "observedAt": "2026-10-22T11:42:37.492673+00:00",
+      "connected": true,
+      "keyguardShowing": true,
+      "screenOff": true,
+      "applicationSha256": "24b443c0333a6c2a0dc0236be1af17abec4eaf111b814202c35236170c8322c2",
+      "testApkSha256": "d21e9442aab5661bfe65bd6fa2db58fda46598e04d3fd0596ce03cd3afdb1483",
+      "foregroundHostServicePresent": false,
+      "newInference": 0,
+      "newDeviceGrant": 0,
+      "applicationStillMatches": true,
+      "originalTestStillMatches": true
+    },
+    "unlockWaitSeconds": 300,
+    "unlockWaitStatus": "unlock_not_observed",
+    "testApkChanged": false,
+    "foregroundHostStarted": false
+  },
+  "remaining": [
+    "17 Source historical docs/baseline/readiness failures; full verify stops at missing AMC02 historical evidence",
+    "owner-unlocked existing-grant Pixel sync/stop and same-account browser UI acceptance",
+    "same job inference/export/restart separately",
+    "full CORE01-12/RQ01-49/research87/SI00-08/U01-05"
+  ],
+  "publicChanged": false,
+  "paidProviderCalls": 0,
+  "actualBilling": 0,
+  "newDeviceGrants": 0,
+  "committed": false,
+  "mainMerged": false,
+  "rootSha256": {
+    "app/os-design-tokens.css": "bb01ef8b2cd0275deb9cf013423cacb7e6e014fc17e370ba49219593f3929ed4",
+    "app/os-shell.css": "9cf8c72fd144984cdb38e018b770310fe72d55d7bef3424ca564e3033b79dcca",
+    "app/rockstaros/guide/page.tsx": "6a18d4ddfcc32717e4300fa16626474cf707f4561f76d98cfe7c8f162c1bc7c3",
+    "app/connect/page.tsx": "57f30b7256a88bd852d12a57734ce279fb786291e2d96379b9951f2351b5a158",
+    "components/home-screen.module.css": "f288d1b126f1f867202e0a7f4808becda84a6a101075c83a3d8c3158686fb673",
+    "components/sky-social-timeline.module.css": "dd17e4cb90e5e0462c9f8c75e7bf58a8dc05a2172cdd1df889ea3b3a35aa65d1",
+    "components/rockstar-entitlement-claim.tsx": "6df5de131411db7bf00ee86cd4fa24fa381c9a11de1ed424a32727d4a28cd501",
+    "services/sky-web/domain-router.mjs": "375b6c98c5b3e3d4771cb3e8853aedc0c33f98459709788bbcbf5eb728efa22a",
+    "tests/common-os-entry-contract.test.mjs": "1223b9035cf799f6496d2bb89b5418362b1731cc4f975d2fc1245cd8602b69e3",
+    "tests/sky-domain-router.test.mjs": "19c0103f586985bfff500da9fdc2d08c598202178dcf378f1b699214689847f4"
+  },
+  "followupSourceReadiness": {
+    "evidence": "docs/evidence/source-readiness-alignment.json",
+    "legacy17Resolved": true,
+    "sourceVerify": {
+      "exitCode": 0,
+      "nodeTotal": 2404,
+      "nodePass": 2403,
+      "nodeFail": 0,
+      "nodeCancelled": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssets": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-source-readiness-mini-final-verify.log",
+      "scope": "Retained local Sites Source candidate; synthetic restored D1/Worker/R2, not public or financial acceptance."
+    },
+    "publicChanged": false,
+    "pixelSyncAccepted": false
+  }
+}

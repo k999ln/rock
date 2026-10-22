@@ -10,7 +10,10 @@ import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
 
-const folder = new URL('../drizzle/', import.meta.url).pathname;
+// The main Site package intentionally replaces root drizzle with drizzle-main.
+// Keep all historical Columbia assertions against the exact published fixture;
+// current main migration bytes/upgrade behavior remain separately exercised below.
+const folder = new URL('../tests/fixtures/sites-columbia-migrations/', import.meta.url).pathname;
 const mainFolder = new URL('../drizzle-main/', import.meta.url).pathname;
 const legacyFolder = new URL('../drizzle-legacy/pre-site-bridge/', import.meta.url).pathname;
 const names = readdirSync(folder)
@@ -23,6 +26,20 @@ const hashLegacy = (name) => createHash('sha256').update(readLegacy(name)).diges
 const journal = JSON.parse(
   readFileSync(folder + 'meta/_journal.json', 'utf8'),
 ).entries;
+await test('the historical lineage fixture matches every pinned published byte and cannot be regenerated in a main package',()=>{
+  const proof=JSON.parse(readFileSync(folder+'provenance.json','utf8'));
+  assert.equal(proof.sourceCommit,'686fd5ab78015f6d8dc29030bfd4f76fb912a920');
+  assert.equal(Object.keys(proof.filesSha256).length,10);
+  for(const [name,sha] of Object.entries(proof.filesSha256))
+    assert.equal(createHash('sha256').update(readFileSync(folder+name)).digest('hex'),sha,name);
+  const actual=JSON.parse(readFileSync(mainFolder+'meta/_journal.json','utf8'));
+  const blocked=spawnSync(process.execPath,['scripts/generate-site-d1-bridge.mjs','--write'],{cwd:new URL('..',import.meta.url),encoding:'utf8'});
+  assert.equal(blocked.status,1); assert.match(blocked.stderr,/must not rewrite the immutable Columbia/);
+  assert.deepEqual(JSON.parse(readFileSync(mainFolder+'meta/_journal.json','utf8')),actual);
+  for(const [name,sha] of Object.entries(proof.filesSha256))
+    assert.equal(createHash('sha256').update(readFileSync(folder+name)).digest('hex'),sha,name);
+});
+
 const original = {
   '0000_previous_havok.sql':
     '7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63',
@@ -141,7 +158,7 @@ await test('the forward Web bridge tolerates objects left by an earlier partial 
   ).get());
 });
 
-await test('Sites deploys only the consolidated root bridge after the recorded history', () => {
+await test('the immutable published Columbia fixture keeps its consolidated bridge after the recorded history', () => {
   assert.deepEqual(names, [
     '0013_sky_provider_connections.sql',
     '0014_jennifer_execution_integrity.sql',
@@ -213,6 +230,13 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0023_jennifer_schema_guard.sql',
     '0024_remote_ai_send_claims_recovery.sql',
     '0025_remote_ai_send_claims_watermark.sql',
+    '0026_eve_account_sync.sql',
+    '0027_os_timeline.sql',
+    '0028_rockstar_accounts.sql',
+    '0029_rockstar_password_accounts.sql',
+    '0030_sky_agent_settings.sql',
+    '0031_owner_workspace_schema_recovery.sql',
+    '0032_eve_runtime_presence.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -520,5 +544,6 @@ await test('fresh and current production D1 databases converge without losing re
   ).first());
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800000);
+  ).first()).created_at), 4102444800004);
+  assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

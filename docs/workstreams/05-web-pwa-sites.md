@@ -256,3 +256,22 @@ O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証�
 
 
 待機中プラン停止受入（2026-10-18、SKY07/BIL02）: 復旧済みSandboxの次周期試験を履歴保持で反復可能にする。上限到達と未払いで保存済みジョブの送信を止め、同意期限内の入金・翌月更新後に同IDを再開。実accountとStripe Sandboxの証拠はdocs/evidence/sky-background-plan-gates.json。合成27試験と全体verifyを実施。本番課金なし。
+
+
+## main Siteの移行系列保護（2026-10-22 / WEB04・RLS02、ROCK）
+
+mainの梱包SourceをColumbia用に誤用できる問題を2試験で再現し、copy/remove前の系列検証で拒否。固定旧系列の元SQL/全保存条件と現行mainの実D1を保持し集中27/27合格。Source全Nodeは2387中2361pass/25fail/1skip、型/lint合格。残る旧画面契約・公開/依存/安全証拠の相違と本番読戻しは未完了。[詳細](../rockstaros-complete-design.md#配信sourceのowner-workspace移行修復core01060809web04sky21)。公開・DB書込・料金変更なし。
+
+
+## 共通画面・独立登録入口のSource整合（CORE01/08/12、WEB04/WEB06/SKY21・ROCK）
+
+Homeの既定tokenとworkspace frameを同値にし、旧青系の面、補助文字、guideのOS/Miniリンク、claimの独立account入口を修正する。localhostの`/os/sky/agents`404もloopback限定aliasで直し、host/query/body/originと本人境界を保持する。[11項目の設計](../rockstaros-complete-design.md#common-os-entry-alignment)、[同一source証拠](../evidence/common-os-entry-alignment.json)。既存Sourceの金融/同意/入力保全/冪等性のassertionを残し、旧画面への固定期待だけ現行機能に合わせる。local synthetic UI、公開v111、Pixel APKを分け、本人アカウント/新推論/配備を未実施へ保持する。次はSource残差17件/全体gateと、解除したPixelの既存account同期・同じ仕事の縦断。
+
+
+## 配信用Sourceの保護応答・baseline・進捗参照（WEB04/WEB06/SKY21・ROCK）
+
+[11項目契約](../rockstaros-complete-design.md#source-readiness-alignment)、[証拠](../evidence/source-readiness-alignment.json)。outer routerの8 header、SSE/private cache保持、独自SW scope/cache、既存stage更新/未知entry拒否を実装し、localhost8応答を測定する。現在の49項目/全体promptをSource入口へ、旧Compute Gridは拡張として金融保留ごと保持。旧E3 forcingを現在R5へ置換し、未実証拒否を残す。AMC02の消えたactive SQL参照は保存済み原本fixtureへ移す。EXTERNALは配信、JOINTは同じ公開候補と実機、OWNERは認可/公開/料金。公開canonical SWはまだunitのみ。次はSource全verify/最終Mini表示/公開gate、Pixel解除後の同期・同一job保存を別々に受入。
+
+Source readback追加：現行public v111のproject/version/source/deploymentをreadonlyで照合し、旧本人限定auditは歴史identityへ分離。public runtime gateはblocked維持。公開Home/APIには8 header、旧URL/SW/JSには不足を観測。候補のlocal合格は公開解消ではない。ecosystemはcanonical49＋保存拡張1を照合、旧SQL参照を固定fixtureへ修正。Workflow/API/CSVは空の復元schemaで実D1を試験し、公開migrationの更新受入と分ける。SOURCE PROJECTSにはsky-linux-localの現存account-sync.patch範囲だけを記載し、完全Linux配布済みとはしない。
+
+静的配信の保護: [11項目契約](../rockstaros-complete-design.md#source-asset-security)。SourceのstageでASSETS/Worker先行を固定し、元app/未知entry/異なるbindingを保全。実asset serviceの_headersなしでWorker/API保護とstatic迂回を同時に再現し、同じ条件の修正後GET/HEAD/304/404/転送/SW/APIを試験する。公開runtimeとCPU/費用は別受入。

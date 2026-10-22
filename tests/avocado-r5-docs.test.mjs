@@ -56,3 +56,15 @@ void test('the concise landing page links to complete progress and explicitly wi
   assert.doesNotMatch(readme, /<!-- project-status:start -->/);
   assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });
+
+void test('R5 copy overrides dark campaign colors locally and enters the current OS directly', () => {
+  const page = read('app/avocado-mini/page.tsx'), css = read('app/avocado-mini/design.module.css');
+  assert.match(page, /miniStyles\.r5Landing/);
+  assert.match(page, /miniStyles\.bodyCopy/);
+  assert.match(page, /miniStyles\.notice/);
+  assert.match(page, /<Link href="\/os">RockstarOSサービスをはじめる<\/Link>/);
+  assert.match(css, /\.r5Landing \.intro > \.bodyCopy,[\s\S]*color: var\(--os-muted, #626e65\)/);
+  assert.match(css, /\.r5Landing \.intro > \.notice[\s\S]*color: var\(--os-text, #252b28\)/);
+  assert.match(css, /background: var\(--os-bg, #f6f4ef\)/);
+  assert.doesNotMatch(css, /(^|\})\s*(body|html|:root)\b/m);
+});

@@ -1,7 +1,8 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {randomUUID} from 'node:crypto';
-import {readFileSync,readdirSync} from 'node:fs';
+import { readFileSync } from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 const root = new URL('../', import.meta.url);
 const {loadRouteFixture} = await import(new URL('tests/route-fixture.mjs',root));
@@ -14,7 +15,7 @@ const entries=[
 ];
 async function setup(t) {
  const sqlite=new DatabaseSync(':memory:'); t.after(()=>sqlite.close());
- for(const name of readdirSync(new URL('drizzle/',root)).filter(n=>n.endsWith('.sql')&&!n.startsWith('._')).sort())sqlite.exec(readFileSync(new URL(`drizzle/${name}`,root),'utf8'));
+ applySourceSandboxSchema(sqlite);
  const db = {
   prepare(sql) {
    return { bind(...args) {

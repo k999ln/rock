@@ -1,8 +1,9 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import * as boundedStream from '../lib/bounded-stream.ts';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { loadRouteFixture } from './route-fixture.mjs';
@@ -24,8 +25,7 @@ import {
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(name => name.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   class Statement {
     constructor(sql, values = []) { Object.assign(this, { sql, values }); }
     bind(...values) { return new Statement(this.sql, values); }

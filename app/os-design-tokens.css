@@ -1,15 +1,15 @@
 /* RockstarOS shared appearance. Surfaces reference these tokens; states retain meaning. */
 :root {
-  --os-bg: #f8f7f5;
-  --os-panel: #ffffff;
-  --os-raised: #f1f0ee;
-  --os-line: #dedddb;
-  --os-text: #242424;
-  --os-muted: #686868;
-  --os-subtle: #707070;
-  --os-accent: #d9365d;
-  --os-accent-ink: #ffffff;
-  --os-focus: #ad2349;
+  --os-bg: #f6f4ef;
+  --os-panel: #fffdf8;
+  --os-raised: #e9ecdf;
+  --os-line: #dedfd6;
+  --os-text: #252b28;
+  --os-muted: #626e65;
+  --os-subtle: #626e65;
+  --os-accent: #315b4d;
+  --os-accent-ink: #fffdf8;
+  --os-focus: #a9754f;
   --os-success: #176d51;
   --os-success-bg: #e8f4ed;
   --os-warning: #80520c;

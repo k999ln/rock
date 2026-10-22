@@ -4,9 +4,9 @@ The Android client must use one Rockstar account across Sky, Zema, entitlement l
 
 ## Authorization flow
 
-1. The device calls `POST /api/rockstar/device-authorizations` with `{ "action": "begin", "deviceName": "..." }` over HTTPS. The service returns a one-time `deviceCode`, an eight-character `userCode`, a ten-minute expiry, a five-second poll interval, and the browser verification URL.
+1. The device calls `POST /api/rockstar/device-authorizations` with `{ "action": "begin", "deviceName": "..." }` over HTTPS. The service returns a one-time `deviceCode`, an eight-character `userCode`, a ten-minute expiry, a five-second poll interval, the browser verification URL, and, only when the host sends `X-Rockstar-Device-Binding: owner-device/v1`, the negotiated binding declaration.
 2. The user opens `/connect/device`, signs into the Rockstar account, checks the displayed device name, then approves or denies the code. Approval binds the pending request to the authenticated account.
-3. The device polls the same API with `{ "action": "poll", "deviceCode": "..." }`. Approval consumes the request exactly once and returns a random `rock_session_...` bearer token with a 90-day expiry. Repeated polling cannot recover that token.
+3. The device polls the same API with `{ "action": "poll", "deviceCode": "..." }`. Approval consumes the request exactly once and returns a random `rock_session_...` bearer token with a 90-day expiry, the authenticated `ownerUserId`, and, for negotiated hosts only, the actual stored session `deviceId`. Repeated polling cannot recover that token.
 4. APIs that accept the device session resolve its owner from the hashed server-side token record. Supported routes include Rockstar service-entitlement lookup/claim, Sky A2A agent and delegation access, delegation artifacts and settlement lookup, and remote LLM pricing/execution guards. Existing service entitlements and paid-execution controls still apply.
 5. The account holder can list and revoke sessions at `/connect/device`. Revocation and expiry immediately reject the bearer token. The database stores only SHA-256 token hashes; the clear token is returned once and must be held by the native app in protected storage.
 
@@ -19,6 +19,8 @@ The confirmation binds the inspected eight-character code to the displayed devic
 The browser uses the shared 10-second header/body deadline and does not follow authentication redirects. A 401 removes the previous device list and confirmation, offers sign-in in a separate tab, and requires a fresh inspection before approval. Unknown approval/revocation outcomes are never automatically repeated. The user checks the native device and refreshes the owner-scoped session list; a delayed older list cannot undo a newer authentication failure. The browser retains the typed code only while the page stays open.
 
 Nine actual-component regressions cover changed codes, pending inspection, 401/redirects, header/body timeout, stale lists, malformed approval responses, and revocation readback. Local synthetic browser checks at 390px and 1280px confirm A-to-B code replacement, exact B approval, timeout recovery without automatic resubmission, and authentication loss. These checks do not grant a real device session.
+
+Negotiated hosts receive the extension; legacy Android receives its original exact response keys. Unknown binding header values are rejected before creating a code. SDK dev.7 requests this header only for begin/poll, retaining the legacy request body. Unconsumed owner denial for negotiated hosts returns `access_denied` with `reason: "owner_denied"`; a consumed code returns `access_denied` without that reason. A missing consume reply must stay unresolved on the host until the owner reconciles or revokes the original grant. Local Worker/D1 coverage also exercises the common runtime queue, encrypted replica/history, Worker restart, and revocation ([evidence](evidence/source-runtime-device-binding.json)); its report is synthetic and no actual owner grant or model inference is performed.
 
 ## Trust boundaries and remaining device work
 

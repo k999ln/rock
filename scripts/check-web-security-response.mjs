@@ -26,12 +26,16 @@ const exactHeader = (response, key, expected, path) => {
   }
 };
 
-const request = async (path) => {
+const request = async (path, redirectTo = null) => {
   const response = await fetch(new URL(path, base), {
     cache: 'no-store',
-    redirect: 'error',
+    redirect: 'manual',
   });
-  if (!response.ok) {
+  if (redirectTo) {
+    const expectedLocation = new URL(redirectTo, base).href;
+    if (response.status !== 308 || response.headers.get('location') !== expectedLocation)
+      throw new Error(`web-security-response: ${path} must redirect within the same origin to ${expectedLocation}`);
+  } else if (!response.ok) {
     throw new Error(`web-security-response: ${path} HTTP ${response.status}`);
   }
   for (const [key, value] of Object.entries(policy.universalHeaders)) {
@@ -41,7 +45,9 @@ const request = async (path) => {
 };
 
 const home = await request('/');
-await request('/sky');
+const usesOsAlias = base.hostname === 'avoado.si' || base.hostname.endsWith('.avoado.si') ||
+  ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
+await request('/sky', usesOsAlias ? '/os/sky' : '/');
 const worker = await request('/sw.js');
 for (const [key, value] of Object.entries(policy.routeHeaders['/sw.js'])) {
   exactHeader(worker, key, value, '/sw.js');
