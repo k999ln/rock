@@ -2679,7 +2679,7 @@
     }
   },
   "portableRuntimeHostUI": {
-    "status": "local_implemented_checks_pending",
+    "status": "public_existing_owner_selector_readback_accepted_new_host_execution_pending",
     "authority": "docs/rockstaros-complete-design.md#portable-runtime-host-ui",
     "skyDesign": "docs/sky-tools-complete-design.md#portable-runtime-host-ui",
     "sourcePaths": [
@@ -2703,6 +2703,7 @@
     "evidence": "docs/evidence/rockstar-runtime-host-ui.json",
     "publicAccepted": false,
     "newActualMacGrant": false,
-    "newPixelProtocolAccepted": false
+    "newPixelProtocolAccepted": false,
+    "ownerUiReadbackAccepted": true
   }
 }

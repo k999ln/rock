@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import WorkspaceShell from './workspace-shell';
 import SkyDeviceAgentConnections from './sky-device-agent-connections';
+import styles from './sky-device-agent-connections.module.css';
 export default function SkyConnectedRuntime() {
   const [owner, setOwner] = useState(''),
     [status, setStatus] = useState<
@@ -41,7 +42,7 @@ export default function SkyConnectedRuntime() {
     };
   }, []);
   return (
-    <WorkspaceShell title="Sky">
+    <WorkspaceShell title="Sky" contentClassName={styles.content}>
       <section
         style={{
           maxWidth: 1040,

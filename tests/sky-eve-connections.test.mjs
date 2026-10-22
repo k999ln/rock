@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import {
   readSkyEveSelection,
   skyEveDevicePath,
@@ -38,6 +39,13 @@ const fixture = () => {
   };
   return { agent, model, device, reference };
 };
+void test('connected Sky route inherits the common OS frame and palette',async()=>{
+  const page=await readFile(new URL('../app/sky/devices/page.tsx',import.meta.url),'utf8');
+  const view=await readFile(new URL('../components/sky-connected-runtime.tsx',import.meta.url),'utf8');
+  const css=await readFile(new URL('../components/sky-device-agent-connections.module.css',import.meta.url),'utf8');
+  assert.match(page,/import ['"]\.\.\/\.\.\/os-design-tokens\.css['"]/);
+  assert.match(view,/contentClassName=\{styles\.content\}/);assert.match(css,/--os-shell-bg/);assert.match(css,/--os-shell-text/);
+});
 const runtimeFixture = () => {
   const f = fixture();
   f.model.scheme = 'ollama-manifest-sha256';
