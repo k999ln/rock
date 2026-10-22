@@ -785,14 +785,14 @@ export default function EveSyncWorkspace({
                 </label>
                 <footer>
                   <span>
-                    {!selectionMatches
+                    {signedIn === null ? 'アカウントと実行先を確認しています…' : !selectionMatches
                       ? 'Skyで選んだ担当かAIが変わったか、接続が解除されています。内容を確認して選び直してください。'
                       : ready
                         ? '選んだ実行先は接続・準備済みです'
                         : (connectionState?.label ??
                           '接続した実行先で、使う担当のモデルを準備してください。')}
                   </span>
-                  {!selectionMatches && (
+                  {signedIn === true && !selectionMatches && (
                     <Link href="/sky/devices">Skyで接続した担当を選び直す</Link>
                   )}
                   <button
