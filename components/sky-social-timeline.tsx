@@ -46,6 +46,7 @@ import {
   type ContinuousItem,
 } from './use-sky-continuous-feed';
 import { feedPollDelay } from '@/lib/sky-continuous-ranking';
+import { useSkyFeedReveal } from './use-sky-feed-reveal';
 import {
   communityFetch,
   prepareCommunityKey,
@@ -133,6 +134,7 @@ export default function SkySocialTimeline({
   useEffect(() => {
     feedRef.current = continuous;
   }, [continuous]);
+  useSkyFeedReveal(continuous, continuousEnabled, live);
   const dataRef = useRef(data);
   useEffect(() => {
     dataRef.current = data;
@@ -216,6 +218,9 @@ export default function SkySocialTimeline({
                 ...value,
                 cursor: old.cursor,
                 posts: [
+                  ...value.posts.filter(
+                    (p) => !old.posts.some((v) => v.id === p.id),
+                  ),
                   ...old.posts
                     .filter(
                       (p) =>
@@ -223,9 +228,6 @@ export default function SkySocialTimeline({
                         value.visibleIds?.includes(p.id),
                     )
                     .map((p) => value.posts.find((v) => v.id === p.id) ?? p),
-                  ...value.posts.filter(
-                    (p) => !old.posts.some((v) => v.id === p.id),
-                  ),
                 ].slice(0, 200),
               }
             : cursor
@@ -1040,7 +1042,7 @@ export default function SkySocialTimeline({
           <details className={styles.rankingNote}>
             <summary>この流れについて</summary>
             <p>
-              フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。閲覧の話題はこの画面を閉じると消えます。ニュースはGDELTの媒体原文リンクです。検出時刻を表示し、内容の正確さを保証する判定には使いません。
+              フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。日本語の話題にも対応します。先頭にいると新着を自動表示し、読み進めている間や入力・文字選択中は通知に留めます。閲覧の話題はこの画面を閉じると消えます。ニュースはGDELTの媒体原文リンクです。検出時刻を表示し、内容の正確さを保証する判定には使いません。
             </p>
             {refreshedAt > 0 && (
               <small>

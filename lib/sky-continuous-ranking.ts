@@ -10,17 +10,73 @@ export type FeedCandidate = {
 export const FEED_BATCH = 12;
 export const FEED_WINDOW = 200;
 const stopWords = new Set(
-  'the and for with from this that have news https www com です ます する した こと これ それ'.split(
+  'the and for with from this that have news https www com です ます する した こと これ それ ため から まで ある いる なる ない について そして'.split(
     ' ',
   ),
 );
+const wordSegments =
+  typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter('ja', { granularity: 'word' })
+    : null;
 export function feedTerms(text: string): string[] {
-  const terms =
-    text
-      .normalize('NFKC')
-      .toLowerCase()
-      .match(/[\p{L}\p{N}][\p{L}\p{N}+#.-]{1,39}/gu) ?? [];
+  const normalized = text.normalize('NFKC').toLowerCase();
+  const terms = wordSegments
+    ? [...wordSegments.segment(normalized)]
+        .filter((part) => part.isWordLike)
+        .flatMap(
+          (part) =>
+            part.segment.match(/[\p{L}\p{N}][\p{L}\p{N}+#.-]{1,39}/gu) ?? [],
+        )
+    : (normalized.match(/[\p{L}\p{N}][\p{L}\p{N}+#.-]{1,39}/gu) ?? []);
   return [...new Set(terms.filter((t) => !stopWords.has(t)))].slice(0, 24);
+}
+
+/** Reserve room for new candidates while keeping the currently rendered rows. */
+export function mergeFeedBuffer<T extends { key: string; createdAt: number }>(
+  previous: T[],
+  incoming: T[],
+  pinned: string[] = [],
+  limit = FEED_WINDOW,
+): T[] {
+  const size = Math.min(FEED_WINDOW, Math.max(0, Math.floor(limit)));
+  const byKey = new Map(
+    [...previous, ...incoming]
+      .filter((item) => Number.isFinite(item.createdAt))
+      .map((item) => [item.key, item]),
+  );
+  const fresh = [...byKey.values()]
+    .sort((a, b) => b.createdAt - a.createdAt || a.key.localeCompare(b.key))
+    .slice(0, size);
+  const kept = new Set(fresh.map((item) => item.key));
+  for (const key of [...new Set(pinned)].slice(0, FEED_WINDOW)) {
+    const item = byKey.get(key);
+    if (item && !kept.has(key)) {
+      fresh.push(item);
+      kept.add(key);
+    }
+  }
+  return fresh;
+}
+
+export function shouldRevealFeedUpdates(input: {
+  enabled: boolean;
+  live: boolean;
+  pending: number;
+  scrollY: number;
+  visible: boolean;
+  composing: boolean;
+  selecting: boolean;
+}) {
+  return (
+    input.enabled &&
+    input.live &&
+    input.pending > 0 &&
+    input.visible &&
+    Number.isFinite(input.scrollY) &&
+    input.scrollY <= 120 &&
+    !input.composing &&
+    !input.selecting
+  );
 }
 export function rankFeed<T extends FeedCandidate>(
   candidates: T[],
@@ -39,7 +95,7 @@ export function rankFeed<T extends FeedCandidate>(
 ): Array<{ item: T; reason: string }> {
   const excluded = new Set(seen),
     unique = new Map<string, T>();
-  for (const item of candidates.slice(0, FEED_WINDOW * 2)) {
+  for (const item of candidates.slice(0, FEED_WINDOW * 3)) {
     if (
       !excluded.has(item.key) &&
       !unique.has(item.key) &&

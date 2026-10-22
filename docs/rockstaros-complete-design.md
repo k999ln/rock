@@ -819,7 +819,10 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 10. **承認**: 自動閲覧更新のみ。source追加、外部投稿、実行/課金、端末grantの既存承認境界を保つ。新規費用/credentialなし。GDELT検出は真偽判定ではない。
 11. **合格/未決定**: 純ranking・append・backoff・key失効・cursor fixture、公開source build、公開UIの続きを確認し証拠へ別記録。意味embedding/政治的中立実証、X本人おすすめ供給、新Pixel OS/生体vault/実課金の合格へ換算しない。実データの増加後に比較評価して係数・window virtualizationを改良する。
 
+2026-10-21追補: 200件の候補が埋まると新着を捨てる挙動を修正。newsは新しい候補200件に表示中の旧news最大200件を保護して最大400件、renderは既存200件の上限を維持する。private投稿は既存200 IDの再確認を維持して新着を優先する。日本語はIntl.Segmenterで単語へ分け、非対応clientは従来の字句抽出へ戻す。初回取得は新着通知にせず、時刻の古い遅着も新しい実受信IDとして検出するが、stale応答から新着通知は作らない。前回記事のstale表示を新応答で消さない。画面先頭（scrollY≤120）かつvisible・live・入力/文字選択なしの場合だけ新着を自動表示し、それ以外は既存の新着ボタンへ保留する。枠を使い切っただけで受信停止せず、実データ終端は待機状態を示す。semantic embedding/政治的中立の実証や無限の投稿供給を保証するものではない。
+
 証拠: [継続timeline](evidence/sky-continuous-timeline.json)。実装: `lib/sky-continuous-ranking.ts` / `components/use-sky-continuous-feed.ts` / 既存social store。検証: `node --experimental-strip-types --test tests/sky-continuous-*.test.mjs tests/sky-social.test.mjs tests/sky-timeline-interactions.test.mjs tests/eve-news-feed.test.mjs tests/home-timeline-frontend.test.mjs`。
+
 
 <a id="portable-runtime-host-ui"></a>
 

@@ -16,12 +16,10 @@ export type ContinuousItem = FeedCandidate &
     | { kind: 'post'; post: SkySocialPost }
     | { kind: 'news'; article: EveNewsLink; stale: boolean }
   );
-type NewsFeed = {
-  selection?: string;
-  articles: EveNewsLink[];
-  fetchedAt: string;
-  stale: boolean;
-};
+import {
+  mergeNewsCandidates,
+  type ContinuousNewsFeed as NewsFeed,
+} from '@/lib/sky-continuous-news';
 export function useSkyContinuousFeed(
   posts: SkySocialPost[],
   scope: string,
@@ -86,7 +84,7 @@ export function useSkyContinuousFeed(
           createdAt: Date.parse(article.seenAt),
           kind: 'news',
           article,
-          stale: news!.stale,
+          stale: news!.staleKeys?.includes(article.id) ?? news!.stale,
         }),
       ),
     ],
@@ -100,9 +98,12 @@ export function useSkyContinuousFeed(
     () =>
       candidates.filter(
         (item) =>
-          active && item.createdAt > startedAt && !keys.includes(item.key),
+          active &&
+          (item.createdAt > startedAt ||
+            (item.kind === 'news' && news?.arrivedKeys?.includes(item.key))) &&
+          !keys.includes(item.key),
       ),
-    [active, candidates, startedAt, keys],
+    [active, candidates, startedAt, keys, news?.arrivedKeys],
   );
   const available = useMemo(
     () => candidates.filter((item) => !head.some((h) => h.key === item.key)),
@@ -177,17 +178,9 @@ export function useSkyContinuousFeed(
           throw Error(value.error || 'ニュースを取得できませんでした。');
         if (!stopped) {
           hasNews.current = true;
-          setNews((old) => ({
-            ...value,
-            articles: [
-              ...new Map(
-                [...(old?.articles ?? []), ...value.articles].map((a) => [
-                  a.id,
-                  a,
-                ]),
-              ).values(),
-            ].slice(0, 200),
-          }));
+          setNews((old) =>
+            mergeNewsCandidates(old, value, latest.current.keys),
+          );
           setNewsError('');
         }
         failures = 0;

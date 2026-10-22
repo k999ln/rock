@@ -2672,7 +2672,10 @@
         "components/use-sky-continuous-feed.ts",
         "components/sky-social-timeline.tsx",
         "app/api/news/feed/route.ts",
-        "lib/sky-social-store.ts"
+        "lib/sky-social-store.ts",
+        "lib/sky-continuous-news.ts",
+        "components/use-sky-feed-reveal.ts",
+        "tests/sky-continuous-feed.test.mjs"
       ],
       "evidence": "docs/evidence/sky-continuous-timeline.json",
       "status": "local_verified_public_pending"
