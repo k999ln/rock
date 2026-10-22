@@ -44,9 +44,14 @@ export function mergeFeedBuffer<T extends { key: string; createdAt: number }>(
       .filter((item) => Number.isFinite(item.createdAt))
       .map((item) => [item.key, item]),
   );
-  const fresh = [...byKey.values()]
-    .sort((a, b) => b.createdAt - a.createdAt || a.key.localeCompare(b.key))
-    .slice(0, size);
+  const incomingKeys = new Set(incoming.map((item) => item.key));
+  const sorted = [...byKey.values()].sort(
+    (a, b) => b.createdAt - a.createdAt || a.key.localeCompare(b.key),
+  );
+  const fresh = [
+    ...sorted.filter((item) => incomingKeys.has(item.key)),
+    ...sorted.filter((item) => !incomingKeys.has(item.key)),
+  ].slice(0, size);
   const kept = new Set(fresh.map((item) => item.key));
   for (const key of [...new Set(pinned)].slice(0, FEED_WINDOW)) {
     const item = byKey.get(key);

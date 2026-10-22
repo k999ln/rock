@@ -282,3 +282,17 @@ void test('stale fallback articles do not masquerade as a live new-head arrival'
   assert.deepEqual(next.arrivedKeys, []);
   assert.ok(next.staleKeys.includes('fallback'));
 });
+
+void test('a full candidate buffer still admits a late-arriving record with an older source timestamp', () => {
+  const previous = Array.from({ length: 200 }, (_, n) =>
+    candidate('known-' + n, { createdAt: now + n }),
+  );
+  const late = candidate('late-arrival', { createdAt: now - 86_400_000 });
+  const next = mergeFeedBuffer(previous, [late], ['known-199']);
+  assert.ok(next.some((item) => item.key === 'late-arrival'));
+  assert.equal(
+    next.find((item) => item.key === 'late-arrival').createdAt,
+    now - 86_400_000,
+  );
+  assert.ok(next.length <= 400);
+});
