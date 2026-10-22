@@ -99,8 +99,9 @@ export function useSkyContinuousFeed(
       candidates.filter(
         (item) =>
           active &&
-          (item.createdAt > startedAt ||
-            (item.kind === 'news' && news?.arrivedKeys?.includes(item.key))) &&
+          (item.kind === 'news'
+            ? Boolean(news?.arrivedKeys?.includes(item.key))
+            : item.createdAt > startedAt) &&
           !keys.includes(item.key),
       ),
     [active, candidates, startedAt, keys, news?.arrivedKeys],
