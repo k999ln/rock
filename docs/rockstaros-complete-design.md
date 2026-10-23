@@ -1028,6 +1028,8 @@ Plannerの信頼したOllama adapterがEMPTY_RESPONSEと共に正規化済みusa
 - 未決定: 画面操作ツールが接続できない場合は実画面を未受入のまま保持し、本人の画面確認または復旧した操作経路で確かめる。fixtureを実UIへ換算しない。
 
 <a id="smis-eve-workbench"></a>
+
+Eveの制作画面では、確認した目的を文章担当へ保存し、選択した実行先へ同じIDの登録を要求する。smisから開いた担当は保存済みrevision・役割・モデルを再照合して登録し、別の担当を増やさない。既存の暗号化された端末コマンドqueue、本人承認、期限、同一IDの再照会を共有する。登録成功は同じAgent/model pinのpresence読戻しで判定し、推論成功とは分ける。実行は既存workflow/runtimeの文章出力256トークンに限定し、外部Tool権限・任意shell・モデル取得・課金fallbackを与えない。成果は既存Eve会話・Job・Artifactへ保存し、Web/Pixelが同じアカウントで再読込する。設定変更、停止、応答喪失、端末切断時は保存データと同じ依頼番号を残し、自動再発行しない。実画面と実モデルの合格は`docs/evidence/eve-smis-execution-loop.json`で独立に記録する。
 ## smisの中身とEveの作成・開発画面
 
 本人の「Skyにあった中身をsmisに更新して表示」「smisのエージェントはEveで簡単に作る」「Eveをビルド・開発しやすくし、指定した実行画面を分かりやすくする」を最新の具体化として採用する。既存RQ01〜49と内部sky識別子は継続する。

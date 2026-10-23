@@ -1,3 +1,4 @@
+import {eveAgentPreparationQueue} from './eve-agent-preparation-sync.ts';
 import { eveDeviceReplicas } from './eve-device-replicas.ts';
 import { EveHistoryError, type EveHistoryKeys } from './eve-history.ts';
 import { negotiateTextAdapters } from './rockstar-adapters.ts';
@@ -27,6 +28,11 @@ type CommandRow = {
   created_at: number;
   expires_at: number;
 };
+type StartFence = {
+  schema: 'rockstaros.runtime-start-fence/1';
+  owner: string;
+  request: Record<string, unknown>;
+};
 type Replica = {
   kind: 'runtime-text';
   command: LinkedCommand;
@@ -52,6 +58,8 @@ export type EveRuntimePending = {
   deviceId: string;
   input: string;
   agentName: string;
+  agentId: string;
+  agentSha256: string;
   model: LinkedCommand['request']['model'];
   state:
     | 'pending'
@@ -68,10 +76,13 @@ export function eveRuntimeSyncStore(
   db: Database,
   owner: string,
   keys: EveHistoryKeys,
+  recoveryPaused = false,
 ) {
   const replicas = eveDeviceReplicas(db, owner, keys),
     history = replicas.history;
+  function dispatchAllowed() { if(recoveryPaused)throw new LinkedExecutionError('RUNTIME_RECOVERY_REQUIRED',503); }
   async function active(deviceId: string) {
+    dispatchAllowed();
     linkedId(deviceId);
     if (
       !(await db
@@ -105,6 +116,7 @@ export function eveRuntimeSyncStore(
     return value;
   }
   async function devices() {
+    if(recoveryPaused)return [];
     const rows = await db
       .prepare(
         'SELECT p.device_id,p.envelope,p.updated_at FROM eve_runtime_presence p JOIN rockstar_device_sessions s ON s.id=p.device_id AND s.user_id=p.owner_id WHERE p.owner_id=? AND s.revoked_at IS NULL AND s.expires_at>? ORDER BY p.updated_at DESC LIMIT 50',
@@ -158,7 +170,7 @@ export function eveRuntimeSyncStore(
       ),
     };
   }
-  async function enqueue(raw: unknown) {
+  function startFields(raw: unknown) {
     const v = linkedFields(raw, [
       'id',
       'threadId',
@@ -190,13 +202,21 @@ export function eveRuntimeSyncStore(
       Number(v.maxOutputTokens) > 1024
     )
       throw new LinkedExecutionError('RUNTIME_APPROVAL_REQUIRED');
+    if (!['gguf-sha256', 'ollama-manifest-sha256'].includes(String(v.modelScheme)))
+      throw new LinkedExecutionError('RUNTIME_SELECTION_CHANGED', 409);
+    return {v: v as typeof v & {input:string},id,threadId,deviceId,agentId};
+  }
+  async function enqueue(raw: unknown) {
+    dispatchAllowed();
+    const {v,id,threadId,deviceId,agentId} = startFields(raw);
     await history.assertWritable(threadId);
     const digest = await linkedDigest(v),
       prior = await find(id);
     if (prior) {
       if (prior.digest !== digest || prior.device_id !== deviceId)
         throw new LinkedExecutionError('RUNTIME_REQUEST_CONFLICT', 409);
-      await command(prior);
+      if (prior.state === 'runtime-fenced') await startFence(prior);
+      else await command(prior);
       return { id, state: prior.state };
     }
     const { presence: p, negotiation } = await available(deviceId),
@@ -273,7 +293,38 @@ export function eveRuntimeSyncStore(
     if (state.startsWith('runtime-stop-unknown:')) return 'stop-unknown';
     return 'received';
   }
+  async function startFence(row: CommandRow): Promise<StartFence> {
+    const value = await history.unsealRecord<StartFence>(row.envelope, `command:${row.id}`);
+    if (value.schema !== 'rockstaros.runtime-start-fence/1' || value.owner !== owner)
+      throw new LinkedExecutionError('RUNTIME_COMMAND_CORRUPT', 409);
+    const {v,id,threadId,deviceId} = startFields(value.request);
+    if (id !== row.id || threadId !== row.thread_id || deviceId !== row.device_id || await linkedDigest(v) !== row.digest)
+      throw new LinkedExecutionError('RUNTIME_COMMAND_CORRUPT', 409);
+    return value;
+  }
+  // Negative authority only: this record can never be dispatched or granted.
+  async function fenceStart(raw: unknown) {
+    dispatchAllowed();
+    const {v,id,threadId,deviceId} = startFields(raw);
+    await history.assertWritable(threadId);
+    const digest = await linkedDigest(v), now = Date.now();
+    await db.prepare(
+      "INSERT INTO eve_device_commands(owner_id,id,device_id,thread_id,digest,envelope,state,created_at,expires_at) SELECT ?,?,?,?,?,?,'runtime-fenced',?,? WHERE EXISTS(SELECT 1 FROM rockstar_device_sessions WHERE id=? AND user_id=?) AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0) ON CONFLICT(owner_id,id) DO NOTHING",
+    ).bind(owner,id,deviceId,threadId,digest,await history.sealRecord({schema:'rockstaros.runtime-start-fence/1',owner,request:v},`command:${id}`),now,now,deviceId,owner,owner,threadId).run();
+    const row = await find(id);
+    if (!row || row.digest !== digest || row.device_id !== deviceId)
+      throw new LinkedExecutionError('RUNTIME_REQUEST_CONFLICT', 409);
+    if (row.state !== 'runtime-fenced') return requestStop({id,confirm:'stop-owner-local-text'});
+    await startFence(row);
+    await history.assertWritable(threadId);
+    return {id,state:'cancelled-before-start',stopConfirmed:true};
+  }
+  async function fenceProjection(row: CommandRow): Promise<EveRuntimePending> {
+    const {request:v} = await startFence(row);
+    return {id:row.id,threadId:row.thread_id,deviceId:row.device_id,input:String(v.input).trim(),agentName:'',agentId:String(v.agentId),agentSha256:String(v.agentSha256),model:{id:'',scheme:v.modelScheme as LinkedCommand['request']['model']['scheme'],sha256:String(v.modelSha256)},state:recoveryPaused?'stop-unknown':'cancelled-before-start',canStop:false,expiresAt:row.expires_at};
+  }
   async function requestStop(raw: unknown) {
+    dispatchAllowed();
     const v = linkedFields(raw, ['id', 'confirm']),
       id = linkedId(v.id);
     if (v.confirm !== 'stop-owner-local-text')
@@ -282,6 +333,11 @@ export function eveRuntimeSyncStore(
       const row = await find(id);
       if (!row)
         throw new LinkedExecutionError('RUNTIME_COMMAND_NOT_FOUND', 404);
+      if (row.state === 'runtime-fenced') {
+        await startFence(row);
+        await history.assertWritable(row.thread_id);
+        return {id,state:'cancelled-before-start',stopConfirmed:true};
+      }
       const c = await command(row),
         prior = await replicas.find(id);
       await history.assertWritable(c.request.threadId);
@@ -563,12 +619,33 @@ export function eveRuntimeSyncStore(
       },
     };
   }
-  async function pendingOwner() {
+  function pendingProjection(row: CommandRow, c: LinkedCommand, supported: Set<string>): EveRuntimePending {
+    return {
+        id: row.id,
+        threadId: row.thread_id,
+        deviceId: row.device_id,
+        input: c.displayInput,
+        agentName: c.request.agent.name,
+        agentId: c.request.agent.id,
+        agentSha256: c.request.agent.sha256,
+        model: c.request.model,
+        state: recoveryPaused?'stop-unknown':ownerState(row.state),
+        canStop: !recoveryPaused && (
+          row.state === 'runtime-pending' ||
+          (supported.has(row.device_id) &&
+            (row.state.startsWith('runtime-claimed:') ||
+              row.state.startsWith('runtime-done:') ||
+              row.state.startsWith('runtime-stop-unknown:')))),
+        expiresAt: row.expires_at,
+    };
+  }
+  async function pendingOwner(threadId = '') {
+    if (threadId) linkedId(threadId);
     const rows = await db
       .prepare(
-        "SELECT * FROM eve_device_commands WHERE owner_id=? AND (state='runtime-pending' OR state LIKE 'runtime-claimed:%' OR state LIKE 'runtime-done:%' OR state='runtime-cancelled' OR state LIKE 'runtime-stop:%' OR state LIKE 'runtime-stopped:%' OR state LIKE 'runtime-stop-finished:%' OR state LIKE 'runtime-stop-unknown:%') ORDER BY created_at DESC LIMIT 50",
+        `SELECT * FROM eve_device_commands WHERE owner_id=? ${threadId ? 'AND thread_id=?' : ''} AND (state='runtime-fenced' OR state='runtime-pending' OR state LIKE 'runtime-claimed:%' OR state LIKE 'runtime-done:%' OR state='runtime-cancelled' OR state LIKE 'runtime-stop:%' OR state LIKE 'runtime-stopped:%' OR state LIKE 'runtime-stop-finished:%' OR state LIKE 'runtime-stop-unknown:%') ORDER BY created_at DESC LIMIT 50`,
       )
-      .bind(owner)
+      .bind(...(threadId ? [owner, threadId] : [owner]))
       .all<CommandRow>();
     const result: EveRuntimePending[] = [];
     const supported = new Set(
@@ -577,6 +654,7 @@ export function eveRuntimeSyncStore(
         .map((p) => p.deviceId),
     );
     for (const row of rows.results) {
+      if (row.state === 'runtime-fenced') { result.push(await fenceProjection(row)); continue; }
       const c = await command(row);
       if (row.state.startsWith('runtime-done:')) {
         const saved = await replicas.find(row.id);
@@ -586,24 +664,36 @@ export function eveRuntimeSyncStore(
         )
           continue;
       }
-      result.push({
-        id: row.id,
-        threadId: row.thread_id,
-        deviceId: row.device_id,
-        input: c.displayInput,
-        agentName: c.request.agent.name,
-        model: c.request.model,
-        state: ownerState(row.state),
-        canStop:
-          row.state === 'runtime-pending' ||
-          (supported.has(row.device_id) &&
-            (row.state.startsWith('runtime-claimed:') ||
-              row.state.startsWith('runtime-done:') ||
-              row.state.startsWith('runtime-stop-unknown:'))),
-        expiresAt: row.expires_at,
-      });
+      result.push(pendingProjection(row, c, supported));
     }
     return result;
+  }
+  /** Bounded discovery only. Cursors never authorize reads or execution. */
+  async function ownerPage(threadId: string, cursor = '') {
+    linkedId(threadId);
+    await history.assertWritable(threadId);
+    let before: [number,string] | null = null;
+    if (cursor) {
+      try {
+        if (cursor.length > 2048) throw Error();
+        const value = JSON.parse(cursor);
+        if (!Array.isArray(value) || value.length !== 4 || value[0] !== owner || value[1] !== threadId || !Number.isSafeInteger(value[2]) || value[2] < 0) throw Error();
+        linkedId(value[3]); before = [value[2], value[3]];
+      } catch { throw new LinkedExecutionError('INVALID_RUNTIME_HISTORY_CURSOR'); }
+    }
+    const rows = (await db.prepare(`SELECT c.* FROM eve_device_commands c WHERE c.owner_id=? AND c.thread_id=? AND c.state LIKE 'runtime-%' AND NOT EXISTS(SELECT 1 FROM eve_conversations t WHERE t.owner_id=c.owner_id AND t.id=c.thread_id AND t.deleted_at<>0) ${before ? 'AND (c.created_at<? OR (c.created_at=? AND c.id<?))' : ''} ORDER BY c.created_at DESC,c.id DESC LIMIT 51`)
+      .bind(owner,threadId,...(before ? [before[0],before[0],before[1]] : [])).all<CommandRow>()).results;
+    const supported = new Set((await devices()).filter(p=>p.executor.capabilities['execution.stop']===true).map(p=>p.deviceId));
+    const pending: EveRuntimePending[] = [], executions: EveRuntimeExecution[] = [];
+    for (const row of rows.slice(0,50)) {
+      if (row.state === 'runtime-fenced') { pending.push(await fenceProjection(row)); continue; }
+      pending.push(pendingProjection(row,await command(row),supported));
+      try { executions.push(await read(row.id)); }
+      catch (error) { if (!(error instanceof LinkedExecutionError) || error.status !== 404) throw error; }
+    }
+    await history.assertWritable(threadId);
+    const last=rows[Math.min(rows.length,50)-1];
+    return {ownerUserId:owner,threadId,pending,executions,cursor:rows.length>50&&last?JSON.stringify([owner,threadId,last.created_at,last.id]):null};
   }
   async function list(threadId = '') {
     const results: EveRuntimeExecution[] = [];
@@ -623,11 +713,30 @@ export function eveRuntimeSyncStore(
       throw new LinkedExecutionError('RUNTIME_REPORT_NOT_FOUND', 404);
     return projection(row, payload);
   }
+  async function inspectOwnerRequest(id: string, deviceId?: string) {
+    if (deviceId) await active(deviceId);
+    const row = await find(id);
+    if (!row || !row.state.startsWith('runtime-') || (deviceId && row.device_id !== deviceId))
+      throw new LinkedExecutionError('RUNTIME_COMMAND_NOT_FOUND', 404);
+    if (row.state === 'runtime-fenced') {
+      await history.assertWritable(row.thread_id);
+      return {ownerUserId:owner,pending:await fenceProjection(row),execution:null};
+    }
+    const c = await command(row);
+    await history.assertWritable(c.request.threadId);
+    const supported = new Set((await devices()).filter(p => p.executor.capabilities['execution.stop'] === true).map(p => p.deviceId));
+    let execution: EveRuntimeExecution | null = null;
+    try { execution = await read(id, deviceId); }
+    catch (error) { if (!(error instanceof LinkedExecutionError) || error.status !== 404) throw error; }
+    return { ownerUserId: owner, pending: pendingProjection(row, c, supported), execution };
+  }
   return {
+    preparations: eveAgentPreparationQueue({db,owner,history,active,available,find}),
     presence,
     devices,
     enqueue,
     requestStop,
+    fenceStart,
     stopReceipt,
     commands,
     claim,
@@ -636,6 +745,8 @@ export function eveRuntimeSyncStore(
     acknowledge,
     list,
     pendingOwner,
+    ownerPage,
+    inspectOwnerRequest,
     read,
   };
 }

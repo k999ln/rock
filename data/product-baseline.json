@@ -3111,5 +3111,17 @@
     "physicalAccepted": false,
     "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
     "reason": "Latest explicit human requests in this chat; restores existing content and simplifies Eve creation/execution UI"
+  },
+  "eveSmisExecutionLoopRequirement20261023": {
+    "source": "本人の明示依頼: Eveとの会話でエージェントを作り、smisに追加し、PixelでもWebでも実行して成果を受け取るところまで実際に一周確認する。",
+    "requirements": [
+      "会話入力から役割を確認し、本人用Agentへ保存する",
+      "smisから同じAgent IDとrevisionで利用できる",
+      "承認済み端末と準備済みモデルだけに登録・実行する",
+      "Web/Pixelの同一accountでJobと成果を再読込する",
+      "fixture/API/ビルドと実UI・実モデル・実機の受入を分ける"
+    ],
+    "design": "docs/rockstaros-complete-design.md#smis-eve-workbench",
+    "evidence": "docs/evidence/eve-smis-execution-loop.json"
   }
 }

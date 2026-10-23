@@ -1,5 +1,7 @@
 # Web / PWA / Sites
 
+Eve→smis→Web/Pixelの実行一周は、本人の2026-10-23の明示依頼。目的の確認、本人用Agent保存、同一ID/revisionの端末登録、準備済みモデルでの実行、同じaccountへの成果保存までを対象とする。設定保存・fixture・build成功だけでは実UI/実機の一周合格としない。正本は[実行一周の証拠](../evidence/eve-smis-execution-loop.json)。
+
 ## 2026-10-14 — 本体Sky `/os/sky` 404退行の修復（WEB06 / SKY21、ROCK）
 
 公開Site v54で`/sky`は200、正規`/os/sky`は404。Site専用sourceのbuild scriptがmainの`vinext build && node scripts/stage-sky-domain-router.mjs`から`vinext build`だけに逸れ、配布archiveに`domain-router.mjs`と`vinext.js`が入っていなかった。Site source `825d117d0ff715f4bb01cd10373313e657061f4d`のbuildをmainと同じ形へ修復し、Site専用rewriteも追加してv55を公開。ローカルWranglerでroot 200、旧`/sky` 308、`/os/sky`・Agent・NYU hub 200を確認。公開`avoado.si`の同じURLはHTTP 200、利用者が開いていたIABタブの再読込でもSky UIが表示された。GitHub mainのrouter stage実装は既存であり、今後はSite sourceとarchive中の3ファイルを出荷前に照合する。本人保存やAgent全体の実行受入とは別のroute修復である。

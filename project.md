@@ -881,4 +881,6 @@ Source保存の最終操作は自動承認審査でprocess作成前に拒否さ�
 
 ## smis内容の継続とEve制作画面（HOME01/WEB04/SKY21・ROCK）
 
+Eve→smis→Pixel/Webの実行一周（WEB04/HOME01/SKY21/OS10）: 会話で確認した目的から作る担当と、smisで選んだ既存担当の同一ID・revisionを端末登録へ接続。登録前後と実行直前に本人・役割・model pinを照合し、別担当の自動作成やモデル取得を行わない。証拠は`docs/evidence/eve-smis-execution-loop.json`。関連58試験は合格。実ブラウザ接続とPixel Linux起動が未確認のため、実機の一周は未受入。
+
 本人の最新3指示を具体化。smisへ私用の保存済みAgent/LLM等を投稿形式で表示、追加画面は全Toolを表示。公開v116 Sourceに不足していた既存hub route/storeを既存テーブルのまま復元。Eveは作成/実行/成果入口、自然文ひな形→モデル→確認→既存本人設定へ保存、同版Eveリンクとsmis一覧へ接続。依頼欄を履歴より前、接続詳細は折りたたみ、モバイル履歴を明示展開。選択/会話/停止/モデル版契約を維持。集中15件成功。最終Source全verify exit0（Node2543/2542pass/1skip/0fail、API1617/CSV385、asset214欠損0）。Rootは型/lint/集中5件と実API2152/CSV113成功、全verify試行はunit1682成功後asset列挙0で停止、再読取225欠損0と後続を別記する。作成タブから新agentへ戻るURL依存と履歴選択時の復帰を補正。公開/実UI/Pixel未受入。初回fixtureの旧SQL名/Source migration前提とbutton空白を補正。合成Unit結果を実機と混同しない。[記録](docs/evidence/os-visual-release.json#workbenchFollowup)。

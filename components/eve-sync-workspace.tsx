@@ -1,9 +1,17 @@
 'use client';
+import {runtimeEveTextExport} from '@/lib/eve-runtime-export';
+import EveRuntimeInteraction from './eve-runtime-interaction';
+import EveRuntimeArchive from './eve-runtime-archive';
+import EveAgentComposer from './eve-agent-composer';
+import {eveAgentConversationPath} from '@/lib/eve-studio-navigation';
+import {runtimeEvePendingKey,runtimeEveRestorableWork} from '@/lib/eve-runtime-work-port';
+import {purposeEvePendingKey} from '@/lib/eve-purpose-runtime-work-port';
+import Workbench from './workbench';
 import EveNewsWorkspace from './eve-news-workspace';
 import EveToolWorkspace from './eve-tool-workspace';
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import SkyAgentEveProfile,{useSkyAgentProfileRequested} from './sky-agent-eve-profile';
+import SkyAgentEveProfile,{useSkyAgentProfileRequested,useSkyAgentProfileKey,type SkyAgentProfileSelection} from './sky-agent-eve-profile';
 import SkyFreeCloudPanel from './sky-free-cloud-panel';
 import type { EveHistoryItem } from '@/lib/eve-history';
 import type { EveDeviceJob } from '@/lib/eve-device-sync';
@@ -66,6 +74,8 @@ export default function EveSyncWorkspace({
   initialSelection?: SkyEveSelection;
 }) {
   const profileRequested=useSkyAgentProfileRequested();
+  const profileKey=useSkyAgentProfileKey();
+  const [toolAgentSelection,setToolAgentSelection]=useState<SkyAgentProfileSelection|null>(null);
   const search=useSearchParams();
   const workbenchQuery=search.toString();
   const [modeOverride,setModeOverrideValue]=useState<{query:string;mode:'work'|'build'}|null>(null);
@@ -75,6 +85,7 @@ export default function EveSyncWorkspace({
   const [buildVisited,setBuildVisited]=useState(search.get('view')==='build');
   useEffect(()=>{if(workbenchMode!=='build'||buildVisited)return;const frame=requestAnimationFrame(()=>setBuildVisited(true));return()=>cancelAnimationFrame(frame);},[workbenchMode,buildVisited]);
   const [cloudHistoryOpen,setCloudHistoryOpen]=useState(false);
+  const [agentWorkOpen,setAgentWorkOpen]=useState(false);
   const newsSourceRequested=useSyncExternalStore(subscribeNewsSourceRequest,()=>new URL(window.location.href).searchParams.has('newsSource'),()=>false);
   const [newsWorkExpanded,setNewsWorkOpen]=useState<boolean|null>(null);
   const newsWorkOpen=newsWorkExpanded??newsSourceRequested;
@@ -107,6 +118,7 @@ export default function EveSyncWorkspace({
   const account = useRef(''),
     expanded = useRef(false);
   const [connectionOwner, setConnectionOwner] = useState('');
+  const toolAgent=toolAgentSelection?.ownerUserId===connectionOwner&&toolAgentSelection.key===profileKey?toolAgentSelection.agent:undefined;
   const [observedAt, setObservedAt] = useState(0);
   const activeThread = useRef(initialThreadId),
     operation = useRef<{ id: string; key: string } | null>(null);
@@ -117,12 +129,14 @@ export default function EveSyncWorkspace({
       if (fetching || document.hidden || !navigator.onLine) return;
       fetching = true;
       try {
+        const runtimeThread = activeThread.current;
         const runtimeLoad = api<{
           ownerUserId: string;
           devices: EveRuntimePresence[];
           executions: EveRuntimeExecution[];
           pending: EveRuntimePending[];
-        }>('/api/eve/runtime').then(
+          recovery?: {state:'paused'};
+        }>('/api/eve/runtime' + (runtimeThread ? '?threadId=' + encodeURIComponent(runtimeThread) : '')).then(
           (data) => ({ data, error: null }),
           (error) => ({
             data: null,
@@ -189,10 +203,17 @@ export default function EveSyncWorkspace({
         if (!expanded.current) setHistoryCursor(history.cursor);
         setJobs(sync.jobs);
         setDevices([...sync.devices, ...(runtime.data?.devices ?? [])]);
-        setRuntimeJobs(runtime.data?.executions ?? []);
-        setRuntimePending(runtime.data?.pending ?? []);
+        // A response for the previously selected conversation must not replace
+        // this conversation's saved jobs. The next poll reads its own thread.
+        if (activeThread.current === runtimeThread) {
+          setRuntimeJobs(runtime.data?.executions ?? []);
+          setRuntimePending(runtime.data?.pending ?? []);
+        } else {
+          setRuntimeJobs([]);
+          setRuntimePending([]);
+        }
         setRuntimeNotice(
-          runtime.error
+          runtime.data?.recovery?.state==='paused' ? '端末実行は保存復旧の照合中です。配送と停止確認を保留しています。' : runtime.error
             ? '追加した実行先を確認できません。接続を確認してください。'
             : '',
         );
@@ -297,11 +318,22 @@ export default function EveSyncWorkspace({
     baseModel &&
     connectionState?.available,
   );
+  const runtimeBinding: Parameters<typeof runtimeEvePendingKey>[0] | null = connectionOwner && selected && device && isEveRuntimePresence(device) && agent && baseModel && 'scheme' in baseModel && (baseModel.scheme === 'gguf-sha256' || baseModel.scheme === 'ollama-manifest-sha256')
+    ? {owner: connectionOwner, threadId: selected, deviceId: device.deviceId, agentId: agent.id, agentSha256: agent.sha256, modelSha256: baseModel.sha256, modelScheme: baseModel.scheme}
+    : null;
+  const creationDevice=device&&isEveRuntimePresence(device)?device:null;
+  const creationModel=creationDevice?.models.find(m=>m.scheme==='gguf-sha256'&&(agent?m.id===agent.modelId:creationDevice.preparedModels.includes(m.id)));
+  const creationBinding: Parameters<typeof purposeEvePendingKey>[0]|null=connectionOwner&&selected&&creationDevice&&creationModel
+    ?{owner:connectionOwner,threadId:selected,deviceId:creationDevice.deviceId,modelId:creationModel.id,modelSha256:creationModel.sha256,modelScheme:'gguf-sha256'}:null;
+  const supportsPurpose=creationDevice?.host.capabilities['agent.prepare']===true;
+  const creationReady=Boolean(creationBinding&&supportsPurpose&&online&&observedAt>0&&selectionMatches&&creationDevice?.phase==='ready'&&creationDevice.preparedModels.includes(creationBinding.modelId));
+  const runtimeCurrent = useCallback(() => account.current === connectionOwner && activeThread.current === selected, [connectionOwner, selected]);
   const targetKey = skyEveConsentKey(connectionOwner, device, agent?.id);
   const consent = Boolean(targetKey && consentTarget === targetKey);
   const setConsent = (checked: boolean) =>
     setConsentTarget(checked ? targetKey : '');
   function conversationPath(thread: string) {
+    if(profileRequested)return eveAgentConversationPath(search.toString(),thread,'work');
     return device && agent && baseModel
       ? skyEveDevicePath(
           {
@@ -322,6 +354,8 @@ export default function EveSyncWorkspace({
     setHistoryOpen(false);
     const owner = account.current;
     activeThread.current = id;
+    setRuntimeJobs([]);
+    setRuntimePending([]);
     setSelected(id);
     setItem(null);
     setInput('');
@@ -342,6 +376,14 @@ export default function EveSyncWorkspace({
       })
       .catch(() => {});
   }
+  function agentConversation() {
+    const query=window.location.search,id=crypto.randomUUID();
+    const mode=workbenchMode;
+    choose(id);
+    history.replaceState(null,'',eveAgentConversationPath(query,id,mode));
+    setModeOverride(mode);
+  }
+  const composerProps={owner:connectionOwner,threadId:selected,observedAt,devices:devices.filter(isEveRuntimePresence),api,current:runtimeCurrent,onConversation:agentConversation};
   function fresh() {
     choose(crypto.randomUUID());
   }
@@ -539,17 +581,23 @@ export default function EveSyncWorkspace({
     a.click();
     setTimeout(() => URL.revokeObjectURL(u), 1000);
   }
-  function saveRuntime(j: EveRuntimeExecution) {
-    if (!j.report.text) return;
-    const text = `# ${j.request.agent.name}\n\n下書きです。内容を確認してください。\n\n${j.report.text}\n\n基盤モデル: ${j.request.model.id}\n仕事ID: ${j.id}\n成果SHA256: ${j.report.outputSha256}\nクラウド使用料: 0円（本人の実行先で推論）\n${j.usage.resources}\n${j.usage.subscription}\n`;
-    const u = URL.createObjectURL(
-      new Blob([text], { type: 'text/plain;charset=utf-8' }),
-    );
-    const a = document.createElement('a');
-    a.href = u;
-    a.download = `Eve-${j.id}.txt`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(u), 1000);
+  async function saveRuntime(j: EveRuntimeExecution) {
+    const owner = account.current;
+    if (!owner || owner !== connectionOwner) return;
+    try {
+      const value = await api<{ownerUserId:string;execution:EveRuntimeExecution|null}>('/api/eve/runtime?requestId='+encodeURIComponent(j.id), {headers:{'x-sky-owner':owner}});
+      if (account.current !== owner || value.ownerUserId !== owner || !value.execution) throw Error('本人と保存済みの成果を確認してください。');
+      const file = await runtimeEveTextExport(value.execution,j);
+      if (account.current !== owner) return;
+      const u = URL.createObjectURL(new Blob([file.text], {type:'text/plain;charset=utf-8'}));
+      const a = document.createElement('a');
+      a.href = u;
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(u),1000);
+    } catch (error) {
+      if (account.current === owner) setMessage(error instanceof Error ? error.message : '成果を保存できません。');
+    }
   }
   return (
     <WorkspaceShell title="Eve" hideTopActions hideAccountAccess contentClassName="eve-sync-main">
@@ -593,12 +641,14 @@ export default function EveSyncWorkspace({
             <button type="button" aria-pressed={workbenchMode==='work'} onClick={()=>setModeOverride('work')}><MessageCircle size={17}/>実行・相談</button>
             <button type="button" onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
           </nav>
-          <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/>}</div>
+          <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
-          <div className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
+          <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
           {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
-          {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner}/>}
+          {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
+          {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}
+          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
           <header>
             <div>
@@ -881,7 +931,8 @@ export default function EveSyncWorkspace({
               {runtimeNotice && (
                 <output className={styles.notice}>{runtimeNotice}</output>
               )}
-
+              {signedIn===true&&connectionOwner&&selected&&<EveRuntimeArchive key={connectionOwner+':'+selected} owner={connectionOwner} threadId={selected} api={api} current={runtimeCurrent}/>}
+              {!profileRequested && signedIn === true && (runtimeBinding||creationBinding) && <EveRuntimeInteraction key={creationBinding?purposeEvePendingKey(creationBinding):runtimeEvePendingKey(runtimeBinding!)} savedWork={runtimeBinding?runtimeEveRestorableWork(runtimeBinding,{ownerUserId:connectionOwner,pending:runtimePending,executions:runtimeJobs}):[]} binding={runtimeBinding} creation={creationBinding} api={api} selectedConnected={ready&&!busy} creationConnected={creationReady&&!busy} supportsPurpose={supportsPurpose} current={runtimeCurrent} />}
             </>
           )}
           {message && <output className={styles.notice}>{message}</output>}

@@ -1,4 +1,6 @@
-### Eveの仕事を停止する（開発候補）
+#Eveの「エージェントを作る」で目的と実行先を選び、役割を確認します。担当は自分のsmisへ保存され、smisの「Eveで使う」から同じ版で依頼できます。Pixelでは既存Terminal LinuxとRockstarOSの同期を起動してください。端末内モデルの登録・実行には接続と明示確認が必要です。実機/実画面の一周受入状況は[実行一周の証拠](docs/evidence/eve-smis-execution-loop.json)を参照してください。
+
+## Eveの仕事を停止する（開発候補）
 
 同じ仕事から開始前取消または停止要求を送り、要求の保存と端末の実停止確認を分けます。依頼と保存済み成果を保持します。公開v114と現行Pixelには未導入です。詳しくは[停止契約](docs/rockstaros-complete-design.md#eve-runtime-owner-stop)を参照してください。
 

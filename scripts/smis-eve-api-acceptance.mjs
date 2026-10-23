@@ -5,6 +5,8 @@ export async function checkSmisEveApi({call,check,database,alice,bob}) {
  const settings={name:'smis synthetic builder',instructions:'整理した文章を返す担当',provider:'local-model',model:'fixture-model',enabled:true};
  await call('GET',undefined,{path,user:null,status:401});
  await call('PUT',{id,revision:0,settings,create:true},{path,headers:{'X-smis-Owner':bob},status:409});
+ await call('PUT',{id,revision:0,settings,create:true},{path,headers:{'X-sky-Owner':bob},status:409});
+ await call('PUT',{id,revision:0,settings,create:true},{path,headers:{'X-sky-Owner':alice,'X-smis-Owner':bob},status:409});
  await call('PUT',{id,revision:0,settings,create:true},{path,origin:'https://other.example.test',status:403});
  const saved=await call('PUT',{id,revision:0,settings,create:true},{path,headers:{'X-smis-Owner':alice}});
  check(saved.agent.id,id);check(saved.agent.revision,1);check(saved.agent.source,'personal');

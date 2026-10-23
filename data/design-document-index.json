@@ -3093,5 +3093,23 @@
     "sourceNodeSkip": 1,
     "sourceApiAssertions": 1617,
     "sourceCsvAssertions": 385
+  },
+  "eveSmisExecutionLoop": {
+    "taskIds": [
+      "WEB04",
+      "HOME01",
+      "SKY21",
+      "OS10"
+    ],
+    "status": "implementation_integrated_actual_browser_and_pixel_loop_pending",
+    "evidence": "docs/evidence/eve-smis-execution-loop.json",
+    "scope": "purpose conversation / saved smis agent / pinned registration / account runtime draft",
+    "actualAcceptance": {
+      "browser": false,
+      "pixelModelInference": false,
+      "sameAccountTwoClients": false,
+      "resultReceivedOnWebAndPixel": false,
+      "publicDeployment": false
+    }
   }
 }
