@@ -1,0 +1,19 @@
+{
+  "schema": "rockstaros.company-brand/1",
+  "revision": 2,
+  "authority": "User supplied signal-2026-10-23-025407.png and requested global sharing",
+  "source": "public/brand/rockstaros-logo-source.png",
+  "sourceSha256": "99718729b2caaf0c52ddcf1db48c48da2c0b1eb61d7ff2c1775ce44d545bf6b9",
+  "width": 1920,
+  "height": 1080,
+  "description": "Six navy outlined petals and a central outlined circle on white",
+  "scope": [
+    "RockstarOS",
+    "smis (formerly Sky)",
+    "Eve",
+    "avocadoMini",
+    "avocadoPro"
+  ],
+  "previousMark": "silver metallic droplet; retained only in historical evidence",
+  "handling": "Preserve the supplied shape/aspect; derive square icons from the centered 1080x1080 canvas without redrawing. Keep legacy asset URLs compatible. Do not imply a rebuilt APK, flashed OS or published Site from source changes."
+}

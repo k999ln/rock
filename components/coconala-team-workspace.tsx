@@ -359,7 +359,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
         {workspace ? <ZemaNavigation active="library" /> : <SkyLibrarySave toolId="coconala" returnTo={returnTo} disabled={locked} />}
       </div>
       <nav className={styles.skyNav} aria-label="ココナラの機能">
-        <Link href={workspace ? '/zema/library' : '/sky'}><ArrowLeft size={15} />{workspace ? 'ライブラリへ戻る' : 'Skyへ戻る'}</Link>
+        <Link href={workspace ? '/zema/library' : '/sky'}><ArrowLeft size={15} />{workspace ? 'ライブラリへ戻る' : 'smisへ戻る'}</Link>
         <button type="button" disabled={locked} aria-current={view === 'management' ? 'page' : undefined} onClick={() => setView('management')}>案件管理</button>
         <button type="button" disabled={locked} aria-current={view === 'check' ? 'page' : undefined} onClick={() => setView('check')}>応募前チェック</button>
       </nav>
@@ -465,7 +465,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
       <Dialog open={Boolean(deleteCaseId)} onOpenChange={(open) => { if (!locked && !open) setDeleteCaseId(''); }}>
         <DialogContent className={`${styles.modal} ${styles.deleteModal}`} showCloseButton={false}>
           <DialogTitle>この下書きを削除しますか？</DialogTitle>
-          <DialogDescription>Skyに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
+          <DialogDescription>smisに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
           <p className={styles.deleteTitle}>{deleteTarget?.terms.title ?? '案件を再読込してください。'}</p>
           {error && <p className={styles.error} role="alert">{error}</p>}
           {needsSignin && signinRecovery}

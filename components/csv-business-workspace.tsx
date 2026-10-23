@@ -403,13 +403,13 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
     type: 'text/csv',
   });
   return (
-    <WorkspaceShell title={workspace ? 'Zema · CSV仕事' : 'Sky · CSV仕事'} hideTopActions>
+    <WorkspaceShell title={workspace ? 'Zema · CSV仕事' : 'smis · CSV仕事'} hideTopActions>
       <div className={styles.page}>
         <div className={styles.toolAccess} onClickCapture={(event) => {
           if (busy && event.target instanceof Element && event.target.closest('a[href]')) event.preventDefault();
         }}>
           {workspace ? <ZemaNavigation active="library" /> : <nav aria-label="CSVの移動先">
-            <Link href="/sky">Skyへ戻る</Link>
+            <Link href="/sky">smisへ戻る</Link>
             <Link href="/zema/library">Zemaのライブラリ</Link>
           </nav>}
           {!workspace && <SkyLibrarySave toolId="rockstar-csv-cleanup" returnTo={returnTo} disabled={busy} />}

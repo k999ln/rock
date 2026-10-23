@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Radio, MessageCircle, Users } from 'lucide-react';
@@ -23,6 +23,7 @@ export default function OsAppNavigation({
   }, [pathname]);
   const selected = active ?? activeOsNavigation(pathname, hash);
   return <nav className={`os-app-navigation os-shell-navigation ${className}`} aria-label={label}
+    style={{ '--os-navigation-count': osNavigationItems.length } as CSSProperties}
     onClickCapture={event => { if (running) event.preventDefault(); }}>
     {osNavigationItems.map(item => {
       const Icon = icons[item.id];

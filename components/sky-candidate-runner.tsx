@@ -26,7 +26,7 @@ const samples: Record<string, string> = {
   'coconala-inbox':
     '依頼文、添付ファイル、納期、報酬、確認が必要な点を整理したい。',
   'youtube-script-writer':
-    'テーマ: Skyに仕事を登録して使えるようにする。5分動画の台本を作る。',
+    'テーマ: smisに仕事を登録して使えるようにする。5分動画の台本を作る。',
   'seo-blueprint':
     'テーマ: ローカルsiツールを安全に仕事で使う方法。検索意図と記事構成を作る。',
   'landing-page-sprint':
@@ -53,7 +53,7 @@ const samples: Record<string, string> = {
     'PAPER市場の固定リプレイで、価格・仮想注文・手数料の確認条件を整理する。',
   'typesafe-computer-use':
     '隔離アカウントの許可アプリで、画面観測だけを確認する。',
-  'jev-review': 'Skyの実行器接続変更をreviewし、リスクと確認項目を整理する。',
+  'jev-review': 'smisの実行器接続変更をreviewし、リスクと確認項目を整理する。',
   'jev-router':
     '短い質問と複雑な実装依頼を、どのモデルへ振り分けるかの条件を作る。',
   'jev-browser':
@@ -206,7 +206,7 @@ export function SkyCandidateRunner({
         <div className="bench-helper">
           <span>
             {guide?.helper ??
-              '本文はこの端末で処理し、状態・所要時間・入出力サイズだけをSkyの実行履歴へ記録します。本文と結果はサーバーに保存しません。'}
+              '本文はこの端末で処理し、状態・所要時間・入出力サイズだけをsmisの実行履歴へ記録します。本文と結果はサーバーに保存しません。'}
           </span>
           <button
             className="text-link"
@@ -261,7 +261,7 @@ export function SkyCandidateRunner({
         >
           <div>
             <p className="sky-tool-eyebrow">PRODUCT HUNT → SKY</p>
-            <h3 id="sky-producthunt-import-title">見つけたツールをSkyへ登録</h3>
+            <h3 id="sky-producthunt-import-title">見つけたツールをsmisへ登録</h3>
             <p>
               Product
               Huntの公開ページURLを引き継ぎ、提供者・接続先・権限を確認する掲載申請を作ります。自動公開や勝手な接続はしません。

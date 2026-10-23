@@ -7,7 +7,7 @@ import './os-shell.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:
-    'SkyとEveの会話・仕事・成果を同じアカウントで引き継ぐRockstarOS WebOS Developer Preview。',
+    'smisとEveの会話・仕事・成果を同じアカウントで引き継ぐRockstarOS WebOS Developer Preview。',
   applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {

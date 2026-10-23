@@ -1,4 +1,4 @@
-const CACHE = 'rockstaros-shell-v4';
+const CACHE = 'rockstaros-shell-v5';
 const CACHE_PREFIXES = ['rockstaros-shell-', 'loop-app-'];
 self.addEventListener('message', (event) => {
   if (

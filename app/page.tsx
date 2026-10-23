@@ -7,13 +7,13 @@ import { campusForHost } from '@/lib/campus-host';
 const homeMetadata: Metadata = {
   title: 'RockstarOS — 自分のSI環境を、どこからでも',
   description:
-    '会員登録・ログインしてSkyの能力を追加し、Eveの会話・仕事・成果を同じアカウントで引き継ぐWebOS。',
+    '会員登録・ログインしてsmisの能力を追加し、Eveの会話・仕事・成果を同じアカウントで引き継ぐWebOS。',
 };
 
 const columbiaMetadata: Metadata = {
-  title: 'Sky for Columbia — Avocado',
+  title: 'smis for Columbia — Avocado',
   description:
-    'A curated Sky feed connecting Columbia students to research, planning, and invention tools.',
+    'A curated smis feed connecting Columbia students to research, planning, and invention tools.',
 };
 
 async function requestedCampus() {

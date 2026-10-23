@@ -133,8 +133,8 @@ export default function EveToolWorkspace({ threadId, onThread }: { threadId: str
     catch (e) { setNotice(e instanceof Error ? e.message : '再読込してください。'); }
     finally { setBusy(false); }
   }
-  return <section className={styles.panel} aria-label="EveからSkyのToolを実行">
-    <h3>SkyのToolで仕事を進める</h3>
+  return <section className={styles.panel} aria-label="EveからsmisのToolを実行">
+    <h3>smisのToolで仕事を進める</h3>
     <p>引用整形 → リンク先の保持を検査 → 保存。外部送信・Cloud呼出はなく、クラウド利用料は0円です。記事の事実確認は含みません。</p>
     <label>目的<input value={objective} maxLength={1000} disabled={busy} onChange={e => { setObjective(e.target.value); }} /></label>
     <label>引用を含む原稿<textarea value={source} maxLength={10000} rows={5} disabled={busy} onChange={e => { setSource(e.target.value); }} placeholder="本文。（出典: [資料](https://example.com/source)）" /></label>

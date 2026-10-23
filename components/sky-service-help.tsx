@@ -7,10 +7,10 @@ import styles from './sky-service-help.module.css';
 
 export default function SkyServiceHelp() {
   const service = useSkyServiceStatus();
-  return <WorkspaceShell title="Skyの利用方法" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <WorkspaceShell title="smisの利用方法" tone="sky" hideTopActions contentClassName={styles.shell}>
     <article className={styles.page}>
       <Link href="/sky/marketplace">マーケットへ戻る</Link>
-      <header><p>SKY SERVICE</p><h1>使い方とデータの扱い</h1><p>SkyはOSを導入せずブラウザから利用できます。PC専用ツールには、本人のPCと接続アプリが必要です。</p></header>
+      <header><p>SKY SERVICE</p><h1>使い方とデータの扱い</h1><p>smisはOSを導入せずブラウザから利用できます。PC専用ツールには、本人のPCと接続アプリが必要です。</p></header>
       <section aria-labelledby="sky-help-start"><h2 id="sky-help-start">まず一つのツールを使う</h2>
         <ol><li>マーケットでツールを選び、機能・利用条件・実行場所・費用を確認します。</li><li>利用画面でサインインします。ChatGPTのサインインと、外部siのAPI利用料は別です。</li><li>サンプルまたは自分の入力で実行し、結果を確認します。</li><li>必要な成果をファイルで保存します。文章ツールは「この端末に保存」も選べます。</li></ol>
         <p><Link href="/sky/tools/mr-citations">出典整理を開く</Link> · <Link href="/sky/tools/mr-free-article">記事の無料版メーカーを開く</Link></p>
@@ -33,7 +33,7 @@ export default function SkyServiceHelp() {
       <section id="limits" aria-labelledby="sky-help-limits"><h2 id="sky-help-limits">対応環境と既知の制限</h2>
         <ul><li>オンラインで利用します。オフライン実行や接続切れ中の停止完了は保証しません。</li><li>導入候補は、本体を実行できるツール数に含みません。LLMの一覧も接続先の候補です。</li><li>Instagram等の外部投稿・広告・請求には実サービスの接続と個別確認が必要です。ブラウザ簡易版の保存を外部操作の完了にしません。</li><li>実行結果の保存に失敗した場合は、結果を手元へ保存してから履歴を確認してください。結果不明の外部操作は重ねて実行しないでください。</li><li>CSVは1ファイル10MBまで。文章保存は20件まで。外部siには利用上限があります。</li></ul>
       </section>
-      <section aria-labelledby="sky-help-providers"><h2 id="sky-help-providers">ツールを提供する</h2><p>掲載には作者・版・配布元・ライセンス・権限・料金・扱うデータを申告します。申請しただけで一般公開されることはありません。</p><p><Link href="/sky/register">掲載申請</Link> · <Link href="/studio">SDK・Studio</Link> · <Link href="/sky/sell">販売設定</Link></p><p>基本登録・接続は0円。Tool売上のSky手数料は10%。外部決済・API・モデル・cloudの費用は別です。決済の接続待ちでは購入・販売できません。</p></section>
+      <section aria-labelledby="sky-help-providers"><h2 id="sky-help-providers">ツールを提供する</h2><p>掲載には作者・版・配布元・ライセンス・権限・料金・扱うデータを申告します。申請しただけで一般公開されることはありません。</p><p><Link href="/sky/register">掲載申請</Link> · <Link href="/studio">SDK・Studio</Link> · <Link href="/sky/sell">販売設定</Link></p><p>基本登録・接続は0円。Tool売上のsmis手数料は10%。外部決済・API・モデル・cloudの費用は別です。決済の接続待ちでは購入・販売できません。</p></section>
       <section aria-labelledby="sky-help-trouble"><h2 id="sky-help-trouble">問題が起きたとき</h2><p>サインイン状態、ツールの利用条件、サービス接続状態を確認してください。PC専用ツールは接続アプリの状態も確認します。</p><p>開発中の不具合は<a href="https://github.com/k999ln/rock/issues" target="_blank" rel="noopener noreferrer">GitHubのIssue</a>で報告できます。公開されるため、原稿・CSV・個人情報・認証情報を添付せず、画面名・操作・時刻・エラー表示だけを記載してください。</p><p>このページは現在の実装を説明する利用案内です。商品の契約・返金条件は購入前に各商品で確認してください。</p></section>
     </article>
   </WorkspaceShell>;

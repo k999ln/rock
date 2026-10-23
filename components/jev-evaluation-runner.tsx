@@ -92,7 +92,7 @@ export function JevEvaluationRunner({
           </span>
         </div>
         <div className="patent-agent-summary">
-          <p>評価したい出力だけを貼り付ける、Skyの任意リモート評価Toolです。</p>
+          <p>評価したい出力だけを貼り付ける、smisの任意リモート評価Toolです。</p>
           <p>
             個人情報、法務相談、未公開発明、秘密情報、原文の全文は送らないでください。
           </p>

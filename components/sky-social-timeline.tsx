@@ -41,6 +41,7 @@ import type {
   SkySocialPost,
 } from '@/lib/sky-social';
 import styles from './sky-social-timeline.module.css';
+import SkyCommunityDirectory from './sky-community-directory';
 import CommunityOsWorkbench from './community-os-workbench';
 import {
   useSkyContinuousFeed,
@@ -110,7 +111,7 @@ export default function SkySocialTimeline({
   }, []);
   const [joinForm, setJoinForm] = useState(false);
   const [threadId, setThreadId] = useState(''),
-    [management, setManagement] = useState(initialView === 'communities'),
+    [management, setManagement] = useState(false),
     [attachmentOpen, setAttachmentOpen] = useState(false),
     [expanded, setExpanded] = useState<Record<string, boolean>>({}),
     [pendingReactions, setPendingReactions] = useState<Record<string, boolean>>(
@@ -171,6 +172,8 @@ export default function SkySocialTimeline({
     sequence = useRef(0);
   const hub = useSkyHub();
   const router = useRouter();
+  const communityPage = initialView === 'communities';
+  const communityDirectory = communityPage && !communityId && !threadId && !lockedCommunity;
   useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(''), 6000);
@@ -356,6 +359,7 @@ export default function SkySocialTimeline({
     }
   }
   const selected = data.communities.find((c) => c.id === communityId);
+  const showPosts = !communityPage || Boolean(selected?.unlocked);
   function post(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!postId.current) postId.current = crypto.randomUUID();
@@ -414,7 +418,7 @@ export default function SkySocialTimeline({
         enabled: true,
         revision: existing?.revision ?? 0,
       });
-      setNotice('自分のSkyに追加しました。実行と費用の確認はEveへ。');
+      setNotice('自分のsmisに追加しました。実行と費用の確認はEveへ。');
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
     } finally {
@@ -425,7 +429,7 @@ export default function SkySocialTimeline({
     try {
       writeHomeIntent(
         window.sessionStorage,
-        `Skyの投稿から追加した「${attachment.resource}」を使いたい。種類: ${attachment.kind}。導入状況・license・実行先・必要費用を確認して使う準備を進めて。`,
+        `smisの投稿から追加した「${attachment.resource}」を使いたい。種類: ${attachment.kind}。導入状況・license・実行先・必要費用を確認して使う準備を進めて。`,
       );
       router.push('/chat');
     } catch {
@@ -445,7 +449,7 @@ export default function SkySocialTimeline({
       const v = (await r.json()) as { error?: string };
       if (!r.ok) throw new Error(v.error ?? '追加できませんでした。');
       setNotice(
-        '自分のSkyに追加しました。「担当とLLMを設定」からEveへ渡せます。',
+        '自分のsmisに追加しました。「担当とLLMを設定」からEveへ渡せます。',
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
@@ -494,7 +498,7 @@ export default function SkySocialTimeline({
     continuous.hasMore,
   ]);
   useEffect(() => {
-    if (!live || !data.profile || threadId || management) return;
+    if (!live || !data.profile || threadId || management || (communityPage && !communityId)) return;
     let stopped = false,
       failures = 0,
       pollingNow = false,
@@ -527,7 +531,7 @@ export default function SkySocialTimeline({
       document.removeEventListener('visibilitychange', wake);
       window.removeEventListener('online', wake);
     };
-  }, [live, data.profile, threadId, management, load]);
+  }, [live, data.profile, threadId, management, load, communityPage, communityId]);
   async function reactTo(
     item: SkySocialPost,
     reaction: 'like' | 'repost' | 'bookmark',
@@ -835,7 +839,7 @@ export default function SkySocialTimeline({
                   ) ? (
                   attachmentAdded ? (
                     <>
-                      <small>自分のSkyに追加済み</small>
+                      <small>自分のsmisに追加済み</small>
                       <button
                         onClick={() => prepareAttachment(post.attachment!)}
                       >
@@ -852,7 +856,7 @@ export default function SkySocialTimeline({
                       }
                     >
                       <Plus size={15} />
-                      自分のSkyに追加
+                      自分のsmisに追加
                     </button>
                   )
                 ) : (
@@ -932,17 +936,22 @@ export default function SkySocialTimeline({
   return (
     <section
       className={styles.shell}
-      id="timeline"
+      id={communityPage ? 'communities' : 'timeline'}
       data-community-timeline
       data-full-home={fullHome || undefined}
       data-timeline-skin="x"
       aria-labelledby="sky-social-title"
     >
       <header className={styles.heading}>
-        <h2 id="sky-social-title">Sky タイムライン</h2>
+        <h2 id="sky-social-title">{communityPage ? 'コミュニティー' : 'smis タイムライン'}</h2>
       </header>
       <div className={styles.timelineTop}>
-        {threadId ? (
+        {communityPage ? (
+          <div className={styles.threadHeading}>
+            {!communityDirectory && <button aria-label="コミュニティーの一覧に戻る" onClick={() => { setCommunityId(''); setThreadId(''); setLockedCommunity(null); setCommunityForm(false); setJoinForm(false); }}><ArrowLeft size={20} /></button>}
+            <strong>{selected?.name || lockedCommunity?.name || 'コミュニティー'}</strong>
+          </div>
+        ) : threadId ? (
           <div className={styles.threadHeading}>
             <button
               aria-label="タイムラインに戻る"
@@ -991,7 +1000,7 @@ export default function SkySocialTimeline({
         )}
         <button
           className={styles.topIcon}
-          aria-label="タイムラインを更新"
+          aria-label={communityPage ? 'コミュニティーを更新' : 'タイムラインを更新'}
           disabled={loading}
           onClick={() => {
             continuous.restart();
@@ -1003,14 +1012,14 @@ export default function SkySocialTimeline({
             className={loading ? styles.spinning : undefined}
           />
         </button>
-        <button
+        {!communityPage && <button
           className={styles.topIcon}
           aria-label="タイムラインの設定とコミュニティー"
           aria-expanded={management}
           onClick={() => setManagement((v) => !v)}
         >
           <SlidersHorizontal size={18} />
-        </button>
+        </button>}
       </div>
       {continuousEnabled && (
         <div className={styles.liveControls}>
@@ -1123,7 +1132,7 @@ export default function SkySocialTimeline({
             void act({ action: 'profile', name: publicName });
           }}
         >
-          <h3>Skyで使う公開名を決めよう。</h3>
+          <h3>smisで使う公開名を決めよう。</h3>
           <p>
             アカウントのメールアドレスは公開しません。ここで設定した名前が投稿に表示されます。
           </p>
@@ -1136,7 +1145,7 @@ export default function SkySocialTimeline({
               onChange={(e) => setPublicName(e.target.value)}
             />
           </label>
-          <button disabled={busy || loading}>Skyを始める</button>
+          <button disabled={busy || loading}>smisを始める</button>
         </form>
       ) : (
         <>
@@ -1145,7 +1154,7 @@ export default function SkySocialTimeline({
               className={styles.sidebar}
               data-open={management}
               aria-label="コミュニティー"
-              hidden={!management}
+              hidden={!management || communityPage}
             >
               <div className={styles.panelHeading}>
                 <strong>タイムラインの設定</strong>
@@ -1174,7 +1183,7 @@ export default function SkySocialTimeline({
                 </span>
                 <div>
                   <strong>{data.profile.name}</strong>
-                  <small>あなたのSky</small>
+                  <small>あなたのsmis</small>
                 </div>
               </div>
               <button
@@ -1248,6 +1257,10 @@ export default function SkySocialTimeline({
               <Link href="/#sky-manage">担当とLLMを設定 →</Link>
             </aside>
             <div className={styles.stream}>
+              {communityDirectory && <SkyCommunityDirectory communities={data.communities} busy={busy}
+                onSelect={c => { setThreadId(''); setCommunityForm(false); setJoinForm(false); if (c.unlocked) { setLockedCommunity(null); setCommunityId(c.id); setRequestedOsVersion(0); } else { setLockedCommunity(c); setCommunityId(''); } }}
+                onCreate={() => { setCommunityForm(true); setJoinForm(false); }}
+                onJoin={() => { setJoinForm(true); setCommunityForm(false); }} />}
               {communityForm && (
                 <form
                   className={styles.communityForm}
@@ -1406,6 +1419,7 @@ export default function SkySocialTimeline({
                   </button>
                 </div>
               )}
+              {showPosts && <>
               {selected?.unlocked && (
                 <div className={styles.communityIntro}>
                   <span>
@@ -1540,7 +1554,7 @@ export default function SkySocialTimeline({
                         <option value="model">LLM・モデル</option>
                         <option value="dataset">データセット</option>
                         <option value="space">Spaces</option>
-                        <option value="agent">Skyの公開Agent・Tool</option>
+                        <option value="agent">smisの公開Agent・Tool</option>
                         <option value="work">作品のURL</option>
                         <option value="edition">OS構成の共有URL</option>
                         <option value="news">ニュースのURL</option>
@@ -1603,7 +1617,7 @@ export default function SkySocialTimeline({
                       <small title="Eveの会話は自動共有されません。">
                         {data.thread?.community || selected
                           ? 'メンバーのみ'
-                          : 'Skyに公開'}
+                          : 'smisに公開'}
                       </small>
                     </div>
                     <div className={styles.sendControls}>
@@ -1658,7 +1672,7 @@ export default function SkySocialTimeline({
                     ? '返信'
                     : mode === 'bookmarks'
                       ? '保存した投稿'
-                      : 'Skyの投稿'
+                      : communityPage ? `${selected?.name || 'コミュニティー'}の投稿` : 'smisの投稿'
                 }
                 aria-busy={loading}
               >
@@ -1668,7 +1682,7 @@ export default function SkySocialTimeline({
                         ? renderPost(item.post)
                         : renderNews(item),
                     )
-                  : data.posts.map((post) => renderPost(post))}
+                  : data.posts.filter(post => !communityPage || post.community?.id === communityId).map((post) => renderPost(post))}
                 {!threadId &&
                   !communityId &&
                   mode !== 'bookmarks' &&
@@ -1720,6 +1734,7 @@ export default function SkySocialTimeline({
                     {discovery}
                   </details>
                 )}
+              </>}
             </div>
           </div>
         </>
@@ -1740,8 +1755,8 @@ export default function SkySocialTimeline({
           )}
         </div>
       )}
-      {!data.profile && externalFeed}
-      {!data.profile && discovery}
+      {!data.profile && !communityPage && externalFeed}
+      {!data.profile && !communityPage && discovery}
     </section>
   );
 }

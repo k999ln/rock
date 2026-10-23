@@ -1364,7 +1364,7 @@ export function AmcToolRunner({
           aria-pressed={surface === 'sky'}
           onClick={() => setSurface('sky')}
         >
-          Skyローンチ
+          smisローンチ
         </button>
         <button
           type="button"
@@ -1441,7 +1441,7 @@ export function AmcToolRunner({
             if (
               dirty &&
               !window.confirm(
-                '未保存の入力を破棄して、Sky専用Goalを保存しますか？',
+                '未保存の入力を破棄して、smis専用Goalを保存しますか？',
               )
             )
               return;
@@ -1618,7 +1618,7 @@ export function AmcToolRunner({
               <>
                 <p>{goal.skyBrief.intent}</p>
                 <p className={styles.warning}>
-                  Sky専用計画 v{goal.skyBrief.planRevision ?? '原資料参照'}
+                  smis専用計画 v{goal.skyBrief.planRevision ?? '原資料参照'}
                   。共有仕様と他担当との照合は手動です。自動監視・指示失効は未接続。保存・承認はローンチ合格ではありません。
                 </p>
               </>

@@ -34,5 +34,5 @@ void test('panel switching and closing preserve the editor and timeline; keyboar
   assert.match(dialog, /onCancel=/);
   assert.match(dialog, /node\.showModal\(\)/);
   for (const text of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowLeft', 'ArrowRight', 'Home', 'End']) assert.ok(dialog.includes(text), text);
-  assert.match(read('components/home-screen.module.css'), /repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(read('components/home-screen.module.css'), /repeat\(var\(--os-navigation-count, 3\), minmax\(0, 1fr\)\)/);
 });

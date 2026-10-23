@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: '/',
     name: 'RockstarOS',
     short_name: 'RockstarOS',
-    description: 'SkyとEveの会話・仕事・成果を、同じアカウントで引き継ぐWebOS。',
+    description: 'smisとEveの会話・仕事・成果を、同じアカウントで引き継ぐWebOS。',
     start_url: '/',
     scope: '/',
     display: 'standalone',

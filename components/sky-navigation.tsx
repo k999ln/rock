@@ -9,7 +9,7 @@ const destinations = [
   { id: 'zema', href: '/chat', label: 'Jenniferを開く', Icon: MessageCircle },
 ] as const;
 export default function SkyNavigation({ active }: { active: typeof destinations[number]['id'] }) {
-  return <nav className={styles.navigation} aria-label="Skyナビゲーション">
+  return <nav className={styles.navigation} aria-label="smisナビゲーション">
     {destinations.map(({ id, href, label, Icon }) => <Link key={id} href={href} aria-current={active === id ? 'page' : undefined}>
       <Icon size={16} aria-hidden="true" /><span>{label}</span>
     </Link>)}

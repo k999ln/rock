@@ -3041,5 +3041,24 @@
     "status": "local_owner_stop_candidate_not_shipped",
     "physicalAccepted": false,
     "publicChanged": false
+  },
+  "osVisualRelease": {
+    "status": "full_checks_pass_native_entry_accepted_public_pending",
+    "evidence": "docs/evidence/os-visual-release.json",
+    "design": "docs/rockstaros-complete-design.md",
+    "source": [
+      "components/home-screen.tsx",
+      "components/os-header.tsx",
+      "components/os-app-navigation.tsx",
+      "components/sky-social-timeline.tsx",
+      "components/sky-community-directory.tsx",
+      "app/os-shell.css"
+    ],
+    "tests": [
+      "tests/smis-community-navigation-ui.test.mjs",
+      "tests/os-bottom-navigation.test.mjs"
+    ],
+    "publicChanged": false,
+    "pixelChanged": true
   }
 }

@@ -35,8 +35,8 @@ export function skyToolUiState(
   };
   if (tool.id === 'jev-router')
     return {
-      label: 'Sky未接続・PC CLIのみ',
-      detail: 'Skyからの接続・実行は準備中',
+      label: 'smis未接続・PC CLIのみ',
+      detail: 'smisからの接続・実行は準備中',
       className: 'is-candidate',
     };
   if (
@@ -51,14 +51,14 @@ export function skyToolUiState(
     };
   if (tool.status === 'candidate' && connectedTools.includes(tool.id))
     return {
-      label: 'Sky登録済み・本体要確認',
+      label: 'smis登録済み・本体要確認',
       detail: '登録記録は本体接続の証明ではありません',
       className: 'is-connect',
     };
   if (tool.status === 'candidate')
     return {
       label: '導入候補・本体未接続',
-      detail: 'Skyへの登録は本体接続ではありません',
+      detail: 'smisへの登録は本体接続ではありません',
       className: 'is-candidate',
     };
   if (tool.runner === 'delivery-local')
@@ -76,7 +76,7 @@ export function skyToolUiState(
   if (tool.runner === 'subscription-ledger')
     return {
       label: 'PC / MCP',
-      detail: 'SkyからPC上の専用システムへ接続',
+      detail: 'smisからPC上の専用システムへ接続',
       className: 'is-connect',
     };
   if (tool.runner === 'jev-evaluation')
@@ -122,7 +122,7 @@ export function skyToolUiState(
   if (tool.id === 'rockstar-markets-analysis')
     return {
       label: 'PAPER検証のみ',
-      detail: 'Skyの仮想台帳で検証。実資金・外部注文には接続していません',
+      detail: 'smisの仮想台帳で検証。実資金・外部注文には接続していません',
       className: 'is-connect',
     };
   if (tool.id === 'mercari-revenue')

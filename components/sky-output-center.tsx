@@ -162,7 +162,7 @@ export default function SkyOutputCenter({
   }
 
   return <WorkspaceShell
-    title={campusId ? `${CAMPUSES[campusId].shortName} Sky` : 'Sky'}
+    title={campusId ? `${CAMPUSES[campusId].shortName} smis` : 'smis'}
     contentClassName={styles.shell}
     tone="sky"
   >
@@ -175,15 +175,15 @@ export default function SkyOutputCenter({
         </div>
         <button type="button" onClick={refresh}><RefreshCw size={16} /> 更新</button>
       </header>
-      <nav className={styles.nav} aria-label="Skyの移動先">
-        <Link href={home}>SkyでAgentを探す</Link>
+      <nav className={styles.nav} aria-label="smisの移動先">
+        <Link href={home}>smisでAgentを探す</Link>
         <Link href="/fitness">Fitnessアプリの例 <ArrowRight size={15} /></Link>
         <Link href={zema}>OS版のZemaで仕事を見る</Link>
       </nav>
       {listState === 'loading' && <p className={styles.notice}>本人の仕事を読み込んでいます…</p>}
       {listState === 'signed_out' && <p className={styles.notice}><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(outputPath)}`}>サインイン</Link>すると、自分の成果を確認できます。</p>}
       {listState === 'unavailable' && <p className={styles.notice} role="alert">仕事を読み込めませんでした。接続を確認して更新してください。</p>}
-      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>Skyで保存されたAgent成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>Skyを開く <ArrowRight size={15} /></Link></div>}
+      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>smisで保存されたAgent成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>smisを開く <ArrowRight size={15} /></Link></div>}
       {listState === 'ready' && jobs.length > 0 && <div className={styles.layout}>
         <section className={styles.list} aria-label="仕事一覧">
           <div className={styles.sectionHead}><h2>仕事</h2><span>{jobs.length}件</span></div>

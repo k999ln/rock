@@ -4,7 +4,7 @@ import {sky140Plan,estimateSkyJobs} from '../lib/sky-plan-estimate';
 export default function SkyPlanEstimate(){
  const [budget,setBudget]=useState(100);const [work,setWork]=useState('standard');
  const task=sky140Plan.workloads.find(v=>v.id===work)!;
- return <section style={{padding:20,background:'#edf2f7',marginBottom:24}}><h2>Sky 140 — 月額 $140 のプラン案</h2><p>確定した料金設計：Agent利用枠 $100 ＋ 運営・決済・保存等 $40。米国向け。税の扱いは未確定、通信料・端末代は別。契約・本番課金はまだ有効になりません。</p>
+ return <section style={{padding:20,background:'#edf2f7',marginBottom:24}}><h2>smis 140 — 月額 $140 のプラン案</h2><p>確定した料金設計：Agent利用枠 $100 ＋ 運営・決済・保存等 $40。米国向け。税の扱いは未確定、通信料・端末代は別。契約・本番課金はまだ有効になりません。</p>
  <label>比較する原価枠 <select value={budget} onChange={e=>setBudget(Number(e.target.value))}><option value={100}>確定した利用枠 $100</option><option value={140}>全額を原価に使う $140</option></select></label>{' '}
  <label>仕事の規模 <select value={work} onChange={e=>setWork(e.target.value)}>{sky140Plan.workloads.map(v=><option key={v.id} value={v.id}>{v.label}</option>)}</select></label>
  <p>1仕事の全呼出し合計：入力 {task.input.toLocaleString()}／出力 {task.output.toLocaleString()} token。</p>

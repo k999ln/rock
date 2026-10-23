@@ -70,7 +70,7 @@ export default function SkyToolWorkspace({
   if (!tool) {
     return (
       <WorkspaceShell
-        title="Sky"
+        title="smis"
         tone="sky"
         contentClassName={styles.shell}
         hideTopActions
@@ -112,7 +112,7 @@ export default function SkyToolWorkspace({
               <ArrowLeft size={16} /> {workspace ? 'ライブラリへ戻る' : 'マーケットへ戻る'}
             </Link>
             <Link className={styles.skyLink} href="/sky">
-              Skyアプリ一覧 <ArrowUpRight size={15} />
+              smisアプリ一覧 <ArrowUpRight size={15} />
             </Link>
           </div>
           <div className={styles.heading}>
@@ -181,11 +181,11 @@ export default function SkyToolWorkspace({
               <h2>
                 {routerHostMismatch
                   ? 'この端末からは接続できません'
-                  : 'Skyからのワンクリック接続は準備中'}
+                  : 'smisからのワンクリック接続は準備中'}
               </h2>
               <p>
                 {routerHostMismatch ??
-                  '現在はPCのCLIから利用できます。Sky Web・専用OS・スマホアプリからの自動接続は未実装です。'}
+                  '現在はPCのCLIから利用できます。smis Web・専用OS・スマホアプリからの自動接続は未実装です。'}
               </p>
               {!routerHostMismatch && host && host !== 'unknown' && (
                 <ul className={styles.requirements}>
@@ -244,7 +244,7 @@ export default function SkyToolWorkspace({
             <section className={styles.openCard}>
               <p className={styles.eyebrow}>接続待ち</p>
               <h2>このツールの実行器を接続してください</h2>
-              <p>Skyに登録済みですが、専用の実行器がまだ接続されていません。</p>
+              <p>smisに登録済みですが、専用の実行器がまだ接続されていません。</p>
               <Link className={styles.action} href="/studio">
                 Studioで接続する <ArrowUpRight size={16} />
               </Link>

@@ -42,7 +42,7 @@ export default function SkyConnectedRuntime() {
     };
   }, []);
   return (
-    <WorkspaceShell title="Sky" contentClassName={styles.content}>
+    <WorkspaceShell title="smis" contentClassName={styles.content}>
       <section
         style={{
           maxWidth: 1040,
@@ -69,7 +69,7 @@ export default function SkyConnectedRuntime() {
         >
           <Link href="/os/eve">Eveで続きを見る</Link>
           <Link href="/connect/device">端末の追加・解除</Link>
-          <Link href="/sky">Skyへ戻る</Link>
+          <Link href="/sky">smisへ戻る</Link>
         </nav>
         {status === 'loading' && <p>接続した能力を確認しています…</p>}
         {status === 'signed_out' && (

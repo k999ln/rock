@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const steps = [
   ['アカウントでサインインする', 'いまのブラウザや対応アプリから利用します。Web版を使うためにSIM/eSIMを購入する必要はありません。'],
-  ['Skyで利用できるToolを選ぶ', 'Skyで機能と利用条件を確認し、Eveへ依頼を渡します。購入済みサービスの署名済み購入claimがある場合だけ、下の登録からRockstar IDへ利用権を結び付けます。'],
+  ['smisで利用できるToolを選ぶ', 'smisで機能と利用条件を確認し、Eveへ依頼を渡します。購入済みサービスの署名済み購入claimがある場合だけ、下の登録からRockstar IDへ利用権を結び付けます。'],
   ['端末で開いて、仕事を依頼する', '確認済み端末だけRockstarOS導入へ進み、その他は既存OSのアプリまたはブラウザを使います。見積と上限を承認したCloud作業は端末がオフラインでも続き、再接続後に進捗・結果・明細を受け取れます。'],
 ];
 
@@ -32,7 +32,7 @@ export default function ConnectPage() {
         <ul>
           <li><CheckCircle2 size={16} />クラウドLLMとAgentへすばやくアクセス</li>
           <li><CheckCircle2 size={16} />実行前見積、利用中の支出、完了後の項目別明細</li>
-          <li><CheckCircle2 size={16} />RockstarOS HomeからSky、Eve、Agentを共通ログインで利用</li>
+          <li><CheckCircle2 size={16} />RockstarOS Homeからsmis、Eve、Agentを共通ログインで利用</li>
         </ul>
       </section>
       <section className={styles.esimCatalog} aria-labelledby="onboarding-steps">
@@ -44,8 +44,8 @@ export default function ConnectPage() {
         </li>)}</ol>
       </section>
       <section className={styles.esimCatalog} aria-labelledby="addon-entry">
-        <div className={styles.esimCatalogTitle}><h2 id="addon-entry">いまの端末に機能を追加する</h2><p>Sky・データ回収・LLMを、対応ブラウザーのホームから利用できます。</p></div>
-        <Link className={styles.esimPlanCard} href="/add"><strong>追加する機能を選ぶ</strong><span>Sky・データ回収・LLM →</span></Link>
+        <div className={styles.esimCatalogTitle}><h2 id="addon-entry">いまの端末に機能を追加する</h2><p>smis・データ回収・LLMを、対応ブラウザーのホームから利用できます。</p></div>
+        <Link className={styles.esimPlanCard} href="/add"><strong>追加する機能を選ぶ</strong><span>smis・データ回収・LLM →</span></Link>
       </section>
       <section className={styles.esimCatalog} aria-labelledby="esim-cloud-entry">
         <div className={styles.esimCatalogTitle}>
@@ -59,7 +59,7 @@ export default function ConnectPage() {
       <section className={styles.esimCatalog} aria-labelledby="device-account-link">
         <div className={styles.esimCatalogTitle}>
           <h2 id="device-account-link">RockstarOS端末のアカウント接続</h2>
-          <p>端末に表示された一時コードをこのRockstar IDで承認すると、端末専用セッションでSky、Eve、クラウド作業へ接続できます。接続後はいつでも取り消せます。</p>
+          <p>端末に表示された一時コードをこのRockstar IDで承認すると、端末専用セッションでsmis、Eve、クラウド作業へ接続できます。接続後はいつでも取り消せます。</p>
         </div>
         <Link className={styles.esimPlanCard} href="/connect/device"><strong>端末コードを承認・管理する</strong><span>ログインと端末接続をひとつのRockstar IDにまとめる <ArrowRight size={15} /></span></Link>
       </section>
@@ -69,7 +69,7 @@ export default function ConnectPage() {
           <p>Agentへの依頼、作業の進捗・成果、料金見積と利用明細をRockstar IDで確認できます。見積や実行料金が確認できない場合は、有料実行を開始しません。</p>
         </div>
         <div className={styles.esimPlanList}>
-          <Link className={styles.esimPlanCard} href="/sky"><strong>Sky — Agentとツールを探す</strong><span>利用可能なAgentや接続先を確認します <ArrowRight size={15} /></span></Link>
+          <Link className={styles.esimPlanCard} href="/sky"><strong>smis — Agentとツールを探す</strong><span>利用可能なAgentや接続先を確認します <ArrowRight size={15} /></span></Link>
           <Link className={styles.esimPlanCard} href="/chat"><strong>Eve — 目的を相談する</strong><span>Goalを整理し、担当siとEveの仕事につなぎます <ArrowRight size={15} /></span></Link>
           <Link className={styles.esimPlanCard} href="/work"><strong>Agent Workbench — 依頼・進捗・費用</strong><span>Agentを選んで依頼し、見積・上限・実行状態・成果・利用明細を確認します <ArrowRight size={15} /></span></Link>
         </div>
@@ -81,9 +81,9 @@ export default function ConnectPage() {
         </div>
         <div className={styles.esimPlanList}>
           <div className={styles.esimPlanCard}><strong>購入・通信開通</strong><span>購入チャネルと通信事業者が提供します。回線状態はRockstarOSサービス利用権とは別に確認します。</span></div>
-          <div className={styles.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>Sky・Eve・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
+          <div className={styles.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>smis・Eve・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
           <div className={styles.esimPlanCard}><strong>端末への導入</strong><span>対応機種は署名済みOS、それ以外は既存OSのアプリまたはブラウザを使います。</span></div>
-          <Link className={styles.esimPlanCard} href="/sky"><strong>Skyを開く</strong><span> AgentやToolを探す <ArrowRight size={15} /></span></Link>
+          <Link className={styles.esimPlanCard} href="/sky"><strong>smisを開く</strong><span> AgentやToolを探す <ArrowRight size={15} /></span></Link>
           <Link className={styles.esimPlanCard} href="/chat"><strong>Eveを開く</strong><span> 相談・進捗・成果をまとめて確認する <ArrowRight size={15} /></span></Link>
         </div>
         <p className={styles.esimDeviceNote}>物理SIMの流通、eSIM開通、アカウントへの購入権連携、実請求、各端末でのOS/client導入は、それぞれ契約・実機受入が必要です。eSIMプランカタログは契約・販売条件の調査用で、RockstarOSサービスの購入窓口ではありません。</p>

@@ -11,7 +11,7 @@ export function LocalGuideHistoryConsent({ checked, disabled, onChange }: {
       <input type="checkbox" checked={checked} disabled={disabled}
         onChange={(event) => onChange(event.target.checked)} />
       <span>
-        端末内処理の実行履歴をSkyに保存する（任意・サインインが必要）
+        端末内処理の実行履歴をsmisに保存する（任意・サインインが必要）
         <small>本文は送信せず、ツール名・日時・成否・処理時間・入出力のバイト数を保存します。オンライン調査とは別の設定です。</small>
       </span>
     </label>

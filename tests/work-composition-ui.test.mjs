@@ -363,7 +363,7 @@ void test('saved output downloads use an owner-authenticated HTTP attachment pin
   await app.click('素材と成果を削除'); assert.equal(app.find('a', '成果をダウンロード'), undefined);
 });
 
-void test('Sky tool links seed only the chosen connected Tool and a fresh check, with no URL-derived material or approval', async () => {
+void test('smis tool links seed only the chosen connected Tool and a fresh check, with no URL-derived material or approval', async () => {
   for (const tool of ['mr-citations', 'mr-free-article', 'rockstar-csv-cleanup']) {
     const app = await harness({ search: `?tool=${tool}&source=PRIVATE&objective=OLD&acceptance=OLD&budgetMinor=10000&consent=true` });
     assert.equal(app.byId('composition-tool-s1').props.value, tool);
@@ -383,7 +383,7 @@ void test('unavailable and malformed tool query parameters explicitly refuse see
     assert.equal(app.requests.some((request) => request.method !== 'GET'), false);
   }
   const app = await harness({ search: '?tool=rockstar-csv-cleanup', initialOwner: null });
-  assert.match(app.text(), /Skyで選んだTool/); assert.equal(app.byId('composition-source'), undefined);
+  assert.match(app.text(), /smisで選んだTool/); assert.equal(app.byId('composition-source'), undefined);
 });
 
 void test('job URLs and existing owner drafts take priority over tool links, including owner reauthentication', async () => {

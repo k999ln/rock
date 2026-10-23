@@ -874,3 +874,7 @@ Source保存の最終操作は自動承認審査でprocess作成前に拒否さ�
 公開承認待ちの独立作業としてSourceへpackage検査CLIと合成負例を追加。実draftの823 fileを全集合/全byte照合し、Worker先行・同Site・SQL12本/原本byte一致を確認。初回の._混入archiveは自動拒否。Metadata/worker改変/他Site/Worker先行無効/欠落asset/SQL改変/linkの合成負例も対象。展開や外部接続を行わず、Source保存拒否を迂回しない。新検査込みのSource全verifyを続ける。
 
 最終ローカルcheckpoint: package guard9件を含むSource全verify exit0（Node2419中2418pass/1skip、API1381/CSV385、assets214missing0）。最終Workerの通常8応答/headersなし12応答を再実測、CLIで同じ配布物823file/SQL12本を照合。新draft sha10082a86…、元Source HEAD6f32、GitHub main/公開v111/実機/本番DBは変更なし。最終Homeの共通frame/表示を同じlocal buildで再確認し、ニュース受信や本人の新account受入へ転用しない。専用tab/preview終了。Source保存・配備は自動承認審査拒否に対する本人の明示承認待ち。ローカルのコード・証拠・復元patchを維持し、全Goalを継続。
+
+## smis表示・タイムライン専用画面・共通ロゴの公開/Pixel更新
+
+本人の明示指示で共通ヘッダーのflex不足、3タブの幅/下余白、コミュニティーへの全体投稿混入を修正。smisは基本タイムライン、＋から追加/管理、コミュニティーは専用一覧へ分離。現行公開v115/ac24から分けた候補の全verify exit0（Node2532/2531pass/1skip/0fail、API1582、CSV385、asset213欠損0）。最終のmanifest改名は別途対象試験/型/buildで確認する。Pixelは同署名の非破壊更新とinstalled APK hash一致、保存45file一致、native入口の実画面/3入口/明るい背景の文字contrastを確認。Webブラウザの実画面はCUA native pipe closedにより未受入。公開/ローカル差替えは次工程。別チャットsmisの物理部品実験は公開しない。GitHub main統合・全OS・全network loop完成を主張しない。[証拠](docs/evidence/os-visual-release.json)。

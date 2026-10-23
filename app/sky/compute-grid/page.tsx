@@ -9,8 +9,8 @@ import styles from './sky-compute-grid.module.css';
 type FixtureInput = Parameters<typeof runComputeGridFixture>[0];
 
 export const metadata: Metadata = {
-  title: 'Compute Grid — Sky',
-  description: '使っていないAndroid端末の計算余力を、安全な固定ロットへ割り当てるSkyのhost fixture。',
+  title: 'Compute Grid — smis',
+  description: '使っていないAndroid端末の計算余力を、安全な固定ロットへ割り当てるsmisのhost fixture。',
 };
 
 const labels: Record<string, string> = {
@@ -26,7 +26,7 @@ export default function SkyComputeGridPage() {
   const lease = result.match.leases[0];
   return (
     <div className={styles.frame}>
-      <WorkspaceShell title="Sky Compute Grid" tone="sky" hideTopActions contentClassName={styles.shell}>
+      <WorkspaceShell title="smis Compute Grid" tone="sky" hideTopActions contentClassName={styles.shell}>
         <SkyNavigation active="compute" />
         <article className={styles.page}>
           <header className={styles.hero}>

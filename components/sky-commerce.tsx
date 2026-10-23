@@ -184,7 +184,7 @@ export function MarketplacePurchase({ offer, mode, compatible = true, onOfferCha
 }
 
 function CommercePage({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return <WorkspaceShell title="Sky Market" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <WorkspaceShell title="smis Market" tone="sky" hideTopActions contentClassName={styles.shell}>
     <div className={styles.page}>
       <Link href="/sky/marketplace" className={styles.back}><ArrowLeft size={15} /> マーケットへ</Link>
       <header className={styles.header}><div><span className={styles.eyebrow}>SKY MARKET</span><h1>{title}</h1><p>{description}</p></div><CommerceNavigation /></header>
@@ -194,7 +194,7 @@ function CommercePage({ title, description, children }: { title: string; descrip
 }
 
 function NotConfigured() {
-  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>Skyの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/sky/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
+  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>smisの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/sky/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
 }
 
 const statusLabels: Record<string, string> = {
@@ -356,8 +356,8 @@ export function OfferEditor({ item, offer, ready, onSave }: { item: Seller['pack
     {(offer?.revision ?? 0) > expectedRevision && !saved && <p className={styles.notice}>表示後に販売条件が更新されています。入力は編集開始時の版を基に保持しています。</p>}
     <fieldset disabled={saving || reviewing} style={{ border: 0, padding: 0, margin: 0, display: 'contents' }}>
     <label>販売価格（円・買い切り）<input type="number" min="50" max="99999999" step="1" required inputMode="numeric" placeholder="例：1,000" value={price} onChange={(event) => setPrice(event.target.value)} /></label>
-    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>Sky手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
-    <p className={styles.subtle}>決済処理の費用はSkyの手数料から負担します。</p>
+    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>smis手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
+    <p className={styles.subtle}>決済処理の費用はsmisの手数料から負担します。</p>
     <label>利用・販売条件のURL<input type="url" pattern="https://.*" required placeholder="https://…" value={termsUrl} onChange={(event) => setTermsUrl(event.target.value)} /></label>
     <label>返金条件<textarea required minLength={1} maxLength={2000} rows={3} placeholder="返金できる条件と、問い合わせ方法" value={refundPolicy} onChange={(event) => setRefundPolicy(event.target.value)} /></label>
     <label className={styles.checkbox}><input type="checkbox" checked={active} onChange={(event) => setActive(event.target.checked)} />マーケットで販売する</label>

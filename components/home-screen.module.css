@@ -377,7 +377,7 @@
   }
   .main {
     border: 0;
-    padding-bottom: calc(62px + env(safe-area-inset-bottom));
+    padding-bottom: 0;
   }
   .mobileHeader {
     display: flex;
@@ -394,10 +394,10 @@
     left: 0;
     right: 0;
     z-index: 90;
-    background: rgba(246, 244, 239, 0.96);
+    background: var(--os-shell-bg, #f6f4ef);
     border-top: 1px solid #dedfd6;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--os-navigation-count, 3), minmax(0, 1fr));
     padding-bottom: env(safe-area-inset-bottom);
   }
   .mobileNav a {
@@ -517,7 +517,7 @@
   border-radius: 12px;
 }
 .home .mobileNav {
-  background: rgba(246, 244, 239, 0.96);
+  background: var(--os-shell-bg, #f6f4ef);
 }
 .home .mobileNav a[aria-current='page'] {
   color: #315b4d;
@@ -539,3 +539,10 @@
 @media (max-width: 1279px) { .home .mobileHeader { display: block; } }
 
 .mobileActions > a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+
+/* smis shows the stream; tools and private work are opened explicitly. */
+.home .layout { display: block; width: 100%; max-width: 680px; margin-inline: auto; }
+.home .main { min-width: 0; }
+.home .mobileHeader { display: block; }
+.home :global(.os-brand-product), .home :global(.os-current-app) { display: none; }
+.home :global(.os-brand-context) { display: inline; }

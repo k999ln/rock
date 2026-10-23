@@ -6,7 +6,7 @@ import { database } from '@/lib/fund-store';
 import { skyToolPackageStore } from '@/lib/sky-tool-package-store';
 
 export const metadata: Metadata = {
-  title: 'RockstarOS利用用 SIM/eSIM — Sky',
+  title: 'RockstarOS利用用 SIM/eSIM — smis',
   description: 'RockstarOSサービス利用権と接続するSIM/eSIMプランの条件・提供状況を確認する。',
 };
 

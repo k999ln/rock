@@ -193,7 +193,7 @@ function conversationIdentityFor(tool: Automation | null) {
   if (tool) {
     return `あなたはJenniferの中で動く${tool.name}専門siです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。実行・承認・利用明細・停止はZemaが管理します。`;
   }
-  return 'あなたはJenniferです。利用者の目的を日本語で自然に整理し、必要なときだけSkyの能力やプロジェクト担当siを案内してください。実行していない作業を完了したと主張せず、実行・承認・利用明細・停止はZemaの既存契約で管理されると説明してください。';
+  return 'あなたはJenniferです。利用者の目的を日本語で自然に整理し、必要なときだけsmisの能力やプロジェクト担当siを案内してください。実行していない作業を完了したと主張せず、実行・承認・利用明細・停止はZemaの既存契約で管理されると説明してください。';
 }
 
 function jenniferStateLabel(state: string | undefined) {
@@ -248,7 +248,7 @@ function roleFor(tool: Automation) {
   return (
     skyRoles.find((role) => role.toolId === tool.id)?.label ??
     skyToolLabelFor(tool.id)?.role ??
-    'Skyアプリ'
+    'smisアプリ'
   );
 }
 
@@ -286,7 +286,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
   }
   if (tool.runner === 'jev-evaluation' && !latest)
     return '外部siの接続確認が必要';
-  return latest ? jobMessage(latest) : 'Sky登録済み';
+  return latest ? jobMessage(latest) : 'smis登録済み';
 }
 
 function responseFor(
@@ -294,7 +294,7 @@ function responseFor(
   routedRole: SkyRole | null,
 ) {
   if (tool?.status === 'candidate' && tool.runner !== 'candidate-local')
-    return `${roleFor(tool)}はSkyに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
+    return `${roleFor(tool)}はsmisに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
   if (tool?.status === 'candidate' && tool.runner === 'candidate-local')
     return tool.origin === 'mr'
       ? `${roleFor(tool)}でローカル下書きを作れます。元サービス、端末、送信先には接続しません。`
@@ -302,8 +302,8 @@ function responseFor(
   if (tool)
     return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認できます。`;
   if (routedRole)
-    return `${routedRole.label}はまだ接続されていません。Skyで接続すると、次からはここで頼めます。`;
-  return '担当を選べませんでした。Skyで接続状態を確認してください。';
+    return `${routedRole.label}はまだ接続されていません。smisで接続すると、次からはここで頼めます。`;
+  return '担当を選べませんでした。smisで接続状態を確認してください。';
 }
 
 function readableChatResult(markdown: string) {
@@ -1458,9 +1458,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                 ? 'ローカルAgentを安全上限で停止しました。依頼を小さく分けてください。Cloudへはフォールバックしません。'
             : 'Local LLMブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。'
           : code === 'REMOTE_LLM_DISABLED'
-            ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
+            ? '外部モデルはサーバー側で無効です。smisの接続管理とサーバー設定を確認してください。'
             : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
-              ? '文章モデルの接続設定が不足しています。Skyの接続管理を確認してください。'
+              ? '文章モデルの接続設定が不足しています。smisの接続管理を確認してください。'
               : '文章モデルから返答を受け取れませんでした。接続状態を確認して再送してください。';
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
@@ -1657,7 +1657,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>成果ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyで能力を追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>Zema · 仕事を管理</span></Link><Link href="/zema/amc"><Sparkles size={16} /><span>仕事の実行計画</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>成果ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>smisで能力を追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>Zema · 仕事を管理</span></Link><Link href="/zema/amc"><Sparkles size={16} /><span>仕事の実行計画</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
@@ -1680,9 +1680,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <House size={18} />
               <span>ホーム</span>
             </Link>
-            <Link href="/sky" aria-label="Skyでアプリを見る">
+            <Link href="/sky" aria-label="smisでアプリを見る">
               <Grid2X2 size={19} />
-              <span>Sky</span>
+              <span>smis</span>
             </Link>
             <Link
               href="/chat"
@@ -1878,7 +1878,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       <p className="zema-message-text">{message.text}</p>
                       {message.side === 'sky' && message.suggestedTool && (
                         <Link className="sky-chat-inline-action" href="/sky">
-                          Skyで接続する
+                          smisで接続する
                         </Link>
                       )}
                     </div>
@@ -2109,7 +2109,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           <small>
                             {step.target.kind === 'amc'
                               ? 'AMCでGoal候補を準備'
-                              : '既存のSky Tool / A2A Agentから選択'}
+                              : '既存のsmis Tool / A2A Agentから選択'}
                             {' · '}
                             {jenniferDataLabel(step.dataClass)}
                             {' · '}
@@ -2337,7 +2337,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         <div>
                           <strong>{activeTool.name}</strong>
                           <p>
-                            Sky登録済みです。実行器をこのPCのSky SDKへ接続すると、同じ入力をZemaから実行できます。
+                            smis登録済みです。実行器をこのPCのsmis SDKへ接続すると、同じ入力をZemaから実行できます。
                           </p>
                         </div>
                         <Link href="/studio">
@@ -2415,7 +2415,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       />
                     ) : (
                       <p>
-                        この担当の実行画面は準備中です。接続状態と対応環境をSkyで確認してください。
+                        この担当の実行画面は準備中です。接続状態と対応環境をsmisで確認してください。
                       </p>
                     )}
                   </div>
@@ -2574,7 +2574,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     onChange={(event) => chooseMode(event.target.value)}
                   >
                     <option value={AUTO_MODE}>自動で選ぶ</option>
-                    {modeApps.length > 0 && <optgroup label="Sky Tool">
+                    {modeApps.length > 0 && <optgroup label="smis Tool">
                       {modeApps.map((tool) => <option key={tool.id} value={tool.id}>{roleFor(tool)} · {tool.name}</option>)}
                     </optgroup>}
                     {connectedMcpServers.length > 0 && <optgroup label="このPCのMCP">
@@ -2582,7 +2582,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     </optgroup>}
                   </select>
                 </label>
-                <Link href="/sky" className="zema-add-tool" aria-label="Skyでツールを追加">
+                <Link href="/sky" className="zema-add-tool" aria-label="smisでツールを追加">
                   <Plus size={15} /> <span>ツールを追加</span>
                 </Link>
                 <span className="zema-composer-tip">Enterで送信 · Shift+Enterで改行</span>

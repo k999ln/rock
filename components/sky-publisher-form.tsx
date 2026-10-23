@@ -219,15 +219,15 @@ export default function SkyPublisherForm({
       <div className="sky-publish-heading">
         <div>
           <p className="rock-eyebrow">FOR TOOL PROVIDERS</p>
-          <h1>自動化ツールを、Skyへ。</h1>
+          <h1>自動化ツールを、smisへ。</h1>
           <p>
-            利用者が判断するための情報だけを入力。遠隔MCPは送信前にSkyが接続とツール一覧を確認します。
+            利用者が判断するための情報だけを入力。遠隔MCPは送信前にsmisが接続とツール一覧を確認します。
           </p>
         </div>
         {!embedded && (
           <Link href="/sky" className="rock-button rock-button-subtle">
             <ArrowLeft size={16} />
-            Skyへ戻る
+            smisへ戻る
           </Link>
         )}
       </div>
@@ -561,12 +561,12 @@ export default function SkyPublisherForm({
         </form>
         <aside className="sky-publish-review">
           <ShieldCheck size={25} />
-          <h2>公開前にSkyが確認すること</h2>
+          <h2>公開前にsmisが確認すること</h2>
           <ol>
             <li>MCPの初期化と能力一覧</li>
             <li>作者・版・配布元の対応</li>
             <li>権限、送信先、料金の差分</li>
-            <li>認証情報をSkyへ直接入力させないこと</li>
+            <li>認証情報をsmisへ直接入力させないこと</li>
             <li>停止、失敗、結果不明時の挙動</li>
           </ol>
           <p>
@@ -577,5 +577,5 @@ export default function SkyPublisherForm({
     </div>
   );
   if (embedded) return <div className={`sky-publish-embedded ${styles.embedded}`}>{content}</div>;
-  return <WorkspaceShell title="Skyに掲載" tone="sky">{content}</WorkspaceShell>;
+  return <WorkspaceShell title="smisに掲載" tone="sky">{content}</WorkspaceShell>;
 }

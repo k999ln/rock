@@ -264,7 +264,7 @@ export default function AmcQuickBoard() {
               disabled={!ready}
               onClick={() =>
                 create(
-                  'Skyの残作業',
+                  'smisの残作業',
                   skyTasks.map((t) => ({
                     ...t,
                     owner: '',
@@ -274,7 +274,7 @@ export default function AmcQuickBoard() {
                 )
               }
             >
-              Skyの残作業 <ArrowRight size={14} />
+              smisの残作業 <ArrowRight size={14} />
             </button>
           </div>
         </div>

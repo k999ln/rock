@@ -39,7 +39,7 @@ export default function SkyXTimeline({ plugin }: { plugin: SkyHubPlugin }) {
   useEffect(() => {
     const receive = (event: MessageEvent) => {
       if (event.source !== frame.current?.contentWindow || event.data?.type !== 'sky-x-widget' || event.data?.channel !== channel) return;
-      if (process.env.NODE_ENV === 'development' && ['started','sdk-loaded','ready','unavailable'].includes(event.data.status)) console.info('Sky X widget:',event.data.status);
+      if (process.env.NODE_ENV === 'development' && ['started','sdk-loaded','ready','unavailable'].includes(event.data.status)) console.info('smis X widget:',event.data.status);
       if (event.data.status === 'ready' || event.data.status === 'unavailable') {
         setStatus(event.data.status);
         if(event.data.status==='unavailable'){const until=Date.now()+15*60_000;setRetryAt(until);try{window.sessionStorage.setItem(cooldownKey,String(until));}catch{/* No storage available. */}}

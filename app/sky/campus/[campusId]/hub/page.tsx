@@ -6,9 +6,9 @@ type Props = { params: Promise<{ campusId: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { campusId } = await params;
-  if (!CAMPUS_IDS.includes(campusId as CampusId)) return { title: 'Sky Campus' };
+  if (!CAMPUS_IDS.includes(campusId as CampusId)) return { title: 'smis Campus' };
   const campus = CAMPUSES[campusId as CampusId];
-  return { title: `${campus.shortName} · Sky`, description: campus.description };
+  return { title: `${campus.shortName} · smis`, description: campus.description };
 }
 
 export default async function CampusSkyHub({ params }: Props) {

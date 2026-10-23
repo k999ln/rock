@@ -56,10 +56,10 @@ export default function SkyNetwork() {
   }
   const connected=connection==='connected'&&!access.executionBlocked;
   const DeviceIcon=hint?.mobile?Smartphone:Laptop;
-  return <div className={frame.frame}><WorkspaceShell title="Sky · 接続" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <div className={frame.frame}><WorkspaceShell title="smis · 接続" tone="sky" hideTopActions contentClassName={styles.shell}>
     <div className={styles.page}>
       <SkyNavigation active="network" />
-      <header className={styles.header}><p className={styles.eyebrow}>CONNECTIONS</p><h1>つないで、すぐに。</h1><p>端末に合った使い方を、Skyが案内します。</p></header>
+      <header className={styles.header}><p className={styles.eyebrow}>CONNECTIONS</p><h1>つないで、すぐに。</h1><p>端末に合った使い方を、smisが案内します。</p></header>
       <ExecutionSignin state={access.accessState}/>
       <section className={styles.device} aria-label="この端末">
         <div className={styles.deviceIcon}><DeviceIcon size={34} strokeWidth={1.3}/></div>

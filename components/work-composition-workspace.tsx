@@ -316,7 +316,7 @@ export default function WorkCompositionWorkspace() {
         <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部siの自律実行や事実確認は行いません。</p>
       </div><Link href="/chat?view=work">Zemaの仕事へ</Link></div>
       {toolEntry.state === 'unavailable' && <div className={`${styles.notice} ${styles.error}`} role="alert">{toolEntry.message}</div>}
-      {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>Skyで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}
+      {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>smisで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}
       <ExecutionSignin state={signinState} />
       {owner && loading && <output className={styles.notice}>保存した仕事とレシピを更新しています…成果はこの画面に残っています。</output>}
       {!privateVisible && pendingOwners.length > 0 && <p className={styles.notice}>保存結果が未確認の操作を保持しています。入力したアカウントで接続を確認してください。</p>}

@@ -120,25 +120,23 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
+  const navigation = readFileSync(resolve(root, 'lib/os-navigation.ts'), 'utf8');
   for (const route of ['/#timeline', '/#sky', '/chat', '/#communities', '/campus', '/wallet', '/market', '/settings']) {
-    assert.match(
-      home,
-      new RegExp(`href: '${route}'`),
-      `${route} is missing from the OS home`,
-    );
+    assert.ok((home + navigation).includes("'" + route + "'"), `${route} is missing from the shared frame`);
   }
   assert.doesNotMatch(home, /href: '\/work'/);
   assert.doesNotMatch(home, /href: '\/csv'/);
   assert.match(home, /DEVELOPER\s+PREVIEW/);
   assert.match(home, /<SkySocialTimeline/);
-  assert.match(home, /discovery=\{<SkyDiscoveryFeed/);
+  assert.match(home, /<SkyDiscoveryDialog/);
+  assert.doesNotMatch(home, /discovery=\{<SkyDiscoveryFeed/);
   assert.doesNotMatch(home, /<SkyInformationMarket|<SkyOptionalFeatures|styles\.hero/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
   assert.match(home, /event.key === 'Escape'/);
   assert.match(home, /data-sky-home/);
   assert.match(
     homeStyles,
-    /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/,
+    /grid-template-columns: repeat\(var\(--os-navigation-count, 3\), minmax\(0, 1fr\)\)/,
   );
 });
 

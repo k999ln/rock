@@ -57,7 +57,7 @@ export default function SkyFreeCloudPanel({agent}:{agent?:SkyLibraryAgent}={}){
  const labels:Record<string,string>={queued:'サーバーの開始待ち',waiting:'無料枠の回復待ち',sending:'Cloud実行中',completed:'結果を保存済み',unconfirmed:'確認が必要・自動再送なし',cancelled:'停止済み'};
  const blockedReason=access==='checking'?'接続を確認しています…':access==='signin'?'ログインすると依頼できます。':!enabled?'このアカウントでは無料Cloudを利用できません。接続・契約状態を確認してください。':!prompt.trim()?'依頼したいことを入力してください。':!consent?'送信先と保存について確認し、同意してください。':'';
  return <section className={styles.panel} aria-label="Cloudへの依頼">
-  <header><span className={styles.badge}>Sky Cloud · 無料Cloud / Sandbox</span><h1>何を手伝いましょうか？</h1><p>{agent?`保存した担当と基盤モデル ${agent.model} を使います。別のモデルへ自動で切り替えません。`:'依頼に合う利用可能な無料モデルを自動で選びます。'}画面を閉じても続き、結果はここに保存されます。</p></header>
+  <header><span className={styles.badge}>smis Cloud · 無料Cloud / Sandbox</span><h1>何を手伝いましょうか？</h1><p>{agent?`保存した担当と基盤モデル ${agent.model} を使います。別のモデルへ自動で切り替えません。`:'依頼に合う利用可能な無料モデルを自動で選びます。'}画面を閉じても続き、結果はここに保存されます。</p></header>
   {access==='signin'&&<div className={styles.notice}><strong>続けるにはログインしてください</strong><p>この画面を残してログインできます。戻ったら「接続・結果を更新」を押してください。</p><a href="/account?returnTo=%2Fos%2Feve" target="_blank" rel="noreferrer">別タブでログイン</a></div>}
   <form onSubmit={event=>{event.preventDefault();void submit();}}>
    <label className={styles.label} htmlFor="sky-cloud-request">依頼したいこと</label>

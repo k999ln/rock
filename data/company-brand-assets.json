@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros.company-brand-assets/1",
+  "source": "public/brand/rockstaros-logo-source.png",
+  "sourceSha256": "99718729b2caaf0c52ddcf1db48c48da2c0b1eb61d7ff2c1775ce44d545bf6b9",
+  "derivation": "centered 1080x1080 crop of the supplied 1920x1080 canvas; original mark geometry and colors retained; 512/192 raster sizes and compatible SVG containers",
+  "files": {
+    "public/company-mark.png": "8f56d809cf3e311311fbb19c0701741e8af1e6d6ac9569f3d42f8f3b4bb1e249",
+    "public/rock-icon-512.png": "8f56d809cf3e311311fbb19c0701741e8af1e6d6ac9569f3d42f8f3b4bb1e249",
+    "public/rock-icon-192.png": "697f265184ae9b59bf13713a5b23e9a88e2e3fb2d7c2a1aa6ff228b5f2b39975",
+    "public/favicon.svg": "15f59c803e5afe5b9096a98eb60c209d8dc9ef778124a10f5b2e84ca1315fedb",
+    "public/company-mark-192.svg": "544521d9e2e2c4b90c72823dd789ddc718807e63454f2d557677b1ddfc61bee5",
+    "public/rock-icon-maskable.svg": "44d66212c66398e130f2694239e1b35e14d927f4d1ffa1d60dcc021e1ebd4e4a",
+    "sites/avocado-mini/public/images/avokado-metallic-mark.png": "8f56d809cf3e311311fbb19c0701741e8af1e6d6ac9569f3d42f8f3b4bb1e249"
+  },
+  "publicDeployed": false,
+  "pixelInstalled": false
+}

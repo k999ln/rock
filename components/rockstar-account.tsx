@@ -23,7 +23,7 @@ function message(value: unknown) {
     ACCOUNT_NAME_INVALID: 'ユーザーIDは英数字から始め、英数字と_を使って3〜32文字で入力してください。',
     ACCOUNT_NAME_UNAVAILABLE: 'このユーザーIDは使われています。登録直後の場合は、ログインから同じ情報で続けられます。',
     PASSWORD_INVALID: 'パスワードは15〜128文字にしてください。単純な繰り返しやよく使われる文字列は使えません。',
-    ACCOUNT_LOGIN_ALREADY_CONFIGURED: 'このアカウントは登録済みです。ログイン、またはSkyへ進んでください。',
+    ACCOUNT_LOGIN_ALREADY_CONFIGURED: 'このアカウントは登録済みです。ログイン、またはsmisへ進んでください。',
     PASSKEY_RATE_LIMITED: '試行が続いています。少し待ってからお試しください。',
     ACCOUNT_BUSY: '認証の処理が混み合っています。少し待ってからお試しください。',
     PASSKEY_REAUTH_REQUIRED: '鍵を変更するには、パスキーでログインし直してから5分以内に操作してください。',
@@ -111,19 +111,19 @@ export default function RockstarAccount() {
     <nav className={styles.top}><Link href="/"><img src="/company-mark.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/os/eve">Eve</Link></nav>
     <section className={styles.card} aria-labelledby="account-title" aria-busy={busy}>
       <p className={styles.eyebrow}>YOUR OWN SPACE</p>
-      <h1 id="account-title">{complete || configured ? '自分のSkyとEveへ。' : mode === 'login' ? 'おかえりなさい。' : mode === 'recover' ? '続きを、取り戻そう。' : '登録して、はじめよう。'}</h1>
-      <p className={styles.description}>{signedIn ? '今までの会話・仕事・成果を引き継ぎます。' : '自分のSkyとEveを、PixelでもWebでも。ChatGPTアカウントは必要ありません。'}</p>
+      <h1 id="account-title">{complete || configured ? '自分のsmisとEveへ。' : mode === 'login' ? 'おかえりなさい。' : mode === 'recover' ? '続きを、取り戻そう。' : '登録して、はじめよう。'}</h1>
+      <p className={styles.description}>{signedIn ? '今までの会話・仕事・成果を引き継ぎます。' : '自分のsmisとEveを、PixelでもWebでも。ChatGPTアカウントは必要ありません。'}</p>
       {recoveryCode ? <div className={styles.notice}>
         <h2>復旧コードを安全な場所に保存</h2><p>ログイン方法を失ったときに必要です。一度だけ表示します。パスワード管理アプリなどへ保存し、チャットや投稿には送らないでください。</p>
         <textarea aria-label="復旧コード" value={recoveryCode} readOnly rows={3} spellCheck={false} />
         <label><input type="checkbox" checked={saved} onChange={e => setSaved(e.target.checked)} />復旧コードを保存しました</label>
-        <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnPath())}>Skyへ進む</button>
+        <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnPath())}>smisへ進む</button>
       </div> : complete ? <div className={styles.success}>
         <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#e6eee2" /><path d="m15 26 7 7 15-15" fill="none" stroke="#285541" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        <h2>準備できました。</h2><p>同じアカウントで、続きから使えます。</p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>Skyへ進む</button>
+        <h2>準備できました。</h2><p>同じアカウントで、続きから使えます。</p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>smisへ進む</button>
       </div> : <div className={styles.step} key={kind + ':' + mode}>
         {!signedIn && <div className={styles.tabs} aria-label="登録方法"><button disabled={busy} aria-pressed={mode === 'signup'} onClick={() => change('signup')}>新規登録</button><button disabled={busy} aria-pressed={mode === 'login'} onClick={() => change('login')}>ログイン</button></div>}
-        {signedIn && configured && mode === 'add' && kind === 'password' ? <div className={styles.success}><p>ログインID：<strong>@{access?.passwordLogin?.handle}</strong></p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>Skyへ進む</button></div> : <form onSubmit={e => { e.preventDefault(); void authenticate(); }} className={styles.form}>
+        {signedIn && configured && mode === 'add' && kind === 'password' ? <div className={styles.success}><p>ログインID：<strong>@{access?.passwordLogin?.handle}</strong></p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>smisへ進む</button></div> : <form onSubmit={e => { e.preventDefault(); void authenticate(); }} className={styles.form}>
           {mode === 'recover' && <div className={styles.recovery}><label>保存した復旧コード<input type="password" autoComplete="off" required value={recoveryInput} onChange={e => setRecoveryInput(e.target.value)} /></label><label><input type="checkbox" required checked={confirmRevoke} onChange={e => setConfirmRevoke(e.target.checked)} />古いログイン方法と端末接続を解除して復旧する</label><p>会話・仕事・成果は保持します。Pixelなどの端末は、復旧後に接続し直せます。</p></div>}
           {enteringPassword && <><label>ユーザーID<input name="username" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required pattern="[A-Za-z0-9][A-Za-z0-9_]{2,31}" minLength={3} maxLength={32} value={handle} onChange={e => setHandle(e.target.value)} placeholder="your_name" /><small>英数字と_で3〜32文字</small></label><label>{mode === 'recover' ? '新しいパスワード' : 'パスワード'}<input name="password" type="password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required minLength={15} maxLength={128} value={secret} onChange={e => setSecret(e.target.value)} placeholder="15文字以上" /></label>{mode !== 'login' && <label>パスワードをもう一度<input name="password-confirmation" type="password" autoComplete="new-password" required minLength={15} maxLength={128} value={confirmation} onChange={e => setConfirmation(e.target.value)} /></label>}</>}
           {kind === 'passkey' && <p className={styles.hint}>{supported ? 'この端末のパスキー、または別の対応端末で本人確認します。' : 'このブラウザではパスキーを使えません。ユーザーIDとパスワードへ切り替えてください。'}</p>}

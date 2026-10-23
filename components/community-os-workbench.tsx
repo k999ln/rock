@@ -529,7 +529,7 @@ export default function CommunityOsWorkbench({
                         />
                       </label>
                       <label>
-                        実行するSky Tool
+                        実行するsmis Tool
                         <select
                           value={a.sourceTool ?? ''}
                           onChange={(e) =>

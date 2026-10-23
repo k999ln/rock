@@ -492,3 +492,7 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 
 2026-10-17の明示指示: 無料Cloudは画面を閉じても待機・自動続行し、再訪で結果確認。本人同意を永続保存、同ID/CASで二重実行を防止、実アカウントのSandbox請求不変を検証。本番課金はしない。従来の画面内限定を更新する。仕様はdocs/llm-evaluation-architecture.mdの画面外継続。
+
+## 現行画面と会社ロゴの更新
+
+本人指定の紺色6輪ロゴ（data/company-brand.json）を共通使用する。表示名はsmis、smisタブの基本表示はtimelineのみ。コミュニティーは独立した一覧から専用鍵で入る。既存SkyのURL/API/schemaは互換のため保持。公開Web/Pixelの表示反映は今回明示承認されたが、全OS/一般ローンチ/実課金合格を意味しない。詳細はdocs/rockstaros-complete-design.mdの共通ヘッダー節。

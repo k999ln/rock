@@ -19,9 +19,9 @@ export default async function SkyCodePage({
   )
     notFound();
   return (
-    <WorkspaceShell title="Sky · コード" tone="sky">
+    <WorkspaceShell title="smis · コード" tone="sky">
       <div style={{ maxWidth: 960, margin: '24px auto', padding: '0 16px' }}>
-        <Link href="/sky">Skyのタイムラインへ</Link>
+        <Link href="/sky">smisのタイムラインへ</Link>
         <SkyCodeTimeline
           initialRepoId={id}
           initialRevision={revision ? Number(revision) : undefined}

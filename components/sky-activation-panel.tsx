@@ -74,13 +74,13 @@ export default function SkyActivationPanel() {
       <div className="sky-activation-heading">
         <div className="sky-activation-icon" aria-hidden="true"><KeyRound size={18} /></div>
         <div>
-          <h2 id="sky-activation-title">TelegramでSky Toolを使う</h2>
+          <h2 id="sky-activation-title">Telegramでsmis Toolを使う</h2>
           <p>発行コードを <code>/sky CODE</code> と送ると、このBotで有効化できます。</p>
         </div>
       </div>
       {loading ? <p className="sky-activation-muted"><LoaderCircle className="spin" size={15} /> Toolを確認中…</p> : null}
       {!loading && !packages.length ? (
-        <p className="sky-activation-muted">審査済みToolがありません。<Link href="/sky/publish">Rock Studioで登録</Link>した後、Sky審査を完了してください。</p>
+        <p className="sky-activation-muted">審査済みToolがありません。<Link href="/sky/publish">Rock Studioで登録</Link>した後、smis審査を完了してください。</p>
       ) : null}
       {packages.length ? (
         <div className="sky-activation-form">

@@ -165,7 +165,7 @@ export default function SystemSettings() {
               href="/sky"
               icon={<Cloud />}
               tone="sky"
-              title="Skyアプリ管理"
+              title="smisアプリ管理"
               detail="探す・接続する・掲載する"
             />
           </SettingsGroup>
@@ -238,7 +238,7 @@ export default function SystemSettings() {
               このPCを接続
             </DialogTitle>
             <DialogDescription>
-              接続アプリを起動すると、SkyからこのPCのMCPを使えます。
+              接続アプリを起動すると、smisからこのPCのMCPを使えます。
             </DialogDescription>
             <DeviceConnection />
           </DialogContent>

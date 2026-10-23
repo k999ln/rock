@@ -40,7 +40,7 @@ export default function SkyMonthlySandbox() {
   }
   const button = { padding: '10px 16px', margin: '8px 8px 8px 0', cursor: 'pointer', borderRadius: 8, border: '1px solid #64748b' };
   return <main style={{ maxWidth: 900, margin: '40px auto', padding: 24, fontFamily: 'system-ui', color: '#172033', background: '#f8fafc' }}>
-    <p>Sky / Agentと月次請求</p><h1>Skyだけで、依頼から明細まで</h1>
+    <p>smis / Agentと月次請求</p><h1>smisだけで、依頼から明細まで</h1>
     <p role="note"><strong>ローカルのテスト環境</strong> · 出典整理Agentは動作します。金額と収納は模擬です。外部LLM・実決済は利用しません。</p>
     <section><h2>1. Agentに依頼する</h2><p>出典整理Agent · テスト単価：1,000文字ごとに10円。テスト月上限：1,000円。見積有効期限：5分。</p>
       <label htmlFor="monthly-input">整理する本文</label><textarea id="monthly-input" disabled={busy} value={markdown} maxLength={20000} rows={5} style={{ display: 'block', width: '100%', marginTop: 8 }} onChange={e => { setMarkdown(e.target.value); setQuote(null); }} />

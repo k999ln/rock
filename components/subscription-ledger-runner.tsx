@@ -96,7 +96,7 @@ export function SubscriptionLedgerRunner({
       id: 'advisor-welcome',
       role: 'assistant',
       content:
-        'こんにちは。Skyの**サブスク顧問**です。PC内の台帳だけを見て答えます。まずは下の質問から試してください。',
+        'こんにちは。smisの**サブスク顧問**です。PC内の台帳だけを見て答えます。まずは下の質問から試してください。',
     },
   ]);
 

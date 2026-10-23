@@ -64,7 +64,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.doesNotMatch(launch, /href="\/sky\/esim"/);
   for (const source of [onboarding, accountEntry]) {
     assert.match(source, /RockstarOS/);
-    assert.match(source, /Sky/);
+    assert.match(source, /smis/);
     assert.match(source, /Eve/);
   }
   assert.match(marketing, /AVOKADO \/ SPATIAL EXPERIENCES/);
@@ -98,7 +98,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(claimUI, /parseRockstarEntitlementHandoffFragment/);
   assert.match(claimUI, /この販売offerの初期Agent構成/);
   assert.match(claimUI, /端末での導入・実行は利用者の確認後/);
-  assert.match(claimUI, /Sky Marketplace/);
+  assert.match(claimUI, /smis Marketplace/);
   assert.match(claimUI, /sky\/marketplace\?package=/);
   assert.match(skyMarketplacePage, /searchParams: Promise/);
   assert.match(skyMarketplacePage, /initialPackageKey=/);
@@ -154,10 +154,10 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(guide, /署名を検証してから起動/);
   assert.match(home, /<OsAppNavigation/);
   assert.match(home, /<SkySocialTimeline/);
-  assert.match(home, /href: '\/#sky'/);
-  assert.match(home, /href: '\/chat', name: 'Eve'/);
+  assert.match(home, /href=\{route\('\/#sky'\)\}/);
+  assert.match(home, /href=\{route\('\/chat'\)\}/);
   assert.match(home, /href=\{route\('\/#sky-manage'\)\}/);
-  assert.match(home, /href: '\/#communities'/);
+  assert.match(read('lib/os-navigation.ts'), /href: '\/#communities'/);
   assert.doesNotMatch(home, /href="\/work"><Bot/);
   assert.match(deviceHome, /requestRockstarUser\(request, db\)/);
   assert.match(deviceHome, /recentAgents/);

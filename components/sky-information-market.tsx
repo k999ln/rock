@@ -211,7 +211,7 @@ export default function SkyInformationMarket({
     try {
       writeHomeIntent(
         window.sessionStorage,
-        `Skyで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した版: ${plugin.metadata.revision ?? '未確認'}\n実行先・導入状況・license・必要費用を確認し、この環境で使える手順から進めて。未導入や未接続なら、その準備を先に示して。`,
+        `smisで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した版: ${plugin.metadata.revision ?? '未確認'}\n実行先・導入状況・license・必要費用を確認し、この環境で使える手順から進めて。未導入や未接続なら、その準備を先に示して。`,
       );
       router.push('/chat');
     } catch (reason) {
@@ -234,7 +234,7 @@ export default function SkyInformationMarket({
               <div>
                 <span>POWERED BY HUGGING FACE</span>
                 <h2 id="hf-catalog-title">次のアイデアを、動く力に。</h2>
-                <p>世界のモデル・データ・アプリを探して、自分のSkyへ。</p>
+                <p>世界のモデル・データ・アプリを探して、自分のsmisへ。</p>
               </div>
               <a
                 href="https://huggingface.co/"
@@ -277,7 +277,7 @@ export default function SkyInformationMarket({
             </div>
             <p className={styles.note}>
               検索語はHugging
-              Faceへ送信します。Skyの検索・追加手数料は0。推論・計算資源などの外部実費と利用条件は別途確認します。
+              Faceへ送信します。smisの検索・追加手数料は0。推論・計算資源などの外部実費と利用条件は別途確認します。
             </p>
             {error && <SkyNotice message={error} className={styles.error} />}
             {catalogState === 'loading' && (
@@ -483,7 +483,7 @@ export default function SkyInformationMarket({
             が適用されることを確認しました。
           </label>
           <p className={styles.note}>
-            Xの埋込みを読み込むと、Xへ通信が発生します。SkyがXのパスワードを受け取ることはありません。
+            Xの埋込みを読み込むと、Xへ通信が発生します。smisがXのパスワードを受け取ることはありません。
           </p>
           <button
             className={styles.primary}
