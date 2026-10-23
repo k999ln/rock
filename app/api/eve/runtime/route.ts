@@ -82,8 +82,17 @@ async function handle(request: Request) {
       if (device) return json({ error: 'BROWSER_APPROVAL_REQUIRED' }, 403);
       return json(await store.enqueue(raw));
     }
-    if (!device) return json({ error: 'APPROVED_DEVICE_REQUIRED' }, 403);
     const value = raw as Record<string, unknown>;
+    if (value?.action === 'stop') {
+      if (device) return json({ error: 'BROWSER_APPROVAL_REQUIRED' }, 403);
+      linkedFields(raw, ['action', 'request']);
+      return json(await store.requestStop(value.request));
+    }
+    if (!device) return json({ error: 'APPROVED_DEVICE_REQUIRED' }, 403);
+    if (value?.action === 'stop-receipt') {
+      linkedFields(raw, ['action', 'receipt']);
+      return json(await store.stopReceipt(device.id, value.receipt));
+    }
     if (value?.action === 'presence') {
       linkedFields(raw, ['action', 'presence']);
       return json(await store.presence(value.presence, device.id));

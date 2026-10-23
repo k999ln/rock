@@ -92,6 +92,7 @@ export default function EveSyncWorkspace({
   const [runtimeJobs, setRuntimeJobs] = useState<EveRuntimeExecution[]>([]),
     [runtimePending, setRuntimePending] = useState<EveRuntimePending[]>([]),
     [runtimeNotice, setRuntimeNotice] = useState('');
+  const [stoppingRuntime, setStoppingRuntime] = useState('');
   const account = useRef(''),
     expanded = useRef(false);
   const [connectionOwner, setConnectionOwner] = useState('');
@@ -330,6 +331,33 @@ export default function EveSyncWorkspace({
   }
   function fresh() {
     choose(crypto.randomUUID());
+  }
+  async function stopRuntime(p: EveRuntimePending) {
+    if (!p.canStop || stoppingRuntime) return;
+    const owner = account.current;
+    setStoppingRuntime(p.id);
+    try {
+      const r = await api<{ state: string; stopConfirmed: boolean }>('/api/eve/runtime', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'stop', request: { id: p.id, confirm: 'stop-owner-local-text' } }),
+      });
+      if (account.current !== owner) return;
+      setMessage(r.state === 'result-retained' ? 'すでに保存された成果を保持しました。' : r.stopConfirmed ? '停止を確認しました。依頼と保存済みの成果は残ります。' : '停止要求を保存しました。端末の実停止を確認しています。');
+    } catch {
+      if (account.current === owner) setMessage('停止結果を確認できません。同じ仕事を読み直してください。停止済みとは扱いません。');
+    } finally { setStoppingRuntime(''); }
+  }
+  function runtimeStopControl(p?: EveRuntimePending) {
+    if (!p) return null;
+    const text = {
+      'cancelled-before-start': '開始前に取り消しました。',
+      'stop-requested': '停止要求を保存済み・実停止を確認中です。',
+      'stop-confirmed': '端末が実停止を確認しました。',
+      'stop-finished': '停止前に実行が終了しています。保存済みの成果は保持します。',
+      'stop-unknown': '実停止は未確認です。接続が戻ると同じ仕事で照合します。',
+      pending: '', received: '',
+    }[p.state];
+    return <div>{text && <output>{text}</output>}{p.canStop && <button disabled={Boolean(stoppingRuntime)} onClick={() => void stopRuntime(p)}>{stoppingRuntime === p.id ? '停止要求を送信中…' : p.state === 'pending' ? '開始前に取り消す' : 'この仕事を停止する'}</button>}</div>;
   }
   async function send() {
     if (
@@ -663,6 +691,7 @@ export default function EveSyncWorkspace({
                           {j.usage.resources} {j.usage.subscription}
                         </small>
                       </details>
+                      {runtimeStopControl(runtimePending.find(p => p.id === j.id))}
                       {j.report.text && (
                         <button onClick={() => saveRuntime(j)}>
                           成果を文章で保存
@@ -684,7 +713,7 @@ export default function EveSyncWorkspace({
                       <div>
                         <strong>{p.agentName}</strong>
                         <span>
-                          {observedAt >= p.expiresAt
+                          {!['pending', 'received'].includes(p.state) ? '停止の照合' : observedAt >= p.expiresAt
                             ? p.state === 'pending'
                               ? '受付期限切れ'
                               : '結果不明・照合待ち'
@@ -694,6 +723,7 @@ export default function EveSyncWorkspace({
                         </span>
                       </div>
                       <p>{p.input}</p>
+                      {runtimeStopControl(p)}
                       <small>仕事ID: {p.id}</small>
                       <small>
                         保存した依頼です。受領だけでは実行完了になりません。

@@ -3024,5 +3024,22 @@
     "publicDeployed": false,
     "localTimeoutMs": 40000,
     "emptyResponseUsage": "trusted normalized Ollama report preserved; no candidate/result/payment authority"
+  },
+  "eveRuntimeOwnerStop": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-runtime-owner-stop",
+      "docs/sky-tools-complete-design.md#eve-runtime-owner-stop"
+    ],
+    "source": [
+      "lib/eve-runtime-sync.ts",
+      "lib/eve-device-replicas.ts",
+      "app/api/eve/runtime/route.ts",
+      "components/eve-sync-workspace.tsx",
+      "tests/eve-runtime-stop.test.mjs",
+      "scripts/runtime-device-api-acceptance.mjs"
+    ],
+    "status": "local_owner_stop_candidate_not_shipped",
+    "physicalAccepted": false,
+    "publicChanged": false
   }
 }

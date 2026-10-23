@@ -91,5 +91,36 @@ export async function checkRuntimeDeviceApi({ call, check, database, getDatabase
   check((await call('GET', undefined, device)).commands, []);
   assert.equal((await call('GET', undefined, { path })).pending.length, 0);
   check((await call('GET', undefined, { path: '/api/eve/device-sync', user: null, headers: device.headers })).commands, []);
+  {
+    const cancelled = { ...input, id: randomUUID(), threadId: randomUUID() };
+    await call('POST', cancelled, { path: path });
+    const stopBody = id => ({ action: 'stop', request: { id, confirm: 'stop-owner-local-text' } });
+    await call('PUT', stopBody(cancelled.id), { path: path, user: null, status: 401 });
+    await call('PUT', stopBody(cancelled.id), { path: path, user: null, headers: device.headers, status: 403 });
+    await call('PUT', stopBody(cancelled.id), { path: path, user: bob, status: 404 });
+    await call('PUT', stopBody(cancelled.id), { path: path, origin: 'https://attacker.invalid', status: 403 });
+    check((await call('PUT', stopBody(cancelled.id), { path: path })).state, 'cancelled-before-start');
+    check((await call('PUT', stopBody(cancelled.id), { path: path })).stopConfirmed, true);
+    check((await call('GET', undefined, device)).commands.length, 0);
+    const active = { ...input, id: randomUUID(), threadId: randomUUID() }, claimId = randomUUID();
+    await call('POST', active, { path: path });
+    const command = (await call('GET', undefined, device)).commands[0].command;
+    await call('PUT', { action: 'claim', claim: { id: active.id, claimId, requestSha256: command.requestSha256 } }, { path: path, user: null, headers: device.headers });
+    await call('PUT', stopBody(active.id), { path: path, status: 409 });
+    await call('PUT', { action: 'presence', presence: { ...presence, executor: { ...presence.executor, capabilities: { ...presence.executor.capabilities, 'execution.stop': true } } } }, { path: path, user: null, headers: device.headers });
+    const requested = await call('PUT', stopBody(active.id), { path: path });
+    check(requested.state, 'stop-requested'); check(requested.stopConfirmed, false);
+    await call('PUT', { action: 'authorize', id: active.id, claimId }, { path: path, user: null, headers: device.headers, status: 409 });
+    const receipt = { action: 'stop-receipt', receipt: { id: active.id, claimId, requestSha256: command.requestSha256, state: 'confirmed' } };
+    await call('PUT', receipt, { path: path, status: 403 });
+    await call('PUT', { ...receipt, receipt: { ...receipt.receipt, claimId: randomUUID() } }, { path: path, user: null, headers: device.headers, status: 409 });
+    check((await call('PUT', receipt, { path: path, user: null, headers: device.headers })).state, 'stop-confirmed');
+    check((await call('GET', undefined, device)).commands.length, 0);
+    const owner = await call('GET', undefined, { path: path });
+    check(owner.pending.find(p => p.id === active.id).state, 'stop-confirmed');
+    check(owner.executions.some(j => j.id === active.id), false);
+    check((await call('GET', undefined, { path: `/api/eve/history?id=${active.threadId}` })).session.messages.length, 1);
+
+  }
   return { id: input.id, threadId: input.threadId, report, path, device };
 }

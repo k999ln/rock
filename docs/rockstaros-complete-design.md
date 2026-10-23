@@ -998,3 +998,17 @@ Tool再開一覧はownerとeve.tool-work/1、指定会話をSQLで絞ってか�
 ### 本文を使えない応答の使用量
 
 Plannerの信頼したOllama adapterがEMPTY_RESPONSEと共に正規化済みusageを返した場合、LLM/provider一致を確認して同じ仕事/試行へ記録する。本文が使えないことと使用量未報告を分け、応答が失敗でも報告済みtokenをnullや0へ置き換えない。モデル名/digestは前後照合し、不一致は候補採用を拒否する。報告の保存で計画/Tool成功、本人承認、金額/請求/入金/作者精算を作らない。停止後の報告も同じ試行に保持し、再送しない。usageのないtransport timeoutは引き続きunknown/nullである。合成回帰試験は空本文+入力17/出力8を返し、通常/停止後の保存、候補なし・Tool0、同試行拒否と会話明細を確認する。
+
+## Eveから同じ仕事を停止する（追加実装・未配布） {#eve-runtime-owner-stop}
+
+1. **目的**: 本人Webから、受付済みの同じjob/threadを停止できるようにする。従来のlogout/key-lossに対する端末内停止と別の入口である。
+2. **体験**: 開始前取消、要求保存、端末の実停止確認、停止前終了、結果不明を分ける。保存済み成果と依頼は保持する。
+3. **責任**: ROCKはowner/device認証、command/replicaの同時更新、状態と同一性を強制。JOINTはPixel実機と同じ公開候補の往復。OWNERの既存grant/実行同意は拡張しない。
+4. **入出力**: owner PUT stopはjob IDと明示操作だけ。device PUT stop-receiptはjob/claim/request hashとpending/confirmed/finished/unknownだけを渡す。guestには従来のscope hashを加えた完全tupleで問い合わせ、原稿やcredentialを停止metadataへ入れない。
+5. **状態**: runtime-cancelledはclaim前CASに成功した取消。runtime-stop/stop-unknownは実停止未確認、runtime-stoppedは認証済み端末のdurable status照合、runtime-stop-finishedは実行終了の照合。未知を完了へ変換しない。
+6. **保存**: 既存eve_device_commands、暗号化replica/history、Native journal、guest停止journalを使い、新しい顧客DB/実行権限は作らない。成果INSERT/UPDATEに同じcommand状態と有効deviceをSQL内で要求し、owner停止CASは観測したreplica版/hashまたは不存在を固定する。
+7. **失敗**: stop要求だけでは停止成功としない。scope不一致やorphanのabsenceだけでは実停止を証明しない。旧hostがexecution.stopを申告しない場合は稼働中停止を提示せず、旧ABIへ新状態を流さない。
+8. **復旧**: 同じ要求/receiptを再照合し推論は再発注しない。finished成果はreceipt送信前にNativeへstageし、応答喪失後も同じreportを保存する。以前からUNKNOWN reportが固定済みの仕事は上書きせず、guest内成果の回収は別検収として残す。
+9. **承認**: Web本人の停止とdeviceの実停止報告は別API。device bearerでowner停止を代行できない。取り消し操作は新しい実行・外部送信・費用の許可にならない。
+10. **合格条件**: owner隔離、旧host、claim競合、成果INSERT/UPDATEと停止の両順序、既存UNKNOWN保持、再起動、実停止と次仕事、同じ仕事のUIを受入する。ローカル/合成/実機/公開を別記し、旧64単体と旧fullを今回変更の成功へ転用しない。
+11. **残る判断**: 同じ公開Source/Native/guest候補のUI・実機受入、UNKNOWN固定済み成果の回収、quota maintenance、完全OSとeSIM/実請求は別gateを維持する。

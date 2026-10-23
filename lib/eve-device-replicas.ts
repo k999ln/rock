@@ -48,6 +48,7 @@ export function eveDeviceReplicas(
     digest: string;
     payload: unknown;
     prior: EveReplicaRow | null;
+    commandStates?: string[];
   }) {
     const { id, threadId, deviceId, revision, digest, payload, prior } = input;
     await history.assertWritable(threadId);
@@ -61,10 +62,19 @@ export function eveDeviceReplicas(
       );
     const envelope = await history.sealRecord(payload, `job:${id}`),
       now = Date.now();
+    // Runtime reports must win the same SQL race as an owner's stop request.
+    // A JavaScript preflight alone leaves a write window while sealing data.
+    const fence = input.commandStates
+      ? ` AND EXISTS(SELECT 1 FROM eve_device_commands c JOIN rockstar_device_sessions s ON s.id=c.device_id AND s.user_id=c.owner_id WHERE c.owner_id=? AND c.id=? AND c.device_id=? AND c.state IN (${input.commandStates.map(() => '?').join(',')}) AND s.revoked_at IS NULL AND s.expires_at>?)`
+      : '';
+    const fenceArgs = input.commandStates
+      ? [owner, id, deviceId, ...input.commandStates, now]
+      : [];
     const result = prior
       ? await db
           .prepare(
-            'UPDATE eve_device_jobs SET revision=revision+1,digest=?,envelope=?,updated_at=? WHERE owner_id=? AND job_id=? AND device_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0)',
+            'UPDATE eve_device_jobs SET revision=revision+1,digest=?,envelope=?,updated_at=? WHERE owner_id=? AND job_id=? AND device_id=? AND revision=? AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0)' +
+              fence,
           )
           .bind(
             digest,
@@ -76,11 +86,14 @@ export function eveDeviceReplicas(
             revision,
             owner,
             threadId,
+            ...fenceArgs,
           )
           .run()
       : await db
           .prepare(
-            'INSERT INTO eve_device_jobs(owner_id,job_id,thread_id,device_id,revision,digest,envelope,updated_at) SELECT ?,?,?,?,1,?,?,? WHERE NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0) ON CONFLICT(owner_id,job_id) DO NOTHING',
+            'INSERT INTO eve_device_jobs(owner_id,job_id,thread_id,device_id,revision,digest,envelope,updated_at) SELECT ?,?,?,?,1,?,?,? WHERE NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0)' +
+              fence +
+              ' ON CONFLICT(owner_id,job_id) DO NOTHING',
           )
           .bind(
             owner,
@@ -92,6 +105,7 @@ export function eveDeviceReplicas(
             now,
             owner,
             threadId,
+            ...fenceArgs,
           )
           .run();
     if (result.meta.changes !== 1)

@@ -53,7 +53,15 @@ export type EveRuntimePending = {
   input: string;
   agentName: string;
   model: LinkedCommand['request']['model'];
-  state: 'pending' | 'received';
+  state:
+    | 'pending'
+    | 'received'
+    | 'cancelled-before-start'
+    | 'stop-requested'
+    | 'stop-confirmed'
+    | 'stop-finished'
+    | 'stop-unknown';
+  canStop: boolean;
   expiresAt: number;
 };
 export function eveRuntimeSyncStore(
@@ -256,11 +264,122 @@ export function eveRuntimeSyncStore(
       throw new LinkedExecutionError('RUNTIME_REQUEST_CONFLICT', 409);
     return { id, state: row.state };
   }
+  function ownerState(state: string): EveRuntimePending['state'] {
+    if (state === 'runtime-pending') return 'pending';
+    if (state === 'runtime-cancelled') return 'cancelled-before-start';
+    if (state.startsWith('runtime-stop:')) return 'stop-requested';
+    if (state.startsWith('runtime-stopped:')) return 'stop-confirmed';
+    if (state.startsWith('runtime-stop-finished:')) return 'stop-finished';
+    if (state.startsWith('runtime-stop-unknown:')) return 'stop-unknown';
+    return 'received';
+  }
+  async function requestStop(raw: unknown) {
+    const v = linkedFields(raw, ['id', 'confirm']),
+      id = linkedId(v.id);
+    if (v.confirm !== 'stop-owner-local-text')
+      throw new LinkedExecutionError('RUNTIME_STOP_CONFIRMATION_REQUIRED');
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const row = await find(id);
+      if (!row)
+        throw new LinkedExecutionError('RUNTIME_COMMAND_NOT_FOUND', 404);
+      const c = await command(row),
+        prior = await replicas.find(id);
+      await history.assertWritable(c.request.threadId);
+      if (
+        prior &&
+        (await replicas.unpack<Replica>(prior)).report.state === 'review'
+      )
+        return { id, state: 'result-retained', stopConfirmed: false };
+      let next = row.state;
+      if (row.state === 'runtime-pending') next = 'runtime-cancelled';
+      else if (/^runtime-(claimed|done):/.test(row.state)) {
+        const p = (await devices()).find((p) => p.deviceId === row.device_id);
+        if (p?.executor.capabilities['execution.stop'] !== true)
+          throw new LinkedExecutionError('RUNTIME_STOP_UNAVAILABLE', 409);
+        next = 'runtime-stop:' + linkedId(row.state.split(':')[1]);
+      } else if (ownerState(row.state) === 'received') {
+        throw new LinkedExecutionError('RUNTIME_STOP_STATE_CONFLICT', 409);
+      }
+      if (next !== row.state) {
+        // Pin the observed replica in the same statement: a report which won
+        // first is retained; a stop which won first fences later publication.
+        const observed = prior
+          ? 'EXISTS(SELECT 1 FROM eve_device_jobs WHERE owner_id=? AND job_id=? AND revision=? AND digest=?)'
+          : 'NOT EXISTS(SELECT 1 FROM eve_device_jobs WHERE owner_id=? AND job_id=?)';
+        const args = prior
+          ? [owner, id, prior.revision, prior.digest]
+          : [owner, id];
+        const r = await db
+          .prepare(
+            'UPDATE eve_device_commands SET state=? WHERE owner_id=? AND id=? AND state=? AND ' +
+              observed +
+              ' AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0)',
+          )
+          .bind(next, owner, id, row.state, ...args, owner, row.thread_id)
+          .run();
+        if (r.meta.changes !== 1) continue;
+      }
+      await replicas.append({
+        jobId: id,
+        threadId: row.thread_id,
+        input: c.displayInput,
+        text: null,
+        createdAt: row.created_at,
+        prefix: 'runtime',
+      });
+      return {
+        id,
+        state: ownerState(next),
+        stopConfirmed:
+          next === 'runtime-cancelled' || next.startsWith('runtime-stopped:'),
+      };
+    }
+    throw new LinkedExecutionError('RUNTIME_STOP_STATE_CONFLICT', 409);
+  }
+  async function stopReceipt(deviceId: string, raw: unknown) {
+    await active(deviceId);
+    const v = linkedFields(raw, ['id', 'claimId', 'requestSha256', 'state']);
+    const id = linkedId(v.id),
+      claimId = linkedId(v.claimId),
+      row = await find(id);
+    if (!row || row.device_id !== deviceId)
+      throw new LinkedExecutionError('RUNTIME_COMMAND_NOT_FOUND', 404);
+    const c = await command(row);
+    if (
+      linkedHash(v.requestSha256) !== c.requestSha256 ||
+      !['pending', 'confirmed', 'finished', 'unknown'].includes(String(v.state))
+    )
+      throw new LinkedExecutionError('RUNTIME_STOP_RECEIPT_MISMATCH', 409);
+    const states = [
+      `runtime-stop:${claimId}`,
+      `runtime-stop-unknown:${claimId}`,
+    ];
+    const next =
+      v.state === 'confirmed'
+        ? `runtime-stopped:${claimId}`
+        : v.state === 'finished'
+          ? `runtime-stop-finished:${claimId}`
+          : v.state === 'unknown'
+            ? `runtime-stop-unknown:${claimId}`
+            : `runtime-stop:${claimId}`;
+    if (row.state === next) return { ok: true, state: ownerState(next) };
+    if (!states.includes(row.state))
+      throw new LinkedExecutionError('RUNTIME_STOP_RECEIPT_MISMATCH', 409);
+    const r = await db
+      .prepare(
+        'UPDATE eve_device_commands SET state=? WHERE owner_id=? AND id=? AND device_id=? AND state=? AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at<>0)',
+      )
+      .bind(next, owner, id, deviceId, row.state, owner, row.thread_id)
+      .run();
+    if (r.meta.changes !== 1)
+      throw new LinkedExecutionError('RUNTIME_STOP_STATE_CONFLICT', 409);
+    return { ok: true, state: ownerState(next) };
+  }
   async function commands(deviceId: string) {
     await active(deviceId);
     const rows = await db
       .prepare(
-        "SELECT * FROM eve_device_commands WHERE owner_id=? AND device_id=? AND ((state='runtime-pending' AND expires_at>?) OR state LIKE 'runtime-claimed:%') ORDER BY created_at,id LIMIT 8",
+        "SELECT * FROM eve_device_commands WHERE owner_id=? AND device_id=? AND ((state='runtime-pending' AND expires_at>?) OR state LIKE 'runtime-claimed:%' OR state LIKE 'runtime-stop:%' OR state LIKE 'runtime-stop-unknown:%') ORDER BY CASE WHEN state LIKE 'runtime-stop:%' OR state LIKE 'runtime-stop-unknown:%' THEN 0 ELSE 1 END,created_at,id LIMIT 8",
       )
       .bind(owner, deviceId, Date.now())
       .all<CommandRow>();
@@ -347,6 +466,7 @@ export function eveRuntimeSyncStore(
       ![
         `runtime-claimed:${report.claimId}`,
         `runtime-done:${report.claimId}`,
+        `runtime-stop-finished:${report.claimId}`,
       ].includes(row.state)
     )
       throw new LinkedExecutionError('RUNTIME_CLAIM_MISMATCH', 409);
@@ -371,6 +491,11 @@ export function eveRuntimeSyncStore(
       digest: await linkedDigest(payload),
       payload,
       prior,
+      commandStates: [
+        `runtime-claimed:${report.claimId}`,
+        `runtime-done:${report.claimId}`,
+        `runtime-stop-finished:${report.claimId}`,
+      ],
     });
     await replicas.append({
       jobId: id,
@@ -441,13 +566,26 @@ export function eveRuntimeSyncStore(
   async function pendingOwner() {
     const rows = await db
       .prepare(
-        "SELECT * FROM eve_device_commands WHERE owner_id=? AND (state='runtime-pending' OR state LIKE 'runtime-claimed:%') ORDER BY created_at DESC LIMIT 50",
+        "SELECT * FROM eve_device_commands WHERE owner_id=? AND (state='runtime-pending' OR state LIKE 'runtime-claimed:%' OR state LIKE 'runtime-done:%' OR state='runtime-cancelled' OR state LIKE 'runtime-stop:%' OR state LIKE 'runtime-stopped:%' OR state LIKE 'runtime-stop-finished:%' OR state LIKE 'runtime-stop-unknown:%') ORDER BY created_at DESC LIMIT 50",
       )
       .bind(owner)
       .all<CommandRow>();
     const result: EveRuntimePending[] = [];
+    const supported = new Set(
+      (await devices())
+        .filter((p) => p.executor.capabilities['execution.stop'] === true)
+        .map((p) => p.deviceId),
+    );
     for (const row of rows.results) {
       const c = await command(row);
+      if (row.state.startsWith('runtime-done:')) {
+        const saved = await replicas.find(row.id);
+        if (
+          saved &&
+          (await replicas.unpack<Replica>(saved)).report.state === 'review'
+        )
+          continue;
+      }
       result.push({
         id: row.id,
         threadId: row.thread_id,
@@ -455,7 +593,13 @@ export function eveRuntimeSyncStore(
         input: c.displayInput,
         agentName: c.request.agent.name,
         model: c.request.model,
-        state: row.state === 'runtime-pending' ? 'pending' : 'received',
+        state: ownerState(row.state),
+        canStop:
+          row.state === 'runtime-pending' ||
+          (supported.has(row.device_id) &&
+            (row.state.startsWith('runtime-claimed:') ||
+              row.state.startsWith('runtime-done:') ||
+              row.state.startsWith('runtime-stop-unknown:'))),
         expiresAt: row.expires_at,
       });
     }
@@ -483,6 +627,8 @@ export function eveRuntimeSyncStore(
     presence,
     devices,
     enqueue,
+    requestStop,
+    stopReceipt,
     commands,
     claim,
     authorize,

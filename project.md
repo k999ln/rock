@@ -1,3 +1,7 @@
+## Eve停止候補：最新公開v114を保持したローカル適応
+
+Source9c4edd9aを基に、owner停止/receipt/成果競合fenceとEve操作だけを追加。既存News/Tool、認証、料金、Home/Pixel選択を保持。初期v113隔離UIは別証拠で、今回はv114の同一buildを再検証する。実機/公開は未受入。
+
 ## Eve v113候補：使用量修正を含む最終full成功
 
 Root verify exit0（1487/1486pass/1skip、API2061/CSV113/assets212欠損0）、Source verify exit0（2514/2513pass/1skip、API1530/CSV385/assets214欠損0）。実Qwen単一caseの計画→元条件採用→実Tool/URL検査→同会話保存/再起動と、本文空応答のusage17/8保持/停止/6job復旧を限定受入。正しいprojectの公開版はv113のままと最新get_siteで確認、外部Source保存/公開は未実施。現在の候補はNews+引用Tool+localhost限定Plannerの65ファイルで、前のNews49ファイル案は固定して別保存。次はこの具体候補の保存/公開条件とSource Agent統合（既存A2A/請求を再利用）。一般SI/実機/Provider/精算/学習は未受入。

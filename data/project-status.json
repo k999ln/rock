@@ -9949,5 +9949,13 @@
         "log": "/private/tmp/eve-empty-usage-source-full.log"
       }
     }
+  },
+  "eveRuntimeOwnerStopCandidate": {
+    "status": "local_verification",
+    "baseSource": "9c4edd9a5a123fa2af5ced72aae39eefe3df3329",
+    "basePublicVersion": 114,
+    "publicChanged": false,
+    "physicalAccepted": false,
+    "next": "full verification and same-build UI, then source/physical release conditions"
   }
 }
