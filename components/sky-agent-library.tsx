@@ -17,16 +17,24 @@ const starters = [
   { id: 'writing', title: '文章を作る', detail: '目的と読み手に合わせて下書き', name: '文章担当', instructions: '目的と読み手を確認し、分かりやすい文章の下書きを作ってください。曖昧な点は質問し、事実と提案を区別してください。' },
   { id: 'planning', title: '仕事を進める', detail: '作業の順番と確認事項を整理', name: '計画担当', instructions: '目的、期限、使える資料と予算を確認し、作業の順番、必要な承認、完了条件を提案してください。実行していない作業を完了と書かないでください。' },
 ] as const;
-export default function SkyAgentLibrary({ publicRuntime = true, embedded = false }: { publicRuntime?: boolean; embedded?: boolean } = {}) {
+export default function SkyAgentLibrary({ publicRuntime = true, embedded = false, creator = false }: { publicRuntime?: boolean; embedded?: boolean; creator?: boolean } = {}) {
   const [agents, setAgents] = useState<SkyLibraryAgent[]>([]);
   const [ownerUserId, setOwnerUserId] = useState('');
   const [selected, setSelected] = useState<SkyLibraryAgent | null>(null);
   const [settings, setSettings] = useState<SkyAgentSettings>(blank);
   const [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [signedOut, setSignedOut] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
-  const [query, setQuery] = useState(''), [creating, setCreating] = useState(false), [dirty, setDirty] = useState(false);
+  const [query, setQuery] = useState(''), [creating, setCreating] = useState(creator), [dirty, setDirty] = useState(false);
   const [creationStep, setCreationStep] = useState<0 | 1 | 2>(0), [starterId, setStarterId] = useState('');
   const [draftId, setDraftId] = useState('');
+  const saving=useRef(false), pendingDraftId=useRef('');
+  const [idea,setIdea]=useState('');
+  function prepareIdea(){
+    const purpose=idea.trim(); if(!purpose){setError('どんな働きを作りたいか入力してください。');return;}
+    const prior=agents.find(a=>a.enabled&&a.source==='personal');
+    setSettings(current=>({...current,name:purpose.split(/[。\n]/)[0].slice(0,60),instructions:purpose,...(prior?{provider:prior.provider,model:prior.model}:{})}));
+    setDirty(true);setError('');setNotice('入力を担当の設定にしました。名前と役割、使うモデルを確認できます。');
+  }
   const editorRef = useRef<HTMLElement>(null);
   const [localModels,setLocalModels] = useState<Array<{name:string;digest:string}>>([]);
   const [modelChecking,setModelChecking] = useState(false);
@@ -43,6 +51,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
   }, []);
   useEffect(() => { const c = new AbortController(); const frame = requestAnimationFrame(() => { void load(c.signal); }); return () => { cancelAnimationFrame(frame); c.abort(); }; }, [load]);
   const open = (agent: SkyLibraryAgent | null) => {
+    pendingDraftId.current='';
     setDraftId(agent?.id ?? crypto.randomUUID());
     setSelected(agent); setSettings(agent ? { name: agent.name, instructions: agent.instructions, provider: agent.provider, model: agent.model, enabled: agent.enabled } : blank());
     setCreating(!agent); setCreationStep(0); setStarterId(''); setDirty(false); setError(''); setNotice('');
@@ -74,19 +83,30 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
   };
   const save = async (event: SyntheticEvent<HTMLFormElement | HTMLButtonElement>) => {
     event.preventDefault();
-    if (creating && creationStep !== 2) return;
+    if (saving.current || (creating && creationStep !== 2)) return;
+    saving.current=true;
     setError(''); setNotice(''); setBusy(true);
     try {
       const value = parseSkyAgentSettings(settings);
-      const id = selected?.id ?? draftId;
-      const response = await fetch('/api/sky/agents', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, revision: selected?.revision ?? 0, settings: value, create: !selected }) });
-      const result = await response.json() as { agent?: SkyLibraryAgent; error?: string };
-      if (!response.ok || !result.agent) throw new Error(result.error || '保存できませんでした。入力は残っています。');
-      const saved = result.agent;
+      if(!selected&&!draftId&&!pendingDraftId.current)pendingDraftId.current=crypto.randomUUID();
+      const id = selected?.id ?? (draftId||pendingDraftId.current);
+      let saved: SkyLibraryAgent;
+      try {
+        const response = await fetch('/api/sky/agents', { method: 'PUT', headers:{'Content-Type':'application/json','X-smis-Owner':ownerUserId},body:JSON.stringify({id,revision: selected?.revision ?? 0,settings:value,create:!selected}) });
+        const result=await response.json() as {agent?:SkyLibraryAgent;error?:string};
+        if(!response.ok||!result.agent)throw new Error(result.error||'保存の応答を確認できません。');
+        saved=result.agent;
+      } catch(reason) {
+        const read=await fetch('/api/sky/agents?id='+encodeURIComponent(id),{cache:'no-store'});
+        const result=await read.json() as {ownerUserId?:string;agent?:SkyLibraryAgent};
+        const found=result.agent;
+        if(!read.ok||result.ownerUserId!==ownerUserId||found?.id!==id||found.revision!==(selected?.revision??0)+1||found.name!==value.name||found.instructions!==value.instructions||found.model!==value.model||found.provider!==value.provider||found.enabled!==value.enabled)throw reason;
+        saved=found;
+      }
+      window.dispatchEvent(new Event('smis-agents-changed'));
       setAgents(current => [saved, ...current.filter(a => a.id !== saved.id)]); open(saved); setNotice(value.enabled?'設定を保存しました。Eveへ渡せます。':'設定を保存しました。この担当の新しい依頼は停止中です。');
     } catch (e) { setError(e instanceof Error ? e.message : '保存できませんでした。入力は残っています。'); }
-    finally { setBusy(false); }
+    finally { saving.current=false; setBusy(false); }
   };
   const inspectModels = async () => {
     setModelChecking(true); setError('');
@@ -101,10 +121,10 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
   const visible = agents.filter(a => `${a.name} ${a.instructions} ${a.model}`.toLowerCase().includes(query.toLowerCase()));
   const definition = textModelProviderDefinition(settings.provider);
   const Heading = embedded ? 'h3' : 'h1';
-  const content = <div className={styles.page} data-sky-agent-management>
+  const content = <div className={styles.page} data-sky-agent-management data-eve-builder={creator || undefined}>
       <header className={styles.hero}>
         <div><Link className={styles.back} href="/#timeline">smis <ChevronRight size={13} /> マイエージェント</Link>
-          <p className={styles.eyebrow}>YOUR AGENTS, YOUR WAY</p><Heading>あなたのエージェント。</Heading>
+          <p className={styles.eyebrow}>YOUR AGENTS, YOUR WAY</p><Heading>{creator ? 'アイデアを、使える担当へ。' : 'あなたのエージェント。'}</Heading>
           <p>やってほしいことに合う担当を作り、使うSIや端末につなぎます。依頼と成果の確認はEveで進められます。</p></div>
         <button className={styles.primary} onClick={() => open(null)} disabled={loading || busy || dirty || signedOut}><Plus size={17} /> エージェントを作る</button>
       </header>
@@ -114,7 +134,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
         <Link href="/os/eve">Eveの仕事と成果 <ArrowUpRight size={15} /></Link>
       </nav>
       {!publicRuntime && <details><summary>購入と利用権の状態を確認</summary><SkyOwnedAgents /></details>}
-      {signedOut && <div className={styles.notice}><p>自分のエージェントと設定を表示するにはサインインしてください。</p><a href="/account?returnTo=%2Fsky%2Fagents" target="_top">サインイン <ArrowRight size={16} /></a></div>}
+      {signedOut && <div className={styles.notice}><p>自分のエージェントと設定を表示するにはサインインしてください。</p><a href={creator ? "/account?returnTo=%2Fos%2Feve%3Fview%3Dbuild" : "/account?returnTo=%2Fsky%2Fagents"} target="_top">サインイン <ArrowRight size={16} /></a></div>}
       {error && <SkyNotice className={styles.error} message={error} />}
       {notice && <output className={styles.success}><Check size={16} /> {notice}</output>}
       <div className={styles.layout}>
@@ -130,13 +150,14 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
         </section>
         <section ref={editorRef} className={styles.editor} aria-labelledby="agent-settings-title">
           {!selected && !creating ? <div className={styles.welcome}><Settings2 size={32} strokeWidth={1.3} /><h2 id="agent-settings-title">使い方まで、あなたに合わせる。</h2><p>やってほしいことを選んで作るか、左の担当を選んで設定できます。</p><button disabled={signedOut} onClick={() => open(null)}>エージェントを作る <Plus size={16} /></button></div> : <form onSubmit={e => void save(e)}>
-            <div className={styles.editorHeading}><div><p className={styles.eyebrow}>{selected?.source === 'sky-tool' ? 'ADDED FROM SKY' : 'YOUR PERSONAL AGENT'}</p><h2 id="agent-settings-title">{creating ? selected?.sourceTool ? 'Toolの担当を設定' : '新しいエージェント' : 'エージェントの設定'}</h2></div><Settings2 size={21} /></div>
+            <div className={styles.editorHeading}><div><p className={styles.eyebrow}>{selected?.source === 'sky-tool' ? 'ADDED FROM SMIS' : 'YOUR PERSONAL AGENT'}</p><h2 id="agent-settings-title">{creating ? selected?.sourceTool ? 'Toolの担当を設定' : '新しいエージェント' : 'エージェントの設定'}</h2></div><Settings2 size={21} /></div>
             {creating && <ol className={styles.steps} aria-label="作成の手順">
-              {['役割', '使うAI', '確認'].map((label, index) => <li key={label} aria-current={creationStep === index ? 'step' : undefined}><span>{index + 1}</span>{label}</li>)}
+              {['役割', 'モデル', '確認'].map((label, index) => <li key={label} aria-current={creationStep === index ? 'step' : undefined}><span>{index + 1}</span>{label}</li>)}
             </ol>}
-            <fieldset disabled={busy || signedOut}>
+            <fieldset disabled={busy || loading || signedOut}>
               {(!creating || creationStep === 0) && <>
               {creating && !selected?.sourceTool && <div className={styles.toolChoice}><h3>smis Toolを使うなら</h3><p>接続済みToolを選ぶと、そのTool専用の担当として設定できます。</p><div>{agents.filter(agent => agent.source === 'sky-tool').slice(0, 4).map(agent => <button type="button" key={agent.id} onClick={() => startToolSetup(agent)}>{agent.name} <ArrowRight size={14} /></button>)}</div><Link href="/#sky">smisでToolを探す <ArrowUpRight size={14} /></Link></div>}
+              {creating && creator && !selected && <div className={styles.idea}><label>どんな働きを作りたい？<textarea rows={3} maxLength={1000} value={idea} placeholder="例：資料から出典付きで要点をまとめるエージェント" onChange={e=>setIdea(e.target.value)}/></label><button type="button" disabled={busy||!idea.trim()} onClick={prepareIdea}>担当の下書きにする</button><p>入力から編集できる設定を作ります。保存や作成だけで、推論・外部操作・課金は始まりません。</p></div>}
               {creating && <div className={styles.starters}><h3>まず、何を任せたい？</h3><p>近いものを選んでから、名前や役割を書き換えられます。</p><div className={styles.starterGrid}>{starters.map(starter => <button type="button" key={starter.id} aria-pressed={starterId === starter.id} onClick={() => applyStarter(starter)}><strong>{starter.title}</strong><span>{starter.detail}</span></button>)}</div></div>}
               <label>名前<input required maxLength={80} value={settings.name} placeholder="例：文章を整える担当" onChange={e => change('name', e.target.value)} /></label>
               <label>何をしてほしい？<textarea required maxLength={1200} rows={4} value={settings.instructions} placeholder="例：資料の出典を示し、要点と分からない点を分けて返す" onChange={e => change('instructions', e.target.value)} /></label>
@@ -161,7 +182,8 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
             </fieldset>
             <div className={styles.actions}>
               {creating && creationStep > 0 && <button type="button" disabled={busy} onClick={() => { setCreationStep(step => Math.max(step - 1, 0) as 0 | 1 | 2); setError(''); }}>戻る</button>}
-              {creating && creationStep < 2 ? <button type="button" className={styles.primary} disabled={busy || signedOut} onClick={nextCreationStep}>次へ <ArrowRight size={16} /></button> : <button type="button" className={styles.primary} disabled={busy || signedOut || (!dirty && !creating)} onClick={e => void save(e)}>{busy ? '保存しています…' : creating ? selected?.sourceTool ? 'Tool担当を保存' : 'エージェントを作成' : '設定を保存'}</button>}
+              {creating && creationStep < 2 ? <button type="button" className={styles.primary} disabled={busy || loading || signedOut} onClick={nextCreationStep}>次へ <ArrowRight size={16} /></button> : <button type="button" className={styles.primary} disabled={busy || loading || signedOut || (!dirty && !creating)} onClick={e => void save(e)}>{busy ? '保存しています…' : creating ? selected?.sourceTool ? 'Tool担当を保存' : 'エージェントを作成' : '設定を保存'}</button>}
+              {selected && !creating && !dirty && <Link href="/#timeline">smisで確認する <ArrowRight size={17}/></Link>}
               {selected && !creating && !dirty && selected.enabled && <Link className={styles.eve} href={skyAgentEvePath(selected)}>Eveに依頼する <ArrowRight size={17} /></Link>}
               {dirty && <button type="button" disabled={busy} onClick={() => open(selected)}>変更を破棄</button>}
             </div>
@@ -169,7 +191,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
           </form>}
         </section>
       </div>
-      {ownerUserId && <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} />}
+      {ownerUserId && (creator ? <details className={styles.deviceDetails}><summary>Pixelなどの接続を確認する</summary><SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId}/></details> : <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} />)}
     </div>;
   return embedded ? content : <WorkspaceShell title="自分のsmis">{content}</WorkspaceShell>;
 }

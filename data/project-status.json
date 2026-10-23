@@ -9976,5 +9976,38 @@
     ],
     "publicChanged": false,
     "pixelChanged": true
+  },
+  "smisEveWorkbench": {
+    "status": "final_source_full_pass_publication_pending",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "publicBaseVersion": 116,
+    "publicBaseCommit": "48cf8b095ec7db99f67dd0774a07f8cb9aa7a638",
+    "evidence": "docs/evidence/os-visual-release.json#workbenchFollowup",
+    "design": "docs/sky-tools-complete-design.md#smis-eve-workbench",
+    "publicDeployed": false,
+    "actualUiAccepted": false,
+    "physicalAccepted": false,
+    "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
+    "sources": [
+      "components/smis-added-posts.tsx",
+      "components/sky-agent-library.tsx",
+      "components/eve-sync-workspace.tsx",
+      "app/api/sky/hub/route.ts"
+    ],
+    "tests": [
+      "tests/smis-eve-workbench.test.mjs",
+      "tests/sky-hub.test.mjs",
+      "scripts/smis-eve-api-acceptance.mjs"
+    ],
+    "sourceFullVerifyExitCode": 0,
+    "sourceNodePass": 2542,
+    "sourceNodeSkip": 1,
+    "sourceApiAssertions": 1617,
+    "sourceCsvAssertions": 385
   }
 }

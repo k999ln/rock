@@ -28,6 +28,8 @@ export async function PUT(request: Request) {
     // Explicit Origin applies to browser and device sessions alike for this settings UI.
     if (request.headers.get('origin') !== new URL(request.url).origin) throw new Error('ORIGIN');
     const owner = await requestUser(request);
+    const expectedOwner=request.headers.get('X-smis-Owner');
+    if(expectedOwner!==null&&expectedOwner!==owner)throw new SkyAgentLibraryError('アカウントが変わりました。画面を開き直してください。',409);
     const reader = request.body?.getReader();
     if (!reader) throw new SkyAgentLibraryError('保存する設定を確認してください。');
     const chunks: Uint8Array[] = []; let size = 0;

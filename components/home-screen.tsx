@@ -8,6 +8,7 @@ import { osRouteHref, skyHomePanelForHash } from '@/lib/os-navigation';
 import { MessageCircle, Plus, MoreHorizontal } from 'lucide-react';
 import SkySocialTimeline from './sky-social-timeline';
 import SkyDiscoveryFeed from './sky-discovery-feed';
+import SmisAddedPosts from './smis-added-posts';
 import SkyDiscoveryDialog from './sky-discovery-dialog';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
 import {
@@ -125,6 +126,7 @@ export default function HomeScreen() {
                     <MoreHorizontal size={22} />
                   </summary>
                   <nav aria-label="追加メニュー">
+                    <Link href="/os/eve?view=build">Eveでエージェントを作る</Link>
                     <Link href={route('/#sky-manage')}>担当とLLMを管理</Link>
                     <Link href="/account">アカウント</Link>
                     <span className={styles.preview}>DEVELOPER PREVIEW</span>
@@ -172,6 +174,7 @@ export default function HomeScreen() {
             <SkySocialTimeline
               key={view==='discover'||view==='manage'?'home':view}
               fullHome
+              personalFeed={<SmisAddedPosts />}
               initialView={view==='discover'||view==='manage'?'home':view}
               externalFeed={
                 <>

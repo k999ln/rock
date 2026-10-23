@@ -17,6 +17,7 @@ export default function WorkspaceShell({
   onConnect,
   running = false,
   hideTopActions = false,
+  hideAccountAccess = false,
   standaloneSky = false,
   standaloneHomeHref = '/sky',
   tone,
@@ -28,6 +29,7 @@ export default function WorkspaceShell({
   onConnect?: () => void;
   running?: boolean;
   hideTopActions?: boolean;
+  hideAccountAccess?: boolean;
   standaloneSky?: boolean;
   standaloneHomeHref?: string;
   tone?: 'sky';
@@ -65,7 +67,7 @@ export default function WorkspaceShell({
       </a>
       <div className="rock-main-column rock-main-column-full">
         {standaloneSky ? <header className={skyStyles.standaloneHeader}>
-          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="smis home">avocado <span>/ Sky</span></Link>
+          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="smis home">avocado <span>/ smis</span></Link>
           <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
         </header> : <OSHeader title={title} running={running}>
           {!hideTopActions && (
@@ -98,7 +100,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
-        {!standaloneSky && title === 'Eve' && <OsAccountAccess />}
+        {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"
           className={`rock-main ${contentClassName ?? ''}`}

@@ -1,3 +1,4 @@
+import { checkSmisEveApi } from './smis-eve-api-acceptance.mjs';
 import { sourceSandboxRestoreStatements } from './sky-monthly-sandbox-db.mjs';
 import { prepareSkyGoal } from './amc-sky-plan.mjs';
 import { checkRuntimeDeviceApi } from './runtime-device-api-acceptance.mjs';
@@ -555,6 +556,7 @@ try {
     path: '/api/sky/service-status', user: null,
   });
   check(serviceStatus.database, 'available');
+  await checkSmisEveApi({call,check,database,alice,bob});
   check(serviceStatus.payments, 'unconfigured');
   check(serviceStatus.csvPayments, 'unconfigured');
   check(serviceStatus.legalAiConfigured, false);

@@ -361,7 +361,7 @@ export default function SkyDiscoveryFeed({
       {standalone && (
         <>
           <header className={styles.heading}>
-            <h1>見つける</h1>
+            <h1>smisで見つける</h1>
             <Link href="/#timeline">ホームへ</Link>
           </header>
           <form className={styles.search} onSubmit={submit}>
@@ -393,8 +393,8 @@ export default function SkyDiscoveryFeed({
       {notice && <output className={styles.notice}>{notice}</output>}
       {(filter === 'all' || filter === 'agent') && (
         <>
-          {tools.slice(0, 1).map(renderTool)}
-          {filter === 'agent' && tools.slice(1).map(renderTool)}
+          {(standalone ? tools : tools.slice(0, 1)).map(renderTool)}
+          {!standalone && filter === 'agent' && tools.slice(1).map(renderTool)}
           {connectionError && (
             <p className={styles.note}>
               {connectionError}{' '}

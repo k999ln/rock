@@ -501,3 +501,5 @@ The main Site's migration lineage requires a restored database. Source recovery 
 main用のSource packageはroot drizzleもmain系列です。Columbiaには元の専用Sourceを使ってください。別Site/欠落/混在のSQL集合は梱包前に拒否し、既存出力を保持します。固定した旧系列fixtureは回帰試験用で、本番の移行先ではありません。集中27/27、全Nodeの残25失敗は別途解消が必要です。
 
 smisはタイムライン、Eveは会話と仕事、コミュニティーは鍵付きの場所の一覧から使います。追加と担当/LLM設定は上部の＋から開きます。旧`/sky` URLと保存データは継続します。
+
+Eveの「エージェントを作る」では、やってほしい働きを書き、名前・役割・基盤モデルを確認して自分のsmisへ保存できます。「実行・相談」へ戻っても同じ会話と選択を保ちます。作成は担当設定の保存で、コードのbuildや推論は開始しません。smisの保存済みカードは本人専用です。公開候補の受入状況は[画面の検証記録](docs/evidence/os-visual-release.json#workbenchFollowup)を参照してください。

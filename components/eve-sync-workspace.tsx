@@ -26,6 +26,9 @@ import {
 } from '@/lib/sky-eve-connections';
 import styles from './eve-sync-workspace.module.css';
 import WorkspaceShell from './workspace-shell';
+import {useSearchParams} from 'next/navigation';
+import SkyAgentLibrary from './sky-agent-library';
+import {Bot, Code2, MessageCircle, ListChecks, PanelLeft} from 'lucide-react';
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
@@ -63,6 +66,14 @@ export default function EveSyncWorkspace({
   initialSelection?: SkyEveSelection;
 }) {
   const profileRequested=useSkyAgentProfileRequested();
+  const search=useSearchParams();
+  const workbenchQuery=search.toString();
+  const [modeOverride,setModeOverrideValue]=useState<{query:string;mode:'work'|'build'}|null>(null);
+  const setModeOverride=(mode:'work'|'build')=>setModeOverrideValue({query:workbenchQuery,mode});
+  const workbenchMode=(modeOverride?.query===workbenchQuery?modeOverride.mode:null)??(search.get('view')==='build'?'build':'work');
+  const [historyOpen,setHistoryOpen]=useState(false);
+  const [buildVisited,setBuildVisited]=useState(search.get('view')==='build');
+  useEffect(()=>{if(workbenchMode!=='build'||buildVisited)return;const frame=requestAnimationFrame(()=>setBuildVisited(true));return()=>cancelAnimationFrame(frame);},[workbenchMode,buildVisited]);
   const [cloudHistoryOpen,setCloudHistoryOpen]=useState(false);
   const newsSourceRequested=useSyncExternalStore(subscribeNewsSourceRequest,()=>new URL(window.location.href).searchParams.has('newsSource'),()=>false);
   const [newsWorkExpanded,setNewsWorkOpen]=useState<boolean|null>(null);
@@ -307,6 +318,8 @@ export default function EveSyncWorkspace({
       : '/os/eve?thread=' + encodeURIComponent(thread);
   }
   function choose(id: string) {
+    setModeOverride('work');
+    setHistoryOpen(false);
     const owner = account.current;
     activeThread.current = id;
     setSelected(id);
@@ -539,9 +552,10 @@ export default function EveSyncWorkspace({
     setTimeout(() => URL.revokeObjectURL(u), 1000);
   }
   return (
-    <WorkspaceShell title="Eve" hideTopActions contentClassName="eve-sync-main">
+    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess contentClassName="eve-sync-main">
       <div className={styles.app}>
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} data-open={historyOpen || undefined}>
+          <button className={styles.historyClose} type="button" onClick={()=>setHistoryOpen(false)}>履歴を閉じる</button>
           <Link href="/os" className={styles.brand}>
             RockstarOS
           </Link>
@@ -570,6 +584,18 @@ export default function EveSyncWorkspace({
           <Link href="/#sky">能力を追加</Link>
         </aside>
         <section className={styles.desk}>
+          <div className={styles.studioHeader}>
+            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h2>{workbenchMode==='build'?'エージェントを作る':'つくる仕事を、ここから。'}</h2><p>作成、実行、成果の確認をひとつの場所で。</p></div>
+            <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
+          </div>
+          <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">
+            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{setBuildVisited(true);setModeOverride('build');}}><Code2 size={17}/>エージェントを作る</button>
+            <button type="button" aria-pressed={workbenchMode==='work'} onClick={()=>setModeOverride('work')}><MessageCircle size={17}/>実行・相談</button>
+            <button type="button" onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
+          </nav>
+          <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/>}</div>
+          <div hidden={workbenchMode!=='work'} className={styles.workContent}>
+          <div className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
           {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner}/>}
@@ -578,7 +604,7 @@ export default function EveSyncWorkspace({
             <div>
               <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
               <h2>
-                {selected ? '会話の続きを、ここから。' : '何を進めますか？'}
+                {selected ? 'この会話の続き' : '新しい仕事'}
               </h2>
             </div>
             <span className={styles.connection}>
@@ -606,6 +632,123 @@ export default function EveSyncWorkspace({
             </div>
           ) : (
             <>
+              <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
+                <h3>何を作り、進めたいですか？</h3>
+                <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary>実行先・担当・基盤モデルを確認する</summary>
+                <div className={styles.modelIdentity} aria-label="使用するLLM">
+                  <div>
+                    <span>使用するLLM</span>
+                    <strong>Eve</strong>
+                    <small>現在は既存モデルを基盤に動作</small>
+                  </div>
+                  <dl>
+                    <dt>基盤モデル</dt>
+                    <dd>
+                      {baseModel?.name ??
+                        agent?.modelId ??
+                        '端末と担当を選ぶと表示されます'}
+                    </dd>
+                  </dl>
+                  <details>
+                    <summary>Eveと担当・基盤モデルについて</summary>
+                    <p>
+                      Eveは使うLLMの製品名です。担当はEveに任せる仕事の役割、基盤モデルは現在の応答を作るモデル、実行先は処理する端末です。Eve専用の学習重みはまだ作成していません。
+                    </p>
+                  </details>
+                </div>
+                <div className={styles.choices}>
+                  <label>
+                    実行先
+                    <select
+                      disabled={busy}
+                      value={device ? skyEveTargetKey(device) : ''}
+                      onChange={(e) => {
+                        setTargetId(e.target.value);
+                        setAgentId('');
+                        setPinnedSelection({ kind: 'none' });
+                        setConsent(false);
+                      }}
+                    >
+                      {!device && (
+                        <option value="">
+                          {devices.length
+                            ? '実行先を選び直してください'
+                            : '実行先を接続してください'}
+                        </option>
+                      )}
+                      {executionTargets.map((d) => (
+                        <option key={skyEveTargetKey(d)} value={skyEveTargetKey(d)}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    担当
+                    <select
+                      disabled={busy}
+                      value={agent?.id ?? ''}
+                      onChange={(e) => {
+                        setAgentId(e.target.value);
+                        setPinnedSelection({ kind: 'none' });
+                        setConsent(false);
+                      }}
+                    >
+                      {!agent && <option value="">担当を選んでください</option>}
+                      {device?.agents.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                </details>
+                <textarea
+                  disabled={busy}
+                  aria-label="続きの依頼"
+                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
+                  value={input}
+                  maxLength={2000}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    setConsent(false);
+                  }}
+                  rows={3}
+                />
+                <label className={styles.consent}>
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                  />
+                  この会話の一部と依頼を「{device?.name ?? '選んだ実行先'}
+                  」へ渡し、本人のモデルで下書きを作る。クラウド使用料0円。
+                  {device && isEveRuntimePresence(device)
+                    ? '出力上限256トークン。'
+                    : ''}
+                </label>
+                <footer>
+                  <span>
+                    {signedIn === null ? 'アカウントと実行先を確認しています…' : !selectionMatches
+                      ? 'smisで選んだ担当かAIが変わったか、接続が解除されています。内容を確認して選び直してください。'
+                      : ready
+                        ? '選んだ実行先は接続・準備済みです'
+                        : (connectionState?.label ??
+                          '接続した実行先で、使う担当のモデルを準備してください。')}
+                  </span>
+                  {signedIn === true && !selectionMatches && (
+                    <Link href="/sky/devices">smisで接続した担当を選び直す</Link>
+                  )}
+                  <button
+                    className={styles.primary}
+                    disabled={!ready || !consent || !input.trim() || busy}
+                    onClick={() => void send()}
+                  >
+                    {busy ? '依頼を保存中…' : '選んだ実行先で下書きを作る'}
+                  </button>
+                </footer>
+              </section>
               <div className={styles.messages} aria-live="polite">
                 {item?.before && (
                   <button onClick={() => void more()}>以前の発言を読む</button>
@@ -628,6 +771,7 @@ export default function EveSyncWorkspace({
                   </div>
                 )}
               </div>
+              <h3 id="eve-work-results" className={styles.resultsTitle}>仕事と成果</h3>
               <div className={styles.results}>
                 {jobs
                   .filter((j) => !selected || j.threadId === selected)
@@ -737,123 +881,11 @@ export default function EveSyncWorkspace({
               {runtimeNotice && (
                 <output className={styles.notice}>{runtimeNotice}</output>
               )}
-              <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
-                <div className={styles.modelIdentity} aria-label="使用するLLM">
-                  <div>
-                    <span>使用するLLM</span>
-                    <strong>Eve</strong>
-                    <small>現在は既存モデルを基盤に動作</small>
-                  </div>
-                  <dl>
-                    <dt>基盤モデル</dt>
-                    <dd>
-                      {baseModel?.name ??
-                        agent?.modelId ??
-                        '端末と担当を選ぶと表示されます'}
-                    </dd>
-                  </dl>
-                  <details>
-                    <summary>Eveと担当・基盤モデルについて</summary>
-                    <p>
-                      Eveは使うLLMの製品名です。担当はEveに任せる仕事の役割、基盤モデルは現在の応答を作るモデル、実行先は処理する端末です。Eve専用の学習重みはまだ作成していません。
-                    </p>
-                  </details>
-                </div>
-                <div className={styles.choices}>
-                  <label>
-                    実行先
-                    <select
-                      disabled={busy}
-                      value={device ? skyEveTargetKey(device) : ''}
-                      onChange={(e) => {
-                        setTargetId(e.target.value);
-                        setAgentId('');
-                        setPinnedSelection({ kind: 'none' });
-                        setConsent(false);
-                      }}
-                    >
-                      {!device && (
-                        <option value="">
-                          {devices.length
-                            ? '実行先を選び直してください'
-                            : '実行先を接続してください'}
-                        </option>
-                      )}
-                      {executionTargets.map((d) => (
-                        <option key={skyEveTargetKey(d)} value={skyEveTargetKey(d)}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    担当
-                    <select
-                      disabled={busy}
-                      value={agent?.id ?? ''}
-                      onChange={(e) => {
-                        setAgentId(e.target.value);
-                        setPinnedSelection({ kind: 'none' });
-                        setConsent(false);
-                      }}
-                    >
-                      {!agent && <option value="">担当を選んでください</option>}
-                      {device?.agents.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <textarea
-                  disabled={busy}
-                  aria-label="続きの依頼"
-                  placeholder="続きに何を作りますか？"
-                  value={input}
-                  maxLength={2000}
-                  onChange={(e) => {
-                    setInput(e.target.value);
-                    setConsent(false);
-                  }}
-                  rows={3}
-                />
-                <label className={styles.consent}>
-                  <input
-                    type="checkbox"
-                    checked={consent}
-                    onChange={(e) => setConsent(e.target.checked)}
-                  />
-                  この会話の一部と依頼を「{device?.name ?? '選んだ実行先'}
-                  」へ渡し、本人のモデルで下書きを作る。クラウド使用料0円。
-                  {device && isEveRuntimePresence(device)
-                    ? '出力上限256トークン。'
-                    : ''}
-                </label>
-                <footer>
-                  <span>
-                    {signedIn === null ? 'アカウントと実行先を確認しています…' : !selectionMatches
-                      ? 'smisで選んだ担当かAIが変わったか、接続が解除されています。内容を確認して選び直してください。'
-                      : ready
-                        ? '選んだ実行先は接続・準備済みです'
-                        : (connectionState?.label ??
-                          '接続した実行先で、使う担当のモデルを準備してください。')}
-                  </span>
-                  {signedIn === true && !selectionMatches && (
-                    <Link href="/sky/devices">smisで接続した担当を選び直す</Link>
-                  )}
-                  <button
-                    className={styles.primary}
-                    disabled={!ready || !consent || !input.trim() || busy}
-                    onClick={() => void send()}
-                  >
-                    {busy ? '依頼を保存中…' : '選んだ実行先で下書きを作る'}
-                  </button>
-                </footer>
-              </section>
+
             </>
           )}
           {message && <output className={styles.notice}>{message}</output>}
+          </div>
         </section>
       </div>
     </WorkspaceShell>

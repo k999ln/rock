@@ -878,3 +878,7 @@ Source保存の最終操作は自動承認審査でprocess作成前に拒否さ�
 ## smis表示・タイムライン専用画面・共通ロゴの公開/Pixel更新
 
 本人の明示指示で共通ヘッダーのflex不足、3タブの幅/下余白、コミュニティーへの全体投稿混入を修正。smisは基本タイムライン、＋から追加/管理、コミュニティーは専用一覧へ分離。現行公開v115/ac24から分けた候補の全verify exit0（Node2532/2531pass/1skip/0fail、API1582、CSV385、asset213欠損0）。最終のmanifest改名は別途対象試験/型/buildで確認する。Pixelは同署名の非破壊更新とinstalled APK hash一致、保存45file一致、native入口の実画面/3入口/明るい背景の文字contrastを確認。Webブラウザの実画面はCUA native pipe closedにより未受入。公開/ローカル差替えは次工程。別チャットsmisの物理部品実験は公開しない。GitHub main統合・全OS・全network loop完成を主張しない。[証拠](docs/evidence/os-visual-release.json)。
+
+## smis内容の継続とEve制作画面（HOME01/WEB04/SKY21・ROCK）
+
+本人の最新3指示を具体化。smisへ私用の保存済みAgent/LLM等を投稿形式で表示、追加画面は全Toolを表示。公開v116 Sourceに不足していた既存hub route/storeを既存テーブルのまま復元。Eveは作成/実行/成果入口、自然文ひな形→モデル→確認→既存本人設定へ保存、同版Eveリンクとsmis一覧へ接続。依頼欄を履歴より前、接続詳細は折りたたみ、モバイル履歴を明示展開。選択/会話/停止/モデル版契約を維持。集中15件成功。最終Source全verify exit0（Node2543/2542pass/1skip/0fail、API1617/CSV385、asset214欠損0）。Rootは型/lint/集中5件と実API2152/CSV113成功、全verify試行はunit1682成功後asset列挙0で停止、再読取225欠損0と後続を別記する。作成タブから新agentへ戻るURL依存と履歴選択時の復帰を補正。公開/実UI/Pixel未受入。初回fixtureの旧SQL名/Source migration前提とbutton空白を補正。合成Unit結果を実機と混同しない。[記録](docs/evidence/os-visual-release.json#workbenchFollowup)。

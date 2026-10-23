@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-10-23T08:11:37Z",
+  "observedAt": "2026-10-23T09:45:54Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -9,13 +9,13 @@
     "assetsBinding": "ASSETS",
     "assetsRunWorkerFirst": true
   },
-  "sourceCommit": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "sourceCommit": "48cf8b095ec7db99f67dd0774a07f8cb9aa7a638",
   "sourceDirty": true,
   "measurement": {
     "nodeVersion": "v26.12.1",
     "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
-    "rawResultSha256": "10ced50812618117dd301a4e6812ef045571559a00cead7fd64dfee375c83119",
-    "builtApplicationSha256": "872f014d34473b36e1b60fd9cad2cfa3847e7f3fbd1bbbdce77d6223e38b6b5f",
+    "rawResultSha256": "94a58c87fcebc35ecfd3e7d20365875970908e1501cabf42688cedfc44cdf45f",
+    "builtApplicationSha256": "f1c52ad95f50dfe7af8102fbedc911b2bb1667a54e0881a7a608ff9f594947b6",
     "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a"
   },
   "inputs": {
@@ -26,7 +26,7 @@
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
     "scripts/check-web-security-response.mjs": "5d09335b743331650d8b6e155a6312ddf695ef7847516dcd0d5436708103100a",
     "public/sw.js": "61bf56942d09187409b76a57526271e54183aa2165ed27e1d776d4a2bf7989bb",
-    "app/manifest.ts": "4917c016974a8dd65f4b8c71afce2b435c9ebc06eab999c986d940a05009326c",
+    "app/manifest.ts": "a9f9f4ca83b554ae43988093311328fb1a294cc483c468b53372df7b4f8b63e5",
     "public/rock-icon-192.png": "697f265184ae9b59bf13713a5b23e9a88e2e3fb2d7c2a1aa6ff228b5f2b39975",
     "public/rock-icon-512.png": "8f56d809cf3e311311fbb19c0701741e8af1e6d6ac9569f3d42f8f3b4bb1e249",
     "public/rock-icon-maskable.svg": "44d66212c66398e130f2694239e1b35e14d927f4d1ffa1d60dcc021e1ebd4e4a"
@@ -42,7 +42,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-CIVpWufh.js"
+      "/_next/static/chunks/index-eeSUcX8O.js"
     ]
   },
   "boundary": {
@@ -92,6 +92,29 @@
       "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
       "rawResultSha256": "2e71cde405059ced06ff8966d02981016b8c8ba7d31af387690b8be4d54f8dcc",
       "assetConfigurationSha256": "59f9b2af9e88a41c049e61a8e8e2b6478cf3e06458b862eb0a070b9a64c0e321"
+    }
+  },
+  "previousVisualMeasurement": {
+    "observedAt": "2026-10-23T08:11:37Z",
+    "measurement": {
+      "nodeVersion": "v26.12.1",
+      "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
+      "rawResultSha256": "10ced50812618117dd301a4e6812ef045571559a00cead7fd64dfee375c83119",
+      "builtApplicationSha256": "872f014d34473b36e1b60fd9cad2cfa3847e7f3fbd1bbbdce77d6223e38b6b5f",
+      "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a"
+    },
+    "inputs": {
+      "services/sky-web/domain-router.mjs": "1d02e631f2078f5b89da56df19a30347a8bf17a879a692e7c4cf213de0cfcdd0",
+      "scripts/stage-sky-domain-router.mjs": "0075f6292660f61565425eadc2f32694b62d852b6435e4436a8f15c20e5d8a4a",
+      "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
+      "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
+      "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
+      "scripts/check-web-security-response.mjs": "5d09335b743331650d8b6e155a6312ddf695ef7847516dcd0d5436708103100a",
+      "public/sw.js": "61bf56942d09187409b76a57526271e54183aa2165ed27e1d776d4a2bf7989bb",
+      "app/manifest.ts": "a9f9f4ca83b554ae43988093311328fb1a294cc483c468b53372df7b4f8b63e5",
+      "public/rock-icon-192.png": "697f265184ae9b59bf13713a5b23e9a88e2e3fb2d7c2a1aa6ff228b5f2b39975",
+      "public/rock-icon-512.png": "8f56d809cf3e311311fbb19c0701741e8af1e6d6ac9569f3d42f8f3b4bb1e249",
+      "public/rock-icon-maskable.svg": "44d66212c66398e130f2694239e1b35e14d927f4d1ffa1d60dcc021e1ebd4e4a"
     }
   }
 }

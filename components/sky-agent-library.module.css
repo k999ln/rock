@@ -105,3 +105,5 @@
 .deviceGroup dt { color: var(--os-muted); flex-shrink: 0; }
 .deviceGroup dd { margin: 0; }
 .deviceConnections a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
+
+.idea{padding:18px;border:1px solid var(--os-line);border-radius:16px;margin-bottom:24px;background:var(--os-raised)}.idea p{font-size:12px;color:var(--os-muted);line-height:1.7}.idea textarea{margin-bottom:12px}.deviceDetails{margin-top:24px;padding:16px;border:1px solid var(--os-line);border-radius:16px;font-size:13px}.deviceDetails summary{cursor:pointer}

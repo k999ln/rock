@@ -83,11 +83,13 @@ async function request<T>(
 }
 export default function SkySocialTimeline({
   fullHome = false,
+  personalFeed,
   initialView = 'home',
   discovery,
   externalFeed,
 }: {
   fullHome?: boolean;
+  personalFeed?: ReactNode;
   initialView?: 'home' | 'bookmarks' | 'communities';
   discovery?: ReactNode;
   externalFeed?: ReactNode;
@@ -1676,6 +1678,7 @@ export default function SkySocialTimeline({
                 }
                 aria-busy={loading}
               >
+                {!communityPage && !threadId && !communityId && mode !== 'bookmarks' && personalFeed}
                 {continuousEnabled
                   ? continuous.items.map((item) =>
                       item.kind === 'post'
