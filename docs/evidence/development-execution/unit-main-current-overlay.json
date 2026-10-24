@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
-  "mainAtCapture": "2bea21b14faec220161ffaac910e973ed0b52de7",
+  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
+  "mainAtCapture": "7188c87986f337c6b65e408a17d2468ecab44fe5",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -286,7 +286,7 @@
       "units": [
         "SMITH-01"
       ],
-      "kind": "limited_source_and_bounded_local_UI_pass_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "2bea21b14faec220161ffaac910e973ed0b52de7",
       "sourceFiles": [
         {
@@ -335,16 +335,97 @@
       "reviewSummary": "docs/evidence/development-execution/smith-bottom-navigation-main-review-summary.json",
       "uiSummary": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
       "attempt": 3,
+      "mainMerged": true,
+      "wholeUnitAccepted": false,
+      "scope": "Three mobile bottom links at <=700px, controlled hash selection and two existing More links; no whole-unit/native/production/authenticated-composer acceptance.",
+      "pr": 203,
+      "acceptedHead": "6e280a935bf834e21913a3a5680050d8318f04c0",
+      "mainMergeSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+      "metadataReviewSha256": "7a63d1d0daabc3cc019412e2c4c643c406414ef8c1006ebcc7dff5f4cdde01a8",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "EVE_SOURCE_ESTIMATE_CANDIDATE",
+      "units": [
+        "EVE-02"
+      ],
+      "kind": "limited_source_and_saved_source_unavailable_localUI_pass_git_candidate",
+      "baseMain": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+      "sourceFiles": [
+        {
+          "path": "lib/eve-text-job.ts",
+          "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+          "bytes": 6812
+        },
+        {
+          "path": "tests/eve-text-estimate.test.mjs",
+          "sha256": "dfa1469e68ff9d6747374dde4efbcf7400e750fe9d36efdc6e8f7705a2243618",
+          "bytes": 14255
+        },
+        {
+          "path": "app/api/llm/estimate/route.ts",
+          "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+          "bytes": 9604
+        },
+        {
+          "path": "tests/work-composition-ui.test.mjs",
+          "sha256": "0c8d5abe9d516aa77a11286bf5207969390fd58ce16ba532973e9ab3d5f41b42",
+          "bytes": 44665
+        },
+        {
+          "path": "tests/eve-text-estimate-ui.test.mjs",
+          "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+          "bytes": 12320
+        },
+        {
+          "path": "tests/eve-text-job.test.mjs",
+          "sha256": "7045a57d0f10e701fc32d7ec5578d734b7f3213b98a07b72d652319cc8877afc",
+          "bytes": 8004
+        },
+        {
+          "path": "lib/remote-ai-text-client.ts",
+          "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+          "bytes": 15463
+        },
+        {
+          "path": "components/eve-text-estimate.tsx",
+          "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+          "bytes": 7676
+        },
+        {
+          "path": "components/work-composition-workspace.tsx",
+          "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+          "bytes": 56166
+        },
+        {
+          "path": "tests/remote-ai-text-client.test.mjs",
+          "sha256": "aa0eb5be79563cd1082ef8f6610c33fc5a2d3fc229aa9c97fa8c86cc92f97da1",
+          "bytes": 6044
+        }
+      ],
+      "sourceReviewSha256": "67cfe71cd5f21a6484cbc1d6df662d2926ec437f63569875a52d62ea6279f424",
+      "reviewSummary": "docs/evidence/development-execution/eve-source-estimate-main-review-summary.json",
+      "uiSummary": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
+      "attempt": 2,
+      "combinedMainUiPending": false,
       "mainMerged": false,
       "wholeUnitAccepted": false,
-      "scope": "Three mobile bottom links at <=700px, controlled hash selection and two existing More links; no whole-unit/native/production/authenticated-composer acceptance."
+      "scope": "Saved owner/revision two-material estimate only; current pricing execution gatefalse and no quote/reserve/approve/send. Numeric/expiry browser success not accepted.",
+      "combinedMainUi": "limited_local_restore_navigation_pass"
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "EVE-02",
+      "state": "saved_source_estimate_exact10_source_and_bounded_combined_UI_pass_main_candidate",
+      "scope": "Exact-head CI actual Linux verify and independent adoption metadata review; quote/reserve/approval/send remain deferred.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "SMITH-01",
-      "state": "attempt3_navigation_exact8_source_and_bounded_local_UI_pass_main_candidate",
+      "state": "limited_navigation_PR203_main_integrated_remaining_UI_gates",
       "scope": "Final same-head Linux verify/CI and independent adoption metadata review; physical inset/keyboard/zoom/auth composer/running-job/two-owner/native/production remain open.",
       "wholeUnitAccepted": false
     },
@@ -423,5 +504,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06"
+  "previousCaptureMain": "2bea21b14faec220161ffaac910e973ed0b52de7"
 }

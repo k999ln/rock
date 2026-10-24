@@ -14,6 +14,8 @@ import {
 } from '@/lib/remote-ai-rate-card';
 import { trustedRemoteAiRateCardKeyResolver } from '@/lib/remote-ai-rate-card-registry';
 import { parseStoredRemoteAiRateCard, RemoteAiRateCardStore } from '@/lib/remote-ai-rate-card-store';
+import { workStore } from '@/lib/work-store';
+import { prepareEveTextEstimate, EveTextEstimateError } from '@/lib/eve-text-job';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: noStoreHeaders });
@@ -34,6 +36,25 @@ export async function POST(request: Request) {
     const input: unknown = JSON.parse(raw);
     if (!input || typeof input !== 'object' || Array.isArray(input)) return json({ code: 'INVALID_INPUT' }, 400);
     let value = input as Record<string, unknown>;
+    let eve: Awaited<ReturnType<typeof prepareEveTextEstimate>> | undefined;
+    let sourceSnapshot: string | undefined;
+    if ('eveSource' in value) {
+      const keys = ['provider', 'eveSource', 'consent', 'model', 'currency', 'maximumBudgetMinor', 'maxOutputTokens'];
+      const ref = value.eveSource;
+      if (Object.keys(value).some((key) => !keys.includes(key)) || value.provider !== 'openai' || value.consent !== true ||
+        !ref || typeof ref !== 'object' || Array.isArray(ref)) return json({ code: 'INVALID_INPUT' }, 400);
+      const source = ref as Record<string, unknown>;
+      if (Object.keys(source).length !== 2 || Object.keys(source).some((key) => !['jobId', 'revision'].includes(key)) ||
+        typeof source.jobId !== 'string' || !/^[A-Za-z0-9._:-]{1,128}$/.test(source.jobId) ||
+        !Number.isSafeInteger(source.revision) || (source.revision as number) < 0) return json({ code: 'INVALID_INPUT' }, 400);
+      const job = await workStore(db).get(owner, source.jobId);
+      if (!job) return json({ code: 'NOT_FOUND' }, 404);
+      if (job.revision !== source.revision) return json({ code: 'EVE_SOURCE_CHANGED' }, 409);
+      eve = await prepareEveTextEstimate(job);
+      sourceSnapshot = JSON.stringify(job);
+      const { eveSource: _source, consent: _consent, ...options } = value;
+      value = { ...options, prompt: eve.prompt };
+    }
     const allowed = new Set(['provider', 'model', 'system', 'prompt', 'maxOutputTokens', 'currency', 'maximumBudgetMinor', 'agentId', 'agentRevision']);
     if (Object.keys(value).some((key) => !allowed.has(key)) ||
       !isTextModelProvider(value.provider) || typeof value.prompt !== 'string' || !value.prompt.trim() ||
@@ -88,6 +109,15 @@ export async function POST(request: Request) {
       verified, inputUpperBound, outputLimit as number, Number.MAX_SAFE_INTEGER,
     );
     if (!estimate) return json({ code: 'ESTIMATE_OVERFLOW' }, 422);
+    if (eve) {
+      // Last awaited read: do not return a stale material estimate after clear/revise/stop.
+      const current = await workStore(db).get(owner, eve.sourceRef.jobId);
+      if (!current || JSON.stringify(current) !== sourceSnapshot) return json({ code: 'EVE_SOURCE_CHANGED' }, 409);
+      const now = Date.now();
+      if (!Number.isSafeInteger(now) || now < 0 || verified.card.effectiveAt > now ||
+        verified.card.expiresAt <= now || estimate.expiresAt <= now)
+        return json({ code: 'REMOTE_AI_RATE_CARD_UNAVAILABLE' }, 503);
+    }
     return json({
       estimate,
       unitRates: [
@@ -106,8 +136,10 @@ export async function POST(request: Request) {
       rateSource: verified.card.sourceUrl,
       cardId: verified.card.cardId,
       effectiveAt: verified.card.effectiveAt,
+      ...(eve ? { sourceRef: eve.sourceRef, promptDigest: eve.promptDigest } : {}),
     });
   } catch (error) {
+    if (error instanceof EveTextEstimateError) return json({ code: 'INVALID_EVE_SOURCE' }, 400);
     if (error instanceof SkyAgentLibraryError) return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message }, { status: error.status, headers: noStoreHeaders });
     if (error instanceof RemoteAiGuardError) return json({ code: error.code }, error.status);
     if (error instanceof SyntaxError) return json({ code: 'INVALID_INPUT' }, 400);

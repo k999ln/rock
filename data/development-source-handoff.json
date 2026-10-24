@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
+  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "2bea21b14faec220161ffaac910e973ed0b52de7",
+    "mainAtCapture": "7188c87986f337c6b65e408a17d2468ecab44fe5",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -115,7 +115,8 @@
       "lane": "eve",
       "ledgerRef": "data/development-unit-progress.json#EVE-02",
       "currentOverlayRefs": [
-        "EVE_TEXT_PREPARATION_CANDIDATE"
+        "EVE_TEXT_PREPARATION_CANDIDATE",
+        "EVE_SOURCE_ESTIMATE_CANDIDATE"
       ]
     },
     {
@@ -651,8 +652,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "EVE-02",
+      "state": "saved_source_estimate_exact10_source_and_bounded_combined_UI_pass_main_candidate",
+      "scope": "Exact-head CI actual Linux verify and independent adoption metadata review; quote/reserve/approval/send remain deferred.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "SMITH-01",
-      "state": "attempt3_navigation_exact8_source_and_bounded_local_UI_pass_main_candidate",
+      "state": "limited_navigation_PR203_main_integrated_remaining_UI_gates",
       "scope": "Final same-head Linux verify/CI and independent adoption metadata review; physical inset/keyboard/zoom/auth composer/running-job/two-owner/native/production remain open.",
       "wholeUnitAccepted": false
     },

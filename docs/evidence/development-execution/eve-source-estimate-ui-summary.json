@@ -1,0 +1,147 @@
+{
+  "schema": "rockstaros.eve-source-estimate.portable-ui-summary/1",
+  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
+  "attempt": 2,
+  "originalRootSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85",
+  "sourceBase": "2bea21b14faec220161ffaac910e973ed0b52de7",
+  "syncedSourceHead": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+  "sourceFiles": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+      "bytes": 6812
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "dfa1469e68ff9d6747374dde4efbcf7400e750fe9d36efdc6e8f7705a2243618",
+      "bytes": 14255
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+      "bytes": 9604
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "0c8d5abe9d516aa77a11286bf5207969390fd58ce16ba532973e9ab3d5f41b42",
+      "bytes": 44665
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+      "bytes": 12320
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "7045a57d0f10e701fc32d7ec5578d734b7f3213b98a07b72d652319cc8877afc",
+      "bytes": 8004
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+      "bytes": 15463
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "bytes": 7676
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+      "bytes": 56166
+    },
+    {
+      "path": "tests/remote-ai-text-client.test.mjs",
+      "sha256": "aa0eb5be79563cd1082ef8f6610c33fc5a2d3fc229aa9c97fa8c86cc92f97da1",
+      "bytes": 6044
+    }
+  ],
+  "status": "PASS_SCOPED_SAVED_SOURCE_AND_UNAVAILABLE_ESTIMATE",
+  "scope": "Actual loopback Eve remix with two synthetic UTF8 files, isolated local D1 and existing local identity; no real account/provider/paid execution.",
+  "syntheticSavedSource": {
+    "sameJobRevisionPreserved": true,
+    "revisionBefore": 1,
+    "revisionAfter": 1,
+    "freePreparationStatus": "review",
+    "materialUtf8Bytes": [
+      57,
+      43
+    ],
+    "materialDigestsReadbackMatch": true,
+    "bomAndCrlfPreserved": true,
+    "jobIdAndRawMaterialsOmitted": true
+  },
+  "passed": [
+    "File chooser loads exactly two generated synthetic files; explicit goal and free prepare/save/consent/local compose-check read back same job",
+    "UTF8 BOM/CRLF and both original file digests preserved in saved material readback",
+    "Reload and exact saved-job restore do not request estimate; consent resets and estimate button disabled",
+    "Comparison cap without currency validates locally without API request; currency edit resets consent",
+    "One explicit re-consented valid-form estimate request returns503 unavailable with no numeric/free fallback",
+    "Estimate panel exposes only one estimate action, no paid approve/reserve/send action; comparison edit resets consent and disables action again",
+    "320/390/700/1280 CSS viewports have no horizontal overflow"
+  ],
+  "serverHttpObservation": {
+    "estimateStatuses": [
+      503
+    ],
+    "quoteOrTextHttpRequests": 0,
+    "bodyLogging": "none observed",
+    "dbQualification": "HTTP observations only; browser did not independently snapshot all DB tables. Fixture no-write checks remain separate."
+  },
+  "originalEvidenceFileCount": 19,
+  "originalEvidenceStorage": "Git-external ignored local evidence; no image/rawDOM/rawlog/local path copied.",
+  "notExecuted": [
+    "Configured trusted-rate numeric result in real browser",
+    "Actual-browser expiry countdown with a successful rate response",
+    "Authenticated production account or provider",
+    "Paid quote/approval/reservation/generation",
+    "Physical soft keyboard/nonzero safearea/200percent zoom"
+  ],
+  "combinedMainUi": {
+    "status": "PASS_SCOPED_LOCAL_RESTORE_AND_NAVIGATION",
+    "mainSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+    "sourceTenHashesUnchanged": true,
+    "sameSyntheticJobAndRevisionRestored": true,
+    "consentReset": true,
+    "estimateDisabled": true,
+    "navCurrent": "Eve",
+    "widths": [
+      320,
+      390,
+      700,
+      701,
+      1280
+    ],
+    "navCounts": [
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    "horizontalOverflow": false,
+    "focusBehavior": "Text input hides navigation; checkbox/after-input focus restores it while synthetic comparison value100 stays unchanged.",
+    "measuredAt390x844": {
+      "navTop": 788,
+      "checkboxBottom": 442.84375,
+      "estimateButtonBottom": 520.625
+    },
+    "restoreEstimateOrPaidHttpRequests": 0,
+    "numericRateUiTested": false,
+    "scopeQualification": "Latest-main combined restore/navigation only, separate from original old-base explicit estimate503 observation. Neither context proves numeric trusted-rate or browser expiry.",
+    "commitHoldReleasedByRoot": true
+  },
+  "toolTimingQualification": "An anomalous filechooser wall duration is not product upload latency or a performance measurement.",
+  "acceptance": {
+    "boundedSavedSourceAnd503Ui": true,
+    "numericSignedRateBrowserSuccess": false,
+    "actualBrowserExpiry": false,
+    "combinedMainUi": true,
+    "wholeEve02": false,
+    "publicDeployment": false,
+    "newMetadataReviewPending": true
+  },
+  "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0",
+  "preCombinedEvidenceFileCount": 12
+}

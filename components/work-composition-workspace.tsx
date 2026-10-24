@@ -19,6 +19,7 @@ import {
   type CompositionPlan, type MaterialKind,
 } from '@/lib/work-composition';
 import { prepareEveTextJob, decodeEveTextMaterial, isEveTextPlan, type EveTextMaterial } from '@/lib/eve-text-job';
+import EveTextEstimatePanel from '@/components/eve-text-estimate';
 import styles from './work-composition-workspace.module.css';
 
 type EditableNode = { id: string; tool: string; inputs: string[]; configText: string };
@@ -504,6 +505,8 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
             {!selected ? <div className={styles.actions}><button className={styles.primary} disabled={locked || !draft.objective.trim() || !draft.acceptance.trim()} onClick={() => withPlan('create')}><Check size={16} /> 確認して仕事を保存</button></div> : <>
               {planChanged && <div className={styles.notice}><p>手順の変更後は、影響する成果の検査をやり直します。保存前に、残したい旧成果をダウンロードしてください。</p><button disabled={locked || selected.status === 'completed' || selected.status === 'cancelled'} onClick={() => withPlan('revise')}>変更した計画を保存</button></div>}
               <label className={styles.checkLabel}><input type="checkbox" checked={draft.consent} disabled={locked} onChange={(event) => edit({ consent: event.target.checked })} />この素材と処理成果を本人用の仕事に保存することを確認しました。</label>
+              {mode === 'eve-text' && materialSaved && !planChanged && <EveTextEstimatePanel
+                key={`${owner}/${selected.id}/${selected.revision}`} job={selected} ownerScope={owner} disabled={locked || draft.dirty} />}
               <h2>実行と成果</h2><ol className={styles.steps}>{selected.composition!.plan.nodes.map((node, index) => {
                 const artifact = selected.composition!.artifacts[node.id];
                 const ready = runnable.some((item) => item.id === node.id);

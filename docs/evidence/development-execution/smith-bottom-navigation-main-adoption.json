@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.smith-bottom-navigation.main-adoption/1",
   "recordedAt": "2026-10-24T19:51:02.880287+00:00",
-  "status": "attempt3_exact8_scoped_source_UI_pass_local53_type_lint_pass_finalheadCI_metadata_review_pending",
+  "status": "PR203_normal_main_integrated_limited_navigation_metadata_and_CI_pass",
   "unit": "SMITH-01",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "05-web-pwa-sites",
@@ -62,7 +62,7 @@
     "path": "docs/evidence/development-execution/smith-bottom-navigation-main.json",
     "sha256": "4138b28e978654dfd474193752d86be9af56b4f0712eede6b16d241b15f9cef8",
     "notOriginalReceiptIdentity": true,
-    "metadataReviewPending": true
+    "metadataReviewPending": false
   },
   "originalArchiveHead": "53e6ed46158e7105c65c68015f3fe9931c61de88",
   "originalArchiveFiles": 5,
@@ -74,7 +74,7 @@
     "sha256": "ba58511390229831dfb26d9f336d2b455191e2ec8ed25701ef47ebc0cceb235b",
     "originalRootSummarySha256": "dc2ea6768e44467c3eb9485a5d288c951eb6b1e44a9f83977de5c5ecedd6d018",
     "evidenceFiles": 17,
-    "metadataReviewPending": true
+    "metadataReviewPending": false
   },
   "protectedRegionsAndFiles": {
     "count": 17,
@@ -852,8 +852,8 @@
   "acceptance": {
     "sourceEightLimitedIndependent": true,
     "rootBoundedLocalUi": true,
-    "adoptionMetadataReviewed": false,
-    "mainMerged": false,
+    "adoptionMetadataReviewed": true,
+    "mainMerged": true,
     "wholeSmith01": false,
     "nativePhysical": false,
     "productionAuth": false,
@@ -868,5 +868,34 @@
     "Two-owner Agent save/read/CAS UI",
     "Native OS or deployed production"
   ],
-  "next": "project/design/fixed scanner and canary; separate Draft PR, exact-final-head actual Linux npmverify/all CI, independent adoption metadata review before merge."
+  "next": "Limited three-link navigation integrated; physical keyboard/inset/zoom/auth-composer/active-job/two-owner/native/production and wholeSMITH gates remain separate.",
+  "historicalCandidateStatus": "attempt3_exact8_scoped_source_UI_pass_local53_type_lint_pass_finalheadCI_metadata_review_pending",
+  "mainOutcome": {
+    "pr": 203,
+    "acceptedHead": "6e280a935bf834e21913a3a5680050d8318f04c0",
+    "mainMergeSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2856,
+      "pass": 2854,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40127344738
+    },
+    "metadataReviewSha256": "7a63d1d0daabc3cc019412e2c4c643c406414ef8c1006ebcc7dff5f4cdde01a8",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceEightUnchanged": true,
+    "wholeSmith01": false,
+    "publicDeployment": false,
+    "unexecutedUiGates": [
+      "Physical soft keyboard",
+      "Nonzero physical safearea inset",
+      "200percent text/browser zoom",
+      "Authenticated Jennifer composer",
+      "Active-running-job real UI guard",
+      "Two-owner Agent save/read/CAS UI",
+      "Native OS or deployed production"
+    ]
+  }
 }

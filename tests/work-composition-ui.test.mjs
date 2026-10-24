@@ -94,6 +94,8 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     removeEventListener(name, callback) { listeners.get(name)?.delete(callback); }, confirm: () => true,
   };
   const modules = {
+    // Child behavior runs in eve-text-estimate-ui; this harness owns the parent workspace.
+    '@/components/eve-text-estimate': () => null,
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     'lucide-react': Object.fromEntries(['Check','Download','Play','Plus','RefreshCw'].map((name) => [name, name])),
     '@/components/workspace-shell': 'shell', '@/components/execution-access': { ExecutionSignin: 'signin', useExecutionAccess: () => ({ accessState: 'ready', setNeedsSignin }) },

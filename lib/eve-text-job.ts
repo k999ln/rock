@@ -1,4 +1,5 @@
 import { COMPOSITION_TEXT_LIMIT, parseCompositionPlan, type CompositionPlan } from './work-composition.ts';
+import type { WorkJob } from './workflow.ts';
 
 export type EveTextMaterial = { name: string; text: string };
 export const EVE_TEXT_ACCEPTANCE = '2つの原文と依頼をそのまま保存する。モデル生成や完成草稿の検収ではありません。';
@@ -58,4 +59,42 @@ export function prepareEveTextJob(materials: readonly EveTextMaterial[], goal: s
   for (const node of plan.nodes) { Object.freeze(node.inputs); Object.freeze(node.config.requiredText); Object.freeze(node.config); Object.freeze(node); }
   Object.freeze(plan.nodes); Object.freeze(plan);
   return Object.freeze({ source, plan });
+}
+
+export type EveEstimateSourceRef = {
+  jobId: string; revision: number; sourceSha256: string; materialSha256: [string, string];
+  builder: 'eve.text-estimate/1';
+};
+export class EveTextEstimateError extends Error {
+  constructor() { super('保存した資料付き依頼を確認できません。最新の仕事を読み直してください。'); }
+}
+/** A saved preparation snapshot is data, never a quote, approval or execution grant. */
+export async function prepareEveTextEstimate(job: WorkJob) {
+  const fail = (): never => { throw new EveTextEstimateError(); };
+  try {
+    const state = job.composition;
+    if (job.templateId !== 'composition' || !['review', 'completed'].includes(job.status) ||
+      !/^[A-Za-z0-9._:-]{1,128}$/.test(job.id) || !Number.isSafeInteger(job.revision) || job.revision < 0 ||
+      !state || state.materialCleared || typeof state.source !== 'string' ||
+      state.source.length > COMPOSITION_TEXT_LIMIT) return fail();
+    const envelope: unknown = JSON.parse(state.source);
+    if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) return fail();
+    const value = envelope as Record<string, unknown>;
+    if (Object.keys(value).length !== 3 || Object.keys(value).some((key) => !['schema', 'materials', 'goal'].includes(key)) ||
+      value.schema !== 'eve.text-preparation/1' || !Array.isArray(value.materials) || typeof value.goal !== 'string') return fail();
+    const prepared = prepareEveTextJob(value.materials, value.goal);
+    if (prepared.source !== state.source || JSON.stringify(prepared.plan) !== JSON.stringify(state.plan) ||
+      job.steps.length !== 1 || job.steps[0].id !== 's1' || job.steps[0].runner !== 'composition' ||
+      job.steps[0].tool !== 'compose-check' || !job.steps[0].passed ||
+      Object.keys(state.artifacts).length !== 1 || state.artifacts.s1?.kind !== 'text' ||
+      state.artifacts.s1?.status !== 'passed' || state.artifacts.s1.text !== state.source) return fail();
+    const materials = value.materials as EveTextMaterial[];
+    const hash = async (text: string) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(text))),
+      (byte) => byte.toString(16).padStart(2, '0')).join('');
+    const prompt = JSON.stringify({ schema: 'eve.text-estimate/1', source: { jobId: job.id, revision: job.revision },
+      materials, goal: value.goal });
+    const sourceRef: EveEstimateSourceRef = { jobId: job.id, revision: job.revision, sourceSha256: await hash(state.source),
+      materialSha256: [await hash(materials[0].text), await hash(materials[1].text)], builder: 'eve.text-estimate/1' };
+    return { prompt, sourceRef, promptDigest: await hash(prompt) };
+  } catch { return fail(); }
 }

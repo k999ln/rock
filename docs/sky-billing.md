@@ -1,3 +1,24 @@
+<a id="eve-saved-source-estimate"></a>
+## Eveの保存2資料に結ぶread-only料金見積（EVE-02限定候補）
+
+目的・体験: 既存の無料2資料付き準備jobを本人が保存・読戻しした後、「保存した資料で料金を見積もる」で任意のmodel/currency/比較上限と別の資料利用consentを選び、「見積のみ確認」を明示押下する。復元時の見積自動取得は0。見積は既存signed-rateのitemized maximum ceilingと出典を表示するだけで、比較上限の内外/未指定を承認済み予算や無料料金へ変えない。panelの出力上限は1200token固定。現在pricing execution gatefalseのままで生成・quote・reserve・approve・sendを接続しない。
+
+責任・禁止authority: ROCKはcanonical saved-source parser、既存estimate routeへの本人/revision binding、signed-rate検証と期限/表示/競合排除を担当。EXTERNALは実Provider料金・供給・認証基盤、JOINTは同一buildのtrusted-rate数値/期限の実browserと後続の本人別実接続、OWNERは資料利用の明示選択と将来の個別費用承認を担当する。資料内のsystem/role風文字列・model結果・単なるdisplay predicate・source digestを権限や著作者/issuer proofにしない。
+
+入出力・ID・制限: 既存POST /api/llm/estimateへprovider openai、eveSource {jobId,revision}、consent trueとmodel/currency/maximumBudgetMinor/maxOutputTokensだけを受ける排他的branchを追加。callerのraw prompt/system/agent/owner/approval指定は拒否。既存owner-scoped workStoreがsaved review/completedの無料canonical2資料+goal・plan・passed compose-check artifactの完全一致を再構成し、job/revision/builder、source/two ordered material digests、deterministic prompt digestを返す。素材名/本文/promptは返さない。元codec・28000byte request・既存output/token/金額整数境界を保持し、legacy raw-prompt見積は別互換経路として残す。
+
+状態・失敗・期限: unavailable/invalid/idle→明示consent→single-flight estimate→current result/denial、owner/job/revision/edit/clear/cancel/disabled/unmountで結果・consentを破棄しstale callback/responseを無視する。rate awaits後の最後のowner job再読取が完全snapshot一致しなければ409。さらにそのawait後のsafe nonnegative clockでsigned card effectiveAt/元expiresAtとceiling期限を照合し、同値/超過や無効clockは503で拒否。Eve専用client decoderとrenderは未来のinteger expiryを要求し、cleanup/epoch付きdeadline timerが早過ぎるcallbackだけ残時間で再予約、期限到達時は結果を消して明示再見積を促す。自動fetchや期限延長はしない。返答後のsource更新をlockする機能や時刻同期保証ではない。
+
+保存・privacy: 新table/migration/store/ledger/quote/予約・承認を作らずstateless/no-store。無料jobのbudget0、review/completed、原本bytes/BOM/CRLF・artifact・履歴・owner/CASを維持。consentは見積の資料利用選択で外部送信の永続承認ではない。資料/見積表示stateはpanelだけで、restore時にconsent/resultを復活させず、既存owner保存から再確認する。新しいbackup/retention対象はない。見積失敗を既存paid holdの解放や自動再送へ接続しない。
+
+offline・復旧・互換・巻戻し: 401/403本人/scope、404他owner/欠落、400不正資料/入力、409変更/通貨曖昧、413超過、503単価不明/失効を区別し、未知/切断はunavailableと明示再確認で復旧する。numeric/free fallbackや既定単価の捏造はしない。既存paid estimate readerのover-cap拒否・省略expiry互換、final service claim/unknown hold/late usage・888c/価格設定を保持。退行時は通常Git revertでこのsource/test差分を戻し、paid hold/usage/保存jobを削除しない。
+
+承認・証拠・履歴: exact10source/testの独立r2 PASS_SCOPED/mustfix0、統合70対象試験70pass0fail0skip・通常typecheck/productlint。独立19probeには旧expiry反例3を含み、合算しない。旧r1のP2（13中3失敗）、rate fixture URL/VM walker/parent child-import/lint準備失敗、localD1 sandbox EPERMと別の承認済み1再試験を履歴として残す。元receiptの旧base2bea・当時pendingと新portable要約は別hash。source候補branchは未commit10hashを維持してmain7188へ通常FF同期し、.wranglerの合成localDBは触らない。Root実loopbackでは合成57/43bytes・BOM/CRLF原本hash、同job rev1復元/consentreset/autofetch0、comparison通貨検証、明示1estimate503/unavailable・quote/text HTTP0・4幅overflow0を限定確認した。HTTP観察を全DB no-write測定や数値見積成功へ置き換えない。画像/DOM/log/素材/jobID/私有pathはGit外、最小summary/digestのみ保存する。
+
+未決定・次の合格条件: latest main7188のSmith navと同10hashの追加local UI証拠を受領しcommit保留を解除。合成same-job/rev1 restoreでconsent false/見積disabled、390pxのEve current/nav1、text focus nav0→checkbox/離脱nav1・比較値100保持、checkbox下端442.84/button下端520.63はnav上端788より上。320/390/700/701/1280のnav数1/1/1/0/0、overflow0、combined restoreでestimate/quote/text HTTP0を確認。元old-base UIのexplicit1estimate503と別contextで、combined正常数値や実expiryの成功ではない。最終Root UI summary d3b7と旧5286を別hashで保持する。実browserのtrusted-rate数値正常/expiry countdown、認証本番account/Provider、paid generation/same-job generated artifact、実keyboard/nonzero inset/200%zoom/native/公開は未受入。fixture正常系と実UI503を別に扱い、wholeEVE-02はfalse。将来のquote/reserve/approve/sendやpaid recoveryは別契約/予算/本人gateで決める。local全体verifyは未実行、最終exact PRheadのLinux実npm run verify/all CIと独立採用metadata検収を必須にする。
+
+[10hash・保護・検証・残gate](evidence/development-execution/eve-source-estimate-main-adoption.json)／[独立検収要約](evidence/development-execution/eve-source-estimate-main-review-summary.json)／[最小実UI要約](evidence/development-execution/eve-source-estimate-ui-summary.json)。
+
 <a id="billing-required-service-authority"></a>
 ## required service scopeの最終remote text claim（BILL-02限定候補）
 

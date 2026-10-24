@@ -1,3 +1,7 @@
+## Eve estimate-only exact10のmain採用準備
+
+Smith203通常merge main7188c879・同SHA6CI成功のclean基点へ独立r2 exact10を無変更採用。元sourceは旧2beaから通常FFし11hash不変/.wrangler非操作を先に確認。元receipt69b127とportable要約を分け、Root実UIは503限定・数値未受入、旧expiry P2/fixture/EPERM再試験を保持。70/type/productlint→Root combinedUI proof確認済み→project/design/scanner→別DraftPR最終同head実Linuxnpmverify/allCI→独立metadata検収。追加proof d3b7（旧5286別保持）によりcommit保留解除、source/UI原本とRootHEAD/index/archiveは保全。[証拠](../evidence/development-execution/eve-source-estimate-main-adoption.json)。
+
 ## Smith attempt3 exact8のmain採用候補
 
 Billing202通常merge main2bea21b1・同SHA6CI成功のclean基点へ、旧468dと8base不変の独立受入8hashを無変更採用。原本5archive53e6ed46とmain適応8byte、元receiptとportable要約を分ける。Root実UI17原本はGit外、最小UI要約/digestのみ保存。17領域保護と既存Billing/eSIM/Mini/immutableを保持。53/type/productlint→project/design/scanner0+canary→Draft PR/最終同head実Linux npmverify/all CI→独立metadatareview。local全体verifyは未実行、検収前merge禁止。[証拠](../evidence/development-execution/smith-bottom-navigation-main-adoption.json)。
