@@ -1,3 +1,7 @@
+## GIT08: 95再開台帳のmetadata-only同期候補（2026-10-24）
+
+固定9a inventory/Pro独立PASSを原本hashで保持し、95id/title順序・188blob/hash・main393task/RQ50/14phasegateを照合。分類49/16/15/14/1、whole accepted0の履歴は書換えず、最新dabのPR194 eSIM限定採用を別overlayへ。Root80not_startedを現未実装数にせず、lean95台帳/handoff/要求model policyを作成。実model/tokens/cost不明はnull、dispatchなし。保全49+OS16≠Root全量Git保存を明示。Billing finalclaim実装中、eSIM独立ACL/epoch/genericattachment未受入、Eve02 bounded textが次。巨大原本/全履歴/私的path/rawpromptなし。次はJSON/project/designcheck→metadata別PR/同headCI npmrunverify→独立採用review。source/runtime/test変更なし、ローカル全verify反復を省略してCIを別gateにする。根拠 docs/evidence/development-execution/unit-restart-ledger-sync.json。
+
 ## eSIM runtime exact6のmain採用候補（2026-10-24 / G04）
 
 最新main9a617fabで同6基底がd150と不変と確認、Smith/Astra r2 PASS_SCOPED/mustFix0の6本文をhash維持で採用。read-to-commit batch fence、listing否定/矛盾とpackage最新世代/tie/expiry優先、owner-session保持・既存予約/late CPUを維持。局所122pass/型/全体lint成功。独立17probe/44passと実local D1拒否rollback/3retry証拠を限定継承。汎用attachment/独立保存ACL期限/本番D1/実課金は未受入。PR193 final Game/EveとeSIM r2原本hashを秘密/path/logなし要約で保存、PR193最終検証をsame83a Linux CI successへ同期しhost成功としない。次: design/metadata→fixed fullverify1回（同headLinuxCIも可）→別PR/CI→独立採用metadata検収。Root HEAD/index/journal非操作。根拠 docs/evidence/development-execution/esim-runtime-main-adoption.json、docs/evidence/development-execution/reviewed-runtime-main-integration.json。

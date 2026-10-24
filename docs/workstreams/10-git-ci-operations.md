@@ -1,3 +1,9 @@
+## 95再開台帳と固定inventory・現行overlay（GIT-08）
+
+[95unit台帳](../../data/development-unit-progress.json)はfixed main9a617fabの49既存実装/16部分採用/15未検証/14外部gate/1unknownを履歴として保持し、whole acceptedは0。Root旧80not_startedを現在の未実装数にしない。[現行overlay](../evidence/development-execution/unit-main-current-overlay.json)でPR194のeSIM限定採用と次優先を分離。Billing finalclaimはRoot割当で実装中、eSIM独立ACL/epoch/genericattachment未受入、Eve02 bounded textが次。ROCKの既存main契約を再利用し、EXTERNAL/JOINT/OWNER gateを未実装/成功へ置換しない。
+
+[188固定digestと独立review参照](../evidence/development-execution/unit-main-inventory-reference.json)は9aのみの証拠で、最新95全体監査ではない。[handoff](../../data/development-source-handoff.json)のsource保全49+OS16はRoot全量保存/main全量採用ではない。モデル設定はuser policy参照のみで実model/usage/costは未取得。main393task/RQ50/phasegateとRoot旧baselineを分離し、runtime/source/testは変更しない。次はこのmetadataのexacthead独立採用検収とCI npm run verify、通常mergeはRoot指示後。metadata main保存と本番配備も別gate。
+
 ## eSIM/Linux現行authorityの保存fence（限定6path）
 
 主担当03、ROCK API/store/read-set/CAS、EXTERNALは支払/回線/鍵の根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。独立Smith/Astra r2のexact6を無変更で採用。listing矛盾/最新package否定・期限・setup/grant変化を同一D1 batchで拒否し、job/予約/lease/receiptの一部保存を防ぐ。既存owner-session read/export、888c/owner/revision/late CPUを保持。122局所/型/lint成功、旧local D1 rollback/3retry証拠digestを確認。汎用attachment/独立ACL期限/本番D1/実Provider・公開は未受入。[11項目契約](../rockstaros-complete-design.md#esim-runtime-commit-authority)・[採用hash/検証/次](../evidence/development-execution/esim-runtime-main-adoption.json)。次は固定候補verify/同headCIと独立main採用metadata検収。PR193はsame-final83a Linux CI成功を最終検証としてmain9a617fabへ統合済み、最終host全verify待ちを次作業としない。

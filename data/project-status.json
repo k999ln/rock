@@ -9659,5 +9659,28 @@
     "independentRetentionAclExpiryAccepted": false,
     "productionD1Accepted": false,
     "providerRealBillingAccepted": false
+  },
+  "unitRestartLedgerSync": {
+    "evidence": "docs/evidence/development-execution/unit-restart-ledger-sync.json",
+    "ledger": "data/development-unit-progress.json",
+    "handoff": "data/development-source-handoff.json",
+    "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
+    "currentOverlayMain": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "unitCount": 95,
+    "wholeUnitsAccepted": 0,
+    "historicalClassifications": {
+      "adopted_subset": 16,
+      "unverified": 15,
+      "external_gate": 14,
+      "existing_implementation": 49,
+      "unknown": 1
+    },
+    "latestWhole95Audited": false,
+    "currentUnimplementedCount": null,
+    "runtimeChanged": false,
+    "localFullVerifyRun": false,
+    "mainMerged": false,
+    "newHeadCiPending": true,
+    "independentAdoptionReviewPending": true
   }
 }

@@ -1,0 +1,51 @@
+{
+  "schema": "rockstaros.unit-restart-ledger-sync/1",
+  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "task": "GIT-08",
+  "scope": "metadata_only_no_runtime_source_test_changes",
+  "baseMain": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+  "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
+  "inventoryOriginalSha256": "7dd557ae7bc16b343407b416134517c28efd763f5b3fcea629b300e4378a9f09",
+  "inventoryReviewOriginalSha256": "748d32fa55c17641ea4394441e1fdb8d24a9130371939b3373a69e1b0bd2ebb8",
+  "independentInventoryVerdict": "pass_limited_fixed_main_restart_inventory",
+  "unitCount": 95,
+  "uniqueIds": 95,
+  "historicalClassifications": {
+    "adopted_subset": 16,
+    "unverified": 15,
+    "external_gate": 14,
+    "existing_implementation": 49,
+    "unknown": 1
+  },
+  "wholeUnitsAccepted": 0,
+  "fixedEvidenceFiles": 188,
+  "fixedEvidenceBlobAndDigestChecks": "passed against fixed9a, not currentdab audit",
+  "mainContext": {
+    "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "productBaseline": "2.08",
+    "requirementIds": "RQ01..RQ50",
+    "taskSource": "data/project-status.json",
+    "taskCount": 393,
+    "taskDigest": "9e209fd50797e12a2b99918338b2f055a59020a5c5d63989b54c595b403aa6a6",
+    "phaseGateCount": 14,
+    "phaseGatesDigest": "aa2ee803e7fd60a7bd21b10fcdfa622fbdd2cf306c8dae9cc2f908266fb5d376",
+    "taskAndPhaseGateContentUnchangedFromInventoryBase": true
+  },
+  "currentOverlay": "docs/evidence/development-execution/unit-main-current-overlay.json",
+  "sourcePreservation": "49+16 payload snapshots, not allRoot save",
+  "omissions": [
+    "full290KB original inventory",
+    "Root135KB bootstrap ledger and execution history",
+    "raw prompts/transcripts/logs/private paths/secret values",
+    "thread dispatch identifiers"
+  ],
+  "validation": "JSON and exact95/188/393/phase/RQ policy checks plus project/design; full npm run verify delegated to new exact-head CI because no source/test/runtime changed",
+  "fullLocalVerifyExecuted": false,
+  "newHeadCi": "pending after PR save",
+  "independentMainAdoptionReview": "pending",
+  "runtimeChanged": false,
+  "sourceChanged": false,
+  "testsChanged": false,
+  "mainMerged": false,
+  "publicDeployment": false
+}

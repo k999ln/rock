@@ -1,3 +1,7 @@
+## 現在の95unit再開入口
+
+[mainの95再開台帳](../../data/development-unit-progress.json)と[引継ぎ](../../data/development-source-handoff.json)を入口に、fixed9a inventoryとPR194現行overlayを区別する。既存393task/RQ50/phasegateを維持し、95whole accepted0。分類は限定証拠であり最新全体監査や現在の未実装数ではない。Billing finalclaim実装中→eSIM残gate→Eve02 bounded textの順、詳しくは[Git運用](10-git-ci-operations.md)。
+
 # RockstarOS 設計・作業ストリーム案内
 
 更新日: 2026-09-19

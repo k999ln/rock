@@ -1,0 +1,2502 @@
+{
+  "schema": "rockstaros.development-unit-progress/2",
+  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
+  "singleWriter": "Git integration; coordinator execution journal remains separately owned",
+  "unitCount": 95,
+  "mainContext": {
+    "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "productBaseline": "2.08",
+    "requirementIds": "RQ01..RQ50",
+    "taskSource": "data/project-status.json",
+    "taskCount": 393,
+    "taskDigest": "9e209fd50797e12a2b99918338b2f055a59020a5c5d63989b54c595b403aa6a6",
+    "phaseGateCount": 14,
+    "phaseGatesDigest": "aa2ee803e7fd60a7bd21b10fcdfa622fbdd2cf306c8dae9cc2f908266fb5d376",
+    "taskAndPhaseGateContentUnchangedFromInventoryBase": true
+  },
+  "fixedInventory": {
+    "base": "9a617fabfef48d82d9b3142680bb00df71776687",
+    "reference": "docs/evidence/development-execution/unit-main-inventory-reference.json",
+    "classificationCounts": {
+      "adopted_subset": 16,
+      "unverified": 15,
+      "external_gate": 14,
+      "existing_implementation": 49,
+      "unknown": 1
+    }
+  },
+  "currentOverlay": "docs/evidence/development-execution/unit-main-current-overlay.json",
+  "classificationMeaning": {
+    "existing_implementation": "Bounded existing source/fixture found at fixed main; not complete requested unit",
+    "adopted_subset": "Specific merged subset only; other contracts/acceptance remain",
+    "unverified": "Implementation or acceptance not established by bounded inventory; not proof no code exists",
+    "external_gate": "External/JOINT/OWNER condition remains; ROCK preparation may already exist",
+    "unknown": "Bounded evidence does not establish current scope; do not invent absence/completion"
+  },
+  "wholeUnitsAccepted": 0,
+  "currentUnimplementedUnitCount": null,
+  "historicalBootstrap": {
+    "rootNotStarted": 80,
+    "usedAsCurrentMainUnimplementedCount": false,
+    "rawRootLedgerCopied": false
+  },
+  "modelRoutingPolicyPath": "data/development-model-routing.json",
+  "actualExecutionMetrics": {
+    "appliedModel": null,
+    "inputTokens": null,
+    "outputTokens": null,
+    "actualCost": null,
+    "currency": null,
+    "wallTime": null,
+    "collectedByThisBatch": false
+  },
+  "units": [
+    {
+      "id": "GIT-01",
+      "title": "保存対象を固定する",
+      "lane": "git",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Source preservation and selected adoption are recorded; unadopted Root bytes remain separate.",
+      "boundedEvidenceAtFixedMain": [
+        "data/development-source-handoff.json",
+        "docs/evidence/development-execution/client-game-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-02",
+      "title": "最新main上の既存実装を先に照合する",
+      "lane": "git",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Main-first subset compatibility comparison exists; this inventory does not finish the entire reconciliation.",
+      "boundedEvidenceAtFixedMain": [
+        "data/development-source-handoff.json",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-03",
+      "title": "既存worktree・PRと編集所有を揃える",
+      "lane": "git",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Ownership/handoff records exist; current live worktree leases and every open PR were not audited here.",
+      "boundedEvidenceAtFixedMain": [
+        "data/development-source-handoff.json",
+        "docs/workstreams/10-git-ci-operations.md"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-04",
+      "title": "DB migrationと互換を一人が統合する",
+      "lane": "git",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Alias validation/replay foundation exists; database unions and remote application require their own exact candidate acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "scripts/sqlite-migration-aliases.mjs",
+        "tests/migration-aliases.test.mjs",
+        "data/migration-aliases.json"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-05",
+      "title": "小さく保存し、変更中の入力を成功候補にしない",
+      "lane": "git",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Saving policy and provenance exist; this read-only inventory creates no commit or immutable release.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "data/development-source-handoff.json"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-06",
+      "title": "GitHub保存・同一SHA CI・PRを完了させる",
+      "lane": "git",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "CI configuration and commands exist; no new GitHub same-SHA check was queried in this finite inventory.",
+      "boundedEvidenceAtFixedMain": [
+        ".github/workflows/ci.yml",
+        "package.json",
+        "docs/workstreams/10-git-ci-operations.md"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [
+        "SYS11",
+        "R04",
+        "DOC05"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-07",
+      "title": "main統合と配備を別に受け入れる",
+      "lane": "git",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Source/main adoption and deployed DNS/TLS/version readback remain separate; no publication verified here.",
+      "boundedEvidenceAtFixedMain": [
+        "data/mini-pro-deployment.json",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "lib/product-domains.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [
+        "WEB05",
+        "WEB06",
+        "WEB09",
+        "WEB10",
+        "WEB13",
+        "WEB14",
+        "WEB15",
+        "WEB16",
+        "WEB17",
+        "WEB18",
+        "DOC05"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GIT-08",
+      "title": "完了台帳と再開入口を揃える",
+      "lane": "git",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Main task and phase-gate records exist; Root 95-unit restart ledger is absent from this fixed main and needs single-writer reconciliation.",
+      "boundedEvidenceAtFixedMain": [
+        "data/project-status.json",
+        "data/development-source-handoff.json"
+      ],
+      "contextualMainTaskRefs": [
+        "G04",
+        "OS10",
+        "DOC01",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [
+        "AI09"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-01",
+      "title": "EveのRoot・Source・公開候補と証拠の同一性を固定",
+      "lane": "eve",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Main history foundation and separate preserved Eve source are distinguished; whole Remix adoption is not established.",
+      "boundedEvidenceAtFixedMain": [
+        "data/development-source-handoff.json",
+        "lib/eve-history.ts",
+        "tests/eve-history.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-02",
+      "title": "Remixを既存WorkJob/owner/revision/usage/stopへ結合",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Common jobs/composition exist; Root Remix integration with owner/revision/reservation/stop is not established on fixed main.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/workflow.ts",
+        "lib/work-composition.ts",
+        "tests/work-composition.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "AMC02",
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-03",
+      "title": "mediaの型付きArtifact転送・保管と旧local作品保全",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "A2A normalizer preserves bounded text and tracks omitted non-text parts; it is not proof of requested four-media binary Artifact transfer. History storage is a separate foundation.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/a2a-artifacts.ts",
+        "tests/a2a-artifacts.test.mjs",
+        "lib/eve-history.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-04",
+      "title": "文章素材掛け合わせと根拠付き草稿",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Composition execution and citation foundations exist; requested text-remix UX and grounded acceptance remain unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/work-composition-executor.ts",
+        "tests/work-composition-route.test.mjs",
+        "lib/sky-citation-agent.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-05",
+      "title": "Agent掛け合わせの版・lineage・権限分離",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Agent library and delegation contracts exist; composed-agent lineage/version/permission end-to-end acceptance remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-agent-library.ts",
+        "tests/sky-agent-library.test.mjs",
+        "lib/a2a-delegation-contract.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-06",
+      "title": "4種類media編集をbounded adapterにする",
+      "lane": "eve",
+      "fixedInventoryClass": "unknown",
+      "boundedScopeAtFixedMain": "Only common execution/artifact foundations were found in the bounded main selection; four media-specific bounded adapters not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/work-composition-executor.ts",
+        "lib/a2a-artifacts.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-07",
+      "title": "素材中心UXとMini/Computer Use共通intent",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Intent and spatial contracts exist; material-centered UX and shared Computer Use interaction are not accepted by these paths.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/home-intent.ts",
+        "lib/owner-intent.ts",
+        "contracts/avocado-mini-spatial-interaction.json"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "MAT03",
+        "MAT04",
+        "R03",
+        "BIL03",
+        "B06"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-08",
+      "title": "model profile・評価・推薦と不採用の永続化",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Model selection and remote evaluation foundations exist; persistent rejection/profile evidence for all entrances is unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-model-selector.ts",
+        "tests/sky-model-selector.test.mjs",
+        "lib/jev-evaluation.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-09",
+      "title": "Mac/GPU・weights・学習データの段階契約",
+      "lane": "eve",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Model/Agent metadata parsers and model-link/manager test definitions exist; GPU procurement, weights license and training-data permission are separate unresolved inputs.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-linux-models.ts",
+        "tests/sky-linux-models.test.mjs",
+        "docs/llm-evaluation-architecture.md"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "AI07"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-10",
+      "title": "非信頼planの有限検証とeffect前再認可",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Plan and Broker authorization foundations exist; every effect-path reauthorization requires targeted integration evidence.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/local-plan.ts",
+        "lib/a2a-broker-authorization.ts",
+        "tests/a2a-broker-authorization.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-11",
+      "title": "実Toolの独立検査・既存有限repair・Agent委任",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Tool inspection and parent delegation control exist; bounded independent repair across all requested Tools remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/mcp-inspection.ts",
+        "lib/a2a-parent-controller.ts",
+        "tests/a2a-parent-controller.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "SKY11",
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-12",
+      "title": "限定外部アプリComputer Use adapter",
+      "lane": "eve",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Host/capability contracts are foundations; no finite external-application Computer Use adapter acceptance was established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-add-host-contract.ts",
+        "lib/sky-add-capability-envelope.ts",
+        "tests/sky-add-capability-envelope.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-13",
+      "title": "全入口でstop・unknown・同ID復旧を一致",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Recovery and job transitions exist; uniform stop/unknown/same-ID recovery across all Eve entrypoints is not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/a2a-delegation-recovery.ts",
+        "lib/workflow.ts",
+        "tests/a2a-delegation-recovery.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "AMC02",
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-14",
+      "title": "最新候補のEve→Smith→Web/Pixel実成果一周",
+      "lane": "eve",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Historical one-job physical/export subset and newer main diagnostics are separate artifacts; PC UI reload/P02/full OS remain unaccepted.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json",
+        "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
+        "tests/pixel-worker-parent-diagnostics.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "EVE-15",
+      "title": "Eve全経路の負例・同candidate回帰・証拠manifest",
+      "lane": "eve",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Existing negative tests and provenance are usable inputs; no all-route same-candidate Eve manifest acceptance exists in this bounded review.",
+      "boundedEvidenceAtFixedMain": [
+        "data/development-source-handoff.json",
+        "tests/workflow.test.mjs",
+        "tests/a2a-delegation-recovery.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "AI02",
+        "AI05"
+      ],
+      "directMainTaskRefs": [
+        "R03",
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-01",
+      "title": "Pixel Terminalの現在状態と開始errorの非破壊診断",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Worker diagnostics and parent ownership hardening are adopted; latest main runtime physical acceptance is separate from prior physical package.",
+      "boundedEvidenceAtFixedMain": [
+        "toolkits/sky-linux-local/pixel-server.mjs",
+        "tests/pixel-worker-parent-diagnostics.test.mjs",
+        "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-02",
+      "title": "機種・OS・能力identity",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Device and observation contracts exist; complete exact-device attestation/freshness coverage is not accepted here.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/device.ts",
+        "contracts/device-capability-snapshot.json",
+        "tests/device-lifecycle.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "AI05",
+        "SKY11"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-03",
+      "title": "導入適合とDSP",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Support matrix/checker and mode design exist; no native compatibility inferred from service entitlement.",
+      "boundedEvidenceAtFixedMain": [
+        "data/device-support-matrix.json",
+        "scripts/check-device-support.mjs",
+        "docs/device-support-architecture.md"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "DSP01",
+        "N04"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-04",
+      "title": "component本人性と版",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Registry author/package verification foundation exists; every Android/Linux pre-effect UID/signature case is unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/registry/common.py",
+        "systems/rock-star-os/os/registry/tests/test_registry.py",
+        "contracts/platform-api.json"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "OS10"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-05",
+      "title": "隔離とBroker",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Linux runner/sandbox implementation and tests exist; current-device isolation and all Broker boundaries require separate acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/runner/executor.py",
+        "systems/rock-star-os/os/runner/sandbox_launcher.c",
+        "systems/rock-star-os/os/runner/tests/test_runner.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-06",
+      "title": "Linux lifecycle",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Pixel guest startup/server and parent-lifetime regression foundations exist; all lifecycle states/current terminal diagnosis remain scoped separately.",
+      "boundedEvidenceAtFixedMain": [
+        "toolkits/sky-linux-local/pixel-bootstrap.py",
+        "toolkits/sky-linux-local/pixel-server.mjs",
+        "tests/test_pixel_worker_parent_exit.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-07",
+      "title": "resource limitsのOS強制",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Resource-limited runner and worker diagnostics exist; complete quotas/network/disk/concurrency and device thermal enforcement remain unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/runner/executor.py",
+        "toolkits/sky-linux-local/worker.py",
+        "tests/test_pixel_worker_diagnostics.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-08",
+      "title": "job再開とeffect一回性",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Persistent job/recovery/runner stores exist; kill at every effect boundary and all adapters' fencing remain unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/work-store.ts",
+        "lib/a2a-delegation-recovery.ts",
+        "systems/rock-star-os/os/runner/store.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-09",
+      "title": "暗号化保存とbackup",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Encrypted backup foundation exists; hardware-backed storage/atomic native import and all old-reader compatibility are separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/backup-crypto.ts",
+        "lib/system-backup.ts",
+        "tests/system-backup.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "SYS01",
+        "SYS02"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-10",
+      "title": "device/鍵喪失復旧",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Recovery policy/tests are foundations; destructive device/Keystore-loss and old-writer revocation acceptance not established.",
+      "boundedEvidenceAtFixedMain": [
+        "data/android-backup-recovery-policy.json",
+        "docs/android-backup-recovery.md",
+        "tests/system-backup.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "SYS01",
+        "SYS02",
+        "OS10",
+        "OS11",
+        "RLS02"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-11",
+      "title": "署名更新とrollback",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "QEMU update and Pixel protected-code updater exist; production signing/full-image rollback must not inherit their acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/update/rock_update.py",
+        "systems/rock-star-os/os/update/test_update.py",
+        "toolkits/sky-linux-local/update-pixel.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-12",
+      "title": "電源・熱・容量・suspend",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Device/resource foundations exist; same-device power/thermal/suspend/hysteresis series not established by bounded evidence.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/device.ts",
+        "docs/device-support-architecture.md",
+        "toolkits/sky-linux-local/worker.py"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "SKY11",
+        "DSP01",
+        "N04"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-13",
+      "title": "標準OS入出力とpermission",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Platform/adapter requirements exist; camera/mic/notification/foreground permissions need exact adapter and physical UI evidence.",
+      "boundedEvidenceAtFixedMain": [
+        "contracts/platform-api.json",
+        "docs/device-support-architecture.md",
+        "docs/workstreams/07-android-device-local-ai.md"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "DSP01",
+        "OS10",
+        "N04",
+        "SIM01",
+        "AI09"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-14",
+      "title": "共通contractとadapter parity",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Portable contracts exist; no all-platform same-job/hash/usage/stop/restore parity matrix accepted here.",
+      "boundedEvidenceAtFixedMain": [
+        "contracts/platform-api.json",
+        "contracts/device-capability-snapshot.json"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "AI05",
+        "OS10"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-15",
+      "title": "同image物理受入",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Physical native same-image acceptance remains separate from APK/AVF/old QEMU evidence.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/templates/os-acceptance-report.md",
+        "data/android-first-flash-gate.json",
+        "docs/phone-preview-20260911.md"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "WEB14",
+        "OS02",
+        "OS11",
+        "D01",
+        "V01",
+        "N03",
+        "RLS02",
+        "LCH03"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-16",
+      "title": "guest/host権限境界",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Guest bridge/Broker and contract tests exist; host UID/SELinux/Keystore/mTLS all-surface security acceptance remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "toolkits/sky-linux-local/android-bridge.py",
+        "systems/rock-star-os/os/mcp_broker/broker.py",
+        "tests/pixel-worker-contract.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-17",
+      "title": "full OS専用Linux・署名・flash・stock/全損復旧",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Dedicated Linux/full build/production signing/flash/stock and total-loss recovery require separate unresolved gates.",
+      "boundedEvidenceAtFixedMain": [
+        "data/android-first-flash-gate.json",
+        "scripts/prepare-phone-build.py",
+        "docs/android-production-signing-custody.md"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "WEB14",
+        "RLS02",
+        "LCH03"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OS-18",
+      "title": "機微vault・E2EE・削除と共通金融/学習境界",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Sensitive-data guard and server-side encryption foundations exist; E2EE/fresh biometric vault/full-loss recovery/health production not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/tests/test_sensitive_guard.py",
+        "lib/backup-crypto.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "OS02",
+        "OS03",
+        "OS04",
+        "OS09",
+        "OS10",
+        "OS11",
+        "DSP01",
+        "RLS02"
+      ],
+      "directMainTaskRefs": [
+        "SYS15"
+      ],
+      "phaseGateRefs": [
+        "ANDROID-PREFULL",
+        "DEVICE-INSTALL"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-01",
+      "title": "正式名・互換入口・既存データの整合",
+      "lane": "smith",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Saved Agent ID/revision immutable-link regression adopted; full renamed shell/data/entrypoint consistency remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-agent-library.ts",
+        "tests/sky-agent-saved-reference.test.mjs",
+        "docs/evidence/development-execution/client-game-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-02",
+      "title": "部品なし目的・本人確認・可能/不足/未対応の表示",
+      "lane": "smith",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Purpose/capability host contracts exist; no complete no-component-to-usable-agent UI acceptance inferred.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-add-capability-envelope.ts",
+        "lib/sky-add-host-contract.ts",
+        "lib/owner-intent.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "MAT03",
+        "R03",
+        "BIL03",
+        "B06"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-03",
+      "title": "新担当同ID登録から実model・保存・原job停止まで",
+      "lane": "smith",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Saved agent/control-plane foundations exist; same-ID real-model save/stop complete loop remains unaccepted.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-agent-library-store.ts",
+        "lib/agent-control-plane.ts",
+        "tests/agent-control-plane.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-04",
+      "title": "内蔵・外付け・周辺観測のadapterと付け替えfence",
+      "lane": "smith",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Capability observations and device relation foundations exist; physical reattachment fencing across three adapter modes unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-add-capability-envelope.ts",
+        "contracts/device-capability-snapshot.json",
+        "lib/sky-network-device.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "AI05"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-05",
+      "title": "別owner Add・同じ担当版実行・opt-in成果循環",
+      "lane": "smith",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Agent/submission foundation exists; another-owner Add and opt-in author revenue/permission loop not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-agent-library.ts",
+        "lib/sky-submission-store.ts",
+        "tests/sky-agent-library.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SMITH-06",
+      "title": "Hey Eve・Thanks Eve・待機の共通入口",
+      "lane": "smith",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Common intent/runtime contracts exist; Hey/Thanks Eve wake, standby and shared physical entrance not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/home-intent.ts",
+        "contracts/local-ai-runtime.json",
+        "docs/workstreams/07-android-device-local-ai.md"
+      ],
+      "contextualMainTaskRefs": [
+        "HOME01",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "AI02",
+        "OS07",
+        "SIM01",
+        "AI09"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-01",
+      "title": "状態の直積と接続判定",
+      "lane": "esim",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Pure service-authority evaluator adopted; current server provenance/atomic dispatch wiring remains separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/rockstar-service-setup.ts",
+        "tests/rockstar-service-setup.test.mjs",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": [
+        "PR194_ESIM_SUBSET"
+      ]
+    },
+    {
+      "id": "ESIM-02",
+      "title": "issuer lifecycleを永続イベントへ結合",
+      "lane": "esim",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Issuer event and persistence foundations exist; transactional end-to-end lifecycle/current-provider readback unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/rockstar-entitlement-event.ts",
+        "lib/rockstar-entitlement-issuer-store.ts",
+        "tests/rockstar-entitlement-issuer-store.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-03",
+      "title": "準備operationと外部資源確保のoutbox",
+      "lane": "esim",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Setup operation persistence and readiness verifier exist; exact outbox/fencing/orphan resource reconciliation acceptance remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup.ts",
+        "tests/rockstar-service-setup.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-04",
+      "title": "子端末attachmentの発行・更新・失効",
+      "lane": "esim",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Signed attachment and device store foundations exist; issue/renew/revoke race and live parent invalidation remain separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/rockstar-service-attachment.ts",
+        "tests/rockstar-service-attachment.test.mjs",
+        "lib/esim-device-entitlement-store.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-05",
+      "title": "既存OSとnativeを能力別に導入する",
+      "lane": "esim",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Attested activation and mode-support foundations exist; genuine device-chain/iPhone/issuer bootstrap tests not inferred.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/esim-attested-device-activation.ts",
+        "tests/esim-attested-device-activation.test.mjs",
+        "data/device-support-matrix.json"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "DSP01",
+        "N04"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-06",
+      "title": "一件のcloud仕事と切断後継続",
+      "lane": "esim",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Cloud access and continuation control foundations exist; durable grant with one real cloud job/disconnection/stop reconciliation unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/esim-cloud-access.ts",
+        "lib/a2a-parent-controller.ts",
+        "tests/esim-cloud-access.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-07",
+      "title": "実sandboxと復旧の一周",
+      "lane": "esim",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Controlled worker tests and pure helper evidence exist; same issuer/contract/workspace sandbox loop requires provider terms and credentials.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/esim-reconciliation-worker.ts",
+        "tests/esim-reconciliation-worker.test.mjs",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "ESIM-08",
+      "title": "証拠と受入の独立欄",
+      "lane": "esim",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Scoped host adoption and phase-gate records exist; matrix of DB/HTTP/provider/device/public/billing acceptance remains incomplete.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/evidence/development-execution/service-contract-adoption.json",
+        "data/project-status.json"
+      ],
+      "contextualMainTaskRefs": [
+        "SIM01",
+        "BIL02",
+        "SKY21",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "AI09"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-01",
+      "title": "固定料金版と起算のschemaを実装する",
+      "lane": "billing",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Immutable billing snapshot/preview helper adopted; 140USD proposal versus 16USD provenance and real pricing remain unresolved.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-linux-billing.ts",
+        "tests/sky-linux-billing.test.mjs",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-02",
+      "title": "同時予約と結果不明の原子保存",
+      "lane": "billing",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Execution/usage persistence foundations exist; cross-device used+reserved+requested atomic budget and unknown reconciliation unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/remote-ai-text-store.ts",
+        "lib/work-store.ts",
+        "tests/remote-ai-text-store.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-03",
+      "title": "計量を請求明細へ一回だけ結ぶ",
+      "lane": "billing",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Signed usage validation and recurring aggregation exist; all meter/source-to-final-invoice uniqueness remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/a2a-usage-receipt.ts",
+        "lib/sky-recurring-usage.ts",
+        "tests/a2a-usage-receipt.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-04",
+      "title": "月締め・訂正・一意Invoice",
+      "lane": "billing",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Pure contract binding and existing monthly store exist; statement DB integration/timezone/proration/final invoice corrections not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-agent-monthly-statement.ts",
+        "tests/sky-agent-monthly-statement.test.mjs",
+        "lib/sky-cloud-monthly-store.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-05",
+      "title": "非同期決済と読戻し",
+      "lane": "billing",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Existing Stripe transport/HTTP monthly foundation exists; live/sandbox provider object graph and loss/reordering acceptance remain separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-cloud-monthly-stripe.ts",
+        "lib/sky-cloud-monthly-http.ts",
+        "tests/sky-cloud-monthly.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-06",
+      "title": "本人UI・未払制限・復帰",
+      "lane": "billing",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Service/setup/monthly persistence foundations exist; exhaustive unpaid restriction/read-export/recovery UI matrix not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-linux-service.ts",
+        "components/rockstar-service-setup.tsx",
+        "lib/sky-cloud-monthly-store.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-07",
+      "title": "作者契約・分配・取消復旧",
+      "lane": "billing",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Pure settlement estimate and marketplace policy foundations exist; no durable per-source author agreement/payment/reversal workflow is established by these paths.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/settlement.ts",
+        "tests/settlement.test.mjs",
+        "lib/sky-marketplace-policy.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "BILL-08",
+      "title": "月末sandboxの受入matrix",
+      "lane": "billing",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Controlled monthly sandbox and helper tests exist; requested same-candidate full month-end DB/HTTP/provider matrix not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-monthly-sandbox.ts",
+        "tests/sky-monthly-sandbox.test.mjs",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "BIL02",
+        "SIM01",
+        "SKY21",
+        "WLT02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-01",
+      "title": "要求領域と観測/入力/光学の契約固定",
+      "lane": "mini",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Pure place-profile validation adopted; observation/input/optics physical coverage remains separate.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+        "tests/avocado-mini-place-profile.test.mjs",
+        "contracts/avocado-mini-spatial-interaction.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT04"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-02",
+      "title": "少数・板膜なし・全範囲の光学選定と反証",
+      "lane": "mini",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Finite geometric/joint-allocation/cone subset adopted; no physical low-glare/full-region/multi-viewer/optics acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+        "tests/avocado-mini-finite-cone.test.mjs",
+        "docs/evidence/development-execution/mini-02-joint-main-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-03",
+      "title": "Goの実描画・光学出力・停止adapter",
+      "lane": "mini",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Spatial output contract/design exists; actual Go render/optical output/independent safety stop adapter not established by this read.",
+      "boundedEvidenceAtFixedMain": [
+        "contracts/avocado-mini-spatial-interaction.json",
+        "docs/rockstaros-avocado-mini-complete-design.md"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT04",
+        "MAT07"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-04",
+      "title": "RGB hand/depthの同期・座標・失効",
+      "lane": "mini",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Spatial contract/design exists; real RGB-hand/depth synchronization/calibration/expiry require exact hardware evidence.",
+      "boundedEvidenceAtFixedMain": [
+        "contracts/avocado-mini-spatial-interaction.json",
+        "docs/rockstaros-avocado-mini-complete-design.md"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT04",
+        "MAT07"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-05",
+      "title": "手/声を共通Eve仕事・実app・原本保存へ結合",
+      "lane": "mini",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Shared intent/job/spatial foundation exists; hand/voice-to-real-app/source-save complete physical loop is not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/owner-intent.ts",
+        "lib/workflow.ts",
+        "contracts/avocado-mini-spatial-interaction.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "AMC02",
+        "MAT03",
+        "MAT04",
+        "R03",
+        "BIL03",
+        "SIM01",
+        "B06"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-06",
+      "title": "電源木・独立光学停止・実netの確定",
+      "lane": "mini",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Electrical/interface design exists; power-tree net and independent optical stop real measurements remain unaccepted.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT07"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-07",
+      "title": "最終回路/PCB・同一閉箱・製造gate",
+      "lane": "mini",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Factory/electrical documents exist; final PCB/netlist/same enclosure/manufacturing acceptance remains unestablished.",
+      "boundedEvidenceAtFixedMain": [
+        "data/avocado-mini-cellular.json",
+        "docs/rockstaros-avocado-mini-complete-design.md"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT15",
+        "MAT07"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MINI-08",
+      "title": "Mini/Pro共通host/native/DSP/eSIM子接続",
+      "lane": "mini",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Runtime/attachment/cellular contracts exist; each Mini/Pro host-native-DSP and child-connection same-artifact acceptance is separate.",
+      "boundedEvidenceAtFixedMain": [
+        "contracts/platform-api.json",
+        "lib/rockstar-service-attachment.ts",
+        "data/avocado-mini-cellular.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "MAT15",
+        "OS10"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "PRO-01",
+      "title": "localStorageの非破壊・本人別移行",
+      "lane": "pro",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Non-destructive local export/preview parser adopted; authenticated owner-bound import/CAS and actual storage migration remain unaccepted.",
+      "boundedEvidenceAtFixedMain": [
+        "sites/avocado-mini/src/pro-local-import.mjs",
+        "sites/avocado-mini/tests/pro-local-import.test.mjs",
+        "docs/evidence/development-execution/client-game-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT16",
+        "B05",
+        "WEB13"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "B05-COMPARE"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "PRO-02",
+      "title": "共通ProUI→実仕事・成果・保存・停止",
+      "lane": "pro",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Pro page/local preview and common jobs/export exist; authenticated Pro UI-to-real-job/save/stop integration remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "sites/avocado-mini/src/pro-os.js",
+        "lib/workflow.ts",
+        "lib/sky-owner-export.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT16",
+        "B05",
+        "WEB13"
+      ],
+      "directMainTaskRefs": [
+        "AMC02",
+        "SIM01"
+      ],
+      "phaseGateRefs": [
+        "B05-COMPARE"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "PRO-03",
+      "title": "nativeProと同一実機SKU/性能/更新復旧",
+      "lane": "pro",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Product/runtime design exists; fixed physical SKU/performance/native update/restore evidence not established.",
+      "boundedEvidenceAtFixedMain": [
+        "data/avokado-pro-pc.json",
+        "docs/avokado-pro-pc-design.md",
+        "contracts/platform-api.json"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT16",
+        "B05",
+        "WEB13"
+      ],
+      "directMainTaskRefs": [
+        "OS10",
+        "MAT16"
+      ],
+      "phaseGateRefs": [
+        "B05-COMPARE"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "PRO-04",
+      "title": "12販売gateとUS初回商流",
+      "lane": "pro",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Sales gate schema/checker/tests exist; US commercial supply/terms/owner funding gates need individual acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "data/avocado-pro-sales-readiness.json",
+        "scripts/check-pro-sales-readiness.mjs",
+        "tests/pro-sales-readiness.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT16",
+        "B05",
+        "WEB13"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "B05-COMPARE"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "NET-01",
+      "title": "経路・IP/DNS/TLS・信頼時刻・VPNの送信前検査",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Private-loopback/session foundations exist; all route/IP/DNS/TLS/trusted-time/VPN pre-send checks remain unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-private-loopback.mjs",
+        "lib/sky-network-session.ts",
+        "tests/sky-network-session.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "DSP01",
+        "OS10",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "NET-02",
+      "title": "ordered通知/進捗cursorとoffline競合からの再接続",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Owner-scoped idempotent Tool event storage and revision CAS exist; these are not an ordered notification cursor or general offline reconnect implementation.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-tool-events.ts",
+        "lib/owner-revision-json-store.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "DSP01",
+        "OS10",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [
+        "SKY20"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "NET-03",
+      "title": "通話media・受領・通信実費の独立adapter",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Cellular/telephony requirements exist; real call media/receipt/telecom cost adapter acceptance not established.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json",
+        "docs/workstreams/07-android-device-local-ai.md"
+      ],
+      "contextualMainTaskRefs": [
+        "DSP01",
+        "OS10",
+        "WEB04"
+      ],
+      "directMainTaskRefs": [
+        "MAT15",
+        "SIM01",
+        "AI09"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WEBOPS-01",
+      "title": "主要flowのa11y・低速・touch/keyboard/reader受入",
+      "lane": "web-ops",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Backup dialog keyboard/focus/diagnostic accessibility subset adopted; all key-flow reader/touch/slow-network coverage remains open.",
+      "boundedEvidenceAtFixedMain": [
+        "components/system-maintenance.tsx",
+        "tests/system-maintenance-accessibility.test.mjs",
+        "docs/evidence/development-execution/client-game-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "WEB04",
+        "WEB13",
+        "HOME01",
+        "SYS02",
+        "SYS07",
+        "SYS08",
+        "SYS09"
+      ],
+      "directMainTaskRefs": [
+        "HOME02",
+        "SYS01",
+        "SYS02",
+        "SYS03",
+        "SYS04",
+        "SYS08"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WEBOPS-02",
+      "title": "PWA install/update/offlineと通知許可の代替導線",
+      "lane": "web-ops",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Service worker install/offline/update foundation exists; full same-client permission alternatives/install recovery not accepted.",
+      "boundedEvidenceAtFixedMain": [
+        "public/sw.js",
+        "tests/pwa-offline.test.mjs",
+        "tests/service-worker-update.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "WEB04",
+        "WEB13",
+        "HOME01",
+        "SYS02",
+        "SYS07",
+        "SYS08",
+        "SYS09"
+      ],
+      "directMainTaskRefs": [
+        "SYS08",
+        "SYS15"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WEBOPS-03",
+      "title": "3domains・release読戻し・導入診断/export/support導線",
+      "lane": "web-ops",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Three-domain routing/deployment metadata and diagnostic/export tests exist; actual current DNS/TLS/deployment/support readback not performed.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/product-domains.ts",
+        "data/mini-pro-deployment.json",
+        "tests/system-maintenance-release.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "WEB04",
+        "WEB13",
+        "HOME01",
+        "SYS02",
+        "SYS07",
+        "SYS08",
+        "SYS09"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OPS-01",
+      "title": "SLO/usage/stop/採算の観測と故障注入",
+      "lane": "web-ops",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Observability/operations foundation exists; product SLO/stop/usage/profitability and fault-injection full matrix unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/decision/observability.ts",
+        "lib/operations.ts",
+        "tests/operations.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SYS01",
+        "SYS02",
+        "SYS12",
+        "SYS13",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "SKY13",
+        "WLT02",
+        "SKY21"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OPS-02",
+      "title": "incident・限定保守・端末/Provider停止と監査復旧",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Persistent operations state exists; bounded maintenance and provider/device incident recovery acceptance unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/operations/state.py",
+        "systems/rock-star-os/os/operations/store.py",
+        "docs/workstreams/04-security-identity-compliance.md"
+      ],
+      "contextualMainTaskRefs": [
+        "SYS01",
+        "SYS02",
+        "SYS12",
+        "SYS13",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "SYS15"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "OPS-03",
+      "title": "鍵期限/署名/SBOM・abuse/supportの運用閉ループ",
+      "lane": "web-ops",
+      "fixedInventoryClass": "unverified",
+      "boundedScopeAtFixedMain": "Security/release validation entrypoints exist; expiry/signing/SBOM/abuse/support complete operational loop not established.",
+      "boundedEvidenceAtFixedMain": [
+        "docs/workstreams/04-security-identity-compliance.md",
+        "docs/workstreams/10-git-ci-operations.md",
+        "package.json"
+      ],
+      "contextualMainTaskRefs": [
+        "SYS01",
+        "SYS02",
+        "SYS12",
+        "SYS13",
+        "OS10"
+      ],
+      "directMainTaskRefs": [
+        "SYS11",
+        "SYS15",
+        "DOC05"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WALLET-01",
+      "title": "一般入金/外部railと確定資金の由来",
+      "lane": "wallet",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Signed synthetic deposit proposal adopted; authenticated external rail/current query/CAS/finality remain separate, funds unchanged.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/wallet-deposit-provenance.ts",
+        "tests/wallet-deposit-provenance.test.mjs",
+        "docs/evidence/development-execution/service-contract-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "WLT01",
+        "WLT02",
+        "WLT03",
+        "WLT04",
+        "WLT05",
+        "WLT06",
+        "GX00"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "GX00-ISOLATION"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WALLET-02",
+      "title": "888c収益連動精算・共有予約・backup照合",
+      "lane": "wallet",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Earning and snapshot foundations exist; verified revenue/888c/shared reservation/backup reconciliation needs same-candidate financial acceptance.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/earning-bridge.ts",
+        "lib/wallet-snapshot.ts",
+        "tests/wallet-snapshot.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "WLT01",
+        "WLT02",
+        "WLT03",
+        "WLT04",
+        "WLT05",
+        "WLT06",
+        "GX00"
+      ],
+      "directMainTaskRefs": [
+        "B03"
+      ],
+      "phaseGateRefs": [
+        "GX00-ISOLATION"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "WALLET-03",
+      "title": "ATM0手数料・別actor認証・unknown払出し",
+      "lane": "wallet",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "ATM and independent wallet actor-auth service foundations exist; live unknown payout/zero Rock fee acceptance not inferred.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/atm/simulator.py",
+        "systems/rock-star-os/os/wallet_auth/service.py",
+        "docs/workstreams/03-wallet-billing-providers.md"
+      ],
+      "contextualMainTaskRefs": [
+        "WLT01",
+        "WLT02",
+        "WLT03",
+        "WLT04",
+        "WLT05",
+        "WLT06",
+        "GX00"
+      ],
+      "directMainTaskRefs": [
+        "BIL02",
+        "SIM01"
+      ],
+      "phaseGateRefs": [
+        "GX00-ISOLATION"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GAME-01",
+      "title": "作者SDK・持込みmanifest・非金融GM01/DX計測",
+      "lane": "game",
+      "fixedInventoryClass": "adopted_subset",
+      "boundedScopeAtFixedMain": "Static manifest intake/diagnosis adopted; real imported engine launch/full SDK fresh-author DX still separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/game-intake.ts",
+        "tests/game-intake.test.mjs",
+        "docs/evidence/development-execution/client-game-adoption.json"
+      ],
+      "contextualMainTaskRefs": [
+        "DX01",
+        "GM01",
+        "AI06",
+        "GX00",
+        "GX01",
+        "GX02"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [
+        "GX00-ISOLATION",
+        "GX01-CONTRACT",
+        "GX01-UI",
+        "DX01-SDK"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "GAME-02",
+      "title": "GX交換gateとgame↔現実WorkJob橋を別経路で閉じる",
+      "lane": "game",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Existing exchange service/nonfinancial sandbox foundations exist; live GX directions/rates/approval and WorkJob bridge remain separate.",
+      "boundedEvidenceAtFixedMain": [
+        "systems/rock-star-os/os/game_exchange/exchange_service.py",
+        "lib/game-sandbox.ts",
+        "docs/workstreams/08-game-market-fund.md"
+      ],
+      "contextualMainTaskRefs": [
+        "DX01",
+        "GM01",
+        "AI06",
+        "GX00",
+        "GX01",
+        "GX02"
+      ],
+      "directMainTaskRefs": [
+        "AI06",
+        "GM01"
+      ],
+      "phaseGateRefs": [
+        "GX00-ISOLATION",
+        "GX01-CONTRACT",
+        "GX01-UI",
+        "DX01-SDK"
+      ],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MATERIAL-01",
+      "title": "Material来歴/制約/候補検査から実験へのgate",
+      "lane": "mini",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Material candidate/provenance/study foundations exist; experiment acceptance and full RQ49/MAT06 patent bridge remain unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/material-invention.ts",
+        "lib/material-study.ts",
+        "tests/material-invention.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "MAT01",
+        "MAT04",
+        "MAT06",
+        "MAT15",
+        "AI06"
+      ],
+      "directMainTaskRefs": [
+        "MAT02",
+        "MAT03"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "COMPANION-01",
+      "title": "独立SOS・保護者通知と時計/TV/robot等の能力adapter",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "external_gate",
+      "boundedScopeAtFixedMain": "Device/spatial architecture exists; independent SOS/guardian notice and watch-TV-robot physical adapters not established by bounded sources.",
+      "boundedEvidenceAtFixedMain": [
+        "data/device-support-matrix.json",
+        "docs/device-support-architecture.md",
+        "docs/rockstaros-avocado-mini-complete-design.md"
+      ],
+      "contextualMainTaskRefs": [
+        "DSP01",
+        "OS10",
+        "N04",
+        "N05"
+      ],
+      "directMainTaskRefs": [
+        "MAT07",
+        "DSP01",
+        "N04"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "AUTH-01",
+      "title": "passkey・family scope・credential lifecycleと限定保守",
+      "lane": "os-pixel",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Passkey and request-auth foundations exist; full family scope/credential lifecycle/limited maintenance acceptance remains unverified.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/jennifer-passkey.ts",
+        "lib/request-auth.ts",
+        "tests/jennifer-passkey.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SYS01",
+        "SYS12",
+        "SYS13",
+        "OS10",
+        "DSP01"
+      ],
+      "directMainTaskRefs": [
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "SYNC-01",
+      "title": "一般offline編集・revision競合・削除優先の復旧",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Owner/revision storage foundations exist; generic offline merge/delete-priority/old snapshot resurrection matrix not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/owner-revision-json-store.ts",
+        "lib/eve-history.ts",
+        "lib/work-store.ts"
+      ],
+      "contextualMainTaskRefs": [
+        "WEB04",
+        "SKY21",
+        "OS10"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MODEL-01",
+      "title": "model取得/検証/削除とowner限定RAG",
+      "lane": "eve",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Model/Agent metadata validation and crypto staging exist; test definitions also reference a local model manager. Complete acquire/verify/delete/owner-scoped RAG acceptance is not established.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/sky-linux-models.ts",
+        "tests/sky-linux-models.test.mjs",
+        "scripts/stage-model-crypto.py"
+      ],
+      "contextualMainTaskRefs": [
+        "AI02",
+        "OS09",
+        "OS10"
+      ],
+      "directMainTaskRefs": [],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    },
+    {
+      "id": "MCP-01",
+      "title": "catalog・OAuth・作者SDKの登録から失効まで",
+      "lane": "smith",
+      "fixedInventoryClass": "existing_implementation",
+      "boundedScopeAtFixedMain": "Hub/package foundations exist; full author SDK/OAuth registration-execution-revocation provider loop remains separate.",
+      "boundedEvidenceAtFixedMain": [
+        "lib/mcp-hub.ts",
+        "lib/sky-tool-package.ts",
+        "tests/mcp.test.mjs"
+      ],
+      "contextualMainTaskRefs": [
+        "SKY21",
+        "OS10",
+        "BIL02"
+      ],
+      "directMainTaskRefs": [
+        "SKY07",
+        "SKY14",
+        "SYS15",
+        "SIM01"
+      ],
+      "phaseGateRefs": [],
+      "wholeUnitAccepted": false,
+      "currentOverlayRefs": []
+    }
+  ],
+  "runtimeChanged": false,
+  "productionDeployment": false,
+  "generalLaunch": "held"
+}
