@@ -1,3 +1,7 @@
+## 2026-10-24 — 受入済みhelperのmain採用範囲（製品方針変更なし）
+
+既存main v2.08/RQ01〜RQ50とRoot v1.127/RQ01〜RQ49の由来を区別したまま、Billing/eSIM/Walletの受入済みpure検証subsetを採用する。料金/同意/権限を変更せず、140USD案と既存Linux16USD termsを自動統一しない。API/store/Broker atomic CAS・実provider・実課金・実機・一般公開は未受入。[採用hash・検証層・残件](evidence/development-execution/service-contract-adoption.json)、[詳細契約](rockstaros-complete-design.md#reviewed-service-contracts)。
+
 # RockstarOS — 現行製品方針と確定要望
 
 ## MiniとProの製品目的（2026-10-21本人確定）

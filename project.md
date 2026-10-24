@@ -1,3 +1,7 @@
+## 受入済みBilling/eSIM/Walletのpure subsetをmain起点で採用（2026-10-24 / G04・BIL02）
+
+PR186通常merge後のmain23ad170cから新branchへ分離。受入済み8pathを意味比較し、既存transport/料金/redirect設定を保持、月次statementはpure bindingのみ採用しDB保存/集計と未移植依存を除外。113対象試験、typecheck、局所lint成功。main2.08/RQ50とRoot1.127/RQ49、140USD案とLinux16USD既存termsの版/由来を保持し、新課金・schema追加・公開なし。固定4404入力不変で全verify exit0、Node2612=2610pass/既存platform2skip、asset欠損0、仕事API1678assertions成功。PR/同一SHA CI/統合差分検収は次gate。Broker atomic CASやissuer/provider、本番は未受入。次はMini/Pro/Web→Smith test→Eve保存/Game検収を各小batchとし、全union未完を一律Git保存停止にしない。根拠: docs/evidence/development-execution/service-contract-adoption.json。
+
 ## PR186 backup fd race correction (2026-10-24 / G04)
 
 CodeQL check120816951394 and independent review found a check/close/reopen backup-path race in f5a7de0a. Replace it with locked snapshot bytes written/fsynced/read back on one exclusive no-follow fd, private owner/ancestry checks, source inode checks and commit-authorizer filesystem verification.28 focused tests and full lint pass; fixed final full verify/new-head CodeQL/independent review are pending. This is overall implementation attempt3 and first correction attempt for distinct root cause GIT04-CP-R1; earlier counts/reviews remain. No Root parallel work or full union acceptance. Evidence: docs/evidence/development-execution/git-04-backup-fd-correction.json.
@@ -295,7 +299,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-21 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-24 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

@@ -1,3 +1,7 @@
+## Service契約検証とWallet proposalの接続境界（2026-10-24）
+
+既存Sky/OS契約のpure helperを採用する。catalog Toolや新しい実行APIは追加しない。[目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・合格・未決定](rockstaros-complete-design.md#reviewed-service-contracts)に従う。canDispatch/defined/confirmed_candidateをTool成功や記帳許可に昇格させず、同意・上限・Broker atomic recheck・実provider/実機を別gateにする。料金版・main140USD案・Root16USD既存terms・888c既存fee policyの由来を保持し、新課金を選択しない。
+
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
 ## 共通サービス体験と状態の読み分け

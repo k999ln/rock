@@ -2,6 +2,8 @@ import { stripeRequest } from '../shared/stripe.mjs';
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
 import {
   LinuxServiceError,
+  parseLinuxTerms,
+  type LinuxTerms,
   type LinuxWorkspace,
   type LinuxInvoice,
   type LinuxEvent,
@@ -382,4 +384,159 @@ export function linuxStripeBilling(
       });
     },
   };
+}
+
+
+/** Contract preview only: no reservation, invoice, collection or ledger mutation. */
+export type LinuxBillingPolicy = {
+  offerId: string;
+  priceVersion: string;
+  contractTextSha256: string | null;
+  timezone: string | null;
+  billingDay: number | null;
+  proration: string | null;
+  tax: string | null;
+  externalCosts: string | null;
+  byok: string | null;
+  // Unset categories remain pending; an explicitly empty list means none agreed.
+  additionalMeters: {
+    category: 'product' | 'telecom' | 'cloud_ai' | 'tool' | 'oss' | 'byok';
+    meter: string;
+    unit: string;
+    included: number;
+    unitMinor: number;
+    rounding: 'ceil_unit';
+  }[] | null;
+  jobCapMinor: number | null;
+};
+export type LinuxContractSnapshot = {
+  schema: 'sky.linux-billing-snapshot/1';
+  product: 'sky-linux-16';
+  provenance: 'existing-linux-terms';
+  ownerId: string;
+  contractId: string;
+  contractDigest: string;
+  currency: 'USD';
+  minorDigits: 2;
+  cpuRounding: 'ceil_minor';
+  terms: LinuxTerms;
+  start: { state: 'legacy' | 'pending' | 'started'; at: number | null };
+  policy: LinuxBillingPolicy;
+  status: 'pending_owner_terms' | 'defined';
+};
+export type LinuxContractEnvelope = { snapshot: LinuxContractSnapshot; digest: string };
+function contractText(value: unknown): string {
+  check(typeof value === 'string' && value.length > 0 && value.length <= 1000 && value.trim() === value,
+    '契約の識別子・条件を確認してください。');
+  return value as string;
+}
+function contractMinor(value: unknown): number {
+  check(Number.isSafeInteger(value) && Number(value) >= 0, '契約の整数金額・数量を確認してください。');
+  return value as number;
+}
+function contractHash(value: unknown): string {
+  check(typeof value === 'string' && /^[a-f0-9]{64}$/.test(value), '契約digestを確認してください。');
+  return value as string;
+}
+function canonicalContract(value: unknown): string {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return JSON.stringify(value);
+  if (typeof value === 'number' && Number.isSafeInteger(value)) return JSON.stringify(value);
+  if (Array.isArray(value)) return '[' + Array.from(value, canonicalContract).join(',') + ']';
+  check(typeof value === 'object' && value !== null, '契約snapshotの形式が不正です。');
+  const record = value as Record<string, unknown>;
+  return '{' + Object.keys(record).sort().map(key => JSON.stringify(key) + ':' + canonicalContract(record[key])).join(',') + '}';
+}
+function freezeContract<T>(value: T): T {
+  if (value && typeof value === 'object') {
+    for (const child of Object.values(value)) freezeContract(child);
+    Object.freeze(value);
+  }
+  return value;
+}
+/** Call with server-owned accepted terms. A digest alone is not consent or readiness. */
+export async function makeLinuxContractSnapshot(
+  workspace: Pick<LinuxWorkspace, 'id' | 'ownerId' | 'contractDigest' | 'terms' | 'serviceStartAt'>,
+  policy: LinuxBillingPolicy,
+): Promise<LinuxContractEnvelope> {
+  const terms = parseLinuxTerms(workspace.terms);
+  const nullableText = (value: unknown) => value === null ? null : contractText(value);
+  const timezone = nullableText(policy.timezone);
+  if (timezone !== null) {
+    try { new Intl.DateTimeFormat('en', { timeZone: timezone }); }
+    catch { throw new LinuxServiceError('契約timezoneを確認してください。'); }
+  }
+  const billingDay = policy.billingDay === null ? null : contractMinor(policy.billingDay);
+  check(billingDay === null || (billingDay >= 1 && billingDay <= 28), '締日1〜28または未確定を指定してください。');
+  const jobCapMinor = policy.jobCapMinor === null ? null : contractMinor(policy.jobCapMinor);
+  check(jobCapMinor === null || jobCapMinor <= terms.monthlyCapMinor, 'job上限が月間上限を超えています。');
+  check(policy.additionalMeters === null || Array.isArray(policy.additionalMeters), '追加meterを確認してください。');
+  const seen = new Set<string>();
+  const additionalMeters = policy.additionalMeters === null ? null : policy.additionalMeters.map(meter => {
+    check(['product', 'telecom', 'cloud_ai', 'tool', 'oss', 'byok'].includes(meter.category) && meter.rounding === 'ceil_unit', 'meter区分・丸めを確認してください。');
+    const key = contractText(meter.category) + ':' + contractText(meter.meter);
+    check(!seen.has(key), '同一meterが重複しています。'); seen.add(key);
+    return { category: meter.category, meter: meter.meter, unit: contractText(meter.unit), included: contractMinor(meter.included), unitMinor: contractMinor(meter.unitMinor), rounding: meter.rounding };
+  });
+  const fixedPolicy: LinuxBillingPolicy = {
+    offerId: contractText(policy.offerId), priceVersion: contractText(policy.priceVersion),
+    contractTextSha256: policy.contractTextSha256 === null ? null : contractHash(policy.contractTextSha256),
+    timezone, billingDay, proration: nullableText(policy.proration), tax: nullableText(policy.tax),
+    externalCosts: nullableText(policy.externalCosts), byok: nullableText(policy.byok), additionalMeters, jobCapMinor,
+  };
+  const start = workspace.serviceStartAt;
+  if (start !== null && start !== undefined) {
+    contractMinor(start);
+    check(!Number.isNaN(new Date(start).getTime()), '起算時刻を確認してください。');
+  }
+  const snapshot: LinuxContractSnapshot = {
+    schema: 'sky.linux-billing-snapshot/1', product: 'sky-linux-16', provenance: 'existing-linux-terms',
+    ownerId: contractText(workspace.ownerId), contractId: contractText(workspace.id),
+    contractDigest: contractHash(workspace.contractDigest), currency: 'USD', minorDigits: 2, cpuRounding: 'ceil_minor', terms,
+    start: { state: start === undefined ? 'legacy' : start === null ? 'pending' : 'started', at: start ?? null },
+    policy: fixedPolicy,
+    status: Object.values(fixedPolicy).some(value => value === null) ? 'pending_owner_terms' : 'defined',
+  };
+  return freezeContract({ snapshot, digest: await sha256Hex(canonicalContract(snapshot)) });
+}
+/** expectedDigest must come from authenticated saved consent, never the submitted envelope. */
+export async function verifyLinuxContractSnapshot(
+  envelope: LinuxContractEnvelope,
+  expected: { ownerId: string; contractId: string; contractDigest: string; digest: string },
+): Promise<LinuxContractSnapshot> {
+  // A submitted object may change while hashing. Verify only detached input.
+  ({ envelope, expected } = structuredClone({ envelope, expected }));
+  const s = envelope.snapshot;
+  check(s && s.start && ['legacy', 'pending', 'started'].includes(s.start.state), '契約snapshotが不正です。');
+  check(s.start.state === 'started' ? s.start.at !== null : s.start.at === null, '起算状態と時刻が一致しません。');
+  const rebuilt = await makeLinuxContractSnapshot({ id: s.contractId, ownerId: s.ownerId, contractDigest: s.contractDigest, terms: s.terms,
+    serviceStartAt: s.start.state === 'legacy' ? undefined : s.start.at }, s.policy);
+  check(canonicalContract(s) === canonicalContract(rebuilt.snapshot) && envelope.digest === rebuilt.digest &&
+    contractHash(expected.digest) === rebuilt.digest && s.ownerId === expected.ownerId &&
+    s.contractId === expected.contractId && s.contractDigest === expected.contractDigest,
+  '保存済みの本人・契約・料金版・snapshot digestが一致しません。');
+  return rebuilt.snapshot;
+}
+/** A deterministic base-line identity, not a persisted once-only charge or a full invoice. */
+export async function previewLinuxContractMonth(
+  envelope: LinuxContractEnvelope,
+  expected: Parameters<typeof verifyLinuxContractSnapshot>[1],
+  period: string,
+  budget: { usedMinor: number; reservedMinor: number; requestedMaxMinor: number },
+) {
+  ({ envelope, expected, budget } = structuredClone({ envelope, expected, budget }));
+  const snapshot = await verifyLinuxContractSnapshot(envelope, expected);
+  check(/^20\d\d-(0[1-9]|1[0-2])$/.test(period), '月をYYYY-MM形式で指定してください。');
+  for (const value of Object.values(budget)) contractMinor(value);
+  const total = BigInt(budget.usedMinor) + BigInt(budget.reservedMinor) + BigInt(budget.requestedMaxMinor);
+  check(total <= BigInt(snapshot.terms.monthlyCapMinor) && snapshot.policy.jobCapMinor !== null &&
+    budget.requestedMaxMinor <= snapshot.policy.jobCapMinor, '承認済みの月間・job予算を超えています。');
+  const until = new Date(period + '-01T00:00:00Z'); until.setUTCMonth(until.getUTCMonth() + 1);
+  const eligible = snapshot.status === 'defined' && snapshot.start.state === 'started' &&
+    typeof snapshot.start.at === 'number' && snapshot.start.at < until.getTime() && snapshot.policy.timezone === 'UTC' && snapshot.policy.proration === 'full_month';
+  // Other timezone/proration policies require the shared period/Invoice implementation.
+  return freezeContract({ contractId: snapshot.contractId, period, currency: snapshot.currency,
+    baseLineKey: await sha256Hex(canonicalContract({ ownerId: snapshot.ownerId, contractId: snapshot.contractId, period, currency: snapshot.currency })),
+    state: eligible ? 'preview_only' as const : 'pending' as const,
+    baseMinor: eligible ? snapshot.terms.baseMinor : null, snapshotDigest: envelope.digest,
+    reservationCreated: false as const, invoiceCreated: false as const, collectionEnabled: false as const });
 }
