@@ -9731,7 +9731,7 @@
   "proAccountImportMainAdoption": {
     "evidence": "docs/evidence/development-execution/pro-account-import-main-adoption.json",
     "reviewSummary": "docs/evidence/development-execution/pro-account-import-review-summary.json",
-    "sourceSixPreserved": true,
+    "sourceSixPreserved": false,
     "attempt": 2,
     "localTests": 69,
     "typecheck": "passed_normal_main_pretypecheck",
@@ -9741,6 +9741,13 @@
     "realAccountBrowserAccepted": false,
     "nativeFullMigrationAccepted": false,
     "fullVerify": "attempt_failed_sandbox_localhost_listen_EPERM_not_passed",
-    "finalHeadCIPending": true
+    "finalHeadCIPending": true,
+    "runtimeFiveSourceFilesPreserved": true,
+    "testOnlyMechanicalVoidInsertions": 25,
+    "mechanicalDeltaIndependentReviewPending": true,
+    "oldLinuxCIFailure": "dd10_lint_product25_no_floating_promises_retained",
+    "mechanicalLocalTests": 69,
+    "mechanicalLintProduct": "passed",
+    "mechanicalTypecheck": "passed"
   }
 }

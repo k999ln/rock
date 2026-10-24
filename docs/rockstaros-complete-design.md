@@ -1,3 +1,5 @@
+Pro統合候補のlint互換差分: tests/pro-account-import.test.mjsの登録呼出25箇所だけにvoidを明示。実行code5ファイル・テスト本体/assertion・保存/認証/暗号契約は不変。旧dd10 Linux lint25失敗とlocal listen EPERMを別々に保持し、新testhashの独立検収/同headCIは未完了。
+
 <a id="pro-account-original-archive"></a>
 ## Pro原本の私有account archive（PRO-01限定候補）
 

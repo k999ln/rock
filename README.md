@@ -1,3 +1,5 @@
+Pro原本archive候補はPR199で継続検証中です。既存の本人確認・保存同意・全bytes/SHA読戻し契約を保ち、test登録のlint互換修正を追加しました。新head CIと独立再検収が完了するまでmain採用は保留です。
+
 Proの[原本私有archive](docs/rockstaros-complete-design.md#pro-account-original-archive)を限定候補へ追加。`npm run dev`のローカルアプリで`/account/import/pro`を開き、Pro exportを選択してpreview・保存先account確認・別の保存同意を行います。保存後は読戻した全bytes/SHAを確認してdownloadします。既存Eve履歴の認証/暗号化keyring準備が必要です。仕事やモデルは実行しません。実account/browser/native・公開の受入は別です。Eve資料準備はPR198でmainへ限定統合済みです。
 
 Eveの[資料付き依頼保存](docs/rockstaros-complete-design.md#eve-text-preparation)を限定候補へ追加。`npm run dev`で起動したローカルアプリの`/os/eve/remix`から2つの文章を選ぶか入力し、goalを確認して準備・仕事保存・素材保存への同意・保存処理を進めます。同じ仕事から原文と成果を読み戻して確認します。無料の準備jobで、生成した草稿ではありません。未保存入力はtabを閉じると失われます。公開サイト/実browser/モデル生成の受入は別gateです。

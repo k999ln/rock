@@ -1,3 +1,5 @@
+Pro PR199のmechanical lint修正: source範囲内test1pathの25登録へvoidのみ追加（+125bytes、除去で旧hashへ完全復元）。runtime5/保護76/95台帳は不変。旧dd10 Linux lint25失敗を保存し、focused69/lint/typeと新headCI/別独立検収を必要とする。
+
 ## PRO-01 exact6原本保管のmain候補
 
 最新clean mainccec（PR198）基点、Pro新6pathは旧1a9/最新双方absent、受入hash無変更で採用。69試験と正規pretypecheck成功、既存core/暗号/store/schema維持。履歴first56/current69訂正とr2限定検収を原本hash要約で記録。固定scanner現行files0/canary→全verify1回→draftPR/同headCI→独立metadata review。旧a2branchは混ぜずRootHEAD/index/journal保持。[設計/証拠](../evidence/development-execution/pro-account-import-main-adoption.json)。

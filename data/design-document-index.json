@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.24",
-  "updatedAt": "2026-10-24T17:23:32.228070+00:00",
+  "version": "1.25",
+  "updatedAt": "2026-10-24T17:52:25.079132+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -2936,6 +2936,11 @@
     "existingEveHistorySchemaAndCrypto": true,
     "mainMerged": false,
     "wholePRO01Accepted": false,
-    "nativeRealAccountBrowserAccepted": false
+    "nativeRealAccountBrowserAccepted": false,
+    "testRegistrationCompatibility": {
+      "path": "tests/pro-account-import.test.mjs",
+      "change": "25 explicit void registrations; assertions/names/bodies unchanged",
+      "independentDeltaReviewPending": true
+    }
   }
 }

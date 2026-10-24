@@ -54,7 +54,7 @@ async function finish(handle, ctx, f, revision = 0) {
   assert.fail('archive did not complete');
 }
 
-test('BOM/CRLF/Unicode original bytes and filename survive encrypted owner archive; legacy checked never starts work', async t => {
+void test('BOM/CRLF/Unicode original bytes and filename survive encrypted owner archive; legacy checked never starts work', async t => {
   const { handle, sqlite, db } = fixture(t), f = await file({ bom: true, name: '原本.json' }), before = JSON.stringify(f.raw), ctx = await context(handle);
   const saved = await finish(handle, ctx, f); assert.deepEqual(proDecode(saved.fileBase64), f.bytes); assert.equal(saved.manifest.filename, f.filename);
   const id = await proArchiveId(ctx.ownerScope, f.operationId); assert.equal(saved.id, id); assert.equal(saved.manifest.fileSha256, f.fileSha256);
@@ -64,14 +64,14 @@ test('BOM/CRLF/Unicode original bytes and filename survive encrypted owner archi
   assert.equal((await eveHistoryStore(db, 'owner-a', keys).recall('private こんにちは')).length, 0);
   const header = await eveHistoryStore(db, 'owner-a', keys).get(id); assert.equal(header.remember, false); assert.equal(header.session.activeRequest, null); assert.equal(header.session.workflowStatus, 'ready');
 });
-test('max file requires eight bounded CAS saves and readback beyond100 messages, without a new table', async t => {
+void test('max file requires eight bounded CAS saves and readback beyond100 messages, without a new table', async t => {
   const { handle, sqlite } = fixture(t), f = await file({ padded: true }), ctx = await context(handle);
   assert.equal(f.byteLength, PRO_FILE_LIMIT); const saved = await finish(handle, ctx, f);
   assert.equal(saved.revision, 8); assert.equal(saved.savedChunks, 117); assert.deepEqual(proDecode(saved.fileBase64), f.bytes);
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 118);
   const readback = await handle(req(ctx, 'alpha', undefined, saved.id)); assert.equal((await readback.json()).state, 'complete');
 });
-test('same request replays preserve ID/revision and reject filename/bytes changes for same logical operation', async t => {
+void test('same request replays preserve ID/revision and reject filename/bytes changes for same logical operation', async t => {
   const { handle } = fixture(t), f = await file(), ctx = await context(handle), first = await finish(handle, ctx, f);
   const replay = await handle(req(ctx, 'alpha', body(f, 0))); const second = await replay.json(); assert.equal(second.id, first.id); assert.equal(second.revision, first.revision);
   const renamed = { ...body(f), filename: 'renamed.json' }; assert.equal((await handle(req(ctx, 'alpha', renamed))).status, 409);
@@ -79,7 +79,7 @@ test('same request replays preserve ID/revision and reject filename/bytes change
   assert.equal(differentBytes.operationId, f.operationId); assert.notEqual(differentBytes.fileSha256, f.fileSha256);
   assert.equal((await handle(req(ctx, 'alpha', body(differentBytes)))).status, 409);
 });
-test('owner change, forged body authority, missing binding, wrong origin and no consent refuse all writes', async t => {
+void test('owner change, forged body authority, missing binding, wrong origin and no consent refuse all writes', async t => {
   const { handle, sqlite } = fixture(t), f = await file(), ctx = await context(handle), b = body(f);
   assert.equal((await handle(req(ctx, 'beta', b))).status, 409);
   for (const value of [{ ...b, owner: 'owner-b' }, { ...b, trusted: true }, { ...b, consent: false }, { ...b, expectedRevision: -1 }]) assert.ok((await handle(req(ctx, 'alpha', value))).status >= 400);
@@ -89,7 +89,7 @@ test('owner change, forged body authority, missing binding, wrong origin and no 
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 0);
   const saved = await finish(handle, ctx, f), other = await context(handle, 'beta'); const hidden = await handle(req(other, 'beta', undefined, saved.id)); assert.equal((await hidden.json()).state, 'not_found');
 });
-test('independent SQLite connections compete at revision0; partial requires explicit current CAS revision', async t => {
+void test('independent SQLite connections compete at revision0; partial requires explicit current CAS revision', async t => {
   const { handle, handler, other, sqlite } = fixture(t), f = await file({ padded: true }), ctx = await context(handle), second = handler({ database: () => other });
   const results = await Promise.all([handle(req(ctx, 'alpha', body(f))), second(req(ctx, 'alpha', body(f)))]);
   assert.deepEqual(results.map(r => r.status).sort((a, b) => a - b), [200, 409]);
@@ -99,7 +99,7 @@ test('independent SQLite connections compete at revision0; partial requires expl
   assert.equal(read.state, 'partial'); assert.equal(read.revision, 1);
   const complete = await finish(second, ctx, f, read.revision); assert.equal(complete.savedChunks, 117);
 });
-test('committed save with lost acknowledgment remains partial; same-ID readback and explicit continuation recover', async t => {
+void test('committed save with lost acknowledgment remains partial; same-ID readback and explicit continuation recover', async t => {
   const { handle, handler, db, sqlite } = fixture(t), f = await file({ padded: true }), ctx = await context(handle); let dropped = false;
   const uncertain = handler({ database: () => ({ ...db, async batch(statements) { const value = await db.batch(statements); if (!dropped) { dropped = true; throw new Error('lost acknowledgment'); } return value; } }) });
   assert.equal((await uncertain(req(ctx, 'alpha', body(f)))).status, 503);
@@ -108,7 +108,7 @@ test('committed save with lost acknowledgment remains partial; same-ID readback 
   assert.equal(read.revision, 1); assert.equal((await handle(req(ctx, 'alpha', body(f, 0)))).status, 409);
   assert.equal((await finish(handle, ctx, f, read.revision)).state, 'complete');
 });
-test('cancel means no later requests; restart/reselect keeps same ID and tombstone forbids resurrection', async t => {
+void test('cancel means no later requests; restart/reselect keeps same ID and tombstone forbids resurrection', async t => {
   const { handle, db } = fixture(t), f = await file({ padded: true }), ctx = await context(handle);
   const first = await (await handle(req(ctx, 'alpha', body(f)))).json(); assert.equal(first.state, 'partial');
   const reselected = await inspectProFile(f.filename, f.bytes); assert.equal(await proArchiveId(ctx.ownerScope, reselected.operationId), first.id);
@@ -116,13 +116,13 @@ test('cancel means no later requests; restart/reselect keeps same ID and tombsto
   await eveHistoryStore(db, 'owner-a', keys).remove(first.id, 1);
   assert.equal((await handle(req(ctx, 'alpha', body(f, 0)))).status, 410);
 });
-test('editing a partial chunk through another history client never permits overwrite or fake completion', async t => {
+void test('editing a partial chunk through another history client never permits overwrite or fake completion', async t => {
   const { handle, db } = fixture(t), f = await file({ padded: true }), ctx = await context(handle);
   const first = await (await handle(req(ctx, 'alpha', body(f)))).json(), store = eveHistoryStore(db, 'owner-a', keys), old = await store.get(first.id);
   await store.save({ session: { ...old.session, messages: [{ id: 'pro-part-0000', side: 'me', text: 'A'.repeat(3000) }] }, revision: old.revision, remember: false });
   assert.equal((await handle(req(ctx, 'alpha', body(f, 2)))).status, 409);
 });
-test('strict file/HTTP parser rejects invalid UTF8, paths, controls, unknown fields/version/digest and oversize before persistence', async t => {
+void test('strict file/HTTP parser rejects invalid UTF8, paths, controls, unknown fields/version/digest and oversize before persistence', async t => {
   const { handle, sqlite } = fixture(t), f = await file(), ctx = await context(handle);
   for (const name of ['../x.json', 'a/b.json', 'a\\b.json', 'a\0.json', '..', 'x.']) await assert.rejects(inspectProFile(name, f.bytes));
   await assert.rejects(inspectProFile('x.json', Uint8Array.from([0xff, 0xfe])));
@@ -134,7 +134,7 @@ test('strict file/HTTP parser rejects invalid UTF8, paths, controls, unknown fie
   const excessive = req(ctx, 'alpha', body(f)); const giant = new Request(excessive.url, { method: 'POST', headers: excessive.headers, body: ' '.repeat(400001) }); assert.equal((await handle(giant)).status, 413);
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 0);
 });
-test('keyring unavailable fails closed and existing owner history survives new import unchanged', async t => {
+void test('keyring unavailable fails closed and existing owner history survives new import unchanged', async t => {
   const { handle, handler, db, sqlite } = fixture(t), f = await file(), ctx = await context(handle);
   const missingKeys = handler({ keys: () => eveHistoryKeys(undefined) }); assert.equal((await missingKeys(req(ctx, 'alpha', body(f)))).status, 503);
   const id = '11111111-1111-4111-8111-111111111111';
@@ -195,7 +195,7 @@ function ui(handle, options = {}) {
     privatePanel: () => nodes(tree).find(n => n.type === 'div' && n.props.ref)?.props.ref.current,
     download: () => download, cleanup: () => cleanups.forEach(fn => fn?.()) };
 }
-test('component requires local preview, account and separate consent; verifies actual bytes before download', async t => {
+void test('component requires local preview, account and separate consent; verifies actual bytes before download', async t => {
   const { handle } = fixture(t), f = await file({ bom: true, name: '私有.json' }), view = ui(handle); t.after(view.cleanup);
   await view.chooseFile(f); assert.equal(view.calls.length, 0); assert.equal(view.button('Save / continue private archive').props.disabled, true);
   view.button('Confirm signed-in account').props.onClick(); await view.until(() => view.status().startsWith('Destination confirmed:'));
@@ -205,7 +205,7 @@ test('component requires local preview, account and separate consent; verifies a
   assert.equal(view.download().filename, f.filename); assert.deepEqual(new Uint8Array(await view.download().blob.arrayBuffer()), f.bytes);
   assert.ok(view.calls.every(c => c.path.startsWith('/api/account/pro-import'))); assert.ok(view.calls.every(c => !c.path.includes(f.filename)));
 });
-test('component cancel during lost response stops later batches; same archive readback remains partial', async t => {
+void test('component cancel during lost response stops later batches; same archive readback remains partial', async t => {
   const { handle, sqlite } = fixture(t), f = await file({ padded: true }); let release;
   const view = ui(handle, { intercept(response, init) { return init.method === 'POST' ? new Promise(resolve => { release = () => resolve(response); }) : response; } }); t.after(view.cleanup);
   await view.chooseFile(f); view.button('Confirm signed-in account').props.onClick(); await view.until(() => view.status().startsWith('Destination confirmed:'));
@@ -216,14 +216,14 @@ test('component cancel during lost response stops later batches; same archive re
   view.button('Read back same archive').props.onClick(); await view.until(() => view.status().startsWith('Partial archive found.'));
   assert.equal(view.button('Download verified original bytes').props.disabled, true);
 });
-test('component owner/logout event clears selected bytes and consent without uploading to the next owner', async t => {
+void test('component owner/logout event clears selected bytes and consent without uploading to the next owner', async t => {
   const { handle } = fixture(t), view = ui(handle); t.after(view.cleanup); await view.chooseFile(await file());
   view.button('Confirm signed-in account').props.onClick(); await view.until(() => view.status().startsWith('Destination confirmed:')); view.consent();
   view.accountChange(); assert.equal(view.button('Save / continue private archive').props.disabled, true); assert.doesNotMatch(view.text(), /Local file preview|こんにちは/);
   assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 0);
 });
 
-test('component lost acknowledgement requires successful readback before any further write', async t => {
+void test('component lost acknowledgement requires successful readback before any further write', async t => {
   const { handle, sqlite } = fixture(t); let drop = true;
   const view = ui(handle, { intercept(response, init) {
     if (init.method === 'POST' && drop) { drop = false; throw new Error('lost acknowledgement'); }
@@ -253,7 +253,7 @@ async function archived(view, f) {
   await view.until(() => view.status().startsWith('Original file archived privately'));
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 40));
-test('returning other-tab owner masks DOM and stale handlers before recheck, then requires new selection and consent', async t => {
+void test('returning other-tab owner masks DOM and stale handlers before recheck, then requires new selection and consent', async t => {
   const { handle, sqlite } = fixture(t); let owner = 'alpha', hold = false, release;
   const view = ui(handle, { owner: () => owner, intercept(response, init) {
     return hold && !init.method ? new Promise(resolve => { release = () => resolve(response); }) : response;
@@ -276,7 +276,7 @@ test('returning other-tab owner masks DOM and stale handlers before recheck, the
   view.button('Save / continue private archive').props.onClick(); await view.until(() => view.status().startsWith('Original file archived privately'));
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 2);
 });
-test('same-owner hidden/visible return restores verified bytes only after recheck and fences old callbacks', async t => {
+void test('same-owner hidden/visible return restores verified bytes only after recheck and fences old callbacks', async t => {
   const { handle } = fixture(t); let hold = false, release;
   const view = ui(handle, { intercept(response, init) { return hold && !init.method ? new Promise(resolve => { release = () => resolve(response); }) : response; } }); t.after(view.cleanup);
   const f = await file({ name: 'same-owner.json' }); await archived(view, f);
@@ -291,7 +291,7 @@ test('same-owner hidden/visible return restores verified bytes only after rechec
   view.button('Download verified original bytes').props.onClick();
   assert.deepEqual(new Uint8Array(await view.download().blob.arrayBuffer()), f.bytes);
 });
-test('transient offline recheck quarantines content until successful same-owner recovery', async t => {
+void test('transient offline recheck quarantines content until successful same-owner recovery', async t => {
   const { handle } = fixture(t); let offline = false;
   const view = ui(handle, { intercept(response, init) { if (offline && !init.method) throw Error('offline'); return response; } }); t.after(view.cleanup);
   await archived(view, await file({ name: 'offline-kept.json' })); offline = true; view.blur(); view.focus();
@@ -300,13 +300,13 @@ test('transient offline recheck quarantines content until successful same-owner 
   offline = false; view.button('Confirm signed-in account').props.onClick(); await view.until(() => view.status().startsWith('Destination confirmed:'));
   assert.match(view.text(), /offline-kept.json/); assert.equal(view.button('Download verified original bytes').props.disabled, false);
 });
-test('current unauthorized return clears previous owner private bytes and download', async t => {
+void test('current unauthorized return clears previous owner private bytes and download', async t => {
   const { handle } = fixture(t); let owner = 'alpha'; const view = ui(handle, { owner: () => owner }); t.after(view.cleanup);
   await archived(view, await file({ name: 'logged-out.json' })); owner = null; view.focus();
   await view.until(() => view.status().startsWith('Account changed.'));
   assert.doesNotMatch(view.text(), /logged-out.json|こんにちは|Destination: /); assert.equal(view.button('Download verified original bytes').props.disabled, true);
 });
-for (const late of ['200', '401', 'OWNER_CHANGED']) test(`obsolete ${late} after cancel/new selection cannot erase or replace newer owner intent`, async t => {
+for (const late of ['200', '401', 'OWNER_CHANGED']) void test(`obsolete ${late} after cancel/new selection cannot erase or replace newer owner intent`, async t => {
   const { handle, sqlite } = fixture(t); let owner = 'alpha', count = 0, release;
   const view = ui(handle, { owner: () => owner, intercept(response, init) {
     if (!init.method && ++count === 1) return new Promise(resolve => { release = () => resolve(late === '200' ? response
@@ -321,13 +321,13 @@ for (const late of ['200', '401', 'OWNER_CHANGED']) test(`obsolete ${late} after
   view.button('Save / continue private archive').props.onClick(); await view.until(() => view.status().startsWith('Original file archived privately'));
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 1);
 });
-test('cancel synchronously fences an already rendered save callback', async t => {
+void test('cancel synchronously fences an already rendered save callback', async t => {
   const { handle, sqlite } = fixture(t), view = ui(handle); t.after(view.cleanup);
   await ready(view, await file()); const oldSave = view.button('Save / continue private archive').props.onClick;
   view.button('Cancel preview / stop later saves').props.onClick(); oldSave(); await tick();
   assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 0); assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 0);
 });
-test('hidden in-flight commit stops batches; late old 200 cannot restore bytes over new owner intent', async t => {
+void test('hidden in-flight commit stops batches; late old 200 cannot restore bytes over new owner intent', async t => {
   const { handle, sqlite } = fixture(t); let owner = 'alpha', release, held = false;
   const view = ui(handle, { owner: () => owner, intercept(response, init) {
     if (init.method === 'POST' && !held) { held = true; return new Promise(resolve => { release = () => resolve(response); }); } return response;
@@ -342,7 +342,7 @@ test('hidden in-flight commit stops batches; late old 200 cannot restore bytes o
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 2);
   assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 2);
 });
-test('late file read, context and unmounted responses cannot revive an invalidated intent', async t => {
+void test('late file read, context and unmounted responses cannot revive an invalidated intent', async t => {
   const { handle } = fixture(t), f = await file(); let releaseFile, releaseAuth;
   const view = ui(handle, { intercept(response, init) { return !init.method ? new Promise(resolve => { releaseAuth = () => resolve(response); }) : response; } });
   view.input().props.onChange({ currentTarget: { files: [{ name: f.filename, size: f.bytes.length,
@@ -354,7 +354,7 @@ test('late file read, context and unmounted responses cannot revive an invalidat
   assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 0);
 });
 
-test('same-owner hidden in-flight archive requires same-ID GET and fresh consent before remaining batches', async t => {
+void test('same-owner hidden in-flight archive requires same-ID GET and fresh consent before remaining batches', async t => {
   const { handle, sqlite } = fixture(t); let held = false, release;
   const view = ui(handle, { intercept(response, init) {
     if (init.method === 'POST' && !held) { held = true; return new Promise(resolve => { release = () => resolve(response); }); } return response;
@@ -371,13 +371,13 @@ test('same-owner hidden in-flight archive requires same-ID GET and fresh consent
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 1);
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 118);
 });
-test('effect setup-cleanup-setup keeps current callbacks usable and unmounted callbacks fenced', async t => {
+void test('effect setup-cleanup-setup keeps current callbacks usable and unmounted callbacks fenced', async t => {
   const { handle } = fixture(t), view = ui(handle, { strictEffects: true });
   await archived(view, await file({ name: 'strict-effects.json' }));
   const oldDownload = view.button('Download verified original bytes').props.onClick;
   view.cleanup(); oldDownload(); await tick(); assert.equal(view.download(), undefined);
 });
-test('explicit new file selection supersedes pending reauthentication without reviving old owner state', async t => {
+void test('explicit new file selection supersedes pending reauthentication without reviving old owner state', async t => {
   const { handle } = fixture(t); let held = false, release;
   const view = ui(handle, { intercept(response, init) {
     if (!init.method && !held) { held = true; return new Promise(resolve => { release = () => resolve(Response.json({ error: 'UNAUTHORIZED' }, { status: 401 })); }); } return response;

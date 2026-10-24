@@ -147,13 +147,15 @@
         },
         {
           "path": "tests/pro-account-import.test.mjs",
-          "sha256": "6b3c1be317fd52ff44eeed415f3308532f783ce2c217865d60dfbe16d0282fc2"
+          "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f"
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pro-account-import-review-summary.json",
       "mainMerged": false,
       "wholeUnitAccepted": false,
-      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects"
+      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "originalSourceReviewPreserved": true,
+      "mechanicalTestDeltaIndependentReviewPending": true
     }
   ],
   "executionPriority": [

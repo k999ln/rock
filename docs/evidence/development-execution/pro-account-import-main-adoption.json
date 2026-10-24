@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.pro-account-import.main-adoption/1",
   "recordedAt": "2026-10-24T17:23:32.228070+00:00",
-  "status": "source_exact6_local69_type_pass_fullverify_sandbox_listen_failure_retained_newheadCI_required",
+  "status": "mechanical25_test_void_delta_local69_lint_type_pass_newheadCI_independent_review_pending",
   "unit": "PRO-01",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "09-business-pilots",
@@ -31,10 +31,10 @@
     },
     {
       "path": "tests/pro-account-import.test.mjs",
-      "sha256": "6b3c1be317fd52ff44eeed415f3308532f783ce2c217865d60dfbe16d0282fc2"
+      "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f"
     }
   ],
-  "sourceAdaptation": false,
+  "sourceAdaptation": true,
   "protectedFiles": [
     {
       "path": ".github/workflows/ci.yml",
@@ -368,14 +368,205 @@
   },
   "scope": "Explicit selected Pro local export -> local preview -> account confirmation and separate consent -> same-owner encrypted exact original archive -> full byte/SHA readback/download. No WorkJob/Tool/model execution.",
   "acceptance": {
-    "sourceIndependentLimited": true,
+    "sourceIndependentLimited": false,
     "metadataReviewed": false,
     "mainMerged": false,
     "wholePRO01": false,
     "realAccountBrowser": false,
     "nativeProFullMigration": false,
     "providerBilling": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "originalSourceIndependentLimited": true,
+    "mechanicalDeltaIndependentReview": false
   },
-  "next": "Commit-before-scan same pinned Gitleaks current-file/canary checks, frozen fullverify once, separate draft PR and exact-head CI, independent metadata adoption review; no main merge yet."
+  "next": "Separate independent final-head/source-test mechanical delta review and actual new-head CI fullverify required before merge; no local fullverify repetition.",
+  "originalReviewedSourceFiles": [
+    {
+      "path": "lib/pro-account-import.ts",
+      "sha256": "58ff7987f5f876bcdfd064f27d3f13be1715c8626cbd3add239d6622f86f1b97"
+    },
+    {
+      "path": "lib/pro-account-import.server.ts",
+      "sha256": "92e04e9eb46d4e3bafb250ebc88bd660d15a77fa18ea644862748530522ae3ed"
+    },
+    {
+      "path": "app/api/account/pro-import/route.ts",
+      "sha256": "e02afb5f95b72782b0c4d33fdf0585cc5e865abcee5d7c833bea1d45028c824e"
+    },
+    {
+      "path": "components/pro-account-import.tsx",
+      "sha256": "9b51cfbc0b380795d6485b2be8125cd19897ee82a51643133cd40f4fe709679b"
+    },
+    {
+      "path": "app/account/import/pro/page.tsx",
+      "sha256": "d6bf62cdb5bf408b49142b087c40938cbf81a1b913927827fdd22b96f7f71ea7"
+    },
+    {
+      "path": "tests/pro-account-import.test.mjs",
+      "sha256": "6b3c1be317fd52ff44eeed415f3308532f783ce2c217865d60dfbe16d0282fc2"
+    }
+  ],
+  "mechanicalLintDelta": {
+    "path": "tests/pro-account-import.test.mjs",
+    "beforeSha256": "6b3c1be317fd52ff44eeed415f3308532f783ce2c217865d60dfbe16d0282fc2",
+    "afterSha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f",
+    "insertions": [
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 57,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 67,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 74,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 82,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 92,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 102,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 111,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 119,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 125,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 137,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 198,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 208,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 219,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 226,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 256,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 279,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 294,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 303,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 309,
+        "column": 53
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 324,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 330,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 345,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 357,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 374,
+        "column": 1
+      },
+      {
+        "path": "tests/pro-account-import.test.mjs",
+        "line": 380,
+        "column": 1
+      }
+    ],
+    "bytesAdded": 125,
+    "exactRemovalReconstructsOriginal": true,
+    "runtimeFiveFilesUnchanged": true,
+    "recordedAt": "2026-10-24T17:52:25.079132+00:00",
+    "reason": "Actual exactdd10 Linux npmverify reached product lint and failed25 no-floating-promises test-registration calls; normal source generation/typecheck had completed. This is separate from local sandbox listen EPERM.",
+    "oldLinuxFailure": {
+      "head": "dd10f4991f849fc9e220669764cedb11ed4a5e1c",
+      "runId": 40116356453,
+      "jobId": 120938347850,
+      "rule": "typescript/no-floating-promises",
+      "errors": 25,
+      "logSha256": "482a3896c08629aef1732f720fa9f99bb2177b18caefd360e4f1ebb629c9dc9b",
+      "localReproductionLogSha256": "7d4d262b9f74807d3b143e3b22ca0ad26777bc7289c7156910420787e2cab1e8",
+      "reviewReceiptSha256": "cd7b0120bbee04d53f030afc5593c2d313e61772bec6514f802fea219df4aea5",
+      "status": "failure retained; not converted to success"
+    },
+    "currentLocalChecks": {
+      "targetedTests": 69,
+      "pass": 69,
+      "fail": 0,
+      "skip": 0,
+      "lintProduct": "passed",
+      "typecheck": "passed_normal_pretypecheck",
+      "logHashes": {
+        "targeted": "7f30547192099cc7d2fad2075ecc1fdd8089fda2229caf3ad56a546ddac372b5",
+        "lint": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0",
+        "typecheck": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+      }
+    },
+    "newHeadActualNpmVerifyRequired": true,
+    "independentNewHashReviewRequired": true
+  }
 }

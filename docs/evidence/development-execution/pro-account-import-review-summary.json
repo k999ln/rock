@@ -75,5 +75,39 @@
     "Root/Git own design/index/README/project/status and exact final integration candidate acceptance.",
     "Old review unchanged; whole unit remains unaccepted."
   ],
-  "privacy": "Only hashes/counts/scope; no raw original file, private paths, review transcript, keyring, secrets or logs copied."
+  "privacy": "Only hashes/counts/scope; no raw original file, private paths, review transcript, keyring, secrets or logs copied.",
+  "reviewScope": "Original six hashes only. Current test-registration mechanical delta is not independently re-reviewed.",
+  "currentCandidateSourceFiles": [
+    {
+      "path": "lib/pro-account-import.ts",
+      "sha256": "58ff7987f5f876bcdfd064f27d3f13be1715c8626cbd3add239d6622f86f1b97"
+    },
+    {
+      "path": "lib/pro-account-import.server.ts",
+      "sha256": "92e04e9eb46d4e3bafb250ebc88bd660d15a77fa18ea644862748530522ae3ed"
+    },
+    {
+      "path": "app/api/account/pro-import/route.ts",
+      "sha256": "e02afb5f95b72782b0c4d33fdf0585cc5e865abcee5d7c833bea1d45028c824e"
+    },
+    {
+      "path": "components/pro-account-import.tsx",
+      "sha256": "9b51cfbc0b380795d6485b2be8125cd19897ee82a51643133cd40f4fe709679b"
+    },
+    {
+      "path": "app/account/import/pro/page.tsx",
+      "sha256": "d6bf62cdb5bf408b49142b087c40938cbf81a1b913927827fdd22b96f7f71ea7"
+    },
+    {
+      "path": "tests/pro-account-import.test.mjs",
+      "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f"
+    }
+  ],
+  "mechanicalDeltaIndependentReviewPending": true,
+  "oldAdoptionReview": {
+    "originalPath": "docs/evidence/development-execution/pro-account-import-main-adoption-review.json",
+    "sha256": "cd7b0120bbee04d53f030afc5593c2d313e61772bec6514f802fea219df4aea5",
+    "verdict": "CHANGES_REQUIRED_FOR_ADOPTION",
+    "mustFix": "Exactdd10 Linux lint25; original source/metadata limited pass does not close required CI gate"
+  }
 }

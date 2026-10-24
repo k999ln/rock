@@ -1,3 +1,7 @@
+## Pro PR199 test登録のlint互換修正（2026-10-24）
+
+旧dd10の実Linux npmverifyは型検査後lint:productのno-floating-promises25件で失敗。local sandbox listen EPERMとは別に保持。対象はPro6内tests/pro-account-import.test.mjsのみ、全25登録へvoidを明示し+125bytes、除去で原本完全復元。assertion/テスト本体/名前・runtime5/保護76/権限/保存/暗号/schema/policy/95分類は不変。旧test6b3c→新8a8250、旧6hash限定レビューを新bytesへ転用しない。focused69pass・lint:product/typecheck成功、canonical設計/目次/statusを同期し、新headCIと別独立再検収前にmergeしない。
+
 ## PRO-01原本保管exact6のmain統合候補（2026-10-24 / G04）
 
 固定全verifyは初期段階のsandbox localhost listen EPERMで停止（4472入力不変、7秒）。失敗を保持し、ローカル反復無し、新head CI実npmverifyを最終gateとする。69試験と正規前処理typecheckの成功とは区別する。
