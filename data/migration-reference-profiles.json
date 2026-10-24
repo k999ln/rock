@@ -1,0 +1,1256 @@
+{
+  "schema": "rockstaros.reviewed-migration-reference-profiles/1",
+  "scope": "Frozen reviewed source bytes and expected alias objects; planner never executes source SQL",
+  "profiles": [
+    {
+      "name": "root84",
+      "journalSha256": "2ffe86411182ebbe31822ae4e962ded69bdc97f9c38a4ab83e3365efd578c639",
+      "sqlFiles": [
+        [
+          "0000_previous_havok.sql",
+          "7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63"
+        ],
+        [
+          "0001_wealthy_shinko_yamashiro.sql",
+          "dd7a0e05ff9d67b14f09c60addc4f27f689d68eead3d17102f31e898bb3218d9"
+        ],
+        [
+          "0002_operations_backend.sql",
+          "83f1c3ced5eb396775926940fc73dc96e0fc9e2f3bb7991bd5a665b228e9d2eb"
+        ],
+        [
+          "0002_work_jobs.sql",
+          "3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9"
+        ],
+        [
+          "0004_union_bridge.sql",
+          "e183bc5778f03886bcd03d0a1548121e06252acde6565769043c3b660dc151af"
+        ],
+        [
+          "0005_early_the_enforcers.sql",
+          "711ed2bc635f5145be84fc953d06d9f2704a874d160275129842df9e4affd1b9"
+        ],
+        [
+          "0006_married_scream.sql",
+          "6294d5c0f810962647d15bb739f9ca35d6914e3647f211c11381f5afd5a8ede4"
+        ],
+        [
+          "0007_yielding_giant_man.sql",
+          "ceeb23872f9d88652a936f6f7f1a09d9f0f7dd096dc5ce191412374de22b8cc2"
+        ],
+        [
+          "0008_wooden_avengers.sql",
+          "542c4e4356ec26b0afb8c55afb46341719ccce91f9c3c449422a7bad0165df70"
+        ],
+        [
+          "0009_sad_giant_girl.sql",
+          "1f167394b9c8fe4fcff2c297c2058c6d1d697daf4cda07066ce4c227af2c91fc"
+        ],
+        [
+          "0010_gray_fat_cobra.sql",
+          "3af98875ff3d2f07b2c5ae4e2d2badf91834c180647c5013fa3659eb575797af"
+        ],
+        [
+          "0011_overrated_skaar.sql",
+          "0cbdb7330ccc5862e16ef35f211fa9a03338369a64a9aae19db1fc86044d9736"
+        ],
+        [
+          "0012_marketplace_relation_guards.sql",
+          "d0785fb3eb987e035197bae77853b562ad0de05de187bf0f35640872f695ca2e"
+        ],
+        [
+          "0013_sky_provider_connections.sql",
+          "6c49fb04ad788f534b464bf0fbe7c85fbc825996af1bd4e96a7e1b2b36a5578b"
+        ],
+        [
+          "0014_sparkling_chimera.sql",
+          "c1a60c71fe6abc17a8bf816b89ccbfb7609aef86286d913f4b1fd7e547bc64f9"
+        ],
+        [
+          "0015_oval_the_twelve.sql",
+          "1fe8549052f694e4e6d2e964f4449f60dc8020f0ae9d1c42ba678a82c3dc60f5"
+        ],
+        [
+          "0016_red_crusher_hogan.sql",
+          "ee4351c89a0a48b3ff1a2de7bdfd4504ff82c1b7b4d167f2e37248b56c763ec9"
+        ],
+        [
+          "0017_high_krista_starr.sql",
+          "5bb272de10ff801f9cf28ea86ad2e4be5abc82c2ad2981b77852b5f9c9f3cb09"
+        ],
+        [
+          "0018_sky_commerce.sql",
+          "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26"
+        ],
+        [
+          "0019_sky_a2a_delegations.sql",
+          "b3b448c4c8df5fcb309c56ef8a35e709f3a7f5a2f5e47394acd1738eeff32add"
+        ],
+        [
+          "0020_a2a_delegation_events.sql",
+          "8fb350013091cc26a5b59bbfb4626cf987f043f1661b8b1768b288af11995bad"
+        ],
+        [
+          "0021_a2a_delegation_inputs.sql",
+          "a24a737720bdf44b7d1b50d96ee2087a0e202cec9c98a6520ed020f1d3c3f1f8"
+        ],
+        [
+          "0022_a2a_delegation_artifacts.sql",
+          "feef54b76a08f89dad5fe7fe973714e5590a1812b968aa3fdfa26d8e0f334769"
+        ],
+        [
+          "0023_a2a_sky_agent_connections.sql",
+          "b3375fbb54be7947c622ebcf03068bec2f8163be27855602b12fdb093ebbd7c1"
+        ],
+        [
+          "0024_a2a_broker_authorizations.sql",
+          "11872c95da26391ec35e295d34c564377e13730bf1c93dcfb5bc135dda1226bd"
+        ],
+        [
+          "0025_a2a_shared_budget_reservations.sql",
+          "99ab92eb2feffac6f273f039465071af8d61d4e6fa89a313a24a1e78c6802627"
+        ],
+        [
+          "0026_a2a_usage_receipts.sql",
+          "8a6efd2d6e08d04d092439bf4851570baa551b4206aca3ca7d9a53feb14f16d5"
+        ],
+        [
+          "0027_esim_provider_webhook_inbox.sql",
+          "58830bff9bd22847b3fd2727a9298c263e27f88d1f7c2feb8a041a3c6eb035c2"
+        ],
+        [
+          "0028_esim_provider_webhook_inbox.sql",
+          "76843c70516bba2959120576a2cbf955779f0e84f8a69f46de95577d6e812612"
+        ],
+        [
+          "0029_esim_profile_order_binding.sql",
+          "226c2dfa824390b6b708acf7db0f082fd460d7b75a324c81d002ac165012082c"
+        ],
+        [
+          "0030_esim_provider_order_once.sql",
+          "0b0d1247c81faf3b6b80a5ae966bd56ac58de7d2018e3c0d778cf4e351785be3"
+        ],
+        [
+          "0031_esim_install_material_delivery.sql",
+          "c5628a6eb338ec5f8ca6f49aa7f5daa2a25a310b73f407e1ca3d81d49599b61d"
+        ],
+        [
+          "0032_esim_order_pricing_snapshot.sql",
+          "ff4973b282264863eb97c550e6174e9a89cc37178c517a758d782edb4fae011a"
+        ],
+        [
+          "0033_a2a_offline_continuation_consent.sql",
+          "d111dbc202f597b6e87cd5b3d611368fa454501bfee0e66aed6bbd796d4ea444"
+        ],
+        [
+          "0034_esim_install_receipts.sql",
+          "3e632b0edba45e6857ccab6de773de3e6b9d32e72037c186fbb9da9eaa7344fc"
+        ],
+        [
+          "0035_esim_device_gateway_entitlements.sql",
+          "298a3c641b5ebcc862dc4156394d1f2df635489609b5febe2377b98a858ea54b"
+        ],
+        [
+          "0036_nostalgic_miek.sql",
+          "03e90152127cd99de4694bab172e68a44924145c4c62d95a6c8562377370d62c"
+        ],
+        [
+          "0037_csv_trial_payments.sql",
+          "6626fef8914586f42b228e4805b42575343afb085b2ae33c0cd7f9eb2eb33af7"
+        ],
+        [
+          "0038_android_attested_gateway_keys.sql",
+          "cbeb908044b2eb4b6f506d2927367173897e5618b3eb7f6816025907646730a7"
+        ],
+        [
+          "0039_rockstar_service_entitlements.sql",
+          "73b9b927589d97eb6ed15378e2d511568fda0eaf5945997face768f0a75d06e7"
+        ],
+        [
+          "0040_rockstar_entitlement_events.sql",
+          "a54e5a511793e53582653f1a1d90db9efe20705510659cf6c58f3c02b64eb14c"
+        ],
+        [
+          "0041_a2a_price_quotes.sql",
+          "2269c035155ef1fb707abf58a423f4695fb24ea363996c8e54308a9504804f5a"
+        ],
+        [
+          "0042_remote_ai_rate_cards.sql",
+          "ab47f2da69fbe15fcf44df55572a74df20f41217d921d5f9d20aee3d5d184015"
+        ],
+        [
+          "0043_a2a_delegation_fanout_limits.sql",
+          "2a7fe251949a7859f93f94fc048563bbd4c7ce91efe839c9849596a367418c1a"
+        ],
+        [
+          "0044_a2a_live_usage_snapshots.sql",
+          "aa22641628a0bbc356d7f4ae1e9008f46591f4fde0fd5790142c759b7a3b3c96"
+        ],
+        [
+          "0045_rockstar_device_sessions.sql",
+          "8bcb2497d8dbc5f05194a6135edaac3acfea14591d6575707f31dc43ce3c91e9"
+        ],
+        [
+          "0046_remote_ai_text_executions.sql",
+          "022ad7625c7269874d195cc323a986c3ffb168c87237e84822e97e79a2adb219"
+        ],
+        [
+          "0047_remote_ai_text_durable_inputs.sql",
+          "1b41984221b595b7282881bdd876f0b5f420f0eecc540d317ff9d3ea0105a34b"
+        ],
+        [
+          "0048_rockstar_a2a_broker_enrollment.sql",
+          "2706c71ae998787c434d37550308f507ab427c5b6bbf1341112b97a5058462f5"
+        ],
+        [
+          "0049_a2a_price_quote_consent_events.sql",
+          "4af15789d46c5a14791f9de8b022eab8cfe684d8089031b131dc8d582395600e"
+        ],
+        [
+          "0050_rockstar_entitlement_purchase_once.sql",
+          "65d10e77038a70de296d105c03aa0a07f437819d6a06224cf319eb9a98dea4ff"
+        ],
+        [
+          "0051_remote_ai_text_live_estimates.sql",
+          "8ed0987699467c276d33da8dd5bdfe7c6521fde8b118cf4d09c51949b92b75d5"
+        ],
+        [
+          "0052_rockstar_entitlement_issuer_deliveries.sql",
+          "9c59f570b5ff85ee71283a62cbcce6e90da87e43df2c0fbac1027d5a80e33d47"
+        ],
+        [
+          "0053_rockstar_entitlement_delivery_key_ids.sql",
+          "c6e5748d407a659781753e6c3f7deb3b67d7c850a8115ecb504c6f86a8aff31b"
+        ],
+        [
+          "0054_rockstar_entitlement_issuer_rate_limits.sql",
+          "3252a601000575e2b0bd716408829f49019daf65bb934d0714ec5eb2171b216e"
+        ],
+        [
+          "0055_sky_package_runtime_bindings.sql",
+          "3326f8bdb4474e92bac0b486f33874abd76910cafb8e68a990a21e4175024332"
+        ],
+        [
+          "0056_a2a_package_runtime_binding_refs.sql",
+          "d7903f3d811a124ef22f78f50e98dbe5ec3d704a45952e1dcf6a99cfbaff28d9"
+        ],
+        [
+          "0057_a2a_parent_sequence.sql",
+          "b7d8a4fb63e5ead7452a8c6c13151ff58c1da0df9217cd3142f4066b037e84c3"
+        ],
+        [
+          "0058_campus_layer.sql",
+          "385902fb4e8b56ae0759484025bf4cb92bdc6e4216493ec2a117ad1f86b21404"
+        ],
+        [
+          "0059_esim_cloud_access_keys.sql",
+          "a004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946"
+        ],
+        [
+          "0060_sky_usage_payments.sql",
+          "4d98258ab0686a88d673e3ae89ab11b35d048dd66b9aea1e54591e2b79f1dd8d"
+        ],
+        [
+          "0061_esim_cloud_proof_uses.sql",
+          "81179c5895b2218420f22ef8ee811b9c315f68d2e7cf0cf17f68967606f07807"
+        ],
+        [
+          "0063_sky_mcp_slots.sql",
+          "ce0277e0da1fe12a609f764fa11f2114e78f7211770536d546c6560694170572"
+        ],
+        [
+          "0064_sky_linux_service.sql",
+          "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+        ],
+        [
+          "0065_rockstar_service_setup.sql",
+          "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+        ],
+        [
+          "0066_sky_agent_settings.sql",
+          "ebb18d1923793903531b86d195fa0c4b321ec09aa375b2013f10b18e717065ef"
+        ],
+        [
+          "0067_sky_optional_features.sql",
+          "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d"
+        ],
+        [
+          "0068_sky_hub_plugins.sql",
+          "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474"
+        ],
+        [
+          "0069_sky_x_feed_state.sql",
+          "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7"
+        ],
+        [
+          "0070_eve_durable_history.sql",
+          "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042"
+        ],
+        [
+          "0071_sky_communities.sql",
+          "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af"
+        ],
+        [
+          "0072_community_os_keys.sql",
+          "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+        ],
+        [
+          "0073_sky_timeline_interactions.sql",
+          "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2"
+        ],
+        [
+          "0074_sky_x_account_oauth.sql",
+          "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+        ],
+        [
+          "0075_eve_device_jobs.sql",
+          "4f20a76c0b75f66817abb310e2c19e1692fec3bd53756d3ce77576a5833936d4"
+        ],
+        [
+          "0076_eve_device_commands.sql",
+          "68051829da0c551161a43d74012d245db38e35a4d7cef906a2e8e52011f1876e"
+        ],
+        [
+          "0077_jennifer_passkey_base.sql",
+          "e4d4a62076d215e0b14ad17e98e9c55199f7194897f663178c1443033afd756c"
+        ],
+        [
+          "0078_rockstar_accounts.sql",
+          "b73721a45c57517a766f7009f0e5b2109f03b1563ff619b7f396598ba30f4562"
+        ],
+        [
+          "0079_rockstar_password_accounts.sql",
+          "e983d21d6a713f20af31f9245d94d8c60345e0b79259d5aa16c6e61273ee9e84"
+        ],
+        [
+          "0080_sky_author_agreement_documents.sql",
+          "2902c000d7c9b596e10914fcd51f0cea48ec818f33bfc096faaa6ba669ffa64e"
+        ],
+        [
+          "0081_sky_agent_invoice_preparation.sql",
+          "c831b57a341b38488f3aa52c8d611ee001830e29223c237e87b2b5462bcfb7c5"
+        ],
+        [
+          "0082_sky_agent_monthly_statements.sql",
+          "1c267368cfe76fb9adb8979593108fda96cf6789837d97731438b7040852e3f6"
+        ],
+        [
+          "0083_eve_runtime_presence.sql",
+          "c68be2fc607fc695d3bb6583b26af0f85e320dba0a748c5aa2b66ccadabd2764"
+        ],
+        [
+          "0084_sky_agent_shares.sql",
+          "420e7f9088bdad844a534600db702cac4e6fcbb417338761dab58ac76295b321"
+        ]
+      ],
+      "aliasObjects": {
+        "0064_sky_linux_service.sql": [
+          {
+            "name": "idx_sky_agent_monthly_owner_period",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX idx_sky_agent_monthly_owner_period ON sky_linux_service_documents(owner_user_id,kind,period,currency)"
+          },
+          {
+            "name": "idx_sky_linux_receipt_workspace",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_receipt_workspace ON sky_linux_service_receipts(workspace_id,created_at)"
+          },
+          {
+            "name": "idx_sky_linux_service_owner",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_service_owner ON sky_linux_service_documents(owner_user_id,kind,updated_at)"
+          },
+          {
+            "name": "sky_agent_monthly_insert",
+            "type": "trigger",
+            "sql": "CREATE TRIGGER sky_agent_monthly_insert BEFORE INSERT ON sky_linux_service_documents WHEN NEW.kind='agent_monthly_statement' BEGIN\n SELECT CASE WHEN NEW.revision IS NOT 0 THEN RAISE(ABORT,'AGENT_MONTHLY_REVISION') END;\n SELECT CASE WHEN json_extract(NEW.payload,'$.schema') IS NOT 'sky.agent-monthly-statement/1' OR\n  json_extract(NEW.payload,'$.id') IS NOT NEW.id OR\n  json_extract(NEW.payload,'$.ownerId') IS NOT NEW.owner_user_id OR\n  json_extract(NEW.payload,'$.mode') IS NOT 'test' OR\n  json_extract(NEW.payload,'$.state') IS NOT 'draft_unreconciled' OR\n  json_extract(NEW.payload,'$.invoice') IS NOT 'not_created' OR\n  json_extract(NEW.payload,'$.collection') IS NOT 'disabled' OR\n  json_extract(NEW.payload,'$.customerPayment') IS NOT 'unconfirmed' OR\n  NEW.period IS NULL OR\n  NEW.currency NOT IN ('USD','JPY') OR\n  NEW.currency IS NULL OR\n  json_extract(NEW.payload,'$.period') IS NOT NEW.period OR\n  json_extract(NEW.payload,'$.currency') IS NOT NEW.currency OR\n  json_extract(NEW.payload,'$.baseMinor') IS NOT 0 OR\n  json_type(NEW.payload,'$.items') IS NOT 'array' OR\n  json_array_length(NEW.payload,'$.items') NOT BETWEEN 1 AND 200 OR\n  strftime('%Y-%m',NEW.period||'-01') IS NOT NEW.period THEN RAISE(ABORT,'AGENT_MONTHLY_SHAPE') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.amountMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.amountMinor') IS NOT (SELECT sum(json_extract(value,'$.amountMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.amountMinor') IS NOT 'integer' OR json_extract(value,'$.amountMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.observedMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.observedMinor') IS NOT (SELECT sum(json_extract(value,'$.observedMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.observedMinor') IS NOT 'integer' OR json_extract(value,'$.observedMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.authorGrossMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.authorGrossMinor') IS NOT (SELECT sum(json_extract(value,'$.authorGrossMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.authorGrossMinor') IS NOT 'integer' OR json_extract(value,'$.authorGrossMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.commissionMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.commissionMinor') IS NOT (SELECT sum(json_extract(value,'$.commissionMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.commissionMinor') IS NOT 'integer' OR json_extract(value,'$.commissionMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.authorPayableMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.authorPayableMinor') IS NOT (SELECT sum(json_extract(value,'$.authorPayableMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.authorPayableMinor') IS NOT 'integer' OR json_extract(value,'$.authorPayableMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.otherUsageMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.otherUsageMinor') IS NOT (SELECT sum(json_extract(value,'$.otherUsageMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.otherUsageMinor') IS NOT 'integer' OR json_extract(value,'$.otherUsageMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN (SELECT count(DISTINCT json_extract(value,'$.paymentId')) FROM json_each(NEW.payload,'$.items')) IS NOT json_array_length(NEW.payload,'$.items') THEN RAISE(ABORT,'AGENT_MONTHLY_DUPLICATE') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') item WHERE NOT EXISTS(\n SELECT 1 FROM sky_usage_payments p\n JOIN a2a_usage_receipts r ON r.delegation_id=p.agent_source_id AND r.owner_user_id=p.owner_user_id\n JOIN agent_delegations d ON d.id=p.agent_source_id AND d.owner_user_id=p.owner_user_id AND d.parent_job_id=r.parent_job_id\n JOIN work_jobs w ON w.id=d.parent_job_id AND w.user_id=p.owner_user_id\n JOIN json_each(w.payload,'$.eveAgent.usageSources') s ON json_extract(s.value,'$.provenance.delegationId')=d.id\n JOIN sky_author_agreement_documents a ON a.agreement_sha256=json_extract(s.value,'$.authorAgreement.agreementSha256') AND a.revoked_at IS NULL\n JOIN sky_package_runtime_bindings b ON b.binding_id=d.package_runtime_binding_id AND b.digest=d.package_runtime_binding_digest AND b.status='active'\n WHERE p.id=json_extract(item.value,'$.paymentId') AND p.owner_user_id=NEW.owner_user_id AND p.mode='test' AND p.state='prepared' AND p.source_kind='sky_agent'\n AND p.agent_source_id=json_extract(item.value,'$.sourceId') AND p.source_digest=json_extract(item.value,'$.digest')\n AND p.confirmation_id=json_extract(item.value,'$.confirmationId') AND p.amount_minor=json_extract(item.value,'$.amountMinor') AND p.currency=lower(NEW.currency)\n AND strftime('%Y-%m',r.issued_at/1000.0,'unixepoch')=NEW.period\n AND r.amount_minor=json_extract(item.value,'$.observedMinor') AND d.parent_job_id=json_extract(item.value,'$.parentJobId')\n AND json_extract(w.payload,'$.eveAgent.threadId')=json_extract(item.value,'$.threadId')\n AND a.agreement_sha256=json_extract(item.value,'$.agreementSha256') AND a.publisher_id=json_extract(item.value,'$.publisherId')\n AND json_extract(a.agreement_json,'$.expiresAt')>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)\n AND json_extract(b.binding_json,'$.expiresAt')>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)\n AND json_extract(s.value,'$.collectionConsent.id')=p.confirmation_id\n AND json_extract(s.value,'$.provenance.receiptSha256')=json_extract(item.value,'$.receiptSha256')\n AND json_extract(s.value,'$.authorAllocation.allocation.grossMinor')=json_extract(item.value,'$.authorGrossMinor')\n AND json_extract(s.value,'$.authorAllocation.allocation.commissionMinor')=json_extract(item.value,'$.commissionMinor')\n AND json_extract(s.value,'$.authorAllocation.allocation.payableMinor')=json_extract(item.value,'$.authorPayableMinor')\n AND json_extract(s.value,'$.authorAllocation.otherUsageMinor')=json_extract(item.value,'$.otherUsageMinor')\n )) THEN RAISE(ABORT,'AGENT_MONTHLY_SOURCE') END;\nEND"
+          },
+          {
+            "name": "sky_agent_monthly_no_delete",
+            "type": "trigger",
+            "sql": "CREATE TRIGGER sky_agent_monthly_no_delete BEFORE DELETE ON sky_linux_service_documents WHEN OLD.kind='agent_monthly_statement' BEGIN SELECT RAISE(ABORT,'AGENT_MONTHLY_IMMUTABLE'); END"
+          },
+          {
+            "name": "sky_agent_monthly_update",
+            "type": "trigger",
+            "sql": "CREATE TRIGGER sky_agent_monthly_update BEFORE UPDATE ON sky_linux_service_documents WHEN OLD.kind='agent_monthly_statement' OR NEW.kind='agent_monthly_statement' BEGIN\n SELECT CASE WHEN OLD.kind IS NOT NEW.kind OR OLD.owner_user_id IS NOT NEW.owner_user_id OR OLD.id IS NOT NEW.id OR OLD.period IS NOT NEW.period OR OLD.currency IS NOT NEW.currency OR NEW.revision IS NOT OLD.revision+1 THEN RAISE(ABORT,'AGENT_MONTHLY_IMMUTABLE') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(OLD.payload,'$.items') old_item WHERE NOT EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') new_item WHERE json_extract(old_item.value,'$.paymentId')=json_extract(new_item.value,'$.paymentId') AND json(old_item.value)=json(new_item.value))) THEN RAISE(ABORT,'AGENT_MONTHLY_MEMBER_IMMUTABLE') END;\n SELECT CASE WHEN json_extract(NEW.payload,'$.schema') IS NOT 'sky.agent-monthly-statement/1' OR\n  json_extract(NEW.payload,'$.id') IS NOT NEW.id OR\n  json_extract(NEW.payload,'$.ownerId') IS NOT NEW.owner_user_id OR\n  json_extract(NEW.payload,'$.mode') IS NOT 'test' OR\n  json_extract(NEW.payload,'$.state') IS NOT 'draft_unreconciled' OR\n  json_extract(NEW.payload,'$.invoice') IS NOT 'not_created' OR\n  json_extract(NEW.payload,'$.collection') IS NOT 'disabled' OR\n  json_extract(NEW.payload,'$.customerPayment') IS NOT 'unconfirmed' OR\n  NEW.period IS NULL OR\n  NEW.currency NOT IN ('USD','JPY') OR\n  NEW.currency IS NULL OR\n  json_extract(NEW.payload,'$.period') IS NOT NEW.period OR\n  json_extract(NEW.payload,'$.currency') IS NOT NEW.currency OR\n  json_extract(NEW.payload,'$.baseMinor') IS NOT 0 OR\n  json_type(NEW.payload,'$.items') IS NOT 'array' OR\n  json_array_length(NEW.payload,'$.items') NOT BETWEEN 1 AND 200 OR\n  strftime('%Y-%m',NEW.period||'-01') IS NOT NEW.period THEN RAISE(ABORT,'AGENT_MONTHLY_SHAPE') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.amountMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.amountMinor') IS NOT (SELECT sum(json_extract(value,'$.amountMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.amountMinor') IS NOT 'integer' OR json_extract(value,'$.amountMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.observedMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.observedMinor') IS NOT (SELECT sum(json_extract(value,'$.observedMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.observedMinor') IS NOT 'integer' OR json_extract(value,'$.observedMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.authorGrossMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.authorGrossMinor') IS NOT (SELECT sum(json_extract(value,'$.authorGrossMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.authorGrossMinor') IS NOT 'integer' OR json_extract(value,'$.authorGrossMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.commissionMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.commissionMinor') IS NOT (SELECT sum(json_extract(value,'$.commissionMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.commissionMinor') IS NOT 'integer' OR json_extract(value,'$.commissionMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.authorPayableMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.authorPayableMinor') IS NOT (SELECT sum(json_extract(value,'$.authorPayableMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.authorPayableMinor') IS NOT 'integer' OR json_extract(value,'$.authorPayableMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN json_type(NEW.payload,'$.otherUsageMinor') IS NOT 'integer' OR json_extract(NEW.payload,'$.otherUsageMinor') IS NOT (SELECT sum(json_extract(value,'$.otherUsageMinor')) FROM json_each(NEW.payload,'$.items')) OR EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') WHERE json_type(value,'$.otherUsageMinor') IS NOT 'integer' OR json_extract(value,'$.otherUsageMinor')<0) THEN RAISE(ABORT,'AGENT_MONTHLY_TOTAL') END;\n SELECT CASE WHEN (SELECT count(DISTINCT json_extract(value,'$.paymentId')) FROM json_each(NEW.payload,'$.items')) IS NOT json_array_length(NEW.payload,'$.items') THEN RAISE(ABORT,'AGENT_MONTHLY_DUPLICATE') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM json_each(NEW.payload,'$.items') item WHERE NOT EXISTS(\n SELECT 1 FROM sky_usage_payments p\n JOIN a2a_usage_receipts r ON r.delegation_id=p.agent_source_id AND r.owner_user_id=p.owner_user_id\n JOIN agent_delegations d ON d.id=p.agent_source_id AND d.owner_user_id=p.owner_user_id AND d.parent_job_id=r.parent_job_id\n JOIN work_jobs w ON w.id=d.parent_job_id AND w.user_id=p.owner_user_id\n JOIN json_each(w.payload,'$.eveAgent.usageSources') s ON json_extract(s.value,'$.provenance.delegationId')=d.id\n JOIN sky_author_agreement_documents a ON a.agreement_sha256=json_extract(s.value,'$.authorAgreement.agreementSha256') AND a.revoked_at IS NULL\n JOIN sky_package_runtime_bindings b ON b.binding_id=d.package_runtime_binding_id AND b.digest=d.package_runtime_binding_digest AND b.status='active'\n WHERE p.id=json_extract(item.value,'$.paymentId') AND p.owner_user_id=NEW.owner_user_id AND p.mode='test' AND p.state='prepared' AND p.source_kind='sky_agent'\n AND p.agent_source_id=json_extract(item.value,'$.sourceId') AND p.source_digest=json_extract(item.value,'$.digest')\n AND p.confirmation_id=json_extract(item.value,'$.confirmationId') AND p.amount_minor=json_extract(item.value,'$.amountMinor') AND p.currency=lower(NEW.currency)\n AND strftime('%Y-%m',r.issued_at/1000.0,'unixepoch')=NEW.period\n AND r.amount_minor=json_extract(item.value,'$.observedMinor') AND d.parent_job_id=json_extract(item.value,'$.parentJobId')\n AND json_extract(w.payload,'$.eveAgent.threadId')=json_extract(item.value,'$.threadId')\n AND a.agreement_sha256=json_extract(item.value,'$.agreementSha256') AND a.publisher_id=json_extract(item.value,'$.publisherId')\n AND json_extract(a.agreement_json,'$.expiresAt')>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)\n AND json_extract(b.binding_json,'$.expiresAt')>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)\n AND json_extract(s.value,'$.collectionConsent.id')=p.confirmation_id\n AND json_extract(s.value,'$.provenance.receiptSha256')=json_extract(item.value,'$.receiptSha256')\n AND json_extract(s.value,'$.authorAllocation.allocation.grossMinor')=json_extract(item.value,'$.authorGrossMinor')\n AND json_extract(s.value,'$.authorAllocation.allocation.commissionMinor')=json_extract(item.value,'$.commissionMinor')\n AND json_extract(s.value,'$.authorAllocation.allocation.payableMinor')=json_extract(item.value,'$.authorPayableMinor')\n AND json_extract(s.value,'$.authorAllocation.otherUsageMinor')=json_extract(item.value,'$.otherUsageMinor')\n )) THEN RAISE(ABORT,'AGENT_MONTHLY_SOURCE') END;\nEND"
+          },
+          {
+            "name": "sky_linux_service_documents",
+            "type": "table",
+            "sql": "CREATE TABLE \"sky_linux_service_documents\" (\n id TEXT PRIMARY KEY NOT NULL, owner_user_id TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('workspace','listing','review','agent_monthly_statement')),\n period TEXT, currency TEXT, revision INTEGER NOT NULL DEFAULT 0,\n payload TEXT NOT NULL CHECK(json_valid(payload)), updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sky_linux_service_receipts",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_receipts (\n id TEXT PRIMARY KEY NOT NULL, workspace_id TEXT NOT NULL, digest TEXT NOT NULL,\n kind TEXT NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)), created_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_documents_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_receipts_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0065_rockstar_service_setup.sql": [
+          {
+            "name": "idx_rockstar_service_setup_session",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX idx_rockstar_service_setup_session ON rockstar_service_setups(json_extract(payload,'$.billing.sessionId'))"
+          },
+          {
+            "name": "rockstar_service_setups",
+            "type": "table",
+            "sql": "CREATE TABLE rockstar_service_setups (\n  id TEXT PRIMARY KEY NOT NULL,\n  owner_user_id TEXT NOT NULL UNIQUE,\n  revision INTEGER NOT NULL DEFAULT 0,\n  payload TEXT NOT NULL CHECK(json_valid(payload)),\n  updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_2",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0066_sky_agent_settings.sql": [
+          {
+            "name": "idx_sky_agent_settings_owner_id",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_agent_settings_owner_id` ON `sky_agent_settings` (`owner_user_id`,`id`)"
+          },
+          {
+            "name": "idx_sky_agent_settings_owner_updated",
+            "type": "index",
+            "sql": "CREATE INDEX `idx_sky_agent_settings_owner_updated` ON `sky_agent_settings` (`owner_user_id`,`updated_at`)"
+          },
+          {
+            "name": "sky_agent_settings",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_agent_settings` (\n\t`owner_user_id` text NOT NULL,\n\t`id` text NOT NULL,\n\t`source_tool` text,\n\t`settings` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`created_at` integer NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0067_sky_optional_features.sql": [
+          {
+            "name": "idx_sky_feature_additions_owner_feature",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_feature_additions_owner_feature` ON `sky_feature_additions` (`owner_user_id`,`feature`)"
+          },
+          {
+            "name": "sky_feature_additions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_feature_additions` (\n\t`owner_user_id` text NOT NULL,\n\t`feature` text NOT NULL,\n\t`enabled` integer NOT NULL,\n\t`purpose` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0068_sky_hub_plugins.sql": [
+          {
+            "name": "idx_sky_hub_plugins_owner_key",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_hub_plugins_owner_key` ON `sky_hub_plugins` (`owner_user_id`,`plugin_key`)"
+          },
+          {
+            "name": "sky_hub_plugins",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_hub_plugins` (\n\t`owner_user_id` text NOT NULL,\n\t`plugin_key` text NOT NULL,\n\t`kind` text NOT NULL,\n\t`resource` text NOT NULL,\n\t`enabled` integer NOT NULL,\n\t`revision` integer NOT NULL,\n\t`metadata` text NOT NULL,\n\t`consent_version` text,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0069_sky_x_feed_state.sql": [
+          {
+            "name": "sky_x_feed_state",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_feed_state` (\n\t`key` text PRIMARY KEY NOT NULL,\n\t`payload` text DEFAULT '[]' NOT NULL,\n\t`remote_user_id` text,\n\t`fetched_at` integer DEFAULT 0 NOT NULL,\n\t`next_refresh_at` integer DEFAULT 0 NOT NULL,\n\t`retry_after` integer DEFAULT 0 NOT NULL,\n\t`lease_id` text,\n\t`lease_until` integer DEFAULT 0 NOT NULL,\n\t`window_day` text DEFAULT '' NOT NULL,\n\t`request_count` integer DEFAULT 0 NOT NULL,\n\t`error_code` text\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_feed_state_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0070_eve_durable_history.sql": [
+          {
+            "name": "eve_conversations",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_conversations` (\n\t`owner_id` text NOT NULL,\n\t`id` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`remember` integer NOT NULL,\n\t`envelope` text NOT NULL,\n\t`updated_at` integer NOT NULL,\n\t`save_token` text NOT NULL,\n\t`deleted_at` integer DEFAULT 0 NOT NULL,\n\tPRIMARY KEY(`owner_id`, `id`)\n)"
+          },
+          {
+            "name": "eve_memory_terms",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_memory_terms` (\n\t`owner_id` text NOT NULL,\n\t`token` text NOT NULL,\n\t`thread_id` text NOT NULL,\n\t`message_id` text NOT NULL,\n\tPRIMARY KEY(`owner_id`, `token`, `thread_id`, `message_id`)\n)"
+          },
+          {
+            "name": "eve_messages",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_messages` (\n\t`seq` integer PRIMARY KEY AUTOINCREMENT NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`thread_id` text NOT NULL,\n\t`message_id` text NOT NULL,\n\t`envelope` text NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          },
+          {
+            "name": "eve_messages_identity",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `eve_messages_identity` ON `eve_messages` (`owner_id`,`thread_id`,`message_id`)"
+          },
+          {
+            "name": "sqlite_autoindex_eve_conversations_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_eve_memory_terms_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0071_sky_communities.sql": [
+          {
+            "name": "sky_communities",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_communities` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`description` text NOT NULL,\n\t`rules` text NOT NULL,\n\t`visibility` text NOT NULL,\n\t`invite_hash` text,\n\t`created_at` integer NOT NULL,\n\t`archived_at` integer DEFAULT 0 NOT NULL\n, `recovery_hash` text, `os_revision` integer DEFAULT 0 NOT NULL, `post_mode` text DEFAULT 'members' NOT NULL)"
+          },
+          {
+            "name": "sky_community_members",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_members` (\n\t`community_id` text NOT NULL,\n\t`profile_id` text NOT NULL,\n\t`joined_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `profile_id`)\n)"
+          },
+          {
+            "name": "sky_social_follows",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_follows` (\n\t`follower_id` text NOT NULL,\n\t`following_id` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`follower_id`, `following_id`)\n)"
+          },
+          {
+            "name": "sky_social_posts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_posts` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`author_id` text NOT NULL,\n\t`community_id` text,\n\t`content` text NOT NULL,\n\t`attachment` text,\n\t`created_at` integer NOT NULL\n, `reply_to` text)"
+          },
+          {
+            "name": "sky_social_posts_community",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_community` ON `sky_social_posts` (`community_id`,`created_at`)"
+          },
+          {
+            "name": "sky_social_posts_created",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_created` ON `sky_social_posts` (`created_at`,`id`)"
+          },
+          {
+            "name": "sky_social_posts_reply",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_reply` ON `sky_social_posts` (`reply_to`,`created_at`)"
+          },
+          {
+            "name": "sky_social_profiles",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_profiles` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`created_at` integer NOT NULL\n)"
+          },
+          {
+            "name": "sky_social_profiles_owner_id_unique",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `sky_social_profiles_owner_id_unique` ON `sky_social_profiles` (`owner_id`)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_communities_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_members_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_follows_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_posts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_profiles_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0072_community_os_keys.sql": [
+          {
+            "name": "sky_communities",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_communities` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`description` text NOT NULL,\n\t`rules` text NOT NULL,\n\t`visibility` text NOT NULL,\n\t`invite_hash` text,\n\t`created_at` integer NOT NULL,\n\t`archived_at` integer DEFAULT 0 NOT NULL\n, `recovery_hash` text, `os_revision` integer DEFAULT 0 NOT NULL, `post_mode` text DEFAULT 'members' NOT NULL)"
+          },
+          {
+            "name": "sky_community_editions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_editions` (\n\t`community_id` text NOT NULL,\n\t`version` integer NOT NULL,\n\t`manifest` text NOT NULL,\n\t`digest` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `version`)\n)"
+          },
+          {
+            "name": "sky_community_install_active",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `sky_community_install_active` ON `sky_community_installs` (`owner_id`) WHERE \"sky_community_installs\".\"active\"=1"
+          },
+          {
+            "name": "sky_community_installs",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_installs` (\n\t`owner_id` text NOT NULL,\n\t`community_id` text NOT NULL,\n\t`version` integer NOT NULL,\n\t`revision` integer NOT NULL,\n\t`manifest` text NOT NULL,\n\t`agent_refs` text NOT NULL,\n\t`active` integer DEFAULT 0 NOT NULL,\n\t`save_token` text NOT NULL,\n\t`updated_at` integer NOT NULL,\n\tPRIMARY KEY(`owner_id`, `community_id`)\n)"
+          },
+          {
+            "name": "sky_community_keys",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_keys` (\n\t`community_id` text NOT NULL,\n\t`profile_id` text NOT NULL,\n\t`key_hash` text NOT NULL,\n\t`revoked_at` integer DEFAULT 0 NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `profile_id`)\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_communities_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_editions_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_installs_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_keys_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0073_sky_timeline_interactions.sql": [
+          {
+            "name": "sky_social_posts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_posts` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`author_id` text NOT NULL,\n\t`community_id` text,\n\t`content` text NOT NULL,\n\t`attachment` text,\n\t`created_at` integer NOT NULL\n, `reply_to` text)"
+          },
+          {
+            "name": "sky_social_posts_community",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_community` ON `sky_social_posts` (`community_id`,`created_at`)"
+          },
+          {
+            "name": "sky_social_posts_created",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_created` ON `sky_social_posts` (`created_at`,`id`)"
+          },
+          {
+            "name": "sky_social_posts_reply",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_reply` ON `sky_social_posts` (`reply_to`,`created_at`)"
+          },
+          {
+            "name": "sky_social_reactions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_reactions` (\n\t`profile_id` text NOT NULL,\n\t`post_id` text NOT NULL,\n\t`kind` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`profile_id`, `post_id`, `kind`)\n)"
+          },
+          {
+            "name": "sky_social_reactions_post",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_reactions_post` ON `sky_social_reactions` (`post_id`,`kind`)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_posts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_reactions_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0074_sky_x_account_oauth.sql": [
+          {
+            "name": "sky_x_accounts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_accounts` (\n\t`owner_id` text PRIMARY KEY NOT NULL,\n\t`remote_id` text,\n\t`username` text,\n\t`display_name` text,\n\t`tokens` text,\n\t`cache` text,\n\t`status` text DEFAULT 'disconnected' NOT NULL,\n\t`revision` integer DEFAULT 0 NOT NULL,\n\t`fetched_at` integer DEFAULT 0 NOT NULL,\n\t`next_refresh_at` integer DEFAULT 0 NOT NULL,\n\t`retry_at` integer DEFAULT 0 NOT NULL,\n\t`lease_id` text,\n\t`lease_until` integer DEFAULT 0 NOT NULL,\n\t`window_day` text DEFAULT '' NOT NULL,\n\t`request_count` integer DEFAULT 0 NOT NULL,\n\t`error_code` text\n)"
+          },
+          {
+            "name": "sky_x_oauth_owner_expiry",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_x_oauth_owner_expiry` ON `sky_x_oauth_states` (`owner_id`,`expires_at`)"
+          },
+          {
+            "name": "sky_x_oauth_states",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_oauth_states` (\n\t`state_hash` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`cookie_hash` text NOT NULL,\n\t`verifier` text NOT NULL,\n\t`account_revision` integer NOT NULL,\n\t`expires_at` integer NOT NULL,\n\t`used_at` integer DEFAULT 0 NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_accounts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_oauth_states_1",
+            "type": "index",
+            "sql": null
+          }
+        ]
+      },
+      "digest": "dc03c356bfa2a4081164f231d512a3abe634544b64c058c40829b5279080b9e5"
+    },
+    {
+      "name": "target-main20",
+      "journalSha256": "e26978a6fa59814a25aeb09aa51aeca092af6141ad5af076b33ddc1b78f6ea94",
+      "sqlFiles": [
+        [
+          "0013_sky_provider_connections.sql",
+          "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+        ],
+        [
+          "0014_jennifer_execution_integrity.sql",
+          "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907"
+        ],
+        [
+          "0015_jennifer_passkey_access.sql",
+          "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c"
+        ],
+        [
+          "0016_sky_monthly_sandbox.sql",
+          "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78"
+        ],
+        [
+          "0017_sky_cloud_monthly_test.sql",
+          "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39"
+        ],
+        [
+          "0018_sky_recurring_sandbox.sql",
+          "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6"
+        ],
+        [
+          "0019_sky_hosted_monthly.sql",
+          "9f244cd985e5583b324a5e9d155fd04bacdb1677aa877c03712a3ce436d29377"
+        ],
+        [
+          "0020_sites_schema_convergence.sql",
+          "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+        ],
+        [
+          "0021_sky_recurring_send_guard.sql",
+          "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33"
+        ],
+        [
+          "0022_sky_agent_settings.sql",
+          "ebb18d1923793903531b86d195fa0c4b321ec09aa375b2013f10b18e717065ef"
+        ],
+        [
+          "0023_sky_optional_features.sql",
+          "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d"
+        ],
+        [
+          "0024_sky_hub_plugins.sql",
+          "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474"
+        ],
+        [
+          "0025_sky_x_feed_state.sql",
+          "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7"
+        ],
+        [
+          "0026_sky_communities.sql",
+          "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af"
+        ],
+        [
+          "0027_community_os_keys.sql",
+          "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+        ],
+        [
+          "0028_sky_timeline_interactions.sql",
+          "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2"
+        ],
+        [
+          "0029_sky_x_account_oauth.sql",
+          "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+        ],
+        [
+          "0030_sky_linux_service.sql",
+          "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+        ],
+        [
+          "0031_rockstar_service_setup.sql",
+          "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+        ],
+        [
+          "0032_eve_durable_history.sql",
+          "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042"
+        ]
+      ],
+      "aliasObjects": {
+        "0030_sky_linux_service.sql": [
+          {
+            "name": "idx_sky_linux_receipt_workspace",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_receipt_workspace ON sky_linux_service_receipts(workspace_id,created_at)"
+          },
+          {
+            "name": "idx_sky_linux_service_owner",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_service_owner ON sky_linux_service_documents(owner_user_id,kind,updated_at)"
+          },
+          {
+            "name": "sky_linux_service_documents",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_documents (\n id TEXT PRIMARY KEY NOT NULL, owner_user_id TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('workspace','listing','review')), revision INTEGER NOT NULL DEFAULT 0,\n payload TEXT NOT NULL CHECK(json_valid(payload)), updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sky_linux_service_receipts",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_receipts (\n id TEXT PRIMARY KEY NOT NULL, workspace_id TEXT NOT NULL, digest TEXT NOT NULL,\n kind TEXT NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)), created_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_documents_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_receipts_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0031_rockstar_service_setup.sql": [
+          {
+            "name": "idx_rockstar_service_setup_session",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX idx_rockstar_service_setup_session ON rockstar_service_setups(json_extract(payload,'$.billing.sessionId'))"
+          },
+          {
+            "name": "rockstar_service_setups",
+            "type": "table",
+            "sql": "CREATE TABLE rockstar_service_setups (\n  id TEXT PRIMARY KEY NOT NULL,\n  owner_user_id TEXT NOT NULL UNIQUE,\n  revision INTEGER NOT NULL DEFAULT 0,\n  payload TEXT NOT NULL CHECK(json_valid(payload)),\n  updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_2",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0022_sky_agent_settings.sql": [
+          {
+            "name": "idx_sky_agent_settings_owner_id",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_agent_settings_owner_id` ON `sky_agent_settings` (`owner_user_id`,`id`)"
+          },
+          {
+            "name": "idx_sky_agent_settings_owner_updated",
+            "type": "index",
+            "sql": "CREATE INDEX `idx_sky_agent_settings_owner_updated` ON `sky_agent_settings` (`owner_user_id`,`updated_at`)"
+          },
+          {
+            "name": "sky_agent_settings",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_agent_settings` (\n\t`owner_user_id` text NOT NULL,\n\t`id` text NOT NULL,\n\t`source_tool` text,\n\t`settings` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`created_at` integer NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0023_sky_optional_features.sql": [
+          {
+            "name": "idx_sky_feature_additions_owner_feature",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_feature_additions_owner_feature` ON `sky_feature_additions` (`owner_user_id`,`feature`)"
+          },
+          {
+            "name": "sky_feature_additions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_feature_additions` (\n\t`owner_user_id` text NOT NULL,\n\t`feature` text NOT NULL,\n\t`enabled` integer NOT NULL,\n\t`purpose` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0024_sky_hub_plugins.sql": [
+          {
+            "name": "idx_sky_hub_plugins_owner_key",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `idx_sky_hub_plugins_owner_key` ON `sky_hub_plugins` (`owner_user_id`,`plugin_key`)"
+          },
+          {
+            "name": "sky_hub_plugins",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_hub_plugins` (\n\t`owner_user_id` text NOT NULL,\n\t`plugin_key` text NOT NULL,\n\t`kind` text NOT NULL,\n\t`resource` text NOT NULL,\n\t`enabled` integer NOT NULL,\n\t`revision` integer NOT NULL,\n\t`metadata` text NOT NULL,\n\t`consent_version` text,\n\t`updated_at` integer NOT NULL\n)"
+          }
+        ],
+        "0025_sky_x_feed_state.sql": [
+          {
+            "name": "sky_x_feed_state",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_feed_state` (\n\t`key` text PRIMARY KEY NOT NULL,\n\t`payload` text DEFAULT '[]' NOT NULL,\n\t`remote_user_id` text,\n\t`fetched_at` integer DEFAULT 0 NOT NULL,\n\t`next_refresh_at` integer DEFAULT 0 NOT NULL,\n\t`retry_after` integer DEFAULT 0 NOT NULL,\n\t`lease_id` text,\n\t`lease_until` integer DEFAULT 0 NOT NULL,\n\t`window_day` text DEFAULT '' NOT NULL,\n\t`request_count` integer DEFAULT 0 NOT NULL,\n\t`error_code` text\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_feed_state_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0032_eve_durable_history.sql": [
+          {
+            "name": "eve_conversations",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_conversations` (\n\t`owner_id` text NOT NULL,\n\t`id` text NOT NULL,\n\t`revision` integer NOT NULL,\n\t`remember` integer NOT NULL,\n\t`envelope` text NOT NULL,\n\t`updated_at` integer NOT NULL,\n\t`save_token` text NOT NULL,\n\t`deleted_at` integer DEFAULT 0 NOT NULL,\n\tPRIMARY KEY(`owner_id`, `id`)\n)"
+          },
+          {
+            "name": "eve_memory_terms",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_memory_terms` (\n\t`owner_id` text NOT NULL,\n\t`token` text NOT NULL,\n\t`thread_id` text NOT NULL,\n\t`message_id` text NOT NULL,\n\tPRIMARY KEY(`owner_id`, `token`, `thread_id`, `message_id`)\n)"
+          },
+          {
+            "name": "eve_messages",
+            "type": "table",
+            "sql": "CREATE TABLE `eve_messages` (\n\t`seq` integer PRIMARY KEY AUTOINCREMENT NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`thread_id` text NOT NULL,\n\t`message_id` text NOT NULL,\n\t`envelope` text NOT NULL,\n\t`updated_at` integer NOT NULL\n)"
+          },
+          {
+            "name": "eve_messages_identity",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `eve_messages_identity` ON `eve_messages` (`owner_id`,`thread_id`,`message_id`)"
+          },
+          {
+            "name": "sqlite_autoindex_eve_conversations_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_eve_memory_terms_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0026_sky_communities.sql": [
+          {
+            "name": "sky_communities",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_communities` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`description` text NOT NULL,\n\t`rules` text NOT NULL,\n\t`visibility` text NOT NULL,\n\t`invite_hash` text,\n\t`created_at` integer NOT NULL,\n\t`archived_at` integer DEFAULT 0 NOT NULL\n, `recovery_hash` text, `os_revision` integer DEFAULT 0 NOT NULL, `post_mode` text DEFAULT 'members' NOT NULL)"
+          },
+          {
+            "name": "sky_community_members",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_members` (\n\t`community_id` text NOT NULL,\n\t`profile_id` text NOT NULL,\n\t`joined_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `profile_id`)\n)"
+          },
+          {
+            "name": "sky_social_follows",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_follows` (\n\t`follower_id` text NOT NULL,\n\t`following_id` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`follower_id`, `following_id`)\n)"
+          },
+          {
+            "name": "sky_social_posts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_posts` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`author_id` text NOT NULL,\n\t`community_id` text,\n\t`content` text NOT NULL,\n\t`attachment` text,\n\t`created_at` integer NOT NULL\n, `reply_to` text)"
+          },
+          {
+            "name": "sky_social_posts_community",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_community` ON `sky_social_posts` (`community_id`,`created_at`)"
+          },
+          {
+            "name": "sky_social_posts_created",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_created` ON `sky_social_posts` (`created_at`,`id`)"
+          },
+          {
+            "name": "sky_social_posts_reply",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_reply` ON `sky_social_posts` (`reply_to`,`created_at`)"
+          },
+          {
+            "name": "sky_social_profiles",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_profiles` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`created_at` integer NOT NULL\n)"
+          },
+          {
+            "name": "sky_social_profiles_owner_id_unique",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `sky_social_profiles_owner_id_unique` ON `sky_social_profiles` (`owner_id`)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_communities_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_members_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_follows_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_posts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_profiles_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0027_community_os_keys.sql": [
+          {
+            "name": "sky_communities",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_communities` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`name` text NOT NULL,\n\t`description` text NOT NULL,\n\t`rules` text NOT NULL,\n\t`visibility` text NOT NULL,\n\t`invite_hash` text,\n\t`created_at` integer NOT NULL,\n\t`archived_at` integer DEFAULT 0 NOT NULL\n, `recovery_hash` text, `os_revision` integer DEFAULT 0 NOT NULL, `post_mode` text DEFAULT 'members' NOT NULL)"
+          },
+          {
+            "name": "sky_community_editions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_editions` (\n\t`community_id` text NOT NULL,\n\t`version` integer NOT NULL,\n\t`manifest` text NOT NULL,\n\t`digest` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `version`)\n)"
+          },
+          {
+            "name": "sky_community_install_active",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX `sky_community_install_active` ON `sky_community_installs` (`owner_id`) WHERE \"sky_community_installs\".\"active\"=1"
+          },
+          {
+            "name": "sky_community_installs",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_installs` (\n\t`owner_id` text NOT NULL,\n\t`community_id` text NOT NULL,\n\t`version` integer NOT NULL,\n\t`revision` integer NOT NULL,\n\t`manifest` text NOT NULL,\n\t`agent_refs` text NOT NULL,\n\t`active` integer DEFAULT 0 NOT NULL,\n\t`save_token` text NOT NULL,\n\t`updated_at` integer NOT NULL,\n\tPRIMARY KEY(`owner_id`, `community_id`)\n)"
+          },
+          {
+            "name": "sky_community_keys",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_community_keys` (\n\t`community_id` text NOT NULL,\n\t`profile_id` text NOT NULL,\n\t`key_hash` text NOT NULL,\n\t`revoked_at` integer DEFAULT 0 NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`community_id`, `profile_id`)\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_communities_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_editions_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_installs_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_community_keys_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0028_sky_timeline_interactions.sql": [
+          {
+            "name": "sky_social_posts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_posts` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`author_id` text NOT NULL,\n\t`community_id` text,\n\t`content` text NOT NULL,\n\t`attachment` text,\n\t`created_at` integer NOT NULL\n, `reply_to` text)"
+          },
+          {
+            "name": "sky_social_posts_community",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_community` ON `sky_social_posts` (`community_id`,`created_at`)"
+          },
+          {
+            "name": "sky_social_posts_created",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_created` ON `sky_social_posts` (`created_at`,`id`)"
+          },
+          {
+            "name": "sky_social_posts_reply",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_posts_reply` ON `sky_social_posts` (`reply_to`,`created_at`)"
+          },
+          {
+            "name": "sky_social_reactions",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_social_reactions` (\n\t`profile_id` text NOT NULL,\n\t`post_id` text NOT NULL,\n\t`kind` text NOT NULL,\n\t`created_at` integer NOT NULL,\n\tPRIMARY KEY(`profile_id`, `post_id`, `kind`)\n)"
+          },
+          {
+            "name": "sky_social_reactions_post",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_social_reactions_post` ON `sky_social_reactions` (`post_id`,`kind`)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_posts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_social_reactions_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0029_sky_x_account_oauth.sql": [
+          {
+            "name": "sky_x_accounts",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_accounts` (\n\t`owner_id` text PRIMARY KEY NOT NULL,\n\t`remote_id` text,\n\t`username` text,\n\t`display_name` text,\n\t`tokens` text,\n\t`cache` text,\n\t`status` text DEFAULT 'disconnected' NOT NULL,\n\t`revision` integer DEFAULT 0 NOT NULL,\n\t`fetched_at` integer DEFAULT 0 NOT NULL,\n\t`next_refresh_at` integer DEFAULT 0 NOT NULL,\n\t`retry_at` integer DEFAULT 0 NOT NULL,\n\t`lease_id` text,\n\t`lease_until` integer DEFAULT 0 NOT NULL,\n\t`window_day` text DEFAULT '' NOT NULL,\n\t`request_count` integer DEFAULT 0 NOT NULL,\n\t`error_code` text\n)"
+          },
+          {
+            "name": "sky_x_oauth_owner_expiry",
+            "type": "index",
+            "sql": "CREATE INDEX `sky_x_oauth_owner_expiry` ON `sky_x_oauth_states` (`owner_id`,`expires_at`)"
+          },
+          {
+            "name": "sky_x_oauth_states",
+            "type": "table",
+            "sql": "CREATE TABLE `sky_x_oauth_states` (\n\t`state_hash` text PRIMARY KEY NOT NULL,\n\t`owner_id` text NOT NULL,\n\t`cookie_hash` text NOT NULL,\n\t`verifier` text NOT NULL,\n\t`account_revision` integer NOT NULL,\n\t`expires_at` integer NOT NULL,\n\t`used_at` integer DEFAULT 0 NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_accounts_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_x_oauth_states_1",
+            "type": "index",
+            "sql": null
+          }
+        ]
+      },
+      "digest": "ea70dc7b4d84f3c42c8d04afb2c1126bf975b397b9d6576c604ee411c5e768cb"
+    },
+    {
+      "name": "fixture-source2",
+      "journalSha256": "5b76d89eabc8973867a03ebae58570d98db02c80479a99149c2dca3edebac4b6",
+      "sqlFiles": [
+        [
+          "0064_sky_linux_service.sql",
+          "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+        ],
+        [
+          "0065_rockstar_service_setup.sql",
+          "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+        ]
+      ],
+      "aliasObjects": {
+        "0064_sky_linux_service.sql": [
+          {
+            "name": "idx_sky_linux_receipt_workspace",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_receipt_workspace ON sky_linux_service_receipts(workspace_id,created_at)"
+          },
+          {
+            "name": "idx_sky_linux_service_owner",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_service_owner ON sky_linux_service_documents(owner_user_id,kind,updated_at)"
+          },
+          {
+            "name": "sky_linux_service_documents",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_documents (\n id TEXT PRIMARY KEY NOT NULL, owner_user_id TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('workspace','listing','review')), revision INTEGER NOT NULL DEFAULT 0,\n payload TEXT NOT NULL CHECK(json_valid(payload)), updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sky_linux_service_receipts",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_receipts (\n id TEXT PRIMARY KEY NOT NULL, workspace_id TEXT NOT NULL, digest TEXT NOT NULL,\n kind TEXT NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)), created_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_documents_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_receipts_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0065_rockstar_service_setup.sql": [
+          {
+            "name": "idx_rockstar_service_setup_session",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX idx_rockstar_service_setup_session ON rockstar_service_setups(json_extract(payload,'$.billing.sessionId'))"
+          },
+          {
+            "name": "rockstar_service_setups",
+            "type": "table",
+            "sql": "CREATE TABLE rockstar_service_setups (\n  id TEXT PRIMARY KEY NOT NULL,\n  owner_user_id TEXT NOT NULL UNIQUE,\n  revision INTEGER NOT NULL DEFAULT 0,\n  payload TEXT NOT NULL CHECK(json_valid(payload)),\n  updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_2",
+            "type": "index",
+            "sql": null
+          }
+        ]
+      },
+      "digest": "e2499ce084cd8d21f0a80419d4d62fca2348787ae9bd626530703d7343e342cf"
+    },
+    {
+      "name": "fixture-target2",
+      "journalSha256": "403da4843e07356fe46b0a49af9a6c84b2ea4957beb3ac21fe95536526df3006",
+      "sqlFiles": [
+        [
+          "0030_sky_linux_service.sql",
+          "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+        ],
+        [
+          "0031_rockstar_service_setup.sql",
+          "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+        ]
+      ],
+      "aliasObjects": {
+        "0030_sky_linux_service.sql": [
+          {
+            "name": "idx_sky_linux_receipt_workspace",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_receipt_workspace ON sky_linux_service_receipts(workspace_id,created_at)"
+          },
+          {
+            "name": "idx_sky_linux_service_owner",
+            "type": "index",
+            "sql": "CREATE INDEX idx_sky_linux_service_owner ON sky_linux_service_documents(owner_user_id,kind,updated_at)"
+          },
+          {
+            "name": "sky_linux_service_documents",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_documents (\n id TEXT PRIMARY KEY NOT NULL, owner_user_id TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('workspace','listing','review')), revision INTEGER NOT NULL DEFAULT 0,\n payload TEXT NOT NULL CHECK(json_valid(payload)), updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sky_linux_service_receipts",
+            "type": "table",
+            "sql": "CREATE TABLE sky_linux_service_receipts (\n id TEXT PRIMARY KEY NOT NULL, workspace_id TEXT NOT NULL, digest TEXT NOT NULL,\n kind TEXT NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)), created_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_documents_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_sky_linux_service_receipts_1",
+            "type": "index",
+            "sql": null
+          }
+        ],
+        "0031_rockstar_service_setup.sql": [
+          {
+            "name": "idx_rockstar_service_setup_session",
+            "type": "index",
+            "sql": "CREATE UNIQUE INDEX idx_rockstar_service_setup_session ON rockstar_service_setups(json_extract(payload,'$.billing.sessionId'))"
+          },
+          {
+            "name": "rockstar_service_setups",
+            "type": "table",
+            "sql": "CREATE TABLE rockstar_service_setups (\n  id TEXT PRIMARY KEY NOT NULL,\n  owner_user_id TEXT NOT NULL UNIQUE,\n  revision INTEGER NOT NULL DEFAULT 0,\n  payload TEXT NOT NULL CHECK(json_valid(payload)),\n  updated_at INTEGER NOT NULL\n)"
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_1",
+            "type": "index",
+            "sql": null
+          },
+          {
+            "name": "sqlite_autoindex_rockstar_service_setups_2",
+            "type": "index",
+            "sql": null
+          }
+        ]
+      },
+      "digest": "5e3f1cd3a36137a6d820cefefb0502662e4ed1b0022bd9ebdad7a54c186226ad"
+    }
+  ]
+}

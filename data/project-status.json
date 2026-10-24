@@ -6827,7 +6827,8 @@
         "scripts/spider-web-runtime.mjs",
         "tests/spider-web-runtime.test.mjs",
         "docs/amc-autonomy-fixture.md",
-        "docs/evidence/amc-fixture-csv-main-integration.json"
+        "docs/evidence/amc-fixture-csv-main-integration.json",
+        "docs/evidence/development-execution/git-04.json"
       ],
       "nextAction": "Integrate the nine open PR histories and selective merge-loss repairs with current main; run full verify and same-SHA CI, publish the work branch and reviewable PR. Main merge and deployment remain separate.",
       "recoveredFrom": {
@@ -9502,5 +9503,31 @@
       "publicSitesChanged": false,
       "prompts": "docs/assets/readme/product-imagery-prompts.md"
     }
+  },
+  "gitMigrationAliasExecution": {
+    "evidence": "docs/evidence/development-execution/git-04.json",
+    "status": "helper_independently_accepted_git_checkpoint_preparing",
+    "unitComplete": false,
+    "runtimePorted": false,
+    "fullUnionAccepted": false,
+    "candidateFiles": {
+      "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+      "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+      "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+      "tests/migration-aliases.test.mjs": "3dc2be92fe0a898d038de4bfa1eaaf351d5327dcf71ef3b16095150ee7589dd0",
+      "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+    },
+    "liveDbReadback": false,
+    "next": "Astra alias review; GIT-04 remaining schema/guard union",
+    "attemptCount": 2,
+    "candidateFilesSha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+    "review": "second Astra review pending",
+    "acceptedHelperReview": "docs/evidence/development-execution/git-04-review-r2.json",
+    "ciRuntime": "26.12.1",
+    "mainMerged": false,
+    "gitHubSaved": false,
+    "checkpoint": "docs/evidence/development-execution/git-04-helper-checkpoint.json",
+    "currentCoreFilesSha256": "d582d6db7a244e754904c3dfefecd52031e348e16f37f79cb5d6256fa78646ed",
+    "postReviewTestAndCiDelta": "mechanical Reflect.get3 and Node26 CI parity; independent delta review pending"
   }
 }
