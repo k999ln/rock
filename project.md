@@ -1,3 +1,7 @@
+## Pixel限定実機証拠を原本hash付き要約へ（2026-10-24 / G04）
+
+原本8b8ed78d…/独立Eve review136e79ef…を照合し、絶対path/原文/privateRealm/識別子/18添付を含めない要約2fileを作成。Linux4pass/skip0、同一attempt2 sourceで今回1job成功/累計2、worker8569ms/childCPU12.635192s/OOMdelta0、旧33保持/total34/2models/10agents、PC+Pixel公式export770bytes同SHA、process0/sync停止を範囲付き記録。PC UI reload画面証拠不足、背景/P02全体/全OS/性能一般化未受入。runtimeコード変更なし、source16保存97044695とmain7既存9未追加auditを維持。統合要約の検収/Git保存/CIは別gate。根拠: docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json、docs/evidence/development-execution/pixel-worker-diagnostics-physical-review-summary.json。
+
 ## MINI-02有限joint-allocation4pathをmain起点へ採用（2026-10-24 / G04）
 
 main7e36c839起点で4path＋独立Pro reviewをbyte一致採用、旧8hash不変。13試験と独立432条件98成立/334不成立の限定pass/指摘0、4要求/domainを保持。最大128有限demand、排他pose、共有sourceと未探索/unsupportedを分離し、可視/低眩しさ/全域/実viewer/停止/製造/権限の全flagfalse。固定4434入力不変で全verify exit0、Node2662=2660pass/既存platform2skip、asset欠損0。PR/同SHA CI/統合検収は後続、OS WIP/価格/公開変更なし。根拠: docs/evidence/development-execution/mini-02-joint-main-adoption.json。
