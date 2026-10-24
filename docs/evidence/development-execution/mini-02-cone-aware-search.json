@@ -1,0 +1,463 @@
+{
+  "schema": "rockstaros.mini02.cone-aware-search-host/1",
+  "recordedAt": "2026-10-24T17:46:28.074Z",
+  "unit": "MINI-02",
+  "status": "implemented_locally_awaiting_independent_review",
+  "taskOwnership": {
+    "primaryWorkstream": "11-material-invention-avocado-mini",
+    "amcTask": "MAT15",
+    "amcPrimarySquad": "M1",
+    "responsibility": "ROCK host research; EXTERNAL/JOINT measured hardware acceptance"
+  },
+  "sourceTree": {
+    "directory": "source-tree:mini-02-cone-aware-search-20261024",
+    "branch": "codex/mini-cone-aware-search-20261024",
+    "baseCommit": "ccec6d43341dd8f12326766311553a59bc301fae",
+    "baseSourceReadFrom": "Git-created main-based tree; no edits to the old Root checkout",
+    "scope": [
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs",
+      "tests/avocado-mini-cone-aware-search.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "docs/evidence/development-execution/mini-02-cone-aware-search.json"
+    ]
+  },
+  "explicitEvolution": {
+    "authorizedBy": "Root dispatch in the user-authorized Mini development coordination",
+    "reason": "Reuse the existing maxflow and pose DFS through a restrict-only data mask; share existing finite-cone validation without duplicating the solver",
+    "modifiedExisting": [
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs"
+    ],
+    "newFiles": [
+      "tests/avocado-mini-cone-aware-search.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "docs/evidence/development-execution/mini-02-cone-aware-search.json"
+    ],
+    "oldTwelveException": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+    "historicalGuard": "Named eleven-byte invariant plus separately pinned evolved joint candidate; no historical receipt overwritten",
+    "selfAcceptance": false
+  },
+  "previousSixSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+    "tests/avocado-mini-cone-aware-search.test.mjs": null,
+    "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md": null,
+    "docs/evidence/development-execution/mini-02-cone-aware-search.json": null
+  },
+  "newFiveSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "a5e28bc4c268ed7971570863e6d5220e02bb4a9ebfd3677ed22ad7c5f240ffba",
+    "tests/avocado-mini-finite-cone.test.mjs": "2961f5d25bb27cf9ca45c38a05aa41b47a27f25b862c0590b4458ba6877c08e0",
+    "tests/avocado-mini-cone-aware-search.test.mjs": "d1b5ffac6e3ef642e81f91c56c71a5f45154bde2a059ac0b5652cc0f262ccf12",
+    "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md": "da8946daadaa3b290c0836c6ea98cebf6c3fcfcd5f8920cc62ea1981ee0b99c2"
+  },
+  "receiptByteHash": {
+    "selfReferenceExcluded": true,
+    "exactSixManifest": "manifest:mini-02-cone-aware-search/exact-six",
+    "handoff": "Raw SHA256 for this receipt is emitted after write in the external exact-six manifest and final handoff; it cannot be embedded in its own bytes."
+  },
+  "immutableElevenSha256": {
+    "tests/avocado-mini-joint-allocation.test.mjs": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3",
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "immutableHistoricalReceiptSha256": {
+    "docs/evidence/development-execution/mini-02-finite-cone-main-compatibility.json": "a8a8ce3208bba1c9de3b4efb96382ce31254c4ec275eaf0f3572045f8e9069f9",
+    "docs/evidence/development-execution/mini-02-finite-cone-review-summary.json": "1973b04861f6c89f3f5f9976b51a7aded209618578ad4a453663acc5f0238973",
+    "docs/evidence/development-execution/mini-02-finite-cone.json": "bdf2e67b94f9723e004e7b32cd6e4448ef07e54f091c11b9dfa63e69550ff39a",
+    "docs/evidence/development-execution/mini-02-joint-allocation-review.json": "0bdf02dc03ab1631405a869d67821a8d8ae21552fa310198979a224aac74ac30",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3",
+    "docs/evidence/development-execution/mini-02-joint-main-adoption.json": "ce119a954782061947557f16db0511a57fea5936214464440e22cf54c1974660",
+    "docs/evidence/development-execution/mini-02-main-adoption.json": "1028996f1b2e2a30875dd7058d36b206f039acc6c6039d28367b74ac274b2deb",
+    "docs/evidence/development-execution/mini-02-review.json": "5f6900c7531e246deada1235b38b880f5bd01a000a2698cb2bb0fb6d5e75b43d",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0"
+  },
+  "implementation": {
+    "apis": [
+      "inspectJointCandidates(serializedJoint)",
+      "runJointAllocationWithEdgeMask(serializedEnvelope)",
+      "runConeAwareSearch(serializedSearchEnvelope)"
+    ],
+    "algorithm": "Shared canonical preparation, restrict-only demand-exit arc mask, unchanged integral maxflow and exclusive-pose DFS, final shared witness verification",
+    "dataOnly": true,
+    "callbacksOrModelExecution": false,
+    "callerSuppliedConeEligibility": false,
+    "geometryRecomputedForMask": true,
+    "maskDigestComputedFromActualCanonicalRestriction": true,
+    "allDeclaredExitsRequireValidCalibration": true,
+    "oneBoundedPoseSearch": true,
+    "stableAngle": "normalized atan2(norm(cross),dot)",
+    "angleToleranceDeg": 1e-7,
+    "angleRoundoffGuardDeg": 8.142219984546603e-13,
+    "limits": {
+      "demands": 128,
+      "devices": 6,
+      "posesPerDevice": 4,
+      "totalExitInstances": 96,
+      "candidateEdges": 12288,
+      "maxPoseVisits": 1024,
+      "maskJsonBytes": 262144,
+      "maskJsonNodes": 32768,
+      "maskJsonDepth": 18
+    },
+    "cutoff": "unknown/search_cutoff",
+    "boundaryWithoutKnownInsideWitness": "unknown/angular_boundary_unresolved",
+    "invalidOrUnknownCalibration": "unavailable",
+    "impossibleScope": "Only the fully known declared finite pose/demand/geometry/cone/sample-capacity model after complete pose search; not continuous/product/physical impossibility"
+  },
+  "requirements": {
+    "noPlateOrMembraneAtImageLocation": true,
+    "fewDisplayPartsGoalMaintained": true,
+    "allDeclaredWorldFixedDemandsIncludingPupilsAndUpDownRetained": true,
+    "lowGlareRequirementMaintained": true,
+    "partsMinimumOrPhysicalWholeRangeProven": false
+  },
+  "acceptance": {
+    "physicalVisible": false,
+    "lowGlare": false,
+    "eyeSafety": false,
+    "continuousWholeDomain": false,
+    "simultaneousPhysicalViewers": false,
+    "independentStop": false,
+    "manufactured": false,
+    "measuredCalibration": false,
+    "dispatchAllowed": false,
+    "grantsAuthority": false
+  },
+  "examples": {
+    "firstGeometryWitnessStatus": "reallocation_required",
+    "samePoseRecovered": true,
+    "cases": [
+      {
+        "name": "known_up_down",
+        "inputSha256": "e0afcba3de57a99bf87f0a2f2d85652f5cffbbb2b56bff57ed2eeeeadbc16752",
+        "jointInputSha256": "9d5673c8884e57b82e516ddab295984ef582e8fb965d1143426d1692d7fe592d",
+        "candidateEdgesSha256": "de7d78a231b57f1865c05e178ea6548ee96f7192891a9d470295f2bce2da3278",
+        "maskSha256": "cbcb6a3e04d2131e5e88d5b60e283d03bac025e997321a23f9c035058de7e763",
+        "resultSha256": "8402d2c94ffcdaa415577d98d9c7adb2f780fd376da5b28ec237be5ee03ca6c4",
+        "status": "finite_cone_allocation_found",
+        "reasons": [],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 2,
+        "searchedConfigurations": 1,
+        "totalConfigurations": 1,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 2,
+          "inside": 2,
+          "outside": 0,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": true,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "same_pose_alternate_exit_four_demands",
+        "inputSha256": "7c138cef3feabcb29fcdc26af00793e6017de7f911e57b7e30eedc3c19fab741",
+        "jointInputSha256": "5d70693163ae90880ee677008ae420542ae7aeaea1d725196b7d82a9605e9a9d",
+        "candidateEdgesSha256": "81791c36ef07a53450a0a47e9ebf46c26c636d46216bdb9c20fa95e26a180474",
+        "maskSha256": "6cc0c719bc80b96695d45335b91f07144ddf70d43daee8cfce03855bc26fd2ef",
+        "resultSha256": "d922a926008e97db6833331ddf91489e0dcfd75bd522e203cf2bb11014083087",
+        "status": "finite_cone_allocation_found",
+        "reasons": [],
+        "declaredDemandCount": 4,
+        "assignedDemandCount": 4,
+        "searchedConfigurations": 1,
+        "totalConfigurations": 1,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 6,
+          "inside": 4,
+          "outside": 2,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": true,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "exclusive_pose_no_joint_solution",
+        "inputSha256": "5337b583b1438588b9e7a2438db9f18f46f3d3959e8a35393ab141a4158d1a03",
+        "jointInputSha256": "57f31c2b0deb743a1eb4eeb74209aee2f25386fadaff98988def48b3fda8850f",
+        "candidateEdgesSha256": "839a57682b76871a448e0b2c8022a64f261659ea54ebee5a9b8d4534f3b27005",
+        "maskSha256": "f53180748dceb5ab29392492b2c4ae7ad2ec52aa9cf10cb5a1722d85e8f02c7a",
+        "resultSha256": "f1fafb0c0735f1c7959f78f81b1407223ccf03a5c1224f846e3df0ab672df824",
+        "status": "finite_cone_allocation_impossible",
+        "reasons": [
+          "exhausted_known_finite_model"
+        ],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 0,
+        "searchedConfigurations": 2,
+        "totalConfigurations": 2,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 2,
+          "inside": 2,
+          "outside": 0,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": false,
+        "finiteModelInfeasibilityProven": true
+      },
+      {
+        "name": "boundary_only_unknown",
+        "inputSha256": "85c1b9583ff3e33d94dc4de28a011e61d6704e6e3c17b5c1f97d359f3c0ec155",
+        "jointInputSha256": "9d5673c8884e57b82e516ddab295984ef582e8fb965d1143426d1692d7fe592d",
+        "candidateEdgesSha256": "de7d78a231b57f1865c05e178ea6548ee96f7192891a9d470295f2bce2da3278",
+        "maskSha256": "23282bfaa3f21cf100f000bb9e7babe281c0e0b8553a1dfd7de59cc4ccc79bfd",
+        "resultSha256": "9200fdd4de2a525f637884f8e532653efa3aa59a524e40cd46123e99be3c1dec",
+        "status": "unknown",
+        "reasons": [
+          "angular_boundary_unresolved"
+        ],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 0,
+        "searchedConfigurations": 1,
+        "totalConfigurations": 1,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 2,
+          "inside": 1,
+          "outside": 0,
+          "boundaryUnknown": 1
+        },
+        "witnessVerified": false,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "expired_unavailable",
+        "inputSha256": "38dd2771d97091d4084bfbfc0687d05859989d2c2b5f8c2b047409095187d740",
+        "jointInputSha256": "9d5673c8884e57b82e516ddab295984ef582e8fb965d1143426d1692d7fe592d",
+        "candidateEdgesSha256": "de7d78a231b57f1865c05e178ea6548ee96f7192891a9d470295f2bce2da3278",
+        "maskSha256": null,
+        "resultSha256": "f8427a201ae66f60d6ad1a2e5586bd89172cbd26c2980037e7a44ee668677a05",
+        "status": "unavailable",
+        "reasons": [
+          "calibration-time-unavailable"
+        ],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 0,
+        "searchedConfigurations": 0,
+        "totalConfigurations": null,
+        "poseSearchComplete": false,
+        "edgeCounts": null,
+        "witnessVerified": false,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "cutoff_unknown",
+        "inputSha256": "876a932d75c2872a37a948328607ff91ef8b468ba344f4bf69db00af9c330b80",
+        "jointInputSha256": "285eb065d88fee384f7483e1d196d4129c885e94239795dc61a7f217a03dd78c",
+        "candidateEdgesSha256": "b882739357c95035f033b2b524d9cd10ed9b043ebf5992b206a257daa0d59435",
+        "maskSha256": "ea5b2b9402dc8b4e95dc60e1608bfea8b4daa7b7e6a61117da36ea0210623c6f",
+        "resultSha256": "529c6aba067eb99c14f8f3bdc5f3e75d2e31124fe0d6cc3bd40a811cf018c7b5",
+        "status": "unknown",
+        "reasons": [
+          "search_cutoff"
+        ],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 0,
+        "searchedConfigurations": 1,
+        "totalConfigurations": 2,
+        "poseSearchComplete": false,
+        "edgeCounts": {
+          "geometric": 3,
+          "inside": 2,
+          "outside": 1,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": false,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "larger_budget_recovery",
+        "inputSha256": "43d1743120673a60f7331f043d5899127008126598f813698da331e1cd16002f",
+        "jointInputSha256": "7305adfa364a200a6c8225e5c2968c8a7e970dd5e64e6e4081bc94ce92b78999",
+        "candidateEdgesSha256": "7e797683345d45e6f9946e7f19c972c9c8dff83b6790029f3d485d2594997778",
+        "maskSha256": "c4bf8a0a8cc4466ec3dd52e7c20eee0744c2fe024105107ef718419f1814754f",
+        "resultSha256": "c99676e0ac2d4a5ad99de05a20c04af1b197b5845ef52bff724e1f8347f1d07c",
+        "status": "finite_cone_allocation_found",
+        "reasons": [],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 2,
+        "searchedConfigurations": 2,
+        "totalConfigurations": 2,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 3,
+          "inside": 2,
+          "outside": 1,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": true,
+        "finiteModelInfeasibilityProven": false
+      },
+      {
+        "name": "clean_recovery",
+        "inputSha256": "e0afcba3de57a99bf87f0a2f2d85652f5cffbbb2b56bff57ed2eeeeadbc16752",
+        "jointInputSha256": "9d5673c8884e57b82e516ddab295984ef582e8fb965d1143426d1692d7fe592d",
+        "candidateEdgesSha256": "de7d78a231b57f1865c05e178ea6548ee96f7192891a9d470295f2bce2da3278",
+        "maskSha256": "cbcb6a3e04d2131e5e88d5b60e283d03bac025e997321a23f9c035058de7e763",
+        "resultSha256": "8402d2c94ffcdaa415577d98d9c7adb2f780fd376da5b28ec237be5ee03ca6c4",
+        "status": "finite_cone_allocation_found",
+        "reasons": [],
+        "declaredDemandCount": 2,
+        "assignedDemandCount": 2,
+        "searchedConfigurations": 1,
+        "totalConfigurations": 1,
+        "poseSearchComplete": true,
+        "edgeCounts": {
+          "geometric": 2,
+          "inside": 2,
+          "outside": 0,
+          "boundaryUnknown": 0
+        },
+        "witnessVerified": true,
+        "finiteModelInfeasibilityProven": false
+      }
+    ]
+  },
+  "validation": {
+    "focused": {
+      "command": "node --test tests/avocado-mini-cone-aware-search.test.mjs tests/avocado-mini-finite-cone.test.mjs tests/avocado-mini-joint-allocation.test.mjs tests/avocado-mini-optical-study.test.mjs tests/avocado-mini-place-profile.test.mjs",
+      "tests": 70,
+      "pass": 70,
+      "fail": 0,
+      "skip": 0,
+      "newSearchTests": 14,
+      "existingInspectorTests": 23,
+      "log": "log:mini-cone-aware-related-tests",
+      "logSha256": "dad32885d8b22f8de292d3ec4d8d6925bb1ee7d399e1accdd682f177e48d7b17"
+    },
+    "lint": {
+      "command": "./node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs tests/avocado-mini-finite-cone.test.mjs tests/avocado-mini-cone-aware-search.test.mjs",
+      "exitCode": 0,
+      "typeAware": true
+    },
+    "syntax": {
+      "files": [
+        "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+        "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs"
+      ],
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "exhaustiveOracle": {
+      "cases": 1728,
+      "variants": [
+        "inward",
+        "outward",
+        "mixed",
+        "boundary"
+      ],
+      "capacityCasesPerVariant": 432,
+      "method": "Independent direct face/XY/scalar-angle oracle and Cartesian skip/exit enumeration for four exclusive-pose combinations; no production geometry, candidate builder or maxflow reused in oracle",
+      "found": 226,
+      "finiteImpossible": 1156,
+      "unknown": 346,
+      "returnedBestAttemptsValidated": 1728,
+      "classificationMismatches": 0,
+      "falseApprovals": 0,
+      "knownInsideSolutionsLost": 0
+    },
+    "legacyCompatibility": {
+      "snapshot": "git-tree:ccec6d43341dd8f12326766311553a59bc301fae",
+      "baseCommit": "ccec6d43341dd8f12326766311553a59bc301fae",
+      "singlePoseCases": 432,
+      "singlePoseFullOutputStreamSha256": "2b79abcadfced4c789f3b82efdb1b4a2bc7ca556c515c4c66c214b29a1c74e04",
+      "twoDeviceCases": 432,
+      "twoDeviceFullOutputStreamSha256": "eda14d78209b6f3a4408dc5c18125409342652d2a08afe989645e1583b28bf6a",
+      "twoDevicePossible": 98,
+      "twoDeviceImpossible": 334,
+      "comparison": "Candidate full JSON output stream including result digests and order matches hashes generated by executing fixed baseline module; six additional default/prerequisite/cutoff/permutation cases directly equal in both modules",
+      "inspectorSemanticComparisons": 128,
+      "inspectorMethod": "120 R1 tilt/azimuth/half-angle grid plus 8 clean/invalid/reversed cases evaluated in fixed baseline and candidate modules",
+      "inspectorAllowedDifferences": [
+        "jointSourceSha256",
+        "resultSha256"
+      ],
+      "inspectorOtherDifferences": 0
+    },
+    "unchangedFullBaseline": {
+      "eyeTargetPairs": 35721,
+      "pupilRaysPerPair": 18,
+      "raysPerCandidate": 642978,
+      "idealMissingPairs": 0,
+      "tenMillimetreGuardMissingPairs": 708,
+      "originalResultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b"
+    },
+    "negativeAndRecovery": [
+      "empty mask retains complete D and returns no assignment",
+      "duplicate/foreign/out-of-range indices and stale/rebound digests rejected",
+      "geometry-blocked pair cannot be resurrected",
+      "all declared exits calibrated including unused zero-capacity later pose",
+      "same pose alternate exit recovers four pupil/up-down rays",
+      "bad pair does not erase exit needed by other ray; residual reassignment",
+      "one pose/device and globally shared source capacity",
+      "budget cutoff unknown then larger-budget recovery",
+      "boundary-only unknown and unused boundary with known-inside witness",
+      "R1 small-angle impossible/unknown/found progression",
+      "non-string/getter/toJSON/callback/authority/eligibility fields refused",
+      "stable ordering, caller input unchanged, clean result recovery"
+    ],
+    "fullVerify": {
+      "status": "not_run_in_lane",
+      "owner": "Git on independently reviewed frozen integration candidate",
+      "command": "npm run verify"
+    }
+  },
+  "independentReview": {
+    "status": "pending",
+    "implementerDoesNotSelfAccept": true
+  },
+  "persistence": {
+    "localFilesSaved": true,
+    "committed": false,
+    "pushed": false,
+    "mainIntegrated": false,
+    "newCandidateCISuccess": false,
+    "published": false,
+    "gitMutationByWriter": false
+  },
+  "sharedChangeRequests": [
+    {
+      "owner": "Root/Git",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/development-lanes/mini.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "data/design-document-index.json",
+        "data/mission-control.json"
+      ],
+      "request": "After independent acceptance, synchronize the narrowly accepted finite search and exact source evolution; retain historical receipts and all physical/product gates. Run project:update, design:check, mission:update/mission:check as applicable and aggregate full verify on the frozen candidate. Distinguish local evidence, branch save, main adoption and same-SHA CI."
+    }
+  ],
+  "unresolved": [
+    "independent code review",
+    "Git save/main adoption and same-SHA candidate CI",
+    "real 3D calibration and combined uncertainty evidence",
+    "real simultaneous optical throughput",
+    "full continuous domain/extended scenes/real viewers",
+    "trajectory/occlusion/radiometry/wave-optics/thermal",
+    "physical visibility/low glare/eye safety/independent optical stop/manufacturing"
+  ],
+  "next": "Root assigns independent Astra review of these exact six bytes. Writer stops editing; Git owns adoption after acceptance. Later optional research is an optimistic boundary-edge feasibility check, still without physical authority."
+}

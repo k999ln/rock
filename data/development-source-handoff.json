@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T17:23:32.228070+00:00",
+  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "ccec6d43341dd8f12326766311553a59bc301fae",
+    "mainAtCapture": "7086309eac76533dd6efe358635a9be8a527ec17",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -446,7 +446,10 @@
       "id": "MINI-02",
       "title": "少数・板膜なし・全範囲の光学選定と反証",
       "lane": "mini",
-      "ledgerRef": "data/development-unit-progress.json#MINI-02"
+      "ledgerRef": "data/development-unit-progress.json#MINI-02",
+      "currentOverlayRefs": [
+        "MINI_CONE_AWARE_SEARCH_CANDIDATE"
+      ]
     },
     {
       "id": "MINI-03",
@@ -636,9 +639,16 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "MINI-02",
+      "state": "cone_aware_finite_host_source_pass_integration_candidate",
+      "scope": "Finite host cone-aware edge restriction/search only; no physical/stop/eye safety/manufacture/dispatch",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "PRO-01",
-      "state": "exact6_source_pass_main_candidate",
-      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "state": "limited_archive_PR199_main_integrated",
+      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
       "wholeUnitAccepted": false
     },
     {

@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.pro-account-import.main-adoption/1",
   "recordedAt": "2026-10-24T17:23:32.228070+00:00",
-  "status": "mechanical25_test_void_delta_local69_lint_type_pass_newheadCI_independent_review_pending",
+  "status": "PR199_normal_main_integrated_limited_original_archive_new_test_delta_review_and_CI_pass",
   "unit": "PRO-01",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "09-business-pilots",
@@ -368,18 +368,18 @@
   },
   "scope": "Explicit selected Pro local export -> local preview -> account confirmation and separate consent -> same-owner encrypted exact original archive -> full byte/SHA readback/download. No WorkJob/Tool/model execution.",
   "acceptance": {
-    "sourceIndependentLimited": false,
-    "metadataReviewed": false,
-    "mainMerged": false,
+    "sourceIndependentLimited": true,
+    "metadataReviewed": true,
+    "mainMerged": true,
     "wholePRO01": false,
     "realAccountBrowser": false,
     "nativeProFullMigration": false,
     "providerBilling": false,
     "publicDeployment": false,
     "originalSourceIndependentLimited": true,
-    "mechanicalDeltaIndependentReview": false
+    "mechanicalDeltaIndependentReview": true
   },
-  "next": "Separate independent final-head/source-test mechanical delta review and actual new-head CI fullverify required before merge; no local fullverify repetition.",
+  "next": "Main archive limited slice accepted; real account/browser/native/fullmigration/provider/wholePRO01 still unaccepted. Original localEPERM and Linuxlint25 remain failures; fresh2ec CI is distinct.",
   "originalReviewedSourceFiles": [
     {
       "path": "lib/pro-account-import.ts",
@@ -568,5 +568,27 @@
     },
     "newHeadActualNpmVerifyRequired": true,
     "independentNewHashReviewRequired": true
+  },
+  "historicalCandidateStatus": "mechanical25_test_void_delta_local69_lint_type_pass_newheadCI_independent_review_pending",
+  "mainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/199",
+    "acceptedHead": "2ec3d3f9c8f3a5abba4b2af70c763b09ab940e06",
+    "mainMergeSha": "7086309eac76533dd6efe358635a9be8a527ec17",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2796,
+      "pass": 2795,
+      "fail": 0,
+      "skip": 1,
+      "runId": 40118258251,
+      "jobId": 120944033921,
+      "logSha256": "68d7d3dc4391f7add5771ffcfef3f1fdc2141bf1e097500099c696639bc48501",
+      "actualExactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "independentR2Sha256": "1f09ee75570aab3c9f38e1d182f4ff9fe8582edb40df326eae4b8fc5337d13f2",
+    "r2CaptureVerdict": "PENDING_CI; mechanical metadata PASS_SCOPED. Later actual CI independently closes remaining gate.",
+    "productionDeployment": false,
+    "wholePRO01": false
   }
 }

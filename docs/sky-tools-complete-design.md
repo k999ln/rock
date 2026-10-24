@@ -1,3 +1,22 @@
+<a id="mini02-cone-aware-search"></a>
+## MINI-02有限cone-aware探索（host研究の限定候補）
+
+目的・利用体験: 旧maxflow/pose DFSを再利用し、全候補辺のうち有限cone内と判定できた辺だけで探索する。最初のwitnessがcone外だったことを、そのpose/exit全体の不合格や解なしへ読み替えない。少ない表示部・板膜なし・上下全範囲・低眩しさの要求は保持し、このhost関数の有限宣言を製品全域達成へ縮めない。CLIとJSONの研究APIであり、新しいToolや物理出力UIではない。
+
+責任: ROCKは厳密parse/元幾何候補/制限mask/最大流/pose DFSと保守的な状態・証人照合。EXTERNALは将来の実測光学/放射/校正根拠、JOINTは同一hardwareの観測/停止/眼安全/製造受入、OWNERは物理試験の対象/条件を担う。synthetic label/digestを測定・署名・Broker権限へ昇格しない。
+
+入出力・上限: 3入口はserialized JSONのみ。inspectJointCandidatesは正規化入力と候補edge/indexのdigestを返し、探索しない。runJointAllocationWithEdgeMaskは元入力/candidate digestと実在一意indexを再照合し、既存辺を除く制限だけを許す。空maskでも需要は残り、幾何的に届かない辺を復活させない。runConeAwareSearchは元joint request/全出口calibrationModels/coordinateFrame/clockDomainを検査してinside edgeを内部計算する。既存128demand・6device・各4pose・全96exit・16sourceとsearchLimit1〜1024を保持。未知field/外来index/古いbinding/関数・callback・shell等の権限入力を拒否する。
+
+状態・根拠: inside辺の全需要割当が再照合できた場合だけfinite_cone_allocation_found。校正/時計/前提が欠けるとunavailable、探索上限はunknown/search_cutoff、角度境界が残る場合は保守的unknown/angular_boundary_unresolved。全前提既知・境界なし・全pose組探索済みの不成立だけfinite_cone_allocation_impossibleで、有限宣言内の証明に限る。全宣言出口は未選択/容量0/候補なしも含め有効校正を要求する新探索規則。mask自体はcone適格性の証明ではない。
+
+保存・失敗・復旧・承認: host同期計算のみ、network/hardware/光出力/永続state/dispatchなし。同じ正当入力は正規化digestと同結果へ収束する。未知/期限切れ/時刻・scene/profile/pose/source不一致はfail closedで、修正したデータからcandidate/modelを再取得して検査する。停止はdeclared stopConfirmedであり実停止receiptではない。元資料/研究結果は呼出側が保持する。通常source revertは可能だが原本/historical evidenceを上書きしない。
+
+互換・明示進化: 旧runJointAllocation無maskの全JSON出力/digest/順序を保持。旧inspectFiniteConeはjoint source pinとそれに依存するresult digestだけが明示変化し、128比較でその他差異0。Rootがjoint source/cone source/cone testの3既存進化を許可。旧12guardのjoint例外をnamed evolutionとして固定し、他11と歴史receipt計18uniqueをbyte保持する。新receiptだけ4一時path参照を論理IDへ置換し、原本はGit外backup/旧hashで保持。数学/fixture/doc5bytesは独立レビューと一致し、公開receipt新hashを旧review hash一致と呼ばない。
+
+合格・未決定: 独立PASS_SCOPED/mustfix0、関連70pass、1728有限oracle/144角度grid/120独立斜面case、legacy432＋432全出力比較は別の証拠範囲で重複加算しない。固定全verify/同headCIとreceipt4参照の採用metadata検収は別gate。実可視/低眩しさ/眼安全/連続全域/同時実viewer/独立停止/実測校正/製造・物理dispatch・MINI02全体は未受入。同一物理候補で後続共同受入とOWNER条件を決める。
+
+[研究API詳細](avocado-mini-r5/factory-development/mini-02-cone-aware-search.md)／[採用hash・検証・4参照差分](evidence/development-execution/mini-02-cone-aware-main-adoption.json)／[独立検収の適用範囲](evidence/development-execution/mini-02-cone-aware-main-review-summary.json)。
+
 Pro統合候補のlint互換差分: tests/pro-account-import.test.mjsの登録呼出25箇所だけにvoidを明示。実行code5ファイル・テスト本体/assertion・保存/認証/暗号契約は不変。旧dd10 Linux lint25失敗とlocal listen EPERMを別々に保持し、新testhashの独立検収/同headCIは未完了。
 
 <a id="pro-account-original-archive"></a>

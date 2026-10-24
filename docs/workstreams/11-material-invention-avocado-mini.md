@@ -1,3 +1,7 @@
+## MINI-02 cone-aware有限探索の採用候補
+
+ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有限証人/不成立/unknownを区別。受入5bytes不変＋receipt4参照だけportable化。3既存進化を明示し、旧11/historical18保持。70試験成功、物理/低眩しさ/眼安全/全域/停止/製造は未受入。[全体契約](../rockstaros-avocado-mini-complete-design.md#mini02-cone-aware-search)／[採用証拠](../evidence/development-execution/mini-02-cone-aware-main-adoption.json)。統合主担当10、固定全verify/CIと独立metadata検収が次。
+
 # Material Invention / avocadoMini
 
 ## 携帯・PC前・対象物前を必須にしない制作と対話
