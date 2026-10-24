@@ -1,0 +1,208 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "billing",
+  "revision": 2,
+  "status": "implemented_pending_astra_review_and_shared_integration",
+  "threadId": "01a16c2c-51f1-7920-b67a-5c1799ae20f9",
+  "currentUnit": "BILL-01",
+  "baseAndSource": [
+    {
+      "candidate": "main",
+      "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "verification": "local git object; fresh remote read failed DNS; no new CI acceptance",
+      "monthlyStoreSha256": "d9577b24514c3cb259fde45fe6458f751a63c6b228706c7372a995025b5a61e6"
+    },
+    {
+      "candidate": "branch",
+      "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "verification": "local git object; fresh remote read failed DNS; no new CI acceptance"
+    },
+    {
+      "candidate": "separateSource",
+      "path": "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-agent-integration",
+      "sha": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+      "monthlyStoreSha256": "ec8e80b46e4b4c2cba59d9c1fbc652ab2ad26bd93b90785e40bad0c9cba48a5c",
+      "paymentObservationSha256": "82f08de543ecf4e65e66a8b6559a5411e479dcc917d6c57212cca35cf35e576e",
+      "notGithubOrProductionAcceptance": true
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "lib/sky-linux-billing.ts",
+    "lib/sky-agent-monthly-statement.ts",
+    "tests/sky-linux-billing.test.mjs",
+    "tests/sky-agent-monthly-statement.test.mjs",
+    "data/development-lanes/billing.json",
+    "docs/evidence/development-execution/bill-01.json"
+  ],
+  "readPaths": [
+    {
+      "path": "lib/sky-linux-service.ts",
+      "rootSha256": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec"
+    },
+    {
+      "path": "lib/rockstar-service-setup.ts",
+      "rootSha256": "94c01b7885f7368571fcb386284a6e3d1b2359d9cf5beed04a4ab88a47a1ce6c"
+    },
+    {
+      "path": "lib/rockstar-service-setup-billing.ts",
+      "rootSha256": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec"
+    },
+    {
+      "path": "lib/sky-agent-monthly-statement.ts",
+      "rootSha256": "30fd647279e53cd5677d8d8a047625c3284dd5408883d5fe43f0137a0ed5db92"
+    },
+    {
+      "path": "lib/sky-cloud-monthly-store.ts",
+      "rootSha256": null
+    },
+    {
+      "path": "db/schema.ts",
+      "rootSha256": "d25f37f1d7da2cab92fade2832d2ddc37974fa779d6cb1f9d2a707ac87a1eb38"
+    },
+    {
+      "path": "tests/sky-linux-service.test.mjs",
+      "rootSha256": "864d811a6c0abe8ff2d1ce44ef4f9a349ba591f5ec1614d26ba5ec2662053898"
+    },
+    {
+      "path": "tests/rockstar-service-setup.test.mjs",
+      "rootSha256": "cc6d32b68ab61d885544b93e5aec51a057a36d2412a17d79ae022a5b5137cb1e"
+    }
+  ],
+  "findings": [
+    "Main monthly-store exists; Root file absent. Separate Source extends store with Agent import/validation/settlement and payment observation. Compare dependencies and migration numbers before transport; do not rebuild or blindly copy.",
+    "Root LinuxTerms has USD baseMinor=1600, CPU terms and caps; setup hashes existing consent and separates method registration from collection. serviceStartAt null=not ready, undefined=legacy. Full immutable offer/priceVersion/meter/timezone/tax/BYOK snapshot and pending_owner_terms sale closure remain missing.",
+    "Root Agent monthly draft reuses sky_linux_service_documents and existing prepared payments, UTC owner/period/currency identity, 200-item hold, CAS and source digest. mode=test, baseMinor=0, draft_unreconciled, invoice=not_created, collection=disabled; never promote to common billed contract.",
+    "Main/Source monthly invoice identity owner_id/period/currency/stripe_account_id is not yet common account/contract/timezone identity. Source provider recovery and reversal holds remain test candidates.",
+    "Reuse lib/rock-wallet.ts, lib/wallet.ts and services/sky-billing existing reservation/ledger; no new balance ledger. USD16 base, legacy verified-revenue 888c cap, Marketplace author allocation and Sky standalone USD140 Sandbox are distinct contracts.",
+    "Keep product/telecom/AI/external costs/OSS/BYOK separate. Included quantities, meter prices, tax, region, proration, rollover and grace/refund conditions remain pending; no invented prices."
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git / schema / eSIM single writers",
+      "paths": [
+        "lib/sky-linux-service.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "db/schema.ts",
+        "drizzle/",
+        "docs/sky-billing.md",
+        "data/design-document-index.json",
+        "project.md",
+        "data/project-status.json",
+        "README.md"
+      ],
+      "request": "Persist server-built LinuxContractEnvelope alongside the accepted offer/contract without changing existing terms or consent retroactively. verifyLinuxContractSnapshot expects server-read ownerId/contractId/contractDigest/digest. Bind digest + expected revision in the same committing CAS as readiness/start/dispatch. serviceStartAt null stays pending; undefined stays legacy until explicit migration consent; signed readiness and payment-method facts are separate from digest. Add DB uniqueness on authenticated owner/contract/period/currency for the base line, not device or priceVersion. baseLineKey is only a deterministic preview identity; persistent once-only enforcement remains unimplemented. Re-pair/restart must reuse same contract/start. Existing UTC/serviceWindows proration is preserved; full_month preview does not change it. Arbitrary timezone/proration close remains BILL03/04.",
+      "negativeCases": [
+        "changed digest/owner/revision between read and commit: no start or dispatch",
+        "null/undefined must not turn into timestamp",
+        "device/re-pair/restart/version changes never insert another same-period base line",
+        "pending_owner_terms must close sale and paid dispatch at real API; previews alone do not enforce it"
+      ]
+    },
+    {
+      "owner": "Git / API / Wallet single writers",
+      "paths": [
+        "lib/sky-linux-service-store.ts",
+        "lib/sky-cloud-monthly-store.ts",
+        "lib/workflow.ts",
+        "app/api/sky/payments/"
+      ],
+      "request": "Wire optional contract binding through authenticated server routes after persistence/consent revision agreement. bindAgentMonthlyContract is a read-only sidecar and does not persist or change existing test draft/base0. Expected revision check here is not a DB CAS. Preserve current draft and source-item dedupe, account/contract identity and legacy 16USD vs 140USD sandbox provenance. BILL02 must atomically check used+holds+requested at committing dispatch with existing Wallet/cloud reservations, not rely on preview. No new ledger or Stripe transport.",
+      "negativeCases": [
+        "concurrent reservations above cap: one rejected by DB not pre-read only",
+        "old/revoked consent at commit: no dispatch",
+        "same source in monthly draft and main/Source invoice: no duplicate bill",
+        "different owner/currency/product cannot be rebound"
+      ]
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/sky-linux-billing.test.mjs tests/rockstar-service-setup.test.mjs tests/sky-agent-monthly-migration.test.mjs",
+      "scope": "host/local fixture, current dirty paths only",
+      "tests": 17,
+      "pass": 15,
+      "fail": 2,
+      "reason": "Both migration fixture failures: listen EPERM 127.0.0.1; no product failure diagnosis or immutable-candidate acceptance",
+      "logOutsideGit": "/private/tmp/billing-bootstrap-tests.log"
+    },
+    {
+      "command": "git ls-remote origin refs/heads/main refs/heads/codex/esim-cloud-access",
+      "result": "failed: github.com DNS unavailable; local refs are not fresh remote evidence"
+    },
+    {
+      "command": "npm run verify",
+      "result": "not run; parent fixed-candidate aggregation per dispatch"
+    }
+  ],
+  "externalConditions": [
+    "OWNER: inclusion/meter/overage/region/tax/proration/timezone/grace/refund and BYOK burden terms required before sales activation.",
+    "EXTERNAL/JOINT: issuer, signed readiness and payment-method/Invoice/payment/refund sandbox acceptance remain separate. No Provider API, live invoice, charge, payout, public deployment or device action executed."
+  ],
+  "nextUnit": {
+    "id": "BILL-02",
+    "prerequisite": "Astra high independent review and shared BILL01 persistence/API/CAS/pending gate connection; no implementer self-approval",
+    "scope": "existing Wallet/cloud budget reservations atomic used+holds+requested check, no duplicate ledger"
+  },
+  "updatedAt": "2026-10-24T06:28:50.311691+00:00",
+  "note": "BILL01 local contract helpers implemented; no shared API/persistence connection or final acceptance. Global project/status/README/design-index aggregation requested from Git single writer.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:30:11.228094+00:00",
+  "primaryWorkstream": "docs/workstreams/03-wallet-billing-providers.md",
+  "primaryOwner": "ROCK",
+  "taskIds": [
+    "BIL02",
+    "SIM01",
+    "SKY21"
+  ],
+  "firstExactPath": {
+    "path": "lib/sky-linux-billing.ts",
+    "status": "implemented_helpers_pending_review_and_shared_connection"
+  },
+  "implementationEvidence": "docs/evidence/development-execution/bill-01.json",
+  "latestExecution": {
+    "recordedAt": "2026-10-24T06:28:50.311691+00:00",
+    "sourceHashes": {
+      "lib/sky-linux-billing.ts": "553461a974aaf2e010c5be603b2929111ead6f1af74effde7fe7e07f51a626e3",
+      "lib/sky-agent-monthly-statement.ts": "91c4a5b0e35b0658d85fbb27abf0b1fd37e71d7c4d1054b50a1df951d2b6843c",
+      "tests/sky-linux-billing.test.mjs": "6c116f523d1226a6fc19c6e07516e9b3b212016307a441a9a34b0493953d5dcf",
+      "tests/sky-agent-monthly-statement.test.mjs": "7ba61653a42b62e3bfefb7eb30bbdd533854f7037db904dfddbf73bd4931ab15"
+    },
+    "tests": [
+      {
+        "command": "node --experimental-strip-types --test tests/sky-linux-billing.test.mjs tests/sky-agent-monthly-statement.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs",
+        "result": "62 passed / 0 failed",
+        "log": "/private/tmp/bill-01-final-tests.log",
+        "sha256": "9bfb8ee287bda4023e667926594b8d367855bf5097f1f54c401183572e0ba5c9"
+      },
+      {
+        "command": "./node_modules/.bin/oxlint lib/sky-linux-billing.ts lib/sky-agent-monthly-statement.ts tests/sky-linux-billing.test.mjs tests/sky-agent-monthly-statement.test.mjs",
+        "result": "exit 0, project configured local oxlint",
+        "log": "/private/tmp/bill-01-oxlint.log"
+      },
+      {
+        "command": "npm run typecheck",
+        "result": "exit 0 (final run)",
+        "log": "/private/tmp/bill-01-typecheck-final.log"
+      },
+      {
+        "command": "npx eslint [four owned source/test paths]",
+        "result": "not executed: eslint absent; attempted resolution failed npm registry DNS. Correct project linter oxlint was then used successfully.",
+        "log": "/private/tmp/bill-01-lint.log"
+      }
+    ],
+    "independentReview": {
+      "state": "pending",
+      "requiredModel": "gpt-6-astra",
+      "requiredEffort": "high",
+      "dispatchOwner": "coordinator next free slot within global active3",
+      "implementerMustNotApproveSelf": true
+    },
+    "acceptanceLimits": [
+      "Pure contract/preview/binding helpers and host fixtures only. Existing real API/store do not yet use snapshots; pending sale/dispatch guard and persistent base uniqueness require shared integration.",
+      "Snapshot status defined is not issuer/readiness/consent approval, provider readiness, production pricing acceptance or permission to charge.",
+      "No actual reservation/Invoice/ledger write/collection/payout/device/publication/Git operation. No full verify; coordinator runs fixed candidate verification."
+    ],
+    "evidenceSha256": "d71a52b2844e93607d2c10f12eb2750e99b850aa7fda74bcbafe8b3601329bbc"
+  }
+}

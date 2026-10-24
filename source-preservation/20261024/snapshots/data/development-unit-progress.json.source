@@ -1,0 +1,4208 @@
+{
+  "schema": "rockstaros.development-unit-progress/1",
+  "recordedAt": "2026-10-24T05:12:08.610961+00:00",
+  "scope": "execution ledger initialized from reviewed instructions; bootstrap is source review only",
+  "singleWriter": "coordinator_or_explicitly_handed_off_git_lane",
+  "unitCount": 95,
+  "deliveryStates": [
+    "not_started",
+    "source_reviewed",
+    "ready",
+    "implementing",
+    "review_pending",
+    "accepted",
+    "blocked",
+    "needs_revalidation"
+  ],
+  "productGateStates": [
+    "not_assessed",
+    "fixture_only",
+    "sandbox_only",
+    "accepted_for_target",
+    "unmet",
+    "rejected_or_infeasible"
+  ],
+  "units": [
+    {
+      "id": "GIT-01",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "review_pending",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": "docs/evidence/development-execution/git-01.json",
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [
+        "independent review; original preservation evidence retained"
+      ],
+      "nextDispatch": "GIT-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "low",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 1,
+        "switchReason": null,
+        "requestedEffort": "low",
+        "dispatchToolAccepted": true
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "dispatchedAt": "2026-10-24T06:00:38.823161+00:00",
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/source-batch-review.json",
+        "sha256": "b71fa91ce13dba12980c405ca67cac422c85965c1fea72899452e61b99464a0c",
+        "verdict": "pass_for_limited_source_preservation_and_host_regression_only",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "GIT-02",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "review_pending",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": "docs/evidence/development-execution/git-01.json",
+      "exactWriteSet": [
+        "docs/evidence/development-execution/git-02.json",
+        "data/development-lanes/git.json",
+        "global coordination metadata only; no runtime/schema/CI change"
+      ],
+      "dependenciesToConfirm": [
+        "GIT-01 independent review",
+        "GIT-04 schema/journal/applied DB union"
+      ],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": {
+        "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+        "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "contractRevision": 2,
+        "contractSha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+        "checkout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+        "branch": "codex/rock-main-integration-20261024"
+      },
+      "reviewEvidence": "docs/evidence/development-execution/git-02-03-review.json",
+      "productGateState": "not_assessed",
+      "gitStage": "isolated_main_checkout_prepared_not_committed",
+      "waitingOn": [
+        "Astra/high revision2 independent review"
+      ],
+      "nextDispatch": "GIT-04 after review",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 2,
+        "switchReason": "Second Sol/medium attempt addresses independent R1/P1 save fence and R2/P2 list contract; no source resnapshot",
+        "requestedEffort": "medium"
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "executionEvidence": "docs/evidence/development-execution/git-02.json",
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/git-02-03-review-r2.json",
+        "status": "accepted_contract_revision2_runtime_unimplemented",
+        "contractRevision": 2,
+        "unitCompletionClaimed": false
+      }
+    },
+    {
+      "id": "GIT-03",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "review_pending",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": "docs/evidence/development-execution/git-01.json",
+      "exactWriteSet": [
+        "docs/evidence/development-execution/git-03.json",
+        "data/development-lanes/git.json",
+        "global coordination metadata only; no runtime/schema/CI change"
+      ],
+      "dependenciesToConfirm": [
+        "GIT-01 independent review",
+        "GIT-04 schema/journal/applied DB union"
+      ],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": {
+        "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+        "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "contractRevision": 2,
+        "contractSha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+        "checkout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+        "branch": "codex/rock-main-integration-20261024"
+      },
+      "reviewEvidence": "docs/evidence/development-execution/git-02-03-review.json",
+      "productGateState": "not_assessed",
+      "gitStage": "isolated_main_checkout_prepared_not_committed",
+      "waitingOn": [
+        "Astra/high revision2 independent review"
+      ],
+      "nextDispatch": "GIT-04 after review",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 2,
+        "switchReason": "unit routing; dispatch requested, runtime model introspection unavailable",
+        "requestedEffort": "medium"
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "executionEvidence": "docs/evidence/development-execution/git-03.json",
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/git-02-03-review-r2.json",
+        "status": "accepted_contract_revision2_runtime_unimplemented",
+        "contractRevision": 2,
+        "unitCompletionClaimed": false
+      }
+    },
+    {
+      "id": "GIT-04",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "implementing",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": "/private/tmp/rock-git04-input/manifest.json",
+      "exactWriteSet": [
+        "scripts/sqlite-migration-aliases.mjs",
+        "scripts/sites-migration-lineage.mjs",
+        "data/migration-aliases.json",
+        "tests/migration-aliases.test.mjs",
+        "data/migration-reference-profiles.json"
+      ],
+      "dependenciesToConfirm": [
+        "remaining8 semantic migrations/13 same-name guard differences",
+        "Eve Source explicit complete DB base",
+        "GIT-02 rev2 runtime consumers not ported"
+      ],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": {
+        "checkout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+        "baseMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+        "candidateFilesSha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+        "fileHashes": {
+          "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+          "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+          "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+          "tests/migration-aliases.test.mjs": "3dc2be92fe0a898d038de4bfa1eaaf351d5327dcf71ef3b16095150ee7589dd0",
+          "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+        },
+        "gitCommit": "3de31818bc2b18a4e82bc4ebf5a5e39357af2816",
+        "pr": 186,
+        "currentCoreFilesSha256": "829f8fc8cd32c0b58f297ffbca1620ef6521ad1213af19738c1ed868de7f2cf3",
+        "fdCorrectionFilesSha256": "829f8fc8cd32c0b58f297ffbca1620ef6521ad1213af19738c1ed868de7f2cf3",
+        "mergeCommit": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac"
+      },
+      "reviewEvidence": "docs/evidence/development-execution/git-04-review.json",
+      "productGateState": "fixture_only",
+      "gitStage": "PR186_main_merged_main_CI_success_full_union_unaccepted",
+      "waitingOn": [
+        "full union remaining scoped gates"
+      ],
+      "nextDispatch": "GIT-04 remaining union after alias review",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 3,
+        "switchReason": "Same Sol/high unit attempt2 fixes independent security findings; no final self-acceptance",
+        "requestedEffort": "high"
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "executionEvidence": "docs/evidence/development-execution/git-04-main-merge.json",
+      "unitCompletionClaimed": false,
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/git-04-review-r2.json",
+        "sha256": "e8f4d0878bd84372ed3d460aa216a035f1f99ba7b47a1c99f558d44a8eca369a",
+        "verdict": "accepted_alias_helper_limited_scope_full_union_unaccepted",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied",
+        "finalHeadReview": "docs/evidence/development-execution/git-04-final-head-review.json",
+        "aliasHelperMainMerged": true
+      },
+      "rootCauseAttempts": {
+        "backup_path_check_close_reopen": {
+          "id": "GIT04-CP-R1",
+          "attempt": 1,
+          "overallAttempt": 3,
+          "limitPerCause": 3,
+          "codeql": "success"
+        },
+        "source_sql_execution": {
+          "attempt": 2,
+          "status": "prior limited correction reviewed"
+        },
+        "metadata_side_effects": {
+          "attempt": 2,
+          "status": "prior limited correction reviewed"
+        },
+        "replay_schema_proof": {
+          "attempt": 2,
+          "status": "prior limited correction reviewed"
+        }
+      },
+      "ancillaryCiCipherTestCorrection": {
+        "attempt": 1,
+        "commit": "3de31818bc2b18a4e82bc4ebf5a5e39357af2816",
+        "path": "tests/sky-x-account.test.mjs",
+        "focusedPassed": 10,
+        "overallHelperAttemptsUnchanged": true
+      }
+    },
+    {
+      "id": "GIT-05",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GIT-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "GIT-06",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GIT-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "GIT-07",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GIT-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "GIT-08",
+      "lane": "git",
+      "parentItems": [
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GIT-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "low",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-01",
+      "lane": "eve",
+      "parentItems": [
+        "P13",
+        "P02"
+      ],
+      "deliveryState": "review_pending",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 1,
+        "switchReason": null,
+        "requestedEffort": "medium",
+        "dispatchToolAccepted": true
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "executionReceipt": "docs/evidence/development-execution/eve-01.json",
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/source-batch-review.json",
+        "sha256": "b71fa91ce13dba12980c405ca67cac422c85965c1fea72899452e61b99464a0c",
+        "verdict": "pass_for_limited_source_preservation_and_host_regression_only",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "EVE-02",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P08",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-03",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-04",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-05",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-06",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-07",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-08",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-09",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P04",
+        "P07",
+        "P09",
+        "P11",
+        "P12"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-09",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-10",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-10",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-11",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-11",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-12",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-12",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-13",
+      "lane": "eve",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P07",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-13",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-14",
+      "lane": "eve",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-14",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "EVE-15",
+      "lane": "eve",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "EVE-15",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-01",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P11"
+      ],
+      "deliveryState": "review_pending",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 1,
+        "switchReason": null,
+        "requestedEffort": "medium",
+        "dispatchToolAccepted": true
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "dispatchedAt": "2026-10-24T06:00:38.823161+00:00",
+      "executionReceipt": "docs/evidence/development-execution/pixel-host-test.json",
+      "independentReviewReceipt": "docs/evidence/development-execution/pixel-host-test-review.json",
+      "acceptedSubscope": "limited host fixture regression only; OS-01 physical/full product conditions still pending",
+      "subscopeReceipts": [
+        {
+          "path": "docs/evidence/development-execution/pixel-host-test-review.json",
+          "status": "accepted_limited_host_fixture_evidence",
+          "nodePass": 9,
+          "pythonPass": 3,
+          "pythonSkip": 1,
+          "scope": "current source hashes matched; actual Linux kernel test skipped on macOS; historical Linux4pass not independently rerun",
+          "wholeUnitAccepted": false
+        }
+      ],
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/pixel-host-test-review.json",
+        "sha256": "ef32a88637649a5be21351c858351a4f5c1ce1c5a844088941efa441fecc7f35",
+        "verdict": "accepted_limited_host_fixture_evidence",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "OS-02",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-03",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-04",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-05",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-06",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-07",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P07",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-08",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-09",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-09",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-10",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-10",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-11",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-11",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-12",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-12",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-13",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-13",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-14",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-14",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-15",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-15",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-16",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-16",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-17",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-17",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6-astra",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OS-18",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P12"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OS-18",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SMITH-01",
+      "lane": "smith",
+      "parentItems": [
+        "P13",
+        "P02"
+      ],
+      "deliveryState": "implementing",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": "gpt-6.1-sol",
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 1,
+        "switchReason": null,
+        "requestedEffort": "medium",
+        "dispatchToolAccepted": true
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/source-batch-review.json",
+        "sha256": "b71fa91ce13dba12980c405ca67cac422c85965c1fea72899452e61b99464a0c",
+        "verdict": "pass_for_limited_source_preservation_and_host_regression_only",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "SMITH-02",
+      "lane": "smith",
+      "parentItems": [
+        "P02",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SMITH-03",
+      "lane": "smith",
+      "parentItems": [
+        "P02",
+        "P01",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SMITH-04",
+      "lane": "smith",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P05",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SMITH-05",
+      "lane": "smith",
+      "parentItems": [
+        "P03",
+        "P08",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SMITH-06",
+      "lane": "smith",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SMITH-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-01",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "implementing",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "pure_subset_PR187_saved_ci_and_integrated_review_pending",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "integrationAdoption": {
+        "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+        "baseMain": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+        "wholeUnitAccepted": false,
+        "sourceReviewRetained": true,
+        "commit": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "pr": 187,
+        "checkpoint": "docs/evidence/development-execution/service-contract-github-checkpoint.json",
+        "githubSaved": true,
+        "mainMerged": false,
+        "fullVerifyExit": 0
+      },
+      "unitCompletionClaimed": false
+    },
+    {
+      "id": "ESIM-02",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-03",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-04",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-05",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-06",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-07",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "ESIM-08",
+      "lane": "esim",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "ESIM-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "low",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-01",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "implementing",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "pure_subset_PR187_saved_ci_and_integrated_review_pending",
+      "waitingOn": [],
+      "nextDispatch": "BILL-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/billing-wallet-review.json",
+        "sha256": "b034977dacb49babf524a54222022f6715d7674df55115abf2ed8c550d9e43c3",
+        "verdict": "billing_changes_required_wallet_pure_candidate_accepted",
+        "limitedSubbatchAccepted": false,
+        "wholeUnitAccepted": false,
+        "note": "BILL correction82pass remains independent-review pending; API/DB/budget binding and real effects are not accepted"
+      },
+      "integrationAdoption": {
+        "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+        "baseMain": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+        "wholeUnitAccepted": false,
+        "sourceReviewRetained": true,
+        "commit": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "pr": 187,
+        "checkpoint": "docs/evidence/development-execution/service-contract-github-checkpoint.json",
+        "githubSaved": true,
+        "mainMerged": false,
+        "fullVerifyExit": 0
+      },
+      "unitCompletionClaimed": false
+    },
+    {
+      "id": "BILL-02",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-03",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-04",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-05",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-06",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-07",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "BILL-08",
+      "lane": "billing",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "BILL-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-01",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/mini-pro-web-review.json",
+        "sha256": "26b368846aa999f9c177cf7d9c4825dbbfd486d5e6fe5d90f8fe37b90a083fac",
+        "verdict": "pass_scoped_host_metadata_file_handoff_and_maintenance_ui_changes",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "MINI-02",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P12"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6-astra",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-03",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-04",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-05",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P03",
+        "P09",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-05",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-06",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P09",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-06",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-07",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P05",
+        "P09",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-07",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MINI-08",
+      "lane": "mini",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P05",
+        "P06",
+        "P07",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MINI-08",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "PRO-01",
+      "lane": "pro",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "PRO-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/mini-pro-web-review.json",
+        "sha256": "26b368846aa999f9c177cf7d9c4825dbbfd486d5e6fe5d90f8fe37b90a083fac",
+        "verdict": "pass_scoped_host_metadata_file_handoff_and_maintenance_ui_changes",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "PRO-02",
+      "lane": "pro",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P03",
+        "P06",
+        "P07"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "PRO-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "PRO-03",
+      "lane": "pro",
+      "parentItems": [
+        "P10",
+        "P05",
+        "P09",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "PRO-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "PRO-04",
+      "lane": "pro",
+      "parentItems": [
+        "P10",
+        "P07",
+        "P08",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "PRO-04",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "NET-01",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P09",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "NET-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "NET-02",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "NET-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "NET-03",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P07",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "NET-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "WEBOPS-01",
+      "lane": "web-ops",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "WEBOPS-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/mini-pro-web-review.json",
+        "sha256": "26b368846aa999f9c177cf7d9c4825dbbfd486d5e6fe5d90f8fe37b90a083fac",
+        "verdict": "pass_scoped_host_metadata_file_handoff_and_maintenance_ui_changes",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      }
+    },
+    {
+      "id": "WEBOPS-02",
+      "lane": "web-ops",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "WEBOPS-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "WEBOPS-03",
+      "lane": "web-ops",
+      "parentItems": [
+        "P03",
+        "P09",
+        "P10",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "WEBOPS-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OPS-01",
+      "lane": "web-ops",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OPS-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OPS-02",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OPS-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "OPS-03",
+      "lane": "web-ops",
+      "parentItems": [
+        "P03",
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "OPS-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "WALLET-01",
+      "lane": "wallet",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "deliveryState": "implementing",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "pure_subset_PR187_saved_ci_and_integrated_review_pending",
+      "waitingOn": [],
+      "nextDispatch": "WALLET-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      },
+      "subscopeReview": {
+        "path": "docs/evidence/development-execution/billing-wallet-review.json",
+        "sha256": "b034977dacb49babf524a54222022f6715d7674df55115abf2ed8c550d9e43c3",
+        "verdict": "billing_changes_required_wallet_pure_candidate_accepted",
+        "limitedSubbatchAccepted": true,
+        "wholeUnitAccepted": false,
+        "note": "Only reviewed source/host/file/metadata/helper scope; full unit/physical/provider/runtime completion not implied"
+      },
+      "integrationAdoption": {
+        "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+        "baseMain": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+        "wholeUnitAccepted": false,
+        "sourceReviewRetained": true,
+        "commit": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "pr": 187,
+        "checkpoint": "docs/evidence/development-execution/service-contract-github-checkpoint.json",
+        "githubSaved": true,
+        "mainMerged": false,
+        "fullVerifyExit": 0
+      },
+      "unitCompletionClaimed": false
+    },
+    {
+      "id": "WALLET-02",
+      "lane": "wallet",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "WALLET-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "WALLET-03",
+      "lane": "wallet",
+      "parentItems": [
+        "P05",
+        "P08"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "WALLET-03",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "GAME-01",
+      "lane": "game",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P10",
+        "P11"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/game",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GAME-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "GAME-02",
+      "lane": "game",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/game",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "GAME-02",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MATERIAL-01",
+      "lane": "mini",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P12"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MATERIAL-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "COMPANION-01",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P05",
+        "P07",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "COMPANION-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "AUTH-01",
+      "lane": "os-pixel",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P05",
+        "P09"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "AUTH-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "SYNC-01",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "SYNC-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "high",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MODEL-01",
+      "lane": "eve",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11",
+        "P12"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MODEL-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    },
+    {
+      "id": "MCP-01",
+      "lane": "smith",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P04",
+        "P09",
+        "P10"
+      ],
+      "deliveryState": "not_started",
+      "bootstrapSourceReviewAvailable": true,
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "inputManifest": null,
+      "exactWriteSet": [],
+      "dependenciesToConfirm": [],
+      "resourceLeaseRequired": [],
+      "sourceCandidate": null,
+      "reviewEvidence": null,
+      "productGateState": "not_assessed",
+      "gitStage": "not_saved_by_this_execution",
+      "waitingOn": [],
+      "nextDispatch": "MCP-01",
+      "modelRouting": {
+        "policyPath": "data/development-model-routing.json",
+        "primaryModel": "gpt-6.1-sol",
+        "effort": "medium",
+        "requestedModel": null,
+        "appliedModel": null,
+        "appliedModelConfirmed": false,
+        "attemptCount": 0,
+        "switchReason": null
+      },
+      "executionMetrics": {
+        "elapsedMs": null,
+        "inputTokens": null,
+        "outputTokens": null,
+        "reviewUsage": null,
+        "reworkUsage": null,
+        "actualCost": null,
+        "currency": null
+      }
+    }
+  ],
+  "modelRoutingPolicyPath": "data/development-model-routing.json",
+  "updatedAt": "2026-10-24T08:48:20.021208+00:00"
+}

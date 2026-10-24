@@ -1,0 +1,331 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "git",
+  "revision": 3,
+  "status": "PR187_saved_ci_review_pending_checkpoint_idle",
+  "threadId": "01a16c23-d327-7401-b994-05796b175cce",
+  "currentUnit": "GIT-04",
+  "baseAndSource": [
+    {
+      "generatedAt": "2026-10-24T06:00:14.774Z",
+      "liveMetadataVerified": true,
+      "sourceReviewComplete": false,
+      "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "branch": {
+        "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "branch": "codex/esim-cloud-access",
+        "dirty": true
+      },
+      "branchCount": 21,
+      "openPullRequests": [
+        100,
+        103,
+        104,
+        105,
+        106,
+        108,
+        110,
+        130,
+        171,
+        177,
+        178
+      ],
+      "sameShaChecks": [
+        {
+          "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+          "state": "PASS",
+          "total": 23,
+          "allSuccessful": true
+        },
+        {
+          "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+          "state": "PASS",
+          "total": 1,
+          "allSuccessful": true
+        }
+      ],
+      "restrictedAttempt": "failed before successful escalated read",
+      "fullContextPath": "/private/tmp/rock-git01-preservation/github-context.json"
+    },
+    {
+      "path": "work/eve-v115-agent-integration",
+      "head": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+      "dirtyPaths": 0,
+      "origin": "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-live-source",
+      "bundle": "/private/tmp/rock-git01-preservation/eve-v115-agent-integration.bundle",
+      "acceptanceTier": "local committed source; not GitHub/public acceptance"
+    },
+    {
+      "path": "work/eve-v115-live-source",
+      "head": "ac24bc0d20dc41804cfc45c8663d4769af6bfc67",
+      "dirtyPaths": 0,
+      "origin": null,
+      "bundle": "/private/tmp/rock-git01-preservation/eve-v115-live-source.bundle",
+      "acceptanceTier": "local committed source; not GitHub/public acceptance"
+    },
+    {
+      "source": "Smith core-source-integration",
+      "classification": "保留",
+      "reason": "not in Root worktree inventory or checked work/ paths; canonical location not established",
+      "resumeCondition": "Smith lane provides exact source location/head/dirty manifest; do not infer from agent-smith worktree name"
+    },
+    {
+      "source": "Sites public v118",
+      "classification": "履歴保持",
+      "reason": "previously recorded public version; current deployed bytes/version not read this unit",
+      "resumeCondition": "Web lane provides immutable deployment source/artifact/readback manifest; no Root acceptance transfer"
+    },
+    {
+      "source": "Mini/Pro",
+      "classification": "保留",
+      "reason": "Root shared sites/avocado-mini worker preserved in manifest; standalone sites/avocado-pro absent; shared router not assigned for edits",
+      "resumeCondition": "Mini/Pro lanes identify candidate asset/route hashes and their owned exact paths"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo/scripts/sqlite-migration-aliases.mjs",
+    "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo/scripts/sites-migration-lineage.mjs",
+    "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo/data/migration-aliases.json",
+    "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo/tests/migration-aliases.test.mjs",
+    "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo/data/migration-reference-profiles.json",
+    "docs/evidence/development-execution/git-04.json",
+    "global progress/docs only in Root"
+  ],
+  "readPaths": [
+    "AGENTS.md",
+    "docs/product-baseline.md",
+    "data/product-baseline.json",
+    "README.md",
+    "project.md",
+    "data/project-status.json",
+    "docs/prompts/rockstaros-development-chats.md",
+    "docs/prompts/rockstaros-development-chats/git.md",
+    "docs/prompts/rockstaros-remaining-work-development.md#git-01",
+    "docs/workstreams/README.md",
+    "docs/workstreams/00-responsibility-boundaries.md",
+    "docs/workstreams/10-git-ci-operations.md",
+    "docs/execution-approval-20260909.md",
+    "data/execution-approval.json",
+    "docs/design-implementation-alignment-20260909.md",
+    "data/rockstaros-development-chats.json",
+    "data/repository-map.json",
+    "scripts/check-repository-map.mjs",
+    "scripts/prompt-context.mjs",
+    "tests/migration-union.test.mjs"
+  ],
+  "findings": [
+    "Root -uall snapshot: 1410 paths = 328 tracked modifications, 7 deletions, 1075 untracked; counts change during concurrent work and are not feature counts. Initial staged count 1 later became 0 without this lane modifying index; preserve owner/index boundary.",
+    "service attachment/setup working blobs exactly match cached main; reuse rather than reimplement. workflow HEAD/main/working blobs all differ. monthly store exists only on main; Remix only in dirty Root among compared refs.",
+    "Root migrations 0064/0065 absent at same paths in cached main; compare semantic tables/journals and applied DB readback before numbering. No migration was modified.",
+    "Baseline Root 1.125/RQ49 vs recorded main 2.08/RQ50 and status165 vs393 require ID/evidence reconciliation; version/count does not select winner.",
+    "GIT-01 full acceptance remains pending: no exhaustive owner/adoption manifest, untracked-byte backup or restore readback. Bootstrap is complete only."
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "coordinator",
+      "request": "Dispatch distinct reviewer for GIT-01/02/03 with same manifest/hash; no self-acceptance. Reviewer slot must fit active<=3."
+    },
+    {
+      "owner": "billing/eSIM/Eve/Smith",
+      "request": "Consume git-02 contract revision1/hash. Propose exact patches; no whole Root workflow/schema/monthly replacement. Preserve main RQ50 and unresolved140vs16 policy; binary media stays separately authorized."
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs",
+      "exitCode": 0,
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "log": "/private/tmp/rock-git04-r2/focused-final.log",
+      "sha256": "8d0c556e48b8adfa50ae3e4769f4058032a9b1bfd3e9b17f59f66aefb21921bb"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/migration-union.test.mjs",
+      "exitCode": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "log": "/private/tmp/rock-git04-r2/existing-union.log",
+      "sha256": "328727b8440eaf37bbef7f18db4619a974144a30e6249e52682bac52ea5b82cd",
+      "scope": "existing synthetic fresh/current workerd/D1 fixtures; not live DB"
+    },
+    {
+      "command": "targeted oxlint (3 changed/related JS files)",
+      "exitCode": 0,
+      "log": "/private/tmp/rock-git04-r2/lint.log"
+    },
+    {
+      "command": "project/schema/database/mission and exact-owned diff checks",
+      "result": "pending final sync checks below"
+    }
+  ],
+  "externalConditions": [
+    "shared working tree still mutable; do not stage this backup as an accepted integration candidate",
+    "workflow three-way delta, main RQ50/Root RQ49 and migration semantic journal/applied-DB mismatch remain GIT-02/04 work",
+    "private candidate evidence needs owner review before copying held bytes",
+    "temporary backup is local and removable by system cleanup; durable retention pending coordinator",
+    "public readback and exact Smith source location remain source-specific holds, not fabricated success"
+  ],
+  "nextUnit": {
+    "id": "Root-assigned PR187 review/merge continuation",
+    "action": "Exact-head CI + integrated subset independent review, then normal merge; follow finite plan"
+  },
+  "updatedAt": "2026-10-24T08:48:20.021208+00:00",
+  "note": "Checkpoint idle; accepted pure helper subset saved in separate draft PR187. Root/global receipts remain local; source adoption evidence is also committed. No next batch or device/provider/public operation.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:20:55.771073+00:00",
+  "primaryWorkstream": "Git / CI / Operations",
+  "primaryOwner": "ROCK",
+  "taskIds": [
+    "G04",
+    "DOC01",
+    "DB01"
+  ],
+  "sourceSamples": [
+    {
+      "path": "lib/workflow.ts",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": "fe603ca6c91a4012ec0799fb7f65d12b65eab111",
+      "mainBlobHash": "586e25fbe4d61d0308cdaa6a09b26419c6036f5f",
+      "workingHash": "f29dd55221c9971f59f7e2b6150f69aa50d99f4d0ddb3d1d4f65209e77d6b8cf",
+      "workingBlobHash": "f28741795b4140f429ab85a4c7fe8f963a76a841"
+    },
+    {
+      "path": "lib/rockstar-service-attachment.ts",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": "122163a5fd301737f5a169e9fff074b6563f79b3",
+      "workingHash": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+      "workingBlobHash": "122163a5fd301737f5a169e9fff074b6563f79b3"
+    },
+    {
+      "path": "lib/rockstar-service-setup.ts",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": "5c6ae3f4ae316f1381c0900fbfa45dcc36ca3a01",
+      "workingHash": "94c01b7885f7368571fcb386284a6e3d1b2359d9cf5beed04a4ab88a47a1ce6c",
+      "workingBlobHash": "5c6ae3f4ae316f1381c0900fbfa45dcc36ca3a01"
+    },
+    {
+      "path": "lib/sky-cloud-monthly-store.ts",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": "6edefede803350e6b46655e551da7af93936fdf8",
+      "workingHash": null
+    },
+    {
+      "path": "lib/eve-remix.ts",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "eve",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": null,
+      "workingHash": "0ee70a8e93f16c987412031c05e1c3d504ab591ea11c00200e0adb8aa95644dd",
+      "workingBlobHash": "bb091be7c7f6026127b3a0e6eecd19caa892330b"
+    },
+    {
+      "path": "drizzle/0064_sky_linux_service.sql",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": null,
+      "workingHash": "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53",
+      "workingBlobHash": "1a8adfae7bf0d58854e3fa7c2893ccca732101dd"
+    },
+    {
+      "path": "drizzle/0065_rockstar_service_setup.sql",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": null,
+      "mainBlobHash": null,
+      "workingHash": "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5",
+      "workingBlobHash": "d5917841a582855e721aa3760b9bf187922801bb"
+    },
+    {
+      "path": "sites/avocado-mini/worker/index.js",
+      "originSource": "dirty Root vs local Git objects",
+      "startHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "owner": "git",
+      "parentP": "P13",
+      "adoption": "pending comparison",
+      "reason": "bootstrap only; no import",
+      "destinationCommit": null,
+      "acceptanceTier": "source metadata only",
+      "blobHash": "12645c7669b0118743a0a987d58bf27ed0fe6c58",
+      "mainBlobHash": "269e440030f29ab7998167aed4b25fb57ebc8c24",
+      "workingHash": "d00271f19a2fc72b5b24e371c509e1268e710a2d59659a97ee0eb4f09d19e174",
+      "workingBlobHash": "f937ae5604d2f80d3ba37c75878c7859e3c05d52"
+    }
+  ],
+  "executionEvidence": "docs/evidence/development-execution/service-contract-github-checkpoint.json",
+  "executionSummary": {
+    "pr186MainMerge": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+    "pr186MainCI": "4 workflows/6 checks success",
+    "pr187": 187,
+    "sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+    "focused": 113,
+    "fullVerifyExit": 0,
+    "fixedInputs": 4404,
+    "changedInputs": 0,
+    "newHeadCI": "in_progress_at_snapshot",
+    "independentIntegratedReview": "pending",
+    "unitComplete": false,
+    "mainMergedPR187": false
+  },
+  "revision2Amendment": {
+    "attempt": 2,
+    "findings": [
+      "GIT0203-R1",
+      "GIT0203-R2"
+    ],
+    "review": "docs/evidence/development-execution/git-02-03-review.json",
+    "runtimeFilesChanged": false
+  }
+}

@@ -1,0 +1,299 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "eve",
+  "revision": 2,
+  "status": "execution_delivered_pending_independent_review",
+  "threadId": "01a16c24-5351-76b0-8c89-c98ad309b2d6",
+  "currentUnit": "EVE-01",
+  "baseAndSource": [
+    {
+      "candidate": "root",
+      "checkout": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "branch": "codex/esim-cloud-access",
+      "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "state": "Shared dirty tree; HEAD is not the runtime candidate; no reset/stash/commit performed"
+    },
+    {
+      "candidate": "separate_source",
+      "checkout": "work/eve-v115-agent-integration",
+      "head": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+      "origin": "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-live-source",
+      "state": "Local repository and local origin; no GitHub/main/deployment equivalence",
+      "missingRootFiles": [
+        "lib/eve-remix.ts",
+        "lib/eve-media-edit.ts",
+        "lib/eve-media-app.ts",
+        "components/eve-remix-workspace.tsx",
+        "components/eve-media-studio.tsx"
+      ],
+      "commonFileSha256": {
+        "lib/workflow.ts": "ede26ca347c541f7633dfb252cd0d2add936d62279c1848faabe9ba57f8a36a5",
+        "lib/eve-tool-work.ts": "60799d6b7a7b4c53df1eb9cd26d343ea2dd48569ff0a266fd1fbbbda66de0b60",
+        "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853"
+      }
+    },
+    {
+      "candidate": "public_v118_historical_evidence",
+      "evidence": "docs/evidence/eve-smis-execution-loop.json#publication",
+      "sourceCommit": "d26363bd7f4a37501db6ba2061728b80351bf776",
+      "archiveSha256": "3469b2f4b8fda4d9cbceef7cbb7ab45a0106786f23ce2deaf58fe50cae49181c",
+      "state": "Historical 71-asset/169 synthetic assertion evidence; current deployment/HTTP/UI not reread; new browser/Pixel/model/two-client result acceptance false"
+    },
+    {
+      "candidate": "github_context",
+      "source": "data/rockstaros-development-chats.json#freshGit",
+      "recordedAt": "2026-10-24T04:16:26.119Z",
+      "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "branch": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "freshShaVerifiedThisBootstrap": false,
+      "attempt": "git ls-remote origin refs/heads/main refs/heads/codex/esim-cloud-access",
+      "result": "exit128: DNS could not resolve github.com; connector search confirmed both branch names but returned no SHA",
+      "next": "Git single-writer must reread current remote SHAs/CI before integration"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "data/development-lanes/eve.json",
+    "docs/evidence/development-execution/eve-01.json",
+    "docs/evidence/development-execution/pixel-host-test-review.json"
+  ],
+  "readPaths": [
+    "lib/eve-remix.ts",
+    "lib/eve-media-edit.ts",
+    "lib/eve-media-app.ts",
+    "components/eve-remix-workspace.tsx",
+    "components/eve-media-studio.tsx",
+    "lib/workflow.ts",
+    "lib/eve-tool-work.ts",
+    "lib/work-composition.ts"
+  ],
+  "findings": [
+    {
+      "existing": "Root untracked Remix prompt/selection/agent-combination helpers; browser text generation and download",
+      "gap": "components/eve-remix-workspace.tsx directly POSTs /api/llm/text, maxOutputTokens600, holds draft/usage in React state; abort is wait cancellation, not durable same-job stop receipt"
+    },
+    {
+      "existing": "Root browser media four explicit operations, Blob export, IndexedDB works filtered by owner",
+      "gap": "No authoritative WorkJob/output manifest/import/usage/stop/recovery binding. Browser owner row or blob URL is not server artifact proof"
+    },
+    {
+      "existing": "workflow WorkJob/revision reducer, eveTool store owner-bound persistence/history/planner usage and stop functions",
+      "gap": "Reuse those contracts, compare Root vs Source before adapting; no new job engine/ledger"
+    },
+    {
+      "existing": "CompositionArtifact requires text, workflow artifact JSON total capped100000; a2a-artifacts deliberately omits nontext data/URI",
+      "gap": "Binary transfer requires separately authorized owner/hash/size/type/quota/retention/import/recovery contract; never inline base64 or implicit fetch"
+    },
+    {
+      "existing": "Prior media evidence source hashes for edit/app/studio/CSS match current bytes",
+      "gap": "Current media test hash differs from prior receipt. Historical UI/media evidence does not accept current integrated candidate"
+    },
+    {
+      "existing": "Common OS design establishes same owner/job/permission/budget/result/stop",
+      "gap": "Complete OS/Tool design files contain no Remix/media-specific entry under those names; shared design-index/full-design addition needed alongside eventual implementation"
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git/integration single-writer",
+      "paths": [
+        "lib/workflow.ts",
+        "lib/work-store.ts",
+        "lib/eve-tool-work.ts"
+      ],
+      "request": "First reconcile main/Root/separate Source and allocate exact ownership. Agree contract revision/hash for authenticated owner + job/thread/revision/command/attempt + immutable material digest + exact agent/model/executor/cap/deadline + scope/quote/reservation; persist CAS before effects. Same command/digest replay returns existing result, conflicting digest409. Preserve active/review/completed/cancelled and unknown stop reconciliation.",
+      "negativeCases": [
+        "owner change/foreign thread rejected",
+        "stale revision/conflicting command409",
+        "persistence failure causes zero effects",
+        "stop race with late output retains usage but withholds acceptance",
+        "no duplicate inference after restart/replay"
+      ]
+    },
+    {
+      "owner": "Artifact/schema/integration single-writer",
+      "paths": [
+        "lib/work-composition.ts",
+        "lib/a2a-artifacts.ts"
+      ],
+      "request": "EVE-03 later: typed output references and authorized byte transfer, immutable originals/derived parents, atomic manifest commit, interrupted transfer recovery and content verification. Keep existing inline limits/nontext omission until accepted. Allocate schema/migration paths centrally; do not invent migration number."
+    },
+    {
+      "owner": "Billing single-writer",
+      "request": "Bind existing quote/version/cap/reservation/usage observation to same job/attempt; unreported usage stays unknown. 600-token browser contract differs from Pixel256-token/120s contract; show exact agreed limits, no silent substitution or new charging ledger."
+    },
+    {
+      "owner": "Git/global documentation single-writer",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/design-document-index.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/sky-tools-complete-design.md"
+      ],
+      "request": "Aggregate lane bootstrap/progress via npm run project:update; add required Remix contract detail/index with implementation. Run full verify on fixed integrated candidate, not each moving bootstrap tree."
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/eve-remix.test.mjs tests/eve-media-edit.test.mjs tests/workflow.test.mjs",
+      "result": "passed15/15, failed0, skipped0",
+      "log": "/private/tmp/eve-eve01-bootstrap-tests.log",
+      "scope": "Existing host/fixture regression only; no model/provider/UI/device/binary integration executed"
+    },
+    {
+      "command": "npm run verify",
+      "result": "not_run",
+      "reason": "Explicit bootstrap scope assigns full verify to Git single-writer at fixed integration candidate"
+    }
+  ],
+  "externalConditions": [
+    "Pixel adb/UI/guest/account lease remains with original Smith; no duplicate operations",
+    "No model execution/download, paid GPU, device, publication, billing, commit or push performed",
+    "Current public/source/build closure and fresh GitHub SHAs remain integration readback gates; no historical pass promoted",
+    "General launch remains on hold; no added dependency on 180-function audit"
+  ],
+  "nextUnit": {
+    "id": "EVE-02",
+    "oneBatch": "Contract-first text Remix job binding: after source reconciliation/shared contract agreement, define pure immutable request/digest validation in lib/eve-remix.ts with tests/eve-remix.test.mjs; no executor/UI conversion or binary transfer in that batch",
+    "acceptance": [
+      "Exact owner/job/thread/revision/command/attempt/material/agent/model/destination/scope/cap/deadline/quote contract agreed by consumers at same revision/hash",
+      "2-4 text materials, total8000 characters, goal500 and immutable originals preserved",
+      "Reject changed digest/stale revision/foreign owner and confirm zero effects before durable save",
+      "Focused tests pass; EVE-03 binary transfer remains separate"
+    ],
+    "commands": [
+      "node --experimental-strip-types --test tests/eve-remix.test.mjs tests/workflow.test.mjs",
+      "npm run typecheck"
+    ],
+    "blockedOn": "Git source reconciliation and shared contract ownership/revision; no need to wait for full OS, finance or all media completion"
+  },
+  "updatedAt": "2026-10-24T06:03:05.915717+00:00",
+  "note": "EVE-01 execution delivered: source manifest and verified Git-external byte backup; independent EVE-01 approval pending. OS-01 review accepts host scope only. Parent/Git aggregate global progress and own Git/main actions. No product/model/device/public edits.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:21:33.669526+00:00",
+  "primaryWorkstream": "docs/workstreams/02-sky-mcp.md",
+  "responsibility": {
+    "primary": "ROCK",
+    "existingTaskIds": [
+      "SKY21",
+      "WEB04",
+      "HOME01",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "JOINT": "Same candidate real client/host acceptance, outside this bootstrap",
+    "OWNER": "Material rights, exact destination/scope/budget confirmation",
+    "EXTERNAL": "Provider and device capabilities; not inferred from fixture success"
+  },
+  "sourceHashes": {
+    "lib/eve-remix.ts": "0ee70a8e93f16c987412031c05e1c3d504ab591ea11c00200e0adb8aa95644dd",
+    "lib/eve-media-edit.ts": "5223d8c30ff03c9184747caaccde93dfdeb423fd9a868ea575dcbb894adb6dc9",
+    "lib/eve-media-app.ts": "7c54dfdb76cfc7535e4445fcb847049234223e7684471117b97213ac4497dd67",
+    "components/eve-remix-workspace.tsx": "c219622c8b7da56561823b3b284bf4632937edc62cd348ea5f8388b9b61b00ab",
+    "components/eve-media-studio.tsx": "b79f14c7d4198b34eb45ac9c763a2ca6d9aca452940ec104802b2ce73f49d38c",
+    "lib/workflow.ts": "f29dd55221c9971f59f7e2b6150f69aa50d99f4d0ddb3d1d4f65209e77d6b8cf",
+    "lib/eve-tool-work.ts": "8e3a0e562d03f437d234ba1aab69d43f6ebf80c2b9ae99afe696ffbb946ca44b",
+    "lib/work-composition.ts": "b86518d34ddca990d7102a270ce61ec53f3512a6b54e684fe21ec87997d0b793"
+  },
+  "authorityRead": {
+    "baselineFive": {
+      "docs/product-baseline.md": "31efd2835273f6f76a1a674ab2fb7eaf8effdb56691521238454be7e6a7b44df",
+      "data/product-baseline.json": "82635329b8f34680a695193840132e59bdbae2024410de3444e661ae8428c577",
+      "README.md": "93c0abcbd93a8c1425704edefb3af5d4887f4ef2eabec9694c985f26ccaf1822",
+      "project.md": "98b5fdb52e75abe066d358f81574e11e041e5aefb8c12c11c84acd3bc63a9470",
+      "data/project-status.json": "2ceb81b12921071267350543ffd5104ddcb9ab8139292f42e540bf899306bfa3"
+    },
+    "scope": "Read recent entry/task/nextPrompt/phaseGate portions; not full histories",
+    "references": [
+      "docs/prompts/rockstaros-development-chats/eve.md",
+      "docs/prompts/rockstaros-development-chats.md",
+      "docs/prompts/rockstaros-remaining-work-development.md#E00-E01",
+      "docs/workstreams/README.md",
+      "docs/workstreams/00-responsibility-boundaries.md",
+      "docs/workstreams/02-sky-mcp.md",
+      "docs/rockstaros-complete-design.md#os-unified-interaction",
+      "docs/sky-tools-complete-design.md",
+      "docs/execution-approval-20260909.md",
+      "data/execution-approval.json",
+      "docs/design-implementation-alignment-20260909.md",
+      "docs/phone-preview-20260911.md"
+    ]
+  },
+  "proposedNextOwnedPaths": [
+    "lib/eve-remix.ts",
+    "tests/eve-remix.test.mjs"
+  ],
+  "ownershipStatus": "Proposal only for next batch; shared API revision/hash and Git allocation required before production edits",
+  "executionReceipt": {
+    "path": "docs/evidence/development-execution/eve-01.json",
+    "sha256": "ecd691e6cca2945bf2bf351d4180b9c0aea2fb97f774cc503a34ffc5e9b30703",
+    "selfApproved": false
+  },
+  "independentOtherLaneReview": {
+    "unit": "OS-01",
+    "path": "docs/evidence/development-execution/pixel-host-test-review.json",
+    "sha256": "ef32a88637649a5be21351c858351a4f5c1ce1c5a844088941efa441fecc7f35",
+    "verdict": "accepted_limited_host_fixture_evidence"
+  },
+  "preservation": {
+    "directory": "/private/tmp/eve-01-preservation-20261024T060305916061Z",
+    "manifestSha256": "1794ad95b23904b1590634a9510cd672f67d6832815c34be0f7862a6c59d01da",
+    "fileCount": 13,
+    "bytes": 87381,
+    "allSourceBackupHashesMatched": true,
+    "gitTrackedBackup": false,
+    "scope": "Explicit code/CSS/test/page files only; no raw materials, credentials, keys, owner data, build cache, generated media"
+  },
+  "git0203Review": {
+    "path": "docs/evidence/development-execution/git-02-03-review.json",
+    "sha256": "7f856f361a58caa6283635ea09b1598fd8c78ecfa2af6ded6d64637d60bbf22d",
+    "targetContractRevision": 1,
+    "targetContractSha256": "d7fe674cc18ec62d4cf9816de94325cc8f4cc8f95d6966feb363dbb551486bca",
+    "verdict": "changes_required_before_runtime_contract_adoption",
+    "findings": [
+      "GIT0203-R1",
+      "GIT0203-R2"
+    ],
+    "scope": "Independent contract/ownership/recovery review only; EVE-01 implementation acceptance and EVE-02 state unchanged"
+  },
+  "git0203ReviewR2": {
+    "path": "docs/evidence/development-execution/git-02-03-review-r2.json",
+    "sha256": "f6d6d0969ea9d9f93a70f51c8d3a4828e9319993f4cfe780c347e326ece0aac0",
+    "targetContractRevision": 2,
+    "targetContractSha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+    "verdict": "accepted_contract_revision2_runtime_unimplemented"
+  },
+  "esim01Review": {
+    "path": "docs/evidence/development-execution/esim-01-review.json",
+    "sha256": "ceba429f9ee716e39791190345253bb9826574911e1c6b516ecb1827031e61aa",
+    "verdict": "changes_required_pure_evaluator_boundaries",
+    "findings": [
+      "ESIM01-R1",
+      "ESIM01-R2"
+    ]
+  },
+  "git04Review": {
+    "path": "docs/evidence/development-execution/git-04-review.json",
+    "sha256": "b246361b3f07802d7a54c43b78c68b88afce827c3490c93bd031d9606928b2b0",
+    "candidateHash": "f046650cf587e5774eca7d2056fa2727ef84f74f1d95e3f2b0dbad3edb1b3b02",
+    "verdict": "changes_required_alias_helper",
+    "findings": [
+      "GIT04-R1",
+      "GIT04-R2",
+      "GIT04-R3"
+    ],
+    "scope": "Alias helper only; no full GIT-04 union acceptance"
+  },
+  "coreP02ShortLoop": {
+    "path": "docs/evidence/development-execution/core-p02-short-loop.json",
+    "sha256": "10976c756eb077ae5fe48be50dd2a0ec1cc679332770d739165fc55b955cd5cc",
+    "unit": "EVE-14",
+    "status": "preflight_observed_not_ready_no_new_inference",
+    "newInferenceAttempts": 0,
+    "blocker": "EXISTING_GUEST_STOPPED_PREPARED_ZERO_AND_NO_FRESH_ABI",
+    "operatorLeaseReleasedAt": "2026-10-24T07:20:13.728128+00:00",
+    "fullLoopAccepted": false
+  }
+}

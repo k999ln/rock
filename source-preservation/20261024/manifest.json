@@ -1,0 +1,386 @@
+{
+  "schema": "rockstaros.source-preservation/1",
+  "recordedAt": "2026-10-24T09:04:55.465648+00:00",
+  "purpose": "Finite code/handoff preservation only, not main implementation",
+  "baseMainAtCapture": "e4e643778b5fd8150e85109fa79ec1f6c140ca9e",
+  "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+  "branch": "codex/source-preservation-20261024",
+  "snapshotFiles": 49,
+  "payloadBytes": 3691158,
+  "eveSourceFiles": 13,
+  "handoffFacts": {
+    "threadsPreviouslyRead": 23,
+    "achievements": 42,
+    "coverageItems": 180,
+    "additionalAlgorithms": 10,
+    "implementationUnits": 95,
+    "sourceBaseline": "1.127/RQ01-RQ49",
+    "mainBaselineAtCapture": "2.08/RQ01-RQ50"
+  },
+  "records": [
+    {
+      "originalPath": "app/os/eve/remix/page.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/app/os/eve/remix/page.tsx.source",
+      "bytes": 215,
+      "sha256": "2fc0c27094088ae9fbe909a855ba5e9b2c2e77dd33ac441bcfe4232eeb6e6184",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-media-studio.module.css",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-media-studio.module.css.source",
+      "bytes": 8863,
+      "sha256": "74737ee7f37d156907347c36a5c0605786c026a1c1609c247a4826b27cff2ec9",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-media-studio.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-media-studio.tsx.source",
+      "bytes": 22298,
+      "sha256": "b79f14c7d4198b34eb45ac9c763a2ca6d9aca452940ec104802b2ce73f49d38c",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-remix-entry.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-remix-entry.tsx.source",
+      "bytes": 876,
+      "sha256": "b7ff4722f6bbac09c449cb4a93088b5ce89dd5dbbe41f97a5e14ab25ee2c5c67",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-remix-stage.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-remix-stage.tsx.source",
+      "bytes": 4307,
+      "sha256": "6729198be94dafbbec34843e3ed268ede4af7c493967adea57bb17766dc809e5",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-remix-workspace.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-remix-workspace.tsx.source",
+      "bytes": 12100,
+      "sha256": "c219622c8b7da56561823b3b284bf4632937edc62cd348ea5f8388b9b61b00ab",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/eve-remix.module.css",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/eve-remix.module.css.source",
+      "bytes": 6245,
+      "sha256": "1bddcc3bbb19fc628b70b05c352396d0c72cf70e3eb5ff3d219c9f68117f1262",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "components/smis-agent-remix.tsx",
+      "snapshotPath": "source-preservation/20261024/snapshots/components/smis-agent-remix.tsx.source",
+      "bytes": 7207,
+      "sha256": "bbac449deac48d4a56ac6ef2a7c6b3997ca459c637e99c38c07d175609941cf5",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "lib/eve-media-app.ts",
+      "snapshotPath": "source-preservation/20261024/snapshots/lib/eve-media-app.ts.source",
+      "bytes": 11485,
+      "sha256": "7c54dfdb76cfc7535e4445fcb847049234223e7684471117b97213ac4497dd67",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "lib/eve-media-edit.ts",
+      "snapshotPath": "source-preservation/20261024/snapshots/lib/eve-media-edit.ts.source",
+      "bytes": 5182,
+      "sha256": "5223d8c30ff03c9184747caaccde93dfdeb423fd9a868ea575dcbb894adb6dc9",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "lib/eve-remix.ts",
+      "snapshotPath": "source-preservation/20261024/snapshots/lib/eve-remix.ts.source",
+      "bytes": 3046,
+      "sha256": "0ee70a8e93f16c987412031c05e1c3d504ab591ea11c00200e0adb8aa95644dd",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "tests/eve-media-edit.test.mjs",
+      "snapshotPath": "source-preservation/20261024/snapshots/tests/eve-media-edit.test.mjs.source",
+      "bytes": 2254,
+      "sha256": "a47b7343e268541133da8b48ea15c42b9edfe600ec7b99f1017a08eedf980eb1",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "tests/eve-remix.test.mjs",
+      "snapshotPath": "source-preservation/20261024/snapshots/tests/eve-remix.test.mjs.source",
+      "bytes": 3303,
+      "sha256": "0be45e47d426c6dbe132f3ea652406136d3cd0086df5507a97cb80f48cef1b38",
+      "scope": "Eve source preserved, runtime adoption deferred"
+    },
+    {
+      "originalPath": "tests/os-shell-navigation.test.mjs",
+      "snapshotPath": "source-preservation/20261024/snapshots/tests/os-shell-navigation.test.mjs.source",
+      "bytes": 4800,
+      "sha256": "5e3c9fe6585cf6bff9f34b111161057f75385c912bede943f8b6dbb330600209",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/rockstaros-chat-achievements.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/rockstaros-chat-achievements.json.source",
+      "bytes": 233620,
+      "sha256": "7cc13b738f2fb39d40a7964e90c28315e4153b88772456e9f1d1d5d433f68712",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/rockstaros-full-function-coverage.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/rockstaros-full-function-coverage.json.source",
+      "bytes": 2162844,
+      "sha256": "ecf9aebf631658019e91b9c92750b0d6c7d88826fac83f7707bb5a5e14bcab86",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/rockstaros-remaining-work-plan.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/rockstaros-remaining-work-plan.json.source",
+      "bytes": 215070,
+      "sha256": "247a35a8767f52f311a0557093e5dc6ffc1500aa6423fd4fd56a477add0eb6fc",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-model-routing.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-model-routing.json.source",
+      "bytes": 139739,
+      "sha256": "af71e5bd08d48162fd0f20035222587693866c4c9707424b4774fe7351dbca95",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/rockstaros-development-chats.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/rockstaros-development-chats.json.source",
+      "bytes": 61547,
+      "sha256": "927219dad28ec7e3993cc0e19d7b8f6bcfc12010c990db0d67ea0a453074bcb5",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-unit-progress.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-unit-progress.json.source",
+      "bytes": 128182,
+      "sha256": "46ee72f855ddbb4a59cc2d25b47b02f2edc544b20b317324646099b74ddbfec5",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats.md.source",
+      "bytes": 22187,
+      "sha256": "09276f0234966119d546d7dbe6e4b3c5ce1526350eb3f7b82f419e7261ad5b86",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-remaining-work-development.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-remaining-work-development.md.source",
+      "bytes": 336593,
+      "sha256": "d92aa7949dbeb5fcdcc84dcb8ee394ed6bb9be57e3385c4a6605541755482531",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/billing.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/billing.md.source",
+      "bytes": 7918,
+      "sha256": "1fb1f2d4f931a1d4c85fddd3d78e842a29aad527f08d0f66ae2d9f473296fe49",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/esim.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/esim.md.source",
+      "bytes": 7768,
+      "sha256": "72605375c463de5b49668d467c1c62b0c37ff63b562235d3949eb21093bddd85",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/eve.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/eve.md.source",
+      "bytes": 9285,
+      "sha256": "56bec10c4fee1a5634b8a75a607d2d2b8e6d2a85f910b6ec4b61c2b10987bde3",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/game.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/game.md.source",
+      "bytes": 7480,
+      "sha256": "86b2fb6cd256b73378db1f20f410aef4c4b880cbef86fcecf688b7e6c1ff0c44",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/git.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/git.md.source",
+      "bytes": 7629,
+      "sha256": "b8199c780e2ac642e87354ae414a10c4cf50911433ecaafe1049e25744829aa3",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/mini.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/mini.md.source",
+      "bytes": 12355,
+      "sha256": "9489e8f896d3e8b078e212a912d65bda39ea3d62179f856f5470b269d6e60d35",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/os-pixel.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/os-pixel.md.source",
+      "bytes": 9318,
+      "sha256": "56b833140831309eb131a456ab42b8dfb4f245c772aae295cac80bb123b81489",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/pro.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/pro.md.source",
+      "bytes": 11336,
+      "sha256": "1680d1f9df255ec0d4d3ebedb7e69e4a33eb8b83df2df5ed93b15cffb10e5336",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/smith.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/smith.md.source",
+      "bytes": 8939,
+      "sha256": "015228fbf74f64e8d8288d345498400cb762eb2d5141a2f608848ec963bc34a2",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/wallet.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/wallet.md.source",
+      "bytes": 7589,
+      "sha256": "0f1410b09a3fed78ad9e0f2ccd5944a1c7258e87fe941b7db57a929dcaed38c8",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/prompts/rockstaros-development-chats/web-ops.md",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/prompts/rockstaros-development-chats/web-ops.md.source",
+      "bytes": 7771,
+      "sha256": "73563dda5d6adc7bc1cec5b5ff37004ff1389282c020813b8342e1cfb51a5ea4",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/billing.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/billing.json.source",
+      "bytes": 11886,
+      "sha256": "3a2b76c0589a720df2d0e798c19b8842009cc93d10ea14c35c9fbc997c76ff2d",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/esim.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/esim.json.source",
+      "bytes": 13743,
+      "sha256": "f6626312b0492aeb459096160aff7868a357f4b8adc180a5ae2a4c035664d002",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/eve.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/eve.json.source",
+      "bytes": 15445,
+      "sha256": "449a3112d9880918c20f56bfd476eed1623cc69da0abcd3b56583dfebc78c90a",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/game.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/game.json.source",
+      "bytes": 11507,
+      "sha256": "7e2da453c7a102a17dbe502f71ebdd2e1bc598899c9f6d7c00fcd1f242c7d34c",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/git.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/git.json.source",
+      "bytes": 14032,
+      "sha256": "896d21d1190e6403401224d3c83f84f04cbd57388ae1b5d9ad2239bd05bd2c45",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/mini.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/mini.json.source",
+      "bytes": 9941,
+      "sha256": "7428a74343f8bf1c0a2d1a432eca1881bd5e6ed51b490b2f57c99249d8592f3e",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/os-pixel.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/os-pixel.json.source",
+      "bytes": 15417,
+      "sha256": "e9c2ee2289bb198057423da806478ba00b99c825eba72e0559300c8cb07d0b8f",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/pro.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/pro.json.source",
+      "bytes": 9389,
+      "sha256": "260eec2892d7fff4b410fc666b1ba028030e9884ac78f4a432835b24d634b5c8",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/smith.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/smith.json.source",
+      "bytes": 8964,
+      "sha256": "5257cf66f07f058a1666761f0b79154989bc6603d526c60b0b0142903e5672f8",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/wallet.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/wallet.json.source",
+      "bytes": 15524,
+      "sha256": "41ff60ee5a57d00ddac96f8effa0e47985564726d6e44f306b294389b0bf325d",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "data/development-lanes/web-ops.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/data/development-lanes/web-ops.json.source",
+      "bytes": 17065,
+      "sha256": "ce96d00ebcd120ca8a431ea945226e11352aab293e0fdad511bfdd01807a0212",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/eve-01.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/evidence/development-execution/eve-01.json.source",
+      "bytes": 17342,
+      "sha256": "ecd691e6cca2945bf2bf351d4180b9c0aea2fb97f774cc503a34ffc5e9b30703",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/source-batch-review.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/evidence/development-execution/source-batch-review.json.source",
+      "bytes": 6324,
+      "sha256": "b71fa91ce13dba12980c405ca67cac422c85965c1fea72899452e61b99464a0c",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/mini-pro-web-review.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/evidence/development-execution/mini-pro-web-review.json.source",
+      "bytes": 9434,
+      "sha256": "26b368846aa999f9c177cf7d9c4825dbbfd486d5e6fe5d90f8fe37b90a083fac",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/game-01-review.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/evidence/development-execution/game-01-review.json.source",
+      "bytes": 7843,
+      "sha256": "02fd9b768ef0df6ba951d61660f0051dfe7c0d16cbbcc99b830eb4b680a14cf8",
+      "scope": "historical source/handoff evidence, not current main authority"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/finance-main-adoption-review.json",
+      "snapshotPath": "source-preservation/20261024/snapshots/docs/evidence/development-execution/finance-main-adoption-review.json.source",
+      "bytes": 17951,
+      "sha256": "b9640363a8b4130968d3cf5a33265f9fa534a0736af6d77be58ef8a86ec02ebc",
+      "scope": "historical source/handoff evidence, not current main authority"
+    }
+  ],
+  "excluded": [
+    "private and secret files",
+    "manuscripts/raw media/owner materials",
+    "52 external artifacts",
+    "OS images/build caches/generated bulk logs",
+    "coordinator journal data/development-execution.json",
+    "active OS/cache-only product code"
+  ],
+  "authority": "All archived SHA/status statements are snapshots of the named source plane and time, not a new current-main verification. Use current Git refs and same-SHA CI. None is a new requirement or live dispatch approval.",
+  "openGates": [
+    "Eve same-job binding and text executor ownership",
+    "Eve binary authorized reference/transfer",
+    "runtime/schema/13 guard/8 migration union",
+    "owner/CAS/budget/stop fences and source provenance",
+    "main-compatible integrated review/build/CI before functional adoption"
+  ],
+  "financialEffects": 0,
+  "physicalAcceptance": false,
+  "publicDeployment": false,
+  "generalLaunch": "held",
+  "secretScan": "bounded allowlist; private key and known credential prefix patterns passed; source material and external artifacts excluded"
+}

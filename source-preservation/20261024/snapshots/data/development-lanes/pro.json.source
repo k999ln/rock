@@ -1,0 +1,204 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "pro",
+  "revision": 2,
+  "status": "implementation_review_pending",
+  "threadId": "01a16c2a-4989-7581-917d-2ece16d4405b",
+  "currentUnit": "PRO-01",
+  "baseAndSource": [
+    {
+      "kind": "local_HEAD",
+      "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43"
+    },
+    {
+      "kind": "local_origin_main_tracking_ref",
+      "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "freshRemoteVerified": false
+    },
+    {
+      "kind": "historical_deployment_evidence",
+      "version": 46,
+      "sha": "c49a0eaa385bb8b0d2b94055e393cee89d17c718",
+      "liveReadbackThisBootstrap": false
+    },
+    {
+      "path": "sites/avocado-mini/src/pro-os.js",
+      "sha256": "6e63a25203a2019855ec414af6620b1a5214f76893be7ace7a752c4ce306edec",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "sites/avocado-mini/src/pages/pro/index.astro",
+      "sha256": "443b390e4a6c6f7aeca3ee0c684aaa8e87fd0603b60a466c8d1745b81382aa8b",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "sites/avocado-mini/worker/shared/domains.mjs",
+      "sha256": "a4c0720f72d90b6734045c6fec5ba9600ed09aa4eb428ceeb5e648edf1caea6d",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "docs/evidence/avocado-pro-os-interface.json",
+      "sha256": "d830b368a2815259df4aabf9078c7e8acab451d5285f944e6706ecdce0984c16",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "contracts/rockstaros-portable-runtime.json",
+      "sha256": "e28def335d3955e2ef368c13847373fdce1a8510f92bf0fff479596463d78a72",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "app/api/work-jobs/route.ts",
+      "sha256": "45f195c3b02c80197757d2d52787cc01c3d6e4dc0d31c0278b181fd6bb58daf4",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "lib/work-store.ts",
+      "sha256": "42a8a47f4285500540fe48fff7e2929f924cc299fc77d58cf90d4fa16fe4a0c6",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    },
+    {
+      "path": "data/avocado-pro-sales-readiness.json",
+      "sha256": "7ba71ef6e42bb83b8dff4b836110f4e2eeaa54409181a3232432dbdf2e9e8dd7",
+      "scope": "current_workspace_bytes_not_clean_commit"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "sites/avocado-mini/src/pro-local-import.mjs",
+    "sites/avocado-mini/src/pro-os.js",
+    "sites/avocado-mini/src/pages/pro/index.astro",
+    "sites/avocado-mini/tests/pro-local-import.test.mjs",
+    "data/development-lanes/pro.json",
+    "docs/evidence/development-execution/pro-01.json"
+  ],
+  "readPaths": [
+    "sites/avocado-mini/src/pro-os.js",
+    "sites/avocado-mini/src/pages/pro/index.astro",
+    "sites/avocado-mini/worker/shared/domains.mjs",
+    "docs/evidence/avocado-pro-os-interface.json",
+    "contracts/rockstaros-portable-runtime.json",
+    "app/api/work-jobs/route.ts",
+    "lib/work-store.ts",
+    "data/avocado-pro-sales-readiness.json"
+  ],
+  "findings": [
+    {
+      "implemented": "Two localStorage keys; input draft capped at 3000 characters, new board text 160, loaded board max100; clipboard draft and JSON board export; no fetch/auth/job connection in pro-os.js.",
+      "gap": "Existing board export omits draft/raw original; load filters/slices malformed/excess entries. New migration must preserve raw original before parsing and never silently promote done to completed."
+    },
+    {
+      "implemented": "Portable runtime declares existing history/jobs/workflow, owner authorization, CAS and UNKNOWN recovery; work store creates once by ID.",
+      "gap": "POST replay compares title/template only; full import digest/provenance and owner-bound mapping are not established."
+    },
+    {
+      "implemented": "Domain router serves Pro assets and /build on avocadopro.si.",
+      "gap": "Inspected router has no common-auth migration gateway; do not infer cookie sharing or permit arbitrary CORS. Explicit file export/import is first viable boundary."
+    },
+    {
+      "implemented": "Sales readiness schema/checker and three negative/synthetic tests exist.",
+      "gap": "12/12 sales gates false; candidate pro-studio-16, silver A4-H2O, exact BOM/physical compatibility unaccepted; paid/shipped orders0. Boolean checker does not verify evidence hash/expiry; synthetic ready is mathematical only."
+    },
+    {
+      "gap": "Referenced data/rockstaros-full-function-coverage.json absent at inspection; no 180-item Pro coverage asserted."
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owners": "Git/Eve/Security schema single-writer",
+      "exactPaths": [
+        "app/api/work-jobs/route.ts",
+        "lib/work-store.ts",
+        "lib/workflow.ts",
+        "app/api/eve/history/route.ts"
+      ],
+      "contract": "Session-derived owner; explicit file selection/owner/destination consent; strict version/hash/item provenance with stable operation+UUID mapping and request digest persisted before mutation; title >120 stays full objective; existing remember/CAS for history and draft workflow only. Owner+operation same digest returns same IDs; other digest409; other owner denied. Lost response GET original ID+digest/revision; UNKNOWN blocks retry; restart reconciles mapping. Logout invalidates pending. Delete originals only future explicit user action after full readback.",
+      "negativeTests": [
+        "two owners",
+        "same operation same/different content",
+        "unknown/lost response",
+        "CAS409",
+        "restart/logout",
+        "legacy done never success",
+        "no implicit Tool/AI/charge"
+      ]
+    },
+    {
+      "owners": "Git/docs single-writer",
+      "exactPaths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/design-document-index.json",
+        "docs/rockstaros-complete-design.md"
+      ],
+      "request": "Aggregate this limited local handoff, input format/hash and limitations with design/check and fixed-candidate verify; do not mark full PRO-01 server migration complete."
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --test sites/avocado-mini/tests/pro-local-import.test.mjs sites/avocado-mini/tests/pro-interest.test.mjs sites/avocado-mini/tests/astro-build.test.mjs",
+      "exitCode": 0,
+      "result": "17/17; Astro regression tests inspect existing repository dist, final new artifact separately built to tmp"
+    },
+    {
+      "command": "node --check sites/avocado-mini/src/pro-local-import.mjs; node --check sites/avocado-mini/src/pro-os.js",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build:client -- --outDir /private/tmp/pro-01-build",
+      "cwd": "sites/avocado-mini",
+      "exitCode": 0,
+      "result": "16 pages; exact final source before evidence write"
+    },
+    {
+      "kind": "local_browser",
+      "origin": "http://127.0.0.1:5347/pro/",
+      "data": "synthetic notes only",
+      "observed": [
+        "draft/board saved through UI",
+        "preview shows original draft/text and legacy provenance",
+        "download without checkbox blocked",
+        "checkbox then download clicked; download bytes not independently read back",
+        "cancel clears preview and disables download",
+        "reload then preview shows same draft/board ID/text"
+      ],
+      "screenshot": "/private/tmp/pro-01-preview.png",
+      "limits": "File-picker import, actual download bytes, async-cancel stress and real owner/server migration not browser-accepted; parser tested in Node."
+    }
+  ],
+  "externalConditions": [
+    {
+      "owner": "OWNER",
+      "condition": "Confirm exact prototype SKU/BOM, region/seller identity, price/terms, funding/reserves and merchant selection; no purchase/payment authorized in bootstrap."
+    },
+    {
+      "owner": "EXTERNAL",
+      "condition": "Supplier allocation/quotes, driver support, payment/carrier/tax/returns conditions missing."
+    },
+    {
+      "owner": "JOINT",
+      "condition": "Same physical Pro build: fit/thermal/power/noise, native boot/model/work/stop/storage/update/rollback/full restore, then sandbox order-delivery/refund evidence; unexecuted."
+    }
+  ],
+  "nextUnit": {
+    "id": "PRO-01",
+    "remaining": "Authenticated server import contract and acceptance; then PRO-02 common UI job/save/stop integration"
+  },
+  "updatedAt": "2026-10-24T06:21:40.099865+00:00",
+  "note": "Exact owned implementation submitted, not final accepted. Parent owns independent review, shared docs, full verify and Git/main. Legacy source and other workspace edits preserved.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:28:02.707937+00:00",
+  "primaryWorkstream": "docs/workstreams/09-business-pilots.md",
+  "primaryOwner": "ROCK",
+  "existingTasks": [
+    "B05",
+    "WEB13",
+    "DSP01"
+  ],
+  "executionEvidence": "docs/evidence/development-execution/pro-01.json",
+  "sourceSha256": {
+    "sites/avocado-mini/src/pro-local-import.mjs": "09534b489f08046a8a81de750a6fc218a76f4399d02634d9149be893ec7aeca0",
+    "sites/avocado-mini/src/pro-os.js": "f256b943d28cc908751df54645ce291ced7810ec9378b64410fce08f17c31c5d",
+    "sites/avocado-mini/src/pages/pro/index.astro": "ea9892504ed794fc6812a0b9ef8a58be57ee647c7c4ebc140a4674cf619308b0",
+    "sites/avocado-mini/tests/pro-local-import.test.mjs": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410"
+  }
+}

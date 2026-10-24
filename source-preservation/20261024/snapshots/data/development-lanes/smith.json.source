@@ -1,0 +1,178 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "smith",
+  "revision": 2,
+  "status": "local_regressions_passed_pending_independent_review",
+  "threadId": "01a16c28-04a3-7022-8475-da5901359f3f",
+  "currentUnit": "SMITH-01",
+  "baseAndSource": {
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "branch": "codex/esim-cloud-access",
+    "localMain": "89e3d77d0d69e6175e56acb39fc399e7de208252",
+    "cachedOriginMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "githubFreshRead": "NOT_VERIFIED: git ls-remote origin refs/heads/main refs/heads/codex/esim-cloud-access exit128; Could not resolve host: github.com",
+    "sourceHashes": {
+      "lib/os-navigation.ts": "66cb751f832459bea849f36453ca1757b08c0b3efd66ff7250275e478a1e4ca4",
+      "components/home-screen.tsx": "ea0c80c82249a415bb104d02ee198b0acc7562085587ac6ff04ba6dfff5db82f",
+      "components/eve-interaction-panel.tsx": "b0b49bb9e621e1ec5c23e7de910afc10cea9c4cecf075e69d92c0c9dcb603e12",
+      "app/manifest.ts": "42e37b143fb37313f4ca8cc4cb5a4a09ebc33b7478ef737b6f670e16ddfc78a6",
+      "data/company-brand.json": "aed944d1a47b570b00f28961a65ffe4562c583ea77c7a5f3dd77ad435c0adc65",
+      "lib/sky-presentation.ts": "82fd17c1e9706bfa82d19c9374522a4ffb33c202d68b45501b56cbb2012c1a4d",
+      "tests/smis-community-navigation-ui.test.mjs": "1aa617f33cfc49206d6e5a2e3326bff70d6ecc60632d2625656c08d8251f0430",
+      "tests/company-brand.test.mjs": "15cb9b4814df5e8dd2b82fbe13778fa9e7c1ca2c5b8bdb95f6fa4f6f5b8a2410"
+    },
+    "candidateLimit": "Shared dirty Root; hashes are per-file observations, not immutable whole-tree receipt; separate Source/public not compared in bootstrap"
+  },
+  "ownedPathsConfirmed": [
+    "tests/os-shell-navigation.test.mjs",
+    "data/development-lanes/smith.json",
+    "docs/evidence/development-execution/smith-01.json"
+  ],
+  "readPaths": [
+    "lib/os-navigation.ts",
+    "components/home-screen.tsx",
+    "components/eve-interaction-panel.tsx",
+    "app/manifest.ts",
+    "data/company-brand.json",
+    "lib/sky-presentation.ts",
+    "tests/smis-community-navigation-ui.test.mjs",
+    "tests/company-brand.test.mjs"
+  ],
+  "findings": [
+    {
+      "implemented": "Navigation Smith/Eve/コミュニティー; Home Smith and Add/管理→Eve build/manage; manifest Smith; common brand scope Smith; legacy /sky and /os aliases retained.",
+      "mapping": {
+        "Smith": "/#timeline",
+        "Eve": "/chat → /os/eve",
+        "コミュニティー": "/#communities",
+        "Add": "/#sky",
+        "管理": "/#sky-manage",
+        "Eve作成": "/os/eve?view=build"
+      },
+      "migration": "No data migration proposed for display-only work; stored role/job/result/ACL/cap/revocation equivalence NOT_TESTED."
+    },
+    {
+      "gap": "baseline smisIdentity.referenceThread remains 01a15221-cccf-7f12-a7f9-cddd417fa4fd (older research); direct spelling correction is Smith 01a16b30-82bb-7cc1-985d-fc74970a26c6 per SMITH-01 packet; direct thread not fetched."
+    },
+    {
+      "gap": "data/rockstaros-full-function-coverage.json absent at read time; 180-item lane allocation pending parent follow-up, not claimed covered."
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git integration",
+      "paths": [
+        "data/product-baseline.json",
+        "data/project-status.json"
+      ],
+      "request": "Distinguish historical smisIdentity.referenceThread from direct Smith spelling source; preserve provenance and internal IDs; reconcile local main versus cached origin/main before implementation. Sync lane progress into project/status/README on fixed candidate.",
+      "negativeCases": [
+        "do not replace historic evidence wholesale",
+        "do not count bootstrap as runtime/main/device acceptance"
+      ]
+    },
+    {
+      "owner": "OS/Eve consumers and schema single-writer",
+      "request": "Before runtime edits fix same owner/session, role ID/revision/model pin, job ID, result hash, ACL/cap/revocation contract revision and candidate hashes. Smith display alone must dispatch/charge/key-update zero; unavailable/loading/ready/failed retained.",
+      "negativeCases": [
+        "other owner",
+        "corrupt saved reference",
+        "revision conflict",
+        "agent/model disconnected"
+      ]
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/smis-community-navigation-ui.test.mjs tests/company-brand.test.mjs",
+      "exitCode": 0,
+      "tests": 6,
+      "passed": 6,
+      "scope": "host existing render/static brand regressions; no browser/device/provider acceptance"
+    },
+    {
+      "command": "npm run verify",
+      "status": "NOT_RUN: parent integration owns full verification on fixed candidate"
+    },
+    {
+      "command": "JSON parse + source hash readback + git diff --check -- data/development-lanes/smith.json",
+      "status": "PASS: JSON parsed; all 8 observed source hashes match on readback; targeted diff whitespace check exit0"
+    },
+    {
+      "command": "node --experimental-strip-types --test --test-concurrency=2 tests/os-shell-navigation.test.mjs tests/home-sky-panel.test.mjs tests/company-brand.test.mjs tests/sky-agent-library.test.mjs tests/zema-chat-session.test.mjs tests/eve-work-history-projection.test.mjs",
+      "exitCode": 0,
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "skipped": 0,
+      "lint": {
+        "command": "node_modules/.bin/oxlint tests/os-shell-navigation.test.mjs",
+        "exitCode": 0
+      },
+      "log": "/private/tmp/smith-01-tests.log",
+      "scope": "Host synthetic SQLite/render/static/function tests; no live network, owner account, device or provider acceptance.",
+      "fullVerify": "NOT_RUN; fixed integrated candidate verification belongs to integration."
+    }
+  ],
+  "externalConditions": [
+    "Original Smith owns Pixel lease; no adb/UI/guest/install/account reconnect/deletion here.",
+    "General launch held; no provider/live charge/OS flash/key operations.",
+    "Remote GitHub fresh SHA/CI unavailable in sandbox DNS; cached refs are not fresh verification.",
+    "Separate Source/public and old-data equivalence remain unaccepted."
+  ],
+  "nextUnit": {
+    "unit": "SMITH-02",
+    "proposedExactWriteSet": [
+      "tests/smis-object-purpose.test.mjs",
+      "data/development-lanes/smith.json",
+      "docs/evidence/development-execution/smith-02.json"
+    ],
+    "condition": "Integration assigns lease after review/save. First reuse existing purpose/missing-parts tests and current original Smith evidence; product code requires separate exact lease."
+  },
+  "updatedAt": "2026-10-24T06:06:16.041909+00:00",
+  "note": "SMITH-01 finite host regression batch completed; historical bootstrap retained. Parent owns independent review, progress sync, Git save/main and whole-candidate verification. No device/provider/public operations.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:25:40.438323+00:00",
+  "primaryWorkstream": "docs/workstreams/02-sky-mcp.md",
+  "responsibility": {
+    "primary": "ROCK",
+    "tasks": [
+      "SKY12",
+      "SKY14",
+      "SKY21"
+    ],
+    "JOINT": "同一候補の実UI/Pixel・provider接続受入は各operatorと別途",
+    "OWNER": "接続先/scope/変更系実行承認"
+  },
+  "currentExecution": {
+    "unit": "SMITH-01",
+    "evidence": "docs/evidence/development-execution/smith-01.json",
+    "candidateManifestSha256": "a5d77f54d081ca7d363c5d72439f42f33777bf494a5edb210d3a997cc25f9bf4",
+    "localTests": 27,
+    "pass": 27,
+    "inputCount": 166,
+    "inputHashesStable": true,
+    "productRuntimeChanged": false,
+    "dataMigrationRequired": false,
+    "independentReview": "pending integration",
+    "gitSave": "not performed by this lane",
+    "mainIntegration": "not performed by this lane",
+    "modelRouting": {
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium",
+      "appliedModel": null,
+      "appliedEffort": null,
+      "reason": "Requested in dispatch; actual runtime identity not independently exposed in this chat. No model switch claimed.",
+      "attemptCount": 1,
+      "testRuns": 2,
+      "finalRunReason": "Pin local input hashes before and after final regression run."
+    },
+    "unaccepted": [
+      "Actual pre-rename/post-rename same-owner legacy dataset comparison of agent counts, job IDs, result hashes, ACL/caps/revocation and device/model pins.",
+      "Actual legacy URL opening through authenticated UI with dispatch/charge/key-update counters zero. Route helpers exercised here have no such execution context; no whole-UI zero-effect claim.",
+      "unavailable/loading/ready/failed UI preservation and real disconnected UI/reconnection behavior.",
+      "Root/separate Source/deployed version parity, current remote SHA/CI, independent review, Git save/main integration.",
+      "Pixel ongoing inference cancellation, normal account reconnection and model output quality remain with original Smith/operator."
+    ]
+  }
+}

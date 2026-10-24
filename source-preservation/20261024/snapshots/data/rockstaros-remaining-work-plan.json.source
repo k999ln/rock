@@ -1,0 +1,5140 @@
+{
+  "schema": "rockstaros-remaining-work-plan/2",
+  "recordedAt": "2026-10-24T02:56:02.124701+00:00",
+  "promptPath": "docs/prompts/rockstaros-remaining-work-development.md",
+  "primaryWorkstream": "Git / CI / Operations",
+  "primaryOwner": "ROCK",
+  "preparationEstimateMinutes": [
+    25,
+    40
+  ],
+  "scope": "prompt_authoring_only_not_runtime_execution",
+  "evidencePath": "docs/evidence/rockstaros-remaining-work-prompt.json",
+  "nextStart": "P13/GIT-01..04 preflight; P01 diagnostic in parallel; minimal Core then short P02; independent ROCK lanes; Git saves per unit; final main/CI readback",
+  "serviceRequiresCommonCoreAcceptance": true,
+  "serviceRequiresFullOsFlash": false,
+  "monthlyBaseUsdPerContract": 16,
+  "includedAllowanceAndRatesFinalized": false,
+  "workItems": [
+    {
+      "id": "P01",
+      "title": "Terminalの開始エラー",
+      "taskIds": [
+        "OS10",
+        "RLS02"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "エラー本文を取得し、データを初期化せず原因を特定する。最終観測はVM0件。 対応：OS10。",
+      "promptAnchor": "p01",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-02",
+        "OS-06",
+        "OS-08",
+        "OS-12",
+        "OS-16",
+        "SMITH-03"
+      ],
+      "additionalUnitIds": [
+        "NET-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-02",
+        "OS-06",
+        "OS-08",
+        "OS-12",
+        "OS-16",
+        "SMITH-03",
+        "NET-01"
+      ]
+    },
+    {
+      "id": "P02",
+      "title": "最新のEve→Smith→Web/Pixel一周",
+      "taskIds": [
+        "WEB04",
+        "HOME01",
+        "SKY21",
+        "OS10"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "同owner、同Agent ID/revision/modelで実作成・登録・二クライアント実行・両側成果読戻しを受入。必要時は既存guestの保護更新。 対応：WEB04 / SKY21 / OS10。",
+      "promptAnchor": "p02",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "physicalAcceptanceDependsOn": [
+        "P01 current target Linux recovery",
+        "P13 selected common-runtime candidate"
+      ],
+      "detailedUnitIds": [
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-04",
+        "EVE-05",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-05",
+        "OS-07",
+        "OS-08",
+        "OS-13",
+        "OS-14",
+        "OS-16",
+        "SMITH-01",
+        "SMITH-02",
+        "SMITH-03",
+        "SMITH-04",
+        "SMITH-06",
+        "MINI-05",
+        "MINI-08",
+        "PRO-01",
+        "PRO-02"
+      ],
+      "additionalUnitIds": [
+        "NET-01",
+        "NET-02",
+        "WEBOPS-01",
+        "WEBOPS-02",
+        "OPS-01",
+        "GAME-01",
+        "GAME-02",
+        "MATERIAL-01",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MODEL-01",
+        "MCP-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-04",
+        "EVE-05",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-05",
+        "OS-07",
+        "OS-08",
+        "OS-13",
+        "OS-14",
+        "OS-16",
+        "SMITH-01",
+        "SMITH-02",
+        "SMITH-03",
+        "SMITH-04",
+        "SMITH-06",
+        "MINI-05",
+        "MINI-08",
+        "PRO-01",
+        "PRO-02",
+        "NET-01",
+        "NET-02",
+        "WEBOPS-01",
+        "WEBOPS-02",
+        "OPS-01",
+        "GAME-01",
+        "GAME-02",
+        "MATERIAL-01",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MODEL-01",
+        "MCP-01"
+      ]
+    },
+    {
+      "id": "P03",
+      "title": "別の実利用者への成果共有・再利用",
+      "taskIds": [
+        "HOME01",
+        "SKY21",
+        "WEB04",
+        "OS10"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "別ownerへ明示共有し、追加・実行・保存・権限分離を同じ候補で確認する。 対応：HOME01 / SKY21。",
+      "promptAnchor": "p03",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-03",
+        "EVE-05",
+        "EVE-11",
+        "EVE-15",
+        "SMITH-05",
+        "MINI-05",
+        "PRO-02"
+      ],
+      "additionalUnitIds": [
+        "NET-02",
+        "WEBOPS-01",
+        "WEBOPS-03",
+        "OPS-03",
+        "GAME-01",
+        "GAME-02",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MCP-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-03",
+        "EVE-05",
+        "EVE-11",
+        "EVE-15",
+        "SMITH-05",
+        "MINI-05",
+        "PRO-02",
+        "NET-02",
+        "WEBOPS-01",
+        "WEBOPS-03",
+        "OPS-03",
+        "GAME-01",
+        "GAME-02",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MCP-01"
+      ]
+    },
+    {
+      "id": "P04",
+      "title": "Xの実投稿をSmithへ供給",
+      "taskIds": [
+        "HOME01",
+        "SKY21",
+        "WEB04"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "認可済みAPI/MCP等の供給元を実接続し、フォロー/おすすめの取得範囲、更新、停止、失効を確認する。 対応：HOME01。",
+      "promptAnchor": "p04",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-09",
+        "EVE-15"
+      ],
+      "additionalUnitIds": [
+        "MCP-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-09",
+        "EVE-15",
+        "MCP-01"
+      ]
+    },
+    {
+      "id": "P05",
+      "title": "RockstarOSのフルOS",
+      "taskIds": [
+        "OS10",
+        "RLS02"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "対象Pixelの全build、正式署名、flash、起動、権限、更新/rollback、純正/全損復旧。APK合格と区別。 対応：OS10 / RQ12。",
+      "promptAnchor": "p05",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-13",
+        "EVE-15",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-08",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-15",
+        "OS-16",
+        "OS-17",
+        "SMITH-04",
+        "MINI-07",
+        "MINI-08",
+        "PRO-03"
+      ],
+      "additionalUnitIds": [
+        "NET-01",
+        "NET-03",
+        "WEBOPS-02",
+        "OPS-02",
+        "OPS-03",
+        "WALLET-03",
+        "COMPANION-01",
+        "AUTH-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-13",
+        "EVE-15",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-08",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-15",
+        "OS-16",
+        "OS-17",
+        "SMITH-04",
+        "MINI-07",
+        "MINI-08",
+        "PRO-03",
+        "NET-01",
+        "NET-03",
+        "WEBOPS-02",
+        "OPS-02",
+        "OPS-03",
+        "WALLET-03",
+        "COMPANION-01",
+        "AUTH-01"
+      ]
+    },
+    {
+      "id": "P06",
+      "title": "eSIM利用開始と管理Linux",
+      "taskIds": [
+        "SIM01",
+        "WEB06",
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "実issuer/地域/契約/導入証拠と同一workspace、利用権、失効、支払後の同データ復帰を受入。 対応：SIM01。",
+      "promptAnchor": "p06",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "OS-03",
+        "OS-06",
+        "OS-14",
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08",
+        "MINI-08",
+        "PRO-02"
+      ],
+      "additionalUnitIds": [],
+      "allImplementationUnitIds": [
+        "OS-03",
+        "OS-06",
+        "OS-14",
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08",
+        "MINI-08",
+        "PRO-02"
+      ]
+    },
+    {
+      "id": "P07",
+      "title": "月16ドルサービスの実請求",
+      "taskIds": [
+        "BIL02",
+        "SIM01",
+        "SKY21"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "枠/単価/税/販売条件を決め、Provider sandboxで予約→使用量→月末明細→回収→未払制限/復帰を照合。 対応：BIL02。",
+      "promptAnchor": "p07",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-02",
+        "EVE-08",
+        "EVE-09",
+        "EVE-13",
+        "EVE-15",
+        "OS-07",
+        "OS-08",
+        "OS-18",
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08",
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08",
+        "MINI-05",
+        "MINI-08",
+        "PRO-02",
+        "PRO-04"
+      ],
+      "additionalUnitIds": [
+        "NET-03",
+        "OPS-01",
+        "WALLET-01",
+        "WALLET-02",
+        "COMPANION-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-02",
+        "EVE-08",
+        "EVE-09",
+        "EVE-13",
+        "EVE-15",
+        "OS-07",
+        "OS-08",
+        "OS-18",
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08",
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08",
+        "MINI-05",
+        "MINI-08",
+        "PRO-02",
+        "PRO-04",
+        "NET-03",
+        "OPS-01",
+        "WALLET-01",
+        "WALLET-02",
+        "COMPANION-01"
+      ]
+    },
+    {
+      "id": "P08",
+      "title": "作者への収益分配",
+      "taskIds": [
+        "SKY21",
+        "BIL02",
+        "WLT06",
+        "B03"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "作者契約、原資、返金/異議、本人確認/税、分配照合と実払出しを個別受入。 対応：SKY21 / Wallet。",
+      "promptAnchor": "p08",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-02",
+        "EVE-05",
+        "EVE-11",
+        "EVE-15",
+        "OS-18",
+        "SMITH-05",
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08",
+        "PRO-04"
+      ],
+      "additionalUnitIds": [
+        "WALLET-01",
+        "WALLET-02",
+        "WALLET-03",
+        "GAME-02"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-02",
+        "EVE-05",
+        "EVE-11",
+        "EVE-15",
+        "OS-18",
+        "SMITH-05",
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08",
+        "PRO-04",
+        "WALLET-01",
+        "WALLET-02",
+        "WALLET-03",
+        "GAME-02"
+      ]
+    },
+    {
+      "id": "P09",
+      "title": "生体・健康情報を扱う安全性",
+      "taskIds": [
+        "OS10",
+        "RLS02",
+        "SYS01",
+        "SYS13",
+        "OS05"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "生体認証必須鍵、用途別同意、E2EE/復旧設計、独立審査、削除/失効/漏えい対応。 対応：Security。",
+      "promptAnchor": "p09",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-03",
+        "EVE-04",
+        "EVE-09",
+        "EVE-10",
+        "EVE-12",
+        "EVE-13",
+        "EVE-15",
+        "OS-04",
+        "OS-05",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-13",
+        "OS-16",
+        "OS-17",
+        "OS-18",
+        "SMITH-04",
+        "SMITH-05",
+        "SMITH-06",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "PRO-01",
+        "PRO-03"
+      ],
+      "primaryWorkstream": "Security / Identity / Compliance",
+      "additionalUnitIds": [
+        "NET-01",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-02",
+        "OPS-03",
+        "WALLET-01",
+        "WALLET-02",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MODEL-01",
+        "MCP-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-03",
+        "EVE-04",
+        "EVE-09",
+        "EVE-10",
+        "EVE-12",
+        "EVE-13",
+        "EVE-15",
+        "OS-04",
+        "OS-05",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-13",
+        "OS-16",
+        "OS-17",
+        "OS-18",
+        "SMITH-04",
+        "SMITH-05",
+        "SMITH-06",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "PRO-01",
+        "PRO-03",
+        "NET-01",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-02",
+        "OPS-03",
+        "WALLET-01",
+        "WALLET-02",
+        "COMPANION-01",
+        "AUTH-01",
+        "SYNC-01",
+        "MODEL-01",
+        "MCP-01"
+      ]
+    },
+    {
+      "id": "P10",
+      "title": "Mini/Proと音声・空間・部品",
+      "taskIds": [
+        "DSP01",
+        "OS10",
+        "MAT15",
+        "SKY21",
+        "MAT18",
+        "WEB04",
+        "B05",
+        "WEB13",
+        "BIL02"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "実機能力、BSP/driver、電力、ASR/音声/センサー、保存・停止と各端末出力を受入。 対応：DSP01 / Material。",
+      "promptAnchor": "p10",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-06",
+        "EVE-07",
+        "EVE-12",
+        "EVE-13",
+        "EVE-15",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-09",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-17",
+        "OS-18",
+        "SMITH-02",
+        "SMITH-04",
+        "SMITH-06",
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "PRO-01",
+        "PRO-02",
+        "PRO-03",
+        "PRO-04"
+      ],
+      "latestMiniPdfPages": 52,
+      "latestMiniDesignVersion": "0.8",
+      "imageLocationBoardOrFilmAllowed": false,
+      "additionalUnitIds": [
+        "NET-02",
+        "NET-03",
+        "WEBOPS-03",
+        "GAME-01",
+        "GAME-02",
+        "MATERIAL-01",
+        "COMPANION-01",
+        "SYNC-01",
+        "MCP-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-06",
+        "EVE-07",
+        "EVE-12",
+        "EVE-13",
+        "EVE-15",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-09",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-17",
+        "OS-18",
+        "SMITH-02",
+        "SMITH-04",
+        "SMITH-06",
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "PRO-01",
+        "PRO-02",
+        "PRO-03",
+        "PRO-04",
+        "NET-02",
+        "NET-03",
+        "WEBOPS-03",
+        "GAME-01",
+        "GAME-02",
+        "MATERIAL-01",
+        "COMPANION-01",
+        "SYNC-01",
+        "MCP-01"
+      ]
+    },
+    {
+      "id": "P11",
+      "title": "性能と使いやすさの実測",
+      "taskIds": [
+        "WEB04",
+        "HOME01",
+        "OS10"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "ブラウザ遅延、起動/応答、電池、連続稼働、回答品質、操作完了率を同条件で測定。 対応：Product / Android。",
+      "promptAnchor": "p11",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-04",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-07",
+        "OS-12",
+        "SMITH-06",
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "PRO-03",
+        "PRO-04"
+      ],
+      "additionalUnitIds": [
+        "NET-01",
+        "NET-03",
+        "WEBOPS-01",
+        "OPS-01",
+        "GAME-01",
+        "MODEL-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-04",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-14",
+        "EVE-15",
+        "OS-01",
+        "OS-07",
+        "OS-12",
+        "SMITH-06",
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "PRO-03",
+        "PRO-04",
+        "NET-01",
+        "NET-03",
+        "WEBOPS-01",
+        "OPS-01",
+        "GAME-01",
+        "MODEL-01"
+      ]
+    },
+    {
+      "id": "P12",
+      "title": "研究15時間完了の資料再現",
+      "taskIds": [
+        "OS10",
+        "SKY21",
+        "WEB04",
+        "WEB06",
+        "WEB13"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "過去900分回答に対応する最終稿/台帳を回収・照合するか、残る840分原本の未達条件を扱う。時間を足して完了扱いしない。 対応：Research。",
+      "promptAnchor": "p12",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "EVE-09",
+        "EVE-15",
+        "OS-18",
+        "MINI-02"
+      ],
+      "additionalUnitIds": [
+        "MATERIAL-01",
+        "MODEL-01"
+      ],
+      "allImplementationUnitIds": [
+        "EVE-09",
+        "EVE-15",
+        "OS-18",
+        "MINI-02",
+        "MATERIAL-01",
+        "MODEL-01"
+      ]
+    },
+    {
+      "id": "P13",
+      "title": "GitHub正本との統合",
+      "taskIds": [
+        "G04",
+        "OS10",
+        "DOC01"
+      ],
+      "status": "not_reaccepted_by_prompt_authoring",
+      "sourceRemaining": "共有dirty Root、別Source候補、公開v118を照合し、対象変更をreviewしてmain保存/同SHA CIを別記録。 対応：Git / CI。",
+      "promptAnchor": "p13",
+      "rockWorkCanProceedIndependently": true,
+      "runtimeChanged": false,
+      "detailedUnitIds": [
+        "GIT-01",
+        "GIT-02",
+        "GIT-03",
+        "GIT-04",
+        "GIT-05",
+        "GIT-06",
+        "GIT-07",
+        "GIT-08",
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-08",
+        "EVE-14",
+        "EVE-15",
+        "OS-17",
+        "SMITH-01",
+        "SMITH-03",
+        "SMITH-05",
+        "MINI-01",
+        "MINI-05",
+        "MINI-07",
+        "PRO-01",
+        "PRO-04"
+      ],
+      "additionalUnitIds": [
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-01",
+        "OPS-02",
+        "OPS-03"
+      ],
+      "allImplementationUnitIds": [
+        "GIT-01",
+        "GIT-02",
+        "GIT-03",
+        "GIT-04",
+        "GIT-05",
+        "GIT-06",
+        "GIT-07",
+        "GIT-08",
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-08",
+        "EVE-14",
+        "EVE-15",
+        "OS-17",
+        "SMITH-01",
+        "SMITH-03",
+        "SMITH-05",
+        "MINI-01",
+        "MINI-05",
+        "MINI-07",
+        "PRO-01",
+        "PRO-04",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-01",
+        "OPS-02",
+        "OPS-03"
+      ]
+    }
+  ],
+  "stageSeparation": [
+    "ROCK_READY",
+    "PROVIDER_READY",
+    "INTEGRATED",
+    "LIMITED_LIVE",
+    "PRODUCTION"
+  ],
+  "revision": 5,
+  "promptSha256": "d92aa7949dbeb5fcdcc84dcb8ee394ed6bb9be57e3385c4a6605541755482531",
+  "freshContextAt": "2026-10-24T05:32:08.506Z",
+  "detailedUnits": [
+    {
+      "id": "GIT-01",
+      "title": "保存対象を固定する",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "a8c093725fc52921136cfe72265ee3c1df59ffd685f3cd5c297d27dcd6007113",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/0"
+    },
+    {
+      "id": "GIT-02",
+      "title": "最新main上の既存実装を先に照合する",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "51dfb1bfe5e68b973206c930902026714644c3309b447c56303e97146fdf704d",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/1"
+    },
+    {
+      "id": "GIT-03",
+      "title": "既存worktree・PRと編集所有を揃える",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "e07e6c43b853f22e10fe40ee485a0589bc5177deed44ac3d82d1325c00b146ff",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/2"
+    },
+    {
+      "id": "GIT-04",
+      "title": "DB migrationと互換を一人が統合する",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-04",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "7c9d0beef7773e153b60900b33896abf891cb3793001bce0ba78a68fb4424a36",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/3"
+    },
+    {
+      "id": "GIT-05",
+      "title": "小さく保存し、変更中の入力を成功候補にしない",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-05",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "4460058ae2a3abaa1009e9da2e732a995da5ee5e9ae88b4657985f85617bdc74",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/4"
+    },
+    {
+      "id": "GIT-06",
+      "title": "GitHub保存・同一SHA CI・PRを完了させる",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-06",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "4bf8f6dd84903c6889158c6b040ff409eb903f5650b6c9badbe51cd483a4f285",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/5"
+    },
+    {
+      "id": "GIT-07",
+      "title": "main統合と配備を別に受け入れる",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-07",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "625a238939748c47aaa42b927f18a794ac428f64d488b9095f9a6b900941e3ca",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/6"
+    },
+    {
+      "id": "GIT-08",
+      "title": "完了台帳と再開入口を揃える",
+      "parentItems": [
+        "P13"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/10-git-ci-operations.md",
+        "lib/workflow.ts",
+        "db/schema.ts",
+        "data/project-status.json"
+      ],
+      "promptSection": "git-08",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "13c692e07d0225070f60d1a65da05ea00211eb7fc7b72e9401f94ee62fcbe825",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "modelRoutingRef": "data/development-model-routing.json#/units/7"
+    },
+    {
+      "id": "EVE-01",
+      "title": "EveのRoot・Source・公開候補と証拠の同一性を固定",
+      "parentItems": [
+        "P13",
+        "P02"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/workflow.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-agent-integration",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/evidence/eve-smis-execution-loop.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/evidence/eve-media-studio.json"
+      ],
+      "acceptance": [
+        "main/Root/Source/public/APK/guestの別manifestをP13へ渡し、hashが異なる受入を転用しない。未追跡Remix/mediaを保全する。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/8"
+    },
+    {
+      "id": "EVE-02",
+      "title": "Remixを既存WorkJob/owner/revision/usage/stopへ結合",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P08",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/workflow.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/work-composition.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-tool-work.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-remix-workspace.tsx"
+      ],
+      "acceptance": [
+        "同owner/job/command/digestでCAS・冪等実行し、異digest409。jobレビューと本人完了を分離し、二client/二worker/応答消失で再作用しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/9"
+    },
+    {
+      "id": "EVE-03",
+      "title": "mediaの型付きArtifact転送・保管と旧local作品保全",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P09",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/a2a-artifacts.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/sky-owner-export.server.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-media-studio.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/work-composition.ts"
+      ],
+      "acceptance": [
+        "binary/URIの無断fetchやinline100KB突破をせず、owner/attempt/hash/size/type/保持/削除付き一回import。部分upload/DB失敗/旧IndexedDB移行で原本と旧成果保持。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/10"
+    },
+    {
+      "id": "EVE-04",
+      "title": "文章素材掛け合わせと根拠付き草稿",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-remix.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-remix-workspace.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/tests/eve-remix.test.mjs"
+      ],
+      "acceptance": [
+        "目的/素材hashを固定し、資料内命令は非信頼。矛盾/不足/出所と不完全応答を表示し、出力上限/usage欠損を成功や0へしない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/11"
+    },
+    {
+      "id": "EVE-05",
+      "title": "Agent掛け合わせの版・lineage・権限分離",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-remix.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/smis-agent-remix.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/sky-agent-library.ts"
+      ],
+      "acceptance": [
+        "元2Agentのowner/ID/revisionとmodelを再読。元設定不変、新IDとlineageを保存し、Tool権限/credentialを合成で継承しない。共有はP03を通す。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/12"
+    },
+    {
+      "id": "EVE-06",
+      "title": "4種類media編集をbounded adapterにする",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-media-edit.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-media-app.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-media-studio.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/tests/eve-media-edit.test.mjs"
+      ],
+      "acceptance": [
+        "写真/音楽/動画sequence/動画音trackの各recipeでsize/decode/duration/資源を強制し、独立parserでPNG/WAV/WebM成果を確認。取消/部分成果保持、任意操作拒否。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/13"
+    },
+    {
+      "id": "EVE-07",
+      "title": "素材中心UXとMini/Computer Use共通intent",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-remix-stage.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-remix-workspace.tsx",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-media-studio.tsx"
+      ],
+      "acceptance": [
+        "drag/button/keyboard/named actionが同intentを使い、原本/作業copy/preview/保存/取消が見える。狭幅・フォーカス・読み上げを試験し、browser操作を実Mini受入にしない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/14"
+    },
+    {
+      "id": "EVE-08",
+      "title": "model profile・評価・推薦と不採用の永続化",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-planner-state.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-planner-inference.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/sky-model-selector.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-agent-integration/docs/evidence/eve-evaluation-v4-real-comparison.json"
+      ],
+      "acceptance": [
+        "suite/model/hash/owner/時刻をpinし、metadata加点0、不正/empty/token cap/usage欠損を保持。候補なしは停止し、95点未達を基準変更やCloud fallbackで採用しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/15"
+    },
+    {
+      "id": "EVE-09",
+      "title": "Mac/GPU・weights・学習データの段階契約",
+      "parentItems": [
+        "P02",
+        "P04",
+        "P07",
+        "P09",
+        "P11",
+        "P12"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/llm-evaluation-architecture.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-news-learning.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-news-learning-preparation.tsx",
+        "/Users/kaiya/Documents/ChatGPT/出願　princeton/outputs/eve-local-benchmark/README.md"
+      ],
+      "acceptance": [
+        "既存小型model実行・品質・Eve統合・training・常時運用を分離。許諾/出所/保持/削除とtrain/test分離、再現/評価/rollbackを準備。会話/生体の無断学習0、未指定GPU契約/取得を起動しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/16"
+    },
+    {
+      "id": "EVE-10",
+      "title": "非信頼planの有限検証とeffect前再認可",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-plan-candidate.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/work-composition.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-planner-state.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/workflow.ts"
+      ],
+      "acceptance": [
+        "candidate/job/source/objective一致、未知field/Tool/循環/越権拒否、最大2attempt/12node等の有限制約。毎step前のBroker/stop/lease/予算照合と二claim拒否を確認。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/17"
+    },
+    {
+      "id": "EVE-11",
+      "title": "実Toolの独立検査・既存有限repair・Agent委任",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-tool-work.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-agent-work.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-agent-repair.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/work-composition-executor.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/check-eve-repair-source-worker.mjs"
+      ],
+      "acceptance": [
+        "mr-citations/composeの検査・元成功artifact再利用・検収条件/予算維持の有限repair。条件弱体化/未知作用再送0、Package/委任/receiptの版と失効を保持。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/18"
+    },
+    {
+      "id": "EVE-12",
+      "title": "限定外部アプリComputer Use adapter",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P10",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/sky-tools-complete-design.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/sky-add-capability-envelope.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/workflow.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/rockstar-adapters.ts"
+      ],
+      "acceptance": [
+        "対象app/版/window/file/scope/前後条件/時間上限をpinし、原本copy編集/保存readback/stopを1作業で実証。別window/権限拒否/不明UIで停止、任意shell/root化0。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/19"
+    },
+    {
+      "id": "EVE-13",
+      "title": "全入口でstop・unknown・同ID復旧を一致",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P07",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/rockstar-eve-interaction.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-runtime-work-port.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-runtime-recovery.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-runtime-history-control.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/pixel-runtime-stop-journal.mjs"
+      ],
+      "acceptance": [
+        "knownExisting記録消失はunknown/同handle、元host receiptまで停止未確定。first-delivery/claim/遅延start/rollback/削除/旧reader/再起動を分け、再実行/費用解放の推測0。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/20"
+    },
+    {
+      "id": "EVE-14",
+      "title": "最新候補のEve→Smith→Web/Pixel実成果一周",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P11",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/evidence/eve-smis-execution-loop.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-purpose-runtime-work-port.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-agent-preparation-sync.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/components/eve-sync-workspace.tsx"
+      ],
+      "acceptance": [
+        "同owner/AgentID/revision/role/model/入力/jobを固定して新Agent作成・登録・実model・両client同成果・export・元停止receiptを実UIで受入。旧v94/v113/v115や合成169を代用しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/21"
+    },
+    {
+      "id": "EVE-15",
+      "title": "Eve全経路の負例・同candidate回帰・証拠manifest",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/prompts/rockstaros-remaining-work-development.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/tests/eve-remix.test.mjs",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/tests/eve-media-edit.test.mjs",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/check-eve-runtime-recovery-worker.mjs",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/check-eve-repair-source-worker.mjs"
+      ],
+      "acceptance": [
+        "局所→package/adapter→同candidate全verify→実UI→機種/Providerを別記録。各入力/contract/build/output hash、環境、command、失敗/残件が再現可能で、partial assertをSI/T全面合格にしない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/22"
+    },
+    {
+      "id": "OS-01",
+      "title": "Pixel Terminalの現在状態と開始errorの非破壊診断",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/inspect-phone.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local/android-bridge.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local/owner-tests/dev/rock/shell/EveOneLoopPreflightTest.java",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/evidence/pixel-durable-stops.json"
+      ],
+      "acceptance": [
+        "過去15:09ETを現在断定せず再観測し、正確なerror/最初の失敗層/原因を特定。既存job/model/key保持でVM/mTLS/account read-onlyを回復。reset/再生成で代用しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/23"
+    },
+    {
+      "id": "OS-02",
+      "title": "機種・OS・能力identity",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/device-capability-snapshot.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/inspect-phone.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/rockstar-adapters.ts"
+      ],
+      "acceptance": [
+        "exact SKU/build/出所/時刻/期限とunknownを保持。未来/期限切れ/偽装を拒否し、OS申告をattestationにしない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/24"
+    },
+    {
+      "id": "OS-03",
+      "title": "導入適合とDSP",
+      "parentItems": [
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/device-support-architecture.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/data/device-support-matrix.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/rockstaros-portable-runtime.json"
+      ],
+      "acceptance": [
+        "exact DSPのboot/driver/署名/復旧とSKU適合を照合。不明/別SKU/失効ではnative導入を閉じ、client/firmware/nativeを分離。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/25"
+    },
+    {
+      "id": "OS-04",
+      "title": "component本人性と版",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/platform-api.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/core",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/automation"
+      ],
+      "acceptance": [
+        "UID/作者署名/package/version/API/manifestと実permissionを導入/実行前に検証。同名別署名/downgrade/増権/再installを拒否。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/26"
+    },
+    {
+      "id": "OS-05",
+      "title": "隔離とBroker",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/automation",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/systems/rock-star-os/os/runner/sandbox_launcher.c",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/local-ai-runtime.json"
+      ],
+      "acceptance": [
+        "UID/SELinux/Binder/namespace/seccomp/cgroupとowner/job grantを結合。別owner/root/古いgrant/任意file/SSRFを拒否し隔離失敗はfail closed。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/27"
+    },
+    {
+      "id": "OS-06",
+      "title": "Linux lifecycle",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/rockstaros-portable-runtime.json"
+      ],
+      "acceptance": [
+        "guest/image/runtimeの版hashとownerをpin。create/start/ready/stop/restart/unknownの実状態と保存をidle/active別に検証。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/28"
+    },
+    {
+      "id": "OS-07",
+      "title": "resource limitsのOS強制",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P07",
+        "P10",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/systems/rock-star-os/os/runner/sandbox_launcher.c",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/packages/rockstaros-runtime/src/executor.mjs",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/local-ai-runtime.json"
+      ],
+      "acceptance": [
+        "CPU/RAM/disk/wall/output/process/network/並列上限をhost側強制。超過/OOM/同時争奪で停止しpartial/usage/unknownを保持。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/29"
+    },
+    {
+      "id": "OS-08",
+      "title": "job再開とeffect一回性",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P07"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-runtime-sync.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/workflow.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/pixel-runtime-stop-journal.mjs"
+      ],
+      "acceptance": [
+        "承認/予約/claim/effect/receipt/commit境界でkill/切断し、同ID読戻し・旧writerfence・重複作用拒否を実環境確認。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/30"
+    },
+    {
+      "id": "OS-09",
+      "title": "暗号化保存とbackup",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-history.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/android-backup-recovery.md"
+      ],
+      "acceptance": [
+        "owner/AAD/key階層/schema/manifest/hashとatomic restore、旧readerを検査。emulator software鍵とPixel hardware鍵を別受入。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/31"
+    },
+    {
+      "id": "OS-10",
+      "title": "device/鍵喪失復旧",
+      "parentItems": [
+        "P05",
+        "P09"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/android-backup-recovery.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/data/android-backup-recovery-policy.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/automation/src/main/java/dev/rock/automation/RecoverableBackupManager.java"
+      ],
+      "acceptance": [
+        "空復元先/本人復旧/旧writer失効/新rebind/削除とstop epochを照合。非破壊exportと全損復元を分離し秘密非公開。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/32"
+    },
+    {
+      "id": "OS-11",
+      "title": "署名更新とrollback",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/systems/rock-star-os/os/update",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/android-rollback-index-policy.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/data/android-signing-custody-policy.json"
+      ],
+      "acceptance": [
+        "verify/stage/trial/health/commitとmigration/旧readerを原子的に管理。署名不正/失効/途中電源断/health失敗/版低下を拒否又は安全復旧。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/33"
+    },
+    {
+      "id": "OS-12",
+      "title": "電源・熱・容量・suspend",
+      "parentItems": [
+        "P01",
+        "P05",
+        "P10",
+        "P11"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/device-capability-snapshot.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/automation",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local"
+      ],
+      "acceptance": [
+        "閾値/復帰条件をprofile固定し、低電池/熱/容量/背景制約で新実行保留。checkpoint/停止/usage保持し無断再実行0。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/34"
+    },
+    {
+      "id": "OS-13",
+      "title": "標準OS入出力とpermission",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/shell",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/android/automation",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/device-capability-snapshot.json"
+      ],
+      "acceptance": [
+        "camera/mic/notification/picker/accessibility/networkの拒否/一時許可/失効/背景化/別profileを実機検証し仕事同意と区別。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/35"
+    },
+    {
+      "id": "OS-14",
+      "title": "共通contractとadapter parity",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P06",
+        "P10"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/rockstar-adapters.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/rockstaros-portable-runtime.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/packages/rockstaros-runtime"
+      ],
+      "acceptance": [
+        "Host/Executor/Output role/protocol/version/期限/true能力の積集合を検査。Pixel/QEMU/Web/Mini/Pro別表で同job fixture一致、観測authority=false。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/36"
+    },
+    {
+      "id": "OS-15",
+      "title": "同image物理受入",
+      "parentItems": [
+        "P05"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/templates/os-acceptance-report.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/phone-preview-20260911.md",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/data/android-first-flash-gate.json"
+      ],
+      "acceptance": [
+        "同image hash/同PixelGL066でboot/権限/保存/再起動/更新rollback/stock全損復旧を記録。APK/AVF/QEMU成功を転用しない。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/37"
+    },
+    {
+      "id": "OS-16",
+      "title": "guest/host権限境界",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P09"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local/android-bridge.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local/common-ui-src/PixelPortableBridgeProtocol.java",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/contracts/platform-api.json"
+      ],
+      "acceptance": [
+        "mTLS/tap/socket/file/Binderのscope/claimを照合しguestrootをhostUID/Keystore/DeviceOwnerへ昇格しない。credential非転送と負例を確認。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/38"
+    },
+    {
+      "id": "OS-17",
+      "title": "full OS専用Linux・署名・flash・stock/全損復旧",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P10",
+        "P13"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/prepare-phone-build.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/scripts/freeze-phone-build-inputs.py",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/data/android-first-flash-gate.json",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/native-os-validation.md"
+      ],
+      "acceptance": [
+        "専用x86_64Linuxでinput/vendor/署名/rollback/backupをfreeze。同一candidateimageの全gateを実測し、購入/鍵/unlock/flashは条件具体化後の最終判断。QEMU/標準clientは独立継続。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/39"
+    },
+    {
+      "id": "OS-18",
+      "title": "機微vault・E2EE・削除と共通金融/学習境界",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P12"
+      ],
+      "sourcePaths": [
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/eve-history.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/request-auth.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/lib/rockstar-device-link.ts",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/toolkits/sky-linux-local/common-ui-src/EvePortableJournalKeys.java",
+        "/Users/kaiya/Documents/ChatGPT/avokdo/docs/workstreams/04-security-identity-compliance.md"
+      ],
+      "acceptance": [
+        "raw非使用fixtureでfresh本人鍵/用途同意/recipient/失効/削除/rollback復旧を検査。server暗号化をE2EEと呼ばず独立審査前は機微無効、非生体開発は継続。usage/作者送金/学習同意を分離。"
+      ],
+      "promptSection": "eve-os-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/40"
+    },
+    {
+      "id": "SMITH-01",
+      "title": "正式名・互換入口・既存データの整合",
+      "parentItems": [
+        "P13",
+        "P02"
+      ],
+      "sourcePaths": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "data/company-brand.json",
+        "lib/os-navigation.ts",
+        "app/manifest.ts",
+        "docs/sky-tools-complete-design.md"
+      ],
+      "acceptance": [
+        "利用者向けSmith表示と内部互換IDを分離",
+        "旧URL/保存keyから同一ownerの同担当/仕事/成果を読取り",
+        "表示変更で新dispatch/課金/鍵更新0",
+        "Root/別Source/公開の反映範囲を別に証拠化"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/41"
+    },
+    {
+      "id": "SMITH-02",
+      "title": "部品なし目的・本人確認・可能/不足/未対応の表示",
+      "parentItems": [
+        "P02",
+        "P10"
+      ],
+      "sourcePaths": [
+        "lib/smis-object-purpose.ts",
+        "lib/smis-module-work-port.ts",
+        "components/smis-object-purpose-panel.tsx",
+        "components/smis-module-panel.tsx",
+        "components/eve-runtime-interaction.tsx",
+        "components/eve-interaction-panel.tsx",
+        "app/os/eve/module/page.tsx",
+        "tests/smis-object-purpose.test.mjs"
+      ],
+      "acceptance": [
+        "11種needsとotherを本人修正・確認",
+        "目的を黙って縮めずunknown/未対応を表示",
+        "Pixel実UIで部品なし文章目的を同担当へ引継ぎ",
+        "測定不足目的は不足を保持してdispatch0",
+        "準備前draftのmemory境界/保存後owner-bindingを維持"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/42"
+    },
+    {
+      "id": "SMITH-03",
+      "title": "新担当同ID登録から実model・保存・原job停止まで",
+      "parentItems": [
+        "P02",
+        "P01",
+        "P13"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-eve-interaction.ts",
+        "lib/eve-purpose-runtime-work-port.ts",
+        "lib/eve-runtime-work-port.ts",
+        "lib/eve-agent-preparation-sync.ts",
+        "lib/eve-runtime-sync.ts",
+        "lib/eve-runtime-history-control.ts",
+        "lib/eve-runtime-export.ts",
+        "lib/eve-runtime-recovery.ts",
+        "lib/workflow.ts",
+        "app/api/eve/runtime/route.ts",
+        "app/api/sky/agents/route.ts",
+        "tests/eve-purpose-runtime-work-port.test.mjs",
+        "tests/eve-runtime-work-port.test.mjs",
+        "tests/eve-runtime-export.test.mjs"
+      ],
+      "acceptance": [
+        "同owner/AgentID/revision/modelの実model結果をWeb/Pixel双方で照合",
+        "Androidに保存したUTF-8を独立読戻しhash比較",
+        "同job停止は元executor receiptまでunknown/予約を維持",
+        "応答消失/期限切れ/knownExisting欠落で自動新ID再送0",
+        "再起動後に同成果/停止・旧鍵/model保持"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/43"
+    },
+    {
+      "id": "SMITH-04",
+      "title": "内蔵・外付け・周辺観測のadapterと付け替えfence",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P05",
+        "P09"
+      ],
+      "sourcePaths": [
+        "lib/smis-visual-input.ts",
+        "lib/smis-camera.ts",
+        "lib/smis-object-handoff.ts",
+        "lib/smis-input-session.ts",
+        "components/smis-camera-workspace.tsx",
+        "lib/smis-module-session.ts",
+        "lib/smis-microbit-bluetooth.ts",
+        "lib/smis-module-work-port.ts",
+        "tests/smis-module.test.mjs",
+        "tests/smis-visual-input.test.mjs",
+        "tests/sky-object-attachment.test.mjs"
+      ],
+      "acceptance": [
+        "owner/object/input-method/time/calibration/epochを同Coreへ結合",
+        "appearance候補を意味理解/実測/実行許可へ昇格しない",
+        "stale/sequence逆行/切断/abort/遅延GATT/別owner拒否",
+        "別対象は旧job停止確認・旧scope失効後だけ再承認",
+        "実部品取得後の同board2実物/Pixel実モデル/ファイル/停止を別gate",
+        "生体/物理actuatorは同意・独立停止・機種別受入"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/44"
+    },
+    {
+      "id": "SMITH-05",
+      "title": "別owner Add・同じ担当版実行・opt-in成果循環",
+      "parentItems": [
+        "P03",
+        "P08",
+        "P09",
+        "P13"
+      ],
+      "sourcePaths": [
+        "lib/sky-agent-share.ts",
+        "lib/sky-agent-share-store.ts",
+        "app/api/sky/agent-shares/route.ts",
+        "components/sky-agent-share.tsx",
+        "components/sky-agent-library.tsx",
+        "lib/sky-agent-outcomes.ts",
+        "lib/sky-agent-outcome-store.ts",
+        "app/api/sky/agent-outcomes/route.ts",
+        "components/sky-agent-outcomes.tsx",
+        "components/sky-agent-outcome-counts.tsx",
+        "components/sky-social-timeline.tsx",
+        "tests/sky-agent-shares.test.mjs",
+        "tests/sky-agent-outcomes.test.mjs",
+        "scripts/check-sky-agent-shares-api.mjs"
+      ],
+      "acceptance": [
+        "2実owner独立認証で作者版/hash/license確認→disabled Add→Bの独立権限/予算で実model又は明示Tool",
+        "元版とB変更版のfrozen roleを同B jobへ束縛",
+        "私有会話/原稿/鍵/jobIDを公開postへ自動コピーしない",
+        "同command/digestのpublish/add/outcome再送で重複0",
+        "撤回/失効/鍵付きACL/CAS競合/別owner拒否",
+        "作者収益は二者契約/実回収/P08へ留保し実行数から送金しない"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/45"
+    },
+    {
+      "id": "SMITH-06",
+      "title": "Hey Eve・Thanks Eve・待機の共通入口",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-eve-interaction.ts",
+        "components/eve-interaction-panel.tsx",
+        "components/eve-runtime-interaction.tsx",
+        "tests/eve-os-interaction.test.mjs",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/device-support-architecture.md"
+      ],
+      "acceptance": [
+        "手入力一周を音声待ちで止めない",
+        "Hey Eve→本人確認→実行/保存→Thanks Eve→原job receipt→standbyを実Pixelで別受入",
+        "誤起動/他人声/locked/offline/再起動/停止不明で権限やstandbyを捏造しない",
+        "MIC OFF/完全電源断と通常wake待機を分離",
+        "無断cloud ASR/常時録音保存/支払認証への昇格0",
+        "Mini/Pro driver/電源/表示は個別実機gate"
+      ],
+      "promptSection": "smith-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/46"
+    },
+    {
+      "id": "ESIM-01",
+      "title": "状態の直積と接続判定",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "bf35242b60f2e3aa20d0dee1f62dbeb5bbad1123ff4fd389e07b29104a8bb207",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/47"
+    },
+    {
+      "id": "ESIM-02",
+      "title": "issuer lifecycleを永続イベントへ結合",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "7b256626b0cbaf34954f9b05ce2a49a3b4c2d352e12b5ed04145a66e6e558109",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/48"
+    },
+    {
+      "id": "ESIM-03",
+      "title": "準備operationと外部資源確保のoutbox",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "9445bce610aca2d894b7b048663d93def8687a96306d920f9aa4b82b14801330",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/49"
+    },
+    {
+      "id": "ESIM-04",
+      "title": "子端末attachmentの発行・更新・失効",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-04",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "75fb1398df6551feee83061384b1c28fee07cba490789fcbf553d8fab2951ab8",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/50"
+    },
+    {
+      "id": "ESIM-05",
+      "title": "既存OSとnativeを能力別に導入する",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-05",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "dd823fed9264e38cbbf6661e239518ba57b518dfe648b5943238eafb21ab0581",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/51"
+    },
+    {
+      "id": "ESIM-06",
+      "title": "一件のcloud仕事と切断後継続",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-06",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "bb0679d9506635a11f47ea002e80e7486788509cf1c9006abfad9865bdf77869",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/52"
+    },
+    {
+      "id": "ESIM-07",
+      "title": "実sandboxと復旧の一周",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-07",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "cc57e6aacf15363437bff7f05215052a3ec2d6e5634455f2c33383ebe59a2321",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/53"
+    },
+    {
+      "id": "ESIM-08",
+      "title": "証拠と受入の独立欄",
+      "parentItems": [
+        "P06",
+        "P07"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-service-setup-billing.ts"
+      ],
+      "promptSection": "esim-08",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "7d36e394d7a7d7896d687d7ab834fc6eeb3c69c390e2b8df58a5143e76a1060f",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "modelRoutingRef": "data/development-model-routing.json#/units/54"
+    },
+    {
+      "id": "BILL-01",
+      "title": "固定料金版と起算のschemaを実装する",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "2d6422d715d2a066e779e7252c28375e5f565969bb8bed74ca37af0bade51626",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/55"
+    },
+    {
+      "id": "BILL-02",
+      "title": "同時予約と結果不明の原子保存",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "bf65b29369e2fec569930da29899fc31aedf11950864ab27e34e8d9e514fe4ac",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/56"
+    },
+    {
+      "id": "BILL-03",
+      "title": "計量を請求明細へ一回だけ結ぶ",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "6a2a782b97dbf71cbad45dc573d06f38d12d843d1ab4b2e836166783979415bf",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/57"
+    },
+    {
+      "id": "BILL-04",
+      "title": "月締め・訂正・一意Invoice",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-04",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "19067381814f30683958349cf79e0112f5786bc5e2f0aa8f25d82d78ddec0a25",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/58"
+    },
+    {
+      "id": "BILL-05",
+      "title": "非同期決済と読戻し",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-05",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "d5bf56c8accc408b3eae67d148775ff656e59a6a32d48dbf6ec2fd6d0aa02ce9",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/59"
+    },
+    {
+      "id": "BILL-06",
+      "title": "本人UI・未払制限・復帰",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-06",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "c047744aaf19cdacb387719c68dd85a07de8eee41b3b7f3622c0a6c6fa10b5e8",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/60"
+    },
+    {
+      "id": "BILL-07",
+      "title": "作者契約・分配・取消復旧",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-07",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "2f6a248f6814739e483b42b23e283f066fa98930e343b2085767effd701d0ab3",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/61"
+    },
+    {
+      "id": "BILL-08",
+      "title": "月末sandboxの受入matrix",
+      "parentItems": [
+        "P07",
+        "P08"
+      ],
+      "sourcePaths": [
+        "lib/sky-linux-service.ts",
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "lib/sky-payments.ts"
+      ],
+      "promptSection": "bill-08",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "acceptance": [
+        "本文該当unitに記載した状態・DB/HTTP・否定例・復旧・同一候補の証拠を検収する"
+      ],
+      "detailTextSha256": "05f18d8b7c233f9c561e669e734b5e276d56f180dc473e3f38f9a30aa3639a3d",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "modelRoutingRef": "data/development-model-routing.json#/units/62"
+    },
+    {
+      "id": "MINI-01",
+      "title": "要求領域と観測/入力/光学の契約固定",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P13"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "docs/avocado-mini-r5/factory-development/reference-reels.json",
+        "contracts/avocado-mini-spatial-runtime.json"
+      ],
+      "acceptance": [
+        "最新2動画/板膜なし/全領域/人数/低眩しさを版付きprofileへ保持",
+        "source/出口/sensor/受動面数を別記録",
+        "sample必要条件と連続/実機/comfortの状態を分離"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/63"
+    },
+    {
+      "id": "MINI-02",
+      "title": "少数・板膜なし・全範囲の光学選定と反証",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P12"
+      ],
+      "taskIds": [
+        "MAT15",
+        "MAT18",
+        "DSP01"
+      ],
+      "sourcePaths": [
+        "docs/avocado-mini-r5/factory-development/free-space-exit-bound.py",
+        "docs/avocado-mini-r5/factory-development/e1-binocular-layout.py",
+        "docs/avocado-mini-r5/factory-development/e1-leairr-prescription.json",
+        "docs/avocado-mini-r5/factory-development/spatial-optical-rfq.md",
+        "docs/avocado-mini-r5/factory-development/component-verdicts.md"
+      ],
+      "acceptance": [
+        "同じD/eyes/targets/人数/輝度/体積でbaselineと次候補を比較",
+        "上下/同水平位置/境界/追跡遅延/公差の失敗点を記録",
+        "実光路/部品/光線生成/停止/測定計画が具体化し、実SC01/02/04/08以前にwhole-rangeへ昇格しない"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/64"
+    },
+    {
+      "id": "MINI-03",
+      "title": "Goの実描画・光学出力・停止adapter",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/targets/avocado-mini/linux/go-bridge-observer.py",
+        "systems/rock-star-os/targets/avocado-mini/spatial/go-depth-session.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/go-d405-preview-host.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/leairr-prewarp.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/display-coordinator.mjs",
+        "systems/rock-star-os/targets/avocado-mini/hardware/reference-interface-map.json"
+      ],
+      "acceptance": [
+        "exact host/Bridge/Go/video/powerを固定",
+        "software-presented/Go scanout/実光学/両眼資格を別receipt",
+        "切断/校正変更/lease/自律再生/逆給電時のstopと実readbackを計測"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/65"
+    },
+    {
+      "id": "MINI-04",
+      "title": "RGB hand/depthの同期・座標・失効",
+      "parentItems": [
+        "P10",
+        "P11",
+        "P09"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/targets/avocado-mini/linux/hand_landmark_observer.py",
+        "systems/rock-star-os/targets/avocado-mini/spatial/hand-preview.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/hand-preview-host.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/HAND-PREVIEW.md",
+        "systems/rock-star-os/targets/avocado-mini/spatial/depth-observation.mjs",
+        "contracts/avocado-mini-spatial-runtime.json"
+      ],
+      "acceptance": [
+        "profile/model/boot/sequence/place/期限/2手/消失負例",
+        "RGB xy/world予測/metric poseを混同せず同期/誤差を実測",
+        "実精度と可視性/認可gate前はspatialActionEligible=false",
+        "子process終了とcamera停止を実確認、raw frame非保存既定"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/66"
+    },
+    {
+      "id": "MINI-05",
+      "title": "手/声を共通Eve仕事・実app・原本保存へ結合",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P03",
+        "P09",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "taskIds": [
+        "MAT15",
+        "OS10",
+        "SKY21",
+        "WEB04"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/targets/avocado-mini/spatial/runtime.mjs",
+        "lib/rockstar-eve-interaction.ts",
+        "components/eve-interaction-panel.tsx",
+        "lib/workflow.ts",
+        "lib/mini-voice-session.ts",
+        "docs/avocado-mini-r5/factory-development/computer-use-scenarios.json",
+        "components/eve-remix-stage.tsx",
+        "components/eve-remix-workspace.tsx",
+        "components/eve-media-studio.tsx",
+        "lib/eve-remix.ts",
+        "lib/eve-media-edit.ts",
+        "lib/eve-media-app.ts",
+        "docs/evidence/eve-remix-mini-ui.json",
+        "docs/evidence/eve-media-studio.json",
+        "tests/eve-remix.test.mjs",
+        "tests/eve-media-edit.test.mjs"
+      ],
+      "acceptance": [
+        "candidate target/artifact/scene/place/期限を本人grantへ固定",
+        "実app revision/hash readback→既存job/artifact原本保存",
+        "SC03/05/06/07/10、unknown同ID読戻し/停止/移設再開、任意shellなし",
+        "Pointer/drag/place/cancelはselectionのみ。旧leaseのup/dropで生成/保存しない",
+        "localmedia4操作の実Blob/IndexedDB証拠と、同job/Artifact原本保存の新受入を分離",
+        "time-stretch/paper→実Web/CAD実寸は別adapter・原本revision/readback/物理gate",
+        "入力hash/operation/app版/出力digestの同IDstage/finalize、二owner/途中停止/partial拒否"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/67"
+    },
+    {
+      "id": "MINI-06",
+      "title": "電源木・独立光学停止・実netの確定",
+      "parentItems": [
+        "P10",
+        "P09",
+        "P11"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/targets/avocado-mini/hardware/reference-interface-map.json",
+        "systems/rock-star-os/targets/avocado-mini/firmware/supervisor.c",
+        "systems/rock-star-os/targets/avocado-mini/hardware/cell-power/README.md",
+        "docs/avocado-mini-r5/factory-development/electrical-architecture.md"
+      ],
+      "acceptance": [
+        "GP7はLEDのみ、5V3A Goを2A couponへ接続しない",
+        "power/逆給電/自己再生/CPUhang故障木と独立停止部品を選定",
+        "stop→実光/位置senseのlatency、故障時off/localrearm、pin/netがtraceable"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/68"
+    },
+    {
+      "id": "MINI-07",
+      "title": "最終回路/PCB・同一閉箱・製造gate",
+      "parentItems": [
+        "P10",
+        "P05",
+        "P09",
+        "P11",
+        "P13"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/targets/avocado-mini/README.md",
+        "systems/rock-star-os/targets/avocado-mini/hardware/spatial-mainboard-plan.json",
+        "systems/rock-star-os/targets/avocado-mini/hardware/check_cad.py",
+        "docs/avocado-mini-r5/factory-development/electrical-architecture.md",
+        "docs/avocado-mini-r5/spatial-computer-use-design.md"
+      ],
+      "acceptance": [
+        "exactBOM/光路/電源/pack/RF/音声/生体/機構/熱を統合",
+        "回路/ERC/stackup/route/DRC/parity/DFM/DFA/製造一式",
+        "同一実基板/閉箱SC/既存OI/MP・更新復旧後に製造release"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/69"
+    },
+    {
+      "id": "MINI-08",
+      "title": "Mini/Pro共通host/native/DSP/eSIM子接続",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P05",
+        "P06",
+        "P07",
+        "P09"
+      ],
+      "taskIds": [
+        "MAT15",
+        "DSP01",
+        "OS10",
+        "SIM01",
+        "BIL02"
+      ],
+      "sourcePaths": [
+        "packages/rockstaros-runtime/README.md",
+        "contracts/rockstaros-portable-runtime.json",
+        "docs/device-support-architecture.md",
+        "contracts/rockstar-service-attachment.json",
+        "docs/avocado-mini-r5/factory-development/computer-use-scenarios.json",
+        "lib/eve-media-app.ts",
+        "docs/evidence/eve-media-studio.json"
+      ],
+      "acceptance": [
+        "本人pairing/親epoch/子端末鍵/失効とcapability再検査",
+        "client先行・nativeboot/BSP/署名復旧は機種別",
+        "二端末予算/同契約基本料重複0・readback/stop/restore",
+        "Mini/Pro同じjob/scene/asset revision/world anchor、旧inputlease失効/新node校正・stop照合",
+        "media4操作と未対応time-stretch/OCR-layout/CADをcapability別表示",
+        "Blob転送/Cloud保存/新Providerは別同意・共通見積、node切替だけで別job/契約を作らない"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/70"
+    },
+    {
+      "id": "PRO-01",
+      "title": "localStorageの非破壊・本人別移行",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P09",
+        "P13"
+      ],
+      "taskIds": [
+        "WEB13",
+        "WEB04",
+        "DSP01",
+        "OS10"
+      ],
+      "sourcePaths": [
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "sites/avocado-mini/src/pro-os.js",
+        "sites/avocado-mini/worker/shared/domains.mjs",
+        "app/api/work-jobs/route.ts",
+        "lib/work-store.ts",
+        "lib/workflow.ts"
+      ],
+      "acceptance": [
+        "explicit preview/owner consent/原本保持、cross-origin cookie/storageコピーなし",
+        "stable import ID/mapping/digestでCAS/unknown/replay照合",
+        "旧doneをTool成功へしない、二owner/部分失敗/再起動/export読戻し"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "modelRoutingRef": "data/development-model-routing.json#/units/71"
+    },
+    {
+      "id": "PRO-02",
+      "title": "共通ProUI→実仕事・成果・保存・停止",
+      "parentItems": [
+        "P10",
+        "P02",
+        "P03",
+        "P06",
+        "P07"
+      ],
+      "taskIds": [
+        "WEB13",
+        "WEB04",
+        "DSP01",
+        "OS10",
+        "SKY21"
+      ],
+      "sourcePaths": [
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "sites/avocado-mini/src/pro-os.js",
+        "packages/rockstaros-runtime/src/index.mjs",
+        "components/eve-sync-workspace.tsx",
+        "lib/eve-runtime-work-port.ts"
+      ],
+      "acceptance": [
+        "実account/thread/Agent/model/executor/quote/cap/approvalを同jobへ",
+        "privatehistory/artifact/usage/stop receipt/旧成果readback",
+        "実status、子失効/二端末共通予約/復帰・新ロゴSmithの反映を別受入"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "modelRoutingRef": "data/development-model-routing.json#/units/72"
+    },
+    {
+      "id": "PRO-03",
+      "title": "nativeProと同一実機SKU/性能/更新復旧",
+      "parentItems": [
+        "P10",
+        "P05",
+        "P09",
+        "P11"
+      ],
+      "taskIds": [
+        "DSP01",
+        "OS10",
+        "B05",
+        "WEB13"
+      ],
+      "sourcePaths": [
+        "data/avocado-pro-sales-readiness.json",
+        "docs/device-support-architecture.md",
+        "docs/workstreams/09-business-pilots.md"
+      ],
+      "acceptance": [
+        "A4-H2O候補のexactBOM/BIOS/QVL/driver/fit/電源/冷却を同機で固定",
+        "本人Core/localmodel/実Tool/stop/save/連続負荷/電力/熱",
+        "native署名/rollback/純正/全損復旧、SKU変更時再受入"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "modelRoutingRef": "data/development-model-routing.json#/units/73"
+    },
+    {
+      "id": "PRO-04",
+      "title": "12販売gateとUS初回商流",
+      "parentItems": [
+        "P10",
+        "P07",
+        "P08",
+        "P11",
+        "P13"
+      ],
+      "taskIds": [
+        "B05",
+        "WEB13",
+        "BIL02",
+        "DSP01"
+      ],
+      "sourcePaths": [
+        "data/avocado-pro-sales-readiness.json",
+        "scripts/check-pro-sales-readiness.mjs",
+        "tests/pro-sales-readiness.test.mjs",
+        "sites/avocado-mini/worker/index.js",
+        "sites/avocado-mini/tests/pro-interest.test.mjs",
+        "docs/workstreams/09-business-pilots.md"
+      ],
+      "acceptance": [
+        "12gateと名義/費目/資金/fee/本人margin条件を証拠hash付きで検収",
+        "sandbox注文/署名webhook/providerGET/返金/dispute/配送dryrun",
+        "希望受付と売上/注文/出荷を分離、ready前はsalesEnabled=false・checker exit2"
+      ],
+      "status": "prompt_only_not_implemented_by_this_task",
+      "promptSection": "mini-pro-detail",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "modelRoutingRef": "data/development-model-routing.json#/units/74"
+    }
+  ],
+  "detailedUnitCount": 75,
+  "previousAuthoringVerification": {
+    "projectCheck": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "typecheck": "passed",
+    "fullVerify": "exit_1_at_shared_lint",
+    "runtimeTestsAfterLint": "not_run",
+    "blocker": "tests/eve-remix.test.mjs:6,12,16,21 no-floating-promises"
+  },
+  "verification": {
+    "recordedAt": "2026-10-24T05:45:28.869154+00:00",
+    "scope": "prompt/data authoring checks and mutable shared Root repository regression; no whole-tree/device/provider/production acceptance",
+    "promptSha256": "d92aa7949dbeb5fcdcc84dcb8ee394ed6bb9be57e3385c4a6605541755482531",
+    "staticConsistency": 0,
+    "staticReceipt": "docs/evidence/rockstaros-model-routing-static-check.json",
+    "fullVerifyCommand": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "fullVerifyExitCode": 1,
+    "projectCheck": 0,
+    "baselineCheck": 0,
+    "designCheck": 0,
+    "schemaCheck": 0,
+    "databaseCheck": 0,
+    "repositoryCheck": 0,
+    "typecheck": 0,
+    "productLint": 0,
+    "nodeTests": {
+      "total": 1701,
+      "passed": 1699,
+      "failed": 1,
+      "skipped": 1
+    },
+    "unresolvedFailures": [
+      {
+        "path": "tests/pixel-portable-executor.test.mjs:120",
+        "assertionLine": 165,
+        "cause": "Mac fixture directly invokes the shared Linux-only worker prepare_child preexec hook; libc.prctl unavailable on macOS",
+        "workerSourceSha256": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+        "testSourceSha256": "0c6a0f2fe577e7ce5792d538c829da34a41f511e8f6e2f80e3f07c7d4f8fef62",
+        "runtimeCodeChangedByThisAuthoring": false,
+        "resolutionOwner": "original Smith/Pixel implementation lane; preserve existing device lease",
+        "acceptance": "unresolved; full verify is not passing"
+      }
+    ],
+    "fullVerifyLog": "/private/tmp/rockstaros-model-routing-verify.log",
+    "fullVerifyLogSha256": "cc545b11a9afbe9c3c56a80aa3a4dc7b5d95836fdcc461e73b493ed8d9cb6889",
+    "remainingVerifyStages": {
+      "exitCode": 0,
+      "scope": "remaining package checks, dry-run billing/operator, toolkit/site/public-preview/meme/farm tests, build, bundle/assets checks, Worker API and CSV",
+      "build": 0,
+      "assetReferences": 233,
+      "missingAssets": 0,
+      "workerApiAssertions": 2152,
+      "csvAssertions": 113,
+      "apiLog": "/private/tmp/rockstaros-model-routing-api.log",
+      "apiLogSha256": "77e1e776ad59527ae51c3568f5c58ac9fbeae9ba2bb14efafa9a54bd2b3ba767"
+    },
+    "verificationAfterMetadataUpdate": "passed_focused_checks",
+    "finalFocusedChecks": {
+      "projectCheck": 0,
+      "baselineCheck": 0,
+      "designCheck": 0,
+      "schemaCheck": 0,
+      "databaseCheck": 0,
+      "repositoryCheck": 0,
+      "authoredPathsDiffCheck": 0
+    }
+  },
+  "chatReviewScope": {
+    "originalFiveDomainReview": "previousChatReviewScope",
+    "additionalInventoryThreadId": "01a1596a-9af6-7a23-800a-22be115e3275",
+    "additionalInventoryTurns": 3,
+    "additionalInventoryHasMore": false,
+    "createdChats": 11,
+    "bootstrapComplete": 11,
+    "fullHistoryReadClaim": false
+  },
+  "coverageAudit": "docs/evidence/rockstaros-remaining-work-prompt.json#coverage",
+  "latestMiniFollowupSnapshot": {
+    "miniLatestDocumentVersion": "0.9",
+    "miniLatestPdfPages": 53,
+    "evidencePath": "docs/evidence/avocado-mini-spatial-development.json",
+    "pdfSha256": "6454622fafc199f1e6cfbae420d01aad3d6e867274b5d4fc4b3fd5cbfc4f2b79",
+    "idealSixFaces80m2Misses": 0,
+    "tenMmNonEmittingBorderMisses": 708,
+    "smallFewDisplaysAccepted": false,
+    "physicalOpticsHandLowGlareFinalPcbAccepted": false,
+    "older52PageSnapshot": "previousMiniFollowupSnapshot"
+  },
+  "updatedAt": "2026-10-24T05:45:28.869154+00:00",
+  "executionMode": "scoped_fresh_thread_batches",
+  "chatRegistry": "data/rockstaros-development-chats.json",
+  "entryPrompt": "docs/prompts/rockstaros-development-chats.md",
+  "additionalUnits": [
+    {
+      "id": "NET-01",
+      "title": "経路・IP/DNS/TLS・信頼時刻・VPNの送信前検査",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P01",
+        "P02",
+        "P05",
+        "P09",
+        "P11"
+      ],
+      "taskIds": [
+        "NET01",
+        "OS10",
+        "DSP01"
+      ],
+      "canonicalIds": [
+        "CORE02",
+        "CORE05",
+        "CORE07",
+        "CORE12"
+      ],
+      "sourcePaths": [
+        "docs/network-transport-design.md",
+        "docs/device-support-architecture.md",
+        "lib/rockstar-eve-interaction.ts",
+        "scripts/stage-pixel-runtime-transport.py",
+        "tests/test_stage_pixel_runtime_transport.py",
+        "systems/rock-star-os/tests/test_contract_runtime_clock_isolation.py"
+      ],
+      "currentState": "NET01契約と既存transportは存在。全経路/VPN/時計ずれの現Pixel受入は未了。旧障害を現在値にしない。",
+      "algorithm": "①OS/OEMのIPv4/6・IP更新・route・TCP/UDP・DNSをadapter観測。device/executor/provider別probe。②hostname/TLSを検証しHTTP降格不可。③OS時刻/単調clock/認証済みserver observationを照合しexpiryの根拠を固定。④capability∩owner policy∩到達性∩費用条件で経路選択、VPN必須なら断/漏えい/split-tunnel逸脱をfail closed。⑤切替後は再認証→同job照合→dispatch。独自TCP/BGP/NTP/VPN stackは作らない。 IP取得はDHCP/static等OS観測源、probing/unknown/degraded/constrained/offlineの閾値/有効期限/理由を版付きpolicyで決める。時計不明時はexpiry依存操作fail closed。VPN kill switchはOS capabilityを確認しIPv6/DNS/reboot leakを試験。",
+      "inputsAndOutputs": "入力=owner/device/job/revision、origin/scope、route/VPN/clock観測と期限。出力=link/IP/DNS/connect/read/HTTPS別状態、選択経路、observedAt/uncertainty/理由/retryAt。",
+      "stateAndPersistence": "観測とauthorityを分離。owner別に最終観測/cursor/版を保存、clock不明は期限を延ばさずunknown。ネットの提案enumは既存workflow状態へ明示投影。VPN secret/本文/credentialは診断外。",
+      "migration": "P13のRoot/Source transport差を解決しjob ID/stop journalを維持。単一online booleanから層別観測へoptional追加、未観測はunknown。",
+      "failureRecovery": "端末断/guest断/Provider断を識別。結果不明送信は同request ID照合、通常回線/cloudへ無断切替/有料再送しない。時刻再起動はboot世代付きmonotonicを再評価。",
+      "negativeTests": [
+        "DNS成功TLS失敗/証明書例外",
+        "IPv6更新/route変更",
+        "VPN kill/DNS leak/split tunnel",
+        "時計巻戻し/未来/monotonic reset",
+        "端末だけ/guestだけ断",
+        "timeout後到着/別owner",
+        "DHCP/静的設定の観測不足",
+        "IPv6 VPN漏えい/再起動",
+        "閾値境界/古い観測"
+      ],
+      "validation": [
+        "python3 -m unittest discover -s tests -p test_stage_pixel_runtime_transport.py",
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_contract_runtime_clock_isolation.py",
+        "npm run device-support:check",
+        "npm run design:check"
+      ],
+      "acceptance": [
+        "経路10項目を各fixtureに割当て、同jobで断/切替/時計/VPN違反時dispatch拒否、二重作用/計上0。新VPN/経路負例を追加し既存checkだけで完成にしない。実回線/衛星は別gate。"
+      ],
+      "externalConditions": "ROCK=選択/診断/強制、EXTERNAL=OS/OEM/modem/carrier/VPN/DNS/TLS/時刻源、JOINT=exact端末/回線/Linux実測、OWNER=回線/送信先/有料経路。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "net-01",
+      "featureIds": [
+        "F001",
+        "F003",
+        "F004",
+        "F011",
+        "F012"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F001",
+          "title": "IPアドレス取得、DNS名前解決、TCP・UDP通信。",
+          "requiredSupplement": "NET01でOS stack再利用、IPv4/IPv6/DHCP/route/DNS/TCP/read/UDP各観測とunknown/probing/失敗分類・fixture。"
+        },
+        {
+          "id": "F003",
+          "title": "通信経路の切替：Wi‑Fi、携帯回線、有線、対応する衛星回線。",
+          "requiredSupplement": "NET01でWi-Fi/携帯/有線/契約済衛星のpolicy/cost/reachabilityと切替後同ID照合。"
+        },
+        {
+          "id": "F004",
+          "title": "圏外、低速、高遅延、通信制限の検出。",
+          "requiredSupplement": "degraded/constrained/offlineの閾値/観測源/期限/理由表示/fault注入。"
+        },
+        {
+          "id": "F011",
+          "title": "ネットワーク時刻の検証。",
+          "requiredSupplement": "OS同期源/署名server時刻/単調時計、unknown時failclosed、drift/rollback試験。"
+        },
+        {
+          "id": "F012",
+          "title": "VPNや通信漏えい防止が必要な端末での接続制御。",
+          "requiredSupplement": "VPNpolicy/kill switch、VPN断・IPv6/DNS漏えい・再起動negative test。"
+        }
+      ],
+      "promptSection": "net-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/75"
+    },
+    {
+      "id": "NET-02",
+      "title": "ordered通知/進捗cursorとoffline競合からの再接続",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P10"
+      ],
+      "taskIds": [
+        "NET01",
+        "WEB04",
+        "SKY21",
+        "OS10"
+      ],
+      "canonicalIds": [
+        "CORE03",
+        "CORE06",
+        "CORE12",
+        "SI04",
+        "SI05"
+      ],
+      "sourcePaths": [
+        "docs/network-transport-design.md",
+        "components/eve-sync-workspace.tsx",
+        "lib/eve-runtime-sync.ts",
+        "lib/eve-device-sync.ts",
+        "lib/workflow.ts",
+        "tests/eve-runtime-sync.test.mjs",
+        "tests/eve-device-sync.test.mjs"
+      ],
+      "currentState": "既存同期/visibility refreshは存在。全端末Push/常時streamの実配達は未受入。一般競合同期の詳細はSYNC-01で補完。",
+      "algorithm": "owner+job+eventIdでdedupe、server revision/単調cursorで順序判定。gapは差分、cursor失効は認可snapshot。Push/SSE/WebSocketは再取得の契機、payloadを状態の権威にしない。保存済みstop/失効/予算を再接続dispatch前に再評価。 自動retryは冪等readを中心に、試行数/最大待ち/期限を固定したexponential backoff+bounded jitter。回線復帰の集中をowner/device単位で抑制しstopで待機timerを解除。effectはretry前に同key照合、Retry-Afterを尊重。",
+      "inputsAndOutputs": "入力=認証event metadata/saved cursor/current owner。出力=最新revision/未取得/遅延/未読・既読。ackは承認でもTool成功でもない。",
+      "stateAndPersistence": "owner/device別cursor/preference/dedupe watermarkを保存。通知に本文を既定露出せず、logout/revokeで購読解除。既存pollingをfallbackに残す。",
+      "migration": "旧時刻順/通知IDのみのclientは認可snapshotで収束。新イベント版とdual readerを追加し別job storeを作らない。",
+      "failureRecovery": "順序逆転でcompleted/stoppedをrunningへ戻さず、unknown/停止未確認は保持。stream切断で仕事失敗/再実行に変換しない。",
+      "negativeTests": [
+        "duplicate/out-of-order",
+        "cursor gap/expiry",
+        "古いrunning/stop後late event",
+        "owner切替",
+        "購読拒否/expired endpoint",
+        "offline両側更新",
+        "指数backoff上限/期限",
+        "復帰集中/429",
+        "backoff待機中stop"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/eve-runtime-sync.test.mjs tests/eve-device-sync.test.mjs",
+        "npm run typecheck",
+        "npm run test:api"
+      ],
+      "acceptance": [
+        "二clientで同jobのgap/逆順/logout/stop後復帰を再現し同revisionへ収束、外部作用再送0。fixture/実Push/実Pixelを分ける。"
+      ],
+      "externalConditions": "EXTERNAL=OS/browser/provider通知、JOINT=実配達/切替、OWNER=通知許可/quiet設定。Smithの通知Tool/MCP接続はMCP-01へ。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "net-02",
+      "featureIds": [
+        "F006",
+        "F008"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F006",
+          "title": "接続の再開、タイムアウト、指数バックオフによる再試行。",
+          "requiredSupplement": "読取のみ自動retry、effectは同key照合、回線復帰の集中抑制/指数バックオフ負例。"
+        },
+        {
+          "id": "F008",
+          "title": "リアルタイムの進捗配信と、再接続後の差分取得。",
+          "requiredSupplement": "認証SSE/WebSocket/既存pollの採否、owner cursor/snapshot fallback/gap・再接続をNET01+Eveへ。"
+        }
+      ],
+      "promptSection": "net-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/76"
+    },
+    {
+      "id": "NET-03",
+      "title": "通話media・受領・通信実費の独立adapter",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P05",
+        "P07",
+        "P10",
+        "P11"
+      ],
+      "taskIds": [
+        "NET01",
+        "DSP01",
+        "B03",
+        "MAT16",
+        "MAT17"
+      ],
+      "canonicalIds": [
+        "CORE02",
+        "CORE04",
+        "CORE07",
+        "SI06",
+        "U01",
+        "U02"
+      ],
+      "sourcePaths": [
+        "docs/network-transport-design.md",
+        "docs/avocado-schoolbag-safety-device.md",
+        "docs/sky-billing.md",
+        "lib/earning-receipt.ts",
+        "lib/rockstar-eve-interaction.ts"
+      ],
+      "currentState": "通話Provider/単独回線/衛星通常音声は未選定。試験音/読み上げは通話成功でない。mainのsky-cloud-monthly-storeはP13で統合対象としRoot既存扱いしない。",
+      "algorithm": "OS/Provider受入stackでsignaling/media/相手受領を別machine。帯域/遅延/損失→品質調整→再接続/終了。device/executor byte推定、AI meter、carrier invoiceを別source/unit/currency/periodで集約しP07原子予約へ渡す。通信byte推定だけで請求しない。",
+      "inputsAndOutputs": "入力=相手/端末capability/owner consent/media scope/quote上限。出力=session別の接続/品質/受領/終了理由、estimated通信量とconfirmed実費receipt。",
+      "stateAndPersistence": "session ID/同意/時刻/品質集約/usage source IDを保存。録音/常時micなし。通信費と16USD/AI/税/888c/ATM0/Market10%は独立line。",
+      "migration": "audio outputから通話権限を推定せず新moduleを明示追加。P07のusage store/leaseを共有し並行課金台帳を新設しない。",
+      "failureRecovery": "media断を連続到達と呼ばない。Provider遅延/不明receiptは保留、同session照合で二重session/請求を防ぐ。通話断でも独立SOSを維持。",
+      "negativeTests": [
+        "signaling成功media断",
+        "mic denied/相手拒否",
+        "stop中late answer",
+        "重複usage/単位通貨違い",
+        "unknown rate/cap枯渇",
+        "衛星非対応"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/settlement.test.mjs tests/billing-worker.test.mjs",
+        "npm run device-support:check",
+        "npm run design:check"
+      ],
+      "acceptance": [
+        "先にadapter/費用fixtureを追加。採用Provider・exact回線/端末で接続/断/再接続/終了/実費読戻しを別gate。未選定通話はunsupported、未知単価は0にしない。"
+      ],
+      "externalConditions": "EXTERNAL=OEM/carrier/call/請求Provider、JOINT=音響/通信/明細実測、OWNER=相手/録音有無/単価上限/契約。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "net-03",
+      "featureIds": [
+        "F009",
+        "F010"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F009",
+          "title": "音声・映像を扱う製品での通話接続、帯域調整、切断復帰。",
+          "requiredSupplement": "対応製品/Provider、通話3面state、loss/帯域/再接続/終了理由・sandbox。"
+        },
+        {
+          "id": "F010",
+          "title": "通信量と外部API費用の計測。",
+          "requiredSupplement": "送受信byte推定とProvider確定料金を別保存、欠測/route切替/上限・二重計上負例。"
+        }
+      ],
+      "promptSection": "net-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/77"
+    },
+    {
+      "id": "WEBOPS-01",
+      "title": "主要flowのa11y・低速・touch/keyboard/reader受入",
+      "primaryLane": "WebOps",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P11"
+      ],
+      "taskIds": [
+        "WEB04",
+        "WEB06",
+        "WEB13",
+        "HOME01"
+      ],
+      "canonicalIds": [
+        "CORE08",
+        "CORE12"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/05-web-pwa-sites.md",
+        "docs/rockstaros-complete-design.md",
+        "components/eve-sync-workspace.tsx",
+        "components/sky-workspace.tsx",
+        "components/system-maintenance.tsx"
+      ],
+      "currentState": "既存画面/回帰と全主要flowのaccessibility一周を区別。狭幅/reader/低速の一括合格は未受入。",
+      "algorithm": "Home→Eve依頼→条件確認→実行/停止→成果、Smith追加、Wallet/設定をflow別に固定。semantic HTML/label/visible focus/touch領域/contrast/reflow/reduced motionを実装。live regionは状態変化を集約しtoken毎に読み上げない。 P11同一回線/low-end profileで初期bytes/初期表示/input delayを計測しbudgetを先に固定。重いmedia/CU/gameは必要時import、skeletonからtimeout/errorへ遷移。保護機構を速度目的で外さない。",
+      "inputsAndOutputs": "入力=viewport/input modality/preferences/current job。出力=同じ状態/費用/失敗へ到達できる操作と読み上げ。",
+      "stateAndPersistence": "下書き/設定をowner別保存しdialog終了focusを起点へ戻す。display stateとWorkJob authorityを分離。",
+      "migration": "既存componentsを改善し別job schema/二系統UIを作らない。Smith正式名/日英の意味/aria名を合わせる。",
+      "failureRecovery": "network失敗で入力保持、再送前は同job照合。focus trap/overflow/承認できない状態をエラーとして修正。",
+      "negativeTests": [
+        "keyboard only/reader",
+        "zoom/319px/横画面",
+        "reduced motion",
+        "長文/空エラー",
+        "busy/stop pending連打",
+        "低速/接続断"
+      ],
+      "validation": [
+        "npm run typecheck",
+        "npm run lint:product",
+        "npm run build",
+        "npm run release:web-assets:check"
+      ],
+      "acceptance": [
+        "新flow別UI回帰に加え採用browser/reader/keyboard/touchで成功・停止・失敗復帰を記録。build/lintを実a11y受入へ転用しない。 低速profile/低性能端末条件・byte/time budget・before/after・欠測を残す。"
+      ],
+      "externalConditions": "JOINT=同候補/支援技術/実操作、OWNER=対象利用者/設定/試用同意。全障害対応や医療効果を宣言しない。",
+      "sourcePathCheck": [],
+      "laneId": "web-ops",
+      "anchor": "webops-01",
+      "featureIds": [
+        "F140",
+        "F141",
+        "F142"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F140",
+          "title": "端末幅、タッチ、キーボード、読み上げへの適応。",
+          "requiredSupplement": "WEB04/CORE12のtouch/keyboard/SR/zoom/reducedmotion各route合格・実UI検査unit。"
+        },
+        {
+          "id": "F141",
+          "title": "色のコントラスト、フォーカス表示、押しやすい操作領域。",
+          "requiredSupplement": "実color/focus/dialogtrap/戻り先/操作領域をCSS/route test＋実読み上げで確認。"
+        },
+        {
+          "id": "F142",
+          "title": "低速回線でも開ける軽量な画面と必要時だけの読み込み。",
+          "requiredSupplement": "low-end/slow-network profile、必要時import/byte-time budget/skeleton/error復帰。"
+        }
+      ],
+      "promptSection": "webops-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "modelRoutingRef": "data/development-model-routing.json#/units/78"
+    },
+    {
+      "id": "WEBOPS-02",
+      "title": "PWA install/update/offlineと通知許可の代替導線",
+      "primaryLane": "WebOps",
+      "parentItems": [
+        "P02",
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "taskIds": [
+        "SYS02",
+        "SYS07",
+        "SYS08",
+        "SYS09",
+        "WEB04"
+      ],
+      "canonicalIds": [
+        "CORE05",
+        "CORE08",
+        "CORE09",
+        "CORE12"
+      ],
+      "sourcePaths": [
+        "app/manifest.ts",
+        "public/sw.js",
+        "public/offline.html",
+        "components/system-maintenance.tsx",
+        "tests/pwa-installability.test.mjs",
+        "tests/pwa-offline.test.mjs",
+        "tests/service-worker-update.test.mjs"
+      ],
+      "currentState": "manifest/非個人offline/owner起動update/通知permission-testは実装あり。Root/配布SourceのSW bytes差、実Push購読/全配達は別。",
+      "algorithm": "manifest identity/scope/icons/HTTPSを検査。waiting SW→owner更新同意→draft保全→activate。cacheは非個人shell限定でAPI/auth/private/no-store/redirect除外。通知は明示requestPermission、拒否/unsupportedならapp内未読/refreshへ。購読/送達/閲覧/承認を分離。",
+      "inputsAndOutputs": "入力=SW lifecycle/build/draft、device permission、owner preferences。出力=install/update/offline状態、未取得明示、通知代替と同jobへの認証リンク。",
+      "stateAndPersistence": "cache版とaccepted build、owner/device購読/preferenceを保存。lockscreen内容最小、logout/revokeで解除。quiet modeは独立SOSを抑えない。",
+      "migration": "既存cache prefixのみ掃除、私有成果を消さない。旧pollingを残しNET-02 cursorと共用。Sourceの即skipWaiting差をP13で修正。",
+      "failureRecovery": "更新失敗は旧受入版維持。offline HTMLでAPIを代替せず仕事は未取得。通知失敗は仕事失敗でなく、endpoint失効を無限再購読しない。",
+      "negativeTests": [
+        "未同意activate",
+        "private cache/owner switch",
+        "API401がHTML化",
+        "offline未cache route",
+        "permission denied/expired endpoint",
+        "update中draft/stop"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/pwa-offline.test.mjs tests/pwa-installability.test.mjs tests/service-worker-update.test.mjs",
+        "npm run build",
+        "npm run web:security:check"
+      ],
+      "acceptance": [
+        "同buildでinstall→拒否/承認更新→offline→restart→logout/login。漏えい/二重送信0。通知許可/拒否/非対応から状態へ到達し実Pushは別実配達記録。"
+      ],
+      "externalConditions": "EXTERNAL=browser/PWA/Push、JOINT=採用Pixel/iPhone/desktop、OWNER=install/更新/通知/表示/quiet設定。",
+      "sourcePathCheck": [],
+      "laneId": "web-ops",
+      "anchor": "webops-02",
+      "featureIds": [
+        "F143",
+        "F144"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F143",
+          "title": "PWAの導入、更新、オフライン時の状態表示。",
+          "requiredSupplement": "SYS08/09のSW/manifest再利用、install/update prompt/reload/失敗復旧/offlineunit。"
+        },
+        {
+          "id": "F144",
+          "title": "通知の本人許可と通知失敗時の代替表示。",
+          "requiredSupplement": "SYS02:許可拒否/取消/非対応/期限/配信失敗→同jobinbox fallback、eventdedup。"
+        }
+      ],
+      "promptSection": "webops-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "modelRoutingRef": "data/development-model-routing.json#/units/79"
+    },
+    {
+      "id": "WEBOPS-03",
+      "title": "3domains・release読戻し・導入診断/export/support導線",
+      "primaryLane": "WebOps",
+      "parentItems": [
+        "P03",
+        "P09",
+        "P10",
+        "P13"
+      ],
+      "taskIds": [
+        "WEB04",
+        "WEB06",
+        "WEB13",
+        "DSP01",
+        "SYS02"
+      ],
+      "canonicalIds": [
+        "CORE06",
+        "CORE08",
+        "CORE09"
+      ],
+      "sourcePaths": [
+        "lib/product-domains.ts",
+        "components/product-domain-navigation.tsx",
+        "services/sky-web/domain-router.mjs",
+        "tests/product-domains.test.mjs",
+        "tests/sky-domain-router.test.mjs",
+        "components/system-maintenance.tsx",
+        "lib/operations.ts",
+        "data/design-document-index.json"
+      ],
+      "currentState": "各過去配備証拠と現在同SHAを分離。正式hostはavoado.si/avocadomini.si/avocadopro.si、一般ローンチ/実機/発売は別。",
+      "algorithm": "host allowlistで総合Smith/Mini/Pro routing。DNS/TLS対象/期限/HTTPS/build/assets/headersを別観測しrelease hashへ結合。導入はservice access/通信/client/native別診断。exportはowner認証→対象選択→artifact hash/版manifest→sanitized packet確認、support送信は別同意。 公開media inventoryにoriginal/source URL・hash・license/使用同意・概念/生成/実機写真・撮影対象/版・alt/captionを記録。ビルドで未分類/権利不明mediaを拒否し、生成renderを実物写真や組立証拠に見せない。",
+      "inputsAndOutputs": "入力=host/path/release hash/deployment ID、owner/capability/選択job。出力=route/readback/診断、期限/削除付きexport manifest。",
+      "stateAndPersistence": "source/deployment/env版と取得時刻を保存。domain linkはCORS/認証共有を与えない。localhost Lab/秘密/原稿/serial/生体は公開bundle/support既定除外。",
+      "migration": "P13でRoot/main/Source/Sites blobを比較し既存route/redirect表を保つ。export変換は元schema/revisionを明記しtombstone/失効世代を保持。",
+      "failureRecovery": "DNS/TLS/build不一致は完了表示を止めrollback候補。export容量/途中失敗は元データ保持、restoreはpreviewからで外部作用を再実行しない。",
+      "negativeTests": [
+        "unknown/typo host/open redirect",
+        "Lab漏えい",
+        "Workerだけ旧版",
+        "別owner export/path traversal",
+        "hash破損/secret混入",
+        "restore削除済み復活",
+        "概念renderが実機写真表示",
+        "未分類/権利不明media",
+        "alt欠落"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/product-domains.test.mjs tests/sky-domain-router.test.mjs tests/web-security-policy.test.mjs",
+        "npm run release:web-bundle:check",
+        "npm run release:web-assets:check",
+        "npm run web:security:check",
+        "npm run test:api"
+      ],
+      "acceptance": [
+        "同releaseの3URL導線/HTTPS/headers/assets読戻し、owner export再読hash一致/越境拒否/削除保持。GitHub保存/main/Sites版/実配備/ローンチを別record。 F145は公開assetとcaptionを全件inventoryへ照合し、概念/生成/実写真を画面で判別可能にする。"
+      ],
+      "externalConditions": "EXTERNAL=DNS/TLS/hosting、JOINT=同配備readback/復元UI、OWNER=公開範囲/持出し/送信先。今回は配備/送信しない。",
+      "sourcePathCheck": [],
+      "laneId": "web-ops",
+      "anchor": "webops-03",
+      "featureIds": [
+        "F013",
+        "F145"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F013",
+          "title": "DNS・TLS証明書・公開ドメインの監視。",
+          "requiredSupplement": "3domain期限/対象/HTTP/version監視、更新失敗/期限接近・通知/復旧をOperationsへ。"
+        },
+        {
+          "id": "F145",
+          "title": "公開画像、製品構想、実機写真の区別。",
+          "requiredSupplement": "WEB18 media inventoryへoriginal/hash/概念・生成・実写真/利用権/明確な表示を追加。"
+        }
+      ],
+      "promptSection": "webops-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "modelRoutingRef": "data/development-model-routing.json#/units/80"
+    },
+    {
+      "id": "OPS-01",
+      "title": "SLO/usage/stop/採算の観測と故障注入",
+      "primaryLane": "WebOps",
+      "parentItems": [
+        "P02",
+        "P07",
+        "P11",
+        "P13"
+      ],
+      "taskIds": [
+        "SYS02",
+        "WEB04",
+        "OS10",
+        "B03",
+        "B05"
+      ],
+      "canonicalIds": [
+        "CORE03",
+        "CORE04",
+        "CORE09",
+        "CORE12",
+        "SI08"
+      ],
+      "sourcePaths": [
+        "lib/workflow.ts",
+        "lib/eve-runtime-sync.ts",
+        "services/sky-agent-runtime/src/worker.ts",
+        "components/system-maintenance.tsx",
+        "scripts/lib/sky-launch-audit.mjs",
+        "tests/sky-launch-audit.test.mjs"
+      ],
+      "currentState": "診断/launch auditは存在。統合SLO/採算/incident観測の達成値は未実測を成功としない。",
+      "algorithm": "trace→owner pseudonym/job/revision/attemptを束縛。queue age/heartbeat/stop ack latency/unknown/reserved/settled usage/失敗を集約、閾値+継続窓+抑制でalert。AI/通信/hosting原価と確定収入を同期間/通貨で照合し、推計利益/現金/未照合を分離。 customer/contract/job/provider transaction IDとsupport時間・直接費を同期間で照合し差額を表示、売上見込/入金/利益を分離。稼働率/失敗率の分母・観測窓・SLO担当/runbookを先に確定する。",
+      "inputsAndOutputs": "入力=sanitized events/metrics/confirmed cost/revenue/source+deployment hashes。出力=環境別health/alert/incident link/鮮度と採算の根拠。",
+      "stateAndPersistence": "原稿/credential/serialなし。event/ingest時刻、保持/sample/削除policy、SLO分母とunknownを保存。無観測をgreenにしない。",
+      "migration": "既存audit/receipt参照、別仕事/費用正本を新設しない。観測fieldはoptional→dual read→cutover。",
+      "failureRecovery": "monitor断自体をunknown alert。自動復旧は許可probeまで、停止不明/決済の再送は不可。赤字/不明単価は無制限補填せず上限/提供条件へ戻す。",
+      "negativeTests": [
+        "metrics欠落/false green",
+        "clock skew/alert storm",
+        "duplicate ingest",
+        "secret log",
+        "予約滞留",
+        "原価未確定を利益扱い",
+        "サポート時間欠測",
+        "別顧客cost誤帰属",
+        "確定収入と見込混合"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/sky-launch-audit.test.mjs",
+        "npm run typecheck",
+        "npm run release:check"
+      ],
+      "acceptance": [
+        "worker停止/遅延/予約滞留/監視断/原価未確定で正しいalert/unknown、重複0。測定window/分母/不確かさを明示しSLO/収益保証を作らない。"
+      ],
+      "externalConditions": "EXTERNAL=hosting/Provider metrics/明細、JOINT=故障/復旧演習、OWNER=閾値/保持/運営通知先/費用上限。外部通知は別許可。",
+      "sourcePathCheck": [],
+      "laneId": "web-ops",
+      "anchor": "ops-01",
+      "featureIds": [
+        "F171",
+        "F179"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F171",
+          "title": "稼働率、遅延、失敗率、キュー滞留、請求差額、資源費用の監視。",
+          "requiredSupplement": "G04/LCH06+Opsのmetric/event schema/SLO/閾値/dashboard/alertdedup/費用cap・担当runbook。"
+        },
+        {
+          "id": "F179",
+          "title": "売上と入金、直接費、サポート時間を同じ顧客・仕事単位で照合。",
+          "requiredSupplement": "B02/B03/B05+Opsのcustomer/job/契約/取引/費用/支援time・差額/採算照合unit。"
+        }
+      ],
+      "promptSection": "ops-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "modelRoutingRef": "data/development-model-routing.json#/units/81"
+    },
+    {
+      "id": "OPS-02",
+      "title": "incident・限定保守・端末/Provider停止と監査復旧",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "taskIds": [
+        "SYS12",
+        "SYS13",
+        "OS10"
+      ],
+      "canonicalIds": [
+        "CORE05",
+        "CORE06",
+        "CORE09"
+      ],
+      "sourcePaths": [
+        "docs/security-incident-response.md",
+        "data/device-emergency-access-policy.json",
+        "services/operator-dock/src/operator-control.ts",
+        "services/operator-dock/src/device-channel.ts",
+        "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+        "tests/operator-control.test.mjs"
+      ],
+      "currentState": "Dock/Agent source/emulator/試験署名Pixel限定は既存。本番credential/StrongBox enrollment/Device Owner/Provider失効/侵害演習は未受入。",
+      "algorithm": "incident→対象限定quarantine→未使用grant失効/新dispatch停止→既送信/usage照合→復旧審査→期限付き解除。hardware署名/nonce/device/expiry/scope/counterを端末でも独立検証し二重ack拒否。管理server単独/LLM/MCPは命令権なし。 detect→triage→isolate→許可先notify→reconcile→restore→postmortemをincident記録へ固定し、各step担当/期限/解除条件とMTTRを測る。notify/remote stopの未送達はunknownのまま。",
+      "inputsAndOutputs": "入力=incident/reason/target/action/期限/hardware assertion。出力=queued/ack/applied/rejected/expired、2KiB以下の既存sanitized診断。",
+      "stateAndPersistence": "専用Dock D1と端末HMAC監査追記のみ。本人へ保守表示/事後通知。写真/原稿/Wallet秘密/画面/mic/camera/任意rootを収集しない。",
+      "migration": "既存policy/別UID/SELinux/別鍵を維持。二台目はdynamic enrollment前に増やさず解除も監査。AUTH-01 credential inventoryへ接続。",
+      "failureRecovery": "offline期限超過命令破棄、即時到達保証なし。boot不能はUSB純正復旧、署名失鍵はHSM別経路。unknown資金を自動返金しない。",
+      "negativeTests": [
+        "expired/replayed/wrong-device",
+        "管理server偽装",
+        "LLM/MCP起動",
+        "private read/root shell",
+        "監査改変",
+        "offline後期限切れ"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/operator-access-auth.test.mjs tests/operator-control.test.mjs tests/operator-device-channel.test.mjs tests/operator-dock-isolation.test.mjs",
+        "npm run operator-dock:check"
+      ],
+      "acceptance": [
+        "紛失/悪意Tool/偽更新演習で対象だけ隔離、監査読戻し/安全解除。source/emulator/test signed/productionを別gate、factory resetは実行しない。 模擬事故の開始/検知/隔離/照合/復旧時刻とMTTR/未復旧理由を保存。"
+      ],
+      "externalConditions": "既存事前登録policy=承認範囲、EXTERNAL=hardware/OEM/provider、JOINT=StrongBox/DeviceOwner/復旧演習、OWNER=対象/実登録/復旧条件。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "ops-02",
+      "featureIds": [
+        "F041",
+        "F172",
+        "F173"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F041",
+          "title": "監査記録と、運営者による限定保守操作の追跡。",
+          "requiredSupplement": "Operator Dockのbreak-glass grant/対象/期限/本人通知/全操作receipt/失効・改ざん拒否。"
+        },
+        {
+          "id": "F172",
+          "title": "異常検知、障害連絡、事故対応、復旧訓練。",
+          "requiredSupplement": "detect/triage/isolate/notify/reconcile/restore/postmortem・模擬事故/復旧訓練/MTTR。"
+        },
+        {
+          "id": "F173",
+          "title": "監査ログの保護と、個人情報を除いた診断の取得。",
+          "requiredSupplement": "Security-Opsのappend-only integrity/権限/PIIredaction/export/restore負例。"
+        }
+      ],
+      "promptSection": "ops-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/82"
+    },
+    {
+      "id": "OPS-03",
+      "title": "鍵期限/署名/SBOM・abuse/supportの運用閉ループ",
+      "primaryLane": "WebOps",
+      "parentItems": [
+        "P03",
+        "P05",
+        "P09",
+        "P13"
+      ],
+      "taskIds": [
+        "SYS01",
+        "SYS02",
+        "SYS13",
+        "WEB04",
+        "RLS02"
+      ],
+      "canonicalIds": [
+        "CORE05",
+        "CORE08",
+        "CORE09"
+      ],
+      "sourcePaths": [
+        "docs/security-incident-response.md",
+        "scripts/check-release-signing.mjs",
+        "scripts/check-release-readiness.mjs",
+        "scripts/check-web-asset-closure.mjs",
+        "services/operator-dock/src/access-auth.ts",
+        "lib/operations.ts"
+      ],
+      "currentState": "鍵/release/SBOM checkは既存。専用abuse/support API/人員/実受付・本番鍵rotationは未確認。新Provider/窓口を創作しない。",
+      "algorithm": "①root/release/OTA/AVB/APK/issuer/device/operator/Provider別公開fingerprint/期限/復旧責任をinventory→期限alert→新trust review→重複窓→旧鍵拒否。②artifact hash/SBOM/依存license/署名を同候補へ結合。③匿名abuseとowner supportを別scope、size/rate/idempotency/retention固定、report→triage→対象限定制限→review→解除。LLMは分類提案のみ。 依存lock/PURL/build chunk/SBOMを突合し脆弱依存の影響artifact/修正期限/reviewer/再配布gateを決める。abuseはappeal/異議申立て・解除理由を追記し作者本人認証と私有データを保護。",
+      "inputsAndOutputs": "入力=公開鍵/証明書/revocation/epoch、artifact/SBOM、最小report/同意packet。出力=期限/影響一覧、release可否、case receipt/status/retryAfter。",
+      "stateAndPersistence": "秘密はrepo/log外、公開fingerprint/証拠hash/追記監査のみ。support本文は役割/保持/削除付き、operator命令権限なし。",
+      "migration": "既存署名manifest/schemaをdual read、旧snapshotで失効を戻さない。第三者Toolをplatform鍵で再署名しない。supportは元job参照だけ。",
+      "failureRecovery": "rotation失敗は脆弱trust無期限延長不可。受付不達/429は未受付draft。障害/abuse制限でもデータ回収/独立安全を保持。",
+      "negativeTests": [
+        "expired/wrong-role/revoked key",
+        "old trust snapshot",
+        "改変SBOM/asset",
+        "spam/large/script report",
+        "別owner参照",
+        "偽operator/LLM制裁",
+        "依存lock/SBOM不一致",
+        "脆弱依存の旧release混入",
+        "異議申立て後の監査欠落"
+      ],
+      "validation": [
+        "npm run release:signing:check",
+        "npm run release:check",
+        "npm run release:web-assets:check",
+        "node --experimental-strip-types --test tests/operator-access-auth.test.mjs tests/web-security-policy.test.mjs",
+        "npm run typecheck",
+        "npm run release:sbom"
+      ],
+      "acceptance": [
+        "合成rotation/失効/期限境界/復旧失敗、同候補SBOM整合を受入。新support負例tests/API/運用演習後に実受付合格、未確定人員/応答時間は未決。"
+      ],
+      "externalConditions": "OS=鍵/Broker/端末強制、WebOps=inventory/窓口、EXTERNAL=CA/HSM/provider、JOINT=信頼更新/訓練、OWNER=実鍵生成/公開/窓口/保持。",
+      "sourcePathCheck": [],
+      "laneId": "web-ops",
+      "anchor": "ops-03",
+      "featureIds": [
+        "F040",
+        "F174",
+        "F175",
+        "F176"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F040",
+          "title": "秘密鍵、APIキー、支払い情報の保護とローテーション。",
+          "requiredSupplement": "credential inventory/最小権限/期限/二鍵切替/失効/漏えい対応・中断job照合。"
+        },
+        {
+          "id": "F174",
+          "title": "鍵、証明書、ドメイン、Provider資格情報の期限管理。",
+          "requiredSupplement": "Opsのowner/expiry/renewal/二鍵/失効/復旧・時計ずれ/更新失敗/稼働job訓練。"
+        },
+        {
+          "id": "F175",
+          "title": "脆弱性、依存部品、ライセンス、SBOMの管理。",
+          "requiredSupplement": "SYS03/10/11のlock/PURL/buildchunk/SBOMを再利用しreview/更新期限/影響/再配布gate。"
+        },
+        {
+          "id": "F176",
+          "title": "不正利用、スパム、悪質な作者商品への対応。",
+          "requiredSupplement": "SKY20/21+Securityのreport/triage/quarantine/appeal/restore、ratecap・監査・私有data保護。"
+        }
+      ],
+      "promptSection": "ops-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "modelRoutingRef": "data/development-model-routing.json#/units/83"
+    },
+    {
+      "id": "WALLET-01",
+      "title": "一般入金/外部railと確定資金の由来",
+      "primaryLane": "Wallet",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "taskIds": [
+        "WLT01",
+        "WLT02",
+        "WLT03",
+        "WLT04",
+        "WLT05",
+        "WLT06"
+      ],
+      "canonicalIds": [
+        "SI06",
+        "U02",
+        "U03",
+        "CORE09"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "lib/operations.ts",
+        "lib/financial-provider.ts",
+        "lib/rock-wallet.ts",
+        "tests/wallet-backend.test.mjs",
+        "tests/rock-wallet.test.mjs"
+      ],
+      "currentState": "owner売上/費用/取消API、受取署名/USDC照合sourceあり。一般外部入金全rail/実回収/出金Providerは未受入。",
+      "algorithm": "deposit/sales/fee collection/withdrawalを別manifest capability。署名/chain/account/asset/amount/finalityを独立readbackしpending→confirmed→available。user入力/LLM/仕事成功/Earning Receiptだけでcreditしない。現fee collector888c上限を一般deposit上限へ転用しない。 Earning Receiptは同ownerの完了した非sample execution/tool/time/currencyへ束縛し、Provider取引のfinality/取消可能性を独立照合。sale candidate→deposit→hold→allocation→withdraw request→paid→着金確認を別状態で保存し、出金受付を着金にしない。",
+      "inputsAndOutputs": "入力=owner binding/authenticated Provider event/integer amount+currency/external transaction+key。出力=pending/held/available/rejectedと由来receipt。",
+      "stateAndPersistence": "cash/売上見込/Earning Receipt/usage invoiceは別entity。既存journal/予約を共有しavailable/reserved/settledの不変量を保持。",
+      "migration": "Wallet/商品schema/SDKを調べ既存adapterへ追加、並行ledger/無認証deposit APIを作らない。P07/08 invoice/作者精算は既存権威参照。",
+      "failureRecovery": "duplicate/遅延/reorg/receipt欠落は保留と照合、二重credit拒否。refund/disputeは元仕訳参照の逆仕訳、履歴編集しない。",
+      "negativeTests": [
+        "fake signature/receipt",
+        "wrong recipient/chain/asset",
+        "reorg/not-finalized",
+        "cross-owner/duplicate event",
+        "rounding/currency mismatch",
+        "user supplied settled",
+        "sample/未完了仕事の収益化",
+        "出金受付だけで着金",
+        "別receiptが同じ入金を参照"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs tests/earning-bridge.test.mjs"
+      ],
+      "acceptance": [
+        "合成rail入金→保留→確定/取消/返金を再起動後照合、二重加算/越境0。liveEnabled=false維持、実rail条件を別gate。"
+      ],
+      "externalConditions": "EXTERNAL=金融rail/本人確認/契約/chain、JOINT=正式sandbox/実readback、OWNER=rail/資産/相手/個別実額。",
+      "sourcePathCheck": [],
+      "laneId": "wallet",
+      "anchor": "wallet-01",
+      "featureIds": [
+        "F126",
+        "F127",
+        "F131"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F126",
+          "title": "自動化で生じた売上、保留、確定、返金、出金の台帳。",
+          "requiredSupplement": "WAL01〜06を具体unitへ。売上候補/入金/hold/配分/払出し/着金の既存台帳を縦断。"
+        },
+        {
+          "id": "F127",
+          "title": "実際の外部入金とEarning Receiptの照合。",
+          "requiredSupplement": "WAL01/B03のProvider取引/完了非samplejob/receipt/owner/currency/finality/取消可能性。"
+        },
+        {
+          "id": "F131",
+          "title": "外部Wallet・決済・保管Providerとのadapter。",
+          "requiredSupplement": "WLT03/06・RQ34/35/36のprovider schema/署名/finality/capability/契約・sandbox/LIVE分離。"
+        }
+      ],
+      "promptSection": "wallet-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "modelRoutingRef": "data/development-model-routing.json#/units/84"
+    },
+    {
+      "id": "WALLET-02",
+      "title": "888c収益連動精算・共有予約・backup照合",
+      "primaryLane": "Wallet",
+      "parentItems": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "taskIds": [
+        "WLT01",
+        "WLT02",
+        "WLT04",
+        "B03",
+        "GX00"
+      ],
+      "canonicalIds": [
+        "CORE06",
+        "SI06",
+        "U03",
+        "U05",
+        "CORE09"
+      ],
+      "sourcePaths": [
+        "docs/rock-first-party-settlement-wallet-20260913.md",
+        "docs/rock-wallet-revenue-hub-20260913.md",
+        "lib/settlement.ts",
+        "lib/rock-wallet.ts",
+        "systems/rock-star-os/os/wallet_backend/README.md",
+        "systems/rock-star-os/os/settlement/store.py",
+        "tests/settlement.test.mjs"
+      ],
+      "currentState": "888cは旧月額/収益連動sandbox系列。現共通基本料16USD/契約と別。旧ToC試算を現料金へ戻さない。",
+      "algorithm": "verified net cashだけからeligible amount、月累計≤888c/収益0→0。owner+contract+period+policyVersionで一度精算、linked device重複なし。既存atomic holdをATM/Game/AIで共有、未回収債務/翌月繰越/カード先払いを作らない。 DB transaction/CASでnet-refund-hold-allocated-reserved≥0を保持し、一つの外部入金へ別Receipt IDを付けても二重配分しない。現ToCの未確定/保留policyは徴収拒否を維持する。",
+      "inputsAndOutputs": "入力=確定net revenue/policy/同意/membership/prior allocation。出力=eligible/allocated/held/paid/refundedとbasis receipt。",
+      "stateAndPersistence": "integer minor/currency/period/basis ID保存。16USD/AI/通信実費/888c/ATM Rock0/Market既存10%を別契約line。backupはschema/hash/cursor/鍵/削除世代を持つ。",
+      "migration": "legacy regression維持、P07 contract正本参照。main migration番号を確認してdual read、古いreceipt再生で新売上を作らない。",
+      "failureRecovery": "収益不明/返金/disputeはhold/逆仕訳。DB/receipt片側復元/鍵全損/旧snapshotはunknown+新資金確定停止、照合前に再控除しない。",
+      "negativeTests": [
+        "2端末同時月次",
+        "zero revenue/cap境界",
+        "返金後再計算",
+        "period/timezone境界",
+        "同key payload違い",
+        "16USD二重加算",
+        "旧backup/receipt欠落",
+        "2配分同時",
+        "別Receiptで同入金",
+        "保留ToC policyで徴収"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/settlement.test.mjs tests/rock-wallet.test.mjs tests/wallet-backend.test.mjs",
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_wallet_backend_multi_device.py"
+      ],
+      "acceptance": [
+        "同契約2端末/同時/再送/返金/再起動で累計≤888c/二重控除0、16USD別請求維持。一般ledger/receipt/available一致と照合不能保留、実収益は別gate。"
+      ],
+      "externalConditions": "OWNER=policy/収益帰属/復旧、EXTERNAL=確定収益証拠、JOINT=正式rail照合。888最大値を利益/収益保証にしない。",
+      "sourcePathCheck": [],
+      "laneId": "wallet",
+      "anchor": "wallet-02",
+      "featureIds": [
+        "F128",
+        "F130"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F128",
+          "title": "同じ収益から二重に分配しない仕組み。",
+          "requiredSupplement": "WAL02でnet-refund-hold-allocated-reserved≥0をDB/CAS、2分配/別Receipt同入金で検証。"
+        },
+        {
+          "id": "F130",
+          "title": "Rockの収益回収上限と対象条件の検査。",
+          "requiredSupplement": "WAL03/BIL01/RQ20:0売上0・最大888c/月・同契約多端末重複防止・現ToC保留拒否。"
+        }
+      ],
+      "promptSection": "wallet-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "modelRoutingRef": "data/development-model-routing.json#/units/85"
+    },
+    {
+      "id": "WALLET-03",
+      "title": "ATM0手数料・別actor認証・unknown払出し",
+      "primaryLane": "Wallet",
+      "parentItems": [
+        "P05",
+        "P08"
+      ],
+      "taskIds": [
+        "WLT02",
+        "WLT03",
+        "GX00"
+      ],
+      "canonicalIds": [
+        "RQ15",
+        "CORE05",
+        "CORE06"
+      ],
+      "sourcePaths": [
+        "systems/rock-star-os/os/atm/README.md",
+        "systems/rock-star-os/os/atm/simulator.py",
+        "systems/rock-star-os/tests/test_os_atm_integration.py",
+        "systems/rock-star-os/tests/test_wallet.py",
+        "docs/os-sky-wallet-game-design.md"
+      ],
+      "currentState": "cardless ATMはSIMULATOR ONLY。実ATM/KYC/現金/production credential未接続。RQ15はRock徴収手数料0、外部実費は別。",
+      "algorithm": "owner exact ATM/amount/key同意→availableをatomic reserve→一回code。別ATM actorだけredeem/dispense/reconcile。dispensedは累計観測、読取/期限切れだけでunknown holdを解放しない。",
+      "inputsAndOutputs": "入力=TrustedWalletContext/amount_minor/ATM ID/key/別認証ATM assertion。出力=withdrawal ID/code hash/state/予約/累計払出し/照合receipt。",
+      "stateAndPersistence": "既存journal/予約を共用しGame/AIと二重使用不可。公開fixture tokenは本番認証でない。owner APIにATM assertion権限を渡さない。",
+      "migration": "既存protocol/owner routerを維持し実Providerは別adapter。ゲーム交換の必須中継にせずATM障害で非金融gameを止めない。",
+      "failureRecovery": "断/半額払出し/timeoutはhold維持し同withdrawal照合、cleanup keyも再送保持。未確認の自動返金/新code再発行なし。",
+      "negativeTests": [
+        "ownerがdispense",
+        "code replay/別ATM",
+        "partial/unknown",
+        "expiry race",
+        "偽ATM actor",
+        "ATM/Game同時reserve"
+      ],
+      "validation": [
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_os_atm_integration.py",
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_wallet.py"
+      ],
+      "acceptance": [
+        "simulatorで二重支出/払出し/不正actor0と再起動journal一致。現金操作なし、実契約/規制/本人/実費/復旧条件は別gate。"
+      ],
+      "externalConditions": "EXTERNAL=ATM/金融rail/法令、JOINT=正式sandbox→指定実条件、OWNER=ATM/額/外部実費。今回は実資金なし。",
+      "sourcePathCheck": [],
+      "laneId": "wallet",
+      "anchor": "wallet-03",
+      "featureIds": [
+        "F136"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F136",
+          "title": "ATMでRockが徴収する手数料0の条件管理。",
+          "requiredSupplement": "WAL06:自社fee0固定、未知外部費で総額無料禁止、Game adapter別同意をfixture/明細へ。"
+        }
+      ],
+      "promptSection": "wallet-03",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "modelRoutingRef": "data/development-model-routing.json#/units/86"
+    },
+    {
+      "id": "GAME-01",
+      "title": "作者SDK・持込みmanifest・非金融GM01/DX計測",
+      "primaryLane": "Game",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P10",
+        "P11"
+      ],
+      "taskIds": [
+        "DX01",
+        "GM01",
+        "AI06"
+      ],
+      "canonicalIds": [
+        "RQ14",
+        "CORE02",
+        "CORE07",
+        "CORE12"
+      ],
+      "sourcePaths": [
+        "docs/workstreams/08-game-market-fund.md",
+        "docs/game-api-contract-draft.md",
+        "docs/game-creation-and-intake-research.md",
+        "lib/game-sandbox.ts",
+        "lib/game-launch.ts",
+        "tests/game-sandbox.test.mjs",
+        "systems/rock-star-os/examples/game/README.md",
+        "systems/rock-star-os/tests/test_game_sdk_examples.py"
+      ],
+      "currentState": "合成SDK/2D粒子sandboxは既存。任意engine持込み/共通仕事接続/実機/商品合格は別。制作と他作者作品持込みの両方を維持。",
+      "algorithm": "作品manifestに作者/権利/engine/runtime/asset hash/capability/save/rule版を固定→検証→allowlisted adapter/sandbox probe→起動。unknown engineはunsupported。fresh導入から制作→試遊→exportと持込み→診断→入力→saveを測る。作者point発行と資金記帳権は分離。 悪意game codeは別process/UIDまたは受入sandboxへ隔離、CPU/RAM/time/output/network/file scopeを強制。管理UI/Broker/Wallet/rootへedgeを作らず、更新権限増分を再審査。作品assetはparent/原作者/expiry/旧版失効とexport digestを追跡する。",
+      "inputsAndOutputs": "入力=manifest/決定的commands/target capability。出力=作品artifact/save digest/診断/導入時間/初回成功分母/復旧時間。",
+      "stateAndPersistence": "既存SandboxState/command/save版とAsset Registry、owner別save使用。作品/利用権/game point/実資金/仕事を別entity。tracking lossはhold解除+pause。",
+      "migration": "既存互換sample/旧save維持、変換不可は拒否し原saveを残す。GameProfile low/standardを互換保証にしない。新import adapter/testsを追加。",
+      "failureRecovery": "process crash/不正save/版違い/依存不足/license欠落は診断し受入saveへrollback。任意shell fallbackや無断downloadなし。",
+      "negativeTests": [
+        "path traversal/zip bomb",
+        "欠落権利/偽署名",
+        "unknown engine",
+        "過大resource",
+        "別owner/版save",
+        "追跡喪失",
+        "authorがWallet操作",
+        "game crashで管理UI巻添え",
+        "Wallet/root/API直接呼出し",
+        "更新でscope追加",
+        "旧版失効作品の再公開"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/game-sandbox.test.mjs tests/game-launch.test.mjs",
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_game_sdk_examples.py"
+      ],
+      "acceptance": [
+        "fresh環境2作者/2方式で制作/持込み→試遊→export→再起動/rollback、失敗分母とhashを記録。Wallet/ファンド完成待ちにせず全engine/Mini空間/Pro実機へ転用しない。"
+      ],
+      "externalConditions": "EXTERNAL=engine/作者license、JOINT=選定runtime/device、OWNER=作品/公開/再配布/費用。",
+      "sourcePathCheck": [],
+      "laneId": "game",
+      "anchor": "game-01",
+      "featureIds": [
+        "F155",
+        "F156",
+        "F158",
+        "F159"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F155",
+          "title": "自作ゲーム作者向けAPI・SDK、sandbox、最小サンプル。",
+          "requiredSupplement": "AI06/DX01 freshSDK/2作者2方式・制作持込→試遊/export/save/restart/rollback・時間/成功率unit。"
+        },
+        {
+          "id": "F156",
+          "title": "ゲーム作者のポイント発行権限と、Walletの実資金記帳権限の分離。",
+          "requiredSupplement": "GX00/01でpointmint/実資金ledger別capability、SQL/別owner/forgedreceipt負例。"
+        },
+        {
+          "id": "F158",
+          "title": "作者の作品、ゲーム資産、ライセンス、版、利用権の管理。",
+          "requiredSupplement": "AI06/CORE11の作品/asset/build/export digest・rights/expiry/parent/旧版失効拒否unit。"
+        },
+        {
+          "id": "F159",
+          "title": "不正なゲームコードを共通管理画面から隔離する実行環境。",
+          "requiredSupplement": "AI06/Securityの悪意gamecode/crash/権限増分/更新、他owner-save/Wallet/root拒否sample。"
+        }
+      ],
+      "promptSection": "game-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/game",
+      "modelRoutingRef": "data/development-model-routing.json#/units/87"
+    },
+    {
+      "id": "GAME-02",
+      "title": "GX交換gateとgame↔現実WorkJob橋を別経路で閉じる",
+      "primaryLane": "Game",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P08",
+        "P10"
+      ],
+      "taskIds": [
+        "GX00",
+        "GX01",
+        "GX02",
+        "AI06",
+        "DX01"
+      ],
+      "canonicalIds": [
+        "RQ13",
+        "RQ14",
+        "RQ48",
+        "SI04",
+        "SI05"
+      ],
+      "sourcePaths": [
+        "docs/gx01-contract-implementation-plan.md",
+        "docs/workstreams/08-game-market-fund.md",
+        "systems/rock-star-os/os/game_exchange/exchange_service.py",
+        "systems/rock-star-os/os/game_exchange/exchange_ledger.py",
+        "systems/rock-star-os/tests/test_game_exchange_races.py",
+        "systems/rock-star-os/tests/test_game_exchange_restore.py",
+        "toolkits/fivem-bridge/store.mjs",
+        "tests/fivem-bridge.test.mjs",
+        "lib/workflow.ts"
+      ],
+      "currentState": "GX01複数owner/player/game/両台帳fixtureあり、GX02 planned/実残高無効。FiveM loopback/NUIは本番本人/Asset/Broker/実game合格でない。",
+      "algorithm": "金融経路: quoteのowner/player/game/通貨/方向/rate版/期限/上限/実費/取消をexact digest→Wallet/game両予約→両receipt照合→確定/補償。非金融経路: real WorkJob→認可bridge envelope→game adapter→artifact hash→owner検収、逆方向はdraftのみ。二経路の承認/ledgerを混ぜない。",
+      "inputsAndOutputs": "入力=connection/quote/owner approval、別game authority receipt、job/revision/action allowlist。出力=既存exchange状態/両台帳証拠、またはgame ack/work artifact/limited memory候補。",
+      "stateAndPersistence": "既存exchange journal/idempotencyと共通Wallet hold再利用。game save/仕事/限定記憶を別store、記憶は出典/期限/削除/owner scope。",
+      "migration": "GX00互換維持、fixture通貨を実tokenへrenameしない。loopbackはauth/capability adapter追加後P13のworkflow/Assetへ接続、GTA VI調査を実接続にしない。",
+      "failureRecovery": "片方commit/timeoutはunknown+同exchange照合、無条件返金/再交換不可。非金融duplicate/late resultは同jobへ一度投影、game失敗でreal完了にしない。",
+      "negativeTests": [
+        "cross-player/game",
+        "quote tamper/expiry",
+        "ATMとreserve race",
+        "一方commit/process kill",
+        "偽NUI/古revision",
+        "game→無承認Wallet/shell",
+        "削除memory再生"
+      ],
+      "validation": [
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_game_exchange_races.py",
+        "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_game_exchange_restore.py",
+        "node --experimental-strip-types --test tests/fivem-bridge.test.mjs"
+      ],
+      "acceptance": [
+        "GX fixture二game/two-ownerで両ledger/hold不変量、二重使用0。非金融往復は同job承認/停止/成果/復旧/削除で受入。正式sandboxは選定game/方向/rate/規約/復旧後、実資金/実game別gate。"
+      ],
+      "externalConditions": "Eve=記憶/学習、Smith=外部MCP、Game=adapter。EXTERNAL=game/金融Provider/権利、JOINT=正式sandbox/選定FiveM、OWNER=対象player/額/rate/実作用。",
+      "sourcePathCheck": [],
+      "laneId": "game",
+      "anchor": "game-02",
+      "featureIds": [
+        "F157",
+        "F160"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F157",
+          "title": "ゲーム内通貨とWalletの交換条件、方向、レート、本人同意、両台帳の照合。",
+          "requiredSupplement": "GX01/02のgame/通貨/方向/rate版/費用/cap/期限/exactconsentと二重使用/逆順/応答消失。"
+        },
+        {
+          "id": "F160",
+          "title": "現実の成果とゲーム内出力を、同じ仕事・作品の版へ結び付けるadapter。",
+          "requiredSupplement": "AI06既存FiveM等限定bridgeへ作品版/job成果・非信頼event・重複/旧版/別owner/取消試験。"
+        }
+      ],
+      "promptSection": "game-02",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/game",
+      "modelRoutingRef": "data/development-model-routing.json#/units/88"
+    },
+    {
+      "id": "MATERIAL-01",
+      "title": "Material来歴/制約/候補検査から実験へのgate",
+      "primaryLane": "Mini",
+      "parentItems": [
+        "P02",
+        "P10",
+        "P12"
+      ],
+      "taskIds": [
+        "MAT01",
+        "MAT04",
+        "MAT15",
+        "MAT18",
+        "AI06",
+        "MAT06"
+      ],
+      "canonicalIds": [
+        "RQ48",
+        "SI02",
+        "SI03",
+        "SI05",
+        "RQ49"
+      ],
+      "sourcePaths": [
+        "lib/material-invention.ts",
+        "docs/material-invention-core.md",
+        "docs/material-invention-xr.md",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "tests/material-invention.test.mjs",
+        "lib/mini-spatial-workflow.ts",
+        "lib/patent-assistant.ts",
+        "lib/patent-ai.ts",
+        "tests/patent-assistant.test.mjs"
+      ],
+      "currentState": "material schema/合成評価/設計とMini光学入力sourceを保持。実材料性能/特許/量産/光学安全は未実測を合格にしない。",
+      "algorithm": "目標→単位付きmaterials/禁止hazard/工程制約→非信頼候補→決定的制約検査→simulation/lab plan→実測receipt→owner検収。目的関数/単位/不確かさ/出典/版固定、未知材料を安全扱いしない。 MAT18の建築/interior/soundも同jobへ接続。CAD/BIM/scene/audioの型・単位・座標系・origin設計hash・許可原本/rightsを固定し型付き成果を照合。変更した材料/制約/工程だけ依存graphに沿って差分再計算し、baseline候補との差/棄却理由/由来を比較。専門家の内容受入と物理sample/安全試験を別gate。 RQ49/MAT06 bridgeは同owner/project/revision/event範囲を固定し、人/AI/simulation/文献/実測を区別して既存PatentIntakeInputとprivate packetへ写像する。",
+      "inputsAndOutputs": "入力=MaterialRecord/InventionGoal/ProcessRecipe/source/license/measurement参照。出力=候補/棄却理由/実験計画/未確定artifact。",
+      "stateAndPersistence": "現state/recipe版/危険情報/由来hashをowner jobへ保存。simulationと実labを別field/環境、raw実験/原稿をGitに入れない。 Bridge manifestとprivate packetのsource-kind/hash/ACL/版を保存し、source削除/失効を派生packetへ反映する。",
+      "migration": "既存schema/Tool詳細/indexへ追記し最新Mini unitへ接続。既存草稿回収/内容受入と再研究を区別し経過時間を完成へ換算しない。",
+      "failureRecovery": "単位不一致/出典失効/solver異常/危険工程は停止、原資料保持。実装scopeに自動混合/物理装置操作を足さない。",
+      "negativeTests": [
+        "unit mismatch",
+        "prohibited hazard",
+        "unknown provenance/license",
+        "LLM偽測定",
+        "古recipe",
+        "device unavailable",
+        "座標系/単位不一致",
+        "元CAD/BIM hash不一致",
+        "差分再計算で未変更部分破損",
+        "専門家未承認を施工可能表示",
+        "偽測定/種別改変を実測へ昇格",
+        "別owner/失効source/古revision",
+        "同入力二重packet/中断後の二重外部送信"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/material-invention.test.mjs tests/patent-assistant.test.mjs",
+        "npm run design:check",
+        "npm run device-support:check"
+      ],
+      "acceptance": [
+        "同入力/版で制約/棄却理由再現、合成/solver/実測表示を分離。実lab/光学/製造/知財は個別受入。 F161/F164は同元設計へartifact照合し型/単位/座標/constraintsと専門家reviewを読戻す。physical sample/安全試験は未実施のまま区別。",
+        "Material event→provenance manifest→private Patent packet→元sourceの種別/版/hash/ACL往復一致と、拒否時の外部送信/課金0。専門家/実lab/出願は別gate。"
+      ],
+      "externalConditions": "Mini主担当、Eve=生成/学習、Smith=外部DB/MCP、EXTERNAL=solver/lab/知財、JOINT=実測、OWNER=目的/費用/実験安全。",
+      "sourcePathCheck": [],
+      "laneId": "mini",
+      "anchor": "material-01",
+      "featureIds": [
+        "F161",
+        "F163",
+        "F164"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F161",
+          "title": "建築・インテリア・サウンド制作の入力と型付き成果。",
+          "requiredSupplement": "MAT18でCAD-BIM/scene/audio形式・単位/座標/許可原本/専門家検収をWorkJobへ。"
+        },
+        {
+          "id": "F163",
+          "title": "物質を組み合わせる候補生成、制約検査、差分再計算、比較。",
+          "requiredSupplement": "MAT03/05/06のmaterial-invention既存型/fixture→Eve/記憶/Simulation、比較・棄却・由来unit。"
+        },
+        {
+          "id": "F164",
+          "title": "CAD/BIMなど元成果への照合と、物理試作・安全試験。",
+          "requiredSupplement": "MAT18/Materialに元設計hash/単位/constraints/専門家承認/物理sample/安全試験gate。"
+        }
+      ],
+      "promptSection": "material-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "additionalPromptSections": [
+        "material-01-patent-bridge"
+      ],
+      "rq49BridgeScope": "detailed_prompt_only_not_runtime_implemented",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "modelRoutingRef": "data/development-model-routing.json#/units/89"
+    },
+    {
+      "id": "COMPANION-01",
+      "title": "独立SOS・保護者通知と時計/TV/robot等の能力adapter",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P05",
+        "P07",
+        "P09",
+        "P10"
+      ],
+      "taskIds": [
+        "MAT16",
+        "MAT17",
+        "DSP01",
+        "OS10",
+        "N04",
+        "N05"
+      ],
+      "canonicalIds": [
+        "RQ48",
+        "CORE02",
+        "CORE05",
+        "CORE06",
+        "CORE07",
+        "CORE12"
+      ],
+      "sourcePaths": [
+        "docs/avocado-schoolbag-safety-device.md",
+        "docs/device-support-architecture.md",
+        "data/device-support-matrix.json",
+        "public/companion-preview/index.html",
+        "public/companion-preview/agent.js",
+        "tests/companion-agent.test.cjs",
+        "lib/eve-runtime-sync.ts"
+      ],
+      "currentState": "Pixel browser試験音/固定Agentあり、独立alarm回路/自由会話/保護者通知/子供pilotは別未受入。時計/TV/robot等は実能力/更新復旧を機種ごと確認。",
+      "algorithm": "①物理input→独立latch→sirenをnetwork/LLM/account/課金から分離し本体側/電力reserveを保持。②guardian本人→device challenge→限定binding、学校mode mic閉、会話は明示開始。③機器descriptorのrole/型/資源/熱/driver/expiryを照合し同owner/job/revision/artifactだけhandoff。robotの物理作用は別安全scope。",
+      "inputsAndOutputs": "入力=physical trigger/selfcheck、guardian同意/child操作、target capability/owner grant。出力=local alarm状態、通知queued/sent/delivered/ack、compatible/unsupported診断とrender/input receipt。",
+      "stateAndPersistence": "SOS/通常会話/通知は別state、sounder確認なしに鳴ったと断定しない。raw音声/連続位置は既定保持なし。端末cacheとZema正本/成果hashを分離、閲覧handoffで推論/支出を再実行しない。",
+      "migration": "previewは状態比較元のみ。Eve/Broker/usageへ接続しProvider直結で迂回しない。旧BlackBerryは安全unlock/recoveryなしに支持へ戻さずdevice matrixを更新。",
+      "failureRecovery": "MCU crash/圏外/失効/学校静音でもSOS維持をbench。relay断は会話/通知成功としない、未送信音声自動再送なし。紛失binding失効でalarmを止めず、熱/追跡喪失で入力release+pause。",
+      "negativeTests": [
+        "MCU hang/low battery/取外し/false trigger",
+        "偽guardian/別家族",
+        "学校mic/child無断Tool",
+        "expired descriptor/別owner/古revision",
+        "unsupported modality/熱cap",
+        "音声ackを承認扱い"
+      ],
+      "validation": [
+        "node --test tests/companion-agent.test.cjs",
+        "node --experimental-strip-types --test tests/eve-runtime-sync.test.mjs",
+        "npm run device-support:check",
+        "npm run design:check"
+      ],
+      "acceptance": [
+        "児童rawなしfixture→非通電mockup/2回路bench→同本体の音/電池/熱/落下/引張/雨/false trigger/停止/通知。機器追加は同job二出力/停止/再起動/旧snapshot/予算/失効、各boot/署名更新/復旧後に対応表示。"
+      ],
+      "externalConditions": "独立SOS=OS、筐体/材料=Mini、学習=Eve、外部Tool=Smith。EXTERNAL=MCU/OEM/BSP/安全試験、JOINT=同本体/保護者client、OWNER=年齢/国/場所/費用/物理作用。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "companion-01",
+      "featureIds": [
+        "F152",
+        "F154"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F152",
+          "title": "**相棒端末**：低消費電力、保護者との接続、物理操作、通信やAIに依存しない警報・SOS。",
+          "requiredSupplement": "MAT16/17別laneで通信/AI/課金停止でもalarm/SOSbutton/電源・guardian失効をbench→実機。"
+        },
+        {
+          "id": "F154",
+          "title": "**時計・TV・ロボット等**：対応能力を宣言する個別adapter。存在しないカメラや表示機能を提供済みとしない。",
+          "requiredSupplement": "DSP01で未選定unsupported/unknownと最低adapterfixture・導入更新停止復旧templateを割当。"
+        }
+      ],
+      "promptSection": "companion-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/90"
+    },
+    {
+      "id": "AUTH-01",
+      "title": "passkey・family scope・credential lifecycleと限定保守",
+      "primaryLane": "OS",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P05",
+        "P09"
+      ],
+      "taskIds": [
+        "SYS01",
+        "SYS12",
+        "SYS13",
+        "OS10",
+        "DSP01"
+      ],
+      "canonicalIds": [
+        "CORE01",
+        "CORE05",
+        "CORE06"
+      ],
+      "sourcePaths": [
+        "lib/rockstar-account.ts",
+        "lib/passkey-browser.ts",
+        "lib/account-handoff.ts",
+        "tests/rockstar-account.test.mjs",
+        "tests/account-handoff.test.mjs",
+        "docs/workstreams/04-security-identity-compliance.md",
+        "docs/security-incident-response.md"
+      ],
+      "currentState": "既存独立account/passkey/端末handoffと限定Dockは部分実装。family/guardian全scope・credential失効横断受入は未了。",
+      "algorithm": "server challenge/RP/origin/signature/UP-UV/counterを検証→server owner決定→one-time device承認。familyはguardian/member/deviceを別principalとし、共有/閲覧/代理承認/支出を用途別grant。credentialは役割別保護/期限/rotation/revoke、支出/鍵/復旧はfresh intentとdigest再認証。client owner field/モデル結果を権威にしない。 全routeでactor-action-resource表を作り本人/家族/作者/運営/Providerを分離。state-changing cookie APIはCSRF/origin検証とrate cap、challenge一回消費をDB原子化。並行credential登録/失効競合、NotAllowedError/未対応authenticatorの本人向け復旧を実装。保護者変更/解除は短期委任失効と子端末再照合。",
+      "inputsAndOutputs": "入力=challenge/assertion/session/device proof、役割/対象/scope/expiry/revision。出力=owner session/device grant/限定delegation、拒否理由/監査receipt。",
+      "stateAndPersistence": "Web cookieはHttpOnly/SameSite既存、device grantは既存保護領域。家族全員へ秘密/Wallet権限を共有しない。監査はactor/role/target/intent/digest/結果/時刻、raw生体なし。",
+      "migration": "既存account/session schema維持、family membershipはversioned追加。古sessionへ権限増分を自動付与せず、失効世代をoffline lease/jobまで伝播。保守はOPS-02独立trust。",
+      "failureRecovery": "紛失/credential失効で新effect停止、既存成果回収は既存policy。復旧は本人確認/鍵/tombstoneを再照合、旧backupで家族scope復活なし。",
+      "negativeTests": [
+        "wrong RP/origin/challenge/replay",
+        "盗難session/別owner",
+        "childがguardian代理",
+        "scope増分/期限切れ",
+        "失効race/古worker",
+        "supportがoperator昇格",
+        "CSRF/偽origin",
+        "並行challenge消費",
+        "NotAllowedError/fallback",
+        "guardian変更後旧grant"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/rockstar-account.test.mjs tests/account-handoff.test.mjs tests/operator-access-auth.test.mjs",
+        "npm run typecheck",
+        "npm run test:api"
+      ],
+      "acceptance": [
+        "5不足項目をauth/family/保守/credential別fixtureへ対応。正当系と越境/replay/失効/旧snapshotを同候補で受入。実hardware authenticator/biometric鍵は別gate。"
+      ],
+      "externalConditions": "EXTERNAL=authenticator/IdP/OEM/issuer、JOINT=exact device/失効実測、OWNER=本人登録/家族委任/復旧/重要操作。",
+      "sourcePathCheck": [],
+      "laneId": "os-pixel",
+      "anchor": "auth-01",
+      "featureIds": [
+        "F028",
+        "F031",
+        "F032"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F028",
+          "title": "アカウント認証、再認証、セッション管理。",
+          "requiredSupplement": "CORE01をAUTHunit化。RP/origin/challenge/cookie/CSRF/rate/並行credential/失効/fresh実UI。"
+        },
+        {
+          "id": "F031",
+          "title": "パスキーなど、対応端末での簡単で強いログイン。",
+          "requiredSupplement": "任意passkey、challenge一回消費/UV/credential失効/代替復旧/NotAllowedErrorをAUTHへ。"
+        },
+        {
+          "id": "F032",
+          "title": "本人、家族、作者、運営者、外部Providerの権限分離。",
+          "requiredSupplement": "actor-action-resource表、短期委任/保護者変更・解除/失効/越境負例。"
+        }
+      ],
+      "promptSection": "auth-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "modelRoutingRef": "data/development-model-routing.json#/units/91"
+    },
+    {
+      "id": "SYNC-01",
+      "title": "一般offline編集・revision競合・削除優先の復旧",
+      "primaryLane": "Eve",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P09",
+        "P10"
+      ],
+      "taskIds": [
+        "WEB04",
+        "SKY21",
+        "OS10"
+      ],
+      "canonicalIds": [
+        "CORE03",
+        "CORE06",
+        "SI04"
+      ],
+      "sourcePaths": [
+        "lib/workflow.ts",
+        "lib/eve-device-sync.ts",
+        "lib/eve-runtime-sync.ts",
+        "components/eve-sync-workspace.tsx",
+        "tests/eve-device-sync.test.mjs",
+        "tests/eve-runtime-sync.test.mjs",
+        "docs/data-storage-boundaries.md"
+      ],
+      "currentState": "同job同期/履歴復旧は既存。offline両側の一般編集を暗黙last-write-winsで完成扱いしない。",
+      "algorithm": "local editへbaseRevision/operationId/owner/deviceを固定しoutbox保存→オンライン時owner再確認→server CAS。409はbase/remote/localの差分を表示し明示merge、新revisionで再送。承認/支出/stopは自動mergeせず権威再検査、tombstone/失効epochが旧snapshotに優先。",
+      "inputsAndOutputs": "入力=versioned local operation/base/server cursor、current auth。出力=ack/conflict/reauth/blocked/unknown、元jobに結ぶmerge候補。",
+      "stateAndPersistence": "owner別outbox/conflict artifact/dedupe IDs、server revision/削除世代を保存。原データを上書き破棄しない。",
+      "migration": "既存revision/schema/outboxがあれば再利用、ないfieldを版付き追加。旧clientの無revision更新は409/再読へ。IndexedDB/mediaはCloud同期済みとしない。",
+      "failureRecovery": "commit後ACK断は同operationId照合。partial upload/容量不足/認証変更はdraft保持、別job新作で回避しない。",
+      "negativeTests": [
+        "二端末同時編集",
+        "offline delete対edit",
+        "owner切替outbox",
+        "ACK欠落/再送",
+        "old snapshot",
+        "approval scope変更",
+        "media partial"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/eve-device-sync.test.mjs tests/eve-runtime-sync.test.mjs",
+        "npm run test:api",
+        "npm run typecheck"
+      ],
+      "acceptance": [
+        "一般offline競合専用testsを追加しtwo-client/再起動/commit直後断でdata loss/越境/二重effect0、明示mergeと削除/失効保持。"
+      ],
+      "externalConditions": "Eve=編集/競合体験、OS=認可/保存/失効、EXTERNAL=storage/browser、JOINT=二client実UI、OWNER=競合解決/削除/復旧。",
+      "sourcePathCheck": [],
+      "laneId": "eve",
+      "anchor": "sync-01",
+      "featureIds": [
+        "F068"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F068",
+          "title": "端末間の同期、オフライン変更の保留、再接続時の競合表示。",
+          "requiredSupplement": "CORE06のoutbox/baseRevision/tombstone/2device並行/conflict表示・解消をDATAunit化。"
+        }
+      ],
+      "promptSection": "sync-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/92"
+    },
+    {
+      "id": "MODEL-01",
+      "title": "model取得/検証/削除とowner限定RAG",
+      "primaryLane": "Eve",
+      "parentItems": [
+        "P02",
+        "P09",
+        "P11",
+        "P12"
+      ],
+      "taskIds": [
+        "AI02",
+        "AI05",
+        "OS10"
+      ],
+      "canonicalIds": [
+        "CORE02",
+        "CORE05",
+        "CORE06",
+        "SI02",
+        "SI07"
+      ],
+      "sourcePaths": [
+        "lib/ollama-model-inventory.ts",
+        "tests/ollama-model-inventory.test.mjs",
+        "docs/llm-evaluation-architecture.md",
+        "data/llm-capabilities.json",
+        "docs/ai-memory-architecture.md",
+        "docs/data-storage-boundaries.md",
+        "lib/eve-news-learning.ts",
+        "tests/eve-news-learning.test.mjs",
+        "android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java",
+        "android/core/src/test/java/dev/rock/core/platform/ResumableModelArtifactStagerTest.java",
+        "docs/os-prototype.md"
+      ],
+      "currentState": "inventory/評価/限定学習sourceあり。model取得受入と意味品質/常時稼働/weights学習/Eve統合は別。RAG corpus/indexの本番受入未確認。",
+      "algorithm": "取得候補をsource/license/format/size/hash/required RAM/quantization版へ固定→owner同意/容量reserve→一時download→hash/format検証→atomic register→warmup/eval。RAGはowner/用途/同意別corpus→chunk版/出典/hash→ACL filter後retrieve→引用/不確かさ付きcontext、検索文は非信頼data。 AI02 ResumableModelArtifactStagerを再利用しqueued/downloading/paused/verifying/staged/quarantined案を既存stager状態へ明示対応。resumeは同source/version/ETag/length/offset/hashで照合し不一致は安全に再開断念。quota/free-spaceと一時file回収を先に検査。RAGはACLを検索前/引用出力前とも検証し、index残存hitでも文書失効なら返さない。",
+      "inputsAndOutputs": "入力=model manifest/accepted source/上限、owner文書refs/保持/削除/用途。出力=verified/unsupported/quarantined inventory、retrieval refs/rank/context digest、評価結果。",
+      "stateAndPersistence": "weights/corpus/raw原稿はGit外、公開metadata/hash/評価のみ。index/key/corpus版/削除tombstoneをowner別保存。RAGを学習済weightsや恒久記憶へ昇格しない。",
+      "migration": "既存ModelProfile/inventory/planner adapterをP13差分で統合。news学習ledger/既存原稿回収と新corpus再研究を分離、旧indexはACL+版確認後再構築。",
+      "failureRecovery": "中断/容量不足/hash不一致はquarantine/再開または破棄、既存受入model維持。削除で文書/chunk/index/cache/backup方針を連動、失効後context再利用不可。",
+      "negativeTests": [
+        "wrong hash/license/format",
+        "不足RAM/温度",
+        "partial download",
+        "別owner RAG",
+        "prompt injection",
+        "deleted doc復活",
+        "fake citation",
+        "モデル結果で承認/Tool成功昇格",
+        "Range/ETag/source変更",
+        "free-space枯渇",
+        "清掃が受入weights消去",
+        "失効index hit漏えい"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/ollama-model-inventory.test.mjs tests/eve-news-learning.test.mjs",
+        "npm run typecheck",
+        "npm run design:check",
+        "gradle -p android :core:test --tests dev.rock.core.platform.ResumableModelArtifactStagerTest"
+      ],
+      "acceptance": [
+        "2不足項目を取得state machine/RAG ACL別testで閉じる。合成小artifact/架空文書で正常/中断/削除/越境拒否、実model/GPU/有料/実データは今回実行しない。"
+      ],
+      "externalConditions": "Eve=選定/評価/RAG体験、OS=資源/認可/保存、Smith=外部検索MCP、EXTERNAL=license/runtime/Provider、OWNER=取得/送信/保持/費用。",
+      "sourcePathCheck": [],
+      "laneId": "eve",
+      "anchor": "model-01",
+      "featureIds": [
+        "F073",
+        "F078"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F073",
+          "title": "モデル取得の容量表示、中断再開、内容照合、不要ファイル回収。",
+          "requiredSupplement": "AI02 stagerを再利用し取得state/整合resume/容量quota/中断・破損・清掃試験。"
+        },
+        {
+          "id": "F078",
+          "title": "入力の分割、検索、参照資料の権限付き取得。",
+          "requiredSupplement": "ACL検索前検査、chunk provenance/版/削除同期/未権限文書0/注入隔離をRAG-DATAへ。"
+        }
+      ],
+      "validationNotes": "Gradle/Java環境が準備済みの場合のみ。docs/os-prototype.mdの既存core:test入口と実在test classを使用。今回はGradle/Java/modelを実行しない。",
+      "promptSection": "model-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "modelRoutingRef": "data/development-model-routing.json#/units/93"
+    },
+    {
+      "id": "MCP-01",
+      "title": "catalog・OAuth・作者SDKの登録から失効まで",
+      "primaryLane": "Smith",
+      "parentItems": [
+        "P02",
+        "P03",
+        "P04",
+        "P09",
+        "P10"
+      ],
+      "taskIds": [
+        "SKY14",
+        "SKY15",
+        "SKY21",
+        "DX01"
+      ],
+      "canonicalIds": [
+        "CORE07",
+        "SI05",
+        "U01",
+        "U03"
+      ],
+      "sourcePaths": [
+        "lib/catalog.ts",
+        "lib/mcp-client.ts",
+        "lib/mcp-inspection.ts",
+        "lib/sky-connections.ts",
+        "lib/sky-tool-package.ts",
+        "lib/sky-tool-package-store.ts",
+        "tests/mcp-client.test.mjs",
+        "docs/sky-tools-complete-design.md",
+        "docs/workstreams/02-sky-mcp.md",
+        "tests/sky-tool-sdk.test.mjs",
+        "tests/mcp-connector.test.mjs",
+        "tests/mcp-inspection.test.mjs",
+        "tests/sky-tool-package.test.mjs"
+      ],
+      "currentState": "既存catalog/passport/inspect/prepare/execute/Package等を再利用。全OAuth/外部feed/作者SDK実Providerは一括readyではない。",
+      "algorithm": "版付きmanifestで作者署名/Tool schema/permissions/origin/data/cost/licenseを登録→inspect/negotiation→本人Add→OAuth state/PKCE/redirect bindingまたは既存credential→server保存→quote/digest→Broker prepare/execute→receipt→revoke。read/write/notify/billingを別scope、dynamic schema変更は再review。 catalogはauthor draft→review→publish→add→versioned update→revoke/deleteを既存schemaへ対応し、old jobは固定旧版参照で閲覧を維持。依存lock/source/license/作者identity/脆弱依存を審査、価格版とExecutor適格条件をstrict parserで検証。接続先はこのPC/Sky Cloud/提供者をdoctorで選択しlocal transport/origin/auth/capabilityを比較。MCP initialize→initialized→tools/list→call→schema/result照合を実Connectorで検証。作者SDKはfresh導入/最小実Tool/取消/再接続/版互換/権利診断を測定。",
+      "inputsAndOutputs": "入力=package/endpoint/capability/schema/OAuth proof/owner grant/job/revision/quote。出力=登録/接続/実行の別状態、互換診断、usage/artifact/失効receipt。",
+      "stateAndPersistence": "tokenは用途別保護領域、公開catalogに置かない。Package/source/contract版をjobへ固定、作者SDKはpoint発行/Wallet記帳/OS鍵を持たない。",
+      "migration": "既存catalog/API/schemaのSmith改名は表示中心で内部互換保持。既存Toolへadapter追記し二重registryや包括shellを作らない。OAuth依存SDK/公式仕様は実装時最新primary source確認。",
+      "failureRecovery": "inspect失敗/expired token/撤回/429/schema driftは接続/仕事をunknown/blockedにし再認可前に送信しない。effect不明は同idempotency key照合、revoke後新dispatch拒否。",
+      "negativeTests": [
+        "redirect/state/PKCE/replay",
+        "SSRF/private endpoint/redirect逸脱",
+        "schema drift/injection",
+        "別owner token",
+        "expired/revoked credential",
+        "duplicate effect",
+        "作者署名を安全保証扱い",
+        "catalog更新でold job参照破損",
+        "価格版/Executor不一致",
+        "接続先切替でtoken流用",
+        "fresh SDK missing dependency"
+      ],
+      "validation": [
+        "node --experimental-strip-types --test tests/mcp-client.test.mjs",
+        "npm run typecheck",
+        "npm run test:api",
+        "npm run design:check",
+        "node --experimental-strip-types --test tests/mcp-connector.test.mjs tests/mcp-inspection.test.mjs tests/sky-tool-sdk.test.mjs tests/sky-tool-package.test.mjs"
+      ],
+      "acceptance": [
+        "8不足項目をmanifest/catalog・MCP交渉・OAuth・権限・作者SDK・費用・停止失効・外部feedへ子assertionで対応。fake provider fixture→正式sandbox→実Providerを分け、実X/送信/支払は個別gate。"
+      ],
+      "externalConditions": "Smith主担当、Eve=依頼/検収、OS=Broker強制、EXTERNAL=Provider/OAuth/権利、JOINT=実接続、OWNER=Add/接続/共有/有料作用。",
+      "sourcePathCheck": [],
+      "laneId": "smith",
+      "anchor": "mcp-01",
+      "featureIds": [
+        "F085",
+        "F086",
+        "F087",
+        "F089",
+        "F090",
+        "F091",
+        "F092",
+        "F095"
+      ],
+      "featureRequirements": [
+        {
+          "id": "F085",
+          "title": "Model・Agent・Toolの商品登録、検索、比較、追加、更新、削除。",
+          "requiredSupplement": "author draft/review/publish/add/update/revoke/deleteと旧job保持のCATALOGunit。"
+        },
+        {
+          "id": "F086",
+          "title": "作者の同一性、配布元、ライセンス、依存関係の確認。",
+          "requiredSupplement": "Package依存lock/source/license/署名者/脆弱依存を作者SDK・審査unitへ。"
+        },
+        {
+          "id": "F087",
+          "title": "商品ごとの入力、出力、必要権限、料金、実行先の宣言。",
+          "requiredSupplement": "catalog厳密parserと入力出力型・価格版・Executor適格条件を結ぶ。"
+        },
+        {
+          "id": "F089",
+          "title": "審査、sandbox試用、公開範囲、失効。",
+          "requiredSupplement": "SKY20/21の審査状態/期限/試用cap/公開scope/失効伝播をunit化。"
+        },
+        {
+          "id": "F090",
+          "title": "MCPの接続先選択：このPC、Sky Cloud、提供者のMCP。",
+          "requiredSupplement": "SKY07の接続先doctor/localtransport/origin/認可/能力比較/切断復旧。"
+        },
+        {
+          "id": "F091",
+          "title": "MCPの初期化、能力交渉、Tool一覧取得、呼び出し、結果照合。",
+          "requiredSupplement": "SKY14/15の実Connectorで能力交渉/一覧schema/timeout/結果検査/通知/失効をunit化。"
+        },
+        {
+          "id": "F092",
+          "title": "OAuthなど外部接続の認可、期限、再接続、解除。",
+          "requiredSupplement": "接続ごとowner/tokenvault/scope/期限/CSRFstate/既存PKCE等・rotation負例。"
+        },
+        {
+          "id": "F095",
+          "title": "作者向けSDK、動くサンプル、導入診断。",
+          "requiredSupplement": "SKY15既存toolkitのfresh導入/実Tool/取消/再接続/版互換・権利診断。"
+        }
+      ],
+      "promptSection": "mcp-01",
+      "implementationStatus": "instruction_only_not_implemented_by_authoring",
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "modelRoutingRef": "data/development-model-routing.json#/units/94"
+    }
+  ],
+  "additionalUnitCount": 20,
+  "totalImplementationUnitCount": 95,
+  "functionalCoveragePath": "data/rockstaros-full-function-coverage.json",
+  "functionalCoverageScope": {
+    "features": 180,
+    "algorithms": 10,
+    "originalAudit": {
+      "explicitFeatures": 123,
+      "referenceOnlyFeatures": 56,
+      "externalFeatures": 1,
+      "explicitAlgorithms": 8,
+      "referenceOnlyAlgorithms": 2
+    },
+    "reconciledUnassigned": 0,
+    "runtimeAcceptedByAuthoring": false
+  },
+  "latestStateReconciliation": {
+    "recordedAt": "2026-10-24T04:31:22.111957+00:00",
+    "miniVersion": "0.9",
+    "miniPdfPages": 53,
+    "miniMissingWith10mmNonEmittingBorder": 708,
+    "miniPhysicalOpticsAccepted": false,
+    "smithPhysicalLeaseOwner": "01a16b30-82bb-7cc1-985d-fc74970a26c6",
+    "smithOwnerConnectionApprovalObserved": true,
+    "smithFullLoopAcceptedByThisAuthoring": false,
+    "gitFreshContextAt": "2026-10-24T04:16:26.119Z"
+  },
+  "previousDetailedPromptVerification": {
+    "recordedAt": "2026-10-24T03:06:14.673432+00:00",
+    "scope": "authoring checks and shared Root repository regression; no immutable whole-tree/device/provider/production acceptance claim",
+    "projectCheck": 0,
+    "baselineCheck": 0,
+    "designCheck": 0,
+    "schemaCheck": 0,
+    "databaseCheck": 0,
+    "repositoryCheck": 0,
+    "typecheck": 0,
+    "verify": 0,
+    "fullVerifyCommand": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "fullVerifyExecutionPermission": "localhost listen allowed after sandbox EPERM",
+    "nodeTests": {
+      "total": 1697,
+      "passed": 1696,
+      "skipped": 1,
+      "failed": 0
+    },
+    "workerApiAssertions": 2152,
+    "csvAssertions": 113,
+    "webAssets": {
+      "references": 231,
+      "missing": 0
+    },
+    "productRuntimeImplemented": false,
+    "physicalTestExecuted": false,
+    "providerSandboxExecuted": false,
+    "productionBillingExecuted": false,
+    "gitCommitPushMergeExecuted": false,
+    "finalPromptSha256": "a9932596685d64807165375df3177c2594c32453b306175a5ceac9d26b77aebc",
+    "attempts": [
+      {
+        "log": "/private/tmp/rockstaros-detailed-prompt/verify.log",
+        "exitCode": 1,
+        "reason": "host default OpenSSL4; protected signer requires OpenSSL3"
+      },
+      {
+        "log": "/private/tmp/rockstaros-detailed-prompt/verify-openssl3.log",
+        "exitCode": 1,
+        "reason": "sandbox EPERM on local listeners; no product assertion repair performed"
+      },
+      {
+        "log": "/private/tmp/rockstaros-detailed-prompt/verify-localhost.log",
+        "exitCode": 0,
+        "reason": "existing OpenSSL3.6.3 and localhost permission; full verify completed"
+      }
+    ],
+    "logs": [
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/baseline-check-final.log",
+        "bytes": 1510,
+        "sha256": "d449205531b77ee6dbbac9ad856d339efda1602622034e554e4a798008c7801b"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/baseline-check.log",
+        "bytes": 1510,
+        "sha256": "d449205531b77ee6dbbac9ad856d339efda1602622034e554e4a798008c7801b"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/database-check-final.log",
+        "bytes": 155,
+        "sha256": "4fff547977cf094ad06d22230a0cda1e46c5f02830677f9485a9612533cf97ca"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/database-check.log",
+        "bytes": 155,
+        "sha256": "4fff547977cf094ad06d22230a0cda1e46c5f02830677f9485a9612533cf97ca"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/design-check-final.log",
+        "bytes": 169,
+        "sha256": "9883d5353462c8e13c293a0d6a39673c5d95a8686706bd8ebda545b1e467a3ab"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/design-check.log",
+        "bytes": 169,
+        "sha256": "9883d5353462c8e13c293a0d6a39673c5d95a8686706bd8ebda545b1e467a3ab"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/project-check-final.log",
+        "bytes": 128,
+        "sha256": "f7eb774831f2312b166344e2bf05ec8c414e0c53a359c28d2105ccd8f345348b"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/project-check.log",
+        "bytes": 128,
+        "sha256": "f7eb774831f2312b166344e2bf05ec8c414e0c53a359c28d2105ccd8f345348b"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/project-update-final.log",
+        "bytes": 121,
+        "sha256": "7d62880401bd0e68395e1018fe96ed2c694b14856f067816aac13a50e2531efd"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/project-update.log",
+        "bytes": 121,
+        "sha256": "7d62880401bd0e68395e1018fe96ed2c694b14856f067816aac13a50e2531efd"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/repository-check.log",
+        "bytes": 164,
+        "sha256": "4b86dc1471071dd5db6f3ab9f1428a585d8b1a5a0a16e493464be3c722036716"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/schema-check.log",
+        "bytes": 235,
+        "sha256": "8ee08e4ee232262f42b02c0683f35ce6438e6007858f3498d73c3fb50a03e535"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/typecheck.log",
+        "bytes": 45,
+        "sha256": "b76dcdd88153680f18ab5459215aa422aa7cbf43cb178b96c33644c432d1b372"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/verify-localhost.log",
+        "bytes": 211234,
+        "sha256": "e97dfc4862fc6572c8a60ff8db22788639c63d07d8484f8a0ac14135ff764e19"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/verify-openssl3.log",
+        "bytes": 221985,
+        "sha256": "cf9c3fd3c001772f1d5cf43353a12cc214c0241360992067024f819a39739ea0"
+      },
+      {
+        "path": "/private/tmp/rockstaros-detailed-prompt/verify.log",
+        "bytes": 26227,
+        "sha256": "201ea8e957b3c660adcdb1c44582e2efae009815e71e13748fc5a9d8bf491c32"
+      }
+    ]
+  },
+  "independentReview": {
+    "status": "accepted_for_prompt_authoring_scope",
+    "path": "docs/evidence/rockstaros-model-routing-review.json",
+    "sha256": "45e25c91cf1a823e5a95b953ad41b2f1a875d128d8c05f80a03612fd3d1cbc1e",
+    "unresolvedFindings": 0,
+    "promptSha256": "d92aa7949dbeb5fcdcc84dcb8ee394ed6bb9be57e3385c4a6605541755482531",
+    "reviewedAt": "2026-10-24T05:42:03.594Z",
+    "scope": "independent prompt authoring review only"
+  },
+  "previousChatReviewScope": {
+    "domains": [
+      "Mini",
+      "Pro",
+      "RockstarOS",
+      "Smith",
+      "Eve"
+    ],
+    "relatedUniqueThreads": 10,
+    "fullHistoryReadClaim": false,
+    "inheritedTurnsDoubleCounted": false,
+    "latestMiniTurnInProgressAtRead": true,
+    "latestEveAdditionalReadSucceeded": true
+  },
+  "previousMiniFollowupSnapshot": {
+    "miniLatestTurnId": "01a16bbf-9cad-71c0-980e-f14e48cec3de",
+    "miniLatestTurnStatusAtRead": "inProgress",
+    "miniAddedReferencesTurnIds": [
+      "01a16bbe-994a-72e1-a751-788e8117012b",
+      "01a16bb5-dce0-7600-aaa4-014f6fd6f1a7"
+    ],
+    "miniLatestDocumentVersion": "0.8",
+    "miniLatestPdfPages": 52,
+    "older47PageEvidence": "historical_v07",
+    "ownerRequirement": "Maintain no plate or membrane at intended image location; whole domain, bare-eye, low glare, hand interaction and existing pricing retained",
+    "proLatestTurnId": "01a16791-1c06-78a1-be34-dab5a0d1a8cc",
+    "proLatestSubstantiveRequestTurnId": "01a16583-5959-7bf1-943d-82e10c5e4e84",
+    "proStatus": "unchanged v46 browser/localStorage preview; common runtime/physical/native/commercial pending",
+    "pointerMediaSupplementAtNY": "2026-10-23T23:00:28-04:00",
+    "pdfPageCountRecorded": 52,
+    "numberedChapterMaxObserved": 51,
+    "followingUnnumberedSectionsObserved": [
+      "Eveの掛け合わせ作業台への適用",
+      "Eve Media Studio — 端末内の編集アプリ"
+    ],
+    "cmSourceThreadFromLocalContract": "01a16b71-c8f7-7590-918f-9f5cf1ea6073",
+    "cmSourceNotRefetchedThisSupplement": true,
+    "newSourceReadOnceNoRepeatedPolling": true
+  },
+  "previousRevisionVerificationHistory": [
+    {
+      "promptSha256": "fc9fdad79a6e2a5334c41b65350bb9da5c7e3027113827b0834ab3b023892be2",
+      "verification": {
+        "recordedAt": "2026-10-24T04:40:17.192759+00:00",
+        "scope": "authoring_and_dispatch_checks_plus_shared_Root_regression_only",
+        "finalPromptSha256": "fc9fdad79a6e2a5334c41b65350bb9da5c7e3027113827b0834ab3b023892be2",
+        "fullVerify": {
+          "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+          "exitCode": 0,
+          "localhostFixturePermission": true,
+          "log": {
+            "path": "/private/tmp/rockstaros-chat-split-verify.log",
+            "bytes": 212444,
+            "sha256": "e4fa7b4e51665c223532a52c5c35b8e37eac1415ad8361e7db53ce0a7dade75d"
+          },
+          "nodeTests": {
+            "total": 1697,
+            "passed": 1696,
+            "skipped": 1,
+            "failed": 0
+          },
+          "workerApiAssertions": 2152,
+          "csvStorageAssertions": 113,
+          "webAssetReferences": 233,
+          "missingWebAssets": 0,
+          "build": "passed",
+          "typecheck": "passed_as_full_verify_stage",
+          "immutableWholeTreeClaim": false,
+          "initialPromptSha256BeforeDocumentationOnlyCorrections": "2e2c978d1f108009437ad519334af2407473b6f06d2718eb04aab789e69f68ba",
+          "finalDocumentationChecksRerunAfterCorrections": true
+        },
+        "finalFocusedChecks": {
+          "project": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-project.log",
+              "bytes": 128,
+              "sha256": "f7eb774831f2312b166344e2bf05ec8c414e0c53a359c28d2105ccd8f345348b"
+            }
+          },
+          "baseline": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-baseline.log",
+              "bytes": 1510,
+              "sha256": "d449205531b77ee6dbbac9ad856d339efda1602622034e554e4a798008c7801b"
+            }
+          },
+          "design": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-design.log",
+              "bytes": 169,
+              "sha256": "9883d5353462c8e13c293a0d6a39673c5d95a8686706bd8ebda545b1e467a3ab"
+            }
+          },
+          "schema": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-schema.log",
+              "bytes": 235,
+              "sha256": "8ee08e4ee232262f42b02c0683f35ce6438e6007858f3498d73c3fb50a03e535"
+            }
+          },
+          "database": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-database.log",
+              "bytes": 155,
+              "sha256": "4fff547977cf094ad06d22230a0cda1e46c5f02830677f9485a9612533cf97ca"
+            }
+          },
+          "repository": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-chat-split-final-repository.log",
+              "bytes": 164,
+              "sha256": "4b86dc1471071dd5db6f3ab9f1428a585d8b1a5a0a16e493464be3c722036716"
+            }
+          }
+        },
+        "dispatchChecks": {
+          "uniqueChats": 11,
+          "completedBootstraps": 11,
+          "units": 95,
+          "originalUnits": 75,
+          "additionalUnits": 20,
+          "features": 180,
+          "algorithms": 10,
+          "unassigned": 0,
+          "externalBoundaryFeatures": 1,
+          "sharedReferencePathsWithSingleWriter": 32,
+          "originalAuditClassificationPreserved": true,
+          "bootstrapReceiptHashesRechecked": true
+        },
+        "acceptanceLimits": [
+          "共有Rootの回帰であり、元Smith等の同時作業を含む不変whole-treeや実機/Provider/本番の受入ではない。",
+          "今回の95作業の製品実装、GitHub保存/main統合、一般公開を実行済みとはしない。"
+        ]
+      },
+      "independentReview": {
+        "decision": "accepted_for_instruction_coverage_and_bounded_chat_bootstrap",
+        "receipt": {
+          "path": "docs/evidence/rockstaros-development-chats-review.json",
+          "sha256": "c2672ab535aaac42d22657682e4d3e918814e90807c4aa86a9e521347fcedbea",
+          "scope": "static_document_assignment_and_bootstrap_evidence_review_only_not_product_acceptance",
+          "planAndRegistryHashesAtReviewAreSnapshotsBeforeValidationMetadataUpdate": true
+        },
+        "runtimeAcceptance": false
+      }
+    },
+    {
+      "promptSha256": "0383915f1dda83fa63db3433f6a3c2803c8302bff8be095c83f3032f15c5121b",
+      "verification": {
+        "recordedAt": "2026-10-24T05:17:50.725409+00:00",
+        "scope": "current prompt authoring/static checks and mutable shared Root regression; not immutable whole-tree or product acceptance",
+        "promptSha256": "0383915f1dda83fa63db3433f6a3c2803c8302bff8be095c83f3032f15c5121b",
+        "fullVerify": {
+          "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+          "exitCode": 0,
+          "localhostFixturePermission": true,
+          "log": {
+            "path": "/private/tmp/rockstaros-history-reflection-verify.log",
+            "sha256": "d9d2a06192da9d99305601c572c1fdc41174d553696eb619e1696c61ca55d476",
+            "bytes": 212388
+          },
+          "nodeTests": {
+            "total": 1700,
+            "passed": 1699,
+            "failed": 0,
+            "skipped": 1
+          },
+          "workerApiAssertions": 2152,
+          "csvStorageAssertions": 113,
+          "webAssetReferences": 233,
+          "missingWebAssets": 0,
+          "build": "passed",
+          "typecheck": "passed",
+          "immutableWholeTreeClaim": false
+        },
+        "finalFocusedChecks": {
+          "project": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-project.log",
+              "sha256": "f7eb774831f2312b166344e2bf05ec8c414e0c53a359c28d2105ccd8f345348b",
+              "bytes": 128
+            }
+          },
+          "baseline": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-baseline.log",
+              "sha256": "d449205531b77ee6dbbac9ad856d339efda1602622034e554e4a798008c7801b",
+              "bytes": 1510
+            }
+          },
+          "design": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-design.log",
+              "sha256": "9883d5353462c8e13c293a0d6a39673c5d95a8686706bd8ebda545b1e467a3ab",
+              "bytes": 169
+            }
+          },
+          "schema": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-schema.log",
+              "sha256": "8ee08e4ee232262f42b02c0683f35ce6438e6007858f3498d73c3fb50a03e535",
+              "bytes": 235
+            }
+          },
+          "database": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-database.log",
+              "sha256": "4fff547977cf094ad06d22230a0cda1e46c5f02830677f9485a9612533cf97ca",
+              "bytes": 155
+            }
+          },
+          "repository": {
+            "exitCode": 0,
+            "log": {
+              "path": "/private/tmp/rockstaros-history-reflection-final-repository.log",
+              "sha256": "4b86dc1471071dd5db6f3ab9f1428a585d8b1a5a0a16e493464be3c722036716",
+              "bytes": 164
+            }
+          }
+        },
+        "staticAuthoring": {
+          "units": 95,
+          "originalUnits": 75,
+          "additionalUnits": 20,
+          "threads": 23,
+          "allListedThreadPaginationEndsObserved": true,
+          "achievementRecords": 42,
+          "lanePackets": 11,
+          "anchors": 84,
+          "unitLedgerInitiallyNotStarted": 95,
+          "rq49BridgeInstructions": "added_not_runtime_implemented"
+        },
+        "independentReview": {
+          "result": "pass_no_actionable_findings",
+          "actionableFindings": 0,
+          "reviewReceipt": {
+            "path": "docs/evidence/rockstaros-history-prompt-review.json",
+            "sha256": "993c7143d0d5ce8b18dcc8edce65dae363727fd5406021f5df90b9061f718204",
+            "bytes": 6483,
+            "scope": "Independent static review of history-to-prompt integration; no runtime acceptance or external action performed.",
+            "inputHashesAreReviewTimeSnapshotsBeforeValidationMetadataUpdates": true,
+            "detailedPromptSha256": "0383915f1dda83fa63db3433f6a3c2803c8302bff8be095c83f3032f15c5121b"
+          },
+          "currentArtifactHashesCompared": 222
+        },
+        "runtimeImplementedByAuthoring": false,
+        "physicalDeviceOperatedByAuthoring": false,
+        "realProviderCalledByAuthoring": false,
+        "gitCommitPushMergeByAuthoring": false,
+        "generalLaunchHeld": true
+      },
+      "independentReview": {
+        "result": "pass_no_actionable_findings",
+        "receipt": {
+          "path": "docs/evidence/rockstaros-history-prompt-review.json",
+          "sha256": "993c7143d0d5ce8b18dcc8edce65dae363727fd5406021f5df90b9061f718204",
+          "bytes": 6483,
+          "scope": "Independent static review of history-to-prompt integration; no runtime acceptance or external action performed.",
+          "inputHashesAreReviewTimeSnapshotsBeforeValidationMetadataUpdates": true,
+          "detailedPromptSha256": "0383915f1dda83fa63db3433f6a3c2803c8302bff8be095c83f3032f15c5121b"
+        },
+        "runtimeAcceptance": false
+      }
+    }
+  ],
+  "historyAchievementPath": "data/rockstaros-chat-achievements.json",
+  "unitProgressPath": "data/development-unit-progress.json",
+  "historyReflection": {
+    "threadCount": 23,
+    "allListedThreadPagesRead": true,
+    "achievementRecords": 42,
+    "lanePackets": 11,
+    "rq49BridgeAddedTo": "MATERIAL-01",
+    "newUnitsAdded": 0,
+    "totalUnits": 95,
+    "runtimeAcceptanceByAuthoring": false,
+    "status": "instructions_saved_verified_independently_reviewed",
+    "verifiedAt": "2026-10-24T05:17:50.725409+00:00",
+    "resolutions": [
+      {
+        "id": "H01",
+        "cause": "Initial chat messages only ran source bootstrap; no finite handoff loop",
+        "correction": "Current packet implementation section plus coordinator writer-transfer/one-unit/review/Git-save/next-unit loop and 95-unit ledger",
+        "instructionStatus": "corrected",
+        "runtimeStatus": "implementation_queued"
+      },
+      {
+        "id": "H02",
+        "cause": "RQ49/MAT06 Material to Patent provenance bridge lacked detailed implementation and acceptance",
+        "correction": "MATERIAL-01 bridge section and plan mapping/source-kind/ACL/revision/hash/idempotency/revocation/negative fixtures",
+        "instructionStatus": "corrected",
+        "runtimeStatus": "not_implemented_by_prompt_authoring"
+      },
+      {
+        "id": "H03",
+        "cause": "Old no-new-chat instruction contradicted owner-approved eleven-chat flow",
+        "correction": "Replaced with existing eleven chat packets, no unapproved proliferation, scoped message authorization",
+        "instructionStatus": "corrected"
+      },
+      {
+        "id": "H04",
+        "cause": "Baseline still reported 75 current units while full plan had 75+20",
+        "correction": "Current baseline/status synchronized to95; original75 and additional20 preserved as historical composition",
+        "instructionStatus": "corrected"
+      },
+      {
+        "id": "H05",
+        "cause": "History/current source divergence could cause stale successes or repeated implementation",
+        "correction": "42 achievement records,23 pagination-end scopes,11 packet history summaries and hash-drift readback/revalidation rules",
+        "instructionStatus": "corrected",
+        "remaining": "Targeted runtime/device revalidation and product gates remain per unit; no historical success promoted"
+      }
+    ]
+  },
+  "modelRoutingPolicyPath": "data/development-model-routing.json",
+  "modelRoutingCounts": {
+    "primaryModels": {
+      "gpt-6.1-sol": 93,
+      "gpt-6-astra": 2
+    },
+    "primaryEfforts": {
+      "gpt-6.1-sol/low": 3,
+      "gpt-6.1-sol/medium": 67,
+      "gpt-6.1-sol/high": 23,
+      "gpt-6-astra/high": 2
+    }
+  }
+}

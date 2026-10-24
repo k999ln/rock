@@ -1,0 +1,299 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "os-pixel",
+  "revision": 4,
+  "status": "attempt2_fixed_focused_verified_pending_astra_rereview",
+  "threadId": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+  "currentUnit": "OS-01",
+  "baseAndSource": [
+    {
+      "kind": "local_HEAD",
+      "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "branch": "codex/esim-cloud-access",
+      "dirtyWorkspace": true
+    },
+    {
+      "kind": "handoff_snapshot_only",
+      "observedAt": "2026-10-24T04:16:26.119Z",
+      "mainSha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "githubRefreshedInBootstrap": false
+    },
+    {
+      "kind": "working_source_sha256",
+      "files": {
+        "scripts/sky-linux-runtime-bridge.mjs": "58290120f6c0539c5e80736193a8ea30e85f4806b696eab93bd1b8268c700432",
+        "scripts/pixel-runtime-stop-journal.mjs": "2d401aa4b05d533cb626faf67efd61f22f1b838d84cbcf677860c56d2e4d3973",
+        "toolkits/sky-linux-local/update-pixel.py": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50",
+        "tests/pixel-runtime-bridge.test.mjs": "c74717c1fa6dda14edc55da7ecfcebec59c28ba69e4c555d2f88efd328c6e64d",
+        "tests/pixel-runtime-stop-journal.test.mjs": "f3b88e6b24b4a790a2db3f9c8b6a43a7928f34e40635bf3ecf54597a60f66cd8",
+        "tests/pixel-guest-update.test.mjs": "63717298db5b691d2a479e061d28da361f6e60acb41a9d6db18d80de62d4e1af",
+        "toolkits/sky-linux-local/README.md": "2c55f52318f776d3b5bc0e36d1329efd84a0121a64ed5ad9ce453e7b4c0a825d",
+        "docs/evidence/smis-object-purpose.json": "6f6b8239cdd4a26be8034232761f60e77fd3d68deb1d4e274ab47641914f895a"
+      }
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "scripts/sky-linux-local-runtime.mjs",
+    "toolkits/sky-linux-local/pixel-server.mjs",
+    "toolkits/sky-linux-local/android-bridge.py",
+    "toolkits/sky-linux-local/prepare-pixel.py",
+    "toolkits/sky-linux-local/android-eve-bridge.patch",
+    "toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java",
+    "toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java",
+    "tests/pixel-cached-prepare.test.mjs",
+    "tests/test_pixel_cached_prepare.py",
+    "tests/test_pixel_cached_native.py",
+    "tests/test_sky_android_bridge.py",
+    "tests/test_stage_pixel_private_preview.py",
+    "data/development-lanes/os-pixel.json",
+    "docs/evidence/development-execution/pixel-cache-only-prepare.json",
+    "docs/evidence/development-execution/pixel-cache-only-prepare-attempt1.json"
+  ],
+  "readPaths": [
+    "scripts/sky-linux-runtime-bridge.mjs",
+    "scripts/pixel-runtime-stop-journal.mjs",
+    "toolkits/sky-linux-local/update-pixel.py",
+    "tests/pixel-runtime-bridge.test.mjs",
+    "tests/pixel-runtime-stop-journal.test.mjs",
+    "tests/pixel-guest-update.test.mjs",
+    "toolkits/sky-linux-local/README.md",
+    "docs/evidence/smis-object-purpose.json"
+  ],
+  "findings": [
+    {
+      "implemented": "Boot-scoped bridge endpoint and durable exact stop fence exist; host tests cover stale socket, delayed start, foreign execution tuple, restart and private journal. Protected code-only updater and transaction reuse documented.",
+      "acceptance": "Source inspection only; no new runtime or physical acceptance."
+    },
+    {
+      "latestEvidence": "smis-object-purpose.json#pixelNoPartsFollowup20261023.followup20261024 records private connection approved, local D1 repair and session realm isolation incident. Production device credential removed; production reconnect required, jobs/results and production server account not deleted. physicalWholeLoopAccepted=false.",
+      "boundary": "Evidence readback, not independent current device observation; original Smith operator owns recovery/physical loop."
+    },
+    {
+      "missing": "Current candidate same Agent/revision/model pin → actual inference → Web/Pixel results → UTF-8 export hash → original job stop/standby remains unaccepted. Full OS image/formal signature/flash/Keystore total-loss recovery remain separate gates."
+    },
+    {
+      "coverage": "data/rockstaros-full-function-coverage.json absent at inspection; 180-item lane mapping pending integration writer."
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git integration",
+      "request": "Aggregate lane progress into project/status/README and assign exact source ownership before OS-01 implementation; refresh GitHub main/branch same-SHA CI on integration candidate.",
+      "contract": "Do not equate branch source-preparation check with full CI; source hashes identify dirty snapshot only."
+    },
+    {
+      "owner": "Eve / Smith / OS consumers",
+      "request": "Pin same owner/job/Agent revision/request digest/model profile and stop receipt across WorkPort/native/Web; preserve production versus localhost realm isolation.",
+      "negativeCases": [
+        "different owner/revision",
+        "expired or revoked grant",
+        "UNKNOWN effect blind retry",
+        "duplicate same job execution",
+        "localhost session deleting HTTPS credential"
+      ],
+      "proposedFirstOwnedFile": "scripts/sky-linux-runtime-bridge.mjs",
+      "ownershipAssigned": false
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/pixel-portable-executor.test.mjs",
+      "exitCode": 0,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 1309.072083,
+      "log": "/private/tmp/os01-pixel-portable-executor.log",
+      "logSha256": "49c9bd0dd42783cd34d48db2c472d9d5dcece7ca6b7ced1a4694e27e9e4a8942",
+      "coverage": "Fixed Python worker token/wall/CPU limits, no shell, bounded environment, launch/deadline failure prompt cleanup; old ABI refusal; common job/history once."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_pixel_worker_parent_exit.py -v",
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 1,
+      "log": "/private/tmp/os01-pixel-parent-exit.log",
+      "logSha256": "e9cfc5e5ac3d14fc2f6702e42ffa0c13d1ebef1d2c8d7b23bc13e35321cb9136",
+      "coverage": "Mocked kernel guard ordering, parent mismatch SIGKILL, unavailable guard fail closed. Actual Linux parent-death test skipped on Mac."
+    }
+  ],
+  "externalConditions": [
+    "Pixel operator lease held by Smith chat 01a16b30-82bb-7cc1-985d-fc74970a26c6; no adb/UI/guest/install/reconnect/delete operation performed.",
+    "Current normal-session reconnect and full loop status must come from Smith same-artifact evidence; older pending approval snapshot superseded by followup20261024.",
+    "Full OS build requires dedicated x86_64 Linux; hardware/flash/production signatures and general launch retain separate gates."
+  ],
+  "nextUnit": {
+    "id": "OS-01/EVE-14",
+    "action": "Astra independent rereview of attempt2 R1/R2 and hashes; only after adoption schedule sole-operator ABI2 code-only physical preparation. Preserve unknown/history/quality/normal-account gates.",
+    "evidence": "docs/evidence/development-execution/pixel-cache-only-prepare.json"
+  },
+  "updatedAt": "2026-10-24T08:19:23.823344+00:00",
+  "note": "Limited execution batch complete: existing fixture fix reproduced without edits; only lane/evidence written. Latest evidence supersedes bootstrap pending-private-approval/full-loop observations; first technical loop exists but whole-loop/quality/normal connection gates remain open.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:25:15.403960+00:00",
+  "primaryOwner": "ROCK",
+  "workstream": "docs/workstreams/07-android-device-local-ai.md",
+  "executionBatch": {
+    "unit": "OS-01/P01",
+    "evidence": "docs/evidence/development-execution/pixel-host-test.json",
+    "sourceHashes": {
+      "tests/pixel-portable-executor.test.mjs": "0c6a0f2fe577e7ce5792d538c829da34a41f511e8f6e2f80e3f07c7d4f8fef62",
+      "toolkits/sky-linux-local/worker.py": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+      "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272"
+    },
+    "fixtureAlreadyFixed": true,
+    "codeChanged": false,
+    "focusedNodePassed": 9,
+    "focusedPythonPassed": 3,
+    "linuxOnlySkipped": 1,
+    "sourceStableDuringChecks": true,
+    "priorPhysicalSourceHashComparison": {
+      "toolkits/sky-linux-local/worker.py": {
+        "expected": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+        "actual": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+        "matches": true
+      },
+      "tests/test_pixel_worker_parent_exit.py": {
+        "expected": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+        "actual": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+        "matches": true
+      }
+    },
+    "independentReview": "pending_parent_dispatch",
+    "githubSaved": false,
+    "mainMerged": false
+  },
+  "independentReviewReferences": [
+    {
+      "path": "docs/evidence/development-execution/source-batch-review.json",
+      "sha256": "b71fa91ce13dba12980c405ca67cac422c85965c1fea72899452e61b99464a0c",
+      "units": [
+        "GIT-01",
+        "EVE-01",
+        "SMITH-01"
+      ],
+      "verdict": "pass_for_limited_source_preservation_and_host_regression_only",
+      "blockingFindings": 0
+    },
+    {
+      "path": "docs/evidence/development-execution/mini-pro-web-review.json",
+      "sha256": "26b368846aa999f9c177cf7d9c4825dbbfd486d5e6fe5d90f8fe37b90a083fac",
+      "units": [
+        "MINI-01",
+        "PRO-01",
+        "WEBOPS-01"
+      ],
+      "verdict": "pass_scoped_host_metadata_file_handoff_and_maintenance_ui_changes",
+      "blockingFindings": 0
+    }
+  ],
+  "cacheOnlyPreparationBatch": {
+    "attempt": 2,
+    "evidence": "docs/evidence/development-execution/pixel-cache-only-prepare.json",
+    "receiptSha256": "72001477812f6c19b9f575d7229788da7bccf434d3692ac60e4c40b819909328",
+    "sourceHashesFinal": {
+      "scripts/sky-linux-local-runtime.mjs": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992",
+      "toolkits/sky-linux-local/pixel-server.mjs": "9d542be006f225733b77c5e675c19df08b9bcb835a5929dca66ae199b6796a1a",
+      "toolkits/sky-linux-local/android-bridge.py": "079b1793ca9dec396d543dbc5255a4edb2a954b3948c803d957a6c0c6118995a",
+      "toolkits/sky-linux-local/prepare-pixel.py": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d",
+      "toolkits/sky-linux-local/android-eve-bridge.patch": "25e82c70127b8429d54ef9fac0a70cedc00035e4b8c99e747c08c70cdc4ee064",
+      "toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java": "cef46771841758f2ff61843f7550cd55cd887d28d8a0cfa08a81508570f61418",
+      "toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java": "60d345a0da7aea369900b7728d9a93d8fba5177db10bb714c585958f3169b734",
+      "tests/pixel-cached-prepare.test.mjs": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148",
+      "tests/test_pixel_cached_prepare.py": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb",
+      "tests/test_pixel_cached_native.py": "491e97471560493cda9cb5846e5b6d5d2ebcf4e058f5beccecde3bac312a9749",
+      "tests/test_sky_android_bridge.py": "5282fac61e4b96d6ae59b29402afd7b44cb67e8a238e51a3096e232e8d8e4577",
+      "tests/test_stage_pixel_private_preview.py": "98bd9ac55e993d1843ee5a61028ab3cfa6a3734587c619238c24552a1b38d56b"
+    },
+    "writeSet": [
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/pixel-server.mjs",
+      "toolkits/sky-linux-local/android-bridge.py",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "toolkits/sky-linux-local/android-eve-bridge.patch",
+      "toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java",
+      "toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java",
+      "tests/pixel-cached-prepare.test.mjs",
+      "tests/test_pixel_cached_prepare.py",
+      "tests/test_pixel_cached_native.py",
+      "tests/test_sky_android_bridge.py",
+      "tests/test_stage_pixel_private_preview.py",
+      "data/development-lanes/os-pixel.json",
+      "docs/evidence/development-execution/pixel-cache-only-prepare.json",
+      "docs/evidence/development-execution/pixel-cache-only-prepare-attempt1.json"
+    ],
+    "nodePassed": 54,
+    "nodeSkipped": 1,
+    "pythonPassed": 31,
+    "androidJavaCompileExitCode": 0,
+    "originalReplayProbePrepareCalls": 2,
+    "foreignSessionCommandEmissions": 0,
+    "deviceOperations": 0,
+    "requiredIndependentReview": "gpt-6-astra/high rereview",
+    "sharedRequests": [
+      {
+        "owner": "Git/design single writer",
+        "paths": [
+          "project.md",
+          "data/project-status.json",
+          "README.md",
+          "data/design-document-index.json",
+          "docs/rockstaros-complete-design.md",
+          "docs/device-support-architecture.md",
+          "docs/workstreams/07-android-device-local-ai.md"
+        ],
+        "request": "Integrate cache-only command/UI contract, exact source+artifact hashes, unknown/expiry/failure recovery and acceptance limits; run project:update/design:check/verify on fixed candidate. Do not mark P02 complete."
+      }
+    ]
+  },
+  "cacheOnlyPreparationHistory": [
+    {
+      "evidence": "docs/evidence/development-execution/pixel-cache-only-prepare-attempt1.json",
+      "sourceSha256": "95a85937e223173cff3bd04a7c1170ad808fb9018f1c087453fd3e442d4e035e",
+      "writeSet": [
+        "scripts/sky-linux-local-runtime.mjs",
+        "toolkits/sky-linux-local/pixel-server.mjs",
+        "toolkits/sky-linux-local/android-bridge.py",
+        "toolkits/sky-linux-local/prepare-pixel.py",
+        "toolkits/sky-linux-local/android-eve-bridge.patch",
+        "toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java",
+        "toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java",
+        "tests/pixel-cached-prepare.test.mjs",
+        "tests/test_pixel_cached_prepare.py",
+        "tests/test_pixel_cached_native.py",
+        "tests/test_sky_android_bridge.py",
+        "tests/test_stage_pixel_private_preview.py",
+        "data/development-lanes/os-pixel.json",
+        "docs/evidence/development-execution/pixel-cache-only-prepare.json"
+      ],
+      "nodePassed": 49,
+      "nodeSkipped": 1,
+      "pythonPassed": 29,
+      "androidJavaCompileExitCode": 0,
+      "guestPackagePrepared": true,
+      "deviceOperations": 0,
+      "requiredIndependentReview": "gpt-6-astra/high before installation",
+      "sharedRequests": [
+        {
+          "owner": "Git/design single writer",
+          "paths": [
+            "project.md",
+            "data/project-status.json",
+            "README.md",
+            "data/design-document-index.json",
+            "docs/rockstaros-complete-design.md",
+            "docs/device-support-architecture.md",
+            "docs/workstreams/07-android-device-local-ai.md"
+          ],
+          "request": "Integrate cache-only command/UI contract, exact source+artifact hashes, unknown/expiry/failure recovery and acceptance limits; run project:update/design:check/verify on fixed candidate. Do not mark P02 complete."
+        }
+      ],
+      "qualityAndNormalConnectionAcceptance": false,
+      "attempt": 1,
+      "independentReview": "docs/evidence/development-execution/pixel-cache-only-prepare-review.json",
+      "status": "changes_required_replay_and_session_binding"
+    }
+  ]
+}

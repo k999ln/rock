@@ -1,0 +1,3467 @@
+{
+  "schema": "rockstaros.development-model-routing/1",
+  "recordedAt": "2026-10-24T05:38:00.854847+00:00",
+  "scope": "Codex development-agent model routing; does not change product Eve models or customer prices",
+  "status": "configured_for_authorized_development_dispatch",
+  "sources": [
+    {
+      "url": "https://developers.openai.com/api/docs/guides/latest-model",
+      "use": "documented flagship/balanced/focused-work model roles; unit assignment is repository-specific judgment"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models",
+      "use": "current model roles and supported reasoning settings"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true",
+      "use": "API pricing reference only; not a Codex plan bill estimate"
+    }
+  ],
+  "modelsVisibleInUserScreenshot": [
+    "gpt-6.1-sol",
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna"
+  ],
+  "coordinator": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium"
+  },
+  "counts": {
+    "primaryModels": {
+      "gpt-6.1-sol": 93,
+      "gpt-6-astra": 2
+    },
+    "primaryEfforts": {
+      "gpt-6.1-sol/low": 3,
+      "gpt-6.1-sol/medium": 67,
+      "gpt-6.1-sol/high": 23,
+      "gpt-6-astra/high": 2
+    }
+  },
+  "unitCount": 95,
+  "units": [
+    {
+      "id": "GIT-01",
+      "title": "保存対象を固定する",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "low",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-02",
+      "title": "最新main上の既存実装を先に照合する",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "allocationReason": "main/Root/別Sourceの意味的な差分・既存契約を照合するため。機械的な抽出だけはLuna補助へ分離。",
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-03",
+      "title": "既存worktree・PRと編集所有を揃える",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-04",
+      "title": "DB migrationと互換を一人が統合する",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-05",
+      "title": "小さく保存し、変更中の入力を成功候補にしない",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-06",
+      "title": "GitHub保存・同一SHA CI・PRを完了させる",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-07",
+      "title": "main統合と配備を別に受け入れる",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GIT-08",
+      "title": "完了台帳と再開入口を揃える",
+      "lane": "git",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "low",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-01",
+      "title": "EveのRoot・Source・公開候補と証拠の同一性を固定",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-02",
+      "title": "Remixを既存WorkJob/owner/revision/usage/stopへ結合",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-03",
+      "title": "mediaの型付きArtifact転送・保管と旧local作品保全",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-04",
+      "title": "文章素材掛け合わせと根拠付き草稿",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-05",
+      "title": "Agent掛け合わせの版・lineage・権限分離",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-06",
+      "title": "4種類media編集をbounded adapterにする",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-07",
+      "title": "素材中心UXとMini/Computer Use共通intent",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-08",
+      "title": "model profile・評価・推薦と不採用の永続化",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る",
+        "候補model自身の採点だけで採用/routingを決める、または評価条件/holdoutを弱める変更"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-09",
+      "title": "Mac/GPU・weights・学習データの段階契約",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-10",
+      "title": "非信頼planの有限検証とeffect前再認可",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-11",
+      "title": "実Toolの独立検査・既存有限repair・Agent委任",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-12",
+      "title": "限定外部アプリComputer Use adapter",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-13",
+      "title": "全入口でstop・unknown・同ID復旧を一致",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-14",
+      "title": "最新候補のEve→Smith→Web/Pixel実成果一周",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "EVE-15",
+      "title": "Eve全経路の負例・同candidate回帰・証拠manifest",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-01",
+      "title": "Pixel Terminalの現在状態と開始errorの非破壊診断",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-02",
+      "title": "機種・OS・能力identity",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-03",
+      "title": "導入適合とDSP",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-04",
+      "title": "component本人性と版",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-05",
+      "title": "隔離とBroker",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-06",
+      "title": "Linux lifecycle",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-07",
+      "title": "resource limitsのOS強制",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-08",
+      "title": "job再開とeffect一回性",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-09",
+      "title": "暗号化保存とbackup",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-10",
+      "title": "device/鍵喪失復旧",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-11",
+      "title": "署名更新とrollback",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-12",
+      "title": "電源・熱・容量・suspend",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-13",
+      "title": "標準OS入出力とpermission",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-14",
+      "title": "共通contractとadapter parity",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-15",
+      "title": "同image物理受入",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-16",
+      "title": "guest/host権限境界",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OS-17",
+      "title": "full OS専用Linux・署名・flash・stock/全損復旧",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6-astra",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "hard design/feasibility/signing-and-recovery decision phase only",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy",
+      "stageRouting": [
+        {
+          "stage": "hard_design_decision",
+          "model": "gpt-6-astra",
+          "effort": "high"
+        },
+        {
+          "stage": "execute_existing_verified_build_or_calculation_plan",
+          "model": "gpt-6.1-sol",
+          "effort": "medium"
+        },
+        {
+          "stage": "changed_critical_invariant_review",
+          "model": "gpt-6-astra",
+          "effort": "high",
+          "independent": true
+        }
+      ]
+    },
+    {
+      "id": "OS-18",
+      "title": "機微vault・E2EE・削除と共通金融/学習境界",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-01",
+      "title": "正式名・互換入口・既存データの整合",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-02",
+      "title": "部品なし目的・本人確認・可能/不足/未対応の表示",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-03",
+      "title": "新担当同ID登録から実model・保存・原job停止まで",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-04",
+      "title": "内蔵・外付け・周辺観測のadapterと付け替えfence",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-05",
+      "title": "別owner Add・同じ担当版実行・opt-in成果循環",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SMITH-06",
+      "title": "Hey Eve・Thanks Eve・待機の共通入口",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-01",
+      "title": "状態の直積と接続判定",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-02",
+      "title": "issuer lifecycleを永続イベントへ結合",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-03",
+      "title": "準備operationと外部資源確保のoutbox",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-04",
+      "title": "子端末attachmentの発行・更新・失効",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-05",
+      "title": "既存OSとnativeを能力別に導入する",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-06",
+      "title": "一件のcloud仕事と切断後継続",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-07",
+      "title": "実sandboxと復旧の一周",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "ESIM-08",
+      "title": "証拠と受入の独立欄",
+      "lane": "esim",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "low",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-01",
+      "title": "固定料金版と起算のschemaを実装する",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-02",
+      "title": "同時予約と結果不明の原子保存",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-03",
+      "title": "計量を請求明細へ一回だけ結ぶ",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-04",
+      "title": "月締め・訂正・一意Invoice",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-05",
+      "title": "非同期決済と読戻し",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-06",
+      "title": "本人UI・未払制限・復帰",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-07",
+      "title": "作者契約・分配・取消復旧",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "BILL-08",
+      "title": "月末sandboxの受入matrix",
+      "lane": "billing",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-01",
+      "title": "要求領域と観測/入力/光学の契約固定",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-02",
+      "title": "少数・板膜なし・全範囲の光学選定と反証",
+      "lane": "mini",
+      "primaryModel": "gpt-6-astra",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "hard design/feasibility/signing-and-recovery decision phase only",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy",
+      "stageRouting": [
+        {
+          "stage": "hard_design_decision",
+          "model": "gpt-6-astra",
+          "effort": "high"
+        },
+        {
+          "stage": "execute_existing_verified_build_or_calculation_plan",
+          "model": "gpt-6.1-sol",
+          "effort": "medium"
+        },
+        {
+          "stage": "changed_critical_invariant_review",
+          "model": "gpt-6-astra",
+          "effort": "high",
+          "independent": true
+        }
+      ]
+    },
+    {
+      "id": "MINI-03",
+      "title": "Goの実描画・光学出力・停止adapter",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-04",
+      "title": "RGB hand/depthの同期・座標・失効",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-05",
+      "title": "手/声を共通Eve仕事・実app・原本保存へ結合",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-06",
+      "title": "電源木・独立光学停止・実netの確定",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-07",
+      "title": "最終回路/PCB・同一閉箱・製造gate",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MINI-08",
+      "title": "Mini/Pro共通host/native/DSP/eSIM子接続",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "PRO-01",
+      "title": "localStorageの非破壊・本人別移行",
+      "lane": "pro",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "PRO-02",
+      "title": "共通ProUI→実仕事・成果・保存・停止",
+      "lane": "pro",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "PRO-03",
+      "title": "nativeProと同一実機SKU/性能/更新復旧",
+      "lane": "pro",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "PRO-04",
+      "title": "12販売gateとUS初回商流",
+      "lane": "pro",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "NET-01",
+      "title": "経路・IP/DNS/TLS・信頼時刻・VPNの送信前検査",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "NET-02",
+      "title": "ordered通知/進捗cursorとoffline競合からの再接続",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "NET-03",
+      "title": "通話media・受領・通信実費の独立adapter",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WEBOPS-01",
+      "title": "主要flowのa11y・低速・touch/keyboard/reader受入",
+      "lane": "web-ops",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WEBOPS-02",
+      "title": "PWA install/update/offlineと通知許可の代替導線",
+      "lane": "web-ops",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WEBOPS-03",
+      "title": "3domains・release読戻し・導入診断/export/support導線",
+      "lane": "web-ops",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OPS-01",
+      "title": "SLO/usage/stop/採算の観測と故障注入",
+      "lane": "web-ops",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OPS-02",
+      "title": "incident・限定保守・端末/Provider停止と監査復旧",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "OPS-03",
+      "title": "鍵期限/署名/SBOM・abuse/supportの運用閉ループ",
+      "lane": "web-ops",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WALLET-01",
+      "title": "一般入金/外部railと確定資金の由来",
+      "lane": "wallet",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WALLET-02",
+      "title": "888c収益連動精算・共有予約・backup照合",
+      "lane": "wallet",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "WALLET-03",
+      "title": "ATM0手数料・別actor認証・unknown払出し",
+      "lane": "wallet",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GAME-01",
+      "title": "作者SDK・持込みmanifest・非金融GM01/DX計測",
+      "lane": "game",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "independent": true,
+        "scope": "exact差分・受入条件・局所試験・復旧を短く検収",
+        "astraEscalation": "riskTriggersに該当しSol highでも解消できない場合だけAstra highで一回診断",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "GAME-02",
+      "title": "GX交換gateとgame↔現実WorkJob橋を別経路で閉じる",
+      "lane": "game",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "資金/料金/利用権/予約/重複課金/精算の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MATERIAL-01",
+      "title": "Material来歴/制約/候補検査から実験へのgate",
+      "lane": "mini",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "COMPANION-01",
+      "title": "独立SOS・保護者通知と時計/TV/robot等の能力adapter",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "光学/電源/人体/緊急動作/実験の安全条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "AUTH-01",
+      "title": "passkey・family scope・credential lifecycleと限定保守",
+      "lane": "os-pixel",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "SYNC-01",
+      "title": "一般offline編集・revision競合・削除優先の復旧",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "high",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "共有schema/状態遷移/移行/複数consumer契約を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MODEL-01",
+      "title": "model取得/検証/削除とowner限定RAG",
+      "lane": "eve",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る",
+        "候補model自身の採点だけで採用/routingを決める、または評価条件/holdoutを弱める変更"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    },
+    {
+      "id": "MCP-01",
+      "title": "catalog・OAuth・作者SDKの登録から失効まで",
+      "lane": "smith",
+      "primaryModel": "gpt-6.1-sol",
+      "effort": "medium",
+      "reviewerPolicy": {
+        "model": "gpt-6-astra",
+        "effort": "high",
+        "independent": true,
+        "scope": "変更された不変条件・負例・復旧・同candidate証拠のみ",
+        "astraEscalation": "当該危険条件を変更するとき必須。無変更の既存成果照合だけならSol独立検収で終了可",
+        "fallbackWithoutRiskChange": {
+          "model": "gpt-6.1-sol",
+          "effort": "medium",
+          "independent": true
+        },
+        "requiredRiskReviewNotWaivedByModelUnavailability": true
+      },
+      "riskTriggers": [
+        "権限/鍵/秘密/失効/実行分離の不変条件を変更",
+        "局所試験で原因不明の失敗が2回続く、または共有境界の合意が成立しない",
+        "負例/復旧/同candidate証拠で矛盾が残る"
+      ],
+      "primaryScope": "bounded unit implementation on exact owned paths",
+      "helperPolicy": {
+        "model": "gpt-6-luna",
+        "effort": "low",
+        "scope": "read-only deterministic inventory or summary only when it saves total effort",
+        "authoritativeDecision": false,
+        "alwaysSpawn": false
+      },
+      "retryPolicyRef": "#/retryPolicy",
+      "metricPolicyRef": "#/measurementPolicy"
+    }
+  ],
+  "helper": {
+    "model": "gpt-6-luna",
+    "effort": "low",
+    "writePaths": [],
+    "deterministicCheckFirst": true,
+    "alwaysSpawn": false
+  },
+  "concurrency": {
+    "maxActiveTotal": 3,
+    "countOriginalSmith": true,
+    "countCoordinator": true,
+    "countReviewersAndHelpers": true,
+    "astraMaxConcurrent": 1,
+    "existingSmithThreadId": "01a16b30-82bb-7cc1-985d-fc74970a26c6"
+  },
+  "retryPolicy": {
+    "totalAttemptsPerUnitAndRootCause": 3,
+    "escalationTrigger": "two failures of same root cause after diagnosing missing permission/provider/lease/source separately",
+    "maxAstraDiagnosticEscalationsPerRootCause": 1,
+    "resetOnModelChange": false,
+    "budgetCapTakesPrecedence": true,
+    "unknownExternalEffectMustReconcileBeforeRetry": true
+  },
+  "measurementPolicy": {
+    "initialAcceptedBatches": 5,
+    "includeImplementationReviewAndRework": true,
+    "wallClockMetric": "end-to-end elapsed time including waiting and rework; do not sum parallel durations as wall time",
+    "required": [
+      "test_acceptance",
+      "review_rejections",
+      "retry_count",
+      "elapsed_time_if_observed",
+      "model_usage_if_exposed",
+      "cost_if_actually_known"
+    ],
+    "unknownValue": null,
+    "apiPriceEqualsCodexBill": false,
+    "modelSelfScoringSufficient": false,
+    "optimalityGuaranteed": false
+  },
+  "legacyModelPolicy": "No routine allocation without measured availability/acceptance/total-consumption advantage; never silently downgrade a mandatory gate.",
+  "dispatch": {
+    "existingChatTool": "mcp__codex_app__send_message_to_thread",
+    "modelArgument": "model",
+    "reasoningArgument": "thinking",
+    "subagentArguments": [
+      "model",
+      "reasoning_effort"
+    ],
+    "subagentForkTurns": "none",
+    "requireActualArguments": true,
+    "recordAppliedModelOnlyWhenConfirmed": true,
+    "messagesSentToExistingChatsByAuthoring": false,
+    "newApiOrFastTierEnabled": false
+  },
+  "authoringRoleUse": {
+    "inventory": {
+      "model": "gpt-6-luna",
+      "effort": "low"
+    },
+    "routingProposal": {
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    },
+    "independentGateReview": {
+      "model": "gpt-6-astra",
+      "effort": "high"
+    },
+    "notAPerformanceBenchmark": true
+  },
+  "freshGit": {
+    "generatedAt": "2026-10-24T05:32:08.506Z",
+    "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "branch": "codex/esim-cloud-access",
+    "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "branchCount": 21,
+    "openPRs": 11,
+    "checks": [
+      {
+        "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+        "state": "PASS",
+        "total": 23,
+        "allSuccessful": true
+      },
+      {
+        "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "state": "PASS",
+        "total": 1,
+        "allSuccessful": true
+      }
+    ]
+  },
+  "verification": {
+    "status": "authoring_accepted_shared_root_verify_has_one_failure",
+    "evidencePath": "docs/evidence/rockstaros-remaining-work-prompt.json",
+    "independentReviewPath": "docs/evidence/rockstaros-model-routing-review.json",
+    "fullVerifyExitCode": 1,
+    "unresolvedRuntimeTestCount": 1
+  }
+}

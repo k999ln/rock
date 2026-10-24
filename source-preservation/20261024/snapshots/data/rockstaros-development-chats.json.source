@@ -1,0 +1,1740 @@
+{
+  "schema": "rockstaros.development-chat-dispatch/1",
+  "recordedAt": "2026-10-24T04:18:52.900500+00:00",
+  "updatedAt": "2026-10-24T08:48:20.021208+00:00",
+  "projectId": "53490a2d-42e6-45f1-a45f-d9ba9587095b",
+  "coordinatorThreadId": "01a16aeb-1268-7491-a2ce-cda09d15df11",
+  "coordinatorTitle": "設計内容を確認",
+  "sourceUserRequest": "ちゃんとそれぞれの作業ごとにチャット分岐して処理が重くならないようにして、それぞれのチャットは繋がってるから",
+  "entryPrompt": "docs/prompts/rockstaros-development-chats.md",
+  "detailedPrompt": "docs/prompts/rockstaros-remaining-work-development.md",
+  "plan": "data/rockstaros-remaining-work-plan.json",
+  "functionalCoverage": "data/rockstaros-full-function-coverage.json",
+  "fullHistoryInherited": false,
+  "connectionMechanism": [
+    "explicit source-chat links/read_thread when required",
+    "shared registry and per-lane handoff",
+    "stable unit/contract/source/artifact identifiers"
+  ],
+  "automaticFullTranscriptSyncAssumed": false,
+  "globalWriterDuringBootstrap": "coordinator",
+  "globalWriterAfterBootstrap": "git",
+  "phase": "authorized_development_execution",
+  "scope": "chat_dispatch_and_bounded_bootstrap_not_all_product_implementation",
+  "scheduler": {
+    "maxActiveWorkLanes": 3,
+    "maxNewBootstrapThreadsWhileExistingSmithActive": 2,
+    "implementationSlots": "Coordinator/Git/implementation/helper/review/original Smith combined max 3; coordinator and Git count separately when both active",
+    "oneBatchPerFreshChat": "one small unit; at most 3 related units before compact handoff",
+    "globalFullVerifyOwner": "git",
+    "fullRegressionPolicy": "focused tests per lane; one full verification per fixed integration candidate"
+  },
+  "existingActiveOperations": [
+    {
+      "threadId": "01a16b30-82bb-7cc1-985d-fc74970a26c6",
+      "title": "Smith",
+      "resource": "Pixel USB / trial Eve / local model / live acceptance",
+      "status": "in_progress_at_read",
+      "observedAt": "2026-10-24T04:18:52.900500+00:00",
+      "facts": "latest completed turn reports Pixel UI and local AI restored; purpose/missing-component UI physically seen; following turn authorizes trial connection and is in progress. End-to-end completion is not inferred.",
+      "rule": "new lanes do not open adb/UI, rebind account, restart guest or delete packages while this owner operation is active"
+    }
+  ],
+  "freshGit": {
+    "generatedAt": "2026-10-24T05:04:24.598Z",
+    "repository": "k999ln/rock",
+    "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "branch": "codex/esim-cloud-access",
+    "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "dirty": true,
+    "branchCount": 21,
+    "openPullRequests": 11,
+    "checks": [
+      {
+        "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+        "state": "PASS",
+        "total": 23,
+        "allSuccessful": true
+      },
+      {
+        "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "state": "PASS",
+        "total": 1,
+        "allSuccessful": true
+      }
+    ],
+    "sourceReviewComplete": false,
+    "restrictedAttemptFailedBeforeSuccessfulRead": true,
+    "latestMainReadback": {
+      "sha": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+      "recordedAt": "2026-10-24T08:42:04.125377+00:00",
+      "source": "PR186 postmerge GitHub API",
+      "mainCI": "success:4 workflows/6 checks"
+    }
+  },
+  "ownershipReviewSource": "/private/tmp/rockstaros-chat-split-review.json",
+  "lanes": [
+    {
+      "id": "git",
+      "requestedTitle": "RockstarOS｜Git保存・統合",
+      "primaryUnitIds": [
+        "GIT-01",
+        "GIT-02",
+        "GIT-03",
+        "GIT-04",
+        "GIT-05",
+        "GIT-06",
+        "GIT-07",
+        "GIT-08"
+      ],
+      "supplementalScope": "P13",
+      "firstUnit": "GIT-01",
+      "mission": "source inventoryとmain/Root/Source/公開差分、移行採番、通常GitHub保存とmain同SHA受入",
+      "workstream": "docs/workstreams/10-git-ci-operations.md",
+      "packet": "docs/prompts/rockstaros-development-chats/git.md",
+      "statusPath": "data/development-lanes/git.json",
+      "sourceChats": [
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "AGENTS.md",
+        "README.md",
+        "project.md",
+        "data/project-status.json",
+        "data/product-baseline.json",
+        "db/schema.ts",
+        "drizzle/",
+        "drizzle-main/",
+        "data/design-document-index.json",
+        "lib/workflow.ts",
+        ".github/"
+      ],
+      "phase": "execution",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": true,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c23-d327-7401-b994-05796b175cce",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:20:55.771073+00:00",
+      "supplementalUnitIds": [],
+      "allUnitIds": [
+        "GIT-01",
+        "GIT-02",
+        "GIT-03",
+        "GIT-04",
+        "GIT-05",
+        "GIT-06",
+        "GIT-07",
+        "GIT-08"
+      ],
+      "functionalCoverageRowIds": [
+        "F166",
+        "F167",
+        "F168",
+        "F169",
+        "F170",
+        "F180"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "PR187_saved_ci_review_pending_checkpoint_idle",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/git.json",
+        "sha256": "ec156146c6239c9c828972829af07173bf81e9898617d752cf84c2e67749c7be",
+        "recordedAt": "2026-10-24T04:22:53.686226+00:00",
+        "nextUnit": {
+          "id": "GIT-01",
+          "title": "固定入力の小batchを所有者別に台帳化して保全読戻し",
+          "firstProposedEditPath": "docs/evidence/rockstaros-source-inventory.json",
+          "steps": [
+            "After coordinator handoff, refresh exact GitHub refs and establish single writer for candidate inventory.",
+            "Inventory one bounded owned path batch including deleted/untracked and hash before/after; classify adoption/exclusion/hold without staging.",
+            "Keep recoverable bytes in approved Git-external storage and verify restored hashes; next compare main contracts under GIT-02."
+          ],
+          "acceptance": "All batch paths classified, deletions/untracked recoverable, no secrets/generated bulk in tracked manifest, hashes stable or explicitly deferred, no other lane overwritten.",
+          "localCommands": [
+            "npm run repository:check",
+            "npm run schema:check",
+            "npm run database:check",
+            "node --test tests/migration-union.test.mjs (later GIT-04; real workerd/D1 localhost required)",
+            "npm run project:check (after coordinator synchronization)"
+          ]
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/git",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true,
+      "currentUnitIds": [
+        "GIT-04"
+      ],
+      "candidateCheckout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+      "candidateBranch": "codex/reviewed-service-contracts-20261024",
+      "nextUnit": "Root-assigned review/merge after exact-head CI; then finite follow-up plan"
+    },
+    {
+      "id": "os-pixel",
+      "requestedTitle": "RockstarOS｜OS・Pixel",
+      "primaryUnitIds": [
+        "OS-01",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-08",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-15",
+        "OS-16",
+        "OS-17",
+        "OS-18"
+      ],
+      "supplementalScope": "P01/P05/P09/P11",
+      "firstUnit": "OS-01",
+      "mission": "端末/Broker/隔離/資源/保存復旧/署名更新/実機、Privacy、相棒の独立SOS、OS性能の集約",
+      "workstream": "docs/workstreams/07-android-device-local-ai.md",
+      "packet": "docs/prompts/rockstaros-development-chats/os-pixel.md",
+      "statusPath": "data/development-lanes/os-pixel.json",
+      "sourceChats": [
+        {
+          "id": "01a15971-415a-7943-88a4-0808be81567e",
+          "title": "Define OS and device foundation"
+        },
+        {
+          "id": "01a14d54-daee-7c30-87a8-faea84641a40",
+          "title": "RockstarOSを再設計"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "android/",
+        "os/physical/",
+        "systems/rock-star-os/os/",
+        "systems/rock-star-os/src/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:25:15.403960+00:00",
+      "supplementalUnitIds": [
+        "NET-01",
+        "NET-02",
+        "NET-03",
+        "OPS-02",
+        "COMPANION-01",
+        "AUTH-01"
+      ],
+      "allUnitIds": [
+        "OS-01",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-08",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-15",
+        "OS-16",
+        "OS-17",
+        "OS-18",
+        "NET-01",
+        "NET-02",
+        "NET-03",
+        "OPS-02",
+        "COMPANION-01",
+        "AUTH-01"
+      ],
+      "functionalCoverageRowIds": [
+        "F001",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F012",
+        "F014",
+        "F028",
+        "F029",
+        "F030",
+        "F031",
+        "F032",
+        "F033",
+        "F034",
+        "F035",
+        "F036",
+        "F037",
+        "F038",
+        "F039",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047",
+        "F048",
+        "F049",
+        "F050",
+        "F051",
+        "F052",
+        "F053",
+        "F054",
+        "F055",
+        "F056",
+        "F057",
+        "F069",
+        "F070",
+        "F149",
+        "F152",
+        "F154",
+        "F172",
+        "F173",
+        "A01",
+        "A06"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/os-pixel.json",
+        "sha256": "aa9477f64d1a41fd0b0179a413a27b67d5dbf3d573ede140d8405ffc3ddb7969",
+        "recordedAt": "2026-10-24T04:26:20.435887+00:00",
+        "nextUnit": {
+          "id": "OS-01",
+          "action": "After Smith lease release, read latest same-artifact followup, reconcile current candidate/connection failure and assign one exact source file before implementation; do not duplicate the active physical loop.",
+          "firstCandidateExactPath": "scripts/sky-linux-runtime-bridge.mjs",
+          "acceptance": "Focused host negative tests on pinned source plus Smith same-candidate evidence; physical inference/export/stop/reload accepted separately.",
+          "batchLimit": "One diagnosed failure only; no speculative bridge change."
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/os-pixel",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "smith",
+      "requestedTitle": "RockstarOS｜Smith・接続と共有",
+      "primaryUnitIds": [
+        "SMITH-01",
+        "SMITH-02",
+        "SMITH-03",
+        "SMITH-04",
+        "SMITH-05",
+        "SMITH-06"
+      ],
+      "supplementalScope": "P02/P03/P04",
+      "firstUnit": "SMITH-01",
+      "mission": "目的/不足・3接続方式・Add/共有/作者の接続、実feed・MCP接続/作者SDK",
+      "workstream": "docs/workstreams/02-sky-mcp.md",
+      "packet": "docs/prompts/rockstaros-development-chats/smith.md",
+      "statusPath": "data/development-lanes/smith.json",
+      "sourceChats": [
+        {
+          "id": "01a16b30-82bb-7cc1-985d-fc74970a26c6",
+          "title": "Smith"
+        },
+        {
+          "id": "01a14ff2-50d6-75d1-bf5f-aadcf37e934e",
+          "title": "smis"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/smis-",
+        "components/smis-",
+        "lib/sky-agent-share",
+        "lib/sky-agent-outcome",
+        "lib/sky-timeline",
+        "lib/mcp-"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c28-04a3-7022-8475-da5901359f3f",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:25:40.438323+00:00",
+      "supplementalUnitIds": [
+        "MCP-01"
+      ],
+      "allUnitIds": [
+        "SMITH-01",
+        "SMITH-02",
+        "SMITH-03",
+        "SMITH-04",
+        "SMITH-05",
+        "SMITH-06",
+        "MCP-01"
+      ],
+      "functionalCoverageRowIds": [
+        "F085",
+        "F086",
+        "F087",
+        "F088",
+        "F089",
+        "F090",
+        "F091",
+        "F092",
+        "F093",
+        "F094",
+        "F095",
+        "F096",
+        "F097",
+        "F098"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/smith.json",
+        "sha256": "bc0cdc996dc853f527f0c2aa4a20478bc1e75631c58dc85df1df0c16ced9e7ee",
+        "recordedAt": "2026-10-24T04:27:00.026221+00:00",
+        "nextUnit": {
+          "unit": "SMITH-01",
+          "batch": "First read-only legacy navigation/saved-reference regression mapping on one fixed candidate; request exact write lease before any code change.",
+          "firstProposedOwnedFile": "tests/os-shell-navigation.test.mjs",
+          "ownershipStatus": "PROPOSED_ONLY; no product/test file editing authorized by bootstrap",
+          "readNext": [
+            "tests/os-shell-navigation.test.mjs",
+            "tests/home-sky-panel.test.mjs"
+          ],
+          "acceptance": [
+            "legacy /sky and saved references reach same owner data",
+            "role/job/result/ACL/cap/revocation unchanged",
+            "no dispatch/charge/key-update from display-only change",
+            "cross-owner/corrupt/revision/disconnected cases fail closed"
+          ],
+          "nextCommand": "node --experimental-strip-types --test tests/os-shell-navigation.test.mjs tests/home-sky-panel.test.mjs",
+          "collision": "lib/os-navigation.ts, Home, Eve, manifest, brand and shared status remain single-writer; no lease requested via messaging"
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/smith",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "eve",
+      "requestedTitle": "RockstarOS｜Eve・仕事と編集",
+      "primaryUnitIds": [
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-04",
+        "EVE-05",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-13",
+        "EVE-14",
+        "EVE-15"
+      ],
+      "supplementalScope": "P02/P03/P11/P12",
+      "firstUnit": "EVE-01",
+      "mission": "共通Web仕事・Artifact・Remix/media・model評価・Tool/repair・CU・研究内容回収/学習体験",
+      "workstream": "docs/workstreams/02-sky-mcp.md",
+      "packet": "docs/prompts/rockstaros-development-chats/eve.md",
+      "statusPath": "data/development-lanes/eve.json",
+      "sourceChats": [
+        {
+          "id": "01a15b7f-e98c-7c32-ae03-8cb61be8bd7d",
+          "title": "eve"
+        },
+        {
+          "id": "01a16b30-fec8-7f60-af9d-b2411e0f231c",
+          "title": "eve (2)"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/eve-",
+        "lib/rockstar-eve-interaction.ts",
+        "components/eve-",
+        "app/os/eve/remix/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c24-5351-76b0-8c89-c98ad309b2d6",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:21:33.669526+00:00",
+      "supplementalUnitIds": [
+        "SYNC-01",
+        "MODEL-01"
+      ],
+      "allUnitIds": [
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-04",
+        "EVE-05",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "SYNC-01",
+        "MODEL-01"
+      ],
+      "functionalCoverageRowIds": [
+        "F058",
+        "F059",
+        "F060",
+        "F061",
+        "F062",
+        "F063",
+        "F064",
+        "F065",
+        "F066",
+        "F067",
+        "F068",
+        "F071",
+        "F072",
+        "F073",
+        "F074",
+        "F075",
+        "F076",
+        "F077",
+        "F078",
+        "F079",
+        "F080",
+        "F081",
+        "F082",
+        "F083",
+        "F084",
+        "F099",
+        "F100",
+        "F101",
+        "F102",
+        "F103",
+        "F104",
+        "F105",
+        "F106",
+        "F107",
+        "F108",
+        "F109",
+        "F110",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08",
+        "A09"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/eve.json",
+        "sha256": "f7919d4479707aed57c9d8d39cbdc775d20cf05bae366781bad46d883c69b05d",
+        "recordedAt": "2026-10-24T04:24:02.492403+00:00",
+        "nextUnit": {
+          "id": "EVE-02",
+          "oneBatch": "Contract-first text Remix job binding: after source reconciliation/shared contract agreement, define pure immutable request/digest validation in lib/eve-remix.ts with tests/eve-remix.test.mjs; no executor/UI conversion or binary transfer in that batch",
+          "acceptance": [
+            "Exact owner/job/thread/revision/command/attempt/material/agent/model/destination/scope/cap/deadline/quote contract agreed by consumers at same revision/hash",
+            "2-4 text materials, total8000 characters, goal500 and immutable originals preserved",
+            "Reject changed digest/stale revision/foreign owner and confirm zero effects before durable save",
+            "Focused tests pass; EVE-03 binary transfer remains separate"
+          ],
+          "commands": [
+            "node --experimental-strip-types --test tests/eve-remix.test.mjs tests/workflow.test.mjs",
+            "npm run typecheck"
+          ],
+          "blockedOn": "Git source reconciliation and shared contract ownership/revision; no need to wait for full OS, finance or all media completion"
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/eve",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "mini",
+      "requestedTitle": "RockstarOS｜Mini・空間と回路",
+      "primaryUnitIds": [
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08"
+      ],
+      "supplementalScope": "P10/P11/P12",
+      "firstUnit": "MINI-01",
+      "mission": "板膜なし/少数全範囲/低眩しさ、手/声/光学/独立停止/PCB、Material/CAD/BIMと現地計測",
+      "workstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+      "packet": "docs/prompts/rockstaros-development-chats/mini.md",
+      "statusPath": "data/development-lanes/mini.json",
+      "sourceChats": [
+        {
+          "id": "01a15026-972f-7f32-945a-2c2045c1f14e",
+          "title": "miniの設計を確認"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "systems/rock-star-os/targets/avocado-mini/",
+        "docs/avocado-mini-r5/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c29-97a5-7a50-bce4-b251e505ad52",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:27:17.395964+00:00",
+      "supplementalUnitIds": [
+        "MATERIAL-01"
+      ],
+      "allUnitIds": [
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "MATERIAL-01"
+      ],
+      "functionalCoverageRowIds": [
+        "F150",
+        "F161",
+        "F162",
+        "F163",
+        "F164"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/mini.json",
+        "sha256": "fcf28b0543f99ebc7bb393d07f36fca15054c3e4f23397d0a2b756e5f20ca11c",
+        "recordedAt": "2026-10-24T04:28:42.829861+00:00",
+        "nextUnit": {
+          "id": "MINI-01",
+          "action": "Assign exact place-profile.mjs and companion local test candidate, agree shared contract revision, then implement one fail-closed synthetic profile validation batch.",
+          "acceptance": "Valid profile roundtrip/hash; reject missing/invalid required geometry, stale revisions and silent domain shrinking; unknown remains unavailable; necessary pass never implies physical/whole-range pass."
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/mini",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "pro",
+      "requestedTitle": "RockstarOS｜Pro・共通OSと実機",
+      "primaryUnitIds": [
+        "PRO-01",
+        "PRO-02",
+        "PRO-03",
+        "PRO-04"
+      ],
+      "supplementalScope": "P10/P07/P08",
+      "firstUnit": "PRO-01",
+      "mission": "旧localStorageの非破壊移行・共通UI・native/実機SKU・販売12gateと注文配送",
+      "workstream": "docs/workstreams/09-business-pilots.md",
+      "packet": "docs/prompts/rockstaros-development-chats/pro.md",
+      "statusPath": "data/development-lanes/pro.json",
+      "sourceChats": [
+        {
+          "id": "01a15027-87c3-74b0-a840-ba8e97ea4265",
+          "title": "Proの設計を確認"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "sites/avocado-mini/src/pages/pro/",
+        "sites/avocado-mini/src/pro-os.js",
+        "sites/avocado-mini/src/pro-os.css",
+        "data/avocado-pro-sales-readiness.json"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c2a-4989-7581-917d-2ece16d4405b",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:28:02.707937+00:00",
+      "supplementalUnitIds": [],
+      "allUnitIds": [
+        "PRO-01",
+        "PRO-02",
+        "PRO-03",
+        "PRO-04"
+      ],
+      "functionalCoverageRowIds": [
+        "F151"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/pro.json",
+        "sha256": "9a6aa389fe0e66237e4e0c7f4defaade12c184ba8551ce48792429d289e64411",
+        "recordedAt": "2026-10-24T04:29:25.829393+00:00",
+        "nextUnit": {
+          "id": "PRO-01",
+          "batch": "Explicit non-destructive local export + strict migration envelope preview; no server mutation/model/payment.",
+          "firstOwnedFileProposed": "sites/avocado-mini/src/pro-local-import.mjs",
+          "otherExactPathsProposed": [
+            "sites/avocado-mini/src/pro-os.js",
+            "sites/avocado-mini/src/pages/pro/index.astro",
+            "sites/avocado-mini/tests/pro-local-import.test.mjs"
+          ],
+          "ownershipStatus": "proposal_only; requires integration assignment before edits",
+          "acceptance": "Raw key originals remain byte-identical on export/cancel/error; draft + board roundtrip; reject unknown fields/version/duplicate IDs/control characters/oversize; preserve160-char board text and legacy done provenance; no network/Tool/charge. Server owner/CAS/replay/readback tests follow shared contract agreement.",
+          "plannedCommands": [
+            "node --check sites/avocado-mini/src/pro-local-import.mjs",
+            "node --test sites/avocado-mini/tests/pro-local-import.test.mjs"
+          ],
+          "plannedCommandsExistNow": false
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/pro",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "esim",
+      "requestedTitle": "RockstarOS｜eSIM・利用開始",
+      "primaryUnitIds": [
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08"
+      ],
+      "supplementalScope": "P06",
+      "firstUnit": "ESIM-01",
+      "mission": "issuer lifecycle・setup operation/outbox・端末鍵・親子attachment・失効復帰・既存OS導入",
+      "workstream": "docs/sim-led-product-architecture.md",
+      "packet": "docs/prompts/rockstaros-development-chats/esim.md",
+      "statusPath": "data/development-lanes/esim.json",
+      "sourceChats": [
+        {
+          "id": "01a15186-5031-7180-85f9-df268547bbb0",
+          "title": "専用クラウドの安全性を確認"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/rockstar-service-attachment.ts",
+        "lib/rockstar-service-setup.ts",
+        "lib/rockstar-service-setup-store.ts",
+        "lib/rockstar-entitlement-",
+        "lib/esim-",
+        "toolkits/esim-bootstrap/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c2b-9ab4-78d1-a26c-4d93f736f4b5",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:29:27.078096+00:00",
+      "supplementalUnitIds": [],
+      "allUnitIds": [
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08"
+      ],
+      "functionalCoverageRowIds": [
+        "F015",
+        "F016",
+        "F017",
+        "F018",
+        "F019",
+        "F020",
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F025",
+        "F026",
+        "F027",
+        "F153"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/esim.json",
+        "sha256": "2f3965327f3c2905fd918c55bb193cd2fcb405d75f78e8f4b2f945283df3aff0",
+        "recordedAt": "2026-10-24T04:31:02.968677+00:00",
+        "nextUnit": {
+          "id": "ESIM-01-A",
+          "status": "awaiting_single_writer_path_allocation_and_authority_contract",
+          "action": "Integrator pin main/Root/Source candidate; allocate tests/rockstar-service-setup.test.mjs and lib/rockstar-service-setup.ts for state-matrix server fixture extension. Remain within ESIM-01; ESIM-02 lifecycle persistence is subsequent work."
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/esim",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "billing",
+      "requestedTitle": "RockstarOS｜料金・請求・作者精算",
+      "primaryUnitIds": [
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08"
+      ],
+      "supplementalScope": "P07/P08",
+      "firstUnit": "BILL-01",
+      "mission": "料金版/起算/原子予約/usage/一意Invoice/入金返金/未払復帰と作者精算",
+      "workstream": "docs/workstreams/03-wallet-billing-providers.md",
+      "packet": "docs/prompts/rockstaros-development-chats/billing.md",
+      "statusPath": "data/development-lanes/billing.json",
+      "sourceChats": [
+        {
+          "id": "01a15972-8a7f-7ab1-ab08-55065fead59f",
+          "title": "実行量ベースの請求管理を整備"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/sky-linux-billing.ts",
+        "lib/sky-linux-payment-handler.ts",
+        "lib/rockstar-service-setup-billing.ts",
+        "lib/sky-agent-monthly",
+        "lib/sky-payments.ts",
+        "lib/sky-author-",
+        "components/sky-payments.tsx",
+        "services/sky-billing/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "threadId": "01a16c2c-51f1-7920-b67a-5c1799ae20f9",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:30:11.228094+00:00",
+      "supplementalUnitIds": [],
+      "allUnitIds": [
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08"
+      ],
+      "functionalCoverageRowIds": [
+        "F111",
+        "F112",
+        "F113",
+        "F114",
+        "F115",
+        "F116",
+        "F117",
+        "F118",
+        "F119",
+        "F120",
+        "F121",
+        "F122",
+        "F123",
+        "F124",
+        "F125",
+        "A07"
+      ],
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/billing.json",
+        "sha256": "4491ab442271364007f367eb741af9bb0733aea0c6c625fa167712b3ca18329e",
+        "recordedAt": "2026-10-24T04:31:39.969335+00:00",
+        "nextUnit": {
+          "id": "BILL-01",
+          "scope": "one compatible fixed-price snapshot and pending terms validation batch after Git source/ownership freeze",
+          "proposedPaths": [
+            "lib/sky-linux-service.ts",
+            "lib/rockstar-service-setup.ts",
+            "lib/rockstar-service-setup-billing.ts",
+            "lib/sky-agent-monthly-statement.ts",
+            "lib/sky-cloud-monthly-store.ts",
+            "db/schema.ts",
+            "tests/sky-linux-service.test.mjs",
+            "tests/rockstar-service-setup.test.mjs"
+          ],
+          "acceptance": [
+            "1600 USD minor once per contract/month; device count does not multiply base",
+            "undefined legacy/null preparation retained; restart/re-pair cannot reset start",
+            "pending terms blocks sale/paid dispatch; altered snapshot digest rejected",
+            "existing drafts, ledger rows and amounts unchanged"
+          ],
+          "commandsNotRun": [
+            "node --experimental-strip-types --test tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs",
+            "node --experimental-strip-types --test tests/sky-agent-monthly-migration.test.mjs",
+            "npm run schema:check"
+          ],
+          "followingUnit": "BILL-02 only after snapshot contract agreement"
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/billing",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "wallet",
+      "requestedTitle": "RockstarOS｜Wallet・収益照合",
+      "primaryUnitIds": [],
+      "supplementalScope": "P07/P08/RQ06/RQ15",
+      "firstUnit": "WALLET-01",
+      "mission": "一般Wallet/真正入金/888c/ATM/外部保管adapter、予約台帳/返金/失効の共通契約",
+      "workstream": "docs/workstreams/03-wallet-billing-providers.md",
+      "packet": "docs/prompts/rockstaros-development-chats/wallet.md",
+      "statusPath": "data/development-lanes/wallet.json",
+      "sourceChats": [
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/settlement",
+        "lib/wallet",
+        "os/wallet_backend/",
+        "os/entitlement/",
+        "systems/rock-star-os/src/blackberryrock/wallet"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "supplementalUnitIds": [
+        "WALLET-01",
+        "WALLET-02",
+        "WALLET-03"
+      ],
+      "allUnitIds": [
+        "WALLET-01",
+        "WALLET-02",
+        "WALLET-03"
+      ],
+      "functionalCoverageRowIds": [
+        "F126",
+        "F127",
+        "F128",
+        "F129",
+        "F130",
+        "F131",
+        "F132",
+        "F133",
+        "F134",
+        "F135",
+        "F136",
+        "A10"
+      ],
+      "threadId": "01a16c2e-7c9a-7280-ae01-171f113453ef",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:32:31.660160+00:00",
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/wallet.json",
+        "sha256": "8e9fee63890dd124987a6acefdc0b6939f1fc1f3f207a4c0bd33f926ebca8cab",
+        "recordedAt": "2026-10-24T04:33:46.689903+00:00",
+        "nextUnit": {
+          "id": "WALLET-01",
+          "batch": "pure synthetic deposit provenance contract and negative fixtures first, then request persistence seam against existing journal",
+          "acceptance": "authenticated same-owner integer currency amount+unique external event; pending→confirmed→available only after independent finality; restart reconciliation; linked refund/reorg reversal; zero duplicate/cross-owner credits; liveEnabled=false",
+          "blockedOn": "exact write-set allocation and consumer/schema revision agreement before shared persistence implementation"
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/wallet",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "game",
+      "requestedTitle": "RockstarOS｜Game・World・作者SDK",
+      "primaryUnitIds": [],
+      "supplementalScope": "RQ13/RQ14/P10",
+      "firstUnit": "GAME-01",
+      "mission": "非金融Game/World/作者SDK・sandbox・導入診断、交換は独立gate、現実作品とゲーム出力adapter",
+      "workstream": "docs/workstreams/08-game-market-fund.md",
+      "packet": "docs/prompts/rockstaros-development-chats/game.md",
+      "statusPath": "data/development-lanes/game.json",
+      "sourceChats": [
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "toolkits/rock-game",
+        "packages/game",
+        "lib/game",
+        "systems/rock-star-os/games/"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "supplementalUnitIds": [
+        "GAME-01",
+        "GAME-02"
+      ],
+      "allUnitIds": [
+        "GAME-01",
+        "GAME-02"
+      ],
+      "functionalCoverageRowIds": [
+        "F155",
+        "F156",
+        "F157",
+        "F158",
+        "F159",
+        "F160",
+        "F165"
+      ],
+      "threadId": "01a16c2e-d5e8-7b01-8773-796ab372d10c",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:32:58.629558+00:00",
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/game.json",
+        "sha256": "2a0a6f069e4354a68ed5f3e9e107f5742118fecf180a11bba11d3aca6e344759",
+        "recordedAt": "2026-10-24T04:33:58.853395+00:00",
+        "nextUnit": {
+          "id": "GAME-01",
+          "batch": "manifest + static diagnostic pure contract fixture",
+          "proposedExactOwnedPaths": [
+            "lib/game-intake.ts",
+            "tests/game-intake.test.mjs"
+          ],
+          "ownershipStatus": "proposal_only_requires_registry_single_writer_assignment",
+          "steps": [
+            "既存manifest候補を再利用しauthor/rights/engine/runtime/package hash/capability/save/rule版を固定。",
+            "allowlisted runtimeのみlaunch_candidate、unknown engineはunsupported、権利欠落rights_blocked。静的診断でlaunch/input/save成功にしない。",
+            "先に2作者/2方式のfresh fixtureと失敗分母・時間・復旧計測契約を固定。既存sample/saveを保全。"
+          ],
+          "acceptance": [
+            "別owner/旧版save、未知engine、欠落license、過大resource/path traversalを拒否。",
+            "最初のpure fixtureを局所試験し、実engineの隔離・fresh制作/持込み→試遊/export/save/restart/rollbackは別受入。"
+          ]
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/game",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    },
+    {
+      "id": "web-ops",
+      "requestedTitle": "RockstarOS｜通信・Web・運用",
+      "primaryUnitIds": [],
+      "supplementalScope": "P04/P11/P13/NET01",
+      "firstUnit": "WEBOPS-01",
+      "mission": "通信復旧/ネット時刻/VPN境界、Web/a11y/PWA/通知、監視/incident/abuse/support/期限管理",
+      "workstream": "docs/workstreams/05-web-pwa-sites.md",
+      "packet": "docs/prompts/rockstaros-development-chats/web-ops.md",
+      "statusPath": "data/development-lanes/web-ops.json",
+      "sourceChats": [
+        {
+          "id": "01a15972-e357-7572-a67d-b53d9bb0b9ab",
+          "title": "Web導線と導入体験を改善"
+        },
+        {
+          "id": "01a1596a-9af6-7a23-800a-22be115e3275",
+          "title": "内容を確認"
+        }
+      ],
+      "ownedPathCandidates": [
+        "lib/network",
+        "lib/notification",
+        "app/sw",
+        "public/sw.js",
+        "scripts/check-web-security-response.mjs",
+        "data/web-security-policy.json"
+      ],
+      "phase": "bootstrap_complete",
+      "initialTask": "bounded_source_and_contract_preflight_only",
+      "globalFilesWritable": false,
+      "runtimeChangesAllowedDuringBootstrap": false,
+      "supplementalUnitIds": [
+        "WEBOPS-01",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-01",
+        "OPS-03"
+      ],
+      "allUnitIds": [
+        "WEBOPS-01",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-01",
+        "OPS-03"
+      ],
+      "functionalCoverageRowIds": [
+        "F002",
+        "F013",
+        "F040",
+        "F137",
+        "F138",
+        "F139",
+        "F140",
+        "F141",
+        "F142",
+        "F143",
+        "F144",
+        "F145",
+        "F146",
+        "F147",
+        "F148",
+        "F171",
+        "F174",
+        "F175",
+        "F176",
+        "F177",
+        "F178",
+        "F179"
+      ],
+      "threadId": "01a16c30-a468-7681-923d-3a8bd7871587",
+      "hostId": "local",
+      "createdAt": "2026-10-24T04:34:53.770711+00:00",
+      "bootstrapStatus": "complete",
+      "implementationStatus": "queued_after_source_contract_handoff",
+      "bootstrapReceipt": {
+        "statusPath": "data/development-lanes/web-ops.json",
+        "sha256": "d4e2ea706c1b4c4a1d2e43a56c401bbd9443727d50a442819e41d07314ce634a",
+        "recordedAt": "2026-10-24T04:36:33.573914+00:00",
+        "nextUnit": {
+          "id": "WEBOPS-01",
+          "action": "Git assigns maintenance TSX/CSS/dedicated accessibility test; inspect computed focus then implement one diagnostic/backup-dialog flow and collect local browser evidence. WEBOPS-02/03 and OPS are queued separately."
+        }
+      },
+      "historyAchievementRef": "data/rockstaros-chat-achievements.json#/lanes/web-ops",
+      "unitProgressPath": "data/development-unit-progress.json",
+      "historyPacketUpdatedAt": "2026-10-24T05:12:08.610961+00:00",
+      "modelRoutingPolicyPath": "data/development-model-routing.json",
+      "coordinatorDefaultModel": "gpt-6.1-sol",
+      "modelRoutingConfiguredForFutureDispatch": true
+    }
+  ],
+  "sourceOwnership": {
+    "rules": [
+      "責任のprimaryと編集権限は別。各unit primaryは自分のowned pathsのみ編集し、他ownerのAPI/共有fileへは差分提案を渡す。",
+      "exact path例外をfolder wildcardより優先。複数laneへ同path writeを渡さない。",
+      "Git laneのみbranch/worktree作成、stage/commit/push/PR/main/配備操作。実装laneは製品コードと局所証拠のみ。",
+      "AGENTS/README/project/status/正本/設計index/nextPrompt等のglobal更新は各laneのstatus deltaをGit laneが反映する。独自に古い全体JSONを上書きしない。",
+      "共有Rootで8lane同時編集しない。Gitが分離checkout/owned-path台帳を用意するまではread-only。初回bootstrap時はworktree/branch実操作なし。GIT-03は明示された実行承認とglobal writer引継ぎに従い、別managed checkoutを準備する。",
+      "所有解決はglobal/exact path例外→最長prefix→候補。候補は編集許可ではなく、Gitがexact write setを確定する。OSの広いsubtreeからWallet/Game/Miniの明示所有を除外する。"
+    ],
+    "globalGitOnly": [
+      "AGENTS.md",
+      "README.md",
+      "project.md",
+      "data/product-baseline.json",
+      "docs/product-baseline.md",
+      "data/project-status.json",
+      "data/design-document-index.json",
+      "data/rockstaros-remaining-work-plan.json",
+      "docs/prompts/rockstaros-remaining-work-development.md",
+      "docs/rockstaros-complete-design.md",
+      "docs/sky-tools-complete-design.md",
+      "docs/device-support-architecture.md",
+      "contracts/* shared schema",
+      "db/schema.ts",
+      "drizzle/*",
+      "drizzle-main/*",
+      "lib/workflow.ts",
+      "lib/rockstar-adapters.ts",
+      "lib/sky-linux-service.ts",
+      "sites/avocado-mini/worker/index.js shared router",
+      "sites/avocado-mini/worker/shared/domains.mjs",
+      "app/manifest.ts",
+      "docs/rockstaros-avocado-mini-complete-design.md"
+    ],
+    "observedCollisionCount": 32,
+    "observedCollisions": [
+      {
+        "path": "app/manifest.ts",
+        "referencedBy": [
+          "smith",
+          "web-ops"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "components/eve-interaction-panel.tsx",
+        "referencedBy": [
+          "mini",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "components/eve-media-studio.tsx",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "components/eve-remix-stage.tsx",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "components/eve-remix-workspace.tsx",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "components/eve-sync-workspace.tsx",
+        "referencedBy": [
+          "eve",
+          "os-pixel",
+          "pro",
+          "web-ops"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "contracts/rockstaros-portable-runtime.json",
+        "referencedBy": [
+          "mini",
+          "os-pixel"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "data/project-status.json",
+        "referencedBy": [
+          "git",
+          "smith"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "docs/device-support-architecture.md",
+        "referencedBy": [
+          "mini",
+          "os-pixel",
+          "pro",
+          "smith"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "docs/evidence/eve-media-studio.json",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "docs/rockstaros-avocado-mini-complete-design.md",
+        "referencedBy": [
+          "mini",
+          "smith"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "docs/security-incident-response.md",
+        "referencedBy": [
+          "os-pixel",
+          "web-ops"
+        ],
+        "singleWriter": "os-pixel"
+      },
+      {
+        "path": "docs/sky-tools-complete-design.md",
+        "referencedBy": [
+          "eve",
+          "smith"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "lib/eve-agent-preparation-sync.ts",
+        "referencedBy": [
+          "eve",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-device-sync.ts",
+        "referencedBy": [
+          "eve",
+          "os-pixel"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-media-app.ts",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-media-edit.ts",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-purpose-runtime-work-port.ts",
+        "referencedBy": [
+          "eve",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-remix.ts",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-runtime-history-control.ts",
+        "referencedBy": [
+          "eve",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-runtime-recovery.ts",
+        "referencedBy": [
+          "eve",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-runtime-sync.ts",
+        "referencedBy": [
+          "eve",
+          "os-pixel",
+          "smith",
+          "web-ops"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/eve-runtime-work-port.ts",
+        "referencedBy": [
+          "eve",
+          "pro",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/operations.ts",
+        "referencedBy": [
+          "wallet",
+          "web-ops"
+        ],
+        "singleWriter": "wallet"
+      },
+      {
+        "path": "lib/rockstar-adapters.ts",
+        "referencedBy": [
+          "eve",
+          "os-pixel"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "lib/rockstar-eve-interaction.ts",
+        "referencedBy": [
+          "eve",
+          "mini",
+          "os-pixel",
+          "smith"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "lib/workflow.ts",
+        "referencedBy": [
+          "eve",
+          "game",
+          "git",
+          "mini",
+          "os-pixel",
+          "pro",
+          "smith",
+          "web-ops"
+        ],
+        "singleWriter": "git"
+      },
+      {
+        "path": "scripts/pixel-runtime-stop-journal.mjs",
+        "referencedBy": [
+          "eve",
+          "os-pixel"
+        ],
+        "singleWriter": "os-pixel"
+      },
+      {
+        "path": "tests/eve-device-sync.test.mjs",
+        "referencedBy": [
+          "eve",
+          "os-pixel"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "tests/eve-media-edit.test.mjs",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "tests/eve-remix.test.mjs",
+        "referencedBy": [
+          "eve",
+          "mini"
+        ],
+        "singleWriter": "eve"
+      },
+      {
+        "path": "tests/eve-runtime-sync.test.mjs",
+        "referencedBy": [
+          "eve",
+          "os-pixel"
+        ],
+        "singleWriter": "eve"
+      }
+    ],
+    "laneBoundaries": {
+      "os-pixel": {
+        "write": [
+          "android/",
+          "os/ except wallet_backend/ and entitlement/",
+          "toolkits/sky-linux-local/",
+          "systems/rock-star-os/ except targets/avocado-mini/, games/, src/blackberryrock/wallet*, os/wallet_backend/, os/settlement/, os/entitlement/",
+          "Pixel/host-specific scripts/tests"
+        ],
+        "proposeOnly": [
+          "shared Web runtime",
+          "global Broker/workflow/schema/contracts",
+          "Eve/Smith UI"
+        ]
+      },
+      "eve": {
+        "write": [
+          "Eve Web runtime/history/stop/recovery TS modules and UI",
+          "Remix/media modules/tests/evidence",
+          "model/LLM/planner/finite repair consumer"
+        ],
+        "proposeOnly": [
+          "OS/native/Pixel scripts",
+          "global workflow/schema",
+          "Smith private library/ACL contract",
+          "billing side effects"
+        ]
+      },
+      "smith": {
+        "write": [
+          "purpose/missing-capability/visual/module/shared-Agent private modules",
+          "Smith/Add/outcomes/feed UI and tests"
+        ],
+        "proposeOnly": [
+          "shared eve-runtime/lib/rockstar-eve-interaction",
+          "schema/global contracts",
+          "Pixel native",
+          "binary media storage authority"
+        ]
+      },
+      "mini": {
+        "write": [
+          "systems/rock-star-os/targets/avocado-mini/",
+          "Mini spatial/factory local source and local evidence",
+          "Mini-only Site UI"
+        ],
+        "proposeOnly": [
+          "Eve Remix/media core",
+          "global adapter/contracts",
+          "common Sites worker/router",
+          "Pro UI/runtime",
+          "shared billing"
+        ]
+      },
+      "pro": {
+        "write": [
+          "Pro-only Site UI/local import adapter/tests",
+          "Pro BOM/sales-readiness domain data/evidence"
+        ],
+        "proposeOnly": [
+          "shared Sites worker/router",
+          "generic payment/Invoice transport",
+          "common runtime/core",
+          "Mini hardware"
+        ]
+      },
+      "esim": {
+        "write": [
+          "issuer/claim/event/setup/attachment/eSIM gateway domain modules/tests"
+        ],
+        "proposeOnly": [
+          "lib/rockstar-service-setup-billing.ts",
+          "lib/sky-linux-service.ts",
+          "shared budget/Invoice",
+          "OS attestation/Keystore implementation"
+        ]
+      },
+      "billing": {
+        "write": [
+          "usage/quote/reservation/monthly/Invoice/author remuneration/payment domain modules/tests",
+          "lib/rockstar-service-setup-billing.ts"
+        ],
+        "proposeOnly": [
+          "issuer truth/entitlement epoch",
+          "global lifecycle lib/sky-linux-service.ts",
+          "Wallet balance/financial rail mutation",
+          "Pro order business gate"
+        ]
+      },
+      "wallet": {
+        "write": [
+          "os/wallet_backend/",
+          "os/entitlement/",
+          "systems/rock-star-os/src/blackberryrock/wallet*",
+          "Wallet-only domain modules/tests/evidence after exact-path assignment",
+          "systems/rock-star-os/os/wallet_backend/",
+          "systems/rock-star-os/os/settlement/",
+          "systems/rock-star-os/os/entitlement/"
+        ],
+        "proposeOnly": [
+          "billing/Invoice/PSP common transport",
+          "global schema/workflow",
+          "Game points issuance",
+          "native generic Broker"
+        ]
+      },
+      "game": {
+        "write": [
+          "systems/rock-star-os/games/",
+          "Game-only domain modules/author SDK/sandbox/tests after exact-path assignment"
+        ],
+        "proposeOnly": [
+          "Wallet funds/ledger authority",
+          "shared workflow/schema",
+          "Mini physical fabrication",
+          "common Sites router"
+        ]
+      },
+      "web-ops": {
+        "write": [
+          "Web/PWA/a11y/notification/operations-only modules/tests/runbooks after exact-path assignment"
+        ],
+        "proposeOnly": [
+          "OS network/device transport writer",
+          "Eve media/binary ownership",
+          "shared Sites/router/global workflow",
+          "CI/Git/deployment operations"
+        ]
+      }
+    },
+    "sharedGlobalFilesBootstrapWriter": "coordinator_only_until_explicit_git_handoff",
+    "implementationResourceLeaseRule": "Current original Smith owns Pixel lease; transfer only after its operation finishes and source/artifact/backup is read back.",
+    "currentExactSharedOwnership": {
+      "lib/workflow.ts": "git",
+      "lib/work-store.ts": "git",
+      "db/schema.ts": "git",
+      "drizzle/": "git GIT-04 exclusive",
+      "drizzle-main/": "git GIT-04 exclusive",
+      "lib/rockstar-adapters.ts": "git",
+      "lib/sky-linux-service.ts": "git",
+      "lib/rockstar-service-setup-billing.ts": "billing domain proposal; git applies reviewed common contract in integration checkout",
+      "sites/avocado-mini/worker/index.js": "git shared router only; Mini/Pro propose changes",
+      "sites/avocado-mini/worker/shared/domains.mjs": "git shared router",
+      "data/rockstaros-development-chats.json": "git",
+      "data/development-unit-progress.json": "git",
+      "data/development-execution.json": "coordinator dispatch journal exception",
+      "project.md": "git",
+      "data/project-status.json": "git",
+      "README.md": "git",
+      "app/api/work-jobs/route.ts": "git retains main .list(user,true); endpoint owner comes from authentication",
+      "lib/eve-news-work.ts": "Eve proposal; git applies scoped call preserving kind even when threadId undefined",
+      "lib/eve-tool-work.ts": "Eve proposal; git applies scoped call preserving exact optional thread",
+      "app/api/amc/route.ts": "git retains main specialized readers",
+      "app/api/material-invention/route.ts": "git retains main listMaterial owner scope",
+      "app/api/sky/a2a-delegations/route.ts": "git retains main Jennifer child readers; no owner widening",
+      "lib/rockstar-service-setup.ts": "esim ESIM-01 sole Root writer; git read/adopt after delta review only",
+      "tests/rockstar-service-setup.test.mjs": "esim ESIM-01 sole Root writer"
+    }
+  },
+  "functionalCoveragePath": "data/rockstaros-full-function-coverage.json",
+  "totalImplementationUnits": 95,
+  "bootstrapCompleteCount": 11,
+  "createdChatCount": 11,
+  "activeBootstrapCountAtRead": 0,
+  "historyAchievementPath": "data/rockstaros-chat-achievements.json",
+  "unitProgressPath": "data/development-unit-progress.json",
+  "historyReflection": {
+    "recordedAt": "2026-10-24T05:12:08.610961+00:00",
+    "threadsReadToEnd": 23,
+    "achievementRecords": 42,
+    "allLanePacketsUpdated": true,
+    "noRuntimeExecutionByAuthoring": true,
+    "status": "verified_independently_reviewed",
+    "verifiedAt": "2026-10-24T05:17:50.725409+00:00",
+    "reviewReceipt": {
+      "path": "docs/evidence/rockstaros-history-prompt-review.json",
+      "sha256": "993c7143d0d5ce8b18dcc8edce65dae363727fd5406021f5df90b9061f718204",
+      "bytes": 6483,
+      "scope": "Independent static review of history-to-prompt integration; no runtime acceptance or external action performed.",
+      "inputHashesAreReviewTimeSnapshotsBeforeValidationMetadataUpdates": true,
+      "detailedPromptSha256": "0383915f1dda83fa63db3433f6a3c2803c8302bff8be095c83f3032f15c5121b"
+    }
+  },
+  "modelRoutingPolicyPath": "data/development-model-routing.json",
+  "modelRoutingStatus": "dispatch_started_with_structured_model_thinking",
+  "executionAuthorization": "Latest user explicitly authorized implementation, eleven-chat dispatch with allocated models, ordinary Git save and main integration",
+  "globalWriterCurrent": "git",
+  "globalWriterHandoff": {
+    "from": "coordinator",
+    "to": "git",
+    "at": "2026-10-24T06:05:17.082084+00:00",
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "sourceManifest": "docs/evidence/development-execution/git-01.json",
+    "ownedGlobals": "existing sourceOwnership.globalGitOnly plus registry, unit ledger, plan/project/status and design synchronization",
+    "coordinatorException": "data/development-execution.json dispatch journal only",
+    "physicalLease": "no physical operations allocated by this handoff",
+    "gitAuthorization": "ordinary snapshot/branch/worktree/commit/push/PR/main integration authorized; no force/reset/stash or unrelated merges"
+  },
+  "gitIntegrationCandidate": {
+    "path": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+    "branch": "codex/rock-main-integration-20261024",
+    "baseMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "contractRevision": 2,
+    "contractSha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+    "review": "accepted limited helper exact head",
+    "runtimePorted": false,
+    "migrationCandidateEvidence": "docs/evidence/development-execution/git-04.json",
+    "migrationCandidateFilesSha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+    "pr": 186,
+    "gitCommit": "3de31818bc2b18a4e82bc4ebf5a5e39357af2816",
+    "ci": "PR head7/7 success; main merge6/6 success",
+    "mainMerged": true,
+    "currentCoreFilesSha256": "829f8fc8cd32c0b58f297ffbca1620ef6521ad1213af19738c1ed868de7f2cf3",
+    "checkpoint": "docs/evidence/development-execution/git-04-main-merge.json",
+    "mergeCommit": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac"
+  },
+  "nextGitAdoption": {
+    "branch": "codex/reviewed-service-contracts-20261024",
+    "baseMain": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+    "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+    "state": "PR187_saved_ci_review_pending_checkpoint_idle",
+    "head": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+    "pr": 187,
+    "checkpoint": "docs/evidence/development-execution/service-contract-github-checkpoint.json",
+    "fullVerifyExit": 0
+  }
+}

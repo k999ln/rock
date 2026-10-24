@@ -1,0 +1,371 @@
+{
+  "schema": "rockstaros.development-execution.eve-01/1",
+  "recordedAt": "2026-10-24T06:03:05.915717+00:00",
+  "unit": "EVE-01",
+  "status": "source_manifest_delivered_pending_independent_review",
+  "routing": {
+    "requestedModel": "gpt-6.1-sol",
+    "requestedEffort": "medium",
+    "appliedModel": null,
+    "appliedModelConfirmed": false,
+    "reason": "dispatch requested model/effort; runtime setting cannot be independently read here",
+    "attemptCount": 1
+  },
+  "root": {
+    "checkout": "/Users/kaiya/Documents/ChatGPT/avokdo",
+    "branch": "codex/esim-cloud-access",
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "dirty": true,
+    "candidateDefinition": "scoped source bytes in this manifest; not immutable whole-tree build"
+  },
+  "main": {
+    "cachedRef": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "registryFreshReadback": {
+      "generatedAt": "2026-10-24T05:04:24.598Z",
+      "repository": "k999ln/rock",
+      "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "branch": "codex/esim-cloud-access",
+      "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "dirty": true,
+      "branchCount": 21,
+      "openPullRequests": 11,
+      "checks": [
+        {
+          "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+          "state": "PASS",
+          "total": 23,
+          "allSuccessful": true
+        },
+        {
+          "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+          "state": "PASS",
+          "total": 1,
+          "allSuccessful": true
+        }
+      ],
+      "sourceReviewComplete": false,
+      "restrictedAttemptFailedBeforeSuccessfulRead": true
+    },
+    "liveRemoteRereadThisExecution": false,
+    "note": "Git single-writer owns current remote/CI; cached refs and prior registry are not new remote proof"
+  },
+  "separateSource": {
+    "checkout": "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-agent-integration",
+    "branch": "codex/eve-agent-amc-v115",
+    "head": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+    "origin": "/Users/kaiya/Documents/ChatGPT/avokdo/work/eve-v115-live-source",
+    "gitHubSaved": false,
+    "note": "Local origin only; saved source not main or public"
+  },
+  "public": {
+    "evidence": "docs/evidence/eve-smis-execution-loop.json#publication",
+    "evidenceFileSha256": "cc95beb961c6a29e7e0dd55057b03477552fd694e2c786b94cb3d962e4d47c6c",
+    "version": 118,
+    "sourceCommit": "d26363bd7f4a37501db6ba2061728b80351bf776",
+    "archiveSha256": "3469b2f4b8fda4d9cbceef7cbb7ab45a0106786f23ce2deaf58fe50cae49181c",
+    "currentDeploymentReadback": false,
+    "publicCommitAvailableInSourceRepo": false,
+    "acceptance": "historical asset/deployment evidence only; no current UI or new Remix acceptance"
+  },
+  "apk": {
+    "evidence": "docs/evidence/smis-object-purpose.json#pixelNoPartsFollowup20261023.followup20261024.finalNativeCandidate",
+    "installedApkSha256Reported": "965922559978b230f5b963726312fe9684a28105c5bccf89711661590f3eec52",
+    "deviceReread": false,
+    "localApkBytesChecked": false,
+    "note": "Reported installed debug APK identity; not full native OS or same Web candidate"
+  },
+  "guest": {
+    "evidence": "docs/evidence/smis-object-purpose.json#pixelNoPartsFollowup20261023.followup20261024.stopRepair",
+    "transactionId": "47bd3097d8a469c7b46d9eef41ed01f6b3a275fc385500d14127416912b7bf9f-90cd974a87a84e3cb75fb20430e78f81",
+    "manifestSha256Reported": "47bd3097d8a469c7b46d9eef41ed01f6b3a275fc385500d14127416912b7bf9f",
+    "sourceWorkerSha256": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+    "currentHostWorkerSha256": "396c2160a769966e21dd9a631f81c3a3bf90adbbf6fd005f5b8ffa181393b8a0",
+    "deviceReread": false,
+    "scope": "same-worker source hash aligns; full guest package not independently reread; stop repair and physical model quality are separate"
+  },
+  "artifactEquality": "Root working files, main commit, separate Source commit, public archive, APK binary and guest transaction are distinct identities; no cross-artifact equivalence asserted",
+  "preservation": {
+    "directory": "/private/tmp/eve-01-preservation-20261024T060305916061Z",
+    "manifestSha256": "1794ad95b23904b1590634a9510cd672f67d6832815c34be0f7862a6c59d01da",
+    "fileCount": 13,
+    "bytes": 87381,
+    "allSourceBackupHashesMatched": true,
+    "gitTrackedBackup": false,
+    "scope": "Explicit code/CSS/test/page files only; no raw materials, credentials, keys, owner data, build cache, generated media"
+  },
+  "sourceFiles": [
+    {
+      "path": "app/os/eve/remix/page.tsx",
+      "bytes": 215,
+      "sha256": "2fc0c27094088ae9fbe909a855ba5e9b2c2e77dd33ac441bcfe4232eeb6e6184",
+      "rootGitStatus": "?? app/os/eve/remix/page.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "2fc0c27094088ae9fbe909a855ba5e9b2c2e77dd33ac441bcfe4232eeb6e6184",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-media-studio.module.css",
+      "bytes": 8863,
+      "sha256": "74737ee7f37d156907347c36a5c0605786c026a1c1609c247a4826b27cff2ec9",
+      "rootGitStatus": "?? components/eve-media-studio.module.css",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "74737ee7f37d156907347c36a5c0605786c026a1c1609c247a4826b27cff2ec9",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-media-studio.tsx",
+      "bytes": 22298,
+      "sha256": "b79f14c7d4198b34eb45ac9c763a2ca6d9aca452940ec104802b2ce73f49d38c",
+      "rootGitStatus": "?? components/eve-media-studio.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "b79f14c7d4198b34eb45ac9c763a2ca6d9aca452940ec104802b2ce73f49d38c",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-remix-entry.tsx",
+      "bytes": 876,
+      "sha256": "b7ff4722f6bbac09c449cb4a93088b5ce89dd5dbbe41f97a5e14ab25ee2c5c67",
+      "rootGitStatus": "?? components/eve-remix-entry.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "b7ff4722f6bbac09c449cb4a93088b5ce89dd5dbbe41f97a5e14ab25ee2c5c67",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-remix-stage.tsx",
+      "bytes": 4307,
+      "sha256": "6729198be94dafbbec34843e3ed268ede4af7c493967adea57bb17766dc809e5",
+      "rootGitStatus": "?? components/eve-remix-stage.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "6729198be94dafbbec34843e3ed268ede4af7c493967adea57bb17766dc809e5",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-remix-workspace.tsx",
+      "bytes": 12100,
+      "sha256": "c219622c8b7da56561823b3b284bf4632937edc62cd348ea5f8388b9b61b00ab",
+      "rootGitStatus": "?? components/eve-remix-workspace.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "c219622c8b7da56561823b3b284bf4632937edc62cd348ea5f8388b9b61b00ab",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/eve-remix.module.css",
+      "bytes": 6245,
+      "sha256": "1bddcc3bbb19fc628b70b05c352396d0c72cf70e3eb5ff3d219c9f68117f1262",
+      "rootGitStatus": "?? components/eve-remix.module.css",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "1bddcc3bbb19fc628b70b05c352396d0c72cf70e3eb5ff3d219c9f68117f1262",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "components/smis-agent-remix.tsx",
+      "bytes": 7207,
+      "sha256": "bbac449deac48d4a56ac6ef2a7c6b3997ca459c637e99c38c07d175609941cf5",
+      "rootGitStatus": "?? components/smis-agent-remix.tsx",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "bbac449deac48d4a56ac6ef2a7c6b3997ca459c637e99c38c07d175609941cf5",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "lib/eve-media-app.ts",
+      "bytes": 11485,
+      "sha256": "7c54dfdb76cfc7535e4445fcb847049234223e7684471117b97213ac4497dd67",
+      "rootGitStatus": "?? lib/eve-media-app.ts",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "7c54dfdb76cfc7535e4445fcb847049234223e7684471117b97213ac4497dd67",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "lib/eve-media-edit.ts",
+      "bytes": 5182,
+      "sha256": "5223d8c30ff03c9184747caaccde93dfdeb423fd9a868ea575dcbb894adb6dc9",
+      "rootGitStatus": "?? lib/eve-media-edit.ts",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "5223d8c30ff03c9184747caaccde93dfdeb423fd9a868ea575dcbb894adb6dc9",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "lib/eve-remix.ts",
+      "bytes": 3046,
+      "sha256": "0ee70a8e93f16c987412031c05e1c3d504ab591ea11c00200e0adb8aa95644dd",
+      "rootGitStatus": "?? lib/eve-remix.ts",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "0ee70a8e93f16c987412031c05e1c3d504ab591ea11c00200e0adb8aa95644dd",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "tests/eve-media-edit.test.mjs",
+      "bytes": 2254,
+      "sha256": "a47b7343e268541133da8b48ea15c42b9edfe600ec7b99f1017a08eedf980eb1",
+      "rootGitStatus": "?? tests/eve-media-edit.test.mjs",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "a47b7343e268541133da8b48ea15c42b9edfe600ec7b99f1017a08eedf980eb1",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    },
+    {
+      "path": "tests/eve-remix.test.mjs",
+      "bytes": 3303,
+      "sha256": "0be45e47d426c6dbe132f3ea652406136d3cd0086df5507a97cb80f48cef1b38",
+      "rootGitStatus": "?? tests/eve-remix.test.mjs",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "separateSourceWorkingSha256": null,
+      "separateSourceHeadSha256": null,
+      "publicCommitSha256": null,
+      "backupSha256": "0be45e47d426c6dbe132f3ea652406136d3cd0086df5507a97cb80f48cef1b38",
+      "selectionProposal": "preserve source; stage only after dependency/contract and independent candidate review; not accepted integration"
+    }
+  ],
+  "sharedComparisons": [
+    {
+      "path": "lib/workflow.ts",
+      "rootWorkingSha256": "f29dd55221c9971f59f7e2b6150f69aa50d99f4d0ddb3d1d4f65209e77d6b8cf",
+      "rootHeadSha256": "46a97392bc6e799be9a694d677f4af2f7f084ff2609f50a4c453cba1ffd537a6",
+      "mainCachedSha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+      "sourceWorkingSha256": "ede26ca347c541f7633dfb252cd0d2add936d62279c1848faabe9ba57f8a36a5",
+      "sourceHeadSha256": "ede26ca347c541f7633dfb252cd0d2add936d62279c1848faabe9ba57f8a36a5",
+      "decision": "do not overwrite; Git single-writer reconciles existing runtime/stop/usage/history before EVE-02"
+    },
+    {
+      "path": "lib/work-composition.ts",
+      "rootWorkingSha256": "b86518d34ddca990d7102a270ce61ec53f3512a6b54e684fe21ec87997d0b793",
+      "rootHeadSha256": "b86518d34ddca990d7102a270ce61ec53f3512a6b54e684fe21ec87997d0b793",
+      "mainCachedSha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+      "sourceWorkingSha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+      "sourceHeadSha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+      "decision": "do not overwrite; Git single-writer reconciles existing runtime/stop/usage/history before EVE-02"
+    },
+    {
+      "path": "lib/eve-tool-work.ts",
+      "rootWorkingSha256": "8e3a0e562d03f437d234ba1aab69d43f6ebf80c2b9ae99afe696ffbb946ca44b",
+      "rootHeadSha256": null,
+      "mainCachedSha256": null,
+      "sourceWorkingSha256": "60799d6b7a7b4c53df1eb9cd26d343ea2dd48569ff0a266fd1fbbbda66de0b60",
+      "sourceHeadSha256": "60799d6b7a7b4c53df1eb9cd26d343ea2dd48569ff0a266fd1fbbbda66de0b60",
+      "decision": "do not overwrite; Git single-writer reconciles existing runtime/stop/usage/history before EVE-02"
+    }
+  ],
+  "gitSelection": {
+    "preserve": [
+      "app/os/eve/remix/page.tsx",
+      "components/eve-media-studio.module.css",
+      "components/eve-media-studio.tsx",
+      "components/eve-remix-entry.tsx",
+      "components/eve-remix-stage.tsx",
+      "components/eve-remix-workspace.tsx",
+      "components/eve-remix.module.css",
+      "components/smis-agent-remix.tsx",
+      "lib/eve-media-app.ts",
+      "lib/eve-media-edit.ts",
+      "lib/eve-remix.ts",
+      "tests/eve-media-edit.test.mjs",
+      "tests/eve-remix.test.mjs"
+    ],
+    "adoptAsExistingLocalSource": [
+      "app/os/eve/remix/page.tsx",
+      "components/eve-media-studio.module.css",
+      "components/eve-media-studio.tsx",
+      "components/eve-remix-entry.tsx",
+      "components/eve-remix-stage.tsx",
+      "components/eve-remix-workspace.tsx",
+      "components/eve-remix.module.css",
+      "components/smis-agent-remix.tsx",
+      "lib/eve-media-app.ts",
+      "lib/eve-media-edit.ts",
+      "lib/eve-remix.ts",
+      "tests/eve-media-edit.test.mjs",
+      "tests/eve-remix.test.mjs"
+    ],
+    "deferIntegration": [
+      "Direct text POST /api/llm/text 600tokens/React draft requires same-job binding EVE-02",
+      "IndexedDB media shelf remains browser-local; authorized binary reference/transfer EVE-03 required",
+      "Do not fold binary into100KB composition text; do not claim stop receipt from browser abort"
+    ],
+    "reject": [
+      "Blind Root/Source/main workflow replacement",
+      "Treat local Source origin as GitHub push",
+      "Treat v118/APK/guest as same artifact",
+      "Stage raw media/materials or whole work directory"
+    ],
+    "writer": "Git lane selects small source patch and stages/commits; this lane makes no Git changes"
+  },
+  "buildInventory": {
+    "newBuildProduced": false,
+    "fixedWholeTreeBuild": false,
+    "evidenceOnly": [
+      "docs/evidence/eve-media-studio.json",
+      "docs/evidence/eve-remix-mini-ui.json"
+    ],
+    "sameCandidateRevalidationRequired": true
+  },
+  "acceptance": {
+    "selfFinalApproved": false,
+    "independentReviewRequired": true,
+    "githubSavedThisExecution": false,
+    "mainIntegratedThisExecution": false,
+    "deviceAcceptedThisExecution": false,
+    "publishedThisExecution": false
+  },
+  "next": {
+    "unit": "EVE-02",
+    "candidateWriteSet": [
+      "lib/eve-remix.ts",
+      "tests/eve-remix.test.mjs"
+    ],
+    "scope": "pure text request/digest validation after shared contract revision and Git source selection; binary transfer stays EVE-03",
+    "requiredSharedWriterAgreement": [
+      "authenticated owner/job/thread/revision/command/attempt",
+      "material hashes and agent/model/executor exact versions",
+      "quote/cap/deadline and scope",
+      "CAS/replay/stop/unknown/usage preservation"
+    ]
+  }
+}

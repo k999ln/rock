@@ -1,0 +1,187 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "mini",
+  "revision": 2,
+  "status": "implementation_local_checks_passed_independent_review_pending",
+  "threadId": "01a16c29-97a5-7a50-bce4-b251e505ad52",
+  "currentUnit": "MINI-01",
+  "baseAndSource": [
+    {
+      "kind": "local_HEAD",
+      "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "immutableWholeTree": false
+    },
+    {
+      "kind": "inherited_remote_snapshot_not_refreshed_in_bootstrap",
+      "recordedAt": "2026-10-24T04:16:26.119Z",
+      "mainSha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "mainChecks": 22,
+      "branchChecks": "source-preparation only"
+    },
+    {
+      "path": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+      "sha256": "b576c480cdfa681f3ed276eeb364f4bbe3b2a3ee8ac0ef5eb57e74663b410f4c"
+    },
+    {
+      "path": "contracts/avocado-mini-spatial-runtime.json",
+      "sha256": "8659b7a4afdb68e3a0abcc65b0419a7849b288c208e9dfc202ec0c42f3e1fbbf"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/reference-reels.json",
+      "sha256": "f4b73bd3b0a1bdd1e52557ee99decc639e2e70a3391c9a4ad22d98d6f165cc5d"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/free-space-exit-bound.py",
+      "sha256": "398ae0a4c800959c84f4829bc44c3d8b554edcb04fb7c73ade62bf2e77939456"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/optical-layout-input.json",
+      "sha256": "5ca6882e30c3312e4a180dfe4025f8019f7818cc1f82fd7be9a2a12b4266c5be"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+      "sha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/calculate-six-exits.mjs",
+      "sha256": "7c5b83e1ffe054ac8459d0fb2db8e44c1634eafd7ae8f8ec9502cc5050285ab1"
+    },
+    {
+      "path": "tests/avocado-mini-native-development.test.mjs",
+      "sha256": "94ea322a7ff3e3ceb7fbc41ff7ff016ce347130c23bc375f3930bde86c52c991"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+    "tests/avocado-mini-place-profile.test.mjs",
+    "data/development-lanes/mini.json",
+    "docs/evidence/development-execution/mini-01.json"
+  ],
+  "readPaths": [
+    "docs/avocado-mini-r5/spatial-computer-use-design.md",
+    "contracts/avocado-mini-spatial-runtime.json",
+    "docs/avocado-mini-r5/factory-development/reference-reels.json",
+    "docs/avocado-mini-r5/factory-development/free-space-exit-bound.py",
+    "docs/avocado-mini-r5/factory-development/optical-layout-input.json",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+    "docs/avocado-mini-r5/factory-development/calculate-six-exits.mjs",
+    "tests/avocado-mini-native-development.test.mjs"
+  ],
+  "findings": [
+    {
+      "implemented": "v0.9 design; separate observation/input/visibility masks and unknown unavailable contract; no plate/membrane; ideal ray geometry includes floor/ceiling, pupil samples and guard band. physicalVisible/physicalAccepted remain false."
+    },
+    {
+      "calculationSource": "calculate-six-exits.mjs has 243 eye positions x147 targets=35721 pairs, 18 pupil rays/pair; ideal six whole faces total80m2; documented missing pairs0 without guard,708 with10mm guard. This bootstrap did not rerun calculation."
+    },
+    {
+      "missing": "MINI-01 structured place profile lacks explicit eye orientations/scene pose-size/pupil-IPD/concurrency/occlusion/lighting/routes/installable domain; separate source/exit/sensor/passive-surface count record and full requirements-to-qualification state machine/input hash receipt remain incomplete."
+    },
+    {
+      "missing": "Real optics, hand/depth fusion, low glare, independent optical cutoff and final PCB unaccepted; six large ideal faces are not adopted small few heads."
+    },
+    {
+      "existingTests": "avocado-mini-native-development.test.mjs exists; targeted rg found no createExitGeometry/optical-exits reference in tests/scripts/native tests. No behavioral suite was executed."
+    },
+    {
+      "implementedCurrentBatch": "Strict pure profile validator and11 behavioral tests. Required geometry and four separate counts validated; immutable versioned requirements/hash prevent silent shrinking. Unknown observation/input remains unavailable. Sample claims never authorize physical/comfort acceptance. Bootstrap missing-list above is historical and partially addressed by this local module."
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "paths": [
+        "contracts/avocado-mini-spatial-runtime.json"
+      ],
+      "owner": "Git integration with Mini/OS/Eve/Smith consumers",
+      "request": "Review private local schema rockstaros.mini-place-profile-local/1 and validatePlaceProfile(input,{expectedRevision,expectedHash?,previousProfile?,previousHash?}) before shared adoption. Return profile/sha256/requirementsSha256/stages/availability and all acceptance flags false. Do not accept caller sample claims as solver/physical evidence. Shared store must supply held revision/hash, preserve old profile on rejection, and define owner-approved requirement-change contract separately."
+    },
+    {
+      "paths": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "data/design-document-index.json"
+      ],
+      "owner": "Git integration single writer",
+      "request": "Add MINI-01 pure validator design: purpose/local input UX; no authority/device I/O; required domain/eye/pose/size/IPD/pupil/people/occlusion/light/routes/installable domains and separate counts; detached/frozen hash output; previous revision/hash and unchanged requirements; unknown unavailable; pending physical/comfort; errors preserve previous stored profile; shared schema/consumer adoption and measurement acceptance remain pending. Link source/test/evidence and run design:check on integrated candidate."
+    },
+    {
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "docs/prompts/rockstaros-remaining-work-development.md"
+      ],
+      "owner": "Git integration single writer",
+      "request": "Aggregate MINI-01 local implementation11/11 and lint pass with independent review/Git/main pending; correct historical v0.8/PDF52 to v0.9/PDF53 at current entry points; retain ideal80m2/10mm708 limitation. No UI/runtime installation/physical/manufacturing/public acceptance added."
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --test tests/avocado-mini-place-profile.test.mjs",
+      "exitCode": 0,
+      "tests": 11,
+      "passed": 11,
+      "scope": "host synthetic only; final source after target-size singleton support"
+    },
+    {
+      "command": "node_modules/.bin/oxlint systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs tests/avocado-mini-place-profile.test.mjs",
+      "exitCode": 0,
+      "scope": "two changed JS files"
+    },
+    {
+      "command": "node --check systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs && node --check tests/avocado-mini-place-profile.test.mjs",
+      "exitCode": 0,
+      "scope": "syntax; first candidate, later final source also parsed by passing Node tests/lint"
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run",
+      "reason": "Git integration single writer aggregates on fixed candidate"
+    }
+  ],
+  "externalConditions": [
+    "EXTERNAL: selected actual optical engine/relay/sensor/SDK and calibrated equipment; no purchases or vendor engagement.",
+    "JOINT: same physical configuration optics, hand, low glare, cutoff and whole-domain acceptance.",
+    "OWNER: versioned place/participants/consent and expert measurement thresholds; manufacturing and public rollout remain pending."
+  ],
+  "nextUnit": {
+    "id": "MINI-01",
+    "action": "Independent review of exact source/test hashes; integrate shared design/index/progress via Git single writer, then commit to dedicated candidate. Resolve any findings before unit acceptance.",
+    "subsequentUnit": "MINI-02 optical alternatives requires separately dispatched gpt-6-astra/high; do not start here."
+  },
+  "updatedAt": "2026-10-24T06:13:29.344459+00:00",
+  "note": "Exact4path local implementation batch. No shared schema/product circuit/Git/device/provider/publication/purchase/manufacturing/live charges changed. Native/optics/hand/glare/final PCB unaccepted. Full verify delegated to Git integration; no independent acceptance self-issued.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:27:17.395964+00:00",
+  "primaryOwner": "ROCK",
+  "workstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+  "firstOwnedFileCandidate": {
+    "path": "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+    "exists": true,
+    "writeAuthorization": "exact assignment for MINI-01 local batch",
+    "companionCandidate": "tests/avocado-mini-place-profile.test.mjs"
+  },
+  "currentBatch": {
+    "unit": "MINI-01",
+    "status": "implementation_local_checks_passed_independent_review_pending",
+    "evidence": "docs/evidence/development-execution/mini-01.json",
+    "artifacts": [
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+        "sha256": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329"
+      },
+      {
+        "path": "tests/avocado-mini-place-profile.test.mjs",
+        "sha256": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec"
+      },
+      {
+        "path": "docs/evidence/development-execution/mini-01.json",
+        "sha256": "7d92408beaeb9107dff05cf0154e165f41719ed92acfac31de65c0ac20930df5"
+      }
+    ],
+    "independentReview": "pending",
+    "integration": "pending",
+    "fullUnitAccepted": false
+  }
+}

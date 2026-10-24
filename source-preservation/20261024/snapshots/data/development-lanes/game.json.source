@@ -1,0 +1,251 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "game",
+  "revision": 2,
+  "status": "implementation_candidate_pending_independent_review",
+  "threadId": "01a16c2e-d5e8-7b01-8773-796ab372d10c",
+  "currentUnit": "GAME-01",
+  "baseAndSource": [
+    {
+      "kind": "local_head",
+      "branch": "codex/esim-cloud-access",
+      "sha": "951d82d5a491a284aed4e0d4d280171d835d4b43"
+    },
+    {
+      "kind": "dispatch_snapshot_only",
+      "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "observedAt": "2026-10-24T04:16:26.119Z",
+      "ci": "main22 / branch source-preparation1; not refreshed by this lane"
+    },
+    {
+      "kind": "remote_refresh",
+      "status": "failed",
+      "command": "git ls-remote origin refs/heads/main refs/heads/codex/rockstaros-development",
+      "reason": "github.com DNS unavailable; no latest remote/CI claim",
+      "note": "Remote request failed at DNS before ref resolution; actual local branch is codex/esim-cloud-access and its remote latest remains unverified."
+    },
+    {
+      "kind": "unit_source",
+      "path": "docs/prompts/rockstaros-remaining-work-development.md#game-01",
+      "sha256": "2e2c978d1f108009437ad519334af2407473b6f06d2718eb04aab789e69f68ba"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "lib/game-intake.ts",
+    "tests/game-intake.test.mjs",
+    "data/development-lanes/game.json",
+    "docs/evidence/development-execution/game-01.json"
+  ],
+  "readPaths": [
+    "lib/game-sandbox.ts",
+    "lib/game-launch.ts",
+    "tests/game-sandbox.test.mjs",
+    "tests/game-launch.test.mjs",
+    "systems/rock-star-os/examples/game/README.md",
+    "systems/rock-star-os/tests/test_game_sdk_examples.py",
+    "sites/avocado-mini/creator-kit/game.js",
+    "docs/game-creation-and-intake-research.md"
+  ],
+  "findings": [
+    {
+      "path": "lib/game-sandbox.ts",
+      "sha256": "fa384195168005521da6a4d01f3cb4f1614836af7923b720789f7f33c1263dba",
+      "finding": "既存: deterministic 2D commands/save/rules; tracking loss release+pause、process再起動digest試験。owner別永続化・悪意code隔離の証明ではない。"
+    },
+    {
+      "path": "lib/game-launch.ts",
+      "sha256": "a06127115c344412e1fe25157ede7aa0c6b1d26fa437e540013c3a9e5eebb64b",
+      "finding": "既存: fixed fiveplay URL/low-standardと手動Eveメモ。汎用manifest・engine probe・互換診断はない。"
+    },
+    {
+      "path": "tests/game-sandbox.test.mjs",
+      "sha256": "cc7f709d213c4aaf8f788239d19e5e45d224f4a3a624fbb6fa794aa0a47643d6",
+      "finding": "既存: 決定性/追跡喪失/再起動/不正save/非金融境界試験。二作者二方式の導入計測は別。"
+    },
+    {
+      "path": "tests/game-launch.test.mjs",
+      "sha256": "1809ed7192b2cf7c45d756d0b461c099d3b95a4ed4df04b6fcc08825da4b5120",
+      "finding": "既存: fixed origin/manual one-shot handoffの2試験。開始時から他担当dirty、変更せず。"
+    },
+    {
+      "path": "systems/rock-star-os/examples/game/README.md",
+      "sha256": "b08449627ce736d5fc2252cc35dc2444f0bec09ba27f1b435ed77daad45b82e1",
+      "finding": "既存: 合成TLS SDK owner/author sampleとfresh Linux計測手順。内部機械測定を作者の人間計測にしない。"
+    },
+    {
+      "path": "systems/rock-star-os/tests/test_game_sdk_examples.py",
+      "sha256": "7326156c2081c3fdc188b3706777946a42031e7375f06da2b704f8b9c7b17a40",
+      "finding": "既存: 独立TLS authorityで登録/同意/両game購入/再開/切断診断試験。今回未実行。"
+    },
+    {
+      "path": "sites/avocado-mini/creator-kit/game.js",
+      "sha256": "6ad92a0a32370b1f9cd1b667aa92ce8e4869ef76b74b4256729c793d06445233",
+      "finding": "既存: browser Catch the Light sample/manifest設定/試遊。汎用import/save/rollbackや実機受入ではない。"
+    },
+    {
+      "path": "docs/game-creation-and-intake-research.md",
+      "sha256": "1460ffd9d6814e43b497ac8e603581890d03a36c985d68eb7250fd846105b88a",
+      "finding": "設計候補: manifest/rights/runtime/capabilityと静的候補・動的launch/input/saveを分離。実装契約へ固定する必要。"
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git integration",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/design-document-index.json",
+        "docs/workstreams/08-game-market-fund.md",
+        "docs/game-creation-and-intake-research.md"
+      ],
+      "request": "Integrate GAME-01 as pure static local candidate (source hashes in evidence); document file-set canonical index and status/check distinction; run design:check/full verify on fixed candidate. Do not label whole GAME-01 accepted before independent review."
+    },
+    {
+      "owner": "Eve/Smith/Asset Registry integration",
+      "paths": [
+        "lib/workflow.ts"
+      ],
+      "request": "Consumer must resolve authenticated owner and current registry grant by game/revision/package digest/license/expiry, pass locally read bytes and exact target runtime/limit revision, recompute same manifest/package digest at handoff, and route any launch through existing workflow/Broker. Do not accept game-provided context or turn points capability into Wallet rights. Bind current grant/rights and resource/capability approval at execution time.",
+      "negativeCases": [
+        "another owner grant",
+        "revoked/changed grant after diagnostic",
+        "mutated manifest after diagnostic",
+        "scope increase on update",
+        "stale target revision",
+        "untrusted game event as approval"
+      ]
+    },
+    {
+      "owner": "OS/Security",
+      "request": "Add accepted process/UID sandbox adapter before executing candidates; enforce CPU/RAM/time/output/files/network, game crash isolation and separate owner save store. launch_candidate alone gives no isolation or execution authority.",
+      "negativeCases": [
+        "game Wallet/root/API call",
+        "network exfiltration",
+        "process crash affecting management UI",
+        "other owner save read",
+        "resource overload"
+      ]
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/game-intake.test.mjs tests/game-sandbox.test.mjs tests/game-launch.test.mjs",
+      "exitCode": 0,
+      "tests": 23,
+      "passed": 23,
+      "failed": 0,
+      "log": "/private/tmp/game-01-local.log",
+      "logSha256": "6294dc428a67dbd2777e4703570cd43591aa3c681fe4e5d2fb2bacdb8a7f8cbd"
+    },
+    {
+      "command": "./node_modules/.bin/oxlint lib/game-intake.ts tests/game-intake.test.mjs",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "./node_modules/.bin/tsc --noEmit --incremental false",
+      "status": "passed",
+      "log": "/private/tmp/game-01-types-project.log",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "externalConditions": [
+    "非金融Game/WorldはWallet/Fund完成待ちにしない。",
+    "EXTERNAL: 選定engine/runtimeと作者license。JOINT: 同一版・deviceの起動/入力/save/rollback受入。OWNER: 作品/初期二方式/共有・公開/費用上限。",
+    "GX00/GX01/DX01 doneは合成範囲。GX02 planned、ゲーム/通貨/方向/rate/取消条件の確定と正式sandboxの個別gateが必要。実資金・外部ゲーム残高・資産売買は無効。",
+    "作者point発行とWallet実資金記帳を別capability/entityとして保持。今回Provider/実機/公開/課金/Git履歴操作なし。"
+  ],
+  "nextUnit": {
+    "id": "GAME-02",
+    "state": "not_started",
+    "requires": "independent review of GAME-01 candidate, Git save and next exact assignment",
+    "scope": "separate GX gate and non-financial WorkJob bridge; no production exchange"
+  },
+  "updatedAt": "2026-10-24T06:42:02.684586+00:00",
+  "note": "Pure static intake implemented in assigned files. Local tests only; independent review pending. UI/workflow/registry/SDK/OS sandbox/docs remain integration requests; no new ledger or runtime execution.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:32:58.629558+00:00",
+  "primaryWorkstream": "docs/workstreams/08-game-market-fund.md",
+  "primaryOwner": "ROCK",
+  "taskIds": [
+    "DX01",
+    "GM01",
+    "AI06"
+  ],
+  "contractRefs": [
+    "RQ14",
+    "RQ13",
+    "CORE02",
+    "CORE07",
+    "CORE12"
+  ],
+  "implementationEvidence": "docs/evidence/development-execution/game-01.json",
+  "candidateHashes": {
+    "lib/game-intake.ts": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58",
+    "tests/game-intake.test.mjs": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c"
+  },
+  "implementationSummary": "Pure strict manifest + file-set digest binding + trusted-grant owner/revision/rights fence + fixed static adapter diagnostic. Existing sandbox/save constants reused; all dynamic checks unverified. 23/23 host tests, targeted lint and project typecheck passed. Independent acceptance pending.",
+  "independentReviewReferences": [
+    {
+      "unit": "GIT-04",
+      "path": "docs/evidence/development-execution/git-04-review-r2.json",
+      "status": "accepted_alias_helper_limited_scope_full_union_unaccepted",
+      "reviewerNotImplementer": true
+    },
+    {
+      "units": [
+        "BILL-01",
+        "WALLET-01"
+      ],
+      "path": "docs/evidence/development-execution/billing-wallet-review.json",
+      "status": "billing_changes_required_wallet_pure_candidate_accepted",
+      "reviewerNotImplementer": true
+    },
+    {
+      "unit": "GIT-04 checkpoint",
+      "path": "docs/evidence/development-execution/git-04-checkpoint-review.json",
+      "status": "changes_required_codeql_backup_race",
+      "commit": "f5a7de0a8f4b952f3d6b8bb984ca9ed22ae74baf"
+    },
+    {
+      "unit": "BILL-01 r2",
+      "path": "docs/evidence/development-execution/billing-review-r2.json",
+      "status": "accepted_pure_contract_binding_correction_integration_pending"
+    },
+    {
+      "unit": "ESIM-01 r2",
+      "path": "docs/evidence/development-execution/esim-review-r2.json",
+      "status": "accepted_pure_evaluator_corrections_server_broker_integration_pending"
+    },
+    {
+      "unit": "OS-01 cache-only preparation",
+      "path": "docs/evidence/development-execution/pixel-cache-only-prepare-review.json",
+      "status": "changes_required_replay_and_session_binding"
+    },
+    {
+      "unit": "OS-01 cache-only preparation r2",
+      "path": "docs/evidence/development-execution/pixel-cache-only-prepare-review-r2.json",
+      "status": "accepted_bounded_cache_only_preparation_candidate_physical_pending"
+    },
+    {
+      "unit": "GIT-04 r3",
+      "path": "docs/evidence/development-execution/git-04-review-r3.json",
+      "status": "accepted_offline_backup_fd_and_test_delta_same_sha_checks_success",
+      "head": "3de31818bc2b18a4e82bc4ebf5a5e39357af2816"
+    },
+    {
+      "unit": "GIT-04 final head",
+      "path": "docs/evidence/development-execution/git-04-final-head-review.json",
+      "status": "accepted_limited_helper_exact_head_all_observed_checks_success",
+      "head": "3de31818bc2b18a4e82bc4ebf5a5e39357af2816"
+    },
+    {
+      "unit": "PR187 finance main adoption",
+      "path": "docs/evidence/development-execution/finance-main-adoption-review.json",
+      "status": "accepted_pure_main_adoption_same_head_verify_pending",
+      "head": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee"
+    }
+  ]
+}

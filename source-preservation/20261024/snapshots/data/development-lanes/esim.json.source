@@ -1,0 +1,296 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "esim",
+  "revision": 3,
+  "status": "attempt2_corrections_delivered_pending_astra_reinspection",
+  "threadId": "01a16c2b-9ab4-78d1-a26c-4d93f736f4b5",
+  "currentUnit": "ESIM-01",
+  "baseAndSource": [
+    {
+      "kind": "Root",
+      "branch": "codex/esim-cloud-access",
+      "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "scope": "dirty shared workspace; not an immutable accepted candidate"
+    },
+    {
+      "kind": "local_origin_main",
+      "sha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "freshRemoteVerified": false,
+      "remoteReadback": "git ls-remote origin refs/heads/main refs/heads/codex/esim-cloud-access failed exit 128: Could not resolve host github.com",
+      "priorPacketReadbackAt": "2026-10-24T04:16:26.119Z",
+      "ci": "not rechecked; prior packet main 22 checks and branch source-preparation only"
+    },
+    {
+      "kind": "separate_Eve_Source",
+      "path": "work/eve-v115-agent-integration",
+      "head": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+      "note": "local Source commit; not GitHub/main/deployment acceptance"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "lib/rockstar-service-setup.ts",
+    "tests/rockstar-service-setup.test.mjs",
+    "data/development-lanes/esim.json",
+    "docs/evidence/development-execution/esim-01.json"
+  ],
+  "readPaths": [
+    "lib/rockstar-service-setup.ts",
+    "lib/rockstar-service-setup-store.ts",
+    "lib/rockstar-service-attachment.ts",
+    "contracts/rockstar-service-attachment.json",
+    "tests/rockstar-service-setup.test.mjs",
+    "tests/rockstar-service-attachment.test.mjs",
+    "lib/esim-cloud-access.ts",
+    "tests/esim-cloud-access.test.mjs"
+  ],
+  "findings": [
+    "Existing: Root setup, setup-store, attachment verifier and attachment contract equal local main blobs. Reuse these; separate Eve Source lacks these six setup/attachment source/contract/test paths.",
+    "Existing: setup-store reads server grant and canonical workspace, enforces owner/revision, explicit quote/recurring consent, billing preparation and runtime receipt. serviceSetupView exposes onboarding state, not full dispatch authorization.",
+    "Existing: attachment verifier checks signature, owner, explicit device approval/proof, contract/version, issuer profile, parent epoch, scope, expiry, key/manifest/capability and audience. Tests include eSIM-free child, revoked/stale authority and expiry. Pure verifier is not wired issuer/DB integration evidence.",
+    "Missing ESIM-01: combined server decision fixture and explicit product-state matrix across separate telecom/profile/service entitlement/contract/payment/runtime/attachment/job/collection authorities; display active must not authorize dispatch.",
+    "Root setup test and cloud access source/test differ from main; cloud access source/test also differ from Eve Source. Integrator must select these diffs; do not copy Source or main over Root.",
+    "Keep telecom, SIM profile, owner service rights and OS/client installation independent. No OS binary, LLM, SIM secret or customer content is stored in SIM. Telecom offline alone must not deny otherwise authorized result access/export."
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git integration",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md"
+      ],
+      "request": "Aggregate this lane bootstrap and next unit without claiming runtime/device completion; select Root/main/Source differences and pin candidate before edits/full verify."
+    },
+    {
+      "owner": "OS + Billing + schema/API single writers",
+      "paths": [
+        "lib/rockstar-service-setup-store.ts",
+        "lib/workflow.ts",
+        "contracts/rockstar-service-attachment.json"
+      ],
+      "request": "Agree revision/hash of server authority mapping: current issuer/epoch, contract/payment, device proof/manifest/capabilities, Core acceptance, workspace and current budget. eSIM lane proposes test/decision extension; no duplicate job/invoice/entitlement store.",
+      "negativeCases": [
+        "client-posted true facts",
+        "old active after revoke",
+        "paid setup without runtime readiness",
+        "attachment success bypassing budget"
+      ]
+    },
+    {
+      "owner": "design single writer",
+      "paths": [
+        "data/design-document-index.json",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "request": "When implementation changes, sync state matrix and dispatch vs retained-read/export acceptance with design:check in same candidate."
+    },
+    {
+      "owner": "Git integration + OS/Billing/schema/API single writers",
+      "paths": [
+        "lib/rockstar-service-setup-store.ts",
+        "lib/workflow.ts",
+        "data/design-document-index.json",
+        "docs/sim-led-product-architecture.md",
+        "project.md",
+        "data/project-status.json",
+        "README.md"
+      ],
+      "request": "Review exact serviceAccessEvaluator patch/adapter contract. Allocate trusted readCurrent composition from current server records only; bind setup to current contract/issuer subject and existing retention authorities; atomically recheck epoch/revision plus consume request-scoped budget under existing job idempotency. Keep pricePolicy unresolved pending 140vs16 resolution. Sync design/progress and full verify on fixed integration candidate.",
+      "requiredNegativeFixtures": [
+        "client payload cannot inject readCurrent",
+        "old active after revoke while attachment signature valid",
+        "race between authority read and dispatch",
+        "replayed reservation cannot execute twice",
+        "old setup agreement bound to another current contract"
+      ]
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+      "exitCode": 0,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Root local fixtures only; no new fixture added",
+      "log": "/private/tmp/esim-01-bootstrap-tests.log",
+      "logSha256": "87e4951931991d7e5030d5d30a9104fb263c835cb73a334c76b2cff3cc6ab832"
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run_by_lane",
+      "reason": "Explicit bootstrap instruction: parent aggregates on fixed candidate"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+      "exitCode": 0,
+      "pass": 47,
+      "fail": 0,
+      "skipped": 0,
+      "log": "/private/tmp/esim-01-implementation-tests.log",
+      "logSha256": "bfb26938f785ad3bbb9054d8b8060bc5b1803fc9cf085af667b3aff1f92c3096",
+      "lint": {
+        "command": "./node_modules/.bin/oxlint lib/rockstar-service-setup.ts tests/rockstar-service-setup.test.mjs",
+        "exitCode": 0
+      },
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exitCode": 0,
+        "logSha256": "b76dcdd88153680f18ab5459215aa422aa7cbf43cb178b96c33644c432d1b372",
+        "scope": "shared Root typecheck, not immutable candidate or CI"
+      },
+      "fullVerify": "not run: parent fixed candidate aggregation"
+    },
+    {
+      "attempt": 2,
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+      "exitCode": 0,
+      "pass": 65,
+      "fail": 0,
+      "skipped": 0,
+      "log": "/private/tmp/esim-01-attempt2-tests.log",
+      "logSha256": "8186175abfabdfdfd58a1d37da94de243f635fd49dfea5817da50877b54c2d0d",
+      "lint": {
+        "command": "./node_modules/.bin/oxlint lib/rockstar-service-setup.ts tests/rockstar-service-setup.test.mjs",
+        "exitCode": 0
+      },
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exitCode": 0,
+        "logSha256": "b76dcdd88153680f18ab5459215aa422aa7cbf43cb178b96c33644c432d1b372",
+        "scope": "shared Root typecheck, not immutable candidate or CI",
+        "log": "/private/tmp/esim-01-attempt2-typecheck.log"
+      },
+      "fullVerify": "not run: parent fixed candidate aggregation"
+    }
+  ],
+  "externalConditions": [
+    {
+      "owner": "EXTERNAL",
+      "condition": "Trusted issuer profile lifecycle/current-state evidence, permitted eUICC/LPA and carrier integration remain unaccepted."
+    },
+    {
+      "owner": "JOINT",
+      "condition": "Same profile/device/contract/workspace lifecycle plus child revoke/restore must be accepted independently from pure fixtures."
+    },
+    {
+      "owner": "OWNER + Billing",
+      "condition": "Price allowance/retention/grace/lease and provider account/budget/terms must be fixed before sale or provider actions."
+    },
+    {
+      "owner": "OS",
+      "condition": "Common Core same-candidate acceptance and device/client capability receipt required; full native flash not prerequisite for existing-OS service route."
+    }
+  ],
+  "nextUnit": {
+    "id": "ESIM-02",
+    "prerequisite": "Astra attempt2 reinspection before pure evaluator acceptance; shared adapter/Broker allocation remains open"
+  },
+  "updatedAt": "2026-10-24T06:55:08.633911+00:00",
+  "note": "ESIM01-R1/R2 attempt2 correction candidate; old receipt/hash/review retained in attemptHistory.65 fixtures/lint/typecheck passed; final independent acceptance pending. No API/store/Broker/Provider/paid dispatch enabled.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:29:27.078096+00:00",
+  "primaryOwner": "ROCK",
+  "primaryWorkstream": "docs/sim-led-product-architecture.md",
+  "taskIds": [
+    "SIM01",
+    "OS10",
+    "BIL02"
+  ],
+  "sourceHashes": [
+    {
+      "path": "lib/rockstar-service-setup.ts",
+      "rootSha256": "94c01b7885f7368571fcb386284a6e3d1b2359d9cf5beed04a4ab88a47a1ce6c",
+      "main": "identical",
+      "mainSha256": "94c01b7885f7368571fcb386284a6e3d1b2359d9cf5beed04a4ab88a47a1ce6c",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "lib/rockstar-service-setup-store.ts",
+      "rootSha256": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+      "main": "identical",
+      "mainSha256": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "lib/rockstar-service-attachment.ts",
+      "rootSha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+      "main": "identical",
+      "mainSha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "contracts/rockstar-service-attachment.json",
+      "rootSha256": "d0d8cd4e733793ac0e3ca14eae555dd72600cbe56ffc222de5e9067f3aa6e188",
+      "main": "identical",
+      "mainSha256": "d0d8cd4e733793ac0e3ca14eae555dd72600cbe56ffc222de5e9067f3aa6e188",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "tests/rockstar-service-setup.test.mjs",
+      "rootSha256": "cc6d32b68ab61d885544b93e5aec51a057a36d2412a17d79ae022a5b5137cb1e",
+      "main": "different",
+      "mainSha256": "d54671828a5d73458457e09280b12a09ff969f5aadcebb86bdf786d984ccacf7",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "tests/rockstar-service-attachment.test.mjs",
+      "rootSha256": "c0e72d655273f1df52c8d147b255ce37ca01a5cdfc621c84cd8a3fa6b575fdef",
+      "main": "identical",
+      "mainSha256": "c0e72d655273f1df52c8d147b255ce37ca01a5cdfc621c84cd8a3fa6b575fdef",
+      "eveSource": "absent",
+      "eveSourceSha256": null
+    },
+    {
+      "path": "lib/esim-cloud-access.ts",
+      "rootSha256": "9cc73def1aa252f752bdc7ed8dd8ee8e1f69cf36e602b5881b51ed3df4f5b15a",
+      "main": "different",
+      "mainSha256": "e78e90e81576286aeb32e839fe3bae513ddcba766054cf9e27263d2c26fb9879",
+      "eveSource": "different",
+      "eveSourceSha256": "e78e90e81576286aeb32e839fe3bae513ddcba766054cf9e27263d2c26fb9879"
+    },
+    {
+      "path": "tests/esim-cloud-access.test.mjs",
+      "rootSha256": "abcc58bec3df8652716dac5d8e4c9e98faf63246411c9fd9a6a77fdf4df7e304",
+      "main": "different",
+      "mainSha256": "36fc9b5428b7b6062370ea6d181ebbefdead4697b40bebad2102c0dc13378679",
+      "eveSource": "different",
+      "eveSourceSha256": "36fc9b5428b7b6062370ea6d181ebbefdead4697b40bebad2102c0dc13378679"
+    }
+  ],
+  "firstExactPath": null,
+  "implementationReceipt": "docs/evidence/development-execution/esim-01.json",
+  "implementationSourceHashes": [
+    {
+      "path": "lib/rockstar-service-setup.ts",
+      "sha256": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2"
+    },
+    {
+      "path": "tests/rockstar-service-setup.test.mjs",
+      "sha256": "244626cca4c9c26cd515a640ecd549a3056810483ece23bbc3e2e2119fed06db"
+    }
+  ],
+  "independentReview": {
+    "required": true,
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "status": "pending_parent_astra_reinspection_attempt2",
+    "reason": "New access decision invariant crosses entitlement/device/contract/budget; implementer cannot give final acceptance. Parent controls active concurrency.",
+    "priorReview": "docs/evidence/development-execution/esim-01-review.json"
+  },
+  "implementationAttempt": 2,
+  "reviewReferences": [
+    {
+      "unit": "GAME-01",
+      "path": "docs/evidence/development-execution/game-01-review.json",
+      "sha256": "02fd9b768ef0df6ba951d61660f0051dfe7c0d16cbbcc99b830eb4b680a14cf8",
+      "status": "accepted_static_intake_scope_runtime_unaccepted",
+      "recordedAt": "2026-10-24T08:55:08.834978+00:00"
+    }
+  ]
+}
