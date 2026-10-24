@@ -1,11 +1,11 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
   "mainContext": {
-    "mainAtCapture": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "mainAtCapture": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -290,7 +290,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "EVE_TEXT_PREPARATION_CANDIDATE"
+      ]
     },
     {
       "id": "EVE-03",

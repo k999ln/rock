@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.billing-final-send.main-adoption/1",
   "recordedAt": "2026-10-24T15:41:01.510072+00:00",
-  "status": "delta_local40_and_frozen_full_verify_pass_draft_PR196_independent_review_and_final_head_CI_pending",
+  "status": "PR196_normal_main_merged_limited_scope_independent_reviews_and_same_sha_CI_pass",
   "baseMain": "7be3d6aa35d8df1329571bbe92971f805694b581",
   "sourceBase": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
   "baseFourUnchanged": true,
@@ -65,18 +65,18 @@
     "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
   },
   "acceptance": {
-    "sourceLimitedIndependent": false,
-    "mainMetadataReviewed": false,
-    "mainMerged": false,
+    "sourceLimitedIndependent": true,
+    "mainMetadataReviewed": true,
+    "mainMerged": true,
     "productionD1": false,
     "commonAuthorityIssuerEpoch": false,
     "realProviderBilling": false,
     "wholeBill02": false,
     "generalLaunch": "held",
     "originalSourceLimitedIndependent": true,
-    "deltaIndependent": false
+    "deltaIndependent": true
   },
-  "next": "Review new four hashes independently, fixed full verify and exact-head CI; no merge before gates.",
+  "next": "Common authority/issuer epoch, productionD1 and real billing remain separate gates; frozen local0531 vs final1bb CI vs main1a9 CI remain distinct.",
   "originalReviewedSourceHashes": {
     "lib/remote-ai-text-store.ts": "11e3725b9c5f974795e01dadf833d26b0561c96c1df2fa3991ca43fbc48773a5",
     "lib/remote-ai-text-execution.ts": "12da588c388c043ca4112187bcc3c71c58e7a63a16238ad4e75fea47e8e99a22",
@@ -101,7 +101,17 @@
       "elapsedSeconds": 71,
       "logSha256": "115018b3265a337349b991b27839258c4d6220a946a152c2769cb813b42c5fb4"
     },
-    "independentReview": "pending_on_new_four_hashes"
+    "independentReview": "New four hashes passed Game r2; hash-bound summary retained."
   },
-  "pr": "https://github.com/k999ln/rock/pull/196"
+  "pr": "https://github.com/k999ln/rock/pull/196",
+  "historicalCandidateStatus": "delta_local40_and_frozen_full_verify_pass_draft_PR196_independent_review_and_final_head_CI_pending",
+  "mainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/196",
+    "acceptedHead": "1bb969b12c33f2aa7ac9b4bccf3c2d264cac6b9c",
+    "mainMergeSha": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 6,
+    "productionDeployment": false,
+    "wholeBill02Accepted": false
+  }
 }

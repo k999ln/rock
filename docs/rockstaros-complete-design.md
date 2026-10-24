@@ -1,3 +1,22 @@
+<a id="eve-text-preparation"></a>
+## Eveの資料付き依頼保存（EVE-02 / attempt2限定候補）
+
+目的・利用体験: `/os/eve/remix`で2つの手元の文章とgoalを確認し、資料付き依頼を既存composition jobへ保存する。画面は「保存する準備」と「生成した草稿ではない」を区別し、モデル生成は未対応と表示する。既存compose-checkによる無料の形式検査だけを行い、保存成功から生成能力を推定しない。
+
+責任: ROCKは入力codec・owner別UI・既存workflow/API/storeへの接続と照合、EXTERNALは将来のモデル等の根拠、JOINTは実browser/HTTPと配備先DBでの受入、OWNERは原文選択と保存同意を担う。新Tool、schema、Provider、usage/課金や外部実行権限は追加しない。表示判定isEveTextPlanは権限判定ではない。
+
+入出力・上限: 手入力または選択したUTF-8ファイルを正確に2つ、名前160文字以内・素材合計8,000 JavaScript文字単位・goal500文字以内、選択fileは各48,000 bytes以内。BOM/CRLF/Unicodeを保持し、HT/LF/CR以外のC0とDEL、無効UTF-8、未知fieldや上限超過を拒否する。制御文字を削って成功扱いしない。versioned JSONのschema/materials/goalを既存source上限と80,000-byte run request上限内で保存し、0JPY/compose-check1手順のplanと同じ原文artifactを出力する。
+
+状態・保存: 既存owner session/scope・job ID・revision・command ID/fingerprintを使用する。計画create時のsourceはnullで、素材保存の同意を伴う最初の成功runを原文固定境界とする。同一jobのGETでowner・source・artifactが一致してから保存確認を表示する。素材変更を別本文の同一commandへ昇格させず、cancel後rerunを拒否し、取消は保存済み原文/downloadを残す。明示erase後は古い応答で原文を復活させない。
+
+失敗・復旧: 応答不明ではjob/command/pendingを保持し、一覧100件外でも既知IDのexact GETで照合する。reloadは実行しない。異なるownerの結果を隠し、元ownerで同一jobへ戻る。unknownなcancelをモデル停止receiptにしない。file読込は同期世代と現在の入力identityで、編集・再選択・空選択取消・owner/job切替・unmount後の古いcallbackを拒否し、新しい読込のloadingを解除させない。
+
+承認・privacy・互換: 原文保存は明示同意と既存workflow遷移を通す。未保存原文はowner別tab memoryと離脱保護だけで、URLにはjob IDのみを置き、raw draft/global storageへ保存しない。tab破棄で未保存入力は失われる。既存compose経路・core schema/engine・料金を保持し、通常source revertで戻せるが保存済みjobを消さない。
+
+合格・未決定: attempt2のexact6独立PASS_SCOPED/mustfix0、旧2P2反例を保持した8独立probe/47focusedと一次関連71passは重複加算しない。証拠はpure codec・VM UI/captured closure/deferred-file・実handlerとSQLite/synthetic authに限定する。今回main基点の関連71passは、全verify/同headCI/別metadata採用検収とは別gate。実browser scheduling/live HTTP、semantic Remix/LLM、durable外部効果claim/usage/paid実行、実機/全OS/一般公開・EVE02全体は未受入。残項目は各同一候補の共同受入で決める。
+
+[exact6・検証・残gate](evidence/development-execution/eve-text-job-main-adoption.json)／[独立検収要約](evidence/development-execution/eve-text-job-review-summary.json)。
+
 同4pathのrecurring互換delta: 同INSERTの既存0021 triggerで拒否例外を維持し、既知拒否と保存不明を区別。局所40pass、新hash独立再検収/全verify/CI待ち。
 
 ## Billing最終send claimの限定採用

@@ -1,0 +1,105 @@
+{
+  "schema": "rockstaros.eve-text-job.reviewed-reconstruction/1",
+  "recordedAt": "2026-10-24T17:05:23.313848+00:00",
+  "baseMain": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+  "supersedesPR": "https://github.com/k999ln/rock/pull/197",
+  "oldFinalHead": "63675b7e691556a106d93aba409faa764a01288b",
+  "originalHistoryPreserved": true,
+  "reason": "Four independently verified public tracked-source SHA256 values were misclassified as generic-api-key in old intermediatea2b2 metadata. Final format is clean; pinned policy still scans old reachable history. Reproduce only reviewed final bytes as a new ordinary commit from current main; oldPR/branch/commits remain remote and no policy/gate changes.",
+  "copiedFinalFileSha256": {
+    "app/os/eve/remix/page.tsx": "e519d2955abbf5913a9c14f10facbffe2fdc18f93855464d62c8add805de532a",
+    "docs/evidence/development-execution/eve-text-job-main-adoption.json": "65d4faa9c1753acb664d9071d776e62d64cc45e300d661eaac8ac45b0a016123",
+    "docs/evidence/development-execution/eve-text-job-review-summary.json": "28d69b63dbd3dff9063ba926023f785384c2552a92360eeca410fcb086ec8287",
+    "lib/eve-text-job.ts": "cff365e5acb837248426981c0ab12d6d208ec55f4723d1dff88a0341c8fabc20",
+    "tests/eve-text-job.test.mjs": "5d3edd9081153a5d9c2c31521ace1ba77e2bbe8012a1f13a765c62a9634f5f2e",
+    "README.md": "7af4b8ea7b4b65c3d579396a19068c6d79c85186ea9d9781182de7416e138c80",
+    "components/work-composition-workspace.tsx": "83e98f599b61b2c3785fead5099c58c099f7da1fc94be27ff4d738dcc24e4044",
+    "data/design-document-index.json": "4402886d63d91e5d433f1ccd11adb2ad14f815c2bdd40adaa66e14d9f2e1b896",
+    "data/development-source-handoff.json": "0f8658baa84d09e9af3ff443299ca2ab69943041804dcbed9bb6f26946568b49",
+    "data/development-unit-progress.json": "57c72f3be2db44c1b94efdb803b992b621f538182fafa77b9f74e658ac090ef1",
+    "data/project-status.json": "34f60567d55b552c3ca99768bdad110fb8e003ad1394635446779420e439178d",
+    "docs/evidence/development-execution/billing-final-send-main-adoption.json": "0efbcd35c73c9dc69385b28d0223880465f3fc9287b2a14c8bbaba16ae0334db",
+    "docs/evidence/development-execution/billing-final-send-review-summary.json": "b8aaff06c0213461e5a636d4087729d5a2003deec2956d12a96279a822847873",
+    "docs/evidence/development-execution/unit-main-current-overlay.json": "c48a80ee10ec43ae892907b0c0aca686e9248862dd42cff75eabcf60fa2f374b",
+    "docs/rockstaros-complete-design.md": "ecb1ca4e0ee61522807cf3c4e7dea3fdfc6b3018ed351cfc32c3e558627f85a3",
+    "docs/sky-tools-complete-design.md": "b5912e257909b22bbee8b767d99bae093bebfed0247e02388d57e634a3c65278",
+    "docs/workstreams/05-web-pwa-sites.md": "48a058bd93b0771823b0e002a91dce9fbae509d0abd52c9745ca1e85f06c34cc",
+    "docs/workstreams/10-git-ci-operations.md": "17f661018320968db43b92d10e06e944fa291ee4559764a77674e0d6e4fca902",
+    "docs/workstreams/README.md": "d525a732b419e9249cf24c2a08730cc848baac59288adfef1f9f742f0212fdce",
+    "project.md": "1615c81b175b0dd2f738bdd7a842673f3b8202b974d3ac54579a235d99f0ff48",
+    "tests/work-composition-route.test.mjs": "3e88556da4b7f7e9d752c8951d78a88424e7661214a4f9279306e4f44209d8ac",
+    "tests/work-composition-ui.test.mjs": "c3605f91f928c7f55cd2175b5214b014fa8599f6d7dd0e48a125141d88ec5002"
+  },
+  "sourceSixHashes": {
+    "lib/eve-text-job.ts": "cff365e5acb837248426981c0ab12d6d208ec55f4723d1dff88a0341c8fabc20",
+    "components/work-composition-workspace.tsx": "83e98f599b61b2c3785fead5099c58c099f7da1fc94be27ff4d738dcc24e4044",
+    "app/os/eve/remix/page.tsx": "e519d2955abbf5913a9c14f10facbffe2fdc18f93855464d62c8add805de532a",
+    "tests/eve-text-job.test.mjs": "5d3edd9081153a5d9c2c31521ace1ba77e2bbe8012a1f13a765c62a9634f5f2e",
+    "tests/work-composition-ui.test.mjs": "c3605f91f928c7f55cd2175b5214b014fa8599f6d7dd0e48a125141d88ec5002",
+    "tests/work-composition-route.test.mjs": "3e88556da4b7f7e9d752c8951d78a88424e7661214a4f9279306e4f44209d8ac"
+  },
+  "protectedSourceManifest": {
+    "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+    "count": 61,
+    "normalizedSortedJsonSha256": "0a9c6f24d5fd83a50388611fdd4d75cdf266e0d7938d783a7bb5f64bf70af39f",
+    "encoding": "Normalize each scalar or {sha256} value; canonical JSON sorted keys, separators comma/colon."
+  },
+  "deletions": [],
+  "noIntermediateCommitCherryPick": true,
+  "oldCandidateReceiptContext": "The22 copied files are byte-identical frozen old-PR artifacts, including oldPR CI/receipt context. This record and new PR/checkpoint describe reconstruction. Old failed runs remain failed; new-head CI and independent byte/metadata review are mandatory.",
+  "falsePositiveEvidence": {
+    "rule": "generic-api-key",
+    "oldCommit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+    "metadataPath": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+    "lines": [
+      43,
+      69,
+      77,
+      83
+    ],
+    "publicFileReadbackVerified": true,
+    "GameMetadataReviewSha256": "24b5bd0ba4541f71f2da8a652734473a59ec3e6705fea54ed296a2cf38f98b38",
+    "formatCheckpointSha256": "f45810a63c2977346ec4802f0cd83bec28e7a4464eeea3f9f372ea099f86de07",
+    "sourceReviewR2Sha256": "a7bda38f34cb25a1ae990aae83d8365157b45799b0d4abd326535e26719ff243",
+    "originalR1ReviewSha256": "83c1cdcbfc42b905d7b11c1aed3f61768dee95a8aff806a2d09baad698a0098b"
+  },
+  "policyAndGate": {
+    "pinnedControl": "cb2425525d3e7d0b8375de5298eaee889a552818",
+    "unchanged": true,
+    "exceptionAdded": false,
+    "fullReachableHistoryScanRequired": true,
+    "allCIRequired": true,
+    "actualNewHeadNpmVerifyRequired": true
+  },
+  "localChecks": {
+    "JSON": "passed",
+    "projectUpdate": "passed",
+    "designCheck": "passed",
+    "diffCheck": "passed",
+    "all22ExactBytes": "passed",
+    "source6AndProtected61": "passed",
+    "scanner": "same Gitleaks8.30.1 and pinned policy, no exceptions",
+    "finalFiles": {
+      "exitCode": 0,
+      "findings": 0,
+      "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "canary": {
+      "exitCode": 23,
+      "findings": 1,
+      "reportSha256": "dd5be6aca7acfbb9b20ea76a318ba99b742b7ddc55aaf148cc5ba982beda4e09"
+    },
+    "fullVerifyRepeated": false,
+    "newHeadCIRequired": true
+  },
+  "acceptance": {
+    "sourceLimited": true,
+    "newCandidateMetadataReview": false,
+    "mainMerged": false,
+    "wholeEVE02": false,
+    "providerBilling": false,
+    "publicDeployment": false,
+    "unreviewedProAdopted": false
+  },
+  "next": "New draft PR, full-history/all CI with same unchanged scanner, separate byte/metadata review. Close oldPR197 only after new independent review and CI success; keep oldbranch."
+}

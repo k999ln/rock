@@ -1,3 +1,11 @@
+## EVE-02 attempt2 exact6のmain統合候補（2026-10-24 / G04）
+
+PR197 metadata表記delta:4つのpath名digestをtyped sha256 recordへ変更、61path/digestと6source不変。同Gitleaks8.30.1固定policyで旧4検出→現行0、疑似API-key1検出、既存policy10pass。旧c21 secrets CI失敗と全履歴scan4件は保持。標準exact fingerprintは実証済みだが固定wrapperがempty-ignore強制で設定だけでは利用不可。control読込interface/厳密4設定/負例試験と別workflow pin更新の設計案だけを残し、手製bypassやcontrolpolicyPRは作成しない。最終newhead CI/format再検収/履歴gateは未完了、ローカル全verify反復なし。
+
+固定a2b2eefd候補の全verify成功（4463入力不変、Node2769/2767pass/0fail/2skip、104秒）。draft PR197保存。結果記録のみの最終commitのCIと別metadata採用検収は未完了、mergeなし。
+
+最新main1a9d9eeeとsource7beの6base不変、受入6hashを無変更採用し関連71pass。無料2文章＋goal準備jobだけを既存composition/owner/revision/同意/同job照合へ接続。旧2P2/control/async overwriteは独立r2で閉鎖、原本hash/旧失敗履歴を保持。生成未対応、Provider/課金/新Tool/schema・browser実受入・EVE02全体は未受入。設計/目次/README/95overlayを同期、393task/14gate/固定95分類/whole0保持。PR196は独立Game-r2/Pro metadata/matchhead通常merge main1a9、PR7CIとmain同SHA6CI成功を確認。Root巨大WIP/未検収Proを混ぜずRootHEAD/index/journal保持。次は固定全verify1回・draftPR同headCI・別metadata採用検収。根拠 docs/evidence/development-execution/eve-text-job-main-adoption.json。
+
 ## Billing final-send exact4のmain採用候補（2026-10-24 / G04）
 
 互換deltaの局所40pass、固定05312751候補の全verify成功（4458入力不変、Node2749/2747pass/0fail/2skip）。draft PR196へ保存。最終metadata commitのCIと新4hash独立再検収は未完了、mergeなし。

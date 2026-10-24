@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.22",
-  "updatedAt": "2026-10-24",
+  "version": "1.23",
+  "updatedAt": "2026-10-24T16:41:08.921877+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -514,7 +514,9 @@
           "app/api/work-jobs/composition/route.ts",
           "app/zema/compose/page.tsx",
           "app/api/work-jobs/composition/artifact/route.ts",
-          "components/sky-tool-workspace.tsx"
+          "components/sky-tool-workspace.tsx",
+          "lib/eve-text-job.ts",
+          "app/os/eve/remix/page.tsx"
         ],
         "regressions": [
           "tests/work-composition.test.mjs",
@@ -523,7 +525,8 @@
           "tests/work-composition-ui.test.mjs",
           "tests/owner-memory-state.test.mjs",
           "tests/workbench-owner-recovery.test.mjs",
-          "tests/work-composition-artifact-route.test.mjs"
+          "tests/work-composition-artifact-route.test.mjs",
+          "tests/eve-text-job.test.mjs"
         ],
         "input": "Owner scoped objective, acceptance criteria, bounded text/CSV and validated finite local Tool graph",
         "output": "Persisted intermediate and checked final artifacts, owner-authenticated revision-bound plain text/CSV attachment, original-preserving edited recheck job, plus sanitized reusable recipe",
@@ -532,7 +535,8 @@
         "approval": "Explicit source/artifact saving consent; human final review; no carried-over payment or provider approval",
         "boundary": "Connected effect-free local processing with zero budget only; unconnected Tools rejected; no OS or provider acceptance claim",
         "evidence": "docs/evidence/work-composition-development.json",
-        "entry": "Zema compose plus the three connected Sky catalog Tools; only safe Tool identity seeds a new empty draft; existing owner/job/recipe/editor state has priority"
+        "entry": "Zema compose plus the three connected Sky catalog Tools; only safe Tool identity seeds a new empty draft; existing owner/job/recipe/editor state has priority",
+        "eveTextPreparation": "docs/rockstaros-complete-design.md#eve-text-preparation"
       }
     },
     {
@@ -2891,6 +2895,27 @@
     "existingSchemaOnly": true,
     "commonAuthorityIssuerEpochAccepted": false,
     "productionD1Accepted": false,
-    "mainMerged": false
+    "mainMerged": true
+  },
+  "eveTextPreparation": {
+    "authority": "docs/rockstaros-complete-design.md#eve-text-preparation",
+    "toolDesign": "docs/sky-tools-complete-design.md#eve-text-preparation",
+    "evidence": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/eve-text-job-review-summary.json",
+    "implementation": [
+      "lib/eve-text-job.ts",
+      "components/work-composition-workspace.tsx",
+      "app/os/eve/remix/page.tsx"
+    ],
+    "tests": [
+      "tests/eve-text-job.test.mjs",
+      "tests/work-composition-ui.test.mjs",
+      "tests/work-composition-route.test.mjs"
+    ],
+    "existingCompositionAndSchemaOnly": true,
+    "mainMerged": false,
+    "wholeEVE02Accepted": false,
+    "semanticGenerationAccepted": false,
+    "providerBillingAccepted": false
   }
 }

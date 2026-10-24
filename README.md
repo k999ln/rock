@@ -1,4 +1,6 @@
-Billingの[最終send claim](docs/sky-billing.md#billing-final-send-claim)を限定採用候補へ追加。送信直前にcurrent parent/price/owner/held budgetを同じSQLで確認し、不明時は送信せずholdを保持します。既存料金・888c・台帳を変更しません。共通authority/issuer epoch・本番D1/実課金は未受入です。95台帳のGIT08 metadataはPR195でmain反映済み、本番配備/95whole受入とは区別します。
+Eveの[資料付き依頼保存](docs/rockstaros-complete-design.md#eve-text-preparation)を限定候補へ追加。`npm run dev`で起動したローカルアプリの`/os/eve/remix`から2つの文章を選ぶか入力し、goalを確認して準備・仕事保存・素材保存への同意・保存処理を進めます。同じ仕事から原文と成果を読み戻して確認します。無料の準備jobで、生成した草稿ではありません。未保存入力はtabを閉じると失われます。公開サイト/実browser/モデル生成の受入は別gateです。
+
+Billingの[最終send claim](docs/sky-billing.md#billing-final-send-claim)はPR196でmainへ限定統合済み。送信直前にcurrent parent/price/owner/held budgetを同じSQLで確認し、不明時は送信せずholdを保持します。既存料金・888c・台帳を変更しません。共通authority/issuer epoch・本番D1/実課金は未受入です。95台帳のGIT08 metadataはPR195でmain反映済み、本番配備/95whole受入とは区別します。
 
 [95unit再開台帳](data/development-unit-progress.json)と[handoff](data/development-source-handoff.json)をmain向けに同期。fixed9aの分類を保持し、PR194のeSIM限定採用は別overlayです。95全体の完了は0、Root旧80not_startedは現在の未実装数ではありません。次は実装中のBilling finalclaim、eSIM残gate、Eve02 bounded text。runtime/source/testは変更せず、metadata保存と本番公開は区別します。
 
