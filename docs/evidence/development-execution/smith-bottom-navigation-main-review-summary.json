@@ -108,5 +108,33 @@
     "Native OS or deployed production"
   ],
   "wholeSmith01": false,
-  "publicDeployment": false
+  "publicDeployment": false,
+  "completedMainAdoption": {
+    "pr": 203,
+    "acceptedHead": "6e280a935bf834e21913a3a5680050d8318f04c0",
+    "mainMergeSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2856,
+      "pass": 2854,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40127344738
+    },
+    "metadataReviewSha256": "7a63d1d0daabc3cc019412e2c4c643c406414ef8c1006ebcc7dff5f4cdde01a8",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceEightUnchanged": true,
+    "wholeSmith01": false,
+    "publicDeployment": false,
+    "unexecutedUiGates": [
+      "Physical soft keyboard",
+      "Nonzero physical safearea inset",
+      "200percent text/browser zoom",
+      "Authenticated Jennifer composer",
+      "Active-running-job real UI guard",
+      "Two-owner Agent save/read/CAS UI",
+      "Native OS or deployed production"
+    ]
+  }
 }

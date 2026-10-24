@@ -1,4 +1,5 @@
 import type { TextGenerationUsage } from './llm-providers.ts';
+import type { EveEstimateSourceRef } from './eve-text-job.ts';
 const messages: Record<string, string> = {
   UNAUTHORIZED: 'サインインの有効期限が切れました。再度サインインして続けてください。',
   SERVICE_ENTITLEMENT_REQUIRED: 'この機能の利用権を確認できません。接続状態を確認してください。',
@@ -118,16 +119,50 @@ function ceiling(value: unknown): value is RemoteTextExecution['quote']['ceiling
     digest(value.rateCardDigest) && integer(value.maximumChargeMinor) && integer(value.inputTokenUpperBound) &&
     integer(value.outputTokenLimit) && value.outputTokenLimit > 0;
 }
-export function readRemoteTextEstimate(value: unknown, expected: { currency: string; model?: string; outputTokenLimit: number; maximumBudgetMinor: number }): RemoteTextEstimate {
+function readEstimateShape(value: unknown, expected: { currency?: string; model?: string; outputTokenLimit: number }): RemoteTextEstimate {
   if (!object(value) || !ceiling(value.estimate) || !Array.isArray(value.unitRates) ||
     !value.unitRates.every((rate) => object(rate) && ['ordinary-input', 'cached-input', 'cache-write', 'output'].includes(String(rate.category)) && integer(rate.rateMinorMicrosPerMillionTokens)) ||
     typeof value.withinUserCap !== 'boolean' || !nonempty(value.cardId) || typeof value.rateSource !== 'string' ||
-    !value.rateSource.startsWith('https://') || value.estimate.currency !== expected.currency ||
+    !value.rateSource.startsWith('https://') || (expected.currency !== undefined && value.estimate.currency !== expected.currency) ||
     (expected.model !== undefined && value.estimate.modelId !== expected.model) || value.estimate.outputTokenLimit !== expected.outputTokenLimit)
     invalid();
-  if (!value.withinUserCap || value.estimate.maximumChargeMinor > expected.maximumBudgetMinor)
-    throw new RemoteAiTextClientError(422, 'REMOTE_AI_QUOTE_OVER_CAP_OR_INVALID');
   return value as RemoteTextEstimate;
+}
+export function readRemoteTextEstimate(value: unknown, expected: { currency: string; model?: string; outputTokenLimit: number; maximumBudgetMinor: number }): RemoteTextEstimate {
+  const estimate = readEstimateShape(value, expected);
+  if (!estimate.withinUserCap || estimate.estimate.maximumChargeMinor > expected.maximumBudgetMinor)
+    throw new RemoteAiTextClientError(422, 'REMOTE_AI_QUOTE_OVER_CAP_OR_INVALID');
+  return estimate;
+}
+export type EveTextEstimate = RemoteTextEstimate & {
+  estimate: RemoteTextEstimate['estimate'] & { expiresAt: number };
+  sourceRef: EveEstimateSourceRef; promptDigest: string;
+};
+export function eveTextEstimateIsCurrent(value: EveTextEstimate | null, now = Date.now()): boolean {
+  return value !== null && integer(now) && integer(value.estimate.expiresAt) && value.estimate.expiresAt > now;
+}
+/** Read-only comparison. This reader never accepts an approval or an execution. */
+export function readEveTextEstimate(value: unknown, expected: {
+  sourceRef: EveEstimateSourceRef; promptDigest: string; currency?: string; model?: string;
+  outputTokenLimit: number; comparisonCapMinor: number | null;
+}): EveTextEstimate {
+  const estimate = readEstimateShape(value, expected);
+  const categories = new Set(estimate.unitRates.map((rate) => rate.category));
+  if (!object(value) || !object(value.sourceRef) || value.estimateOnly !== true ||
+    ![2, 4].includes(estimate.unitRates.length) || categories.size !== estimate.unitRates.length ||
+    !categories.has('ordinary-input') || !categories.has('output') ||
+    value.executionAuthorized !== false || value.providerSubmission !== 'not_performed' ||
+    value.userCapMinor !== expected.comparisonCapMinor || !digest(value.promptDigest) ||
+    value.promptDigest !== expected.promptDigest ||
+    Object.keys(value.sourceRef).length !== 5 ||
+    value.sourceRef.jobId !== expected.sourceRef.jobId || value.sourceRef.revision !== expected.sourceRef.revision ||
+    value.sourceRef.builder !== expected.sourceRef.builder || !digest(value.sourceRef.sourceSha256) ||
+    value.sourceRef.sourceSha256 !== expected.sourceRef.sourceSha256 || !Array.isArray(value.sourceRef.materialSha256) ||
+    value.sourceRef.materialSha256.length !== 2 || value.sourceRef.materialSha256.some((item, i) =>
+      !digest(item) || item !== expected.sourceRef.materialSha256[i]) ||
+    estimate.withinUserCap !== (expected.comparisonCapMinor === null || estimate.estimate.maximumChargeMinor <= expected.comparisonCapMinor)) invalid();
+  if (!eveTextEstimateIsCurrent(value as EveTextEstimate)) invalid();
+  return value as EveTextEstimate;
 }
 export function readRemoteTextExecution(value: unknown, expected: { parentJobId: string; requestId?: string; requestDigest?: string; previous?: RemoteTextExecution }): RemoteTextExecution {
   if (!object(value) || !identifier(value.id) || value.parentJobId !== expected.parentJobId || !identifier(value.requestId) ||

@@ -1,3 +1,7 @@
+## Eve saved-source見積only r2限定候補（EVE-02 / HOME01 / WEB04 / SKY21）
+
+主担当05/ROCK、統合10。保存owner/revisionのcanonical2資料+goalから既存signed-rate ceilingへ結び、itemized表示のみ。pricinggatefalse/quote/reserve/approve/send/無料job budget0を保持。expiry P2反例3を修正し独立19/初回統合70/type/lint成功。初回CIは実verify成功だがtest正規表現CodeQLで不合格。test1明示機械例外を修正しUI8/endpoint10成功、product5/他test4不変。新head CIとmechanical検収待ち。Root実UIは保存復元/consent reset/503 unavailable/quoteHTTP0だけで数値成功ではない。Smithnav入り追加UIは同10hash/main7188で限定restore/nav/入力保持/5幅HTTP0を確認しcommit保留解除。最終CI/metadata review/実numeric・expiry/paid/native/prodは別gate。[契約](../rockstaros-complete-design.md#eve-saved-source-estimate)／[証拠](../evidence/development-execution/eve-source-estimate-main-adoption.json)。
+
 ## Smith mobile3入口 attempt3の限定候補（HOME01 / WEB04 / SKY21 / OS10）
 
 主担当05/ROCK、Git統合10。Homeの旧5navを共有3navへ置換し、hash同期とMoreの2linkだけを明示例外として採用。17保護・53試験/type/lint、Rootの同8hashの限定local実UIを確認。attempt1 hash不一致→2、attempt2 mobile Agent導線消失→3の失敗/修正を保持。実keyboard/safearea/zoom/認証composer/runningjob/twoowner/native/本番は未受入。最終同head実Linux verify/CIとmetadata採用review待ち。[11項目契約](../rockstaros-complete-design.md#smith-mobile-bottom-navigation)／[証拠](../evidence/development-execution/smith-bottom-navigation-main-adoption.json)。

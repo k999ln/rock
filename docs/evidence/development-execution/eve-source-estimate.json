@@ -1,0 +1,445 @@
+{
+  "schema": "rockstaros.eve-source-estimate.portable-source-summary/1",
+  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
+  "unit": "EVE-02",
+  "attempt": 2,
+  "sourceOriginalBase": "2bea21b14faec220161ffaac910e973ed0b52de7",
+  "syncedSourceHead": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+  "sourceFiles": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+      "bytes": 6812
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "dfa1469e68ff9d6747374dde4efbcf7400e750fe9d36efdc6e8f7705a2243618",
+      "bytes": 14255
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+      "bytes": 9604
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "0c8d5abe9d516aa77a11286bf5207969390fd58ce16ba532973e9ab3d5f41b42",
+      "bytes": 44665
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+      "bytes": 12501
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "7045a57d0f10e701fc32d7ec5578d734b7f3213b98a07b72d652319cc8877afc",
+      "bytes": 8004
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+      "bytes": 15463
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "bytes": 7676
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+      "bytes": 56166
+    },
+    {
+      "path": "tests/remote-ai-text-client.test.mjs",
+      "sha256": "aa0eb5be79563cd1082ef8f6610c33fc5a2d3fc229aa9c97fa8c86cc92f97da1",
+      "bytes": 6044
+    }
+  ],
+  "sourceAdaptationDuringAdoption": true,
+  "originalImplementationReceiptSha256": "69b1277e6b8635804c83a4f7dd743fdf4025081254aa55bb907a7984c68ad23c",
+  "originalReceiptHistoricalStatus": "ATTEMPT2_EXPIRY_REPAIR_FOCUSED_PASS_PENDING_INDEPENDENT_R2_AND_ROOT_UI",
+  "receiptQualification": "New portable metadata, not the original receipt. Original r2 review covers ten initial files; current candidate has nine identical files plus one explicitly authorized test-expression repair. Product5 remain identical, and independent mechanical/adoption review is pending.",
+  "sourceReviewSha256": "67cfe71cd5f21a6484cbc1d6df662d2926ec437f63569875a52d62ea6279f424",
+  "sourceReviewVerdict": "PASS_SCOPED",
+  "sourceMustFix": 0,
+  "priorReview": {
+    "path": "docs/evidence/development-execution/eve-source-estimate-review.json",
+    "sha256": "61b46c1b065cd75129f818dd3636d9e54d98ec3f86e0eed276fe868ceb542605",
+    "verdict": "CHANGES_REQUIRED",
+    "preserved": true
+  },
+  "failureAndRepairHistory": [
+    {
+      "attempt": 1,
+      "id": "EVE-ESTIMATE-EXPIRY-01",
+      "priority": "P2",
+      "independentTests": {
+        "tests": 13,
+        "pass": 10,
+        "fail": 3
+      },
+      "cause": "Rate checked before final awaited saved-source reread; client parse/render accepted expired ceiling.",
+      "repair": "Fresh final safe clock and rate/ceiling expiry after final owner read; Eve-only parser/render require future integer expiry; cleanup/epoch-bound deadline clears display without automatic request or permission changes.",
+      "closedBy": "Independent r2 PASS_SCOPED; original three probes replayed unchanged, included in independent19."
+    }
+  ],
+  "fixtureAndHarnessFailures": [
+    {
+      "id": "route-initial",
+      "result": "5 fixture failures before route assertions",
+      "cause": "example.test rate source violated existing official provider source validator. Used allowed official source URL as signed fixture metadata only; no fetch."
+    },
+    {
+      "id": "ui-initial",
+      "result": "5 harness walker failures",
+      "cause": "Undefined child defaulted to root and recursed. Fixed test-only walker."
+    },
+    {
+      "id": "lint-initial",
+      "result": "2 lint errors",
+      "cause": "Layout-effect state reset and cleanup ref increment. Replaced with conditional own-state adjustment before commit and stateless cleanup, no lint suppression."
+    },
+    {
+      "id": "focused",
+      "result": {
+        "tests": 64,
+        "pass": 35,
+        "fail": 29,
+        "skipped": 0
+      },
+      "cause": "29 parent cases refused unknown child import before assertions. Explicit one-path scope extension permits only module map fixture wiring; all existing assertions retained."
+    },
+    {
+      "id": "paid-regression",
+      "result": {
+        "tests": 74,
+        "pass": 73,
+        "fail": 1,
+        "skipped": 0
+      },
+      "cause": "Sandbox loopback EPERM. Kept failure and reran only that test with approved localhost permission."
+    }
+  ],
+  "historicalLogDigests": [
+    {
+      "id": "attempt2-expiry-initial",
+      "sha256": "9e362946cedd66dd9091bb076c55be1d06eb566a055df50f04cb5ceb84e72a4b"
+    },
+    {
+      "id": "attempt2-focused",
+      "sha256": "86393f13c8dd5ec3561239ac0951483fb2b9120071339c298fb116d7daf98fee"
+    },
+    {
+      "id": "attempt2-original-counterexamples",
+      "sha256": "6a1f06f080f964eeeb7c22109084aa650b9d773dee073e3dab72ea4d58b1742a"
+    },
+    {
+      "id": "attempt2-typecheck",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    {
+      "id": "attempt2-lint",
+      "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+    },
+    {
+      "id": "route-initial",
+      "sha256": "247ab8b02b7ab535f2cd2aba06b6ab10c4b5c58117cebc905daacb181d6f39a3"
+    },
+    {
+      "id": "route-second",
+      "sha256": "e48ad604e9125975d979292eab1d30271871348a5ef0614ef05e377c623140ed"
+    },
+    {
+      "id": "codec-initial",
+      "sha256": "02252b6e88f43526e19e94b26c2c56874ea9bbc93159789e00c910cba4192edb"
+    },
+    {
+      "id": "ui-initial",
+      "sha256": "205a557489247ce34f35f9da9554197e9dd8e02a506cf0fa0a9021c6e9e98858"
+    },
+    {
+      "id": "ui-second",
+      "sha256": "1f6f8a900a669d9e42defc07d325b65dca010b1727957911afa808846d9fb22e"
+    },
+    {
+      "id": "ui-third",
+      "sha256": "a5c28288f664cc3e9c64ff316de8bcb4fc4af284bcd59095fd825d7fddf6a3c4"
+    },
+    {
+      "id": "lint-initial",
+      "sha256": "b9cb4af2158be21d498b1bf895bda25dbd4067a3aa17bcb833b043d61a1785af"
+    },
+    {
+      "id": "lint-second",
+      "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+    },
+    {
+      "id": "focused",
+      "sha256": "61cebe9589b142563a580484747e6ea46f93e86fa85d6d7e34cad672477b34bf"
+    },
+    {
+      "id": "focused-bounded",
+      "sha256": "7710c8eef8bab7ff0203c6502a9a6890d72423801fc547441879bb35a9f59687"
+    },
+    {
+      "id": "paid-regression",
+      "sha256": "3ff24b51274dd53e3614c17eccbc18653e5bb58b340e67167791f06b747ed7f7"
+    },
+    {
+      "id": "paid-d1-approved",
+      "sha256": "c2c97284d012dd1ad0a7ce6c401d384c21714c3e74ea4b2b7fe0d4e7b7485504"
+    },
+    {
+      "id": "legacy-ui-map-diagnostic",
+      "sha256": "7c24267212ee755427f7bd40be1efa4650e56d340c1d82cdf2facba5d4efd03f"
+    },
+    {
+      "id": "focused-final",
+      "sha256": "764eda9d4a4bc9955ade1a4c6c8f8d64dcf01b22434070d122f570c01595ec86"
+    },
+    {
+      "id": "lint-final",
+      "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+    },
+    {
+      "id": "typecheck-final-accepted",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    {
+      "id": "parent-ui-final",
+      "sha256": "be56f28a68313d61d96bb5eafe3b7a3495a2a078e5710797b33b817665f8458f"
+    },
+    {
+      "id": "panel-final",
+      "sha256": "62345b502fcfceda198f2c0e7a970ae455f56ca53292151cb14cd66c821aaadf"
+    },
+    {
+      "id": "last-delta-lint",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "typecheck-fixed",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    }
+  ],
+  "r1ReceiptSha256": "f00ff9509f429053ca71b96d8263c24f7baa2e12fb7138b28d3228345a75215b",
+  "independentValidation": {
+    "focused70": {
+      "tests": 70,
+      "pass": 70,
+      "fail": 0,
+      "skip": 0
+    },
+    "probeGroups19": {
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "skip": 0
+    },
+    "originalExpiry3": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "includedIn19": true
+    },
+    "countsNotAdditive": true,
+    "planes": "Actual transpiled server route with synthetic auth/scope boundary, in-memory SQLite/current migrations, ephemeral real signed rate. Actual transpiled panel in deterministic hook/JSX/timer VM. No browser/listening server/real Provider/production DB operated."
+  },
+  "priorLocalD1Qualification": "Original paid regression73pass/1sandbox listen EPERM and separate approved localD1 retry1pass remain historical, not a current integration/D1 or production pass.",
+  "api": {
+    "path": "POST /api/llm/estimate",
+    "eveInputKeys": [
+      "provider",
+      "eveSource",
+      "consent",
+      "model",
+      "currency",
+      "maximumBudgetMinor",
+      "maxOutputTokens"
+    ],
+    "eveSourceKeys": [
+      "jobId",
+      "revision"
+    ],
+    "newResponseKeys": [
+      "sourceRef",
+      "promptDigest"
+    ],
+    "stateless": true,
+    "sourceRead": "Authenticated owner and exact stored revision; saved review/completed preparation only; no cancelled/cleared/unsaved material.",
+    "comparisonCap": "Optional display comparison only, not approved budget or free price.",
+    "legacyRawPromptBranchCompatible": true,
+    "newTablesSchemaMigrationsOrConfig": false,
+    "errors": "401/403 existing auth/scope;404 foreign/missing job;409 source changed or currency ambiguity;400 invalid source/input;413 request too large;503 missing/untrusted/expired rates; sanitized without source echo",
+    "eveExpiry": "Existing signed ceiling expiresAt is mandatory and current in Eve parser/display. Trusted expiry is never altered. Expired rate is sanitized503 with no estimate body."
+  },
+  "protectedBoundaries": [
+    "Canonical source codec and parent integration unchanged from r1. Same owner/revision/exact saved2materials+goal/preparation artifact/source consent boundary; role/system-looking material remains data, not authority.",
+    "Guarded nonexecution flags/sourceRef/digests/money fields preserved. Source change or owner reassignment during async rate work still refuses. No raw material/prompt echoed.",
+    "Estimate routes remain read-only across every SQLite table in independent success/denial probes. Provider fetch0. Free preparation remains budget0 and review/completed, with no paid quote/reserve/approve/send or job-state mutation.",
+    "Original paid runtime, final service claim, workflow/history/price contracts remain exact base. Current pricing execution gate stays false.",
+    "Panel restore remains autofetch0; explicit opt-in/action required, duplicate/stale clicks and late401/200 are discarded on identity/edit changes. Output bound remains fixed1200 in panel; no editable output limit added.",
+    "Expiry handling uses current clocks and point-in-time source observations; this is not a synchronized-clock guarantee or a lock across later source changes. Once expiry timer clears state, clock rollback does not restore it."
+  ],
+  "uiSummary": {
+    "path": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
+    "sha256": "9f62d525a07dfe4045b56d4b0c58d393de9002d2268bc67b687231da24af59d7",
+    "originalRootSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85",
+    "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0"
+  },
+  "acceptance": {
+    "boundedSyntheticEstimate": true,
+    "independentSourceReview": true,
+    "combinedMainUi": true,
+    "newMetadataReviewed": false,
+    "mainIntegrated": false,
+    "paidGeneration": false,
+    "sameJobGeneratedArtifact": false,
+    "productionProviderBilling": false,
+    "publicDeployment": false,
+    "wholeEve02": false,
+    "originalSourceTenReviewed": true,
+    "currentNineExact": true,
+    "currentMechanicalExceptionReviewed": false
+  },
+  "combinedMainUi": {
+    "status": "PASS_SCOPED_LOCAL_RESTORE_AND_NAVIGATION",
+    "mainSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+    "sameSyntheticJobAndRevisionRestored": true,
+    "consentReset": true,
+    "estimateDisabled": true,
+    "navCurrent": "Eve",
+    "widths": [
+      320,
+      390,
+      700,
+      701,
+      1280
+    ],
+    "navCounts": [
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    "horizontalOverflow": false,
+    "focusBehavior": "Text input hides navigation; checkbox/after-input focus restores it while synthetic comparison value100 stays unchanged.",
+    "measuredAt390x844": {
+      "navTop": 788,
+      "checkboxBottom": 442.84375,
+      "estimateButtonBottom": 520.625
+    },
+    "restoreEstimateOrPaidHttpRequests": 0,
+    "numericRateUiTested": false,
+    "scopeQualification": "Latest-main combined restore/navigation only, separate from original old-base explicit estimate503 observation. Neither context proves numeric trusted-rate or browser expiry.",
+    "commitHoldReleasedByRoot": true,
+    "originalUiSourceTenHashesMatchedAtObservation": true,
+    "currentRuntimeFiveHashesUnchanged": true,
+    "currentExactFilesFromUiManifest": 9,
+    "currentTestOnlyMechanicalException": true
+  },
+  "reviewedOriginalSourceFiles": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+      "bytes": 6812
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "dfa1469e68ff9d6747374dde4efbcf7400e750fe9d36efdc6e8f7705a2243618",
+      "bytes": 14255
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+      "bytes": 9604
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "0c8d5abe9d516aa77a11286bf5207969390fd58ce16ba532973e9ab3d5f41b42",
+      "bytes": 44665
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+      "bytes": 12320
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "7045a57d0f10e701fc32d7ec5578d734b7f3213b98a07b72d652319cc8877afc",
+      "bytes": 8004
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+      "bytes": 15463
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "bytes": 7676
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+      "bytes": 56166
+    },
+    {
+      "path": "tests/remote-ai-text-client.test.mjs",
+      "sha256": "aa0eb5be79563cd1082ef8f6610c33fc5a2d3fc229aa9c97fa8c86cc92f97da1",
+      "bytes": 6044
+    }
+  ],
+  "runtimeProductFiveUnchanged": true,
+  "reviewedExactFileCount": 9,
+  "mechanicalTestException": {
+    "path": "tests/eve-text-estimate-ui.test.mjs",
+    "oldSha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+    "newSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+    "failedHead": "27874885b65331b31807e7b5b707e4520e841212",
+    "failedCheckId": 121015639703,
+    "failedRule": "Missing regular expression anchor",
+    "oldExpression": "/quotes|\\/text$/",
+    "change": "Use URL pathname comparison for exact /api/llm/quotes, its slash subpaths, and exact /api/llm/text; optional query cannot hide paid calls. No network operation.",
+    "callsShapeAudit": "Actual panel calls remoteAiTextRequest with same-origin path strings; VM mock records {path,method,body} unchanged. Existing client allowlist admits quotes/subpath/text and optional parentJobId query.",
+    "scope": "Only this assertion expression. Reverse replacement reconstructs exact old full-file hash. No assertion deletion, unconditional result, product5 or other test4 changes.",
+    "authorization": "Root explicit one-file CodeQL expression exception",
+    "independentMechanicalReview": "PENDING_ROOT_ASSIGNED_REVIEWER",
+    "diffSha256": "ff6129a0c669a8ab2a5e8bcea282c166bdcdfc9efa5483a4cbdfa56bff5a118a",
+    "validation": {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/eve-text-estimate-ui.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 2,
+      "logSha256": "ef58117f8279affa0ed314048e7c6457dcd6104b26f2c8446ae404da0bbcb2a1",
+      "endpointMatrix": {
+        "cases": 10,
+        "paidDetected": 8,
+        "estimateNotMisclassified": 2,
+        "externalAccess": false,
+        "sha256": "b132e810f3d90a46b7fb2ca329e4ba7ae74e7143098441a5afb2985bbbc66c87"
+      },
+      "uiSuite": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    "priorFailedHeadActualLinuxVerify": {
+      "tests": 2875,
+      "pass": 2873,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40141891855,
+      "logSha256": "e97138e3910bbe54e2cfb13f42e3c7379f5bef438e50991ce95d63e0a601cfa3"
+    }
+  }
+}

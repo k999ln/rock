@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.29",
-  "updatedAt": "2026-10-24T19:51:02.880287+00:00",
+  "version": "1.30",
+  "updatedAt": "2026-10-24T23:10:23.433054+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3029,8 +3029,41 @@
     "reviewSummary": "docs/evidence/development-execution/smith-bottom-navigation-main-review-summary.json",
     "uiSummary": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
     "attempt": 3,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeSmith01Accepted": false,
     "publicDeployment": false
+  },
+  "eveSavedSourceEstimate": {
+    "authority": "docs/rockstaros-complete-design.md#eve-saved-source-estimate",
+    "toolDesign": "docs/sky-tools-complete-design.md#eve-saved-source-estimate",
+    "billingDesign": "docs/sky-billing.md#eve-saved-source-estimate",
+    "implementation": [
+      "lib/eve-text-job.ts",
+      "app/api/llm/estimate/route.ts",
+      "lib/remote-ai-text-client.ts",
+      "components/eve-text-estimate.tsx",
+      "components/work-composition-workspace.tsx"
+    ],
+    "tests": [
+      "tests/eve-text-estimate.test.mjs",
+      "tests/work-composition-ui.test.mjs",
+      "tests/eve-text-estimate-ui.test.mjs",
+      "tests/eve-text-job.test.mjs",
+      "tests/remote-ai-text-client.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/eve-source-estimate-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/eve-source-estimate-main-review-summary.json",
+    "uiSummary": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
+    "attempt": 2,
+    "mainMerged": false,
+    "combinedMainUiPending": false,
+    "pricingExecutionGateChanged": false,
+    "paidGenerationAccepted": false,
+    "wholeEve02Accepted": false,
+    "publicDeployment": false,
+    "combinedMainUi": "limited_local_restore_and_navigation_pass",
+    "currentNineExactPlusTestMechanicalException": true,
+    "runtimeProductFiveUnchanged": true,
+    "mechanicalTestExceptionPath": "tests/eve-text-estimate-ui.test.mjs"
   }
 }
