@@ -1,3 +1,7 @@
+## Smith mobile3入口 attempt3の限定候補（HOME01 / WEB04 / SKY21 / OS10）
+
+主担当05/ROCK、Git統合10。Homeの旧5navを共有3navへ置換し、hash同期とMoreの2linkだけを明示例外として採用。17保護・53試験/type/lint、Rootの同8hashの限定local実UIを確認。attempt1 hash不一致→2、attempt2 mobile Agent導線消失→3の失敗/修正を保持。実keyboard/safearea/zoom/認証composer/runningjob/twoowner/native/本番は未受入。最終同head実Linux verify/CIとmetadata採用review待ち。[11項目契約](../rockstaros-complete-design.md#smith-mobile-bottom-navigation)／[証拠](../evidence/development-execution/smith-bottom-navigation-main-adoption.json)。
+
 ## EVE-02文章準備のmain採用候補
 
 ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/owner/revision/保存同意/同job読戻し/unknownと取消/100件外復旧をexact6で限定採用。attempt2独立PASS、旧2P2は履歴を保持して閉鎖。実browser・semantic生成・Provider/課金・新Tool/schema・公開は未受入。[設計](../rockstaros-complete-design.md#eve-text-preparation)／[証拠](../evidence/development-execution/eve-text-job-main-adoption.json)。Git主担当は10、固定全verify/CIと別metadata採用検収が次。

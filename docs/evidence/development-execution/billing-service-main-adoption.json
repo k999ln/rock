@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.billing-service-authority.main-adoption/1",
   "recordedAt": "2026-10-24T19:02:56.451588+00:00",
-  "status": "exact4_source_pass_local53_type_lint_pass_finalheadCI_metadata_review_pending",
+  "status": "PR202_normal_main_integrated_limited_service_authority_metadata_and_CI_pass",
   "unit": "BILL-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "03-wallet-billing-providers",
@@ -33,7 +33,7 @@
     "sha256": "a2cfda1d07b18b587f4d6ec3146596b1d36a88fcffd3c274b7585ab00488dc32",
     "summaryOnly": true,
     "notOriginalReceiptIdentity": true,
-    "metadataReviewPending": true
+    "metadataReviewPending": false
   },
   "sourceIndependentReviewSha256": "acf603b55a398639d3871ec619dbd08629c940637a8332e3b59fa72b64ae9869",
   "reviewSummary": "docs/evidence/development-execution/billing-service-main-review-summary.json",
@@ -656,8 +656,8 @@
   },
   "acceptance": {
     "sourceFourLimitedIndependent": true,
-    "metadataReviewed": false,
-    "mainMerged": false,
+    "metadataReviewed": true,
+    "mainMerged": true,
     "priceSchemaMigrationConfigChange": false,
     "commonContractIssuerEpoch": false,
     "sourceAttachmentPerOriginalOrderBinding": false,
@@ -666,5 +666,27 @@
     "publicDeployment": false,
     "wholeBill02": false
   },
-  "next": "JSON/project/design/current scanner0+canary, separate draftPR and actual exact final-head npmverify/all CI, independent adoption metadata review before merge."
+  "next": "Required current generic service final claim integrated; common contract/issuer epoch/order binding/account-month and production gates remain separate.",
+  "historicalCandidateStatus": "exact4_source_pass_local53_type_lint_pass_finalheadCI_metadata_review_pending",
+  "mainOutcome": {
+    "pr": 202,
+    "acceptedHead": "31594439258c2a9574c0fe2c9756caf42597a74e",
+    "mainMergeSha": "2bea21b14faec220161ffaac910e973ed0b52de7",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2847,
+      "pass": 2845,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40124033528
+    },
+    "metadataReviewSha256": "2bce788f18ef60f2cdd52c43cd296b7df890bbf87538053c5f2b9d1911c5c494",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceFourUnchanged": true,
+    "commonContractIssuerEpochAccepted": false,
+    "wholeBill02": false,
+    "productionProviderBillingAccepted": false,
+    "publicDeployment": false
+  }
 }

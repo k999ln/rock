@@ -1,0 +1,71 @@
+/* Only the two explicit consumer hosts acquire mobile application chrome. */
+.os-app-navigation {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  [data-os-bottom-navigation-host='workspace'] {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+
+  [data-os-bottom-navigation-host] :is(a, button, input, textarea, [tabindex]) {
+    scroll-margin-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+
+  [data-os-bottom-navigation-host] .os-app-navigation {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    box-sizing: border-box;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    border-top: 1px solid #c9d0c5;
+    background: #f6f4ef;
+    color: #344739;
+  }
+
+  [data-os-bottom-navigation-host] .os-app-navigation a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 44px;
+    gap: 1px;
+    padding: 2px;
+    color: inherit;
+    font: 600 11px/1.2 system-ui, sans-serif;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  [data-os-bottom-navigation-host] .os-app-navigation a[aria-current='page'] {
+    color: #254b3b;
+    background: #e5eadc;
+  }
+
+  [data-os-bottom-navigation-host] .os-app-navigation a[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  [data-os-bottom-navigation-host] .os-app-navigation a:focus-visible {
+    outline: 2px solid #315b4d;
+    outline-offset: -4px;
+  }
+
+  /* Editing keeps the current input/composer unobstructed without moving focus.
+     This also works for a hardware keyboard; no viewport-size guess is stored. */
+  [data-os-bottom-navigation-host]:has(
+    textarea:focus,
+    input:not([type='checkbox'], [type='radio'], [type='button'], [type='submit'], [type='reset'], [type='file'], [type='range'], [type='color'], [type='hidden']):focus,
+    [contenteditable]:not([contenteditable='false']):focus
+  ) .os-app-navigation {
+    display: none;
+  }
+}

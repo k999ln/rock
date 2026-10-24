@@ -1,3 +1,5 @@
+Smithの[mobile3入口](../rockstaros-complete-design.md#smith-mobile-bottom-navigation)は05の限定候補、統合主担当10。attempt3 exact8と限定local実UI PASSを採用し、wholeSMITH/native/公開は未受入。Billing required service最終claimはPR202/main2bea・同SHA6CI成功で限定統合済み。原本5archiveは別source branch。
+
 Billingの[required service最終claim](../sky-billing.md#billing-required-service-authority)は03の限定候補、統合主担当10。最新eSIM201 main468dから受入4sourceだけを採用し、server preview/requiredと価格/schema/issuer epochの未受入を明示する。Web source保全は別branchで、runtime採用とは分ける。
 
 eSIM/Linuxの[owner-response本文開示](../rockstaros-complete-design.md#esim-owner-response-disclosure)は03の限定候補、統合主担当10。最新Mini200 main99abから受入3sourceだけ採用し、原本receipt hashとportable要約を分ける。現owner row/payload witnessであり独立retention ACL/期限や本番auth/DBの完成ではない。

@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T19:02:56.451588+00:00",
+  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+    "mainAtCapture": "2bea21b14faec220161ffaac910e973ed0b52de7",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -308,7 +308,10 @@
       "id": "SMITH-01",
       "title": "正式名・互換入口・既存データの整合",
       "lane": "smith",
-      "ledgerRef": "data/development-unit-progress.json#SMITH-01"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-01",
+      "currentOverlayRefs": [
+        "SMITH_BOTTOM_NAVIGATION_CANDIDATE"
+      ]
     },
     {
       "id": "SMITH-02",
@@ -648,8 +651,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "SMITH-01",
+      "state": "attempt3_navigation_exact8_source_and_bounded_local_UI_pass_main_candidate",
+      "scope": "Final same-head Linux verify/CI and independent adoption metadata review; physical inset/keyboard/zoom/auth composer/running-job/two-owner/native/production remain open.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "BILL-02",
-      "state": "required_service_authority_exact4_source_pass_main_candidate",
+      "state": "required_service_authority_PR202_main_integrated_remaining_shared_gates",
       "scope": "Current same-owner active scope/expiry final claim only; no common contract/epoch/order binding/account-month aggregate completion",
       "wholeUnitAccepted": false
     },

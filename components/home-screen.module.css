@@ -135,8 +135,7 @@
   border-inline: 1px solid #dedfd6;
   min-height: 100dvh;
 }
-.mobileHeader,
-.mobileNav {
+.mobileHeader {
   display: none;
 }
 .explore {
@@ -400,26 +399,6 @@
   .mobileHeader img {
     filter: none;
   }
-  .mobileNav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 90;
-    background: rgba(246, 244, 239, 0.96);
-    border-top: 1px solid #dedfd6;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .mobileNav a {
-    display: grid;
-    place-items: center;
-    min-height: 56px;
-  }
-  .mobileNav a[aria-current='page'] {
-    color: #315b4d;
-  }
 }
 @media (max-width: 430px) {
   .mobileHeader {
@@ -527,13 +506,6 @@
   background: #315b4d;
   color: #fffdf8;
   border-radius: 12px;
-}
-.home .mobileNav {
-  background: rgba(246, 244, 239, 0.96);
-}
-.home .mobileNav a[aria-current='page'] {
-  color: #315b4d;
-  background: #e5eadc;
 }
 .home .sources {
   background: #fffdf8;

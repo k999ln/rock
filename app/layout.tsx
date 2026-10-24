@@ -5,6 +5,7 @@ import CommunityOsRuntime from '@/components/community-os-runtime';
 import './app.css';
 import './workspace.css';
 import './work/work.css';
+import './os-bottom-navigation.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:

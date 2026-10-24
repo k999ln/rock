@@ -70,5 +70,26 @@
     "Required authority read failures deny. Since SQL still resolves referenced table, preview is not a migration-missing bypass.",
     "No production/Provider/issuer/payment/SIM/device/browser/publication or live finance acceptance. Synthetic scope rows and rates do not establish trusted receipt provenance."
   ],
-  "privacy": "Allowlisted scope/digests/relative paths/counts only; no raw proof/log/private path/token copied."
+  "privacy": "Allowlisted scope/digests/relative paths/counts only; no raw proof/log/private path/token copied.",
+  "completedMainAdoption": {
+    "pr": 202,
+    "acceptedHead": "31594439258c2a9574c0fe2c9756caf42597a74e",
+    "mainMergeSha": "2bea21b14faec220161ffaac910e973ed0b52de7",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2847,
+      "pass": 2845,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40124033528
+    },
+    "metadataReviewSha256": "2bce788f18ef60f2cdd52c43cd296b7df890bbf87538053c5f2b9d1911c5c494",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceFourUnchanged": true,
+    "commonContractIssuerEpochAccepted": false,
+    "wholeBill02": false,
+    "productionProviderBillingAccepted": false,
+    "publicDeployment": false
+  }
 }

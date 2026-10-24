@@ -1,3 +1,7 @@
+## Smith attempt3 exact8のmain採用候補
+
+Billing202通常merge main2bea21b1・同SHA6CI成功のclean基点へ、旧468dと8base不変の独立受入8hashを無変更採用。原本5archive53e6ed46とmain適応8byte、元receiptとportable要約を分ける。Root実UI17原本はGit外、最小UI要約/digestのみ保存。17領域保護と既存Billing/eSIM/Mini/immutableを保持。53/type/productlint→project/design/scanner0+canary→Draft PR/最終同head実Linux npmverify/all CI→独立metadatareview。local全体verifyは未実行、検収前merge禁止。[証拠](../evidence/development-execution/smith-bottom-navigation-main-adoption.json)。
+
 ## Billing service authority exact4採用候補
 
 最新clean main468d（eSIM201/main同SHA6CI成功）基点、旧99abと4base不変、独立PASS4hashを無変更採用。元receipt7a52をGit外保持、portable a2cfと分ける。53/type/productlint成功、eSIM3/Mini6/history18/RootHEAD/index/旧197を保持。JSON/project/design/fixedscanner0/canary→別draftPR最終同headCIで実npmverify→独立metadata採用review。Web5sourcearchiveはこのPR後の別sourcebranch保存でmainへ混ぜない。[証拠](../evidence/development-execution/billing-service-main-adoption.json)。

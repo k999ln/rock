@@ -1,3 +1,26 @@
+<a id="smith-mobile-bottom-navigation"></a>
+## Smith/Eve/コミュニティーの共通mobile入口（SMITH-01限定候補）
+
+目的・体験: Homeと既存WorkspaceShellで、幅700px以下の下部入口をSmith /#timeline・Eve /chat・コミュニティー /#communitiesの3つに揃える。701px以上は従来のdesktop/tablet導線を保つ。Homeの旧5link下部navを置き換え、既存Moreには「見つける」/#catalogと「自分のSky」/sky/agentsの2linkだけを追加する。Agentの保存済みID/revision/tool queryを変えず、原本Home全体やos-shell.cssを転用しない。
+
+責任: ROCKは共有nav/consumer/hash/focus/listenerと既存guardの維持、EXTERNALはbrowser/CSS/deviceの機能、JOINTは同一buildの実viewport・keyboard・認証後composer検証、OWNERは既存signin/依頼/保存・実行承認を担う。静的な移動linkは本人認証・Tool実行・課金の権限を与えない。主担当05、Git統合10、既存HOME01/WEB04/SKY21/OS10とSMITH-01の限定overlayを使う。
+
+入力・出力: usePathnameとnative hashをpure route mappingへ渡し、現在の項目をaria-currentで示す。Homeは既存panel同期とclick captureからnavigationHashを制御値として渡す。silent pushState/replaceStateでもpanelと選択を揃え、defaultPrevented/modified/new-target clickでは現在panelを変えない。Shellはhash/popstate fallbackを使い、path変更/unmountでlistenerを除去する。/chatと既存/os prefix、/sky/agentsを認識し、無関係なworkspaceにactiveを捏造しない。
+
+状態・保存: mount/route/hash/controlled Home hash/typing/runningを表示状態として扱う。新API・ownerデータ・fetch・localStorage・DB・model/Agent状態は追加しない。新下部3linkはprefetch=false。Eveの本人gate、保存前離脱・running/stop・owner/CASは元のconsumerが保持する。runningはpointerとEnter/Spaceの既定移動を阻止するが、実active job UIの合格は別gate。
+
+表示・失敗・復旧: 56px+safeareaの不透明nav、44px以上のtarget、label/current/focusを持つ。Homeの既存62px+safearea予約を維持し、Shellだけ同値のbottom予約を追加する。input/textarea/contenteditable focus中はCSSでnavを隠し、blurを強制せずdraft/focusを保ち、focus離脱で戻す。hidden auth親・closed details内のDOM数を可視nav数へ換算しない。route移動失敗やsignin必要時は既存page/gateへ戻し、仕事・送信・課金を自動開始しない。
+
+互換・offline・更新復旧: 項目ID stream/eve/communitiesと既存URLを維持し、保存job/AgentのID/revision/queryを移行しない。新たな永続データ・retention・backup対象はなく、reloadで表示stateだけを再計算する。offlineのroute読込失敗は既存routerの再読込/戻るで復旧し、モデル/Tool/jobのretryや送信を起こさない。表示退行時は既知main2beaのconsumer/styleと通常Git revertによる候補差分の巻戻しを使う。旧原本archive5のHome/CSSを復旧先へ直接転用しない。
+
+承認・由来: Rootにより最終nav置換とhash同期/guard、既存mobile Moreの静的2link例外が承認済み。原本5.sourceはsource branch53e6ed46に保存され、今回のmain向け8source/testは別byte/hashの適応である。元実装receipt、portable要約、Root実UI summaryは別hashで保存し、元receiptの当時pending表示を完了済みに書き換えない。
+
+合格証拠: attempt1の実UIでCommunity URL/Smith active不一致を再現しattempt2で修正。attempt2でmobile保存Agent導線消失を実UIで発見しattempt3の2More linksで修正し、両失敗履歴と負例試験を保持。exact8独立code PASS_SCOPED/mustfix0、17保護領域/ファイルの再構成証明、統合53対象試験・通常typecheck・product lintを記録する。Rootの同8hashの実loopback UIではHome/Shellの320/390/700で可視nav1、701/1024/1280で0、overflow0、hash click/BackForward/Enter、入力focus保持・Agent footer・既存passkey gate・More両link到達を限定確認した。17画像/DOM等の原本はGit外で、公開するのは最小summaryとdigestのみ。
+
+未決定・次の受入: 実softkeyboard、非ゼロ実safearea、200% text/browser zoom、認証後Jennifer composer、実running job、2owner Agent save/read/CAS UI、native/実機/公開本番は未試験。既存機種/権限/公開gateで対象buildと同条件の実測を集める。限定local UIやVM/ソース試験をこれらへ転用せず、whole SMITH-01はfalse。最終exact PRheadのLinux実npm run verify/all CIと独立採用metadata検収が必要。今回local全体verifyは未実行と明示する。
+
+[8hash・保護・検証・残gate](evidence/development-execution/smith-bottom-navigation-main-adoption.json)／[独立検収要約](evidence/development-execution/smith-bottom-navigation-main-review-summary.json)／[最小実UI要約](evidence/development-execution/smith-bottom-navigation-ui-summary.json)。
+
 <a id="billing-required-service-authority"></a>
 ## required service scopeの最終remote text claim（BILL-02限定候補）
 
