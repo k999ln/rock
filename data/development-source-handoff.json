@@ -1,916 +1,660 @@
 {
-  "schema": "rockstaros.development-source-handoff/1",
-  "recordedAt": "2026-10-24T09:07:49.535284+00:00",
-  "authority": "Main existing baseline2.08/RQ01-RQ50 and existing AMC/material/compose/grid contracts retained; archived Root snapshots are reference, not runtime adoption or a new product decision",
+  "schema": "rockstaros.development-source-handoff/2",
+  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
-  "currentMainAtCapture": "e4e643778b5fd8150e85109fa79ec1f6c140ca9e",
-  "sourceSnapshot": {
-    "branch": "codex/source-preservation-20261024",
-    "commit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
-    "baseMain": "e4e643778b5fd8150e85109fa79ec1f6c140ca9e",
-    "files": 49,
-    "payloadBytes": 3691158,
-    "manifestPath": "source-preservation/20261024/manifest.json",
-    "sourceSnapshotReadback": "all bytes identical",
-    "rootIndexUsed": false,
-    "candidateCheckoutUsed": false,
-    "mainAdopted": false,
-    "reviewedSubsetPR": "separate",
-    "manifestSha256": "d628ee7f0e7374a135aee2fdc04aa382dddd0438f50106c62227a677964ca125",
-    "remoteHeadReadback": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
-    "githubSaved": true
+  "mainContext": {
+    "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "productBaseline": "2.08",
+    "requirementIds": "RQ01..RQ50",
+    "taskSource": "data/project-status.json",
+    "taskCount": 393,
+    "taskDigest": "9e209fd50797e12a2b99918338b2f055a59020a5c5d63989b54c595b403aa6a6",
+    "phaseGateCount": 14,
+    "phaseGatesDigest": "aa2ee803e7fd60a7bd21b10fcdfa622fbdd2cf306c8dae9cc2f908266fb5d376",
+    "taskAndPhaseGateContentUnchangedFromInventoryBase": true
   },
-  "historyFacts": {
+  "previousHandoff": {
+    "gitRef": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "path": "data/development-source-handoff.json",
+    "sha256": "b1e20f643bfa4d39a477272ec7907341c0e0424a70c2e3899144461893391dd3",
+    "preservedInGitHistory": true
+  },
+  "restartLedger": "data/development-unit-progress.json",
+  "fixedInventoryReference": "docs/evidence/development-execution/unit-main-inventory-reference.json",
+  "currentOverlay": "docs/evidence/development-execution/unit-main-current-overlay.json",
+  "sourcePreservation": {
+    "branch": "codex/source-preservation-20261024",
+    "latestRecordedCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "initial49Commit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
+    "manifests": [
+      {
+        "path": "source-preservation/20261024/manifest.json",
+        "records": 49,
+        "sha256": "d628ee7f0e7374a135aee2fdc04aa382dddd0438f50106c62227a677964ca125"
+      },
+      {
+        "path": "source-preservation/20261024/os-reviewed/manifest.json",
+        "records": 16,
+        "sha256": "a4df5a3ee6fc5829715ef155b45626f6dadb298baefbb86a2ec9d0eebccce2e9"
+      }
+    ],
+    "payloadSnapshots": 65,
+    "meaning": "49 historical/source payloads +16 reviewed OS payloads as non-executable .source snapshots. Not all Root files Git-saved; not blanket main runtime adoption.",
+    "wholeRootGitSaved": false,
+    "unpreservedRootBytesCount": null
+  },
+  "historicalRetrievalFacts": {
     "threadsPreviouslyRead": 23,
     "achievements": 42,
     "coverageRows": 180,
     "algorithmRows": 10,
     "units": 95,
     "liveTranscriptSync": false,
-    "scope": "Reuse existing retrieval audit; this integration did not reread 23 transcripts or reverify all historic claims"
+    "scope": "Reuse existing retrieval audit; this integration did not reread 23 transcripts or reverify all historic claims",
+    "reverifiedByThisBatch": false
   },
   "units": [
     {
       "id": "GIT-01",
       "title": "保存対象を固定する",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "low",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-01"
     },
     {
       "id": "GIT-02",
       "title": "最新main上の既存実装を先に照合する",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-02"
     },
     {
       "id": "GIT-03",
       "title": "既存worktree・PRと編集所有を揃える",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-03"
     },
     {
       "id": "GIT-04",
       "title": "DB migrationと互換を一人が統合する",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-04"
     },
     {
       "id": "GIT-05",
       "title": "小さく保存し、変更中の入力を成功候補にしない",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-05"
     },
     {
       "id": "GIT-06",
       "title": "GitHub保存・同一SHA CI・PRを完了させる",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-06"
     },
     {
       "id": "GIT-07",
       "title": "main統合と配備を別に受け入れる",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-07"
     },
     {
       "id": "GIT-08",
       "title": "完了台帳と再開入口を揃える",
       "lane": "git",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "low",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GIT-08"
     },
     {
       "id": "EVE-01",
       "title": "EveのRoot・Source・公開候補と証拠の同一性を固定",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-01"
     },
     {
       "id": "EVE-02",
       "title": "Remixを既存WorkJob/owner/revision/usage/stopへ結合",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-02"
     },
     {
       "id": "EVE-03",
       "title": "mediaの型付きArtifact転送・保管と旧local作品保全",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-03"
     },
     {
       "id": "EVE-04",
       "title": "文章素材掛け合わせと根拠付き草稿",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-04"
     },
     {
       "id": "EVE-05",
       "title": "Agent掛け合わせの版・lineage・権限分離",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-05"
     },
     {
       "id": "EVE-06",
       "title": "4種類media編集をbounded adapterにする",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-06"
     },
     {
       "id": "EVE-07",
       "title": "素材中心UXとMini/Computer Use共通intent",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-07"
     },
     {
       "id": "EVE-08",
       "title": "model profile・評価・推薦と不採用の永続化",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-08"
     },
     {
       "id": "EVE-09",
       "title": "Mac/GPU・weights・学習データの段階契約",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-09"
     },
     {
       "id": "EVE-10",
       "title": "非信頼planの有限検証とeffect前再認可",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-10"
     },
     {
       "id": "EVE-11",
       "title": "実Toolの独立検査・既存有限repair・Agent委任",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-11"
     },
     {
       "id": "EVE-12",
       "title": "限定外部アプリComputer Use adapter",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-12"
     },
     {
       "id": "EVE-13",
       "title": "全入口でstop・unknown・同ID復旧を一致",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-13"
     },
     {
       "id": "EVE-14",
       "title": "最新候補のEve→Smith→Web/Pixel実成果一周",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-14"
     },
     {
       "id": "EVE-15",
       "title": "Eve全経路の負例・同candidate回帰・証拠manifest",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#EVE-15"
     },
     {
       "id": "OS-01",
       "title": "Pixel Terminalの現在状態と開始errorの非破壊診断",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-01"
     },
     {
       "id": "OS-02",
       "title": "機種・OS・能力identity",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-02"
     },
     {
       "id": "OS-03",
       "title": "導入適合とDSP",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-03"
     },
     {
       "id": "OS-04",
       "title": "component本人性と版",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-04"
     },
     {
       "id": "OS-05",
       "title": "隔離とBroker",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-05"
     },
     {
       "id": "OS-06",
       "title": "Linux lifecycle",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-06"
     },
     {
       "id": "OS-07",
       "title": "resource limitsのOS強制",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-07"
     },
     {
       "id": "OS-08",
       "title": "job再開とeffect一回性",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-08"
     },
     {
       "id": "OS-09",
       "title": "暗号化保存とbackup",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-09"
     },
     {
       "id": "OS-10",
       "title": "device/鍵喪失復旧",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-10"
     },
     {
       "id": "OS-11",
       "title": "署名更新とrollback",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-11"
     },
     {
       "id": "OS-12",
       "title": "電源・熱・容量・suspend",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-12"
     },
     {
       "id": "OS-13",
       "title": "標準OS入出力とpermission",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-13"
     },
     {
       "id": "OS-14",
       "title": "共通contractとadapter parity",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-14"
     },
     {
       "id": "OS-15",
       "title": "同image物理受入",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-15"
     },
     {
       "id": "OS-16",
       "title": "guest/host権限境界",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-16"
     },
     {
       "id": "OS-17",
       "title": "full OS専用Linux・署名・flash・stock/全損復旧",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6-astra",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-17"
     },
     {
       "id": "OS-18",
       "title": "機微vault・E2EE・削除と共通金融/学習境界",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OS-18"
     },
     {
       "id": "SMITH-01",
       "title": "正式名・互換入口・既存データの整合",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-01"
     },
     {
       "id": "SMITH-02",
       "title": "部品なし目的・本人確認・可能/不足/未対応の表示",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-02"
     },
     {
       "id": "SMITH-03",
       "title": "新担当同ID登録から実model・保存・原job停止まで",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-03"
     },
     {
       "id": "SMITH-04",
       "title": "内蔵・外付け・周辺観測のadapterと付け替えfence",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-04"
     },
     {
       "id": "SMITH-05",
       "title": "別owner Add・同じ担当版実行・opt-in成果循環",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-05"
     },
     {
       "id": "SMITH-06",
       "title": "Hey Eve・Thanks Eve・待機の共通入口",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SMITH-06"
     },
     {
       "id": "ESIM-01",
       "title": "状態の直積と接続判定",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-01"
     },
     {
       "id": "ESIM-02",
       "title": "issuer lifecycleを永続イベントへ結合",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-02"
     },
     {
       "id": "ESIM-03",
       "title": "準備operationと外部資源確保のoutbox",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-03"
     },
     {
       "id": "ESIM-04",
       "title": "子端末attachmentの発行・更新・失効",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-04"
     },
     {
       "id": "ESIM-05",
       "title": "既存OSとnativeを能力別に導入する",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-05"
     },
     {
       "id": "ESIM-06",
       "title": "一件のcloud仕事と切断後継続",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-06"
     },
     {
       "id": "ESIM-07",
       "title": "実sandboxと復旧の一周",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-07"
     },
     {
       "id": "ESIM-08",
       "title": "証拠と受入の独立欄",
       "lane": "esim",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "low",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-08"
     },
     {
       "id": "BILL-01",
       "title": "固定料金版と起算のschemaを実装する",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-01"
     },
     {
       "id": "BILL-02",
       "title": "同時予約と結果不明の原子保存",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-02"
     },
     {
       "id": "BILL-03",
       "title": "計量を請求明細へ一回だけ結ぶ",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-03"
     },
     {
       "id": "BILL-04",
       "title": "月締め・訂正・一意Invoice",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-04"
     },
     {
       "id": "BILL-05",
       "title": "非同期決済と読戻し",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-05"
     },
     {
       "id": "BILL-06",
       "title": "本人UI・未払制限・復帰",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-06"
     },
     {
       "id": "BILL-07",
       "title": "作者契約・分配・取消復旧",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-07"
     },
     {
       "id": "BILL-08",
       "title": "月末sandboxの受入matrix",
       "lane": "billing",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#BILL-08"
     },
     {
       "id": "MINI-01",
       "title": "要求領域と観測/入力/光学の契約固定",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-01"
     },
     {
       "id": "MINI-02",
       "title": "少数・板膜なし・全範囲の光学選定と反証",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6-astra",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-02"
     },
     {
       "id": "MINI-03",
       "title": "Goの実描画・光学出力・停止adapter",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-03"
     },
     {
       "id": "MINI-04",
       "title": "RGB hand/depthの同期・座標・失効",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-04"
     },
     {
       "id": "MINI-05",
       "title": "手/声を共通Eve仕事・実app・原本保存へ結合",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-05"
     },
     {
       "id": "MINI-06",
       "title": "電源木・独立光学停止・実netの確定",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-06"
     },
     {
       "id": "MINI-07",
       "title": "最終回路/PCB・同一閉箱・製造gate",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-07"
     },
     {
       "id": "MINI-08",
       "title": "Mini/Pro共通host/native/DSP/eSIM子接続",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MINI-08"
     },
     {
       "id": "PRO-01",
       "title": "localStorageの非破壊・本人別移行",
       "lane": "pro",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#PRO-01"
     },
     {
       "id": "PRO-02",
       "title": "共通ProUI→実仕事・成果・保存・停止",
       "lane": "pro",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#PRO-02"
     },
     {
       "id": "PRO-03",
       "title": "nativeProと同一実機SKU/性能/更新復旧",
       "lane": "pro",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#PRO-03"
     },
     {
       "id": "PRO-04",
       "title": "12販売gateとUS初回商流",
       "lane": "pro",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#PRO-04"
     },
     {
       "id": "NET-01",
       "title": "経路・IP/DNS/TLS・信頼時刻・VPNの送信前検査",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#NET-01"
     },
     {
       "id": "NET-02",
       "title": "ordered通知/進捗cursorとoffline競合からの再接続",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#NET-02"
     },
     {
       "id": "NET-03",
       "title": "通話media・受領・通信実費の独立adapter",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#NET-03"
     },
     {
       "id": "WEBOPS-01",
       "title": "主要flowのa11y・低速・touch/keyboard/reader受入",
       "lane": "web-ops",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WEBOPS-01"
     },
     {
       "id": "WEBOPS-02",
       "title": "PWA install/update/offlineと通知許可の代替導線",
       "lane": "web-ops",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WEBOPS-02"
     },
     {
       "id": "WEBOPS-03",
       "title": "3domains・release読戻し・導入診断/export/support導線",
       "lane": "web-ops",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WEBOPS-03"
     },
     {
       "id": "OPS-01",
       "title": "SLO/usage/stop/採算の観測と故障注入",
       "lane": "web-ops",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OPS-01"
     },
     {
       "id": "OPS-02",
       "title": "incident・限定保守・端末/Provider停止と監査復旧",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OPS-02"
     },
     {
       "id": "OPS-03",
       "title": "鍵期限/署名/SBOM・abuse/supportの運用閉ループ",
       "lane": "web-ops",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#OPS-03"
     },
     {
       "id": "WALLET-01",
       "title": "一般入金/外部railと確定資金の由来",
       "lane": "wallet",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WALLET-01"
     },
     {
       "id": "WALLET-02",
       "title": "888c収益連動精算・共有予約・backup照合",
       "lane": "wallet",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WALLET-02"
     },
     {
       "id": "WALLET-03",
       "title": "ATM0手数料・別actor認証・unknown払出し",
       "lane": "wallet",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#WALLET-03"
     },
     {
       "id": "GAME-01",
       "title": "作者SDK・持込みmanifest・非金融GM01/DX計測",
       "lane": "game",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GAME-01"
     },
     {
       "id": "GAME-02",
       "title": "GX交換gateとgame↔現実WorkJob橋を別経路で閉じる",
       "lane": "game",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#GAME-02"
     },
     {
       "id": "MATERIAL-01",
       "title": "Material来歴/制約/候補検査から実験へのgate",
       "lane": "mini",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MATERIAL-01"
     },
     {
       "id": "COMPANION-01",
       "title": "独立SOS・保護者通知と時計/TV/robot等の能力adapter",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#COMPANION-01"
     },
     {
       "id": "AUTH-01",
       "title": "passkey・family scope・credential lifecycleと限定保守",
       "lane": "os-pixel",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#AUTH-01"
     },
     {
       "id": "SYNC-01",
       "title": "一般offline編集・revision競合・削除優先の復旧",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "high",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#SYNC-01"
     },
     {
       "id": "MODEL-01",
       "title": "model取得/検証/削除とowner限定RAG",
       "lane": "eve",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MODEL-01"
     },
     {
       "id": "MCP-01",
       "title": "catalog・OAuth・作者SDKの登録から失効まで",
       "lane": "smith",
-      "sourcePrimaryModel": "gpt-6.1-sol",
-      "sourceEffort": "medium",
-      "deliveryState": "consult current exact lane receipt and Git evidence; snapshot is not a completion claim"
+      "ledgerRef": "data/development-unit-progress.json#MCP-01"
     }
   ],
-  "laneSourcePackets": [
-    {
-      "lane": "git",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/git.md",
-      "sourceStatusPath": "data/development-lanes/git.json",
-      "sourceThreadId": "01a16c23-d327-7401-b994-05796b175cce",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "os-pixel",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/os-pixel.md",
-      "sourceStatusPath": "data/development-lanes/os-pixel.json",
-      "sourceThreadId": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "smith",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/smith.md",
-      "sourceStatusPath": "data/development-lanes/smith.json",
-      "sourceThreadId": "01a16c28-04a3-7022-8475-da5901359f3f",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "eve",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/eve.md",
-      "sourceStatusPath": "data/development-lanes/eve.json",
-      "sourceThreadId": "01a16c24-5351-76b0-8c89-c98ad309b2d6",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "mini",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/mini.md",
-      "sourceStatusPath": "data/development-lanes/mini.json",
-      "sourceThreadId": "01a16c29-97a5-7a50-bce4-b251e505ad52",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "pro",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/pro.md",
-      "sourceStatusPath": "data/development-lanes/pro.json",
-      "sourceThreadId": "01a16c2a-4989-7581-917d-2ece16d4405b",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "esim",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/esim.md",
-      "sourceStatusPath": "data/development-lanes/esim.json",
-      "sourceThreadId": "01a16c2b-9ab4-78d1-a26c-4d93f736f4b5",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "billing",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/billing.md",
-      "sourceStatusPath": "data/development-lanes/billing.json",
-      "sourceThreadId": "01a16c2c-51f1-7920-b67a-5c1799ae20f9",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "wallet",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/wallet.md",
-      "sourceStatusPath": "data/development-lanes/wallet.json",
-      "sourceThreadId": "01a16c2e-7c9a-7280-ae01-171f113453ef",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "game",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/game.md",
-      "sourceStatusPath": "data/development-lanes/game.json",
-      "sourceThreadId": "01a16c2e-d5e8-7b01-8773-796ab372d10c",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    },
-    {
-      "lane": "web-ops",
-      "sourcePacket": "docs/prompts/rockstaros-development-chats/web-ops.md",
-      "sourceStatusPath": "data/development-lanes/web-ops.json",
-      "sourceThreadId": "01a16c30-a468-7681-923d-3a8bd7871587",
-      "threadIdIsSourceIdentityNotDispatchPermission": true
-    }
-  ],
-  "concurrency": {
-    "maxActiveTotal": 3,
-    "thisBatch": "Root + Git + OS operator; no new agents/chats",
-    "onlyPixelOperator": "OS lane",
-    "cachedSnapshotLeasesNotCurrentAuthorization": true
-  },
-  "retryPolicy": {
-    "totalAttemptsPerUnitAndRootCause": 3,
-    "escalationTrigger": "two failures of same root cause after diagnosing missing permission/provider/lease/source separately",
-    "maxAstraDiagnosticEscalationsPerRootCause": 1,
-    "resetOnModelChange": false,
-    "budgetCapTakesPrecedence": true,
-    "unknownExternalEffectMustReconcileBeforeRetry": true
-  },
-  "mergeState": {
-    "PR186": "limited migration helper merged; whole union incomplete",
-    "PR187": "pure Billing/eSIM/Wallet merged; API/store/Broker/provider gate incomplete",
-    "thisAdoption": "reviewed client/Game subset candidate, not merged"
-  },
-  "nextFiniteBatches": [
+  "modelRoutingPolicy": "data/development-model-routing.json",
+  "nextExecutionPriority": [
     {
       "order": 1,
-      "scope": "This candidate",
-      "gate": "focused, fixed verify, PR/exact-head CI and integrated-subset independent review"
+      "unit": "BILL-02",
+      "state": "implementation_in_progress_per_Root_dispatch",
+      "scope": "Existing final provider-send claim: same-DB parentstop/current price/held cap predicates; no new Wallet or tariff",
+      "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
+      "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
+      "dependency": "Independent of the six eSIM files for this finite existing-store gap",
+      "currentSourceReviewedByThisBatch": false,
+      "wholeUnitAccepted": false
     },
     {
       "order": 2,
-      "scope": "Eve13 source and original Smith shell test",
-      "gate": "Already saved as .source files on source branch; inspect complete schema/runtime/base and same-job binding before main functionality"
+      "unit": "ESIM-01",
+      "state": "remaining_authority_adapter_gates",
+      "scope": "Independent retention ACL/expiry, issuer epoch/contract binding and generic attachment remain unaccepted; do not recreate adopted fence",
+      "wholeUnitAccepted": false
     },
     {
       "order": 3,
-      "scope": "95unit prompts/routing/registry and 42 history/180 coverage",
-      "gate": "Use this reconciled handoff plus archived full source. Port executable checkers/entry paths in bounded main-compatible docs batch; never bulk replace current main product baseline/status"
-    },
-    {
-      "order": 4,
-      "scope": "Remaining8 migrations/13 guard semantics/Eve base/GIT02 runtime port",
-      "gate": "Dedicated schema/runtime transaction acceptance, not a blocker for independent pure helper preservation"
+      "unit": "EVE-02",
+      "state": "next_bounded_text_integration",
+      "scope": "Reuse existing main workflow/composition and preserved source; one same-owner same-job bounded text path after shared contracts, no fullOS/optics/livefund prerequisite",
+      "wholeUnitAccepted": false
     }
   ],
+  "currentGIT08Scope": "Metadata save/branch/main integration separate; whole GIT08/95 acceptance not inferred",
   "productionAcceptance": false,
   "publicDeployment": false,
   "generalLaunch": "held"

@@ -1,0 +1,77 @@
+{
+  "schema": "rockstaros.unit-main-current-overlay/1",
+  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+  "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
+  "historicalClassificationEdits": 0,
+  "freshWhole95Audit": false,
+  "updates": [
+    {
+      "id": "PR194_ESIM_SUBSET",
+      "units": [
+        "ESIM-01"
+      ],
+      "kind": "additional_adopted_subset",
+      "pr": "https://github.com/k999ln/rock/pull/194",
+      "acceptedHead": "725da79b875a9a4534a2f508008364224d50dea9",
+      "mainMergeSha": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+      "sourceHashes": {
+        "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+        "lib/sky-linux-service-store.ts": "51363eeef57cebd42555607e0e463748b11c6b3660da729cb9ea9ee96575fabe",
+        "lib/sky-linux-service.ts": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+        "app/api/sky/linux/route.ts": "dc672181feb50a2c030f2582851b76c48966b575b367aa3dc13d37531948b131",
+        "tests/sky-linux-service.test.mjs": "9bbe7f9e69ba260e2649b8aaba1da0e90ac0fa7ff9298c329893288ed50b3326",
+        "tests/rockstar-service-setup.test.mjs": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8"
+      },
+      "sourceAttempt": 2,
+      "sourceR2ReviewSha256": "185728ed3f1db9027a7723cb4b109ee723a0abf241b69674577d0efdaba533bf",
+      "adoptionMetadataReview": {
+        "pathInOperatorWorkspace": "docs/evidence/development-execution/esim-runtime-main-adoption-review.json",
+        "sha256": "734f830cbb9d634c4ba5476099a4149d3b2c878c1d80330348938354fbd10623",
+        "mustFix": 0
+      },
+      "scope": "Existing Linux add/run/claim/heartbeat commit-time authority fence and owner-session retained reads; latest negative reviews deny.",
+      "notAccepted": [
+        "generic signed attachment",
+        "independent persisted retention ACL/expiry",
+        "issuer epoch/contract binding generalization",
+        "full production D1",
+        "real provider collection"
+      ],
+      "wholeUnitAccepted": false
+    }
+  ],
+  "executionPriority": [
+    {
+      "order": 1,
+      "unit": "BILL-02",
+      "state": "implementation_in_progress_per_Root_dispatch",
+      "scope": "Existing final provider-send claim: same-DB parentstop/current price/held cap predicates; no new Wallet or tariff",
+      "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
+      "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
+      "dependency": "Independent of the six eSIM files for this finite existing-store gap",
+      "currentSourceReviewedByThisBatch": false,
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 2,
+      "unit": "ESIM-01",
+      "state": "remaining_authority_adapter_gates",
+      "scope": "Independent retention ACL/expiry, issuer epoch/contract binding and generic attachment remain unaccepted; do not recreate adopted fence",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 3,
+      "unit": "EVE-02",
+      "state": "next_bounded_text_integration",
+      "scope": "Reuse existing main workflow/composition and preserved source; one same-owner same-job bounded text path after shared contracts, no fullOS/optics/livefund prerequisite",
+      "wholeUnitAccepted": false
+    }
+  ],
+  "metadataBatch": {
+    "unit": "GIT-08",
+    "state": "branch_candidate_pending_independent_adoption_review",
+    "wholeUnitAccepted": false
+  },
+  "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance."
+}

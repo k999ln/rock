@@ -1,0 +1,555 @@
+{
+  "schema": "rockstaros.development-model-routing-reference/1",
+  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "scope": "User development-routing policy reference only; no dispatch/model runtime or price change",
+  "source": {
+    "pathInOperatorWorkspace": "data/development-model-routing.json",
+    "sha256": "af71e5bd08d48162fd0f20035222587693866c4c9707424b4774fe7351dbca95",
+    "fullPolicySnapshot": {
+      "commit": "970446952d6d894348c0e57401bde42b19362bbd",
+      "path": "source-preservation/20261024/snapshots/data/development-model-routing.json.source",
+      "sha256": "af71e5bd08d48162fd0f20035222587693866c4c9707424b4774fe7351dbca95",
+      "nonExecutableHistoricalReference": true
+    }
+  },
+  "counts": {
+    "primaryModels": {
+      "gpt-6.1-sol": 93,
+      "gpt-6-astra": 2
+    },
+    "primaryEfforts": {
+      "gpt-6.1-sol/low": 3,
+      "gpt-6.1-sol/medium": 67,
+      "gpt-6.1-sol/high": 23,
+      "gpt-6-astra/high": 2
+    }
+  },
+  "unitCount": 95,
+  "coordinatorRequested": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium"
+  },
+  "helperRequested": {
+    "model": "gpt-6-luna",
+    "effort": "low",
+    "alwaysSpawn": false,
+    "deterministicCheckFirst": true
+  },
+  "concurrency": {
+    "maxActiveTotal": 3,
+    "coordinatorAndReviewersIncluded": true,
+    "astraMaxConcurrent": 1
+  },
+  "retryPolicy": {
+    "totalAttemptsPerUnitAndRootCause": 3,
+    "escalationTrigger": "two failures of same root cause after diagnosing missing permission/provider/lease/source separately",
+    "maxAstraDiagnosticEscalationsPerRootCause": 1,
+    "resetOnModelChange": false,
+    "budgetCapTakesPrecedence": true,
+    "unknownExternalEffectMustReconcileBeforeRetry": true
+  },
+  "measurementPolicy": {
+    "initialAcceptedBatches": 5,
+    "includeImplementationReviewAndRework": true,
+    "wallClockMetric": "end-to-end elapsed time including waiting and rework; do not sum parallel durations as wall time",
+    "required": [
+      "test_acceptance",
+      "review_rejections",
+      "retry_count",
+      "elapsed_time_if_observed",
+      "model_usage_if_exposed",
+      "cost_if_actually_known"
+    ],
+    "unknownValue": null,
+    "apiPriceEqualsCodexBill": false,
+    "modelSelfScoringSufficient": false,
+    "optimalityGuaranteed": false
+  },
+  "actualRuntime": {
+    "appliedModelsConfirmed": false,
+    "tokens": null,
+    "cost": null,
+    "currency": null,
+    "collectedByThisBatch": false,
+    "scope": "Not imported from lane receipts by this metadata batch; null is unknown here, not zero or proof none ever ran."
+  },
+  "newAgentsOrChatsStarted": false,
+  "modelAvailabilityVerifiedNow": false,
+  "units": [
+    {
+      "id": "GIT-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "low"
+    },
+    {
+      "id": "GIT-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GIT-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GIT-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "GIT-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GIT-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GIT-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GIT-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "low"
+    },
+    {
+      "id": "EVE-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "EVE-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-09",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-10",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "EVE-11",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "EVE-12",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-13",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "EVE-14",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "EVE-15",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-09",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-10",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-11",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-12",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-13",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-14",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-15",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OS-16",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-17",
+      "requestedModel": "gpt-6-astra",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "OS-18",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "SMITH-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "SMITH-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "SMITH-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "SMITH-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "SMITH-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "SMITH-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "ESIM-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "low"
+    },
+    {
+      "id": "BILL-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "BILL-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "BILL-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "BILL-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "BILL-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "BILL-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "BILL-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "BILL-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MINI-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MINI-02",
+      "requestedModel": "gpt-6-astra",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "MINI-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MINI-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MINI-05",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MINI-06",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "MINI-07",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "MINI-08",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "PRO-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "PRO-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "PRO-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "PRO-04",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "NET-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "NET-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "NET-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "WEBOPS-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "WEBOPS-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "WEBOPS-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OPS-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OPS-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "OPS-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "WALLET-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "WALLET-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "WALLET-03",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "GAME-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "GAME-02",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MATERIAL-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "COMPANION-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "AUTH-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "SYNC-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "high"
+    },
+    {
+      "id": "MODEL-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    },
+    {
+      "id": "MCP-01",
+      "requestedModel": "gpt-6.1-sol",
+      "requestedEffort": "medium"
+    }
+  ]
+}
