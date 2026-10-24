@@ -1,0 +1,96 @@
+/* One neutral system frame. Community appearance remains in community content. */
+:root {
+  --os-shell-bg: #f6f4ef;
+  --os-shell-navigation-height: 72px;
+  --os-shell-panel: #fffdf8;
+  --os-shell-raised: #e9ecdf;
+  --os-shell-text: #252b28;
+  --os-shell-muted: #626e65;
+  --os-shell-line: #dedfd6;
+  --os-shell-accent: #315b4d;
+  --os-shell-accent-ink: #fffdf8;
+  --os-shell-focus: #a9754f;
+}
+.rock-workspace.rock-workspace {
+  --os-bg: var(--os-shell-bg);
+  --os-panel: var(--os-shell-panel);
+  --os-raised: var(--os-shell-raised);
+  --os-text: var(--os-shell-text);
+  --os-muted: var(--os-shell-muted);
+  --os-subtle: var(--os-shell-muted);
+  --os-line: var(--os-shell-line);
+  --os-accent: var(--os-shell-accent);
+  --os-accent-ink: var(--os-shell-accent-ink);
+  --os-focus: var(--os-shell-focus);
+}
+.community-os-runtime {
+  background: var(--os-shell-bg);
+  color: var(--os-shell-muted);
+  border-bottom: 1px solid var(--os-shell-line);
+}
+.community-os-runtime strong { color: var(--os-shell-text); }
+/* Self-contained chrome: Home does not load workspace-only design tokens. */
+.os-header { width: 100%; background: var(--os-shell-panel); color: var(--os-shell-text); border-bottom: 1px solid var(--os-shell-line); font-family: inherit; line-height: 1.4; position: relative; z-index: 30; }
+.os-header *, .os-header *::before, .os-header *::after { box-sizing: border-box; }
+.os-header-inner { width: 100%; max-width: var(--os-content, 1280px); padding: env(safe-area-inset-top) 24px 0; margin-inline: auto; }
+.os-header-row { display: flex; flex-wrap: nowrap; align-items: center; gap: 18px; min-height: 60px; min-width: 0; }
+.os-header .os-brand { display: inline-flex; align-items: center; flex-shrink: 0; color: var(--os-shell-text); text-decoration: none; gap: 10px; font-size: 20px; font-weight: 750; white-space: nowrap; }
+.os-header .os-brand img { display: block; width: 30px; height: 30px; flex: 0 0 30px; object-fit: contain; }
+.os-brand-context { display: none; }
+.os-header .os-current-app { color: var(--os-shell-muted); border-left: 1px solid var(--os-shell-line); padding-left: 18px; font-size: 13px; }
+.os-header-actions { display: flex; align-items: center; flex-wrap: nowrap; gap: 10px; margin-left: auto; min-width: 0; }
+.os-header-actions > a, .os-header-actions button, .os-header-actions summary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; font-size: 13px; }
+.os-header .os-header-actions :is(a,button) { color: var(--os-shell-text); }
+.os-header .os-header-actions .rock-button { background: transparent; border-color: var(--os-shell-line); }
+.rock-workspace .rock-button-primary:hover,
+.rock-workspace .sky-main-feed .sky-post-primary:hover,
+.rock-workspace .sky-one-tap-connect:hover { background: #264b3f; border-color: #264b3f; }
+.os-shell-navigation.os-shell-navigation a {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: var(--os-shell-muted); text-decoration: none; border: 0;
+  border-radius: 12px; min-height: 48px; background: transparent;
+}
+.os-shell-navigation.os-shell-navigation a[aria-current='page'] {
+  color: var(--os-shell-accent); background: #e5eadc; border: 0;
+}
+.os-shell-navigation a:focus-visible { outline: 2px solid var(--os-shell-focus); outline-offset: -4px; }
+.os-shell-navigation [aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
+@media (max-width: 1279px) {
+  .rock-workspace.rock-workspace, [data-sky-home] { padding-bottom: calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom) + 16px); }
+  :is(.rock-workspace, [data-sky-home]) :is(a, button, input, textarea, [tabindex]) { scroll-margin-bottom: calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom) + 16px); }
+  .os-header { position: sticky; top: 0; }
+  .os-header-inner { padding: env(safe-area-inset-top) 16px 0; }
+  .os-header-row { gap: 12px; min-height: 56px; }
+  .os-brand-product, .os-current-app { display: none; }
+  .os-brand-context { display: inline; }
+  .os-header .os-header-actions > a[href='/test'], .os-header .rock-web-label { display: none; }
+  .os-shell-navigation.os-shell-navigation {
+    display: grid; grid-template-columns: repeat(var(--os-navigation-count, 3), minmax(0,1fr));
+    position: fixed; inset: auto 0 0; z-index: 90; gap: 0;
+    padding: 0 0 env(safe-area-inset-bottom); overflow: visible;
+    background: var(--os-shell-bg); border-top: 1px solid var(--os-shell-line);
+    box-shadow: none; height: calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom));
+  }
+  .os-shell-navigation.os-shell-navigation a { min-width: 0; min-height: var(--os-shell-navigation-height); padding: 8px 4px; border-radius: 0; flex-direction: column; gap: 4px; font-size: 11px; line-height: 1.2; font-weight: 600; }
+  .os-shell-navigation.os-shell-navigation a span {
+    position: static; width: auto; height: auto; padding: 0; overflow: visible; clip-path: none; white-space: nowrap;
+  }
+}
+@media (min-width: 1280px) {
+  [data-sky-home] { padding-bottom: calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom) + 16px); }
+  .os-home-navigation.os-home-navigation { display: grid; grid-template-columns: repeat(var(--os-navigation-count, 3), minmax(0,1fr)); position: fixed; inset: auto 0 0; margin-inline: auto; width: min(100%, 680px); height: calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom)); z-index: 90; padding-bottom: env(safe-area-inset-bottom); background: var(--os-shell-bg); border-top: 1px solid var(--os-shell-line); }
+  .os-home-navigation.os-home-navigation a { flex-direction: column; gap: 4px; min-width: 0; min-height: var(--os-shell-navigation-height); font-size: 11px; border-radius: 0; }
+}
+
+.rock-workspace .rock-main.eve-sync-main { padding: 0; max-width: var(--os-content); }
+
+/* The same frame also covers older packaged workspace styles. */
+.rock-workspace.rock-workspace :is(.rock-main-column, .rock-main) {
+  color: var(--os-text);
+  background: var(--os-bg);
+}
+.rock-workspace.rock-workspace .rock-bottom-note {
+  color: var(--os-shell-muted);
+  border-color: var(--os-shell-line);
+  background: var(--os-shell-panel);
+}

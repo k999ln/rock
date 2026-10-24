@@ -1,0 +1,70 @@
+{
+  "schema": "rockstaros.source-preservation/1",
+  "recordedAt": "2026-10-24T19:14:33.633481+00:00",
+  "purpose": "Five original lower-navigation sources preserved as nonexecuting .source snapshots; not main implementation.",
+  "parentSourcePreservationCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+  "comparisonMain": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+  "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+  "sourceInventory": {
+    "path": "docs/evidence/development-execution/source-preservation-next-batch.json",
+    "sha256": "ac73e495f1b0227cf94e82fc0d3b4d5aa89e7153ec8d6e634f47023c969e392b"
+  },
+  "snapshotFiles": 5,
+  "payloadBytes": 23050,
+  "records": [
+    {
+      "originalPath": "components/os-app-navigation.tsx",
+      "snapshotPath": "source-preservation/20261024/smith-lower-navigation/snapshots/components/os-app-navigation.tsx.source",
+      "bytes": 1930,
+      "sha256": "fda1e4a0554812964f3f0cf793af5bba153abea24a3165c8e5c550e2255d424b",
+      "gitBlobSha1": "b5a1a4ae83a00c2d63280cdf1bf17f62a6e01075",
+      "classification": "product_source"
+    },
+    {
+      "originalPath": "lib/os-navigation.ts",
+      "snapshotPath": "source-preservation/20261024/smith-lower-navigation/snapshots/lib/os-navigation.ts.source",
+      "bytes": 1869,
+      "sha256": "66cb751f832459bea849f36453ca1757b08c0b3efd66ff7250275e478a1e4ca4",
+      "gitBlobSha1": "a7ce8cd5890720e35265374eff681149329e70b1",
+      "classification": "product_source"
+    },
+    {
+      "originalPath": "app/os-shell.css",
+      "snapshotPath": "source-preservation/20261024/smith-lower-navigation/snapshots/app/os-shell.css.source",
+      "bytes": 6149,
+      "sha256": "f215302712f0b90f24933718f389deda54040cc4bbb0a4a2cb70dc78cac68adf",
+      "gitBlobSha1": "e7cd333d84a13710827efaca10fb1fc7ca718dd9",
+      "classification": "product_source_styles"
+    },
+    {
+      "originalPath": "components/home-screen.module.css",
+      "snapshotPath": "source-preservation/20261024/smith-lower-navigation/snapshots/components/home-screen.module.css.source",
+      "bytes": 10388,
+      "sha256": "d3a5c314b214d2bcf5df33776bc5c87581ea8f3cbd3c0ee6df2031b0b03a3268",
+      "gitBlobSha1": "59dac25aba1b843f66c6d25db08e4a3a2a67b3fd",
+      "classification": "product_source_styles"
+    },
+    {
+      "originalPath": "tests/os-bottom-navigation.test.mjs",
+      "snapshotPath": "source-preservation/20261024/smith-lower-navigation/snapshots/tests/os-bottom-navigation.test.mjs.source",
+      "bytes": 2714,
+      "sha256": "220cb38de570809c7e21763d3205164d7b0df8e39b1c393e4efe0f3dd58f3003",
+      "gitBlobSha1": "2b44137d29f8d3e94577907f71479b83028d8a6d",
+      "classification": "synthetic_test_source_inline_stubs"
+    }
+  ],
+  "status": "unreviewed_source_archive",
+  "existingArchivesUnchanged": {
+    "firstBatchFiles": 49,
+    "osReviewedFiles": 16
+  },
+  "dependencyClosure": "Bounded source/test closure only. Runtime consumers, full CSS cascade and current-main compatibility require separate adoption.",
+  "mainAdopted": false,
+  "runtimeAcceptance": false,
+  "physicalAcceptance": false,
+  "publicDeployment": false,
+  "generalLaunch": false,
+  "financialEffects": 0,
+  "exclusionPolicy": "Only the five inventory candidates. No private-held data, secrets, manuscripts, media, OS images, caches, generated logs or coordinator journal.",
+  "verification": "Exact regular-file/no-symlink, size, SHA256 and Git blob checks before/after copy; no application tests or runtime acceptance transferred."
+}
