@@ -136,7 +136,10 @@ export class RemoteAiTextStore {
       WHERE owner_user_id = ? AND execution_id = ?`).bind(owner, id)
       .first<EncryptedRemoteAiTextInput & { executionId: string; ownerUserId: string; expiresAt: number; createdAt: number }>();
   }
-  async claimProviderSend(owner: string, id: string, now = Date.now()) {
+  async claimProviderSend(owner: string, id: string, now = Date.now(), serviceAuthority: 'required' | 'preview' = 'preview') {
+    // Preview is the existing server-only default for direct legacy/sandbox callers.
+    // The production coordinator explicitly forwards its trusted runtime policy.
+    if (serviceAuthority !== 'required' && serviceAuthority !== 'preview') throw new RemoteAiTextStoreError('INVALID_STATE');
     if (!Number.isSafeInteger(now) || now < 0) throw new RemoteAiTextStoreError('INVALID_STATE');
     // This INSERT is the final authorization point before an external send. Recheck
     // current DB authorities here, not only in the earlier reserved->sending step.
@@ -167,7 +170,16 @@ export class RemoteAiTextStore {
             AND p.currency = e.currency AND p.budget_limit_minor = e.parent_budget_limit_minor
             AND p.reserved_minor >= e.maximum_charge_minor AND p.settled_minor >= 0
             AND p.reserved_minor + p.settled_minor <= p.budget_limit_minor)
-      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id).run();
+        AND (? = 'preview' OR EXISTS (SELECT 1 FROM rockstar_service_entitlements a
+          WHERE a.owner_user_id = e.owner_user_id AND a.status = 'active'
+            AND (a.expires_at IS NULL OR (typeof(a.expires_at) = 'integer'
+              AND a.expires_at > MAX(clock.at, e.updated_at)))
+            AND EXISTS (SELECT 1 FROM json_each(
+              CASE WHEN json_valid(a.scopes_json) THEN
+                CASE WHEN json_type(a.scopes_json) = 'array' THEN a.scopes_json ELSE '[]' END
+              ELSE '[]' END
+            ) scope WHERE scope.type = 'text' AND scope.value = 'rockstaros_access')))
+      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id, serviceAuthority).run();
     return (result.meta?.changes ?? 0) === 1;
   }
   async deleteInputAfterTerminal(owner: string, id: string) {

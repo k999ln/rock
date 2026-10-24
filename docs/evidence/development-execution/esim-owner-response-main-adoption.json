@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.esim-owner-response.main-adoption/1",
   "recordedAt": "2026-10-24T18:40:10.872392+00:00",
-  "status": "exact3_source_pass_local145_D1_type_lint_pass_fixedverify_CI_metadata_review_pending",
+  "status": "PR201_normal_main_integrated_current_owner_response_limited_scope_metadata_and_CI_pass",
   "unit": "ESIM-01",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "03-wallet-billing-providers",
@@ -29,7 +29,7 @@
     "sha256": "579f3f1394de3c024df360dc32f5a7eb305f5fcf33471c02c7e4c81da713f674",
     "summaryOnly": true,
     "originalSourceThreeReviewInherited": true,
-    "newReceiptMetadataReviewPending": true
+    "newReceiptMetadataReviewPending": false
   },
   "reviewSummary": "docs/evidence/development-execution/esim-owner-response-main-review-summary.json",
   "sourceIndependentReviewSha256": "fcff52486d714d190f393c3b3dd3b569df505da30a5c295341eebb3305f27a13",
@@ -632,8 +632,8 @@
   },
   "acceptance": {
     "sourceThreeLimitedIndependent": true,
-    "publicReceiptAndMetadataReviewed": false,
-    "mainMerged": false,
+    "publicReceiptAndMetadataReviewed": true,
+    "mainMerged": true,
     "independentRetentionACLExpiry": false,
     "genericAttachment": false,
     "issuerEpochRuntimeBinding": false,
@@ -643,5 +643,31 @@
     "publicDeployment": false,
     "wholeESIM01Through08": false
   },
-  "next": "JSON/project/design/current scanner0+canary; separate draftPR and actual exact final-head CI npmverify; independent adoption metadata review before merge."
+  "next": "Current owner/row/payload disclosure slice integrated; independent retention ACL/expiry/genericattachment/epoch and production gates remain separate.",
+  "historicalCandidateStatus": "exact3_source_pass_local145_D1_type_lint_pass_fixedverify_CI_metadata_review_pending",
+  "mainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/201",
+    "acceptedHead": "defba2868e138803fd3612f6dd2388384ae65596",
+    "mainMergeSha": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+    "sourceReviewSha256": "fcff52486d714d190f393c3b3dd3b569df505da30a5c295341eebb3305f27a13",
+    "metadataReviewSha256": "1a84590e6d2189cdf2c1a8e3f90d68cc1cf3913e765f67380f5cc1ce17b34aca",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2834,
+      "pass": 2832,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40122192145,
+      "jobId": 120955966060,
+      "logSha256": "85bee10578890889b28f3d706f81dbd89736e7ce19df99cd7e2989c6866e087a",
+      "exactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "sourceThreeUnchanged": true,
+    "original4035AndPortable579fSeparated": true,
+    "independentRetentionACLExpiry": false,
+    "genericAttachment": false,
+    "productionD1": false,
+    "publicDeployment": false
+  }
 }

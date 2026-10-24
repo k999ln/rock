@@ -1,0 +1,74 @@
+{
+  "schema": "rockstaros.billing-service-authority.review-summary/1",
+  "recordedAt": "2026-10-24T19:02:56.451588+00:00",
+  "sourceReviewSha256": "acf603b55a398639d3871ec619dbd08629c940637a8332e3b59fa72b64ae9869",
+  "sourceReviewVerdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "sourceFiles": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043"
+    },
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde"
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "sha256": "493f616de5168a492b677957cb49e1db744957cbd86c2aa65a23e8bbc528d0e0"
+    },
+    {
+      "path": "tests/remote-ai-text-service-authority.test.mjs",
+      "sha256": "bd194ea8d94c5821fe9d2d23858ff4b462f9ae980616035d5f036c6858bd4750"
+    }
+  ],
+  "originalReceiptSha256": "7a52a6c32dc43039010ad804d01649f0be377741747640856da2f9ee5a7fc90d",
+  "portablePublicReceiptSha256": "a2cfda1d07b18b587f4d6ec3146596b1d36a88fcffd3c274b7585ab00488dc32",
+  "receiptQualification": "Original full receipt and reviewed five-file identity stay outsideGit. Public minimal receipt is new metadata; only exact four code/test bytes inherit source review, not identical receipt bytes.",
+  "evidence": {
+    "targeted": {
+      "tests": 53,
+      "pass": 53,
+      "fail": 0,
+      "skip": 0,
+      "planes": "Host SQLite, independent Worker connections, local Miniflare D1, mock Provider only"
+    },
+    "independentProbeGroups": 11,
+    "oldBaseNegativeCases": 2,
+    "oldEachMockSend": 1,
+    "candidateEachMockSend": 0,
+    "notAdditive": true
+  },
+  "callerAudit": [
+    {
+      "path": "services/sky-agent-runtime/src/worker.ts",
+      "result": "Only production central-coordinator caller found in app/lib/services; runtimeEnv:this.env preserves required setting. Existing early hasActiveScope remains precheck. Source inspected; entire deployed WorkflowEntrypoint/step lifecycle not executed."
+    },
+    {
+      "path": "lib/sky-recurring-usage.ts",
+      "result": "Existing server-only opt-in wrapper forwards ...input plus store; inferred coordinator input type includes setting. Its caller controls trusted runtimeEnv; no synthetic generic entitlement minted. Legacy standalone omitted policy remains preview while recurring trigger still independently applies."
+    },
+    {
+      "path": "scripts/check-work-api.mjs",
+      "result": "Synthetic direct coordinator options retain omitted-policy preview contract; broad API suite not rerun in this finite review."
+    },
+    {
+      "path": "scripts/sky-cloud-monthly-fixture.mjs; scripts/check-sky-recurring-provider.mjs",
+      "result": "Direct store fixture calls omit policy and retain preview; no production coordinator bypass introduced. External Stripe driver inspected only, not executed."
+    },
+    {
+      "path": "app/api/llm/text/route.ts; app/api/llm/quotes/route.ts; app/api/llm/quotes/[id]/route.ts",
+      "result": "Existing authenticated quote/approval, encrypted input and Workflow handoff retained; client fields never used as trusted final service policy."
+    }
+  ],
+  "invariants": "Required service read is final atomic predicate; preview/required captured from trusted server env. No-fetch rejected/DBUNCONFIRMED/lost-ack holds do not auto-resend; genuine priced late usage settles once.",
+  "scopeLimits": [
+    "Current generic service authority only; any active matching grant follows existing semantics, not exact original SIM/order/key/receipt binding.",
+    "No common contract digest/consent revision/issuer epoch/source attachment/account-month aggregation acceptance; no full BILL02 completion.",
+    "Runtime policy is not persisted/version-pinned per execution across deployments. Omitted setting remains legacy preview intentionally, never required service acceptance. SQL required checks cannot protect a deployment intentionally configured preview.",
+    "Malformed text/fractional expiry is rejected more strictly than old precheck; valid signed integer/null expiry preserved. Maximum clocks protect stale-host expiry, not synchronized-clock accuracy; future clock skew can deny.",
+    "Required authority read failures deny. Since SQL still resolves referenced table, preview is not a migration-missing bypass.",
+    "No production/Provider/issuer/payment/SIM/device/browser/publication or live finance acceptance. Synthetic scope rows and rates do not establish trusted receipt provenance."
+  ],
+  "privacy": "Allowlisted scope/digests/relative paths/counts only; no raw proof/log/private path/token copied."
+}

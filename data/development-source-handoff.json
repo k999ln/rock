@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
+  "recordedAt": "2026-10-24T19:02:56.451588+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+    "mainAtCapture": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -404,7 +404,10 @@
       "id": "BILL-02",
       "title": "同時予約と結果不明の原子保存",
       "lane": "billing",
-      "ledgerRef": "data/development-unit-progress.json#BILL-02"
+      "ledgerRef": "data/development-unit-progress.json#BILL-02",
+      "currentOverlayRefs": [
+        "BILLING_SERVICE_AUTHORITY_CANDIDATE"
+      ]
     },
     {
       "id": "BILL-03",
@@ -645,8 +648,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "BILL-02",
+      "state": "required_service_authority_exact4_source_pass_main_candidate",
+      "scope": "Current same-owner active scope/expiry final claim only; no common contract/epoch/order binding/account-month aggregate completion",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "ESIM-01",
-      "state": "owner_response_exact3_source_pass_main_candidate",
+      "state": "owner_response_PR201_main_integrated_remaining_independent_retention_gates",
       "scope": "Current HTTP private-body disclosure boundary only; independent persisted retention ACL/expiry/genericattachment remain unaccepted",
       "wholeUnitAccepted": false
     },

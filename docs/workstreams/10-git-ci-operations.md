@@ -1,3 +1,7 @@
+## Billing service authority exact4採用候補
+
+最新clean main468d（eSIM201/main同SHA6CI成功）基点、旧99abと4base不変、独立PASS4hashを無変更採用。元receipt7a52をGit外保持、portable a2cfと分ける。53/type/productlint成功、eSIM3/Mini6/history18/RootHEAD/index/旧197を保持。JSON/project/design/fixedscanner0/canary→別draftPR最終同headCIで実npmverify→独立metadata採用review。Web5sourcearchiveはこのPR後の別sourcebranch保存でmainへ混ぜない。[証拠](../evidence/development-execution/billing-service-main-adoption.json)。
+
 ## eSIM owner-response source3採用候補
 
 最新clean main99ab（Mini200/main同SHA6CI成功）基点、旧708と3base不変、独立PASS3hashを無変更採用。元4035 receiptはGit外保持、portable最小579fと分ける。正規type/lint・145回帰＋D1 1成功。source3以外に既存codeを混ぜず、Mini6/11/history18/Pro6とRootHEAD/index/旧197を保持。JSON/project/design/fixedscanner/canary→固定全verifyか最終同headCI→draftPR→独立metadata検収。独立ACL/expiry/genericattachment/本番未受入。[採用証拠](../evidence/development-execution/esim-owner-response-main-adoption.json)。Billingは別tree準備のみで本変更に未採用。

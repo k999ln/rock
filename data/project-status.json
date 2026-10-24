@@ -9779,12 +9779,29 @@
     "localD1Pass": 1,
     "typecheck": "passed_normal_pretypecheck",
     "lintProduct": "passed",
-    "metadataReviewPending": true,
-    "mainMerged": false,
+    "metadataReviewPending": false,
+    "mainMerged": true,
     "independentRetentionACLExpiryAccepted": false,
     "genericAttachmentAccepted": false,
     "productionD1Accepted": false,
     "fullVerify": "not_run_locally_required_exact_final_head_CI",
-    "finalHeadCIPending": true
+    "finalHeadCIPending": false,
+    "mainMergeSha": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 6
+  },
+  "billingServiceAuthorityMainAdoption": {
+    "evidence": "docs/evidence/development-execution/billing-service-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/billing-service-main-review-summary.json",
+    "sourceFourPreserved": true,
+    "localTests": 53,
+    "typecheck": "passed_normal_pretypecheck",
+    "lintProduct": "passed",
+    "metadataReviewPending": true,
+    "mainMerged": false,
+    "finalHeadCIPending": true,
+    "fullVerify": "required_actual_exact_finalhead_CI_not_run_locally",
+    "commonContractIssuerEpochAccepted": false,
+    "productionProviderBillingAccepted": false
   }
 }

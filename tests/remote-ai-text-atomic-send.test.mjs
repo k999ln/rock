@@ -110,7 +110,7 @@ async function workerMain(adapterFactory) {
   try {
     const result = workerData.operation === 'reserve'
       ? (await store.reserve(workerData.owner, workerData.id, workerData.approval)).state
-      : await store.claimProviderSend(workerData.owner, workerData.id);
+      : await store.claimProviderSend(workerData.owner, workerData.id, Date.now(), workerData.serviceAuthority);
     parentPort.postMessage({ok:true,result});
   } catch (error) { parentPort.postMessage({ok:false,code:error.code ?? error.message}); }
   finally { connection.close(); }
@@ -238,4 +238,24 @@ void test('known recurring denial before final claim keeps the hold, reports rej
   assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM remote_ai_text_send_claims').get().n,0);
   assert.equal((await f.request(fetchImpl)).providerSubmission,'not_repeated');
   assert.equal(sends,0);
+});
+
+
+void test('required service policy reaches independent Worker final claims and current revoke from another connection', async t => {
+  const f=await fixture(t), now=Date.now();
+  f.second.prepare(`INSERT INTO rockstar_service_entitlements
+    (issuer_id,claim_id,owner_user_id,offer_id,purchase_reference_sha256,claim_code_sha256,form_factor,
+     scopes_json,issuer_key_id,claim_signature,status,claimed_at,expires_at)
+    VALUES ('fixture','fixture',?,'fixture',?,?,'service_only','["rockstaros_access"]','fixture','fixture','active',?,?)`)
+    .run(owner,'a'.repeat(64),'b'.repeat(64),now,now+600000);
+  await f.reserve();await f.queueInput();await f.store.claimDispatch(owner,f.record.id,f.record.approvalDigest);
+  f.second.prepare("UPDATE rockstar_service_entitlements SET status='revoked'").run();
+  const denied=await race(f,[{id:f.record.id,serviceAuthority:'required'},{id:f.record.id,serviceAuthority:'required'}]);
+  assert.equal(denied.filter(r=>r.ok && !r.result).length,2);
+  assert.equal(f.pool().reserved_minor,1);
+  // Explicit synthetic authority restoration before any successful send claim.
+  f.second.prepare("UPDATE rockstar_service_entitlements SET status='active'").run();
+  const allowed=await race(f,[{id:f.record.id,serviceAuthority:'required'},{id:f.record.id,serviceAuthority:'required'}]);
+  assert.equal(allowed.filter(r=>r.ok && r.result).length,1);
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM remote_ai_text_send_claims').get().n,1);
 });

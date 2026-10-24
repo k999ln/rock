@@ -1,3 +1,22 @@
+<a id="billing-required-service-authority"></a>
+## required service scopeの最終remote text claim（BILL-02限定候補）
+
+目的・体験: 既存WorkerのROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED設定が要求するrockstaros_accessを、初期precheckだけでなく外部送信直前の同じINSERT claimで確認する。見積/予約後にscopeが失効・取消されればfetchしない。これは現ownerのgeneric service scope確認で、特定SIM/order/key/receiptへの一致を追加するものではない。
+
+責任・承認: ROCKはtrusted runtimeEnvのpolicy転送と既存atomic claim・hold/復旧、EXTERNALは実Provider/issuer/決済根拠、JOINTは本番schema/Worker lifecycleと外部結果照合、OWNERは既存価格/上限/依頼承認を担う。client intent/bodyやmodel結果をrequired flagのauthorityにせず、設定値そのものを変更しない。新価格/schema/migration/共通contract/issuer epochや新しい権限を作らない。
+
+入力・policy: coordinatorはserver runtimeEnv文字列trueだけをrequired、falseまたは省略を既存previewとしてdispatch await前に捕捉する。null/boolean/空文字/未知/大文字表記はdispatch前に拒否し、await中のenv変更で既に捕捉したrequiredを下げない。store直接呼出はserver-onlyのrequired/preview enumで、不正値を拒否し既存fixtureの省略previewを保持する。previewを本番service受入とは呼ばず、参照table欠落のmigration bypassにも使わない。
+
+入出力・保存: requiredでは同じowner_user_id・status active・JSON array内のtext rockstaros_accessと、null expiryまたはinteger expires_atがMAX(host now,DB clock,persisted execution updated_at)より厳密に後であるgrantの存在を、従来の最終INSERT SELECTへ結合する。malformed/non-array JSONは空配列として権限を与えず、他owner/失効/返金/期限切れや一致scopeなしはclaim0。同ownerの有効matching grantが別の無効履歴と共存しても既存意味論に従って許可する。旧owner/input/parent/rate/body/model/currency/held pool/cap/clock、一意claimとrecurring BEFORE INSERT例外は保持する。
+
+状態・失敗・復旧: 既知のclaim拒否はfetch0/元hold保持/unreconciled。DB/authority table/claim永続化が不明ならUNCONFIRMEDでholdを保持し、commit済みclaimの応答喪失やmarker保存失敗も自動再送しない。既存取消はunreconciled holdを解放しない。trusted fixture復旧後は残予算内の別承認requestを実行できるが、unknown既存requestを自動再送しない。claim前commitのrevoke/expiryは拒否、claim後のrevoke/parent stopは既に認可したsendを遡及停止しない。正当なpriced late usageは親を再起動せず既存一回settleで照合する。
+
+互換・限界: policyは各attemptのserver設定で、実行ごとの永続version/issuer epochではない。意図してpreviewにしたdeploymentをrequired SQLで保護したとは扱わない。strict expiryと最大clockはstale-hostを抑えるが同期時計の真正性を証明せず、未来skewは保守的拒否を起こす。署名済みrate/予算/888c・通貨/手数料/残高の数学とschema、元recurring exception contractは不変。通常source revertは可能だがclaim/hold/usageを消して再送しない。
+
+合格・未決定: exact4独立PASS_SCOPED/mustfix0、53対象試験（SQLite/独立Worker connections/local Miniflare D1/mock fetch）と11独立probe、旧base2負例mocksend1→候補0を範囲別に記録する。本番Workflow全lifecycle/issuer provenance/Provider/決済/production D1/実機/公開、exact original order binding/common consent revision/issuer epoch/account-month集約・BILL02全体は未受入。元receipt7a52とportable要約a2cfは別hashで、source4だけの旧reviewを公開metadata同一性へ転用しない。最終同head CI実npmverifyと独立metadata採用検収、後続の同一候補共同受入で残gateを決める。
+
+[採用4hash・検証・残gate](evidence/development-execution/billing-service-main-adoption.json)／[callerと独立検収要約](evidence/development-execution/billing-service-main-review-summary.json)。
+
 <a id="esim-owner-response-disclosure"></a>
 ## eSIM/Linux保存本文のcurrent-owner HTTP開示（限定候補）
 
