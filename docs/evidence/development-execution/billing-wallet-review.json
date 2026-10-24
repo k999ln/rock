@@ -1,0 +1,249 @@
+{
+  "schema": "rockstaros.development-execution.billing-wallet-review/1",
+  "recordedAt": "2026-10-24T07:21:45.953355+00:00",
+  "reviewerLane": "game",
+  "independence": "Reviewer implemented GAME-01 only; did not implement BILL-01 or WALLET-01. Product files unchanged in this review.",
+  "routing": {
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "appliedModel": null,
+    "appliedModelConfirmed": false,
+    "note": "Dispatch and model-switch instructions received; runtime identity not independently introspectable."
+  },
+  "status": "billing_changes_required_wallet_pure_candidate_accepted",
+  "BILL-01": {
+    "status": "changes_required_pure_binding",
+    "wholeUnitAccepted": false,
+    "receipt": "docs/evidence/development-execution/bill-01.json",
+    "receiptSha256": "d71a52b2844e93607d2c10f12eb2750e99b850aa7fda74bcbafe8b3601329bbc",
+    "sourceHashes": {
+      "lib/sky-linux-billing.ts": "553461a974aaf2e010c5be603b2929111ead6f1af74effde7fe7e07f51a626e3",
+      "lib/sky-agent-monthly-statement.ts": "91c4a5b0e35b0658d85fbb27abf0b1fd37e71d7c4d1054b50a1df951d2b6843c",
+      "tests/sky-linux-billing.test.mjs": "6c116f523d1226a6fc19c6e07516e9b3b212016307a441a9a34b0493953d5dcf",
+      "tests/sky-agent-monthly-statement.test.mjs": "7ba61653a42b62e3bfefb7eb30bbdd533854f7037db904dfddbf73bd4931ab15"
+    },
+    "dependencyComparison": [
+      {
+        "path": "lib/sky-linux-service.ts",
+        "receiptSha256": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec",
+        "currentSha256": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/rockstar-service-setup.ts",
+        "receiptSha256": "34a7ad0c35c7149c999a0e4aeeed97cc1528b455cdfe3f5f6a12484e99bbc182",
+        "currentSha256": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+        "matchesReceipt": false
+      },
+      {
+        "path": "lib/rockstar-service-setup-billing.ts",
+        "receiptSha256": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+        "currentSha256": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+        "matchesReceipt": true
+      },
+      {
+        "path": "db/schema.ts",
+        "receiptSha256": "d25f37f1d7da2cab92fade2832d2ddc37974fa779d6cb1f9d2a707ac87a1eb38",
+        "currentSha256": "d25f37f1d7da2cab92fade2832d2ddc37974fa779d6cb1f9d2a707ac87a1eb38",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/rock-wallet.ts",
+        "receiptSha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+        "currentSha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/wallet.ts",
+        "receiptSha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+        "currentSha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+        "matchesReceipt": true
+      }
+    ],
+    "findings": [
+      {
+        "id": "BILL01-R1",
+        "priority": 2,
+        "title": "Async sidecar construction mixes verified statement/digest with later mutable fields",
+        "path": "lib/sky-agent-monthly-statement.ts",
+        "start": 95,
+        "end": 108,
+        "relatedPath": "lib/sky-linux-billing.ts:535",
+        "minimalCounterexample": "Use a mutable serialized envelope and server-read draft. Pause crypto.subtle.digest on the second digest (statementDigest) after its input bytes were captured. While awaiting, set saved.statement.currency=JPY, period=2026-08 and envelope.digest=f*64; resume.",
+        "observed": "bindAgentMonthlyContract returns draft_only with the original USD/2026-09 statementDigest but JPY/2026-08 and an unverified f*64 snapshotDigest. invoiceCreated/collectionEnabled remain false; no financial effect executed.",
+        "cause": "saved/envelope/expected are retained across awaits. statementDigest captures JSON before the await; snapshotDigest/period/currency are read after it. Object.freeze freezes only the inconsistent result. The preview also rereads envelope.digest after asynchronous baseLineKey hashing.",
+        "requiredCorrection": "At entry, detach the complete saved statement/revision, envelope and expected consent context before any await; validate and hash that same snapshot, then derive every returned field from it or a verified immutable return. Apply the same rule to preview/verification boundaries that reread caller objects after await. Do not mutate caller inputs.",
+        "acceptance": "Controlled asynchronous input-mutation test for statement fields/revision/envelope/expected must produce the original internally consistent binding or reject, never a mixed digest/identity/period/currency. Existing frozen/serialized positive and wrong owner/currency/revision cases must still pass."
+      }
+    ],
+    "acceptedSubscope": [
+      "Snapshot preserves Linux USD1600/CPU accepted terms and freezes detached fields. Canonical digest binds owner/contract/version with separately provided server consent expectation.",
+      "Integer/BigInt preview cap comparisons reject overflow. No reservation/Invoice/collection is created. Deterministic base-line identity does not claim DB uniqueness.",
+      "Legacy undefined and pending null start remain distinct; pending values never become free prices. Existing monthly draft/base0/collection-disabled semantics retained.",
+      "Compared pre-existing billing transport/business body and monthly save/read body with GIT01 preservation backup; unchanged except added imports and additive helpers. No 140USD-main sandbox replacement or 888c-policy rewrite."
+    ],
+    "validation": [
+      {
+        "command": "node --experimental-strip-types --test tests/sky-linux-billing.test.mjs tests/sky-agent-monthly-statement.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs",
+        "exitCode": 0,
+        "tests": 80,
+        "passed": 80,
+        "failed": 0,
+        "log": "/private/tmp/game-review-bill01-focused.log",
+        "logSha256": "d08925a46b49adfbed5152c8b9f6f7115111fa0a577e90053907b8fe392a7c73"
+      },
+      {
+        "command": "node --experimental-strip-types /private/tmp/game-review-bill01-probes.mjs",
+        "exitCode": 0,
+        "scriptSha256": "3b3b5e7c37418e388ffdacbe9344f2a02d440a9dd0838c9ccc660cf7e93dabd9",
+        "output": "/private/tmp/game-review-bill01-probes.json",
+        "outputSha256": "6e94301f9fc3fe6ace422ddaf37b3d4cbe373ecbf9ec6f17ae683ca1afce1966",
+        "result": "Async mixed-binding defect reproduced. Unknown jobCap remains fail-closed, not zero; alternate billing-day behavior observed but no invoicing acceptance inferred."
+      }
+    ],
+    "validationScope": "Receipt reported62 tests. Current shared rockstar-service-setup.ts and its tests changed after receipt; independently executed80 current-workspace tests. Do not count this as replay of the exact historical62-input snapshot or acceptance of eSIM changes. Billing four owned hashes match.",
+    "contractObservations": [
+      {
+        "path": "lib/sky-linux-billing.ts:528",
+        "observation": "jobCapMinor=null yields pending_owner_terms snapshot but zero-request preview throws budget-exceeded instead of returning pending/null amount. This is fail-closed and does not authorize spending; clarify unsupported/unknown preview UI semantics during integration."
+      },
+      {
+        "path": "lib/sky-linux-billing.ts:530",
+        "observation": "Only UTC/full_month calendar preview is computed; billingDay15 still returns preview_only. Exact closing-day/timezone/proration Invoice periods remain BILL03/04 and must not be inferred from this preview."
+      }
+    ],
+    "integrationGates": [
+      "Fix BILL01-R1 and independently re-review same new hashes.",
+      "Server persistence/accepted-consent and same-transaction revision/digest CAS; pending sale/dispatch closure; immutable snapshot proof through readiness/start.",
+      "Existing budget reservations must atomically check used+holds+requested at dispatch. Preview cap arithmetic is not concurrency enforcement.",
+      "DB unique owner/contract/period/currency basic line and same-source usage dedupe; exact timezone/closing-date/proration policies.",
+      "No actual customer charge, Provider acceptance or Invoice/ledger authority from defined/draft_only/preview_only states."
+    ]
+  },
+  "WALLET-01": {
+    "status": "accepted_pure_signed_fixture_candidate_only",
+    "wholeUnitAccepted": false,
+    "receipt": "docs/evidence/development-execution/wallet-01.json",
+    "receiptSha256": "436b9e70ccaa003dbfca93124ae406e3239f1c6296b9270452bae1f91307c9c9",
+    "sourceHashes": {
+      "lib/wallet-deposit-provenance.ts": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+      "tests/wallet-deposit-provenance.test.mjs": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88"
+    },
+    "dependencyComparison": [
+      {
+        "path": "lib/financial-provider.ts",
+        "receiptSha256": "2f6d5c6924c821f74e17779e211d833ee0387c26274d27005a27fe132f87d43f",
+        "currentSha256": "2f6d5c6924c821f74e17779e211d833ee0387c26274d27005a27fe132f87d43f",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/receipt-signature.ts",
+        "receiptSha256": "3764d383cc5b01b95062f9438f5639152cc83b3b6edd675ff819213b8e55a0ac",
+        "currentSha256": "3764d383cc5b01b95062f9438f5639152cc83b3b6edd675ff819213b8e55a0ac",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/rock-wallet.ts",
+        "receiptSha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+        "currentSha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/operations.ts",
+        "receiptSha256": "0e9b4d49b3254a9e207f99bade098f04e7b660b05fc9b643fb54a78061892b00",
+        "currentSha256": "0e9b4d49b3254a9e207f99bade098f04e7b660b05fc9b643fb54a78061892b00",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/earning-bridge.ts",
+        "receiptSha256": "c6a2895a0af100fbaabd31db6c96199a2f2d3dc3cc1d4d25686dbd5064fb56f9",
+        "currentSha256": "c6a2895a0af100fbaabd31db6c96199a2f2d3dc3cc1d4d25686dbd5064fb56f9",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/earning-receipt.ts",
+        "receiptSha256": "015d28960ab7b916ea14ba027f66bd1da0ba739812325c7dfed52a059069263e",
+        "currentSha256": "015d28960ab7b916ea14ba027f66bd1da0ba739812325c7dfed52a059069263e",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/settlement.ts",
+        "receiptSha256": "e540626528367c0e14c8fe2aa33b11e79f6087b3fe7736825aeabcb1e2d85f82",
+        "currentSha256": "e540626528367c0e14c8fe2aa33b11e79f6087b3fe7736825aeabcb1e2d85f82",
+        "matchesReceipt": true
+      },
+      {
+        "path": "lib/wallet.ts",
+        "receiptSha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+        "currentSha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+        "matchesReceipt": true
+      },
+      {
+        "path": "systems/rock-star-os/src/blackberryrock/wallet.py",
+        "receiptSha256": "a97697f375015dccc16088d05f3b150a7ba25eaab49167117abccd7e7cf2f0c6",
+        "currentSha256": "a97697f375015dccc16088d05f3b150a7ba25eaab49167117abccd7e7cf2f0c6",
+        "matchesReceipt": true
+      }
+    ],
+    "findings": [],
+    "acceptedSubscope": [
+      "Event raw bytes and independent readback use distinct current non-revoked role keys; HMAC fixture proof bound to event digest and exact provider/owner/operation/chain/account/asset/currency/amount/transfer identity. Unknown finality is rejected.",
+      "Authority and packet copied before asynchronous verification. Role-key mismatch and mutation during evaluation independently probed.",
+      "Transfer uniqueness key excludes owner/asset/receipt; event key is provider+eventId. Checkpoint intent/revision/trust/sequence and original event fence aliases, reorg/refund linkage, regression and terminal resurrection.",
+      "All success/replay/reversal stages preserve liveEnabled=false, creditAllowed=false, amountToCreditMinor=0. Payout acceptance is distinct from arrival; sales require existing earning reconciliation.",
+      "Existing FinancialProvider/receipt-signature/888c fee collector/Wallet/earning dependencies match receipt hashes. General deposit amount is not capped by888c; fee collection calls existing policy and cannot collect Linux1600 as the fee."
+    ],
+    "validation": [
+      {
+        "command": "node --experimental-strip-types --test tests/wallet-deposit-provenance.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs tests/wallet-backend.test.mjs tests/earning-bridge.test.mjs",
+        "exitCode": 0,
+        "tests": 23,
+        "passed": 23,
+        "failed": 0,
+        "log": "/private/tmp/game-review-wallet01-focused.log",
+        "logSha256": "153abc0d776bf53bf8c3eccd3c329dd7456cae70ae4877e1d40a87b912fd5726"
+      },
+      {
+        "command": "node --experimental-strip-types /private/tmp/game-review-wallet01-probes.mjs",
+        "exitCode": 0,
+        "scriptSha256": "cb814f6154ab416abeaf7203ae8ca2e491ac7cfefa8e9b5f449578e342a59a9d",
+        "output": "/private/tmp/game-review-wallet01-probes.json",
+        "outputSha256": "e13dbe22673dbcfbdbf9fb34fd5878baa6a7f3114787fb5c8ad636d6f9190209",
+        "results": {
+          "inputMutation": {
+            "ownerId": "owner:1",
+            "stage": "confirmed_candidate",
+            "creditAllowed": false,
+            "amountToCreditMinor": 0,
+            "liveEnabled": false
+          },
+          "unknownFinality": {
+            "error": "WALLET_PROVENANCE_INTEGER"
+          },
+          "wrongRoleSignature": {
+            "error": "RECEIPT_SIGNATURE_INVALID"
+          }
+        }
+      }
+    ],
+    "integrationGates": [
+      "This is synthetic HMAC trust/readback, not an implemented bank/chain authentication/finality protocol. Actual Provider/contract/role-key/finality acceptance remains external.",
+      "Authenticated server must load authority/current trust and globally scoped event/transfer claims inside eventual existing authority transaction, rechecking revocation/epoch at commit.",
+      "DB UNIQUE(provider,eventId) and UNIQUE(provider,chain,transactionId,transferId), CAS and atomic journal/projection are not implemented here. Serialized checkpoint reload does not prove durable restart or concurrency.",
+      "Same-event claim plus absent checkpoint can propose expectedRevision0 again; only atomic global claim/CAS storage may admit at most one. No new balance ledger permitted.",
+      "Refund/reorg must append original-linked compensating entries and reconcile settled/spent/holds; unknown outcome keeps holds. No available balance may derive from confirmed_candidate."
+    ]
+  },
+  "operations": {
+    "productEdits": false,
+    "globalStatusEdits": false,
+    "gitMutation": false,
+    "actualDatabaseOperations": false,
+    "syntheticLocalFixturesOnly": true,
+    "providerCalls": false,
+    "realFunds": false,
+    "physicalDevice": false,
+    "fullVerify": false
+  },
+  "next": "Coordinator routes BILL01-R1 back to billing writer and later independent re-review; retain WALLET-01 limited candidate acceptance with shared persistence/Provider gates open. This review does not accept GAME-01 or complete integration."
+}

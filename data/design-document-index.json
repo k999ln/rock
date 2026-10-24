@@ -300,7 +300,7 @@
   },
   "schema": "rockstaros-design-document-index/1",
   "version": "1.19",
-  "updatedAt": "2026-10-17",
+  "updatedAt": "2026-10-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -1197,6 +1197,16 @@
         "docs/sky-tools-complete-design.md",
         "docs/sky-commerce-design.md",
         "docs/wallet-commerce-design.md"
+      ],
+      "implementation": [
+        "lib/sky-linux-billing.ts",
+        "lib/sky-agent-monthly-statement.ts",
+        "tests/sky-linux-billing.test.mjs",
+        "tests/sky-agent-monthly-statement.test.mjs",
+        "lib/rockstar-service-setup.ts",
+        "tests/rockstar-service-setup.test.mjs",
+        "lib/wallet-deposit-provenance.ts",
+        "tests/wallet-deposit-provenance.test.mjs"
       ]
     },
     {
@@ -2668,5 +2678,26 @@
     "status": "design_and_public_copy_update",
     "physicalAcceptance": false,
     "supplySecured": false
+  },
+  "reviewedServiceContracts": {
+    "authority": "docs/rockstaros-complete-design.md#reviewed-service-contracts",
+    "billingDesign": "docs/sky-billing.md#reviewed-service-contracts",
+    "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+    "implementation": [
+      "lib/sky-linux-billing.ts",
+      "lib/sky-agent-monthly-statement.ts",
+      "lib/rockstar-service-setup.ts",
+      "lib/wallet-deposit-provenance.ts"
+    ],
+    "tests": [
+      "tests/sky-linux-billing.test.mjs",
+      "tests/sky-agent-monthly-statement.test.mjs",
+      "tests/rockstar-service-setup.test.mjs",
+      "tests/wallet-deposit-provenance.test.mjs"
+    ],
+    "scope": "pure_host_helpers_no_api_store_broker_adapter",
+    "productionAccepted": false,
+    "newPriceSelected": false,
+    "wholeUnitsAccepted": false
   }
 }

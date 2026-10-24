@@ -1,0 +1,164 @@
+{
+  "schema": "rockstaros.reviewed-service-contract-adoption/1",
+  "recordedAt": "2026-10-24T08:40:37.686985+00:00",
+  "owner": "ROCK/Git single writer",
+  "baseMain": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+  "branch": "codex/reviewed-service-contracts-20261024",
+  "scope": "pure helpers only; no API/store/Broker wiring",
+  "reviewedInputs": {
+    "lib/sky-linux-billing.ts": "746359b1af7169144bf745830fb429a8b97b29cf9656c96e9ea6187876300f9a",
+    "lib/sky-agent-monthly-statement.ts": "b480bfbe88e393452c46e19e3a08da61e6b15a90f6819de15ca41e8271d94aeb",
+    "tests/sky-linux-billing.test.mjs": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+    "tests/sky-agent-monthly-statement.test.mjs": "d240eddf6b76c0c54edfc4d5df26a28dcc55afd6c2d67ec248f66aa15e30b892",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/rockstar-service-setup.test.mjs": "244626cca4c9c26cd515a640ecd549a3056810483ece23bbc3e2e2119fed06db",
+    "lib/wallet-deposit-provenance.ts": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+    "tests/wallet-deposit-provenance.test.mjs": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88"
+  },
+  "adoptedHashes": {
+    "lib/sky-linux-billing.ts": "de75e2a27e1272bb48714b6234422f2cc1172624a87d32201d4352ad7834d123",
+    "lib/sky-agent-monthly-statement.ts": "ecfd3007f207bf91a2df1d9aa3165e4ee5ff9138bc95b60bb312943be87dd6cb",
+    "tests/sky-linux-billing.test.mjs": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+    "tests/sky-agent-monthly-statement.test.mjs": "81683241e3067f3267a4380fea506993bf6a202c2fffda7d7e6919f2d4935b5f",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/rockstar-service-setup.test.mjs": "1338f89f8a2598147e406ec1d181e46a906cd23f228f414bfdb50a2318795604",
+    "lib/wallet-deposit-provenance.ts": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+    "tests/wallet-deposit-provenance.test.mjs": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88"
+  },
+  "reviews": [
+    "billing-review-r2.json",
+    "esim-review-r2.json",
+    "billing-wallet-review.json"
+  ],
+  "subsetDecisions": [
+    {
+      "paths": [
+        "lib/sky-linux-billing.ts",
+        "tests/sky-linux-billing.test.mjs"
+      ],
+      "adopt": "snapshot/verify/preview and reviewed async input-detachment regressions",
+      "preserveMain": "existing transport body and Sky invoice line labels; no cosmetic Smith rename"
+    },
+    {
+      "paths": [
+        "lib/rockstar-service-setup.ts",
+        "tests/rockstar-service-setup.test.mjs"
+      ],
+      "adopt": "pure authority evaluator plus signed synthetic regression tests",
+      "preserveMain": "existing setup API/store/readiness; redirect:error assertion and historical test title"
+    },
+    {
+      "paths": [
+        "lib/sky-agent-monthly-statement.ts",
+        "tests/sky-agent-monthly-statement.test.mjs"
+      ],
+      "adopt": "reviewed statement types, period validation and bindAgentMonthlyContract; 3 pure binding tests",
+      "exclude": "DB read/save, source aggregation, kind key, database imports and one save gate test: dependencies not yet main-adopted; no DB schema added"
+    },
+    {
+      "paths": [
+        "lib/wallet-deposit-provenance.ts",
+        "tests/wallet-deposit-provenance.test.mjs"
+      ],
+      "adopt": "exact reviewed pure signed fixture proposal module and tests"
+    }
+  ],
+  "dependencyComparison": {
+    "byteIdentical": [
+      "lib/sky-linux-service.ts",
+      "lib/rockstar-service-setup-billing.ts",
+      "lib/rockstar-service-attachment.ts",
+      "lib/financial-provider.ts",
+      "lib/receipt-signature.ts",
+      "lib/rock-wallet.ts"
+    ],
+    "differingFilesPreserved": [
+      "lib/rockstar-entitlement-claim.ts",
+      "lib/sky-stripe.ts"
+    ],
+    "semanticUse": "sha256Hex string hashing and SkyPaymentError status semantics inspected compatible; no Root copy of either file"
+  },
+  "validation": {
+    "focused": {
+      "tests": 113,
+      "pass": 113,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheckExit": 0,
+    "focusedLintExit": 0,
+    "fullVerify": {
+      "exitCode": 0,
+      "inputCount": 4404,
+      "changedInputs": [],
+      "elapsedSeconds": 255,
+      "logSha256": "83870916ce68fff476a5de8bbcb02fd0d7b5cb0795acbc90fff4392a105a8012",
+      "nodeTests": 2612,
+      "nodePassed": 2610,
+      "nodeFailed": 0,
+      "nodeSkipped": 2,
+      "skipScope": "existing platform-specific tests",
+      "assetMissing": 0,
+      "workApiAssertions": 1678
+    },
+    "reviewAppliesTo": "Root exact reviewed bytes; integration subset compatibility checked here, independent integrated-diff acceptance pending",
+    "existingMainBodiesPreserved": true,
+    "postVerifyChanges": "Only result annotations in this receipt, project status, project.md and README; no code/test/contract changes. Metadata/design/baseline checks rerun after annotations."
+  },
+  "policy": {
+    "mainBaselineVersion": "2.08",
+    "mainRequirements": "RQ01-RQ50 retained",
+    "rootBaselineVersion": "1.127 kept separately",
+    "main140UsdProposalRetained": true,
+    "rootLinux1600TermsProvenanceRetained": true,
+    "pricePolicy": "unresolved for real adapters",
+    "newPriceSelected": false,
+    "financialEffects": 0,
+    "productionReady": false,
+    "generalLaunch": "held",
+    "publicDeployment": false,
+    "databaseMigrationsAdded": 0
+  },
+  "openGates": [
+    "Trusted consistent server readCurrent provenance and setup order/contract linkage",
+    "Broker atomic revision/epoch/reservation recheck and job idempotency",
+    "Saved consent digest/CAS; used+holds+requested atomic dispatch cap",
+    "Unique owner/contract/period/currency basic line and usage source dedupe",
+    "Timezone/closing-day/proration: preview computes UTC/full_month only, billingDay is not an accepted closing-date implementation; unknown job cap fails closed",
+    "Wallet authenticated provider query, global event/transfer uniqueness+CAS, durable trust/reversal/reconciliation, live provider acceptance"
+  ],
+  "fullUnionSeparate": [
+    "8 migrations",
+    "13 guard differences",
+    "Eve complete source base",
+    "GIT02 revision2 runtime port"
+  ],
+  "finiteFollowupPlan": [
+    {
+      "order": 1,
+      "scope": "This Billing4/eSIM2/Wallet2 pure subset",
+      "next": "fixed candidate verify, new PR/CI; independent integrated-diff review before main merge"
+    },
+    {
+      "order": 2,
+      "scope": "MINI-01 2 code/test paths; PRO-01 4 code/test paths; WEBOPS-01 3 code/test paths",
+      "review": "mini-pro-web-review.json",
+      "next": "rehash against reviewed source, compare main behavior; new bounded PR with design/index and UI/build evidence",
+      "unaccepted": "optics/PCB/hardware, authenticated Pro import/CAS, exported browser bytes, broad accessibility/device acceptance"
+    },
+    {
+      "order": 3,
+      "scope": "SMITH-01 saved-URL host regression subset",
+      "review": "source-batch-review.json",
+      "next": "select test-only candidate after main API parity; preserve 166-path source snapshot rather than bulk copy",
+      "unaccepted": "authenticated saved URL with zero new dispatch/cost/key mutation; UI/device and quality"
+    },
+    {
+      "order": 4,
+      "scope": "EVE-01 13-file source preservation, GAME-01 pure intake candidate",
+      "next": "Eve inspect source artifact dependencies before functional adoption; Game requires independent review then nonfinancial bridge",
+      "unaccepted": "Remix/media execution parity and binary transfer; real exchange and GX gates"
+    }
+  ],
+  "rollback": "Revert additive helper/doc/test commit through normal PR. No persistent schema/data migration or provider effect to undo."
+}

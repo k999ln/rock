@@ -1,0 +1,104 @@
+{
+  "schema": "rockstaros.billing-review/2",
+  "recordedAt": "2026-10-24T07:47:49.587929+00:00",
+  "unit": "BILL-01",
+  "reviewerLane": "game",
+  "independence": "Root coordinator wrote the four-file correction; reviewer did not implement BILL-01 or this fix.",
+  "status": "accepted_pure_contract_binding_correction_integration_pending",
+  "sourceHashes": {
+    "lib/sky-linux-billing.ts": "746359b1af7169144bf745830fb429a8b97b29cf9656c96e9ea6187876300f9a",
+    "lib/sky-agent-monthly-statement.ts": "b480bfbe88e393452c46e19e3a08da61e6b15a90f6819de15ca41e8271d94aeb",
+    "tests/sky-linux-billing.test.mjs": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+    "tests/sky-agent-monthly-statement.test.mjs": "d240eddf6b76c0c54edfc4d5df26a28dcc55afd6c2d67ec248f66aa15e30b892"
+  },
+  "candidateDigest": "ef500503009d03072653ec780ecb505be72d05f46b7f7a02d3496764fc0f10d9",
+  "inputOwnershipRecord": "data/development-execution.json#billingCorrectionOwnership",
+  "priorReview": "docs/evidence/development-execution/billing-wallet-review.json",
+  "closedFindings": [
+    {
+      "id": "BILL01-R1",
+      "paths": [
+        "lib/sky-agent-monthly-statement.ts:95",
+        "lib/sky-linux-billing.ts:507",
+        "lib/sky-linux-billing.ts:527"
+      ],
+      "reason": "bind, verify and preview synchronously structuredClone complete caller-owned document/envelope/consent/budget before first await; subsequent hashes and returned fields use captured values.",
+      "reproduction": "Previous reviewer second-digest suspension now returns USD/2026-09 and the originally verified digest, with the original statement hash; caller changes remain on caller object only. New tests pause first/second digest and mutate nested item/revision/owner/consent/envelope/budget; original consistent result retained."
+    }
+  ],
+  "newActionableFindings": [],
+  "validation": [
+    {
+      "command": "node --experimental-strip-types --test tests/sky-linux-billing.test.mjs tests/sky-agent-monthly-statement.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs",
+      "exitCode": 0,
+      "tests": 82,
+      "passed": 82,
+      "failed": 0,
+      "log": "/private/tmp/game-review-billing-r2-focused.log",
+      "logSha256": "d81bcee59ec7a00fb246163ca6a97976f4f411dc8525f2cab0c29a1513482cd1"
+    },
+    {
+      "command": "node --experimental-strip-types /private/tmp/game-review-billing-r2-probes.mjs",
+      "exitCode": 0,
+      "scriptSha256": "37277ae8eb2d9403bfd7ed6e2532d7a7af86bd71e801a1c093ca826bbed5881f",
+      "output": "/private/tmp/game-review-billing-r2-probes.json",
+      "outputSha256": "a92d61f8f74bd91cec76f253f7197dda4abdd2bc916a2ecb97224b4b084368da",
+      "sidecarResult": {
+        "result": {
+          "schema": "sky.agent-monthly-contract-binding/1",
+          "statementId": "agent-monthly:test",
+          "statementRevision": 3,
+          "statementDigest": "d49d1da414a44303e272049aa037639b62b331a4596bfc325fc7c874ba6bd94b",
+          "contractId": "contract-test",
+          "snapshotDigest": "f050c008915de976819fa3140ce3c85708032cfa3fae87ab36c1a0c19ac92467",
+          "period": "2026-09",
+          "currency": "USD",
+          "state": "draft_only",
+          "baseIncluded": false,
+          "invoiceCreated": false,
+          "collectionEnabled": false
+        },
+        "statementDigestMatchesPreMutation": true,
+        "verifiedCurrency": "USD",
+        "verifiedSnapshotDigest": "f050c008915de976819fa3140ce3c85708032cfa3fae87ab36c1a0c19ac92467"
+      }
+    }
+  ],
+  "dependencyHashes": {
+    "lib/sky-linux-service.ts": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "lib/rockstar-service-setup-billing.ts": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+    "db/schema.ts": "d25f37f1d7da2cab92fade2832d2ddc37974fa779d6cb1f9d2a707ac87a1eb38",
+    "lib/rock-wallet.ts": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+    "lib/wallet.ts": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c"
+  },
+  "acceptedScope": [
+    "Pure snapshot/verify/preview/sidecar consistency only; no server/API authority or atomic commit created.",
+    "Existing nullable/legacy semantics and integer budget checks retained; false reservation/Invoice/collection flags unchanged.",
+    "Old provider transport and DB save/read code unchanged by clone correction."
+  ],
+  "observationsRetained": [
+    {
+      "path": "lib/sky-linux-billing.ts:528",
+      "observation": "jobCapMinor=null yields pending_owner_terms snapshot but zero-request preview throws budget-exceeded instead of returning pending/null amount. This is fail-closed and does not authorize spending; clarify unsupported/unknown preview UI semantics during integration."
+    },
+    {
+      "path": "lib/sky-linux-billing.ts:530",
+      "observation": "Only UTC/full_month calendar preview is computed; billingDay15 still returns preview_only. Exact closing-day/timezone/proration Invoice periods remain BILL03/04 and must not be inferred from this preview."
+    }
+  ],
+  "remainingIntegrationGates": [
+    "Server persistence/accepted-consent and same-transaction revision/digest CAS; pending sale/dispatch closure; immutable snapshot proof through readiness/start.",
+    "Existing budget reservations must atomically check used+holds+requested at dispatch. Preview cap arithmetic is not concurrency enforcement.",
+    "DB unique owner/contract/period/currency basic line and same-source usage dedupe; exact timezone/closing-date/proration policies.",
+    "No actual customer charge, Provider acceptance or Invoice/ledger authority from defined/draft_only/preview_only states."
+  ],
+  "wholeUnitAccepted": false,
+  "operations": {
+    "productEdits": false,
+    "gitMutation": false,
+    "providerActualDbDeviceFunds": false,
+    "fullVerify": false
+  },
+  "next": "Shared writer can integrate this reviewed sourcehash after normal save gate; persistence/CAS/API/unique billing line and real provider acceptance remain open."
+}

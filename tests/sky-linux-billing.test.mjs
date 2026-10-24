@@ -249,3 +249,98 @@ void test('malformed customer configuration stops before any payment request',()
   }
   assert.equal(calls,0);
 });
+
+
+import { makeLinuxContractSnapshot, verifyLinuxContractSnapshot, previewLinuxContractMonth } from '../lib/sky-linux-billing.ts';
+const contractWorkspace = () => ({ id: 'contract-fixture', ownerId: 'alice', deviceRef: 'pixel', contractDigest: 'a'.repeat(64), serviceStartAt: Date.parse('2026-09-01T00:00:00Z'),
+  terms: { schema: 'sky.linux-terms/1', version: 'fixture-not-sale', currency: 'USD', baseMinor: 1600, cpuUnitMs: 1000, cpuUnitMinor: 1, includedCpuMs: 1000, monthlyCapMinor: 5000, graceDays: 3, leaseSeconds: 60, retentionDays: 30, termsUrl: 'https://example.test/terms' } });
+// Explicit test-only policy. No production price, tax or entitlement is selected.
+const contractPolicy = () => ({ offerId: 'fixture-linux', priceVersion: 'fixture-v1', contractTextSha256: 'c'.repeat(64), timezone: 'UTC', billingDay: 1, proration: 'full_month', tax: 'fixture-tax', externalCosts: 'fixture-no-external-charge', byok: 'fixture-user-pays-provider', additionalMeters: [], jobCapMinor: 1000 });
+const expectedContract = envelope => ({ ownerId: 'alice', contractId: 'contract-fixture', contractDigest: 'a'.repeat(64), digest: envelope.digest });
+void test('async verification and preview detach consent, envelope and budget before hashing', async () => {
+  const original = await makeLinuxContractSnapshot(contractWorkspace(), contractPolicy());
+  const budget = { usedMinor: 0, reservedMinor: 0, requestedMaxMinor: 1 };
+  const baseline = await previewLinuxContractMonth(original, expectedContract(original), '2026-09', budget);
+  for (const operation of ['verify', 'preview']) {
+    for (const pauseAt of operation === 'verify' ? [1] : [1, 2]) {
+      const envelope = structuredClone(original), consent = expectedContract(original), inputBudget = { ...budget };
+      const digest = Reflect.get(crypto.subtle, 'digest');
+      let calls = 0, release, reached;
+      const paused = new Promise(resolve => { reached = resolve; });
+      const gate = new Promise(resolve => { release = resolve; });
+      crypto.subtle.digest = async function (...args) {
+        const bytes = new Uint8Array(args[1]).slice();
+        if (++calls === pauseAt) { reached(); await gate; }
+        return digest.call(this, args[0], bytes);
+      };
+      try {
+        const pending = operation === 'verify' ? verifyLinuxContractSnapshot(envelope, consent)
+          : previewLinuxContractMonth(envelope, consent, '2026-09', inputBudget);
+        await paused;
+        envelope.digest = 'f'.repeat(64); envelope.snapshot.ownerId = 'bob';
+        consent.ownerId = 'bob'; consent.digest = 'f'.repeat(64);
+        inputBudget.requestedMaxMinor = 999999;
+        release();
+        assert.deepEqual(await pending, operation === 'verify' ? original.snapshot : baseline);
+        assert.equal(inputBudget.requestedMaxMinor, 999999);
+      } finally { release(); crypto.subtle.digest = digest; }
+    }
+  }
+});
+void test('fixed snapshot preserves accepted CPU terms, all cost categories, canonical digest and detached immutability', async () => {
+  const w = contractWorkspace(), policy = contractPolicy();
+  policy.additionalMeters = [{ category: 'cloud_ai', meter: 'output', unit: 'token', included: 10, unitMinor: 2, rounding: 'ceil_unit' }];
+  const e = await makeLinuxContractSnapshot(w, policy);
+  w.terms.cpuUnitMinor = 999; policy.additionalMeters[0].unitMinor = 999;
+  assert.equal(e.snapshot.terms.cpuUnitMinor, 1); assert.equal(e.snapshot.policy.additionalMeters[0].unitMinor, 2);
+  assert.ok(Object.isFrozen(e.snapshot.policy.additionalMeters[0]));
+  const reordered = JSON.parse(JSON.stringify(e)); reordered.snapshot.policy = Object.fromEntries(Object.entries(reordered.snapshot.policy).reverse());
+  assert.deepEqual(await verifyLinuxContractSnapshot(reordered, expectedContract(e)), e.snapshot);
+});
+void test('digest, owner, product, currency, minor digits, pricing version and rounding tampering are rejected', async () => {
+  const e = await makeLinuxContractSnapshot(contractWorkspace(), contractPolicy());
+  for (const change of [s => s.ownerId = 'bob', s => s.product = 'sky-140', s => s.currency = 'JPY', s => s.minorDigits = 0,
+    s => s.cpuRounding = 'floor_minor', s => s.policy.priceVersion = 'v2', s => s.terms.baseMinor = 14000, s => s.start.at = null,
+    s => s.policy.additionalMeters = [{category:'cloud_ai',meter:'x',unit:'token',included:0,unitMinor:1,rounding:'floor'}]]) {
+    const altered = structuredClone(e); change(altered.snapshot);
+    await assert.rejects(verifyLinuxContractSnapshot(altered, expectedContract(e)));
+  }
+  await assert.rejects(verifyLinuxContractSnapshot(e, { ...expectedContract(e), ownerId: 'bob' }));
+  const otherVersion = await makeLinuxContractSnapshot(contractWorkspace(), { ...contractPolicy(), priceVersion: 'v2' });
+  await assert.rejects(verifyLinuxContractSnapshot(otherVersion, expectedContract(e)));
+});
+void test('1600 base preview identity survives device/re-pair/restart and retry without creating invoice or reservation', async () => {
+  const e = await makeLinuxContractSnapshot(contractWorkspace(), contractPolicy());
+  const budget = { usedMinor: 1600, reservedMinor: 500, requestedMaxMinor: 1000 };
+  const a = await previewLinuxContractMonth(e, expectedContract(e), '2026-09', budget);
+  const b = await makeLinuxContractSnapshot({ ...contractWorkspace(), deviceRef: 'mini-repaired' }, contractPolicy());
+  assert.equal(b.digest, e.digest);
+  assert.deepEqual(await previewLinuxContractMonth(b, expectedContract(e), '2026-09', budget), a);
+  assert.equal(a.baseMinor, 1600); assert.equal(a.invoiceCreated, false); assert.equal(a.collectionEnabled, false); assert.equal(a.reservationCreated, false);
+  const v2 = await makeLinuxContractSnapshot(contractWorkspace(), { ...contractPolicy(), priceVersion: 'new-fixture' });
+  assert.equal((await previewLinuxContractMonth(v2, expectedContract(v2), '2026-09', budget)).baseLineKey, a.baseLineKey);
+  assert.notEqual((await previewLinuxContractMonth(e, expectedContract(e), '2026-10', budget)).baseLineKey, a.baseLineKey);
+});
+void test('null preparation, undefined legacy and undefined owner terms never become a zero-price or started contract', async () => {
+  for (const start of [null, undefined]) {
+    const e = await makeLinuxContractSnapshot({ ...contractWorkspace(), serviceStartAt: start }, contractPolicy());
+    assert.equal(e.snapshot.start.state, start === null ? 'pending' : 'legacy');
+    assert.equal((await previewLinuxContractMonth(e, expectedContract(e), '2026-09', {usedMinor:0,reservedMinor:0,requestedMaxMinor:0})).baseMinor, null);
+  }
+  const pending = await makeLinuxContractSnapshot(contractWorkspace(), { ...contractPolicy(), tax: null, additionalMeters: null });
+  assert.equal(pending.snapshot.status, 'pending_owner_terms');
+  assert.equal((await previewLinuxContractMonth(pending, expectedContract(pending), '2026-09', {usedMinor:0,reservedMinor:0,requestedMaxMinor:0})).state, 'pending');
+  await assert.rejects(makeLinuxContractSnapshot(contractWorkspace(), { ...contractPolicy(), tax: undefined }));
+});
+void test('monthly/job caps reject overflow, malformed amounts and unknown period semantics', async () => {
+  const e = await makeLinuxContractSnapshot(contractWorkspace(), contractPolicy());
+  for (const budget of [{usedMinor:4600,reservedMinor:400,requestedMaxMinor:1}, {usedMinor:0,reservedMinor:0,requestedMaxMinor:1001},
+    {usedMinor:Number.MAX_SAFE_INTEGER,reservedMinor:Number.MAX_SAFE_INTEGER,requestedMaxMinor:0},
+    {usedMinor:-1,reservedMinor:0,requestedMaxMinor:0}, {usedMinor:0,reservedMinor:0,requestedMaxMinor:0.1}])
+    await assert.rejects(previewLinuxContractMonth(e, expectedContract(e), '2026-09', budget));
+  await assert.rejects(previewLinuxContractMonth(e, expectedContract(e), '2026-13', {usedMinor:0,reservedMinor:0,requestedMaxMinor:0}));
+  const future = await previewLinuxContractMonth(e, expectedContract(e), '2026-08', {usedMinor:0,reservedMinor:0,requestedMaxMinor:0});
+  assert.equal(future.baseMinor, null);
+  const timezone = await makeLinuxContractSnapshot(contractWorkspace(), {...contractPolicy(), timezone:'America/New_York'});
+  assert.equal((await previewLinuxContractMonth(timezone, expectedContract(timezone), '2026-09', {usedMinor:0,reservedMinor:0,requestedMaxMinor:0})).state, 'pending');
+});

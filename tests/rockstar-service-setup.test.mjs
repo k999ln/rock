@@ -7,6 +7,7 @@ import {
   acceptServiceSetup,
   serviceSetupReadiness,
   serviceSetupView,
+  serviceAccessEvaluator,
 } from '../lib/rockstar-service-setup.ts';
 import { serviceSetupStore } from '../lib/rockstar-service-setup-store.ts';
 import { serviceSetupBilling } from '../lib/rockstar-service-setup-billing.ts';
@@ -585,4 +586,201 @@ void test('new client gate never infers readiness from a payment method, interfa
   assert.doesNotMatch(android, /<uses-permission[^>]+(?:WRITE_EMBEDDED_SUBSCRIPTIONS|MANAGE_DEVICE_POLICY_MANAGED_SUBSCRIPTIONS)/);
   assert.match(native, /if \(!systemAuthority && !carrierAuthority\)/);
   assert.match(native, /telephony\.hasCarrierPrivileges\(\)/);
+});
+
+// ESIM-01: real synthetic signatures; mutable server readback, no client facts.
+async function accessFixture() {
+  const keys = await crypto.subtle.generateKey('Ed25519', true, ['sign', 'verify']);
+  const raw = new Uint8Array(await crypto.subtle.exportKey('raw', keys.publicKey));
+  const { serviceAttachmentSigningBytes } = await import('../lib/rockstar-service-attachment.ts');
+  const request = { ownerId: 'owner', workspaceId: 'workspace',
+    deviceKeyThumbprint: sha, requiredScope: 'sky', requestDigest: 'b'.repeat(64) };
+  const facts = { ownerAuthenticated: true, deviceApproved: true, deviceProofVerified: true,
+    deviceRevoked: false, contractStatus: 'active', issuerProfileActive: true,
+    ownerRef: 'owner', contractId: 'contract', contractVersion: terms.version,
+    workspaceId: 'workspace', deviceKeyThumbprint: sha, parentEntitlementId: 'entitlement',
+    parentEntitlementEpoch: 7, audience: 'broker', allowedScopes: ['sky'], requiredScope: 'sky',
+    capabilityProfileHash: sha, manifestHash: sha };
+  const unsigned = { schema: 'rockstar.service-attachment/1', issuerId: 'issuer', keyId: 'key',
+    attachmentId: 'child', ownerRef: 'owner', contractId: 'contract', contractVersion: terms.version,
+    workspaceId: 'workspace', deviceKeyThumbprint: sha, parentEntitlementId: 'entitlement',
+    parentEntitlementEpoch: 7, scope: ['sky'], capabilityProfileHash: sha, manifestHash: sha,
+    audience: 'broker', issuedAt: now, expiresAt: now + 60_000, nonce: 'nonce' };
+  const signature = Buffer.from(await crypto.subtle.sign(
+    'Ed25519', keys.privateKey, serviceAttachmentSigningBytes(unsigned),
+  )).toString('base64url');
+  let setup = await createServiceSetup('owner', 'order', 'parent-device', terms, now);
+  setup = await acceptServiceSetup(setup, setup.quoteDigest, true, true, now);
+  setup.workspaceId = 'workspace';
+  setup.billing.verifiedAt = now;
+  setup.runtime.verifiedAt = now;
+  setup.runtime.receiptDigest = sha;
+  const snapshot = { schema: 'rockstar.service-access-authorities/1', revision: 1,
+    observedAt: now, validUntil: now + 30_000, ownerId: 'owner', workspaceId: 'workspace',
+    telecom: 'offline', profile: 'not_required', client: 'supported', setup,
+    setupFacts: { readiness: serviceSetupReadiness(config), currentGrant: true,
+      workspaceMatches: true, linuxCanExecute: true, linuxReason: null },
+    attachment: { ...unsigned, signature }, attachmentFacts: facts,
+    agreementDigest: setup.agreementDigest, payment: 'current', pricePolicy: 'resolved',
+    budget: { state: 'reserved', requestDigest: request.requestDigest },
+    retained: { ownerId: 'owner', workspaceId: 'workspace', read: true, export: true } };
+  return { request, snapshot, resolveKey: async () => raw };
+}
+
+void test('ESIM-01 state product: independent retained access and dispatch eligibility', async (t) => {
+  const f = await accessFixture();
+  const cases = [
+    ['offline eSIM-free child', () => {}, true],
+    ['telecom online alone', (s) => { s.telecom = 'online'; s.setup = null; }, false],
+    ['purchase or URL only', (s) => { s.attachment = null; }, false],
+    ['unverified profile', (s) => { s.profile = 'unknown'; }, false],
+    ['paid but runtime unready', (s) => { s.setup.runtime.verifiedAt = null; }, false],
+    ['unverified runtime receipt', (s) => { s.setup.runtime.receiptDigest = null; }, false],
+    ['Core pending', (s) => { s.setupFacts.readiness.osReady = false; }, false],
+    ['module disabled', (s) => { s.setupFacts.readiness.enabled = false; }, false],
+    ['old client', (s) => { s.client = 'unsupported'; }, false],
+    ['unknown client', (s) => { s.client = 'new_unrecognized_state'; }, false],
+    ['unknown payment', (s) => { s.payment = 'paid'; }, false],
+    ['unpaid restriction', (s) => { s.payment = 'restricted'; }, false],
+    ['unresolved 140 vs 16 policy', (s) => { s.pricePolicy = 'unresolved'; }, false],
+    ['old issuer active after revoke', (s) => { s.attachmentFacts.issuerProfileActive = false; }, false],
+    ['old signed epoch after restore', (s) => { s.attachmentFacts.parentEntitlementEpoch++; }, false],
+    ['child revoked', (s) => { s.attachmentFacts.deviceRevoked = true; }, false],
+    ['contract ended', (s) => { s.attachmentFacts.contractStatus = 'ended'; }, false],
+    ['changed contract version', (s) => { s.attachmentFacts.contractVersion = 'new'; }, false],
+    ['changed consent', (s) => { s.agreementDigest = sha; }, false],
+    ['changed manifest', (s) => { s.attachmentFacts.manifestHash = 'c'.repeat(64); }, false],
+    ['truthy client-shaped proof', (s) => { s.attachmentFacts.deviceProofVerified = 'true'; }, false],
+    ['missing device possession', (s) => { s.attachmentFacts.deviceProofVerified = false; }, false],
+    ['attachment without budget', (s) => { s.budget.state = 'unavailable'; }, false],
+    ['reservation for another request', (s) => { s.budget.requestDigest = sha; }, false],
+    ['no current service grant', (s) => { s.setupFacts.currentGrant = false; }, false],
+    ['workspace unready', (s) => { s.setupFacts.workspaceMatches = false; }, false],
+    ['Linux restricted', (s) => { s.setupFacts.linuxCanExecute = false; }, false],
+    ['future readiness', (s) => { s.setup.runtime.verifiedAt = now + 1; }, false],
+  ];
+  for (const [name, change, canDispatch] of cases) {
+    await t.test(name, async () => {
+      const s = structuredClone(f.snapshot); change(s);
+      const evaluate = serviceAccessEvaluator({ readCurrent: async () => s, resolveKey: f.resolveKey });
+      assert.deepEqual(await evaluate(f.request, now), {
+        canDispatch, canRead: true, canExport: true, revision: 1,
+      });
+    });
+  }
+});
+
+void test('ESIM-01 absent, stale, foreign and client-supplied authorities fail closed', async () => {
+  const f = await accessFixture();
+  const denied = { canDispatch: false, canRead: false, canExport: false, revision: null };
+  for (const mutate of [
+    (s) => { s.schema = 'old-client/0'; },
+    (s) => { s.ownerId = 'other'; },
+    (s) => { s.workspaceId = 'other'; },
+    (s) => { s.attachmentFacts.ownerAuthenticated = false; },
+    (s) => { s.validUntil = now; },
+    (s) => { s.observedAt = now + 1; },
+    (s) => { s.revision = -1; },
+  ]) {
+    const s = structuredClone(f.snapshot); mutate(s);
+    assert.deepEqual(await serviceAccessEvaluator({ readCurrent: async () => s,
+      resolveKey: f.resolveKey })(f.request, now), denied);
+  }
+  for (const readCurrent of [async () => null, async () => { throw Error('unavailable'); }]) {
+    const evaluate = serviceAccessEvaluator({ readCurrent, resolveKey: f.resolveKey });
+    assert.deepEqual(await evaluate({ ...f.request, currentGrant: true,
+      setupFacts: f.snapshot.setupFacts, snapshot: f.snapshot }, now), denied);
+  }
+  const evaluate = serviceAccessEvaluator({ readCurrent: async () => f.snapshot, resolveKey: f.resolveKey });
+  assert.equal((await evaluate({ ...f.request, deviceKeyThumbprint: 'c'.repeat(64) }, now)).canDispatch, false);
+  assert.equal((await evaluate({ ...f.request, requiredScope: 'agents' }, now)).canDispatch, false);
+  assert.deepEqual(await evaluate({ ...f.request, requestDigest: 'invalid' }, now), denied);
+  assert.deepEqual(await evaluate(null, now), denied);
+  f.snapshot.retained.read = false;
+  f.snapshot.retained.export = false;
+  assert.deepEqual(await evaluate(f.request, now), {
+    canDispatch: true, canRead: false, canExport: false, revision: 1,
+  });
+});
+
+void test('ESIM-01 retry and restart re-read current epoch; no cached dispatch permission', async () => {
+  const f = await accessFixture();
+  let reads = 0;
+  const authorities = { readCurrent: async () => { reads++; return structuredClone(f.snapshot); },
+    resolveKey: f.resolveKey };
+  const evaluate = serviceAccessEvaluator(authorities);
+  assert.equal((await evaluate(f.request, now)).canDispatch, true);
+  f.snapshot.attachmentFacts.parentEntitlementEpoch++;
+  f.snapshot.revision++;
+  assert.equal((await evaluate(f.request, now)).canDispatch, false);
+  assert.equal((await serviceAccessEvaluator(authorities)(f.request, now)).canDispatch, false);
+  assert.equal(reads, 3);
+  f.snapshot.validUntil = now + 120_000;
+  assert.equal((await evaluate(f.request, now + 60_000)).canDispatch, false);
+});
+
+void test('ESIM-01 review regressions: invalid saved setup never dispatches or erases retained access', async (t) => {
+  const f = await accessFixture();
+  const cases = [
+    ['unknown setup schema', (s) => { s.setup.schema = 'rockstar.service-setup/999'; }],
+    ['missing setup schema', (s) => { delete s.setup.schema; }],
+    ['null setup schema', (s) => { s.setup.schema = null; }],
+    ['nonstring setup schema', (s) => { s.setup.schema = 1; }],
+    ['legacy setup schema', (s) => { s.setup.schema = 'rockstar.service-setup/0'; }],
+    ['missing runtime reviewer counterexample', (s) => { delete s.setup.runtime; }],
+    ['null runtime', (s) => { s.setup.runtime = null; }],
+    ['malformed runtime', (s) => { s.setup.runtime = 'corrupt'; }],
+    ['missing billing', (s) => { delete s.setup.billing; }],
+    ['malformed billing', (s) => { s.setup.billing = []; }],
+    ['missing terms', (s) => { delete s.setup.terms; }],
+    ['malformed terms', (s) => { s.setup.terms = 42; }],
+    ['invalid terms schema', (s) => { s.setup.terms.schema = 'unknown/99'; }],
+    ['incomplete terms', (s) => { delete s.setup.terms.monthlyCapMinor; }],
+    ['missing dispatch facts', (s) => { delete s.setupFacts; }],
+    ['missing budget', (s) => { delete s.budget; }],
+  ];
+  for (const [name, mutate] of cases) {
+    await t.test(name, async () => {
+      const s = structuredClone(f.snapshot); mutate(s);
+      const evaluate = serviceAccessEvaluator({ readCurrent: async () => s, resolveKey: f.resolveKey });
+      assert.deepEqual(await evaluate(f.request, now), {
+        canDispatch: false, canRead: true, canExport: true, revision: 1,
+      });
+      s.retained.export = false;
+      assert.deepEqual(await evaluate(f.request, now), {
+        canDispatch: false, canRead: true, canExport: false, revision: 1,
+      });
+      s.retained.read = false;
+      assert.deepEqual(await evaluate(f.request, now), {
+        canDispatch: false, canRead: false, canExport: false, revision: 1,
+      });
+    });
+  }
+});
+
+void test('ESIM-01 review regressions: corrupt dispatch cannot grant unknown or foreign retention ACL', async () => {
+  const f = await accessFixture();
+  const denied = { canDispatch: false, canRead: false, canExport: false, revision: null };
+  for (const mutate of [
+    (s) => { delete s.retained; },
+    (s) => { s.retained = null; },
+    (s) => { delete s.attachmentFacts; },
+    (s) => { s.attachmentFacts.ownerAuthenticated = false; },
+    (s) => { s.ownerId = 'other'; },
+    (s) => { s.validUntil = now; },
+  ]) {
+    const s = structuredClone(f.snapshot); delete s.setup.runtime; mutate(s);
+    const evaluate = serviceAccessEvaluator({ readCurrent: async () => s, resolveKey: f.resolveKey });
+    assert.deepEqual(await evaluate(f.request, now), denied);
+  }
+  for (const retained of [
+    { ownerId: 'other', workspaceId: 'workspace', read: true, export: true },
+    { ownerId: 'owner', workspaceId: 'other', read: true, export: true },
+    { ownerId: 'owner', workspaceId: 'workspace', read: 'true', export: 'true' },
+    { ownerId: 'owner', workspaceId: 'workspace' },
+  ]) {
+    const s = structuredClone(f.snapshot); delete s.setup.runtime; s.retained = retained;
+    const evaluate = serviceAccessEvaluator({ readCurrent: async () => s, resolveKey: f.resolveKey });
+    assert.deepEqual(await evaluate(f.request, now), { ...denied, revision: 1 });
+  }
 });

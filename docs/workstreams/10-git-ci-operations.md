@@ -1,3 +1,7 @@
+## 受入済みlane subsetの順次保存（G04 / ROCK）
+
+PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採用証拠と有限計画](../evidence/development-execution/service-contract-adoption.json)へ。helper受入、GitHub保存、main統合、同SHA CI、公開を別記録とする。次はMini/Pro/Webの検収済み限定差分、Smith test、Eve保存/Game検収を各小PRで再照合し、未完の全DB unionを独立成果保存の一律停止理由にしない。
+
 # Git / CI / Operations
 
 ## avokado全体のREADME入口（2026-10-21、DOC04 / G04、ROCK）

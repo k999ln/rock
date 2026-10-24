@@ -1,5 +1,6 @@
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
 import { parseLinuxTerms, type LinuxTerms } from './sky-linux-service.ts';
+import { verifyServiceAttachment, type AttachmentFacts } from './rockstar-service-attachment.ts';
 
 export class ServiceSetupError extends Error {
   status: number;
@@ -198,6 +199,111 @@ export type SetupFacts = {
   linuxCanExecute: boolean;
   linuxReason: string | null;
 };
+
+export type ServiceAccessRequest = {
+  ownerId: string;
+  workspaceId: string;
+  deviceKeyThumbprint: string;
+  requiredScope: string;
+  requestDigest: string;
+};
+/** Proposed server adapter contract, not a browser payload or a new persisted record.
+ * Read a consistent current revision from existing authorities on EVERY call.
+ * Retention permissions come from the owner-scoped artifact/recovery authority.
+ */
+export type ServiceAccessSnapshot = {
+  schema: 'rockstar.service-access-authorities/1';
+  revision: number;
+  observedAt: number;
+  validUntil: number;
+  ownerId: string;
+  workspaceId: string;
+  telecom: 'online' | 'offline' | 'unknown';
+  profile: 'installed' | 'not_required' | 'unknown';
+  client: 'supported' | 'unsupported' | 'unknown';
+  setup: ServiceSetup | null;
+  setupFacts: SetupFacts;
+  attachment: unknown;
+  attachmentFacts: AttachmentFacts;
+  // Current server authority independently binds contract and current rate consent.
+  agreementDigest: string | null;
+  payment: 'current' | 'restricted' | 'unknown';
+  pricePolicy: 'resolved' | 'unresolved';
+  budget: { state: 'reserved' | 'unavailable' | 'unknown'; requestDigest: string };
+  retained: { ownerId: string; workspaceId: string; read: boolean; export: boolean };
+};
+
+/** Server composition only. Never expose readCurrent/resolveKey as request input.
+ * This is an eligibility check, NOT a reusable dispatch permit: the Broker must
+ * atomically recheck revision/epoch and consume the existing budget reservation.
+ * No production adapter is enabled here; legacy onboarding views stay unchanged.
+ */
+export function serviceAccessEvaluator(authorities: {
+  readCurrent: (request: ServiceAccessRequest, now: number) => Promise<ServiceAccessSnapshot | null>;
+  resolveKey: (issuerId: string, keyId: string) => Promise<Uint8Array | null>;
+}) {
+  return async (request: ServiceAccessRequest, now = Date.now()) => {
+    const denied = { canDispatch: false, canRead: false, canExport: false, revision: null as number | null };
+    // Only authenticated, current retention authority may advance this fallback.
+    // Subsequent failures in dispatch data must not erase granted recovery access.
+    let result = denied;
+    const digest = /^[a-f0-9]{64}$/;
+    if (!request || !Number.isSafeInteger(now) ||
+      ![request.ownerId, request.workspaceId, request.requiredScope].every((v) =>
+        typeof v === 'string' && /^[A-Za-z0-9._:@-]{1,160}$/.test(v)) ||
+      !digest.test(request.deviceKeyThumbprint) || !digest.test(request.requestDigest)) return denied;
+    try {
+      const s = await authorities.readCurrent(request, now);
+      if (!s || s.schema !== 'rockstar.service-access-authorities/1' ||
+        !Number.isSafeInteger(s.revision) || s.revision < 0 ||
+        !Number.isSafeInteger(s.observedAt) || !Number.isSafeInteger(s.validUntil) ||
+        s.observedAt > now || s.validUntil <= now ||
+        s.ownerId !== request.ownerId || s.workspaceId !== request.workspaceId ||
+        s.attachmentFacts.ownerAuthenticated !== true ||
+        s.attachmentFacts.ownerRef !== request.ownerId ||
+        s.attachmentFacts.workspaceId !== request.workspaceId) return denied;
+      const retained = s.retained.ownerId === request.ownerId &&
+        s.retained.workspaceId === request.workspaceId;
+      result = { ...denied, revision: s.revision,
+        canRead: retained && s.retained.read === true,
+        canExport: retained && s.retained.export === true };
+      const setup = s.setup;
+      if (!setup || typeof setup !== 'object' || Array.isArray(setup) ||
+        setup.schema !== 'rockstar.service-setup/1' ||
+        !setup.billing || typeof setup.billing !== 'object' || Array.isArray(setup.billing) ||
+        !setup.runtime || typeof setup.runtime !== 'object' || Array.isArray(setup.runtime) ||
+        !setup.terms || typeof setup.terms !== 'object' || Array.isArray(setup.terms) ||
+        setup.ownerId !== request.ownerId ||
+        setup.workspaceId !== request.workspaceId ||
+        !digest.test(s.agreementDigest ?? '') || setup.agreementDigest !== s.agreementDigest ||
+        !Number.isSafeInteger(setup.acceptedAt) || (setup.acceptedAt as number) > now ||
+        !Number.isSafeInteger(setup.billing.verifiedAt) || (setup.billing.verifiedAt as number) > now ||
+        !Number.isSafeInteger(setup.runtime.verifiedAt) || (setup.runtime.verifiedAt as number) > now ||
+        !digest.test(setup.runtime.receiptDigest ?? '') ||
+        s.setupFacts.readiness.enabled !== true || s.setupFacts.readiness.osReady !== true ||
+        s.setupFacts.currentGrant !== true || s.setupFacts.workspaceMatches !== true ||
+        s.setupFacts.linuxCanExecute !== true ||
+        s.client !== 'supported' || !['installed', 'not_required'].includes(s.profile) ||
+        s.payment !== 'current' || s.pricePolicy !== 'resolved' ||
+        s.budget.state !== 'reserved' || s.budget.requestDigest !== request.requestDigest ||
+        s.attachmentFacts.ownerAuthenticated !== true ||
+        s.attachmentFacts.deviceApproved !== true || s.attachmentFacts.deviceProofVerified !== true ||
+        s.attachmentFacts.deviceRevoked !== false || s.attachmentFacts.issuerProfileActive !== true ||
+        setup.terms.version !== s.attachmentFacts.contractVersion ||
+        s.attachmentFacts.deviceKeyThumbprint !== request.deviceKeyThumbprint ||
+        s.attachmentFacts.requiredScope !== request.requiredScope) return result;
+      // No implicit cast/migration of legacy or malformed persisted terms.
+      parseLinuxTerms(setup.terms);
+      const attachment = await verifyServiceAttachment(
+        s.attachment, s.attachmentFacts, authorities.resolveKey, now,
+      );
+      return { ...result, canDispatch: attachment !== null };
+    } catch {
+      // Before retention authorization: all denied. After it: dispatch alone fails.
+      return result;
+    }
+  };
+}
 /** Facts are read by the server from existing authorities, never posted by a browser. */
 export function serviceSetupView(
   setup: ServiceSetup | null,

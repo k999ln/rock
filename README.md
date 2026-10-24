@@ -1,3 +1,5 @@
+Billing契約snapshot/月次draft binding、service access eligibility、Wallet署名fixture proposalのpure helperを採用しています。対象113試験と固定候補の全verifyに合格。既存画面/APIへは未接続です。新料金・実課金・残高変更・一般公開は有効にしていません。[設計と未受入gate](docs/rockstaros-complete-design.md#reviewed-service-contracts)／[採用証拠](docs/evidence/development-execution/service-contract-adoption.json)。
+
 # avokado
 
 <p align="center">
@@ -349,7 +351,7 @@ Mini/ProのWebソースは [sites/avocado-mini](sites/avocado-mini/) に共通�
 実装の承認・受入gate、次の作業、検証結果は [project.md](project.md)、[進捗JSON](data/project-status.json)、[作業分野](docs/workstreams/README.md)を確認してください。[全タスクの進捗](project.md#全taskの作業進捗)も参照できます。作業数は製品の完成率を表しません。GitHub保存、mainへの統合、各サイトの配備は別に記録します。
 
 <!-- project-overview:start -->
-Updated: 2026-10-21 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-24 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## 権利と公開・実機の境界

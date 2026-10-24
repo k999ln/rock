@@ -1,0 +1,185 @@
+{
+  "schema": "rockstaros.esim-review/2",
+  "recordedAt": "2026-10-24T07:48:57.657736+00:00",
+  "unit": "ESIM-01",
+  "reviewerLane": "game",
+  "independence": "Reviewer did not implement ESIM-01 or attempt2 fixes; did not modify product source/tests.",
+  "status": "accepted_pure_evaluator_corrections_server_broker_integration_pending",
+  "receipt": "docs/evidence/development-execution/esim-01.json",
+  "receiptSha256": "25b293e284d7431a6c75c3a779ab8511c12547b57d17c6d0d850a95bf54f6280",
+  "priorReview": "docs/evidence/development-execution/esim-01-review.json",
+  "priorReviewSha256": "ceba429f9ee716e39791190345253bb9826574911e1c6b516ecb1827031e61aa",
+  "sourceHashes": {
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/rockstar-service-setup.test.mjs": "244626cca4c9c26cd515a640ecd549a3056810483ece23bbc3e2e2119fed06db"
+  },
+  "dependencyHashes": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "lib/rockstar-service-attachment.ts": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+    "lib/rockstar-service-setup-billing.ts": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+    "lib/sky-linux-service.ts": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec",
+    "lib/rockstar-entitlement-claim.ts": "ef7092cc183179a98e3d4767b80ea89f9d63dbb379a6b9066a0f2f795b0a7ca8"
+  },
+  "candidateDigest": "9579d0fd9da9a082f82a60f6efa4db32cb140b3a356b3b6b00c0674207c6a594",
+  "consumedContract": {
+    "path": "docs/evidence/development-execution/git-02.json#/contract",
+    "schema": "rockstaros.integration-boundary/1",
+    "revision": 2,
+    "sha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+    "agreement": "Consume independently accepted revision2 additive boundary and atomic save-fence requirements; evaluator remains eligibility only, not a commit fence. No production adapter or consumer integration acceptance."
+  },
+  "closedFindings": [
+    {
+      "id": "ESIM01-R1",
+      "path": "lib/rockstar-service-setup.ts",
+      "lines": [
+        270,
+        275,
+        296
+      ],
+      "reason": "Requires exact persisted rockstar.service-setup/1 and object billing/runtime/terms, then validates current Linux terms; unknown/missing/null/nonstring/legacy setup fails dispatch. No implicit upgrade or inference from outer authority schema.",
+      "reproduction": "Original unknown/missing setup-schema counterexamples now return canDispatch=false while retaining authenticated read/export and revision1."
+    },
+    {
+      "id": "ESIM01-R2",
+      "path": "lib/rockstar-service-setup.ts",
+      "lines": [
+        249,
+        257,
+        267,
+        303
+      ],
+      "reason": "Fallback advances only after outer schema/current owner/workspace authentication and independent strict retention ACL checks. Malformed dispatch subrecords then fail dispatch only, without erasing authenticated recovery access.",
+      "reproduction": "Missing runtime/billing/terms retain read/export; read-only ACL stays read-only; foreign ACL denies read/export; expired outer authority denies all with revision=null. Original missing-runtime counterexample is closed."
+    }
+  ],
+  "newActionableFindings": [],
+  "validation": [
+    {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+      "exitCode": 0,
+      "tests": 65,
+      "passed": 65,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/private/tmp/game-review-esim-r2-focused.log",
+      "logSha256": "b411de5393594c4e1e50bcbe446f9a9749d2216765c14c78052b33d1588e19eb"
+    },
+    {
+      "command": "node --experimental-strip-types /private/tmp/game-review-esim-r2-probes.mjs",
+      "exitCode": 0,
+      "scriptSha256": "620866f44cc1736ad0dd19ab8a4487d2108924f3102d81d70bfcdd069774e7c4",
+      "output": "/private/tmp/game-review-esim-r2-probes.json",
+      "outputSha256": "a5719d15241746573d7d73d07baa5cd93eaf72edf3ef3c16b01522df07684517",
+      "cases": [
+        {
+          "case": "unchanged",
+          "result": {
+            "canDispatch": true,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "unknown_saved_setup_schema",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "missing_saved_setup_schema",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "missing_dispatch_subrecord",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "missing_billing",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "missing_terms",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": true,
+            "revision": 1
+          }
+        },
+        {
+          "case": "foreign_retention_with_corrupt_runtime",
+          "result": {
+            "canDispatch": false,
+            "canRead": false,
+            "canExport": false,
+            "revision": 1
+          }
+        },
+        {
+          "case": "expired_auth_with_corrupt_runtime",
+          "result": {
+            "canDispatch": false,
+            "canRead": false,
+            "canExport": false,
+            "revision": null
+          }
+        },
+        {
+          "case": "read_only_with_corrupt_runtime",
+          "result": {
+            "canDispatch": false,
+            "canRead": true,
+            "canExport": false,
+            "revision": 1
+          }
+        }
+      ]
+    }
+  ],
+  "acceptedScope": [
+    "Pure evaluator with synthetic signed attachments and supplied current server authority; read/export independently retained when dispatch-only state is malformed.",
+    "Current epoch/revocation/owner/device/workspace/scope/agreement/runtime/client/Core/request-budget checks remain in place. Telecom offline and not_required child profile do not determine service permission.",
+    "No provider effect, reservation consumption, payment collection or actual Tool execution from evaluation. canDispatch is eligibility only."
+  ],
+  "remainingConditions": [
+    "Concrete trusted consistent readCurrent adapter is not implemented or connected to API/store. Current-record provenance, freshness, issuer sequence/epoch and durable runtime receipt must be bound by authority owners. Arbitrary browser objects are not authority.",
+    "Existing setup stores no contractId: adapter must bind setup order/owner/workspace/agreement to current contract and issuer subject; cannot infer from signed attachment alone.",
+    "Atomic recheck/consume of revision, epoch, request-scoped reservation and existing job idempotency required at Broker dispatch; this check cannot resolve races or duplicate execution.",
+    "A new ESIM authority contract and consumer revision/hash acknowledgement, design-index/design docs update and same-candidate verify remain single-writer integration tasks.",
+    "Price140USD vs16USD unresolved: pricePolicy remains unresolved in any real adapter until explicit canonical policy. No production provider/payment activation.",
+    "ESIM-02 issuer inbox/sequence/digest/revocation persistence remains next unit; real issuer/device/provider and publication unaccepted."
+  ],
+  "wholeUnitAccepted": false,
+  "apiStoreBrokerAccepted": false,
+  "actualIssuerDeviceProviderAccepted": false,
+  "operations": {
+    "productEdits": false,
+    "gitMutation": false,
+    "actualDatabaseOperations": false,
+    "providerCalls": false,
+    "device": false,
+    "financialEffects": false,
+    "fullVerify": false
+  },
+  "next": "Integrator may save/adopt exact pure evaluator correction; concrete authenticated consistent readCurrent adapter, contract/order linkage and atomic Broker epoch/revision/reservation recheck remain open. ESIM-02 only under new exact assignment."
+}

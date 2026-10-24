@@ -3055,5 +3055,15 @@
     "procurementAuthorizedByThisDecision": false,
     "authority": "docs/service-design/03-product-profiles.md#mini-pro-purpose",
     "scope": "Purpose and public communication; no new RQ or physical/sales/procurement acceptance"
+  },
+  "reviewedServiceContractAdoption": {
+    "decision": "implementation_subset_only_no_new_product_requirement",
+    "baselineVersionRetained": "2.08",
+    "rootBaselineProvenance": "1.127/RQ01-RQ49",
+    "mainRequirementSetRetained": "RQ01-RQ50",
+    "evidence": "docs/evidence/development-execution/service-contract-adoption.json",
+    "pricePolicyUnresolved": true,
+    "productionBillingAccepted": false,
+    "publicDeployment": false
   }
 }

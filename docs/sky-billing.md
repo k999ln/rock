@@ -1,3 +1,18 @@
+<a id="reviewed-service-contracts"></a>
+## 受入済みservice契約のpure helper採用（2026-10-24）
+
+目的・体験: 既存Linux契約の単価版と同意digestを同じsnapshotに固定し、月次draftとの対応を検証する。service accessは実行eligibilityと本人の成果のread/exportを分け、Walletは署名済み合成観測から記帳前のproposalを返す。既存画面/APIの動作は変えず、追加exportを自動接続しない。
+
+責任・入出力: ROCKは純粋な検証と不変snapshotを担当。Billingはserver-owned terms/policy/consent、既存statement/revision、used/reserved/requested上限を受け、digest付きsnapshot・preview・draft bindingを返す。eSIMは注入されたcurrent server authorityとissuer鍵を読み、canDispatch/canRead/canExport/revisionを返す。canDispatchは再利用可能な許可証ではない。Walletは合成HMAC event/readbackと独立role鍵/current trust/checkpointを受け、global transfer/event key付きCAS提案を返す。EXTERNALは実issuer/決済/chain応答、OWNERは料金・上限・鍵・契約の明示同意、JOINTは本番adapterの縦断受入を担当する。
+
+状態・保存: Billingのpending_owner_terms/defined、legacy/pending/started、preview_only/draft_onlyは予約・Invoice・収納を作らない。署名attachmentの失効・権限不一致でdispatchを拒否し、認証済みretention ACLが許すread/exportを保持する。Walletのpending/held/confirmed/arrival/reversal/replay候補は常にliveEnabled=false、creditAllowed=false、amountToCreditMinor=0。追加helperはメモリの結果のみでDB/APIの新設なし。既存owner/revision/台帳・usage・取消・tombstoneを変更しない。
+
+失敗・復旧・互換: Callerの入力を暗号検証前にdetached snapshot化し、await中の改変で同意/通貨/期間/digestを混ぜない。不正schema、別owner、失効鍵、古いrevision、予算超過、異なる観測、reorg/返金の未対応を拒否する。未知job capはfail closed。再試行は現authorityから再評価し、再送のglobal uniquenessとCASは将来同一transactionへ接続する。追加機能を通常revertでき、永続migrationなし。月次DB read/save/集計は今回採用せず、sourceの旧draft/base0契約を記帳権限へ転用しない。
+
+承認・料金・未決定: mainの140USD案とRootの既存Linux16USD/CPU termsは版・provenanceを保持し、新しい料金を選ばない。実adapterのpricePolicyはunresolvedのまま。previewはUTC/full_monthだけの試算で、billingDayの保存は締日計算の完成を意味しない。税・日割り・締日/期間・契約開始・追加meter・BYOK/外部費用は明示同意とBILL03/04受入で決める。既存888c fee policy、一般deposit、Linux基本料は独立。実課金・実残高・一般公開は有効にしない。
+
+合格条件と残件: 対象113試験、typecheck、局所lintでRoot受入済みhelperのmain互換を確認。固定候補の全verify、同一SHA CIと統合差分検収を別に受ける。trusted consistent server adapter、setup order/契約link、保存同意/CAS、Brokerのrevision/epoch/予約消費、基本料/usage重複防止、provider/実機/本番は未受入。全DB unionの残件を独立helperのGit保存停止条件にしない。採用/除外hashと有限後続計画は[証拠](evidence/development-execution/service-contract-adoption.json)。
+
 # Sky Market決済と旧収益精算
 
 ## Sky単体の月次請求ローカル実装（2026-10-15）
