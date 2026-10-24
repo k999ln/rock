@@ -54,7 +54,7 @@ const factory=new Function('spawn','readFile','writeFile','mkdir','open','rename
 await writeFile(join(base,'worker.py'),'import json,sys\nprint(json.dumps({"text":json.load(sys.stdin)["input"]}))\n');
 const settle=async promise=>{let timer;try{await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('owner evidence did not settle')),2000);})]);}finally{clearTimeout(timer);}};
 try {
- for(const kind of ['swap','growth','fifo','symlink','directory','hardlink','public','oversize','foreign']) {
+ for(const kind of ['swap','growth','create_race','fifo','symlink','directory','hardlink','public','oversize','foreign']) {
   const id=randomUUID(),directory=join(base,'jobs',id),owner=join(directory,'parent-diagnostics.owner'),record=join(directory,'parent-diagnostics.json');
   await mkdir(directory,{recursive:true,mode:0o700});
   const target=join(directory,'target');await writeFile(target,'x'.repeat(36),{mode:0o600});
@@ -62,14 +62,14 @@ try {
   else if(kind==='symlink')await symlink(target,owner);
   else if(kind==='directory')await mkdir(owner,{mode:0o700});
   else if(kind==='hardlink')await link(target,owner);
-  else if(!['swap','growth'].includes(kind))await writeFile(owner,'x'.repeat(kind==='oversize'?37:36),{mode:kind==='public'?0o644:0o600});
+  else if(!['swap','growth','create_race'].includes(kind))await writeFile(owner,'x'.repeat(kind==='oversize'?37:36),{mode:kind==='public'?0o644:0o600});
   if(kind==='public')await chmod(owner,0o644);
   let resolveDone,baseline,mutated=false,readCalls=0,checked=false;
   const done=new Promise(resolve=>{resolveDone=resolve;});
   const ioOpen=async(path,flags,...rest)=>{
    const bounded=path===owner&&typeof flags==='number';
    if(bounded){checked=true;assert.equal(flags&(fsConstants.O_NOFOLLOW|fsConstants.O_NONBLOCK),fsConstants.O_NOFOLLOW|fsConstants.O_NONBLOCK);}
-   let file;try{file=await open(path,flags,...rest);}catch(error){if(bounded)resolveDone();throw error;}
+   let file;try{file=await open(path,flags,...rest);}catch(error){if(bounded&&error.code==='ENOENT'&&kind==='create_race'){await writeFile(owner,'x'.repeat(36),{mode:0o600});mutated=true;resolveDone();}else if(bounded&&error.code!=='ENOENT')resolveDone();throw error;}
    if(!bounded)return file;
    if(['swap','growth'].includes(kind)&&!mutated) {
     baseline=await readFile(record,'utf8');mutated=true;
@@ -88,7 +88,7 @@ try {
   assert.equal(JSON.parse(await execute(['python3',join(base,'worker.py'),'run'],{input,timeout:2000}).promise).text,'fixture result',kind);
   await settle(done);await new Promise(resolve=>setImmediate(resolve));assert.ok(checked,kind);
   if(['swap','growth'].includes(kind)){assert.ok(mutated,kind);assert.equal(readCalls,1,kind);assert.equal(await readFile(record,'utf8'),baseline,kind);}
-  else{assert.equal(readCalls,0,kind);await assert.rejects(readFile(record),{code:'ENOENT'});}
+  else{if(kind==='create_race'){assert.ok(mutated);assert.ok(readCalls<=1);}else assert.equal(readCalls,0,kind);await assert.rejects(readFile(record),{code:'ENOENT'});}
   assert.equal(await readFile(target,'utf8'),'x'.repeat(36),kind);
   assert.deepEqual((await readdir(directory)).filter(name=>name.startsWith('.parent-diagnostics-')),[],kind);
  }

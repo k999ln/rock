@@ -1,7 +1,7 @@
 <a id="pixel-main-worker-diagnostics"></a>
 ## Pixel Linux workerの親寿命・任意診断（OS10 / PIXEL-MAIN-DIAGNOSTICS-01）
 
-CodeQL owner競合の修正: 旧候補fb70cfb5のHigh1（ownerのlstat後path再open）は失敗として保持。既存ownerはNOFOLLOW/NONBLOCKで一度openし、同一fdのfstatでregular/本人uid/private/単一link/36bytesを確認、最大37bytesだけreadしてUUID一致を照合する。publish前にもowner名のdev/inodeと私有regular条件を確認し、観測した差替えなら診断を更新しない。private親directoryの前提は維持し、悪意ある同uid書込者に対する全filesystemのatomic leaseとは主張しない。FIFO/非regular/増大/owner差替えは診断unknownのまま、既存stdout/error/stopを変えない。8実filesystem反例＋foreign uidのfstat fixture、新旧hash/旧失敗/新review gateは[修正証拠](evidence/development-execution/pixel-owner-toctou-fix.json)。旧検収を新hashの受入に流用せず、同head CodeQL/独立delta検収を通す。
+CodeQL owner競合の修正: 旧候補fb70cfb5のHigh1（ownerのlstat後path再open）は失敗として保持。既存ownerは存在probeをせずNOFOLLOW/NONBLOCKで直接openし、ENOENT時だけwxで排他作成する。作成競合はEEXISTからreadへ戻らず診断不明に留める。同一fdのfstatでregular/本人uid/private/単一link/36bytesを確認、最大37bytesだけreadしてUUID一致を照合する。publish前にもowner名のdev/inodeと私有regular条件を確認し、観測した差替えなら診断を更新しない。private親directoryの前提は維持し、悪意ある同uid書込者に対する全filesystemのatomic leaseとは主張しない。FIFO/非regular/増大/owner差替えは診断unknownのまま、既存stdout/error/stopを変えない。9実filesystem反例＋foreign uidのfstat fixture、新旧hash/旧失敗/新review gateは[修正証拠](evidence/development-execution/pixel-owner-toctou-fix.json)。旧検収を新hashの受入に流用せず、同head CodeQL/独立delta検収を通す。
 
 目的・体験: 既存端末内文章jobを固定runnerで実行し、親worker終了時に計算子を残さず、停止/失敗の観測を同じjobの私有診断へ残す。診断の欠落を成功や許可へ換算しない。
 

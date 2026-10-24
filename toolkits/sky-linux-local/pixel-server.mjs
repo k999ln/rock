@@ -52,23 +52,28 @@ function execute(args, { input, timeout = 240000, signal, onProgress } = {}) {
         }
         // A restarted/duplicate launcher must not replace an earlier job's evidence.
         const owner = join(evidenceDirectory, 'parent-diagnostics.owner');
-        let ownerIdentity;
+        let claim, created = false, ownerIdentity;
         try {
-          const claim = await open(owner, 'wx', 0o600);
-          try { await claim.writeFile(evidence.observationId); await claim.sync(); ownerIdentity = await claim.stat(); } finally { await claim.close(); }
+          claim = await open(owner, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_NONBLOCK);
         } catch (error) {
-          if (error.code !== 'EEXIST') return;
-          // Check and read one nonblocking descriptor, never reopen a checked path.
-          const claim = await open(owner, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_NONBLOCK);
-          try {
-            const stat = await claim.stat();
-            if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== uid || (stat.mode & 0o077) || stat.size !== 36) return;
+          if (error.code !== 'ENOENT') return;
+          // Exclusive creation fails closed if another observer wins this race.
+          claim = await open(owner, 'wx', 0o600);
+          created = true;
+        }
+        try {
+          const stat = await claim.stat();
+          if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== uid || (stat.mode & 0o077) || stat.size !== (created ? 0 : 36)) return;
+          if (created) {
+            await claim.writeFile(evidence.observationId);
+            await claim.sync();
+          } else {
             const bytes = Buffer.alloc(37);
             const { bytesRead } = await claim.read(bytes, 0, bytes.length, 0);
             if (bytesRead !== 36 || bytes.subarray(0, bytesRead).toString('utf8') !== evidence.observationId) return;
-            ownerIdentity = stat;
-          } finally { await claim.close(); }
-        }
+          }
+          ownerIdentity = await claim.stat();
+        } finally { await claim.close(); }
         temporary = join(evidenceDirectory, `.parent-diagnostics-${randomUUID()}`);
         const file = await open(temporary, 'wx', 0o600);
         try { await file.writeFile(raw); await file.sync(); } finally { await file.close(); }

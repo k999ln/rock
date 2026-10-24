@@ -1,3 +1,7 @@
+## PR193 owner直接openへ最終整理（2026-10-24 / G04・OS10）
+
+506a54c6でもCodeQLがEEXIST判定後openをHighとして指摘。既存owner直接NOFOLLOW/NONBLOCK open→ENOENT時のみatomic wx作成へ変更し、競合作成は再openせず不明へ。同一FD fstat/37byte/owner名inode確認は維持、10filesystem/uidケースと既存回帰は局所34中33pass/既存skip1。旧candidateの全verify2試行は入力変更0だが未変更activation1timeout、次AMC2 spawnSync ETIMEDOUTで失敗。対象は各単独成功（AMC2は0.73秒）、原因未確定・CPU/メモリ未測定。期限/fixtureを緩和せず同候補反復停止。次は新head保存/CIとRoot割当Game最終hash再検収を先行し、必要最終fullverifyは並行review/tests終了後の別gate。CodeQL抑制/mergeなし。根拠 docs/evidence/development-execution/pixel-owner-toctou-fix.json。
+
 ## PR193 CodeQL owner競合の限定修正（2026-10-24 / G04・OS10）
 
 旧head fb70cfb5のCodeQL High1を保持し、正式割当でserver owner readを同一NOFOLLOW/NONBLOCK fd→fstat→最大37byteへ変更。publish直前のowner dev/inode再照合を追加。親診断回帰にowner差替え/増大/FIFO/非regular/権限/uid等9caseを追加し、旧sourceは同回帰で失敗、新sourceは成功。局所34中33pass/既存skip1、型/全体lint成功。worker/manager/URL/model/prepare/build/CI/Miniを変更しない。影響するOS/Tool契約・index/進捗・候補hashを同期。次: 新固定全verify→新commit/同head CI→Root割当の独立delta再検収。CodeQL抑制/mergeなし。根拠 docs/evidence/development-execution/pixel-owner-toctou-fix.json。

@@ -30,11 +30,11 @@
   },
   "runtimeAndTestsSha256": {
     "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
-    "toolkits/sky-linux-local/pixel-server.mjs": "e0eb69f224cf85408d7d25ba6bebfc2b73c4ecf06344d219b2a8c4ccd56ee474",
+    "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
     "tests/test_pixel_worker_diagnostics.py": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8",
     "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
     "tests/pixel-worker-contract.test.mjs": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
-    "tests/pixel-worker-parent-diagnostics.test.mjs": "4d2be8f94e6d1c650d5cea61d23990a3763b633ce8a0736de903d5b4c2169c9f"
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff"
   },
   "protectedMainSha256": {
     "scripts/sky-linux-local-runtime.mjs": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
@@ -198,9 +198,10 @@
     "previousHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
     "previousCodeql": "High1 failure retained",
     "newHashes": {
-      "toolkits/sky-linux-local/pixel-server.mjs": "e0eb69f224cf85408d7d25ba6bebfc2b73c4ecf06344d219b2a8c4ccd56ee474",
-      "tests/pixel-worker-parent-diagnostics.test.mjs": "4d2be8f94e6d1c650d5cea61d23990a3763b633ce8a0736de903d5b4c2169c9f"
+      "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+      "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff"
     },
-    "newIndependentReviewPending": true
+    "newIndependentReviewPending": true,
+    "openOrder": "Existing direct open; ENOENT-only atomic exclusive create, no EEXIST reopen"
   }
 }

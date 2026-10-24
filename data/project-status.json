@@ -9622,8 +9622,10 @@
     "ownerToctouDelta": {
       "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
       "oldHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
-      "status": "host_pass_review_and_new_CI_pending",
-      "CodeqlSuppressed": false
+      "status": "direct_open_host_pass_new_review_and_CI_pending",
+      "CodeqlSuppressed": false,
+      "intermediateHead": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
+      "localFullVerifyGate": "pending_after_review; unchanged timeout failures retained"
     }
   },
   "mini02FiniteConeCandidate": {

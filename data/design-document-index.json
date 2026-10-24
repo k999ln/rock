@@ -2814,10 +2814,11 @@
       "publish": "Private regular36byte owner dev/inode rechecked before rename",
       "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
       "sourceHashes": {
-        "toolkits/sky-linux-local/pixel-server.mjs": "e0eb69f224cf85408d7d25ba6bebfc2b73c4ecf06344d219b2a8c4ccd56ee474",
-        "tests/pixel-worker-parent-diagnostics.test.mjs": "4d2be8f94e6d1c650d5cea61d23990a3763b633ce8a0736de903d5b4c2169c9f"
+        "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+        "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff"
       },
-      "newDeltaReviewPending": true
+      "newDeltaReviewPending": true,
+      "create": "Open existing first; missing-only exclusive wx, competing creator rejected without reopen"
     }
   },
   "mini02FiniteConeInspection": {
