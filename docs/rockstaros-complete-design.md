@@ -1,3 +1,26 @@
+<a id="esim-runtime-commit-authority"></a>
+## eSIM利用権からLinux command保存までの現行権限fence
+
+目的・体験: 既存購入/install/device-keyとsetup/catalogを読んだ後に失効や変更が起きても、新しいadd/run/claim/heartbeatを古い許可で保存しない。本人の依頼は既存予約/仕事/receiptへ一度だけ反映し、拒否時は保存データを保ったまま現在状態を読み直す。SIM/eSIM・利用権・回線profile・OS/client状態は別々に追跡し、SIMへOS binaryを格納する前提は作らない。
+
+責任・禁止: ROCKは既存server auth/固定SQL read-set/同一D1 batch/CASと公開action境界、EXTERNALは決済/回線/鍵/registryの根拠、JOINTは本番migration/trigger・複数instanceと実HTTP往復、OWNERは同意/予算/接続を担う。clientのworker/currentGrant/owner/retention ACL/pricePolicyを信頼せず、新しいissuerやTool成功/課金許可を作らない。
+
+入出力・版・上限: JSON POSTは既存48000byte上限とOrigin/auth/no-storeを維持。action別field集合と非負safe revisionを厳密照合し、通常POSTはadd/run/cancel/confirmのみ、claim/heartbeat/close-monthは従来worker認証側。dispatchは既存workspace/1とtyped limits/termsを検査しunknown形式をcast昇格しない。固定server SELECTのみを捕捉し、最大100read・結果1000rows/serialized1MBを超えたread-setは拒否。client SQL/列名は受け付けない。
+
+現行authority: listingはcanonical review:<id>がちょうど1件で、他owner/reviewerを含む関連secondary rowとの矛盾を拒否。packageは否定を隠したpositive projectionでなく全reviewを捕捉し、最大server reviewed_at世代の全tieが同じpinをverifiedし、有効期限内であることを要求。unknown/不正/未来/矛盾や最新期限切れから古いpositiveへ戻らない。commit時刻でexpiryを再評価する。
+
+状態・保存・失敗: 同一D1 batchの先頭でread多重集合とcurrent-timeを再SELECTし、workspace id/owner/revision/payloadを比較してから既存workspace/work_jobs/reservation/receiptを書き込む。削除/差替え/否定挿入/CAS不一致はbatch全体をrollback、job/lease/予約/effectを増やさない。既存schema/table/ledgerを再利用しmigrationや別entitlement/budget DBは追加しない。
+
+offline・重複・不確定: 同じrequest/digestは元job/予約のまま、変更digest/別ownerは拒否。retryでも現行authorityを再照合し、否定が残る間は繰返し拒否する。取消と遅い署名CPU usageは既存経路で一度だけ照合し、失効後の再dispatch/lease延長をしない。新しい外部Provider呼出しや自動再送を追加しない。
+
+保持・復旧・互換: 既存認証owner session＋row/payload owner一致でread/exportを判断し、dispatch形式不明やsetup不備だけで本人の保存データを消さない。これは独立した永続ACL/期限判断の受入ではない。不正reviewは既存reviewerの明示更新/新しいverified世代で修復する。secondary矛盾や本番修復APIは別gate。sourceの通常revertは可能だが、保存job/receiptを消したり再課金しない。
+
+承認・合格・未決定: Smith/Astra r2は旧2P1を閉じmustFix0、独立17probe/局所44pass。exact6本文を変更せず最新mainへ採用し、関連122試験とmain型/lintを確認。既存local D1 query/assertionで否定挿入拒否・前後marker書込rollback・各3fresh retry拒否の原本digestを再確認した。fixture/SQL受入を汎用attachment/issuer-contract-device binding、独立retention ACL/期限、実HTTP、本番D1/trigger/複数instance信頼、accept/provision/outbox/collection、実課金・端末/全OS・一般公開へ昇格しない。未決定は各担当の同一候補試験とOWNER条件で決める。既存料金・月888c・owner/revision・予約・late CPU契約を維持する。
+
+[exact6・保全・検証・残gate](evidence/development-execution/esim-runtime-main-adoption.json)。[独立review要約](evidence/development-execution/reviewed-runtime-main-integration.json)。
+
+PR193の最終検証はexact83a Linux CIのnpm run verify成功で完了し、main9a617fabへ通常統合済み。旧「最終local verify待ち」は保存時点の計画で、Root明示の最終Eve判断に置き換わる。過去host timeoutと最終host未実行は保持し、host成功を主張しない。新package実機/背景/P02/full OSとMini実光学は未受入。
+
 <a id="pixel-main-worker-diagnostics"></a>
 ## Pixel Linux workerの親寿命・任意診断（OS10 / PIXEL-MAIN-DIAGNOSTICS-01）
 

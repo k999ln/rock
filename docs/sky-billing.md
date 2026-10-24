@@ -1,3 +1,10 @@
+<a id="esim-runtime-commit-authority"></a>
+## 既存Linux/eSIMの保存時authorityと保持
+
+[OS全体契約](rockstaros-complete-design.md#esim-runtime-commit-authority)の11項目に従い、既存add/run/claim/heartbeatは同一D1 batchで本人/利用権/setup/catalog/latest review/expiryとworkspace CASを再照合する。否定/変更時は予約/仕事/lease/receiptを増やさず、同じrequest/digestは再課金せず保持。通常POSTへworkerやclient trustを渡さない。ROCKはAPI/store、EXTERNALはauthorityの根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。既存owner sessionのread/exportと実行可否を分け、独立retention ACL/期限や汎用attachment/実Provider・収納を受入済みにしない。新Tool/catalog/料金を作らず既存888c/late usageを保持する。
+
+検証・失敗復旧・上限・保存・互換・承認・未決定は同契約と[採用証拠](evidence/development-execution/esim-runtime-main-adoption.json)へ集約。canonical review矛盾とpackage最新世代の否定は古いpositiveへfallbackせず、既存reviewerの明示回復と全入力再照合で復旧する。
+
 <a id="reviewed-service-contracts"></a>
 ## 受入済みservice契約のpure helper採用（2026-10-24）
 

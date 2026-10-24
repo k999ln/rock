@@ -16,6 +16,7 @@ import {
   applyLinuxEvent,
   linuxAccess,
   linuxCommand,
+  linuxOwnerAccess,
 } from '../lib/sky-linux-service.ts';
 
 const now = Date.UTC(2026, 9, 20),
@@ -782,5 +783,27 @@ void test('ESIM-01 review regressions: corrupt dispatch cannot grant unknown or 
     const s = structuredClone(f.snapshot); delete s.setup.runtime; s.retained = retained;
     const evaluate = serviceAccessEvaluator({ readCurrent: async () => s, resolveKey: f.resolveKey });
     assert.deepEqual(await evaluate(f.request, now), { ...denied, revision: 1 });
+  }
+});
+
+void test('runtime owner retention remains independent from unknown dispatch schema and corrupt billing', async () => {
+  const workspace = await createLinuxWorkspace('owner', 'device', 'order', terms, 'sandbox', now);
+  for (const change of [
+    w => { w.schema = 'sky.linux-workspace/999'; },
+    w => { delete w.schema; },
+    w => { w.invoices = null; },
+    w => { w.issuer = null; },
+    w => { w.terms = null; },
+  ]) {
+    const w = structuredClone(workspace); change(w);
+    assert.deepEqual(linuxOwnerAccess(w, 'owner', 'owner', now), {
+      canRead: true, canExport: true, canExecute: false,
+      reason: 'dispatch_schema_unsupported', dataRetained: true,
+    });
+    await assert.rejects(linuxCommand(w, { action: 'run' }, [], now));
+    for (const [owner, recordOwner] of [['', 'owner'], ['other', 'owner'], ['owner', 'other']]) {
+      const access = linuxOwnerAccess(w, owner, recordOwner, now);
+      assert.equal(access.canRead, false); assert.equal(access.canExport, false); assert.equal(access.canExecute, false);
+    }
   }
 });

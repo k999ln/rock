@@ -9612,21 +9612,26 @@
   "pixelMainDiagnosticsCandidate": {
     "batch": "PIXEL-MAIN-DIAGNOSTICS-01",
     "evidence": "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
-    "runtimeReviewPending": true,
+    "runtimeReviewPending": false,
     "hostTargetedPassed": true,
-    "candidateLinuxParentAccepted": false,
+    "candidateLinuxParentAccepted": true,
     "candidatePhysicalAccepted": false,
     "p02Complete": false,
     "fullOsAccepted": false,
-    "mainMerged": false,
+    "mainMerged": true,
     "ownerToctouDelta": {
       "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
       "oldHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
-      "status": "direct_open_host_pass_new_review_and_CI_pending",
+      "status": "accepted_final83a_Linux_CI_and_independent_reviews",
       "CodeqlSuppressed": false,
       "intermediateHead": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
-      "localFullVerifyGate": "pending_after_review; unchanged timeout failures retained"
-    }
+      "localFullVerifyGate": "superseded_by_explicit_Root_same_final83a_Linux_CI_success",
+      "hostTimeoutsPreserved": true
+    },
+    "mainSha": "9a617fabfef48d82d9b3142680bb00df71776687",
+    "finalVerificationPlane": "same_final83a_Linux_CI",
+    "finalHostFullVerifyExecuted": false,
+    "reviewSummary": "docs/evidence/development-execution/reviewed-runtime-main-integration.json"
   },
   "mini02FiniteConeCandidate": {
     "attempt": 2,
@@ -9635,9 +9640,24 @@
     "oldTwelvePreserved": true,
     "independentSourceMustFix": 0,
     "relatedTests": 56,
-    "integrationReviewPending": true,
+    "integrationReviewPending": false,
     "wholeMini02Accepted": false,
     "physicalAccepted": false,
-    "mainMerged": false
+    "mainMerged": true,
+    "mainSha": "9a617fabfef48d82d9b3142680bb00df71776687"
+  },
+  "esimRuntimeMainAdoption": {
+    "evidence": "docs/evidence/development-execution/esim-runtime-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/reviewed-runtime-main-integration.json",
+    "sourceAttempt": 2,
+    "exactSixPreserved": true,
+    "independentSourceMustFix": 0,
+    "relatedTests": 122,
+    "integrationMetadataReviewPending": true,
+    "mainMerged": false,
+    "genericAttachmentAccepted": false,
+    "independentRetentionAclExpiryAccepted": false,
+    "productionD1Accepted": false,
+    "providerRealBillingAccepted": false
   }
 }

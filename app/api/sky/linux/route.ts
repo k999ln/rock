@@ -6,7 +6,6 @@ import {
   type LinuxServiceConfig,
 } from '@/lib/sky-linux-service-store';
 import {
-  linuxAccess,
   linuxMonthTotal,
   linuxPeriod,
   parseLinuxTerms,
@@ -44,6 +43,12 @@ export async function GET(request: Request) {
     const terms = config.SKY_LINUX_SERVICE_TERMS_JSON
       ? parseLinuxTerms(JSON.parse(config.SKY_LINUX_SERVICE_TERMS_JSON))
       : null;
+    const access = doc ? await store.access(owner) : null;
+    let currentMonthMaximumMinor: number | null = null;
+    if (doc && access?.reason !== 'dispatch_schema_unsupported') {
+      try { currentMonthMaximumMinor = linuxMonthTotal(doc.payload, linuxPeriod(Date.now())); }
+      catch { /* Dispatch metadata is not the retained-data ACL. */ }
+    }
     return json({
       plan: { name: 'Sky Linux 16', currency: 'USD', baseMinor: 1600 },
       enabled: config.SKY_LINUX_SERVICE_ENABLED === 'true',
@@ -53,10 +58,8 @@ export async function GET(request: Request) {
       eligibleOrders: await store.eligibleOrders(owner),
       workspace: doc,
       creatorEarnings: await store.creatorEarnings(owner),
-      access: doc ? linuxAccess(doc.payload, Date.now()) : null,
-      currentMonthMaximumMinor: doc
-        ? linuxMonthTotal(doc.payload, linuxPeriod(Date.now()))
-        : null,
+      access,
+      currentMonthMaximumMinor,
     });
   } catch (error) {
     return failure(error);
@@ -69,6 +72,7 @@ export async function POST(request: Request) {
       raw = await linuxRequestText(request, 48000);
     const value = JSON.parse(raw),
       store = linuxServiceStore(db, env as unknown as LinuxServiceConfig);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new SyntaxError();
     if (value.action === 'register') {
       const developer = await requestDeveloperUser(request, db);
       if (developer !== owner || value.rightsAccepted !== true)
@@ -79,6 +83,15 @@ export async function POST(request: Request) {
       return json({ workspace: await store.accept(owner, value) }, 201);
     if (!['add', 'run', 'cancel', 'confirm'].includes(value.action))
       throw new LinuxServiceError('対応する操作を選んでください。', 400);
+    const fields: Record<string, string[]> = {
+      add: ['action', 'revision', 'listingId'],
+      run: ['action', 'revision', 'listingId', 'requestId', 'input', 'maximumMinor', 'cpuLimitMs', 'accepted'],
+      cancel: ['action', 'revision', 'jobId'],
+      confirm: ['action', 'revision', 'jobId'],
+    };
+    if (!Number.isSafeInteger(value.revision) || value.revision < 0 ||
+      Object.keys(value).length !== fields[value.action].length ||
+      Object.keys(value).some(key => !fields[value.action].includes(key))) throw new SyntaxError();
     return json({
       workspace: await store.command(
         owner,
