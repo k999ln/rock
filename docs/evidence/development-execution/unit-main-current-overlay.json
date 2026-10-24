@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T19:02:56.451588+00:00",
-  "mainAtCapture": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
+  "mainAtCapture": "2bea21b14faec220161ffaac910e973ed0b52de7",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -248,7 +248,7 @@
       "units": [
         "BILL-02"
       ],
-      "kind": "independent_limited_source_pass_portable_receipt_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
       "sourceFiles": [
         {
@@ -270,18 +270,88 @@
       ],
       "sourceReviewSha256": "acf603b55a398639d3871ec619dbd08629c940637a8332e3b59fa72b64ae9869",
       "reviewSummary": "docs/evidence/development-execution/billing-service-main-review-summary.json",
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "scope": "Existing required rockstaros_access final claim; trusted preview remains distinct, DBUNCONFIRMED holds/noresend and lateusageonce preserved",
       "commonContractIssuerEpochAccepted": false,
-      "productionProviderBillingAccepted": false
+      "productionProviderBillingAccepted": false,
+      "pr": 202,
+      "acceptedHead": "31594439258c2a9574c0fe2c9756caf42597a74e",
+      "mainMergeSha": "2bea21b14faec220161ffaac910e973ed0b52de7",
+      "metadataReviewSha256": "2bce788f18ef60f2cdd52c43cd296b7df890bbf87538053c5f2b9d1911c5c494",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "SMITH_BOTTOM_NAVIGATION_CANDIDATE",
+      "units": [
+        "SMITH-01"
+      ],
+      "kind": "limited_source_and_bounded_local_UI_pass_git_candidate",
+      "baseMain": "2bea21b14faec220161ffaac910e973ed0b52de7",
+      "sourceFiles": [
+        {
+          "path": "components/os-app-navigation.tsx",
+          "bytes": 1898,
+          "sha256": "be474f2775e9cb4665fd7954279e09105f9b6c9d37e28845766172330461f8a4"
+        },
+        {
+          "path": "lib/os-navigation.ts",
+          "bytes": 823,
+          "sha256": "d5c7923363e07b353585fa494487472f8c43d1b13260b86779b1919a260082ce"
+        },
+        {
+          "path": "app/os-bottom-navigation.css",
+          "bytes": 2220,
+          "sha256": "bd9ca8d40c79af9cc8e459579bde6c33bc54df6d96f1d1ac1f285e80260d9ecf"
+        },
+        {
+          "path": "components/home-screen.tsx",
+          "bytes": 13964,
+          "sha256": "0f3012eafb7ee680baf8f08cc7f2e60acdd305dc1715805e947d87ccc137aeda"
+        },
+        {
+          "path": "components/home-screen.module.css",
+          "bytes": 9143,
+          "sha256": "5ca6259c9d0488c0e6bd2d4a2d27160979d93a467d4ae7970a749834eea3804a"
+        },
+        {
+          "path": "components/workspace-shell.tsx",
+          "bytes": 4081,
+          "sha256": "c28b3dff3e2b633b88d315c5f28b1576e19240ef852454f4f52294da56952183"
+        },
+        {
+          "path": "app/layout.tsx",
+          "bytes": 1017,
+          "sha256": "77dafa710ce5697d758685877f4241b4f7fe5ecb61f0da3481267daf9750e719"
+        },
+        {
+          "path": "tests/os-bottom-navigation-main.test.mjs",
+          "bytes": 16104,
+          "sha256": "5eb2e9f590f19594ae1084a252ce07fef277c8f7506e279eb1d96a585753566c"
+        }
+      ],
+      "sourceReviewSha256": "5ebf4e44c465277a6a382d15f8c0299098856a4f74f85aa5be5d6717115795d5",
+      "originalArchiveHead": "53e6ed46158e7105c65c68015f3fe9931c61de88",
+      "reviewSummary": "docs/evidence/development-execution/smith-bottom-navigation-main-review-summary.json",
+      "uiSummary": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
+      "attempt": 3,
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Three mobile bottom links at <=700px, controlled hash selection and two existing More links; no whole-unit/native/production/authenticated-composer acceptance."
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "SMITH-01",
+      "state": "attempt3_navigation_exact8_source_and_bounded_local_UI_pass_main_candidate",
+      "scope": "Final same-head Linux verify/CI and independent adoption metadata review; physical inset/keyboard/zoom/auth composer/running-job/two-owner/native/production remain open.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "BILL-02",
-      "state": "required_service_authority_exact4_source_pass_main_candidate",
+      "state": "required_service_authority_PR202_main_integrated_remaining_shared_gates",
       "scope": "Current same-owner active scope/expiry final claim only; no common contract/epoch/order binding/account-month aggregate completion",
       "wholeUnitAccepted": false
     },
@@ -353,5 +423,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "99ab093c09be22c2d65a677a031b27ceed7236fe"
+  "previousCaptureMain": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06"
 }

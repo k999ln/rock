@@ -6,6 +6,7 @@ import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
 import skyStyles from '@/components/sky-surface.module.css';
+import OsAppNavigation from './os-app-navigation';
 
 export default function WorkspaceShell({
   children,
@@ -50,6 +51,7 @@ export default function WorkspaceShell({
         onClickCapture?.(event);
       }}
       className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
+      data-os-bottom-navigation-host="workspace"
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
     >
@@ -118,6 +120,7 @@ export default function WorkspaceShell({
           </Link>
         </div>
       </div>
+      <OsAppNavigation running={running} />
     </div>
   );
 }

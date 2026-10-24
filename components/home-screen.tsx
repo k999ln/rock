@@ -33,6 +33,7 @@ import { SkyNewsConnections } from './sky-information-market';
 import { useSkyFeatures } from '@/lib/use-sky-features';
 import type { WorkJob } from '@/lib/workflow';
 import styles from './home-screen.module.css';
+import OsAppNavigation from './os-app-navigation';
 
 type View = 'home' | 'discover' | 'sources' | 'bookmarks' | 'communities';
 const apps: { href: string; name: string; Icon: LucideIcon; view?: View }[] = [
@@ -70,6 +71,7 @@ function viewForHash(fragment: string): View {
 export default function HomeScreen() {
   const timelineReceiver = useTimelineConnector();
   const [view, setView] = useState<View>('home');
+  const [navigationHash, setNavigationHash] = useState('');
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [featureOnly, setFeatureOnly] = useState(false);
@@ -78,6 +80,7 @@ export default function HomeScreen() {
   useEffect(() => {
     const sync = () => {
       setView(viewForHash(window.location.hash));
+      setNavigationHash(window.location.hash);
       setFeatureOnly(window.location.hash === '#optional-features');
     };
     const frame = requestAnimationFrame(sync);
@@ -139,9 +142,11 @@ export default function HomeScreen() {
     <div
       className={styles.home}
       data-sky-home
+      data-os-bottom-navigation-host="home"
       data-timeline-skin="x"
       onClickCapture={(event) => {
         if (
+          event.defaultPrevented ||
           event.button !== 0 ||
           event.metaKey ||
           event.ctrlKey ||
@@ -150,7 +155,7 @@ export default function HomeScreen() {
         )
           return;
         const anchor = (event.target as Element).closest('a[href]');
-        if (!anchor) return;
+        if (!anchor || (anchor.getAttribute('target') && anchor.getAttribute('target') !== '_self')) return;
         const target = new URL(
           anchor.getAttribute('href')!,
           window.location.href,
@@ -161,6 +166,7 @@ export default function HomeScreen() {
           target.hash
         ) {
           setView(viewForHash(target.hash));
+          setNavigationHash(target.hash);
           setFeatureOnly(target.hash === '#optional-features');
         }
       }}
@@ -239,6 +245,8 @@ export default function HomeScreen() {
                   <MoreHorizontal size={22} />
                 </summary>
                 <nav aria-label="追加メニュー">
+                  <Link href="/#catalog">見つける</Link>
+                  <Link href="/sky/agents">自分のSky</Link>
                   <Link href="/#bookmarks">ブックマーク</Link>
                   <Link href="/#news-plugins">ニュースの配信元</Link>
                   <Link href="/#optional-features">機能を追加</Link>
@@ -374,35 +382,7 @@ export default function HomeScreen() {
           </div>
         </aside>
       </div>
-      <nav className={styles.mobileNav} aria-label="モバイルメニュー">
-        <Link
-          href="/#timeline"
-          aria-label="Skyのストリーム"
-          aria-current={view === 'home' ? 'page' : undefined}
-        >
-          <Radio size={25} />
-        </Link>
-        <Link
-          href="/#catalog"
-          aria-label="見つける"
-          aria-current={view === 'discover' ? 'page' : undefined}
-        >
-          <Search size={25} />
-        </Link>
-        <Link href="/chat" aria-label="Eve">
-          <MessageCircle size={25} />
-        </Link>
-        <Link href="/sky/agents" aria-label="自分のSky">
-          <Layers2 size={25} />
-        </Link>
-        <Link
-          href="/#communities"
-          aria-label="コミュニティー"
-          aria-current={view === 'communities' ? 'page' : undefined}
-        >
-          <Users size={25} />
-        </Link>
-      </nav>
+      <OsAppNavigation activeHash={navigationHash} />
     </div>
   );
 }

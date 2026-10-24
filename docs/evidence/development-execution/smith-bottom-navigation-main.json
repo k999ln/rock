@@ -1,0 +1,163 @@
+{
+  "schema": "rockstaros.smith-bottom-navigation.portable-source-summary/1",
+  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
+  "unit": "SMITH-01-BOTTOM-NAV-MAIN-01",
+  "attempt": 3,
+  "sourceBase": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+  "sourceFiles": [
+    {
+      "path": "components/os-app-navigation.tsx",
+      "bytes": 1898,
+      "sha256": "be474f2775e9cb4665fd7954279e09105f9b6c9d37e28845766172330461f8a4"
+    },
+    {
+      "path": "lib/os-navigation.ts",
+      "bytes": 823,
+      "sha256": "d5c7923363e07b353585fa494487472f8c43d1b13260b86779b1919a260082ce"
+    },
+    {
+      "path": "app/os-bottom-navigation.css",
+      "bytes": 2220,
+      "sha256": "bd9ca8d40c79af9cc8e459579bde6c33bc54df6d96f1d1ac1f285e80260d9ecf"
+    },
+    {
+      "path": "components/home-screen.tsx",
+      "bytes": 13964,
+      "sha256": "0f3012eafb7ee680baf8f08cc7f2e60acdd305dc1715805e947d87ccc137aeda"
+    },
+    {
+      "path": "components/home-screen.module.css",
+      "bytes": 9143,
+      "sha256": "5ca6259c9d0488c0e6bd2d4a2d27160979d93a467d4ae7970a749834eea3804a"
+    },
+    {
+      "path": "components/workspace-shell.tsx",
+      "bytes": 4081,
+      "sha256": "c28b3dff3e2b633b88d315c5f28b1576e19240ef852454f4f52294da56952183"
+    },
+    {
+      "path": "app/layout.tsx",
+      "bytes": 1017,
+      "sha256": "77dafa710ce5697d758685877f4241b4f7fe5ecb61f0da3481267daf9750e719"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "bytes": 16104,
+      "sha256": "5eb2e9f590f19594ae1084a252ce07fef277c8f7506e279eb1d96a585753566c"
+    }
+  ],
+  "sourceAdaptationDuringGitAdoption": false,
+  "originalImplementationReceiptSha256": "5797b97d21f1f62ed2abb1c3134450a2d54b669fc83a446819a0600029f75b30",
+  "originalReceiptHistoricalStatus": "attempt3_host_pass_pending_root_browser_and_independent_r3",
+  "receiptQualification": "This is a new portable minimal summary, not byte-identical to the full implementation receipt. Exact eight code/test bytes inherit scoped source review; this new public metadata needs independent adoption review.",
+  "originalArchive": {
+    "branch": "codex/source-preservation-20261024",
+    "head": "53e6ed46158e7105c65c68015f3fe9931c61de88",
+    "files": [
+      {
+        "path": "components/os-app-navigation.tsx",
+        "sha256": "fda1e4a0554812964f3f0cf793af5bba153abea24a3165c8e5c550e2255d424b",
+        "bytes": 1930,
+        "matchesPreservationPlan": true
+      },
+      {
+        "path": "lib/os-navigation.ts",
+        "sha256": "66cb751f832459bea849f36453ca1757b08c0b3efd66ff7250275e478a1e4ca4",
+        "bytes": 1869,
+        "matchesPreservationPlan": true
+      },
+      {
+        "path": "app/os-shell.css",
+        "sha256": "f215302712f0b90f24933718f389deda54040cc4bbb0a4a2cb70dc78cac68adf",
+        "bytes": 6149,
+        "matchesPreservationPlan": true
+      },
+      {
+        "path": "components/home-screen.module.css",
+        "sha256": "d3a5c314b214d2bcf5df33776bc5c87581ea8f3cbd3c0ee6df2031b0b03a3268",
+        "bytes": 10388,
+        "matchesPreservationPlan": true
+      },
+      {
+        "path": "tests/os-bottom-navigation.test.mjs",
+        "sha256": "220cb38de570809c7e21763d3205164d7b0df8e39b1c393e4efe0f3dd58f3003",
+        "bytes": 2714,
+        "matchesPreservationPlan": true
+      }
+    ],
+    "readback": "Git writer previously verified five GitHub blob byte/hash identities.",
+    "provenance": "Original five .source snapshots remain unchanged; current main-compatible eight are separate adapted bytes, not original-copy acceptance."
+  },
+  "independentSourceReview": {
+    "sha256": "5ebf4e44c465277a6a382d15f8c0299098856a4f74f85aa5be5d6717115795d5",
+    "code": "PASS_SCOPED",
+    "mustFix": [],
+    "protectedRegionsAndFiles": 17
+  },
+  "rootUiSummary": {
+    "path": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
+    "sha256": "ba58511390229831dfb26d9f336d2b455191e2ec8ed25701ef47ebc0cceb235b",
+    "originalSummarySha256": "dc2ea6768e44467c3eb9485a5d288c951eb6b1e44a9f83977de5c5ecedd6d018",
+    "evidenceFiles": 17,
+    "boundedLocalUiPass": true
+  },
+  "history": {
+    "implementationReceiptHashes": [
+      {
+        "attempt": 1,
+        "sha256": "29469dc9fc0f7a946ccb3a750b21b162cfbb5de41b8664fe2fa992327d76b457"
+      },
+      {
+        "attempt": 2,
+        "sha256": "081eff8f0cd6a1d3c5d9a6e727ed416ae8fc905d0406c2232745fd7b33416625"
+      }
+    ],
+    "independentReviewDigests": [
+      {
+        "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review.json",
+        "sha256": "92e3a75da7e186c8f14f068df901a41d038a726c3e8e246556b160c3cea45dcf"
+      },
+      {
+        "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review-r2.json",
+        "sha256": "590691198232082aff39f84d2c3b08b2fb0c9ec5b4992e2ae7342162a2d5caba"
+      },
+      {
+        "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review-r3.json",
+        "sha256": "5ebf4e44c465277a6a382d15f8c0299098856a4f74f85aa5be5d6717115795d5"
+      }
+    ],
+    "failuresAndRecovery": [
+      {
+        "attempt": 1,
+        "id": "NAV-HASH-ACTIVE-01",
+        "observed": "Community hash changed while Smith remained active; reproduced twice in actual local UI.",
+        "cause": "Home Link transitions can use silent pushState/replaceState without hashchange or pathname change.",
+        "repair": "Home supplies controlled navigationHash from its existing sync/capture; defaultPrevented/modified/new-target links do not switch the current panel.",
+        "closedForBoundedLocalUiInAttempt": 2
+      },
+      {
+        "attempt": 2,
+        "id": "NAV-MOBILE-AGENT-REACH-02",
+        "observed": "Replacing five bottom links removed mobile saved-Agent reachability; hidden desktop links did not satisfy mobile access.",
+        "cause": "Existing mobile More omitted the removed saved-Agent entry.",
+        "repair": "Only two authorized static links added to existing More: /#catalog and /sky/agents; scoped mobile-menu regression.",
+        "closedForBoundedLocalUiInAttempt": 3
+      }
+    ],
+    "attempt3NegativeTest": {
+      "attempt2ProductWithNewRegression": true,
+      "tests": 9,
+      "pass": 8,
+      "fail": 1,
+      "logSha256": "c5f918bfa3d1475d35e18b692ae9ca12e8a364ece69c40d42d543d76e4edcde1"
+    }
+  },
+  "acceptance": {
+    "sourceEightLimited": true,
+    "boundedLocalUi": true,
+    "adoptionMetadataReviewed": false,
+    "mainMerged": false,
+    "wholeSmith01": false,
+    "publicDeployment": false
+  }
+}

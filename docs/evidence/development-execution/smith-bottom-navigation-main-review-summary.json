@@ -1,0 +1,112 @@
+{
+  "schema": "rockstaros.smith-bottom-navigation.main-review-summary/1",
+  "recordedAt": "2026-10-24T19:51:02.880287+00:00",
+  "sourceReviewSha256": "5ebf4e44c465277a6a382d15f8c0299098856a4f74f85aa5be5d6717115795d5",
+  "sourceFiles": [
+    {
+      "path": "components/os-app-navigation.tsx",
+      "bytes": 1898,
+      "sha256": "be474f2775e9cb4665fd7954279e09105f9b6c9d37e28845766172330461f8a4"
+    },
+    {
+      "path": "lib/os-navigation.ts",
+      "bytes": 823,
+      "sha256": "d5c7923363e07b353585fa494487472f8c43d1b13260b86779b1919a260082ce"
+    },
+    {
+      "path": "app/os-bottom-navigation.css",
+      "bytes": 2220,
+      "sha256": "bd9ca8d40c79af9cc8e459579bde6c33bc54df6d96f1d1ac1f285e80260d9ecf"
+    },
+    {
+      "path": "components/home-screen.tsx",
+      "bytes": 13964,
+      "sha256": "0f3012eafb7ee680baf8f08cc7f2e60acdd305dc1715805e947d87ccc137aeda"
+    },
+    {
+      "path": "components/home-screen.module.css",
+      "bytes": 9143,
+      "sha256": "5ca6259c9d0488c0e6bd2d4a2d27160979d93a467d4ae7970a749834eea3804a"
+    },
+    {
+      "path": "components/workspace-shell.tsx",
+      "bytes": 4081,
+      "sha256": "c28b3dff3e2b633b88d315c5f28b1576e19240ef852454f4f52294da56952183"
+    },
+    {
+      "path": "app/layout.tsx",
+      "bytes": 1017,
+      "sha256": "77dafa710ce5697d758685877f4241b4f7fe5ecb61f0da3481267daf9750e719"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "bytes": 16104,
+      "sha256": "5eb2e9f590f19594ae1084a252ce07fef277c8f7506e279eb1d96a585753566c"
+    }
+  ],
+  "verdict": "PASS_SCOPED_CODE_AND_ROOT_BOUNDED_LOCAL_UI",
+  "sourceMustFix": [],
+  "reviewHistory": [
+    {
+      "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review.json",
+      "sha256": "92e3a75da7e186c8f14f068df901a41d038a726c3e8e246556b160c3cea45dcf"
+    },
+    {
+      "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review-r2.json",
+      "sha256": "590691198232082aff39f84d2c3b08b2fb0c9ec5b4992e2ae7342162a2d5caba"
+    },
+    {
+      "path": "docs/evidence/development-execution/smith-bottom-navigation-main-review-r3.json",
+      "sha256": "5ebf4e44c465277a6a382d15f8c0299098856a4f74f85aa5be5d6717115795d5"
+    }
+  ],
+  "protectedRegionsAndFiles": 17,
+  "protectedProof": "Independent r3 exact two-link exception reconstructs r2 Home/test; r2 independently reconstructs base. Eight candidate bytes and all eight base bytes are unchanged during main adoption. Thirteen entire protected files are hash-checked; four owned-file region proofs are inherited from exact reviewed bytes, not whole-file unchanged claims.",
+  "failureAndRecoveryHistory": [
+    {
+      "attempt": 1,
+      "id": "NAV-HASH-ACTIVE-01",
+      "observed": "Community hash changed while Smith remained active; reproduced twice in actual local UI.",
+      "cause": "Home Link transitions can use silent pushState/replaceState without hashchange or pathname change.",
+      "repair": "Home supplies controlled navigationHash from its existing sync/capture; defaultPrevented/modified/new-target links do not switch the current panel.",
+      "closedForBoundedLocalUiInAttempt": 2
+    },
+    {
+      "attempt": 2,
+      "id": "NAV-MOBILE-AGENT-REACH-02",
+      "observed": "Replacing five bottom links removed mobile saved-Agent reachability; hidden desktop links did not satisfy mobile access.",
+      "cause": "Existing mobile More omitted the removed saved-Agent entry.",
+      "repair": "Only two authorized static links added to existing More: /#catalog and /sky/agents; scoped mobile-menu regression.",
+      "closedForBoundedLocalUiInAttempt": 3
+    }
+  ],
+  "sourceAndPortableReceiptHashes": {
+    "original": "5797b97d21f1f62ed2abb1c3134450a2d54b669fc83a446819a0600029f75b30",
+    "portable": "4138b28e978654dfd474193752d86be9af56b4f0712eede6b16d241b15f9cef8",
+    "notIdentical": true
+  },
+  "rootUiSummary": {
+    "path": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
+    "sha256": "ba58511390229831dfb26d9f336d2b455191e2ec8ed25701ef47ebc0cceb235b",
+    "originalSummarySha256": "dc2ea6768e44467c3eb9485a5d288c951eb6b1e44a9f83977de5c5ecedd6d018",
+    "boundedLocalUiPass": true
+  },
+  "independentRuns": {
+    "r2Focused": 52,
+    "r2ProbeGroups": 5,
+    "r3DeltaTests": 3,
+    "notAdditive": true
+  },
+  "newAdoptionMetadataReviewPending": true,
+  "notExecuted": [
+    "Physical soft keyboard",
+    "Nonzero physical safearea inset",
+    "200percent text/browser zoom",
+    "Authenticated Jennifer composer",
+    "Active-running-job real UI guard",
+    "Two-owner Agent save/read/CAS UI",
+    "Native OS or deployed production"
+  ],
+  "wholeSmith01": false,
+  "publicDeployment": false
+}

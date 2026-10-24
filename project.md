@@ -1,3 +1,7 @@
+## Smith mobile bottom navigation attempt3のmain候補（2026-10-24 / G04）
+
+着手: Billing202通常merge main2bea21b1・同SHA6CI成功をclean基点に独立受入8hashを無変更採用。主担当Git10/source05、既存HOME01/WEB04/SKY21/OS10・SMITH-01。原本archive5の53e6ed46とは別provenance。判断: attempt1実hash不一致とattempt2 mobileAgent導線消失を保持し、attempt3のcontrolled hashとMore2静的link例外を採用。17領域保護、既存owner/CAS/auth/Agent/料金/domainを維持。検証完了: 統合53対象試験53pass0fail0skip、通常typecheck/productlint成功。Root同8hashの実local UI17証拠はGit外で、portable最小summaryとhashのみ保存。次: project/design/scanner、Draft PR最終同headLinux実npmverify/allCIと独立metadata検収。local全体verify未実行、main未merge・公開なし。未完: 実keyboard/非zero safearea/200%zoom/認証composer/runningjob/twoowner/native/prod、wholeSMITHfalse。[実装/hash/試験](docs/evidence/development-execution/smith-bottom-navigation-main-adoption.json)。
+
 ## Billing current service authority exact4のmain候補（2026-10-24 / G04）
 
 eSIM201通常merge main468d・同SHA6CI成功を新clean基点に、旧99abと4base不変の受入hashを無変更採用。trusted runtimeEnv required/previewをdispatch await前に捕捉し、required時の同owner active scope/committime expiryを最終INSERTへ結合。53tests/type/productlint成功。旧base2 mocksend1→new0/独立11を原本hashで保持し、DBUNCONFIRMED/unknownhold/noresend/lateusageonce/旧recurring例外を区別。元receipt7a52/portable a2cfを別hashにし、新metadata独立検収へ。価格/schema/migration/設定/commoncontract/issuer epoch・accountmonth/実Provider/課金/公開の完成へ拡張しない。eSIM3/Mini6/history18/固定95whole0/393task14gate/RootHEADindex/旧197保持。次はJSON/design/fixedscanner0/canary→別draftPR最終同headCI実npmverify→独立metadata採用検収。Web5source保全は別branchで後続、mainへ混ぜない。根拠 docs/evidence/development-execution/billing-service-main-adoption.json。

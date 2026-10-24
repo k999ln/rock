@@ -9797,11 +9797,32 @@
     "localTests": 53,
     "typecheck": "passed_normal_pretypecheck",
     "lintProduct": "passed",
-    "metadataReviewPending": true,
-    "mainMerged": false,
-    "finalHeadCIPending": true,
+    "metadataReviewPending": false,
+    "mainMerged": true,
+    "finalHeadCIPending": false,
     "fullVerify": "required_actual_exact_finalhead_CI_not_run_locally",
     "commonContractIssuerEpochAccepted": false,
-    "productionProviderBillingAccepted": false
+    "productionProviderBillingAccepted": false,
+    "mainMergeSha": "2bea21b14faec220161ffaac910e973ed0b52de7",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 6
+  },
+  "smithBottomNavigationMainAdoption": {
+    "evidence": "docs/evidence/development-execution/smith-bottom-navigation-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/smith-bottom-navigation-main-review-summary.json",
+    "portableUiSummary": "docs/evidence/development-execution/smith-bottom-navigation-ui-summary.json",
+    "sourceEightPreserved": true,
+    "attempt": 3,
+    "localTargetedPass": 53,
+    "typecheck": "passed_normal_pretypecheck",
+    "lintProduct": "passed",
+    "rootBoundedLocalUi": "passed_home_shell_only",
+    "metadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "fullVerify": "not_run_locally_required_actual_exact_finalhead_LinuxCI",
+    "wholeSmith01Accepted": false,
+    "nativePhysicalAccepted": false,
+    "publicDeployment": false
   }
 }
