@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-text-job.main-adoption/1",
   "recordedAt": "2026-10-24T16:41:08.921877+00:00",
-  "status": "metadata_four_digest_records_restructured_current_scan_clean_historical_secrets_gate_still_blocked",
+  "status": "PR198_reviewed_final_tree_normally_main_integrated_limited_text_preparation",
   "unit": "EVE-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "05-web-pwa-sites",
@@ -123,8 +123,8 @@
   },
   "acceptance": {
     "sourceIndependentLimited": true,
-    "mainMetadataReviewed": false,
-    "mainMerged": false,
+    "mainMetadataReviewed": true,
+    "mainMerged": true,
     "wholeEVE02": false,
     "semanticLlmRemix": false,
     "browserLiveHttp": false,
@@ -134,7 +134,7 @@
     "physicalDeviceFullOs": false,
     "generalLaunch": "held"
   },
-  "next": "Finite metadata-format checkpoint. Exact-fingerprint control support requires the bounded scope above; no control policy PR or hand-built bypass created. Root assigns next scope and independent reviews; PR197 remains draft/unmerged.",
+  "next": "PR198 clean main is current ancestry. PriorPR197 format/history gate belongs to retained oldbranch; no olda2 branch merge. Semantic/model/browser/liveHTTP/EVE02 whole remain unaccepted.",
   "pr": "https://github.com/k999ln/rock/pull/197",
   "secretScanFormatDelta": {
     "previousHead": "c21f000fe85f0af2c77db4335ebf92474008597b",
@@ -258,5 +258,26 @@
     },
     "finalHeadCI": "New metadata commit will trigger CI; historical gate remains open until separately authorized reviewed control support exists.",
     "localFullVerifyRepeated": false
+  },
+  "historicalCandidateStatus": "metadata_four_digest_records_restructured_current_scan_clean_historical_secrets_gate_still_blocked",
+  "cleanMainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/198",
+    "acceptedHead": "8716bb13ee3952b99bab5a14c37feeb1744b7c9c",
+    "mainMergeSha": "ccec6d43341dd8f12326766311553a59bc301fae",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaAllSuccessAtCapture": true,
+    "originalAdoptionReviewSha256": "7f0843ade63cd5c4848ec9f5507efe6721c685c835c38d27f8ac8eacf0a65463",
+    "oldPR197AtCapture": {
+      "state": "CLOSED",
+      "closedAt": "2026-10-24T17:24:31Z",
+      "branchRetained": true,
+      "oldHead": "63675b7e691556a106d93aba409faa764a01288b",
+      "evidenceAndFailuresPreserved": true
+    },
+    "oldBranchAndFailureEvidenceRetained": true,
+    "policyAndScannerUnchanged": true,
+    "wholeEVE02Accepted": false,
+    "productionDeployment": false,
+    "mainSameShaCISuccess": 6
   }
 }

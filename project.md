@@ -1,3 +1,13 @@
+## Pro PR199 test登録のlint互換修正（2026-10-24）
+
+旧dd10の実Linux npmverifyは型検査後lint:productのno-floating-promises25件で失敗。local sandbox listen EPERMとは別に保持。対象はPro6内tests/pro-account-import.test.mjsのみ、全25登録へvoidを明示し+125bytes、除去で原本完全復元。assertion/テスト本体/名前・runtime5/保護76/権限/保存/暗号/schema/policy/95分類は不変。旧test6b3c→新8a8250、旧6hash限定レビューを新bytesへ転用しない。focused69pass・lint:product/typecheck成功、canonical設計/目次/statusを同期し、新headCIと別独立再検収前にmergeしない。
+
+## PRO-01原本保管exact6のmain統合候補（2026-10-24 / G04）
+
+固定全verifyは初期段階のsandbox localhost listen EPERMで停止（4472入力不変、7秒）。失敗を保持し、ローカル反復無し、新head CI実npmverifyを最終gateとする。69試験と正規前処理typecheckの成功とは区別する。
+
+PR198通常merge mainccec同SHA6CI成功/旧PR197close・旧branch保存を確認し、新clean基点に、旧1a9と双方absentのPro新6を受入hash無変更採用。対象69pass、正規main前処理付きtypecheck成功。workerの生成module欠落3TS2307/新diag0は過去の失敗として保持、実原稿copy/手書stub無し。旧P1/P2→r2限定PASS、歴史first56/current69訂正は原本44eb/旧74a2/b0a9/reviewhashで保持。既存暗号化履歴・CAS・owner/sameorigin/同意・UNKNOWN再読戻しを再利用し、新schema/暗号engine/鍵/job/model/Toolなし。実account/browser/native/全移行未受入。設計/index/README/status/95overlay同期、393task/14gate/固定95/whole0保持。次は現行fixedscanner/canary→固定全verify1回→別draftPR/同headCI→別metadata採用検収。旧Root/Pro WIP/旧a2履歴を混ぜずRootHEAD/index/journal保持。根拠 docs/evidence/development-execution/pro-account-import-main-adoption.json。
+
 ## EVE-02 attempt2 exact6のmain統合候補（2026-10-24 / G04）
 
 PR197 metadata表記delta:4つのpath名digestをtyped sha256 recordへ変更、61path/digestと6source不変。同Gitleaks8.30.1固定policyで旧4検出→現行0、疑似API-key1検出、既存policy10pass。旧c21 secrets CI失敗と全履歴scan4件は保持。標準exact fingerprintは実証済みだが固定wrapperがempty-ignore強制で設定だけでは利用不可。control読込interface/厳密4設定/負例試験と別workflow pin更新の設計案だけを残し、手製bypassやcontrolpolicyPRは作成しない。最終newhead CI/format再検収/履歴gateは未完了、ローカル全verify反復なし。

@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
-  "mainAtCapture": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+  "recordedAt": "2026-10-24T17:23:32.228070+00:00",
+  "mainAtCapture": "ccec6d43341dd8f12326766311553a59bc301fae",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -96,7 +96,7 @@
       "units": [
         "EVE-02"
       ],
-      "kind": "independent_limited_source_pass_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
       "sourceHashes": {
         "lib/eve-text-job.ts": "cff365e5acb837248426981c0ab12d6d208ec55f4723d1dff88a0341c8fabc20",
@@ -108,18 +108,69 @@
       },
       "reviewSummary": "docs/evidence/development-execution/eve-text-job-review-summary.json",
       "sourceReviewR2Sha256": "a7bda38f34cb25a1ae990aae83d8365157b45799b0d4abd326535e26719ff243",
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "scope": "Existing free text-preparation composition path only; no model/provider/usage/charge/Tool/core-schema addition",
-      "browserLiveHttpAccepted": false
+      "browserLiveHttpAccepted": false,
+      "pr": "https://github.com/k999ln/rock/pull/198",
+      "acceptedHead": "8716bb13ee3952b99bab5a14c37feeb1744b7c9c",
+      "mainMergeSha": "ccec6d43341dd8f12326766311553a59bc301fae",
+      "metadataReviewSha256": "7f0843ade63cd5c4848ec9f5507efe6721c685c835c38d27f8ac8eacf0a65463"
+    },
+    {
+      "id": "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE",
+      "units": [
+        "PRO-01"
+      ],
+      "kind": "independent_limited_source_pass_git_candidate",
+      "baseMain": "ccec6d43341dd8f12326766311553a59bc301fae",
+      "sourceFiles": [
+        {
+          "path": "lib/pro-account-import.ts",
+          "sha256": "58ff7987f5f876bcdfd064f27d3f13be1715c8626cbd3add239d6622f86f1b97"
+        },
+        {
+          "path": "lib/pro-account-import.server.ts",
+          "sha256": "92e04e9eb46d4e3bafb250ebc88bd660d15a77fa18ea644862748530522ae3ed"
+        },
+        {
+          "path": "app/api/account/pro-import/route.ts",
+          "sha256": "e02afb5f95b72782b0c4d33fdf0585cc5e865abcee5d7c833bea1d45028c824e"
+        },
+        {
+          "path": "components/pro-account-import.tsx",
+          "sha256": "9b51cfbc0b380795d6485b2be8125cd19897ee82a51643133cd40f4fe709679b"
+        },
+        {
+          "path": "app/account/import/pro/page.tsx",
+          "sha256": "d6bf62cdb5bf408b49142b087c40938cbf81a1b913927827fdd22b96f7f71ea7"
+        },
+        {
+          "path": "tests/pro-account-import.test.mjs",
+          "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f"
+        }
+      ],
+      "reviewSummary": "docs/evidence/development-execution/pro-account-import-review-summary.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "originalSourceReviewPreserved": true,
+      "mechanicalTestDeltaIndependentReviewPending": true
     }
   ],
   "executionPriority": [
     {
+      "order": 0,
+      "unit": "PRO-01",
+      "state": "exact6_source_pass_main_candidate",
+      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "wholeUnitAccepted": false
+    },
+    {
       "order": 1,
       "unit": "EVE-02",
-      "state": "source_attempt2_pass_main_candidate",
-      "scope": "Exact6 reviewed free text-preparation; integration verify/CI/metadata review pending, semantic Remix unaccepted",
+      "state": "limited_preparation_PR198_main_integrated",
+      "scope": "PR198 clean reviewed tree mainccec; semantic/model/browser/liveHTTP still unaccepted",
       "wholeUnitAccepted": false,
       "currentSourceReviewedByThisBatch": true
     },
@@ -162,5 +213,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "7be3d6aa35d8df1329571bbe92971f805694b581"
+  "previousCaptureMain": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988"
 }
