@@ -1,3 +1,7 @@
+## MINI-02 exact source保存（G04 / ROCK）
+
+[採用証拠](../evidence/development-execution/mini-02-main-adoption.json)で5pathのhash・限定独立検収・固定verify・GitHub/CIを区別する。Source provenanceは独立read-only checkpointで、Mini保存を無期限に遅らせない。OS診断WIPは含めない。
+
 ## client/Game採用とdeferred source保全（G04 / ROCK）
 
 [統合候補](../evidence/development-execution/client-game-adoption.json)と[main対応95unit引継ぎ](../../data/development-source-handoff.json)から再開する。PR186/187のmain統合、client/Game採用候補、Eve/過去資料source branch保存を区別する。Rootの23chat/42成果/180coverage/95unit資料は非実行`.source`保存と由来付き要約で保持し、旧mainSHA/配備/試験を現在mainの成功にしない。残全unionは別gate、OS/cache-onlyは唯一operatorのbatch中で触らない。

@@ -1,0 +1,89 @@
+{
+  "schema": "rockstaros.mini02.main-adoption/1",
+  "recordedAt": "2026-10-24T10:51:08.837793+00:00",
+  "baseMain": "bbefa875f166f17d335936ab63aef2697f8f7df7",
+  "branch": "codex/mini02-optical-study-20261024",
+  "review": "docs/evidence/development-execution/mini-02-review.json",
+  "verdict": "pass_limited_host_finite_study",
+  "fiveReviewedPaths": [
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+    "tests/avocado-mini-optical-study.test.mjs",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+    "docs/evidence/development-execution/mini-02.json",
+    "data/development-lanes/mini.json"
+  ],
+  "sourceHashes": {
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "adoption": "Exact five reviewed bodies/hashes; source lane/receipt pre-integration statements are historical, current integrated validation is this receipt",
+  "requirements": [
+    "no plate/membrane at image location",
+    "few display units unresolved; aperture count is not device count",
+    "whole range including above/below; no domain reduction",
+    "low glare unmeasured"
+  ],
+  "sample": {
+    "enclosureM": [
+      4,
+      4,
+      3
+    ],
+    "servicePlanM": [
+      3,
+      3
+    ],
+    "eyePositions": 243,
+    "targets": 147,
+    "pairs": 35721,
+    "pupilRaysPerPair": 18,
+    "evaluatedCandidates": 7,
+    "unsupportedCandidates": 2,
+    "idealSixFullFacesMissingPairs": 0,
+    "guard10mmMissingPairs": 708,
+    "guard30mmMissingPairs": 1396
+  },
+  "validation": {
+    "focusedTests": 20,
+    "focusedPassed": 20,
+    "focusedFailed": 0,
+    "newStudyTests": 9,
+    "focusedLintExit": 0,
+    "syntaxExit": 0,
+    "fullVerify": {
+      "exitCode": 0,
+      "inputCount": 4428,
+      "changedInputs": [],
+      "elapsedSeconds": 110,
+      "logSha256": "0a470a255eeda46dd5658fd31a9c3cc9d9e454c55e823cdc171a00b7de5d4d8b",
+      "nodeTests": 2649,
+      "nodePassed": 2647,
+      "nodeFailed": 0,
+      "nodeSkipped": 2,
+      "skipScope": "existing platform-specific tests",
+      "assetMissing": 0
+    },
+    "postVerifyChanges": "Only result annotations in adoption receipt/status/project/README; five reviewed paths and pinned dependencies unchanged; metadata/baseline/design rechecked."
+  },
+  "physicalAccepted": false,
+  "lowGlareHumanSafetyAccepted": false,
+  "simultaneousViewersAccepted": false,
+  "pcbManufacturingAccepted": false,
+  "wholeUnitComplete": false,
+  "publicDeployment": false,
+  "generalLaunch": "held",
+  "sourceBodyChanged": false,
+  "OSDiagnosticWIPIncluded": false,
+  "rollback": "Normal revert of additive host study/docs; no persistent migration, hardware or provider effects.",
+  "publicationSideEffects": {
+    "publicWorkflow": "main push only for public-release/rockstaros/** or publish workflow itself",
+    "changedPathsMatchPublicTrigger": false,
+    "deployCalled": false
+  }
+}

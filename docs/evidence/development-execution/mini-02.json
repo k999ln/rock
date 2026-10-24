@@ -1,0 +1,1253 @@
+{
+  "schema": "rockstaros.mini-optical-study-evidence/1",
+  "unit": "MINI-02",
+  "recordedAt": "2026-10-24T09:48:06.356313+00:00",
+  "status": "local_finite_study_checks_passed_independent_review_pending",
+  "ownership": {
+    "exactWriteSet": [
+      "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "tests/avocado-mini-optical-study.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+      "docs/evidence/development-execution/mini-02.json",
+      "data/development-lanes/mini.json"
+    ],
+    "noGitMutation": true,
+    "noChildAgent": true,
+    "noOtherThreadMessageInBatch": true,
+    "sharedFilesEdited": false
+  },
+  "implementationArtifacts": [
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "sha256": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9"
+    },
+    {
+      "path": "tests/avocado-mini-optical-study.test.mjs",
+      "sha256": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+      "sha256": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9"
+    }
+  ],
+  "preservedMini01AndGeometry": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+      "beforeSha256": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+      "afterSha256": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+      "unchanged": true
+    },
+    {
+      "path": "tests/avocado-mini-place-profile.test.mjs",
+      "beforeSha256": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+      "afterSha256": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+      "unchanged": true
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+      "beforeSha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+      "afterSha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+      "unchanged": true
+    }
+  ],
+  "referenceArtifacts": [
+    {
+      "path": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+      "sha256": "b576c480cdfa681f3ed276eeb364f4bbe3b2a3ee8ac0ef5eb57e74663b410f4c"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/reference-reels.json",
+      "sha256": "f4b73bd3b0a1bdd1e52557ee99decc639e2e70a3391c9a4ad22d98d6f165cc5d"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/calculate-six-exits.mjs",
+      "sha256": "7c5b83e1ffe054ac8459d0fb2db8e44c1634eafd7ae8f8ec9502cc5050285ab1"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/e1-leairr-prescription.json",
+      "sha256": "cf4b796c3789995f600731700ea84186e12070eb9607d862bbd218d4ef737eca"
+    },
+    {
+      "path": "contracts/avocado-mini-spatial-runtime.json",
+      "sha256": "8659b7a4afdb68e3a0abcc65b0419a7849b288c208e9dfc202ec0c42f3e1fbbf"
+    }
+  ],
+  "referenceScope": "existing repository v0.9/PDF53 and E1 proposals only; no new vendor specification or selection",
+  "study": {
+    "schema": "rockstaros.mini-optical-study-result/1",
+    "inputSha256": "bf5134b0b4d0e5473228c715e5ace17f86a291cb28820eace8c5ec06af22d057",
+    "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+    "geometrySha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+    "fixture": {
+      "id": "mini-v09-six-exits-243x147x18/1",
+      "enclosureM": {
+        "min": [
+          -2,
+          -2,
+          0
+        ],
+        "max": [
+          2,
+          2,
+          3
+        ]
+      },
+      "servicePlanM": [
+        3,
+        3
+      ],
+      "eyeXY": {
+        "countPerAxis": 9,
+        "minM": -1.5,
+        "maxM": 1.5
+      },
+      "eyeHeightsM": [
+        1.2,
+        1.6,
+        1.9
+      ],
+      "targetXY": {
+        "countPerAxis": 7,
+        "minM": -1.5,
+        "maxM": 1.5
+      },
+      "targetHeightsM": [
+        0.8,
+        1.4,
+        2
+      ],
+      "interpupillaryDistanceM": 0.064,
+      "pupilOffsetsM": [
+        -0.002,
+        0,
+        0.002
+      ],
+      "pupilOrientation": "horizontal perpendicular to target-eye XY; [1,0,0] for vertical alignment",
+      "targetExtentMode": "sampled points only; not a whole extended scene",
+      "viewerPositionsAreSimultaneous": false,
+      "requiredSimultaneousViewers": null,
+      "imageLocationPassiveSurfaces": 0,
+      "opticalAngleAndFocus": "ideal unlimited at every exit position",
+      "illuminationLux": null,
+      "permittedLuminance": null,
+      "placementErrorM": null,
+      "trackingLatencyMs": null,
+      "physicalEnclosureVolumeM3": null,
+      "occlusion": "empty-path optimistic bound; actual body/furniture unmeasured",
+      "requirements": [
+        "no image-location plate/membrane/scattering surface",
+        "few display parts",
+        "whole requested volume including above/below",
+        "fixed world scene",
+        "low glare"
+      ]
+    },
+    "sampleCounts": {
+      "eyes": 243,
+      "targets": 147,
+      "eyeTargetPairs": 35721,
+      "pupilRaysPerPair": 18
+    },
+    "results": [
+      {
+        "id": "four-sides-300mm",
+        "candidateSha256": "125a8ee2f2c59143897512f3e1ae70fc0f203ef56b9d2b08f0154d0b267918c8",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 4,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 35489,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            -1.5,
+            -1.5,
+            0.8
+          ],
+          "pupilM": [
+            -1.534,
+            -1.5,
+            1.198
+          ],
+          "boundaryPointM": [
+            -1.4316582914572864,
+            -1.5,
+            -1.1102230246251565e-16
+          ],
+          "boundaryFaces": [
+            "floor"
+          ]
+        },
+        "nominalApertureAreaM2": 0.35999999999999976,
+        "effectiveApertureAreaM2": 0.35999999999999976,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          }
+        ]
+      },
+      {
+        "id": "six-faces-300mm",
+        "candidateSha256": "3a985ea537ea5ac7f227b742e0d3dde43c1b2d28f4c4aaf9f283038ec7ed99f1",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 6,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 35443,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            -1.5,
+            -1.5,
+            0.8
+          ],
+          "pupilM": [
+            -1.534,
+            -1.5,
+            1.198
+          ],
+          "boundaryPointM": [
+            -1.4316582914572864,
+            -1.5,
+            -1.1102230246251565e-16
+          ],
+          "boundaryFaces": [
+            "floor"
+          ]
+        },
+        "nominalApertureAreaM2": 0.5399999999999997,
+        "effectiveApertureAreaM2": 0.5399999999999997,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -0.15,
+              1.35,
+              0.15,
+              1.65
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "floor",
+            "face": "floor",
+            "rect": [
+              -0.15,
+              -0.15,
+              0.15,
+              0.15
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "ceiling",
+            "face": "ceiling",
+            "rect": [
+              -0.15,
+              -0.15,
+              0.15,
+              0.15
+            ],
+            "guardM": 0
+          }
+        ]
+      },
+      {
+        "id": "six-faces-1200mm",
+        "candidateSha256": "459116b14aff9d241ba54a7dbc7dbf169670839d0c83dd7d70c31a8446e9bf64",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 6,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 31564,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            -1.5,
+            -1.5,
+            0.8
+          ],
+          "pupilM": [
+            -1.534,
+            -1.5,
+            1.198
+          ],
+          "boundaryPointM": [
+            -1.4316582914572864,
+            -1.5,
+            -1.1102230246251565e-16
+          ],
+          "boundaryFaces": [
+            "floor"
+          ]
+        },
+        "nominalApertureAreaM2": 8.64,
+        "effectiveApertureAreaM2": 8.64,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -0.6,
+              0.9,
+              0.6,
+              2.1
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -0.6,
+              0.9,
+              0.6,
+              2.1
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -0.6,
+              0.9,
+              0.6,
+              2.1
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -0.6,
+              0.9,
+              0.6,
+              2.1
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "floor",
+            "face": "floor",
+            "rect": [
+              -0.6,
+              -0.6,
+              0.6,
+              0.6
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "ceiling",
+            "face": "ceiling",
+            "rect": [
+              -0.6,
+              -0.6,
+              0.6,
+              0.6
+            ],
+            "guardM": 0
+          }
+        ]
+      },
+      {
+        "id": "four-full-faces",
+        "candidateSha256": "19eaef08d8971db17818f2d231d32fc484cb1ba3ad9288ec409f12da69650e92",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 4,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 5953,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            -1.5,
+            -1.5,
+            0.8
+          ],
+          "pupilM": [
+            -1.534,
+            -1.5,
+            1.198
+          ],
+          "boundaryPointM": [
+            -1.4316582914572864,
+            -1.5,
+            -1.1102230246251565e-16
+          ],
+          "boundaryFaces": [
+            "floor"
+          ]
+        },
+        "nominalApertureAreaM2": 48,
+        "effectiveApertureAreaM2": 48,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          }
+        ]
+      },
+      {
+        "id": "six-full-faces-ideal",
+        "candidateSha256": "52a97c68e437ff533138212eaf6797aceecc70f55f6fe372e089bf477cce6f6f",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 6,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "sampled_necessary_condition_passed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 0,
+        "firstMissing": null,
+        "nominalApertureAreaM2": 80,
+        "effectiveApertureAreaM2": 80,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "floor",
+            "face": "floor",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0
+          },
+          {
+            "id": "ceiling",
+            "face": "ceiling",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0
+          }
+        ]
+      },
+      {
+        "id": "six-full-faces-10mm-guard",
+        "candidateSha256": "4f00c09399b23b093eabc85b64cd2b34b92fce17fcfd05873a347b9fef41c4a4",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 6,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 708,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            1.5,
+            1.5,
+            0.8
+          ],
+          "pupilM": [
+            -1.4759583694396574,
+            -1.5240416305603426,
+            1.198
+          ],
+          "boundaryPointM": [
+            1.9920498347914979,
+            2,
+            0.7341940276254973
+          ],
+          "boundaryFaces": [
+            "north"
+          ]
+        },
+        "nominalApertureAreaM2": 80,
+        "effectiveApertureAreaM2": 79.1224,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.01
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.01
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.01
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.01
+          },
+          {
+            "id": "floor",
+            "face": "floor",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0.01
+          },
+          {
+            "id": "ceiling",
+            "face": "ceiling",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0.01
+          }
+        ]
+      },
+      {
+        "id": "six-full-faces-30mm-guard",
+        "candidateSha256": "1faaf7d93d4664fc80847ede51c33983d3e997f4ce3d274a8c106317b1dd8f76",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": 6,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": 1,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "necessary_condition_failed",
+        "evaluatedPairs": 35721,
+        "pupilRays": 642978,
+        "missingPairs": 1396,
+        "firstMissing": {
+          "eyeCenterM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            1,
+            1,
+            0.8
+          ],
+          "pupilM": [
+            -1.4759583694396574,
+            -1.5240416305603426,
+            1.198
+          ],
+          "boundaryPointM": [
+            1.9809498937979044,
+            2,
+            0.6423163884536869
+          ],
+          "boundaryFaces": [
+            "north"
+          ]
+        },
+        "nominalApertureAreaM2": 80,
+        "effectiveApertureAreaM2": 77.38159999999999,
+        "opticalSteering": "already unlimited in this necessary condition; does not add exit positions",
+        "exits": [
+          {
+            "id": "west",
+            "face": "west",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.03
+          },
+          {
+            "id": "east",
+            "face": "east",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.03
+          },
+          {
+            "id": "south",
+            "face": "south",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.03
+          },
+          {
+            "id": "north",
+            "face": "north",
+            "rect": [
+              -2,
+              0,
+              2,
+              3
+            ],
+            "guardM": 0.03
+          },
+          {
+            "id": "floor",
+            "face": "floor",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0.03
+          },
+          {
+            "id": "ceiling",
+            "face": "ceiling",
+            "rect": [
+              -2,
+              -2,
+              2,
+              2
+            ],
+            "guardM": 0.03
+          }
+        ]
+      },
+      {
+        "id": "relocatable-or-switched-exits",
+        "candidateSha256": "6516b6a227efbb94bf7411bcb9b0db0db343c84b1853053a7deb8016f0f7362b",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": null,
+          "opticalExits": null,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": null,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "unsupported",
+        "reasons": [
+          "no world-space exit trajectories or reachable pose set",
+          "no per-frame joint allocation for both pupils, all scene points and viewers",
+          "no latency/settling/duty-cycle/radiometry/independent-stop measurements"
+        ],
+        "evaluatedPairs": 0,
+        "missingPairs": null,
+        "nominalApertureAreaM2": null,
+        "effectiveApertureAreaM2": null
+      },
+      {
+        "id": "existing-go-leairr-relay",
+        "candidateSha256": "27cb904d9ff104f1da1f7e25427463cb61872d6277fa7b7fa04d4f70f3132deb",
+        "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+        "counts": {
+          "physicalEnclosures": null,
+          "activeImageSources": 1,
+          "opticalExits": null,
+          "sensors": null,
+          "imageLocationPassiveSurfaces": 0,
+          "modeledPoseCount": null,
+          "sampledViewerPositions": 243,
+          "measuredSimultaneousViewers": null
+        },
+        "requiredEyeTargetPairs": 35721,
+        "requiredPupilRaysPerPair": 18,
+        "acceptance": {
+          "continuousWholeDomain": false,
+          "physicalVisible": false,
+          "simultaneousViewers": false,
+          "lowGlare": false,
+          "independentStop": false,
+          "manufactured": false,
+          "grantsAuthority": false
+        },
+        "status": "unsupported",
+        "reasons": [
+          "existing E1 prescription is not a calibrated room-boundary ray generator",
+          "vertical cone, effective aperture, source-relay mapping and simultaneous scene unqualified",
+          "brightness/glare, occlusion, power/thermal and independent optical cutoff unaccepted"
+        ],
+        "evaluatedPairs": 0,
+        "missingPairs": null,
+        "nominalApertureAreaM2": null,
+        "effectiveApertureAreaM2": null
+      }
+    ],
+    "diagnostics": [
+      {
+        "candidateId": "four-full-faces",
+        "supplementaryOnly": true,
+        "pupilModel": "one center ray, not binocular acceptance",
+        "vertical": {
+          "belowAvailable": false,
+          "aboveAvailable": false
+        },
+        "seamSweep": {
+          "eyeM": [
+            0,
+            0,
+            1.6
+          ],
+          "targetBaseM": [
+            1,
+            1,
+            1.4
+          ],
+          "offsetAxis": "y",
+          "offsetRangeM": [
+            -0.025,
+            0.025
+          ],
+          "sampleCount": 201,
+          "missedSamples": 0,
+          "firstMissingOffsetM": null,
+          "lastMissingOffsetM": null
+        },
+        "continuousProof": false,
+        "physicalAccepted": false
+      },
+      {
+        "candidateId": "six-full-faces-ideal",
+        "supplementaryOnly": true,
+        "pupilModel": "one center ray, not binocular acceptance",
+        "vertical": {
+          "belowAvailable": true,
+          "aboveAvailable": true
+        },
+        "seamSweep": {
+          "eyeM": [
+            0,
+            0,
+            1.6
+          ],
+          "targetBaseM": [
+            1,
+            1,
+            1.4
+          ],
+          "offsetAxis": "y",
+          "offsetRangeM": [
+            -0.025,
+            0.025
+          ],
+          "sampleCount": 201,
+          "missedSamples": 0,
+          "firstMissingOffsetM": null,
+          "lastMissingOffsetM": null
+        },
+        "continuousProof": false,
+        "physicalAccepted": false
+      },
+      {
+        "candidateId": "six-full-faces-10mm-guard",
+        "supplementaryOnly": true,
+        "pupilModel": "one center ray, not binocular acceptance",
+        "vertical": {
+          "belowAvailable": true,
+          "aboveAvailable": true
+        },
+        "seamSweep": {
+          "eyeM": [
+            0,
+            0,
+            1.6
+          ],
+          "targetBaseM": [
+            1,
+            1,
+            1.4
+          ],
+          "offsetAxis": "y",
+          "offsetRangeM": [
+            -0.025,
+            0.025
+          ],
+          "sampleCount": 201,
+          "missedSamples": 40,
+          "firstMissingOffsetM": -0.004750000000000001,
+          "lastMissingOffsetM": 0.0049999999999999975
+        },
+        "continuousProof": false,
+        "physicalAccepted": false
+      }
+    ],
+    "exclusions": [
+      "finite pupil points and eye/target grid only",
+      "no occlusion or physical optical engine",
+      "no wave optics/scattering/etendue/radiometry/aberration qualification",
+      "no simultaneous scene/viewer or motion/latency qualification",
+      "no safety/comfort/electrical/thermal qualification"
+    ],
+    "physicalCandidateSelected": false,
+    "wholeUnitAccepted": false,
+    "acceptance": {
+      "continuousWholeDomain": false,
+      "physicalVisible": false,
+      "simultaneousViewers": false,
+      "lowGlare": false,
+      "independentStop": false,
+      "manufactured": false,
+      "grantsAuthority": false
+    },
+    "resultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b"
+  },
+  "verification": [
+    {
+      "command": "node --test tests/avocado-mini-optical-study.test.mjs",
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "scope": "host synthetic geometry and input rejection; not independent review"
+    },
+    {
+      "command": "node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs tests/avocado-mini-optical-study.test.mjs",
+      "exitCode": 0,
+      "scope": "two new JS files"
+    },
+    {
+      "command": "node --check docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "exitCode": 0,
+      "scope": "syntax"
+    },
+    {
+      "command": "node docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs --json",
+      "exitCode": 0,
+      "resultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b",
+      "scope": "same-domain reproduction"
+    },
+    {
+      "command": "node docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs --accept-physical",
+      "exitCode": 1,
+      "expectedRejection": "STUDY_CLI_ARGUMENT_UNSUPPORTED"
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run_in_this_batch",
+      "reason": "Git single writer runs on integrated fixed candidate; no broad shared-worktree verification here"
+    }
+  ],
+  "independentReview": {
+    "status": "pending",
+    "verdict": null,
+    "nextOwner": "Root assigns independent reviewer after this finite batch returns its slot"
+  },
+  "gitState": {
+    "mini01PR": 188,
+    "mini01MergeSha": "bbefa875f166f17d335936ab63aef2697f8f7df7",
+    "mini01MainChecks": {
+      "success": 12,
+      "pending": 0,
+      "failed": 0,
+      "source": "prior direct GitHub same-SHA check-runs readback"
+    },
+    "mini02SavedLocally": true,
+    "mini02BranchSaved": false,
+    "mini02MainIntegrated": false
+  },
+  "unresolved": [
+    "realizable few-part full-domain optical engine",
+    "continuous domain and whole extended scene",
+    "simultaneous viewers and joint pupil/scene ray allocation",
+    "source/relay calibration and reachable moving poses",
+    "body/furniture occlusion and source direct view",
+    "measured luminance, low glare and owner comfort limits",
+    "independent physical optical stop/readback including startup and backpower",
+    "latency, placement error, power and thermal acceptance",
+    "final PCB/manufacturing/physical qualification"
+  ],
+  "nextFiniteWork": {
+    "kind": "candidate ray-generator/trajectory and simultaneous-allocation adapter contract",
+    "requirements": "retain same D, upper/lower points, binocular pupil model and four owner requirements; do not shrink denominator",
+    "acceptance": "fixed-pose reduction reproduces baseline; incompatible poses fail simultaneous allocation; unknown/uncalibrated/stale/late/stop-unconfirmed remains unavailable",
+    "physicalActionsAuthorizedByThisArtifact": false
+  },
+  "sharedChangeRequests": [
+    {
+      "id": "MINI02-DESIGN",
+      "paths": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "data/design-document-index.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ],
+      "owner": "Git integration single writer",
+      "request": "After independent review, link MINI-02 module/test/assessment/evidence; retain v0.9/PDF53. Record exact common denominator35721 and18 pupil rays, separate source/enclosure/exit/sensor/pose counts, nominal80m2 versus guard-effective79.1224m2/708 misses. State bounded JSON/schema/hash rejection, unknown physical values, source-change errors, stdout-only host operation, rerun recovery, all acceptance false. Carry next moving-exit joint-allocation/calibration/stop and SC01/02/04/08 measurement contract; no adopted small-head engine. Run design:check after synchronization."
+    },
+    {
+      "id": "MINI02-PROGRESS",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "docs/prompts/rockstaros-remaining-work-development.md"
+      ],
+      "owner": "Git integration single writer",
+      "request": "Record MINI-01 independent limited review passed and PR188 merged at bbefa875f166f17d335936ab63aef2697f8f7df7 with12/12 same-SHA main checks. Record MINI-02 local finite batch9/9 tests and lint only, independent review pending. Add the assessment/CLI usage, unchanged four user optical requirements, unresolved simultaneous/physical/low-glare/stop/manufacturing gates and next finite adapter task. Preserve independent document save, branch push, PR merge, same-SHA CI milestones; run project:update and full verify on fixed integrated candidate, not dirty shared checkout."
+    }
+  ],
+  "hashManifestPolicy": "Evidence embeds hashes of implementation files and preserved dependencies; lane embeds this evidence hash. Neither JSON embeds its own file hash; final external manifest covers all five files."
+}

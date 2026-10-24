@@ -3076,5 +3076,13 @@
     "newPriceSelected": false,
     "physicalAccepted": false,
     "productionAccepted": false
+  },
+  "mini02StudyImplementation": {
+    "decision": "bounded_implementation_no_new_requirement",
+    "baselineVersionRetained": "2.08",
+    "evidence": "docs/evidence/development-execution/mini-02-main-adoption.json",
+    "fourRequirementsAndDomainRetained": true,
+    "physicalAccepted": false,
+    "wholeUnitComplete": false
   }
 }
