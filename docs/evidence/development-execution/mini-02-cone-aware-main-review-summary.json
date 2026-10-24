@@ -103,5 +103,30 @@
     "No real optical emission, physical stop/readback, radiometry/eye safety, thermal, manufacture, provider or deployment operation.",
     "Root/Git retains shared design/index/project/status/README synchronization and exact final candidate fullverify/main/CI adoption."
   ],
-  "privacy": "Original/log/snapshot temp paths removed from public receipt; only digests/logical references/counts retained. No raw reports/private originals/secret values copied."
+  "privacy": "Original/log/snapshot temp paths removed from public receipt; only digests/logical references/counts retained. No raw reports/private originals/secret values copied.",
+  "completedAdoption": {
+    "pr": "https://github.com/k999ln/rock/pull/200",
+    "acceptedHead": "709aa5fce8fa810e2ed756b3b9c67d4959ff9b18",
+    "mainMergeSha": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+    "sourceReviewSha256": "22210200ccba2a02b2f437d9b656d85c565271e207bf6d25336e2a4c03185f32",
+    "metadataReviewSha256": "0928589732062340b9baacadf9c619b92942579a91ea25195a73391ca15d67ce",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2810,
+      "pass": 2809,
+      "fail": 0,
+      "skip": 1,
+      "runId": 40120091040,
+      "jobId": 120949554939,
+      "logSha256": "a1bb87439256fe7b59cd6b1dd857959dc87de9102ba6273f8ee2306b1eeb74dc",
+      "exactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "sourceFiveUnchanged": true,
+    "receiptOnlyFourReferenceException": true,
+    "original8116AndPortable5bcbSeparated": true,
+    "physicalAccepted": false,
+    "wholeMini02": false,
+    "publicDeployment": false
+  }
 }

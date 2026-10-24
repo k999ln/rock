@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.26",
-  "updatedAt": "2026-10-24T18:10:48.512465+00:00",
+  "version": "1.27",
+  "updatedAt": "2026-10-24T18:40:10.872392+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -2861,7 +2861,7 @@
       "historicalTwelveAtOriginalCapture": true,
       "currentElevenAndHistoricalReceiptsUnchanged": true,
       "jointEvolutionExplicit": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
-      "independentAdoptionMetadataReviewPending": true
+      "independentAdoptionMetadataReviewPending": false
     }
   },
   "esimRuntimeCommitAuthority": {
@@ -2884,7 +2884,7 @@
     "genericAttachmentAccepted": false,
     "independentRetentionAclExpiryAccepted": false,
     "productionD1Accepted": false,
-    "mainMerged": false
+    "mainMerged": true
   },
   "billingFinalSendAuthority": {
     "authority": "docs/sky-billing.md#billing-final-send-claim",
@@ -2968,8 +2968,27 @@
     ],
     "immutableElevenPreserved": true,
     "receiptFourRefsSanitized": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "physicalAccepted": false,
     "wholeMini02Accepted": false
+  },
+  "esimOwnerResponseDisclosure": {
+    "authority": "docs/rockstaros-complete-design.md#esim-owner-response-disclosure",
+    "toolDesign": "docs/sky-tools-complete-design.md#esim-owner-response-disclosure",
+    "billingDesign": "docs/sky-billing.md#esim-owner-response-disclosure",
+    "implementation": [
+      "lib/sky-linux-service-store.ts",
+      "app/api/sky/linux/route.ts"
+    ],
+    "tests": [
+      "tests/sky-linux-owner-response.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/esim-owner-response-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/esim-owner-response-main-review-summary.json",
+    "existingSchemaOnly": true,
+    "mainMerged": false,
+    "independentRetentionAclExpiryAccepted": false,
+    "genericAttachmentAccepted": false,
+    "productionD1Accepted": false
   }
 }

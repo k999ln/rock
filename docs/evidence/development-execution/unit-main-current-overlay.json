@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
-  "mainAtCapture": "7086309eac76533dd6efe358635a9be8a527ec17",
+  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
+  "mainAtCapture": "99ab093c09be22c2d65a677a031b27ceed7236fe",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -167,7 +167,7 @@
       "units": [
         "MINI-02"
       ],
-      "kind": "independent_source_pass_receipt_sanitized_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "7086309eac76533dd6efe358635a9be8a527ec17",
       "currentSixFiles": [
         {
@@ -198,17 +198,59 @@
       "reviewedFiveUnchanged": true,
       "receiptSanitizedReferences": 4,
       "sourceReviewSha256": "22210200ccba2a02b2f437d9b656d85c565271e207bf6d25336e2a4c03185f32",
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "physicalAccepted": false,
-      "reviewSummary": "docs/evidence/development-execution/mini-02-cone-aware-main-review-summary.json"
+      "reviewSummary": "docs/evidence/development-execution/mini-02-cone-aware-main-review-summary.json",
+      "pr": "https://github.com/k999ln/rock/pull/200",
+      "acceptedHead": "709aa5fce8fa810e2ed756b3b9c67d4959ff9b18",
+      "mainMergeSha": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+      "metadataReviewSha256": "0928589732062340b9baacadf9c619b92942579a91ea25195a73391ca15d67ce",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "ESIM_OWNER_RESPONSE_CANDIDATE",
+      "units": [
+        "ESIM-01",
+        "ESIM-08"
+      ],
+      "kind": "independent_limited_source_pass_portable_receipt_git_candidate",
+      "baseMain": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+      "sourceFiles": [
+        {
+          "path": "lib/sky-linux-service-store.ts",
+          "sha256": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139"
+        },
+        {
+          "path": "app/api/sky/linux/route.ts",
+          "sha256": "c79de07078b91384a8af2921447b62b53d4426d8676456c2c2e451027ccb6b4d"
+        },
+        {
+          "path": "tests/sky-linux-owner-response.test.mjs",
+          "sha256": "37ed015038a691cf6fc4786b31b8738b169d449eb139e2f9e8f1888d2f5becc2"
+        }
+      ],
+      "reviewSummary": "docs/evidence/development-execution/esim-owner-response-main-review-summary.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Fresh current owner/row/revision/raw payload HTTP workspace disclosure witness and known-commit bounded acknowledgement only",
+      "independentRetentionACLExpiryAccepted": false,
+      "genericAttachmentAccepted": false,
+      "productionD1Accepted": false
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "ESIM-01",
+      "state": "owner_response_exact3_source_pass_main_candidate",
+      "scope": "Current HTTP private-body disclosure boundary only; independent persisted retention ACL/expiry/genericattachment remain unaccepted",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "MINI-02",
-      "state": "cone_aware_finite_host_source_pass_integration_candidate",
+      "state": "cone_aware_finite_host_PR200_main_integrated",
       "scope": "Finite host cone-aware edge restriction/search only; no physical/stop/eye safety/manufacture/dispatch",
       "wholeUnitAccepted": false
     },
@@ -266,5 +308,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "ccec6d43341dd8f12326766311553a59bc301fae"
+  "previousCaptureMain": "7086309eac76533dd6efe358635a9be8a527ec17"
 }

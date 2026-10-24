@@ -1,3 +1,7 @@
+## eSIM owner-responseの採用候補
+
+ROCKはpublic HTTP workspace本文のcurrent owner/row/revision/raw bytes最終SQL投影を担当。既存実行grantと保存済み本人read、既知commit ackを分離し、古い本文fallback/再実行/削除をしない。source3不変、145回帰＋別localD1成功。独立retention ACL/expiry/genericattachment/issuer epoch・本番resolver/DB/課金は未受入。[契約](../sky-billing.md#esim-owner-response-disclosure)／[証拠](../evidence/development-execution/esim-owner-response-main-adoption.json)。統合主担当10。
+
 ## BILL-02最終claimの別候補
 
 主担当03、ROCKは既存store/orchestratorのfinal INSERT SELECT、EXTERNALはusage/clock/決済根拠、JOINTはD1/実Provider、OWNERは価格/同意/上限。原本exact4の独立限定passを記録し、同4pathのrecurring互換deltaは局所40pass・新hash独立再検収待ち。stop/revoke前commit拒否、unknown hold/no resend、二connection同cap/一意claimを検査。共通authority/issuer epoch/本番D1/実課金は未受入。次は固定全verifyと同headCI、独立main metadata review。[契約](../sky-billing.md#billing-final-send-claim)・[hash/検証](../evidence/development-execution/billing-final-send-main-adoption.json)。

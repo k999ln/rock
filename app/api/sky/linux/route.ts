@@ -34,16 +34,40 @@ function failure(error: unknown) {
     503,
   );
 }
+async function ownerResponse(
+  store: ReturnType<typeof linuxServiceStore>, owner: string,
+  expected?: Awaited<ReturnType<typeof store.command>>,
+) {
+  // A missing/unknown adapter is a denied projection, never a legacy body fallback.
+  try {
+    const view = typeof store.ownerResponse === 'function' ? await store.ownerResponse(owner, expected) : null;
+    return view?.workspace && view.access?.canRead === true
+      ? view : { workspace: null, access: null };
+  } catch { return { workspace: null, access: null }; }
+}
+async function mutationResponse(
+  store: ReturnType<typeof linuxServiceStore>, owner: string,
+  saved: Awaited<ReturnType<typeof store.command>>, status = 200,
+) {
+  const view = await ownerResponse(store, owner, saved);
+  return json({ accepted: true, revision: saved.revision, ...view,
+    ...(view.workspace ? {} : { reconciliation: 'refresh_required' }) }, status);
+}
 export async function GET(request: Request) {
   try {
     const config = env as unknown as LinuxServiceConfig,
       store = linuxServiceStore(database(), config);
-    const owner = await requestUser(request),
-      doc = await store.get(owner);
+    const owner = await requestUser(request);
     const terms = config.SKY_LINUX_SERVICE_TERMS_JSON
       ? parseLinuxTerms(JSON.parse(config.SKY_LINUX_SERVICE_TERMS_JSON))
       : null;
-    const access = doc ? await store.access(owner) : null;
+    // Collect unrelated metadata first, so the fresh disclosure projection is
+    // the last awaited operation before serialization of private workspace data.
+    const termsDigest = terms ? await sha256Hex(JSON.stringify(terms)) : null,
+      catalog = await store.catalog(),
+      eligibleOrders = await store.eligibleOrders(owner),
+      creatorEarnings = await store.creatorEarnings(owner);
+    const { workspace: doc, access } = await ownerResponse(store, owner);
     let currentMonthMaximumMinor: number | null = null;
     if (doc && access?.reason !== 'dispatch_schema_unsupported') {
       try { currentMonthMaximumMinor = linuxMonthTotal(doc.payload, linuxPeriod(Date.now())); }
@@ -53,11 +77,11 @@ export async function GET(request: Request) {
       plan: { name: 'Sky Linux 16', currency: 'USD', baseMinor: 1600 },
       enabled: config.SKY_LINUX_SERVICE_ENABLED === 'true',
       terms,
-      termsDigest: terms ? await sha256Hex(JSON.stringify(terms)) : null,
-      catalog: await store.catalog(),
-      eligibleOrders: await store.eligibleOrders(owner),
+      termsDigest,
+      catalog,
+      eligibleOrders,
       workspace: doc,
-      creatorEarnings: await store.creatorEarnings(owner),
+      creatorEarnings,
       access,
       currentMonthMaximumMinor,
     });
@@ -80,7 +104,7 @@ export async function POST(request: Request) {
       return json({ listing: await store.register(owner, value.listing) }, 201);
     }
     if (value.action === 'accept')
-      return json({ workspace: await store.accept(owner, value) }, 201);
+      return mutationResponse(store, owner, await store.accept(owner, value), 201);
     if (!['add', 'run', 'cancel', 'confirm'].includes(value.action))
       throw new LinuxServiceError('対応する操作を選んでください。', 400);
     const fields: Record<string, string[]> = {
@@ -92,13 +116,8 @@ export async function POST(request: Request) {
     if (!Number.isSafeInteger(value.revision) || value.revision < 0 ||
       Object.keys(value).length !== fields[value.action].length ||
       Object.keys(value).some(key => !fields[value.action].includes(key))) throw new SyntaxError();
-    return json({
-      workspace: await store.command(
-        owner,
-        value.revision,
-        value as LinuxCommand,
-      ),
-    });
+    return mutationResponse(store, owner,
+      await store.command(owner, value.revision, value as LinuxCommand));
   } catch (error) {
     return failure(error);
   }

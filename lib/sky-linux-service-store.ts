@@ -244,9 +244,47 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig,
     }
     return grant;
   }
+  /** Public disclosure is a fresh saved-version projection, not an execution
+   * permit. Keep internal get/event/worker paths independent from this view.
+   * A completed mutation may pass its result only as an expected version; it
+   * never supplies the response body or substitutes for current owner authority.
+   */
+  async function ownerResponse(owner: string, expected?: Document<LinuxWorkspace>, now = Date.now()) {
+    const denied = { workspace: null, access: null };
+    try {
+      const row = await db.prepare(`SELECT id,owner_user_id AS ownerId,revision,payload
+        FROM sky_linux_service_documents WHERE id=? AND kind='workspace' AND owner_user_id=?`)
+        .bind(await workspaceId(owner), owner)
+        .first<{ id: string; ownerId: string; revision: number; payload: string }>();
+      if (!row || !Number.isSafeInteger(row.revision) || row.revision < 0) return denied;
+      const doc = { ...row, payload: JSON.parse(row.payload) as LinuxWorkspace };
+      if (doc.ownerId !== owner || doc.payload?.ownerId !== owner ||
+        (expected && (expected.id !== doc.id || expected.ownerId !== owner ||
+          expected.revision !== doc.revision || JSON.stringify(expected.payload) !== row.payload))) return denied;
+      let access = linuxOwnerAccess(doc.payload, owner, doc.ownerId, now);
+      if (access.canRead !== true) return denied;
+      if (access.canExecute) {
+        try { await liveGrant(doc.payload, now); }
+        catch { access = { ...access, canExecute: false, reason: 'current_authority_required' }; }
+      }
+      // This is the disclosure linearization point, after asynchronous checks.
+      // Compare the original bytes, not a reserialized/normalized JSON value:
+      // even a revision-preserving replacement must invalidate the chosen view.
+      const current = await db.prepare(`SELECT id FROM sky_linux_service_documents
+        WHERE id=? AND kind='workspace' AND owner_user_id=? AND revision=?
+          AND payload COLLATE BINARY=?`)
+        .bind(row.id, owner, row.revision, row.payload).first<{ id: string }>();
+      return current?.id === row.id ? { workspace: doc, access } : denied;
+    } catch {
+      // Unknown/unavailable current read authority never revives a cached body.
+      // No data is deleted and a mutation already committed is not repeated.
+      return denied;
+    }
+  }
   return {
     get,
     catalog,
+    ownerResponse,
     async access(owner: string, now = Date.now()) {
       const doc = await get(owner);
       if (!doc) return null;
@@ -413,7 +451,9 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig,
         )
         .bind(id, owner, JSON.stringify(w), now)
         .run();
-      return (await get(owner))!;
+      // The insert is known to have succeeded. A later owner/read conflict must
+      // withhold the public body, not erase this mutation acknowledgement.
+      return { id, ownerId: owner, revision: 0, payload: w };
     },
     async activateSetup(
       owner: string,

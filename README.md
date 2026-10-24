@@ -1,3 +1,5 @@
+Sky Linuxの[保存本文の読取確認](docs/rockstaros-complete-design.md#esim-owner-response-disclosure)を限定候補へ更新。既存の`/sky/linux`で、本人の保存データ読取と新しい実行許可を区別します。保存後に本文を確認できない場合は再実行せず最新状態を読み戻し、APIは既知commitのackと本文なしを区別して返します。独立保存ACL/期限・本番DB/auth・公開の受入は別です。Mini有限cone探索はPR200でmainへ限定統合済みです。
+
 Miniの[有限cone-aware探索](docs/rockstaros-avocado-mini-complete-design.md#mini02-cone-aware-search)をhost研究候補へ追加。既存の有限joint solverへinside edgeだけを渡し、found・finite impossible・unknown・unavailableを区別します。[研究APIと実行例](docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md)からJSON入力で検査できます。物理出力・低眩しさ・眼安全・全域・停止・製造や公開の受入ではありません。Pro原本archiveはPR199でmainへ限定統合済みです。
 
 Pro原本archive候補はPR199で継続検証中です。既存の本人確認・保存同意・全bytes/SHA読戻し契約を保ち、test登録のlint互換修正を追加しました。新head CIと独立再検収が完了するまでmain採用は保留です。

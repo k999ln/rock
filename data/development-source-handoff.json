@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
+  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "7086309eac76533dd6efe358635a9be8a527ec17",
+    "mainAtCapture": "99ab093c09be22c2d65a677a031b27ceed7236fe",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -344,7 +344,10 @@
       "id": "ESIM-01",
       "title": "状態の直積と接続判定",
       "lane": "esim",
-      "ledgerRef": "data/development-unit-progress.json#ESIM-01"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-01",
+      "currentOverlayRefs": [
+        "ESIM_OWNER_RESPONSE_CANDIDATE"
+      ]
     },
     {
       "id": "ESIM-02",
@@ -386,7 +389,10 @@
       "id": "ESIM-08",
       "title": "証拠と受入の独立欄",
       "lane": "esim",
-      "ledgerRef": "data/development-unit-progress.json#ESIM-08"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-08",
+      "currentOverlayRefs": [
+        "ESIM_OWNER_RESPONSE_CANDIDATE"
+      ]
     },
     {
       "id": "BILL-01",
@@ -639,8 +645,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "ESIM-01",
+      "state": "owner_response_exact3_source_pass_main_candidate",
+      "scope": "Current HTTP private-body disclosure boundary only; independent persisted retention ACL/expiry/genericattachment remain unaccepted",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "MINI-02",
-      "state": "cone_aware_finite_host_source_pass_integration_candidate",
+      "state": "cone_aware_finite_host_PR200_main_integrated",
       "scope": "Finite host cone-aware edge restriction/search only; no physical/stop/eye safety/manufacture/dispatch",
       "wholeUnitAccepted": false
     },

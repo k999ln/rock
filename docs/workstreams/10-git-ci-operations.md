@@ -1,3 +1,7 @@
+## eSIM owner-response source3採用候補
+
+最新clean main99ab（Mini200/main同SHA6CI成功）基点、旧708と3base不変、独立PASS3hashを無変更採用。元4035 receiptはGit外保持、portable最小579fと分ける。正規type/lint・145回帰＋D1 1成功。source3以外に既存codeを混ぜず、Mini6/11/history18/Pro6とRootHEAD/index/旧197を保持。JSON/project/design/fixedscanner/canary→固定全verifyか最終同headCI→draftPR→独立metadata検収。独立ACL/expiry/genericattachment/本番未受入。[採用証拠](../evidence/development-execution/esim-owner-response-main-adoption.json)。Billingは別tree準備のみで本変更に未採用。
+
 ## Mini cone-aware source5＋portable receipt採用候補
 
 最新clean main708（Pro199）起点、旧ccecとの6base不変。数学/code/test/doc5hash固定、receiptの4local参照だけlogical IDへ置換し旧8116→新5bcbを記録。原本Git外保持、旧11/historical18/Pro6は不変。70試験→lint/type/JSON/design/scanner→固定全verify1→別draftPR/同headCI→独立metadata採用検収。Pro199は独立r2＋新2ec実verify2795pass/0fail/1skip・PR7CI/main708同SHA6CI成功を別要約へ。旧Root/197branchを混ぜず、eSIMtreeは独立で準備のみ。[証拠](../evidence/development-execution/mini-02-cone-aware-main-adoption.json)。
