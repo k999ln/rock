@@ -1,3 +1,28 @@
+<a id="pixel-main-worker-diagnostics"></a>
+## Pixel Linux workerの親寿命・任意診断（OS10 / PIXEL-MAIN-DIAGNOSTICS-01）
+
+CodeQL owner競合の修正: 旧候補fb70cfb5のHigh1（ownerのlstat後path再open）は失敗として保持。既存ownerは存在probeをせずNOFOLLOW/NONBLOCKで直接openし、ENOENT時だけwxで排他作成する。作成競合はEEXISTからreadへ戻らず診断不明に留める。同一fdのfstatでregular/本人uid/private/単一link/36bytesを確認、最大37bytesだけreadしてUUID一致を照合する。publish前にもowner名のdev/inodeと私有regular条件を確認し、観測した差替えなら診断を更新しない。private親directoryの前提は維持し、悪意ある同uid書込者に対する全filesystemのatomic leaseとは主張しない。FIFO/非regular/増大/owner差替えは診断unknownのまま、既存stdout/error/stopを変えない。9実filesystem反例＋foreign uidのfstat fixture、新旧hash/旧失敗/新review gateは[修正証拠](evidence/development-execution/pixel-owner-toctou-fix.json)。旧検収を新hashの受入に流用せず、同head CodeQL/独立delta検収を通す。
+
+目的・体験: 既存端末内文章jobを固定runnerで実行し、親worker終了時に計算子を残さず、停止/失敗の観測を同じjobの私有診断へ残す。診断の欠落を成功や許可へ換算しない。
+
+責任・禁止: ROCKは固定argv/env・限度・PID/start/boot・once/cancel fence・任意診断、EXTERNALはkernel/runtime、JOINTは同一候補Linux/Pixel受入、OWNERは端末導入/本人接続/費用。modelにTool/network/shell/root/課金権限を与えない。manager/HTTPS allowlist/model schema/service/lifecycle/prepare/buildを変更しない。
+
+入出力・版・上限: 既存jobId/input/instructions/modelSha256と任意modelIdは512tokens/180秒wall/170秒CPUの旧defaultを維持。追加契約はmaxOutputTokens整数1〜1024とdeadline整数を両方要求し、現在から120000ms以内・期限前を検証/guard後/直前spawnで再検査。不明field/片側指定を拒否。capabilitiesはlinux-text-capability/1、protocol1。公開manager action拡張なし。モデル/manifest実hash、core0/FSIZE1MiB/NOFILE128と固定実行を維持する。
+
+状態・失敗: started/onceで重複拒否、cancelを先に永続化。childは別process group、PR_SET_PDEATHSIG(SIGKILL)と親PID再検査を限度設定前に実行、失敗は起動前拒否。期限/abort要求とexit/signalは別欄で、SIGXCPUやOOMから因果を断言しない。非zero/空/過大成果は失敗。stopは確認後output削除・stop receiptを優先し、診断用output読込/hashをしない。
+
+保存・保持・削除: 既存私有job folderのworker diagnostics.jsonは16KiB、parent-diagnostics.jsonは8KiB、owner-only600/atomic rename。workerは非ブロックlockとregular/owner/mode/link/size/NOFOLLOW/NONBLOCKでFIFO/device/別ownerを拒否。parentは同一job owner claimで後続launcherの上書き拒否。入力/指示はbytes/hashのみ、raw本文/envなし。既存1MiB stdoutを同一inodeから最大64KiB/回・250ms間隔で有限観測、finish join50msで打切る。RSSは子履歴high-water、初回stdout観測はfirst-tokenではない。診断を復旧権威にせず、既存成果/backupの保持責任を拡張しない。
+
+offline・再送・不確定: 取得/再推論を追加しない。診断破損/lock競合/非regular/IO失敗はunknownのまま、既存stdout/error/停止を妨げない。未reapは成功とせず、古い診断で再実行しない。
+
+更新・互換・復旧・承認: 通常revertでsourceへ戻せるが既存jobを再実行/書換しない。旧default互換を試験する。選択移植serverは旧実機source/packageと別artifactで、worker一致から実機合格を継承しない。cache-only/native account/bridge/journalと端末更新は別batch。導入や外部作用はOWNER条件を満たすまで実施しない。
+
+合格・未決定: host診断27中26pass/歴史artifact比較skip1、parent4中3pass/Linux kernel skip1、Node33中32pass/既存platform skip1、bridge4pass。実Linux parent4caseは標準Ubuntu CIで実行しstep上限3分。callback反例試験はcallback event必須/2秒期限へ安定化し、worker保存hashは不変。固定全verify/同head CI/独立reviewはPR/checkpointで別記する。背景/同一Pixel package/品質・性能一般化/P02全体/full OSは各担当の同一artifact実測とOWNER条件で判断する。一般公開保留。
+
+[候補hash・保全・試験・未受入](evidence/development-execution/pixel-main-diagnostics-adoption.json)。
+
+OS runtimeとMiniは別検収scope。[Mini契約](rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection)。
+
 <a id="mini02-finite-joint-allocation"></a>
 ## MINI-02 可動・切替出口の有限同時割当（2026-10-24）
 

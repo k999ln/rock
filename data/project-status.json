@@ -9608,5 +9608,36 @@
     "backgroundExecutionAccepted": false,
     "pcUiReloadConfirmed": false,
     "publicDeployment": false
+  },
+  "pixelMainDiagnosticsCandidate": {
+    "batch": "PIXEL-MAIN-DIAGNOSTICS-01",
+    "evidence": "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
+    "runtimeReviewPending": true,
+    "hostTargetedPassed": true,
+    "candidateLinuxParentAccepted": false,
+    "candidatePhysicalAccepted": false,
+    "p02Complete": false,
+    "fullOsAccepted": false,
+    "mainMerged": false,
+    "ownerToctouDelta": {
+      "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
+      "oldHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
+      "status": "direct_open_host_pass_new_review_and_CI_pending",
+      "CodeqlSuppressed": false,
+      "intermediateHead": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
+      "localFullVerifyGate": "pending_after_review; unchanged timeout failures retained"
+    }
+  },
+  "mini02FiniteConeCandidate": {
+    "attempt": 2,
+    "reviewSummary": "docs/evidence/development-execution/mini-02-finite-cone-review-summary.json",
+    "exactFourPreserved": true,
+    "oldTwelvePreserved": true,
+    "independentSourceMustFix": 0,
+    "relatedTests": 56,
+    "integrationReviewPending": true,
+    "wholeMini02Accepted": false,
+    "physicalAccepted": false,
+    "mainMerged": false
   }
 }

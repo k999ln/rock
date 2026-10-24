@@ -1,0 +1,146 @@
+{
+  "schema": "rockstaros.pixel-owner-toctou-fix/1",
+  "recordedAt": "2026-10-24T13:51:04.585399+00:00",
+  "previousHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
+  "previousFailure": {
+    "head": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
+    "checkRunId": 120886068107,
+    "status": "completed",
+    "conclusion": "failure",
+    "severity": "high",
+    "newAlerts": 1,
+    "annotation": {
+      "path": "toolkits/sky-linux-local/pixel-server.mjs",
+      "line": 61,
+      "title": "Potential file system race condition"
+    },
+    "sourceFinding": "Path lstat followed by path readFile permits replacement before reopen",
+    "proposedFix": "Open once NOFOLLOW/NONBLOCK; fstat private regular owner single-link size36; descriptor read bounded37bytes; same owner ID check",
+    "proposedTests": [
+      "swap owner path after descriptor acquisition cannot redirect read",
+      "symlink/FIFO/directory/hardlink/oversize/foreign-owner refused without waiting",
+      "normal owner continuation/duplicate owner preservation and diagnostics IO failure routing retained"
+    ],
+    "patchSha256": "d21abc20aa897fb21aa270757f4c14d228aa27957e84b91f60297afc59639551",
+    "patchApplied": false,
+    "testsExecutedForProposal": false,
+    "mergePerformed": false,
+    "requiredNext": "Explicit exception to freeze, implement bounded regression, independent delta review and new-head CI/full verification"
+  },
+  "authorization": "Root explicitly assigned this minimum runtime/regression/affected-design delta; no CodeQL suppression or bypass",
+  "runtimePaths": [
+    "toolkits/sky-linux-local/pixel-server.mjs",
+    "tests/pixel-worker-parent-diagnostics.test.mjs"
+  ],
+  "oldHashes": {
+    "toolkits/sky-linux-local/pixel-server.mjs": "47df13cccb62f31b5b3f7811ae506b28fee8097e5ac89841af946f3a7d7fc953",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "5368025a78bd785809d6cae1f4b7a6d22e4721fde51d4d4677dca692a7a4b49f"
+  },
+  "newHashes": {
+    "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff"
+  },
+  "change": "Existing owner is opened directly once with O_RDONLY|O_NOFOLLOW|O_NONBLOCK. Only ENOENT permits atomic wx exclusive creation; a competing creator causes optional evidence to fail closed without reopen. Both paths fstat/validate and read or write their same descriptor; bounded37byte read, private regular owner/link/size checks, final publish name dev/inode validation remain.",
+  "failureContract": "All evidence exceptions remain optional. Job stdout/error/stop routing and manager-through-close source are unchanged. No new owner/runtime/network privilege.",
+  "boundary": "The private directory invariant remains required. Publication-time inode check rejects observed owner-name replacement; this is not a global atomic filesystem lease against a malicious same-uid writer.",
+  "regression": {
+    "cases": [
+      "owner name swapped to symlink after descriptor open",
+      "owner grows after descriptor stat",
+      "another creator appears between missing read-open and atomic wx create",
+      "FIFO",
+      "symlink",
+      "directory",
+      "hardlink",
+      "public permissions",
+      "oversize",
+      "foreign uid via fstat fixture"
+    ],
+    "actualFilesystemCases": 9,
+    "foreignUidFixture": "fstat proxy; no privileged chown",
+    "checks": [
+      "bounded37byte read",
+      "no owner path readFile",
+      "old diagnostic bytes unchanged on replacement/growth",
+      "external target unchanged",
+      "no temporary files remain",
+      "successful stdout retained"
+    ],
+    "existingCoverage": "normal close/signals, duplicate observation preservation, timeout/abort/spawn-error, evidence IO failure routing retained"
+  },
+  "negativeControl": {
+    "oldSourceSha256": "47df13cccb62f31b5b3f7811ae506b28fee8097e5ac89841af946f3a7d7fc953",
+    "oldExitCode": 1,
+    "newRegressionRejectsOldImplementation": true,
+    "fixtureOnlySourcePathOverride": true,
+    "logSha256": "48ce5f3f9ca81ede7b3715ca57e572a770a28e7bdab3577b2404f2de83df20f8"
+  },
+  "validation": {
+    "focusedNode": {
+      "tests": 34,
+      "passed": 33,
+      "skipped": 1,
+      "skipScope": "Existing protected system PID platform case"
+    },
+    "typecheck": "passed",
+    "lintProduct": "passed",
+    "fullVerify": "New candidate gate pending. Per Root, save local pass/new head CI and independent review checkpoint first; one necessary final local full verify may run after concurrent review/tests finish.",
+    "newHeadCI": "pending; both prior CodeQL failures retained; no suppression",
+    "localFullVerifyAttempts": [
+      {
+        "candidateHead": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
+        "proof": {
+          "exitCode": 1,
+          "inputCount": 4448,
+          "changedInputs": [],
+          "elapsedSeconds": 291,
+          "logSha256": "2724368c730ed19db93b01202ac26d98a4a02129387a8773a2d8acc53c5b2b03"
+        },
+        "failure": "Unchanged sky-activation timeout; no input drift",
+        "isolated": {
+          "exitCode": 0,
+          "elapsedSeconds": 12.58,
+          "sourceChanged": false
+        }
+      },
+      {
+        "candidateHead": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
+        "proof": {
+          "exitCode": 1,
+          "inputCount": 4448,
+          "changedInputs": [],
+          "elapsedSeconds": 352,
+          "logSha256": "7131ac6bb50e1c0e9c4237ead39d76aa604792009c56c154962d20f783b73b68"
+        },
+        "failure": "Unchanged AMC snapshot2 child spawnSync ETIMEDOUT; no input drift",
+        "isolated": {
+          "exitCode": 0,
+          "elapsedSeconds": 0.73,
+          "sourceChanged": false
+        }
+      }
+    ],
+    "failureCause": "Unresolved. Isolated unchanged tests pass; CPU/memory pressure not measured and not asserted."
+  },
+  "review": "Previous Game/eSIM receipts bind old hashes; Root assigns independent new-delta review before merge",
+  "preserved": "worker/Python suites/contract test/CI step/manager URL/model/schema/prepare/build/service lifecycle and Mini current4/old12 bytes unchanged",
+  "physicalAccepted": false,
+  "P02Complete": false,
+  "wholeMini02Accepted": false,
+  "mainMerged": false,
+  "intermediateAttempt": {
+    "head": "506a54c629d19bcf75c6bdd95243f9e1554d33b5",
+    "sourceHashes": {
+      "toolkits/sky-linux-local/pixel-server.mjs": "e0eb69f224cf85408d7d25ba6bebfc2b73c4ecf06344d219b2a8c4ccd56ee474",
+      "tests/pixel-worker-parent-diagnostics.test.mjs": "4d2be8f94e6d1c650d5cea61d23990a3763b633ce8a0736de903d5b4c2169c9f"
+    },
+    "codeql": {
+      "checkId": 120892388691,
+      "conclusion": "failure",
+      "severity": "high",
+      "path": "toolkits/sky-linux-local/pixel-server.mjs",
+      "line": 62,
+      "message": "Potential file system race condition at existing-owner open after EEXIST creation probe"
+    }
+  }
+}

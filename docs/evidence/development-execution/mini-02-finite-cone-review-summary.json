@@ -1,0 +1,76 @@
+{
+  "schema": "rockstaros.mini02-finite-cone.adoption-review-summary/1",
+  "sourcePlane": "Existing independent original and r2 review receipts in operator workspace; raw review/log paths not copied",
+  "originalReview": {
+    "path": "docs/evidence/development-execution/mini-02-finite-cone-review.json",
+    "sha256": "1502a1b6160db7de500890121e590a9a9e5cd52a0ec3179ccfa10f418994681f",
+    "unchanged": true,
+    "verdict": "changes_required"
+  },
+  "r2Review": {
+    "path": "docs/evidence/development-execution/mini-02-finite-cone-review-r2.json",
+    "sha256": "dd733155a8b0b0b6f40937d7bdcca73ea5f8c6f26eed67d79d1a05a9910a3ed4",
+    "verdict": "pass_limited_synthetic_witness_inspection",
+    "mustFix": 0,
+    "exactFourSha256": {
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+      "tests/avocado-mini-finite-cone.test.mjs": "0694108f883fae92dd58c80bdccffece4a87542dfc42605447217083e48e77b8",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+      "docs/evidence/development-execution/mini-02-finite-cone.json": "bdf2e67b94f9723e004e7b32cd6e4448ef07e54f091c11b9dfa63e69550ff39a"
+    }
+  },
+  "originalCandidateAdopted": false,
+  "findingResolution": {
+    "id": "MINI02-CONE-R1",
+    "status": "resolved_in_attempt2",
+    "change": "Normalize emission/axis; atan2(norm(cross),dot) preserves near-parallel components; extra64epsilon-radian comparison guard only enlarges unknown band.",
+    "exactCounterexample": {
+      "axisWorld": [
+        8.726646259971647e-09,
+        0,
+        1
+      ],
+      "halfAngleDeg": 2e-07,
+      "angularErrorDeg": 0,
+      "returnedAngleDeg": 5e-07,
+      "returnedStatus": "reallocation_required",
+      "insideRecoveryHalfAngleDeg": 1e-06,
+      "insideRecoveryStatus": "finite_cone_witness_passed"
+    }
+  },
+  "preservedTwelveSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27",
+    "tests/avocado-mini-joint-allocation.test.mjs": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3",
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "independentVerification": {
+    "relatedTests": 56,
+    "relatedPassed": 56,
+    "scalarOracleConditions": 120,
+    "independentHalfAngleConditions": 168,
+    "endpointConditions": 20,
+    "classificationDifferences": 0
+  },
+  "scope": "Exact attempt2 four-file candidate: bounded host inspection of complete finite joint witnesses under declared synthetic cone/error assumptions. MINI02-CONE-R1 is resolved for this candidate. This is not whole MINI-02, measured calibration, continuous coverage, real optical safety or runtime acceptance.",
+  "unacceptedConditions": [
+    "measured3D source/relay calibration and physical total uncertainty",
+    "cone-eligible global reallocation search",
+    "continuous domain/extended scene/real simultaneous viewers",
+    "arbitrary moving aperture/trajectory/latency/occlusion/radiometry/wave optics",
+    "physical visibility/low glare/eye safety/independent stop/PCB/manufacturing",
+    "new batch Git/main and same-SHA integration verification"
+  ],
+  "wholeMini02Accepted": false,
+  "physicalAccepted": false,
+  "mainAdoptedAtCreation": false,
+  "integrationReviewPending": true
+}
