@@ -3084,5 +3084,13 @@
     "fourRequirementsAndDomainRetained": true,
     "physicalAccepted": false,
     "wholeUnitComplete": false
+  },
+  "mini02JointAllocationImplementation": {
+    "decision": "bounded_host_implementation_no_new_requirement",
+    "baselineVersionRetained": "2.08",
+    "fourRequirementsAndDomainRetained": true,
+    "evidence": "docs/evidence/development-execution/mini-02-joint-main-adoption.json",
+    "physicalAccepted": false,
+    "wholeUnitComplete": false
   }
 }

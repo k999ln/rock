@@ -1,3 +1,7 @@
+## MINI-02有限joint-allocation4pathをmain起点へ採用（2026-10-24 / G04）
+
+main7e36c839起点で4path＋独立Pro reviewをbyte一致採用、旧8hash不変。13試験と独立432条件98成立/334不成立の限定pass/指摘0、4要求/domainを保持。最大128有限demand、排他pose、共有sourceと未探索/unsupportedを分離し、可視/低眩しさ/全域/実viewer/停止/製造/権限の全flagfalse。固定4434入力不変で全verify exit0、Node2662=2660pass/既存platform2skip、asset欠損0。PR/同SHA CI/統合検収は後続、OS WIP/価格/公開変更なし。根拠: docs/evidence/development-execution/mini-02-joint-main-adoption.json。
+
 ## MINI-02の検収済み有限studyをmain起点へ採用（2026-10-24 / G04）
 
 main bbefa875起点で5path＋reviewをbyte一致採用、Mini3hash/4要求/domainを保持。対象20（新9＋既存11）・lint/syntax成功。7候補35,721×18の独立再現pass/指摘0、unsupported2は未評価。光学/低眩しさ/人体/PCB/製造/同時viewerは未受入。固定4428入力不変で全verify exit0、Node2649=2647pass/既存platform2skip、asset欠損0。別PR/CIへ進む。OS診断WIP/料金/公開変更なし。根拠: docs/evidence/development-execution/mini-02-main-adoption.json。

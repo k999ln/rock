@@ -1,3 +1,7 @@
+## 2026-10-24 — MINI-02有限joint-allocation採用（要件/domain変更なし）
+
+main2.08/RQ01〜50、AMC/material/compose/gridと4要求を保持。排他的pose/共有sourceの有限同時割当だけを採用し、実光学/低眩しさ/全域/実同時viewer/停止/製造は未受入。[詳細](rockstaros-avocado-mini-complete-design.md#mini02-finite-joint-allocation)／[採用証拠](evidence/development-execution/mini-02-joint-main-adoption.json)。
+
 ## 2026-10-24 — MINI-02有限比較採用（要件/domain変更なし）
 
 main2.08/RQ01〜50と既存AMC/material/compose/gridを保持。4要求を縮めず固定domainのhost幾何比較だけを採用する。実光学・低眩しさ・人体・PCB/製造・同時viewerは未受入。[詳細](rockstaros-avocado-mini-complete-design.md#mini02-finite-optical-study)／[採用証拠](evidence/development-execution/mini-02-main-adoption.json)。

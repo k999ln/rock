@@ -1,0 +1,88 @@
+{
+  "schema": "rockstaros.mini02-joint.main-adoption/1",
+  "recordedAt": "2026-10-24T11:41:20.539015+00:00",
+  "baseMain": "7e36c8390f8321c87113b49a3069ab37ebd98e18",
+  "branch": "codex/mini02-joint-allocation-20261024",
+  "review": "docs/evidence/development-execution/mini-02-joint-allocation-review.json",
+  "reviewVerdict": "pass_limited_finite_joint_allocation",
+  "fourReviewedHashes": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27",
+    "tests/avocado-mini-joint-allocation.test.mjs": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3"
+  },
+  "preservedEightHashes": {
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "sourceBodiesChanged": false,
+  "scope": "Pure finite host joint assignment of declared demand/pose/source/exit sample slots; no runtime execution",
+  "requirementsRetained": [
+    "no image-location plate/membrane",
+    "few display units unresolved and separate from exit count",
+    "whole range including above/below; domain not shrunk",
+    "low glare unmeasured"
+  ],
+  "independentEnumeration": {
+    "cases": 432,
+    "possible": 98,
+    "impossible": 334,
+    "scope": "synthetic finite capacities, not optical throughput or physical feasibility"
+  },
+  "baselineReduction": {
+    "eyeTargetPairs": 35721,
+    "pupilRaysPerPair": 18,
+    "idealMissing": 0,
+    "guard10mmMissing": 708,
+    "separateFromFrameDemandSubset": true
+  },
+  "validation": {
+    "focused": "pending",
+    "fixedCandidateFullVerify": {
+      "exitCode": 0,
+      "inputCount": 4434,
+      "changedInputs": [],
+      "elapsedSeconds": 117,
+      "logSha256": "89d5c341982d5fbbcc68528c91c851a95dc7d130bf5c4649ec6a29dc2714e509",
+      "node": {
+        "tests": 2662,
+        "pass": 2660,
+        "fail": 0,
+        "skipped": 2
+      },
+      "skipScope": "existing platform-specific tests",
+      "assetMissing": 0
+    },
+    "focusedTests": 33,
+    "jointTests": 13,
+    "focusedPassed": 33,
+    "focusedFailed": 0,
+    "focusedLintExit": 0,
+    "syntaxExit": 0,
+    "postVerifyChanges": "Only result annotations in adoption receipt/status/project/README; four reviewed bodies and preserved8 unchanged; metadata/baseline/design rechecked."
+  },
+  "wholeUnitComplete": false,
+  "physicalVisibleLowGlareContinuousWholeDomainSimultaneousPhysicalViewersIndependentStopManufacturedGrantsAuthority": false,
+  "newPriceSelected": false,
+  "publicDeployment": false,
+  "generalLaunch": "held",
+  "rollback": "Normal revert of additive host module/test/docs; no persistent state migration or physical operation",
+  "next": "Same-head CI and integrated-diff independent review before normal main merge; next source/angle/trajectory/uncertainty contract requires separate exact assignment.",
+  "publication": {
+    "publicWorkflowPathsMatched": false,
+    "deployCalled": false
+  },
+  "priorGitSourcePreservation": {
+    "commit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "OSReviewedSourceFiles": 16,
+    "remoteFetchedBlobsReadBack": 19,
+    "mainOSRuntimeAdopted": false,
+    "wholeRootAdopted": false
+  }
+}

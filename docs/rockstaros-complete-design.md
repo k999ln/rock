@@ -1,3 +1,16 @@
+<a id="mini02-finite-joint-allocation"></a>
+## MINI-02 可動・切替出口の有限同時割当（2026-10-24）
+
+目的・体験・責任: 板膜なし、少ない表示部、上下を含む全範囲、低眩しさを保持し、同じframeの有限demandへ排他的poseと共有sourceを同時に割り当てられるかをhostで調べる。ROCKは厳密入力/検証/有限探索/証人と反例を担当、EXTERNALは実source/relay/機構、JOINTは校正・SC01/02/04/08測定、OWNERは用途/予算/快適上限を判断する。
+
+入出力・状態: 最大128KiB JSON、128demand/6device/各4pose/全96exit/16source、searchLimit1〜1024。profile/frame revision/hash、world-fixed scene、眼/target IDと座標、pose校正ラベル/整定/時刻/角度、宣言容量を入力する。1device/frame1poseを選びdemand→exit→共有sourceの整数flowで有限証人を出す。排他poseの和集合やsource容量の複製を同時成功にしない。foundは指定有限frameの証人、全探索impossibleは宣言有限仮定内のみ、search_incompleteは未決、unknown/stale/late/停止未確認はunsupported。
+
+保存・失敗・復旧・互換: 関数はnetwork/device/永続stateなし。同じ正当入力はID正規化とdigestで同結果へ収束し、未知field/重複ID/非有限/過大入力、profile/scene不一致やsource hash改変を拒否。失敗時は呼出側が旧入力/証拠を保持する。宣言stop/calibration/slotはsyntheticで真正認証や実測ではない。既存study/Mini3/旧laneの8hashを維持し、別関数の35,721×18固定縮退でideal0/10mm708欠損を保持。有限128demandを連続全域や実viewer同時性へ換算しない。通常revertで戻せ、DBや物理復旧はない。
+
+承認・合格・未決定: 全結果のphysicalVisible/lowGlare/continuousWholeDomain/simultaneousPhysicalViewers/independentStop/manufactured/grantsAuthorityはfalse。仮のsample容量を光束・明るさ・実同時光線へ換算しない。Pro独立reviewは13試験と432条件（98成立/334不成立）を再現し限定pass/指摘0。新統合候補で対象試験/固定verify/同SHA CIと統合検収を別に受ける。有限角度・軌道/整定・遮蔽・誤差/遅延、校正済み実source、実同時scene、放射/低眩しさ/人体、独立停止/残光/逆給電、PCB/製造は未受入。次の純host契約を別候補で定義し、未知を無制限や受入済みへ補完しない。料金/本人/job/保存と一般公開保留を維持する。
+
+[詳細契約](avocado-mini-r5/factory-development/mini-02-joint-allocation.md)／[独立review](evidence/development-execution/mini-02-joint-allocation-review.json)／[main採用・検証](evidence/development-execution/mini-02-joint-main-adoption.json)。元4pathの「独立検収・Gitは後続」は保存時点の記述で、後続状況はreview/main採用receiptを参照する。
+
 <a id="mini02-finite-optical-study"></a>
 ## MINI-02 固定domainの有限光学study（2026-10-24）
 
