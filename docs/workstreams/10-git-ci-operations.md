@@ -1,3 +1,11 @@
+## Pixel Linux診断attempt2の限定実機証拠
+
+[公開可能な要約](../evidence/development-execution/pixel-worker-diagnostics-physical-summary.json)と[元Eve独立検収の要約](../evidence/development-execution/pixel-worker-diagnostics-physical-review-summary.json)を参照。元receipt/reviewは原本SHAで結び、18添付・原文・privateRealm/私的state・絶対path・鍵/モデル/APKをmainへ保存しない。
+
+同一受入sourceでLinux親終了fixture4pass/skip0、今回1job成功（累計2）、worker wall8.569秒/child CPU12.635192秒/cgroup OOM差分0を観測。旧33jobを保持しtotal34、2models/10agents、model process0/sync停止。PCとPixelの公式exportファイル770bytesは同SHAで読戻した。これはexportファイル寸法で成果本文寸法ではない。
+
+PC UI reloadは画面証拠不足で未確認。背景実行・P02全体・全OS・原因解消/一般化した性能は未受入。限定job/export証拠を単体APKや全OS完成、main runtime移植、一般公開へ昇格させない。source16は別保全branch97044695、main7既存/9未追加の具体auditを維持し、この変更はruntimeコードを含めない。
+
 ## MINI-02 joint-allocation exact保存（G04 / ROCK）
 
 [採用証拠](../evidence/development-execution/mini-02-joint-main-adoption.json)で検収済み4body/旧8hash、固定候補verify、PR/CI/統合検収を区別する。OS診断WIP・Source完全D1baseは別gate。次のhost契約はRootの別割当で進める。

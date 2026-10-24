@@ -1,0 +1,26 @@
+{
+  "schema": "rockstaros.pixel-worker-diagnostics-physical-review-summary/1",
+  "recordedAt": "2026-10-24T12:34:50.522072+00:00",
+  "reviewedOriginalReceiptSha256": "8b8ed78d3012441ef6521b1ad19b0726b8772fb294823b6daefecefd6d70a45a",
+  "originalReviewSha256": "136e79ef018b12f6754e058492d3dc99548021d02d0a87960db052c85ce5358f",
+  "originalReviewStatus": "accepted_limited_physical_run_export_state_preservation",
+  "reviewerLane": "eve",
+  "independentOfOperatorAndImplementation": true,
+  "reviewScope": "Original operator evidence: same immutable candidate, one-job Linux fixture/export/state preservation only",
+  "originalProofArtifactsHashChecked": 18,
+  "originalCheckCount": 10,
+  "summaryPath": "docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json",
+  "thisSummaryIntegrationIndependentlyReviewed": false,
+  "directDeviceOrInferenceActionByThisPR": false,
+  "unitComplete": false,
+  "p02Complete": false,
+  "allOsAccepted": false,
+  "backgroundExecutionAccepted": false,
+  "newApkAcceptedByReview": false,
+  "publicDeployment": false,
+  "limitations": [
+    "PC UI reload not evidenced",
+    "No raw proof attachments committed; original digest is provenance, not a claim all original bytes are public",
+    "Original review is not acceptance of a changed runtime or full main OS port"
+  ]
+}

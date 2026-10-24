@@ -1,3 +1,5 @@
+Pixel Linuxの[限定実機証拠要約](docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json)を保存。1jobとPC/Pixel exportの一致を確認した範囲で、PC UI reload・背景実行・P02全体・全OSは未受入です。原文/私的state/鍵/モデル/APKは含めません。
+
 MINI-02の[有限同時光線割当](docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md)を採用。排他的poseと共有sourceの仮定内で証人/反例を返し、対象33試験と全verifyに合格したhost研究で、実光学・低眩しさ・全域・実viewer・停止・製造の受入ではありません。
 
 MINI-02の[固定domain光学study](docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md)を採用。板膜なし・少ない表示部・上下全範囲・低眩しさを保持した対象20試験と固定候補全verify成功の有限幾何比較で、実光学・人体・同時viewer・PCB/製造は未受入です。

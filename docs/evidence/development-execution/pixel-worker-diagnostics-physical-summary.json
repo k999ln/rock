@@ -1,0 +1,118 @@
+{
+  "schema": "rockstaros.pixel-worker-diagnostics-physical-summary/1",
+  "recordedAt": "2026-10-24T12:34:50.522072+00:00",
+  "sourcePlane": "Sanitized integration summary of operator receipt; original raw receipt and18 local proof attachments are excluded from this PR",
+  "originalReceipt": {
+    "pathInOperatorWorkspace": "docs/evidence/development-execution/pixel-worker-diagnostics-physical.json",
+    "sha256": "8b8ed78d3012441ef6521b1ad19b0726b8772fb294823b6daefecefd6d70a45a",
+    "includedInThisCommit": false
+  },
+  "originalIndependentReview": {
+    "pathInOperatorWorkspace": "docs/evidence/development-execution/pixel-worker-diagnostics-physical-review.json",
+    "sha256": "136e79ef018b12f6754e058492d3dc99548021d02d0a87960db052c85ce5358f",
+    "status": "accepted_limited_physical_run_export_state_preservation",
+    "includedInThisCommit": false
+  },
+  "scope": "One bounded synthetic job and same-job official exports on existing Pixel Linux/client path; separate from native full OS, background execution or service launch",
+  "device": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel"
+  },
+  "immutableReviewedSource": {
+    "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "serverSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6",
+    "diagnosticsAttempt": 2,
+    "sourcePreservationCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "sourceSnapshotsSaved": 16,
+    "mainSourceAudit": {
+      "existingPaths": 7,
+      "missingPaths": 9,
+      "mainRuntimeAdopted": false
+    }
+  },
+  "deployedPackage": {
+    "serverSha256": "dec18fa43eddddd60dc82240ff30bf0f4c2408ebc978b15f7aea7d0a464e5fcb",
+    "manifestSha256": "7f0223c18be30512b0e285dc3ebc2d117169c8ef1720543fbe2118b9da598d03",
+    "payloadReadbackMatched": true,
+    "sourceAndPackagedArtifactHashesAreDistinct": true
+  },
+  "linuxParentFixture": {
+    "executed": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "newModelJobs": 0,
+    "fixtureProcessesRemaining": 0,
+    "scope": "Actual Linux updated-worker parent/child death fixture; no model inference"
+  },
+  "jobMetrics": {
+    "newSubmissions": 1,
+    "cumulativePhysicalSubmissions": 2,
+    "successfulJobObserved": true,
+    "workerReportedMs": 8569,
+    "childSpawnObservedToExitMs": 8581.66643,
+    "parentObservedMs": 9296.672232,
+    "childCpuSeconds": 12.635192,
+    "cgroupOomDelta": {
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "comparisonLimit": "Single observed job; no performance SLA, quality generalization or background acceptance"
+  },
+  "officialExports": {
+    "fileBytes": 770,
+    "sha256": "18c6abab6a8f27a09c5a90fcff3e812db141dc7d1f7e41d9c87ca7c273bf6ca0",
+    "actualPcFileReadBack": true,
+    "retainedPixelCopyReadBack": true,
+    "sameFileHashMatched": true,
+    "rawContentIncluded": false,
+    "fileSizeIsNotBodySize": true
+  },
+  "finalState": {
+    "oldRunCount": 33,
+    "totalJobs": 34,
+    "models": 2,
+    "agents": 10,
+    "old33RunHashesUnchanged": true,
+    "modelsAgentsUnchanged": true,
+    "ownerAndPrivateIdentityUnchanged": true,
+    "activeJobs": 0,
+    "stopUnconfirmedJobs": 0,
+    "unknownStateJobs": 0,
+    "targetModelProcesses": 0,
+    "syncServiceActive": false,
+    "newKeyGrantModelRuntimeApk": 0
+  },
+  "unconfirmed": [
+    "PC UI reload: screen evidence insufficient",
+    "background execution",
+    "P02 whole-unit completion",
+    "full OS",
+    "root-cause resolution and generalized performance"
+  ],
+  "acceptance": {
+    "limitedPhysicalJobAndSameJobExport": true,
+    "unitComplete": false,
+    "p02Complete": false,
+    "allOsAccepted": false,
+    "backgroundExecutionAccepted": false,
+    "runtimeRootCauseResolved": false,
+    "mainRuntimeAdopted": false,
+    "newPriceOrBillingEnabled": false,
+    "publicDeployment": false,
+    "generalLaunch": "held"
+  },
+  "privacyExclusions": [
+    "18 raw proof attachments and duplicate logs",
+    "raw prompt/output/export body",
+    "job/thread/agent/account identifiers",
+    "privateRealm and private state/configuration",
+    "identity/device/account fingerprints",
+    "absolute operator paths and private URLs",
+    "models/weights/APKs/images/keys/credentials"
+  ],
+  "validation": "Source receipt/review digest and exact source pins checked; scoped values crosschecked. Summary integration itself requires independent adoption review."
+}

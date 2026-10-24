@@ -9588,5 +9588,25 @@
     "wholeUnitComplete": false,
     "generalLaunch": "held",
     "fullVerifyExit": 0
+  },
+  "pixelWorkerDiagnosticsPhysicalSummary": {
+    "status": "original_independent_limited_pass_sanitized_summary_integration_pending",
+    "evidence": "docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json",
+    "reviewSummary": "docs/evidence/development-execution/pixel-worker-diagnostics-physical-review-summary.json",
+    "originalReceiptSha256": "8b8ed78d3012441ef6521b1ad19b0726b8772fb294823b6daefecefd6d70a45a",
+    "originalReviewSha256": "136e79ef018b12f6754e058492d3dc99548021d02d0a87960db052c85ce5358f",
+    "linuxFixturePassed": 4,
+    "linuxFixtureSkipped": 0,
+    "newSuccessfulJobs": 1,
+    "cumulativePhysicalSubmissions": 2,
+    "exportFileBytes": 770,
+    "rawAttachmentsIncluded": 0,
+    "mainRuntimeAdopted": false,
+    "unitComplete": false,
+    "p02Complete": false,
+    "allOsAccepted": false,
+    "backgroundExecutionAccepted": false,
+    "pcUiReloadConfirmed": false,
+    "publicDeployment": false
   }
 }
