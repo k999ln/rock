@@ -1,0 +1,130 @@
+{
+  "schema": "rockstaros.reviewed-runtime-main-integration/1",
+  "recordedAt": "2026-10-24T14:47:29.932249+00:00",
+  "sourcePlane": "Allowlisted summaries of original independent reviews in operator workspace; originals/raw logs/private paths not copied",
+  "reviews": [
+    {
+      "originalPath": "docs/evidence/development-execution/pixel-main-diagnostics-review-r2.json",
+      "originalSha256": "fdac7292a8f03261b4e0df4fe2fe445565aaa9531b7cffb81bf69483716e5306",
+      "originalIncluded": false,
+      "reviewerLane": "Game",
+      "originalStatus": "pass_limited_owner_descriptor_delta_final_full_verify_and_same_head_ci_pending",
+      "mustFix": 0,
+      "head": "83a04433ba90071aa5fe44f4b5b86af22bcd50e5",
+      "nineDeltaHashes": {
+        "data/design-document-index.json": "9b7a2f4adb155f8aac65af0246a804bb3787d03a3768b27f4ddd653d917ad5d4",
+        "data/project-status.json": "7e3c26e2cd91b1c6fc883d322122b40ebe9cbd7f95b0690cfd220e5a0d3423cf",
+        "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json": "1c5173c432abeee93d63d15b2008cc225a53ee5b4e93c482f1cc487d52f70bb4",
+        "docs/evidence/development-execution/pixel-owner-toctou-fix.json": "20486d6f0b446a989bb51449a0e32976826146702505c363fce171cd377ec42b",
+        "docs/rockstaros-complete-design.md": "0f5c378735d16c4c9036db70e81dc77db5b52c75961480372e1a4b273cd48ddf",
+        "docs/sky-tools-complete-design.md": "a8d0f2b627db4df2dae7312c1d9eca6971ead636bdce82a2cc5a5b3ba3a2441e",
+        "project.md": "16f0910dbf1b54fee9ef86ff8bc6e87998174bba49536d3d83e24856c258f6ca",
+        "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+        "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb"
+      },
+      "scope": "Independent limited owner descriptor/direct-open delta and mechanical Mini void change; original receipt pending verification wording is superseded only by final Eve/Root decision below"
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/pixel-mini-final-main-review.json",
+      "originalSha256": "dc46f2dcf1b41b15d9ad8a680f71149fdb62e4669fcba55485abc6169459fe6b",
+      "originalIncluded": false,
+      "reviewerLane": "Eve",
+      "originalStatus": "pass_final_head_metadata_evidence_linux_ci",
+      "mustFix": 0,
+      "head": "83a04433ba90071aa5fe44f4b5b86af22bcd50e5",
+      "nineDeltaHashes": {
+        "data/design-document-index.json": "9b7a2f4adb155f8aac65af0246a804bb3787d03a3768b27f4ddd653d917ad5d4",
+        "data/project-status.json": "7e3c26e2cd91b1c6fc883d322122b40ebe9cbd7f95b0690cfd220e5a0d3423cf",
+        "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json": "1c5173c432abeee93d63d15b2008cc225a53ee5b4e93c482f1cc487d52f70bb4",
+        "docs/evidence/development-execution/pixel-owner-toctou-fix.json": "20486d6f0b446a989bb51449a0e32976826146702505c363fce171cd377ec42b",
+        "docs/rockstaros-complete-design.md": "0f5c378735d16c4c9036db70e81dc77db5b52c75961480372e1a4b273cd48ddf",
+        "docs/sky-tools-complete-design.md": "a8d0f2b627db4df2dae7312c1d9eca6971ead636bdce82a2cc5a5b3ba3a2441e",
+        "project.md": "16f0910dbf1b54fee9ef86ff8bc6e87998174bba49536d3d83e24856c258f6ca",
+        "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+        "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb"
+      },
+      "scope": "Independent final metadata/evidence/privacy/hash scope plus actual exact-head Linux CI",
+      "finalVerification": {
+        "plane": "same_final_head_Linux_CI",
+        "workflowRunId": 40101765349,
+        "jobId": 120895208832,
+        "logSha256": "2898e55b974e01121204b4a97489af3c41f4edf7b498fdb8fa2baf320304f8d9",
+        "npmRunVerifyActuallyExecuted": true,
+        "allEightChecksSuccess": true,
+        "node": {
+          "tests": 2689,
+          "passed": 2688,
+          "failed": 0,
+          "skipped": 1
+        },
+        "linuxParent": {
+          "executed": 4,
+          "passed": 4,
+          "skipped": 0,
+          "actualKernelChildDeathCase": "ok"
+        },
+        "diagnostics": {
+          "executed": 27,
+          "passed": 26,
+          "skipped": 1,
+          "skipScope": "Optional historical worker artifact comparison"
+        },
+        "workApiAssertions": 1678,
+        "csvAssertions": 385,
+        "rootExplicitDecision": "Same-final83a Linux CI is final verification; no duplicate local whole verify",
+        "finalHostFullVerifyExecuted": false,
+        "pastHostTimeoutsPreserved": true,
+        "hostSuccessClaimed": false
+      }
+    },
+    {
+      "originalPath": "docs/evidence/development-execution/esim-runtime-save-revalidation-review-r2.json",
+      "originalSha256": "185728ed3f1db9027a7723cb4b109ee723a0abf241b69674577d0efdaba533bf",
+      "originalIncluded": false,
+      "reviewerLane": "Smith",
+      "originalVerdict": "PASS_SCOPED",
+      "mustFix": 0,
+      "attempt": 2,
+      "sourceHashes": {
+        "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+        "lib/sky-linux-service-store.ts": "51363eeef57cebd42555607e0e463748b11c6b3660da729cb9ea9ee96575fabe",
+        "lib/sky-linux-service.ts": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+        "app/api/sky/linux/route.ts": "dc672181feb50a2c030f2582851b76c48966b575b367aa3dc13d37531948b131",
+        "tests/sky-linux-service.test.mjs": "9bbe7f9e69ba260e2649b8aaba1da0e90ac0fa7ff9298c329893288ed50b3326",
+        "tests/rockstar-service-setup.test.mjs": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8"
+      },
+      "primaryReceiptPath": "docs/evidence/development-execution/esim-runtime-save-revalidation.json",
+      "primaryReceiptSha256": "c643b31be46ba802e68ac74958bff56d946d461876d7062c8d91bf1d5d693990",
+      "primaryReceiptIncluded": false,
+      "previousReviewPath": "docs/evidence/development-execution/esim-runtime-save-revalidation-review.json",
+      "previousReviewSha256": "82fc6f94ef8ff9e68f30302192e78f918bcf6b180e77353c17b9b1e48aebadae",
+      "previousReviewVerdict": "changes_required",
+      "closedFindingIds": [
+        "ESIM-RUNTIME-REVIEW-01",
+        "ESIM-RUNTIME-REVIEW-02"
+      ],
+      "scope": "Existing Linux add/run/claim/heartbeat read-to-commit authority fence; canonical listing contradictions deny and package latest generation/tie/expiry cannot fall back to old positives",
+      "independentProbes": 17,
+      "relatedFocusedTests": 44,
+      "limits": [
+        "existing authenticated owner-session retention only; independent persisted ACL/expiry and real Linux HTTP integration unaccepted",
+        "production migration/trigger provenance and cross-instance trusted-config revocation remain separate",
+        "generic signed attachment/issuer-contract-device binding, activation/outbox/collection/provider remain outside slice",
+        "no production D1, paid provider, device/OS acceptance or publication"
+      ]
+    }
+  ],
+  "PR193Outcome": {
+    "pr": "https://github.com/k999ln/rock/pull/193",
+    "acceptedHead": "83a04433ba90071aa5fe44f4b5b86af22bcd50e5",
+    "mainMergeSha": "9a617fabfef48d82d9b3142680bb00df71776687",
+    "sourceTreeUnchangedAtMerge": true,
+    "normalMerge": true,
+    "supersededPlan": "Commit-time metadata/PR text saying final local verify pending is historical. Final same-head Linux CI closes final verification; no final host-success claim.",
+    "postmergeMainCi": "Separate Git checkpoint; not inferred from accepted-head checks"
+  },
+  "privacy": "No raw log/artifact body, original thread/account/device identifiers, secrets/models/APKs/private state or absolute operator paths copied",
+  "physicalAcceptedByTheseReviews": false,
+  "P02Complete": false,
+  "wholeMini02Complete": false
+}

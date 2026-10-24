@@ -1,3 +1,7 @@
+## eSIM runtime exact6のmain採用候補（2026-10-24 / G04）
+
+最新main9a617fabで同6基底がd150と不変と確認、Smith/Astra r2 PASS_SCOPED/mustFix0の6本文をhash維持で採用。read-to-commit batch fence、listing否定/矛盾とpackage最新世代/tie/expiry優先、owner-session保持・既存予約/late CPUを維持。局所122pass/型/全体lint成功。独立17probe/44passと実local D1拒否rollback/3retry証拠を限定継承。汎用attachment/独立保存ACL期限/本番D1/実課金は未受入。PR193 final Game/EveとeSIM r2原本hashを秘密/path/logなし要約で保存、PR193最終検証をsame83a Linux CI successへ同期しhost成功としない。次: design/metadata→fixed fullverify1回（同headLinuxCIも可）→別PR/CI→独立採用metadata検収。Root HEAD/index/journal非操作。根拠 docs/evidence/development-execution/esim-runtime-main-adoption.json、docs/evidence/development-execution/reviewed-runtime-main-integration.json。
+
 ## PR193 owner直接openへ最終整理（2026-10-24 / G04・OS10）
 
 506a54c6でもCodeQLがEEXIST判定後openをHighとして指摘。既存owner直接NOFOLLOW/NONBLOCK open→ENOENT時のみatomic wx作成へ変更し、競合作成は再openせず不明へ。同一FD fstat/37byte/owner名inode確認は維持、10filesystem/uidケースと既存回帰は局所34中33pass/既存skip1。旧candidateの全verify2試行は入力変更0だが未変更activation1timeout、次AMC2 spawnSync ETIMEDOUTで失敗。対象は各単独成功（AMC2は0.73秒）、原因未確定・CPU/メモリ未測定。期限/fixtureを緩和せず同候補反復停止。次は新head保存/CIとRoot割当Game最終hash再検収を先行し、必要最終fullverifyは並行review/tests終了後の別gate。CodeQL抑制/mergeなし。根拠 docs/evidence/development-execution/pixel-owner-toctou-fix.json。

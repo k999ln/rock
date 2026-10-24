@@ -1,3 +1,7 @@
+## eSIM/Linux現行authorityの保存fence（限定6path）
+
+主担当03、ROCK API/store/read-set/CAS、EXTERNALは支払/回線/鍵の根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。独立Smith/Astra r2のexact6を無変更で採用。listing矛盾/最新package否定・期限・setup/grant変化を同一D1 batchで拒否し、job/予約/lease/receiptの一部保存を防ぐ。既存owner-session read/export、888c/owner/revision/late CPUを保持。122局所/型/lint成功、旧local D1 rollback/3retry証拠digestを確認。汎用attachment/独立ACL期限/本番D1/実Provider・公開は未受入。[11項目契約](../rockstaros-complete-design.md#esim-runtime-commit-authority)・[採用hash/検証/次](../evidence/development-execution/esim-runtime-main-adoption.json)。次は固定候補verify/同headCIと独立main採用metadata検収。PR193はsame-final83a Linux CI成功を最終検証としてmain9a617fabへ統合済み、最終host全verify待ちを次作業としない。
+
 # Wallet / Billing / Providers
 
 ## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）

@@ -275,7 +275,37 @@ export async function createLinuxWorkspace(
     receipts: [],
   };
 }
+/** Dispatch consumes only this supported saved schema. No cast upgrades history. */
+export function assertLinuxDispatchWorkspace(w: LinuxWorkspace) {
+  if (!w || w.schema !== 'sky.linux-workspace/1' ||
+    typeof w.ownerId !== 'string' || !w.ownerId || typeof w.id !== 'string' ||
+    !['sandbox', 'live'].includes(w.mode) ||
+    !Number.isSafeInteger(w.epoch) || w.epoch < 1 ||
+    !/^[a-f0-9]{64}$/.test(w.contractDigest) ||
+    !w.issuer || !['active', 'suspended', 'terminated', 'unknown'].includes(w.issuer.state) ||
+    !Number.isSafeInteger(w.issuer.sequence) || !Number.isSafeInteger(w.issuer.validUntil) ||
+    !Array.isArray(w.jobs) || !Array.isArray(w.invoices) || !Array.isArray(w.attachments) ||
+    !Array.isArray(w.receipts) || !Array.isArray(w.serviceWindows) ||
+    w.jobs.some(j => !j || !['queued', 'running', 'review', 'completed', 'cancel_requested', 'cancelled', 'unknown'].includes(j.state) ||
+      [j.reservedMinor, j.cpuLimitMs, j.cpuMs, j.computeMinor, j.authorMinor, j.leaseUntil]
+        .some(n => !Number.isSafeInteger(n) || n < 0)) ||
+    w.invoices.some(i => !i || !['open', 'paid', 'reversed'].includes(i.state) || !Number.isSafeInteger(i.dueAt)))
+    throw new LinuxServiceError('保存形式を確認してください。実行を停止し、保存データを保持しています。');
+  parseLinuxTerms(w.terms);
+}
+
+/** Owner/ACL binding is independent of dispatch schema and billing readiness.
+ * Arguments are resolved by the existing server session and owner-scoped row.
+ */
+export function linuxOwnerAccess(w: LinuxWorkspace, owner: string, recordOwner: string, now: number) {
+  const retained = typeof owner === 'string' && owner.length > 0 && recordOwner === owner && w?.ownerId === owner;
+  if (!retained) return { canRead: false, canExport: false, canExecute: false, reason: 'owner_required', dataRetained: true };
+  try { return linuxAccess(w, now); }
+  catch { return { canRead: true, canExport: true, canExecute: false, reason: 'dispatch_schema_unsupported', dataRetained: true }; }
+}
+
 export function linuxAccess(w: LinuxWorkspace, now: number) {
+  assertLinuxDispatchWorkspace(w);
   const debt = w.invoices.some(
     (i) => i.state === 'reversed' || (i.state === 'open' && i.dueAt <= now),
   );
@@ -383,6 +413,9 @@ export async function linuxCommand(
   catalog: LinuxListing[],
   now: number,
 ) {
+  assertLinuxDispatchWorkspace(original);
+  if (!command || !['add', 'run', 'claim', 'heartbeat', 'cancel', 'confirm', 'close-month'].includes(command.action))
+    throw new LinuxServiceError('対応する操作を選んでください。', 400);
   const w: LinuxWorkspace = structuredClone(original);
   const listing = (id: string) =>
     catalog.find((x) => x.id === id && x.active) ??
@@ -572,6 +605,7 @@ export async function applyLinuxEvent(
   event: LinuxEvent,
   now: number,
 ) {
+  assertLinuxDispatchWorkspace(original);
   const w = structuredClone(original),
     p = event.payload;
   linuxInt(event.issuedAt);

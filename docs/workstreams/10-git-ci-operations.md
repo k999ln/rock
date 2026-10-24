@@ -1,3 +1,7 @@
+## eSIM/Linux現行authorityの保存fence（限定6path）
+
+主担当03、ROCK API/store/read-set/CAS、EXTERNALは支払/回線/鍵の根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。独立Smith/Astra r2のexact6を無変更で採用。listing矛盾/最新package否定・期限・setup/grant変化を同一D1 batchで拒否し、job/予約/lease/receiptの一部保存を防ぐ。既存owner-session read/export、888c/owner/revision/late CPUを保持。122局所/型/lint成功、旧local D1 rollback/3retry証拠digestを確認。汎用attachment/独立ACL期限/本番D1/実Provider・公開は未受入。[11項目契約](../rockstaros-complete-design.md#esim-runtime-commit-authority)・[採用hash/検証/次](../evidence/development-execution/esim-runtime-main-adoption.json)。次は固定候補verify/同headCIと独立main採用metadata検収。PR193はsame-final83a Linux CI成功を最終検証としてmain9a617fabへ統合済み、最終host全verify待ちを次作業としない。
+
 ## Pixel診断のmain候補とMini r2（OS10 / OS-01 / P02）
 
 主担当07 Android、Gitは候補/共有metadata/Gitの単独writer。ROCKは固定worker/launcher親寿命・任意診断、EXTERNALはkernel、JOINTは同一候補Linux/Pixel、OWNERは導入/接続/費用。6runtime/test＋bounded Python CI stepを移植、manager/URL/model/prepare/build/service hash固定。[候補証拠](../evidence/development-execution/pixel-main-diagnostics-adoption.json)にコマンド/結果/初回host試験反例/保全hash、[OS契約](../rockstaros-complete-design.md#pixel-main-worker-diagnostics)に11項目を記録。次はexact候補の独立review、CI Linux親終了4case、fixed full verifyのGit記録。host skipをLinux成功に換算しない。新serverは旧実機packageと別artifact。cache/native account/背景/P02全体/full OS未受入。Mini r2はaccepted4hash/旧12保持の別scopeで、[review要約](../evidence/development-execution/mini-02-finite-cone-review-summary.json)を参照。実光学/MINI02全体未受入。原計画/元reviewはoperator workspaceのdigest参照、raw資料/ログをコピーしない。

@@ -1,3 +1,7 @@
+## eSIM/Linux保存時authorityの限定採用
+
+回線profile・本人/利用権・OS/client導入を分け、既存利用権からのLinux commandは[同一commitの現行authority契約](../rockstaros-complete-design.md#esim-runtime-commit-authority)で再照合する。新しい同意/請求/料金を作らず、既存月888c・owner/revision・予約/late CPUを保持。owner-sessionでの保存データread/exportは独立永続ACL/期限判断とは区別し、汎用attachment・本番D1・実課金は別gate。[根拠](../evidence/development-execution/esim-runtime-main-adoption.json)。
+
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](../sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。
 
 # 共通システムと契約

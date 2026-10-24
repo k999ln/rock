@@ -2,6 +2,9 @@ import { skyToolPackageStore } from './sky-tool-package-store.ts';
 import { skyCommerceStore } from './sky-commerce-store.ts';
 import {
   resolveEsimCloudGrant,
+  captureEsimAuthorityReads,
+  currentEsimPackageReview,
+  ESIM_COMMIT_NOW_SQL,
   type EsimCloudConfig,
 } from './esim-cloud-grant.ts';
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
@@ -14,6 +17,8 @@ import {
   applyLinuxEvent,
   createLinuxWorkspace,
   linuxCommand,
+  assertLinuxDispatchWorkspace,
+  linuxOwnerAccess,
   makeLinuxListing,
   parseLinuxTerms,
   LinuxServiceError,
@@ -35,7 +40,9 @@ export type LinuxServiceConfig = EsimCloudConfig &
     SKY_LINUX_SERVICE_TERMS_JSON?: string;
     SKY_LINUX_EVENT_KEYS_JSON?: string;
   };
-export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
+/** Optional dependency is server composition only; never passed from an HTTP body. */
+export function linuxServiceStore(db: Database, config: LinuxServiceConfig,
+  dependencies: { grant?: typeof resolveEsimCloudGrant } = {}) {
   async function document<T>(
     id: string,
     kind: string,
@@ -56,56 +63,59 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
   const workspaceId = async (owner: string) =>
     `workspace:${await sha256Hex(owner)}`;
   async function get(owner: string) {
-    return document<LinuxWorkspace>(await workspaceId(owner), 'workspace');
+    const doc = await document<LinuxWorkspace>(await workspaceId(owner), 'workspace');
+    return doc && doc.ownerId === owner && doc.payload?.ownerId === owner ? doc : null;
   }
-  async function catalog(): Promise<LinuxListing[]> {
-    const rows = await db
+  async function catalog(readDb: Database = db, now = Date.now()): Promise<LinuxListing[]> {
+    const rows = await readDb
       .prepare(
         `SELECT payload FROM sky_linux_service_documents WHERE kind='listing' ORDER BY updated_at DESC LIMIT 200`,
       )
       .all<{ payload: string }>();
-    const registry = await skyToolPackageStore(db).listRegistry();
-    const reviews = await db
-      .prepare(
-        `SELECT payload FROM sky_linux_service_documents WHERE kind='review'`,
-      )
-      .all<{ payload: string }>();
-    const admitted = reviews.results.map(
-      (r) =>
-        JSON.parse(r.payload) as {
-          listingId: string;
-          digest: string;
-          decision: string;
-          expiresAt: number;
-        },
-    );
-    return rows.results
-      .map((r) => JSON.parse(r.payload) as LinuxListing)
-      .filter(
-        (l) =>
-          l.active &&
-          admitted.some(
-            (r) =>
-              r.listingId === l.id &&
-              r.digest === l.digest &&
-              r.decision === 'approved' &&
-              r.expiresAt > Date.now(),
-          ) &&
-          registry.some(
-            (p) =>
-              p.packageKey === l.packageKey &&
-              p.manifestSha256 === l.packageSha256 &&
-              p.installable,
-          ),
-      );
+    const registry = await skyToolPackageStore(readDb).listRegistry();
+    // Exactly one relevant canonical listing review is supported. Secondary
+    // rows (including negative rows owned by a reviewer, not the buyer) are
+    // contradictory authority, never a historical positive fallback. The row owner
+    // is original-reviewer provenance; the existing upsert can name a later
+    // authorized reviewer in payload without changing that original row owner.
+    const reviews = await readDb.prepare(`SELECT d.id,d.owner_user_id AS ownerId,d.revision,d.payload,
+        json_extract(d.payload,'$.listingId') AS listingId,json_extract(d.payload,'$.digest') AS digest,
+        CASE WHEN d.id='review:'||json_extract(d.payload,'$.listingId')
+          AND (SELECT count(*) FROM json_each(d.payload))=6
+          AND json_type(d.payload,'$.listingId')='text' AND json_type(d.payload,'$.digest')='text'
+          AND json_type(d.payload,'$.decision')='text' AND json_extract(d.payload,'$.decision')='approved'
+          AND json_type(d.payload,'$.reviewerId')='text' AND json_extract(d.payload,'$.reviewerId')<>''
+          AND d.owner_user_id<>''
+          AND json_type(d.payload,'$.reviewedAt')='integer' AND json_extract(d.payload,'$.reviewedAt')>=0
+          AND json_extract(d.payload,'$.reviewedAt')<=MAX(?,${ESIM_COMMIT_NOW_SQL})
+          AND json_type(d.payload,'$.expiresAt')='integer' AND json_extract(d.payload,'$.expiresAt')>MAX(?,${ESIM_COMMIT_NOW_SQL})
+          AND NOT EXISTS(SELECT 1 FROM sky_linux_service_documents other WHERE other.kind='review'
+            AND other.id<>d.id AND json_extract(other.payload,'$.listingId')=json_extract(d.payload,'$.listingId'))
+        THEN 1 ELSE 0 END AS admissible
+      FROM sky_linux_service_documents d WHERE d.kind='review'`)
+      .bind(now, now).all<{ id: string; listingId: string | null; digest: string | null; admissible: number }>();
+    const packages = new Map<string, boolean>();
+    const admitted: LinuxListing[] = [];
+    for (const row of rows.results) {
+      const listing = JSON.parse(row.payload) as LinuxListing;
+      const relevant = reviews.results.filter(r => r.id === `review:${listing.id}` || r.listingId === listing.id);
+      if (!listing.active || relevant.length !== 1 || relevant[0].admissible !== 1 ||
+        relevant[0].digest !== listing.digest || !registry.some(p => p.packageKey === listing.packageKey &&
+          p.manifestSha256 === listing.packageSha256 && p.installable)) continue;
+      const pin = `${listing.packageKey}:${listing.packageSha256}`;
+      if (!packages.has(pin)) packages.set(pin, await currentEsimPackageReview(readDb, listing.packageKey, listing.packageSha256, now));
+      if (packages.get(pin)) admitted.push(listing);
+    }
+    return admitted;
   }
   async function persist(
     before: Document<LinuxWorkspace>,
     after: LinuxWorkspace,
     event?: LinuxEvent,
     proof: unknown = null,
+    authorityChecks: D1PreparedStatement[] = [],
   ) {
-    const commands: D1PreparedStatement[] = [];
+    const commands: D1PreparedStatement[] = [...authorityChecks];
     // A failing SQL assertion aborts the entire D1 batch, including the Eve writes.
     const assertion = (sql: string, values: unknown[]) =>
       db
@@ -115,8 +125,8 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
         .bind(...values);
     commands.push(
       assertion(
-        `EXISTS(SELECT 1 FROM sky_linux_service_documents WHERE id=? AND owner_user_id=? AND revision=?)`,
-        [before.id, before.ownerId, before.revision],
+        `EXISTS(SELECT 1 FROM sky_linux_service_documents WHERE id=? AND owner_user_id=? AND revision=? AND json(payload)=json(?))`,
+        [before.id, before.ownerId, before.revision, JSON.stringify(before.payload)],
       ),
     );
     for (const j of after.jobs) {
@@ -180,11 +190,12 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
     w: LinuxWorkspace,
     now: number,
     provisioning = false,
+    readDb: Database = db,
   ) {
     if (config.SKY_LINUX_SERVICE_ENABLED !== 'true')
       throw new LinuxServiceError('専用Linuxサービスはまだ準備中です。', 503);
-    const grant = await resolveEsimCloudGrant(
-      db,
+    const grant = await (dependencies.grant ?? resolveEsimCloudGrant)(
+      readDb,
       config,
       w.ownerId,
       w.orderId,
@@ -201,34 +212,49 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
       );
     if (config.ROCKSTAR_SERVICE_SETUP_ENABLED === 'true') {
       requireServiceSetupReady(config);
-      const row = await db
+      const row = await readDb
         .prepare(
-          `SELECT payload FROM rockstar_service_setups WHERE owner_user_id=?`,
+          `SELECT id,owner_user_id,revision,payload FROM rockstar_service_setups WHERE owner_user_id=?`,
         )
         .bind(w.ownerId)
         .first<{ payload: string }>();
       const setup = row ? (JSON.parse(row.payload) as ServiceSetup) : null;
       if (
         !setup ||
+        setup.schema !== 'rockstar.service-setup/1' ||
+        !setup.billing || !setup.runtime || !setup.terms ||
         setup.ownerId !== w.ownerId ||
         setup.orderId !== w.orderId ||
         setup.deviceRef !== w.deviceRef ||
-        setup.acceptedAt === null ||
-        !setup.agreementDigest ||
-        setup.billing.verifiedAt === null ||
+        !Number.isSafeInteger(setup.acceptedAt) ||
+        (setup.acceptedAt as number) > now ||
+        !/^[a-f0-9]{64}$/.test(setup.agreementDigest ?? '') ||
+        !Number.isSafeInteger(setup.billing.verifiedAt) ||
+        (setup.billing.verifiedAt as number) > now ||
         JSON.stringify(setup.terms) !== JSON.stringify(w.terms) ||
         (!provisioning &&
-          (setup.workspaceId !== w.id || setup.runtime.verifiedAt === null))
+          (setup.workspaceId !== w.id || !Number.isSafeInteger(setup.runtime.verifiedAt) ||
+            (setup.runtime.verifiedAt as number) > now || !/^[a-f0-9]{64}$/.test(setup.runtime.receiptDigest ?? '')))
       )
         throw new LinuxServiceError(
           '契約・支払い準備・専用環境の利用開始を完了してください。',
           403,
         );
+      parseLinuxTerms(setup.terms);
     }
+    return grant;
   }
   return {
     get,
     catalog,
+    async access(owner: string, now = Date.now()) {
+      const doc = await get(owner);
+      if (!doc) return null;
+      const access = linuxOwnerAccess(doc.payload, owner, doc.ownerId, now);
+      if (!access.canExecute) return access;
+      try { await liveGrant(doc.payload, now); return access; }
+      catch { return { ...access, canExecute: false, reason: 'current_authority_required' }; }
+    },
     async eligibleOrders(owner: string, now = Date.now()) {
       if (config.SKY_LINUX_SERVICE_ENABLED !== 'true') return [];
       const rows = await db
@@ -239,7 +265,7 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
         .all<{ orderId: string }>();
       const choices = [];
       for (const row of rows.results) {
-        const grant = await resolveEsimCloudGrant(
+        const grant = await (dependencies.grant ?? resolveEsimCloudGrant)(
           db,
           config,
           owner,
@@ -437,21 +463,47 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
       worker = false,
     ) {
       const before = await get(owner);
-      if (!before || before.revision !== revision)
-        throw new LinuxServiceError(
-          '状態が変わりました。再読み込みしてください。',
-        );
-      if (
-        ['claim', 'heartbeat', 'close-month'].includes(command.action) &&
-        !worker
-      )
+      if (!Number.isSafeInteger(revision) || revision < 0 || !before || before.revision !== revision)
+        throw new LinuxServiceError('状態が変わりました。再読み込みしてください。');
+      assertLinuxDispatchWorkspace(before.payload);
+      if (['claim', 'heartbeat', 'close-month'].includes(command.action) && !worker)
         throw new LinuxServiceError('実行環境の認証が必要です。', 403);
-      if (['run', 'add', 'claim', 'heartbeat'].includes(command.action))
-        await liveGrant(before.payload, now);
-      return persist(
-        before,
-        await linuxCommand(before.payload, command, await catalog(), now),
-      );
+      const dispatch = ['run', 'add', 'claim', 'heartbeat'].includes(command.action);
+      const reads = captureEsimAuthorityReads(db);
+      const grant = dispatch ? await liveGrant(before.payload, now, false, reads.database) : null;
+      const listings = await catalog(dispatch ? reads.database : db, now);
+      const after = await linuxCommand(before.payload, command, listings, now);
+      const checks = dispatch ? reads.assertions() : [];
+      if (dispatch && grant) {
+        let validUntil = Math.min(grant.expiresAt, before.payload.issuer.validUntil);
+        if (command.action === 'claim' || command.action === 'heartbeat') {
+          validUntil = Math.min(validUntil, after.jobs.find(j => j.id === command.jobId)?.leaseUntil ?? 0);
+        }
+        if (command.action === 'heartbeat') {
+          const job = before.payload.jobs.find(j => j.id === command.jobId);
+          validUntil = Math.min(validUntil, job?.leaseUntil ?? 0);
+        }
+        checks.push(db.prepare(`SELECT CASE WHEN (? > MAX(?, ${ESIM_COMMIT_NOW_SQL})
+          AND strftime('%Y-%m','now') = ?)
+          THEN 1 ELSE json('SKY_LINUX_AUTHORITY_EXPIRED') END`).bind(validUntil, now, new Date(now).toISOString().slice(0, 7)));
+        const listingId = 'listingId' in command ? command.listingId
+          : 'jobId' in command ? before.payload.jobs.find(j => j.id === command.jobId)?.listing.id : undefined;
+        const listing = listings.find(l => l.id === listingId);
+        if (!listing) throw new LinuxServiceError('実行対象の現在版を確認してください。', 403);
+
+      }
+      // A retry still commits its authority assertions, but never repeats writes.
+      if (JSON.stringify(after) === JSON.stringify(before.payload)) {
+        if (checks.length) {
+          checks.push(db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM sky_linux_service_documents
+            WHERE id=? AND owner_user_id=? AND revision=? AND json(payload)=json(?))
+            THEN 1 ELSE json('SKY_LINUX_REVISION_CONFLICT') END`)
+            .bind(before.id, owner, revision, JSON.stringify(before.payload)));
+          await db.batch(checks);
+        }
+        return before;
+      }
+      return persist(before, after, undefined, null, checks);
     },
     async event(event: LinuxEvent, now = Date.now(), proof: unknown = null) {
       const row = await db
@@ -470,6 +522,8 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig) {
         ...row,
         payload: JSON.parse(row.payload) as LinuxWorkspace,
       };
+      if (before.ownerId !== before.payload.ownerId)
+        throw new LinuxServiceError('保存先の本人が一致しません。', 403);
       const duplicate = await db
         .prepare(
           `SELECT workspace_id AS workspaceId,digest FROM sky_linux_service_receipts WHERE id=?`,

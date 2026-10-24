@@ -1,3 +1,5 @@
+eSIM/Linuxの[保存時authority契約](docs/rockstaros-complete-design.md#esim-runtime-commit-authority)を限定採用候補へ更新。依頼の読取後に利用権/setup/reviewが変われば保存を拒否し、同一依頼の重複予約を防ぎます。本人の既存sessionによる保存データ読取と、新しい実行許可を区別します。汎用attachment・独立保存ACL期限・本番D1/実課金は未受入です。PR193はmain9a617fabへ統合済み、最終検証は同83aのLinux CI成功で、追加host全verify待ちではありません。
+
 Pixel Linuxの[worker診断・親寿命の候補](docs/rockstaros-complete-design.md#pixel-main-worker-diagnostics)と独立r2済み[Mini有限cone検査](docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection)を別scopeで保存。旧jobの512tokens/180秒wall/170秒CPUを維持し、追加期限/token契約を厳密検証。任意私有診断は成功/停止・権限を変えません。新候補のLinux/実機・背景/P02全体/全OS・Mini実光学は別受入です。
 
 Pixel Linuxの[限定実機証拠要約](docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json)を保存。1jobとPC/Pixel exportの一致を確認した範囲で、PC UI reload・背景実行・P02全体・全OSは未受入です。原文/私的state/鍵/モデル/APKは含めません。

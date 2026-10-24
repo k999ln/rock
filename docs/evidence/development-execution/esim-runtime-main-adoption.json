@@ -1,0 +1,78 @@
+{
+  "schema": "rockstaros.esim-runtime-main-adoption/1",
+  "recordedAt": "2026-10-24T14:47:29.937353+00:00",
+  "status": "exact_reviewed_six_adopted_targeted_pass_metadata_review_and_fixed_verify_CI_pending",
+  "primaryWorkstream": "03 Wallet/Billing/Providers; Git sole integration writer",
+  "baseMain": "9a617fabfef48d82d9b3142680bb00df71776687",
+  "sourceBase": "d15096b86ed0ddc745492e1b95caa6dcc3266ca5",
+  "sourceBaseComparison": "All six original main bodies byte-identical between d150 and9a617fab; no adaptation delta",
+  "sourceHashes": {
+    "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+    "lib/sky-linux-service-store.ts": "51363eeef57cebd42555607e0e463748b11c6b3660da729cb9ea9ee96575fabe",
+    "lib/sky-linux-service.ts": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+    "app/api/sky/linux/route.ts": "dc672181feb50a2c030f2582851b76c48966b575b367aa3dc13d37531948b131",
+    "tests/sky-linux-service.test.mjs": "9bbe7f9e69ba260e2649b8aaba1da0e90ac0fa7ff9298c329893288ed50b3326",
+    "tests/rockstar-service-setup.test.mjs": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8"
+  },
+  "acceptedSourceAttempt": 2,
+  "sourceBodiesModifiedByIntegration": false,
+  "reviewSummary": "docs/evidence/development-execution/reviewed-runtime-main-integration.json",
+  "independentSourceMustFix": 0,
+  "sameReviewerClosedFindings": [
+    "ESIM-RUNTIME-REVIEW-01",
+    "ESIM-RUNTIME-REVIEW-02"
+  ],
+  "validation": {
+    "tests": 122,
+    "passed": 122,
+    "failed": 0,
+    "skipped": 0,
+    "typecheck": "passed",
+    "lintProduct": "passed",
+    "originalLocalD1ProofHashRechecked": true
+  },
+  "inheritedActualLocalD1Evidence": {
+    "primaryReceiptSha256": "c643b31be46ba802e68ac74958bff56d946d461876d7062c8d91bf1d5d693990",
+    "scriptAndLogDigestsRechecked": true,
+    "engine": "local Miniflare/workerd D1",
+    "scope": "Actual authority query/assertion batch only; not full command/provider or production D1",
+    "listingAndPackageNegativeInsertions": "initial commit rejected; both preceding/following marker writes rollback;3fresh retries denied per target",
+    "stablePositiveControl": "passed",
+    "rerunByIntegrator": false
+  },
+  "contract": "Fixed server-owned SELECT read projections plus current-time predicates are re-evaluated in the same batch as workspace/work_jobs/reservation/receipt writes. Relevant negative insertions/deletions/replacements and exact owner/revision/payload changes reject stale commit.",
+  "retainedReadScope": "Existing authenticated owner session plus matching row/payload owner. Unknown dispatch schema/current setup restrictions do not erase retained read/export. No independently persisted ACL/expiry acceptance.",
+  "financialInvariants": [
+    "existing prices/terms unchanged",
+    "existing payment and owner/revision boundaries retained",
+    "worst-case reservation and late measured CPU once retained",
+    "same id+digest retry no duplicate work/charge",
+    "existing month888c invariant unchanged; no real funds or collection"
+  ],
+  "protectedPR193SourceHashes": {
+    ".github/workflows/ci.yml": "e79347318e48da02612c753751a04cbfc05fd9b1ff132a881676a16ea9df9652",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+    "tests/pixel-worker-contract.test.mjs": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+    "tests/test_pixel_worker_diagnostics.py": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8",
+    "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+    "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+  },
+  "metadataMapping": "Source requested sim-led-product-architecture.md is absent in current main; reuse existing service-design/02-system-contracts, OS/Tool full designs and sky-billing instead of copying unreviewed Root book/history.",
+  "acceptance": {
+    "scopedSourceIndependent": true,
+    "integrationMetadataReviewed": false,
+    "mainMerged": false,
+    "genericAttachment": false,
+    "independentPersistedRetentionAclExpiry": false,
+    "fullProductionD1": false,
+    "providerRealBilling": false,
+    "newPhysicalOS": false,
+    "P02Complete": false,
+    "generalLaunch": "held"
+  },
+  "next": "One fixed candidate verify (same-head Linux CI can be final); separate adoption metadata review and exact-head CI before normal merge. Host timeout is failure, not inferred success; no unbounded retries."
+}

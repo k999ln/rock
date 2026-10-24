@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.20",
+  "version": "1.21",
   "updatedAt": "2026-10-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1238,7 +1238,15 @@
         "lib/rockstar-service-setup.ts",
         "tests/rockstar-service-setup.test.mjs",
         "lib/wallet-deposit-provenance.ts",
-        "tests/wallet-deposit-provenance.test.mjs"
+        "tests/wallet-deposit-provenance.test.mjs",
+        "lib/esim-cloud-grant.ts",
+        "lib/sky-linux-service-store.ts",
+        "lib/sky-linux-service.ts",
+        "app/api/sky/linux/route.ts"
+      ],
+      "recoveredContractReferences": [
+        "tests/sky-linux-service.test.mjs",
+        "tests/rockstar-service-setup.test.mjs"
       ]
     },
     {
@@ -2806,9 +2814,9 @@
       "cpuSeconds": 170
     },
     "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
-    "candidateRuntimeIndependentlyReviewed": false,
+    "candidateRuntimeIndependentlyReviewed": true,
     "candidatePhysicalAccepted": false,
-    "mainMerged": false,
+    "mainMerged": true,
     "parentOwnerEvidence": {
       "read": "One NOFOLLOW/NONBLOCK fd, fstat then bounded37bytes",
       "publish": "Private regular36byte owner dev/inode rechecked before rename",
@@ -2817,9 +2825,14 @@
         "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
         "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff"
       },
-      "newDeltaReviewPending": true,
+      "newDeltaReviewPending": false,
       "create": "Open existing first; missing-only exclusive wx, competing creator rejected without reopen"
-    }
+    },
+    "finalAcceptedHead": "83a04433ba90071aa5fe44f4b5b86af22bcd50e5",
+    "mainSha": "9a617fabfef48d82d9b3142680bb00df71776687",
+    "finalVerification": "same-final-head Linux CI npm run verify actually succeeded",
+    "finalHostFullVerifyRun": false,
+    "reviewSummary": "docs/evidence/development-execution/reviewed-runtime-main-integration.json"
   },
   "mini02FiniteConeInspection": {
     "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection",
@@ -2834,6 +2847,29 @@
     "syntheticWitnessOnly": true,
     "oldTwelveUnchanged": true,
     "physicalAccepted": false,
-    "wholeMini02Accepted": false
+    "wholeMini02Accepted": false,
+    "mainMerged": true
+  },
+  "esimRuntimeCommitAuthority": {
+    "authority": "docs/rockstaros-complete-design.md#esim-runtime-commit-authority",
+    "toolDesign": "docs/sky-tools-complete-design.md#esim-runtime-commit-authority",
+    "billingDesign": "docs/sky-billing.md#esim-runtime-commit-authority",
+    "evidence": "docs/evidence/development-execution/esim-runtime-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/reviewed-runtime-main-integration.json",
+    "implementation": [
+      "lib/esim-cloud-grant.ts",
+      "lib/sky-linux-service-store.ts",
+      "lib/sky-linux-service.ts",
+      "app/api/sky/linux/route.ts"
+    ],
+    "tests": [
+      "tests/sky-linux-service.test.mjs",
+      "tests/rockstar-service-setup.test.mjs"
+    ],
+    "existingSchemaOnly": true,
+    "genericAttachmentAccepted": false,
+    "independentRetentionAclExpiryAccepted": false,
+    "productionD1Accepted": false,
+    "mainMerged": false
   }
 }
