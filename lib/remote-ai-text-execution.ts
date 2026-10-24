@@ -42,8 +42,20 @@ export async function executeReservedRemoteAiText(input: {
     return { record: await store.get(ownerId, id), providerSubmission: 'not_repeated' as const };
   // A durable one-time claim makes Workflow callback replay fail closed. A crash
   // after this write but before fetch is conservatively unreconciled, never resent.
-  if (!await store.claimProviderSend(ownerId, id)) {
-    const record = await store.markUnreconciled(ownerId, id, 'DUPLICATE_PROVIDER_SEND_CLAIM');
+  let sendClaimed: boolean;
+  try {
+    sendClaimed = await store.claimProviderSend(ownerId, id);
+  } catch (error) {
+    // The existing recurring trigger aborts the INSERT on a known access denial.
+    // Other errors leave persistence uncertain. Both retain the hold and never fetch.
+    const recurringDenied = error instanceof Error &&
+      /^(?:D1_ERROR: )?SKY_RECURRING_ACCESS_BLOCKED(?:: SQLITE_CONSTRAINT)?$/.test(error.message);
+    await store.markUnreconciled(ownerId, id,
+      recurringDenied ? 'PROVIDER_SEND_CLAIM_REJECTED' : 'PROVIDER_SEND_CLAIM_UNCONFIRMED');
+    throw error;
+  }
+  if (!sendClaimed) {
+    const record = await store.markUnreconciled(ownerId, id, 'PROVIDER_SEND_CLAIM_REJECTED');
     return { record, providerSubmission: 'not_repeated' as const };
   }
   const startedAt = Date.now();

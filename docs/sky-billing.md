@@ -1,3 +1,22 @@
+<a id="billing-final-send-claim"></a>
+## Remote textの最終send claim（BILL-02限定採用）
+
+目的・体験: 見積/予約後に親仕事が停止したり価格が失効した場合、以前のread判断だけでProvider送信しない。既存承認digestと固定inputを用い、外部fetch直前の一度のclaim文をローカル認可の確定点にする。不明はno-send/hold保持で照合へ渡す。
+
+責任・禁止: ROCKは既存store/orchestrator・同一SQL predicate・idempotency/復旧、EXTERNALはProvider usage/鍵/clock・決済の根拠、JOINTはD1/本番schema/複数instanceと外部応答、OWNERは価格/同意/上限を担う。新しい価格・Wallet・888c・migration・Provider権限を作らない。既存paid gateや共通authority/issuer epochを合格扱いしない。
+
+入力・出力・上限: 既存server owner/execution id/safe nonnegative nowと保存済みapproval/input/rate/max/currency/parent capを使用し、client trueをauthorityにしない。input ownerとexecution owner/sending、current同owner active parent、active rateのID/digest/exact JSON/model/currency/effective/expiry、固定input deadlineとquote+24h capを同じINSERT SELECTで要求。held poolはsame owner/parent/currency/exact original cap、reserved>=execution maximum、settled>=0、reserved+settled<=capを要求する。既存opt-in recurringがあれば同INSERT内のmigration 0021 BEFORE INSERT triggerでactive/access/periodを確認、無ければこの任意guardだけが無い。これは汎用Linux/eSIM契約ではない。
+
+状態・保存・失敗: execution_id一意のimmutable send claimを同じDBに保存し、0行/例外はfetchしない。既存SKY_RECURRING_ACCESS_BLOCKED例外を維持し、既知の拒否はPROVIDER_SEND_CLAIM_REJECTED、不明な保存結果はPROVIDER_SEND_CLAIM_UNCONFIRMEDとする。rejected claimは既存unknown/unreconciledへ、claim永続化の不明や応答喪失も元holdを保持する。unknown marker保存まで失敗してもsending/heldとimmutable claimで自動再送しない。claimより前にcommitしたstop/revokeは拒否、claim後のstopは既に認可したsendの後続として既存照合へ渡す。
+
+保持・重複・復旧: 既存暗号input/opt-in result/usage receiptと削除条件を維持し、同ID再実行で新claim/送信/引落を増やさない。stop後に届く本物のpriced usageは従来検証/一回settle経路で処理し、親を再起動しない。fixtureのmock responseは実Provider finalityではない。不明な外部効果は照合し、holdを先に解放して再送しない。
+
+時計・互換・承認: 比較時刻はMAX(server now, SQLite UTC ms, execution.updated_at)。過去パラメータで期限を巻戻せず、先行clockは時刻条件を早め得る。clock合意/認証済みissuer epochの証明ではなく、server nowはHTTP client authorityではない。旧approval/request/quote/rate/saveResult/max/cap/予算triggerを保持。通常source revertは可能だが送信claim/receiptやholdを削除せず既存照合する。
+
+合格・未決定: 原本exact4で局所28pass、独立23 unique scenario、旧2反例はmock send1を検出し新候補fetch0を確認。二Worker別connection/同じSQLite fileでcap競合とclaim一意性を確認したhost evidenceで、D1 runtime/clock/metadata・本番schema、共通authority/issuer epoch/consent revision adapter、実課金/決済/一般公開は未受入。各担当の同一候補DB/HTTP/provider gateとOWNER条件で残項目を決める。元候補の全verifyは既存recurring例外契約1件で失敗。最小互換deltaの局所40pass（旧recurring suiteを含む）は新hash独立検収・metadata review/同head CI/固定全verifyとは別gate。
+
+[受入4hash・原本digest・試験・残gate](evidence/development-execution/billing-final-send-main-adoption.json)。[独立検収の最小要約](evidence/development-execution/billing-final-send-review-summary.json)。
+
 <a id="esim-runtime-commit-authority"></a>
 ## 既存Linux/eSIMの保存時authorityと保持
 

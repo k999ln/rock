@@ -1,3 +1,7 @@
+## Billing final-send exact4のmain採用候補（2026-10-24 / G04）
+
+PR195通常merge main7be3d6aaで旧dab同4基底不変を確認、原本Game/Astra限定pass4hashを保持し、既存recurring例外契約の最小修正を同4pathへ追加。局所40pass、新hash独立再検収待ち、独立23uniqueと旧2反例検出は原本hashで限定継承。parentstop/price revoke before finalclaimはfetch0、unknown/claim応答喪失はhold保持/再送0。新migration/価格/Walletalgebra/888c変更なし、common authority/issuer epoch未接続。本番D1/実課金/全OS/一般公開未受入。GIT08は文書/branch/main保存完了・配備なしを95overlayへ別記録。次は設計同期→固定全verify1回（同headCI可）→別PR/CI→独立metadata採用review。原本/秘密/path/logをコピーせず、RootHEAD/index/journal保持。根拠 docs/evidence/development-execution/billing-final-send-main-adoption.json。
+
 ## GIT08: 95再開台帳のmetadata-only同期候補（2026-10-24）
 
 固定9a inventory/Pro独立PASSを原本hashで保持し、95id/title順序・188blob/hash・main393task/RQ50/14phasegateを照合。分類49/16/15/14/1、whole accepted0の履歴は書換えず、最新dabのPR194 eSIM限定採用を別overlayへ。Root80not_startedを現未実装数にせず、lean95台帳/handoff/要求model policyを作成。実model/tokens/cost不明はnull、dispatchなし。保全49+OS16≠Root全量Git保存を明示。Billing finalclaim実装中、eSIM独立ACL/epoch/genericattachment未受入、Eve02 bounded textが次。巨大原本/全履歴/私的path/rawpromptなし。次はJSON/project/designcheck→metadata別PR/同headCI npmrunverify→独立採用review。source/runtime/test変更なし、ローカル全verify反復を省略してCIを別gateにする。根拠 docs/evidence/development-execution/unit-restart-ledger-sync.json。

@@ -9679,8 +9679,26 @@
     "currentUnimplementedCount": null,
     "runtimeChanged": false,
     "localFullVerifyRun": false,
+    "mainMerged": true,
+    "newHeadCiPending": false,
+    "independentAdoptionReviewPending": false,
+    "metadataMainSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "fullVerificationPlane": "Exactb9dc LinuxCI npmrunverify",
+    "productionDeployment": false
+  },
+  "billingFinalSendMainAdoption": {
+    "evidence": "docs/evidence/development-execution/billing-final-send-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/billing-final-send-review-summary.json",
+    "sourceFourPreserved": false,
+    "sourceIndependentMustFix": 0,
+    "localTests": 40,
+    "integrationMetadataReviewPending": true,
     "mainMerged": false,
-    "newHeadCiPending": true,
-    "independentAdoptionReviewPending": true
+    "commonAuthorityIssuerEpochAccepted": false,
+    "productionD1Accepted": false,
+    "realProviderBillingAccepted": false,
+    "originalReviewedHashesRecorded": true,
+    "deltaIndependentReviewPending": true,
+    "fullVerify": "original_semantic_failure_recorded_delta_pending"
   }
 }

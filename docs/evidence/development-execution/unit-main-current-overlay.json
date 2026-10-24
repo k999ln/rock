@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
-  "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+  "recordedAt": "2026-10-24T15:41:01.510072+00:00",
+  "mainAtCapture": "7be3d6aa35d8df1329571bbe92971f805694b581",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -39,14 +39,59 @@
         "real provider collection"
       ],
       "wholeUnitAccepted": false
+    },
+    {
+      "id": "GIT08_METADATA_MAIN",
+      "units": [
+        "GIT-08"
+      ],
+      "kind": "metadata_main_integration",
+      "pr": "https://github.com/k999ln/rock/pull/195",
+      "acceptedHead": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107",
+      "mainMergeSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+      "documentSaved": true,
+      "workBranchSaved": true,
+      "mainMerged": true,
+      "productionDeployment": false,
+      "wholeUnitAccepted": false,
+      "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
+    },
+    {
+      "id": "BILL_FINAL_CLAIM_CANDIDATE",
+      "units": [
+        "BILL-02"
+      ],
+      "kind": "independent_limited_source_pass_git_candidate",
+      "sourceHashes": {
+        "lib/remote-ai-text-store.ts": "7568f214e64e9fed3e54726210fee799ff6d1006b65920c5ddf753215923a2c6",
+        "lib/remote-ai-text-execution.ts": "8ec17779e5ff115fe774faf9ff292abe9f2ef36af6dfac03cdd7ce65e78f6921",
+        "tests/remote-ai-text-store.test.mjs": "0f982b569afd91ac0e9f2a3ade1b455b509452921a5b47a38c89a743ae883698",
+        "tests/remote-ai-text-atomic-send.test.mjs": "8ab584f6ee05c1461c0c2eec8b0fa7fc0fb9e1920ab99b04dc71fdd35c11f67e"
+      },
+      "reviewSummary": "docs/evidence/development-execution/billing-final-send-review-summary.json",
+      "baseMain": "7be3d6aa35d8df1329571bbe92971f805694b581",
+      "sourceReviewMustFix": 0,
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Atomic final remote-text claim/no-resend hold only",
+      "commonAuthorityIssuerEpochAccepted": false,
+      "productionD1Accepted": false,
+      "realBillingAccepted": false,
+      "originalReviewedSourceHashes": {
+        "lib/remote-ai-text-store.ts": "11e3725b9c5f974795e01dadf833d26b0561c96c1df2fa3991ca43fbc48773a5",
+        "lib/remote-ai-text-execution.ts": "12da588c388c043ca4112187bcc3c71c58e7a63a16238ad4e75fea47e8e99a22",
+        "tests/remote-ai-text-store.test.mjs": "d0d74e0f556739798badc08fbe0a326e8332e9994cfeffad6daf7383ceccace2",
+        "tests/remote-ai-text-atomic-send.test.mjs": "d1853f42e8eb2b6ce1a20a0a89435adefd17596487f0496ff214ecc1ab40145c"
+      },
+      "deltaIndependentReviewPending": true
     }
   ],
   "executionPriority": [
     {
       "order": 1,
       "unit": "BILL-02",
-      "state": "implementation_in_progress_per_Root_dispatch",
-      "scope": "Existing final provider-send claim: same-DB parentstop/current price/held cap predicates; no new Wallet or tariff",
+      "state": "recurring_delta_independent_review_pending",
+      "scope": "Original final-claim four hashes independently passed; recurring compatibility delta local40 passed, independent delta review/verify/CI pending",
       "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
       "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
       "dependency": "Independent of the six eSIM files for this finite existing-store gap",
@@ -69,9 +114,23 @@
     }
   ],
   "metadataBatch": {
+    "id": "GIT08_METADATA_MAIN",
+    "units": [
+      "GIT-08"
+    ],
+    "kind": "metadata_main_integration",
+    "pr": "https://github.com/k999ln/rock/pull/195",
+    "acceptedHead": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107",
+    "mainMergeSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "documentSaved": true,
+    "workBranchSaved": true,
+    "mainMerged": true,
+    "productionDeployment": false,
+    "wholeUnitAccepted": false,
+    "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b",
     "unit": "GIT-08",
-    "state": "branch_candidate_pending_independent_adoption_review",
-    "wholeUnitAccepted": false
+    "originalCaptureState": "branch_candidate_pending_independent_adoption_review",
+    "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance."
 }

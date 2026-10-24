@@ -1,3 +1,7 @@
+## GIT08 main反映後のBilling限定採用
+
+PR195の95台帳metadataは文書保存・branch保存・main7be3d6aa反映まで完了。本番配備と95whole acceptedは0のまま。分類base9a/188digestを保持し、Billing原本exact4独立passとrecurring互換delta再検収待ちは別candidate overlayへ追記、main採用と混同しない。原本review/receiptはhash付き最小要約で保存、秘密/path/logをコピーしない。次はBilling固定全verify/CI/独立採用metadata review。[証拠](../evidence/development-execution/billing-final-send-main-adoption.json)。
+
 ## 95再開台帳と固定inventory・現行overlay（GIT-08）
 
 [95unit台帳](../../data/development-unit-progress.json)はfixed main9a617fabの49既存実装/16部分採用/15未検証/14外部gate/1unknownを履歴として保持し、whole acceptedは0。Root旧80not_startedを現在の未実装数にしない。[現行overlay](../evidence/development-execution/unit-main-current-overlay.json)でPR194のeSIM限定採用と次優先を分離。Billing finalclaimはRoot割当で実装中、eSIM独立ACL/epoch/genericattachment未受入、Eve02 bounded textが次。ROCKの既存main契約を再利用し、EXTERNAL/JOINT/OWNER gateを未実装/成功へ置換しない。

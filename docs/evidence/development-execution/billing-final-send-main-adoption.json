@@ -1,0 +1,94 @@
+{
+  "schema": "rockstaros.billing-final-send.main-adoption/1",
+  "recordedAt": "2026-10-24T15:41:01.510072+00:00",
+  "status": "recurring_contract_delta_local40_pass_independent_delta_review_and_verify_pending",
+  "baseMain": "7be3d6aa35d8df1329571bbe92971f805694b581",
+  "sourceBase": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+  "baseFourUnchanged": true,
+  "sourceHashes": {
+    "lib/remote-ai-text-store.ts": "7568f214e64e9fed3e54726210fee799ff6d1006b65920c5ddf753215923a2c6",
+    "lib/remote-ai-text-execution.ts": "8ec17779e5ff115fe774faf9ff292abe9f2ef36af6dfac03cdd7ce65e78f6921",
+    "tests/remote-ai-text-store.test.mjs": "0f982b569afd91ac0e9f2a3ade1b455b509452921a5b47a38c89a743ae883698",
+    "tests/remote-ai-text-atomic-send.test.mjs": "8ab584f6ee05c1461c0c2eec8b0fa7fc0fb9e1920ab99b04dc71fdd35c11f67e"
+  },
+  "integrationSourceAdaptation": true,
+  "reviewSummary": "docs/evidence/development-execution/billing-final-send-review-summary.json",
+  "independentSourceMustFix": 0,
+  "sourceOriginalReceiptSha256": "b8dd95f8888378f3e5af0238be58d3d3a3ce92ee087bde521e8cf4cdb59f22d9",
+  "sourceIndependentReviewSha256": "ca6a5b80a12fcfd112e23c164e4add036aaef3b5a1aee98e34a0f47b9a0f682b",
+  "validation": {
+    "localTargetTests": 40,
+    "localPassed": 40,
+    "failed": 0,
+    "skipped": 0,
+    "typecheck": "passed",
+    "lintProduct": "passed",
+    "independent23ScenarioEvidence": "Original four hashes only; delta requires independent review.",
+    "fullVerify": "Original candidate failed one semantic recurring contract test; delta full verify pending. No failure promoted to success."
+  },
+  "contract": "Final INSERT SELECT is the local send authorization linearization point. Current owner/input/sending/parent/rate/time/pool/opt-in recurring predicates plus execution_id uniqueness are atomic.",
+  "unknownOutcome": "Failed/rejected/unknown claim does no fetch and conserves original hold; immutable committed claim prevents automatic resend even after lost acknowledgment or unknown-marker persistence failure.",
+  "limits": [
+    "No common accepted authority/issuer epoch/generic consent revision attached",
+    "No new migration/rate/Wallet algebra/888c policy",
+    "SQLite two connections/Worker race is host evidence, not deployed D1 proof",
+    "No new provider call/real billing/public deployment by this integration"
+  ],
+  "protectedSourceHashes": {
+    "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+    "lib/sky-linux-service-store.ts": "51363eeef57cebd42555607e0e463748b11c6b3660da729cb9ea9ee96575fabe",
+    "lib/sky-linux-service.ts": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+    "app/api/sky/linux/route.ts": "dc672181feb50a2c030f2582851b76c48966b575b367aa3dc13d37531948b131",
+    "tests/sky-linux-service.test.mjs": "9bbe7f9e69ba260e2649b8aaba1da0e90ac0fa7ff9298c329893288ed50b3326",
+    "tests/rockstar-service-setup.test.mjs": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8",
+    ".github/workflows/ci.yml": "e79347318e48da02612c753751a04cbfc05fd9b1ff132a881676a16ea9df9652",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+    "tests/pixel-worker-contract.test.mjs": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+    "tests/test_pixel_worker_diagnostics.py": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8",
+    "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+    "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+  },
+  "acceptance": {
+    "sourceLimitedIndependent": false,
+    "mainMetadataReviewed": false,
+    "mainMerged": false,
+    "productionD1": false,
+    "commonAuthorityIssuerEpoch": false,
+    "realProviderBilling": false,
+    "wholeBill02": false,
+    "generalLaunch": "held",
+    "originalSourceLimitedIndependent": true,
+    "deltaIndependent": false
+  },
+  "next": "Review new four hashes independently, fixed full verify and exact-head CI; no merge before gates.",
+  "originalReviewedSourceHashes": {
+    "lib/remote-ai-text-store.ts": "11e3725b9c5f974795e01dadf833d26b0561c96c1df2fa3991ca43fbc48773a5",
+    "lib/remote-ai-text-execution.ts": "12da588c388c043ca4112187bcc3c71c58e7a63a16238ad4e75fea47e8e99a22",
+    "tests/remote-ai-text-store.test.mjs": "d0d74e0f556739798badc08fbe0a326e8332e9994cfeffad6daf7383ceccace2",
+    "tests/remote-ai-text-atomic-send.test.mjs": "d1853f42e8eb2b6ce1a20a0a89435adefd17596487f0496ff214ecc1ab40145c"
+  },
+  "recurringContractDelta": {
+    "cause": "Inline recurring WHERE selected zero rows before existing migration 0021 BEFORE INSERT trigger could raise SKY_RECURRING_ACCESS_BLOCKED.",
+    "fix": "Reuse existing recurring trigger in same atomic INSERT; preserve old business exception. Coordinator distinguishes exact known denial from uncertain persistence; both retain hold/no fetch/no retry.",
+    "scope": "Same four source/test paths only; original sky-recurring-sandbox.test.mjs unchanged; no migration or pricing change.",
+    "focusedCommand": "node --experimental-strip-types --test tests/remote-ai-text-store.test.mjs tests/remote-ai-text-atomic-send.test.mjs tests/sky-recurring-sandbox.test.mjs",
+    "focusedResult": {
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "skip": 0
+    },
+    "priorFullVerify": {
+      "exitCode": 1,
+      "inputCount": 4458,
+      "changedInputs": [],
+      "elapsedSeconds": 71,
+      "logSha256": "115018b3265a337349b991b27839258c4d6220a946a152c2769cb813b42c5fb4"
+    },
+    "independentReview": "pending_on_new_four_hashes"
+  }
+}
