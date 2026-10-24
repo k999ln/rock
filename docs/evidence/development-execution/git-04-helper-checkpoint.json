@@ -1,0 +1,54 @@
+{
+  "schema": "rockstaros.git04.helper-checkpoint/1",
+  "recordedAt": "2026-10-24T07:35:34.175629+00:00",
+  "scope": "explicit offline filename alias helper only; full GIT-04 union unaccepted",
+  "baseMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+  "acceptedRuntimeCandidate": {
+    "sha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+    "review": "docs/evidence/development-execution/git-04-review-r2.json",
+    "status": "independently accepted limited helper only"
+  },
+  "currentCoreFiles": {
+    "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+    "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+    "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+    "tests/migration-aliases.test.mjs": "a54476f33637df9e734441025c6b920c6db51daf2331a7a84cb5995e687f682c",
+    "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+  },
+  "currentCoreFilesSha256": "d582d6db7a244e754904c3dfefecd52031e348e16f37f79cb5d6256fa78646ed",
+  "postReviewCompatibilityDelta": {
+    "tests/migration-aliases.test.mjs": "Only three method reads use Reflect.get(DatabaseSync.prototype,prepare); same original function and .call(this) preserved; no skipped/disabled assertion",
+    "oldTestSha256": "3dc2be92fe0a898d038de4bfa1eaaf351d5327dcf71ef3b16095150ee7589dd0",
+    "newTestSha256": "a54476f33637df9e734441025c6b920c6db51daf2331a7a84cb5995e687f682c",
+    ".github/workflows/ci.yml": "Verify Node22 -> tested26.12.1 for authorizer/serialization. Permissions/actions/events unchanged. App engine floor unchanged.",
+    "ciWorkflowSha256": "5754e9390263a6f9af54e7b0c5de474195f3133b15d337f66015c2bdf7d7163f",
+    "independentDeltaReview": "pending parent checkpoint review; not falsely included in original five-file hash"
+  },
+  "localValidationAtPreparation": {
+    "focused": {
+      "pass": 20,
+      "fail": 0,
+      "skip": 0
+    },
+    "fullLint": "pass with main locked dependencies",
+    "fullVerify": "preparation snapshot; final result will be attached to PR and coordinator handoff"
+  },
+  "publicationAudit": {
+    "githubHooks": [],
+    "workflowPermissions": "read",
+    "publicOverviewTrigger": "push main paths public-release/rockstaros/** or publish-rockstaros-public.yml; candidate changes neither",
+    "manualPublishOnly": "release signing publish control workflow remains manual/guarded",
+    "remoteMigration": "none invoked or wired",
+    "sitesDeployment": "not invoked",
+    "generalLaunch": "held"
+  },
+  "remaining": {
+    "canonicalMigrations": 8,
+    "sameNameGuardDifferences": 13,
+    "completeEveSourceBase": false,
+    "runtimeUnionPort": false,
+    "unitComplete": false
+  },
+  "billingEsimMiniPro": "Other Root lane changes are excluded from this isolated checkpoint",
+  "gitStageAtPreparation": "selected candidate before final verify; actual GitHub/CI/SHA readback in PR and coordinator handoff, not acceptance inferred from this snapshot"
+}

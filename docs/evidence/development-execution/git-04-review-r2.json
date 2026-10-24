@@ -1,0 +1,172 @@
+{
+  "schema": "rockstaros.development-execution.git-04-review/2",
+  "recordedAt": "2026-10-24T07:17:14.516081+00:00",
+  "unit": "GIT-04",
+  "reviewerLane": "game",
+  "independence": "Reviewer authored GAME-01 only, not GIT-04 helper/profiles/tests or BILL-01/WALLET-01. No implementation edits in this review.",
+  "routing": {
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "appliedModel": null,
+    "appliedModelConfirmed": false,
+    "note": "Model switch and dispatch request received; no independently introspectable runtime identity."
+  },
+  "status": "accepted_alias_helper_limited_scope_full_union_unaccepted",
+  "target": {
+    "checkout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+    "candidateSha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+    "files": {
+      "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+      "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+      "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+      "tests/migration-aliases.test.mjs": "3dc2be92fe0a898d038de4bfa1eaaf351d5327dcf71ef3b16095150ee7589dd0",
+      "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+    },
+    "receipt": "docs/evidence/development-execution/git-04.json",
+    "receiptSha256": "6c80694791b9aafb12cd8d1b1fc520a91ca9195e4d9d391fb282f212a3657762",
+    "scopeNote": "Four original code/data paths plus new migration-reference-profiles.json are five bound files; all five checked.",
+    "priorReview": "docs/evidence/development-execution/git-04-review.json",
+    "priorReviewSha256": "b246361b3f07802d7a54c43b78c68b88afce827c3490c93bd031d9606928b2b0"
+  },
+  "closedFindings": [
+    {
+      "id": "GIT04-R1",
+      "status": "closed_in_reviewed_offline_helper_scope",
+      "path": "scripts/sqlite-migration-aliases.mjs",
+      "lines": [
+        38,
+        69,
+        106
+      ],
+      "reason": "Planner executes zero source SQL. Entire source/target journal+SQL list must match fixed reviewed profile; deserialize into isolated read-only defensive/query-only snapshot with deny-by-default authorizer. No host user-defined functions inherited.",
+      "reproduction": "Comment-separated VACUUM extra journal entry now rejected, external file absent; focused tests also reject ATTACH/PRAGMA/functions/DDL/DML."
+    },
+    {
+      "id": "GIT04-R2",
+      "status": "closed_in_reviewed_offline_helper_scope",
+      "path": "scripts/sqlite-migration-aliases.mjs",
+      "lines": [
+        71,
+        140,
+        161,
+        197
+      ],
+      "reason": "Recognized metadata objects only; insert effects constrained by authorizer; transaction checks unchanged domain/schema/application sequence and exact old history/audit plus intended alias delta before commit.",
+      "reproduction": "Silent tombstone-delete/stop-payload-rewrite trigger rejected before write, values unchanged. Focused tests independently rerun authorizer failure, forced policy failure and metadata rewrite injection rollback."
+    },
+    {
+      "id": "GIT04-R3",
+      "status": "closed_in_reviewed_offline_helper_scope",
+      "path": "scripts/sqlite-migration-aliases.mjs",
+      "lines": [
+        107,
+        109,
+        115,
+        124
+      ],
+      "reason": "Every plan/replay validates reviewed complete profile, alias objects, immutable guards, provenance and source/canonical history linkage; canonical-main no-op checked separately.",
+      "reproduction": "Drop previously validated receipt index after successful apply: replay rejected. Focused tests cover source/journal/guard/provenance/audit/history mutation and valid no-op."
+    }
+  ],
+  "newActionableFindings": [],
+  "validation": [
+    {
+      "command": "node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs",
+      "cwd": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+      "exitCode": 0,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "log": "/private/tmp/game-review-git04-r2-focused.log",
+      "logSha256": "0bc8be28e44ef4e1cc148f38897998be344a3d23b9a3e9b98d9d8174b4eef342"
+    },
+    {
+      "command": "node /private/tmp/game-review-git04-r2-negative.mjs",
+      "exitCode": 0,
+      "scriptSha256": "7850861ba6de27e430044f380086a2bb67c9c19406375841a2439932b2561120",
+      "result": "/private/tmp/game-review-git04-r2-negative.json",
+      "resultSha256": "ae0b6b410170050e70f62674e0a42d478914ff1e4206509ce009a4e2fa10d02a",
+      "cases": [
+        {
+          "case": "successful_metadata_trigger_mutates_domain",
+          "before": {
+            "tombstones": 1,
+            "payload": "{\"status\":\"active\",\"stopRequestedAt\":1}"
+          },
+          "result": {
+            "error": "Unknown migration metadata object/audit conflicts: silent_loss"
+          },
+          "after": {
+            "tombstones": 1,
+            "payload": "{\"status\":\"active\",\"stopRequestedAt\":1}"
+          }
+        },
+        {
+          "case": "planning_external_write_via_commented_vacuum",
+          "planStatus": {
+            "error": "Unverified complete source/target journal and SQL manifest; no source SQL is executed"
+          },
+          "externalFileCreated": false
+        },
+        {
+          "case": "replay_accepts_missing_previously_validated_index",
+          "replay": {
+            "error": "Migration alias schema is incomplete or changed: idx_sky_linux_receipt_workspace"
+          }
+        }
+      ]
+    }
+  ],
+  "unchangedInputs": {
+    "frozen149Rehashed": false,
+    "basis": "Previous independent review verified 149 frozen inputs; current receipt records same manifest hash. Avoided repeating unchanged full inventory and union regression.",
+    "newProfileRead": true,
+    "profileSha256": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+  },
+  "limitations": [
+    "Only explicit isolated offline-copy metadata alias helper accepted; operator must keep DB and backup parent exclusive. Absolute path is not proof of an offline copy; backup path reopen is not hardened against adversarial filesystem races.",
+    "Requires Node SQLite setAuthorizer/serialize/deserialize support; fails closed otherwise. No minimum runtime migration adopted here.",
+    "Pinned schema-profile equality is intentionally strict; future migration/schema evolution needs separately reviewed profiles.",
+    "No automatic application/deployment call added by reviewed wrapper; production/live DB/recovery not accepted."
+  ],
+  "fullUnitRemaining": {
+    "unitComplete": false,
+    "migrationUnionAccepted": false,
+    "pendingTargetMigrations": [
+      "0014_jennifer_execution_integrity.sql",
+      "0015_jennifer_passkey_access.sql",
+      "0016_sky_monthly_sandbox.sql",
+      "0017_sky_cloud_monthly_test.sql",
+      "0018_sky_recurring_sandbox.sql",
+      "0019_sky_hosted_monthly.sql",
+      "0020_sites_schema_convergence.sql",
+      "0021_sky_recurring_send_guard.sql"
+    ],
+    "guardDifferences": [
+      "a2a_budget_reservation_before_insert",
+      "a2a_budget_settlement_before_update",
+      "a2a_delegation_fanout_limits_before_insert",
+      "a2a_live_usage_snapshot_before_insert",
+      "a2a_parent_predecessor_guard",
+      "remote_ai_text_dispatch_guard",
+      "remote_ai_text_input_relation_guard",
+      "remote_ai_text_quote_guard",
+      "remote_ai_text_release_guard",
+      "remote_ai_text_reserve_guard",
+      "remote_ai_text_send_claim_binding_guard",
+      "remote_ai_text_state_guard",
+      "remote_ai_text_usage_guard"
+    ],
+    "eveSourceCompleteBase": false,
+    "runtimeConsumerUnion": false
+  },
+  "operations": {
+    "implementationEdits": false,
+    "gitMutation": false,
+    "actualDatabaseOperations": false,
+    "syntheticTemporaryDatabaseOperations": true,
+    "fullVerify": false,
+    "providerFundsDevicePublication": false
+  },
+  "next": "Integrator may adopt this exact offline helper subcandidate after normal save gates; GIT-04 remains open for eight migrations, thirteen guard differences, Source complete base and runtime fence/list union."
+}

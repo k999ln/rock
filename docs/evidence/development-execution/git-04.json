@@ -1,0 +1,391 @@
+{
+  "schema": "rockstaros.development-execution.git-04/1",
+  "recordedAt": "2026-10-24T07:09:40.428533+00:00",
+  "unit": "GIT-04",
+  "status": "attempt2_alias_security_fixes_review_pending_full_union_unaccepted",
+  "unitComplete": false,
+  "primaryOwner": "ROCK",
+  "taskIds": [
+    "G04",
+    "DB01"
+  ],
+  "requestedModel": "gpt-6.1-sol",
+  "requestedEffort": "high",
+  "appliedModel": null,
+  "appliedModelConfirmed": false,
+  "attemptCount": 2,
+  "candidate": {
+    "checkout": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+    "branch": "codex/rock-main-integration-20261024",
+    "baseMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "runtimeFilesChanged": false,
+    "rootProductFilesChangedByGit": false,
+    "headCommitUnchanged": true,
+    "githubSaved": false,
+    "mainMerged": false
+  },
+  "acceptedInputContract": {
+    "revision": 2,
+    "sha256": "18c7affab1ba2dec00c49c7630507aaddff87814ecb2bd2e11795d2f8bac3951",
+    "review": "docs/evidence/development-execution/git-02-03-review-r2.json",
+    "reviewSha256": "f6d6d0969ea9d9f93a70f51c8d3a4828e9319993f4cfe780c347e326ece0aac0",
+    "runtimeImplementationAccepted": false
+  },
+  "inputs": {
+    "frozenManifest": "/private/tmp/rock-git04-input/manifest.json",
+    "sha256": "17061049ebe2ef9096e7625c2b3fe3e2e4c3da7940cacae6b0f8449b3d42c2c8",
+    "fileCount": 149,
+    "sourceLayers": {
+      "Root": {
+        "schemaTables": 117,
+        "sqlCount": 84
+      },
+      "main": {
+        "schemaTables": 119,
+        "sqlCount": 20
+      },
+      "EveSource": {
+        "schemaTables": 126,
+        "sqlCount": 15,
+        "completeBaseSupplied": false
+      }
+    },
+    "liveMetadata": {
+      "generatedAt": "2026-10-24T06:38:53.253Z",
+      "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "verified": true
+    }
+  },
+  "implementation": {
+    "files": {
+      "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+      "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+      "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+      "tests/migration-aliases.test.mjs": "3dc2be92fe0a898d038de4bfa1eaaf351d5327dcf71ef3b16095150ee7589dd0",
+      "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229"
+    },
+    "scope": "explicit offline SQLite filename alias compatibility through existing Sites migration-lineage module; never automatic deploy/start",
+    "pinnedAliases": 11,
+    "sqlAppliedFilesChanged": false,
+    "appSchemaChanged": false,
+    "newApplicationMigration": null,
+    "metadataOnlySchema": "_rock_migration_aliases append-only audit in explicitly selected test/copy DB",
+    "atomicity": "exclusive backup file creation and logical readback; BEGIN IMMEDIATE; recheck plan/history/schema/all SQL hashes; alias+audit inserts all-or-none; expected row-change check",
+    "exclusions": [
+      "No remote/live DB operation",
+      "No whole Root/Source SQL copy into main",
+      "No drop/rename/rewrite of applied SQL",
+      "No timestamp-high-watermark rewriting",
+      "No runtime fence/list implementation or provider effect"
+    ],
+    "planning": "No source SQL execution at all. Complete source/target journal+SQL hashes must match reviewed frozen profiles; expected schema definitions are data, not executable SQL. Planner uses isolated serialized memory snapshot with defensive/trusted-schema-off/query-only and deny-by-default SQLite authorizer.",
+    "writeBoundary": "Exact recognized metadata table/index/immutable trigger schema only. Unknown metadata trigger rejected. Apply authorizer denies attachments/external operations and domain DDL/DML, with exact constant audit setup and append-only insert scope.",
+    "preCommit": "Independent whole-domain/schema/tombstone/receipt/pending/Drizzle/application-sequence digest equality; exact old history/audit prefix and expected new delta; full replay proof before COMMIT. Any failure rolls back.",
+    "replay": "Every plan/replay rechecks full reviewed source/target profiles, alias table and all associated index/trigger objects, exact audit/guards, source profile provenance and both source/canonical history links. Pristine canonical-main no-op remains distinct.",
+    "apiRequirement": "Helper requires setAuthorizer+serialize+deserialize. Tested Node26.12.1; missing API fails closed, no permissive fallback. Application minimum engine remains unchanged.",
+    "referenceProfiles": {
+      "path": "data/migration-reference-profiles.json",
+      "profiles": [
+        "root84",
+        "target-main20",
+        "fixture-source2",
+        "fixture-target2"
+      ],
+      "sourceSqlExecutedByPlanner": 0,
+      "futureEvolution": "new source/target/schema evolution requires independent reviewed profile; no auto-learning/adoption"
+    },
+    "officialApiSource": "https://nodejs.org/api/sqlite.html#databasesetauthorizercallback"
+  },
+  "verification": [
+    {
+      "command": "node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs",
+      "exitCode": 0,
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "log": "/private/tmp/rock-git04-r2/focused-final.log",
+      "sha256": "8d0c556e48b8adfa50ae3e4769f4058032a9b1bfd3e9b17f59f66aefb21921bb"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/migration-union.test.mjs",
+      "exitCode": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "log": "/private/tmp/rock-git04-r2/existing-union.log",
+      "sha256": "328727b8440eaf37bbef7f18db4619a974144a30e6249e52682bac52ea5b82cd",
+      "scope": "existing synthetic fresh/current workerd/D1 fixtures; not live DB"
+    },
+    {
+      "command": "targeted oxlint (3 changed/related JS files)",
+      "exitCode": 0,
+      "log": "/private/tmp/rock-git04-r2/lint.log"
+    },
+    {
+      "command": "project/schema/database/mission and exact-owned diff checks",
+      "result": "Root project:update/check and candidate project/schema/database/mission/lint/owned diff checks exit0"
+    }
+  ],
+  "frozenRootFixture": {
+    "sourceMigrations": 84,
+    "recorded": 11,
+    "repeatAliases": 0,
+    "domainRowsPreserved": true,
+    "backupVerified": true,
+    "remainingMigrations": [
+      "0014_jennifer_execution_integrity.sql",
+      "0015_jennifer_passkey_access.sql",
+      "0016_sky_monthly_sandbox.sql",
+      "0017_sky_cloud_monthly_test.sql",
+      "0018_sky_recurring_sandbox.sql",
+      "0019_sky_hosted_monthly.sql",
+      "0020_sites_schema_convergence.sql",
+      "0021_sky_recurring_send_guard.sql"
+    ],
+    "fullUnionAccepted": false,
+    "sourceIsSyntheticSQLiteBuiltFromFrozenSource": true,
+    "liveDatabaseReadback": false
+  },
+  "coveredNegativeAndRecoveryCases": [
+    "fresh does not invent applied aliases",
+    "main history no-op",
+    "Root alias normalization and canonical duplicate-CREATE suppression",
+    "repeat and immutable history/audit",
+    "mid-transaction abort restores exact logical DB; retry succeeds",
+    "stale/missing plan rejected before write",
+    "tampered SQL/journal/path/audit and incomplete schema rejected",
+    "separate unused backup plus dangling symlink refusal",
+    "concurrent writer lock leaves DB unchanged",
+    "same receipt/pending/reservation/stop/revocation/deletion values after reopen; stale CAS and unknown old-client kind refuse",
+    "Drizzle original hash/timestamp preserved; no timestamp migration success claimed"
+  ],
+  "fullUnionRemaining": {
+    "state": "unaccepted",
+    "pendingTargetMigrations": [
+      "0014_jennifer_execution_integrity.sql",
+      "0015_jennifer_passkey_access.sql",
+      "0016_sky_monthly_sandbox.sql",
+      "0017_sky_cloud_monthly_test.sql",
+      "0018_sky_recurring_sandbox.sql",
+      "0019_sky_hosted_monthly.sql",
+      "0020_sites_schema_convergence.sql",
+      "0021_sky_recurring_send_guard.sql"
+    ],
+    "guardDifferences": [
+      "a2a_budget_reservation_before_insert",
+      "a2a_budget_settlement_before_update",
+      "a2a_delegation_fanout_limits_before_insert",
+      "a2a_live_usage_snapshot_before_insert",
+      "a2a_parent_predecessor_guard",
+      "remote_ai_text_dispatch_guard",
+      "remote_ai_text_input_relation_guard",
+      "remote_ai_text_quote_guard",
+      "remote_ai_text_release_guard",
+      "remote_ai_text_reserve_guard",
+      "remote_ai_text_send_claim_binding_guard",
+      "remote_ai_text_state_guard",
+      "remote_ai_text_usage_guard"
+    ],
+    "differenceMeaning": "normalized same-name trigger SQL differs; no automatic winner/dropping guard. Full semantic review/union still required.",
+    "firstFailureWithNaiveReplay": "main0013 bridge on full Root: csv_jobs.available_at absent; adding columns alone still collides with existing Jennifer passkey objects",
+    "sourceBase": "Eve Source standalone15 migration set lacks explicit complete inherited DB base; no live readback",
+    "runtimeConsumer": "GIT-02 revision2 atomic save fences/list compatibility remains required; no self-acceptance from alias tests"
+  },
+  "parallelLanes": {
+    "ESIM01": "setup schema/runtime-missing corrections hold; Git did not edit Root setup/test or adopt candidate",
+    "Billing": "Root billing/monthly statement sole domain writer; no writes/adoption by Git",
+    "MiniPro": "candidate-only; no unreviewed success transfer",
+    "sourceBatch": "GIT01/EVE01/SMITH01 limited review only; whole units unaccepted",
+    "Pixel": "Node9/Python3+Linux1skip host scope only; no new physical/model-quality acceptance"
+  },
+  "restore": "alias failure rolls back; verified preimage backup restored to separate fixture and logically matched. Do not rewind live DB or discard newer tombstones.",
+  "dependencies": {
+    "installedModules": "ignored symlink to existing Root node_modules for local tests/lint; no install/lock change",
+    "rootLockSha256": "199f8ed0a6c99390aa217362a834a54aad4e8a87dad564dd7b4c0b052de30547",
+    "candidateLockSha256": "539ba4006b336adb6624c797103a6c1822576a4f4933cd8a1dec0556e96f3a52",
+    "limitation": "full fixed dependency candidate/npm-ci/full-verify/CI remain GIT05/06 work"
+  },
+  "independentReview": {
+    "state": "pending second Astra/high review",
+    "reviewedAttempt": 1,
+    "priorReview": "docs/evidence/development-execution/git-04-review.json",
+    "implementerFinalAcceptance": false
+  },
+  "next": "independent Astra review of alias code; retain GIT-04 for remaining schema/guard/base union before GIT05/06 main save/merge. Inspect CI push/merge deployment side effects before publishing events.",
+  "finalChecks": {
+    "candidateCodeHashesStable": true,
+    "publishedSqlJournalAppSchemaDiff": "none",
+    "rootBranchUnchanged": true,
+    "wholeUnitAccepted": false,
+    "globalSync": "Root165/main393 progress synchronized; project/schema/database/mission pass",
+    "ownedDiffCheck": "exit0",
+    "codeAndProfileHashCheck": "pass",
+    "attempt1ReceiptReviewHashes": "unchanged",
+    "fullVerify": "not rerun; user-assigned fixed-candidate gate later"
+  },
+  "candidateFilesSha256": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+  "correctedFindings": [
+    "GIT04-R1",
+    "GIT04-R2",
+    "GIT04-R3"
+  ],
+  "attemptHistory": [
+    {
+      "attempt": 1,
+      "candidateFilesSha256": "f046650cf587e5774eca7d2056fa2727ef84f74f1d95e3f2b0dbad3edb1b3b02",
+      "receipt": "docs/evidence/development-execution/history/git-04-attempt1.json",
+      "receiptSha256": "3239e5a80f83a815f06c05f343eabe0bf6482f05b3a022cca1f7cdcdafb22b32",
+      "review": "docs/evidence/development-execution/git-04-review.json",
+      "reviewSha256": "b246361b3f07802d7a54c43b78c68b88afce827c3490c93bd031d9606928b2b0",
+      "verdict": "changes_required_alias_helper",
+      "codeBackup": "work/development-backups/git-04-attempt1-20261024",
+      "adopted": false
+    }
+  ],
+  "attempt2SecurityRegression": {
+    "R1": [
+      "9 unapproved SQL/journal probes rejected before execution, including comment-separated VACUUM/ATTACH and dangerous PRAGMA/functions/DDL/DML; external file absent",
+      "host user-defined generated-column function not inherited or executed by planner snapshot"
+    ],
+    "R2": [
+      "delete/update/ignore/rewrite metadata triggers rejected with logical DB unchanged",
+      "unknown audit insert trigger rejected, even on replay",
+      "domain write authorizer rejects state corruption",
+      "independent precommit domain digest catches injected authorizer failure and rolls back tombstone/stop deletion",
+      "old history delta mutation rejected/rolled back",
+      "mid-transaction SQLite API failure restores exact logical DB; no production test hook"
+    ],
+    "R3": [
+      "successful replay followed by index removal/source edit/journal edit/guard removal/provenance forgery/audit unlink/history unlink refused with zero further effects",
+      "valid unchanged replay remains no-op; canonical-main history validated separately"
+    ],
+    "notTested": "New runtime fences/list API, complete union, actual Provider/device/production DB remain unaccepted"
+  },
+  "dispatchAggregation": {
+    "path": "data/development-execution.json",
+    "readOnly": true,
+    "laneCount": 11,
+    "lanes": [
+      {
+        "lane": "git",
+        "dispatchStatus": "git_04_second_attempt_fixing_three_astra_defects",
+        "laneReportedStatus": "GIT-04_alias_code_review_pending_full_union_unaccepted",
+        "laneCurrentUnit": "GIT-04",
+        "receipt": "docs/evidence/development-execution/history/git-04-attempt1.json",
+        "receiptSha256": "3239e5a80f83a815f06c05f343eabe0bf6482f05b3a022cca1f7cdcdafb22b32",
+        "wholeUnitAcceptedByThisAggregation": false,
+        "currentCandidateReceipt": "docs/evidence/development-execution/git-04.json",
+        "currentCandidateSha256": "not self-hashed; candidateFilesSha256 binds code/data",
+        "snapshotNote": "dispatch/lane metadata captured before this final Git sync"
+      },
+      {
+        "lane": "os-pixel",
+        "dispatchStatus": "mini_pro_web_limited_independent_review_accepted",
+        "laneReportedStatus": "focused_verified_pending_independent_review",
+        "laneCurrentUnit": "OS-01",
+        "receipt": null,
+        "receiptSha256": null,
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "smith",
+        "dispatchStatus": "review_pending",
+        "laneReportedStatus": "local_regressions_passed_pending_independent_review",
+        "laneCurrentUnit": "SMITH-01",
+        "receipt": "docs/evidence/development-execution/smith-01.json",
+        "receiptSha256": "33b9f8dbd2321f233c7ba0284df8d27f68f240303d7d2cad6b631136189b363e",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "eve",
+        "dispatchStatus": "eve_14_core_p02_short_loop_non_destructive",
+        "laneReportedStatus": "execution_delivered_pending_independent_review",
+        "laneCurrentUnit": "EVE-01",
+        "receipt": "docs/evidence/development-execution/eve-01.json",
+        "receiptSha256": "ecd691e6cca2945bf2bf351d4180b9c0aea2fb97f774cc503a34ffc5e9b30703",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "mini",
+        "dispatchStatus": "mini_01_implemented_11_tests_review_pending",
+        "laneReportedStatus": "implementation_local_checks_passed_independent_review_pending",
+        "laneCurrentUnit": "MINI-01",
+        "receipt": "docs/evidence/development-execution/mini-01.json",
+        "receiptSha256": "7d92408beaeb9107dff05cf0154e165f41719ed92acfac31de65c0ac20930df5",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "pro",
+        "dispatchStatus": "pro_01_export_preview_17_tests_local_ui_review_pending",
+        "laneReportedStatus": "implementation_review_pending",
+        "laneCurrentUnit": "PRO-01",
+        "receipt": "docs/evidence/development-execution/pro-01.json",
+        "receiptSha256": "ffd193b64b62ff6b9d8f1a603dde78cb23d987694494bb6e6657a90473dc342e",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "esim",
+        "dispatchStatus": "esim_01_second_attempt_65_tests_astra_rereview_pending",
+        "laneReportedStatus": "attempt2_corrections_delivered_pending_astra_reinspection",
+        "laneCurrentUnit": "ESIM-01",
+        "receipt": "docs/evidence/development-execution/esim-01.json",
+        "receiptSha256": "25b293e284d7431a6c75c3a779ab8511c12547b57d17c6d0d850a95bf54f6280",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "billing",
+        "dispatchStatus": "bill_01_snapshot_62_tests_astra_review_pending_api_db_binding_pending",
+        "laneReportedStatus": "implemented_pending_astra_review_and_shared_integration",
+        "laneCurrentUnit": "BILL-01",
+        "receipt": "docs/evidence/development-execution/bill-01.json",
+        "receiptSha256": "d71a52b2844e93607d2c10f12eb2750e99b850aa7fda74bcbafe8b3601329bbc",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "wallet",
+        "dispatchStatus": "wallet_01_fixture_candidate_23_tests_astra_review_pending_credit_disabled",
+        "laneReportedStatus": "implementation_candidate_awaiting_independent_review",
+        "laneCurrentUnit": "WALLET-01",
+        "receipt": "docs/evidence/development-execution/wallet-01.json",
+        "receiptSha256": "436b9e70ccaa003dbfca93124ae406e3239f1c6296b9270452bae1f91307c9c9",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "game",
+        "dispatchStatus": "game_01_static_intake_23_tests_review_pending_dynamic_unverified",
+        "laneReportedStatus": "implementation_candidate_pending_independent_review",
+        "laneCurrentUnit": "GAME-01",
+        "receipt": "docs/evidence/development-execution/game-01.json",
+        "receiptSha256": "b76619e3a7999b37504343815134fe0177ac13ec56c3ca2c530433c0acf154d9",
+        "wholeUnitAcceptedByThisAggregation": false
+      },
+      {
+        "lane": "web-ops",
+        "dispatchStatus": "webops_01_27_tests_local_keyboard_319px_verified_review_pending",
+        "laneReportedStatus": "implementation_ready_for_independent_review",
+        "laneCurrentUnit": "WEBOPS-01",
+        "receipt": "docs/evidence/development-execution/webops-01.json",
+        "receiptSha256": "c48a51a335e1cc891d20e39ed0804bf017376ec3cb5cfa5261f5877aff03a746",
+        "wholeUnitAcceptedByThisAggregation": false
+      }
+    ],
+    "scope": "dispatch and lane receipt snapshots may lag each other; reported dispatch is not execution/product completion",
+    "limitedReviews": [
+      "docs/evidence/development-execution/source-batch-review.json",
+      "docs/evidence/development-execution/pixel-host-test-review.json",
+      "docs/evidence/development-execution/mini-pro-web-review.json"
+    ],
+    "providerPhysicalAcceptancePromoted": false
+  },
+  "localPreservation": {
+    "path": "/Users/kaiya/Documents/ChatGPT/avokdo/work/development-backups/initial-execution-20261024",
+    "manifestSha256": "be9d7491adea3120b2184e569b2bc8d84240fb0b3a25f6d6a2714e2078db02ae",
+    "filesRehashed": 3625,
+    "bytes": 1950878569,
+    "gitIgnoredVerified": true,
+    "secretHoldCopied": false,
+    "githubSaved": false
+  },
+  "accessProbeBoundary": "No website/bypass-token probe performed by this batch; no token value read/output/copied. Rotation-related failure must not be treated as runtime defect."
+}

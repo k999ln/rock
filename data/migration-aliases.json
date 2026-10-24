@@ -1,0 +1,63 @@
+{
+  "schema": "rockstaros.migration-aliases/1",
+  "source": "Root codex/esim-cloud-access frozen20261024",
+  "targetMain": "7304e449cd7938b098b0b1ce481a06501db8d795",
+  "engine": "wrangler-d1-filenames-only",
+  "aliases": [
+    {
+      "source": "0064_sky_linux_service.sql",
+      "canonical": "0030_sky_linux_service.sql",
+      "sha256": "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+    },
+    {
+      "source": "0065_rockstar_service_setup.sql",
+      "canonical": "0031_rockstar_service_setup.sql",
+      "sha256": "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+    },
+    {
+      "source": "0066_sky_agent_settings.sql",
+      "canonical": "0022_sky_agent_settings.sql",
+      "sha256": "ebb18d1923793903531b86d195fa0c4b321ec09aa375b2013f10b18e717065ef"
+    },
+    {
+      "source": "0067_sky_optional_features.sql",
+      "canonical": "0023_sky_optional_features.sql",
+      "sha256": "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d"
+    },
+    {
+      "source": "0068_sky_hub_plugins.sql",
+      "canonical": "0024_sky_hub_plugins.sql",
+      "sha256": "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474"
+    },
+    {
+      "source": "0069_sky_x_feed_state.sql",
+      "canonical": "0025_sky_x_feed_state.sql",
+      "sha256": "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7"
+    },
+    {
+      "source": "0070_eve_durable_history.sql",
+      "canonical": "0032_eve_durable_history.sql",
+      "sha256": "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042"
+    },
+    {
+      "source": "0071_sky_communities.sql",
+      "canonical": "0026_sky_communities.sql",
+      "sha256": "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af"
+    },
+    {
+      "source": "0072_community_os_keys.sql",
+      "canonical": "0027_community_os_keys.sql",
+      "sha256": "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+    },
+    {
+      "source": "0073_sky_timeline_interactions.sql",
+      "canonical": "0028_sky_timeline_interactions.sql",
+      "sha256": "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2"
+    },
+    {
+      "source": "0074_sky_x_account_oauth.sql",
+      "canonical": "0029_sky_x_account_oauth.sql",
+      "sha256": "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "schema": "rockstaros.git04.checkpoint-review/1",
+  "recordedAt": "2026-10-24T07:46:40.688465+00:00",
+  "reviewerLane": "game",
+  "independence": "Reviewer did not implement GIT-04 or PR186; review-only product scope.",
+  "status": "changes_required_codeql_backup_race",
+  "pr": "https://github.com/k999ln/rock/pull/186",
+  "commit": "f5a7de0a8f4b952f3d6b8bb984ca9ed22ae74baf",
+  "base": "7304e449cd7938b098b0b1ce481a06501db8d795",
+  "remoteReadback": {
+    "source": "GitHub connector get_pr_info",
+    "headSha": "f5a7de0a8f4b952f3d6b8bb984ca9ed22ae74baf",
+    "baseSha": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "state": "open",
+    "merged": false,
+    "changedFiles": 13
+  },
+  "candidateFiles": {
+    "scripts/sqlite-migration-aliases.mjs": "1394091bd60eb70aff0465d11ab18bed2f934239d3e0570785445523ccb10552",
+    "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+    "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+    "tests/migration-aliases.test.mjs": "a54476f33637df9e734441025c6b920c6db51daf2331a7a84cb5995e687f682c",
+    "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229",
+    ".github/workflows/ci.yml": "5754e9390263a6f9af54e7b0c5de474195f3133b15d337f66015c2bdf7d7163f"
+  },
+  "previousCandidate": "b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f",
+  "deltaReview": {
+    "runtimeHelperAndDataUnchanged": true,
+    "testOnlyChanges": "Exactly3 original=DatabaseSync.prototype.prepare reads replaced by Reflect.get(DatabaseSync.prototype,prepare); bound .call(this), restores, injection bodies and assertions unchanged. Compared verified old backup bytes to committed current bytes.",
+    "ciChange": "verify Node22 to26.12.1; event filters, permissions contents:read, pinned actions, install/verify commands unchanged. Other Node22 regression/build jobs do not run alias-only APIs.",
+    "documentation": "Added offline-only usage, exact profile/API requirement, immutable applied SQL/history, separate-copy restore and full-union limitations. Old preparation/pending entries are historical, not current CI success. No newly added full-union/device/Provider/charging completion claim found.",
+    "mechanicalDeltaAccepted": true,
+    "adoptionAllowed": false
+  },
+  "findings": [
+    {
+      "id": "GIT04-CP-R1",
+      "priority": 1,
+      "path": "scripts/sqlite-migration-aliases.mjs",
+      "start": 175,
+      "end": 183,
+      "title": "Backup path is checked/created then closed and reopened by SQLite",
+      "source": "Coordinator authenticated GitHub readback for same-SHA checkrun120816951394, CodeQL high-severity FAIL at line181. Reviewer source confirms check/close/reopen pattern.",
+      "cause": "existsSync/realpath and exclusive open(wx) only validate the earlier path. The placeholder FD is closed before await backup(db,backupPath), which resolves/reopens the name; an attacker-controllable directory can replace it and redirect backup before later digest readback. Logical equality after write cannot undo writing the wrong target. This was a declared r2 limitation, now an explicit failing CI adoption gate.",
+      "requiredCorrection": [
+        "Remove the externally writable check-close-reopen backup lifecycle without suppressing CodeQL or weakening tests.",
+        "Use a supported descriptor-based destination, or create the SQLite backup inside a newly owned/private0700 directory with controlled ancestry; verify there, then atomically publish without clobbering an existing final path (for example exclusive link rather than overwrite rename). Preserve artifact identity through verification and publication; keep the offline-source/operator boundary explicit.",
+        "Add deterministic race tests for replacement/symlink swap between planning, placeholder creation and backup open, plus destination already present/dangling symlink and concurrent replacement. Original DB and an unrelated sentinel destination must stay unchanged on refusal; no partial alias commit.",
+        "Re-run focused suite and same-SHA CodeQL after implementation; hold adoption/merge until the failing gate is resolved."
+      ],
+      "acceptance": "Same new candidate hash, local race refusal and normal backup/replay success, independently reviewed correction, and exact-head security gate success."
+    }
+  ],
+  "validation": [
+    {
+      "command": "node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs",
+      "cwd": "/Users/kaiya/.codex-work/worktrees/rock-main-integration/avokdo",
+      "exitCode": 0,
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "log": "/private/tmp/game-review-git04-checkpoint-focused.log",
+      "logSha256": "a785c1960043a8c34dedcc05b1276f9d52e0506e684328a71eceef081b5b952a"
+    }
+  ],
+  "ci": {
+    "workflowSnapshot": "GitHub connector reports verification in_progress and SPIDER regressions/security/CodeQL workflow executions success. Workflow execution success is not the CodeQL result gate.",
+    "codeScanningGate": {
+      "checkRunId": 120816951394,
+      "conclusion": "failure",
+      "severity": "high",
+      "annotation": "Potential file system race condition: The file may have changed since it was checked",
+      "path": "scripts/sqlite-migration-aliases.mjs",
+      "line": 181,
+      "provenance": "coordinator authenticated read-only report; local gh api attempts failed network and were not counted as independent readback"
+    },
+    "allChecksSuccessful": false,
+    "mergeReady": false
+  },
+  "priorFullVerify": {
+    "source": "git-04-github-checkpoint.json receipt",
+    "exitCode": 0,
+    "trackedInputCount": 4394,
+    "reportedChangedInputs": 0,
+    "logSha256Verified": true,
+    "rerunByReviewer": false,
+    "all4394RehashedByReviewer": false
+  },
+  "publicationAudit": {
+    "workflowChangedOnlyVerifyRuntime": true,
+    "publicOverviewFilterMatchesChangedPaths": false,
+    "releaseSigningManualNotInvoked": true,
+    "newDeployOrRemoteMigrationHook": false,
+    "repoHooksReport": "checkpoint reports empty; reviewer did not independently list remote hooks",
+    "generalLaunch": "held"
+  },
+  "fullUnionRemaining": {
+    "unitComplete": false,
+    "migrationUnionAccepted": false,
+    "pendingTargetMigrations": [
+      "0014_jennifer_execution_integrity.sql",
+      "0015_jennifer_passkey_access.sql",
+      "0016_sky_monthly_sandbox.sql",
+      "0017_sky_cloud_monthly_test.sql",
+      "0018_sky_recurring_sandbox.sql",
+      "0019_sky_hosted_monthly.sql",
+      "0020_sites_schema_convergence.sql",
+      "0021_sky_recurring_send_guard.sql"
+    ],
+    "guardDifferences": [
+      "a2a_budget_reservation_before_insert",
+      "a2a_budget_settlement_before_update",
+      "a2a_delegation_fanout_limits_before_insert",
+      "a2a_live_usage_snapshot_before_insert",
+      "a2a_parent_predecessor_guard",
+      "remote_ai_text_dispatch_guard",
+      "remote_ai_text_input_relation_guard",
+      "remote_ai_text_quote_guard",
+      "remote_ai_text_release_guard",
+      "remote_ai_text_reserve_guard",
+      "remote_ai_text_send_claim_binding_guard",
+      "remote_ai_text_state_guard",
+      "remote_ai_text_usage_guard"
+    ],
+    "eveSourceCompleteBase": false,
+    "runtimeConsumerUnion": false
+  },
+  "operations": {
+    "productEdits": false,
+    "gitMutation": false,
+    "remoteReviewsOrCommentsPosted": false,
+    "realDbProviderDevicePublication": false,
+    "fullVerify": false
+  },
+  "next": "Assign backup race correction to Git writer; re-review exact new candidate and require same-SHA CI before merge. Continue BILL/ESIM independent reviews."
+}

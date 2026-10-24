@@ -75,3 +75,6 @@ export async function syncSitesPackageSourceLineage({ root, projectId }) {
     sourceDirectory,
   };
 }
+
+// Explicit offline D1 filename reconciliation; never part of automatic deployment.
+export { planMigrationAliases, reconcileLocalMigrationAliases, sqliteLogicalDigest } from './sqlite-migration-aliases.mjs';

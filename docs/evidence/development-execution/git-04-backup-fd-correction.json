@@ -1,0 +1,107 @@
+{
+  "schema": "rockstaros.git04.backup-fd-correction/1",
+  "recordedAt": "2026-10-24T08:10:24.654893+00:00",
+  "unit": "GIT-04",
+  "scope": "offline alias helper backup lifecycle only; full union unaccepted",
+  "overallImplementationAttempt": 3,
+  "attemptHistory": [
+    {
+      "overallAttempt": 1,
+      "rootCause": "source SQL/metadata trigger/replay preservation",
+      "result": "changes required"
+    },
+    {
+      "overallAttempt": 2,
+      "rootCause": "source SQL/metadata trigger/replay preservation",
+      "result": "limited helper accepted; later checkpoint CodeQL found distinct backup namespace root cause"
+    },
+    {
+      "overallAttempt": 3,
+      "rootCause": "GIT04-CP-R1 backup path close/reopen race",
+      "rootCauseAttempt": 1,
+      "result": "correction candidate, independent review/CI pending"
+    }
+  ],
+  "perRootCauseLimit": 3,
+  "overallCountReset": false,
+  "priorCommit": "f5a7de0a8f4b952f3d6b8bb984ca9ed22ae74baf",
+  "priorReview": "docs/evidence/development-execution/git-04-checkpoint-review.json",
+  "priorReviewSha256": "89511e3128e641f75547fba8ebb418a77426e7dca910bed65e44baa7882092ca",
+  "failedCodeQLCheckRun": 120816951394,
+  "newCandidateFiles": {
+    "scripts/sqlite-migration-aliases.mjs": "c171f50aa4cbf095eabe820fb731e9b68904b9c4014a4fc59ba6520c562de930",
+    "scripts/sites-migration-lineage.mjs": "5515223ff5a6860ca850c1589e05a2d806a49623ec07d82c8ef77c923f254f6f",
+    "data/migration-aliases.json": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+    "data/migration-reference-profiles.json": "8099020a86087c1d0ebee4e8528e3c85a99a9431a39ddacb55c146a188d2a229",
+    "tests/migration-aliases.test.mjs": "44c9bf833c16bc21131ef738a532ecefd6221895c0b98aa96684fdbe35fcc332"
+  },
+  "newCandidateFilesSha256": "829f8fc8cd32c0b58f297ffbca1620ef6521ad1213af19738c1ed868de7f2cf3",
+  "change": {
+    "backup": "Locked consistent SQLite serialized bytes -> O_EXCL|O_NOFOLLOW0600 held fd -> write/fsync -> readback on same fd -> deserialize bytes for logical restore. No SQLite backup(path), no path reopen for data verification. FD held until commit/close.",
+    "source": "Owned private0700 parent and trusted directory ancestry; O_NOFOLLOW source fd anchors regular single-link inode. Existing complete rollback-journal copy only, no recovery/WAL sidecars. SQLite source path identity checked before/after opening, at writer lock and commit.",
+    "commit": "Metadata-only SQLite authorization and all existing domain/history/audit postconditions retained. Filesystem-only guard checks namespace/inode/backup bytes again in the COMMIT authorizer.",
+    "publication": "fsync backup fd and private parent; no clobbering rename or replacement. Failed/partial artifacts are not silently removed or claimed verified.",
+    "trustBoundary": "Single-operator offline POSIX copy; private directory/controlled ancestry excludes untrusted identities. Arbitrary root/same-UID/in-process hostile code is not an OS security boundary. Detected namespace changes are refused; no sandbox claim."
+  },
+  "focusedValidation": {
+    "command": "node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs",
+    "exitCode": 0,
+    "tests": 28,
+    "pass": 28,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "50ce4b43ff43e4d01218d7c0b729bb31ebf7254416800a912a600bfb75cb1ae9",
+    "fullLintExitCode": 0,
+    "fullVerify": "preparation snapshot; final result reported with GitHub head checkpoint"
+  },
+  "regressions": [
+    "symlink installed before exclusive create",
+    "backup inode/name replacement after open and after write; sentinel unchanged",
+    "zero/short write and false fd readback refuse",
+    "backup missing just before COMMIT authorizer -> rollback",
+    "source replacement at descriptor or writer-lock acquisition; original moved DB unchanged",
+    "parent directory replacement -> no fake backup commit",
+    "private parent/trusted ancestry/single-link source enforcement;0600 snapshot hash proof",
+    "recovery/WAL sidecars and WAL-header offline sources refuse before SQLite open",
+    "all original source-SQL,metadata-trigger,replay negatives retained"
+  ],
+  "frozenRootFixture": {
+    "sourceMigrations": 84,
+    "recorded": 11,
+    "repeatAliases": 0,
+    "domainRowsPreserved": true,
+    "backupVerified": true,
+    "remainingMigrations": [
+      "0014_jennifer_execution_integrity.sql",
+      "0015_jennifer_passkey_access.sql",
+      "0016_sky_monthly_sandbox.sql",
+      "0017_sky_cloud_monthly_test.sql",
+      "0018_sky_recurring_sandbox.sql",
+      "0019_sky_hosted_monthly.sql",
+      "0020_sites_schema_convergence.sql",
+      "0021_sky_recurring_send_guard.sql"
+    ],
+    "fullUnionAccepted": false,
+    "sourceIsSyntheticSQLiteBuiltFromFrozenSource": true,
+    "liveDatabaseReadback": false
+  },
+  "saveBoundary": {
+    "pr": 186,
+    "branch": "codex/rock-main-integration-20261024",
+    "priorSHA": "f5a7de0a8f4b952f3d6b8bb984ca9ed22ae74baf",
+    "newSHA": "not committed at preparation",
+    "independentAstra": "pending Root assignment",
+    "sameHeadCodeQL": "pending",
+    "mainMerged": false
+  },
+  "remaining": {
+    "unitComplete": false,
+    "fullUnionAccepted": false,
+    "canonicalMigrations": 8,
+    "sameNameGuards": 13,
+    "EveSourceBase": false,
+    "runtimeUnionPort": false,
+    "providerDeviceProductionAccepted": false
+  },
+  "parallelRootChangesIncluded": false
+}

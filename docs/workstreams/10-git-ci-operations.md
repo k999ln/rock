@@ -213,3 +213,25 @@ ROCK担当。利用者のmain反映指示により、034/035で限定検収さ�
 PR185のCodeQL指摘に対応し、検査済みHTMLを共有temp固定名へ保存する不要なdebug writeを撤去。Linux runtimeのdownload URLは固定した公開artifactへ照合し、lockfile値を任意送信先へ使わせない。URL変造拒否の回帰試験を追加。
 
 統合結果: PR #185 / merge `9b5ce641e0a947e4b4106f2ffca09d5feee237b2`、source `8fc8027cd149d2486bcfc2be03863200c87d2c1e`。全verify exit0、同一head checks成功。保存→branch→main統合を確認。共有checkoutの進行中差分と公開・実機・実Providerは別。検証詳細は統合台帳。
+
+### GIT-04: explicit local D1 filename alias compatibility
+
+`scripts/sqlite-migration-aliases.mjs` prepares an **offline SQLite copy** for the existing Wrangler filename migrator. `data/migration-aliases.json` pins 11 exact Root/main SQL aliases, including Root0064/main0030 and Root0065/main0031. Existing SQL and Drizzle timestamps are never changed. This helper is exported through `scripts/sites-migration-lineage.mjs`; build, start and deployment do not invoke it automatically.
+
+Read a plan with an explicit complete frozen source lineage and target lineage:
+
+```sh
+node scripts/sqlite-migration-aliases.mjs --database /absolute/offline-copy.sqlite --source /absolute/frozen-root/drizzle --target /absolute/integration/drizzle
+```
+
+Only after reviewing that plan, use the same arguments plus `--backup /absolute/unused-backup.sqlite --plan-digest DIGEST` to record verified aliases. After `BEGIN IMMEDIATE`, a consistent serialized snapshot is saved and logically read back through one exclusively created no-follow descriptor; state/source drift, filename-byte mismatch, incomplete source schema, unknown audit records and concurrent writers refuse the operation. Backup files contain private database contents and stay outside Git. Failures roll back all filename/audit inserts; retries require a new plan and unused backup path. Keep the backup and original store. Restoring a backup over a newer live database can erase tombstones: restore into a separate copy and re-review, never overwrite current state automatically.
+
+The helper adds only missing canonical names to `d1_migrations` plus an immutable alias audit. It does not replay application SQL, weaken constraints, rewrite `__drizzle_migrations`, perform remote operations, enable billing, or grant runtime completion. Old pending jobs, receipts, stop/revocation records and deletion tombstones remain in place. A high Drizzle timestamp is **not** reconciled by filename aliases.
+
+`remainingMigrations` is an unresolved gate, not permission to call `npm start` or apply those SQL files to Root. The frozen complete Root has 8 target migrations still pending after alias normalization; missing additive CSV/provider columns, partially overlapping Jennifer objects and same-name guard differences need a separate reviewed schema/trigger union. The separate Eve Source lineage also needs its explicit complete base before application. GIT-02 revision2 save fences and list compatibility remain runtime-port requirements.
+
+Verify with `node --test tests/migration-aliases.test.mjs tests/sites-migration-lineage.test.mjs`, the existing `tests/migration-union.test.mjs` (localhost/workerd), and `npm run schema:check`. These are host/SQLite/D1 fixture checks; production readback and runtime acceptance remain separate.
+
+Attempt2 security boundary: planning never executes source SQL. Reviewed `data/migration-reference-profiles.json` binds every journal/SQL byte and expected alias schema/index/trigger definition. Authorizer/query-only isolated snapshots and metadata-only write authorization plus independent precommit state/delta verification refuse external SQL, unknown metadata triggers and silent domain mutations. Replay validates complete audit provenance/history/schema every time. Tested Node26.12.1; helper fails closed without authorizer/serialize/deserialize APIs. Attempt1 metadata proofs are not silently upgraded.20 focused+13 existing D1 tests pass; second review and full union remain pending.
+
+PR186 CodeQL filesystem race correction: backup paths are never passed back to SQLite or reopened for data verification. Held source/backup/directory descriptors and named inode/ownership/link checks span writer lock and COMMIT; backup bytes and private-parent directory entries are synced. Apply requires owned private0700 parents, trusted ancestry, a single-link complete rollback-journal copy and no pre-existing recovery/WAL sidecars. No automatic live-DB cleanup, chmod, recovery or unsafe rollback. Missing/replaced backup/source names abort the transaction, including COMMIT-authorizer checks. Retain failed artifacts for operator review; do not treat a partial/missing backup as success.28 focused cases pass; fresh exact-head CI and independent review still gate adoption.
