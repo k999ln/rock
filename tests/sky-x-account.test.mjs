@@ -110,7 +110,9 @@ void test('token/cache cipher binds owner, purpose, authentication tag and handl
   await assert.rejects(b.open(sealed, 'feed:123'), /key-unavailable/);
   await assert.rejects(a.open(sealed, 'tokens:123'), /key-unavailable/);
   const v = JSON.parse(sealed);
-  v.cipher = 'A' + v.cipher.slice(1);
+  const originalCipher = v.cipher;
+  v.cipher = (originalCipher[0] === 'A' ? 'B' : 'A') + originalCipher.slice(1);
+  assert.notEqual(v.cipher, originalCipher);
   await assert.rejects(
     a.open(JSON.stringify(v), 'feed:123'),
     /key-unavailable/,
