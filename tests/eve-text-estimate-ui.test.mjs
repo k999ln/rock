@@ -100,7 +100,11 @@ void test('over-comparison is visible without quote, approve, reserve or text ex
   h.change('見積通貨', 'USD'); h.change('見積比較上限', '0'); h.agree(); h.click();
   await h.until(() => h.text().includes('比較用上限を超えています'));
   assert.equal(h.calls.length, 1); assert.equal(h.calls[0].body.maximumBudgetMinor, 0);
-  assert.equal(h.calls.some(c => /quotes|\/text$/.test(c.path)), false);
+  assert.equal(h.calls.some(({ path }) => {
+    const pathname = new URL(path, 'https://fixture.invalid').pathname;
+    return pathname === '/api/llm/quotes' || pathname.startsWith('/api/llm/quotes/') ||
+      pathname === '/api/llm/text';
+  }), false);
 });
 void test('changing inputs invalidates consent and rejects a retained old click handler', async () => {
   const h = await harness((_call, work) => response(work)); h.agree();

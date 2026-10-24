@@ -374,8 +374,8 @@
         },
         {
           "path": "tests/eve-text-estimate-ui.test.mjs",
-          "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
-          "bytes": 12320
+          "sha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+          "bytes": 12501
         },
         {
           "path": "tests/eve-text-job.test.mjs",
@@ -411,7 +411,10 @@
       "mainMerged": false,
       "wholeUnitAccepted": false,
       "scope": "Saved owner/revision two-material estimate only; current pricing execution gatefalse and no quote/reserve/approve/send. Numeric/expiry browser success not accepted.",
-      "combinedMainUi": "limited_local_restore_navigation_pass"
+      "combinedMainUi": "limited_local_restore_navigation_pass",
+      "reviewedExactFileCount": 9,
+      "runtimeProductFiveUnchanged": true,
+      "mechanicalTestExceptionPath": "tests/eve-text-estimate-ui.test.mjs"
     }
   ],
   "executionPriority": [

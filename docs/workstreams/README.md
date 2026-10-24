@@ -1,4 +1,4 @@
-Eveの[保存2資料の見積](../rockstaros-complete-design.md#eve-saved-source-estimate)は05のestimate-only候補、統合10。exact10/r2独立PASS、70局所/型/lint。Root実UIは保存/復元/503限定、Smithnav入り追加restore/nav/focus/5幅を同10hashで限定確認、commit保留解除。Smith navはPR203/main7188・同SHA6CI成功で限定統合済み。paid生成/wholeEVE/公開は別gate。
+Eveの[保存2資料の見積](../rockstaros-complete-design.md#eve-saved-source-estimate)は05のestimate-only候補、統合10。元exact10/r2独立PASS、初回70局所/型/lint。CI CodeQL後のtest1明示機械例外＋9一致/product5不変を記録し、新headCI/機械検収待ち。Root実UIは保存/復元/503限定、Smithnav入り追加restore/nav/focus/5幅を同10hashで限定確認、commit保留解除。Smith navはPR203/main7188・同SHA6CI成功で限定統合済み。paid生成/wholeEVE/公開は別gate。
 
 Smithの[mobile3入口](../rockstaros-complete-design.md#smith-mobile-bottom-navigation)は05の限定候補、統合主担当10。attempt3 exact8と限定local実UI PASSを採用し、wholeSMITH/native/公開は未受入。Billing required service最終claimはPR202/main2bea・同SHA6CI成功で限定統合済み。原本5archiveは別source branch。
 

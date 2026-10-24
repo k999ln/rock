@@ -1,6 +1,6 @@
 ## Eve estimate-only exact10のmain採用準備
 
-Smith203通常merge main7188c879・同SHA6CI成功のclean基点へ独立r2 exact10を無変更採用。元sourceは旧2beaから通常FFし11hash不変/.wrangler非操作を先に確認。元receipt69b127とportable要約を分け、Root実UIは503限定・数値未受入、旧expiry P2/fixture/EPERM再試験を保持。70/type/productlint→Root combinedUI proof確認済み→project/design/scanner→別DraftPR最終同head実Linuxnpmverify/allCI→独立metadata検収。追加proof d3b7（旧5286別保持）によりcommit保留解除、source/UI原本とRootHEAD/index/archiveは保全。[証拠](../evidence/development-execution/eve-source-estimate-main-adoption.json)。
+Smith203通常merge main7188c879・同SHA6CI成功のclean基点へ初回は独立r2 exact10を無変更採用し、CI CodeQL後にtest1の明示例外だけをpathname比較へ変更。現在9一致＋test1機械例外、runtime5不変。旧head278/旧test2eb・新test2f638/失敗check/修正UI8成功を保持し、新head CIと独立mechanical検収を必須にする。元sourceは旧2beaから通常FFし11hash不変/.wrangler非操作を先に確認。元receipt69b127とportable要約を分け、Root実UIは503限定・数値未受入、旧expiry P2/fixture/EPERM再試験を保持。70/type/productlint→Root combinedUI proof確認済み→project/design/scanner→別DraftPR最終同head実Linuxnpmverify/allCI→独立metadata検収。追加proof d3b7（旧5286別保持）によりcommit保留解除、source/UI原本とRootHEAD/index/archiveは保全。[証拠](../evidence/development-execution/eve-source-estimate-main-adoption.json)。
 
 ## Smith attempt3 exact8のmain採用候補
 

@@ -9832,7 +9832,7 @@
     "evidence": "docs/evidence/development-execution/eve-source-estimate-main-adoption.json",
     "reviewSummary": "docs/evidence/development-execution/eve-source-estimate-main-review-summary.json",
     "portableUiSummary": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
-    "sourceTenPreserved": true,
+    "sourceTenPreserved": false,
     "attempt": 2,
     "localTargetedPass": 70,
     "typecheck": "passed_normal_pretypecheck",
@@ -9849,6 +9849,13 @@
     "wholeEve02Accepted": false,
     "publicDeployment": false,
     "combinedMainUi": "passed_limited_restore_navigation_only",
-    "combinedMainUiOriginalSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85"
+    "combinedMainUiOriginalSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85",
+    "originalReviewedTenPreservedOutsideGit": true,
+    "currentRuntimeFivePreserved": true,
+    "currentNineExactPlusTestMechanicalException": true,
+    "mechanicalTestException": "tests/eve-text-estimate-ui.test.mjs",
+    "mechanicalUiTestsPass": 8,
+    "independentMechanicalReviewPending": true,
+    "localTargeted70Context": "before one-test CodeQL repair"
   }
 }

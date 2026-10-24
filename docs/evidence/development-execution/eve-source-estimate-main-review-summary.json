@@ -27,8 +27,8 @@
     },
     {
       "path": "tests/eve-text-estimate-ui.test.mjs",
-      "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
-      "bytes": 12320
+      "sha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+      "bytes": 12501
     },
     {
       "path": "tests/eve-text-job.test.mjs",
@@ -58,7 +58,7 @@
   ],
   "receiptHashes": {
     "original": "69b1277e6b8635804c83a4f7dd743fdf4025081254aa55bb907a7984c68ad23c",
-    "portable": "41ee84f082141de533712d1befae1a0bd6b37a43bfc66779341ce8e7fd6e949d",
+    "portable": "c36a89f9786841f8af9d44a74e8e5a6d28770cab6ce6b4274e2502ba3c8fa1ea",
     "notIdentical": true
   },
   "priorReviewSha256": "61b46c1b065cd75129f818dd3636d9e54d98ec3f86e0eed276fe868ceb542605",
@@ -93,14 +93,15 @@
   ],
   "uiSummary": {
     "path": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
-    "sha256": "553a7a6900fe71ae660fec6ae49bf7bb4a2d636907755525d7cbfd26ebcfc747",
+    "sha256": "9f62d525a07dfe4045b56d4b0c58d393de9002d2268bc67b687231da24af59d7",
     "originalRootSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85",
-    "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0"
+    "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0",
+    "currentProductFiveUnchanged": true,
+    "currentTenHashMatchClaimed": false
   },
   "combinedMainUiProof": {
     "status": "PASS_SCOPED_LOCAL_RESTORE_AND_NAVIGATION",
     "mainSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
-    "sourceTenHashesUnchanged": true,
     "sameSyntheticJobAndRevisionRestored": true,
     "consentReset": true,
     "estimateDisabled": true,
@@ -129,10 +130,116 @@
     "restoreEstimateOrPaidHttpRequests": 0,
     "numericRateUiTested": false,
     "scopeQualification": "Latest-main combined restore/navigation only, separate from original old-base explicit estimate503 observation. Neither context proves numeric trusted-rate or browser expiry.",
-    "commitHoldReleasedByRoot": true
+    "commitHoldReleasedByRoot": true,
+    "originalUiSourceTenHashesMatchedAtObservation": true,
+    "currentRuntimeFiveHashesUnchanged": true,
+    "currentExactFilesFromUiManifest": 9,
+    "currentTestOnlyMechanicalException": true
   },
   "metadataReviewRequiredBeforeMerge": true,
   "numericBrowserOrActualExpiryAccepted": false,
   "wholeEve02": false,
-  "publicDeployment": false
+  "publicDeployment": false,
+  "reviewedOriginalSourceFiles": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+      "bytes": 6812
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "dfa1469e68ff9d6747374dde4efbcf7400e750fe9d36efdc6e8f7705a2243618",
+      "bytes": 14255
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+      "bytes": 9604
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "0c8d5abe9d516aa77a11286bf5207969390fd58ce16ba532973e9ab3d5f41b42",
+      "bytes": 44665
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+      "bytes": 12320
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "7045a57d0f10e701fc32d7ec5578d734b7f3213b98a07b72d652319cc8877afc",
+      "bytes": 8004
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+      "bytes": 15463
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "bytes": 7676
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+      "bytes": 56166
+    },
+    {
+      "path": "tests/remote-ai-text-client.test.mjs",
+      "sha256": "aa0eb5be79563cd1082ef8f6610c33fc5a2d3fc229aa9c97fa8c86cc92f97da1",
+      "bytes": 6044
+    }
+  ],
+  "runtimeProductFiveUnchanged": true,
+  "currentNineExactPlusMechanicalTest": true,
+  "mechanicalTestException": {
+    "path": "tests/eve-text-estimate-ui.test.mjs",
+    "oldSha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+    "newSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+    "failedHead": "27874885b65331b31807e7b5b707e4520e841212",
+    "failedCheckId": 121015639703,
+    "failedRule": "Missing regular expression anchor",
+    "oldExpression": "/quotes|\\/text$/",
+    "change": "Use URL pathname comparison for exact /api/llm/quotes, its slash subpaths, and exact /api/llm/text; optional query cannot hide paid calls. No network operation.",
+    "callsShapeAudit": "Actual panel calls remoteAiTextRequest with same-origin path strings; VM mock records {path,method,body} unchanged. Existing client allowlist admits quotes/subpath/text and optional parentJobId query.",
+    "scope": "Only this assertion expression. Reverse replacement reconstructs exact old full-file hash. No assertion deletion, unconditional result, product5 or other test4 changes.",
+    "authorization": "Root explicit one-file CodeQL expression exception",
+    "independentMechanicalReview": "PENDING_ROOT_ASSIGNED_REVIEWER",
+    "diffSha256": "ff6129a0c669a8ab2a5e8bcea282c166bdcdfc9efa5483a4cbdfa56bff5a118a",
+    "validation": {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/eve-text-estimate-ui.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 2,
+      "logSha256": "ef58117f8279affa0ed314048e7c6457dcd6104b26f2c8446ae404da0bbcb2a1",
+      "endpointMatrix": {
+        "cases": 10,
+        "paidDetected": 8,
+        "estimateNotMisclassified": 2,
+        "externalAccess": false,
+        "sha256": "b132e810f3d90a46b7fb2ca329e4ba7ae74e7143098441a5afb2985bbbc66c87"
+      },
+      "uiSuite": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    "priorFailedHeadActualLinuxVerify": {
+      "tests": 2875,
+      "pass": 2873,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40141891855,
+      "logSha256": "e97138e3910bbe54e2cfb13f42e3c7379f5bef438e50991ce95d63e0a601cfa3"
+    }
+  },
+  "independentMechanicalReviewPending": true
 }

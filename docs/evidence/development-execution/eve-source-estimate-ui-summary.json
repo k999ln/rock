@@ -101,7 +101,6 @@
   "combinedMainUi": {
     "status": "PASS_SCOPED_LOCAL_RESTORE_AND_NAVIGATION",
     "mainSha": "7188c87986f337c6b65e408a17d2468ecab44fe5",
-    "sourceTenHashesUnchanged": true,
     "sameSyntheticJobAndRevisionRestored": true,
     "consentReset": true,
     "estimateDisabled": true,
@@ -130,7 +129,11 @@
     "restoreEstimateOrPaidHttpRequests": 0,
     "numericRateUiTested": false,
     "scopeQualification": "Latest-main combined restore/navigation only, separate from original old-base explicit estimate503 observation. Neither context proves numeric trusted-rate or browser expiry.",
-    "commitHoldReleasedByRoot": true
+    "commitHoldReleasedByRoot": true,
+    "originalUiSourceTenHashesMatchedAtObservation": true,
+    "currentRuntimeFiveHashesUnchanged": true,
+    "currentExactFilesFromUiManifest": 9,
+    "currentTestOnlyMechanicalException": true
   },
   "toolTimingQualification": "An anomalous filechooser wall duration is not product upload latency or a performance measurement.",
   "acceptance": {
@@ -143,5 +146,40 @@
     "newMetadataReviewPending": true
   },
   "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0",
-  "preCombinedEvidenceFileCount": 12
+  "preCombinedEvidenceFileCount": 12,
+  "sourceBindingQualification": "Root UI manifests bind the original reviewed ten source/test hashes. Current candidate keeps product/runtime5 and other tests4 identical; only the nonruntime paid-endpoint assertion expression changes under explicit mechanical exception. The UI evidence remains valid for unchanged product5, not a claim of current all-ten hash identity.",
+  "currentRuntimeProductFiles": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136",
+      "bytes": 6812
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa",
+      "bytes": 9604
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf",
+      "bytes": 15463
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "bytes": 7676
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287",
+      "bytes": 56166
+    }
+  ],
+  "currentReviewedExactFileCount": 9,
+  "mechanicalTestException": {
+    "path": "tests/eve-text-estimate-ui.test.mjs",
+    "oldSha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+    "newSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+    "productUnchanged": true
+  }
 }
