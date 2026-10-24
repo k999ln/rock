@@ -137,13 +137,37 @@ export class RemoteAiTextStore {
       .first<EncryptedRemoteAiTextInput & { executionId: string; ownerUserId: string; expiresAt: number; createdAt: number }>();
   }
   async claimProviderSend(owner: string, id: string, now = Date.now()) {
-    // The input was committed during the approval window. Dispatch uses that
-    // durable input's fixed execution deadline, not the earlier quote expiry.
-    const result = await this.db.prepare(`INSERT INTO remote_ai_text_send_claims (execution_id, owner_user_id, claimed_at)
-      SELECT e.id, e.owner_user_id, ? FROM remote_ai_text_executions e
-      JOIN remote_ai_text_inputs i ON i.execution_id = e.id
-      WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending' AND i.expires_at > ?
-      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id, now).run();
+    if (!Number.isSafeInteger(now) || now < 0) throw new RemoteAiTextStoreError('INVALID_STATE');
+    // This INSERT is the final authorization point before an external send. Recheck
+    // current DB authorities here, not only in the earlier reserved->sending step.
+    // Durable input outlives quote approval, but never its fixed execution deadline.
+    // Migration 0021 enforces recurring access in this same INSERT and preserves
+    // its SKY_RECURRING_ACCESS_BLOCKED exception contract on authoritative denial.
+    const result = await this.db.prepare(`WITH clock AS (
+        SELECT MAX(?, CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)) AS at
+      )
+      INSERT INTO remote_ai_text_send_claims (execution_id, owner_user_id, claimed_at)
+      SELECT e.id, e.owner_user_id, MAX(clock.at, e.updated_at) FROM remote_ai_text_executions e
+      JOIN remote_ai_text_inputs i ON i.execution_id = e.id AND i.owner_user_id = e.owner_user_id
+      CROSS JOIN clock
+      WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending'
+        AND i.expires_at > MAX(clock.at, e.updated_at)
+        AND e.expires_at + 86400000 > MAX(clock.at, e.updated_at)
+        AND e.maximum_charge_minor >= 0 AND e.maximum_charge_minor <= e.approved_cap_minor
+        AND EXISTS (SELECT 1 FROM work_jobs w
+          WHERE w.id = e.parent_job_id AND w.user_id = e.owner_user_id
+            AND json_extract(w.payload, '$.status') = 'active')
+        AND EXISTS (SELECT 1 FROM remote_ai_rate_cards c
+          WHERE c.provider_id = 'openai' AND c.card_id = e.card_id AND c.digest = e.rate_card_digest
+            AND c.card_json = e.rate_card_json AND c.model_id = e.model_id AND c.currency = e.currency
+            AND c.status = 'active' AND c.effective_at <= MAX(clock.at, e.updated_at)
+            AND c.expires_at > MAX(clock.at, e.updated_at))
+        AND EXISTS (SELECT 1 FROM agent_delegation_budget_pools p
+          WHERE p.owner_user_id = e.owner_user_id AND p.parent_job_id = e.parent_job_id
+            AND p.currency = e.currency AND p.budget_limit_minor = e.parent_budget_limit_minor
+            AND p.reserved_minor >= e.maximum_charge_minor AND p.settled_minor >= 0
+            AND p.reserved_minor + p.settled_minor <= p.budget_limit_minor)
+      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id).run();
     return (result.meta?.changes ?? 0) === 1;
   }
   async deleteInputAfterTerminal(owner: string, id: string) {

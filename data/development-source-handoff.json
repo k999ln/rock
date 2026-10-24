@@ -4,7 +4,7 @@
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "mainAtCapture": "7be3d6aa35d8df1329571bbe92971f805694b581",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -631,8 +631,8 @@
     {
       "order": 1,
       "unit": "BILL-02",
-      "state": "implementation_in_progress_per_Root_dispatch",
-      "scope": "Existing final provider-send claim: same-DB parentstop/current price/held cap predicates; no new Wallet or tariff",
+      "state": "recurring_delta_independent_review_pending",
+      "scope": "Original final-claim four hashes independently passed; recurring compatibility delta local40 passed, independent delta review/verify/CI pending",
       "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
       "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
       "dependency": "Independent of the six eSIM files for this finite existing-store gap",
@@ -654,8 +654,24 @@
       "wholeUnitAccepted": false
     }
   ],
-  "currentGIT08Scope": "Metadata save/branch/main integration separate; whole GIT08/95 acceptance not inferred",
+  "currentGIT08Scope": "Metadata document+work branch+main saved through PR195; no deployment or whole95 acceptance",
   "productionAcceptance": false,
   "publicDeployment": false,
-  "generalLaunch": "held"
+  "generalLaunch": "held",
+  "GIT08SaveStages": {
+    "id": "GIT08_METADATA_MAIN",
+    "units": [
+      "GIT-08"
+    ],
+    "kind": "metadata_main_integration",
+    "pr": "https://github.com/k999ln/rock/pull/195",
+    "acceptedHead": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107",
+    "mainMergeSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "documentSaved": true,
+    "workBranchSaved": true,
+    "mainMerged": true,
+    "productionDeployment": false,
+    "wholeUnitAccepted": false,
+    "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
+  }
 }

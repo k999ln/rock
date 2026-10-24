@@ -9679,8 +9679,28 @@
     "currentUnimplementedCount": null,
     "runtimeChanged": false,
     "localFullVerifyRun": false,
+    "mainMerged": true,
+    "newHeadCiPending": false,
+    "independentAdoptionReviewPending": false,
+    "metadataMainSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "fullVerificationPlane": "Exactb9dc LinuxCI npmrunverify",
+    "productionDeployment": false
+  },
+  "billingFinalSendMainAdoption": {
+    "evidence": "docs/evidence/development-execution/billing-final-send-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/billing-final-send-review-summary.json",
+    "sourceFourPreserved": false,
+    "sourceIndependentMustFix": 0,
+    "localTests": 40,
+    "integrationMetadataReviewPending": true,
     "mainMerged": false,
-    "newHeadCiPending": true,
-    "independentAdoptionReviewPending": true
+    "commonAuthorityIssuerEpochAccepted": false,
+    "productionD1Accepted": false,
+    "realProviderBillingAccepted": false,
+    "originalReviewedHashesRecorded": true,
+    "deltaIndependentReviewPending": true,
+    "fullVerify": "passed_on_05312751_frozen_inputs4458_unchanged0_tests2749_pass2747_fail0_skip2",
+    "pr": "https://github.com/k999ln/rock/pull/196",
+    "finalHeadCIPending": true
   }
 }

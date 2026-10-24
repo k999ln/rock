@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.21",
+  "version": "1.22",
   "updatedAt": "2026-10-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1242,11 +1242,15 @@
         "lib/esim-cloud-grant.ts",
         "lib/sky-linux-service-store.ts",
         "lib/sky-linux-service.ts",
-        "app/api/sky/linux/route.ts"
+        "app/api/sky/linux/route.ts",
+        "lib/remote-ai-text-store.ts",
+        "lib/remote-ai-text-execution.ts"
       ],
       "recoveredContractReferences": [
         "tests/sky-linux-service.test.mjs",
-        "tests/rockstar-service-setup.test.mjs"
+        "tests/rockstar-service-setup.test.mjs",
+        "tests/remote-ai-text-store.test.mjs",
+        "tests/remote-ai-text-atomic-send.test.mjs"
       ]
     },
     {
@@ -2869,6 +2873,23 @@
     "existingSchemaOnly": true,
     "genericAttachmentAccepted": false,
     "independentRetentionAclExpiryAccepted": false,
+    "productionD1Accepted": false,
+    "mainMerged": false
+  },
+  "billingFinalSendAuthority": {
+    "authority": "docs/sky-billing.md#billing-final-send-claim",
+    "evidence": "docs/evidence/development-execution/billing-final-send-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/billing-final-send-review-summary.json",
+    "implementation": [
+      "lib/remote-ai-text-store.ts",
+      "lib/remote-ai-text-execution.ts"
+    ],
+    "tests": [
+      "tests/remote-ai-text-store.test.mjs",
+      "tests/remote-ai-text-atomic-send.test.mjs"
+    ],
+    "existingSchemaOnly": true,
+    "commonAuthorityIssuerEpochAccepted": false,
     "productionD1Accepted": false,
     "mainMerged": false
   }

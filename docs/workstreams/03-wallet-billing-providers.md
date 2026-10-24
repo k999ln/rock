@@ -1,3 +1,7 @@
+## BILL-02最終claimの別候補
+
+主担当03、ROCKは既存store/orchestratorのfinal INSERT SELECT、EXTERNALはusage/clock/決済根拠、JOINTはD1/実Provider、OWNERは価格/同意/上限。原本exact4の独立限定passを記録し、同4pathのrecurring互換deltaは局所40pass・新hash独立再検収待ち。stop/revoke前commit拒否、unknown hold/no resend、二connection同cap/一意claimを検査。共通authority/issuer epoch/本番D1/実課金は未受入。次は固定全verifyと同headCI、独立main metadata review。[契約](../sky-billing.md#billing-final-send-claim)・[hash/検証](../evidence/development-execution/billing-final-send-main-adoption.json)。
+
 ## eSIM/Linux現行authorityの保存fence（限定6path）
 
 主担当03、ROCK API/store/read-set/CAS、EXTERNALは支払/回線/鍵の根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。独立Smith/Astra r2のexact6を無変更で採用。listing矛盾/最新package否定・期限・setup/grant変化を同一D1 batchで拒否し、job/予約/lease/receiptの一部保存を防ぐ。既存owner-session read/export、888c/owner/revision/late CPUを保持。122局所/型/lint成功、旧local D1 rollback/3retry証拠digestを確認。汎用attachment/独立ACL期限/本番D1/実Provider・公開は未受入。[11項目契約](../rockstaros-complete-design.md#esim-runtime-commit-authority)・[採用hash/検証/次](../evidence/development-execution/esim-runtime-main-adoption.json)。次は固定候補verify/同headCIと独立main採用metadata検収。PR193はsame-final83a Linux CI成功を最終検証としてmain9a617fabへ統合済み、最終host全verify待ちを次作業としない。

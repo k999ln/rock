@@ -5,7 +5,7 @@
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
   "mainContext": {
-    "mainAtCapture": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+    "mainAtCapture": "7be3d6aa35d8df1329571bbe92971f805694b581",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -239,7 +239,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "GIT08_METADATA_MAIN"
+      ]
     },
     {
       "id": "EVE-01",
@@ -1549,7 +1551,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "BILL_FINAL_CLAIM_CANDIDATE"
+      ]
     },
     {
       "id": "BILL-03",
@@ -2498,5 +2502,21 @@
   ],
   "runtimeChanged": false,
   "productionDeployment": false,
-  "generalLaunch": "held"
+  "generalLaunch": "held",
+  "metadataSaveStages": {
+    "id": "GIT08_METADATA_MAIN",
+    "units": [
+      "GIT-08"
+    ],
+    "kind": "metadata_main_integration",
+    "pr": "https://github.com/k999ln/rock/pull/195",
+    "acceptedHead": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107",
+    "mainMergeSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "documentSaved": true,
+    "workBranchSaved": true,
+    "mainMerged": true,
+    "productionDeployment": false,
+    "wholeUnitAccepted": false,
+    "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
+  }
 }

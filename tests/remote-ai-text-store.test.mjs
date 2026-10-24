@@ -416,3 +416,49 @@ void test('history filters by owned parent before limiting rows and expires only
   assert.equal((await unknown.store.list(owner, unknown.parent.id, unknown.quote.expiresAt + 1))[0].state, 'unreconciled');
   assert.equal(unknown.pool().reserved_minor, 1);
 });
+
+void test('parent stop between dispatch and final send claim performs no Provider send and keeps the hold', async t => {
+  const f = await fixture(t);
+  await f.reserve();
+  const claim = f.store.claimProviderSend.bind(f.store);
+  t.mock.method(f.store, 'claimProviderSend', async (...args) => {
+    const stopped = applyWorkCommand(f.parent, { id: randomUUID(), action: 'cancel' }, 0);
+    assert.equal(await workStore(f.db).update(owner, stopped, 0), true);
+    return claim(...args);
+  });
+  let sends = 0;
+  const result = await f.request(async () => { sends++; return response(); });
+  assert.equal(sends, 0);
+  assert.equal(result.providerSubmission, 'not_repeated');
+  assert.equal(result.record.state, 'unreconciled');
+  assert.equal(f.pool().reserved_minor, 1);
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM remote_ai_text_send_claims').get().n, 0);
+});
+
+void test('pricing revoked between dispatch and final send claim performs no Provider send and keeps the hold', async t => {
+  const f = await fixture(t);
+  await f.reserve();
+  const claim = f.store.claimProviderSend.bind(f.store);
+  t.mock.method(f.store, 'claimProviderSend', async (...args) => {
+    await new RemoteAiRateCardStore(f.db).revoke('openai', f.verified.card.cardId, 'synthetic-operator');
+    return claim(...args);
+  });
+  let sends = 0;
+  const result = await f.request(async () => { sends++; return response(); });
+  assert.equal(sends, 0);
+  assert.equal(result.record.state, 'unreconciled');
+  assert.equal(f.pool().reserved_minor, 1);
+});
+
+void test('uncertain final claim persistence performs no fetch, preserves budget and does not retry', async t => {
+  const f = await fixture(t);
+  await f.reserve();
+  t.mock.method(f.store, 'claimProviderSend', async () => { throw new Error('synthetic storage unavailable'); });
+  let sends = 0;
+  await assert.rejects(f.request(async () => { sends++; return response(); }), /synthetic storage/);
+  assert.equal((await f.store.get(owner, f.record.id)).errorCode, 'PROVIDER_SEND_CLAIM_UNCONFIRMED');
+  assert.equal((await f.store.get(owner, f.record.id)).state, 'unreconciled');
+  assert.equal(f.pool().reserved_minor, 1);
+  assert.equal((await f.request(async () => { sends++; return response(); })).providerSubmission, 'not_repeated');
+  assert.equal(sends, 0);
+});

@@ -1,0 +1,74 @@
+{
+  "schema": "rockstaros.billing-final-send.review-summary/1",
+  "recordedAt": "2026-10-24T15:41:01.510072+00:00",
+  "originals": [
+    {
+      "pathInOperatorWorkspace": "docs/evidence/development-execution/billing-final-send-claim.json",
+      "sha256": "b8dd95f8888378f3e5af0238be58d3d3a3ce92ee087bde521e8cf4cdb59f22d9",
+      "included": false,
+      "statusAtCapture": "implemented_local_checks_passed_pending_astra_independent_review"
+    },
+    {
+      "pathInOperatorWorkspace": "docs/evidence/development-execution/billing-final-send-claim-review.json",
+      "sha256": "ca6a5b80a12fcfd112e23c164e4add036aaef3b5a1aee98e34a0f47b9a0f682b",
+      "included": false,
+      "status": "pass_limited_remote_text_atomic_final_claim_shared_contract_and_integration_gates_open",
+      "mustFix": 0
+    },
+    {
+      "pathInOperatorWorkspace": "docs/evidence/development-execution/unit-ledger-main-adoption-review.json",
+      "sha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b",
+      "included": false,
+      "verdict": "pass_scoped_metadata_adoption",
+      "mustFix": 0,
+      "head": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107"
+    }
+  ],
+  "sourceHashes": {
+    "lib/remote-ai-text-store.ts": "11e3725b9c5f974795e01dadf833d26b0561c96c1df2fa3991ca43fbc48773a5",
+    "lib/remote-ai-text-execution.ts": "12da588c388c043ca4112187bcc3c71c58e7a63a16238ad4e75fea47e8e99a22",
+    "tests/remote-ai-text-store.test.mjs": "d0d74e0f556739798badc08fbe0a326e8332e9994cfeffad6daf7383ceccace2",
+    "tests/remote-ai-text-atomic-send.test.mjs": "d1853f42e8eb2b6ce1a20a0a89435adefd17596487f0496ff214ecc1ab40145c"
+  },
+  "sourceBase": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
+  "acceptedScope": "Limited existing remote text atomic final-send claim and no-resend hold preservation; not common service authority or production billing",
+  "targetSuite": {
+    "tests": 28,
+    "passed": 28,
+    "composition": "17 original controls +3 orchestration negatives +8 file-backed tests; no extra count for earlier seven-control subset"
+  },
+  "independentProbes": {
+    "uniqueScenarios": 23,
+    "oldTwoCounterexamplesDetected": 2,
+    "newMocks": "parentstop/rate revoke before final claim fetch0; committed claim lost response claim1/hold1/fetch0/retry0",
+    "retryProbesNotDoubleCounted": true,
+    "fixtureCorrection": "Immutable updated_at trigger was retained; reviewer corrected only temporary probe to legitimate updateLiveEstimate"
+  },
+  "remaining": [
+    "Cloudflare D1 actual runtime/clock/metadata semantics and production schema not accepted",
+    "Common authority/issuer epoch/consent revision adapter not connected; standalone recurring is opt-in existing scope only",
+    "Max server/DB/persisted clock is not authenticated clock agreement; ahead time can conservatively restrict or move time checks early",
+    "No real Provider/charge/Wallet transfer/OS/device/publication acceptance"
+  ],
+  "GIT08MetadataOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/195",
+    "acceptedHead": "b9dcfe00d67161f8e906f0a3bb701af44ac5e107",
+    "mainSha": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "documentSaved": true,
+    "workBranchSaved": true,
+    "mainMerged": true,
+    "productionDeployment": false,
+    "finalVerification": "Actual exact-head Linux CI npmrunverify success verified by Pro; local whole verify not repeated",
+    "whole95Accepted": 0,
+    "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687"
+  },
+  "privacy": "Only allowlisted digest/scope/counts. No raw review/log/prompt/private path/thread identity/secret values copied.",
+  "reviewScope": "Original hashes only; recurring compatibility delta has not received independent review.",
+  "deltaSourceHashes": {
+    "lib/remote-ai-text-store.ts": "7568f214e64e9fed3e54726210fee799ff6d1006b65920c5ddf753215923a2c6",
+    "lib/remote-ai-text-execution.ts": "8ec17779e5ff115fe774faf9ff292abe9f2ef36af6dfac03cdd7ce65e78f6921",
+    "tests/remote-ai-text-store.test.mjs": "0f982b569afd91ac0e9f2a3ade1b455b509452921a5b47a38c89a743ae883698",
+    "tests/remote-ai-text-atomic-send.test.mjs": "8ab584f6ee05c1461c0c2eec8b0fa7fc0fb9e1920ab99b04dc71fdd35c11f67e"
+  },
+  "deltaIndependentReviewPending": true
+}
