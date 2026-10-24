@@ -9618,7 +9618,13 @@
     "candidatePhysicalAccepted": false,
     "p02Complete": false,
     "fullOsAccepted": false,
-    "mainMerged": false
+    "mainMerged": false,
+    "ownerToctouDelta": {
+      "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
+      "oldHead": "fb70cfb5a51ce9fc95eec026bfb9d5b3ee2a186c",
+      "status": "host_pass_review_and_new_CI_pending",
+      "CodeqlSuppressed": false
+    }
   },
   "mini02FiniteConeCandidate": {
     "attempt": 2,

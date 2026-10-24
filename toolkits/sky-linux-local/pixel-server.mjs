@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
+import { constants as fsConstants } from 'node:fs';
 import { readFile, writeFile, mkdir, open, rename, unlink, lstat } from 'node:fs/promises';
 import { homedir, userInfo } from 'node:os';
 import { join } from 'node:path';
@@ -51,18 +52,31 @@ function execute(args, { input, timeout = 240000, signal, onProgress } = {}) {
         }
         // A restarted/duplicate launcher must not replace an earlier job's evidence.
         const owner = join(evidenceDirectory, 'parent-diagnostics.owner');
+        let ownerIdentity;
         try {
           const claim = await open(owner, 'wx', 0o600);
-          try { await claim.writeFile(evidence.observationId); await claim.sync(); } finally { await claim.close(); }
+          try { await claim.writeFile(evidence.observationId); await claim.sync(); ownerIdentity = await claim.stat(); } finally { await claim.close(); }
         } catch (error) {
           if (error.code !== 'EEXIST') return;
-          const stat = await lstat(owner);
-          if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.uid !== uid || (stat.mode & 0o077) || stat.size !== 36 ||
-              await readFile(owner, 'utf8') !== evidence.observationId) return;
+          // Check and read one nonblocking descriptor, never reopen a checked path.
+          const claim = await open(owner, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_NONBLOCK);
+          try {
+            const stat = await claim.stat();
+            if (!stat.isFile() || stat.nlink !== 1 || stat.uid !== uid || (stat.mode & 0o077) || stat.size !== 36) return;
+            const bytes = Buffer.alloc(37);
+            const { bytesRead } = await claim.read(bytes, 0, bytes.length, 0);
+            if (bytesRead !== 36 || bytes.subarray(0, bytesRead).toString('utf8') !== evidence.observationId) return;
+            ownerIdentity = stat;
+          } finally { await claim.close(); }
         }
         temporary = join(evidenceDirectory, `.parent-diagnostics-${randomUUID()}`);
         const file = await open(temporary, 'wx', 0o600);
         try { await file.writeFile(raw); await file.sync(); } finally { await file.close(); }
+        // A replaced owner name must not let an older observer publish over it.
+        const currentOwner = await lstat(owner);
+        if (!currentOwner.isFile() || currentOwner.isSymbolicLink() || currentOwner.nlink !== 1 ||
+            currentOwner.uid !== uid || (currentOwner.mode & 0o077) || currentOwner.size !== 36 ||
+            currentOwner.dev !== ownerIdentity.dev || currentOwner.ino !== ownerIdentity.ino) return;
         await rename(temporary, join(evidenceDirectory, 'parent-diagnostics.json'));
         const directory = await open(evidenceDirectory, 'r');
         try { await directory.sync(); } finally { await directory.close(); }

@@ -1,3 +1,7 @@
+## PR193 CodeQL owner競合の限定修正（2026-10-24 / G04・OS10）
+
+旧head fb70cfb5のCodeQL High1を保持し、正式割当でserver owner readを同一NOFOLLOW/NONBLOCK fd→fstat→最大37byteへ変更。publish直前のowner dev/inode再照合を追加。親診断回帰にowner差替え/増大/FIFO/非regular/権限/uid等9caseを追加し、旧sourceは同回帰で失敗、新sourceは成功。局所34中33pass/既存skip1、型/全体lint成功。worker/manager/URL/model/prepare/build/CI/Miniを変更しない。影響するOS/Tool契約・index/進捗・候補hashを同期。次: 新固定全verify→新commit/同head CI→Root割当の独立delta再検収。CodeQL抑制/mergeなし。根拠 docs/evidence/development-execution/pixel-owner-toctou-fix.json。
+
 ## Pixel main診断移植とMini r2の固定候補準備（2026-10-24 / G04・OS10）
 
 6runtime/test＋Python CI stepをmain d15096b8へ最小port。worker c6a4cb0d不変、serverはexecuteのみ選択し旧実機packageと区別。manager/URL/model/prepare/build/service固定。Python27中26pass/比較skip1、parent4中3pass/Linux skip1、Node33中32pass/platform skip1、bridge4pass。初回450ms host試験反例からcallback event必須/2秒期限へ試験だけ調整。追加承認Mini r2新4hash固定/旧12不変、56試験/lint成功。次: design/進捗同期→fixed full verify1回→PR/CI→別担当独立review。runtime/統合metadata未検収、新Linux/Pixel/背景/P02全体/full OS/実光学未受入、一般公開保留。根拠 docs/evidence/development-execution/pixel-main-diagnostics-adoption.json、docs/evidence/development-execution/mini-02-finite-cone-review-summary.json。

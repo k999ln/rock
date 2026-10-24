@@ -2808,7 +2808,17 @@
     "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
     "candidateRuntimeIndependentlyReviewed": false,
     "candidatePhysicalAccepted": false,
-    "mainMerged": false
+    "mainMerged": false,
+    "parentOwnerEvidence": {
+      "read": "One NOFOLLOW/NONBLOCK fd, fstat then bounded37bytes",
+      "publish": "Private regular36byte owner dev/inode rechecked before rename",
+      "evidence": "docs/evidence/development-execution/pixel-owner-toctou-fix.json",
+      "sourceHashes": {
+        "toolkits/sky-linux-local/pixel-server.mjs": "e0eb69f224cf85408d7d25ba6bebfc2b73c4ecf06344d219b2a8c4ccd56ee474",
+        "tests/pixel-worker-parent-diagnostics.test.mjs": "4d2be8f94e6d1c650d5cea61d23990a3763b633ce8a0736de903d5b4c2169c9f"
+      },
+      "newDeltaReviewPending": true
+    }
   },
   "mini02FiniteConeInspection": {
     "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection",

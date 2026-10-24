@@ -1,6 +1,8 @@
 <a id="pixel-worker-diagnostic-adapter"></a>
 ## Pixel runner診断とMini有限検査の境界
 
+owner診断の読込は[共通OS契約](rockstaros-complete-design.md#pixel-main-worker-diagnostics)の同一fd/37byte上限・publish前inode確認に従う。旧High失敗を保持し、新hashのCodeQL/独立検収前にmergeしない。Toolの入出力/権限や停止・成功routingは拡張しない。
+
 既存端末内文章実行は[OS契約の11項目](rockstaros-complete-design.md#pixel-main-worker-diagnostics)の目的/体験/責任・入出力/限度・状態/失敗・私有保存/削除・offline/重複・互換/revert・権限/承認・host/Linux/Pixel別合格・未決定に従う。launcherは8KiB evidence-onlyを追加し、manager公開action/loopback認証/model allowlist/prepare/stop/service lifecycleは保持。診断欠落や旧実機成功を新artifactの成功にしない。ROCK実装、EXTERNAL kernel、JOINT同一候補受入、OWNER導入/費用の分界を維持し、cache/native accountは別batch。
 
 Miniは[finite-cone attempt2契約](rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection)のpure host検査を別scopeで保存。新catalog/Tool権限/発光APIなし。独立r2は合成witnessの有限数値検査だけの合格で、runtime独立review・Linux/Pixel・実光学/低眩しさ/MINI02全体は別gate。
