@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-text-job.main-adoption/1",
   "recordedAt": "2026-10-24T16:41:08.921877+00:00",
-  "status": "exact6_source_review_pass_local71_pass_fixed_verify_CI_metadata_review_pending",
+  "status": "exact6_source_review_pass_local71_and_frozen_full_verify_pass_draftPR197_metadata_review_final_CI_pending",
   "unit": "EVE-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "05-web-pwa-sites",
@@ -27,7 +27,19 @@
     "pass": 71,
     "fail": 0,
     "skip": 0,
-    "fullVerify": "One frozen candidate run pending; final exact-head CI may be final proof. No unbounded repeats."
+    "fullVerify": {
+      "status": "passed",
+      "candidateHead": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+      "inputCount": 4463,
+      "changedInputs": 0,
+      "elapsedSeconds": 104,
+      "logSha256": "b8756f7f684dab8391b88b6c54455be79b1b9583fd77d24604fe8aad138ec25c",
+      "nodeTests": 2769,
+      "passed": 2767,
+      "failed": 0,
+      "skipped": 2,
+      "finalMetadataCommit": "Full verify belongs to candidateHead before this metadata-only receipt; final-head CI remains separate."
+    }
   },
   "scope": "Two bounded local UTF-8 materials plus goal preserved as one free existing composition preparation job; no semantic model generation.",
   "protectedSourceHashes": {
@@ -114,5 +126,6 @@
     "physicalDeviceFullOs": false,
     "generalLaunch": "held"
   },
-  "next": "Frozen integration verify, draft PR/exact-head CI, separate metadata adoption review; no merge before Root assignment."
+  "next": "Frozen integration verify, draft PR/exact-head CI, separate metadata adoption review; no merge before Root assignment.",
+  "pr": "https://github.com/k999ln/rock/pull/197"
 }

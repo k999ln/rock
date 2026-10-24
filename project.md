@@ -1,5 +1,7 @@
 ## EVE-02 attempt2 exact6のmain統合候補（2026-10-24 / G04）
 
+固定a2b2eefd候補の全verify成功（4463入力不変、Node2769/2767pass/0fail/2skip、104秒）。draft PR197保存。結果記録のみの最終commitのCIと別metadata採用検収は未完了、mergeなし。
+
 最新main1a9d9eeeとsource7beの6base不変、受入6hashを無変更採用し関連71pass。無料2文章＋goal準備jobだけを既存composition/owner/revision/同意/同job照合へ接続。旧2P2/control/async overwriteは独立r2で閉鎖、原本hash/旧失敗履歴を保持。生成未対応、Provider/課金/新Tool/schema・browser実受入・EVE02全体は未受入。設計/目次/README/95overlayを同期、393task/14gate/固定95分類/whole0保持。PR196は独立Game-r2/Pro metadata/matchhead通常merge main1a9、PR7CIとmain同SHA6CI成功を確認。Root巨大WIP/未検収Proを混ぜずRootHEAD/index/journal保持。次は固定全verify1回・draftPR同headCI・別metadata採用検収。根拠 docs/evidence/development-execution/eve-text-job-main-adoption.json。
 
 ## Billing final-send exact4のmain採用候補（2026-10-24 / G04）

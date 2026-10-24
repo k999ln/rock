@@ -9717,6 +9717,9 @@
     "wholeEVE02Accepted": false,
     "semanticModelRemixAccepted": false,
     "providerBillingAccepted": false,
-    "browserLiveHttpAccepted": false
+    "browserLiveHttpAccepted": false,
+    "fullVerify": "passed_on_a2b2eefd_inputs4463_unchanged0_tests2769_pass2767_fail0_skip2",
+    "pr": "https://github.com/k999ln/rock/pull/197",
+    "finalHeadCIPending": true
   }
 }
