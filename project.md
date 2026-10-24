@@ -1,5 +1,7 @@
 ## MINI-02 cone-aware source5＋sanitized receipt統合候補（2026-10-24 / G04）
 
+固定候補全verify成功（4477入力不変、108秒、Node2810/2808pass/0fail/2skip）。結果記録だけの最終3metadata差分と同headCI/独立metadata検収を分け、source5＋公開receipt bytesは不変。
+
 Pro199通常merge main708・同SHA6CI成功を基点に、独立PASS数学/code/test/doc5hashを不変採用。6番目receiptだけ一時path4参照を論理IDへ置換、原本8116をRoot Git外backup保持・公開5bcbと分ける。新receiptを旧review一致と呼ばず採用metadata検収へ。旧ccec/最新6base同一、許可3既存進化と旧11/historical18、Pro archive6を保持。関連70pass・product/source lint・正規typecheck/設計成功、分類/95whole0/393task14gate維持。新Tool/権限/物理出力/課金なし。実光学/低眩しさ/眼安全/連続全域/実viewer/独立停止/製造/全Mini未受入。次はlint/type/JSON/design/fixedscanner→固定全verify1→draftPR同headCI→別metadata採用検収。RootHEAD/index/旧197branch保持、eSIMは別clean tree準備のみ。根拠 docs/evidence/development-execution/mini-02-cone-aware-main-adoption.json。
 
 ## Pro PR199 test登録のlint互換修正（2026-10-24）

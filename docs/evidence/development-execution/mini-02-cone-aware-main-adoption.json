@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.mini02-cone-aware-search.main-adoption/1",
   "recordedAt": "2026-10-24T18:10:48.512465+00:00",
-  "status": "reviewed_five_exact_plus_four_refs_sanitized_receipt_local70_pass_verify_CI_metadata_review_pending",
+  "status": "reviewed_five_portable_receipt_local70_fullverify_pass_finalheadCI_and_metadata_review_pending",
   "unit": "MINI-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "11-material-invention-avocado-mini",
@@ -564,7 +564,23 @@
       "skip": 0,
       "logSha256": "2c1e53cb9b88144ce5b97865281a3b48afef66616474a1c343cd8a76243864d3"
     },
-    "fullVerify": "One frozen candidate run pending; final same-head CI also mandatory.",
+    "fullVerify": {
+      "exitCode": 0,
+      "inputCount": 4477,
+      "changedInputs": [],
+      "elapsedSeconds": 108,
+      "logSha256": "cf66a8b65f9e35f7468bb8333252947c4a13205194a2b5c98db16ba8e7b5b4fc",
+      "status": "passed",
+      "workingTreeBaseAtRun": "7086309eac76533dd6efe358635a9be8a527ec17",
+      "frozenTreeCommitCreatedAfterRun": "02b7b53330dd8e392b621b4d780998cd35e8e689",
+      "inputManifestSha256": "ec6aec4c3c1d6a115610674df1d65bcfc05573cd9fe39e49a8a958735e726e7d",
+      "nodeTests": 2810,
+      "pass": 2808,
+      "fail": 0,
+      "skip": 2,
+      "finalMetadataDeltaOnly": true,
+      "actualNewHeadCIRequired": true
+    },
     "lintProduct": "passed_after_normal_typecheck_generation",
     "lintSource": "passed",
     "typecheck": "passed_normal_main_pretypecheck",

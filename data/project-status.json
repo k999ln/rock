@@ -9765,6 +9765,8 @@
     "physicalAccepted": false,
     "lintProduct": "passed",
     "sourceLint": "passed",
-    "typecheck": "passed_normal_pretypecheck"
+    "typecheck": "passed_normal_pretypecheck",
+    "fullVerify": "passed_frozen_tree_inputs4477_unchanged0_node2810_pass2808_fail0_skip2",
+    "finalHeadCIPending": true
   }
 }
