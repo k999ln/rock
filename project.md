@@ -1,3 +1,7 @@
+## MINI-02 cone-aware source5＋sanitized receipt統合候補（2026-10-24 / G04）
+
+Pro199通常merge main708・同SHA6CI成功を基点に、独立PASS数学/code/test/doc5hashを不変採用。6番目receiptだけ一時path4参照を論理IDへ置換、原本8116をRoot Git外backup保持・公開5bcbと分ける。新receiptを旧review一致と呼ばず採用metadata検収へ。旧ccec/最新6base同一、許可3既存進化と旧11/historical18、Pro archive6を保持。関連70pass・product/source lint・正規typecheck/設計成功、分類/95whole0/393task14gate維持。新Tool/権限/物理出力/課金なし。実光学/低眩しさ/眼安全/連続全域/実viewer/独立停止/製造/全Mini未受入。次はlint/type/JSON/design/fixedscanner→固定全verify1→draftPR同headCI→別metadata採用検収。RootHEAD/index/旧197branch保持、eSIMは別clean tree準備のみ。根拠 docs/evidence/development-execution/mini-02-cone-aware-main-adoption.json。
+
 ## Pro PR199 test登録のlint互換修正（2026-10-24）
 
 旧dd10の実Linux npmverifyは型検査後lint:productのno-floating-promises25件で失敗。local sandbox listen EPERMとは別に保持。対象はPro6内tests/pro-account-import.test.mjsのみ、全25登録へvoidを明示し+125bytes、除去で原本完全復元。assertion/テスト本体/名前・runtime5/保護76/権限/保存/暗号/schema/policy/95分類は不変。旧test6b3c→新8a8250、旧6hash限定レビューを新bytesへ転用しない。focused69pass・lint:product/typecheck成功、canonical設計/目次/statusを同期し、新headCIと別独立再検収前にmergeしない。

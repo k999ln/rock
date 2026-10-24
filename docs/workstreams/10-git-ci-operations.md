@@ -1,3 +1,7 @@
+## Mini cone-aware source5＋portable receipt採用候補
+
+最新clean main708（Pro199）起点、旧ccecとの6base不変。数学/code/test/doc5hash固定、receiptの4local参照だけlogical IDへ置換し旧8116→新5bcbを記録。原本Git外保持、旧11/historical18/Pro6は不変。70試験→lint/type/JSON/design/scanner→固定全verify1→別draftPR/同headCI→独立metadata採用検収。Pro199は独立r2＋新2ec実verify2795pass/0fail/1skip・PR7CI/main708同SHA6CI成功を別要約へ。旧Root/197branchを混ぜず、eSIMtreeは独立で準備のみ。[証拠](../evidence/development-execution/mini-02-cone-aware-main-adoption.json)。
+
 Pro PR199のmechanical lint修正: source範囲内test1pathの25登録へvoidのみ追加（+125bytes、除去で旧hashへ完全復元）。runtime5/保護76/95台帳は不変。旧dd10 Linux lint25失敗を保存し、focused69/lint/typeと新headCI/別独立検収を必要とする。
 
 ## PRO-01 exact6原本保管のmain候補

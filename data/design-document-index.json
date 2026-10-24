@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.25",
-  "updatedAt": "2026-10-24T17:52:25.079132+00:00",
+  "version": "1.26",
+  "updatedAt": "2026-10-24T18:10:48.512465+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -2853,10 +2853,16 @@
     "reviewSummary": "docs/evidence/development-execution/mini-02-finite-cone-review-summary.json",
     "acceptedSourceAttempt": 2,
     "syntheticWitnessOnly": true,
-    "oldTwelveUnchanged": true,
+    "oldTwelveUnchanged": false,
     "physicalAccepted": false,
     "wholeMini02Accepted": false,
-    "mainMerged": true
+    "mainMerged": true,
+    "currentJointEvolution": {
+      "historicalTwelveAtOriginalCapture": true,
+      "currentElevenAndHistoricalReceiptsUnchanged": true,
+      "jointEvolutionExplicit": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "independentAdoptionMetadataReviewPending": true
+    }
   },
   "esimRuntimeCommitAuthority": {
     "authority": "docs/rockstaros-complete-design.md#esim-runtime-commit-authority",
@@ -2934,13 +2940,36 @@
       "tests/pro-account-import.test.mjs"
     ],
     "existingEveHistorySchemaAndCrypto": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholePRO01Accepted": false,
     "nativeRealAccountBrowserAccepted": false,
     "testRegistrationCompatibility": {
       "path": "tests/pro-account-import.test.mjs",
       "change": "25 explicit void registrations; assertions/names/bodies unchanged",
-      "independentDeltaReviewPending": true
+      "independentDeltaReviewPending": false
     }
+  },
+  "mini02ConeAwareSearch": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-cone-aware-search",
+    "implementation": [
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs",
+      "tests/avocado-mini-cone-aware-search.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "docs/evidence/development-execution/mini-02-cone-aware-search.json"
+    ],
+    "evidence": "docs/evidence/development-execution/mini-02-cone-aware-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/mini-02-cone-aware-main-review-summary.json",
+    "authorizedExistingEvolution": [
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs"
+    ],
+    "immutableElevenPreserved": true,
+    "receiptFourRefsSanitized": true,
+    "mainMerged": false,
+    "physicalAccepted": false,
+    "wholeMini02Accepted": false
   }
 }

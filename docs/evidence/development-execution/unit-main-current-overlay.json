@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T17:23:32.228070+00:00",
-  "mainAtCapture": "ccec6d43341dd8f12326766311553a59bc301fae",
+  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
+  "mainAtCapture": "7086309eac76533dd6efe358635a9be8a527ec17",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -122,7 +122,7 @@
       "units": [
         "PRO-01"
       ],
-      "kind": "independent_limited_source_pass_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "ccec6d43341dd8f12326766311553a59bc301fae",
       "sourceFiles": [
         {
@@ -151,19 +151,72 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pro-account-import-review-summary.json",
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
       "originalSourceReviewPreserved": true,
-      "mechanicalTestDeltaIndependentReviewPending": true
+      "mechanicalTestDeltaIndependentReviewPending": false,
+      "pr": "https://github.com/k999ln/rock/pull/199",
+      "acceptedHead": "2ec3d3f9c8f3a5abba4b2af70c763b09ab940e06",
+      "mainMergeSha": "7086309eac76533dd6efe358635a9be8a527ec17",
+      "adoptionReviewR2Sha256": "1f09ee75570aab3c9f38e1d182f4ff9fe8582edb40df326eae4b8fc5337d13f2",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "MINI_CONE_AWARE_SEARCH_CANDIDATE",
+      "units": [
+        "MINI-02"
+      ],
+      "kind": "independent_source_pass_receipt_sanitized_git_candidate",
+      "baseMain": "7086309eac76533dd6efe358635a9be8a527ec17",
+      "currentSixFiles": [
+        {
+          "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+          "sha256": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634"
+        },
+        {
+          "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+          "sha256": "a5e28bc4c268ed7971570863e6d5220e02bb4a9ebfd3677ed22ad7c5f240ffba"
+        },
+        {
+          "path": "tests/avocado-mini-finite-cone.test.mjs",
+          "sha256": "2961f5d25bb27cf9ca45c38a05aa41b47a27f25b862c0590b4458ba6877c08e0"
+        },
+        {
+          "path": "tests/avocado-mini-cone-aware-search.test.mjs",
+          "sha256": "d1b5ffac6e3ef642e81f91c56c71a5f45154bde2a059ac0b5652cc0f262ccf12"
+        },
+        {
+          "path": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+          "sha256": "da8946daadaa3b290c0836c6ea98cebf6c3fcfcd5f8920cc62ea1981ee0b99c2"
+        },
+        {
+          "path": "docs/evidence/development-execution/mini-02-cone-aware-search.json",
+          "sha256": "5bcbee667c2745bc891ffc0a488bfab147df3965926423b59008d06fdf428fc7"
+        }
+      ],
+      "reviewedFiveUnchanged": true,
+      "receiptSanitizedReferences": 4,
+      "sourceReviewSha256": "22210200ccba2a02b2f437d9b656d85c565271e207bf6d25336e2a4c03185f32",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "reviewSummary": "docs/evidence/development-execution/mini-02-cone-aware-main-review-summary.json"
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "MINI-02",
+      "state": "cone_aware_finite_host_source_pass_integration_candidate",
+      "scope": "Finite host cone-aware edge restriction/search only; no physical/stop/eye safety/manufacture/dispatch",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "PRO-01",
-      "state": "exact6_source_pass_main_candidate",
-      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "state": "limited_archive_PR199_main_integrated",
+      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
       "wholeUnitAccepted": false
     },
     {
@@ -213,5 +266,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988"
+  "previousCaptureMain": "ccec6d43341dd8f12326766311553a59bc301fae"
 }

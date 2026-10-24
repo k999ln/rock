@@ -39,17 +39,22 @@ function dependency() {
     'JOINT_BASELINE_SOURCE_CHANGED');
 }
 
-function parse(serialized) {
-  check(typeof serialized === 'string' && Buffer.byteLength(serialized) <= 131072, 'JOINT_BOUNDED_JSON_REQUIRED');
+function parseJson(serialized, bytes = 131072, nodesLimit = 10000, depthLimit = 16) {
+  check(typeof serialized === 'string' && Buffer.byteLength(serialized) <= bytes, 'JOINT_BOUNDED_JSON_REQUIRED');
   let r;
   try { r = JSON.parse(serialized); } catch { throw new Error('JOINT_JSON_INVALID'); }
   const pending = [[r, 0]]; let nodes = 0;
   while (pending.length) {
     const [v, depth] = pending.pop();
-    check(++nodes <= 10000 && depth <= 16, 'JOINT_JSON_TOO_COMPLEX');
+    check(++nodes <= nodesLimit && depth <= depthLimit, 'JOINT_JSON_TOO_COMPLEX');
     if (typeof v === 'number') check(Number.isFinite(v), 'JOINT_FINITE_JSON_REQUIRED');
     else if (v && typeof v === 'object') for (const child of Object.values(v)) pending.push([child, depth + 1]);
   }
+  return r;
+}
+
+function parse(serialized) {
+  const r = parseJson(serialized);
   fields(r, 'schema,studyOnly,assumption,geometrySha256,baselineFixtureSha256,profile,frame,sources,devices,searchLimit');
   check(r.schema === SCHEMA && r.studyOnly === true
     && r.assumption === 'ideal_geometry_hypothetical_sample_slots', 'JOINT_STUDY_SCHEMA_REQUIRED');
@@ -107,7 +112,7 @@ function parse(serialized) {
 
 // Integral max flow: one demand -> one exit -> its shared source. Residual edges allow
 // reassignment; a greedy first available exit would incorrectly reject some valid allocations.
-function allocate(demands, activeExits, sources) {
+function allocate(demands, activeExits, sources, allowed = null) {
   const graph = [];
   const node = () => { graph.push([]); return graph.length - 1; };
   const start = node(), end = node(), rayNodes = demands.map(node), exitNodes = activeExits.map(node);
@@ -121,7 +126,7 @@ function allocate(demands, activeExits, sources) {
   demands.forEach((d, i) => {
     edge(start, rayNodes[i], 1);
     activeExits.forEach((e, j) => {
-      if (e.reachable.has(d.id)) links.push({ demand: d.id, exit: e, edge: edge(rayNodes[i], exitNodes[j], 1) });
+      if (e.reachable.has(d.id) && (allowed === null || allowed.has(e.edgeIndices.get(d.id)))) links.push({ demand: d.id, exit: e, edge: edge(rayNodes[i], exitNodes[j], 1) });
     });
   });
   activeExits.forEach((e, j) => edge(exitNodes[j], sourceNodes.get(e.sourceId), e.sampleRayCapacity));
@@ -143,11 +148,8 @@ function allocate(demands, activeExits, sources) {
     deviceId: l.exit.deviceId, poseId: l.exit.poseId, exitId: l.exit.id, sourceId: l.exit.sourceId })) };
 }
 
-/** Input bindings are synthetic study consistency checks, not issuer trust or runtime permission. */
-export function runJointAllocation(serialized) {
-  dependency();
-  const r = parse(serialized);
-  const base = { schema: 'rockstaros.mini-joint-allocation-result/1', inputSha256: digest(r),
+function baseResult(r) {
+  return { schema: 'rockstaros.mini-joint-allocation-result/1', inputSha256: digest(r),
     baselineFixtureSha256: FIXTURE, geometrySha256: GEOMETRY, demandCount: r.frame.demands.length,
     baselineEyeTargetPairs: 35721, baselinePupilRaysPerPair: 18,
     fullBaselineEvaluated: false, continuousDomainEvaluated: false,
@@ -168,7 +170,9 @@ export function runJointAllocation(serialized) {
       'no trajectory/latency/occlusion/wave-optics/thermal/human qualification',
       'finite declared demands only; no denominator reduction or full-scene acceptance'],
   };
-  function finish(extra) { dependency(); const v = { ...base, ...extra }; return { ...v, resultSha256: digest(v) }; }
+}
+
+function unknownPrerequisites(r) {
   const unknown = [];
   if (r.frame.stopConfirmed !== true) unknown.push('frame:stop-unconfirmed');
   if (r.frame.atMs >= r.frame.deadlineMs) unknown.push('frame:late');
@@ -181,14 +185,42 @@ export function runJointAllocation(serialized) {
       unknown.push(`pose:${d.id}/${p.id}:unknown-stale-or-future`);
     for (const e of p.exits) if (e.sampleRayCapacity === null) unknown.push(`exit:${d.id}/${p.id}/${e.id}:capacity`);
   }
-  if (unknown.length) return finish({ status: 'unsupported', unknown, searchedConfigurations: 0,
-    searchComplete: false, assignment: null, selectedPoses: null, individuallyReachableCount: null });
-  const devices = r.devices.map(d => ({ id: d.id, poses: d.poses.map(p => ({ id: p.id,
+  return unknown;
+}
+
+function unsupported(unknown) {
+  return { status: 'unsupported', unknown, searchedConfigurations: 0,
+    searchComplete: false, assignment: null, selectedPoses: null, individuallyReachableCount: null };
+}
+function finish(result) { dependency(); return { ...result, resultSha256: digest(result) }; }
+
+// One canonical preparation path for the legacy solver and the data-only mask API.
+function prepare(serialized) {
+  dependency();
+  const request = parse(serialized), base = baseResult(request), unknown = unknownPrerequisites(request);
+  if (unknown.length) return { request, base, unknown, devices: null, candidates: null, candidateEdgesSha256: null };
+  const candidates = [];
+  // parse has lexically sorted device/pose/exit/demand IDs. These nested loops
+  // define tuple order, with source fixed by each exit. Never use caller indices.
+  const devices = request.devices.map(d => ({ id: d.id, poses: d.poses.map(p => ({ id: p.id,
     exits: p.exits.map(e => {
       const geometry = createExitGeometry({ bounds: BOUNDS, exits: [e] });
-      return { ...e, deviceId: d.id, poseId: p.id,
-        reachable: new Set(r.frame.demands.filter(ray => geometry.ray(ray.eyeM, ray.targetM).geometricPathAvailable).map(ray => ray.id)) };
+      const reachable = new Set(), edgeIndices = new Map();
+      for (const demand of request.frame.demands) {
+        const ray = geometry.ray(demand.eyeM, demand.targetM);
+        if (!ray.geometricPathAvailable) continue;
+        const index = candidates.length;
+        candidates.push({ index, deviceId: d.id, poseId: p.id, exitId: e.id,
+          demandId: demand.id, sourceId: e.sourceId, boundaryPointM: ray.boundaryPointM });
+        reachable.add(demand.id); edgeIndices.set(demand.id, index);
+      }
+      return { ...e, deviceId: d.id, poseId: p.id, reachable, edgeIndices };
     }) })) }));
+  const candidateEdgesSha256 = digest({ jointInputSha256: base.inputSha256, geometrySha256: GEOMETRY, candidates });
+  return { request, base, unknown, devices, candidates, candidateEdgesSha256 };
+}
+
+function solve(r, devices, allowed = null) {
   const allExits = devices.flatMap(d => d.poses.flatMap(p => p.exits));
   const unreachable = r.frame.demands.filter(d => !allExits.some(e => e.reachable.has(d.id))).map(d => d.id);
   const relaxed = { individuallyReachableCount: r.frame.demands.length - unreachable.length,
@@ -203,7 +235,7 @@ export function runJointAllocation(serialized) {
       return;
     }
     searched++;
-    const allocation = allocate(r.frame.demands, selected.flatMap(p => p.exits), r.sources);
+    const allocation = allocate(r.frame.demands, selected.flatMap(p => p.exits), r.sources, allowed);
     if (bestAttempt === null || allocation.flow > bestFlow) {
       bestFlow = allocation.flow;
       const assigned = new Set(allocation.assignment.map(a => a.demandId));
@@ -215,12 +247,58 @@ export function runJointAllocation(serialized) {
       selectedPoses: selected.map((p, i) => ({ deviceId: devices[i].id, poseId: p.id })) };
   }
   visit(0);
-  return finish({ ...relaxed, totalConfigurations, searchedConfigurations: searched,
+  return { ...relaxed, totalConfigurations, searchedConfigurations: searched,
     searchComplete: searched === totalConfigurations, bestAllocatedDemandCount: bestFlow,
     bestAttempt,
     status: solution ? 'finite_joint_allocation_found' : searched === totalConfigurations
       ? 'finite_joint_allocation_impossible' : 'search_incomplete',
-    assignment: solution?.assignment ?? null, selectedPoses: solution?.selectedPoses ?? null });
+    assignment: solution?.assignment ?? null, selectedPoses: solution?.selectedPoses ?? null };
+}
+
+
+/** Legacy schema, output ordering and digests are preserved without a mask. */
+export function runJointAllocation(serialized) {
+  const c = prepare(serialized);
+  return finish({ ...c.base, ...(c.unknown.length ? unsupported(c.unknown) : solve(c.request, c.devices)) });
+}
+
+/** Geometry candidates are plain host data, not calibrated cone or runtime authority. */
+export function inspectJointCandidates(serialized) {
+  const c = prepare(serialized);
+  return finish({ schema: 'rockstaros.mini-joint-candidates/1',
+    jointInputSha256: c.base.inputSha256, candidateEdgesSha256: c.candidateEdgesSha256,
+    canonicalJointRequest: c.request, geometrySha256: GEOMETRY, demandCount: c.base.demandCount,
+    counts: c.base.counts, acceptance: c.base.acceptance,
+    status: c.unknown.length ? 'unsupported' : 'available', unknown: c.unknown,
+    candidateEdges: c.candidates, searchedConfigurations: 0 });
+}
+
+/** Restrict existing geometry edges by indices bound to this exact canonical request.
+ * No callbacks, external eligibility authority, new geometry or demand deletion. */
+export function runJointAllocationWithEdgeMask(serialized) {
+  const envelope = parseJson(serialized, 262144, 32768, 18);
+  fields(envelope, 'schema,studyOnly,jointRequest,jointInputSha256,candidateEdgesSha256,allowedEdgeIndices');
+  check(envelope.schema === 'rockstaros.mini-joint-edge-mask/1' && envelope.studyOnly === true, 'JOINT_MASK_SCHEMA_REQUIRED');
+  const c = prepare(JSON.stringify(envelope.jointRequest));
+  check(envelope.jointInputSha256 === c.base.inputSha256, 'JOINT_MASK_INPUT_BINDING_MISMATCH');
+  check(envelope.candidateEdgesSha256 === c.candidateEdgesSha256, 'JOINT_MASK_CANDIDATE_BINDING_MISMATCH');
+  const indices = envelope.allowedEdgeIndices;
+  check(Array.isArray(indices) && indices.length <= 12288, 'JOINT_MASK_INDEX_LIMIT');
+  const allowed = new Set();
+  for (const index of indices) {
+    check(integer(index, 0, (c.candidates?.length ?? 0) - 1) && !allowed.has(index), 'JOINT_MASK_INDEX_INVALID_OR_DUPLICATE');
+    allowed.add(index);
+  }
+  indices.sort((a, b) => a - b);
+  const maskSha256 = digest({ jointInputSha256: c.base.inputSha256,
+    candidateEdgesSha256: c.candidateEdgesSha256, allowedEdgeIndices: indices });
+  const inputSha256 = digest({ schema: envelope.schema, studyOnly: true,
+    jointInputSha256: c.base.inputSha256, maskSha256 });
+  return finish({ ...c.base, schema: 'rockstaros.mini-joint-edge-mask-result/1', inputSha256,
+    jointInputSha256: c.base.inputSha256, candidateEdgesSha256: c.candidateEdgesSha256, maskSha256,
+    scope: 'hypothetical-geometry-edge-restriction', candidateEdgeCount: c.candidates?.length ?? null,
+    allowedEdgeCount: allowed.size, coneAcceptance: false,
+    ...(c.unknown.length ? unsupported(c.unknown) : solve(c.request, c.devices, allowed)) });
 }
 
 /** Minimal synthetic up/down counterexample. Does not claim a real two-ray optical engine. */

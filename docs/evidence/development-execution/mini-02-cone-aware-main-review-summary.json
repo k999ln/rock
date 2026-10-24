@@ -1,0 +1,107 @@
+{
+  "schema": "rockstaros.mini02-cone-aware-search.review-summary/1",
+  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
+  "originalReviewSha256": "22210200ccba2a02b2f437d9b656d85c565271e207bf6d25336e2a4c03185f32",
+  "originalReviewVerdict": "PASS_SCOPED",
+  "originalMustFix": 0,
+  "reviewedFiveFiles": [
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "sha256": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "sha256": "a5e28bc4c268ed7971570863e6d5220e02bb4a9ebfd3677ed22ad7c5f240ffba"
+    },
+    {
+      "path": "tests/avocado-mini-finite-cone.test.mjs",
+      "sha256": "2961f5d25bb27cf9ca45c38a05aa41b47a27f25b862c0590b4458ba6877c08e0"
+    },
+    {
+      "path": "tests/avocado-mini-cone-aware-search.test.mjs",
+      "sha256": "d1b5ffac6e3ef642e81f91c56c71a5f45154bde2a059ac0b5652cc0f262ccf12"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "sha256": "da8946daadaa3b290c0836c6ea98cebf6c3fcfcd5f8920cc62ea1981ee0b99c2"
+    }
+  ],
+  "originalReceiptSha256": "8116fad69737d217c6ab6a6b588ead680e677a5fc478af48c035137df669eef5",
+  "publicReceiptSha256": "5bcbee667c2745bc891ffc0a488bfab147df3965926423b59008d06fdf428fc7",
+  "scopeQualification": "Mathematical code/test/doc five bytes exactly match original independent review. Four portable receipt references changed; new public receipt hash is not falsely claimed to equal original reviewed receipt. Separate metadata adoption review required.",
+  "sanitization": {
+    "sourceReceiptPath": "docs/evidence/development-execution/mini-02-cone-aware-search.json",
+    "exactFourReferenceChanges": [
+      {
+        "jsonPath": [
+          "sourceTree",
+          "directory"
+        ],
+        "replacement": "source-tree:mini-02-cone-aware-search-20261024",
+        "reason": "Portable logical reference replaces local temporary filesystem path; no measured/result/math/source change."
+      },
+      {
+        "jsonPath": [
+          "receiptByteHash",
+          "exactSixManifest"
+        ],
+        "replacement": "manifest:mini-02-cone-aware-search/exact-six",
+        "reason": "Portable logical reference replaces local temporary filesystem path; no measured/result/math/source change."
+      },
+      {
+        "jsonPath": [
+          "validation",
+          "focused",
+          "log"
+        ],
+        "replacement": "log:mini-cone-aware-related-tests",
+        "reason": "Portable logical reference replaces local temporary filesystem path; no measured/result/math/source change."
+      },
+      {
+        "jsonPath": [
+          "validation",
+          "legacyCompatibility",
+          "snapshot"
+        ],
+        "replacement": "git-tree:ccec6d43341dd8f12326766311553a59bc301fae",
+        "reason": "Portable logical reference replaces local temporary filesystem path; no measured/result/math/source change."
+      }
+    ],
+    "onlyFourJsonValuesChanged": true,
+    "reverseReplacementRestoresOriginalBytes": true,
+    "originalRetainedByRootOutsideGit": true
+  },
+  "evolution": {
+    "authorizedExistingPaths": [
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs"
+    ],
+    "immutableElevenCount": 11,
+    "immutableHistoricalReceiptCount": 9,
+    "immutableUniquePaths": 18,
+    "oldJointExceptionExplicit": true
+  },
+  "verification": {
+    "focused": 70,
+    "newTests": 14,
+    "independentProbeGroups": 6,
+    "independentAngularCases": 144,
+    "independentObliqueCases": 120,
+    "producerExhaustiveOracle": 1728,
+    "legacyOutputCases": [
+      432,
+      432
+    ],
+    "notAdditiveTestCount": true,
+    "classificationMismatches": 0,
+    "physicalAcceptance": false
+  },
+  "limits": [
+    "Finite declared geometry/cone/sample-capacity research only; combined uncertainty and calibration labels are synthetic, not measured evidence.",
+    "No claim of minimal hardware parts, continuous physical volume, arbitrary external scenes or product feasibility.",
+    "No real optical emission, physical stop/readback, radiometry/eye safety, thermal, manufacture, provider or deployment operation.",
+    "Root/Git retains shared design/index/project/status/README synchronization and exact final candidate fullverify/main/CI adoption."
+  ],
+  "privacy": "Original/log/snapshot temp paths removed from public receipt; only digests/logical references/counts retained. No raw reports/private originals/secret values copied."
+}

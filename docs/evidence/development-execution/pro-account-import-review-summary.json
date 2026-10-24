@@ -103,11 +103,32 @@
       "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f"
     }
   ],
-  "mechanicalDeltaIndependentReviewPending": true,
+  "mechanicalDeltaIndependentReviewPending": false,
   "oldAdoptionReview": {
     "originalPath": "docs/evidence/development-execution/pro-account-import-main-adoption-review.json",
     "sha256": "cd7b0120bbee04d53f030afc5593c2d313e61772bec6514f802fea219df4aea5",
     "verdict": "CHANGES_REQUIRED_FOR_ADOPTION",
     "mustFix": "Exactdd10 Linux lint25; original source/metadata limited pass does not close required CI gate"
+  },
+  "completedMainAdoption": {
+    "pr": "https://github.com/k999ln/rock/pull/199",
+    "acceptedHead": "2ec3d3f9c8f3a5abba4b2af70c763b09ab940e06",
+    "mainMergeSha": "7086309eac76533dd6efe358635a9be8a527ec17",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2796,
+      "pass": 2795,
+      "fail": 0,
+      "skip": 1,
+      "runId": 40118258251,
+      "jobId": 120944033921,
+      "logSha256": "68d7d3dc4391f7add5771ffcfef3f1fdc2141bf1e097500099c696639bc48501",
+      "actualExactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "independentR2Sha256": "1f09ee75570aab3c9f38e1d182f4ff9fe8582edb40df326eae4b8fc5337d13f2",
+    "r2CaptureVerdict": "PENDING_CI; mechanical metadata PASS_SCOPED. Later actual CI independently closes remaining gate.",
+    "productionDeployment": false,
+    "wholePRO01": false
   }
 }

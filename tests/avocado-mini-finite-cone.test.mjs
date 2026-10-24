@@ -351,11 +351,19 @@ void test('strict bounded JSON rejects methods, unexpected authority/horizontal 
   assert.throws(() => inspect(deep), /JSON_TOO_COMPLEX/);
 });
 
-void test('the reviewed joint four and preceding eight files retain their exact bytes', () => {
+void test('eleven historical files stay immutable; Root-authorized joint evolution is separately pinned for review', () => {
   const receipt = JSON.parse(readFileSync(new URL('../docs/evidence/development-execution/mini-02-joint-allocation-review.json', import.meta.url), 'utf8'));
   const preserved = { ...receipt.exactFourSha256, ...receipt.preservedEightSha256 };
   assert.equal(Object.keys(preserved).length, 12);
-  for (const [path, expected] of Object.entries(preserved)) {
+  // Explicit exception for restrict-only reuse; this pin does not self-approve the new candidate.
+  const evolvedPath = 'docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs';
+  const evolvedCandidateSha256 = 'b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634';
+  assert.equal(preserved[evolvedPath], 'a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27');
+  let immutableCount = 0;
+  for (const [path, historical] of Object.entries(preserved)) {
+    const expected = path === evolvedPath ? evolvedCandidateSha256 : historical;
+    if (path !== evolvedPath) immutableCount++;
     assert.equal(createHash('sha256').update(readFileSync(new URL(`../${path}`, import.meta.url))).digest('hex'), expected, path);
   }
+  assert.equal(immutableCount, 11);
 });
