@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
-  "mainAtCapture": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+  "recordedAt": "2026-10-24T19:02:56.451588+00:00",
+  "mainAtCapture": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -214,7 +214,7 @@
         "ESIM-01",
         "ESIM-08"
       ],
-      "kind": "independent_limited_source_pass_portable_receipt_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "99ab093c09be22c2d65a677a031b27ceed7236fe",
       "sourceFiles": [
         {
@@ -231,19 +231,64 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/esim-owner-response-main-review-summary.json",
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "scope": "Fresh current owner/row/revision/raw payload HTTP workspace disclosure witness and known-commit bounded acknowledgement only",
       "independentRetentionACLExpiryAccepted": false,
       "genericAttachmentAccepted": false,
-      "productionD1Accepted": false
+      "productionD1Accepted": false,
+      "pr": "https://github.com/k999ln/rock/pull/201",
+      "acceptedHead": "defba2868e138803fd3612f6dd2388384ae65596",
+      "mainMergeSha": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+      "metadataReviewSha256": "1a84590e6d2189cdf2c1a8e3f90d68cc1cf3913e765f67380f5cc1ce17b34aca",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "BILLING_SERVICE_AUTHORITY_CANDIDATE",
+      "units": [
+        "BILL-02"
+      ],
+      "kind": "independent_limited_source_pass_portable_receipt_git_candidate",
+      "baseMain": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+      "sourceFiles": [
+        {
+          "path": "lib/remote-ai-text-store.ts",
+          "sha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043"
+        },
+        {
+          "path": "lib/remote-ai-text-execution.ts",
+          "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde"
+        },
+        {
+          "path": "tests/remote-ai-text-atomic-send.test.mjs",
+          "sha256": "493f616de5168a492b677957cb49e1db744957cbd86c2aa65a23e8bbc528d0e0"
+        },
+        {
+          "path": "tests/remote-ai-text-service-authority.test.mjs",
+          "sha256": "bd194ea8d94c5821fe9d2d23858ff4b462f9ae980616035d5f036c6858bd4750"
+        }
+      ],
+      "sourceReviewSha256": "acf603b55a398639d3871ec619dbd08629c940637a8332e3b59fa72b64ae9869",
+      "reviewSummary": "docs/evidence/development-execution/billing-service-main-review-summary.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Existing required rockstaros_access final claim; trusted preview remains distinct, DBUNCONFIRMED holds/noresend and lateusageonce preserved",
+      "commonContractIssuerEpochAccepted": false,
+      "productionProviderBillingAccepted": false
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "BILL-02",
+      "state": "required_service_authority_exact4_source_pass_main_candidate",
+      "scope": "Current same-owner active scope/expiry final claim only; no common contract/epoch/order binding/account-month aggregate completion",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "ESIM-01",
-      "state": "owner_response_exact3_source_pass_main_candidate",
+      "state": "owner_response_PR201_main_integrated_remaining_independent_retention_gates",
       "scope": "Current HTTP private-body disclosure boundary only; independent persisted retention ACL/expiry/genericattachment remain unaccepted",
       "wholeUnitAccepted": false
     },
@@ -308,5 +353,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "7086309eac76533dd6efe358635a9be8a527ec17"
+  "previousCaptureMain": "99ab093c09be22c2d65a677a031b27ceed7236fe"
 }

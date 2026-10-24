@@ -1,3 +1,7 @@
+## Billing current service authority exact4のmain候補（2026-10-24 / G04）
+
+eSIM201通常merge main468d・同SHA6CI成功を新clean基点に、旧99abと4base不変の受入hashを無変更採用。trusted runtimeEnv required/previewをdispatch await前に捕捉し、required時の同owner active scope/committime expiryを最終INSERTへ結合。53tests/type/productlint成功。旧base2 mocksend1→new0/独立11を原本hashで保持し、DBUNCONFIRMED/unknownhold/noresend/lateusageonce/旧recurring例外を区別。元receipt7a52/portable a2cfを別hashにし、新metadata独立検収へ。価格/schema/migration/設定/commoncontract/issuer epoch・accountmonth/実Provider/課金/公開の完成へ拡張しない。eSIM3/Mini6/history18/固定95whole0/393task14gate/RootHEADindex/旧197保持。次はJSON/design/fixedscanner0/canary→別draftPR最終同headCI実npmverify→独立metadata採用検収。Web5source保全は別branchで後続、mainへ混ぜない。根拠 docs/evidence/development-execution/billing-service-main-adoption.json。
+
 ## eSIM owner-response exact3のmain採用候補（2026-10-24 / G04）
 
 Mini200通常merge main99ab・同SHA6CI成功を新clean基点に、旧708と3base不変の受入hashを無変更採用。public GET/POST本文はcurrent owner/row/revision/raw bytesの最終SQLで投影し、非同期grant後の旧本文fallbackを閉じる。read/execute/既知commit ack/unknownを分離。正規type/lint、145pass/0fail/1D1skip＋別localD1 1pass。独立12probe/78回帰、旧7distinct負例（8Node失敗）と元receipt4035/portable579fを重複・同hash扱いしない。独立ACL/expiry/genericattachment/issuer epoch・本番resolver/DB/課金/実機/公開未受入。Mini6/11/history18/Pro6・393task14gate/固定95whole0維持。canonical設計/index/README/status/95overlay同期、RootHEAD/index/旧197保持。次はfixedscanner/canary→別draftPRの同exact finalhead CIで実npmverify→独立metadata採用検収。広域localverifyは重ねず、CI未完を成功へ換算しない。Billingは別tree準備のみ。根拠 docs/evidence/development-execution/esim-owner-response-main-adoption.json。

@@ -1,3 +1,7 @@
+## Billing required service claim候補
+
+ROCKは既存server required設定のrockstaros_accessを最終atomic INSERTへ転送し、同owner/status/scopes/committime expiryを再照合。preview/requiredを分離し、DBUNCONFIRMED hold/noresend・priced lateusageonce・旧recurring例外を保持。53試験/型/lint成功、source4hash不変。価格/schema/migration/設定/共通issuer epochは変更・完成扱いしない。[契約](../sky-billing.md#billing-required-service-authority)／[証拠](../evidence/development-execution/billing-service-main-adoption.json)。統合主担当10、最終CI/metadata採用review待ち。
+
 ## eSIM owner-responseの採用候補
 
 ROCKはpublic HTTP workspace本文のcurrent owner/row/revision/raw bytes最終SQL投影を担当。既存実行grantと保存済み本人read、既知commit ackを分離し、古い本文fallback/再実行/削除をしない。source3不変、145回帰＋別localD1成功。独立retention ACL/expiry/genericattachment/issuer epoch・本番resolver/DB/課金は未受入。[契約](../sky-billing.md#esim-owner-response-disclosure)／[証拠](../evidence/development-execution/esim-owner-response-main-adoption.json)。統合主担当10。

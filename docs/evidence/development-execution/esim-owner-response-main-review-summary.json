@@ -56,5 +56,30 @@
     "ESIM01-08 whole units remain false; prices/usage accounting/888-cent policy not changed.",
     "Same-head remote CI/current main, shared design/index/README/project/status and integration adoption remain Root/Git responsibility."
   ],
-  "privacy": "Portable hashes/scope/counts only. No raw workspace/body/manuscript/log/private path/session/secret copied."
+  "privacy": "Portable hashes/scope/counts only. No raw workspace/body/manuscript/log/private path/session/secret copied.",
+  "completedMainAdoption": {
+    "pr": "https://github.com/k999ln/rock/pull/201",
+    "acceptedHead": "defba2868e138803fd3612f6dd2388384ae65596",
+    "mainMergeSha": "468d7bbcb673dad0ab2e5b531d9801ecd25e9e06",
+    "sourceReviewSha256": "fcff52486d714d190f393c3b3dd3b569df505da30a5c295341eebb3305f27a13",
+    "metadataReviewSha256": "1a84590e6d2189cdf2c1a8e3f90d68cc1cf3913e765f67380f5cc1ce17b34aca",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2834,
+      "pass": 2832,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40122192145,
+      "jobId": 120955966060,
+      "logSha256": "85bee10578890889b28f3d706f81dbd89736e7ce19df99cd7e2989c6866e087a",
+      "exactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "sourceThreeUnchanged": true,
+    "original4035AndPortable579fSeparated": true,
+    "independentRetentionACLExpiry": false,
+    "genericAttachment": false,
+    "productionD1": false,
+    "publicDeployment": false
+  }
 }

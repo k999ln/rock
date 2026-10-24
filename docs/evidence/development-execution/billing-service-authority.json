@@ -1,0 +1,59 @@
+{
+  "schema": "rockstaros.billing-service-authority.public-source-receipt/1",
+  "originalReceiptSha256": "7a52a6c32dc43039010ad804d01649f0be377741747640856da2f9ee5a7fc90d",
+  "sourceReviewSha256": "acf603b55a398639d3871ec619dbd08629c940637a8332e3b59fa72b64ae9869",
+  "sourceBase": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+  "sourceFiles": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043"
+    },
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde"
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "sha256": "493f616de5168a492b677957cb49e1db744957cbd86c2aa65a23e8bbc528d0e0"
+    },
+    {
+      "path": "tests/remote-ai-text-service-authority.test.mjs",
+      "sha256": "bd194ea8d94c5821fe9d2d23858ff4b462f9ae980616035d5f036c6858bd4750"
+    }
+  ],
+  "sourceReview": "PASS_SCOPED mustfix0 on exact4 source/test bytes; portable receipt is new metadata with a distinct hash",
+  "scope": "Existing required service policy forwarded from trusted runtimeEnv into final atomic same-owner active rockstaros_access claim predicate; preview remains explicit legacy mode.",
+  "policy": "String true=required; false/omitted=preview; malformed runtime/direct-claim policy rejects. Required grant uses active owner row, guarded exact text scope array and null or integer expiry greater than max clock. No config values changed.",
+  "validation": {
+    "targetedTests": 53,
+    "pass": 53,
+    "fail": 0,
+    "skip": 0,
+    "localD1": "actual local Miniflare D1 predicate exercised by targeted source suite; no production schema/runtime acceptance",
+    "independentProbeGroups": 11,
+    "oldBaseNegativeCases": 2,
+    "oldEachMockSend": 1,
+    "newEachMockSend": 0,
+    "notAdditive": true
+  },
+  "invariants": "No claim/no fetch/held unknown or rejected; DBUNCONFIRMED and lost ack/failed marker never auto-resend; genuine priced late usage settles once; recurring exception and all other atomic predicates retained.",
+  "limits": [
+    "Current generic service authority only; any active matching grant follows existing semantics, not exact original SIM/order/key/receipt binding.",
+    "No common contract digest/consent revision/issuer epoch/source attachment/account-month aggregation acceptance; no full BILL02 completion.",
+    "Runtime policy is not persisted/version-pinned per execution across deployments. Omitted setting remains legacy preview intentionally, never required service acceptance. SQL required checks cannot protect a deployment intentionally configured preview.",
+    "Malformed text/fractional expiry is rejected more strictly than old precheck; valid signed integer/null expiry preserved. Maximum clocks protect stale-host expiry, not synchronized-clock accuracy; future clock skew can deny.",
+    "Required authority read failures deny. Since SQL still resolves referenced table, preview is not a migration-missing bypass.",
+    "No production/Provider/issuer/payment/SIM/device/browser/publication or live finance acceptance. Synthetic scope rows and rates do not establish trusted receipt provenance."
+  ],
+  "acceptance": {
+    "sourceFourLimitedIndependent": true,
+    "metadataReviewed": false,
+    "mainMerged": false,
+    "wholeBill02": false,
+    "priceSchemaMigrationOrConfigChange": false,
+    "commonContractIssuerEpoch": false,
+    "productionD1ProviderBilling": false,
+    "publicDeployment": false
+  },
+  "privacy": "Allowlisted relative paths/digests/counts/scope only; full original receipt retained outsideGit, no private path/raw log/credential copied."
+}

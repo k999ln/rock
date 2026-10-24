@@ -1,3 +1,5 @@
+Billingの[required service最終claim](../sky-billing.md#billing-required-service-authority)は03の限定候補、統合主担当10。最新eSIM201 main468dから受入4sourceだけを採用し、server preview/requiredと価格/schema/issuer epochの未受入を明示する。Web source保全は別branchで、runtime採用とは分ける。
+
 eSIM/Linuxの[owner-response本文開示](../rockstaros-complete-design.md#esim-owner-response-disclosure)は03の限定候補、統合主担当10。最新Mini200 main99abから受入3sourceだけ採用し、原本receipt hashとportable要約を分ける。現owner row/payload witnessであり独立retention ACL/期限や本番auth/DBの完成ではない。
 
 MINI-02の[有限cone-aware探索](../rockstaros-avocado-mini-complete-design.md#mini02-cone-aware-search)は11のhost研究候補、統合主担当10。Pro199 main708同SHA CI成功後のclean baseで採用し、receipt4参照のportable化と独立数学5hashを分ける。物理/停止/眼安全/製造の合格ではない。

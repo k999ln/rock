@@ -16,7 +16,7 @@ export async function executeReservedRemoteAiText(input: {
   approvalDigest: string;
   intent: RemoteAiTextIntent;
   verified: VerifiedRemoteAiRateCard;
-  runtimeEnv: LlmRuntimeEnv;
+  runtimeEnv: LlmRuntimeEnv & { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string };
   fetchImpl?: typeof fetch;
   onOutputProgress?: OpenAiOutputProgress;
 }) {
@@ -37,6 +37,12 @@ export async function executeReservedRemoteAiText(input: {
     return { record: current, providerSubmission: 'not_repeated' as const };
   if (!await remoteAiTextQuoteMatches(current.quote, verified, intent, Date.now(), true))
     throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
+  // This is deployment configuration, not an intent/body boolean. Missing is the
+  // existing preview default; malformed values must not downgrade a required gate.
+  const serviceSetting = runtimeEnv.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED;
+  if (serviceSetting !== undefined && serviceSetting !== 'true' && serviceSetting !== 'false')
+    throw new RemoteAiTextStoreError('INVALID_STATE');
+  const serviceAuthority = serviceSetting === 'true' ? 'required' : 'preview';
   if (!runtimeEnv.OPENAI_API_KEY) throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
   if (!await store.claimDispatch(ownerId, id, approvalDigest))
     return { record: await store.get(ownerId, id), providerSubmission: 'not_repeated' as const };
@@ -44,7 +50,7 @@ export async function executeReservedRemoteAiText(input: {
   // after this write but before fetch is conservatively unreconciled, never resent.
   let sendClaimed: boolean;
   try {
-    sendClaimed = await store.claimProviderSend(ownerId, id);
+    sendClaimed = await store.claimProviderSend(ownerId, id, Date.now(), serviceAuthority);
   } catch (error) {
     // The existing recurring trigger aborts the INSERT on a known access denial.
     // Other errors leave persistence uncertain. Both retain the hold and never fetch.
