@@ -1,3 +1,7 @@
+## PRO-01原本account archive候補
+
+ROCKは既存Pro parserとEve暗号化履歴を再利用し、選択file→local preview→本人account確認/別同意→原本保管→全bytes/SHA読戻しをexact6で限定採用。旧P1/P2はr2で閉鎖、first56/current69の履歴訂正をhashで保持。新schema/鍵/WorkJob/Tool/modelなし、実account/browser/native/全移行は未受入。[設計](../rockstaros-complete-design.md#pro-account-original-archive)／[証拠](../evidence/development-execution/pro-account-import-main-adoption.json)。統合主担当10、Security/Eve境界を共有。
+
 # Business Pilots
 
 ## CSV共通処理の4修正（2026-10-05、G04）

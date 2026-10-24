@@ -42,5 +42,25 @@
     "Only six source hashes pinned; shared tree/dependencies not whole-tree frozen. Root/Git must synchronize design/index/status/README and run fixed integration gates, same-SHA CI and normal Git adoption.",
     "No provider/billing/financial effect, device, public deployment or Git operation performed by reviewer."
   ],
-  "privacy": "Allowlisted hashes, scope, counts and findings only; no raw reviews, original material, private filesystem paths, thread identities or logs."
+  "privacy": "Allowlisted hashes, scope, counts and findings only; no raw reviews, original material, private filesystem paths, thread identities or logs.",
+  "mainAdoption": {
+    "pr": "https://github.com/k999ln/rock/pull/198",
+    "acceptedHead": "8716bb13ee3952b99bab5a14c37feeb1744b7c9c",
+    "mainMergeSha": "ccec6d43341dd8f12326766311553a59bc301fae",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaAllSuccessAtCapture": true,
+    "originalAdoptionReviewSha256": "7f0843ade63cd5c4848ec9f5507efe6721c685c835c38d27f8ac8eacf0a65463",
+    "oldPR197AtCapture": {
+      "state": "CLOSED",
+      "closedAt": "2026-10-24T17:24:31Z",
+      "branchRetained": true,
+      "oldHead": "63675b7e691556a106d93aba409faa764a01288b",
+      "evidenceAndFailuresPreserved": true
+    },
+    "oldBranchAndFailureEvidenceRetained": true,
+    "policyAndScannerUnchanged": true,
+    "wholeEVE02Accepted": false,
+    "productionDeployment": false,
+    "mainSameShaCISuccess": 6
+  }
 }

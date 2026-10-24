@@ -1,3 +1,7 @@
+## PRO-01 exact6原本保管のmain候補
+
+最新clean mainccec（PR198）基点、Pro新6pathは旧1a9/最新双方absent、受入hash無変更で採用。69試験と正規pretypecheck成功、既存core/暗号/store/schema維持。履歴first56/current69訂正とr2限定検収を原本hash要約で記録。固定scanner現行files0/canary→全verify1回→draftPR/同headCI→独立metadata review。旧a2branchは混ぜずRootHEAD/index/journal保持。[設計/証拠](../evidence/development-execution/pro-account-import-main-adoption.json)。
+
 ## EVE-02 attempt2 exact6統合候補
 
 主担当10/ROCK。最新remote main1a9とsource旧7beの6基底同一、独立PASS_SCOPEDの6hashを無変更採用。関連71pass。旧巨大Root Remix/media/workflow、未検収Proを混ぜず、RootHEAD/index/journal保持。固定全verify1回→別draftPR/同headCI→独立metadata採用review。PR196 BillingはGame-r2/Pro metadata検収とacceptedhead7CI/main1a9同SHA6CI成功を最小hash要約で同期。[Eve採用証拠](../evidence/development-execution/eve-text-job-main-adoption.json)／[Billing要約](../evidence/development-execution/billing-final-send-review-summary.json)。一般公開/実課金なし。

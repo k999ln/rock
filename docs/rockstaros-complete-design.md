@@ -1,3 +1,22 @@
+<a id="pro-account-original-archive"></a>
+## Pro原本の私有account archive（PRO-01限定候補）
+
+目的・体験: `/account/import/pro`で本人が選んだ既存Pro exportをlocal previewし、保存先accountの確認と別の保存同意を経て、原本を既存Eve暗号化履歴へ保管する。全bytesとSHA256の一致を読戻してから元fileとしてdownloadする。既存Pro local preview/exportを再利用し、旧checkedはlegacy provenance/draftであり仕事の完了や実行権限ではない。
+
+責任: ROCKはcodec・同意/owner UI・既存handler/storeへのadapterと照合、EXTERNALは既存hosting/auth供給、JOINTは実account/browser/配備先DBの受入、OWNERはfile選択・保存先確認・保存同意を担う。既存eveHistoryStoreと暗号化/owner binding/keyringを再利用し、新table/migration・暗号engine・鍵生成、WorkJob/model/Tool自動実行を追加しない。
+
+入出力・上限: `pro-local-import/1`の選択fileをUTF-8で検査し、最大262,144 bytes、名前255文字以内でpath区切り/制御文字/不正surrogate/末尾dot・spaceを拒否。BOMはparse時のみ除き、元bytes・名前・full file SHAと既存content digest/operationIdを別々に保持する。Base64を3,000文字chunk、manifest1＋part最大117の計118messageへ固定IDで保存する。POST body400,000 bytes以下・1回最大16messageの既存CAS、最大file8writes。読戻しは既存100件pageを跨いで同revisionを再確認し、全bytesを再構成/検査して返す。
+
+状態・保存・承認: requestUserだけを本人authorityとし、same-origin POST・ownerScopeとopaque Eve binding・正確なfield/expectedRevision/明示consentを要求する。owner+operationIdからarchive IDを決め、filename/bytes/digest変更や既存part差異を競合として拒否。missing/partial/completeを区別し、completeも原文fullSHA/bytesを照合する。暗号化履歴はremember false/ready/outcome null、実行jobを生成しない。既存keyring未設定はunavailableで、準備状態を実account受入へ昇格しない。
+
+失敗・復旧: 応答喪失/UNKNOWNは後続書込みを止め、同一IDのGET成功と新しい同意後だけ残partを続行する。cancelはローカル継続意図を破棄し、既にcommitした暗号化partを全損/rollbackと呼ばない。削除済みhistoryはtombstoneを尊重する。他clientの変更/競合を上書きせずfalse completeにしない。blur/hiddenは同期DOM maskとcurrent intent失効、focus/visibleの本人再確認まで私有情報とsave/downloadを拒否する。同じownerは成功再確認後に復旧し、変更owner/unauthorizedは旧原文/同意/receiptを破棄。旧200/401/OWNER_CHANGED、遅延file/GET、unmount後callbackで新owner状態を消したり復活させない。
+
+privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGitやURL/global storageへ置かない。元fileを本人が保管し、partialと保存済み範囲を示す。source revertでUI/API追加を戻せるが既存暗号化historyを消さない。既存Eve/chat/WorkJob/料金/権限は維持する。
+
+合格・未決定: attempt2 exact6独立PASS_SCOPED/mustfix0。旧P1/P2の2反例検出と新13独立probe/46回帰、一次関連69passは重複加算しない。一次履歴の誤記は旧56/14 newと現69/27 newを原本hash付きで訂正し、6source不変。workerの生成module欠落3TS2307は失敗として保持し、統合は正規main pretypecheckで型検査成功、実原稿copy/手書stub無し。証拠はsynthetic UI lifecycle＋実handler/codec/file-backed SQLiteで、実browser/account認証、native/全移行・実機、モデル/Tool/Provider/課金・公開・PRO01全体は未受入。同候補全verify/CI/別metadata検収と後続共同受入で残項目を決める。
+
+[exact6・検証・残gate](evidence/development-execution/pro-account-import-main-adoption.json)／[独立検収・履歴訂正要約](evidence/development-execution/pro-account-import-review-summary.json)。
+
 <a id="eve-text-preparation"></a>
 ## Eveの資料付き依頼保存（EVE-02 / attempt2限定候補）
 

@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
+  "recordedAt": "2026-10-24T17:23:32.228070+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+    "mainAtCapture": "ccec6d43341dd8f12326766311553a59bc301fae",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -488,7 +488,10 @@
       "id": "PRO-01",
       "title": "localStorageの非破壊・本人別移行",
       "lane": "pro",
-      "ledgerRef": "data/development-unit-progress.json#PRO-01"
+      "ledgerRef": "data/development-unit-progress.json#PRO-01",
+      "currentOverlayRefs": [
+        "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE"
+      ]
     },
     {
       "id": "PRO-02",
@@ -632,10 +635,17 @@
   "modelRoutingPolicy": "data/development-model-routing.json",
   "nextExecutionPriority": [
     {
+      "order": 0,
+      "unit": "PRO-01",
+      "state": "exact6_source_pass_main_candidate",
+      "scope": "Same-owner encrypted original archival/readback only; no jobs/native migration/Tool/model/provider effects",
+      "wholeUnitAccepted": false
+    },
+    {
       "order": 1,
       "unit": "EVE-02",
-      "state": "source_attempt2_pass_main_candidate",
-      "scope": "Exact6 reviewed free text-preparation; integration verify/CI/metadata review pending, semantic Remix unaccepted",
+      "state": "limited_preparation_PR198_main_integrated",
+      "scope": "PR198 clean reviewed tree mainccec; semantic/model/browser/liveHTTP still unaccepted",
       "wholeUnitAccepted": false,
       "currentSourceReviewedByThisBatch": true
     },

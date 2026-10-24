@@ -1,11 +1,11 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
+  "recordedAt": "2026-10-24T17:23:32.228070+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
   "mainContext": {
-    "mainAtCapture": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+    "mainAtCapture": "ccec6d43341dd8f12326766311553a59bc301fae",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -1900,7 +1900,9 @@
         "B05-COMPARE"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE"
+      ]
     },
     {
       "id": "PRO-02",

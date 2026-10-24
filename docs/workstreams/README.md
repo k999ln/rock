@@ -1,3 +1,5 @@
+PRO-01の[原本私有archive](../rockstaros-complete-design.md#pro-account-original-archive)は09の限定候補、統合主担当10。既存Eve暗号化履歴へ明示同意で保管する6sourceだけを採用し、実account/browser/native/実行移行は別gate。EveはPR198 clean mainccecから継続する。
+
 EVE-02の[資料付き依頼保存](../rockstaros-complete-design.md#eve-text-preparation)は既存composeへのattempt2 exact6限定候補。入口05、統合主担当10。原文2つ＋goal保存と生成未対応を区別し、受入済みBilling PR196/同mainSHA CIの要約と別overlayへ記録する。
 
 ## 現在の95unit再開入口
