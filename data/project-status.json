@@ -9547,5 +9547,24 @@
     "productionAccepted": false,
     "generalLaunch": "held",
     "fullVerifyExit": 0
+  },
+  "reviewedClientGameAdoption": {
+    "status": "fixed_candidate_full_verify_pass_pending_git_save_ci_and_integrated_review",
+    "evidence": "docs/evidence/development-execution/client-game-adoption.json",
+    "focusedHost": 69,
+    "focusedPro": 7,
+    "wholeUnitsComplete": false,
+    "physicalAccepted": false,
+    "productionAccepted": false,
+    "publicDeployment": false,
+    "generalLaunch": "held",
+    "fullVerifyExit": 0
+  },
+  "developmentSourceHandoff": {
+    "path": "data/development-source-handoff.json",
+    "sourceBranch": "codex/source-preservation-20261024",
+    "sourceCommit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
+    "sourceFilesSaved": 49,
+    "mainAdopted": false
   }
 }

@@ -3065,5 +3065,16 @@
     "pricePolicyUnresolved": true,
     "productionBillingAccepted": false,
     "publicDeployment": false
+  },
+  "reviewedClientGameAdoption": {
+    "decision": "implementation_subset_only_existing_product_policy_retained",
+    "baselineVersionRetained": "2.08",
+    "mainRequirementSetRetained": "RQ01-RQ50",
+    "rootBaselineProvenance": "1.127/RQ01-RQ49",
+    "evidence": "docs/evidence/development-execution/client-game-adoption.json",
+    "handoff": "data/development-source-handoff.json",
+    "newPriceSelected": false,
+    "physicalAccepted": false,
+    "productionAccepted": false
   }
 }

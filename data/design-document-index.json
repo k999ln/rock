@@ -384,6 +384,11 @@
         "data/avokado-pro-pc.json",
         "docs/avocado-mini-cellular.md",
         "data/avocado-mini-cellular.json"
+      ],
+      "implementation": [
+        "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+        "tests/avocado-mini-place-profile.test.mjs",
+        "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs"
       ]
     },
     {
@@ -584,7 +589,15 @@
           "tests/history-navigation-guard.test.mjs"
         ],
         "limits": "Navigation traversal protection requires Navigation API; closing the tab still loses in-memory input."
-      }
+      },
+      "implementation": [
+        "sites/avocado-mini/src/pro-local-import.mjs",
+        "sites/avocado-mini/src/pro-os.js",
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "sites/avocado-mini/tests/pro-local-import.test.mjs",
+        "components/system-maintenance.tsx",
+        "components/system-maintenance.module.css"
+      ]
     },
     {
       "id": "linux_qemu",
@@ -1340,6 +1353,10 @@
         "docs/gx01-reference-sdk-sandbox-20260910.md",
         "docs/mini-game-client.md",
         "docs/workstreams/08-game-market-fund.md"
+      ],
+      "implementation": [
+        "lib/game-intake.ts",
+        "tests/game-intake.test.mjs"
       ]
     },
     {
@@ -2699,5 +2716,30 @@
     "productionAccepted": false,
     "newPriceSelected": false,
     "wholeUnitsAccepted": false
+  },
+  "reviewedClientGameSubsets": {
+    "authority": "docs/rockstaros-complete-design.md#reviewed-client-game-subsets",
+    "miniAuthority": "docs/rockstaros-avocado-mini-complete-design.md#reviewed-client-game-subsets",
+    "evidence": "docs/evidence/development-execution/client-game-adoption.json",
+    "implementation": [
+      "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+      "tests/avocado-mini-place-profile.test.mjs",
+      "sites/avocado-mini/src/pro-local-import.mjs",
+      "sites/avocado-mini/src/pro-os.js",
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "components/system-maintenance.tsx",
+      "components/system-maintenance.module.css",
+      "tests/system-maintenance-accessibility.test.mjs",
+      "lib/game-intake.ts",
+      "tests/game-intake.test.mjs",
+      "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+      "tests/sky-agent-saved-reference.test.mjs",
+      "tests/system-maintenance-release.test.mjs"
+    ],
+    "handoff": "data/development-source-handoff.json",
+    "physicalAccepted": false,
+    "runtimeExecutionAccepted": false,
+    "productionAccepted": false
   }
 }

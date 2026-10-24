@@ -1,0 +1,331 @@
+{
+  "schema": "rockstaros.development-execution.finance-main-adoption-review/1",
+  "recordedAt": "2026-10-24T08:52:34.638043+00:00",
+  "reviewerLane": "game",
+  "writerLane": "git",
+  "independentOfImplementation": true,
+  "routing": {
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "appliedModel": null,
+    "actualRuntimeModelIndependentlyConfirmed": false
+  },
+  "status": "accepted_pure_main_adoption_same_head_verify_pending",
+  "adoptionAllowed": true,
+  "mergeReady": false,
+  "wholeUnitsComplete": false,
+  "pr": {
+    "number": 187,
+    "url": "https://github.com/k999ln/rock/pull/187",
+    "head": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+    "base": "23ad170c59d9e4593d3ffd89b83f601f9a0d4fac",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "readback": "GitHub PR metadata plus clean integration checkout HEAD match"
+  },
+  "scope": "Independent review of additive Billing/eSIM/Wallet pure main-adoption subset. No API/store/Broker wiring or runtime financial authorization.",
+  "writerReceipt": {
+    "path": "docs/evidence/development-execution/service-contract-adoption.json",
+    "sha256": "e40047e218dda42131199920d77443a060befbbb09c3f16bdba10a448558aecd"
+  },
+  "priorReviews": [
+    {
+      "path": "docs/evidence/development-execution/billing-review-r2.json",
+      "sha256": "98ab3e86e203ed7e385bf82524df975e0114e62cf3ef89186fffd03e99fc5fcd"
+    },
+    {
+      "path": "docs/evidence/development-execution/esim-review-r2.json",
+      "sha256": "9638686dafdba520e7bc933f8bd1546d02d58882f605781d8adab4cd8594eb54"
+    },
+    {
+      "path": "docs/evidence/development-execution/billing-wallet-review.json",
+      "sha256": "b034977dacb49babf524a54222022f6715d7674df55115abf2ed8c550d9e43c3"
+    }
+  ],
+  "reviewedRootHashes": {
+    "lib/sky-linux-billing.ts": "746359b1af7169144bf745830fb429a8b97b29cf9656c96e9ea6187876300f9a",
+    "lib/sky-agent-monthly-statement.ts": "b480bfbe88e393452c46e19e3a08da61e6b15a90f6819de15ca41e8271d94aeb",
+    "tests/sky-linux-billing.test.mjs": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+    "tests/sky-agent-monthly-statement.test.mjs": "d240eddf6b76c0c54edfc4d5df26a28dcc55afd6c2d67ec248f66aa15e30b892",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/rockstar-service-setup.test.mjs": "244626cca4c9c26cd515a640ecd549a3056810483ece23bbc3e2e2119fed06db",
+    "lib/wallet-deposit-provenance.ts": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+    "tests/wallet-deposit-provenance.test.mjs": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88"
+  },
+  "adoptedHashes": {
+    "lib/sky-linux-billing.ts": "de75e2a27e1272bb48714b6234422f2cc1172624a87d32201d4352ad7834d123",
+    "lib/sky-agent-monthly-statement.ts": "ecfd3007f207bf91a2df1d9aa3165e4ee5ff9138bc95b60bb312943be87dd6cb",
+    "tests/sky-linux-billing.test.mjs": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+    "tests/sky-agent-monthly-statement.test.mjs": "81683241e3067f3267a4380fea506993bf6a202c2fffda7d7e6919f2d4935b5f",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/rockstar-service-setup.test.mjs": "1338f89f8a2598147e406ec1d181e46a906cd23f228f414bfdb50a2318795604",
+    "lib/wallet-deposit-provenance.ts": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+    "tests/wallet-deposit-provenance.test.mjs": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88"
+  },
+  "adoptedCoreDigest": {
+    "sha256": "22ecdee5a797054fc832c83251de50b0223d8247aa7cf5d80db16a57ef36bdb3",
+    "encoding": "UTF-8 JSON of adoptedHashes, sorted keys, compact separators"
+  },
+  "dependencyComparison": {
+    "lib/sky-linux-service.ts": {
+      "sha256": "5dfb9523e3cf0508363bb1f5e6dd034556dd7201c520ec9104ed1ea90ad43eec",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/rockstar-service-setup-billing.ts": {
+      "sha256": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/rockstar-service-attachment.ts": {
+      "sha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/financial-provider.ts": {
+      "sha256": "2f6d5c6924c821f74e17779e211d833ee0387c26274d27005a27fe132f87d43f",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/receipt-signature.ts": {
+      "sha256": "3764d383cc5b01b95062f9438f5639152cc83b3b6edd675ff819213b8e55a0ac",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/rock-wallet.ts": {
+      "sha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+      "unchangedFromMain": true,
+      "identicalRoot": true
+    },
+    "lib/rockstar-entitlement-claim.ts": {
+      "sha256": "eb533ae2cb1c8f4a1702e1ccb646770d05a927ea71f0ee9580dd76e092d7c794",
+      "unchangedFromMain": true,
+      "identicalRoot": false
+    },
+    "lib/sky-stripe.ts": {
+      "sha256": "d8a4a9106c6042e9d70063aa6a63c891a0fc76286136c3d53d83aff2497e97a1",
+      "unchangedFromMain": true,
+      "identicalRoot": false
+    },
+    "shared/stripe.mjs": {
+      "sha256": "e70502f7ae56775fcf7e45bef95dceac987b708353fdbb0821a6454be60cee75",
+      "unchangedFromMain": true,
+      "identicalRoot": false
+    }
+  },
+  "deltaAssessment": [
+    {
+      "area": "Billing",
+      "result": "Accepted",
+      "evidence": "Only added imports and snapshot/verify/preview block relative to base main; stripping those additions reproduces existing main billing bytes exactly. Root-to-adopted only changes two invoice descriptions back to original Sky names; runtime helpers and tests otherwise retain reviewed semantics.",
+      "preserved": "Detached inputs before await; same owner/contract/digest; integer used+reserved+requested caps, pending/null and legacy semantics; false reservation/invoice/collection flags. Existing main Stripe transport and redirect:error preserved, not overwritten by Root manual redirect."
+    },
+    {
+      "area": "Monthly statement",
+      "result": "Accepted pure subset",
+      "evidence": "New main module includes identical reviewed types/period validation/bindAgentMonthlyContract. Root database imports/kind/read/save/source aggregation and matching save-only test are omitted; all three pure binding tests retained.",
+      "preserved": "Server-read draft/revision and saved consent expectations; detached statement/envelope/expected before await; base0 and no invoice/collection. No main DB or schema change."
+    },
+    {
+      "area": "eSIM access",
+      "result": "Accepted",
+      "evidence": "Source exactly matches reviewed Root hash. Main existing setup body reproduced exactly after removing additive import/evaluator. Tests retain main historical title and redirect:error expectation; new evaluator tests otherwise identical.",
+      "preserved": "Current owner/device/workspace/agreement/runtime/scope/trust/revocation/epoch/request-budget eligibility. Unknown saved setup/malformed dispatch fails dispatch while authenticated independent retention ACL governs read/export. No replayable dispatch permit or atomic stop/commit authority added."
+    },
+    {
+      "area": "Wallet",
+      "result": "Accepted fixture proposal only",
+      "evidence": "Module and tests exactly match prior reviewed hashes; FinancialProvider/receipt-signature/rock-wallet dependencies byte-identical.",
+      "preserved": "Distinct event/query role keys, canonical provenance, owner/transfer/event bindings, current trust/revision and reversal relation. All outputs keep liveEnabled=false, creditAllowed=false, amountToCreditMinor=0. Existing888c synthetic fee cap reused; general deposits not capped as fees."
+    }
+  ],
+  "baselinePreservation": {
+    "existingBaselineFieldsByteEquivalentAfterParsing": true,
+    "onlyNewImplementationAnnotation": "reviewedServiceContractAdoption",
+    "mainVersion": "2.08/RQ01-RQ50",
+    "rootProvenance": "1.127/RQ01-RQ49",
+    "main140UsdDraftRetained": true,
+    "linux1600TermsRetained": true,
+    "pricePolicyUnresolved": true,
+    "mainLegacy888ToCPolicy": "Historical regression/on-hold policy retained; not activated as production monthly charging. Existing main marketplace policy untouched.",
+    "mainStripeDependencyUnchanged": true,
+    "newProductionPolicySelected": false
+  },
+  "findings": [],
+  "validation": {
+    "focused": {
+      "command": "node --experimental-strip-types --test tests/sky-linux-billing.test.mjs tests/sky-agent-monthly-statement.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs tests/wallet-deposit-provenance.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs tests/wallet-backend.test.mjs tests/earning-bridge.test.mjs",
+      "pass": 113,
+      "fail": 0,
+      "skip": 0
+    },
+    "independentNegativeProbes": {
+      "method": "Previous reviewer scripts copied to temporary files with import paths changed exclusively to integrated main checkout; rerun against adopted dependencies, not old proof reuse.",
+      "billing": "Second-digest input mutation retains original USD/period/digests; unknown job cap rejects; day15 remains preview_only without invoice/collection, not accepted closing-date calculation.",
+      "esim": "9 positive/negative cases rerun: unknown/missing setup schema, missing runtime/billing/terms retain authorized recovery access; foreign/expired authority denies appropriately; read-only ACL does not gain export.",
+      "wallet": "Mid-verification caller mutation does not change captured owner/result; unknown finality and wrong role signature reject; no credit/live enabled."
+    },
+    "noConsumerWiring": "Search of app/lib found no external calls to the six new helper exports; PR runtime edits limited to four helper paths, no API/schema/store additions.",
+    "fullVerify": {
+      "writerProof": {
+        "exitCode": 0,
+        "inputCount": 4404,
+        "changedInputs": [],
+        "elapsedSeconds": 255,
+        "logSha256": "83870916ce68fff476a5de8bbcb02fd0d7b5cb0795acbc90fff4392a105a8012"
+      },
+      "logSha256Matched": true,
+      "independentlyRerun": false,
+      "currentInputReadback": {
+        "inputCount": 4404,
+        "changed": [
+          "README.md",
+          "data/project-status.json",
+          "docs/evidence/development-execution/service-contract-adoption.json",
+          "project.md"
+        ],
+        "baselineExistingAllFieldsEqual": true
+      },
+      "postVerifyDelta": "Exactly README.md, project.md, data/project-status.json and adoption receipt differ from writer preverify hashes; disclosed result annotations only. All implementation/test/dependency inputs unchanged. Metadata/design/baseline reruns are writer evidence, not represented as independent commands."
+    },
+    "logs": {
+      "/private/tmp/game-review-finance-main-inputs.json": "61263997c96e8662dc29ffe65680d3eff50b6dcc0c6141dbfa33abb820559ef8",
+      "/private/tmp/game-review-finance-main-wallet-probe.json": "e13dbe22673dbcfbdbf9fb34fd5878baa6a7f3114787fb5c8ad636d6f9190209",
+      "/private/tmp/game-review-finance-main-billing-probe.mjs": "04568e77c655322abe37751b1a8859cc7b223979389f385fd2c3d39024a80ffd",
+      "/private/tmp/game-review-finance-main-billing-probe.json": "a92d61f8f74bd91cec76f253f7197dda4abdd2bc916a2ecb97224b4b084368da",
+      "/private/tmp/game-review-finance-main-focused.log": "2ed35336b136e5bd613a8d4fcf766459d3e896ac28cbe70674e5792e7b4f041d",
+      "/private/tmp/game-review-finance-main-ci-final.jsonl": "7aa78a154ab8f91e1984763224360bcb7083a56a1a38354746e893ab44cb37c2",
+      "/private/tmp/game-review-finance-main-ci.jsonl": "66b7153f3b5ac9fad0672e1ecb56c8d532ab71920717efdde6b29f1b5e887db4",
+      "/private/tmp/game-review-finance-main-esim-probe.json": "a5719d15241746573d7d73d07baa5cd93eaf72edf3ef3c16b01522df07684517",
+      "/private/tmp/game-review-finance-main-deps.json": "60e7b52ec15c41737dc5c69870e274d0513ebaa3f8528d3dc2502844aa6b9e1f",
+      "/private/tmp/game-review-finance-main-wallet-probe.mjs": "145b04a58b90ca4bf2a92e0e631be136b6b419627cb993eee1e62aa6f909745e",
+      "/private/tmp/game-review-finance-main-esim-probe.mjs": "9e4871a73f1eb82cf52fe7af362b9e01610ed27315485d2431cac5903dd77698"
+    }
+  },
+  "ci": {
+    "head": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+    "snapshotOnly": true,
+    "allChecksSuccessful": false,
+    "checks": [
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/runs/120829972660",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829972660,
+        "name": "CodeQL",
+        "output": {
+          "summary": "[View all branch alerts](/k999ln/rock/security/code-scanning?query=pr%3A187+tool%3ACodeQL+is%3Aopen).",
+          "title": "No new alerts in code changed by this pull request"
+        },
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402750/job/120829603642",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603642,
+        "name": "SPIDER CodeQL (python)",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402750/job/120829603583",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603583,
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402692/job/120829603550",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603550,
+        "name": "SPIDER / secrets",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402675/job/120829603482",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603482,
+        "name": "SPIDER / production web security measurement",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "completed"
+      },
+      {
+        "conclusion": null,
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402674/job/120829603410",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603410,
+        "name": "verify",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "success",
+        "details_url": "https://github.com/k999ln/rock/actions/runs/40079402675/job/120829603281",
+        "head_sha": "99cc4a52a79cd0cd4cb10a9402c2797f61a04cee",
+        "id": 120829603281,
+        "name": "SPIDER / repair regressions",
+        "output": {
+          "summary": null,
+          "title": null
+        },
+        "status": "completed"
+      }
+    ],
+    "initialSnapshot": "Individual CodeQL initially neutral while Python category upload was in_progress; final snapshot CodeQL success. Do not treat initial neutral as clean.",
+    "remaining": "verify job120829603410 run40079402674 in_progress; no failure or success inferred. No further polling in this bounded review."
+  },
+  "openGates": [
+    "Trusted consistent server readCurrent provenance and setup order/contract linkage",
+    "Broker atomic revision/epoch/reservation recheck and job idempotency",
+    "Saved consent digest/CAS; used+holds+requested atomic dispatch cap",
+    "Unique owner/contract/period/currency basic line and usage source dedupe",
+    "Timezone/closing-day/proration: preview computes UTC/full_month only, billingDay is not an accepted closing-date implementation; unknown job cap fails closed",
+    "Wallet authenticated provider query, global event/transfer uniqueness+CAS, durable trust/reversal/reconciliation, live provider acceptance"
+  ],
+  "fullDatabaseUnionAccepted": false,
+  "fullDatabaseUnionRemaining": [
+    "8 migrations",
+    "13 guard differences",
+    "Eve complete source base",
+    "GIT02 revision2 runtime port"
+  ],
+  "unaccepted": [
+    "Authenticated consistent server readCurrent/source provenance and setup order/current-contract binding.",
+    "Atomic accepted-consent digest/revision CAS, used+holds+requested reservation enforcement, Broker epoch/revocation/stop recheck and idempotent execution.",
+    "DB uniqueness for owner/contract/period/currency basic line, usage dedupe and Wallet global event/transfer claims with atomic journals/projections.",
+    "Durable issuer/role-key/revocation/finality provider integration, compensating reconciliation, actual charging/payout/balance updates.",
+    "Exact closing-day/timezone/proration policy, actual issuer/device/provider, general publication or commercial readiness."
+  ],
+  "operations": {
+    "productEdits": 0,
+    "gitMutations": 0,
+    "deviceOperations": 0,
+    "realProviderCalls": 0,
+    "realFunds": 0,
+    "fullLocalVerifyRerun": false,
+    "writes": "This review receipt and game lane reference only; temporary logs/probes outside Git."
+  },
+  "next": "Coordinator may return merge continuation to Git after verify and all required exact-head checks succeed, draft readiness and normal head/base check. Integrated pure subset accepted; no merge or whole-unit acceptance here."
+}

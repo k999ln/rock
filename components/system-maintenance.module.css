@@ -61,3 +61,28 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 @media(max-width:560px){.content{width:calc(100% - 24px);padding-top:22px}.overview h1{font-size:24px}.checks article,.actions>button{min-height:64px}}
 @media(prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* Local aliases preserve the existing main dark palette. */
+.page, .dialog { --os-text: #f4f6f8; --os-bg: #0b0d10; }
+/* Maintenance owns these controls, including the portalled backup dialog. */
+.page :is(button, a, summary):focus-visible,
+.dialog :is(button, input):focus-visible {
+  outline: 3px solid var(--os-text);
+  outline-offset: 3px;
+}
+.page :is(button, a), .dialog button { min-width: 44px; min-height: 44px; }
+.page button[aria-disabled='true'] { cursor: wait; }
+.dialog [data-slot='dialog-close'] { top: 4px; right: 4px; }
+.dialog { min-width: 0; overflow-wrap: anywhere; }
+.dialog [data-slot='dialog-title'] { padding-right: 44px; }
+.passphrase, .passphrase input, .fileButton { min-width: 0; width: 100%; }
+.fileButton { overflow-wrap: anywhere; }
+.overview > div { min-width: 0; }
+.overviewIcon { flex-shrink: 0; }
+.checks small, .actions small, .notice { overflow-wrap: anywhere; }
+.cancelBackup { min-height: 44px; padding: 10px 13px; border: 1px solid var(--os-text); border-radius: 12px; color: var(--os-text); background: var(--os-bg); }
+.diagnosticSummary { display: block; margin-bottom: 16px; color: var(--os-text); font-size: 13px; line-height: 1.6; }
+.notice:empty, .notice[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dialog, .dialog * { animation: none !important; transition: none !important; }
+}

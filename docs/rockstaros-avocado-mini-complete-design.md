@@ -1,3 +1,18 @@
+<a id="reviewed-client-game-subsets"></a>
+## 受入済みclient/Game subsetのmain採用（2026-10-24）
+
+目的・体験: Miniの場所条件を厳密なJSONとして局所診断し、Proの旧browserノートを原文previewして本人が明示exportできるようにする。Web保全dialogはkeyboardで開閉し、処理後に起点へfocusを戻し、失敗時の入力/既存設定を維持する。Smithは保存済みAgentのID/revision/source Tool参照を既存mainリンクで保持。Gameは作者が提示したfile-setと権利/実行先の静的導入診断を返す。
+
+責任・入出力: ROCKはJSON/hash/版・入力分離・有限上限・診断/UIを担当。Miniは眼/target領域、orientation、人数・光源・出口等の独立countsを入力し凍結済みprofile/幾何候補を出す。Proは既存2keyのraw文字列か有限export fileを入力し、旧doneをdraft provenanceとしてpreview、承認後に同一digest付きfileを出す。Webは既存diagnosticと暗号backupの処理状態を表示する。Gameはmanifest/package bytes/current registry grant/target/save metadataを入力し理由付きstatic-local診断を返す。EXTERNAL/JOINTは物理光学・実機/engine/provider、本物のowner/rights serverを受け入れ、OWNERは私有file保存・契約・公開・端末操作を決める。
+
+状態・保存: Miniのsample/ray候補はphysicalVisible/physicalAccepted=falseでstorageも発光制御もない。Pro preview/export/cancelのepochで遅い応答を捨て、原keyを書換/削除せずaccount migrationを主張しない。Webは既存世代fenceをclose/reset/unmountまで保持し、quota失敗は元設定へrollback、同じdialogで明示retryする。背景とmodalの通知を重複させない。Game launch_candidateもisolation/launch/input/saveはunverified、測定値null。署名・法的権利・実行能力・通貨発行・実残高への昇格なし。schema/DB/権限APIを新設しない。
+
+失敗・復旧・互換: 不正schema/未知field/重複path/改ざんhash/別owner/失効grant/上限超過は拒否。Proの長文や旧doneを切捨てず、私有previewはtextContentで表示し入力を実行しない。cancel後のfile読込・hash計算は再表示しない。Webの暗号化/復号が遅れても閉じた後にdownload/設定書換/成功表示をしない。mainのGame保持/履歴/重複命令/overflow guard、既存Pro商品/interest、Web release/Pixel根拠、Smith /chatを保持する。通常revertで戻せ、永続migrationなし。
+
+承認・合格・未決定: 私有file exportはcheckboxとclick、実実行/課金は従来の別承認が必要。対象69 host試験とPro7試験、typecheck、局所lintを確認し、固定候補全verify・同SHA CI・統合差分独立検収へ進む。Pro browser download byte読戻し/file picker/認証server import、Web screen reader/zoom/touch/実更新、Mini光学/低眩光/快適性/独立cutoff、Game実process/資源隔離/launch/save/recoveryは未受入。未決定は各既存unitで実測とowner判断を記録し、fixtureを物理/本番へ転用しない。料金/権限/一般公開保留は維持する。
+
+[採用hash・除外・復旧・検証](evidence/development-execution/client-game-adoption.json)。[95unit引継ぎ](../data/development-source-handoff.json)はmain2.08/RQ01〜50とRoot1.127/RQ01〜49を分け、23chat/42成果/180項目/10算法の過去監査を現在のruntime完成としない。Eve13等は別source保存branchの非実行`.source`として保全し、schema/runtimeの未受入部分を丸ごと移植しない。
+
 ## 製品目的の本人確定（2026-10-21）
 
 Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連部品確保を目的とする。物理機能や地域導入、部品確保を実績として宣言しない。 [体験・責任・保存・失敗/復旧・承認・合格条件](service-design/03-product-profiles.md#mini-pro-purpose)。
