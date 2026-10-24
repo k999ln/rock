@@ -1,5 +1,7 @@
 ## Billing final-send exact4のmain採用候補（2026-10-24 / G04）
 
+互換deltaの局所40pass、固定05312751候補の全verify成功（4458入力不変、Node2749/2747pass/0fail/2skip）。draft PR196へ保存。最終metadata commitのCIと新4hash独立再検収は未完了、mergeなし。
+
 PR195通常merge main7be3d6aaで旧dab同4基底不変を確認、原本Game/Astra限定pass4hashを保持し、既存recurring例外契約の最小修正を同4pathへ追加。局所40pass、新hash独立再検収待ち、独立23uniqueと旧2反例検出は原本hashで限定継承。parentstop/price revoke before finalclaimはfetch0、unknown/claim応答喪失はhold保持/再送0。新migration/価格/Walletalgebra/888c変更なし、common authority/issuer epoch未接続。本番D1/実課金/全OS/一般公開未受入。GIT08は文書/branch/main保存完了・配備なしを95overlayへ別記録。次は設計同期→固定全verify1回（同headCI可）→別PR/CI→独立metadata採用review。原本/秘密/path/logをコピーせず、RootHEAD/index/journal保持。根拠 docs/evidence/development-execution/billing-final-send-main-adoption.json。
 
 ## GIT08: 95再開台帳のmetadata-only同期候補（2026-10-24）

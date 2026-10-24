@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.billing-final-send.main-adoption/1",
   "recordedAt": "2026-10-24T15:41:01.510072+00:00",
-  "status": "recurring_contract_delta_local40_pass_independent_delta_review_and_verify_pending",
+  "status": "delta_local40_and_frozen_full_verify_pass_draft_PR196_independent_review_and_final_head_CI_pending",
   "baseMain": "7be3d6aa35d8df1329571bbe92971f805694b581",
   "sourceBase": "dab7b0759930dfbff55fad9322acf8f4c154da7e",
   "baseFourUnchanged": true,
@@ -24,7 +24,19 @@
     "typecheck": "passed",
     "lintProduct": "passed",
     "independent23ScenarioEvidence": "Original four hashes only; delta requires independent review.",
-    "fullVerify": "Original candidate failed one semantic recurring contract test; delta full verify pending. No failure promoted to success."
+    "fullVerify": {
+      "status": "passed",
+      "candidateHead": "05312751cbbfa0ac890417f6a9e6fa32a0cdac34",
+      "inputs": 4458,
+      "changedInputs": 0,
+      "elapsedSeconds": 95,
+      "logSha256": "ac5c9b99d766e1a3c787347d19ce6c884d8af7f23161ecf16ddc534c1fc06188",
+      "nodeTests": 2749,
+      "passed": 2747,
+      "failed": 0,
+      "skipped": 2,
+      "finalMetadataCommit": "Full verify proof is for candidateHead before this metadata-only receipt; final-head CI remains required."
+    }
   },
   "contract": "Final INSERT SELECT is the local send authorization linearization point. Current owner/input/sending/parent/rate/time/pool/opt-in recurring predicates plus execution_id uniqueness are atomic.",
   "unknownOutcome": "Failed/rejected/unknown claim does no fetch and conserves original hold; immutable committed claim prevents automatic resend even after lost acknowledgment or unknown-marker persistence failure.",
@@ -90,5 +102,6 @@
       "logSha256": "115018b3265a337349b991b27839258c4d6220a946a152c2769cb813b42c5fb4"
     },
     "independentReview": "pending_on_new_four_hashes"
-  }
+  },
+  "pr": "https://github.com/k999ln/rock/pull/196"
 }

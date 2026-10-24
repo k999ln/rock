@@ -9699,6 +9699,8 @@
     "realProviderBillingAccepted": false,
     "originalReviewedHashesRecorded": true,
     "deltaIndependentReviewPending": true,
-    "fullVerify": "original_semantic_failure_recorded_delta_pending"
+    "fullVerify": "passed_on_05312751_frozen_inputs4458_unchanged0_tests2749_pass2747_fail0_skip2",
+    "pr": "https://github.com/k999ln/rock/pull/196",
+    "finalHeadCIPending": true
   }
 }
