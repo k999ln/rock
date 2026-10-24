@@ -1,3 +1,7 @@
+## client/Game採用とdeferred source保全（G04 / ROCK）
+
+[統合候補](../evidence/development-execution/client-game-adoption.json)と[main対応95unit引継ぎ](../../data/development-source-handoff.json)から再開する。PR186/187のmain統合、client/Game採用候補、Eve/過去資料source branch保存を区別する。Rootの23chat/42成果/180coverage/95unit資料は非実行`.source`保存と由来付き要約で保持し、旧mainSHA/配備/試験を現在mainの成功にしない。残全unionは別gate、OS/cache-onlyは唯一operatorのbatch中で触らない。
+
 ## 受入済みlane subsetの順次保存（G04 / ROCK）
 
 PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採用証拠と有限計画](../evidence/development-execution/service-contract-adoption.json)へ。helper受入、GitHub保存、main統合、同SHA CI、公開を別記録とする。次はMini/Pro/Webの検収済み限定差分、Smith test、Eve保存/Game検収を各小PRで再照合し、未完の全DB unionを独立成果保存の一律停止理由にしない。

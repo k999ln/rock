@@ -1,0 +1,138 @@
+{
+  "schema": "rockstaros.development-execution.mini-pro-web-review/1",
+  "recordedAt": "2026-10-24T06:59:01.135155+00:00",
+  "role": "independent reviewer, not implementer/integrator of these batches",
+  "requestedModel": "gpt-6.1-sol",
+  "requestedEffort": "medium",
+  "actualModelIndependentlyConfirmed": false,
+  "verdict": "pass_scoped_host_metadata_file_handoff_and_maintenance_ui_changes",
+  "blockingFindings": [],
+  "unitWholeCompletion": false,
+  "inputs": {
+    "mini-01": {
+      "evidenceSha256": "7d92408beaeb9107dff05cf0154e165f41719ed92acfac31de65c0ac20930df5",
+      "expectedSourceHashes": {
+        "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+        "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+        "contracts/avocado-mini-spatial-runtime.json": "8659b7a4afdb68e3a0abcc65b0419a7849b288c208e9dfc202ec0c42f3e1fbbf",
+        "docs/avocado-mini-r5/factory-development/reference-reels.json": "f4b73bd3b0a1bdd1e52557ee99decc639e2e70a3391c9a4ad22d98d6f165cc5d",
+        "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+        "docs/avocado-mini-r5/factory-development/calculate-six-exits.mjs": "7c5b83e1ffe054ac8459d0fb2db8e44c1634eafd7ae8f8ec9502cc5050285ab1",
+        "docs/avocado-mini-r5/spatial-computer-use-design.md": "b576c480cdfa681f3ed276eeb364f4bbe3b2a3ee8ac0ef5eb57e74663b410f4c"
+      },
+      "beforeMismatch": [],
+      "afterMismatch": []
+    },
+    "pro-01": {
+      "evidenceSha256": "ffd193b64b62ff6b9d8f1a603dde78cb23d987694494bb6e6657a90473dc342e",
+      "expectedSourceHashes": {
+        "sites/avocado-mini/src/pro-local-import.mjs": "09534b489f08046a8a81de750a6fc218a76f4399d02634d9149be893ec7aeca0",
+        "sites/avocado-mini/src/pro-os.js": "f256b943d28cc908751df54645ce291ced7810ec9378b64410fce08f17c31c5d",
+        "sites/avocado-mini/src/pages/pro/index.astro": "ea9892504ed794fc6812a0b9ef8a58be57ee647c7c4ebc140a4674cf619308b0",
+        "sites/avocado-mini/tests/pro-local-import.test.mjs": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410"
+      },
+      "beforeMismatch": [],
+      "afterMismatch": []
+    },
+    "webops-01": {
+      "evidenceSha256": "c48a51a335e1cc891d20e39ed0804bf017376ec3cb5cfa5261f5877aff03a746",
+      "expectedSourceHashes": {
+        "components/system-maintenance.tsx": "db9595fa9ce0830da7c94eea707ab10ccfc6e3bf1668e2ce044bd91f393b0803",
+        "components/system-maintenance.module.css": "822d6f088f4b83cb1060549a412b92bc59dee18d8d99309159b9c1d055b5934a",
+        "tests/system-maintenance-accessibility.test.mjs": "d7df52a02889060184b32716301dbf1df6164589e7ab84a6b4de8014f337e911"
+      },
+      "beforeMismatch": [],
+      "afterMismatch": []
+    }
+  },
+  "scopeWritesReviewed": {
+    "MINI-01": "2 product/test paths + lane/evidence (4 total); 5 baseline references rehashed unchanged",
+    "PRO-01": "4 product/test paths + lane/evidence (6 total)",
+    "WEBOPS-01": "3 product/test paths + lane/evidence (5 total)"
+  },
+  "reproduction": [
+    {
+      "unit": "MINI-01",
+      "command": "node --test tests/avocado-mini-place-profile.test.mjs",
+      "exitCode": 0,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/private/tmp/mini-independent-review.log",
+      "logSha256": "57043b87df66a4b48acddf06eb1324f77dc4f7f0445025d7e807dae7dc3d24bf"
+    },
+    {
+      "unit": "PRO-01",
+      "command": "node --test sites/avocado-mini/tests/pro-local-import.test.mjs sites/avocado-mini/tests/pro-interest.test.mjs sites/avocado-mini/tests/astro-build.test.mjs",
+      "exitCode": 0,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/private/tmp/pro-independent-review.log",
+      "limit": "Astro tests inspect existing dist; no rebuild repeated.",
+      "logSha256": "399df3b1995dcc517999b7ce32f78012bb54562c1da6be73f3ed5e823f2dddaa"
+    },
+    {
+      "unit": "WEBOPS-01",
+      "command": "node --experimental-strip-types --test tests/system-maintenance-accessibility.test.mjs tests/system-backup.test.mjs tests/pwa-offline.test.mjs tests/service-worker-update.test.mjs tests/web-route-style-contract.test.mjs",
+      "exitCode": 0,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/private/tmp/webops-independent-review.log",
+      "logSha256": "683e60e0d0588074f768d04f3dc217db243a04b1df8144aa590b33e98489adff"
+    },
+    {
+      "unit": "PRO-01",
+      "command": "Reviewer inline Node VM executes existing migration event section with synthetic document/deferred export/file read; actual parser/export module imported.",
+      "exitCode": 0,
+      "assertions": "Unicode decomposed/NFC hashes distinct, CRLF/whitespace/astral exact raw originals, full 160-code-unit board and legacyChecked/draft retained; prepare-cancel and file-read-cancel races cannot repopulate preview or re-enable download; unchecked consent blocks download. No storage write/remove/network/download invoked.",
+      "log": "/private/tmp/pro-independent-review-extra.log",
+      "logSha256": "8ac3ec12a176b3d1aa99a1137208d6c36166c506b16f7b4e57484723b4cbe606"
+    },
+    {
+      "command": "node_modules/.bin/oxlint systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs tests/avocado-mini-place-profile.test.mjs components/system-maintenance.tsx tests/system-maintenance-accessibility.test.mjs",
+      "exitCode": 0
+    }
+  ],
+  "acceptedSubscopes": {
+    "MINI-01": "Pure local strict JSON geometry/profile validator: four distinct counts, caller-held revision and digest/previous chain, requirements cannot shrink/change across revision, input detached/frozen, original preserved on rejection. Unknown fields/status/authority rejected; unknown/unlisted observation/input unavailable; sample success leaves physical/comfort/whole-range/grant false. No hardware or optical control added.",
+    "PRO-01": "Explicit private file preview/export only. Exact raw old key strings and full 160-code-unit board survive; old done is provenance/draft only. Strict version/hash/operation/unknown owner field checks, explicit export checkbox, epoch cancellation. No normalize/truncation/write/remove/network in new migration path; existing legacy board/editor truncation and explicit erase controls are pre-existing, not migration actions. Account migration visibly not connected; digest/operation ID grants no server-owner authority.",
+    "WEBOPS-01": "Scoped UI source and host regression: atomic/busy aggregate output, guarded aria-disabled diagnosis retains button, explicit trigger finalFocus through shared Dialog, close/cancel controls, accessible file label and passphrase help, modal-only error status, catch preserves input/modal, narrow reflow/focus targets. Loaded input is React state without network-driven reset. No shared dialog primitive/auth/storage authority change."
+  },
+  "uiEvidence": {
+    "method": "Reviewed supplied PNGs and code; no private/live browser action repeated. Original keyboard/focus/disconnect metrics remain implementer observations, not independently replayed interaction.",
+    "proScreenshot": {
+      "path": "/private/tmp/pro-01-preview.png",
+      "sha256": "5fb6a5277ae8c78d25f81c9ee9542f2d6ecbb1585d05bdd491de4b7fda8e3e6d",
+      "visible": "Original notes preview, legacy draft provenance and account migration not connected warning/consent controls."
+    },
+    "webScreenshots": [
+      {
+        "path": "/private/tmp/webops-01-final-319px.png",
+        "sha256": "e99c2b237336304a74ade4d6037ebc22239c0692d5c289020ec3ca17c55b8188",
+        "matches": true
+      },
+      {
+        "path": "/private/tmp/webops-01-disconnected.png",
+        "sha256": "9e786161aeba19f1a5e3b8e1a4f5a78124a448f89238827462969fe2c7e103ee",
+        "matches": true
+      }
+    ],
+    "visible": "319px dialog fits with focus ring, labelled input/save/cancel/close; disconnected screenshot retains masked input and modal validation error. Screenshot alone does not prove keyboard sequence or connection state."
+  },
+  "riskReview": {
+    "astraRequiredForThisBatch": false,
+    "reason": "Mini metadata rejects qualification; Pro file-only handoff; maintenance scoped UI. No new physical safety control, key/auth authority, server schema or stop invariant introduced. Future real controls/shared contracts require prescribed review."
+  },
+  "remaining": [
+    "MINI: shared runtime/store/Broker integration, radiometry/whole-domain/bench/real optics/glare/comfort/independent cutoff/PCB/manufacturing remain unaccepted.",
+    "PRO: actual exported download bytes/file-picker browser flow, authenticated server owner/CAS/idempotent mapping/recovery and full same-account readback remain pending; local VM races do not prove browser stress. No real Pro/native acceptance.",
+    "WEBOPS: screen reader, actual zoom/touch/reduced-motion preference/backdrop, slow profiles and other major flows remain unaccepted. Disconnect evidence predates final minor diagnosis/name changes as disclosed.",
+    "Full verify/build not repeated; immutable integrated candidate, GitHub/main/deployment/Provider/physical acceptance remain integration gates."
+  ],
+  "reviewWrites": [
+    "docs/evidence/development-execution/mini-pro-web-review.json",
+    "data/development-lanes/os-pixel.json review reference only"
+  ]
+}

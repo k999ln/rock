@@ -1,3 +1,7 @@
+## Game静的導入診断とclient接続のmain採用
+
+[目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・合格・未決定](rockstaros-complete-design.md#reviewed-client-game-subsets)に従う。追加catalog Tool、汎用shell、実engine adapter、金融exchangeは有効にしない。Game診断の候補を権限/隔離/起動/保存成功へ換算せず、Smith参照は既存main /chatを保持する。
+
 ## Service契約検証とWallet proposalの接続境界（2026-10-24）
 
 既存Sky/OS契約のpure helperを採用する。catalog Toolや新しい実行APIは追加しない。[目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・合格・未決定](rockstaros-complete-design.md#reviewed-service-contracts)に従う。canDispatch/defined/confirmed_candidateをTool成功や記帳許可に昇格させず、同意・上限・Broker atomic recheck・実provider/実機を別gateにする。料金版・main140USD案・Root16USD既存terms・888c既存fee policyの由来を保持し、新課金を選択しない。

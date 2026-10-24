@@ -1,0 +1,126 @@
+{
+  "schema": "rockstaros.development-execution.game-01-review/1",
+  "recordedAt": "2026-10-24T08:55:08.834978+00:00",
+  "unit": "GAME-01",
+  "reviewerLane": "esim",
+  "independence": "eSIM reviewer did not author GAME-01 and did not act as Root/integration acceptance writer. Product sources unchanged by review.",
+  "routing": {
+    "requestedModel": "gpt-6.1-sol",
+    "requestedEffort": "medium",
+    "appliedModel": null,
+    "appliedModelConfirmed": false,
+    "note": "Dispatch request only; runtime metadata not introspectable. No model-switch claim.",
+    "attemptCount": 1
+  },
+  "status": "accepted_static_intake_scope_runtime_unaccepted",
+  "verdictJa": "固定hashの静的intake候補範囲は合格。修正必須指摘なし。実行・隔離・権利真正性・本番release・交換の受入ではない。",
+  "target": {
+    "receipt": "docs/evidence/development-execution/game-01.json",
+    "receiptSha256": "b76619e3a7999b37504343815134fe0177ac13ec56c3ca2c530433c0acf154d9",
+    "candidateHashes": {
+      "lib/game-intake.ts": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58",
+      "tests/game-intake.test.mjs": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c"
+    },
+    "preservedInputs": [
+      {
+        "path": "lib/game-sandbox.ts",
+        "sha256": "fa384195168005521da6a4d01f3cb4f1614836af7923b720789f7f33c1263dba",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "lib/game-launch.ts",
+        "sha256": "a06127115c344412e1fe25157ede7aa0c6b1d26fa437e540013c3a9e5eebb64b",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "tests/game-sandbox.test.mjs",
+        "sha256": "cc7f709d213c4aaf8f788239d19e5e45d224f4a3a624fbb6fa794aa0a47643d6",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "tests/game-launch.test.mjs",
+        "sha256": "1809ed7192b2cf7c45d756d0b461c099d3b95a4ed4df04b6fcc08825da4b5120",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "systems/rock-star-os/examples/game/README.md",
+        "sha256": "b08449627ce736d5fc2252cc35dc2444f0bec09ba27f1b435ed77daad45b82e1",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "systems/rock-star-os/tests/test_game_sdk_examples.py",
+        "sha256": "7326156c2081c3fdc188b3706777946a42031e7375f06da2b704f8b9c7b17a40",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "sites/avocado-mini/creator-kit/game.js",
+        "sha256": "6ad92a0a32370b1f9cd1b667aa92ce8e4869ef76b74b4256729c793d06445233",
+        "matchesAuthorReceiptAndBootstrap": true
+      },
+      {
+        "path": "docs/game-creation-and-intake-research.md",
+        "sha256": "1460ffd9d6814e43b497ac8e603581890d03a36c985d68eb7250fd846105b88a",
+        "matchesAuthorReceiptAndBootstrap": true
+      }
+    ]
+  },
+  "findings": [],
+  "verifiedBoundaries": [
+    "Manifest uses strict field sets/schema/sourceKind/file-set, positive safe integers, bounded arrays and known capability declarations. Unknown metadata cannot add shell/root/network/Wallet powers.",
+    "Host registry grant must uniquely bind grantId/owner/author/game/revision/package/license/exact-expiry, current expiry and revoked===false; all assets use bound license. This verifies trusted-host correspondence, not authenticity of a self-supplied registry or legal ownership.",
+    "Locally supplied package bytes hash and observed file count/bytes match declarations and ceilings. Every asset binds exact case path/bytes/hash. Canonical sorted file index recomputed from assets must match granted package digest, rejecting substituted content even if its asset hash updated.",
+    "Path grammar rejects traversal/absolute/URL/drive/backslash/encoding/shell strings; duplicate case-folded asset IDs/paths and observed file paths refused. Integer overflow refused; expanded sum safe-integer checked.",
+    "Engine/runtime exact version pair must match one of two fixed diagnostic adapters; unknown versions yield unsupported, not a runnable generic fallback. Host target runtime/capability and resource ceilings checked.",
+    "Particle save format/version/rule reused from existing sandbox; provided save metadata binds owner/game/revision/format/version/rule. No save migration, arbitrary save loading, engine launch or file write in intake.",
+    "Diagnostic launch_candidate remains static-local with isolation/launch/input/save all unverified and measured adoption timings null. No capability/approval is minted. Existing sandbox/launch/sample paths remain byte-identical."
+  ],
+  "validation": {
+    "existingSuite": {
+      "command": "node --experimental-strip-types --test tests/game-intake.test.mjs tests/game-sandbox.test.mjs tests/game-launch.test.mjs",
+      "exitCode": 0,
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Independent rerun. Includes existing synthetic sandbox math/save and process-restart fixture; not a deployed engine isolation or real game acceptance."
+    },
+    "additionalProbes": {
+      "command": "node --experimental-strip-types --input-type=module (inline read-only fixture-reuse probe)",
+      "fixtureRecipe": "Read fixed tests/game-intake.test.mjs prefix before const diagnose; replace relative lib imports with absolute file URLs and import.meta.url with original test URL; export fixture via data URL. Import fixed diagnoseGameIntake. Assert status, input immutability and all four checks unverified per case. No persistent test/source modifications.",
+      "passed": 15,
+      "failed": 0,
+      "baseline": "launch_candidate",
+      "cases": {
+        "unknown engine": "unsupported",
+        "revoked string false": "rights_blocked",
+        "registry author mismatch": "rights_blocked",
+        "noninteger grant expiry": "rights_blocked",
+        "unknown particle save format": "unsupported",
+        "encoded traversal asset": "invalid_manifest",
+        "case-folded duplicate asset ID": "invalid_manifest",
+        "MAX_SAFE_INTEGER+1 for each of seven resource keys": "invalid_manifest (7 cases)"
+      },
+      "networkTripwire": "Temporarily replace global fetch with throwing/counting function during probes; calls=0; restore afterwards. Static source also has no network/process/write/engine execution APIs."
+    },
+    "sourceStableBeforeAfter": true,
+    "preservedHashCount": 8,
+    "fullVerify": "not run; fixed integration candidate remains parent responsibility"
+  },
+  "operations": {
+    "productEdits": false,
+    "globalEdits": false,
+    "gitMutation": false,
+    "deviceOperations": false,
+    "providerOperations": false,
+    "engineLaunchByIntake": 0,
+    "archiveExtraction": 0,
+    "networkCallsDuringAdditionalProbes": 0,
+    "saveWritesByIntake": 0
+  },
+  "remainingConditions": [
+    "Real authenticated consumer must resolve current registry grant and target revision; no browser/game-provided context as authority. Diagnosis never proves legal permission or verifies publisher signature.",
+    "Consumer must rebind same manifest/package/capability approval and current rights at handoff/execution; revocation or package change after diagnosis cannot reuse stale candidate boolean.",
+    "Actual OS process/UID/network/resource isolation, launch/input/save/play/export/restart/rollback and real engine installation remain unaccepted. Runtime resource ceilings are declarations checked statically here, not CPU/RAM/time enforcement.",
+    "No archive extraction, general commercial game format support, physical device, production release, paid billing, Wallet mint or external game exchange acceptance.",
+    "Single-writer design/index/progress aggregation, fixed-candidate full verify and Git/main acceptance remain separate; GAME-02 requires next exact assignment."
+  ]
+}

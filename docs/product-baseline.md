@@ -1,3 +1,7 @@
+## 2026-10-24 — client/Game限定採用とsource引継ぎ（方針変更なし）
+
+main2.08/RQ01〜RQ50、AMC/material/compose/gridと既存権限・料金を保持したまま、受入済みMini/Pro/Web/Smith/Gameの必要subsetを採用する。光学・実機・実engine・実課金・一般公開の完成ではない。[詳細境界](rockstaros-complete-design.md#reviewed-client-game-subsets)。Eve13sourceとRoot23chat/42成果/180coverage/95unit資料は別source branchで保全し、[mainと整合した引継ぎ](../data/development-source-handoff.json)から再照合する。過去snapshot mainSHAを最新と扱わない。
+
 ## 2026-10-24 — 受入済みhelperのmain採用範囲（製品方針変更なし）
 
 既存main v2.08/RQ01〜RQ50とRoot v1.127/RQ01〜RQ49の由来を区別したまま、Billing/eSIM/Walletの受入済みpure検証subsetを採用する。料金/同意/権限を変更せず、140USD案と既存Linux16USD termsを自動統一しない。API/store/Broker atomic CAS・実provider・実課金・実機・一般公開は未受入。[採用hash・検証層・残件](evidence/development-execution/service-contract-adoption.json)、[詳細契約](rockstaros-complete-design.md#reviewed-service-contracts)。

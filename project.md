@@ -1,3 +1,9 @@
+## PR187統合後のclient/Game subset採用とsource保全（2026-10-24 / G04）
+
+main e4e64377起点でMini3（局所profile/固定幾何依存/試験）、Pro4のprivate export subset、Web3のaccessibility subset、main互換Smith saved-reference試験、Game2のstatic intakeを採用。Web releaseとbackup世代fence、main Game保護・Pro商品/interest・Smith /chat、AMC/material/compose/grid/RQ50を保持。対象69+Pro7、typecheck/lint成功。固定4420入力不変で全verify exit0、Node2640=2638pass/既存platform2skip、asset欠損0。Pro localhost preview/同意なしexport拒否/cancelを確認。source不変のMini追加独立検収記録（11既存＋173負例の実行報告）を追補。別PR/同SHA CI/統合差分検収は次gate。
+
+Eve13とRoot引継ぎ49file計3,691,158bytesを別source branch codex/source-preservation-20261024 / f495bfc8721d40ab06275c1f50c9f9a98157d2baへ通常push、remote一致・全blob byte読戻し一致。秘密/原稿/52外部artifact/active OS/cache-onlyコードを除外、Root HEAD/indexを使わず保存。23chat/42成果/180項目/10算法/95unitをmainbaseline2.08対Root1.127の由来付き引継ぎへ整理。source保存はmain機能採用・runtime/physical/公開成功と別。根拠: docs/evidence/development-execution/client-game-adoption.json、data/development-source-handoff.json。
+
 ## 受入済みBilling/eSIM/Walletのpure subsetをmain起点で採用（2026-10-24 / G04・BIL02）
 
 PR186通常merge後のmain23ad170cから新branchへ分離。受入済み8pathを意味比較し、既存transport/料金/redirect設定を保持、月次statementはpure bindingのみ採用しDB保存/集計と未移植依存を除外。113対象試験、typecheck、局所lint成功。main2.08/RQ50とRoot1.127/RQ49、140USD案とLinux16USD既存termsの版/由来を保持し、新課金・schema追加・公開なし。固定4404入力不変で全verify exit0、Node2612=2610pass/既存platform2skip、asset欠損0、仕事API1678assertions成功。PR/同一SHA CI/統合差分検収は次gate。Broker atomic CASやissuer/provider、本番は未受入。次はMini/Pro/Web→Smith test→Eve保存/Game検収を各小batchとし、全union未完を一律Git保存停止にしない。根拠: docs/evidence/development-execution/service-contract-adoption.json。

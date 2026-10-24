@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -89,12 +90,14 @@ export default function SystemMaintenance() {
   const [checks, setChecks] = useState(initialChecks);
   const [running, setRunning] = useState(true);
   const [message, setMessage] = useState('');
+  const [diagnosticSummary, setDiagnosticSummary] = useState('');
   const [backupMode, setBackupMode] = useState<BackupMode | null>(null);
   const [passphrase, setPassphrase] = useState('');
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [backupBusy, setBackupBusy] = useState(false);
   const [waitingUpdate, setWaitingUpdate] = useState<ServiceWorker | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const backupTrigger = useRef<HTMLButtonElement | null>(null);
   const backupGeneration = useRef(0);
   useEffect(() => () => { backupGeneration.current++; }, []);
 
@@ -207,6 +210,7 @@ export default function SystemMaintenance() {
       state: deviceToken() ? 'ready' : 'attention',
     });
     setChecks(next);
+    setDiagnosticSummary(`診断完了。${next.filter(({ state }) => state === 'ready').length} / ${next.length} 項目が利用可能。${next.filter(({ state }) => state === 'blocked').length} 項目は利用できません。詳細はシステム診断を確認してください。`);
     setRunning(false);
   }, []);
 
@@ -362,7 +366,8 @@ export default function SystemMaintenance() {
     setBackupMode(null);
   }
 
-  function openBackup(mode: BackupMode) {
+  function openBackup(mode: BackupMode, trigger: HTMLButtonElement) {
+    backupTrigger.current = trigger;
     backupGeneration.current++;
     setBackupBusy(false);
     setBackupMode(mode);
@@ -431,7 +436,7 @@ export default function SystemMaintenance() {
           <Link href="/settings" aria-label="設定へ戻る"><ArrowLeft size={19} /></Link>
         </nav>
         <strong>システム</strong>
-        <button onClick={() => void runDiagnostics()} disabled={running} aria-label="再診断">
+        <button onClick={() => { if (!running) void runDiagnostics(); }} aria-disabled={running} aria-controls="maintenance-checks" aria-label="再診断">
           <RefreshCw size={18} className={running ? styles.spin : undefined} />
         </button>
       </header>
@@ -445,6 +450,10 @@ export default function SystemMaintenance() {
             <p>{readyCount} / {checks.length} 項目が利用可能。この端末の実測結果です。</p>
           </div>
         </section>
+
+        <output className={styles.diagnosticSummary} aria-atomic="true" aria-busy={running}>
+          {running ? '診断中です。' : diagnosticSummary}
+        </output>
 
         <section className={styles.section}>
           <h2>日常の運用</h2>
@@ -464,7 +473,7 @@ export default function SystemMaintenance() {
           </div>
         </section>
 
-        <section className={styles.checks} aria-label="システム診断">
+        <section id="maintenance-checks" className={styles.checks} aria-label="システム診断">
           {checks.map((check) => (
             <article key={check.id}>
               <StatusIcon state={check.state} />
@@ -476,11 +485,11 @@ export default function SystemMaintenance() {
         <section className={styles.section}>
           <h2>保全と復旧</h2>
           <div className={styles.actions}>
-            <button onClick={() => openBackup('create')}>
+            <button onClick={(event) => openBackup('create', event.currentTarget)}>
               <span className={styles.green}><Download /></span>
               <span><strong>暗号化バックアップ</strong><small>端末内の外観・設定を安全に保存</small></span>
             </button>
-            <button onClick={() => openBackup('restore')}>
+            <button onClick={(event) => openBackup('restore', event.currentTarget)}>
               <span className={styles.blue}><ArchiveRestore /></span>
               <span><strong>バックアップから復元</strong><small>改ざん検知後に端末設定を戻す</small></span>
             </button>
@@ -515,7 +524,7 @@ export default function SystemMaintenance() {
           </div>
         </section>
 
-        {message && <output className={styles.notice}>{message}</output>}
+        <output className={styles.notice} hidden={backupMode !== null || !message} aria-atomic="true">{message}</output>
 
         <details className={styles.release}>
           <summary>
@@ -547,7 +556,7 @@ export default function SystemMaintenance() {
       </div>
 
       <Dialog open={backupMode !== null} onOpenChange={(open) => !open && closeBackup()}>
-        <DialogContent className={styles.dialog}>
+        <DialogContent className={styles.dialog} finalFocus={backupTrigger}>
           <DialogTitle>{backupMode === 'create' ? '暗号化バックアップ' : '端末設定を復元'}</DialogTitle>
           <DialogDescription>
             {backupMode === 'create'
@@ -564,7 +573,7 @@ export default function SystemMaintenance() {
                 accept=".rockstarbackup,application/json"
                 onChange={(event) => setBackupFile(event.target.files?.[0] || null)}
               />
-              <button className={styles.fileButton} disabled={backupBusy} onClick={() => fileInput.current?.click()}>
+              <button className={styles.fileButton} disabled={backupBusy} aria-label={backupFile ? `復元するバックアップファイルを選ぶ：${backupFile.name}` : '復元するバックアップファイルを選ぶ'} onClick={() => fileInput.current?.click()}>
                 <Upload size={18} />{backupFile?.name || 'バックアップを選ぶ'}
               </button>
             </>
@@ -577,11 +586,13 @@ export default function SystemMaintenance() {
               value={passphrase}
               onChange={(event) => setPassphrase(event.target.value)}
               autoComplete="new-password"
+              aria-describedby="backup-passphrase-help"
               placeholder="10文字以上"
             />
           </label>
+          <p id="backup-passphrase-help" className={styles.dialogNote}>10文字以上のパスフレーズを入力してください。復元する場合は作成時と同じものを使います。</p>
           <p className={styles.dialogNote}>PC接続トークン、ログイン情報、Wallet資金、サーバー上の実行履歴は書き出しません。</p>
-          {message && <output role="alert" className={styles.notice}>{message}</output>}
+          <output className={styles.notice} aria-atomic="true">{message}</output>
           <button
             className={styles.primary}
             disabled={backupBusy}
@@ -590,6 +601,7 @@ export default function SystemMaintenance() {
             {backupBusy && <LoaderCircle className={styles.spin} size={17} />}
             {backupMode === 'create' ? '暗号化して保存' : '確認して復元'}
           </button>
+          <DialogClose className={styles.cancelBackup}>キャンセル</DialogClose>
         </DialogContent>
       </Dialog>
     </main>

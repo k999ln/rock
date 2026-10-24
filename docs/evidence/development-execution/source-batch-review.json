@@ -1,0 +1,128 @@
+{
+  "schema": "rockstaros.development-execution.source-batch-review/1",
+  "recordedAt": "2026-10-24T06:08:36.662705+00:00",
+  "role": "independent reviewer; not implementer/integrator for reviewed batches",
+  "requestedRouting": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "actualRuntimeConfigurationIndependentlyConfirmed": false
+  },
+  "reviewedEvidenceSha256": {
+    "docs/evidence/development-execution/git-01.json": "5ceb4731a23a9b490c406ebd04beabe9fc3ae2c4b69f04df2ec07e7872f55dff",
+    "docs/evidence/development-execution/eve-01.json": "ecd691e6cca2945bf2bf351d4180b9c0aea2fb97f774cc503a34ffc5e9b30703",
+    "docs/evidence/development-execution/smith-01.json": "33b9f8dbd2321f233c7ba0284df8d27f68f240303d7d2cad6b631136189b363e"
+  },
+  "acceptanceAuthority": "docs/prompts/rockstaros-remaining-work-development.md#GIT-01 / SMITH-01 / EVE-01",
+  "verdict": "pass_for_limited_source_preservation_and_host_regression_only",
+  "blockingFindings": [],
+  "unitCompletionClaimed": false,
+  "checks": {
+    "git": {
+      "manifestHashMatched": true,
+      "paths": 1421,
+      "classifications": {
+        "保留": 1367,
+        "外部artifact": 52,
+        "既統合": 2
+      },
+      "payloadPairsRehashed": 1738,
+      "payloadMismatches": [],
+      "deletionPreimagesAndTombstones": 7,
+      "heldUncopiedCount": 1,
+      "bundleSha256Matched": 3,
+      "currentTrackedSnapshotDrift": [
+        "data/development-lanes/eve.json",
+        "data/development-lanes/git.json",
+        "data/development-lanes/smith.json",
+        "data/development-unit-progress.json",
+        "data/rockstaros-development-chats.json",
+        "tests/os-shell-navigation.test.mjs"
+      ],
+      "restoredPayloadsRehashed": 1738,
+      "restoreMismatches": [],
+      "restoredPaths": 1420,
+      "externalArtifactPayloads": 52,
+      "bundleTreeChecks": [
+        {
+          "commit": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+          "tree": "df02886c39adb496368bab7f803cef0e22d574d1",
+          "matches": true
+        },
+        {
+          "commit": "3f6075f7190be778f0a8b4d243a087d6f99081b9",
+          "tree": "620ad471c915e76174bd6a6498237f9c835149e5",
+          "matches": true
+        },
+        {
+          "commit": "ac24bc0d20dc41804cfc45c8663d4769af6bfc67",
+          "tree": "773f613e1a80219cce470c9fa78b86e3efb8f6f0",
+          "matches": true
+        }
+      ]
+    },
+    "eve": {
+      "manifestHashMatched": true,
+      "files": 13,
+      "bytes": 87381,
+      "backupMismatches": [],
+      "currentSourceDrift": []
+    },
+    "smith": {
+      "candidateFiles": 166,
+      "currentSourceHashMismatches": [],
+      "afterTestHashMismatches": []
+    }
+  },
+  "bundleRestorationFsck": [
+    {
+      "repository": "root-inputs.git",
+      "fsckExitCode": 0,
+      "outputLines": 1
+    },
+    {
+      "repository": "eve-v115-agent-integration.git",
+      "fsckExitCode": 0,
+      "outputLines": 0
+    },
+    {
+      "repository": "eve-v115-live-source.git",
+      "fsckExitCode": 0,
+      "outputLines": 0
+    }
+  ],
+  "smithReproduction": {
+    "command": "node --experimental-strip-types --test --test-concurrency=2 tests/os-shell-navigation.test.mjs tests/home-sky-panel.test.mjs tests/company-brand.test.mjs tests/sky-agent-library.test.mjs tests/zema-chat-session.test.mjs tests/eve-work-history-projection.test.mjs",
+    "exitCode": 0,
+    "passed": 27,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 874.677042,
+    "log": "/private/tmp/source-batch-smith-review.log",
+    "logSha256": "eb53a549cc6954b74cc976b1510dc0fd53173d1d9c3d92cdacfc73e283456b2c",
+    "lintCommand": "node_modules/.bin/oxlint tests/os-shell-navigation.test.mjs",
+    "lintExitCode": 0,
+    "testChangeReview": "Added pure URL/reference test preserves Agent ID/revision/tool, fragment and repeated query; covers legacy/canonical/localhost paths. It does not prove authenticated UI zero-dispatch/charge/key-update.",
+    "protectedContractChangeFound": false
+  },
+  "acceptanceLayers": {
+    "GIT-01": "Captured 1421 paths classified; 1420 non-secret paths preserved, including 7 deleted HEAD preimages/tombstones and 52 external artifacts. 1738 original payloads plus 1738 restored copies rehashed; three bundle hashes, restored commit/tree IDs and fsck match. Secret/private candidate remains explicitly excluded (one).",
+    "EVE-01": "13 code/CSS/page/test files / 87381 bytes rehashed with private manifest and source identity separation. main/Root/local Source/public history/APK/guest are separately identified; no new build/deployment/physical proof.",
+    "SMITH-01": "166 candidate hashes match before/after independent 27-test reproduction; lint passed. Existing synthetic owner/revision/history cases and new saved URL reference regression accepted at host level only."
+  },
+  "limitations": [
+    "GIT snapshot current-path drift is expected after capture; six changed captured paths listed in checks, not treated as snapshot corruption or immutable current-tree acceptance. New paths are outside this snapshot acceptance.",
+    "Secret/private candidate exclusion requires owner privacy/secure-retention decision; no secret bytes read/copied for review. Private /tmp backups need durable retention before cleanup.",
+    "GIT-02/03/04 semantic adoption, workflow/main and migration reconciliation, exact Smith source and public source readback remain pending.",
+    "EVE artifact preservation does not prove Remix/media functionality or parity with public/APK/guest; fixed-candidate dependency/build review remains required.",
+    "SMITH actual pre/post legacy data equivalence, authenticated URL opening with zero new dispatch/charge/key change, UI states/reconnect and device/model quality remain unaccepted.",
+    "GitHub save/main integration/whole-tree full verify and production/physical/Provider acceptance are not provided by this review."
+  ],
+  "riskReview": {
+    "astraRequiredForThisBatch": false,
+    "reason": "Reviewed work is source preservation and test-only regression; no new runtime authority, keys, stop invariant, financial or shared schema change. Later protected-contract edits require prescribed Astra review."
+  },
+  "exactReviewWrites": [
+    "docs/evidence/development-execution/source-batch-review.json",
+    "data/development-lanes/os-pixel.json (review reference only)"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "rockstaros.mini-independent-review/1",
+  "unit": "MINI-01",
+  "recordedAt": "2026-10-24T09:12:16.520369+00:00",
+  "reviewer": "/root/mini01_review",
+  "reviewerIndependentOfImplementation": true,
+  "requestedModel": "gpt-6-astra",
+  "requestedReasoningEffort": "high",
+  "actualModelIndependentlyConfirmed": false,
+  "verdict": "pass_limited_pure_profile_validator",
+  "blockingFindings": [],
+  "sourceHashes": {
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec"
+  },
+  "reproduction": {
+    "existingNodeTests": {
+      "command": "node --test tests/avocado-mini-place-profile.test.mjs",
+      "passed": 11,
+      "failed": 0,
+      "alsoRerunByParent": true
+    },
+    "reviewerAdditionalNegatives": {
+      "passed": 173,
+      "provenance": "independent agent execution report; no persistent additional test script or raw log supplied",
+      "coverage": [
+        "required fields at each nested level",
+        "unknown fields/non-enumerable/symbol and unusual prototypes",
+        "range/count anomalies",
+        "every requirements change across revision",
+        "getter executions zero",
+        "rejected update preserves old input/hash",
+        "sample pass never implies physical/comfort/whole-domain/authority"
+      ]
+    }
+  },
+  "fixesRequired": false,
+  "wholeUnitAccepted": false,
+  "limits": [
+    "shared contract/runtime/store adoption pending",
+    "physical optics/hand/low glare/comfort/independent cutoff/final PCB/manufacturing unaccepted",
+    "Git single writer owns full verify/GitHub/main readback"
+  ]
+}

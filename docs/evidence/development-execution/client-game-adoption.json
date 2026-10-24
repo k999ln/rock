@@ -1,0 +1,154 @@
+{
+  "schema": "rockstaros.reviewed-client-game-adoption/1",
+  "recordedAt": "2026-10-24T09:07:49.535284+00:00",
+  "owner": "ROCK/Git single writer",
+  "baseMain": "e4e643778b5fd8150e85109fa79ec1f6c140ca9e",
+  "branch": "codex/reviewed-client-and-game-subsets-20261024",
+  "reviewedInputs": {
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "sites/avocado-mini/src/pro-local-import.mjs": "09534b489f08046a8a81de750a6fc218a76f4399d02634d9149be893ec7aeca0",
+    "sites/avocado-mini/src/pro-os.js": "f256b943d28cc908751df54645ce291ced7810ec9378b64410fce08f17c31c5d",
+    "sites/avocado-mini/src/pages/pro/index.astro": "ea9892504ed794fc6812a0b9ef8a58be57ee647c7c4ebc140a4674cf619308b0",
+    "sites/avocado-mini/tests/pro-local-import.test.mjs": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410",
+    "components/system-maintenance.tsx": "db9595fa9ce0830da7c94eea707ab10ccfc6e3bf1668e2ce044bd91f393b0803",
+    "components/system-maintenance.module.css": "822d6f088f4b83cb1060549a412b92bc59dee18d8d99309159b9c1d055b5934a",
+    "tests/system-maintenance-accessibility.test.mjs": "d7df52a02889060184b32716301dbf1df6164589e7ab84a6b4de8014f337e911",
+    "tests/os-shell-navigation.test.mjs": "5e3c9fe6585cf6bff9f34b111161057f75385c912bede943f8b6dbb330600209",
+    "lib/game-intake.ts": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58",
+    "tests/game-intake.test.mjs": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "adoptedHashes": {
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "sites/avocado-mini/src/pro-local-import.mjs": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+    "sites/avocado-mini/src/pro-os.js": "d7898ec9053f1245221bf224a09260a3f7da5979a8f5a7c9dacacd53e5c869a6",
+    "sites/avocado-mini/src/pages/pro/index.astro": "9c58117e0cc41e8d7c36021cc55098b26eacc4122651eab6b2a0fed323c40152",
+    "sites/avocado-mini/tests/pro-local-import.test.mjs": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410",
+    "components/system-maintenance.tsx": "51acb881dd48606fd38f738ee8ca83ef4cbed5c28d200a1ffa4d235cb3fd1b0d",
+    "components/system-maintenance.module.css": "c4a6770c3d896a181f9bd2e663047d3a79ad444784e04d315ae35870e0f1bdaa",
+    "tests/system-maintenance-accessibility.test.mjs": "d7df52a02889060184b32716301dbf1df6164589e7ab84a6b4de8014f337e911",
+    "lib/game-intake.ts": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58",
+    "tests/game-intake.test.mjs": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+    "tests/sky-agent-saved-reference.test.mjs": "d174090fadd4b562d13b6c4950ccdd839630665510592aac6bb5c53f26e5d774",
+    "tests/system-maintenance-release.test.mjs": "36034f1c2aaabda4ddc31ccc5e6fe3d0290ef3ebb4e672900aaa1d291f22aabb"
+  },
+  "scopeDecisions": [
+    {
+      "lane": "Mini",
+      "adopt": "Reviewed place-profile + test plus pinned optical-exits geometric dependency (3 paths)",
+      "limits": "Pure local JSON/ray geometry only; all physical visibility/comfort/whole-domain acceptance false; no optics/device/PCB control"
+    },
+    {
+      "lane": "Pro",
+      "adopt": "Reviewed private export/preview parser and test; migration-only script block and UI section on existing main /pro page",
+      "preserveMain": "Existing product, components configurator, interest form, privacy/region/price copy, scripts and routes retained; no whole workspace/page replacement",
+      "difference": "One explanatory no-control-regex lint directive keeps the intentional control-character rejection expression unchanged. No storage write/delete, account upload or new executor"
+    },
+    {
+      "lane": "Web",
+      "adopt": "Diagnostic summary, keyboard/return-focus, modal-only status, file label/passphrase help, focus/target/reflow/reduced-motion styles",
+      "preserveMain": "backupGeneration close/reset/unmount fences; disabled busy input; reset try/catch; main public/Pixel release evidence and original header/theme",
+      "testHarnessOnly": "Existing release regression adds DialogClose stub, currentTarget mock and modal implicit-output status lookup. Restore error text, unchanged settings, retry and late-result fences remain asserted"
+    },
+    {
+      "lane": "Smith",
+      "adopt": "Saved reference ID/revision/sourceTool immutable link check using existing main skyAgentEvePath /chat",
+      "defer": "Root whole os-shell-navigation test depends on lib/os-navigation.ts absent in main and newer shell; full source test is preserved separately, no shell route implementation copied"
+    },
+    {
+      "lane": "Game",
+      "adopt": "Exact reviewed game-intake module/test, main sandbox constants byte-identical",
+      "preserveMain": "Existing held-particle/moving-group, duplicate command/history and revision/tick overflow guards and tests are not replaced by older Root sandbox",
+      "defer": "Root game-launch module/test not in main; intake emits static diagnosis only; no archive extraction/process/engine/Wallet effects"
+    }
+  ],
+  "sourceReviewScope": "Root exact hashes accepted; integrated subset differences require independent review after this PR",
+  "validation": {
+    "mainFocused": 69,
+    "mainFocusedPassed": 69,
+    "proFocused": 7,
+    "proFocusedPassed": 7,
+    "typecheckExit": 0,
+    "focusedLintExit": 0,
+    "fullVerify": {
+      "exitCode": 0,
+      "inputCount": 4420,
+      "changedInputs": [],
+      "elapsedSeconds": 261,
+      "logSha256": "20262251a22fa5af3ab3e6eec21d5e134206632115f980ae5f4a4ce09fb37758",
+      "nodeTests": 2640,
+      "nodePassed": 2638,
+      "nodeFailed": 0,
+      "nodeSkipped": 2,
+      "skipScope": "existing platform-specific tests",
+      "webAssetMissing": 0
+    },
+    "initialCorrections": [
+      "Resolved pinned Mini optical-exits dependency",
+      "Updated existing test harness event and modal status representation; production lifecycle fences unchanged",
+      "Documented intentional control-character rejection regex for focused lint"
+    ],
+    "proBrowser": {
+      "origin": "http://127.0.0.1:5357/pro/",
+      "build": "Astro14 pages, output in /private/tmp/rock-client-adoption/pro-ui-build",
+      "observed": [
+        "existing product/configurator/interest page retained",
+        "empty-origin original notes preview displays draft empty/items empty",
+        "export click without checkbox refuses with status",
+        "cancel clears preview and disables export; originals unchanged message"
+      ],
+      "data": "isolated localhost origin, empty browser note keys; no real private notes",
+      "notAccepted": [
+        "actual export download bytes",
+        "file picker import",
+        "screen reader/zoom/touch",
+        "account/native migration"
+      ],
+      "screenshotLocalOnly": "/private/tmp/rock-client-adoption/pro-private-notes-cancelled.png",
+      "screenshotSha256": "b3dd66e12a70cb01b14b052792218e43ba4b8fa7c6fe0d0f0318b980e4ebaf4a"
+    },
+    "postVerifyChanges": "Result annotations and one source-unchanged Mini independent-review JSON only; no product/test/contract source changed after fixed verify. Metadata/baseline/design rechecked."
+  },
+  "sourcePreservation": {
+    "branch": "codex/source-preservation-20261024",
+    "commit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
+    "baseMain": "e4e643778b5fd8150e85109fa79ec1f6c140ca9e",
+    "files": 49,
+    "payloadBytes": 3691158,
+    "manifestPath": "source-preservation/20261024/manifest.json",
+    "sourceSnapshotReadback": "all bytes identical",
+    "rootIndexUsed": false,
+    "candidateCheckoutUsed": false,
+    "mainAdopted": false,
+    "reviewedSubsetPR": "separate",
+    "manifestSha256": "d628ee7f0e7374a135aee2fdc04aa382dddd0438f50106c62227a677964ca125",
+    "remoteHeadReadback": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
+    "githubSaved": true
+  },
+  "handoffCandidate": "data/development-source-handoff.json",
+  "openConditions": [
+    "Pro browser exported bytes/file-picker, account import authentication/CAS/idempotency and native hardware",
+    "Web assistive technology/computed zoom/touch/backdrop/reduced-motion and actual update/push flows",
+    "Mini radiometry/whole-domain/physical visibility/comfort/cutoff/PCB/manufacturing",
+    "Game trusted registry/current rights at dispatch, actual process/UID/network/resource isolation, launch/input/save/play/export/recovery",
+    "Smith authenticated saved URL zero-dispatch/cost/key change; full source shell integration",
+    "Eve same-job and binary transfer; full runtime/schema union"
+  ],
+  "wholeUnitsComplete": false,
+  "physicalAccepted": false,
+  "runtimeExecutionAccepted": false,
+  "financialEffects": 0,
+  "newPriceSelected": false,
+  "publicDeployment": false,
+  "generalLaunch": "held",
+  "rollback": "Normal revert of additive helper/test/UI changes; no schema/data migration, provider state or device action to undo.",
+  "additionalMiniReview": {
+    "path": "docs/evidence/development-execution/mini-01-independent-review.json",
+    "sha256": "daca62921a9b837c738234a784b23ee5566352d1cb0565f003f63c04dc135fce",
+    "sourceUnchanged": true,
+    "scope": "11 existing tests plus independent report of173 extra negatives; no extra script/raw log supplied; physical/whole unit unaccepted"
+  }
+}

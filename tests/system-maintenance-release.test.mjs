@@ -59,7 +59,7 @@ function load(data, options = {}) {
       ].map((name) => [name, transparent]),
     ),
     '@/components/ui/dialog': Object.fromEntries(
-      ['Dialog', 'DialogContent', 'DialogDescription', 'DialogTitle'].map(
+      ['Dialog', 'DialogClose', 'DialogContent', 'DialogDescription', 'DialogTitle'].map(
         (name) => [name, transparent],
       ),
     ),
@@ -224,7 +224,7 @@ function interactive(storage, backupModule = backup, options = {}) {
       (item) => item.props?.onClick && text(item) === label,
     );
     assert.ok(node, label);
-    node.props.onClick();
+    node.props.onClick({ currentTarget: node });
     rerender();
     await flush();
   }
@@ -303,7 +303,7 @@ void test('restore quota failure stays in the dialog with visible error and keep
   assert.equal(h.dialog().props.open, true);
   const alert = h
     .nodes(h.dialog())
-    .find((node) => node.props?.role === 'alert');
+    .find((node) => node.type === 'output' && node.props?.['aria-atomic'] === 'true');
   assert.ok(alert);
   assert.match(h.text(alert), /変更前の設定に戻しました/);
   assert.doesNotMatch(h.text(h.tree), /端末設定を復元しました/);
