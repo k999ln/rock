@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-text-job.main-adoption/1",
   "recordedAt": "2026-10-24T16:41:08.921877+00:00",
-  "status": "exact6_source_review_pass_local71_and_frozen_full_verify_pass_draftPR197_metadata_review_final_CI_pending",
+  "status": "metadata_four_digest_records_restructured_current_scan_clean_historical_secrets_gate_still_blocked",
   "unit": "EVE-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "05-web-pwa-sites",
@@ -52,7 +52,9 @@
     "app/api/work-jobs/route.ts": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d",
     "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
     "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
-    "lib/rockstar-service-access.ts": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09",
+    "lib/rockstar-service-access.ts": {
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09"
+    },
     "package.json": "34513a6d08b7eba5b941c084b8f63b4c5e53f028c657d42ce7228329fae0d5e1",
     "drizzle/0020_sites_schema_convergence.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
     "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
@@ -78,7 +80,9 @@
     "lib/llm-providers.ts": "08383331a405daa09aab254c3463bdc3ecf4fe7f2488f316fa69d8a9fc218654",
     "lib/rock-wallet.ts": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
     "app/api/llm/text/route.ts": "942bb6ea002c6a6d076ad36b6e8f6511dd4fc511d1af01a25608995f53d801be",
-    "drizzle/0015_jennifer_passkey_access.sql": "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c",
+    "drizzle/0015_jennifer_passkey_access.sql": {
+      "sha256": "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c"
+    },
     "drizzle/0024_sky_hub_plugins.sql": "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474",
     "drizzle/0026_sky_communities.sql": "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af",
     "drizzle/0016_sky_monthly_sandbox.sql": "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78",
@@ -86,13 +90,17 @@
     "drizzle/0021_sky_recurring_send_guard.sql": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
     "drizzle/0030_sky_linux_service.sql": "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53",
     "drizzle/0023_sky_optional_features.sql": "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d",
-    "drizzle/0027_community_os_keys.sql": "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77",
+    "drizzle/0027_community_os_keys.sql": {
+      "sha256": "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+    },
     "drizzle/0013_sky_provider_connections.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
     "drizzle/0032_eve_durable_history.sql": "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042",
     "drizzle/0025_sky_x_feed_state.sql": "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7",
     "drizzle/0018_sky_recurring_sandbox.sql": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6",
     "drizzle/0017_sky_cloud_monthly_test.sql": "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39",
-    "drizzle/0029_sky_x_account_oauth.sql": "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6",
+    "drizzle/0029_sky_x_account_oauth.sql": {
+      "sha256": "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+    },
     "drizzle/0014_jennifer_execution_integrity.sql": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907",
     "drizzle/0028_sky_timeline_interactions.sql": "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2",
     "drizzle/0019_sky_hosted_monthly.sql": "9f244cd985e5583b324a5e9d155fd04bacdb1677aa877c03712a3ce436d29377",
@@ -126,6 +134,129 @@
     "physicalDeviceFullOs": false,
     "generalLaunch": "held"
   },
-  "next": "Frozen integration verify, draft PR/exact-head CI, separate metadata adoption review; no merge before Root assignment.",
-  "pr": "https://github.com/k999ln/rock/pull/197"
+  "next": "Finite metadata-format checkpoint. Exact-fingerprint control support requires the bounded scope above; no control policy PR or hand-built bypass created. Root assigns next scope and independent reviews; PR197 remains draft/unmerged.",
+  "pr": "https://github.com/k999ln/rock/pull/197",
+  "secretScanFormatDelta": {
+    "previousHead": "c21f000fe85f0af2c77db4335ebf92474008597b",
+    "change": "Only four public path->digest scalars become path->{sha256:digest}; all61 normalized path/digest pairs unchanged.",
+    "sourceSixUnchanged": true,
+    "protectedEntries": 61,
+    "rule": "generic-api-key",
+    "upstreamRuleMeaning": "Credential-like access/auth/key context adjacent to assignment and high-entropy value misclassifies four path-named source SHA256 entries. Typed sha256 field removes that assignment context.",
+    "scanner": {
+      "version": "8.30.1",
+      "archiveSha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
+      "source": "official GitHub gitleaks v8.30.1 release checksum"
+    },
+    "pinnedControl": "cb2425525d3e7d0b8375de5298eaee889a552818",
+    "pinnedPolicySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3",
+    "currentFileLocalScan": {
+      "beforeFindings": 4,
+      "afterFindings": 0,
+      "syntheticApiKeyFindings": 1,
+      "existingRealScannerPolicyTestsPassed": 10,
+      "reportsSha256": {
+        "before": "3690c672f719b64544b08e2ebd14084d793e21117bf215d55d0587fb4a30c6b8",
+        "after": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "positiveControl": "69b5c43f38268406505d54044a3e05efb50eccd83d662a8113e59af677e49956"
+      }
+    },
+    "oldCISecretsFailure": {
+      "runId": 40112948533,
+      "jobId": 120928365542,
+      "conclusion": "failure",
+      "downloadedLogSha256": "8f5c698d6c05d25c1dd1eec3b8ebcc291a0cc1cd3114171f1601233c445c0e6d",
+      "independentReviewLogSha256": "2d3cbc29c405cc6cc737f59ef520a44803223e394ae6d7930c1fbb70e70c4cb3",
+      "differentCaptureEncodingsNotClaimedByteIdentical": true,
+      "reviewReceiptSha256": "24b5bd0ba4541f71f2da8a652734473a59ec3e6705fea54ed296a2cf38f98b38"
+    },
+    "historyScan": {
+      "head": "c21f000fe85f0af2c77db4335ebf92474008597b",
+      "completed": true,
+      "exitCode": 1,
+      "findings": 4,
+      "reportSha256": "4f471ecec6d49d9cf02b38b3cd2fe97a40e6cd0685fd5bbe62a63a58ad83e80b",
+      "meaning": "All4 are olda2b2 historical records; current-file reformat cannot erase reachable history. Not a successful required gate."
+    },
+    "exactHistoricalFingerprintProposal": {
+      "entries": [
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 43,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:43"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 69,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:69"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 77,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:77"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 83,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:83"
+        }
+      ],
+      "implemented": false,
+      "standardMechanismTest": {
+        "standardMechanism": "Gitleaks8.30.1 --gitleaks-ignore-path, only four-component commit fingerprints, no global three-component entries",
+        "results": {
+          "no-ignore": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "exact": {
+            "exitCode": 0,
+            "findings": 0
+          },
+          "different-commit": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-path": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-rule": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-line": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "new-secret-new-commit": {
+            "exitCode": 23,
+            "findings": 1
+          }
+        },
+        "controlWrapperCurrentlyAcceptsThisFile": false,
+        "noCandidateOrControlPolicyChanged": true
+      },
+      "existingWrapperSupport": false,
+      "reason": "Pinned wrapper always creates empty-ignore and accepts only repository/gitleaks/config/output; candidate ignore and inline allow are deliberately ignored. Settings-only addition has no effect. TOML path/value/commit allowlists cannot restrict exact line/fingerprint.",
+      "requiredScopeBeforeAnyControlPolicyPR": [
+        "scripts/spider-repository-scan.py: reviewed pinned-control fingerprint input routed to standard Gitleaks ignore flag; no manual result suppression and no candidate file loading",
+        "new .github/spider/public-source-digest-fingerprints.ignore: exactly4 commit:path:rule:line entries, never3-component global fingerprints",
+        "new .github/spider/public-source-digest-fingerprint-provenance.json: exact4 public source digest/readback plus independent evidence hashes only",
+        "tests/test_spider_repository_scan.py and tests/test_spider_gitleaks_policy.py: default-empty/candidate-ignores-rejected and exact4 plus changed commit/path/rule/line/new secret negative controls",
+        "separate .github/workflows/spider.yml pin-update change after reviewed control commit exists: pinned ref plus explicit trusted control fingerprint path"
+      ],
+      "rollout": "First independently reviewed control implementation commit C, then separate reviewed workflow pin update W pointing to immutable C and passing trusted-file argument. Workflow currently hardcodes cb242552, so merging origin/main alone without this pin update cannot change policy. After ordinary merges and CI, merge origin/main normally intoPR197 and rerun final-head gates; never rewrite old commits or relabel old runs."
+    },
+    "finalHeadCI": "New metadata commit will trigger CI; historical gate remains open until separately authorized reviewed control support exists.",
+    "localFullVerifyRepeated": false
+  }
 }

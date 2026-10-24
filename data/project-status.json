@@ -9720,6 +9720,8 @@
     "browserLiveHttpAccepted": false,
     "fullVerify": "passed_on_a2b2eefd_inputs4463_unchanged0_tests2769_pass2767_fail0_skip2",
     "pr": "https://github.com/k999ln/rock/pull/197",
-    "finalHeadCIPending": true
+    "finalHeadCIPending": true,
+    "secretScanGate": "oldc21_secrets_failure4_public_digest_FP_preserved_current_format_clean_history4_still_open",
+    "metadataFormatDelta": "only4_typed_digest_records_values_unchanged"
   }
 }
