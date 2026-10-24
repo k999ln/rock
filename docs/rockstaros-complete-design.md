@@ -1,3 +1,16 @@
+<a id="mini02-finite-optical-study"></a>
+## MINI-02 固定domainの有限光学study（2026-10-24）
+
+目的・体験・責任: 板膜なし、少ない表示部、上下を含む全範囲、まぶしくしない4要求を保持し、host CLI/関数で候補の幾何必要条件と反例を比較する。ROCKは厳密JSON、source/result digest、列挙、反証を担当。EXTERNALは実発光/relay/sensor、JOINTは校正・共同割当・実測、OWNERは部品/人体/製造/安全と予算を判断する。
+
+入出力・状態・保存: 4×4×3m enclosure、3×3m service plane、243眼位置×147上下target×18 pupil rayを固定。入力検査→依存source hash照合→7候補評価/2候補unsupported→有限欠損/最初の反例/digestを返す。共通分母35,721 pairを縮めず、243眼位置を同時viewer数にしない。Gitにはsource/最小fixture/要約証拠を保存し、runtime永続state、権限、光源出力を作らない。active source・筐体・sensor数はaperture数と分離し未定をnullのまま扱う。
+
+失敗・復旧・互換: domain変更/下方target除去/ceiling欠落/guard削除/測定値や同時性の捏造を拒否し、旧入力を保持する。同じ正当入力なら同digestへ収束。MINI-01 profile/test/geometry3hashを保持し、unknown engine/motionへfallbackしない。通常revertで戻せ、永続migrationや実機復旧操作はない。
+
+承認・合格・未決定: ideal全面6面の欠損0は有限幾何必要条件であり、少数小型/連続全域/空中像成立ではない。10mm guardで708、30mmで1396 pair欠損。低眩しさ・光量/人体/熱電気/独立cutoff/PCB/製造/同時viewer/extended sceneは未受入。Pro独立reviewは全7候補35,721×18を再現し限定pass/指摘0。対象9＋Mini01既存11試験とlint/syntaxを確認し、固定候補verify・別PR/同SHA CIへ進む。新source/校正/姿勢/共同割当は別候補・別検収で決める。料金/権限/一般公開保留は維持する。
+
+[詳細評価と次の測定契約](avocado-mini-r5/factory-development/mini-02-candidate-assessment.md)／[独立review](evidence/development-execution/mini-02-review.json)／[main採用・検証](evidence/development-execution/mini-02-main-adoption.json)。評価書とlane/元receiptの「検収前」は保存時点の記述で、後続検収はreview/main採用receiptから参照する。
+
 <a id="reviewed-client-game-subsets"></a>
 ## 受入済みclient/Game subsetのmain採用（2026-10-24）
 

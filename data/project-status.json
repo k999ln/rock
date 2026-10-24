@@ -9566,5 +9566,18 @@
     "sourceCommit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
     "sourceFilesSaved": 49,
     "mainAdopted": false
+  },
+  "mini02FiniteOpticalStudy": {
+    "status": "exact_reviewed_candidate_fullverify_pass_pending_git_ci",
+    "evidence": "docs/evidence/development-execution/mini-02-main-adoption.json",
+    "focusedTests": 20,
+    "newStudyTests": 9,
+    "physicalAccepted": false,
+    "lowGlareHumanSafetyAccepted": false,
+    "simultaneousViewersAccepted": false,
+    "pcbManufacturingAccepted": false,
+    "wholeUnitComplete": false,
+    "generalLaunch": "held",
+    "fullVerifyExit": 0
   }
 }

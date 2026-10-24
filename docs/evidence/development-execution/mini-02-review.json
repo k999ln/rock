@@ -1,0 +1,98 @@
+{
+  "schema": "rockstaros.independent-development-review/1",
+  "unit": "MINI-02",
+  "recordedAt": "2026-10-24T09:52:09.290435+00:00",
+  "reviewer": {
+    "lane": "pro",
+    "threadId": "01a16c2a-4989-7581-917d-2ece16d4405b",
+    "independentOf": "Mini implementation and Root integration",
+    "routingPolicy": "data/development-model-routing.json MINI-02 reviewerPolicy: gpt-6-astra/high"
+  },
+  "verdict": "pass_limited_host_finite_study",
+  "mustFix": [],
+  "acceptedScope": "Exact five-file candidate: reproducible fixed-domain geometric necessary-condition comparison, conservative unsupported states, finite counterexamples, next measurement/adapter contract. MINI-02 whole-unit completion and physical optical feasibility are NOT accepted.",
+  "reviewedSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "pinnedMini01AndGeometryUnchanged": true,
+  "resultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b",
+  "fixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+  "verification": [
+    {
+      "command": "node --test tests/avocado-mini-optical-study.test.mjs",
+      "exitCode": 0,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "command": "node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs tests/avocado-mini-optical-study.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --check docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --input-type=module (review inline independent enumeration)",
+      "exitCode": 0,
+      "method": "Import pinned original createExitGeometry, independently construct 243 eye points by flat index (XY step .375; heights1.2/1.6/1.9),147 targets (XY step .5; heights.8/1.4/2); XY range[-1.5,1.5]. Construct centered clipped rectangles from face/count/width/guard. Enumerate horizontal pupil offsets[-.034,-.032,-.030,.030,.032,.034], vertical[-.002,0,.002] with target-perpendicular right vector. Evaluate all18 rays without short-circuit. Compare 7 rectangle lists, counts and first-failing rays against study; deepEqual entire recalculated study to saved receipt.",
+      "eyeTargetPairs": 35721,
+      "pupilRaysPerCandidate": 642978,
+      "missingPairsByCandidate": {
+        "four-sides-300mm": 35489,
+        "six-faces-300mm": 35443,
+        "six-faces-1200mm": 31564,
+        "four-full-faces": 5953,
+        "six-full-faces-ideal": 0,
+        "six-full-faces-10mm-guard": 708,
+        "six-full-faces-30mm-guard": 1396
+      }
+    },
+    {
+      "command": "node --input-type=module (review inline rejection/recovery and boundary probes)",
+      "exitCode": 0,
+      "rejected": [
+        "remove lower targets",
+        "translate enclosure domain",
+        "assert simultaneous viewers",
+        "invent measured luminance",
+        "turn unsupported motion into fixed model",
+        "omit ceiling face",
+        "remove10mm guard"
+      ],
+      "recovery": "After seven rejected requests a clean request reproduces the same result digest. No state/persistent output mutation.",
+      "boundaryResult": "Recomputed201 seam rays: four-full0, ideal-six0,10mm-six40 misses. Four-side vertical up/down both false; six-face up/down true. Supplementary center rays remain separate from binocular35721 denominator."
+    },
+    {
+      "command": "node docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs --accept-physical",
+      "exitCode": 1,
+      "expectedRejection": "STUDY_CLI_ARGUMENT_UNSUPPORTED"
+    }
+  ],
+  "invariantFindings": [
+    "All four owner requirements retained. Image-location passive surfaces0; active source/enclosure/sensor counts remain unknown rather than equated to aperture count; few-small-head feasibility remains unresolved.",
+    "4x4x3m enclosure and3x3m service plane match existing calculate-six-exits/source design; both upper/lower target heights retained. Finite sampled points explicitly do not prove continuous domain or extended scene coverage.",
+    "80m2 nominal and effective ideal area;10mm guard effective79.1224m2;30mm guard77.3816m2.20mm extra erosion is labelled hypothetical, not eye-tracking tolerance.",
+    "243 sampled eye positions are not simultaneous viewers. Fixed pose1; moving pose set unknown. Two unsupported candidates retain required35721 denominator, evaluated0 and missing=null.",
+    "9 candidate acceptance objects have0 true fields; no physical candidate selected. Fixed-exit steering already ideal/unlimited and cannot create missing exit positions within this model; no claim eye tracking solves it.",
+    "Assessment introduces no newly accepted physical/safety threshold. Brightness/glare, radiometry, occlusion, calibration, latency and independent cutoff remain unmeasured. E1 single-source entry is explicitly a proposal, not vendor/model compatibility acceptance."
+  ],
+  "unacceptedConditions": [
+    "continuous full-domain and extended-scene rays",
+    "few-small-part realizable engine and calibrated source/relay",
+    "joint simultaneous pupil/scene/viewer allocation and reachable moving poses",
+    "occlusion, eye comfort and low-glare measurements",
+    "independent physical stop/readback, startup/backpower failures",
+    "thermal/electrical/human safety, PCB/manufacturing",
+    "Git/main integration and same-SHA CI for this batch"
+  ],
+  "nextOwnerAction": "Root may return this limited pass to Git single-writer for exact candidate adoption and shared-document synchronization. A new moving/relay candidate needs its own geometry/calibration/joint-allocation review; no Mini writer correction is required for this bounded batch.",
+  "operations": "Read-only implementation review; only this review receipt and Pro lane review reference written. No product/global/Git/device changes, no other chat/agent/message/wait, no full verify."
+}

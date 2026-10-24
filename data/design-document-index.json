@@ -388,7 +388,12 @@
       "implementation": [
         "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
         "tests/avocado-mini-place-profile.test.mjs",
-        "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs"
+        "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+        "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+        "tests/avocado-mini-optical-study.test.mjs",
+        "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+        "docs/evidence/development-execution/mini-02.json",
+        "data/development-lanes/mini.json"
       ]
     },
     {
@@ -2741,5 +2746,18 @@
     "physicalAccepted": false,
     "runtimeExecutionAccepted": false,
     "productionAccepted": false
+  },
+  "mini02FiniteOpticalStudy": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-optical-study",
+    "evidence": "docs/evidence/development-execution/mini-02-main-adoption.json",
+    "implementation": [
+      "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "tests/avocado-mini-optical-study.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+      "docs/evidence/development-execution/mini-02.json",
+      "data/development-lanes/mini.json"
+    ],
+    "physicalAccepted": false,
+    "wholeUnitComplete": false
   }
 }

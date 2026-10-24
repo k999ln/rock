@@ -1,3 +1,7 @@
+## MINI-02の検収済み有限studyをmain起点へ採用（2026-10-24 / G04）
+
+main bbefa875起点で5path＋reviewをbyte一致採用、Mini3hash/4要求/domainを保持。対象20（新9＋既存11）・lint/syntax成功。7候補35,721×18の独立再現pass/指摘0、unsupported2は未評価。光学/低眩しさ/人体/PCB/製造/同時viewerは未受入。固定4428入力不変で全verify exit0、Node2649=2647pass/既存platform2skip、asset欠損0。別PR/CIへ進む。OS診断WIP/料金/公開変更なし。根拠: docs/evidence/development-execution/mini-02-main-adoption.json。
+
 ## PR187統合後のclient/Game subset採用とsource保全（2026-10-24 / G04）
 
 main e4e64377起点でMini3（局所profile/固定幾何依存/試験）、Pro4のprivate export subset、Web3のaccessibility subset、main互換Smith saved-reference試験、Game2のstatic intakeを採用。Web releaseとbackup世代fence、main Game保護・Pro商品/interest・Smith /chat、AMC/material/compose/grid/RQ50を保持。対象69+Pro7、typecheck/lint成功。固定4420入力不変で全verify exit0、Node2640=2638pass/既存platform2skip、asset欠損0。Pro localhost preview/同意なしexport拒否/cancelを確認。source不変のMini追加独立検収記録（11既存＋173負例の実行報告）を追補。別PR/同SHA CI/統合差分検収は次gate。

@@ -1,3 +1,7 @@
+## 2026-10-24 — MINI-02有限比較採用（要件/domain変更なし）
+
+main2.08/RQ01〜50と既存AMC/material/compose/gridを保持。4要求を縮めず固定domainのhost幾何比較だけを採用する。実光学・低眩しさ・人体・PCB/製造・同時viewerは未受入。[詳細](rockstaros-avocado-mini-complete-design.md#mini02-finite-optical-study)／[採用証拠](evidence/development-execution/mini-02-main-adoption.json)。
+
 ## 2026-10-24 — client/Game限定採用とsource引継ぎ（方針変更なし）
 
 main2.08/RQ01〜RQ50、AMC/material/compose/gridと既存権限・料金を保持したまま、受入済みMini/Pro/Web/Smith/Gameの必要subsetを採用する。光学・実機・実engine・実課金・一般公開の完成ではない。[詳細境界](rockstaros-complete-design.md#reviewed-client-game-subsets)。Eve13sourceとRoot23chat/42成果/180coverage/95unit資料は別source branchで保全し、[mainと整合した引継ぎ](../data/development-source-handoff.json)から再照合する。過去snapshot mainSHAを最新と扱わない。

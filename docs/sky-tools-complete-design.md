@@ -1,3 +1,7 @@
+## MINI-02 host研究の権限境界
+
+[目的・体験・責任・入出力・状態・保存・失敗復旧・承認・合格・未決定](rockstaros-avocado-mini-complete-design.md#mini02-finite-optical-study)に従う。catalog Tool/汎用実行API/発光や人体操作を追加せず、幾何sample成功を物理・低眩しさ・全域・同時viewer合格へ昇格させない。
+
 ## Game静的導入診断とclient接続のmain採用
 
 [目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・合格・未決定](rockstaros-complete-design.md#reviewed-client-game-subsets)に従う。追加catalog Tool、汎用shell、実engine adapter、金融exchangeは有効にしない。Game診断の候補を権限/隔離/起動/保存成功へ換算せず、Smith参照は既存main /chatを保持する。
