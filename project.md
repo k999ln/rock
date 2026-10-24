@@ -1,3 +1,7 @@
+## Pixel main診断移植とMini r2の固定候補準備（2026-10-24 / G04・OS10）
+
+6runtime/test＋Python CI stepをmain d15096b8へ最小port。worker c6a4cb0d不変、serverはexecuteのみ選択し旧実機packageと区別。manager/URL/model/prepare/build/service固定。Python27中26pass/比較skip1、parent4中3pass/Linux skip1、Node33中32pass/platform skip1、bridge4pass。初回450ms host試験反例からcallback event必須/2秒期限へ試験だけ調整。追加承認Mini r2新4hash固定/旧12不変、56試験/lint成功。次: design/進捗同期→fixed full verify1回→PR/CI→別担当独立review。runtime/統合metadata未検収、新Linux/Pixel/背景/P02全体/full OS/実光学未受入、一般公開保留。根拠 docs/evidence/development-execution/pixel-main-diagnostics-adoption.json、docs/evidence/development-execution/mini-02-finite-cone-review-summary.json。
+
 ## Pixel限定実機証拠を原本hash付き要約へ（2026-10-24 / G04）
 
 原本8b8ed78d…/独立Eve review136e79ef…を照合し、絶対path/原文/privateRealm/識別子/18添付を含めない要約2fileを作成。Linux4pass/skip0、同一attempt2 sourceで今回1job成功/累計2、worker8569ms/childCPU12.635192s/OOMdelta0、旧33保持/total34/2models/10agents、PC+Pixel公式export770bytes同SHA、process0/sync停止を範囲付き記録。PC UI reload画面証拠不足、背景/P02全体/全OS/性能一般化未受入。runtimeコード変更なし、source16保存97044695とmain7既存9未追加auditを維持。統合要約の検収/Git保存/CIは別gate。根拠: docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json、docs/evidence/development-execution/pixel-worker-diagnostics-physical-review-summary.json。

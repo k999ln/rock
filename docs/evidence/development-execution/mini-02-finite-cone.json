@@ -1,0 +1,526 @@
+{
+  "schema": "rockstaros.mini02.finite-cone-host-inspection/1",
+  "recordedAt": "2026-10-24T13:08:23.524Z",
+  "task": "MINI-02",
+  "workstream": "11-material-invention-avocado-mini",
+  "responsibility": "ROCK host research; EXTERNAL/JOINT physical calibration and optical acceptance",
+  "status": "R1_repaired_locally_awaiting_independent_rereview",
+  "sourceIntegration": {
+    "pr": 191,
+    "url": "https://github.com/k999ln/rock/pull/191",
+    "mergeCommit": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+    "sameShaCI": {
+      "checks": [
+        {
+          "name": "verify",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470083/job/120874570696"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470065/job/120867804067"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470065/job/120867803804"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470067/job/120867803794"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470049/job/120867803790"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40092470067/job/120867803601"
+        }
+      ],
+      "verification": {
+        "runId": 40092470083,
+        "url": "https://github.com/k999ln/rock/actions/runs/40092470083",
+        "headSha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+        "attempt": 2,
+        "status": "completed",
+        "conclusion": "success",
+        "updatedAt": "2026-10-24T12:41:25Z"
+      },
+      "firstAttempt": {
+        "conclusion": "cancelled",
+        "head_sha": "7e290e01255c4b3ca1d62ba164bc7eec4b64dc9f",
+        "id": 40092470083,
+        "run_attempt": 1,
+        "status": "completed",
+        "explanation": "Prolonged verification run cancelled by Git coordinator; cause unresolved; this was not a source-code fix."
+      }
+    }
+  },
+  "ownership": {
+    "newFour": [
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md",
+      "docs/evidence/development-execution/mini-02-finite-cone.json"
+    ],
+    "oldTwelveReadOnly": true,
+    "sharedFilesEdited": false,
+    "gitMutationPerformed": false
+  },
+  "newSourceDocTestSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "0694108f883fae92dd58c80bdccffece4a87542dfc42605447217083e48e77b8",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab"
+  },
+  "preservedTwelveSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27",
+    "tests/avocado-mini-joint-allocation.test.mjs": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3",
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "preservedBaseline": {
+    "eyeTargetPairs": 35721,
+    "pupilRaysPerPair": 18,
+    "raysPerCandidate": 642978,
+    "sixFullFacesIdealMissingPairs": 0,
+    "sixFullFaces10mmGuardMissingPairs": 708,
+    "continuousDomainAccepted": false
+  },
+  "implementation": {
+    "api": "inspectFiniteCone(serializedJSONString)",
+    "kind": "complete supplied-witness necessary-condition inspection",
+    "noReallocationSearch": true,
+    "allAllocationsEvaluated": false,
+    "syntheticCalibrationReferenceIsNotMeasurement": true,
+    "calibrationDigestReferenceAuthentication": false,
+    "poseGeometrySnapshotBinding": true,
+    "angleToleranceDeg": 1e-7,
+    "axisNormTolerance": 1e-9,
+    "angularError": "declared total axis and ray/coordinate angular error bound; unknown unavailable",
+    "inputLimits": {
+      "bytes": 262144,
+      "nodes": 20000,
+      "depth": 18,
+      "demands": 128,
+      "devices": 6,
+      "models": 96
+    },
+    "statuses": [
+      "finite_cone_witness_passed",
+      "reallocation_required",
+      "unknown",
+      "unavailable"
+    ],
+    "allSuppliedModelsValidated": true,
+    "angleCalculation": "atan2(norm(cross(normalized emission, normalized axis)), dot(normalized emission, normalized axis))",
+    "angleRoundoffGuardDeg": 8.142219984546603e-13,
+    "numericalGuard": "64 epsilon radians added to the existing unknown band; accepted cone is not widened; physical calibration error remains separate"
+  },
+  "requirements": {
+    "noPlateOrMembraneAtImageLocation": true,
+    "fewDisplayPartsGoalPreserved": true,
+    "allDeclaredDemandsIncludingUpDownAndPupilsRetained": true,
+    "lowGlareRequirementPreserved": true,
+    "installedPartsOrMinimumCountProven": false,
+    "physicalWholeRangeProven": false,
+    "physicalLowGlareProven": false
+  },
+  "acceptance": {
+    "physicalVisible": false,
+    "lowGlare": false,
+    "eyeSafety": false,
+    "continuousWholeDomain": false,
+    "simultaneousPhysicalViewers": false,
+    "independentStop": false,
+    "manufactured": false,
+    "measuredCalibration": false,
+    "dispatchAllowed": false,
+    "grantsAuthority": false
+  },
+  "cases": [
+    {
+      "name": "synthetic_up_down",
+      "inputSha256": "f1358dd623841fc7dc5c63d3141573b9aa5a94a9a392d4b590398b7a87c8c5c1",
+      "resultSha256": "0642ffa3aacb308a2e52cd26d1ce7d69e14daede6a1ac2c6a90fd41580edb78d",
+      "status": "finite_cone_witness_passed",
+      "reasons": [],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    },
+    {
+      "name": "reversed_emission_axis",
+      "inputSha256": "2c85471512922050d357cf6246e3c565844d76eede71e5148e14107ca6e4666d",
+      "resultSha256": "245cba061a2db1a42b7a8aadc32cc6d4a450bfca83a66d355265b4993ac8a172",
+      "status": "reallocation_required",
+      "reasons": [
+        "outside:down"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "outside",
+          "angleDeg": 180,
+          "lowerDeg": 179.9,
+          "upperDeg": 180
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    },
+    {
+      "name": "boundary_error",
+      "inputSha256": "b0609b4b2108f50baa03d23607e23dd5a2a3f9706f006abefe08cff1d6016b14",
+      "resultSha256": "b25cd5a992d06e628585656857ba58452e3848e061ff0353b372e232de270999",
+      "status": "unknown",
+      "reasons": [
+        "boundary:down"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "boundary_unknown",
+          "angleDeg": 45,
+          "lowerDeg": 44.9,
+          "upperDeg": 45.1
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    },
+    {
+      "name": "expired_calibration",
+      "inputSha256": "0968c5f819988e1e1bef9c50f8ee86bef435fcf49bde7dbaf732745745cbc43a",
+      "resultSha256": "2cd0b3f711915a1054c6ae166a8926e83e5cbb4f95713b80ba55aa6ab38276e8",
+      "status": "unavailable",
+      "reasons": [
+        "calibration-time-unavailable"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 0,
+      "rayStates": []
+    },
+    {
+      "name": "unknown_total_angular_error",
+      "inputSha256": "76235394da9c9494892f0844330a5213dc0c52dc31bb9f5affbc9d21b04f44ad",
+      "resultSha256": "8e0e29c5b5fef16ada349872e7e92046c3b8695857ff737299eb2cf469476d57",
+      "status": "unavailable",
+      "reasons": [
+        "calibration-angular-bound-unavailable"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 0,
+      "rayStates": []
+    },
+    {
+      "name": "missing_upper_demand_assignment",
+      "inputSha256": "df56b6e582f865a34bb249ab4f587ece7b0b3a711a1c8f02133ecbae794272dd",
+      "resultSha256": "c4f0cb15ea60993b757963050e034b8768d610b1762b3aac4f88676168f0433d",
+      "status": "unavailable",
+      "reasons": [
+        "witness-complete-demand-set-required"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 0,
+      "rayStates": []
+    },
+    {
+      "name": "R1_exact_counterexample",
+      "inputSha256": "d4501f28ee44e9d802702f76dde000fb26a6394969b1a4be7cf578222d34835f",
+      "resultSha256": "051c0bf2ef1e17351e3deb552ea898fa973dce1af8b32a44525f801abb6adf29",
+      "status": "reallocation_required",
+      "reasons": [
+        "outside:down"
+      ],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "outside",
+          "angleDeg": 5e-7,
+          "lowerDeg": 5e-7,
+          "upperDeg": 5e-7
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    },
+    {
+      "name": "R1_valid_inside_recovery",
+      "inputSha256": "c667e571f18b720566c23d066d89037513d1a3fcd8aa30cd8b080b0612618b86",
+      "resultSha256": "c5fe0871172f42092c8022b5840fa02a603386458e1580785afab6dc574ff222",
+      "status": "finite_cone_witness_passed",
+      "reasons": [],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "inside",
+          "angleDeg": 5e-7,
+          "lowerDeg": 5e-7,
+          "upperDeg": 5e-7
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    },
+    {
+      "name": "recovered_original",
+      "inputSha256": "f1358dd623841fc7dc5c63d3141573b9aa5a94a9a392d4b590398b7a87c8c5c1",
+      "resultSha256": "0642ffa3aacb308a2e52cd26d1ce7d69e14daede6a1ac2c6a90fd41580edb78d",
+      "status": "finite_cone_witness_passed",
+      "reasons": [],
+      "declaredDemandCount": 2,
+      "evaluatedDemandCount": 2,
+      "rayStates": [
+        {
+          "demandId": "down",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        },
+        {
+          "demandId": "up",
+          "status": "inside",
+          "angleDeg": 0,
+          "lowerDeg": 0,
+          "upperDeg": 0.1
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "focused": {
+      "command": "node --test tests/avocado-mini-finite-cone.test.mjs tests/avocado-mini-joint-allocation.test.mjs tests/avocado-mini-optical-study.test.mjs tests/avocado-mini-place-profile.test.mjs",
+      "tests": 56,
+      "pass": 56,
+      "fail": 0,
+      "skip": 0,
+      "newTests": 23,
+      "log": "/private/tmp/mini-finite-cone-attempt2-related.log",
+      "logSha256": "58f783dbf2fbf9fb979417f414e722c14553e64177ebc68acc89c229b6f22894"
+    },
+    "lint": {
+      "command": "./node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs tests/avocado-mini-finite-cone.test.mjs",
+      "exitCode": 0
+    },
+    "negativeAndRecovery": [
+      "reversed emission direction",
+      "angular error boundary and numerical tolerance",
+      "both pupils and upper/lower target omissions",
+      "six world directions",
+      "forged pose/exit/source and shared capacity",
+      "stale/future/unknown calibration and clock/profile/scene mismatch",
+      "changed aperture with reused calibration labels",
+      "first joint witness fails but alternate witness passes",
+      "complete witness beyond upstream search cutoff",
+      "reordering invariance",
+      "strict bounded JSON and no authority/horizontal conversion",
+      "repair restores original result hash",
+      "old twelve hashes unchanged",
+      "unused supplied model with unknown calibration is unavailable; removing unused model recovers",
+      "R1 near-axis exact counterexample, original 120-condition independent scalar oracle, small/antiparallel scale accuracy, non-cardinal rotations, error and comparison endpoint roundoff guards, valid-inside and clean recovery"
+    ],
+    "fullVerifyForNewBatch": {
+      "status": "not_run_in_lane",
+      "owner": "Git coordinator on frozen integration candidate",
+      "command": "npm run verify"
+    },
+    "reviewerAngularGrid": {
+      "conditions": 120,
+      "classificationDifferences": 0,
+      "unambiguousOutsideReportedInside": 0,
+      "maximumAngleErrorDeg": 3.3881317890172014e-21,
+      "states": {
+        "inside": 45,
+        "outside": 60,
+        "boundary_unknown": 15
+      },
+      "oracle": "atan2(hypot(axis.x,axis.y),axis.z) for exactly vertical emission; original review 1e-7 degree thresholds",
+      "grid": {
+        "tiltDeg": [
+          0,
+          1e-7,
+          3e-7,
+          5e-7,
+          0.000001,
+          0.00001,
+          20,
+          45,
+          90,
+          180
+        ],
+        "azimuthDeg": [
+          0,
+          37,
+          90
+        ],
+        "halfAngleDeg": [
+          2e-7,
+          5e-7,
+          0.000001,
+          45
+        ],
+        "angularErrorDeg": 0
+      }
+    },
+    "additionalNumericalConditions": {
+      "scaleAndNearAntiparallel": 135,
+      "nonCardinalRotations": 3,
+      "errorAndComparisonEndpoints": 20,
+      "allPassed": true
+    }
+  },
+  "independentReview": {
+    "status": "pending_rereview",
+    "implementerDoesNotSelfAccept": true,
+    "previousReviewPath": "docs/evidence/development-execution/mini-02-finite-cone-review.json",
+    "previousReviewSha256": "1502a1b6160db7de500890121e590a9a9e5cd52a0ec3179ccfa10f418994681f",
+    "previousVerdict": "changes_required"
+  },
+  "persistence": {
+    "localFilesSaved": true,
+    "branchSaved": false,
+    "mainIntegrated": false,
+    "newBatchCIConfirmed": false,
+    "published": false
+  },
+  "sharedChangeRequests": [
+    {
+      "owner": "Root/Git",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/development-lanes/mini.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "data/design-document-index.json"
+      ],
+      "request": "After independent review, synchronize MINI-02 finite-cone host inspection, exact hashes and limits with the appropriate existing design entry; run project:update/design:check/full verify on the fixed candidate. Preserve prior gates and distinguish local save, branch save and main integration.",
+      "acceptance": "No self-review approval, physical/low-glare/manufacturing/dispatch acceptance or new main CI success without matching evidence."
+    }
+  ],
+  "next": "Root dispatches independent Pro rereview of exact revised four and immutable R1 review receipt, then Git checkpoint. No self-acceptance. Later research remains cone-eligible joint reallocation and calibrated total-angular-error fixtures.",
+  "unresolved": [
+    "independent R1 rereview and Git saving/integration of these four",
+    "unknown CI attempt-1 stall cause",
+    "real 3D calibration/error evidence",
+    "arbitrary moving interior aperture and trajectory/latency",
+    "occlusion/wave-optics/radiometry/thermal",
+    "physical visibility, low glare, independent optical stop and manufactured device"
+  ],
+  "implementationAttempt": 2,
+  "repairAttempts": [
+    {
+      "attempt": 1,
+      "reviewPath": "docs/evidence/development-execution/mini-02-finite-cone-review.json",
+      "reviewSha256": "1502a1b6160db7de500890121e590a9a9e5cd52a0ec3179ccfa10f418994681f",
+      "verdict": "changes_required",
+      "exactFourSha256": {
+        "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "c35d5fd5c8736659bb75663631de4b40a8bb7252a6c90144c0bd2d854f65008a",
+        "tests/avocado-mini-finite-cone.test.mjs": "a08056470e31b15806fca216ad49bb6b5e87bcd959fa1a1303fbf36fe7d38277",
+        "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "7f57923f458642cba2ac7d80c34a520834c0bb65421beb89feac3d7a6e872ed5",
+        "docs/evidence/development-execution/mini-02-finite-cone.json": "0f6c5141a51cbf59bf846807c7a634d0daabe2c923ad405e4b937c67acdd005f"
+      },
+      "finding": "MINI02-CONE-R1",
+      "reproducedBeforeRepair": {
+        "conditions": 120,
+        "classificationDifferences": 21,
+        "unambiguousOutsideReportedInside": 9,
+        "exactCounterexampleAngleDeg": 0,
+        "exactCounterexampleStatus": "finite_cone_witness_passed"
+      }
+    },
+    {
+      "attempt": 2,
+      "finding": "MINI02-CONE-R1",
+      "cause": "acos loses near-parallel perpendicular component when rounded dot becomes 1; clamp cannot restore it",
+      "correction": "normalized cross/dot atan2 preserves near-parallel and near-antiparallel components; extra comparison roundoff guard only extends unknown band",
+      "verification": {
+        "conditions": 120,
+        "classificationDifferences": 0,
+        "unambiguousOutsideReportedInside": 0,
+        "maximumAngleErrorDeg": 3.3881317890172014e-21,
+        "states": {
+          "inside": 45,
+          "outside": 60,
+          "boundary_unknown": 15
+        }
+      },
+      "exactCounterexampleAfter": {
+        "angleDeg": 5e-7,
+        "status": "reallocation_required"
+      },
+      "insideRecovery": "finite_cone_witness_passed",
+      "independentAcceptance": false
+    }
+  ]
+}

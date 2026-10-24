@@ -1,3 +1,14 @@
+<a id="mini02-finite-cone-inspection"></a>
+## MINI-02 有限出射角・校正witnessの検査（attempt2）
+
+目的・体験・責任: 板膜なし・少ない表示部・上下の全需要・低眩しさを維持し、供給された完全witnessが宣言synthetic cone/errorの必要条件を満たすかhost検査する。外側なら代替witnessへ復旧でき、全解不成立とは言わない。ROCKは厳密入力/有限数値検査、EXTERNALは実部品/3D校正、JOINTは同一光学系の視認/停止、OWNERは用途/設置/予算。発光/dispatch/料金/権限なし。
+
+入出力・状態: finite-cone-study/1、world座標/clock/frame/input hash/全demand/pose/assignment/calibrationModelsを厳密照合する。[詳細・全上限](avocado-mini-r5/factory-development/mini-02-finite-cone.md)を正本に、不正/未知誤差はunavailable、境界はunknown、外側はreallocation_required、全件必要条件のみ通過をfinite_cone_witness_passedとする。attempt1のacos近平行誤合格R1を、正規化atan2(norm(cross),dot)とunknown側64epsilon余裕で修正したattempt2のみ採用候補。
+
+保存・失敗・再送・復旧・互換: hardware/network/storageを持たないpure host検査。input/result digestは同一入力照合用で実校正署名ではない。古い成功/部分witness/探索未完の成功昇格を拒否し、全入力と完全代替witnessで再検査する。旧solver/12hashと35721×18・0対708未達を保持。通常revert可能、永続migrationなし。
+
+承認・合格・未決定: Pro独立r2はmustFix0、新4hash固定、関連56試験、独立scalar120/別式168/境界20条件で差0。[元reviewとr2の要約](evidence/development-execution/mini-02-finite-cone-review-summary.json)を参照。旧changes_requiredを上書きしない。実校正/連続全域/任意移動開口/実同時viewer/低眩しさ/眼安全/独立stop/PCB/製造/MINI02全体は未受入。実校正誤差とcone適格再割当探索は別候補・実測・OWNER条件で判断し、host成功から物理許可を作らない。一般公開保留。
+
 <a id="mini02-finite-joint-allocation"></a>
 ## MINI-02 可動・切替出口の有限同時割当（2026-10-24）
 

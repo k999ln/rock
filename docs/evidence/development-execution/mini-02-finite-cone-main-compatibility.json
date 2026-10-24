@@ -1,0 +1,45 @@
+{
+  "schema": "rockstaros.mini02-finite-cone.main-compatibility/1",
+  "scope": "Only23 top-level test() promises receive void. No assertion/fixture/order/test count/runtime source semantics changed.",
+  "authorization": "Explicit Root exception to accepted-four hash freeze for this exact mechanical change only",
+  "path": "tests/avocado-mini-finite-cone.test.mjs",
+  "acceptedR2Sha256": "0694108f883fae92dd58c80bdccffece4a87542dfc42605447217083e48e77b8",
+  "mainCompatibleSha256": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+  "exactDiff": {
+    "oldLinePattern": "^test(",
+    "newLinePattern": "^void test(",
+    "count": 23,
+    "removingOnlyInsertedVoidReconstructsAcceptedBytes": true,
+    "unifiedDiffSha256": "f22462398d1fb5434b63352c818f21b3e94f5ca572db6bc6de1e21f02da9c9ed"
+  },
+  "originalProReviewR2Sha256": "dd733155a8b0b0b6f40937d7bdcca73ea5f8c6f26eed67d79d1a05a9910a3ed4",
+  "originalMeaningReviewStillAppliesToUnchangedAssertions": true,
+  "newMechanicalDeltaIndependentReviewPending": true,
+  "initialFullVerify": {
+    "exitCode": 1,
+    "inputCount": 4446,
+    "changedInputs": [],
+    "elapsedSeconds": 38,
+    "logSha256": "285167a853a5b92da159eab8c5ecf0e1b296ce03227fbab50949bcad2f5959bc"
+  },
+  "initialFailure": {
+    "phase": "lint:product after successful tsc",
+    "rule": "typescript/no-floating-promises",
+    "errorCount": 23,
+    "onlyPath": "tests/avocado-mini-finite-cone.test.mjs",
+    "success": false
+  },
+  "priorCandidateMetadata": "Existing exact-four hash records are frozen pre-compatibility source/review snapshots. This receipt identifies the only changed test hash in the current main candidate; three source/doc/evidence hashes and all old twelve remain unchanged.",
+  "currentMiniHashes": {
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+    "docs/evidence/development-execution/mini-02-finite-cone.json": "bdf2e67b94f9723e004e7b32cd6e4448ef07e54f091c11b9dfa63e69550ff39a"
+  },
+  "otherFrozenInputsUnchanged": true,
+  "validation": "Run related56 tests and main typecheck/lint, then freeze candidate including this receipt for one necessary full-verify retry; results in PR/Git checkpoint",
+  "runtimeChangedByThisDelta": false,
+  "physicalAcceptanceTransferred": false,
+  "wholeMini02Accepted": false,
+  "mainMerged": false
+}

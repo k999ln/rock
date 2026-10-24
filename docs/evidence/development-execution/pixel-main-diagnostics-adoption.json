@@ -1,0 +1,196 @@
+{
+  "schema": "rockstaros.pixel-main-diagnostics.adoption/1",
+  "batch": "PIXEL-MAIN-DIAGNOSTICS-01",
+  "recordedAt": "2026-10-24T13:21:06.707062+00:00",
+  "baseMain": "d15096b86ed0ddc745492e1b95caa6dcc3266ca5",
+  "workstream": "07 Android/device-local-AI",
+  "tasks": [
+    "OS-01",
+    "OS10",
+    "P02"
+  ],
+  "status": "targeted_host_pass_independent_review_and_Linux_CI_pending",
+  "sourceProvenance": {
+    "plan": {
+      "pathInOperatorWorkspace": "docs/evidence/development-execution/pixel-runtime-main-port-plan.json",
+      "sha256": "d40afa9241a9cdd82776201070494adc35c4e76c1e7e59f33fd9d2197f6f928a"
+    },
+    "sourcePreservationCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "originalDiagnosticReview": {
+      "pathInOperatorWorkspace": "docs/evidence/development-execution/pixel-worker-diagnostics-review-r2.json",
+      "sha256": "a9a00e136d316600b052efb8950be6e60c1308f5a5a3eb3e47c79679ce911b2c",
+      "meaning": "Prior independent source review; not review of this selective main candidate"
+    },
+    "workerExactPreserved": true,
+    "pythonParentSuiteExactPreserved": true,
+    "diagnosticSuiteAdaptation": "One host counterexample:450ms deadline expired before callback. Test now requires callback-failed event and uses2s deadline/3s assertion. Worker unchanged.",
+    "serverSelection": "execute() and builtin imports only; main manager/HTTP/prepare/stop/close lifecycle unchanged",
+    "serverIsPriorPhysicalSource": false,
+    "priorPhysicalPackageAcceptanceTransferred": false
+  },
+  "runtimeAndTestsSha256": {
+    "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "toolkits/sky-linux-local/pixel-server.mjs": "47df13cccb62f31b5b3f7811ae506b28fee8097e5ac89841af946f3a7d7fc953",
+    "tests/test_pixel_worker_diagnostics.py": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8",
+    "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "tests/pixel-worker-contract.test.mjs": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "5368025a78bd785809d6cae1f4b7a6d22e4721fde51d4d4677dca692a7a4b49f"
+  },
+  "protectedMainSha256": {
+    "scripts/sky-linux-local-runtime.mjs": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+    "scripts/sky-linux-model-link.mjs": "d0c399f5cf6d9f72ea74fd25728a8a66f156599337f4c279f645be6bb2c27f2a",
+    "lib/sky-linux-models.ts": "4c61dd7be615b435b4cab3d0b6760e45ce3ca09c7d4a7f0e353169e95a8eefe9",
+    "toolkits/sky-linux-local/prepare-pixel.py": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+    "toolkits/sky-linux-local/android-bridge.py": "22490f323e31e8e3e2bd543a9c317d2eb7f069a6febec08a8c44291dcabeefef",
+    "toolkits/sky-linux-local/android-eve-bridge.patch": "4d04357c1ecae1933f34209a799e3bbba7101db65ad13da6c577912343be1196",
+    "scripts/build-sky-linux-pixel.mjs": "b9362fe9a4116689fc9297fbbd03e18fa3143dceb4c2688374001cd605c417e7",
+    "toolkits/sky-linux-local/runtime-lock.json": "9200c4993c434a409691f49c08600466bb0df217bfd04d9bf0b064b2eafd9898",
+    "toolkits/sky-linux-local/update-pixel.py": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+    "tests/sky-linux-local.test.mjs": "837d2981e5aedde99b9ed48da7b9253a514817d2fc322114ee38a41ca09f69b1",
+    "tests/sky-linux-models.test.mjs": "3191d591d81f4a7c9201d75f21e70f8b447f7cc5c0e276b72a8bbc6e8f8c4066",
+    "tests/sky-pixel-entry.test.mjs": "37fa5259d775db031b36d900793c9e5712dbcfc609b74218f39a310c89586cc4",
+    "tests/sky-linux-service.test.mjs": "14bb8cd318c9c2d8f99e97e60fe36f8d5316d60d1a193ccb0cd159969c89997f",
+    "lib/sky-private-loopback.mjs": "a2de4a01186fe3db63cdbd705ee0ada1f3aa803d3ef129c6775cced2db264326"
+  },
+  "preservedHelperAstEquivalent": [
+    "save",
+    "digest",
+    "selected_model",
+    "job_dir",
+    "identity",
+    "alive",
+    "stop_all"
+  ],
+  "ci": {
+    "path": ".github/workflows/ci.yml",
+    "change": "stdlib Python27 diagnostic and4parent cases, step timeout3minutes; no added dependencies",
+    "LinuxGate": "Actual parent-death case must execute on candidate ubuntu runner. Host skip is not Linux pass."
+  },
+  "contracts": {
+    "legacyDefaults": {
+      "tokens": 512,
+      "wallSeconds": 180,
+      "cpuSeconds": 170
+    },
+    "additionalLimits": {
+      "tokens": [
+        1,
+        1024
+      ],
+      "deadlineMaximumMs": 120000,
+      "bothFieldsRequired": true,
+      "unknownFieldsRejected": true
+    },
+    "parentLifetime": "PDEATHSIG SIGKILL and parent PID race check before limits/start",
+    "diagnostics": "optional16KiB worker/8KiB parent evidence; private nonblocking lock/regular NOFOLLOW NONBLOCK reads; stop never reads/hashes output; observer join50ms",
+    "authorityAdded": false,
+    "managerRouteExpanded": false
+  },
+  "validation": {
+    "commands": {
+      "python": {
+        "command": [
+          "python3",
+          "tests/test_pixel_worker_diagnostics.py",
+          "-v"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 8.38
+      },
+      "parent": {
+        "command": [
+          "python3",
+          "tests/test_pixel_worker_parent_exit.py",
+          "-v"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.18
+      },
+      "node": {
+        "command": [
+          "node",
+          "--experimental-strip-types",
+          "--test",
+          "tests/pixel-worker-contract.test.mjs",
+          "tests/pixel-worker-parent-diagnostics.test.mjs",
+          "tests/sky-linux-local.test.mjs",
+          "tests/sky-linux-models.test.mjs",
+          "tests/sky-pixel-entry.test.mjs",
+          "tests/sky-linux-service.test.mjs"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 4.14
+      },
+      "bridge": {
+        "command": [
+          "python3",
+          "tests/test_sky_android_bridge.py",
+          "-v"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.5
+      }
+    },
+    "hostPythonDiagnostics": {
+      "tests": 27,
+      "passed": 26,
+      "skipped": 1,
+      "skip": "Optional historical worker comparison artifact not supplied"
+    },
+    "hostParent": {
+      "tests": 4,
+      "passed": 3,
+      "skipped": 1,
+      "skip": "Actual Linux kernel required"
+    },
+    "hostNode": {
+      "tests": 33,
+      "passed": 32,
+      "skipped": 1,
+      "skip": "Existing protected system PID platform case"
+    },
+    "bridge": {
+      "tests": 4,
+      "passed": 4,
+      "skipped": 0
+    },
+    "mini": {
+      "tests": 56,
+      "passed": 56,
+      "skipped": 0
+    },
+    "targetedLint": "passed",
+    "fullVerify": "Required once on fixed combined candidate; final result recorded in PR/Git checkpoint"
+  },
+  "distinctMiniScope": {
+    "reviewSummary": "docs/evidence/development-execution/mini-02-finite-cone-review-summary.json",
+    "attempt": 2,
+    "exactFourSha256": {
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+      "tests/avocado-mini-finite-cone.test.mjs": "0694108f883fae92dd58c80bdccffece4a87542dfc42605447217083e48e77b8",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+      "docs/evidence/development-execution/mini-02-finite-cone.json": "bdf2e67b94f9723e004e7b32cd6e4448ef07e54f091c11b9dfa63e69550ff39a"
+    },
+    "oldTwelveUnchanged": true,
+    "runtimeOrPhysicalAcceptanceTransferred": false
+  },
+  "acceptance": {
+    "hostTargeted": true,
+    "candidateIndependentRuntimeReview": false,
+    "candidateLinuxParentKernel": false,
+    "candidatePhysicalPackage": false,
+    "cacheOnly": false,
+    "nativeAccountBridge": false,
+    "background": false,
+    "p02WholeUnit": false,
+    "fullOs": false,
+    "generalLaunch": "held",
+    "mainMerged": false
+  },
+  "excluded": [
+    "manager/URL/model/schema/service/lifecycle/prepare/build changes",
+    "cache-only/native account/bridge/journal/common executor",
+    "models/APKs/OS images/raw private state/device inference/paid Linux/deploy"
+  ],
+  "next": "Exact-head independent runtime review, separate metadata review and CI Linux4cases. No merge before independent review."
+}

@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.19",
+  "version": "1.20",
   "updatedAt": "2026-10-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -759,7 +759,17 @@
         "contract": "Exact owner/delegation/terms, current signed usage proof and original settled ledger receipt are read-only requirements for wallet_settled.",
         "mutation": "No reserve, dispatch, settle or release on readback.",
         "failure": "Any missing, changed or unverifiable binding stays unknown; held is not asserted without proof."
-      }
+      },
+      "implementation": [
+        "toolkits/sky-linux-local/worker.py",
+        "toolkits/sky-linux-local/pixel-server.mjs"
+      ],
+      "recoveredContractReferences": [
+        "tests/test_pixel_worker_diagnostics.py",
+        "tests/test_pixel_worker_parent_exit.py",
+        "tests/pixel-worker-contract.test.mjs",
+        "tests/pixel-worker-parent-diagnostics.test.mjs"
+      ]
     },
     {
       "id": "local_ai_and_memory",
@@ -2775,5 +2785,44 @@
     ],
     "physicalAccepted": false,
     "wholeUnitComplete": false
+  },
+  "pixelMainWorkerDiagnostics": {
+    "authority": "docs/rockstaros-complete-design.md#pixel-main-worker-diagnostics",
+    "toolDesign": "docs/sky-tools-complete-design.md#pixel-worker-diagnostic-adapter",
+    "evidence": "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
+    "implementation": [
+      "toolkits/sky-linux-local/worker.py",
+      "toolkits/sky-linux-local/pixel-server.mjs"
+    ],
+    "tests": [
+      "tests/test_pixel_worker_diagnostics.py",
+      "tests/test_pixel_worker_parent_exit.py",
+      "tests/pixel-worker-contract.test.mjs",
+      "tests/pixel-worker-parent-diagnostics.test.mjs"
+    ],
+    "legacyDefaults": {
+      "tokens": 512,
+      "wallSeconds": 180,
+      "cpuSeconds": 170
+    },
+    "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "candidateRuntimeIndependentlyReviewed": false,
+    "candidatePhysicalAccepted": false,
+    "mainMerged": false
+  },
+  "mini02FiniteConeInspection": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-cone-inspection",
+    "implementation": [
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "tests/avocado-mini-finite-cone.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md",
+      "docs/evidence/development-execution/mini-02-finite-cone.json"
+    ],
+    "reviewSummary": "docs/evidence/development-execution/mini-02-finite-cone-review-summary.json",
+    "acceptedSourceAttempt": 2,
+    "syntheticWitnessOnly": true,
+    "oldTwelveUnchanged": true,
+    "physicalAccepted": false,
+    "wholeMini02Accepted": false
   }
 }
