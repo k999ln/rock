@@ -1,0 +1,108 @@
+import importlib.util
+from pathlib import Path
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parent.parent
+spec = importlib.util.spec_from_file_location('private_preview', ROOT / 'scripts/stage-pixel-private-preview.py')
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+
+class PrivatePreviewStageTest(unittest.TestCase):
+    def fixture(self, directory):
+        source = Path(directory) / 'source'
+        java = source / 'shell/src/debug/java/dev/rock/shell'
+        java.mkdir(parents=True)
+        (java / 'EveAccountSync.java').write_text('return new EveAccountSessionStore(c,endpoint(c)); },sessions(c));pending=flow.begin(')
+        (java / 'EvePendingAuthorizationStore.java').write_text('new File(dir,"eve-pending-authorization-v1.bin")')
+        (java / 'EveAccountActivity.java').write_text('''setContentView(scroll);
+text(body,"会員登録・ログイン",26);
+text(body,"Webでパスキーを使って登録・ログインします。同じアカウントの会話・選んだ仕事・成果をこのPixelでも使えます。",15);
+EveAccountSync.begin(this,ACCOUNT_ORIGIN);
+"Webで会員登録・ログイン",()->work;
+EveAccountSync.endpoint(this)+"/os/eve";
+private void openAccount(String userCode){ }
+startActivity(new Intent(this,EveLinuxActivity.class).putExtra("threadId",id).putExtra("context",carry));
+''')
+        import shutil
+        flow = source / 'shell/src/debug/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java'
+        flow.parent.mkdir(parents=True)
+        shutil.copy2(ROOT / 'android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java', flow)
+        (java / 'EveAccountSessionStore.java').write_text('this.file = storage == null ? new AtomicFile(new File(directory, FILE_NAME)) : storage;')
+        for name in ['EvePortableClaimJournal.java', 'EvePortableJournalKeys.java']:
+            shutil.copy2(ROOT / 'toolkits/sky-linux-local/common-ui-src' / name, java / name)
+        (source / 'shell/src/debug/AndroidManifest.xml').write_text('        <activity android:name=".EveLinuxActivity" android:exported="false" />\n        <activity android:name=".SkyLinuxActivity" android:exported="false" android:launchMode="singleTop" />\n<activity android:name=".MainActivity" android:exported="true"><intent-filter tools:node="removeAll" /></activity>')
+        return source, java
+
+    def test_separate_private_session_and_pending_leave_original_source_unchanged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, java = self.fixture(directory)
+            before = {p.name: p.read_bytes() for p in java.iterdir()}
+            output = Path(directory) / 'output'
+            result = module.stage(source, output)
+            self.assertFalse(result['productionSessionCopied'])
+            self.assertTrue(result['newGrantRequiresOwnerApproval'])
+            for name, data in before.items():
+                self.assertEqual(data, (java / name).read_bytes())
+            staged = output / 'shell/src/debug/java/dev/rock/shell'
+            self.assertIn('EvePrivatePreview.session(c,endpoint(c))', (staged / 'EveAccountSync.java').read_text())
+            self.assertIn('private-eve-pending-v1.bin', (staged / 'EvePendingAuthorizationStore.java').read_text())
+            self.assertIn('PCとの接続を確認する', (staged / 'EveAccountActivity.java').read_text())
+            entry = (staged / 'RockstarOsActivity.java').read_text()
+            self.assertNotIn('SkyLinuxActivity.class', entry)
+            self.assertNotIn('MainActivity.class', entry)
+            self.assertNotIn('LinuxActivity', (output / 'shell/src/debug/AndroidManifest.xml').read_text())
+            self.assertIn('tools:node="remove"', (output / 'shell/src/debug/AndroidManifest.xml').read_text())
+            self.assertIn('Eveで依頼・成果・停止を開く', entry)
+            self.assertIn('if (preview && EvePrivatePreview.selected(this))', entry)
+            self.assertIn('path = "/os/eve/module"', entry)
+            helper = (staged / 'EvePrivatePreview.java').read_text()
+            for forbidden in ['authorizationHeader(', 'KeyGenerator', 'KeyPairGenerator', 'generateKey', 'clearLocal(', 'deleteEntry']:
+                self.assertNotIn(forbidden, helper)
+            self.assertIn('handles.pending()', helper)
+            self.assertIn('private-eve-preview', helper)
+            storage = (staged / 'EveAccountSessionStore.java').read_text()
+            self.assertLess(storage.index('storage = EvePrivatePreview.session(context, origin)'), storage.index('this.file = storage == null'))
+            journal = (staged / 'EvePortableClaimJournal.java').read_text()
+            self.assertIn('this(directory,packageName,origin,owner,device,keys,probe,false)', journal)
+            self.assertIn('debugUsbPreview && "http://localhost:5199".equals(origin)', journal)
+            self.assertIn('EvePrivatePreview.selected(app)', (staged / 'EvePortableJournalKeys.java').read_text())
+
+    def test_cached_preparation_uses_existing_transport_and_no_retired_screen_or_download(self):
+        source = ROOT / 'toolkits/sky-linux-local/common-ui-src'
+        activity = (source / 'RockstarOsActivity.java').read_text()
+        self.assertIn('android.os.SystemClock.elapsedRealtime()-cacheObserved >= 30000', activity)
+        self.assertIn('cacheBusy=true;cacheInventory=null', activity)
+        self.assertIn('EvePortableAccountSync.cachedModels(this,action,selection)', activity)
+        self.assertIn('final JSONObject inventoryAtSelection=new JSONObject(cacheInventory.toString())',activity)
+        self.assertIn('inventoryAtSelection.getString("sessionBinding")',activity)
+        self.assertIn('cacheSessionCurrent(this,selected.optString("sessionBinding"))',activity)
+        sync = (source / 'EvePortableAccountSync.java').read_text()
+        bounded = sync[sync.index('    static boolean cacheSessionCurrent('):sync.index('    static boolean sync(')]
+        self.assertIn('SkyLinuxBridge.requestExisting(context,command,guard)', bounded)
+        self.assertIn('!stop.pending()', bounded)
+        self.assertNotIn('synchronized(EveAccountSync.class)', bounded)
+        self.assertIn('account.check()', bounded)
+        for forbidden in ['generateKey', 'authorize', 'sync(context', 'requestStop(', 'runtime-start', 'add-model']:
+            self.assertNotIn(forbidden, bounded)
+
+    def test_existing_output_is_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = self.fixture(directory)
+            output = Path(directory) / 'output'
+            output.mkdir()
+            marker = output / 'keep.txt'
+            marker.write_text('unchanged')
+            with self.assertRaises(ValueError):
+                module.stage(source, output)
+            self.assertEqual(marker.read_text(), 'unchanged')
+
+    def test_missing_source_is_not_guessed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ValueError):
+                module.stage(Path(directory) / 'missing', Path(directory) / 'out')
+
+
+if __name__ == '__main__':
+    unittest.main()

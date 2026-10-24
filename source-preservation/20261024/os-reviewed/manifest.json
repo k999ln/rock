@@ -1,0 +1,183 @@
+{
+  "schema": "rockstaros.os-source-preservation/1",
+  "recordedAt": "2026-10-24T11:18:02.194114+00:00",
+  "parentSourcePreservationCommit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
+  "comparisonMain": "7e36c8390f8321c87113b49a3069ab37ebd98e18",
+  "rootBaseline": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+  "sourceFiles": 16,
+  "payloadBytes": 275771,
+  "records": [
+    {
+      "originalPath": "scripts/sky-linux-local-runtime.mjs",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/scripts/sky-linux-local-runtime.mjs.source",
+      "bytes": 45090,
+      "sha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/pixel-server.mjs",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/pixel-server.mjs.source",
+      "bytes": 11411,
+      "sha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/android-bridge.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/android-bridge.py.source",
+      "bytes": 6402,
+      "sha256": "079b1793ca9dec396d543dbc5255a4edb2a954b3948c803d957a6c0c6118995a"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/prepare-pixel.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/prepare-pixel.py.source",
+      "bytes": 14947,
+      "sha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/android-eve-bridge.patch",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/android-eve-bridge.patch.source",
+      "bytes": 39500,
+      "sha256": "25e82c70127b8429d54ef9fac0a70cedc00035e4b8c99e747c08c70cdc4ee064"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/common-ui-src/RockstarOsActivity.java.source",
+      "bytes": 17627,
+      "sha256": "cef46771841758f2ff61843f7550cd55cd887d28d8a0cfa08a81508570f61418"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java.source",
+      "bytes": 23137,
+      "sha256": "60d345a0da7aea369900b7728d9a93d8fba5177db10bb714c585958f3169b734"
+    },
+    {
+      "originalPath": "tests/pixel-cached-prepare.test.mjs",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/pixel-cached-prepare.test.mjs.source",
+      "bytes": 10171,
+      "sha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+    },
+    {
+      "originalPath": "tests/test_pixel_cached_prepare.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_pixel_cached_prepare.py.source",
+      "bytes": 6293,
+      "sha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+    },
+    {
+      "originalPath": "tests/test_pixel_cached_native.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_pixel_cached_native.py.source",
+      "bytes": 11115,
+      "sha256": "491e97471560493cda9cb5846e5b6d5d2ebcf4e058f5beccecde3bac312a9749"
+    },
+    {
+      "originalPath": "tests/test_sky_android_bridge.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_sky_android_bridge.py.source",
+      "bytes": 3938,
+      "sha256": "5282fac61e4b96d6ae59b29402afd7b44cb67e8a238e51a3096e232e8d8e4577"
+    },
+    {
+      "originalPath": "tests/test_stage_pixel_private_preview.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_stage_pixel_private_preview.py.source",
+      "bytes": 7194,
+      "sha256": "98bd9ac55e993d1843ee5a61028ab3cfa6a3734587c619238c24552a1b38d56b"
+    },
+    {
+      "originalPath": "toolkits/sky-linux-local/worker.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/toolkits/sky-linux-local/worker.py.source",
+      "bytes": 29027,
+      "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+    },
+    {
+      "originalPath": "tests/test_pixel_worker_diagnostics.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_pixel_worker_diagnostics.py.source",
+      "bytes": 30008,
+      "sha256": "3fc5a828606fecdf41d9e0ef7d665e1e51624326ef6f6d9e522b6925dc3bf7fa"
+    },
+    {
+      "originalPath": "tests/pixel-portable-executor.test.mjs",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/pixel-portable-executor.test.mjs.source",
+      "bytes": 16314,
+      "sha256": "d2d17ff70e05c49c0e70abff29a3b3a87b0dfd23b5f10716d25f4a912f1d5128"
+    },
+    {
+      "originalPath": "tests/test_pixel_worker_parent_exit.py",
+      "snapshotPath": "source-preservation/20261024/os-reviewed/snapshots/tests/test_pixel_worker_parent_exit.py.source",
+      "bytes": 3597,
+      "sha256": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272"
+    }
+  ],
+  "superseded": {
+    "toolkits/sky-linux-local/pixel-server.mjs": {
+      "cacheOnlySha256": "9d542be006f225733b77c5e675c19df08b9bcb835a5929dca66ae199b6796a1a",
+      "diagnosticsAttempt2Sha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    }
+  },
+  "protectedDependenciesHashOnly": [
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "reviewedSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "scripts/sky-linux-runtime-bridge.mjs",
+      "reviewedSha256": "8abb973d480059e54ac6955cea28920b6a5fe85f75e4cbab6d26c41120ff39f3",
+      "liveMatchesReview": true,
+      "mainExists": false,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "scripts/pixel-runtime-stop-journal.mjs",
+      "reviewedSha256": "2d401aa4b05d533cb626faf67efd61f22f1b838d84cbcf677860c56d2e4d3973",
+      "liveMatchesReview": true,
+      "mainExists": false,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "toolkits/sky-linux-local/prepare-pixel.py",
+      "reviewedSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "toolkits/sky-linux-local/android-bridge.py",
+      "reviewedSha256": "079b1793ca9dec396d543dbc5255a4edb2a954b3948c803d957a6c0c6118995a",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "toolkits/sky-linux-local/android-eve-bridge.patch",
+      "reviewedSha256": "25e82c70127b8429d54ef9fac0a70cedc00035e4b8c99e747c08c70cdc4ee064",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": false
+    },
+    {
+      "path": "toolkits/sky-linux-local/runtime-lock.json",
+      "reviewedSha256": "9200c4993c434a409691f49c08600466bb0df217bfd04d9bf0b064b2eafd9898",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": true
+    },
+    {
+      "path": "toolkits/sky-linux-local/update-pixel.py",
+      "reviewedSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50",
+      "liveMatchesReview": true,
+      "mainExists": true,
+      "mainMatchesReview": false
+    }
+  ],
+  "excluded": [
+    "privateRealm settings",
+    "keys and credentials",
+    "APK",
+    "models and weights",
+    "images",
+    "raw materials",
+    "duplicate logs"
+  ],
+  "mainAdopted": false,
+  "physicalPerformanceP02Accepted": false,
+  "note": "Frozen exact reviewed source only. Missing dependency closure and main-specific compatibility are separate gates. No privateRealm settings, APK, weights, keys or live runtime state."
+}

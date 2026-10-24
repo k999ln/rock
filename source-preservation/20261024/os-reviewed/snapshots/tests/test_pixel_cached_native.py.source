@@ -1,0 +1,110 @@
+"""Execute actual native cache methods with content-free host doubles, never Android/device I/O.
+Set PIXEL_CACHE_JAVA_HOME and PIXEL_CACHE_JSON_JAR to existing local build dependencies.
+"""
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+
+@unittest.skipUnless(os.environ.get('PIXEL_CACHE_JAVA_HOME') and os.environ.get('PIXEL_CACHE_JSON_JAR'), 'Explicit existing JDK/JSON jar required')
+class NativeCacheContractTest(unittest.TestCase):
+    def test_actual_native_methods_bind_inventory_session_and_recheck_at_dequeue(self):
+        source=(ROOT/'toolkits/sky-linux-local/common-ui-src/EvePortableAccountSync.java').read_text()
+        methods=source[source.index('    static boolean cacheSessionCurrent('):source.index('    static boolean sync(')]
+        harness='''package dev.rock.shell;
+import org.json.*;
+class Context {KeyguardManager key=new KeyguardManager();<T>T getSystemService(Class<T> type){return type.cast(key);}}
+class KeyguardManager {boolean isDeviceLocked(){return CacheProbe.locked;}}
+class PixelHostPrerequisites {static boolean available(Context c){return CacheProbe.available;}}
+class EveAccountSync {static boolean linked(Context c){return CacheProbe.linked;}}
+class EvePixelHostService {static boolean running(){return CacheProbe.running;}}
+class EvePortableAccountBinding {
+ String owner=CacheProbe.currentOwner,stopSessionHash=CacheProbe.currentSession;
+ EvePortableAccountBinding(Context c){}
+ void check()throws Exception {if(CacheProbe.retired||!owner.equals(CacheProbe.currentOwner)||!stopSessionHash.equals(CacheProbe.currentSession))throw new java.io.IOException();}
+ boolean active(){try{check();return true;}catch(Exception invalid){return false;}}
+ JSONObject inspect()throws Exception{if(CacheProbe.flipAfterInspect)CacheProbe.currentSession="c".repeat(64);return new JSONObject().put("ownerUserId",CacheProbe.foreign?"foreign":owner).put("deviceId",CacheProbe.ID);}
+}
+class EvePortableStopHandles {boolean pending(){return CacheProbe.pending;}}
+class SkyLinuxBridge {
+ interface ExistingGuard {void check()throws Exception;}
+ static JSONObject requestExisting(Context c,JSONObject command,ExistingGuard guard)throws Exception{
+  if(CacheProbe.beforeDequeue!=null)CacheProbe.beforeDequeue.run();
+  guard.check(); // Real bridge holds the captured guard with the queued call.
+  CacheProbe.calls++;CacheProbe.last=command;
+  if(CacheProbe.retireAfter)CacheProbe.retired=true;
+  guard.check();return new JSONObject(CacheProbe.response.toString());
+ }
+}
+public class CacheProbe {
+ static final Object CACHE_IO_LOCK=new Object();static volatile JSONObject cacheObservation;
+ static final String ID="11111111-1111-4111-8111-111111111111",HASH="b".repeat(64);
+ static String currentSession,currentOwner;static Runnable beforeDequeue;
+ static boolean locked,available,linked,running,pending,foreign,retired,retireAfter,flipAfterInspect;static int calls;static JSONObject response,last;
+ static EvePortableStopHandles handles(Context c){return new EvePortableStopHandles();}
+''' + methods + '''
+ interface Operation {void run()throws Exception;}
+ static void rejected(Operation operation)throws Exception{try{operation.run();throw new AssertionError("must reject");}catch(java.io.IOException|JSONException expected){}}
+ static void reset()throws Exception{
+  locked=false;available=true;linked=true;running=false;pending=false;foreign=false;retired=false;retireAfter=false;flipAfterInspect=false;calls=0;last=null;beforeDequeue=null;
+  currentSession="a".repeat(64);currentOwner="fixture-owner";cacheObservation=null;android.os.SystemClock.time=1000;
+  JSONObject model=new JSONObject().put("id","fixture").put("sha256",HASH).put("bytes",1024);
+  response=new JSONObject().put("schema","sky.private-linux-deployment/1").put("vm","pixel-linux").put("cacheOnlyProtocol",2).put("phase","stopped")
+   .put("models",new JSONArray().put(model)).put("agents",new JSONArray()).put("runs",new JSONArray()).put("preparedModels",new JSONArray())
+   .put("cacheInventory",new JSONArray().put(new JSONObject(model.toString()).put("state","verified").put("cacheOnly",true).put("downloads",false)));
+ }
+ static JSONObject selection(JSONObject inventory)throws Exception{return new JSONObject().put("modelId","fixture").put("modelSha256",HASH).put("requestId",ID)
+  .put("sessionBinding",inventory.getString("sessionBinding")).put("inventoryId",inventory.getString("inventoryId")).put("expiresAtElapsed",inventory.getLong("expiresAtElapsed"));}
+ static JSONObject tuple(JSONObject selection)throws Exception {JSONObject t=new JSONObject(selection.toString());t.remove("inventoryId");t.remove("expiresAtElapsed");return t;}
+ static void operation(JSONObject selection)throws Exception {response.put("cachePreparation",new JSONObject(tuple(selection).toString()).put("scopeSha256",currentSession).put("state","preparing").put("cacheOnly",true));}
+ public static void main(String[] args)throws Exception{
+  Context c=new Context();reset();JSONObject inv=cachedModels(c,"inventory",null),selected=selection(inv);
+  if(calls!=1||!last.getBoolean("cacheOnly")||!"cache-inventory".equals(last.getString("action"))||!HASH.equals(inv.getJSONArray("inventory").getJSONObject(0).getString("sha256")))throw new AssertionError();
+  calls=0;operation(selected);cachedModels(c,"prepare",selected);
+  if(calls!=1||!"prepare-cached".equals(last.getString("action"))||!last.getBoolean("accepted")||!currentSession.equals(last.getString("scopeSha256"))||last.has("owner")||last.has("authorization"))throw new AssertionError();
+  android.os.SystemClock.time=50000;cachedModels(c,"cancel",tuple(selected));if(!"cancel-cached-prepare".equals(last.getString("action")))throw new AssertionError();
+  cachedModels(c,"status",tuple(selected));if(!"cache-status".equals(last.getString("action")))throw new AssertionError();
+  response.getJSONObject("cachePreparation").put("state","ready");if(!"unknown".equals(cachedModels(c,"status",tuple(selected)).getJSONObject("operation").getString("state")))throw new AssertionError("stale ready");
+  for(int i=0;i<6;i++){reset();switch(i){case 0:locked=true;break;case 1:available=false;break;case 2:linked=false;break;case 3:running=true;break;case 4:pending=true;break;case 5:foreign=true;break;}rejected(()->cachedModels(c,"inventory",null));if(calls!=0)throw new AssertionError("pre-I/O guard emitted");}
+  for(String action:new String[]{"prepare","cancel","status"}){reset();JSONObject prior=selection(cachedModels(c,"inventory",null));calls=0;currentSession="c".repeat(64);operation(prior);
+   rejected(()->cachedModels(c,action,"prepare".equals(action)?prior:tuple(prior)));if(calls!=0)throw new AssertionError("A selection rebound to B: "+action);}
+  for(int i=0;i<5;i++){reset();JSONObject prior=selection(cachedModels(c,"inventory",null));calls=0;operation(prior);final int fault=i;
+   beforeDequeue=()->{switch(fault){case 0:currentSession="c".repeat(64);break;case 1:pending=true;break;case 2:running=true;break;case 3:locked=true;break;case 4:android.os.SystemClock.time=50000;break;}};
+   rejected(()->cachedModels(c,"prepare",prior));if(calls!=0)throw new AssertionError("dequeue guard emitted");}
+  for(String action:new String[]{"cancel","status"}){reset();JSONObject prior=selection(cachedModels(c,"inventory",null));calls=0;operation(prior);beforeDequeue=()->currentSession="c".repeat(64);
+   rejected(()->cachedModels(c,action,tuple(prior)));if(calls!=0)throw new AssertionError("late rebind on "+action);}
+  reset();JSONObject prior=selection(cachedModels(c,"inventory",null));calls=0;operation(prior);flipAfterInspect=true;JSONObject afterInspect=prior;rejected(()->cachedModels(c,"prepare",afterInspect));if(calls!=0)throw new AssertionError();
+  reset();prior=selection(cachedModels(c,"inventory",null));JSONObject expired=prior;calls=0;android.os.SystemClock.time=50000;rejected(()->cachedModels(c,"prepare",expired));if(calls!=0)throw new AssertionError();
+  reset();prior=selection(cachedModels(c,"inventory",null));JSONObject superseded=prior;cachedModels(c,"inventory",null);calls=0;rejected(()->cachedModels(c,"prepare",superseded));if(calls!=0)throw new AssertionError();
+  reset();prior=selection(cachedModels(c,"inventory",null));JSONObject tampered=new JSONObject(prior.toString()).put("modelSha256","d".repeat(64));calls=0;rejected(()->cachedModels(c,"prepare",tampered));if(calls!=0)throw new AssertionError();
+  reset();for(int protocol:new int[]{0,1}){response.put("cacheOnlyProtocol",protocol);rejected(()->cachedModels(c,"inventory",null));}
+  reset();retireAfter=true;rejected(()->cachedModels(c,"inventory",null));
+  reset();response.getJSONArray("cacheInventory").getJSONObject(0).put("downloads",true);rejected(()->cachedModels(c,"inventory",null));
+  reset();response.getJSONArray("cacheInventory").getJSONObject(0).put("sha256","c".repeat(64));rejected(()->cachedModels(c,"inventory",null));
+  System.out.println("PASS actual native methods: A-inventory/B prepare-cancel-status emit0; dequeue session-stop-sync-lock-expiry emit0; same-session exact pins; cancel/status after inventory expiry; stale-ready/old-ABI/authority rejection; host doubles only");
+ }
+}
+'''
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp);(folder/'CacheProbe.java').write_text(harness)
+            clock=folder/'android/os/SystemClock.java';clock.parent.mkdir(parents=True);clock.write_text('package android.os; public final class SystemClock {public static long time=1000;public static long elapsedRealtime(){return time;}}')
+            (folder/'EvePortableCommands.java').write_text((ROOT/'toolkits/sky-linux-local/common-ui-src/EvePortableCommands.java').read_text())
+            jdk=Path(os.environ['PIXEL_CACHE_JAVA_HOME'])/'bin';jar=os.environ['PIXEL_CACHE_JSON_JAR']
+            result=subprocess.run([str(jdk/'javac'),'-cp',jar,'-d',temp,str(folder/'CacheProbe.java'),str(folder/'EvePortableCommands.java'),str(clock)],capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            result=subprocess.run([str(jdk/'java'),'-cp',temp+os.pathsep+jar,'dev.rock.shell.CacheProbe'],capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr);self.assertIn('PASS actual native methods',result.stdout);print(result.stdout.strip())
+
+    def test_actual_bridge_carries_guard_to_dequeue_and_before_accepting_response(self):
+        text=(ROOT/'toolkits/sky-linux-local/android-eve-bridge.patch').read_text()
+        self.assertIn('final ExistingGuard guard',text)
+        self.assertIn('new Call(command,guard)',text)
+        self.assertIn('task.guard.check();}catch(Exception rejected){task.done.completeExceptionally(rejected);continue;}',text)
+        dequeue=text.index('Call task=queue.poll(');check=text.index('task.guard.check()',dequeue);send=text.index('write(socket.getOutputStream()',dequeue)
+        self.assertLess(check,send)
+        self.assertIn('if(task.guard!=null)task.guard.check();task.done.complete(value)',text)
+
+if __name__=='__main__':unittest.main()

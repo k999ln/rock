@@ -1,0 +1,277 @@
+package dev.rock.shell;
+
+import android.content.Context;
+import android.app.KeyguardManager;
+import java.util.function.BooleanSupplier;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/** Uses EveAccountSync's existing exclusion and foreground lifetime; no second runner. */
+final class EvePortableAccountSync {
+    static volatile String notice="";
+    private static final Object CACHE_IO_LOCK=new Object();
+    private static volatile JSONObject cacheObservation;
+    // Cancellation I/O does not wait behind an unrelated account HTTP response.
+    // It never executes jobs, creates keys, or extends Android's background lifetime.
+    private static final ExecutorService STOP_IO=Executors.newSingleThreadExecutor();
+    private static final Set<String> stopQueued=ConcurrentHashMap.newKeySet();
+    private static EvePortableStopHandles handles(Context c)throws Exception {
+        return new EvePortableStopHandles(new java.io.File(c.getApplicationContext().getNoBackupFilesDir(),"portable-stops").toPath());
+    }
+    static void requestStop(Context c) {
+        Context app=c.getApplicationContext();
+        synchronized(EveAccountSync.class){
+            if(app.getSystemService(KeyguardManager.class).isDeviceLocked())return;
+            if(EveAccountSync.linked(app))return; // A stale unlinked observation cannot stop a new account.
+            try{String session=handles(app).requestActive();if(!session.isEmpty())requestStop(app,session);}
+            catch(Exception unavailable){notice="停止要求の保存を確認できません。実停止は未確認です。";}
+        }
+    }
+    private static void stopNotice(Context app,String session,String message) {
+        try{if(session.equals(handles(app).activeSession()))notice=message;}catch(Exception ignored){}
+    }
+    private static void stopAfterFailure(Context context,EvePortableAccountBinding account,Exception failure,boolean journalUnavailable){
+        boolean locked=context.getSystemService(KeyguardManager.class).isDeviceLocked();
+        int status=failure instanceof EvePortableController.HttpFailure?((EvePortableController.HttpFailure)failure).status:0;
+        if(EvePortableStopHandles.requiresStop(locked,account.active(),failure instanceof EvePortableController.Stopped,status,journalUnavailable))
+            requestStop(context,account.stopSessionHash);
+    }
+    private static void requestStop(Context c,String session) {
+        Context app=c.getApplicationContext();
+        try{EvePortableStopHandles stop=handles(app);stop.requestSession(session);if(!stop.pending(session))return;}
+        catch(Exception unavailable){stopNotice(app,session,"停止要求の保存を確認できません。実停止は未確認です。");return;}
+        if(!stopQueued.add(session))return;
+        STOP_IO.execute(()->{
+            try{
+                EvePortableStopHandles stop=handles(app);stop.requestSession(session);
+                for(int attempt=0;attempt<2&&stop.pending(session);attempt++){
+                    try{stop.cancelRequested(command->SkyLinuxBridge.request(app,command),1,session);}
+                    catch(Exception unavailable){stopNotice(app,session,"停止要求を保持しています。Linuxとの接続と実停止は未確認です。");}
+                    if(stop.pending(session)&&attempt==0)Thread.sleep(500);
+                }
+                stopNotice(app,session,stop.pending(session)?"停止要求を保持しています。実停止は未確認です。":"このPixelの停止要求を照合しました。仕事と成果は保持しています。");
+            }catch(Exception unavailable){stopNotice(app,session,"停止要求を照合できません。成果を保持し、同じ仕事を再確認します。");}
+            finally{stopQueued.remove(session);}
+        });
+    }
+    private static JSONObject bridge(Context context,EvePortableStopHandles stop,EvePortableAccountBinding account,
+            BooleanSupplier continuing,JSONObject command)throws Exception {
+        String action=command.getString("action");
+        if("runtime-capabilities".equals(action)||"runtime-start".equals(action)){
+            if(!continuing.getAsBoolean()||!account.active())throw new EvePortableController.Stopped();
+            JSONObject probe=new JSONObject().put("schema","rockstaros.pixel-runtime-bridge/1").put("action","runtime-stop-capabilities");
+            PixelPortableBridgeProtocol.validate(probe,SkyLinuxBridge.request(context,probe));
+        }
+        if("runtime-start".equals(action)){
+            stop.arm(command,account.stopSessionHash); // Durable before a start; old sessions cannot stop new ones.
+            if(!continuing.getAsBoolean()||!account.active())throw new EvePortableController.Stopped();
+        }
+        JSONObject result=SkyLinuxBridge.request(context,command);
+        PixelPortableBridgeProtocol.validate(command,result);stop.observe(command,result);return result;
+    }
+    private static JSONObject descriptor(String id,String role,String platform,JSONObject capabilities,long now)throws Exception{
+        return new JSONObject().put("schema","rockstaros.adapter/1").put("id",id).put("role",role).put("platform",platform)
+            .put("version","1.0.0").put("protocols",new JSONArray().put(1)).put("observedAt",now).put("expiresAt",now+30000).put("capabilities",capabilities);
+    }
+    private static JSONObject presence(JSONObject snapshot)throws Exception{
+        if(snapshot==null)return null;
+        JSONObject diagnostic=SkyLinuxBridge.diagnostics();
+        if(!Boolean.TRUE.equals(diagnostic.opt("authenticated"))||!Boolean.TRUE.equals(diagnostic.opt("portableRuntime")))return null;
+        if(!"pixel-linux".equals(snapshot.optString("vm"))||!"ready".equals(snapshot.optString("phase")))return null;
+        JSONObject environment=snapshot.getJSONObject("environment");
+        if(!"linux".equals(environment.optString("platform"))||!"aarch64".equals(environment.optString("architecture")))return null;
+        JSONArray agents=new JSONArray(),models=new JSONArray(),aa=snapshot.getJSONArray("agents"),mm=snapshot.getJSONArray("models"),prepared=snapshot.getJSONArray("preparedModels");
+        EvePortableCommands.require(aa.length()<=32&&mm.length()<=8&&prepared.length()<=8);
+        for(int i=0;i<aa.length();i++){
+            JSONObject a=aa.getJSONObject(i),copy=new JSONObject();for(String key:new String[]{"id","name","instructions","modelId","sha256"})copy.put(key,EvePortableCommands.string(a,key));agents.put(copy);
+        }
+        for(int i=0;i<mm.length();i++){
+            JSONObject m=mm.getJSONObject(i);models.put(new JSONObject().put("id",EvePortableCommands.string(m,"id")).put("name",EvePortableCommands.string(m,"name"))
+                .put("scheme","gguf-sha256").put("sha256",EvePortableCommands.string(m,"sha256")));
+        }
+        long now=System.currentTimeMillis();
+        return new JSONObject().put("schema","rockstaros.runtime-presence/1").put("name","Pixel · Linux").put("phase","ready")
+            .put("host",descriptor("pixel-android-account","host","android",new JSONObject().put("identity.owner-local",true).put("store.cas",true),now))
+            .put("executor",descriptor("pixel-linux-gguf","executor","linux",new JSONObject().put("text.generate",true).put("model.pin",true).put("execution.stop",true),now))
+            .put("output",descriptor("pixel-eve-text","output","android",new JSONObject().put("output.text",true),now))
+            .put("agents",agents).put("models",models).put("preparedModels",prepared);
+    }
+    /** Opaque inventory binding is local metadata, never a grant or credential. */
+    static boolean cacheSessionCurrent(Context context,String binding) {
+        try {
+            EvePortableAccountBinding account=new EvePortableAccountBinding(context);
+            return binding.equals(account.stopSessionHash)&&account.active()
+                &&!context.getSystemService(KeyguardManager.class).isDeviceLocked()
+                &&PixelHostPrerequisites.available(context)&&EveAccountSync.linked(context);
+        }catch(Exception unavailable){return false;}
+    }
+    private static void cacheLive(Context context,EvePortableAccountBinding account,EvePortableStopHandles stop,String binding)throws Exception {
+        account.check();
+        EvePortableCommands.require(binding.equals(account.stopSessionHash)&&cacheSessionCurrent(context,binding)
+            &&!EvePixelHostService.running()&&!stop.pending());
+    }
+    private static void cacheSelection(JSONObject selection,String binding,boolean prepare)throws Exception {
+        EvePortableCommands.require(selection!=null&&binding.equals(EvePortableCommands.string(selection,"sessionBinding")));
+        EvePortableCommands.fields(selection,prepare?new String[]{"modelId","modelSha256","requestId","sessionBinding","inventoryId","expiresAtElapsed"}
+            :new String[]{"modelId","modelSha256","requestId","sessionBinding"});
+        String model=EvePortableCommands.string(selection,"modelId"),hash=EvePortableCommands.string(selection,"modelSha256");
+        EvePortableCommands.require(model.matches("[a-z0-9][a-z0-9.-]{0,79}")&&!model.contains("..")
+            &&hash.matches("[a-f0-9]{64}")&&EvePortableCommands.id(EvePortableCommands.string(selection,"requestId")));
+        if(!prepare)return; // Stop/read of the exact original operation outlives inventory expiry.
+        JSONObject observed=cacheObservation;
+        long expiry=EvePortableCommands.integer(selection,"expiresAtElapsed"),now=android.os.SystemClock.elapsedRealtime();
+        EvePortableCommands.require(observed!=null&&binding.equals(observed.getString("sessionBinding"))
+            &&EvePortableCommands.string(selection,"inventoryId").equals(observed.getString("inventoryId"))
+            &&expiry==observed.getLong("expiresAtElapsed")&&now>=observed.getLong("observedElapsed")&&now<expiry);
+        boolean found=false;JSONArray inventory=observed.getJSONArray("inventory");
+        for(int i=0;i<inventory.length();i++){JSONObject row=inventory.getJSONObject(i);
+            if(model.equals(row.getString("id"))&&hash.equals(row.getString("sha256"))&&"verified".equals(row.getString("state")))found=true;}
+        EvePortableCommands.require(found);
+    }
+    /** Owner initiated readiness only: no account grant, model registration or inference. */
+    static JSONObject cachedModels(Context context,String action,JSONObject selection)throws Exception {
+        synchronized(CACHE_IO_LOCK){
+            final JSONObject captured=selection==null?null:new JSONObject(selection.toString());
+            EvePortableAccountBinding account=new EvePortableAccountBinding(context);
+            final String binding=account.stopSessionHash;
+            if(captured!=null)EvePortableCommands.require(binding.equals(EvePortableCommands.string(captured,"sessionBinding")));
+            EvePortableStopHandles stop=handles(context);cacheLive(context,account,stop,binding);
+            JSONObject identity=account.inspect();
+            EvePortableCommands.require(account.owner.equals(EvePortableCommands.string(identity,"ownerUserId"))
+                &&EvePortableCommands.id(EvePortableCommands.string(identity,"deviceId")));
+            JSONObject command;
+            if("inventory".equals(action)){
+                EvePortableCommands.require(captured==null);
+                command=new JSONObject().put("action","cache-inventory").put("cacheOnly",true);
+            }else if("status".equals(action)&&(captured==null||captured.length()==1)){
+                if(captured!=null)EvePortableCommands.fields(captured,"sessionBinding");
+                command=new JSONObject().put("action","status");
+            }else{
+                EvePortableCommands.require("prepare".equals(action)||"cancel".equals(action)||"status".equals(action));
+                cacheSelection(captured,binding,"prepare".equals(action));
+                command=new JSONObject().put("action","prepare".equals(action)?"prepare-cached":"cancel".equals(action)?"cancel-cached-prepare":"cache-status")
+                    .put("cacheOnly",true).put("modelId",captured.getString("modelId")).put("modelSha256",captured.getString("modelSha256"))
+                    .put("requestId",captured.getString("requestId")).put("scopeSha256",binding);
+                if("prepare".equals(action))command.put("accepted",true);
+            }
+            // The same captured guard runs before queueing, at bridge dequeue immediately
+            // before write/effect, and again before accepting a response. No sync-stop lock.
+            SkyLinuxBridge.ExistingGuard guard=()->{
+                cacheLive(context,account,stop,binding);
+                if("prepare".equals(action))cacheSelection(captured,binding,true);
+            };
+            guard.check();JSONObject response=SkyLinuxBridge.requestExisting(context,command,guard);guard.check();
+            EvePortableCommands.require("sky.private-linux-deployment/1".equals(response.optString("schema"))&&"pixel-linux".equals(response.optString("vm"))
+                &&response.optInt("cacheOnlyProtocol",0)==2);
+            JSONObject result=new JSONObject().put("phase",response.getString("phase")).put("observedAt",System.currentTimeMillis()).put("sessionBinding",binding)
+                .put("modelCount",response.getJSONArray("models").length()).put("agentCount",response.getJSONArray("agents").length())
+                .put("jobCount",response.getJSONArray("runs").length()).put("preparedCount",response.getJSONArray("preparedModels").length());
+            if("inventory".equals(action)){
+                JSONArray inventory=response.getJSONArray("cacheInventory"),models=response.getJSONArray("models");
+                EvePortableCommands.require(inventory.length()==models.length()&&models.length()<=8);
+                JSONArray safe=new JSONArray();java.util.HashSet<String> ids=new java.util.HashSet<>();
+                for(int i=0;i<inventory.length();i++){
+                    JSONObject row=inventory.getJSONObject(i),model=models.getJSONObject(i);
+                    String id=EvePortableCommands.string(row,"id"),hash=EvePortableCommands.string(row,"sha256"),state=EvePortableCommands.string(row,"state");
+                    EvePortableCommands.require(id.equals(model.getString("id"))&&ids.add(id)&&hash.matches("[a-f0-9]{64}")&&hash.equals(model.getString("sha256"))
+                        &&EvePortableCommands.integer(row,"bytes")==EvePortableCommands.integer(model,"bytes")&&Boolean.TRUE.equals(row.opt("cacheOnly"))&&Boolean.FALSE.equals(row.opt("downloads"))
+                        &&("verified".equals(state)||"unavailable".equals(state)));
+                    String reason=row.optString("reason","");EvePortableCommands.require(reason.isEmpty()||reason.matches("CACHE_[A-Z_]+"));
+                    safe.put(new JSONObject().put("id",id).put("sha256",hash).put("bytes",row.getLong("bytes")).put("state",state).put("reason",reason));
+                }
+                long elapsed=android.os.SystemClock.elapsedRealtime();
+                result.put("inventory",safe).put("inventoryId",java.util.UUID.randomUUID().toString()).put("observedElapsed",elapsed).put("expiresAtElapsed",elapsed+30000);
+                cacheObservation=new JSONObject(result.toString()); // Detached caller cannot edit the held binding.
+            }
+            JSONObject operation=response.optJSONObject("cachePreparation");
+            if(operation!=null&&binding.equals(operation.optString("scopeSha256"))){
+                String id=operation.getString("requestId"),model=operation.getString("modelId"),hash=operation.getString("modelSha256"),state=operation.getString("state");
+                EvePortableCommands.require(EvePortableCommands.id(id)&&hash.matches("[a-f0-9]{64}")&&Boolean.TRUE.equals(operation.opt("cacheOnly"))
+                    &&java.util.Arrays.asList("preparing","ready","failed","stopped","unknown").contains(state));
+                if(captured!=null&&captured.has("requestId"))EvePortableCommands.require(id.equals(captured.getString("requestId"))&&model.equals(captured.getString("modelId"))&&hash.equals(captured.getString("modelSha256")));
+                if("ready".equals(state)){
+                    boolean prepared=false;JSONArray ready=response.getJSONArray("preparedModels");
+                    for(int i=0;i<ready.length();i++)if(model.equals(ready.getString(i)))prepared=true;
+                    JSONObject environment=response.optJSONObject("environment");
+                    if(!prepared||!"ready".equals(response.optString("phase"))||environment==null||!hash.equals(environment.optString("modelSha256")))state="unknown";
+                }
+                result.put("operation",new JSONObject().put("requestId",id).put("modelId",model).put("modelSha256",hash).put("state",state).put("sessionBinding",binding));
+            }else if(captured!=null&&captured.has("requestId"))throw new java.io.IOException("CACHE_PREPARATION_READBACK_REQUIRED");
+            guard.check();return result;
+        }
+    }
+
+    static boolean sync(Context context,JSONObject snapshot,BooleanSupplier continuing)throws Exception{
+        notice="";
+        if(!continuing.getAsBoolean()){requestStop(context);throw new EvePortableController.Stopped();}
+        EvePortableStopHandles stop=handles(context);
+        if(stop.pending()){
+            stop.cancelRequested(command->SkyLinuxBridge.request(context,command),1,null);
+            if(stop.pending()){notice="前の仕事の実停止を確認しています。新しい実行は保留します。";throw new EvePortableController.Stopped();}
+        }
+        EvePortableAccountBinding account;
+        try{account=new EvePortableAccountBinding(context);}
+        catch(Exception unavailable){requestStop(context);throw unavailable;}
+        String previousSession=stop.activeSession();
+        if(!previousSession.isEmpty()&&!previousSession.equals(account.stopSessionHash)){
+            stop.requestSession(previousSession);
+            stop.cancelRequested(command->SkyLinuxBridge.request(context,command),1,previousSession);
+            if(stop.pending(previousSession)){notice="前の接続で始めた仕事の停止を確認しています。新しい実行は保留します。";throw new EvePortableController.Stopped();}
+        }
+        // This is a lookup hint, never a grant. Cache only an authenticated identity before work.
+        // On later revocation, open that existing journal before the HTTP check so owned work can be cancelled.
+        String cacheKey=account.cacheKey(),device=EveAccountSync.prefs(context).getString(cacheKey,"");
+        if(!EvePortableCommands.id(device)){
+            JSONObject identity;
+            try{identity=account.inspect();}
+            catch(Exception failure){stopAfterFailure(context,account,failure,false);
+                if(failure instanceof EvePortableController.HttpFailure&&((EvePortableController.HttpFailure)failure).status==404)return false;throw failure;}
+            EvePortableCommands.require(account.owner.equals(EvePortableCommands.string(identity,"ownerUserId")));
+            device=EvePortableCommands.string(identity,"deviceId");EvePortableCommands.require(EvePortableCommands.id(device));
+            if(!EveAccountSync.prefs(context).edit().putString(cacheKey,device).commit())throw new java.io.IOException("PORTABLE_DEVICE_CACHE_UNCONFIRMED");
+        }
+        EvePortableClaimJournal opened;
+        try{opened=EvePortableJournalKeys.open(context,account.origin,account.owner,device);}
+        catch(Exception unavailable){stopAfterFailure(context,account,unavailable,true);throw unavailable;}
+        try(EvePortableClaimJournal journal=opened){
+            EvePortableController controller=new EvePortableController(account,c->bridge(context,stop,account,continuing,c),journal,account.owner,device,
+                EvePortableCommands.sha(account.origin+"\n"+account.owner+"\n"+device),()->continuing.getAsBoolean()&&account.active(),System::currentTimeMillis,
+                ()->!context.getSystemService(KeyguardManager.class).isDeviceLocked());
+            JSONObject observed=presence(snapshot);boolean preparationSupported=false;
+            if(observed!=null){
+                preparationSupported=EvePortableAgentPreparation.supported(command->{
+                    if(!continuing.getAsBoolean()||!account.active())throw new EvePortableController.Stopped();
+                    JSONObject response=bridge(context,stop,account,continuing,command);
+                    if(!continuing.getAsBoolean()||!account.active())throw new EvePortableController.Stopped();return response;
+                });
+                if(preparationSupported)observed.getJSONObject("host").getJSONObject("capabilities").put("agent.prepare",true);
+            }
+            JSONObject result=controller.poll(observed);
+            String state=result.getString("state");boolean saved=Boolean.TRUE.equals(result.opt("saved")),agentRegistered=false;
+            // Existing execution and stop processing has priority over registration.
+            if(preparationSupported&&"idle".equals(state)){
+                final String targetDevice=device;
+                EvePortableAgentPreparation preparation=new EvePortableAgentPreparation(account,
+                    command->bridge(context,stop,account,continuing,command),()->{
+                        JSONObject current=presence(SkyLinuxBridge.request(context,new JSONObject().put("action","status")));
+                        EvePortableCommands.require(current!=null);current.getJSONObject("host").getJSONObject("capabilities").put("agent.prepare",true);return current;
+                    },account.owner,targetDevice,EvePortableCommands.sha(account.origin+"\n"+account.owner+"\n"+targetDevice),
+                    ()->continuing.getAsBoolean()&&account.active(),System::currentTimeMillis);
+                agentRegistered=preparation.poll();
+            }
+            if(agentRegistered)notice="新しい担当をこのPixelに登録しました。依頼の実行は確認待ちです。";
+            else if("review".equals(state)&&saved)notice="作成した下書きを同じアカウントへ保存しました。内容を確認してください。";
+            else if("unknown".equals(state))notice=saved?"結果未確認の状態を保存しました。自動で実行し直しません。":"結果を確認できていません。同じ仕事を照会し、自動で実行し直しません。";
+            else if("running".equals(state))notice="このPixelで作業中です。成果の保存はまだ完了していません。";
+            else if("waiting_for_linux".equals(state))notice="Linuxの接続確認後に同じ仕事を再開します。";
+            return saved;
+        }catch(Exception failure){
+            stopAfterFailure(context,account,failure,false);
+            throw failure;
+        }
+    }
+}

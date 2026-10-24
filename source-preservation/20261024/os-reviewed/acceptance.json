@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-24T11:18:02.194114+00:00",
+  "sourceReviews": [
+    {
+      "path": "docs/evidence/development-execution/pixel-cache-only-prepare-review-r2.json",
+      "sha256": "8614110c72c64b3066b19b7bfa06563e60b96d52a3f878b6cbc1804614f9ece7",
+      "status": "accepted_bounded_cache_only_preparation_candidate_physical_pending",
+      "adoptionAllowed": true,
+      "scope": "Exact reviewed ABI2 candidate only, for separate sole-operator same-signer APK/code-only guest preparation batch under conditions below. No physical or inference acceptance.",
+      "findings": 0
+    },
+    {
+      "path": "docs/evidence/development-execution/pixel-worker-diagnostics-review-r2.json",
+      "sha256": "a9a00e136d316600b052efb8950be6e60c1308f5a5a3eb3e47c79679ce911b2c",
+      "status": "accepted_bounded_diagnostics_candidate_linux_fixture_required_before_one_job",
+      "adoptionAllowed": true,
+      "scope": "Bounded code-only diagnostics candidate, subject to the exact-hash update and pre-inference Linux fixture conditions below. Not runtime completion or device acceptance.",
+      "findings": 0
+    }
+  ],
+  "diagnosticsSupersedesCacheOnlyPixelServer": {
+    "toolkits/sky-linux-local/pixel-server.mjs": {
+      "cacheOnlySha256": "9d542be006f225733b77c5e675c19df08b9bcb835a5929dca66ae199b6796a1a",
+      "diagnosticsAttempt2Sha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    }
+  },
+  "linuxParentFixture": {
+    "path": "tests/test_pixel_worker_parent_exit.py",
+    "sha256": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "requires": "Actual Linux updated-worker4 executed/4 passed/0skip before one-job physical retest; this Git save does not execute it"
+  },
+  "physicalOrPerformanceAcceptedByThisSave": false,
+  "p02Complete": false,
+  "sourceSavedNotMainRuntimeAdopted": true
+}
