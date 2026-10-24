@@ -1,0 +1,60 @@
+{
+  "schema": "rockstaros.esim-owner-response.review-summary/1",
+  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
+  "sourceReviewSha256": "fcff52486d714d190f393c3b3dd3b569df505da30a5c295341eebb3305f27a13",
+  "sourceReviewVerdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "sourceFiles": [
+    {
+      "path": "lib/sky-linux-service-store.ts",
+      "sha256": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139"
+    },
+    {
+      "path": "app/api/sky/linux/route.ts",
+      "sha256": "c79de07078b91384a8af2921447b62b53d4426d8676456c2c2e451027ccb6b4d"
+    },
+    {
+      "path": "tests/sky-linux-owner-response.test.mjs",
+      "sha256": "37ed015038a691cf6fc4786b31b8738b169d449eb139e2f9e8f1888d2f5becc2"
+    }
+  ],
+  "originalReceiptSha256": "4035c6130b684325ff90e7d85dc7efc733c167deb4d24f0134c949e972d376e9",
+  "portablePublicReceiptSha256": "579f3f1394de3c024df360dc32f5a7eb305f5fcf33471c02c7e4c81da713f674",
+  "receiptQualification": "Original full receipt remains outsideGit. Public receipt is an allowlisted minimal scope/hash/count/limit summary, not byte-identical to original; source3 are byte-identical. Independent metadata adoption review required.",
+  "sourceEvidence": {
+    "primaryTargeted": {
+      "tests": 146,
+      "pass": 145,
+      "fail": 0,
+      "skip": 1
+    },
+    "independentProbes": {
+      "nodeTests": 12,
+      "leafScenarios": 10,
+      "pass": 12
+    },
+    "independentRegressions": {
+      "tests": 79,
+      "pass": 78,
+      "skip": 1
+    },
+    "oldBaseControl": {
+      "distinctNegativeCases": 7,
+      "nodeFailuresExpected": 8,
+      "parentGroupNotDoubleCounted": true
+    },
+    "localD1IndependentPass": 1,
+    "notAdditiveCounts": true
+  },
+  "scope": "Current owner/session-row/payload saved-version disclosure witness; independent retention ACL/expiry and generic attachment are not added. Known committed mutation may return bounded ack without body.",
+  "limits": [
+    "Final SQL is a point-in-time disclosure witness, not a lock preventing changes after the read linearization point or a revocation of delivered/cached plaintext.",
+    "Current owner-session/row/payload authority only. No independent retained ACL/expiry, retention-start policy, generic signed attachment, parent-entitlement epoch binding, new table or migration.",
+    "HTTP runtime tests execute actual transpiled routes and actual store over SQLite with synthetic server authentication/grants; production resolver/credentials/session revocation behavior not accepted.",
+    "Local D1 covers actual store SQL only; no D1-hosted production app, provider, billing, physical device/native OS or public rollout acceptance.",
+    "Existing accept/provision/setup-ready atomicity/outbox and DB commit acknowledgment uncertainty remain outside scope.",
+    "ESIM01-08 whole units remain false; prices/usage accounting/888-cent policy not changed.",
+    "Same-head remote CI/current main, shared design/index/README/project/status and integration adoption remain Root/Git responsibility."
+  ],
+  "privacy": "Portable hashes/scope/counts only. No raw workspace/body/manuscript/log/private path/session/secret copied."
+}

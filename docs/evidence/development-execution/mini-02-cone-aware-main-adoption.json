@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.mini02-cone-aware-search.main-adoption/1",
   "recordedAt": "2026-10-24T18:10:48.512465+00:00",
-  "status": "reviewed_five_portable_receipt_local70_fullverify_pass_finalheadCI_and_metadata_review_pending",
+  "status": "PR200_normal_main_integrated_finite_host_scope_source5_receipt4_metadata_review_and_CI_pass",
   "unit": "MINI-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "11-material-invention-avocado-mini",
@@ -611,8 +611,8 @@
   },
   "acceptance": {
     "reviewedFiveSourceLimited": true,
-    "sanitizedReceiptMetadataReviewed": false,
-    "mainMerged": false,
+    "sanitizedReceiptMetadataReviewed": true,
+    "mainMerged": true,
     "wholeMini02": false,
     "physicalVisible": false,
     "lowGlare": false,
@@ -627,5 +627,31 @@
     "providerBilling": false,
     "publicDeployment": false
   },
-  "next": "Focused70/lint/type, JSON/project/design, same pinned scanner/canary, fixed fullverify1, draftPR and same-head CI; independent adoption metadata review before merge."
+  "next": "Finite host slice integrated; all physical/eye-safety/continuous-domain/stop/manufacture/Mini whole conditions remain separate. Original receipt and historical evidence retained.",
+  "historicalCandidateStatus": "reviewed_five_portable_receipt_local70_fullverify_pass_finalheadCI_and_metadata_review_pending",
+  "mainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/200",
+    "acceptedHead": "709aa5fce8fa810e2ed756b3b9c67d4959ff9b18",
+    "mainMergeSha": "99ab093c09be22c2d65a677a031b27ceed7236fe",
+    "sourceReviewSha256": "22210200ccba2a02b2f437d9b656d85c565271e207bf6d25336e2a4c03185f32",
+    "metadataReviewSha256": "0928589732062340b9baacadf9c619b92942579a91ea25195a73391ca15d67ce",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2810,
+      "pass": 2809,
+      "fail": 0,
+      "skip": 1,
+      "runId": 40120091040,
+      "jobId": 120949554939,
+      "logSha256": "a1bb87439256fe7b59cd6b1dd857959dc87de9102ba6273f8ee2306b1eeb74dc",
+      "exactCheckoutAndTerminalObserved": true
+    },
+    "mainSameShaCISuccess": 6,
+    "sourceFiveUnchanged": true,
+    "receiptOnlyFourReferenceException": true,
+    "original8116AndPortable5bcbSeparated": true,
+    "physicalAccepted": false,
+    "wholeMini02": false,
+    "publicDeployment": false
+  }
 }

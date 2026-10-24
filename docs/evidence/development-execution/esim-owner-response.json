@@ -1,0 +1,62 @@
+{
+  "schema": "rockstaros.esim-owner-response.public-source-receipt/1",
+  "originalReceiptSha256": "4035c6130b684325ff90e7d85dc7efc733c167deb4d24f0134c949e972d376e9",
+  "sourceReviewSha256": "fcff52486d714d190f393c3b3dd3b569df505da30a5c295341eebb3305f27a13",
+  "sourceBase": "7086309eac76533dd6efe358635a9be8a527ec17",
+  "sourceFiles": [
+    {
+      "path": "lib/sky-linux-service-store.ts",
+      "sha256": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139"
+    },
+    {
+      "path": "app/api/sky/linux/route.ts",
+      "sha256": "c79de07078b91384a8af2921447b62b53d4426d8676456c2c2e451027ccb6b4d"
+    },
+    {
+      "path": "tests/sky-linux-owner-response.test.mjs",
+      "sha256": "37ed015038a691cf6fc4786b31b8738b169d449eb139e2f9e8f1888d2f5becc2"
+    }
+  ],
+  "sourceReview": "PASS_SCOPED; mustFix0 applies to exact three source bytes, not a claim of identical public receipt hash",
+  "scope": "Current owner/row/revision/exact payload byte witness for HTTP private-body disclosure; read permission distinct from execution grant and known mutation acknowledgement.",
+  "primaryEvidence": {
+    "targetedTests": 146,
+    "passed": 145,
+    "failed": 0,
+    "skipped": 1,
+    "localD1Passed": 1,
+    "typecheck": "passed normal main pretypecheck",
+    "lintProduct": "passed"
+  },
+  "independentEvidence": {
+    "probesPassed": 12,
+    "leafScenarios": 10,
+    "regressionTests": 79,
+    "regressionPassed": 78,
+    "regressionSkipped": 1,
+    "localD1Passed": 1,
+    "oldBaseNegativeDistinctCases": 7,
+    "oldBaseNodeFailuresExpected": 8,
+    "notAdditive": true
+  },
+  "limits": [
+    "Final SQL is a point-in-time disclosure witness, not a lock preventing changes after the read linearization point or a revocation of delivered/cached plaintext.",
+    "Current owner-session/row/payload authority only. No independent retained ACL/expiry, retention-start policy, generic signed attachment, parent-entitlement epoch binding, new table or migration.",
+    "HTTP runtime tests execute actual transpiled routes and actual store over SQLite with synthetic server authentication/grants; production resolver/credentials/session revocation behavior not accepted.",
+    "Local D1 covers actual store SQL only; no D1-hosted production app, provider, billing, physical device/native OS or public rollout acceptance.",
+    "Existing accept/provision/setup-ready atomicity/outbox and DB commit acknowledgment uncertainty remain outside scope.",
+    "ESIM01-08 whole units remain false; prices/usage accounting/888-cent policy not changed.",
+    "Same-head remote CI/current main, shared design/index/README/project/status and integration adoption remain Root/Git responsibility."
+  ],
+  "acceptance": {
+    "sourceLimited": true,
+    "independentRetentionACLExpiry": false,
+    "genericAttachment": false,
+    "issuerEpochBinding": false,
+    "productionD1": false,
+    "realProviderBilling": false,
+    "physicalDevice": false,
+    "publicDeployment": false
+  },
+  "privacy": "Portable minimal allowlisted summary; original source receipt/logs/private paths not copied into Git. Original receipt retained outsideGit under its hash. New public receipt requires separate adoption metadata review."
+}

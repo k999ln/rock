@@ -1,11 +1,11 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-24T18:10:48.512465+00:00",
+  "recordedAt": "2026-10-24T18:40:10.872392+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
   "mainContext": {
-    "mainAtCapture": "7086309eac76533dd6efe358635a9be8a527ec17",
+    "mainAtCapture": "99ab093c09be22c2d65a677a031b27ceed7236fe",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -1344,7 +1344,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "PR194_ESIM_SUBSET"
+        "PR194_ESIM_SUBSET",
+        "ESIM_OWNER_RESPONSE_CANDIDATE"
       ]
     },
     {
@@ -1507,7 +1508,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "ESIM_OWNER_RESPONSE_CANDIDATE"
+      ]
     },
     {
       "id": "BILL-01",

@@ -1,3 +1,22 @@
+<a id="esim-owner-response-disclosure"></a>
+## eSIM/Linux保存本文のcurrent-owner HTTP開示（限定候補）
+
+目的・体験: public Sky Linux GETとaccept/add/run/cancel/confirmの応答で、非同期grant照合を待つ間にowner/row/revision/payloadが変わった場合、以前に読んだworkspace本文を返さない。本人の保存データ読取と新しい実行許可は別の判断とし、grant失効時も安定した本人rowの保存済み読取を実行権限へ昇格しない。
+
+責任: ROCKは既存storeのownerResponse投影とpublic routeの直前照合・bounded ack・fail closed、EXTERNALは既存auth/grant供給、JOINTは本番resolver/session/DB/HTTPの受入、OWNERは本人sessionと既存実行同意を担う。新table/migration・ACL engine・署名attachment・issuer epochや鍵を追加しない。商品/SIM/通信/LLM料金と888c・台帳/予約の契約は変えない。
+
+入力・出力・状態: server requestUser由来owner、既存workspace ID/row owner/revision/raw JSON payloadを選ぶ。安全な非負revisionとrow/payload両owner・既存linuxOwnerAccess.canReadを検査する。必要時の非同期liveGrant照合後、同じID/kind=workspace/owner/revisionとpayload COLLATE BINARYの完全一致を最後のSQLで要求し、そのsnapshotだけを返す。HTTP clientが渡すowner/witnessはauthorityにしない。grant照合失敗はcanExecute falseにし、安定した本人のcanReadとは分ける。
+
+失敗・復旧: rebind/delete/stale revision/revision維持のpayload差替え/空白bytes変更、null/不正payloadや読取不明はworkspace/access nullで、cached bodyへfallbackしない。GETはterms/catalog等のawaitを先に終え、本文投影を最後のawaitにする。これはSQL時点の開示witnessで、query後の変更をlockせず、既に配布済み/缓存本文を失効させる証明ではない。
+
+保存・ack・承認: internal get/event/workerの業務経路は分けて維持する。既知の成功commit後に最終投影が拒否/不明なら、accepted true・saved revision・workspace/access null・reconciliation refresh_requiredだけのbounded ackを返し、本文を復活させない。acceptは成功INSERT後の既知結果をexpected versionとして渡し、後続readの衝突をcommit不成立へ変えない。commit前失敗やcommit acknowledgement不明は503/unknownで成功flagにせず、同request IDの読戻しで照合する。post-read拒否だけで削除やmutation再実行を行わない。
+
+互換・限界: existing same-owner stable read/commandは保持し、raw bytes/revisionが変われば保守的拒否。独立したretained ACL/expiry/retention-start・汎用signed attachment・parent entitlement epoch binding・session revocation/本番resolverの受入ではない。単なるready/credential/fixture/local D1と本番成功を区別する。通常source revertは可能だが保存済みrow/receipt/予約を消さない。
+
+合格・未決定: source3は独立PASS_SCOPED/mustfix0とbyte一致。一次146tests/145pass/1既定D1skip、別local D1 1pass、12独立probe（10leaf）/78回帰と旧base7distinct負例（親group込み8Node失敗）は範囲を分け重複加算しない。SQLite＋実transpiled HTTP route＋synthetic authと、Miniflare/workerdの実store SQLを検査し、D1-hosted本番appや実resolver/account/Provider・実課金/実機・一般公開を合格にしない。元fullreceipt4035のhashを保持したportable最小receipt579fは新metadataとして別検収し、元reviewと同hashと主張しない。固定全verify/同headCI/独立採用reviewと後続共同受入で残項目を決める。
+
+[採用3hash・検証・残gate](evidence/development-execution/esim-owner-response-main-adoption.json)／[原本hashと独立検収要約](evidence/development-execution/esim-owner-response-main-review-summary.json)。
+
 <a id="billing-final-send-claim"></a>
 ## Remote textの最終send claim（BILL-02限定採用）
 
