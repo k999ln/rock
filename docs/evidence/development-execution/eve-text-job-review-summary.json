@@ -1,0 +1,46 @@
+{
+  "schema": "rockstaros.eve-text-job.review-summary/1",
+  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
+  "attempt": 2,
+  "verdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "originalReceiptSha256": "191b3fe9dc5a2a62d1b6161df1eff9f631868ab8db9fa462ad5e78d834bb741f",
+  "originalReviewR2Sha256": "a7bda38f34cb25a1ae990aae83d8365157b45799b0d4abd326535e26719ff243",
+  "originalReviewR1Sha256": "83c1cdcbfc42b905d7b11c1aed3f61768dee95a8aff806a2d09baad698a0098b",
+  "sourceHashes": {
+    "lib/eve-text-job.ts": "cff365e5acb837248426981c0ab12d6d208ec55f4723d1dff88a0341c8fabc20",
+    "components/work-composition-workspace.tsx": "83e98f599b61b2c3785fead5099c58c099f7da1fc94be27ff4d738dcc24e4044",
+    "app/os/eve/remix/page.tsx": "e519d2955abbf5913a9c14f10facbffe2fdc18f93855464d62c8add805de532a",
+    "tests/eve-text-job.test.mjs": "5d3edd9081153a5d9c2c31521ace1ba77e2bbe8012a1f13a765c62a9634f5f2e",
+    "tests/work-composition-ui.test.mjs": "c3605f91f928c7f55cd2175b5214b014fa8599f6d7dd0e48a125141d88ec5002",
+    "tests/work-composition-route.test.mjs": "3e88556da4b7f7e9d752c8951d78a88424e7661214a4f9279306e4f44209d8ac"
+  },
+  "closedFindings": [
+    {
+      "id": "EVE-TEXT-REVIEW-01",
+      "status": "closed_for_reviewed_scope"
+    },
+    {
+      "id": "EVE-TEXT-REVIEW-02",
+      "status": "closed_for_reviewed_scope"
+    }
+  ],
+  "previousFindings": "Original two P2 control-character and captured async-file overwrite counterexamples preserved; closed only for current six hashes.",
+  "independentEvidence": {
+    "probesPassed": 8,
+    "focusedRegressionPassed": 47,
+    "primaryRelatedPassed": 71,
+    "notAdditiveCoverageCount": true,
+    "planes": "Pure adapter, VM UI/captured closure/deferred file, actual imported handler with SQLite/synthetic auth; no real browser/live HTTP/device."
+  },
+  "remaining": [
+    "PASS_SCOPED is not whole EVE02/model Remix or production readiness.",
+    "Real browser event scheduling, live HTTP UI and physical device untested; VM harness and actual handler+SQLite synthetic authentication are distinct evidence layers.",
+    "Control policy is explicit C0-except-HT/LF/CR plus DEL; other valid Unicode is preserved, not silently normalized.",
+    "No new durable external-effect claim/lease/outbox, exactly-once CPU execution, model stop, paid dispatch or generic authority/usage integration.",
+    "Unsaved input lost on tab destruction is not recoverable; only committed job data can be reopened.",
+    "Only six source hashes pinned; shared tree/dependencies not whole-tree frozen. Root/Git must synchronize design/index/status/README and run fixed integration gates, same-SHA CI and normal Git adoption.",
+    "No provider/billing/financial effect, device, public deployment or Git operation performed by reviewer."
+  ],
+  "privacy": "Allowlisted hashes, scope, counts and findings only; no raw reviews, original material, private filesystem paths, thread identities or logs."
+}

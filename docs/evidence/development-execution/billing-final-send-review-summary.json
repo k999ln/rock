@@ -70,5 +70,31 @@
     "tests/remote-ai-text-store.test.mjs": "0f982b569afd91ac0e9f2a3ade1b455b509452921a5b47a38c89a743ae883698",
     "tests/remote-ai-text-atomic-send.test.mjs": "8ab584f6ee05c1461c0c2eec8b0fa7fc0fb9e1920ab99b04dc71fdd35c11f67e"
   },
-  "deltaIndependentReviewPending": true
+  "deltaIndependentReviewPending": false,
+  "completedDeltaReview": {
+    "originalPath": "docs/evidence/development-execution/billing-final-send-claim-review-r2.json",
+    "sha256": "b8a63aee7826719db332453dcf2757785dad59dbc04dac884149c1a288bdad75",
+    "head": "1bb969b12c33f2aa7ac9b4bccf3c2d264cac6b9c",
+    "verdict": "pass_limited",
+    "mustFix": 0,
+    "targetedPass": 40,
+    "additionalProbesPass": 14,
+    "oldTwoControlsFailedAsExpected": 2
+  },
+  "completedMetadataReview": {
+    "originalPath": "docs/evidence/development-execution/billing-main-adoption-review.json",
+    "sha256": "ed68c9816f2f9df476fa5321a9db75db112b694d93e4c1727ae4f0eecc2b4ab1",
+    "verdict": "pass_scoped_final_head_metadata_adoption",
+    "mustFix": 0,
+    "protectedUniquePathsUnchanged": 52
+  },
+  "mainOutcome": {
+    "pr": "https://github.com/k999ln/rock/pull/196",
+    "acceptedHead": "1bb969b12c33f2aa7ac9b4bccf3c2d264cac6b9c",
+    "mainMergeSha": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 6,
+    "productionDeployment": false,
+    "wholeBill02Accepted": false
+  }
 }

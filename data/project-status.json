@@ -9692,15 +9692,31 @@
     "sourceFourPreserved": false,
     "sourceIndependentMustFix": 0,
     "localTests": 40,
-    "integrationMetadataReviewPending": true,
-    "mainMerged": false,
+    "integrationMetadataReviewPending": false,
+    "mainMerged": true,
     "commonAuthorityIssuerEpochAccepted": false,
     "productionD1Accepted": false,
     "realProviderBillingAccepted": false,
     "originalReviewedHashesRecorded": true,
-    "deltaIndependentReviewPending": true,
+    "deltaIndependentReviewPending": false,
     "fullVerify": "passed_on_05312751_frozen_inputs4458_unchanged0_tests2749_pass2747_fail0_skip2",
     "pr": "https://github.com/k999ln/rock/pull/196",
-    "finalHeadCIPending": true
+    "finalHeadCIPending": false,
+    "mainMergeSha": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+    "mainSameShaCISuccess": 6
+  },
+  "eveTextPreparationMainAdoption": {
+    "evidence": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/eve-text-job-review-summary.json",
+    "sourceSixPreserved": true,
+    "attempt": 2,
+    "sourceIndependentMustFix": 0,
+    "localTests": 71,
+    "integrationMetadataReviewPending": true,
+    "mainMerged": false,
+    "wholeEVE02Accepted": false,
+    "semanticModelRemixAccepted": false,
+    "providerBillingAccepted": false,
+    "browserLiveHttpAccepted": false
   }
 }
