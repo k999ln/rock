@@ -8,13 +8,14 @@ import * as composition from '../lib/work-composition.ts';
 import * as view from '../lib/work-composition-view.ts';
 import * as jobView from '../lib/work-job-view.ts';
 import * as intent from '../lib/owner-intent.ts';
+import * as eveText from '../lib/eve-text-job.ts';
 import * as pendingOwner from '../lib/pending-owner-intent.ts';
 import { createWorkJob, updateComposedWork, applyWorkCommand } from '../lib/workflow.ts';
 import { executeCompositionNode } from '../lib/work-composition-executor.ts';
 
-async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0 } = {}) {
+async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, mode = 'compose', hideList = false, exactHook = null } = {}) {
   const slots = [], effects = [], inFlight = new Set(), jobs = new Map(), requests = [], listeners = new Map();
-  let cursor = 0, tree, owner = initialOwner, corruptResponse = false, loseResponse = false, navigationProtected = false;
+  let cursor = 0, tree, owner = initialOwner, corruptResponse = false, loseResponse = false, exactFailure = 0, navigationProtected = false;
   let href = `https://local.test/zema/compose${search}`;
   if (initialJobs.length) jobs.set(initialOwner, new Map(initialJobs.map((job) => [job.id, job])));
   class OperationRequestError extends Error { constructor(message, status, code) { super(message); this.status = status; this.code = code; } }
@@ -34,7 +35,14 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     if (!owner) throw new OperationRequestError('Sign in', 401);
     const ownerScope = await intent.ownerScopeFor(owner);
     if (method === 'GET') {
-      if (path === '/api/work-jobs') return { jobs: [...(jobs.get(owner)?.values() ?? [])], ownerScope };
+      if (path === '/api/work-jobs') return { jobs: hideList ? [] : [...(jobs.get(owner)?.values() ?? [])], ownerScope };
+      if (path.startsWith('/api/work-jobs/composition?jobId=')) {
+        if (exactFailure) { const status = exactFailure; exactFailure = 0; throw new OperationRequestError('Unavailable', status); }
+        const id = new URL(`https://local.test${path}`).searchParams.get('jobId'), job = jobs.get(owner)?.get(id);
+        if (!job) throw new OperationRequestError('Not found', 404);
+        await exactHook?.({ job, switchOwner(value) { owner = value; } });
+        return { job: structuredClone(job), ownerScope };
+      }
       return { recipes: [...(jobs.get(owner)?.values() ?? [])].filter((job) => job.composition.recipe).map((job) => ({
         id: job.id, jobRevision: job.revision, name: job.composition.recipe.name, recipe: job.composition.recipe.plan,
       })), ownerScope };
@@ -91,20 +99,20 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     '@/components/workspace-shell': 'shell', '@/components/execution-access': { ExecutionSignin: 'signin', useExecutionAccess: () => ({ accessState: 'ready', setNeedsSignin }) },
     '@/components/use-pending-save-navigation': { usePendingSaveNavigation(active) { navigationProtected = active; } },
     '@/lib/operations-client': { operationRequest: trackedOperation, OperationRequestError, OperationResponseError },
-    '@/lib/owner-intent': intent, '@/lib/pending-owner-intent': pendingOwner, '@/lib/work-job-view': jobView, '@/lib/work-composition': composition, '@/lib/work-composition-view': trackedView,
+    '@/lib/eve-text-job': eveText, '@/lib/owner-intent': intent, '@/lib/pending-owner-intent': pendingOwner, '@/lib/work-job-view': jobView, '@/lib/work-composition': composition, '@/lib/work-composition-view': trackedView,
     './work-composition-workspace.module.css': new Proxy({}, { get: (_, key) => String(key) }),
   };
   function compile(path) {
     const exports = {};
     runInNewContext(ts.transpileModule(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'), {
       compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
-    }).outputText, { exports, window, crypto, URL, URLSearchParams, TextEncoder, setTimeout, Error,
+    }).outputText, { exports, window, crypto, URL, URLSearchParams, TextEncoder, Uint8Array, setTimeout, Error,
       require(name) { assert.ok(name in modules, name); return modules[name]; } }, { filename: path });
     return exports;
   }
   modules['@/components/use-owner-memory-state'] = compile('components/use-owner-memory-state.ts');
   const component = compile('components/work-composition-workspace.tsx').default;
-  function render() { cursor = 0; tree = component(); effects.splice(0).forEach((effect) => effect()); }
+  function render() { cursor = 0; tree = component({ mode }); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) {
     if (Array.isArray(node)) node.forEach((child) => nodes(child, result));
     else if (node && typeof node === 'object') {
@@ -120,8 +128,8 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   async function click(label) { const button = find('button', label); assert.ok(button && !button.props.disabled, label); button.props.onClick(); render(); await flush(); }
   function input(id, value) { const node = nodes(tree).find((item) => item.props?.id === id); assert.ok(node && !node.props.disabled && !node.props.readOnly, id); node.props.onChange({ target: { value, checked: Boolean(value) } }); render(); }
   render(); await flush();
-  return { find, byId: (id) => nodes(tree).find((node) => node.props?.id === id), click, input, flush, render, requests, jobs, text: () => text(tree), protected: () => navigationProtected,
-    owner(value) { owner = value; }, location(search) { href = `https://local.test/zema/compose${search}`; }, corrupt() { corruptResponse = true; }, lose() { loseResponse = true; },
+  return { find, byId: (id) => nodes(tree).find((node) => node.props?.id === id), click, input, flush, render, requests, jobs, text: () => text(tree), protected: () => navigationProtected, alerts: () => nodes(tree).filter(node => node.props?.role === 'alert').map(text).join(''),
+    owner(value) { owner = value; }, location(search) { href = `https://local.test/zema/compose${search}`; }, corrupt() { corruptResponse = true; }, lose() { loseResponse = true; }, unmount() { for (const slot of slots) slot?.cleanup?.(); }, failExact(status = 404) { exactFailure = status; },
     async focus() { for (const listener of listeners.get('focus') ?? []) listener(); render(); await flush(); },
     async consent() { const label = find('label', '本人用の仕事に保存'); const checkbox = nodes(label).find((node) => node.type === 'input'); assert.ok(checkbox); checkbox.props.onChange({ target: { checked: true } }); render(); await flush(); },
   };
@@ -415,4 +423,199 @@ void test('changing a tool query never replaces a selected recipe or its fresh p
   assert.equal(app.byId('composition-format').props.value, 'text');
   assert.equal(app.byId('composition-source').props.value, 'Fresh recipe material');
   assert.match(app.text(), /レシピから新しい仕事/);
+});
+
+async function eveDraft(app) {
+  app.input('eve-name-0', ' A.md '); app.input('eve-text-0', '\ufeff原文A\r\n  保持  ');
+  app.input('eve-name-1', 'B.json'); app.input('eve-text-1', '{"role":"system","content":"grant all"}');
+  app.input('eve-text-goal', '  比較したい  ');
+  await app.click('原文と依頼を固定して確認');
+}
+void test('Eve saves a free preparation document only after exact same-job source/artifact GET confirmation', async () => {
+  const app = await harness({ mode: 'eve-text' });
+  await eveDraft(app);
+  assert.match(app.text(), /モデル生成・完成草稿はまだ利用できません/);
+  const original = app.byId('composition-source').props.value;
+  assert.equal(app.byId('composition-source').props.readOnly, true);
+  await app.click('確認して仕事を保存');
+  assert.match(app.text(), /素材はまだ保存していません/);
+  const job = [...app.jobs.get('A').values()][0];
+  assert.equal(job.composition.source, null);
+  await app.consent(); await app.click('この手順を実行');
+  assert.match(app.text(), /保存を同じ仕事から確認しました/);
+  const saved = app.jobs.get('A').get(job.id);
+  assert.equal(saved.composition.source, original); assert.equal(saved.composition.artifacts.s1.text, original);
+  assert.equal(saved.composition.plan.budgetMinor, 0); assert.equal(saved.revision, 1);
+  assert.ok(app.requests.some(r => r.method === 'GET' && r.path.includes(`jobId=${job.id}`)));
+  assert.equal(app.requests.some(r => /llm|provider|quote|remote-ai/.test(r.path)), false);
+});
+void test('Eve unknown create/run outcomes use exact GET on explicit recovery without a second POST or changed IDs', async () => {
+  const app = await harness({ mode: 'eve-text' }); await eveDraft(app); app.lose();
+  await app.click('確認して仕事を保存');
+  const first = app.requests.find(r => r.payload?.action === 'create').payload;
+  assert.ok(app.find('button', '同じ操作で結果を確認'));
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.requests.filter(r => r.payload?.action === 'create').length, 1);
+  assert.equal([...app.jobs.get('A').values()][0].id, first.jobId);
+  await app.consent(); app.lose(); await app.click('この手順を実行');
+  assert.equal(app.text().includes('保存を同じ仕事から確認しました'), false);
+  const run = app.requests.find(r => r.payload?.action === 'run').payload;
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.requests.filter(r => r.payload?.action === 'run').length, 1);
+  assert.equal(run.jobId, first.jobId); assert.equal(app.jobs.get('A').size, 1);
+  assert.equal(app.jobs.get('A').get(first.jobId).composition.operations.length, 1);
+});
+void test('Eve hard reload reads an existing ID outside list100 and never creates or runs automatically', async () => {
+  const app = await harness({ mode: 'eve-text' }); await eveDraft(app); await app.click('確認して仕事を保存');
+  await app.consent(); await app.click('この手順を実行');
+  const saved = [...app.jobs.get('A').values()][0];
+  const fresh = await harness({ mode: 'eve-text', initialJobs: [saved], hideList: true, search: `?job=${saved.id}` });
+  assert.equal(fresh.byId('composition-source').props.value, saved.composition.source);
+  assert.equal(fresh.requests.filter(r => r.method !== 'GET').length, 0);
+  assert.ok(fresh.requests.some(r => r.path.includes(`jobId=${saved.id}`)));
+  const stranger = await harness({ mode: 'eve-text', initialOwner: 'B', hideList: true, search: `?job=${saved.id}` });
+  assert.equal(stranger.byId('composition-source').props.value, '');
+  assert.equal(stranger.text().includes('原文A'), false);
+  assert.equal(stranger.requests.filter(r => r.method !== 'GET').length, 0);
+});
+void test('Eve owner switch hides raw drafts and cancel response loss remains unconfirmed until same-ID readback', async () => {
+  const app = await harness({ mode: 'eve-text' }); app.input('eve-name-0', 'private-A'); app.input('eve-text-0', 'private manuscript');
+  app.owner('B'); await app.focus(); assert.equal(app.byId('eve-text-0').props.value, '');
+  app.owner('A'); await app.focus(); assert.equal(app.byId('eve-text-0').props.value, 'private manuscript');
+  await eveDraft(app); await app.click('確認して仕事を保存'); app.lose(); await app.click('仕事を中止');
+  assert.equal(app.text().includes('仕事を中止しました。保存済み'), false);
+  assert.ok(app.find('button', '同じ操作で結果を確認'));
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.requests.filter(r => r.method === 'PATCH').length, 1);
+  assert.equal([...app.jobs.get('A').values()][0].status, 'cancelled');
+  assert.equal(app.find('button', 'この手順を実行')?.props.disabled, true);
+});
+void test('Eve acknowledgement followed by missing readback remains pending and cannot allocate a replacement job', async () => {
+  const app = await harness({ mode: 'eve-text' }); await eveDraft(app); app.failExact(404);
+  await app.click('確認して仕事を保存');
+  assert.ok(app.find('button', '同じ操作で結果を確認'));
+  assert.equal(app.text().includes('仕事を確認しました。保存済み'), false);
+  assert.equal(app.find('button', '確認して仕事を保存')?.props.disabled, true);
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.requests.filter(r => r.payload?.action === 'create').length, 1);
+  assert.equal(app.jobs.get('A').size, 1);
+});
+
+function deferredEveFiles(first = 'old imported source') {
+  let release;
+  const bytes = new TextEncoder().encode(first);
+  return { files: [{ name: 'A.txt', size: bytes.length, arrayBuffer: () => new Promise(resolve => { release = () => resolve(bytes.buffer); }) },
+    { name: 'B.txt', size: 1, arrayBuffer: async () => new TextEncoder().encode('b').buffer }], release: () => release() };
+}
+void test('attempt2: accepted same-frame captured raw edit invalidates older file content', async () => {
+  const app = await harness({ mode: 'eve-text' }), pendingFile = deferredEveFiles();
+  const oldEdit = app.byId('eve-text-0').props.onChange;
+  app.byId('eve-text-files').props.onChange({ target: { files: pendingFile.files, value: 'fixture' } });
+  oldEdit({ target: { value: 'newer manual source' } }); app.render();
+  assert.equal(app.byId('eve-text-0').props.value, 'newer manual source');
+  pendingFile.release(); await app.flush();
+  assert.equal(app.byId('eve-text-0').props.value, 'newer manual source');
+  assert.equal(app.requests.some(request => request.method !== 'GET'), false);
+});
+void test('attempt2: accepted same-frame goal edit invalidates pending imported material', async () => {
+  const app = await harness({ mode: 'eve-text' }), file = deferredEveFiles();
+  app.input('eve-text-0', 'current original');
+  const oldGoal = app.byId('eve-text-goal').props.onChange;
+  app.byId('eve-text-files').props.onChange({ target: { files: file.files, value: 'fixture' } });
+  oldGoal({ target: { value: 'new goal' } }); app.render();
+  assert.equal(app.byId('eve-text-goal').props.value, 'new goal');
+  file.release(); await app.flush();
+  assert.equal(app.byId('eve-text-0').props.value, 'current original');
+  assert.equal(app.byId('eve-text-goal').props.value, 'new goal');
+});
+void test('attempt2: replacement file selection supersedes pending read and valid imported bytes can still save', async () => {
+  const app = await harness({ mode: 'eve-text' }), first = deferredEveFiles(), second = deferredEveFiles('latest\r\n原文');
+  const select = app.byId('eve-text-files').props.onChange;
+  select({ target: { files: first.files, value: 'first' } }); app.render();
+  app.byId('eve-text-files').props.onChange({ target: { files: second.files, value: 'second' } });
+  second.release(); await app.flush();
+  assert.equal(app.byId('eve-text-0').props.value, 'latest\r\n原文');
+  first.release(); await app.flush();
+  assert.equal(app.byId('eve-text-0').props.value, 'latest\r\n原文');
+  app.input('eve-text-goal', '保存'); await app.click('原文と依頼を固定して確認');
+  await app.click('確認して仕事を保存'); await app.consent(); await app.click('この手順を実行');
+  const saved = [...app.jobs.get('A').values()][0];
+  assert.equal(JSON.parse(saved.composition.source).materials[0].text, 'latest\r\n原文');
+  assert.equal(saved.composition.artifacts.s1.text, saved.composition.source);
+  assert.equal(app.requests.filter(r => r.payload?.action === 'run').length, 1);
+});
+void test('attempt2: explicit cancel, empty selection and unmount invalidate deferred file callbacks', async () => {
+  for (const action of ['cancel', 'empty', 'unmount']) {
+    const app = await harness({ mode: 'eve-text' }), file = deferredEveFiles();
+    app.input('eve-text-0', 'original to retain');
+    app.byId('eve-text-files').props.onChange({ target: { files: file.files, value: 'fixture' } }); app.render();
+    if (action === 'cancel') await app.click('ファイル読込を取り消す');
+    else if (action === 'empty') app.byId('eve-text-files').props.onChange({ target: { files: [], value: '' } });
+    else app.unmount();
+    file.release(); await app.flush();
+    assert.equal(app.byId('eve-text-0').props.value, 'original to retain');
+    assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  }
+});
+void test('attempt2: file callback after owner change or draft discard cannot replace a newer owner-scoped input', async () => {
+  const app = await harness({ mode: 'eve-text' }), file = deferredEveFiles();
+  app.byId('eve-text-files').props.onChange({ target: { files: file.files, value: 'fixture' } }); app.render();
+  app.owner('B'); await app.focus(); app.input('eve-text-0', 'B current input');
+  file.release(); await app.flush(); assert.equal(app.byId('eve-text-0').props.value, 'B current input');
+  app.owner('A'); await app.focus(); assert.equal(app.byId('eve-text-0').props.value, '');
+  await eveDraft(app);
+  const discard = app.find('button', '未保存の入力を破棄').props.onClick, next = deferredEveFiles();
+  app.byId('eve-text-files').props.onChange({ target: { files: next.files, value: 'fixture' } });
+  discard(); app.render(); next.release(); await app.flush();
+  assert.equal(app.byId('eve-text-0').props.value, '');
+  assert.equal(app.byId('composition-source').props.value, '');
+});
+void test('attempt2: invalid controls from file/manual/goal never create a prepared job or leak error contents', async () => {
+  for (const entry of ['file', 'manual', 'goal']) {
+    const app = await harness({ mode: 'eve-text' });
+    app.input('eve-name-0', 'a'); app.input('eve-text-0', 'first'); app.input('eve-name-1', 'b'); app.input('eve-text-1', 'second'); app.input('eve-text-goal', 'goal');
+    const invalid = 'private-marker\u0007forbidden';
+    if (entry === 'file') {
+      const bytes = new TextEncoder().encode(invalid);
+      app.byId('eve-text-files').props.onChange({ target: { files: [{ name: 'a', size: bytes.length, arrayBuffer: async () => bytes.buffer },
+        { name: 'b', size: 6, arrayBuffer: async () => new TextEncoder().encode('second').buffer }], value: 'fixture' } });
+      await app.flush(); assert.equal(app.byId('eve-text-0').props.value, 'first');
+      assert.match(app.alerts(), /2つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
+    } else {
+      app.input(entry === 'manual' ? 'eve-text-0' : 'eve-text-goal', invalid);
+      await app.click('原文と依頼を固定して確認');
+      assert.equal(app.byId('composition-source').props.value, '');
+      assert.match(app.alerts(), /2つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
+    }
+    assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  }
+});
+void test('attempt2: delayed exact read owner switch and wrong artifact keep confirmation pending with no second run', async () => {
+  for (const action of ['owner', 'artifact']) {
+    let active = false, original;
+    const app = await harness({ mode: 'eve-text', exactHook: async ({ job, switchOwner }) => {
+      if (!active || !job.composition.artifacts.s1) return; active = false;
+      if (action === 'owner') switchOwner('B');
+      else { original = job.composition.artifacts.s1.text; job.composition.artifacts.s1.text = 'wrong artifact'; }
+    } });
+    await eveDraft(app); await app.click('確認して仕事を保存'); await app.consent(); active = true; await app.click('この手順を実行');
+    assert.equal(app.text().includes('保存を同じ仕事から確認しました'), false);
+    if (action === 'owner') { assert.equal(app.byId('composition-source')?.props.value ?? '', ''); app.owner('A'); await app.focus(); }
+    else [...app.jobs.get('A').values()][0].composition.artifacts.s1.text = original;
+    await app.click('同じ操作で結果を確認');
+    assert.match(app.text(), /保存を同じ仕事から確認しました/);
+    assert.equal(app.requests.filter(r => r.payload?.action === 'run').length, 1);
+  }
+});
+void test('attempt2: captured file/prepare handlers from an older input cannot replace or freeze a newer edit', async () => {
+  const app = await harness({ mode: 'eve-text' });
+  const select = app.byId('eve-text-files').props.onChange, prepare = app.find('button', '原文と依頼を固定して確認').props.onClick;
+  app.input('eve-text-0', 'new current text');
+  let reads = 0;
+  const files = [{ name: 'a', size: 3, arrayBuffer: async () => { reads++; return new TextEncoder().encode('old').buffer; } },
+    { name: 'b', size: 3, arrayBuffer: async () => new TextEncoder().encode('old').buffer }];
+  select({ target: { files, value: 'old' } }); prepare(); await app.flush();
+  assert.equal(reads, 0); assert.equal(app.byId('eve-text-0').props.value, 'new current text');
+  assert.equal(app.byId('composition-source').props.value, '');
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false);
 });

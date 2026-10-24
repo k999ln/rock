@@ -1,3 +1,7 @@
+## EVE-02 attempt2 exact6統合候補
+
+主担当10/ROCK。最新remote main1a9とsource旧7beの6基底同一、独立PASS_SCOPEDの6hashを無変更採用。関連71pass。旧巨大Root Remix/media/workflow、未検収Proを混ぜず、RootHEAD/index/journal保持。固定全verify1回→別draftPR/同headCI→独立metadata採用review。PR196 BillingはGame-r2/Pro metadata検収とacceptedhead7CI/main1a9同SHA6CI成功を最小hash要約で同期。[Eve採用証拠](../evidence/development-execution/eve-text-job-main-adoption.json)／[Billing要約](../evidence/development-execution/billing-final-send-review-summary.json)。一般公開/実課金なし。
+
 ## GIT08 main反映後のBilling限定採用
 
 PR195の95台帳metadataは文書保存・branch保存・main7be3d6aa反映まで完了。本番配備と95whole acceptedは0のまま。分類base9a/188digestを保持し、Billing原本exact4独立passとrecurring互換delta再検収待ちは別candidate overlayへ追記、main採用と混同しない。原本review/receiptはhash付き最小要約で保存、秘密/path/logをコピーしない。次はBilling固定全verify/CI/独立採用metadata review。[証拠](../evidence/development-execution/billing-final-send-main-adoption.json)。

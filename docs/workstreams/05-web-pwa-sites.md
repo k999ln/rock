@@ -1,3 +1,7 @@
+## EVE-02文章準備のmain採用候補
+
+ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/owner/revision/保存同意/同job読戻し/unknownと取消/100件外復旧をexact6で限定採用。attempt2独立PASS、旧2P2は履歴を保持して閉鎖。実browser・semantic生成・Provider/課金・新Tool/schema・公開は未受入。[設計](../rockstaros-complete-design.md#eve-text-preparation)／[証拠](../evidence/development-execution/eve-text-job-main-adoption.json)。Git主担当は10、固定全verify/CIと別metadata採用検収が次。
+
 # Web / PWA / Sites
 
 ## Mini/Proの目的を明示（2026-10-21、WEB13 / WEB06、ROCK）

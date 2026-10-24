@@ -18,6 +18,7 @@ import {
   runnableCompositionNodes, suggestComposition, COMPOSITION_TEXT_LIMIT,
   type CompositionPlan, type MaterialKind,
 } from '@/lib/work-composition';
+import { prepareEveTextJob, decodeEveTextMaterial, isEveTextPlan, type EveTextMaterial } from '@/lib/eve-text-job';
 import styles from './work-composition-workspace.module.css';
 
 type EditableNode = { id: string; tool: string; inputs: string[]; configText: string };
@@ -87,11 +88,25 @@ function StepConfiguration({ node, update }: { node: EditableNode; update: (chan
   </>;
 }
 
-export default function WorkCompositionWorkspace() {
+async function exactCompositionJob(id: string, owner: string): Promise<WorkJob> {
+  if (id.length !== 36) throw new OperationResponseError('INVALID_RESPONSE');
+  const response = await operationRequest<unknown>(`/api/work-jobs/composition?jobId=${encodeURIComponent(id)}`);
+  if (readOwnerScope((response as { ownerScope?: unknown }).ownerScope) !== owner) throw new OperationResponseError('INVALID_RESPONSE');
+  const job = readWorkJobResponse(response);
+  if (job.id !== id || !job.composition) throw new OperationResponseError('INVALID_RESPONSE');
+  return job;
+}
+
+export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 'compose' | 'eve-text' } = {}) {
   const { accessState, setNeedsSignin } = useExecutionAccess();
   const [owner, setOwnerValue] = useState<string | null>(null);
   const currentOwner = useRef<string | null>(null);
   const [memory, setMemory, memories, currentMemory] = useOwnerMemoryState<WorkspaceMemory>(owner, currentOwner, { selected: '', drafts: {}, editors: {}, openedEditor: '' });
+  const [eveInput, setEveInput, eveInputs, currentEveInput] = useOwnerMemoryState<{ materials: EveTextMaterial[]; goal: string }>(owner, currentOwner,
+    { materials: [{ name: '', text: '' }, { name: '', text: '' }], goal: '' });
+  const [readingEve, setReadingEve] = useState(false);
+  const fileGeneration = useRef(0);
+  useEffect(() => () => { fileGeneration.current++; }, []);
   const [error, setError] = useOwnerMemoryState(owner, currentOwner, '');
   const [message, setMessage] = useOwnerMemoryState(owner, currentOwner, '');
   const [jobs, setJobs] = useState<WorkJob[]>([]);
@@ -109,15 +124,15 @@ export default function WorkCompositionWorkspace() {
   useEffect(() => { selectedRef.current = memory.selected; }, [memory.selected]);
   const initializedOwners = useRef(new Set<string>());
   const setOwner = useCallback((scope: string | null) => {
-    if (scope !== currentOwner.current) { selectedRef.current = ''; setJobs([]); setRecipes([]); }
+    if (scope !== currentOwner.current) { selectedRef.current = ''; setJobs([]); setRecipes([]); fileGeneration.current++; setReadingEve(false); }
     currentOwner.current = scope; setOwnerValue(scope);
   }, []);
   const selected = jobs.find((job) => job.id === memory.selected && job.composition);
   const draft = memory.drafts[draftKey(memory.selected)] ?? (selected ? jobDraft(selected) : blankDraft());
   const ownPending = owner ? pendingOperations[owner] : undefined;
-  const locked = busy || loading || !owner || Boolean(ownPending);
+  const locked = busy || loading || readingEve || !owner || Boolean(ownPending);
   const retainedInput = Object.values(memories).some((state) => Object.values(state.drafts).some((item) => item.dirty) || Object.values(state.editors).some((item) => item.dirty));
-  usePendingSaveNavigation(busy || pendingOwners.length > 0 || retainedInput);
+  usePendingSaveNavigation(busy || readingEve || pendingOwners.length > 0 || retainedInput || Object.values(eveInputs).some((input) => input.goal || input.materials.some((material) => material.name || material.text)));
 
   const refresh = useCallback(async () => {
     if (inFlight.current) return;
@@ -129,7 +144,23 @@ export default function WorkCompositionWorkspace() {
       if (!list.ownerScope || list.ownerScope !== saved.ownerScope) {
         setOwner(null); setNeedsSignin(true); return;
       }
-      setOwner(list.ownerScope); setJobs(list.jobs.filter((job) => job.composition)); setRecipes(saved.recipes);
+      if (mode === 'eve-text') setOwner(list.ownerScope);
+      const known = pending.current.get(list.ownerScope)?.payload.jobId ?? new URL(window.location.href).searchParams.get('job');
+      const knownId = typeof known === 'string' ? known : '';
+      if (mode === 'eve-text' && knownId) {
+        try {
+          const exact = await exactCompositionJob(knownId, list.ownerScope);
+          list.jobs = [exact, ...list.jobs.filter((job) => job.id !== knownId)];
+        } catch (cause) {
+          if (!(cause instanceof OperationRequestError && cause.status === 404)) throw cause;
+          list.jobs = list.jobs.filter((job) => job.id !== knownId);
+        }
+        const current = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition'));
+        if (current.ownerScope !== list.ownerScope) { setOwner(current.ownerScope); return; }
+      }
+      if (token !== generation.current) return;
+      list.jobs = list.jobs.filter((job) => job.composition && (mode !== 'eve-text' || isEveTextPlan(job.composition.plan)));
+      setOwner(list.ownerScope); setJobs(list.jobs); setRecipes(saved.recipes);
       setNeedsSignin(false);
       if (!initializedOwners.current.has(list.ownerScope)) {
         initializedOwners.current.add(list.ownerScope);
@@ -152,9 +183,12 @@ export default function WorkCompositionWorkspace() {
       if (token !== generation.current) return;
       if (cause instanceof OperationRequestError && cause.status === 401) {
         setOwner(null); setNeedsSignin(true);
-      } else if (currentOwner.current) setError('仕事の保存先を確認できません。通信を確認して再読込してください。', currentOwner.current);
+      } else if (currentOwner.current) {
+        setError('仕事の保存先を確認できません。通信を確認して再読込してください。', currentOwner.current);
+        if (mode === 'eve-text') setOwner(null);
+      }
     } finally { if (token === generation.current) setLoading(false); }
-  }, [setNeedsSignin, setError, setMemory, setOwner]);
+  }, [setNeedsSignin, setError, setMemory, setOwner, mode]);
   // Owner-dependent setters change identity as the owner changes. Keep one mount/focus listener.
   const refreshRef = useRef(refresh);
   useEffect(() => { refreshRef.current = refresh; }, [refresh]);
@@ -171,14 +205,20 @@ export default function WorkCompositionWorkspace() {
     return !locked && !inFlight.current && Boolean(owner && owner === currentOwner.current &&
       !pending.current.has(owner) && memory.selected === selectedRef.current);
   }
+  function invalidateEveFiles() {
+    if (!owner || currentOwner.current !== owner) return;
+    fileGeneration.current++; setReadingEve(false);
+  }
   function edit(next: Partial<Draft>) {
     if (!canEditNow()) return;
+    invalidateEveFiles();
     const id = memory.selected;
     setMemory((state) => ({ ...state, drafts: { ...state.drafts, [draftKey(id)]: { ...(state.drafts[draftKey(id)] ?? draft), ...next, dirty: true } } }));
     setError(''); setMessage('');
   }
   function chooseJob(id: string) {
     if (!canEditNow()) return;
+    invalidateEveFiles();
     selectedRef.current = id;
     setMemory((state) => ({ ...state, selected: id }));
     setError(''); setMessage('');
@@ -186,12 +226,12 @@ export default function WorkCompositionWorkspace() {
     if (id) url.searchParams.set('job', id); else url.searchParams.delete('job');
     window.history.replaceState(window.history.state, '', url);
   }
-  async function submit(operation: Pending) {
+  async function submit(operation: Pending, recover = false) {
     if (inFlight.current || currentOwner.current !== operation.owner) return;
     inFlight.current = true; const token = ++generation.current; setBusy(true); setError(''); setMessage('');
     pending.current.set(operation.owner, operation);
     setPendingOperations(Object.fromEntries(pending.current));
-    let confirmed = false;
+    let confirmed = false, verifyingWrite = false;
     try {
       const fingerprint = await compositionPayloadFingerprint(operation.payload);
       const identity = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition'));
@@ -200,8 +240,27 @@ export default function WorkCompositionWorkspace() {
         throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
       }
       if (token !== generation.current || currentOwner.current !== operation.owner) return;
-      const result = await operationRequest<unknown>(operation.path, operation.method, operation.payload,
-        { [OWNER_SCOPE_HEADER]: operation.owner });
+      let result: unknown;
+      if (mode === 'eve-text' && recover) {
+        try {
+          const saved = await exactCompositionJob(String(operation.payload.jobId), operation.owner);
+          if (compositionResponseConfirms(saved, operation.payload, fingerprint)) result = { job: saved, ownerScope: operation.owner };
+        } catch (cause) { if (!(cause instanceof OperationRequestError && cause.status === 404)) throw cause; }
+      }
+      if (!result) {
+        if (mode === 'eve-text' && operation.payload.action === 'create') {
+          const url = new URL(window.location.href); url.searchParams.set('job', String(operation.payload.jobId));
+          window.history.replaceState(window.history.state, '', url);
+        }
+        result = await operationRequest<unknown>(operation.path, operation.method, operation.payload,
+          { [OWNER_SCOPE_HEADER]: operation.owner });
+      }
+      const acknowledged = readWorkJobResponse(result);
+      verifyingWrite = mode === 'eve-text';
+      const job = mode === 'eve-text' ? await exactCompositionJob(String(operation.payload.jobId), operation.owner) : acknowledged;
+      if (mode === 'eve-text' && operation.payload.action === 'run' && !job.composition?.materialCleared &&
+        (job.composition?.source !== operation.payload.source ||
+          job.composition?.artifacts[String(operation.payload.stepId)]?.text !== operation.payload.source)) throw new OperationResponseError('INVALID_RESPONSE');
       const responseOwner = readOwnerScope((result as { ownerScope?: unknown }).ownerScope);
       if (operation.path.endsWith('/composition') && responseOwner !== operation.owner)
         throw new OperationResponseError('INVALID_RESPONSE');
@@ -210,7 +269,6 @@ export default function WorkCompositionWorkspace() {
       if (after.ownerScope !== operation.owner) {
         setOwner(after.ownerScope); throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
       }
-      const job = readWorkJobResponse(result);
       if (token !== generation.current || currentOwner.current !== operation.owner) return;
       if (!compositionResponseConfirms(job, operation.payload, fingerprint)) throw new OperationResponseError('INVALID_RESPONSE');
       confirmed = true;
@@ -233,10 +291,11 @@ export default function WorkCompositionWorkspace() {
         const url = new URL(window.location.href); url.searchParams.set('job', job.id);
         window.history.replaceState(window.history.state, '', url);
       }
-      setMessage(compositionSaveMessage(job, operation.payload), operation.owner);
+      setMessage(mode === 'eve-text' && job.composition?.materialCleared ? 'この仕事の素材・成果は削除済みです。再実行しません。' :
+        mode === 'eve-text' && operation.payload.action === 'run' ? '資料付き依頼の保存を同じ仕事から確認しました。生成した草稿ではありません。' : compositionSaveMessage(job, operation.payload), operation.owner);
     } catch (cause) {
       if (cause instanceof OperationRequestError && cause.status === 401) { setOwner(null); setNeedsSignin(true); }
-      if (cause instanceof OperationRequestError && isDefinitivePendingSaveFailure(cause.status, cause.code)) confirmed = true;
+      if (!verifyingWrite && cause instanceof OperationRequestError && isDefinitivePendingSaveFailure(cause.status, cause.code)) confirmed = true;
       if (currentOwner.current === operation.owner)
         setError(cause instanceof OperationRequestError ? cause.message : '応答を確認できません。同じ操作で結果を確認してください。入力と操作IDは保持しています。', operation.owner);
     } finally {
@@ -248,6 +307,7 @@ export default function WorkCompositionWorkspace() {
   }
   function mutate(payload: Record<string, unknown>, path = '/api/work-jobs/composition', method = 'POST') {
     if (!canEditNow() || !owner) return;
+    invalidateEveFiles();
     void submit({ owner, path, method, payload, selected: memory.selected });
   }
   function withPlan(action: 'create' | 'revise') {
@@ -258,6 +318,48 @@ export default function WorkCompositionWorkspace() {
         : { action, jobId: crypto.randomUUID(), plan });
       else if (selected) mutate({ action, jobId: selected.id, revision: selected.revision, commandId: crypto.randomUUID(), plan });
     } catch (cause) { setError(cause instanceof SyntaxError ? '処理設定のJSONを確認してください。' : cause instanceof Error ? cause.message : '手順を確認してください。'); }
+  }
+  function changeEveMaterial(index: number, field: 'name' | 'text', value: string) {
+    if (!canEditNow() || selected) return;
+    invalidateEveFiles();
+    setEveInput((input) => ({ ...input, materials: input.materials.map((material, i) => i === index ? { ...material, [field]: value } : material) }));
+  }
+  function changeEveGoal(goal: string) {
+    if (!canEditNow() || selected) return;
+    invalidateEveFiles();
+    setEveInput((input) => ({ ...input, goal }));
+  }
+  async function loadEveFiles(files: FileList | null) {
+    // A queued replacement/cancel selection may arrive while readingEve from a
+    // newer render is true. Check synchronous owner/job/write fences, then give
+    // every accepted selection its own generation, including an empty cancel.
+    if (!owner || currentOwner.current !== owner || busy || loading || selected || inFlight.current ||
+      pending.current.has(owner) || memory.selected !== selectedRef.current || !currentEveInput() || !currentMemory()) return;
+    const author = owner, version = ++fileGeneration.current;
+    if (!files?.length) { setReadingEve(false); return; }
+    setReadingEve(true); setError('');
+    try {
+      if (files.length !== 2) throw new Error('UTF-8文章を2つ選んでください。');
+      const materials: EveTextMaterial[] = [];
+      for (const file of Array.from(files)) {
+        if (file.size > 48_000) throw new Error('1ファイル48 KB以内にしてください。');
+        materials.push(decodeEveTextMaterial(file.name, new Uint8Array(await file.arrayBuffer())));
+      }
+      // Validate names and combined limits without requiring a goal to be entered first.
+      prepareEveTextJob(materials, '取込内容を確認');
+      if (version === fileGeneration.current && currentOwner.current === author) setEveInput((input) => ({ ...input, materials }), author);
+    } catch (cause) {
+      if (version === fileGeneration.current && currentOwner.current === author) setError(cause instanceof Error ? cause.message : 'UTF-8文章を確認してください。', author);
+    } finally { if (version === fileGeneration.current) setReadingEve(false); }
+  }
+  function prepareEve() {
+    if (!canEditNow() || selected || !currentEveInput()) return;
+    invalidateEveFiles();
+    try {
+      const prepared = prepareEveTextJob(eveInput.materials, eveInput.goal);
+      edit({ ...prepared.plan, source: prepared.source, nodes: editableNodes(prepared.plan), consent: false, recipeRef: null });
+      setEveInput({ materials: [{ name: '', text: '' }, { name: '', text: '' }], goal: '' });
+    } catch (cause) { setError(cause instanceof Error ? cause.message : '資料と依頼を確認してください。'); }
   }
   function openEditor(nodeId: string) {
     if (!canEditNow() || !selected?.composition || !currentMemory()) return;
@@ -305,18 +407,20 @@ export default function WorkCompositionWorkspace() {
   const hasOutput = Boolean(selected?.composition && Object.keys(selected.composition.artifacts).length);
   const materialSaved = selected?.composition?.source !== null && selected?.composition?.source !== undefined;
   const canRun = selected?.status === 'active' && draft.consent && Boolean((selected.composition?.source ?? draft.source).trim()) && !planChanged;
-  const canSaveRecipe = Boolean(selected && ['review', 'completed'].includes(selected.status) && selected.steps.every((step) => step.passed));
+  const canSaveRecipe = mode !== 'eve-text' && Boolean(selected && ['review', 'completed'].includes(selected.status) && selected.steps.every((step) => step.passed));
   const privateVisible = Boolean(owner);
   const signinState = owner ? 'ready' : loading ? 'checking' : accessState === 'signin' ? 'signin' : 'unavailable';
 
-  return <WorkspaceShell title="Zema · 仕事を組み立てる" running={busy}>
+  return <WorkspaceShell title={mode === 'eve-text' ? 'Eve · 資料付き依頼を保存' : 'Zema · 仕事を組み立てる'} running={busy}>
     <div className={styles.workspace}>
-      <div className={styles.intro}><div><h1>目的から、仕事を組み立てる。</h1>
+      <div className={styles.intro}><div><h1>{mode === 'eve-text' ? '2つの資料と依頼を、ひとつの仕事へ。' : '目的から、仕事を組み立てる。'}</h1>
         <p>素材を整え、完成条件を検査し、成果を保存。使った手順はレシピにして、次の素材でも使えます。</p>
         <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部siの自律実行や事実確認は行いません。</p>
       </div><Link href="/chat?view=work">Zemaの仕事へ</Link></div>
       {toolEntry.state === 'unavailable' && <div className={`${styles.notice} ${styles.error}`} role="alert">{toolEntry.message}</div>}
       {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>Skyで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}
+      {mode === 'eve-text' && <p className={styles.notice}>ここでは資料付き依頼を保存します。モデル生成・完成草稿はまだ利用できません。原文は変更せず、未保存の入力はタブを閉じると失われます。</p>}
+      {mode === 'eve-text' && readingEve && <button type="button" onClick={invalidateEveFiles}>ファイル読込を取り消す</button>}
       <ExecutionSignin state={signinState} />
       {owner && loading && <output className={styles.notice}>保存した仕事とレシピを更新しています…成果はこの画面に残っています。</output>}
       {!privateVisible && pendingOwners.length > 0 && <p className={styles.notice}>保存結果が未確認の操作を保持しています。入力したアカウントで接続を確認してください。</p>}
@@ -326,7 +430,7 @@ export default function WorkCompositionWorkspace() {
         {message && <output className={`${styles.notice} ${styles.success}`}>{message}</output>}
         {ownPending && <section className={styles.notice} aria-label="保存結果の確認"><strong>保存結果を確認してください。</strong>
           <p>新しい操作は保留中です。同じ操作IDで確認するので、仕事を二重に作りません。</p>
-          <button disabled={busy || loading} onClick={() => void submit(ownPending)}>{busy ? '確認中…' : '同じ操作で結果を確認'}</button>
+          <button disabled={busy || loading} onClick={() => void submit(ownPending, true)}>{busy ? '確認中…' : '同じ操作で結果を確認'}</button>
         </section>}
       </>}
       <div className={styles.grid}>
@@ -336,7 +440,7 @@ export default function WorkCompositionWorkspace() {
           <h2>保存した仕事</h2>
           <ul>{privateVisible && jobs.map((job) => <li key={job.id}><button aria-current={memory.selected === job.id ? 'true' : undefined} disabled={busy || Boolean(ownPending)} onClick={() => chooseJob(job.id)}><span>{job.composition?.plan.objective}<small>{({ active: '作業中', review: '本人確認待ち', completed: '完了', cancelled: '中止' })[job.status]} · {job.steps.filter((step) => step.passed).length}/{job.steps.length}</small></span></button></li>)}</ul>
           {privateVisible && jobs.length === 0 && <p className={styles.empty}>仕事を保存すると、ここから再開できます。</p>}
-          <h2>仕事のレシピ</h2>
+          {mode !== 'eve-text' && <><h2>仕事のレシピ</h2>
           <p className={styles.note}>手順だけを再利用。過去の素材・成果・承認は含みません。</p>
           <ul>{privateVisible && recipes.map((recipe) => <li key={recipe.id}><button disabled={locked} onClick={() => {
             if (!canEditNow()) return;
@@ -346,28 +450,39 @@ export default function WorkCompositionWorkspace() {
               inputKind: recipe.recipe.inputKind, nodes: editableNodes(recipe.recipe), recipeRef: { id: recipe.id, revision: recipe.jobRevision }, dirty: true } } }));
             setError(''); setMessage('新しい目的・素材・完成条件を入力してください。旧仕事は変更しません。');
           }}>{recipe.name}<small>{recipe.recipe.nodes.length}手順 · {recipe.recipe.inputKind === 'csv' ? 'CSV' : '文章'}</small></button></li>)}</ul>
-          {privateVisible && recipes.length === 0 && <p className={styles.empty}>成果の検査が終わった仕事から保存できます。</p>}
+          {privateVisible && recipes.length === 0 && <p className={styles.empty}>成果の検査が終わった仕事から保存できます。</p>}</>}
         </aside>
         <section className={styles.panel} aria-label="仕事の組み立て">
           <h2>{selected ? '保存した仕事' : draft.recipeRef ? 'レシピから新しい仕事' : '新しい仕事'}</h2>
           {!privateVisible ? <p className={styles.empty}>サインインすると、目的・素材を入力して仕事とレシピを保存できます。</p> : <>
+            {mode === 'eve-text' && !selected && <fieldset disabled={locked}><legend>資料付き依頼の準備</legend>
+              <label htmlFor="eve-text-files">UTF-8文章を2つ選ぶ（各48 KB以内・本文合計8,000文字）</label>
+              <input id="eve-text-files" type="file" multiple disabled={locked} onChange={(event) => { void loadEveFiles(event.target.files); event.target.value = ''; }} />
+              {eveInput.materials.map((material, index) => <div key={index}>
+                <label htmlFor={`eve-name-${index}`}>資料{index + 1}の名前</label><input id={`eve-name-${index}`} maxLength={160} value={material.name} disabled={locked} onChange={(event) => changeEveMaterial(index, 'name', event.target.value)} />
+                <label htmlFor={`eve-text-${index}`}>資料{index + 1}の原文</label><textarea id={`eve-text-${index}`} rows={3} maxLength={8000} value={material.text} disabled={locked} onChange={(event) => changeEveMaterial(index, 'text', event.target.value)} />
+              </div>)}
+              <label htmlFor="eve-text-goal">依頼（500文字以内）</label><textarea id="eve-text-goal" rows={2} maxLength={500} value={eveInput.goal} disabled={locked} onChange={(event) => changeEveGoal(event.target.value)} />
+              <button type="button" disabled={locked} onClick={prepareEve}>原文と依頼を固定して確認</button>
+              <p>下の内容を確認して仕事を保存し、素材の保存に同意して手順を実行してください。計画だけの保存では原文はまだ保存されません。</p>
+            </fieldset>}
             {selected && <p className={styles.note}>保存済み · revision {selected.revision} · {selected.id}</p>}
             {draft.originJobId && jobs.some((job) => job.id === draft.originJobId) && <div className={styles.actions}><button disabled={locked} onClick={() => chooseJob(draft.originJobId!)}>元の仕事を表示</button><p className={styles.note}>編集版は別の仕事です。元の成果と検査記録は変更していません。</p></div>}
-            {draft.dirty && <div className={styles.actions}><p className={styles.note}>未保存の入力があります。このタブで保持しています。</p><button disabled={locked} onClick={() => { if (canEditNow() && window.confirm('この画面の未保存入力を破棄します。保存済みの仕事は残ります。')) setMemory((state) => ({ ...state, drafts: { ...state.drafts, [draftKey(memory.selected)]: selected ? jobDraft(selected) : blankDraft() } })); }}>未保存の入力を破棄</button></div>}
-            <label htmlFor="composition-objective">目的</label><textarea id="composition-objective" rows={2} maxLength={1000} disabled={locked || selected?.status === 'cancelled' || selected?.status === 'completed'} value={draft.objective} onChange={(event) => edit({ objective: event.target.value })} placeholder="例：記事の出典を整理して、公開前の確認をしたい" />
-            <label htmlFor="composition-acceptance">完成条件</label><textarea id="composition-acceptance" rows={2} maxLength={1000} disabled={locked || selected?.status === 'cancelled' || selected?.status === 'completed'} value={draft.acceptance} onChange={(event) => edit({ acceptance: event.target.value })} placeholder="例：出典一覧があり、300文字以上。本人が内容を確認する" />
+            {draft.dirty && <div className={styles.actions}><p className={styles.note}>未保存の入力があります。このタブで保持しています。</p><button disabled={locked} onClick={() => { if (canEditNow() && window.confirm('この画面の未保存入力を破棄します。保存済みの仕事は残ります。')) { invalidateEveFiles(); setMemory((state) => ({ ...state, drafts: { ...state.drafts, [draftKey(memory.selected)]: selected ? jobDraft(selected) : blankDraft() } })); } }}>未保存の入力を破棄</button></div>}
+            <label htmlFor="composition-objective">目的</label><textarea id="composition-objective" rows={2} maxLength={1000} disabled={locked || mode === 'eve-text' || selected?.status === 'cancelled' || selected?.status === 'completed'} value={draft.objective} onChange={(event) => edit({ objective: event.target.value })} placeholder="例：記事の出典を整理して、公開前の確認をしたい" />
+            <label htmlFor="composition-acceptance">完成条件</label><textarea id="composition-acceptance" rows={2} maxLength={1000} disabled={locked || mode === 'eve-text' || selected?.status === 'cancelled' || selected?.status === 'completed'} value={draft.acceptance} onChange={(event) => edit({ acceptance: event.target.value })} placeholder="例：出典一覧があり、300文字以上。本人が内容を確認する" />
             <p className={styles.note}>下の検査設定で文字数・必須文言を指定できます。意味や正しさの最終確認は本人が行います。</p>
-            <div className={styles.columns}><div><label htmlFor="composition-format">素材の形式</label><select id="composition-format" value={draft.inputKind} disabled={locked || Boolean(selected) || Boolean(draft.recipeRef)} onChange={(event) => edit({ inputKind: event.target.value as MaterialKind, nodes: editableNodes(suggestComposition(draft.objective, event.target.value as MaterialKind)) })}><option value="text">文章（UTF-8）</option><option value="csv">CSV（UTF-8）</option></select></div>
-              <div><label htmlFor="composition-deadline">期限（任意）</label><input id="composition-deadline" type="date" value={draft.deadline} disabled={locked || selected?.status === 'completed' || selected?.status === 'cancelled'} onChange={(event) => edit({ deadline: event.target.value })} /></div></div>
-            <label htmlFor="composition-source">{materialSaved ? '保存した元素材' : '今回の素材'}</label><textarea id="composition-source" rows={6} maxLength={COMPOSITION_TEXT_LIMIT} value={materialSaved ? selected!.composition!.source! : draft.source} readOnly={materialSaved} disabled={locked || selected?.status === 'cancelled' || selected?.status === 'completed'} onChange={(event) => edit({ source: event.target.value })} placeholder={draft.inputKind === 'csv' ? 'name,amount\nAlice,100' : '処理する文章を貼り付けてください'} />
+            <div className={styles.columns}><div><label htmlFor="composition-format">素材の形式</label><select id="composition-format" value={draft.inputKind} disabled={locked || mode === 'eve-text' || Boolean(selected) || Boolean(draft.recipeRef)} onChange={(event) => edit({ inputKind: event.target.value as MaterialKind, nodes: editableNodes(suggestComposition(draft.objective, event.target.value as MaterialKind)) })}><option value="text">文章（UTF-8）</option><option value="csv">CSV（UTF-8）</option></select></div>
+              <div><label htmlFor="composition-deadline">期限（任意）</label><input id="composition-deadline" type="date" value={draft.deadline} disabled={locked || mode === 'eve-text' || selected?.status === 'completed' || selected?.status === 'cancelled'} onChange={(event) => edit({ deadline: event.target.value })} /></div></div>
+            <label htmlFor="composition-source">{materialSaved ? '保存した元素材' : '今回の素材'}</label><textarea id="composition-source" rows={6} maxLength={COMPOSITION_TEXT_LIMIT} value={materialSaved ? selected!.composition!.source! : draft.source} readOnly={materialSaved || mode === 'eve-text'} disabled={locked || selected?.status === 'cancelled' || selected?.status === 'completed'} onChange={(event) => edit({ source: event.target.value })} placeholder={draft.inputKind === 'csv' ? 'name,amount\nAlice,100' : '処理する文章を貼り付けてください'} />
             <p className={styles.note}>{materialSaved ? '元素材は固定しています。別の素材は「新しい仕事」またはレシピから作成してください。' : `${draft.source.length}/${COMPOSITION_TEXT_LIMIT}文字。入力は未保存です。実行時に本人用の素材・成果として保存します。`}</p>
-            {!selected && <div className={styles.actions}>
+            {!selected && mode !== 'eve-text' && <div className={styles.actions}>
               <button disabled={locked || Boolean(draft.recipeRef) || !draft.objective.trim()} onClick={() => edit({ nodes: editableNodes(suggestComposition(draft.objective, draft.inputKind)) })}>手順を提案</button>
               <button disabled={locked || Boolean(draft.recipeRef)} onClick={() => edit({ inputKind: 'text', objective: '記事の出典を整理する', acceptance: '出典一覧があり、本文と出典を本人が確認できる',
                 source: 'RockstarOSでは、依頼から成果の確認までを一つの仕事で管理します。（出典: [RockstarOS](https://example.com/rockstaros)）\n仕事の手順を保存し、次の素材で再利用できます。',
                 nodes: editableNodes(suggestComposition('記事の出典を整理する', 'text')) })}>文章サンプルを入力</button>
             </div>}
-            <fieldset disabled={locked || selected?.status === 'completed' || selected?.status === 'cancelled'}><legend>処理と検査の手順</legend>
+            <fieldset disabled={locked || mode === 'eve-text' || selected?.status === 'completed' || selected?.status === 'cancelled'}><legend>処理と検査の手順</legend>
               <ol className={styles.steps}>{draft.nodes.map((node, index) => {
                 const capability = capabilityFor(node.tool);
                 const update = (change: Partial<EditableNode>) => edit({ nodes: draft.nodes.map((item, i) => i === index ? { ...item, ...change } : item) });
@@ -396,7 +511,7 @@ export default function WorkCompositionWorkspace() {
                 const editor = memory.openedEditor === editorKey ? memory.editors[editorKey] : undefined;
                 return <li key={node.id}><div className={styles.stepHeading}><h3>{index + 1}. {capabilityFor(node.tool)?.name}</h3><span>{artifact ? artifact.status === 'passed' ? node.tool === 'compose-check' ? '登録条件に合格' : '処理済み' : '条件の確認が必要' : ready ? '実行できます' : '入力元の成果待ち'}</span></div>
                   {(ready || artifact?.status === 'needs_review') && <div className={styles.actions}><button className={styles.primary} disabled={locked || !canRun || !ready} onClick={() => mutate({ action: 'run', jobId: selected.id, revision: selected.revision, commandId: crypto.randomUUID(), stepId: node.id, source: selected.composition!.source ?? draft.source, saveMaterial: true })}><Play size={15} /> {artifact ? '同じ条件で再検査' : 'この手順を実行'}</button></div>}
-                  {artifact && <details className={styles.artifact} open><summary>{node.tool === 'compose-check' ? '検査した成果' : '途中成果'}を表示</summary><pre>{artifact.text}</pre><ul>{artifact.checks.map((check, i) => <li key={i}>{check.passed ? '✓' : '要確認'} {check.name}：{check.detail}</li>)}</ul><a className={styles.downloadLink} href={`/api/work-jobs/composition/artifact?jobId=${encodeURIComponent(selected.id)}&nodeId=${encodeURIComponent(node.id)}&revision=${selected.revision}`} download={`zema-step-${node.id}-r${selected.revision}.${artifact.kind === 'csv' ? 'csv' : 'txt'}`} referrerPolicy="no-referrer"><Download size={15} /> 成果をダウンロード</a><div className={styles.actions}><button disabled={locked} onClick={() => openEditor(node.id)}>編集して検査する</button></div></details>}
+                  {artifact && <details className={styles.artifact} open><summary>{node.tool === 'compose-check' ? '検査した成果' : '途中成果'}を表示</summary><pre>{artifact.text}</pre><ul>{artifact.checks.map((check, i) => <li key={i}>{check.passed ? '✓' : '要確認'} {check.name}：{check.detail}</li>)}</ul><a className={styles.downloadLink} href={`/api/work-jobs/composition/artifact?jobId=${encodeURIComponent(selected.id)}&nodeId=${encodeURIComponent(node.id)}&revision=${selected.revision}`} download={`zema-step-${node.id}-r${selected.revision}.${artifact.kind === 'csv' ? 'csv' : 'txt'}`} referrerPolicy="no-referrer"><Download size={15} /> 成果をダウンロード</a>{mode !== 'eve-text' && <div className={styles.actions}><button disabled={locked} onClick={() => openEditor(node.id)}>編集して検査する</button></div>}</details>}
                   {artifact && editor && <fieldset disabled={locked} className={styles.editor}><legend>成果の編集版</legend>
                       <p className={styles.note}>編集開始時の成果（revision {editor.originalRevision}）を保持しています。編集版は新しい仕事に保存し、新しい条件で検査します。元の合格・承認は引き継ぎません。</p>
                       <div className={styles.columns}><div><label htmlFor={`original-artifact-${node.id}`}>編集開始時の原文</label><textarea id={`original-artifact-${node.id}`} rows={8} value={editor.original} readOnly /></div><div><label htmlFor={`edited-artifact-${node.id}`}>編集する内容</label><textarea id={`edited-artifact-${node.id}`} rows={8} maxLength={COMPOSITION_TEXT_LIMIT} value={editor.text} onChange={(event) => editArtifact(editorKey, { text: event.target.value })} /></div></div>

@@ -1,0 +1,262 @@
+{
+  "schema": "rockstaros.eve-text-job.main-adoption/1",
+  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
+  "status": "metadata_four_digest_records_restructured_current_scan_clean_historical_secrets_gate_still_blocked",
+  "unit": "EVE-02",
+  "primaryWorkstream": "10-git-ci-operations",
+  "sourceWorkstream": "05-web-pwa-sites",
+  "baseMain": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
+  "sourceBase": "7be3d6aa35d8df1329571bbe92971f805694b581",
+  "baseSixUnchanged": true,
+  "sourceHashes": {
+    "lib/eve-text-job.ts": "cff365e5acb837248426981c0ab12d6d208ec55f4723d1dff88a0341c8fabc20",
+    "components/work-composition-workspace.tsx": "83e98f599b61b2c3785fead5099c58c099f7da1fc94be27ff4d738dcc24e4044",
+    "app/os/eve/remix/page.tsx": "e519d2955abbf5913a9c14f10facbffe2fdc18f93855464d62c8add805de532a",
+    "tests/eve-text-job.test.mjs": "5d3edd9081153a5d9c2c31521ace1ba77e2bbe8012a1f13a765c62a9634f5f2e",
+    "tests/work-composition-ui.test.mjs": "c3605f91f928c7f55cd2175b5214b014fa8599f6d7dd0e48a125141d88ec5002",
+    "tests/work-composition-route.test.mjs": "3e88556da4b7f7e9d752c8951d78a88424e7661214a4f9279306e4f44209d8ac"
+  },
+  "sourceAdaptation": false,
+  "reviewSummary": "docs/evidence/development-execution/eve-text-job-review-summary.json",
+  "originalReceiptSha256": "191b3fe9dc5a2a62d1b6161df1eff9f631868ab8db9fa462ad5e78d834bb741f",
+  "originalReviewR2Sha256": "a7bda38f34cb25a1ae990aae83d8365157b45799b0d4abd326535e26719ff243",
+  "originalReviewR1Sha256": "83c1cdcbfc42b905d7b11c1aed3f61768dee95a8aff806a2d09baad698a0098b",
+  "localValidation": {
+    "command": "node --experimental-strip-types --test tests/eve-text-job.test.mjs tests/work-composition-route.test.mjs tests/work-composition-ui.test.mjs tests/work-composition.test.mjs tests/work-composition-artifact-route.test.mjs tests/work-composition-view.test.mjs",
+    "tests": 71,
+    "pass": 71,
+    "fail": 0,
+    "skip": 0,
+    "fullVerify": {
+      "status": "passed",
+      "candidateHead": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+      "inputCount": 4463,
+      "changedInputs": 0,
+      "elapsedSeconds": 104,
+      "logSha256": "b8756f7f684dab8391b88b6c54455be79b1b9583fd77d24604fe8aad138ec25c",
+      "nodeTests": 2769,
+      "passed": 2767,
+      "failed": 0,
+      "skipped": 2,
+      "finalMetadataCommit": "Full verify belongs to candidateHead before this metadata-only receipt; final-head CI remains separate."
+    }
+  },
+  "scope": "Two bounded local UTF-8 materials plus goal preserved as one free existing composition preparation job; no semantic model generation.",
+  "protectedSourceHashes": {
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/work-composition-executor.ts": "91a53b3a4c771e4729fc1696bc2d5cf477c7a0033f5f58712dd5daea1376c4d7",
+    "lib/work-composition-store.ts": "5b60733194e266aa4fa1008bf3a0517b575ae517e4adfe1d2b0b92a05ebcb2ba",
+    "lib/work-composition-view.ts": "b27a90cdbad38e686993d0666b97d805264d9f5fcce7abf2c5ba5f7da8022d39",
+    "lib/work-store.ts": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330",
+    "app/api/work-jobs/route.ts": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d",
+    "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
+    "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
+    "lib/rockstar-service-access.ts": {
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09"
+    },
+    "package.json": "34513a6d08b7eba5b941c084b8f63b4c5e53f028c657d42ce7228329fae0d5e1",
+    "drizzle/0020_sites_schema_convergence.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
+    "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+    "lib/sky-linux-service-store.ts": "51363eeef57cebd42555607e0e463748b11c6b3660da729cb9ea9ee96575fabe",
+    "lib/sky-linux-service.ts": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+    "app/api/sky/linux/route.ts": "dc672181feb50a2c030f2582851b76c48966b575b367aa3dc13d37531948b131",
+    "tests/sky-linux-service.test.mjs": "9bbe7f9e69ba260e2649b8aaba1da0e90ac0fa7ff9298c329893288ed50b3326",
+    "tests/rockstar-service-setup.test.mjs": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8",
+    ".github/workflows/ci.yml": "e79347318e48da02612c753751a04cbfc05fd9b1ff132a881676a16ea9df9652",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+    "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs": "7552f7c4c24d97a2d4b55f5140fbff2f71f0b32f10090fe0a157ee57c47178fd",
+    "tests/avocado-mini-finite-cone.test.mjs": "641019247a077ec007885894780ff7156facdb17b61ae3a640d90878470abc80",
+    "tests/pixel-worker-contract.test.mjs": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
+    "tests/pixel-worker-parent-diagnostics.test.mjs": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+    "tests/test_pixel_worker_diagnostics.py": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8",
+    "tests/test_pixel_worker_parent_exit.py": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "toolkits/sky-linux-local/pixel-server.mjs": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+    "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "lib/remote-ai-text-pricing.ts": "0ca5e6926a79a1a811b7dd6026007a8c41928bdec095c5a05c4a94a45bbd99df",
+    "lib/remote-ai-rate-card.ts": "e28725dc74544c2ffbb66acfa2a69702f92dd3ba6ae150bd233d5c82b99900ba",
+    "lib/remote-ai-rate-card-store.ts": "d803261c00d7a4442d06cdc4779017b26454495c2f91ac7f690df0e1a97f7d8d",
+    "lib/remote-ai-text-input.ts": "a77ec687a25bf0bfdcae16d3d2277347cb0d6b5e9821d7cb734ad46c54d84da8",
+    "lib/llm-providers.ts": "08383331a405daa09aab254c3463bdc3ecf4fe7f2488f316fa69d8a9fc218654",
+    "lib/rock-wallet.ts": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+    "app/api/llm/text/route.ts": "942bb6ea002c6a6d076ad36b6e8f6511dd4fc511d1af01a25608995f53d801be",
+    "drizzle/0015_jennifer_passkey_access.sql": {
+      "sha256": "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c"
+    },
+    "drizzle/0024_sky_hub_plugins.sql": "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474",
+    "drizzle/0026_sky_communities.sql": "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af",
+    "drizzle/0016_sky_monthly_sandbox.sql": "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78",
+    "drizzle/0031_rockstar_service_setup.sql": "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5",
+    "drizzle/0021_sky_recurring_send_guard.sql": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
+    "drizzle/0030_sky_linux_service.sql": "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53",
+    "drizzle/0023_sky_optional_features.sql": "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d",
+    "drizzle/0027_community_os_keys.sql": {
+      "sha256": "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+    },
+    "drizzle/0013_sky_provider_connections.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
+    "drizzle/0032_eve_durable_history.sql": "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042",
+    "drizzle/0025_sky_x_feed_state.sql": "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7",
+    "drizzle/0018_sky_recurring_sandbox.sql": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6",
+    "drizzle/0017_sky_cloud_monthly_test.sql": "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39",
+    "drizzle/0029_sky_x_account_oauth.sql": {
+      "sha256": "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+    },
+    "drizzle/0014_jennifer_execution_integrity.sql": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907",
+    "drizzle/0028_sky_timeline_interactions.sql": "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2",
+    "drizzle/0019_sky_hosted_monthly.sql": "9f244cd985e5583b324a5e9d155fd04bacdb1677aa877c03712a3ce436d29377",
+    "drizzle/0022_sky_agent_settings.sql": "ebb18d1923793903531b86d195fa0c4b321ec09aa375b2013f10b18e717065ef",
+    "drizzle-main/0021_sites_schema_convergence.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
+    "drizzle-main/0024_remote_ai_send_claims_recovery.sql": "a8a76b732f26d119fb88cac858aad40f4eda121795348594bac37f5226c1f0ea",
+    "drizzle-main/0022_sky_recurring_send_guard.sql": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
+    "drizzle-main/0023_jennifer_schema_guard.sql": "a230ea4414b321daaa1d7d6156b172f82d431ba9e943bcf472d20f8b6fe6e0ea",
+    "drizzle-main/0026_home_eve_linux_runtime.sql": "3725b8ae3094f8011e1b0e576f73a4aabb2321b11f09337c4db4901dd252f147",
+    "drizzle-main/0025_remote_ai_send_claims_watermark.sql": "e6fc8fa70c98de774a11554a0742e3f81f9edbaee57e7f44ba5f8ce0820ede44",
+    "drizzle-main/0020_main_legacy_columns.sql": "2d3ffd062e700158c145614e0e76d949ab0f1339f8f41e826c73196b85e9bf09"
+  },
+  "contract": {
+    "input": "Exactly two named materials; each selected file<=48000 bytes, total text<=8000 JS string units, name<=160, goal<=500; valid UTF8 including BOM/CRLF preserved. C0 except HT/LF/CR plus DEL rejected without stripping. Existing composition/source and80000-byte request limits retained.",
+    "authority": "Existing owner session/scope, revision and command fingerprint; explicit source-save consent. Display-only isEveTextPlan never grants execution authority.",
+    "commitBoundary": "Create plan has null source; first successful explicit run stores immutable versioned source and compose-check artifact. Read back exact same job owner/source/artifact before saying saved.",
+    "recovery": "Stable job/command IDs, exact GET beyond list100, pending unknown retention, no reload autorun. Cancel retains stored originals/download; explicit erase cannot be reversed by old replay.",
+    "asyncFileFence": "Input/memory identity and synchronous fileGeneration invalidation fence edit, replacement/cancel, owner switch, job selection and unmount; stale reader cannot overwrite newer accepted input or clear its loading state.",
+    "privacy": "Unsaved owner-scoped tab memory only, navigation guard; job ID only in URL, no raw draft/global storage. Tab destruction loses unsaved input."
+  },
+  "acceptance": {
+    "sourceIndependentLimited": true,
+    "mainMetadataReviewed": false,
+    "mainMerged": false,
+    "wholeEVE02": false,
+    "semanticLlmRemix": false,
+    "browserLiveHttp": false,
+    "durableExternalEffectAuthorityUsage": false,
+    "productionD1": false,
+    "providerBilling": false,
+    "physicalDeviceFullOs": false,
+    "generalLaunch": "held"
+  },
+  "next": "Finite metadata-format checkpoint. Exact-fingerprint control support requires the bounded scope above; no control policy PR or hand-built bypass created. Root assigns next scope and independent reviews; PR197 remains draft/unmerged.",
+  "pr": "https://github.com/k999ln/rock/pull/197",
+  "secretScanFormatDelta": {
+    "previousHead": "c21f000fe85f0af2c77db4335ebf92474008597b",
+    "change": "Only four public path->digest scalars become path->{sha256:digest}; all61 normalized path/digest pairs unchanged.",
+    "sourceSixUnchanged": true,
+    "protectedEntries": 61,
+    "rule": "generic-api-key",
+    "upstreamRuleMeaning": "Credential-like access/auth/key context adjacent to assignment and high-entropy value misclassifies four path-named source SHA256 entries. Typed sha256 field removes that assignment context.",
+    "scanner": {
+      "version": "8.30.1",
+      "archiveSha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
+      "source": "official GitHub gitleaks v8.30.1 release checksum"
+    },
+    "pinnedControl": "cb2425525d3e7d0b8375de5298eaee889a552818",
+    "pinnedPolicySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3",
+    "currentFileLocalScan": {
+      "beforeFindings": 4,
+      "afterFindings": 0,
+      "syntheticApiKeyFindings": 1,
+      "existingRealScannerPolicyTestsPassed": 10,
+      "reportsSha256": {
+        "before": "3690c672f719b64544b08e2ebd14084d793e21117bf215d55d0587fb4a30c6b8",
+        "after": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "positiveControl": "69b5c43f38268406505d54044a3e05efb50eccd83d662a8113e59af677e49956"
+      }
+    },
+    "oldCISecretsFailure": {
+      "runId": 40112948533,
+      "jobId": 120928365542,
+      "conclusion": "failure",
+      "downloadedLogSha256": "8f5c698d6c05d25c1dd1eec3b8ebcc291a0cc1cd3114171f1601233c445c0e6d",
+      "independentReviewLogSha256": "2d3cbc29c405cc6cc737f59ef520a44803223e394ae6d7930c1fbb70e70c4cb3",
+      "differentCaptureEncodingsNotClaimedByteIdentical": true,
+      "reviewReceiptSha256": "24b5bd0ba4541f71f2da8a652734473a59ec3e6705fea54ed296a2cf38f98b38"
+    },
+    "historyScan": {
+      "head": "c21f000fe85f0af2c77db4335ebf92474008597b",
+      "completed": true,
+      "exitCode": 1,
+      "findings": 4,
+      "reportSha256": "4f471ecec6d49d9cf02b38b3cd2fe97a40e6cd0685fd5bbe62a63a58ad83e80b",
+      "meaning": "All4 are olda2b2 historical records; current-file reformat cannot erase reachable history. Not a successful required gate."
+    },
+    "exactHistoricalFingerprintProposal": {
+      "entries": [
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 43,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:43"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 69,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:69"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 77,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:77"
+        },
+        {
+          "commit": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b",
+          "path": "docs/evidence/development-execution/eve-text-job-main-adoption.json",
+          "rule": "generic-api-key",
+          "line": 83,
+          "fingerprint": "a2b2eefdc5bdd941f87c1ba27d42834f5e87789b:docs/evidence/development-execution/eve-text-job-main-adoption.json:generic-api-key:83"
+        }
+      ],
+      "implemented": false,
+      "standardMechanismTest": {
+        "standardMechanism": "Gitleaks8.30.1 --gitleaks-ignore-path, only four-component commit fingerprints, no global three-component entries",
+        "results": {
+          "no-ignore": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "exact": {
+            "exitCode": 0,
+            "findings": 0
+          },
+          "different-commit": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-path": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-rule": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "different-line": {
+            "exitCode": 23,
+            "findings": 1
+          },
+          "new-secret-new-commit": {
+            "exitCode": 23,
+            "findings": 1
+          }
+        },
+        "controlWrapperCurrentlyAcceptsThisFile": false,
+        "noCandidateOrControlPolicyChanged": true
+      },
+      "existingWrapperSupport": false,
+      "reason": "Pinned wrapper always creates empty-ignore and accepts only repository/gitleaks/config/output; candidate ignore and inline allow are deliberately ignored. Settings-only addition has no effect. TOML path/value/commit allowlists cannot restrict exact line/fingerprint.",
+      "requiredScopeBeforeAnyControlPolicyPR": [
+        "scripts/spider-repository-scan.py: reviewed pinned-control fingerprint input routed to standard Gitleaks ignore flag; no manual result suppression and no candidate file loading",
+        "new .github/spider/public-source-digest-fingerprints.ignore: exactly4 commit:path:rule:line entries, never3-component global fingerprints",
+        "new .github/spider/public-source-digest-fingerprint-provenance.json: exact4 public source digest/readback plus independent evidence hashes only",
+        "tests/test_spider_repository_scan.py and tests/test_spider_gitleaks_policy.py: default-empty/candidate-ignores-rejected and exact4 plus changed commit/path/rule/line/new secret negative controls",
+        "separate .github/workflows/spider.yml pin-update change after reviewed control commit exists: pinned ref plus explicit trusted control fingerprint path"
+      ],
+      "rollout": "First independently reviewed control implementation commit C, then separate reviewed workflow pin update W pointing to immutable C and passing trusted-file argument. Workflow currently hardcodes cb242552, so merging origin/main alone without this pin update cannot change policy. After ordinary merges and CI, merge origin/main normally intoPR197 and rerun final-head gates; never rewrite old commits or relabel old runs."
+    },
+    "finalHeadCI": "New metadata commit will trigger CI; historical gate remains open until separately authorized reviewed control support exists.",
+    "localFullVerifyRepeated": false
+  }
+}

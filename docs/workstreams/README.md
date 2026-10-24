@@ -1,3 +1,5 @@
+EVE-02の[資料付き依頼保存](../rockstaros-complete-design.md#eve-text-preparation)は既存composeへのattempt2 exact6限定候補。入口05、統合主担当10。原文2つ＋goal保存と生成未対応を区別し、受入済みBilling PR196/同mainSHA CIの要約と別overlayへ記録する。
+
 ## 現在の95unit再開入口
 
 [mainの95再開台帳](../../data/development-unit-progress.json)と[引継ぎ](../../data/development-source-handoff.json)を入口に、fixed9a inventoryとPR194現行overlayを区別する。既存393task/RQ50/phasegateを維持し、95whole accepted0。分類は限定証拠であり最新全体監査や現在の未実装数ではない。Billing finalclaim実装中→eSIM残gate→Eve02 bounded textの順、詳しくは[Git運用](10-git-ci-operations.md)。

@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T15:16:36.193554+00:00",
+  "recordedAt": "2026-10-24T16:41:08.921877+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "7be3d6aa35d8df1329571bbe92971f805694b581",
+    "mainAtCapture": "1a9d9eee861d678c5a91c2e23a51e10bddf5a988",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -113,7 +113,10 @@
       "id": "EVE-02",
       "title": "Remixを既存WorkJob/owner/revision/usage/stopへ結合",
       "lane": "eve",
-      "ledgerRef": "data/development-unit-progress.json#EVE-02"
+      "ledgerRef": "data/development-unit-progress.json#EVE-02",
+      "currentOverlayRefs": [
+        "EVE_TEXT_PREPARATION_CANDIDATE"
+      ]
     },
     {
       "id": "EVE-03",
@@ -630,14 +633,11 @@
   "nextExecutionPriority": [
     {
       "order": 1,
-      "unit": "BILL-02",
-      "state": "recurring_delta_independent_review_pending",
-      "scope": "Original final-claim four hashes independently passed; recurring compatibility delta local40 passed, independent delta review/verify/CI pending",
-      "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
-      "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
-      "dependency": "Independent of the six eSIM files for this finite existing-store gap",
-      "currentSourceReviewedByThisBatch": false,
-      "wholeUnitAccepted": false
+      "unit": "EVE-02",
+      "state": "source_attempt2_pass_main_candidate",
+      "scope": "Exact6 reviewed free text-preparation; integration verify/CI/metadata review pending, semantic Remix unaccepted",
+      "wholeUnitAccepted": false,
+      "currentSourceReviewedByThisBatch": true
     },
     {
       "order": 2,
@@ -648,9 +648,13 @@
     },
     {
       "order": 3,
-      "unit": "EVE-02",
-      "state": "next_bounded_text_integration",
-      "scope": "Reuse existing main workflow/composition and preserved source; one same-owner same-job bounded text path after shared contracts, no fullOS/optics/livefund prerequisite",
+      "unit": "BILL-02",
+      "state": "limited_final_claim_main_integrated_remaining_shared_gates",
+      "scope": "PR196 main1a9; Game r2/metadata/CI pass. Common authority/epoch, productionD1 and real billing remain.",
+      "planPathInOperatorWorkspace": "docs/evidence/development-execution/billing-atomic-budget-next-batch.json",
+      "planSha256": "9b4f9a13bba876218f8cc5a767afb7b31ce20d3a539963b4bf09209de0588153",
+      "dependency": "Independent of the six eSIM files for this finite existing-store gap",
+      "currentSourceReviewedByThisBatch": false,
       "wholeUnitAccepted": false
     }
   ],
