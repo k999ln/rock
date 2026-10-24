@@ -1,3 +1,7 @@
+## PR186 backup fd race correction (2026-10-24 / G04)
+
+CodeQL check120816951394 and independent review found a check/close/reopen backup-path race in f5a7de0a. Replace it with locked snapshot bytes written/fsynced/read back on one exclusive no-follow fd, private owner/ancestry checks, source inode checks and commit-authorizer filesystem verification.28 focused tests and full lint pass; fixed final full verify/new-head CodeQL/independent review are pending. This is overall implementation attempt3 and first correction attempt for distinct root cause GIT04-CP-R1; earlier counts/reviews remain. No Root parallel work or full union acceptance. Evidence: docs/evidence/development-execution/git-04-backup-fd-correction.json.
+
 ## Offline alias helper Git checkpoint preparation (2026-10-24 / G04)
 
 Independent Astra review accepts only the five-file offline helper candidate `b61d05cbc84ee43790bbcbf42dd7e46c3215825a29574e16aae9ac8ac4a0091f`. Prepare a small PR on the main-based checkout; Root business changes are excluded. Align the verify job with tested Node26.12.1, without skipping tests or changing runtime permissions. Full union8 migrations/13 guards/Source base/runtime port remains unaccepted. Full verify/CI/main readback pending for this checkpoint.

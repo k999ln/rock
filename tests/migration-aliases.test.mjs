@@ -157,3 +157,61 @@ await test('replay validates missing schema, immutable guards, provenance and au
     const before=sqliteLogicalDigest(db);db.close();assert.throws(()=>f.plan(),/Unverified|incomplete|changed|audit|history|guards/i);await assert.rejects(f.apply({digest:'old'},'replay.sqlite'),/Unverified|incomplete|changed|audit|history|guards/i);const after=f.open();assert.equal(sqliteLogicalDigest(after),before);after.close();
   }
 });
+// Test-only fd/namespace races. Production code has no injection hook.
+async function withFsMethod(name, wrap, action) {
+  const fs=(await import('node:fs')).default;
+  const {syncBuiltinESMExports}=await import('node:module');
+  const original=Reflect.get(fs,name);fs[name]=wrap(original,fs);syncBuiltinESMExports();
+  try{return await action(fs);}finally{fs[name]=original;syncBuiltinESMExports();}
+}
+function assertOriginalState(f,expected,path=f.databasePath){const db=new DatabaseSync(path);try{assert.equal(sqliteLogicalDigest(db),expected);}finally{db.close();}}
+await test('exclusive no-follow backup creation rejects a symlink installed at the open syscall',async t=>{
+  const f=fixture(t),p=f.plan(),fs=(await import('node:fs')).default,target=join(fs.realpathSync(f.root),'backup.sqlite'),victim=join(f.root,'sentinel');writeFileSync(victim,'keep');let raced=false;
+  await withFsMethod('openSync',(original,api)=>(path,...args)=>{if(path===target&&typeof args[0]==='number'&&(args[0]&api.constants.O_CREAT)){raced=true;api.symlinkSync(victim,target);}return original(path,...args);},async()=>{await assert.rejects(f.apply(p),/EEXIST/);});
+  assert.equal(raced,true);assert.equal(readFileSync(victim,'utf8'),'keep');assertOriginalState(f,p.inputDigest);
+});
+await test('backup replacement after fd creation or writing cannot redirect bytes into a sentinel',async t=>{
+  for(const point of ['open','write']){
+    const f=fixture(t),p=f.plan(),fs=(await import('node:fs')).default,target=join(fs.realpathSync(f.root),'backup.sqlite'),victim=join(f.root,'sentinel');writeFileSync(victim,'keep');let raced=false;
+    const swap=api=>{api.unlinkSync(target);api.symlinkSync(victim,target);raced=true;};
+    if(point==='open')await withFsMethod('openSync',(original,api)=>(path,...args)=>{const fd=original(path,...args);if(path===target&&typeof args[0]==='number'&&(args[0]&api.constants.O_CREAT))swap(api);return fd;},async()=>{await assert.rejects(f.apply(p),/identity|link|changed/i);});
+    else await withFsMethod('writeSync',(original,api)=>(...args)=>{const n=original(...args);if(!raced)swap(api);return n;},async()=>{await assert.rejects(f.apply(p),/identity|link|changed/i);});
+    assert.equal(raced,true);assert.equal(readFileSync(victim,'utf8'),'keep');assertOriginalState(f,p.inputDigest);
+  }
+});
+await test('short writes and tampered descriptor readback never qualify as a verified backup',async t=>{
+  const f=fixture(t),p=f.plan();await withFsMethod('writeSync',()=>()=>0,async()=>{await assert.rejects(f.apply(p),/Short backup/);});assertOriginalState(f,p.inputDigest);
+  const g=fixture(t),q=g.plan();let corrupted=false;await withFsMethod('readSync',(original,api)=>(fd,buffer,offset,length,position)=>{const n=original(fd,buffer,offset,length,position);let isBackup=false;try{const held=api.fstatSync(fd,{bigint:true}),named=api.lstatSync(join(g.root,'backup.sqlite'),{bigint:true});isBackup=held.dev===named.dev&&held.ino===named.ino;}catch(error){if(error.code!=='ENOENT')throw error;}if(isBackup&&length>100&&n>0){buffer[offset]^=0xff;corrupted=true;}return n;},async()=>{await assert.rejects(g.apply(q),/Backup descriptor bytes|restore differs/);});assert.equal(corrupted,true);assertOriginalState(g,q.inputDigest);
+});
+await test('backup disappearance just before COMMIT is caught by the SQLite commit authorizer and rolls back',async t=>{
+  const f=fixture(t),p=f.plan(),original=Reflect.get(DatabaseSync.prototype,'exec'),fs=(await import('node:fs')).default;let removed=false;
+  DatabaseSync.prototype.exec=function(sql){if(sql==='COMMIT'&&!removed){removed=true;fs.unlinkSync(join(f.root,'backup.sqlite'));}return original.call(this,sql);};
+  try{await assert.rejects(f.apply(p),/ENOENT|changed|authoriz/i);}finally{DatabaseSync.prototype.exec=original;}
+  assert.equal(removed,true);assertOriginalState(f,p.inputDigest);
+});
+await test('source path replacement at descriptor acquisition or writer-lock acquisition refuses before domain mutation',async t=>{
+  for(const point of ['open','lock']){
+    const f=fixture(t),p=f.plan(),fs=(await import('node:fs')).default,source=join(fs.realpathSync(f.root),'copy.sqlite'),held=join(f.root,'held-original.sqlite'),victim=join(f.root,'sentinel');writeFileSync(victim,'keep');let raced=false;
+    const swap=()=>{fs.renameSync(source,held);fs.symlinkSync(victim,source);raced=true;};
+    if(point==='open')await withFsMethod('openSync',(original,api)=>(path,...args)=>{const fd=original(path,...args);if(path===source&&typeof args[0]==='number'&&(args[0]&api.constants.O_NOFOLLOW))swap();return fd;},async()=>{await assert.rejects(f.apply(p),/identity|link|changed/i);});
+    else {const original=Reflect.get(DatabaseSync.prototype,'exec');DatabaseSync.prototype.exec=function(sql){const value=original.call(this,sql);if(sql==='BEGIN IMMEDIATE'&&!raced)swap();return value;};try{await assert.rejects(f.apply(p),/identity|link|changed/i);}finally{DatabaseSync.prototype.exec=original;}}
+    assert.equal(raced,true);assert.equal(readFileSync(victim,'utf8'),'keep');assertOriginalState(f,p.inputDigest,held);
+  }
+});
+await test('backup-parent replacement cannot publish or commit a fake backup',async t=>{
+  const f=fixture(t),p=f.plan(),fs=(await import('node:fs')).default,parent=join(f.root,'private-backup'),moved=join(f.root,'displaced-backup'),victim=join(f.root,'sentinel');mkdirSync(parent,{mode:0o700});writeFileSync(victim,'keep');const target=join(fs.realpathSync(parent),'backup.sqlite');let raced=false;
+  await withFsMethod('openSync',(original,api)=>(path,...args)=>{const fd=original(path,...args);if(path===target&&typeof args[0]==='number'&&(args[0]&api.constants.O_CREAT)){api.renameSync(parent,moved);api.mkdirSync(parent,{mode:0o700});api.symlinkSync(victim,target);raced=true;}return fd;},async()=>{await assert.rejects(reconcileLocalMigrationAliases({...f,backupPath:target,expectedPlanDigest:p.digest}),/ancestry|parent|identity|changed/i);});
+  assert.equal(raced,true);assert.equal(readFileSync(victim,'utf8'),'keep');assertOriginalState(f,p.inputDigest);
+});
+await test('apply requires private owned parents, trusted ancestry and a single-link source; successful backup is durable snapshot bytes',async t=>{
+  const fs=(await import('node:fs')).default,f=fixture(t),p=f.plan();fs.chmodSync(f.root,0o755);await assert.rejects(f.apply(p),/private0700/);assertOriginalState(f,p.inputDigest);fs.chmodSync(f.root,0o700);
+  fs.linkSync(f.databasePath,join(f.root,'hardlink'));await assert.rejects(f.apply(p),/identity|link/i);assertOriginalState(f,p.inputDigest);fs.unlinkSync(join(f.root,'hardlink'));
+  const untrusted=join(f.root,'untrusted'),child=join(untrusted,'private');mkdirSync(untrusted);fs.chmodSync(untrusted,0o777);mkdirSync(child,{mode:0o700});const copy=join(child,'copy.sqlite');fs.copyFileSync(f.databasePath,copy);await assert.rejects(reconcileLocalMigrationAliases({...f,databasePath:copy,backupPath:join(child,'backup.sqlite'),expectedPlanDigest:p.digest}),/ancestry/);assertOriginalState(f,p.inputDigest,copy);
+  const result=await f.apply();assert.equal(result.backupVerified,true);const {createHash}=await import('node:crypto');const bytes=readFileSync(result.backupPath);assert.equal(createHash('sha256').update(bytes).digest('hex'),result.backupSha256);assert.equal(fs.statSync(result.backupPath).mode&0o777,0o600);
+});
+
+await test('offline source refuses recovery sidecars and WAL headers before SQLite can recover or create files',async t=>{
+  const fs=(await import('node:fs')).default;
+  for(const suffix of ['-journal','-wal','-shm']){const f=fixture(t),p=f.plan(),before=readFileSync(f.databasePath);writeFileSync(f.databasePath+suffix,'keep-sidecar');await assert.rejects(f.apply(p),/sidecars/);assert.deepEqual(readFileSync(f.databasePath),before);assert.equal(readFileSync(f.databasePath+suffix,'utf8'),'keep-sidecar');fs.unlinkSync(f.databasePath+suffix);assertOriginalState(f,p.inputDigest);}
+  const f=fixture(t),p=f.plan(),bytes=readFileSync(f.databasePath);bytes[18]=2;bytes[19]=2;writeFileSync(f.databasePath,bytes);await assert.rejects(f.apply(p),/rollback-journal offline/);assert.deepEqual(readFileSync(f.databasePath),bytes);assert.equal(existsSync(f.databasePath+'-wal'),false);
+});

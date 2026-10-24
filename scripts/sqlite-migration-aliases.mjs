@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, realpathSync, openSync, closeSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { DatabaseSync, backup, constants as C } from 'node:sqlite';
+import { readFileSync, realpathSync, openSync, closeSync, fstatSync, lstatSync, readSync, writeSync, fsyncSync, constants as F } from 'node:fs';
+import { resolve, dirname, basename, join } from 'node:path';
+import { DatabaseSync, constants as C } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
 
 const hash = v => createHash('sha256').update(v).digest('hex');
@@ -144,7 +144,10 @@ function writeAuthorizer(stage) {
     // sqlite3_serialize issues a read-only page_count pragma internally.
     if (action === C.SQLITE_PRAGMA && a === 'page_count' && b === null) return C.SQLITE_OK;
     if (action === C.SQLITE_FUNCTION && String(b).toLowerCase() === 'current_timestamp') return C.SQLITE_OK;
-    if (action === C.SQLITE_TRANSACTION) return C.SQLITE_OK;
+    if (action === C.SQLITE_TRANSACTION) {
+      if (String(a).toUpperCase() === 'COMMIT') stage.beforeCommit?.();
+      return C.SQLITE_OK;
+    }
     if (stage.value === 'setup') {
       if (action === C.SQLITE_CREATE_TABLE && a === AUDIT) return C.SQLITE_OK;
       if (action === C.SQLITE_CREATE_INDEX && ['sqlite_autoindex__rock_migration_aliases_1','sqlite_autoindex__rock_migration_aliases_2'].includes(a)) return C.SQLITE_OK;
@@ -170,21 +173,97 @@ function verifyDelta(db, before, plan, options) {
     if (replay.aliases.length) throw new Error('Incomplete alias/audit commit; rollback');
   });
 }
-export async function reconcileLocalMigrationAliases({ databasePath,sourceDirectory,targetDirectory,backupPath,expectedPlanDigest }) {
-  localFile(databasePath);localFile(backupPath);
-  if (!existsSync(databasePath) || realpathSync(databasePath)===resolve(backupPath) || existsSync(backupPath)) throw new Error('Existing local DB and unused separate backup path required');
-  const db = new DatabaseSync(databasePath), options={sourceDirectory,targetDirectory};
+// The caller must supply a single-operator offline copy in private POSIX
+// directories. Same-UID/root processes are not an OS security boundary, but
+// namespace changes are checked at acquisition, publication and COMMIT.
+function privateLocation(path) {
+  localFile(path);
+  if (typeof process.getuid !== 'function' || typeof F.O_NOFOLLOW !== 'number' || typeof F.O_DIRECTORY !== 'number') throw new Error('Private POSIX no-follow file descriptors are required');
+  const parent = realpathSync(dirname(path));
+  const fd = openSync(parent, F.O_RDONLY | F.O_DIRECTORY | F.O_NOFOLLOW);
   try {
+    const uid = BigInt(process.getuid()), stat = fstatSync(fd, {bigint:true}), ancestry = [];
+    if (!stat.isDirectory() || stat.uid !== uid || (stat.mode & 0o077n) !== 0n) throw new Error('Source and backup need owned private0700 parent directories');
+    for (let name=parent;;name=dirname(name)) {
+      const value=lstatSync(name,{bigint:true});
+      const rootSticky=value.uid===0n && (value.mode&0o1000n)!==0n;
+      if (!value.isDirectory() || (value.uid!==uid && value.uid!==0n) || ((value.mode&0o022n)!==0n && !rootSticky)) throw new Error('Untrusted writable directory ancestry');
+      ancestry.push({name,dev:value.dev,ino:value.ino});
+      if(dirname(name)===name)break;
+    }
+    return {path:join(parent,basename(path)),fd,parent,ancestry,uid,dev:stat.dev,ino:stat.ino};
+  } catch(error) {closeSync(fd);throw error;}
+}
+function assertLocation(location) {
+  const parent=fstatSync(location.fd,{bigint:true});
+  if(parent.dev!==location.dev || parent.ino!==location.ino || parent.uid!==location.uid || (parent.mode&0o077n)!==0n)throw new Error('Private parent descriptor changed');
+  for(const expected of location.ancestry){
+    const stat=lstatSync(expected.name,{bigint:true});
+    const rootSticky=stat.uid===0n && (stat.mode&0o1000n)!==0n;
+    if(!stat.isDirectory() || stat.dev!==expected.dev || stat.ino!==expected.ino || (stat.uid!==location.uid&&stat.uid!==0n) || ((stat.mode&0o022n)!==0n&&!rootSticky))throw new Error('Directory ancestry changed');
+  }
+}
+function assertFile(location,fd,identity,privateFile=false) {
+  assertLocation(location);
+  const held=fstatSync(fd,{bigint:true}), named=lstatSync(location.path,{bigint:true});
+  if(!held.isFile() || !named.isFile() || held.dev!==identity.dev || held.ino!==identity.ino || named.dev!==held.dev || named.ino!==held.ino || held.nlink!==1n || held.uid!==location.uid || (held.mode&(privateFile?0o077n:0o022n))!==0n)throw new Error('File identity/link/ownership changed');
+  return held;
+}
+function readDescriptor(fd,size) {
+  const bytes=Buffer.alloc(size);
+  for(let offset=0;offset<size;){const n=readSync(fd,bytes,offset,size-offset,offset);if(n<=0)throw new Error('Short descriptor read');offset+=n;}
+  return bytes;
+}
+function requireOfflineSource(location,fd,size) {
+  if(size<100n)throw new Error('An existing complete offline SQLite copy is required');
+  const header=readDescriptor(fd,100);
+  if(header.subarray(0,16).toString()!=='SQLite format 3\0' || header[18]!==1 || header[19]!==1)throw new Error('A complete rollback-journal offline SQLite copy is required');
+  for(const suffix of ['-journal','-wal','-shm']){
+    try{lstatSync(location.path+suffix);}catch(error){if(error.code==='ENOENT')continue;throw error;}
+    throw new Error('Offline copy must not have recovery/WAL sidecars');
+  }
+}
+function snapshotDigest(bytes) {
+  const restored=new DatabaseSync(':memory:');
+  try {requireBoundary(restored);restored.deserialize(bytes);return sqliteLogicalDigest(restored);}finally{restored.close();}
+}
+export async function reconcileLocalMigrationAliases({ databasePath,sourceDirectory,targetDirectory,backupPath,expectedPlanDigest }) {
+  const locations=[],fds=[];let db;
+  try {
+    const source=privateLocation(databasePath);locations.push(source);
+    const destination=privateLocation(backupPath);locations.push(destination);
+    if(source.path===destination.path)throw new Error('unused separate backup required');
+    const sourceFd=openSync(source.path,F.O_RDONLY|F.O_NOFOLLOW);fds.push(sourceFd);
+    const sourceId=fstatSync(sourceFd,{bigint:true});
+    assertFile(source,sourceFd,sourceId);
+    requireOfflineSource(source,sourceFd,sourceId.size);
+    // Only a private, identity-anchored offline source is opened by SQLite.
+    // No externally writable destination is ever passed to SQLite.
+    db=new DatabaseSync(source.path);assertFile(source,sourceFd,sourceId);
     requireBoundary(db);
-    const plan=planMigrationAliases(db,options);
-    if (!expectedPlanDigest || plan.digest!==expectedPlanDigest) throw new Error('Stale or missing explicit migration plan');
-    closeSync(openSync(backupPath,'wx',0o600));await backup(db,backupPath);
-    const restored=new DatabaseSync(backupPath,{readOnly:true});
-    try { if(sqliteLogicalDigest(restored)!==plan.inputDigest)throw new Error('Backup snapshot differs from plan'); } finally {restored.close();}
+    const options={sourceDirectory,targetDirectory},plan=planMigrationAliases(db,options);
+    if(!expectedPlanDigest||plan.digest!==expectedPlanDigest)throw new Error('Stale or missing explicit migration plan');
     const stage={value:'setup'};db.setAuthorizer(writeAuthorizer(stage));db.exec('BEGIN IMMEDIATE');
     try {
+      assertFile(source,sourceFd,sourceId);assertLocation(destination);
       const current=planMigrationAliases(db,options);
-      if(current.digest!==plan.digest)throw new Error('Database/source changed after backup; re-plan');
+      if(current.digest!==plan.digest)throw new Error('Database/source changed before locked snapshot; re-plan');
+      const snapshot=Buffer.from(db.serialize()),snapshotHash=hash(snapshot);
+      if(snapshotDigest(snapshot)!==plan.inputDigest)throw new Error('Locked snapshot differs from plan');
+      let backupFd;
+      try {backupFd=openSync(destination.path,F.O_RDWR|F.O_CREAT|F.O_EXCL|F.O_NOFOLLOW,0o600);}catch(error){if(error.code==='EEXIST')throw new Error('unused separate backup required (EEXIST)');throw error;}
+      fds.push(backupFd);const backupId=fstatSync(backupFd,{bigint:true});
+      assertFile(destination,backupFd,backupId,true);
+      for(let offset=0;offset<snapshot.length;){const n=writeSync(backupFd,snapshot,offset,snapshot.length-offset,offset);if(n<=0)throw new Error('Short backup descriptor write');offset+=n;}
+      fsyncSync(backupFd);fsyncSync(destination.fd);
+      const backupGuard=()=>{
+        assertFile(source,sourceFd,sourceId);
+        const stat=assertFile(destination,backupFd,backupId,true);
+        if(stat.size!==BigInt(snapshot.length)||hash(readDescriptor(backupFd,snapshot.length))!==snapshotHash)throw new Error('Backup descriptor bytes/size changed');
+      };
+      backupGuard();
+      // Restore from the bytes read on the held fd, never reopen its pathname.
+      if(snapshotDigest(readDescriptor(backupFd,snapshot.length))!==plan.inputDigest)throw new Error('Backup descriptor restore differs from plan');
       const before=withReadSnapshot(db,metadata);
       if(plan.aliases.length){
         if(!before.hasAudit){db.exec(TABLE);for(const sql of Object.values(guards))db.exec(sql);}
@@ -194,11 +273,12 @@ export async function reconcileLocalMigrationAliases({ databasePath,sourceDirect
           if(db.prepare('INSERT INTO _rock_migration_aliases(canonical_name,alias_name,sql_sha256,source_manifest_sha256) VALUES (?,?,?,?)').run(alias.canonical,alias.source,alias.sha256,plan.sourceProfileSha256).changes!==1)throw new Error('Alias audit insert was rejected');
         }
       }
-      stage.value='validate';verifyDelta(db,before,plan,options);db.exec('COMMIT');
-      return{recorded:plan.aliases.length,backupPath,backupVerified:true,protectedStateVerified:true,remainingMigrations:plan.targetMigrationsStillPending,completeUnionAccepted:false};
-    } catch(error){stage.value='finish';db.exec('ROLLBACK');throw error;}
-    finally{db.setAuthorizer(null);}
-  }finally{db.close();}
+      stage.value='validate';verifyDelta(db,before,plan,options);backupGuard();
+      // The authorizer checks fs-only guards again when SQLite prepares COMMIT.
+      stage.beforeCommit=backupGuard;db.exec('COMMIT');
+      return{recorded:plan.aliases.length,backupPath:destination.path,backupSha256:snapshotHash,backupVerified:true,protectedStateVerified:true,remainingMigrations:plan.targetMigrationsStillPending,completeUnionAccepted:false};
+    }catch(error){stage.value='finish';db.exec('ROLLBACK');throw error;}finally{db.setAuthorizer(null);}
+  }finally{db?.close();for(const fd of fds.reverse())closeSync(fd);for(const location of locations.reverse())closeSync(location.fd);}
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   try{const args=process.argv.slice(2),v={};for(let i=0;i<args.length;i+=2){if(!['--database','--source','--target','--backup','--plan-digest'].includes(args[i])||!args[i+1]||v[args[i]])throw new Error('Only explicit unique local database/source/target/backup/plan-digest flags are supported');v[args[i]]=args[i+1];}

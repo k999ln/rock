@@ -9506,7 +9506,7 @@
   },
   "gitMigrationAliasExecution": {
     "evidence": "docs/evidence/development-execution/git-04.json",
-    "status": "helper_independently_accepted_git_checkpoint_preparing",
+    "status": "PR186_backup_fd_correction_pending_new_review_ci",
     "unitComplete": false,
     "runtimePorted": false,
     "fullUnionAccepted": false,
@@ -9528,6 +9528,11 @@
     "gitHubSaved": false,
     "checkpoint": "docs/evidence/development-execution/git-04-helper-checkpoint.json",
     "currentCoreFilesSha256": "d582d6db7a244e754904c3dfefecd52031e348e16f37f79cb5d6256fa78646ed",
-    "postReviewTestAndCiDelta": "mechanical Reflect.get3 and Node26 CI parity; independent delta review pending"
+    "postReviewTestAndCiDelta": "mechanical Reflect.get3 and Node26 CI parity; independent delta review pending",
+    "correctionEvidence": "docs/evidence/development-execution/git-04-backup-fd-correction.json",
+    "newCandidateFilesSha256": "829f8fc8cd32c0b58f297ffbca1620ef6521ad1213af19738c1ed868de7f2cf3",
+    "overallImplementationAttempt": 3,
+    "rootCause": "GIT04-CP-R1",
+    "rootCauseAttempt": 1
   }
 }
