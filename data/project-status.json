@@ -9579,5 +9579,14 @@
     "wholeUnitComplete": false,
     "generalLaunch": "held",
     "fullVerifyExit": 0
+  },
+  "mini02JointAllocation": {
+    "status": "exact4_fullverify_pass_pending_git_ci_integrated_review",
+    "evidence": "docs/evidence/development-execution/mini-02-joint-main-adoption.json",
+    "oldEightHashesUnchanged": true,
+    "physicalAccepted": false,
+    "wholeUnitComplete": false,
+    "generalLaunch": "held",
+    "fullVerifyExit": 0
   }
 }

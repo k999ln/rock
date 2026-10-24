@@ -1,3 +1,7 @@
+## MINI-02 joint-allocation exact保存（G04 / ROCK）
+
+[採用証拠](../evidence/development-execution/mini-02-joint-main-adoption.json)で検収済み4body/旧8hash、固定候補verify、PR/CI/統合検収を区別する。OS診断WIP・Source完全D1baseは別gate。次のhost契約はRootの別割当で進める。
+
 ## MINI-02 exact source保存（G04 / ROCK）
 
 [採用証拠](../evidence/development-execution/mini-02-main-adoption.json)で5pathのhash・限定独立検収・固定verify・GitHub/CIを区別する。Source provenanceは独立read-only checkpointで、Mini保存を無期限に遅らせない。OS診断WIPは含めない。

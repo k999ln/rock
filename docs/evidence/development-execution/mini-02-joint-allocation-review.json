@@ -1,0 +1,115 @@
+{
+  "schema": "rockstaros.independent-development-review/1",
+  "unit": "MINI-02",
+  "batch": "joint-allocation",
+  "recordedAt": "2026-10-24T11:37:32.053130+00:00",
+  "reviewer": {
+    "lane": "pro",
+    "threadId": "01a16c2a-4989-7581-917d-2ece16d4405b",
+    "independentOf": "Mini implementation and Root integration",
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "actualModelIndependentlyMeasured": false,
+    "childAgents": 0
+  },
+  "verdict": "pass_limited_finite_joint_allocation",
+  "mustFix": [],
+  "acceptedScope": "Pure host assignment of declared finite demands to discrete boundary-aperture poses and hypothetical integer sample slots. One pose per device per frame, exit and globally shared source capacities, conservative unknown states and finite-search witness/counterexample. Not full MINI-02 or physical optical acceptance.",
+  "exactFourSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27",
+    "tests/avocado-mini-joint-allocation.test.mjs": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json": "56c73ed7d097ee4b40573f8ef3f5bf5791a5c1d24046e46f0580d4a4e65085f3"
+  },
+  "preservedEightSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "oldEightHashesUnchanged": true,
+  "verification": [
+    {
+      "command": "node --test tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0,
+      "passed": 13,
+      "failed": 0,
+      "scope": "Includes author432-case oracle and full fixed baseline reductions"
+    },
+    {
+      "command": "node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --check docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs; node --check tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --input-type=module (review independent Cartesian assignment enumeration)",
+      "exitCode": 0,
+      "method": "Different from author single-pose recursive oracle: two devices with2 exclusive poses each;3 vertical demands (floor at x=-.75,+.75 and ceiling at x=0);2 globally shared sources. Device0 selects full floor or ceiling/sourceA. Device1 selects narrow right-floor/sourceA plus ceiling/sourceB, or full floor/sourceB plus ceiling/sourceA. For each4 pose combinations, enumerate64 base4 vectors (skip or one of3 exits), check face/XY rectangle directly without createExitGeometry or maxflow, count exit/source usage. Sweep3 exit capacities0..2 and2 source capacities0..3 =>432 cases. Compare global best count/status; inspect every returned full/partial witness for unique demand, one selected pose/device, reachability and capacities.",
+      "cases": 432,
+      "poseCombinationsPerCase": 4,
+      "assignmentVectorsPerPose": 64,
+      "possible": 98,
+      "impossible": 334,
+      "witnessesValidated": 432,
+      "nestedInputPermutation": "same input/result digest and deterministic tie"
+    },
+    {
+      "command": "node --input-type=module (review receipt, rejection/recovery, deadline and binocular probes)",
+      "exitCode": 0,
+      "savedExampleHashesMatched": 5,
+      "fixedBaselineReduction": "Deep-equal to saved receipt; each35721 pairs/642978 rays/1pose; ideal0 misses,10mm guard708 misses",
+      "baselineResultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b",
+      "baselineFixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+      "unsupportedCases": 9,
+      "unsupportedDetails": [
+        "source capacity null",
+        "calibration null",
+        "angle null",
+        "valid-until null",
+        "age21 exceeds max20",
+        "future observation",
+        "expired at frame time",
+        "at deadline",
+        "stop null"
+      ],
+      "rejectedCases": 6,
+      "rejectedDetails": [
+        "profile null",
+        "profile hash mismatch",
+        "empty calibration ID",
+        "unregistered source",
+        "world-fixed false",
+        "same target ID moved between demands"
+      ],
+      "recovery": "Clean input reproduces original result after all errors; maxAge20 inclusive succeeds,21 unsupported; budget2 with later third-pose solution remains search_incomplete, budget3 finds witness;4 up/down left/right pupil demands preserved"
+    }
+  ],
+  "invariantFindings": [
+    "Exclusive-pose union exposes individual reachability only. Solver selects exactly one pose/device and never combines exclusive poses in a simultaneous witness.",
+    "Flow network shares one source capacity node across devices/exits; independent enumeration validates both full and partial witnesses and non-greedy reassignment.",
+    "Ray IDs remain stable through pose selection; repeated target IDs must retain world coordinates. Scene/profile bindings are synthetic consistency checks, explicitly not issuer or calibration authentication.",
+    "128-demand finite API explicitly reports fullBaselineEvaluated=false and continuousDomainEvaluated=false; independent full reduction keeps original243x147x18 denominator. No claim partial input completes full-domain coverage.",
+    "Unknown calibration, angle, capacity, stale/late/stop-unconfirmed return unsupported with no assignment. Exhausted search returns search_incomplete, never impossibility; success before exhaustive completion is a finite witness only.",
+    "Four owner conditions retained. Passive surfaces at image location0; device/source/exit/pose and aperture area remain separate. Few-part full-volume low-glare feasibility is unresolved. Declared sample capacity is not optical throughput or brightness.",
+    "All seven acceptance flags stay false in observed outputs, including physicalVisible, lowGlare, continuousWholeDomain, simultaneousPhysicalViewers, independentStop, manufactured and grantsAuthority. No new measured optical/safety threshold or physical assertion is introduced."
+  ],
+  "unacceptedConditions": [
+    "calibrated real source/relay and finite angular response",
+    "arbitrary interior aperture transforms and trajectories",
+    "continuous domain, extended scene and real simultaneous viewers",
+    "occlusion, geometry/temporal uncertainty, latency and settling measurements",
+    "radiometry, low glare, direct-view exposure and human comfort",
+    "physical independent stop/readback, startup/backpower/residual light",
+    "power/thermal/electrical safety, final PCB/manufacturing",
+    "new batch Git/main and same-SHA integrated verification"
+  ],
+  "next": "Root may pass exact four-path candidate to Git single-writer for shared-design/progress synchronization and fixed-candidate verification. Next finite work is calibrated finite-angle/trajectory and uncertainty contracts, retaining unknown rejection and zero execution authority. No writer correction required for this bounded batch.",
+  "operations": "Only this receipt and Pro lane review reference written; no implementation fixes, global files, Git mutations, physical actions, other chats/agents/messages or waiting loops."
+}

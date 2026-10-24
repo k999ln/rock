@@ -393,7 +393,11 @@
         "tests/avocado-mini-optical-study.test.mjs",
         "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
         "docs/evidence/development-execution/mini-02.json",
-        "data/development-lanes/mini.json"
+        "data/development-lanes/mini.json",
+        "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+        "tests/avocado-mini-joint-allocation.test.mjs",
+        "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md",
+        "docs/evidence/development-execution/mini-02-joint-allocation.json"
       ]
     },
     {
@@ -2756,6 +2760,18 @@
       "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
       "docs/evidence/development-execution/mini-02.json",
       "data/development-lanes/mini.json"
+    ],
+    "physicalAccepted": false,
+    "wholeUnitComplete": false
+  },
+  "mini02JointAllocation": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-finite-joint-allocation",
+    "evidence": "docs/evidence/development-execution/mini-02-joint-main-adoption.json",
+    "implementation": [
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "tests/avocado-mini-joint-allocation.test.mjs",
+      "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md",
+      "docs/evidence/development-execution/mini-02-joint-allocation.json"
     ],
     "physicalAccepted": false,
     "wholeUnitComplete": false

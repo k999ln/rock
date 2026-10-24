@@ -1,0 +1,424 @@
+{
+  "schema": "rockstaros.mini-joint-allocation-evidence/1",
+  "unit": "MINI-02",
+  "status": "local_joint_solver_checks_passed_independent_review_pending",
+  "startedAt": "2026-10-24T11:23:57.134195+00:00",
+  "exactWriteSet": [
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+    "tests/avocado-mini-joint-allocation.test.mjs",
+    "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md",
+    "docs/evidence/development-execution/mini-02-joint-allocation.json"
+  ],
+  "preservedSha256": {
+    "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+    "tests/avocado-mini-optical-study.test.mjs": "87eaa57ba09fcf54815f74ddb9e760a157ec8e749594f3428aa1b2de79d832b5",
+    "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+    "docs/evidence/development-execution/mini-02.json": "9024bbcfb27bb85c4be019da8d0f1bef9d74ca2df580696f1bab0ad4337729a0",
+    "data/development-lanes/mini.json": "4d9a22249b92c0c2484d9241474cf4c2b7bfce8f338d92a18a949c65c40b1202",
+    "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+    "tests/avocado-mini-place-profile.test.mjs": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+    "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+  },
+  "previousBatchIntegration": {
+    "pr": 189,
+    "headSha": "5ae836b45ba28891d464aefb85c35b296ff954e8",
+    "mergeSha": "7e36c8390f8321c87113b49a3069ab37ebd98e18",
+    "remoteMainSameSha": true,
+    "mainCi": {
+      "success": 6,
+      "pending": 0,
+      "failed": 0,
+      "source": "direct GitHub API check-runs and branch readback this turn"
+    }
+  },
+  "ownership": "new four paths only; old study/Mini3/shared/Git unchanged",
+  "physicalAccepted": false,
+  "independentReview": {
+    "status": "pending",
+    "verdict": null,
+    "owner": "Root assigns a different reviewer after finite batch slot return"
+  },
+  "completedAt": "2026-10-24T11:31:14.863Z",
+  "implementationArtifacts": [
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "sha256": "a242a99892bd77673da7102c1d02dfbbf6e56c98690d69aa69a42a9183a4ec27"
+    },
+    {
+      "path": "tests/avocado-mini-joint-allocation.test.mjs",
+      "sha256": "f1fc9e66193e1c70c443eb88233a9d532e25e5ce3a76d714faa2e705cb36fd9f"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md",
+      "sha256": "6125303411fd02a673412bee1c007ac018ef23fc25ca947d744c8bceab811aed"
+    }
+  ],
+  "requirements": [
+    "no plate/membrane at image location",
+    "few display parts; separate device/source/exit/pose/area counts",
+    "full requested domain including up/down; no domain shrink",
+    "low glare; no increased brightness workaround"
+  ],
+  "scope": "Pure host finite joint assignment with hypothetical sample slots and discrete boundary poses; no physical feasibility or runtime authority",
+  "examples": [
+    {
+      "name": "exclusive-poses-union-not-joint",
+      "inputSha256": "57f31c2b0deb743a1eb4eeb74209aee2f25386fadaff98988def48b3fda8850f",
+      "resultSha256": "73341b2ce0feb1871bce2458a477ddd37955bc34d104357bab8fc5253e437e2d",
+      "status": "finite_joint_allocation_impossible",
+      "demandCount": 2,
+      "individuallyReachableCount": 2,
+      "totalConfigurations": 2,
+      "searchedConfigurations": 2,
+      "searchComplete": true,
+      "bestAllocatedDemandCount": 1,
+      "selectedPoses": null,
+      "assignment": null,
+      "bestAttempt": {
+        "assignment": [
+          {
+            "demandId": "up",
+            "deviceId": "switchable",
+            "poseId": "ceiling-pose",
+            "exitId": "aperture",
+            "sourceId": "source"
+          }
+        ],
+        "selectedPoses": [
+          {
+            "deviceId": "switchable",
+            "poseId": "ceiling-pose"
+          }
+        ],
+        "unassignedDemandIds": [
+          "down"
+        ]
+      },
+      "acceptance": {
+        "physicalVisible": false,
+        "lowGlare": false,
+        "continuousWholeDomain": false,
+        "simultaneousPhysicalViewers": false,
+        "independentStop": false,
+        "manufactured": false,
+        "grantsAuthority": false
+      }
+    },
+    {
+      "name": "independent-devices-joint-witness",
+      "inputSha256": "9d5673c8884e57b82e516ddab295984ef582e8fb965d1143426d1692d7fe592d",
+      "resultSha256": "631f4829b6b457bd8fb343ec8cf483bf69d3ba7d282b4732c6fb952719fd1f34",
+      "status": "finite_joint_allocation_found",
+      "demandCount": 2,
+      "individuallyReachableCount": 2,
+      "totalConfigurations": 1,
+      "searchedConfigurations": 1,
+      "searchComplete": true,
+      "bestAllocatedDemandCount": 2,
+      "selectedPoses": [
+        {
+          "deviceId": "device0",
+          "poseId": "floor-pose"
+        },
+        {
+          "deviceId": "device1",
+          "poseId": "ceiling-pose"
+        }
+      ],
+      "assignment": [
+        {
+          "demandId": "down",
+          "deviceId": "device0",
+          "poseId": "floor-pose",
+          "exitId": "aperture",
+          "sourceId": "source"
+        },
+        {
+          "demandId": "up",
+          "deviceId": "device1",
+          "poseId": "ceiling-pose",
+          "exitId": "aperture",
+          "sourceId": "source"
+        }
+      ],
+      "bestAttempt": {
+        "assignment": [
+          {
+            "demandId": "down",
+            "deviceId": "device0",
+            "poseId": "floor-pose",
+            "exitId": "aperture",
+            "sourceId": "source"
+          },
+          {
+            "demandId": "up",
+            "deviceId": "device1",
+            "poseId": "ceiling-pose",
+            "exitId": "aperture",
+            "sourceId": "source"
+          }
+        ],
+        "selectedPoses": [
+          {
+            "deviceId": "device0",
+            "poseId": "floor-pose"
+          },
+          {
+            "deviceId": "device1",
+            "poseId": "ceiling-pose"
+          }
+        ],
+        "unassignedDemandIds": []
+      },
+      "acceptance": {
+        "physicalVisible": false,
+        "lowGlare": false,
+        "continuousWholeDomain": false,
+        "simultaneousPhysicalViewers": false,
+        "independentStop": false,
+        "manufactured": false,
+        "grantsAuthority": false
+      }
+    },
+    {
+      "name": "shared-source-one-slot-conflict",
+      "inputSha256": "1b029833b7c37be1a9bb76d8a57cc6b057b866431e5ca5bb960f4219dfff0c8e",
+      "resultSha256": "aa52ae4dce32fef11bcf6b6e9a42581b0d9103bb1d34a5a106fd7cdb98dc30ce",
+      "status": "finite_joint_allocation_impossible",
+      "demandCount": 2,
+      "individuallyReachableCount": 2,
+      "totalConfigurations": 1,
+      "searchedConfigurations": 1,
+      "searchComplete": true,
+      "bestAllocatedDemandCount": 1,
+      "selectedPoses": null,
+      "assignment": null,
+      "bestAttempt": {
+        "assignment": [
+          {
+            "demandId": "down",
+            "deviceId": "device0",
+            "poseId": "floor-pose",
+            "exitId": "aperture",
+            "sourceId": "source"
+          }
+        ],
+        "selectedPoses": [
+          {
+            "deviceId": "device0",
+            "poseId": "floor-pose"
+          },
+          {
+            "deviceId": "device1",
+            "poseId": "ceiling-pose"
+          }
+        ],
+        "unassignedDemandIds": [
+          "up"
+        ]
+      },
+      "acceptance": {
+        "physicalVisible": false,
+        "lowGlare": false,
+        "continuousWholeDomain": false,
+        "simultaneousPhysicalViewers": false,
+        "independentStop": false,
+        "manufactured": false,
+        "grantsAuthority": false
+      }
+    },
+    {
+      "name": "budget-exhaustion-unknown",
+      "inputSha256": "b2dece4bb1c061be449022233cac813cdb72c80fbb89af7b0f334c6798b28849",
+      "resultSha256": "14adc1954f29b64a9f539a0c4f9967b3018490ebebe0d94b306ccbe74f280b53",
+      "status": "search_incomplete",
+      "demandCount": 2,
+      "individuallyReachableCount": 2,
+      "totalConfigurations": 2,
+      "searchedConfigurations": 1,
+      "searchComplete": false,
+      "bestAllocatedDemandCount": 1,
+      "selectedPoses": null,
+      "assignment": null,
+      "bestAttempt": {
+        "assignment": [
+          {
+            "demandId": "up",
+            "deviceId": "switchable",
+            "poseId": "ceiling-pose",
+            "exitId": "aperture",
+            "sourceId": "source"
+          }
+        ],
+        "selectedPoses": [
+          {
+            "deviceId": "switchable",
+            "poseId": "ceiling-pose"
+          }
+        ],
+        "unassignedDemandIds": [
+          "down"
+        ]
+      },
+      "acceptance": {
+        "physicalVisible": false,
+        "lowGlare": false,
+        "continuousWholeDomain": false,
+        "simultaneousPhysicalViewers": false,
+        "independentStop": false,
+        "manufactured": false,
+        "grantsAuthority": false
+      }
+    },
+    {
+      "name": "unknown-angle-unavailable",
+      "inputSha256": "be63e016deb3db655122c5fa1dcfdecbd3b148e6defcb07001cdcb28b8a72e73",
+      "resultSha256": "6113db7d2615af50a6e0aec1493389fd7fc377441760fd84c8206f291fc82cd8",
+      "status": "unsupported",
+      "demandCount": 2,
+      "individuallyReachableCount": null,
+      "searchedConfigurations": 0,
+      "searchComplete": false,
+      "selectedPoses": null,
+      "assignment": null,
+      "unknown": [
+        "pose:device0/floor-pose:angle-model"
+      ],
+      "acceptance": {
+        "physicalVisible": false,
+        "lowGlare": false,
+        "continuousWholeDomain": false,
+        "simultaneousPhysicalViewers": false,
+        "independentStop": false,
+        "manufactured": false,
+        "grantsAuthority": false
+      }
+    }
+  ],
+  "fixedBaselineReduction": {
+    "baselineResultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b",
+    "baselineFixtureSha256": "a761c757c9f67921ee1e01d9cf60e99165badb1168ca62b9e00ab45fbeca3602",
+    "results": [
+      {
+        "id": "six-full-faces-ideal",
+        "pairs": 35721,
+        "rays": 642978,
+        "missingPairs": 0,
+        "firstMissing": null,
+        "posesPerConfiguration": 1
+      },
+      {
+        "id": "six-full-faces-10mm-guard",
+        "pairs": 35721,
+        "rays": 642978,
+        "missingPairs": 708,
+        "firstMissing": {
+          "eyeM": [
+            -1.5,
+            -1.5,
+            1.2
+          ],
+          "targetM": [
+            1.5,
+            1.5,
+            0.8
+          ],
+          "allocated": 0
+        },
+        "posesPerConfiguration": 1
+      }
+    ],
+    "physicalAccepted": false,
+    "fullSceneSimultaneousAccepted": false
+  },
+  "verification": [
+    {
+      "command": "node --test tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0,
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "exhaustiveOracleCapacityCases": 432,
+      "fixedReductionPairsPerCandidate": 35721,
+      "fixedReductionRaysPerCandidate": 642978
+    },
+    {
+      "command": "node_modules/.bin/oxlint docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --check docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs && node --check tests/avocado-mini-joint-allocation.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --input-type=module (five summary examples and runFixedBaselineReduction)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run_for_new_batch",
+      "reason": "Git single writer runs full verification on fixed integrated candidate after independent review; previous PR189 verify/CI do not accept new module"
+    }
+  ],
+  "oldEightHashesUnchanged": true,
+  "modelRouting": {
+    "unit": "MINI-02",
+    "stage": "hard_design_decision",
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "basis": "Root explicit same-chat assignment",
+    "actualModelIndependentlyMeasured": false,
+    "childAgentsStarted": 0
+  },
+  "responsibility": {
+    "primary": "ROCK",
+    "external": "actual source/relay/actuator calibration and capacity",
+    "joint": "SC01/02/04/08 on same hardware/profile",
+    "owner": "purpose, budget and comfort limits"
+  },
+  "unaccepted": [
+    "continuous domain and extended scene",
+    "real source cone/quilt/throughput/radiometry",
+    "arbitrary interior-pose transforms and swept trajectories",
+    "occlusion, mechanism interference, calibration uncertainty and latency",
+    "measured low glare, direct-view suppression and owner comfort",
+    "physical stop/readback, residual light/startup/backpower",
+    "power/thermal/electrical/human safety",
+    "physical engine/PCB/manufacturing",
+    "new batch independent review/Git branch/main integration"
+  ],
+  "nextFiniteWork": "Independent review of joint-solver exact four paths; then measured finite-angle ray-generator/trajectory contract with conservative uncertainty and no authority promotion.",
+  "sharedChangeRequests": [
+    {
+      "owner": "Git integration single writer",
+      "paths": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "data/design-document-index.json",
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ],
+      "request": "After independent review, link new joint-allocation module/test/doc/evidence; record purpose, synthetic inputs/bindings, one-pose-per-device witness/maxflow/shared source slots, unknown/stale/late/stop-unconfirmed, bounds/budget and deterministic recovery. Keep old MINI02 fixed study and Mini3 bodies/hashes unchanged. Add physical/low-glare/continuous/trajectory/calibration exclusions; run design:check."
+    },
+    {
+      "owner": "Git integration single writer",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/development-lanes/mini.json"
+      ],
+      "request": "Record prior PR189 main7e36c839 and same-SHA6/6CI separately from new local13/13 tests plus432 oracle cases, two fixed baseline reductions0/708. New independent review and Git/main still pending. Add module usage and next task, preserve four owner requirements and all physical gates. Update project/README using project:update and run verify on accepted fixed candidate; do not rewrite old reviewed lane snapshot until integration scope owns it."
+    }
+  ],
+  "operations": {
+    "newPathsOnly": 4,
+    "oldLaneEdited": false,
+    "gitMutations": 0,
+    "otherThreadMessagesAfterFormalDispatch": 0,
+    "childAgents": 0,
+    "physicalActions": 0,
+    "sourceFilesOutsideOwnershipEdited": 0
+  },
+  "hashManifestPolicy": "Three implementation hashes embedded here; external final manifest supplies this receipt hash to avoid self-reference."
+}
