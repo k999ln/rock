@@ -10120,7 +10120,7 @@
       "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
     },
     "messageService": {
-      "status": "reviewed_main_synchronized_ci_pending",
+      "status": "PR238_main_integrated_development_local_service",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10129,8 +10129,8 @@
       ],
       "physicalAccepted": false,
       "providerConnected": false,
-      "mainMerged": false,
-      "nextAction": "Confirm synchronized PR231 exact-head CI, then hand the isolated service packet to central Git; actual modem/provider/product identity/physical acceptance remains separate",
+      "mainMerged": true,
+      "nextAction": "Real product identity/modem/provider transport and Job import remain separately unaccepted; original231 is indirectly merged via238",
       "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
       "evidence": "docs/evidence/development-execution/mini-08-message-service.json",
       "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
@@ -10157,7 +10157,12 @@
         "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
       },
       "newHostCommonTests": 103,
-      "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
+      "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+      "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+      "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+      "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+      "headCISuccess": 14,
+      "mainCISuccess": 13
     }
   },
   "pixelCacheMainAdoption": {
@@ -10923,7 +10928,7 @@
     "testSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
     "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
     "workerRuntimeChanged": false,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeOSAccepted": false,
     "physicalAccepted": false,
     "publicDeployment": false,
@@ -10942,7 +10947,12 @@
     "sourceIndependentReviewer": "Existing Web reviewer; actual seven child cases",
     "sourceIndependentReview": "PASS_SCOPED_TEST_ONLY_OBSERVATION_HANDSHAKE",
     "integrationMetadataReviewer": "Root; provenance and adoption metadata review only",
-    "integrationMetadataReview": "preliminary scoped pass; final pinned head pending"
+    "integrationMetadataReview": "Root final pinned R5 PASS; source reviewed independently by existing Web actor",
+    "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+    "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+    "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+    "newHeadCISuccess": 14,
+    "mainCISuccess": 13
   },
   "smithRunningSkipMainCurrent": {
     "schema": "rockstaros.smith-running-skip-main-current/1",
@@ -11068,7 +11078,7 @@
   "miniGestureInput": {
     "taskId": "MAT15",
     "primarySquad": "M1",
-    "status": "reviewed_browser_prototype",
+    "status": "PR238_main_integrated_VIEW_ONLY_prototype",
     "scope": "single camera local hand gesture preview; Eve feedback integration reserved",
     "cameraAccepted": false,
     "physicalAccepted": false,
@@ -11099,14 +11109,21 @@
       "readmeOnlyAdditionalDocumentationRevision": true,
       "latestHostTestSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
       "hostTestDeltaEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json"
-    }
+    },
+    "mainMerged": true,
+    "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+    "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+    "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+    "headCISuccess": 14,
+    "mainCISuccess": 13,
+    "nextAction": "Real camera precision/thermal/power/calibration/Mini device and explicit Eve feedback remain separate; original234 indirectly merged via238"
   },
   "preparedDeviceMiniBatch": {
     "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
     "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
     "fixedSourceCount": 24,
-    "status": "host_test_descriptor_read_revision_pending_Root_delta_review_and_new_head_CI",
-    "mainMerged": false,
+    "status": "PR238_main_integrated_same_SHA_all_CI_success",
+    "mainMerged": true,
     "whole95Accepted": 0,
     "publicDeployment": false,
     "unionHostFullVerify": {
@@ -11129,7 +11146,7 @@
       "failure": 1
     },
     "codeqlMediumAlertsAtInitialHead": 3,
-    "sourceSecurityDisposition": "Root PASS_SCOPED_SOURCE_AFTER_FIX at054dda; DedicatedWorker scoped disposition separate; no security0 claim",
+    "sourceSecurityDisposition": "Root scoped installer054/testb4b passed, CodeQL high0/medium1 dedicatedWorker recorded, nozeroSecurity claim",
     "originalOther20SourceUnchanged": true,
     "newUnionHostFullVerify": {
       "tests": 3074,
@@ -11148,20 +11165,31 @@
       "path": "docs/evidence/development-execution/prepared-device-mini-integration.json",
       "sha256": "6328e820167418359dd3f2f26992d1cc4e127e9eeb85ebfa39470cade9ce0bb1",
       "meaning": "Original22-file capture bytes only; current originalOther20 remain unchanged, installer/README/test revisions tracked at fixed24"
-    }
+    },
+    "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+    "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+    "headCISuccess": 14,
+    "mainCISuccess": 13,
+    "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+    "newExactHeadCI": "passed all14 ataba; main all13 at440f"
   },
   "miniLinuxObservationFixture": {
     "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
     "sourceSha256": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f",
     "runtimeControllerAndGateChanged": false,
     "sourceIndependentReview": "PASS_SCOPED_TEST_FIXTURE",
-    "newExactHeadLinuxPacketCI": "required; initial588 Linux26 had1failure",
-    "mainMerged": false,
+    "newExactHeadLinuxPacketCI": "passed actual Linux26/common103 ataba andmain440f",
+    "mainMerged": true,
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "publicDeployment": false,
     "sourceIndependentReviewer": "Root;7 host clock probes with kernel fence stub",
     "independentReview": "docs/evidence/development-execution/mini-linux-packet-clock-review.json",
-    "independentReviewSha256": "26326bb3df2c805fd1eb6d4e67ca664239e238252be215812d6a41985aa19a66"
+    "independentReviewSha256": "26326bb3df2c805fd1eb6d4e67ca664239e238252be215812d6a41985aa19a66",
+    "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+    "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+    "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+    "headCISuccess": 14,
+    "mainCISuccess": 13
   }
 }

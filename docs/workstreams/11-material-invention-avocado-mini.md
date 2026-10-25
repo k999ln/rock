@@ -4,6 +4,10 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 
 # Material Invention / avocadoMini
 
+## Mini service/cameraのmain限定採用
+
+元PR231/234はPR238へ通常mergeされmain440fで限定採用、最終head14/main13CI成功。source/service5は開発用local Broker/AP/scheduler/ackのみ、cameraはVIEW_ONLY、installerはUID/O_NOFOLLOW/hardlink対応POSIXで非上書き準備。Windows/同UID並行親交換の非保証と未検証camera精度/校正/実Mini/transport/identity/Jobimport/Evefeedbackを保持する。元host/初回CI/レビューscopeと新CIを混ぜず、95unit全体を完了へ昇格しない。[現行受入](../evidence/development-execution/prepared-device-mini-main-current.json)。
+
 ## Mini開発用message serviceの採用
 
 ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止をhostで検査する。独立source検収mustFix0、service20・全Mini103・追加9負例とLinux packet26を別集計で記録する。実製品identity/回線/transport/Job保存/実機は未受入。[契約](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)／[独立検収](../evidence/development-execution/mini-08-message-service-review.json)。

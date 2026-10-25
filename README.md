@@ -66,7 +66,7 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 
 Miniの[カメラ手指入力preview](systems/rock-star-os/targets/avocado-mini/gesture/README.md)は端末内追跡から表示の選択・移動・回転・取消だけを提案します。開始は本人操作とbrowserのcamera許可、停止/非表示/期限でtrackとworkerを閉じます。VIEW_ONLYの開発fixtureで、実空間の校正・実行承認・好み推定や実機精度の受入は別です。 model準備は対応するmacOS/LinuxのUID/O_NOFOLLOW/hardlinkを使い、既存対象を上書きしません。Windows等の未対応環境と旧残骸の手動確認条件は技術READMEを参照してください。
 
-Miniの[開発用message service](systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を限定候補へ追加。Broker/APの有限local入口・scheduler/停止・保存済み受信の確認を共通adapterへつなぎます。実製品identity、実modem/回線、Job取込み・実機の受入は別gateです。
+Miniの[開発用message service](systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)をPR238でmainへ限定採用。Broker/APの有限local入口・scheduler/停止・保存済み受信の確認を共通adapterへつなぎます。実製品identity、実modem/回線、Job取込み・実機の受入は別gateです。
 
 日米のsi・メッセージ・小ファイル向け[共通message adapter](systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。 最新main同期の製品4/Pixel fixture2は固定検収hash一致、新host全verify3025件失敗0。[採用段階](docs/evidence/development-execution/mini-08-message-main-adoption.json)でheadCI/mainCIを原機能検収と別追跡。 Miniの共通message adapterはPR229/main a58c6ffaへ限定採用し、head全14CI・main全13CI成功。[現行受入](docs/evidence/development-execution/mini-08-message-main-current.json)。
 
@@ -410,6 +410,8 @@ Miniと同じWebソース内にあります。
 ---
 
 ## 開発と検証
+
+準備済みPixel/Miniの[現行受入](docs/evidence/development-execution/prepared-device-mini-main-current.json)はPR238/main440fへ通常統合済みです。最終head14/main13CI、Linux3074試験失敗0・common103/packet26成功を確認。旧231/234は238経由の採用として区別し、元失敗・修復・検収receiptを保持します。Developer Previewの限定範囲で、実機・実回線・実camera精度・全OS・公開は別gateです。
 
 Pixel診断の正常fixtureは、実empty観測からstdout出力を順序付けて時刻・hash・CPU・privacyのassertionを維持します。`python3 -B tests/test_pixel_worker_diagnostics.py` を入口とし、[独立検収と採用段階](docs/evidence/development-execution/pixel-empty-observation-main-adoption.json)でLinuxとhost、初回CI失敗と同SHA retryを分けます。OS237とSmith235の現行Git/CI受入は各current receiptに記録し、実機・全OS・公開は別gateです。
 

@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## 準備済みPixel/Miniのmain受入・現行同期
+
+PR238は最終aba899d1の全14CIとRoot R5/元Web R2 carryforward検収後、main440f3cfbへ通常統合。parent bb432＋aba、tree89fa9一致、同mergeSHA全13CI成功。head/main実Linux標準全verifyは3074試験/3072pass/0fail/2skip、common103＋実隔離namespace packet26成功。元231f27/2341bdは間接merge commit4e201/2b614として238経由採用をGH読戻し、元branch保持。Pixel empty-clock2fixture、開発localservice、VIEW_ONLY camera、installer非上書き修復を別scopeとし、元source/失敗/metadata指摘/同SHA retryを保存。CodeQLはhigh0/medium1の専用Worker限定評価を保持、security0とはしない。Web R2はoperator CI pathのみportable要約し原SHAを保持、Rootfd989reviewはbyte保存。95固定分類/whole0・393task/14gates・元capturependingは不変。次はこのsource0 currentmetadataの独立検収→同headCI→通常main/mergeCIで有限隊列を終了。[現行受入](docs/evidence/development-execution/prepared-device-mini-main-current.json)。実機/実回線/実金融/実camera精度/校正/Jobimport/Eve学習/wholeOS/P02/公開・616は保留。
+
 ## 新host試験のdescriptor読取とCI最終再固定
 
 installer修復後b709で実Linux packetは成功したが、CodeQLが新host試験のlstat後path再readをhighで指摘。installer054と他23固定対象は変えず、同じ拒否試験のregular fileをchild/検査前のO_NOFOLLOW|O_NONBLOCK descriptorへ固定し、型/link数/dev/ino照合後にdescriptorでreadしfinally closeする。元の拒否/fetch0/元inode/内容/cleanup assertionは維持。専用+gesture47/47成功、testは旧0d3からb4b385へ改版。 currentのoriginalSource22Unchangedは撤去し、元22receiptのbytes/hash不変を示すoriginalSource22CaptureUnchangedへ限定。現コードは元20不変/改版追跡済み固定24で記録する。Root source4150は旧testの履歴として保持し、この限定test差分を別確認して新head標準verify/CodeQL全CIを必須とする。[差分記録](docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json)。root/Tool/実機/実課金/実camera精度/公開を追加受入しない。

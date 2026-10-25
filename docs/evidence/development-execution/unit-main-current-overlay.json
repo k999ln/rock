@@ -989,6 +989,63 @@
       "physicalAccepted": false,
       "realFinancialAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "PIXEL_OBSERVATION_FIXTURES_ADOPTED",
+      "units": [
+        "OS-01"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Test-only deterministic real empty observation plus Linux single-call epoch; no production worker/controller/Gate change",
+      "pr": 238,
+      "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+      "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+      "headCISuccess": 14,
+      "mainCISuccess": 13,
+      "evidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_MESSAGE_SERVICE_ADOPTED",
+      "units": [
+        "MINI-08"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Development local Broker/AP/bounded scheduler/consumer ack only; real product identity/modem/provider/Job import unaccepted",
+      "pr": 238,
+      "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+      "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+      "headCISuccess": 14,
+      "mainCISuccess": 13,
+      "evidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_CAMERA_GESTURE_ADOPTED",
+      "units": [
+        "MINI-04"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Local single-camera hand/finger VIEW_ONLY proposals only; initial headless/canvas SDK evidence not RootCUA or real camera accuracy/calibration/Eve learning",
+      "pr": 238,
+      "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+      "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+      "headCISuccess": 14,
+      "mainCISuccess": 13,
+      "evidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

@@ -643,7 +643,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "PIXEL_CACHE_MAIN_CANDIDATE",
-        "PIXEL_GUARD_PHYSICAL_ADOPTED"
+        "PIXEL_GUARD_PHYSICAL_ADOPTED",
+        "PIXEL_OBSERVATION_FIXTURES_ADOPTED"
       ]
     },
     {
@@ -1807,7 +1808,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "MINI_CAMERA_GESTURE_CANDIDATE"
+        "MINI_CAMERA_GESTURE_CANDIDATE",
+        "MINI_CAMERA_GESTURE_ADOPTED"
       ]
     },
     {
@@ -1908,7 +1910,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "MINI_MESSAGE_ADOPTED",
-        "MINI_MESSAGE_SERVICE_CANDIDATE"
+        "MINI_MESSAGE_SERVICE_CANDIDATE",
+        "MINI_MESSAGE_SERVICE_ADOPTED"
       ]
     },
     {

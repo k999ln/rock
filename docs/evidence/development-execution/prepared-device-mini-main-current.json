@@ -1,0 +1,146 @@
+{
+  "schema": "rockstaros.prepared-device-mini-main-current/1",
+  "recordedAt": "2026-10-25T16:03:07.202742+00:00",
+  "pr": 238,
+  "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+  "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+  "parents": [
+    "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "aba899d11d6b59df61b9f7f400b132c330db2f9a"
+  ],
+  "tree": "89fa9f122f5196faf98ac7c02ed25e8b3d2a956f",
+  "mainMerged": true,
+  "headCISuccess": 14,
+  "mainCISuccess": 13,
+  "headVerify": {
+    "run": 40208431827,
+    "tests": 3074,
+    "pass": 3072,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "2f7292c4c86dca6d8da7b776ca5cf8624de06135d2076c51ecf5c01b3f60f91b"
+  },
+  "mainVerify": {
+    "run": 40208972807,
+    "tests": 3074,
+    "pass": 3072,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "d6afd62bb41a4b0c491819d0c2e252aa429219b1da6b69b8a6da84c5ae058b52"
+  },
+  "headLinuxPackets": {
+    "run": 40208431832,
+    "commonTests": 103,
+    "realIsolatedNamespacePacketTests": 26,
+    "fail": 0,
+    "logSha256": "da23bc025af9ebe1c9b5ad0e1b801d2dfb0c43157e9b43fb60bc63d0d761904e"
+  },
+  "mainLinuxPackets": {
+    "run": 40208972751,
+    "commonTests": 103,
+    "realIsolatedNamespacePacketTests": 26,
+    "fail": 0,
+    "logSha256": "c5279d9bf2786374b349298b43ac569ddac93e7572f6f30609883891de2a4323"
+  },
+  "fixedSource24": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b",
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5",
+    "tests/avocado-mini-tethering.test.mjs": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09",
+    "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf",
+    "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922",
+    "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.html": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.css": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44",
+    "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154",
+    "systems/rock-star-os/targets/avocado-mini/gesture/serve.py": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366",
+    "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5",
+    "systems/rock-star-os/targets/avocado-mini/gesture/README.md": "f3cb6effc2941cb4a1ab4f85efe25d92f744c7437d33fa54478cf1f9f78a2690",
+    "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56",
+    "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7",
+    "tests/avocado-mini-gesture.test.mjs": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3",
+    "tests/test_pixel_worker_diagnostics.py": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+    "tests/avocado-mini-gesture-installer.test.mjs": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f"
+  },
+  "allFixedSourceHashesMatchHeadAndMain": true,
+  "originalSnapshots": {
+    "PR231": {
+      "head": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
+      "state": "MERGED",
+      "githubIndirectMergeCommit": "4e2011f79c2739b1068b52c1d13d11cad375a8dc",
+      "mergedAt": "2026-10-25T15:52:08Z",
+      "adoptedVia": 238
+    },
+    "PR234": {
+      "head": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6",
+      "state": "MERGED",
+      "githubIndirectMergeCommit": "2b614b414d69992e3767c3e608836dbceb267cb6",
+      "mergedAt": "2026-10-25T15:52:08Z",
+      "adoptedVia": 238
+    },
+    "branchRefsPreserved": true,
+    "notSeparateOriginalHeadMainCIClaims": true
+  },
+  "adoptedScopes": {
+    "pixelFixture": "One real-child normal empty-observation handshake, worker unchanged; Web7actual-child source review",
+    "linuxFixture": "One controlled observation epoch; production controller/Gate unchanged, Root7host probes plus actual finalLinux26",
+    "service": "Development local Broker/AP/bounded scheduler/consumer ack only; real product identity/modem/provider/Job import unaccepted",
+    "gesture": "Local single-camera hand/finger VIEW_ONLY proposals only; initial headless/canvas SDK evidence not RootCUA or real camera accuracy/calibration/Eve learning",
+    "installer": "Known model integrity, private/no-follow/exclusive temp and atomic non-overwrite; trusted UID/O_NOFOLLOW/hardlink-capable POSIX host, Windows unsupported, no concurrent malicious same-UID/privileged parent/code replacement guarantee"
+  },
+  "sourceReviewEvidence": {
+    "pixel": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json",
+    "linuxClock": "docs/evidence/development-execution/mini-linux-packet-clock-review.json",
+    "service": "docs/evidence/development-execution/mini-08-message-service-review.json",
+    "gestureOriginal": "docs/evidence/development-execution/mini-gesture-input-review.json",
+    "installerRuntimeFix": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+    "installerLatestHostTestRead": "docs/evidence/development-execution/mini-gesture-installer-host-test-read-review.json"
+  },
+  "metadataReviewEvidence": {
+    "serviceR1": "docs/evidence/development-execution/mini-message-service-integration-review.json",
+    "gestureR1": "docs/evidence/development-execution/mini-gesture-integration-review.json",
+    "serviceR2Portable": "docs/evidence/development-execution/mini-message-service-integration-review-r2-summary.json",
+    "gestureR2Portable": "docs/evidence/development-execution/mini-gesture-integration-review-r2-summary.json",
+    "RootFinalPinnedR5": "Root independently passed exactaba head61manifest/fixed24/provenance/currentflag, with Web ownedMini R2 projection carryforward; private proof original hash preserved",
+    "RootFinalPrivateReceiptSha256": "4d12d7c9cc8ed47e83d1d6d9b9d12c026899cee11460cec6263531e8a5a479cb"
+  },
+  "codeql": {
+    "headCheckRun": 121214639794,
+    "conclusion": "success",
+    "highAlerts": 0,
+    "remainingMediumAlerts": 1,
+    "remainingPath": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js:4",
+    "RootScopedDisposition": "Dedicated creator/implicit-port, fixed same-origin/self-only CSP and VIEW_ONLY, not Window messaging; broader channels/authority need separate review",
+    "zeroSecurityFindingsClaim": false,
+    "alertsDismissedOrChecksWeakened": false
+  },
+  "historyPreserved": [
+    "Initial588 Linux26 one lease-tick failure and Web service-index MUSTFIX1",
+    "bf42 all14 checks succeeded but actual installer symlink clobber blocked adoption",
+    "Installer original6e321 to054 independently corrected; original source/metadata receipts retained",
+    "b709 host-test path-read CodeQL high; finalb4b descriptor read and Root9890 source review",
+    "Original22 capture and originalOther20/final24 current meaning distinguished",
+    "Smith main firstfixture failure and one diagnosed sameSHA retry separate from permanent fix"
+  ],
+  "historicalAdoptionReceiptsUnchanged": true,
+  "fixed95ClassificationUnchanged": true,
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "realSatelliteProviderAccepted": false,
+  "realFinancialAccepted": false,
+  "realCameraAccuracyAccepted": false,
+  "calibratedSpatialAccepted": false,
+  "rootCUAGestureAcceptance": false,
+  "jobImportOrEveLearningAccepted": false,
+  "wholeOSAccepted": false,
+  "P02Complete": false,
+  "publicDeployment": false,
+  "bulk616Export": "HELD",
+  "next": "Finite source integration complete; close this current-metadata branch through independent review/headCI/normalmain/mergeCI. Resume remaining physical/provider/calibration/product-identity gates separately with exact artifact/conditions; no new source scope."
+}
