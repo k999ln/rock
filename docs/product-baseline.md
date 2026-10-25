@@ -16,6 +16,8 @@ main2.08/RQ01〜RQ50、AMC/material/compose/gridと既存権限・料金を保�
 
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-25本人の明示追加要望: カメラで手・指を追い、最初はlocal VIEW_ONLYの選択/移動/回転/取消を試作する。Mini単体・板や膜なし・少ない表示部・上下を含む全域・低まぶしさを維持。観測gestureを本人の好み・同意・物理/金融/共有の承認へ昇格しない。全身認識・実Mini cameraの校正/精度・Eveへの明示feedbackは別受入。追加意図はdata/product-baseline.jsonのminiGestureInputIntentと固定gesture設計へ記録し、既存RQ50/393task/phase gatesは保持する。
+
 ## MiniとProの製品目的（2026-10-21本人確定）
 
 本人の明示指示「miniは暮らしやまちづくり、proはAI専用PCと半導体確保」を採用する。Miniは暮らしとまちづくりに貢献する空間端末、ProはAI専用PCであり、その製造・販売事業を通じて半導体と関連部品を継続的に確保できる調達基盤を育てる。確保量・供給契約・購入予算の確定や、半導体の製造能力を保有するという意味ではない。既存RQ、R5単独動作、Pro独立PC、ゲーム、権限・料金・物理受入gateは保持する。

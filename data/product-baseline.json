@@ -3092,5 +3092,21 @@
     "evidence": "docs/evidence/development-execution/mini-02-joint-main-adoption.json",
     "physicalAccepted": false,
     "wholeUnitComplete": false
+  },
+  "miniGestureInputIntent": {
+    "date": "2026-10-25",
+    "source": "owner explicitly requested camera tracking and gesture operation, with the personal-reaction/Mini conversation as context",
+    "taskId": "MAT15",
+    "primarySquad": "M1",
+    "firstSlice": "local hand/finger tracking and view-only interaction proposals",
+    "existingBoundaries": [
+      "standalone R5",
+      "no plate or membrane",
+      "few display parts",
+      "full range including up/down",
+      "low glare",
+      "gesture is not physical/financial/sharing approval"
+    ],
+    "physicalAccepted": false
   }
 }

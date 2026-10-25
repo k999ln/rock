@@ -945,6 +945,12 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
 
+### Miniカメラ追跡・ジェスチャー入力（2026-10-25）
+
+本人がカメラ追跡による動作/ジェスチャー機能を追加依頼。MAT15/M1のR5単体入力として、まず端末内の手指推定・選択/移動/回転/停止のpreviewを実装する。本人の反応を学ぶEveとの接続意図を保持し、好み推定を実行許可にしない。旧四方向/大型Full-scaleの完成や精密3D受入には転用しない。単体と表示4条件を維持、実カメラ・同一閉箱は未受入。テザリングPR229/231とは別branchで進める。
+
+検証完了: 14試験と独立5negative成功。停止競合・古いworker通知・期限後応答の3指摘を修正しmustFix0。合成canvasで実SDK推論・停止後track終了・外部通信0を独立確認。host全verifyは3024試験/3021pass/0fail/3skipで完走（他suite非加算）。初回OpenSSL版不一致と新test lint失敗は証拠に残し、環境指定/登録形式を修正。保存・CI・main採用は別段階。根拠 [検証記録](docs/evidence/development-execution/mini-gesture-input.json)。
+
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
 PR229採用確定: 最終head1e6ed3bcをmain `a58c6ffa857389193727b0b6d4a867352f269f77`へ通常統合し、同merge SHA全13CI成功、headとmergeのtree一致、原機能4/別Pixel fixture2のhash不変を直接照合。Linux共通83＋実packet26と全verifyのログを[main確認記録](docs/evidence/development-execution/mini-08-message-main-confirmation.json)へ保存。PR231はこのmainを取り込み、常駐制御5hash不変/103回帰成功、独立metadata検収mustFix0。旧保存head6b155020全14CI成功を保持し、新同期headCIは別確認。

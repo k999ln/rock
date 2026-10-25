@@ -1031,6 +1031,8 @@ Local si / AI02にrandom-initの学習・保存・再開・CPU推論の研究too
 
 ## Mini本体SIMによる独立通信（2026-10-05）
 
+Miniのカメラ入力はR5単体の端末内手指追跡prototypeを追加する（2026-10-25本人要望）。明示開始・停止と有限sessionを持つVIEW_ONLY候補として選択/移動/回転/取消を扱い、映像を保存/外部送信しない。校正済み空間操作・本人性・物理実行・Eveの好み/承認へ昇格させず、詳細と失敗/復旧/合格条件は[入力契約](../systems/rock-star-os/targets/avocado-mini/gesture/README.md)を参照する。Mini単体と表示4条件は維持する。
+
 利用者指定により[Mini cellular設計](avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。
 
 後続の本人指定では、衛星通信の初期地域を日米、用途をsi・メッセージ・小ファイルとする。[Mini message service](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)は既存の開発用ServiceAccess/Broker本人・端末binding、AP認証、共通byte/cost台帳を接続する。有限schedulerでTTL掃除・再送を行い、予約後のAP/本人/期限を再確認する。再起動は無効から始め、失効鍵を削除する。実modem/provider、製品本人認証、同一閉箱・電池・実機常駐の受入は未実施。Mini単体と表示4条件を維持する。

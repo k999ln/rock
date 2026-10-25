@@ -11063,5 +11063,18 @@
     "deviceOperations": 0,
     "additionalInference": 0,
     "publicDeployment": false
+  },
+  "miniGestureInput": {
+    "taskId": "MAT15",
+    "primarySquad": "M1",
+    "status": "reviewed_browser_prototype",
+    "scope": "single camera local hand gesture preview; Eve feedback integration reserved",
+    "cameraAccepted": false,
+    "physicalAccepted": false,
+    "fourDisplayConditionsPreserved": true,
+    "evidence": "docs/evidence/development-execution/mini-gesture-input.json",
+    "review": "docs/evidence/development-execution/mini-gesture-input-review.json",
+    "mustFixCount": 0,
+    "mainIntegrated": false
   }
 }
