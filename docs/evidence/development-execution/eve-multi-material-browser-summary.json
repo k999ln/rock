@@ -1,0 +1,58 @@
+{
+  "schema": "rockstaros.eve-multi-material-browser-summary/1",
+  "recordedAt": "2026-10-25T13:22:08.252445+00:00",
+  "candidateManifestSha256": "37b8c522f292cf2a0608f46d6b7ae89996c44896798b1f3f293e40144a007fcc",
+  "source9Hashes": {
+    "components/eve-text-estimate.tsx": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a",
+    "components/work-composition-workspace.tsx": "ab42e251d37adfde2cb14d0228a41b1aedb8988c5d9ccb52f672198d8167cc4e",
+    "lib/eve-text-job.ts": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba",
+    "lib/remote-ai-text-client.ts": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051",
+    "tests/eve-text-estimate-ui.test.mjs": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba",
+    "tests/eve-text-estimate.test.mjs": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573",
+    "tests/eve-text-job.test.mjs": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90",
+    "tests/work-composition-ui.test.mjs": "58b25fe5a43ca930caac40c3a43e47046a2cbad523fc75da1e3ab33cfa4abaa3",
+    "tests/eve-multi-material.test.mjs": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689"
+  },
+  "source9Unchanged": true,
+  "rootProductEdits": 0,
+  "plane": "Actual Chrome/React Workspace and Eve estimate panel, actual workflow/text-check helpers and CSS. Session/shell/fetch mocked, storage page RAM, unrelated CSV adapter disabled. Not production auth/storage acceptance.",
+  "observed": [
+    "Three material plan preview preserves exact names/text/goal; prepare alone does not create a job.",
+    "Three material plan saves with correct creation fingerprint; material remains unsaved until explicit consent and local text-check run.",
+    "Four material upper limit disables add; remove/reindex/current edit/re-add preserves unedited third material. Retained stale handlers remain independent VM-probe evidence, not browser click.",
+    "Four material plan and original source save separately. Two distinct visible jobs preserve three and four materials as verified from selected DOM JSON; local checks complete, no model generation.",
+    "Four material estimate shows fixture USD0.05 vs cap0, over-cap non-execution and one unit label per rate; actual price/usage not certified.",
+    "With fixture TTL15sec, result is absent after natural elapsed time with same source and estimate POST count1; no date/visibility override.",
+    "Synthetic ownerB readback hides saved source/jobs/quote; returnA restores jobs; original three-material source remains byte-identical after four-material editing; quote not resurrected."
+  ],
+  "expiryObservationElapsedSeconds": 171.73561716079712,
+  "expiryLatencySlaMeasured": false,
+  "requestSummary": {
+    "create": 2,
+    "localTextCheckRun": 2,
+    "estimate": 1,
+    "realProvider": 0,
+    "realCharges": 0,
+    "modelGeneration": 0
+  },
+  "countEvidence": "Material counts are derived from observed composition-source DOM JSON, not optional fixture telemetry materialCount (null).",
+  "failureHistory": [
+    "Initial fixture build imported server CSV Node modules; disabled only unrelated CSV adapter and permitted actual text-check tool. Product source unchanged.",
+    "First actual UI create response omitted creationFingerprint; component correctly held an unconfirmed operation. Fixture corrected to existing API contract; first AX/telemetry and helper bundle retained.",
+    "Optional telemetry used a file-decoder on prepared source JSON, so materialCount is null. Original telemetry retained; actual material counts verified from selected DOM JSON.",
+    "No reload durability accepted from page-RAM fixture; genuine API/storage evidence remains host and independent review."
+  ],
+  "independentSourceReviewR2Sha256": "5cbc64063c3cd13612aff4a4888ba0e32211c39b7e9d3fc683f6391c04d684c2",
+  "historicalR1R2OrOldTwoMaterialBrowserEvidenceChanged": false,
+  "cleanup": {
+    "tabsClosed": true,
+    "serverStopped": true,
+    "port8766NoListener": true
+  },
+  "notAccepted": [
+    "WholeEVE unit, actual model/provider submission, actual billing, production session/D1 persistence, actual file-picker/late FileReader or retained callback races, responsive layout certification, device/OS deployment or public launch."
+  ],
+  "status": "BOUNDED_UI_DOCUMENTARY_REVIEW_PASS",
+  "originalSummarySha256": "ef1b55c1a1a7efc19fd559ebd18e011f9139dc08cbfadfca25c83615fe9e47d5",
+  "rawEvidencePublished": false
+}

@@ -250,6 +250,8 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 Git採用着手: 本人の明示指示を直接確認し、最新main53d991b3へ最終R2 patchを3-way適用。製品4/test5はR2と同hash、既存main全受入とindex1.41を保持し1.42へ更新。主担当10/G04・source05/ROCK。元host3003件はR2前・旧baseの履歴であり、今回の型/全verify/CIへ転用しない。標準private生成を含む新候補のhost全verifyは3025試験/3022pass/0fail/3Macskip・build/APIまでexit0。別担当統合metadata検収、GitHub保存、最終headCI、通常main統合・同mergeSHA CI、current進捗同期を進める。
 
+現行採用: PR232の独立R2と別担当統合metadata検収はmustFix0、固定head d1eabc8a全7CIとLinux3025/3023pass/0fail/2skip成功。main fb604256へ通常統合し親/tree/製品4/test5一致を読戻し、同mergeSHA全6CIとLinux3025/3023pass/0fail/2skip成功。Root追加3/4実React合成UIはraw14/helper8hashとDOMを別担当がdocumentary検収し、原R1/R2と旧2資料証拠は不変。API/session/RAM/単価はfixture、実Provider/実課金0、wholeEVE/本番保存/実機/公開は未受入。現行記録は docs/evidence/development-execution/eve-multi-material-main-current.json。次はcurrent metadataのGit/main保存・同SHA CI確認。
+
 ## Eve単価の重複単位表示を別commitで採用
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。

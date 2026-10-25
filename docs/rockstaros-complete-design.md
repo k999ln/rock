@@ -583,6 +583,8 @@ ROCKはPC receiverの結果を同時callbackから保護する。入力は既存
 Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計画・途中成果・検査・操作ID・sanitized recipeを追加する。接続済みのeffect-free処理だけを予算0で実行し、外部Agent、Broker承認、Provider receipt、native能力への昇格は行わない。目的・入力・条件・状態・保存・失敗復旧・承認・互換・合格条件・未決事項は[仕事の組み立てとレシピ](sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)を参照。Webの受入をAndroid/nativeの同一契約受入へ転用しない。
 
 <a id="eve-multi-material"></a>
+
+現行採用: PR232/main `fb604256`に2〜4資料の互換拡張を限定統合。原R1/R2・採用前snapshotを保持し、追加3/4実React合成UIは別documentary検収として記録する。実Provider/課金・本番保存・wholeEVE・公開の受入にはしない。[現行証拠](evidence/development-execution/eve-multi-material-main-current.json)。
 ### 2〜4資料の互換拡張（EVE-02）
 
 目的・利用体験: 既存の資料付き依頼に3番目・4番目の資料を加え、同じ仕事で無料準備・原文保存・復元・見積比較を行う。「資料を追加」「資料Nを外す」は通常buttonでkeyboard操作できる。最低2・最大4、本文合計8,000 JavaScript文字単位、依頼500文字、名前160文字、選択file各48,000 bytesと既存80,000-byte run request上限を維持する。資料数を増やしても入力総量・生成能力・予算は増やさない。
