@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.mini-message-main-current/1",
+  "pr": 229,
+  "acceptedHead": "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2",
+  "mainMergeSha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+  "mainTree": "9ef3690c7eb8a36edae959c52ccba5d9eaf7f84f",
+  "parents": [
+    "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+    "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2"
+  ],
+  "mainMerged": true,
+  "headCISuccess": 14,
+  "mainCISuccess": 13,
+  "headVerify": {
+    "run": 40198692160,
+    "tests": 3025,
+    "pass": 3023,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "d8e301401060a0cac49185bb0194c225cf249cce3317b21c7b2906ed7e85e44c"
+  },
+  "mainVerify": {
+    "run": 40199085990,
+    "tests": 3025,
+    "pass": 3023,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "e10d689ef988999757270e72d4a72ea68cbc5c752263ad866b4ccb6dda32ca50"
+  },
+  "source4AndPixelFixture2Unchanged": true,
+  "featureIndependentReview": "docs/evidence/development-execution/mini-08-message-review.json",
+  "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json",
+  "originalAdoptionReceipt": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
+  "historicalOriginal451CIAndPendingCaptureUnchanged": true,
+  "scope": "Offline bounded message adapter and separately reviewed Pixel normal-case wait fixture; no production worker change",
+  "wholeUnitAccepted": false,
+  "physicalAccepted": false,
+  "providerConnected": false,
+  "realFinancialAccepted": false,
+  "publicDeployment": false
+}

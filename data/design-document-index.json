@@ -1451,7 +1451,9 @@
           "JP",
           "US"
         ],
-        "physicalAccepted": false
+        "physicalAccepted": false,
+        "mainMerged": true,
+        "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
       }
     },
     {
@@ -3111,7 +3113,17 @@
     "attempt": 3,
     "mainMerged": true,
     "wholeSmith01Accepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "runningLandmarkRepair": {
+      "implementation": "components/workspace-shell.tsx",
+      "regression": "tests/os-bottom-navigation-main.test.mjs",
+      "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+      "contract": "Exact existing #workspace-main fragment remains usable while running; all other anchor clicks and consumer admission remain guarded. No new execution authority or persistence.",
+      "browserAcceptance": "Synthetic actual React/Chrome fixture390+1280; real job/auth/device/whole SMITH unaccepted",
+      "mainMerged": false,
+      "authority": "docs/rockstaros-complete-design.md#smith-running-workspace-landmark",
+      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark"
+    }
   },
   "eveSavedSourceEstimate": {
     "authority": "docs/rockstaros-complete-design.md#eve-saved-source-estimate",

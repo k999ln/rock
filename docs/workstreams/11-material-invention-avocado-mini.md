@@ -4,6 +4,10 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 
 # Material Invention / avocadoMini
 
+## Mini開発用message serviceの採用
+
+ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止をhostで検査する。独立source検収mustFix0、service20・全Mini103・追加9負例とLinux packet26を別集計で記録する。実製品identity/回線/transport/Job保存/実機は未受入。[契約](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)／[独立検収](../evidence/development-execution/mini-08-message-service-review.json)。
+
 ## 携帯・PC前・対象物前を必須にしない制作と対話
 
 2026-10-15の[本人指示と6受入ケース](../service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を追加。設計同期はDOC04/H1（ROCK）、体験はWEB04、能力/仕事連携はSKY21、実機入力/表示/停止と空間到達範囲はMAT15（JOINT）。最初は一室・一作品で電話取り出し0/PC前必須操作0、案/修正/保存/再開を測る。確定版の製作引渡しは非電話の本人確認と設備/専門家の受入を別に通す。新規購入/製作/契約/実送信はこの設計更新では実施しない。
@@ -186,7 +190,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 [Linux下位制御](../../systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md): Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 namespace所有claimの破棄/再利用は自動解除せず、旧processと未確定予約の管理照合が必要。
 
-日米のsi・メッセージ・小ファイル向け[共通message adapter](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。開発用Broker本人確認・AP再認証・有限常駐schedulerを接続し、期限・予約を送信直前にも再確認する。実Broker本人認証/実transport/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。 PR229はmain a58c6ffaへ通常統合・同SHA全13CI成功、元製品4/Pixel fixture2の検収hash一致。常駐制御PR231は別の受入対象。[採用段階](../evidence/development-execution/mini-08-message-main-adoption.json)で原機能検収とmain確認証拠を別追跡。
+日米のsi・メッセージ・小ファイル向け[共通message adapter](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。 最新main同期の製品4/Pixel fixture2は固定検収hash一致、新host全verify3025件失敗0。[採用段階](../evidence/development-execution/mini-08-message-main-adoption.json)でheadCI/mainCIを原機能検収と別追跡。 PR229/main a58c6ffaへ限定採用、head14/main13CI成功。[現行受入](../evidence/development-execution/mini-08-message-main-current.json)。
 
 [AP認証・網側上限](../../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)の共通adapterを追加。端末固有鍵、管理下hostapdの世代/認証、網側HMAC/TLS予約をLinux転送前に確認する。事業者・modemは本人回答どおり未定。実無線/衛星/請求は未受入、単体携行と表示4条件を維持。
 
