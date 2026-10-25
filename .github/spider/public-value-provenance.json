@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 169,
+  "distinctValues": 172,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 61,
+    "public-artifact-digest": 64,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2389,6 +2389,48 @@
         ]
       },
       "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "9e80c28302e916e16cb3b16f061ad30ec5c01bf062f84f39306c0ee516668207",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/access_session.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 8,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1access_session.py"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "42f04d5454f66001f1ff6c24d7c8d2a43eef5c5c37c1b72061e3ffde7743376e",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 12,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1fixture_access.py"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "8a096df6808c7a1b83d5ac2788613ff6d4b4833419931e20fb6dc72e341f0640",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 17,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1test_access_adapters.py"
+        ]
+      },
+      "exactPathCount": 2
     }
   ],
   "supplementalReviews": [
@@ -2429,6 +2471,17 @@
       ],
       "basis": "Independently recomputed public GGUF tokenizer digest. Mutation or another path must remain detectable. Historical occurrence counts and reviewedHead unchanged.",
       "policySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3"
+    },
+    {
+      "head": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+      "recordedOn": "2026-10-25",
+      "addedDistinctValues": 3,
+      "exactPaths": [
+        "docs/evidence/development-execution/mini-08-access-review.json",
+        "docs/evidence/development-execution/mini-08-access-adapters.json"
+      ],
+      "basis": "Three recomputed public source digests in Mini receipts. Exact path AND literal value only; historical occurrence count and reviewedHead unchanged.",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a"
     }
   ],
   "integratedReview": {

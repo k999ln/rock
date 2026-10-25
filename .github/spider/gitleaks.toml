@@ -1218,3 +1218,24 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:android/automation/src/debug/assets/rock\-local\-model\-catalog\.json)\z''']
 regexes = ['''\Aee28b958b28c088fc6713ddeb2257bbadacc406eb2b3cf76e395c1bfd1c2a54d\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 9e80c28302e9"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/development\-execution/mini\-08\-access\-review\.json|docs/evidence/development\-execution/mini\-08\-access\-adapters\.json)\z''']
+regexes = ['''\A3268dd3ff1c770ed3d30cbf81e31d591d298828ae1e42a4ec5ef4e39a05eac2f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 42f04d5454f6"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/development\-execution/mini\-08\-access\-review\.json|docs/evidence/development\-execution/mini\-08\-access\-adapters\.json)\z''']
+regexes = ['''\A2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 8a096df6808c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/development\-execution/mini\-08\-access\-review\.json|docs/evidence/development\-execution/mini\-08\-access\-adapters\.json)\z''']
+regexes = ['''\A9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1\z''']
