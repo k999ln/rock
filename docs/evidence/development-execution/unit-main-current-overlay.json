@@ -636,7 +636,7 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
-      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure unresolved. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
+      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure at8f retained as history; later undici fixPR216 adopted. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
       "mainMerged": true,
       "metadataReviewPending": false,
       "wholeUnitAccepted": false,
@@ -853,7 +853,7 @@
       "order": 0,
       "unit": "OS-01",
       "state": "PR209_main_integrated_new_guard_physical_unverified",
-      "scope": "PR209/main8f source and7 productCI accepted; Dependabot1failure unresolved. Oldf3 physical is historical only; newc43/P02/fullOS separate. PR213 UI bounded subset adopted; physical/Provider/fullOS gates remain separate.",
+      "scope": "PR209/main8f source and7 productCI accepted; Dependabot1failure at8f retained as history; later undici fixPR216 adopted. Oldf3 physical is historical only; newc43/P02/fullOS separate. PR213 UI bounded subset adopted; physical/Provider/fullOS gates remain separate.",
       "wholeUnitAccepted": false
     }
   ],

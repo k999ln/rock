@@ -242,9 +242,9 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIは限定採用済み。公開配備・616一括公開は保留です。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、残る別の自動更新失敗はzodです。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIは限定採用済み。公開配備・616一括公開は保留です。
 
-主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。undici7.29.1のsecurity_update_not_possibleはG04未解決で、依存lock差分0・修正未実施。この変更はmetadataだけ、PR213 fixture診断は別scope。Pixel metadataはPR214/main dc2b992f・製品7CI成功まで完了。UIも上記PR213の限定範囲で受入済み。
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。8f時点のundici7.29.1更新不可と当時の依存lock差分0を履歴に保持。後続PR216/main d2222dc5のundici制約修正を採用済みで、今回同期ではその依存・lockを保持する。別のzod自動更新失敗はG04 followup。この変更はmetadataだけ、PR213 fixture診断は別scope。Pixel metadataはPR214/main dc2b992f・製品7CI成功まで完了。UIも上記PR213の限定範囲で受入済み。
 
 ### 原source/host段階の記録（履歴）
 

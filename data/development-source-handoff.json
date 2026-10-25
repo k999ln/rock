@@ -751,7 +751,7 @@
       "order": 0,
       "unit": "OS-01",
       "state": "PR209_main_integrated_new_guard_physical_unverified",
-      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure undici unresolved. See docs/evidence/development-execution/pixel-cache-main-merge.json. PR213 bounded UI is adopted; newguard physical/P02/fullOS remain separate.",
+      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure at8f retained as history; later undici fixPR216 adopted. See docs/evidence/development-execution/pixel-cache-main-merge.json. PR213 bounded UI is adopted; newguard physical/P02/fullOS remain separate.",
       "wholeUnitAccepted": false
     }
   ],

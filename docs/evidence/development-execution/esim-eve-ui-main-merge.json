@@ -97,19 +97,6 @@
       "fullVerifyExit": "actual_job_success"
     }
   },
-  "unresolved": [
-    {
-      "kind": "Dependabot",
-      "run": 40177675682,
-      "job": 121121795935,
-      "error": "security_update_not_possible",
-      "package": "undici",
-      "resolvedVersion": "7.29.1",
-      "minimumNonVulnerableReportedByBot": "7.30.1",
-      "dependencyLockDiffFromBase": 0,
-      "scope": "Automated dependency update failure; separate from7 successful product CI checks; no dependency repair authorized in this batch"
-    }
-  ],
   "preserved": {
     "whole95Accepted": 0,
     "baseline": "2.08 / RQ50 / 393tasks / 14phaseGates",
@@ -132,7 +119,22 @@
     "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
     "scope": "Root/Mini undici constraint and locks updated by separate owner; preserved byte-for-byte. Prior8f failed automated update remains historical, not a claim that PR216 failed. New-main product checks succeeded; separate Dependabot results are retained by that workflow.",
     "productCIChecksReadBack": "success",
-    "newMainBotFailuresObserved": 1
+    "newMainBotFailuresObserved": 1,
+    "newMainBotFailurePackage": "zod",
+    "undiciFixAdoptedSeparately": true
   },
-  "metadataBaseSynchronization": "d2222dc54fb78a035d45b7e4f75c2a45ad786173"
+  "metadataBaseSynchronization": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+  "historicalFailures": [
+    {
+      "kind": "Dependabot",
+      "run": 40177675682,
+      "job": 121121795935,
+      "error": "security_update_not_possible",
+      "package": "undici",
+      "resolvedVersion": "7.29.1",
+      "minimumNonVulnerableReportedByBot": "7.30.1",
+      "dependencyLockDiffFromBase": 0,
+      "scope": "Automated dependency update failure; separate from7 successful product CI checks; no dependency repair authorized in this batch"
+    }
+  ]
 }

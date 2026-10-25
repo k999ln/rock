@@ -10048,7 +10048,14 @@
     "mainProductSameShaCISuccess": 7,
     "mainAllChecksSuccess": false,
     "mainDependabotFailure": 1,
-    "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+    "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json",
+    "laterDependencyFix": {
+      "pr": 216,
+      "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "evidence": "docs/evidence/undici-security-constraint.json",
+      "old8fFailureRetainedAsHistory": true,
+      "separateBotFailurePackage": "zod"
+    }
   },
   "esimAcknowledgementMainAdoption": {
     "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
