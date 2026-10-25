@@ -1,0 +1,323 @@
+{
+  "schema": "mini-access-main-merge/1",
+  "date": "2026-10-25",
+  "pr": 215,
+  "url": "https://github.com/k999ln/rock/pull/215",
+  "acceptedSourceHead": "04f5e757112c7650da340bf881da83adf495ed6c",
+  "mainMergeSha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+  "mergedAt": "2026-10-25T10:07:44Z",
+  "mergeMethod": "normal_merge_no_history_rewrite",
+  "sourceTree": "c36033f9c35d86510133e1e7a74531b0ed2947a6",
+  "mergeTree": "c36033f9c35d86510133e1e7a74531b0ed2947a6",
+  "treeEqual": true,
+  "headChecks": [
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:05:33Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138771720",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138771720,
+      "name": "source-tests",
+      "status": "completed"
+    },
+    {
+      "app": "github-advanced-security",
+      "completed_at": "2026-10-25T10:04:50Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/runs/121138663622",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138663622,
+      "name": "CodeQL",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:03:51Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126647/job/121138191298",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138191298,
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:03:27Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126600/job/121138190999",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190999,
+      "name": "linux-packets",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:03:44Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126567/job/121138190895",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190895,
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:04:23Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138190775",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190775,
+      "name": "partitions (main-1)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:03:41Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138190774",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190774,
+      "name": "partitions (main-0)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:04:47Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138190764",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190764,
+      "name": "partitions (main-2)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:04:18Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138190763",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190763,
+      "name": "partitions (support)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:05:13Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126504/job/121138190760",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190760,
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:05:17Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126572/job/121138190649",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190649,
+      "name": "partitions (main-3)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:03:44Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126567/job/121138190645",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190645,
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:05:57Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126552/job/121138190635",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190635,
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:04:57Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183126504/job/121138190535",
+      "head_sha": "04f5e757112c7650da340bf881da83adf495ed6c",
+      "id": 121138190535,
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    }
+  ],
+  "mainProductChecks": [
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:10:34Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139795780",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139795780,
+      "name": "source-tests",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:09:03Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491956/job/121139287640",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287640,
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:09:13Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491956/job/121139287559",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287559,
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:10:12Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491959/job/121139287449",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287449,
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:09:42Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139287401",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287401,
+      "name": "partitions (main-2)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:09:32Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139287354",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287354,
+      "name": "partitions (support)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:08:54Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139287334",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287334,
+      "name": "partitions (main-0)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:10:15Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139287328",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287328,
+      "name": "partitions (main-3)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:08:51Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183492001/job/121139287273",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287273,
+      "name": "linux-packets",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:09:19Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491978/job/121139287229",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287229,
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:10:18Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491958/job/121139287175",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287175,
+      "name": "partitions (main-1)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:11:19Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491959/job/121139287171",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139287171,
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:12:01Z",
+      "conclusion": "success",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183491957/job/121139286954",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139286954,
+      "name": "verify",
+      "status": "completed"
+    }
+  ],
+  "separateAutomation": [
+    {
+      "app": "github-actions",
+      "completed_at": "2026-10-25T10:08:59Z",
+      "conclusion": "failure",
+      "details_url": "https://github.com/k999ln/rock/actions/runs/40183504068/job/121139328546",
+      "head_sha": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
+      "id": 121139328546,
+      "name": "Dependabot",
+      "status": "completed"
+    }
+  ],
+  "separateAutomationFailure": {
+    "dependency": "zod",
+    "cause": "@cloudflare/vitest-plugin 1.3.4 pins zod 4.4.3; updater cannot reach fixed >=4.6.6 without incompatible downgrade",
+    "run": 40183504068,
+    "job": 121139328546,
+    "status": "unresolved_shared_with_Git_owner",
+    "notCountedAsProductCISuccess": true
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/mini-08-main-sync-review.json",
+    "mustFix": 0
+  },
+  "localCombinationAttempt": {
+    "status": "existing_sky_activation_timeout",
+    "test": "tests/sky-activation.test.mjs",
+    "sameSourceSingleFileRerun": "4_pass_0_fail",
+    "CIExactHeadVerify": "success",
+    "notClaimedRuntimeFix": true
+  },
+  "physicalAccepted": false,
+  "wifiRadioTested": false,
+  "providerConnected": false,
+  "invoiceVerified": false,
+  "nextAction": "Hardware/provider comparison and P0-P5 physical trial preparation; no purchase/contract/RF execution"
+}

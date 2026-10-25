@@ -641,7 +641,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "PIXEL_CACHE_MAIN_CANDIDATE"
+        "PIXEL_CACHE_MAIN_CANDIDATE",
+        "PIXEL_GUARD_PHYSICAL_ADOPTED"
       ]
     },
     {
@@ -1352,7 +1353,8 @@
       "currentOverlayRefs": [
         "PR194_ESIM_SUBSET",
         "ESIM_OWNER_RESPONSE_CANDIDATE",
-        "ESIM_UI_ACK_ADOPTED"
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
       ]
     },
     {
@@ -1471,7 +1473,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "ESIM_UI_ACK_ADOPTED"
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
       ]
     },
     {
@@ -1519,7 +1522,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "ESIM_OWNER_RESPONSE_CANDIDATE",
-        "ESIM_UI_ACK_ADOPTED"
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
       ]
     },
     {

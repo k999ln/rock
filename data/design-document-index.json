@@ -1422,8 +1422,20 @@
         "docs/avocado-mini-spatial-invention.md",
         "docs/avocado-mini-hardware-design.md",
         "docs/avocado-mini-r5/embedded-portable-connectivity.md",
-        "docs/service-design/08-mini-connectivity-and-billing.md"
-      ]
+        "docs/service-design/08-mini-connectivity-and-billing.md",
+        "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+        "docs/avocado-mini-r5/physical-trial-template.json"
+      ],
+      "satelliteTrialOwnerSelection": {
+        "date": "2026-10-25",
+        "regions": [
+          "JP",
+          "US"
+        ],
+        "initialUseCase": "si_messages_small_files",
+        "document": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+        "physicalAccepted": false
+      }
     },
     {
       "id": "verification_and_operations",
