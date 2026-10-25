@@ -9,8 +9,10 @@ import * as client from '../lib/remote-ai-text-client.ts';
 import * as currency from '../lib/currency-format.ts';
 import { executeCompositionNode } from '../lib/work-composition-executor.ts';
 
-async function job() {
-  const prepared = eve.prepareEveTextJob([{ name: 'A.md', text: 'Synthetic A' }, { name: 'B.md', text: 'Synthetic B' }], 'Synthetic compare');
+async function job(count = 2) {
+  const input = [{ name: 'A.md', text: 'Synthetic A' }, { name: 'B.md', text: 'Synthetic B' }];
+  while (input.length < count) input.push({ name: `${input.length}.md`, text: `Synthetic ${input.length}` });
+  const prepared = eve.prepareEveTextJob(input, 'Synthetic compare');
   const work = createWorkJob({ id: crypto.randomUUID(), title: 'Synthetic saved materials', templateId: 'composition', plan: prepared.plan });
   const result = await executeCompositionNode(work.composition, prepared.plan.nodes[0], prepared.source);
   return updateComposedWork(work, { action: 'run', id: crypto.randomUUID(), fingerprint: 'a'.repeat(64), revision: 0, stepId: 's1', source: prepared.source, result });
@@ -186,4 +188,21 @@ void test('display deadline clears an otherwise idle panel and never refreshes o
   assert.equal(h.calls.length, 1); assert.equal(h.timerCount, 0);
   h.setProps({ ownerScope: 'owner-b', job: await job() }); h.fireTimers(); assert.equal(h.calls.length, 1);
   assert.equal(h.consent().props.checked, false); h.unmount(); clock.mock.restore();
+});
+
+for (const count of [3, 4]) void test(`${count}-source result requires every ordered digest and v2 builder; owner invalidation still clears it`, async () => {
+  const work = await job(count), expected = await eve.prepareEveTextEstimate(work), valid = await response(work);
+  const read = value => client.readEveTextEstimate(value, { ...expected, outputTokenLimit: 1200, comparisonCapMinor: null });
+  assert.equal(read(valid).sourceRef.materialSha256.length, count);
+  for (const change of [v => { v.sourceRef.materialSha256.pop(); }, v => { v.sourceRef.materialSha256.push('a'.repeat(64)); },
+    v => { v.sourceRef.materialSha256[count - 1] = 'b'.repeat(64); }, v => { v.sourceRef.materialSha256.reverse(); },
+    v => { v.sourceRef.builder = 'eve.text-estimate/1'; }]) {
+    const altered = structuredClone(valid); change(altered); assert.throws(() => read(altered));
+  }
+  const h = await harness((_call, selected) => response(selected)); h.setProps({ job: work });
+  assert.equal(h.calls.length, 0); h.agree(); h.click();
+  await h.until(() => h.text().includes('最大見積'));
+  assert.equal(h.calls.length, 1); assert.equal(h.calls[0].path, '/api/llm/estimate');
+  h.setProps({ ownerScope: 'owner-b' }); assert.equal(h.text().includes('最大見積'), false);
+  assert.equal(h.consent().props.checked, false); assert.equal(h.calls.length, 1);
 });

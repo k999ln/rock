@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.41",
+  "version": "1.42",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -2952,7 +2952,38 @@
     "mainMerged": true,
     "wholeEVE02Accepted": false,
     "semanticGenerationAccepted": false,
-    "providerBillingAccepted": false
+    "providerBillingAccepted": false,
+    "multiMaterialCompatibility": {
+      "schemas": [
+        "eve.text-preparation/1",
+        "eve.text-preparation/2"
+      ],
+      "estimateBuilders": [
+        "eve.text-estimate/1",
+        "eve.text-estimate/2"
+      ],
+      "materialCount": [
+        2,
+        3,
+        4
+      ],
+      "totalTextLimit": 8000,
+      "legacyTwoMaterialBytesUnchanged": true,
+      "evidence": "docs/evidence/development-execution/eve-multi-material.json",
+      "wholeUnitAccepted": false,
+      "mainMerged": false,
+      "gitHubSaved": false,
+      "independentReviewPerformed": true,
+      "tests": [
+        "tests/eve-multi-material.test.mjs",
+        "tests/eve-text-estimate.test.mjs",
+        "tests/eve-text-estimate-ui.test.mjs",
+        "tests/work-composition-ui.test.mjs"
+      ],
+      "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+      "authority": "docs/rockstaros-complete-design.md#eve-multi-material",
+      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material"
+    }
   },
   "proAccountOriginalArchive": {
     "authority": "docs/rockstaros-complete-design.md#pro-account-original-archive",

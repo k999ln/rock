@@ -196,6 +196,8 @@ privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGi
 
 同4pathのrecurring互換delta: 同INSERTの既存0021 triggerで拒否例外を維持し、既知拒否と保存不明を区別。局所40pass、新hash独立再検収/全verify/CI待ち。
 
+
+
 ## Billing最終send claimの限定採用
 
 [Billingの11項目契約](sky-billing.md#billing-final-send-claim)で、current parent/rate/time/held cap/ownerと既存opt-in recurringを同じ最終INSERT SELECTへ固定する。拒否/不明時はno-send/元hold維持、既存late usageと一回settleを保持。新migration/料金/Wallet/888c変更なし。共通authority・issuer epoch/consent revision adapterと本番D1/実Providerは未受入。[exact4採用証拠](evidence/development-execution/billing-final-send-main-adoption.json)。ROCK実装、EXTERNAL根拠、JOINT本番受入、OWNER同意/費用の分界を維持する。
@@ -485,6 +487,17 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 成果の編集では、開始時の原文とrevisionを読み取り専用で保持し、編集内容と新しい目的・完成条件・文字数・必須文言を別の下書きへ入力する。「編集版を新しい仕事へ」は独立した未検査jobの計画だけを保存し、素材はこのタブに未保存で保持する。保存済み成果の取得は本人認証付きのHTTP attachmentを使い、表示したjob／手順／revisionへ一致させる。別owner・消去済み成果は404、更新済みの版は409で止め、private/no-store、nosniff、plain UTF-8 text／CSVと中立的なファイル名を使用する。新しい素材保存の本人同意と実行後に、別jobの検査・成果として保存する。原job、原artifact、旧検査合格、本人確認、Provider receiptは変更も移植もしない。CSVはCSV構造検査、文章はplain text表示を使い、任意HTMLを実行しない。編集memoryと保存不明の転送snapshotはowner／job／nodeに結び、元owner再確認後だけ戻す。別タブの後続revisionで比較元を置き換えず、開始時版を表示する。明示した素材消去は、その仕事の未保存編集も確認して消す。
 
 合格条件は、実入力で2種類以上の接続済み処理→検査→保存→再表示→レシピ保存→新素材の新jobを一周し、原成果が不変であること。本人切替、401、Origin、競合、応答喪失、二重クリック、失敗検査の再開、素材消去、再起動、PC／390pxを確認する。正常／異常APIは実handler/storeとSQLite、実画面・実D1は別証拠で記録する。候補の対象試験は `tests/work-composition*.test.mjs`、共通owner hookと既存Workbenchの回帰、全体 `npm run verify`。現時点は実装とローカル検証中で、本番本人認証、同一最終SHA CI、公開反映は別受入。未決事項は外部Toolの接続契約と有料実行で、既存の見積／予算／Provider受入が揃うまで候補を利用不可に保つ。
+
+<a id="eve-multi-material"></a>
+### 2〜4資料の互換拡張（EVE-02）
+
+目的・利用体験: 既存の資料付き依頼に3番目・4番目の資料を加え、同じ仕事で無料準備・原文保存・復元・見積比較を行う。「資料を追加」「資料Nを外す」は通常buttonでkeyboard操作できる。最低2・最大4、本文合計8,000 JavaScript文字単位、依頼500文字、名前160文字、選択file各48,000 bytesと既存80,000-byte run request上限を維持する。資料数を増やしても入力総量・生成能力・予算は増やさない。
+
+責任・入出力: ROCKは既存codec/workflow/owner別UIと全資料の照合を担う。OWNERが資料の選択・固定・保存同意・見積同意を別々に行う。EXTERNALの信頼できる単価がなければ従来どおり見積を拒否する。2資料は`eve.text-preparation/1`・既存plan・`eve.text-estimate/1`をbyte互換で保持し、3・4資料だけ`eve.text-preparation/2`と対応plan・`eve.text-estimate/2`にする。材料順序を含むcanonical envelopeとprompt digest、全2〜4本文のordered SHA256を照合し、見積replyの欠落・追加・順序変更・旧builder混在を拒否する。schemaと資料数が食い違う保存も拒否する。
+
+状態・保存・失敗・復旧: 既存compositionのcreate→同意付きrun→review、owner/job/revision/command照合と原文artifactを再利用する。別engine/DB/migrationは追加しない。資料追加・削除は未保存入力だけを変え、保存済み原文は変更しない。入力identityとfile世代を再照合し、古い追加/削除・名前/本文/依頼編集callbackや読込で新入力・別ownerを上書きしない。過大入力や不正UTF8/controlは切捨てず拒否し、既存入力を保つ。restoreはGETのみで自動再実行・自動見積しない。新形式を知らない旧readerは拒否するため、rollbackは旧版で3・4資料を開けない旨を示し、新版へ戻して復元する。保存済みjobを削除して回避しない。
+
+承認・合格条件・未決定: 保存と見積の明示同意を維持し、pricing execution gatefalse・budget0・quote/reserve/approve/sendなし。2資料互換、3・4資料の同job保存/復元、全hashの比較、8,000/500/48,000/80,000境界、不正schema/count/owner/revision、後着読込・入力差替えをhost/API/VMで検査する。modelによる草稿/意味検収、実Provider/請求、実browser全操作、別端末/実機/一般公開は別gate。合格証拠は[限定受入記録](evidence/development-execution/eve-multi-material.json)へ残し、固定候補の独立検収・Git採用は実施した段階だけ更新する。
 
 ### Zemaの古い応答と未送信入力（2026-10-11、WEB04）
 

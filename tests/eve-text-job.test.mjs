@@ -58,7 +58,7 @@ void test('file decoder preserves BOM/CRLF bytes and rejects invalid UTF8 rather
     assert.throws(() => decodeEveTextMaterial('A.md', bad));
 });
 void test('rejects malformed/binary/unknown fields, bad names/goals and over-limit material without truncation', () => {
-  for (const input of [[], materials().slice(0, 1), [...materials(), materials()[0]],
+  for (const input of [[], materials().slice(0, 1), [...materials(), materials()[0], materials()[0], materials()[0]],
     [{ name: 'a', text: 'x'.repeat(8000) }, { name: 'b', text: 'x' }],
     [{ name: 'a\n', text: 'x' }, materials()[1]], [{ name: 'x'.repeat(161), text: 'x' }, materials()[1]],
     [{ name: 'a', text: '\ud800' }, materials()[1]], [{ name: 'a', text: '\0' }, materials()[1]],
