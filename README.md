@@ -387,6 +387,8 @@ Miniと同じWebソース内にあります。
 
 ## 開発と検証
 
+undiciはrootで修正版7系（`^7.30.1`）、Miniサイトで修正版8系（`^8.12.2`）をoverrideで許容し、各lockfileで実版を固定します。`npm ci` と `npm ci --prefix sites/avocado-mini` 後に `node --test tests/undici-dependency-security.test.mjs tests/undici-tls-options.test.mjs` で依存先とTLS設定の保持を確認できます。[修正・検証記録](docs/evidence/undici-security-constraint.json)。
+
 Node.js 22.13以降とnpmを使用します。Webのローカル起動:
 
     npm ci

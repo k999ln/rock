@@ -2,6 +2,13 @@
 
 PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。現在: PR208の検収済みheadc3c0e17d/exact20pathを通常main2854d069へ統合。headtree/main tree一致、同mergeSHA全6CIとLinux実verify2911/2909pass/2skip/0failを確認。文書保存・作業branch GitHub保存・main統合を完了、公開配備は未実施。元receiptのcapture-time pendingと初回失敗は保持し、現在のproject/status/overlay/handoffはこの別metadata同期で訂正する。次は既存Pixel/eSIM候補を新mainへ通常照合し、各独立gateから再開。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。
 
+## undici依存制約の修正（SYS15・G04 / ROCK）
+
+最新main2a9828b2のeSIM/Eve受入済み変更を通常同期。undici/package/test bytesは不変、先行Mac全verifyと同期後の新HEAD全CIは別証拠とする。
+
+PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点に、root overrideの7.29.1固定を同majorの修正版^7.30.1へ更新し、root全verify成功（2940件/2937pass/0fail/3Macskip）後、同じundiciのMini側3alertも確認。Mini override^8.12.2/lock8.12.3を追加し、両lockfileそれぞれundici1件のみ更新。計7consumerと既存TLS/依存回帰29件成功、root旧制約の1件失敗反例を保持。root npm監査undici0件・他依存10件を区別し、最終全verifyはexit0（root2942/2939pass/0fail/3Macskip、build/API含む）。Mini監査もundici0・他2件。旧SHAの失敗を保持し、新HEADとmain統合SHAのCodeQL/全CIは別々に確認する。実機操作・追加推論・公開配備なし。
+
+
 ## Pro原本exportから既存私有archiveへの入口候補（2026-10-25 / G04）
 
 着手: 最新mainb1b0/PR206を基点にPRO-01-ARCHIVE-ENTRYの検収済み3source/testを同hash採用。主担当10/source05、既存B05/WEB13/G04。判断: 元receipt3cebはportableで同bytes保持、Root独立review6883・localChrome UI94c0は要約/hashだけ採用。既存13archive/storeと183保護pathを保持し、自動転送・権限・schema/鍵・課金を追加しない。検証済み履歴: 関連40・独立5群、Chrome1512/390 overflow0/preview/cancel。初回preview startup失敗は維持し、成功へ換算しない。次: 統合対象試験/project:update/design:check/scannerとcanary、DraftPR exactpayload読戻し、最終head Linux actualverify/CI、独立metadata検収。merge/公開先実click/認証済server保存/native/配備/wholePRO01は未受入。11lane/95unit/42成果の有限要約をmain入口へ接続し、Root旧RQ49/165taskとmainRQ50/393taskを区別。Rootregistry非操作、残616公開保留。根拠 docs/evidence/development-execution/pro-archive-entry-main-adoption.json。
