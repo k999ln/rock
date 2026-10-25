@@ -10088,7 +10088,7 @@
     "sourceScopedAccepted": true,
     "finalHeadCIPending": false,
     "mainMerged": true,
-    "actualHiddenTransitionTested": false,
+    "actualHiddenTransitionTested": true,
     "physicalAccepted": false,
     "realFinancialAccepted": false,
     "publicDeployment": false,
@@ -10100,7 +10100,12 @@
     "headCISuccess": 7,
     "mainProductCISuccess": 6,
     "mergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
-    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed."
+    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed.",
+    "integrationTimeActualHiddenTransitionTested": false,
+    "actualHiddenAcceptanceScope": "Supplemental post-PR213 native Chrome visibility/read gating, synthetic fetch; scoped independent documentary review; no real hidden click or production acceptance.",
+    "visibilityEvidence": "docs/evidence/development-execution/esim-natural-visibility-summary.json",
+    "visibilityIndependentReview": "docs/evidence/development-execution/esim-natural-visibility-review-summary.json",
+    "visibilityEvidenceMainIntegrated": false
   },
   "eveRateUnitMainAdoption": {
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
