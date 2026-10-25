@@ -1,0 +1,177 @@
+{
+  "schema": "rockstaros.mini-integration-metadata-independent-review/1",
+  "recordedAt": "2026-10-25T14:59:07.483378+00:00",
+  "unit": "MINI-04",
+  "originalPr": 234,
+  "integrationPr": 238,
+  "status": "PASS_SCOPED_METADATA_CI_NOT_GREEN",
+  "metadataVerdict": "PASS_SCOPED",
+  "mustFix": [],
+  "adoptionAllowedNow": false,
+  "pinnedEvidence": {
+    "pinnedHead": "588e0f8a01d04264719093ceb0e967e565f65db1",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "mergeBase": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "packetSha256": "2ae63228ab2b68d8a050b2a2e63cf63260623f6f8ba979a05abd25580a797c6f",
+    "manifestSha256": "c5d2df2aff0918806b03d397c2c4c02154c14f04c89a57bacab8e32d6330edc9",
+    "nonOwnedProjectStatusExact": true,
+    "statusExclusions": [
+      "miniTetheringPrototype.messageService",
+      "miniGestureInput",
+      "pixelEmptyObservationFixture",
+      "smithRunningSkipMainCurrent",
+      "os02CapabilityFreshnessMainCurrent",
+      "preparedDeviceMiniBatch"
+    ],
+    "tasks393Exact": true,
+    "phaseGates14Exact": true,
+    "ledger95UnitCoresAndTopMetadataExact": true,
+    "wholeUnitAcceptedCount": 0,
+    "ledgerChanges": "Only4overlayref additions:Mini2owned here;OS02/Smith2reviewed separately byRoot.",
+    "existing25OverlayUpdatesUnchanged": true,
+    "baseline": "All existingJSON fields/version/RQ exact; only miniGestureInputIntent added. Designindex1.43→1.44.",
+    "oldMini229SnapshotSha256": "c1a70f589b4c0a8f51fe023620302517cc4712d32a57a1547799c1bb1f286224",
+    "hostRuns": "Prior service3027/3024pass and gesture3041/3038pass are separate bb11host stages. New union3041/3038pass/0fail/3skip is atbb432 with loghash58f1709e verified. These counts overlap, not additive; no rerun by reviewer.",
+    "unionHostFullVerify": {
+      "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "tests": 3041,
+      "pass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
+    },
+    "ciSnapshotSha256": "0b33d093f2e78a9243f18332ea15c9eb5b36a6a5e9b9b11e0d3826d82c5cfa97",
+    "ci": {
+      "retrievedAt": "2026-10-25T14:56:34.678Z",
+      "source": "Connected pull-request check diagnostics",
+      "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
+      "total": 14,
+      "success": 13,
+      "failure": 1,
+      "allChecksGreen": false,
+      "linuxPackets": {
+        "runId": 40203760810,
+        "jobId": 121200223020,
+        "url": "https://github.com/k999ln/rock/actions/runs/40203760810/job/121200223020",
+        "failure": "26tests/1failure:test_process_exit_leaves_kernel_quota_and_expiry;child invalid_observation_lease then exit1!=0",
+        "repairOwner": "CentralGit/Root; no repair or reproduction by metadata reviewer"
+      },
+      "CodeQL": "Checksuccess contains3medium alerts; not represented as security0 or independently triaged.",
+      "oldCI": "f27source14success and1bdsource13success are history only, not newhead/main proof."
+    },
+    "acceptanceBoundary": "Physical/provider/cameraaccuracy/thermal/calibration/Jobimport/Evelearning/financial/wholeMini/publicacceptance remainfalse;616HOLD."
+  },
+  "candidateAdoption": {
+    "path": "docs/evidence/development-execution/mini-gesture-main-adoption.json",
+    "sha256": "47244f96d89e592d32d3efd22d6e589f53ff7c858fce4a45eca8a8d0d1a679f6",
+    "originalReviewedHead": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "historicalSynchronizedMain": null,
+    "sourceReview": {
+      "path": "docs/evidence/development-execution/mini-gesture-input-review.json",
+      "sha256": "6178b604743d53c0cdfce5f5a3a7aef72c6774cdb766547eb6d03fd909e5f34a"
+    },
+    "originalSourceReviewDecision": "PASS_FOR_VIEW_ONLY_BROWSER_PROTOTYPE",
+    "sourceHashes": [
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+        "sha256": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+        "sha256": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+        "sha256": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs",
+        "sha256": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.html",
+        "sha256": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.css",
+        "sha256": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs",
+        "sha256": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/serve.py",
+        "sha256": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+        "sha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json",
+        "sha256": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json",
+        "sha256": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json",
+        "sha256": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "sha256": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs",
+        "sha256": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore",
+        "sha256": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7"
+      },
+      {
+        "path": "tests/avocado-mini-gesture.test.mjs",
+        "sha256": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3"
+      }
+    ],
+    "sameAtOriginalCommitAndPinnedHead": true,
+    "readOnlyDependencies7": null,
+    "originalSourceReviewNotRepeated": true
+  },
+  "ownedMetadata": {
+    "statusPath": "miniGestureInput",
+    "unitCoreUnchanged": true,
+    "overlayRefsBefore": [],
+    "overlayRefsAfter": [
+      "MINI_CAMERA_GESTURE_CANDIDATE"
+    ],
+    "mainMergedClaim": false,
+    "physicalAccepted": false,
+    "wholeUnitAccepted": false,
+    "memberHostAndNewUnionSeparate": true
+  },
+  "scopeReadback": "VIEW_ONLYsingle-camera prototype; notrealcameraaccuracy/spatialcalibration/thermal/power/RootCUA/physical/Evepreference/permission proof.",
+  "history": {
+    "oldSnapshotsAndFailuresRetained": true,
+    "unfixedPreviousCheckpoint": "Private5fec1e4d retained; earlier5d227378/2b614b41 not reused as currentacceptance.",
+    "headCiFailurePreserved": true,
+    "readTransport": "Initial localgh API connection failed; connected diagnostics succeeded atsamehead. No failedfetch counted as success.",
+    "reviewReceiptSerialization": "First output attempt stopped with reviewer KeyError message before creating eitherreceipt. Corrected local label mapping; no candidatechange.",
+    "testsFullVerifyBrowserRerun": false
+  },
+  "operations": {
+    "onlyRepositoryWrite": "docs/evidence/development-execution/mini-gesture-integration-review.json",
+    "candidateBranchOrSourceChanged": false,
+    "globalJsonCiChanged": false,
+    "newActorDependencyProviderDeviceDeploy": false,
+    "bulk616": "HOLD"
+  },
+  "next": "Mini234metadata passes atfixedhead; commonbatch stillblocked byMini231metadata andlinuxCI. Wait for allnewheadCI then normalmain/mergeSHA checks."
+}

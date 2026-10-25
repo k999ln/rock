@@ -1,0 +1,181 @@
+{
+  "schema": "rockstaros.mini-integration-metadata-independent-review/2",
+  "recordedAt": "2026-10-25T15:42:05.552625+00:00",
+  "integrationPr": 238,
+  "status": "PASS_SCOPED_OWNED_METADATA_CONDITIONAL_CI_NOT_GREEN",
+  "metadataVerdict": "PASS_SCOPED_OWNED_MINI_METADATA",
+  "mustFix": [],
+  "adoptionAllowedNow": false,
+  "pinnedHead": "b709f03f4dba2f3d1e9308829091b05332f9af30",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "packetSha256": "43ac1fa416d38a573048f1a9f6e196edcacadfe527904c2783293994115278cf",
+  "manifestSha256": "fe0f1ebc7b0d159a941697f96095d7e052a0a204d819eafab71e9e9c1d8dc878",
+  "manifestPathCount": 60,
+  "fixedSource24HashReadback": true,
+  "serviceDependencies7HashReadback": true,
+  "reviewedMetadataFileHashes": {
+    "data/design-document-index.json": "94ae217df1c8ea0d8c015d09a2c122e39761851b6d19ebd6adbbee0d348c3f7f",
+    "data/project-status.json": "1e3ed5a422948c6ef49546d730c5cbfafcdc576fafd1c341de9d9c0cd9a4d955",
+    "data/development-unit-progress.json": "5edf0682f965c6a7bd025257f80a0c8744234262021d09771b66e0ff65f90d39",
+    "data/development-source-handoff.json": "d957f28ba804e4f11c5864b4a9a6007a726366d73f1708eaff7662f9efb3340e",
+    "data/product-baseline.json": "c8ffdf2ef54a1551bfe69c74b2ae29f5583fc6e93d62a234701d0f9177a2b9f4",
+    "docs/evidence/development-execution/unit-main-current-overlay.json": "5d265d74001dd993a2852af3a60170fe2ac764e59864c38fb42dae5643842f09",
+    "docs/evidence/development-execution/mini-08-message-service-main-adoption.json": "fa621d3d68e56eac355a7d10982bf556fbcc7f75a19c113d611b269e688e8be3",
+    "docs/evidence/development-execution/mini-gesture-main-adoption.json": "47244f96d89e592d32d3efd22d6e589f53ff7c858fce4a45eca8a8d0d1a679f6",
+    "docs/evidence/development-execution/mini-gesture-codeql-triage.json": "feb9f12fc36b2dadf1cf3b291376cfb08c435a1d7fd5f2a35c17ebe8ddd35df8",
+    "docs/evidence/development-execution/prepared-device-mini-security-revision.json": "202b9307a6670011d0b991492775f0a9c5bb7ad62b01d46ab677ac67f9f59609",
+    "docs/evidence/development-execution/prepared-device-mini-integration.json": "6328e820167418359dd3f2f26992d1cc4e127e9eeb85ebfa39470cade9ce0bb1",
+    "docs/evidence/development-execution/prepared-device-mini-integration-supplement.json": "8a0588d2b2b67e93280c4e49dd11e2dbfc8b666c11ce7b24b94475ecf8f777d1",
+    "docs/evidence/development-execution/mini-gesture-installer-safety.json": "881f61a2c0abd41350738412eddaa44238041fc4d48fe2ccb6f27282d94c3f73",
+    "docs/evidence/development-execution/mini-gesture-installer-safety-review.json": "4150c74dd7c046dd07b2ac1cee0192aa71274440a746f1f12b0c3d9eb64f94ed",
+    "docs/rockstaros-avocado-mini-complete-design.md": "e43cddd1e43601c89bdd90286b4ddbc915c932aac2756131c36ab83da1fb810b",
+    "docs/rockstaros-complete-design.md": "49b5cab2b2c6c335d5428bbeafa70123a80a34b48dfae7ff45cae3a3379df2cf",
+    "docs/service-design/03-product-profiles.md": "a2f9d22cfe1f584b35b7034f6398969ee1b268f66ccbf61eeeb4b1220892f7ac",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "707768c09a84c2ee53e9e0a30dcdefbdcaa079c9d407b5b6c27041915b202520"
+  },
+  "reviewedOwnedProjectionHashes": {
+    "/data/project-status.json/miniTetheringPrototype/messageService": "1e5b15938e33d509467ba325c595c32fd64cd53bc177bac6dac5362e8492fcd1",
+    "/data/project-status.json/miniGestureInput": "524f534834a85afaea771e61f61530edcce7b8266c1b0ddc957c1177aff6bc93",
+    "/data/design-document-index.json/systemDomains/material_invention_avocado_mini/boundedMessageAdapter": "50d216efc37f54287ce0ca4244959b6d5e2195031bd08fd8063b9509ace22ffd",
+    "/data/design-document-index.json/systemDomains/material_invention_avocado_mini/boundedMessageService": "f33c965fb29575ba90e67ec99936a1faea63bd3330f1f295f874344a6652eff7",
+    "/data/design-document-index.json/systemDomains/material_invention_avocado_mini/cameraGesturePreview": "e5b433e8a7a84b4e422ea931a26fdb8dd9bd6c777b252d187e722c008be25a89"
+  },
+  "preservation": {
+    "priorR1Receipts": {
+      "docs/evidence/development-execution/mini-message-service-integration-review.json": "9f847b31eb26bc1b588a22032b9a526af93a20ef2cd4b41dd547c49efc000ff0",
+      "docs/evidence/development-execution/mini-gesture-integration-review.json": "b8bb06ee60a6379797118f6cf2799507430ca8d9df6b800f44adc4e45c3430a2"
+    },
+    "r1Unchanged": true,
+    "sourceReview6451Gesture6178FixtureC602Unchanged": true,
+    "tasks393AndGates14Exact": true,
+    "units95CoreAndTopMetadataExact": true,
+    "existingOverlayUpdatesRetained": true,
+    "baselineOnlyNewMiniGestureIntent": true,
+    "outsideSevenOwnedStatusPathsExact": true
+  },
+  "currentRevision": {
+    "path": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+    "sha256": "202b9307a6670011d0b991492775f0a9c5bb7ad62b01d46ab677ac67f9f59609",
+    "originalCapturesImmutable": true,
+    "installerSourceReviewOwner": "Root; not re-executed or independently re-adjudicated by this metadata reviewer",
+    "installerReviewSha256": "4150c74dd7c046dd07b2ac1cee0192aa71274440a746f1f12b0c3d9eb64f94ed",
+    "originalGesture14Unchanged": true,
+    "changedOriginalGesturePaths": [
+      "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "systems/rock-star-os/targets/avocado-mini/gesture/README.md"
+    ],
+    "newInstallerTestHashAtReviewedHead": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38",
+    "scope": "VIEW_ONLY gesture prototype; development Broker/AP message service; no physical/provider/auth/financial/product-wide acceptance"
+  },
+  "ci": {
+    "snapshotPath": "private-evidence:ci-r3-snapshot.json",
+    "snapshotSha256": "8252ed6ee7044b40d457b5d8f054575304f616660fea82599ec7b9e35c7a95c0",
+    "head": "b709f03f4dba2f3d1e9308829091b05332f9af30",
+    "completed": 14,
+    "success": 13,
+    "failure": 1,
+    "linuxPackets": "success",
+    "codeql": "failure: 2new alerts including1high",
+    "annotations": [
+      {
+        "path": "tests/avocado-mini-gesture-installer.test.mjs",
+        "start_line": 99,
+        "end_line": 99,
+        "annotation_level": "failure",
+        "message": "The file may have changed since it [was checked](1).\nThe file may have changed since it [was checked](2).",
+        "title": "Potential file system race condition",
+        "raw_details": null
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+        "start_line": 4,
+        "end_line": 4,
+        "annotation_level": "warning",
+        "message": "Postmessage handler has no origin check.",
+        "title": "Missing origin verification in `postMessage` handler",
+        "raw_details": null
+      }
+    ],
+    "newTestTOCTOUFixOwner": "Git implements test-only fd read; Root source review. This review neither implements nor accepts a future change.",
+    "securityZeroClaim": false,
+    "oldCITransferredToNewHead": false
+  },
+  "hostValidation": {
+    "currentUnion": {
+      "tests": 3074,
+      "pass": 3071,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
+      "documentationReadmeChangedAfterRunOnly": true
+    },
+    "historicalHostRuns": "Original member and R1/R2 union counts retained as earlier immutable captures, not additive or current final-head CI",
+    "reviewerReranTests": false
+  },
+  "externalMetadataBlockers": [
+    {
+      "id": "BATCH-CURRENT-SOURCE22-LABEL-01",
+      "owner": "Root aggregate metadata / central Git",
+      "priority": "P2",
+      "path": "data/project-status.json",
+      "jsonPointer": "/preparedDeviceMiniBatch/originalSource22Unchanged",
+      "observed": true,
+      "issue": "Current aggregate still labels original22 sources unchanged although installer and README changed. Other20 unchanged and current revision correctly disclose both exceptions. Historical immutable R2 field is retained without objection.",
+      "requiredRepair": "Remove/qualify current boolean as immutable original source22 CAPTURE with path/hash, retain originalOther20SourceUnchanged and explicit two revisions.",
+      "blocksAggregateAdoption": true,
+      "ownedMiniMetadataVerdictUnaffected": true
+    }
+  ],
+  "history": {
+    "initial588eHead": "13success/1linuxfailure; CodeQL checksuccess with3medium alerts retained",
+    "intermediateBf42Head": "14success but actual installer defect uncorrected; never adopted",
+    "currentB709Head": "Installer corrected and Root-sourcePASS; new test high remains unresolved at this head",
+    "historicalSource16UnchangedFields": "Valid only within referenced original/R2 immutable captures; current fixed24 revision overrides source authority",
+    "failedOrPartialRunPromoted": false
+  },
+  "carryForward": {
+    "required": "Final test-fix head must retain these reviewed Mini metadata projections/bytes and fixed installer hash; compare changed paths, re-review modified metadata. Root separately reviews any new test/source/aggregate correction and obtains new exacthead CI.",
+    "installerSha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+    "aggregateBooleanCorrectionException": "Explicitly tracked Root-owned correction; changing shared file does not imply unchanged whole-file hash. Revalidate preserved owned JSON projections."
+  },
+  "acceptance": {
+    "ownedMiniMetadataOnly": true,
+    "aggregateMetadataFullyAccepted": false,
+    "allCiGreen": false,
+    "sourceReReviewByThisReviewer": false,
+    "mainIntegrated": false,
+    "physicalCameraOrThermalOrCalibration": false,
+    "providerOrRealBilling": false,
+    "whole95Accepted": 0,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "operations": {
+    "newFilesOnly": [
+      "docs/evidence/development-execution/mini-message-service-integration-review-r2.json",
+      "docs/evidence/development-execution/mini-gesture-integration-review-r2.json"
+    ],
+    "sourceCandidateOrSharedMetadataEdited": false,
+    "browserOrRuntimeOrFullVerifyRun": false,
+    "priorReviewsChanged": false,
+    "newActors": 0
+  },
+  "next": "Root-owned aggregate label correction and new test-only source review, final Mini metadata preservation readback, exact finalhead allCI, then ordinary main adoption and separate mergeSHA CI. This is not adoption permission before those conditions.",
+  "unit": "MINI-08",
+  "originalPr": 231,
+  "priorR1ReviewSha256": "9f847b31eb26bc1b588a22032b9a526af93a20ef2cd4b41dd547c49efc000ff0",
+  "resolvedFinding": {
+    "id": "MINI231-DESIGN-MERGE-SCOPE-01",
+    "status": "RESOLVED_AT_B709",
+    "evidence": "Old boundedMessageAdapter equals synchronized main object exactly; boundedMessageService is separate pending false record with own receipt/review/latestSync and explicit adapter candidate change."
+  },
+  "sourceProvenance": "Original service5 and dependencies7 exact; original review6451 retained, no service source change/retest.",
+  "operatorReceiptProvenance": {
+    "originalSha256": "2d08b70459f80f4b514b1b5c96c025d1f97083c4d2acf78fc7e5627907d169d3",
+    "summaryDerivation": "Only ci.snapshotPath operator absolute directory replaced with private-evidence basename; all original review claims/limitations preserved",
+    "newSummaryHashDoesNotEqualOriginal": true
+  }
+}

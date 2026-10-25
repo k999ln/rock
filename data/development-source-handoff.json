@@ -206,7 +206,8 @@
       "lane": "os-pixel",
       "ledgerRef": "data/development-unit-progress.json#OS-01",
       "currentOverlayRefs": [
-        "PIXEL_GUARD_PHYSICAL_ADOPTED"
+        "PIXEL_GUARD_PHYSICAL_ADOPTED",
+        "PIXEL_OBSERVATION_FIXTURES_ADOPTED"
       ]
     },
     {
@@ -499,7 +500,8 @@
       "lane": "mini",
       "ledgerRef": "data/development-unit-progress.json#MINI-04",
       "currentOverlayRefs": [
-        "MINI_CAMERA_GESTURE_CANDIDATE"
+        "MINI_CAMERA_GESTURE_CANDIDATE",
+        "MINI_CAMERA_GESTURE_ADOPTED"
       ]
     },
     {
@@ -527,7 +529,8 @@
       "ledgerRef": "data/development-unit-progress.json#MINI-08",
       "currentOverlayRefs": [
         "MINI_MESSAGE_ADOPTED",
-        "MINI_MESSAGE_SERVICE_CANDIDATE"
+        "MINI_MESSAGE_SERVICE_CANDIDATE",
+        "MINI_MESSAGE_SERVICE_ADOPTED"
       ]
     },
     {
@@ -1232,14 +1235,25 @@
   "preparedDeviceMiniBatch": {
     "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
     "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
-    "stage": "pending_union_verify_fixedhead_review_CI_main",
+    "stage": "PR238_main_integrated_same_SHA_all_CI_success",
     "originalSourceRefs": {
       "fixture": "9a04322004b9bf2d90dfaecf162caba2211c58c2",
       "mini231": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
       "mini234": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6"
     },
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeUnitAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "acceptedHead": "aba899d11d6b59df61b9f7f400b132c330db2f9a",
+    "mainMergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+    "headCISuccess": 14,
+    "mainCISuccess": 13,
+    "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json"
+  },
+  "currentFiniteBatchCloseout": {
+    "evidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+    "sourceIntegrationGateClosed": true,
+    "wholeUnitAccepted": false,
+    "next": "Close currentmetadata Git/main/CI then finite handoff; do not rerun accepted source or expand new scopes. Physical/provider/realcamera/calibration/productidentity/Jobimport/Evelearning/wholeOS/P02/publication remain separate."
   }
 }

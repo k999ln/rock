@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.44",
+  "version": "1.45",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1467,7 +1467,8 @@
         ],
         "physicalAccepted": false,
         "mainMerged": true,
-        "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
+        "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+        "originalAdapterMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
       },
       "cameraGesturePreview": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
@@ -1485,9 +1486,12 @@
           "evidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
           "independentReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
           "scope": "UID/O_NOFOLLOW/hardlink-capable trusted local POSIX host, non-overwriting model preparation; Windows unsupported",
-          "mainMerged": false,
-          "physicalAccepted": false
-        }
+          "mainMerged": true,
+          "physicalAccepted": false,
+          "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json"
+        },
+        "mainMerged": true,
+        "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json"
       },
       "boundedMessageService": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
@@ -1503,12 +1507,13 @@
         "evidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
         "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
         "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
-        "mainMerged": false,
+        "mainMerged": true,
         "changesExistingAdapterInCandidate": true,
         "baseAdapterAdoptionEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json",
         "wholeUnitAccepted": false,
         "physicalAccepted": false,
-        "providerConnected": false
+        "providerConnected": false,
+        "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json"
       }
     },
     {

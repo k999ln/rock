@@ -1,0 +1,34 @@
+{
+  "schema": "rockstaros.installer-host-test-fd-source-review/1",
+  "recordedAt": "2026-10-25T15:44:41.488168+00:00",
+  "reviewer": "Root independent of Git test modifier",
+  "status": "PASS_SCOPED_TEST_ONLY_SOURCE",
+  "mustFix": [],
+  "previousTestSha256": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38",
+  "reviewedTestSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+  "testPath": "tests/avocado-mini-gesture-installer.test.mjs",
+  "installerSourceUnchanged": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+  "change": "Only regular-file refusal cases pin O_RDONLY|O_NOFOLLOW|O_NONBLOCK descriptor before path checks/child; fstat verifies type/nlink/device/inode before read; finally closes it. Prior rejection/no-fetch/path-inode/content/cleanup assertions retained and stronger checks added.",
+  "independentExecution": {
+    "tests": 47,
+    "pass": 47,
+    "fail": 0,
+    "skip": 0,
+    "oldInstallerNegativeControlsFail": 3,
+    "newInstallerReexecutedRealNetwork": false,
+    "logSha256": "f77fff8f298b5ab14b36a90b486036a999f02c62c770a2d663d84ffe37f2ca7c",
+    "negativeLogSha256": "9142aea033bce02a602e4d3cb7bb3ef89f515f49b73c9a153257eaef45f9d4e0"
+  },
+  "aggregateLabelCorrection": {
+    "blocker": "BATCH-CURRENT-SOURCE22-LABEL-01",
+    "currentWorkingMetadataFixed": true,
+    "oldCaptureHashVerified": true,
+    "finalPinnedHeadStillRequired": true
+  },
+  "limits": [
+    "No new actual browser/physical/model download/inference",
+    "CodeQL high resolution requires new exacthead diagnostic result, not inferred from unit success",
+    "Latest main integration plus same-mergeSHA allCI remain required"
+  ],
+  "bulk616": "HOLD"
+}

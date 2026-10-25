@@ -365,6 +365,8 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 # RockstarOS 全体詳細設計
 
+現行の有限採用: 開発用Mini message serviceとVIEW_ONLY camera/安全なmodel準備、Pixel/Linux test-only補足はPR238/main440fに通常統合しhead14/main13同SHA CI成功。元candidate/snapshotの未採用値は記録時履歴として保持し、物理/実回線/実金融/校正/Eve学習/wholeOS/P02は受入へ昇格しない。[現行受入](evidence/development-execution/prepared-device-mini-main-current.json)。
+
 現行製品の要望・料金・未受入gateは[製品ベース](product-baseline.md)を正本とし、全体の読み始めは[サービス統合設計](service-design/README.md)。
 
 ## 通信・端末OS・クラウドを分ける基盤

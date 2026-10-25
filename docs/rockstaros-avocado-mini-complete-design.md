@@ -81,6 +81,8 @@ Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連
 
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
+現行の有限採用: 開発用Mini message serviceとVIEW_ONLY camera/安全なmodel準備、Pixel/Linux test-only補足はPR238/main440fに通常統合しhead14/main13同SHA CI成功。元candidate/snapshotの未採用値は記録時履歴として保持し、物理/実回線/実金融/校正/Eve学習/wholeOS/P02は受入へ昇格しない。[現行受入](evidence/development-execution/prepared-device-mini-main-current.json)。
+
 ## 開発用bounded message serviceの限定採用候補
 
 共通message adapterの上へ、peer credentialで照合するUnix local入口、固定operationのBroker/AP開発adapter、有限scheduler・停止・consumer受領確認を接続する。実製品signer/authorisationや実modem transport/Job保存へ昇格しない。既存byte/cost予約・単体表示4条件を保持し、owner・権限epoch・失効・期限を各作用前に検査する。詳細の状態/失敗/復旧/承認/未実行gateは[固定source契約](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)と[独立検収](evidence/development-execution/mini-08-message-service-review.json)を参照。

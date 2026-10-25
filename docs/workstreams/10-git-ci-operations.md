@@ -88,6 +88,10 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 # Git / CI / Operations
 
+## 準備済みdevice/Mini有限採用の現行受入
+
+PR238/main440f、headaba全14CI・mergeSHA全13CI成功。実Linux3074/3072pass/0fail/2skipとcommon103/packet26を確認。旧588clock failure、bf42安全性block、b709test-readhighとdescriptor修復、Web index/currentlabel指摘を別履歴保存。Root source/metadataとWeb metadataの独立性を保持し、old231/234は238経由の間接mergeとして記録する。元Rootcheckout/indexと616保留を維持し、このcurrentmetadataだけを別CI/mainで閉じる。[受入記録](../evidence/development-execution/prepared-device-mini-main-current.json)。
+
 ## Pixel正常fixtureの観測待合せ
 
 有限batch初回588のLinux packet26中1失敗は別の時刻境界fixture。observe_readyの1呼出しだけ時刻を束縛し、外側kernel expiry/openは実時計へ戻す。Root7host clockprobe合格は実Linux合格へ転用しない。新serviceのpending/adopted index境界もWeb R1で修復し、元source22＋追加fixture1を再固定する。[追加記録](../evidence/development-execution/prepared-device-mini-integration-supplement.json)。

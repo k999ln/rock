@@ -1,0 +1,177 @@
+{
+  "schema": "rockstaros.mini-integration-metadata-independent-review/1",
+  "recordedAt": "2026-10-25T14:59:06.965276+00:00",
+  "unit": "MINI-08",
+  "originalPr": 231,
+  "integrationPr": 238,
+  "status": "MUSTFIX_METADATA_CI_NOT_GREEN",
+  "metadataVerdict": "MUSTFIX",
+  "mustFix": [
+    {
+      "id": "MINI231-DESIGN-MERGE-SCOPE-01",
+      "priority": "P2",
+      "path": "data/design-document-index.json",
+      "jsonPointer": "/systemDomains/16/boundedMessageAdapter",
+      "startLine": 1455,
+      "endLine": 1472,
+      "problem": "Pending message_service/test and developmentBroker/APscheduler scope added to existing mainMerged=true entry, keeping oldMini229currentMainEvidence. Other service adoption/status/overlay correctly say mainMerged=false. This makes index claim new scope already merged using old subset evidence.",
+      "requiredRepair": "Preserve old adapter merge/evidence snapshot. Give new bounded service a separate pending subrecord with mainMerged=false,itsownadoption/latestSync; or explicitly scope inherited main/evidence to adapter and keep new service state distinct. Source/runtime unchanged.",
+      "revalidation": "Fix on new metadatahead and repeat changed metadata/newheadCI only; current fixedhead remains history."
+    }
+  ],
+  "adoptionAllowedNow": false,
+  "pinnedEvidence": {
+    "pinnedHead": "588e0f8a01d04264719093ceb0e967e565f65db1",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "mergeBase": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "packetSha256": "2ae63228ab2b68d8a050b2a2e63cf63260623f6f8ba979a05abd25580a797c6f",
+    "manifestSha256": "c5d2df2aff0918806b03d397c2c4c02154c14f04c89a57bacab8e32d6330edc9",
+    "nonOwnedProjectStatusExact": true,
+    "statusExclusions": [
+      "miniTetheringPrototype.messageService",
+      "miniGestureInput",
+      "pixelEmptyObservationFixture",
+      "smithRunningSkipMainCurrent",
+      "os02CapabilityFreshnessMainCurrent",
+      "preparedDeviceMiniBatch"
+    ],
+    "tasks393Exact": true,
+    "phaseGates14Exact": true,
+    "ledger95UnitCoresAndTopMetadataExact": true,
+    "wholeUnitAcceptedCount": 0,
+    "ledgerChanges": "Only4overlayref additions:Mini2owned here;OS02/Smith2reviewed separately byRoot.",
+    "existing25OverlayUpdatesUnchanged": true,
+    "baseline": "All existingJSON fields/version/RQ exact; only miniGestureInputIntent added. Designindex1.43→1.44.",
+    "oldMini229SnapshotSha256": "c1a70f589b4c0a8f51fe023620302517cc4712d32a57a1547799c1bb1f286224",
+    "hostRuns": "Prior service3027/3024pass and gesture3041/3038pass are separate bb11host stages. New union3041/3038pass/0fail/3skip is atbb432 with loghash58f1709e verified. These counts overlap, not additive; no rerun by reviewer.",
+    "unionHostFullVerify": {
+      "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "tests": 3041,
+      "pass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
+    },
+    "ciSnapshotSha256": "0b33d093f2e78a9243f18332ea15c9eb5b36a6a5e9b9b11e0d3826d82c5cfa97",
+    "ci": {
+      "retrievedAt": "2026-10-25T14:56:34.678Z",
+      "source": "Connected pull-request check diagnostics",
+      "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
+      "total": 14,
+      "success": 13,
+      "failure": 1,
+      "allChecksGreen": false,
+      "linuxPackets": {
+        "runId": 40203760810,
+        "jobId": 121200223020,
+        "url": "https://github.com/k999ln/rock/actions/runs/40203760810/job/121200223020",
+        "failure": "26tests/1failure:test_process_exit_leaves_kernel_quota_and_expiry;child invalid_observation_lease then exit1!=0",
+        "repairOwner": "CentralGit/Root; no repair or reproduction by metadata reviewer"
+      },
+      "CodeQL": "Checksuccess contains3medium alerts; not represented as security0 or independently triaged.",
+      "oldCI": "f27source14success and1bdsource13success are history only, not newhead/main proof."
+    },
+    "acceptanceBoundary": "Physical/provider/cameraaccuracy/thermal/calibration/Jobimport/Evelearning/financial/wholeMini/publicacceptance remainfalse;616HOLD."
+  },
+  "candidateAdoption": {
+    "path": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+    "sha256": "fa621d3d68e56eac355a7d10982bf556fbcc7f75a19c113d611b269e688e8be3",
+    "originalReviewedHead": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "historicalSynchronizedMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+    "sourceReview": {
+      "path": "docs/evidence/development-execution/mini-08-message-service-review.json",
+      "sha256": "645137f36a4700e48a82d0811409eafddb24bc4af8ceb83096b3037653a7b34f"
+    },
+    "originalSourceReviewDecision": "PASS_FOR_DEVELOPMENT_BROKER_AP_AND_LOCAL_PROTOCOL_ONLY",
+    "sourceHashes": [
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+        "sha256": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+        "sha256": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+        "sha256": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+        "sha256": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5"
+      },
+      {
+        "path": "tests/avocado-mini-tethering.test.mjs",
+        "sha256": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09"
+      }
+    ],
+    "sameAtOriginalCommitAndPinnedHead": true,
+    "readOnlyDependencies7": [
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+        "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+        "sha256": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+        "sha256": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+        "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+      },
+      {
+        "path": "systems/rock-star-os/os/mcp_broker/service_access.py",
+        "sha256": "44e1171e4aae4b0c312d67bcf91cfd2125813d12309d79df9fefcb041eca5a5a"
+      },
+      {
+        "path": "systems/rock-star-os/os/service_access/controller.py",
+        "sha256": "e606bbe1ca0dad14e19b0fa28256e27a2a94e5a5f8c6199acad19129a190c0cd"
+      },
+      {
+        "path": "systems/rock-star-os/os/runner/transport.py",
+        "sha256": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6"
+      }
+    ],
+    "originalSourceReviewNotRepeated": true
+  },
+  "ownedMetadata": {
+    "statusPath": "miniTetheringPrototype.messageService",
+    "unitCoreUnchanged": true,
+    "overlayRefsBefore": [
+      "MINI_MESSAGE_ADOPTED"
+    ],
+    "overlayRefsAfter": [
+      "MINI_MESSAGE_ADOPTED",
+      "MINI_MESSAGE_SERVICE_CANDIDATE"
+    ],
+    "mainMergedClaim": false,
+    "physicalAccepted": false,
+    "wholeUnitAccepted": false,
+    "memberHostAndNewUnionSeparate": true
+  },
+  "scopeReadback": "DevelopmentBroker/APingress/localprotocol/bounded scheduler only;realidentity/modem/provider/Jobimport/physical unaccepted.",
+  "history": {
+    "oldSnapshotsAndFailuresRetained": true,
+    "unfixedPreviousCheckpoint": "Private5fec1e4d retained; earlier5d227378/2b614b41 not reused as currentacceptance.",
+    "headCiFailurePreserved": true,
+    "readTransport": "Initial localgh API connection failed; connected diagnostics succeeded atsamehead. No failedfetch counted as success.",
+    "reviewReceiptSerialization": "First output attempt stopped with reviewer KeyError message before creating eitherreceipt. Corrected local label mapping; no candidatechange.",
+    "testsFullVerifyBrowserRerun": false
+  },
+  "operations": {
+    "onlyRepositoryWrite": "docs/evidence/development-execution/mini-message-service-integration-review.json",
+    "candidateBranchOrSourceChanged": false,
+    "globalJsonCiChanged": false,
+    "newActorDependencyProviderDeviceDeploy": false,
+    "bulk616": "HOLD"
+  },
+  "next": "CentralGit fixes message design-index state and exactheadlinuxCI before adoption; newhead requires scopedmetadata/newCI recheck."
+}
