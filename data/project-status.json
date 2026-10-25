@@ -10318,5 +10318,31 @@
       "state": "latest_main_synced_final_review_ci_pending",
       "mainMerged": false
     }
+  },
+  "pixelGuardPhysicalEvidenceSave": {
+    "summary": "docs/evidence/development-execution/pixel-guard-main-physical-summary.json",
+    "summarySha256": "99737574673bf612a8a545c5e80bbe4d50879d75c32f1c750e0d5b131d0f439e",
+    "review": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+    "reviewSha256": "6db55d77b41348ce7be98e9aea2c8a43c1c05c047686e6e81a59d35ce1ef45f5",
+    "physicalBatchScopedPass": true,
+    "manifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "originalCodeRestored": true,
+    "coreStatePreserved": true,
+    "cacheControlRowsAdded": 2,
+    "nativePresentHashes": 4,
+    "nativeAbsentPreserved": 1,
+    "additionalInference": 0,
+    "mainIntegrated": false,
+    "wholeOS01Accepted": false,
+    "p02Complete": false,
+    "publicDeployment": false,
+    "gitSaveStage": "PR223 oldhead2c0 saved and7CI success; latest-main synchronized candidate pending exact-head CI and authorized main adoption",
+    "mainIntegrationAuthorized": true,
+    "mainIntegrationAuthorization": {
+      "sourceChat": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+      "sourceTurn": "01a172c7-0cab-7f51-8ed6-11aaf2aa694f",
+      "sourceUserMessage": "01a172c7-0d55-7121-be42-1f90c74d437d",
+      "scope": "Evidence main adoption and same merge SHA CI; no new device operations or inference."
+    }
   }
 }

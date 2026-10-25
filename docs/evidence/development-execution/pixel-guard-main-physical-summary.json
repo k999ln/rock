@@ -1,0 +1,119 @@
+{
+  "schema": "rockstaros.pixel-guard-main.portable-physical-summary/1",
+  "recordedAt": "2026-10-25T09:48:47.130989+00:00",
+  "status": "limited_guard_fixed_package_physical_batch_passed_original_code_restored",
+  "operatorReceiptSha256": "45483840038c3b812ad4f359fbee81695a6472d49969e40996752844b2510503",
+  "target": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel",
+    "apkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec"
+  },
+  "candidate": {
+    "mainMerge": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "sourceHead": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+    "manifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "guardSourceSha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594",
+    "payloadsVerified": 11,
+    "auxVerified": 3,
+    "all11InstalledPayloadHashesMatched": true,
+    "temporarilyDeployed": true,
+    "currentlyDeployed": false
+  },
+  "results": {
+    "pixelLinuxArm64Guard": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Same guard source bytes on actual Pixel Linux/arm64; isolated synthetic filesystem fixtures; test import path adaptation only; live journal untouched"
+    },
+    "pixelLinuxParentLifetime": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cacheOnly": {
+      "controlProtocol": 2,
+      "inventoryVerified": true,
+      "ready": true,
+      "downloads": false,
+      "workerProtocol": 1,
+      "sameIdReplayMatched": true,
+      "displacedReplayMatched": true,
+      "wrongScopeRefused": true,
+      "invalidInputsRefusedBeforeEffect": [
+        "accepted=false",
+        "cacheOnly=false",
+        "wrong model SHA",
+        "unexpected shell field"
+      ],
+      "preparingCancelled": true,
+      "cancelState": "stopped",
+      "additionalControlRows": 2,
+      "oldControlRowsPreserved": true,
+      "cacheUnknown": 0,
+      "allowedProbes": "Existing verified llama-cli --version and fixed worker capabilities only; no run/generation command."
+    },
+    "restoration": {
+      "manifestSha256": "7f0223c18be30512b0e285dc3ebc2d117169c8ef1720543fbe2118b9da598d03",
+      "committed": true,
+      "all11OriginalCodeBytesRestored": true,
+      "rootWorkerClientRestored": true
+    },
+    "preservation": {
+      "counts": {
+        "models": 2,
+        "agents": 10,
+        "runs": 34,
+        "active": 0,
+        "stopUnconfirmed": 0,
+        "unknown": 0
+      },
+      "coreStateHashesUnchanged": true,
+      "original11CodeHashesRestored": true,
+      "rootWorkerClientRestored": true,
+      "guestIdentityHashesUnchanged": true,
+      "nativeProtectedHashesUnchanged": true,
+      "nativeApkUnchanged": true,
+      "forwardAndReverseSettingsUnchanged": true,
+      "nativeServicesUnchanged": true,
+      "modelsRuntimeActualBytesUnchanged": true,
+      "commonRuntimeCapabilityRestored": {
+        "available": true,
+        "schema": "rockstaros.pixel-runtime-response/1",
+        "state": "capabilities",
+        "protocol": 1,
+        "scopedExecution": true,
+        "workerProtocol": 1
+      },
+      "savedSuccessfulOutputsVerified": 23,
+      "phase": "stopped",
+      "liveModelProcesses": 0,
+      "additionalInference": 0
+    },
+    "additionalInference": 0
+  },
+  "proofs": {
+    "count": 27,
+    "allOperatorPinnedHashesMatched": true,
+    "privateArchiveIndexSha256": "5f74132f8076c5da0301b14c5ef833a74e41206d73b34673464b95c567e3a169",
+    "operatorReceiptSha256": "45483840038c3b812ad4f359fbee81695a6472d49969e40996752844b2510503",
+    "rawProofsKeptOutsideGit": true
+  },
+  "limits": [
+    "Physical test does not certify full OS signing/flash/OTA/data-loss restore, all OS-01/P02 or general launch.",
+    "Guard kernel regressions use isolated synthetic filesystem fixtures on actual Pixel arm64; do not claim hostile live-journal race exploitation.",
+    "No inference content/latency/background or new account/Agent end-to-end job acceptance."
+  ],
+  "history": [
+    "Initial IME bulk input corrupted; command not found, no guest script effect.",
+    "Automatic approval rejected unverified numeric-key execution; safe text staging plus screenshot before Enter used afterward.",
+    "Owner app switch caused pause before exercise Enter; owner returned and left Terminal idle for the final successful batch."
+  ],
+  "independentReview": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+  "unitComplete": false,
+  "p02Complete": false,
+  "productionDeployment": false,
+  "flashOrReset": false,
+  "newKeysGrantsModelsOrRuntimeDownloads": false
+}
