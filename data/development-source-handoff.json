@@ -964,5 +964,33 @@
     "paidGenerationAccepted": false,
     "publicDeployment": false,
     "evidence": "docs/evidence/development-execution/eve-multi-material-main-current.json"
+  },
+  "gameWorkDraftMainAdoption": {
+    "schema": "rockstaros.game-work-draft-main-current/1",
+    "pr": 230,
+    "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+    "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "mainTree": "9f59b112bc02c12e71c613f27cd2ced1b6c045f0",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "mainMerged": true,
+    "mainLinuxVerify": {
+      "run": 40192534278,
+      "job": 121166406137,
+      "tests": 3010,
+      "pass": 3008,
+      "fail": 0,
+      "skip": 2
+    },
+    "source4Unchanged": true,
+    "ciPreparation": "Fixed pinned ee9 historical object fetch/hash validation in isolated CI; old shallow missing-object failure preserved in adoption receipt",
+    "scope": "Nonfinancial Game report to explicit owner-checked WorkJob draft/create/unknown recovery only",
+    "originalReceipt": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "historicalReceiptUnchanged": true,
+    "wholeUnitAccepted": false,
+    "financialExchangeAccepted": false,
+    "realProviderAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
   }
 }

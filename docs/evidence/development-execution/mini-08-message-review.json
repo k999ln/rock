@@ -1,0 +1,120 @@
+{
+  "schema": "mini-bounded-message-independent-review/1",
+  "reviewedAt": "2026-10-25T11:36:21.092321+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "worktree": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+  "branch": "codex/mini-bounded-message-adapter-20261025",
+  "baseHead": "aac6d45d48ed058fe434ff7181f867ba8ef264cc",
+  "decision": "PASS_FOR_OFFLINE_COMMON_ADAPTER_ONLY",
+  "mustFixCount": 0,
+  "openFindings": [],
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
+      "sha256": "4aa11046911f69f1f6423be740d1dc433e28bd10e10987c55be172d849057a02"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "200268c6b57640e8036dc79ef9193cfe6778b8f0cd5e40dc9297bfcc489957e8"
+    }
+  ],
+  "evidenceHashes": [
+    {
+      "path": "/private/tmp/mini-message-final-negative-review.py",
+      "sha256": "576e9f3aecf7fe539a065c8ae1119da7b8f5591c9a9a979fce5834971c4e6351"
+    },
+    {
+      "path": "/private/tmp/mini-message-final-negative-review.log",
+      "sha256": "c99080b409b93d73d21085d9789eb044066e825c901cf5fda011630e983cb752"
+    },
+    {
+      "path": "/private/tmp/mini-message-review-regression.log",
+      "sha256": "afb6435b391724c648d2ef09abee730ae24b03d9e40c5d5fa9c1396380ad78d9"
+    },
+    {
+      "path": "/private/tmp/mini-message-negative-review.py",
+      "sha256": "6f2d49c7f80e94565ef6a2af29be5daf5f79514d0ab7272d6e400866e7e9c961"
+    },
+    {
+      "path": "/private/tmp/mini-message-negative-review-results.json",
+      "sha256": "6005a0cbfe38a8a6372e4f44f3d9dbdeb7087ea8358704870e18c9b0fc6d1e55"
+    }
+  ],
+  "resolvedFindings": [
+    {
+      "id": "MESSAGE-P2-CAS",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "enqueue with revision=None committed a record, bypassing public CAS.",
+      "fix": "All public revision-bearing methods require a non-bool integer. Internal maintenance/recheck paths alone may omit revision.",
+      "independentVerification": "Eight-case negative suite checks None/bool/float/string/negative revisions across seven public entrypoints; rejected without traffic."
+    },
+    {
+      "id": "MESSAGE-P2-REVOKED-QUEUE",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "enqueue then revoke and reallow without a sweep restored the original queued payload and delivered hello.",
+      "fix": "Controller persists a client permissionEpoch; queued payload binds it. Revoke/reallow changes the epoch, so old payload cannot revive.",
+      "independentVerification": "Original no-intermediate-sweep sequence and legacy clients lacking the field both remain revoked with no send."
+    },
+    {
+      "id": "MESSAGE-P2-REENTRY",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "A synchronous transport callback calling owner_command attempted a second flock via a new fd and deadlocked despite RLock. Reviewer interrupted the isolated test process.",
+      "fix": "An in_operation guard rejects same-thread API reentry immediately, including shutdown before it can release ownership.",
+      "independentVerification": "Transport callback owner stop and shutdown both reject with message_api_reentry, retain ownership and holds, and make no wire effect."
+    }
+  ],
+  "additionalIntegrationChecks": [
+    "Initial direct Controller disable during exchange could still deliver a payload. Such lower-level calls are now explicitly excluded from the public boundary; sole MessageAdapter owner/observe/attachment APIs serialize with dispatch. The implementation does not claim an instantaneous physical stop.",
+    "All public operations and shutdown share RLock; an already-waiting dispatch fails after shutdown closes the service, independently exercised with a held mutex.",
+    "MessageAdapter owns the same directory lifetime lock as LinuxGate; simultaneous IP/message sessions are rejected. Shared SQLite usage and retained reservations survive mode changes. Concurrent dual-path service remains unimplemented.",
+    "Constructor fences old state and reopening requires fresh authorization/observation. Independent reopen test retained the previous byte reservation.",
+    "Receiver frames cannot extend beyond the pinned policy expiry or be admitted after that period. This was statically found while the parent was already implementing its fix; no claim of an executed pre-fix reproduction.",
+    "Repeatable take plus durable acknowledge protects the handoff from consumer crash; independent restart/read, wrong-recipient, acknowledgement replay/conflict and replayed-frame checks pass. Consumer idempotent Job import remains a future trusted integration.",
+    "Exact signed envelope/base64 sizing, recipient/profile binding, reassembly aggregate size and digest, record/queue limits, retry/TTL bounds, new reservations for retries, unknown retention, and existing IP capability checks inspected.",
+    "MESSAGES.md distinguishes fixture/common protocol from modem driver, real network, RF, real AP authentication, provider billing and physical standalone acceptance; four display constraints remain explicit."
+  ],
+  "independentExecutions": [
+    {
+      "command": "python3 -B -W ignore::ResourceWarning -m unittest test_message_adapter test_controller test_linux_gate -q",
+      "cwd": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo/systems/rock-star-os/targets/avocado-mini/tethering",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 3.672,
+      "log": "/private/tmp/mini-message-review-regression.log",
+      "scope": "28 message fixtures, 28 existing controller tests, 4 compiler tests; no real Linux packet execution"
+    },
+    {
+      "command": "python3 -B -W ignore::ResourceWarning /private/tmp/mini-message-final-negative-review.py",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.099,
+      "log": "/private/tmp/mini-message-final-negative-review.log",
+      "scope": "Independent focused negative cases; uses existing setup only"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "limits": [
+    "Reviewer made no repository edits, Git mutations, provider calls, RF transmissions, VM operations or paid communication. Only independent scripts/logs/receipt were written under /private/tmp.",
+    "Production modem/provider transports, encryption and key provisioning, Broker/AP ingress, scheduler, country-specific services, real billing hard caps and physical hardware are not accepted by this review.",
+    "The transport must enforce all-traffic quota/expiry, perform no hidden retries/spooling and finish within a bound. Arbitrary callbacks cannot establish those guarantees. Stop waits for the current bounded exchange and must retry stale CAS before completion can be claimed.",
+    "Private storage anti-rollback, secure erasure and consumer idempotent Job import are explicitly outside this common adapter implementation.",
+    "Full repository verify, all access-adapter tests, real Linux packet regression, Git save, CI and main integration were not independently executed in this review. Parent-run results must remain separately attributed.",
+    "Receipt covers exact file hashes; later source edits require reinspection."
+  ]
+}
