@@ -2,13 +2,18 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "b8abe386e8885557168d8f0ca921bb418e6284ee3e6873133c5b1ce6c8e249cd",
-  "packageEntries": 984,
-  "uniqueComponents": 941,
+  "packageLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+  "packageEntries": 973,
+  "uniqueComponents": 930,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
       "expression": "(AFL-2.1 OR BSD-3-Clause)",
+      "uniqueComponents": 1,
+      "reviewClass": "license-choice-review"
+    },
+    {
+      "expression": "(MIT OR CC0-1.0)",
       "uniqueComponents": 1,
       "reviewClass": "license-choice-review"
     },
@@ -69,7 +74,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 778,
+      "uniqueComponents": 767,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -86,17 +91,12 @@
       "expression": "MPL-2.0",
       "uniqueComponents": 27,
       "reviewClass": "reciprocal-source-terms-review"
-    },
-    {
-      "expression": "Python-2.0",
-      "uniqueComponents": 1,
-      "reviewClass": "standard-license-text-and-notice"
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 891,
+    "standard-license-text-and-notice": 879,
     "reciprocal-source-terms-review": 41,
-    "license-choice-review": 8,
+    "license-choice-review": 9,
     "attribution-review": 1
   },
   "reviewComponents": [
@@ -241,7 +241,7 @@
       "optional": false
     },
     {
-      "purl": "pkg:npm/caniuse-lite@1.0.30001810",
+      "purl": "pkg:npm/caniuse-lite@1.0.30001819",
       "license": "CC-BY-4.0",
       "reviewClass": "attribution-review",
       "lockScope": "production-reachable",
@@ -430,6 +430,13 @@
       "optional": false
     },
     {
+      "purl": "pkg:npm/type-fest@4.41.0",
+      "license": "(MIT OR CC0-1.0)",
+      "reviewClass": "license-choice-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
       "purl": "pkg:npm/wrangler@4.122.0",
       "license": "MIT OR Apache-2.0",
       "reviewClass": "license-choice-review",
@@ -454,7 +461,7 @@
   "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
   "boundary": "The CycloneDX SBOM preserves component names and versions. This audit triages package-lock metadata only; it does not prove which packages are shipped in a browser bundle, satisfy license obligations, or authorize distribution.",
   "reviewScopeSummary": {
-    "production-reachable-required": 7,
+    "production-reachable-required": 8,
     "production-reachable-optional": 11,
     "development-only-required": 7,
     "development-only-optional": 25

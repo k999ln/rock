@@ -1,0 +1,70 @@
+{
+  "schema": "rockstaros.undici-pr218-main-integration/1",
+  "recordedAt": "2026-10-25T10:52:03.528140+00:00",
+  "authorization": {
+    "sourceChat": "01a16c28-04a3-7022-8475-da5901359f3f",
+    "sourceTurn": "01a172a8-4e49-7341-a628-e6c39dd5d722",
+    "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
+    "scope": "Normal main merge of PR218 after latest-main/head/independent review/CI checks; mergeSHA CI and progress/handoff reflection. Public/deployment/616 holds remain."
+  },
+  "task": "G04",
+  "primarySquad": "H1",
+  "writerBoundary": "Smith branch synchronization/source readback; Git担当 only normal main integration",
+  "pr": 218,
+  "previousAcceptedHead": "1d731c8442f44653976bfcdc1bbfafb2338e88d9",
+  "previousAcceptedHeadCI": {
+    "success": 7,
+    "run": 40183835652,
+    "job": 121140316075,
+    "linuxTests": 2988,
+    "pass": 2986,
+    "fail": 0,
+    "skip": 2
+  },
+  "mainSynchronization": {
+    "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "commit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+    "method": "ordinary merge",
+    "incomingSincePriorBase": {
+      "paths": 33,
+      "insertions": 2259,
+      "deletions": 56
+    },
+    "conflicts": [
+      "README.md",
+      "project.md",
+      "docs/workstreams/10-git-ci-operations.md"
+    ],
+    "resolution": "Preserve incoming PR213 UI acceptance and historical undici/zod notes; retain SRI/regression evidence; keep newc43/P02/fullOS unaccepted explicitly. Preserve all unrelated main metadata/runtime."
+  },
+  "preservationBaselineSha256": "929a5a891336fba11ad828e9f702eb5b137b245fb99f02ad2a960190e80695b6",
+  "sriSourceSha256": "fa0ca2b289cdd18dfd84ac54623630f3970f80ac349ba02c06e4a69e0e8aeda1",
+  "verification": {
+    "focused": "9pass/0fail/0skip",
+    "independentSynchronizedReview": {
+      "status": "PASS_SCOPED_MAIN_SYNC",
+      "mustFix": [],
+      "sha256": "01e80cc3a13e039ab53dd85b6e9ef701bba63efaed65b248404021738f8b0eae",
+      "preservedMainDeltaPaths": 28,
+      "protectedPaths": 11,
+      "historicalReceipts": 67
+    },
+    "finalSynchronizedHeadCI": "pending_at_capture",
+    "mainMergeSha": null,
+    "mainSameShaCI": "not_run_at_capture",
+    "independentIntegrationMetadataReview": {
+      "status": "PASS_SCOPED_INTEGRATION_METADATA",
+      "mustFix": [],
+      "sha256": "8709d3da13247ad41e91265cf779c987c909590a05beaed340d402567cf0573f"
+    }
+  },
+  "boundaries": {
+    "dependencyManifestsAndLocksUnchangedFromMain": true,
+    "publicDeployment": false,
+    "bulk616PublicExport": "HELD",
+    "realProviderOrFinancialAcceptance": false,
+    "physicalP02WholeOSAccepted": false,
+    "historicalReceiptsUnchanged": true
+  },
+  "next": "Complete independent sync review and exact-head CI; Git担当 normal main integration; verify mergeSHA CI and update current progress/handoff with results."
+}

@@ -17,6 +17,7 @@
   },
   "overrides": {
     "http-cache-semantics": "$http-cache-semantics",
-    "undici": "^8.12.2"
+    "undici": "^8.12.2",
+    "zod": "^4.6.6"
   }
 }

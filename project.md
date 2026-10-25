@@ -1,3 +1,7 @@
+## zod依存制約の互換修正（SYS15・G04 / ROCK）
+
+着手: main ee9b8801を基点に、rootのCloudflare固定4.4.3・shadcn3系依存とMini4.6.5を修正する。shadcnを上流のZod4移行済み4.22.1へ更新し、root/Miniともzod修正版^4.6.6へ制約する。既存製品sourceのZod3 schema利用なしを確認。依存consumer・schema・制限付きcollectionの早期拒否を試験し、全verifyと新HEAD/main同SHA CIを別々に記録する。実機操作・追加推論・公開配備なし。対象34/34と旧依存3失敗反例、Cloudflare Worker14/14、両監査zod0を確認。初回host全verifyは2991件/2986pass/2fail/3skip。依存inventory期待件数を973/930/51へ同期し、既存localhost5秒timeoutはsource不変の再試験で回復、対象89/89成功。初回失敗を保持し、新HEADのLinux全verifyとmain統合CIで最終確認（記録時pending）。
+
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 
 PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。現在: PR208の検収済みheadc3c0e17d/exact20pathを通常main2854d069へ統合。headtree/main tree一致、同mergeSHA全6CIとLinux実verify2911/2909pass/2skip/0failを確認。文書保存・作業branch GitHub保存・main統合を完了、公開配備は未実施。元receiptのcapture-time pendingと初回失敗は保持し、現在のproject/status/overlay/handoffはこの別metadata同期で訂正する。次は既存Pixel/eSIM候補を新mainへ通常照合し、各独立gateから再開。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。
@@ -218,7 +222,7 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## PR213 CI停止のWallet fixture競合を修正
 
-G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headで同SHA Linux全verify/CodeQLを確認する。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHA CIを確認中。UIは未merge。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
+G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headとmergeSHAのLinux全verify/CodeQL成功を確認した。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHAの製品7CI成功を確認済み。UIも上記の限定範囲でmain統合済み。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
 
 UI最新main同期: main41ee45d7のMini Linux限定採用を通常取り込み、controller/packet tests/専用CI/証拠と現statusを保持。UI4sourceとPixel9sourceは同hash。旧head7f2aの全verify/CodeQLは成功済みだが、今回の最終head CIを別に確認する。
 
@@ -229,20 +233,32 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 ## Eve単価の重複単位表示を別commitで採用
 
-本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補CIで最終確認しmain merge後の同SHA CIも確認する。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
+
+本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補headとmain merge後の同SHA CIを確認済み。
 
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
-着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、次は最新maindc2取り込み後の最終head Linux全CI・通常main統合・mergeSHA CIを確認する。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
+追加検収: PR213統合後に完了した自然Chrome hidden/visibleとfresh read復帰の証拠を匿名要約で保存する。3遷移・hidden9観測で本文と操作を遮断し、古いGETだけでは復元せず、現contextの応答後に復元、POST0。長いtool中断とhelper接続によるGET8→9を明記。Root原本4ad92/Web独立review5f5dと派生要約のhashを区別し、Git担当が別途metadata一致を検収（必須修正0）。コード統合時には未完だった履歴は保持する。実本人認証・実回線/eSIM・課金・端末/全製品の合格へ拡張しない。次はこの別証拠PRの同head CI、通常main統合、merge同SHA CI。証拠: docs/evidence/development-execution/esim-natural-visibility-summary.json と esim-natural-visibility-review-summary.json。
+
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
+
+着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、最新maindc2取り込み後の最終headと通常main mergeの同一SHA CIまで成功を確認した。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-新c43 packageの非破壊実機batchはOS operatorが完了し、別のPro reviewerがdocumentary限定PASS（mustFix0、原本6db55d77）。guard9/parent4/cache-onlyを確認、元7f code復元、34jobs/2models/10agents/23成果hash・接続を保持、cache制御row2のみ追加。これは独立小branchへの匿名summary/review保存であり、今回追加main mergeは依頼されていない。元operator receipt/raw27proof・画面・鍵/接続値はGitへ入れず、旧f3/8f失敗履歴と全OS/P02未受入を維持する。保存後の同head CI/remote hashを別checkpointで確認する。
+新c43 packageの非破壊実機batchはOS operatorが完了し、別のPro reviewerがdocumentary限定PASS（mustFix0、原本6db55d77）。guard9/parent4/cache-onlyを確認、元7f code復元、34jobs/2models/10agents/23成果hash・接続を保持し、cache制御row2のみ追加。PR223の元2c0では証拠Git保存と7CI成功まで完了。後続の本人明示指示により、証拠2docsを固定した最新main同期・独立metadata検収・新headCI・通常main統合・merge同SHA CIへ進む。追加端末操作/推論0、元operator receipt/raw27proof・画面・鍵/接続値はGitへ入れず、P02全体・全OS・実金融・一般公開は未受入。
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用しました（同SHA CIは別確認）。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
 
-主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。undici7.29.1のsecurity_update_not_possibleはG04未解決で、依存lock差分0・修正未実施。この変更はmetadataだけ、PR213 fixture診断は別scope。次はこのmetadataのGitHub保存/通常main統合/同SHA CIを確認し、UIは別に受入する。
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。8f当時の依存lock差分0は履歴であり、今回の同期はPR216の依存・lockを保持する。UIは上記PR213の限定範囲で受入済み、実Provider/金融/物理は別gate。
+
+### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
+
+開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、現在mainのzod更新不可は別依存の未解決として残す。
+
+[PR218](https://github.com/k999ln/rock/pull/218)はSRI大小文字の不一致digestを拒否する2回帰と独立検収・進捗引継ぎを追加する候補。[証拠](docs/evidence/development-execution/undici-security-update.json)。旧両majorでSRI回避/過剰encoding crash、新版で拒否/生存を独立確認。同期前host verify2984／2981pass／0fail／3skip、同期後対象9pass。受入head `0aa1c8d4`の同一SHA全7CI成功、Linux実verify2988／2986pass／0fail／2skipを直接確認し、PR218へGit保存済み。結果metadataのhead1d731c84も全7CI成功。この過去受入と、今回最新main同期後の新head CIを区別する。本人指示による通常main統合へ向け、最新ee9b8801を通常同期。新head独立検収・CI、統合後同SHA CIを確認する。他依存root10／Mini2指摘、Pixel実機/P02/全OS、公開・配備・616一括公開は未受入／保留。
 
 ### 原source/host段階の記録（履歴）
 

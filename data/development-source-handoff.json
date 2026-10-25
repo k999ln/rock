@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T09:16:15.697593+00:00",
+  "recordedAt": "2026-10-25T09:54:24.658763+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -751,7 +751,7 @@
       "order": 0,
       "unit": "OS-01",
       "state": "PR209_main_integrated_new_guard_physical_unverified",
-      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure undici unresolved. See docs/evidence/development-execution/pixel-cache-main-merge.json. Newguard physical/P02/fullOS and PR213 UI acceptance remain separate.",
+      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure at8f retained as history; later undici fixPR216 adopted. See docs/evidence/development-execution/pixel-cache-main-merge.json. PR213 bounded UI is adopted; newguard physical/P02/fullOS remain separate.",
       "wholeUnitAccepted": false
     }
   ],
@@ -794,5 +794,68 @@
     "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
     "sameShaCISuccess": 6,
     "capturedMainContextPreserved": true
+  },
+  "dependencySecurityFollowup": {
+    "taskId": "G04",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "state": "repair_main_fixed_supplement_independent_git_saved_accepted_head_ci_pass",
+    "evidence": "docs/evidence/development-execution/undici-security-update.json",
+    "scope": "PR216/main d222 repair root^7.30.1 lock7.30.1 and Mini^8.12.2 lock8.12.3 adopted unchanged; six GitHub undici alerts fixed. PR218 adds SRI regression and independent evidence. Otherroot10/Mini2 audit findings and zod bot failure separate.",
+    "next": "Complete latest-main synchronized head review/CI, then Git担当 normal main merge and mergeSHA CI; reflect current state without rewriting historical receipts. Public/deployment/616 HELD.",
+    "holds": [
+      "public deployment",
+      "616 bulk public export"
+    ],
+    "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "independentSourceReview": "PASS_SCOPED_SOURCE",
+    "miniSite": {
+      "from": "8.11.2",
+      "to": "8.12.3",
+      "undiciAuditFindingsAfter": 0,
+      "otherAuditFindingsRemaining": 2
+    },
+    "independentReview": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
+    "localVerify": "pre_PR216_sync_candidate PASS root2984/pass2981/fail0/skip3; current final-head verify via GitHub separately",
+    "repairMainPR": 216,
+    "repairMergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "repairMainMerged": true,
+    "supplementPR": 218,
+    "supplementMainMerged": false,
+    "gitSaved": true,
+    "sameShaCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
+    "repairMainCI": {
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "productSuccess": 7,
+      "dependabotSuccess": 2,
+      "dependabotFailure": 1,
+      "failurePackage": "zod",
+      "allChecksSuccess": false
+    },
+    "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "integrationRequest": {
+      "authorized": true,
+      "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
+      "syncedMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "syncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "evidence": "docs/evidence/development-execution/undici-pr218-main-integration.json",
+      "state": "latest_main_synced_final_review_ci_pending",
+      "mainMerged": false
+    }
   }
 }

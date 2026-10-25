@@ -10074,28 +10074,55 @@
     "mainProductSameShaCISuccess": 7,
     "mainAllChecksSuccess": false,
     "mainDependabotFailure": 1,
-    "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+    "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json",
+    "laterDependencyFix": {
+      "pr": 216,
+      "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "evidence": "docs/evidence/undici-security-constraint.json",
+      "old8fFailureRetainedAsHistory": true,
+      "separateBotFailurePackage": "zod"
+    }
   },
   "esimAcknowledgementMainAdoption": {
     "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
     "sourceScopedAccepted": true,
-    "independentMetadataReviewPending": true,
-    "finalHeadCIPending": true,
-    "mainMerged": false,
-    "actualHiddenTransitionTested": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
+    "actualHiddenTransitionTested": true,
     "physicalAccepted": false,
     "realFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "sameHeadCIPending": false,
+    "metadataReviewPending": false,
+    "integrationMetadataChecked": true,
+    "headCISuccess": 7,
+    "mainProductCISuccess": 6,
+    "mergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed.",
+    "integrationTimeActualHiddenTransitionTested": false,
+    "actualHiddenAcceptanceScope": "Supplemental post-PR213 native Chrome visibility/read gating, synthetic fetch; scoped independent documentary review; no real hidden click or production acceptance.",
+    "visibilityEvidence": "docs/evidence/development-execution/esim-natural-visibility-summary.json",
+    "visibilityIndependentReview": "docs/evidence/development-execution/esim-natural-visibility-review-summary.json"
   },
   "eveRateUnitMainAdoption": {
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
     "sourceIndependentPass": true,
     "newHashBrowserScopedPass": true,
-    "metadataReviewPending": true,
-    "sameHeadCIPending": true,
-    "mainMerged": false,
+    "metadataReviewPending": false,
+    "sameHeadCIPending": false,
+    "mainMerged": true,
     "productionBilling": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "finalHeadCIPending": false,
+    "integrationMetadataChecked": true,
+    "headCISuccess": 7,
+    "mainProductCISuccess": 6,
+    "mergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed."
   },
   "undiciSecurityConstraint": {
     "taskIds": [
@@ -10129,6 +10156,103 @@
     "miniAuditUndiciFindings": 0,
     "miniOtherAuditFindings": 2,
     "latestMainSynchronization": "2a9828b2879904d3aeb28bc6919132b70c49f3cb"
+  },
+  "zodSecurityConstraint": {
+    "taskIds": [
+      "SYS15",
+      "G04"
+    ],
+    "primaryWorkstream": "04-security-identity-compliance",
+    "responsibility": "ROCK",
+    "status": "targeted_repair_verified_exact_head_ci_pending",
+    "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "shadcn": "4.22.1",
+    "zodOverride": "^4.6.6",
+    "newHeadCI": "pending",
+    "mainMergeCI": "pending",
+    "physicalOperations": false,
+    "additionalInference": false,
+    "lockedVersion": "4.6.7",
+    "evidence": "docs/evidence/zod-security-constraint.json",
+    "targetedTests": {
+      "pass": 34,
+      "fail": 0,
+      "skip": 0
+    },
+    "oldDependencyRegression": "3 expected failures",
+    "auditZodFindings": {
+      "root": 0,
+      "mini": 0
+    },
+    "fullVerify": "initial host exit1: inventory expectation corrected; localhost timeout passes targeted retry; exact-head Linux full verify pending",
+    "targetedRepairTests": 89
+  },
+  "undiciSecurityUpdate": {
+    "taskId": "G04",
+    "primarySquad": "H1",
+    "primaryOwner": "ROCK",
+    "state": "repair_main_fixed_supplement_independent_git_saved_accepted_head_ci_pass",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "from": "7.29.1",
+    "to": "7.30.1",
+    "evidence": "docs/evidence/development-execution/undici-security-update.json",
+    "undiciAuditFindingsAfter": 0,
+    "otherAuditFindingsRemaining": 10,
+    "independentReview": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
+    "gitSaved": true,
+    "sameShaCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "independentSourceReview": "PASS_SCOPED_SOURCE",
+    "miniSite": {
+      "from": "8.11.2",
+      "to": "8.12.3",
+      "undiciAuditFindingsAfter": 0,
+      "otherAuditFindingsRemaining": 2
+    },
+    "localVerify": "pre_PR216_sync_candidate PASS root2984/pass2981/fail0/skip3; current final-head verify via GitHub separately",
+    "repairMainPR": 216,
+    "repairMergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "repairMainMerged": true,
+    "supplementPR": 218,
+    "supplementMainMerged": false,
+    "scope": "PR216/main d222 repair root^7.30.1 lock7.30.1 and Mini^8.12.2 lock8.12.3 adopted unchanged; six GitHub undici alerts fixed. PR218 adds SRI regression and independent evidence. Otherroot10/Mini2 audit findings and zod bot failure separate.",
+    "next": "Complete latest-main synchronized head review/CI, then Git担当 normal main merge and mergeSHA CI; reflect current state without rewriting historical receipts. Public/deployment/616 HELD.",
+    "repairMainCI": {
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "productSuccess": 7,
+      "dependabotSuccess": 2,
+      "dependabotFailure": 1,
+      "failurePackage": "zod",
+      "allChecksSuccess": false
+    },
+    "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "integrationRequest": {
+      "authorized": true,
+      "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
+      "syncedMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "syncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "evidence": "docs/evidence/development-execution/undici-pr218-main-integration.json",
+      "state": "latest_main_synced_final_review_ci_pending",
+      "mainMerged": false
+    }
   },
   "pixelGuardPhysicalEvidenceSave": {
     "summary": "docs/evidence/development-execution/pixel-guard-main-physical-summary.json",

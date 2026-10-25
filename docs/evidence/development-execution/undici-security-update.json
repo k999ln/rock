@@ -1,0 +1,342 @@
+{
+  "schema": "rockstaros.undici-security-update/1",
+  "recordedAt": "2026-10-25T10:11:05.549094+00:00",
+  "task": "G04",
+  "primarySquad": "H1",
+  "primaryOwner": "ROCK",
+  "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+  "branch": "codex/undici-security-update-20261025",
+  "failure": {
+    "mainSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "run": 40177675682,
+    "job": 121121795935,
+    "error": "security_update_not_possible",
+    "resolvedVersion": "7.29.1",
+    "minimumNonVulnerableReportedByBot": "7.30.1",
+    "logSha256": "d7e7e87d1eeae97d35ad8cc8ca043b6e1e72e6bea08c2523a716987f321906a7",
+    "cause": "Root overrides.undici pinned every dependency path to vulnerable7.29.1; updater retained that pin."
+  },
+  "repair": {
+    "from": "7.29.1",
+    "to": "7.30.1",
+    "manifest": "package.json#overrides.undici",
+    "lock": "package-lock.json#packages/node_modules/undici",
+    "nodeEngine": ">=20.18.1 unchanged; repository>=22.13.0",
+    "unrelatedPackagesChanged": 0,
+    "dependencyPaths": [
+      "@ai-sdk/provider-utils",
+      "@cloudflare/vitest-plugin/miniflare",
+      "miniflare",
+      "@dotenvx/dotenvx",
+      "shadcn",
+      "wrangler/miniflare"
+    ],
+    "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+    "override": "^7.30.1 adopted unchanged from PR216; allows later7.x fixes"
+  },
+  "upstream": [
+    "https://github.com/nodejs/undici/releases/tag/v7.30.1",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-f72v-6w45-q472",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-4qv8-2p9j-2685"
+  ],
+  "verification": {
+    "npmCi": "PASS normal install including lifecycle scripts",
+    "npmLsUndici": "PASS all six paths deduplicated7.30.1",
+    "auditBefore": {
+      "info": 0,
+      "low": 0,
+      "moderate": 12,
+      "high": 6,
+      "critical": 0,
+      "total": 18
+    },
+    "auditAfter": {
+      "info": 0,
+      "low": 0,
+      "moderate": 5,
+      "high": 5,
+      "critical": 0,
+      "total": 10
+    },
+    "undiciAdvisoriesBefore": [
+      "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
+      "https://github.com/advisories/GHSA-f72v-6w45-q472",
+      "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    ],
+    "undiciFindingAfter": null,
+    "auditAllClear": false,
+    "auditRemaining": "Root10 and Mini2 findings in other dependencies remain; separate graph counts, not undici findings",
+    "focusedTests": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    "fullVerify": {
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "environment": "macOS Node26.12.1 / OpenSSL3.6.3 / normal npmci root+Mini",
+      "rootTests": 2984,
+      "rootPass": 2981,
+      "rootFail": 0,
+      "rootSkip": 3,
+      "skipMeaning": "Host skips remain skips; Linux final-head results recorded separately",
+      "apiAssertions": 1678,
+      "logSha256": "0a91e4bb12c3ce4f98e14f816bae7c46d9ed4d2f9283824f9ec7597dc5f69f03",
+      "candidateScope": "Earlier candidate after main2a, before main PR216 adds4constraint tests; not current final-head acceptance"
+    },
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "finalSameShaCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
+    "hostInitialFailure": {
+      "stage": "release:signing:check",
+      "reason": "Host default OpenSSL4; existing harness requires OpenSSL3",
+      "correction": "Select installed OpenSSL3.6.3 using PATH; no source or check changes",
+      "rerun": "PASS with OpenSSL3 and Mini dependencies installed"
+    },
+    "additionalHostSetupFailure": {
+      "stage": "test:avocado-mini-site build",
+      "reason": "Separate Mini node_modules absent; astro command not found",
+      "correction": "Run npm ci --prefix sites/avocado-mini exactly as existing CI; no test weakened"
+    },
+    "currentFocusedTests": {
+      "command": "node --test tests/undici-dependency-security.test.mjs tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "preserved": {
+    "historical8fDependabotFailureUnchanged": true,
+    "pixelNewGuardPhysicalAccepted": false,
+    "p02AndWholeOSAccepted": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "mainMerged": true,
+    "realProviderOrFinancialAcceptance": false,
+    "mainMergedScope": "Dependency repair PR216 only; supplemental PR218 remains unmerged"
+  },
+  "next": "Supplement PR218 saved and independently accepted with exact accepted-head7CI success; verify the final metadata head in GitHub PR checks. Additional main integration separate; zod and other audit findings unresolved; public/deployment/616 holds remain.",
+  "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+  "mainSynchronization": {
+    "method": "ordinary merge",
+    "commit": "9fcc9133",
+    "preserved": "PR216 accepted ^7.30.1/^8.12.2 constraints and both locks byte-for-byte; all incoming main changes retained."
+  },
+  "independentSourceReview": {
+    "status": "PASS_SCOPED_SOURCE",
+    "mustFix": [],
+    "source": [
+      {
+        "path": "package.json",
+        "sha256": "4f7cfdbdbfa8e0fb1248a1d080ffe4c888b8e91bf2be4c7dbf23c8a63d2ca7a8"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "b8abe386e8885557168d8f0ca921bb418e6284ee3e6873133c5b1ce6c8e249cd"
+      },
+      {
+        "path": "tests/undici-security-update.test.mjs",
+        "sha256": "fa0ca2b289cdd18dfd84ac54623630f3970f80ac349ba02c06e4a69e0e8aeda1"
+      }
+    ],
+    "independentTests": {
+      "sourceRegressionAndTlsCompatibility": {
+        "command": "node --test tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs",
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0
+      },
+      "oldVersionSRIControl": {
+        "tests": 2,
+        "pass": 1,
+        "fail": 1,
+        "exit": 1,
+        "expected": "Missing expected rejection: SHA256"
+      },
+      "excessiveEncodingEarlyClose": {
+        "scope": "isolated synthetic HTTP loopback only; six gzip content codings, Content-Length42, earlyclose",
+        "newVersionExit": 0,
+        "newVersionObserved": "fetch rejection caught; process survives",
+        "oldVersionExit": 1,
+        "oldVersionObserved": "unhandled error event UND_ERR_RES_CONTENT_LENGTH_MISMATCH",
+        "initialSandboxAttempt": "EPERM listen, rerun authorized with escalation; not counted as product failure"
+      }
+    },
+    "limits": [
+      "Final metadata review pending separate parent request",
+      "Final GitHub head CI not run by this reviewer",
+      "EventSource runtime memory probe not executed; its advisory absence is audit evidence only",
+      "Node bundled undici unaffected by package override; no claim of runtime Node upgrade"
+    ],
+    "sha256": "d9858c041eeceba399bb86aba78e3886f3d4681e7a880440e65d388c4cf2d415",
+    "candidateScope": "Historical initial exact-pin candidate; rootmanifest later adopted ^range from accepted main. Do not treat old source hashes as current manifest."
+  },
+  "limits": [
+    "npm package override does not upgrade Node bundled undici",
+    "Other dependencies: root10/Mini2 audit findings remain",
+    "GitHub confirms6undici alerts fixed after PR216 adoption. Historical8f failed job remains failure; newmain zod bot failure remains separate."
+  ],
+  "miniSite": {
+    "manifest": "sites/avocado-mini/package.json with ^8.12.2 override adopted unchanged from PR216",
+    "lock": "sites/avocado-mini/package-lock.json",
+    "from": "8.11.2",
+    "to": "8.12.3",
+    "path": "unifont ^8.0.0 → undici8.12.3",
+    "onlyChangedPackageNode": "node_modules/undici",
+    "nodeEngine": ">=22.19.0 unchanged",
+    "npmCi": "PASS normal install",
+    "auditBefore": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 3,
+      "critical": 0,
+      "total": 3
+    },
+    "auditAfter": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 2,
+      "critical": 0,
+      "total": 2
+    },
+    "undiciFindingAfter": null,
+    "githubOpenAlertsAtCapture": [
+      55,
+      56,
+      57
+    ]
+  },
+  "githubRootOpenAlertsAtCapture": [
+    48,
+    49,
+    50
+  ],
+  "independentFinalReview": {
+    "status": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "mustFix": [],
+    "sha256": "b69ec5d512f8b674c518b2f01da10a007ac3c40f081f3180e8ff802b8bb32613",
+    "scope": "root3source + Mini lock +7metadata paths; preserves main18changes,393tasks14gates and original receipts",
+    "miniIndependent": "new8.12.3 SRI2pass/encoding rejection+process survives; old8.11.2 SRI fail/encoding process crash",
+    "candidateScope": "Historical pre-PR216-merge independent review; final synchronized metadata review follows."
+  },
+  "status": "REPAIR_MAIN_FIXED_SUPPLEMENT_INDEPENDENT_AND_ACCEPTED_HEAD_CI_PASS",
+  "repairMain": {
+    "pr": 216,
+    "acceptedHead": "d89efc5584dbb5b1b0ec00c853701520a497cfb1",
+    "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "mainMerged": true,
+    "headCI": "PR body reports8success; independently read main and supplement checks separately",
+    "alerts": {
+      "48": "fixed",
+      "49": "fixed",
+      "50": "fixed",
+      "55": "fixed",
+      "56": "fixed",
+      "57": "fixed"
+    },
+    "alertReadback": "GitHub Dependabot API confirms all6 fixed at2026-10-25T09:57:22Z..24Z",
+    "mainCI": {
+      "productSuccess": 7,
+      "dependabotSuccess": 2,
+      "dependabotFailure": 1,
+      "pending": 0,
+      "allChecksSuccess": false,
+      "failedPackage": "zod",
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "rawChecksSha256": "11c865e4983a8946ddb1a92dd774a4d1b09addac5cfa9e51a0f8cff79a87b83f"
+    },
+    "otherBotFailure": {
+      "run": 40182780072,
+      "job": 121137173178,
+      "package": "zod",
+      "error": "security_update_not_possible",
+      "reason": "Available path would downgrade @cloudflare/vitest-plugin1.3.4 to0.0.0",
+      "outsideUndiciScope": true
+    },
+    "linuxVerify": {
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "run": 40182767302,
+      "job": 121137133356,
+      "conclusion": "success",
+      "tests": 2986,
+      "pass": 2984,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "b426ec2c53bd14b9db3236f118a923c1327b010a02e65a113383f11cdd4605da"
+    }
+  },
+  "supplement": {
+    "pr": 218,
+    "scope": "SRI behavioral regression2tests and independent readback/progress/handoff only; dependency manifests/locks/license inventory identical to current main",
+    "mainMerged": false,
+    "acceptedHeadCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
+    "gitSaved": true
+  },
+  "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+  "scannerPolicySynchronization": {
+    "method": "ordinary merge",
+    "incomingPaths": [
+      ".github/spider/gitleaks.toml",
+      ".github/spider/public-value-provenance.json"
+    ],
+    "bothBytesMatchMain": true,
+    "ownPolicyChanges": 0
+  },
+  "independentSynchronizedReview": {
+    "status": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
+    "mustFix": [],
+    "sha256": "b4a8878b70d856b7f7d119a0b5461f6bc1b25f8dd5823c143fbccf9f00957dd2",
+    "base": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "scope": "7 supplemental paths only; accepted dependency manifests/locks/license/constraint tests/scanner policies exactly match latest main; prior393tasks14phasegates/receipts/holds retained",
+    "currentFocusedTests": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "independentResultMetadataReview": {
+    "status": "PASS_SCOPED_RESULT_METADATA",
+    "mustFix": [],
+    "sha256": "8c4a0a60ca1385e935458375f0837a03fb4cc6db64f5db08c74ddabbeffebf29",
+    "scope": "Result-only six metadata paths; source/dependency locks/policy unchanged; accepted0aaCI and final metadata SHA CI kept distinct"
+  }
+}
