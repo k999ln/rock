@@ -10575,7 +10575,16 @@
     },
     "productRuntimeChanged": false,
     "schemaApiBillingChanged": false,
-    "hostFullVerify": "not yet run in integration tree",
+    "hostFullVerify": {
+      "exitCode": 0,
+      "tests": 3026,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 3,
+      "baseMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "later854SyncMetadataOnly": true,
+      "logSha256": "36b95f8fb2ca20cab9d3355e43489b60819a39a8999e26ce9301530797023024"
+    },
     "gitHubSaved": false,
     "mainMerged": false,
     "wholeUnitAccepted": false,
@@ -10585,6 +10594,7 @@
     "validReadyAccepted": false,
     "realProviderOrFinancialAccepted": false,
     "publicDeployment": false,
-    "next": "Latest-main full verify; independent Root integration metadata review; finalhead CI and normal main/mergeSHA CI"
+    "next": "Latest-main full verify; independent Root integration metadata review; finalhead CI and normal main/mergeSHA CI",
+    "latestSynchronizedMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271"
   }
 }

@@ -261,7 +261,7 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## eSIM provision再開のtest-only採用（ESIM-03 / SIM01）
 
-主担当01/ROCK・統合10/G04。既存store2つを同一file SQLiteで使い、workspace INSERT後のsetup UPDATEだけ制御Errorを注入し、旧store/接続を捨てて同file再open・同workspace再開/再送/owner/旧revision/失効を検査する。runtime/schema/API/Billing変更0、元test/receiptと独立reviewをhash固定。独立60/60成功・追加1probeは重複非加算、mustFix0。実processkill/電断/本番D1/issuer/validready/Provider/課金/wholeESIMは未受入。main fb604256へ採用準備、全verifyとRoot統合metadata別検収→headCI→通常main/mergeCIで閉じる。[採用証拠](docs/evidence/development-execution/esim-provision-recovery-main-adoption.json)。
+主担当01/ROCK・統合10/G04。既存store2つを同一file SQLiteで使い、workspace INSERT後のsetup UPDATEだけ制御Errorを注入し、旧store/接続を捨てて同file再open・同workspace再開/再送/owner/旧revision/失効を検査する。runtime/schema/API/Billing変更0、元test/receiptと独立reviewをhash固定。独立60/60成功・追加1probeは重複非加算、mustFix0。実processkill/電断/本番D1/issuer/validready/Provider/課金/wholeESIMは未受入。 新host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0、Eve現行進捗main854をmetadataのみ通常同期済み。main fb604256へ採用準備、全verifyとRoot統合metadata別検収→headCI→通常main/mergeCIで閉じる。[採用証拠](docs/evidence/development-execution/esim-provision-recovery-main-adoption.json)。
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
