@@ -1108,3 +1108,19 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 失敗・復旧・承認: owner不一致は読めず、競合は409、削除後は410、鍵不足は503。入力と既存成果を保持して再認証・同じ履歴の再読込・鍵復旧へ戻す。削除は本人確認操作を通す。Linux service/setupは署名、本人、契約、予算、使用量を既存workflowへ結び、実運営受入まで既定無効。mainの月140 USD案と旧branch月16 USD案の相違は未解決であり、本統合で料金を決定しない。
 
 合格条件: 暗号化・owner分離・版競合・削除・再送・権限非復元、成果hashとexport拒否条件、fresh/main DBの移行、全verifyと同一SHA CI。Pixel/AVFコードとLabは開発sourceとして保存し、host合格を実機・全OS・provider・一般公開へ転用しない。未決定は個別workstreamで対象/料金/鍵/実Providerの証拠を揃えて決める。
+
+
+<a id="pro-original-archive-entry"></a>
+## Pro原本exportから私有archiveへの入口
+
+目的・利用体験: Proで書いたbrowser内draft/boardを失わず、既存の本人別暗号化原本archiveへ手動で渡す。Proの「Move private notes safely」でpreviewし、file exportへ同意してdownloadする。固定`https://avoado.si/account/import/pro`を本人が開き、sign in後にfileを手動で再選択し、保存先account確認と別の保存同意を経て原本を保管・全bytes/SHA読戻しする。avocadopro.siはPro、avocadomini.siはMini、avoado.siは総合/Sky入口。
+
+責任・入出力: ROCKは既存export/parser、通常anchor、状態文言と既存archiveの認証/owner/revision/暗号化を再利用する。入力は現在browserのdraft/boardまたは選択export、出力はlocal fileと既存archiveへの入口。元helperのnot_connectedはlocal previewがaccount移行を行わないことを表す。EXTERNALは公開hosting/auth基盤、OWNERは選択file/保存先/二つの個別同意。
+
+状態・保存: 未preview→preview→export同意→local downloadを分ける。linkはquery/fragmentなし、new tab/noopener/noreferrer/no-referrer/prefetch=false。linkを開いてもnotes、cookies、owner情報を転送しない。元localStorage keys・epoch fencing・file形式・archive schema/crypto/Keyringは不変。export/downloadはaccount保存成功を意味せず、原本fileと元browser記録を保持する。
+
+失敗・復旧: 不正file/size/遅延preview/取消/保存不可ではexportを成立させず、取消はpreviewと同意を消してexportを無効にする。account側のunknownは既存同ID読戻しと新しい同意で扱い、この入口で自動再送/別archive作成/削除を行わない。新job・model・payment・native installは開始しない。
+
+承認・合格条件: file export同意は保存同意に代用しない。検収済み3source/test、関連40と独立5群、localChrome1512/390 overflow0・preview/cancel・固定link表示を限定証拠とする。初回preview server失敗は記録し、後続Astro dev表示と分ける。公開先の実click、認証済server保存、実原稿upload、DNS/TLS/配備、native/実機、wholePRO01は未受入。最終head Linux actualverify/全CIと独立metadata検収がmerge前gate。
+
+未決定の決め方: 実account/browser保存は権限・Keyring準備と本人の個別同意を確認した同candidateで受け入れる。公開は各domain/build SHAのreadback gate、native移行は別SKU/保存復旧gateで決める。入口の案内を実配備成功にしない。[採用証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)、[95unit引継ぎ](evidence/development-execution/all-lanes-main-handoff-summary.json)。

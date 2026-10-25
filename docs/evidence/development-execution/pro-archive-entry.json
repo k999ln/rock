@@ -1,0 +1,254 @@
+{
+  "schema": "rockstaros.pro-private-archive-entry/1",
+  "recordedAt": "2026-10-25T05:54:54.089992+00:00",
+  "status": "IMPLEMENTED_LOCAL_40_PASS_PENDING_INDEPENDENT_REVIEW_UI_AND_ADOPTION",
+  "unit": "PRO-01-ARCHIVE-ENTRY",
+  "existingTaskIds": [
+    "B05",
+    "WEB13",
+    "G04"
+  ],
+  "workstream": "05-web-pwa-sites / ROCK",
+  "amcAssignmentContext": {
+    "B05": "O5",
+    "WEB13": "O7",
+    "scope": "Source entry UX only; same-build deployment/rollback and hardware acceptance remain separate."
+  },
+  "candidate": {
+    "treeLogicalId": "rock-pro-archive-entry-20261025",
+    "branch": "codex/pro-archive-entry-20261025",
+    "baseMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+    "uncommitted": true,
+    "gitOperationsPerformed": false,
+    "preparationSha256": "5c9079ac2314b0848b1fda2926f15a696af36e547fc0c742c585b46c34f5c5cf",
+    "exactWriteSet": [
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "sites/avocado-mini/src/pro-os.js",
+      "sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "docs/evidence/development-execution/pro-archive-entry.json"
+    ],
+    "sourceHashes": [
+      {
+        "path": "sites/avocado-mini/src/pages/pro/index.astro",
+        "beforeSha256": "9c58117e0cc41e8d7c36021cc55098b26eacc4122651eab6b2a0fed323c40152",
+        "afterSha256": "571370ef797fa8ed168a67c2ba4a6d460489c524aa88b45edb443508f1716c03",
+        "bytes": 8358
+      },
+      {
+        "path": "sites/avocado-mini/src/pro-os.js",
+        "beforeSha256": "d7898ec9053f1245221bf224a09260a3f7da5979a8f5a7c9dacacd53e5c869a6",
+        "afterSha256": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+        "bytes": 3289
+      },
+      {
+        "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+        "beforeSha256": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410",
+        "afterSha256": "bd549178d59e6c8df37e55ec58bc88f872d9195102c34900ef9d746c6eba6566",
+        "bytes": 9535
+      }
+    ]
+  },
+  "changes": [
+    {
+      "path": "sites/avocado-mini/src/pages/pro/index.astro",
+      "behavior": "Existing private browser-note preview/export section now offers an explicit ordinary anchor to https://avoado.si/account/import/pro. Three steps explain review/export, sign in and manual reselection, destination account confirmation and separate archive-save consent. Original browser notes and downloaded file retained; export is a local download and not an account save, job conversion or native installation.",
+      "navigation": "Fixed URL has no query or fragment. Opens only through user operation in a new tab with noopener noreferrer, no-referrer and explicit Astro prefetch=false. No controller handler, automatic navigation, form submit or data payload added."
+    },
+    {
+      "path": "sites/avocado-mini/src/pro-os.js",
+      "behavior": "Replaced three stale cancelled/preview/export status messages with manual archive handoff guidance. Export success explicitly says no account data has been saved.",
+      "preservation": "Reverse replacement of the three status strings reconstructs the entire original controller SHA256. Existing epoch, async fencing, consent, cancellation, file validation, localStorage reads, Blob download and cleanup code remain byte-identical."
+    },
+    {
+      "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "behavior": "Three new regression groups exercise the static link contract and the shipped controller with actual local export/preview helpers and synthetic DOM/storage. Original four tests retained byte-identically apart from two new imports.",
+      "coverage": [
+        "Fixed approved URL without material/query/fragment, isolated tab, no prefetch and manual account/separate-consent wording.",
+        "Preview alone does not download/open; missing export consent blocks download; consented Blob contains exact original strings; cancel clears preview/consent and prevents further export.",
+        "Cancel fences delayed file preview; selecting another file resets consent; malformed selection rejects and leaves original browser storage unchanged."
+      ],
+      "scope": "Network and storage mutation functions fail if called in synthetic harness. Real browser/UI and actual authenticated server save are not claimed."
+    }
+  ],
+  "readOnlyReuse": [
+    {
+      "path": "sites/avocado-mini/src/pro-local-import.mjs",
+      "sha256": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+      "match": true
+    },
+    {
+      "path": "app/account/import/pro/page.tsx",
+      "sha256": "d6bf62cdb5bf408b49142b087c40938cbf81a1b913927827fdd22b96f7f71ea7",
+      "match": true
+    },
+    {
+      "path": "components/pro-account-import.tsx",
+      "sha256": "9b51cfbc0b380795d6485b2be8125cd19897ee82a51643133cd40f4fe709679b",
+      "match": true
+    },
+    {
+      "path": "lib/pro-account-import.ts",
+      "sha256": "58ff7987f5f876bcdfd064f27d3f13be1715c8626cbd3add239d6622f86f1b97",
+      "match": true
+    },
+    {
+      "path": "lib/pro-account-import.server.ts",
+      "sha256": "92e04e9eb46d4e3bafb250ebc88bd660d15a77fa18ea644862748530522ae3ed",
+      "match": true
+    },
+    {
+      "path": "sites/avocado-mini/tests/domains.test.mjs",
+      "sha256": "ccdffb37c0b6809403339dd13a5493e6282ca69de75bc55042e3e332042d6f36",
+      "match": true
+    },
+    {
+      "path": "tests/pro-account-import.test.mjs",
+      "sha256": "8a825049c5feab248fa9d70bf2fcf15d268b5ef428343ffaaeb43237c10c0a1f",
+      "match": true
+    }
+  ],
+  "preservationAudit": {
+    "controllerBeforeSha256": "d7898ec9053f1245221bf224a09260a3f7da5979a8f5a7c9dacacd53e5c869a6",
+    "onlyControllerStatusStringsChanged": true,
+    "originalFourTestsSha256": "18ab515ac57e2fea3a93d9eecf0e86bc374590613ce9000e4510df81a8312410",
+    "originalFourTestsUnchanged": true,
+    "existingArchiveComponentAndServerHashesUnchanged": true,
+    "existingLocalHelperAndKeysUnchanged": true,
+    "helperAccountMigrationField": "Pure local helper still returns historical not_connected because preview/export performs no account migration; it is not presented as the current archive-entry availability message.",
+    "newLocalStorageKeys": 0,
+    "automaticUploadOrFetchOrPrefetchAdded": false,
+    "notesInURLQueryFragment": false
+  },
+  "validation": [
+    {
+      "stage": "baseline",
+      "command": "node --experimental-strip-types --test sites/avocado-mini/tests/pro-local-import.test.mjs tests/pro-account-import.test.mjs",
+      "exitCode": 0,
+      "tests": 31,
+      "pass": 31,
+      "fail": 0,
+      "skip": 0,
+      "logLogicalId": "pro-archive-entry-baseline.log",
+      "sha256": "a04a0380cd6783c3f81f28dace6aa1d37a753d660345ae74f8d149b2ce727e0b"
+    },
+    {
+      "stage": "focused",
+      "command": "node --experimental-strip-types --test sites/avocado-mini/tests/pro-local-import.test.mjs tests/pro-account-import.test.mjs",
+      "exitCode": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skip": 0,
+      "logLogicalId": "pro-archive-entry-focused.log",
+      "sha256": "6db68ee3c8440a93a2ecad758c67cbf0dc701b10339824a9381764ae025fb71e"
+    },
+    {
+      "stage": "integration",
+      "command": "node --experimental-strip-types --test sites/avocado-mini/tests/pro-local-import.test.mjs sites/avocado-mini/tests/domains.test.mjs tests/pro-account-import.test.mjs",
+      "exitCode": 0,
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "skip": 0,
+      "logLogicalId": "pro-archive-entry-integration.log",
+      "sha256": "473dbab89feb332b95b58bb533c1afcf131eae9f624ac11fb8a2a55a270bc003"
+    },
+    {
+      "stage": "targeted-lint",
+      "command": "node node_modules/oxlint/bin/oxlint sites/avocado-mini/src/pro-os.js sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "exitCode": 0,
+      "diagnostics": 0,
+      "logLogicalId": "pro-archive-entry-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "site-build",
+      "command": "npm --prefix sites/avocado-mini run build",
+      "exitCode": 0,
+      "pages": 14,
+      "warnings": 0,
+      "logLogicalId": "pro-archive-entry-site-build.log",
+      "sha256": "8a51f2e56bf6d073ad4cd278daa57deaf8b8af036dafd81daa4ba5fe56c893cf"
+    }
+  ],
+  "validationCounts": "Final40 = site local import7 (original4 + new3), domain6, existing account archive27. Earlier31/34 are overlapping stages, not additional tests.",
+  "builtArtifact": {
+    "logicalId": "avocado-mini/dist/client/_site-pages/pro/index.html",
+    "sha256": "b347a4ed61d11708b3a8238e876222c5414fe8f38c32e5873f7974075c7795d7",
+    "archiveAnchor": "<a href=\"https://avoado.si/account/import/pro\" target=\"_blank\" rel=\"noopener noreferrer\" referrerpolicy=\"no-referrer\" data-astro-prefetch=\"false\" data-migration-archive>",
+    "noArchivePrefetchLink": true,
+    "staleUnconnectedWordingRemoved": true,
+    "storage": "Ignored local build output; not a new Git artifact or deployment."
+  },
+  "auditArtifact": {
+    "logicalId": "pro-archive-entry-audit.json",
+    "sha256": "6852df8dbca0d059abc0d1b7ca40dba2e1db6a0509601a560a477de7c7b390aa",
+    "storage": "temporary outside Git"
+  },
+  "failureHistory": {
+    "baselineFailures": [],
+    "newTestFailures": [],
+    "lintFailures": [],
+    "buildFailures": [],
+    "skippedTests": [],
+    "warnings": [],
+    "expectedNegativePaths": "Unconsented export, cancelled or delayed preview, malformed file and existing owner/epoch/conflict/refusal tests passed their assertions."
+  },
+  "approvalAndPrivacy": {
+    "linkIsNotArchiveSaveConsent": true,
+    "manualReselectRequired": true,
+    "destinationAccountConfirmationRequired": true,
+    "separateDestinationSaveConsentRequired": true,
+    "originalsNonDestructive": true,
+    "noSecretsOrRealManuscriptsRead": true,
+    "testInputsSynthetic": true,
+    "newAuthenticationOrAPI": false,
+    "feesOrBudgetChanged": false,
+    "nativeOrPhysicalActions": false
+  },
+  "integrationHandoff": {
+    "owner": "Root independent reviewer/UI and Git single writer",
+    "sharedMetadataEdited": false,
+    "globalRegistryReadOrEdited": false,
+    "reason": "Explicit four-path ownership; shared README/project/status/design bookkeeping belongs to integration owner.",
+    "next": [
+      "Independently review these exact three source/test hashes and receipt.",
+      "Operate the built Pro page UI and existing archive flow under the separately authorized local account/runtime conditions; preserve manual file handoff and distinct export/save consent.",
+      "Integration owner synchronizes shared documentation/status/design if needed, runs fixed-candidate verify/CI and handles ordinary Git adoption.",
+      "Keep remaining616 bulk public export held; deployment and native acceptance remain separate."
+    ]
+  },
+  "notRun": {
+    "fullVerify": "NOT_RUN; fixed integration candidate gate belongs to Root/Git",
+    "typecheck": "No TypeScript changes; Astro build and targeted JS lint executed.",
+    "realBrowserUI": "NOT_RUN; coordinator scheduled after independent review",
+    "authenticatedAccountSave": "NOT_RUN",
+    "remoteCI": "NOT_RUN",
+    "githubSaveMerge": "NOT_RUN",
+    "deploymentDNSorTLSReadback": "NOT_RUN"
+  },
+  "acceptance": {
+    "localEntryImplementation": true,
+    "selfIndependentAcceptance": false,
+    "wholePro01": false,
+    "wholeProProduct": false,
+    "actualAuthenticatedArchiveSave": false,
+    "nativeMigration": false,
+    "physicalDevice": false,
+    "publicAvailability": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "boundaries": {
+    "ownedSourcePaths": 3,
+    "ownedReceiptPaths": 1,
+    "sourceOutsideCandidateChanged": false,
+    "gitMutation": false,
+    "otherChatMessage": false,
+    "childAgent": false,
+    "providerCalls": 0,
+    "newListeners": 0,
+    "bulk616Export": "HELD"
+  }
+}

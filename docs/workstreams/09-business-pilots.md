@@ -1,3 +1,7 @@
+## PRO-01原本archive入口候補
+
+検収済み3source/testをmainb1b0基点で採用。Pro local export→固定avoado.si/account/import/pro→手動再選択/本人account確認/別同意を案内し、既存archive/auth/crypto/schemaは不変。関連40/独立5群とChrome local1512/390 UIを限定確認。最終head CI/独立metadata検収、認証済server保存・公開先実click/配備/native/wholePRO01は別gate。[詳細](../rockstaros-complete-design.md#pro-original-archive-entry)／[有限11lane引継ぎ](../evidence/development-execution/all-lanes-main-handoff-summary.json)。Rootregistry非操作、残616公開保留。
+
 ## PRO-01原本account archive候補
 
 ROCKは既存Pro parserとEve暗号化履歴を再利用し、選択file→local preview→本人account確認/別同意→原本保管→全bytes/SHA読戻しをexact6で限定採用。旧P1/P2はr2で閉鎖、first56/current69の履歴訂正をhashで保持。新schema/鍵/WorkJob/Tool/modelなし、実account/browser/native/全移行は未受入。[設計](../rockstaros-complete-design.md#pro-account-original-archive)／[証拠](../evidence/development-execution/pro-account-import-main-adoption.json)。統合主担当10、Security/Eve境界を共有。

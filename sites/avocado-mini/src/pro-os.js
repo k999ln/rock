@@ -15,13 +15,13 @@ function cancelMigration() {
   migrationDownload.disabled = true;
   migrationConsent.checked = false;
   migrationFile.value = '';
-  migrationStatus.textContent = 'Cancelled. Original browser keys are unchanged. Account migration is not connected.';
+  migrationStatus.textContent = 'Cancelled. Original browser notes are unchanged. To archive later, export a file and select it manually at the private archive.';
 }
 function showMigration(result) {
   migrationEnvelope = result.envelope;
   migrationPreview.textContent = JSON.stringify({ draft: result.draft, items: result.items }, null, 2);
   migrationDownload.disabled = false;
-  migrationStatus.textContent = 'Local preview only. Legacy checks remain draft provenance. No account data has been saved.';
+  migrationStatus.textContent = 'Local preview only. Legacy checks remain draft provenance. No account data has been saved. Export a file, then use the private archive link for account confirmation and separate save consent.';
 }
 document.querySelector('[data-migration-prepare]')?.addEventListener('click', async () => {
   cancelMigration();
@@ -50,6 +50,6 @@ migrationDownload?.addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(migrationEnvelope, null, 2)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = 'avocadopro-local-import.json'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  migrationStatus.textContent = 'Private file exported. Originals retained. Account migration is not connected.';
+  migrationStatus.textContent = 'Private file exported to this device. Originals retained; no account data has been saved. Open the private archive link, sign in, manually select this file again, confirm the destination account, and give separate archive save consent.';
 });
 document.querySelector('[data-migration-cancel]')?.addEventListener('click', cancelMigration);

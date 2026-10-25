@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.32",
-  "updatedAt": "2026-10-25T00:48:35.401651+00:00",
+  "version": "1.33",
+  "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3096,9 +3096,28 @@
     "reviewSummary": "docs/evidence/development-execution/wallet-ledger-db-recovery-main-review-summary.json",
     "testOnly": true,
     "runtimeProductChanges": 0,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeWallet02Accepted": false,
     "productionFinanceAccepted": false,
+    "publicDeployment": false
+  },
+  "proOriginalArchiveEntry": {
+    "authority": "docs/rockstaros-complete-design.md#pro-original-archive-entry",
+    "toolDesign": "docs/sky-tools-complete-design.md#pro-original-archive-entry",
+    "implementation": [
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "sites/avocado-mini/src/pro-os.js"
+    ],
+    "tests": [
+      "sites/avocado-mini/tests/pro-local-import.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/pro-archive-entry-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/pro-archive-entry-main-review-summary.json",
+    "explicitManualHandoffOnly": true,
+    "existingArchiveAuthStoreCryptoUnchanged": true,
+    "mainMerged": false,
+    "wholePRO01Accepted": false,
+    "authenticatedRealAccountBrowserAccepted": false,
     "publicDeployment": false
   }
 }

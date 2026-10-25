@@ -1,0 +1,70 @@
+{
+  "schema": "rockstaros.pro-archive-entry.main-review-summary/1",
+  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "sourceReviewSha256": "688377b501423206d871c8c914d4f8b5c6778cc36bf2d5c486a8747b976dfe8d",
+  "sourceVerdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "sourceFiles": [
+    {
+      "path": "sites/avocado-mini/src/pages/pro/index.astro",
+      "sha256": "571370ef797fa8ed168a67c2ba4a6d460489c524aa88b45edb443508f1716c03",
+      "bytes": 8358
+    },
+    {
+      "path": "sites/avocado-mini/src/pro-os.js",
+      "sha256": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+      "bytes": 3289
+    },
+    {
+      "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "sha256": "bd549178d59e6c8df37e55ec58bc88f872d9195102c34900ef9d746c6eba6566",
+      "bytes": 9535
+    }
+  ],
+  "receiptHashes": {
+    "original": "3ceb68e7cfae863377d3ce3d07ba606dfccbdc50941a4b31d59ee210f229d972",
+    "portable": "3ceb68e7cfae863377d3ce3d07ba606dfccbdc50941a4b31d59ee210f229d972",
+    "identical": true,
+    "adaptation": "No operator-private absolute paths found; original source receipt adopted unchanged. Its pending flags remain capture-time facts."
+  },
+  "validation": {
+    "sourceAndIndependentRelatedTests": 40,
+    "breakdown": "7local export (4existing+3new),6domain,27existingarchive; overlapping rerun counts not additive",
+    "independentGroups": 5,
+    "independentScope": "Actual shipped controller in synthetic DOM, generated artifact/host mapping and negative storage/cancel/stale/oversize probes.",
+    "protectedExistingArchiveAndStoreFiles": 13,
+    "localTypecheckOrFullVerifyClaimedBySource": false
+  },
+  "actualRootUi": {
+    "originalSummarySha256": "94c00be159498988584d214d38dc4c19b5a35ba1a45ff4f89ae2618ff6b27a2f",
+    "browser": "Chrome",
+    "localOnly": true,
+    "observed": [
+      "1512px and390px viewport horizontal overflow0",
+      "Fixed approved URL, new isolated tab, no-referrer, no prefetch",
+      "Manual reselection, account confirmation and separate archive consent visible",
+      "Preview and cancel preserve originals; cancel clears preview and disables export"
+    ],
+    "failureHistory": {
+      "initialPreviewServerExit": 1,
+      "noPassCredited": true,
+      "recovery": "Official Astro dev localhost startup succeeded; subsequent rendered UI observed."
+    },
+    "notExecuted": [
+      "external destination click",
+      "authenticated server archive save",
+      "actual private manuscript export/upload",
+      "production deployment",
+      "native OS migration"
+    ],
+    "rawImagesDomAndLocalUrlsNotCopied": true
+  },
+  "preservedBoundaries": [
+    "Link/export is not account-storage consent",
+    "No upload/navigation/prefetch from preview or export",
+    "Same original browser keys, parser and archive server/schema/crypto unchanged",
+    "No jobs/native install/payment/provider/device/public deployment"
+  ],
+  "wholePRO01Accepted": false,
+  "metadataAdoptionReviewRequiredBeforeMerge": true
+}

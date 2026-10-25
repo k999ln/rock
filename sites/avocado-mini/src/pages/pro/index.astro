@@ -38,7 +38,26 @@ import ProAssemblyWorkbench from "../../components/ProAssemblyWorkbench.astro";
     </section>
 
     <section class="pro-interest"><div><p class="pro-kicker">DESIGN TARGET / NOT A SALES OFFER</p><h2>{proDesign.targetLabel}</h2><p>{proDesign.priceNote} Mini is optional and sold separately. Hardware has not yet been assembled or accepted.</p><a href={proDesign.source}>Read the source design ↗</a></div></section>
-    <section class="pro-interest" aria-label="Private browser notes"><div><h2>Move private notes safely</h2><p>Preview and export this browser’s original draft and board. Account migration is not connected. This does not start jobs, AI, or payment. Existing Eve history stays in its current account.</p><button type="button" data-migration-prepare>Preview original notes</button><label>Preview an export file <input type="file" accept="application/json,.json" data-migration-file /></label><pre data-migration-preview style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:20rem;overflow:auto" aria-label="Private notes preview"></pre><label><input type="checkbox" data-migration-consent /> I reviewed these private notes and want to save a file on this device.</label><button type="button" data-migration-download disabled>Export reviewed private file</button><button type="button" data-migration-cancel>Cancel preview</button><p data-migration-status role="status" aria-live="polite">Original browser keys are retained. No account migration has occurred.</p></div></section>
+    <section class="pro-interest" aria-label="Private browser notes">
+      <div>
+        <h2>Move private notes safely</h2>
+        <p>Preview and export this browser’s original draft and board, then continue to your private archive on avoado.si. This does not start jobs, AI, or payment. Existing Eve history stays in its current account.</p>
+        <button type="button" data-migration-prepare>Preview original notes</button>
+        <label>Preview an export file <input type="file" accept="application/json,.json" data-migration-file /></label>
+        <pre data-migration-preview style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:20rem;overflow:auto" aria-label="Private notes preview"></pre>
+        <label><input type="checkbox" data-migration-consent /> I reviewed these private notes and want to save a file on this device.</label>
+        <button type="button" data-migration-download disabled>Export reviewed private file</button>
+        <button type="button" data-migration-cancel>Cancel preview</button>
+        <p data-migration-status role="status" aria-live="polite">Original browser notes are retained. Export a file, then continue to the private archive.</p>
+        <ol>
+          <li>Review the preview, confirm file export, and download your private file to this device.</li>
+          <li>Open the private archive, sign in, and manually select the downloaded file again.</li>
+          <li>Confirm the destination account and give separate archive save consent there. Export consent here does not authorize account storage.</li>
+        </ol>
+        <a href="https://avoado.si/account/import/pro" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" data-astro-prefetch="false" data-migration-archive>Open private archive on avoado.si (new tab) ↗</a>
+        <p>Opening this link sends no notes. Export only downloads a file; it does not save to your account. The original browser notes and downloaded file are retained. A private archive keeps the original file; it does not convert notes into jobs or install a native OS.</p>
+      </div>
+    </section>
   </main>
   <footer><span>© 2026 avokado</span><nav aria-label="Footer navigation"><a href="https://avoado.si/">Sky & services</a><a href="https://avocadomini.si/">avocadoMini</a><a href="https://avocadopro.si/">avocadoPro</a><a href="/privacy/">Privacy</a></nav></footer>
   <script>import "../../pro-experience.js"; import "../../pro-os.js";</script>

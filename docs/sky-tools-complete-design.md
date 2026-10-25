@@ -1569,3 +1569,9 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ## 未統合Tool/runtimeの接続境界
 
 Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのinstructionsは非信頼の役割設定であり、Tool権限・外部送信・支払同意は既存Broker/workflowが強制する。成果持出しは読み取り専用で、有料実行利用権を復旧の前提にしない。本人用Planner/Zoom/Linux Labはloopback・開発環境・明示設定の境界を維持し、公開環境で有効化しない。契約・入出力・状態・保存・失敗復旧・承認・合格条件は[統合runtime](rockstaros-complete-design.md#unmerged-runtime-integration)に従う。実Zoom、任意API/MCP、実Linux provider、本番請求は個別受入が必要。
+
+
+<a id="pro-original-archive-entry"></a>
+## Pro原本archiveへの手動入口
+
+既存Pro原本archiveの利用導線。目的・入力/出力・状態・保存・失敗/復旧・別同意・責任・合格条件・未決定の決め方は[OS詳細](rockstaros-complete-design.md#pro-original-archive-entry)を共通契約とする。通常の固定linkだけであり、新Tool/API/権限は追加しない。元browser→local file exportと、sign in後の手動再選択→本人account確認→別同意→既存暗号化archive全bytes/SHA読戻しを分ける。local表示/fixtureは実account保存・配備・native移行を意味しない。[証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)。
