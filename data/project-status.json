@@ -10079,7 +10079,7 @@
       "mergeEvidence": "docs/evidence/development-execution/mini-08-hardware-main-merge.json"
     },
     "messageAdapter": {
-      "status": "latest_main_synchronized_host_full_verify_pass_pending_adoption",
+      "status": "PR229_main_integrated_same_SHA_CI_pass",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10088,14 +10088,14 @@
       ],
       "physicalAccepted": false,
       "providerConnected": false,
-      "nextAction": "Review final PR229 head and adopt separately; concrete modem/provider transport, Broker/AP ingress, bounded scheduler and Job import remain pending",
+      "nextAction": "Concrete transport, Broker/AP ingress, bounded scheduler and Job import remain separate; no physical/realProvider acceptance",
       "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
       "evidence": "docs/evidence/development-execution/mini-08-message-adapter.json",
       "independentReview": "docs/evidence/development-execution/mini-08-message-review.json",
       "hostTestsPassed": 83,
       "mustFixRemaining": 0,
       "gitHubSaved": true,
-      "mainMerged": false,
+      "mainMerged": true,
       "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail",
       "pr": 229,
       "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
@@ -10112,7 +10112,12 @@
         "fail": 0,
         "skip": 3
       },
-      "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
+      "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json",
+      "acceptedHead": "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2",
+      "mainMergeSha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "headCISuccess": 14,
+      "mainCISuccess": 13,
+      "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
     }
   },
   "pixelCacheMainAdoption": {
@@ -10646,5 +10651,108 @@
     "next": "Latest-main full verify; independent Root integration metadata review; finalhead CI and normal main/mergeSHA CI",
     "latestSynchronizedMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
     "latestSynchronizationScope": "Preserves Mini229 normal merge including source4 and Pixel normal-case fixture. Final exact-head Linux fullverify remains required; earlier host counts retain their fb604 base."
+  },
+  "smithRunningSkipLink": {
+    "taskId": "SKY21",
+    "unitId": "SMITH-01",
+    "primarySquad": "O5",
+    "state": "source_metadata_independent_pass_host_verify_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+    "baseMain": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+    "wholeUnitAccepted": false,
+    "realJobAccepted": false,
+    "mainMerged": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "hostVerify": "2994tests/2991pass/0fail/3skip; before latest-main adoption",
+    "latestIntegrationMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+    "gitSaveEvidence": "docs/evidence/development-execution/smith-running-skip-link-git-save.json",
+    "mainIntegrationRequested": false
+  },
+  "smithRunningSkipMainAdoption": {
+    "schema": "rockstaros.smith-running-skip-main-adoption/1",
+    "recordedAt": "2026-10-25T13:48:31.196028+00:00",
+    "unit": "SMITH-01",
+    "task": "SKY21",
+    "previousSaveOnlySnapshot": "docs/evidence/development-execution/smith-running-skip-link-git-save.json",
+    "previousSnapshotUnchanged": true,
+    "newMainAuthorization": {
+      "sourceChat": "01a16aeb-1268-7491-a2ce-cda09d15df11",
+      "sourceTurn": "01a172a1-9173-7c61-a4aa-b132f749bc37",
+      "sourceUserMessage": "01a172a1-9909-7483-9a82-970b09ee6c75",
+      "directUserReadback": true,
+      "scope": "Continue other chats remaining work through independent acceptance, Git save and main integration;616 bulk publication held",
+      "rootAppliedToThisCandidate": true
+    },
+    "synchronizedMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "source2": [
+      {
+        "path": "components/workspace-shell.tsx",
+        "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+      },
+      {
+        "path": "tests/os-bottom-navigation-main.test.mjs",
+        "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+      }
+    ],
+    "independentSourceReview": "docs/evidence/development-execution/smith-running-skip-link-review-summary.json",
+    "scope": "Same-page workspace landmark only; original navigation/consumer auth-owner-budget-job contracts retained",
+    "newHostFullVerify": {
+      "baseMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "exitCode": 0,
+      "tests": 3026,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 3,
+      "logSha256": "b41f8894f212b0bf274a9d401c9b618d6d001f541ab0bfe2178a2b0529ce3618"
+    },
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "rootCUAAcceptance": false,
+    "realAuthJobAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "next": "New standard fullverify, preserve latestmain, separate Root final metadata review, exacthead CI then normal main/mergeCI",
+    "latestSynchronizedMain": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+    "latestSynchronizationScope": "Preserves accepted Mini and eSIM main records; new exact-head Linux fullverify/CI remains required after adding eSIM test"
+  },
+  "esimProvisionRecoveryMainCurrent": {
+    "schema": "rockstaros.esim-provision-recovery-main-current/1",
+    "pr": 236,
+    "acceptedHead": "42c005688d78daa8597b7f59f445e2c5ace9c2f7",
+    "mainMergeSha": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+    "mainMerged": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "headVerify": {
+      "run": 40199178953,
+      "tests": 3026,
+      "pass": 3024,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "129850911384adf5502d98557350ece57d4a40efeebe26698180be1a98e6353b"
+    },
+    "mainVerify": {
+      "run": 40199482134,
+      "tests": 3026,
+      "pass": 3024,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "f6ff9330c5ce923663faadc289a01d92c85e4baec321199a4d339c1f42b55ec5"
+    },
+    "scope": "Test-only explicit close/reopen after controlled local setup UPDATE failure; same persisted workspace and no repeated billing prerequisites",
+    "sourceTestSha256": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+    "sourceIndependentReview": "docs/evidence/development-execution/esim-provision-recovery-review.json",
+    "originalAdoptionReceipt": "docs/evidence/development-execution/esim-provision-recovery-main-adoption.json",
+    "historicalReceiptsUnchanged": true,
+    "runtimeSchemaApiBillingChanged": false,
+    "wholeUnitAccepted": false,
+    "processKillOrPowerLossAccepted": false,
+    "productionD1Accepted": false,
+    "realIssuerReadyAccepted": false,
+    "realProviderOrFinancialAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
   }
 }

@@ -734,6 +734,11 @@ Web Previewのvisual contractは、avokado製品Siteと同じグラファイト�
 
 keyboard、touch、screen reader、文字倍率、色以外の状態表現、動きを減らすmodeを画面ごとに受け入れる。会話だけを唯一の操作方法にしない。
 
+<a id="smith-running-workspace-landmark"></a>
+### 処理中のページ内スキップ導線
+
+running時の同頁landmark修復（SKY21 / SMITH-01）: 既存の`#workspace-main`だけはshellのclick guardを通し、Tab→Enterで`tabIndex=-1`のmainへ移れる。他route/別fragmentの抑止、navのaria-disabled、running/beforeunloadとconsumerのonClickCaptureは維持する。consumerが追加でpreventDefaultする条件を解除せず、hash移動をjob停止・再送・承認・本人切替へ接続しない。入出力は既存running/anchor hrefとbrowserの同頁focusだけ、新API/保存/復旧データなし。退行時は通常Git revertでshell差分を戻し、保存jobを削除しない。局所10試験と実Reactを使う合成Chrome390/1280fixtureで旧抑止→新focus/遷移抑止/draft保持を確認した。実keyboard/非zero inset/zoom/認証後composer/real job/native/本番の合格は別でwhole SMITHはfalse。[修正証拠](evidence/development-execution/smith-running-skip-link.json)。
+
 ### 接続案内と現行方針（2026-10-11）
 
 Homeと接続案内は既存のaccountEntryDecisionに合わせ、アカウント利用を先に示す。SIM購入をWeb利用の前提にせず、既存の署名済み購入claim・端末コード・キー管理の経路を保持する。eSIMの新規発行/販売は保留を明示し、この文言修正で機能を有効化しない。合格条件はHome→接続→Sky/Zema導線、既存claim契約検査、PC/390pxでの操作確認。新しい料金・認証方式・販売開始は決めない。

@@ -226,6 +226,15 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## SMITH-01 処理中のページ内スキップ導線
+
+最新main24ad1952へeSIM test-onlyまで通常同期し、Mini229/current main a58全13CIとeSIM236/current main24ad全6CIの実受入を現行status/95overlay/handoffへ追記。各head14/7成功、LinuxはMini3025/3023/0/2、eSIM3026/3024/0/2。元pending/失敗/host/原検収は不変。whole95受入0、金融/実機/公開は未受入。次はSmith固定source2のRoot最終metadata検収・新headCI・通常main/mergeCI。
+
+判断更新: Root側本人の他chat残作業もmain統合まで進める明示指示を直接読戻し、このsource2にも適用。元save-only recordは履歴保存し、新しい[main採用記録](docs/evidence/development-execution/smith-running-skip-main-adoption.json)へ分離。main a58c6ffaへ通常同期、source2と元reviewhash不変。新標準host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0。Root別metadata検収→最終headCI→通常main/mergeCIを実施する。実auth/job/RootCUA/実機/wholeSMITH/公開は未受入。
+
+現在の有限修復（SKY21 / O5 / SMITH-01）: main3bbから、running中に既存「メインコンテンツへ」が抑止される不具合を修復。既知同頁fragmentだけを許可し、他移動・consumer guard・auth/owner/予算/job/保存は保持。10局所試験と合成actual React/Chrome390/1280で旧反例/新focus・遷移抑止・draft保持を確認。[証拠](docs/evidence/development-execution/smith-running-skip-link.json)。source/metadata独立検収PASS・必須修正0、host全verify2994/2991pass/0fail/3skip。最新mainへの採用/Git保存/最終同SHA CIはGit担当へ引継ぐ。実auth/realjob/実機/native/wholeSMITHは未受入、公開・配備・616保留。原PR203 receiptの記録時点の値は保持する。
+
+
 ## Game→WorkJobの非金融下書き採用（AI06/GM01・08/ROCK）
 
 着手: 最新main1ec70d62へ固定4sourceを同hash採用。既存GAME-01/PR205のCLI受入とworkflow/API/store/owner/依存を保全。元receipt78376/独立reviewf21ed/Root UIec031を原本hashと区別した匿名要約で保存。原56・独立7・Root実合成UIと最新Zod4.6.7 preflight56を別平面で保持。下書きimportは一時memory、本人createが唯一の保存、unknown時同ID/planを明示確認、実行/完了/予算承認0。標準private生成を含むhost全verifyはexit0（3010/3007pass/0fail/3skip）。初回loopback待受けEPERMはsource変更なしで実行条件を直して回復し、失敗ログを保持。Linux07354 CIは旧UI反例の固定ee9 object不足で1fail（3010/3007pass/2skip）。CIだけにdepth1固定commit取得＋旧Workbench hash照合を追加し、4source/反例を変更・skipしない。独立integration検収、同head CI、通常main/同mergeCIが残gate。原missing-private fulltsc失敗は保存し型stubを採用しない。wholeGAME02/実Game/金融/Provider/実機/公開と616一括公開は保留。証拠 docs/evidence/development-execution/game-work-draft-main-adoption.json。

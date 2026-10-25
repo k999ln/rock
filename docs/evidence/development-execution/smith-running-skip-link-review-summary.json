@@ -1,0 +1,70 @@
+{
+  "schema": "rockstaros.smith-running-skip-portable-review/1",
+  "sourceReviewStatus": "PASS_SCOPED_SOURCE",
+  "mustFix": [],
+  "source": [
+    {
+      "path": "components/workspace-shell.tsx",
+      "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+    }
+  ],
+  "originalSourceReviewSha256": "38402db2ac4ef610d5a42cdc07c4895ecb864488c16ea3d465328ed38c90b279",
+  "originalMetadataReviewSha256": "d9684e7574e7465b2db081b28339dd9454ec96b4f6a4cea0fbd7f52280ffb6df",
+  "sourceBase": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+  "resolvedEvidenceFinding": "Old variant unexecuted route/draft checks now null with checksNotRun; old measured skip failure retained, new supported assertions remain true.",
+  "browserSummaryReadback": {
+    "sha256": "829e5dd627eb6e69a47d644ef8f65d06dde2d592ad9c84b6391ad8812e709034",
+    "widths": [
+      390,
+      1280
+    ],
+    "oldMeasuredSkipReachedMain": false,
+    "oldRouteGuardAndDraft": null,
+    "oldChecksNotRun": [
+      "route guard",
+      "draft preservation"
+    ],
+    "newSkipFocusRouteGuardDraftAssertions": true,
+    "externalRequests": 0,
+    "apiRequests": 0,
+    "sourceHashesVerified": true,
+    "screenshotHashesVerified": true,
+    "scriptSha256": "2bf72d82c01c30712474cdf51959e78ac26634232f1f6b4ce85b3896e7303a01",
+    "execution": "Parent reran actual React/Chrome synthetic loopback fixture; reviewer inspected revised fixture/summary and hashes, not a separate browser execution"
+  },
+  "verifiedAtOriginalBase": {
+    "exactTwoSourceTestPlusTenMetadataDocPaths": true,
+    "taskAssignmentSKY21O5MatchesAMC": true,
+    "allExistingStatusFieldsUnchanged": true,
+    "handoffOnlyNewSmithFollowupAndSmith01OverlayRef": true,
+    "allExistingOverlayUpdatesUnchangedNewSingleCandidateOnly": true,
+    "indexOnlyRunningLandmarkRepairSubentryAdded": true,
+    "bothExistingBooksHaveUniqueAnchorInsideUiAccessibilitySection": true,
+    "contractPurposeExperienceResponsibilityInputsOutputsRunningStateNoStorageFailureRevertAdmissionAcceptanceRemainingGatesConsistent": true,
+    "consumerCanStillPreventDefault": true,
+    "originalPR203ReceiptUnchanged": true,
+    "baseline2_08And393Tasks14PhaseGatesUnchanged": true,
+    "95LedgerBytesAndWholeAccepted0Unchanged": true,
+    "correctedOldBrowserUnmeasuredChecksAndFixtureBoundaryRetained": true,
+    "noRawBrowserArtifactsCopiedIntoGit": true,
+    "mainMergeFullVerifyAndFinalCINotPrematurelyPassed": true,
+    "publicDeployment": false,
+    "bulk616PublicExport": "HELD",
+    "wholeSmithAuthRealJobPhysicalNativeNotAccepted": true,
+    "all13ProtectedFilesIncludingSixOriginalNavImplementationsMatchBase": true
+  },
+  "limits": [
+    "Actual browser fixture stubs Next link/router and device monitor; no real auth/owner/job/provider acceptance",
+    "Independent109cases execute actual TSX handler via deterministic compilation, not live DOM/browser",
+    "Metadata and final Git saved SHA CI still require parent verification",
+    "Scoped host/browser-fixture accessibility repair only, not actual authenticated composer or real running job acceptance",
+    "Source10tests and109independent cases remain original accepted executions; metadata additions do not replace final same-SHA CI",
+    "Full verify in progress at review; final results/metadata review digest may be appended truthfully before Git save",
+    "No source/auth/owner/job/fee/provider/device changes beyond reviewed click guard"
+  ],
+  "rawBrowserOrPrivatePathsPublished": false
+}
