@@ -501,4 +501,4 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 ## 現行画面と会社ロゴの更新
 
-本人指定の紺色6輪ロゴ（data/company-brand.json）を共通使用する。表示名はsmis、smisタブの基本表示はtimelineのみ。コミュニティーは独立した一覧から専用鍵で入る。既存SkyのURL/API/schemaは互換のため保持。公開Web/Pixelの表示反映は今回明示承認されたが、全OS/一般ローンチ/実課金合格を意味しない。詳細はdocs/rockstaros-complete-design.mdの共通ヘッダー節。
+本人が2026-10-25に明示指定した虹色6輪ロゴ（data/company-brand.json）を3サイトで共通使用する。紺色版から変更する理由は、本人添付の現行ロゴに統一する明示依頼。表示名はsmis、smisタブの基本表示はtimelineのみ。コミュニティーは独立した一覧から専用鍵で入る。既存SkyのURL/API/schemaは互換のため保持。公開Web/Pixelの表示反映は今回明示承認されたが、全OS/一般ローンチ/実課金合格を意味しない。詳細はdocs/rockstaros-complete-design.mdの共通ヘッダー節。

@@ -42,7 +42,7 @@ export default function OSHeader({
             aria-label="RockstarOS ホーム"
             aria-disabled={running || undefined}
           >
-            <Image src="/company-mark.png" alt="" width={30} height={30} unoptimized />
+            <Image src="/brand/rainbow-logo-512.png" alt="" width={30} height={30} unoptimized />
             <span className="os-brand-product">RockstarOS</span><span className="os-brand-context">{title}</span>
           </Link>
           <span className="os-current-app">{title}</span>

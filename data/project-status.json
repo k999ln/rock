@@ -10027,5 +10027,22 @@
       "resultReceivedOnWebAndPixel": false,
       "publicDeployment": false
     }
+  },
+  "rainbowWebBrand20261025": {
+    "taskId": "WEB04",
+    "owner": "ROCK",
+    "status": "verified_publication_pending",
+    "scope": "Three published web sites; exact supplied rainbow logo; native unchanged",
+    "next": "Publish exact checked source and read back avoado.si; Mini/Pro v48 already deployed",
+    "verification": {
+      "coreTests": 2603,
+      "passed": 2602,
+      "skipped": 1,
+      "failed": 0,
+      "logoRouting": 18,
+      "pwaLogo": 4,
+      "miniProPublicSite": 40,
+      "verifyRemainder": "passed after OpenSSL3, child dependencies and local-state isolation; resumed at failed environment step"
+    }
   }
 }

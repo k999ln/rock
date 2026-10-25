@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'RockstarOS',
   },
-  icons: { icon: '/favicon.svg', apple: '/rock-icon-192.png' },
+  icons: { icon: '/brand/rainbow-favicon.svg', apple: '/brand/rainbow-logo-192.png' },
 };
 export const viewport: Viewport = {
   width: 'device-width',
@@ -28,7 +28,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>{children}<script src="/brand/rainbow-boot.js" defer /></body>
     </html>
   );
 }

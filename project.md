@@ -1,3 +1,11 @@
+## 2026-10-25 — 虹色Webブランドの検証完了
+
+公開版を基にした3サイトのWebブランド変更。本体2603試験は2602 pass/1 skip/0 fail、ロゴとrouting18試験、PWA/ロゴ4試験、独立Mini/Pro40試験成功。npm run verifyは環境依存（OpenSSL3、不足子依存、一時state）を補い、中断箇所から残りの全stageを実行し完了。baseline/design/typecheck、build、配布参照218件missing0、API/CSV、mission/work/botまで成功。Mini/Proはv48公開・正式domain読戻し済み。OSはこのsourceの保存・公開・正式domain読戻しが次。実機・本番課金・一般ローンチ合格への読み替えなし。
+
+## 2026-10-25 — 3サイトの虹色ロゴ統一
+
+本人の明示依頼により、公開版sourceからWebブランドを修正。旧紺色・銀色の表示を本人添付の虹色原本へ統一し、白背景の既存光跡案をスキップ可能な起動演出に反映。公開・読戻しは検証後に別記する。実機OS/APKは対象外。担当Web/ROCK、既存WEB04。
+
 ## Eve停止候補：最新公開v114を保持したローカル適応
 
 Source9c4edd9aを基に、owner停止/receipt/成果競合fenceとEve操作だけを追加。既存News/Tool、認証、料金、Home/Pixel選択を保持。初期v113隔離UIは別証拠で、今回はv114の同一buildを再検証する。実機/公開は未受入。

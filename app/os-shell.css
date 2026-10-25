@@ -94,3 +94,5 @@
   border-color: var(--os-shell-line);
   background: var(--os-shell-panel);
 }
+
+.os-header .os-brand img{background:#fff;border-radius:6px;filter:none}

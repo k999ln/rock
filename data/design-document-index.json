@@ -3111,5 +3111,14 @@
       "resultReceivedOnWebAndPixel": false,
       "publicDeployment": false
     }
+  },
+  "rainbowWebBrand20261025": {
+    "authority": "docs/rockstaros-complete-design.md",
+    "source": [
+      "public/brand/rainbow-boot.js",
+      "components/os-header.tsx",
+      "app/layout.tsx"
+    ],
+    "scope": "Web branding only; native installation unchanged"
   }
 }

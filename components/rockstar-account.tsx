@@ -108,7 +108,7 @@ export default function RockstarAccount() {
     finally { setBusy(false); }
   }
   return <main className={styles.page}>
-    <nav className={styles.top}><Link href="/"><img src="/company-mark.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/os/eve">Eve</Link></nav>
+    <nav className={styles.top}><Link href="/"><img src="/brand/rainbow-logo-512.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/os/eve">Eve</Link></nav>
     <section className={styles.card} aria-labelledby="account-title" aria-busy={busy}>
       <p className={styles.eyebrow}>YOUR OWN SPACE</p>
       <h1 id="account-title">{complete || configured ? '自分のsmisとEveへ。' : mode === 'login' ? 'おかえりなさい。' : mode === 'recover' ? '続きを、取り戻そう。' : '登録して、はじめよう。'}</h1>

@@ -3070,13 +3070,13 @@
   "previousNextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "companyLogo20261023": {
     "schema": "rockstaros.company-brand/1",
-    "revision": 2,
-    "authority": "User supplied signal-2026-10-23-025407.png and requested global sharing",
+    "revision": 3,
+    "authority": "Owner explicitly requests the attached rainbow logo across all three published sites on 2026-10-25",
     "source": "public/brand/rockstaros-logo-source.png",
-    "sourceSha256": "99718729b2caaf0c52ddcf1db48c48da2c0b1eb61d7ff2c1775ce44d545bf6b9",
-    "width": 1920,
-    "height": 1080,
-    "description": "Six navy outlined petals and a central outlined circle on white",
+    "sourceSha256": "520b8ca375bb8d533055f6ab884532d30a204e42774fabd13d756c36f0045045",
+    "width": 1254,
+    "height": 1254,
+    "description": "Owner supplied six rainbow outlined petals and central loop on white",
     "scope": [
       "RockstarOS",
       "smis (formerly Sky)",
@@ -3084,8 +3084,8 @@
       "avocadoMini",
       "avocadoPro"
     ],
-    "previousMark": "silver metallic droplet; retained only in historical evidence",
-    "handling": "Preserve the supplied shape/aspect; derive square icons from the centered 1080x1080 canvas without redrawing. Keep legacy asset URLs compatible. Do not imply a rebuilt APK, flashed OS or published Site from source changes."
+    "previousMark": "Navy flower and silver metallic marks retired from current Web branding",
+    "handling": "Preserve supplied pixels, colors, shape and aspect ratio. Square resizes only. This update covers three Web sites, not a rebuilt or installed native OS."
   },
   "osVisualDirection20261023": {
     "authority": "latest explicit user instruction",

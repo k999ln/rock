@@ -8,8 +8,8 @@ const json=p=>JSON.parse(read(p).toString());
 const sha=b=>createHash('sha256').update(b).digest('hex');
 void test('new company logo preserves the exact owner supplied original and common product scope',()=>{
  const brand=json('data/company-brand.json'),source=read(brand.source);
- assert.equal(sha(source),'99718729b2caaf0c52ddcf1db48c48da2c0b1eb61d7ff2c1775ce44d545bf6b9');assert.equal(brand.sourceSha256,sha(source));
- assert.deepEqual([source.readUInt32BE(16),source.readUInt32BE(20)],[1920,1080]);
+ assert.equal(sha(source),'520b8ca375bb8d533055f6ab884532d30a204e42774fabd13d756c36f0045045');assert.equal(brand.sourceSha256,sha(source));
+ assert.deepEqual([source.readUInt32BE(16),source.readUInt32BE(20)],[1254,1254]);
  for(const name of ['RockstarOS','Eve','avocadoMini','avocadoPro'])assert.ok(brand.scope.includes(name));
  assert.ok(brand.scope.some(name=>name.startsWith('smis')));
 });

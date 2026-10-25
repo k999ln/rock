@@ -75,6 +75,7 @@ const SKY_PREFIXES = [
   '/zema',
   '/manifest.webmanifest',
   '/company-mark.png',
+  '/brand',
   '/rock-icon-',
   '/loop-icon-',
   '/toolkits',
