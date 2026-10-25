@@ -73,6 +73,16 @@
         "cause": "sandbox listen EPERM127.0.0.1 at sky:a2a:workflow:test, before product tests",
         "sourceChanged": false,
         "logSha256": "63a7cdb8222a1443a2f2318aec2a6f4847d07ef72b31bff4047859d8218a6182"
+      },
+      {
+        "stage": "exacthead07354 Linux CI",
+        "run": 40190970498,
+        "job": 121161707735,
+        "result": "exit1:3010tests/3007pass/1fail/2skip",
+        "cause": "checkout depth1 fetched only head; actual old-main negative control could not read pinned ee9 Workbench",
+        "source4Changed": false,
+        "testRemovedOrSkipped": false,
+        "rawLogSha256": "f03c7d9a2b5007ed520c2bcca078e6e53d38a2a1fb4d9fd20ab05b527adada6c"
       }
     ]
   },
@@ -83,5 +93,14 @@
     "incoming": "PR22122metadata/design paths only; accepted runtime/dependencies unchanged since host verification",
     "source4HashesUnchanged": true,
     "allExistingMainStatusPreserved": true
+  },
+  "ciHistoricalFixturePreparation": {
+    "workflow": ".github/workflows/ci.yml",
+    "commit": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "path": "components/workbench.tsx",
+    "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+    "fetch": "git fetch --no-tags --depth=1 origin ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "scope": "One immutable public main baseline, hash checked before full verify. Current source checkout unchanged, no all-history fetch or test weakening.",
+    "newExactHeadCI": "pending_at_capture"
   }
 }

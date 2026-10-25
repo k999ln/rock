@@ -10471,6 +10471,12 @@
       "fail": 0,
       "skip": 3,
       "exitCode": 0
+    },
+    "ciHistoricalFixturePreparation": {
+      "commit": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+      "source4Unchanged": true,
+      "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
     }
   }
 }
