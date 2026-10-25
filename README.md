@@ -1,7 +1,3 @@
-保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
-
-eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
-
 PR209の更新fenceは、metadataを同じFDで検査・上限付き読込し、pointer/receipt/親directoryの差し替え時に拒否する修正候補です。旧headのCodeQL Highを履歴として保持し、新HEADの全CIで再確認します。実機操作・追加推論は行いません。
 
 Pixel/Linuxの[cache-only準備と更新fence](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)を限定候補へ追加。既存の検証済みbytesだけでversion/capabilitiesを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を使います。cache不一致や結果不明を取得/修復/推論へ自動切替しません。更新中は新しい効果を止め、固定payload/既存job・model・鍵を保持します。host検収済み、同head Linux新Python安全試験と全verify/独立metadata検収は別gate。実機配備・推論・fullOS/P02/一般公開は未受入です。Pro入口はPR207/main0dで限定統合済みです。
@@ -194,6 +190,8 @@ native統合手順にはOS系列ごとの実装・検証方法、Linux toolkit�
 
 ### 現在の開発状況
 
+eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
+
 Web runtime、Linux/serviceとPixel/Lab adapterのコードをmainへ統合済み。Pixel 10 GL066 / frankelでは純正OS上の試験署名APKで非破壊の実再起動受入23/23が根拠です。
 
 全OS build・正式署名・flash/boot・data/Keystore全損復元は未完了。[Pixelの境界](docs/phone-preview-20260911.md)。QEMU Developer Previewは独立した系列として保持し、最新候補の配布受入は[QEMU担当](docs/workstreams/06-native-qemu-release.md)で管理します。
@@ -252,6 +250,8 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 - [仕事の状態遷移](lib/workflow.ts)
 
 ### 現在の開発状況
+
+保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
 
 会話の明示保存・読戻し・削除と、本人の成果をHTMLへ持ち出すコードをmainへ統合済み。
 

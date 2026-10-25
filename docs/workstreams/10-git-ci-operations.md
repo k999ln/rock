@@ -1,7 +1,3 @@
-## Wallet UI fixtureの遅延GET帰属
-
-CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固定する。新しい認証確認GETへ古いgateを渡さず、後着の古い読取でowner/私有情報を復活させない既存製品契約を固定2反例で検査。`node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs`45pass、旧対照2fail。製品source/認証/料金は変更なし。[証拠](../evidence/development-execution/wallet-ui-deferred-get-fixture.json)。
-
 ## Pixel cache-only/更新fence main候補
 
 Pro207 main0d基点、検収済み9source/test無変更と追加CI1path限定。元receipt2608/独立c9c795、原cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。[詳細](../rockstaros-complete-design.md#pixel-cache-only-main-port)。Node/Python/normalgenerator/type/packageと最終head Linux新Python6+23/実verify/全CI・独立metadataがgate。Gitの端末操作0、physical/fullOS/P02/追加推論は未受入、soleOS leaseを維持。Rootregistry非操作、616公開保留。
@@ -91,6 +87,12 @@ PC UI reloadは画面証拠不足で未確認。背景実行・P02全体・全OS
 PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採用証拠と有限計画](../evidence/development-execution/service-contract-adoption.json)へ。helper受入、GitHub保存、main統合、同SHA CI、公開を別記録とする。次はMini/Pro/Webの検収済み限定差分、Smith test、Eve保存/Game検収を各小PRで再照合し、未完の全DB unionを独立成果保存の一律停止理由にしない。
 
 # Git / CI / Operations
+
+## Wallet UI fixtureの遅延GET帰属
+
+CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固定する。新しい認証確認GETへ古いgateを渡さず、後着の古い読取でowner/私有情報を復活させない既存製品契約を固定2反例で検査。`node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs`45pass、旧対照2fail。製品source/認証/料金は変更なし。[証拠](../evidence/development-execution/wallet-ui-deferred-get-fixture.json)。
+
+
 
 ## avokado全体のREADME入口（2026-10-21、DOC04 / G04、ROCK）
 

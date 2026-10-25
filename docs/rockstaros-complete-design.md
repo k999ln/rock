@@ -379,6 +379,12 @@ Pixelの有限計画は[モデル導入とJennifer契約](native-os-integration.
 
 [選択契約](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、Skyでmodel/Agent/Toolと実hostを選び、Zemaの同Job/版/grant/見積へ固定する。model推論先とAgent runnerを分け、local/cloud/明示組合せを対応能力の範囲で提示する。全選択肢の実装/本番受入は未完了で、Brokerの承認/予算/停止と無断fallback禁止を維持する。
 
+
+<a id="eve-estimate-rate-unit"></a>
+### Eve見積の単価単位表示
+
+目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。
+
 ## Pixel先行とiOSのservice client
 
 [多機種契約](device-support-architecture.md#pixel先行とiosへの機能追加)に従い、最初の物理商品はPixelの独自OS統合。iOSはeSIM商品＋client/Web/対応native連携の後続経路として同じJob/Artifact/予算/Receiptへ接続する。回線profile、利用権、client版、device sessionとOS権限を分離し、Pixel専用権限をiOSへ継承しない。Pixelが不在でもcloud接続できる設計とし、実装/実機受入は別に記録する。
@@ -994,6 +1000,21 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 
 既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
 
+
+<a id="esim-ack-reconciliation"></a>
+### eSIMサービス保存ack後の現在状態再照合
+
+目的・利用体験: 保存応答の直後に読込が失敗しても、以前の契約や私有情報を操作可能として残さない。保存revisionを案内し、明示の状態再確認はGETだけを行う。初回の本当の未契約は既存同意導線を保つ。
+
+責任・入出力: ROCKの既存UIはaccepted/requestId/revisionを一時的な照合情報として扱う。Broker・serverの本人/owner権限、workflow、料金、支払いclaimは従来の契約を維持する。EXTERNALの応答やclient ackは実行権限へ昇格しない。OWNERは現状態を確認して意図した操作だけを選ぶ。
+
+状態・保存: loading/ready/pending/unavailable/signin/changedと既知/不明の照合状態を使う。同owner/workspace/order/device、ack以上revision、対象requestIdをfresh GETで確認してから現時点の権限に沿って復帰。private bodyやcredentialを新たに永続保存しない。null/500/401/403/別owner/古い応答では私有情報・export・invoice・新契約・mutationを隠す。非表示でgenerationとflightを無効化し、復帰時はfresh GETだけを実行する。
+
+失敗・復旧・承認: 不明POST結果を自動再送しない。同時操作lockとcurrent view照合で古いhandlerを拒否。late POST/GETは権限を復活させない。既知validationエラーも現権限を再読込してから入力を戻す。保存ackは課金・job完了・契約有効・端末導入の証明ではない。
+
+合格条件・未決定: 元8反例と追加3 lifecycle、component41、関連回帰/type/lint、実React合成browserのnull/500/403と同context回復を限定検収。実browser hidden遷移は未検証でありfixture結果と区別。最新main採用後の独立metadata検収、全verify、同head/mergeSHA CIでGit受入を決める。実Provider/金融/実機/一般公開は別gate。[証拠](evidence/development-execution/esim-ack-main-adoption.json)。
+
+
 ## 着脱Miniと請求の共通契約
 
 [Mini通信・月次請求](service-design/08-mini-connectivity-and-billing.md)に本人、場所scope、携帯電源、WAN能力、usage/請求/制限/復旧を統合。OSによる銀行口座凍結は行わず、本番gateと旧料金保留を維持する。
@@ -1146,24 +1167,9 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
 
 
-<a id="esim-ack-reconciliation"></a>
-## eSIMサービス保存ack後の現在状態再照合
-
-目的・利用体験: 保存応答の直後に読込が失敗しても、以前の契約や私有情報を操作可能として残さない。保存revisionを案内し、明示の状態再確認はGETだけを行う。初回の本当の未契約は既存同意導線を保つ。
-
-責任・入出力: ROCKの既存UIはaccepted/requestId/revisionを一時的な照合情報として扱う。Broker・serverの本人/owner権限、workflow、料金、支払いclaimは従来の契約を維持する。EXTERNALの応答やclient ackは実行権限へ昇格しない。OWNERは現状態を確認して意図した操作だけを選ぶ。
-
-状態・保存: loading/ready/pending/unavailable/signin/changedと既知/不明の照合状態を使う。同owner/workspace/order/device、ack以上revision、対象requestIdをfresh GETで確認してから現時点の権限に沿って復帰。private bodyやcredentialを新たに永続保存しない。null/500/401/403/別owner/古い応答では私有情報・export・invoice・新契約・mutationを隠す。非表示でgenerationとflightを無効化し、復帰時はfresh GETだけを実行する。
-
-失敗・復旧・承認: 不明POST結果を自動再送しない。同時操作lockとcurrent view照合で古いhandlerを拒否。late POST/GETは権限を復活させない。既知validationエラーも現権限を再読込してから入力を戻す。保存ackは課金・job完了・契約有効・端末導入の証明ではない。
-
-合格条件・未決定: 元8反例と追加3 lifecycle、component41、関連回帰/type/lint、実React合成browserのnull/500/403と同context回復を限定検収。実browser hidden遷移は未検証でありfixture結果と区別。最新main採用後の独立metadata検収、全verify、同head/mergeSHA CIでGit受入を決める。実Provider/金融/実機/一般公開は別gate。[証拠](evidence/development-execution/esim-ack-main-adoption.json)。
 
 
-<a id="eve-estimate-rate-unit"></a>
-## Eve見積の単価単位表示
 
-目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。
 
 <a id="pixel-update-guard-toctou-fix"></a>
 ### PR209 update metadata読込競合の修正（2026-10-25）

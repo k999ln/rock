@@ -54,5 +54,16 @@
   "physicalAccepted": false,
   "realFinancialOperation": false,
   "publicDeployment": false,
-  "next": "Independent source/readback review, latest main normal sync, fixed final-head Linux full verify and all CI; no timeout/skip/security weakening."
+  "next": "Independent source/readback review, latest main normal sync, fixed final-head Linux full verify and all CI; no timeout/skip/security weakening.",
+  "hostFullVerify": {
+    "exitCode": 0,
+    "root": {
+      "tests": 2982,
+      "pass": 2979,
+      "fail": 0,
+      "skipped": 3
+    },
+    "logSha256": "36a51eeccdcc5fee95037080e86de647fad825449cec125b5d14425f9219eb4a",
+    "scope": "Mac host; Linux-only skips separate; subsequent doc placement checked by project/design/diff, final-head Linux CI still required"
+  }
 }
