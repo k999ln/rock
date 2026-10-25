@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp, mkdir, readFile, writeFile, copyFile, rm, symlink, link, readdir, lstat, chmod, realpath} from 'node:fs/promises';
+import {mkdtemp, mkdir, readFile, writeFile, copyFile, rm, symlink, link, readdir, lstat, chmod, realpath, open} from 'node:fs/promises';
+import {constants} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {tmpdir} from 'node:os';
@@ -95,8 +96,17 @@ for(const [name,place,kind] of [
   if(kind==='file')await writeFile(path,'existing must remain unchanged');
   if(kind==='directory')await mkdir(path);
   if(kind==='fifo')assert.equal(spawnSync('mkfifo',[path]).status,0);
-  const before=await lstat(path),result=await f.run();assert.notEqual(result.status,0);assert.equal(result.report.fetchCalls,0);assert.equal((await lstat(path)).ino,before.ino);
-  if(kind==='file')assert.equal(await readFile(path,'utf8'),'existing must remain unchanged');await noTemporary(f);
+  // Pin the original regular-file object before checking paths or running the child.
+  const handle=kind==='file'?await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK):null;
+  try {
+    const before=await lstat(path),result=await f.run();assert.notEqual(result.status,0);assert.equal(result.report.fetchCalls,0);assert.equal((await lstat(path)).ino,before.ino);
+    if(handle){
+      const checked=await handle.stat();assert.ok(checked.isFile());assert.equal(checked.nlink,1);
+      assert.equal(checked.dev,before.dev);assert.equal(checked.ino,before.ino);
+      assert.equal(await handle.readFile('utf8'),'existing must remain unchanged');
+    }
+  } finally {await handle?.close();}
+  await noTemporary(f);
 });
 for(const kind of ['models-symlink','models-file','models-writable','runtime-symlink'])void test('model installer refuses '+kind+' before network or outside writes',options,async t=>{
   const f=await fixture(t);

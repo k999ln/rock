@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## 新host試験のdescriptor読取とCI最終再固定
+
+installer修復後b709で実Linux packetは成功したが、CodeQLが新host試験のlstat後path再readをhighで指摘。installer054と他23固定対象は変えず、同じ拒否試験のregular fileをchild/検査前のO_NOFOLLOW|O_NONBLOCK descriptorへ固定し、型/link数/dev/ino照合後にdescriptorでreadしfinally closeする。元の拒否/fetch0/元inode/内容/cleanup assertionは維持。専用+gesture47/47成功、testは旧0d3からb4b385へ改版。Root source4150は旧testの履歴として保持し、この限定test差分を別確認して新head標準verify/CodeQL全CIを必須とする。[差分記録](docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json)。root/Tool/実機/実課金/実camera精度/公開を追加受入しない。
+
 ## finite batchのinstaller安全性修復と最終再固定
 
 Rootが旧installer6e321の既存download/directory symlinkによる外部marker上書きを実証し、bf42全14CI成功でも採用を止めた。元Mini担当のinstaller054dda＋専用test0d3df＋primary881fだけを採用し、Root独立4150で47試験/別旧新6scenario・beforefetch拒否/marker保持/正常0600nlink1/cleanup/valid再実行fetch0を確認。Root指示により技術READMEだけ追加改版し、UID/O_NOFOLLOW/hardlink対応macOS/Linux・Windows非対応、既存物非上書き/旧残骸自動削除なし、同UID並行親交換の非保証を明記。元22のうち20とservice依存7は不変、installer/技術README改版＋新hosttest＋Linuxfixtureで固定24hash。新union全verify3074/3071pass/0fail/3skip成功（README文書追記だけ後続）、CodeQL3警告の実bug修復とDedicatedWorker限定文脈を分離しsecurity0としない。旧588失敗/bf42CI成功・採用block/原sourceレビューは保存。[最終修復記録](docs/evidence/development-execution/prepared-device-mini-security-revision.json)。次: 新manifest/headのRoot/Web再検収→同head全CI/実Linux26→通常main/mergeCI→current metadata/main保存。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開・616は保留。

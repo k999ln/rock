@@ -11096,14 +11096,16 @@
       "rootSourceReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
       "mustFix": 0,
       "originalOtherGesture14Unchanged": true,
-      "readmeOnlyAdditionalDocumentationRevision": true
+      "readmeOnlyAdditionalDocumentationRevision": true,
+      "latestHostTestSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+      "hostTestDeltaEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json"
     }
   },
   "preparedDeviceMiniBatch": {
     "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
     "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
     "fixedSourceCount": 24,
-    "status": "installer_security_source_pass_new_union_full_verify_pass_pending_finalhead_review_CI",
+    "status": "host_test_descriptor_read_revision_pending_Root_delta_review_and_new_head_CI",
     "mainMerged": false,
     "whole95Accepted": 0,
     "publicDeployment": false,
@@ -11120,7 +11122,7 @@
     },
     "originalFixedSourceCount": 22,
     "linuxPacketSupplement": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
-    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json",
     "originalSource22Unchanged": true,
     "originalHeadCI": {
       "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
@@ -11140,7 +11142,8 @@
       "noTypeStubs": true,
       "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
       "documentationReadmeChangedAfterRunOnly": true
-    }
+    },
+    "testReadRevisionSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0"
   },
   "miniLinuxObservationFixture": {
     "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
