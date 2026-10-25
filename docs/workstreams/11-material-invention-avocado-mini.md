@@ -4,6 +4,10 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 
 # Material Invention / avocadoMini
 
+## Mini開発用message serviceの採用
+
+ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止をhostで検査する。独立source検収mustFix0、service20・全Mini103・追加9負例とLinux packet26を別集計で記録する。実製品identity/回線/transport/Job保存/実機は未受入。[契約](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)／[独立検収](../evidence/development-execution/mini-08-message-service-review.json)。
+
 ## 携帯・PC前・対象物前を必須にしない制作と対話
 
 2026-10-15の[本人指示と6受入ケース](../service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を追加。設計同期はDOC04/H1（ROCK）、体験はWEB04、能力/仕事連携はSKY21、実機入力/表示/停止と空間到達範囲はMAT15（JOINT）。最初は一室・一作品で電話取り出し0/PC前必須操作0、案/修正/保存/再開を測る。確定版の製作引渡しは非電話の本人確認と設備/専門家の受入を別に通す。新規購入/製作/契約/実送信はこの設計更新では実施しない。
@@ -17,6 +21,8 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 5時間の品質改善で、本人別memoryによる配合・候補・保留IDの復旧、二重submit防止、古い一覧によるowner巻戻し拒否、保存入力digestから再生成した候補の照合を修正した。元ownerで同じIDを確認し、不完全な成功応答では保留を消さない。入力形式・安全判定・workflow/CAS・装置非接続は維持する。設計は[CoreのWeb接続](../material-invention-core.md#sky--zemaの机上比較と本人用保存)、証拠は[品質改善記録](../evidence/quality-reliability-review.json)。`node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/material-workspace-recovery.test.mjs`、型・lint、統合verifyと実画面で検証する。未完成JSONを含む未送信入力も保存時点との差分で離脱から保護し、元owner／匿名local draftの明示破棄を同じsnapshotに限定する。空・変更していない保存済み入力では移動できる。強制終了後のmemory復旧、外部ラボ・物理実験・本番受入は含まない。
 
 ## R5の現行入口
+
+2026-10-25の本人指示で、Miniのカメラ追跡・ジェスチャー入力を追加する。最初は手指の選択/移動/回転/停止を端末内で推定し、VIEW_ONLY候補として扱う。Eveの好み予測、本人の明示feedback、Smithの操作許可を分ける。単眼の画面座標を精密3D/全空間追跡の合格にせず、旧四方向契約や物理/金融承認を迂回しない。Mini単体と表示4条件を維持する。 [カメラ入力契約](../../systems/rock-star-os/targets/avocado-mini/gesture/README.md)。
 
 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](../avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 ROCKはadapter/台帳、JOINTは同一実機のRF/電源/熱、EXTERNALは部品/回線条件、OWNERは地域/用途/費用と実施を確定する。
 

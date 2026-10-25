@@ -923,6 +923,72 @@
       "P02Complete": false,
       "physicalAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "SMITH_RUNNING_SKIP_LINK_ADOPTED",
+      "units": [
+        "SMITH-01"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Exact same-page workspace skip landmark during running only; consumer and all other navigation fences retained",
+      "pr": 235,
+      "acceptedHead": "7e9a1db871c799073ea0178ea112f00e6c264a51",
+      "mainMergeSha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "headCISuccess": 7,
+      "mainLatestCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/smith-running-skip-main-current.json",
+      "wholeUnitAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "OS02_CAPABILITY_FRESHNESS_ADOPTED",
+      "units": [
+        "OS-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Future local capability observation rejected; same elapsed-realtime consumer/helper time guard only",
+      "pr": 237,
+      "acceptedHead": "ef13a7b51fab35dc3b4db20695f655197d2c670b",
+      "mainMergeSha": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "headCISuccess": 8,
+      "mainLatestCISuccess": 7,
+      "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-current.json",
+      "wholeUnitAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_MESSAGE_SERVICE_CANDIDATE",
+      "units": [
+        "MINI-08"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Development local Broker/AP ingress and bounded scheduler only; no real product identity/modem/provider/Job import",
+      "evidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_CAMERA_GESTURE_CANDIDATE",
+      "units": [
+        "MINI-04"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Local single-camera view-only prototype; no RGB-depth synchronization/calibrated rig, actual camera precision or Eve learning",
+      "evidence": "docs/evidence/development-execution/mini-gesture-main-adoption.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

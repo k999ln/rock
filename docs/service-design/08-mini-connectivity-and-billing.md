@@ -23,7 +23,7 @@ Sky単体で利用から月次請求まで完結し、Mini・Jennifer・Zema・R
 
 ## ハードと通信
 
-日米のsi・メッセージ・小ファイル向け[共通message adapter](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
+日米のsi・メッセージ・小ファイル向け[共通message adapter](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。既存の開発用Broker本人確認とAP認証を常駐入口へ接続し、周期件数・再送・期限・料金予約を制限する。固定Unix modem bridgeは期限付き。実Broker本人認証・実modem/provider・Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
 
 2026-10-25の継続指示に基づく準備（要件変更なし）: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](../avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。
 

@@ -16,6 +16,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 import uuid
 
 from controller import Controller, Rejected
@@ -38,11 +39,14 @@ def prepare(controller, gate, clients, max_grant_seconds=30):
 def observe_ready(controller,gate):
     now = int(time.time())
     clients=list(controller.snapshot(now)['clients'])
-    gate.observe(controller.snapshot(now)['revision'], dict(bootId='fixture-boot', linkId='fixture-link', providerId='fixture',
-                 contractVersion='v1', region='US', observedAt=now, validUntil=now+60,
-                 powerSafe=True,batteryReady=True,apIsolated=True,meterReady=True,hardQuotaReady=True,
-                 satelliteRegistered=True,twoWayIp=True,internetReachable=True,sharingEntitled=True,
-                 connectedClientIds=clients))
+    # A valid fixture observation and its one validation call use the same epoch.
+    # Kernel expiry/open/ping tests resume the real clock immediately afterwards.
+    with patch.object(gate, '_now', return_value=now):
+        gate.observe(controller.snapshot(now)['revision'], dict(bootId='fixture-boot', linkId='fixture-link', providerId='fixture',
+                     contractVersion='v1', region='US', observedAt=now, validUntil=now+60,
+                     powerSafe=True,batteryReady=True,apIsolated=True,meterReady=True,hardQuotaReady=True,
+                     satelliteRegistered=True,twoWayIp=True,internetReachable=True,sharingEntitled=True,
+                     connectedClientIds=clients))
 
 
 def create_controller(directory, seconds=30, byte_cap=100000, cost_cap=100000):

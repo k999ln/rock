@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.43",
+  "version": "1.44",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -803,9 +803,10 @@
         "acceptedTimeOrder": "0 <= observedAt <= now < expiresAt; lifetime <=30000ms",
         "scope": "Local display observation only; not device identity/readiness/authority proof",
         "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-adoption.json",
-        "mainMerged": false,
+        "mainMerged": true,
         "wholeOSAccepted": false,
-        "physicalAccepted": false
+        "physicalAccepted": false,
+        "currentMainEvidence": "docs/evidence/development-execution/os02-capability-freshness-main-current.json"
       }
     },
     {
@@ -1467,6 +1468,47 @@
         "physicalAccepted": false,
         "mainMerged": true,
         "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
+      },
+      "cameraGesturePreview": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+          "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+          "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js"
+        ],
+        "tests": [
+          "tests/avocado-mini-gesture.test.mjs"
+        ],
+        "scope": "local single-camera view-only proposals; not calibrated spatial acceptance or Eve preference inference",
+        "physicalAccepted": false,
+        "installerSafety": {
+          "evidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+          "independentReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+          "scope": "UID/O_NOFOLLOW/hardlink-capable trusted local POSIX host, non-overwriting model preparation; Windows unsupported",
+          "mainMerged": false,
+          "physicalAccepted": false
+        }
+      },
+      "boundedMessageService": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+        ],
+        "tests": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+          "tests/avocado-mini-tethering.test.mjs"
+        ],
+        "scope": "development local Broker/AP ingress and bounded scheduler/stop only; no real product identity/transport or Job import acceptance",
+        "evidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+        "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+        "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+        "mainMerged": false,
+        "changesExistingAdapterInCandidate": true,
+        "baseAdapterAdoptionEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json",
+        "wholeUnitAccepted": false,
+        "physicalAccepted": false,
+        "providerConnected": false
       }
     },
     {
@@ -3133,9 +3175,10 @@
       "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
       "contract": "Exact existing #workspace-main fragment remains usable while running; all other anchor clicks and consumer admission remain guarded. No new execution authority or persistence.",
       "browserAcceptance": "Synthetic actual React/Chrome fixture390+1280; real job/auth/device/whole SMITH unaccepted",
-      "mainMerged": false,
+      "mainMerged": true,
       "authority": "docs/rockstaros-complete-design.md#smith-running-workspace-landmark",
-      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark"
+      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark",
+      "currentMainEvidence": "docs/evidence/development-execution/smith-running-skip-main-current.json"
     }
   },
   "eveSavedSourceEstimate": {

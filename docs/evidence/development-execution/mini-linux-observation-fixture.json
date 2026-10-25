@@ -1,0 +1,58 @@
+{
+  "schema": "rockstaros.mini-linux-observation-fixture/1",
+  "recordedAt": "2026-10-25T14:54:12.953275+00:00",
+  "scope": "Test-only valid ready-observation helper clock binding for exactly one Gate.observe call; production strict lease comparison unchanged",
+  "oldCandidateHead": "588e0f8a01d04264719093ceb0e967e565f65db1",
+  "failure": {
+    "run": 40203760810,
+    "step": "Verify real packets in disposable namespaces",
+    "test": "test_process_exit_leaves_kernel_quota_and_expiry",
+    "tests": 26,
+    "pass": 25,
+    "fail": 1,
+    "skip": 0,
+    "error": "controller.Rejected invalid_observation_lease after second-boundary tick between fixture observation sample and Gate._fence/controller validation",
+    "logSha256": "640ca528e957d03fc35b936c8bb0d8bae3741f9b2a9f1b1756772dc62d246703"
+  },
+  "path": "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+  "beforeSha256": "547e32d814f8d452fbbb6cc88eceac708eb3daa97a3697d0e2e489c7b279f210",
+  "afterSha256": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f",
+  "runtimeUnchanged": {
+    "controller": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26",
+    "linuxGate": "e290c92307f35f698bd7df06ca23ae5f85dbce194e162f571497552a43ef1490"
+  },
+  "fix": "unittest.mock.patch binds gate._now to already captured fixture now only around observe; restores before open/ping/kernel expiry/recovery. No threshold/TTL change, no guard relaxation.",
+  "astValidation": {
+    "all26PacketTestMethodsAndAssertionsUnchanged": true,
+    "allOtherFunctionsUnchanged": true,
+    "observationCallAndPayloadUnchanged": true,
+    "onlyHelperAndStandardLibraryImportChanged": true
+  },
+  "hostProbe": {
+    "actualControllerAndDecoratedLinuxGateObserve": true,
+    "kernelFenceStubbed": true,
+    "oldTick1000To1001Rejected": true,
+    "newSingleCallBindingPasses": true,
+    "clockRestoredTo1001AfterCall": true,
+    "sameStaleObservationThenRejected": true,
+    "probeResults": [
+      {
+        "case": "old-negative",
+        "exitCode": 1,
+        "logSha256": "88f3dd70f3e8d562b531983eee8c957dba1bd48be71d5ae63fccebd897faa7db"
+      },
+      {
+        "case": "new-pass",
+        "exitCode": 0,
+        "logSha256": "68535196b94b6718742c2e97a9d7c46286ad03321271ca243d607791da8e908a"
+      }
+    ],
+    "noLinuxPacketAcceptanceFromHost": true
+  },
+  "independentReview": "pending Root exact-source review",
+  "newHeadRealLinux26PacketCI": "not yet run; required",
+  "wholeUnitAccepted": false,
+  "realNetworkOrProviderAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false
+}

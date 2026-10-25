@@ -6,7 +6,7 @@ MAT15 / MINI-08 / NET01・DP02/03/05。2026-10-25の本人指示「Mini自身が
 
 [AP認証・網側上限adapter](ACCESS.md)を追加。本人が許可した端末の固有鍵/認証状態と、HMAC/TLSで確認する網側予約をLinux転送前へ接続する。事業者・modem未定の共通protocol/試験であり、実無線・実請求の受入は別。
 
-[小容量メッセージadapter](MESSAGES.md)は日米のsi・メッセージ・小ファイルを有限分割・再送・TTL・共通byte/cost予約で制御します。無線なしfixtureの実装であり、実modem/網側課金との接続は未受入です。
+[小容量メッセージadapter](MESSAGES.md)は日米のsi・メッセージ・小ファイルを有限分割・再送・TTL・共通byte/cost予約で制御します。既存の開発用Broker本人確認とAP認証を使うMessageService、有限tick、private Unix入口も実装しています。無線なしfixtureの実装であり、実Broker本人認証・実modem/網側課金との接続は未受入です。
 
 ## 利用体験と構成
 

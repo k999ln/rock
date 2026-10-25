@@ -1,0 +1,155 @@
+{
+  "schema": "mini-gesture-installer-safety/1",
+  "recordedDate": "2026-10-25",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "scope": "Source-only correction to the local pinned model installer; separate from previous 16-file gesture acceptance and PR231 communication controls.",
+  "changedSource": {
+    "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+    "previousSha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989",
+    "sha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555"
+  },
+  "newTest": {
+    "path": "tests/avocado-mini-gesture-installer.test.mjs",
+    "sha256": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38"
+  },
+  "unchangedPreviouslyReviewedFiles": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+      "sha256": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+      "sha256": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+      "sha256": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs",
+      "sha256": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.html",
+      "sha256": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.css",
+      "sha256": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs",
+      "sha256": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/serve.py",
+      "sha256": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json",
+      "sha256": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json",
+      "sha256": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json",
+      "sha256": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+      "sha256": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs",
+      "sha256": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore",
+      "sha256": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7"
+    },
+    {
+      "path": "tests/avocado-mini-gesture.test.mjs",
+      "sha256": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3"
+    }
+  ],
+  "finding": {
+    "severity": "P1",
+    "originalRootCounterexampleSha256": "235170946c7e374a27c92435f9df939a24dab8815f05a6f98e315e2c5561aaf7",
+    "originalSourceExecutedUnchanged": true,
+    "reproducedHere": [
+      "Legacy .download symlink followed by writeFile overwrote the outside synthetic marker with model bytes.",
+      "models directory symlink created model bytes outside the fixture project.",
+      "runtime directory symlink created a models directory outside the fixture project."
+    ],
+    "realUserFilesTouched": 0
+  },
+  "correction": [
+    "Validate owned non-group/world-writable runtime/storage directories with lstat and canonical containment; reject symlinks and wrong object types.",
+    "Validate repository-trusted manifest shape and exact existing HTTPS URL; retain checked-in SHA-256/model version and 10 MB maximum.",
+    "Refuse all pre-existing legacy .download objects. An existing target must be an owned single-link regular file with the verified digest; valid reruns perform no fetch or replacement.",
+    "Download with the same 30-second AbortSignal and redirect:error; reject invalid responses, oversize streams and hash mismatches before publication.",
+    "Allocate a private mkdtemp directory and exclusive no-follow 0600 regular temporary file; flush and recheck its digest before publishing.",
+    "Atomically link the verified inode to an absent target. EEXIST never replaces a racing file or symlink. Remove only the owned temporary inode/directory in finally."
+  ],
+  "validation": {
+    "originalNegativeControl": {
+      "command": "MINI_GESTURE_INSTALLER_SOURCE=<original installer matching previousSha256> node --test --test-name-pattern=\"legacy symlink|models-symlink|runtime-symlink\" tests/avocado-mini-gesture-installer.test.mjs",
+      "exitCode": 1,
+      "tests": 3,
+      "failed": 3,
+      "expectedFailure": true,
+      "logSha256": "94f189e51de85cd26d884b8d0aa0dce1a642325b07ebcd500a69940bf5e88d64"
+    },
+    "fixedInstaller": {
+      "command": "node --test tests/avocado-mini-gesture-installer.test.mjs",
+      "exitCode": 0,
+      "tests": 33,
+      "passed": 33,
+      "failed": 0,
+      "logSha256": "8c3ad64cfc09e50d0793e2269f5f560f49be6bb7e08ca37e29ae423179747529"
+    },
+    "combinedRegression": {
+      "command": "node --test tests/avocado-mini-gesture.test.mjs tests/avocado-mini-gesture-installer.test.mjs",
+      "exitCode": 0,
+      "tests": 47,
+      "passed": 47,
+      "failed": 0,
+      "countsOverlapFocusedTests": true,
+      "logSha256": "8acdc77f998d806a183d292ebf61ad1c8ac29b36a6ca350ffefe09e167786ee7"
+    },
+    "lint": {
+      "command": "oxlint tests/avocado-mini-gesture-installer.test.mjs systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "testMethod": "Every case copies the actual installer bytes unchanged to a fresh private fixture. Only the trusted fixture manifest and global fetch response are synthetic. Filesystem write/publication fault injection occurs in the child test preloader, not production source. Private temporary permissions and cleanup are asserted.",
+    "coverage": [
+      "normal install and verified idempotent rerun",
+      "legacy temp and target symlink/hardlink/regular/directory/FIFO",
+      "storage-directory symlink, file and unsafe permissions; runtime-directory symlink",
+      "hash mismatch, oversize, network/stream/HTTP/redirect failure",
+      "partial write, temporary-byte tampering, failed publication and cleanup",
+      "target symlink/file creation at fetch/publication boundaries",
+      "URL/digest/byte-limit manifest validation"
+    ],
+    "realNetworkRequests": 0,
+    "cameraStarts": 0,
+    "modelInferenceRuns": 0
+  },
+  "limitations": [
+    "POSIX filesystem/UID and hard-link semantics are required; unsupported platforms fail closed.",
+    "Code and manifest are repository-trusted. A same-UID actor able to replace code or concurrently exchange parent directories is not fully contained by these path checks; no openat-relative guarantee is claimed.",
+    "The pinned real model, SDK, URL, and camera/runtime files were not changed or executed. Existing wrong-digest or unsafe paths are refused and require explicit owner cleanup; they are not overwritten or automatically repaired.",
+    "Full repository verify, independent re-review of this changed source, final CI/main adoption and progress/index synchronization belong to Root and central Git integration, and are not claimed by this source packet."
+  ],
+  "handoff": {
+    "independentReview": "pending Root review of new source/test hashes; old installer acceptance does not cover these new bytes",
+    "centralGit": "update source/manifest/CI/main and owned progress/index records within existing integration coordination",
+    "gitOperationsPerformed": false,
+    "deploymentPerformed": false,
+    "displayConditionsAndStandalonePreserved": true
+  }
+}

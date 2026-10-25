@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.pixel-empty-observation-main-adoption/1",
+  "recordedAt": "2026-10-25T14:31:12.339190+00:00",
+  "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "primaryReceipt": {
+    "path": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "sha256": "d6cc4524e973b722a74e858df1f568f6f0ac1b04a78a8b8ea31862d7b10235a3",
+    "immutableCapturePendingFieldsPreserved": true
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json",
+    "sha256": "c602fd1d105144aaf0d49869171b1f77795541410c32a0bfb98a710707ff5737",
+    "status": "PASS_SCOPED_TEST_ONLY_OBSERVATION_HANDSHAKE",
+    "mustFix": 0,
+    "reviewer": "Existing Web reviewer; source and seven actual child cases"
+  },
+  "testSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+  "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+  "workerRuntimeChanged": false,
+  "scope": "One real-child normal fixture waits at most3seconds for actual empty observation before stdout; all15 assertions and othermoduleAST retained",
+  "independentActualChildCases": 7,
+  "hostWholeSuite": {
+    "tests": 27,
+    "pass": 26,
+    "fail": 0,
+    "skip": 1
+  },
+  "newHeadStandardFullVerify": "not yet run; exacthead CI required",
+  "mainMerged": false,
+  "wholeUnitAccepted": false,
+  "physicalAccepted": false,
+  "modelInferencePerformed": false,
+  "publicDeployment": false,
+  "next": "Root independent integration metadata review; finalhead allCI including Python preflight and npm verify; normalmain and mergeSHA CI",
+  "integrationMetadataReview": {
+    "reviewer": "Root",
+    "scope": "Provenance/current main/metadata and CI, not a re-execution of seven source cases",
+    "status": "preliminary scoped pass; final pinned head pending"
+  },
+  "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "rockstaros.mini-message-service-main-adoption/1",
+  "recordedAt": "2026-10-25T14:24:28.122867+00:00",
+  "pr": 231,
+  "unit": "MINI-08",
+  "task": "MAT15",
+  "responsibility": "ROCK",
+  "originalReviewedHead": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
+  "synchronizedMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+  "fixedSource5": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+      "sha256": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+      "sha256": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5"
+    },
+    {
+      "path": "tests/avocado-mini-tethering.test.mjs",
+      "sha256": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09"
+    }
+  ],
+  "readOnlyDependencies7": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+      "sha256": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+      "sha256": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+      "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+    },
+    {
+      "path": "systems/rock-star-os/os/mcp_broker/service_access.py",
+      "sha256": "44e1171e4aae4b0c312d67bcf91cfd2125813d12309d79df9fefcb041eca5a5a"
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/controller.py",
+      "sha256": "e606bbe1ca0dad14e19b0fa28256e27a2a94e5a5f8c6199acad19129a190c0cd"
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/transport.py",
+      "sha256": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6"
+    }
+  ],
+  "sourceIndependentReview": {
+    "path": "docs/evidence/development-execution/mini-08-message-service-review.json",
+    "sha256": "645137f36a4700e48a82d0811409eafddb24bc4af8ceb83096b3037653a7b34f",
+    "verdict": "PASS_FOR_DEVELOPMENT_BROKER_AP_AND_LOCAL_PROTOCOL_ONLY",
+    "mustFix": 0
+  },
+  "primaryReceipt": {
+    "path": "docs/evidence/development-execution/mini-08-message-service.json",
+    "sha256": "714d2f0da4d5842fa56e38adf0df1de3b2cf9ef339b3d0c4a3e5fbf7b402f152"
+  },
+  "newHostValidation": {
+    "pythonCommonTests": 103,
+    "serviceTestsWithin103": 20,
+    "pass": 103,
+    "fail": 0,
+    "noAdditiveIndependentNineClaim": true,
+    "npmFullVerify": {
+      "tests": 3027,
+      "pass": 3024,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
+    }
+  },
+  "latestMainPreservation": "All main status fields preserved; only miniTetheringPrototype.messageService added. Old Mini229 capture receipt byte-restored; author confirmation remains separate file.",
+  "oldMini229Confirmation": "docs/evidence/development-execution/mini-08-message-main-confirmation.json",
+  "scope": "Development local Broker/AP ingress, bounded scheduler/stop and consumer ack over existing offline adapter only",
+  "originalF27CISuccess": 14,
+  "newExactHeadCI": "pending final batch head; sourcef27 old14success retained as history",
+  "mainMerged": false,
+  "physicalAccepted": false,
+  "realProductIdentityAccepted": false,
+  "providerConnected": false,
+  "realModemTransportAccepted": false,
+  "jobImportAccepted": false,
+  "wholeUnitAccepted": false,
+  "realFinancialAccepted": false,
+  "publicDeployment": false,
+  "next": "Latest main including OS02 and fixture fixes preserved; Root final metadata review; new exacthead allCI; normalmain/mergeSHA CI",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
+}

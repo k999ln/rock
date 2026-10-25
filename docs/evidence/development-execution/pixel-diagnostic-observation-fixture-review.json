@@ -1,0 +1,215 @@
+{
+  "schema": "rockstaros.pixel-diagnostic-observation-fixture-independent-review/1",
+  "recordedAt": "2026-10-25T14:22:55.597162+00:00",
+  "status": "PASS_SCOPED_TEST_ONLY_OBSERVATION_HANDSHAKE",
+  "mustFix": [],
+  "scope": "One normal real-child diagnostic test replaces fixed producer sleep with bounded acknowledgement of an actual empty-file sample. No worker/Smith product change or renewed OS acceptance.",
+  "candidate": {
+    "logicalTree": "rock-os02-capability-freshness-main-adoption-20261025",
+    "headAtReview": "ef13a7b51fab35dc3b4db20695f655197d2c670b",
+    "path": "tests/test_pixel_worker_diagnostics.py",
+    "beforeSha256": "5a9b14de75b8f71344ac112a44c9ffbb5f5e5f3fe91ade76516eaeba48fd3337",
+    "afterSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+    "workerPath": "toolkits/sky-linux-local/worker.py",
+    "workerBeforeAfterAndFailureMainSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "candidateEvidencePath": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "candidateEvidenceSha256": "d6cc4524e973b722a74e858df1f568f6f0ac1b04a78a8b8ea31862d7b10235a3",
+    "testWorkerAndCandidateReceiptUnchangedDuringReview": true,
+    "failureMainSha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
+  },
+  "independence": {
+    "implementer": "Central Git",
+    "reviewer": "Existing Web reviewer; no child agent",
+    "productionSourceOrTestEdited": false,
+    "runtimeObserverChildCpuOrPrivacyAssertionMockedAway": false,
+    "realProcesses": "Every independent case executes one actual subprocess with original worker spawn/wait/resource accounting. Sample scheduling/availability or fixture producer error is fault-injected only.",
+    "input": "Existing explicitly synthetic constant/pinned fixture bytes; no private manuscript, key, actual model or provider read."
+  },
+  "strengthReview": {
+    "ast": {
+      "changedMethods": [
+        "test_real_fixture_stdout_exit_cpu_and_input_hash_without_authority"
+      ],
+      "assertionsUnchanged": 15,
+      "allOtherModuleAstUnchanged": true
+    },
+    "handshake": "Patched test observer calls original OutputObservation.sample first, then signals only if first remains None and last_empty is a real observed timestamp. It never fabricates timestamps or tolerates None. Real producer waits at most3seconds, then explicit failure if marker absent; success prints stdout and retains final0.3second observation window.",
+    "failureRetention": "Same15assertion calls and whole-module AST outside one method unchanged. No assertion deletion,skip addition,baseline edit or worker change. Existing immediate-output test still accepts unknown prior-empty observation as runtime metadata, separate from this normal controlled sequence.",
+    "actualCpuAndPrivacy": "Original success assertion requires available real child CPU sum>0, normal exit0, exact input/output hashes, output complete and first>prior-empty timing. Existing assert_private confirms synthetic private body omitted, bounded0600diagnostics/lock, no temp writer residue; prompt removal and generatedTokens=None retained.",
+    "bounds": "Independent permanent observer failure and erased observation fail around3.24/3.36seconds, not hang or pass;250ms deadline kills/reaps own child withSIGKILL. Probe supervisor also has14second subprocess bound.",
+    "smith235Preserved": {
+      "components/workspace-shell.tsx": {
+        "candidate": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650",
+        "smith235Main": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650",
+        "same": true,
+        "locallyModified": false
+      },
+      "tests/os-bottom-navigation-main.test.mjs": {
+        "candidate": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f",
+        "smith235Main": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f",
+        "same": true,
+        "locallyModified": false
+      }
+    }
+  },
+  "independentExecution": [
+    {
+      "case": "old-delayed",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> delay-0.45",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "realChildCount": 1,
+      "returnCodes": [
+        0
+      ],
+      "elapsedSeconds": 0.768,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "a47e298001311c02afed0389cb957753053f12767c227c22fe8db8e2b884b344"
+    },
+    {
+      "case": "candidate-delayed",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> delay-0.45",
+      "expectedExit": 0,
+      "observedExit": 0,
+      "realChildCount": 1,
+      "returnCodes": [
+        0
+      ],
+      "elapsedSeconds": 1.045,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "67194c794b141d6365feb8cc73ac274b2087f38c87e7b72f2aeec621c6590857"
+    },
+    {
+      "case": "candidate-long-delay",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> delay-2.2",
+      "expectedExit": 0,
+      "observedExit": 0,
+      "realChildCount": 1,
+      "returnCodes": [
+        0
+      ],
+      "elapsedSeconds": 2.787,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "6880499860d8ac24200fcf7476d1bf97246c12f90a915e9e288b58f2170ece51"
+    },
+    {
+      "case": "candidate-never-observe",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> never-observe",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "realChildCount": 1,
+      "returnCodes": [
+        1
+      ],
+      "elapsedSeconds": 3.242,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "a34e9639e6da65044914f678f00c10348d82bc17904843675d357c9fb747b989"
+    },
+    {
+      "case": "candidate-erased-empty",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> erase-empty",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "realChildCount": 1,
+      "returnCodes": [
+        1
+      ],
+      "elapsedSeconds": 3.358,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "751c872c51a59ff4a0603b02b090b6ca16ab8c9c36fd5402054adecbb14a3ecb"
+    },
+    {
+      "case": "candidate-producer-error",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> producer-error",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "realChildCount": 1,
+      "returnCodes": [
+        1
+      ],
+      "elapsedSeconds": 0.294,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "393da4f7f0c0cf4720f20648761d6b9b6f0e843a0a295e55e7977e11b872584b"
+    },
+    {
+      "case": "candidate-deadline",
+      "command": "python3 -B <private-review-dir>/probe.py <old-or-candidate-test> deadline",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "realChildCount": 1,
+      "returnCodes": [
+        -9
+      ],
+      "elapsedSeconds": 0.264,
+      "allChildrenReaped": true,
+      "ownedDirectoriesRemoved": true,
+      "logSha256": "9d95987a83d832ad34b72b5da3141c7d86a4f4362c16a554804b8ae4900c18c0"
+    }
+  ],
+  "counterexampleConclusion": {
+    "old450ms": "Same actual worker, old test: real child exits0, no prior-empty sample, exact int-vs-NoneType comparison error reproduces.",
+    "new450msAnd2200ms": "Both pass unchanged assertions with actual empty sample before stdout.",
+    "neverObserveAndEraseEmpty": "Both retain test failure; no None allowance.",
+    "producerError": "Child exit1 remains test failure after handshake.",
+    "deadline": "250ms timeout remains test failure; own actual childreturn-9 and reaped.",
+    "counts": "7targeted executions,2expected success and5expected refusal/error controls; not7normal tests or additional product features."
+  },
+  "hostRegression": {
+    "command": "python3 -B -m unittest discover -s tests -p test_pixel_worker_diagnostics.py",
+    "tests": 27,
+    "pass": 26,
+    "fail": 0,
+    "skip": 1,
+    "skipReason": "Pre-existing opt-in prior-worker comparison requires PIXEL_PREVIOUS_WORKER; no new skip introduced.",
+    "platform": "macOS host; separate Linux launcher/parent-death acceptance not inferred.",
+    "exitCode": 0,
+    "logSha256": "f2aacad68511d8bcb740d8ce44b106250e8cc1fe1eba42cec5188783943fc6a2",
+    "independentlyRun": true
+  },
+  "executionFailureHistory": {
+    "initialSameSuiteInSandbox": "27tests,error3,skip1. All3errors are existing AF_UNIX socket fixture bind EPERM for diagnostics.lock/diagnostics.json/output.txt, not changed handshake behavior.",
+    "resolution": "Automatic permission review allowed exact same suite outside sandbox;26pass1existing skip. No test/worker change between runs.",
+    "initialSandboxLogSha256": "1905e9fd9b45302f860ad2c4df7cf33e0c0136b3d1b504faeaaf5ca677d9cccd",
+    "gitProbeHistory": "Implementer650ms first attempt exceeded old producer lifetime and was retained separately;450ms independently reproduced exact main failure.",
+    "newUnexpectedProductFailures": 0,
+    "negativeControlsAreNotAcceptanceFailures": true
+  },
+  "privateEvidence": {
+    "packetLogicalId": "pixel-diagnostic-independent-review-20261025/review-packet.json",
+    "packetSha256": "876ee0d2b88313b03356071c477aa0cec0e976a46f04b7b2a55ae9d35748aa76",
+    "probeSha256": "20a26cdf02b1c164a4e2b5ec163a2a0f609690c5e85d475664913587e12dda7c",
+    "resultsSha256": "149a2d83a0e059a49349d00bc1d9d58b0ec3316604affb929b36399b9105e7df",
+    "astCheckSha256": "cb336f114f6022b3f542355fada786f43738d51cb59229aa8037a2c07081ccd7",
+    "rawLogsPublished": false
+  },
+  "operations": {
+    "repositoryWrite": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json only",
+    "gitOrGlobalMetadataWrites": 0,
+    "sourceOrCiEdits": 0,
+    "otherWriterReverts": 0,
+    "browserDeviceKeyProviderInferenceDeploy": 0,
+    "otherChildrenAgents": 0,
+    "externalNetwork": 0,
+    "coordination": "Only authorized existing Git/Root chats; exact lease/checkpoint, no new actor."
+  },
+  "acceptance": {
+    "testOnlyFixture": true,
+    "workerRuntimeFix": false,
+    "smithProductChange": false,
+    "linuxParentLifetime": false,
+    "physicalDevice": false,
+    "P02Complete": false,
+    "wholeOS": false,
+    "sameMainShaCiSuccess": "NOT_ASSERTED; Git owns exact-SHA retry/head checks",
+    "fullNpmVerify": "NOT_RUN by reviewer",
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "next": "Git/Root may consume exact testhash259c6665 and unchanged workerc6a4cb0d for separate test-only supplemental adoption. Preserve main attempt1failure and same-SHA retry history; verify latest integration source/CI separately. Reviewer ends finite turn."
+}

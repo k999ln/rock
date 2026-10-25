@@ -10118,6 +10118,46 @@
       "headCISuccess": 14,
       "mainCISuccess": 13,
       "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
+    },
+    "messageService": {
+      "status": "reviewed_main_synchronized_ci_pending",
+      "taskId": "MAT15",
+      "primarySquad": "M1",
+      "regions": [
+        "JP",
+        "US"
+      ],
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "mainMerged": false,
+      "nextAction": "Confirm synchronized PR231 exact-head CI, then hand the isolated service packet to central Git; actual modem/provider/product identity/physical acceptance remains separate",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "evidence": "docs/evidence/development-execution/mini-08-message-service.json",
+      "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+      "hostTests": 103,
+      "serviceTests": 20,
+      "independentNegativeTests": 9,
+      "mustFixRemaining": 0,
+      "gitHubSaved": true,
+      "pr": 231,
+      "sourceCommit": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+      "fullVerify": "complete_chain_exit0_2993tests_2990pass_3skip_0fail",
+      "linuxCommonTests": 103,
+      "linuxPacketTests": 26,
+      "ciStatus": "previous_6b155020_14_success_synchronized_head_pending",
+      "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "latestIntegrationMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+      "newIntegrationHostFullVerify": {
+        "tests": 3027,
+        "pass": 3024,
+        "fail": 0,
+        "skip": 3,
+        "exitCode": 0,
+        "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
+      },
+      "newHostCommonTests": 103,
+      "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
     }
   },
   "pixelCacheMainAdoption": {
@@ -10876,5 +10916,252 @@
       }
     },
     "latestSynchronizedMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
+  },
+  "pixelEmptyObservationFixture": {
+    "evidence": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "scope": "One normal-case fixture actual empty-observation rendezvous only",
+    "testSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+    "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "workerRuntimeChanged": false,
+    "mainMerged": false,
+    "wholeOSAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "independentReview": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json",
+    "independentReviewSha256": "c602fd1d105144aaf0d49869171b1f77795541410c32a0bfb98a710707ff5737",
+    "mustFix": 0,
+    "independentActualChildren": 7,
+    "originalMainSameShaRetry": {
+      "sha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "run": 40200549454,
+      "attempt": 2,
+      "conclusion": "success",
+      "firstFailurePreserved": true
+    },
+    "currentIntegrationEvidence": "docs/evidence/development-execution/pixel-empty-observation-main-adoption.json",
+    "sourceIndependentReviewer": "Existing Web reviewer; actual seven child cases",
+    "sourceIndependentReview": "PASS_SCOPED_TEST_ONLY_OBSERVATION_HANDSHAKE",
+    "integrationMetadataReviewer": "Root; provenance and adoption metadata review only",
+    "integrationMetadataReview": "preliminary scoped pass; final pinned head pending"
+  },
+  "smithRunningSkipMainCurrent": {
+    "schema": "rockstaros.smith-running-skip-main-current/1",
+    "pr": 235,
+    "acceptedHead": "7e9a1db871c799073ea0178ea112f00e6c264a51",
+    "mainMergeSha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+    "mainTree": "7b35e92f75790b44cf2a4883bd7e9ed4332fe040",
+    "mainMerged": true,
+    "headCISuccess": 7,
+    "mainLatestCISuccess": 6,
+    "headVerify": {
+      "run": 40200052370,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "769d430b595e31c2ee90013a39c09b0a6377e87a2335d030e8804e9599fea029"
+    },
+    "mainVerify": {
+      "run": 40200549454,
+      "attempt": 2,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "d36f1f6d5890551a7082d2bd103e5d6dbd579024442e2e21fb59244ee848fad9"
+    },
+    "historicalMainAttempt1": {
+      "conclusion": "failed before npm verify; separate Pixel normal fixture fixed initial0.3second sleep did not establish empty sample, int-versus-None error",
+      "logSha256": "659ddbaeb224c9cd0f62e97a7411cc59edc207ebf227465a03720e0ec761eea8",
+      "preserved": true
+    },
+    "retryPolicy": "One retry after deterministic same-cause old failure/new success diagnosis; fixture prevention separately reviewed, not inferred from retry success",
+    "fixturePreventionEvidence": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "scope": "Exact same-page workspace skip landmark during running only; consumer and all other navigation fences retained",
+    "source2": [
+      {
+        "path": "components/workspace-shell.tsx",
+        "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+      },
+      {
+        "path": "tests/os-bottom-navigation-main.test.mjs",
+        "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+      }
+    ],
+    "source2Unchanged": true,
+    "originalReceiptsUnchanged": true,
+    "wholeUnitAccepted": false,
+    "rootCUAAcceptance": false,
+    "realAuthJobAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
+  },
+  "os02CapabilityFreshnessMainCurrent": {
+    "schema": "rockstaros.os02-capability-freshness-main-current/1",
+    "pr": 237,
+    "acceptedHead": "ef13a7b51fab35dc3b4db20695f655197d2c670b",
+    "mainMergeSha": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "mainMerged": true,
+    "headCISuccess": 8,
+    "mainCISuccess": 7,
+    "headVerify": {
+      "run": 40200870371,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "a4203665d282f411189317e3bf08edf9e03889e2972e6c3bff3914458dc7490e"
+    },
+    "mainVerify": {
+      "run": 40201798481,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "7415c2ff928acab09ceb501d68e4818b0d64761623db3e24e80c797a8a93c500"
+    },
+    "headAndroidPrototype": {
+      "run": 40200870402,
+      "conclusion": "success",
+      "actualConsumerFreshnessMethodsPassed": 2,
+      "logSha256": "0173809d390391a5163e3b6563844856aebef35167550217b78ce58041208e56"
+    },
+    "mainAndroidPrototype": {
+      "run": 40201798456,
+      "conclusion": "success",
+      "actualConsumerFreshnessMethodsPassed": 2,
+      "logSha256": "407ecd072b1b11ac82149b2b70bc3cd497b3b75c9dc4e9e7f00247a8825c1814"
+    },
+    "fixedSource4": [
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "bytes": 248493,
+        "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+        "bytes": 614,
+        "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+      },
+      {
+        "path": "tests/test_device_capability_freshness.py",
+        "bytes": 3849,
+        "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+      },
+      {
+        "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+        "bytes": 2239,
+        "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+      }
+    ],
+    "source4Unchanged": true,
+    "originalSourceReview": "docs/evidence/development-execution/os02-capability-freshness-review.json",
+    "contractCheckerRootFourMutantsPass": true,
+    "scope": "Future local capability observation rejected; same elapsed-realtime consumer/helper time guard only",
+    "wholeUnitAccepted": false,
+    "P02Complete": false,
+    "newFreshnessAndroidRuntimeOrPhysicalAccepted": false,
+    "deviceOperations": 0,
+    "additionalInference": 0,
+    "publicDeployment": false
+  },
+  "miniGestureInput": {
+    "taskId": "MAT15",
+    "primarySquad": "M1",
+    "status": "reviewed_browser_prototype",
+    "scope": "single camera local hand gesture preview; Eve feedback integration reserved",
+    "cameraAccepted": false,
+    "physicalAccepted": false,
+    "fourDisplayConditionsPreserved": true,
+    "evidence": "docs/evidence/development-execution/mini-gesture-input.json",
+    "review": "docs/evidence/development-execution/mini-gesture-input-review.json",
+    "mustFixCount": 0,
+    "mainIntegrated": false,
+    "latestIntegrationMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "integrationEvidence": "docs/evidence/development-execution/mini-gesture-main-adoption.json",
+    "newHostFullVerify": {
+      "baseMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "focused": 14,
+      "npmRootTests": 3041,
+      "npmPass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "logSha256": "d909ea86c75c2fa31562fb29b2dd895c6c09fc1a775a6352729f9763238eb3e8"
+    },
+    "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "installerSafetyRevision": {
+      "evidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+      "sourceSha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+      "rootSourceReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+      "mustFix": 0,
+      "originalOtherGesture14Unchanged": true,
+      "readmeOnlyAdditionalDocumentationRevision": true,
+      "latestHostTestSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+      "hostTestDeltaEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json"
+    }
+  },
+  "preparedDeviceMiniBatch": {
+    "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "fixedSourceCount": 24,
+    "status": "host_test_descriptor_read_revision_pending_Root_delta_review_and_new_head_CI",
+    "mainMerged": false,
+    "whole95Accepted": 0,
+    "publicDeployment": false,
+    "unionHostFullVerify": {
+      "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "tests": 3041,
+      "pass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
+    },
+    "originalFixedSourceCount": 22,
+    "linuxPacketSupplement": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
+    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json",
+    "originalHeadCI": {
+      "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
+      "success": 13,
+      "failure": 1
+    },
+    "codeqlMediumAlertsAtInitialHead": 3,
+    "sourceSecurityDisposition": "Root PASS_SCOPED_SOURCE_AFTER_FIX at054dda; DedicatedWorker scoped disposition separate; no security0 claim",
+    "originalOther20SourceUnchanged": true,
+    "newUnionHostFullVerify": {
+      "tests": 3074,
+      "pass": 3071,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
+      "documentationReadmeChangedAfterRunOnly": true
+    },
+    "testReadRevisionSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+    "originalSource22CaptureUnchanged": true,
+    "originalSource22CaptureEvidence": {
+      "path": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+      "sha256": "6328e820167418359dd3f2f26992d1cc4e127e9eeb85ebfa39470cade9ce0bb1",
+      "meaning": "Original22-file capture bytes only; current originalOther20 remain unchanged, installer/README/test revisions tracked at fixed24"
+    }
+  },
+  "miniLinuxObservationFixture": {
+    "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
+    "sourceSha256": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f",
+    "runtimeControllerAndGateChanged": false,
+    "sourceIndependentReview": "PASS_SCOPED_TEST_FIXTURE",
+    "newExactHeadLinuxPacketCI": "required; initial588 Linux26 had1failure",
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "sourceIndependentReviewer": "Root;7 host clock probes with kernel fence stub",
+    "independentReview": "docs/evidence/development-execution/mini-linux-packet-clock-review.json",
+    "independentReviewSha256": "26326bb3df2c805fd1eb6d4e67ca664239e238252be215812d6a41985aa19a66"
   }
 }

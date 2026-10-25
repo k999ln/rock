@@ -1,0 +1,52 @@
+{
+  "schema": "rockstaros.smith-running-skip-main-current/1",
+  "pr": 235,
+  "acceptedHead": "7e9a1db871c799073ea0178ea112f00e6c264a51",
+  "mainMergeSha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+  "mainTree": "7b35e92f75790b44cf2a4883bd7e9ed4332fe040",
+  "mainMerged": true,
+  "headCISuccess": 7,
+  "mainLatestCISuccess": 6,
+  "headVerify": {
+    "run": 40200052370,
+    "tests": 3027,
+    "pass": 3025,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "769d430b595e31c2ee90013a39c09b0a6377e87a2335d030e8804e9599fea029"
+  },
+  "mainVerify": {
+    "run": 40200549454,
+    "attempt": 2,
+    "tests": 3027,
+    "pass": 3025,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "d36f1f6d5890551a7082d2bd103e5d6dbd579024442e2e21fb59244ee848fad9"
+  },
+  "historicalMainAttempt1": {
+    "conclusion": "failed before npm verify; separate Pixel normal fixture fixed initial0.3second sleep did not establish empty sample, int-versus-None error",
+    "logSha256": "659ddbaeb224c9cd0f62e97a7411cc59edc207ebf227465a03720e0ec761eea8",
+    "preserved": true
+  },
+  "retryPolicy": "One retry after deterministic same-cause old failure/new success diagnosis; fixture prevention separately reviewed, not inferred from retry success",
+  "fixturePreventionEvidence": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+  "scope": "Exact same-page workspace skip landmark during running only; consumer and all other navigation fences retained",
+  "source2": [
+    {
+      "path": "components/workspace-shell.tsx",
+      "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+    }
+  ],
+  "source2Unchanged": true,
+  "originalReceiptsUnchanged": true,
+  "wholeUnitAccepted": false,
+  "rootCUAAcceptance": false,
+  "realAuthJobAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false
+}

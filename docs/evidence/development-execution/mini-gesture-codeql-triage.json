@@ -1,0 +1,46 @@
+{
+  "schema": "rockstaros.mini-gesture-codeql-triage/1",
+  "recordedAt": "2026-10-25T15:01:27.447888+00:00",
+  "headAtDetection": "588e0f8a01d04264719093ceb0e967e565f65db1",
+  "checkRun": 121200638793,
+  "checkConclusion": "success",
+  "securityAlertSummary": "3 new medium alerts; not zero security findings",
+  "source16Changed": false,
+  "independentRootDisposition": "pending",
+  "alerts": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "line": 5,
+      "rule": "File data in outbound network request",
+      "evidence": "Manual opt-in Node installer reads checked-in runtime/model.json; public Google model URL and SHA fixed in reviewed source16, redirect:error,30s timeout,maxBytes10000000. Manifest is repository-owner configuration, not caller/request data.",
+      "proposedScopedDisposition": "Intentional model artifact download under trusted local repository/model-directory ownership; no automatic network operation in the application. No code change proposed pending independent Root review."
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "line": 13,
+      "rule": "Network data written to file",
+      "evidence": "Bytes are size bounded and SHA256 checked against fixed repository manifest before writing constant local runtime/models/hand_landmarker.task.download and renaming to constant target. Network bytes do not choose paths or execute.",
+      "proposedScopedDisposition": "Intentional integrity-verified artifact file write with trusted local model directory; no code change proposed pending independent Root review."
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+      "line": 4,
+      "rule": "Missing origin verification in postMessage handler",
+      "evidence": "demo.mjs creates a dedicated Worker from self URL. CameraSession owns its handle; worker uses implicit dedicated message port, not Window cross-document postMessage or SharedWorker/ServiceWorker. Local HTML/server CSP worker-src/connect-src self, frame-ancestors none on served response. No transferred message ports accepted and output is VIEW_ONLY/no authority.",
+      "primarySource": "https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage",
+      "specSections": [
+        "10.1.3.2 dedicated worker communication",
+        "10.2 infrastructure creator-linked dedicated worker"
+      ],
+      "proposedScopedDisposition": "Dedicated creator/implicit-port context; Window-origin check finding appears inapplicable. Independent Root source-context confirmation required."
+    }
+  ],
+  "assumptions": [
+    "Trusted checkout/manifest and owner-controlled local model directory; hostile same-user repository/code edits are outside this prototype boundary",
+    "Prototype remains loopback and VIEW_ONLY; no production host, financial/physical execution or actual-camera accuracy acceptance"
+  ],
+  "repositorySecurityChecksWeakened": false,
+  "alertsDismissedOrHidden": false,
+  "dependencyOrModelDownloadPerformedByIntegration": false,
+  "next": "Root independently reviews these actual source boundaries and determines any mustfix; original source16 stays pinned unless a reviewed source revision is necessary"
+}

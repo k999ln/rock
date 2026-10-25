@@ -1,0 +1,8 @@
+{
+  "name": "mini-gesture-local-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pinned local-only development hand tracking runtime",
+  "dependencies": {"@mediapipe/tasks-vision": "1.1.1"}
+}

@@ -1,0 +1,69 @@
+{
+  "schema": "rockstaros.os02-capability-freshness-main-current/1",
+  "pr": 237,
+  "acceptedHead": "ef13a7b51fab35dc3b4db20695f655197d2c670b",
+  "mainMergeSha": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "mainMerged": true,
+  "headCISuccess": 8,
+  "mainCISuccess": 7,
+  "headVerify": {
+    "run": 40200870371,
+    "tests": 3027,
+    "pass": 3025,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "a4203665d282f411189317e3bf08edf9e03889e2972e6c3bff3914458dc7490e"
+  },
+  "mainVerify": {
+    "run": 40201798481,
+    "tests": 3027,
+    "pass": 3025,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "7415c2ff928acab09ceb501d68e4818b0d64761623db3e24e80c797a8a93c500"
+  },
+  "headAndroidPrototype": {
+    "run": 40200870402,
+    "conclusion": "success",
+    "actualConsumerFreshnessMethodsPassed": 2,
+    "logSha256": "0173809d390391a5163e3b6563844856aebef35167550217b78ce58041208e56"
+  },
+  "mainAndroidPrototype": {
+    "run": 40201798456,
+    "conclusion": "success",
+    "actualConsumerFreshnessMethodsPassed": 2,
+    "logSha256": "407ecd072b1b11ac82149b2b70bc3cd497b3b75c9dc4e9e7f00247a8825c1814"
+  },
+  "fixedSource4": [
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "bytes": 248493,
+      "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+      "bytes": 614,
+      "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+    },
+    {
+      "path": "tests/test_device_capability_freshness.py",
+      "bytes": 3849,
+      "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+    },
+    {
+      "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+      "bytes": 2239,
+      "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+    }
+  ],
+  "source4Unchanged": true,
+  "originalSourceReview": "docs/evidence/development-execution/os02-capability-freshness-review.json",
+  "contractCheckerRootFourMutantsPass": true,
+  "scope": "Future local capability observation rejected; same elapsed-realtime consumer/helper time guard only",
+  "wholeUnitAccepted": false,
+  "P02Complete": false,
+  "newFreshnessAndroidRuntimeOrPhysicalAccepted": false,
+  "deviceOperations": 0,
+  "additionalInference": 0,
+  "publicDeployment": false
+}

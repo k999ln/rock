@@ -1,0 +1,60 @@
+{
+  "schema": "mini-gesture-input-evidence/1",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "scope": "R5 standalone, local single-camera hand gesture view-only browser prototype",
+  "review": {
+    "path": "docs/evidence/development-execution/mini-gesture-input-review.json",
+    "sha256": "6178b604743d53c0cdfce5f5a3a7aef72c6774cdb766547eb6d03fd909e5f34a",
+    "mustFixCount": 0
+  },
+  "validation": {
+    "focused": {
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "logSha256": "8cba0a2403028ce8b0b47bb49be3b05ab6d57245d078aedad41b976a9c5ab7c2"
+    },
+    "independentNegatives": {
+      "tests": 5,
+      "passed": 5
+    },
+    "browser": {
+      "syntheticCamera": true,
+      "actualSdkInference": true,
+      "externalRequests": 0,
+      "allTracksEndedAfterStop": true,
+      "logSha256": "9cee2fec303824c91b74e997ff85b7efb80780f255fbb7e08f0666806d90e44c"
+    },
+    "fullVerify": {
+      "command": "PATH=<OpenSSL3-bin>:$PATH npm run verify",
+      "exitCode": 0,
+      "rootTests": 3024,
+      "rootPassed": 3021,
+      "rootSkipped": 3,
+      "rootFailed": 0,
+      "logSha256": "3ea92f169089ee2a96bbbe940c1681df4a38a5122a676ebda5e5a582c26e6996",
+      "scope": "host; other suite counts not additive"
+    },
+    "previousFailures": [
+      "Initial host verify stopped at existing signing tests because PATH selected a different OpenSSL major version; rerun explicitly selected installed OpenSSL 3.",
+      "Next verify stopped at new test declarations lacking void; lint additionally required const events. Test registration fixed without changing assertions."
+    ]
+  },
+  "boundaries": {
+    "physicalCameraAccepted": false,
+    "gestureAccuracyMeasured": false,
+    "miniHardwareAccepted": false,
+    "calibratedSpatialAccepted": false,
+    "evePreferenceInferenceConnected": false,
+    "coreCommitAllowed": false,
+    "physicalExecutionAllowed": false,
+    "mainIntegrated": false,
+    "fourDisplayConditionsPreserved": true
+  },
+  "next": [
+    "Confirm exact-head CI and coordinate separate Git adoption.",
+    "Measure real camera accuracy, false activations, latency, battery and heat on selected Mini hardware.",
+    "Add explicit good/different feedback for Eve through a separate permission-bound contract."
+  ]
+}

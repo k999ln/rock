@@ -16,6 +16,8 @@ main2.08/RQ01〜RQ50、AMC/material/compose/gridと既存権限・料金を保�
 
 # RockstarOS — 現行製品方針と確定要望
 
+2026-10-25本人の明示追加要望: カメラで手・指を追い、最初はlocal VIEW_ONLYの選択/移動/回転/取消を試作する。Mini単体・板や膜なし・少ない表示部・上下を含む全域・低まぶしさを維持。観測gestureを本人の好み・同意・物理/金融/共有の承認へ昇格しない。全身認識・実Mini cameraの校正/精度・Eveへの明示feedbackは別受入。追加意図はdata/product-baseline.jsonのminiGestureInputIntentと固定gesture設計へ記録し、既存RQ50/393task/phase gatesは保持する。
+
 ## MiniとProの製品目的（2026-10-21本人確定）
 
 本人の明示指示「miniは暮らしやまちづくり、proはAI専用PCと半導体確保」を採用する。Miniは暮らしとまちづくりに貢献する空間端末、ProはAI専用PCであり、その製造・販売事業を通じて半導体と関連部品を継続的に確保できる調達基盤を育てる。確保量・供給契約・購入予算の確定や、半導体の製造能力を保有するという意味ではない。既存RQ、R5単独動作、Pro独立PC、ゲーム、権限・料金・物理受入gateは保持する。
@@ -509,7 +511,7 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 ## 2026-10-15 Mini着脱・衛星Wi-FiとAgent月次請求
 
-日米のsi・メッセージ・小ファイル向け[共通message adapter](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
+日米のsi・メッセージ・小ファイル向け[共通message adapter](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。 開発用Broker/AP認証と有限常駐schedulerを接続する。実契約本人認証・modem/provider・実機受入は別。
 
 2026-10-25の継続指示に基づく準備（要件変更なし）: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。
 

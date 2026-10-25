@@ -1,0 +1,116 @@
+{
+  "schema": "rockstaros.prepared-device-mini-security-revision/1",
+  "recordedAt": "2026-10-25T15:27:28.050724+00:00",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "previousHead": "bf42a6f55efe4fd83008312c69a6611355aa03f2",
+  "previousHeadCISuccess": 14,
+  "previousHeadAdoptionBlockedByActualSecurityFinding": true,
+  "originalSource22Capture": {
+    "path": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "sha256": "6328e820167418359dd3f2f26992d1cc4e127e9eeb85ebfa39470cade9ce0bb1",
+    "immutable": true
+  },
+  "linuxFixtureSupplement": {
+    "path": "docs/evidence/development-execution/prepared-device-mini-integration-supplement.json",
+    "sha256": "8a0588d2b2b67e93280c4e49dd11e2dbfc8b666c11ce7b24b94475ecf8f777d1",
+    "immutableR2Capture": true
+  },
+  "fixedSource24": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b",
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5",
+    "tests/avocado-mini-tethering.test.mjs": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09",
+    "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf",
+    "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922",
+    "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.html": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.css": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44",
+    "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154",
+    "systems/rock-star-os/targets/avocado-mini/gesture/serve.py": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366",
+    "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5",
+    "systems/rock-star-os/targets/avocado-mini/gesture/README.md": "f3cb6effc2941cb4a1ab4f85efe25d92f744c7437d33fa54478cf1f9f78a2690",
+    "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56",
+    "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7",
+    "tests/avocado-mini-gesture.test.mjs": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3",
+    "tests/test_pixel_worker_diagnostics.py": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+    "tests/avocado-mini-gesture-installer.test.mjs": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f"
+  },
+  "originalOther20SourceHashesUnchanged": true,
+  "installerRevision": {
+    "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+    "oldSha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989",
+    "newSha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+    "newTest": "tests/avocado-mini-gesture-installer.test.mjs",
+    "newTestSha256": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38",
+    "primary": {
+      "path": "docs/evidence/development-execution/mini-gesture-installer-safety.json",
+      "sha256": "881f61a2c0abd41350738412eddaa44238041fc4d48fe2ccb6f27282d94c3f73"
+    },
+    "independentReview": {
+      "path": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+      "sha256": "4150c74dd7c046dd07b2ac1cee0192aa71274440a746f1f12b0c3d9eb64f94ed",
+      "reviewer": "Root, independent of original Mini installer author",
+      "verdict": "PASS_SCOPED_SOURCE_AFTER_FIX",
+      "mustFix": 0,
+      "actualModelDownloadOrCamera": false
+    },
+    "fixScope": "Reject unsafe pre-existing paths before fetch; private exclusive no-follow temporary write, digest revalidation and atomic hardlink no-clobber publish; valid existing target verified with fetch0, no replacement",
+    "limitations": "Trusted local code/manifest and filesystem principals; same-UID/privileged concurrent parent/code replacement and untested ACL/filesystems not certified"
+  },
+  "technicalDocumentationRevision": {
+    "path": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+    "oldSha256": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f",
+    "newSha256": "f3cb6effc2941cb4a1ab4f85efe25d92f744c7437d33fa54478cf1f9f78a2690",
+    "authorization": "Root explicitly requires UID/O_NOFOLLOW/hardlink host requirements, Windows unsupported, non-overwrite and no automatic legacy debris deletion",
+    "runtimeCodeOutsideInstallerChanged": false
+  },
+  "codeqlDisposition": {
+    "initialHead": "588e0f8a01d04264719093ceb0e967e565f65db1",
+    "reportedMediumAlerts": 3,
+    "checkStatusWasSuccess": true,
+    "securityZeroClaim": false,
+    "downloadRequestAlert": "Exact known URL and fixed repository model manifest; manual artifact acquisition only. Root independently verifies constraints in revised installer.",
+    "networkBytesWriteAlert": "Root actual legacy/directory symlink clobber counterexample was actionable; corrected and independently tested, not waived as trusted-metadata-only.",
+    "workerOriginAlert": "Root independently validates dedicated creator/implicit-port channel with same-origin constructor and self-only CSP for VIEW_ONLY prototype; not Window messaging; no new origin guard/exclusion.",
+    "workerSpec": "https://html.spec.whatwg.org/multipage/workers.html#dedicated-workers-and-the-dedicatedworkerglobalscope-interface",
+    "alertsDismissedOrScannerWeakened": false,
+    "newHeadActualAlertReadback": "required; not yet run"
+  },
+  "localFocusedValidation": {
+    "installer": 33,
+    "installerAndGesture": 47,
+    "pass": 47,
+    "fail": 0,
+    "skip": 0,
+    "countsNotAdditive": true
+  },
+  "newUnionHostFullVerify": {
+    "tests": 3074,
+    "pass": 3071,
+    "fail": 0,
+    "skip": 3,
+    "exitCode": 0,
+    "standardPrivateGeneration": true,
+    "noTypeStubs": true,
+    "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
+    "documentationReadmeChangedAfterRunOnly": true
+  },
+  "newExactHeadCI": "not yet run",
+  "mainMerged": false,
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "realSatelliteProviderAccepted": false,
+  "realFinancialAccepted": false,
+  "realCameraAccuracyAccepted": false,
+  "calibratedSpatialAccepted": false,
+  "eveLearningAccepted": false,
+  "publicDeployment": false,
+  "bulk616Export": "HELD",
+  "next": "Freeze new24source/manifest/head; Root security/fixture/current metadata and Web Mini metadata review; new exacthead allCI/realLinux26 then ordinarymain/same-mergeSHA allCI"
+}

@@ -226,6 +226,26 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## 新host試験のdescriptor読取とCI最終再固定
+
+installer修復後b709で実Linux packetは成功したが、CodeQLが新host試験のlstat後path再readをhighで指摘。installer054と他23固定対象は変えず、同じ拒否試験のregular fileをchild/検査前のO_NOFOLLOW|O_NONBLOCK descriptorへ固定し、型/link数/dev/ino照合後にdescriptorでreadしfinally closeする。元の拒否/fetch0/元inode/内容/cleanup assertionは維持。専用+gesture47/47成功、testは旧0d3からb4b385へ改版。 currentのoriginalSource22Unchangedは撤去し、元22receiptのbytes/hash不変を示すoriginalSource22CaptureUnchangedへ限定。現コードは元20不変/改版追跡済み固定24で記録する。Root source4150は旧testの履歴として保持し、この限定test差分を別確認して新head標準verify/CodeQL全CIを必須とする。[差分記録](docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json)。root/Tool/実機/実課金/実camera精度/公開を追加受入しない。
+
+## finite batchのinstaller安全性修復と最終再固定
+
+Rootが旧installer6e321の既存download/directory symlinkによる外部marker上書きを実証し、bf42全14CI成功でも採用を止めた。元Mini担当のinstaller054dda＋専用test0d3df＋primary881fだけを採用し、Root独立4150で47試験/別旧新6scenario・beforefetch拒否/marker保持/正常0600nlink1/cleanup/valid再実行fetch0を確認。Root指示により技術READMEだけ追加改版し、UID/O_NOFOLLOW/hardlink対応macOS/Linux・Windows非対応、既存物非上書き/旧残骸自動削除なし、同UID並行親交換の非保証を明記。元22のうち20とservice依存7は不変、installer/技術README改版＋新hosttest＋Linuxfixtureで固定24hash。新union全verify3074/3071pass/0fail/3skip成功（README文書追記だけ後続）、CodeQL3警告の実bug修復とDedicatedWorker限定文脈を分離しsecurity0としない。旧588失敗/bf42CI成功・採用block/原sourceレビューは保存。[最終修復記録](docs/evidence/development-execution/prepared-device-mini-security-revision.json)。次: 新manifest/headのRoot/Web再検収→同head全CI/実Linux26→通常main/mergeCI→current metadata/main保存。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開・616は保留。
+
+## 有限batchのCI・metadata差分修復
+
+初回head588e0f8aは13CI成功・linux-packetsだけ26件中1失敗。crash子processのobserve_readyでsample秒と_fence後のvalidation秒が変わり、厳密observedAt==nowに拒否された。runtime/controller/Gateを変えず、test helperの1観測呼出しだけgate._nowを固定し直後に復元。Root独立7clockprobeで旧拒否/新成功・stale/expired/future/TTL61拒否・例外復元を確認、26packet methods/payload AST不変。元22sourceは完全固定、追加fixture1で23hashとする。実Linux26は新headCIで別検証。Web R1のservice index scope MUSTFIX1はold adapter objectをmain不変へ戻し新service pending subrecordへ分離して修復。gesture metadata R1はmustFix0。CodeQL成功checkにもmedium3件があり、手動model installerとDedicatedWorkerの信頼境界をRootが独立確認するまでsecurity0としない。元588/原receipt/source22captureを保持し、[追加採用記録](docs/evidence/development-execution/prepared-device-mini-integration-supplement.json)で最終head/manifest→独立再検収→新全CI→通常main/mergeCIを閉じる。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開は未受入。
+
+## 準備済みPixel/Miniの有限統合batch
+
+主担当10/G04、source07/11・ROCK。main bb432の全受入を基点に、別保存済みPixel fixture9a043220・Mini231f27faea8・Mini2341bd7189bを通常mergeして元commitをancestor保持。fixture1/開発service5/gesture16の22hashとservice依存7を完全固定、全main status/既存baselineRQ50・393task/14gate・95固定分類/whole0を保つ。CI同一内容の直列重複を減らすためRoot提案を採用し、一つの最終headへ統合。既存source検収を維持してRootはfixture/current metadata、WebはMini2scopeのmetadata/CIを独立検収する。新union標準全verify→固定manifest/head→新同head全CI→通常main/mergeCIを実施し、旧branchCIは転用しない。独立7childはWebが実行、Rootは再実行していない。実機/実回線/実camera精度/校正/実金融/Eve学習/全OS/P02/公開は未受入、616HOLD。[共通採用記録](docs/evidence/development-execution/prepared-device-mini-integration.json)。
+
+## Pixel正常fixtureの実empty観測待合せと現行受入
+
+主担当10/G04、source07/ROCK。Smith merge bb11のCI attempt1は既存Pixel正常fixtureの時刻Noneでnpm全verify前に停止。実observerを450ms遅延させ旧exact反例を再現し、正常fixtureのproducerを実empty観測後にだけ出力する最大3秒待合せへ変更。15assertion/他moduleAST/worker本体c6a4不変、Web独立c602 mustFix0、実child7case・reap/cleanup合格。旧650ms別エラー、永久観測不能/出力失敗/250msdeadlineの負例、Mac27中26pass1skipを分けて保持。初回失敗後、同bb11の一度だけのretryは全6CI・Linux3027/3025pass/0fail/2skip成功。恒久修正の成功へ転用せず新headCIを必須とする。OS237はhead8/mainbb432全7CI・Androidprototype2freshness試験/既存compile-emulatorとLinux3027/3025/0/2成功。両現行status/95overlay/handoff/indexを同期し、元capture false/pendingを保持。[fixture採用](docs/evidence/development-execution/pixel-empty-observation-main-adoption.json)。次: Root別metadata検収→fixedheadCI→通常main/mergeCI。runtime/実機/推論/wholeOS/P02/公開受入は追加しない。
+
 ## OS-02 capability観測時刻の限定修復
 
 主担当07/ROCK・統合10/G04。未来observedAtをfreshにしていた旧consumer反例を保持し、固定4source/testと作者/Root独立receiptをhash不変でmain a58へ採用準備。actual Shell guardと純粋helperは0<=observed<=now<expiry、最大30秒を要求する。schema/producer/identity/権限/未知表示とtimerは保持。追加CIは既存JDK17後のbounded2分Python明示試験とpush/PR両pathfilterだけで、既存compile/emulatorを保持。新host全verifyは契約checker同期後3026試験/3023pass/0fail/3skip、元の旧literal検査1失敗は履歴保持。新host境界2方法/23case成功、作者offline compile/Shell14/lint0errors202warnings（差分未測定）、Rootsource検収mustFix0。次: 標準fullverify/最新main同期→Root別metadata/CI検収→最終headAndroid/全CI→通常main/mergeCI。device/推論/鍵/flash0、Android runtime/実機/P02/wholeOS/公開は未受入。[採用記録](docs/evidence/development-execution/os02-capability-freshness-main-adoption.json)。
@@ -941,9 +961,23 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
 
+### Miniカメラ追跡・ジェスチャー入力（2026-10-25）
+
+本人がカメラ追跡による動作/ジェスチャー機能を追加依頼。MAT15/M1のR5単体入力として、まず端末内の手指推定・選択/移動/回転/停止のpreviewを実装する。本人の反応を学ぶEveとの接続意図を保持し、好み推定を実行許可にしない。旧四方向/大型Full-scaleの完成や精密3D受入には転用しない。単体と表示4条件を維持、実カメラ・同一閉箱は未受入。テザリングPR229/231とは別branchで進める。
+
+検証完了: 14試験と独立5negative成功。停止競合・古いworker通知・期限後応答の3指摘を修正しmustFix0。合成canvasで実SDK推論・停止後track終了・外部通信0を独立確認。host全verifyは3024試験/3021pass/0fail/3skipで完走（他suite非加算）。初回OpenSSL版不一致と新test lint失敗は証拠に残し、環境指定/登録形式を修正。保存・CI・main採用は別段階。根拠 [検証記録](docs/evidence/development-execution/mini-gesture-input.json)。
+
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-最新main採用準備: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+PR229採用確定: 最終head1e6ed3bcをmain `a58c6ffa857389193727b0b6d4a867352f269f77`へ通常統合し、同merge SHA全13CI成功、headとmergeのtree一致、原機能4/別Pixel fixture2のhash不変を直接照合。Linux共通83＋実packet26と全verifyのログを[main確認記録](docs/evidence/development-execution/mini-08-message-main-confirmation.json)へ保存。PR231はこのmainを取り込み、常駐制御5hash不変/103回帰成功、独立metadata検収mustFix0。旧保存head6b155020全14CI成功を保持し、新同期headCIは別確認。
+
+PR229採用準備時の履歴: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+
+常駐制御着手（本人の次指示）: PR229のmain統合・同SHA CIは中央Gitと調整し、別branchで既存Broker本人確認・AP再認証・有限schedulerを接続する。期限掃除・有限再送・通信量/料金予約を維持。日米小容量、Mini単体、表示4条件を維持し、実回線・契約・実機は未受入。
+
+常駐制御検収: 開発用Broker本人/端末bindingと毎回guard、APの予約前後認証、有限round-robin tick、private Unix入口を実装。網側予約/AP照会中の本人期限切れと旧PSK再接続を独立反例で修正し、service20件・独立負例9件・全Mini103件のwrapper成功、mustFix0。[専用検収](docs/evidence/development-execution/mini-08-message-service-review.json)。全verifyは初回のsuite60秒制限と旧node_modulesの不一致を切分け、suite180秒/lockfile同期後に最終までexit0（主2993件/2990成功/3skip/失敗0、他suite非加算）。通信の個別期限は変更しない。新source `9dae624b` はDraft PR231へ保存。同SHA全14CI成功（Linux共通103件＋実packet26件・全verifyを含む）。最終metadata headとmain採用は別追跡。PR229のmain採用は中央Gitと別追跡。
+
+開発用message service採用準備: 原f27faea8全14CI/独立mustFix0のsource5と依存7を固定。main bb11を通常同期し、旧status全fieldとMini229/eSIM/Smith currentを保持してmessageServiceだけ追加。元Mini229 adoption receiptはbyte不変へ戻し、作者確認は別fileへ保持。新host103試験と標準fullverify3027/3024pass/0fail/3skip成功。実製品identity/transport/Job保存/実機/金融/wholeMINIは未受入。[現行採用](docs/evidence/development-execution/mini-08-message-service-main-adoption.json)。次は最新main再同期とRoot固定headmetadata/新headCI/mainCI。
 
 共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
 

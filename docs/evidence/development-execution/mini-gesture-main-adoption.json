@@ -1,0 +1,113 @@
+{
+  "schema": "rockstaros.mini-gesture-main-adoption/1",
+  "recordedAt": "2026-10-25T14:39:26.174714+00:00",
+  "pr": 234,
+  "unit": "MINI-04",
+  "task": "MAT15",
+  "responsibility": "ROCK",
+  "originalReviewedHead": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "fixedSource16": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+      "sha256": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+      "sha256": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+      "sha256": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs",
+      "sha256": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.html",
+      "sha256": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.css",
+      "sha256": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs",
+      "sha256": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/serve.py",
+      "sha256": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "sha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json",
+      "sha256": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json",
+      "sha256": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json",
+      "sha256": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+      "sha256": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs",
+      "sha256": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore",
+      "sha256": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7"
+    },
+    {
+      "path": "tests/avocado-mini-gesture.test.mjs",
+      "sha256": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3"
+    }
+  ],
+  "primaryReceipt": {
+    "path": "docs/evidence/development-execution/mini-gesture-input.json",
+    "sha256": "acc972c45137e98a8c5fa7f94242584af061681eb686f51cff347f1c44d0eb25"
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/mini-gesture-input-review.json",
+    "portableSha256": "6178b604743d53c0cdfce5f5a3a7aef72c6774cdb766547eb6d03fd909e5f34a",
+    "originalRawReviewSha256": "483433b539da15f71bd9ce642d65a7a497ba882b6b1ef126b3562efdc5d5d739",
+    "verdict": "PASS_FOR_VIEW_ONLY_BROWSER_PROTOTYPE",
+    "mustFix": 0
+  },
+  "newHostValidation": {
+    "baseMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+    "focused": 14,
+    "npmRootTests": 3041,
+    "npmPass": 3038,
+    "fail": 0,
+    "skip": 3,
+    "exitCode": 0,
+    "logSha256": "d909ea86c75c2fa31562fb29b2dd895c6c09fc1a775a6352729f9763238eb3e8"
+  },
+  "browserEvidence": "Original independent headless Chrome/Playwright loopback, canvas replacing getUserMedia and real local SDK/model inference; not Root CUA, real hands/camera accuracy or Mini device acceptance. No new browser execution in Git integration. Future browser operations CUA only.",
+  "scope": "Single-camera local hand/finger tracking into view-only select/transform/stop proposals only",
+  "originalHeadCISuccess": 13,
+  "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+  "newExactHeadCI": "pending final batch head",
+  "mainMerged": false,
+  "modelBinariesGitAdded": false,
+  "newModelDownloads": 0,
+  "wholeUnitAccepted": false,
+  "physicalAccepted": false,
+  "realCameraAccuracyAccepted": false,
+  "calibratedSpatialAccepted": false,
+  "permissionExecutionAccepted": false,
+  "evePreferenceOrFeedbackAccepted": false,
+  "publicDeployment": false,
+  "next": "Final batch manifest/head and Web independent metadata/CI review; one union headCI then normalmain/mergeCI"
+}

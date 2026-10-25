@@ -62,3 +62,17 @@ npm run verify
 256byte/1KiB/16KiB、JP/US profile分離、chunk欠落/逆順/重複/改変、ACK消失・不正、有限再送、期限、復旧、同時dispatch、CAS、失効再許可、共有量/費用枠、停止競合、受信保存引渡しを無線なしfixtureで検証する。合成値を契約価格・速度・稼働時間の実測へ転用しない。
 
 次は選定modemの実host interfaceと国別carrier契約に合わせた具体transport、Broker/AP認証入口、有限scheduler、常駐sweep、Job保存引渡し、国別鍵と暗号化・rollback保護を接続する。国別機材・契約・hard capが確定するまで実RF/有料通信を開始しない。DHCP/DNS/RA/NAT/routeやWi-Fi実handshakeと、光学4条件の受入も別途必要。
+
+## Broker・APと常駐制御
+
+`message_service.py` の `MessageService` は既存 `ServiceAccessPrincipalAdapter` を使い、固定consumerのowner/deviceをMiniのpolicyへ照合する。requestはBearerを毎回検証し、workerも周期・送信ごとに同じServiceAccessのguardを再評価する。既存ServiceAccessは公開fixture tokenと合成端末を受け付ける開発系列であり、実契約の本人認証ではない。料金holdや現在のpaid policyを変更しない。試験だけ明示free policyを使う。
+
+信頼されたOS bootstrapが同一ServiceAccessController、MessageAdapter、ManagedAP、modem観測関数を渡す。`PYTHONPATH` に `systems/rock-star-os/os` と `src`、このディレクトリを含める。公開requestは `status/enable/stop/enroll/revoke/enqueue` のみ。変更にはrevision、enqueueにはAP認証済みclient、requestId、kind、base64 payload、ttlが必要。owner、価格、観測値、接続先、shellをrequestから選べない。statusは本文・鍵を返さず、enroll時だけ端末別PSKを一度返す。再登録は同じbyte capを維持し、旧queueのpermissionEpochを失効させる。
+
+`tick()` は停止中・回線断でもTTLを掃除する。1周期1〜8件をround-robinで選び、次回時刻前の再送を行わない。AP bindingを予約前・網側予約後に再確認し、既存の各attempt通信量・料金予約を使う。失敗時の予約は戻さない。観測失敗は旧link epochを閉じ、次の周期で新しい観測を要求する。再起動はAP/送信とも無効から始め、本人のenable、再認証、新観測後に未期限切れqueueを再開する。stopは現在の有限I/Oと直列化され、瞬時のRF停止を保証しない。
+
+`serve(service, listener, stop, max_ticks=3600, interval=1)` は所有者の0700 directory内の0600 Unix socketを検査する。1周期につき最大1 request、request読取は全体1秒・100000 bytes以内、返信も1秒以内。周期数は最大86400で終端時にdisableする。supervisor再起動で勝手にenableしない。失敗は一般化した拒否だけを返し、token/本文をログへ記録しない。状態取得でもrevisionが変わるため、競合時は新statusから明示再試行する。
+
+`LocalModemTransport` は既存OSの長さ付きUnix transportとLinux peer UID検査を使う。固定local endpointへ `mini-local-modem/1` のgrant/frameを渡し、最大3秒の応答期限とACK上限を課す。modem supervisor実装・網側hard cap・RF停止・秘密通信は別途必要。このbridgeだけで実衛星通信成功とはしない。観測関数、AP、quota transportも信頼された有限I/O実装を構成する必要があり、任意callbackやDNS停止を含む外部環境のwall-clock上限は未受入。実機systemd常駐導入・実Broker認証・実provider・Job importは残る。
+
+試験: `python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'`。実SQLiteのServiceAccess、AP Unix socket、再起動、本人失効、予約後AP切断、TTL、再送上限、fairness、byte cap、CAS、Unix loopを検証。無線/請求/日米の認証・契約は未実施。Mini単体、板・膜なし、少ない表示部、上下を含む全範囲、まぶしくしない条件を保持する。
