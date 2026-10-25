@@ -20,6 +20,7 @@ import uuid
 
 from controller import Controller, Rejected
 from linux_gate import LinuxGate
+from ap_control import ManagedAP, OwnedHostapd
 
 
 def command(*args, check=True):
@@ -76,12 +77,36 @@ def delayed_install(directory, ns, client, marker):
     g.open(c.snapshot(int(time.time()))['revision'],'delayed',client,10000)
 
 
+def ap_parent_death_fixture(marker):
+    script = ("import os,sys,time; from pathlib import Path; from hostapd_child import bind_parent; "
+              "bind_parent(int(sys.argv[1])); Path(sys.argv[2]).write_text(str(os.getpid())); time.sleep(60)")
+    child=subprocess.Popen([sys.executable, '-B', '-c', script, str(os.getpid()), marker],
+                           cwd=Path(__file__).resolve().parent)
+    child.wait(timeout=60)
+
+
+class NoRadioAP(ManagedAP):
+    """TEST ONLY: real hostapd process/control, driver=none, no RF/WPA handshake."""
+    def config(self):
+        return super().config().replace(b'driver=nl80211',b'driver=none').replace(b'country_code=US\n',b'')
+
+
+def owned_ap_parent(directory, namespace, control, client, ready):
+    c=create_controller(directory)
+    gate=LinuxGate(c,namespace)
+    ctl=OwnedHostapd(Path(control),'lan0',gate,country='US',channel=1,band='g')
+    ap=NoRadioAP(c.directory/'ap',ctl)
+    ap.provision('phone',client); ap.enable()
+    Path(ready).write_text(json.dumps(dict(pid=ctl.process.pid, socket=list(ctl.socket_identity))))
+    time.sleep(60)
+
+
 class PacketTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not sys.platform.startswith('linux') or os.geteuid()!=0:
             raise RuntimeError('Explicit Linux root packet test required; not a skipped success')
-        for name in ['ip','nft','ping','sysctl','nsenter']:
+        for name in ['ip','nft','ping','sysctl','nsenter','hostapd']:
             if not shutil.which(name): raise RuntimeError('Missing prerequisite: '+name)
 
     def setUp(self):
@@ -124,6 +149,9 @@ class PacketTests(unittest.TestCase):
         command('ip','netns','exec',self.router,'sysctl','-qw','net.ipv4.ip_forward=1','net.ipv6.conf.all.forwarding=1')
 
     def tearDown(self):
+        if hasattr(self, 'ap'):
+            self.ap.shutdown()
+            if hasattr(self,'ap_fixture'): self.ap_fixture.close()
         if self.gate:
             self.gate.shutdown()
         for ns in reversed(self.names):
@@ -151,6 +179,149 @@ class PacketTests(unittest.TestCase):
 
     def open(self,key='grant',index=0,size=1000):
         return self.gate.open(self.revision(),key,self.bindings[index],size)
+
+    def access(self):
+        from ap_control import ManagedAP
+        from access_session import AccessSession
+        from fixture_access import ReferenceAP, ReferenceNetwork
+        from network_quota import NetworkQuota
+        self.c=create_controller(Path(self.temp.name)/'private')
+        self.gate=LinuxGate(self.c,self.router)
+        self.ap_fixture=ReferenceAP(Path(self.temp.name)/'ctl','lan0',self.c.directory/'ap')
+        self.ap=ManagedAP(self.c.directory/'ap',self.ap_fixture)
+        policy=self.c.snapshot(int(time.time()))['policy']
+        key=os.urandom(32)
+        self.carrier=ReferenceNetwork(Path(self.temp.name)/'carrier.sqlite',policy,key,lambda:int(time.time()))
+        self.network=NetworkQuota(self.c.directory/'network',policy,key,self.carrier,management_exempt=True)
+        self.session=AccessSession(self.gate,self.ap,self.network)
+        self.access_key=self.session.enroll('fixture-owner',self.revision(),self.bindings[0],100000)['enrollmentKey']
+        self.session.enable('fixture-owner',self.revision())
+        self.assertTrue(self.ap_fixture.associate(self.bindings[0]['mac'],self.access_key))
+        self.access_observe()
+
+    def access_observe(self):
+        now=int(time.time())
+        value=dict(bootId='fixture-boot',linkId='fixture-link',providerId='fixture',contractVersion='v1',region='US',
+            observedAt=now,validUntil=now+60,powerSafe=True,batteryReady=True,
+            satelliteRegistered=True,twoWayIp=True,internetReachable=True,sharingEntitled=True)
+        return self.session.observe('fixture-owner',self.revision(),value)
+
+    def test_owned_real_hostapd_kill_orphan_socket_and_safe_restart(self):
+        ready=Path(self.temp.name)/'owned-ready'
+        directory=Path(self.temp.name)/'private'; control=Path(self.temp.name)/'ctl'
+        parent=multiprocessing.get_context('fork').Process(target=owned_ap_parent,
+            args=(directory,self.router,control,self.bindings[0],ready))
+        parent.start()
+        try:
+            until=time.monotonic()+8
+            while not ready.exists() and parent.is_alive() and time.monotonic()<until: time.sleep(.02)
+            self.assertTrue(ready.exists(),'real hostapd driver=none startup failed')
+            pid=json.loads(ready.read_text())['pid']
+            parent.kill(); parent.join(timeout=3)
+            proc=Path(f'/proc/{pid}/stat'); until=time.monotonic()+3
+            while proc.exists() and proc.read_text().split()[2]!='Z' and time.monotonic()<until: time.sleep(.02)
+            self.assertTrue(not proc.exists() or proc.read_text().split()[2]=='Z')
+            self.assertTrue((control/'lan0').exists(),'SIGKILL should leave pathname socket')
+            self.c=Controller(directory); self.gate=LinuxGate(self.c,self.router)
+            ctl=OwnedHostapd(control,'lan0',self.gate,country='US',channel=1,band='g')
+            self.ap=NoRadioAP(self.c.directory/'ap',ctl)
+            self.assertFalse((control/'lan0').exists())
+            self.assertFalse(self.ap.enabled); self.ap.enable()
+            self.assertEqual(ctl.request('PING'),'PONG')
+            self.ap._status(); self.ap.disable(); self.ap.disable()
+            self.ap.halt(); self.assertFalse((control/'lan0').exists())
+            # Unknown sockets are never removed just because the directory is private.
+            import socket
+            foreign=socket.socket(socket.AF_UNIX,socket.SOCK_DGRAM)
+            try:
+                foreign.bind(str(control/'lan0')); os.chmod(control/'lan0',0o600)
+                with self.assertRaises(Rejected): ctl.claim(self.ap.directory,self.ap.lock)
+                self.assertTrue((control/'lan0').exists())
+            finally: foreign.close(); (control/'lan0').unlink(missing_ok=True)
+        finally:
+            if parent.is_alive(): parent.kill(); parent.join(timeout=3)
+
+    def test_ap_launcher_child_dies_when_owning_process_is_killed(self):
+        marker=Path(self.temp.name)/'child-pid'
+        parent=multiprocessing.get_context('fork').Process(target=ap_parent_death_fixture,args=(str(marker),))
+        parent.start()
+        try:
+            until=time.monotonic()+5
+            while not marker.exists() and time.monotonic()<until: time.sleep(.02)
+            self.assertTrue(marker.exists()); pid=int(marker.read_text())
+            parent.kill(); parent.join(timeout=3); self.assertFalse(parent.is_alive())
+            until=time.monotonic()+3
+            proc=Path(f'/proc/{pid}/stat')
+            while proc.exists() and proc.read_text().split()[2]!='Z' and time.monotonic()<until: time.sleep(.02)
+            self.assertTrue(not proc.exists() or proc.read_text().split()[2]=='Z')
+        finally:
+            if parent.is_alive(): parent.kill(); parent.join(timeout=3)
+
+    def test_access_auth_grant_dual_stack_and_detached_portable_reenable(self):
+        self.access()
+        with self.assertRaises(Rejected): self.session.open('other',self.revision(),'other','phone',1000)
+        self.assertFalse(self.ping())
+        self.session.open('fixture-owner',self.revision(),'ap-grant','phone',1000)
+        self.assertTrue(self.ping()); self.assertTrue(self.ping(v=6)); self.assertFalse(self.ping(client=1))
+        result=self.session.stop('fixture-owner',self.revision(),dock_id=None)
+        self.assertTrue(result['localStopConfirmed']); self.assertTrue(result['apStopConfirmed'])
+        self.assertEqual(result['providerClosed'],['ap-grant']); self.assertEqual(result['providerUnknown'],[])
+        self.assertFalse(self.ping()); self.assertFalse(self.ping(v=6))
+        # Standalone does not need a dock; fresh owner enable + fresh observation is required.
+        self.session.enable('fixture-owner',self.revision())
+        self.assertTrue(self.ap_fixture.associate(self.bindings[0]['mac'],self.access_key)); self.access_observe()
+        self.session.open('fixture-owner',self.revision(),'portable','phone',1000)
+        self.assertTrue(self.ping())
+        self.session.stop('fixture-owner',self.revision(),client_id='phone')
+        self.assertFalse(self.ping()); self.assertFalse(self.ap_fixture.associate(self.bindings[0]['mac'],self.access_key))
+
+    def test_access_lost_carrier_ack_never_opens_and_stop_reconciles_unknown(self):
+        self.access(); self.carrier.fail_after_effect=True
+        with self.assertRaises(TimeoutError): self.session.open('fixture-owner',self.revision(),'unknown','phone',1000)
+        self.assertFalse(self.ping()); self.assertFalse(self.ping(v=6))
+        self.assertEqual(self.network.pending_ids(),['unknown'])
+        self.carrier.fail_after_effect=False
+        result=self.session.stop('fixture-owner',self.revision())
+        self.assertEqual(result['providerClosed'],['unknown']); self.assertEqual(result['providerUnknown'],[])
+        self.assertTrue(result['reservationRetained'])
+        self.assertEqual(self.c.snapshot(int(time.time()))['grants']['unknown']['status'],'reserved')
+
+    def test_access_refresh_failure_and_auth_loss_fence_active_grant(self):
+        self.access(); self.session.open('fixture-owner',self.revision(),'active','phone',1000)
+        self.assertTrue(self.ping()); self.carrier.fail_after_effect=True
+        with self.assertRaises(TimeoutError): self.session.enable('fixture-owner',self.revision())
+        self.assertFalse(self.ping()); self.assertFalse(self.ap_fixture.enabled)
+        self.carrier.fail_after_effect=False
+        self.session.enable('fixture-owner',self.revision())
+        self.ap_fixture.associate(self.bindings[0]['mac'],self.access_key); self.access_observe()
+        self.session.open('fixture-owner',self.revision(),'second','phone',1000); self.assertTrue(self.ping())
+        self.ap_fixture.stations.clear()
+        with self.assertRaises(Rejected): self.session.open('fixture-owner',self.revision(),'no-auth','phone',1000)
+        self.assertFalse(self.ping())
+
+    def test_access_invalid_signed_quota_and_independent_stop_on_nft_error(self):
+        self.access()
+        def corrupt(body): body['account']['allTrafficHardStop']=False; return body
+        self.carrier.transform=corrupt
+        with self.assertRaises(Rejected): self.session.open('fixture-owner',self.revision(),'bad','phone',1000)
+        self.assertFalse(self.ping()); self.assertFalse(self.ping(v=6))
+        # A simulated nft outage must not skip the independent AP shutdown path.
+        real=self.gate._nft
+        def failed(*args,**kwargs): raise OSError('fixture nft unavailable')
+        self.gate._nft=failed
+        try:
+            result=self.session.stop('fixture-owner',self.revision())
+            self.assertFalse(result['localStopConfirmed']); self.assertTrue(result['apStopConfirmed'])
+            self.assertFalse(self.ap_fixture.enabled); self.assertEqual(result['providerUnknown'],['bad'])
+        finally: self.gate._nft=real
+        real_pending=self.network.pending_ids
+        def corrupt_journal(): raise OSError('fixture unreadable provider journal')
+        self.network.pending_ids=corrupt_journal
+        try:
+            result=self.session.stop('fixture-owner',self.revision())
+            self.assertTrue(result['localStopConfirmed']); self.assertTrue(result['apStopConfirmed'])
+            self.assertFalse(result['providerJournalKnown']); self.assertFalse(self.ping())
+        finally: self.network.pending_ids=real_pending
 
     def test_default_deny_and_dual_stack_same_quota(self):
         self.start()

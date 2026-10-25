@@ -108,7 +108,8 @@
     "additionalInferenceByGit": 0,
     "deviceActionsByGit": 0,
     "realProviderOrFinancialAcceptance": false,
-    "p02AndWholeOSAccepted": false
+    "p02AndWholeOSAccepted": false,
+    "miniCommonAccessAdapterMain215": true
   },
   "captureTimePendingInOriginalReceiptsRetained": true,
   "next": "Newguard scoped physical independent review/evidence save is a separate authorized OS batch; fullOS/P02/Provider/financial/public gates remain independent.",
@@ -123,7 +124,7 @@
     "newMainBotFailurePackage": "zod",
     "undiciFixAdoptedSeparately": true
   },
-  "metadataBaseSynchronization": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+  "metadataBaseSynchronization": "52b3d1d92045f9d9e6a6e83662b7e3689e33f4bc",
   "historicalFailures": [
     {
       "kind": "Dependabot",
@@ -136,5 +137,6 @@
       "dependencyLockDiffFromBase": 0,
       "scope": "Automated dependency update failure; separate from7 successful product CI checks; no dependency repair authorized in this batch"
     }
-  ]
+  ],
+  "integrationTimingNote": "PR213 code/main CI acceptance preceded supplementary native-hidden-cycle documentary acceptance. At-integration hidden scope is not retroactively upgraded. New physical/visibility evidence is separate and not included here."
 }

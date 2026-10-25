@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.40",
+  "version": "1.41",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -390,7 +390,10 @@
         "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md",
         "docs/evidence/development-execution/mini-08-linux-tethering.json",
         "docs/evidence/development-execution/mini-08-tethering-main-merge.json",
-        "docs/evidence/development-execution/mini-08-linux-tethering-ci.json"
+        "docs/evidence/development-execution/mini-08-linux-tethering-ci.json",
+        "systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md",
+        "docs/evidence/development-execution/mini-08-linux-main-merge.json",
+        "docs/evidence/development-execution/mini-08-access-adapters.json"
       ],
       "implementation": [
         "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
@@ -404,7 +407,15 @@
         "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
         "tests/avocado-mini-joint-allocation.test.mjs",
         "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.md",
-        "docs/evidence/development-execution/mini-02-joint-allocation.json"
+        "docs/evidence/development-execution/mini-02-joint-allocation.json",
+        "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/hostapd_child.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+        "systems/rock-star-os/targets/avocado-mini/tethering/access_session.py"
       ]
     },
     {
