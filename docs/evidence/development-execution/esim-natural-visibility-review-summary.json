@@ -1,0 +1,121 @@
+{
+  "schema": "rockstaros.esim-natural-visibility-portable-review/1",
+  "originalReviewSha256": "5f5d83586f61fc21de4643385ca2a61655d15a34d7a46fd1c1017642c525ae3f",
+  "derivation": "Root copies independent reviewer findings without changing verdict; local raw-proof paths omitted. This derivative needs separate adoption metadata review.",
+  "recordedAt": "2026-10-25T10:14:46.488267+00:00",
+  "unit": "ESIM-BILLING-UI-ACK-01",
+  "status": "PASS_SCOPED_NATURAL_VISIBILITY_AND_FRESH_READ_RECOVERY",
+  "mustFix": [],
+  "reviewMethod": "Independent documentary readback of Root actual-browser evidence, current candidate/source and local immutable PR213 merge Git objects. Reviewer performs no browser action or new runtime test.",
+  "priorReviewHistory": {
+    "r2": {
+      "path": "docs/evidence/development-execution/esim-billing-ui-ack-review-r2.json",
+      "sha256": "01e70baf6a14c625cad4f656ab07295b698fa38214066e965b0a48a89632cb2e",
+      "unchanged": true,
+      "historicalVerdict": "CODE_PASS_SCOPED_ROOT_BOUNDED_UI_PASS_HIDDEN_PARTIAL_UNVERIFIED"
+    },
+    "attempt1": {
+      "path": "docs/evidence/development-execution/esim-billing-ui-ack-review.json",
+      "sha256": "deefef4d54311c54ef9ab1a4df10412c5109419184fecde56a30b453fe70cb5e",
+      "unchanged": true
+    },
+    "supersedesOnlyPendingEvidence": "This supplemental visibility evidence completes the bounded natural-visibility/read-gating documentary gate; prior snapshots retain their then-unverified history. It does not replace original failure or hook records."
+  },
+  "boundedAcceptedFindings": [
+    {
+      "case": "actual native hidden/visible transitions",
+      "evidence": "Three natural hidden transitions, each with event/microtask/settled samples:9hidden samples all privateVisible=false and mutationButtons empty. Initial manual visible sample has private body and3action buttons. Native AX provides an independently stored partial earlier snapshot consistent with full telemetry.",
+      "qualification": "Telemetry samples are3cycles, not9independent cycles; passive host fixture records actual document visibility."
+    },
+    {
+      "case": "fresh GET held after visible",
+      "evidence": "Visible settled states GET4/6/8 have no private body or action buttons; hidden counts2/5/7 do not change within each hidden sample group. Earlier AX return view is pending with no current private body.",
+      "qualification": "Focus/pageshow can add read requests. This is no-restoration-before-current-read evidence, not exactly oneGETpercycle."
+    },
+    {
+      "case": "oldest held response released alone",
+      "evidence": "Oldest-released and following manual telemetry both GET9/POST0,privateVisible=false,mutationButtons empty. old-get-only DOM main contains only pending/public text and refresh.",
+      "qualification": "Fixture explicitly releases held.shift(); documentary record does not include per-response IDs or cryptographic network trace. Product generation/readVersion protection is separately code-reviewed."
+    },
+    {
+      "case": "matching fresh replies released",
+      "evidence": "Final manual sample GET9/POST0 restores privateVisible=true and3buttons. Recovered DOM confirms owner-a workspace/revision7,current synthetic private text,running job and unpaid invoice; screenshot visually confirms private result plus controls.",
+      "qualification": "All remaining held replies were released, including current matching fresh view. Evidence supports no early restoration and eventual current recovery; does not distinguish individual remaining response deliveries."
+    },
+    {
+      "case": "no mutation replay",
+      "evidence": "Every retained observation and final DOM counts POST0. The real-browser visibility sequence tests read/display quarantine and recovery, not a saved-mutation path or real hidden click."
+    }
+  ],
+  "sameDocumentAndToolQualification": {
+    "sameDocumentAcrossLongToolPause": true,
+    "oneShortUninterruptedCycle": false,
+    "nativeObservationBeforeHelperAttachment": "Root records natural Chrome tab transitions before debugger helper binding. Saved telemetry and observedSequence prefix are consistent.",
+    "helperAttachment": "Later browser helper binds existing page to read saved log and release held responses; GET8→9 added, POST remains0. Explicitly included in accepted sequence rather than hidden as uninterrupted run.",
+    "continuityEvidenceLimit": "Same-document continuity relies on Root operation record plus preserved complete native telemetry prefix and unchanged fixture/source hashes; no independent navigation token or wall-clock timestamps per sample.",
+    "toolFailures": [
+      {
+        "operation": "Safari getApp",
+        "result": "timeoutReached",
+        "wallSeconds": 8205.3464,
+        "countedAsPass": false
+      },
+      {
+        "operation": "Native Chrome continuation",
+        "result": "User browser changes prevented pending native action; no original tab content modified",
+        "countedAsPass": false
+      }
+    ],
+    "cleanup": "Root reports own test tab closed and own server stopped. Reviewer started no tab/server or unrelated process."
+  },
+  "main213Comparison": {
+    "mergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "mergeCommittedAt": "2026-10-25T05:47:47-04:00",
+    "completionSummaryRecordedAt": "2026-10-25T10:06:10.281614+00:00",
+    "productAdoptedBeforeVisibilityGateEvidenceCompleted": true,
+    "noRetroactiveAcceptanceAtMerge": true,
+    "candidateHashes": {
+      "components/sky-linux-service.tsx": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1",
+      "tests/sky-linux-service-reconciliation.test.mjs": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936",
+      "docs/evidence/development-execution/esim-billing-ui-ack.json": "50379e5d5ae031b2bc82c28fb2bb8325e3f979c0edf5c7c7aa90b2548fcc1a64",
+      "lib/operations-client.ts": "250c4562822e4933a52c7149d892f7f16e3cae345362dff2228dd3a99d50c59f"
+    },
+    "main213Hashes": {
+      "components/sky-linux-service.tsx": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1",
+      "tests/sky-linux-service-reconciliation.test.mjs": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936",
+      "docs/evidence/development-execution/esim-billing-ui-ack.json": "4177a7836e22dce46dbc9f6db15afcc3631a3dbc9f4ad0fb34d5a3c5be126e23",
+      "lib/operations-client.ts": "250c4562822e4933a52c7149d892f7f16e3cae345362dff2228dd3a99d50c59f"
+    },
+    "componentTestOperationsClientMatchMain213": true,
+    "receiptMetadataDifference": {
+      "originalCandidateSha256": "50379e5d5ae031b2bc82c28fb2bb8325e3f979c0edf5c7c7aa90b2548fcc1a64",
+      "mainPortableSha256": "4177a7836e22dce46dbc9f6db15afcc3631a3dbc9f4ad0fb34d5a3c5be126e23",
+      "equal": false,
+      "assessment": "40differing JSON leaves confined to path/script/command/checkout/log/handoff metadata across5top-level keys. Product sourceHashes identical. This is acknowledged receipt normalization, not an identical-receipt claim."
+    },
+    "notCurrentRemoteMainAudit": "Only immutable merge213 objects compared; no remote/CI/publication claim."
+  },
+  "separateAcceptancePlanes": {
+    "naturalHiddenDisplayAndFreshReadRecovery": "PASS_SCOPED_DOCUMENTARY",
+    "retainedHandlerInvocationWhileHidden": "Independent actual-component hook probes only; real-browser hidden invocation NOT_RUN",
+    "savedAckThenHiddenLateRead": "Independent hook and existing normal browser ack tests remain separate; this native sequence POST0 does not establish combined actual-browser mutation+hidden cycle.",
+    "singleUninterruptedShortCycle": "NOT_ESTABLISHED",
+    "productionAuthOrRealOwnerSwitch": "NOT_ACCEPTED",
+    "realProviderBillingCarrierEsim": "NOT_ACCEPTED",
+    "nativeOsOrPhysicalDevice": "NOT_ACCEPTED",
+    "wholeEsimUnits": "NOT_ACCEPTED"
+  },
+  "acceptance": {
+    "boundedActualNativeVisibilityGate": true,
+    "boundedOldFreshReadRecovery": true,
+    "independentDocumentaryReview": true,
+    "hookSuccessPromotedToBrowserHiddenClick": false,
+    "wholeProductOrProductionAccepted": false
+  },
+  "operations": {
+    "newRepositoryWrite": "docs/evidence/development-execution/esim-billing-ui-ack-visibility-review.json",
+    "priorR2OrAttempt1Changed": false,
+    "sourcePrimaryReceiptGitRegistryBrowserOtherChatOrChildMutation": false,
+    "testsRerun": false
+  }
+}

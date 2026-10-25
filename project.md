@@ -240,6 +240,8 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
+追加検収: PR213統合後に完了した自然Chrome hidden/visibleとfresh read復帰の証拠を匿名要約で保存する。3遷移・hidden9観測で本文と操作を遮断し、古いGETだけでは復元せず、現contextの応答後に復元、POST0。長いtool中断とhelper接続によるGET8→9を明記。Root原本4ad92/Web独立review5f5dと派生要約のhashを区別し、Git担当が別途metadata一致を検収（必須修正0）。コード統合時には未完だった履歴は保持する。実本人認証・実回線/eSIM・課金・端末/全製品の合格へ拡張しない。次はこの別証拠PRの同head CI、通常main統合、merge同SHA CI。証拠: docs/evidence/development-execution/esim-natural-visibility-summary.json と esim-natural-visibility-review-summary.json。
+
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
 
 着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、最新maindc2取り込み後の最終headと通常main mergeの同一SHA CIまで成功を確認した。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
