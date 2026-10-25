@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { SkyNotice } from './sky-feedback';
 import WorkspaceShell from './workspace-shell';
 import type {
@@ -16,7 +17,7 @@ type View = {
   termsDigest: string | null;
   catalog: LinuxListing[];
   workspace: { revision: number; payload: LinuxWorkspace } | null;
-  access: { canExecute: boolean; reason: string | null } | null;
+  access: { canRead: boolean; canExport: boolean; canExecute: boolean; reason: string | null } | null;
   currentMonthMaximumMinor: number | null;
   creatorEarnings: {
     period: string;
@@ -28,6 +29,12 @@ type View = {
     recoveryRequired: boolean;
   }[];
 };
+type OwnerContext = { ownerId: string; workspaceId: string; orderId: string; deviceRef: string };
+type Confirmation = {
+  action: string; requestId?: string; owner?: OwnerContext; orderId?: string; deviceRef?: string;
+  saved: boolean; revision: number | null;
+};
+type ReadState = 'loading' | 'ready' | 'pending' | 'unavailable' | 'signin' | 'changed';
 const dollars = (minor: number) =>
   new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'USD' }).format(
     minor / 100,
@@ -46,58 +53,138 @@ export default function SkyLinuxService() {
   const [listingJson, setListingJson] = useState(''),
     [rights, setRights] = useState(false);
   const [runAgreed, setRunAgreed] = useState(false);
-  async function refresh() {
-    const response = await fetch('/api/sky/linux', { cache: 'no-store' });
-    const data = (await response.json()) as View & { error?: string };
-    if (!response.ok) throw new Error(data.error);
-    setView(data);
-    setError('');
+  const [readState, setReadState] = useState<ReadState>('loading');
+  const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const live = useRef(true), generation = useRef(0), readVersion = useRef(0), mutationLock = useRef(false);
+  const currentView = useRef<View | null>(null), currentState = useRef<ReadState>('loading');
+  const owner = useRef<OwnerContext | null>(null), pending = useRef<Confirmation | null>(null);
+  const visible = () => typeof document !== 'undefined' && document.visibilityState === 'visible';
+  const active = (version: number) => live.current && visible() && version === generation.current;
+  function status(value: ReadState) { currentState.current = value; setReadState(value); }
+  function show(value: View | null) { currentView.current = value; setView(value); }
+  function confirm(value: Confirmation | null) { pending.current = value; setConfirmation(value); }
+  function clearPrivate() {
+    show(null); setOrder(''); setDevice(''); setAgreed(false); setSelected('');
+    setInput(''); setRunAgreed(false); setListingJson(''); setRights(false);
+  }
+  function restrict(reason: 'signin' | 'changed' | 'unavailable') {
+    generation.current++; readVersion.current++; mutationLock.current = false;
+    if (reason === 'unavailable') show(null);
+    else clearPrivate();
+    setBusy(false); setError(''); status(reason);
+  }
+  const canMutate = () => live.current && visible() && currentState.current === 'ready' &&
+    !!view && view === currentView.current && !mutationLock.current && !pending.current;
+  function matches(context: OwnerContext, workspace: LinuxWorkspace) {
+    return context.ownerId === workspace.ownerId && context.workspaceId === workspace.id &&
+      context.orderId === workspace.orderId && context.deviceRef === workspace.deviceRef;
+  }
+  async function refresh(message = '') {
+    if (!live.current || !visible() || mutationLock.current) return;
+    const version = generation.current, read = ++readVersion.current;
+    show(null); status(pending.current ? 'pending' : 'loading');
+    try {
+      const data = await operationRequest<View>('/api/sky/linux');
+      if (!active(version) || read !== readVersion.current) return;
+      if (!data || !Array.isArray(data.catalog) || !Array.isArray(data.eligibleOrders) ||
+        !Array.isArray(data.creatorEarnings) || (data.workspace !== null &&
+          (!data.workspace || !Number.isSafeInteger(data.workspace.revision) || data.workspace.revision < 0 ||
+            !data.workspace.payload || data.access?.canRead !== true))) throw Error('invalid current view');
+      const workspace = data.workspace?.payload;
+      if (workspace && ![workspace.id, workspace.ownerId, workspace.orderId, workspace.deviceRef]
+        .every(value => typeof value === 'string' && value.length > 0)) throw Error('invalid owner context');
+      if (workspace && owner.current && !matches(owner.current, workspace)) { restrict('changed'); return; }
+      const expected = pending.current;
+      if (expected) {
+        if (workspace && ((expected.owner && !matches(expected.owner, workspace)) ||
+          (!expected.owner && (expected.orderId !== workspace.orderId || expected.deviceRef !== workspace.deviceRef)))) {
+          restrict('changed'); return;
+        }
+        if (!workspace || !expected.saved || expected.revision === null ||
+          data.workspace!.revision < expected.revision ||
+          (expected.action === 'run' && !workspace.jobs?.some(job => job.id === expected.requestId))) {
+          status('pending'); setError(''); return;
+        }
+        confirm(null);
+      } else if (!workspace && owner.current) {
+        // A missing private body is not proof the previous contract disappeared.
+        status('unavailable'); setError('保存データの現在の表示を確認できません。状態を更新してください。'); return;
+      }
+      if (workspace) owner.current = { ownerId: workspace.ownerId, workspaceId: workspace.id,
+        orderId: workspace.orderId, deviceRef: workspace.deviceRef };
+      show(data); status('ready'); setError(message);
+    } catch (error) {
+      if (!active(version) || read !== readVersion.current) return;
+      if (error instanceof OperationRequestError && [401, 403].includes(error.status)) { restrict('signin'); return; }
+      show(null); status('unavailable'); setError('現在の表示を確認できません。自動再送せず、状態を更新してください。');
+    }
   }
   useEffect(() => {
-    let live = true;
-    const controller = new AbortController();
-    void fetch('/api/sky/linux', {
-      cache: 'no-store',
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        const data = (await response.json()) as View & { error?: string };
-        if (!response.ok) throw new Error(data.error);
-        return data;
-      })
-      .then((data) => {
-        if (live) setView(data);
-      })
-      .catch((e) => {
-        if (live)
-          setError(
-            e instanceof Error ? e.message : '状態を確認できませんでした。',
-          );
-      });
+    live.current = true;
+    const liveRef = live, generationRef = generation, readRef = readVersion;
+    void refresh();
+    // Existing connection-check event and browser lifecycle invalidate old replies.
+    // HttpOnly account changes are observable here only at these boundaries or a new server view.
+    const hide = () => restrict('unavailable');
+    const recheck = () => { restrict('unavailable'); void refresh(); };
+    const visibilityChanged = () => {
+      if (visible()) recheck();
+      else {
+        restrict('unavailable');
+        clearPrivate();
+      }
+    };
+    document.addEventListener('visibilitychange', visibilityChanged);
+    window.addEventListener('blur', hide);
+    window.addEventListener('focus', recheck);
+    window.addEventListener('pageshow', recheck);
+    window.addEventListener('sky-execution-access-check', recheck);
     return () => {
-      live = false;
-      controller.abort();
+      liveRef.current = false; generationRef.current++; readRef.current++;
+      document.removeEventListener('visibilitychange', visibilityChanged);
+      window.removeEventListener('blur', hide);
+      window.removeEventListener('focus', recheck);
+      window.removeEventListener('pageshow', recheck);
+      window.removeEventListener('sky-execution-access-check', recheck);
     };
   }, []);
   async function act(value: Record<string, unknown>) {
-    setBusy(true);
-    setError('');
+    if (!canMutate()) return;
+    const before = currentView.current!, version = generation.current;
+    if (value.action === 'accept' && !before.eligibleOrders.some(choice =>
+      choice.orderId === value.orderId && choice.deviceRef === value.deviceRef)) return;
+    const expected: Confirmation = { action: typeof value.action === 'string' ? value.action : '', saved: false, revision: null,
+      ...(owner.current ? { owner: owner.current } : { orderId: typeof value.orderId === 'string' ? value.orderId : '', deviceRef: typeof value.deviceRef === 'string' ? value.deviceRef : '' }),
+      ...(typeof value.requestId === 'string' ? { requestId: value.requestId } : {}) };
+    mutationLock.current = true; readVersion.current++;
+    confirm(expected); show(null); status('pending'); setBusy(true); setError('');
+    let readBack = false, validationMessage = '';
     try {
-      const response = await fetch('/api/sky/linux', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...value, revision: view?.workspace?.revision }),
-      });
-      const data = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(data.error);
-      await refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '操作を完了できませんでした。');
+      const data = await operationRequest<{ accepted?: boolean; revision?: number; listing?: unknown }>(
+        '/api/sky/linux', 'POST', { ...value, revision: before.workspace?.revision });
+      if (!active(version)) return;
+      if (value.action === 'register' && data.listing) confirm(null);
+      else if (data.accepted === true && Number.isSafeInteger(data.revision) &&
+        (data.revision as number) >= (before.workspace?.revision ?? 0))
+        confirm({ ...expected, saved: true, revision: data.revision! });
+      readBack = true;
+    } catch (error) {
+      if (!active(version)) return;
+      if (error instanceof OperationRequestError && error.status >= 400 && error.status < 500) {
+        confirm(null);
+        if ([401, 403].includes(error.status)) restrict('signin');
+        else if (error.code === 'OWNER_CHANGED') restrict('changed');
+        else { validationMessage = error.message; readBack = true; }
+      } else {
+        status('unavailable'); setError('操作の保存結果が不明です。再送せず、元のアカウントで状態を確認してください。');
+      }
     } finally {
-      setBusy(false);
+      if (active(version)) { mutationLock.current = false; setBusy(false); }
     }
+    if (readBack && active(version)) await refresh(validationMessage);
   }
   function download(name: string, value: unknown) {
+    if (!canMutate()) return;
     const url = URL.createObjectURL(
       new Blob(
         [typeof value === 'string' ? value : JSON.stringify(value, null, 2)],
@@ -111,29 +198,25 @@ export default function SkyLinuxService() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   async function payment(invoiceId: string, action: 'collect' | 'reconcile') {
-    setBusy(true);
-    setError('');
+    if (!canMutate()) return;
+    const version = generation.current;
+    mutationLock.current = true; readVersion.current++; setBusy(true); setError('');
     try {
-      const response = await fetch('/api/sky/linux/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ invoiceId, action }),
-      });
-      const data = (await response.json()) as { error?: string; url?: string };
-      if (!response.ok) throw new Error(data.error);
+      const data = await operationRequest<{ url?: string }>('/api/sky/linux/payments', 'POST', { invoiceId, action });
+      if (!active(version)) return;
       if (data.url) {
         const url = new URL(data.url);
-        if (url.protocol !== 'https:' || url.hostname !== 'invoice.stripe.com')
-          throw new Error('請求書URLを確認できません。');
+        if (url.protocol !== 'https:' || url.hostname !== 'invoice.stripe.com') throw Error('請求書URLを確認できません。');
         window.location.assign(url.href);
-      } else await refresh();
-    } catch (e) {
-      setError(
-        e instanceof Error ? e.message : '支払いを確認できませんでした。',
-      );
-    } finally {
-      setBusy(false);
-    }
+      } else {
+        mutationLock.current = false;
+        await refresh();
+      }
+    } catch (error) {
+      if (!active(version)) return;
+      if (error instanceof OperationRequestError && [401, 403].includes(error.status)) restrict('signin');
+      else { show(null); status('unavailable'); setError('支払いの状態を確認できません。再送せず状態を更新してください。'); }
+    } finally { if (active(version)) { mutationLock.current = false; setBusy(false); } }
   }
   const workspace = view?.workspace?.payload,
     terms = workspace?.terms ?? view?.terms;
@@ -157,13 +240,22 @@ export default function SkyLinuxService() {
             含まれる利用枠を超えた分だけ、事前単価と承認した上限で計算します。枠の量と超過単価は準備中です。支払いが止まると新しい実行を制限し、設定と成果を保持します。
           </p>
         </header>
+        {confirmation && <output>
+          {confirmation.saved ? `操作を保存しました（保存版 ${confirmation.revision}）。現在の表示を再確認しています。`
+            : '操作の保存結果を確認中です。自動再送しません。'}
+          <p>この表示だけでは、閲覧権限・契約の利用開始・入金・仕事の完了は確認できません。</p>
+        </output>}
+        {readState === 'signin' && <p role="alert">現在の閲覧権限を確認できません。サインインを確認してから状態を更新してください。</p>}
+        {readState === 'changed' && <p role="alert">アカウントまたは契約の表示先が変わりました。元のアカウントで本人を再確認してください。</p>}
         {error && <SkyNotice message={error} className={styles.notice} />}
+        {readState !== 'ready' && <p>保存データと現在の費用は再確認待ちです。新しい契約・依頼・請求操作は開始しません。</p>}
         <button
           disabled={busy}
-          onClick={() => void refresh().catch((e) => setError(e.message))}
+          onClick={() => void refresh()}
         >
           状態を更新
         </button>
+        {readState === 'ready' && visible() && <>
         {!view?.enabled && (
           <p className={styles.notice}>
             この環境は契約・実行先・決済の受入準備中です。まだ契約や請求を開始しません。
@@ -228,6 +320,7 @@ export default function SkyLinuxService() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
+                  if (!canMutate()) return;
                   void act({
                     action: 'accept',
                     orderId,
@@ -327,11 +420,12 @@ export default function SkyLinuxService() {
             <h2>依頼する</h2>
             <p>
               今月の基本料金・確定使用分・実行中の予約上限：
-              {dollars(view?.currentMonthMaximumMinor ?? 1600)}
+              {view?.currentMonthMaximumMinor == null ? '現在の費用は未確認' : dollars(view.currentMonthMaximumMinor)}
             </p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                if (!canMutate()) return;
                 if (!/^\d{1,6}(\.\d{1,2})?$/.test(max)) {
                   setError('今回の上限額をセント単位で入力してください。');
                   return;
@@ -576,6 +670,7 @@ export default function SkyLinuxService() {
             登録する
           </button>
         </details>
+        </>}
       </div>
     </WorkspaceShell>
   );

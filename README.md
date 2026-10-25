@@ -186,6 +186,8 @@ native統合手順にはOS系列ごとの実装・検証方法、Linux toolkit�
 
 ### 現在の開発状況
 
+eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
+
 [PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
 
 G04ではundici更新不可の原因となったoverride固定を7.29.1から7.30.1へ修正中です。通常npm ciとundici監査の解消を確認し、独立検収・Git保存・最終同一SHA CIを進めます。他依存の監査指摘10件、main統合、公開・配備・616一括公開は別の未完了／保留として維持します。[修正証拠](docs/evidence/development-execution/undici-security-update.json)。
@@ -250,6 +252,8 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 - [仕事の状態遷移](lib/workflow.ts)
 
 ### 現在の開発状況
+
+保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
 
 会話の明示保存・読戻し・削除と、本人の成果をHTMLへ持ち出すコードをmainへ統合済み。
 
