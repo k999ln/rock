@@ -240,6 +240,8 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
+現在: product PR213/main2a、progress PR222/mainee9、追加実visibility証拠PR224/mainf59を別々に受入。224のhead7CI/merge6CI・Linux2986/2984pass/0fail/2skipを確認。213統合後に完了した限定証拠であり、実auth/issuer-provider sandbox/回線/課金収納/公開とESIM01-08 whole gateは未受入。次候補ESIM03の有限gap再照合は未着手。
+
 追加検収: PR213統合後に完了した自然Chrome hidden/visibleとfresh read復帰の証拠を匿名要約で保存する。3遷移・hidden9観測で本文と操作を遮断し、古いGETだけでは復元せず、現contextの応答後に復元、POST0。長いtool中断とhelper接続によるGET8→9を明記。Root原本4ad92/Web独立review5f5dと派生要約のhashを区別し、Git担当が別途metadata一致を検収（必須修正0）。コード統合時には未完だった履歴は保持する。実本人認証・実回線/eSIM・課金・端末/全製品の合格へ拡張しない。次はこの別証拠PRの同head CI、通常main統合、merge同SHA CI。証拠: docs/evidence/development-execution/esim-natural-visibility-summary.json と esim-natural-visibility-review-summary.json。
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
@@ -248,15 +250,15 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用しました（同SHA CIは別確認）。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用し、同SHAの製品7・自動更新2成功を確認しました。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
 
 主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。8f当時の依存lock差分0は履歴であり、今回の同期はPR216の依存・lockを保持する。UIは上記PR213の限定範囲で受入済み、実Provider/金融/物理は別gate。
 
 ### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
 
-開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、現在mainのzod更新不可は別依存の未解決として残す。
+開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、当時のzod更新不可は後続PR225/main f4で修正済み（原receiptは保持）。
 
-[PR218](https://github.com/k999ln/rock/pull/218)はSRI大小文字の不一致digestを拒否する2回帰と独立検収・進捗引継ぎを追加する候補。[証拠](docs/evidence/development-execution/undici-security-update.json)。旧両majorでSRI回避/過剰encoding crash、新版で拒否/生存を独立確認。同期前host verify2984／2981pass／0fail／3skip、同期後対象9pass。受入head `0aa1c8d4`の同一SHA全7CI成功、Linux実verify2988／2986pass／0fail／2skipを直接確認し、PR218へGit保存済み。結果metadataのhead1d731c84も全7CI成功。この過去受入と、今回最新main同期後の新head CIを区別する。本人指示による通常main統合へ向け、最新ee9b8801を通常同期。新head独立検収・CI、統合後同SHA CIを確認する。他依存root10／Mini2指摘、Pixel実機/P02/全OS、公開・配備・616一括公開は未受入／保留。
+PR218は検収済みhead2f737579（8CI成功）をmain7edbb9beへ通常統合し、同mergeSHAの8check成功（製品7/補助collect1）、Linux2993/2991pass/0fail/2skipを確認。PR225/mainf4の製品7・Dependabot2成功とZod修正を別証拠で確認した。root10/Mini2は旧監査snapshotで、後続PR225 receiptではroot7/Mini1（新規監査ではない）。原receiptの失敗・pendingは保持、公開/配備/616保留。 証拠 docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json。
 
 ### 原source/host段階の記録（履歴）
 
@@ -896,7 +898,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。別枠Dependabotのzod更新失敗は未解決としてGit担当へ連携し、成功に含めない。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
+統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。当時の別枠Dependabot zod更新失敗は成功へ含めず履歴保持。後続PR225/main f4の修正と製品7/自動更新2成功は別証拠で確認済み。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
 
 本人回答反映・検証: 初期対象を日米両方のsi/メッセージ/小ファイルへ確定し、9704/NB-NTN優先、9770一般IP後段へ順序を更新。国別受入profileと未実行境界を同期。独立差分検収mustFix0、mission/project/design・台帳境界チェック成功。[選択反映検収](docs/evidence/development-execution/mini-08-owner-choice-review.json)。更新headの全体verifyはPR221のCIで別追跡。
 
