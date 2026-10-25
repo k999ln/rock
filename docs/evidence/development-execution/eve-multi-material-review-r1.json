@@ -1,0 +1,143 @@
+{
+  "schema": "rockstaros.eve-multi-material.independent-review/1",
+  "recordedAt": "2026-10-25T12:11:44.473515+00:00",
+  "role": "Independent reviewer, not implementation author",
+  "attempt": 1,
+  "verdict": "CHANGES_REQUIRED",
+  "baseMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+  "reviewedSourceAndTests": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba"
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "27a23487472ed9ba194cd1ed5d5b36aacfab6a571fde047204dd18fdf6b37427"
+    },
+    {
+      "path": "tests/eve-multi-material.test.mjs",
+      "sha256": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689"
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90"
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "4df7fddcaa01a067ce7f1fc14b929e76937640fd88a183223c7491f6a86aa263"
+    }
+  ],
+  "fullManifest16Matches": true,
+  "mustFix": [
+    {
+      "id": "EVE-MULTI-STALE-MATERIAL-01",
+      "priority": "P2",
+      "file": "components/work-composition-workspace.tsx",
+      "line": 324,
+      "summary": "A captured pre-removal name or text edit overwrites the different material moved into the same numeric slot.",
+      "cause": "resizeEveMaterials checks currentEveInput, but changeEveMaterial only checks owner/job locks and addresses a mutable numeric index.",
+      "reproduction": "Create 3 materials; capture material2 name/text onChange; remove material2; invoke the old callback. Material3, now in slot2, is overwritten. Both independently captured callbacks fail original-value assertions.",
+      "requiredFix": "Fence material edit by current input/structure identity before mutating; retain current valid edits. Add regression for name and text after remove/reindex, including same-frame queued callbacks.",
+      "acceptance": "Immutable independent ui-probes tests both pass; existing related suite passes; no weakening of owner/file-generation guards."
+    },
+    {
+      "id": "EVE-MULTI-HISTORICAL-UI-02",
+      "priority": "P2",
+      "file": "README.md",
+      "line": 13,
+      "summary": "Expanded 2-4 material usage text shares an unqualified historical real-local-UI success claim from the old two-material feature.",
+      "cause": "Only 2資料 was expanded to2〜4資料, while later sentences about actual local UI/restore/503 retain their old unqualified subject.",
+      "requiredFix": "State that those actual UI observations are historical two-material evidence; new3/4 acceptance currently covers host/API/component VM only and actual browser remains unaccepted. Do not rewrite old evidence as a new pass.",
+      "acceptance": "README usage and evidence scope explicitly distinguish old two-material browser evidence from new3/4 host/VM tests; receipt/design remain consistent."
+    }
+  ],
+  "mustFixCount": 2,
+  "independentChecks": {
+    "codecProbes": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0
+    },
+    "uiCounterexamples": {
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "failureMeaning": "Confirmed product defect, not expected success"
+    },
+    "relatedRegressions": {
+      "tests": 83,
+      "pass": 83,
+      "fail": 0,
+      "skip": 0
+    },
+    "testsNotAdditiveCoverage": true,
+    "existingAssertions": "No unsupported assertion deletion observed; prior three-material refusal was correctly moved to five-material refusal and positive3/4 cases added; error text checks updated for new count label."
+  },
+  "positiveFindings": [
+    "Legacy two-material source/plan/prompt/digests byte-equivalent for3 independent vectors",
+    "New3/4 canonical schemas and ordered per-source SHA256 preserved",
+    "Count/schema mismatch, cancelled/active/cleared jobs, altered artifact/plan, output authority/builder/hash/revision forgery refused",
+    "8000 body/500goal/160name/48000file and existing12000 envelope limit upheld; excessively escaped input refuses rather than truncates",
+    "Actual imported estimate-handler/SQLite/signed-synthetic-rate related tests keep DB snapshot unchanged, reject foreign owner and record zero sends",
+    "No paid pricing gate, core workflow/schema/migration, account, real Provider, device or publication change detected"
+  ],
+  "probeHistory": [
+    {
+      "phase": "initial independent worst-escaped probe",
+      "result": "One probe initially expected max8000 escaped chars to succeed; source also has unchanged12000 envelope cap, so the probe expectation was corrected. Product was not modified; final6 codec probes pass."
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "name": "ui-probes.test.mjs",
+      "sha256": "09643d16545e05d8bf22ab0ec24cdd14ea3b192987dbc0fc96014005f2cec21f"
+    },
+    {
+      "name": "ui-probes.log",
+      "sha256": "01c6975a7ba1c71f6cb00019085369ce235bb01579821db87e2182ba542acb39"
+    },
+    {
+      "name": "codec-probes.test.mjs",
+      "sha256": "4208fe9e69e84a7e8cab903577f2d9ecfc81b3b24f31a1709e15664e3520c19e"
+    },
+    {
+      "name": "codec-probes.log",
+      "sha256": "02968e61fc8a1e9822f7b1c62adc0793eccf09a46dd53b39c56246db7bc3d03b"
+    },
+    {
+      "name": "regressions.log",
+      "sha256": "f26d45a514f3291c7982c2bebc8fa436844e7a5dae293c5d206d237723196e1c"
+    }
+  ],
+  "planes": [
+    "Pure TypeScript imports and independent Node crypto hashes",
+    "Transpiled actual parent React component in VM with synthetic owner/store and captured callbacks",
+    "Related actual estimate handler with SQLite and synthetic authentication/rates"
+  ],
+  "notAccepted": [
+    "Real browser event scheduling/rendering/keyboard use",
+    "Cross-device/physical acceptance",
+    "Real Provider pricing/billing or paid execution",
+    "Whole EVE02",
+    "Candidate CI, GitHub save, main integration or deployment"
+  ],
+  "readOnlyProduct": true,
+  "fullVerifyRerun": false,
+  "next": "Implementation author fixes2 findings; rerun same immutable ui counterexamples and independent r2 hashes/targeted regressions before Git adoption."
+}

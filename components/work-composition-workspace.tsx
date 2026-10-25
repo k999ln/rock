@@ -321,12 +321,22 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
     } catch (cause) { setError(cause instanceof SyntaxError ? '処理設定のJSONを確認してください。' : cause instanceof Error ? cause.message : '手順を確認してください。'); }
   }
   function changeEveMaterial(index: number, field: 'name' | 'text', value: string) {
-    if (!canEditNow() || selected) return;
+    if (!canEditNow() || selected || !currentEveInput()) return;
     invalidateEveFiles();
     setEveInput((input) => ({ ...input, materials: input.materials.map((material, i) => i === index ? { ...material, [field]: value } : material) }));
   }
+  function resizeEveMaterials(removeIndex?: number) {
+    if (!canEditNow() || selected || !currentEveInput()) return;
+    invalidateEveFiles();
+    setEveInput((input) => {
+      if (removeIndex === undefined) return input.materials.length < 4
+        ? { ...input, materials: [...input.materials, { name: '', text: '' }] } : input;
+      if (input.materials.length <= 2 || !Number.isInteger(removeIndex) || removeIndex < 0 || removeIndex >= input.materials.length) return input;
+      return { ...input, materials: input.materials.filter((_, index) => index !== removeIndex) };
+    });
+  }
   function changeEveGoal(goal: string) {
-    if (!canEditNow() || selected) return;
+    if (!canEditNow() || selected || !currentEveInput()) return;
     invalidateEveFiles();
     setEveInput((input) => ({ ...input, goal }));
   }
@@ -340,7 +350,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
     if (!files?.length) { setReadingEve(false); return; }
     setReadingEve(true); setError('');
     try {
-      if (files.length !== 2) throw new Error('UTF-8文章を2つ選んでください。');
+      if (files.length < 2 || files.length > 4) throw new Error('UTF-8文章を2〜4つ選んでください。');
       const materials: EveTextMaterial[] = [];
       for (const file of Array.from(files)) {
         if (file.size > 48_000) throw new Error('1ファイル48 KB以内にしてください。');
@@ -414,7 +424,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
 
   return <WorkspaceShell title={mode === 'eve-text' ? 'Eve · 資料付き依頼を保存' : 'Zema · 仕事を組み立てる'} running={busy}>
     <div className={styles.workspace}>
-      <div className={styles.intro}><div><h1>{mode === 'eve-text' ? '2つの資料と依頼を、ひとつの仕事へ。' : '目的から、仕事を組み立てる。'}</h1>
+      <div className={styles.intro}><div><h1>{mode === 'eve-text' ? '2〜4つの資料と依頼を、ひとつの仕事へ。' : '目的から、仕事を組み立てる。'}</h1>
         <p>素材を整え、完成条件を検査し、成果を保存。使った手順はレシピにして、次の素材でも使えます。</p>
         <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部siの自律実行や事実確認は行いません。</p>
       </div><Link href="/chat?view=work">Zemaの仕事へ</Link></div>
@@ -457,12 +467,14 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
           <h2>{selected ? '保存した仕事' : draft.recipeRef ? 'レシピから新しい仕事' : '新しい仕事'}</h2>
           {!privateVisible ? <p className={styles.empty}>サインインすると、目的・素材を入力して仕事とレシピを保存できます。</p> : <>
             {mode === 'eve-text' && !selected && <fieldset disabled={locked}><legend>資料付き依頼の準備</legend>
-              <label htmlFor="eve-text-files">UTF-8文章を2つ選ぶ（各48 KB以内・本文合計8,000文字）</label>
+              <label htmlFor="eve-text-files">UTF-8文章を2〜4つ選ぶ（各48 KB以内・本文合計8,000文字）</label>
               <input id="eve-text-files" type="file" multiple disabled={locked} onChange={(event) => { void loadEveFiles(event.target.files); event.target.value = ''; }} />
               {eveInput.materials.map((material, index) => <div key={index}>
                 <label htmlFor={`eve-name-${index}`}>資料{index + 1}の名前</label><input id={`eve-name-${index}`} maxLength={160} value={material.name} disabled={locked} onChange={(event) => changeEveMaterial(index, 'name', event.target.value)} />
                 <label htmlFor={`eve-text-${index}`}>資料{index + 1}の原文</label><textarea id={`eve-text-${index}`} rows={3} maxLength={8000} value={material.text} disabled={locked} onChange={(event) => changeEveMaterial(index, 'text', event.target.value)} />
+                <button type="button" disabled={locked || eveInput.materials.length <= 2} onClick={() => resizeEveMaterials(index)}>資料{index + 1}を外す</button>
               </div>)}
+              <button type="button" disabled={locked || eveInput.materials.length >= 4} onClick={() => resizeEveMaterials()}>資料を追加</button>
               <label htmlFor="eve-text-goal">依頼（500文字以内）</label><textarea id="eve-text-goal" rows={2} maxLength={500} value={eveInput.goal} disabled={locked} onChange={(event) => changeEveGoal(event.target.value)} />
               <button type="button" disabled={locked} onClick={prepareEve}>原文と依頼を固定して確認</button>
               <p>下の内容を確認して仕事を保存し、素材の保存に同意して手順を実行してください。計画だけの保存では原文はまだ保存されません。</p>

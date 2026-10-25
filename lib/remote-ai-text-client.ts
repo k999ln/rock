@@ -158,7 +158,9 @@ export function readEveTextEstimate(value: unknown, expected: {
     value.sourceRef.jobId !== expected.sourceRef.jobId || value.sourceRef.revision !== expected.sourceRef.revision ||
     value.sourceRef.builder !== expected.sourceRef.builder || !digest(value.sourceRef.sourceSha256) ||
     value.sourceRef.sourceSha256 !== expected.sourceRef.sourceSha256 || !Array.isArray(value.sourceRef.materialSha256) ||
-    value.sourceRef.materialSha256.length !== 2 || value.sourceRef.materialSha256.some((item, i) =>
+    !([2, 3, 4].includes(expected.sourceRef.materialSha256.length)) ||
+    expected.sourceRef.builder !== (expected.sourceRef.materialSha256.length === 2 ? 'eve.text-estimate/1' : 'eve.text-estimate/2') ||
+    value.sourceRef.materialSha256.length !== expected.sourceRef.materialSha256.length || value.sourceRef.materialSha256.some((item, i) =>
       !digest(item) || item !== expected.sourceRef.materialSha256[i]) ||
     estimate.withinUserCap !== (expected.comparisonCapMinor === null || estimate.estimate.maximumChargeMinor <= expected.comparisonCapMinor)) invalid();
   if (!eveTextEstimateIsCurrent(value as EveTextEstimate)) invalid();
