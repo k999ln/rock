@@ -497,7 +497,10 @@
       "id": "MINI-04",
       "title": "RGB hand/depthの同期・座標・失効",
       "lane": "mini",
-      "ledgerRef": "data/development-unit-progress.json#MINI-04"
+      "ledgerRef": "data/development-unit-progress.json#MINI-04",
+      "currentOverlayRefs": [
+        "MINI_CAMERA_GESTURE_CANDIDATE"
+      ]
     },
     {
       "id": "MINI-05",
@@ -523,7 +526,8 @@
       "lane": "mini",
       "ledgerRef": "data/development-unit-progress.json#MINI-08",
       "currentOverlayRefs": [
-        "MINI_MESSAGE_ADOPTED"
+        "MINI_MESSAGE_ADOPTED",
+        "MINI_MESSAGE_SERVICE_CANDIDATE"
       ]
     },
     {
@@ -1223,6 +1227,19 @@
     "newFreshnessAndroidRuntimeOrPhysicalAccepted": false,
     "deviceOperations": 0,
     "additionalInference": 0,
+    "publicDeployment": false
+  },
+  "preparedDeviceMiniBatch": {
+    "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "stage": "pending_union_verify_fixedhead_review_CI_main",
+    "originalSourceRefs": {
+      "fixture": "9a04322004b9bf2d90dfaecf162caba2211c58c2",
+      "mini231": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
+      "mini234": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6"
+    },
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
     "publicDeployment": false
   }
 }

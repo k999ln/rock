@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## 準備済みPixel/Miniの有限統合batch
+
+主担当10/G04、source07/11・ROCK。main bb432の全受入を基点に、別保存済みPixel fixture9a043220・Mini231f27faea8・Mini2341bd7189bを通常mergeして元commitをancestor保持。fixture1/開発service5/gesture16の22hashとservice依存7を完全固定、全main status/既存baselineRQ50・393task/14gate・95固定分類/whole0を保つ。CI同一内容の直列重複を減らすためRoot提案を採用し、一つの最終headへ統合。既存source検収を維持してRootはfixture/current metadata、WebはMini2scopeのmetadata/CIを独立検収する。新union標準全verify→固定manifest/head→新同head全CI→通常main/mergeCIを実施し、旧branchCIは転用しない。独立7childはWebが実行、Rootは再実行していない。実機/実回線/実camera精度/校正/実金融/Eve学習/全OS/P02/公開は未受入、616HOLD。[共通採用記録](docs/evidence/development-execution/prepared-device-mini-integration.json)。
+
 ## Pixel正常fixtureの実empty観測待合せと現行受入
 
 主担当10/G04、source07/ROCK。Smith merge bb11のCI attempt1は既存Pixel正常fixtureの時刻Noneでnpm全verify前に停止。実observerを450ms遅延させ旧exact反例を再現し、正常fixtureのproducerを実empty観測後にだけ出力する最大3秒待合せへ変更。15assertion/他moduleAST/worker本体c6a4不変、Web独立c602 mustFix0、実child7case・reap/cleanup合格。旧650ms別エラー、永久観測不能/出力失敗/250msdeadlineの負例、Mac27中26pass1skipを分けて保持。初回失敗後、同bb11の一度だけのretryは全6CI・Linux3027/3025pass/0fail/2skip成功。恒久修正の成功へ転用せず新headCIを必須とする。OS237はhead8/mainbb432全7CI・Androidprototype2freshness試験/既存compile-emulatorとLinux3027/3025/0/2成功。両現行status/95overlay/handoff/indexを同期し、元capture false/pendingを保持。[fixture採用](docs/evidence/development-execution/pixel-empty-observation-main-adoption.json)。次: Root別metadata検収→fixedheadCI→通常main/mergeCI。runtime/実機/推論/wholeOS/P02/公開受入は追加しない。

@@ -10146,7 +10146,7 @@
       "linuxPacketTests": 26,
       "ciStatus": "previous_6b155020_14_success_synchronized_head_pending",
       "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
-      "latestIntegrationMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "latestIntegrationMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
       "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
       "newIntegrationHostFullVerify": {
         "tests": 3027,
@@ -10156,7 +10156,8 @@
         "exitCode": 0,
         "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
       },
-      "newHostCommonTests": 103
+      "newHostCommonTests": 103,
+      "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
     }
   },
   "pixelCacheMainAdoption": {
@@ -11075,6 +11076,39 @@
     "evidence": "docs/evidence/development-execution/mini-gesture-input.json",
     "review": "docs/evidence/development-execution/mini-gesture-input-review.json",
     "mustFixCount": 0,
-    "mainIntegrated": false
+    "mainIntegrated": false,
+    "latestIntegrationMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "integrationEvidence": "docs/evidence/development-execution/mini-gesture-main-adoption.json",
+    "newHostFullVerify": {
+      "baseMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "focused": 14,
+      "npmRootTests": 3041,
+      "npmPass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "logSha256": "d909ea86c75c2fa31562fb29b2dd895c6c09fc1a775a6352729f9763238eb3e8"
+    },
+    "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
+  },
+  "preparedDeviceMiniBatch": {
+    "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "fixedSourceCount": 22,
+    "status": "union_host_full_verify_pass_pending_finalhead_review_CI_main",
+    "mainMerged": false,
+    "whole95Accepted": 0,
+    "publicDeployment": false,
+    "unionHostFullVerify": {
+      "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "tests": 3041,
+      "pass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
+    }
   }
 }

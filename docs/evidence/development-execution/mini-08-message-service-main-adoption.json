@@ -88,7 +88,7 @@
   "oldMini229Confirmation": "docs/evidence/development-execution/mini-08-message-main-confirmation.json",
   "scope": "Development local Broker/AP ingress, bounded scheduler/stop and consumer ack over existing offline adapter only",
   "originalF27CISuccess": 14,
-  "newExactHeadCI": "not yet run",
+  "newExactHeadCI": "pending final batch head; sourcef27 old14success retained as history",
   "mainMerged": false,
   "physicalAccepted": false,
   "realProductIdentityAccepted": false,
@@ -98,5 +98,7 @@
   "wholeUnitAccepted": false,
   "realFinancialAccepted": false,
   "publicDeployment": false,
-  "next": "Latest main including OS02 and fixture fixes preserved; Root final metadata review; new exacthead allCI; normalmain/mergeSHA CI"
+  "next": "Latest main including OS02 and fixture fixes preserved; Root final metadata review; new exacthead allCI; normalmain/mergeSHA CI",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
 }

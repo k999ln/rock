@@ -1806,7 +1806,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "MINI_CAMERA_GESTURE_CANDIDATE"
+      ]
     },
     {
       "id": "MINI-05",
@@ -1905,7 +1907,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "MINI_MESSAGE_ADOPTED"
+        "MINI_MESSAGE_ADOPTED",
+        "MINI_MESSAGE_SERVICE_CANDIDATE"
       ]
     },
     {

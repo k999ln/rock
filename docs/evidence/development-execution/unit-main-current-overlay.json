@@ -961,6 +961,34 @@
       "realFinancialAccepted": false,
       "physicalAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_MESSAGE_SERVICE_CANDIDATE",
+      "units": [
+        "MINI-08"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Development local Broker/AP ingress and bounded scheduler only; no real product identity/modem/provider/Job import",
+      "evidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "MINI_CAMERA_GESTURE_CANDIDATE",
+      "units": [
+        "MINI-04"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Local single-camera view-only prototype; no RGB-depth synchronization/calibrated rig, actual camera precision or Eve learning",
+      "evidence": "docs/evidence/development-execution/mini-gesture-main-adoption.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

@@ -1,0 +1,136 @@
+{
+  "schema": "rockstaros.prepared-device-mini-batch/1",
+  "recordedAt": "2026-10-25T14:39:26.174714+00:00",
+  "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+  "primaryWorkstream": "10-git-ci-operations",
+  "responsibility": "ROCK",
+  "scope": "One normal Pixel fixture handshake, development Mini local message service, and view-only single-camera hand gesture prototype; source scopes disjoint",
+  "originalSourceRefs": {
+    "fixture": "9a04322004b9bf2d90dfaecf162caba2211c58c2",
+    "mini231": "f27faea8b3d70ac520fa63f1e7b85fafbd707556",
+    "mini234": "1bd7189b552c48a285108cfa2f54d118cb2a2ec6"
+  },
+  "originalRefsReachableByNormalMerge": true,
+  "fixedSource22": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b",
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5",
+    "tests/avocado-mini-tethering.test.mjs": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09",
+    "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf",
+    "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922",
+    "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.html": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25",
+    "systems/rock-star-os/targets/avocado-mini/gesture/demo.css": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44",
+    "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154",
+    "systems/rock-star-os/targets/avocado-mini/gesture/serve.py": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366",
+    "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b",
+    "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5",
+    "systems/rock-star-os/targets/avocado-mini/gesture/README.md": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f",
+    "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56",
+    "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7",
+    "tests/avocado-mini-gesture.test.mjs": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3",
+    "tests/test_pixel_worker_diagnostics.py": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f"
+  },
+  "readOnlyServiceDependencies7": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+      "sha256": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+      "sha256": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+      "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+    },
+    {
+      "path": "systems/rock-star-os/os/mcp_broker/service_access.py",
+      "sha256": "44e1171e4aae4b0c312d67bcf91cfd2125813d12309d79df9fefcb041eca5a5a"
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/controller.py",
+      "sha256": "e606bbe1ca0dad14e19b0fa28256e27a2a94e5a5f8c6199acad19129a190c0cd"
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/transport.py",
+      "sha256": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6"
+    }
+  ],
+  "independentSourceReviews": {
+    "fixture": {
+      "path": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json",
+      "sha256": "c602fd1d105144aaf0d49869171b1f77795541410c32a0bfb98a710707ff5737"
+    },
+    "service": {
+      "path": "docs/evidence/development-execution/mini-08-message-service-review.json",
+      "sha256": "645137f36a4700e48a82d0811409eafddb24bc4af8ceb83096b3037653a7b34f"
+    },
+    "gesture": {
+      "path": "docs/evidence/development-execution/mini-gesture-input-review.json",
+      "sha256": "6178b604743d53c0cdfce5f5a3a7aef72c6774cdb766547eb6d03fd909e5f34a"
+    }
+  },
+  "integrationReviewAssignments": {
+    "fixtureAndOSSmithCurrent": "Root, separate from Web actual-child source review",
+    "twoMiniMetadata": "Existing Web reviewer, separate from implementation and central integration writer"
+  },
+  "separateHostValidationsNotAdditive": {
+    "fixture": {
+      "tests": 27,
+      "pass": 26,
+      "skip": 1,
+      "independentActualChildCases": 7
+    },
+    "service": {
+      "pythonCommon": 103,
+      "npmRootTests": 3027,
+      "npmPass": 3024,
+      "fail": 0,
+      "skip": 3,
+      "base": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
+    },
+    "gesture": {
+      "focused": 14,
+      "independentNegative": 5,
+      "npmRootTests": 3041,
+      "npmPass": 3038,
+      "fail": 0,
+      "skip": 3,
+      "base": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
+    }
+  },
+  "unionHostFullVerify": {
+    "baseMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "tests": 3041,
+    "pass": 3038,
+    "fail": 0,
+    "skip": 3,
+    "exitCode": 0,
+    "standardPrivateGeneration": true,
+    "noTypeStubs": true,
+    "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
+  },
+  "newExactHeadCI": "not yet run; old source-head CI is historical, not substituted",
+  "mainMerged": false,
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "realProductIdentityAccepted": false,
+  "realSatelliteProviderAccepted": false,
+  "realFinancialAccepted": false,
+  "newPhysicalCameraAccuracyAccepted": false,
+  "spatialCalibrationAccepted": false,
+  "rootCUAGestureAcceptance": false,
+  "jobImportOrEveLearningAccepted": false,
+  "publicDeployment": false,
+  "bulk616Export": "HELD",
+  "next": "One union standard fullverify, fixed manifest/head, separate independent metadata reviews, same-head allCI, normalmain merge and same-mergeSHA allCI; preserve per-source adoption trace"
+}

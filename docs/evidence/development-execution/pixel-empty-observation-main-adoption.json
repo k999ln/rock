@@ -36,5 +36,6 @@
     "reviewer": "Root",
     "scope": "Provenance/current main/metadata and CI, not a re-execution of seven source cases",
     "status": "preliminary scoped pass; final pinned head pending"
-  }
+  },
+  "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
 }
