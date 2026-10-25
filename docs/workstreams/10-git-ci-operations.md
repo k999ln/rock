@@ -1,3 +1,7 @@
+## PR225最終検収のGit保存（2026-10-25 / G04・ROCK）
+
+PR225のhead dcf86f99全8CIとmain f4ed492c全9CI（CodeQL含む）を再読戻しし、[最終検収](../evidence/development-execution/zod-security-constraint-review.json)・project/status/READMEをmain統合済みに同期。原本の絶対local pathは匿名化し、元SHA256・ログhash・CIリンクと失敗履歴を保持。最新main7edbb9beを基点に文書だけを保存し、この新HEADと統合SHAは別CIで検証する。実機操作・追加推論0、Rootregistry非操作、公開保留。
+
 ## PRO-01原本archive入口候補
 
 検収済み3source/testをmainb1b0基点で採用。Pro local export→固定avoado.si/account/import/pro→手動再選択/本人account確認/別同意を案内し、既存archive/auth/crypto/schemaは不変。関連40/独立5群とChrome local1512/390 UIを限定確認。最終head CI/独立metadata検収、認証済server保存・公開先実click/配備/native/wholePRO01は別gate。[詳細](../rockstaros-complete-design.md#pro-original-archive-entry)／[有限11lane引継ぎ](../evidence/development-execution/all-lanes-main-handoff-summary.json)。Rootregistry非操作、残616公開保留。

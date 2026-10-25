@@ -1,0 +1,360 @@
+{
+  "schema": "rockstaros.pixel-guard-main-physical.documentary-review/1",
+  "recordedAt": "2026-10-25T10:09:37.933952+00:00",
+  "status": "PASS_SCOPED_DOCUMENTARY_PHYSICAL_BATCH",
+  "verdict": "PASS_SCOPED",
+  "mustFix": [],
+  "mustFixCount": 0,
+  "scope": "Independent documentary verification of OS-operated new c43 package physical measurements and restoration. This is not a new independent source review or a new physical run.",
+  "unit": "OS-01",
+  "existingTaskIds": [
+    "OS10",
+    "P02"
+  ],
+  "reviewer": {
+    "lane": "Pro",
+    "operatorLane": "OS",
+    "independentOfPhysicalOperator": true,
+    "authoredGuardSource": true,
+    "independentGuardSourceReviewClaimed": false,
+    "guardSourceReapprovalPerformed": false,
+    "physicalOperationsPerformed": false,
+    "inferencePerformed": false
+  },
+  "authorization": {
+    "directHumanInstructionRead": true,
+    "threadId": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+    "turnId": "01a17274-1f47-7952-8851-60389bb9223a",
+    "userMessageId": "01a17274-30c3-7290-b83a-ca4742075da9",
+    "authorizedScope": "guard-fixed non-destructive check, restoration, independent review, evidence Git save; no inference, preserve work/models/data/connections",
+    "reviewerWriteOwnership": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+    "gitWriter": "Existing Git lane; this reviewer did not commit/push/merge or message another chat"
+  },
+  "bindings": {
+    "operatorReceipt": {
+      "path": "docs/evidence/development-execution/pixel-guard-main-physical.json",
+      "sha256": "45483840038c3b812ad4f359fbee81695a6472d49969e40996752844b2510503",
+      "bytes": 13884
+    },
+    "portableSummaryDraft": {
+      "logicalName": "pixel-guard-main-physical-20261025/portable-summary.json",
+      "sha256": "99737574673bf612a8a545c5e80bbe4d50879d75c32f1c750e0d5b131d0f439e",
+      "bytes": 4614,
+      "status": "SCOPED_CONTENT_MATCH",
+      "rawPrivateDataOrScreensCopied": false
+    },
+    "privateArchiveIndex": {
+      "path": "work/development-backups/pixel-guard-main-physical-20261025/archive-index.json",
+      "sha256": "5f74132f8076c5da0301b14c5ef833a74e41206d73b34673464b95c567e3a169",
+      "proofCopiesMatched": 27,
+      "GitIgnoredArchiveOnly": true
+    },
+    "proofs": [
+      {
+        "file": "pins.json",
+        "sha256": "20e08dc5184014fbb2de540eabca99faf8b3f0b7df5f5f4b9df94c2367b30a23",
+        "bytes": 3400
+      },
+      {
+        "file": "before.json",
+        "sha256": "294cdc6b3f99fa7f15c9f6ad1d2ed2ab73ce8bb1adecb48b4e19e25cc906f486",
+        "bytes": 3906
+      },
+      {
+        "file": "after.json",
+        "sha256": "b8ddedf08a4a47f21e29a92dae003d42e08caf4302322f0c1511e15a3724174f",
+        "bytes": 3905
+      },
+      {
+        "file": "native-before.json",
+        "sha256": "69cfe2edeec63f92d47496c086cdc5327862f8d14c298f0e7bc50d542fa8e8e3",
+        "bytes": 1204
+      },
+      {
+        "file": "native-after.json",
+        "sha256": "2e47a64487a9cdf75e01fb7b3db569c621c4c8c8d8814cd9c9b5c393e04b0684",
+        "bytes": 1204
+      },
+      {
+        "file": "batch-result.json",
+        "sha256": "d7407c76eb32174686910e93ad3d9130e4d533e72d04539e7175748a6da2d6dd",
+        "bytes": 289
+      },
+      {
+        "file": "recovery-ready.json",
+        "sha256": "69788c9126079a21e9febcc913f6beeac8f47dd826c4cad25ee0c83080b5f910",
+        "bytes": 1916
+      },
+      {
+        "file": "candidate-update.json",
+        "sha256": "965f21aa9a9505a60722c0aa2e15fb13578954ad81513b09bba061fb5f1657b8",
+        "bytes": 477
+      },
+      {
+        "file": "restore-update.json",
+        "sha256": "a2e4263b37cf9a7f663e1c01c44f09933fd6d7ce6bda5c7c2cd7645e5a4c202d",
+        "bytes": 477
+      },
+      {
+        "file": "cache-acceptance.json",
+        "sha256": "7e3c01edfaa0074e3c6943548088e13919590be23363cd394bb8997b11e0eea9",
+        "bytes": 3737
+      },
+      {
+        "file": "restoration.json",
+        "sha256": "1d12c6c7914cc4359b19c0f2ec38f22f2a2e91d473dc8b13e93a1c1da504ba9e",
+        "bytes": 1233
+      },
+      {
+        "file": "linux-guard.json",
+        "sha256": "5a8397a7face6aa6df9e361da06b2a05078a30998f25cc9f73d548f9a8238cc2",
+        "bytes": 541
+      },
+      {
+        "file": "linux-guard.log",
+        "sha256": "ace4471c314cf47c6cc86005523060a7527a23d07dc188e7b3fff3425312fcd0",
+        "bytes": 2283
+      },
+      {
+        "file": "linux-parent.log",
+        "sha256": "2c496dcd9d559c9116f1c72eb98c6a755cac96feb3dc90b21e9dec03e7cd7dea",
+        "bytes": 624
+      },
+      {
+        "file": "candidate-update.log",
+        "sha256": "afef17aa50d28dd7797f084ad85a29079c68cbb4f4457527fc5cdced959c3cee",
+        "bytes": 451
+      },
+      {
+        "file": "restore-update.log",
+        "sha256": "8c3ce585b934f9ff4ebb9d9797ccea93f7ba9d74ca4410d71bf81fd2d9c1f49b",
+        "bytes": 451
+      },
+      {
+        "file": "host.py",
+        "sha256": "0af655a202f20cf04fdf2b40d9d17d8786186ce98b40e6fc012276c37c5f1852",
+        "bytes": 3471
+      },
+      {
+        "file": "batch.py",
+        "sha256": "1100823660943a33a22e849a3631d2dae67832b520e3e48899d5c54791f9850a",
+        "bytes": 3644
+      },
+      {
+        "file": "inspect-guest.py",
+        "sha256": "057adfa1648a4125e04ec07016e0e21ebf21668651ed60d0b09bfae21e57c6e3",
+        "bytes": 4219
+      },
+      {
+        "file": "prepare-recovery.py",
+        "sha256": "7ca8a2725bc3d88f0c2957e0b02fdf7f61cc6d1870cd21a95ec867d9ce955d57",
+        "bytes": 2582
+      },
+      {
+        "file": "cache-acceptance.py",
+        "sha256": "6d975b6bd80fd9e02385c39e0c18ffed987fe5031e787571ef52e664dad75f55",
+        "bytes": 5294
+      },
+      {
+        "file": "final-readback.py",
+        "sha256": "bfec53e0354cd51946ccdb3aa64b9ed418ac5a777635138a85eb297d82d66bc0",
+        "bytes": 2933
+      },
+      {
+        "file": "pixel-update-guard.mjs",
+        "sha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594",
+        "bytes": 3156
+      },
+      {
+        "file": "pixel-update-guard.test.mjs",
+        "sha256": "ed93c91c208a4be3376353bac3d4c9e1ee2e95e3e34b58864eaaaca411117889",
+        "bytes": 7724
+      },
+      {
+        "file": "test_pixel_worker_parent_exit.py",
+        "sha256": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+        "bytes": 3597
+      },
+      {
+        "file": "exercise-verified.png",
+        "sha256": "b4431d56822f15460560744517ee88777d557fb9406338df98963b105dad910d",
+        "bytes": 604393
+      },
+      {
+        "file": "exercise-progress.png",
+        "sha256": "d3572a8b781703da984e00d8cbfb6acd2a8035da7d37229b6ab9aa28ac630468",
+        "bytes": 582410
+      }
+    ],
+    "allProofHashesAndBytesMatched": true,
+    "allPrivateArchiveCopiesMatched": true
+  },
+  "artifactVerification": {
+    "sourceHead": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+    "mainMerge": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "mainAtOperatorPreparation": "41ee45d7fce8390b27c59110cc282f695f898122",
+    "manifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "guardSha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594",
+    "originalTestSha256": "ad229a3f265dc95dcda548612de9250f0ed063586bb32500c882ef696c3669b8",
+    "transferredTestSha256": "ed93c91c208a4be3376353bac3d4c9e1ee2e95e3e34b58864eaaaca411117889",
+    "guardSourceSameBytesAsAcceptedHead": true,
+    "testOnlyChange": "One relative import: ../toolkits/sky-linux-local/pixel-update-guard.mjs -> ./pixel-update-guard.mjs",
+    "parentFixtureSameBytesAsAcceptedHead": true,
+    "hostAcceptedPackagePayloadHashesMatched": 11,
+    "hostAcceptedPackageAuxHashesMatched": 3,
+    "helperPinHashesMatched": 8,
+    "installedPayloadReadback": "cache-acceptance.py rehashed each of the11 installed payloads against the fixed package manifest before API tests; matching boolean and transaction/receipt digest recorded",
+    "currentlyDeployed": false,
+    "originalCodeRestored": true
+  },
+  "measurementReview": {
+    "guardRegression": {
+      "platform": "Operator batch requires Linux/aarch64/non-root; run from Pixel Terminal",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0,
+      "logSha256": "ace4471c314cf47c6cc86005523060a7527a23d07dc188e7b3fff3425312fcd0",
+      "scope": "Actual Pixel Linux kernel/Node running isolated synthetic filesystem fixtures; not hostile live-journal mutation"
+    },
+    "parentLifetime": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0,
+      "logSha256": "2c496dcd9d559c9116f1c72eb98c6a755cac96feb3dc90b21e9dec03e7cd7dea",
+      "scope": "Includes actual Linux parent-death signal behavior using a synthetic sleeping Python child. No model inference process."
+    },
+    "cacheOnly": {
+      "controlProtocol": 2,
+      "inventoryVerified": true,
+      "downloads": false,
+      "ready": true,
+      "sameIdAndDisplacedReplayMatched": true,
+      "wrongScopeRefused": true,
+      "invalidInputs": [
+        "accepted=false",
+        "cacheOnly=false",
+        "wrong model SHA",
+        "unexpected shell field"
+      ],
+      "recordedRefusedCalls": 5,
+      "preparingCancelled": true,
+      "finalCancelState": "stopped",
+      "recordedActionAllowlist": [
+        "status",
+        "cache-inventory",
+        "prepare-cached",
+        "cache-status",
+        "cancel-cached-prepare",
+        "stop-environment"
+      ],
+      "additionalInference": 0,
+      "permittedRuntimeProbes": "Existing cached llama-cli --version and fixed worker capabilities only"
+    },
+    "restoration": {
+      "manifestSha256": "7f0223c18be30512b0e285dc3ebc2d117169c8ef1720543fbe2118b9da598d03",
+      "originalManifestReconstructedFrom11BeforeHashes": true,
+      "candidateAndRestorationTransactionIdsMatchedAcrossProofs": true,
+      "restoreCommitted": true,
+      "original11CodeBytesRestored": true,
+      "rootWorkerAndClientBytesRestored": true,
+      "commonRuntimeCapabilityBeforeAfterMatched": true,
+      "finalPhase": "stopped",
+      "liveModelProcesses": 0,
+      "finalBatchFailure": null
+    },
+    "preservation": {
+      "counts": {
+        "models": 2,
+        "agents": 10,
+        "runs": 34,
+        "active": 0,
+        "stopUnconfirmed": 0,
+        "unknown": 0
+      },
+      "unchangedCoreFieldDigests": [
+        "owner",
+        "runs",
+        "models",
+        "agents",
+        "selectedModelId"
+      ],
+      "modelCachesActualByteChecks": 2,
+      "runtimeManifestFilesCheckedByOperatorHelper": true,
+      "runtimeArchiveLockManifestBeforeAfterMatched": true,
+      "guestIdentityHashEntriesUnchanged": 4,
+      "nativeProtectedRecords": 5,
+      "nativePresentFileHashesUnchanged": 4,
+      "nativeAbsentRecordStillAbsent": 1,
+      "nativeAPKHashUnchanged": true,
+      "nativeServicesHashUnchanged": true,
+      "adbForwardAndReverseHashesUnchanged": true,
+      "successfulSavedOutputsRehashedByOperatorHelper": 23,
+      "wholeStateBytesUnchanged": false,
+      "reasonWholeStateChanged": "Exactly two new cache control rows; old ledger digest reconstructs after removal and previous pointer row is retained. Current cache-preparation pointer is not claimed unchanged.",
+      "addedCacheControlRows": 2,
+      "oldLedgerPreserved": true,
+      "cacheUnknown": 0
+    },
+    "screenshots": {
+      "reviewed": 2,
+      "preExecution": "exercise-verified.png shows correct fixed exercise command staged in Terminal; earlier corrupted input and old-batch output remain visible as history",
+      "postExecution": "exercise-progress.png shows new batch completion marker, cache result and original-code restored summary",
+      "boundary": "Screens corroborate helper/log sequence; upper old-batch output is not counted as current c43 acceptance."
+    }
+  },
+  "portableSummaryReview": {
+    "hash": "99737574673bf612a8a545c5e80bbe4d50879d75c32f1c750e0d5b131d0f439e",
+    "candidateAndCountsMatchOperatorReceipt": true,
+    "resultsAndLimitsMatch": true,
+    "proofCountAndArchiveHashMatch": true,
+    "noRawPrivateProofContentsOrScreensIncluded": true,
+    "noSerialOrCredentialValuesIncluded": true,
+    "clarificationsCarriedByThisReview": [
+      "Native5 protection entries are4 present matching hashes plus1 still absent.",
+      "Whole state hash differs because of two documented cache-control additions; preserved core/old ledger is the claim.",
+      "23 saved output hashes were checked by the operator helper; this reviewer checked helper/log consistency, not live private output files."
+    ]
+  },
+  "historyPreserved": {
+    "priorF3ArtifactAcceptanceSeparate": true,
+    "initialCorruptedInput": "Visible command-not-found; not counted as success",
+    "automaticApprovalRejection": "Unverified numeric-key execution probe was rejected; no bypass or execution by reviewer",
+    "safeAlternative": "Owner Terminal foreground, staged fixed command visually checked before Enter",
+    "ownerAppSwitch": "Operator paused before exercise Enter; human explicitly returned Terminal and left device idle",
+    "finalBatch": "Successful c43 test and7f restoration, verified by pinned output and before/after evidence"
+  },
+  "limitations": [
+    "Reviewer is the guard implementation author; only independent of this physical operation. Do not cite this as independent guard source approval.",
+    "Documentary acceptance relies on operator-generated pinned logs, helpers and screenshots; it is not independent live measurement or cryptographic device attestation.",
+    "Guard race regressions use isolated fixtures; no attack on the live owner update journal was performed.",
+    "Source/payload has been restored to original7f code; c43 is not currently deployed.",
+    "No new inference correctness, latency, long-running/background, account/Agent end-to-end or financial acceptance.",
+    "No full OS signing/flash/OTA/data-loss restoration, wholeOS-01/P02, production or general-launch acceptance.",
+    "Git publication of the anonymized summary and review remains the Git lane next step; raw evidence remains private."
+  ],
+  "physicalBatchEvidenceAccepted": true,
+  "unitComplete": false,
+  "p02Complete": false,
+  "fullOSAccepted": false,
+  "productionDeployment": false,
+  "operations": {
+    "localScreenshotsInspected": 2,
+    "deviceAccess": false,
+    "newInference": false,
+    "helpersExecuted": false,
+    "sourceModified": false,
+    "globalMetadataModified": false,
+    "gitMutations": false,
+    "rawProofsCopiedIntoGit": false,
+    "otherChatMessages": false,
+    "subagents": false,
+    "readOnlyEvidenceInspection": true,
+    "readOnlyGitObjectComparisons": true,
+    "onlyFileWritten": "docs/evidence/development-execution/pixel-guard-main-physical-review.json"
+  },
+  "next": "Git lane may adopt the hash-bound portable summary plus this scoped review under its existing authorization; independently verify its final manifest and exact-head CI. No further physical operation or inference is required by this review."
+}

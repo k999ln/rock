@@ -1,6 +1,10 @@
-## zod依存制約の互換修正（SYS15・G04 / ROCK）
+## PR225 zod最終検収のGit保存・現行進捗同期（SYS15・G04 / ROCK）
 
-着手: main ee9b8801を基点に、rootのCloudflare固定4.4.3・shadcn3系依存とMini4.6.5を修正する。shadcnを上流のZod4移行済み4.22.1へ更新し、root/Miniともzod修正版^4.6.6へ制約する。既存製品sourceのZod3 schema利用なしを確認。依存consumer・schema・制限付きcollectionの早期拒否を試験し、全verifyと新HEAD/main同SHA CIを別々に記録する。実機操作・追加推論・公開配備なし。対象34/34と旧依存3失敗反例、Cloudflare Worker14/14、両監査zod0を確認。初回host全verifyは2991件/2986pass/2fail/3skip。依存inventory期待件数を973/930/51へ同期し、既存localhost5秒timeoutはsource不変の再試験で回復、対象89/89成功。初回失敗を保持し、新HEADのLinux全verifyとmain統合CIで最終確認（記録時pending）。
+PR225は検証済みHEAD `dcf86f99ab8712d539c3ae9f8f4702a8edf3661e`（CodeQL集約を含む全8CI成功）をmain `f4ed492c9c4ae06c4c94c5c36d2f692315cae622`へ通常統合済み。同一mergeSHAの全9CI（CodeQL両言語・Dependabot2件を含む）成功、head/merge tree一致、両Linux全verify2991試験/2989pass/0fail/2skipを確認。zod警告42/54はdismissせずfixed、限定PASS/mustFix0。[最終検収](docs/evidence/development-execution/zod-security-constraint-review.json)を保存し、原本hash・CIリンク・ログhashを保持して個人端末の絶対pathだけを除いた。
+
+履歴: main ee9b8801起点でshadcn4.22.1とroot/Mini zod^4.6.6/lock4.6.7を採用。対象34/34、旧依存3失敗反例、Cloudflare14/14、両監査zod0。初回host全verify2991/2986pass/2fail/3skipは保持し、inventory期待値修正・既存localhost timeout再試験89/89の後、host全verify再実行2991/2988pass/0fail/3skipが成功。旧HEADのPython時間上限超過も履歴保持、検査条件は変更なし。元receiptの記録時pendingを上書きせず、現在の結果は上記検収へ分離した。
+
+今回の保存は最新main7edbb9be起点の文書・進捗のみ。依存/実装/テストを変えず、後続PR218のSRI試験と既存mainを保全する。PR225実装のGit保存・main統合は完了、本metadata新HEADと統合SHAのCIは今回別確認する。他依存の監査指摘・実機/P02/全OS/本番/一般公開は別gate。実機操作・追加推論・公開配備0。
 
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 
@@ -250,13 +254,15 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用し、同SHAの製品7・自動更新2成功を確認しました。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
+新c43 packageの非破壊実機batchはOS operatorが完了し、別のPro reviewerがdocumentary限定PASS（mustFix0、原本6db55d77）。guard9/parent4/cache-onlyを確認、元7f code復元、34jobs/2models/10agents/23成果hash・接続を保持し、cache制御row2のみ追加。PR223の元2c0では証拠Git保存と7CI成功まで完了。後続の本人明示指示により、証拠2docsを固定した最新main同期・独立metadata検収・新headCI・通常main統合・merge同SHA CIへ進む。追加端末操作/推論0、元operator receipt/raw27proof・画面・鍵/接続値はGitへ入れず、P02全体・全OS・実金融・一般公開は未受入。
+
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用し、同SHA全9CI成功を確認しました（最終検収は冒頭参照）。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
 
 主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。8f当時の依存lock差分0は履歴であり、今回の同期はPR216の依存・lockを保持する。UIは上記PR213の限定範囲で受入済み、実Provider/金融/物理は別gate。
 
 ### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
 
-開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、当時のzod更新不可は後続PR225/main f4で修正済み（原receiptは保持）。
+開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、d222当時のzod更新不可は履歴として残し、PR225/main f4ed492cで修正・同SHA全9CI成功を確認済み。
 
 PR218は検収済みhead2f737579（8CI成功）をmain7edbb9beへ通常統合し、同mergeSHAの8check成功（製品7/補助collect1）、Linux2993/2991pass/0fail/2skipを確認。PR225/mainf4の製品7・Dependabot2成功とZod修正を別証拠で確認した。root10/Mini2は旧監査snapshotで、後続PR225 receiptではroot7/Mini1（新規監査ではない）。原receiptの失敗・pendingは保持、公開/配備/616保留。 証拠 docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json。
 

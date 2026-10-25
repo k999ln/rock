@@ -10117,7 +10117,16 @@
       "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
       "evidence": "docs/evidence/undici-security-constraint.json",
       "old8fFailureRetainedAsHistory": true,
-      "separateBotFailurePackage": "zod"
+      "separateBotFailurePackage": "zod",
+      "zodResolution": {
+        "pr": 225,
+        "mergeSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "headChecksSuccess": 8,
+        "mergeChecksSuccess": 9,
+        "allChecksSuccess": true,
+        "evidence": "docs/evidence/development-execution/zod-security-constraint-review.json"
+      }
     }
   },
   "esimAcknowledgementMainAdoption": {
@@ -10211,12 +10220,23 @@
     ],
     "primaryWorkstream": "04-security-identity-compliance",
     "responsibility": "ROCK",
-    "status": "targeted_repair_verified_exact_head_ci_pending",
+    "status": "PR225_main_merged_exact_head_and_merge_all_CI_success",
     "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
     "shadcn": "4.22.1",
     "zodOverride": "^4.6.6",
-    "newHeadCI": "pending",
-    "mainMergeCI": "pending",
+    "newHeadCI": {
+      "sha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+      "success": 8,
+      "failure": 0,
+      "codeqlAggregate": "success"
+    },
+    "mainMergeCI": {
+      "sha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "success": 9,
+      "failure": 0,
+      "codeqlLanguages": "javascript-typescript and python success",
+      "separateAggregateListed": false
+    },
     "physicalOperations": false,
     "additionalInference": false,
     "lockedVersion": "4.6.7",
@@ -10231,8 +10251,44 @@
       "root": 0,
       "mini": 0
     },
-    "fullVerify": "initial host exit1: inventory expectation corrected; localhost timeout passes targeted retry; exact-head Linux full verify pending",
-    "targetedRepairTests": 89
+    "fullVerify": {
+      "hostRetry": {
+        "sha": "57166ec04b0f78a99768eb861008a8c37a621aac",
+        "exitCode": 0,
+        "tests": 2991,
+        "pass": 2988,
+        "fail": 0,
+        "skip": 3
+      },
+      "finalHeadAndMainLinux": {
+        "tests": 2991,
+        "pass": 2989,
+        "fail": 0,
+        "skip": 2,
+        "allSteps": "success"
+      }
+    },
+    "targetedRepairTests": 89,
+    "historicalCapture": {
+      "status": "targeted_repair_verified_exact_head_ci_pending",
+      "newHeadCI": "pending",
+      "mainMergeCI": "pending",
+      "fullVerify": "initial host exit1: inventory expectation corrected; localhost timeout passes targeted retry; exact-head Linux full verify pending"
+    },
+    "pr": 225,
+    "acceptedHead": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+    "mainMergeSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+    "mainMerged": true,
+    "implementationGithubSaved": true,
+    "reviewVerdict": "PASS_SCOPED_ZOD_AND_EXACT_SHA_CI",
+    "mustFixCount": 0,
+    "finalReview": "docs/evidence/development-execution/zod-security-constraint-review.json",
+    "finalReviewSha256": "10c16cf2401054886750fdc4ffdaf38c5e1f2282678ccecc9b5f4217ea0a9e5c",
+    "dependabotAlertsFixed": [
+      42,
+      54
+    ],
+    "nextAction": "Dependency repair is integrated. Preserve other dependency findings and product gates; this documentation-only successor must pass its own exact-head and merge-SHA CI."
   },
   "undiciSecurityUpdate": {
     "taskId": "G04",
@@ -10283,7 +10339,16 @@
       "dependabotSuccess": 2,
       "dependabotFailure": 1,
       "failurePackage": "zod",
-      "allChecksSuccess": false
+      "allChecksSuccess": false,
+      "laterZodResolution": {
+        "pr": 225,
+        "mergeSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "headChecksSuccess": 8,
+        "mergeChecksSuccess": 9,
+        "allChecksSuccess": true,
+        "evidence": "docs/evidence/development-execution/zod-security-constraint-review.json"
+      }
     },
     "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
     "integrationRequest": {
@@ -10333,6 +10398,32 @@
         "mini": 1
       },
       "newAuditPerformedByThisMetadataBatch": false
+    }
+  },
+  "pixelGuardPhysicalEvidenceSave": {
+    "summary": "docs/evidence/development-execution/pixel-guard-main-physical-summary.json",
+    "summarySha256": "99737574673bf612a8a545c5e80bbe4d50879d75c32f1c750e0d5b131d0f439e",
+    "review": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+    "reviewSha256": "6db55d77b41348ce7be98e9aea2c8a43c1c05c047686e6e81a59d35ce1ef45f5",
+    "physicalBatchScopedPass": true,
+    "manifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "originalCodeRestored": true,
+    "coreStatePreserved": true,
+    "cacheControlRowsAdded": 2,
+    "nativePresentHashes": 4,
+    "nativeAbsentPreserved": 1,
+    "additionalInference": 0,
+    "mainIntegrated": false,
+    "wholeOS01Accepted": false,
+    "p02Complete": false,
+    "publicDeployment": false,
+    "gitSaveStage": "PR223 oldhead2c0 saved and7CI success; latest-main synchronized candidate pending exact-head CI and authorized main adoption",
+    "mainIntegrationAuthorized": true,
+    "mainIntegrationAuthorization": {
+      "sourceChat": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+      "sourceTurn": "01a172c7-0cab-7f51-8ed6-11aaf2aa694f",
+      "sourceUserMessage": "01a172c7-0d55-7121-be42-1f90c74d437d",
+      "scope": "Evidence main adoption and same merge SHA CI; no new device operations or inference."
     }
   }
 }
