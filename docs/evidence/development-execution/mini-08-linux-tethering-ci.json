@@ -1,0 +1,187 @@
+{
+  "schema": "mini-linux-source-head-ci/1",
+  "pr": 212,
+  "head": "08633c36d8678f5053b48232e14336de772fde6e",
+  "status": "draft_saved_source_head_all_CI_pass",
+  "checks": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:27:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628519/job/121118590250",
+      "name": "linux-packets",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Mini Linux packet enforcement"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:27:49Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121118590295",
+      "name": "partitions (main-0)",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:30:12Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628440/job/121118589910",
+      "name": "verify",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:29:07Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628489/job/121118590261",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "startedAt": "2026-10-25T08:26:49Z",
+      "status": "COMPLETED",
+      "workflowName": "SPIDER CodeQL security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:27:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628477/job/121118590214",
+      "name": "SPIDER / repair regressions",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "SPIDER repair regressions"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:24Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628515/job/121118590299",
+      "name": "SPIDER / secrets",
+      "startedAt": "2026-10-25T08:26:51Z",
+      "status": "COMPLETED",
+      "workflowName": "SPIDER repository security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121118590312",
+      "name": "partitions (main-1)",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628489/job/121118590413",
+      "name": "SPIDER CodeQL (python)",
+      "startedAt": "2026-10-25T08:27:02Z",
+      "status": "COMPLETED",
+      "workflowName": "SPIDER CodeQL security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121118590265",
+      "name": "partitions (main-2)",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121118590347",
+      "name": "partitions (main-3)",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121118590157",
+      "name": "partitions (support)",
+      "startedAt": "2026-10-25T08:26:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:29:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628456/job/121119058494",
+      "name": "source-tests",
+      "startedAt": "2026-10-25T08:28:57Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:27Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/40176628477/job/121118590359",
+      "name": "SPIDER / production web security measurement",
+      "startedAt": "2026-10-25T08:26:55Z",
+      "status": "COMPLETED",
+      "workflowName": "SPIDER repair regressions"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-25T08:28:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/runs/121119005299",
+      "name": "CodeQL",
+      "startedAt": "2026-10-25T08:28:39Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    }
+  ],
+  "checksPassed": 14,
+  "sourceManifest": {
+    ".github/workflows/mini-tether-linux.yml": "57374d3ab73a0386bdffb92c7b47bda4cbeb5cd87df5d8a8e0b7665f515a2704",
+    "README.md": "f80bc3b38646e2378cfa02c41399c6c78112c1d22562b1e00f2c79adca325b8e",
+    "data/design-document-index.json": "92f1424610147a0b2dc4d4f3d8e4420a5fae78f7a041d16e6d58fa854b1c3141",
+    "data/project-status.json": "3af4da2b3db7091ab21f1281561ff18f8271049448a4b8b8034e571107a6b566",
+    "docs/avocado-mini-r5/embedded-portable-connectivity.md": "c3d668f14569fd1c366d2adb4e29948cef6c4c129a5e4c3450e3b28d986b83f2",
+    "docs/evidence/development-execution/mini-08-linux-tethering-adoption-review.json": "beba596e7f19dbba889c64033dc253c07fb0102eac080934dcd7ed88e84822e9",
+    "docs/evidence/development-execution/mini-08-linux-tethering-final-review.json": "4a97258a7c7baf2512c4bf2752030961d32daeed27cb665e7f1225c31b5703a4",
+    "docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json": "3a2d04fdaacb61123314ef3f5e3436acb6100a07286a6ddd26429820ea2adc2d",
+    "docs/evidence/development-execution/mini-08-linux-tethering-metadata-review.json": "a1c87eea0da08380f62cb7f1a71f58eaa70971a7c8cb77e3c6615f81952f7698",
+    "docs/evidence/development-execution/mini-08-linux-tethering-review.json": "28ba697248c0b1cb42aae45eaa0ae4c823b39dec5f8c960cd88cc326648d3ca3",
+    "docs/evidence/development-execution/mini-08-linux-tethering-save-review.json": "422a04f23aacf7b48653b421f0f99db3b7a9ac1dcab5ea50acc1a39b352898c8",
+    "docs/evidence/development-execution/mini-08-linux-tethering.json": "2f1dfed75029e0539992ab412cd35bd259ff27531206fbb87f8595d5e4576ce8",
+    "docs/rockstaros-avocado-mini-complete-design.md": "3070744aa9002a1779c45815594e511f6283f4321c97e5959da87ea3be625e99",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "679f85b64d7586f18335fc9d79e567f544708a437ec8a90d05bf8b2f4b0ad01e",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "55e53a40aa15987c53203690c918756b6a7eeb82f85911ddb41cf309b2783424",
+    "project.md": "91a07afaa87eba4e8d310845d0c62e44ab4ae5e3d390b74eb8c68cb12a9c6a54",
+    "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md": "8160a986d6409d09f81b8707160e9195bcba7354ad5dbe28c7c80766317a27ff",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "4f3a80c2d9dc043f62f6cf898d6ceb7458aa66e886bba1ff34ec4a3aa29718c2",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43"
+  },
+  "linuxPacketJob": {
+    "url": "https://github.com/k999ln/rock/actions/runs/40176628519/job/121118590250",
+    "hostTests": 32,
+    "packetTests": 20,
+    "passed": true,
+    "logSha256": "f458161a391fbdefb339fd24573aa44c20391807115726ea695f573e92a5c089"
+  },
+  "hostMainMergeEvidence": "docs/evidence/development-execution/mini-08-tethering-main-merge.json",
+  "githubSaved": true,
+  "mainMerged": false,
+  "physicalAccepted": false,
+  "wifiRadioTested": false,
+  "providerInvoiceVerified": false,
+  "generalLaunch": "held",
+  "laterMetadataCommitCI": "must be checked separately; this receipt attests source head08633c36 only"
+}

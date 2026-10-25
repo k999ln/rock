@@ -1,0 +1,73 @@
+{
+  "schema": "mini-tether-linux-adoption-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "candidateRoot": "/private/tmp/mini-tether-linux-candidate",
+  "status": "read_only_adoption_preparation_passed",
+  "mustFixRemaining": 0,
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a",
+    "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md": "8160a986d6409d09f81b8707160e9195bcba7354ad5dbe28c7c80766317a27ff",
+    "docs/evidence/development-execution/mini-08-linux-tethering.json": "2f1dfed75029e0539992ab412cd35bd259ff27531206fbb87f8595d5e4576ce8",
+    "docs/evidence/development-execution/mini-08-linux-tethering-review.json": "28ba697248c0b1cb42aae45eaa0ae4c823b39dec5f8c960cd88cc326648d3ca3",
+    ".github/workflows/mini-tether-linux.yml": "57374d3ab73a0386bdffb92c7b47bda4cbeb5cd87df5d8a8e0b7665f515a2704"
+  },
+  "runtimeControllerAndLinuxThreeFilesUnchanged": true,
+  "originalReviewCopyUnchanged": true,
+  "claimsReviewed": {
+    "localLinuxPacketTests": 20,
+    "localHostCompilerTests": 4,
+    "packetExecutor": "implementation agent",
+    "reviewerPacketExecution": false,
+    "physicalSatelliteApAndProviderClaims": false,
+    "generalLaunch": "held",
+    "gitMainAndCiMarked": "not yet executed/merged",
+    "initial20TestFailurePreserved": {
+      "failures": 3,
+      "errors": 12
+    },
+    "logHashesMatch": true,
+    "namespaceClaimReconciliationLimitationDocumented": true
+  },
+  "guestReadback": {
+    "basis": "implementation agent reports actual parent-turn exec output: ssh uname -r; nft --version; python3 --version; sha256sum /tmp/mini-tether-src/*.py",
+    "kernel": "6.8.0-134-generic",
+    "nftables": "1.0.9",
+    "python": "3.12.3",
+    "fourCodeHashesReportedMatching": true,
+    "independentlyReadByReviewer": false,
+    "vmAlreadyStopped": true
+  },
+  "workflowReview": {
+    "trigger": "pull_request/path-filter, main push/path-filter, workflow_dispatch",
+    "checkedOutRevision": "github.event.pull_request.head.sha || github.sha",
+    "checkoutActionPinnedToFullSha": true,
+    "checkoutPublishedTagIndependentlyVerified": false,
+    "credentialsPersisted": false,
+    "tokenPermissions": "contents:read",
+    "runner": "GitHub-hosted ubuntu-24.04 fresh job, not self-hosted",
+    "rootScope": "explicit namespace packet script; no device/radio configuration",
+    "prerequisites": "nftables/iproute2/iputils-ping/util-linux/procps installed",
+    "unavailablePrerequisites": "explicit RuntimeError/command failure, not skipped success",
+    "existingTestsContainSkip": false,
+    "timeoutMinutes": 5,
+    "ciExecutedByThisReview": false
+  },
+  "verificationPerformed": [
+    "Read LINUX.md/acceptance receipt/original review copy/workflow",
+    "Compared all declared source hashes and original review copy",
+    "Compared local successful and failed execution log hashes",
+    "Static workflow exact-revision/minimal-permission/runner/prerequisite/no-skip inspection"
+  ],
+  "notPerformed": [
+    "additional runtime tests",
+    "VM access or packet execution",
+    "independent guest hash readback",
+    "Git mutation/save/merge",
+    "CI execution"
+  ],
+  "notes": "This receipt accepts documentation/evidence/CI preparation only. Runtime static/compiler review is retained separately; implementer packet20 evidence is not promoted to independent execution or actual satellite/AP/charge acceptance."
+}

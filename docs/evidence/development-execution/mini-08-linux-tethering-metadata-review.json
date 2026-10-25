@@ -1,0 +1,71 @@
+{
+  "schema": "mini-tether-linux-metadata-proposal-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "status": "read_only_metadata_proposal_passed",
+  "mustFixRemaining": 0,
+  "candidateRoot": "/private/tmp/mini-tether-linux-candidate",
+  "baseCopy": "/private/tmp/mini-linux-meta-base",
+  "patchPath": "/private/tmp/mini-tether-linux-metadata-proposal.patch",
+  "patchSha256": "10c3ce8f3d6678c7e8069115aaf10a562687c02d053a2ecb8f898045a7569be7",
+  "patchExactlyMatchesNineFileDiff": true,
+  "baseSha256": {
+    "README.md": "410d32ce38e3c2719e5407be4479ffe1bb6ac82d0b3d23296ee360bd930fd313",
+    "data/design-document-index.json": "dc86eeb61e1a5be9bb8c891d5e6aa5582ae6f24cdd05c9e524b6d0a02f87eea0",
+    "data/project-status.json": "29cb47d243250574975fe1a6d2df677166eeeb4435d48a457ca1492a45535e79",
+    "docs/avocado-mini-r5/embedded-portable-connectivity.md": "6944c5c04f8437f6f8178e3912600537744ea6bfecbe0e106792e8c5ef22c186",
+    "docs/rockstaros-avocado-mini-complete-design.md": "6a5388da638f32ed8d660f03762d18477fd994f1617c4f1763dfe4802733b935",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "84dfd7f316e9ac5f67d29ee3666c9baf817771565a2decc0f80d795d9053f552",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "ba95d019e589debb1142b89609377b20e11eba2f31d070a610fa83f0715e9ad7",
+    "project.md": "7bae35f842723796c9dfbbdd680fecd753a909c42df4d4f83237bb7856bda17f",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788"
+  },
+  "candidateSha256": {
+    "README.md": "fd4bb5def0ca2f078f443b95248a075759d5ad5a336929b557014900c339773e",
+    "data/design-document-index.json": "b0cf93dcd1a969beb4db537bbf7e5cb419da5dfb30ba8d0502fad3044895a90c",
+    "data/project-status.json": "bbb287c9a4631f2bd0caddf6436ba413837134c7caeb148d09fa1b2d681ace35",
+    "docs/avocado-mini-r5/embedded-portable-connectivity.md": "c3d668f14569fd1c366d2adb4e29948cef6c4c129a5e4c3450e3b28d986b83f2",
+    "docs/rockstaros-avocado-mini-complete-design.md": "3070744aa9002a1779c45815594e511f6283f4321c97e5959da87ea3be625e99",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "679f85b64d7586f18335fc9d79e567f544708a437ec8a90d05bf8b2f4b0ad01e",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "55e53a40aa15987c53203690c918756b6a7eeb82f85911ddb41cf309b2783424",
+    "project.md": "c2ea5dc5c33675767ed2c8df29ff4dc32db396b195cf18ffe205e2e83e4fff4b",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "4f3a80c2d9dc043f62f6cf898d6ceb7458aa66e886bba1ff34ec4a3aa29718c2"
+  },
+  "findings": [
+    {
+      "id": "META-R1",
+      "severity": "P2",
+      "status": "resolved",
+      "problem": "README mixed old unimplemented-adapter/fixed-IPC wording with newly implemented Linux namespace control and implied final counter reconciliation.",
+      "fixVerified": "Now separates implemented process-local LinuxGate/quota/expiry from unimplemented authenticated IPC/Broker/AP/modem/provider and actual hardware; counter observation explicitly retains unresolved reservations."
+    }
+  ],
+  "claimsVerified": {
+    "linuxPacket20Compiler4": true,
+    "independentReviewLimitedToStaticAndHost": true,
+    "hostFullVerifyNotReusedForLinux": true,
+    "linuxFullVerifyNotRun": true,
+    "linuxGitSaveAndMergeNotDone": true,
+    "linuxCiPreparedNotRun": true,
+    "physicalApProviderInvoiceNotAccepted": true,
+    "fourDisplayRequirementsAndPortableMiniMaintained": true,
+    "allPreexistingProjectStatusPreserved": true,
+    "namespaceClaimsRequireManualReconciliation": true,
+    "currentNineEntrypointsUpdated": true,
+    "linuxCodeAndOriginalAcceptanceHashesUnchanged": true,
+    "originalIndependentReceiptCopyExact": true
+  },
+  "evidenceBindings": {
+    "docs/evidence/development-execution/mini-08-linux-tethering.json": "2f1dfed75029e0539992ab412cd35bd259ff27531206fbb87f8595d5e4576ce8",
+    "docs/evidence/development-execution/mini-08-linux-tethering-review.json": "28ba697248c0b1cb42aae45eaa0ae4c823b39dec5f8c960cd88cc326648d3ca3"
+  },
+  "notPerformed": [
+    "patch application to shared/managed tree",
+    "source or receipt edits other than this supplementary receipt",
+    "Git mutations",
+    "new runtime/packet tests",
+    "full verify",
+    "main/CI checks"
+  ],
+  "integrationCondition": "Apply as a separate Linux batch after host integration; rebase metadata against then-current main and preserve fresh host Git/CI status rather than replacing it with this base copy."
+}

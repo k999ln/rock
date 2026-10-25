@@ -1,0 +1,135 @@
+{
+  "schema": "mini-tether-linux-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "candidateRoot": "/private/tmp/mini-tether-linux-candidate",
+  "status": "static_and_host_compiler_review_passed",
+  "mustFixRemaining": 0,
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a"
+  },
+  "unchangedDuringFinalCompilerTests": true,
+  "frozenControllerMatchesPreviousReview": true,
+  "findings": [
+    {
+      "id": "LG-R1",
+      "severity": "P1",
+      "problem": "Directory-local locks allowed two databases to operate the same namespace; name-only lock also failed to represent namespace aliases.",
+      "fixVerified": "Shared lock and durable owner claim keyed by pinned namespace st_dev/st_ino; directory/policy binding retained; alias and second database rejection tests inspected.",
+      "status": "resolved_in_source",
+      "discovery": "independent static counterexample; vulnerable Linux runtime not executed by reviewer"
+    },
+    {
+      "id": "LG-R2",
+      "severity": "P1",
+      "problem": "Same-name foreign table or malformed hooks could be adopted; input/output accept rules survived startup.",
+      "fixVerified": "Uninitialized ownership cannot adopt existing table, including retry; exact 3 chain names/hook/type/priority/drop policies and empty input/output rules required.",
+      "status": "resolved_in_source",
+      "discovery": "independent static counterexample; vulnerable Linux runtime not executed by reviewer"
+    },
+    {
+      "id": "LG-R3",
+      "severity": "P1",
+      "problem": "Closed gate remained callable after ownership release; same-instance open/stop could interleave around nft effects.",
+      "fixVerified": "All public operations use RLock and closed guard; shutdown shares mutex; stale object and open/stop race tests inspected.",
+      "status": "resolved_in_source",
+      "discovery": "independent static counterexample; vulnerable Linux runtime not executed by reviewer"
+    },
+    {
+      "id": "LG-R4",
+      "severity": "P2",
+      "problem": "Scoped IPv6 text passed ipaddress and was interpolated into nft script.",
+      "fixVerified": "Percent-containing addresses rejected before parsing; ordinary, whitespace and newline scope negative tests pass.",
+      "status": "resolved_in_source",
+      "discovery": "independent compiler counterexample executed before fix; nft execution/exploit not attempted"
+    },
+    {
+      "id": "LG-R5",
+      "severity": "P1",
+      "problem": "Namespace pathname replacement after construction could redirect subsequent nft operations.",
+      "fixVerified": "Namespace fd pinned at construction, all nft calls use nsenter /proc/self/fd and pass_fds; replacement test inspected.",
+      "status": "resolved_in_source",
+      "discovery": "independent static counterexample; vulnerable Linux runtime not executed by reviewer"
+    },
+    {
+      "id": "LG-R6",
+      "severity": "P1",
+      "problem": "Parent kill during nft could release locks while orphan nft child later reopened rules after new service recovery.",
+      "fixVerified": "Both owner-lock fds passed into nsenter/nft so locks survive parent death until child exits; delayed child/parent SIGKILL test inspected.",
+      "status": "resolved_in_source",
+      "discovery": "independent static counterexample; vulnerable Linux runtime not executed by reviewer"
+    }
+  ],
+  "verification": {
+    "command": "python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p test_linux_gate.py -v",
+    "hostCompilerTests": 4,
+    "passed": 4,
+    "failed": 0,
+    "exitCode": 0,
+    "seconds": 0.122,
+    "independentPreFixCompilerCounterexamplesExecuted": 1,
+    "packetTestCasesInspected": 20,
+    "packetTestsExecutedByReviewer": 0,
+    "vmOperationsByReviewer": 0,
+    "notes": "Independent host compiler4/static review remains valid: runtime/compiler unchanged. Final packet20 + compiler4 success read from implementer log; no independent VM execution and no remote source hash readback by reviewer."
+  },
+  "acceptedScope": [
+    "fixed-schema nft compiler",
+    "static shared tx/rx/IPv4/IPv6 quota construction and absolute+kernel expiry",
+    "attempt-before-effect journal with reservation retention on ambiguous effects",
+    "namespace FD pin and st_dev/st_ino ownership",
+    "canonical default-deny startup and foreign table rejection",
+    "thread/process/child-process ownership lifecycle",
+    "readback is explicitly non-final; no automatic controller settlement or cost refund"
+  ],
+  "notAccepted": [
+    "independent reviewer Linux VM execution or remote source hash attestation; implementer log evidence is recorded separately",
+    "actual AP/modem/satellite/provider",
+    "authenticated Broker/UI and nonfixture client identity binding",
+    "provider bill hard cap or invoice finality",
+    "hardware/driver/thermal/power closed-box acceptance",
+    "complete repo verify or main/CI",
+    "protection against trusted root directly changing kernel state or bypassing sole facade",
+    "storage rollback/complete loss, provider reconciliation and finite-record rollover"
+  ],
+  "sourceAtIndependentCompilerRunSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "690730aee564cce9db8fb6f3a4a5b08b450f4a892024baf55cea388d663d65bb"
+  },
+  "testFixtureFollowUp": {
+    "status": "read_only_review_passed",
+    "changedPaths": [
+      "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py"
+    ],
+    "runtimeAndHostCompilerUnchanged": true,
+    "review": "Capture original netns dev/inode; after gate shutdown and namespace deletion, unlink only JSON claim whose stored directory belongs to this unique temporary fixture; keep lock inode. No production auto-removal added.",
+    "testRerunByReviewer": false,
+    "productionLimitation": "Persistent owner claims are not automatically deleted by LinuxGate; namespace destruction/inode reuse requires management reconciliation."
+  },
+  "implementerPacketEvidence": {
+    "independentlyExecutedByReviewer": false,
+    "logsReadByReviewer": true,
+    "finalLog": "/private/tmp/mini-tether-linux-acceptance-clean.log",
+    "finalLogSha256": "8fe23983fb3fe9547504878c95ba4aa39b483a199e2035725d79acbf7eafab78",
+    "compilerPassed": 4,
+    "packetPassed": 20,
+    "packetSeconds": 17.464,
+    "packetFailed": 0,
+    "currentSourceMatchReportedByImplementer": true,
+    "remoteSourceReadbackPerformedByReviewer": false,
+    "hashesEmbeddedInLog": false,
+    "priorFailureLog": "/private/tmp/mini-tether-linux-acceptance.log",
+    "priorFailureLogSha256": "6976302ec4a358b793b630fbd8d5dfb85b21571cddf115ccbbb531d65a6bc715",
+    "priorResult": {
+      "tests": 20,
+      "failures": 3,
+      "errors": 12
+    },
+    "priorCauseReportedByImplementer": "Old fixture ownership claims collided with reused kernel namespace inode; runtime rejected fail-closed. Only finished fixture claims were cleaned and test teardown revised."
+  }
+}
