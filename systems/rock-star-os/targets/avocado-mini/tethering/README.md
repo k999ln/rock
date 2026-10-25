@@ -2,7 +2,7 @@
 
 MAT15 / MINI-08 / NET01・DP02/03/05。2026-10-25の本人指示「Mini自身が衛星回線につながってWi-Fiを配る、ドックから外しても単体、接続端末・通信量・料金上限管理」を具体化する。主担当はMaterial Invention / avocadoMiniのROCK。既存の[携帯通信設計](../../../../../docs/avocado-mini-r5/embedded-portable-connectivity.md)と[通信・請求の共通設計](../../../../../docs/service-design/08-mini-connectivity-and-billing.md)を使う。
 
-現在の成果は **Python/SQLiteの実行可能なhost制御prototypeと試験**。modem、Wi-Fi、kernel packet path、本人認証UI、Provider請求には未接続。実衛星通信・携行電池・全Mini完成ではない。板/膜なし、少ない表示部、上下を含む全範囲、低眩しさの既存条件を保持し、光学sourceは変更しない。
+成果は **Python/SQLiteのhost制御prototype** と、[Linux packet gate](LINUX.md)の隔離namespace実パケット試験。modem、Wi-Fi無線、本人認証UI、Provider請求には未接続。実衛星通信・携行電池・全Mini完成ではない。板/膜なし、少ない表示部、上下を含む全範囲、低眩しさの既存条件を保持し、光学sourceは変更しない。
 
 ## 利用体験と構成
 
@@ -20,7 +20,7 @@ MAT15 / MINI-08 / NET01・DP02/03/05。2026-10-25の本人指示「Mini自身が
 
 ## 責任と既存systemの再利用
 
-- ROCK: controller.pyの制御状態、所有者照合、revision競合拒否、SQLite事前予約/保存、停止、期限、復旧。Mini内のpacket adapterと共通owner UIへの接続は次段階。
+- ROCK: controller.pyの制御状態、所有者照合、revision競合拒否、SQLite事前予約/保存、停止、期限、復旧。Linux namespace packet adapterを限定実装。実AP/modemと共通owner UIへの接続は次段階。
 - EXTERNAL: 内蔵衛星modem/アンテナ、BSP、AP driver、回線の共有許諾と料金定義、Providerの上限/計量機能、電池と熱。
 - JOINT: 同じ本体/契約で双方向IP→client HTTPS疎通、遮蔽、切断、課金境界、電源着脱、再起動を測定。
 - OWNER: 共有対象、回線、期間、容量と費用の上限を承認。購入・契約・実課金の実施はこのhost試験に含めない。
@@ -53,19 +53,19 @@ MAT15 / MINI-08 / NET01・DP02/03/05。2026-10-25の本人指示「Mini自身が
 
 settle後も予約した費用上限全体を消費扱いにし、このprototypeでは差額を返さない。実請求とは別なので`invoiceVerified=false`を維持する。未確定やtimeoutの予約は期限切れでも戻さない。最終counterが予約byteを越えたら異常を保存して共有を停止し、報告されたoverrun値と予約を残す。再起動でfaultを消さない。
 
-**端末で受信後にdropするだけでは衛星課金上限を保証できない。** 未要求downlink/再送/registrationなどもProvider側で課金され得る。現モデルの`hardQuotaReady`は未実装adapterの信頼境界であり、実課金保証の証明ではない。実装接続前に、網側のhard cap/最悪飛越量、protocol overheadを含む総量の上界、全local流量を同じ契約へ計上する経路を確定し、上界を予約に含める。これができない回線を「料金上限保証済み」で起動しない。
+**端末で受信後にdropするだけでは衛星課金上限を保証できない。** 未要求downlink/再送/registrationなどもProvider側で課金され得る。現モデルの`hardQuotaReady`はtrusted observationの信頼境界であり、Linux namespaceのbyte quota検証を実網のhard capや実課金保証へ昇格させない。実AP/modem・Provider計量adapterは未接続。実装接続前に、網側のhard cap/最悪飛越量、protocol overheadを含む総量の上界、全local流量を同じ契約へ計上する経路を確定し、上界を予約に含める。これができない回線を「料金上限保証済み」で起動しない。
 
 ## 停止・再起動と着脱
 
 失効、OFF、boot/link変更、観測更新、離脱でepochが変わり、旧grantは使用不能。新観測後も旧grantを復活させない。owner再許可は端末の累積量をリセットしない。上限到達で新grantを拒否しても、既に予約済みの有効grantはその枠内だけ利用できる。
 
-起動・process crash時のdefault deny、clockの信頼性、原子的packet quota/期限、daemon停止後のwatchdogは実adapterが必要。Pythonを周期実行して数秒後に遮断する方式では厳密な上限を保証しない。付け外し時は古いtokenを閉じて最終counterを照合し、電池/温度を再観測して新epochで再開する。owner/jobは継続し、場所の設備操作scopeは自動復活しない。衛星TCP sessionの無切断は保証しない。
+LinuxGateでは専用namespaceの起動時default deny、共有packet quota、kernel期限、daemon終了後の制限を実装・試験済み。clockの信頼性、実AP/modem/BSPへの接続と実機watchdogは別受入が必要。Pythonを周期実行して数秒後に遮断する方式では厳密な上限を保証しない。付け外し時は古いtokenを閉じてcounterを観測し、最終確定できない予約は保持したまま、電池/温度を再観測して新epochで再開する。owner/jobは継続し、場所の設備操作scopeは自動復活しない。衛星TCP sessionの無切断は保証しない。
 
-## 実adapterの次の実装境界
+## 実adapterの実装境界
 
 AP認証は[hostapd公式](https://www.w1.fi/hostapd/)の対応機能を採用候補とし、[設定source](https://android.googlesource.com/platform/external/wpa_supplicant_8/+/master/hostapd/hostapd.conf)のstation isolationを含めてexact driverで検証する。packet filterの候補は[nftables公式manual](https://netfilter.org/projects/nftables/manpage.html)のcounter/quota/set期限。既存仕様の存在はMiniでの作動証拠ではない。上記資料は2026-10-25に確認した。
 
-adapterはroot用任意shellを公開せず、固定IPCでtoken install/close/readbackのみを受ける。token IDの二重installを拒否し、maxBytes、boot/link/epoch、owner/client binding、期限、IPv4/IPv6の全経路を照合する。forward既定拒否、LAN-to-LAN/管理面分離、DHCP/DNS/IPv6 RAの境界、確立済みflow/offloadによるquota回避、packet粒度のovershoot、conntrack、APの偽装/再接続、管理系自身の衛星使用も試験する。Linux network namespaceのpacket試験→driver/AP→modem sandbox→同一閉箱と段階を分ける。radioやroot設定をhost試験から勝手に変更しない。
+LinuxGateはroot用任意shellを公開せず、固定schemaのプロセス内APIでtoken install/close/readbackを受ける。認証済み固定IPCとBroker/AP接続は未実装で、次段階に実装・検証する。token IDの二重installを拒否し、maxBytes、boot/link/epoch、owner/client binding、期限、IPv4/IPv6の全経路を照合する。forward既定拒否、LAN-to-LAN/管理面分離、DHCP/DNS/IPv6 RAの境界、確立済みflow/offloadによるquota回避、packet粒度のovershoot、conntrack、APの偽装/再接続、管理系自身の衛星使用も試験する。Linux network namespaceのpacket試験→driver/AP→modem sandbox→同一閉箱と段階を分ける。radioやroot設定をhost試験から勝手に変更しない。
 
 ## 再現と合格条件
 

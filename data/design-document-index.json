@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.37",
+  "version": "1.38",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -386,7 +386,11 @@
         "data/avocado-mini-cellular.json",
         "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
         "docs/evidence/development-execution/mini-08-tethering.json",
-        "docs/avocado-mini-r5/embedded-portable-connectivity.md"
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+        "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md",
+        "docs/evidence/development-execution/mini-08-linux-tethering.json",
+        "docs/evidence/development-execution/mini-08-tethering-main-merge.json",
+        "docs/evidence/development-execution/mini-08-linux-tethering-ci.json"
       ],
       "implementation": [
         "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",

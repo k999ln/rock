@@ -1,0 +1,124 @@
+{
+  "schema": "mini-tethering-main-merge/1",
+  "date": "2026-10-25",
+  "pr": 211,
+  "url": "https://github.com/k999ln/rock/pull/211",
+  "head": "7123bc466517d373faf9f5a16f0a36c25e09db98",
+  "mergeSha": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+  "mergedAt": "2026-10-25T08:25:17Z",
+  "mainAtReadback": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+  "parents": [
+    "81aca294b6c977f353752461f09823c4948a7ea9",
+    "7123bc466517d373faf9f5a16f0a36c25e09db98"
+  ],
+  "tree": "404538b70e73a7e6e4890e9562246f0aac589e4f",
+  "acceptedHeadTreeMatches": true,
+  "headChecksPassed": 13,
+  "mainChecks": [
+    {
+      "name": "source-tests",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118856647"
+    },
+    {
+      "name": "partitions (main-1)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118341779"
+    },
+    {
+      "name": "partitions (main-0)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118341736"
+    },
+    {
+      "name": "partitions (support)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118341728"
+    },
+    {
+      "name": "partitions (main-3)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118341726"
+    },
+    {
+      "name": "partitions (main-2)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546258/job/121118341577"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546283/job/121118341573"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546244/job/121118341532"
+    },
+    {
+      "name": "verify",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546216/job/121118341392"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546201/job/121118341385"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546244/job/121118341338"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "head": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40176546201/job/121118341245"
+    }
+  ],
+  "mainChecksPassed": 12,
+  "verifyLogSha256": "f2e7cf84de052935c13514cb08e73a2c9db2b5d24b92b04e10495aaff77fc071",
+  "mainVerifyReportedTotals": [
+    "ℹ tests 2912",
+    "ℹ pass 2910",
+    "ℹ fail 0",
+    "ℹ skipped 2"
+  ],
+  "githubSaved": true,
+  "mainMerged": true,
+  "sameShaCISuccess": true,
+  "physicalAccepted": false,
+  "providerInvoiceVerified": false,
+  "linuxImplementation": "separate Draft PR212",
+  "generalLaunch": "held",
+  "mainVerifySuite": {
+    "tests": 2912,
+    "passed": 2910,
+    "failed": 0,
+    "skipped": 2
+  }
+}

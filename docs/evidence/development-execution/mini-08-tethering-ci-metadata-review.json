@@ -1,0 +1,95 @@
+{
+  "schema": "mini-ci-metadata-independent-review/1",
+  "date": "2026-10-25",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-linux-save/avokdo",
+  "baseSourceHead": "08633c36d8678f5053b48232e14336de772fde6e",
+  "status": "ci_metadata_evidence_review_passed",
+  "mustFixRemaining": 0,
+  "candidateFilesSha256": {
+    "README.md": "1366af05d577dd87d81dc8cbdf9d18d43c8cfbe1ccc42f20e430ec98fab3cf91",
+    "data/design-document-index.json": "c7d97a3d99208201783a13568a58f945f07715605d2e283616d81ffc8278a257",
+    "data/project-status.json": "597de4dfff1cded115129b411f8f18bf90a76d1f9582007588074e3376292bd5",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "0c8fc9746887a6d0e8e5d116e769ffa25f09e74c34c776c621a922925f4828b3",
+    "project.md": "6f80cff97d870f4dba63d857ae6b381da5d94b742ce93b2cb269a2716c0f8f4b",
+    "docs/evidence/development-execution/mini-08-linux-tethering-ci.json": "5ed72a66b619be7ab7997e8f8cf188852fa5c042beeaeedafeb49771062d99a1",
+    "docs/evidence/development-execution/mini-08-tethering-main-merge.json": "ea62982d5d95dd4b72703d94b4a3b137ae227e1a25af146c9a9617acdb125e47"
+  },
+  "evidenceInputsSha256": {
+    "mini211-main-ci-latest.json": "a52615db5db42860319e36080a43f8d45de07bf3a268bf8c69757f01a6475f21",
+    "mini211-head-ci.json": "2e3b4457673e80ce78910d64fd1e59478071c9d7bd1d2592e157dfab5dc3eb07",
+    "mini211-main-verify.log": "f2e7cf84de052935c13514cb08e73a2c9db2b5d24b92b04e10495aaff77fc071",
+    "mini212-head-ci.json": "d87d72a5d5c3ee115a7a0334c978bbc928ba79df22ed4bba3bc2b250fdcccac2",
+    "mini212-linux-packets-ci.log": "f458161a391fbdefb339fd24573aa44c20391807115726ea695f573e92a5c089"
+  },
+  "checks": {
+    "onlyFiveTrackedMetadataPlusTwoNewEvidenceFiles": true,
+    "nonMiniStatusUnchanged": true,
+    "sourceAndOriginalReceiptsUnchanged": true,
+    "elevenFrozenLinuxFilesMatchOriginalManifest": true,
+    "linuxEvidenceSourceManifestMatchesCommittedHEAD": true,
+    "originalCaptureTimeReceiptsPreserved": true,
+    "mainMergeParentsAndTreeVerifiedFromLocalGitObjects": true,
+    "hostMainAndReviewedHeadShareTree": "404538b70e73a7e6e4890e9562246f0aac589e4f",
+    "main12ChecksExactMatchCapturedGitHubResponse": true,
+    "hostHead13ChecksMatchCapturedResponse": true,
+    "linux14ChecksExactMatchCapturedGitHubResponse": true,
+    "verifyAndPacketLogHashesMatchEvidence": true,
+    "mainVerifyCompleteThroughBotCheck": true
+  },
+  "hostMainAcceptance": {
+    "mergeSha": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+    "checksPassed": 12,
+    "verifySuite": {
+      "tests": 2912,
+      "passed": 2910,
+      "skipped": 2,
+      "failed": 0
+    },
+    "mergeMethodObserved": "two-parent normal merge with accepted head tree identical"
+  },
+  "linuxSourceAcceptance": {
+    "head": "08633c36d8678f5053b48232e14336de772fde6e",
+    "checksPassed": 14,
+    "hostTests": 32,
+    "packetTests": 20,
+    "mainMerged": false,
+    "draftOpenAtCapturedReadback": true,
+    "reviewerPacketExecution": false
+  },
+  "independentCommands": [
+    {
+      "command": "npm run project:check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run design:check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check HEAD",
+      "exitCode": 0
+    }
+  ],
+  "evidenceLimits": [
+    "GitHub responses and CI logs were captured by implementation agent and independently read/compared here; reviewer did not make a fresh remote request.",
+    "Merge timestamp and main-at-readback are implementation-agent observations; local Git validates commit parents and tree, not current remote branch position.",
+    "This receipt does not attest CI for the later metadata commit; exact later head must be checked separately.",
+    "Original local full-verify evidence remains bound to its old 2854 base; later host main CI is separate evidence."
+  ],
+  "remainingGates": {
+    "laterMetadataHeadCI": "not_yet_attested",
+    "linuxMainMerged": false,
+    "physicalSatelliteWifiAccepted": false,
+    "providerInvoiceVerified": false,
+    "generalLaunch": "held"
+  },
+  "notPerformed": [
+    "source edits",
+    "metadata edits",
+    "Git mutation",
+    "fresh GitHub requests",
+    "CI execution",
+    "VM tests",
+    "full verify rerun"
+  ]
+}

@@ -777,4 +777,6 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 
 [実装と詳細契約](../systems/rock-star-os/targets/avocado-mini/tethering/README.md) / [証拠](evidence/development-execution/mini-08-tethering.json)。ownerの共通Broker認証とAgent/Wallet/Invoiceは既存契約を使い、通信予約を請求成立へ昇格しない。対象はMAT15/M1のROCK、実接続はJOINT、部品/回線/料金計量はEXTERNAL、回線と上限承認はOWNER。既定OFFから観測と承認後だけ予約、CAS/epoch/期限で旧grantを失効し、結果不明とoverrunは保留。SQLiteの保存成功後だけgrantを発行し、復旧は給電/通信unknown・共有OFFで始める。DP02/03/05、Linux packet試験、実回線の上限と同一閉箱の未完了を残す。
 
+[Linux下位制御](../systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md): Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 namespace所有claimの破棄/再利用は自動解除せず、旧processと未確定予約の管理照合が必要。
+
 2026-10-15明示要求は[統合設計](service-design/08-mini-connectivity-and-billing.md)と[R5詳細](avocado-mini-r5/embedded-portable-connectivity.md)へ追加。固定dock/可搬core、携帯電源、衛星WAN/Wi-Fi LAN、場所権限、同一job継続、月次usage請求を分離して設計する。実機・本番未受入。

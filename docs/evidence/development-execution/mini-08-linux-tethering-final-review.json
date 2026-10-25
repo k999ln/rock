@@ -1,0 +1,84 @@
+{
+  "schema": "mini-tether-linux-final-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-linux-packets/avokdo",
+  "status": "final_three_path_evidence_review_passed",
+  "mustFixRemaining": 0,
+  "finalChangePaths": [
+    "project.md",
+    "data/project-status.json",
+    "docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json"
+  ],
+  "candidateFilesSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a",
+    "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md": "8160a986d6409d09f81b8707160e9195bcba7354ad5dbe28c7c80766317a27ff",
+    "docs/evidence/development-execution/mini-08-linux-tethering.json": "2f1dfed75029e0539992ab412cd35bd259ff27531206fbb87f8595d5e4576ce8",
+    "docs/evidence/development-execution/mini-08-linux-tethering-review.json": "28ba697248c0b1cb42aae45eaa0ae4c823b39dec5f8c960cd88cc326648d3ca3",
+    ".github/workflows/mini-tether-linux.yml": "57374d3ab73a0386bdffb92c7b47bda4cbeb5cd87df5d8a8e0b7665f515a2704",
+    "docs/evidence/development-execution/mini-08-linux-tethering-adoption-review.json": "beba596e7f19dbba889c64033dc253c07fb0102eac080934dcd7ed88e84822e9",
+    "docs/evidence/development-execution/mini-08-linux-tethering-metadata-review.json": "a1c87eea0da08380f62cb7f1a71f58eaa70971a7c8cb77e3c6615f81952f7698",
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "4f3a80c2d9dc043f62f6cf898d6ceb7458aa66e886bba1ff34ec4a3aa29718c2",
+    "README.md": "fd4bb5def0ca2f078f443b95248a075759d5ad5a336929b557014900c339773e",
+    "data/design-document-index.json": "b0cf93dcd1a969beb4db537bbf7e5cb419da5dfb30ba8d0502fad3044895a90c",
+    "data/project-status.json": "73e4904ba17eedf87e041cf1212d8bf48e5ced709b9d61d4b37f1f10ef874396",
+    "docs/avocado-mini-r5/embedded-portable-connectivity.md": "c3d668f14569fd1c366d2adb4e29948cef6c4c129a5e4c3450e3b28d986b83f2",
+    "docs/rockstaros-avocado-mini-complete-design.md": "3070744aa9002a1779c45815594e511f6283f4321c97e5959da87ea3be625e99",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "679f85b64d7586f18335fc9d79e567f544708a437ec8a90d05bf8b2f4b0ad01e",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "55e53a40aa15987c53203690c918756b6a7eeb82f85911ddb41cf309b2783424",
+    "project.md": "7ab726652427617ea64623abcb1fa38ca3203fbc2b98af7c4caf6ccbfe76883f",
+    "docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json": "3a2d04fdaacb61123314ef3f5e3436acb6100a07286a6ddd26429820ea2adc2d"
+  },
+  "priorMetadataReviewSha256": "a1c87eea0da08380f62cb7f1a71f58eaa70971a7c8cb77e3c6615f81952f7698",
+  "checks": {
+    "exactThreePathDelta": true,
+    "projectAndStatusReconstructedToPriorReviewedHashes": true,
+    "otherSevenMetadataFilesUnchanged": true,
+    "allElevenSourceAndOriginalReceiptHashesMatch": true,
+    "originalHostStatusPreserved": true,
+    "metadataPatchSynchronized": true,
+    "projectCheckExitCode": 0,
+    "projectCheckExecutedByReviewer": true
+  },
+  "fullVerify": {
+    "executor": "implementation agent",
+    "reviewerExecutedFullVerify": false,
+    "logReadAndHashVerified": true,
+    "logPath": "/private/tmp/mini-linux-full-verify.log",
+    "logSha256": "7b9b184eef0ec6d130a7d18f090ecc58a59dc9aecd6522f6a6f88cdafdf79cb1",
+    "exitCodeReported": 0,
+    "mainSuite": {
+      "tests": 2912,
+      "passed": 2909,
+      "failed": 0,
+      "skipped": 3
+    },
+    "completeChainTailObserved": "bot:check with success output",
+    "host": "macOS",
+    "separateLinuxPacketEvidence": true,
+    "hostVerifyDoesNotRunRootPacketTests": true
+  },
+  "remainingGates": {
+    "githubSaved": false,
+    "mainMerged": false,
+    "linuxCi": "prepared_not_run",
+    "physicalAccepted": false,
+    "wifiRadioAndSatelliteNotAccepted": true,
+    "providerInvoiceVerified": false,
+    "generalLaunch": "held"
+  },
+  "metadataPatchSha256": "f111803c398dd1251dd7a3675e4d43268169732510b516620c8a9277f6b45d5b",
+  "notPerformed": [
+    "source edits",
+    "metadata edits",
+    "rewriting prior receipts",
+    "Git operations",
+    "new VM packet tests",
+    "full verify rerun",
+    "GitHub or CI mutation"
+  ],
+  "integrationCondition": "Git must preserve this exact code/receipt payload and revalidate metadata against then-current main; same-head and postmerge CI remain separate gates."
+}
