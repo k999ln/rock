@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.undici-security-update/1",
-  "recordedAt": "2026-10-25T09:49:47.976181+00:00",
+  "recordedAt": "2026-10-25T09:57:09.939722+00:00",
   "task": "G04",
   "primarySquad": "H1",
   "primaryOwner": "ROCK",
@@ -65,11 +65,39 @@
     ],
     "undiciFindingAfter": null,
     "auditAllClear": false,
-    "auditRemaining": "10 findings in other dependencies remain outside this repair",
-    "focusedTests": "initial5pass; rerun with final metadata pending",
-    "fullVerify": "pending",
-    "independentReview": "pending",
-    "finalSameShaCI": "pending"
+    "auditRemaining": "Root10 and Mini2 findings in other dependencies remain; separate graph counts, not undici findings",
+    "focusedTests": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    "fullVerify": {
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "environment": "macOS Node26.12.1 / OpenSSL3.6.3 / normal npmci root+Mini",
+      "rootTests": 2984,
+      "rootPass": 2981,
+      "rootFail": 0,
+      "rootSkip": 3,
+      "skipMeaning": "Host skips remain skips; Linux final-head results recorded separately",
+      "apiAssertions": 1678,
+      "logSha256": "0a91e4bb12c3ce4f98e14f816bae7c46d9ed4d2f9283824f9ec7597dc5f69f03"
+    },
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "finalSameShaCI": "pending_at_capture; final GitHub check readback required",
+    "hostInitialFailure": {
+      "stage": "release:signing:check",
+      "reason": "Host default OpenSSL4; existing harness requires OpenSSL3",
+      "correction": "Select installed OpenSSL3.6.3 using PATH; no source or check changes",
+      "rerun": "PASS with OpenSSL3 and Mini dependencies installed"
+    },
+    "additionalHostSetupFailure": {
+      "stage": "test:avocado-mini-site build",
+      "reason": "Separate Mini node_modules absent; astro command not found",
+      "correction": "Run npm ci --prefix sites/avocado-mini exactly as existing CI; no test weakened"
+    }
   },
   "preserved": {
     "historical8fDependabotFailureUnchanged": true,
@@ -80,5 +108,109 @@
     "mainMerged": false,
     "realProviderOrFinancialAcceptance": false
   },
-  "next": "Complete focused tests, full verify, independent review, GitHub branch/DraftPR save and final same-SHA CI; main integration separate. Historical failed run is not rerun/green."
+  "next": "GitHub Draft PR and final same-SHA CI; main integration and default-branch Dependabot rescan remain separate. Preserve public/deployment/616 holds.",
+  "synchronizedMain": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+  "mainSynchronization": {
+    "method": "ordinary merge",
+    "commit": "9d81259f",
+    "preserved": "All18 changed main paths retained; conflict union preserved eSIM UI text and both progress fields."
+  },
+  "independentSourceReview": {
+    "status": "PASS_SCOPED_SOURCE",
+    "mustFix": [],
+    "source": [
+      {
+        "path": "package.json",
+        "sha256": "4f7cfdbdbfa8e0fb1248a1d080ffe4c888b8e91bf2be4c7dbf23c8a63d2ca7a8"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "b8abe386e8885557168d8f0ca921bb418e6284ee3e6873133c5b1ce6c8e249cd"
+      },
+      {
+        "path": "tests/undici-security-update.test.mjs",
+        "sha256": "fa0ca2b289cdd18dfd84ac54623630f3970f80ac349ba02c06e4a69e0e8aeda1"
+      }
+    ],
+    "independentTests": {
+      "sourceRegressionAndTlsCompatibility": {
+        "command": "node --test tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs",
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0
+      },
+      "oldVersionSRIControl": {
+        "tests": 2,
+        "pass": 1,
+        "fail": 1,
+        "exit": 1,
+        "expected": "Missing expected rejection: SHA256"
+      },
+      "excessiveEncodingEarlyClose": {
+        "scope": "isolated synthetic HTTP loopback only; six gzip content codings, Content-Length42, earlyclose",
+        "newVersionExit": 0,
+        "newVersionObserved": "fetch rejection caught; process survives",
+        "oldVersionExit": 1,
+        "oldVersionObserved": "unhandled error event UND_ERR_RES_CONTENT_LENGTH_MISMATCH",
+        "initialSandboxAttempt": "EPERM listen, rerun authorized with escalation; not counted as product failure"
+      }
+    },
+    "limits": [
+      "Final metadata review pending separate parent request",
+      "Final GitHub head CI not run by this reviewer",
+      "EventSource runtime memory probe not executed; its advisory absence is audit evidence only",
+      "Node bundled undici unaffected by package override; no claim of runtime Node upgrade"
+    ],
+    "sha256": "d9858c041eeceba399bb86aba78e3886f3d4681e7a880440e65d388c4cf2d415"
+  },
+  "limits": [
+    "npm package override does not upgrade Node bundled undici",
+    "Other dependencies: root10/Mini2 audit findings remain",
+    "Default-branch Dependabot resolution awaits main adoption and GitHub rescan; historical8f failed job remains failure"
+  ],
+  "miniSite": {
+    "manifest": "sites/avocado-mini/package.json unchanged",
+    "lock": "sites/avocado-mini/package-lock.json",
+    "from": "8.11.2",
+    "to": "8.12.3",
+    "path": "unifont ^8.0.0 → undici8.12.3",
+    "onlyChangedPackageNode": "node_modules/undici",
+    "nodeEngine": ">=22.19.0 unchanged",
+    "npmCi": "PASS normal install",
+    "auditBefore": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 3,
+      "critical": 0,
+      "total": 3
+    },
+    "auditAfter": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 2,
+      "critical": 0,
+      "total": 2
+    },
+    "undiciFindingAfter": null,
+    "githubOpenAlertsAtCapture": [
+      55,
+      56,
+      57
+    ]
+  },
+  "githubRootOpenAlertsAtCapture": [
+    48,
+    49,
+    50
+  ],
+  "independentFinalReview": {
+    "status": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "mustFix": [],
+    "sha256": "b69ec5d512f8b674c518b2f01da10a007ac3c40f081f3180e8ff802b8bb32613",
+    "scope": "root3source + Mini lock +7metadata paths; preserves main18changes,393tasks14gates and original receipts",
+    "miniIndependent": "new8.12.3 SRI2pass/encoding rejection+process survives; old8.11.2 SRI fail/encoding process crash"
+  }
 }

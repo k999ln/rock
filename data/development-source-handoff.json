@@ -798,13 +798,24 @@
   "dependencySecurityFollowup": {
     "taskId": "G04",
     "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
-    "state": "undici_override_and_lock_repaired_validation_in_progress",
+    "state": "independently_accepted_local_verify_pass_git_ci_pending_at_capture",
     "evidence": "docs/evidence/development-execution/undici-security-update.json",
-    "scope": "7.29.1→7.30.1 override/lock only plus SRI regression; npmci and undici audit clear. Other10audit findings remain; historical8f failure retained.",
-    "next": "Full verify, independent acceptance, Git save and exact final SHA CI; main merge separate.",
+    "scope": "root7.29.1→7.30.1 override/lock; Mini8.11.2→8.12.3 lock only; both normal npmci/undici audit clear. Otherroot10/Mini2 audit findings remain; historical8f failure retained.",
+    "next": "Save DraftPR, verify its exact final SHA CI, record GitHub readback; normal main integration requires separate instruction. Default-branch Dependabot alerts remain open until adoption/rescan.",
     "holds": [
       "public deployment",
       "616 bulk public export"
-    ]
+    ],
+    "synchronizedMain": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "independentSourceReview": "PASS_SCOPED_SOURCE",
+    "miniSite": {
+      "from": "8.11.2",
+      "to": "8.12.3",
+      "undiciAuditFindingsAfter": 0,
+      "otherAuditFindingsRemaining": 2
+    },
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "localVerify": "PASS root2984/pass2981/fail0/skip3",
+    "mainMerged": false
   }
 }

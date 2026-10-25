@@ -231,13 +231,13 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
 
 主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici7.29.1の更新不可は下記G04で修正中、PR213 UIは別scope。
 
 ### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
 
-最新main `dc2b992f`基点。root overrideの7.29.1固定が修正版への解決を妨げていたため、overrideと単体lock entryを7.30.1へ更新。通常npm ciと6経路の解決、npm監査でundici3指摘→0を確認。他依存10指摘は未解決として区別する。[修正・検証証拠](docs/evidence/development-execution/undici-security-update.json)。SRIの大小文字で不一致digestを通さない回帰と既存TLS確認を実施し、全体verify・独立検収・Git保存・最終同一SHA CIを続ける。main統合、公開・配備・616一括公開は未実施／保留。旧8fの失敗receipt、Pixel実機・料金gateは維持。
+開始main `dc2b992f`から最新 `2a9828b2`を通常mergeで保全同期。root overrideの7.29.1固定が修正版への解決を妨げていたため、overrideと単体lock entryを7.30.1へ更新。rootの通常npm ciと6経路の解決、npm監査でundici3指摘→0を確認。Miniの別lockも既存8系を維持して8.11.2→8.12.3へ限定更新し、npm ciとundici3指摘→0を確認。他依存はroot10／Mini2指摘が未解決として区別する。[修正・検証証拠](docs/evidence/development-execution/undici-security-update.json)。SRIの大小文字で不一致digestを通さない回帰と既存TLSの5試験が成功。独立source検収PASS・必須修正0、旧SRI回避/過剰encoding crashと新版での拒否/生存を確認。最終metadata独立検収PASS・必須修正0、全体verify exit0（root2984／2981pass／0fail／3host skip、API1678assertions）を確認。次はGit保存と最終同一SHA CI。main統合、公開・配備・616一括公開は未実施／保留。旧8fの失敗receipt、Pixel実機・料金gateは維持。
 
 ### 原source/host段階の記録（履歴）
 
