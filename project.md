@@ -1,3 +1,7 @@
+## PR213 CI停止のWallet fixture競合を修正
+
+G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headで同SHA Linux全verify/CodeQLを確認する。Pixelの確定済み8f CI metadataは別専用PRで保存し、UI未mergeを保持する。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
+
 UI最新main同期: main41ee45d7のMini Linux限定採用を通常取り込み、controller/packet tests/専用CI/証拠と現statusを保持。UI4sourceとPixel9sourceは同hash。旧head7f2aの全verify/CodeQLは成功済みだが、今回の最終head CIを別に確認する。
 
 UI最終同期: Pixel PR209/main8f646ff3の限定採用を通常取り込み。Pixel9source・旧物理要約・Wallet/Mini・task/phase gateを保持。eSIM/Eve4source/testは検収済みhashと同一。最終CIとmain統合はこの同期後のheadで確認する。Pixel mergeSHA CI完了前に次main mergeは実行しない。
