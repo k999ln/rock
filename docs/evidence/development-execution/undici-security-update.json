@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.undici-security-update/1",
-  "recordedAt": "2026-10-25T10:00:37.586647+00:00",
+  "recordedAt": "2026-10-25T10:11:05.549094+00:00",
   "task": "G04",
   "primarySquad": "H1",
   "primaryOwner": "ROCK",
@@ -88,7 +88,23 @@
       "candidateScope": "Earlier candidate after main2a, before main PR216 adds4constraint tests; not current final-head acceptance"
     },
     "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
-    "finalSameShaCI": "pending_at_capture supplement PR218",
+    "finalSameShaCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
     "hostInitialFailure": {
       "stage": "release:signing:check",
       "reason": "Host default OpenSSL4; existing harness requires OpenSSL3",
@@ -118,7 +134,7 @@
     "realProviderOrFinancialAcceptance": false,
     "mainMergedScope": "Dependency repair PR216 only; supplemental PR218 remains unmerged"
   },
-  "next": "Complete independent synchronized review, save supplemental DraftPR218 and check its exact final SHA CI; main repair CI and supplemental CI are distinct. Public/deployment/616 holds remain.",
+  "next": "Supplement PR218 saved and independently accepted with exact accepted-head7CI success; verify the final metadata head in GitHub PR checks. Additional main integration separate; zod and other audit findings unresolved; public/deployment/616 holds remain.",
   "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
   "mainSynchronization": {
     "method": "ordinary merge",
@@ -225,7 +241,7 @@
     "miniIndependent": "new8.12.3 SRI2pass/encoding rejection+process survives; old8.11.2 SRI fail/encoding process crash",
     "candidateScope": "Historical pre-PR216-merge independent review; final synchronized metadata review follows."
   },
-  "status": "REPAIR_ADOPTED_FROM_PR216_SUPPLEMENTAL_REGRESSION_CI_PENDING",
+  "status": "REPAIR_MAIN_FIXED_SUPPLEMENT_INDEPENDENT_AND_ACCEPTED_HEAD_CI_PASS",
   "repairMain": {
     "pr": 216,
     "acceptedHead": "d89efc5584dbb5b1b0ec00c853701520a497cfb1",
@@ -275,7 +291,24 @@
     "pr": 218,
     "scope": "SRI behavioral regression2tests and independent readback/progress/handoff only; dependency manifests/locks/license inventory identical to current main",
     "mainMerged": false,
-    "finalHeadCI": "pending_at_capture"
+    "acceptedHeadCI": {
+      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
+      "success": 7,
+      "failure": 0,
+      "pending": 0,
+      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
+      "linuxVerify": {
+        "run": 40183235097,
+        "job": 121138519689,
+        "tests": 2988,
+        "pass": 2986,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+      },
+      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+    },
+    "gitSaved": true
   },
   "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
   "scannerPolicySynchronization": {
@@ -299,5 +332,11 @@
       "fail": 0,
       "skip": 0
     }
+  },
+  "independentResultMetadataReview": {
+    "status": "PASS_SCOPED_RESULT_METADATA",
+    "mustFix": [],
+    "sha256": "8c4a0a60ca1385e935458375f0837a03fb4cc6db64f5db08c74ddabbeffebf29",
+    "scope": "Result-only six metadata paths; source/dependency locks/policy unchanged; accepted0aaCI and final metadata SHA CI kept distinct"
   }
 }

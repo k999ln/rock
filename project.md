@@ -246,7 +246,7 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 開始main dc2→2aを通常同期して独立修正・検収した後、並行担当の[PR216](https://github.com/k999ln/rock/pull/216)がmain `d2222dc5`へ通常統合されたため、そのroot`^7.30.1`／Mini`^8.12.2`制約とlock7.30.1／8.12.3をbyte不変で採用。GitHub警告48/49/50/55/56/57はfixed。旧8f失敗receiptを変更せず、現在mainのzod更新不可は別依存の未解決として残す。
 
-[PR218](https://github.com/k999ln/rock/pull/218)はSRI大小文字の不一致digestを拒否する2回帰と独立検収・進捗引継ぎを追加する候補。[証拠](docs/evidence/development-execution/undici-security-update.json)。旧両majorでSRI回避/過剰encoding crash、新版で拒否/生存を独立確認。同期前host verify2984／2981pass／0fail／3skip、同期後対象9pass。同期後の全体verifyは最終head Linux CIで確認し、GitHub保存とmain統合を区別する。他依存root10／Mini2指摘、Pixel実機/P02/全OS、公開・配備・616一括公開は未受入／保留。
+[PR218](https://github.com/k999ln/rock/pull/218)はSRI大小文字の不一致digestを拒否する2回帰と独立検収・進捗引継ぎを追加する候補。[証拠](docs/evidence/development-execution/undici-security-update.json)。旧両majorでSRI回避/過剰encoding crash、新版で拒否/生存を独立確認。同期前host verify2984／2981pass／0fail／3skip、同期後対象9pass。受入head `0aa1c8d4`の同一SHA全7CI成功、Linux実verify2988／2986pass／0fail／2skipを直接確認し、PR218へGit保存済み。この確定結果のmetadata更新headもPR checksで確認する。補足PRのmain統合は別。他依存root10／Mini2指摘、Pixel実機/P02/全OS、公開・配備・616一括公開は未受入／保留。
 
 ### 原source/host段階の記録（履歴）
 
