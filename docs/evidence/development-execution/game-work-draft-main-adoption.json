@@ -101,6 +101,10 @@
     "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
     "fetch": "git fetch --no-tags --depth=1 origin ee9b88010c4ccb20be1db46177e3805380995c4b",
     "scope": "One immutable public main baseline, hash checked before full verify. Current source checkout unchanged, no all-history fetch or test weakening.",
-    "newExactHeadCI": "pending_at_capture"
+    "newExactHeadCI": "pending_at_capture",
+    "independentShallowReproduction": {
+      "sha256": "7d5f5d1b798370561d9f4bea62e2454890fd202bced0fa9323b799f1814a591d",
+      "result": "Independent isolated depth1 repro failed before the fixed single-commit fetch, then returned expected d93 Workbench bytes; source4 unchanged."
+    }
   }
 }
