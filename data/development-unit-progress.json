@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
+  "recordedAt": "2026-10-25T09:54:24.658763+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
@@ -292,7 +292,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "EVE_TEXT_PREPARATION_CANDIDATE",
-        "EVE_SOURCE_ESTIMATE_CANDIDATE"
+        "EVE_SOURCE_ESTIMATE_CANDIDATE",
+        "EVE_RATE_UNIT_ADOPTED"
       ]
     },
     {
@@ -1350,7 +1351,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "PR194_ESIM_SUBSET",
-        "ESIM_OWNER_RESPONSE_CANDIDATE"
+        "ESIM_OWNER_RESPONSE_CANDIDATE",
+        "ESIM_UI_ACK_ADOPTED"
       ]
     },
     {
@@ -1468,7 +1470,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "ESIM_UI_ACK_ADOPTED"
+      ]
     },
     {
       "id": "ESIM-07",
@@ -1514,7 +1518,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "ESIM_OWNER_RESPONSE_CANDIDATE"
+        "ESIM_OWNER_RESPONSE_CANDIDATE",
+        "ESIM_UI_ACK_ADOPTED"
       ]
     },
     {

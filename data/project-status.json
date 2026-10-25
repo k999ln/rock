@@ -10053,22 +10053,38 @@
   "esimAcknowledgementMainAdoption": {
     "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
     "sourceScopedAccepted": true,
-    "independentMetadataReviewPending": true,
-    "finalHeadCIPending": true,
-    "mainMerged": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
     "actualHiddenTransitionTested": false,
     "physicalAccepted": false,
     "realFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "sameHeadCIPending": false,
+    "metadataReviewPending": false,
+    "integrationMetadataChecked": true,
+    "headCISuccess": 7,
+    "mainProductCISuccess": 6,
+    "mergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed."
   },
   "eveRateUnitMainAdoption": {
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
     "sourceIndependentPass": true,
     "newHashBrowserScopedPass": true,
-    "metadataReviewPending": true,
-    "sameHeadCIPending": true,
-    "mainMerged": false,
+    "metadataReviewPending": false,
+    "sameHeadCIPending": false,
+    "mainMerged": true,
     "productionBilling": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "finalHeadCIPending": false,
+    "integrationMetadataChecked": true,
+    "headCISuccess": 7,
+    "mainProductCISuccess": 6,
+    "mergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+    "reviewScope": "Product source independently reviewed; Git integration metadata checked for consistency, no second independent metadata reviewer claimed."
   }
 }

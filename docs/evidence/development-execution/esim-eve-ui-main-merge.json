@@ -1,0 +1,129 @@
+{
+  "schema": "rockstaros.pixel-esim-main-acceptance/1",
+  "authorization": {
+    "source": "Direct human request in this current chat; independent of Smith request",
+    "text": "続けて、準備済みのPixelとeSIMの作業も最新mainに合わせて、開発・検収・Git保存・main統合まで進めて。",
+    "scope": "Pixel/eSIM development, acceptance, Git save and normal main integration; no public deployment or additional physical actions",
+    "sourceChat": "01a16c23-d327-7401-b994-05796b175cce",
+    "sourceTurn": "01a171d3-daf1-7700-8d89-90fe178c6501",
+    "sourceUserMessage": "01a171d3-db32-7721-9eff-a4198cb698e3",
+    "directThreadReadVerified": true
+  },
+  "pixel": {
+    "pr": 209,
+    "head": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+    "mergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "headCiSuccess": 8,
+    "productCiSuccess": 7,
+    "actualMainLinux": {
+      "mergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+      "run": 40177661118,
+      "job": 121121750495,
+      "logSha256": "dd2d3b5363a5d13707a5f910102693270e55733ebfe367cd796915b9be5a083b",
+      "rootCounts": {
+        "tests": 2938,
+        "pass": 2936,
+        "fail": 0,
+        "skipped": 2
+      },
+      "pythonSafetyCacheAndUpdate": [
+        true,
+        true
+      ],
+      "fullVerifyExit": "success_from_GitHub_job_conclusion",
+      "productChecksSuccess": 7,
+      "dependabotFailureSeparate": true
+    },
+    "guardIndependentReviewSha256": "948769d00a75ed4e31160f43d020e3a2919167f8f9f10f85d13a337303676c97",
+    "finalMetadataIndependentReviewSha256": "d006aec4f2481d1aa8ce5bde44c5bc497f9b4f9b0006ee78dd1ba99c0ce778e8",
+    "originalSevenSourcePreserved": true,
+    "guardTwoMatchAuthorCommit": true,
+    "oldPhysicalReviewSha256": "38d8f4d32a74734ac069b93b44e2e1a2613d649230472c83fdf47c2b0361f779",
+    "newGuardPhysicalAccepted": false,
+    "currentProgressMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "currentProgressMainProductCiSuccess": 7
+  },
+  "ui": {
+    "pr": 213,
+    "head": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "mergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "mainProductCiAllSuccess": true,
+    "sourceFourUnchanged": true,
+    "eSIMSourceIndependentReviewSha256": "01e70baf6a14c625cad4f656ab07295b698fa38214066e965b0a48a89632cb2e",
+    "eveSourceIndependentReviewSha256": "89091a29fbf7e00c507d20d4d64ce38afbc53af1393c3f7f8cb41fa7ae9d08d4",
+    "eSimActualSyntheticBrowserSummarySha256": "7ba36667a4eba9b63a26e28c089640c16330560a7f811600f5b640a8eff0e274",
+    "eveActualSyntheticChromeSummarySha256": "28f8e6c7936bcb867a8323af12349e98e7761df2713a785c1079b0c01a6d4034",
+    "actualHiddenBrowserTransitionTested": false,
+    "integrationMetadataReview": "Git consistency checks; product source reviewed independently; no second independent metadata reviewer claimed",
+    "eveAuthorization": {
+      "sourceChat": "01a16c24-5351-76b0-8c89-c98ad309b2d6",
+      "sourceTurn": "01a17201-e17d-7142-8613-f6d2a3a4adb5",
+      "sourceUserMessage": "01a17201-e26e-7a63-9142-db4c5647c556",
+      "text": "Git担当に引き継いで、main採用と同一SHAのCI確認まで進めて",
+      "directHumanMessagePreviouslyRead": true
+    },
+    "mainProductCiSuccess": 6,
+    "headCiSuccess": 7,
+    "acceptedTree": "fd5ded98aa834e796d5d9a67411f1453cd04e57d",
+    "headActualLinux": {
+      "head": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+      "run": 40181679266,
+      "job": 121133871404,
+      "logSha256": "a5542ebe8a30903c415e34eede0bbb027aec70033deb8c85ef7279b1b1e1ba07",
+      "root": {
+        "tests": 2982,
+        "pass": 2980,
+        "fail": 0,
+        "skipped": 2
+      },
+      "walletGateNewRegressionBothPresent": true,
+      "pythonCache6Update23": true,
+      "fullVerifyExit": "success_from_actual_job"
+    },
+    "testFixtureException": "tests/wallet-workspace-recovery.test.mjs",
+    "fixtureEvidence": "docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json",
+    "mainActualLinux": {
+      "mergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+      "run": 40182125683,
+      "job": 121135188075,
+      "logSha256": "bd032f5bdd0665e5bf270007e756d3f111c0e20de30fdc0f0ec7ff6fbf1ff6b7",
+      "root": {
+        "tests": 2982,
+        "pass": 2980,
+        "fail": 0,
+        "skipped": 2
+      },
+      "walletGateRegressionsBothExecuted": true,
+      "fullVerifyExit": "actual_job_success"
+    }
+  },
+  "unresolved": [
+    {
+      "kind": "Dependabot",
+      "run": 40177675682,
+      "job": 121121795935,
+      "error": "security_update_not_possible",
+      "package": "undici",
+      "resolvedVersion": "7.29.1",
+      "minimumNonVulnerableReportedByBot": "7.30.1",
+      "dependencyLockDiffFromBase": 0,
+      "scope": "Automated dependency update failure; separate from7 successful product CI checks; no dependency repair authorized in this batch"
+    }
+  ],
+  "preserved": {
+    "whole95Accepted": 0,
+    "baseline": "2.08 / RQ50 / 393tasks / 14phaseGates",
+    "walletMiniHostAndMiniLinux": true,
+    "rootRegistryReadOrWritten": false,
+    "historicalSourceReceiptsUnchanged": true,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "additionalInferenceByGit": 0,
+    "deviceActionsByGit": 0,
+    "realProviderOrFinancialAcceptance": false,
+    "p02AndWholeOSAccepted": false
+  },
+  "captureTimePendingInOriginalReceiptsRetained": true,
+  "next": "Newguard scoped physical independent review/evidence save is a separate authorized OS batch; fullOS/P02/Provider/financial/public gates remain independent.",
+  "recordedAt": "2026-10-25T09:54:24.626056+00:00"
+}

@@ -86,6 +86,8 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 ## Wallet UI fixtureの遅延GET帰属
 
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](../evidence/development-execution/esim-eve-ui-main-merge.json)。
+
 CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固定する。新しい認証確認GETへ古いgateを渡さず、後着の古い読取でowner/私有情報を復活させない既存製品契約を固定2反例で検査。`node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs`45pass、旧対照2fail。製品source/認証/料金は変更なし。[証拠](../evidence/development-execution/wallet-ui-deferred-get-fixture.json)。
 
 
@@ -94,7 +96,7 @@ CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固�
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
 
-現在の次作業: undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213は未mergeの別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+現在の次作業: undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213 UIも限定main採用済みで実Provider/金融/物理は別gate。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
 
 原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
