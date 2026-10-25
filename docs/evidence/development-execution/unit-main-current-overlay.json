@@ -636,7 +636,7 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
-      "scope": "Explicit cache-only backend with user-authorized same-FD update-guard CodeQL repair; host/package only, new-head CI pending.",
+      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure unresolved. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
       "mainMerged": true,
       "metadataReviewPending": false,
       "wholeUnitAccepted": false,

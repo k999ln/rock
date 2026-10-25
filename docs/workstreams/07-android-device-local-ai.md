@@ -1,13 +1,3 @@
-## PR209 main8fの現在受入
-
-Source/最終metadata独立PASS、head3e8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip。undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213未merge/UI受入は別scope。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。
-
-PR209追補: 利用者明示依頼のOS10/P02 guard競合修正。同FDの限定読込とmetadata置換拒否、旧実装反例と7追加回帰。ROCK主担当07、Git/CI10。新HEAD CodeQL集約/全verifyがgate、実機・追加推論なし。[証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。
-
-## Pixel cache-only/更新fence main候補
-
-Pro207 main0d基点、検収済み9source/test無変更と追加CI1path限定。元receipt2608/独立c9c795、原cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。[詳細](../rockstaros-complete-design.md#pixel-cache-only-main-port)。Node/Python/normalgenerator/type/packageと最終head Linux新Python6+23/実verify/全CI・独立metadataがgate。Gitの端末操作0、physical/fullOS/P02/追加推論は未受入、soleOS leaseを維持。Rootregistry非操作、616公開保留。
-
 ## Pixel診断のmain候補とMini r2（OS10 / OS-01 / P02）
 
 主担当07 Android、Gitは候補/共有metadata/Gitの単独writer。ROCKは固定worker/launcher親寿命・任意診断、EXTERNALはkernel、JOINTは同一候補Linux/Pixel、OWNERは導入/接続/費用。6runtime/test＋bounded Python CI stepを移植、manager/URL/model/prepare/build/service hash固定。[候補証拠](../evidence/development-execution/pixel-main-diagnostics-adoption.json)にコマンド/結果/初回host試験反例/保全hash、[OS契約](../rockstaros-complete-design.md#pixel-main-worker-diagnostics)に11項目を記録。次はexact候補の独立review、CI Linux親終了4case、fixed full verifyのGit記録。host skipをLinux成功に換算しない。新serverは旧実機packageと別artifact。cache/native account/背景/P02全体/full OS未受入。Mini r2はaccepted4hash/旧12保持の別scopeで、[review要約](../evidence/development-execution/mini-02-finite-cone-review-summary.json)を参照。実光学/MINI02全体未受入。原計画/元reviewはoperator workspaceのdigest参照、raw資料/ログをコピーしない。
@@ -23,6 +13,14 @@ PC UI reloadは画面証拠不足で未確認。背景実行・P02全体・全OS
 <a id="android--device--local-ai"></a>
 
 # Android / Device / Local si
+
+## Pixel cache-only/更新fence main候補
+
+Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
+
+現在の次作業: undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213は未mergeの別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+
+原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
 2026-10-21の[最新OS本体設計](../rockstaros-complete-design.md#redesign-thread-home-sky-eve)をPixel profileの前提にする。Pixel 10 GL066/frankel向け全OSは、共通runtime、投稿型Home/Sky、Eve、owner別OS版を同一の署名済みimageへ適合させ、boot・権限・保存/再起動・復旧で受け入れる。Web版、試験APK、QEMU、別X画面の合格はこの全OS受入へ転用しない。実eSIM/Cloud、正式署名、flashは個別gate。
 
