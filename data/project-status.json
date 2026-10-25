@@ -10025,7 +10025,12 @@
       "evidence": "docs/evidence/development-execution/mini-08-access-adapters.json",
       "mustFixRemaining": 0,
       "independentReviewEvidence": "docs/evidence/development-execution/mini-08-access-review.json",
-      "fullVerify": "complete_chain_exit0_2938_tests_2935_pass_3_skip_0_fail"
+      "fullVerify": "complete_chain_exit0_2938_tests_2935_pass_3_skip_0_fail",
+      "pr": 215,
+      "githubSaved": true,
+      "mainMerged": false,
+      "ciStatus": "fixture_cwd_and_TLS_fixed_waiting_updated_CI_and_exact_public_digest_policy",
+      "followupReviewEvidence": "docs/evidence/development-execution/mini-08-access-ci-review.json"
     }
   },
   "pixelCacheMainAdoption": {

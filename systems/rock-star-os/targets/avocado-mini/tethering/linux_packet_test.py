@@ -80,7 +80,8 @@ def delayed_install(directory, ns, client, marker):
 def ap_parent_death_fixture(marker):
     script = ("import os,sys,time; from pathlib import Path; from hostapd_child import bind_parent; "
               "bind_parent(int(sys.argv[1])); Path(sys.argv[2]).write_text(str(os.getpid())); time.sleep(60)")
-    child=subprocess.Popen([sys.executable, '-B', '-c', script, str(os.getpid()), marker])
+    child=subprocess.Popen([sys.executable, '-B', '-c', script, str(os.getpid()), marker],
+                           cwd=Path(__file__).resolve().parent)
     child.wait(timeout=60)
 
 

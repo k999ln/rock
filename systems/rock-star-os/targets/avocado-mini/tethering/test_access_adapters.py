@@ -228,7 +228,9 @@ class TLSTests(unittest.TestCase):
                 try: self.wfile.write(cls.reply)
                 except OSError: pass
         cls.server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler)
-        context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER); context.load_cert_chain(cls.cert,cls.key)
+        context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version=ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(cls.cert,cls.key)
         cls.server.socket=context.wrap_socket(cls.server.socket,server_side=True)
         cls.thread=threading.Thread(target=cls.server.serve_forever,daemon=True); cls.thread.start()
 

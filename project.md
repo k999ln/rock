@@ -839,7 +839,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。保存は専用branch、main統合とCIは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
+AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。PR215へ保存。初回CIで試験helperのcwd依存とTLS試験server最低versionを検出し補正（runtime不変）。独立補足検収mustFix0、Linux上のhost55/packet26を別cwdで再実行成功。SPIDERの履歴source digest誤検出3値×2pathはGit担当へexact例外/provenance調整を依頼。更新head CI/mainは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
 
 着手: PR212の最新main同期・独立検収・全14head CI後、main41ee45d7へ通常統合し同SHA全13CI成功を確認。本人の次指示でAP端末認証と衛星網側上限の共通adapterを実装開始。事業者・modem未定のため共通protocol/試験を先行し、契約・機器・実回線・実課金の受入は別にする。
 

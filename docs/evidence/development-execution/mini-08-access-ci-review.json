@@ -1,0 +1,114 @@
+{
+  "schema": "mini-access-ci-fixture-followup-review/2",
+  "date": "2026-10-25",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-ap-network-limits/avokdo",
+  "reviewedBaseHead": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+  "status": "two_test_only_ci_fixes_review_passed",
+  "mustFixRemaining": 0,
+  "priorImmutableReceipt": {
+    "path": "/private/tmp/mini-access-review.json",
+    "sha256": "0bab3bcc71519eb2e78741855c8d94a0117c39249b94e8104826701d5979471f"
+  },
+  "supersededFollowupReceiptSha256": "4709b2c88732d1b5d05f4f5ec54e5987c395180280afe30ae6c9f2a00a766bd6",
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/access_session.py",
+      "sha256": "3268dd3ff1c770ed3d30cbf81e31d591d298828ae1e42a4ec5ef4e39a05eac2f"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+      "sha256": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/demo.py",
+      "sha256": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+      "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/hostapd_child.py",
+      "sha256": "34e114dfd681daa85092ea076d7e493af80d838232cb91c1779be9c0a7fb6e1c"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py",
+      "sha256": "e290c92307f35f698bd7df06ca23ae5f85dbce194e162f571497552a43ef1490"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+      "sha256": "547e32d814f8d452fbbb6cc88eceac708eb3daa97a3697d0e2e489c7b279f210"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+      "sha256": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py",
+      "sha256": "eedcc429af891389225186e52ef3905ead97d3adb9ece96bc66d97fe8cca7fde"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py",
+      "sha256": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py",
+      "sha256": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43"
+    }
+  ],
+  "changedTestFiles": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+      "previousSha256": "73c9e50e47ccec7ffe4acbe2ec58a673149d4596ecf9e9792db02e7e02f313b2",
+      "sha256": "547e32d814f8d452fbbb6cc88eceac708eb3daa97a3697d0e2e489c7b279f210",
+      "change": "Set helper Popen cwd to absolute source directory."
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py",
+      "previousSha256": "9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1",
+      "sha256": "eedcc429af891389225186e52ef3905ead97d3adb9ece96bc66d97fe8cca7fde",
+      "change": "Set loopback test server minimum TLS version to TLSv1_2 before certificate loading and socket wrapping."
+    }
+  ],
+  "checks": {
+    "exactTwoTestOnlyChanges": true,
+    "productionSourceUnchanged": true,
+    "otherTenPythonHashesUnchanged": true,
+    "oldReceiptUnmodified": true,
+    "noFilenameToDigestMapInThisReceipt": true
+  },
+  "independentVerification": [
+    {
+      "kind": "fixture helper import portability",
+      "passed": true,
+      "method": "Capture fixture Popen arguments through isolated AST; import helper with its absolute cwd while caller is /private/tmp."
+    },
+    {
+      "kind": "TLS regression tests",
+      "command": "python3 -B -W ignore::ResourceWarning -m unittest test_access_adapters.TLSTests",
+      "exitCode": 0,
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "logPath": "/private/tmp/mini-access-ci-tls-review.log",
+      "logSha256": "ec5a5f60149c71f062b74d161747769e1f9d0dc610aa9b22cc12eb0472eafc90",
+      "execution": "approved loopback-only TLS fixture outside sandbox"
+    }
+  ],
+  "remainingValidation": [
+    "Implementation-agent full host55 rerun",
+    "Implementation-agent Linux26 absolute-script-path run from /tmp",
+    "Updated PR head CI including CodeQL and SPIDER; this review does not assert those final checks passed"
+  ],
+  "acceptanceLimits": [
+    "No RF or WPA handshake acceptance",
+    "No real provider or invoice guarantee",
+    "No main integration acceptance"
+  ],
+  "sourceEditsByReviewer": false
+}
