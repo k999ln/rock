@@ -1,0 +1,103 @@
+{
+  "schema": "mini215-public-digest-policy-independent-review/1",
+  "date": "2026-10-25",
+  "status": "limited_public_digest_allowlist_review_passed",
+  "mustFixRemaining": 0,
+  "policyBaseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+  "sourceCommit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+  "proposalHashes": [
+    {
+      "path": "/private/tmp/mini215-public-digest-policy/policy.patch",
+      "sha256": "9fd7df137025947aa807816ae1bc6aafe275033ae793b97ed5298751956a378c"
+    },
+    {
+      "path": "/private/tmp/mini215-public-digest-policy/gitleaks.toml",
+      "sha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a"
+    },
+    {
+      "path": "/private/tmp/mini215-public-digest-policy/public-value-provenance.json",
+      "sha256": "21d56397c876694705f23481f17cb2a70516e23fe65bfb712403b3ba1ef68ace"
+    },
+    {
+      "path": "/private/tmp/mini215-public-digest-policy/source-proof.json",
+      "sha256": "9eac1a4d2f5129f13b51ec33ede3a1af0809944be1e166d35382aea0f11ee55a"
+    }
+  ],
+  "recomputedSourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/access_session.py",
+      "sha256": "3268dd3ff1c770ed3d30cbf81e31d591d298828ae1e42a4ec5ef4e39a05eac2f"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+      "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py",
+      "sha256": "9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1"
+    }
+  ],
+  "scope": {
+    "rule": "generic-api-key",
+    "condition": "AND",
+    "regexTarget": "secret",
+    "exactEvidencePaths": [
+      "docs/evidence/development-execution/mini-08-access-review.json",
+      "docs/evidence/development-execution/mini-08-access-adapters.json"
+    ],
+    "exactDigestCount": 3,
+    "newAllowlists": 3,
+    "globalExemptionsAdded": false
+  },
+  "independentChecks": {
+    "sourceDigestsRecomputedFromCommitBytes": true,
+    "allSixHistoricalEvidenceOccurrencesMatch": true,
+    "candidateSha256FieldsRecomputedFromDigestStrings": true,
+    "provenanceLineAndJsonPointerReferencesMatch": true,
+    "exactPositivePathValueCombinations": 6,
+    "negativePathOrValueVariants": 39,
+    "allOtherParsedPolicyContentUnchanged": true,
+    "patchExactlyMatchesBaseToProposal": true,
+    "priorProvenanceValuesAndSupplementalReviewsPreserved": true,
+    "historicalReviewedHeadAndOccurrencesPreserved": true,
+    "distinctAndClassificationCountsIncrementOnlyByThree": true,
+    "newPolicyHashMatchesProvenanceAndScanReport": true
+  },
+  "classification": "These exact values are independently reproducible SHA-256 source-integrity digests, not access credentials. The exception matches only those literals at the two recorded evidence paths.",
+  "implementationExecutedValidation": {
+    "independentlyReadByReviewer": true,
+    "policyTests": {
+      "tests": 10,
+      "passed": 10,
+      "seconds": 7.625,
+      "logPath": "/private/tmp/mini215-policy-tests.log",
+      "logSha256": "ee4e79dbd814a3be5fdde5a6a8e0c4bda0e3c16981a3de7b08f0a119211e88ac"
+    },
+    "fullHistoryScan": {
+      "reportPath": "/private/tmp/mini215-policy-scan/report.json",
+      "reportSha256": "4d2ca9d5308b48c296a90e5d29007343c2ec3a21d914cbbb374ed6cc8967fb41",
+      "logPath": "/private/tmp/mini215-policy-scan.log",
+      "logSha256": "6ca8676b60f74e98fe9d6aa45a1aeac03ce8f97b3159da23f5eae3d109fb2d81",
+      "targetHead": "a5fb39361cc2b0ec5a12f312eab8b6df11bfe94b",
+      "reachableCommitCount": 1639,
+      "totalFindings": 0,
+      "historyScanCompleted": true,
+      "scannerVersion": "8.30.1",
+      "reportedExitCode": 0
+    }
+  },
+  "limitations": [
+    "Reviewer did not rerun the full-history scanner or existing ten policy tests; execution logs and exact policy hash were independently checked.",
+    "No findings is limited to the scanner coverage reported in report.json and does not prove absence of all secrets or vulnerabilities.",
+    "Repo/main policy is not modified by this proposal review; Git integration and later exact-head CI remain separate."
+  ],
+  "sourceOrPolicyEditsByReviewer": false,
+  "adoption": {
+    "pr": 217,
+    "head": "45df67595fb3af5a4470f708c6ecc28b24ef0e60",
+    "headChecks": "7_success",
+    "mainMergeSha": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "controlRefPinnedToAdoptedCommit": true,
+    "productRuntimeChanged": false
+  }
+}

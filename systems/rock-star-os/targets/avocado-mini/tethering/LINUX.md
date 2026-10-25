@@ -10,7 +10,7 @@ MAT15 / MINI-08、ROCK担当。単体のMini内で衛星WANからWi-Fiへ中継�
 
 ## 入力・状態・責任
 
-管理側が事前作成した `mini-tether-*` namespace、初期化済みController、認証済みclientIdに結び付くLAN/WAN interface・unicast MAC・IPv4/IPv6を受ける。全Controller変更は `LinuxGate` の `owner_command` / `observe` / `attachment` / `open` / `close` / `shutdown` を通す。root用任意shellやネットワーク公開APIはない。入力は固定schemaで検証し、IPv6 scope/改行等を拒否する。MAC/IPだけで端末本人性を保証せず、Broker/AP認証・隔離は次段階。
+管理側が事前作成した `mini-tether-*` namespace、初期化済みController、認証済みclientIdに結び付くLAN/WAN interface・unicast MAC・IPv4/IPv6を受ける。全Controller変更は `LinuxGate` の `owner_command` / `observe` / `attachment` / `open` / `close` / `shutdown` を通す。root用任意shellやネットワーク公開APIはない。入力は固定schemaで検証し、IPv6 scope/改行等を拒否する。MAC/IPだけで端末本人性を保証しない。[AccessSession](ACCESS.md)は端末固有鍵/hostapd認証と網側予約を前段へ接続する。実Broker IPCと無線隔離の受入は別。
 
 ROCKが固定API、事前予約、kernel制御、失敗時の停止、台帳維持を担当。EXTERNALがAP/BSP/衛星modem/回線計量を提供。JOINTで同一閉箱・契約の疎通/課金/電源を検証。OWNERが期間、端末、容量、費用を承認する。本実装から契約・購入・実課金を実施しない。
 
@@ -30,7 +30,7 @@ ROCKが固定API、事前予約、kernel制御、失敗時の停止、台帳維�
 
 SQLiteやjournalの削除・巻戻しで枠を再利用しない。namespace破棄後も `/run/mini-tether-gates/` のowner claimは自動削除しない。inode再利用時は安全側で拒否するため、管理者が旧process/child終了、旧namespace消滅、台帳/未確定予約を照合してからclaimを移行する管理実装が必要。テストの後処理だけは、自分の一時fixtureを完全に閉じた後にそのfixture所有のJSONを除き、lock inodeは保持する。製品の自動解除には流用しない。
 
-APの端末認証/鍵・DHCP/DNS/IPv6 RA・NAT/経路・管理trafficの会計、hostapd driver隔離、BSP offload、modem/provider adapter、請求最終照合、period rollover、電池/温度/筐体の受入は未実装/未受入。これらが完了するまで一般公開・実課金・実衛星通信可能とは表示しない。
+AP端末認証/鍵の共通adapterは[ACCESS.md](ACCESS.md)へ進めた。実無線、DHCP/DNS/IPv6 RA・NAT/経路・管理trafficの会計、hostapd driver隔離、BSP offload、modem/provider adapter、請求最終照合、period rollover、電池/温度/筐体の受入は未実装/未受入。これらが完了するまで一般公開・実課金・実衛星通信可能とは表示しない。
 
 ## 再現
 
@@ -40,13 +40,13 @@ APの端末認証/鍵・DHCP/DNS/IPv6 RA・NAT/経路・管理trafficの会計�
 python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p test_linux_gate.py
 ```
 
-使い捨てLinux VM専用（root、ip/nft/nsenter/ping/sysctl必須。実行先を確認する）:
+使い捨てLinux VM専用（root、ip/nft/nsenter/ping/sysctl/hostapd必須。実行先を確認する）:
 
 ```sh
 sudo python3 -B systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py
 ```
 
-後者は一時namespace/vethだけを作り、既存interfaceやradioを設定しない。前提不足はskip合格にせず失敗する。20件はdual-stack共有quota、端末/管理面分離、packet単位超過阻止、複数端末/料金上限、close/revoke/離脱/携行再観測、再起動、daemon終了、親kill/子process、並行writer、名前置換/alias、既存TCP停止、UDP burstを検証する。
+後者は一時namespace/vethだけを作り、既存interfaceやradioを設定しない。前提不足はskip合格にせず失敗する。従来20件はdual-stack共有quota、端末/管理面分離、packet単位超過阻止、複数端末/料金上限、close/revoke/離脱/携行再観測、再起動、daemon終了、親kill/子process、並行writer、名前置換/alias、既存TCP停止、UDP burstを検証する。共通AP/網側adapterではさらに6件を追加し、計26件。追加の実hostapdはdriver=noneで無線を送信しない。
 
 証拠: `docs/evidence/development-execution/mini-08-linux-tethering.json`、独立静的/host検収は `mini-08-linux-tethering-review.json`。packet試験は実装担当実行で、独立担当のVM再実行ではない。全repo verify・Git保存・main統合・CIは別記録とする。
 

@@ -1,0 +1,91 @@
+{
+  "schema": "mini-linux-main-merge/1",
+  "pr": 212,
+  "head": "dc0707555061a6bfd5f5c647e4698221edf137d3",
+  "mergeSha": "41ee45d7fce8390b27c59110cc282f695f898122",
+  "treeMatchesAcceptedHead": true,
+  "mainChecksPassed": 13,
+  "checks": [
+    {
+      "name": "source-tests",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121124101373"
+    },
+    {
+      "name": "partitions (support)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121123527689"
+    },
+    {
+      "name": "partitions (main-0)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121123527683"
+    },
+    {
+      "name": "partitions (main-3)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121123527542"
+    },
+    {
+      "name": "partitions (main-1)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121123527529"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251109/job/121123527419"
+    },
+    {
+      "name": "partitions (main-2)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251118/job/121123527394"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251109/job/121123527247"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251014/job/121123527050"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251035/job/121123527008"
+    },
+    {
+      "name": "verify",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251025/job/121123526858"
+    },
+    {
+      "name": "linux-packets",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251038/job/121123526850"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "head": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40178251014/job/121123526846"
+    }
+  ],
+  "physicalAccepted": false,
+  "providerInvoiceVerified": false,
+  "nextAction": "common AP authentication and network quota adapters; carrier/modem undecided by owner"
+}

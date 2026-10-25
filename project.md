@@ -218,7 +218,7 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## PR213 CI停止のWallet fixture競合を修正
 
-G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headで同SHA Linux全verify/CodeQLを確認する。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHA CIを確認中。UIは未merge。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
+G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headとmergeSHAのLinux全verify/CodeQL成功を確認した。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHAの製品7CI成功を確認済み。UIも上記の限定範囲でmain統合済み。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
 
 UI最新main同期: main41ee45d7のMini Linux限定採用を通常取り込み、controller/packet tests/専用CI/証拠と現statusを保持。UI4sourceとPixel9sourceは同hash。旧head7f2aの全verify/CodeQLは成功済みだが、今回の最終head CIを別に確認する。
 
@@ -229,18 +229,22 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 ## Eve単価の重複単位表示を別commitで採用
 
-本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補CIで最終確認しmain merge後の同SHA CIも確認する。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
+
+本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補headとmain merge後の同SHA CIを確認済み。
 
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
-着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、次は最新maindc2取り込み後の最終head Linux全CI・通常main統合・mergeSHA CIを確認する。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
+
+着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、最新maindc2取り込み後の最終headと通常main mergeの同一SHA CIまで成功を確認した。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、残る別の自動更新失敗はzodです。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
 
-主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。8f当時の依存lock差分0は履歴であり、今回の同期はPR216の依存・lockを保持する。UIは上記PR213の限定範囲で受入済み、実Provider/金融/物理は別gate。
 
 ### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
 
@@ -886,11 +890,15 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-判断更新: Linux下位制御の実装・実packet試験へ進んだ。Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 [Linux証拠](docs/evidence/development-execution/mini-08-linux-tethering.json)。Linux組合せ候補の全体verifyも完走exit0（主2912件/2909成功/3skip/失敗0）。[全体検証証拠](docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json)。別Draft PR212へ保存しsource head `08633c36` の全14CI成功（host32/実packet20）。[CI証拠](docs/evidence/development-execution/mini-08-linux-tethering-ci.json)。Linuxのmain統合は未実施。次: APの認証済みclient bindingとProvider上限。表示4条件・Mini単体携行を維持し、実機/公開合格へ昇格しない。
+AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。PR215へ保存。初回CIで試験helperのcwd依存とTLS試験server最低versionを検出し補正（runtime不変）。独立補足検収mustFix0、Linux上のhost55/packet26を別cwdで再実行成功。SPIDERの公開source digest誤検出3値×2pathは独立検収・policy10/10・履歴scan0後、PR217をmain bcf5345cへ通常統合（head7CI成功）。最新mainを競合なく同期し、control固定refを採用済みbcf5345cへ更新。runtimeはa5fb3936と不変。PR215の更新head CI/mainは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
+
+着手: PR212の最新main同期・独立検収・全14head CI後、main41ee45d7へ通常統合し同SHA全13CI成功を確認。本人の次指示でAP端末認証と衛星網側上限の共通adapterを実装開始。事業者・modem未定のため共通protocol/試験を先行し、契約・機器・実回線・実課金の受入は別にする。
+
+判断更新: Linux下位制御の実装・実packet試験へ進んだ。Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 [Linux証拠](docs/evidence/development-execution/mini-08-linux-tethering.json)。Linux組合せ候補の全体verifyも完走exit0（主2912件/2909成功/3skip/失敗0）。[全体検証証拠](docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json)。別Draft PR212へ保存しsource head `08633c36` の全14CI成功（host32/実packet20）。[CI証拠](docs/evidence/development-execution/mini-08-linux-tethering-ci.json)。その後、最新main同期head dc070755を独立検収し全14head CI成功、PR212をmain41ee45d7へ統合、同SHA13CI成功。[統合証拠](docs/evidence/development-execution/mini-08-linux-main-merge.json)。次: APの認証済みclient bindingとProvider上限。表示4条件・Mini単体携行を維持し、実機/公開合格へ昇格しない。
 
 着手: 本人のMini単体衛星→Wi-Fi/携帯/端末・通信量・料金上限管理指示でMAT15/M1のROCK作業を開始。GitHub main `0d72671739a8bdd3969b539c5f09ef54a90e1bea` の読戻しと同SHA plain snapshotを基点に、Root共有WIP/旧光学を保持。判断: 実adapterが未確定のためhost制御と下位強制を分ける。検収でoverrun後のcounter巻戻し、再起動時の旧dock給電、記録上限表示を修正。Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
 
-局所検証と独立検収・全verifyの結果は [docs/evidence/development-execution/mini-08-tethering.json](docs/evidence/development-execution/mini-08-tethering.json)。 原本receiptは初回snapshot時点の履歴として保持。PR208 main `2854d069` の専用Git worktreeへ採用し、Node wrapperのawait漏れ1行を補正して独立検収mustFix0。OpenSSL3とmacOS waitid対応Pythonで全体verifyを完走しexit0（主回帰2912件/2909成功/3skip/失敗0）。[採用・全体検証証拠](docs/evidence/development-execution/mini-08-tethering-main-adoption.json)に環境差と補正を記録。最新main `81aca294` の既存進捗を保全してPR211へ保存、通常main統合 `55a5193e` と同SHA全12CI成功を確認。統合treeは検収headと完全一致。[統合証拠](docs/evidence/development-execution/mini-08-tethering-main-merge.json)。次は別Draft PR212のLinux制御から実AP/回線/電池条件の受入へ進む。
+局所検証と独立検収・全verifyの結果は [docs/evidence/development-execution/mini-08-tethering.json](docs/evidence/development-execution/mini-08-tethering.json)。 原本receiptは初回snapshot時点の履歴として保持。PR208 main `2854d069` の専用Git worktreeへ採用し、Node wrapperのawait漏れ1行を補正して独立検収mustFix0。OpenSSL3とmacOS waitid対応Pythonで全体verifyを完走しexit0（主回帰2912件/2909成功/3skip/失敗0）。[採用・全体検証証拠](docs/evidence/development-execution/mini-08-tethering-main-adoption.json)に環境差と補正を記録。最新main `81aca294` の既存進捗を保全してPR211へ保存、通常main統合 `55a5193e` と同SHA全12CI成功を確認。統合treeは検収headと完全一致。[統合証拠](docs/evidence/development-execution/mini-08-tethering-main-merge.json)。次はPR212統合済みLinux制御から実AP/回線/電池条件の受入へ進む。
 
 MAT15/M1主担当、BIL02/O5連携。利用者のGitHub反映指示により最新mainから今回の設計だけを切出し、サービス設計08へ統合。原本package/料金hold/実機gateを維持。runtime・回線契約・実請求・口座操作なし。次はDP01〜05と請求sandboxの受入。保存/PR/main統合はGitHub記録で別追跡する。
 

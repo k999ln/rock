@@ -26,7 +26,9 @@ ROCKはpublic HTTP workspace本文のcurrent owner/row/revision/raw bytes最終S
 
 ## eSIM保存ackのUI再照合
 
-ESIM-BILLING-UI-ACK-01の検収済みattempt2を最新main81acaへ無変更採用。ROCKはUIの現在権限照合、OWNERは明示操作、EXTERNAL応答は権限に昇格しない。`node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs`、`npm run typecheck`、`npm run verify`と同head CI/独立metadata検収がGit受入条件。実金融・Provider・実機・公開は別gate。[証拠](../evidence/development-execution/esim-ack-main-adoption.json)。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](../evidence/development-execution/esim-eve-ui-main-merge.json)。
+
+ESIM-BILLING-UI-ACK-01の検収済みattempt2を最新main81acaへ無変更採用。ROCKはUIの現在権限照合、OWNERは明示操作、EXTERNAL応答は権限に昇格しない。`node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs`、`npm run typecheck`、`npm run verify`とproduct-source独立検収・Git metadata整合確認・同head CIがGit受入条件。実金融・Provider・実機・公開は別gate。[証拠](../evidence/development-execution/esim-ack-main-adoption.json)。
 
 
 

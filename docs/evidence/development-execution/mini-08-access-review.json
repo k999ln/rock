@@ -1,0 +1,105 @@
+{
+  "schema": "mini-access-independent-review/1",
+  "date": "2026-10-25",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-ap-network-limits/avokdo",
+  "status": "independent_static_and_host_review_passed",
+  "mustFixRemaining": 0,
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/access_session.py": "3268dd3ff1c770ed3d30cbf81e31d591d298828ae1e42a4ec5ef4e39a05eac2f",
+    "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c",
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39",
+    "systems/rock-star-os/targets/avocado-mini/tethering/hostapd_child.py": "34e114dfd681daa85092ea076d7e493af80d838232cb91c1779be9c0a7fb6e1c",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "e290c92307f35f698bd7df06ca23ae5f85dbce194e162f571497552a43ef1490",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "73c9e50e47ccec7ffe4acbe2ec58a673149d4596ecf9e9792db02e7e02f313b2",
+    "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py": "9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43"
+  },
+  "priorRequiresFixReceipt": {
+    "path": "/private/tmp/mini-access-review-before-final-fixes.json",
+    "sha256": "2a47a8d657350b559d316cf8049b045644918c7b38ee2c9d8d549ffeacf50e4a",
+    "priorMustFixCount": 2
+  },
+  "independentHostTest": {
+    "command": "python3 -B -W ignore::ResourceWarning -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'",
+    "exitCode": 0,
+    "tests": 55,
+    "passed": 55,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 3.476,
+    "log": "/private/tmp/mini-access-review-final-host.log",
+    "logSha256": "dfd85bbee50077326832921f35a27e57e412eea13e39d0dadbde9de1a169ce66",
+    "runtime": "macOS Python 3.15",
+    "sourceHashesRecordedBeforeAndUnchangedAfterRun": true,
+    "execution": "approved outside sandbox solely for private UNIX sockets and loopback TLS fixtures",
+    "earlierSandboxAttempt": {
+      "testsExecuted": 51,
+      "errors": 9,
+      "reason": "UNIX/loopback bind denied; TLS setup prevented four tests",
+      "productFailure": false
+    }
+  },
+  "independentCounterexamples": {
+    "enableFailureAndRepeatedDisable": "prior host reproductions; current regression coverage passed",
+    "lostReserveAcknowledgement": "prior host reproduction; restart read and expiry-after-close independently rechecked successfully",
+    "stopWithLocalClosedRemoteUnknown": "prior host reproduction; now pending network journal determines targets",
+    "nftFailureStopsOtherLayers": "prior host reproduction; independent best-effort stop paths inspected",
+    "stalePendingFile": "prior host reproduction; randomized atomic filenames and regression passed",
+    "providerJournalReadFailure": "prior calls=[] reproduction; current independent recheck invoked local-stop and AP-halt, returned providerJournalKnown=false",
+    "orphanSocket": "static original finding; current ownership journal/lock protocol and actual-hostapd Linux test source reviewed; no reviewer Linux execution"
+  },
+  "resolvedFindings": [
+    "R1 enable failure must fence old permits and halt AP",
+    "R2 bind authentication to owned foreground daemon, config/credential hashes and socket generation",
+    "R3 confirm DISABLE using status, including repeated FAIL response",
+    "R4 persist reserve uncertainty before network effect and support read/close recovery after expiry",
+    "R5 include remote unknown/reserved grants despite local packet records being closed",
+    "R6 attempt independent local/AP/provider stops and retain uncertainty",
+    "R7 bind hostapd lifetime to owning process with Linux parent-death signal and no-fork exec",
+    "R8 avoid stale fixed pending filename blocking recovery",
+    "R9 provider journal enumeration failure cannot prevent local/AP stop",
+    "R10 recover only owned orphan sockets under gate/AP locks and persisted owner/generation evidence"
+  ],
+  "linuxEvidence": {
+    "executor": "implementation agent",
+    "reviewerPacketExecution": false,
+    "tests": 26,
+    "passed": 26,
+    "seconds": 33.703,
+    "logPath": "/private/tmp/mini-access-linux-final.log",
+    "logSha256": "0de4af0f8b481fbd3f6476cf9ee04bac56d3cdd6b7494130b7d171a5d7b8b08c",
+    "logIndependentlyRead": true,
+    "guestHashReadbackPath": "/private/tmp/mini-access-guest-sha256.txt",
+    "guestHashReadbackSha256": "dc0e03ecead70b062dbc59cfe2dbaa6682b768fe2d4e147ac4895c2d7ba78982",
+    "allTwelveCapturedGuestHashesIndependentlyMatchedLocal": true,
+    "reviewerDirectGuestReadback": false,
+    "reportedEnvironment": {
+      "os": "Ubuntu 24.04",
+      "kernel": "6.8.0-134",
+      "hostapd": "2.10",
+      "driver": "none in test-only subclass"
+    },
+    "includes": "real namespace packets; facade failures and recovery; actual hostapd foreground process, parent kill, orphan socket recovery, repeated disable and rejection of foreign socket"
+  },
+  "acceptedScope": [
+    "private control-socket protocol and owned-daemon lifecycle implementation",
+    "provider-neutral authenticated receipt protocol and TEST ONLY reference quota authority",
+    "durable local uncertainty, quota admission and independent stop coordination",
+    "host regression tests and independently reviewed implementation-agent Linux execution evidence"
+  ],
+  "notAccepted": [
+    "Wi-Fi RF or WPA handshake",
+    "real satellite modem/provider connection",
+    "real provider invoice or fee-cap guarantee",
+    "physical portable Mini and battery/thermal acceptance",
+    "authenticated public Broker IPC",
+    "general release or deployment",
+    "latest full-repository verify, Git save, main integration or same-head CI from this receipt"
+  ],
+  "sourceEditsByReviewer": false,
+  "nextGate": "Bind integration to these exact source hashes; record latest full verify and same-head CI separately. Provider-specific and radio/BSP acceptance remain separate."
+}

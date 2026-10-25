@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T09:16:15.697593+00:00",
+  "recordedAt": "2026-10-25T09:54:24.658763+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -751,7 +751,7 @@
       "order": 0,
       "unit": "OS-01",
       "state": "PR209_main_integrated_new_guard_physical_unverified",
-      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure undici unresolved. See docs/evidence/development-execution/pixel-cache-main-merge.json. Newguard physical/P02/fullOS and PR213 UI acceptance remain separate.",
+      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure at8f retained as history; later undici fixPR216 adopted. See docs/evidence/development-execution/pixel-cache-main-merge.json. PR213 bounded UI is adopted; newguard physical/P02/fullOS remain separate.",
       "wholeUnitAccepted": false
     }
   ],

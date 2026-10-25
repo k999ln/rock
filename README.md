@@ -64,7 +64,9 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 
 ## Mini — 暮らしとまちづくり
 
-衛星回線をWi-Fi共有する[制御prototype](systems/rock-star-os/targets/avocado-mini/tethering/README.md)を追加しました。`python3 -B systems/rock-star-os/targets/avocado-mini/tethering/demo.py` で、架空回線の接続許可・持ち出し・送受信量・料金上限・再起動復旧を試せます。実衛星/APはまだ接続していません。 host制御は[PR211](https://github.com/k999ln/rock/pull/211)でmain統合・同SHA全12CI成功。Linux制御は[別Draft PR212](https://github.com/k999ln/rock/pull/212)へ保存し、source headの全14CIでhost32件/実packet20件を確認しました。
+衛星回線をWi-Fi共有する[制御prototype](systems/rock-star-os/targets/avocado-mini/tethering/README.md)を追加しました。`python3 -B systems/rock-star-os/targets/avocado-mini/tethering/demo.py` で、架空回線の接続許可・持ち出し・送受信量・料金上限・再起動復旧を試せます。実衛星/APはまだ接続していません。 host制御は[PR211](https://github.com/k999ln/rock/pull/211)でmain統合・同SHA全12CI成功。Linux制御も[PR212](https://github.com/k999ln/rock/pull/212)でmain `41ee45d7`へ統合し、同SHA全13CIの成功を確認しました。
+
+[AP認証・網側上限adapter](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)を追加。端末固有鍵と網側予約の確認後だけ転送を許可し、応答喪失や停止失敗を未確認として残します。事業者・modem未定の共通protocolで、実無線・実衛星・請求には未接続です。
 
 Linux側の[転送制御と試験手順](systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md)を追加。通常hostのcompiler試験と、使い捨てLinux VM上のroot namespace packet試験を分けて実行できます。Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。
 
@@ -186,9 +188,9 @@ native統合手順にはOS系列ごとの実装・検証方法、Linux toolkit�
 
 ### 現在の開発状況
 
-eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。 eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、残る別の自動更新失敗はzodです。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
 
 undici更新不可は[PR216](https://github.com/k999ln/rock/pull/216)からmain `d2222dc5`へ統合され、root7.30.1／Mini8.12.3の対象警告6件がGitHubでfixedになりました。両major内の修正版を許可する制約を保全しています。[PR218](https://github.com/k999ln/rock/pull/218)へ追加SRI回帰と独立検収・引継ぎ記録を保存し、受入head `0aa1c8d4`の同一SHA CI7件成功を確認しました。補足PRのmain統合は別です。他依存の監査指摘（root10／Mini2）とzod自動更新不可、公開・配備・616一括公開の保留は維持します。[検証証拠](docs/evidence/development-execution/undici-security-update.json)。
 
@@ -253,7 +255,7 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 
 ### 現在の開発状況
 
-保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。 保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
 
 会話の明示保存・読戻し・削除と、本人の成果をHTMLへ持ち出すコードをmainへ統合済み。
 
