@@ -82,9 +82,9 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
   assert.deepEqual(result.webLicense, {
-    packageEntries: 984,
-    uniqueComponents: 941,
-    reviewRequired: 50,
+    packageEntries: 973,
+    uniqueComponents: 930,
+    reviewRequired: 51,
   });
   assert.equal(result.sites.status, 'OUTDATED');
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });

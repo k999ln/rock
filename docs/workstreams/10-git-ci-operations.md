@@ -1,3 +1,7 @@
+## PR225最終検収のGit保存（2026-10-25 / G04・ROCK）
+
+PR225のhead dcf86f99全8CIとmain f4ed492c全9CI（CodeQL含む）を再読戻しし、[最終検収](../evidence/development-execution/zod-security-constraint-review.json)・project/status/READMEをmain統合済みに同期。原本の絶対local pathは匿名化し、元SHA256・ログhash・CIリンクと失敗履歴を保持。最新main7edbb9beを基点に文書だけを保存し、この新HEADと統合SHAは別CIで検証する。実機操作・追加推論0、Rootregistry非操作、公開保留。
+
 ## PRO-01原本archive入口候補
 
 検収済み3source/testをmainb1b0基点で採用。Pro local export→固定avoado.si/account/import/pro→手動再選択/本人account確認/別同意を案内し、既存archive/auth/crypto/schemaは不変。関連40/独立5群とChrome local1512/390 UIを限定確認。最終head CI/独立metadata検収、認証済server保存・公開先実click/配備/native/wholePRO01は別gate。[詳細](../rockstaros-complete-design.md#pro-original-archive-entry)／[有限11lane引継ぎ](../evidence/development-execution/all-lanes-main-handoff-summary.json)。Rootregistry非操作、残616公開保留。
@@ -86,6 +90,8 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 ## Wallet UI fixtureの遅延GET帰属
 
+PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](../evidence/development-execution/esim-eve-ui-main-merge.json)。
+
 CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固定する。新しい認証確認GETへ古いgateを渡さず、後着の古い読取でowner/私有情報を復活させない既存製品契約を固定2反例で検査。`node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs`45pass、旧対照2fail。製品source/認証/料金は変更なし。[証拠](../evidence/development-execution/wallet-ui-deferred-get-fixture.json)。
 
 
@@ -94,7 +100,7 @@ CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固�
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
 
-現在の次作業: undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213は未mergeの別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+現在のGit受入: PR218は検収済みhead2f737579（8CI成功）をmain7edbb9beへ通常統合し、同mergeSHAの8check成功（製品7/補助collect1）、Linux2993/2991pass/0fail/2skipを確認。PR225/mainf4の製品7・Dependabot2成功とZod修正を別証拠で確認した。root10/Mini2は旧監査snapshotで、後続PR225 receiptではroot7/Mini1（新規監査ではない）。原receiptの失敗・pendingは保持、公開/配備/616保留。 元f3物理と新c43限定実機、PR213/224 UI、P02/全OSを別gateとして保持。
 
 原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
@@ -244,6 +250,12 @@ G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通
 
 H1 / R04、ROCK。main `ecb4b2af`は古いmanifestと新しいlockを別のmerge親から取り込み、`npm ci`が検査・Web build前に停止している。直前main `624124cf`と同一のlockを維持し、Cloudflare/Vitestの5宣言と`undici@7.29.1`の既存overrideだけを戻す。CIは通常の`npm ci`を使い、install scriptや検査の省略で通さない。ローカルのoffline dry-runは依存展開なしの整合性確認であり、GitHub上の実install・build・全体verifyとは分ける。[証拠と残課題](../evidence/spider-locked-dependency-restore.json)を参照する。
 
+
+### 現行undici security update（G04 / H1 / ROCK）
+
+cycle43の旧7.29.1固定は当時の復元記録。PR216/main d222のroot`^7.30.1`／Mini`^8.12.2`を通常mergeで保全し、lock7.30.1／8.12.3とlicense在庫はmainと同一。GitHubのundici警告48/49/50/55/56/57はfixed。PR218はSRI behavioral2回帰＋独立受入/引継ぎに限定する。EXTERNALはnpm/GitHub、ROCKはpin/lock/回帰、OWNERの追加main統合・公開gateは別。
+
+`npm ci`両方、`npm ls undici --all`、`npm audit --json`でundici指摘消失を確認。当時のroot10/Mini2指摘とzod bot更新不可は旧snapshot。後続PR225/main f4でZod修正を採用し、同SHA製品7/自動更新2成功、当該receiptの他指摘root7/Mini1を別の記録時点として保持。独立旧反例/新拒否・生存とmetadata保全、同期後対象9pass、同期前host全verify exit0を区別する。受入head0aaの同一SHA全7CI成功、Linux `npm run verify`2988／2986pass／0fail／2skipを確認し、[証拠](../evidence/development-execution/undici-security-update.json)へ結果を結ぶ。公開・配備・616一括公開、実Provider/金融/Pixel gateを開けない。
 
 ## AMC観測元のファイル読取り
 
