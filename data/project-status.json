@@ -10043,7 +10043,7 @@
       "taskId": "MAT15",
       "primarySquad": "M1",
       "primaryOwner": "ROCK",
-      "status": "owner_region_and_initial_use_selected_independently_reviewed",
+      "status": "main_merged_same_sha_CI_pass",
       "documentation": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
       "template": "docs/avocado-mini-r5/physical-trial-template.json",
       "physicalAccepted": false,
@@ -10069,7 +10069,50 @@
         "9770_IP_comparison_later"
       ],
       "currentRevisionReviewed": true,
-      "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json"
+      "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json",
+      "pr": 221,
+      "githubSaved": true,
+      "mainMerged": true,
+      "acceptedSourceHead": "ad805ceae341c608103dab6b978db85b41631de7",
+      "mainMergeSha": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+      "mainCI": "7_same_sha_success",
+      "mergeEvidence": "docs/evidence/development-execution/mini-08-hardware-main-merge.json"
+    },
+    "messageAdapter": {
+      "status": "latest_main_synchronized_host_full_verify_pass_pending_adoption",
+      "taskId": "MAT15",
+      "primarySquad": "M1",
+      "regions": [
+        "JP",
+        "US"
+      ],
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "nextAction": "Review final PR229 head and adopt separately; concrete modem/provider transport, Broker/AP ingress, bounded scheduler and Job import remain pending",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "evidence": "docs/evidence/development-execution/mini-08-message-adapter.json",
+      "independentReview": "docs/evidence/development-execution/mini-08-message-review.json",
+      "hostTestsPassed": 83,
+      "mustFixRemaining": 0,
+      "gitHubSaved": true,
+      "mainMerged": false,
+      "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail",
+      "pr": 229,
+      "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+      "linuxCommonTestsPassed": 83,
+      "linuxPacketTestsPassed": 26,
+      "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
+      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
+      "latestIntegrationMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
+      "newIntegrationFullVerify": {
+        "exitCode": 0,
+        "tests": 3025,
+        "pass": 3022,
+        "fail": 0,
+        "skip": 3
+      },
+      "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
     }
   },
   "pixelCacheMainAdoption": {
@@ -10464,7 +10507,7 @@
     "realGameAccepted": false,
     "realProviderOrFinancialAccepted": false,
     "publicDeployment": false,
-    "stage": "independent_source_and_bounded_UI_pass_standard_private_and_host_full_verify_pass",
+    "stage": "PR230_main_integrated_same_SHA_CI_pass",
     "hostFullVerify": {
       "tests": 3010,
       "pass": 3007,
@@ -10477,7 +10520,13 @@
       "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
       "source4Unchanged": true,
       "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
-    }
+    },
+    "mainMerged": true,
+    "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+    "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/game-work-draft-main-current.json"
   },
   "eveMultiMaterialPreparation": {
     "unit": "EVE-02",

@@ -1435,6 +1435,21 @@
         "initialUseCase": "si_messages_small_files",
         "document": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
         "physicalAccepted": false
+      },
+      "boundedMessageAdapter": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+        ],
+        "tests": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py"
+        ],
+        "scope": "offline_common_protocol_shared_ledger_not_radio_or_provider_acceptance",
+        "regions": [
+          "JP",
+          "US"
+        ],
+        "physicalAccepted": false
       }
     },
     {

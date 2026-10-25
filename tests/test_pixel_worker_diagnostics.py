@@ -142,12 +142,25 @@ class DiagnosticsTest(unittest.TestCase):
         self.assert_private()
 
     def test_cancel_deletes_output_and_retains_same_inode_metadata_after_stop(self):
+        output_recorded = threading.Event()
+        original_diagnostic = w.diagnostic
+
+        def recorded(path, section, fields):
+            result = original_diagnostic(path, section, fields)
+            if result and section == 'output' and 'firstObservedMonotonicNs' in fields:
+                # This normal-case test needs the observer write to finish first.
+                # Production stop diagnostics intentionally do not wait for a lock;
+                # contention/failed evidence has separate negative tests below.
+                output_recorded.set()
+            return result
+
         def finish(child, _):
             child.kw['stdout'].write(PRIVATE.encode())
             child.kw['stdout'].flush()
-            time.sleep(.3)
+            self.assertTrue(output_recorded.wait(3), 'first output diagnostic was not persisted')
             w.stop(KEY)
-        with patch.object(w.subprocess, 'Popen', self.child(finish)), patch.object(w, 'identity', return_value=None):
+        with patch.object(w.subprocess, 'Popen', self.child(finish)), patch.object(w, 'identity', return_value=None), \
+                patch.object(w, 'diagnostic', recorded):
             self.assertEqual(w.run(self.data()), {'cancelled': True})
         d = self.read()
         self.assertTrue(d['stop']['confirmed'])

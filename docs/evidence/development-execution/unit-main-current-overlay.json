@@ -811,7 +811,7 @@
       "units": [
         "GAME-02"
       ],
-      "kind": "additional_candidate_subset",
+      "kind": "additional_adopted_subset",
       "scope": "Nonfinancial untrusted Game report to transient editable draft, explicit existing owner-checked WorkJob create and same-request unknown recovery; no reverse bridge/GX authority",
       "tasks": [
         "AI06",
@@ -826,7 +826,12 @@
       "financialExchangeAccepted": false,
       "realProviderAccepted": false,
       "physicalAccepted": false,
-      "publicDeploymentAccepted": false
+      "publicDeploymentAccepted": false,
+      "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+      "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "currentMainEvidence": "docs/evidence/development-execution/game-work-draft-main-current.json"
     },
     {
       "id": "EVE_MULTI_MATERIAL_ADOPTED",
