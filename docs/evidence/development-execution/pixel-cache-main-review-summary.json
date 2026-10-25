@@ -107,5 +107,7 @@
   ],
   "physicalAccepted": false,
   "wholeOS01Accepted": false,
-  "metadataReviewRequiredBeforeMerge": true
+  "metadataReviewRequiredBeforeMerge": true,
+  "historicalScope": "Original pre-fix source snapshot only. Later CodeQL High guard race superseded candidate acceptance; current repair has new guard/test/package hashes.",
+  "guardFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json"
 }

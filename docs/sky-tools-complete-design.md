@@ -1585,3 +1585,6 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
+
+
+PR209のupdate metadata読込は[OS詳細の競合修正](rockstaros-complete-design.md#pixel-update-guard-toctou-fix)に従う。同FDの限定読込と全metadataの置換検査を追加し、旧headのHigh指摘を履歴に残す。実機・推論受入は増やさない。

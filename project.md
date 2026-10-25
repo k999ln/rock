@@ -1,3 +1,11 @@
+## Pixel候補の最新main同期とguard修正取り込み
+
+最新main81aca294を通常mergeし、Wallet208/210の現在受入と4試験を保持。作者修正e5ba8521を通常取り込み、元9sourceのうち7不変・guardと試験2件は作者commitと同hash。旧headのCodeQL Highと旧physicalは履歴として保持。次は最終headの独立検収・GitHub保存・同一SHAのCodeQL/全CI確認、その後main通常統合。実機操作・追加推論・公開配備・616一括公開は未実施。
+
+## PR209 update guardの競合修正（2026-10-25 / OS10・P02・G04）
+
+着手・判断: 利用者の明示依頼で旧06dac1bbのCodeQL Highを修正。主担当07 / ROCK、統合10。同FD限定読込とpointer/receipt/親directoryの同一性再確認、7追加回帰を実装。対象26成功、旧実装で反例失敗を確認。検証完了: 対象26/Python6+23、lint/design/project/package、全verify成功（root2924件/2921成功/3Macskip）。OpenSSL3選択前とsandbox loopback制限の失敗は証拠に保持。次: 新HEAD push後のCodeQL含む全CI、検収JSON更新。実機・追加推論0、Rootregistry/616保全は非操作。元のmissing-module/hostskip/neutral→High履歴は保持。
+
 ## Pixel cache-only/更新fence main候補（2026-10-25 / G04）
 
 着手: Pro207通常main0dを基点に、sourceb1b0の独立検収済み9source/testを同hash採用。主担当10/source07、既存taskはreceipt参照。判断: 元receipt2608とportableのhashを分け、c9c795独立PASS/mustfix0・host99pass3skip/独立80pass1skip・Root11payload+aux3closureを保持。追加CI1pathは承認済みの独立synthetic stepだけでPython6+23をLinux上に配線。通常private module generatorでtypeを検証し、元missing-module失敗を成功へ換算しない。次: 対象Node/Python/lint/type/package/project/design/scanner、DraftPR exactpayload、最終head Linux Python各suiteと実npmverify/全CI、独立metadata検収。実機soleOSのleaseを維持、Gitの端末操作0。ロック解除待ちや旧physicalを今回合格にしない。RootHEAD/index/archive・残616公開保留。根拠 docs/evidence/development-execution/pixel-cache-main-adoption.json。

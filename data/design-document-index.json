@@ -3157,6 +3157,8 @@
     "noAcquisitionFallback": true,
     "mainMerged": false,
     "physicalAccepted": false,
-    "wholeOS01Accepted": false
+    "wholeOS01Accepted": false,
+    "guardRaceFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+    "sameDescriptorBoundedMetadataRead": true
   }
 }

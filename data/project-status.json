@@ -9972,6 +9972,15 @@
     "physicalAccepted": false,
     "p02Complete": false,
     "wholeOS01Accepted": false,
-    "productionDeployment": false
+    "productionDeployment": false,
+    "guardRaceFix": {
+      "status": "host_verified_new_head_ci_pending",
+      "oldHead": "06dac1bb4ffa84badfe57bdfac8f81b204bae0d5",
+      "reason": "CodeQL High metadata lstat/read race; host counterexample confirmed",
+      "evidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+      "physicalAccepted": false,
+      "additionalInference": false,
+      "fullVerify": "pass_2924tests_2921pass_0fail_3MacSkip"
+    }
   }
 }

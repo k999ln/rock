@@ -39,3 +39,77 @@ void test('corrupt, mismatched, public, symlink or missing receipt never becomes
   await symlink(other, f.receipt); await assert.rejects(f.guard(), pending);
   await rm(f.receipt); await f.write('committed'); await writeFile(f.pointer, JSON.stringify({ id: '../outside' })); await assert.rejects(f.guard(), pending);
 });
+
+// Serial deterministic barriers on real temporary files, no product test hook.
+const fs = (await import('node:fs/promises')).default;
+const { syncBuiltinESMExports } = await import('node:module');
+const { constants } = await import('node:fs');
+async function intercept(t, { beforeRead, afterRead, afterStat, afterLstat } = {}) {
+  const originalOpen = fs.open, originalLstat = fs.lstat;
+  let opened = 0, closed = 0;
+  fs.open = async (...args) => {
+    const handle = await originalOpen(...args); opened++;
+    const stat = handle.stat.bind(handle), read = handle.read.bind(handle), close = handle.close.bind(handle);
+    handle.stat = async () => { const info = await stat(); await afterStat?.(args[0], info); return info; };
+    handle.read = async (...values) => {
+      assert.ok(args[1] & constants.O_NOFOLLOW); assert.ok(args[1] & constants.O_NONBLOCK);
+      assert.ok(values[0].length <= 262145); assert.ok(values[2] <= 262145);
+      await beforeRead?.(args[0]); const result = await read(...values); await afterRead?.(args[0]); return result;
+    };
+    handle.close = async () => { closed++; return close(); };
+    return handle;
+  };
+  fs.lstat = async path => { const info = await originalLstat(path); await afterLstat?.(path, info); return info; };
+  syncBuiltinESMExports();
+  t.after(() => { fs.open = originalOpen; fs.lstat = originalLstat; syncBuiltinESMExports(); assert.equal(closed, opened); });
+}
+void test('receipt replacement after metadata check cannot read an unchecked terminal symlink (original CodeQL race)', async t => {
+  const f = await fixture(t); await f.write('staged');
+  const target = join(f.root, 'synthetic-terminal.json');
+  await writeFile(target, JSON.stringify({ schema: 'sky.pixel-guest-update/1', id: f.id, state: 'committed' }), { mode: 0o600 });
+  let replaced = false;
+  const replace = async path => { if (path === f.receipt && !replaced) { replaced = true; await rm(path); await symlink(target, path); } };
+  // afterLstat exercises the vulnerable implementation; afterStat exercises
+  // the same boundary on the fixed descriptor implementation.
+  await intercept(t, { afterLstat: replace, afterStat: replace });
+  await assert.rejects(f.guard(), pending); assert.equal(replaced, true);
+});
+void test('regular receipt replacement after descriptor read is fenced even when both contents are terminal', async t => {
+  const f = await fixture(t); await f.write('committed'); let replaced = false;
+  await intercept(t, { afterRead: async path => { if (path === f.receipt && !replaced) {
+    replaced = true; await rm(path); await writeFile(path, JSON.stringify({ schema: 'sky.pixel-guest-update/1', id: f.id, state: 'committed' }), { mode: 0o600 });
+  } } });
+  await assert.rejects(f.guard(), pending); assert.equal(replaced, true);
+});
+void test('new update pointer published while receipt is read cannot reuse an old terminal receipt', async t => {
+  const f = await fixture(t); await f.write('committed'); let replaced = false;
+  await intercept(t, { afterRead: async path => { if (path === f.receipt && !replaced) {
+    replaced = true; const temp = join(f.root, 'new-pointer');
+    await writeFile(temp, JSON.stringify({ id: 'c'.repeat(64) + '-' + 'd'.repeat(32) }), { mode: 0o600 }); await fs.rename(temp, f.pointer);
+  } } });
+  await assert.rejects(f.guard(), pending); assert.equal(replaced, true);
+});
+void test('replaced parent directory is fenced even if it still resolves to the opened receipt', async t => {
+  const f = await fixture(t); await f.write('committed'); let replaced = false;
+  await intercept(t, { afterRead: async path => { if (path === f.receipt && !replaced) {
+    replaced = true; const moved = f.directory + '-moved'; await fs.rename(f.directory, moved); await symlink(moved, f.directory);
+  } } });
+  await assert.rejects(f.guard(), pending); assert.equal(replaced, true);
+});
+void test('growth after fstat stays bounded and closes all acquired descriptors', async t => {
+  const f = await fixture(t); await f.write('committed'); let grew = false;
+  await intercept(t, { beforeRead: async path => { if (path === f.receipt && !grew) { grew = true; await fs.appendFile(path, Buffer.alloc(1048576)); } } });
+  await assert.rejects(f.guard(), pending); assert.equal(grew, true);
+});
+void test('in-place same-length content mutation and read errors fail closed without descriptor leaks', async t => {
+  const f = await fixture(t); await f.write('committed'); let changed = false;
+  await intercept(t, { afterRead: async path => { if (path === f.receipt && !changed) {
+    changed = true; await writeFile(path, JSON.stringify({ schema: 'sky.pixel-guest-update/1', id: f.id, state: 'installed' }));
+  } } });
+  await assert.rejects(f.guard(), pending); assert.equal(changed, true);
+});
+void test('descriptor read failure closes all acquired handles', async t => {
+  const f = await fixture(t); await f.write('committed');
+  await intercept(t, { beforeRead: async path => { if (path === f.receipt) throw Error('synthetic read failure'); } });
+  await assert.rejects(f.guard(), pending);
+});

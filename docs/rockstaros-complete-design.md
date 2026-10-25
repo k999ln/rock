@@ -1144,3 +1144,11 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
+
+
+<a id="pixel-update-guard-toctou-fix"></a>
+### PR209 update metadata読込競合の修正（2026-10-25）
+
+旧head06dac1bbではCodeQL集約がconfiguration不足neutralからHighのfile raceへ更新され、receiptのlstat後にsymlinkへ差し替えるhost反例が成立した。旧独立PASSはこの修正の合格証拠へ転用しない。pointer/receiptをO_RDONLY|O_NOFOLLOW|O_NONBLOCKで開き、同FDのfstatで所有者・private mode・regular file・単一link・容量を検査し、同FDから最大262145bytesだけ読む。親directoryも非追従FDで保持し、返却前に全FDと各pathのinode/device・mode・所有者・size・更新時刻を照合する。変化・読込失敗・上限超過はPIXEL_UPDATE_PENDING。全経路でFDを閉じる。
+
+再現試験は旧実装のreceipt差し替え反例、regular置換、pointer再公開、親directory置換、読込中増大/同容量書換、読込失敗とFD解放を含む。新HEADのCodeQL集約と全CIを確認する。修正はhost metadata読込だけで、実機操作・追加推論・新権限はない。証拠は`docs/evidence/development-execution/pixel-update-guard-toctou-fix.json`。
