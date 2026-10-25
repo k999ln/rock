@@ -12,7 +12,11 @@
     "headLinuxVerify": {
       "run": 40187836396,
       "job": 121152297520,
-      "logSha256": "8b1316c58906c7d6c5970e8b50c48f1b6f25737d2472c1c25d7d037a192678a0"
+      "logSha256": "8b1316c58906c7d6c5970e8b50c48f1b6f25737d2472c1c25d7d037a192678a0",
+      "tests": 2993,
+      "pass": 2991,
+      "fail": 0,
+      "skip": 2
     },
     "mainLinuxVerify": {
       "run": 40188241367,
@@ -59,12 +63,56 @@
       "root": 7,
       "mini": 1
     },
-    "newAuditPerformedByThisMetadataBatch": false
+    "newAuditPerformedByThisMetadataBatch": false,
+    "finalReview": "docs/evidence/development-execution/zod-security-constraint-review.json",
+    "finalReviewSha256": "10c16cf2401054886750fdc4ffdaf38c5e1f2282678ccecc9b5f4217ea0a9e5c"
   },
   "wholeUnitAccepted": false,
   "wholeOSAccepted": false,
   "realProviderAccepted": false,
   "realFinanceAccepted": false,
   "publicDeployment": false,
-  "bulk616": "HELD"
+  "bulk616": "HELD",
+  "pixelGuardPhysicalEvidence": {
+    "pr": 223,
+    "head": "7e21ee54f2082b76727ca559c55df55d68c10457",
+    "merge": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+    "tree": "e23b329c72c667f037ba1b51ba7f7f06df19ceb5",
+    "headChecksSuccess": 7,
+    "mergeChecksSuccess": 6,
+    "headLinuxVerify": {
+      "run": 40189070094,
+      "job": 121155989214,
+      "tests": 2993,
+      "pass": 2991,
+      "fail": 0,
+      "skip": 2,
+      "rawLogSha256": "8248969564fdaa7729642a9c185b46d00fccd797e5c02cd8f7887fc818d6fed6"
+    },
+    "mainLinuxVerify": {
+      "run": 40189406837,
+      "job": 121156998900,
+      "tests": 2993,
+      "pass": 2991,
+      "fail": 0,
+      "skip": 2,
+      "rawLogSha256": "b2e369e1af9706171efb05321ba61bb10bbadb252c4c53e45e56aa6967133bdc"
+    },
+    "summary": "docs/evidence/development-execution/pixel-guard-main-physical-summary.json",
+    "summarySha256": "99737574673bf612a8a545c5e80bbe4d50879d75c32f1c750e0d5b131d0f439e",
+    "independentDocumentaryReview": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+    "reviewSha256": "6db55d77b41348ce7be98e9aea2c8a43c1c05c047686e6e81a59d35ce1ef45f5",
+    "physicalBatchScopedPass": true,
+    "originalCodeRestored": true,
+    "currentDeviceIsOriginalCodeNotPermanentC43Deployment": true,
+    "coreJobsModelsAgentsOutputsPreserved": true,
+    "cacheControlRowsAdded": 2,
+    "nativePresentHashes": 4,
+    "nativeAbsentPreserved": 1,
+    "newDeviceOperations": 0,
+    "additionalInference": 0,
+    "wholeOSAccepted": false,
+    "P02Complete": false,
+    "rawProofsPublished": false
+  }
 }

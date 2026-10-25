@@ -254,9 +254,11 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
+現在: 追加限定物理証拠PR223をmain1ec70d62へ通常統合し、head7CI/merge6CI・実Linux2993/2991pass/0fail/2skipを確認。元2docs997375/6db55と独立判定を不変採用、旧save recordのmainIntegrated=falseは当時snapshotとして保持し、current recordを別追加した。追加端末操作・推論0、P02全体・全OSは未受入。
+
 新c43 packageの非破壊実機batchはOS operatorが完了し、別のPro reviewerがdocumentary限定PASS（mustFix0、原本6db55d77）。guard9/parent4/cache-onlyを確認、元7f code復元、34jobs/2models/10agents/23成果hash・接続を保持し、cache制御row2のみ追加。PR223の元2c0では証拠Git保存と7CI成功まで完了。後続の本人明示指示により、証拠2docsを固定した最新main同期・独立metadata検収・新headCI・通常main統合・merge同SHA CIへ進む。追加端末操作/推論0、元operator receipt/raw27proof・画面・鍵/接続値はGitへ入れず、P02全体・全OS・実金融・一般公開は未受入。
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用し、同SHA全9CI成功を確認しました（最終検収は冒頭参照）。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠のmain採用はしていません。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。8f時点のDependabot自動更新1件失敗は履歴として保持し、同8fの全check成功とは扱いません。後続PR216/main d2222dc5でundici制約修正を採用済みで、当時の別の自動更新失敗はzodで、後続PR225/main f4ed492cで制約修正を採用し、同SHA全9CI成功を確認しました（最終検収は冒頭参照）。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの限定実機試験と元codeへの復元は独立検収済みで、[PR223](https://github.com/k999ln/rock/pull/223)へ証拠保存済み（head2c0f3dfeの7CI成功）。追加証拠はPR223/main1ec70d62へ通常統合済み（採用head7e21の7CI、merge同SHA6CI成功）。端末は元code7fへ復元済みで、新c43の常設配備とは区別します。P02全体・全OS・実金融・一般公開は未受入、公開・配備・616一括公開は保留です。
 
 主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici更新不可はPR216/main d222で修正済み、下記G04はPR218の補足検収。PR213 UIの統合を保持。8f当時の依存lock差分0は履歴であり、今回の同期はPR216の依存・lockを保持する。UIは上記PR213の限定範囲で受入済み、実Provider/金融/物理は別gate。
 

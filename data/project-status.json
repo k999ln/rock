@@ -10397,7 +10397,9 @@
         "root": 7,
         "mini": 1
       },
-      "newAuditPerformedByThisMetadataBatch": false
+      "newAuditPerformedByThisMetadataBatch": false,
+      "finalReview": "docs/evidence/development-execution/zod-security-constraint-review.json",
+      "finalReviewSha256": "10c16cf2401054886750fdc4ffdaf38c5e1f2282678ccecc9b5f4217ea0a9e5c"
     }
   },
   "pixelGuardPhysicalEvidenceSave": {
@@ -10425,5 +10427,26 @@
       "sourceUserMessage": "01a172c7-0d55-7121-be42-1f90c74d437d",
       "scope": "Evidence main adoption and same merge SHA CI; no new device operations or inference."
     }
+  },
+  "pixelGuardPhysicalMainAdoption": {
+    "pr": 223,
+    "acceptedHead": "7e21ee54f2082b76727ca559c55df55d68c10457",
+    "mainMergeSha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+    "mainMerged": true,
+    "headChecksSuccess": 7,
+    "mainSameShaChecksSuccess": 6,
+    "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+    "historicalSaveRecord": "pixelGuardPhysicalEvidenceSave retained as capture-time snapshot",
+    "physicalBatchScopedPass": true,
+    "originalCodeRestored": true,
+    "cacheControlRowsAdded": 2,
+    "nativePresentHashes": 4,
+    "nativeAbsentPreserved": 1,
+    "additionalInference": 0,
+    "newDeviceOperations": 0,
+    "wholeOSAccepted": false,
+    "P02Complete": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
   }
 }

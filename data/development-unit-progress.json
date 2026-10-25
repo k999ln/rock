@@ -641,7 +641,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "PIXEL_CACHE_MAIN_CANDIDATE"
+        "PIXEL_CACHE_MAIN_CANDIDATE",
+        "PIXEL_GUARD_PHYSICAL_ADOPTED"
       ]
     },
     {
