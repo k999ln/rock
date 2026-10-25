@@ -239,6 +239,17 @@ UI最終同期: Pixel PR209/main8f646ff3の限定採用を通常取り込み。P
 UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a5193eを通常取り込み。Mini host source/進捗とWallet現受入を保持。各独立source/実合成UIの根拠を別receiptで扱い、最終head全CIとmain merge SHAを確認する。
 
 
+## EVE-02 2〜4資料の互換拡張（ROCK / WEB04・HOME01・SKY21）
+
+元候補の履歴: 当時の最新main f4ed492cをGitHubから読戻し、PR222の進捗同期とEveの限定採用を確認。shared dirty Rootは変更せず、固定mainの別候補で、設計の2〜4資料に対して現実装が2資料のみだった不足を対象にする。2資料の旧envelope/plan/promptを保持し、3・4資料だけversion2で既存compositionと見積onlyへ接続。合計8,000文字・goal500・file48,000byte・run80,000byte、owner/revision・consent・pricinggatefalseを維持する。判断: paid生成/新job engine/DB/migrationには広げない。検証と未完了gateは docs/evidence/development-execution/eve-multi-material.json へ記録する。GitHub保存・main採用・CIはこの候補の未実施段階。一般公開保留。
+
+
+検証完了: 関連85/85、旧source3失敗反例、旧2資料3vector byte一致、type/lint/design成功。host全verifyはf4ed基点候補で3003件/3000pass/0fail/3skip・build/API/storageまで成功。初回OpenSSL/localhost/借用依存path・子process時間切れを証拠に保持。作業中のmain27a8へ11pathを同期し、Eve製品4/依存lock不変、追加undici2を含む85試験を再確認。同期後の全verify再実行・独立検収・Git/main採用は別段階として未実施。
+
+独立検収: R1のP2二件（削除後の旧slot edit、READMEの旧UI証拠範囲）を固定し、material/goal editへ入力identity照合を追加。旧反例は不変でr2独立8+追加2/関連86成功、mustFix0・PASS_SCOPED。一次88/type/lint成功。旧host全verifyを修正後候補へ転用せず、Gitへexact9とreview r1/r2を渡し、最新main同期・最終head Linux全verify/CI・通常main統合・同mergeSHA CIと現行進捗同期を必須にする。
+
+Git採用着手: 本人の明示指示を直接確認し、最新main53d991b3へ最終R2 patchを3-way適用。製品4/test5はR2と同hash、既存main全受入とindex1.41を保持し1.42へ更新。主担当10/G04・source05/ROCK。元host3003件はR2前・旧baseの履歴であり、今回の型/全verify/CIへ転用しない。標準private生成を含む新候補のhost全verifyは3025試験/3022pass/0fail/3Macskip・build/APIまでexit0。別担当統合metadata検収、GitHub保存、最終headCI、通常main統合・同mergeSHA CI、current進捗同期を進める。
+
 ## Eve単価の重複単位表示を別commitで採用
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。

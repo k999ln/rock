@@ -582,12 +582,12 @@ void test('attempt2: invalid controls from file/manual/goal never create a prepa
       app.byId('eve-text-files').props.onChange({ target: { files: [{ name: 'a', size: bytes.length, arrayBuffer: async () => bytes.buffer },
         { name: 'b', size: 6, arrayBuffer: async () => new TextEncoder().encode('second').buffer }], value: 'fixture' } });
       await app.flush(); assert.equal(app.byId('eve-text-0').props.value, 'first');
-      assert.match(app.alerts(), /2つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
+      assert.match(app.alerts(), /2〜4つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
     } else {
       app.input(entry === 'manual' ? 'eve-text-0' : 'eve-text-goal', invalid);
       await app.click('原文と依頼を固定して確認');
       assert.equal(app.byId('composition-source').props.value, '');
-      assert.match(app.alerts(), /2つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
+      assert.match(app.alerts(), /2〜4つのUTF-8文章/); assert.equal(app.alerts().includes('private-marker'), false);
     }
     assert.equal(app.requests.some(r => r.method !== 'GET'), false);
   }
@@ -620,4 +620,78 @@ void test('attempt2: captured file/prepare handlers from an older input cannot r
   assert.equal(reads, 0); assert.equal(app.byId('eve-text-0').props.value, 'new current text');
   assert.equal(app.byId('composition-source').props.value, '');
   assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+});
+
+for (const count of [3, 4]) void test(`Eve ${count}-material manual entry saves exact originals and restores same job without re-execution`, async () => {
+  const app = await harness({ mode: 'eve-text' });
+  for (let i = 2; i < count; i++) await app.click('資料を追加');
+  for (let i = 0; i < count; i++) { app.input(`eve-name-${i}`, `${i}.txt`); app.input(`eve-text-${i}`, `\ufeffSynthetic ${i}\r\n🙂`); }
+  app.input('eve-text-goal', ' Compare all '); await app.click('原文と依頼を固定して確認');
+  const source = app.byId('composition-source').props.value;
+  assert.equal(JSON.parse(source).materials.length, count);
+  assert.equal(JSON.parse(source).schema, 'eve.text-preparation/2');
+  await app.click('確認して仕事を保存'); await app.consent(); await app.click('この手順を実行');
+  const saved = [...app.jobs.get('A').values()][0]; assert.equal(saved.status, 'review');
+  assert.equal(saved.composition.source, source); assert.equal(saved.composition.artifacts.s1.text, source);
+  const restored = await harness({ mode: 'eve-text', initialJobs: [saved], search: `?job=${saved.id}` });
+  assert.equal(restored.byId('composition-source').props.value, source);
+  assert.equal(restored.requests.filter(r => r.method !== 'GET').length, 0);
+});
+void test('material add/remove caps, stale resize and delayed file read preserve newer input and owner', async () => {
+  const app = await harness({ mode: 'eve-text' });
+  assert.equal(app.find('button', '資料1を外す').props.disabled, true);
+  await app.click('資料を追加'); app.input('eve-name-2', 'last.txt'); app.input('eve-text-2', 'keep last');
+  await app.click('資料を追加'); assert.equal(app.find('button', '資料を追加').props.disabled, true);
+  await app.click('資料3を外す'); assert.equal(app.byId('eve-text-2').props.value, '');
+  const oldAdd = app.find('button', '資料を追加').props.onClick;
+  app.input('eve-text-0', 'newer'); oldAdd(); app.render(); assert.equal(app.byId('eve-text-3'), undefined);
+  const pending = deferredEveFiles();
+  app.byId('eve-text-files').props.onChange({ target: { files: pending.files, value: '' } }); app.render();
+  // Explicit cancel unlocks controls; a later resize must not be overwritten by that old read.
+  await app.click('ファイル読込を取り消す'); await app.click('資料を追加');
+  pending.release(); await app.flush(); assert.equal(app.byId('eve-text-0').props.value, 'newer');
+  assert.ok(app.byId('eve-text-3'));
+  const oldRemove = app.find('button', '資料4を外す').props.onClick;
+  app.owner('B'); await app.focus(); oldRemove(); await app.flush();
+  assert.equal(app.byId('eve-text-2'), undefined); assert.equal(app.byId('eve-text-0').props.value, '');
+  assert.equal(app.requests.filter(r => r.method !== 'GET').length, 0);
+});
+
+for (const count of [3, 4]) void test(`Eve imports ${count} UTF8 files atomically and rejects 5 without reading or replacing`, async () => {
+  const app = await harness({ mode: 'eve-text' });
+  const files = Array.from({ length: count }, (_, i) => {
+    const bytes = new TextEncoder().encode(`\ufeffsource ${i}\r\n`);
+    return { name: `${i}.txt`, size: bytes.length, arrayBuffer: async () => bytes.buffer };
+  });
+  app.byId('eve-text-files').props.onChange({ target: { files, value: '' } }); await app.flush();
+  assert.equal(app.byId(`eve-text-${count - 1}`).props.value, `\ufeffsource ${count - 1}\r\n`);
+  let reads = 0;
+  app.byId('eve-text-files').props.onChange({ target: { files: Array.from({ length: 5 }, () => ({ name: 'x', size: 1, arrayBuffer: async () => { reads++; return new ArrayBuffer(1); } })), value: '' } });
+  await app.flush(); assert.equal(reads, 0);
+  assert.equal(app.byId(`eve-text-${count - 1}`).props.value, `\ufeffsource ${count - 1}\r\n`);
+  assert.match(app.alerts(), /2〜4つ/); assert.equal(app.requests.filter(r => r.method !== 'GET').length, 0);
+});
+
+for (const field of ['name', 'text']) void test(`Eve removed material old ${field} callback cannot overwrite the source shifted into its slot`, async () => {
+  const app = await harness({ mode: 'eve-text' }); await app.click('資料を追加');
+  app.input('eve-name-1', 'second.txt'); app.input('eve-text-1', 'second original');
+  app.input('eve-name-2', 'third.txt'); app.input('eve-text-2', 'third original');
+  const oldEdit = app.byId(`eve-${field}-1`).props.onChange;
+  await app.click('資料2を外す');
+  oldEdit({ target: { value: 'late second edit' } }); app.render();
+  assert.equal(app.byId('eve-name-1').props.value, 'third.txt');
+  assert.equal(app.byId('eve-text-1').props.value, 'third original');
+  app.input(`eve-${field}-1`, 'current third edit');
+  assert.equal(app.byId(`eve-${field}-1`).props.value, 'current third edit');
+  assert.equal(app.requests.filter(r => r.method !== 'GET').length, 0);
+});
+void test('Eve captured goal and material callbacks cannot change a newer input identity', async () => {
+  const app = await harness({ mode: 'eve-text' });
+  const oldGoal = app.byId('eve-text-goal').props.onChange, oldMaterial = app.byId('eve-text-0').props.onChange;
+  app.input('eve-text-goal', 'new current goal');
+  oldGoal({ target: { value: 'late old goal' } }); oldMaterial({ target: { value: 'late old material' } }); app.render();
+  assert.equal(app.byId('eve-text-goal').props.value, 'new current goal');
+  assert.equal(app.byId('eve-text-0').props.value, '');
+  app.input('eve-text-0', 'current material'); assert.equal(app.byId('eve-text-0').props.value, 'current material');
+  assert.equal(app.requests.filter(r => r.method !== 'GET').length, 0);
 });
