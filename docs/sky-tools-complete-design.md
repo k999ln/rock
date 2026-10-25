@@ -1581,3 +1581,7 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ## Pixel cache-only準備/更新fence
 
 既存ローカルruntimeの保守処理で、新catalog Tool・Broker権限を追加しない。目的、責任、入出力、状態/保存、失敗/復旧、明示承認、合格条件と未決定gateは[OS詳細](rockstaros-complete-design.md#pixel-cache-only-main-port)を共通契約とする。原tupleのdurable台帳、同ID読戻し、unknown無再送と固定payload更新fenceを保持し、cache準備を推論や取得へ昇格させない。host/CI/package/physicalを別々に受け入れる。[証拠](evidence/development-execution/pixel-cache-main-adoption.json)。
+
+### Wallet process強制終了のhost fixture
+
+既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。

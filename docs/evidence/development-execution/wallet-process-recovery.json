@@ -1,0 +1,204 @@
+{
+  "schema": "rockstaros.wallet-process-recovery/1",
+  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
+  "status": "INDEPENDENT_SOURCE_METADATA_AND_HOST_VERIFY_PASS_GIT_SAVE_PENDING",
+  "unit": "WALLET-02",
+  "slice": "WALLET-PROCESS-RECOVERY-01",
+  "primaryWorkstream": "03-wallet-billing-providers",
+  "responsibility": "ROCK",
+  "primarySquad": "O5",
+  "existingTaskIds": [
+    "WLT01",
+    "WLT02",
+    "WLT04",
+    "B03"
+  ],
+  "coordinationTask": "G04",
+  "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "reasonSelected": "Explicit remaining process-kill gate in all-lanes-main-handoff-summary; Pixel/eSIM already owned by other active tasks.",
+  "sourceFiles": [
+    {
+      "path": "tests/billing-worker.test.mjs",
+      "sha256": "dcfd8c96c1cafb34453c31f3782f5552a0fe2e1d1f46d2fcd5a63a85c1416ed5"
+    },
+    {
+      "path": "tests/fixtures/billing-test-d1.mjs",
+      "sha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+    },
+    {
+      "path": "tests/fixtures/billing-process-crash-child.mjs",
+      "sha256": "ae63103aa8950eaafdae6848c1fd152950bf56cb3d27706c08432112a98570a7"
+    },
+    {
+      "path": "tests/billing-process-recovery.test.mjs",
+      "sha256": "8a6e4c050441bb126d4bb19ca1d1d72dcc24d18e333d64b955e6d35d63341b93"
+    }
+  ],
+  "testOnly": true,
+  "runtimeProductChanges": 0,
+  "behavior": "Actual parent SIGKILL of synthetic local worker child at before-batch, each11 SQL statement and after-commit; wait for child death then reopen same WAL database.",
+  "acceptanceChecks": [
+    "Child IPC checkpoint confirms target point/pid/WAL and partial state; require exit signal SIGKILL, not graceful close.",
+    "Before commit: retain receipt INSERT but rollback every partial allocation. After commit: exact snapshot survives lost acknowledgement.",
+    "Fresh connection plus repeat reopen: same receipt/instruction identifiers and one allocation; monthly cap400+488 then0 remains once.",
+    "Default deployed ToC hold returns409 with zero accounting mutation both before and after recovery.",
+    "Cleanup own child process and temp DB/WAL/SHM on success/error/timeout."
+  ],
+  "validation": {
+    "hostFocused": {
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "skip": 0
+    },
+    "newProcessTests": 13,
+    "existingRelatedTests": 23,
+    "countsNotAdditive": true,
+    "independentReview": "PASS_SCOPED",
+    "fullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "openssl": "OpenSSL3.6.3 selected through process environment",
+      "rootSuite": {
+        "tests": 2911,
+        "pass": 2908,
+        "fail": 0,
+        "skip": 3
+      },
+      "skipNames": [
+        "﹣ unsupported platforms refuse discovery instead of opening with zero-valued safety flags (0.281208ms) # SKIP",
+        "﹣ a stale Linux lock pointing at a protected system PID is reclaimable (0.562625ms) # SKIP",
+        "﹣ owner response: actual local D1 owner/version/byte predicates withhold races and preserve stored data (0.13075ms) # SKIP"
+      ],
+      "workApiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "9a1776b520121f9991e58a306ae081f6e593c297aa9f7801351b9aa54ebec275",
+      "countsNotAdditive": true,
+      "postVerifyChange": "One trailing blank line removed from test adapter only; code-equivalence independent confirmation and final-head CI separate."
+    },
+    "independentFocusedTests": 22,
+    "instrumentedProcessTests": 13,
+    "brokenInvariantCounterexamples": 7,
+    "targetedLint": "PASS",
+    "projectUpdate": "PASS",
+    "missionCheck": "PASS",
+    "designCheck": "PASS",
+    "scanner": {
+      "version": "8.30.1",
+      "changedPayloadFindings": 0,
+      "canaryTests": 10,
+      "canaryFail": 0,
+      "policyUnchanged": true,
+      "policySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3",
+      "payloadRescanRequiredBeforeSave": false,
+      "latestRescan": "Final acceptance metadata included; zero findings required immediately before staging."
+    },
+    "logDigests": [
+      {
+        "id": "wallet-process-managed-focused.log",
+        "sha256": "e56de1b0d1dacac971db2946d9e12585762c24016311f6a21ca71a30941eb4d6"
+      },
+      {
+        "id": "wallet-process-lint.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "wallet-process-metadata.log",
+        "sha256": "b7a4294b0d9ac6b34bdc77e69a06af11e6efbce9a3ea60784dbc03ed6ef3b79a"
+      },
+      {
+        "id": "wallet-process-mission.log",
+        "sha256": "1beb78e231b96a277ea97191653f400518be2331862ed6140d242d647decb8fb"
+      },
+      {
+        "id": "wallet-process-design.log",
+        "sha256": "80fb1340c583a9b7a6ac994927179b5aea3e8854aff5d33720413d7bb9a85ca5"
+      },
+      {
+        "id": "wallet-process-scanner-canary.log",
+        "sha256": "a865cd7c85b239a16ac39677e137e8c45a31221d5b7362c677fd9dd617574a5e"
+      }
+    ],
+    "finalFocused": {
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "ff830e8269a323b03ae95b8ef4dcea9f32ff76b8ac3a722c2f778f8796bfe3ba"
+    }
+  },
+  "failureHistory": [
+    {
+      "step": "initial target lint",
+      "result": "prefer-const two diagnostics",
+      "correction": "Explicit initializers added; final lint passed."
+    },
+    {
+      "step": "first managed-tree copy",
+      "result": "sandbox write denied before source write",
+      "correction": "Authorized targeted copy into dedicated managed worktree succeeded via escalation; no shared source modified."
+    },
+    {
+      "step": "first full npm run verify",
+      "exitCode": 1,
+      "cause": "Host default OpenSSL failed existing OpenSSL3 requirement;18 setup errors before product tests.",
+      "recovery": "Rerun with installed /opt/homebrew/opt/openssl@3/bin selected in command environment; no source or policy weakened.",
+      "logSha256": "9e4767b90d452d33428c5ac2027a5dfb109b2a7be25d66d33ddf4951e6429c9b"
+    },
+    {
+      "step": "final staged diff-check",
+      "result": "new fixture blank line at EOF detected; no commit made",
+      "correction": {
+        "path": "tests/fixtures/billing-test-d1.mjs",
+        "beforeSha256": "238964f7a7c3616a094beec56365a1c2b3f9142447cf017757408ba37f6c0989",
+        "afterSha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2",
+        "change": "remove one blank line at EOF only",
+        "semanticChange": false
+      }
+    }
+  ],
+  "notAccepted": [
+    "OS power loss / disk loss",
+    "Cloudflare D1 concurrency and durability",
+    "real Provider revenue / available cash",
+    "two authenticated physical devices",
+    "production finance / wholeWALLET02",
+    "public deployment",
+    "remaining616 bulk public export"
+  ],
+  "windows": "Explicit skip; POSIX SIGKILL acceptance only",
+  "stages": {
+    "implementation": true,
+    "independentReview": true,
+    "gitHubSaved": false,
+    "mainMerged": false,
+    "deployed": false
+  },
+  "reviewSummary": "docs/evidence/development-execution/wallet-process-recovery-review-summary.json",
+  "sourceReviewSha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041",
+  "cleanupLimitations": [
+    "Cleanup established for child exit and ordinary harness assertion/timeout paths only. Abrupt SIGKILL of parent or host power loss cannot execute t.after cleanup.",
+    "System-wide process enumeration unavailable (pgrep: sysmond service not found). Child exit observed by harness, but no global orphan-process inventory obtained.",
+    "SQLite WAL process termination is not filesystem/device power-loss acceptance, production D1 semantics, multiwriter concurrency, or authenticated-device evidence.",
+    "Windows explicitly skipped; review ran POSIX macOS only.",
+    "Partial snapshot: no full npm run verify, Git save, branch/main CI, deploy, or remote SHA verification performed by reviewer. Git owner must retain identical four hashes and run required checks in complete clean-main tree."
+  ],
+  "metadataReviewHistory": [
+    {
+      "result": "MUST_FIX_1",
+      "finding": "New headCISuccess7 not linked to stored merge-only readback",
+      "correction": "Removed unnecessary head count; directly evidenced merge-SHA6success retained.",
+      "reReview": "PASS_SCOPED_R2"
+    }
+  ],
+  "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json",
+  "postReviewWhitespaceNormalization": {
+    "path": "tests/fixtures/billing-test-d1.mjs",
+    "beforeSha256": "238964f7a7c3616a094beec56365a1c2b3f9142447cf017757408ba37f6c0989",
+    "afterSha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2",
+    "change": "remove one blank line at EOF only",
+    "semanticChange": false,
+    "independentVerdict": "PASS_SCOPED_WHITESPACE_ONLY",
+    "independentReviewSha256": "9a7ae9700869ac3fdf2dbac4f5989f9b48fb7cb851a56367503d182ad9f881c1"
+  }
+}

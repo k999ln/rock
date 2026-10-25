@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
-  "mainAtCapture": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
+  "mainAtCapture": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -481,7 +481,7 @@
       "units": [
         "PRO-01"
       ],
-      "kind": "additional_adopted_subset",
+      "kind": "additional_bounded_candidate",
       "baseMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
       "sourceFiles": [
         {
@@ -512,8 +512,56 @@
       "pr": 207,
       "acceptedHead": "bfb3e1bf789cb548acc6715805749ae5e319a5dc",
       "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
-      "metadataReviewSha256": "1940ac3b66bd019b0b493fe0b1b8b79d7722e964a905aba7548631dd1609f918",
-      "mainSameShaCISuccess": 6
+      "mainSameShaCISuccess": 6,
+      "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+    },
+    {
+      "id": "WALLET_PROCESS_RECOVERY_CANDIDATE",
+      "units": [
+        "WALLET-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "sourceFiles": [
+        {
+          "path": "tests/billing-worker.test.mjs",
+          "sha256": "dcfd8c96c1cafb34453c31f3782f5552a0fe2e1d1f46d2fcd5a63a85c1416ed5"
+        },
+        {
+          "path": "tests/fixtures/billing-test-d1.mjs",
+          "sha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+        },
+        {
+          "path": "tests/fixtures/billing-process-crash-child.mjs",
+          "sha256": "ae63103aa8950eaafdae6848c1fd152950bf56cb3d27706c08432112a98570a7"
+        },
+        {
+          "path": "tests/billing-process-recovery.test.mjs",
+          "sha256": "8a6e4c050441bb126d4bb19ca1d1d72dcc24d18e333d64b955e6d35d63341b93"
+        }
+      ],
+      "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
+      "scope": "Test-only actual POSIX child SIGKILL at13 checkpoints; local SQLite fresh-connection recovery, same receipt/instructions/cap and default hold. Not actual Cloudflare, powerloss, cash or wholeWallet.",
+      "metadataReviewPending": false,
+      "mainMerged": true,
+      "wholeUnitAccepted": false,
+      "publicDeploymentAccepted": false,
+      "sourceIndependentReview": "PASS_SCOPED",
+      "sourceReviewSha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041",
+      "fullVerify": "host_pass_2911tests_2908pass_3skip_0fail",
+      "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json",
+      "pr": 208,
+      "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+      "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "headSameShaCISuccess": 7,
+      "mainSameShaCISuccess": 6,
+      "actualMainLinuxVerify": {
+        "tests": 2911,
+        "pass": 2909,
+        "fail": 0,
+        "skip": 2
+      },
+      "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
     },
     {
       "id": "PIXEL_CACHE_MAIN_CANDIDATE",
@@ -599,23 +647,16 @@
   "executionPriority": [
     {
       "order": 0,
-      "unit": "OS-01",
-      "state": "cache_main_and_update_fence_source_reviewed_candidate",
-      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
-      "wholeUnitAccepted": false
-    },
-    {
-      "order": 0,
       "unit": "PRO-01",
-      "state": "PR207_archive_entry_main_integrated",
-      "scope": "PR207 normal merge/main0d exact tree and6main checks/actualverify done; authenticated account save/native/public gates remain unaccepted.",
+      "state": "PR207_main_integrated_entry_only_remaining_real_archive_gates",
+      "scope": "PR207 ordinary merge and6 same-mergeSHA CI pass; authenticated save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "PR206_main_integrated_SQLite_test_only_remaining_gates",
-      "scope": "PR206 exact-head Linux verify/all checks and adoption metadata review completed; real funds/process-kill/Cloudflare concurrency remain unaccepted.",
+      "state": "PR208_main_integrated_test_only_process_recovery",
+      "scope": "Normal merge2854d069, exact20payload/tree and6sameSHA mainCI/actualLinuxverify passed. Remaining powerloss/Cloudflare/production/wholeWallet gates stay open.",
       "wholeUnitAccepted": false
     },
     {
@@ -663,8 +704,8 @@
     {
       "order": 1,
       "unit": "PRO-01",
-      "state": "limited_archive_PR199_main_integrated",
-      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
+      "state": "PR207_main_integrated_entry_only_remaining_real_archive_gates",
+      "scope": "PR207 ordinary merge and6 same-mergeSHA CI pass; authenticated save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
@@ -692,6 +733,13 @@
       "dependency": "Independent of the six eSIM files for this finite existing-store gap",
       "currentSourceReviewedByThisBatch": false,
       "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
+      "unit": "OS-01",
+      "state": "cache_main_and_update_fence_source_reviewed_candidate",
+      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "wholeUnitAccepted": false
     }
   ],
   "metadataBatch": {
@@ -714,5 +762,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2"
+  "previousCaptureMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea"
 }

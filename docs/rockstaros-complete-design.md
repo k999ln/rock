@@ -1140,3 +1140,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 承認・合格条件: Mainの固定download URL検証、同FD/非symlink/限定bytesのprivate-owner launcher、既存worker/model/runtime lockとlegacy job上限を保持する。独立c9c795は9sourceとhost/package限定合格。99hostpass3Macskip・独立80pass1Linuxskipは重複を含む。CIの専用synthetic stepでPython cache6/update23がLinux上で実行されたことを各exit/件数で確認し、実npmverify/全CIと独立metadata検収がmerge前gate。
 
 未決定の決め方: 同一package SHAによるPixel10 GL066/frankelの非破壊確認はsoleOS担当の別lease・復旧条件で受け入れる。Gitは端末へ書かず、旧実機やhost fixtureを新候補のphysical/P02/fullOS/一般公開へ転用しない。実inferは別承認で、今回追加しない。[採用証拠](evidence/development-execution/pixel-cache-main-adoption.json)。
+
+### Wallet process強制終了のhost fixture
+
+既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。

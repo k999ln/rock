@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.34",
+  "version": "1.35",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3099,7 +3099,21 @@
     "mainMerged": true,
     "wholeWallet02Accepted": false,
     "productionFinanceAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "processCrashFollowup": {
+      "tests": [
+        "tests/billing-worker.test.mjs",
+        "tests/fixtures/billing-test-d1.mjs",
+        "tests/fixtures/billing-process-crash-child.mjs",
+        "tests/billing-process-recovery.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
+      "scope": "POSIX process SIGKILL host fixture only; production runtime and migrations unchanged",
+      "mainMerged": true,
+      "pr": 208,
+      "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
+    }
   },
   "proOriginalArchiveEntry": {
     "authority": "docs/rockstaros-complete-design.md#pro-original-archive-entry",
@@ -3118,7 +3132,8 @@
     "mainMerged": true,
     "wholePRO01Accepted": false,
     "authenticatedRealAccountBrowserAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
   },
   "pixelCacheOnlyMainPort": {
     "authority": "docs/rockstaros-complete-design.md#pixel-cache-only-main-port",

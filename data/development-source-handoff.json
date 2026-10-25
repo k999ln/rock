@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
+  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -660,23 +660,16 @@
   "nextExecutionPriority": [
     {
       "order": 0,
-      "unit": "OS-01",
-      "state": "cache_main_update_fence_source_reviewed_candidate",
-      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
-      "wholeUnitAccepted": false
-    },
-    {
-      "order": 0,
       "unit": "PRO-01",
-      "state": "PR207_main_integrated_archive_entry",
-      "scope": "main0d tree/readback6CI actualverify done; real account/server save/native/deployment remain separate.",
+      "state": "PR207_main_integrated_entry_only",
+      "scope": "Ordinary merge0d726717 and6 sameSHA CI pass; real archive save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "PR206_main_integrated_SQLite_test_only_remaining_crash_and_production_gates",
-      "scope": "PR206 actual merge/head CI complete; no whole Wallet, real funds, process-kill or Cloudflare concurrency acceptance.",
+      "state": "PR208_main_integrated_test_only_process_recovery",
+      "scope": "Git/main/CI gates closed at2854d069; this is13POSIX process-death fixture acceptance, not real revenue/physical/Cloudflare/wholeWallet.",
       "wholeUnitAccepted": false
     },
     {
@@ -724,8 +717,8 @@
     {
       "order": 1,
       "unit": "PRO-01",
-      "state": "limited_archive_PR199_main_integrated",
-      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
+      "state": "PR207_main_integrated_entry_only",
+      "scope": "Ordinary merge0d726717 and6 sameSHA CI pass; real archive save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
@@ -753,6 +746,13 @@
       "dependency": "Independent of the six eSIM files for this finite existing-store gap",
       "currentSourceReviewedByThisBatch": false,
       "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
+      "unit": "OS-01",
+      "state": "cache_main_update_fence_source_reviewed_candidate",
+      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "wholeUnitAccepted": false
     }
   ],
   "currentGIT08Scope": "Metadata document+work branch+main saved through PR195; no deployment or whole95 acceptance",
@@ -775,5 +775,24 @@
     "wholeUnitAccepted": false,
     "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
   },
-  "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json"
+  "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
+  "latestProEntryMergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json",
+  "walletProcessRecoveryMainMerge": {
+    "pr": 208,
+    "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+    "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+    "documentSaved": true,
+    "workBranchGitHubSaved": true,
+    "mainMerged": true,
+    "sameMergeShaCISuccess": 6,
+    "wholeUnitAccepted": false,
+    "productionDeployment": false
+  },
+  "currentMainReadback": {
+    "sha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+    "sameShaCISuccess": 6,
+    "capturedMainContextPreserved": true
+  }
 }
