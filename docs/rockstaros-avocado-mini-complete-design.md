@@ -773,6 +773,8 @@ R5のMini単体動作はProを必須としない。専用モデルは端末内�
 
 ### MINI-08 単体衛星テザリング制御
 
+2026-10-25の継続指示に基づく準備（要件変更なし）: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。
+
 Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
 
 [実装と詳細契約](../systems/rock-star-os/targets/avocado-mini/tethering/README.md) / [証拠](evidence/development-execution/mini-08-tethering.json)。ownerの共通Broker認証とAgent/Wallet/Invoiceは既存契約を使い、通信予約を請求成立へ昇格しない。対象はMAT15/M1のROCK、実接続はJOINT、部品/回線/料金計量はEXTERNAL、回線と上限承認はOWNER。既定OFFから観測と承認後だけ予約、CAS/epoch/期限で旧grantを失効し、結果不明とoverrunは保留。SQLiteの保存成功後だけgrantを発行し、復旧は給電/通信unknown・共有OFFで始める。DP02/03/05、Linux packet試験、実回線の上限と同一閉箱の未完了を残す。

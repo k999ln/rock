@@ -737,7 +737,8 @@
       "wholeUnitAccepted": false,
       "physicalAccepted": false,
       "realProviderAccepted": false,
-      "publicDeploymentAccepted": false
+      "publicDeploymentAccepted": false,
+      "supplementalVisibilityEvidenceRef": "ESIM_NATIVE_VISIBILITY_ADOPTED"
     },
     {
       "id": "EVE_RATE_UNIT_ADOPTED",
@@ -756,6 +757,53 @@
       "wholeUnitAccepted": false,
       "physicalAccepted": false,
       "realProviderAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "ESIM_NATIVE_VISIBILITY_ADOPTED",
+      "units": [
+        "ESIM-01",
+        "ESIM-06",
+        "ESIM-08"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Post-PR213 natural Chrome hidden/fresh-read quarantine and recovery, synthetic fetch; long interruption/helper GET8→9 recorded, POST0.",
+      "productPR": 213,
+      "progressPR": 222,
+      "evidencePR": 224,
+      "mainMergeSha": "f59e21b362eaa16b5ad62a7709e22c3aebfe1561",
+      "headCISuccess": 7,
+      "mainProductCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-natural-visibility-summary.json",
+      "independentReview": "docs/evidence/development-execution/esim-natural-visibility-review-summary.json",
+      "mainMergeEvidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "realAuthenticationAccepted": false,
+      "realFinancialAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "PIXEL_GUARD_PHYSICAL_ADOPTED",
+      "units": [
+        "OS-01"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "c43 bounded physical guard9/parent4/cache-only and original7f restoration; core/oldledger preserved with2cache rows, native4present+1absent; documentary evidence main adoption only",
+      "pr": 223,
+      "acceptedHead": "7e21ee54f2082b76727ca559c55df55d68c10457",
+      "mainMergeSha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+      "independentReview": "docs/evidence/development-execution/pixel-guard-main-physical-review.json",
+      "physicalBatchScopedPass": true,
+      "wholeUnitAccepted": false,
+      "wholeOSAccepted": false,
+      "P02Complete": false,
+      "newDeviceOperations": 0,
+      "additionalInference": 0,
       "publicDeploymentAccepted": false
     }
   ],

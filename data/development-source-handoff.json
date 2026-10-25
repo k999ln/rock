@@ -203,7 +203,10 @@
       "id": "OS-01",
       "title": "Pixel Terminalの現在状態と開始errorの非破壊診断",
       "lane": "os-pixel",
-      "ledgerRef": "data/development-unit-progress.json#OS-01"
+      "ledgerRef": "data/development-unit-progress.json#OS-01",
+      "currentOverlayRefs": [
+        "PIXEL_GUARD_PHYSICAL_ADOPTED"
+      ]
     },
     {
       "id": "OS-02",
@@ -352,7 +355,9 @@
       "lane": "esim",
       "ledgerRef": "data/development-unit-progress.json#ESIM-01",
       "currentOverlayRefs": [
-        "ESIM_OWNER_RESPONSE_CANDIDATE"
+        "ESIM_OWNER_RESPONSE_CANDIDATE",
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
       ]
     },
     {
@@ -383,7 +388,11 @@
       "id": "ESIM-06",
       "title": "一件のcloud仕事と切断後継続",
       "lane": "esim",
-      "ledgerRef": "data/development-unit-progress.json#ESIM-06"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-06",
+      "currentOverlayRefs": [
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
+      ]
     },
     {
       "id": "ESIM-07",
@@ -397,7 +406,9 @@
       "lane": "esim",
       "ledgerRef": "data/development-unit-progress.json#ESIM-08",
       "currentOverlayRefs": [
-        "ESIM_OWNER_RESPONSE_CANDIDATE"
+        "ESIM_OWNER_RESPONSE_CANDIDATE",
+        "ESIM_UI_ACK_ADOPTED",
+        "ESIM_NATIVE_VISIBILITY_ADOPTED"
       ]
     },
     {
@@ -790,18 +801,18 @@
     "productionDeployment": false
   },
   "currentMainReadback": {
-    "sha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
-    "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+    "sha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+    "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
     "sameShaCISuccess": 6,
     "capturedMainContextPreserved": true
   },
   "dependencySecurityFollowup": {
     "taskId": "G04",
     "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
-    "state": "repair_main_fixed_supplement_independent_git_saved_accepted_head_ci_pass",
+    "state": "supplement_main_merged_same_sha_CI_pass",
     "evidence": "docs/evidence/development-execution/undici-security-update.json",
-    "scope": "PR216/main d222 repair root^7.30.1 lock7.30.1 and Mini^8.12.2 lock8.12.3 adopted unchanged; six GitHub undici alerts fixed. PR218 adds SRI regression and independent evidence. Otherroot10/Mini2 audit findings and zod bot failure separate.",
-    "next": "Complete latest-main synchronized head review/CI, then Git担当 normal main merge and mergeSHA CI; reflect current state without rewriting historical receipts. Public/deployment/616 HELD.",
+    "scope": "PR216 repaired undici; PR218 adds unchanged SRI regressions/evidence and is merged with same-SHA CI. PR225 subsequently repaired Zod. Original audit/failure receipts remain historical; other recorded root7/Mini1 findings remain separate.",
+    "next": "Retain accepted dependencies/SRI regression and historical evidence; triage other recorded audit findings under G04. Public/deployment/616 held.",
     "holds": [
       "public deployment",
       "616 bulk public export"
@@ -812,7 +823,7 @@
       "from": "8.11.2",
       "to": "8.12.3",
       "undiciAuditFindingsAfter": 0,
-      "otherAuditFindingsRemaining": 2
+      "otherAuditFindingsRemaining": 1
     },
     "independentReview": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
     "localVerify": "pre_PR216_sync_candidate PASS root2984/pass2981/fail0/skip3; current final-head verify via GitHub separately",
@@ -820,24 +831,19 @@
     "repairMergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
     "repairMainMerged": true,
     "supplementPR": 218,
-    "supplementMainMerged": false,
+    "supplementMainMerged": true,
     "gitSaved": true,
     "sameShaCI": {
-      "head": "0aa1c8d4366e4dc3c8d5d2af8ee68bee3437420d",
-      "success": 7,
+      "head": "2f73757938b8ca82ac1519f4e467af345634a0e5",
+      "success": 8,
       "failure": 0,
       "pending": 0,
-      "readbackAt": "2026-10-25T10:11:05.549094+00:00",
       "linuxVerify": {
-        "run": 40183235097,
-        "job": 121138519689,
-        "tests": 2988,
-        "pass": 2986,
-        "fail": 0,
-        "skip": 2,
-        "logSha256": "81a6ce207a3bfa9abf1e92b57b4c1f7f4c1501544396bf7227cd87a2dfa9fe80"
+        "run": 40187836396,
+        "job": 121152297520,
+        "logSha256": "8b1316c58906c7d6c5970e8b50c48f1b6f25737d2472c1c25d7d037a192678a0"
       },
-      "scope": "Exact accepted supplement head before this CI-result metadata refresh; subsequent metadata head CI readback is kept in PR218."
+      "scope": "Exact accepted final source/evidence head2f after f4 Zod repair main synchronization"
     },
     "repairMainCI": {
       "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
@@ -851,11 +857,86 @@
     "integrationRequest": {
       "authorized": true,
       "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
-      "syncedMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
-      "syncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "syncedMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "syncCommit": "1fc8ebb6a380cfb5f43e9d2ef878c09f4293b9a3",
       "evidence": "docs/evidence/development-execution/undici-pr218-main-integration.json",
-      "state": "latest_main_synced_final_review_ci_pending",
-      "mainMerged": false
+      "state": "main_merged_same_sha_ci_pass",
+      "mainMerged": true,
+      "mergeSha": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
+      "finalAcceptedHead": "2f73757938b8ca82ac1519f4e467af345634a0e5",
+      "initialEe9SyncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "finalSyncCommit": "1fc8ebb6a380cfb5f43e9d2ef878c09f4293b9a3"
+    },
+    "mainMergeSha": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
+    "mergeEvidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+    "mainSameShaCI": {
+      "sha": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
+      "success": 8,
+      "productSuccess": 7,
+      "auxiliarySuccess": 1,
+      "linuxVerify": {
+        "run": 40188241367,
+        "job": 121153499550,
+        "tests": 2993,
+        "pass": 2991,
+        "fail": 0,
+        "skip": 2,
+        "logSha256": "50b936108566f938a9dd8ea266b47d1f2fc4611cd30c109d4b144dcfebab6dc4"
+      }
+    },
+    "priorAuditSnapshot": {
+      "rootOther": 10,
+      "miniOther": 2,
+      "source": "docs/evidence/development-execution/undici-security-update.json"
+    },
+    "auditSnapshotScope": "Latest recorded PR225 receipt snapshot root7/Mini1; no new npm audit by this metadata batch.",
+    "laterZodRepair": {
+      "pr": 225,
+      "merge": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "productChecksSuccess": 7,
+      "dependabotChecksSuccess": 2,
+      "auditSnapshotSource": "docs/evidence/zod-security-constraint.json",
+      "recordedOtherFindings": {
+        "root": 7,
+        "mini": 1
+      },
+      "newAuditPerformedByThisMetadataBatch": false,
+      "finalReview": "docs/evidence/development-execution/zod-security-constraint-review.json",
+      "finalReviewSha256": "10c16cf2401054886750fdc4ffdaf38c5e1f2282678ccecc9b5f4217ea0a9e5c"
     }
+  },
+  "esimVisibilityAcceptance": {
+    "productPR": 213,
+    "progressPR": 222,
+    "evidencePR": 224,
+    "evidenceMerge": "f59e21b362eaa16b5ad62a7709e22c3aebfe1561",
+    "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+    "wholeUnitsAccepted": false,
+    "nextScopedCandidate": {
+      "unit": "ESIM-03",
+      "state": "NOT_STARTED_FINITE_GAP_RECHECK_REQUIRED",
+      "scope": "Setup persistence interruption and recovery/cancel-ready fixtures; no real provider or financial actions."
+    }
+  },
+  "pixelGuardPhysicalMainAdoption": {
+    "pr": 223,
+    "acceptedHead": "7e21ee54f2082b76727ca559c55df55d68c10457",
+    "mainMergeSha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+    "mainMerged": true,
+    "headChecksSuccess": 7,
+    "mainSameShaChecksSuccess": 6,
+    "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+    "historicalSaveRecord": "pixelGuardPhysicalEvidenceSave retained as capture-time snapshot",
+    "physicalBatchScopedPass": true,
+    "originalCodeRestored": true,
+    "cacheControlRowsAdded": 2,
+    "nativePresentHashes": 4,
+    "nativeAbsentPreserved": 1,
+    "additionalInference": 0,
+    "newDeviceOperations": 0,
+    "wholeOSAccepted": false,
+    "P02Complete": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
   }
 }
