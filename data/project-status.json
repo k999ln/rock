@@ -10586,6 +10586,67 @@
       "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
     }
   },
+  "esimProvisionRecoveryMainAdoption": {
+    "schema": "rockstaros.esim-provision-recovery-main-adoption/1",
+    "recordedAt": "2026-10-25T13:36:38.631648+00:00",
+    "unit": "ESIM-03",
+    "taskIds": [
+      "SIM01"
+    ],
+    "primaryWorkstream": "01-product-ux",
+    "responsibility": "ROCK",
+    "synchronizedMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+    "scope": "Test-only controlled interruption after actual file SQLite workspace INSERT, discard old stores/connection and explicit reopen/retry; no runtime bug reproduced",
+    "sourceTestSha256": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+    "primaryReceipt": {
+      "path": "docs/evidence/development-execution/esim-provision-recovery.json",
+      "sha256": "aada2f8c7f350e5708111d39b3865a78715d2410cc2bc7c34c22f40632fe1ee0"
+    },
+    "independentReview": {
+      "path": "docs/evidence/development-execution/esim-provision-recovery-review.json",
+      "sha256": "b101b410bb42e48747e0208c198c006de387688802fde606f9b2bea6f6c26897",
+      "verdict": "PASS_SCOPED_TEST_ONLY",
+      "mustFix": 0
+    },
+    "protectedFiveHashesUnchanged": {
+      "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+      "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+      "lib/sky-linux-service-store.ts": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+      "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+      "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+    },
+    "independentTests": {
+      "pass": 60,
+      "fail": 0,
+      "skip": 0,
+      "overlappingExtraPreconditionProbe": 1,
+      "probeAdditive": false
+    },
+    "productRuntimeChanged": false,
+    "schemaApiBillingChanged": false,
+    "hostFullVerify": {
+      "exitCode": 0,
+      "tests": 3026,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 3,
+      "baseMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "later854SyncMetadataOnly": true,
+      "logSha256": "36b95f8fb2ca20cab9d3355e43489b60819a39a8999e26ce9301530797023024"
+    },
+    "gitHubSaved": false,
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "realIssuerAccepted": false,
+    "productionD1Accepted": false,
+    "processKillOrPowerLossAccepted": false,
+    "validReadyAccepted": false,
+    "realProviderOrFinancialAccepted": false,
+    "publicDeployment": false,
+    "next": "Latest-main full verify; independent Root integration metadata review; finalhead CI and normal main/mergeSHA CI",
+    "latestSynchronizedMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "latestSynchronizationScope": "Preserves Mini229 normal merge including source4 and Pixel normal-case fixture. Final exact-head Linux fullverify remains required; earlier host counts retain their fb604 base."
+  },
   "os02CapabilityFreshnessMainAdoption": {
     "schema": "rockstaros.os02-capability-freshness-main-adoption/1",
     "recordedAt": "2026-10-25T13:54:27.509021+00:00",

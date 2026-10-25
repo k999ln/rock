@@ -265,6 +265,10 @@ PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHA
 本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補headとmain merge後の同SHA CIを確認済み。
 
 
+## eSIM provision再開のtest-only採用（ESIM-03 / SIM01）
+
+主担当01/ROCK・統合10/G04。既存store2つを同一file SQLiteで使い、workspace INSERT後のsetup UPDATEだけ制御Errorを注入し、旧store/接続を捨てて同file再open・同workspace再開/再送/owner/旧revision/失効を検査する。runtime/schema/API/Billing変更0、元test/receiptと独立reviewをhash固定。独立60/60成功・追加1probeは重複非加算、mustFix0。実processkill/電断/本番D1/issuer/validready/Provider/課金/wholeESIMは未受入。 新host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0、Eve現行進捗main854をmetadataのみ通常同期済み。main fb604256へ採用準備、全verifyとRoot統合metadata別検収→headCI→通常main/mergeCIで閉じる。[採用証拠](docs/evidence/development-execution/esim-provision-recovery-main-adoption.json)。
+
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
 現在: product PR213/main2a、progress PR222/mainee9、追加実visibility証拠PR224/mainf59を別々に受入。224のhead7CI/merge6CI・Linux2986/2984pass/0fail/2skipを確認。213統合後に完了した限定証拠であり、実auth/issuer-provider sandbox/回線/課金収納/公開とESIM01-08 whole gateは未受入。次候補ESIM03の有限gap再照合は未着手。

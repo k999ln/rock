@@ -139,6 +139,8 @@ Material Inventionは2D候補比較とSky/Zema接続がある段階で、シミ�
 
 Shellの[local capability観測](docs/rockstaros-complete-design.md#os02-capability-observation-freshness)は未来時刻・期限切れ・30秒超を未評価へ戻す限定修復候補です。host試験は `OS02_JAVA_HOME=<既存JDK17> python3 -m unittest tests.test_device_capability_freshness -v`。実機・全OSの受入は別gateです。
 
+既存eSIM service setupの[provision再開fixture](docs/evidence/development-execution/esim-provision-recovery-main-adoption.json)は `node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs` で検証します。file SQLiteの制御中断・明示再接続試験であり、実issuer・本番D1・電断・実課金の受入は別gateです。
+
 <p align="center">
   <img src="public-release/rockstaros/rockstaros-motion.gif" alt="RockstarOSの共通基盤を表したコンセプトアニメーション" width="100%" />
 </p>
