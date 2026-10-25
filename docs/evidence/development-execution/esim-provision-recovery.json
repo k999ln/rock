@@ -1,0 +1,196 @@
+{
+  "schema": "rockstaros.esim-provision-recovery-test-candidate/1",
+  "recordedAt": "2026-10-25T11:45:06.613305+00:00",
+  "unit": "ESIM-03",
+  "slice": "ESIM03-PROVISION-RECOVERY-01",
+  "status": "IMPLEMENTER_TEST_ONLY_PASS_PENDING_INDEPENDENT_REVIEW",
+  "independentAcceptance": false,
+  "wholeUnitAccepted": false,
+  "base": {
+    "mainSha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+    "freshGithubMainReadback": true,
+    "localBranch": "codex/esim-provision-recovery-20261025",
+    "dedicatedIndependentClone": true
+  },
+  "ownedPaths": [
+    "tests/rockstar-service-setup.test.mjs",
+    "docs/evidence/development-execution/esim-provision-recovery.json"
+  ],
+  "testName": "provision resumes one persisted canonical workspace after interrupted setup save and SQLite reopen",
+  "sourceHashes": {
+    "tests/rockstar-service-setup.test.mjs": {
+      "before": "d161ca107f11cf765be3c8f90a656c5d956982af41bd8f89c9ec60c210387ed8",
+      "after": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279"
+    }
+  },
+  "protectedFiveHashesUnchanged": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+    "lib/sky-linux-service-store.ts": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+  },
+  "packageAndLockUnchanged": {
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "dependencyReuse": {
+    "installPerformed": false,
+    "newDependencies": false,
+    "sourceCache": "existing rock-undici-main-sync-20261025 node_modules",
+    "cacheLockByteMatchesCandidate": true,
+    "lockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "method": "ignored node_modules symlink; no cache writes or package install commands"
+  },
+  "existingEvidenceNotRecreated": [
+    "Existing lost billing response test uses a saved billing intent; it does not inject the post-workspace/pre-setup-save failure.",
+    "Existing canonical reuse success test uses a closure Linux mock and memory SQLite; it does not close/reopen actual canonical-store persistence."
+  ],
+  "fixtureReuse": {
+    "path": "tests/fixtures/billing-test-d1.mjs",
+    "reused": true,
+    "sharedFixtureChanged": false,
+    "migrateOption": false,
+    "migrationReason": "Its default four billing-service migrations are not application drizzle. The new test applies the existing sorted application drizzle set once, then reopens with no remigration.",
+    "failureInjection": "Local prepare wrapper throws once before the armed rockstar_service_setups UPDATE, after asserting one canonical workspace row is already committed. No product hook or common fixture change.",
+    "transactionAdapter": "Existing TestD1 prepare/batch semantics retained."
+  },
+  "observedCase": {
+    "actualProductStores": [
+      "serviceSetupStore",
+      "linuxServiceStore"
+    ],
+    "controlledDependencies": [
+      "current grant/owner facts",
+      "billing start and reconcile responses"
+    ],
+    "persistence": "Real node:sqlite file-backed SQLite with application migrations; actual product Linux INSERT and setup CAS SQL.",
+    "faultCount": 1,
+    "faultBoundary": "After actual canonical workspace INSERT, before setup UPDATE.",
+    "beforeReopen": "Setup document/revision unchanged, exactly one unstarted workspace persisted.",
+    "restart": "Original SQLite handle closed, new handle opened for the same file, both actual product store instances recreated; complete four-table snapshot matches.",
+    "recovery": "Original setup id/agreement/challenge and canonical workspace row/payload id preserved. Setup revision increases exactly once; requestedAt is set. Subsequent provision with the current revision changes no stored rows.",
+    "rowCountsAfterRecovery": {
+      "rockstar_service_setups": 1,
+      "canonicalWorkspace": 1,
+      "work_jobs": 0,
+      "sky_linux_service_receipts": 0
+    },
+    "workspaceAssertions": {
+      "serviceStartAt": null,
+      "serviceWindowCount": 0,
+      "jobCount": 0,
+      "invoiceCount": 0,
+      "canOpenSkyEve": false,
+      "paymentCollected": false,
+      "initialChargeMinor": 0
+    },
+    "negativeCases": [
+      "Stale setup revision rejected without mutations.",
+      "Foreign owner rejected; no setup/workspace exposed.",
+      "Revoked controlled grant rejects provision and setup-ready without mutations."
+    ],
+    "unchangedNegativeSnapshots": [
+      "rockstar_service_setups",
+      "sky_linux_service_documents",
+      "sky_linux_service_receipts",
+      "work_jobs"
+    ],
+    "billingMockCalls": {
+      "preparation": {
+        "start": 1,
+        "reconcile": 1
+      },
+      "recoveryAndNegativeCases": {
+        "start": 0,
+        "reconcile": 0
+      }
+    },
+    "externalNetworkAttempts": 0,
+    "networkGuard": "Test-local global fetch mock throws on any attempt.",
+    "noControlSourceFixNeededForThisCase": true
+  },
+  "verification": {
+    "focusedInitial": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='provision resumes one persisted canonical workspace' tests/rockstar-service-setup.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "qualification": "First implementation before final extra payment/count assertions; final version verified by whole-file run."
+    },
+    "finalOwnedSuite": {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs",
+      "tests": 60,
+      "passed": 60,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalLint": {
+      "command": "./node_modules/.bin/oxlint tests/rockstar-service-setup.test.mjs",
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "node": "v26.12.1",
+    "logs": {
+      "focused": {
+        "outsideGitBasename": "esim-provision-recovery-focused.log",
+        "sha256": "7f7ede416236c98b3a047e5b1006bddc10d4f46c64f087ac902b24e2998e42d8",
+        "exitCode": 0
+      },
+      "suite": {
+        "outsideGitBasename": "esim-provision-recovery-suite.log",
+        "sha256": "5e6a7fbdb50d537a9b5e0e54b6753da6738cdfd0b3bf8fbf67f06dab19331991",
+        "exitCode": 0
+      },
+      "lint": {
+        "outsideGitBasename": "esim-provision-recovery-lint.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "exitCode": 0
+      }
+    },
+    "fullVerify": {
+      "status": "NOT_RUN_BY_IMPLEMENTER",
+      "reason": "Test-only finite lease; fixed integration candidate full verification/CI belongs to Root/Git."
+    },
+    "typecheck": {
+      "status": "NOT_RUN",
+      "reason": "No TypeScript/product source changed; candidate requires later integration checks."
+    }
+  },
+  "cleanup": {
+    "testAfterHookClosesAllSQLiteHandles": true,
+    "directoryAndDatabaseWalShmJournalRemovalAsserted": true,
+    "cleanupAssertionsPassedInFinalSuite": true,
+    "databaseOrSidecarsGitSaved": false
+  },
+  "failureHistory": {
+    "unexpectedTestFailures": [],
+    "expectedInjectedFailure": "One local setup save Error; the regression asserts rejection and durable committed workspace before reopening.",
+    "runtimeBugReproduced": false
+  },
+  "acceptanceLimits": [
+    "Implementer test result only; independent reviewer has not accepted this candidate.",
+    "SQLite/D1-shaped adapter is not deployed Cloudflare D1 or production SQL acceptance.",
+    "Explicit close/reopen after injected save error is not process kill, power loss or crash durability proof.",
+    "HTTP route was statically read only: unexpected errors map to 503/no-store. Real HTTP/session/CSRF behavior is not executed by this new case.",
+    "Controlled grant revocation is not real issuer/device/cryptographic lifecycle acceptance.",
+    "No valid ready receipt was accepted; no new dispatch or service billing window was opened.",
+    "No real Linux resource, provider, Stripe request, charge or collection occurred; local row cardinality is not a provider resource-count proof.",
+    "Cancel-ready concurrency, generic outbox/fencing, real issuer, whole eSIM and public launch remain unaccepted."
+  ],
+  "operations": {
+    "productSourceChanged": false,
+    "schemaChanged": false,
+    "apiChanged": false,
+    "newEnumOrOutboxOrPolicy": false,
+    "sharedRootOrGitIndexChanged": false,
+    "localCommitCreated": false,
+    "pushPerformed": false,
+    "mainIntegrated": false,
+    "providerOrDeviceAction": false
+  },
+  "next": "Freeze the two-path candidate and hand off to Root for separate independent review and integration ownership; do not self-certify or start a follow-up source change."
+}

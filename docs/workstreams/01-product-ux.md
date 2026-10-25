@@ -12,6 +12,10 @@
 
 ## 現在地
 
+### ESIM-03 provision再開・制御中断のfile SQLite試験
+
+ROCKは既存storeのtest-only回復fixtureを採用する。実workspace作成後のsetup保存失敗から旧接続を閉じ、同fileの新接続で同workspaceへ再開し、replay/owner/失効・記帳非重複を照合する。独立60pass・mustFix0、追加1probeは重複非加算。`node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs`と最新候補`npm run verify`を入口にする。実issuer/本番D1/実processkill/電断/validready/Provider/実課金/wholeESIMは別gate。[採用段階](../evidence/development-execution/esim-provision-recovery-main-adoption.json)。
+
 - AMC02 / H1 再簡素化: 標準入口は「依頼→Goalと意図の確認」のみ。部隊選択と質問票を外し、ソフトウェア試作の汎用4役割7工程・仮工数・依頼文を自動準備する。工数は未校正の係数で納期やsi速度ではない。チャットを含む従来機能は詳細へ保持。si実行・自動通知は未接続で、未実行を進行中にしない。
 
 - AMC02 / H1 チャット化: 常設の会話から目的・範囲・完成条件を順に入力し、専用ボタンで計画承認する。案内はルールベースでsi未接続。詳細編集と会話の条件差分を再確認し、自由文を実行権限や完了証拠にしない。会話はGoalとは別保存。
