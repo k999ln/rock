@@ -1,0 +1,81 @@
+{
+  "schema": "mini-owner-choice-independent-review/1",
+  "reviewedAt": "2026-10-25T10:36:35.126776+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "worktree": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+  "baseCommit": "8b9400c821f680828f02c39843a2d5455ac64a0a",
+  "observedHead": "8b9400c821f680828f02c39843a2d5455ac64a0a",
+  "scope": "Read-only owner-choice document delta review; repository files unmodified by reviewer.",
+  "decision": "PASS_FOR_OWNER_SELECTION_DOCUMENTATION_ONLY",
+  "mustFixCount": 0,
+  "findings": [],
+  "sourceHashes": [
+    {
+      "path": "README.md",
+      "sha256": "0761777790d1d1d7bc0d10d1eb75400b462a38e6964021f46893e896d843c4f0"
+    },
+    {
+      "path": "data/design-document-index.json",
+      "sha256": "132d80b0ed8216b4f046ff6698c62a5288dd31d664ea8a751ac7cb42fb562071"
+    },
+    {
+      "path": "data/project-status.json",
+      "sha256": "52ab8caee4796f5630f6ec3504733e448c1d1a1d40fb95092d6fd9b144de7cf7"
+    },
+    {
+      "path": "docs/avocado-mini-r5/README.md",
+      "sha256": "19d253b7995bb28970305c2bd7d32b963bddf09b680d09547b3cbc20621b32e4"
+    },
+    {
+      "path": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+      "sha256": "2066b4533dbef9202f446b9ca7c6f25de0dbe5ac4b609f2ce78e14d4a7ea815b"
+    },
+    {
+      "path": "docs/avocado-mini-r5/physical-trial-template.json",
+      "sha256": "abd2a85b552f83130bea401d62b3145b426eedc20c89d5ebd4e337f274154f00"
+    },
+    {
+      "path": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+      "sha256": "cffc6253070e3c60f70abf6928110582aad70748e77e2e5123c4e8af6d67050a"
+    },
+    {
+      "path": "docs/product-baseline.md",
+      "sha256": "b55c67f8380c16d1cc094db8748d9436eeca3a04681d6bdd21fa829480629f1a"
+    },
+    {
+      "path": "docs/rockstaros-avocado-mini-complete-design.md",
+      "sha256": "1b6ca86fef16de23163c4ecd3148ed0447d7fd85fa88567e8c7cb1a3954c29f6"
+    },
+    {
+      "path": "docs/service-design/08-mini-connectivity-and-billing.md",
+      "sha256": "ff6fe93cc92f7b77352e322de0b29b9c8fb3f2b5b58e3b6cb0c62c05bed5c33e"
+    },
+    {
+      "path": "docs/workstreams/11-material-invention-avocado-mini.md",
+      "sha256": "28ced91e09c700c85548036a035f22bc1bab3084f4a6d5054c6a83e5cceba8b0"
+    },
+    {
+      "path": "project.md",
+      "sha256": "0bdc885b98866e579624db2f06066f4fb66659e8ddf1aec7626fb3db232f6d94"
+    }
+  ],
+  "checks": [
+    "Read complete two-file delta and all ten related entrypoint/status/index deltas against the specified base.",
+    "JP and US plus initial si/messages/small-files use are recorded consistently. This confirms the supplied owner choice, not country-specific service availability.",
+    "9704 IMT and BG95-S5 NB-NTN are prioritized for comparison only; selected modem/provider remain unset. 9770 and later general IP/Web sharing remain explicit objectives.",
+    "One run binds one JP or US country profile; both independent acceptances are required for a dual-region claim. Both regional records remain NOT_RUN with empty evidence.",
+    "Cross-region changes require closing old grants, reconciling unknown reservations and renewed owner permission; automatic continued cross-border charging is not assumed.",
+    "Original standalone/200 mm/four-display constraints, numerical targets and required measurement fields are byte-equivalent as parsed structures to the base template.",
+    "Local/client/byte/cost controls, network hard caps, management-traffic assumptions, contracts and regional compliance remain prerequisites for physical tests.",
+    "256 byte/1 KiB/16 KiB payload points are proposed no-radio fixtures, not user budgets, sent traffic or implemented adapters. Chunking, integrity, retry budgets, expiry, queue limits and acknowledgement semantics remain future design/test work.",
+    "Template executionAuthorized, physicalAccepted, providerConnected and invoiceVerified stay false; stage and acceptance decisions remain NOT_RUN.",
+    "All non-Mini project-status top-level values unchanged; existing evidence not relabelled as review of this delta. currentRevisionReviewed=false accurately marks the pre-receipt state.",
+    "JSON parsing and git diff --check passed; twelve modified paths are documentation/metadata, with no runtime source changes."
+  ],
+  "limits": [
+    "Owner choice is supplied by the parent task as the direct user decision; reviewer did not independently fetch another conversation.",
+    "Existing published hardware comparisons were reviewed previously and were not revalidated over the network in this owner-choice-only delta review.",
+    "No physical radio, provider integration, contract, procurement, paid communication, billing reconciliation or full runtime regression was performed.",
+    "This receipt binds the recorded hashes only; later metadata edits and Git/CI/main status require their own confirmation."
+  ]
+}

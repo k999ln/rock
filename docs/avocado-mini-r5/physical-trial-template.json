@@ -24,7 +24,7 @@
     "id": null,
     "region": null,
     "siteRef": null,
-    "useCase": null,
+    "useCase": "si_messages_small_files",
     "startedAt": null,
     "endedAt": null,
     "operatorApprovalRef": null,
@@ -40,7 +40,8 @@
     "packComplianceRef": null,
     "bomRevision": null,
     "closedEnclosureRevision": null,
-    "measurementCalibrationRef": null
+    "measurementCalibrationRef": null,
+    "countryProfileRef": null
   },
   "contract": {
     "provider": null,
@@ -156,7 +157,7 @@
     "invoiceReconciliationRef": null,
     "decision": "NOT_RUN",
     "unresolved": [
-      "Region/use case and measurable targets not selected",
+      "Countries JP/US and initial si/messages/small-files use are selected; local sites, measurable targets and country-specific profiles remain unset",
       "Hardware, compliance, contract, sharing permission and hard caps not confirmed",
       "Real Wi-Fi, satellite, closed enclosure, battery and invoice tests not run"
     ]
@@ -170,6 +171,39 @@
     "runtime": "monotonic minutes from undocking without external power to the predeclared stop threshold; retain mode/power trace",
     "stop": "same owner stop-request monotonic timestamp to independently observed local nft fence, AP disabled/no forwarding, and provider-confirmed network fence; provider request acknowledgement is not proof of the fence",
     "unknown": "unknown provider status uses null providerStopLatencyMs plus providerStopStatus=unknown and unresolved reservation; never zero or success",
-    "targets": "all required targets and definitions fixed before execution; null/unmeasured fields cannot pass acceptance"
-  }
+    "targets": "all required targets and definitions fixed before execution; null/unmeasured fields cannot pass acceptance",
+    "region": "Each run binds exactly one JP or US country profile; both independent regional acceptances are needed for the dual-region claim. Region/use-case choice alone never authorizes purchase, contract, RF or charge."
+  },
+  "ownerSelection": {
+    "date": "2026-10-25",
+    "source": "direct_owner_reply",
+    "regions": [
+      "JP",
+      "US"
+    ],
+    "initialUseCase": "si_messages_small_files",
+    "bothRegionsRequireSeparateAcceptance": true,
+    "modemSelected": false,
+    "providerSelected": false
+  },
+  "regionalAcceptance": [
+    {
+      "region": "JP",
+      "status": "NOT_RUN",
+      "profileRef": null,
+      "regulatoryEvidenceRef": null,
+      "serviceAndSharingPermissionRef": null,
+      "networkCapEvidenceRef": null,
+      "physicalRunRefs": []
+    },
+    {
+      "region": "US",
+      "status": "NOT_RUN",
+      "profileRef": null,
+      "regulatoryEvidenceRef": null,
+      "serviceAndSharingPermissionRef": null,
+      "networkCapEvidenceRef": null,
+      "physicalRunRefs": []
+    }
+  ]
 }

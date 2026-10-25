@@ -58,7 +58,7 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 
 ## 受入と未確定事項
 
-内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。地域/用途と数値目標は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 [未記入試験台帳](physical-trial-template.json)のP0〜P5をDP02〜05へ接続する。
+内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 [未記入試験台帳](physical-trial-template.json)のP0〜P5をDP02〜05へ接続する。
 
 主担当MAT15（JOINT）、建築/空間pilotはMAT15とhost連携契約、通信adapterはROCKとProviderの共同受入。機械・実無線・電池・同一閉箱のDP01〜05はNOT_RUN。host/隔離Linuxの既存software証拠は上記リンクで別管理する。
 

@@ -10043,7 +10043,7 @@
       "taskId": "MAT15",
       "primarySquad": "M1",
       "primaryOwner": "ROCK",
-      "status": "candidate_comparison_and_trial_template_independently_reviewed",
+      "status": "owner_region_and_initial_use_selected_independently_reviewed",
       "documentation": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
       "template": "docs/avocado-mini-r5/physical-trial-template.json",
       "physicalAccepted": false,
@@ -10052,9 +10052,24 @@
       "radioTransmissionPerformed": false,
       "selectedProvider": null,
       "selectedModem": null,
-      "nextAction": "Resolve region/use-case, supplier integration specifications, sharing permission and enforceable network cost cap before physical trial",
+      "nextAction": "Complete JP and US country-specific hardware/contract/hard-cap profiles and measurable targets; prepare bounded asynchronous message fixtures before physical trials",
       "independentReviewEvidence": "docs/evidence/development-execution/mini-08-hardware-prep-review.json",
-      "mustFixRemaining": 0
+      "mustFixRemaining": 0,
+      "ownerSelection": {
+        "date": "2026-10-25",
+        "regions": [
+          "JP",
+          "US"
+        ],
+        "initialUseCase": "si_messages_small_files"
+      },
+      "candidatePriority": [
+        "9704_IMT_small_async_data",
+        "BG95_S5_NB_NTN_small_async_data",
+        "9770_IP_comparison_later"
+      ],
+      "currentRevisionReviewed": true,
+      "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json"
     }
   },
   "pixelCacheMainAdoption": {

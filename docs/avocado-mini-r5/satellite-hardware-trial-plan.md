@@ -1,12 +1,22 @@
 # avocadoMini — 内蔵衛星回線の候補比較と実機試験準備
 
-2026-10-25 / MAT15・M1・ROCK。MINI-08の共通制御に続く設計・試験準備。候補採用、購入、契約、無線送信、実機合格の記録ではない。対象地域・用途への回答は未確定のため、日本/米国を別に確認し、軽量si通信と一般Web共有を別能力として比較する。
+2026-10-25 / MAT15・M1・ROCK。MINI-08の共通制御に続く設計・試験準備。候補採用、購入、契約、無線送信、実機合格の記録ではない。2026-10-25の本人回答により、最初の対象地域を日本と米国の両方、用途をsi・メッセージ・小さなファイルに確定した。国ごとの提供範囲・認証・契約・同一機試験を分け、軽量si通信と一般Web共有を別能力として比較する。
 
 ## 到達したい構成と選定順
 
 `内蔵電池 → Mini Linux/Broker → Wi-Fi AP → 許可した端末` に `内蔵modem＋antenna → 衛星網` を接続する。ドック・携帯電話・外付け衛星terminalを必須にしない。使用時全高200mm以内を維持する。原本のD30軸・D96台座は比較寸法であり確定径ではない。固定原本packageは変更しない。板・膜なし、少ない表示部、上下を含む全範囲、低眩しさは別の光学受入として維持する。通信試験の合格で光学研究gateを開けない。
 
-最初は **一般IPを扱える9770系列の収納・契約適合を確認する**。同時に9704/NB-NTNで小さなsi要求と結果を届ける案を比較する。後者を採用しても一般インターネット共有の完成とは呼ばない。高速動画までを200mm円筒に収める成立根拠は今回得られていない。
+最初は **9704のIMTとBG95-S5等のNB-NTNを、小容量の非同期si通信向けに優先比較する**。これは本人の初期用途選択に基づく順序変更で、modem/Provider採用の決定ではない。9770は一般IPが必要な処理・将来のWeb共有の比較候補として保持する。軽量通信だけの合格を一般インターネット共有の完成とは呼ばない。高速動画までを200mm円筒に収める成立根拠は今回得られていない。
+
+## 初期用途と日本・米国の受入
+
+Wi-Fi端末からMiniへsi要求・短文・小ファイルを渡し、Miniが保存・予算予約・非同期送信を行い、返答または配送状態を同じrequest IDで端末へ返す体験を先に成立させる。衛星接続中も本人認証・端末許可・通信量/料金上限は共通契約を維持する。一般Webの任意TCP転送、動画、大容量model/OS downloadは初期用途の合格対象に含めず、元の共有目標は後段へ残す。
+
+- JP: 日本の試験場所、対象modem/antenna/firmware、現地で必要な適合、利用可能な契約・用途許諾、網側上限、JPY等の請求条件を一つのprofileで確認する。
+- US: 米国の試験場所と州、対象構成の適合、網側/契約・用途許諾、上限とUSD等の請求条件を別profileで確認する。
+- 一方の実機結果やProviderの広域coverage説明で他方を合格にしない。両国の結果が揃うまで「日米対応」を受入済みと表示しない。国別profileと契約を替える場合も、元のgrantを閉じて未確定予約を照合し、移動先の条件で本人が再許可する。国またぎの自動課金継続を前提にしない。
+
+最初の無線なしfixture案はapplication payload 256byte / 1KiB / 16KiB。これはユーザー指定の上限や実網への送信許可ではなく、試験前に契約と予算に合わせて固定する比較点である。実転送は選定transportのpayload上限から認証/envelope分を引いて分割し、欠落・重複・順序逆転・再起動をrequest IDとchunk番号/全体digestで検出する。再送を無制限にせず回数・有効期限・byte/cost予約で止める。受信側認証・完全性確認、送達確認と処理成功の区別、offline queueの容量/TTLと失効時の破棄は次のadapter設計・試験で具体化し、現MINI-08で実装済みとは扱わない。
 
 ## Modem候補
 
@@ -14,7 +24,7 @@
 
 | 候補 | 公開能力・寸法 | Miniでの位置付けと未解決 |
 | --- | --- | --- |
-| [Iridium Certus 9770](https://www.iridium.com/products/iridium-certus-9770) | IPデータ最大上り22/下り88 kbps、140×60×16mm、185g、12V±2.5V、passive omni antenna | 一般IP試験の第一比較候補。D30軸には幅60mmが入らない。径/配置は未決定、200mm全体に電池・演算・光学を収めるCADが必要。消費電力・送信peak・Linux側interfaceのOEM仕様を取得。一般Web/複数端末の契約可否は別確認 |
+| [Iridium Certus 9770](https://www.iridium.com/products/iridium-certus-9770) | IPデータ最大上り22/下り88 kbps、140×60×16mm、185g、12V±2.5V、passive omni antenna | 一般IPが必要な処理の後段比較候補。D30軸には幅60mmが入らない。径/配置は未決定、200mm全体に電池・演算・光学を収めるCADが必要。消費電力・送信peak・Linux側interfaceのOEM仕様を取得。一般Web/複数端末の契約可否は別確認 |
 | [Iridium Certus 9704](https://www.iridium.com/products/iridium-certus-9704-module) | IMT message最大100KB、JSPR、31.5×42×3.8mm、12g（Web表記） | 軽量siの非同期メッセージ候補。任意IP routerではない。host bridge・再送一意性・cloud側配送が必要。製造図面revisionと電源peakを取り寄せるまで収納/電源を確定しない |
 | [Quectel BG95-S5](https://www.quectel.com/product/bg95-s5-satellite-communication-module/) | Rel-17 NB-NTN B255/B256/B23、LTE-M/NB2/EGPRS/GNSS、23.6×19.9×2.2mm | 小型低データ量候補。選んだSIM・網・firmwareの実装能力で判定。地上LTE能力を衛星能力へ転用しない。UDP主体サービスではTCP/HTTPS一般共有を未受入とする |
 | [Starlink Mini](https://www.starlink.com/public-files/specification_sheet_mini.pdf) | 298.5×259×38.5mm、平均25–40W（比較用別製品） | 外部terminalを用いた性能比較のみ。現仕様のまま200mm円筒内蔵の根拠にはならず、Mini単体の合格対象外 |
@@ -63,7 +73,7 @@ MINI-08の`mini-network-quota/1`は共通試験契約で、上記providerの実A
 
 | 段階 | 準備/試験 | 合格条件と証拠 |
 | --- | --- | --- |
-| P0・購入前 | region、用途、必要台数/速度/稼働時間、BOM・納期・予算、modem/interface、antenna承認、電池pack、試験場所を固定 | owner判断と専門側の適合根拠が揃う。未決定値があればRF/有料通信へ進まない |
+| P0・購入前 | 日米/軽量si用途は本人選択済み。国別の場所/構成/契約、必要台数/速度/稼働時間、BOM・納期・予算、modem/interface、antenna承認、電池pack、試験場所を固定 | owner判断と専門側の適合根拠が揃う。未決定値があればRF/有料通信へ進まない |
 | P1・無線なし | 寸法CAD、電源治具、電子負荷、電流波形/温度計測、隔離Linux試験を再現 | 最大包絡200mm、保護とbrownout/復旧、host55・Linux26の同一source証拠。実Wi-Fi/衛星成功には換算しない |
 | P2・実Wi-Fi | 対応Linux AP無線、許可端末2台＋拒否端末1台（暫定試験構成）、WPA鍵、DHCP/DNS/RA/NAT/route、guest/admin分離 | 実handshake、失効/なりすまし/切断再接続、IPv4/6・双方traffic、端末別/合計上限をpacket capture/hostapd/ledgerで対応付ける。現共通コード以外のネットワーク統合は未実装 |
 | P3・衛星bench | RF適合/契約/共有許可/有限budgetが揃った同一装置で登録→IPまたはmessage→端末まで試験 | 実IP共有と非同期messageを別結果にする。固定の小payloadから開始し、予算付きrunだけ実行。uplink/downlink双方とprovider記録を照合 |

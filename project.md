@@ -882,7 +882,9 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。別枠Dependabotのzod更新失敗は未解決としてGit担当へ連携し、成功に含めない。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
 
-後続準備着手: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](docs/avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。地域/用途と数値目標は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 比較は公開公式資料で実施。Directoryは認証期限切れのため利用不可。部品/料金の採用は保留し、共有許諾とhard capを満たす候補からP0を埋める。
+本人回答反映・検証: 初期対象を日米両方のsi/メッセージ/小ファイルへ確定し、9704/NB-NTN優先、9770一般IP後段へ順序を更新。国別受入profileと未実行境界を同期。独立差分検収mustFix0、mission/project/design・台帳境界チェック成功。[選択反映検収](docs/evidence/development-execution/mini-08-owner-choice-review.json)。更新headの全体verifyはPR221のCIで別追跡。
+
+後続準備着手: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](docs/avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 比較は公開公式資料で実施。Directoryは認証期限切れのため利用不可。部品/料金の採用は保留し、日米それぞれの共有/用途許諾とhard capを満たす候補からP0の残項目を埋める。
 
 AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。PR215へ保存。初回CIで試験helperのcwd依存とTLS試験server最低versionを検出し補正（runtime不変）。独立補足検収mustFix0、Linux上のhost55/packet26を別cwdで再実行成功。SPIDERの公開source digest誤検出3値×2pathは独立検収・policy10/10・履歴scan0後、PR217をmain bcf5345cへ通常統合（head7CI成功）。最新mainを競合なく同期し、control固定refを採用済みbcf5345cへ更新。runtimeはa5fb3936と不変。PR215の更新head CI/mainは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
 
