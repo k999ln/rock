@@ -10271,6 +10271,13 @@
     "wholeOS01Accepted": false,
     "p02Complete": false,
     "publicDeployment": false,
-    "gitSaveStage": "candidate_before_push; actual remote/head CI recorded in separate checkpoint"
+    "gitSaveStage": "PR223 oldhead2c0 saved and7CI success; latest-main synchronized candidate pending exact-head CI and authorized main adoption",
+    "mainIntegrationAuthorized": true,
+    "mainIntegrationAuthorization": {
+      "sourceChat": "01a16c27-ccab-7af1-95a3-33880f6dc75a",
+      "sourceTurn": "01a172c7-0cab-7f51-8ed6-11aaf2aa694f",
+      "sourceUserMessage": "01a172c7-0d55-7121-be42-1f90c74d437d",
+      "scope": "Evidence main adoption and same merge SHA CI; no new device operations or inference."
+    }
   }
 }
