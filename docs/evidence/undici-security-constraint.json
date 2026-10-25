@@ -143,5 +143,10 @@
       56,
       57
     ]
+  },
+  "latestMainSynchronization": {
+    "base": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "changes": "Pixel status/documentation only; all new main records preserved, own dependency note added.",
+    "dependencyAndTestBytesUnchanged": true
   }
 }
