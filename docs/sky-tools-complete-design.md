@@ -1581,3 +1581,6 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ## Pixel cache-only準備/更新fence
 
 既存ローカルruntimeの保守処理で、新catalog Tool・Broker権限を追加しない。目的、責任、入出力、状態/保存、失敗/復旧、明示承認、合格条件と未決定gateは[OS詳細](rockstaros-complete-design.md#pixel-cache-only-main-port)を共通契約とする。原tupleのdurable台帳、同ID読戻し、unknown無再送と固定payload更新fenceを保持し、cache準備を推論や取得へ昇格させない。host/CI/package/physicalを別々に受け入れる。[証拠](evidence/development-execution/pixel-cache-main-adoption.json)。
+
+
+PR209のupdate metadata読込は[OS詳細の競合修正](rockstaros-complete-design.md#pixel-update-guard-toctou-fix)に従う。同FDの限定読込と全metadataの置換検査を追加し、旧headのHigh指摘を履歴に残す。実機・推論受入は増やさない。

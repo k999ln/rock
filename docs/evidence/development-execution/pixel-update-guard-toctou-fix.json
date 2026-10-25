@@ -1,0 +1,129 @@
+{
+  "schema": "rockstaros.pixel-update-guard-toctou-fix/1",
+  "recordedAt": "2026-10-25T08:09:54.284434+00:00",
+  "oldHead": "06dac1bb4ffa84badfe57bdfac8f81b204bae0d5",
+  "authorization": "User explicitly requested PR209 repair, regression tests, new-head CI and review update; no physical/inference",
+  "status": "HOST_VERIFIED_NEW_HEAD_CI_PENDING",
+  "cause": "CodeQL High at guard line12: path lstat and path readFile race. Original staged-to-terminal symlink host counterexample confirmed.",
+  "implementation": "Open NOFOLLOW/NONBLOCK, validate descriptor then bounded same-FD read, retain directory descriptors and verify metadata identity after reads; fail closed and close descriptors.",
+  "source": [
+    {
+      "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "sha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594"
+    },
+    {
+      "path": "tests/pixel-update-guard.test.mjs",
+      "sha256": "ad229a3f265dc95dcda548612de9250f0ed063586bb32500c882ef696c3669b8"
+    }
+  ],
+  "targetedTests": {
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "additionalRegressionGroups": 7,
+    "oldImplementationCounterexampleExit": 1,
+    "oldFailure": "Missing expected rejection for staged receipt replaced by terminal symlink"
+  },
+  "fullVerify": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "exitCode": 0,
+    "rootNodeTests": 2924,
+    "rootNodePass": 2921,
+    "rootNodeFail": 0,
+    "rootNodeSkip": 3,
+    "scope": "Mac host, Linux-only skips remain; exact-head Linux CI separate",
+    "logSha256": "416c38bbb850afdc8b3170cfd3045f1d72a0f81ee431e28c97df3d543d00ec75"
+  },
+  "newHeadCI": "pending",
+  "physicalAccepted": false,
+  "additionalInference": false,
+  "originalSourceReceiptUnchanged": true,
+  "historicalSourcePassSuperseded": true,
+  "package": {
+    "manifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "files": {
+      "server.mjs": "0c7dbc8636387c0d106a2313323af67713826fafca48549b70fa0cd2c881f470",
+      "ui/index.html": "f8400151bfcd67323ee20ca6e58d27a7bf3e985a8f88a4ded436666719289220",
+      "ui/app.js": "67d78facb2e967380b20bff2bbfc0ef7a3491f9f33128791cdde0c3269a3719e",
+      "ui/app.css": "9c2c72c57e0a0c0d0c227c69e72326fbe14691b4cbf8770694ffc6ee43b1f299",
+      "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+      "toolkits/sky-linux-local/runtime-lock.json": "9200c4993c434a409691f49c08600466bb0df217bfd04d9bf0b064b2eafd9898",
+      "toolkits/sky-linux-local/prepare-pixel.py": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+      "toolkits/sky-linux-local/node-lock.json": "fe7c8d504e0a3e16991666bc91ae2ea4d74be02a7f9d75afcb46750c2f2b067b",
+      "toolkits/sky-linux-local/models.json": "0f30150af3e544168ec7fb43b25b645b311b71fdcff95b799baeade0863d2da8",
+      "toolkits/sky-linux-local/android-bridge.py": "22490f323e31e8e3e2bd543a9c317d2eb7f069a6febec08a8c44291dcabeefef",
+      "toolkits/sky-linux-local/install-android-bridge.py": "564cfb08569071a957a4395fd3647c9f79354bf80f6f2e84b05e2f08ff6d6bd2"
+    },
+    "auxiliaryHashes": {
+      "bootstrap.py": "dc55676f098cad3de57a046a2418f018caf123aeb1938572efed73e792024f13",
+      "install-startup.py": "33bb4538919c96885d3f46aad9c7e42a72302a4fd721faa9583faa5273271ed4",
+      "update-pixel.py": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc"
+    },
+    "deviceDeployed": false
+  },
+  "hostValidation": {
+    "targetedNode": {
+      "pass": 26,
+      "fail": 0,
+      "skip": 0
+    },
+    "pythonCache": {
+      "pass": 6,
+      "fail": 0
+    },
+    "pythonUpdate": {
+      "pass": 23,
+      "fail": 0
+    },
+    "lint": "pass",
+    "design": "pass",
+    "projectUpdate": "pass",
+    "package": "11 payload + 3 auxiliary rehashed; only bundled server changes from prior package"
+  },
+  "failureHistory": [
+    {
+      "command": "npm run verify",
+      "result": "failed before target runtime tests: system OpenSSL is not version3",
+      "followup": "Reran with existing /opt/homebrew/opt/openssl@3/bin in PATH; no code or signing-policy workaround."
+    },
+    {
+      "command": "verify with OpenSSL3 inside sandbox",
+      "result": "EPERM loopback listen during local synthetic tests",
+      "resolution": "One authorized outside-sandbox host-only rerun passed; no device/inference/deploy."
+    }
+  ],
+  "evidence": [
+    {
+      "artifact": "pixel209-fix-targeted.log",
+      "sha256": "4c4ac68875781557e7aef998491569d5bfdecccc7d602fb5efdafcd907619889"
+    },
+    {
+      "artifact": "pixel209-fix-old-counterexample.log",
+      "sha256": "22e5aa8fe9c031047fba6f4ce96ef2aba09eddd8934dc3fd2f80fac2398d93d8"
+    },
+    {
+      "artifact": "pixel209-fix-cache-python.log",
+      "sha256": "47ace84ff2685e11e424720a6025631fa05f74dfba0c266a77bc56e6881ae875"
+    },
+    {
+      "artifact": "pixel209-fix-update-python.log",
+      "sha256": "686c07a3da4dd164329c8d147222a460450480a548ce38e4d9cbd98443b90521"
+    },
+    {
+      "artifact": "pixel209-fix-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "pixel209-fix-project.log",
+      "sha256": "b7a4294b0d9ac6b34bdc77e69a06af11e6efbce9a3ea60784dbc03ed6ef3b79a"
+    },
+    {
+      "artifact": "pixel209-fix-design.log",
+      "sha256": "80fb1340c583a9b7a6ac994927179b5aea3e8854aff5d33720413d7bb9a85ca5"
+    },
+    {
+      "artifact": "pixel209-fix-package.log",
+      "sha256": "1bd30060d1204616aab61b8ed9c35c5a294112aab019221c611151812c43b5ef"
+    }
+  ]
+}

@@ -1140,3 +1140,11 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 承認・合格条件: Mainの固定download URL検証、同FD/非symlink/限定bytesのprivate-owner launcher、既存worker/model/runtime lockとlegacy job上限を保持する。独立c9c795は9sourceとhost/package限定合格。99hostpass3Macskip・独立80pass1Linuxskipは重複を含む。CIの専用synthetic stepでPython cache6/update23がLinux上で実行されたことを各exit/件数で確認し、実npmverify/全CIと独立metadata検収がmerge前gate。
 
 未決定の決め方: 同一package SHAによるPixel10 GL066/frankelの非破壊確認はsoleOS担当の別lease・復旧条件で受け入れる。Gitは端末へ書かず、旧実機やhost fixtureを新候補のphysical/P02/fullOS/一般公開へ転用しない。実inferは別承認で、今回追加しない。[採用証拠](evidence/development-execution/pixel-cache-main-adoption.json)。
+
+
+<a id="pixel-update-guard-toctou-fix"></a>
+### PR209 update metadata読込競合の修正（2026-10-25）
+
+旧head06dac1bbではCodeQL集約がconfiguration不足neutralからHighのfile raceへ更新され、receiptのlstat後にsymlinkへ差し替えるhost反例が成立した。旧独立PASSはこの修正の合格証拠へ転用しない。pointer/receiptをO_RDONLY|O_NOFOLLOW|O_NONBLOCKで開き、同FDのfstatで所有者・private mode・regular file・単一link・容量を検査し、同FDから最大262145bytesだけ読む。親directoryも非追従FDで保持し、返却前に全FDと各pathのinode/device・mode・所有者・size・更新時刻を照合する。変化・読込失敗・上限超過はPIXEL_UPDATE_PENDING。全経路でFDを閉じる。
+
+再現試験は旧実装のreceipt差し替え反例、regular置換、pointer再公開、親directory置換、読込中増大/同容量書換、読込失敗とFD解放を含む。新HEADのCodeQL集約と全CIを確認する。修正はhost metadata読込だけで、実機操作・追加推論・新権限はない。証拠は`docs/evidence/development-execution/pixel-update-guard-toctou-fix.json`。
