@@ -803,9 +803,10 @@
         "acceptedTimeOrder": "0 <= observedAt <= now < expiresAt; lifetime <=30000ms",
         "scope": "Local display observation only; not device identity/readiness/authority proof",
         "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-adoption.json",
-        "mainMerged": false,
+        "mainMerged": true,
         "wholeOSAccepted": false,
-        "physicalAccepted": false
+        "physicalAccepted": false,
+        "currentMainEvidence": "docs/evidence/development-execution/os02-capability-freshness-main-current.json"
       }
     },
     {
@@ -3133,9 +3134,10 @@
       "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
       "contract": "Exact existing #workspace-main fragment remains usable while running; all other anchor clicks and consumer admission remain guarded. No new execution authority or persistence.",
       "browserAcceptance": "Synthetic actual React/Chrome fixture390+1280; real job/auth/device/whole SMITH unaccepted",
-      "mainMerged": false,
+      "mainMerged": true,
       "authority": "docs/rockstaros-complete-design.md#smith-running-workspace-landmark",
-      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark"
+      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark",
+      "currentMainEvidence": "docs/evidence/development-execution/smith-running-skip-main-current.json"
     }
   },
   "eveSavedSourceEstimate": {

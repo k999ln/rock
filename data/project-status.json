@@ -10876,5 +10876,153 @@
       }
     },
     "latestSynchronizedMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
+  },
+  "pixelEmptyObservationFixture": {
+    "evidence": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "scope": "One normal-case fixture actual empty-observation rendezvous only",
+    "testSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+    "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "workerRuntimeChanged": false,
+    "mainMerged": false,
+    "wholeOSAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "independentReview": "docs/evidence/development-execution/pixel-diagnostic-observation-fixture-review.json",
+    "independentReviewSha256": "c602fd1d105144aaf0d49869171b1f77795541410c32a0bfb98a710707ff5737",
+    "mustFix": 0,
+    "independentActualChildren": 7,
+    "originalMainSameShaRetry": {
+      "sha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "run": 40200549454,
+      "attempt": 2,
+      "conclusion": "success",
+      "firstFailurePreserved": true
+    },
+    "currentIntegrationEvidence": "docs/evidence/development-execution/pixel-empty-observation-main-adoption.json",
+    "sourceIndependentReviewer": "Existing Web reviewer; actual seven child cases",
+    "sourceIndependentReview": "PASS_SCOPED_TEST_ONLY_OBSERVATION_HANDSHAKE",
+    "integrationMetadataReviewer": "Root; provenance and adoption metadata review only",
+    "integrationMetadataReview": "preliminary scoped pass; final pinned head pending"
+  },
+  "smithRunningSkipMainCurrent": {
+    "schema": "rockstaros.smith-running-skip-main-current/1",
+    "pr": 235,
+    "acceptedHead": "7e9a1db871c799073ea0178ea112f00e6c264a51",
+    "mainMergeSha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+    "mainTree": "7b35e92f75790b44cf2a4883bd7e9ed4332fe040",
+    "mainMerged": true,
+    "headCISuccess": 7,
+    "mainLatestCISuccess": 6,
+    "headVerify": {
+      "run": 40200052370,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "769d430b595e31c2ee90013a39c09b0a6377e87a2335d030e8804e9599fea029"
+    },
+    "mainVerify": {
+      "run": 40200549454,
+      "attempt": 2,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "d36f1f6d5890551a7082d2bd103e5d6dbd579024442e2e21fb59244ee848fad9"
+    },
+    "historicalMainAttempt1": {
+      "conclusion": "failed before npm verify; separate Pixel normal fixture fixed initial0.3second sleep did not establish empty sample, int-versus-None error",
+      "logSha256": "659ddbaeb224c9cd0f62e97a7411cc59edc207ebf227465a03720e0ec761eea8",
+      "preserved": true
+    },
+    "retryPolicy": "One retry after deterministic same-cause old failure/new success diagnosis; fixture prevention separately reviewed, not inferred from retry success",
+    "fixturePreventionEvidence": "docs/evidence/development-execution/pixel-empty-observation-fixture.json",
+    "scope": "Exact same-page workspace skip landmark during running only; consumer and all other navigation fences retained",
+    "source2": [
+      {
+        "path": "components/workspace-shell.tsx",
+        "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+      },
+      {
+        "path": "tests/os-bottom-navigation-main.test.mjs",
+        "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+      }
+    ],
+    "source2Unchanged": true,
+    "originalReceiptsUnchanged": true,
+    "wholeUnitAccepted": false,
+    "rootCUAAcceptance": false,
+    "realAuthJobAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
+  },
+  "os02CapabilityFreshnessMainCurrent": {
+    "schema": "rockstaros.os02-capability-freshness-main-current/1",
+    "pr": 237,
+    "acceptedHead": "ef13a7b51fab35dc3b4db20695f655197d2c670b",
+    "mainMergeSha": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+    "mainMerged": true,
+    "headCISuccess": 8,
+    "mainCISuccess": 7,
+    "headVerify": {
+      "run": 40200870371,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "a4203665d282f411189317e3bf08edf9e03889e2972e6c3bff3914458dc7490e"
+    },
+    "mainVerify": {
+      "run": 40201798481,
+      "tests": 3027,
+      "pass": 3025,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "7415c2ff928acab09ceb501d68e4818b0d64761623db3e24e80c797a8a93c500"
+    },
+    "headAndroidPrototype": {
+      "run": 40200870402,
+      "conclusion": "success",
+      "actualConsumerFreshnessMethodsPassed": 2,
+      "logSha256": "0173809d390391a5163e3b6563844856aebef35167550217b78ce58041208e56"
+    },
+    "mainAndroidPrototype": {
+      "run": 40201798456,
+      "conclusion": "success",
+      "actualConsumerFreshnessMethodsPassed": 2,
+      "logSha256": "407ecd072b1b11ac82149b2b70bc3cd497b3b75c9dc4e9e7f00247a8825c1814"
+    },
+    "fixedSource4": [
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "bytes": 248493,
+        "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+        "bytes": 614,
+        "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+      },
+      {
+        "path": "tests/test_device_capability_freshness.py",
+        "bytes": 3849,
+        "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+      },
+      {
+        "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+        "bytes": 2239,
+        "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+      }
+    ],
+    "source4Unchanged": true,
+    "originalSourceReview": "docs/evidence/development-execution/os02-capability-freshness-review.json",
+    "contractCheckerRootFourMutantsPass": true,
+    "scope": "Future local capability observation rejected; same elapsed-realtime consumer/helper time guard only",
+    "wholeUnitAccepted": false,
+    "P02Complete": false,
+    "newFreshnessAndroidRuntimeOrPhysicalAccepted": false,
+    "deviceOperations": 0,
+    "additionalInference": 0,
+    "publicDeployment": false
   }
 }

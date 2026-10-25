@@ -1,0 +1,84 @@
+{
+  "schema": "rockstaros.pixel-empty-observation-fixture/1",
+  "recordedAt": "2026-10-25T14:16:41.597282+00:00",
+  "scope": "Test-only first real empty-file observation rendezvous in one real-child normal diagnostics fixture; separate from Mini229 first-output diagnostic wait fix",
+  "sourceTest": "tests/test_pixel_worker_diagnostics.py",
+  "beforeSha256": "5a9b14de75b8f71344ac112a44c9ffbb5f5e5f3fe91ade76516eaeba48fd3337",
+  "afterSha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+  "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+  "workerRuntimeChanged": false,
+  "observedMainFailure": {
+    "sha": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+    "run": 40200549454,
+    "attempt": 1,
+    "step": "Verify bounded Pixel worker diagnostics and Linux parent lifetime",
+    "error": "firstObservedMonotonicNs > previousEmptyObservationMonotonicNs TypeError: int versus None",
+    "tests": 27,
+    "errors": 1,
+    "skip": 1,
+    "standardNpmVerifyReached": false,
+    "failedLogSha256": "659ddbaeb224c9cd0f62e97a7411cc59edc207ebf227465a03720e0ec761eea8"
+  },
+  "cause": "A fixed initial0.3second producer sleep cannot guarantee an observer empty-file sample on a busy runner. Missing prior-empty timing is valid runtime evidence and must not be fabricated.",
+  "fix": "Only fixture producer waits up to3seconds for an actual OutputObservation.sample returning a real empty observation, then emits stdout. Missing release causes explicit child failure. Final producer sleep and all output/CPU/privacy/permission/hash assertions remain.",
+  "astValidation": {
+    "changedMethods": [
+      "test_real_fixture_stdout_exit_cpu_and_input_hash_without_authority"
+    ],
+    "allAssertionCallsByteEquivalentAst": true,
+    "assertionCalls": 15,
+    "allOtherMethodsUnchanged": true
+  },
+  "independentStyleLocalProbes": {
+    "observerFirstSampleDelaySeconds": 0.45,
+    "cases": [
+      {
+        "case": "old-negative",
+        "returnCode": 1,
+        "expected": 1,
+        "logSha256": "4fdfca8624e016280648fc47e68f0d5bcafc4a9a9b369c034a63880b56961250"
+      },
+      {
+        "case": "new-delayed-pass",
+        "returnCode": 0,
+        "expected": 0,
+        "logSha256": "a63581525160b9c02ddf51b7f91e778e7a70a76ea6c733c5774918f80ebafa35"
+      },
+      {
+        "case": "new-no-empty-negative",
+        "returnCode": 1,
+        "expected": 1,
+        "logSha256": "d4d5455f646d952b928e91e9e902f01e985fe6c5af04dbcc5faf9094e686eff2"
+      },
+      {
+        "case": "new-producer-error-negative",
+        "returnCode": 1,
+        "expected": 1,
+        "logSha256": "05ba8640c71e8535b25c34f2324c008458156893af81ffd56ca24363ebcaf506"
+      }
+    ],
+    "overlapNotAdditive": true,
+    "probeSha256": "5eac06e96fbae297245524975de1ee0a635ffaf5d4562cce2bbcce65603a36f6"
+  },
+  "probeHistory": "Initial650ms delay also exceeded old child lifetime and caused missing final hash; retained separately.450ms reproduces the exact main None-time error.",
+  "hostWholeSuite": {
+    "tests": 27,
+    "pass": 26,
+    "fail": 0,
+    "skip": 1,
+    "platform": "Mac; Linux parent/launcher behavior remains separate",
+    "logSha256": "accd6fb18a7891c2bfaebc2f777378df42bc2d716be1c24c3b21e7b0631906b4"
+  },
+  "rootIndependentReview": "pending on exact final testhash; not self-certified",
+  "sameMainShaRetry": {
+    "run": 40200549454,
+    "attempt": 2,
+    "status": "requested once after concrete fixture diagnosis; outcome pending",
+    "oldAttemptPreserved": true
+  },
+  "wholeOSAccepted": false,
+  "P02Complete": false,
+  "physicalAccepted": false,
+  "modelInferencePerformed": false,
+  "publicDeployment": false
+}

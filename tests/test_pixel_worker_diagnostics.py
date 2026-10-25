@@ -77,11 +77,26 @@ class DiagnosticsTest(unittest.TestCase):
         self.assertFalse(list(self.path().glob('.diagnostics-*')))
 
     def test_real_fixture_stdout_exit_cpu_and_input_hash_without_authority(self):
-        self.binary.write_text('#!' + sys.executable + '\nimport sys,time\ntime.sleep(.3)\nprint(' + repr(PRIVATE) + ',flush=True)\ntime.sleep(.3)\n')
+        empty_observed = self.root / 'fixture-empty-observed'
+        self.binary.write_text(
+            '#!' + sys.executable + '\nimport pathlib,sys,time\n'
+            'ready=pathlib.Path(' + repr(str(empty_observed)) + ')\n'
+            'until=time.monotonic()+3\n'
+            'while not ready.exists() and time.monotonic()<until: time.sleep(.01)\n'
+            'if not ready.exists(): raise RuntimeError("fixture empty observation not confirmed")\n'
+            'print(' + repr(PRIVATE) + ',flush=True)\ntime.sleep(.3)\n')
         self.binary.chmod(0o700)
         self.pin()
+        # This normal-case fixture requires an actual empty-file sample before stdout.
+        # Production permits no previous-empty observation; that case is tested separately.
+        original_sample = w.OutputObservation.sample
+        def sample_then_release_stdout(observer):
+            original_sample(observer)
+            if observer.first is None and observer.last_empty is not None:
+                empty_observed.touch(mode=0o600, exist_ok=True)
         # Host fixture only. Real Linux parent-death behavior has a separate test.
-        with patch.object(w, 'prepare_child', side_effect=lambda cpu, parent: w.limits(cpu)):
+        with patch.object(w, 'prepare_child', side_effect=lambda cpu, parent: w.limits(cpu)), \
+                patch.object(w.OutputObservation, 'sample', sample_then_release_stdout):
             result = w.run(self.data())
         self.assertEqual(result['text'], PRIVATE)
         d = self.read()

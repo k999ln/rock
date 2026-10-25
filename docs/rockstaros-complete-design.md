@@ -553,6 +553,8 @@ Toolは少なくとも次を宣言する。
 
 <a id="os02-capability-observation-freshness"></a>
 
+現行採用: PR237/head ef13a7b5全8CI、main bb432fd9全7CI（Android prototypeを含む）成功。新時刻guardの実機表示やP02/wholeOSは未受入。[現行証拠](evidence/development-execution/os02-capability-freshness-main-current.json)。
+
 ### Shellのlocal capability観測時刻（OS-02 / OS10）
 
 目的・体験: 未来時刻の観測を新鮮な端末情報として表示しない。Shellの既存 `applyDeviceCapabilities` がBroker応答の観測時刻をelapsed realtimeで検査し、無効なら既存のunknown/未評価表示へ戻す。端末全体の適合や本人性・実行権限を追加証明する機能ではない。

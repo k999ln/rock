@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## Pixel正常fixtureの実empty観測待合せと現行受入
+
+主担当10/G04、source07/ROCK。Smith merge bb11のCI attempt1は既存Pixel正常fixtureの時刻Noneでnpm全verify前に停止。実observerを450ms遅延させ旧exact反例を再現し、正常fixtureのproducerを実empty観測後にだけ出力する最大3秒待合せへ変更。15assertion/他moduleAST/worker本体c6a4不変、Web独立c602 mustFix0、実child7case・reap/cleanup合格。旧650ms別エラー、永久観測不能/出力失敗/250msdeadlineの負例、Mac27中26pass1skipを分けて保持。初回失敗後、同bb11の一度だけのretryは全6CI・Linux3027/3025pass/0fail/2skip成功。恒久修正の成功へ転用せず新headCIを必須とする。OS237はhead8/mainbb432全7CI・Androidprototype2freshness試験/既存compile-emulatorとLinux3027/3025/0/2成功。両現行status/95overlay/handoff/indexを同期し、元capture false/pendingを保持。[fixture採用](docs/evidence/development-execution/pixel-empty-observation-main-adoption.json)。次: Root別metadata検収→fixedheadCI→通常main/mergeCI。runtime/実機/推論/wholeOS/P02/公開受入は追加しない。
+
 ## OS-02 capability観測時刻の限定修復
 
 主担当07/ROCK・統合10/G04。未来observedAtをfreshにしていた旧consumer反例を保持し、固定4source/testと作者/Root独立receiptをhash不変でmain a58へ採用準備。actual Shell guardと純粋helperは0<=observed<=now<expiry、最大30秒を要求する。schema/producer/identity/権限/未知表示とtimerは保持。追加CIは既存JDK17後のbounded2分Python明示試験とpush/PR両pathfilterだけで、既存compile/emulatorを保持。新host全verifyは契約checker同期後3026試験/3023pass/0fail/3skip、元の旧literal検査1失敗は履歴保持。新host境界2方法/23case成功、作者offline compile/Shell14/lint0errors202warnings（差分未測定）、Rootsource検収mustFix0。次: 標準fullverify/最新main同期→Root別metadata/CI検収→最終headAndroid/全CI→通常main/mergeCI。device/推論/鍵/flash0、Android runtime/実機/P02/wholeOS/公開は未受入。[採用記録](docs/evidence/development-execution/os02-capability-freshness-main-adoption.json)。

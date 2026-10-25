@@ -677,7 +677,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "OS02_CAPABILITY_FRESHNESS_CANDIDATE"
+        "OS02_CAPABILITY_FRESHNESS_CANDIDATE",
+        "OS02_CAPABILITY_FRESHNESS_ADOPTED"
       ]
     },
     {
@@ -1208,7 +1209,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "SMITH_BOTTOM_NAVIGATION_CANDIDATE"
+        "SMITH_BOTTOM_NAVIGATION_CANDIDATE",
+        "SMITH_RUNNING_SKIP_LINK_ADOPTED"
       ]
     },
     {

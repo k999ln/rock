@@ -88,6 +88,10 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 # Git / CI / Operations
 
+## Pixel正常fixtureの観測待合せ
+
+worker本体を変えず、正常fixtureの出力前に実empty sampleを最大3秒待つ。Smith bb11初回27件の1error/1skipと、450ms旧反例/新成功、Web実child7負例/cleanup、同SHA一度retry成功を別履歴に保つ。15assertion/他methodASTと既存None許容runtimeケースを維持。`python3 -B tests/test_pixel_worker_diagnostics.py`、exacthead標準`npm run verify`と全CI→通常main/mergeCIを確認する。[採用段階](../evidence/development-execution/pixel-empty-observation-main-adoption.json)。OS/Smithのcurrent metadataも同期しwhole95受入0、616公開保留を維持する。
+
 ## Wallet UI fixtureの遅延GET帰属
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](../evidence/development-execution/esim-eve-ui-main-merge.json)。
