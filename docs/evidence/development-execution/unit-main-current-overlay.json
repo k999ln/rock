@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
-  "mainAtCapture": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+  "recordedAt": "2026-10-25T09:16:15.696716+00:00",
+  "mainAtCapture": "41ee45d7fce8390b27c59110cc282f695f898122",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -568,7 +568,7 @@
       "units": [
         "OS-01"
       ],
-      "kind": "bounded_source_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
       "sourceNine": [
         {
@@ -636,9 +636,9 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
-      "scope": "Explicit cache-only backend with user-authorized same-FD update-guard CodeQL repair; host/package only, new-head CI pending.",
-      "mainMerged": false,
-      "metadataReviewPending": true,
+      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure unresolved. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
+      "mainMerged": true,
+      "metadataReviewPending": false,
       "wholeUnitAccepted": false,
       "physicalAccepted": false,
       "productionAccepted": false,
@@ -707,7 +707,16 @@
           "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
         }
       ],
-      "guardFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json"
+      "guardFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+      "pr": 209,
+      "acceptedHead": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+      "mainMergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+      "sourceIndependentReview": "PASS_SCOPED_current_guard",
+      "headSameShaCISuccess": 8,
+      "mainProductSameShaCISuccess": 7,
+      "mainAllChecksSuccess": false,
+      "mainDependabotFailure": 1,
+      "mainMergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
     }
   ],
   "executionPriority": [
@@ -803,8 +812,8 @@
     {
       "order": 0,
       "unit": "OS-01",
-      "state": "cache_main_and_update_fence_source_reviewed_candidate",
-      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "state": "PR209_main_integrated_new_guard_physical_unverified",
+      "scope": "PR209/main8f source and7 productCI accepted; Dependabot1failure unresolved. Oldf3 physical is historical only; newc43/P02/fullOS separate. PR213 UI unmerged.",
       "wholeUnitAccepted": false
     }
   ],
@@ -828,5 +837,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea"
+  "previousCaptureMain": "2854d069bdfaf42d4816d24272b0e2d71f32997c"
 }
