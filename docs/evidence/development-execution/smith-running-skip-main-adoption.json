@@ -1,0 +1,45 @@
+{
+  "schema": "rockstaros.smith-running-skip-main-adoption/1",
+  "recordedAt": "2026-10-25T13:48:31.196028+00:00",
+  "unit": "SMITH-01",
+  "task": "SKY21",
+  "previousSaveOnlySnapshot": "docs/evidence/development-execution/smith-running-skip-link-git-save.json",
+  "previousSnapshotUnchanged": true,
+  "newMainAuthorization": {
+    "sourceChat": "01a16aeb-1268-7491-a2ce-cda09d15df11",
+    "sourceTurn": "01a172a1-9173-7c61-a4aa-b132f749bc37",
+    "sourceUserMessage": "01a172a1-9909-7483-9a82-970b09ee6c75",
+    "directUserReadback": true,
+    "scope": "Continue other chats remaining work through independent acceptance, Git save and main integration;616 bulk publication held",
+    "rootAppliedToThisCandidate": true
+  },
+  "synchronizedMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+  "source2": [
+    {
+      "path": "components/workspace-shell.tsx",
+      "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+    }
+  ],
+  "independentSourceReview": "docs/evidence/development-execution/smith-running-skip-link-review-summary.json",
+  "scope": "Same-page workspace landmark only; original navigation/consumer auth-owner-budget-job contracts retained",
+  "newHostFullVerify": {
+    "baseMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "exitCode": 0,
+    "tests": 3026,
+    "pass": 3023,
+    "fail": 0,
+    "skip": 3,
+    "logSha256": "b41f8894f212b0bf274a9d401c9b618d6d001f541ab0bfe2178a2b0529ce3618"
+  },
+  "mainMerged": false,
+  "wholeUnitAccepted": false,
+  "rootCUAAcceptance": false,
+  "realAuthJobAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false,
+  "next": "New standard fullverify, preserve latestmain, separate Root final metadata review, exacthead CI then normal main/mergeCI"
+}
