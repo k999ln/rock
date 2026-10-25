@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
+  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -668,8 +668,8 @@
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "process_crash_fixture_independent_host_verify_pass_save_next",
-      "scope": "Source4 and metadata independently reviewed, host36 and fullverify pass; next exactbranch Git save/CI. No runtime price/Provider/public changes.",
+      "state": "PR208_main_integrated_test_only_process_recovery",
+      "scope": "Git/main/CI gates closed at2854d069; this is13POSIX process-death fixture acceptance, not real revenue/physical/Cloudflare/wholeWallet.",
       "wholeUnitAccepted": false
     },
     {
@@ -769,5 +769,23 @@
     "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
   },
   "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
-  "latestProEntryMergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+  "latestProEntryMergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json",
+  "walletProcessRecoveryMainMerge": {
+    "pr": 208,
+    "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+    "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+    "documentSaved": true,
+    "workBranchGitHubSaved": true,
+    "mainMerged": true,
+    "sameMergeShaCISuccess": 6,
+    "wholeUnitAccepted": false,
+    "productionDeployment": false
+  },
+  "currentMainReadback": {
+    "sha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+    "sameShaCISuccess": 6,
+    "capturedMainContextPreserved": true
+  }
 }

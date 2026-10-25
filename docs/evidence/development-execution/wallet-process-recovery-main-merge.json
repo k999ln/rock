@@ -1,0 +1,150 @@
+{
+  "schema": "rockstaros.wallet-process-recovery.main-merge/1",
+  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
+  "pr": 208,
+  "url": "https://github.com/k999ln/rock/pull/208",
+  "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+  "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+  "parents": [
+    "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+    "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d"
+  ],
+  "treeSha": "184fd2f6e4debca8addd294caeace4590077bb8c",
+  "headAndMergeTreeEqual": true,
+  "normalMerge": true,
+  "exactPayloadFiles": 20,
+  "manifestSha256": "84e8cffcbc2e5c4da7613e61038d9f8c8447a9edc1454afd285941092421818f",
+  "remoteAndGitObjectPayloadSha256Matches": 20,
+  "sourceScope": "Four tests/fixtures only; runtime product/Worker/domain/keys/migrations/price/888/defaultToC policy unchanged.",
+  "reviewVerdicts": {
+    "source": "PASS_SCOPED",
+    "metadata": "PASS_SCOPED",
+    "postReviewWhitespace": "PASS_SCOPED_WHITESPACE_ONLY",
+    "mustFix": 0
+  },
+  "reviews": [
+    {
+      "logicalId": "wallet-process-independent-review.json",
+      "sha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041"
+    },
+    {
+      "logicalId": "wallet-process-metadata-review-r2.json",
+      "sha256": "f84a4862627a2f8cd8bcd908c3c17f5cbdb874b8381e433cc708b355d89a4748"
+    },
+    {
+      "logicalId": "wallet-process-whitespace-review.json",
+      "sha256": "9a7ae9700869ac3fdf2dbac4f5989f9b48fb7cb851a56367503d182ad9f881c1"
+    }
+  ],
+  "prHeadCISuccess": 7,
+  "mergeSameShaCISuccess": 6,
+  "mainChecks": [
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377257/job/121108791605"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377257/job/121108791437"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377288/job/121108791283"
+    },
+    {
+      "name": "verify",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377301/job/121108791131"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377288/job/121108791092"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "headSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40173377237/job/121108790942"
+    }
+  ],
+  "actualMainLinuxVerify": {
+    "head": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "runId": "40173377301",
+    "jobId": "121108791131",
+    "runner": "ubuntu-latest",
+    "actualCheckoutShaFound": true,
+    "actualNpmVerifyStep": "success",
+    "rootSuite": {
+      "tests": 2911,
+      "pass": 2909,
+      "fail": 0,
+      "skip": 2
+    },
+    "separateSuiteCounts": [
+      "ℹ tests 25",
+      "ℹ pass 25",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 45",
+      "ℹ pass 45",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 4",
+      "ℹ pass 4",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 6",
+      "ℹ pass 6",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 7",
+      "ℹ pass 7",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 2",
+      "ℹ pass 2",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ tests 2",
+      "ℹ pass 2",
+      "ℹ fail 0",
+      "ℹ skipped 0"
+    ],
+    "countsNotAdditive": true,
+    "logSha256": "0c56722594c97ab1e8a6864d91f64e65b9859f206103bf19ca8247d4304c2a3a"
+  },
+  "priorProtection": {
+    "total": 183,
+    "unchanged": 182,
+    "reviewedException": {
+      "path": "tests/billing-worker.test.mjs",
+      "reason": "Reviewed TestD1 extraction into shared test fixture; existing tests retained, no Worker product edit.",
+      "sha256": "dcfd8c96c1cafb34453c31f3782f5552a0fe2e1d1f46d2fcd5a63a85c1416ed5"
+    }
+  },
+  "saveStages": {
+    "originalDocumentsSaved": true,
+    "sourceWorkBranchGitHubSaved": true,
+    "sourceMainMerged": true,
+    "thisCurrentStatusSync": "separate_metadata_update_candidate",
+    "productionDeployment": false
+  },
+  "captureMeaning": "Original source/review receipts retain their preparation-time pending and host failure/skip evidence. This record closes only PR208 Git save/main/CI stages.",
+  "notAccepted": [
+    "Production finance/real revenue/Provider arrival",
+    "Cloudflare concurrency or power loss",
+    "Authenticated multi-device wallet",
+    "WholeWallet02, general launch or deployment"
+  ],
+  "remaining616PublicExport": "HELD",
+  "rootRegistryReadOrWritten": false
+}

@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
-  "mainAtCapture": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
+  "mainAtCapture": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -520,7 +520,7 @@
       "units": [
         "WALLET-02"
       ],
-      "kind": "additional_bounded_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
       "sourceFiles": [
         {
@@ -543,13 +543,25 @@
       "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
       "scope": "Test-only actual POSIX child SIGKILL at13 checkpoints; local SQLite fresh-connection recovery, same receipt/instructions/cap and default hold. Not actual Cloudflare, powerloss, cash or wholeWallet.",
       "metadataReviewPending": false,
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "publicDeploymentAccepted": false,
       "sourceIndependentReview": "PASS_SCOPED",
       "sourceReviewSha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041",
       "fullVerify": "host_pass_2911tests_2908pass_3skip_0fail",
-      "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json"
+      "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json",
+      "pr": 208,
+      "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+      "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "headSameShaCISuccess": 7,
+      "mainSameShaCISuccess": 6,
+      "actualMainLinuxVerify": {
+        "tests": 2911,
+        "pass": 2909,
+        "fail": 0,
+        "skip": 2
+      },
+      "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
     }
   ],
   "executionPriority": [
@@ -563,8 +575,8 @@
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "process_crash_fixture_source_independent_and_host_verify_pass_Git_save_next",
-      "scope": "Source/metadata independent PASS and host verify passed; next exactbranch Git save/same-head CI. No next implementation or main merge included.",
+      "state": "PR208_main_integrated_test_only_process_recovery",
+      "scope": "Normal merge2854d069, exact20payload/tree and6sameSHA mainCI/actualLinuxverify passed. Remaining powerloss/Cloudflare/production/wholeWallet gates stay open.",
       "wholeUnitAccepted": false
     },
     {
@@ -663,5 +675,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2"
+  "previousCaptureMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea"
 }
