@@ -145,6 +145,13 @@
     ]
   },
   "latestMainSynchronization": {
+    "base": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "changes": "Accepted eSIM/Eve UI and test fixture updates from PR213; all incoming keys and runtime preserved.",
+    "dependencyAndTestBytesUnchanged": true,
+    "finalHeadFullVerify": "pending exact-head CI",
+    "localFullVerifyScope": "Previous candidate before incoming UI change; no reuse as final exact-head full-verify result"
+  },
+  "priorMainSynchronization": {
     "base": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
     "changes": "Pixel status/documentation only; all new main records preserved, own dependency note added.",
     "dependencyAndTestBytesUnchanged": true

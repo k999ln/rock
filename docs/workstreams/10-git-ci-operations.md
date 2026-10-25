@@ -84,6 +84,12 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 # Git / CI / Operations
 
+## Wallet UI fixtureの遅延GET帰属
+
+CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固定する。新しい認証確認GETへ古いgateを渡さず、後着の古い読取でowner/私有情報を復活させない既存製品契約を固定2反例で検査。`node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs`45pass、旧対照2fail。製品source/認証/料金は変更なし。[証拠](../evidence/development-execution/wallet-ui-deferred-get-fixture.json)。
+
+
+
 ## Pixel cache-only/更新fence main候補
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。

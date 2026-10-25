@@ -51,6 +51,7 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     corruptPost = null,
     rejectPost = null,
     delayedGet = null,
+    heldGetResponse = null,
     mounted = true;
   const requests = [],
     tasks = new Set(),
@@ -227,12 +228,18 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
       input = options.body ? JSON.parse(options.body) : undefined;
     const entry = { method, input, owner, headers: options.headers };
     requests.push(entry);
+    // Bind the one deferred response to its initiating request before any await.
+    const heldGet = method === 'GET' ? delayedGet : null;
+    if (heldGet) delayedGet = null;
     if (method === 'POST' && rejectPost) {
       const status = rejectPost;
       rejectPost = null;
       return Response.json({ error: 'fixture refusal' }, { status });
     }
+    const responseHold = method === 'GET' ? heldGetResponse : null;
+    if (responseHold) heldGetResponse = null;
     const response = await routeCall(method, input, owner, options.headers);
+    if (responseHold) { responseHold.started.resolve(); await responseHold.promise; }
     entry.status = response.status;
     if (method === 'POST' && malformedPost && response.ok) {
       malformedPost = false;
@@ -255,11 +262,7 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
       dropPost = false;
       throw Error('synthetic response lost after commit');
     }
-    if (method === 'GET' && delayedGet) {
-      const gate = delayedGet;
-      delayedGet = null;
-      await gate.promise;
-    }
+    if (heldGet) await heldGet.promise;
     return response;
   }
   function track(promise, held = false) {
@@ -378,6 +381,11 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     corruptNextPostError(format = 'truncated') { corruptPost = format; },
     setOwner(value) {
       owner = value;
+    },
+    holdGetResponse() {
+      const gate = { ...Promise.withResolvers(), started: Promise.withResolvers() };
+      heldGetResponse = gate;
+      return gate;
     },
     delayGet() {
       const gate = Promise.withResolvers();
@@ -518,6 +526,37 @@ for (const view of ['wallet-workspace.tsx', 'revenue-wallet-workspace.tsx']) {
     await h.flush();
     assert.equal(h.ledger().snapshot.balance, 24000);
     assert.equal(h.ledger().snapshot.records.length, 1);
+  });
+  void test(`${view}: delayed old GET never holds the newer authentication read`, { timeout: 10000 }, async (t) => {
+    const h = harness(t, view);
+    await h.flush();
+    const old = h.delayGet();
+    const response = h.holdGetResponse();
+    const read = h.ledger().refresh();
+    await response.started.promise;
+    let current;
+    let timer;
+    try {
+      h.setOwner(null);
+      current = h.ledger().refresh();
+      await Promise.race([
+        current,
+        new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('new authentication read inherited old GET gate')), 5000); }),
+      ]);
+      await h.flush();
+      assert.equal(h.ledger().snapshot, null);
+      assert.equal(h.ledger().ownerScope, null);
+      assert.ok(h.ledger().needsSignin);
+    } finally {
+      clearTimeout(timer);
+      response.resolve();
+      old.resolve();
+      await Promise.allSettled([read, current]);
+    }
+    await h.flush();
+    assert.equal(h.ledger().snapshot, null);
+    assert.equal(h.ledger().ownerScope, null);
+    assert.ok(h.ledger().needsSignin);
   });
   void test(`${view}: a stale successful GET cannot restore rows after newer authentication loss`, async (t) => {
     const h = harness(t, view);

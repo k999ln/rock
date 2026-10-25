@@ -1,0 +1,69 @@
+{
+  "schema": "rockstaros.wallet-ui-deferred-get-ci-fixture/1",
+  "recordedAt": "2026-10-25T09:18:09.147996+00:00",
+  "scope": "G04 test fixture only; no Wallet/UI product source, schema, auth or price change",
+  "cause": "Deferred GET gate was claimed after awaiting route response. A newer fast authentication read could consume the old gate and deadlock a test awaiting auth loss before releasing old read.",
+  "liveCi": {
+    "head": "c5cb0f7e303628d026e9566938ec60cf1db057a2",
+    "run": 40178566228,
+    "job": 121124488343,
+    "lastObservedLine": 3097,
+    "lastObservedTest": "revenue-wallet-workspace.tsx: an old GET cannot erase a newly saved entry",
+    "nextCase": "stale successful GET after newer authentication loss",
+    "npmVerifyStarted": "2026-10-25T08:56:46Z",
+    "observedMoreThanMinutes": 13,
+    "cancelReason": "Bounded deterministic2-case reproduction proved fixture gate theft after live test progress stopped; no unmodified blind retry",
+    "screenshotSha256": "f1b5e40aa3b989e8e3c48004cf75493b0acde87377d061ef20f7d9fb4df20736"
+  },
+  "implementation": "Reserve each deferred GET gate synchronously at fetch initiation, before await; retain the captured gate for only that response. Existing held task classification stays before request execution.",
+  "source": {
+    "path": "tests/wallet-workspace-recovery.test.mjs",
+    "baseSha256": "b0d8b79cf373ac2163a42343a83ae877f0b8d98fad54a9b793c705d7eb6bbc3a",
+    "sha256": "4ab7067de43d828f995b1dfa1a3ab4cd7626c8ffe6968a15839d6ee87e3b0326"
+  },
+  "regressions": {
+    "newTests": 2,
+    "views": [
+      "wallet-workspace.tsx",
+      "revenue-wallet-workspace.tsx"
+    ],
+    "method": "Hold old GET response before former gate-claim point; newer unauthenticated GET must complete before old gate released, and late old response cannot revive snapshot/owner.",
+    "assertionsRemovedOrWeakened": 0,
+    "oldControlTests": 2,
+    "oldControlFail": 2,
+    "oldSpecificFailure": "new authentication read inherited old GET gate",
+    "oldProductNeverReverted": true,
+    "fixedSuiteTests": 45,
+    "fixedSuitePass": 45,
+    "fixedSuiteFail": 0,
+    "fixedSuiteSkip": 0,
+    "logs": [
+      {
+        "name": "old-final.log",
+        "sha256": "fb06989034ffaf8298b2a4ac6cd7adecf23e470510b23dd5cf79dca23dc501f0"
+      },
+      {
+        "name": "fixed-suite.log",
+        "sha256": "2071aaeb433f348288ca5c43526b21868614aaa292825be1ed32466dbd467e07"
+      }
+    ]
+  },
+  "productSourceUnchanged": true,
+  "eSimEveSourceFourUnchanged": true,
+  "wholeUnitAccepted": false,
+  "physicalAccepted": false,
+  "realFinancialOperation": false,
+  "publicDeployment": false,
+  "next": "Independent source/readback review, latest main normal sync, fixed final-head Linux full verify and all CI; no timeout/skip/security weakening.",
+  "hostFullVerify": {
+    "exitCode": 0,
+    "root": {
+      "tests": 2982,
+      "pass": 2979,
+      "fail": 0,
+      "skipped": 3
+    },
+    "logSha256": "36a51eeccdcc5fee95037080e86de647fad825449cec125b5d14425f9219eb4a",
+    "scope": "Mac host; Linux-only skips separate; subsequent doc placement checked by project/design/diff, final-head Linux CI still required"
+  }
+}

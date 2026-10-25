@@ -1,0 +1,181 @@
+{
+  "schema": "rockstaros.eve-estimate-rate-unit/1",
+  "recordedAt": "2026-10-25T07:05:37.241020+00:00",
+  "finding": "EVE-ESTIMATE-UNIT-DUPLICATE-01",
+  "status": "MINIMAL_DISPLAY_FIX_LOCAL_PASS_PENDING_INDEPENDENT_REVIEW_AND_NEW_BROWSER_READBACK",
+  "baseSha": "bfb3e1bf789cb548acc6715805749ae5e319a5dc",
+  "sameTreeMainSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "baseMainTreeEqual": true,
+  "uncommitted": true,
+  "scope": {
+    "ownedPaths": [
+      "components/eve-text-estimate.tsx",
+      "tests/eve-text-estimate-ui.test.mjs",
+      "docs/evidence/development-execution/eve-estimate-rate-unit.json"
+    ],
+    "productDelta": "Remove renderer literal suffix only; shared formatter already supplies per-million-token unit.",
+    "productChangedLines": 1,
+    "sharedFormatterChanged": false,
+    "apiStoreRatePriceVersionNumericConversionExpiryConsentOrOwnerLogicChanged": false,
+    "originalAssertionsDeletedOrWeakened": 0
+  },
+  "sourceHashes": [
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "baseSha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "candidateSha256": "f0b7f73e372b98fb5a41849116f63a1b91743d2655036f181f99b949bbb4a156"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "baseSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+      "candidateSha256": "e46bf07d37eb9933224f30786bea50f443fb700da7b2459f14fe064f197adb90"
+    }
+  ],
+  "initialEvidence": {
+    "rootBrowserSummarySha256": "cc8eb65818159a560f2209450d8f57ab986683d41dd2fba41efa3e09f7d4e925",
+    "plane": "Root actual Chrome/React component with synthetic owner/job/API/rate; previous source hash only.",
+    "observed": "入力：$10 / 100万 tokens / 100万token",
+    "cause": "formatCurrencyRatePerMillionTokens already returns unit; renderer appended it again.",
+    "historicalOnly": true,
+    "notNewCandidateBrowserAcceptance": true
+  },
+  "verification": {
+    "newRegression": "Actual transpiled component renders USD/JPY input and output rows. Every row equals existing formatter amount/string and contains exactly one per-million-token unit; four currency/category combinations. One estimate request, no paid request.",
+    "oldRendererNegativeControl": {
+      "sourceSha256": "ce02db1f4a45798c131a4cca910fbe3e255520ba553c399cd6e34d051ce816f7",
+      "sourceEqualsBase": true,
+      "method": "Temporary copy of current new assertion against immutable base renderer; import paths redirected only for local replay. Product current source never reverted.",
+      "tests": 1,
+      "expectedFail": 1,
+      "specificFailure": "unit must appear exactly once:2 !==1",
+      "exitCode": 1
+    },
+    "panelSuite": {
+      "command": "node --experimental-strip-types --test tests/eve-text-estimate-ui.test.mjs",
+      "exitCode": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "existingExpiryOwnerConsentOvercapAndRestoreCasesRetained": true
+    },
+    "lint": {
+      "command": "./node_modules/.bin/oxlint components/eve-text-estimate.tsx tests/eve-text-estimate-ui.test.mjs",
+      "exitCode": 0
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "normalPretypecheck": true,
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "fullVerify": "NOT_RUN: bounded renderer-only task; integration gate belongs to Root/Git"
+  },
+  "fixtureHistory": [
+    {
+      "logId": "before",
+      "result": "Original regression failed with duplicate unit and test-walker artificial spaces in exact text comparison.",
+      "correction": "Added separate DOM textContent-style joining for new row assertions; existing text helper/assertions unchanged."
+    },
+    {
+      "logId": "tests",
+      "result": "Initial post-product-fix suite still failed new exact-string assertion because walker added artificial spaces.",
+      "productFailure": false,
+      "correction": "New textContent helper only. Existing eight tests unchanged; final nine pass. Pure old renderer negative control then specifically failed2units!=1."
+    }
+  ],
+  "protectedDependencies": [
+    {
+      "path": "lib/currency-format.ts",
+      "sha256": "231f6ffea0eb12c8df79dd82929df8db82aa8f12b52cc305596ed0eadf3ab3ba"
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf"
+    },
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "52911dfd0c336cd6be11ca8129521ae14a20c7cf04045197aaf4df498b266136"
+    },
+    {
+      "path": "app/api/llm/estimate/route.ts",
+      "sha256": "240f9e3a229185d46f89b225af8de1eff814819b982b5bbd8842deb99f9dc2aa"
+    },
+    {
+      "path": "lib/remote-ai-pricing-gate.ts",
+      "sha256": "b4f0f29bd9f504e606c82fe81b36f5a80f06dba13d3b29ff34e82f9da6276032"
+    },
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043"
+    },
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287"
+    }
+  ],
+  "evidenceLogs": [
+    {
+      "id": "before",
+      "sha256": "db52f32e072fdb57d54ef4683f0af420516da75d8bf52c3fee7390d74b7e5187",
+      "bytes": 1224
+    },
+    {
+      "id": "tests",
+      "sha256": "469afdcae24db03666beba1e292191123f9fa0d2ce914913f6511312688814ab",
+      "bytes": 2011
+    },
+    {
+      "id": "negative",
+      "sha256": "c6fcf02de6b58d687bc47ff4a9c1b2ce03d5a8284cd55363ef64d7f804600af5",
+      "bytes": 1024
+    },
+    {
+      "id": "tests-final",
+      "sha256": "864dbf04c185b942414a8207aaf12d20be3c701f1d11b2e7ccde841800cd78ea",
+      "bytes": 1046
+    },
+    {
+      "id": "lint-final",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "id": "typecheck",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+      "bytes": 148
+    }
+  ],
+  "recovery": "Normal revert only owned renderer/test delta; no DB/schema/state/charge to restore. Shared formatter, signed rates and all execution limits stay fixed.",
+  "limits": [
+    "Local harness executes actual transpiled component with synthetic React hook/JSX/fetch/clock adapters; it is not real-browser acceptance.",
+    "Root previous numeric/expiry browser evidence remains tied to old renderer hash; new actual Chrome UI confirmation is pending.",
+    "No Provider/inference/paid execution, actual authenticated owner, device/native, production DB/rate, deployment or whole EVE acceptance."
+  ],
+  "acceptance": {
+    "localDisplayRegression": true,
+    "independentReview": false,
+    "newHashBrowser": false,
+    "mainMerged": false,
+    "physicalDevice": false,
+    "productionProviderBilling": false,
+    "publicDeployment": false
+  },
+  "operations": {
+    "sourceOutsideThreePaths": false,
+    "gitMutations": false,
+    "sharedMetadataOrRootRegistry": false,
+    "browserOrServerOperations": false,
+    "privateMaterialOrCredentialsRead": false,
+    "otherChatMessages": false,
+    "children": false
+  },
+  "next": "Root independently reviews exact renderer/test hashes and performs new-hash actual UI readback; Git integrates normally and records main/CI separately."
+}

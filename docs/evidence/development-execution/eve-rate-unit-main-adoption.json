@@ -1,0 +1,58 @@
+{
+  "schema": "rockstaros.eve-rate-unit-main-adoption/1",
+  "recordedAt": "2026-10-25T08:31:14.701263+00:00",
+  "finding": "EVE-ESTIMATE-UNIT-DUPLICATE-01",
+  "sourceFiles": [
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "f0b7f73e372b98fb5a41849116f63a1b91743d2655036f181f99b949bbb4a156"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "e46bf07d37eb9933224f30786bea50f443fb700da7b2459f14fe064f197adb90"
+    },
+    {
+      "path": "docs/evidence/development-execution/eve-estimate-rate-unit.json",
+      "sha256": "e1da6d555b096133e71b2554a165633bcbc54d1f7eafa2b429a74cf6a70043a6"
+    }
+  ],
+  "sourceAdaptation": "none; redundant renderer suffix removed, formatter unchanged",
+  "independentSourceReview": {
+    "sha256": "89091a29fbf7e00c507d20d4d64ce38afbc53af1393c3f7f8cb41fa7ae9d08d4",
+    "status": "PASS_SCOPED",
+    "mustFix": 0,
+    "tests": 19,
+    "pass": 19,
+    "oldRendererNegativeControl": "Expected2units!=1 failure; retained"
+  },
+  "actualChromeUi": {
+    "summarySha256": "28f8e6c7936bcb867a8323af12349e98e7761df2713a785c1079b0c01a6d4034",
+    "newSourceHash": "f0b7f73e372b98fb5a41849116f63a1b91743d2655036f181f99b949bbb4a156",
+    "syntheticOwnerJobApi": true,
+    "oneUnitPerRateRow": true,
+    "numericOverCapExpiryOwnerResetRetained": true,
+    "actualExpirySeconds": 6,
+    "estimateRequests": 1,
+    "paidRequests": 0
+  },
+  "acceptance": {
+    "sourceScopedAccepted": true,
+    "integrationCI": "pending",
+    "gitSaved": false,
+    "mainMerged": false,
+    "actualProvider": false,
+    "physical": false,
+    "productionBilling": false,
+    "publicDeployment": false
+  },
+  "scope": "Separate bounded display commit paired with eSIM UI for CI only; no Pixel/Linux changes. Receipt capture-time pending retained; current scoped evidence here.",
+  "next": "Targeted19/type/lint, metadata review and final-head all CI; normal merge and merge-SHA CI.",
+  "latestMainSynchronization": {
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "normalMerge": true,
+    "pixelCurrentAcceptanceAndWalletMiniPreserved": true,
+    "uiSourceFourUnchanged": true,
+    "fixtureTestOnlyException": "tests/wallet-workspace-recovery.test.mjs",
+    "fixtureEvidence": "docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json"
+  }
+}

@@ -24,6 +24,12 @@ ROCKはpublic HTTP workspace本文のcurrent owner/row/revision/raw bytes最終S
 
 # Wallet / Billing / Providers
 
+## eSIM保存ackのUI再照合
+
+ESIM-BILLING-UI-ACK-01の検収済みattempt2を最新main81acaへ無変更採用。ROCKはUIの現在権限照合、OWNERは明示操作、EXTERNAL応答は権限に昇格しない。`node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs`、`npm run typecheck`、`npm run verify`と同head CI/独立metadata検収がGit受入条件。実金融・Provider・実機・公開は別gate。[証拠](../evidence/development-execution/esim-ack-main-adoption.json)。
+
+
+
 ## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）
 
 2つの既存Wallet画面はuse-wallet-ledgerで読取・保存・取消を共有する。応答喪失後も同じID／payloadで明示確認し、現在ownerを添えてPOSTする。別owner／本人未確認時に元のdraftと過去一覧を見せず、元ownerに戻ると元のIDと入力を復元する。取消も追記型の既存契約を維持し、実送金・料金・Provider接続を追加しない。

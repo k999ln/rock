@@ -10050,6 +10050,27 @@
     "mainDependabotFailure": 1,
     "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
   },
+  "esimAcknowledgementMainAdoption": {
+    "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
+    "sourceScopedAccepted": true,
+    "independentMetadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "actualHiddenTransitionTested": false,
+    "physicalAccepted": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "eveRateUnitMainAdoption": {
+    "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
+    "sourceIndependentPass": true,
+    "newHashBrowserScopedPass": true,
+    "metadataReviewPending": true,
+    "sameHeadCIPending": true,
+    "mainMerged": false,
+    "productionBilling": false,
+    "publicDeployment": false
+  },
   "undiciSecurityConstraint": {
     "taskIds": [
       "SYS15",
@@ -10081,6 +10102,6 @@
     "fullVerify": "exit0_root2942_pass2939_fail0_skip3_build_and_api_pass",
     "miniAuditUndiciFindings": 0,
     "miniOtherAuditFindings": 2,
-    "latestMainSynchronization": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6"
+    "latestMainSynchronization": "2a9828b2879904d3aeb28bc6919132b70c49f3cb"
   }
 }

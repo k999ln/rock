@@ -4,6 +4,8 @@ PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI
 
 ## undici依存制約の修正（SYS15・G04 / ROCK）
 
+最新main2a9828b2のeSIM/Eve受入済み変更を通常同期。undici/package/test bytesは不変、先行Mac全verifyと同期後の新HEAD全CIは別証拠とする。
+
 PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点に、root overrideの7.29.1固定を同majorの修正版^7.30.1へ更新し、root全verify成功（2940件/2937pass/0fail/3Macskip）後、同じundiciのMini側3alertも確認。Mini override^8.12.2/lock8.12.3を追加し、両lockfileそれぞれundici1件のみ更新。計7consumerと既存TLS/依存回帰29件成功、root旧制約の1件失敗反例を保持。root npm監査undici0件・他依存10件を区別し、最終全verifyはexit0（root2942/2939pass/0fail/3Macskip、build/API含む）。Mini監査もundici0・他2件。旧SHAの失敗を保持し、新HEADとmain統合SHAのCodeQL/全CIは別々に確認する。実機操作・追加推論・公開配備なし。
 
 
@@ -213,6 +215,26 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 2026-10-17 BIL02/O5（JOINT）: 本人指示で月額140 USD・利用枠100 USDの既存Stripe Sandbox契約に無料Cloud自動選択を接続する。main a067a03eからcodex/sky-monthly-free-cloudで開始。1時間合成契約とは分離した永続月次契約・署名通知・上限停止・入金後復旧を同一DBで検証する。境界金額は合成、Cloud応答は匿名無料実接続、本番課金は無効。23件の対象試験、実Stripeの140 USD失敗→同一請求入金と署名通知3件、無料Cloud実POST3回・UI再押下追加0回、再起動保持を確認。全体verifyは全stage exit0（2287成功/既存skip1、/private/tmp/sky-monthly-free-verify.log）。証拠 docs/evidence/sky-monthly-free-cloud.json。公開D1/実アカウント契約は変更なし。次は同head CIとmain統合、公開account移行・常設schedulerは別配備受入。
 
 # RockstarOS — 現在の作業と再開情報
+
+## PR213 CI停止のWallet fixture競合を修正
+
+G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headで同SHA Linux全verify/CodeQLを確認する。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHA CIを確認中。UIは未merge。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
+
+UI最新main同期: main41ee45d7のMini Linux限定採用を通常取り込み、controller/packet tests/専用CI/証拠と現statusを保持。UI4sourceとPixel9sourceは同hash。旧head7f2aの全verify/CodeQLは成功済みだが、今回の最終head CIを別に確認する。
+
+UI最終同期: Pixel PR209/main8f646ff3の限定採用を通常取り込み。Pixel9source・旧物理要約・Wallet/Mini・task/phase gateを保持。eSIM/Eve4source/testは検収済みhashと同一。最終CIとmain統合はこの同期後のheadで確認する。Pixel mergeSHA CI完了前に次main mergeは実行しない。
+
+UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a5193eを通常取り込み。Mini host source/進捗とWallet現受入を保持。各独立source/実合成UIの根拠を別receiptで扱い、最終head全CIとmain merge SHAを確認する。
+
+
+## Eve単価の重複単位表示を別commitで採用
+
+本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補CIで最終確認しmain merge後の同SHA CIも確認する。
+
+
+## eSIM保存ack後の再照合UIを最新mainへ採用
+
+着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、次は最新maindc2取り込み後の最終head Linux全CI・通常main統合・mergeSHA CIを確認する。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
