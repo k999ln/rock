@@ -1575,3 +1575,9 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ## Pro原本archiveへの手動入口
 
 既存Pro原本archiveの利用導線。目的・入力/出力・状態・保存・失敗/復旧・別同意・責任・合格条件・未決定の決め方は[OS詳細](rockstaros-complete-design.md#pro-original-archive-entry)を共通契約とする。通常の固定linkだけであり、新Tool/API/権限は追加しない。元browser→local file exportと、sign in後の手動再選択→本人account確認→別同意→既存暗号化archive全bytes/SHA読戻しを分ける。local表示/fixtureは実account保存・配備・native移行を意味しない。[証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)。
+
+
+<a id="pixel-cache-only-main-port"></a>
+## Pixel cache-only準備/更新fence
+
+既存ローカルruntimeの保守処理で、新catalog Tool・Broker権限を追加しない。目的、責任、入出力、状態/保存、失敗/復旧、明示承認、合格条件と未決定gateは[OS詳細](rockstaros-complete-design.md#pixel-cache-only-main-port)を共通契約とする。原tupleのdurable台帳、同ID読戻し、unknown無再送と固定payload更新fenceを保持し、cache準備を推論や取得へ昇格させない。host/CI/package/physicalを別々に受け入れる。[証拠](evidence/development-execution/pixel-cache-main-adoption.json)。

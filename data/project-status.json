@@ -9916,11 +9916,31 @@
     "sourceRelatedPass": 40,
     "independentGroups": 5,
     "rootActualUi": "Chrome1512/390_preview_cancel_fixedlink_no_overflow",
+    "metadataReviewPending": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
+    "authenticatedServerArchiveSaveAccepted": false,
+    "wholePRO01Accepted": false,
+    "publicDeployment": false,
+    "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 6,
+    "actualLinuxVerify": "2898tests_2896pass_0fail_2skip"
+  },
+  "pixelCacheMainAdoption": {
+    "evidence": "docs/evidence/development-execution/pixel-cache-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
+    "sourceNinePreserved": true,
+    "sourceHostPass": 99,
+    "sourceMacSkips": 3,
+    "independentPass": 80,
+    "independentLinuxSkip": 1,
     "metadataReviewPending": true,
     "finalHeadCIPending": true,
     "mainMerged": false,
-    "authenticatedServerArchiveSaveAccepted": false,
-    "wholePRO01Accepted": false,
-    "publicDeployment": false
+    "physicalAccepted": false,
+    "p02Complete": false,
+    "wholeOS01Accepted": false,
+    "productionDeployment": false
   }
 }

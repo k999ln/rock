@@ -1,3 +1,7 @@
+## Pixel cache-only/更新fence main候補
+
+Pro207 main0d基点、検収済み9source/test無変更と追加CI1path限定。元receipt2608/独立c9c795、原cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。[詳細](../rockstaros-complete-design.md#pixel-cache-only-main-port)。Node/Python/normalgenerator/type/packageと最終head Linux新Python6+23/実verify/全CI・独立metadataがgate。Gitの端末操作0、physical/fullOS/P02/追加推論は未受入、soleOS leaseを維持。Rootregistry非操作、616公開保留。
+
 ## Pixel診断のmain候補とMini r2（OS10 / OS-01 / P02）
 
 主担当07 Android、Gitは候補/共有metadata/Gitの単独writer。ROCKは固定worker/launcher親寿命・任意診断、EXTERNALはkernel、JOINTは同一候補Linux/Pixel、OWNERは導入/接続/費用。6runtime/test＋bounded Python CI stepを移植、manager/URL/model/prepare/build/service hash固定。[候補証拠](../evidence/development-execution/pixel-main-diagnostics-adoption.json)にコマンド/結果/初回host試験反例/保全hash、[OS契約](../rockstaros-complete-design.md#pixel-main-worker-diagnostics)に11項目を記録。次はexact候補の独立review、CI Linux親終了4case、fixed full verifyのGit記録。host skipをLinux成功に換算しない。新serverは旧実機packageと別artifact。cache/native account/背景/P02全体/full OS未受入。Mini r2はaccepted4hash/旧12保持の別scopeで、[review要約](../evidence/development-execution/mini-02-finite-cone-review-summary.json)を参照。実光学/MINI02全体未受入。原計画/元reviewはoperator workspaceのdigest参照、raw資料/ログをコピーしない。

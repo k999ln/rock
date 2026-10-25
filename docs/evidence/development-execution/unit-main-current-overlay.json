@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
-  "mainAtCapture": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
+  "mainAtCapture": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -481,7 +481,7 @@
       "units": [
         "PRO-01"
       ],
-      "kind": "additional_bounded_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
       "sourceFiles": [
         {
@@ -504,19 +504,111 @@
       "sourceReviewSha256": "688377b501423206d871c8c914d4f8b5c6778cc36bf2d5c486a8747b976dfe8d",
       "scope": "Explicit ordinary no-referrer fixed link/manual-file handoff and three status strings. Existing parser/archive auth/store/crypto untouched.",
       "localActualUi": true,
-      "metadataReviewPending": true,
-      "mainMerged": false,
+      "metadataReviewPending": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "authenticatedArchiveSaveAccepted": false,
-      "publicDeploymentAccepted": false
+      "publicDeploymentAccepted": false,
+      "pr": 207,
+      "acceptedHead": "bfb3e1bf789cb548acc6715805749ae5e319a5dc",
+      "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "metadataReviewSha256": "1940ac3b66bd019b0b493fe0b1b8b79d7722e964a905aba7548631dd1609f918",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "PIXEL_CACHE_MAIN_CANDIDATE",
+      "units": [
+        "OS-01"
+      ],
+      "kind": "bounded_source_candidate",
+      "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "sourceNine": [
+        {
+          "path": "scripts/sky-linux-local-runtime.mjs",
+          "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+          "bytes": 36436,
+          "baseSha256": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+          "reusedRootSourceSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+        },
+        {
+          "path": "toolkits/sky-linux-local/pixel-server.mjs",
+          "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+          "bytes": 11893,
+          "baseSha256": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+          "reusedRootSourceSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+        },
+        {
+          "path": "toolkits/sky-linux-local/prepare-pixel.py",
+          "sha256": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+          "bytes": 15244,
+          "baseSha256": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+          "reusedRootSourceSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+        },
+        {
+          "path": "tests/pixel-cached-prepare.test.mjs",
+          "sha256": "6a53e882f91a3ec3c6e84714b1cc5d1f1902aaca06cdd68da88319c698509bdf",
+          "bytes": 16163,
+          "baseSha256": null,
+          "reusedRootSourceSha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+        },
+        {
+          "path": "tests/test_pixel_cached_prepare.py",
+          "sha256": "4444e49b6dccd7ba1a21e2f2865916fb76af0aaaff33af0526b1167d4de1ae9e",
+          "bytes": 8121,
+          "baseSha256": null,
+          "reusedRootSourceSha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+        },
+        {
+          "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+          "sha256": "42af308a104efd6a65c3c7005902e5299c260436a240386f2b49d8a9f623aa3b",
+          "bytes": 1812,
+          "baseSha256": null,
+          "reusedRootSourceSha256": "9dc2419510e5717809f120019687fc2894503298d938d0970070e9feb5a89734"
+        },
+        {
+          "path": "toolkits/sky-linux-local/update-pixel.py",
+          "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+          "bytes": 18562,
+          "baseSha256": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+          "reusedRootSourceSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50"
+        },
+        {
+          "path": "tests/pixel-update-guard.test.mjs",
+          "sha256": "1bb65199178956ba7d93b6166332dacd4b69c2f7bf922b3d7a4aef2b4153de27",
+          "bytes": 2682,
+          "baseSha256": null,
+          "reusedRootSourceSha256": "47e7c211ad4c1ee4ed79ca13565871c16f3dc3a06ec1289386c7e0bd5c4b349a"
+        },
+        {
+          "path": "tests/test_pixel_guest_update.py",
+          "sha256": "fb6c16779817d5fc76d967e15f48d9a0b70810ef975739d68b904c4abafccc24",
+          "bytes": 22745,
+          "baseSha256": null,
+          "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
+        }
+      ],
+      "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
+      "scope": "Explicit cache-only durable preparation ledger and matching fixed-payload update exclusion/recovery; host only",
+      "mainMerged": false,
+      "metadataReviewPending": true,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "productionAccepted": false
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "OS-01",
+      "state": "cache_main_and_update_fence_source_reviewed_candidate",
+      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
       "unit": "PRO-01",
-      "state": "private_archive_entry_source_and_local_UI_pass_candidate",
-      "scope": "Final exact-head Linux actual verify/all CI and independent metadata review before merge. No authenticated server save, native migration or deployment acceptance.",
+      "state": "PR207_archive_entry_main_integrated",
+      "scope": "PR207 normal merge/main0d exact tree and6main checks/actualverify done; authenticated account save/native/public gates remain unaccepted.",
       "wholeUnitAccepted": false
     },
     {
@@ -622,5 +714,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "08669893ec8bc9aab498d38b88a60f8911fd3443"
+  "previousCaptureMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2"
 }

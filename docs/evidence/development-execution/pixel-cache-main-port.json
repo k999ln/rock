@@ -1,0 +1,424 @@
+{
+  "schema": "rockstaros.pixel-cache-main-port/1",
+  "recordedAt": "2026-10-25T06:46:47.098501+00:00",
+  "clientDate": "2026-10-25",
+  "batch": "OS-01-CACHE-BACKEND-MAIN",
+  "status": "isolated_host_candidate_ready_for_independent_review_typecheck_generation_pending",
+  "unitComplete": false,
+  "p02Complete": false,
+  "workspace": {
+    "path": "<candidate-tree>",
+    "branch": "codex/pixel-cache-main-20261025",
+    "baseMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+    "laterSuppliedMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+    "laterMainOsPathDiff": "git diff --name-only base..0d726717 on OS source/test targets returned no paths; no rebase/merge/fetch performed",
+    "preparation": {
+      "path": "operator-artifact:pixel-cache-main-preparation-20261025.json",
+      "sha256": "d8ed552972a149f8c9403863851839765936fe2cc87742a00459d0d37e256eb7"
+    },
+    "plan": {
+      "path": "<operator-root>/docs/evidence/development-execution/pixel-cache-only-next-batch.json",
+      "sha256": "bc3bd3e2a930ef4881288ff510fdecc06a8d13bcd21f32bfe85213f5d48a1ed7"
+    },
+    "sharedRootChangedByThisBatch": false
+  },
+  "ownership": {
+    "allowedCodeTestPaths": [
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/pixel-server.mjs",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "tests/pixel-cached-prepare.test.mjs",
+      "tests/test_pixel_cached_prepare.py",
+      "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "toolkits/sky-linux-local/update-pixel.py",
+      "tests/pixel-update-guard.test.mjs",
+      "tests/test_pixel_guest_update.py"
+    ],
+    "receipt": "docs/evidence/development-execution/pixel-cache-main-port.json",
+    "sourcePathCount": 9,
+    "receiptPathCount": 1,
+    "gitMutation": false,
+    "globalMetadataOrRegistryMutation": false,
+    "otherChatOrSubagent": false,
+    "otherEditsReverted": false
+  },
+  "source": [
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+      "bytes": 36436,
+      "baseSha256": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+      "reusedRootSourceSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-server.mjs",
+      "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+      "bytes": 11893,
+      "baseSha256": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+      "reusedRootSourceSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    },
+    {
+      "path": "toolkits/sky-linux-local/prepare-pixel.py",
+      "sha256": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+      "bytes": 15244,
+      "baseSha256": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+      "reusedRootSourceSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+    },
+    {
+      "path": "tests/pixel-cached-prepare.test.mjs",
+      "sha256": "6a53e882f91a3ec3c6e84714b1cc5d1f1902aaca06cdd68da88319c698509bdf",
+      "bytes": 16163,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+    },
+    {
+      "path": "tests/test_pixel_cached_prepare.py",
+      "sha256": "4444e49b6dccd7ba1a21e2f2865916fb76af0aaaff33af0526b1167d4de1ae9e",
+      "bytes": 8121,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "sha256": "42af308a104efd6a65c3c7005902e5299c260436a240386f2b49d8a9f623aa3b",
+      "bytes": 1812,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "9dc2419510e5717809f120019687fc2894503298d938d0970070e9feb5a89734"
+    },
+    {
+      "path": "toolkits/sky-linux-local/update-pixel.py",
+      "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+      "bytes": 18562,
+      "baseSha256": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+      "reusedRootSourceSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50"
+    },
+    {
+      "path": "tests/pixel-update-guard.test.mjs",
+      "sha256": "1bb65199178956ba7d93b6166332dacd4b69c2f7bf922b3d7a4aef2b4153de27",
+      "bytes": 2682,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "47e7c211ad4c1ee4ed79ca13565871c16f3dc3a06ec1289386c7e0bd5c4b349a"
+    },
+    {
+      "path": "tests/test_pixel_guest_update.py",
+      "sha256": "fb6c16779817d5fc76d967e15f48d9a0b70810ef975739d68b904c4abafccc24",
+      "bytes": 22745,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
+    }
+  ],
+  "implementation": [
+    {
+      "area": "manager",
+      "paths": [
+        "scripts/sky-linux-local-runtime.mjs"
+      ],
+      "reused": "Reviewed cache-only ABI2 ledger/cache actions/persistCache/prepare options from preservation97044695; current main manager retained outside bounded fragments.",
+      "behavior": [
+        "strict explicit accepted/cacheOnly and original requestId/scope/model/hash",
+        "durable256 ledger/no eviction/A-B-A/restart unknown/incomplete-history refusal",
+        "busy active/preparing/stop requested/unconfirmed/unknown deny; same-tuple status/cancel without job/environment stop",
+        "request sync completes before version/capability effect; recheck transaction fence after request sync and before effect",
+        "terminal remains preparing until sync; recheck fence before ready and after terminal sync; uncertain writes yield persisted unknown best effort, never successful replay",
+        "cache writer rejection recovery is local to persistCache so unknown can be saved; legacy persist queue retains previous failure behavior",
+        "close waits admitted action promises before releasing owner manager lock; closed flag rechecked after async admission guard"
+      ]
+    },
+    {
+      "area": "Pixel server",
+      "paths": [
+        "toolkits/sky-linux-local/pixel-server.mjs"
+      ],
+      "behavior": [
+        "current main hardened execute() preserved byte-for-byte",
+        "guard provider wired into environment",
+        "inspectCached fixed --cache-inventory and explicit --cache-only selector; legacy --progress preserved",
+        "no common socket/portable dispatcher/executor import or new public endpoint"
+      ]
+    },
+    {
+      "area": "cache Python",
+      "paths": [
+        "toolkits/sky-linux-local/prepare-pixel.py"
+      ],
+      "reused": "Existing reviewed regular/inspect_cached/cached_operation and early flags; existing acquisition/redirect helpers AST unchanged.",
+      "behavior": [
+        "inventory verifies existing owned non-symlink model/archive/runtime/worker/manifest bytes without executable/network/repair",
+        "prepare uses only verified --version and capabilities; strict integer ABI1, linux/aarch64 and1024/120000 bounds, boolean values refused",
+        "failure never falls into acquire/extract/apt/network"
+      ]
+    },
+    {
+      "area": "transaction fence",
+      "paths": [
+        "toolkits/sky-linux-local/pixel-update-guard.mjs",
+        "toolkits/sky-linux-local/update-pixel.py"
+      ],
+      "reused": "Existing transaction producer/rollback and guard; no pointer-only imitation or full portable closure.",
+      "adaptations": [
+        "guard ExecutorError dependency replaced only by ordinary Error with fixed code PIXEL_UPDATE_PENDING",
+        "updater Unix common-runtime/socket/scopedExecution probe replaced by fixed worker.py capabilities plus existing loopback status/idle; no common-scoped capability claim",
+        "worker health probe fixed argv/no shell/minimal env/15s timeout/temp stdout bounded by child RLIMIT_FSIZE8192,CPU5,core0 and bounded read/strict ABI",
+        "loopback status disables proxy routing and bounds response size",
+        "update.lock LOCK_NB,11 payload allowlist,unchanged engine/node locks,private state/identity/code inventory/fsync staged pointer/second idle check/rollback/recovery retained",
+        "if second idle check loses to cache admission before service/code effects, validate old app/identity and record admission rejection without stopping services",
+        "cache ledger gets a separate optional cacheLedgerSha256 receipt fingerprint, preserving old core protected hash compatibility and accepting only empty-ledger initialization normalization; update/rollback never restores user state from backup"
+      ]
+    }
+  ],
+  "invariants": {
+    "unchangedSourceHashes": {
+      "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+      "toolkits/sky-linux-local/models.json": "0f30150af3e544168ec7fb43b25b645b311b71fdcff95b799baeade0863d2da8",
+      "toolkits/sky-linux-local/runtime-lock.json": "9200c4993c434a409691f49c08600466bb0df217bfd04d9bf0b064b2eafd9898",
+      "toolkits/sky-linux-local/node-lock.json": "fe7c8d504e0a3e16991666bc91ae2ea4d74be02a7f9d75afcb46750c2f2b067b",
+      "scripts/sky-linux-model-link.mjs": "d0c399f5cf6d9f72ea74fd25728a8a66f156599337f4c279f645be6bb2c27f2a",
+      "lib/sky-linux-models.ts": "4c61dd7be615b435b4cab3d0b6760e45ce3ca09c7d4a7f0e353169e95a8eefe9",
+      "scripts/build-sky-linux-pixel.mjs": "b9362fe9a4116689fc9297fbbd03e18fa3143dceb4c2688374001cd605c417e7"
+    },
+    "mainLauncherExecuteSha256": "2ddc5926a196348b5f58d9e71820399aef5a3d8ca2bcecf29be652d44f116a9e",
+    "mainLauncherExecuteUnchanged": true,
+    "runtimeURLValidation": "export linuxRuntimeDownloadUrl and validated fetch wrapper retained; existing attacker/loopback/query/suffix-host rejection regression passes",
+    "modelAcquisitionHelpers": "progress/ModelRedirect/validate/acquire/sha/extract AST equal to base main",
+    "serviceAuthority": "only existing fixed sky-android-bridge.service and sky-private.service stop/start/check; no arbitrary unit/shell/root API",
+    "scope": "Backend host compatibility only. scopeSha256 is opaque binding metadata, not a new identity/approval grant."
+  },
+  "verification": [
+    {
+      "command": "node --experimental-strip-types --test tests/pixel-cached-prepare.test.mjs tests/pixel-update-guard.test.mjs tests/sky-linux-local.test.mjs tests/sky-linux-models.test.mjs tests/pixel-worker-contract.test.mjs tests/pixel-worker-parent-diagnostics.test.mjs",
+      "exitCode": 0,
+      "passed": 41,
+      "failed": 0,
+      "skipped": 1,
+      "ran": 42,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/node-final.log",
+        "sha256": "d5859e67e056187098dbc9628ac45ca2d6f1d00fc972356c65fa1c024924e593",
+        "bytes": 4440
+      },
+      "scope": "host synthetic only"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_pixel_cached_prepare.py -v",
+      "exitCode": 0,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "ran": 6,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/cache-python-final2.log",
+        "sha256": "f0a3d9848db35a0de7b8d821dfdbc2cd0963c03c146b9aba2e9074a706348c60",
+        "bytes": 1116
+      },
+      "scope": "host synthetic only"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_pixel_guest_update.py -v",
+      "exitCode": 0,
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "ran": 23,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/updater-final.log",
+        "sha256": "671e483057f4f3a51b466b0fd1356b40c2721ea2f6f92b78d3c64312ab85ce30",
+        "bytes": 3617
+      },
+      "scope": "host synthetic only"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_pixel_worker_diagnostics.py -v",
+      "exitCode": 0,
+      "passed": 26,
+      "failed": 0,
+      "skipped": 1,
+      "ran": 27,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/worker-diagnostics-unsandboxed.log",
+        "sha256": "f17ee5e604697b3dd4f37e3b7dc39bf930b97040e8e67e63a484484b7d08567b",
+        "bytes": 4716
+      },
+      "scope": "existing host diagnostic regression, one limited sandbox escalation for synthetic Unix socket bind; no external communication/device"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_pixel_worker_parent_exit.py -v",
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 1,
+      "ran": 4,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/worker-parent.log",
+        "sha256": "4e77313adb8933d773cd89adc7b1596bedfd3ed24b7058209cce7d28f642c093",
+        "bytes": 685
+      },
+      "scope": "host synthetic only"
+    }
+  ],
+  "passedCount": 99,
+  "skippedCount": 3,
+  "skipMeaning": [
+    "Node stale protected-system-PID case requires Linux",
+    "Python diagnostics real orphan-child cleanup case requires Linux",
+    "Python parent-death actual kernel case requires Linux; host skip is not Linux pass"
+  ],
+  "additionalChecks": [
+    {
+      "command": "node_modules/.bin/oxlint scripts/sky-linux-local-runtime.mjs toolkits/sky-linux-local/pixel-server.mjs toolkits/sky-linux-local/pixel-update-guard.mjs tests/pixel-cached-prepare.test.mjs tests/pixel-update-guard.test.mjs",
+      "exitCode": 0,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/lint-final.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "command": "node_modules/.bin/esbuild toolkits/sky-linux-local/pixel-server.mjs --bundle --platform=node --format=esm --target=node22 --outfile=operator-artifact:pixel-cache-main-implementation/server-bundle-final.mjs",
+      "exitCode": 0,
+      "bundle": {
+        "path": "operator-artifact:pixel-cache-main-implementation/server-bundle-final.mjs",
+        "sha256": "548977e4d827d06200e1f8593967a52b8a1a6b59a6e5c6cfc6bdd85f9c21a3a2",
+        "bytes": 194839
+      },
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/bundle-final.log",
+        "sha256": "d489e9fd542c674a836357119267ef8ba9e517df8fc5843809ccabcb1110ba7d",
+        "bytes": 89
+      },
+      "executedServer": false,
+      "fullPixelPackage": false
+    },
+    {
+      "command": "node_modules/.bin/tsc --noEmit --incremental false",
+      "exitCode": 2,
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/typecheck.log",
+        "sha256": "e9f3ebc5cf58c6b5b891e128024bd86347184c6d456c6352388a5e56871bb2af",
+        "bytes": 393
+      },
+      "unresolved": "existing lib/generated/private-content.ts absent, reported by legal-ai.ts14/legal-intake.ts1/patent-ai.ts7; no manual stub/copy/generator or unowned source added; Root/Git standard generation and final typecheck remain pending"
+    }
+  ],
+  "interleavings": [
+    "actual manager + actual guard refuse pending pointer before admission; status/emergency stop still function",
+    "request fsync held while pending pointer published: no prepare call, row unknown",
+    "terminal fsync held while pointer published: public state stays nonterminal, no stale ready; final row unknown",
+    "actual JS manager + actual Python transaction updater share synthetic state/app fixtures: barrier at initial guard and request-sync; updater publishes pointer, manager emits0 effects, second idle check declines update, fixed service-control calls0, old app and new unknown ledger retained",
+    "close during initial/post-sync async guard has no late prepare and owner lock is retained until action settles",
+    "request/terminal fsync exceptions cannot expose successful terminal replay; best-effort unknown readback asserted",
+    "pending/active-reconciled stop-unknown, legacy prepare,full256,A-B-A/reopen/displaced cancel tested without real model/service"
+  ],
+  "failureHistory": [
+    {
+      "stage": "baseline reused tests",
+      "result": "11 Node cache and5 Python cache passed before candidate-specific tests; not final totals"
+    },
+    {
+      "stage": "first added Node coverage",
+      "failure": "malformed synthetic job omitted workflow steps; fixture raised TypeError in applyWorkCommand",
+      "fix": "reuse actual beginLinuxRun constructor for valid active/requested/unconfirmed fixture; no runtime workaround",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/cache-node-r1.log",
+        "sha256": "63b7cb27d4675e53434d21018003e75f5a38704aff63bea3de2bc428b57fa22b",
+        "bytes": 2866
+      }
+    },
+    {
+      "stage": "first updater admission-race fixture",
+      "failure": "original rollback path called service stop even though second idle check declined before any cutover",
+      "fix": "pre-effect admission rejection preserves app/identity and records terminal rollback without service operations",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/updater-r1.log",
+        "sha256": "450bf694b202a726c862bf7fb11ff37a4137a34bd38ec1e17fad8885bf644835",
+        "bytes": 3949
+      }
+    },
+    {
+      "stage": "close fixture",
+      "failure": "test attached rejection handler after awaiting close, yielding unhandled CACHE_MANAGER_CLOSED",
+      "fix": "attach rejection assertion before closing; retain no-late-effect and close-wait checks",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/node-regression.log",
+        "sha256": "b9fa8247d7d9731d33665e4a3418c92d74f8515954781c21d7cebb64229b7878",
+        "bytes": 5408
+      }
+    },
+    {
+      "stage": "initial lint",
+      "failure": "no-useless-spread for Promise.allSettled iterable",
+      "fix": "pass pendingActions Set directly",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/lint.log",
+        "sha256": "54ee419b29188c0ea46df3eece25128ff48eaa04d626a212c2e3e4ee3b89db7c",
+        "bytes": 222
+      }
+    },
+    {
+      "stage": "sandbox diagnostic regression",
+      "failure": "3 synthetic Unix socket bind subcases rejected by sandbox PermissionError; test source unchanged",
+      "fix": "one restricted approval-reviewed host-only rerun succeeded; Linux skip remains",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/worker-diagnostics.log",
+        "sha256": "b9c6fa882f916ac8130122044a348b60c8df874b8bc9ec60126bd133338523e7",
+        "bytes": 7799
+      }
+    },
+    {
+      "stage": "typecheck",
+      "failure": "missing existing generated private-content.ts",
+      "fix": "not fixed here; standard generator belongs to Root/Git, no source ownership expansion",
+      "evidence": {
+        "path": "operator-artifact:pixel-cache-main-implementation/typecheck.log",
+        "sha256": "e9f3ebc5cf58c6b5b891e128024bd86347184c6d456c6352388a5e56871bb2af",
+        "bytes": 393
+      }
+    }
+  ],
+  "operations": {
+    "hostSyntheticTests": true,
+    "liveServiceControl": false,
+    "PixelConnectedOrRead": false,
+    "PixelUI": false,
+    "inference": false,
+    "newModelRuntimeDownload": false,
+    "networkAcquisition": false,
+    "newKeyGrantSigning": false,
+    "realGuestUpdateOrFlash": false,
+    "newRuntimeEndpoint": false,
+    "fullPackageBuild": false,
+    "gitCommitPushMerge": false,
+    "publication": false
+  },
+  "physicalNext": {
+    "target": "Pixel10 GL066/frankel; non-destructive Developer Preview only",
+    "currentDeviceObservedThisBatch": false,
+    "requiresSeparateRootLease": true,
+    "readOnlyPreflight": [
+      "confirm exact device/owner/unlocked state and sole operator; read current APK signer+bytes and guest boot/installed source/transaction hashes",
+      "read existing same-account session/peer/cert/stop journal hashes only; do not expose values or create/refresh/rebind credentials",
+      "confirm job/model/agent totals and original per-job hashes, active0/stop-unconfirmed0/unknown state and no remaining model process; missing access is a stop condition",
+      "verify existing model/archive/runtime/worker/manifest bytes against pinned inventory, no download/repair/service or setting change"
+    ],
+    "sameArtifactPath": [
+      "independent review this candidate; standard generated dependency/typecheck and global verify on exact final source",
+      "build/freeze exact11 payload package+updater from that same reviewed tree using only existing cached dependencies; pin manifest/updater/source SHA outside shared transfer area; current server bundle is not the full package",
+      "separately authorize code-only non-destructive candidate update with stopped environment, backup/rollback/restore and same owner/session/keys/model/runtime preservation readbacks",
+      "separately lease cache-only inventory/prepare/status/cancel readbacks on Pixel, with matching worker ABI/protocol2/source/hash; no new model/grant/agent/job"
+    ],
+    "inferenceBudget": "Earlier two synthetic submissions already consumed max2. This receipt allocates0; no replay or additional inference without explicit new Root allocation. Cache readiness --version/capabilities must not create an LLM job.",
+    "priorPhysicalEvidenceTransfers": false,
+    "limits": "Old foreground inference/export success belongs to its prior exact artifact. This main-compatible candidate is host-tested only; Pixel cache prepare/update, background operation, normal credential recovery, P02 and fullOS remain unaccepted."
+  },
+  "pending": [
+    "Independent source/test review of exact nine source hashes and receipt",
+    "Root/Git standard generation of missing private-content then final typecheck/global verify and required design/index/project/status/README synchronization",
+    "Actual Linux non-skipped parent-death/orphan gates for exact integrated candidate; unchanged prior worker acceptance is not a new whole-package pass",
+    "Exact package and separately leased physical read-only/preparation/update gates; no further inference allocation in this batch"
+  ],
+  "readyForIndependentReview": true,
+  "hostCandidateAcceptedByWriterOnly": true,
+  "productionReady": false,
+  "physicalAccepted": false,
+  "githubSaved": false,
+  "mainMerged": false
+}

@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
@@ -639,7 +639,9 @@
         "DEVICE-INSTALL"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "PIXEL_CACHE_MAIN_CANDIDATE"
+      ]
     },
     {
       "id": "OS-02",

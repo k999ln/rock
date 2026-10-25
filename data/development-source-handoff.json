@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -660,9 +660,16 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "OS-01",
+      "state": "cache_main_update_fence_source_reviewed_candidate",
+      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
       "unit": "PRO-01",
-      "state": "explicit_archive_entry_candidate_source_review_and_local_UI_pass",
-      "scope": "Draft PR exact payload readback, final-head actual Linux verify/all checks and independent metadata review before any merge.",
+      "state": "PR207_main_integrated_archive_entry",
+      "scope": "main0d tree/readback6CI actualverify done; real account/server save/native/deployment remain separate.",
       "wholeUnitAccepted": false
     },
     {

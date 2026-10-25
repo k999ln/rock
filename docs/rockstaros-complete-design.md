@@ -1124,3 +1124,19 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 承認・合格条件: file export同意は保存同意に代用しない。検収済み3source/test、関連40と独立5群、localChrome1512/390 overflow0・preview/cancel・固定link表示を限定証拠とする。初回preview server失敗は記録し、後続Astro dev表示と分ける。公開先の実click、認証済server保存、実原稿upload、DNS/TLS/配備、native/実機、wholePRO01は未受入。最終head Linux actualverify/全CIと独立metadata検収がmerge前gate。
 
 未決定の決め方: 実account/browser保存は権限・Keyring準備と本人の個別同意を確認した同candidateで受け入れる。公開は各domain/build SHAのreadback gate、native移行は別SKU/保存復旧gateで決める。入口の案内を実配備成功にしない。[採用証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)、[95unit引継ぎ](evidence/development-execution/all-lanes-main-handoff-summary.json)。
+
+
+<a id="pixel-cache-only-main-port"></a>
+## Pixel cache-only準備と固定payload更新fence
+
+目的・利用体験: 取得済みbytesでローカルmodelの準備状況を確認する。明示accepted/cacheOnlyを伴うcache inventory/prepare/status/cancelだけを既存managerへ追加する。cache準備は固定検証済みllama-cliのversionとworker capabilitiesを読むだけで、推論・download・apt・extract・修復を行わない。通常prepareは既存の明示取得経路として保持し、cache失敗から自動移行しない。
+
+責任・入出力: ROCKは既存local owner/manager lock、runtime/model検証、guardと固定11payload updaterを維持する。入力は原requestId/scopeSha256/modelId/modelSha256とexact action項目。scopeはopaqueな既存束縛値で、本人性やBroker権限を新たに付与しない。出力はinventory、preparing、ready、cancelled、failed、unknownの有限結果と同tuple読戻し。EXTERNALは端末/上流runtime、OWNERは既存導入・操作・実機更新条件、JOINTは同packageの物理確認。
+
+状態・保存: 最大256件の原tuple台帳は追出さず、満杯・不完全legacy・異なるtupleは拒否する。A/B/Aと再起動後も同じ結果を返し、新prepareを再実行しない。再起動時preparingはunknown。requestのfile/parent directory同期前に効果を開始せず、terminal同期が確認できるまで成功結果を公開しない。write不明はunknown/fenceで止める。closeはadmitted処理完了までmanager lockを保持する。active/prepare/stop要求/未確定stop/unknownは新効果を拒否し、既存同tupleのstatus/取消は別jobを止めない。
+
+更新・失敗・復旧: update.lockとdurable transaction pointer/terminalを前後で確認する。updaterは固定11payloadと既存2serviceだけを扱い、cutover前の拒否ではservice操作0。途中失敗は既知backupへ戻すかunknown fenceを残す。既存job/model/鍵/state/cache ledgerを保持し、不明なpointerを自動削除して再実行しない。固定worker ABI1/Linux arm64/上限検査をhealth probeとし、任意shell/root/portable executor/socket共通APIを追加しない。
+
+承認・合格条件: Mainの固定download URL検証、同FD/非symlink/限定bytesのprivate-owner launcher、既存worker/model/runtime lockとlegacy job上限を保持する。独立c9c795は9sourceとhost/package限定合格。99hostpass3Macskip・独立80pass1Linuxskipは重複を含む。CIの専用synthetic stepでPython cache6/update23がLinux上で実行されたことを各exit/件数で確認し、実npmverify/全CIと独立metadata検収がmerge前gate。
+
+未決定の決め方: 同一package SHAによるPixel10 GL066/frankelの非破壊確認はsoleOS担当の別lease・復旧条件で受け入れる。Gitは端末へ書かず、旧実機やhost fixtureを新候補のphysical/P02/fullOS/一般公開へ転用しない。実inferは別承認で、今回追加しない。[採用証拠](evidence/development-execution/pixel-cache-main-adoption.json)。

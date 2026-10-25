@@ -1,3 +1,7 @@
+## Pixel cache-only/更新fence main候補（2026-10-25 / G04）
+
+着手: Pro207通常main0dを基点に、sourceb1b0の独立検収済み9source/testを同hash採用。主担当10/source07、既存taskはreceipt参照。判断: 元receipt2608とportableのhashを分け、c9c795独立PASS/mustfix0・host99pass3skip/独立80pass1skip・Root11payload+aux3closureを保持。追加CI1pathは承認済みの独立synthetic stepだけでPython6+23をLinux上に配線。通常private module generatorでtypeを検証し、元missing-module失敗を成功へ換算しない。次: 対象Node/Python/lint/type/package/project/design/scanner、DraftPR exactpayload、最終head Linux Python各suiteと実npmverify/全CI、独立metadata検収。実機soleOSのleaseを維持、Gitの端末操作0。ロック解除待ちや旧physicalを今回合格にしない。RootHEAD/index/archive・残616公開保留。根拠 docs/evidence/development-execution/pixel-cache-main-adoption.json。
+
 ## Pro原本exportから既存私有archiveへの入口候補（2026-10-25 / G04）
 
 着手: 最新mainb1b0/PR206を基点にPRO-01-ARCHIVE-ENTRYの検収済み3source/testを同hash採用。主担当10/source05、既存B05/WEB13/G04。判断: 元receipt3cebはportableで同bytes保持、Root独立review6883・localChrome UI94c0は要約/hashだけ採用。既存13archive/storeと183保護pathを保持し、自動転送・権限・schema/鍵・課金を追加しない。検証済み履歴: 関連40・独立5群、Chrome1512/390 overflow0/preview/cancel。初回preview startup失敗は維持し、成功へ換算しない。次: 統合対象試験/project:update/design:check/scannerとcanary、DraftPR exactpayload読戻し、最終head Linux actualverify/CI、独立metadata検収。merge/公開先実click/認証済server保存/native/配備/wholePRO01は未受入。11lane/95unit/42成果の有限要約をmain入口へ接続し、Root旧RQ49/165taskとmainRQ50/393taskを区別。Rootregistry非操作、残616公開保留。根拠 docs/evidence/development-execution/pro-archive-entry-main-adoption.json。
