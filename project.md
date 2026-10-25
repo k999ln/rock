@@ -6,6 +6,10 @@ Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照
 
 最新main81aca294を通常mergeし、Wallet208/210の現在受入と4試験を保持。作者修正e5ba8521を通常取り込み、元9sourceのうち7不変・guardと試験2件は作者commitと同hash。旧headのCodeQL Highと旧physicalは履歴として保持。次は最終headの独立検収・GitHub保存・同一SHAのCodeQL/全CI確認、その後main通常統合。実機操作・追加推論・公開配備・616一括公開は未実施。
 
+## undici依存制約の修正（SYS15・G04 / ROCK）
+
+PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点に、root overrideの7.29.1固定を同majorの修正版^7.30.1へ更新し、root全verify成功（2940件/2937pass/0fail/3Macskip）後、同じundiciのMini側3alertも確認。Mini override^8.12.2/lock8.12.3を追加し、両lockfileそれぞれundici1件のみ更新。計7consumerと既存TLS/依存回帰29件成功、root旧制約の1件失敗反例を保持。root npm監査undici0件・他依存10件を区別し、最終全verifyはexit0（root2942/2939pass/0fail/3Macskip、build/API含む）。Mini監査もundici0・他2件。旧SHAの失敗を保持し、新HEADとmain統合SHAのCodeQL/全CIは別々に確認する。実機操作・追加推論・公開配備なし。
+
 ## PR209 update guardの競合修正（2026-10-25 / OS10・P02・G04）
 
 着手・判断: 利用者の明示依頼で旧06dac1bbのCodeQL Highを修正。主担当07 / ROCK、統合10。同FD限定読込とpointer/receipt/親directoryの同一性再確認、7追加回帰を実装。対象26成功、旧実装で反例失敗を確認。検証完了: 対象26/Python6+23、lint/design/project/package、全verify成功（root2924件/2921成功/3Macskip）。OpenSSL3選択前とsandbox loopback制限の失敗は証拠に保持。次: 新HEAD push後のCodeQL含む全CI、検収JSON更新。実機・追加推論0、Rootregistry/616保全は非操作。元のmissing-module/hostskip/neutral→High履歴は保持。
