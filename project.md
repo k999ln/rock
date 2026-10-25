@@ -880,6 +880,10 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
+共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221のmain統合/同SHA CIは中央Gitへ依頼済みで別追跡。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
+
+共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。Git保存・同SHA Linux CI・main採用は別追跡。
+
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。別枠Dependabotのzod更新失敗は未解決としてGit担当へ連携し、成功に含めない。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
 
 本人回答反映・検証: 初期対象を日米両方のsi/メッセージ/小ファイルへ確定し、9704/NB-NTN優先、9770一般IP後段へ順序を更新。国別受入profileと未実行境界を同期。独立差分検収mustFix0、mission/project/design・台帳境界チェック成功。[選択反映検収](docs/evidence/development-execution/mini-08-owner-choice-review.json)。更新headの全体verifyはPR221のCIで別追跡。

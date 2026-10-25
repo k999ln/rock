@@ -509,6 +509,8 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 ## 2026-10-15 Mini着脱・衛星Wi-FiとAgent月次請求
 
+日米のsi・メッセージ・小ファイル向け[共通message adapter](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
+
 2026-10-25の継続指示に基づく準備（要件変更なし）: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。
 
 利用者が建築/家具へ埋め込む着脱Mini、衛星WANによる携帯Wi-Fi、携帯料金に近いAgent利用の月次後払いを明示。R5の1本自律を維持し、外部給電のみの前提を設置中給電＋携帯電源へ更新。battery部品・衛星方式・料金数値は未確定。未払い時は通知/異議/有料実行制限/適法な回収で扱い、OSに銀行口座凍結権を与えない。[統合設計](service-design/08-mini-connectivity-and-billing.md)。

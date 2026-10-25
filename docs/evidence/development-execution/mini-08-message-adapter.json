@@ -1,0 +1,82 @@
+{
+  "schema": "mini-bounded-message-validation/1",
+  "date": "2026-10-25",
+  "taskId": "MAT15",
+  "unit": "MINI-08",
+  "scope": "offline_common_adapter_shared_ledger",
+  "regions": [
+    "JP",
+    "US"
+  ],
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
+      "sha256": "4aa11046911f69f1f6423be740d1dc433e28bd10e10987c55be172d849057a02"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "200268c6b57640e8036dc79ef9193cfe6778b8f0cd5e40dc9297bfcc489957e8"
+    }
+  ],
+  "tests": {
+    "host": {
+      "command": "PYTHONWARNINGS=ignore::ResourceWarning python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'",
+      "tests": 83,
+      "fail": 0,
+      "logSha256": "939084f58115bb6f67a7d0c7b0765a67c7f9cd5dc0572f05a1cb26994d47cf2c"
+    },
+    "independent": {
+      "review": "docs/evidence/development-execution/mini-08-message-review.json",
+      "sha256": "9e1ebc10ddb4a609e6eb2679f43b20af8508e7eb269f39baf66a04f9277dad95",
+      "existingAndNewTests": 60,
+      "additionalNegativeTests": 8,
+      "mustFixRemaining": 0
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH PYTHONWARNINGS=ignore::ResourceWarning npm run verify",
+      "exitCode": 0,
+      "rootSuite": {
+        "tests": 2986,
+        "pass": 2983,
+        "fail": 0,
+        "skip": 3
+      },
+      "otherSuitesNotAdditive": true,
+      "logSha256": "e168932312cd9134f632fd0b880e7a8e4ea716ed2f7d8872813fa0b323af1c59",
+      "environment": "macOS arm64, Node 26.12.1, Python 3.15, OpenSSL 3",
+      "linuxPacketExecution": false
+    }
+  },
+  "preserved": [
+    "Mini standalone without phone/Pro/PC/dock prerequisite",
+    "no display plate or membrane",
+    "few display parts",
+    "whole range including up and down",
+    "low glare",
+    "existing all-traffic provider hard cap and management-exemption prerequisite",
+    "shared byte/cost reservations and unknown retention"
+  ],
+  "notAccepted": [
+    "modem driver",
+    "carrier integration",
+    "radio",
+    "real provider invoice",
+    "physical Mini",
+    "encrypted live transport",
+    "Broker/AP ingress",
+    "scheduler",
+    "secure erase/antirollback",
+    "Job import",
+    "simultaneous IP and message sessions"
+  ],
+  "gitHubSaved": false,
+  "mainMerged": false
+}

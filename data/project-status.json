@@ -10070,6 +10070,26 @@
       ],
       "currentRevisionReviewed": true,
       "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json"
+    },
+    "messageAdapter": {
+      "status": "offline_implemented_independent_review_and_full_verify_pass",
+      "taskId": "MAT15",
+      "primarySquad": "M1",
+      "regions": [
+        "JP",
+        "US"
+      ],
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "nextAction": "Git save and same-head Linux CI; concrete modem/provider transport, Broker/AP ingress and bounded scheduler remain pending",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "evidence": "docs/evidence/development-execution/mini-08-message-adapter.json",
+      "independentReview": "docs/evidence/development-execution/mini-08-message-review.json",
+      "hostTestsPassed": 83,
+      "mustFixRemaining": 0,
+      "gitHubSaved": false,
+      "mainMerged": false,
+      "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail"
     }
   },
   "pixelCacheMainAdoption": {
