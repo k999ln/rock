@@ -1,0 +1,27 @@
+{
+  "schema": "rockstaros.eve-multi-material-browser-review/1",
+  "recordedAt": "2026-10-25T13:31:02.869360+00:00",
+  "verdict": "PASS_SCOPED_DOCUMENTARY",
+  "mustFix": [],
+  "reviewerRole": "Git integration; separate from Root browser observer and original implementation author",
+  "observedUIByReviewer": false,
+  "summary": "docs/evidence/development-execution/eve-multi-material-browser-summary.json",
+  "originalSummarySha256": "ef1b55c1a1a7efc19fd559ebd18e011f9139dc08cbfadfca25c83615fe9e47d5",
+  "checks": [
+    "Matched all14 original observation files and all8 helper files to recorded SHA256/byte lengths.",
+    "Matched source9 to frozen R2 and PR232; read helper actual imports/workflow/text-check versus synthetic session/fetch/RAM and 15secTTL fixture.",
+    "Asserted exact original3 source byte restoration after4 editing; source4 unchanged at expiredquote; ownerB empty source/names/quote and no synthetic material in productDOM.",
+    "Counted two creates/two local text-check runs/one estimate; model0; checked four slot limit/reindex DOM.",
+    "Reviewed initial helper/create-response/telemetry failures; retained historical R1/R2 and old2material UI scope."
+  ],
+  "limitations": [
+    "Documentary review of observer evidence; not independent browser rerun.",
+    "Page-RAM synthetic owner/server/API and fixture rates; no production auth/D1/reload durability or actual provider/billing.",
+    "TTL observation171.7356seconds is eventual absence, not expiry latency SLA.",
+    "Stale callback/FileReader races rely on independent VM tests, not actual browser interactions."
+  ],
+  "wholeUnitAccepted": false,
+  "realProviderAccepted": false,
+  "paidGenerationAccepted": false,
+  "publicDeployment": false
+}

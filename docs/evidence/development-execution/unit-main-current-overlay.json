@@ -827,6 +827,27 @@
       "realProviderAccepted": false,
       "physicalAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "EVE_MULTI_MATERIAL_ADOPTED",
+      "units": [
+        "EVE-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Legacy2 exact bytes and3/4 v2 saved preparation/estimate only; bounded synthetic browser supplemental evidence separately reviewed.",
+      "pr": 232,
+      "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+      "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+      "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+      "browserReview": "docs/evidence/development-execution/eve-multi-material-browser-review.json",
+      "wholeUnitAccepted": false,
+      "paidGenerationAccepted": false,
+      "realProviderAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [
