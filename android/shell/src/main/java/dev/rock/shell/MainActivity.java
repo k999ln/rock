@@ -2704,8 +2704,7 @@ public final class MainActivity extends Activity {
             !oneOf(capabilities.optString("automaticProfileEnablement"), "eligible", "not_eligible", "unsupported", "unknown") ||
             !oneOf(capabilities.optString("organizationOwnedDevice"), "true", "false", "unknown") ||
             !validLocalInferenceObservation(localInference) ||
-            observedAt < 0 || expiresAt <= now || expiresAt <= observedAt ||
-            expiresAt - observedAt > 30_000L) {
+            !CapabilitySnapshotFreshness.isFresh(now, observedAt, expiresAt)) {
             clearDeviceCapabilityExpiry();
             deviceCapabilityStatus.setText("端末能力: Brokerから新しい情報を取得できません。\n"
                 + "eSIMプロファイル・プラン適合: 未確認。\nRockstarOS全体の端末適合: 未評価。");

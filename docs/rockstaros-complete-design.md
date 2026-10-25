@@ -551,6 +551,18 @@ Toolは少なくとも次を宣言する。
 
 導入時と実行直前の両方でcapabilityを確認する。古いcache、未知の必須capability、署名・版不一致では動かさない。
 
+<a id="os02-capability-observation-freshness"></a>
+
+### Shellのlocal capability観測時刻（OS-02 / OS10）
+
+目的・体験: 未来時刻の観測を新鮮な端末情報として表示しない。Shellの既存 `applyDeviceCapabilities` がBroker応答の観測時刻をelapsed realtimeで検査し、無効なら既存のunknown/未評価表示へ戻す。端末全体の適合や本人性・実行権限を追加証明する機能ではない。
+
+責任・入出力: ROCK/07はconsumerと純粋Java helper、EXTERNALは時計/Android、JOINTは同一APKの実機表示検証、OWNERは導入と利用を担当する。入力は既存 `now` / `observedAtElapsedMs` / `expiresAtElapsedMs`（long）、出力はfreshの真偽。条件は `0 <= observedAt <= now < expiresAt`、`expiresAt-observedAt <= 30000ms`。非負・順序制約後の減算なのでoverflowしない。欠落値-1、schema3/local_observation、profile/source/delivery/enum/localInference検査は既存のまま。
+
+状態・保存・失敗・復旧: 新しい永続化・schema・producer変更はない。未来/欠落/期限切れ/逆転/過大TTLでは既存expiryを解除して未評価にし、次のBroker読戻しを待つ。有効時は既存の残存期限timerを維持する。推測fallbackや古い観測の延長はしない。戻す場合もconsumer/helperの組を同一版で扱い、API/producerへ新しい権限を渡さない。
+
+承認・合格条件・未決定: 同helper/actual consumer guardの23境界・既存default/未知表示を2 unittestで検査。独立旧consumer反例と別BigInteger境界probeは重複非加算。既存JDK17直後のAndroid CIで明示実行し、Python/Java fixtureだけの変更でも発火させる。標準全verifyと同head Android compile/emulator/全CIを別確認する。実機/Android runtime/P02/全OSは同一artifactの別受入まで未実施。署名/鍵/SKU/OS imageの未決定は既存release gateで決め、host成功を転用しない。[固定source・検収・採用段階](evidence/development-execution/os02-capability-freshness-main-adoption.json)。
+
 ## 7. 仕事の状態
 
 現行Web親仕事は `lib/workflow.ts` の `active / review / completed / cancelled`。生成時active、必須stepの合格後review、本人完了でcompleted、取消でcancelledになる。編集成果は原成果を保持した新しい仕事で再検査する。

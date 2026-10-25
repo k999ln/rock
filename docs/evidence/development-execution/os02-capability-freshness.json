@@ -1,0 +1,173 @@
+{
+  "schema": "rockstaros.os02-capability-freshness/1",
+  "recordedAt": "2026-10-25T13:45:21.981642+00:00",
+  "unit": "OS-02",
+  "finding": "OS02-FUTURE-OBSERVATION",
+  "status": "host_validated_pending_independent_review_and_central_git_save",
+  "mainBaseReadback": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+  "scope": {
+    "primarySquad": "O6",
+    "workstream": "07-android-device-local-ai",
+    "oneFiniteFix": "Reject local capability observations dated after the consumer elapsed-realtime clock.",
+    "ownedPaths": [
+      "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+      "tests/test_device_capability_freshness.py",
+      "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+      "docs/evidence/development-execution/os02-capability-freshness.json"
+    ],
+    "sourcePreservationComparedBeforeChange": true,
+    "mainConsumerOnlyTimeGuardChanged": true
+  },
+  "preservedSourceComparison": {
+    "commit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+    "consumerMethodBeforeSha256": "beefd7dd36cba2def89204cfb737d3f229462fe19a5ac2bef0ef1c55a4d5da84",
+    "consumerMethodByteEqual": true,
+    "duplicateImplementationCreated": false
+  },
+  "before": {
+    "consumerSha256": "9f37ff98902c393583cb895fa7b3b272ccde825f357d68fe1f831845dd10c753",
+    "counterexample": {
+      "now": 1000,
+      "observedAt": 2000,
+      "expiresAt": 32000,
+      "ttlMs": 30000,
+      "expectedFresh": false,
+      "oldActualFresh": true
+    },
+    "command": "OS02_JAVA_HOME=<existing JDK17> python3 -m unittest tests.test_device_capability_freshness.DeviceCapabilityFreshnessTests.test_time_boundaries -v",
+    "exitCode": 1,
+    "failure": "future-observation: expected false, got true",
+    "baselineReproduction": "Export MainActivity.java from mainBaseReadback and set OS02_CONSUMER_SOURCE to that file; run the same selected test.",
+    "scope": "The test extracts and compiles the actual consumer time guard. This is a host counterexample, not Android UI execution or proof of a grant/exploit."
+  },
+  "implementation": {
+    "helper": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+    "consumerCallsHelper": true,
+    "acceptedTimeOrder": "0 <= observedAt <= now < expiresAt; expiresAt - observedAt <= 30000",
+    "overflowSafety": "Ordered nonnegative timestamps make the subtraction nonnegative and representable.",
+    "unchanged": [
+      "protocol 3 and local_observation",
+      "device profile/source/delivery guards",
+      "unknown enums and missing-time default -1",
+      "local inference observation validation",
+      "invalid observation clears expiry and displays unknown/unassessed",
+      "valid display expiry scheduling",
+      "schema and producer",
+      "SKU/build identity and attestation boundaries"
+    ]
+  },
+  "candidateFiles": [
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "bytes": 248493,
+      "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+      "bytes": 614,
+      "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+    },
+    {
+      "path": "tests/test_device_capability_freshness.py",
+      "bytes": 3849,
+      "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+    },
+    {
+      "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+      "bytes": 2239,
+      "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+    }
+  ],
+  "verification": {
+    "hostFreshness": {
+      "command": "OS02_JAVA_HOME=<existing JDK17> PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.test_device_capability_freshness -v",
+      "exitCode": 0,
+      "unittestMethodsPassed": 2,
+      "javaBoundaryCasesPassed": 23,
+      "skipped": 0,
+      "javaRelease": 11,
+      "coverage": [
+        "future observation",
+        "observed-at-now allowed",
+        "30s TTL boundary",
+        "expiry-at-now rejected",
+        "expired",
+        "missing/negative time sentinel",
+        "negative now",
+        "zero/reversed lifetime",
+        "Long.MIN_VALUE and Long.MAX_VALUE",
+        "wrapped expiry and huge duration"
+      ],
+      "actualConsumerGuardExtracted": true,
+      "productionHelperCompiledAndExecuted": true,
+      "noAndroidDoubles": true
+    },
+    "android": {
+      "command": "JAVA_HOME=<existing JDK17> ANDROID_HOME=<existing SDK35> GRADLE_USER_HOME=<private cache clone> <existing Gradle8.11.1>/bin/gradle -p android :shell:compileDebugJavaWithJavac :shell:testDebugUnitTest :shell:lintDebug -ProckBuildRoot=<private output> --no-daemon --offline --console=plain",
+      "exitCode": 0,
+      "tasksExecuted": 67,
+      "shellUnitTestsPassed": 14,
+      "shellUnitTestsFailures": 0,
+      "shellUnitTestsSkipped": 0,
+      "lintErrors": 0,
+      "lintWarnings": 202,
+      "warningCountComparedToBase": false,
+      "existingTools": "Temurin17.0.20.1+1 / SDK35 / Gradle8.11.1",
+      "dependencyDownloads": 0,
+      "sandboxAttempt": "Initial Gradle localhost socket was sandbox-denied; identical offline command completed with approved local-socket escalation.",
+      "apkAssembledOrInstalled": false,
+      "keysGenerated": false
+    },
+    "diffCheckExitCode": 0,
+    "fullVerify": "Deferred to central Git on the fixed integration candidate, per single-writer packet.",
+    "androidRuntime": "Not run",
+    "physical": "Not run"
+  },
+  "centralWriterRequests": [
+    {
+      "owner": "Root/central Git",
+      "paths": [
+        "data/design-document-index.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md",
+        "data/project-status.json",
+        "README.md"
+      ],
+      "request": "Synchronize the accepted minimal consumer freshness behavior and this receipt through the existing canonical design/progress/handoff entries. These shared paths were not edited in this lease."
+    },
+    {
+      "owner": "Root/central Git",
+      "paths": [
+        ".github/workflows/android.yml"
+      ],
+      "request": "Add an explicit bounded run of python3 -m unittest tests.test_device_capability_freshness -v after existing JDK17 setup. npm verify currently does not discover Python tests. CI wiring is outside this source lease and remains pending."
+    }
+  ],
+  "acceptance": {
+    "independentReview": "pending Root review",
+    "gitSaved": false,
+    "mainIntegrated": false,
+    "OS02Complete": false,
+    "P02Complete": false,
+    "wholeOSAccepted": false,
+    "androidRuntimeAccepted": false,
+    "physicalAccepted": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "preservation": {
+    "deviceOperations": 0,
+    "additionalInference": 0,
+    "modelRuntimeDownloads": 0,
+    "providerCalls": 0,
+    "sourceCommitsOrPushes": 0,
+    "globalRootEdits": 0,
+    "sharedMetadataEdits": 0,
+    "newChatsOrAgents": 0,
+    "jobsModelsDataConnections": "No device or existing runtime state accessed or changed. Root dirty sources and 616 HOLD retained."
+  },
+  "next": "Root independently reviews these exact file hashes; central Git owns CI/design/progress synchronization, fixed-candidate verify, save and integration. End this finite lease here."
+}
