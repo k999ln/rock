@@ -69,6 +69,8 @@ async function harness(onRequest) {
   }
   function text(node) { if (node === null || node === undefined || typeof node === 'boolean') return '';
     if (typeof node !== 'object') return String(node); if (Array.isArray(node)) return node.map(text).join(' '); return text(node.props?.children); }
+  function textContent(node) { if (node === null || node === undefined || typeof node === 'boolean') return '';
+    if (typeof node !== 'object') return String(node); if (Array.isArray(node)) return node.map(textContent).join(''); return textContent(node.props?.children); }
   const input = label => nodes(tree).find(n => n.type === 'input' && n.props['aria-label'] === label);
   const button = () => nodes(tree).find(n => n.type === 'button');
   const consent = () => nodes(tree).find(n => n.type === 'input' && n.props.type === 'checkbox');
@@ -78,11 +80,28 @@ async function harness(onRequest) {
   async function until(predicate) { for (let i = 0; i < 100; i++) { render(); if (predicate()) return; await new Promise(r => setTimeout(r, 2)); } throw Error('timed out'); }
   render();
   return { calls, render, button, consent, change, agree, click, text: () => text(tree), until,
+    rateRows: () => nodes(tree).filter(node => node.type === 'li').map(textContent),
     fireTimers() { const pending = [...timers.values()]; timers.clear(); pending.forEach(timer => timer.fn()); render(); },
     get timerCount() { return timers.size; },
     get props() { return props; }, setProps(next) { props = { ...props, ...next }; render(); },
     unmount() { mounted = false; slots.forEach(s => s?.cleanup?.()); }, get lateWrites() { return lateWrites; } };
 }
+
+void test('actual USD and JPY input/output rows match formatter amounts with exactly one per-million-token unit', async () => {
+  for (const code of ['USD', 'JPY']) {
+    const h = await harness(async (_call, work) => {
+      const value = await response(work); value.estimate.currency = code; return value;
+    });
+    h.change('見積通貨', code); h.agree(); h.click(); await h.until(() => h.text().includes('最大見積'));
+    const rates = [1000000000, 2000000000], labels = ['入力', '出力'];
+    const rows = h.rateRows(); assert.equal(rows.length, 2);
+    rows.forEach((row, index) => {
+      assert.equal([...row.matchAll(/100万\s*tokens?/gu)].length, 1, 'unit must appear exactly once');
+      assert.equal(row, `${labels[index]}：${currency.formatCurrencyRatePerMillionTokens(rates[index], code)}`, `${code} ${labels[index]}`);
+    });
+    assert.equal(h.calls.length, 1); assert.equal(h.calls[0].path, '/api/llm/estimate'); h.unmount();
+  }
+});
 
 void test('actual panel restores without fetch, needs explicit choice and only displays an itemized estimate', async () => {
   const h = await harness((_call, work) => response(work));

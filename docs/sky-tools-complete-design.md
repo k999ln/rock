@@ -1586,3 +1586,9 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ## eSIMサービス保存ackの再照合
 
 既存サービス管理UIの状態修正。目的、責任、入出力、状態/保存、失敗/復旧、承認、合格条件と未決定は[OS共通契約](rockstaros-complete-design.md#esim-ack-reconciliation)を参照。新Tool/API/価格/権限を追加しない。保存ackと現時点のread/execute権限を分け、不明時は私有情報と操作を保留しGETで照合する。
+
+
+<a id="eve-estimate-rate-unit"></a>
+## Eve見積の単価単位表示
+
+目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。

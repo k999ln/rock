@@ -1143,3 +1143,9 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 失敗・復旧・承認: 不明POST結果を自動再送しない。同時操作lockとcurrent view照合で古いhandlerを拒否。late POST/GETは権限を復活させない。既知validationエラーも現権限を再読込してから入力を戻す。保存ackは課金・job完了・契約有効・端末導入の証明ではない。
 
 合格条件・未決定: 元8反例と追加3 lifecycle、component41、関連回帰/type/lint、実React合成browserのnull/500/403と同context回復を限定検収。実browser hidden遷移は未検証でありfixture結果と区別。最新main採用後の独立metadata検収、全verify、同head/mergeSHA CIでGit受入を決める。実Provider/金融/実機/一般公開は別gate。[証拠](evidence/development-execution/esim-ack-main-adoption.json)。
+
+
+<a id="eve-estimate-rate-unit"></a>
+## Eve見積の単価単位表示
+
+目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。

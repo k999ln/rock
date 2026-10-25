@@ -9966,5 +9966,15 @@
     "physicalAccepted": false,
     "realFinancialAccepted": false,
     "publicDeployment": false
+  },
+  "eveRateUnitMainAdoption": {
+    "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
+    "sourceIndependentPass": true,
+    "newHashBrowserScopedPass": true,
+    "metadataReviewPending": true,
+    "sameHeadCIPending": true,
+    "mainMerged": false,
+    "productionBilling": false,
+    "publicDeployment": false
   }
 }
