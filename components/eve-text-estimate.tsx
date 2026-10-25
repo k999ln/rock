@@ -86,7 +86,7 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
   const displayed = result && eveTextEstimateIsCurrent(result) ? result : null;
   return <section aria-label="保存資料の料金見積">
     <h2>保存した資料で料金を見積もる</h2>
-    <p>2つの保存資料と依頼を使った見積のみです。この画面では生成・費用の承認・課金は行いません。</p>
+    <p>保存した資料と依頼を使った見積のみです。この画面では生成・費用の承認・課金は行いません。</p>
     <p>この環境では文章生成を開始できません。資料の保存・復元はそのまま利用できます。</p>
     <fieldset disabled={!available}>
       <label>モデル（任意）<input aria-label="見積モデル" maxLength={120} value={model} onChange={(event) => { invalidate(); setModel(event.target.value); }} /></label>
@@ -94,7 +94,7 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
       <label>比較用上限（任意・未承認）<input aria-label="見積比較上限" inputMode="decimal" value={cap} maxLength={24} onChange={(event) => { invalidate(); setCap(event.target.value); }} /></label>
       <label><input type="checkbox" checked={consent} onChange={(event) => {
         invalidate(); setConsent(event.target.checked);
-      }} />保存した2資料と依頼を料金見積に使います。</label>
+      }} />保存した資料すべてと依頼を料金見積に使います。</label>
       <button type="button" disabled={!available || !consent || busy} onClick={() => void estimate()}>{busy ? '見積を確認中…' : '見積のみ確認'}</button>
     </fieldset>
     {(error || (result && !displayed)) && <p role="alert">{error || '見積の有効期限が切れました。改めて見積もってください。'}</p>}

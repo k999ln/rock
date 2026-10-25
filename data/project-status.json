@@ -10479,6 +10479,45 @@
       "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
     }
   },
+  "eveMultiMaterialPreparation": {
+    "unit": "EVE-02",
+    "primaryWorkstream": "05-web-pwa-sites",
+    "primaryOwner": "ROCK",
+    "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+    "status": "independent_r2_pass_pending_git_integration",
+    "scope": "2-4 saved materials; legacy2 byte compatibility; estimate only",
+    "evidence": "docs/evidence/development-execution/eve-multi-material.json",
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "paidGenerationAccepted": false,
+    "publicDeployment": false,
+    "synchronizedMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+    "focusedTestsPassed": 88,
+    "afterSyncTargetedPassed": 85,
+    "independentReviewPerformed": true,
+    "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+    "mustFix": 0,
+    "independentRelatedTestsPassed": 86,
+    "historicalPreR2HostFullVerify": {
+      "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "counts": {
+        "tests": 3003,
+        "pass": 3000,
+        "fail": 0,
+        "skip": 3
+      },
+      "appliesToFinalR2": false
+    },
+    "latestIntegrationMain": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "newIntegrationFullVerify": {
+      "status": "passed_host",
+      "tests": 3025,
+      "pass": 3022,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0
+    }
+  },
   "miniGestureInput": {
     "taskId": "MAT15",
     "primarySquad": "M1",

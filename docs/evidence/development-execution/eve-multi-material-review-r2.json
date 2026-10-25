@@ -1,0 +1,136 @@
+{
+  "schema": "rockstaros.eve-multi-material.independent-review/1",
+  "recordedAt": "2026-10-25T12:13:42.068135+00:00",
+  "role": "Independent reviewer, not implementation author",
+  "attempt": 2,
+  "verdict": "PASS_SCOPED",
+  "baseMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+  "priorReviewSha256": "5db4fe2f77d4a40f418ef9d5ecb5ee47ae31bb4cdd2a06c19c3b22953417feab",
+  "reviewedSourceAndTests": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba"
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "ab42e251d37adfde2cb14d0228a41b1aedb8988c5d9ccb52f672198d8167cc4e"
+    },
+    {
+      "path": "tests/eve-multi-material.test.mjs",
+      "sha256": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689"
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90"
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "58b25fe5a43ca930caac40c3a43e47046a2cbad523fc75da1e3ab33cfa4abaa3"
+    }
+  ],
+  "readmeSha256": "735c94174512cd97a95c8b4f0bb0247cdcacdb3ee1b3e17bf53b5f79f3650c53",
+  "mustFix": [],
+  "mustFixCount": 0,
+  "closedFindings": [
+    {
+      "id": "EVE-MULTI-STALE-MATERIAL-01",
+      "status": "closed_for_fixed_hashes",
+      "evidence": "Original independent text/name callbacks now both preserve shifted third material. Same-frame removal, duplicate add and stale goal independently pass. Fresh input callbacks still edit normally; original file-read followed by same-frame raw/goal edit regressions remain passing."
+    },
+    {
+      "id": "EVE-MULTI-HISTORICAL-UI-02",
+      "status": "closed_for_readme_hash",
+      "evidence": "README paragraph explicitly limits actual local UI observations to historical two-material evidence and declares new3/4 host/API/VM only, actual browser unaccepted."
+    }
+  ],
+  "sourceDeltaFromR1": {
+    "changed": [
+      "components/work-composition-workspace.tsx",
+      "tests/work-composition-ui.test.mjs"
+    ],
+    "unchangedSourceAndTests": 7,
+    "productFix": "Only currentEveInput() guard added to changeEveMaterial and changeEveGoal; no API/codec/estimate/authority/budget/paid gate change",
+    "newAuthorRegressionTests": 3,
+    "existingAssertionsRetained": true
+  },
+  "independentChecks": {
+    "immutableR1ProbesAndCodec": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    "additionalSameFrameProbes": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    "relatedRegression": {
+      "tests": 86,
+      "pass": 86,
+      "fail": 0,
+      "skip": 0,
+      "includes": "Eve codec, endpoint, estimate UI, composition UI/route and remote text client; does not include unrelated undici2"
+    },
+    "testsAreNotCoverageAdditive": true,
+    "initialR1TwoFailCounterexamplesPreserved": true
+  },
+  "evidenceFiles": [
+    {
+      "name": "ui-probes.test.mjs",
+      "sha256": "09643d16545e05d8bf22ab0ec24cdd14ea3b192987dbc0fc96014005f2cec21f"
+    },
+    {
+      "name": "codec-probes.test.mjs",
+      "sha256": "4208fe9e69e84a7e8cab903577f2d9ecfc81b3b24f31a1709e15664e3520c19e"
+    },
+    {
+      "name": "r2-extra-probes.test.mjs",
+      "sha256": "dd9606d32e715470d8497cb52616959913c9f27a4da0664ee680366726798a83"
+    },
+    {
+      "name": "r2-probes.log",
+      "sha256": "75e736980d52b6302404ad2b6692d77b7da6120aecd023e01a8a856b6845f8eb"
+    },
+    {
+      "name": "r2-extra-probes.log",
+      "sha256": "3171ee909ed87b7813194e8ce440771c71f9fc5e924d8f6a918d96eb70f31c07"
+    },
+    {
+      "name": "r2-regressions.log",
+      "sha256": "fcd13d6ace0b4ac468d79c0e45d6266c3bff211b901e45f7696c4d97618c1ba6"
+    }
+  ],
+  "planes": [
+    "Pure TypeScript imports and independent Node crypto hashes",
+    "Transpiled actual parent React component in VM with synthetic owner/store and captured callbacks",
+    "Related actual estimate handler with SQLite and synthetic authentication/rates"
+  ],
+  "notAccepted": [
+    "Real browser event scheduling/rendering/keyboard use",
+    "Cross-device/physical acceptance",
+    "Real Provider pricing/billing or paid execution",
+    "Whole EVE02",
+    "Candidate CI, GitHub save, main integration or deployment"
+  ],
+  "fullVerifyRerun": false,
+  "readOnlyProduct": true,
+  "next": "Git owner may adopt the fixed9 source/test hashes and explicit README boundary after current-main synchronization. Fixed final candidate fullVerify, CI and normal main merge with same-SHA readback remain separate gates."
+}

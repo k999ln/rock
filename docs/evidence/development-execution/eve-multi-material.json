@@ -1,0 +1,229 @@
+{
+  "schema": "rockstaros.eve-multi-material/1",
+  "status": "PASS_SCOPED_INDEPENDENT_R2_PENDING_GIT_INTEGRATION",
+  "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+  "unit": "EVE-02",
+  "decision": "Next unmet design requirement 2-4 inputs after PR198/204/213/222 limited adoption. Free saved preparation and estimate only.",
+  "legacyTwoMaterialCompatibility": true,
+  "limits": {
+    "materialCount": [
+      2,
+      3,
+      4
+    ],
+    "totalTextJsUnits": 8000,
+    "goalJsUnits": 500,
+    "fileBytes": 48000,
+    "runBodyBytes": 80000
+  },
+  "initialValidation": {
+    "focused": {
+      "tests": 63,
+      "pass": 63,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheck": "FAILED_missing_stripe_in_initial_borrowed_node_modules; rechecking against main-matching dependency tree",
+    "lint": "pass"
+  },
+  "independentReviewPerformed": true,
+  "mainMerged": false,
+  "gitHubSaved": false,
+  "paidGenerationAccepted": false,
+  "publicDeployment": false,
+  "next": "Git owner adopts exact reviewed9, preserves both failure and repair receipts and latest-main metadata, runs fixed candidate fullVerify/CI, normal main merge, same-merge-SHA CI and current progress/handoff synchronization.",
+  "recordedAt": "2026-10-25T12:15:17.309316+00:00",
+  "synchronizedMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+  "reviewerRole": "Implementation author: source inspection, negative controls and automated acceptance. Not a second independent reviewer.",
+  "mustFixFromLocalAcceptance": [],
+  "contract": {
+    "oldTwoMaterialEnvelopePlanPrompt": "byte_equal_3_legacy_vectors",
+    "newThreeFourMaterial": "version2; all ordered source digests bound",
+    "sameJobPersistence": "existing workflow and exact source/artifact readback",
+    "limitsUnchanged": true,
+    "pricingExecutionGateChanged": false
+  },
+  "validation": {
+    "finalFocused": {
+      "tests": 85,
+      "pass": 85,
+      "fail": 0,
+      "skip": 0,
+      "command": "node --experimental-strip-types --test tests/eve-multi-material.test.mjs tests/eve-text-job.test.mjs tests/eve-text-estimate.test.mjs tests/eve-text-estimate-ui.test.mjs tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/remote-ai-text-client.test.mjs tests/undici-security-update.test.mjs"
+    },
+    "typecheck": "pass after main-matching dependencies",
+    "targetLint": "pass",
+    "projectUpdate": "pass",
+    "designCheck": "pass",
+    "fullVerify": {
+      "exitCode": 0,
+      "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "root": {
+        "tests": 3003,
+        "pass": 3000,
+        "fail": 0,
+        "skip": 3
+      },
+      "includes": "Web build, API/storage and baseline checks; sub-suite counts are not added",
+      "environment": "Dedicated npm ci --ignore-scripts from unchanged lockfiles; OpenSSL3; synthetic localhost allowed; Node --test-concurrency=4 for host load",
+      "afterMainSync": "Product4 and lockfiles unchanged; incoming test-only undici2 and full related85 passed. Entire fullVerify not rerun after metadata/test-only main synchronization."
+    },
+    "oldSourceNegativeControl": {
+      "tests": 3,
+      "pass": 0,
+      "expectedFail": 3
+    },
+    "priorUnrelatedFailuresRecheck": {
+      "tests": 55,
+      "pass": 55,
+      "fail": 0
+    }
+  },
+  "failureHistory": [
+    {
+      "phase": "initial typecheck",
+      "cause": "Borrowed initial node_modules lacked Stripe; product type errors not observed after corrected dependency environment."
+    },
+    {
+      "phase": "initial full verify",
+      "cause": "Host default OpenSSL was not required OpenSSL3; corrected PATH only."
+    },
+    {
+      "phase": "second full verify",
+      "cause": "Sandbox EPERM on synthetic localhost listener; repeated with scoped tool approval."
+    },
+    {
+      "phase": "third full verify",
+      "root": {
+        "tests": 3003,
+        "pass": 2997,
+        "fail": 3,
+        "skip": 3
+      },
+      "causes": [
+        "Borrowed dependencies resolved vendor/braces to another checkout",
+        "AMC child exit timing",
+        "Wallet SIGKILL checkpoint timeout"
+      ],
+      "resolution": "Dedicated dependencies, failed suites55 pass, reduced test concurrency; no production or assertion changes."
+    },
+    {
+      "phase": "first legacy parity probe",
+      "cause": "Synthetic job ID did not match existing UUID parser; fixed fixture ID only; final3 parity vectors pass."
+    }
+  ],
+  "mainSynchronization": {
+    "incomingPaths": 11,
+    "productSourceChangedByIncomingMain": false,
+    "lockfilesChangedByIncomingMain": false,
+    "incomingTest": "tests/undici-security-update.test.mjs",
+    "incomingTests": 2,
+    "latestMainSameShaObservedCI": {
+      "sha": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+      "checks": 6,
+      "allSuccess": true,
+      "isCandidateCI": false
+    }
+  },
+  "acceptancePlanes": [
+    "pure codec and canonical hash validation",
+    "actual estimate handler with SQLite and synthetic authentication/signed synthetic rates",
+    "transpiled real component VM with synthetic owner/store; no real browser claim",
+    "host full regression and Web build on recorded original base"
+  ],
+  "remaining": [
+    "Real-browser scheduling and 3/4-material UI acceptance not performed",
+    "GitHub save, candidate same-SHA CI and main adoption not performed",
+    "Paid model dispatch, quote/reserve/approval/usage/output bridge remain deferred; whole EVE02 not accepted",
+    "Public deployment, real Provider/billing, device and wholeOS remain separate"
+  ],
+  "sourceAndTests": [
+    {
+      "path": "lib/eve-text-job.ts",
+      "sha256": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba"
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "ab42e251d37adfde2cb14d0228a41b1aedb8988c5d9ccb52f672198d8167cc4e"
+    },
+    {
+      "path": "tests/eve-multi-material.test.mjs",
+      "sha256": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689"
+    },
+    {
+      "path": "tests/eve-text-job.test.mjs",
+      "sha256": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90"
+    },
+    {
+      "path": "tests/eve-text-estimate.test.mjs",
+      "sha256": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "58b25fe5a43ca930caac40c3a43e47046a2cbad523fc75da1e3ab33cfa4abaa3"
+    }
+  ],
+  "verificationLogHashes": {
+    "eve-next-final-focused.log": "d12c62dfb075b4c201a2690a33031f0cdf983af15ac19c8ae59e28118fd0d36e",
+    "eve-next-verify-r4.log": "5e7b31d9bc6f8afbe4e27b3685102d3f27eb9b4efd4366daafb83091a1e7918f",
+    "eve-next-legacy-parity.log": "34de9c9e659ea42ed6e2314f27f95209dd5154ad4f12b4b4238a3aa12e02044c",
+    "eve-next-old-counterexample.log": "f48c7b5c75aa16dc92a58fd36e54f997aed1ba83426317f72fdd697f4ee61fcc"
+  },
+  "independentReview": {
+    "attempt1": {
+      "path": "docs/evidence/development-execution/eve-multi-material-review-r1.json",
+      "sha256": "5db4fe2f77d4a40f418ef9d5ecb5ee47ae31bb4cdd2a06c19c3b22953417feab",
+      "verdict": "CHANGES_REQUIRED",
+      "mustFix": 2
+    },
+    "attempt2": {
+      "path": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+      "sha256": "5cbc64063c3cd13612aff4a4888ba0e32211c39b7e9d3fc683f6391c04d684c2",
+      "verdict": "PASS_SCOPED",
+      "mustFix": 0
+    },
+    "closed": [
+      "EVE-MULTI-STALE-MATERIAL-01",
+      "EVE-MULTI-HISTORICAL-UI-02"
+    ],
+    "immutableOriginalProbesAndCodec": {
+      "tests": 8,
+      "pass": 8
+    },
+    "independentAdditionalProbes": {
+      "tests": 2,
+      "pass": 2
+    },
+    "independentRelatedRegression": {
+      "tests": 86,
+      "pass": 86
+    },
+    "countsNotAdditive": true
+  },
+  "repair": {
+    "component": "current input identity guard for material and goal edits",
+    "testAdditions": 3,
+    "readme": "Historical2 actual UI separated from new3/4 host/API/VM, not actual browser",
+    "primaryFocused": {
+      "tests": 88,
+      "pass": 88,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheck": "pass",
+    "lint": "pass",
+    "fullVerifyAfterRepair": "Deferred to Git fixed candidate and merge-SHA Linux CI; old host full verify is not promoted to new9hash."
+  }
+}

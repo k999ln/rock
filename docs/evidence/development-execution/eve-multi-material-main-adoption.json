@@ -1,0 +1,59 @@
+{
+  "schema": "rockstaros.eve-multi-material-main-adoption/1",
+  "baseMain": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+  "originalBaseMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+  "sourceAndTests": {
+    "lib/eve-text-job.ts": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba",
+    "lib/remote-ai-text-client.ts": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051",
+    "components/eve-text-estimate.tsx": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a",
+    "components/work-composition-workspace.tsx": "ab42e251d37adfde2cb14d0228a41b1aedb8988c5d9ccb52f672198d8167cc4e",
+    "tests/eve-multi-material.test.mjs": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689",
+    "tests/eve-text-job.test.mjs": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90",
+    "tests/eve-text-estimate.test.mjs": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573",
+    "tests/eve-text-estimate-ui.test.mjs": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba",
+    "tests/work-composition-ui.test.mjs": "58b25fe5a43ca930caac40c3a43e47046a2cbad523fc75da1e3ab33cfa4abaa3"
+  },
+  "originalPrimaryReceiptSha256": "e2e1d02e516551bfda85cd4bec6dfb2f9d9de2b84f43192857ca478aaceab87d",
+  "reviewR1Sha256": "5db4fe2f77d4a40f418ef9d5ecb5ee47ae31bb4cdd2a06c19c3b22953417feab",
+  "reviewR2Sha256": "5cbc64063c3cd13612aff4a4888ba0e32211c39b7e9d3fc683f6391c04d684c2",
+  "sourceReview": "PASS_SCOPED mustFix0",
+  "method": "3-way apply final18-path patch, source9 bytes unchanged, latest main status/index preserved; new README/project/design paragraphs moved into related sections below canonical titles. Original receipts remain unchanged.",
+  "authorization": {
+    "sourceChat": "01a16c24-5351-76b0-8c89-c98ad309b2d6",
+    "sourceTurn": "01a172f6-5f7b-7382-916c-c90046f00f6d",
+    "sourceUserMessage": "01a172f6-60b0-7551-bd3e-37b2f88327e9"
+  },
+  "limits": {
+    "materialCount": [
+      2,
+      3,
+      4
+    ],
+    "totalTextJsUnits": 8000,
+    "goalJsUnits": 500,
+    "fileBytes": 48000,
+    "runBodyBytes": 80000
+  },
+  "historicalHostFullVerifyNotAcceptedForNewCandidate": true,
+  "newFullVerify": {
+    "status": "passed_host",
+    "tests": 3025,
+    "pass": 3022,
+    "fail": 0,
+    "skip": 3,
+    "exitCode": 0,
+    "baseMain": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "standardPrivateGenerationAndTypecheck": "passed via normal npm run verify lifecycle",
+    "rawLogSha256": "b5acfa9be68022405ad27ad3acd9b9b98c26da65394d986503fa77087daa403b",
+    "exactFinalHeadLinuxCI": "required separately"
+  },
+  "newHeadCI": "pending_at_capture",
+  "mainMerge": "not_run_at_capture",
+  "actualBrowser3or4Accepted": false,
+  "realProviderPricingOrBillingAccepted": false,
+  "paidGenerationAccepted": false,
+  "physicalAccepted": false,
+  "wholeEVE02Accepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD"
+}

@@ -196,6 +196,8 @@ privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGi
 
 同4pathのrecurring互換delta: 同INSERTの既存0021 triggerで拒否例外を維持し、既知拒否と保存不明を区別。局所40pass、新hash独立再検収/全verify/CI待ち。
 
+
+
 ## Billing最終send claimの限定採用
 
 [Billingの11項目契約](sky-billing.md#billing-final-send-claim)で、current parent/rate/time/held cap/ownerと既存opt-in recurringを同じ最終INSERT SELECTへ固定する。拒否/不明時はno-send/元hold維持、既存late usageと一回settleを保持。新migration/料金/Wallet/888c変更なし。共通authority・issuer epoch/consent revision adapterと本番D1/実Providerは未受入。[exact4採用証拠](evidence/development-execution/billing-final-send-main-adoption.json)。ROCK実装、EXTERNAL根拠、JOINT本番受入、OWNER同意/費用の分界を維持する。
@@ -579,6 +581,17 @@ ROCKはPC receiverの結果を同時callbackから保護する。入力は既存
 ### Webの複数Tool仕事とレシピ（2026-10-13）
 
 Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計画・途中成果・検査・操作ID・sanitized recipeを追加する。接続済みのeffect-free処理だけを予算0で実行し、外部Agent、Broker承認、Provider receipt、native能力への昇格は行わない。目的・入力・条件・状態・保存・失敗復旧・承認・互換・合格条件・未決事項は[仕事の組み立てとレシピ](sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)を参照。Webの受入をAndroid/nativeの同一契約受入へ転用しない。
+
+<a id="eve-multi-material"></a>
+### 2〜4資料の互換拡張（EVE-02）
+
+目的・利用体験: 既存の資料付き依頼に3番目・4番目の資料を加え、同じ仕事で無料準備・原文保存・復元・見積比較を行う。「資料を追加」「資料Nを外す」は通常buttonでkeyboard操作できる。最低2・最大4、本文合計8,000 JavaScript文字単位、依頼500文字、名前160文字、選択file各48,000 bytesと既存80,000-byte run request上限を維持する。資料数を増やしても入力総量・生成能力・予算は増やさない。
+
+責任・入出力: ROCKは既存codec/workflow/owner別UIと全資料の照合を担う。OWNERが資料の選択・固定・保存同意・見積同意を別々に行う。EXTERNALの信頼できる単価がなければ従来どおり見積を拒否する。2資料は`eve.text-preparation/1`・既存plan・`eve.text-estimate/1`をbyte互換で保持し、3・4資料だけ`eve.text-preparation/2`と対応plan・`eve.text-estimate/2`にする。材料順序を含むcanonical envelopeとprompt digest、全2〜4本文のordered SHA256を照合し、見積replyの欠落・追加・順序変更・旧builder混在を拒否する。schemaと資料数が食い違う保存も拒否する。
+
+状態・保存・失敗・復旧: 既存compositionのcreate→同意付きrun→review、owner/job/revision/command照合と原文artifactを再利用する。別engine/DB/migrationは追加しない。資料追加・削除は未保存入力だけを変え、保存済み原文は変更しない。入力identityとfile世代を再照合し、古い追加/削除・名前/本文/依頼編集callbackや読込で新入力・別ownerを上書きしない。過大入力や不正UTF8/controlは切捨てず拒否し、既存入力を保つ。restoreはGETのみで自動再実行・自動見積しない。新形式を知らない旧readerは拒否するため、rollbackは旧版で3・4資料を開けない旨を示し、新版へ戻して復元する。保存済みjobを削除して回避しない。
+
+承認・合格条件・未決定: 保存と見積の明示同意を維持し、pricing execution gatefalse・budget0・quote/reserve/approve/sendなし。2資料互換、3・4資料の同job保存/復元、全hashの比較、8,000/500/48,000/80,000境界、不正schema/count/owner/revision、後着読込・入力差替えをhost/API/VMで検査する。modelによる草稿/意味検収、実Provider/請求、実browser全操作、別端末/実機/一般公開は別gate。合格証拠は[限定受入記録](evidence/development-execution/eve-multi-material.json)へ残し、固定候補の独立検収・Git採用は実施した段階だけ更新する。
 
 <a id="game-work-draft"></a>
 ### 非金融Game結果から既存WorkJobへの明示下書き（GAME-02限定）
