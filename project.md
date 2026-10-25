@@ -946,6 +946,8 @@ PR229採用準備時の履歴: source4と別Pixel fixture2は元検収hash不変
 
 常駐制御検収: 開発用Broker本人/端末bindingと毎回guard、APの予約前後認証、有限round-robin tick、private Unix入口を実装。網側予約/AP照会中の本人期限切れと旧PSK再接続を独立反例で修正し、service20件・独立負例9件・全Mini103件のwrapper成功、mustFix0。[専用検収](docs/evidence/development-execution/mini-08-message-service-review.json)。全verifyは初回のsuite60秒制限と旧node_modulesの不一致を切分け、suite180秒/lockfile同期後に最終までexit0（主2993件/2990成功/3skip/失敗0、他suite非加算）。通信の個別期限は変更しない。新source `9dae624b` はDraft PR231へ保存。同SHA全14CI成功（Linux共通103件＋実packet26件・全verifyを含む）。最終metadata headとmain採用は別追跡。PR229のmain採用は中央Gitと別追跡。
 
+開発用message service採用準備: 原f27faea8全14CI/独立mustFix0のsource5と依存7を固定。main bb11を通常同期し、旧status全fieldとMini229/eSIM/Smith currentを保持してmessageServiceだけ追加。元Mini229 adoption receiptはbyte不変へ戻し、作者確認は別fileへ保持。新host103試験と標準fullverify3027/3024pass/0fail/3skip成功。実製品identity/transport/Job保存/実機/金融/wholeMINIは未受入。[現行採用](docs/evidence/development-execution/mini-08-message-service-main-adoption.json)。次は最新main再同期とRoot固定headmetadata/新headCI/mainCI。
+
 共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
 
 共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。GitHub branch/PR229へ保存。隔離Linuxも同source83件＋実packet26件成功。初期head CIは13成功・既存Pixel正常系fixture競合1失敗で、製品sourceを変えず明示待合せへ修正し、650ms fsync遅延の独立負例で旧失敗/修正後成功・保存失敗時拒否を確認。同期source head `f59be1af`の全14CI（全verify・実Linux packet含む）成功。最終metadata headのCIはPR229へ結び、message adapterのmain採用は別追跡。

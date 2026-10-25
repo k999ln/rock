@@ -49,12 +49,5 @@
     "fail": 0,
     "logSha256": "09dad2b6da36d603a8ea3a53914fc2540e2cc026b095a3286c638edddd65e905",
     "priorSandboxAttempt": "Unix/loopback socket EPERM;79 run/9 errors, retained separately; not product failure"
-  },
-  "currentConfirmation": {
-    "evidence": "docs/evidence/development-execution/mini-08-message-main-confirmation.json",
-    "sha256": "f41d43aa9ed006bd69824189f333eed62b9ed7b1f4bfab382452cf0999ae06b3",
-    "mergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
-    "checksSucceeded": 13,
-    "originalCapturePreserved": true
   }
 }

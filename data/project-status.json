@@ -10145,7 +10145,18 @@
       "linuxCommonTests": 103,
       "linuxPacketTests": 26,
       "ciStatus": "previous_6b155020_14_success_synchronized_head_pending",
-      "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77"
+      "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "latestIntegrationMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+      "newIntegrationHostFullVerify": {
+        "tests": 3027,
+        "pass": 3024,
+        "fail": 0,
+        "skip": 3,
+        "exitCode": 0,
+        "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
+      },
+      "newHostCommonTests": 103
     }
   },
   "pixelCacheMainAdoption": {
