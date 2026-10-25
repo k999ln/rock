@@ -53,6 +53,21 @@
       "logSha256": "e168932312cd9134f632fd0b880e7a8e4ea716ed2f7d8872813fa0b323af1c59",
       "environment": "macOS arm64, Node 26.12.1, Python 3.15, OpenSSL 3",
       "linuxPacketExecution": false
+    },
+    "isolatedLinux": {
+      "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+      "environment": "dedicated Lima Ubuntu 24.04 arm64 / Python 3.12 / nftables 1.0.9 / hostapd 2.10 driver=none",
+      "commonTests": 83,
+      "packetTests": 26,
+      "failures": 0,
+      "skip": 0,
+      "logSha256": "5892311d1462b112dccb844d9da6067c3d637b4ead845c161b88eb2b4692d94f",
+      "controllerSha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26",
+      "messageAdapterSha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2",
+      "vmStoppedAfterTests": true,
+      "radioTested": false,
+      "providerConnected": false,
+      "invoiceVerified": false
     }
   },
   "preserved": [
@@ -77,6 +92,20 @@
     "Job import",
     "simultaneous IP and message sessions"
   ],
-  "gitHubSaved": false,
-  "mainMerged": false
+  "gitHubSaved": true,
+  "mainMerged": false,
+  "pr": 229,
+  "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+  "ciFollowup": {
+    "head": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+    "productChecksSucceeded": 13,
+    "productChecksFailed": 1,
+    "failure": "existing Pixel normal-case diagnostic observer/stop race",
+    "runId": 40189848217,
+    "jobId": 121158307786,
+    "logSha256": "9cbdaab92dbb5ca95b254cba92f8c0e25412d498597c103255c722417209e4eb",
+    "runtimeChangedForFix": false,
+    "followup": "Normal-case fixture now waits for observed successful diagnostic write; independent slow-fsync counterexample confirms old failure and fixed success; latest CI pending",
+    "independentReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
+  }
 }

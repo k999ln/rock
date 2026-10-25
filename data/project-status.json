@@ -10081,15 +10081,20 @@
       ],
       "physicalAccepted": false,
       "providerConnected": false,
-      "nextAction": "Git save and same-head Linux CI; concrete modem/provider transport, Broker/AP ingress and bounded scheduler remain pending",
+      "nextAction": "Adopt PR221 synchronization; validate final head CI with deterministic Pixel normal-case fixture; real transport/Broker/AP/scheduler remain pending",
       "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
       "evidence": "docs/evidence/development-execution/mini-08-message-adapter.json",
       "independentReview": "docs/evidence/development-execution/mini-08-message-review.json",
       "hostTestsPassed": 83,
       "mustFixRemaining": 0,
-      "gitHubSaved": false,
+      "gitHubSaved": true,
       "mainMerged": false,
-      "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail"
+      "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail",
+      "pr": 229,
+      "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+      "linuxCommonTestsPassed": 83,
+      "linuxPacketTestsPassed": 26,
+      "ciStatus": "initial_existing_pixel_fixture_race_fixed_independent_review_pass_final_CI_pending"
     }
   },
   "pixelCacheMainAdoption": {
