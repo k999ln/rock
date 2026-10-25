@@ -7,7 +7,7 @@ import OsAppNavigation from './os-app-navigation';
 import { osRouteHref, skyHomePanelForHash } from '@/lib/os-navigation';
 import { MessageCircle, Plus, MoreHorizontal } from 'lucide-react';
 import SkySocialTimeline from './sky-social-timeline';
-import SkyDiscoveryFeed from './sky-discovery-feed';
+
 import SmisAddedPosts from './smis-added-posts';
 import SkyDiscoveryDialog from './sky-discovery-dialog';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
@@ -20,6 +20,7 @@ import { SkyNewsConnections } from './sky-information-market';
 import { useSkyFeatures } from '@/lib/use-sky-features';
 import styles from './home-screen.module.css';
 
+const SkyDiscoveryFeed = lazy(() => import('./sky-discovery-feed'));
 const SkyAgentLibrary = lazy(() => import('./sky-agent-library'));
 type View = 'home' | 'discover' | 'manage' | 'sources' | 'bookmarks' | 'communities';
 function viewForHash(fragment: string): View {
@@ -135,7 +136,7 @@ export default function HomeScreen() {
                     <Link href={route('/#optional-features')}>機能を追加</Link>
                     <Link href={route('/campus')}>Campus</Link>
                     <Link href={route('/connect')}>利用環境をつなぐ</Link>
-                    <Link href={route('/settings')}>設定</Link>
+                    <Link href={route('/settings')}>設定</Link><Link href="/test">開発者向け出力テスト</Link>
                     {enabled('wallet') && (
                       <Link href={route('/wallet')}>Wallet</Link>
                     )}
@@ -147,10 +148,11 @@ export default function HomeScreen() {
               </div>
             </OSHeader>
           </div>
+          {view === 'home' && <section className={styles.workEntry} aria-label="仕事への入口"><div><strong>やりたいことから、次の一歩へ。</strong><p>依頼・計画・承認・進捗・成果は、同じEveで。</p></div><nav aria-label="仕事の主な操作"><Link href="/os/eve">Eveに依頼</Link><Link href="/os/eve#eve-work-results">仕事と成果</Link><Link href="/connect/service">利用環境をつなぐ</Link></nav></section>}
           <SkyDiscoveryDialog open={view==='discover'||view==='manage'} mode={view==='manage'?'manage':'discover'} onModeChange={mode=>{window.location.hash=mode==='manage'?'sky-manage':'sky';}} onClose={()=>{window.location.hash='timeline';setView('home');}}>
             {panelVisited && <>
               <section id="sky-add-panel" role="tabpanel" aria-labelledby="sky-add-tab" hidden={view!=='discover'}>
-                <SkyDiscoveryFeed key={featureOnly?'features':'discover'} initialFilter={featureOnly?'features':'all'} standalone />
+                <Suspense fallback={<output>能力を読み込んでいます…</output>}><SkyDiscoveryFeed key={featureOnly?'features':'discover'} initialFilter={featureOnly?'features':'agent'} standalone embedded /></Suspense>
               </section>
               <section id="sky-manage-panel" role="tabpanel" aria-labelledby="sky-manage-tab" hidden={view!=='manage'}>
                 <Suspense fallback={<output>担当とLLMの設定を読み込んでいます…</output>}><SkyAgentLibrary embedded /></Suspense>

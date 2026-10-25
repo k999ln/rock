@@ -1148,3 +1148,9 @@
     animation: none;
   }
 }
+
+.shell .empty{padding:24px 20px;min-height:0;max-width:none}.shell .empty h3{font-size:22px;line-height:1.5;letter-spacing:0;max-width:none;word-break:normal;overflow-wrap:anywhere;margin:8px 0}.shell .empty p{max-width:none;margin:8px 0;line-height:1.7}.emptyAction{display:inline-flex;align-items:center;min-height:48px;color:var(--tl-blue);font-weight:600}.shell .liveLine button,.shell .topicChips button,.shell .feedStatus button,.shell .rankingNote summary{min-height:48px}.shell .feedStatus{font-size:12px;line-height:1.7;padding:4px 16px;margin:0;border:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.shell .liveLine{min-height:48px}.shell .topicChips{gap:6px}.shell .topicChips button{padding:8px 12px}.shell[data-full-home='true'] .composer :is(button,a){min-height:48px}
+
+.shell .composerTools :is(a,button){min-height:48px}.shell .topicChips button{flex-shrink:0}
+
+.feedPreferences>summary{min-height:48px;padding:14px 0;cursor:pointer;font-size:13px;line-height:1.5;list-style-position:inside}.shell .feedPreferences .rankingNote{padding:0 0 8px}

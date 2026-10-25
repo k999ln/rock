@@ -443,3 +443,5 @@ void test('build asset cache policy covers successful reads but never promotes p
     assert.equal(await response.text(),status===304?'':'fixture');
   }
 });
+
+void test('retired duplicate presentations use canonical product domains and retain same-origin Studio query state',async()=>{const app=withMiniSite({fetch:()=>new Response('app')},()=>new Response('mini'));const mini=await app.fetch(new Request('https://avoado.si/avocado-mini?private=do-not-forward'),{},{});assert.equal(mini.status,308);assert.equal(mini.headers.get('location'),'https://avocadomini.si/');const studio=await app.fetch(new Request('https://avoado.si/studio?tool=fixture'),{},{});assert.equal(studio.status,308);assert.equal(studio.headers.get('location'),'https://avoado.si/os/sky/publish?tool=fixture');});

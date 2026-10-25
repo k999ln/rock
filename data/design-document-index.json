@@ -3120,5 +3120,16 @@
       "app/layout.tsx"
     ],
     "scope": "Web branding only; native installation unchanged"
+  },
+  "publicDesignCleanup": {
+    "authority": "docs/rockstaros-complete-design.md#公開webの入口原稿配布物の整理",
+    "miniProAuthority": "docs/rockstaros-avocado-mini-complete-design.md",
+    "toolAuthority": "docs/sky-tools-complete-design.md",
+    "source": [
+      "components/home-screen.tsx",
+      "components/sky-discovery-feed.tsx",
+      "components/eve-sync-workspace.tsx"
+    ],
+    "nativeAcceptanceChanged": false
   }
 }

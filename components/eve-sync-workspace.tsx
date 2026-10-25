@@ -633,7 +633,7 @@ export default function EveSyncWorkspace({
         </aside>
         <section className={styles.desk}>
           <div className={styles.studioHeader}>
-            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h2>{workbenchMode==='build'?'エージェントを作る':'つくる仕事を、ここから。'}</h2><p>作成、実行、成果の確認をひとつの場所で。</p></div>
+            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h2>{workbenchMode==='build'?'エージェントを作る':'つくる仕事を、ここから。'}</h2><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
             <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
           </div>
           <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">

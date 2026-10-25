@@ -57,14 +57,12 @@ void test('the concise landing page links to complete progress and explicitly wi
   assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });
 
-void test('R5 copy overrides dark campaign colors locally and enters the current OS directly', () => {
-  const page = read('app/avocado-mini/page.tsx'), css = read('app/avocado-mini/design.module.css');
-  assert.match(page, /miniStyles\.r5Landing/);
-  assert.match(page, /miniStyles\.bodyCopy/);
-  assert.match(page, /miniStyles\.notice/);
-  assert.match(page, /<Link href="\/os">RockstarOSサービスをはじめる<\/Link>/);
-  assert.match(css, /\.r5Landing \.intro > \.bodyCopy,[\s\S]*color: var\(--os-muted, #626e65\)/);
-  assert.match(css, /\.r5Landing \.intro > \.notice[\s\S]*color: var\(--os-text, #252b28\)/);
-  assert.match(css, /background: var\(--os-bg, #f6f4ef\)/);
-  assert.doesNotMatch(css, /(^|\})\s*(body|html|:root)\b/m);
+void test('retired duplicate Mini presentation redirects to its product domain without changing R5 gates', () => {
+  const page = read('app/avocado-mini/page.tsx');
+  assert.match(page, /permanentRedirect\('https:\/\/avocadomini\.si\/'\)/);
+  assert.doesNotMatch(page, /AvocadoTurntable|<main|miniStyles/);
+  assert.equal(baseline.launchPage.hardwareCanonicalOrigin, 'https://avocadomini.si');
+  assert.equal(baseline.launchPage.installGuideRoute, '/rockstaros/guide');
+  assert.equal(baseline.marketPositioning.r5.priceStatus, 'not_confirmed_for_R5_do_not_inherit_E3_prices');
+  assert.equal(baseline.marketPositioning.r5.manufacturingReleased, false);
 });

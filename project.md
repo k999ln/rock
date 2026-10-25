@@ -1,3 +1,11 @@
+## 2026-10-25 — デザイン整理の回帰検証完了、公開待ち
+
+公開OS候補のnpm run verify exit0。Core2605試験（2604pass/1skip/0fail）、配布除外guard追加2試験、Mini/Pro44試験成功。参照されない旧Mini画像4,912,313 bytesは配布から除外し、本人原本/歴史資料は正本に保持。Mini/Pro public/imagesは65,760,897→2,448,179 bytes、現行Mini heroは見える画素/alphaを保つlossless WebP 661,850→367,448 bytes。原稿は既存pro-local-import/1を再利用。次は正規Sites source保存→OS→Mini/Pro公開→正式domainで読戻し。一般販売・native Mini・本人job自動同期の受入は増やしていない。
+
+## 2026-10-25 — 3サイトのレビュー指摘修正と軽量化に着手
+
+WEB04/HOME01・ROCK。公開source OS v119/Mini・Pro v48から修正。役割別正規URL・単一原稿・提供状況・未使用配布物を整理し、owner/job/revision/予算/停止/販売gateは保持。公開前に実UI・routing・原稿・画像参照・verifyを検証。現在GitHub main 3bb3be259b29feb76e0a688636d0b8e37f89abfa とRoot branch951d82d5、Sites sourceを別物として記録し、共有Rootのdirtyを巻き込まない。
+
 ## 2026-10-25 — 虹色Webブランドの検証完了
 
 公開版を基にした3サイトのWebブランド変更。本体2603試験は2602 pass/1 skip/0 fail、ロゴとrouting18試験、PWA/ロゴ4試験、独立Mini/Pro40試験成功。npm run verifyは環境依存（OpenSSL3、不足子依存、一時state）を補い、中断箇所から残りの全stageを実行し完了。baseline/design/typecheck、build、配布参照218件missing0、API/CSV、mission/work/botまで成功。Mini/Proはv48公開・正式domain読戻し済み。OSはこのsourceの保存・公開・正式domain読戻しが次。実機・本番課金・一般ローンチ合格への読み替えなし。

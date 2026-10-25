@@ -96,3 +96,7 @@
 }
 
 .os-header .os-brand img{background:#fff;border-radius:6px;filter:none}
+
+.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px}.os-header .os-brand img{width:34px;height:34px;flex-basis:34px}
+
+.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-current-app{display:none}}

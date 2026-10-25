@@ -13,3 +13,5 @@
 @media(prefers-reduced-motion:no-preference){.buildPane,.workContent{animation:eve-pane-arrival .18s ease-out}@keyframes eve-pane-arrival{from{opacity:.7;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}}
 
 .app .historyClose{display:none}@media(max-width:720px){.sidebar[data-open='true']{position:fixed;inset:100px auto calc(88px + env(safe-area-inset-bottom)) 0;width:min(88vw,340px);z-index:75;overflow:auto;background:#f0f1e9;box-shadow:12px 0 40px #252b2826;border:1px solid var(--line);border-radius:0 18px 18px 0}.app .historyClose{display:block;align-self:end;min-height:44px;font-size:12px}}
+
+.studioHeader h2{font-size:clamp(23px,3vw,32px);letter-spacing:-.02em;line-height:1.35}.workbenchTabs{gap:8px;overflow:auto}.workbenchTabs button{min-height:48px;white-space:nowrap}.historyToggle{min-height:48px}.targetSummary{line-height:1.65}

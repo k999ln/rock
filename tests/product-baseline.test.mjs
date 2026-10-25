@@ -322,3 +322,5 @@ void test('canonical 49 requirements and the existing Source extension retain se
   wrongPrompt.nextPrompt = source.previousNextPrompt;
   assert.throws(() => validateBaseline(wrongPrompt), /現行の全体開発マスター/);
 });
+
+void test('Mini canonical presentation cannot become an arbitrary external destination or inherit historical prices',()=>{const wrong=structuredClone(source);wrong.launchPage.hardwareCanonicalOrigin='https://example.invalid';assert.throws(()=>validateBaseline(wrong),/avocadoMini製品ホーム/);const priced=structuredClone(source);priced.marketPositioning.r5.priceStatus='for_sale';assert.throws(()=>validateBaseline(priced),/avocadoMini/);});

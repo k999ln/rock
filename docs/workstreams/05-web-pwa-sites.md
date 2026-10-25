@@ -277,3 +277,10 @@ Homeの既定tokenとworkspace frameを同値にし、旧青系の面、補助�
 Source readback追加：現行public v111のproject/version/source/deploymentをreadonlyで照合し、旧本人限定auditは歴史identityへ分離。public runtime gateはblocked維持。公開Home/APIには8 header、旧URL/SW/JSには不足を観測。候補のlocal合格は公開解消ではない。ecosystemはcanonical49＋保存拡張1を照合、旧SQL参照を固定fixtureへ修正。Workflow/API/CSVは空の復元schemaで実D1を試験し、公開migrationの更新受入と分ける。SOURCE PROJECTSにはsky-linux-localの現存account-sync.patch範囲だけを記載し、完全Linux配布済みとはしない。
 
 静的配信の保護: [11項目契約](../rockstaros-complete-design.md#source-asset-security)。SourceのstageでASSETS/Worker先行を固定し、元app/未知entry/異なるbindingを保全。実asset serviceの_headersなしでWorker/API保護とstatic迂回を同時に再現し、同じ条件の修正後GET/HEAD/304/404/転送/SW/APIを試験する。公開runtimeとCPU/費用は別受入。
+
+
+## 3サイトの公開デザイン整理（WEB04・HOME01・ROCK、2026-10-25）
+
+本人がレビュー指摘の修正と不要な重複ページ・画像の整理および公開を明示依頼。主担当Web。既存公開source（OS v119、Mini/Pro v48）を基に、Homeの仕事入口、Eveへの導線、技術候補の折畳み、48px操作、Proの単一下書きと原稿export/restore、Miniの空メディア枠除去と単一status画面を実装する。Miniの現行3D・映像とProの実部品組立を保持。旧URLは308、決済戻りのsession_idは照会先へ保持し、支払い結果を推測しない。画像は参照調査後にWebPへ変換・未使用配布物のみ除外し、旧画像URLは同一画像の軽量版へ転送する。
+
+保存済みserver job/owner/revision/費用/承認/停止/復旧、Wallet/Game/SDK、販売gateは不変。Proのclipboard移動は本人の貼付が必要で、クラウド同期・原稿保管・実行成功ではない。ローカルメモは保持し、export/restoreはブラウザ内のみ。Mini OSの未承認公開gateを開かない。GitHub mainへの統合・Site source保存・公開・正式domain読戻しを別記録する。検証は対象routing/original/parser/branding、baseline/design/typecheck、npm run verify、同一buildのUIと配布画像容量。

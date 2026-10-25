@@ -695,3 +695,17 @@ R5のMini単体動作はProを必須としない。専用モデルは端末内�
 ## 着脱Miniと月次請求
 
 2026-10-15明示要求は[統合設計](service-design/08-mini-connectivity-and-billing.md)と[R5詳細](avocado-mini-r5/embedded-portable-connectivity.md)へ追加。固定dock/可搬core、携帯電源、衛星WAN/Wi-Fi LAN、場所権限、同一job継続、月次usage請求を分離して設計する。実機・本番未受入。
+
+
+## 公開Webの入口・原稿・配布物の整理
+
+- 目的・体験: 3製品の入口を区別し、やりたいことからEveへ進む。Homeは投稿フィードを維持し、仕事と成果・接続へ短い導線を置く。
+- 責任: ROCKは表示と配布物、JOINTは本人の同一仕事・実機、OWNERは依頼/権限/上限/削除の最終確認。
+- 入出力: Homeのリンク、能力filter、Proの下書き/ローカルメモ、本人が選ぶJSON原稿。Proからは明示操作でclipboardへコピーして本人Eveへ移動し、URLには本文を含めない。
+- 状態: ブラウザpreviewと本人のserver jobを区別し、実行器ありを接続済み/課金済み/実機合格へ昇格しない。取得失敗時にLIVEと断定しない。
+- 保存: 既存Pro localStorage keyとserver job ID/revisionを保持。書出しはprivate file、復元はformat/長さ/重複IDを検査し、既存値がある場合は置換確認。
+- 失敗と復旧: clipboard不可は元画面で選択/手動コピー、restore失敗は現表示を保全。決済照会不能は未確認を示し、再支払いを促さない。
+- 承認: デザイン修正/公開/不要配布物除外は今回の本人明示指示。実行/費用/端末権限/本番販売の新承認は生じない。
+- 正規URL: avoado.siは共通サービス、avocadomini.siはMini、avocadopro.siはPro。旧Mini紹介と重複Studioの本文は削除し正規画面へ308。データを持つ旧仕事UIは同等性未証明のため削除しない。
+- 合格条件: 本文をURLへ漏らさない原稿移動、無効原稿の拒否、既存キー読戻し、closed販売と旧決済参照の保持、転送先画像の存在、現行3D/映像/組立/配布物の継続、同一候補でのUI表示。
+- 未決定: server側の原稿保管/同一job同期は別受入。完成前にlocal boardを廃棄しない。

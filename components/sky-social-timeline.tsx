@@ -1026,15 +1026,15 @@ export default function SkySocialTimeline({
       {continuousEnabled && (
         <div className={styles.liveControls}>
           <div className={styles.liveLine}>
-            <span className={live ? styles.liveDot : styles.pausedDot} />
+            <span className={live && !continuous.newsError && !liveError ? styles.liveDot : styles.pausedDot} />
             <span>
-              {live ? 'LIVE · 新着を待っています' : '自動更新を停止中'}
+              {!live ? '自動更新を停止中' : continuous.newsError || liveError ? '一部の配信元を確認できません' : continuous.newsLoading && !continuous.items.length ? '新着を確認中' : '自動更新中'}
             </span>
             <button aria-pressed={live} onClick={() => setLive((v) => !v)}>
               {live ? '一時停止' : '再開'}
             </button>
           </div>
-          <div className={styles.topicChips} aria-label="読みたい話題">
+          <details className={styles.feedPreferences}><summary>話題と表示設定</summary><div className={styles.topicChips} aria-label="読みたい話題">
             {[
               ['all', 'すべて'],
               ['technology', 'テクノロジー'],
@@ -1062,7 +1062,7 @@ export default function SkySocialTimeline({
                 投稿の確認 {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
               </small>
             )}
-          </details>
+          </details></details>
           {liveError && (
             <output className={styles.feedStatus}>{liveError}</output>
           )}
@@ -1665,6 +1665,7 @@ export default function SkySocialTimeline({
                             ? '人をフォローするか、コミュニティーに参加すると投稿が流れます。'
                             : 'まだ投稿がありません。最初の発見を共有してみよう。'}
                     </p>
+                    {!threadId && mode !== 'bookmarks' && <a href="/os/eve" className={styles.emptyAction}>Eveで仕事を始める ↗</a>}
                   </div>
                 )}
               <div

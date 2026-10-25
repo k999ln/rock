@@ -1074,6 +1074,13 @@ export function validateBaseline(
   const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
   const retiredHardware = isArchivedPath('components/avocado-turntable.tsx');
   const turntableSource = retiredHardware ? '' : read(resolve(root, 'components/avocado-turntable.tsx'));
+  const canonicalHardwareEntry = retiredHardware &&
+    hardwarePageSource.includes("permanentRedirect('https://avocadomini.si/')") &&
+    data.launchPage?.hardwareCanonicalOrigin === 'https://avocadomini.si' &&
+    data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
+    data.marketPositioning?.legacyCommercialFields?.currentR5PriceAuthority === 'marketPositioning.r5.priceStatus' &&
+    data.marketPositioning?.r5?.priceStatus === 'not_confirmed_for_R5_do_not_inherit_E3_prices' &&
+    ['tower20E3', 'mini200E2Integration', 'avocadoMiniDesiredReferencePriceJpy'].every(key => !Object.hasOwn(data.marketPositioning, key));
   const currentR5Entry = retiredHardware &&
     hardwarePageSource.includes('AVOCADOMINI R5 / DESIGN PROGRAM') &&
     hardwarePageSource.includes('使用時200mm以内') && hardwarePageSource.includes('別Hubは不要') &&
@@ -1107,7 +1114,7 @@ export function validateBaseline(
       (canonicalOsEntry || (launchPageSource.includes('SIM/eSIMをつないで、Sky・Eve・AI Agentへ') &&
       launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
       launchPageSource.includes('href="/connect"'))) &&
-      (currentR5Entry || (!retiredHardware && hardwarePageSource.includes('<AvocadoTurntable />') &&
+      (currentR5Entry || canonicalHardwareEntry || (!retiredHardware && hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&

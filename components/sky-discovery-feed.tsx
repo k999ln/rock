@@ -37,10 +37,12 @@ const labels: { id: Filter; label: string }[] = [
 /** Native discovery rows. Catalog metadata is not represented as an authored social post. */
 export default function SkyDiscoveryFeed({
   standalone = false,
+  embedded = false,
   query = '',
   initialFilter = 'all',
 }: {
   standalone?: boolean;
+  embedded?: boolean;
   query?: string;
   initialFilter?: Filter;
 }) {
@@ -59,6 +61,7 @@ export default function SkyDiscoveryFeed({
   const [retry, setRetry] = useState(0),
     [connectionsReady, setConnectionsReady] = useState(false),
     [connectionError, setConnectionError] = useState('');
+  const [showCandidates, setShowCandidates] = useState(false);
   const pending = useRef(false);
   useEffect(() => {
     const c = new AbortController();
@@ -198,6 +201,7 @@ export default function SkyDiscoveryFeed({
     .filter(
       (t) =>
         (standalone || suggestions.includes(t.id)) &&
+        (!standalone || showCandidates || t.status === 'ready') &&
         (!search ||
           `${t.name} ${t.description} ${t.category}`
             .toLowerCase()
@@ -360,23 +364,22 @@ export default function SkyDiscoveryFeed({
     >
       {standalone && (
         <>
-          <header className={styles.heading}>
-            <h1>smisで見つける</h1>
-            <Link href="/#timeline">ホームへ</Link>
-          </header>
+          {!embedded && <header className={styles.heading}><h1>能力を見つける</h1><Link href="/#timeline">ホームへ</Link></header>}
+          {connectionError && <p className={styles.note}>接続状態を確認できないため、追加を停止しています。<Link href="/account">本人のアカウントを確認</Link><button onClick={()=>setRetry(value=>value+1)}>再確認</button></p>}
+          <p className={styles.note}>目的の言葉で探して、接続・料金・実行先を確認します。モデルやデータは種類を切り替えて表示できます。</p>
           <form className={styles.search} onSubmit={submit}>
             <Search size={19} />
             <input
               id="sky-discovery-search"
               aria-label="モデル・Agent・Toolを検索"
-              placeholder="モデル・Agent・Toolを検索"
+              placeholder="例：出典、CSV、契約、ゲーム"
               maxLength={80}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
             />
             <button>検索</button>
           </form>
-          <nav className={styles.filters} aria-label="投稿の種類">
+          <label className={styles.availability}><input type="checkbox" checked={showCandidates} onChange={event=>setShowCandidates(event.target.checked)} />準備中・導入候補も表示</label><p className={styles.note}>「実行器あり」は接続・本人認証・料金条件の確認を省略できる意味ではありません。</p><nav className={styles.filters} aria-label="投稿の種類">
             {labels.map((tab) => (
               <button
                 key={tab.id}
@@ -395,7 +398,7 @@ export default function SkyDiscoveryFeed({
         <>
           {(standalone ? tools : tools.slice(0, 1)).map(renderTool)}
           {!standalone && filter === 'agent' && tools.slice(1).map(renderTool)}
-          {connectionError && (
+          {connectionError && !standalone && (
             <p className={styles.note}>
               {connectionError}{' '}
               <button onClick={() => setRetry((v) => v + 1)}>

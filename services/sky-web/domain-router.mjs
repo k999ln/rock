@@ -215,10 +215,11 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       // Owner-approved retirement of duplicate screens; keep installation guidance.
       if (source.hostname === MINI_PUBLIC_HOST) {
         const retired = new Map([['/rockstaros', '/os'], ['/rockstaros/crowdfunding', '/os']]);
-        const destination = retired.get(path.replace(/\/$/, ''));
+        const destination = path.replace(/\/$/, '') === '/avocado-mini' ? 'https://avocadomini.si/' : path.replace(/\/$/, '') === '/studio' ? '/os/sky/publish' : retired.get(path.replace(/\/$/, ''));
         if (destination && ['GET', 'HEAD'].includes(request.method)) {
-          source.pathname = destination;
-          return Response.redirect(source.href, 308);
+          const target = new URL(destination, source);
+          if (target.origin === source.origin) target.search = source.search;
+          return Response.redirect(target.href, 308);
         }
         if (isPath(path, '/rockstaros/guide')) return skyWorker.fetch(request, env, context);
       }

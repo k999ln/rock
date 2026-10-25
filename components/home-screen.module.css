@@ -544,5 +544,8 @@
 .home .layout { display: block; width: 100%; max-width: 680px; margin-inline: auto; }
 .home .main { min-width: 0; }
 .home .mobileHeader { display: block; }
-.home :global(.os-brand-product), .home :global(.os-current-app) { display: none; }
-.home :global(.os-brand-context) { display: inline; }
+.home :global(.os-brand-product) { display: inline; }
+.home :global(.os-current-app) { display: none; }
+.home :global(.os-brand-context) { display: none; }
+
+.workEntry{padding:20px 20px 16px;border-bottom:1px solid var(--tl-line);background:#fdfcf8}.workEntry strong{font-size:17px;font-weight:650;letter-spacing:0}.workEntry p{margin:6px 0 14px;font-size:13px;color:var(--tl-muted);line-height:1.6}.workEntry nav{display:flex;gap:8px;flex-wrap:wrap}.workEntry nav a{min-height:48px;display:inline-flex;align-items:center;padding:0 15px;border:1px solid var(--tl-line);border-radius:12px;font-size:13px}.workEntry nav a:first-child{background:#315b4d;color:white;border-color:#315b4d}@media(max-width:420px){.workEntry{padding:16px}.workEntry nav{gap:6px}.workEntry nav a{padding:0 11px}}

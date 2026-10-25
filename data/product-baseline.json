@@ -1249,7 +1249,9 @@
     "visualDirection": "light_product_showcase_with_scroll_tower",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
     "hardwareProgramRoute": "/avocado-mini",
-    "previousRoute": "/rockstaros"
+    "previousRoute": "/rockstaros",
+    "hardwareCanonicalOrigin": "https://avocadomini.si",
+    "hardwareCanonicalReason": "Owner 2026-10-25 requests retiring duplicate product presentation and canonical product domains; old /avocado-mini remains a permanent redirect, all R5 acceptance/price gates preserved."
   },
   "visualSystem": {
     "surfaces": [

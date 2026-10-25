@@ -10044,5 +10044,32 @@
       "miniProPublicSite": 40,
       "verifyRemainder": "passed after OpenSSL3, child dependencies and local-state isolation; resumed at failed environment step"
     }
+  },
+  "publicDesignCleanup": {
+    "owner": "ROCK",
+    "taskIds": [
+      "WEB04",
+      "HOME01"
+    ],
+    "status": "verified_publication_pending",
+    "authority": "docs/workstreams/05-web-pwa-sites.md",
+    "sourceBases": {
+      "os": 119,
+      "miniPro": 48
+    },
+    "imageBytesBefore": 65760897,
+    "imageBytesAfter": 2448179,
+    "next": "Save exact sources; publish OS first, then Mini/Pro; read back all canonical domains",
+    "githubMainIntegrated": false,
+    "verification": {
+      "verifyExit": 0,
+      "coreTests": 2605,
+      "corePass": 2604,
+      "coreSkip": 1,
+      "coreFail": 0,
+      "retiredAssetGuardTests": 2,
+      "miniProTests": 44
+    },
+    "excludedOsImageBytes": 4912313
   }
 }
