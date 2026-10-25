@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { TestD1 } from './fixtures/billing-test-d1.mjs';
+import { linuxServiceStore } from '../lib/sky-linux-service-store.ts';
 import {
   createServiceSetup,
   acceptServiceSetup,
@@ -434,6 +438,173 @@ void test('lost billing response keeps a durable intent; retry and revision conf
     d.payload.id,
   );
 });
+void test('provision resumes one persisted canonical workspace after interrupted setup save and SQLite reopen', async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), 'rock-esim-provision-recovery-'));
+  const path = join(directory, 'recovery.sqlite');
+  const handles = [];
+  let permitted = true;
+  let failNextSetupSave = false;
+  let injectedFailures = 0;
+  let networkAttempts = 0;
+  const billingCalls = { start: 0, reconcile: 0 };
+  t.mock.method(globalThis, 'fetch', () => {
+    networkAttempts++;
+    throw new Error('External network is forbidden in provision recovery');
+  });
+  t.after(() => {
+    for (const handle of handles) handle.close();
+    rmSync(directory, { recursive: true, force: true });
+    for (const suffix of ['', '-wal', '-shm', '-journal'])
+      assert.equal(existsSync(path + suffix), false);
+    assert.equal(existsSync(directory), false);
+  });
+  function open(migrate) {
+    // Reuse the shared file-backed D1 adapter; its billing migrations are not
+    // this application's schema, so apply the existing drizzle set only once.
+    const handle = new TestD1(path, { migrate: false });
+    handles.push(handle);
+    if (migrate)
+      for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+        .filter((name) => /^\d.*\.sql$/.test(name))
+        .sort())
+        handle.database.exec(
+          readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
+        );
+    const db = {
+      prepare(sql) {
+        const statement = handle.prepare(sql);
+        const wrapped = {
+          bind(...values) {
+            statement.bind(...values);
+            return wrapped;
+          },
+          first: () => statement.first(),
+          all: () => statement.all(),
+          async run() {
+            if (failNextSetupSave && sql.startsWith('UPDATE rockstar_service_setups SET')) {
+              assert.equal(handle.database.prepare(
+                "SELECT count(*) AS count FROM sky_linux_service_documents WHERE kind='workspace'",
+              ).get().count, 1);
+              failNextSetupSave = false;
+              injectedFailures++;
+              throw new Error('Injected setup save failure after workspace commit');
+            }
+            return statement.run();
+          },
+        };
+        return wrapped;
+      },
+      batch: (statements) => handle.batch(statements),
+    };
+    const grant = async (_db, _config, owner, order) =>
+      permitted && owner === 'owner' && order === 'order'
+        ? {
+            ownerUserId: owner,
+            orderId: order,
+            deviceRef: 'pixel-fixture',
+            expiresAt: now + 86400000,
+            scopes: ['rockstaros_access', 'sky', 'zema', 'agents'],
+          }
+        : null;
+    const linux = linuxServiceStore(db, config, { grant });
+    const store = serviceSetupStore(db, config, {
+      grant,
+      linux,
+      billing: () => ({
+        start: async () => {
+          billingCalls.start++;
+          return { sessionId: 'cs_test_Fixture', url: 'https://example.com/fixture-only' };
+        },
+        reconcile: async () => {
+          billingCalls.reconcile++;
+          return { setupIntentId: 'seti_Fixture', paymentMethodId: 'pm_Fixture' };
+        },
+      }),
+    });
+    const snapshot = () => JSON.stringify([
+      'rockstar_service_setups', 'sky_linux_service_documents',
+      'sky_linux_service_receipts', 'work_jobs',
+    ].map((table) => handle.database.prepare(`SELECT * FROM ${table} ORDER BY id`).all()));
+    const assertUnstarted = async () => {
+      const workspace = await linux.get('owner');
+      assert.equal(workspace.payload.serviceStartAt, null);
+      assert.equal(workspace.payload.serviceWindows.length, 0);
+      assert.equal(workspace.payload.jobs.length, 0);
+      assert.equal(workspace.payload.invoices.length, 0);
+      assert.equal(handle.database.prepare('SELECT count(*) AS count FROM work_jobs').get().count, 0);
+      assert.equal(handle.database.prepare('SELECT count(*) AS count FROM sky_linux_service_receipts').get().count, 0);
+      const view = await store.view('owner', now + 1000);
+      assert.equal(view.access.canOpenSkyEve, false);
+      assert.equal(view.access.paymentCollected, false);
+      assert.equal(view.access.initialChargeMinor, 0);
+      return workspace;
+    };
+    return { handle, store, linux, snapshot, assertUnstarted };
+  }
+
+  let opened = open(true);
+  let setup = await opened.store.draft('owner', 'order', now);
+  setup = await opened.store.accept('owner', setup.revision, {
+    quoteDigest: setup.payload.quoteDigest, accepted: true, recurringAccepted: true,
+  }, now);
+  setup = (await opened.store.startBilling('owner', setup.revision, now)).setup;
+  setup = await opened.store.reconcileBilling('owner', setup.revision, now);
+  const acceptedSetup = structuredClone(setup);
+  assert.deepEqual(billingCalls, { start: 1, reconcile: 1 });
+  failNextSetupSave = true;
+  await assert.rejects(
+    opened.store.provision('owner', setup.revision, now),
+    /Injected setup save failure after workspace commit/,
+  );
+  assert.equal(injectedFailures, 1);
+  assert.deepEqual(await opened.store.get('owner'), acceptedSetup);
+  const originalWorkspace = await opened.assertUnstarted();
+  const interruptedSnapshot = opened.snapshot();
+
+  // Discard both product store instances and the actual SQLite connection.
+  // The second connection must discover the durable row, not a Linux mock.
+  opened.handle.close();
+  assert.equal(opened.handle.closed, true);
+  opened = open(false);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.deepEqual(await opened.linux.get('owner'), originalWorkspace);
+  const resumed = await opened.store.provision('owner', setup.revision, now + 1000);
+  assert.equal(resumed.id, acceptedSetup.id);
+  assert.equal(resumed.payload.id, acceptedSetup.payload.id);
+  assert.equal(resumed.payload.runtime.challenge, acceptedSetup.payload.runtime.challenge);
+  assert.equal(resumed.payload.agreementDigest, acceptedSetup.payload.agreementDigest);
+  assert.equal(resumed.revision, acceptedSetup.revision + 1);
+  assert.equal(resumed.payload.workspaceId, originalWorkspace.payload.id);
+  assert.equal(resumed.payload.runtime.requestedAt, now + 1000);
+  assert.deepEqual(await opened.assertUnstarted(), originalWorkspace);
+  assert.equal(opened.handle.database.prepare(
+    "SELECT count(*) AS count FROM sky_linux_service_documents WHERE kind='workspace'",
+  ).get().count, 1);
+  assert.equal(opened.handle.database.prepare('SELECT count(*) AS count FROM rockstar_service_setups').get().count, 1);
+  const recoveredSnapshot = opened.snapshot();
+  assert.deepEqual(await opened.store.provision('owner', resumed.revision, now + 2000), resumed);
+  assert.equal(opened.snapshot(), recoveredSnapshot);
+
+  await assert.rejects(opened.store.provision('owner', acceptedSetup.revision, now + 2000), /再読み込み/);
+  await assert.rejects(opened.store.provision('another-owner', resumed.revision, now + 2000), /再読み込み/);
+  assert.equal(await opened.store.get('another-owner'), null);
+  assert.equal(await opened.linux.get('another-owner'), null);
+  assert.equal(opened.snapshot(), recoveredSnapshot);
+  permitted = false;
+  await assert.rejects(opened.store.provision('owner', resumed.revision, now + 2000), /利用権/);
+  await assert.rejects(opened.store.runtimeReady('owner', {
+    schema: 'sky.linux-worker-request/1', action: 'setup-ready',
+    workspaceId: originalWorkspace.payload.id, issuedAt: now + 2000,
+    contractDigest: originalWorkspace.payload.contractDigest,
+    setupChallenge: resumed.payload.runtime.challenge, probeSha256: sha,
+  }, { keyId: 'fixture-only' }, now + 2000), /利用権/);
+  assert.equal(opened.snapshot(), recoveredSnapshot);
+  assert.deepEqual(await opened.assertUnstarted(), originalWorkspace);
+  assert.deepEqual(billingCalls, { start: 1, reconcile: 1 });
+  assert.equal(networkAttempts, 0);
+  assert.equal(injectedFailures, 1);
+});
+
 function stripeFixture(setup) {
   const calls = [],
     metadata = {
