@@ -9956,6 +9956,33 @@
     },
     "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
   },
+  "miniTetheringPrototype": {
+    "taskId": "MAT15",
+    "unit": "MINI-08",
+    "primarySquad": "M1",
+    "primaryOwner": "ROCK",
+    "status": "host_full_verify_and_independent_review_passed_integration_pending",
+    "evidence": "docs/evidence/development-execution/mini-08-tethering.json",
+    "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
+    "physicalAccepted": false,
+    "providerConnected": false,
+    "wifiApConnected": false,
+    "invoiceVerified": false,
+    "githubSaved": false,
+    "mainMerged": false,
+    "generalLaunch": "held",
+    "nextAction": "Git lane save and merge exact host batch with same-SHA CI; separate Linux packet batch next",
+    "validation": {
+      "focusedTests": "28/28",
+      "independentReview": "mustFix0",
+      "fullVerify": "passed_host_2912_tests_2909_pass_3_skip_0_fail_complete_chain",
+      "mainCI": "not_run",
+      "wrapperFollowupReview": "docs/evidence/development-execution/mini-08-tethering-await-review.json"
+    },
+    "adoptionBase": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "adoptionEvidence": "docs/evidence/development-execution/mini-08-tethering-main-adoption.json",
+    "saveBaseMain": "81aca294b6c977f353752461f09823c4948a7ea9"
+  },
   "esimAcknowledgementMainAdoption": {
     "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
     "sourceScopedAccepted": true,

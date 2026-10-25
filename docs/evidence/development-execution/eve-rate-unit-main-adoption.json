@@ -46,5 +46,11 @@
     "publicDeployment": false
   },
   "scope": "Separate bounded display commit paired with eSIM UI for CI only; no Pixel/Linux changes. Receipt capture-time pending retained; current scoped evidence here.",
-  "next": "Targeted19/type/lint, metadata review and final-head all CI; normal merge and merge-SHA CI."
+  "next": "Targeted19/type/lint, metadata review and final-head all CI; normal merge and merge-SHA CI.",
+  "latestMainSynchronization": {
+    "baseMain": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+    "normalMerge": true,
+    "miniHostAndWalletPreserved": true,
+    "sourceHashesUnchanged": true
+  }
 }

@@ -89,5 +89,11 @@
     "projectUpdate": "pass",
     "fullVerify": "Stopped at Mini site build because separate site dependencies were absent; no source failure. Installed dependencies from same-lock existing tree; remaining stages and final-head CI required.",
     "fullVerifyLogSha256": "65de7998b8b234afc6e50e8108816999bf47b8e75ddc340e4946588e9f30d021"
+  },
+  "latestMainSynchronization": {
+    "baseMain": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+    "normalMerge": true,
+    "miniHostAndWalletPreserved": true,
+    "sourceHashesUnchanged": true
   }
 }

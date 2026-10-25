@@ -1,0 +1,89 @@
+{
+  "schema": "mini-host-latest-main-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "independent read-only review agent",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-host-save/avokdo",
+  "baseMain": "81aca294b6c977f353752461f09823c4948a7ea9",
+  "branch": "codex/mini-tethering-host-20261025",
+  "status": "latest_main_adoption_review_passed",
+  "mustFixRemaining": 0,
+  "candidateFilesSha256": {
+    "README.md": "84f2155850f11567a84b65955e4dc810bf7502f0c698b30697c4d02338c416ee",
+    "data/design-document-index.json": "b07e7acc2a01cc7a90149b93e052ffb36cbf424797148ae72c43eb9959abd06d",
+    "data/project-status.json": "e74f3b9813ef535effa659635ac9adb209a45199bcef089dd3d6799022b1e520",
+    "docs/avocado-mini-r5/embedded-portable-connectivity.md": "6944c5c04f8437f6f8178e3912600537744ea6bfecbe0e106792e8c5ef22c186",
+    "docs/evidence/development-execution/mini-08-tethering-await-review.json": "77a136828868cc4413a7b0867e4ed1ce8a9618554c6bfb7bb412a06e2bec89bb",
+    "docs/evidence/development-execution/mini-08-tethering-main-adoption.json": "a639b6db7ead07c4c2769e28b2a23f55a3985ca09dbedd11c38996fcc0d875e3",
+    "docs/evidence/development-execution/mini-08-tethering-metadata-review.json": "3be6668d6d0eab17cfe5eb3e009759fba459b4846bc9fa10daf02bbbc117d189",
+    "docs/evidence/development-execution/mini-08-tethering-review.json": "77d3dd735828ee67f8dc4d2d91c5ebf0467ec7fb1f113ea5c8d11c0b733abe8c",
+    "docs/evidence/development-execution/mini-08-tethering.json": "7c3f54d1c750a14572b13d6fa5c34c2c641c94141360a3c9e6e4104cfac6f4d5",
+    "docs/rockstaros-avocado-mini-complete-design.md": "6a5388da638f32ed8d660f03762d18477fd994f1617c4f1763dfe4802733b935",
+    "docs/service-design/08-mini-connectivity-and-billing.md": "84dfd7f316e9ac5f67d29ee3666c9baf817771565a2decc0f80d795d9053f552",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "ba95d019e589debb1142b89609377b20e11eba2f31d070a610fa83f0715e9ad7",
+    "project.md": "6a7571ac6fbae752d4a46c40eb00b4a4e93b06ab3f1ea1d4be47a2f37cb6bedf",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788",
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "tests/avocado-mini-tethering.test.mjs": "638cf1161df76ef84f8dbf256f5c4cd2e9e7d4a07992798d6c71a165af9f9c27",
+    "docs/evidence/development-execution/mini-08-tethering-latest-main-save.json": "99352ee35d076b168c77d83ef9b91803bf0ee8e1872856a63cc84ec107a5cf20"
+  },
+  "prior18FileManifestSha256": "d19d70f6d8ad7bfcf5f70a30dec51df858f040c984efabb36bbc99d9f217df17",
+  "checks": {
+    "tenNewFrozenFilesUnchanged": true,
+    "trackedMetadataPaths": 8,
+    "newSaveEvidencePaths": 1,
+    "statusOnlyMiniKeyAddedToLatestMain": true,
+    "saveBaseMainMatchesHEAD": true,
+    "readmeAndProjectOnlyAdditions": true,
+    "latestMainExistingProgressPreserved": true,
+    "noLinuxBatchFiles": true,
+    "saveEvidenceAll18ManifestHashesMatch": true
+  },
+  "independentlyExecutedChecks": [
+    {
+      "command": "npm run project:check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run mission:check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run design:check",
+      "exitCode": 0
+    },
+    {
+      "command": "node --test tests/avocado-mini-tethering.test.mjs",
+      "exitCode": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "git diff --check HEAD",
+      "exitCode": 0
+    }
+  ],
+  "validationBoundary": {
+    "fullVerifyPriorBase": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "latestBaseFullVerifyRunByReviewer": false,
+    "sameShaCI": "pending",
+    "githubSaved": false,
+    "mainMerged": false,
+    "physicalAccepted": false,
+    "providerConnected": false,
+    "wifiApConnected": false,
+    "invoiceVerified": false,
+    "generalLaunch": "held"
+  },
+  "notPerformed": [
+    "source or metadata edits",
+    "Git mutation",
+    "GitHub readback or mutation",
+    "full verify rerun",
+    "Linux VM or real device tests"
+  ],
+  "integrationCondition": "Save exact reviewed candidate, obtain same-head CI before integration, and preserve original historical receipts separately from new Git/CI acceptance."
+}
