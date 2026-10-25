@@ -10103,7 +10103,7 @@
       "linuxPacketTestsPassed": 26,
       "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
       "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
-      "latestIntegrationMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "latestIntegrationMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
       "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
       "newIntegrationFullVerify": {
         "exitCode": 0,
