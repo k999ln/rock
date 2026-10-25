@@ -186,7 +186,9 @@ native統合手順にはOS系列ごとの実装・検証方法、Linux toolkit�
 
 ### 現在の開発状況
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+
+G04ではundici更新不可の原因となったoverride固定を7.29.1から7.30.1へ修正中です。通常npm ciとundici監査の解消を確認し、独立検収・Git保存・最終同一SHA CIを進めます。他依存の監査指摘10件、main統合、公開・配備・616一括公開は別の未完了／保留として維持します。[修正証拠](docs/evidence/development-execution/undici-security-update.json)。
 
 cache-only準備は取得済みbytesのversion/capabilitiesだけを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を行います。不一致/不明時に取得・修復・推論へ切り替えず、同FDの限定metadata読込と固定payload更新fenceを使います。旧f3の限定物理測定/元code復旧は新c43の受入へ転用しません。[契約](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)。
 

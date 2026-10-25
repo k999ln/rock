@@ -211,9 +211,13 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
-[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
 
-主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。undici7.29.1のsecurity_update_not_possibleはG04未解決で、依存lock差分0・修正未実施。この変更はmetadataだけ、PR213 fixture診断は別scope。次はこのmetadataのGitHub保存/通常main統合/同SHA CIを確認し、UIは別に受入する。
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。Pixel進捗metadataはPR214/main dc2b992fへ通常統合し、head8CI/merge7CI成功。undici7.29.1の更新不可は下記G04で修正中、PR213 UIは別scope。
+
+### Dependabot／undici更新不可の修正（G04 / H1 / ROCK）
+
+最新main `dc2b992f`基点。root overrideの7.29.1固定が修正版への解決を妨げていたため、overrideと単体lock entryを7.30.1へ更新。通常npm ciと6経路の解決、npm監査でundici3指摘→0を確認。他依存10指摘は未解決として区別する。[修正・検証証拠](docs/evidence/development-execution/undici-security-update.json)。SRIの大小文字で不一致digestを通さない回帰と既存TLS確認を実施し、全体verify・独立検収・Git保存・最終同一SHA CIを続ける。main統合、公開・配備・616一括公開は未実施／保留。旧8fの失敗receipt、Pixel実機・料金gateは維持。
 
 ### 原source/host段階の記録（履歴）
 

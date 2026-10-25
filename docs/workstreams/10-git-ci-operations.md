@@ -88,7 +88,7 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
 
-現在の次作業: undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213は未mergeの別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+現在の次作業: undici更新不可は下記G04の7.30.1候補で修正・検証中。旧8fの失敗履歴は維持。旧f3実機を新c43/P02/全OSへ転用せず、PR213は未mergeの別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
 
 原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
@@ -238,6 +238,10 @@ G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通
 
 H1 / R04、ROCK。main `ecb4b2af`は古いmanifestと新しいlockを別のmerge親から取り込み、`npm ci`が検査・Web build前に停止している。直前main `624124cf`と同一のlockを維持し、Cloudflare/Vitestの5宣言と`undici@7.29.1`の既存overrideだけを戻す。CIは通常の`npm ci`を使い、install scriptや検査の省略で通さない。ローカルのoffline dry-runは依存展開なしの整合性確認であり、GitHub上の実install・build・全体verifyとは分ける。[証拠と残課題](../evidence/spider-locked-dependency-restore.json)を参照する。
 
+
+### 現行undici security update（G04 / H1 / ROCK）
+
+上記cycle43の7.29.1固定は当時の復元記録。最新main dc2b992fから、Dependabotのsecurity_update_not_possibleの根因であるroot overrideを修正版7.30.1へ更新し、lockのundici1entryだけを再解決する。EXTERNALはnpm/GitHubの配布・CI、ROCKはpin/lock/互換回帰、OWNERのmain統合・公開gateは別。通常`npm ci`、`npm ls undici --all`、`npm audit --json`で6経路とundici指摘消失を確認。他依存10指摘は残る。`node --test tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs`、`npm run project:update`、`npm run mission:update`、`npm run mission:check`、`npm run verify`、独立検収と最終SHA CIを完了条件とする。[証拠](../evidence/development-execution/undici-security-update.json)。lock由来license在庫だけ再生成し法的clearanceは上げない。復旧はこのPRの依存差分をrevertし、旧pinへの復帰は脆弱性再導入と明示する。公開・配備・616一括公開、実Provider/金融/Pixel gateは保留。
 
 ## AMC観測元のファイル読取り
 

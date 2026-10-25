@@ -794,5 +794,17 @@
     "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
     "sameShaCISuccess": 6,
     "capturedMainContextPreserved": true
+  },
+  "dependencySecurityFollowup": {
+    "taskId": "G04",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "state": "undici_override_and_lock_repaired_validation_in_progress",
+    "evidence": "docs/evidence/development-execution/undici-security-update.json",
+    "scope": "7.29.1→7.30.1 override/lock only plus SRI regression; npmci and undici audit clear. Other10audit findings remain; historical8f failure retained.",
+    "next": "Full verify, independent acceptance, Git save and exact final SHA CI; main merge separate.",
+    "holds": [
+      "public deployment",
+      "616 bulk public export"
+    ]
   }
 }

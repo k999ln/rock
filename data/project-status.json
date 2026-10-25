@@ -10049,5 +10049,23 @@
     "mainAllChecksSuccess": false,
     "mainDependabotFailure": 1,
     "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+  },
+  "undiciSecurityUpdate": {
+    "taskId": "G04",
+    "primarySquad": "H1",
+    "primaryOwner": "ROCK",
+    "state": "repair_implemented_validation_in_progress",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "from": "7.29.1",
+    "to": "7.30.1",
+    "evidence": "docs/evidence/development-execution/undici-security-update.json",
+    "undiciAuditFindingsAfter": 0,
+    "otherAuditFindingsRemaining": 10,
+    "independentReview": "pending",
+    "gitSaved": false,
+    "sameShaCI": "pending",
+    "mainMerged": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD"
   }
 }

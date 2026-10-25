@@ -1,0 +1,84 @@
+{
+  "schema": "rockstaros.undici-security-update/1",
+  "recordedAt": "2026-10-25T09:49:47.976181+00:00",
+  "task": "G04",
+  "primarySquad": "H1",
+  "primaryOwner": "ROCK",
+  "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+  "branch": "codex/undici-security-update-20261025",
+  "failure": {
+    "mainSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "run": 40177675682,
+    "job": 121121795935,
+    "error": "security_update_not_possible",
+    "resolvedVersion": "7.29.1",
+    "minimumNonVulnerableReportedByBot": "7.30.1",
+    "logSha256": "d7e7e87d1eeae97d35ad8cc8ca043b6e1e72e6bea08c2523a716987f321906a7",
+    "cause": "Root overrides.undici pinned every dependency path to vulnerable7.29.1; updater retained that pin."
+  },
+  "repair": {
+    "from": "7.29.1",
+    "to": "7.30.1",
+    "manifest": "package.json#overrides.undici",
+    "lock": "package-lock.json#packages/node_modules/undici",
+    "nodeEngine": ">=20.18.1 unchanged; repository>=22.13.0",
+    "unrelatedPackagesChanged": 0,
+    "dependencyPaths": [
+      "@ai-sdk/provider-utils",
+      "@cloudflare/vitest-plugin/miniflare",
+      "miniflare",
+      "@dotenvx/dotenvx",
+      "shadcn",
+      "wrangler/miniflare"
+    ],
+    "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg=="
+  },
+  "upstream": [
+    "https://github.com/nodejs/undici/releases/tag/v7.30.1",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-f72v-6w45-q472",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-4qv8-2p9j-2685"
+  ],
+  "verification": {
+    "npmCi": "PASS normal install including lifecycle scripts",
+    "npmLsUndici": "PASS all six paths deduplicated7.30.1",
+    "auditBefore": {
+      "info": 0,
+      "low": 0,
+      "moderate": 12,
+      "high": 6,
+      "critical": 0,
+      "total": 18
+    },
+    "auditAfter": {
+      "info": 0,
+      "low": 0,
+      "moderate": 5,
+      "high": 5,
+      "critical": 0,
+      "total": 10
+    },
+    "undiciAdvisoriesBefore": [
+      "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
+      "https://github.com/advisories/GHSA-f72v-6w45-q472",
+      "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    ],
+    "undiciFindingAfter": null,
+    "auditAllClear": false,
+    "auditRemaining": "10 findings in other dependencies remain outside this repair",
+    "focusedTests": "initial5pass; rerun with final metadata pending",
+    "fullVerify": "pending",
+    "independentReview": "pending",
+    "finalSameShaCI": "pending"
+  },
+  "preserved": {
+    "historical8fDependabotFailureUnchanged": true,
+    "pixelNewGuardPhysicalAccepted": false,
+    "p02AndWholeOSAccepted": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "mainMerged": false,
+    "realProviderOrFinancialAcceptance": false
+  },
+  "next": "Complete focused tests, full verify, independent review, GitHub branch/DraftPR save and final same-SHA CI; main integration separate. Historical failed run is not rerun/green."
+}
