@@ -1,3 +1,7 @@
+## PR225最終検収の保存（2026-10-25 / SYS15・G04・ROCK）
+
+zod修正はPR225/main f4ed492cへ統合済み。head dcf86f99全8CI・main全9CI成功、zod警告42/54 fixed、限定PASS/mustFix0。[最終検収](../evidence/development-execution/zod-security-constraint-review.json)に原本hash・同SHAチェック・旧失敗履歴・未受入境界を保存した。下記の修正着手時記録と元receiptのpendingは履歴であり、現在のzod受入待ちではない。新しい文書保存PRのCIは別途確認する。
+
 ## zod依存制約の互換修正（2026-10-25 / SYS15・G04・ROCK）
 
 main d2222dc5のDependabot失敗を修正。shadcn4.18のZod3制約は上流Zod4移行版4.22.1で解消し、Cloudflare plugin4.4.3固定を同major修正版へoverride。root/Miniのzodは^4.6.6/lock4.6.7。consumer解決・既存config/registry・AI SDK schema3/4互換・上限超過collection早期拒否を確認する。既存runtime/UI/sourceは変更せず、fullverify/newHEAD/main統合CIを別々に記録。実機操作・追加推論・公開なし。[証拠](../evidence/zod-security-constraint.json)。
