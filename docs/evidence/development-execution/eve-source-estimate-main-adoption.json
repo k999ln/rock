@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-source-estimate.main-adoption/1",
   "recordedAt": "2026-10-24T23:10:23.433054+00:00",
-  "status": "nine_exact_plus_authorized_test_expression_repair_ui8_pass_newheadCI_mechanical_metadata_review_pending",
+  "status": "PR204_normal_main_integrated_estimate_only_nine_exact_plus_reviewed_test_exception",
   "unit": "EVE-02",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "05-web-pwa-sites",
@@ -67,7 +67,7 @@
     "path": "docs/evidence/development-execution/eve-source-estimate.json",
     "sha256": "c36a89f9786841f8af9d44a74e8e5a6d28770cab6ce6b4274e2502ba3c8fa1ea",
     "notOriginalReceiptIdentity": true,
-    "newMetadataReviewPending": true
+    "newMetadataReviewPending": false
   },
   "sourceIndependentReviewSha256": "67cfe71cd5f21a6484cbc1d6df662d2926ec437f63569875a52d62ea6279f424",
   "reviewSummary": "docs/evidence/development-execution/eve-source-estimate-main-review-summary.json",
@@ -75,7 +75,7 @@
     "path": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
     "sha256": "9f62d525a07dfe4045b56d4b0c58d393de9002d2268bc67b687231da24af59d7",
     "originalRootSummarySha256": "d3b7cf40a4eefbcef2957dcc9699b0eab337fa033d6d380de6e617d435dc0c85",
-    "newMetadataReviewPending": true,
+    "newMetadataReviewPending": false,
     "preCombinedRootSummarySha256": "5286e1a5f786ca168500c40c57f94728ee0fe3998ff3bbf5735824ee77a971f0",
     "currentRuntimeProductFiveUnchanged": true,
     "currentTenHashMatchClaimed": false
@@ -930,8 +930,8 @@
     "sourceTenLimitedIndependent": false,
     "boundedSavedSourceAnd503LocalUi": true,
     "combinedMainUi": true,
-    "newMetadataReviewed": false,
-    "mainMerged": false,
+    "newMetadataReviewed": true,
+    "mainMerged": true,
     "numericBrowserSignedRate": false,
     "actualBrowserExpiry": false,
     "paidGeneration": false,
@@ -942,9 +942,10 @@
     "originalSourceTenLimitedIndependent": true,
     "currentRuntimeFiveIndependent": true,
     "currentNineExact": true,
-    "mechanicalTestExceptionReviewed": false
+    "mechanicalTestExceptionReviewed": true,
+    "currentNinePlusMechanicalIndependent": true
   },
-  "next": "Normal forward commit for authorized one-test expression plus corrected provenance. New exact-head actual Linux npmverify/all CI including CodeQL and independent mechanical/adoption metadata review before merge.",
+  "next": "Read-only saved-source estimate integrated; numeric/expiry actual browser, paid quote/reserve/send/artifact recovery and production gates remain separate.",
   "historicalInitialCandidateStatus": "exact10_source_r2_and_bounded_combinedUI_pass_local70_type_lint_finalCI_metadata_pending",
   "reviewedOriginalSourceFiles": [
     {
@@ -1012,7 +1013,6 @@
     "callsShapeAudit": "Actual panel calls remoteAiTextRequest with same-origin path strings; VM mock records {path,method,body} unchanged. Existing client allowlist admits quotes/subpath/text and optional parentJobId query.",
     "scope": "Only this assertion expression. Reverse replacement reconstructs exact old full-file hash. No assertion deletion, unconditional result, product5 or other test4 changes.",
     "authorization": "Root explicit one-file CodeQL expression exception",
-    "independentMechanicalReview": "PENDING_ROOT_ASSIGNED_REVIEWER",
     "diffSha256": "ff6129a0c669a8ab2a5e8bcea282c166bdcdfc9efa5483a4cbdfa56bff5a118a",
     "validation": {
       "command": [
@@ -1045,6 +1045,41 @@
       "skip": 2,
       "runId": 40141891855,
       "logSha256": "e97138e3910bbe54e2cfb13f42e3c7379f5bef438e50991ce95d63e0a601cfa3"
-    }
+    },
+    "historicalCapturedReviewStatus": "PENDING_ROOT_ASSIGNED_REVIEWER",
+    "independentMechanicalReview": "PASS_SCOPED"
+  },
+  "historicalCandidateStatus": "nine_exact_plus_authorized_test_expression_repair_ui8_pass_newheadCI_mechanical_metadata_review_pending",
+  "mainOutcome": {
+    "pr": 204,
+    "acceptedHead": "163f8850106a3667adfa8d03ba43d4dd7875582c",
+    "mainMergeSha": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2875,
+      "pass": 2873,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40142596572,
+      "logSha256": "2dac03da0bf4fe95d6523d0cae53778058f12fac853bb28b37f317d893b67d4e"
+    },
+    "metadataMechanicalReviewSha256": "d2202d397bb89c2369a2c82f6bc73874d387ad10f9ce65124e179b5961fd0ec6",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "r2ExactFiles": 9,
+    "runtimeProductFiveUnchanged": true,
+    "mechanicalTestException": {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "oldSha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+      "newSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+      "independentReview": "PASS_SCOPED"
+    },
+    "numericBrowserSignedRate": false,
+    "actualBrowserExpiry": false,
+    "paidGeneration": false,
+    "sameJobGeneratedArtifact": false,
+    "wholeEve02": false,
+    "productionProviderBilling": false,
+    "publicDeployment": false
   }
 }

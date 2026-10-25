@@ -1,0 +1,87 @@
+{
+  "schema": "rockstaros.game-creator-fixture.main-review-summary/1",
+  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
+  "sourceReviewSha256": "30d618d92f0778add6a7081d86a4dcd7e12d7abc34735963c1319e53b9927e60",
+  "sourceVerdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "sourceFiles": [
+    {
+      "path": "scripts/game-creator-fixture.mjs",
+      "sha256": "62c0575a28b71383e330a9e673b535a64f4111f005b2c231a7f0e88755cf8884",
+      "bytes": 16133
+    },
+    {
+      "path": "tests/game-creator-fixture.test.mjs",
+      "sha256": "8454117a6677e9581e1163936874d7346cfc0bbb123751f2a67ebf575d275ab1",
+      "bytes": 17333
+    }
+  ],
+  "reusedFive": [
+    {
+      "path": "lib/game-intake.ts",
+      "sha256": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58"
+    },
+    {
+      "path": "lib/game-sandbox.ts",
+      "sha256": "02598e5d73fa22db1a4e573eaf1e83719faa29721c96e7a98159cd3144de7b36"
+    },
+    {
+      "path": "tests/fixtures/game-sandbox-session.json",
+      "sha256": "0df00814e88721d16ca41e30b1dbb8c0ccc536c363e5f82958f292448699ea08"
+    },
+    {
+      "path": "tests/game-intake.test.mjs",
+      "sha256": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c"
+    },
+    {
+      "path": "tests/game-sandbox.test.mjs",
+      "sha256": "a06bdb9160af481b0a48cb827a5441c35181202904767caa7f9e221652fa9c52"
+    }
+  ],
+  "receiptHashes": {
+    "original": "9936e50de45cde386192eda5e8ce194fb5a40f26de9514d7960af1d30f35b6ab",
+    "portable": "136a4ed36d81821cab7d2f06d42b0804256dbc588111f2b522dc5f2e679a7f43",
+    "notIdentical": true
+  },
+  "sourceReview": [
+    "Only exact SHA256-pinned finite committed particle session enters the adapter. Existing diagnoseGameIntake grants/target/package validator runs before lock, sandbox or save; no caller engine/package/rights override.",
+    "Uses existing createSandbox/applySandboxCommand/saveSandbox/loadSandbox/sandboxDigest exports. All five reused source/test/fixture paths match fixed base bytes. No new save envelope, engine, authenticated store, external fetch, shell/eval, issuer key, Wallet or financial endpoint.",
+    "Source and saved/lock bytes are opened O_NOFOLLOW|O_NONBLOCK, validated with fstat and bounded reads on the same open FD. Directory FD/current inode, owner/mode, file nlink/private mode and before/after size/time are checked. File operations assume private same-UID fixture directory; not hostile same-UID protection.",
+    "Exclusive lock plus immutable O_EXCL revision slots prevent normal concurrent overwrite. Only explicit recovery with validated private lock and ESRCH unlinks same inode; EPERM/live/unknown state refuses. Normal release also checks inode before unlink.",
+    "Each loaded save must pass existing save validation and match exact known session prefix digest. Exact retry preserves state; changed same-ID/stale new request uses existing409. Exact original lost-ack request can recover byte-identical already committed slot; malformed/partial/foreign state is never auto-adopted.",
+    "Static diagnostic launch/input/save/isolation remain unverified and measurements null. Actual hostProof is separate and retains productionExchangeEnabled=false/authenticatedOwnerStorageAccepted=false. Synthetic Date.now-based grant is only diagnostic fixture authority."
+  ],
+  "validation": {
+    "focused40": "40pass0fail0skip",
+    "independent10": "10pass0fail0skip",
+    "adversarialGroups": [
+      "Distinct-process start/resume; identical retry with original old expected revision unchanged; changed same ID/stale new command409 and exact original bytes retained.",
+      "Expired/revoked/foreign-owner/bad-package CLI denial with empty directory.",
+      "Corrupt/version/rule CLI resume refusal; no reset or overwrite.",
+      "Save and lock symlink/FIFO/oversize rejection in bounded CLI subprocesses; victim preserved.",
+      "Unknown and live lock unchanged; injected process.kill EPERM preserved lock and created no save.",
+      "Injected same-FD fstat foreign UID denied before unlink; real cross-UID runtime not claimed.",
+      "Lock replaced at dead-owner check rejected on inode mismatch; replacement and moved original both retained.",
+      "Lock replaced during publication rejected at normal release; replacement not deleted.",
+      "Actual child SIGKILL after31save bytes: old accepted save intact; explicit dead-lock recovery reads old revision; partial next slot preserved and retry rejected.",
+      "Three simultaneous actual CLI writers: only success with exact revision1 or FIXTURE_LOCKED; one save, lock released."
+    ],
+    "cleanupDirectories": 28,
+    "allRemoved": true
+  },
+  "fixturePlane": "POSIX host Node, finite committed particle session, synthetic owner/Date.now-based grant, private same-UID temp directory and real child-process/file I/O only. No authenticated application owner, arbitrary engine, browser/native/physical or financial acceptance.",
+  "limits": [
+    "Actual installed browser/third-party engine isolation and resource enforcement",
+    "Authenticated owner/project durable storage and common WorkJob/Zema bridge",
+    "Fresh external-author setup/first success/recovery measurements and licensing provenance",
+    "Pixel/Mini/Pro/native physical runtime and input/display acceptance",
+    "Game exchange direction/rate/consent/provider sandbox and live finance remain production disabled; no real funds or external balances moved",
+    "PID namespace/liveness is host-local; no distributed lock or hostile same-UID filesystem isolation proof. Ownership mismatch used child-only fstat fault injection, not another real OS user.",
+    "Host timings reported by implementer are synthetic single-machine timings, not measured fresh-author onboarding/production success.",
+    "Common WorkJob/Zema, source licensing provenance, production authorization, durable authenticated owner storage and human UX are not accepted by these tests.",
+    "Shared documentation/design:check/fixed-candidate verify and Git save/PR/merge belong to integration owner; this receipt accepts only reviewed bytes."
+  ],
+  "newMetadataReviewPending": true,
+  "wholeGame01": false,
+  "publicDeployment": false
+}

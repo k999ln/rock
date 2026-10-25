@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
+  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+    "mainAtCapture": "434f8076e5e16f953f8a814430082a3cfa0dce56",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -603,7 +603,10 @@
       "id": "GAME-01",
       "title": "作者SDK・持込みmanifest・非金融GM01/DX計測",
       "lane": "game",
-      "ledgerRef": "data/development-unit-progress.json#GAME-01"
+      "ledgerRef": "data/development-unit-progress.json#GAME-01",
+      "currentOverlayRefs": [
+        "GAME_CREATOR_HOST_FIXTURE_CANDIDATE"
+      ]
     },
     {
       "id": "GAME-02",
@@ -652,8 +655,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "GAME-01",
+      "state": "creator_host_fixture_exact2_source_pass_main_candidate",
+      "scope": "Exact-head Linux actual verify/all CI and independent adoption metadata review; host synthetic fixture only, not fullSDK/auth owner/financial/native.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "EVE-02",
-      "state": "saved_source_estimate_exact10_source_and_bounded_combined_UI_pass_main_candidate",
+      "state": "estimate_only_PR204_main_integrated_remaining_numeric_UI_paid_gates",
       "scope": "Exact-head CI actual Linux verify and independent adoption metadata review; quote/reserve/approval/send remain deferred.",
       "wholeUnitAccepted": false
     },

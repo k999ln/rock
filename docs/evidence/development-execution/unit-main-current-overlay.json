@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-24T23:10:23.433054+00:00",
-  "mainAtCapture": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
+  "mainAtCapture": "434f8076e5e16f953f8a814430082a3cfa0dce56",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -349,7 +349,7 @@
       "units": [
         "EVE-02"
       ],
-      "kind": "limited_source_and_saved_source_unavailable_localUI_pass_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "7188c87986f337c6b65e408a17d2468ecab44fe5",
       "sourceFiles": [
         {
@@ -408,20 +408,57 @@
       "uiSummary": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
       "attempt": 2,
       "combinedMainUiPending": false,
-      "mainMerged": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "scope": "Saved owner/revision two-material estimate only; current pricing execution gatefalse and no quote/reserve/approve/send. Numeric/expiry browser success not accepted.",
       "combinedMainUi": "limited_local_restore_navigation_pass",
       "reviewedExactFileCount": 9,
       "runtimeProductFiveUnchanged": true,
-      "mechanicalTestExceptionPath": "tests/eve-text-estimate-ui.test.mjs"
+      "mechanicalTestExceptionPath": "tests/eve-text-estimate-ui.test.mjs",
+      "pr": 204,
+      "acceptedHead": "163f8850106a3667adfa8d03ba43d4dd7875582c",
+      "mainMergeSha": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+      "metadataMechanicalReviewSha256": "d2202d397bb89c2369a2c82f6bc73874d387ad10f9ce65124e179b5961fd0ec6",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "GAME_CREATOR_HOST_FIXTURE_CANDIDATE",
+      "units": [
+        "GAME-01"
+      ],
+      "kind": "limited_host_fixture_source_pass_git_candidate",
+      "baseMain": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+      "sourceFiles": [
+        {
+          "path": "scripts/game-creator-fixture.mjs",
+          "sha256": "62c0575a28b71383e330a9e673b535a64f4111f005b2c231a7f0e88755cf8884",
+          "bytes": 16133
+        },
+        {
+          "path": "tests/game-creator-fixture.test.mjs",
+          "sha256": "8454117a6677e9581e1163936874d7346cfc0bbb123751f2a67ebf575d275ab1",
+          "bytes": 17333
+        }
+      ],
+      "sourceReviewSha256": "30d618d92f0778add6a7081d86a4dcd7e12d7abc34735963c1319e53b9927e60",
+      "reviewSummary": "docs/evidence/development-execution/game-creator-fixture-main-review-summary.json",
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "scope": "Static intake to fixed particle session and existing save/load/replay CLI, host synthetic identity only; no full authorSDK/owner auth/WorkJob/financial/native acceptance."
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "GAME-01",
+      "state": "creator_host_fixture_exact2_source_pass_main_candidate",
+      "scope": "Exact-head Linux actual verify/all CI and independent adoption metadata review; host synthetic fixture only, not fullSDK/auth owner/financial/native.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "EVE-02",
-      "state": "saved_source_estimate_exact10_source_and_bounded_combined_UI_pass_main_candidate",
+      "state": "estimate_only_PR204_main_integrated_remaining_numeric_UI_paid_gates",
       "scope": "Exact-head CI actual Linux verify and independent adoption metadata review; quote/reserve/approval/send remain deferred.",
       "wholeUnitAccepted": false
     },
@@ -507,5 +544,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "2bea21b14faec220161ffaac910e973ed0b52de7"
+  "previousCaptureMain": "7188c87986f337c6b65e408a17d2468ecab44fe5"
 }
