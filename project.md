@@ -228,7 +228,7 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## OS-02 capability観測時刻の限定修復
 
-主担当07/ROCK・統合10/G04。未来observedAtをfreshにしていた旧consumer反例を保持し、固定4source/testと作者/Root独立receiptをhash不変でmain a58へ採用準備。actual Shell guardと純粋helperは0<=observed<=now<expiry、最大30秒を要求する。schema/producer/identity/権限/未知表示とtimerは保持。追加CIは既存JDK17後のbounded2分Python明示試験とpush/PR両pathfilterだけで、既存compile/emulatorを保持。新host境界2方法/23case成功、作者offline compile/Shell14/lint0errors202warnings（差分未測定）、Rootsource検収mustFix0。次: 標準fullverify/最新main同期→Root別metadata/CI検収→最終headAndroid/全CI→通常main/mergeCI。device/推論/鍵/flash0、Android runtime/実機/P02/wholeOS/公開は未受入。[採用記録](docs/evidence/development-execution/os02-capability-freshness-main-adoption.json)。
+主担当07/ROCK・統合10/G04。未来observedAtをfreshにしていた旧consumer反例を保持し、固定4source/testと作者/Root独立receiptをhash不変でmain a58へ採用準備。actual Shell guardと純粋helperは0<=observed<=now<expiry、最大30秒を要求する。schema/producer/identity/権限/未知表示とtimerは保持。追加CIは既存JDK17後のbounded2分Python明示試験とpush/PR両pathfilterだけで、既存compile/emulatorを保持。新host全verifyは契約checker同期後3026試験/3023pass/0fail/3skip、元の旧literal検査1失敗は履歴保持。新host境界2方法/23case成功、作者offline compile/Shell14/lint0errors202warnings（差分未測定）、Rootsource検収mustFix0。次: 標準fullverify/最新main同期→Root別metadata/CI検収→最終headAndroid/全CI→通常main/mergeCI。device/推論/鍵/flash0、Android runtime/実機/P02/wholeOS/公開は未受入。[採用記録](docs/evidence/development-execution/os02-capability-freshness-main-adoption.json)。
 
 
 ## SMITH-01 処理中のページ内スキップ導線

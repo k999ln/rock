@@ -16,7 +16,7 @@ PC UI reloadは画面証拠不足で未確認。背景実行・P02全体・全OS
 
 ## OS-02 local capabilityの未来観測拒否
 
-主担当07/ROCK、統合10/G04。実Shell consumerの時刻guardだけを純粋helperへ接続し、0<=observed<=now<expiry・最大30秒、無効時unknown/既存timer解除を保持。schema/producer/SKU/本人権限は変更しない。固定4source/test、作者offline compile/Shell14/lint0errors（202warnings・差分未測定）、Root独立source検収mustFix0を継承。`OS02_JAVA_HOME=<既存JDK17> python3 -m unittest tests.test_device_capability_freshness -v` がactual consumerを含む2方法/23境界。Android CIの既存JDK直後に明示試験と両pathfilterを追加し、標準fullverify→Root統合metadata別検収→headAndroid/全CI→通常main/mergeCIを確認する。device/推論/鍵/flash/Provider0、実機/P02/wholeOSは未受入。[設計](../rockstaros-complete-design.md#os02-capability-observation-freshness)／[採用段階](../evidence/development-execution/os02-capability-freshness-main-adoption.json)。
+主担当07/ROCK、統合10/G04。実Shell consumerの時刻guardだけを純粋helperへ接続し、0<=observed<=now<expiry・最大30秒、無効時unknown/既存timer解除を保持。schema/producer/SKU/本人権限は変更しない。固定4source/test、作者offline compile/Shell14/lint0errors（202warnings・差分未測定）、Root独立source検収mustFix0を継承。`OS02_JAVA_HOME=<既存JDK17> python3 -m unittest tests.test_device_capability_freshness -v` がactual consumerを含む2方法/23境界。Android CIの既存JDK直後に明示試験と両pathfilterを追加し、新host全verify3026/3023pass/0fail/3skipを確認し、旧literal checker1失敗と独立4mutant拒否を保持。最新main bb11へ通常同期後、Root統合metadata別検収→headAndroid/全CI→通常main/mergeCIを確認する。device/推論/鍵/flash/Provider0、実機/P02/wholeOSは未受入。[設計](../rockstaros-complete-design.md#os02-capability-observation-freshness)／[採用段階](../evidence/development-execution/os02-capability-freshness-main-adoption.json)。
 
 ## Pixel cache-only/更新fence main候補
 

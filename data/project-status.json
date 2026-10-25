@@ -10824,7 +10824,16 @@
       ],
       "existingCompileEmulatorStepsPreserved": true
     },
-    "hostFullVerify": "not yet run",
+    "hostFullVerify": {
+      "baseMain": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+      "exitCode": 0,
+      "tests": 3026,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 3,
+      "logSha256": "9638611084214c6674118cdf82f68c17b77e79cdd42b226c01fa833f9fa0897d",
+      "laterSmithSyncRequiresFinalExactHeadCI": true
+    },
     "scope": "Reject future local capability observations in actual elapsed-realtime Shell consumer; existing unknown display/expiry scheduling and all schema/producer/identity/authority checks remain",
     "mainMerged": false,
     "wholeUnitAccepted": false,
@@ -10866,6 +10875,6 @@
         "independentReviewerProductEdits": 0
       }
     },
-    "latestSynchronizedMain": "24ad19526ed36e85efab5758d1159e7f983b9fe4"
+    "latestSynchronizedMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e"
   }
 }
