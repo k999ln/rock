@@ -1,0 +1,59 @@
+{
+  "schema": "rockstaros.os02-capability-freshness-independent-review/1",
+  "recordedAt": "2026-10-25T13:47:11.608761+00:00",
+  "reviewerRole": "Root independent of OS implementation author",
+  "verdict": "PASS_SCOPED_SOURCE",
+  "mustFix": [],
+  "primaryReceiptSha256": "6cccad9d2ded4d09ef98dd6d37404501853cde001806e5f1e943c11e9ee5838c",
+  "sourceFiles": [
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+      "bytes": 248493,
+      "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+    },
+    {
+      "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+      "bytes": 614,
+      "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+    },
+    {
+      "path": "tests/test_device_capability_freshness.py",
+      "bytes": 3849,
+      "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+    },
+    {
+      "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+      "bytes": 2239,
+      "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+    }
+  ],
+  "actualConsumerOnlyGuardReplacement": true,
+  "independentValidation": {
+    "candidateUnittestMethods": 2,
+    "skip": 0,
+    "actualConsumerOldNegative": "exit1 future-observation expected false/got true",
+    "separateExactJavaHelperBigIntegerBoundaryProbes": "PASS independent BigInteger boundary probes=2828 accepted=120",
+    "countsNotAdditiveCoverage": true
+  },
+  "reviewFindings": [
+    "Actual elapsed-realtime consumer invokes production helper; default -1 and unknown clear/expiry rendering unchanged.",
+    "0 <= observedAt <= now < expiresAt and lifetime <=30000 preserves old accepted nonfuture timestamps; ordered nonnegative subtraction cannot overflow.",
+    "No schema/producer/SKU/build/authority/inference behavior changed.",
+    "New Python regression requires explicit CI wiring under existing JDK; no final CI success inferred from host tests."
+  ],
+  "reviewProbeHistory": [
+    "Initial reviewer exact-byte assertion omitted the old Java literal L suffix and failed after successful tests; corrected expected bytes after reading immutable diff. No product change or test assertion weakening."
+  ],
+  "androidBuildEvidence": "Author offline actual consumer compile, Shell14 and lint0errors/202warnings; Root did not rerun Android build; warning delta unmeasured",
+  "limits": [
+    "Host Java proof and documentary compile review only; Android runtime/device/physical/inference/wholeOS/P02 not accepted",
+    "Fullverify and final head/main CI remain Git adoption gates"
+  ],
+  "operations": {
+    "productFilesEditedByReviewer": 0,
+    "deviceOperations": 0,
+    "additionalInference": 0,
+    "bulk616": "HELD"
+  },
+  "next": "Central Git adopts exact fixed4 source/test hashes + original receipt + this review; updates canonical design/index/status and explicit JDK CI step; Root independently reviews integration metadata."
+}

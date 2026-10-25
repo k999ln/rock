@@ -188,7 +188,11 @@ assert.ok(deviceCapabilitySource.includes('EsimProvisioningCompatibility.classif
 assert.ok(!/getEid\(|getActiveSubscriptionInfoList\(|READ_PHONE_STATE/.test(deviceCapabilitySource));
 const deviceShellMain = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
 assert.ok(deviceShellMain.includes('long expiresAt = capabilities == null ? -1 : capabilities.optLong("expiresAtElapsedMs", -1)'));
-assert.ok(deviceShellMain.includes('expiresAt <= now'));
+assert.ok(deviceShellMain.includes('!CapabilitySnapshotFreshness.isFresh(now, observedAt, expiresAt)'));
+const deviceCapabilityFreshness = read('android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java');
+assert.ok(deviceCapabilityFreshness.includes('now >= 0 && observedAt >= 0 && observedAt <= now'));
+assert.ok(deviceCapabilityFreshness.includes('expiresAt > now && expiresAt > observedAt'));
+assert.ok(deviceCapabilityFreshness.includes('expiresAt - observedAt <= 30_000L'));
 assert.ok(deviceShellMain.includes('端末対応を再確認'));
 assert.ok(deviceShellMain.includes('protocolVersion", -1) != 3'));
 assert.ok(deviceShellMain.includes('automaticProfileEnablement'));

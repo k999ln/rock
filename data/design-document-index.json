@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.42",
+  "version": "1.43",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -791,7 +791,22 @@
         "tests/test_pixel_worker_parent_exit.py",
         "tests/pixel-worker-contract.test.mjs",
         "tests/pixel-worker-parent-diagnostics.test.mjs"
-      ]
+      ],
+      "capabilityObservationFreshness": {
+        "contract": "docs/rockstaros-complete-design.md#os02-capability-observation-freshness",
+        "implementation": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+        "consumer": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "tests": [
+          "tests/test_device_capability_freshness.py",
+          "tests/fixtures/DeviceCapabilityFreshnessTest.java"
+        ],
+        "acceptedTimeOrder": "0 <= observedAt <= now < expiresAt; lifetime <=30000ms",
+        "scope": "Local display observation only; not device identity/readiness/authority proof",
+        "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-adoption.json",
+        "mainMerged": false,
+        "wholeOSAccepted": false,
+        "physicalAccepted": false
+      }
     },
     {
       "id": "local_ai_and_memory",
