@@ -3109,7 +3109,10 @@
       ],
       "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
       "scope": "POSIX process SIGKILL host fixture only; production runtime and migrations unchanged",
-      "mainMerged": false
+      "mainMerged": true,
+      "pr": 208,
+      "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
     }
   },
   "proOriginalArchiveEntry": {

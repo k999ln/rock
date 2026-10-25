@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "WALLET-02 test-only local process SIGKILL fixture implemented; source/metadata independent reviews and host fullverify passed. Git save/same-head CI next; not a prerequisite for nonfinancial products.",
+  "nextProductSlice": "Preserve PR209 Pixel candidate and eSIM/UI candidates; compare with latestmain2854d069 and pass their own remaining gates before adoption. Do not repeat PR208 test implementation.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -91,6 +91,20 @@
       "mergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
       "sameShaCISuccess": 6,
       "evidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 208,
+      "scope": "Test-only Wallet process-death fixture bounded main adoption",
+      "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+      "sameShaCISuccess": 6,
+      "actualMainLinuxVerify": {
+        "tests": 2911,
+        "pass": 2909,
+        "fail": 0,
+        "skip": 2
+      },
+      "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
       "wholeUnitAccepted": false
     }
   ]

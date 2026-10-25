@@ -9934,14 +9934,26 @@
     "hostFocusedPass": 36,
     "newSigkillCases": 13,
     "independentReviewPending": false,
-    "gitHubSaved": false,
-    "mainMerged": false,
+    "gitHubSaved": true,
+    "mainMerged": true,
     "wholeWallet02Accepted": false,
     "productionFinanceAccepted": false,
     "publicDeployment": false,
     "independentReview": "PASS_SCOPED",
     "reviewSummary": "docs/evidence/development-execution/wallet-process-recovery-review-summary.json",
     "fullVerify": "host_pass_2911tests_2908pass_3skip_0fail",
-    "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json"
+    "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json",
+    "pr": 208,
+    "acceptedHead": "c3c0e17dfbafbc339fdcc427113cd53daf2fac3d",
+    "mainMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+    "headSameShaCISuccess": 7,
+    "mergeSameShaCISuccess": 6,
+    "actualMainLinuxVerify": {
+      "tests": 2911,
+      "pass": 2909,
+      "fail": 0,
+      "skip": 2
+    },
+    "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
   }
 }
