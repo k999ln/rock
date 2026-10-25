@@ -75,5 +75,13 @@
         "logSha256": "63a7cdb8222a1443a2f2318aec2a6f4847d07ef72b31bff4047859d8218a6182"
       }
     ]
+  },
+  "latestMainSynchronization": {
+    "main": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+    "mergeCommit": "a344172eb62bb8ef347fc94c715ff72a12e867ef",
+    "method": "ordinary merge",
+    "incoming": "PR22122metadata/design paths only; accepted runtime/dependencies unchanged since host verification",
+    "source4HashesUnchanged": true,
+    "allExistingMainStatusPreserved": true
   }
 }
