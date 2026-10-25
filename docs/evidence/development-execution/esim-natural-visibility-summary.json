@@ -1,0 +1,280 @@
+{
+  "schema": "rockstaros.esim-natural-visibility-portable-summary/1",
+  "originalSummarySha256": "4ad92e5ab55625529d3b0e24e52cc6d3027bdc20eda48aae08fa94824148b1ab",
+  "originalHistoricalStatus": "OBSERVED_NATURAL_VISIBILITY_OLD_AND_FRESH_READ_GATING_PENDING_INDEPENDENT_DOCUMENTARY_REVIEW",
+  "originalRecordedAt": "2026-10-25T10:06:10.281614+00:00",
+  "independentStatus": "PASS_SCOPED_NATURAL_VISIBILITY_AND_FRESH_READ_RECOVERY",
+  "independentOriginalSha256": "5f5d83586f61fc21de4643385ca2a61655d15a34d7a46fd1c1017642c525ae3f",
+  "mustFix": [],
+  "sourceHashes": {
+    "components/sky-linux-service.tsx": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1",
+    "tests/sky-linux-service-reconciliation.test.mjs": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936",
+    "docs/evidence/development-execution/esim-billing-ui-ack.json": "50379e5d5ae031b2bc82c28fb2bb8325e3f979c0edf5c7c7aa90b2548fcc1a64",
+    "lib/operations-client.ts": "250c4562822e4933a52c7149d892f7f16e3cae345362dff2228dd3a99d50c59f"
+  },
+  "mainMergeKnown": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+  "mainProductAdoptedBeforeThisGateCompleted": true,
+  "temporalQualification": "Do not claim actual visibility passed before PR213 merge; this is supplemental post-adoption UI evidence. Old r2 summary remains a historical not-observed snapshot.",
+  "observedSequence": [
+    {
+      "stage": "manual",
+      "visibility": "visible",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": true,
+      "mutationButtons": [
+        "電子契約と証明を保存",
+        "設定・仕事・成果を持ち出す",
+        "仕事を停止する"
+      ]
+    },
+    {
+      "stage": "event",
+      "visibility": "hidden",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "hidden",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "hidden",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "event",
+      "visibility": "visible",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "visible",
+      "gets": 2,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "visible",
+      "gets": 4,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "event",
+      "visibility": "hidden",
+      "gets": 5,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "hidden",
+      "gets": 5,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "hidden",
+      "gets": 5,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "event",
+      "visibility": "visible",
+      "gets": 5,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "visible",
+      "gets": 5,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "visible",
+      "gets": 6,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "event",
+      "visibility": "hidden",
+      "gets": 7,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "hidden",
+      "gets": 7,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "hidden",
+      "gets": 7,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "event",
+      "visibility": "visible",
+      "gets": 7,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "microtask",
+      "visibility": "visible",
+      "gets": 7,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "settled",
+      "visibility": "visible",
+      "gets": 8,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "oldest-released",
+      "visibility": "visible",
+      "gets": 9,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "manual",
+      "visibility": "visible",
+      "gets": 9,
+      "posts": 0,
+      "privateVisible": false,
+      "mutationButtons": []
+    },
+    {
+      "stage": "manual",
+      "visibility": "visible",
+      "gets": 9,
+      "posts": 0,
+      "privateVisible": true,
+      "mutationButtons": [
+        "電子契約と証明を保存",
+        "設定・仕事・成果を持ち出す",
+        "仕事を停止する"
+      ]
+    }
+  ],
+  "boundedChecks": {
+    "naturalNativeChromeHiddenVisibleObserved": true,
+    "nativeInitialPrivateAndActionsVisible": true,
+    "nativeHiddenPrivateAndActionsAbsent": true,
+    "nativeVisibleFreshHeldPrivateAndActionsAbsent": true,
+    "freshReadCountIncreasedBeforeReply": true,
+    "oldGetOnlyReleaseDoesNotRestore": true,
+    "freshMatchingRepliesRestorePrivateAndActions": true,
+    "postCountThroughout": 0
+  },
+  "sequenceLimit": {
+    "oneShortUninterruptedCycle": false,
+    "sameDocumentAcrossLongToolPause": true,
+    "nativeObservationsCapturedBeforeDebuggerAttachment": true,
+    "backgroundBrowserHelperAttachedAfterNativeEventObservationsForReadbackAndRelease": true,
+    "helperAddedGetReadObserved": {
+      "nativeLastSettledGets": 8,
+      "helperReadbackGets": 9
+    },
+    "noExtraPostOrOwnerMutation": true,
+    "retainedHandlerWhileHidden": "Independent actual-component hook probes; not a hidden-browser click or a new physical-user-auth result."
+  },
+  "toolFailuresAndInterruption": [
+    {
+      "operation": "Safari getApp",
+      "result": "timeoutReached",
+      "wallSeconds": 8205.3464,
+      "countedAsPass": false
+    },
+    {
+      "operation": "Native Chrome continuation",
+      "result": "User browser changes prevented pending native action; no original tab content modified",
+      "countedAsPass": false
+    }
+  ],
+  "plane": "Normal native Chrome actual component with synthetic fetch/data; no real auth/provider/billing. Browser helper used only after native observations for old/fresh release and proof readback.",
+  "notAccepted": [
+    "production authentication/actual account change",
+    "real eSIM/carrier/charge/invoice",
+    "OS/device acceptance",
+    "a single uninterrupted cycle without the documented tool pause",
+    "retained callback invocation via real UI while tab hidden"
+  ],
+  "cleanup": {
+    "ownTestTabClosed": true,
+    "ownedServerStopped": true,
+    "noProductSourceChanges": true
+  },
+  "main213Comparison": {
+    "components/sky-linux-service.tsx": {
+      "observedSourceSha256": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1",
+      "main213Sha256": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1",
+      "equal": true
+    },
+    "tests/sky-linux-service-reconciliation.test.mjs": {
+      "observedSourceSha256": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936",
+      "main213Sha256": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936",
+      "equal": true
+    },
+    "docs/evidence/development-execution/esim-billing-ui-ack.json": {
+      "observedSourceSha256": "50379e5d5ae031b2bc82c28fb2bb8325e3f979c0edf5c7c7aa90b2548fcc1a64",
+      "main213Sha256": "4177a7836e22dce46dbc9f6db15afcc3631a3dbc9f4ad0fb34d5a3c5be126e23",
+      "equal": false
+    },
+    "lib/operations-client.ts": {
+      "observedSourceSha256": "250c4562822e4933a52c7149d892f7f16e3cae345362dff2228dd3a99d50c59f",
+      "main213Sha256": "250c4562822e4933a52c7149d892f7f16e3cae345362dff2228dd3a99d50c59f",
+      "equal": true
+    }
+  },
+  "productComponentAndTestHashesMatchMain213": true,
+  "receiptMetadataQualification": "Original candidate receipt50379e is preserved; main213 portable metadata receipt differs. This is not a product component/test difference.",
+  "fixtureScope": "Actual component+actual operations-client+real React DOM; synthetic local fetch only. Next Link/shell/notice are labelled fixture chrome. No product/API/auth source modified.",
+  "fixtureManifestSha256": "ebdb4f15073c644999216f57e1f6cd65344a165698be1460aacc4064f772fd44",
+  "rawEvidencePublished": false,
+  "originalsUnmodified": true
+}
