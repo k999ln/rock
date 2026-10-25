@@ -1,3 +1,7 @@
+## zod依存制約の互換修正（SYS15・G04 / ROCK）
+
+着手: main ee9b8801を基点に、rootのCloudflare固定4.4.3・shadcn3系依存とMini4.6.5を修正する。shadcnを上流のZod4移行済み4.22.1へ更新し、root/Miniともzod修正版^4.6.6へ制約する。既存製品sourceのZod3 schema利用なしを確認。依存consumer・schema・制限付きcollectionの早期拒否を試験し、全verifyと新HEAD/main同SHA CIを別々に記録する。実機操作・追加推論・公開配備なし。対象34/34と旧依存3失敗反例、Cloudflare Worker14/14、両監査zod0を確認。初回host全verifyは2991件/2986pass/2fail/3skip。依存inventory期待件数を973/930/51へ同期し、既存localhost5秒timeoutはsource不変の再試験で回復、対象89/89成功。初回失敗を保持し、新HEADのLinux全verifyとmain統合CIで最終確認（記録時pending）。
+
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 
 PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。現在: PR208の検収済みheadc3c0e17d/exact20pathを通常main2854d069へ統合。headtree/main tree一致、同mergeSHA全6CIとLinux実verify2911/2909pass/2skip/0failを確認。文書保存・作業branch GitHub保存・main統合を完了、公開配備は未実施。元receiptのcapture-time pendingと初回失敗は保持し、現在のproject/status/overlay/handoffはこの別metadata同期で訂正する。次は既存Pixel/eSIM候補を新mainへ通常照合し、各独立gateから再開。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。

@@ -10156,5 +10156,35 @@
     "miniAuditUndiciFindings": 0,
     "miniOtherAuditFindings": 2,
     "latestMainSynchronization": "2a9828b2879904d3aeb28bc6919132b70c49f3cb"
+  },
+  "zodSecurityConstraint": {
+    "taskIds": [
+      "SYS15",
+      "G04"
+    ],
+    "primaryWorkstream": "04-security-identity-compliance",
+    "responsibility": "ROCK",
+    "status": "targeted_repair_verified_exact_head_ci_pending",
+    "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "shadcn": "4.22.1",
+    "zodOverride": "^4.6.6",
+    "newHeadCI": "pending",
+    "mainMergeCI": "pending",
+    "physicalOperations": false,
+    "additionalInference": false,
+    "lockedVersion": "4.6.7",
+    "evidence": "docs/evidence/zod-security-constraint.json",
+    "targetedTests": {
+      "pass": 34,
+      "fail": 0,
+      "skip": 0
+    },
+    "oldDependencyRegression": "3 expected failures",
+    "auditZodFindings": {
+      "root": 0,
+      "mini": 0
+    },
+    "fullVerify": "initial host exit1: inventory expectation corrected; localhost timeout passes targeted retry; exact-head Linux full verify pending",
+    "targetedRepairTests": 89
   }
 }
