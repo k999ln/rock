@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.game-creator-fixture.main-adoption/1",
   "recordedAt": "2026-10-25T00:05:37.934051+00:00",
-  "status": "exact2_source_pass_local40_lint_syntax_type_finalCI_metadata_review_pending",
+  "status": "PR205_normal_main_integrated_bounded_host_fixture_metadata_and_CI_pass",
   "unit": "GAME-01",
   "primaryWorkstream": "10-git-ci-operations",
   "sourceWorkstream": "08-game-market-fund",
@@ -53,7 +53,7 @@
     "path": "docs/evidence/development-execution/game-creator-fixture.json",
     "sha256": "136a4ed36d81821cab7d2f06d42b0804256dbc588111f2b522dc5f2e679a7f43",
     "notOriginalReceiptIdentity": true,
-    "metadataReviewPending": true
+    "metadataReviewPending": false
   },
   "sourceIndependentReviewSha256": "30d618d92f0778add6a7081d86a4dcd7e12d7abc34735963c1319e53b9927e60",
   "reviewSummary": "docs/evidence/development-execution/game-creator-fixture-main-review-summary.json",
@@ -935,8 +935,8 @@
   ],
   "acceptance": {
     "sourceTwoLimitedIndependent": true,
-    "newMetadataReviewed": false,
-    "mainMerged": false,
+    "newMetadataReviewed": true,
+    "mainMerged": true,
     "wholeGame01": false,
     "wholeGame02": false,
     "fullSDKFreshAuthorDX": false,
@@ -948,7 +948,7 @@
     "authorWalletAuthority": false,
     "publicDeployment": false
   },
-  "next": "project/design/scanner then Draft PR exact-head actual Linux npmverify/all CI and independent adoption metadata review before merge.",
+  "next": "Bounded fixed-particle host fixture integrated; fresh external author/fullSDK/authenticated owner/WorkJob/browser/native/finance/production gates remain separate.",
   "integrationScannerHistory": {
     "initialFindings": 1,
     "rule": "generic-api-key",
@@ -958,5 +958,31 @@
     "classification": "Pre-existing illustrative request key in owner-only quote approval example, not authentication credential.",
     "resolution": "Replace fixed illustrative string with explicit <request-key> placeholder; no wire/schema/authority/financial or scanner policy changes.",
     "sourceTwoChanged": false
+  },
+  "historicalCandidateStatus": "exact2_source_pass_local40_lint_syntax_type_finalCI_metadata_review_pending",
+  "mainOutcome": {
+    "pr": 205,
+    "acceptedHead": "387e23a1f6f177cab870d49a0b079cfe9d0a7e5c",
+    "mainMergeSha": "08669893ec8bc9aab498d38b88a60f8911fd3443",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2892,
+      "pass": 2890,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "5d827e0514f61d9ea54e65f41e75e28db1ffcd323e018c26a88b01b9443d3ba5"
+    },
+    "metadataReviewSha256": "3f90df85ec359c291e3102dd2430270fe5dea2e0b66f4a2c39521d3347e03140",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceTwoUnchanged": true,
+    "reusedFiveUnchanged": true,
+    "staticDiagnosticRuntimeAccepted": false,
+    "fullSDKFreshAuthor": false,
+    "authenticatedOwnerStorage": false,
+    "wholeGame01": false,
+    "wholeGame02": false,
+    "productionExchangeEnabled": false,
+    "publicDeployment": false
   }
 }

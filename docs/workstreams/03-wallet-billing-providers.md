@@ -1,3 +1,7 @@
+## WALLET-02 legacy ledger DB fault/reopen限定fixture候補
+
+主担当03/ROCK、Git統合10。既存tests/billing-worker.test.mjsのTestD1だけをfile-backed reopen/fault hooksへ拡張。元3tests/署名helper・Worker/domain/defaultToC hold/鍵/migrations/888は不変。23局所/独立6群・rollback11位置/ackloss/reopen/400+488を確認、lint/type成功。same synthetic ownerと明示直列batchであり、実provider/2認証端末/Cloudflare並行/prodfinanceは未受入。最終同headLinux実verify/全CIとmetadata検収待ち。[詳細](../sky-billing.md#wallet-legacy-db-recovery-fixture)／[証拠](../evidence/development-execution/wallet-ledger-db-recovery-main-adoption.json)。
+
 ## Billing required service claim候補
 
 ROCKは既存server required設定のrockstaros_accessを最終atomic INSERTへ転送し、同owner/status/scopes/committime expiryを再照合。preview/requiredを分離し、DBUNCONFIRMED hold/noresend・priced lateusageonce・旧recurring例外を保持。53試験/型/lint成功、source4hash不変。価格/schema/migration/設定/共通issuer epochは変更・完成扱いしない。[契約](../sky-billing.md#billing-required-service-authority)／[証拠](../evidence/development-execution/billing-service-main-adoption.json)。統合主担当10、最終CI/metadata採用review待ち。

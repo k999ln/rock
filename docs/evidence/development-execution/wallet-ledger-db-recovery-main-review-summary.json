@@ -1,0 +1,67 @@
+{
+  "schema": "rockstaros.wallet-db-recovery.main-review-summary/1",
+  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
+  "sourceReviewSha256": "14ecc5f0d6acbd239598a6ca2f035b98702bb99e539c8c1d46fd047bb9567aed",
+  "sourceVerdict": "PASS_SCOPED",
+  "mustFix": 0,
+  "sourceFiles": [
+    {
+      "path": "tests/billing-worker.test.mjs",
+      "sha256": "257e5ea6400eb9928a938c03ab6a836094483e96a1a72dca4d3f5bb7c1b39bd8",
+      "bytes": 32515
+    }
+  ],
+  "receiptHashes": {
+    "original": "53472a23d51a205251e33dff8e9ac025d8db6b8696f1321d7d51e98b4eaddb39",
+    "portable": "2f5a6e9983c9749420558ac6c65983409c611e9e8eaecdd8e2915652a8f6ea6f",
+    "notIdentical": true
+  },
+  "sourceFindings": [
+    "Only tests/billing-worker.test.mjs and candidate receipt changed. Worker, domain/888 policy, token/signature helpers, rock-wallet source, four migrations and cited native Wallet/Entitlement paths match fixed Git base. No product key, schema, price, issuer, worker or ledger implementation edit.",
+    "TestD1 keeps the original in-memory/migrate default. File fixture migrates only first open and reopens the same SQLite path with new DatabaseSync handles; WAL/SHM remain inside owned temporary directory.",
+    "beforeBatch awaits before BEGIN IMMEDIATE after Worker receipt INSERT; afterStatement executes within transaction and rollback catch; afterCommit runs after COMMIT outside rollback catch. Injected faults therefore cover the claimed three distinct persistence boundaries.",
+    "Added six tests use real existing worker SQL and full six-table snapshots. Original three test bodies and original local signature helper are unchanged. No HMAC value is drawn from environment or real issuer credentials.",
+    "Two delivery contexts deliberately pause before transaction then serialize A/B batches. This supports same normalized synthetic owner/month400+488 cap only; it is not parallel writer/Cloudflare or authenticated two-device acceptance.",
+    "Default ToC worker rejects before receipt INSERT and cannot adopt the legacy fixture acceptance as production policy. Internal payable/fee instructions are not executed transfers."
+  ],
+  "validation": {
+    "focused": 23,
+    "billingOriginal": 3,
+    "billingAdded": 6,
+    "independentGroups": 6,
+    "rollbackPositionsWithinGroups": 11,
+    "countsNotAdditive": true,
+    "cases": [
+      "Every one of11transaction statement boundaries faulted independently. Each leaves only unapplied original receipt, all five allocation tables empty; close/reopen twice and same-key replay converge to one exact allocation.",
+      "Pre-batch persisted unapplied receipt survives reopen. Default ToC returns409 SKY_FEE_POLICY_ON_HOLD, never enters batch and changes no rows before or after legacy recovery.",
+      "Post-commit acknowledgement fault with gross2000/cost100 yields fee888/payable1012 and four ledger entries. Two reopen/replays preserve full six-table state and original payout/fee instruction identity.",
+      "Provider-reference alias, owner, evidence hash, payout account, amount and execution identity conflicts reject409 for both pending and applied states; currencyEUR rejects400. Full snapshot unchanged.",
+      "Two open handles read same unapplied receipt before their batches. Explicit serialized release yields one allocation, original201 and replay200, no duplicate ledger/month/instruction writes.",
+      "Same-owner distinct receipts interleave before serialized transactions; fee400+488, conservation of gross/cost/fee/payable, reopened replay exact, subsequent same-month receipt fee0."
+    ]
+  },
+  "fixturePlane": "Local Node SQLite file/WAL handles, in-process unchanged actual Worker SQL, literal synthetic signatures/owner fixtures and deterministic injected errors. No HTTP listener/network, real Provider, real credit, process kill or Cloudflare concurrency.",
+  "failureHistory": {
+    "implementerOriginalFailures": [],
+    "implementerNewFailures": [],
+    "independentUnexpectedFailures": [],
+    "expectedInjectedFailures": "HTTP500 after pre-batch/each of11within-batch/afterCommit hooks; expected409 identity/ToC hold and400 unsupported currency. All asserted, no skipped/cancelled checks.",
+    "fullVerify": "NOT_RUN per bounded assignment",
+    "CI": "NOT_RUN",
+    "physicalAndCloud": "NOT_RUN"
+  },
+  "limits": [
+    "No actual process kill, simultaneous write transactions or Cloudflare D1 durability acceptance; two requests overlap only before explicitly serialized SQLite batches.",
+    "Two delivery contexts use the same already-normalized synthetic owner, not independently authenticated devices or contract normalization.",
+    "Existing Provider-signed provenance checker remains fixture-only and unconnected to funded available credit; no new creditAllowed bypass.",
+    "Internal legacy earning credit ledger lines are synthetic accounting; test HMAC evidence is not real Provider/chain finality or verified cash profit.",
+    "Native Wallet/ATM/Game/AI reservations and cross-ledger finality/reversal/backup remain outside this DB fixture.",
+    "No full verify, Git save/PR/merge or current remote CI executed; parent integrates and reviews exact candidate.",
+    "Review uses local SQLite handles and injected errors, not actual process termination, remote D1 response loss or simultaneous writer transactions.",
+    "Same owner is already-normalized synthetic alice. No independently authenticated devices, real contract mapping, provider finality, actual revenue or available cash accepted."
+  ],
+  "newMetadataReviewPending": true,
+  "runtimeProductChanges": 0,
+  "wholeWallet02": false,
+  "productionFinance": false
+}

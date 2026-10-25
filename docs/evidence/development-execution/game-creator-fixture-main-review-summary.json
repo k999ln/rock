@@ -83,5 +83,30 @@
   ],
   "newMetadataReviewPending": true,
   "wholeGame01": false,
-  "publicDeployment": false
+  "publicDeployment": false,
+  "completedMainAdoption": {
+    "pr": 205,
+    "acceptedHead": "387e23a1f6f177cab870d49a0b079cfe9d0a7e5c",
+    "mainMergeSha": "08669893ec8bc9aab498d38b88a60f8911fd3443",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2892,
+      "pass": 2890,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "5d827e0514f61d9ea54e65f41e75e28db1ffcd323e018c26a88b01b9443d3ba5"
+    },
+    "metadataReviewSha256": "3f90df85ec359c291e3102dd2430270fe5dea2e0b66f4a2c39521d3347e03140",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "sourceTwoUnchanged": true,
+    "reusedFiveUnchanged": true,
+    "staticDiagnosticRuntimeAccepted": false,
+    "fullSDKFreshAuthor": false,
+    "authenticatedOwnerStorage": false,
+    "wholeGame01": false,
+    "wholeGame02": false,
+    "productionExchangeEnabled": false,
+    "publicDeployment": false
+  }
 }

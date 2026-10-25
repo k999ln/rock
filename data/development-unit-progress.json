@@ -1,11 +1,11 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
+  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
   "mainContext": {
-    "mainAtCapture": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+    "mainAtCapture": "08669893ec8bc9aab498d38b88a60f8911fd3443",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -2274,7 +2274,9 @@
         "GX00-ISOLATION"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "WALLET_LEDGER_DB_RECOVERY_CANDIDATE"
+      ]
     },
     {
       "id": "WALLET-03",

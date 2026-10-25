@@ -1,3 +1,5 @@
+Walletの[legacy DB recovery](../sky-billing.md#wallet-legacy-db-recovery-fixture)は03のtest-only候補、統合10。受入test1を無変更採用し23局所/lint/type成功。実runtime/defaultpolicy/888は不変、実Provider/認証端末/Cloudflare/prodfinanceは未受入。Game host fixtureはPR205/main0866・同SHA6CI成功で限定統合済み。
+
 Gameの[known-particle creator fixture CLI](../game-api-contract-draft.md#game-creator-host-fixture)は08のhost候補、統合10。source2/reuse5固定、40局所/型/lint/構文成功。診断unverifiedと別hostProofを区別し、fullSDK/本人保存/実機/金融/公開は未受入。Eve estimate-onlyはPR204/main434f・同SHA6CI成功で限定統合済み。
 
 Eveの[保存2資料の見積](../rockstaros-complete-design.md#eve-saved-source-estimate)は05のestimate-only候補、統合10。元exact10/r2独立PASS、初回70局所/型/lint。CI CodeQL後のtest1明示機械例外＋9一致/product5不変を記録し、新headCI/機械検収待ち。Root実UIは保存/復元/503限定、Smithnav入り追加restore/nav/focus/5幅を同10hashで限定確認、commit保留解除。Smith navはPR203/main7188・同SHA6CI成功で限定統合済み。paid生成/wholeEVE/公開は別gate。

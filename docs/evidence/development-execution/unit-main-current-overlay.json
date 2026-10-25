@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
-  "mainAtCapture": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
+  "mainAtCapture": "08669893ec8bc9aab498d38b88a60f8911fd3443",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -426,7 +426,7 @@
       "units": [
         "GAME-01"
       ],
-      "kind": "limited_host_fixture_source_pass_git_candidate",
+      "kind": "additional_adopted_subset",
       "baseMain": "434f8076e5e16f953f8a814430082a3cfa0dce56",
       "sourceFiles": [
         {
@@ -442,16 +442,48 @@
       ],
       "sourceReviewSha256": "30d618d92f0778add6a7081d86a4dcd7e12d7abc34735963c1319e53b9927e60",
       "reviewSummary": "docs/evidence/development-execution/game-creator-fixture-main-review-summary.json",
+      "mainMerged": true,
+      "wholeUnitAccepted": false,
+      "scope": "Static intake to fixed particle session and existing save/load/replay CLI, host synthetic identity only; no full authorSDK/owner auth/WorkJob/financial/native acceptance.",
+      "pr": 205,
+      "acceptedHead": "387e23a1f6f177cab870d49a0b079cfe9d0a7e5c",
+      "mainMergeSha": "08669893ec8bc9aab498d38b88a60f8911fd3443",
+      "metadataReviewSha256": "3f90df85ec359c291e3102dd2430270fe5dea2e0b66f4a2c39521d3347e03140",
+      "mainSameShaCISuccess": 6
+    },
+    {
+      "id": "WALLET_LEDGER_DB_RECOVERY_CANDIDATE",
+      "units": [
+        "WALLET-02"
+      ],
+      "kind": "limited_test_only_SQLite_reopen_source_pass_git_candidate",
+      "baseMain": "08669893ec8bc9aab498d38b88a60f8911fd3443",
+      "sourceFiles": [
+        {
+          "path": "tests/billing-worker.test.mjs",
+          "sha256": "257e5ea6400eb9928a938c03ab6a836094483e96a1a72dca4d3f5bb7c1b39bd8",
+          "bytes": 32515
+        }
+      ],
+      "sourceReviewSha256": "14ecc5f0d6acbd239598a6ca2f035b98702bb99e539c8c1d46fd047bb9567aed",
+      "reviewSummary": "docs/evidence/development-execution/wallet-ledger-db-recovery-main-review-summary.json",
       "mainMerged": false,
       "wholeUnitAccepted": false,
-      "scope": "Static intake to fixed particle session and existing save/load/replay CLI, host synthetic identity only; no full authorSDK/owner auth/WorkJob/financial/native acceptance."
+      "scope": "Existing legacy fixture SQL fault/reopen/replay/cap tests only; runtime/defaultToC hold unchanged. Not actual provider/cash/auth devices/Cloudflare or full Wallet acceptance."
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "WALLET-02",
+      "state": "legacy_ledger_SQLite_recovery_test_only_source_pass_main_candidate",
+      "scope": "Exact-head Linux actual verify/all CI and independent metadata review; runtime/price/key/888/defaultToC unchanged.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "GAME-01",
-      "state": "creator_host_fixture_exact2_source_pass_main_candidate",
+      "state": "bounded_host_fixture_PR205_main_integrated_remaining_fullSDK_gates",
       "scope": "Exact-head Linux actual verify/all CI and independent adoption metadata review; host synthetic fixture only, not fullSDK/auth owner/financial/native.",
       "wholeUnitAccepted": false
     },
@@ -544,5 +576,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "7188c87986f337c6b65e408a17d2468ecab44fe5"
+  "previousCaptureMain": "434f8076e5e16f953f8a814430082a3cfa0dce56"
 }
