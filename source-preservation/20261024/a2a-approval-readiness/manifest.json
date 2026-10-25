@@ -1,0 +1,46 @@
+{
+  "schema": "rockstaros.source-preservation/1",
+  "purpose": "Only two specifically inspected original UI guidance and inline synthetic test sources as nonexecuting .source snapshots.",
+  "parentSourcePreservationCommit": "53e6ed46158e7105c65c68015f3fe9931c61de88",
+  "comparisonMain": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+  "sourceInventory": {
+    "path": "docs/evidence/development-execution/source-preservation-coverage.json",
+    "sha256": "881a014dfcf77eb408427d4d67386729aad635e29fb638ccbcb9295b7964b40b",
+    "scope": "nextSafeCohort exact two only; no full inventory copy"
+  },
+  "snapshotFiles": 2,
+  "payloadBytes": 5823,
+  "records": [
+    {
+      "originalPath": "lib/a2a-approval-readiness.ts",
+      "snapshotPath": "source-preservation/20261024/a2a-approval-readiness/snapshots/lib/a2a-approval-readiness.ts.source",
+      "bytes": 2444,
+      "sha256": "a1e54de72184dcac1427199434d7384a9f32d0fad93060b0c5d561d81f45a3fe",
+      "gitBlobSha1": "f5b4ee9b241553885e6d12c4b3ce0c7d3f6e8c52"
+    },
+    {
+      "originalPath": "tests/a2a-approval-readiness.test.mjs",
+      "snapshotPath": "source-preservation/20261024/a2a-approval-readiness/snapshots/tests/a2a-approval-readiness.test.mjs.source",
+      "bytes": 3379,
+      "sha256": "0ce0abb12f05ab75f0511a0739f3bae570130d36c33446cbaaa3b8b438f37ac3",
+      "gitBlobSha1": "09700a32abb329262332017c7105b39db1aac5e3"
+    }
+  ],
+  "scope": "UI guidance is never approval authority. Inline tests use only synthetic material, example.com and repeated fake digests. No code correction or functional acceptance.",
+  "dependencyNotCopied": {
+    "path": "lib/a2a-delegation-recovery.ts",
+    "sha256": "83d0b4c47cb77a53c1335793b4734713dbec9ebfc2a9c37d0b0e955b737130af",
+    "reason": "Exact bytes already reachable from both confirmed histories."
+  },
+  "existingArchivesPreserved": {
+    "firstBatch": 49,
+    "osReviewed": 16,
+    "smithNavigation": 5
+  },
+  "mainAdopted": false,
+  "runtimeAcceptance": false,
+  "publicDeployment": false,
+  "financialEffects": 0,
+  "bulk618Export": false,
+  "remaining616PublicExport": "held"
+}
