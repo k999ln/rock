@@ -1,3 +1,5 @@
+Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照合し、cache ready/replay/取消と元7f0223復旧を限定合格。元34run/2model/10agent・23出力hash保持、追加推論0。修正c43e7047の実機合格には転用しない。統合同期tree初回全verifyは共有node_modulesのvendor参照pathで1件失敗し、tree専用cloneへ切替えて再検証中（試験削除/弱化なし）。
+
 ## Pixel候補の最新main同期とguard修正取り込み
 
 最新main81aca294を通常mergeし、Wallet208/210の現在受入と4試験を保持。作者修正e5ba8521を通常取り込み、元9sourceのうち7不変・guardと試験2件は作者commitと同hash。旧headのCodeQL Highと旧physicalは履歴として保持。次は最終headの独立検収・GitHub保存・同一SHAのCodeQL/全CI確認、その後main通常統合。実機操作・追加推論・公開配備・616一括公開は未実施。
