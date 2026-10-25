@@ -47,6 +47,7 @@ import { OperationRequestError } from '@/lib/operations-client';
 import { pendingOwnerStatus } from '@/lib/pending-owner-intent';
 import { OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import { jenniferReviewClaimContract } from '@/lib/jennifer-execution-reports';
+import type { GameWorkDraft } from '@/lib/game-work-draft';
 
 const stateNames = {
   active: '作業中',
@@ -57,7 +58,7 @@ const stateNames = {
 type Update = { jobId: string; revision: number; command: WorkCommand };
 type JenniferTaskJobCoordination = NonNullable<WorkJob['coordination']>;
 type PendingUpdate = Update & { ownerScope: string };
-type Creation = { ownerScope: string; id: string; title: string; templateId: string };
+type Creation = { ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'> };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
   id: string;
@@ -454,6 +455,16 @@ export default function Workbench({
   const [title, setTitle, titleDrafts, currentTitle] = useOwnerMemoryState(ownerScope, currentOwner, ''),
     [templateId, setTemplateId, , currentTemplate] = useOwnerMemoryState(ownerScope, currentOwner, 'article'),
     [note, setNote, noteDrafts, currentNote] = useOwnerMemoryState(ownerScope, currentOwner, '');
+  const [gameInput, setGameInput] = useState({ source: '', instruction: '' });
+  const gameInputRef = useRef(gameInput);
+  const [gameDraft, setGameDraft] = useState<GameWorkDraft | null>(null);
+  const gameDraftRef = useRef<GameWorkDraft | null>(null);
+  const gameDraftEpoch = useRef(0);
+  const gamePrepareFlight = useRef(false);
+  const gameMounted = useRef(false);
+  const [gamePreparing, setGamePreparing] = useState(false);
+  const [gameDraftError, setGameDraftError] = useState('');
+  useEffect(() => { gameMounted.current = true; return () => { gameMounted.current = false; }; }, []);
   const [error, setError] = useState(''),
     [loading, setLoading] = useState(true),
     [ready, setReady] = useState(false);
@@ -480,6 +491,9 @@ export default function Workbench({
   const updateInFlight = useRef(false);
   const setOwnerScope = useCallback((scope: string | null) => {
     if (currentOwner.current !== scope) {
+      gameDraftEpoch.current++; gamePrepareFlight.current = false;
+      gameInputRef.current = { source: '', instruction: '' }; setGameInput(gameInputRef.current);
+      gameDraftRef.current = null; setGameDraft(null); setGameDraftError(''); setGamePreparing(false);
       selectedIdRef.current = ''; setSelectedId('');
       setDelegations([]); setA2aParentController(null); setDelegationBudgetPool(null); setDelegationBudgetReservations([]);
       setArtifactDocuments({}); setDelegationUsageDetails({}); setDelegationBusy(false);
@@ -487,17 +501,46 @@ export default function Workbench({
     currentOwner.current = scope;
     setOwnerScopeValue(scope);
   }, []);
-  const hasPrivateDraft = Boolean(title.trim() || note.trim() || localPackageTask.trim() || delegationForm.message.trim() ||
+  const hasPrivateDraft = Boolean(gameInput.source.trim() || gameInput.instruction.trim() || title.trim() || note.trim() || localPackageTask.trim() || delegationForm.message.trim() ||
     delegationForm.budgetLimitInput.trim() || delegationForm.parentBudgetLimitInput.trim() || delegationForm.continueWhileDeviceOffline);
-  const hasRetainedDrafts = Object.values(titleDrafts).some(value => value.trim()) ||
+  const hasRetainedDrafts = Boolean(gameInput.source.trim() || gameInput.instruction.trim()) || Object.values(titleDrafts).some(value => value.trim()) ||
     Object.values(noteDrafts).some(value => value.trim()) || Object.values(localPackageTaskDrafts).some(value => value.trim()) ||
     Object.values(delegationFormDrafts).some(value => value.message.trim() || value.budgetLimitInput.trim() || value.parentBudgetLimitInput.trim() || value.continueWhileDeviceOffline);
-  usePendingSaveNavigation(pendingCreation !== null || pending !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0 || runnerDrafts.size > 0);
+  usePendingSaveNavigation(Boolean(gameInput.source.trim() || gameInput.instruction.trim()) || pendingCreation !== null || pending !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0 || runnerDrafts.size > 0);
   const ownsCurrentInput = () => Boolean(ownerScope && ownerScope === currentOwner.current);
+  function invalidateGameDraft(clearTitle = true) {
+    gameDraftEpoch.current++; gamePrepareFlight.current = false;
+    const previous = gameDraftRef.current;
+    gameDraftRef.current = null; setGameDraft(null); setGameDraftError(''); setGamePreparing(false);
+    if (clearTitle && previous) setTitle(current => current === previous.title ? '' : current);
+  }
+  function editGameInput(patch: Partial<typeof gameInput>) {
+    if (!ownsCurrentInput() || locked || gameInput !== gameInputRef.current) return;
+    invalidateGameDraft();
+    gameInputRef.current = { ...gameInputRef.current, ...patch }; setGameInput(gameInputRef.current);
+  }
+  async function prepareGameDraft() {
+    if (!gameMounted.current || !ownsCurrentInput() || locked || gamePrepareFlight.current ||
+      gameInput !== gameInputRef.current || creation.current) return;
+    const epoch = gameDraftEpoch.current, owner = ownerScope!, source = gameInput;
+    const current = () => gameMounted.current && epoch === gameDraftEpoch.current &&
+      currentOwner.current === owner && source === gameInputRef.current;
+    gamePrepareFlight.current = true; setGamePreparing(true); setGameDraftError('');
+    try {
+      const { prepareGameWorkDraft } = await import('@/lib/game-work-draft');
+      if (!current()) return;
+      const draft = await prepareGameWorkDraft(source.source, source.instruction, owner);
+      if (!current()) return;
+      gameDraftRef.current = draft; setGameDraft(draft); setTitle(draft.title); setTemplateId(draft.templateId);
+    } catch {
+      if (current()) setGameDraftError('Gameの結果と依頼を確認してください。まだ仕事は保存していません。');
+    } finally { if (current()) { gamePrepareFlight.current = false; setGamePreparing(false); } }
+  }
   function discardPrivateDraft() {
-    if (!ownsCurrentInput() || !currentTitle() || !currentTemplate() || !currentNote() || !currentLocalPackageTask() ||
+    if (gameInput !== gameInputRef.current || !ownsCurrentInput() || !currentTitle() || !currentTemplate() || !currentNote() || !currentLocalPackageTask() ||
       !currentDelegationForm() || !currentQuote() || !currentQuoteConsent() || busy || delegationBusy ||
       createInFlight.current || creation.current || updateInFlight.current || pendingUpdate.current || delegationSubmission.current[ownerScope!]?.uncertain) return;
+    invalidateGameDraft(false); gameInputRef.current = { source: '', instruction: '' }; setGameInput(gameInputRef.current);
     setTitle(''); setTemplateId('article'); setNote(''); setLocalPackageTask('');
     setDelegationForm((current) => ({ ...current, message: '', budgetLimitInput: '', budgetLimitMinor: 0,
       parentBudgetLimitInput: '', parentBudgetLimitMinor: 0, continueWhileDeviceOffline: false }));
@@ -879,13 +922,16 @@ export default function Workbench({
     setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
   }, []);
   async function create() {
-    if (createInFlight.current || updateInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
+    if ((!creation.current && (gameDraft !== gameDraftRef.current || gameInput !== gameInputRef.current)) || gamePrepareFlight.current || createInFlight.current || updateInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
     if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
     createInFlight.current = true;
     listGeneration.current++; setLoading(false);
     setBusy(true);
     setError('');
-    const operation = creation.current ?? { ownerScope: ownerScope!, id: crypto.randomUUID(), title: title.trim(), templateId };
+    const draft = gameDraftRef.current;
+    const operation: Creation = creation.current ?? { ownerScope: ownerScope!, id: crypto.randomUUID(), title: title.trim(), templateId,
+      ...(draft && draft.ownerScope === ownerScope && draft.title === title.trim() && draft.templateId === templateId
+        ? { plan: { ...draft.plan } } : {}) };
     creation.current = operation;
     setPendingCreation(operation);
     try {
@@ -897,15 +943,17 @@ export default function Workbench({
       if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
       if (ownerStatus === 'changed')
         throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
-      const input = { id: operation.id, title: operation.title, templateId: operation.templateId };
+      const input = { id: operation.id, title: operation.title, templateId: operation.templateId, ...(operation.plan ? { plan: operation.plan } : {}) };
       const job = readWorkJobResponse(await request<unknown>('POST', input, operation.ownerScope));
-      if (job.id !== input.id || job.title !== input.title || job.templateId !== input.templateId)
+      if (job.id !== input.id || job.title !== input.title || job.templateId !== input.templateId ||
+          (operation.plan && (job.plan.schemaVersion !== operation.plan.schemaVersion || job.plan.objective !== operation.plan.objective)))
         throw new Error('保存結果を確認できません。同じ作成内容で結果を確認してください。');
       accept(job);
       selectJob(job.id, operation.ownerScope);
       setRunnerStep(null);
       setNote('', operation.ownerScope);
       setTitle('', operation.ownerScope);
+      invalidateGameDraft(false); gameInputRef.current = { source: '', instruction: '' }; setGameInput(gameInputRef.current);
       creation.current = null;
       setPendingCreation(null);
     } catch (e) {
@@ -1617,13 +1665,29 @@ export default function Workbench({
           </section>
         )}
         <section className="work-create" aria-label="新しい仕事">
+          <details className="work-notice" aria-label="Gameから仕事の下書き">
+            <summary>Gameの結果から仕事の下書きを作る</summary>
+            <p>Gameからの申告を未検証の資料として使います。取り込みだけでは保存・実行・完了・費用の承認をしません。</p>
+            <label htmlFor="game-work-source">Gameの結果（JSON）<Textarea id="game-work-source" aria-label="Game結果JSON" maxLength={16000} value={gameInput.source} disabled={!ready || locked}
+              onChange={(event) => editGameInput({ source: event.target.value })} /></label>
+            <label htmlFor="game-work-instruction">この結果から依頼したいこと<Textarea id="game-work-instruction" aria-label="Gameからの依頼" maxLength={400} value={gameInput.instruction} disabled={!ready || locked}
+              onChange={(event) => editGameInput({ instruction: event.target.value })} /></label>
+            <button type="button" disabled={!ready || locked || gamePreparing || !gameInput.source.trim() || !gameInput.instruction.trim()}
+              onClick={() => void prepareGameDraft()}>{gamePreparing ? '下書きを確認中…' : '仕事の下書きに入れる'}</button>
+            {gameDraftError && <p role="alert">{gameDraftError}</p>}
+            {gameDraft && gameDraft.ownerScope === ownerScope && <div aria-label="Game下書きの確認">
+              <p>保存版の申告 {gameDraft.sourceRevision}・入力SHA256 {gameDraft.sourceSha256}</p>
+              <p>{gameDraft.plan.objective}</p>
+              <p>内容を確認してから「仕事を作成」を押してください。Gameの結果は仕事の完了や実行許可ではありません。</p>
+            </div>}
+          </details>
           <label>
             仕事の名前
             <input
               value={title}
               maxLength={120}
               disabled={locked || !ownerScope}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => { if (!ownsCurrentInput() || locked) return; invalidateGameDraft(false); setTitle(e.target.value); }}
               placeholder="例: 自動化についての記事"
             />
           </label>
@@ -1632,7 +1696,7 @@ export default function Workbench({
             <Select
               value={templateId}
               onValueChange={(value) => {
-                if (value) setTemplateId(value);
+                if (value && ownsCurrentInput() && !locked) { invalidateGameDraft(false); setTemplateId(value); }
               }}
               disabled={locked}
             >
@@ -1656,7 +1720,7 @@ export default function Workbench({
           </label>
           <button
             className="work-primary"
-            disabled={!ready || loading || locked || !title.trim()}
+            disabled={!ready || loading || locked || gamePreparing || !title.trim()}
             onClick={() => void create()}
           >
             <Plus size={17} /> 仕事を作成

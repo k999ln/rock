@@ -805,6 +805,28 @@
       "newDeviceOperations": 0,
       "additionalInference": 0,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "GAME_WORK_DRAFT_CANDIDATE",
+      "units": [
+        "GAME-02"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Nonfinancial untrusted Game report to transient editable draft, explicit existing owner-checked WorkJob create and same-request unknown recovery; no reverse bridge/GX authority",
+      "tasks": [
+        "AI06",
+        "GM01"
+      ],
+      "contextTask": "DX01",
+      "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+      "sourceIndependentReview": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+      "hostFullVerifyExitCode": 0,
+      "mainAdoptionAtCapture": "pending",
+      "wholeUnitAccepted": false,
+      "financialExchangeAccepted": false,
+      "realProviderAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

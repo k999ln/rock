@@ -1,0 +1,51 @@
+{
+  "schema": "rockstaros.game-work-draft-portable-root-ui/1",
+  "originalRootUiSha256": "ec031fbe848998aa5ac4511599f3a0919b77bee1f78f9eb50eb12968afd86f42",
+  "capturedStatusIsHistorical": true,
+  "independentSourceReviewStatus": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+  "rawArtifactsPublished": false,
+  "rawArtifactCount": 12,
+  "originalReceiptHashQualification": "candidateSourceHashes primary receipt refers to immutable original78376; portable primary receipt has a separate hash.",
+  "recordedAt": "2026-10-25T11:16:09.304925+00:00",
+  "status": "PASS_SCOPED_FUNCTIONAL_REACT_UI_PENDING_INDEPENDENT_SOURCE_REVIEW",
+  "candidateSourceHashes": {
+    "lib/game-work-draft.ts": "1ed31cb398d571ed11708959ab7396af2daa8392c784b362b9a69e2acc32e3a6",
+    "components/workbench.tsx": "2bd1c749e0a1106a272298b845734c2197f1643f24a2aa74e72958fada65fcdc",
+    "tests/game-work-draft.test.mjs": "52e53b8789fac9fb46621a485f96104a02ce219486166db9898ac2f2bfc9bf21",
+    "tests/game-work-draft-ui.test.mjs": "9e48f1e19eccbb26adae1b104b8b555fc24fe387768bba4e30c973ef7b2502dd",
+    "docs/evidence/development-execution/game-work-draft.json": "78376b9adb2a3e0097acb4c7b5ab37d6ed92224053d6196c789e2d76d87bc668"
+  },
+  "fixtureHelperHashes": {
+    "index.html": "b66021b362f25c5d7d146381cfd463cc35262fc9d8ae253b6a8858ab383e7407",
+    "sample.mjs": "4e66d01bf86d910c62ff59bd18ef5a214535bbab322512a5ab4b200092cf51be",
+    "app.css": "ae7ee25976e4e2be4daaf35d07ceb4b8cc884ee10dfe0fe26c48e708313ff748",
+    "serve.py": "f5df7e5154195f20d5955063e768092d0b48ea7218009cde897cc12204da6c5c",
+    "build.mjs": "f3de720249bcbcb263a9010eb1b3fcb8fd7abc1b3feff1cb0ba97f6e078848e6",
+    "app.js": "8bac43332a96b21920968d9909ef3508926078d1f23c3dd82d8e0f20896309bf",
+    "sample-report.json": "cd37de1577a5ed151507ab88bb5009f67d144e6cc9480edc28768a517d3f6d3a"
+  },
+  "sourceAndHelperModifiedByRoot": false,
+  "actualUi": "Chrome1512 actual Workbench and real React; local synthetic fetch and mocked unrelated children; fixture lacks full product styles; no production layout/auth/storage acceptance.",
+  "accepted": [
+    "Explicit import shows unverified claimed revision/input hash/objective; no visible job before explicit create.",
+    "Committed synthetic response loss shows pending original request. Explicit connection read then same-content confirmation yields one visible job with original objective, steps0/2 and not executed.",
+    "Editing title removes Game draft confirmation.",
+    "After server-context readback of fixture ownerB, raw Game input/instruction are empty and ownerA job hidden; returning ownerA and readback preserves one saved job without restoring Game raw draft.",
+    "Forged authenticatedOwnerStorageAccepted=true is refused in actual UI.",
+    "Explicit discard clears raw input/instruction/title/draft and disables create; existing job count remains1."
+  ],
+  "qualification": [
+    "Fixture owner switch dispatches an event that actual Workbench does not consume. Owner change is accepted only after existing explicit reload obtains new scope; no immediate owner-event or native sign-in acceptance.",
+    "Browser helper does not inspect window.fixture application memory. Exact same-ID/plan replay, zero transport counts and cross-owner server rejection remain established separately by real route/SQLite/hook tests.",
+    "Browser fixture stores jobs in page RAM; durable persistence is not claimed from this UI.",
+    "Initial Playwright button locator did not match HTML summary; native AX expansion succeeded.",
+    "Initial localhost bind failed sandbox EPERM; authorized loopback-only process then started successfully."
+  ],
+  "operations": {
+    "realProviderCalls": 0,
+    "realCharges": 0,
+    "physicalActions": 0,
+    "browserTabClosed": true,
+    "serverStopRequested": true
+  }
+}

@@ -2382,7 +2382,9 @@
         "DX01-SDK"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "GAME_WORK_DRAFT_CANDIDATE"
+      ]
     },
     {
       "id": "MATERIAL-01",

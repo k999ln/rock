@@ -10448,5 +10448,35 @@
     "P02Complete": false,
     "realFinancialAccepted": false,
     "publicDeployment": false
+  },
+  "gameWorkDraftMainAdoption": {
+    "taskIds": [
+      "AI06",
+      "GM01"
+    ],
+    "primaryWorkstream": "08-game-market-fund",
+    "responsibility": "ROCK",
+    "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "sourceIndependentReview": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+    "rootSyntheticFunctionalUiScopedPass": true,
+    "latestRootContractPreflightPass": 56,
+    "wholeGAME02Accepted": false,
+    "realGameAccepted": false,
+    "realProviderOrFinancialAccepted": false,
+    "publicDeployment": false,
+    "stage": "independent_source_and_bounded_UI_pass_standard_private_and_host_full_verify_pass",
+    "hostFullVerify": {
+      "tests": 3010,
+      "pass": 3007,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0
+    },
+    "ciHistoricalFixturePreparation": {
+      "commit": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+      "source4Unchanged": true,
+      "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
+    }
   }
 }

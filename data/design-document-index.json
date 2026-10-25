@@ -3218,5 +3218,24 @@
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
     "mainMerged": true,
     "currentMergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json"
+  },
+  "gameWorkDraft": {
+    "authority": "docs/game-api-contract-draft.md#game-work-draft",
+    "osDesign": "docs/rockstaros-complete-design.md#game-work-draft",
+    "toolDesign": "docs/sky-tools-complete-design.md#game-work-draft",
+    "implementation": [
+      "lib/game-work-draft.ts",
+      "components/workbench.tsx"
+    ],
+    "tests": [
+      "tests/game-work-draft.test.mjs",
+      "tests/game-work-draft-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/game-work-draft-review-summary.json",
+    "existingWorkflowApiStoreUnchanged": true,
+    "wholeGAME02Accepted": false,
+    "financialExchange": false,
+    "publicDeployment": false
   }
 }
