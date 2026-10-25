@@ -639,7 +639,9 @@
         "DEVICE-INSTALL"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "PIXEL_CACHE_MAIN_CANDIDATE"
+      ]
     },
     {
       "id": "OS-02",

@@ -6,6 +6,7 @@ import { homedir, userInfo } from 'node:os';
 import { join } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { createLinuxLocalManager } from '../../scripts/sky-linux-local-runtime.mjs';
+import { pixelUpdateGuard } from './pixel-update-guard.mjs';
 import { isLocalRuntimeHost, isLocalRuntimeRequest } from '../../lib/sky-private-loopback.mjs';
 
 if (process.platform !== 'linux' || process.arch !== 'arm64') throw new Error('Pixel内Linuxで起動してください。');
@@ -133,10 +134,15 @@ function execute(args, { input, timeout = 240000, signal, onProgress } = {}) {
   return { child, promise };
 }
 const manager = await createLinuxLocalManager({ root, stateDir: join(base, 'state'), environment: {
+  assertExecutionAllowed: pixelUpdateGuard(base),
   id: 'pixel-linux', spawn: execute, bootId: (await readFile('/proc/sys/kernel/random/boot_id', 'utf8')).trim(),
   phaseLabels: { stopped: 'AIの実行を停止しました。成果とSkyの画面は残っています' },
+  async inspectCached(lock) {
+    const raw = await execute(['python3', join(root, 'toolkits/sky-linux-local/prepare-pixel.py'), '--cache-inventory'], {input: JSON.stringify(lock.model), timeout: 120000}).promise;
+    return JSON.parse(raw.split('\n').at(-1));
+  },
   async prepare(lock, worker, options) {
-    const raw = await execute(['python3', join(root, 'toolkits/sky-linux-local/prepare-pixel.py'), '--progress'], { ...options, input: JSON.stringify(lock.model), timeout: 900000 }).promise;
+    const raw = await execute(['python3', join(root, 'toolkits/sky-linux-local/prepare-pixel.py'), options.cacheOnly === true ? '--cache-only' : '--progress'], { ...options, input: JSON.stringify(lock.model), timeout: 900000 }).promise;
     const result = JSON.parse(raw.split('\n').at(-1));
     if (result.error) throw new Error(result.error);
     return result;

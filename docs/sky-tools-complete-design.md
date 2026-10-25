@@ -1577,6 +1577,11 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 既存Pro原本archiveの利用導線。目的・入力/出力・状態・保存・失敗/復旧・別同意・責任・合格条件・未決定の決め方は[OS詳細](rockstaros-complete-design.md#pro-original-archive-entry)を共通契約とする。通常の固定linkだけであり、新Tool/API/権限は追加しない。元browser→local file exportと、sign in後の手動再選択→本人account確認→別同意→既存暗号化archive全bytes/SHA読戻しを分ける。local表示/fixtureは実account保存・配備・native移行を意味しない。[証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)。
 
 
+<a id="pixel-cache-only-main-port"></a>
+## Pixel cache-only準備/更新fence
+
+既存ローカルruntimeの保守処理で、新catalog Tool・Broker権限を追加しない。目的、責任、入出力、状態/保存、失敗/復旧、明示承認、合格条件と未決定gateは[OS詳細](rockstaros-complete-design.md#pixel-cache-only-main-port)を共通契約とする。原tupleのdurable台帳、同ID読戻し、unknown無再送と固定payload更新fenceを保持し、cache準備を推論や取得へ昇格させない。host/CI/package/physicalを別々に受け入れる。[証拠](evidence/development-execution/pixel-cache-main-adoption.json)。
+
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
@@ -1592,3 +1597,5 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ## Eve見積の単価単位表示
 
 目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。
+
+PR209のupdate metadata読込は[OS詳細の競合修正](rockstaros-complete-design.md#pixel-update-guard-toctou-fix)に従う。同FDの限定読込と全metadataの置換検査を追加し、旧headのHigh指摘を履歴に残す。実機・推論受入は増やさない。

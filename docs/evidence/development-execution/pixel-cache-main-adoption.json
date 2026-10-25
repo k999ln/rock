@@ -1,0 +1,1140 @@
+{
+  "schema": "rockstaros.pixel-cache-main.adoption/1",
+  "recordedAt": "2026-10-25T07:12:04.924941+00:00",
+  "status": "GUARD_CODEQL_REPAIR_NEW_HEAD_CI_PENDING",
+  "unit": "OS-01-CACHE-BACKEND-MAIN",
+  "units": [
+    "OS-01"
+  ],
+  "existingTaskIds": [
+    "OS10",
+    "P02"
+  ],
+  "primaryWorkstream": "10-git-ci-operations / ROCK",
+  "sourceWorkstream": "07-android-device-local-ai / ROCK",
+  "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "sourceBase": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+  "sourceOwnedPathsUnchangedBetweenBases": true,
+  "sourceNine": [
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+      "bytes": 36436,
+      "baseSha256": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+      "reusedRootSourceSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-server.mjs",
+      "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+      "bytes": 11893,
+      "baseSha256": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+      "reusedRootSourceSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    },
+    {
+      "path": "toolkits/sky-linux-local/prepare-pixel.py",
+      "sha256": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+      "bytes": 15244,
+      "baseSha256": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+      "reusedRootSourceSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+    },
+    {
+      "path": "tests/pixel-cached-prepare.test.mjs",
+      "sha256": "6a53e882f91a3ec3c6e84714b1cc5d1f1902aaca06cdd68da88319c698509bdf",
+      "bytes": 16163,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+    },
+    {
+      "path": "tests/test_pixel_cached_prepare.py",
+      "sha256": "4444e49b6dccd7ba1a21e2f2865916fb76af0aaaff33af0526b1167d4de1ae9e",
+      "bytes": 8121,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "sha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594",
+      "bytes": 3156,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "9dc2419510e5717809f120019687fc2894503298d938d0970070e9feb5a89734"
+    },
+    {
+      "path": "toolkits/sky-linux-local/update-pixel.py",
+      "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+      "bytes": 18562,
+      "baseSha256": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+      "reusedRootSourceSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50"
+    },
+    {
+      "path": "tests/pixel-update-guard.test.mjs",
+      "sha256": "ad229a3f265dc95dcda548612de9250f0ed063586bb32500c882ef696c3669b8",
+      "bytes": 7750,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "47e7c211ad4c1ee4ed79ca13565871c16f3dc3a06ec1289386c7e0bd5c4b349a"
+    },
+    {
+      "path": "tests/test_pixel_guest_update.py",
+      "sha256": "fb6c16779817d5fc76d967e15f48d9a0b70810ef975739d68b904c4abafccc24",
+      "bytes": 22745,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
+    }
+  ],
+  "sourceAdaptation": "User-authorized CodeQL repair: guard and guard tests changed after original source review; other seven source/test hashes unchanged. Original nine retained in sourceNineBeforeGuardFix.",
+  "portableReceipt": {
+    "path": "docs/evidence/development-execution/pixel-cache-main-port.json",
+    "original": "2608dada9c27a9041bd56670d7647cc73cd103dc585835a3ef6b1a0aabf69f50",
+    "portable": "18701ae3ed98eb8f370b75c19cbd31662a4b96ba1a9974e645ada7d5b39e1e52",
+    "identical": false,
+    "operatorReferenceStringsAdapted": 19,
+    "scope": "Only absolute operator/tmp reference strings made logical. Runtime/test bytes and recorded source hashes/results unchanged."
+  },
+  "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
+  "sourceIndependentReviewSha256": "c9c79543b40b990a912a35f044eb37c4878365620b4c3afdbd30d065fb1ea63e",
+  "protectedFiles": [
+    {
+      "path": "app/api/account/pro-import/route.ts",
+      "sha256": "e02afb5f95b72782b0c4d33fdf0585cc5e865abcee5d7c833bea1d45028c824e"
+    },
+    {
+      "path": "components/sky-linux-service.tsx",
+      "sha256": "c2a4489f244af3d3a36b20baa404049665c5229c081423a47ce778f96673858a"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0013_sky_provider_connections.sql",
+      "sha256": "23d7dd65ad0312cda81e14dec4e33a6080d147dd5a058d2719fba7c3559839aa"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0014_sparkling_chimera.sql",
+      "sha256": "c1a60c71fe6abc17a8bf816b89ccbfb7609aef86286d913f4b1fd7e547bc64f9"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0015_oval_the_twelve.sql",
+      "sha256": "1fe8549052f694e4e6d2e964f4449f60dc8020f0ae9d1c42ba678a82c3dc60f5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0016_red_crusher_hogan.sql",
+      "sha256": "ee4351c89a0a48b3ff1a2de7bdfd4504ff82c1b7b4d167f2e37248b56c763ec9"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0017_high_krista_starr.sql",
+      "sha256": "5bb272de10ff801f9cf28ea86ad2e4be5abc82c2ad2981b77852b5f9c9f3cb09"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
+      "sha256": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0019_sky_a2a_delegations.sql",
+      "sha256": "b3b448c4c8df5fcb309c56ef8a35e709f3a7f5a2f5e47394acd1738eeff32add"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0020_a2a_delegation_events.sql",
+      "sha256": "8fb350013091cc26a5b59bbfb4626cf987f043f1661b8b1768b288af11995bad"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0021_a2a_delegation_inputs.sql",
+      "sha256": "a24a737720bdf44b7d1b50d96ee2087a0e202cec9c98a6520ed020f1d3c3f1f8"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0022_a2a_delegation_artifacts.sql",
+      "sha256": "feef54b76a08f89dad5fe7fe973714e5590a1812b968aa3fdfa26d8e0f334769"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0023_a2a_sky_agent_connections.sql",
+      "sha256": "b3375fbb54be7947c622ebcf03068bec2f8163be27855602b12fdb093ebbd7c1"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0024_a2a_broker_authorizations.sql",
+      "sha256": "11872c95da26391ec35e295d34c564377e13730bf1c93dcfb5bc135dda1226bd"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0025_a2a_shared_budget_reservations.sql",
+      "sha256": "99ab92eb2feffac6f273f039465071af8d61d4e6fa89a313a24a1e78c6802627"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0026_a2a_usage_receipts.sql",
+      "sha256": "8a6efd2d6e08d04d092439bf4851570baa551b4206aca3ca7d9a53feb14f16d5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0027_esim_provider_webhook_inbox.sql",
+      "sha256": "58830bff9bd22847b3fd2727a9298c263e27f88d1f7c2feb8a041a3c6eb035c2"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0028_esim_provider_webhook_inbox.sql",
+      "sha256": "76843c70516bba2959120576a2cbf955779f0e84f8a69f46de95577d6e812612"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0029_esim_profile_order_binding.sql",
+      "sha256": "226c2dfa824390b6b708acf7db0f082fd460d7b75a324c81d002ac165012082c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0030_esim_provider_order_once.sql",
+      "sha256": "0b0d1247c81faf3b6b80a5ae966bd56ac58de7d2018e3c0d778cf4e351785be3"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0031_esim_install_material_delivery.sql",
+      "sha256": "c5628a6eb338ec5f8ca6f49aa7f5daa2a25a310b73f407e1ca3d81d49599b61d"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0032_esim_order_pricing_snapshot.sql",
+      "sha256": "ff4973b282264863eb97c550e6174e9a89cc37178c517a758d782edb4fae011a"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0033_a2a_offline_continuation_consent.sql",
+      "sha256": "d111dbc202f597b6e87cd5b3d611368fa454501bfee0e66aed6bbd796d4ea444"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0034_esim_install_receipts.sql",
+      "sha256": "3e632b0edba45e6857ccab6de773de3e6b9d32e72037c186fbb9da9eaa7344fc"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0035_esim_device_gateway_entitlements.sql",
+      "sha256": "298a3c641b5ebcc862dc4156394d1f2df635489609b5febe2377b98a858ea54b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0036_nostalgic_miek.sql",
+      "sha256": "03e90152127cd99de4694bab172e68a44924145c4c62d95a6c8562377370d62c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0037_csv_trial_payments.sql",
+      "sha256": "6626fef8914586f42b228e4805b42575343afb085b2ae33c0cd7f9eb2eb33af7"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0038_android_attested_gateway_keys.sql",
+      "sha256": "cbeb908044b2eb4b6f506d2927367173897e5618b3eb7f6816025907646730a7"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0039_rockstar_service_entitlements.sql",
+      "sha256": "73b9b927589d97eb6ed15378e2d511568fda0eaf5945997face768f0a75d06e7"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0040_rockstar_entitlement_events.sql",
+      "sha256": "a54e5a511793e53582653f1a1d90db9efe20705510659cf6c58f3c02b64eb14c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0041_a2a_price_quotes.sql",
+      "sha256": "2269c035155ef1fb707abf58a423f4695fb24ea363996c8e54308a9504804f5a"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0042_remote_ai_rate_cards.sql",
+      "sha256": "ab47f2da69fbe15fcf44df55572a74df20f41217d921d5f9d20aee3d5d184015"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0043_a2a_delegation_fanout_limits.sql",
+      "sha256": "2a7fe251949a7859f93f94fc048563bbd4c7ce91efe839c9849596a367418c1a"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0044_a2a_live_usage_snapshots.sql",
+      "sha256": "aa22641628a0bbc356d7f4ae1e9008f46591f4fde0fd5790142c759b7a3b3c96"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0045_rockstar_device_sessions.sql",
+      "sha256": "8bcb2497d8dbc5f05194a6135edaac3acfea14591d6575707f31dc43ce3c91e9"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0046_remote_ai_text_executions.sql",
+      "sha256": "022ad7625c7269874d195cc323a986c3ffb168c87237e84822e97e79a2adb219"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0047_remote_ai_text_durable_inputs.sql",
+      "sha256": "1b41984221b595b7282881bdd876f0b5f420f0eecc540d317ff9d3ea0105a34b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0048_rockstar_a2a_broker_enrollment.sql",
+      "sha256": "2706c71ae998787c434d37550308f507ab427c5b6bbf1341112b97a5058462f5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0049_a2a_price_quote_consent_events.sql",
+      "sha256": "4af15789d46c5a14791f9de8b022eab8cfe684d8089031b131dc8d582395600e"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0050_rockstar_entitlement_purchase_once.sql",
+      "sha256": "65d10e77038a70de296d105c03aa0a07f437819d6a06224cf319eb9a98dea4ff"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0051_remote_ai_text_live_estimates.sql",
+      "sha256": "8ed0987699467c276d33da8dd5bdfe7c6521fde8b118cf4d09c51949b92b75d5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0052_rockstar_entitlement_issuer_deliveries.sql",
+      "sha256": "9c59f570b5ff85ee71283a62cbcce6e90da87e43df2c0fbac1027d5a80e33d47"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0053_rockstar_entitlement_delivery_key_ids.sql",
+      "sha256": "c6e5748d407a659781753e6c3f7deb3b67d7c850a8115ecb504c6f86a8aff31b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0054_rockstar_entitlement_issuer_rate_limits.sql",
+      "sha256": "3252a601000575e2b0bd716408829f49019daf65bb934d0714ec5eb2171b216e"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0055_sky_package_runtime_bindings.sql",
+      "sha256": "3326f8bdb4474e92bac0b486f33874abd76910cafb8e68a990a21e4175024332"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0056_a2a_package_runtime_binding_refs.sql",
+      "sha256": "d7903f3d811a124ef22f78f50e98dbe5ec3d704a45952e1dcf6a99cfbaff28d9"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0057_a2a_parent_sequence.sql",
+      "sha256": "b7d8a4fb63e5ead7452a8c6c13151ff58c1da0df9217cd3142f4066b037e84c3"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0058_campus_layer.sql",
+      "sha256": "385902fb4e8b56ae0759484025bf4cb92bdc6e4216493ec2a117ad1f86b21404"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0059_sky_library.sql",
+      "sha256": "7c5ba6a6f9400d2538286292922ebe07e5e81d17fa3b6cbd63922782485f8c47"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0060_sky_code_timeline.sql",
+      "sha256": "472af38e2deabd549e49adf44d6edf5e9700921668a60e1efd6e74f744965daf"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0061_esim_cloud_access_keys.sql",
+      "sha256": "a004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0062_sky_provider_revision.sql",
+      "sha256": "30325a448fffef3b8c19c042c0ce1d5fff999bf65a7919d8bc91bc144344975d"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/0063_talented_ulik.sql",
+      "sha256": "ed7c6c5203f196a387647a3dfc1cd40f7b8a63209c7eece598b43bbf4a1e071d"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/README.md",
+      "sha256": "9e8fcfd90cb78201ef00989a3fd704eb688075169705d9a8c7363435969f5e36"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0000_snapshot.json",
+      "sha256": "2542ac8c5658f2f86d59ace7d57c83fb4b9fb31980e2b3a38a2a2e1a0b6d53a5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0001_snapshot.json",
+      "sha256": "5610deed4f87b3cefa0b78ddb87d5a9a3e68536639bdf25dea0f24f1477f8dd4"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0002_snapshot.json",
+      "sha256": "13b20473333fb38ffa3025c704932f3379e9003580964cac1d01a04d19b6e194"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0003_snapshot.json",
+      "sha256": "e9895d2211c0188e931d165e666e554d132a28fa156818dd579f76bc3f81567b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0004_snapshot.json",
+      "sha256": "eb53aaf95d193a87a6dce444e6c42bd34fe3707f2ec4f35f3843d979edfc4496"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0005_snapshot.json",
+      "sha256": "10513f279bcb537f541852376f34202c63fa106fa677121bf0e3751bc07c144e"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0006_snapshot.json",
+      "sha256": "edbb0659427b40492f09a4415dd3457af0cfbce445d4794879c575068d372615"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0007_snapshot.json",
+      "sha256": "737709c1d2d7a76a7be520267e0e25a0ffe8cd03bdaeca3d719d56c8e85a3ec6"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0008_snapshot.json",
+      "sha256": "c146a19a8c9793f5db390f700b25a69f965e224e5db083149fbe6172a62435c8"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0009_snapshot.json",
+      "sha256": "67b1622a3ec54a58743f01287e51fefaabb2119b9b6a31920edb57363449e73e"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0010_snapshot.json",
+      "sha256": "0c5c474b7768ed478e4f5d101aed4b654c562505664a8e1cae3174091a8121a8"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0011_snapshot.json",
+      "sha256": "06b0f2b9679559d90c3df7d086f049cb2a2775ec2ca8d2172999de8e82369b4f"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0012_snapshot.json",
+      "sha256": "2ef9422f33a3b07375681292defeddd52f053233a3013d3b93d70e1456065b8a"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0013_snapshot.json",
+      "sha256": "cf1d8574ca835feae57195f5df3c5bcb7155866c2c5816cd32ee739186751d40"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0014_snapshot.json",
+      "sha256": "4f2f96d0ea32601a64fb33e4a9d450a5a18555370d81de65ab1660b20e05fc31"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0015_snapshot.json",
+      "sha256": "60de761cf326fc0a3fe780103330b986fbd734a44d40fe5991028e16f02d545c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0016_snapshot.json",
+      "sha256": "f2b0ef7869bfc6a7daa27cbcd36a380c941e30d3cf0b17b5e9e4e463df363cc4"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0017_snapshot.json",
+      "sha256": "ca3dbcb01e58faf1ab87ea7c0f24582fbb744ad238e45d15435a023c6fced328"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0018_snapshot.json",
+      "sha256": "ea08009511534cbad77c945604ada3e45f1723941117e63d30a4ba8e3f69ee10"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0019_snapshot.json",
+      "sha256": "6a6577a5191f1de66bc77d84605e460a7e2f734d48fafe967b672663113a3da7"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0020_snapshot.json",
+      "sha256": "b669cb9bb42d5ee327f5eb2e06189be894e2cb690c962ee009e79cdc6cb684d3"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0021_snapshot.json",
+      "sha256": "7dfe71383f107dd40d4f688fbaaaac5282b48f78e63c7721caa4e973bf13a4cb"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0022_snapshot.json",
+      "sha256": "d79d0f5f80902313d3ffb52e2cb074ec3e3c47cc38afa2cb2a5a014a58ad53ce"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0023_snapshot.json",
+      "sha256": "e1a31e39c49e4eb64b8a62693790a15143de67e9d9db30c55c2774ae3926c8d5"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0024_snapshot.json",
+      "sha256": "8149f7f949677d8d53b9010f29d48c36a727bf6bbdefa12c94a7c8ab4670415b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0025_snapshot.json",
+      "sha256": "7cc3309a1056cbab0960d189ad956285a38d1b118490fd5b54b01b750b85cd9b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0026_snapshot.json",
+      "sha256": "0fad56001205faaa70ecbe8e8eeb2cfa63b634237f9134a72167a5480428d2be"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0027_snapshot.json",
+      "sha256": "0ec3d00abfd01649bbbb35300add050246ee3df14285b6e04d7fa01408cb5962"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0028_snapshot.json",
+      "sha256": "b5a29a112acb10a7ff883f94de6909e672b98317eacba3a0e0918fc351b2dc04"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0029_snapshot.json",
+      "sha256": "98a326c1ca897c853a8269ff1410103bd0c687ac6e2f4cd5818372a14c0ff307"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0030_snapshot.json",
+      "sha256": "ce55c83af05e20acd4b03dcae3d19a0d6feceb7be3eb808ee713a6a743c0d330"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0031_snapshot.json",
+      "sha256": "c2992b0a71e1b8819c4562a320bb1019033bfa3b547cd5d181bc96dc0aa11c85"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0032_snapshot.json",
+      "sha256": "e271e7b8c313950608f39daa9c0ba4a20a386b4710d5237949d6fcd0de692641"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0033_snapshot.json",
+      "sha256": "aebfb30a007b15ef9cbe6976bc25eefba87bb067961837fd5089fd165ce0bbc3"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0034_snapshot.json",
+      "sha256": "178e2ac7b3394fae5d93495882fce7f2a7ee359778209c00c147070272cafbf8"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0035_snapshot.json",
+      "sha256": "9d8cc917ba2a403e5977db91294afad3758e0e4795f4d1f141853e9dd6b2a69b"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0036_snapshot.json",
+      "sha256": "b9d9ffca0492a102fa12c969d9374c6f774124feb1268dd335e64a47070fa7cc"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0037_snapshot.json",
+      "sha256": "c9f6fff966970f9c5eca4a44a2674d0dd0b0b49bb5c12d07e17db5dee2426bcb"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0038_snapshot.json",
+      "sha256": "e0dcd9269d2f08020883bc2990f4631b2a3d9db34ecb90edf1cddf56a88db532"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0039_snapshot.json",
+      "sha256": "a6f9c30c61b201a4643a31a8e280a49cb93f2914a5df7305c2aa5a9ce55c5e84"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0040_snapshot.json",
+      "sha256": "da15f1b00b31664bc91ae041ab49d67bd358ae928e6a2abcd763287305fc699c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0045_snapshot.json",
+      "sha256": "b391dfd5bcc9b60c9c2657d9d8fad71b5fba89312757ef5c30a235bd5a398aad"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0046_snapshot.json",
+      "sha256": "62f8928bd77e966c502f1d8444b7da8ef4aec82e642aab1fc0ce399caf1a1a31"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0047_snapshot.json",
+      "sha256": "bba2665e16750b4e7c9877c7c28c0467e55bd3389f804deddf4d72c8a6b8a214"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0048_snapshot.json",
+      "sha256": "328dffa3c00ad1d77e8a90a3f7cde6d012b385979fb64bf74cef6b34d948289c"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0049_snapshot.json",
+      "sha256": "17e81a26fb231bbe059ed41ce66a441a67c0643460ef7e34dfd43ad6837a57f7"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0050_snapshot.json",
+      "sha256": "908bae865be6d99e9646c7c59602146776db20b76fe987bafea4d451f1dceaf2"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0051_snapshot.json",
+      "sha256": "b28b9b6a05301da8aed12eac30ed1b6ae9fcafc8171989605955af57b966a056"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0052_snapshot.json",
+      "sha256": "1af20689fa9b0b63bdd62c71cdbf67fb986b756823cbadda858f40c92f493fca"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0053_snapshot.json",
+      "sha256": "3691cfc74fd09d8194cdb7fd809ed2747b2243eef3a2bf61add3e69f5bb2e441"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0054_snapshot.json",
+      "sha256": "22729d29cfd53d012229a7c55353e79ef6ffbc4bab29a614a27cb270a0638909"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0055_snapshot.json",
+      "sha256": "2b3318600264b7b1ad4c953eec7e83d45047e9c620ad9be9adda31c7425c41fa"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0056_snapshot.json",
+      "sha256": "88aad1f87f95f447e0561d80aaede99ba4951a697f43d83bb049afec724dad76"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0057_snapshot.json",
+      "sha256": "45327a690b1bf501238868470ec83bf8913cc260ca0a510ef14625bfc826b22e"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0059_snapshot.json",
+      "sha256": "369c1c4325c20d05621eed400ec3f7f5046a958e0c4aacb7254a2bae975df82d"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0062_snapshot.json",
+      "sha256": "3d730de8d1d69b7210bf1a1caf3793fd94bb6ca510d6d43aa49d1d9d07b16ed4"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/0063_snapshot.json",
+      "sha256": "a3583d2eb0ff17a2a874ae2dd4207572f9f48f0fdf866a7f77dc18429dd3868d"
+    },
+    {
+      "path": "drizzle-legacy/post-site-bridge/meta/_journal.json",
+      "sha256": "8de6bccc8aa2b7abae2e1911c7369bd7ee316b2787e88fd2de3cd533ded3e971"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0000_previous_havok.sql",
+      "sha256": "7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0001_wealthy_shinko_yamashiro.sql",
+      "sha256": "dd7a0e05ff9d67b14f09c60addc4f27f689d68eead3d17102f31e898bb3218d9"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0002_operations_backend.sql",
+      "sha256": "83f1c3ced5eb396775926940fc73dc96e0fc9e2f3bb7991bd5a665b228e9d2eb"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0002_work_jobs.sql",
+      "sha256": "3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0004_union_bridge.sql",
+      "sha256": "e183bc5778f03886bcd03d0a1548121e06252acde6565769043c3b660dc151af"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0005_early_the_enforcers.sql",
+      "sha256": "711ed2bc635f5145be84fc953d06d9f2704a874d160275129842df9e4affd1b9"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0006_married_scream.sql",
+      "sha256": "6294d5c0f810962647d15bb739f9ca35d6914e3647f211c11381f5afd5a8ede4"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0007_yielding_giant_man.sql",
+      "sha256": "ceeb23872f9d88652a936f6f7f1a09d9f0f7dd096dc5ce191412374de22b8cc2"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0008_wooden_avengers.sql",
+      "sha256": "542c4e4356ec26b0afb8c55afb46341719ccce91f9c3c449422a7bad0165df70"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0009_sad_giant_girl.sql",
+      "sha256": "1f167394b9c8fe4fcff2c297c2058c6d1d697daf4cda07066ce4c227af2c91fc"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0010_gray_fat_cobra.sql",
+      "sha256": "3af98875ff3d2f07b2c5ae4e2d2badf91834c180647c5013fa3659eb575797af"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0011_overrated_skaar.sql",
+      "sha256": "0cbdb7330ccc5862e16ef35f211fa9a03338369a64a9aae19db1fc86044d9736"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/0012_marketplace_relation_guards.sql",
+      "sha256": "d0785fb3eb987e035197bae77853b562ad0de05de187bf0f35640872f695ca2e"
+    },
+    {
+      "path": "drizzle-legacy/pre-site-bridge/README.md",
+      "sha256": "9c6167c943b3aab661187d8bafd99679f800d9649a5cc1994efa0fe6a15a64c9"
+    },
+    {
+      "path": "drizzle-main/0020_main_legacy_columns.sql",
+      "sha256": "2d3ffd062e700158c145614e0e76d949ab0f1339f8f41e826c73196b85e9bf09"
+    },
+    {
+      "path": "drizzle-main/0021_sites_schema_convergence.sql",
+      "sha256": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+    },
+    {
+      "path": "drizzle-main/0022_sky_recurring_send_guard.sql",
+      "sha256": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33"
+    },
+    {
+      "path": "drizzle-main/0023_jennifer_schema_guard.sql",
+      "sha256": "a230ea4414b321daaa1d7d6156b172f82d431ba9e943bcf472d20f8b6fe6e0ea"
+    },
+    {
+      "path": "drizzle-main/0024_remote_ai_send_claims_recovery.sql",
+      "sha256": "a8a76b732f26d119fb88cac858aad40f4eda121795348594bac37f5226c1f0ea"
+    },
+    {
+      "path": "drizzle-main/0025_remote_ai_send_claims_watermark.sql",
+      "sha256": "e6fc8fa70c98de774a11554a0742e3f81f9edbaee57e7f44ba5f8ce0820ede44"
+    },
+    {
+      "path": "drizzle-main/0026_home_eve_linux_runtime.sql",
+      "sha256": "3725b8ae3094f8011e1b0e576f73a4aabb2321b11f09337c4db4901dd252f147"
+    },
+    {
+      "path": "drizzle-main/README.md",
+      "sha256": "3d80899e94dc7c6a3189fa4afc4eef46b36cf2744c0e9e981b992f0e95ba22cc"
+    },
+    {
+      "path": "drizzle-main/meta/_journal.json",
+      "sha256": "c7f50aa31bb983b7da386e72d1258de4c9ce6b3570bfa3c5a37cffe51ae798d2"
+    },
+    {
+      "path": "drizzle.config.ts",
+      "sha256": "0e179dcca3272080f3b4af06993b4b64ab96ae01d4e06aac273979486b9994d8"
+    },
+    {
+      "path": "drizzle/0013_sky_provider_connections.sql",
+      "sha256": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+    },
+    {
+      "path": "drizzle/0014_jennifer_execution_integrity.sql",
+      "sha256": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907"
+    },
+    {
+      "path": "drizzle/0015_jennifer_passkey_access.sql",
+      "sha256": "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c"
+    },
+    {
+      "path": "drizzle/0016_sky_monthly_sandbox.sql",
+      "sha256": "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78"
+    },
+    {
+      "path": "drizzle/0017_sky_cloud_monthly_test.sql",
+      "sha256": "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39"
+    },
+    {
+      "path": "drizzle/0018_sky_recurring_sandbox.sql",
+      "sha256": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6"
+    },
+    {
+      "path": "drizzle/0019_sky_hosted_monthly.sql",
+      "sha256": "9f244cd985e5583b324a5e9d155fd04bacdb1677aa877c03712a3ce436d29377"
+    },
+    {
+      "path": "drizzle/0020_sites_schema_convergence.sql",
+      "sha256": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+    },
+    {
+      "path": "drizzle/0021_sky_recurring_send_guard.sql",
+      "sha256": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33"
+    },
+    {
+      "path": "drizzle/0022_sky_agent_settings.sql",
+      "sha256": "ebb18d1923793903531b86d195fa0c4b321ec09aa375b2013f10b18e717065ef"
+    },
+    {
+      "path": "drizzle/0023_sky_optional_features.sql",
+      "sha256": "f525422dac987b47c0969d6a65fcb876f74dca35f6f4732157208a6877c3497d"
+    },
+    {
+      "path": "drizzle/0024_sky_hub_plugins.sql",
+      "sha256": "b3cfcbd70aa00a6a5625605a27cfed33dc80b2e126eaab8069da168af01c7474"
+    },
+    {
+      "path": "drizzle/0025_sky_x_feed_state.sql",
+      "sha256": "20ebf9f56f4304642f7a69b343e35b21f5f3044a8a3f68b024548105509c1fa7"
+    },
+    {
+      "path": "drizzle/0026_sky_communities.sql",
+      "sha256": "136084ea0d196dde5d751a49ef7099bdaa3e60a3c4bb01c06d39185a0f6207af"
+    },
+    {
+      "path": "drizzle/0027_community_os_keys.sql",
+      "sha256": "5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77"
+    },
+    {
+      "path": "drizzle/0028_sky_timeline_interactions.sql",
+      "sha256": "e4b6e10770f9fe57a501072e01ec39b4d18ac9eb21a00c4f314c39322ba316c2"
+    },
+    {
+      "path": "drizzle/0029_sky_x_account_oauth.sql",
+      "sha256": "9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6"
+    },
+    {
+      "path": "drizzle/0030_sky_linux_service.sql",
+      "sha256": "9b6585f4eba0f4e1547ccdf0ce897a8fd09024a2ea4c91ca3c2b8cb29383ef53"
+    },
+    {
+      "path": "drizzle/0031_rockstar_service_setup.sql",
+      "sha256": "f46dbf42d04b859855474367e9c9f20648c8fa23807d9115110309ca53854dd5"
+    },
+    {
+      "path": "drizzle/0032_eve_durable_history.sql",
+      "sha256": "b1f2ffa404f44629addcf26b3e6fe127d93b0f400719a4bbe4d18d45f2d57042"
+    },
+    {
+      "path": "drizzle/README.md",
+      "sha256": "a3a535de1f61f3ea50ba3f120498f4dd854778f3e191a40b922a4a88b4d70ea2"
+    },
+    {
+      "path": "drizzle/meta/0006_snapshot.json",
+      "sha256": "7cbe747a039c5782680eca73dd4409f6c33b743c41ee6e4050a2460bd0131817"
+    },
+    {
+      "path": "drizzle/meta/_journal.json",
+      "sha256": "e26978a6fa59814a25aeb09aa51aeca092af6141ad5af076b33ddc1b78f6ea94"
+    },
+    {
+      "path": "lib/eve-history-client.ts",
+      "sha256": "467fe4fa96bcae266dde70bc4baff65b57c56e953173c059ab7471cb60410e0b"
+    },
+    {
+      "path": "lib/eve-history.ts",
+      "sha256": "f7e6191faa86014977733b78a00a746f36dd568a75dcb39ded13b40065c8c4e1"
+    },
+    {
+      "path": "lib/pro-account-import.server.ts",
+      "sha256": "92e04e9eb46d4e3bafb250ebc88bd660d15a77fa18ea644862748530522ae3ed"
+    },
+    {
+      "path": "lib/pro-account-import.ts",
+      "sha256": "58ff7987f5f876bcdfd064f27d3f13be1715c8626cbd3add239d6622f86f1b97"
+    },
+    {
+      "path": "lib/remote-ai-guard.ts",
+      "sha256": "1631e159119762f88724aadcf38b9b227807da8d66c8b2683951afc4714cc584"
+    },
+    {
+      "path": "lib/remote-ai-pricing-gate.ts",
+      "sha256": "b4f0f29bd9f504e606c82fe81b36f5a80f06dba13d3b29ff34e82f9da6276032"
+    },
+    {
+      "path": "lib/remote-ai-rate-card-operator.ts",
+      "sha256": "d3611224f8bf4ce6052db19c84f340756f1ae547e1425a1b160e2229f8926f6e"
+    },
+    {
+      "path": "lib/remote-ai-rate-card-registry.ts",
+      "sha256": "fc06330ec323bede2cb37fb8e61c6cd95a0fa782ec58bf6d0ed0e6e0daf885d2"
+    },
+    {
+      "path": "lib/remote-ai-rate-card-store.ts",
+      "sha256": "d803261c00d7a4442d06cdc4779017b26454495c2f91ac7f690df0e1a97f7d8d"
+    },
+    {
+      "path": "lib/remote-ai-rate-card.ts",
+      "sha256": "e28725dc74544c2ffbb66acfa2a69702f92dd3ba6ae150bd233d5c82b99900ba"
+    },
+    {
+      "path": "lib/remote-ai-text-client.ts",
+      "sha256": "44a30f021ad00a6cbccbf6a2f8e35e4961f7fec73e50e1c21d679d74141f9baf"
+    },
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde"
+    },
+    {
+      "path": "lib/remote-ai-text-http.ts",
+      "sha256": "b551a3478ac2f39f98a3ea231f2835f7d0903380d50f722ea26ebbd4e4d6a923"
+    },
+    {
+      "path": "lib/remote-ai-text-input.ts",
+      "sha256": "a77ec687a25bf0bfdcae16d3d2277347cb0d6b5e9821d7cb734ad46c54d84da8"
+    },
+    {
+      "path": "lib/remote-ai-text-pricing.ts",
+      "sha256": "0ca5e6926a79a1a811b7dd6026007a8c41928bdec095c5a05c4a94a45bbd99df"
+    },
+    {
+      "path": "lib/remote-ai-text-rate.ts",
+      "sha256": "99b62f74cf598eb7e91722cb582eae90042503df9a806da4b361380f4e3952e4"
+    },
+    {
+      "path": "lib/remote-ai-text-request.ts",
+      "sha256": "49199092b8d43e69eb45887fec51be57b2573fd20f411865b60dea767c58c747"
+    },
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043"
+    },
+    {
+      "path": "lib/sky-linux-billing.ts",
+      "sha256": "de75e2a27e1272bb48714b6234422f2cc1172624a87d32201d4352ad7834d123"
+    },
+    {
+      "path": "lib/sky-linux-local.ts",
+      "sha256": "49c4f057bb21eab9d605932e2bdf2a63cdbe62c5d2353b16938ead5fe6156a2d"
+    },
+    {
+      "path": "lib/sky-linux-models.ts",
+      "sha256": "4c61dd7be615b435b4cab3d0b6760e45ce3ca09c7d4a7f0e353169e95a8eefe9"
+    },
+    {
+      "path": "lib/sky-linux-payment-handler.ts",
+      "sha256": "5ea18339cdf0a060979e83cc1f50515783c4b9cb00ea4e0af3fc7d716edb0482"
+    },
+    {
+      "path": "lib/sky-linux-service-store.ts",
+      "sha256": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139"
+    },
+    {
+      "path": "lib/sky-linux-service.ts",
+      "sha256": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7"
+    },
+    {
+      "path": "services/sky-billing/.env.example",
+      "sha256": "4b5ad8257750fcf95f657319c28fcc08418d28816a69f4e80b4b97d10fe8b0ea"
+    },
+    {
+      "path": "services/sky-billing/migrations/0001_billing.sql",
+      "sha256": "b8a8b881f9251ae891a7be4e82c9a9f95a9a8a0c2e892aeca6ac2f4a7f02f802"
+    },
+    {
+      "path": "services/sky-billing/migrations/0002_earnings_settlement.sql",
+      "sha256": "295c0a7a3a8bbd13afd34709738cdb0d1a07053427f658d4c8b0c6f65a6e61a2"
+    },
+    {
+      "path": "services/sky-billing/migrations/0003_automation_funds.sql",
+      "sha256": "03deb89e51f839f8a872c48754b01f104e6ad4f22daa391e630374ffaffc1104"
+    },
+    {
+      "path": "services/sky-billing/migrations/0004_rock_settlement_wallet.sql",
+      "sha256": "135b6f7bc3cdd3afedef5f1b22a7f9117bb6a8b1d2d657d2fce9015b15fb0fc8"
+    },
+    {
+      "path": "services/sky-billing/src/domain.ts",
+      "sha256": "45346907a25c998489d388b17cfa9421618a95d11bae2605a513848e85d42d59"
+    },
+    {
+      "path": "services/sky-billing/src/receipt-signature.ts",
+      "sha256": "92b6a6c3e9438878c111233836022cb7b5cd3dc63b41c46d2b654ed56beefe10"
+    },
+    {
+      "path": "services/sky-billing/src/stripe-signature.ts",
+      "sha256": "30de1a12e03027538a53d46f51145c72e5010c1be21f37967ab5dd32576386d1"
+    },
+    {
+      "path": "services/sky-billing/src/worker.ts",
+      "sha256": "200bc06ecd3c31e916e08426fd554c315abd36a9c92c03bc749881b0155ecb6b"
+    },
+    {
+      "path": "services/sky-billing/wrangler.jsonc",
+      "sha256": "aa9b06980513f2d7ea823631e5fdfac113d3bdc464a3d3cf06235768f651d2fa"
+    },
+    {
+      "path": "sites/avocado-mini/src/pages/pro/index.astro",
+      "sha256": "571370ef797fa8ed168a67c2ba4a6d460489c524aa88b45edb443508f1716c03"
+    },
+    {
+      "path": "sites/avocado-mini/src/pro-os.js",
+      "sha256": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8"
+    },
+    {
+      "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "sha256": "bd549178d59e6c8df37e55ec58bc88f872d9195102c34900ef9d746c6eba6566"
+    },
+    {
+      "path": "toolkits/sky-linux-local/models.json",
+      "sha256": "0f30150af3e544168ec7fb43b25b645b311b71fdcff95b799baeade0863d2da8"
+    },
+    {
+      "path": "toolkits/sky-linux-local/worker.py",
+      "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+    }
+  ],
+  "additionalApprovedCiPath": {
+    "path": ".github/workflows/ci.yml",
+    "step": "Test Pixel cache/update safety (synthetic)",
+    "commands": [
+      "python3 tests/test_pixel_cached_prepare.py -v",
+      "python3 tests/test_pixel_guest_update.py -v"
+    ],
+    "reason": "New Python6+23 safety tests are not discovered by npm test; exact-head Linux execution must be observed.",
+    "existingSecurityRunnerSetupSkipAndNpmVerifyUnchanged": true,
+    "independentMetadataReviewRequired": true
+  },
+  "localValidation": {
+    "targetedNode": {
+      "tests": 42,
+      "pass": 41,
+      "fail": 0,
+      "skip": 1,
+      "skipMeaning": "Mac host cannot run existing Linux parent-death fixture; exact-head Linux gate required"
+    },
+    "targetedPython": {
+      "cache": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0
+      },
+      "update": {
+        "tests": 23,
+        "pass": 23,
+        "fail": 0
+      }
+    },
+    "typecheck": "passed_existing_normal_generator_then_tsc",
+    "lint": "passed_targeted_no_diagnostics",
+    "packageClosure": {
+      "manifestSha256": "f3b345c95a5e6b6d09a12c53c5ddc388034d83c0969b7313fc2092111cbd37d6",
+      "matchesRootManifest": true,
+      "payload11HashesMatch": true,
+      "aux3HashesMatch": true,
+      "deviceDeployed": false,
+      "historicalBeforeGuardFix": true
+    },
+    "metadataUpdate": "passed_393tasks_14phaseGates",
+    "designCheck": "passed_19domains_38tools_50RQ",
+    "fullVerify": "not run locally; final-head actual Linux CI required",
+    "scanner": {
+      "version": "8.30.1",
+      "policySha256": "a8c20aa11472ec5c84aaaf00b0b0a28ea5f51c78e39fb792bcf8763b75494cf3",
+      "currentPayloadFindings": 0,
+      "canaryPass": 10,
+      "policyUnchanged": true
+    }
+  },
+  "acceptance": {
+    "sourceIndependentScopedPass": true,
+    "metadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "physicalAccepted": false,
+    "inferenceAccepted": false,
+    "wholeOS01": false,
+    "p02Complete": false,
+    "productionDeployment": false,
+    "historicalSourceIndependentPassSupersededByGuardRace": true
+  },
+  "sourcePreservationHead": "8d2f9f6ee66a50dc4de470f479cba7508a65851f",
+  "remaining616PublicExport": "HELD",
+  "rootRegistryReadOrWritten": false,
+  "next": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+  "sourceNineBeforeGuardFix": [
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+      "bytes": 36436,
+      "baseSha256": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+      "reusedRootSourceSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-server.mjs",
+      "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+      "bytes": 11893,
+      "baseSha256": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+      "reusedRootSourceSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+    },
+    {
+      "path": "toolkits/sky-linux-local/prepare-pixel.py",
+      "sha256": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+      "bytes": 15244,
+      "baseSha256": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+      "reusedRootSourceSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+    },
+    {
+      "path": "tests/pixel-cached-prepare.test.mjs",
+      "sha256": "6a53e882f91a3ec3c6e84714b1cc5d1f1902aaca06cdd68da88319c698509bdf",
+      "bytes": 16163,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+    },
+    {
+      "path": "tests/test_pixel_cached_prepare.py",
+      "sha256": "4444e49b6dccd7ba1a21e2f2865916fb76af0aaaff33af0526b1167d4de1ae9e",
+      "bytes": 8121,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+    },
+    {
+      "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "sha256": "42af308a104efd6a65c3c7005902e5299c260436a240386f2b49d8a9f623aa3b",
+      "bytes": 1812,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "9dc2419510e5717809f120019687fc2894503298d938d0970070e9feb5a89734"
+    },
+    {
+      "path": "toolkits/sky-linux-local/update-pixel.py",
+      "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+      "bytes": 18562,
+      "baseSha256": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+      "reusedRootSourceSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50"
+    },
+    {
+      "path": "tests/pixel-update-guard.test.mjs",
+      "sha256": "1bb65199178956ba7d93b6166332dacd4b69c2f7bf922b3d7a4aef2b4153de27",
+      "bytes": 2682,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "47e7c211ad4c1ee4ed79ca13565871c16f3dc3a06ec1289386c7e0bd5c4b349a"
+    },
+    {
+      "path": "tests/test_pixel_guest_update.py",
+      "sha256": "fb6c16779817d5fc76d967e15f48d9a0b70810ef975739d68b904c4abafccc24",
+      "bytes": 22745,
+      "baseSha256": null,
+      "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
+    }
+  ],
+  "guardFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+  "latestMainSynchronization": {
+    "baseMain": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+    "normalMergeCommit": "7ca96277",
+    "guardFixCommit": "e5ba85214b03e9bc408b9efcebcc3d491cdf25a5",
+    "originalSevenSourceUnchanged": true,
+    "guardAndTestsMatchAuthorCommit": true,
+    "walletFourAndCurrentAcceptancePreserved": true,
+    "independentFinalReview": "pending",
+    "finalHeadCI": "pending",
+    "physicalAccepted": false,
+    "miniHostAdoptionPreserved": true
+  },
+  "historicalPhysicalReview": {
+    "path": "docs/evidence/development-execution/pixel-cache-main-physical-review.json",
+    "sha256": "38d8f4d32a74734ac069b93b44e2e1a2613d649230472c83fdf47c2b0361f779",
+    "oldManifestOnly": true,
+    "status": "PASS_LIMITED_OLD_ARTIFACT_MEASUREMENTS_AND_RESTORATION",
+    "currentGuardPhysicalAccepted": false
+  },
+  "guardIndependentReview": {
+    "originalSha256": "948769d00a75ed4e31160f43d020e3a2919167f8f9f10f85d13a337303676c97",
+    "headReviewed": "20ff1f2a44763d9b467e390e9b6a64062fec3bc5",
+    "mainReviewed": "81aca294b6c977f353752461f09823c4948a7ea9",
+    "status": "PASS_SCOPED",
+    "mustFix": 0,
+    "relatedNodePass": 26,
+    "additionalIndependentPass": 8,
+    "pythonCachePass": 6,
+    "pythonUpdatePass": 23,
+    "countsNotAdditive": true,
+    "packageManifestSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+    "sourceNine": [
+      {
+        "path": "scripts/sky-linux-local-runtime.mjs",
+        "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+        "bytes": 36436,
+        "baseSha256": "d4f2ed7362aeff25a8b92b69331104b536d414f6220891f9ced334f83414e9b5",
+        "reusedRootSourceSha256": "bcecc4e9a4beea3425407e16b180e71510c42867f538fc794a49061e3f571992"
+      },
+      {
+        "path": "toolkits/sky-linux-local/pixel-server.mjs",
+        "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+        "bytes": 11893,
+        "baseSha256": "9ca5ffa0c14e9b0504f0de475cf956062d18848d5b8ca406178803a5de5c9feb",
+        "reusedRootSourceSha256": "a50ab3840aa3b75de1efe406df6c485bc64d9aae70227cd2bfd9cfa3c9525ce6"
+      },
+      {
+        "path": "toolkits/sky-linux-local/prepare-pixel.py",
+        "sha256": "c5ba0c09ca2fecb3f81bc86aa4062ab195ab0a1b2b4bf2253759250b7f4ffffd",
+        "bytes": 15244,
+        "baseSha256": "aea5925a43b5ddd4111dce30e25f6d50f8d67d48298844d527a066a94f2f6e7b",
+        "reusedRootSourceSha256": "ef6f3bc343bcff55aa6bf32df689252e1b2ed15154e2a25148586742be37244d"
+      },
+      {
+        "path": "tests/pixel-cached-prepare.test.mjs",
+        "sha256": "6a53e882f91a3ec3c6e84714b1cc5d1f1902aaca06cdd68da88319c698509bdf",
+        "bytes": 16163,
+        "baseSha256": null,
+        "reusedRootSourceSha256": "aaac60ee186b639f446ce50af672afe46d0f3c77e8a9ba1daddca40126215148"
+      },
+      {
+        "path": "tests/test_pixel_cached_prepare.py",
+        "sha256": "4444e49b6dccd7ba1a21e2f2865916fb76af0aaaff33af0526b1167d4de1ae9e",
+        "bytes": 8121,
+        "baseSha256": null,
+        "reusedRootSourceSha256": "badab4352dc251f2e8795ff0d5c73f71a4eaf9ebc9e49fadebc1d82a69ed6dcb"
+      },
+      {
+        "path": "toolkits/sky-linux-local/pixel-update-guard.mjs",
+        "sha256": "7832752e21f72bd8edd51eaf40532c6d31734620d0317625202a2e5fef8b7594",
+        "bytes": 3156,
+        "baseSha256": null,
+        "reusedRootSourceSha256": "9dc2419510e5717809f120019687fc2894503298d938d0970070e9feb5a89734"
+      },
+      {
+        "path": "toolkits/sky-linux-local/update-pixel.py",
+        "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+        "bytes": 18562,
+        "baseSha256": "cc19f865d17e0bea65927152dc51faf10c10f7c88c7b737010ee2e9381246ce9",
+        "reusedRootSourceSha256": "c30c93aad66c2fde8adb9e3363a35edf04f0dbe48ab7eb6cda34491693999d50"
+      },
+      {
+        "path": "tests/pixel-update-guard.test.mjs",
+        "sha256": "ad229a3f265dc95dcda548612de9250f0ed063586bb32500c882ef696c3669b8",
+        "bytes": 7750,
+        "baseSha256": null,
+        "reusedRootSourceSha256": "47e7c211ad4c1ee4ed79ca13565871c16f3dc3a06ec1289386c7e0bd5c4b349a"
+      },
+      {
+        "path": "tests/test_pixel_guest_update.py",
+        "sha256": "fb6c16779817d5fc76d967e15f48d9a0b70810ef975739d68b904c4abafccc24",
+        "bytes": 22745,
+        "baseSha256": null,
+        "reusedRootSourceSha256": "dd6977345c14e436cb27addd51ad503a01a6969375e9166577cd3c3f160fa8c9"
+      }
+    ],
+    "laterMetadataReviewRequired": true
+  },
+  "localIntegrationFailureHistory": [
+    {
+      "stage": "first root node test invocation",
+      "cause": "shared node_modules resolved vendor/braces through other tree",
+      "resolution": "tree-local dependency clone; dependency regression pass and root2937/2934pass/0fail/3skip"
+    },
+    {
+      "stage": "full verify at Mini site build",
+      "cause": "separate site node_modules absent",
+      "resolution": "same-lock site dependencies prepared; remaining verify stages and final-head CI required",
+      "notAFullVerifyPass": true
+    }
+  ],
+  "previousIntegrationHeadCI": {
+    "head": "20ff1f2a44763d9b467e390e9b6a64062fec3bc5",
+    "allChecks": 8,
+    "success": 8,
+    "codeqlHigh104InstanceState": "fixed",
+    "notFinalAfterNewerMainSynchronization": true
+  }
+}

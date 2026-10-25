@@ -91,9 +91,9 @@
     "fullVerifyLogSha256": "65de7998b8b234afc6e50e8108816999bf47b8e75ddc340e4946588e9f30d021"
   },
   "latestMainSynchronization": {
-    "baseMain": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
+    "baseMain": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
     "normalMerge": true,
-    "miniHostAndWalletPreserved": true,
-    "sourceHashesUnchanged": true
+    "pixelSourceNineWalletAndMiniPreserved": true,
+    "uiSourceHashesUnchanged": true
   }
 }

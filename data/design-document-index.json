@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.36",
+  "version": "1.37",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3137,6 +3137,32 @@
     "authenticatedRealAccountBrowserAccepted": false,
     "publicDeployment": false,
     "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+  },
+  "pixelCacheOnlyMainPort": {
+    "authority": "docs/rockstaros-complete-design.md#pixel-cache-only-main-port",
+    "toolDesign": "docs/sky-tools-complete-design.md#pixel-cache-only-main-port",
+    "implementation": [
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/pixel-server.mjs",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "toolkits/sky-linux-local/pixel-update-guard.mjs",
+      "toolkits/sky-linux-local/update-pixel.py"
+    ],
+    "tests": [
+      "tests/pixel-cached-prepare.test.mjs",
+      "tests/test_pixel_cached_prepare.py",
+      "tests/pixel-update-guard.test.mjs",
+      "tests/test_pixel_guest_update.py"
+    ],
+    "evidence": "docs/evidence/development-execution/pixel-cache-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
+    "cacheVersionCapabilitiesOnly": true,
+    "noAcquisitionFallback": true,
+    "mainMerged": false,
+    "physicalAccepted": false,
+    "wholeOS01Accepted": false,
+    "guardRaceFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+    "sameDescriptorBoundedMetadataRead": true
   },
   "esimAcknowledgementReconciliation": {
     "authority": "docs/rockstaros-complete-design.md#esim-ack-reconciliation",
