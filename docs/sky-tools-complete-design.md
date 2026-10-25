@@ -1213,6 +1213,15 @@ SKY07／O4の会話保存は`components/use-sky-chat-session.ts`へ集約する�
 合格条件はv1互換署名、v2単価改ざん拒否、最高単価での見積、本人/入力/予算/期限の束縛、4区分の正確な計算と未知使用量拒否、D1料金表登録から見積APIの一致、全文verify。公開v24の更新や実si実行の証拠へは転用しない。公式仕様: [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)、[Responses create](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。
 
 
+
+<a id="eve-estimate-rate-unit"></a>
+#### Eve見積の単価単位表示
+
+目的・利用体験は各単価の100万token当たりを1回だけ表示すること。ROCKの既存formatter出力へrendererが加えていた重複単位のみ除く。入出力・見積期限・一時保存・失敗/復旧・owner/同意・上限比較・料金版と実行承認は従来契約を保持する。独立19試験と旧renderer反例、新hashの実Chrome合成UIを限定合格とし、最終head CI/metadata検収で採用を決める。実Provider/費用承認/課金/実機/公開は別gate。[証拠](evidence/development-execution/eve-rate-unit-main-adoption.json)。
+
+PR209のupdate metadata読込は[OS詳細の競合修正](rockstaros-complete-design.md#pixel-update-guard-toctou-fix)に従う。同FDの限定読込と全metadataの置換検査を追加し、旧headのHigh指摘を履歴に残す。実機・推論受入は増やさない。
+
+
 ## 2026-10-01 Sky文章ツールの成果再利用
 
 ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェックの既存実行画面に「この端末に保存」、保存成果再表示・削除を追加。原稿は端末処理、成果は本人が選んだ同一ブラウザのlocalStorageへ全Tool合計20件、サーバーには本文を送らない。共有端末の閲覧可能性とMarkdown代替を明示。関連15試験・typecheck成功。独立作業コピーの全verifyは519 tests・265 API assertions・build等完走（既存database-status期待件数101→102の整合を含む）。実ブラウザでMarket検索→出典整理→保存→再読込→再表示、無料記事作成・保存を確認。稼働コピーは2026-10-01チャットのwork/sky-service。共有作業treeの以後の変更はこの合格へ算入しない。本番未配備。配備元7c79e43のSiteは一般公開設定で、以前のOS管理者限定要求との相違があるため公開範囲の回答待ち。アカウント別クラウド成果同期・実Provider接続の合格ではない。
@@ -1449,6 +1458,13 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 
 既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
 
+
+<a id="esim-ack-reconciliation"></a>
+### eSIMサービス保存ackの再照合
+
+既存サービス管理UIの状態修正。目的、責任、入出力、状態/保存、失敗/復旧、承認、合格条件と未決定は[OS共通契約](rockstaros-complete-design.md#esim-ack-reconciliation)を参照。新Tool/API/価格/権限を追加しない。保存ackと現時点のread/execute権限を分け、不明時は私有情報と操作を保留しGETで照合する。
+
+
 ## Zemaの会話復旧と引き継ぎ（2026-10-11）
 
 同じToolの古いチャットURLを開いても、別thread IDの新しいSky引き継ぎを消費しない。Toolとthread IDの両方が一致してから一度だけ消費する。会話一覧のTTL整理で保存容量不足・書込拒否が起きても、有効な会話の原本を削除せず、有効な分だけ表示して次回に整理を再試行する。期限切れ・不正な会話は復元しない。認証失効時の私有領域隔離と確認済み消去は維持する。対象は同じタブのsessionStorageであり、別アカウントの証拠なし復旧やサーバー保存を意味しない。
@@ -1585,6 +1601,3 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
-
-
-PR209のupdate metadata読込は[OS詳細の競合修正](rockstaros-complete-design.md#pixel-update-guard-toctou-fix)に従う。同FDの限定読込と全metadataの置換検査を追加し、旧headのHigh指摘を履歴に残す。実機・推論受入は増やさない。

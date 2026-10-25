@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.36",
+  "version": "1.39",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3173,10 +3173,36 @@
     "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
     "cacheVersionCapabilitiesOnly": true,
     "noAcquisitionFallback": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "physicalAccepted": false,
     "wholeOS01Accepted": false,
     "guardRaceFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
-    "sameDescriptorBoundedMetadataRead": true
+    "sameDescriptorBoundedMetadataRead": true,
+    "currentMergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+  },
+  "esimAcknowledgementReconciliation": {
+    "authority": "docs/rockstaros-complete-design.md#esim-ack-reconciliation",
+    "toolDesign": "docs/sky-tools-complete-design.md#esim-ack-reconciliation",
+    "implementation": [
+      "components/sky-linux-service.tsx"
+    ],
+    "tests": [
+      "tests/sky-linux-service-reconciliation.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
+    "mainMerged": false,
+    "physicalAccepted": false
+  },
+  "eveEstimateRateUnitDisplay": {
+    "authority": "docs/rockstaros-complete-design.md#eve-estimate-rate-unit",
+    "toolDesign": "docs/sky-tools-complete-design.md#eve-estimate-rate-unit",
+    "implementation": [
+      "components/eve-text-estimate.tsx"
+    ],
+    "tests": [
+      "tests/eve-text-estimate-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
+    "mainMerged": false
   }
 }

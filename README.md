@@ -1,7 +1,3 @@
-PR209の更新fenceは、metadataを同じFDで検査・上限付き読込し、pointer/receipt/親directoryの差し替え時に拒否する修正候補です。旧headのCodeQL Highを履歴として保持し、新HEADの全CIで再確認します。実機操作・追加推論は行いません。
-
-Pixel/Linuxの[cache-only準備と更新fence](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)を限定候補へ追加。既存の検証済みbytesだけでversion/capabilitiesを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を使います。cache不一致や結果不明を取得/修復/推論へ自動切替しません。更新中は新しい効果を止め、固定payload/既存job・model・鍵を保持します。host検収済み、同head Linux新Python安全試験と全verify/独立metadata検収は別gate。実機配備・推論・fullOS/P02/一般公開は未受入です。Pro入口はPR207/main0dで限定統合済みです。
-
 [PR207](https://github.com/k999ln/rock/pull/207)はmain `0d726717`へ通常統合済みで、同一SHAのCI6件成功を確認しました。公開・配備・616件一括公開は保留です。採用済みの[Wallet process復旧fixture](docs/sky-billing.md#wallet-process-recovery-fixture)は `node --experimental-strip-types --test tests/billing-process-recovery.test.mjs` で実行できます。合成local SQLiteの子processを13点で強制終了し、再接続・再送の一意性を検査します。POSIX限定でWindowsはskip。本番金融の受入ではありません。 [PR208](https://github.com/k999ln/rock/pull/208)はmain `2854d069`へ通常統合済みで、同mergeSHAの全6CIとLinux実verify（2911試験・2909pass・0fail・2skip）が成功しました。原本の記録時pendingと現在のGit受入を分けた[統合証拠](docs/evidence/development-execution/wallet-process-recovery-main-merge.json)を保存しています。
 
 Proの[私有原本archiveへの入口](docs/rockstaros-complete-design.md#pro-original-archive-entry)を限定候補へ追加。Proの「Move private notes safely」でpreview・別のfile export同意・downloadを行い、「Open private archive on avoado.si」から既存`/account/import/pro`へ進みます。sign in後に同fileを手動で選び直し、保存先accountと別の保存同意を確認します。原文は元browserとfileへ保持し、自動転送・仕事化・native移行は行いません。Chromeのlocal1512/390表示とpreview/cancelを限定確認。認証済server保存・公開先実click・配備は別gateです。Wallet DB復旧test-onlyはPR206/mainb1b0で限定統合済み。[11lane/95unit/履歴42成果の引継ぎ要約](docs/evidence/development-execution/all-lanes-main-handoff-summary.json)を参照してください。
@@ -192,6 +188,12 @@ native統合手順にはOS系列ごとの実装・検証方法、Linux toolkit�
 
 ### 現在の開発状況
 
+eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/実行を再読込できるまで操作を保留します。null・読込失敗・権限変更時は以前の私有情報や操作を隠し、「状態を再確認」でGETだけを行います。画面復帰時も再確認し、自動で申込・課金・再送しません。[契約と検収範囲](docs/rockstaros-complete-design.md#esim-ack-reconciliation)。
+
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+
+cache-only準備は取得済みbytesのversion/capabilitiesだけを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を行います。不一致/不明時に取得・修復・推論へ切り替えず、同FDの限定metadata読込と固定payload更新fenceを使います。旧f3の限定物理測定/元code復旧は新c43の受入へ転用しません。[契約](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)。
+
 Web runtime、Linux/serviceとPixel/Lab adapterのコードをmainへ統合済み。Pixel 10 GL066 / frankelでは純正OS上の試験署名APKで非破壊の実再起動受入23/23が根拠です。
 
 全OS build・正式署名・flash/boot・data/Keystore全損復元は未完了。[Pixelの境界](docs/phone-preview-20260911.md)。QEMU Developer Previewは独立した系列として保持し、最新候補の配布受入は[QEMU担当](docs/workstreams/06-native-qemu-release.md)で管理します。
@@ -250,6 +252,8 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 - [仕事の状態遷移](lib/workflow.ts)
 
 ### 現在の開発状況
+
+保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。
 
 会話の明示保存・読戻し・削除と、本人の成果をHTMLへ持ち出すコードをmainへ統合済み。
 
@@ -382,6 +386,8 @@ Miniと同じWebソース内にあります。
 ---
 
 ## 開発と検証
+
+undiciはrootで修正版7系（`^7.30.1`）、Miniサイトで修正版8系（`^8.12.2`）をoverrideで許容し、各lockfileで実版を固定します。`npm ci` と `npm ci --prefix sites/avocado-mini` 後に `node --test tests/undici-dependency-security.test.mjs tests/undici-tls-options.test.mjs` で依存先とTLS設定の保持を確認できます。[修正・検証記録](docs/evidence/undici-security-constraint.json)。
 
 Node.js 22.13以降とnpmを使用します。Webのローカル起動:
 

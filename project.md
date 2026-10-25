@@ -1,22 +1,13 @@
-最新main55a5193eのMini host限定採用を通常取り込みし、元Mini source/進捗・Wallet受入・task/phase gateを保持。Pixel9sourceは20ff独立検収と同hash、物理要約は旧package限定。最終head CIはこの同期後に確認する。
-
-Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照合し、cache ready/replay/取消と元7f0223復旧を限定合格。元34run/2model/10agent・23出力hash保持、追加推論0。修正c43e7047の実機合格には転用しない。統合同期tree初回全verifyは共有node_modulesのvendor参照pathで1件失敗し、tree専用cloneへ切替えて再検証中（試験削除/弱化なし）。
-
-## Pixel候補の最新main同期とguard修正取り込み
-
-最新main81aca294を通常mergeし、Wallet208/210の現在受入と4試験を保持。作者修正e5ba8521を通常取り込み、元9sourceのうち7不変・guardと試験2件は作者commitと同hash。旧headのCodeQL Highと旧physicalは履歴として保持。次は最終headの独立検収・GitHub保存・同一SHAのCodeQL/全CI確認、その後main通常統合。実機操作・追加推論・公開配備・616一括公開は未実施。
-
-## PR209 update guardの競合修正（2026-10-25 / OS10・P02・G04）
-
-着手・判断: 利用者の明示依頼で旧06dac1bbのCodeQL Highを修正。主担当07 / ROCK、統合10。同FD限定読込とpointer/receipt/親directoryの同一性再確認、7追加回帰を実装。対象26成功、旧実装で反例失敗を確認。検証完了: 対象26/Python6+23、lint/design/project/package、全verify成功（root2924件/2921成功/3Macskip）。OpenSSL3選択前とsandbox loopback制限の失敗は証拠に保持。次: 新HEAD push後のCodeQL含む全CI、検収JSON更新。実機・追加推論0、Rootregistry/616保全は非操作。元のmissing-module/hostskip/neutral→High履歴は保持。
-
-## Pixel cache-only/更新fence main候補（2026-10-25 / G04）
-
-着手: Pro207通常main0dを基点に、sourceb1b0の独立検収済み9source/testを同hash採用。主担当10/source07、既存taskはreceipt参照。判断: 元receipt2608とportableのhashを分け、c9c795独立PASS/mustfix0・host99pass3skip/独立80pass1skip・Root11payload+aux3closureを保持。追加CI1pathは承認済みの独立synthetic stepだけでPython6+23をLinux上に配線。通常private module generatorでtypeを検証し、元missing-module失敗を成功へ換算しない。次: 対象Node/Python/lint/type/package/project/design/scanner、DraftPR exactpayload、最終head Linux Python各suiteと実npmverify/全CI、独立metadata検収。実機soleOSのleaseを維持、Gitの端末操作0。ロック解除待ちや旧physicalを今回合格にしない。RootHEAD/index/archive・残616公開保留。根拠 docs/evidence/development-execution/pixel-cache-main-adoption.json。
-
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 
 PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。現在: PR208の検収済みheadc3c0e17d/exact20pathを通常main2854d069へ統合。headtree/main tree一致、同mergeSHA全6CIとLinux実verify2911/2909pass/2skip/0failを確認。文書保存・作業branch GitHub保存・main統合を完了、公開配備は未実施。元receiptのcapture-time pendingと初回失敗は保持し、現在のproject/status/overlay/handoffはこの別metadata同期で訂正する。次は既存Pixel/eSIM候補を新mainへ通常照合し、各独立gateから再開。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。
+
+## undici依存制約の修正（SYS15・G04 / ROCK）
+
+最新main2a9828b2のeSIM/Eve受入済み変更を通常同期。undici/package/test bytesは不変、先行Mac全verifyと同期後の新HEAD全CIは別証拠とする。
+
+PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点に、root overrideの7.29.1固定を同majorの修正版^7.30.1へ更新し、root全verify成功（2940件/2937pass/0fail/3Macskip）後、同じundiciのMini側3alertも確認。Mini override^8.12.2/lock8.12.3を追加し、両lockfileそれぞれundici1件のみ更新。計7consumerと既存TLS/依存回帰29件成功、root旧制約の1件失敗反例を保持。root npm監査undici0件・他依存10件を区別し、最終全verifyはexit0（root2942/2939pass/0fail/3Macskip、build/API含む）。Mini監査もundici0・他2件。旧SHAの失敗を保持し、新HEADとmain統合SHAのCodeQL/全CIは別々に確認する。実機操作・追加推論・公開配備なし。
+
 
 ## Pro原本exportから既存私有archiveへの入口候補（2026-10-25 / G04）
 
@@ -224,6 +215,56 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 2026-10-17 BIL02/O5（JOINT）: 本人指示で月額140 USD・利用枠100 USDの既存Stripe Sandbox契約に無料Cloud自動選択を接続する。main a067a03eからcodex/sky-monthly-free-cloudで開始。1時間合成契約とは分離した永続月次契約・署名通知・上限停止・入金後復旧を同一DBで検証する。境界金額は合成、Cloud応答は匿名無料実接続、本番課金は無効。23件の対象試験、実Stripeの140 USD失敗→同一請求入金と署名通知3件、無料Cloud実POST3回・UI再押下追加0回、再起動保持を確認。全体verifyは全stage exit0（2287成功/既存skip1、/private/tmp/sky-monthly-free-verify.log）。証拠 docs/evidence/sky-monthly-free-cloud.json。公開D1/実アカウント契約は変更なし。次は同head CIとmain統合、公開account移行・常設schedulerは別配備受入。
 
 # RockstarOS — 現在の作業と再開情報
+
+## PR213 CI停止のWallet fixture競合を修正
+
+G04の実CI c5cbで既存Wallet UI試験が停止。遅延GET gateを応答後に割当てるfixture競合を固定2反例で再現し、request開始時に一度だけ予約するtest-only修正。新2反例を含む全45試験成功、旧fixtureだけへ戻した対照は2失敗。既存assertion削除/弱化0、製品4source・Wallet/auth/schema/価格は不変。停止runは反例成立後に終了し、修正headで同SHA Linux全verify/CodeQLを確認する。Pixelの確定済み8f CI metadataはPR214/main dc2b992fへ分離保存済みで、そのmergeSHA CIを確認中。UIは未merge。証拠 docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json。
+
+UI最新main同期: main41ee45d7のMini Linux限定採用を通常取り込み、controller/packet tests/専用CI/証拠と現statusを保持。UI4sourceとPixel9sourceは同hash。旧head7f2aの全verify/CodeQLは成功済みだが、今回の最終head CIを別に確認する。
+
+UI最終同期: Pixel PR209/main8f646ff3の限定採用を通常取り込み。Pixel9source・旧物理要約・Wallet/Mini・task/phase gateを保持。eSIM/Eve4source/testは検収済みhashと同一。最終CIとmain統合はこの同期後のheadで確認する。Pixel mergeSHA CI完了前に次main mergeは実行しない。
+
+UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a5193eを通常取り込み。Mini host source/進捗とWallet現受入を保持。各独立source/実合成UIの根拠を別receiptで扱い、最終head全CIとmain merge SHAを確認する。
+
+
+## Eve単価の重複単位表示を別commitで採用
+
+本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補CIで最終確認しmain merge後の同SHA CIも確認する。
+
+
+## eSIM保存ack後の再照合UIを最新mainへ採用
+
+着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。現在: 対象回帰/type/lintとfixture修正込みhost全verifyは成功（2982試験/2979pass/0fail/3skip）。独立product-source検収とGit metadata整合確認を保持し、次は最新maindc2取り込み後の最終head Linux全CI・通常main統合・mergeSHA CIを確認する。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
+
+## Pixel候補の最新main同期とguard修正取り込み
+
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。undici7.29.1のsecurity_update_not_possibleはG04未解決で、依存lock差分0・修正未実施。この変更はmetadataだけ、PR213 fixture診断は別scope。次はこのmetadataのGitHub保存/通常main統合/同SHA CIを確認し、UIは別に受入する。
+
+### 原source/host段階の記録（履歴）
+
+以下の待ち/次作業は当初記録であり、現在のsource/Git/CI受入は上記に更新済み。OpenSSL、sandbox、共有依存参照などの失敗履歴と原sourceの復元情報を保持する。
+
+最新main55a5193eのMini host限定採用を通常取り込みし、元Mini source/進捗・Wallet受入・task/phase gateを保持。Pixel9sourceは20ff独立検収と同hash、物理要約は旧package限定。最終head CIはこの同期後に確認する。
+
+Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照合し、cache ready/replay/取消と元7f0223復旧を限定合格。元34run/2model/10agent・23出力hash保持、追加推論0。修正c43e7047の実機合格には転用しない。統合同期tree初回全verifyは共有node_modulesのvendor参照pathで1件失敗し、tree専用cloneへ切替えて再検証中（試験削除/弱化なし）。
+
+### Pixel候補の最新main同期とguard修正取り込み（原source段階）
+
+最新main81aca294を通常mergeし、Wallet208/210の現在受入と4試験を保持。作者修正e5ba8521を通常取り込み、元9sourceのうち7不変・guardと試験2件は作者commitと同hash。旧headのCodeQL Highと旧physicalは履歴として保持。次は最終headの独立検収・GitHub保存・同一SHAのCodeQL/全CI確認、その後main通常統合。実機操作・追加推論・公開配備・616一括公開は未実施。
+
+
+### PR209 update guardの競合修正（2026-10-25 / OS10・P02・G04）
+
+着手・判断: 利用者の明示依頼で旧06dac1bbのCodeQL Highを修正。主担当07 / ROCK、統合10。同FD限定読込とpointer/receipt/親directoryの同一性再確認、7追加回帰を実装。対象26成功、旧実装で反例失敗を確認。検証完了: 対象26/Python6+23、lint/design/project/package、全verify成功（root2924件/2921成功/3Macskip）。OpenSSL3選択前とsandbox loopback制限の失敗は証拠に保持。次: 新HEAD push後のCodeQL含む全CI、検収JSON更新。実機・追加推論0、Rootregistry/616保全は非操作。元のmissing-module/hostskip/neutral→High履歴は保持。
+
+
+### Pixel cache-only/更新fence main候補（2026-10-25 / G04）
+
+着手: Pro207通常main0dを基点に、sourceb1b0の独立検収済み9source/testを同hash採用。主担当10/source07、既存taskはreceipt参照。判断: 元receipt2608とportableのhashを分け、c9c795独立PASS/mustfix0・host99pass3skip/独立80pass1skip・Root11payload+aux3closureを保持。追加CI1pathは承認済みの独立synthetic stepだけでPython6+23をLinux上に配線。通常private module generatorでtypeを検証し、元missing-module失敗を成功へ換算しない。次: 対象Node/Python/lint/type/package/project/design/scanner、DraftPR exactpayload、最終head Linux Python各suiteと実npmverify/全CI、独立metadata検収。実機soleOSのleaseを維持、Gitの端末操作0。ロック解除待ちや旧physicalを今回合格にしない。RootHEAD/index/archive・残616公開保留。根拠 docs/evidence/development-execution/pixel-cache-main-adoption.json。
+
+
 
 backup修正sourcea3a888bbの最終APKもPixelで全5工程attempt1/115.675秒、同意/同ID/失効/再同意/再起動readback/UIが合格。strict backupのhost完了復元とTool逆順atomic拒否、Pixel隔離DBの保留復元/pauseを含むBinder/SQLite11件とUI13実+既存skip1、host222/build/lint/全体verifyが成功。元75仕事276成果の全状態/内容、現83仕事308全body hash/実機4APKを確認。owner DBの上書き復元・旧APK downgrade・全OSの受入ではない。最終同一head CI/main統合はPR169を正本に別確認する。
 
@@ -839,7 +880,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。PR215へ保存。初回CIで試験helperのcwd依存とTLS試験server最低versionを検出し補正（runtime不変）。独立補足検収mustFix0、Linux上のhost55/packet26を別cwdで再実行成功。SPIDERの履歴source digest誤検出3値×2pathはGit担当へexact例外/provenance調整を依頼。更新head CI/mainは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
+AP/網側adapter検証: 端末別PSK、管理下hostapd子process、署名付き網側hard cap/予約/照会/停止を追加。local予約→remote予約→nftの順を強制。host/TLS55件、隔離Linux26件（実packetと実hostapd driver=noneの親kill/復旧を含む）成功。独立検収で指摘された停止経路・daemon世代・応答喪失復旧・親死亡・atomic保存を修正。独立再検収mustFix0、host55件独立再実行成功。最終sourceで全体npm run verify完走exit0（主2938件/2935成功/3skip/失敗0、仕事API1678/CSV385）。[検証証拠](docs/evidence/development-execution/mini-08-access-adapters.json)。PR215へ保存。初回CIで試験helperのcwd依存とTLS試験server最低versionを検出し補正（runtime不変）。独立補足検収mustFix0、Linux上のhost55/packet26を別cwdで再実行成功。SPIDERの公開source digest誤検出3値×2pathは独立検収・policy10/10・履歴scan0後、PR217をmain bcf5345cへ通常統合（head7CI成功）。最新mainを競合なく同期し、control固定refを採用済みbcf5345cへ更新。runtimeはa5fb3936と不変。PR215の更新head CI/mainは別追跡。[実装契約](systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)。
 
 着手: PR212の最新main同期・独立検収・全14head CI後、main41ee45d7へ通常統合し同SHA全13CI成功を確認。本人の次指示でAP端末認証と衛星網側上限の共通adapterを実装開始。事業者・modem未定のため共通protocol/試験を先行し、契約・機器・実回線・実課金の受入は別にする。
 
