@@ -848,6 +848,24 @@
       "realProviderAccepted": false,
       "physicalAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "SMITH_RUNNING_SKIP_LINK_CANDIDATE",
+      "units": [
+        "SMITH-01"
+      ],
+      "kind": "additional_candidate_subset",
+      "baseMain": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+      "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+      "sourceChanges": [
+        "components/workspace-shell.tsx",
+        "tests/os-bottom-navigation-main.test.mjs"
+      ],
+      "previousNavigationRecord": "SMITH_BOTTOM_NAVIGATION_CANDIDATE retained as original capture; six original navigation implementation files unchanged",
+      "scope": "Known same-page landmark fragment only; local synthetic keyboard/browser acceptance. Real active job/auth/device/native/production remain open.",
+      "wholeUnitAccepted": false,
+      "mainMerged": false,
+      "publicDeployment": false
     }
   ],
   "executionPriority": [

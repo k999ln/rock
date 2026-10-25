@@ -1,0 +1,48 @@
+{
+  "schema": "rockstaros.smith-running-skip-git-save/1",
+  "recordedAt": "2026-10-25T13:42:57.525959+00:00",
+  "unit": "SMITH-01",
+  "task": "SKY21",
+  "responsibility": "ROCK",
+  "synchronizedMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+  "source2": [
+    {
+      "path": "components/workspace-shell.tsx",
+      "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+    }
+  ],
+  "primaryReceipt": "docs/evidence/development-execution/smith-running-skip-link.json",
+  "originalReceiptSha256": "c5d231ee0ed6fa01bb56a751da0c8de993c2a5060c03e78ac0052bc0304e7525",
+  "independentReview": "docs/evidence/development-execution/smith-running-skip-link-review-summary.json",
+  "authorHostFullVerify": {
+    "base": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+    "tests": 2994,
+    "pass": 2991,
+    "fail": 0,
+    "skip": 3,
+    "notFinalGitCISha": true
+  },
+  "scope": "Exact #workspace-main skip landmark remains usable while running; all other navigation remains blocked and consumer admission preserved",
+  "browserMethod": "Existing headless Chrome/Playwright loopback fixture with stubs; not Root CUA or production auth/job acceptance. Future browser operations CUA only.",
+  "mainIntegrationRequested": false,
+  "mainMerged": false,
+  "sameSHA_CI": "not yet run",
+  "wholeUnitAccepted": false,
+  "realAuthJobAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false,
+  "bulk616Export": "HELD",
+  "next": "Independent integration metadata review; save Draft PR and verify exacthead CI only; no main merge authorized",
+  "integrationFocusedTests": {
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "initialIntegrationAttempt": "Missing TypeScript dependency before existing locked cache was linked; no product test executed. Original failure retained.",
+  "dependencyInstallPerformed": false
+}

@@ -317,7 +317,8 @@
       "lane": "smith",
       "ledgerRef": "data/development-unit-progress.json#SMITH-01",
       "currentOverlayRefs": [
-        "SMITH_BOTTOM_NAVIGATION_CANDIDATE"
+        "SMITH_BOTTOM_NAVIGATION_CANDIDATE",
+        "SMITH_RUNNING_SKIP_LINK_CANDIDATE"
       ]
     },
     {
@@ -964,5 +965,18 @@
     "paidGenerationAccepted": false,
     "publicDeployment": false,
     "evidence": "docs/evidence/development-execution/eve-multi-material-main-current.json"
+  },
+  "smithRunningSkipLinkFollowup": {
+    "taskId": "SKY21",
+    "unit": "SMITH-01",
+    "scope": "One host/browser-fixture same-page running skip-link defect; no whole-unit/authenticated-composer/real-job acceptance",
+    "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+    "state": "source_metadata_independent_pass_host_verify_pass_git_ci_pending",
+    "next": "Independent review and same final SHA CI; later real authenticated running-job/softkeyboard/physical inset/zoom/two-owner/native gates remain.",
+    "mainMerged": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "hostVerify": "2994tests/2991pass/0fail/3skip; before latest-main adoption"
   }
 }

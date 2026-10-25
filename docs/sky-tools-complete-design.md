@@ -388,6 +388,11 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 - 受入（2026-09-27）: ローカル実ブラウザのホームとMarketは320／390／440／768／1280pxで横はみ出し0、アイコンと本文の間隔12／14px。Jev Routerとココナラは320／390／768／1280pxで横はみ出し0、main landmark各1個。ホームの全Tool検索でJev Routerへ到達し、ホームとMarketから同じ概要を開閉、Escとfocus復帰を確認した。ココナラのBase UI Dialogは320／390pxでfocus trap・Esc・元のボタンへの復帰を確認し、保存失敗は入力画面内に表示する。出典整理のサンプル実行と結果表示も確認した。
 - 検証範囲: 関連17試験、typecheck、`lint:product`、`sky:check`、buildは合格。2026-09-30に製品ベースとbaseline validatorのアクセント期待値を現行workspace CSSのice-blue `#bedce6`へ合わせ、R5文書・DB status testを含む該当テストを通した。全体verifyはこの更新後に未実施。無限定lintは未変更vendor・生成物のエラーを含みうる。本番配備、Tool本体接続、決済は未実施。
 
+<a id="smith-running-workspace-landmark"></a>
+#### 処理中のページ内スキップ導線
+
+running時の同頁landmark修復（SKY21 / SMITH-01）: 既存の`#workspace-main`だけはshellのclick guardを通し、Tab→Enterで`tabIndex=-1`のmainへ移れる。他route/別fragmentの抑止、navのaria-disabled、running/beforeunloadとconsumerのonClickCaptureは維持する。consumerが追加でpreventDefaultする条件を解除せず、hash移動をjob停止・再送・承認・本人切替へ接続しない。入出力は既存running/anchor hrefとbrowserの同頁focusだけ、新API/保存/復旧データなし。退行時は通常Git revertでshell差分を戻し、保存jobを削除しない。局所10試験と実Reactを使う合成Chrome390/1280fixtureで旧抑止→新focus/遷移抑止/draft保持を確認した。実keyboard/非zero inset/zoom/認証後composer/real job/native/本番の合格は別でwhole SMITHはfalse。[修正証拠](evidence/development-execution/smith-running-skip-link.json)。
+
 ### 1.2 全入口・開閉画面の監査と実行導線
 
 2026-09-27の追加監査は、一覧の外観だけでなく、ホームとMarketから34 Tool詳細、概要、サービス接続、PC/MCP接続、掲載フォームまでを対象にする。主担当はProduct / UXのROCK、既存WEB04。初期画面が表示できることと、実行器・外部Providerの成功は別に受け入れる。

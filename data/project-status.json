@@ -10536,5 +10536,23 @@
       "skip": 2,
       "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
     }
+  },
+  "smithRunningSkipLink": {
+    "taskId": "SKY21",
+    "unitId": "SMITH-01",
+    "primarySquad": "O5",
+    "state": "source_metadata_independent_pass_host_verify_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+    "baseMain": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+    "wholeUnitAccepted": false,
+    "realJobAccepted": false,
+    "mainMerged": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "hostVerify": "2994tests/2991pass/0fail/3skip; before latest-main adoption",
+    "latestIntegrationMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+    "gitSaveEvidence": "docs/evidence/development-execution/smith-running-skip-link-git-save.json",
+    "mainIntegrationRequested": false
   }
 }
