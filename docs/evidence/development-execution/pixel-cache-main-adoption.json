@@ -1020,7 +1020,7 @@
   ],
   "guardFixEvidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
   "latestMainSynchronization": {
-    "baseMain": "81aca294b6c977f353752461f09823c4948a7ea9",
+    "baseMain": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
     "normalMergeCommit": "7ca96277",
     "guardFixCommit": "e5ba85214b03e9bc408b9efcebcc3d491cdf25a5",
     "originalSevenSourceUnchanged": true,
@@ -1028,7 +1028,8 @@
     "walletFourAndCurrentAcceptancePreserved": true,
     "independentFinalReview": "pending",
     "finalHeadCI": "pending",
-    "physicalAccepted": false
+    "physicalAccepted": false,
+    "miniHostAdoptionPreserved": true
   },
   "historicalPhysicalReview": {
     "path": "docs/evidence/development-execution/pixel-cache-main-physical-review.json",

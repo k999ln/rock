@@ -68,6 +68,8 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 
 ## Mini — 暮らしとまちづくり
 
+衛星回線をWi-Fi共有する[制御prototype](systems/rock-star-os/targets/avocado-mini/tethering/README.md)を追加しました。`python3 -B systems/rock-star-os/targets/avocado-mini/tethering/demo.py` で、架空回線の接続許可・持ち出し・送受信量・料金上限・再起動復旧を試せます。実衛星/APはまだ接続していません。
+
 <p align="center">
   <img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="石と木のある建築空間になじむMini R5の製品コンセプト" width="100%" />
 </p>

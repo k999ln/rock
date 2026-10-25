@@ -769,4 +769,12 @@ R5のMini単体動作はProを必須としない。専用モデルは端末内�
 
 ## 着脱Miniと月次請求
 
+<a id="mini-tethering-control"></a>
+
+### MINI-08 単体衛星テザリング制御
+
+Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
+
+[実装と詳細契約](../systems/rock-star-os/targets/avocado-mini/tethering/README.md) / [証拠](evidence/development-execution/mini-08-tethering.json)。ownerの共通Broker認証とAgent/Wallet/Invoiceは既存契約を使い、通信予約を請求成立へ昇格しない。対象はMAT15/M1のROCK、実接続はJOINT、部品/回線/料金計量はEXTERNAL、回線と上限承認はOWNER。既定OFFから観測と承認後だけ予約、CAS/epoch/期限で旧grantを失効し、結果不明とoverrunは保留。SQLiteの保存成功後だけgrantを発行し、復旧は給電/通信unknown・共有OFFで始める。DP02/03/05、Linux packet試験、実回線の上限と同一閉箱の未完了を残す。
+
 2026-10-15明示要求は[統合設計](service-design/08-mini-connectivity-and-billing.md)と[R5詳細](avocado-mini-r5/embedded-portable-connectivity.md)へ追加。固定dock/可搬core、携帯電源、衛星WAN/Wi-Fi LAN、場所権限、同一job継続、月次usage請求を分離して設計する。実機・本番未受入。
