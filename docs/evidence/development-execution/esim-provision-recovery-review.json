@@ -1,0 +1,66 @@
+{
+  "schema": "rockstaros.esim-provision-recovery-independent-review/1",
+  "unit": "ESIM-03",
+  "status": "PASS_SCOPED_TEST_ONLY",
+  "reviewer": "Git integration reviewer, independent of test implementation author; not the reviewer of own later integration metadata",
+  "mustFix": [],
+  "wholeESIM03Accepted": false,
+  "candidateBase": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+  "testSha256": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+  "originalReceiptSha256": "aada2f8c7f350e5708111d39b3865a78715d2410cc2bc7c34c22f40632fe1ee0",
+  "protectedFiveHashesUnchanged": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+    "lib/sky-linux-service-store.ts": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+  },
+  "sourceReview": [
+    "Both actual product stores share a new file-backed TestD1 SQLite database with existing drizzle migrations. Shared TestD1 code and five protected paths remain unchanged.",
+    "Fault wrapper intercepts exactly the setup UPDATE run after actual Linux workspace INSERT. It asserts one durable workspace before throwing once; original setup document remains unchanged. This is a controlled local error, not a real process/power crash.",
+    "All initial product store instances and first SQLite handle are discarded/closed; second handle rediscovers the same workspace and setup state from the same file. Resume preserves setup/operation/challenge/agreement/workspace identity, advances revision once and leaves one setup/workspace.",
+    "Same-version replay preserves all four named table snapshots. Old revision, other owner, and controlled grant revocation reject without mutations to those tables. No statement about all database tables or real issuer lifecycle is inferred.",
+    "Mock billing start/reconcile occurs once in prerequisites and is not repeated by failed/resumed/replayed provision. Network trap records zero external fetches. Service start/windows/jobs/invoices/payment-collected remain unstarted.",
+    "runtimeReady negative case uses revoked controlled grant; no valid proof/ready accepted, actual signed identity or provider runtime readiness is established.",
+    "After-hook closes every handle and removes the temporary directory/database and named sidecars, with explicit absence assertions."
+  ],
+  "independentValidation": {
+    "wholeOwnedSuite": {
+      "tests": 60,
+      "pass": 60,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "c58ed19e2ff840515a6a8b6b430293dc61ab58ca17d5b387204b7eb6f18ec827"
+    },
+    "extraPreconditionProbe": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "overlapsOriginalCaseNotAdditive": true,
+      "checks": [
+        "Before the injected provision attempt the actual workspace table is empty and no injection occurred",
+        "After reopen the native SQLite connection object differs and the previous handle is closed"
+      ],
+      "probeSha256": "d22667a04c474f1dfda96a0723f17ccdc1cfc8d39b79e810e8a103a2df2c956f",
+      "logSha256": "9ed4fb1fd53780b1113a4e716188265e4613b6343695b9fae13260e29ef3b393"
+    },
+    "newDependenciesInstalled": false,
+    "originalTestOrProductEdited": false,
+    "fullVerifyOrHeadCI": "not run by this review; future integration gate"
+  },
+  "acceptanceLimits": [
+    "Actual local file SQLite plus D1-shaped adapter only; no production Cloudflare D1 or HTTP endpoint execution",
+    "Controlled grant errors only; no real issuer/device/credential acceptance",
+    "No crash, process-kill, power-loss or fsync durability claim",
+    "No provider resource creation, Stripe request, real charge/collection, valid ready or billing window",
+    "No cancel-ready race, generic outbox/fencing, wholeESIM03, whole product or public launch acceptance"
+  ],
+  "operations": {
+    "reviewFileOnly": true,
+    "rootRegistryTouched": false,
+    "sourceOrTestOrPackageOrSharedFixtureChanged": false,
+    "deviceOrProviderActions": 0
+  },
+  "next": "Root may independently review any subsequent Git adoption metadata, then separately authorize and verify latest-main integration/CI. Source fixes are unnecessary for this bounded coverage case."
+}
