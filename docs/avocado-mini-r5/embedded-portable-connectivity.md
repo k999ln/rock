@@ -38,6 +38,12 @@ Wi-Fi APは近くの端末への接続、衛星は上流WAN候補。インター
 
 ## OS・仕事・回線共有
 
+### 単体テザリングのhost制御prototype
+
+Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
+
+[設計・API・再現コマンド](../../systems/rock-star-os/targets/avocado-mini/tethering/README.md)に責任、入出力、状態、保存、失敗、復旧、承認、合格条件と未決定の決め方を記載。[証拠](../evidence/development-execution/mini-08-tethering.json)でhost/実機/保存/統合を分ける。料金は承認済みall-in最大値で予約し、未確定枠を期限で返さない。端末受信後のdropだけでは衛星課金上限を保証できず、網側上限を含む実測が必要。
+
 接続契約はownerRef、deviceRef、dockRef、attachmentState、powerSource、WAN種別、capability、許可された共有端末、使用量上限、permission revisionを持つ設計とする。秘密値や回線資格情報をゲームへ渡さない。SSID/接続鍵は端末固有、初期共有はOFF。招待/解除、guest分離、管理面のアクセス制限を設ける。本人のSky/Zema領域と来客hotspotを分離する。
 
 場所を離れても本人の同一job ID/版を維持する。施設の権限・回線・センサー閲覧は本人の仕事保存とは分け、取り外し後は場所scopeを失効する。衛星へ切り替わってもAgentの費用上限・通信予算を引き継ぎ、ゲームやmodelの大容量downloadを無断再開しない。回線切替でTCPやゲームsessionが維持できるとは保証せず、jobの再送一意性と結果照会で復旧する。
