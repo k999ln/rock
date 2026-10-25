@@ -238,6 +238,8 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 ## Pixel候補の最新main同期とguard修正取り込み
 
+新c43 packageの非破壊実機batchはOS operatorが完了し、別のPro reviewerがdocumentary限定PASS（mustFix0、原本6db55d77）。guard9/parent4/cache-onlyを確認、元7f code復元、34jobs/2models/10agents/23成果hash・接続を保持、cache制御row2のみ追加。これは独立小branchへの匿名summary/review保存であり、今回追加main mergeは依頼されていない。元operator receipt/raw27proof・画面・鍵/接続値はGitへ入れず、旧f3/8f失敗履歴と全OS/P02未受入を維持する。保存後の同head CI/remote hashを別checkpointで確認する。
+
 [PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。Dependabot自動更新1件はundici更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
 
 主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESSを確認。元receipt当時pendingと旧f3物理証拠は保持。undici7.29.1のsecurity_update_not_possibleはG04未解決で、依存lock差分0・修正未実施。この変更はmetadataだけ、PR213 fixture診断は別scope。次はこのmetadataのGitHub保存/通常main統合/同SHA CIを確認し、UIは別に受入する。
