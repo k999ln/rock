@@ -16,6 +16,10 @@ ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/
 
 # Web / PWA / Sites
 
+## SMITH-01 処理中の同頁スキップ導線（SKY21 / O5 / ROCK）
+
+main3bb基点。処理中の全anchor抑止が既存skip linkまで無効にする反例を修復し、`#workspace-main`だけを許可。他移動/consumer guard、auth/owner/料金/job/保存を変更しない。局所10pass、actual React/Chrome合成390/1280の旧反例と新focus/route抑止/draft保持を確認。source/metadata独立検収PASS・指摘0、host全verify2994/2991pass/0fail/3skip。Git担当の最新main保全/Git保存/最終同head CIが次。実running/auth composer/physical keyboard/inset/zoom/twoowner/native/公開、wholeSMITHは未受入。[証拠](../evidence/development-execution/smith-running-skip-link.json)。公開/配備/616一括公開保留、原PR203 receiptは不変。
+
 ## Mini/Proの目的を明示（2026-10-21、WEB13 / WEB06、ROCK）
 
 本人指示によりMiniは暮らし・まちづくり、ProはAI専用PCと事業を通じた半導体/関連部品確保を設計と両製品のPurposeへ明示する。ROCKはコピーと正本・配備、EXTERNALは供給/施設、OWNERは用途/予算/契約を担当。現行R5/Pro単独性と販売停止を維持し、供給・住民向けの機能を実装済みにしない。正本は製品profileの `mini-pro-purpose` 節。合格はサイト試験、root verify、正式URLのPurpose読戻し、main保存。Sites v42/source `ef42496c543c08b8ace91b030310cc70899a918a`を公開し、両正式domainのHTTPS200とブラウザPurpose表示を確認。サイト38試験、design:check、root verifyが成功。証拠は `data/mini-pro-purpose-publication.json`。施設・供給・有料注文の受入は未追加。

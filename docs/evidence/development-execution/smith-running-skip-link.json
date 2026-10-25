@@ -1,0 +1,197 @@
+{
+  "schema": "rockstaros.smith-running-skip-link/1",
+  "recordedAt": "2026-10-25T12:27:16.755412+00:00",
+  "taskId": "SKY21",
+  "unitId": "SMITH-01",
+  "primarySquad": "O5",
+  "primaryOwner": "ROCK",
+  "workstream": "05-web-pwa-sites",
+  "baseMain": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+  "scope": "Running WorkspaceShell allows its existing exact #workspace-main fragment while retaining other anchor click guards; one finite keyboard-accessibility defect, not full running-job/SMITH acceptance",
+  "source": [
+    {
+      "path": "components/workspace-shell.tsx",
+      "baseSha256": "c28b3dff3e2b633b88d315c5f28b1576e19240ef852454f4f52294da56952183",
+      "sha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650"
+    },
+    {
+      "path": "tests/os-bottom-navigation-main.test.mjs",
+      "baseSha256": "5eb2e9f590f19594ae1084a252ce07fef277c8f7506e279eb1d96a585753566c",
+      "sha256": "55578a53dd23b70301e8211ed09360690eceb0bb7a09ce8068d3082ecf4bcc5f"
+    }
+  ],
+  "protected": [
+    {
+      "path": "components/os-app-navigation.tsx",
+      "sha256": "be474f2775e9cb4665fd7954279e09105f9b6c9d37e28845766172330461f8a4"
+    },
+    {
+      "path": "lib/os-navigation.ts",
+      "sha256": "d5c7923363e07b353585fa494487472f8c43d1b13260b86779b1919a260082ce"
+    },
+    {
+      "path": "app/os-bottom-navigation.css",
+      "sha256": "bd9ca8d40c79af9cc8e459579bde6c33bc54df6d96f1d1ac1f285e80260d9ecf"
+    },
+    {
+      "path": "components/home-screen.tsx",
+      "sha256": "0f3012eafb7ee680baf8f08cc7f2e60acdd305dc1715805e947d87ccc137aeda"
+    },
+    {
+      "path": "components/home-screen.module.css",
+      "sha256": "5ca6259c9d0488c0e6bd2d4a2d27160979d93a467d4ae7970a749834eea3804a"
+    },
+    {
+      "path": "app/layout.tsx",
+      "sha256": "77dafa710ce5697d758685877f4241b4f7fe5ecb61f0da3481267daf9750e719"
+    },
+    {
+      "path": "components/sky-chat-workspace.tsx",
+      "sha256": "d53505d193ea07fbf4a11007e31fda535e0c1e934898c290a720842e60371400"
+    },
+    {
+      "path": "components/sky-workspace.tsx",
+      "sha256": "d4f5913188b91e017b9f930cf9fdb0257946efb6ff78e9da944a60c6392127b8"
+    },
+    {
+      "path": "components/workbench.tsx",
+      "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "c1b13a88a3219b58a97a70d227663e475e51f1a6eff7fc7bc0d59b8ba37ca287"
+    },
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5"
+    },
+    {
+      "path": "data/product-baseline.json",
+      "sha256": "d91331c1d366a6d16fa476c63fd1fab78aedf6019b2a14e2ebf85a52f9e3bef2"
+    },
+    {
+      "path": "data/mission-control.json",
+      "sha256": "8498373e36b3529a5659de1106a54a5f0889c3b066c063407935a2110091cf9c"
+    }
+  ],
+  "stateAndStorage": "No job/auth/owner/budget/store/DB/route mapping changes. Consumer capture callback and existing beforeunload remain intact; no new persistence or data migration.",
+  "reproduction": {
+    "oldUnitCase": "running=true/#workspace-main prevented unexpectedly",
+    "oldBrowserWidths": [
+      390,
+      1280
+    ],
+    "oldKeyboardSkipReachedMain": false,
+    "oldOtherChecks": "Not executed; null, never interpreted as failure"
+  },
+  "verification": {
+    "focusedCommand": "node --experimental-strip-types --test tests/os-bottom-navigation-main.test.mjs",
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skip": 0,
+    "browser": {
+      "scope": "Actual WorkspaceShell/OsAppNavigation React in synthetic local browser fixture; Next link/router and device monitor are fixture edges; no auth/provider/real job acceptance",
+      "cases": [
+        {
+          "variant": "old",
+          "width": 390,
+          "keyboardSkipReachedMain": false,
+          "routeGuardPreserved": null,
+          "draftPreserved": null,
+          "checksNotRun": [
+            "route guard",
+            "draft preservation"
+          ]
+        },
+        {
+          "variant": "new",
+          "width": 390,
+          "keyboardSkipReachedMain": true,
+          "routeGuardPreserved": true,
+          "draftPreserved": true,
+          "checksNotRun": []
+        },
+        {
+          "variant": "old",
+          "width": 1280,
+          "keyboardSkipReachedMain": false,
+          "routeGuardPreserved": null,
+          "draftPreserved": null,
+          "checksNotRun": [
+            "route guard",
+            "draft preservation"
+          ]
+        },
+        {
+          "variant": "new",
+          "width": 1280,
+          "keyboardSkipReachedMain": true,
+          "routeGuardPreserved": true,
+          "draftPreserved": true,
+          "checksNotRun": []
+        }
+      ],
+      "externalRequests": 0,
+      "apiRequests": 0,
+      "oldSourceSha256": "c28b3dff3e2b633b88d315c5f28b1576e19240ef852454f4f52294da56952183",
+      "newSourceSha256": "e170ab72e6ad47d3b2a73ce21fde58801159197c725306b7859ccadb541fd650",
+      "screenshots": [
+        {
+          "logicalId": "synthetic-running-skip-390",
+          "sha256": "eb5979174f10ef5624f799564e72da28f2e42bc1317ca5fee90074a0b175d91e"
+        },
+        {
+          "logicalId": "synthetic-running-skip-1280",
+          "sha256": "31cc7954e3d6cb7f1e8bab50323dadd99938d24c69ebfc0b22e780046b722014"
+        }
+      ],
+      "rawArtifactsOutsideGit": true,
+      "fixtureRunnerSha256": "2bf72d82c01c30712474cdf51959e78ac26634232f1f6b4ce85b3896e7303a01",
+      "summarySha256": "829e5dd627eb6e69a47d644ef8f65d06dde2d592ad9c84b6391ad8812e709034",
+      "method": "Existing headless Chrome/Playwright actual-React fixture; not CUA, physical keyboard, authenticated composer, real job or Root UI acceptance",
+      "futureBrowserOperations": "CUA only; no more browser operations in this packet"
+    },
+    "independentReview": {
+      "status": "PASS_SCOPED_SOURCE",
+      "mustFix": 0,
+      "regressionTests": 10,
+      "independentCases": 109,
+      "oldSourceCounterexampleExit": 1,
+      "sha256": "38402db2ac4ef610d5a42cdc07c4895ecb864488c16ea3d465328ed38c90b279",
+      "browserReviewScope": "Parent-run browser summary readback, distinct from independently executed109cases"
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "baseMain": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+      "scope": "Mac host source candidate before latest-main adoption; not final Git SHA CI",
+      "tests": 2994,
+      "pass": 2991,
+      "fail": 0,
+      "skip": 3,
+      "logSha256": "f3f16e86c43e550d93e84ac936e16e991c0ff93a19886ec105e81554e76ad1f7"
+    },
+    "sameShaCI": "pending_at_capture",
+    "independentMetadataReview": {
+      "status": "PASS_SCOPED_SOURCE_AND_METADATA",
+      "mustFix": 0,
+      "sha256": "d9684e7574e7465b2db081b28339dd9454ec96b4f6a4cea0fbd7f52280ffb6df"
+    }
+  },
+  "evidenceCorrection": "Independent review found old browser guard/draft values were unmeasured, not false. Corrected to null/checksNotRun and reran; product source unchanged.",
+  "boundaries": {
+    "wholeSmith01Accepted": false,
+    "physicalKeyboardSafeareaZoomAccepted": false,
+    "authenticatedComposerOrRealJobAccepted": false,
+    "nativeProductionAccepted": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "mainMerged": false,
+    "productPolicyOrPricingChanged": false,
+    "realProviderOrFinancialActions": 0,
+    "deviceActions": 0
+  },
+  "rollback": "Ordinary revert of this shell/test change; no saved data, job, budget or schema migration to reverse.",
+  "next": "Git担当 latest-main preservation/adoption of exact source2 plus reviewed metadata, Draft PR save and exact final SHA CI. This user request does not request main integration or deployment."
+}

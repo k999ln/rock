@@ -1404,7 +1404,9 @@
       "directMainTaskRefs": [],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "ESIM_PROVISION_RECOVERY_ADOPTED"
+      ]
     },
     {
       "id": "ESIM-04",
@@ -1900,7 +1902,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "MINI_MESSAGE_ADOPTED"
+      ]
     },
     {
       "id": "PRO-01",
