@@ -1,0 +1,181 @@
+{
+  "schema": "mini-message-main-adoption/1",
+  "pr": 229,
+  "merged": true,
+  "acceptedHead": "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2",
+  "mergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+  "mergedAt": "2026-10-25T13:45:33Z",
+  "normalMerge": true,
+  "treeMatchesAcceptedHead": true,
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
+      "sha256": "4aa11046911f69f1f6423be740d1dc433e28bd10e10987c55be172d849057a02"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "200268c6b57640e8036dc79ef9193cfe6778b8f0cd5e40dc9297bfcc489957e8"
+    },
+    {
+      "path": "tests/test_pixel_worker_diagnostics.py",
+      "sha256": "5a9b14de75b8f71344ac112a44c9ffbb5f5e5f3fe91ade76516eaeba48fd3337"
+    },
+    {
+      "path": "toolkits/sky-linux-local/worker.py",
+      "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+    }
+  ],
+  "separateReviews": {
+    "feature": "docs/evidence/development-execution/mini-08-message-review.json",
+    "ciFixture": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
+  },
+  "checks": [
+    {
+      "name": "source-tests",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186698794"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085922/job/121186192473"
+    },
+    {
+      "name": "partitions (main-0)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186192331"
+    },
+    {
+      "name": "partitions (main-3)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186192315"
+    },
+    {
+      "name": "verify",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085990/job/121186192300"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085922/job/121186192285"
+    },
+    {
+      "name": "partitions (main-1)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186192247"
+    },
+    {
+      "name": "partitions (support)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186192214"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085847/job/121186192005"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085840/job/121186191979"
+    },
+    {
+      "name": "partitions (main-2)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085939/job/121186191969"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085840/job/121186191794"
+    },
+    {
+      "name": "linux-packets",
+      "head_sha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40199085839/job/121186191741"
+    }
+  ],
+  "logs": {
+    "verify": {
+      "run": 40199085990,
+      "job": 121186192300,
+      "logSha256": "f54282a9c4c465c02fe464ecc4420aa52e9fd24440d5d810a3923506f7bf5ac6",
+      "summaries": [
+        "2026-10-25T13:46:29.0800137Z Ran 27 tests in 4.536s",
+        "2026-10-25T13:46:29.2207340Z Ran 4 tests in 0.047s",
+        "2026-10-25T13:46:29.4318350Z Ran 6 tests in 0.086s",
+        "2026-10-25T13:46:30.3964478Z Ran 23 tests in 0.859s",
+        "2026-10-25T13:46:32.5542879Z Ran 29 tests in 0.454s",
+        "2026-10-25T13:46:32.8094175Z Ran 9 tests in 0.144s",
+        "2026-10-25T13:46:33.3539942Z Ran 15 tests in 0.419s",
+        "2026-10-25T13:46:33.9352934Z Ran 11 tests in 0.450s",
+        "2026-10-25T13:49:32.5335184Z ℹ tests 3025",
+        "2026-10-25T13:49:32.5336087Z ℹ pass 3023",
+        "2026-10-25T13:49:32.5336408Z ℹ fail 0",
+        "2026-10-25T13:49:32.5337377Z ℹ skipped 2",
+        "2026-10-25T13:49:36.3356717Z ℹ tests 25",
+        "2026-10-25T13:49:36.3357457Z ℹ pass 25",
+        "2026-10-25T13:49:36.3357676Z ℹ fail 0",
+        "2026-10-25T13:49:36.3358110Z ℹ skipped 0",
+        "2026-10-25T13:49:38.5006748Z ℹ tests 45",
+        "2026-10-25T13:49:38.5007900Z ℹ pass 45",
+        "2026-10-25T13:49:38.5008286Z ℹ fail 0",
+        "2026-10-25T13:49:38.5009135Z ℹ skipped 0",
+        "2026-10-25T13:49:38.9074576Z ℹ tests 4",
+        "2026-10-25T13:49:38.9075374Z ℹ pass 4",
+        "2026-10-25T13:49:38.9075800Z ℹ fail 0",
+        "2026-10-25T13:49:38.9078540Z ℹ skipped 0",
+        "2026-10-25T13:49:39.1213637Z ℹ tests 6",
+        "2026-10-25T13:49:39.1215212Z ℹ pass 6",
+        "2026-10-25T13:49:39.1216234Z ℹ fail 0",
+        "2026-10-25T13:49:39.1217448Z ℹ skipped 0",
+        "2026-10-25T13:49:39.3426336Z ℹ tests 7",
+        "2026-10-25T13:49:39.3428206Z ℹ pass 7",
+        "2026-10-25T13:49:39.3428625Z ℹ fail 0",
+        "2026-10-25T13:49:39.3429527Z ℹ skipped 0",
+        "2026-10-25T13:49:39.5542990Z ℹ tests 2",
+        "2026-10-25T13:49:39.5545213Z ℹ pass 2",
+        "2026-10-25T13:49:39.5545655Z ℹ fail 0",
+        "2026-10-25T13:49:39.5547647Z ℹ skipped 0",
+        "2026-10-25T13:49:39.7944565Z ℹ tests 2",
+        "2026-10-25T13:49:39.7945468Z ℹ pass 2",
+        "2026-10-25T13:49:39.7945905Z ℹ fail 0",
+        "2026-10-25T13:49:39.7946806Z ℹ skipped 0"
+      ]
+    },
+    "linux-packets": {
+      "run": 40199085839,
+      "job": 121186191741,
+      "logSha256": "bc6198ddcc5f39d0f06a9279eb58a9695a85873819cb79ff347bc1255f2d4e70",
+      "summaries": [
+        "2026-10-25T13:46:07.7168233Z Ran 83 tests in 8.227s",
+        "2026-10-25T13:46:32.4286165Z Ran 26 tests in 24.591s"
+      ]
+    }
+  },
+  "scope": "PR229 common message adapter only; later PR231 service is separate",
+  "physicalAccepted": false,
+  "liveProviderAccepted": false
+}

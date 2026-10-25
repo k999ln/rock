@@ -10079,7 +10079,7 @@
       "mergeEvidence": "docs/evidence/development-execution/mini-08-hardware-main-merge.json"
     },
     "messageAdapter": {
-      "status": "offline_adapter_verified_ready_for_git_adoption",
+      "status": "latest_main_synchronized_host_full_verify_pass_pending_adoption",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10095,17 +10095,29 @@
       "hostTestsPassed": 83,
       "mustFixRemaining": 0,
       "gitHubSaved": true,
-      "mainMerged": false,
+      "mainMerged": true,
       "fullVerify": "complete_chain_exit0_2986tests_2983pass_3skip_0fail",
       "pr": 229,
       "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
       "linuxCommonTestsPassed": 83,
       "linuxPacketTestsPassed": 26,
-      "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
-      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5"
+      "ciStatus": "13_same_merge_sha_checks_success",
+      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
+      "latestIntegrationMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
+      "newIntegrationFullVerify": {
+        "exitCode": 0,
+        "tests": 3025,
+        "pass": 3022,
+        "fail": 0,
+        "skip": 3
+      },
+      "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json",
+      "mainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "currentConfirmationEvidence": "docs/evidence/development-execution/mini-08-message-main-confirmation.json"
     },
     "messageService": {
-      "status": "verified_saved_awaiting_parent_main_adoption",
+      "status": "reviewed_main_synchronized_ci_pending",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10115,7 +10127,7 @@
       "physicalAccepted": false,
       "providerConnected": false,
       "mainMerged": false,
-      "nextAction": "Confirm PR229 main adoption/CI with central Git, synchronize PR231 to main and verify exact-head CI; real provider/modem/product identity/physical acceptance remains separate",
+      "nextAction": "Confirm synchronized PR231 exact-head CI, then hand the isolated service packet to central Git; actual modem/provider/product identity/physical acceptance remains separate",
       "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
       "evidence": "docs/evidence/development-execution/mini-08-message-service.json",
       "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
@@ -10129,7 +10141,8 @@
       "fullVerify": "complete_chain_exit0_2993tests_2990pass_3skip_0fail",
       "linuxCommonTests": 103,
       "linuxPacketTests": 26,
-      "ciStatus": "14_same_source_head_success"
+      "ciStatus": "previous_6b155020_14_success_synchronized_head_pending",
+      "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77"
     }
   },
   "pixelCacheMainAdoption": {
@@ -10508,5 +10521,99 @@
     "P02Complete": false,
     "realFinancialAccepted": false,
     "publicDeployment": false
+  },
+  "gameWorkDraftMainAdoption": {
+    "taskIds": [
+      "AI06",
+      "GM01"
+    ],
+    "primaryWorkstream": "08-game-market-fund",
+    "responsibility": "ROCK",
+    "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "sourceIndependentReview": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+    "rootSyntheticFunctionalUiScopedPass": true,
+    "latestRootContractPreflightPass": 56,
+    "wholeGAME02Accepted": false,
+    "realGameAccepted": false,
+    "realProviderOrFinancialAccepted": false,
+    "publicDeployment": false,
+    "stage": "PR230_main_integrated_same_SHA_CI_pass",
+    "hostFullVerify": {
+      "tests": 3010,
+      "pass": 3007,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0
+    },
+    "ciHistoricalFixturePreparation": {
+      "commit": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+      "source4Unchanged": true,
+      "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
+    },
+    "mainMerged": true,
+    "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+    "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/game-work-draft-main-current.json"
+  },
+  "eveMultiMaterialPreparation": {
+    "unit": "EVE-02",
+    "primaryWorkstream": "05-web-pwa-sites",
+    "primaryOwner": "ROCK",
+    "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+    "status": "PR232_main_integrated_same_SHA_CI_pass",
+    "scope": "2-4 saved materials; legacy2 byte compatibility; estimate only",
+    "evidence": "docs/evidence/development-execution/eve-multi-material.json",
+    "mainMerged": true,
+    "wholeUnitAccepted": false,
+    "paidGenerationAccepted": false,
+    "publicDeployment": false,
+    "synchronizedMain": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+    "focusedTestsPassed": 88,
+    "afterSyncTargetedPassed": 85,
+    "independentReviewPerformed": true,
+    "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+    "mustFix": 0,
+    "independentRelatedTestsPassed": 86,
+    "historicalPreR2HostFullVerify": {
+      "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+      "counts": {
+        "tests": 3003,
+        "pass": 3000,
+        "fail": 0,
+        "skip": 3
+      },
+      "appliesToFinalR2": false
+    },
+    "latestIntegrationMain": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "newIntegrationFullVerify": {
+      "status": "passed_host",
+      "tests": 3025,
+      "pass": 3022,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0
+    },
+    "gitHubSaved": true,
+    "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+    "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+    "headCISuccess": 7,
+    "currentMainEvidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+    "browserSupplement": "docs/evidence/development-execution/eve-multi-material-browser-summary.json",
+    "browserDocumentaryReview": "docs/evidence/development-execution/eve-multi-material-browser-review.json",
+    "actualBrowserSupplementScope": "Synthetic3/4 React fixture only; not production auth/storage/provider",
+    "next": "Current metadata Git/main save; actual provider/production auth-storage/wholeEVE remain gated",
+    "mainCISuccess": 6,
+    "mainLinuxVerify": {
+      "run": 40197738045,
+      "job": 121182146386,
+      "tests": 3025,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
+    }
   }
 }

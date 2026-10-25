@@ -8,8 +8,6 @@ Walletの[DB復旧fixture](docs/sky-billing.md#wallet-legacy-db-recovery-fixture
 
 Game作者向け[host fixture CLI](docs/game-api-contract-draft.md#game-creator-host-fixture)を限定候補へ追加。`node --experimental-strip-types scripts/game-creator-fixture.mjs --help`から、所有するprivate temp directoryで固定粒子sessionのstart/read/resumeを試せます。既存save形式で再開・同一retryを照合し、不明な保存やlockは自動削除しません。合成ownerのhostサンプルで、任意engine・認証owner保存・fullSDK・金融・実機・公開の受入ではありません。Eve見積onlyはPR204でmainへ限定統合済みです。
 
-Eveの[保存資料の料金見積](docs/rockstaros-complete-design.md#eve-saved-source-estimate)を限定候補へ追加。`npm run dev`の`/os/eve/remix`で2資料と依頼を無料準備・保存・読戻し後、「保存した資料で料金を見積もる」から必要なmodel/通貨/比較上限を選び、別の資料利用同意後に「見積のみ確認」を押します。比較上限は未承認で、生成・費用承認・課金は行いません。信頼できる単価がなければ利用不可を表示します。実local UIは保存/復元と503を確認し、数値正常/期限はfixtureと区別、最新mainのSmith navとの復元・表示切替・入力保持も限定確認しました。数値/expiry実browser、最終CI/検収・公開は別gateです。初回CIが指摘したテスト表現1箇所を修正し、製品動作は維持しています。Smith navはPR203でmainへ限定統合済みです。
-
 小型画面の[下部ナビ](docs/rockstaros-complete-design.md#smith-mobile-bottom-navigation)を限定候補へ更新。`npm run dev`のHomeや既存WorkspaceShellで、幅700px以下にSmith・Eve・コミュニティーの3入口を表示します。見つける／自分のSkyはHomeの「その他」メニューから開けます。入力中はナビを隠して入力を保ちます。限定local実UIを確認済みですが、実機keyboard・認証後composer・本番公開等は別受入です。Billing service最終claimはPR202でmainへ限定統合済みです。
 
 Cloud textの[最終service確認](docs/sky-billing.md#billing-required-service-authority)を限定候補へ追加。既存server設定がrequiredの場合は送信直前にも本人の有効な利用権と期限を確認します。previewは既存試験/legacy経路として区別し、結果不明時は予約を保持して自動再送しません。価格・設定値・schemaは変更していません。最終CI/独立採用検収・実Provider/課金/公開は別gateです。eSIM本文開示はPR201でmainへ限定統合済みです。
@@ -66,7 +64,7 @@ Miniは暮らしとまちづくりへの貢献を目指します。ProはAIを�
 
 ## Mini — 暮らしとまちづくり
 
-日米のsi・メッセージ・小ファイル向け[共通message adapter](systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。既存の開発用Broker本人確認とAP認証を常駐入口へ接続し、周期件数・再送・期限・料金予約を制限する。固定Unix modem bridgeは期限付き。実Broker本人認証・実modem/provider・Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
+日米のsi・メッセージ・小ファイル向け[共通message adapter](systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。既存の開発用Broker本人確認とAP認証を常駐入口へ接続し、周期件数・再送・期限・料金予約を制限する。固定Unix modem bridgeは期限付き。実Broker本人認証・実modem/provider・Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。 PR229はmain a58c6ffaへ通常統合・同SHA全13CI成功、元製品4/Pixel fixture2の検収hash一致。常駐制御PR231は別の受入対象。[採用段階](docs/evidence/development-execution/mini-08-message-main-adoption.json)で原機能検収とmain確認証拠を別追跡。
 
 [内蔵衛星modem・電池・回線候補と実機試験準備](docs/avocado-mini-r5/satellite-hardware-trial-plan.md)で比較条件とP0〜P5の記録項目を確認できます。 初期対象は日本・米国のsi／メッセージ／小ファイル通信に確定し、国別に検証します。実機通信・契約・閉箱携帯は未受入です。
 
@@ -210,11 +208,19 @@ eSIMは本人用Cloud Sky・Eve・Linuxサービスへの入口です。OS binar
 
 <br>
 
+### Game結果から仕事の下書きを作る
+
+仕事画面で既存host fixtureのGame結果JSONと依頼を入力し、「仕事の下書きに入れる」で申告版・入力hash・目的を確認できます。取り込みだけでは保存せず、本人が「仕事を作成」を押して既存の未実行WorkJobへ保存します。入力/名前/templateの編集、破棄、本人scopeの再読込で古いGame下書きを無効にします。不明な保存結果は同じID/内容を明示確認し、自動再送しません。Game申告は完了・実行・予算承認になりません。[契約と検証範囲](docs/game-api-contract-draft.md#game-work-draft)。
+
 ---
 
 <a id="eve"></a>
 
 ## Eve — 会話から仕事と成果へ
+
+Eveの資料付き依頼はPR232でmainへ限定採用した2〜4資料対応です。「資料を追加」「資料Nを外す」で準備し、合計8,000文字以内で保存・復元・見積比較します。2資料の既存保存は互換維持。3・4資料は新版形式で、生成・課金は開始しません。[契約と残gate](docs/rockstaros-complete-design.md#eve-multi-material)。
+
+Eveの[保存資料の料金見積](docs/rockstaros-complete-design.md#eve-saved-source-estimate)を限定候補へ追加。`npm run dev`の`/os/eve/remix`で2〜4資料と依頼を無料準備・保存・読戻し後、「保存した資料で料金を見積もる」から必要なmodel/通貨/比較上限を選び、別の資料利用同意後に「見積のみ確認」を押します。比較上限は未承認で、生成・費用承認・課金は行いません。信頼できる単価がなければ利用不可を表示します。実local UIの保存/復元・503確認は既存2資料の履歴です。採用前の3・4資料検証はhost/API/VMのみでした。その後、実Reactと合成API/RAMによる3・4資料の保存・復元、見積表示/自然失効、owner切替を追加観測し、独立documentary検収しました。[現行証拠](docs/evidence/development-execution/eve-multi-material-main-current.json)。実認証・本番保存・Provider利用の受入は別gateです。数値正常/期限はfixtureと区別し、最新mainのSmith navとの復元・表示切替・入力保持も限定確認しました。実Provider単価・本番認証/保存・本番見積/課金・公開は別gateです。初回CIが指摘したテスト表現1箇所を修正し、製品動作は維持しています。Smith navはPR203でmainへ限定統合済みです。
 
 <p align="center">
   <img src="docs/assets/readme/eve-workflow.svg" alt="Eveの会話・承認・仕事・成果をつなぐ概念図" width="100%" />
@@ -394,6 +400,8 @@ Miniと同じWebソース内にあります。
 ---
 
 ## 開発と検証
+
+Gameの旧UI反例は固定main `ee9b88010c4ccb20be1db46177e3805380995c4b` を参照します。浅いcloneで検証する場合は `git fetch --no-tags --depth=1 origin ee9b88010c4ccb20be1db46177e3805380995c4b` で準備します。CIもこのcommitだけを取得し、旧WorkbenchのSHA256 `d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2` を照合してから反例を実行します。
 
 undiciはrootで修正版7系（`^7.30.1`）、Miniサイトで修正版8系（`^8.12.2`）をoverrideで許容し、各lockfileで実版を固定します。`npm ci` と `npm ci --prefix sites/avocado-mini` 後に `node --test tests/undici-dependency-security.test.mjs tests/undici-tls-options.test.mjs` で依存先とTLS設定の保持を確認できます。[修正・検証記録](docs/evidence/undici-security-constraint.json)。
 

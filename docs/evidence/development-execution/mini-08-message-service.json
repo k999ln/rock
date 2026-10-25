@@ -190,5 +190,17 @@
     "verifyRun": 40193904633,
     "verifyJob": 121170529010,
     "verifyLogSha256": "13b40ea8b0282a182ad2c4691b40d4403ab380883366aa75e1a719c32ff5e112"
+  },
+  "parentMainConfirmation": {
+    "path": "docs/evidence/development-execution/mini-08-message-main-confirmation.json",
+    "mergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "checksSucceeded": 13
+  },
+  "mainSynchronization": {
+    "baseMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "reviewedServiceHashesUnchanged": true,
+    "hostMiniTestsPassed": 103,
+    "metadataIndependentMustFix": 0,
+    "newHeadCI": "pending"
   }
 }

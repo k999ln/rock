@@ -196,6 +196,8 @@ privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGi
 
 同4pathのrecurring互換delta: 同INSERTの既存0021 triggerで拒否例外を維持し、既知拒否と保存不明を区別。局所40pass、新hash独立再検収/全verify/CI待ち。
 
+
+
 ## Billing最終send claimの限定採用
 
 [Billingの11項目契約](sky-billing.md#billing-final-send-claim)で、current parent/rate/time/held cap/ownerと既存opt-in recurringを同じ最終INSERT SELECTへ固定する。拒否/不明時はno-send/元hold維持、既存late usageと一回settleを保持。新migration/料金/Wallet/888c変更なし。共通authority・issuer epoch/consent revision adapterと本番D1/実Providerは未受入。[exact4採用証拠](evidence/development-execution/billing-final-send-main-adoption.json)。ROCK実装、EXTERNAL根拠、JOINT本番受入、OWNER同意/費用の分界を維持する。
@@ -485,6 +487,19 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 成果の編集では、開始時の原文とrevisionを読み取り専用で保持し、編集内容と新しい目的・完成条件・文字数・必須文言を別の下書きへ入力する。「編集版を新しい仕事へ」は独立した未検査jobの計画だけを保存し、素材はこのタブに未保存で保持する。保存済み成果の取得は本人認証付きのHTTP attachmentを使い、表示したjob／手順／revisionへ一致させる。別owner・消去済み成果は404、更新済みの版は409で止め、private/no-store、nosniff、plain UTF-8 text／CSVと中立的なファイル名を使用する。新しい素材保存の本人同意と実行後に、別jobの検査・成果として保存する。原job、原artifact、旧検査合格、本人確認、Provider receiptは変更も移植もしない。CSVはCSV構造検査、文章はplain text表示を使い、任意HTMLを実行しない。編集memoryと保存不明の転送snapshotはowner／job／nodeに結び、元owner再確認後だけ戻す。別タブの後続revisionで比較元を置き換えず、開始時版を表示する。明示した素材消去は、その仕事の未保存編集も確認して消す。
 
 合格条件は、実入力で2種類以上の接続済み処理→検査→保存→再表示→レシピ保存→新素材の新jobを一周し、原成果が不変であること。本人切替、401、Origin、競合、応答喪失、二重クリック、失敗検査の再開、素材消去、再起動、PC／390pxを確認する。正常／異常APIは実handler/storeとSQLite、実画面・実D1は別証拠で記録する。候補の対象試験は `tests/work-composition*.test.mjs`、共通owner hookと既存Workbenchの回帰、全体 `npm run verify`。現時点は実装とローカル検証中で、本番本人認証、同一最終SHA CI、公開反映は別受入。未決事項は外部Toolの接続契約と有料実行で、既存の見積／予算／Provider受入が揃うまで候補を利用不可に保つ。
+
+<a id="eve-multi-material"></a>
+
+現行採用: PR232/main `fb604256`に2〜4資料の互換拡張を限定統合。原R1/R2・採用前snapshotを保持し、追加3/4実React合成UIは別documentary検収として記録する。実Provider/課金・本番保存・wholeEVE・公開の受入にはしない。[現行証拠](evidence/development-execution/eve-multi-material-main-current.json)。
+### 2〜4資料の互換拡張（EVE-02）
+
+目的・利用体験: 既存の資料付き依頼に3番目・4番目の資料を加え、同じ仕事で無料準備・原文保存・復元・見積比較を行う。「資料を追加」「資料Nを外す」は通常buttonでkeyboard操作できる。最低2・最大4、本文合計8,000 JavaScript文字単位、依頼500文字、名前160文字、選択file各48,000 bytesと既存80,000-byte run request上限を維持する。資料数を増やしても入力総量・生成能力・予算は増やさない。
+
+責任・入出力: ROCKは既存codec/workflow/owner別UIと全資料の照合を担う。OWNERが資料の選択・固定・保存同意・見積同意を別々に行う。EXTERNALの信頼できる単価がなければ従来どおり見積を拒否する。2資料は`eve.text-preparation/1`・既存plan・`eve.text-estimate/1`をbyte互換で保持し、3・4資料だけ`eve.text-preparation/2`と対応plan・`eve.text-estimate/2`にする。材料順序を含むcanonical envelopeとprompt digest、全2〜4本文のordered SHA256を照合し、見積replyの欠落・追加・順序変更・旧builder混在を拒否する。schemaと資料数が食い違う保存も拒否する。
+
+状態・保存・失敗・復旧: 既存compositionのcreate→同意付きrun→review、owner/job/revision/command照合と原文artifactを再利用する。別engine/DB/migrationは追加しない。資料追加・削除は未保存入力だけを変え、保存済み原文は変更しない。入力identityとfile世代を再照合し、古い追加/削除・名前/本文/依頼編集callbackや読込で新入力・別ownerを上書きしない。過大入力や不正UTF8/controlは切捨てず拒否し、既存入力を保つ。restoreはGETのみで自動再実行・自動見積しない。新形式を知らない旧readerは拒否するため、rollbackは旧版で3・4資料を開けない旨を示し、新版へ戻して復元する。保存済みjobを削除して回避しない。
+
+承認・合格条件・未決定: 保存と見積の明示同意を維持し、pricing execution gatefalse・budget0・quote/reserve/approve/sendなし。2資料互換、3・4資料の同job保存/復元、全hashの比較、8,000/500/48,000/80,000境界、不正schema/count/owner/revision、後着読込・入力差替えをhost/API/VMで検査する。modelによる草稿/意味検収、実Provider/請求、実browser全操作、別端末/実機/一般公開は別gate。合格証拠は[限定受入記録](evidence/development-execution/eve-multi-material.json)へ残し、固定候補の独立検収・Git採用は実施した段階だけ更新する。
 
 ### Zemaの古い応答と未送信入力（2026-10-11、WEB04）
 
@@ -1129,6 +1144,25 @@ Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation�
 - Walletは金融台帳・Provider境界。通常Toolの自己申告で残高を変更しない。
 - Fundは確認済み実績から構成を比較するsystem。Tool自身に配分authorityを与えない。
 - ATMはWalletとは別adapter。ATM手数料0を他Tool料金へ転用しない。
+
+<a id="game-work-draft"></a>
+### 非金融Game結果から既存WorkJobへの明示下書き（GAME-02限定）
+
+目的・体験: 既存known-particle host fixtureのJSONと本人の依頼を仕事画面へ明示入力し、「仕事の下書きに入れる」で内容・申告版・入力hashを確認する。取り込みはlocal formだけで、「仕事を作成」が既存本人createを行う唯一の保存点。生成した仕事もactive/未実行で、完了・実行・予算の承認にはしない。既存GAME-01 CLI（PR205/main08669893）は維持し、fullGAME02や双方向bridgeへ拡張しない。
+
+責任・権限: ROCK/08は入力変換と既存Web consumer、共通workflow/API/store/owner resolverは既存契約を維持する。Gameのowner名・digest・hostProofは未検証の申告。本人の認証・capability・Tool成功・費用承認へ昇格しない。EXTERNALの任意engineや本番Providerは接続しない。OWNERの明示createと既存owner再読込を必須にする。
+
+入出力: strictな既存Game reportのfield集合、UTF8最大16000bytes、依頼最大400JS units、現UI owner contextを受ける。不明field、承認/完了/予算flagの昇格、不正UTF8/制御文字/過大入力は拒否。出力は本人scope、申告revision、貼付けたexact bytesのSHA256、最大120unitsのtitle、article template、既存WorkPlan(schemaVersion1/objective最大1000)。raw JSON、Game側owner、pidや実行commandを永続planへコピーしない。
+
+状態・保存: Game入力/下書きはReactの一時memory。localStorage/URL移送や自動再開をしない。編集・template変更・破棄・新owner再読込でprovenanceを無効化する。既存createはowner/ID/title/template/optional planを同じpending Creationへ捕捉し、既存API/SQLite保存・revision/CASを使う。新たなpersisted draft status/schemaは追加しない。意図的に新規createした別jobをGame全体で重複排除する仕様ではない。
+
+失敗・復旧: epoch/current-input reference/mounted guardで古いcallbackと遅いdigestを拒否する。unknown保存結果は元ID/planを保持し、自動POST/PATCHを行わず、本人再読込後の明示確認で同じ要求だけ再照合する。応答plan不一致は未確認を維持。owner変更は実際のserver-context再読込で判定し、fixtureの未購読ownerイベントを即時本人切替の証拠にしない。既存仕事は破棄操作で消さない。
+
+承認・費用: 取り込み/prepareは保存・実行・課金0。保存済jobの実行、Tool権限、予算上限、Provider receiptは既存の別gateを通す。金額、Wallet/GX、実game残高を動かさない。
+
+受入: 固定4sourceの新17群+既存復旧39群（56）、別担当旧base上の追加7probe、Rootの実React UI（合成fetch/RAM保存・layout未受入）を別々に記録する。最新Zod4.6.7下のRoot preflight56成功は旧7probeやfullverifyの代用にしない。標準private生成/型/全verify、同head CI、独立integration metadata、通常main統合とmerge同SHA CIを採用gateとする。原fulltscのgenerated-private欠落3件とtype-only stub試験は履歴保持し、stubを製品へ入れない。
+
+未決定・次の決め方: 実Game import、Work→Game、限定memory、外部作者のfresh SDK導入計測、production auth/storage/identityイベント、OS/実機/本番金融・公開は別受入。各既存AI06/GM01/DX01とphaseGateで対象・本人権限・同一artifact・失敗復旧の証拠を固定して決める。wholeGAME02はfalse。[採用証拠](evidence/development-execution/game-work-draft-main-adoption.json)。
 
 ## 20. Tool追加の完了条件
 

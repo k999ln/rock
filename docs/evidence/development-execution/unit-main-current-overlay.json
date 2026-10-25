@@ -805,6 +805,54 @@
       "newDeviceOperations": 0,
       "additionalInference": 0,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "GAME_WORK_DRAFT_CANDIDATE",
+      "units": [
+        "GAME-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Nonfinancial untrusted Game report to transient editable draft, explicit existing owner-checked WorkJob create and same-request unknown recovery; no reverse bridge/GX authority",
+      "tasks": [
+        "AI06",
+        "GM01"
+      ],
+      "contextTask": "DX01",
+      "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+      "sourceIndependentReview": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+      "hostFullVerifyExitCode": 0,
+      "mainAdoptionAtCapture": "pending",
+      "wholeUnitAccepted": false,
+      "financialExchangeAccepted": false,
+      "realProviderAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false,
+      "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+      "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "currentMainEvidence": "docs/evidence/development-execution/game-work-draft-main-current.json"
+    },
+    {
+      "id": "EVE_MULTI_MATERIAL_ADOPTED",
+      "units": [
+        "EVE-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Legacy2 exact bytes and3/4 v2 saved preparation/estimate only; bounded synthetic browser supplemental evidence separately reviewed.",
+      "pr": 232,
+      "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+      "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+      "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+      "browserReview": "docs/evidence/development-execution/eve-multi-material-browser-review.json",
+      "wholeUnitAccepted": false,
+      "paidGenerationAccepted": false,
+      "realProviderAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

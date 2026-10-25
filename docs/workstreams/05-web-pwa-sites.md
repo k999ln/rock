@@ -160,6 +160,10 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ## 現在地
 
+### Eve 2〜4資料の互換拡張採用
+
+source05/ROCK・統合10/G04、EVE-02/WEB04/HOME01/SKY21。最終R2の製品4/test5を固定し、2資料v1 byte互換・3/4のみv2、本文合計8000/goal500/file48000/run80000上限、owner/revision/別同意・pricing gatefalseを保持する。原R1のstale slot edit2反例を残しR2必須0/独立8+2・関連86を継承。最新mainと全受入を保持して全verify→独立統合metadata→headCI→通常main/merge同SHA CI→current進捗を同期する。旧2資料実UIと新3/4のhost/API/VMを分け、採用前snapshotの3/4実browser未受入は保持。その後のRoot合成API/RAM実React3/4UIを別documentary検収し限定証拠を追加。PR232/head d1eabc8a全7CI後、main fb604256へ通常統合、同mergeSHA全6CI成功。実Provider/課金/本番保存/実機/wholeEVE02/公開は未受入。[現行採用](../evidence/development-execution/eve-multi-material-main-current.json)。[契約](../rockstaros-complete-design.md#eve-multi-material)／[原検収](../evidence/development-execution/eve-multi-material-review-r2.json)。
+
 - 回転するMotion Towerが説明の大見出しに重なる問題を修正。デスクトップは左に説明、右に黒い製品面、モバイルは上に説明、下に製品を配置し、一周の横移動と傾きを抑えた。センサー章の重複接写を取り除き、青い発光と一周後の価格は残した。デスクトップの途中角度と390px幅の後半・価格を試写で確認。製品Site v20（source `95dd1fa05b82749c295d3f71ebd9cc020bae828f`）を公開し、新しいCSSの読込みを確認。GitHub mainは未反映で、既存PRを更新する。
 
 - 利用者の最新指定で、avocadoMini製品Siteの青い全面背景を冒頭の黒いスタジオ写真に合わせて黒・金属色へ変更。ハイライト、デザイン、OS導入、下層ページを同系統にし、青い光はセンサーの演出へ絞った。デスクトップと390px幅の試写で表示を確認。製品Site v19（source `ac51ed7cbb64c37deb35f20b08ade219ad840d34`）を公開し、新しいCSSの読込みを確認。GitHub mainは未反映で、既存PRへ更新する。

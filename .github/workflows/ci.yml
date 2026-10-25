@@ -16,6 +16,16 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Fetch pinned historical Game negative-control fixture
+        timeout-minutes: 2
+        run: |
+          git fetch --no-tags --depth=1 origin ee9b88010c4ccb20be1db46177e3805380995c4b
+          python3 - <<'PYBASE'
+          import hashlib, subprocess
+          baseline = subprocess.check_output(['git', 'show', 'ee9b88010c4ccb20be1db46177e3805380995c4b:components/workbench.tsx'])
+          if hashlib.sha256(baseline).hexdigest() != 'd93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2':
+              raise SystemExit('Pinned Game Workbench baseline SHA256 mismatch')
+          PYBASE
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # Offline alias validation uses SQLite authorizer/serialization APIs.

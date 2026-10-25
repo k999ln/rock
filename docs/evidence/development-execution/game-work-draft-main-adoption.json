@@ -1,0 +1,110 @@
+{
+  "schema": "rockstaros.game-work-draft-main-adoption/1",
+  "mainBase": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+  "originalCandidateBase": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+  "sourceHashes": {
+    "lib/game-work-draft.ts": "1ed31cb398d571ed11708959ab7396af2daa8392c784b362b9a69e2acc32e3a6",
+    "components/workbench.tsx": "2bd1c749e0a1106a272298b845734c2197f1643f24a2aa74e72958fada65fcdc",
+    "tests/game-work-draft.test.mjs": "52e53b8789fac9fb46621a485f96104a02ce219486166db9898ac2f2bfc9bf21",
+    "tests/game-work-draft-ui.test.mjs": "9e48f1e19eccbb26adae1b104b8b555fc24fe387768bba4e30c973ef7b2502dd"
+  },
+  "originalReceiptSha256": "78376b9adb2a3e0097acb4c7b5ab37d6ed92224053d6196c789e2d76d87bc668",
+  "portableReceiptSha256": "2f1bcc89a402063f927db90774f31c8f3bb87f34dff2aad4bb8154d75507f874",
+  "originalReviewSha256": "f21ed165227d77d8f509a16cb88ec911eb6febe049256dea006f26752e5939b0",
+  "portableReviewSha256": "4c3a403c5616aefb4a449166b65381bb2e8fecc70b03c95f1bec1d3de0e212ab",
+  "originalRootUiSha256": "ec031fbe848998aa5ac4511599f3a0919b77bee1f78f9eb50eb12968afd86f42",
+  "portableRootUiSha256": "9a8db8ee452695870fa42d8163abb1172bb206882837bd390c07781c5bea7dd3",
+  "independentSourceReview": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+  "mustFix": [],
+  "latestContractPreflight": {
+    "base": "27a8b774d806b7143b9b62f8291ea8c297ee9e27",
+    "sha256": "bf89b8f1cf6eeac3ced570817816b6a5b036e5ccff5273f653cf3f989136c953",
+    "zod": "4.6.7",
+    "tests": 56,
+    "pass": 56,
+    "fail": 0,
+    "skip": 0,
+    "scope": "Separate Root latest-contract fixture preflight, not old independent7 or full integration acceptance"
+  },
+  "sourceProtectedContracts": {
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "lib/work-store.ts": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330",
+    "app/api/work-jobs/route.ts": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d",
+    "lib/owner-intent.ts": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+    "lib/work-job-view.ts": "35b07adfa3695fba9465ccef7eeb5c3d95b39213e4f9c9b2c76327a512348829",
+    "lib/pending-owner-intent.ts": "316a9cc1b1897bb59e6c15d1f9c607fc96a9ae53c463b3412054f69d83327d35",
+    "components/use-owner-memory-state.ts": "dae8486a3a3fd5c34e7258f58659d6b02abc2eebe77302276b79cc2f085f039c",
+    "tests/workbench-owner-recovery.test.mjs": "fdecedd6df0259e5e1cdbde6b2dc4994d0aab17aa13f8b0ea06e4b4e8d569263",
+    "scripts/game-creator-fixture.mjs": "62c0575a28b71383e330a9e673b535a64f4111f005b2c231a7f0e88755cf8884"
+  },
+  "authorization": {
+    "sourceChat": "01a16c2e-d5e8-7b01-8773-796ab372d10c",
+    "sourceTurn": "01a172cc-9bbb-7811-a112-103a21699aec",
+    "sourceUserMessage": "01a172cc-9c33-72d0-831c-15396b668383",
+    "scope": "Fixed candidate; standard full verify, exact head CI, normal main integration and merge-SHA CI"
+  },
+  "standardPrivateGenerationRequired": true,
+  "typeStubAdopted": false,
+  "integrationStageAtCapture": "candidate after standard private generation and complete host verify; independent integration metadata/headCI/main/mergeCI remain",
+  "wholeGAME02": false,
+  "realGameImport": false,
+  "workToGameBridge": false,
+  "realProviderOrPaidModel": false,
+  "financialExchange": false,
+  "publicDeployment": false,
+  "bulk616": "HELD",
+  "validation": {
+    "standardPrivateGeneration": "passed; generated output ignored, no type stub",
+    "fullVerify": {
+      "command": "npm run verify with installed OpenSSL3 and local synthetic fixture listener permission",
+      "baseMain": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+      "exitCode": 0,
+      "rootTests": 3010,
+      "rootPass": 3007,
+      "rootFail": 0,
+      "rootSkip": 3,
+      "plane": "Mac host full chain including standard typecheck/build/API; exact finalhead Linux CI remains required",
+      "logSha256": "f3bf631e7a866b6e043849ab9b953b451827de47a9eafd5732731f9e5e6d44cf"
+    },
+    "failureHistory": [
+      {
+        "stage": "initial full verify",
+        "result": "exit1",
+        "cause": "sandbox listen EPERM127.0.0.1 at sky:a2a:workflow:test, before product tests",
+        "sourceChanged": false,
+        "logSha256": "63a7cdb8222a1443a2f2318aec2a6f4847d07ef72b31bff4047859d8218a6182"
+      },
+      {
+        "stage": "exacthead07354 Linux CI",
+        "run": 40190970498,
+        "job": 121161707735,
+        "result": "exit1:3010tests/3007pass/1fail/2skip",
+        "cause": "checkout depth1 fetched only head; actual old-main negative control could not read pinned ee9 Workbench",
+        "source4Changed": false,
+        "testRemovedOrSkipped": false,
+        "rawLogSha256": "f03c7d9a2b5007ed520c2bcca078e6e53d38a2a1fb4d9fd20ab05b527adada6c"
+      }
+    ]
+  },
+  "latestMainSynchronization": {
+    "main": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+    "mergeCommit": "a344172eb62bb8ef347fc94c715ff72a12e867ef",
+    "method": "ordinary merge",
+    "incoming": "PR22122metadata/design paths only; accepted runtime/dependencies unchanged since host verification",
+    "source4HashesUnchanged": true,
+    "allExistingMainStatusPreserved": true
+  },
+  "ciHistoricalFixturePreparation": {
+    "workflow": ".github/workflows/ci.yml",
+    "commit": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "path": "components/workbench.tsx",
+    "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+    "fetch": "git fetch --no-tags --depth=1 origin ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "scope": "One immutable public main baseline, hash checked before full verify. Current source checkout unchanged, no all-history fetch or test weakening.",
+    "newExactHeadCI": "pending_at_capture",
+    "independentShallowReproduction": {
+      "sha256": "7d5f5d1b798370561d9f4bea62e2454890fd202bced0fa9323b799f1814a591d",
+      "result": "Independent isolated depth1 repro failed before the fixed single-commit fetch, then returned expected d93 Workbench bytes; source4 unchanged."
+    }
+  }
+}

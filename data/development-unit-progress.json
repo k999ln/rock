@@ -293,7 +293,8 @@
       "currentOverlayRefs": [
         "EVE_TEXT_PREPARATION_CANDIDATE",
         "EVE_SOURCE_ESTIMATE_CANDIDATE",
-        "EVE_RATE_UNIT_ADOPTED"
+        "EVE_RATE_UNIT_ADOPTED",
+        "EVE_MULTI_MATERIAL_ADOPTED"
       ]
     },
     {
@@ -2382,7 +2383,9 @@
         "DX01-SDK"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "GAME_WORK_DRAFT_CANDIDATE"
+      ]
     },
     {
       "id": "MATERIAL-01",

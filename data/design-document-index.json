@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.41",
+  "version": "1.42",
   "updatedAt": "2026-10-25",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -2969,7 +2969,40 @@
     "mainMerged": true,
     "wholeEVE02Accepted": false,
     "semanticGenerationAccepted": false,
-    "providerBillingAccepted": false
+    "providerBillingAccepted": false,
+    "multiMaterialCompatibility": {
+      "schemas": [
+        "eve.text-preparation/1",
+        "eve.text-preparation/2"
+      ],
+      "estimateBuilders": [
+        "eve.text-estimate/1",
+        "eve.text-estimate/2"
+      ],
+      "materialCount": [
+        2,
+        3,
+        4
+      ],
+      "totalTextLimit": 8000,
+      "legacyTwoMaterialBytesUnchanged": true,
+      "evidence": "docs/evidence/development-execution/eve-multi-material.json",
+      "wholeUnitAccepted": false,
+      "mainMerged": true,
+      "gitHubSaved": true,
+      "independentReviewPerformed": true,
+      "tests": [
+        "tests/eve-multi-material.test.mjs",
+        "tests/eve-text-estimate.test.mjs",
+        "tests/eve-text-estimate-ui.test.mjs",
+        "tests/work-composition-ui.test.mjs"
+      ],
+      "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+      "authority": "docs/rockstaros-complete-design.md#eve-multi-material",
+      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material",
+      "currentMainEvidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+      "browserSupplement": "docs/evidence/development-execution/eve-multi-material-browser-summary.json"
+    }
   },
   "proAccountOriginalArchive": {
     "authority": "docs/rockstaros-complete-design.md#pro-account-original-archive",
@@ -3235,5 +3268,24 @@
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
     "mainMerged": true,
     "currentMergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json"
+  },
+  "gameWorkDraft": {
+    "authority": "docs/game-api-contract-draft.md#game-work-draft",
+    "osDesign": "docs/rockstaros-complete-design.md#game-work-draft",
+    "toolDesign": "docs/sky-tools-complete-design.md#game-work-draft",
+    "implementation": [
+      "lib/game-work-draft.ts",
+      "components/workbench.tsx"
+    ],
+    "tests": [
+      "tests/game-work-draft.test.mjs",
+      "tests/game-work-draft-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/game-work-draft-review-summary.json",
+    "existingWorkflowApiStoreUnchanged": true,
+    "wholeGAME02Accepted": false,
+    "financialExchange": false,
+    "publicDeployment": false
   }
 }
