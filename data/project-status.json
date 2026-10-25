@@ -10160,7 +10160,7 @@
     ],
     "primaryWorkstream": "04-security-identity-compliance",
     "responsibility": "ROCK",
-    "status": "focused_verified_full_verify_and_ci_pending",
+    "status": "targeted_repair_verified_exact_head_ci_pending",
     "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
     "shadcn": "4.22.1",
     "zodOverride": "^4.6.6",
@@ -10180,6 +10180,7 @@
       "root": 0,
       "mini": 0
     },
-    "fullVerify": "running at commit capture-time"
+    "fullVerify": "initial host exit1: inventory expectation corrected; localhost timeout passes targeted retry; exact-head Linux full verify pending",
+    "targetedRepairTests": 89
   }
 }

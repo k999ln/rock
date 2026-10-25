@@ -1,6 +1,6 @@
 ## zod依存制約の互換修正（SYS15・G04 / ROCK）
 
-着手: main ee9b8801を基点に、rootのCloudflare固定4.4.3・shadcn3系依存とMini4.6.5を修正する。shadcnを上流のZod4移行済み4.22.1へ更新し、root/Miniともzod修正版^4.6.6へ制約する。既存製品sourceのZod3 schema利用なしを確認。依存consumer・schema・制限付きcollectionの早期拒否を試験し、全verifyと新HEAD/main同SHA CIを別々に記録する。実機操作・追加推論・公開配備なし。対象34/34と旧依存3失敗反例、Cloudflare Worker14/14、両監査zod0を確認。全verifyは実行中、新HEADとmain統合SHAのCIは未確認（記録時）。
+着手: main ee9b8801を基点に、rootのCloudflare固定4.4.3・shadcn3系依存とMini4.6.5を修正する。shadcnを上流のZod4移行済み4.22.1へ更新し、root/Miniともzod修正版^4.6.6へ制約する。既存製品sourceのZod3 schema利用なしを確認。依存consumer・schema・制限付きcollectionの早期拒否を試験し、全verifyと新HEAD/main同SHA CIを別々に記録する。実機操作・追加推論・公開配備なし。対象34/34と旧依存3失敗反例、Cloudflare Worker14/14、両監査zod0を確認。初回host全verifyは2991件/2986pass/2fail/3skip。依存inventory期待件数を973/930/51へ同期し、既存localhost5秒timeoutはsource不変の再試験で回復、対象89/89成功。初回失敗を保持し、新HEADのLinux全verifyとmain統合CIで最終確認（記録時pending）。
 
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 

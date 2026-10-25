@@ -52,7 +52,24 @@
       "oversizedArrayValidatorVisits": 6,
       "expectedVisits": 0
     },
-    "fullVerify": "running",
+    "fullVerify": {
+      "attempt1": "exit1",
+      "rootTests": 2991,
+      "pass": 2986,
+      "fail": 2,
+      "skip": 3,
+      "failures": [
+        "release-readiness expected old dependency inventory counts; corrected to973/930/51",
+        "start-local-web -r=false hit existing5second subprocess timeout; source unchanged"
+      ],
+      "targetedRepair": {
+        "tests": 89,
+        "pass": 89,
+        "fail": 0,
+        "skip": 0
+      },
+      "finalExactHeadLinuxCI": "pending"
+    },
     "rootAuditZod": 0,
     "rootOtherAuditFindings": 7,
     "miniAuditZod": 0,
@@ -78,7 +95,8 @@
     "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
     "sites/avocado-mini/package.json": "495a8cea62e1dec5cbbfac2dc8991a9ff72212d3e82a9c975ed5356f181ff0e6",
     "sites/avocado-mini/package-lock.json": "06c9e2ded0496b2c9fd6f6f263857e3d786da705fa42255080ee359f0fc04937",
-    "tests/zod-dependency-security.test.mjs": "a7dcb722f7c40553744b54739406b295ce6446517bea34b31b60d9628fe6b64d"
+    "tests/zod-dependency-security.test.mjs": "a7dcb722f7c40553744b54739406b295ce6446517bea34b31b60d9628fe6b64d",
+    "tests/release-readiness.test.mjs": "bc2d19bae270b2cf068720571e83980f083b77efea75029acb812c8ea820a201"
   },
   "unchangedRuntimeSource": true,
   "lockChanges": {
