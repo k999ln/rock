@@ -1,0 +1,241 @@
+{
+  "schema": "mini-bounded-message-validation/1",
+  "date": "2026-10-25",
+  "taskId": "MAT15",
+  "unit": "MINI-08",
+  "scope": "offline_common_adapter_shared_ledger",
+  "regions": [
+    "JP",
+    "US"
+  ],
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
+      "sha256": "4aa11046911f69f1f6423be740d1dc433e28bd10e10987c55be172d849057a02"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "200268c6b57640e8036dc79ef9193cfe6778b8f0cd5e40dc9297bfcc489957e8"
+    }
+  ],
+  "tests": {
+    "host": {
+      "command": "PYTHONWARNINGS=ignore::ResourceWarning python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'",
+      "tests": 83,
+      "fail": 0,
+      "logSha256": "939084f58115bb6f67a7d0c7b0765a67c7f9cd5dc0572f05a1cb26994d47cf2c"
+    },
+    "independent": {
+      "review": "docs/evidence/development-execution/mini-08-message-review.json",
+      "sha256": "9e1ebc10ddb4a609e6eb2679f43b20af8508e7eb269f39baf66a04f9277dad95",
+      "existingAndNewTests": 60,
+      "additionalNegativeTests": 8,
+      "mustFixRemaining": 0
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH PYTHONWARNINGS=ignore::ResourceWarning npm run verify",
+      "exitCode": 0,
+      "rootSuite": {
+        "tests": 2986,
+        "pass": 2983,
+        "fail": 0,
+        "skip": 3
+      },
+      "otherSuitesNotAdditive": true,
+      "logSha256": "e168932312cd9134f632fd0b880e7a8e4ea716ed2f7d8872813fa0b323af1c59",
+      "environment": "macOS arm64, Node 26.12.1, Python 3.15, OpenSSL 3",
+      "linuxPacketExecution": false
+    },
+    "isolatedLinux": {
+      "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+      "environment": "dedicated Lima Ubuntu 24.04 arm64 / Python 3.12 / nftables 1.0.9 / hostapd 2.10 driver=none",
+      "commonTests": 83,
+      "packetTests": 26,
+      "failures": 0,
+      "skip": 0,
+      "logSha256": "5892311d1462b112dccb844d9da6067c3d637b4ead845c161b88eb2b4692d94f",
+      "controllerSha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26",
+      "messageAdapterSha256": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2",
+      "vmStoppedAfterTests": true,
+      "radioTested": false,
+      "providerConnected": false,
+      "invoiceVerified": false
+    },
+    "sameSourceLinuxFullVerify": {
+      "head": "f59be1af5b658bce6857663ffade2a6018c652c5",
+      "runId": "40190642057",
+      "jobId": "121160701545",
+      "checkoutShaFound": true,
+      "counts": [
+        "ℹ tests 2993",
+        "ℹ pass 2991",
+        "ℹ fail 0",
+        "ℹ skipped 2",
+        "ℹ tests 25",
+        "ℹ pass 25",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 45",
+        "ℹ pass 45",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 4",
+        "ℹ pass 4",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 6",
+        "ℹ pass 6",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 7",
+        "ℹ pass 7",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ],
+      "logSha256": "1e7f8abaa8355688f35092918d6703c005b20d633007a3ae9caa6359121175cd",
+      "conclusion": "success"
+    }
+  },
+  "preserved": [
+    "Mini standalone without phone/Pro/PC/dock prerequisite",
+    "no display plate or membrane",
+    "few display parts",
+    "whole range including up and down",
+    "low glare",
+    "existing all-traffic provider hard cap and management-exemption prerequisite",
+    "shared byte/cost reservations and unknown retention"
+  ],
+  "notAccepted": [
+    "modem driver",
+    "carrier integration",
+    "radio",
+    "real provider invoice",
+    "physical Mini",
+    "encrypted live transport",
+    "Broker/AP ingress",
+    "scheduler",
+    "secure erase/antirollback",
+    "Job import",
+    "simultaneous IP and message sessions"
+  ],
+  "gitHubSaved": true,
+  "mainMerged": false,
+  "pr": 229,
+  "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+  "ciFollowup": {
+    "head": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+    "productChecksSucceeded": 13,
+    "productChecksFailed": 1,
+    "failure": "existing Pixel normal-case diagnostic observer/stop race",
+    "runId": 40189848217,
+    "jobId": 121158307786,
+    "logSha256": "9cbdaab92dbb5ca95b254cba92f8c0e25412d498597c103255c722417209e4eb",
+    "runtimeChangedForFix": false,
+    "followup": "Deterministic readiness fixture independently reviewed; all 14 checks succeeded at validatedSourceHead including full verify and real Linux packets.",
+    "independentReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
+  },
+  "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
+  "sameHeadCI": [
+    {
+      "name": "source-tests",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121161258112",
+      "completedAt": "2026-10-25T11:54:48Z"
+    },
+    {
+      "name": "CodeQL",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/runs/121161032652",
+      "completedAt": "2026-10-25T11:53:25Z"
+    },
+    {
+      "name": "partitions (main-3)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701789",
+      "completedAt": "2026-10-25T11:54:26Z"
+    },
+    {
+      "name": "partitions (support)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701750",
+      "completedAt": "2026-10-25T11:53:36Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642000/job/121160701744",
+      "completedAt": "2026-10-25T11:53:33Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641989/job/121160701742",
+      "completedAt": "2026-10-25T11:53:22Z"
+    },
+    {
+      "name": "partitions (main-1)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701735",
+      "completedAt": "2026-10-25T11:53:29Z"
+    },
+    {
+      "name": "partitions (main-0)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701716",
+      "completedAt": "2026-10-25T11:52:55Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641985/job/121160701694",
+      "completedAt": "2026-10-25T11:53:11Z"
+    },
+    {
+      "name": "linux-packets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642015/job/121160701594",
+      "completedAt": "2026-10-25T11:52:52Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642000/job/121160701589",
+      "completedAt": "2026-10-25T11:54:21Z"
+    },
+    {
+      "name": "partitions (main-2)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701574",
+      "completedAt": "2026-10-25T11:54:09Z"
+    },
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642057/job/121160701545",
+      "completedAt": "2026-10-25T11:56:58Z"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641985/job/121160701539",
+      "completedAt": "2026-10-25T11:52:49Z"
+    }
+  ],
+  "finalMetadataCI": "Track current PR229 head separately; no main integration of message adapter performed"
+}

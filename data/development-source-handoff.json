@@ -118,7 +118,8 @@
       "ledgerRef": "data/development-unit-progress.json#EVE-02",
       "currentOverlayRefs": [
         "EVE_TEXT_PREPARATION_CANDIDATE",
-        "EVE_SOURCE_ESTIMATE_CANDIDATE"
+        "EVE_SOURCE_ESTIMATE_CANDIDATE",
+        "EVE_MULTI_MATERIAL_ADOPTED"
       ]
     },
     {
@@ -316,7 +317,8 @@
       "lane": "smith",
       "ledgerRef": "data/development-unit-progress.json#SMITH-01",
       "currentOverlayRefs": [
-        "SMITH_BOTTOM_NAVIGATION_CANDIDATE"
+        "SMITH_BOTTOM_NAVIGATION_CANDIDATE",
+        "SMITH_RUNNING_SKIP_LINK_CANDIDATE"
       ]
     },
     {
@@ -370,7 +372,10 @@
       "id": "ESIM-03",
       "title": "準備operationと外部資源確保のoutbox",
       "lane": "esim",
-      "ledgerRef": "data/development-unit-progress.json#ESIM-03"
+      "ledgerRef": "data/development-unit-progress.json#ESIM-03",
+      "currentOverlayRefs": [
+        "ESIM_PROVISION_RECOVERY_ADOPTED"
+      ]
     },
     {
       "id": "ESIM-04",
@@ -511,7 +516,10 @@
       "id": "MINI-08",
       "title": "Mini/Pro共通host/native/DSP/eSIM子接続",
       "lane": "mini",
-      "ledgerRef": "data/development-unit-progress.json#MINI-08"
+      "ledgerRef": "data/development-unit-progress.json#MINI-08",
+      "currentOverlayRefs": [
+        "MINI_MESSAGE_ADOPTED"
+      ]
     },
     {
       "id": "PRO-01",
@@ -950,5 +958,138 @@
     "financialExchangeAccepted": false,
     "publicDeployment": false,
     "next": "Independent integration metadata, exact head CI, normal main integration and merge-SHA CI."
+  },
+  "eveMultiMaterialMainAdoption": {
+    "pr": "https://github.com/k999ln/rock/pull/232",
+    "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+    "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+    "mainMerged": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "scope": "Legacy2 exact bytes and3/4 v2 saved preparation/estimate only; bounded synthetic browser supplemental evidence separately reviewed.",
+    "wholeUnitAccepted": false,
+    "paidGenerationAccepted": false,
+    "publicDeployment": false,
+    "evidence": "docs/evidence/development-execution/eve-multi-material-main-current.json"
+  },
+  "gameWorkDraftMainAdoption": {
+    "schema": "rockstaros.game-work-draft-main-current/1",
+    "pr": 230,
+    "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+    "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "mainTree": "9f59b112bc02c12e71c613f27cd2ced1b6c045f0",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "mainMerged": true,
+    "mainLinuxVerify": {
+      "run": 40192534278,
+      "job": 121166406137,
+      "tests": 3010,
+      "pass": 3008,
+      "fail": 0,
+      "skip": 2
+    },
+    "source4Unchanged": true,
+    "ciPreparation": "Fixed pinned ee9 historical object fetch/hash validation in isolated CI; old shallow missing-object failure preserved in adoption receipt",
+    "scope": "Nonfinancial Game report to explicit owner-checked WorkJob draft/create/unknown recovery only",
+    "originalReceipt": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "historicalReceiptUnchanged": true,
+    "wholeUnitAccepted": false,
+    "financialExchangeAccepted": false,
+    "realProviderAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
+  },
+  "smithRunningSkipLinkFollowup": {
+    "taskId": "SKY21",
+    "unit": "SMITH-01",
+    "scope": "One host/browser-fixture same-page running skip-link defect; no whole-unit/authenticated-composer/real-job acceptance",
+    "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+    "state": "source_metadata_independent_pass_host_verify_pass_git_ci_pending",
+    "next": "Independent review and same final SHA CI; later real authenticated running-job/softkeyboard/physical inset/zoom/two-owner/native gates remain.",
+    "mainMerged": false,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
+    "hostVerify": "2994tests/2991pass/0fail/3skip; before latest-main adoption"
+  },
+  "miniMessageMainCurrent": {
+    "schema": "rockstaros.mini-message-main-current/1",
+    "pr": 229,
+    "acceptedHead": "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2",
+    "mainMergeSha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "mainTree": "9ef3690c7eb8a36edae959c52ccba5d9eaf7f84f",
+    "parents": [
+      "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271",
+      "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2"
+    ],
+    "mainMerged": true,
+    "headCISuccess": 14,
+    "mainCISuccess": 13,
+    "headVerify": {
+      "run": 40198692160,
+      "tests": 3025,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "d8e301401060a0cac49185bb0194c225cf249cce3317b21c7b2906ed7e85e44c"
+    },
+    "mainVerify": {
+      "run": 40199085990,
+      "tests": 3025,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "e10d689ef988999757270e72d4a72ea68cbc5c752263ad866b4ccb6dda32ca50"
+    },
+    "source4AndPixelFixture2Unchanged": true,
+    "featureIndependentReview": "docs/evidence/development-execution/mini-08-message-review.json",
+    "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json",
+    "originalAdoptionReceipt": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
+    "historicalOriginal451CIAndPendingCaptureUnchanged": true,
+    "scope": "Offline bounded message adapter and separately reviewed Pixel normal-case wait fixture; no production worker change",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "providerConnected": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "esimProvisionRecoveryMainCurrent": {
+    "schema": "rockstaros.esim-provision-recovery-main-current/1",
+    "pr": 236,
+    "acceptedHead": "42c005688d78daa8597b7f59f445e2c5ace9c2f7",
+    "mainMergeSha": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+    "mainMerged": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "headVerify": {
+      "run": 40199178953,
+      "tests": 3026,
+      "pass": 3024,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "129850911384adf5502d98557350ece57d4a40efeebe26698180be1a98e6353b"
+    },
+    "mainVerify": {
+      "run": 40199482134,
+      "tests": 3026,
+      "pass": 3024,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "f6ff9330c5ce923663faadc289a01d92c85e4baec321199a4d339c1f42b55ec5"
+    },
+    "scope": "Test-only explicit close/reopen after controlled local setup UPDATE failure; same persisted workspace and no repeated billing prerequisites",
+    "sourceTestSha256": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+    "sourceIndependentReview": "docs/evidence/development-execution/esim-provision-recovery-review.json",
+    "originalAdoptionReceipt": "docs/evidence/development-execution/esim-provision-recovery-main-adoption.json",
+    "historicalReceiptsUnchanged": true,
+    "runtimeSchemaApiBillingChanged": false,
+    "wholeUnitAccepted": false,
+    "processKillOrPowerLossAccepted": false,
+    "productionD1Accepted": false,
+    "realIssuerReadyAccepted": false,
+    "realProviderOrFinancialAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false
   }
 }

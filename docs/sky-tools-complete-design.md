@@ -388,6 +388,11 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 - 受入（2026-09-27）: ローカル実ブラウザのホームとMarketは320／390／440／768／1280pxで横はみ出し0、アイコンと本文の間隔12／14px。Jev Routerとココナラは320／390／768／1280pxで横はみ出し0、main landmark各1個。ホームの全Tool検索でJev Routerへ到達し、ホームとMarketから同じ概要を開閉、Escとfocus復帰を確認した。ココナラのBase UI Dialogは320／390pxでfocus trap・Esc・元のボタンへの復帰を確認し、保存失敗は入力画面内に表示する。出典整理のサンプル実行と結果表示も確認した。
 - 検証範囲: 関連17試験、typecheck、`lint:product`、`sky:check`、buildは合格。2026-09-30に製品ベースとbaseline validatorのアクセント期待値を現行workspace CSSのice-blue `#bedce6`へ合わせ、R5文書・DB status testを含む該当テストを通した。全体verifyはこの更新後に未実施。無限定lintは未変更vendor・生成物のエラーを含みうる。本番配備、Tool本体接続、決済は未実施。
 
+<a id="smith-running-workspace-landmark"></a>
+#### 処理中のページ内スキップ導線
+
+running時の同頁landmark修復（SKY21 / SMITH-01）: 既存の`#workspace-main`だけはshellのclick guardを通し、Tab→Enterで`tabIndex=-1`のmainへ移れる。他route/別fragmentの抑止、navのaria-disabled、running/beforeunloadとconsumerのonClickCaptureは維持する。consumerが追加でpreventDefaultする条件を解除せず、hash移動をjob停止・再送・承認・本人切替へ接続しない。入出力は既存running/anchor hrefとbrowserの同頁focusだけ、新API/保存/復旧データなし。退行時は通常Git revertでshell差分を戻し、保存jobを削除しない。局所10試験と実Reactを使う合成Chrome390/1280fixtureで旧抑止→新focus/遷移抑止/draft保持を確認した。実keyboard/非zero inset/zoom/認証後composer/real job/native/本番の合格は別でwhole SMITHはfalse。[修正証拠](evidence/development-execution/smith-running-skip-link.json)。
+
 ### 1.2 全入口・開閉画面の監査と実行導線
 
 2026-09-27の追加監査は、一覧の外観だけでなく、ホームとMarketから34 Tool詳細、概要、サービス接続、PC/MCP接続、掲載フォームまでを対象にする。主担当はProduct / UXのROCK、既存WEB04。初期画面が表示できることと、実行器・外部Providerの成功は別に受け入れる。
@@ -489,6 +494,8 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 合格条件は、実入力で2種類以上の接続済み処理→検査→保存→再表示→レシピ保存→新素材の新jobを一周し、原成果が不変であること。本人切替、401、Origin、競合、応答喪失、二重クリック、失敗検査の再開、素材消去、再起動、PC／390pxを確認する。正常／異常APIは実handler/storeとSQLite、実画面・実D1は別証拠で記録する。候補の対象試験は `tests/work-composition*.test.mjs`、共通owner hookと既存Workbenchの回帰、全体 `npm run verify`。現時点は実装とローカル検証中で、本番本人認証、同一最終SHA CI、公開反映は別受入。未決事項は外部Toolの接続契約と有料実行で、既存の見積／予算／Provider受入が揃うまで候補を利用不可に保つ。
 
 <a id="eve-multi-material"></a>
+
+現行採用: PR232/main `fb604256`に2〜4資料の互換拡張を限定統合。原R1/R2・採用前snapshotを保持し、追加3/4実React合成UIは別documentary検収として記録する。実Provider/課金・本番保存・wholeEVE・公開の受入にはしない。[現行証拠](evidence/development-execution/eve-multi-material-main-current.json)。
 ### 2〜4資料の互換拡張（EVE-02）
 
 目的・利用体験: 既存の資料付き依頼に3番目・4番目の資料を加え、同じ仕事で無料準備・原文保存・復元・見積比較を行う。「資料を追加」「資料Nを外す」は通常buttonでkeyboard操作できる。最低2・最大4、本文合計8,000 JavaScript文字単位、依頼500文字、名前160文字、選択file各48,000 bytesと既存80,000-byte run request上限を維持する。資料数を増やしても入力総量・生成能力・予算は増やさない。

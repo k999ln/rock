@@ -42,11 +42,12 @@ export default function WorkspaceShell({
   return (
     <div
       onClickCapture={(event) => {
-        if (
-          running &&
-          event.target instanceof Element &&
-          event.target.closest('a[href]')
-        )
+        const link = event.target instanceof Element
+          ? event.target.closest('a[href]')
+          : null;
+        // Keep the shell's own landmark reachable during a job. All route
+        // changes (including other fragments) still use the existing guard.
+        if (running && link && link.getAttribute('href') !== '#workspace-main')
           event.preventDefault();
         onClickCapture?.(event);
       }}

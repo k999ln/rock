@@ -83,7 +83,7 @@ void test('actual main Home replaces its mobile block once and preserves discove
   assert.ok(!all.some(n => n.type === 'a' && ['/wallet', '/market'].includes(n.props.href)));
 });
 void test('actual shell mounts once inside its existing running guard without changing auth children', async () => {
-  const Nav = await navigation(); class Element { closest() { return this; } }
+  const Nav = await navigation(); class Element { closest() { return this; } getAttribute() { return '/'; } }
   const Shell = compile('components/workspace-shell.tsx', {
     react: staticReact, '@/lib/device': { monitorDevice() {} }, '@/lib/product-identity': { PRODUCT_RELEASE_NAME: 'RockstarOS 1.0' },
     './os-app-navigation': { default: Nav },
@@ -100,6 +100,40 @@ void test('actual shell mounts once inside its existing running guard without ch
   }
   // Hidden parent remains the existing admission mechanism; nav has no independent portal/global mount.
   assert.doesNotMatch(source('components/os-app-navigation.tsx'), /createPortal|fetch\(|Storage|ownerId|agentRevision/);
+});
+void test('running workspace keeps its own skip link usable without admitting route changes', async () => {
+  const Nav = await navigation();
+  class Element {
+    constructor(href) { this.href = href; }
+    closest() { return this; }
+    getAttribute(name) { return name === 'href' ? this.href : null; }
+  }
+  const Shell = compile('components/workspace-shell.tsx', {
+    react: staticReact, '@/lib/device': { monitorDevice() {} },
+    '@/lib/product-identity': { PRODUCT_RELEASE_NAME: 'RockstarOS 1.0' },
+    './os-app-navigation': { default: Nav },
+  }, { Element }).default;
+  for (const running of [false, true]) {
+    const seen = [];
+    const child = { type: 'button', props: { children: 'Synthetic stop control' } };
+    const tree = Shell({ title: 'Fixture', running, children: child,
+      onClickCapture(event) { seen.push(event); } });
+    const all = nodes(tree);
+    const skip = all.find(n => n.type === 'a' && n.props.className === 'rock-skip');
+    const main = all.find(n => n.type === 'main');
+    assert.equal(skip.props.href, '#workspace-main');
+    assert.equal(main.props.id, 'workspace-main');
+    assert.equal(main.props.tabIndex, -1);
+    assert.ok(nodes(main).includes(child));
+    for (const href of [skip.props.href, '/chat', '/#communities', '#other-panel', '/chat#workspace-main']) {
+      let prevented = false;
+      const event = { target: new Element(href), preventDefault() { prevented = true; } };
+      tree.props.onClickCapture(event);
+      assert.equal(prevented, running && href !== skip.props.href, `${running}/${href}`);
+      assert.equal(seen.at(-1), event, 'existing consumer still receives capture events');
+    }
+    assert.equal(all.find(n => n.type === Nav).props.running, running);
+  }
 });
 void test('root and pass-through layouts do not mount a second nav or change viewport/domain contracts', () => {
   const root = source('app/layout.tsx'); assert.match(root, /import '\.\/os-bottom-navigation\.css'/);

@@ -132,7 +132,7 @@ class Controller:
         return [g for g in s['grants'].values() if g['status'] == 'reserved'
                 and (client is None or g['clientId'] == client)]
 
-    def _reason(self, s, now):
+    def _base_reason(self, s, now):
         if now < s['lastTime']:
             return 'clock_regressed'
         if s['fault']:
@@ -148,10 +148,18 @@ class Controller:
             return 'power_unavailable'
         if not o['apIsolated'] or not o['meterReady'] or not o['hardQuotaReady']:
             return 'enforcement_unavailable'
-        if not o['satelliteRegistered'] or not o['twoWayIp'] or not o['internetReachable']:
+        if not o['satelliteRegistered']:
             return 'satellite_unavailable'
         if not o['sharingEntitled'] or any(o[k] != s['policy'][k] for k in ('providerId', 'contractVersion', 'region')):
             return 'contract_unavailable'
+        return None
+
+    def _reason(self, s, now):
+        reason = self._base_reason(s, now)
+        if reason:
+            return reason
+        if not s['observation']['twoWayIp'] or not s['observation']['internetReachable']:
+            return 'satellite_unavailable'
         return None
 
     def owner_command(self, authenticated_owner, revision, command, now):
@@ -171,17 +179,19 @@ class Controller:
                 prior = s['clients'].get(client)
                 require(prior is None, 'client_already_known')
                 require(len(s['clients']) < s['policy']['maxClients'], 'client_limit')
-                s['clients'][client] = dict(allowed=True, byteCap=c['byteCap'], txBytes=0, rxBytes=0)
+                s['clients'][client] = dict(allowed=True, permissionEpoch=0, byteCap=c['byteCap'], txBytes=0, rxBytes=0)
             elif op == 'reallow':
                 fields(c, 'op clientId')
                 require(identity(c['clientId']) in s['clients'], 'unknown_client')
                 require(now < s['policy']['expiresAt'], 'approval_expired')
                 s['clients'][c['clientId']]['allowed'] = True
+                s['clients'][c['clientId']]['permissionEpoch'] = s['clients'][c['clientId']].get('permissionEpoch', 0) + 1
                 self._invalidate(s)
             elif op == 'revoke':
                 fields(c, 'op clientId')
                 require(identity(c['clientId']) in s['clients'], 'unknown_client')
                 s['clients'][c['clientId']]['allowed'] = False
+                s['clients'][c['clientId']]['permissionEpoch'] = s['clients'][c['clientId']].get('permissionEpoch', 0) + 1
                 self._invalidate(s)
             elif op in ('enable', 'disable'):
                 fields(c, 'op')
@@ -258,25 +268,30 @@ class Controller:
             require(len(s['grants']) < 4096, 'period_record_limit')
             reason = self._reason(s, now)
             require(reason is None, reason)
-            client = s['clients'].get(client_id)
-            require(client is not None and client['allowed'], 'client_denied')
-            require(client_id in s['observation']['connectedClientIds'], 'client_disconnected')
-            p = s['policy']
-            require(max_bytes <= p['maxGrantBytes'], 'grant_too_large')
-            held = self._held(s)
-            require(s['txBytes'] + s['rxBytes'] + sum(g['maxBytes'] for g in held) + max_bytes <= p['byteCap'], 'byte_cap')
-            require(client['txBytes'] + client['rxBytes'] + sum(g['maxBytes'] for g in self._held(s, client_id)) + max_bytes <= client['byteCap'], 'client_byte_cap')
-            # Approved ALL-IN upper-bound tariff, never an actual provider price.
-            cost = ((max_bytes + p['blockBytes'] - 1) // p['blockBytes']) * p['blockPriceMinor'] + p['grantFeeMinor']
-            number(cost)
-            require(s['costUpperMinor'] + sum(g['costUpperMinor'] for g in held) + cost <= p['costCapMinor'], 'cost_cap')
-            g = dict(grantId=grant_id, clientId=client_id, maxBytes=max_bytes, costUpperMinor=cost,
-                     epoch=s['epoch'], bootId=s['observation']['bootId'], linkId=s['observation']['linkId'],
-                     expiresAt=min(now + p['maxGrantSeconds'], s['observation']['validUntil'], p['expiresAt']),
-                     status='reserved', txBytes=None, rxBytes=None)
-            s['grants'][grant_id] = g
-            return dict(grant=copy.deepcopy(g), installAllowed=True, replay=False)
+            return self._reserve(s, grant_id, client_id, max_bytes, now)
         return self._change(revision, now, mutate)
+
+    def _reserve(self, s, grant_id, client_id, max_bytes, now):
+        """Shared ledger mutation; caller checks capability/identity in the same transaction."""
+        require(grant_id not in s['grants'] and len(s['grants']) < 4096, 'period_record_limit')
+        client = s['clients'].get(client_id)
+        require(client is not None and client['allowed'], 'client_denied')
+        require(client_id in s['observation']['connectedClientIds'], 'client_disconnected')
+        p = s['policy']
+        require(max_bytes <= p['maxGrantBytes'], 'grant_too_large')
+        held = self._held(s)
+        require(s['txBytes'] + s['rxBytes'] + sum(g['maxBytes'] for g in held) + max_bytes <= p['byteCap'], 'byte_cap')
+        require(client['txBytes'] + client['rxBytes'] + sum(g['maxBytes'] for g in self._held(s, client_id)) + max_bytes <= client['byteCap'], 'client_byte_cap')
+        # Approved ALL-IN upper-bound tariff, never an actual provider price.
+        cost = ((max_bytes + p['blockBytes'] - 1) // p['blockBytes']) * p['blockPriceMinor'] + p['grantFeeMinor']
+        number(cost)
+        require(s['costUpperMinor'] + sum(g['costUpperMinor'] for g in held) + cost <= p['costCapMinor'], 'cost_cap')
+        g = dict(grantId=grant_id, clientId=client_id, maxBytes=max_bytes, costUpperMinor=cost,
+                 epoch=s['epoch'], bootId=s['observation']['bootId'], linkId=s['observation']['linkId'],
+                 expiresAt=min(now + p['maxGrantSeconds'], s['observation']['validUntil'], p['expiresAt']),
+                 status='reserved', txBytes=None, rxBytes=None)
+        s['grants'][grant_id] = g
+        return dict(grant=copy.deepcopy(g), installAllowed=True, replay=False)
 
     def can_forward(self, grant_id, now):
         """Control decision only. Kernel/provider must enforce bytes+expiry atomically."""

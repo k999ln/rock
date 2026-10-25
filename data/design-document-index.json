@@ -1436,6 +1436,23 @@
         "document": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
         "physicalAccepted": false
       },
+      "boundedMessageAdapter": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+        ],
+        "tests": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py"
+        ],
+        "scope": "offline_common_protocol_shared_ledger_not_radio_or_provider_acceptance",
+        "regions": [
+          "JP",
+          "US"
+        ],
+        "physicalAccepted": false,
+        "mainMerged": true,
+        "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
+      },
       "cameraGesturePreview": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
         "implementation": [
@@ -2984,8 +3001,8 @@
       "legacyTwoMaterialBytesUnchanged": true,
       "evidence": "docs/evidence/development-execution/eve-multi-material.json",
       "wholeUnitAccepted": false,
-      "mainMerged": false,
-      "gitHubSaved": false,
+      "mainMerged": true,
+      "gitHubSaved": true,
       "independentReviewPerformed": true,
       "tests": [
         "tests/eve-multi-material.test.mjs",
@@ -2995,7 +3012,9 @@
       ],
       "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
       "authority": "docs/rockstaros-complete-design.md#eve-multi-material",
-      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material"
+      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material",
+      "currentMainEvidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+      "browserSupplement": "docs/evidence/development-execution/eve-multi-material-browser-summary.json"
     }
   },
   "proAccountOriginalArchive": {
@@ -3105,7 +3124,17 @@
     "attempt": 3,
     "mainMerged": true,
     "wholeSmith01Accepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "runningLandmarkRepair": {
+      "implementation": "components/workspace-shell.tsx",
+      "regression": "tests/os-bottom-navigation-main.test.mjs",
+      "evidence": "docs/evidence/development-execution/smith-running-skip-link.json",
+      "contract": "Exact existing #workspace-main fragment remains usable while running; all other anchor clicks and consumer admission remain guarded. No new execution authority or persistence.",
+      "browserAcceptance": "Synthetic actual React/Chrome fixture390+1280; real job/auth/device/whole SMITH unaccepted",
+      "mainMerged": false,
+      "authority": "docs/rockstaros-complete-design.md#smith-running-workspace-landmark",
+      "toolDesign": "docs/sky-tools-complete-design.md#smith-running-workspace-landmark"
+    }
   },
   "eveSavedSourceEstimate": {
     "authority": "docs/rockstaros-complete-design.md#eve-saved-source-estimate",

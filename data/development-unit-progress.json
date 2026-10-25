@@ -293,7 +293,8 @@
       "currentOverlayRefs": [
         "EVE_TEXT_PREPARATION_CANDIDATE",
         "EVE_SOURCE_ESTIMATE_CANDIDATE",
-        "EVE_RATE_UNIT_ADOPTED"
+        "EVE_RATE_UNIT_ADOPTED",
+        "EVE_MULTI_MATERIAL_ADOPTED"
       ]
     },
     {
@@ -1401,7 +1402,9 @@
       "directMainTaskRefs": [],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "ESIM_PROVISION_RECOVERY_ADOPTED"
+      ]
     },
     {
       "id": "ESIM-04",
@@ -1897,7 +1900,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "MINI_MESSAGE_ADOPTED"
+      ]
     },
     {
       "id": "PRO-01",

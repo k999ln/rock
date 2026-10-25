@@ -27,6 +27,8 @@ PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点
 
 ## Game creator host fixture exact2のmain候補（2026-10-24 / G04）
 
+現行Git受入: PR230/head4046c712全7CI、通常merge main53d991b3全6CIとLinux3010/3008pass/0fail/2skip成功。旧capture pending/浅いcheckout失敗を保持し、固定ee9 object fetch/hash検証後のsource4一致を別記録。非金融draft/createのみ、GX/wholeGAME/公開は未受入。[現行証拠](docs/evidence/development-execution/game-work-draft-main-current.json)。
+
 着手: Eve204通常merge main434f・同SHA6CI成功をclean基点に、旧7188で独立受入済みscript/test2hashを無変更採用。主担当Git10/source08、GAME-01/GM01/AI06・DX01文脈。元receipt9936と新portableは別hash、engine/save形式と再利用5・既存保全sourceを固定。判断: staticdiagnostic unverified/nullを維持し、synthetic ownerのhostProofだけを別証拠へ。検証完了: 統合40pass0fail0skip、対象lint/構文2/通常type成功。独立10probe/ownedtmp28cleanup、EPERM/inodeswap/symlinkFIFO/oversize/concurrency/midwritekill/旧save保持/partial非自動採用を限定記録。判断更新: 局所scannerで既存GameAPI request-key例を1件検出し、非credentialの説明用<request-key>へ明示。schema/金融条件/source2/policyは不変、初回reportはGit外保持。次: project/design/scanner、Draft PRの最終同headLinux実npmverify/全CIと独立metadata検収。local全体verify未実行、fresh作者SDK/本人保存/WorkJob/実engine/金融/実機/公開・wholeGAMEは未受入。Walletは最新mainのclean test-only treeを準備しただけでsource未編集。[証拠](docs/evidence/development-execution/game-creator-fixture-main-adoption.json)。
 
 ## Eve saved-source estimate-only r2のmain採用準備（2026-10-24 / G04）
@@ -224,6 +226,15 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## SMITH-01 処理中のページ内スキップ導線
+
+最新main24ad1952へeSIM test-onlyまで通常同期し、Mini229/current main a58全13CIとeSIM236/current main24ad全6CIの実受入を現行status/95overlay/handoffへ追記。各head14/7成功、LinuxはMini3025/3023/0/2、eSIM3026/3024/0/2。元pending/失敗/host/原検収は不変。whole95受入0、金融/実機/公開は未受入。次はSmith固定source2のRoot最終metadata検収・新headCI・通常main/mergeCI。
+
+判断更新: Root側本人の他chat残作業もmain統合まで進める明示指示を直接読戻し、このsource2にも適用。元save-only recordは履歴保存し、新しい[main採用記録](docs/evidence/development-execution/smith-running-skip-main-adoption.json)へ分離。main a58c6ffaへ通常同期、source2と元reviewhash不変。新標準host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0。Root別metadata検収→最終headCI→通常main/mergeCIを実施する。実auth/job/RootCUA/実機/wholeSMITH/公開は未受入。
+
+現在の有限修復（SKY21 / O5 / SMITH-01）: main3bbから、running中に既存「メインコンテンツへ」が抑止される不具合を修復。既知同頁fragmentだけを許可し、他移動・consumer guard・auth/owner/予算/job/保存は保持。10局所試験と合成actual React/Chrome390/1280で旧反例/新focus・遷移抑止・draft保持を確認。[証拠](docs/evidence/development-execution/smith-running-skip-link.json)。source/metadata独立検収PASS・必須修正0、host全verify2994/2991pass/0fail/3skip。最新mainへの採用/Git保存/最終同SHA CIはGit担当へ引継ぐ。実auth/realjob/実機/native/wholeSMITHは未受入、公開・配備・616保留。原PR203 receiptの記録時点の値は保持する。
+
+
 ## Game→WorkJobの非金融下書き採用（AI06/GM01・08/ROCK）
 
 着手: 最新main1ec70d62へ固定4sourceを同hash採用。既存GAME-01/PR205のCLI受入とworkflow/API/store/owner/依存を保全。元receipt78376/独立reviewf21ed/Root UIec031を原本hashと区別した匿名要約で保存。原56・独立7・Root実合成UIと最新Zod4.6.7 preflight56を別平面で保持。下書きimportは一時memory、本人createが唯一の保存、unknown時同ID/planを明示確認、実行/完了/予算承認0。標準private生成を含むhost全verifyはexit0（3010/3007pass/0fail/3skip）。初回loopback待受けEPERMはsource変更なしで実行条件を直して回復し、失敗ログを保持。Linux07354 CIは旧UI反例の固定ee9 object不足で1fail（3010/3007pass/2skip）。CIだけにdepth1固定commit取得＋旧Workbench hash照合を追加し、4source/反例を変更・skipしない。独立integration検収、同head CI、通常main/同mergeCIが残gate。原missing-private fulltsc失敗は保存し型stubを採用しない。wholeGAME02/実Game/金融/Provider/実機/公開と616一括公開は保留。証拠 docs/evidence/development-execution/game-work-draft-main-adoption.json。
@@ -250,12 +261,18 @@ UI候補はeSIM cf7bb704とEve9fa85eb0の別commitを維持して最新main55a51
 
 Git採用着手: 本人の明示指示を直接確認し、最新main53d991b3へ最終R2 patchを3-way適用。製品4/test5はR2と同hash、既存main全受入とindex1.41を保持し1.42へ更新。主担当10/G04・source05/ROCK。元host3003件はR2前・旧baseの履歴であり、今回の型/全verify/CIへ転用しない。標準private生成を含む新候補のhost全verifyは3025試験/3022pass/0fail/3Macskip・build/APIまでexit0。別担当統合metadata検収、GitHub保存、最終headCI、通常main統合・同mergeSHA CI、current進捗同期を進める。
 
+現行採用: PR232の独立R2と別担当統合metadata検収はmustFix0、固定head d1eabc8a全7CIとLinux3025/3023pass/0fail/2skip成功。main fb604256へ通常統合し親/tree/製品4/test5一致を読戻し、同mergeSHA全6CIとLinux3025/3023pass/0fail/2skip成功。Root追加3/4実React合成UIはraw14/helper8hashとDOMを別担当がdocumentary検収し、原R1/R2と旧2資料証拠は不変。API/session/RAM/単価はfixture、実Provider/実課金0、wholeEVE/本番保存/実機/公開は未受入。現行記録は docs/evidence/development-execution/eve-multi-material-main-current.json。次はcurrent metadataのGit/main保存・同SHA CI確認。
+
 ## Eve単価の重複単位表示を別commitで採用
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。
 
 本人依頼のmain採用対象。検収済み3hashを無変更採用し、rendererの重複suffixだけ除去。独立19pass・旧renderer2単位の反例と、新hashの実Chrome合成UI（1単位、上限比較、6秒失効、owner reset、paid0）を保持。金額計算/formatter/API/料金/本人同意は不変。eSIMとは別commit/receipt、同一UI候補headとmain merge後の同SHA CIを確認済み。
 
+
+## eSIM provision再開のtest-only採用（ESIM-03 / SIM01）
+
+主担当01/ROCK・統合10/G04。既存store2つを同一file SQLiteで使い、workspace INSERT後のsetup UPDATEだけ制御Errorを注入し、旧store/接続を捨てて同file再open・同workspace再開/再送/owner/旧revision/失効を検査する。runtime/schema/API/Billing変更0、元test/receiptと独立reviewをhash固定。独立60/60成功・追加1probeは重複非加算、mustFix0。実processkill/電断/本番D1/issuer/validready/Provider/課金/wholeESIMは未受入。 新host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0、Eve現行進捗main854をmetadataのみ通常同期済み。main fb604256へ採用準備、全verifyとRoot統合metadata別検収→headCI→通常main/mergeCIで閉じる。[採用証拠](docs/evidence/development-execution/esim-provision-recovery-main-adoption.json)。
 
 ## eSIM保存ack後の再照合UIを最新mainへ採用
 
@@ -927,7 +944,14 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
+最新main採用準備: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+
+共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
+
+共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。GitHub branch/PR229へ保存。隔離Linuxも同source83件＋実packet26件成功。初期head CIは13成功・既存Pixel正常系fixture競合1失敗で、製品sourceを変えず明示待合せへ修正し、650ms fsync遅延の独立負例で旧失敗/修正後成功・保存失敗時拒否を確認。同期source head `f59be1af`の全14CI（全verify・実Linux packet含む）成功。最終metadata headのCIはPR229へ結び、message adapterのmain採用は別追跡。
+
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。当時の別枠Dependabot zod更新失敗は成功へ含めず履歴保持。後続PR225/main f4の修正と製品7/自動更新2成功は別証拠で確認済み。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
+
 
 本人回答反映・検証: 初期対象を日米両方のsi/メッセージ/小ファイルへ確定し、9704/NB-NTN優先、9770一般IP後段へ順序を更新。国別受入profileと未実行境界を同期。独立差分検収mustFix0、mission/project/design・台帳境界チェック成功。[選択反映検収](docs/evidence/development-execution/mini-08-owner-choice-review.json)。更新headの全体verifyはPR221のCIで別追跡。
 

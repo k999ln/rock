@@ -1,0 +1,91 @@
+{
+  "schema": "mini229-pixel-fixture-independent-review/1",
+  "reviewedAt": "2026-10-25T11:48:40.942947+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "worktree": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+  "reviewedBaseHead": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
+  "comparedMain": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+  "decision": "PASS_TEST_FIXTURE_ONLY",
+  "mustFixCount": 0,
+  "findings": [],
+  "sourceHashes": [
+    {
+      "path": "tests/test_pixel_worker_diagnostics.py",
+      "sha256": "5a9b14de75b8f71344ac112a44c9ffbb5f5e5f3fe91ade76516eaeba48fd3337"
+    },
+    {
+      "path": "toolkits/sky-linux-local/worker.py",
+      "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+    }
+  ],
+  "baseHashes": [
+    {
+      "path": "tests/test_pixel_worker_diagnostics.py",
+      "sha256": "a8c6600f764df83bb06c60218c5028f47ed7615573dca33b52eefdf5629fa6b8"
+    }
+  ],
+  "checks": [
+    "Only the named test method differs at AST level; all other tests including lock contention, failed evidence and stop/deadline negative tests are unchanged.",
+    "Production worker bytes equal the PR head and supplied main commit. No runtime correction is claimed.",
+    "Event is signalled only after diagnostic returns true for the first output record, including completed file replacement and directory fsync. Existing stop/privacy/same-inode metadata/cancel/replay assertions remain.",
+    "The test retains a finite three-second wait and fails explicitly if evidence cannot be persisted; it does not make production best-effort diagnostic writes block.",
+    "git diff --check passed."
+  ],
+  "independentExperiments": [
+    {
+      "case": "Original test with first observer diagnostic fsync delayed 650 ms while holding its lock",
+      "result": "Reproduced KeyError: stop, matching CI failure.",
+      "passedAsExpectedCounterexample": true
+    },
+    {
+      "case": "Repaired test with identical 650 ms fsync delay",
+      "result": "Passed without errors/failures.",
+      "passedAsExpectedCounterexample": true
+    },
+    {
+      "case": "Repaired test with first observer diagnostic returning false",
+      "result": "Explicit AssertionError: first output diagnostic was not persisted.",
+      "passedAsExpectedCounterexample": true
+    }
+  ],
+  "fullFixtureExecution": {
+    "command": "python3 -B tests/test_pixel_worker_diagnostics.py",
+    "tests": 27,
+    "passed": 26,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0,
+    "exitCode": 0,
+    "seconds": 4.47,
+    "log": "/private/tmp/mini229-pixel-fixture-regression-unsandboxed.log",
+    "skipReason": "Prior preserved worker comparison requires PIXEL_PREVIOUS_WORKER; not supplied.",
+    "sandboxAttempt": "First restricted execution had three UNIX socket bind PermissionErrors in one negative test. An approved unsandboxed repeat passed; these environment failures were not counted as product failures or silently promoted to passes."
+  },
+  "evidenceHashes": [
+    {
+      "path": "/private/tmp/mini229-verify-failure.log",
+      "sha256": "9cbdaab92dbb5ca95b254cba92f8c0e25412d498597c103255c722417209e4eb"
+    },
+    {
+      "path": "/private/tmp/mini229-pixel-fixture-independent.py",
+      "sha256": "15b2b1e4e36e7b198eb525f54c9aea651da172f675a4e5732c071d40f45f3c2c"
+    },
+    {
+      "path": "/private/tmp/mini229-pixel-fixture-independent-results.json",
+      "sha256": "ca55b1a00f1e96a97a92829ce739c893ed53691a4ceb158dca827e1ea99b9806"
+    },
+    {
+      "path": "/private/tmp/mini229-pixel-fixture-regression.log",
+      "sha256": "d193cfebe1e963550260aba65c0838994389b0c561921aec6b01f71b78b64d1c"
+    },
+    {
+      "path": "/private/tmp/mini229-pixel-fixture-regression-unsandboxed.log",
+      "sha256": "54d574e15b6d135f32a7d18ea0536b9d2a1d57d1bc598ff0c446ae4d519bd8e7"
+    }
+  ],
+  "limits": [
+    "No repository edit, Git mutation, real Pixel/device test, inference, provider contact or external service operation by reviewer.",
+    "The test establishes the normal-case observation-before-stop ordering. Production diagnostic lock contention can still legitimately omit optional stop evidence; that behavior and its negative tests remain.",
+    "CI rerun/main integration and parent-lifetime suite were not independently checked in this fixture review; parent results remain separate."
+  ]
+}

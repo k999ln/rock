@@ -16,6 +16,10 @@ ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/
 
 # Web / PWA / Sites
 
+## SMITH-01 処理中の同頁スキップ導線（SKY21 / O5 / ROCK）
+
+main3bb基点。処理中の全anchor抑止が既存skip linkまで無効にする反例を修復し、`#workspace-main`だけを許可。他移動/consumer guard、auth/owner/料金/job/保存を変更しない。局所10pass、actual React/Chrome合成390/1280の旧反例と新focus/route抑止/draft保持を確認。source/metadata独立検収PASS・指摘0、host全verify2994/2991pass/0fail/3skip。Git担当の最新main保全/Git保存/最終同head CIが次。実running/auth composer/physical keyboard/inset/zoom/twoowner/native/公開、wholeSMITHは未受入。[証拠](../evidence/development-execution/smith-running-skip-link.json)。公開/配備/616一括公開保留、原PR203 receiptは不変。
+
 ## Mini/Proの目的を明示（2026-10-21、WEB13 / WEB06、ROCK）
 
 本人指示によりMiniは暮らし・まちづくり、ProはAI専用PCと事業を通じた半導体/関連部品確保を設計と両製品のPurposeへ明示する。ROCKはコピーと正本・配備、EXTERNALは供給/施設、OWNERは用途/予算/契約を担当。現行R5/Pro単独性と販売停止を維持し、供給・住民向けの機能を実装済みにしない。正本は製品profileの `mini-pro-purpose` 節。合格はサイト試験、root verify、正式URLのPurpose読戻し、main保存。Sites v42/source `ef42496c543c08b8ace91b030310cc70899a918a`を公開し、両正式domainのHTTPS200とブラウザPurpose表示を確認。サイト38試験、design:check、root verifyが成功。証拠は `data/mini-pro-purpose-publication.json`。施設・供給・有料注文の受入は未追加。
@@ -162,7 +166,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ### Eve 2〜4資料の互換拡張採用
 
-source05/ROCK・統合10/G04、EVE-02/WEB04/HOME01/SKY21。最終R2の製品4/test5を固定し、2資料v1 byte互換・3/4のみv2、本文合計8000/goal500/file48000/run80000上限、owner/revision/別同意・pricing gatefalseを保持する。原R1のstale slot edit2反例を残しR2必須0/独立8+2・関連86を継承。最新mainと全受入を保持して全verify→独立統合metadata→headCI→通常main/merge同SHA CI→current進捗を同期する。旧2資料実UIと新3/4のhost/API/VMを分け、3/4実browser・実Provider/課金/実機/wholeEVE02/公開は未受入。[契約](../rockstaros-complete-design.md#eve-multi-material)／[原検収](../evidence/development-execution/eve-multi-material-review-r2.json)。
+source05/ROCK・統合10/G04、EVE-02/WEB04/HOME01/SKY21。最終R2の製品4/test5を固定し、2資料v1 byte互換・3/4のみv2、本文合計8000/goal500/file48000/run80000上限、owner/revision/別同意・pricing gatefalseを保持する。原R1のstale slot edit2反例を残しR2必須0/独立8+2・関連86を継承。最新mainと全受入を保持して全verify→独立統合metadata→headCI→通常main/merge同SHA CI→current進捗を同期する。旧2資料実UIと新3/4のhost/API/VMを分け、採用前snapshotの3/4実browser未受入は保持。その後のRoot合成API/RAM実React3/4UIを別documentary検収し限定証拠を追加。PR232/head d1eabc8a全7CI後、main fb604256へ通常統合、同mergeSHA全6CI成功。実Provider/課金/本番保存/実機/wholeEVE02/公開は未受入。[現行採用](../evidence/development-execution/eve-multi-material-main-current.json)。[契約](../rockstaros-complete-design.md#eve-multi-material)／[原検収](../evidence/development-execution/eve-multi-material-review-r2.json)。
 
 - 回転するMotion Towerが説明の大見出しに重なる問題を修正。デスクトップは左に説明、右に黒い製品面、モバイルは上に説明、下に製品を配置し、一周の横移動と傾きを抑えた。センサー章の重複接写を取り除き、青い発光と一周後の価格は残した。デスクトップの途中角度と390px幅の後半・価格を試写で確認。製品Site v20（source `95dd1fa05b82749c295d3f71ebd9cc020bae828f`）を公開し、新しいCSSの読込みを確認。GitHub mainは未反映で、既存PRを更新する。
 
