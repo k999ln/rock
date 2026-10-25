@@ -1,0 +1,113 @@
+{
+  "schema": "mini-hardware-preparation-main-acceptance/1",
+  "date": "2026-10-25",
+  "pr": 221,
+  "url": "https://github.com/k999ln/rock/pull/221",
+  "acceptedHead": "ad805ceae341c608103dab6b978db85b41631de7",
+  "mergeSha": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+  "mergedAt": "2026-10-25T11:52:41Z",
+  "treeEqual": true,
+  "treeSha": "691b4e7f2e174d29d1a5d35ff4f95c69dba5f827",
+  "headChecks": [
+    {
+      "name": "CodeQL",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/runs/121159816110",
+      "completedAt": "2026-10-25T11:47:37Z"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198670/job/121159358911",
+      "completedAt": "2026-10-25T11:46:20Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198623/job/121159358837",
+      "completedAt": "2026-10-25T11:47:45Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198670/job/121159358672",
+      "completedAt": "2026-10-25T11:46:50Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198623/job/121159358618",
+      "completedAt": "2026-10-25T11:47:53Z"
+    },
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198613/job/121159358588",
+      "completedAt": "2026-10-25T11:49:40Z"
+    },
+    {
+      "name": "prototype",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198632/job/121159358523",
+      "completedAt": "2026-10-25T11:50:20Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190198625/job/121159358517",
+      "completedAt": "2026-10-25T11:46:31Z"
+    }
+  ],
+  "mainChecks": [
+    {
+      "name": "SPIDER / repair regressions",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704503/job/121160893431",
+      "completedAt": "2026-10-25T11:53:49Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704474/job/121160893414",
+      "completedAt": "2026-10-25T11:55:19Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704503/job/121160893352",
+      "completedAt": "2026-10-25T11:54:25Z"
+    },
+    {
+      "name": "prototype",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704500/job/121160893230",
+      "completedAt": "2026-10-25T11:57:57Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704474/job/121160893149",
+      "completedAt": "2026-10-25T11:56:02Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704488/job/121160893037",
+      "completedAt": "2026-10-25T11:53:58Z"
+    },
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190704441/job/121160892835",
+      "completedAt": "2026-10-25T11:57:48Z"
+    }
+  ],
+  "scope": "hardware candidate comparison and JP/US small-si physical trial preparation only",
+  "physicalAccepted": false,
+  "providerSelected": false,
+  "purchased": false,
+  "contractSigned": false,
+  "radioTransmitted": false,
+  "displayConditionsPreserved": true,
+  "standaloneMiniPreserved": true
+}

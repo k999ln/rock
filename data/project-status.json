@@ -10043,7 +10043,7 @@
       "taskId": "MAT15",
       "primarySquad": "M1",
       "primaryOwner": "ROCK",
-      "status": "owner_region_and_initial_use_selected_independently_reviewed",
+      "status": "main_merged_same_sha_CI_pass",
       "documentation": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
       "template": "docs/avocado-mini-r5/physical-trial-template.json",
       "physicalAccepted": false,
@@ -10069,10 +10069,17 @@
         "9770_IP_comparison_later"
       ],
       "currentRevisionReviewed": true,
-      "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json"
+      "ownerSelectionReviewEvidence": "docs/evidence/development-execution/mini-08-owner-choice-review.json",
+      "pr": 221,
+      "githubSaved": true,
+      "mainMerged": true,
+      "acceptedSourceHead": "ad805ceae341c608103dab6b978db85b41631de7",
+      "mainMergeSha": "3bb3be259b29feb76e0a688636d0b8e37f89abfa",
+      "mainCI": "7_same_sha_success",
+      "mergeEvidence": "docs/evidence/development-execution/mini-08-hardware-main-merge.json"
     },
     "messageAdapter": {
-      "status": "offline_implemented_independent_review_and_full_verify_pass",
+      "status": "offline_adapter_verified_ready_for_git_adoption",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10081,7 +10088,7 @@
       ],
       "physicalAccepted": false,
       "providerConnected": false,
-      "nextAction": "Adopt PR221 synchronization; validate final head CI with deterministic Pixel normal-case fixture; real transport/Broker/AP/scheduler remain pending",
+      "nextAction": "Review final PR229 head and adopt separately; concrete modem/provider transport, Broker/AP ingress, bounded scheduler and Job import remain pending",
       "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
       "evidence": "docs/evidence/development-execution/mini-08-message-adapter.json",
       "independentReview": "docs/evidence/development-execution/mini-08-message-review.json",
@@ -10094,7 +10101,8 @@
       "sourceCommit": "54a7fcc31e23ce90bfc28f93fc69b1affebe08bf",
       "linuxCommonTestsPassed": 83,
       "linuxPacketTestsPassed": 26,
-      "ciStatus": "initial_existing_pixel_fixture_race_fixed_independent_review_pass_final_CI_pending"
+      "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
+      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5"
     }
   },
   "pixelCacheMainAdoption": {

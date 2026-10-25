@@ -68,6 +68,48 @@
       "radioTested": false,
       "providerConnected": false,
       "invoiceVerified": false
+    },
+    "sameSourceLinuxFullVerify": {
+      "head": "f59be1af5b658bce6857663ffade2a6018c652c5",
+      "runId": "40190642057",
+      "jobId": "121160701545",
+      "checkoutShaFound": true,
+      "counts": [
+        "ℹ tests 2993",
+        "ℹ pass 2991",
+        "ℹ fail 0",
+        "ℹ skipped 2",
+        "ℹ tests 25",
+        "ℹ pass 25",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 45",
+        "ℹ pass 45",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 4",
+        "ℹ pass 4",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 6",
+        "ℹ pass 6",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 7",
+        "ℹ pass 7",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ],
+      "logSha256": "1e7f8abaa8355688f35092918d6703c005b20d633007a3ae9caa6359121175cd",
+      "conclusion": "success"
     }
   },
   "preserved": [
@@ -105,7 +147,95 @@
     "jobId": 121158307786,
     "logSha256": "9cbdaab92dbb5ca95b254cba92f8c0e25412d498597c103255c722417209e4eb",
     "runtimeChangedForFix": false,
-    "followup": "Normal-case fixture now waits for observed successful diagnostic write; independent slow-fsync counterexample confirms old failure and fixed success; latest CI pending",
+    "followup": "Deterministic readiness fixture independently reviewed; all 14 checks succeeded at validatedSourceHead including full verify and real Linux packets.",
     "independentReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
-  }
+  },
+  "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
+  "sameHeadCI": [
+    {
+      "name": "source-tests",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121161258112",
+      "completedAt": "2026-10-25T11:54:48Z"
+    },
+    {
+      "name": "CodeQL",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/runs/121161032652",
+      "completedAt": "2026-10-25T11:53:25Z"
+    },
+    {
+      "name": "partitions (main-3)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701789",
+      "completedAt": "2026-10-25T11:54:26Z"
+    },
+    {
+      "name": "partitions (support)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701750",
+      "completedAt": "2026-10-25T11:53:36Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642000/job/121160701744",
+      "completedAt": "2026-10-25T11:53:33Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641989/job/121160701742",
+      "completedAt": "2026-10-25T11:53:22Z"
+    },
+    {
+      "name": "partitions (main-1)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701735",
+      "completedAt": "2026-10-25T11:53:29Z"
+    },
+    {
+      "name": "partitions (main-0)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701716",
+      "completedAt": "2026-10-25T11:52:55Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641985/job/121160701694",
+      "completedAt": "2026-10-25T11:53:11Z"
+    },
+    {
+      "name": "linux-packets",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642015/job/121160701594",
+      "completedAt": "2026-10-25T11:52:52Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642000/job/121160701589",
+      "completedAt": "2026-10-25T11:54:21Z"
+    },
+    {
+      "name": "partitions (main-2)",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642037/job/121160701574",
+      "completedAt": "2026-10-25T11:54:09Z"
+    },
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190642057/job/121160701545",
+      "completedAt": "2026-10-25T11:56:58Z"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40190641985/job/121160701539",
+      "completedAt": "2026-10-25T11:52:49Z"
+    }
+  ],
+  "finalMetadataCI": "Track current PR229 head separately; no main integration of message adapter performed"
 }

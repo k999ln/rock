@@ -906,9 +906,9 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221のmain統合/同SHA CIは中央Gitへ依頼済みで別追跡。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
+共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
 
-共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。GitHub branch/PR229へ保存。隔離Linuxも同source83件＋実packet26件成功。初期head CIは13成功・既存Pixel正常系fixture競合1失敗で、製品sourceを変えず明示待合せへ修正し、650ms fsync遅延の独立負例で旧失敗/修正後成功・保存失敗時拒否を確認。最終head CI・main採用は別追跡。
+共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。GitHub branch/PR229へ保存。隔離Linuxも同source83件＋実packet26件成功。初期head CIは13成功・既存Pixel正常系fixture競合1失敗で、製品sourceを変えず明示待合せへ修正し、650ms fsync遅延の独立負例で旧失敗/修正後成功・保存失敗時拒否を確認。同期source head `f59be1af`の全14CI（全verify・実Linux packet含む）成功。最終metadata headのCIはPR229へ結び、message adapterのmain採用は別追跡。
 
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。当時の別枠Dependabot zod更新失敗は成功へ含めず履歴保持。後続PR225/main f4の修正と製品7/自動更新2成功は別証拠で確認済み。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
 
