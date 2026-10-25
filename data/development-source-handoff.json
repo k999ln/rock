@@ -628,7 +628,10 @@
       "id": "GAME-02",
       "title": "GX交換gateとgame↔現実WorkJob橋を別経路で閉じる",
       "lane": "game",
-      "ledgerRef": "data/development-unit-progress.json#GAME-02"
+      "ledgerRef": "data/development-unit-progress.json#GAME-02",
+      "currentOverlayRefs": [
+        "GAME_WORK_DRAFT_CANDIDATE"
+      ]
     },
     {
       "id": "MATERIAL-01",
@@ -938,5 +941,14 @@
     "P02Complete": false,
     "realFinancialAccepted": false,
     "publicDeployment": false
+  },
+  "gameWorkDraftCandidate": {
+    "evidence": "docs/evidence/development-execution/game-work-draft-main-adoption.json",
+    "source4Fixed": true,
+    "standardPrivateAndHostFullVerifyPassed": true,
+    "wholeGAME02Accepted": false,
+    "financialExchangeAccepted": false,
+    "publicDeployment": false,
+    "next": "Independent integration metadata, exact head CI, normal main integration and merge-SHA CI."
   }
 }

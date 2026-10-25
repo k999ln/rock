@@ -580,6 +580,25 @@ ROCKはPC receiverの結果を同時callbackから保護する。入力は既存
 
 Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計画・途中成果・検査・操作ID・sanitized recipeを追加する。接続済みのeffect-free処理だけを予算0で実行し、外部Agent、Broker承認、Provider receipt、native能力への昇格は行わない。目的・入力・条件・状態・保存・失敗復旧・承認・互換・合格条件・未決事項は[仕事の組み立てとレシピ](sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)を参照。Webの受入をAndroid/nativeの同一契約受入へ転用しない。
 
+<a id="game-work-draft"></a>
+### 非金融Game結果から既存WorkJobへの明示下書き（GAME-02限定）
+
+目的・体験: 既存known-particle host fixtureのJSONと本人の依頼を仕事画面へ明示入力し、「仕事の下書きに入れる」で内容・申告版・入力hashを確認する。取り込みはlocal formだけで、「仕事を作成」が既存本人createを行う唯一の保存点。生成した仕事もactive/未実行で、完了・実行・予算の承認にはしない。既存GAME-01 CLI（PR205/main08669893）は維持し、fullGAME02や双方向bridgeへ拡張しない。
+
+責任・権限: ROCK/08は入力変換と既存Web consumer、共通workflow/API/store/owner resolverは既存契約を維持する。Gameのowner名・digest・hostProofは未検証の申告。本人の認証・capability・Tool成功・費用承認へ昇格しない。EXTERNALの任意engineや本番Providerは接続しない。OWNERの明示createと既存owner再読込を必須にする。
+
+入出力: strictな既存Game reportのfield集合、UTF8最大16000bytes、依頼最大400JS units、現UI owner contextを受ける。不明field、承認/完了/予算flagの昇格、不正UTF8/制御文字/過大入力は拒否。出力は本人scope、申告revision、貼付けたexact bytesのSHA256、最大120unitsのtitle、article template、既存WorkPlan(schemaVersion1/objective最大1000)。raw JSON、Game側owner、pidや実行commandを永続planへコピーしない。
+
+状態・保存: Game入力/下書きはReactの一時memory。localStorage/URL移送や自動再開をしない。編集・template変更・破棄・新owner再読込でprovenanceを無効化する。既存createはowner/ID/title/template/optional planを同じpending Creationへ捕捉し、既存API/SQLite保存・revision/CASを使う。新たなpersisted draft status/schemaは追加しない。意図的に新規createした別jobをGame全体で重複排除する仕様ではない。
+
+失敗・復旧: epoch/current-input reference/mounted guardで古いcallbackと遅いdigestを拒否する。unknown保存結果は元ID/planを保持し、自動POST/PATCHを行わず、本人再読込後の明示確認で同じ要求だけ再照合する。応答plan不一致は未確認を維持。owner変更は実際のserver-context再読込で判定し、fixtureの未購読ownerイベントを即時本人切替の証拠にしない。既存仕事は破棄操作で消さない。
+
+承認・費用: 取り込み/prepareは保存・実行・課金0。保存済jobの実行、Tool権限、予算上限、Provider receiptは既存の別gateを通す。金額、Wallet/GX、実game残高を動かさない。
+
+受入: 固定4sourceの新17群+既存復旧39群（56）、別担当旧base上の追加7probe、Rootの実React UI（合成fetch/RAM保存・layout未受入）を別々に記録する。最新Zod4.6.7下のRoot preflight56成功は旧7probeやfullverifyの代用にしない。標準private生成/型/全verify、同head CI、独立integration metadata、通常main統合とmerge同SHA CIを採用gateとする。原fulltscのgenerated-private欠落3件とtype-only stub試験は履歴保持し、stubを製品へ入れない。
+
+未決定・次の決め方: 実Game import、Work→Game、限定memory、外部作者のfresh SDK導入計測、production auth/storage/identityイベント、OS/実機/本番金融・公開は別受入。各既存AI06/GM01/DX01とphaseGateで対象・本人権限・同一artifact・失敗復旧の証拠を固定して決める。wholeGAME02はfalse。[採用証拠](evidence/development-execution/game-work-draft-main-adoption.json)。
+
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。
