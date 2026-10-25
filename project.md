@@ -228,7 +228,7 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## 新host試験のdescriptor読取とCI最終再固定
 
-installer修復後b709で実Linux packetは成功したが、CodeQLが新host試験のlstat後path再readをhighで指摘。installer054と他23固定対象は変えず、同じ拒否試験のregular fileをchild/検査前のO_NOFOLLOW|O_NONBLOCK descriptorへ固定し、型/link数/dev/ino照合後にdescriptorでreadしfinally closeする。元の拒否/fetch0/元inode/内容/cleanup assertionは維持。専用+gesture47/47成功、testは旧0d3からb4b385へ改版。Root source4150は旧testの履歴として保持し、この限定test差分を別確認して新head標準verify/CodeQL全CIを必須とする。[差分記録](docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json)。root/Tool/実機/実課金/実camera精度/公開を追加受入しない。
+installer修復後b709で実Linux packetは成功したが、CodeQLが新host試験のlstat後path再readをhighで指摘。installer054と他23固定対象は変えず、同じ拒否試験のregular fileをchild/検査前のO_NOFOLLOW|O_NONBLOCK descriptorへ固定し、型/link数/dev/ino照合後にdescriptorでreadしfinally closeする。元の拒否/fetch0/元inode/内容/cleanup assertionは維持。専用+gesture47/47成功、testは旧0d3からb4b385へ改版。 currentのoriginalSource22Unchangedは撤去し、元22receiptのbytes/hash不変を示すoriginalSource22CaptureUnchangedへ限定。現コードは元20不変/改版追跡済み固定24で記録する。Root source4150は旧testの履歴として保持し、この限定test差分を別確認して新head標準verify/CodeQL全CIを必須とする。[差分記録](docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json)。root/Tool/実機/実課金/実camera精度/公開を追加受入しない。
 
 ## finite batchのinstaller安全性修復と最終再固定
 

@@ -11123,7 +11123,6 @@
     "originalFixedSourceCount": 22,
     "linuxPacketSupplement": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
     "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-ci-read-revision.json",
-    "originalSource22Unchanged": true,
     "originalHeadCI": {
       "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
       "success": 13,
@@ -11143,7 +11142,13 @@
       "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
       "documentationReadmeChangedAfterRunOnly": true
     },
-    "testReadRevisionSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0"
+    "testReadRevisionSha256": "b4b385b9da5efe0e7ee4c7e078eeb462f02145d887704e54cf0dab61faa972b0",
+    "originalSource22CaptureUnchanged": true,
+    "originalSource22CaptureEvidence": {
+      "path": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+      "sha256": "6328e820167418359dd3f2f26992d1cc4e127e9eeb85ebfa39470cade9ce0bb1",
+      "meaning": "Original22-file capture bytes only; current originalOther20 remain unchanged, installer/README/test revisions tracked at fixed24"
+    }
   },
   "miniLinuxObservationFixture": {
     "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
