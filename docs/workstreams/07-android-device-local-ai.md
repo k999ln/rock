@@ -14,6 +14,10 @@ PC UI reloadは画面証拠不足で未確認。背景実行・P02全体・全OS
 
 # Android / Device / Local si
 
+## OS-02 local capabilityの未来観測拒否
+
+主担当07/ROCK、統合10/G04。実Shell consumerの時刻guardだけを純粋helperへ接続し、0<=observed<=now<expiry・最大30秒、無効時unknown/既存timer解除を保持。schema/producer/SKU/本人権限は変更しない。固定4source/test、作者offline compile/Shell14/lint0errors（202warnings・差分未測定）、Root独立source検収mustFix0を継承。`OS02_JAVA_HOME=<既存JDK17> python3 -m unittest tests.test_device_capability_freshness -v` がactual consumerを含む2方法/23境界。Android CIの既存JDK直後に明示試験と両pathfilterを追加し、標準fullverify→Root統合metadata別検収→headAndroid/全CI→通常main/mergeCIを確認する。device/推論/鍵/flash/Provider0、実機/P02/wholeOSは未受入。[設計](../rockstaros-complete-design.md#os02-capability-observation-freshness)／[採用段階](../evidence/development-execution/os02-capability-freshness-main-adoption.json)。
+
 ## Pixel cache-only/更新fence main候補
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。

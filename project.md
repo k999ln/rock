@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## OS-02 capability観測時刻の限定修復
+
+主担当07/ROCK・統合10/G04。未来observedAtをfreshにしていた旧consumer反例を保持し、固定4source/testと作者/Root独立receiptをhash不変でmain a58へ採用準備。actual Shell guardと純粋helperは0<=observed<=now<expiry、最大30秒を要求する。schema/producer/identity/権限/未知表示とtimerは保持。追加CIは既存JDK17後のbounded2分Python明示試験とpush/PR両pathfilterだけで、既存compile/emulatorを保持。新host境界2方法/23case成功、作者offline compile/Shell14/lint0errors202warnings（差分未測定）、Rootsource検収mustFix0。次: 標準fullverify/最新main同期→Root別metadata/CI検収→最終headAndroid/全CI→通常main/mergeCI。device/推論/鍵/flash0、Android runtime/実機/P02/wholeOS/公開は未受入。[採用記録](docs/evidence/development-execution/os02-capability-freshness-main-adoption.json)。
+
 ## Game→WorkJobの非金融下書き採用（AI06/GM01・08/ROCK）
 
 着手: 最新main1ec70d62へ固定4sourceを同hash採用。既存GAME-01/PR205のCLI受入とworkflow/API/store/owner/依存を保全。元receipt78376/独立reviewf21ed/Root UIec031を原本hashと区別した匿名要約で保存。原56・独立7・Root実合成UIと最新Zod4.6.7 preflight56を別平面で保持。下書きimportは一時memory、本人createが唯一の保存、unknown時同ID/planを明示確認、実行/完了/予算承認0。標準private生成を含むhost全verifyはexit0（3010/3007pass/0fail/3skip）。初回loopback待受けEPERMはsource変更なしで実行条件を直して回復し、失敗ログを保持。Linux07354 CIは旧UI反例の固定ee9 object不足で1fail（3010/3007pass/2skip）。CIだけにdepth1固定commit取得＋旧Workbench hash照合を追加し、4source/反例を変更・skipしない。独立integration検収、同head CI、通常main/同mergeCIが残gate。原missing-private fulltsc失敗は保存し型stubを採用しない。wholeGAME02/実Game/金融/Provider/実機/公開と616一括公開は保留。証拠 docs/evidence/development-execution/game-work-draft-main-adoption.json。

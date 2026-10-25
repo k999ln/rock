@@ -676,7 +676,9 @@
         "DEVICE-INSTALL"
       ],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "OS02_CAPABILITY_FRESHNESS_CANDIDATE"
+      ]
     },
     {
       "id": "OS-03",

@@ -213,7 +213,10 @@
       "id": "OS-02",
       "title": "機種・OS・能力identity",
       "lane": "os-pixel",
-      "ledgerRef": "data/development-unit-progress.json#OS-02"
+      "ledgerRef": "data/development-unit-progress.json#OS-02",
+      "currentOverlayRefs": [
+        "OS02_CAPABILITY_FRESHNESS_CANDIDATE"
+      ]
     },
     {
       "id": "OS-03",
@@ -992,5 +995,12 @@
     "realProviderAccepted": false,
     "physicalAccepted": false,
     "publicDeployment": false
+  },
+  "os02CapabilityFreshnessCandidate": {
+    "scope": "Reject future local capability observations in actual elapsed-realtime Shell consumer; existing unknown display/expiry scheduling and all schema/producer/identity/authority checks remain",
+    "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-adoption.json",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "mainMerged": false
   }
 }

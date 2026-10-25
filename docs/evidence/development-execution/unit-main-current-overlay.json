@@ -853,6 +853,20 @@
       "realProviderAccepted": false,
       "physicalAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "OS02_CAPABILITY_FRESHNESS_CANDIDATE",
+      "units": [
+        "OS-02"
+      ],
+      "kind": "additional_candidate_subset",
+      "scope": "Reject future local capability observations in actual elapsed-realtime Shell consumer; existing unknown display/expiry scheduling and all schema/producer/identity/authority checks remain",
+      "evidence": "docs/evidence/development-execution/os02-capability-freshness-main-adoption.json",
+      "sourceIndependentReview": "docs/evidence/development-execution/os02-capability-freshness-review.json",
+      "wholeUnitAccepted": false,
+      "P02Complete": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

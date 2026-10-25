@@ -10585,5 +10585,103 @@
       "skip": 2,
       "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
     }
+  },
+  "os02CapabilityFreshnessMainAdoption": {
+    "schema": "rockstaros.os02-capability-freshness-main-adoption/1",
+    "recordedAt": "2026-10-25T13:54:27.509021+00:00",
+    "unit": "OS-02",
+    "taskIds": [
+      "OS10"
+    ],
+    "primaryWorkstream": "07-android-device-local-ai",
+    "responsibility": "ROCK",
+    "baseMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "fixedSource4": [
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "bytes": 248493,
+        "sha256": "c9f68bde28a8318ac101e5d8816843bf3f1a999ccca65ae5e61c68a8da3ca5b3"
+      },
+      {
+        "path": "android/shell/src/main/java/dev/rock/shell/CapabilitySnapshotFreshness.java",
+        "bytes": 614,
+        "sha256": "444cb9dc004e2c1d9ebe7ffd64eeb239f7ceb2d76ec4a71b1521d5e828cbb5f2"
+      },
+      {
+        "path": "tests/test_device_capability_freshness.py",
+        "bytes": 3849,
+        "sha256": "75f9d0b11df17d23024fc1475a2c510f4246307d2ff54933fabdf9bbc79a03a2"
+      },
+      {
+        "path": "tests/fixtures/DeviceCapabilityFreshnessTest.java",
+        "bytes": 2239,
+        "sha256": "acd534e3ed15ca65707ebb73abbbbd95870868b4dc7aef7b8f7243ec55fe8105"
+      }
+    ],
+    "primaryReceipt": {
+      "path": "docs/evidence/development-execution/os02-capability-freshness.json",
+      "sha256": "6cccad9d2ded4d09ef98dd6d37404501853cde001806e5f1e943c11e9ee5838c"
+    },
+    "sourceIndependentReview": {
+      "path": "docs/evidence/development-execution/os02-capability-freshness-review.json",
+      "sha256": "26edd7c31bafc9d99db06a56cd5eaf80f9dac7352edc64e70eef46665cf8f153",
+      "mustFix": 0
+    },
+    "integrationHostFreshness": {
+      "unittestMethods": 2,
+      "pass": 2,
+      "skip": 0,
+      "javaBoundaryCases": 23,
+      "actualConsumerGuardAndProductionHelper": true
+    },
+    "authorAndroidEvidence": {
+      "actualConsumerCompile": true,
+      "shellUnitTests": 14,
+      "lintErrors": 0,
+      "lintWarnings": 202,
+      "warningDeltaMeasured": false,
+      "offline": true,
+      "reviewedSourceHashesMatch": true,
+      "integrationReviewerReranAndroidBuild": false
+    },
+    "newCIWiring": {
+      "workflow": ".github/workflows/android.yml",
+      "jdk": "existing Temurin17 setup",
+      "boundedMinutes": 2,
+      "command": "python3 -m unittest tests.test_device_capability_freshness -v",
+      "newBothPushAndPRPathFilters": [
+        "tests/test_device_capability_freshness.py",
+        "tests/fixtures/DeviceCapabilityFreshnessTest.java"
+      ],
+      "existingCompileEmulatorStepsPreserved": true
+    },
+    "hostFullVerify": "not yet run",
+    "scope": "Reject future local capability observations in actual elapsed-realtime Shell consumer; existing unknown display/expiry scheduling and all schema/producer/identity/authority checks remain",
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "P02Complete": false,
+    "androidRuntimeAccepted": false,
+    "physicalAccepted": false,
+    "additionalInference": 0,
+    "deviceOperations": 0,
+    "realFinancialAccepted": false,
+    "publicDeployment": false,
+    "next": "Latest-main synchronization, standard fullverify, separate Root integration metadata/CI review, exacthead Android+allCI, normalmain/mergeSHA CI",
+    "initialHostFullVerify": {
+      "exitCode": 1,
+      "tests": 3025,
+      "pass": 3021,
+      "fail": 1,
+      "skip": 3,
+      "failure": "Existing source-contract checker searched consumer text expiresAt <= now after guard moved to production helper",
+      "logSha256": "867d90f68056b4bcfbe3578624aade81484ad54df921b22af7f527eb363e56f7"
+    },
+    "contractCheckerSynchronization": {
+      "path": "scripts/check-os-contracts.mjs",
+      "oldAssertion": "Consumer contains expiresAt <= now",
+      "replacement": "Actual consumer calls !CapabilitySnapshotFreshness.isFresh; actual production helper checks ordered nonnegative timestamps, future/expiry rejection and maximum30000ms lifetime",
+      "targetedOsContractPassed": true,
+      "fixedSource4Unchanged": true
+    }
   }
 }
