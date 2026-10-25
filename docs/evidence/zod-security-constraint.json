@@ -1,0 +1,240 @@
+{
+  "schema": "rockstaros.zod-security-constraint/1",
+  "recordedAt": "2026-10-25",
+  "taskIds": [
+    "SYS15",
+    "G04"
+  ],
+  "responsibility": "ROCK",
+  "baseMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+  "previousFailedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+  "advisory": "GHSA-mrhx-c7xc-m3w5",
+  "alerts": [
+    42,
+    54
+  ],
+  "cause": [
+    "shadcn4.18.0 requires zod^3.24.1",
+    "@cloudflare/vitest-plugin1.3.4 pins zod4.4.3",
+    "Mini lock zod4.6.5"
+  ],
+  "change": {
+    "shadcn": "4.18.0 -> 4.22.1 (upstream Zod4 migration)",
+    "zodOverrideBothRoots": "^4.6.6",
+    "lockedVersionBothRoots": "4.6.7",
+    "cloudflarePluginVersionUnchanged": "1.3.4",
+    "rootLockChangedEntries": 29,
+    "miniLockChangedEntries": 1,
+    "existingAiCloudflareAstroUndiciVersionsUnchanged": true
+  },
+  "upstream": [
+    "https://github.com/shadcn-ui/ui/releases/tag/shadcn%404.22.0",
+    "https://github.com/colinhacks/zod/pull/6652"
+  ],
+  "compatibility": [
+    "No repository application imports zod or shadcn/schema; @shadcn/react UI version unchanged",
+    "All consumer declared ranges accept patched4 except Cloudflare exact4.4.3 (same-major override tested with existing local Worker suite)",
+    "Existing components.json and registry item schemas parse; invalid item rejects",
+    "AI SDK schema conversion accepts zod/v3 and zod4; no model calls",
+    "Bounded array/max,length,set/map synchronously/asynchronously reject before element transforms"
+  ],
+  "validation": {
+    "targeted": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skip": 0
+    },
+    "oldDependencyCounterexample": {
+      "tests": 5,
+      "pass": 2,
+      "fail": 3,
+      "oversizedArrayValidatorVisits": 6,
+      "expectedVisits": 0
+    },
+    "fullVerify": "running",
+    "rootAuditZod": 0,
+    "rootOtherAuditFindings": 7,
+    "miniAuditZod": 0,
+    "miniOtherAuditFindings": 1,
+    "cloudflareWorkerCompatibility": {
+      "files": 2,
+      "tests": 14,
+      "pass": 14
+    },
+    "shadcnCliVersion": "4.22.1"
+  },
+  "license": "Inventory refreshed; legal clearance remains pending",
+  "newHeadCI": "pending capture-time",
+  "mainMergeCI": "pending capture-time",
+  "boundaries": {
+    "physicalOperations": false,
+    "additionalModelInference": false,
+    "deployment": false,
+    "wholeProductAccepted": false
+  },
+  "files": {
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "sites/avocado-mini/package.json": "495a8cea62e1dec5cbbfac2dc8991a9ff72212d3e82a9c975ed5356f181ff0e6",
+    "sites/avocado-mini/package-lock.json": "06c9e2ded0496b2c9fd6f6f263857e3d786da705fa42255080ee359f0fc04937",
+    "tests/zod-dependency-security.test.mjs": "a7dcb722f7c40553744b54739406b295ce6446517bea34b31b60d9628fe6b64d"
+  },
+  "unchangedRuntimeSource": true,
+  "lockChanges": {
+    "package-lock.json": [
+      {
+        "path": "",
+        "before": "0.1.0",
+        "after": "0.1.0"
+      },
+      {
+        "path": "node_modules/@cloudflare/vitest-plugin/node_modules/zod",
+        "before": "4.4.3",
+        "after": null
+      },
+      {
+        "path": "node_modules/@shadcn/registry",
+        "before": null,
+        "after": "0.2.0"
+      },
+      {
+        "path": "node_modules/argparse",
+        "before": "2.0.1",
+        "after": null
+      },
+      {
+        "path": "node_modules/baseline-browser-mapping",
+        "before": "2.11.21",
+        "after": "2.11.32"
+      },
+      {
+        "path": "node_modules/browserslist",
+        "before": "4.28.9",
+        "after": "4.29.4"
+      },
+      {
+        "path": "node_modules/bundle-name",
+        "before": "4.1.0",
+        "after": "4.1.1"
+      },
+      {
+        "path": "node_modules/callsites",
+        "before": "3.1.0",
+        "after": null
+      },
+      {
+        "path": "node_modules/caniuse-lite",
+        "before": "1.0.30001810",
+        "after": "1.0.30001819"
+      },
+      {
+        "path": "node_modules/cn",
+        "before": null,
+        "after": "0.2.6"
+      },
+      {
+        "path": "node_modules/cosmiconfig",
+        "before": "9.0.2",
+        "after": null
+      },
+      {
+        "path": "node_modules/electron-to-chromium",
+        "before": "1.5.422",
+        "after": "1.5.464"
+      },
+      {
+        "path": "node_modules/error-ex",
+        "before": "1.3.4",
+        "after": null
+      },
+      {
+        "path": "node_modules/import-fresh",
+        "before": "3.3.1",
+        "after": null
+      },
+      {
+        "path": "node_modules/is-arrayish",
+        "before": "0.2.1",
+        "after": null
+      },
+      {
+        "path": "node_modules/js-yaml",
+        "before": "4.3.2",
+        "after": null
+      },
+      {
+        "path": "node_modules/json-parse-even-better-errors",
+        "before": "2.3.1",
+        "after": null
+      },
+      {
+        "path": "node_modules/lines-and-columns",
+        "before": "1.2.4",
+        "after": null
+      },
+      {
+        "path": "node_modules/node-releases",
+        "before": "2.0.54",
+        "after": "2.0.60"
+      },
+      {
+        "path": "node_modules/open",
+        "before": "11.0.2",
+        "after": "11.0.4"
+      },
+      {
+        "path": "node_modules/parent-module",
+        "before": "1.0.1",
+        "after": null
+      },
+      {
+        "path": "node_modules/parse-json",
+        "before": "5.2.0",
+        "after": null
+      },
+      {
+        "path": "node_modules/resolve-from",
+        "before": "4.0.0",
+        "after": null
+      },
+      {
+        "path": "node_modules/shadcn",
+        "before": "4.18.0",
+        "after": "4.22.1"
+      },
+      {
+        "path": "node_modules/type-fest",
+        "before": null,
+        "after": "4.41.0"
+      },
+      {
+        "path": "node_modules/update-browserslist-db",
+        "before": "1.3.2",
+        "after": "1.3.4"
+      },
+      {
+        "path": "node_modules/wsl-utils",
+        "before": "1.0.0",
+        "after": "1.0.1"
+      },
+      {
+        "path": "node_modules/wsl-utils/node_modules/powershell-utils",
+        "before": "0.1.0",
+        "after": null
+      },
+      {
+        "path": "node_modules/zod",
+        "before": "3.25.76",
+        "after": "4.6.7"
+      }
+    ],
+    "sites/avocado-mini/package-lock.json": [
+      {
+        "path": "node_modules/zod",
+        "before": "4.6.5",
+        "after": "4.6.7"
+      }
+    ]
+  }
+}

@@ -1,3 +1,7 @@
+## zod依存制約の互換修正（2026-10-25 / SYS15・G04・ROCK）
+
+main d2222dc5のDependabot失敗を修正。shadcn4.18のZod3制約は上流Zod4移行版4.22.1で解消し、Cloudflare plugin4.4.3固定を同major修正版へoverride。root/Miniのzodは^4.6.6/lock4.6.7。consumer解決・既存config/registry・AI SDK schema3/4互換・上限超過collection早期拒否を確認する。既存runtime/UI/sourceは変更せず、fullverify/newHEAD/main統合CIを別々に記録。実機操作・追加推論・公開なし。[証拠](../evidence/zod-security-constraint.json)。
+
 ## 2026-10-09 SYS15連携 — Skyコード公開時の標準保護
 
 SKY20／ROCKのコード公開にSPIDERを既定で適用。本人がSecret Checkへの交換／取り外しを選べる。選択とexact content hashを各commitへ束ね、検査失敗／未登録検査器は公開を停止する。認証・所有権・revision・Broker承認は別境界として維持。[詳細](../sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
