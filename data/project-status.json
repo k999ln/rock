@@ -10118,6 +10118,45 @@
       "headCISuccess": 14,
       "mainCISuccess": 13,
       "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
+    },
+    "messageService": {
+      "status": "reviewed_main_synchronized_ci_pending",
+      "taskId": "MAT15",
+      "primarySquad": "M1",
+      "regions": [
+        "JP",
+        "US"
+      ],
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "mainMerged": false,
+      "nextAction": "Confirm synchronized PR231 exact-head CI, then hand the isolated service packet to central Git; actual modem/provider/product identity/physical acceptance remains separate",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "evidence": "docs/evidence/development-execution/mini-08-message-service.json",
+      "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+      "hostTests": 103,
+      "serviceTests": 20,
+      "independentNegativeTests": 9,
+      "mustFixRemaining": 0,
+      "gitHubSaved": true,
+      "pr": 231,
+      "sourceCommit": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+      "fullVerify": "complete_chain_exit0_2993tests_2990pass_3skip_0fail",
+      "linuxCommonTests": 103,
+      "linuxPacketTests": 26,
+      "ciStatus": "previous_6b155020_14_success_synchronized_head_pending",
+      "parentMainMergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "latestIntegrationMain": "bb11a7e4838d3f2bc13b5529cf137be83662c92e",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+      "newIntegrationHostFullVerify": {
+        "tests": 3027,
+        "pass": 3024,
+        "fail": 0,
+        "skip": 3,
+        "exitCode": 0,
+        "logSha256": "a2fd6a7fdc23b9b0aeef4cb68c3615ef6d2dedd5d2b9705d18e4d95f0d5072cd"
+      },
+      "newHostCommonTests": 103
     }
   },
   "pixelCacheMainAdoption": {

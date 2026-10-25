@@ -4,6 +4,10 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 
 # Material Invention / avocadoMini
 
+## Mini開発用message serviceの採用
+
+ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止をhostで検査する。独立source検収mustFix0、service20・全Mini103・追加9負例とLinux packet26を別集計で記録する。実製品identity/回線/transport/Job保存/実機は未受入。[契約](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)／[独立検収](../evidence/development-execution/mini-08-message-service-review.json)。
+
 ## 携帯・PC前・対象物前を必須にしない制作と対話
 
 2026-10-15の[本人指示と6受入ケース](../service-design/01-service-experience.md#携帯を持たずpcや対象物の前にもいない制作体験)を追加。設計同期はDOC04/H1（ROCK）、体験はWEB04、能力/仕事連携はSKY21、実機入力/表示/停止と空間到達範囲はMAT15（JOINT）。最初は一室・一作品で電話取り出し0/PC前必須操作0、案/修正/保存/再開を測る。確定版の製作引渡しは非電話の本人確認と設備/専門家の受入を別に通す。新規購入/製作/契約/実送信はこの設計更新では実施しない。

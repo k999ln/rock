@@ -81,6 +81,10 @@ Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連
 
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
+## 開発用bounded message serviceの限定採用候補
+
+共通message adapterの上へ、peer credentialで照合するUnix local入口、固定operationのBroker/AP開発adapter、有限scheduler・停止・consumer受領確認を接続する。実製品signer/authorisationや実modem transport/Job保存へ昇格しない。既存byte/cost予約・単体表示4条件を保持し、owner・権限epoch・失効・期限を各作用前に検査する。詳細の状態/失敗/復旧/承認/未実行gateは[固定source契約](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)と[独立検収](evidence/development-execution/mini-08-message-service-review.json)を参照。
+
 版: 2.0 / 2026-09-18
 状態: 既存Material Invention研究profileと共通契約の設計資料
 注意: 現行avocadoMiniの製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本書の四方向発明台、AR、Full-scale/rack構成はこの研究profile内の設計であり、R5の完成外形・全空間裸眼表示・製造承認を示さない。

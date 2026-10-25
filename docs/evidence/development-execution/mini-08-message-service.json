@@ -1,0 +1,206 @@
+{
+  "schema": "mini-message-service-validation/1",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "scope": "development Broker/AP/local Unix message service; no physical or live provider acceptance",
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+      "sha256": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+      "sha256": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5"
+    },
+    {
+      "path": "tests/avocado-mini-tethering.test.mjs",
+      "sha256": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09"
+    }
+  ],
+  "regions": [
+    "JP",
+    "US"
+  ],
+  "preserved": [
+    "standalone Mini without required dock/phone/PC/Pro",
+    "no plate or membrane",
+    "few display parts",
+    "full range including up/down",
+    "low glare",
+    "finite TTL/retries/shared byte and cost reservations"
+  ],
+  "host": {
+    "status": "passed_final_service_and_wrapper",
+    "miniTests": 103,
+    "serviceTests": 20,
+    "independentNegativeTests": 9,
+    "independentMustFix": 0
+  },
+  "fullVerify": {
+    "status": "passed",
+    "log": "/private/tmp/mini-service-final-verify.log",
+    "priorAttempt": "Mini suite 60s timeout under concurrent load; independent 101 tests completed in 72.8s; stale installed Zod dependencies caused 3 failures. Suite-only timeout 180s; npm ci root and Mini site; Zod 5/5 passed. Transport deadlines unchanged.",
+    "exitCode": 0,
+    "rootTests": 2993,
+    "rootPassed": 2990,
+    "rootFailed": 0,
+    "rootSkipped": 3,
+    "rawLogSha256": "54ddfadd3ac6f396e227315ab648a1b2caca28b572812f66a2bd44fb236c50c3",
+    "nonAdditiveSuites": true
+  },
+  "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+  "gitHubSaved": true,
+  "mainMerged": false,
+  "physicalAccepted": false,
+  "providerConnected": false,
+  "remaining": [
+    "actual product identity/authentication beyond existing public ServiceAccess fixture",
+    "modem supervisor enforcing matching provider reservation before RF; encrypted live transport",
+    "real JP/US provider contracts and period-wide hard cap including management traffic",
+    "bounded production observation and provider I/O, Linux service installation, physical sustained operation",
+    "consumer Job import with durable acknowledgement",
+    "same enclosure battery/power/heat and all four display conditions physical acceptance"
+  ],
+  "reviewReceiptSha256": "645137f36a4700e48a82d0811409eafddb24bc4af8ceb83096b3037653a7b34f",
+  "pr": 231,
+  "sourceCommit": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+  "ciStatus": "14_source_head_checks_success",
+  "basePR": 229,
+  "linuxCI": {
+    "head": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+    "run": 40193904560,
+    "job": 121170528890,
+    "status": "success",
+    "commonTests": 103,
+    "packetTests": 26,
+    "rawLogSha256": "edacb8eeba1016f402c6bb2622327c3d3bac4a7b2e7e2aa457aa77112a8ff492",
+    "checkoutVerified": true,
+    "physicalRadioAccepted": false
+  },
+  "sourceCI": {
+    "head": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+    "checks": [
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121171268199",
+        "name": "source-tests",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/runs/121170933369",
+        "name": "CodeQL",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121170529564",
+        "name": "partitions (main-2)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121170529524",
+        "name": "partitions (main-0)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121170529519",
+        "name": "partitions (main-3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121170529486",
+        "name": "partitions (support)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904672/job/121170529380",
+        "name": "partitions (main-1)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904574/job/121170529195",
+        "name": "SPIDER / production web security measurement",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904551/job/121170529088",
+        "name": "SPIDER / secrets",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904553/job/121170529087",
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904633/job/121170529010",
+        "name": "verify",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904574/job/121170528930",
+        "name": "SPIDER / repair regressions",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904560/job/121170528890",
+        "name": "linux-packets",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "9dae624b1f348d5185f25c1d0fb8b72185783963",
+        "html_url": "https://github.com/k999ln/rock/actions/runs/40193904553/job/121170528824",
+        "name": "SPIDER CodeQL (python)",
+        "status": "completed"
+      }
+    ],
+    "verifyRun": 40193904633,
+    "verifyJob": 121170529010,
+    "verifyLogSha256": "13b40ea8b0282a182ad2c4691b40d4403ab380883366aa75e1a719c32ff5e112"
+  },
+  "parentMainConfirmation": {
+    "path": "docs/evidence/development-execution/mini-08-message-main-confirmation.json",
+    "mergeCommit": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "checksSucceeded": 13
+  },
+  "mainSynchronization": {
+    "baseMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+    "reviewedServiceHashesUnchanged": true,
+    "hostMiniTestsPassed": 103,
+    "metadataIndependentMustFix": 0,
+    "newHeadCI": "pending"
+  }
+}

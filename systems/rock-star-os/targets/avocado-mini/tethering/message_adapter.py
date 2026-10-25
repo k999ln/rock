@@ -274,7 +274,24 @@ class MessageAdapter:
             result['providerUnknown'] = self._close_pending()
             return result
 
-    def dispatch(self, owner, revision, request_id):
+    def pending(self, owner):
+        """Private scheduler view; never expose client bindings to public status."""
+        self.sweep(owner)
+        with self._lock(), self.c._db() as db:
+            return [dict(requestId=k, clientId=r['client'], nextAt=r['nextAt'])
+                    for k, r in self._load(db)['records'].items() if r['state'] == 'queued']
+
+    def invalidate_link(self, owner):
+        """Trusted observer failure closes link admission without losing consent."""
+        with self._lock():
+            def invalidate(s, q, now):
+                s['observation'] = None
+                self.c._invalidate(s)
+                q['linkEpoch'] = None
+                self._purge(s, q, now)
+            return self._change(owner, None, invalidate)
+
+    def dispatch(self, owner, revision, request_id, *, authorize=None):
         number(revision)
         identity(request_id)
         with self._lock():
@@ -285,6 +302,8 @@ class MessageAdapter:
                 if r['state'] != 'queued':
                     return dict(state=r['state'])
                 self._ready(s, q, now, r['client'])
+                if authorize is not None:
+                    authorize(r['client'])
                 require(now >= r['nextAt'], 'retry_not_due')
                 index = next(i for i, ack in enumerate(r['acked']) if not ack)
                 if r['tries'][index] >= self.p['maxAttempts']:
@@ -313,6 +332,11 @@ class MessageAdapter:
                     self._ready(s, q, now, r['client'])
                     require(s['epoch'] == grant['epoch'] and now < grant['expiresAt'] and now < r['expiresAt'], 'grant_expired_or_fenced')
                 self._change(owner, None, recheck)
+                if authorize is not None:
+                    authorize(grant['clientId'])
+                    # AP/Broker checks can themselves take time. Recheck the
+                    # local message/grant lease after their final I/O as well.
+                    self._change(owner, None, recheck)
                 raw = self.transport.exchange(frame, copy.deepcopy(grant))
                 ack = self.codec.unpack('mini-message-ack/1', raw, self.p['maxAckBytes'])
                 fields(ack, 'binding frameSha256 requestId index delivered')

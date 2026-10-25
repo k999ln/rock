@@ -947,7 +947,15 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
-最新main採用準備: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+PR229採用確定: 最終head1e6ed3bcをmain `a58c6ffa857389193727b0b6d4a867352f269f77`へ通常統合し、同merge SHA全13CI成功、headとmergeのtree一致、原機能4/別Pixel fixture2のhash不変を直接照合。Linux共通83＋実packet26と全verifyのログを[main確認記録](docs/evidence/development-execution/mini-08-message-main-confirmation.json)へ保存。PR231はこのmainを取り込み、常駐制御5hash不変/103回帰成功、独立metadata検収mustFix0。旧保存head6b155020全14CI成功を保持し、新同期headCIは別確認。
+
+PR229採用準備時の履歴: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+
+常駐制御着手（本人の次指示）: PR229のmain統合・同SHA CIは中央Gitと調整し、別branchで既存Broker本人確認・AP再認証・有限schedulerを接続する。期限掃除・有限再送・通信量/料金予約を維持。日米小容量、Mini単体、表示4条件を維持し、実回線・契約・実機は未受入。
+
+常駐制御検収: 開発用Broker本人/端末bindingと毎回guard、APの予約前後認証、有限round-robin tick、private Unix入口を実装。網側予約/AP照会中の本人期限切れと旧PSK再接続を独立反例で修正し、service20件・独立負例9件・全Mini103件のwrapper成功、mustFix0。[専用検収](docs/evidence/development-execution/mini-08-message-service-review.json)。全verifyは初回のsuite60秒制限と旧node_modulesの不一致を切分け、suite180秒/lockfile同期後に最終までexit0（主2993件/2990成功/3skip/失敗0、他suite非加算）。通信の個別期限は変更しない。新source `9dae624b` はDraft PR231へ保存。同SHA全14CI成功（Linux共通103件＋実packet26件・全verifyを含む）。最終metadata headとmain採用は別追跡。PR229のmain採用は中央Gitと別追跡。
+
+開発用message service採用準備: 原f27faea8全14CI/独立mustFix0のsource5と依存7を固定。main bb11を通常同期し、旧status全fieldとMini229/eSIM/Smith currentを保持してmessageServiceだけ追加。元Mini229 adoption receiptはbyte不変へ戻し、作者確認は別fileへ保持。新host103試験と標準fullverify3027/3024pass/0fail/3skip成功。実製品identity/transport/Job保存/実機/金融/wholeMINIは未受入。[現行採用](docs/evidence/development-execution/mini-08-message-service-main-adoption.json)。次は最新main再同期とRoot固定headmetadata/新headCI/mainCI。
 
 共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
 
