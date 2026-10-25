@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.undici-security-update/1",
-  "recordedAt": "2026-10-25T09:57:09.939722+00:00",
+  "recordedAt": "2026-10-25T10:00:37.586647+00:00",
   "task": "G04",
   "primarySquad": "H1",
   "primaryOwner": "ROCK",
@@ -31,7 +31,8 @@
       "shadcn",
       "wrangler/miniflare"
     ],
-    "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg=="
+    "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+    "override": "^7.30.1 adopted unchanged from PR216; allows later7.x fixes"
   },
   "upstream": [
     "https://github.com/nodejs/undici/releases/tag/v7.30.1",
@@ -83,10 +84,11 @@
       "rootSkip": 3,
       "skipMeaning": "Host skips remain skips; Linux final-head results recorded separately",
       "apiAssertions": 1678,
-      "logSha256": "0a91e4bb12c3ce4f98e14f816bae7c46d9ed4d2f9283824f9ec7597dc5f69f03"
+      "logSha256": "0a91e4bb12c3ce4f98e14f816bae7c46d9ed4d2f9283824f9ec7597dc5f69f03",
+      "candidateScope": "Earlier candidate after main2a, before main PR216 adds4constraint tests; not current final-head acceptance"
     },
     "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
-    "finalSameShaCI": "pending_at_capture; final GitHub check readback required",
+    "finalSameShaCI": "pending_at_capture supplement PR218",
     "hostInitialFailure": {
       "stage": "release:signing:check",
       "reason": "Host default OpenSSL4; existing harness requires OpenSSL3",
@@ -97,6 +99,13 @@
       "stage": "test:avocado-mini-site build",
       "reason": "Separate Mini node_modules absent; astro command not found",
       "correction": "Run npm ci --prefix sites/avocado-mini exactly as existing CI; no test weakened"
+    },
+    "currentFocusedTests": {
+      "command": "node --test tests/undici-dependency-security.test.mjs tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
     }
   },
   "preserved": {
@@ -105,15 +114,16 @@
     "p02AndWholeOSAccepted": false,
     "publicDeployment": false,
     "remaining616PublicExport": "HELD",
-    "mainMerged": false,
-    "realProviderOrFinancialAcceptance": false
+    "mainMerged": true,
+    "realProviderOrFinancialAcceptance": false,
+    "mainMergedScope": "Dependency repair PR216 only; supplemental PR218 remains unmerged"
   },
-  "next": "GitHub Draft PR and final same-SHA CI; main integration and default-branch Dependabot rescan remain separate. Preserve public/deployment/616 holds.",
-  "synchronizedMain": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+  "next": "Complete independent synchronized review, save supplemental DraftPR218 and check its exact final SHA CI; main repair CI and supplemental CI are distinct. Public/deployment/616 holds remain.",
+  "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
   "mainSynchronization": {
     "method": "ordinary merge",
-    "commit": "9d81259f",
-    "preserved": "All18 changed main paths retained; conflict union preserved eSIM UI text and both progress fields."
+    "commit": "9fcc9133",
+    "preserved": "PR216 accepted ^7.30.1/^8.12.2 constraints and both locks byte-for-byte; all incoming main changes retained."
   },
   "independentSourceReview": {
     "status": "PASS_SCOPED_SOURCE",
@@ -162,15 +172,16 @@
       "EventSource runtime memory probe not executed; its advisory absence is audit evidence only",
       "Node bundled undici unaffected by package override; no claim of runtime Node upgrade"
     ],
-    "sha256": "d9858c041eeceba399bb86aba78e3886f3d4681e7a880440e65d388c4cf2d415"
+    "sha256": "d9858c041eeceba399bb86aba78e3886f3d4681e7a880440e65d388c4cf2d415",
+    "candidateScope": "Historical initial exact-pin candidate; rootmanifest later adopted ^range from accepted main. Do not treat old source hashes as current manifest."
   },
   "limits": [
     "npm package override does not upgrade Node bundled undici",
     "Other dependencies: root10/Mini2 audit findings remain",
-    "Default-branch Dependabot resolution awaits main adoption and GitHub rescan; historical8f failed job remains failure"
+    "GitHub confirms6undici alerts fixed after PR216 adoption. Historical8f failed job remains failure; newmain zod bot failure remains separate."
   ],
   "miniSite": {
-    "manifest": "sites/avocado-mini/package.json unchanged",
+    "manifest": "sites/avocado-mini/package.json with ^8.12.2 override adopted unchanged from PR216",
     "lock": "sites/avocado-mini/package-lock.json",
     "from": "8.11.2",
     "to": "8.12.3",
@@ -211,6 +222,82 @@
     "mustFix": [],
     "sha256": "b69ec5d512f8b674c518b2f01da10a007ac3c40f081f3180e8ff802b8bb32613",
     "scope": "root3source + Mini lock +7metadata paths; preserves main18changes,393tasks14gates and original receipts",
-    "miniIndependent": "new8.12.3 SRI2pass/encoding rejection+process survives; old8.11.2 SRI fail/encoding process crash"
+    "miniIndependent": "new8.12.3 SRI2pass/encoding rejection+process survives; old8.11.2 SRI fail/encoding process crash",
+    "candidateScope": "Historical pre-PR216-merge independent review; final synchronized metadata review follows."
+  },
+  "status": "REPAIR_ADOPTED_FROM_PR216_SUPPLEMENTAL_REGRESSION_CI_PENDING",
+  "repairMain": {
+    "pr": 216,
+    "acceptedHead": "d89efc5584dbb5b1b0ec00c853701520a497cfb1",
+    "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "mainMerged": true,
+    "headCI": "PR body reports8success; independently read main and supplement checks separately",
+    "alerts": {
+      "48": "fixed",
+      "49": "fixed",
+      "50": "fixed",
+      "55": "fixed",
+      "56": "fixed",
+      "57": "fixed"
+    },
+    "alertReadback": "GitHub Dependabot API confirms all6 fixed at2026-10-25T09:57:22Z..24Z",
+    "mainCI": {
+      "productSuccess": 7,
+      "dependabotSuccess": 2,
+      "dependabotFailure": 1,
+      "pending": 0,
+      "allChecksSuccess": false,
+      "failedPackage": "zod",
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "rawChecksSha256": "11c865e4983a8946ddb1a92dd774a4d1b09addac5cfa9e51a0f8cff79a87b83f"
+    },
+    "otherBotFailure": {
+      "run": 40182780072,
+      "job": 121137173178,
+      "package": "zod",
+      "error": "security_update_not_possible",
+      "reason": "Available path would downgrade @cloudflare/vitest-plugin1.3.4 to0.0.0",
+      "outsideUndiciScope": true
+    },
+    "linuxVerify": {
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "run": 40182767302,
+      "job": 121137133356,
+      "conclusion": "success",
+      "tests": 2986,
+      "pass": 2984,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "b426ec2c53bd14b9db3236f118a923c1327b010a02e65a113383f11cdd4605da"
+    }
+  },
+  "supplement": {
+    "pr": 218,
+    "scope": "SRI behavioral regression2tests and independent readback/progress/handoff only; dependency manifests/locks/license inventory identical to current main",
+    "mainMerged": false,
+    "finalHeadCI": "pending_at_capture"
+  },
+  "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+  "scannerPolicySynchronization": {
+    "method": "ordinary merge",
+    "incomingPaths": [
+      ".github/spider/gitleaks.toml",
+      ".github/spider/public-value-provenance.json"
+    ],
+    "bothBytesMatchMain": true,
+    "ownPolicyChanges": 0
+  },
+  "independentSynchronizedReview": {
+    "status": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
+    "mustFix": [],
+    "sha256": "b4a8878b70d856b7f7d119a0b5461f6bc1b25f8dd5823c143fbccf9f00957dd2",
+    "base": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "scope": "7 supplemental paths only; accepted dependency manifests/locks/license/constraint tests/scanner policies exactly match latest main; prior393tasks14phasegates/receipts/holds retained",
+    "currentFocusedTests": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    }
   }
 }

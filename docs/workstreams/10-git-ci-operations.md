@@ -94,7 +94,7 @@ CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固�
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
 
-現在の次作業: undici更新不可は下記G04のroot7.30.1／Mini8.12.3候補で修正・独立検収PASS、Git保存と最終CI待ち。旧8fの失敗履歴は維持。旧f3実機を新c43/P02/全OSへ転用せず、PR213/main2aのUI統合を保全し、undici修正とは別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+現在の次作業: undici更新不可はPR216/main d222でroot7.30.1／Mini8.12.3へ修正済み、対象警告6fixed。下記G04の追加回帰/独立証拠はPR218の最終CI待ち。旧8fの失敗履歴は維持。旧f3実機を新c43/P02/全OSへ転用せず、PR213/main2aのUI統合を保全し、undici修正とは別scope。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
 
 原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
@@ -247,7 +247,9 @@ H1 / R04、ROCK。main `ecb4b2af`は古いmanifestと新しいlockを別のmerge
 
 ### 現行undici security update（G04 / H1 / ROCK）
 
-上記cycle43の7.29.1固定は当時の復元記録。開始main dc2b992fから2a9828b2を通常mergeで保全同期し、Dependabotのsecurity_update_not_possibleの根因であるroot overrideを修正版7.30.1へ更新し、root lockのundici1entryだけを再解決する。Mini側の同3警告（55/56/57）も、既存^8経路を維持して別lockの1entryだけ8.11.2→8.12.3へ更新する。EXTERNALはnpm/GitHubの配布・CI、ROCKはpin/lock/互換回帰、OWNERのmain統合・公開gateは別。通常`npm ci`、`npm ls undici --all`、`npm audit --json`で6経路とundici指摘消失を確認。他依存はroot10／Mini2指摘が残る。`node --test tests/undici-security-update.test.mjs tests/undici-tls-options.test.mjs`、`npm run project:update`、`npm run mission:update`、`npm run mission:check`、`npm run verify`、独立検収と最終SHA CIを完了条件とする。[証拠](../evidence/development-execution/undici-security-update.json)。独立検収PASS/必須修正0、全体verify exit0（root2984／2981pass／0fail／3host skip）を確認。lock由来license在庫だけ再生成し法的clearanceは上げない。復旧はこのPRの依存差分をrevertし、旧pinへの復帰は脆弱性再導入と明示する。公開・配備・616一括公開、実Provider/金融/Pixel gateは保留。
+cycle43の旧7.29.1固定は当時の復元記録。PR216/main d222のroot`^7.30.1`／Mini`^8.12.2`を通常mergeで保全し、lock7.30.1／8.12.3とlicense在庫はmainと同一。GitHubのundici警告48/49/50/55/56/57はfixed。PR218はSRI behavioral2回帰＋独立受入/引継ぎに限定する。EXTERNALはnpm/GitHub、ROCKはpin/lock/回帰、OWNERの追加main統合・公開gateは別。
+
+`npm ci`両方、`npm ls undici --all`、`npm audit --json`でundici指摘消失を確認。他root10/Mini2指摘とmainのzod bot更新不可は未解決。独立旧反例/新拒否・生存とmetadata保全、同期後対象9pass、同期前host全verify exit0を区別する。最終同一SHA Linux `npm run verify`とCIを確認し、[証拠](../evidence/development-execution/undici-security-update.json)へ結果を結ぶ。公開・配備・616一括公開、実Provider/金融/Pixel gateを開けない。
 
 ## AMC観測元のファイル読取り
 

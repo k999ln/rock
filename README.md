@@ -190,7 +190,7 @@ eSIMサービス管理では、保存ackの後に現在の権限・同じ契約/
 
 [PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功、Linux実verify2938試験/2936成功/0失敗/2skipと専用Python cache6/update23を確認しました。当該SHAのDependabot自動更新1件はundici更新不可で失敗しており、その履歴を全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。PR213 UIはmain `2a9828b2`へ通常統合済みです。新c43 guardの実機/P02/全OSは未受入、公開・配備・616一括公開は保留です。
 
-G04ではundici更新不可の原因となったoverride固定を7.29.1から7.30.1へ修正しました。Miniサイトの別lockも8.11.2から8.12.3へ更新しました。両方で通常npm ciとundici監査の解消を確認し、両系統の独立検収PASSと全体verify成功を確認しました。Git保存と最終同一SHA CIを進めます。他依存の監査指摘（root10件／Mini2件）、main統合、公開・配備・616一括公開は別の未完了／保留として維持します。[修正証拠](docs/evidence/development-execution/undici-security-update.json)。
+undici更新不可は[PR216](https://github.com/k999ln/rock/pull/216)からmain `d2222dc5`へ統合され、root7.30.1／Mini8.12.3の対象警告6件がGitHubでfixedになりました。両major内の修正版を許可する制約を保全しています。[PR218](https://github.com/k999ln/rock/pull/218)は追加SRI回帰と独立検収・引継ぎ記録の候補です。他依存の監査指摘（root10／Mini2）とzod自動更新不可、公開・配備・616一括公開の保留は維持します。[検証証拠](docs/evidence/development-execution/undici-security-update.json)。
 
 cache-only準備は取得済みbytesのversion/capabilitiesだけを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を行います。不一致/不明時に取得・修復・推論へ切り替えず、同FDの限定metadata読込と固定payload更新fenceを使います。旧f3の限定物理測定/元code復旧は新c43の受入へ転用しません。[契約](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)。
 

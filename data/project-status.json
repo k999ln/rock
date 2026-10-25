@@ -10108,20 +10108,19 @@
     "taskId": "G04",
     "primarySquad": "H1",
     "primaryOwner": "ROCK",
-    "state": "independently_accepted_local_verify_pass_git_ci_pending_at_capture",
+    "state": "repair_main_integrated_supplemental_regression_ci_pending",
     "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
     "from": "7.29.1",
     "to": "7.30.1",
     "evidence": "docs/evidence/development-execution/undici-security-update.json",
     "undiciAuditFindingsAfter": 0,
     "otherAuditFindingsRemaining": 10,
-    "independentReview": "PASS_SCOPED_SOURCE_AND_METADATA",
-    "gitSaved": false,
-    "sameShaCI": "pending_at_capture",
-    "mainMerged": false,
+    "independentReview": "PASS_SCOPED_SYNCHRONIZED_SUPPLEMENT",
+    "gitSaved": true,
+    "sameShaCI": "supplement_final_head_pending_at_capture",
     "publicDeployment": false,
     "remaining616PublicExport": "HELD",
-    "synchronizedMain": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "synchronizedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
     "independentSourceReview": "PASS_SCOPED_SOURCE",
     "miniSite": {
       "from": "8.11.2",
@@ -10129,6 +10128,22 @@
       "undiciAuditFindingsAfter": 0,
       "otherAuditFindingsRemaining": 2
     },
-    "localVerify": "PASS root2984/pass2981/fail0/skip3"
+    "localVerify": "pre_PR216_sync_candidate PASS root2984/pass2981/fail0/skip3; current final-head verify via GitHub separately",
+    "repairMainPR": 216,
+    "repairMergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "repairMainMerged": true,
+    "supplementPR": 218,
+    "supplementMainMerged": false,
+    "scope": "PR216/main d222 repair root^7.30.1 lock7.30.1 and Mini^8.12.2 lock8.12.3 adopted unchanged; six GitHub undici alerts fixed. PR218 adds SRI regression and independent evidence. Otherroot10/Mini2 audit findings and zod bot failure separate.",
+    "next": "Check main repair SHA CI separately; complete independent synchronized review and final PR218 SHA CI; leave supplemental merge/public/deployment/616 pending.",
+    "repairMainCI": {
+      "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+      "productSuccess": 7,
+      "dependabotSuccess": 2,
+      "dependabotFailure": 1,
+      "failurePackage": "zod",
+      "allChecksSuccess": false
+    },
+    "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8"
   }
 }
