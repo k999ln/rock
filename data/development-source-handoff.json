@@ -746,6 +746,13 @@
       "dependency": "Independent of the six eSIM files for this finite existing-store gap",
       "currentSourceReviewedByThisBatch": false,
       "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
+      "unit": "OS-01",
+      "state": "cache_main_update_fence_source_reviewed_candidate",
+      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "wholeUnitAccepted": false
     }
   ],
   "currentGIT08Scope": "Metadata document+work branch+main saved through PR195; no deployment or whole95 acceptance",

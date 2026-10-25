@@ -94,18 +94,32 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     writing = writing.then(async () => { const temp = storePath + '.tmp'; await writeFile(temp, body, { mode: 0o600 }); await rename(temp, storePath); });
     return writing;
   };
+  const persistCache = async () => {
+    try { await persist(); }
+    catch (error) { writing = writing.catch(() => {}); throw error; }
+    const file = await open(storePath, 'r');
+    try { await file.sync(); } finally { await file.close(); }
+    const directory = await open(stateDir, 'r');
+    try { await directory.sync(); } finally { await directory.close(); }
+  };
   const spawnShell = (args, options) => environment ? environment.spawn(args, options) : exec(['shell', VM, '--', ...args], options);
   const shell = (args, options) => spawnShell(args, options).promise;
   const jsonShell = async (args, options) => JSON.parse(await shell(args, options));
   let home;
   const guestHome = async () => home ??= await shell(['python3', '-c', 'from pathlib import Path; print(Path.home())']);
   const stopProcess = async id => jsonShell(['python3', `${await guestHome()}/sky-private/worker.py`, 'stop', id], { timeout: 12000 });
+  const cacheRowView = row => {
+    const value = JSON.parse(JSON.stringify(row));
+    if (preparation && row === state.cachePreparation && value.state !== 'preparing') { value.state = 'preparing'; delete value.result; }
+    return value;
+  };
   const snapshot = () => ({ schema: 'sky.private-linux-deployment/1', vm: environment?.id ?? VM, private: true,
     phase: state.phase, phaseLabel: environment?.phaseLabels?.[state.phase] ?? PHASES[state.phase], error: state.error,
     candidate: { ...lock.model, available: undefined, cacheBlob: undefined },
     candidates: [lock.model, ...catalog].filter(c => !state.models.some(m => m.sha256 === c.sha256 && m.id !== c.id)).map(m => ({ ...m, cacheBlob: undefined })),
     selectedModelId: state.selectedModelId, preparedModels: state.preparedModels,
-    preparation: state.preparation ?? null,
+    preparation: state.preparation ?? null, cacheOnlyProtocol: environment?.inspectCached ? 2 : 0,
+    cachePreparation: state.cachePreparation ? cacheRowView(state.cachePreparation) : null,
     models: state.models, agents: state.agents, price: linuxLocalPrice, environment: state.environment ?? null,
     runs: state.runs.map(r => ({ ...r, stateLabel: r.stop === 'requested' ? '停止を確認しています' : r.stop === 'unconfirmed' ? '停止できたか未確認' : r.error ? '実行できませんでした' : STATES[r.job.status] })) });
   // Reconcile interrupted work before allowing another execution. Never retry inference automatically.
@@ -122,15 +136,42 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     state.phase = 'stopped'; state.error = 'Linuxが再起動しました。環境を準備してから依頼してください。';
     state.preparedModels = [];
   }
+  // Never evict a seen ID back into the executable namespace. Legacy single-entry
+  // state cannot prove older IDs absent; retain its known row and block new IDs.
+  const CACHE_HISTORY_LIMIT = 256;
+  const bindingKeys = ['requestId', 'scopeSha256', 'modelId', 'modelSha256'];
+  const sameCacheBinding = (a, b) => bindingKeys.every(k => a[k] === b[k]);
+  if (!state.cachePreparations) state.cachePreparations = {schema: 1, incomplete: Boolean(state.cachePreparation), entries: {}};
+  const ledger = state.cachePreparations;
+  if (ledger.schema !== 1 || typeof ledger.incomplete !== 'boolean' || !ledger.entries || Array.isArray(ledger.entries) ||
+      typeof ledger.entries !== 'object' || Object.keys(ledger.entries).length > CACHE_HISTORY_LIMIT) throw new Error('CACHE_HISTORY_INVALID');
+  if (state.cachePreparation && !Object.hasOwn(ledger.entries, state.cachePreparation.requestId)) {
+    if (Object.keys(ledger.entries).length >= CACHE_HISTORY_LIMIT) throw new Error('CACHE_HISTORY_FULL');
+    ledger.entries[state.cachePreparation.requestId] = {...state.cachePreparation};
+    ledger.incomplete = true;
+  }
+  if (state.cachePreparation && !sameCacheBinding(state.cachePreparation, ledger.entries[state.cachePreparation.requestId])) throw new Error('CACHE_HISTORY_BINDING_MISMATCH');
+  for (const [id, row] of Object.entries(ledger.entries)) {
+    if (!row || row.requestId !== id || !/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(id) ||
+        !/^[a-f0-9]{64}$/.test(row.scopeSha256) || !/^[a-f0-9]{64}$/.test(row.modelSha256) ||
+        typeof row.modelId !== 'string' || !/^[a-z0-9][a-z0-9.-]{0,79}$/.test(row.modelId) || row.modelId.includes('..') ||
+        row.cacheOnly !== true || !['preparing', 'ready', 'stopped', 'failed', 'unknown'].includes(row.state)) throw new Error('CACHE_HISTORY_INVALID');
+    if (row.state === 'preparing') { row.state = 'unknown'; row.result = {state: 'unknown', errorCode: 'CACHE_PREPARATION_INTERRUPTED'}; }
+    if (row.result && (typeof row.result !== 'object' || Array.isArray(row.result) || row.result.state !== row.state)) throw new Error('CACHE_HISTORY_RESULT_INVALID');
+  }
+  if (state.cachePreparation) state.cachePreparation = ledger.entries[state.cachePreparation.requestId];
+  const cacheOutcome = row => ({...snapshot(), cachePreparation: cacheRowView(row)});
+
   await persist();
 
-  async function prepare(model, signal) {
+  async function prepare(model, signal, cacheOnly = false) {
     if (environment) {
-      const prepared = await environment.prepare(runtimeLock(model), worker, { signal, onProgress: progress => {
+      const prepared = await environment.prepare(runtimeLock(model), worker, { signal, cacheOnly, onProgress: progress => {
         state.preparation = { modelId: model.id, label: String(progress.label ?? '準備しています').slice(0, 140),
           receivedBytes: Number(progress.receivedBytes) || 0, totalBytes: model.bytes };
       } });
       if (prepared.errorCode === 'memory-too-small') throw new Error('Linuxのメモリが足りません。Terminalの詳細設定で4GBに変更して再起動してください。');
+      if (cacheOnly && (prepared.cacheOnly !== true || prepared.downloads !== false || prepared.workerProtocol !== 1)) throw new Error('CACHE_ONLY_RESPONSE_REQUIRED');
       if (!prepared.ready || prepared.platform !== 'linux' || prepared.architecture !== 'aarch64' || prepared.modelSha256 !== model.sha256)
         throw new Error('端末内Linuxの実行確認ができませんでした。');
       if (signal.aborted) throw new Error('準備を停止しました。');
@@ -212,10 +253,104 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     }).finally(async () => { active = null; await persist(); });
     active.done = task;
   }
+  const assertExecutionAllowed = async () => { await environment?.assertExecutionAllowed?.(); };
+  const pendingActions = new Set();
   async function action(input) {
+    const task = dispatch(input); pendingActions.add(task);
+    try { return await task; } finally { pendingActions.delete(task); }
+  }
+  async function dispatch(input) {
     if (closed || !input || typeof input !== 'object' || Array.isArray(input)) throw new Error('画面を開き直してください。');
-    if (Object.keys(input).some(k => !['action', 'modelId', 'model', 'link', 'promptFormat', 'accepted', 'agent', 'agentFile', 'agentId', 'input', 'requestId', 'jobId', 'surface', 'agentSha256', 'modelSha256'].includes(k))) throw new Error('操作の項目を確認してください。');
+    if (Object.keys(input).some(k => !['action', 'modelId', 'model', 'link', 'promptFormat', 'accepted', 'agent', 'agentFile', 'agentId', 'input', 'requestId', 'jobId', 'surface', 'agentSha256', 'modelSha256', 'scopeSha256', 'cacheOnly'].includes(k))) throw new Error('操作の項目を確認してください。');
     if (input.action === 'status') return snapshot();
+    if (['cache-inventory', 'prepare-cached', 'cancel-cached-prepare', 'cache-status'].includes(input.action)) {
+      const exact = names => Object.keys(input).sort().join(',') === names.sort().join(',');
+      const bound = ['action', 'modelId', 'modelSha256', 'requestId', 'scopeSha256', 'cacheOnly'];
+      if (!environment?.inspectCached || input.cacheOnly !== true ||
+          !(input.action === 'cache-inventory' ? exact(['action', 'cacheOnly']) : exact(input.action === 'prepare-cached' ? [...bound, 'accepted'] : bound)))
+        throw new Error('CACHE_ONLY_PROTOCOL_REQUIRED');
+      await assertExecutionAllowed();
+      if (closed) throw new Error('CACHE_MANAGER_CLOSED');
+      if (mutating) throw new Error('CACHE_PREPARATION_BUSY_OR_STOP_UNKNOWN');
+      const prior = Object.hasOwn(ledger.entries, input.requestId) ? ledger.entries[input.requestId] : null;
+      if (prior && !sameCacheBinding(prior, input)) throw new Error('CACHE_PREPARATION_BINDING_MISMATCH');
+      if (input.action === 'cache-status' || input.action === 'cancel-cached-prepare') {
+        if (!prior) throw new Error('CACHE_PREPARATION_BINDING_MISMATCH');
+        if (input.action === 'cancel-cached-prepare' && preparation && prior === state.cachePreparation && prior.state === 'preparing') { prepareAbort.abort(); await preparation; }
+        return cacheOutcome(prior);
+      }
+      if (input.action === 'prepare-cached' && prior) {
+        if (input.accepted !== true) throw new Error('CACHE_MODEL_PIN_OR_APPROVAL_REQUIRED');
+        return cacheOutcome(prior); // Terminal outcomes survive A/B/A and restart.
+      }
+      if (inspecting || active || preparation || Object.values(ledger.entries).some(row => row.state === 'unknown') || state.runs.some(r => r.job.status === 'active' || r.stop === 'unconfirmed' || r.stop === 'requested'))
+        throw new Error('CACHE_PREPARATION_BUSY_OR_STOP_UNKNOWN');
+      if (input.action === 'cache-inventory') {
+        inspecting = true;
+        try {
+          const cacheInventory = [];
+          for (const model of state.models) {
+            try {
+              const result = await environment.inspectCached(runtimeLock(model));
+              if (result.id !== model.id || result.sha256 !== model.sha256 || result.bytes !== model.bytes || result.state !== 'verified' || result.cacheOnly !== true || result.downloads !== false)
+                throw new Error('CACHE_INVENTORY_MISMATCH');
+              cacheInventory.push(result);
+            } catch (error) { cacheInventory.push({id: model.id, sha256: model.sha256, bytes: model.bytes, state: 'unavailable', reason: /^CACHE_[A-Z_]+$/.test(error.message) ? error.message : 'CACHE_UNAVAILABLE', cacheOnly: true, downloads: false}); }
+          }
+          return {...snapshot(), cacheInventory, cacheObservedAt: Date.now()};
+        } finally { inspecting = false; }
+      }
+      const model = modelById(input.modelId);
+      if (!model || input.modelSha256 !== model.sha256 || input.accepted !== true ||
+          !/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(input.requestId) || !/^[a-f0-9]{64}$/.test(input.scopeSha256))
+        throw new Error('CACHE_MODEL_PIN_OR_APPROVAL_REQUIRED');
+      if (ledger.incomplete) throw new Error('CACHE_HISTORY_RECONCILIATION_REQUIRED');
+      if (Object.keys(ledger.entries).length >= CACHE_HISTORY_LIMIT) throw new Error('CACHE_HISTORY_FULL');
+      mutating = true;
+      try {
+        state.cachePreparation = {requestId: input.requestId, scopeSha256: input.scopeSha256,
+          modelId: model.id, modelSha256: model.sha256, state: 'preparing', cacheOnly: true};
+        ledger.entries[input.requestId] = state.cachePreparation;
+        state.phase = 'preparing'; state.error = null;
+        state.preparedModels = state.preparedModels.filter(id => id !== model.id);
+        state.preparation = {modelId: model.id, label: '保存済みのAIだけを照合しています', receivedBytes: 0, totalBytes: model.bytes};
+        const row = state.cachePreparation;
+        try { await persistCache(); } // Durable operation identity before any readiness effect.
+        catch {
+          row.state = 'unknown'; row.result = {state: 'unknown', errorCode: 'CACHE_REQUEST_SAVE_UNCONFIRMED'}; state.phase = 'failed';
+          await persistCache().catch(() => {});
+          throw new Error('CACHE_REQUEST_SAVE_UNCONFIRMED');
+        }
+        // An update may publish its durable fence while this request is syncing.
+        try { await assertExecutionAllowed(); if (closed) throw new Error('CACHE_MANAGER_CLOSED'); }
+        catch (error) {
+          row.state = 'unknown'; row.result = {state: 'unknown', errorCode: 'CACHE_ADMISSION_UNCONFIRMED'}; state.phase = 'failed';
+          await persistCache().catch(() => {}); throw error;
+        }
+        prepareAbort = new AbortController();
+        preparation = prepare(model, prepareAbort.signal, true).then(async () => {
+          await assertExecutionAllowed();
+          if (closed || prepareAbort.signal.aborted) throw new Error('CACHE_PREPARATION_CANCELLED');
+          row.state = 'ready'; row.result = {state: 'ready', modelId: model.id, modelSha256: model.sha256, workerProtocol: 1, cacheOnly: true};
+        }).catch(error => {
+          state.phase = prepareAbort.signal.aborted ? 'stopped' : 'failed'; state.error = prepareAbort.signal.aborted ? null : error.message;
+          row.state = prepareAbort.signal.aborted ? 'stopped' : 'failed';
+          row.result = {state: row.state, errorCode: prepareAbort.signal.aborted ? 'CACHE_PREPARATION_CANCELLED' : /^CACHE_[A-Z_]+$/.test(error.message) ? error.message : 'CACHE_PREPARATION_FAILED'};
+        }).finally(async () => {
+          state.preparation = null;
+          try { await persistCache(); await assertExecutionAllowed(); }
+          catch {
+            row.state = 'unknown'; row.result = {state: 'unknown', errorCode: 'CACHE_RESULT_SAVE_UNCONFIRMED'}; state.phase = 'failed';
+            await persistCache().catch(() => {});
+          }
+          preparation = null; // A terminal result is visible only after durable readback metadata commit.
+        });
+        return snapshot();
+      } finally { mutating = false; }
+    }
+
+    if (!['export', 'export-agent', 'export-model', 'stop', 'stop-environment'].includes(input.action)) await assertExecutionAllowed();
+    if (closed) throw new Error('画面を開き直してください。');
     if (input.action === 'inspect-model') {
       if (active || preparation) throw new Error('今の仕事や準備が終わるか、停止してから別のAIを確認してください。');
       if (inspecting) throw new Error('前のAIの配布情報を確認しています。少しお待ちください。');
@@ -311,6 +446,7 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
   async function close() {
     if (closed) return;
     closed = true;
+    await Promise.allSettled(pendingActions);
     if (preparation) { prepareAbort.abort(); await preparation; }
     if (active) { const done = active.done; await stopRun(state.runs.find(r => r.job.id === active.id)); await done; }
     await writing; await unlink(guardPath);
