@@ -1,3 +1,35 @@
+<a id="game-creator-host-fixture"></a>
+## 作者向けknown-particle host fixture CLI（GAME-01 / GM01 / AI06、DX01文脈）
+
+目的・体験: 既存static intake→既知particle sandbox→既存save/load/replayを一つのhost CLIへ結ぶ有限サンプル。作者本人の新規導入や任意engineの実行基盤を完成扱いしない。主担当08/ROCK、Git統合10。固定sessionだけでstart/read/resume/commandし、同save bytes/digestと操作ID/版を照合する。金融完成を待たず非金融fixtureを進めるが、実交換/現実WorkJob橋は別gate。
+
+責任・禁止authority: ROCKは既存診断/engine呼出し・file境界/保存照合/失敗復旧、EXTERNALは実engine/platform・license/provenance、JOINTは外部作者/実target/本人別保存の同一条件検証、OWNERは対象機種/権利/導入と将来の個別金融同意を担当する。固定synthetic owner/Date.now grantはfixture入力で、OS/本人認証・作者のポイント発行・Wallet実記帳/888c/交換権限へ昇格させない。productionExchangeEnabled=false/authenticatedOwnerStorageAccepted=falseを維持する。
+
+入出力・ID・制限: sourceは既存tests/fixtures/game-sandbox-session.jsonの固定SHA0df00814だけ、adapterはparticle-fixture/1だけ。既存diagnoseGameIntakeがmanifest/package/target/grantを診断し、deniedはlock/runtime/save前に止める。callerがengine/package/rights/任意scriptを上書きしない。CLIのoperation別allowlist、既知command ID/完全payload、整数revision0〜1000と4,000,000byte save上限を強制する。通常出力のdiagnosticと別のhostProofがsession/save/state digest、revision、readback、identical retry/recovered slotとhost elapsedを返す。PIDはhostの一時比較値で本人性ではない。
+
+状態・保存: startは既知sessionの先頭操作、readは明示保存版、resumeは明示元版から既知残操作、commandは既知次操作または完全同一retryだけを扱う。changed sameID/stale new requestは既存409、受理済み同一retryは状態不変。既存createSandbox/applySandboxCommand/saveSandbox/loadSandbox/sandboxDigestとraw save形式/版/規則を再利用する。所有mode0700のrock-game-fixture-*ディレクトリをcanonical system tmp直下に作り、既知basenameのimmutable save-N.json(mode0600)をO_EXCLで発行。新DB/store/上書きlatest pointer/台帳やsave envelopeは作らない。fileとdirectoryをfsync後、同じbytesをreopen/load/digest照合する。
+
+file/lock安全・失敗: source/save/lockをO_NOFOLLOW|O_NONBLOCKで開き、同FD fstat/有限readでregular/nlink/owner/mode/size/timeを確認。directory FDと現inodeを照合し、symlink/FIFO/hardlink/oversize/変化を拒否する。必要flagがなければfail closed。最小exclusive lockのrelease前にもinode/deviceを照合。private same-UID fixtureという前提で、悪意ある同UID・他OSuser・分散lockへの耐性は未証明。PID再利用/live/EPERM/未知はlockを残して拒否し、他processを停止しない。
+
+重複・中断・復旧・互換: 別process start/resumeと同一元requestのlost-ack retryは、完全一致するknown session prefix/保存slotだけを復旧する。壊れた/partial/foreign/新版・規則違いslotは自動採用/上書き/削除しない。--recover-lockは明示指定し、安全に読めた同inodeのlockでprocess.kill(pid,0)がESRCHの時だけ除去する。旧受入saveと未知partial次slotを保持し、明示read/resumeで旧版を確認してownerが調査する。失敗をreset/返金/金融操作へ結ばない。退行時は通常Git revertでこのCLI/testを戻し、再利用5ファイル・既存save版や他の保存資料を変更しない。作成したfixture一時dirはownerの管理対象で、恒久backup/retention/認証owner storeの代替ではない。
+
+診断とhost受入: 既存diagnosticのlaunch/input/save/isolationはunverified、導入/初回/成功/復旧measurementはnullのまま。別hostProof/単一hostの合成elapsedをその空欄へ移さず、外部作者の実測やproduction成功率にしない。独立source PASS_SCOPED/mustfix0、40focus（新17+既存23）/10独立probe、統合40pass0fail0skip・対象lint/2構文/通常typecheckを記録する。EPERM、UID fault injection、inode swap、symlink/FIFO/oversize、3CLI競合、実child midwrite SIGKILL、旧save保持とpartial非自動採用を確認し、独立owned tmp28件をcleanupした。UID差はfstat注入で、実別OSuser試験ではない。元receipt9936と新portable summaryは別hash、原本log/private path/PID出力はGit外に保つ。
+
+未決定・次の合格条件: 外部作者のfresh導入/初回成功/復旧の実測、実browser/第三者engine隔離と資源制限、本人/projectの永続保存・共通WorkJob/Zema橋、license/provenance、Pixel/Mini/Pro/native実機、個別GX交換方向/rate/同意/provider/金融は未受入。wholeGAME01/GAME02/fullSDK/公開はfalse。対象を各既存gateで決め、同一buildの別process/実target/権限/復旧証拠で閉じる。今回local全体verifyは未実行で、最終exact PRheadのLinux実npm run verify/全CIと独立採用metadata検収を必須にする。
+
+[採用2hash・再利用5・検証・残gate](evidence/development-execution/game-creator-fixture-main-adoption.json)／[独立検収要約](evidence/development-execution/game-creator-fixture-main-review-summary.json)。
+
+利用例（作成した一時dirを印字し、その値をPRIVATE_TEMP_DIRへ指定）:
+
+```sh
+node --input-type=module -e "import {mkdtempSync} from 'node:fs'; import {tmpdir} from 'node:os'; import {join} from 'node:path'; console.log(mkdtempSync(join(tmpdir(), 'rock-game-fixture-')))"
+node --experimental-strip-types scripts/game-creator-fixture.mjs start --directory PRIVATE_TEMP_DIR
+node --experimental-strip-types scripts/game-creator-fixture.mjs read --directory PRIVATE_TEMP_DIR --revision 1
+node --experimental-strip-types scripts/game-creator-fixture.mjs resume --directory PRIVATE_TEMP_DIR --revision 1
+```
+
+--helpで全optionを確認できる。実Owner/任意path/任意engineへ広げない。
+
 <a id="eve-saved-source-estimate"></a>
 ## Eveの保存2資料に結ぶread-only料金見積（EVE-02限定候補）
 

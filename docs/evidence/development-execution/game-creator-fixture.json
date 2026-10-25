@@ -1,0 +1,161 @@
+{
+  "schema": "rockstaros.game-creator-fixture.portable-source-summary/1",
+  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
+  "unit": "GAME-01",
+  "sourceBase": "7188c87986f337c6b65e408a17d2468ecab44fe5",
+  "sourceFiles": [
+    {
+      "path": "scripts/game-creator-fixture.mjs",
+      "sha256": "62c0575a28b71383e330a9e673b535a64f4111f005b2c231a7f0e88755cf8884",
+      "bytes": 16133
+    },
+    {
+      "path": "tests/game-creator-fixture.test.mjs",
+      "sha256": "8454117a6677e9581e1163936874d7346cfc0bbb123751f2a67ebf575d275ab1",
+      "bytes": 17333
+    }
+  ],
+  "reusedFive": [
+    {
+      "path": "lib/game-intake.ts",
+      "sha256": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58"
+    },
+    {
+      "path": "lib/game-sandbox.ts",
+      "sha256": "02598e5d73fa22db1a4e573eaf1e83719faa29721c96e7a98159cd3144de7b36"
+    },
+    {
+      "path": "tests/fixtures/game-sandbox-session.json",
+      "sha256": "0df00814e88721d16ca41e30b1dbb8c0ccc536c363e5f82958f292448699ea08"
+    },
+    {
+      "path": "tests/game-intake.test.mjs",
+      "sha256": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c"
+    },
+    {
+      "path": "tests/game-sandbox.test.mjs",
+      "sha256": "a06bdb9160af481b0a48cb827a5441c35181202904767caa7f9e221652fa9c52"
+    }
+  ],
+  "sourceAdaptation": false,
+  "originalImplementationReceiptSha256": "9936e50de45cde386192eda5e8ce194fb5a40f26de9514d7960af1d30f35b6ab",
+  "originalReceiptHistoricalStatus": "IMPLEMENTED_LOCAL_40_PASS_PENDING_INDEPENDENT_REVIEW",
+  "receiptQualification": "New minimal portable metadata, not byte-identical to original implementation receipt. Only exact script/test2 bytes inherit independent source review; new metadata needs adoption review.",
+  "sourceReviewSha256": "30d618d92f0778add6a7081d86a4dcd7e12d7abc34735963c1319e53b9927e60",
+  "sourceReviewStatus": "PASS_SCOPED",
+  "sourceMustFix": [],
+  "fixturePlane": "POSIX host Node, finite committed particle session, synthetic owner/Date.now-based grant, private same-UID temp directory and real child-process/file I/O only. No authenticated application owner, arbitrary engine, browser/native/physical or financial acceptance.",
+  "staticDiagnosticUnchanged": "Original launch/input/save/isolation checks remain unverified and installation/first attempt/success/recovery measurements remain null. Static diagnostic never becomes accepted game execution.",
+  "hostProofSeparate": "Separate hostProof includes PID for temporary process comparison, fixed session hash, revision/state digest/save hash/readback, identical retry/recovered slot and actual elapsedMillis. No isolation or production permission claimed.",
+  "nonFinancial": "productionExchangeEnabled=false and authenticatedOwnerStorageAccepted=false in successful fixture output. Points/capability labels never grant Wallet posting, game exchange, issuance authority or actual balances.",
+  "validation": {
+    "focused": {
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "skip": 0,
+      "newFixtureGroups": 17,
+      "existingGroups": 23
+    },
+    "independentProbeGroups": 10,
+    "notAdditiveWithAssertions": true,
+    "independentCleanup": {
+      "ownedDirectories": 28,
+      "allRemoved": true,
+      "remainingChildren": 0,
+      "otherProcessesSignaled": false
+    },
+    "scope": "Static denial, start/command/read/resume, exact retries/revision conflicts, corrupt/partial saves, bounded same-FD source/save/lock, inode/mode/UID faults, concurrent CLI and own midwrite SIGKILL."
+  },
+  "failureHistory": [
+    {
+      "stage": "initial new fixture14groups",
+      "result": "14pass/0fail, source fixed session hash confirmed before tests",
+      "logId": "game-creator-fixture-tests-initial.log"
+    },
+    {
+      "stage": "initial lint",
+      "result": "1prefer-const error in test local state variable; changed let toconst, no suppression",
+      "logId": "game-creator-fixture-lint-initial.log"
+    },
+    {
+      "stage": "initial broader targeted",
+      "result": "40pass/0fail before final hardening",
+      "logId": "game-creator-fixture-targeted.log"
+    },
+    {
+      "stage": "final hardening",
+      "change": "Added directory fsync, explicit invalid-save code/status and strict per-operation option allowlists. Final same40groups pass, lint/syntax pass.",
+      "logId": "game-creator-fixture-targeted-final.log"
+    }
+  ],
+  "historicalLogs": [
+    {
+      "id": "game-creator-fixture-tests-initial.log",
+      "sha256": "158322e18947d2332a67dfa96b79b256ec74ffa9c0db3fd6dab9734015ba6f41",
+      "bytes": 1661
+    },
+    {
+      "id": "game-creator-fixture-lint-initial.log",
+      "sha256": "1a0a990a34a914ea685d4512028516145085a0031a5bfb4ccaa71d6580cbcead",
+      "bytes": 126
+    },
+    {
+      "id": "game-creator-fixture-targeted.log",
+      "sha256": "c54cc4f932b2e084f937a0b73740c2059b48cb19c47bb1644b93f2483e1ed773",
+      "bytes": 4345
+    },
+    {
+      "id": "game-creator-fixture-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "id": "game-creator-fixture-targeted-final.log",
+      "sha256": "2e9c940f5b60aa879fdb14fc513d0df14d948fca19bd5d669600942829a2675a",
+      "bytes": 4347
+    },
+    {
+      "id": "game-creator-fixture-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "id": "game-creator-fixture-measure.json",
+      "sha256": "ddd444dc545ff7c16e3d4feb92d38ac6e037fafa4454e04f239e3339841f3d49",
+      "bytes": 990
+    },
+    {
+      "id": "game-creator-fixture-help.log",
+      "sha256": "8da972efb008331b3d53d293f0a1d94a2829fe8afe3c3c793c731f8e7e58c5d2",
+      "bytes": 897
+    }
+  ],
+  "measurementQualification": "Existing static installation/firstAttempt/firstSuccess/recovery fields stay null and checks unverified. Separate single-machine synthetic host elapsed timings are not fresh external author onboarding, success rate or production recovery.",
+  "limits": [
+    "Actual installed browser/third-party engine isolation and resource enforcement",
+    "Authenticated owner/project durable storage and common WorkJob/Zema bridge",
+    "Fresh external-author setup/first success/recovery measurements and licensing provenance",
+    "Pixel/Mini/Pro/native physical runtime and input/display acceptance",
+    "Game exchange direction/rate/consent/provider sandbox and live finance remain production disabled; no real funds or external balances moved",
+    "PID namespace/liveness is host-local; no distributed lock or hostile same-UID filesystem isolation proof. Ownership mismatch used child-only fstat fault injection, not another real OS user.",
+    "Host timings reported by implementer are synthetic single-machine timings, not measured fresh-author onboarding/production success.",
+    "Common WorkJob/Zema, source licensing provenance, production authorization, durable authenticated owner storage and human UX are not accepted by these tests.",
+    "Shared documentation/design:check/fixed-candidate verify and Git save/PR/merge belong to integration owner; this receipt accepts only reviewed bytes."
+  ],
+  "acceptance": {
+    "boundedHostFixtureSource": true,
+    "independentSourceReview": true,
+    "newMetadataReviewed": false,
+    "mainMerged": false,
+    "wholeGame01": false,
+    "wholeGame02": false,
+    "fullSDKFreshAuthorDX": false,
+    "authenticatedOwnerStorage": false,
+    "commonWorkJobZemaBridge": false,
+    "nativePhysical": false,
+    "productionExchangeEnabled": false,
+    "authorWalletAuthority": false,
+    "publicDeployment": false
+  }
+}

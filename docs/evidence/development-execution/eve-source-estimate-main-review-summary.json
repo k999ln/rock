@@ -241,5 +241,37 @@
       "logSha256": "e97138e3910bbe54e2cfb13f42e3c7379f5bef438e50991ce95d63e0a601cfa3"
     }
   },
-  "independentMechanicalReviewPending": true
+  "independentMechanicalReviewPending": false,
+  "completedMainAdoption": {
+    "pr": 204,
+    "acceptedHead": "163f8850106a3667adfa8d03ba43d4dd7875582c",
+    "mainMergeSha": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+    "acceptedHeadCISuccess": 7,
+    "actualAcceptedHeadNpmVerify": {
+      "tests": 2875,
+      "pass": 2873,
+      "fail": 0,
+      "skip": 2,
+      "runId": 40142596572,
+      "logSha256": "2dac03da0bf4fe95d6523d0cae53778058f12fac853bb28b37f317d893b67d4e"
+    },
+    "metadataMechanicalReviewSha256": "d2202d397bb89c2369a2c82f6bc73874d387ad10f9ce65124e179b5961fd0ec6",
+    "mainSameShaCISuccess": 6,
+    "actualMainNpmVerifySuccess": true,
+    "r2ExactFiles": 9,
+    "runtimeProductFiveUnchanged": true,
+    "mechanicalTestException": {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "oldSha256": "2eb27d5ecc120eca909929e09d853e4ac186e5f8fa5699c38da4ade69311ee8f",
+      "newSha256": "2f638ff79f6da58bf8fcdd2a80a62a65770eb89cd0c052cc487bd98b0ec8e9c9",
+      "independentReview": "PASS_SCOPED"
+    },
+    "numericBrowserSignedRate": false,
+    "actualBrowserExpiry": false,
+    "paidGeneration": false,
+    "sameJobGeneratedArtifact": false,
+    "wholeEve02": false,
+    "productionProviderBilling": false,
+    "publicDeployment": false
+  }
 }

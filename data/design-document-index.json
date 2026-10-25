@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.30",
-  "updatedAt": "2026-10-24T23:10:23.433054+00:00",
+  "version": "1.31",
+  "updatedAt": "2026-10-25T00:05:37.934051+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3055,7 +3055,7 @@
     "reviewSummary": "docs/evidence/development-execution/eve-source-estimate-main-review-summary.json",
     "uiSummary": "docs/evidence/development-execution/eve-source-estimate-ui-summary.json",
     "attempt": 2,
-    "mainMerged": false,
+    "mainMerged": true,
     "combinedMainUiPending": false,
     "pricingExecutionGateChanged": false,
     "paidGenerationAccepted": false,
@@ -3065,5 +3065,23 @@
     "currentNineExactPlusTestMechanicalException": true,
     "runtimeProductFiveUnchanged": true,
     "mechanicalTestExceptionPath": "tests/eve-text-estimate-ui.test.mjs"
+  },
+  "gameCreatorHostFixture": {
+    "authority": "docs/game-api-contract-draft.md#game-creator-host-fixture",
+    "osDesign": "docs/rockstaros-complete-design.md#game-creator-host-fixture",
+    "toolDesign": "docs/sky-tools-complete-design.md#game-creator-host-fixture",
+    "implementation": [
+      "scripts/game-creator-fixture.mjs"
+    ],
+    "tests": [
+      "tests/game-creator-fixture.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/game-creator-fixture-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/game-creator-fixture-main-review-summary.json",
+    "existingEngineAndSaveFormatUnchanged": true,
+    "mainMerged": false,
+    "wholeGame01Accepted": false,
+    "productionExchangeEnabled": false,
+    "publicDeployment": false
   }
 }

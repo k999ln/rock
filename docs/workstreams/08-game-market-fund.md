@@ -1,3 +1,7 @@
+## GAME-01 known-particle host creator fixture候補（GM01 / AI06、DX01文脈）
+
+ROCKは既存static intake→既知particle→既存save/replayの新CLI/test2だけを採用し、engine/save形式/再利用5は固定。診断unverified/measurements nullと別hostProofを区別。独立40/10probe・tmp28cleanup、統合40/lint/構文/type成功。mode/FD/inode/lock/中断/partial/競合のhost合成範囲で、本人保存/fullSDK/実engine/WorkJob/Wallet/実機/公開は未受入。最終同head実Linuxverify/CIと独立metadata採用検収待ち。[詳細・CLI利用](../game-api-contract-draft.md#game-creator-host-fixture)／[証拠](../evidence/development-execution/game-creator-fixture-main-adoption.json)。統合主担当10。
+
 # Game / Market / Fund
 
 ## 目的
