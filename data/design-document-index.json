@@ -383,7 +383,10 @@
         "docs/avokado-pro-pc-design.md",
         "data/avokado-pro-pc.json",
         "docs/avocado-mini-cellular.md",
-        "data/avocado-mini-cellular.json"
+        "data/avocado-mini-cellular.json",
+        "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
+        "docs/evidence/development-execution/mini-08-tethering.json",
+        "docs/avocado-mini-r5/embedded-portable-connectivity.md"
       ],
       "implementation": [
         "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",

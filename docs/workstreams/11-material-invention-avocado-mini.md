@@ -178,4 +178,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 ## 着脱・衛星携帯Wi-Fi
 
+主担当MAT15/M1、MINI-08・NET01との接続。Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
+
+[実装設計](../../systems/rock-star-os/targets/avocado-mini/tethering/README.md)／[証拠](../evidence/development-execution/mini-08-tethering.json)。検証: `node --test tests/avocado-mini-tethering.test.mjs`。次はdefault deny/原子的quota/期限/IPv6と再起動のLinux packet試験、Provider上限と同一閉箱の受入。
+
 MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivity.md)。取り外し後の電源を必須化し、DP01〜05を同一試作機で受入する。請求はBIL02/O5。設計のみ、実機未受入。

@@ -1,0 +1,109 @@
+{
+  "schema": "rock-mini-tethering-evidence/1",
+  "recordedAt": "2026-10-25",
+  "taskId": "MAT15",
+  "unit": "MINI-08",
+  "primarySquad": "M1",
+  "primaryOwner": "ROCK",
+  "status": "host_implementation_and_independent_review_passed_integration_pending",
+  "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "baseReadback": "GitHub connector fetch_commit(main); shell DNS unavailable; local git object matched",
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788",
+    "tests/avocado-mini-tethering.test.mjs": "f423cca185c981c5025946008b5701a6c1a42e5a8eef93919cbf123380310b99"
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/mini-08-tethering-review.json",
+    "sha256": "77d3dd735828ee67f8dc4d2d91c5ebf0467ec7fb1f113ea5c8d11c0b733abe8c",
+    "mustFixRemaining": 0,
+    "correctedFindings": [
+      "immutable overrun counters/holds",
+      "recover and boot change discard stale dock power",
+      "record capacity shown in snapshot"
+    ]
+  },
+  "scope": [
+    "owner/client allow revoke reallow",
+    "observed connected client list separate from permission",
+    "global and per-client tx+rx reservations",
+    "integer all-in cost upper bounds",
+    "SQLite commit-before-grant CAS",
+    "dock detach/boot invalidation",
+    "uncertain reservations survive restart",
+    "offline demonstration"
+  ],
+  "validation": {
+    "pythonTests": 28,
+    "pythonPassed": 28,
+    "pythonFailed": 0,
+    "nodeWrapper": "passed 1/1 on final source",
+    "independentArithmeticOracleConditions": 512,
+    "demo": "passed portable decision; tx40/rx100; cost cap rejected; restart OFF; unknown100byte/10minor retained",
+    "lint": "targeted oxlint wrapper exit0",
+    "projectUpdate": "passed snapshot 114/393; counts not completion",
+    "designCheck": "passed design and research coverage",
+    "missionCheck": "passed 32 squads/393 owners/229 scoped plans",
+    "fullVerify": "attempted; stopped at private:check because git-archive validation copy has no .git; no later checks claimed",
+    "missionUpdate": "attempted; same no-.git metadata precheck; direct project:update and mission:check passed"
+  },
+  "commands": [
+    "python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p test_*.py",
+    "node --test tests/avocado-mini-tethering.test.mjs",
+    "python3 -B systems/rock-star-os/targets/avocado-mini/tethering/demo.py",
+    "npm run design:check",
+    "npm run project:update",
+    "npm run mission:check",
+    "npm run verify"
+  ],
+  "preservedRequirements": [
+    "no plate or membrane at image",
+    "few display parts",
+    "full requested range including up/down",
+    "not glaring"
+  ],
+  "physicalAccepted": false,
+  "kernelAdapterConnected": false,
+  "wifiApConnected": false,
+  "providerConnected": false,
+  "realChargeCapAccepted": false,
+  "invoiceVerified": false,
+  "wholeMini08Accepted": false,
+  "githubSaved": false,
+  "mainMerged": false,
+  "ciObserved": false,
+  "generalLaunch": "held",
+  "sharedChangeRequests": {
+    "preparedAgainst": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+    "candidateDirectory": "/private/tmp/mini-tethering-main-candidate",
+    "paths": [
+      "README.md",
+      "project.md",
+      "data/project-status.json",
+      "data/design-document-index.json",
+      "docs/rockstaros-avocado-mini-complete-design.md",
+      "docs/service-design/08-mini-connectivity-and-billing.md",
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/avocado-mini-r5/embedded-portable-connectivity.md"
+    ],
+    "rootSharedFilesEdited": false,
+    "gitCoordinator": "01a16c23-d327-7401-b994-05796b175cce",
+    "handoff": "requested isolated tree and metadata adoption; queued coordination, no reply received yet"
+  },
+  "nextSteps": [
+    "Git owner fixed-worktree metadata adoption/project:update/mission:update/full verify and same-SHA CI",
+    "connect existing owner Broker/UI without request-declared authority",
+    "Linux namespace packet adapter with default deny, atomic total tx+rx cap/expiry, IPv6/isolation/flow offload/restart tests",
+    "Provider all-in maximum including downlink/control/retry overhead and network-side hard cap",
+    "exact modem/AP/battery/thermal in same portable core DP02-05"
+  ],
+  "limits": [
+    "Prototype does not send or block packets; hardQuotaReady is trusted adapter input, not proof of real enforcement",
+    "Provider price/coverage/shared IP rights not selected; fixture prices only",
+    "Trusted clock/protected storage/antirollback and loss recovery not integrated",
+    "4096 grants/64 enrolled clients per approved period; no automatic reset or tariff increase",
+    "Billing cost exposure is conservatively retained, never certified invoice or Wallet funds"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "mini-tethering-await-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "candidateRoot": "/Users/kaiya/.codex-work/worktrees/mini-tethering-control/avokdo",
+  "status": "passed",
+  "mustFixRemaining": 0,
+  "scope": "One-line Node test promise await correction only",
+  "manifestPath": "/private/tmp/mini-tethering-final-manifest.json",
+  "manifestSha256": "d7118890487c9d3713b66fe066e98e02bf289b1c97002248cf68010ca5d1f78d",
+  "manifestEntries": 7,
+  "unchangedOtherFiles": 6,
+  "changedPaths": [
+    "tests/avocado-mini-tethering.test.mjs"
+  ],
+  "beforeSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788",
+    "tests/avocado-mini-tethering.test.mjs": "f423cca185c981c5025946008b5701a6c1a42e5a8eef93919cbf123380310b99",
+    "docs/evidence/development-execution/mini-08-tethering.json": "7c3f54d1c750a14572b13d6fa5c34c2c641c94141360a3c9e6e4104cfac6f4d5",
+    "docs/evidence/development-execution/mini-08-tethering-review.json": "77d3dd735828ee67f8dc4d2d91c5ebf0467ec7fb1f113ea5c8d11c0b733abe8c"
+  },
+  "afterSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788",
+    "tests/avocado-mini-tethering.test.mjs": "638cf1161df76ef84f8dbf256f5c4cd2e9e7d4a07992798d6c71a165af9f9c27",
+    "docs/evidence/development-execution/mini-08-tethering.json": "7c3f54d1c750a14572b13d6fa5c34c2c641c94141360a3c9e6e4104cfac6f4d5",
+    "docs/evidence/development-execution/mini-08-tethering-review.json": "77d3dd735828ee67f8dc4d2d91c5ebf0467ec7fb1f113ea5c8d11c0b733abe8c"
+  },
+  "exactDiffVerified": "line 7: test(...) -> await test(...); all other wrapper bytes unchanged",
+  "validation": {
+    "command": "node --test tests/avocado-mini-tethering.test.mjs",
+    "exitCode": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 2495.62,
+    "runtime": "Wrapper executes frozen Python host suite; no runtime source changes"
+  },
+  "originalReviewPreserved": true,
+  "originalReviewPath": "docs/evidence/development-execution/mini-08-tethering-review.json",
+  "originalReviewSha256": "77d3dd735828ee67f8dc4d2d91c5ebf0467ec7fb1f113ea5c8d11c0b733abe8c",
+  "notPerformed": [
+    "Git mutations",
+    "Linux VM packet execution",
+    "full verify",
+    "main integration or CI"
+  ],
+  "countClarification": "The supplied old manifest contains seven total paths, of which six non-wrapper paths are unchanged; no eighth path was provided or attested."
+}

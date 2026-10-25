@@ -23,6 +23,10 @@ Sky単体で利用から月次請求まで完結し、Mini・Jennifer・Zema・R
 
 ## ハードと通信
 
+Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
+
+[通信制御の詳細](../../systems/rock-star-os/targets/avocado-mini/tethering/README.md)へ、利用体験、責任、API、最大料金の予約、停止/復旧とDP02/03/05への受入順を追加した。実料金表は未確定で、試験の単価は架空。
+
 [着脱・衛星・携帯Wi-Fiの詳細](../avocado-mini-r5/embedded-portable-connectivity.md)をR5の現行追補とする。固定dockは保持・給電・任意の有線通信、可搬coreはOS・本人性・保存・携帯電源・Wi-Fiを担当する。1本自律・使用時200mm以内・別演算Hub不要は維持。原本の外部給電のみの前提を、設置中給電＋取り外し後の携帯電源へ更新する。battery部品は未選定。
 
 直接衛星通信は目標であり、屋内での受信や高速internetを保証しない。アンテナ、上り/下り、回線契約、IP/共有可否、熱/電池/収納を同一試作機で確認する。外部衛星terminalで通信できても、Mini単独衛星対応とは呼ばない。物理停止、ゲーム、local処理はcloud課金の完成待ちにしない。

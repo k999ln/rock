@@ -1,0 +1,96 @@
+{
+  "schema": "mini-tethering-independent-review/1",
+  "date": "2026-10-25",
+  "reviewer": "/root/tethering_review",
+  "scope": "offline Python/SQLite control-plane only",
+  "candidateRoot": "/private/tmp/mini-tethering-candidate",
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788",
+    "tests/avocado-mini-tethering.test.mjs": "f423cca185c981c5025946008b5701a6c1a42e5a8eef93919cbf123380310b99"
+  },
+  "unchangedDuringTestRun": true,
+  "status": "limited_host_review_passed",
+  "mustFixRemaining": 0,
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "P2",
+      "discovery": "independent static counterexample; original defective version not executed",
+      "problem": "A second smaller settlement after overrun could release reservation and overwrite confirmed overrun evidence",
+      "fixVerified": "First overrun immutable; exact retry retains hold; changed tx/rx rejects with counter_conflict",
+      "status": "resolved"
+    },
+    {
+      "id": "R2",
+      "severity": "P2",
+      "discovery": "independent static counterexample; original defective version not executed",
+      "problem": "Persisted dockId bypassed portable battery gate after recover or bootId change",
+      "fixVerified": "Both recover and observed boot change clear dockId and place scope; fresh attachment required before external power bypass",
+      "status": "resolved"
+    },
+    {
+      "id": "R3",
+      "severity": "P2",
+      "discovery": "independent static counterexample; original defective version not executed",
+      "problem": "4096 grant-record boundary rejected reservations but snapshot did not disclose blocking reason",
+      "fixVerified": "nextGrantBlockReason=period_record_limit, matching reserve; restored boundary fixture verifies",
+      "status": "resolved"
+    }
+  ],
+  "verification": {
+    "command": "python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p test_*.py",
+    "pythonTests": 28,
+    "passed": 28,
+    "failed": 0,
+    "exitCode": 0,
+    "seconds": 2.413,
+    "independentArithmeticOracleConditions": 512,
+    "oracleMeaning": "8 cost caps x 8 first grant byte counts x 8 second grant byte counts; two-client combined all-in-cost reservation oracle",
+    "nodeWrapperEarlierPass": true,
+    "nodeWrapperEarlierPythonTests": 25,
+    "notes": "Regression scenarios added by implementer from independently identified counterexamples, then independently executed and source-reviewed."
+  },
+  "accepted": [
+    "owner mismatch rejection within trusted broker call boundary",
+    "SQLite CAS/atomic parallel reservation",
+    "per-client and global tx+rx reservation limits",
+    "integer all-in cost upper-bound reservations and no cost refunds",
+    "idempotency/counter-conflict/overrun retention",
+    "stop/revoke/epoch/expiry/clock checks",
+    "detach/reboot preserves accounting and invalidates stale power",
+    "private DB directory/file permission checks",
+    "offline demo"
+  ],
+  "notAccepted": [
+    "radio/modem/AP/kernel enforcement integration",
+    "provider credentials or contract authority",
+    "real satellite packets/throughput/coverage",
+    "downlink physical charge hard cap",
+    "existing owner UI/Broker runtime integration",
+    "hardware power/thermal/closed-enclosure portability",
+    "trusted clock and storage rollback/complete-loss protection",
+    "full repository verify",
+    "GitHub save/main integration/CI"
+  ],
+  "sourceAtTestRunSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "c9f36fc82ac40d8f80221cc86a5ad37ecd9f04d7ff3b435d4eefa64de96b8b86",
+    "tests/avocado-mini-tethering.test.mjs": "f423cca185c981c5025946008b5701a6c1a42e5a8eef93919cbf123380310b99"
+  },
+  "documentationFollowUp": {
+    "status": "passed",
+    "changedPaths": [
+      "systems/rock-star-os/targets/avocado-mini/tethering/README.md"
+    ],
+    "readOnlyReview": true,
+    "runtimeAndTestsUnchanged": true,
+    "testsRerun": false,
+    "reason": "Documentation-only corrections: main-existing communication/billing design link and unmerged Root comparison source explicitly excluded from candidate runtime dependencies.",
+    "newReadmeSha256": "205dbb967acf41b4da9f6f7e1ed1855ad208529f05cbb08ead367b7393f09788"
+  }
+}
