@@ -1,9 +1,8 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { privateKeyToAccount } from 'viem/accounts';
 import { createBillingToken } from '../lib/billing-token.ts';
@@ -11,88 +10,7 @@ import billingWorker, {
   legacyFixtureBillingWorker,
 } from '../services/sky-billing/src/worker.ts';
 
-class Statement {
-  #database;
-  #sql;
-  #values = [];
-  constructor(database, sql) {
-    this.#database = database;
-    this.#sql = sql;
-  }
-  bind(...values) {
-    this.#values = values;
-    return this;
-  }
-  run() {
-    const result = this.#database.prepare(this.#sql).run(...this.#values);
-    return Promise.resolve({
-      success: true,
-      meta: { changes: Number(result.changes) },
-    });
-  }
-  first() {
-    return Promise.resolve(
-      this.#database.prepare(this.#sql).get(...this.#values) ?? null,
-    );
-  }
-  all() {
-    return Promise.resolve({
-      success: true,
-      results: this.#database.prepare(this.#sql).all(...this.#values),
-    });
-  }
-}
-
-class TestD1 {
-  constructor(path = ':memory:', { migrate = true, hooks = {} } = {}) {
-    this.database = new DatabaseSync(path);
-    this.hooks = hooks;
-    this.closed = false;
-    if (!migrate) return;
-    for (const migration of [
-      '0001_billing.sql',
-      '0002_earnings_settlement.sql',
-      '0003_automation_funds.sql',
-      '0004_rock_settlement_wallet.sql',
-    ])
-      this.database.exec(
-        readFileSync(
-          new URL(
-            `../services/sky-billing/migrations/${migration}`,
-            import.meta.url,
-          ),
-          'utf8',
-        ),
-      );
-  }
-  prepare(sql) {
-    return new Statement(this.database, sql);
-  }
-  async batch(statements) {
-    if (this.hooks.beforeBatch) await this.hooks.beforeBatch();
-    this.database.exec('BEGIN IMMEDIATE');
-    const results = [];
-    try {
-      for (const [index, statement] of statements.entries()) {
-        results.push(await statement.run());
-        if (this.hooks.afterStatement)
-          await this.hooks.afterStatement(index);
-      }
-      this.database.exec('COMMIT');
-    } catch (error) {
-      this.database.exec('ROLLBACK');
-      throw error;
-    }
-    // A lost acknowledgement must not try to roll back an already committed DB.
-    if (this.hooks.afterCommit) await this.hooks.afterCommit();
-    return results;
-  }
-  close() {
-    if (this.closed) return;
-    this.database.close();
-    this.closed = true;
-  }
-}
+import { TestD1 } from './fixtures/billing-test-d1.mjs';
 
 const origin = 'https://sky.example';
 const sharedSecret = 'test-billing-shared-secret-that-is-long-enough';

@@ -71,16 +71,27 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "PRO-01 explicit local export to existing authenticated private original archive; this candidate remains unmerged pending exact-head CI and independent metadata review.",
+  "nextProductSlice": "WALLET-02 test-only local process SIGKILL fixture implemented; source/metadata independent reviews and host fullverify passed. Git save/same-head CI next; not a prerequisite for nonfinancial products.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
     "Mini optical/eye-safety/stop/manufacturing and Pro physical SKU/native/commerce remain external/owner gates.",
-    "Wallet process-kill followup is backlog; not a prerequisite for nonfinancial product work.",
+    "Wallet local process-crash fixture is implemented and independently reviewed in this candidate; Cloudflare durability/concurrency, powerloss and real-account/financial acceptance remain separate gates and are not prerequisites for nonfinancial product work.",
     "Pixel full OS/flash/signing and all physical/full-loss acceptance remain separate."
   ],
   "noNewSourceOrRuntimeAcceptanceFromAudit": true,
   "generalLaunch": false,
   "productionDeployment": false,
-  "registryCopied": false
+  "registryCopied": false,
+  "historicalNextProductSliceAtAudit": "PRO-01 explicit local export to existing authenticated private original archive; this candidate remains unmerged pending exact-head CI and independent metadata review.",
+  "postAuditUpdates": [
+    {
+      "recordedAt": "2026-10-25T07:03:34.137467+00:00",
+      "pr": 207,
+      "mergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json",
+      "wholeUnitAccepted": false
+    }
+  ]
 }

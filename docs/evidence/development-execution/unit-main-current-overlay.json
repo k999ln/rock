@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
-  "mainAtCapture": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
+  "mainAtCapture": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -504,26 +504,67 @@
       "sourceReviewSha256": "688377b501423206d871c8c914d4f8b5c6778cc36bf2d5c486a8747b976dfe8d",
       "scope": "Explicit ordinary no-referrer fixed link/manual-file handoff and three status strings. Existing parser/archive auth/store/crypto untouched.",
       "localActualUi": true,
-      "metadataReviewPending": true,
-      "mainMerged": false,
+      "metadataReviewPending": false,
+      "mainMerged": true,
       "wholeUnitAccepted": false,
       "authenticatedArchiveSaveAccepted": false,
-      "publicDeploymentAccepted": false
+      "publicDeploymentAccepted": false,
+      "pr": 207,
+      "acceptedHead": "bfb3e1bf789cb548acc6715805749ae5e319a5dc",
+      "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "mainSameShaCISuccess": 6,
+      "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+    },
+    {
+      "id": "WALLET_PROCESS_RECOVERY_CANDIDATE",
+      "units": [
+        "WALLET-02"
+      ],
+      "kind": "additional_bounded_candidate",
+      "baseMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "sourceFiles": [
+        {
+          "path": "tests/billing-worker.test.mjs",
+          "sha256": "dcfd8c96c1cafb34453c31f3782f5552a0fe2e1d1f46d2fcd5a63a85c1416ed5"
+        },
+        {
+          "path": "tests/fixtures/billing-test-d1.mjs",
+          "sha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+        },
+        {
+          "path": "tests/fixtures/billing-process-crash-child.mjs",
+          "sha256": "ae63103aa8950eaafdae6848c1fd152950bf56cb3d27706c08432112a98570a7"
+        },
+        {
+          "path": "tests/billing-process-recovery.test.mjs",
+          "sha256": "8a6e4c050441bb126d4bb19ca1d1d72dcc24d18e333d64b955e6d35d63341b93"
+        }
+      ],
+      "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
+      "scope": "Test-only actual POSIX child SIGKILL at13 checkpoints; local SQLite fresh-connection recovery, same receipt/instructions/cap and default hold. Not actual Cloudflare, powerloss, cash or wholeWallet.",
+      "metadataReviewPending": false,
+      "mainMerged": false,
+      "wholeUnitAccepted": false,
+      "publicDeploymentAccepted": false,
+      "sourceIndependentReview": "PASS_SCOPED",
+      "sourceReviewSha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041",
+      "fullVerify": "host_pass_2911tests_2908pass_3skip_0fail",
+      "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json"
     }
   ],
   "executionPriority": [
     {
       "order": 0,
       "unit": "PRO-01",
-      "state": "private_archive_entry_source_and_local_UI_pass_candidate",
-      "scope": "Final exact-head Linux actual verify/all CI and independent metadata review before merge. No authenticated server save, native migration or deployment acceptance.",
+      "state": "PR207_main_integrated_entry_only_remaining_real_archive_gates",
+      "scope": "PR207 ordinary merge and6 same-mergeSHA CI pass; authenticated save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "PR206_main_integrated_SQLite_test_only_remaining_gates",
-      "scope": "PR206 exact-head Linux verify/all checks and adoption metadata review completed; real funds/process-kill/Cloudflare concurrency remain unaccepted.",
+      "state": "process_crash_fixture_source_independent_and_host_verify_pass_Git_save_next",
+      "scope": "Source/metadata independent PASS and host verify passed; next exactbranch Git save/same-head CI. No next implementation or main merge included.",
       "wholeUnitAccepted": false
     },
     {
@@ -571,8 +612,8 @@
     {
       "order": 1,
       "unit": "PRO-01",
-      "state": "limited_archive_PR199_main_integrated",
-      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
+      "state": "PR207_main_integrated_entry_only_remaining_real_archive_gates",
+      "scope": "PR207 ordinary merge and6 same-mergeSHA CI pass; authenticated save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
@@ -622,5 +663,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "08669893ec8bc9aab498d38b88a60f8911fd3443"
+  "previousCaptureMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2"
 }

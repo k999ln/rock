@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
@@ -2276,7 +2276,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "WALLET_LEDGER_DB_RECOVERY_CANDIDATE"
+        "WALLET_LEDGER_DB_RECOVERY_CANDIDATE",
+        "WALLET_PROCESS_RECOVERY_CANDIDATE"
       ]
     },
     {

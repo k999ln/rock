@@ -568,3 +568,15 @@ SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOU
 本人指示（2026-10-18）で、既存の公開Sandboxを履歴保持のまま繰り返し試験できるようにする。restoredからのcapは現在契約の期間へ合成100 USDを適用し、close-monthは既存の失敗用テスト支払方法で対象月を締める。payは対象期間の請求1件だけを選択し、以前の請求や旧契約JSONを削除しない。復旧時計は実時間と試験月初の遅い方に固定し、未来月の試験でも期限外扱いにしない。本人限定flag・test鍵・Stripe account照合・livemode=false・既存leaseとidempotency keyを維持する。DB移行なし。
 
 保存済みqueued/waitingは毎回の送信前に同じ月次契約と利用枠を再確認する。quota_exhaustedまたはpayment_or_contract_blockedの間はProvider送信を行わず、試行回数を消費しない。10分の同意期限内に入金照合と翌月更新が完了すれば同じIDを続行する。期限を越えた古い依頼は復旧後も自動再送せず、新しい明示依頼が必要。入金だけで同月の使用額を消さない。送信済み・結果不明を自動的にqueuedへ戻さない。画面終了中の公開実account受入と合成並列試験を分けてdocs/evidence/sky-background-plan-gates.jsonへ記録する。本番課金なし。
+
+
+<a id="wallet-process-recovery-fixture"></a>
+## Wallet local process強制終了復旧fixture
+
+目的・責任: ROCK/O5は既存legacy fixtureのlocal SQLite復旧を検査する。実Worker/料金/鍵/migrationsは変更しない。EXTERNAL/JOINTのCloudflare durabilityや実Provider、OWNERの資金/同意は別受入。入力は合成receiptと一時DB、出力は試験結果だけで実資金/外部送信はない。
+
+状態・保存: parentは子processのIPC checkpoint（before batch、11 SQL statement各直後、commit直後）を確認してSIGKILLし、exit signalを待つ。新接続で同じWAL DBを開き、commit前はINSERT済みreceiptのみ・配賦rollback、commit後は確定snapshotを保持する。同receipt再送で同じinstruction/一度だけの配賦を読み、400+488後のcapを二重消費しない。
+
+失敗・復旧・承認: checkpoint未到達/別pid/早期終了は失敗。成功/失敗/timeoutとも自身の子とDB/WAL/SHMをcleanupする。既定ToC holdは409/無変更を保ち、fixture署名を実収益の検証や課金承認にしない。
+
+合格条件: `node --experimental-strip-types --test tests/billing-process-recovery.test.mjs tests/billing-worker.test.mjs tests/earning-bridge.test.mjs tests/wallet-deposit-provenance.test.mjs` と独立反例、全verify。同一試験を重複加算しない。Windowsは明示skip、POSIX hostだけの受入。実停電/媒体損失/Cloudflare並行/二認証端末/本番金融は未受入。未決定は対象Provider/端末/障害モデルを個別gateで確定する。[証拠](evidence/development-execution/wallet-process-recovery.json)。

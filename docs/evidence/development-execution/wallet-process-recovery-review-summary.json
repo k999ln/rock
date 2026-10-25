@@ -1,0 +1,118 @@
+{
+  "schema": "rockstaros.wallet-process-recovery.review-summary/1",
+  "sourceReviewSha256": "9235e5f15c97feb60e08b6076968dd5e401129e5cb16e5844424b1ec566f8041",
+  "verdict": "PASS_SCOPED",
+  "mustFix": [],
+  "reviewedAt": "2026-10-25T07:02:54.604745+00:00",
+  "sourceHashes": {
+    "tests/billing-worker.test.mjs": "dcfd8c96c1cafb34453c31f3782f5552a0fe2e1d1f46d2fcd5a63a85c1416ed5",
+    "tests/fixtures/billing-test-d1.mjs": "238964f7a7c3616a094beec56365a1c2b3f9142447cf017757408ba37f6c0989",
+    "tests/fixtures/billing-process-crash-child.mjs": "ae63103aa8950eaafdae6848c1fd152950bf56cb3d27706c08432112a98570a7",
+    "tests/billing-process-recovery.test.mjs": "8a6e4c050441bb126d4bb19ca1d1d72dcc24d18e333d64b955e6d35d63341b93"
+  },
+  "mechanicalComparison": {
+    "testDefinitionsAndSignatureHelper": "Entire original source from const origin onwards byte-identical",
+    "adapter": "Exact extracted Statement/TestD1 modulo imports, export and relocated migration path",
+    "unchangedCandidateProductFiles": {
+      "lib": 5,
+      "services/sky-billing": 7
+    },
+    "finalRevision": "Re-reviewed final initializers let child = null / let exited = Promise.resolve; focused22 and instrumented13/mutants7 rerun on this revision. Full-main destination four files byte-identical at review.",
+    "mutationLocations": "Only reviewer-owned copies under /private/tmp/wallet-process-review-probes; candidate and original were not modified"
+  },
+  "focusedValidation": {
+    "command": "node --experimental-strip-types --test tests/billing-process-recovery.test.mjs tests/billing-worker.test.mjs",
+    "node": "v26.12.1",
+    "exitCode": 0,
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skip": 0,
+    "newProcessTests": 13,
+    "originalBillingTests": 9
+  },
+  "findings": {
+    "mustFix": [],
+    "processDeath": "Every baseline checkpoint requires child PID equality, distinct parent PID, requested checkpoint, WAL journal, successful SIGKILL and exit {code:null,signal:SIGKILL}. Instrumented copy passed all 13; no child finally/ROLLBACK/close marker. Positive control reached finally and close and correctly failed harness.",
+    "rollback": "before-batch and each of 11 SQL statements recover one original unapplied insert, zero allocated fee, and empty accounting/payout/fee tables via a new connection. No child JavaScript cleanup implements rollback.",
+    "ackLoss": "after-commit snapshot survives SIGKILL; default ToC Worker returns policy hold without mutation; legacy fixture same receipt returns original result and stable IDs.",
+    "replay": "Reopen/replay produces exact snapshot equality; original pay/rock-fee IDs and amounts asserted; cap allocation 400 + 488 + 0 with monthly total 888 and receipt count 3.",
+    "harness": "Broken atomicity, lost commit, broken replay, wrong PID, early clean exit, missing checkpoint timeout and wrong IPC message all exit nonzero; no residual temporary DB directories in observed before/after scans."
+  },
+  "independentCounterexamples": [
+    {
+      "name": "instrument-no-finally",
+      "exitCode": 0,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "broken-atomicity",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "lost-commit",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "broken-replay",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "wrong-pid",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "early-exit",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "no-checkpoint-timeout",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    },
+    {
+      "name": "wrong-ipc-kind",
+      "exitCode": 1,
+      "leftoverTemporaryDirectories": []
+    }
+  ],
+  "instrumentationPositiveControl": {
+    "exitCode": 1,
+    "events": [
+      "finally",
+      "close"
+    ]
+  },
+  "cleanupLimitations": [
+    "Cleanup established for child exit and ordinary harness assertion/timeout paths only. Abrupt SIGKILL of parent or host power loss cannot execute t.after cleanup.",
+    "System-wide process enumeration unavailable (pgrep: sysmond service not found). Child exit observed by harness, but no global orphan-process inventory obtained.",
+    "SQLite WAL process termination is not filesystem/device power-loss acceptance, production D1 semantics, multiwriter concurrency, or authenticated-device evidence.",
+    "Windows explicitly skipped; review ran POSIX macOS only.",
+    "Partial snapshot: no full npm run verify, Git save, branch/main CI, deploy, or remote SHA verification performed by reviewer. Git owner must retain identical four hashes and run required checks in complete clean-main tree."
+  ],
+  "held": [
+    "production D1 and real Provider",
+    "real money and authenticated devices",
+    "public launch/deploy",
+    "native OS/device acceptance",
+    "power-loss durability",
+    "616-file bulk work"
+  ],
+  "countsNotAdditive": true,
+  "runtimeProductChanges": 0,
+  "scope": "Independent review of exact4 test/fixture files only; fullverify, Git and production gates separate.",
+  "postReviewWhitespaceNormalization": {
+    "path": "tests/fixtures/billing-test-d1.mjs",
+    "beforeSha256": "238964f7a7c3616a094beec56365a1c2b3f9142447cf017757408ba37f6c0989",
+    "afterSha256": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2",
+    "change": "remove one blank line at EOF only",
+    "semanticChange": false,
+    "independentVerdict": "PASS_SCOPED_WHITESPACE_ONLY",
+    "independentReviewSha256": "9a7ae9700869ac3fdf2dbac4f5989f9b48fb7cb851a56367503d182ad9f881c1"
+  }
+}

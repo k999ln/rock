@@ -1124,3 +1124,8 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 承認・合格条件: file export同意は保存同意に代用しない。検収済み3source/test、関連40と独立5群、localChrome1512/390 overflow0・preview/cancel・固定link表示を限定証拠とする。初回preview server失敗は記録し、後続Astro dev表示と分ける。公開先の実click、認証済server保存、実原稿upload、DNS/TLS/配備、native/実機、wholePRO01は未受入。最終head Linux actualverify/全CIと独立metadata検収がmerge前gate。
 
 未決定の決め方: 実account/browser保存は権限・Keyring準備と本人の個別同意を確認した同candidateで受け入れる。公開は各domain/build SHAのreadback gate、native移行は別SKU/保存復旧gateで決める。入口の案内を実配備成功にしない。[採用証拠](evidence/development-execution/pro-archive-entry-main-adoption.json)、[95unit引継ぎ](evidence/development-execution/all-lanes-main-handoff-summary.json)。
+
+
+### Wallet process強制終了のhost fixture
+
+既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。

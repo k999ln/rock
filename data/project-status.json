@@ -9916,11 +9916,32 @@
     "sourceRelatedPass": 40,
     "independentGroups": 5,
     "rootActualUi": "Chrome1512/390_preview_cancel_fixedlink_no_overflow",
-    "metadataReviewPending": true,
-    "finalHeadCIPending": true,
-    "mainMerged": false,
+    "metadataReviewPending": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
     "authenticatedServerArchiveSaveAccepted": false,
     "wholePRO01Accepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+    "mainSameShaCISuccess": 6,
+    "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+  },
+  "walletProcessRecovery": {
+    "unit": "WALLET-02",
+    "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
+    "testOnly": true,
+    "runtimeProductChanges": 0,
+    "hostFocusedPass": 36,
+    "newSigkillCases": 13,
+    "independentReviewPending": false,
+    "gitHubSaved": false,
+    "mainMerged": false,
+    "wholeWallet02Accepted": false,
+    "productionFinanceAccepted": false,
+    "publicDeployment": false,
+    "independentReview": "PASS_SCOPED",
+    "reviewSummary": "docs/evidence/development-execution/wallet-process-recovery-review-summary.json",
+    "fullVerify": "host_pass_2911tests_2908pass_3skip_0fail",
+    "metadataReview": "docs/evidence/development-execution/wallet-process-recovery-metadata-review.json"
   }
 }
