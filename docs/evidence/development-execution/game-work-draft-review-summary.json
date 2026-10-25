@@ -1,0 +1,174 @@
+{
+  "schema": "rockstaros.game-work-draft-portable-review/1",
+  "originalReviewSha256": "f21ed165227d77d8f509a16cb88ec911eb6febe049256dea006f26752e5939b0",
+  "originalReceiptSha256": "78376b9adb2a3e0097acb4c7b5ab37d6ed92224053d6196c789e2d76d87bc668",
+  "portableReceiptSha256": "2f1bcc89a402063f927db90774f31c8f3bb87f34dff2aad4bb8154d75507f874",
+  "normalization": "Original verdict/source findings/validation/failures/remaining gates retained; absolute operator paths normalized and duplicate hash/log inventories omitted. Original source review was on ee9, not a new-main full verification.",
+  "recordedAt": "2026-10-25T11:18:16.222408+00:00",
+  "unit": "GAME-02-nonfinancial-game-to-work-draft-limited",
+  "status": "PASS_SCOPED_SOURCE_AND_ROOT_BOUNDED_FUNCTIONAL_UI",
+  "mustFix": [],
+  "wholeGAME02": false,
+  "reviewer": {
+    "independentOfImplementer": true,
+    "sourceGitRegistryOrOriginalReceiptEdited": false,
+    "otherChatOrSubagentInvoked": false,
+    "browserOrFixtureOperated": false
+  },
+  "sourceReview": [
+    "Helper parses a bounded exact report shape and explicit instruction, hashes exact pasted input and returns frozen owner-scoped data only. Unverified diagnostic and false authority flags retained. Claimed report digests/identity are not independently verified and are labelled as untrusted source, never an execution/auth/budget grant.",
+    "New UI preparation changes only transient form state. Existing explicit create and existing WorkPlan contract are reused; persisted WorkJob remains active with zero events/no passed steps. There is no new persisted draft state, game engine, route, owner resolver or financial adapter.",
+    "Game input reference+epoch+owner+mounted guards fence edited/discarded/foreign-owner/late-digest handlers; source/title/template edits invalidate provenance. Unprepared raw source participates in existing navigation/discard guard.",
+    "Pending Creation captures optional plan with original ID/title/template and same owner. Unknown create retains the original immutable request. Existing owner recheck and API owner header run before POST; response objective/schema mismatch leaves outcome unresolved. No automatic POST retry or PATCH/run.",
+    "Workflow/store/API/owner intent/recovery helpers/adopted creator fixture/package/status hashes match base. No provider, price, Wallet, schema or dependency changes.",
+    "Owner boundary is an observed server-context recheck. A fixture owner toggle event unconsumed by Workbench is not proof of actual owner notification or immediate isolation; later explicit authenticated-scope read is the tested boundary."
+  ],
+  "validation": [
+    {
+      "name": "independent focused rerun",
+      "command": "node --experimental-strip-types --test tests/game-work-draft.test.mjs tests/game-work-draft-ui.test.mjs tests/workbench-owner-recovery.test.mjs",
+      "cwd": "operator-checkout:game-work-draft",
+      "exitCode": 0,
+      "tests": 56,
+      "pass": 56,
+      "fail": 0,
+      "skip": 0,
+      "log": "operator-local:game-work-draft-review-focused.log",
+      "plane": "Actual Workbench TSX in deterministic hook/JSX fixture, actual route/auth/service-scope contracts with synthetic signatures and in-memory SQLite; not real browser/auth/provider."
+    },
+    {
+      "name": "independent additional negative/positive probes",
+      "command": "node --experimental-strip-types --test operator-local:game-work-draft-independent-probes.mjs",
+      "exitCode": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "log": "operator-local:game-work-draft-independent-probes-final.log",
+      "harness": "Read-only reuse of existing actual Workbench/API/SQLite fixture, temporary absolute module resolution; new reviewer scenarios. No product source stub or fixture server edit.",
+      "cases": [
+        "Template change invalidates captured Game create; deliberate normal create uses selected existing template with no old plan.",
+        "Precommit503 unknown result has0jobs, reconnect never resends, explicit retry repeats exact ID+plan and creates1job.",
+        "Successful response with unrelated objective stays unresolved; original stored plan preserved; same original request recovers1job.",
+        "Actual crypto digest delayed until after discard cannot reattach or save cleared source.",
+        "Captured source-edit/prepare/create callbacks cannot mutate newly rechecked owner-B inputs.",
+        "Unknown committed request cannot be retried by owner-B even through retained handler; original owner-A recheck and explicit retry repeat exact plan/ID,1job/zero events/no passed steps.",
+        "Two same-frame prepare callbacks start one helper call and no POST/PATCH/storage writes."
+      ]
+    },
+    {
+      "name": "independent targeted lint",
+      "command": "node_modules/.bin/oxlint lib/game-work-draft.ts components/workbench.tsx tests/game-work-draft.test.mjs tests/game-work-draft-ui.test.mjs",
+      "exitCode": 0,
+      "log": "operator-local:game-work-draft-review-lint.log"
+    },
+    {
+      "name": "type boundary readback",
+      "fullTypecheckExitCodeReported": 2,
+      "fullTypecheck": "NOT_PASSED:3unchanged missing generated/private-content.ts errors in legal-ai/legal-intake/patent-ai. Raw private module not read/generated/copied by reviewer.",
+      "scopedTypecheckExitCodeReported": 0,
+      "scopedScriptRead": true,
+      "scopedAmbient": "declare module wildcard generated/private-content.ts; type-only broad ambient. Does not establish actual private integration.",
+      "independentlyRerun": false,
+      "logHashesVerified": true,
+      "integrationGate": "Central Git runs normal exact-head private generation/typecheck/full verify/CI; no full pass inferred here."
+    }
+  ],
+  "rootActualUiReadback": {
+    "summaryPath": "operator-proof:root-browser-summary.json",
+    "sha256": "ec031fbe848998aa5ac4511599f3a0919b77bee1f78f9eb50eb12968afd86f42",
+    "allFiveCandidateHashesAndSevenHelperHashesMatch": true,
+    "rootStatus": "PASS_SCOPED_FUNCTIONAL_REACT_UI_PENDING_INDEPENDENT_SOURCE_REVIEW",
+    "all12ArtifactHashesVerified": true,
+    "textArtifactsRead": [
+      "draft-import-ax.txt",
+      "lost-response-ax.txt",
+      "forged-report-rejected-ax.txt",
+      "owner-b-refreshed-ax.txt",
+      "same-request-recovered-dom.json",
+      "owner-b-refreshed-dom.json",
+      "owner-button-before-refresh-dom.json",
+      "discard-complete-dom.json"
+    ],
+    "pngInspection": "Screenshot hash verified only; reviewer did not independently assess layout.",
+    "acceptedScope": [
+      "Explicit import shows unverified claimed revision/input hash/objective; no visible job before explicit create.",
+      "Committed synthetic response loss shows pending original request. Explicit connection read then same-content confirmation yields one visible job with original objective, steps0/2 and not executed.",
+      "Editing title removes Game draft confirmation.",
+      "After server-context readback of fixture ownerB, raw Game input/instruction are empty and ownerA job hidden; returning ownerA and readback preserves one saved job without restoring Game raw draft.",
+      "Forged authenticatedOwnerStorageAccepted=true is refused in actual UI.",
+      "Explicit discard clears raw input/instruction/title/draft and disables create; existing job count remains1."
+    ],
+    "qualifications": [
+      "Fixture owner switch dispatches an event that actual Workbench does not consume. Owner change is accepted only after existing explicit reload obtains new scope; no immediate owner-event or native sign-in acceptance.",
+      "Browser helper does not inspect window.fixture application memory. Exact same-ID/plan replay, zero transport counts and cross-owner server rejection remain established separately by real route/SQLite/hook tests.",
+      "Browser fixture stores jobs in page RAM; durable persistence is not claimed from this UI.",
+      "Initial Playwright button locator did not match HTML summary; native AX expansion succeeded.",
+      "Initial localhost bind failed sandbox EPERM; authorized loopback-only process then started successfully."
+    ],
+    "ownerCheckQualification": "Owner B toggle alone retains prior view because its fixture event is not a Workbench listener. Only explicit reload/current server-scope read clears raw Game source/instruction and hides old-owner job. No immediate-event/production sign-in acceptance.",
+    "routeVsDom": "Browser evidence is visible functional flow on page RAM. Exact transport counts/ID+plan idempotency and cross-owner rejection are established by separate actual-route/SQLite/hook tests, not window.fixture memory or DOM counts.",
+    "cleanupReportedByRoot": {
+      "realProviderCalls": 0,
+      "realCharges": 0,
+      "physicalActions": 0,
+      "browserTabClosed": true,
+      "serverStopRequested": true
+    }
+  },
+  "failureHistory": {
+    "implementer": [
+      {
+        "stage": "initial13new groups",
+        "result": "11pass/2fail",
+        "cause": "Test used wrong labels for existing discard and pending reconnect buttons; actual create/draft/owner paths already passed. Kept initial log; corrected test labels to actual existing UI."
+      },
+      {
+        "stage": "second13new groups",
+        "result": "12pass/1fail",
+        "cause": "Discard test label still did not match actual existing button. Corrected to exact 未保存の入力を破棄; no product workaround/suppression."
+      },
+      {
+        "stage": "initial lint",
+        "result": "3errors",
+        "cause": "Control-regex rule and2Textarea label associations. Replaced control regex with explicit codepoint checks and added explicit htmlFor/id."
+      },
+      {
+        "stage": "raw input discard coverage",
+        "result": "Added raw Game input to existing retained-draft/navigation/discard handling; new stale-discard test passes. New input remains transient and no store/schema added."
+      },
+      {
+        "stage": "full tsc",
+        "result": "3missing generated-private module errors retained separately; scoped type-only check succeeds, full private integration remains central gate."
+      }
+    ],
+    "reviewProbeInitial": "Initial temporary probe failed before tests:typescript import resolved relative to /private/tmp. Corrected temporary module URL; original failure log preserved.",
+    "reviewProbeSecond": "6pass1fail; reviewer used nonexistent report template. Existing workflow correctly refused it. Changed probe to existing coconala template, no product edit.",
+    "reviewProbeFinal": "7pass0fail",
+    "sourceFindingsMustFix": 0,
+    "fullTypecheckStillFailed": true,
+    "fullVerifyCiOrGitMain": "NOT_RUN in this review"
+  },
+  "cleanup": {
+    "testProcessesFinished": true,
+    "sqlite": "Original fixture t.after closes every synthetic in-memory connection; passing runs completed cleanup.",
+    "creatorTemporaryDirectory": "Reviewer source helper uses owned mkdtemp and finally removes directory; no private report file stored.",
+    "newBrowserOrServer": false,
+    "privateManuscriptOrGeneratedPrivateRead": false,
+    "testOnlyTemporaryFiles": "Retained logs/scripts only under/private/tmp"
+  },
+  "remainingGates": {
+    "wholeGAME02": false,
+    "generalImportedGameOrSdk": false,
+    "workToGameBridge": false,
+    "financialGXWallet": false,
+    "actualProviderOrPaidModel": false,
+    "productionAuthStorageOrAccountEvents": false,
+    "physicalNative": false,
+    "layoutOrProductionUi": false,
+    "fullPrivateTypecheckVerifyCi": "Central integration pending",
+    "gitSaveMainAdoption": "Separate integration owner step"
+  },
+  "next": "Root may consume this exact candidate scoped code/route review and bounded functional UI record. Central Git owns documentation/design/status synchronization and full exact-head checks before adoption. No source fix requested; reviewer ends finite turn.",
+  "copiedReviewerFieldsDescribeOriginalReviewOnly": true
+}

@@ -1,0 +1,153 @@
+{
+  "schema": "rockstaros.game-work-draft-portable/1",
+  "originalReceiptSha256": "78376b9adb2a3e0097acb4c7b5ab37d6ed92224053d6196c789e2d76d87bc668",
+  "originalSchema": "rockstaros.game-work-draft/1",
+  "normalization": "Selected behavioral/validation/failure/limit fields retained, operator absolute paths normalized; duplicate proof logs and hash inventories omitted. Original immutable receipt remains operator-held. Captured pending status is historical.",
+  "recordedAt": "2026-10-25T11:10:11.937861+00:00",
+  "status": "IMPLEMENTED_LOCAL_56_PASS_PENDING_INDEPENDENT_REVIEW_AND_ROOT_REAL_UI",
+  "unit": "GAME-02-nonfinancial-game-to-work-draft-limited",
+  "taskIds": [
+    "AI06",
+    "GM01"
+  ],
+  "contextTask": "DX01",
+  "workstream": "08-game-market-fund / ROCK with existing Web consumer",
+  "behavior": [
+    {
+      "path": "lib/game-work-draft.ts",
+      "summary": "Strict bounded UTF8 exact Game host-report shape to frozen owner-scoped editable draft. Accepts only known particle report schema, with static checks still unverified and measurements null. Supplied approval/completion/budget/policy fields or promoted flags refuse. Raw report is data, never trusted receipt/identity/permission.",
+      "input": "Explicit pasted JSON <=16000UTF8 bytes, explicit user instruction <=400JS units, current authenticated-UI owner scope passed as context. No game field supplies actual requestUser identity.",
+      "output": "title<=120validUTF8 units, existing article template, existing WorkPlan(schemaVersion1,objective<=1000), claimed source revision and SHA256 of exact pasted text. Plan contains unverified source summary/digests, not raw Game JSON, process metadata, original game owner label or executable command. executionAuthorized/workCompleted/budgetApproved allfalse. No ID or WorkJob state assigned by helper."
+    },
+    {
+      "path": "components/workbench.tsx",
+      "summary": "Actual existing consumer adds explicit Game JSON/instruction input and draft-import action. Lazy loads helper only on user action. Import changes local form only; existing explicit work-create button is the sole persistence action. No new route/schema/workflow/engine/module beyond authorized helper.",
+      "state": "Owner change/unknown clears raw Game input and Game draft; input/title/template edit or explicit discard invalidates provenance. Epoch, exact current-input reference and mounted guard reject old handlers and late digest outcomes. Unprepared raw Game input participates in existing navigation/discard guard. No localStorage/URL draft transfer or automatic restore/save/execute.",
+      "persistence": "Existing create captures optional approved draft plan into original immutable pending Creation request with same ID/title/template. Owner recheck/header remain unchanged. Unknown result retains original plan+ID; explicit retry repeats same request and validated response must match plan objective. Creation success clears transient Game data. Persisted job has existing active status with zero events/no passed steps; there is no new persisted draft status or automatic run.",
+      "idempotencyLimit": "No duplicate for the same pending explicit create/retry operation. A deliberately new explicit create after resolving prior state is a new WorkJob under existing product contract; this batch adds no global per-game dedupe index."
+    },
+    {
+      "path": "tests/game-work-draft.test.mjs",
+      "summary": "5 pure/actual adopted-host-report groups: unchanged frozen owner draft compatible with real createWorkJob; forged flags/authority/budget reject; malformed/oversized/control/invalidUTF8 input sanitized; exact hash/revision vs source owner; bounded Unicode and literal role text."
+    },
+    {
+      "path": "tests/game-work-draft-ui.test.mjs",
+      "summary": "12 actual Workbench+existing API+SQLite fixture groups using existing signed synthetic service-scope/auth harness. Does not stub product component or API behavior. Includes actual old-main component negative control, no helper-only acceptance; unknown commit sameID/plan retry; two same-frame create clicks; owner switching; late real WebCrypto digest after edit; unmount; discard/stale closures; raw pre-import input discard; zero auto POST/PATCH/Provider."
+    }
+  ],
+  "validation": {
+    "targeted": {
+      "command": "node --experimental-strip-types --test tests/game-work-draft.test.mjs tests/game-work-draft-ui.test.mjs tests/workbench-owner-recovery.test.mjs",
+      "exitCode": 0,
+      "tests": 56,
+      "pass": 56,
+      "fail": 0,
+      "skip": 0,
+      "newGroups": 17,
+      "existingRecoveryGroups": 39,
+      "logId": "game-work-draft-targeted-final.log"
+    },
+    "negativeControl": {
+      "baseSha": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "path": "components/workbench.tsx",
+      "baseSha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
+      "method": "Actual git-show old-main component compiled and mounted in same real API/SQLite harness; no Game input/consumer is present. The same consumer-field acceptance assertion refuses old component, not an ENOENT or fake helper-success assertion.",
+      "pass": true
+    },
+    "lint": {
+      "command": "node_modules/.bin/oxlint lib/game-work-draft.ts components/workbench.tsx tests/game-work-draft.test.mjs tests/game-work-draft-ui.test.mjs",
+      "exitCode": 0,
+      "logId": "game-work-draft-lint-final.log"
+    },
+    "fullTypecheck": {
+      "command": "node_modules/.bin/tsc --noEmit --incremental false",
+      "exitCode": 2,
+      "result": "Only3 missing lib/generated/private-content.ts module errors in unchanged legal-ai/legal-intake/patent-ai. No generated private data read/copied; standard private generator/full verify delegated to central exact-head integration. Not a full typecheck pass.",
+      "logId": "game-work-draft-types-initial.log"
+    },
+    "scopedTypecheck": {
+      "command": "node operator-local:game-work-draft-typecheck.mjs",
+      "exitCode": 0,
+      "result": "Changed TS/TSX and imported public contracts checked with existing tsconfig. A temporary type-only ambient declaration covers absent unrelated generated-private module. Does not establish real private-module integration.",
+      "logId": "game-work-draft-types-final.log"
+    },
+    "whitespace": {
+      "command": "git diff --check plus git diff --no-index --check /dev/null for3new source/test files",
+      "exitCode": 0
+    },
+    "planes": "VM transpilation of actual Workbench, actual route handlers/owner scopes and signed synthetic grants, in-memory SQLite; adopted local host Game sample. No actual browser acceptance, live auth, provider, production DB or physical device.",
+    "fullVerify": "NOT_RUN per scope",
+    "independentReview": "PENDING; implementer cannot self-accept",
+    "RootActualUI": "PENDING separate Root operation",
+    "CI": "NOT_RUN",
+    "gitSaveMain": "NOT_RUN"
+  },
+  "failureHistory": [
+    {
+      "stage": "initial13new groups",
+      "result": "11pass/2fail",
+      "cause": "Test used wrong labels for existing discard and pending reconnect buttons; actual create/draft/owner paths already passed. Kept initial log; corrected test labels to actual existing UI."
+    },
+    {
+      "stage": "second13new groups",
+      "result": "12pass/1fail",
+      "cause": "Discard test label still did not match actual existing button. Corrected to exact 未保存の入力を破棄; no product workaround/suppression."
+    },
+    {
+      "stage": "initial lint",
+      "result": "3errors",
+      "cause": "Control-regex rule and2Textarea label associations. Replaced control regex with explicit codepoint checks and added explicit htmlFor/id."
+    },
+    {
+      "stage": "raw input discard coverage",
+      "result": "Added raw Game input to existing retained-draft/navigation/discard handling; new stale-discard test passes. New input remains transient and no store/schema added."
+    },
+    {
+      "stage": "full tsc",
+      "result": "3missing generated-private module errors retained separately; scoped type-only check succeeds, full private integration remains central gate."
+    }
+  ],
+  "limits": {
+    "wholeGAME02": false,
+    "realGameImport": false,
+    "workToGameBridge": false,
+    "financialGXWalletExchange": false,
+    "externalBalancesRates": false,
+    "productionAuthOrIssuer": false,
+    "modelProviderOrPaidExecution": false,
+    "actualUIAccepted": false,
+    "physicalNative": false,
+    "publicDeployment": false,
+    "generalLaunchAllowed": false
+  },
+  "operations": {
+    "ownedProductPathsOnly": true,
+    "authorizedIndependentCloneAndLocalBranch": true,
+    "rootSharedGitIndexMutations": 0,
+    "pushPrMainCommit": 0,
+    "sharedWorkflowApiSchemaPackageStatusEdits": 0,
+    "newDependenciesInstalled": 0,
+    "privateManuscriptOrGeneratedPrivateReads": 0,
+    "browser": 0,
+    "serverStarted": 0,
+    "otherChats": 0,
+    "children": 0,
+    "providerCalls": 0,
+    "productionDB": 0,
+    "fullVerify": 0,
+    "testDB": "Synthetic in-memory SQLite real route writes only"
+  },
+  "sharedIntegrationRequests": "Root/Web independent review and real UI first; central Git single writer synchronizes docs/workstream/design/index/README/status as applicable, runs standard exact-head private generation/type/full verify/CI before adoption. Preserve all prior adopted Game evidence and whole-unit limits.",
+  "next": "Freeze exact5paths and private UI fixture; return checkpoint then idle. No source replacement during Root real UI. No next unit begun.",
+  "candidate": {
+    "baseSha": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+    "sourceHashes": {
+      "lib/game-work-draft.ts": "1ed31cb398d571ed11708959ab7396af2daa8392c784b362b9a69e2acc32e3a6",
+      "components/workbench.tsx": "2bd1c749e0a1106a272298b845734c2197f1643f24a2aa74e72958fada65fcdc",
+      "tests/game-work-draft.test.mjs": "52e53b8789fac9fb46621a485f96104a02ce219486166db9898ac2f2bfc9bf21",
+      "tests/game-work-draft-ui.test.mjs": "9e48f1e19eccbb26adae1b104b8b555fc24fe387768bba4e30c973ef7b2502dd"
+    },
+    "originalReceiptSha256": "78376b9adb2a3e0097acb4c7b5ab37d6ed92224053d6196c789e2d76d87bc668",
+    "oldGameFixtureAccepted": "PR188/205 adopted source used from main. Historical bootstrap40pass is preserved historical implementation evidence, not current unaccepted status."
+  }
+}

@@ -15,9 +15,13 @@ siネイティブOSの共通仕事・記憶・権限契約を、Game／IP制作�
 - Web/D1はapproval・reservation・receipt・positionのowner／proposal一致をrelation triggerで強制し、直接SQLでも孤立・別owner参照を拒否する。
 - ファンドは検証済みreceiptがある場合だけ構成・配分・観測利回りを再計算する。
 - 実ゲームsandbox、実市場注文、清算、実Wallet資金移動、自動再投資は未接続。
-- `GM01`（AI06から切り出し、進行中・host fixture統合候補）: R5統合設計§03／GAME01の最小操作を、決定的な2D粒子sandbox（`lib/game-sandbox.ts`）としてhost／fixture段階で実装した。選択、保持中だけの移動、放す、衝突・結合、分離、取消、時間停止、追跡喪失時の保持解除＋休止、版付きsaveからの再開を扱い、不正save・形式版違い・規則版違いを拒否する。別プロセス再起動を挟んだ再開が無停止実行と同じ状態digestになることを試験する。金額・課金・交換・Wallet・GX01には接続しない。R5裸眼空間表示、精密3D入力、安全、熱・電源・収納（MAT15）、実機・OS統合の合格ではない。共通仕事・限定記憶・Zema進捗への接続（AI06本体）は未着手。
+- `GM01`（AI06から切り出し、進行中・host fixture統合候補）: R5統合設計§03／GAME01の最小操作を、決定的な2D粒子sandbox（`lib/game-sandbox.ts`）としてhost／fixture段階で実装した。選択、保持中だけの移動、放す、衝突・結合、分離、取消、時間停止、追跡喪失時の保持解除＋休止、版付きsaveからの再開を扱い、不正save・形式版違い・規則版違いを拒否する。別プロセス再起動を挟んだ再開が無停止実行と同じ状態digestになることを試験する。金額・課金・交換・Wallet・GX01には接続しない。R5裸眼空間表示、精密3D入力、安全、熱・電源・収納（MAT15）、実機・OS統合の合格ではない。共通WorkJobへ渡す明示下書きの限定候補は下記。限定記憶・Zema進捗・双方向の完全縦断（AI06本体）は別受入。
 
 GM01の保存・復旧では、保持中なのに速度が残る粒子群、重複した操作ID、版数を超える操作・取消履歴を拒否する。時刻・版数の整数上限へ達する操作は状態を変更せず失敗し、上限直前に受理した操作の再送は同じ状態を返す。これらはhost単体試験で確認する保存形式の整合性であり、追跡センサーや実機の安全受入ではない。
+
+### Game→WorkJobの限定下書き候補
+
+ROCK/08、既存AI06/GM01（DX01文脈）。固定4sourceと匿名化した原receipt/独立source検収/Root実合成UIを最新mainへ採用準備。取り込みは未検証入力の一時下書き、本人の既存createだけが保存し、実行/完了/予算承認0。owner再読込・編集失効・unknown同ID/plan復旧を既存workflow/API/storeで検査する。原GAME-01 CLIのmain採用を維持。次は標準private生成を含む全verify→独立integration metadata→同head CI→通常main/同mergeCI。wholeGAME02/実Game/金融/Provider/実機/公開は未受入。[契約](../game-api-contract-draft.md#game-work-draft)／[採用証拠](../evidence/development-execution/game-work-draft-main-adoption.json)。
 
 主なtask: 非金融Game／IP縦断の`AI06`（2D最小loopは`GM01`）、`GX00`, `GX01`, `GX02`, `DX01`, `MKT01`, `MKT02`, `SPN01`, `FND01`。
 

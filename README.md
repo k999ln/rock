@@ -210,6 +210,10 @@ eSIMは本人用Cloud Sky・Eve・Linuxサービスへの入口です。OS binar
 
 <a id="eve"></a>
 
+### Game結果から仕事の下書きを作る
+
+仕事画面で既存host fixtureのGame結果JSONと依頼を入力し、「仕事の下書きに入れる」で申告版・入力hash・目的を確認できます。取り込みだけでは保存せず、本人が「仕事を作成」を押して既存の未実行WorkJobへ保存します。入力/名前/templateの編集、破棄、本人scopeの再読込で古いGame下書きを無効にします。不明な保存結果は同じID/内容を明示確認し、自動再送しません。Game申告は完了・実行・予算承認になりません。[契約と検証範囲](docs/game-api-contract-draft.md#game-work-draft)。
+
 ## Eve — 会話から仕事と成果へ
 
 <p align="center">
