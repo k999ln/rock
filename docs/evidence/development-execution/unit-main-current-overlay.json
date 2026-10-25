@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T09:16:15.696716+00:00",
-  "mainAtCapture": "41ee45d7fce8390b27c59110cc282f695f898122",
+  "recordedAt": "2026-10-25T09:54:24.658763+00:00",
+  "mainAtCapture": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -636,7 +636,7 @@
         }
       ],
       "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
-      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure unresolved. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
+      "scope": "Source/metadata independent PASS; finalhead3e all8CI success; ordinary main8f product7CI success plus Dependabot1failure at8f retained as history; later undici fixPR216 adopted. Current c43 guard physical/P02/fullOS unaccepted; oldf3 measurements historical only.",
       "mainMerged": true,
       "metadataReviewPending": false,
       "wholeUnitAccepted": false,
@@ -717,6 +717,46 @@
       "mainAllChecksSuccess": false,
       "mainDependabotFailure": 1,
       "mainMergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+    },
+    {
+      "id": "ESIM_UI_ACK_ADOPTED",
+      "units": [
+        "ESIM-01",
+        "ESIM-06",
+        "ESIM-08"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "SIM01/BIL02/SKY21/G04: saved ack is correlation only; fresh current context restores UI; no automatic POST",
+      "pr": 213,
+      "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+      "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+      "mainMerged": true,
+      "mainMergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+      "headCISuccess": 7,
+      "mainProductCISuccess": 6,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "EVE_RATE_UNIT_ADOPTED",
+      "units": [
+        "EVE-02"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Renderer rate unit once; formatter/rates/auth/expiry/execution unchanged",
+      "pr": 213,
+      "acceptedHead": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+      "mainMergeSha": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+      "mainMerged": true,
+      "mainMergeEvidence": "docs/evidence/development-execution/esim-eve-ui-main-merge.json",
+      "headCISuccess": 7,
+      "mainProductCISuccess": 6,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "realProviderAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [
@@ -813,7 +853,7 @@
       "order": 0,
       "unit": "OS-01",
       "state": "PR209_main_integrated_new_guard_physical_unverified",
-      "scope": "PR209/main8f source and7 productCI accepted; Dependabot1failure unresolved. Oldf3 physical is historical only; newc43/P02/fullOS separate. PR213 UI unmerged.",
+      "scope": "PR209/main8f source and7 productCI accepted; Dependabot1failure at8f retained as history; later undici fixPR216 adopted. Oldf3 physical is historical only; newc43/P02/fullOS separate. PR213 UI bounded subset adopted; physical/Provider/fullOS gates remain separate.",
       "wholeUnitAccepted": false
     }
   ],
@@ -837,5 +877,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "2854d069bdfaf42d4816d24272b0e2d71f32997c"
+  "previousCaptureMain": "41ee45d7fce8390b27c59110cc282f695f898122"
 }
