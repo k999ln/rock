@@ -855,12 +855,14 @@
       "authorized": true,
       "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
       "syncedMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
-      "syncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "syncCommit": "1fc8ebb6a380cfb5f43e9d2ef878c09f4293b9a3",
       "evidence": "docs/evidence/development-execution/undici-pr218-main-integration.json",
       "state": "main_merged_same_sha_ci_pass",
       "mainMerged": true,
       "mergeSha": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
-      "finalAcceptedHead": "2f73757938b8ca82ac1519f4e467af345634a0e5"
+      "finalAcceptedHead": "2f73757938b8ca82ac1519f4e467af345634a0e5",
+      "initialEe9SyncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "finalSyncCommit": "1fc8ebb6a380cfb5f43e9d2ef878c09f4293b9a3"
     },
     "mainMergeSha": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
     "mergeEvidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
