@@ -10533,10 +10533,10 @@
     "primaryWorkstream": "05-web-pwa-sites",
     "primaryOwner": "ROCK",
     "baseMain": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
-    "status": "independent_r2_pass_pending_git_integration",
+    "status": "PR232_main_integrated_same_SHA_CI_pass",
     "scope": "2-4 saved materials; legacy2 byte compatibility; estimate only",
     "evidence": "docs/evidence/development-execution/eve-multi-material.json",
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeUnitAccepted": false,
     "paidGenerationAccepted": false,
     "publicDeployment": false,
@@ -10565,6 +10565,25 @@
       "fail": 0,
       "skip": 3,
       "exitCode": 0
+    },
+    "gitHubSaved": true,
+    "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+    "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+    "headCISuccess": 7,
+    "currentMainEvidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+    "browserSupplement": "docs/evidence/development-execution/eve-multi-material-browser-summary.json",
+    "browserDocumentaryReview": "docs/evidence/development-execution/eve-multi-material-browser-review.json",
+    "actualBrowserSupplementScope": "Synthetic3/4 React fixture only; not production auth/storage/provider",
+    "next": "Current metadata Git/main save; actual provider/production auth-storage/wholeEVE remain gated",
+    "mainCISuccess": 6,
+    "mainLinuxVerify": {
+      "run": 40197738045,
+      "job": 121182146386,
+      "tests": 3025,
+      "pass": 3023,
+      "fail": 0,
+      "skip": 2,
+      "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
     }
   }
 }

@@ -2986,8 +2986,8 @@
       "legacyTwoMaterialBytesUnchanged": true,
       "evidence": "docs/evidence/development-execution/eve-multi-material.json",
       "wholeUnitAccepted": false,
-      "mainMerged": false,
-      "gitHubSaved": false,
+      "mainMerged": true,
+      "gitHubSaved": true,
       "independentReviewPerformed": true,
       "tests": [
         "tests/eve-multi-material.test.mjs",
@@ -2997,7 +2997,9 @@
       ],
       "independentReview": "docs/evidence/development-execution/eve-multi-material-review-r2.json",
       "authority": "docs/rockstaros-complete-design.md#eve-multi-material",
-      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material"
+      "toolDesign": "docs/sky-tools-complete-design.md#eve-multi-material",
+      "currentMainEvidence": "docs/evidence/development-execution/eve-multi-material-main-current.json",
+      "browserSupplement": "docs/evidence/development-execution/eve-multi-material-browser-summary.json"
     }
   },
   "proAccountOriginalArchive": {
