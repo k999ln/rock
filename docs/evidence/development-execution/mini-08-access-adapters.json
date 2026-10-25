@@ -1,0 +1,71 @@
+{
+  "schema": "mini-access-adapters/1",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "date": "2026-10-25",
+  "baseMain": "41ee45d7fce8390b27c59110cc282f695f898122",
+  "providerSelection": "undecided_common_adapter_first",
+  "host": {
+    "testsPassed": 55,
+    "command": "python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'",
+    "scope": "Unix datagram protocol fixture, reference network authority, real temporary TLS; no radio"
+  },
+  "linux": {
+    "testsPassed": 26,
+    "os": "Ubuntu 24.04 arm64",
+    "kernel": "6.8.0-134-generic",
+    "python": "3.12.3",
+    "nftables": "1.0.9",
+    "command": "sudo python3 -B systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+    "scope": "real veth packets, process signals and owned hostapd crash/restart; station auth and carrier are fixtures",
+    "hostapd": "2.10 driver=none; no RF or WPA handshake",
+    "logSha256": "0de4af0f8b481fbd3f6476cf9ee04bac56d3cdd6b7494130b7d171a5d7b8b08c",
+    "guestSourceHashEvidenceSha256": "dc0e03ecead70b062dbc59cfe2dbaa6682b768fe2d4e147ac4895c2d7ba78982"
+  },
+  "independentReview": {
+    "mustFixRemaining": 0,
+    "hostTestsPassed": 55,
+    "evidence": "docs/evidence/development-execution/mini-08-access-review.json",
+    "receiptSha256": "0bab3bcc71519eb2e78741855c8d94a0117c39249b94e8104826701d5979471f",
+    "linuxExecutionByIndependentReviewer": false
+  },
+  "fullVerify": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH PYTHONWARNINGS=ignore::ResourceWarning npm run verify",
+    "exitCode": 0,
+    "completeChain": true,
+    "mainTests": 2938,
+    "mainPassed": 2935,
+    "mainFailed": 0,
+    "mainSkipped": 3,
+    "workApiAssertions": 1678,
+    "csvAssertions": 385,
+    "logSha256": "3f1da320db9862c7bf22c6a5a1f542296dd3ca58b3e628e398ceded18df6af85",
+    "node": "v26.12.1",
+    "python": "Python 3.15.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)"
+  },
+  "physicalAccepted": false,
+  "wifiRadioTested": false,
+  "providerConnected": false,
+  "invoiceVerified": false,
+  "displayConditions": [
+    "no_plate_or_membrane",
+    "few_display_parts",
+    "full_range_including_up_down",
+    "no_glare"
+  ],
+  "sources": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "e290c92307f35f698bd7df06ca23ae5f85dbce194e162f571497552a43ef1490",
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py": "9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1",
+    "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c",
+    "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf",
+    "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39",
+    "systems/rock-star-os/targets/avocado-mini/tethering/hostapd_child.py": "34e114dfd681daa85092ea076d7e493af80d838232cb91c1779be9c0a7fb6e1c",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "73c9e50e47ccec7ffe4acbe2ec58a673149d4596ecf9e9792db02e7e02f313b2",
+    "systems/rock-star-os/targets/avocado-mini/tethering/demo.py": "19601977d698065f45fb03f2cc8ae8eac56de164a1b13b5f79d3eef775971acd",
+    "systems/rock-star-os/targets/avocado-mini/tethering/access_session.py": "3268dd3ff1c770ed3d30cbf81e31d591d298828ae1e42a4ec5ef4e39a05eac2f",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_controller.py": "4f3159b9c0617e471344e891766ff701061e88f299667cdbfa2b3e75088aa5c3"
+  }
+}

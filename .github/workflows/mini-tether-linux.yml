@@ -27,8 +27,8 @@ jobs:
       - name: Install namespace packet test prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y nftables iproute2 iputils-ping util-linux procps
-      - name: Verify host controller and fixed rule compiler
+          sudo apt-get install --no-install-recommends -y nftables iproute2 iputils-ping util-linux procps hostapd openssl
+      - name: Verify controller, AP protocol, network quota and TLS
         run: python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'
       - name: Verify real packets in disposable namespaces
         run: sudo python3 -B systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py

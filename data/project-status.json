@@ -9973,7 +9973,7 @@
     "githubSaved": true,
     "mainMerged": true,
     "generalLaunch": "held",
-    "nextAction": "Linux Draft PR212 saved and tested; authenticated AP/client and bounded Provider accounting next",
+    "nextAction": "Common AP/network adapters validated in fixtures; independent review/full verification then same-device radio/provider acceptance",
     "validation": {
       "focusedTests": "28/28",
       "independentReview": "mustFix0",
@@ -9993,21 +9993,40 @@
       "independentReviewerPacketExecution": false,
       "mustFixRemaining": 0,
       "githubSaved": true,
-      "mainMerged": false,
+      "mainMerged": true,
       "linuxBatchFullVerify": "host_full_chain_pass_2912tests_2909pass_3skip_0fail",
       "linuxCI": "source_head_08633c36_all_14_success_including_real_packets",
       "physicalAccepted": false,
       "wifiRadioTested": false,
       "providerInvoiceVerified": false,
-      "nextAction": "keep Draft separate; authenticated AP/client identity and bounded Provider accounting",
+      "nextAction": "AP authentication and network quota common adapters",
       "fullVerifyEvidence": "docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json",
       "pr": 212,
       "acceptedSourceHead": "08633c36d8678f5053b48232e14336de772fde6e",
-      "ciEvidence": "docs/evidence/development-execution/mini-08-linux-tethering-ci.json"
+      "ciEvidence": "docs/evidence/development-execution/mini-08-linux-tethering-ci.json",
+      "mainMergeSha": "41ee45d7fce8390b27c59110cc282f695f898122",
+      "mainCI": "13_same_sha_success",
+      "mergeEvidence": "docs/evidence/development-execution/mini-08-linux-main-merge.json"
     },
     "pr": 211,
     "mainMergeSha": "55a5193e53b4db5f223c282a4d261cc1cf9be914",
-    "mergeEvidence": "docs/evidence/development-execution/mini-08-tethering-main-merge.json"
+    "mergeEvidence": "docs/evidence/development-execution/mini-08-tethering-main-merge.json",
+    "accessAdapters": {
+      "status": "local_tests_review_and_full_verify_passed",
+      "taskId": "MAT15",
+      "providerSelection": "undecided_owner_requested_common_adapter_first",
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "wifiRadioTested": false,
+      "nextAction": "Save reviewed common adapters to a separate PR; next same-device Wi-Fi/provider/Broker integration",
+      "hostTestsPassed": 55,
+      "linuxPacketTestsPassed": 26,
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md",
+      "evidence": "docs/evidence/development-execution/mini-08-access-adapters.json",
+      "mustFixRemaining": 0,
+      "independentReviewEvidence": "docs/evidence/development-execution/mini-08-access-review.json",
+      "fullVerify": "complete_chain_exit0_2938_tests_2935_pass_3_skip_0_fail"
+    }
   },
   "pixelCacheMainAdoption": {
     "evidence": "docs/evidence/development-execution/pixel-cache-main-adoption.json",
