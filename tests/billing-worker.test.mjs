@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -42,8 +44,11 @@ class Statement {
 }
 
 class TestD1 {
-  constructor() {
-    this.database = new DatabaseSync(':memory:');
+  constructor(path = ':memory:', { migrate = true, hooks = {} } = {}) {
+    this.database = new DatabaseSync(path);
+    this.hooks = hooks;
+    this.closed = false;
+    if (!migrate) return;
     for (const migration of [
       '0001_billing.sql',
       '0002_earnings_settlement.sql',
@@ -64,19 +69,28 @@ class TestD1 {
     return new Statement(this.database, sql);
   }
   async batch(statements) {
+    if (this.hooks.beforeBatch) await this.hooks.beforeBatch();
     this.database.exec('BEGIN IMMEDIATE');
+    const results = [];
     try {
-      const results = [];
-      for (const statement of statements) results.push(await statement.run());
+      for (const [index, statement] of statements.entries()) {
+        results.push(await statement.run());
+        if (this.hooks.afterStatement)
+          await this.hooks.afterStatement(index);
+      }
       this.database.exec('COMMIT');
-      return results;
     } catch (error) {
       this.database.exec('ROLLBACK');
       throw error;
     }
+    // A lost acknowledgement must not try to roll back an already committed DB.
+    if (this.hooks.afterCommit) await this.hooks.afterCommit();
+    return results;
   }
   close() {
+    if (this.closed) return;
     this.database.close();
+    this.closed = true;
   }
 }
 
@@ -593,4 +607,249 @@ void test('a concurrent consumed Wallet challenge cannot reactivate a revoked op
     .get();
   assert.equal(collection.status, 'awaiting_wallet');
   assert.equal(collection.recipient_address, null);
+});
+
+// WALLET-DB-RECOVERY-01: local SQLite fault/reopen fixtures only. Test signatures
+// and legacy internal accounting do not establish real revenue or available cash.
+const accountingTables = [
+  'earning_receipts', 'monthly_earning_settlements',
+  'monthly_fund_earning_settlements', 'earning_ledger_entries',
+  'payout_instructions', 'rock_fee_collection_instructions',
+];
+function accountingSnapshot(DB) {
+  return Object.fromEntries(accountingTables.map((table) => [table,
+    DB.database.prepare(`SELECT * FROM ${table} ORDER BY 1, 2`).all(),
+  ]));
+}
+function fileBillingFixture(t) {
+  const directory = mkdtempSync(join(tmpdir(), 'wallet-db-recovery-'));
+  const path = join(directory, 'billing.sqlite');
+  const handles = [];
+  let initialized = false;
+  t.after(() => {
+    try { for (const DB of handles) DB.close(); }
+    finally { rmSync(directory, { recursive: true, force: true }); }
+    // Covers DB, WAL and SHM sidecars even if an assertion/fault aborted a test.
+    assert.equal(existsSync(directory), false);
+  });
+  return (hooks = {}) => {
+    const DB = new TestD1(path, { migrate: !initialized, hooks });
+    initialized = true;
+    handles.push(DB);
+    DB.database.exec('PRAGMA journal_mode=WAL');
+    return DB;
+  };
+}
+function recoveryReceipt(suffix = 'one', patch = {}) {
+  return {
+    receiptId: `recovery_${suffix}`, executionReceiptId: `execution_${suffix}`,
+    userId: 'alice', beneficiaryRole: 'toc', fundId: 'fund:fixture',
+    automationToolId: 'tool:fixture', sourceProvider: 'synthetic-provider',
+    providerReference: `external_${suffix}`, payoutAccountId: 'fixture_alice',
+    evidenceSha256: 'e'.repeat(64), currency: 'usd', grossAmountMinor: 500,
+    operatingCostMinor: 100, occurredAt: Math.floor(Date.now() / 1000), ...patch,
+  };
+}
+async function deliverReceipt(DB, receipt, worker = legacyFixtureBillingWorker) {
+  const raw = JSON.stringify(receipt);
+  const response = await worker.fetch(new Request('https://settlement.example/v1/earnings', {
+    method: 'POST', headers: { 'Sky-Receipt-Signature': signature(raw) }, body: raw,
+  }), { DB, BILLING_SHARED_SECRET: sharedSecret, SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret, SKY_ORIGIN: origin });
+  return { status: response.status, body: await response.json() };
+}
+function assertUnappliedOnly(DB, receiptId) {
+  const state = accountingSnapshot(DB);
+  assert.equal(state.earning_receipts.length, 1);
+  assert.equal(state.earning_receipts[0].receipt_id, receiptId);
+  assert.equal(state.earning_receipts[0].applied_at, null);
+  assert.equal(state.earning_receipts[0].sky_fee_minor, 0);
+  assert.equal(state.earning_receipts[0].distributable_minor, 0);
+  for (const table of accountingTables.slice(1)) assert.deepEqual(state[table], []);
+}
+function assertOneAllocation(DB, receipt) {
+  const state = accountingSnapshot(DB);
+  assert.equal(state.earning_receipts.length, 1);
+  const row = state.earning_receipts[0];
+  assert.equal(row.receipt_id, receipt.receiptId);
+  assert.equal(row.execution_receipt_id, receipt.executionReceiptId);
+  assert.equal(row.provider_reference, receipt.providerReference);
+  assert.equal(row.user_id, receipt.userId);
+  assert.equal(row.currency, 'usd');
+  assert.equal(row.gross_minor, 500);
+  assert.equal(row.operating_cost_minor, 100);
+  assert.ok(Number.isSafeInteger(row.applied_at));
+  assert.equal(row.sky_fee_minor, 400);
+  assert.equal(row.distributable_minor, 0);
+  assert.equal(state.monthly_earning_settlements.length, 1);
+  assert.equal(state.monthly_earning_settlements[0].receipt_count, 1);
+  assert.equal(state.monthly_earning_settlements[0].sky_fee_minor, 400);
+  assert.equal(state.monthly_fund_earning_settlements.length, 1);
+  assert.equal(state.earning_ledger_entries.length, 3);
+  assert.equal(new Set(state.earning_ledger_entries.map((r) => r.entry_id)).size, 3);
+  assert.equal(state.payout_instructions.length, 1);
+  assert.equal(state.payout_instructions[0].receipt_id, receipt.receiptId);
+  assert.equal(state.payout_instructions[0].status, 'not_required');
+  assert.equal(state.payout_instructions[0].amount_minor, 0);
+  assert.equal(state.rock_fee_collection_instructions.length, 1);
+  assert.equal(state.rock_fee_collection_instructions[0].instruction_id, `rock-fee:${receipt.receiptId}`);
+  assert.equal(state.rock_fee_collection_instructions[0].status, 'awaiting_wallet');
+  assert.equal(state.rock_fee_collection_instructions[0].amount_minor, 400);
+  return state;
+}
+
+void test('file DB: INSERT survives interruption before batch and same receipt recovers exactly once after reopen', async (t) => {
+  const open = fileBillingFixture(t), receipt = recoveryReceipt();
+  let faults = 0;
+  let DB = open({ beforeBatch() { faults++; throw new Error('fixture_before_batch'); } });
+  assert.equal((await deliverReceipt(DB, receipt)).status, 500);
+  assert.equal(faults, 1);
+  assertUnappliedOnly(DB, receipt.receiptId);
+  DB.close();
+  DB = open();
+  assertUnappliedOnly(DB, receipt.receiptId);
+  const recovered = await deliverReceipt(DB, receipt);
+  assert.equal(recovered.status, 200);
+  assert.equal(recovered.body.replay, true);
+  const committed = assertOneAllocation(DB, receipt);
+  assert.equal(recovered.body.receipt.payoutInstructionId, committed.payout_instructions[0].instruction_id);
+  DB.close();
+  DB = open();
+  assert.deepEqual(accountingSnapshot(DB), committed);
+  const replay = await deliverReceipt(DB, receipt);
+  assert.equal(replay.status, 200);
+  assert.equal(replay.body.replay, true);
+  assert.deepEqual(replay.body.receipt, recovered.body.receipt);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+});
+
+void test('file DB: committed batch with lost acknowledgement returns original instructions after reopen', async (t) => {
+  const open = fileBillingFixture(t), receipt = recoveryReceipt();
+  let faults = 0;
+  let DB = open({ afterCommit() { faults++; throw new Error('fixture_ack_lost'); } });
+  assert.equal((await deliverReceipt(DB, receipt)).status, 500);
+  assert.equal(faults, 1);
+  const committed = assertOneAllocation(DB, receipt);
+  DB.close();
+  DB = open();
+  assert.deepEqual(accountingSnapshot(DB), committed);
+  const replay = await deliverReceipt(DB, receipt);
+  assert.equal(replay.status, 200);
+  assert.equal(replay.body.replay, true);
+  assert.equal(replay.body.receipt.payoutInstructionId, committed.payout_instructions[0].instruction_id);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+  DB.close();
+  DB = open();
+  assert.equal((await deliverReceipt(DB, receipt)).body.replay, true);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+});
+
+void test('file DB: failure after partial batch statements rolls back allocation before same-key reopen recovery', async (t) => {
+  const open = fileBillingFixture(t), receipt = recoveryReceipt();
+  let faults = 0;
+  let DB = open({ afterStatement(index) {
+    if (index !== 3) return;
+    // Both owner and fund aggregates exist inside the uncommitted transaction.
+    assert.equal(DB.database.prepare('SELECT sky_fee_minor FROM monthly_earning_settlements').get().sky_fee_minor, 400);
+    assert.equal(DB.database.prepare('SELECT COUNT(*) AS n FROM monthly_fund_earning_settlements').get().n, 1);
+    faults++;
+    throw new Error('fixture_partial_batch');
+  } });
+  assert.equal((await deliverReceipt(DB, receipt)).status, 500);
+  assert.equal(faults, 1);
+  assertUnappliedOnly(DB, receipt.receiptId);
+  DB.close();
+  DB = open();
+  assertUnappliedOnly(DB, receipt.receiptId);
+  assert.equal((await deliverReceipt(DB, receipt)).status, 200);
+  const committed = assertOneAllocation(DB, receipt);
+  assert.equal((await deliverReceipt(DB, receipt)).body.replay, true);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+});
+
+void test('file DB: two delivery contexts interleave before explicitly serialized 400+488-cent batches', { timeout: 10000 }, async (t) => {
+  const open = fileBillingFixture(t);
+  const reachedA = Promise.withResolvers(), reachedB = Promise.withResolvers();
+  const releaseA = Promise.withResolvers(), releaseB = Promise.withResolvers();
+  const A = open({ async beforeBatch() { reachedA.resolve(); await releaseA.promise; } });
+  const B = open({ async beforeBatch() { reachedB.resolve(); await releaseB.promise; } });
+  const first = recoveryReceipt('first');
+  const second = recoveryReceipt('second', { occurredAt: first.occurredAt, grossAmountMinor: 1000 });
+  // Same normalized owner, not two authenticated devices or a contract resolver.
+  const requestA = deliverReceipt(A, first);
+  await reachedA.promise;
+  const requestB = deliverReceipt(B, second);
+  try {
+    await reachedB.promise;
+    assert.equal(accountingSnapshot(A).earning_receipts.length, 2);
+    assert.equal(accountingSnapshot(A).monthly_earning_settlements.length, 0);
+    releaseA.resolve();
+    const resultA = await requestA;
+    assert.equal(resultA.status, 201);
+    assert.equal(resultA.body.receipt.skyFeeMinor, 400);
+    releaseB.resolve();
+    const resultB = await requestB;
+    assert.equal(resultB.status, 201);
+    assert.equal(resultB.body.receipt.skyFeeMinor, 488);
+  } finally {
+    releaseA.resolve(); releaseB.resolve();
+    await Promise.allSettled([requestA, requestB]);
+  }
+  const committed = accountingSnapshot(A);
+  const month = committed.monthly_earning_settlements[0];
+  assert.equal(committed.monthly_earning_settlements.length, 1);
+  assert.equal(month.receipt_count, 2);
+  assert.equal(month.sky_fee_minor, 888);
+  assert.equal(month.gross_minor, 1500);
+  assert.equal(month.operating_cost_minor, 200);
+  assert.equal(month.distributable_minor, 412);
+  assert.equal(month.gross_minor, month.operating_cost_minor + month.sky_fee_minor + month.distributable_minor);
+  assert.equal(committed.payout_instructions.length, 2);
+  assert.equal(committed.rock_fee_collection_instructions.length, 2);
+  A.close(); B.close();
+  const reopened = open();
+  assert.deepEqual(accountingSnapshot(reopened), committed);
+  for (const receipt of [first, second]) assert.equal((await deliverReceipt(reopened, receipt)).body.replay, true);
+  assert.deepEqual(accountingSnapshot(reopened), committed);
+  const afterCap = await deliverReceipt(reopened, recoveryReceipt('after_cap', { occurredAt: first.occurredAt, operatingCostMinor: 0 }));
+  assert.equal(afterCap.body.receipt.skyFeeMinor, 0);
+  assert.equal(afterCap.body.receipt.distributableMinor, 500);
+  assert.equal(accountingSnapshot(reopened).monthly_earning_settlements[0].sky_fee_minor, 888);
+});
+
+void test('file DB: provider-reference aliases and changed owner/amount/currency cannot change persisted accounting', async (t) => {
+  const open = fileBillingFixture(t), receipt = recoveryReceipt();
+  let DB = open();
+  assert.equal((await deliverReceipt(DB, receipt)).status, 201);
+  const committed = assertOneAllocation(DB, receipt);
+  DB.close(); DB = open();
+  const alias = { receiptId: 'alias_receipt', executionReceiptId: 'alias_execution' };
+  for (const patch of [alias, { ...alias, userId: 'mallory' },
+    { ...alias, grossAmountMinor: 600 }, { grossAmountMinor: 600 }]) {
+    assert.equal((await deliverReceipt(DB, { ...receipt, ...patch })).status, 409);
+    assert.deepEqual(accountingSnapshot(DB), committed);
+  }
+  assert.equal((await deliverReceipt(DB, { ...receipt, ...alias, currency: 'eur' })).status, 400);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+  assert.equal((await deliverReceipt(DB, receipt)).body.replay, true);
+  assert.deepEqual(accountingSnapshot(DB), committed);
+});
+
+void test('file DB: deployed default policy stays on hold with zero mutation before and after legacy recovery', async (t) => {
+  const open = fileBillingFixture(t), receipt = recoveryReceipt();
+  let DB = open();
+  const empty = accountingSnapshot(DB);
+  let rejected = await deliverReceipt(DB, receipt, billingWorker);
+  assert.equal(rejected.status, 409);
+  assert.equal(rejected.body.code, 'SKY_FEE_POLICY_ON_HOLD');
+  assert.deepEqual(accountingSnapshot(DB), empty);
+  assert.equal((await deliverReceipt(DB, receipt)).status, 201);
+  const committed = assertOneAllocation(DB, receipt);
+  DB.close(); DB = open();
+  for (const value of [receipt, recoveryReceipt('new')]) {
+    rejected = await deliverReceipt(DB, value, billingWorker);
+    assert.equal(rejected.status, 409);
+    assert.equal(rejected.body.code, 'SKY_FEE_POLICY_ON_HOLD');
+    assert.deepEqual(accountingSnapshot(DB), committed);
+  }
 });

@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.31",
-  "updatedAt": "2026-10-25T00:05:37.934051+00:00",
+  "version": "1.32",
+  "updatedAt": "2026-10-25T00:48:35.401651+00:00",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3079,9 +3079,26 @@
     "evidence": "docs/evidence/development-execution/game-creator-fixture-main-adoption.json",
     "reviewSummary": "docs/evidence/development-execution/game-creator-fixture-main-review-summary.json",
     "existingEngineAndSaveFormatUnchanged": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeGame01Accepted": false,
     "productionExchangeEnabled": false,
+    "publicDeployment": false
+  },
+  "walletLegacyDbRecoveryFixture": {
+    "authority": "docs/sky-billing.md#wallet-legacy-db-recovery-fixture",
+    "osDesign": "docs/rockstaros-complete-design.md#wallet-legacy-db-recovery-fixture",
+    "toolDesign": "docs/sky-tools-complete-design.md#wallet-legacy-db-recovery-fixture",
+    "implementation": [],
+    "tests": [
+      "tests/billing-worker.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/wallet-ledger-db-recovery-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/wallet-ledger-db-recovery-main-review-summary.json",
+    "testOnly": true,
+    "runtimeProductChanges": 0,
+    "mainMerged": false,
+    "wholeWallet02Accepted": false,
+    "productionFinanceAccepted": false,
     "publicDeployment": false
   }
 }

@@ -1,3 +1,7 @@
+## Wallet DB recovery test-only exact1採用候補
+
+Game205通常merge main0866・同SHA6CI成功のclean基点へ、旧434fとtestbase不変の受入1hashを無変更採用。元receipt5347とportable要約を分け、runtime/source・価格/鍵/migration/888・RootHEAD/indexを保持。Root専有registryは読戻し/restore対象外。23/lint/type→project/design/scanner→Draft PR最終同headLinux実npmverify/全CI→独立metadata検収。承認済archive8d2 exact3保存を維持、残616は公開保留。[証拠](../evidence/development-execution/wallet-ledger-db-recovery-main-adoption.json)。
+
 ## Game creator host fixture exact2採用候補
 
 Eve204通常merge main434f・同SHA6CI成功のclean基点へ、旧7188と2base不変のscript/test hashを無変更採用。元receipt9936と新portableを分け、再利用5・既存Eve/Smith/Billing/eSIM/Mini/履歴・RootHEAD/index/archiveを維持。40/lint/構文/type→project/design/scanner→Draft PR最終同headLinux実npmverify/全CI→独立metadata検収。host synthetic ownerだけでstatic unverifiedをruntime受入へ移さない。Walletは別test-only worktree準備で、source/金融は操作しない。[証拠](../evidence/development-execution/game-creator-fixture-main-adoption.json)。

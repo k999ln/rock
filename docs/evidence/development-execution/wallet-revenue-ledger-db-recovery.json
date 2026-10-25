@@ -1,0 +1,153 @@
+{
+  "schema": "rockstaros.wallet-db-recovery.portable-source-summary/1",
+  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
+  "batch": "WALLET-DB-RECOVERY-01",
+  "unit": "WALLET-02",
+  "sourceBase": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+  "sourceFiles": [
+    {
+      "path": "tests/billing-worker.test.mjs",
+      "sha256": "257e5ea6400eb9928a938c03ab6a836094483e96a1a72dca4d3f5bb7c1b39bd8",
+      "bytes": 32515
+    }
+  ],
+  "sourceAdaptation": false,
+  "testOnly": true,
+  "runtimeProductChanges": 0,
+  "originalImplementationReceiptSha256": "53472a23d51a205251e33dff8e9ac025d8db6b8696f1321d7d51e98b4eaddb39",
+  "originalReceiptHistoricalStatus": "test_only_candidate_local_checks_passed_independent_review_pending",
+  "receiptQualification": "New minimal portable metadata, not byte-identical to the original full receipt. Only exact test1 bytes inherit source review; new adoption metadata requires independent review.",
+  "sourceReviewSha256": "14ecc5f0d6acbd239598a6ca2f035b98702bb99e539c8c1d46fd047bb9567aed",
+  "sourceReviewStatus": "PASS_SCOPED",
+  "mustFix": [],
+  "protectedRuntimeAndConfig": [
+    {
+      "path": "lib/wallet-deposit-provenance.ts",
+      "sha256": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9"
+    },
+    {
+      "path": "lib/earning-bridge.ts",
+      "sha256": "c6a2895a0af100fbaabd31db6c96199a2f2d3dc3cc1d4d25686dbd5064fb56f9"
+    },
+    {
+      "path": "services/sky-billing/src/worker.ts",
+      "sha256": "200bc06ecd3c31e916e08426fd554c315abd36a9c92c03bc749881b0155ecb6b"
+    },
+    {
+      "path": "services/sky-billing/migrations/0002_earnings_settlement.sql",
+      "sha256": "295c0a7a3a8bbd13afd34709738cdb0d1a07053427f658d4c8b0c6f65a6e61a2"
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/wallet.py",
+      "sha256": "a97697f375015dccc16088d05f3b150a7ba25eaab49167117abccd7e7cf2f0c6"
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/store.py",
+      "sha256": "011561f513fa9e0543947384a3f0918c5856e64fec11ce78f2b3f7fbc039e501"
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/wallet_bridge.py",
+      "sha256": "56c4bf55632f58b9adc1f97d59a9fd677df14b48b2aa883b943dfb5bdb13b330"
+    },
+    {
+      "path": "services/sky-billing/migrations/0003_automation_funds.sql",
+      "sha256": "03deb89e51f839f8a872c48754b01f104e6ad4f22daa391e630374ffaffc1104"
+    },
+    {
+      "path": "services/sky-billing/migrations/0004_rock_settlement_wallet.sql",
+      "sha256": "135b6f7bc3cdd3afedef5f1b22a7f9117bb6a8b1d2d657d2fce9015b15fb0fc8"
+    },
+    {
+      "path": "services/sky-billing/migrations/0001_billing.sql",
+      "sha256": "b8a8b881f9251ae891a7be4e82c9a9f95a9a8a0c2e892aeca6ac2f4a7f02f802"
+    },
+    {
+      "path": "services/sky-billing/src/domain.ts",
+      "sha256": "45346907a25c998489d388b17cfa9421618a95d11bae2605a513848e85d42d59"
+    },
+    {
+      "path": "services/sky-billing/src/receipt-signature.ts",
+      "sha256": "92b6a6c3e9438878c111233836022cb7b5cd3dc63b41c46d2b654ed56beefe10"
+    },
+    {
+      "path": "lib/billing-token.ts",
+      "sha256": "8f07e0a9a2071064b51cfce548b05762d9e5425b1477774ce47c1f2dfceec2c7"
+    },
+    {
+      "path": "lib/rock-wallet.ts",
+      "sha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b"
+    }
+  ],
+  "originalTestsAndSignatureHelperUnchanged": true,
+  "validation": {
+    "focused23": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "skip": 0
+    },
+    "billingSubset": {
+      "original": 3,
+      "added": 6,
+      "total": 9
+    },
+    "independentProbeGroups": 6,
+    "rollbackStatementPositions": 11,
+    "countsNotAdditive": true,
+    "plane": "Local Node SQLite file/WAL handles, in-process unchanged actual Worker SQL, literal synthetic signatures/owner fixtures and deterministic injected errors. No HTTP listener/network, real Provider, real credit, process kill or Cloudflare concurrency."
+  },
+  "observedAcceptance": [
+    {
+      "case": "pre-batch interruption",
+      "observed": "One stored receipt with applied_at NULL and zero allocation totals/ledger/instructions survives close/reopen. Replay applies once, second reopen returns same payoutInstructionId and identical snapshot."
+    },
+    {
+      "case": "post-commit acknowledgement loss",
+      "observed": "Error response leaves committed one-receipt allocation. Two close/reopen replays keep original instruction IDs, applied_at, totals and accounting rows unchanged."
+    },
+    {
+      "case": "partial batch rollback",
+      "observed": "Fault sees 400 synthetic cents in owner/fund aggregate inside transaction. ROLLBACK leaves unapplied receipt and zero partial allocations; reopen and same-key replay converges to single allocation."
+    },
+    {
+      "case": "explicit serialized interleaving",
+      "observed": "Two file DB handles both persist receipts and pause before BEGIN; release A then B, fees400+488=888. Same owner/month gross1500=cost200+fee888+payable412. Reopen replays preserve entire snapshot; additional net500 receipt adds fee0, not another basic fee."
+    },
+    {
+      "case": "provider-reference conflict",
+      "observed": "New receipt/execution aliases, owner/amount changes return409; currency mismatch returns400. Full six-table snapshot unchanged, original receipt still replays."
+    },
+    {
+      "case": "current default policy",
+      "observed": "Default billingWorker returns409 SKY_FEE_POLICY_ON_HOLD before any earning and after legacy allocation/reopen, for original and new receipt. Full accounting snapshot unchanged."
+    }
+  ],
+  "originalFailures": [],
+  "originalSkippedTests": [],
+  "newFailures": [],
+  "expectedInjectedFailures": "HTTP500 from hooks, expected409 identity/ToC hold and400 unsupported currency are asserted negatives, not failed or skipped product tests.",
+  "cleanup": "Owned temporary SQLite/WAL/SHM directory removed after every fixture closes all handles; no persistent DB artifact in Git.",
+  "limits": [
+    "No actual process kill, simultaneous write transactions or Cloudflare D1 durability acceptance; two requests overlap only before explicitly serialized SQLite batches.",
+    "Two delivery contexts use the same already-normalized synthetic owner, not independently authenticated devices or contract normalization.",
+    "Existing Provider-signed provenance checker remains fixture-only and unconnected to funded available credit; no new creditAllowed bypass.",
+    "Internal legacy earning credit ledger lines are synthetic accounting; test HMAC evidence is not real Provider/chain finality or verified cash profit.",
+    "Native Wallet/ATM/Game/AI reservations and cross-ledger finality/reversal/backup remain outside this DB fixture.",
+    "No full verify, Git save/PR/merge or current remote CI executed; parent integrates and reviews exact candidate.",
+    "Review uses local SQLite handles and injected errors, not actual process termination, remote D1 response loss or simultaneous writer transactions.",
+    "Same owner is already-normalized synthetic alice. No independently authenticated devices, real contract mapping, provider finality, actual revenue or available cash accepted."
+  ],
+  "acceptance": {
+    "testOnlyScopedSource": true,
+    "independentSourceReview": true,
+    "newMetadataReviewed": false,
+    "mainMerged": false,
+    "realProviderRevenue": false,
+    "availableCredit": false,
+    "twoAuthenticatedDevices": false,
+    "cloudflareConcurrencyDurability": false,
+    "productionFinance": false,
+    "wholeWallet02": false,
+    "publicDeployment": false
+  }
+}

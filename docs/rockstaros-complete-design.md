@@ -1,3 +1,26 @@
+<a id="wallet-legacy-db-recovery-fixture"></a>
+## Legacy earning ledgerのSQLite fault/reopen fixture（WALLET-02限定試験候補）
+
+目的・体験: 新しい金融runtimeを作らず、既存Billing Workerのlegacy fixture receipt/batch処理で、応答不明・処理中断を模擬した後の同一DB再open/同key再送が重複記帳しないことを確かめる。利用対象は開発者のhost合成試験。既存memory TestD1をfile-backed reopen/fault hookへ拡張するtests/billing-worker.test.mjsだけの変更で、製品UI/Worker/API/台帳/price/鍵/migrationは変えない。主担当03、Git統合10、WLT01/WLT02/WLT04/B03/GX00文脈のWALLET-02 overlayを使う。
+
+責任・禁止authority: ROCKは既存SQL/既存fixtureへの有限試験・snapshot照合と後処理、EXTERNALはProvider/銀行/chain/Cloudflareの実際のfinality・永続性、JOINTは同一artifactの実provider/実DB/別端末/復旧の共同受入、OWNERは本人性・契約・実資金条件と費用同意を担当する。test HMAC/legacy earning credit/payout instructionは実収益・現金・available credit・実transferや本人承認の代替ではない。default ToCはSKY_FEE_POLICY_ON_HOLDで拒否したまま、888c/domain/署名issuer/価格/秘密値を変更しない。
+
+入力・出力・ID: 元3testと既存signature helperをそのまま使い、同じnormalized synthetic alice/monthにliteral test keysで署名したreceiptを与える。deviceA/Bは同ownerの配送ラベルで、2認証端末や契約resolverではない。receipt ID/provider_reference/execution/owner/amount/currency/evidence/payout accountの既存bindingと、applied_at/元payout・fee instruction ID・全6table snapshotを確認する。provider reference一意性を一般chain eventの二重計上防止へ拡張しない。新価格やUSD16項目を足さない。
+
+状態・故障境界: beforeBatchはWorker receipt INSERT後・BEGIN IMMEDIATE前、afterStatementはtransaction内、afterCommitはCOMMIT後rollback catch外へ置く。前者はunapplied receiptだけが残り、11statement位置の例外ではROLLBACKしてallocation0、後者ではcommit済み1allocationが残る。いずれも同fileを新DatabaseSync handleで再openし、同key replayがexact1allocationとimmutable instruction IDへ収束し、さらにreopen/replayしてsnapshotを変えないことを試験する。想定500/409/400はassertした負例で、失敗skipへ換算しない。
+
+保存・cleanup・retry: TestD1の元defaultはmemory/migrate trueを保持。file fixtureは既存migrationを最初のopen時に一度だけ適用し、その後migrate falseで同SQLite/WALへ接続し直す。新save schema/DB/ledger/migration/storeは作らない。test after-hookで全handleを閉じ、所有tmp directoryとDB/WAL/SHMを削除し不存在までassertする。fixture以外の保存/hold/履歴をreset/restoreしない。製品のretention/backup/実DB災害復旧は未試験で、新backup契約として扱わない。
+
+競合・復旧・互換: 2handleの要求がBEGIN前で重なる所まで観察し、batchを明示直列化して同receiptの201/200・同owner/monthの400+488=888とgross=cost+fee+payable、後続fee0を確認する。異なるowner/amount/evidence/payout/IDsの409、currency400でsnapshot不変。default WorkerのToC holdはlegacy前後・reopen後とも保持。既存provider provenance checker/creditAllowed/Wallet/ATM/Game/AI予約は未接続のまま。これは同時write transactionやCloudflare並行・実OS crash/process killを試したものではない。退行時は通常Git revertでtest差分だけを戻し、製品データの巻戻しは行わない。
+
+合格証拠・由来: exact test1と元receiptの独立PASS_SCOPED/mustfix0、統合23（billing旧3+新6の9を含む）23pass0fail0skip・対象lint・通常typecheck。独立6群にrollback11位置/同receipt2handle/ack loss/reopen/400+488/既存default holdを含み、件数を足して誇張しない。元失敗/skipは空、想定注入例外は別記録。元receipt5347とportable新summaryは別hash、source testだけが元reviewのbyte同一性を引き継ぐ。raw DB/log/署名素材/私有pathはGit外で、最小summary/digestだけを保存する。
+
+未決定・次の合格条件: 実Provider/chain finality/検証済現金収益、funded available credit、2認証端末/contract正規化、Cloudflare同時処理・durability、native/共通予約/跨台帳finality/reversal/backup・本番金融は未受入。wholeWALLET-02/公開はfalse。実装不変のfixture検証を本番権限へ転用せず、各既存gateで対象/同意/予算/実環境を決めて同一条件で受け入れる。local全体verifyは未実行、最終exact PRheadのLinux実npm run verify/全CIと独立採用metadata検収が必要。
+
+[test1hash・runtime保護・検証・残gate](evidence/development-execution/wallet-ledger-db-recovery-main-adoption.json)／[独立検収要約](evidence/development-execution/wallet-ledger-db-recovery-main-review-summary.json)。
+
+実行: `node --experimental-strip-types --test tests/billing-worker.test.mjs tests/earning-bridge.test.mjs tests/wallet-deposit-provenance.test.mjs`。これは合成testだけで、実Provider入金や支払命令の実行を行わない。
+
 <a id="game-creator-host-fixture"></a>
 ## 作者向けknown-particle host fixture CLI（GAME-01 / GM01 / AI06、DX01文脈）
 

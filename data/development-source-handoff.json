@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T00:05:37.934051+00:00",
+  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
-    "mainAtCapture": "434f8076e5e16f953f8a814430082a3cfa0dce56",
+    "mainAtCapture": "08669893ec8bc9aab498d38b88a60f8911fd3443",
     "productBaseline": "2.08",
     "requirementIds": "RQ01..RQ50",
     "taskSource": "data/project-status.json",
@@ -591,7 +591,10 @@
       "id": "WALLET-02",
       "title": "888c収益連動精算・共有予約・backup照合",
       "lane": "wallet",
-      "ledgerRef": "data/development-unit-progress.json#WALLET-02"
+      "ledgerRef": "data/development-unit-progress.json#WALLET-02",
+      "currentOverlayRefs": [
+        "WALLET_LEDGER_DB_RECOVERY_CANDIDATE"
+      ]
     },
     {
       "id": "WALLET-03",
@@ -655,8 +658,15 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "WALLET-02",
+      "state": "legacy_ledger_SQLite_recovery_test_only_source_pass_main_candidate",
+      "scope": "Exact-head Linux actual verify/all CI and independent metadata review; runtime/price/key/888/defaultToC unchanged.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 1,
       "unit": "GAME-01",
-      "state": "creator_host_fixture_exact2_source_pass_main_candidate",
+      "state": "bounded_host_fixture_PR205_main_integrated_remaining_fullSDK_gates",
       "scope": "Exact-head Linux actual verify/all CI and independent adoption metadata review; host synthetic fixture only, not fullSDK/auth owner/financial/native.",
       "wholeUnitAccepted": false
     },
