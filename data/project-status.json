@@ -9924,7 +9924,9 @@
     "publicDeployment": false,
     "mainMergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
     "mainSameShaCISuccess": 6,
-    "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
+    "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json",
+    "acceptedHeadCISuccess": 7,
+    "actualLinuxVerify": "2898tests_2896pass_0fail_2skip"
   },
   "walletProcessRecovery": {
     "unit": "WALLET-02",
@@ -9982,5 +9984,39 @@
     "adoptionBase": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
     "adoptionEvidence": "docs/evidence/development-execution/mini-08-tethering-main-adoption.json",
     "saveBaseMain": "81aca294b6c977f353752461f09823c4948a7ea9"
+  },
+  "pixelCacheMainAdoption": {
+    "evidence": "docs/evidence/development-execution/pixel-cache-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/pixel-cache-main-review-summary.json",
+    "sourceNinePreserved": false,
+    "sourceHostPass": 99,
+    "sourceMacSkips": 3,
+    "independentPass": 80,
+    "independentLinuxSkip": 1,
+    "metadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "physicalAccepted": false,
+    "p02Complete": false,
+    "wholeOS01Accepted": false,
+    "productionDeployment": false,
+    "guardRaceFix": {
+      "status": "host_verified_new_head_ci_pending",
+      "oldHead": "06dac1bb4ffa84badfe57bdfac8f81b204bae0d5",
+      "reason": "CodeQL High metadata lstat/read race; host counterexample confirmed",
+      "evidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
+      "physicalAccepted": false,
+      "additionalInference": false,
+      "fullVerify": "pass_2924tests_2921pass_0fail_3MacSkip"
+    },
+    "historicalPhysicalReview": {
+      "path": "docs/evidence/development-execution/pixel-cache-main-physical-review.json",
+      "sha256": "38d8f4d32a74734ac069b93b44e2e1a2613d649230472c83fdf47c2b0361f779",
+      "oldManifestOnly": true,
+      "status": "PASS_LIMITED_OLD_ARTIFACT_MEASUREMENTS_AND_RESTORATION",
+      "currentGuardPhysicalAccepted": false
+    },
+    "originalSevenSourcePreserved": true,
+    "guardTwoMatchAuthorCommit": "e5ba85214b03e9bc408b9efcebcc3d491cdf25a5"
   }
 }

@@ -1,0 +1,49 @@
+{
+  "schema": "rockstaros.pixel-cache-main.physical-independent-review/1",
+  "recordedAt": "2026-10-25T08:24:24.859474+00:00",
+  "reviewer": "Git integration; separate from physical OS operator; read-only documentary review",
+  "status": "PASS_LIMITED_OLD_ARTIFACT_MEASUREMENTS_AND_RESTORATION",
+  "mustFix": [],
+  "physicalReceiptSha256": "2fde97b64432c2007f43fa39e7a5326ee74164b0e5ab0691e3970c6b49ae53ab",
+  "verifiedProofFiles": 16,
+  "reviewedHelpers": 4,
+  "reviewedScreenshots": 3,
+  "target": "Pixel10 GL066/frankel",
+  "testedManifestSha256": "f3b345c95a5e6b6d09a12c53c5ddc388034d83c0969b7313fc2092111cbd37d6",
+  "restoredManifestSha256": "7f0223c18be30512b0e285dc3ebc2d117169c8ef1720543fbe2118b9da598d03",
+  "reviewFindings": {
+    "testedPackageAll11LocalHashesMatched": true,
+    "cacheReadyReplayBindingCancelRecorded": true,
+    "screenshotsCorroborateInstallCacheAndRestore": true,
+    "beforeAfterCoreStateEqual": true,
+    "modelsAgentsRuns": [
+      2,
+      10,
+      34
+    ],
+    "activeUnknownUnconfirmed": [
+      0,
+      0,
+      0
+    ],
+    "additionalCacheRows": 2,
+    "oldLedgerRetained": true,
+    "successfulOutputHashChecks": 23,
+    "nativeApkAndProtectedHashesUnchanged": true,
+    "additionalInference": 0,
+    "candidateCurrentlyInstalled": false
+  },
+  "limits": [
+    "Review reads pre-existing operator evidence; no new live device operation performed",
+    "Only old f3b345 package was physically measured; later CodeQL High and guard fix supersede its source security acceptance",
+    "New c43e7047 package and current guard have NO physical acceptance from this review",
+    "Full OS/signing/flash/OTA/data-loss recovery/P02/general launch remain unaccepted",
+    "No raw private state, key/session values, device serial or model/user output exported"
+  ],
+  "currentGuardPackageSha256": "c43e704711dd0e0ac96fc79c7fde9bd91306c3697a865460d9f29b56fa9755be",
+  "currentGuardPhysicalAccepted": false,
+  "wholeOS01Accepted": false,
+  "p02Complete": false,
+  "reviewDeviceActions": 0,
+  "productionDeployment": false
+}
