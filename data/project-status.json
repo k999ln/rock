@@ -10049,5 +10049,26 @@
     "mainAllChecksSuccess": false,
     "mainDependabotFailure": 1,
     "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
+  },
+  "esimAcknowledgementMainAdoption": {
+    "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
+    "sourceScopedAccepted": true,
+    "independentMetadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "actualHiddenTransitionTested": false,
+    "physicalAccepted": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "eveRateUnitMainAdoption": {
+    "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
+    "sourceIndependentPass": true,
+    "newHashBrowserScopedPass": true,
+    "metadataReviewPending": true,
+    "sameHeadCIPending": true,
+    "mainMerged": false,
+    "productionBilling": false,
+    "publicDeployment": false
   }
 }

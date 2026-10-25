@@ -102,7 +102,7 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
       <p>保存版 {displayed.sourceRef.revision}・{displayed.estimate.modelId}：最大見積 {formatCurrencyMinor(displayed.estimate.maximumChargeMinor, displayed.estimate.currency)}</p>
       <p>{!cap.trim() ? '比較用上限は未指定です。実行費用は未承認です。' :
         displayed.withinUserCap ? '比較用上限の範囲内です。実行費用は未承認です。' : '比較用上限を超えています。実行は開始していません。'}</p>
-      <ul>{displayed.unitRates.map((rate) => <li key={rate.category}>{labels[rate.category]}：{formatCurrencyRatePerMillionTokens(rate.rateMinorMicrosPerMillionTokens, displayed.estimate.currency)} / 100万token</li>)}</ul>
+      <ul>{displayed.unitRates.map((rate) => <li key={rate.category}>{labels[rate.category]}：{formatCurrencyRatePerMillionTokens(rate.rateMinorMicrosPerMillionTokens, displayed.estimate.currency)}</li>)}</ul>
       <p>料金版 {displayed.estimate.pricingVersion}。<a href={displayed.rateSource} rel="noreferrer" target="_blank">単価の出典</a></p>
       <p>Providerへ送信していません。これは確定した利用明細や請求額ではありません。</p>
     </div>}
