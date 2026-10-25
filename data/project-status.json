@@ -11094,8 +11094,8 @@
   "preparedDeviceMiniBatch": {
     "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
     "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
-    "fixedSourceCount": 22,
-    "status": "union_host_full_verify_pass_pending_finalhead_review_CI_main",
+    "fixedSourceCount": 23,
+    "status": "initial_head_linux_fixture_clock_race_pending_supplement_review_and_newhead_CI",
     "mainMerged": false,
     "whole95Accepted": 0,
     "publicDeployment": false,
@@ -11109,6 +11109,31 @@
       "standardPrivateGeneration": true,
       "noTypeStubs": true,
       "logSha256": "58f1709e954ea41e4070169c1716c295b36ec43ee3b7040bc4272662025ddefe"
-    }
+    },
+    "originalFixedSourceCount": 22,
+    "linuxPacketSupplement": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
+    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-integration-supplement.json",
+    "originalSource22Unchanged": true,
+    "originalHeadCI": {
+      "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
+      "success": 13,
+      "failure": 1
+    },
+    "codeqlMediumAlertsAtInitialHead": 3,
+    "sourceSecurityDisposition": "pending Root trusted-boundary review"
+  },
+  "miniLinuxObservationFixture": {
+    "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
+    "sourceSha256": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f",
+    "runtimeControllerAndGateChanged": false,
+    "sourceIndependentReview": "PASS_SCOPED_TEST_FIXTURE",
+    "newExactHeadLinuxPacketCI": "required; initial588 Linux26 had1failure",
+    "mainMerged": false,
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "sourceIndependentReviewer": "Root;7 host clock probes with kernel fence stub",
+    "independentReview": "docs/evidence/development-execution/mini-linux-packet-clock-review.json",
+    "independentReviewSha256": "26326bb3df2c805fd1eb6d4e67ca664239e238252be215812d6a41985aa19a66"
   }
 }

@@ -1455,14 +1455,12 @@
       "boundedMessageAdapter": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
         "implementation": [
-          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
-          "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py"
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
         ],
         "tests": [
-          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
-          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py"
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py"
         ],
-        "scope": "development_broker_ap_bounded_scheduler_shared_ledger_not_radio_or_provider_acceptance",
+        "scope": "offline_common_protocol_shared_ledger_not_radio_or_provider_acceptance",
         "regions": [
           "JP",
           "US"
@@ -1483,6 +1481,27 @@
         ],
         "scope": "local single-camera view-only proposals; not calibrated spatial acceptance or Eve preference inference",
         "physicalAccepted": false
+      },
+      "boundedMessageService": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+        ],
+        "tests": [
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+          "tests/avocado-mini-tethering.test.mjs"
+        ],
+        "scope": "development local Broker/AP ingress and bounded scheduler/stop only; no real product identity/transport or Job import acceptance",
+        "evidence": "docs/evidence/development-execution/mini-08-message-service-main-adoption.json",
+        "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+        "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+        "mainMerged": false,
+        "changesExistingAdapterInCandidate": true,
+        "baseAdapterAdoptionEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json",
+        "wholeUnitAccepted": false,
+        "physicalAccepted": false,
+        "providerConnected": false
       }
     },
     {

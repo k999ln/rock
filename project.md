@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## 有限batchのCI・metadata差分修復
+
+初回head588e0f8aは13CI成功・linux-packetsだけ26件中1失敗。crash子processのobserve_readyでsample秒と_fence後のvalidation秒が変わり、厳密observedAt==nowに拒否された。runtime/controller/Gateを変えず、test helperの1観測呼出しだけgate._nowを固定し直後に復元。Root独立7clockprobeで旧拒否/新成功・stale/expired/future/TTL61拒否・例外復元を確認、26packet methods/payload AST不変。元22sourceは完全固定、追加fixture1で23hashとする。実Linux26は新headCIで別検証。Web R1のservice index scope MUSTFIX1はold adapter objectをmain不変へ戻し新service pending subrecordへ分離して修復。gesture metadata R1はmustFix0。CodeQL成功checkにもmedium3件があり、手動model installerとDedicatedWorkerの信頼境界をRootが独立確認するまでsecurity0としない。元588/原receipt/source22captureを保持し、[追加採用記録](docs/evidence/development-execution/prepared-device-mini-integration-supplement.json)で最終head/manifest→独立再検収→新全CI→通常main/mergeCIを閉じる。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開は未受入。
+
 ## 準備済みPixel/Miniの有限統合batch
 
 主担当10/G04、source07/11・ROCK。main bb432の全受入を基点に、別保存済みPixel fixture9a043220・Mini231f27faea8・Mini2341bd7189bを通常mergeして元commitをancestor保持。fixture1/開発service5/gesture16の22hashとservice依存7を完全固定、全main status/既存baselineRQ50・393task/14gate・95固定分類/whole0を保つ。CI同一内容の直列重複を減らすためRoot提案を採用し、一つの最終headへ統合。既存source検収を維持してRootはfixture/current metadata、WebはMini2scopeのmetadata/CIを独立検収する。新union標準全verify→固定manifest/head→新同head全CI→通常main/mergeCIを実施し、旧branchCIは転用しない。独立7childはWebが実行、Rootは再実行していない。実機/実回線/実camera精度/校正/実金融/Eve学習/全OS/P02/公開は未受入、616HOLD。[共通採用記録](docs/evidence/development-execution/prepared-device-mini-integration.json)。

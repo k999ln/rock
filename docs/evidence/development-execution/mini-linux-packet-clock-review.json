@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.mini-linux-packet-clock-independent-review/1",
+  "recordedAt": "2026-10-25T15:00:54.334019+00:00",
+  "reviewer": "Root independent of Git fixture author",
+  "status": "PASS_SCOPED_TEST_FIXTURE",
+  "mustFix": [],
+  "sourcePath": "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py",
+  "sourceSha256": "8cdb3c4c21e7dd4d933c614b065c7735a91e2a3f517b10838d5acc41b87d860f",
+  "originalHeadFailure": "588e0f8a01d04264719093ceb0e967e565f65db1/linux-packets",
+  "scope": "One fixture observation invocation clock only; not runtime grace or policy relaxation",
+  "checks": {
+    "wholeOtherModuleASTUnchanged": true,
+    "realPacketTestMethodsUnchanged": 26,
+    "observePayloadCallASTUnchanged": true,
+    "controllerAndLinuxGateBytesUnchanged": true,
+    "independentHostProbes": [
+      "old actual Controller/Gate observation rejects forced second crossing",
+      "candidate same operation succeeds and original advancing clock restored",
+      "stale rejected after scope",
+      "expired rejected after scope",
+      "future rejected after scope",
+      "excessiveTTL rejected after scope",
+      "exception restores clock and leaves Controller snapshot unchanged"
+    ],
+    "probeCount": 7,
+    "countNotAdditiveCoverage": true
+  },
+  "plane": "Actual Controller and actual unwrapped LinuxGate.observe; kernel fence stubbed. No network namespace or real packets in this review.",
+  "limits": [
+    "Actual Linux26 packet suite must pass new exacthead CI",
+    "No actual satellite/provider/product identity/billing/device/fullOS/P02 acceptance",
+    "Original source22 remain protected; this is one additional test fixture source"
+  ],
+  "operations": {
+    "sourceEdits": 0,
+    "deviceOperations": 0,
+    "realProviderCalls": 0,
+    "bulk616": "HOLD"
+  },
+  "next": "Git publishes corrected newhead/manifest plus Web service-index repair; Root checks newhead integration metadata and exacthead Linux/allCI before normalmain/same-mergeSHA CI"
+}
