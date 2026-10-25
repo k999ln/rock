@@ -10200,7 +10200,7 @@
     "supplementPR": 218,
     "supplementMainMerged": false,
     "scope": "PR216/main d222 repair root^7.30.1 lock7.30.1 and Mini^8.12.2 lock8.12.3 adopted unchanged; six GitHub undici alerts fixed. PR218 adds SRI regression and independent evidence. Otherroot10/Mini2 audit findings and zod bot failure separate.",
-    "next": "PR218 supplemental integration is separate; refer to its current head checks after this result-only metadata refresh. zod/other audit findings unresolved, public/deployment/616 HELD.",
+    "next": "Complete latest-main synchronized head review/CI, then Git担当 normal main merge and mergeSHA CI; reflect current state without rewriting historical receipts. Public/deployment/616 HELD.",
     "repairMainCI": {
       "sha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
       "productSuccess": 7,
@@ -10209,6 +10209,15 @@
       "failurePackage": "zod",
       "allChecksSuccess": false
     },
-    "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8"
+    "latestMainAtFreeze": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "integrationRequest": {
+      "authorized": true,
+      "sourceUserMessage": "01a172a8-5160-7502-9739-2d6c0f4d2321",
+      "syncedMain": "ee9b88010c4ccb20be1db46177e3805380995c4b",
+      "syncCommit": "9f221f75aecd51ebd5255fa603cfc58c041f0ec5",
+      "evidence": "docs/evidence/development-execution/undici-pr218-main-integration.json",
+      "state": "latest_main_synced_final_review_ci_pending",
+      "mainMerged": false
+    }
   }
 }
