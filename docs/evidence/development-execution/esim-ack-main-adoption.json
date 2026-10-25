@@ -91,9 +91,11 @@
     "fullVerifyLogSha256": "65de7998b8b234afc6e50e8108816999bf47b8e75ddc340e4946588e9f30d021"
   },
   "latestMainSynchronization": {
-    "baseMain": "41ee45d7fce8390b27c59110cc282f695f898122",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
     "normalMerge": true,
-    "pixelWalletMiniHostAndMiniLinuxPreserved": true,
-    "uiSourceHashesUnchanged": true
+    "pixelCurrentAcceptanceAndWalletMiniPreserved": true,
+    "uiSourceFourUnchanged": true,
+    "fixtureTestOnlyException": "tests/wallet-workspace-recovery.test.mjs",
+    "fixtureEvidence": "docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json"
   }
 }

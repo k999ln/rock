@@ -48,9 +48,11 @@
   "scope": "Separate bounded display commit paired with eSIM UI for CI only; no Pixel/Linux changes. Receipt capture-time pending retained; current scoped evidence here.",
   "next": "Targeted19/type/lint, metadata review and final-head all CI; normal merge and merge-SHA CI.",
   "latestMainSynchronization": {
-    "baseMain": "41ee45d7fce8390b27c59110cc282f695f898122",
+    "baseMain": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
     "normalMerge": true,
-    "pixelWalletMiniHostAndMiniLinuxPreserved": true,
-    "uiSourceHashesUnchanged": true
+    "pixelCurrentAcceptanceAndWalletMiniPreserved": true,
+    "uiSourceFourUnchanged": true,
+    "fixtureTestOnlyException": "tests/wallet-workspace-recovery.test.mjs",
+    "fixtureEvidence": "docs/evidence/development-execution/wallet-ui-deferred-get-fixture.json"
   }
 }

@@ -10017,15 +10017,15 @@
     "sourceMacSkips": 3,
     "independentPass": 80,
     "independentLinuxSkip": 1,
-    "metadataReviewPending": true,
-    "finalHeadCIPending": true,
-    "mainMerged": false,
+    "metadataReviewPending": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
     "physicalAccepted": false,
     "p02Complete": false,
     "wholeOS01Accepted": false,
     "productionDeployment": false,
     "guardRaceFix": {
-      "status": "host_verified_new_head_ci_pending",
+      "status": "independent_source_and_final_head_ci_pass_main_integrated_physical_unverified",
       "oldHead": "06dac1bb4ffa84badfe57bdfac8f81b204bae0d5",
       "reason": "CodeQL High metadata lstat/read race; host counterexample confirmed",
       "evidence": "docs/evidence/development-execution/pixel-update-guard-toctou-fix.json",
@@ -10041,7 +10041,14 @@
       "currentGuardPhysicalAccepted": false
     },
     "originalSevenSourcePreserved": true,
-    "guardTwoMatchAuthorCommit": "e5ba85214b03e9bc408b9efcebcc3d491cdf25a5"
+    "guardTwoMatchAuthorCommit": "e5ba85214b03e9bc408b9efcebcc3d491cdf25a5",
+    "mainMergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "acceptedHead": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+    "headSameShaCISuccess": 8,
+    "mainProductSameShaCISuccess": 7,
+    "mainAllChecksSuccess": false,
+    "mainDependabotFailure": 1,
+    "mergeEvidence": "docs/evidence/development-execution/pixel-cache-main-merge.json"
   },
   "esimAcknowledgementMainAdoption": {
     "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
