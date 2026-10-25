@@ -1,3 +1,7 @@
+## PR207統合読戻しとWALLET-02 process強制終了復旧の着手（2026-10-25）
+
+PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。次はexactbranch Git保存/CI。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。
+
 ## Pro原本exportから既存私有archiveへの入口候補（2026-10-25 / G04）
 
 着手: 最新mainb1b0/PR206を基点にPRO-01-ARCHIVE-ENTRYの検収済み3source/testを同hash採用。主担当10/source05、既存B05/WEB13/G04。判断: 元receipt3cebはportableで同bytes保持、Root独立review6883・localChrome UI94c0は要約/hashだけ採用。既存13archive/storeと183保護pathを保持し、自動転送・権限・schema/鍵・課金を追加しない。検証済み履歴: 関連40・独立5群、Chrome1512/390 overflow0/preview/cancel。初回preview startup失敗は維持し、成功へ換算しない。次: 統合対象試験/project:update/design:check/scannerとcanary、DraftPR exactpayload読戻し、最終head Linux actualverify/CI、独立metadata検収。merge/公開先実click/認証済server保存/native/配備/wholePRO01は未受入。11lane/95unit/42成果の有限要約をmain入口へ接続し、Root旧RQ49/165taskとmainRQ50/393taskを区別。Rootregistry非操作、残616公開保留。根拠 docs/evidence/development-execution/pro-archive-entry-main-adoption.json。

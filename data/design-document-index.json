@@ -3099,7 +3099,18 @@
     "mainMerged": true,
     "wholeWallet02Accepted": false,
     "productionFinanceAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "processCrashFollowup": {
+      "tests": [
+        "tests/billing-worker.test.mjs",
+        "tests/fixtures/billing-test-d1.mjs",
+        "tests/fixtures/billing-process-crash-child.mjs",
+        "tests/billing-process-recovery.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/wallet-process-recovery.json",
+      "scope": "POSIX process SIGKILL host fixture only; production runtime and migrations unchanged",
+      "mainMerged": false
+    }
   },
   "proOriginalArchiveEntry": {
     "authority": "docs/rockstaros-complete-design.md#pro-original-archive-entry",
@@ -3115,9 +3126,10 @@
     "reviewSummary": "docs/evidence/development-execution/pro-archive-entry-main-review-summary.json",
     "explicitManualHandoffOnly": true,
     "existingArchiveAuthStoreCryptoUnchanged": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholePRO01Accepted": false,
     "authenticatedRealAccountBrowserAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "mergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
   }
 }

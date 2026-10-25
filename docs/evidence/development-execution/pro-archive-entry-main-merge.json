@@ -1,0 +1,66 @@
+{
+  "schema": "rockstaros.pro-archive-entry.main-merge/1",
+  "recordedAt": "2026-10-25T07:02:03.485108+00:00",
+  "pr": 207,
+  "state": "closed",
+  "merged": true,
+  "head": "bfb3e1bf789cb548acc6715805749ae5e319a5dc",
+  "mergeSha": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "mergedAt": "2026-10-25T06:15:25Z",
+  "currentMain": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+  "checks": [
+    {
+      "name": "SPIDER / secrets",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457176/job/121094222319"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457067/job/121094222081"
+    },
+    {
+      "name": "verify",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457070/job/121094222076"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457086/job/121094221992"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457067/job/121094221902"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "head": "0d72671739a8bdd3969b539c5f09ef54a90e1bea",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40168457086/job/121094221846"
+    }
+  ],
+  "status": "MAIN_MERGED_SAME_SHA_CI_PASS",
+  "independentMetadataReviewSha256": "1940ac3b66bd019b0b493fe0b1b8b79d7722e964a905aba7548631dd1609f918",
+  "method": "Direct GitHub readback; existing ordinary merge has parents b1b0ca41 and accepted bfb3e1bf; no duplicate merge performed.",
+  "acceptedScope": "PR207 exact21path; three entry source/test files unchanged from source review. No new archive authentication or runtime acceptance.",
+  "sourceReviewSha256": "688377b501423206d871c8c914d4f8b5c6778cc36bf2d5c486a8747b976dfe8d",
+  "wholePRO01Accepted": false,
+  "authenticatedServerArchiveSaveAccepted": false,
+  "publicDeployment": false,
+  "nativeAccepted": false,
+  "remaining616PublicExport": "HELD",
+  "captureTimePendingFlagsInOriginalReceiptsPreserved": true
+}

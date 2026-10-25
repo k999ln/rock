@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "recordedAt": "2026-10-25T07:03:34.137467+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -661,15 +661,15 @@
     {
       "order": 0,
       "unit": "PRO-01",
-      "state": "explicit_archive_entry_candidate_source_review_and_local_UI_pass",
-      "scope": "Draft PR exact payload readback, final-head actual Linux verify/all checks and independent metadata review before any merge.",
+      "state": "PR207_main_integrated_entry_only",
+      "scope": "Ordinary merge0d726717 and6 sameSHA CI pass; real archive save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
       "order": 0,
       "unit": "WALLET-02",
-      "state": "PR206_main_integrated_SQLite_test_only_remaining_crash_and_production_gates",
-      "scope": "PR206 actual merge/head CI complete; no whole Wallet, real funds, process-kill or Cloudflare concurrency acceptance.",
+      "state": "process_crash_fixture_independent_host_verify_pass_save_next",
+      "scope": "Source4 and metadata independently reviewed, host36 and fullverify pass; next exactbranch Git save/CI. No runtime price/Provider/public changes.",
       "wholeUnitAccepted": false
     },
     {
@@ -717,8 +717,8 @@
     {
       "order": 1,
       "unit": "PRO-01",
-      "state": "limited_archive_PR199_main_integrated",
-      "scope": "Owner encrypted original archive only; native/fullmigration/browser account acceptance remains open",
+      "state": "PR207_main_integrated_entry_only",
+      "scope": "Ordinary merge0d726717 and6 sameSHA CI pass; real archive save/public/native remain separate.",
       "wholeUnitAccepted": false
     },
     {
@@ -768,5 +768,6 @@
     "wholeUnitAccepted": false,
     "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
   },
-  "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json"
+  "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
+  "latestProEntryMergeEvidence": "docs/evidence/development-execution/pro-archive-entry-main-merge.json"
 }
