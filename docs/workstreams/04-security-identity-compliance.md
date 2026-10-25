@@ -93,6 +93,8 @@ Dependabot #26のsharp／librsvg修正はrootのminiflare overrideと同梱nativ
 
 ## SDK依存の監査同期（SYS15）
 
+PR209 main統合8f646ff3のDependabot更新失敗はroot overrideのundici7.29.1固定による。同major修正版を許容する^7.30.1とlock7.30.1へ更新。Mini側は^8.12.2/lock8.12.3で同じundiciの別3alertを修正し、全consumerの解決先・既存TLS設定保持・全verify・新HEAD/main統合SHAのCIを別々に検証する。[修正と検証記録](../evidence/undici-security-constraint.json)。旧失敗、他依存の監査指摘、法的clearance・実機・公開gateは別扱い。
+
 SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。
 
 2026-10-07 cycle77: PR #89へmain `0455499d` の文書整理を反映し、project.mdの競合を両側の記録を残して解消。SDK lockと監査一覧の既存修正は同一byte、release回帰35/35とrelease／inventory checkが合格。新しいSHAの全体CI・SPIDERは後続確認。詳細は同じ検証記録のlatestMainRefreshへ保存する。

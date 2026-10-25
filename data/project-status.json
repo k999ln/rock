@@ -10070,5 +10070,38 @@
     "mainMerged": false,
     "productionBilling": false,
     "publicDeployment": false
+  },
+  "undiciSecurityConstraint": {
+    "taskIds": [
+      "SYS15",
+      "G04"
+    ],
+    "primaryWorkstream": "04-security-identity-compliance",
+    "responsibility": "ROCK",
+    "status": "host_verified_ci_pending",
+    "failedMergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "baseMain": "41ee45d7fce8390b27c59110cc282f695f898122",
+    "overrideBefore": "7.29.1",
+    "overrideAfter": "^7.30.1",
+    "newHeadCI": "pending",
+    "mainMergeCI": "pending",
+    "physicalOperations": false,
+    "additionalInference": false,
+    "lockedVersion": "7.30.1",
+    "evidence": "docs/evidence/undici-security-constraint.json",
+    "targetedTests": {
+      "pass": 29,
+      "fail": 0,
+      "skip": 0
+    },
+    "oldConstraintRegression": "1 expected failure",
+    "auditUndiciFindings": 0,
+    "otherAuditFindings": 10,
+    "miniOverride": "^8.12.2",
+    "miniLockedVersion": "8.12.3",
+    "fullVerify": "exit0_root2942_pass2939_fail0_skip3_build_and_api_pass",
+    "miniAuditUndiciFindings": 0,
+    "miniOtherAuditFindings": 2,
+    "latestMainSynchronization": "2a9828b2879904d3aeb28bc6919132b70c49f3cb"
   }
 }

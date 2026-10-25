@@ -1,0 +1,159 @@
+{
+  "schema": "rockstaros.undici-security-constraint/1",
+  "recordedAt": "2026-10-25T09:36:13.580782+00:00",
+  "taskIds": [
+    "SYS15",
+    "G04"
+  ],
+  "primaryWorkstream": "04-security-identity-compliance",
+  "responsibility": "ROCK",
+  "status": "HOST_VERIFIED_NEW_HEAD_AND_MAIN_CI_PENDING",
+  "baseMain": "41ee45d7fce8390b27c59110cc282f695f898122",
+  "historicalFailure": {
+    "pr": 209,
+    "mergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "checkRun": 121121795935,
+    "url": "https://github.com/k999ln/rock/actions/runs/40177675682/job/121121795935",
+    "error": "security_update_not_possible",
+    "latestResolvable": "7.29.1",
+    "lowestNonVulnerable": "7.30.1"
+  },
+  "cause": "Root overrides.undici pinned7.29.1; provider-utils5.0.45 permits^7.29.0. Cloudflare exact constraints remain overridden by the shared root override.",
+  "change": {
+    "overrideBefore": "7.29.1",
+    "overrideAfter": "^7.30.1",
+    "lockedBefore": "7.29.1",
+    "lockedAfter": "7.30.1",
+    "onlyChangedLockPackage": "node_modules/undici",
+    "aiSdkUpdated": false,
+    "consumerCount": 6,
+    "majorUpgrade": false,
+    "mini": {
+      "overrideBefore": null,
+      "overrideAfter": "^8.12.2",
+      "lockedBefore": "8.11.2",
+      "lockedAfter": "8.12.3",
+      "onlyChangedLockPackage": "node_modules/undici",
+      "consumer": "unifont@0.7.5",
+      "astroUpdated": false
+    }
+  },
+  "upstreamEvidence": [
+    "https://github.com/nodejs/undici/releases/tag/v7.30.1",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c",
+    "https://github.com/nodejs/undici/security/advisories/GHSA-4w7w-5xrc-9h26"
+  ],
+  "validation": {
+    "cleanNpmCi": "root and mini site passed",
+    "targeted": {
+      "tests": 29,
+      "pass": 29,
+      "fail": 0,
+      "skip": 0,
+      "log": {
+        "sha256": "a85b7cdeb9a2109e39e3e519068ebe67c160d1db21ea7f8920418fc160996769",
+        "bytes": 2538
+      }
+    },
+    "oldConstraintRegression": {
+      "exitCode": 1,
+      "tests": 1,
+      "fail": 1,
+      "reason": "old override rejects repaired7.30.1",
+      "log": {
+        "sha256": "d43b4bd05ba7e5416ff86b73643f32cedc4cb6d666e5bbfe911b2e823f636667",
+        "bytes": 1077
+      }
+    },
+    "audit": {
+      "undiciFindings": 0,
+      "otherFindings": 10,
+      "otherNames": [
+        "@cloudflare/vitest-plugin",
+        "@vitest/mocker",
+        "body-parser",
+        "fast-uri",
+        "hono",
+        "ip-address",
+        "shadcn",
+        "vite",
+        "vitest",
+        "zod"
+      ],
+      "log": {
+        "sha256": "c1ed1e7b4f799ad8e9734b0c758d1334a10e7bfa7451576e51b6a4776b87219f",
+        "bytes": 12553
+      },
+      "scope": "root lockfile;10 existing non-undici findings"
+    },
+    "licenseInventory": "lock hash refreshed; legal clearance unchanged",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootTests": 2942,
+      "pass": 2939,
+      "fail": 0,
+      "skip": 3,
+      "scope": "Mac host, both root and Mini undici updates, build/API included",
+      "logSha256": "cc7c136bd4e7a767ee230e8c4ea1c1b76c1203934d952363270c1473d91c233f"
+    },
+    "newHeadCI": "pending",
+    "mainMergeCI": "pending",
+    "rootOnlyFullVerify": {
+      "exitCode": 0,
+      "tests": 2940,
+      "pass": 2937,
+      "fail": 0,
+      "skip": 3,
+      "scope": "Before Mini update; final candidate reverified separately",
+      "log": {
+        "sha256": "ced63a8aeb0eac8058c066da8a8c2b809e3670e2da5c559422f9acce42c0ab38",
+        "bytes": 334478
+      }
+    },
+    "miniAudit": {
+      "undiciFindings": 0,
+      "otherFindings": 2,
+      "otherNames": [
+        "vite",
+        "zod"
+      ],
+      "log": {
+        "sha256": "82b1009124be97af2811856f987cd42325ad8a89de131b3d680ffe20f0f7e66f",
+        "bytes": 4435
+      }
+    }
+  },
+  "boundaries": {
+    "deviceOperations": false,
+    "additionalInference": false,
+    "productionDeployment": false,
+    "allRepositoryVulnerabilitiesFixed": false,
+    "rootExecutionRegistryReadOrWritten": false
+  },
+  "next": "Complete full verify, save PR, read back all CI at its exact head, normal main merge and check all CI at the merge SHA. Preserve old8f failure as history.",
+  "dependabotAlertsBefore": {
+    "root": [
+      48,
+      49,
+      50
+    ],
+    "mini": [
+      55,
+      56,
+      57
+    ]
+  },
+  "latestMainSynchronization": {
+    "base": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "changes": "Accepted eSIM/Eve UI and test fixture updates from PR213; all incoming keys and runtime preserved.",
+    "dependencyAndTestBytesUnchanged": true,
+    "finalHeadFullVerify": "pending exact-head CI",
+    "localFullVerifyScope": "Previous candidate before incoming UI change; no reuse as final exact-head full-verify result"
+  },
+  "priorMainSynchronization": {
+    "base": "dc2b992f1e8b341e12a899661a5aa5e6018fe4b6",
+    "changes": "Pixel status/documentation only; all new main records preserved, own dependency note added.",
+    "dependencyAndTestBytesUnchanged": true
+  }
+}
