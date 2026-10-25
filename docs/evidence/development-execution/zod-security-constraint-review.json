@@ -1,0 +1,519 @@
+{
+  "schema": "rockstaros.zod-security-constraint.review/1",
+  "recordedAt": "2026-10-25T11:15:29.122127+00:00",
+  "reviewerRole": "implementation author; dependency compatibility tests and exact-SHA CI readback, not an independent source security audit",
+  "verdict": "PASS_SCOPED_ZOD_AND_EXACT_SHA_CI",
+  "status": "PR225_MAIN_MERGED_ALL_OBSERVED_CI_SUCCESS_ZOD_ALERTS_FIXED",
+  "taskIds": [
+    "SYS15",
+    "G04"
+  ],
+  "mustFix": [],
+  "mustFixCount": 0,
+  "pr": {
+    "pr": 225,
+    "url": "https://github.com/k999ln/rock/pull/225",
+    "head": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+    "main": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+    "headTree": "8711e49fe6602bdcc05221933760c679ba26aec8",
+    "mergeTree": "8711e49fe6602bdcc05221933760c679ba26aec8",
+    "mergedAt": "2026-10-25T11:08:50Z"
+  },
+  "cause": {
+    "previousFailedMain": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "previousFailedCheck": 121137173178,
+    "constraints": [
+      "shadcn4.18.0 zod^3.24.1",
+      "Cloudflare vitest-plugin1.3.4 zod4.4.3",
+      "Mini lock zod4.6.5"
+    ],
+    "advisory": "GHSA-mrhx-c7xc-m3w5"
+  },
+  "fix": {
+    "shadcn": "4.22.1 upstream Zod4 migration",
+    "rootAndMiniOverride": "^4.6.6",
+    "rootAndMiniLock": "4.6.7",
+    "rootLockChangedEntries": 29,
+    "miniLockChangedEntries": 1,
+    "applicationSourceChanged": false,
+    "existingAiCloudflareAstroUndiciVersionsUnchanged": true,
+    "licenseInventoryUpdated": true,
+    "legalClearanceUnchanged": true
+  },
+  "upstream": [
+    "https://github.com/shadcn-ui/ui/releases/tag/shadcn%404.22.0",
+    "https://github.com/colinhacks/zod/pull/6652"
+  ],
+  "compatibility": [
+    "Every installed consumer resolves patched Zod4; declared ranges accept it except the deliberate same-major Cloudflare exact-pin override",
+    "Existing components.json and registry schema positive/negative fixtures pass",
+    "AI SDK schema adapter supports zod/v3 and Zod4 without model calls",
+    "Bounded array/max,length,set,map reject oversized input before element validation, sync/async",
+    "Existing Cloudflare Worker compatibility14/14; shadcn CLI4.22.1"
+  ],
+  "localVerification": {
+    "targeted": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skip": 0
+    },
+    "oldDependenciesCounterexample": {
+      "tests": 5,
+      "pass": 2,
+      "fail": 3,
+      "oversizedArrayElementVisits": 6,
+      "expected": 0
+    },
+    "repairTargeted": {
+      "tests": 89,
+      "pass": 89,
+      "fail": 0,
+      "skip": 0
+    },
+    "initialFullVerify": {
+      "exitCode": 1,
+      "tests": 2991,
+      "pass": 2986,
+      "fail": 2,
+      "skip": 3,
+      "failures": [
+        "fixed inventory expected-count mismatch",
+        "unchanged localhost5second timeout; targeted retry passes"
+      ]
+    },
+    "fullVerifyRetry": {
+      "sha": "57166ec04b0f78a99768eb861008a8c37a621aac",
+      "exitCode": 0,
+      "tests": 2991,
+      "pass": 2988,
+      "fail": 0,
+      "skip": 3,
+      "buildAndApi": "passed"
+    },
+    "mainSynchronization": {
+      "main": "f59e21b362eaa16b5ad62a7709e22c3aebfe1561",
+      "method": "normal merge",
+      "incoming": "eSIM acceptance metadata4files",
+      "dependencyAndTestBytesUnchanged": true,
+      "projectCheck": "passed"
+    }
+  },
+  "headCI": {
+    "sha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+    "checks": [
+      {
+        "id": 121150726873,
+        "name": "CodeQL",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/runs/121150726873"
+      },
+      {
+        "id": 121150418126,
+        "name": "verify",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149321/job/121150418126"
+      },
+      {
+        "id": 121150250883,
+        "name": "SPIDER / production web security measurement",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149324/job/121150250883"
+      },
+      {
+        "id": 121150250748,
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149325/job/121150250748"
+      },
+      {
+        "id": 121150250654,
+        "name": "SPIDER / repair regressions",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149324/job/121150250654"
+      },
+      {
+        "id": 121150250510,
+        "name": "SPIDER CodeQL (python)",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149325/job/121150250510"
+      },
+      {
+        "id": 121150250424,
+        "name": "public-fixture-tests",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149322/job/121150250424"
+      },
+      {
+        "id": 121150250339,
+        "name": "SPIDER / secrets",
+        "headSha": "dcf86f99ab8712d539c3ae9f8f4702a8edf3661e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187149319/job/121150250339"
+      }
+    ],
+    "success": 8,
+    "failure": 0,
+    "linuxVerify": {
+      "job": 121150418126,
+      "tests": 2991,
+      "pass": 2989,
+      "fail": 0,
+      "skip": 2,
+      "allSteps": "success"
+    },
+    "codeqlAggregate": "success",
+    "snapshot": {
+      "path": "local-evidence:zod-pr225-final-head-ci.json",
+      "sha256": "53f2e4f0b39518f53ab1ff1f00086eb91dab4775c64fdf0b58aa231c654eedae",
+      "bytes": 50447
+    }
+  },
+  "mainCI": {
+    "sha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+    "checks": [
+      {
+        "id": 121151764989,
+        "name": "Dependabot",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187655345/job/121151764989"
+      },
+      {
+        "id": 121151764302,
+        "name": "Dependabot",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187655297/job/121151764302"
+      },
+      {
+        "id": 121151731045,
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187645008/job/121151731045"
+      },
+      {
+        "id": 121151730917,
+        "name": "SPIDER / repair regressions",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187644989/job/121151730917"
+      },
+      {
+        "id": 121151730862,
+        "name": "SPIDER CodeQL (python)",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187645008/job/121151730862"
+      },
+      {
+        "id": 121151730835,
+        "name": "public-fixture-tests",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187644990/job/121151730835"
+      },
+      {
+        "id": 121151730817,
+        "name": "SPIDER / production web security measurement",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187644989/job/121151730817"
+      },
+      {
+        "id": 121151730738,
+        "name": "verify",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187645020/job/121151730738"
+      },
+      {
+        "id": 121151730674,
+        "name": "SPIDER / secrets",
+        "headSha": "f4ed492c9c4ae06c4c94c5c36d2f692315cae622",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40187644988/job/121151730674"
+      }
+    ],
+    "success": 9,
+    "failure": 0,
+    "linuxVerify": {
+      "job": 121151730738,
+      "tests": 2991,
+      "pass": 2989,
+      "fail": 0,
+      "skip": 2,
+      "allSteps": "success"
+    },
+    "codeql": "javascript-typescript and python success; no separate aggregate check listed on main",
+    "snapshot": {
+      "path": "local-evidence:zod-pr225-main-ci-final.json",
+      "sha256": "17c34f87f548576aa30da8753721c76a50d5984c8f47d1035fa031327bc6ea0c",
+      "bytes": 149142
+    }
+  },
+  "zodAlerts": [
+    {
+      "dependency": {
+        "manifest_path": "sites/avocado-mini/package-lock.json",
+        "package": {
+          "ecosystem": "npm",
+          "name": "zod"
+        },
+        "relationship": "transitive",
+        "scope": "runtime",
+        "version_requirement": "4.6.5"
+      },
+      "dismissed_at": null,
+      "fixed_at": "2026-10-25T11:08:56Z",
+      "number": 54,
+      "security_vulnerability": {
+        "first_patched_version": {
+          "identifier": "4.6.6"
+        },
+        "package": {
+          "ecosystem": "npm",
+          "name": "zod"
+        },
+        "severity": "high",
+        "vulnerable_version_range": "< 4.6.6"
+      },
+      "state": "fixed"
+    },
+    {
+      "dependency": {
+        "manifest_path": "package-lock.json",
+        "package": {
+          "ecosystem": "npm",
+          "name": "zod"
+        },
+        "relationship": "transitive",
+        "scope": "runtime",
+        "version_requirement": "3.25.76"
+      },
+      "dismissed_at": null,
+      "fixed_at": "2026-10-25T11:08:56Z",
+      "number": 42,
+      "security_vulnerability": {
+        "first_patched_version": {
+          "identifier": "4.6.6"
+        },
+        "package": {
+          "ecosystem": "npm",
+          "name": "zod"
+        },
+        "severity": "high",
+        "vulnerable_version_range": "< 4.6.6"
+      },
+      "state": "fixed"
+    }
+  ],
+  "npmAudit": {
+    "rootZod": 0,
+    "miniZod": 0,
+    "rootOtherFindings": 7,
+    "miniOtherFindings": 1
+  },
+  "history": {
+    "previousHead": "57166ec04b0f78a99768eb861008a8c37a621aac",
+    "previousHeadLinuxAttempt1": {
+      "job": 121149331414,
+      "failure": "unchanged Python observer finish0.21340924s exceeded0.2s; source and assertion unchanged; retried then final new-head CI passed"
+    },
+    "oldMainFailurePreserved": true,
+    "captureTimePendingEvidencePreserved": true
+  },
+  "evidence": [
+    {
+      "path": "local-evidence:zod-targeted.log",
+      "sha256": "5c0c27cb109da1fea66c4df3dec87a7ab33234fdfbd42d64b10f1d510812d2be",
+      "bytes": 3026
+    },
+    {
+      "path": "local-evidence:zod-before-regression.log",
+      "sha256": "c8d28fe78b2fadc5951041eabcd906f4d870e4728f3e22d21b9f440a2b2c6aeb",
+      "bytes": 3126
+    },
+    {
+      "path": "local-evidence:zod-repair-targeted.log",
+      "sha256": "5691340a5fb7e04765855d96a39444e2c73a78d7d21198a8d481ef638731b155",
+      "bytes": 7900
+    },
+    {
+      "path": "local-evidence:zod-full-verify.log",
+      "sha256": "77c6cd70e8f00bdd6a3dff2437186c20340c5427e2992435c7c4c6533406dffb",
+      "bytes": 313620
+    },
+    {
+      "path": "local-evidence:zod-full-verify-retry.log",
+      "sha256": "4e1ea3209aca574aa776845a6ab37ffe144b8f9c527c80262b02aa0cb0e84ea8",
+      "bytes": 340451
+    },
+    {
+      "path": "local-evidence:zod-head571-linux-verify.log",
+      "sha256": "d7e649568f2fac7205abb2c6b5ed38799e32e42a8eefef438193b7a6cd2cb69f",
+      "bytes": 27454
+    },
+    {
+      "path": "local-evidence:zod-final-head-linux-verify.log",
+      "sha256": "34ec40132a4ae3aec0c2220e91d26f36ba726ebb64a9e9ee101948963f95c07f",
+      "bytes": 585378
+    },
+    {
+      "path": "local-evidence:zod-main-linux-verify.log",
+      "sha256": "adbebb55285aeef6a64711a6469d8b4f0f49f716cc6a8748dd1408fb3adee5a2",
+      "bytes": 585254
+    },
+    {
+      "path": "local-evidence:zod-pr225-final-files.json",
+      "sha256": "6b34f55861889545d9e0476fcfbb55763401b939f3579e5d52f97e5f8d94966a",
+      "bytes": 1821
+    },
+    {
+      "path": "local-evidence:zod-audit-root.json",
+      "sha256": "d402124c444c8232a2f1bb8a3f2dcadc8eeecda542595aa7cf6aca94a94ccb01",
+      "bytes": 10735
+    },
+    {
+      "path": "local-evidence:zod-audit-mini.json",
+      "sha256": "875fa6f9f276db00b4a0a7b26f382d506dd3ac67c11fe78d8f70574b7ebd3c57",
+      "bytes": 3676
+    },
+    {
+      "path": "local-evidence:zod-alerts-before.json",
+      "sha256": "30c34364e9ac88d586e29fed79b678d9cad0a073e492dcb46ba2c96392f866fd",
+      "bytes": 4853
+    },
+    {
+      "path": "local-evidence:zod-alerts-after.json",
+      "sha256": "4535411c051bf882bbaa36a4dce85c180429c6aa17c3782923b6b71a3801ded0",
+      "bytes": 885
+    }
+  ],
+  "remoteFiles": [
+    {
+      "path": "README.md",
+      "sha": "80edcbb62b7ea9f662536d90d558b02c6297be0f",
+      "status": "modified",
+      "changes": 2
+    },
+    {
+      "path": "data/project-status.json",
+      "sha": "bc89001f927c14ef7e2591b88ac593fe2b0e13ec",
+      "status": "modified",
+      "changes": 30
+    },
+    {
+      "path": "data/web-third-party-license-audit.json",
+      "sha": "7689d6255669af663cdfc18241fa5b5e896ecf4b",
+      "status": "modified",
+      "changes": 33
+    },
+    {
+      "path": "docs/evidence/zod-security-constraint.json",
+      "sha": "6b4195b232b019cdedf383fe33f1b2ff3b594c2e",
+      "status": "added",
+      "changes": 258
+    },
+    {
+      "path": "docs/workstreams/04-security-identity-compliance.md",
+      "sha": "42e46d2411545865fb0e4557e4dc95059e1976b8",
+      "status": "modified",
+      "changes": 4
+    },
+    {
+      "path": "package-lock.json",
+      "sha": "5080a501dee3acd8fed493b35987854763ddab47",
+      "status": "modified",
+      "changes": 324
+    },
+    {
+      "path": "package.json",
+      "sha": "ad307ccefb04dcfe56ae4c417d39d5e6ef7e2d3e",
+      "status": "modified",
+      "changes": 5
+    },
+    {
+      "path": "project.md",
+      "sha": "a7601bf81f090fc7ee7841598f9a2d7a9822a54c",
+      "status": "modified",
+      "changes": 4
+    },
+    {
+      "path": "sites/avocado-mini/package-lock.json",
+      "sha": "290aad5a2f02c95d3fed5afcb36de4bcb1c7b12f",
+      "status": "modified",
+      "changes": 6
+    },
+    {
+      "path": "sites/avocado-mini/package.json",
+      "sha": "096a0cdab510f1ce5d12822a19faa3c5b13d7aa3",
+      "status": "modified",
+      "changes": 3
+    },
+    {
+      "path": "tests/release-readiness.test.mjs",
+      "sha": "41aeb681b5e84fc1a4311a53c78eeaaf52019299",
+      "status": "modified",
+      "changes": 6
+    },
+    {
+      "path": "tests/zod-dependency-security.test.mjs",
+      "sha": "bc77b1fb75f976b54345c9ddf7ad2fafb6dbd25b",
+      "status": "added",
+      "changes": 84
+    }
+  ],
+  "operations": {
+    "physicalOperations": false,
+    "additionalModelInference": false,
+    "subagents": false,
+    "otherChatMessages": false,
+    "deployment": false,
+    "alertDismissal": false,
+    "rootGitIndexTouched": false
+  },
+  "limits": [
+    "Dependency repair and observed exact-head/main CI only; other dependency audit findings remain",
+    "Upstream early rejection protects bounded collections; no claim that unbounded schemas are resource-limited",
+    "No device, P02, fullOS, production, general-launch or whole-unit acceptance"
+  ],
+  "sourceReview": {
+    "sha256": "8cb231a702741f5e51a7955a7c3f7f7c9b44ea9f5cd4413fc0a6001a726f23f0",
+    "bytes": 16178,
+    "sourceBasename": "zod-security-constraint-review.json",
+    "transformation": "Private absolute local evidence paths replaced with local-evidence:<basename>; substantive verdicts, hashes, CI URLs and history preserved. Raw logs remain outside Git."
+  },
+  "gitSavePreparation": {
+    "baseMain": "7edbb9be6f6697fe85a5c4d7c2a0c1fed70b8839",
+    "scope": "PR225 completed review and current status synchronization only",
+    "runtimeAndDependencyChanges": false,
+    "newMetadataHeadCI": "pending at commit capture-time; read back separately",
+    "newMetadataMergeCI": "pending at commit capture-time; read back separately"
+  }
+}
