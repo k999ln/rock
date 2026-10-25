@@ -10104,8 +10104,7 @@
     "integrationTimeActualHiddenTransitionTested": false,
     "actualHiddenAcceptanceScope": "Supplemental post-PR213 native Chrome visibility/read gating, synthetic fetch; scoped independent documentary review; no real hidden click or production acceptance.",
     "visibilityEvidence": "docs/evidence/development-execution/esim-natural-visibility-summary.json",
-    "visibilityIndependentReview": "docs/evidence/development-execution/esim-natural-visibility-review-summary.json",
-    "visibilityEvidenceMainIntegrated": false
+    "visibilityIndependentReview": "docs/evidence/development-execution/esim-natural-visibility-review-summary.json"
   },
   "eveRateUnitMainAdoption": {
     "evidence": "docs/evidence/development-execution/eve-rate-unit-main-adoption.json",
