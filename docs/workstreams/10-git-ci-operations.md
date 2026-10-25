@@ -96,7 +96,7 @@ CIの無期限待ちを防ぐため、遅延応答gateをrequest開始時に固�
 
 Source/最終metadata独立PASS、head3e全8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip、Python cache6/update23。cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。同FD限定読込でmetadata差替を拒否する。
 
-現在の次作業: undici更新不可はPR216/main d222でroot7.30.1／Mini8.12.3へ修正済み、対象警告6fixed。下記G04の追加回帰/独立証拠はPR218へ保存し、受入head0aa全7CI成功。補足main統合は今回の本人指示により準備中。別のzod自動更新失敗はG04 followup。旧8fの失敗履歴は維持。旧f3実機を新c43/P02/全OSへ転用せず、PR213/main2aのUI統合を保全し、undici修正とは別scope。PR213の実Provider/金融/物理は別gate。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
+現在の次作業: undici更新不可はPR216/main d222でroot7.30.1／Mini8.12.3へ修正済み、対象警告6fixed。下記G04の追加回帰/独立証拠はPR218へ保存し、受入head0aa全7CI成功。補足main統合は今回の本人指示により準備中。当時の別のzod自動更新失敗にはPR225/main f4ed492cで制約修正を採用し、同SHA CIは別確認する。旧8fの失敗履歴は維持。旧f3実機を新c43/P02/全OSへ転用せず、PR213/main2aのUI統合を保全し、undici修正とは別scope。PR213の実Provider/金融/物理は別gate。Gitの端末操作/追加推論0、Rootregistry非操作、616公開保留。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。[共通契約](../rockstaros-complete-design.md#pixel-cache-only-main-port)。
 
 原source段階の復元情報: base0d/source b1、元receipt2608/旧独立c9c795（後にHighが判明しguard独立948769へ更新）。[guard修正証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。当初のCI待ちは履歴であり現在は上記結果。
 
