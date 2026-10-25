@@ -908,6 +908,12 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
 
+### Miniカメラ追跡・ジェスチャー入力（2026-10-25）
+
+本人がカメラ追跡による動作/ジェスチャー機能を追加依頼。MAT15/M1のR5単体入力として、まず端末内の手指推定・選択/移動/回転/停止のpreviewを実装する。本人の反応を学ぶEveとの接続意図を保持し、好み推定を実行許可にしない。旧四方向/大型Full-scaleの完成や精密3D受入には転用しない。単体と表示4条件を維持、実カメラ・同一閉箱は未受入。テザリングPR229/231とは別branchで進める。
+
+検証完了: 14試験と独立5negative成功。停止競合・古いworker通知・期限後応答の3指摘を修正しmustFix0。合成canvasで実SDK推論・停止後track終了・外部通信0を独立確認。host全verifyは3024試験/3021pass/0fail/3skipで完走（他suite非加算）。初回OpenSSL版不一致と新test lint失敗は証拠に残し、環境指定/登録形式を修正。保存・CI・main採用は別段階。根拠 [検証記録](docs/evidence/development-execution/mini-gesture-input.json)。
+
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。当時の別枠Dependabot zod更新失敗は成功へ含めず履歴保持。後続PR225/main f4の修正と製品7/自動更新2成功は別証拠で確認済み。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。

@@ -1435,6 +1435,19 @@
         "initialUseCase": "si_messages_small_files",
         "document": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
         "physicalAccepted": false
+      },
+      "cameraGesturePreview": {
+        "documentation": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "implementation": [
+          "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+          "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+          "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js"
+        ],
+        "tests": [
+          "tests/avocado-mini-gesture.test.mjs"
+        ],
+        "scope": "local single-camera view-only proposals; not calibrated spatial acceptance or Eve preference inference",
+        "physicalAccepted": false
       }
     },
     {

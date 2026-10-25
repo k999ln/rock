@@ -1,0 +1,210 @@
+{
+  "schema": "mini-gesture-independent-review/1",
+  "reviewedAt": "2026-10-25T13:36:43.949490+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "branch": "codex/mini-gesture-input-20261025",
+  "baseHead": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+  "decision": "PASS_FOR_VIEW_ONLY_BROWSER_PROTOTYPE",
+  "mustFixCount": 0,
+  "openFindings": [],
+  "scope": "New Mini hand-tracking gesture slice; distinct from PR229/PR231 messaging and Pixel fixture reviews. Read-only source review with isolated independent tests.",
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/engine.mjs",
+      "sha256": "5c54d11a513360ab2adcd574c44dd8c5c7b78f19647dabbfcf2a9c544f195ddf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.mjs",
+      "sha256": "2dd18e708ce5fac0121e09a098a172612c3fd57a27e9fb3ffc2e7412d207b922"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/tracking-worker.js",
+      "sha256": "c6dc9e585b8d366e71f66a9a22871cca2c734a0bf211d30db99a06605b8470d1"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.mjs",
+      "sha256": "55af5a9c8a476fbb61d18f70c4dcab840540d880d13c05e9f7b8c85b3485b72d"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.html",
+      "sha256": "c161aa1126161efb531cba8fd70eac8af00802bbf8d883fc6a7cb583a4729d25"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/demo.css",
+      "sha256": "a877b23259c70a841f11eada3aff13f06bff797cf322bf4574d6e3f6c8e98e44"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/fixture.mjs",
+      "sha256": "1d8872f43ebc7d16dbb12d72dc001418b8dd87354b5666c2067ed291e0a6a154"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/serve.py",
+      "sha256": "6cdca8620fac47a5328428c32fcb6116bb5b279d51c23347187a4bba86165366"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+      "sha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package.json",
+      "sha256": "d240fea66caf9428b28d5889b437d1a31a0fd1bde324a50646b2cc18db1db901"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/package-lock.json",
+      "sha256": "648e617734ee1e3e16e7093981a693451cbf96702bd72060438a0c1dbae2596b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json",
+      "sha256": "94d1413760f4d8012e1330bb6805653acb08744e432f9d3a14136a0d696c92c5"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+      "sha256": "7619647549b3fbfdbf0f9d5e49f25ca537087d2ab2437f2ba826b62e309cad0f"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs",
+      "sha256": "4662cc5582a08d0641925cff3c2e1ca8d78cbec3eb143571adc7b6a1fc332b56"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/gesture/.gitignore",
+      "sha256": "8052962f44707f792fa4d0d647a74cb8e7b2fcb2dda463f0c40756cf9109b7f7"
+    },
+    {
+      "path": "tests/avocado-mini-gesture.test.mjs",
+      "sha256": "cc97f654d4346f9e8a6142c1753226b17a45f227ddc8ef42f6355d4a8a5cc1c3"
+    }
+  ],
+  "evidenceHashes": [
+    {
+      "path": "mini-gesture-negative.mjs",
+      "sha256": "fdf3432d5b914355fbedad40eceddf8b136633dcf775a99d9f6e659d61605a69"
+    },
+    {
+      "path": "mini-gesture-expiry-probe.mjs",
+      "sha256": "4fedcad17d3b5eb6348c5e34fc9c23f9b3ab72109c5eebbf48fc8a165af16350"
+    },
+    {
+      "path": "mini-gesture-final-negatives.mjs",
+      "sha256": "1a895a6ec40cc94253ebdb1dfb9d8de24be7fb94c57408284fb0259b241ea55d"
+    },
+    {
+      "path": "mini-gesture-final-negatives.log",
+      "sha256": "8d180feb0bc9086287f1c47ca1ebaebd722f4801fcbd6fa07286bcb3ea258e63"
+    },
+    {
+      "path": "mini-gesture-independent-final.log",
+      "sha256": "5c28ac0d7261b0bbf5b2c1b7a21f571132c6363521b8ddf0ef28553ddd20a22d"
+    },
+    {
+      "path": "mini-gesture-independent-browser.log",
+      "sha256": "9cee2fec303824c91b74e997ff85b7efb80780f255fbb7e08f0666806d90e44c"
+    },
+    {
+      "path": "mini-gesture-independent-server-readback.json",
+      "sha256": "e6704a109b01c1830960f081bfa8fc54ca89c347320847416d0d4d199bdc3595"
+    }
+  ],
+  "resolvedFindings": [
+    {
+      "id": "GESTURE-P1-PERMISSION-RACE",
+      "severity": "P1",
+      "reproducedBeforeFix": true,
+      "counterexample": "Resolve the camera permission promise, then stop two microtasks later. The fulfillment had passed its alive check, but its later await assignment stored the stream after stop. Session was idle with stops=0 and lateStreamStored=true.",
+      "fix": "Await into a local stream, recheck generation, stop that local stream on stale generation, and assign shared session state only while alive.",
+      "finalIndependentVerification": "Six microtask placements all close the track exactly once and leave stream/srcObject null."
+    },
+    {
+      "id": "GESTURE-P2-STALE-WORKER-ERROR",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "Save the running worker error handler, stop and restart the CameraSession, then invoke the old handler. It stopped the new session.",
+      "fix": "Bind the running error callback to alive(gen), matching the frame callback.",
+      "finalIndependentVerification": "Old error and frame callbacks cannot change the running new session, current video attachment or consumer frame count."
+    },
+    {
+      "id": "GESTURE-P2-EXPIRED-RESPONSE",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "With maxDurationMs=100, send at time 10 then deliver a worker result at time 100 before the next animation callback. The expired session stayed running and delivered one consumer update.",
+      "fix": "Validate response-time clock and session expiry before invoking the consumer.",
+      "finalIndependentVerification": "At/after expiry and nonfinite/regressed clocks, no consumer update occurs and capture is stopped."
+    }
+  ],
+  "independentExecutions": [
+    {
+      "command": "node --test tests/avocado-mini-gesture.test.mjs",
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 204.574333,
+      "log": "mini-gesture-independent-final.log",
+      "scope": "Final test bytes include void test declarations and const events lint fixes; assertions preserved."
+    },
+    {
+      "command": "node --test <temporary-evidence>/mini-gesture-final-negatives.mjs",
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 241.323291,
+      "log": "mini-gesture-final-negatives.log",
+      "scope": "Multiple permission microtask races, stale worker callbacks, response deadlines/clocks, late bitmap after restart, and untrusted metadata unable to grant authority."
+    },
+    {
+      "command": "PLAYWRIGHT_MODULE=<installed-playwright-module> node systems/rock-star-os/targets/avocado-mini/gesture/browser-smoke.cjs",
+      "exitCode": 0,
+      "log": "mini-gesture-independent-browser.log",
+      "scope": "Independent headless Chrome run with getUserMedia replaced before page execution by canvas.captureStream. No physical camera used. Synthetic gesture demo made zero camera calls. Model path completed two inference frames; all synthetic tracks ended on stop, video srcObject became null, no page errors or unexpected console errors, and zero non-loopback requests observed."
+    },
+    {
+      "command": "Read four served source files from http://127.0.0.1:8768 and compare bytes with reviewed tree",
+      "result": "All source hashes matched and server supplied self-only connect CSP, including worker response. Hashes still match final source."
+    },
+    {
+      "command": "git diff --check and git check-ignore for model/SDK installed files",
+      "result": "Whitespace check passed; generated model and node_modules are ignored."
+    }
+  ],
+  "dependencyVerification": {
+    "modelBytes": 7819105,
+    "modelManifestMatched": true,
+    "modelArtifact": [
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/gesture/runtime/models/hand_landmarker.task",
+        "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+      }
+    ],
+    "sdkVersion": "1.1.1",
+    "sdkLockIntegrity": "sha512-jwntgT5tzDrKOkqg6xNDNpRcTUnGvmylZE5DFnzPXossiWOIDdZX+C81LI75hlXhsG58YZW+lGzcmjH1qrQE/Q==",
+    "notes": "Pinned local SDK/model paths; no CDN fallback in source. Installer uses a fixed manifest URL, size/deadline bounds and SHA-256 verification before rename. No dependency install or model download performed by reviewer."
+  },
+  "officialSourcesRead": [
+    {
+      "url": "https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/web_js",
+      "scope": "VIDEO configuration, local model loading, HandLandmarker options and worker use align with the public API."
+    },
+    {
+      "url": "https://developers.google.com/edge/api/mediapipe/js/tasks-vision.handlandmarker",
+      "scope": "HandLandmarker API reference used for static interface review."
+    }
+  ],
+  "contractChecks": [
+    "Single-hand continuity, ambiguity/loss/out-of-frame rejection, ordered timestamps, scene cancellation, hysteresis and finite capture controls inspected and exercised by local tests.",
+    "Gesture proposals remain VIEW_ONLY with calibrated, physicalExecutionAllowed, approvalGranted and preferenceInferred all false. Model metadata cannot provide owner identity or execution authority.",
+    "Source has no raw-camera upload, persistent video/landmark history, biometric identification or preference-learning path. The tested document and worker CSP constrain external connections.",
+    "Demo checks current session identity before UI updates; constructor failure is caught. Worker closes transferred bitmaps, and stopped capture closes late untransferred bitmaps.",
+    "Mini standalone and four display requirements remain documented; the rectangular browser preview is explicitly a development fixture, not a new physical display design.",
+    "README reproduction steps and browser assertions reviewed. Existing R5 package originals were not edited by reviewer; no such modification appears in the inspected source scope."
+  ],
+  "limitations": [
+    "No physical camera, human hand recording, Mini hardware, camera permissions on a user device, 3D calibration, precision/full-space coverage, gesture accuracy, false activation rate, energy or thermal acceptance was performed.",
+    "Real-model smoke uses a blank synthetic canvas. It proves loading/inference/lifecycle behavior, not successful hand detection or useful real-camera accuracy.",
+    "Browser tests used an approved headless temporary browser against loopback only. Zero external requests is the observed tested path, supported by CSP; it is not an unrestricted proof for arbitrary modified dependencies or future integrations.",
+    "Physical device control, Core commits, Eve preference inference/feedback, user identity and authorization are not connected by this slice.",
+    "Full repository verify, OpenSSL environment recovery, Git save, CI and main integration remain parent/Git evidence and are not accepted by this receipt.",
+    "No repository edits, commits, reverts, merges, deployment or original R5 changes were made by reviewer."
+  ],
+  "originalReceiptSha256": "483433b539da15f71bd9ce642d65a7a497ba882b6b1ef126b3562efdc5d5d739",
+  "portabilityNote": "Local workspace and temporary log paths removed; original receipt digest retained. Source hashes and review results unchanged."
+}

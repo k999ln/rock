@@ -1,0 +1,9 @@
+{
+  "name": "MediaPipe HandLandmarker full float16 version 1",
+  "url": "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+  "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+  "maxBytes": 10000000,
+  "documentation": "https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker",
+  "runtimeVersion": "1.1.1",
+  "scope": "local development preview; not calibrated spatial input or physical acceptance"
+}

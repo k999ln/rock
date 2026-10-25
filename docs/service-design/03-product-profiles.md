@@ -50,6 +50,9 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 ## avocadoMini
 
+2026-10-25の本人指示で、Miniのカメラ追跡・ジェスチャー入力を追加する。最初は手指の選択/移動/回転/停止を端末内で推定し、VIEW_ONLY候補として扱う。Eveの好み予測、本人の明示feedback、Smithの操作許可を分ける。単眼の画面座標を精密3D/全空間追跡の合格にせず、旧四方向契約や物理/金融承認を迂回しない。Mini単体と表示4条件を維持する。 [カメラ入力契約](../../systems/rock-star-os/targets/avocado-mini/gesture/README.md)。
+
+
 価値は、身体・手・日本語音声で遊び、作り、学び、暮らしへ広げる空間端末。現行R5は**使用時全高200mm以内の銀色円筒、1本自律、同型mini増設、設置中給電＋携帯電源（部品未選定）、別Edge Hub不要**。テレビ・スマホ・Pro・外部PC・インターネットを基本操作と保存の必須条件にしない。[R5正本](../avocado-mini-r5/README.md)と[統合基本設計](../avocado-mini-r5/package/integrated_design.md)を引き継ぐ。
 
 建築一体型はR5 coreの任意設置profile。新築の計画時に建築士・設備設計者・施工者と天井内の設置位置、点検口、電源、熱、室内への展開/収納、撤去後の原状回復を協議する。天井の種類ごとにmounting kitを分けるが、Mini一台のlocal起動・入力・保存・停止を建物ネットワークやProへ依存させない。施工者と建物所有者は設置・設備の責任を持ち、居住者の私的な音声・映像・作品・Jobの閲覧権を得ない。住まいのToolや家電は対応hostのread/propose/act権限と本人承認を別に受け入れる。設計段階への参入は販路構想であり、契約済み物件や施工完了の証拠ではない。[設置profileと受入](../avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)を参照。
