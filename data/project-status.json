@@ -10103,6 +10103,27 @@
       "linuxPacketTestsPassed": 26,
       "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
       "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5"
+    },
+    "messageService": {
+      "status": "independently_reviewed_full_verify_running",
+      "taskId": "MAT15",
+      "primarySquad": "M1",
+      "regions": [
+        "JP",
+        "US"
+      ],
+      "physicalAccepted": false,
+      "providerConnected": false,
+      "mainMerged": false,
+      "nextAction": "Finish exact-source full verify and Git save; central Git owns PR229 main adoption; physical/provider/product identity acceptance remains separate",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "evidence": "docs/evidence/development-execution/mini-08-message-service.json",
+      "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+      "hostTests": 103,
+      "serviceTests": 20,
+      "independentNegativeTests": 9,
+      "mustFixRemaining": 0,
+      "gitHubSaved": false
     }
   },
   "pixelCacheMainAdoption": {

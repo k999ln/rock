@@ -1,0 +1,193 @@
+{
+  "schema": "mini-message-service-independent-review/1",
+  "reviewedAt": "2026-10-25T12:34:17.468415+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "worktree": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+  "branch": "codex/mini-message-service-20261025",
+  "baseHead": "45116526d653a6c21fee9e00926f9e1ea3026a91",
+  "decision": "PASS_FOR_DEVELOPMENT_BROKER_AP_AND_LOCAL_PROTOCOL_ONLY",
+  "mustFixCount": 0,
+  "openFindings": [],
+  "scope": "New Broker/AP message service and bounded scheduling review. This does not replace or extend the prior PR229 message adapter or Pixel diagnostic fixture receipts.",
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+      "sha256": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+      "sha256": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5"
+    },
+    {
+      "path": "tests/avocado-mini-tethering.test.mjs",
+      "sha256": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09"
+    }
+  ],
+  "readOnlyDependencyHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/controller.py",
+      "sha256": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/ap_control.py",
+      "sha256": "f4bbd942a7fceffb8e668319d23fddeb4a88497e4c7a01ca5272fc737c97251c"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/network_quota.py",
+      "sha256": "20301ad728371643450a45d672087b8464f5f82071a423228ba73dde353fbeaf"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py",
+      "sha256": "2f9539b7d02aa02b76ae4b21a4e87411bc33c1b7bfdcd6ca8e662b2195151d39"
+    },
+    {
+      "path": "systems/rock-star-os/os/mcp_broker/service_access.py",
+      "sha256": "44e1171e4aae4b0c312d67bcf91cfd2125813d12309d79df9fefcb041eca5a5a"
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/controller.py",
+      "sha256": "e606bbe1ca0dad14e19b0fa28256e27a2a94e5a5f8c6199acad19129a190c0cd"
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/transport.py",
+      "sha256": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6"
+    }
+  ],
+  "evidenceHashes": [
+    {
+      "path": "/private/tmp/mini-service-negative-probe.py",
+      "sha256": "205d6b6db066192872ebccc928726b1a2896c7c53eaa2894b54e86950df0962e"
+    },
+    {
+      "path": "/private/tmp/mini-service-negative-probe-results.json",
+      "sha256": "f448ab01765965fe7b31c59666a2712c83dc5d23b9932db825ab7a94fd1e6fa5"
+    },
+    {
+      "path": "/private/tmp/mini-service-post-ap-expiry.py",
+      "sha256": "276c392a3d0b9b9277cc1ec8644c359db765dc8db3dcf731e2290ea2f368e7df"
+    },
+    {
+      "path": "/private/tmp/mini-service-post-ap-expiry-result.json",
+      "sha256": "9b66764bf1048505e58c4b78ef0107cd4d63fc1925e243030539e82111e2f0c6"
+    },
+    {
+      "path": "/private/tmp/mini-service-final-negatives.py",
+      "sha256": "1417909048951b065b420f8da6f69fc5d8f9311191dd03fdfb17dfd4cbf9107f"
+    },
+    {
+      "path": "/private/tmp/mini-service-final-negatives.log",
+      "sha256": "9ca979cc91c82eeae458e51fac58a85637730afb1f972d26165111268959fc0a"
+    },
+    {
+      "path": "/private/tmp/mini-service-independent-host.log",
+      "sha256": "c6e849b6dbce0ae7aa36f3cf4f281a001bbbb5c02124fe9998339b982d207073"
+    },
+    {
+      "path": "/private/tmp/mini-service-independent-final-focused.log",
+      "sha256": "241c7f0f757ef648da46207362d93f5267294d6dc010eb51b0f84a6ae9c94f24"
+    },
+    {
+      "path": "/private/tmp/mini-service-independent-node-wrapper.log",
+      "sha256": "4f4604603a3fe654926c923a4fffd51f352a82f4db755f3a8fce31627f446e62"
+    },
+    {
+      "path": "/private/tmp/mini-service-final-source-manifest.json",
+      "sha256": "ab8dd5beb94277fd3c1e37d9fde086ac633513ceced24fc0396a87dae9698cef"
+    }
+  ],
+  "resolvedFindings": [
+    {
+      "id": "SERVICE-P1-LIVE-ELIGIBILITY",
+      "severity": "P1",
+      "reproducedBeforeFix": true,
+      "counterexamples": [
+        "Signed restore shortened identity validity to time 101. Provider reserve advanced clock from 100 to 102; device_eligible=false but one frame delivered hello.",
+        "After the first fix, eligibility was still evaluated before the post-reservation AP lookup. Delaying that lookup to time 102 reproduced the same expired-identity delivery."
+      ],
+      "fixVerified": "Authorization performs AP lookup/binding comparison then re-enters the actual ServiceAccess guard and owner/device binding immediately before admission. MessageAdapter additionally rechecks local TTL/grant epoch after authorization I/O.",
+      "finalIndependentResult": "Both expiry sequences and suspension during provider reserve send zero frames and retain byte/cost holds."
+    },
+    {
+      "id": "SERVICE-P2-REVOKED-PSK",
+      "severity": "P2",
+      "reproducedBeforeFix": true,
+      "counterexample": "revoke(phone) followed by enable kept the old per-device PSK. The revoked device could rejoin and AP authenticated(phone) succeeded despite Controller allowed=false.",
+      "fixVerified": "The revoke path independently attempts ManagedAP.revoke and always halts AP afterward.",
+      "finalIndependentResult": "Old PSK cannot rejoin after re-enable; a separate enrolled device still can. Simulated AP credential-store failure leaves local permission revoked and AP halted."
+    }
+  ],
+  "independentTests": [
+    {
+      "command": "python3 -B -W ignore::ResourceWarning -m unittest test_message_service -q",
+      "cwd": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo/systems/rock-star-os/targets/avocado-mini/tethering",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 12.911,
+      "log": "/private/tmp/mini-service-independent-final-focused.log",
+      "scope": "Final behavioral source, including slow AP eligibility, message TTL, policy expiry and local modem transport."
+    },
+    {
+      "command": "python3 -B -W ignore::ResourceWarning /private/tmp/mini-service-final-negatives.py",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 5.639,
+      "log": "/private/tmp/mini-service-final-negatives.log",
+      "scope": "Independent expiry during reserve/AP lookup, suspension during reserve, old PSK rejection with other client retained, AP revoke failure cleanup, invalid listener cleanup, slow-drip absolute timeout, duplicate/trailing JSON, period-expiry AP stop."
+    },
+    {
+      "command": "node --test tests/avocado-mini-tethering.test.mjs",
+      "cwd": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "seconds": 16.605,
+      "log": "/private/tmp/mini-service-independent-node-wrapper.log",
+      "scope": "Final wrapper successfully ran full discovered Mini Python suite and enforced subprocess error/status/test-output assertions."
+    },
+    {
+      "command": "python3 -B -W ignore::ResourceWarning -m unittest discover -p test_*.py",
+      "tests": 100,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 62.606,
+      "log": "/private/tmp/mini-service-independent-host.log",
+      "scope": "Earlier regression checkpoint before the final period/AP-delay additions; not attributed to the final exact source."
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "finalDocstringOnlyAdjustment": {
+    "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+    "description": "After execution, clarified that the local grant dictionary is not a provider signature and the modem supervisor must confirm its matching reservation. Reversing only this docstring substitution reproduces the pre-test SHA-256 exactly. Other reviewed runtime/test/docs hashes match the pre-test manifest. No behavioral rerun required for that docstring correction."
+  },
+  "wrapperReview": "The only wrapper change is a 60,000 to 180,000 ms whole-suite budget and an explanatory comment. Assertions, child process status handling, byte buffer limit and underlying transport deadlines remain unchanged. The independent earlier host run exceeded 60 seconds while passing; final wrapper itself passed.",
+  "reviewedBoundaries": [
+    "Uses the actual ServiceAccessPrincipalAdapter and fixed consumer authority; owner/device are policy-bound and request JSON cannot select identity, observations, prices, endpoint or shell.",
+    "The service-access authority remains a public development fixture, not production buyer identity. Paid policy is not weakened by product source; explicit free policy appears in tests only.",
+    "AP identity is checked around reservations and final eligibility is checked after potentially slow AP I/O. Unknown sends retain local reservations, retries remain finite, and ordinary IP authorization is not inferred from message capability.",
+    "Pending queue sweeps while offline; refresh failure invalidates old link observation. Restart disables AP/admission, and policy expiry now stops AP without a user request.",
+    "Finite request count and per-tick selection, absolute Unix input deadline, request bound, generic errors, private socket checks, finally-close and bounded framed local transport inspected.",
+    "Published requirements of Mini standalone operation and all four display constraints are retained in MESSAGES.md without claiming physical acceptance."
+  ],
+  "limitations": [
+    "No repository source edits, Git commits/merges, VM operation, physical Wi-Fi/WPA handshake, satellite RF, provider contract or real charge were performed by reviewer.",
+    "Local Unix/TLS tests ran with approval outside the filesystem/network sandbox because fixture socket binding needs that environment. They used temporary local services only.",
+    "The local modem supervisor is not implemented or accepted. It must authenticate the caller, confirm provider reservation and enforce all-traffic byte/cost/expiry before RF. Socket timeout is not proof of RF stop.",
+    "Arbitrary trusted modem observers, provider DNS/HTTPS and external environments have no independently accepted hard wall-clock deadline. This review accepts bounded scheduler iteration and tested local protocol I/O, not a real-time system guarantee.",
+    "Linux-specific SO_PEERCRED behavior and real Linux packet tests were not independently executed on this host in this review.",
+    "Full repository verify, dependency-install outcome, CI, Git save and main integration are separate parent/Git evidence. Parent-reported unrelated Zod/dependency failures and later reruns are not reclassified by this receipt."
+  ]
+}

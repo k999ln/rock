@@ -771,7 +771,7 @@ R5のMini単体動作はProを必須としない。専用モデルは端末内�
 
 <a id="mini-tethering-control"></a>
 
-日米のsi・メッセージ・小ファイル向け[共通message adapter](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。実transport/常駐scheduler/Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
+日米のsi・メッセージ・小ファイル向け[共通message adapter](../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)を追加。有限分割・認証付き再組立・再送・TTL・共通通信量/料金予約をhostで検証する。既存の開発用Broker本人確認とAP認証を常駐入口へ接続し、周期件数・再送・期限・料金予約を制限する。固定Unix modem bridgeは期限付き。実Broker本人認証・実modem/provider・Job引渡し・実機は未受入。Mini単体、表示4条件と既存料金gateを維持。
 
 ### MINI-08 単体衛星テザリング制御
 

@@ -1439,12 +1439,14 @@
       "boundedMessageAdapter": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
         "implementation": [
-          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+          "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py"
         ],
         "tests": [
-          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py"
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py",
+          "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py"
         ],
-        "scope": "offline_common_protocol_shared_ledger_not_radio_or_provider_acceptance",
+        "scope": "development_broker_ap_bounded_scheduler_shared_ledger_not_radio_or_provider_acceptance",
         "regions": [
           "JP",
           "US"

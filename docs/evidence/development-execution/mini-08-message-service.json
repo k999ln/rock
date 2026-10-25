@@ -1,0 +1,66 @@
+{
+  "schema": "mini-message-service-validation/1",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "scope": "development Broker/AP/local Unix message service; no physical or live provider acceptance",
+  "sourceHashes": [
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py",
+      "sha256": "d85607c334fa091e948ceb94beb5cdd0ebddabb4fa6f08e713b2e90f7083b943"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py",
+      "sha256": "b0b4359537877d16c14ad0bfa227e9964169e7c318a35ff10cbe12d873e6eedd"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/test_message_service.py",
+      "sha256": "dd736aed5037a47c74cd373591fdd2e8dbe207dc64d8aef83660dedeef66888b"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",
+      "sha256": "a217465c2366efc8101a59fe700152eadddbb9727d60b6bf0ce0076dbfcc27a5"
+    },
+    {
+      "path": "tests/avocado-mini-tethering.test.mjs",
+      "sha256": "0566fd4298c8718cafe9c9a930023f1e8758302b2f9bd3d642d958b3dae78a09"
+    }
+  ],
+  "regions": [
+    "JP",
+    "US"
+  ],
+  "preserved": [
+    "standalone Mini without required dock/phone/PC/Pro",
+    "no plate or membrane",
+    "few display parts",
+    "full range including up/down",
+    "low glare",
+    "finite TTL/retries/shared byte and cost reservations"
+  ],
+  "host": {
+    "status": "passed_final_service_and_wrapper",
+    "miniTests": 103,
+    "serviceTests": 20,
+    "independentNegativeTests": 9,
+    "independentMustFix": 0
+  },
+  "fullVerify": {
+    "status": "running_after_dependency_sync",
+    "log": "/private/tmp/mini-service-final-verify.log",
+    "priorAttempt": "Mini suite 60s timeout under concurrent load; independent 101 tests completed in 72.8s; stale installed Zod dependencies caused 3 failures. Suite-only timeout 180s; npm ci root and Mini site; Zod 5/5 passed. Transport deadlines unchanged."
+  },
+  "independentReview": "docs/evidence/development-execution/mini-08-message-service-review.json",
+  "gitHubSaved": false,
+  "mainMerged": false,
+  "physicalAccepted": false,
+  "providerConnected": false,
+  "remaining": [
+    "actual product identity/authentication beyond existing public ServiceAccess fixture",
+    "modem supervisor enforcing matching provider reservation before RF; encrypted live transport",
+    "real JP/US provider contracts and period-wide hard cap including management traffic",
+    "bounded production observation and provider I/O, Linux service installation, physical sustained operation",
+    "consumer Job import with durable acknowledgement",
+    "same enclosure battery/power/heat and all four display conditions physical acceptance"
+  ],
+  "reviewReceiptSha256": "645137f36a4700e48a82d0811409eafddb24bc4af8ceb83096b3037653a7b34f"
+}
