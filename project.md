@@ -27,6 +27,8 @@ PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点
 
 ## Game creator host fixture exact2のmain候補（2026-10-24 / G04）
 
+現行Git受入: PR230/head4046c712全7CI、通常merge main53d991b3全6CIとLinux3010/3008pass/0fail/2skip成功。旧capture pending/浅いcheckout失敗を保持し、固定ee9 object fetch/hash検証後のsource4一致を別記録。非金融draft/createのみ、GX/wholeGAME/公開は未受入。[現行証拠](docs/evidence/development-execution/game-work-draft-main-current.json)。
+
 着手: Eve204通常merge main434f・同SHA6CI成功をclean基点に、旧7188で独立受入済みscript/test2hashを無変更採用。主担当Git10/source08、GAME-01/GM01/AI06・DX01文脈。元receipt9936と新portableは別hash、engine/save形式と再利用5・既存保全sourceを固定。判断: staticdiagnostic unverified/nullを維持し、synthetic ownerのhostProofだけを別証拠へ。検証完了: 統合40pass0fail0skip、対象lint/構文2/通常type成功。独立10probe/ownedtmp28cleanup、EPERM/inodeswap/symlinkFIFO/oversize/concurrency/midwritekill/旧save保持/partial非自動採用を限定記録。判断更新: 局所scannerで既存GameAPI request-key例を1件検出し、非credentialの説明用<request-key>へ明示。schema/金融条件/source2/policyは不変、初回reportはGit外保持。次: project/design/scanner、Draft PRの最終同headLinux実npmverify/全CIと独立metadata検収。local全体verify未実行、fresh作者SDK/本人保存/WorkJob/実engine/金融/実機/公開・wholeGAMEは未受入。Walletは最新mainのclean test-only treeを準備しただけでsource未編集。[証拠](docs/evidence/development-execution/game-creator-fixture-main-adoption.json)。
 
 ## Eve saved-source estimate-only r2のmain採用準備（2026-10-24 / G04）
@@ -920,6 +922,8 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## Mini埋込・着脱・衛星Wi-FiとAgent月次請求（2026-10-15）
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
+
+最新main採用準備: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
 
 共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
 

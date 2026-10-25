@@ -1,0 +1,44 @@
+{
+  "schema": "rockstaros.mini-message-main-adoption/1",
+  "recordedAt": "2026-10-25T13:35:47.952407+00:00",
+  "pr": 229,
+  "originalReviewedHead": "45116526d653a6c21fee9e00926f9e1ea3026a91",
+  "synchronizedMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+  "source4AndPixelFixture2Hashes": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "290eaec214f21c155ab691265ff4b614709009f1dc3062b008a2861b09128d26",
+    "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py": "69d5ad88deba9d481ea662a94a6c4160f875d386395217531a0c31f734847cf2",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_message_adapter.py": "4aa11046911f69f1f6423be740d1dc433e28bd10e10987c55be172d849057a02",
+    "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md": "200268c6b57640e8036dc79ef9193cfe6778b8f0cd5e40dc9297bfcc489957e8",
+    "tests/test_pixel_worker_diagnostics.py": "5a9b14de75b8f71344ac112a44c9ffbb5f5e5f3fe91ade76516eaeba48fd3337",
+    "toolkits/sky-linux-local/worker.py": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917"
+  },
+  "source4Unchanged": true,
+  "pixelWorkerRuntimeUnchanged": true,
+  "featureIndependentReview": {
+    "path": "docs/evidence/development-execution/mini-08-message-review.json",
+    "sha256": "9e1ebc10ddb4a609e6eb2679f43b20af8508e7eb269f39baf66a04f9277dad95",
+    "scope": "Offline common message adapter only; CAS, permission epoch and reentrancy fixes verified",
+    "mustFix": 0
+  },
+  "separatePixelFixtureReview": {
+    "path": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json",
+    "sha256": "c4c3e0c6d0769da6dda51e429c00f1129a5fc9d39f122dc70e23098ed06a4ae7",
+    "scope": "One normal-case observer fixture replaces timing sleep with bounded first-diagnostic Event; production worker unchanged",
+    "mustFix": 0
+  },
+  "newHostFullVerify": {
+    "exitCode": 0,
+    "tests": 3025,
+    "pass": 3022,
+    "fail": 0,
+    "skip": 3
+  },
+  "mainMerged": false,
+  "currentHeadCI": "not yet run; original451 all14 checks are historical and not substituted",
+  "physicalAccepted": false,
+  "providerConnected": false,
+  "wholeUnitAccepted": false,
+  "realBillingAccepted": false,
+  "publicDeployment": false,
+  "next": "Independent integration metadata review; fixed finalhead allCI; normal main merge and sameSHA CI"
+}

@@ -10079,7 +10079,7 @@
       "mergeEvidence": "docs/evidence/development-execution/mini-08-hardware-main-merge.json"
     },
     "messageAdapter": {
-      "status": "offline_adapter_verified_ready_for_git_adoption",
+      "status": "latest_main_synchronized_host_full_verify_pass_pending_adoption",
       "taskId": "MAT15",
       "primarySquad": "M1",
       "regions": [
@@ -10102,7 +10102,17 @@
       "linuxCommonTestsPassed": 83,
       "linuxPacketTestsPassed": 26,
       "ciStatus": "validated_source_head_14_success_final_metadata_head_tracked_in_PR229",
-      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5"
+      "validatedSourceHead": "f59be1af5b658bce6857663ffade2a6018c652c5",
+      "latestIntegrationMain": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+      "currentIntegrationEvidence": "docs/evidence/development-execution/mini-08-message-main-adoption.json",
+      "newIntegrationFullVerify": {
+        "exitCode": 0,
+        "tests": 3025,
+        "pass": 3022,
+        "fail": 0,
+        "skip": 3
+      },
+      "separatePixelFixtureReview": "docs/evidence/development-execution/mini-08-message-ci-fixture-review.json"
     }
   },
   "pixelCacheMainAdoption": {
@@ -10497,7 +10507,7 @@
     "realGameAccepted": false,
     "realProviderOrFinancialAccepted": false,
     "publicDeployment": false,
-    "stage": "independent_source_and_bounded_UI_pass_standard_private_and_host_full_verify_pass",
+    "stage": "PR230_main_integrated_same_SHA_CI_pass",
     "hostFullVerify": {
       "tests": 3010,
       "pass": 3007,
@@ -10510,7 +10520,13 @@
       "sha256": "d93e120c16b86f136cada419a500a4b192e71319fafc597024bab701f6b7f6c2",
       "source4Unchanged": true,
       "fullVerifyCIAtCapture": "07354 failed missing historical object; bounded preparation added, newhead CI required"
-    }
+    },
+    "mainMerged": true,
+    "acceptedHead": "4046c7125bc796e7b41dfcfe48ca1de1dc08f5c8",
+    "mainMergeSha": "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/game-work-draft-main-current.json"
   },
   "eveMultiMaterialPreparation": {
     "unit": "EVE-02",
