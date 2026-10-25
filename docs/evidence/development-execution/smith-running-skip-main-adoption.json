@@ -41,5 +41,7 @@
   "realAuthJobAccepted": false,
   "physicalAccepted": false,
   "publicDeployment": false,
-  "next": "New standard fullverify, preserve latestmain, separate Root final metadata review, exacthead CI then normal main/mergeCI"
+  "next": "New standard fullverify, preserve latestmain, separate Root final metadata review, exacthead CI then normal main/mergeCI",
+  "latestSynchronizedMain": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+  "latestSynchronizationScope": "Preserves accepted Mini and eSIM main records; new exact-head Linux fullverify/CI remains required after adding eSIM test"
 }

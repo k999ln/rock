@@ -228,6 +228,8 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 ## SMITH-01 処理中のページ内スキップ導線
 
+最新main24ad1952へeSIM test-onlyまで通常同期し、Mini229/current main a58全13CIとeSIM236/current main24ad全6CIの実受入を現行status/95overlay/handoffへ追記。各head14/7成功、LinuxはMini3025/3023/0/2、eSIM3026/3024/0/2。元pending/失敗/host/原検収は不変。whole95受入0、金融/実機/公開は未受入。次はSmith固定source2のRoot最終metadata検収・新headCI・通常main/mergeCI。
+
 判断更新: Root側本人の他chat残作業もmain統合まで進める明示指示を直接読戻し、このsource2にも適用。元save-only recordは履歴保存し、新しい[main採用記録](docs/evidence/development-execution/smith-running-skip-main-adoption.json)へ分離。main a58c6ffaへ通常同期、source2と元reviewhash不変。新標準host全verify3026試験/3023pass/0fail/3skip・build/APIまでexit0。Root別metadata検収→最終headCI→通常main/mergeCIを実施する。実auth/job/RootCUA/実機/wholeSMITH/公開は未受入。
 
 現在の有限修復（SKY21 / O5 / SMITH-01）: main3bbから、running中に既存「メインコンテンツへ」が抑止される不具合を修復。既知同頁fragmentだけを許可し、他移動・consumer guard・auth/owner/予算/job/保存は保持。10局所試験と合成actual React/Chrome390/1280で旧反例/新focus・遷移抑止・draft保持を確認。[証拠](docs/evidence/development-execution/smith-running-skip-link.json)。source/metadata独立検収PASS・必須修正0、host全verify2994/2991pass/0fail/3skip。最新mainへの採用/Git保存/最終同SHA CIはGit担当へ引継ぐ。実auth/realjob/実機/native/wholeSMITHは未受入、公開・配備・616保留。原PR203 receiptの記録時点の値は保持する。

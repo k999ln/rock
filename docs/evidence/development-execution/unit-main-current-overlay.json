@@ -871,6 +871,44 @@
       "wholeUnitAccepted": false,
       "mainMerged": false,
       "publicDeployment": false
+    },
+    {
+      "id": "MINI_MESSAGE_ADOPTED",
+      "units": [
+        "MINI-08"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Offline bounded message adapter and separately reviewed Pixel normal-case wait fixture; no production worker change",
+      "pr": 229,
+      "acceptedHead": "1e6ed3bcf1d0f907251e60aefedb882e17cd83c2",
+      "mainMergeSha": "a58c6ffa857389193727b0b6d4a867352f269f77",
+      "headCISuccess": 14,
+      "mainCISuccess": 13,
+      "evidence": "docs/evidence/development-execution/mini-08-message-main-current.json",
+      "wholeUnitAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
+    },
+    {
+      "id": "ESIM_PROVISION_RECOVERY_ADOPTED",
+      "units": [
+        "ESIM-03"
+      ],
+      "kind": "additional_adopted_subset",
+      "scope": "Test-only explicit close/reopen after controlled local setup UPDATE failure; same persisted workspace and no repeated billing prerequisites",
+      "pr": 236,
+      "acceptedHead": "42c005688d78daa8597b7f59f445e2c5ace9c2f7",
+      "mainMergeSha": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-provision-recovery-main-current.json",
+      "wholeUnitAccepted": false,
+      "realProviderAccepted": false,
+      "realFinancialAccepted": false,
+      "physicalAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

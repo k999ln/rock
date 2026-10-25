@@ -1449,7 +1449,9 @@
           "JP",
           "US"
         ],
-        "physicalAccepted": false
+        "physicalAccepted": false,
+        "mainMerged": true,
+        "currentMainEvidence": "docs/evidence/development-execution/mini-08-message-main-current.json"
       }
     },
     {
