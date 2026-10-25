@@ -1,0 +1,37 @@
+{
+  "schema": "mini-tether-linux-full-verify/1",
+  "date": "2026-10-25",
+  "baseMain": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+  "hostPrerequisite": "docs/evidence/development-execution/mini-08-tethering-main-adoption.json",
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a",
+    "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md": "8160a986d6409d09f81b8707160e9195bcba7354ad5dbe28c7c80766317a27ff",
+    "docs/evidence/development-execution/mini-08-linux-tethering.json": "2f1dfed75029e0539992ab412cd35bd259ff27531206fbb87f8595d5e4576ce8",
+    "docs/evidence/development-execution/mini-08-linux-tethering-review.json": "28ba697248c0b1cb42aae45eaa0ae4c823b39dec5f8c960cd88cc326648d3ca3",
+    ".github/workflows/mini-tether-linux.yml": "57374d3ab73a0386bdffb92c7b47bda4cbeb5cd87df5d8a8e0b7665f515a2704",
+    "docs/evidence/development-execution/mini-08-linux-tethering-adoption-review.json": "beba596e7f19dbba889c64033dc253c07fb0102eac080934dcd7ed88e84822e9",
+    "docs/evidence/development-execution/mini-08-linux-tethering-metadata-review.json": "a1c87eea0da08380f62cb7f1a71f58eaa70971a7c8cb77e3c6615f81952f7698",
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/README.md": "4f3a80c2d9dc043f62f6cf898d6ceb7458aa66e886bba1ff34ec4a3aa29718c2"
+  },
+  "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+  "exitCode": 0,
+  "environment": "macOS; Node26.12.1/Python3.15/OpenSSL3.6.3",
+  "fullChainCompletedThrough": "bot:check",
+  "mainTestSuite": {
+    "tests": 2912,
+    "passed": 2909,
+    "failed": 0,
+    "skipped": 3
+  },
+  "logSha256": "7b9b184eef0ec6d130a7d18f090ecc58a59dc9aecd6522f6a6f88cdafdf79cb1",
+  "packetExecution": "separate real Linux VM evidence in mini-08-linux-tethering.json; host verify does not execute root packet tests",
+  "githubSaved": false,
+  "mainMerged": false,
+  "sameShaCI": "not_run",
+  "physicalAccepted": false,
+  "providerInvoiceVerified": false,
+  "generalLaunch": "held"
+}

@@ -44,6 +44,8 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 
 [設計・API・再現コマンド](../../systems/rock-star-os/targets/avocado-mini/tethering/README.md)に責任、入出力、状態、保存、失敗、復旧、承認、合格条件と未決定の決め方を記載。[証拠](../evidence/development-execution/mini-08-tethering.json)でhost/実機/保存/統合を分ける。料金は承認済みall-in最大値で予約し、未確定枠を期限で返さない。端末受信後のdropだけでは衛星課金上限を保証できず、網側上限を含む実測が必要。
 
+[Linux下位制御](../../systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md): Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 namespace所有claimの破棄/再利用は自動解除せず、旧processと未確定予約の管理照合が必要。
+
 接続契約はownerRef、deviceRef、dockRef、attachmentState、powerSource、WAN種別、capability、許可された共有端末、使用量上限、permission revisionを持つ設計とする。秘密値や回線資格情報をゲームへ渡さない。SSID/接続鍵は端末固有、初期共有はOFF。招待/解除、guest分離、管理面のアクセス制限を設ける。本人のSky/Zema領域と来客hotspotを分離する。
 
 場所を離れても本人の同一job ID/版を維持する。施設の権限・回線・センサー閲覧は本人の仕事保存とは分け、取り外し後は場所scopeを失効する。衛星へ切り替わってもAgentの費用上限・通信予算を引き継ぎ、ゲームやmodelの大容量downloadを無断再開しない。回線切替でTCPやゲームsessionが維持できるとは保証せず、jobの再送一意性と結果照会で復旧する。

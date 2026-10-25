@@ -823,6 +823,8 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
+判断更新: Linux下位制御の実装・実packet試験へ進んだ。Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 [Linux証拠](docs/evidence/development-execution/mini-08-linux-tethering.json)。Linux組合せ候補の全体verifyも完走exit0（主2912件/2909成功/3skip/失敗0）。[全体検証証拠](docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json)。次: 別batchのGit保存/同head CI、APの認証済みclient bindingとProvider上限。表示4条件・Mini単体携行を維持し、実機/公開合格へ昇格しない。
+
 着手: 本人のMini単体衛星→Wi-Fi/携帯/端末・通信量・料金上限管理指示でMAT15/M1のROCK作業を開始。GitHub main `0d72671739a8bdd3969b539c5f09ef54a90e1bea` の読戻しと同SHA plain snapshotを基点に、Root共有WIP/旧光学を保持。判断: 実adapterが未確定のためhost制御と下位強制を分ける。検収でoverrun後のcounter巻戻し、再起動時の旧dock給電、記録上限表示を修正。Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信量と費用の事前予約、ドック離脱、停止/期限、SQLite保存と再起動復旧のhost制御prototypeを追加。架空回線の試験であり、実modem/AP/kernel強制・本人UI・Provider課金・同一閉箱は未接続。板/膜なし、少ない表示部、上下全範囲、低眩しさを保持する。
 
 局所検証と独立検収・全verifyの結果は [docs/evidence/development-execution/mini-08-tethering.json](docs/evidence/development-execution/mini-08-tethering.json)。 原本receiptは初回snapshot時点の履歴として保持。PR208 main `2854d069` の専用Git worktreeへ採用し、Node wrapperのawait漏れ1行を補正して独立検収mustFix0。OpenSSL3とmacOS waitid対応Pythonで全体verifyを完走しexit0（主回帰2912件/2909成功/3skip/失敗0）。[採用・全体検証証拠](docs/evidence/development-execution/mini-08-tethering-main-adoption.json)に環境差と補正を記録。保存候補でGitHub保存/main統合/CIは未実行。最新main `81aca294` を土台に同じhost候補を差分採用し、PR208/210の進捗を保全。次: Git担当による固定候補採用とshared metadata同期、下位packet adapter/回線/電池条件の受入。

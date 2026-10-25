@@ -1,0 +1,34 @@
+name: Mini Linux packet enforcement
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'systems/rock-star-os/targets/avocado-mini/tethering/**'
+      - '.github/workflows/mini-tether-linux.yml'
+  pull_request:
+    paths:
+      - 'systems/rock-star-os/targets/avocado-mini/tethering/**'
+      - '.github/workflows/mini-tether-linux.yml'
+permissions:
+  contents: read
+concurrency:
+  group: mini-tether-linux-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  linux-packets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Install namespace packet test prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y nftables iproute2 iputils-ping util-linux procps
+      - name: Verify host controller and fixed rule compiler
+        run: python3 -B -m unittest discover -s systems/rock-star-os/targets/avocado-mini/tethering -p 'test_*.py'
+      - name: Verify real packets in disposable namespaces
+        run: sudo python3 -B systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py

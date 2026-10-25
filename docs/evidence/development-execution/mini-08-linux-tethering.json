@@ -1,0 +1,55 @@
+{
+  "schema": "mini-tether-linux-acceptance/1",
+  "date": "2026-10-25",
+  "taskId": "MAT15",
+  "unit": "MINI-08",
+  "scope": "isolated Linux VM real namespace packet enforcement",
+  "sourceSha256": {
+    "systems/rock-star-os/targets/avocado-mini/tethering/controller.py": "443fbda015ce64f45d5e86974fe9680172a76ca18a3c4b0057987bb067834545",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_gate.py": "710e8a4d195c6784eb99599bbe902cb09ee9fd400ce699dbb831cf66619adeb3",
+    "systems/rock-star-os/targets/avocado-mini/tethering/test_linux_gate.py": "05f0b27908d7906f2d15ad77215a69065312275d6f0a3e1c065f108447623b43",
+    "systems/rock-star-os/targets/avocado-mini/tethering/linux_packet_test.py": "252f8f83f266d2ef7fa5388b43e6392c45248bc792ab344f7367897baada603a",
+    "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md": "8160a986d6409d09f81b8707160e9195bcba7354ad5dbe28c7c80766317a27ff",
+    ".github/workflows/mini-tether-linux.yml": "57374d3ab73a0386bdffb92c7b47bda4cbeb5cd87df5d8a8e0b7665f515a2704"
+  },
+  "environment": {
+    "os": "Ubuntu 24.04 arm64",
+    "kernel": "6.8.0-134-generic",
+    "nftables": "1.0.9",
+    "python": "3.12.3",
+    "limaInstance": "mini-tether-linux",
+    "sharedMounts": false
+  },
+  "verification": {
+    "hostCompilerPassed": 4,
+    "linuxPacketPassed": 20,
+    "failed": 0,
+    "packetSeconds": 17.464,
+    "guestSourceHashReadbackMatches": true,
+    "executor": "implementation agent",
+    "reviewerPacketExecution": false,
+    "logSha256": "8fe23983fb3fe9547504878c95ba4aa39b483a199e2035725d79acbf7eafab78"
+  },
+  "independentReview": {
+    "mustFixRemaining": 0,
+    "receipt": "docs/evidence/development-execution/mini-08-linux-tethering-review.json"
+  },
+  "priorFailure": {
+    "tests": 20,
+    "failures": 3,
+    "errors": 12,
+    "cause": "stale prior fixture ownership claims with kernel inode reuse; fail-closed",
+    "resolution": "test-only owned claim teardown; product never auto-removes claims",
+    "logSha256": "6976302ec4a358b793b630fbd8d5dfb85b21571cddf115ccbbb531d65a6bc715"
+  },
+  "physicalAccepted": false,
+  "satelliteConnected": false,
+  "wifiRadioTested": false,
+  "providerInvoiceVerified": false,
+  "mainMerged": false,
+  "githubSaved": false,
+  "fullRepoVerify": "not_run_for_linux_batch",
+  "generalLaunch": "held",
+  "nextAction": "save separate Linux batch and wire explicit isolated Linux CI; then authenticated AP/client integration and provider bounded accounting; no actual service purchase or charging",
+  "ciWorkflow": "prepared; not executed or merged"
+}

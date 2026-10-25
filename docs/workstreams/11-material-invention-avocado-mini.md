@@ -182,4 +182,6 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 [実装設計](../../systems/rock-star-os/targets/avocado-mini/tethering/README.md)／[証拠](../evidence/development-execution/mini-08-tethering.json)。検証: `node --test tests/avocado-mini-tethering.test.mjs`。次はdefault deny/原子的quota/期限/IPv6と再起動のLinux packet試験、Provider上限と同一閉箱の受入。
 
+[Linux下位制御](../../systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md): Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 namespace所有claimの破棄/再利用は自動解除せず、旧processと未確定予約の管理照合が必要。
+
 MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivity.md)。取り外し後の電源を必須化し、DP01〜05を同一試作機で受入する。請求はBIL02/O5。設計のみ、実機未受入。

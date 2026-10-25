@@ -9981,6 +9981,24 @@
     },
     "adoptionBase": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
     "adoptionEvidence": "docs/evidence/development-execution/mini-08-tethering-main-adoption.json",
-    "saveBaseMain": "81aca294b6c977f353752461f09823c4948a7ea9"
+    "saveBaseMain": "81aca294b6c977f353752461f09823c4948a7ea9",
+    "linuxPacketGate": {
+      "status": "isolated_linux_packet_and_independent_static_review_passed",
+      "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md",
+      "evidence": "docs/evidence/development-execution/mini-08-linux-tethering.json",
+      "packetTestsPassed": 20,
+      "compilerTestsPassed": 4,
+      "independentReviewerPacketExecution": false,
+      "mustFixRemaining": 0,
+      "githubSaved": false,
+      "mainMerged": false,
+      "linuxBatchFullVerify": "host_full_chain_pass_2912tests_2909pass_3skip_0fail",
+      "linuxCI": "prepared_not_run",
+      "physicalAccepted": false,
+      "wifiRadioTested": false,
+      "providerInvoiceVerified": false,
+      "nextAction": "Git save and same-head Linux CI; authenticated AP/client and bounded Provider accounting",
+      "fullVerifyEvidence": "docs/evidence/development-execution/mini-08-linux-tethering-full-verify.json"
+    }
   }
 }
