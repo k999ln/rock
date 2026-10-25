@@ -1,0 +1,93 @@
+{
+  "schema": "rockstaros.esim-ack-main-adoption/1",
+  "recordedAt": "2026-10-25T08:23:01.305521+00:00",
+  "unit": "ESIM-BILLING-UI-ACK-01",
+  "baseMain": "81aca294b6c977f353752461f09823c4948a7ea9",
+  "primaryWorkstream": "03-wallet-billing-providers / ROCK",
+  "gitWorkstream": "10-git-ci-operations / ROCK",
+  "sourceFiles": [
+    {
+      "path": "components/sky-linux-service.tsx",
+      "sha256": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1"
+    },
+    {
+      "path": "tests/sky-linux-service-reconciliation.test.mjs",
+      "sha256": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936"
+    }
+  ],
+  "sourceAdaptation": "none",
+  "sourceReceipt": {
+    "originalSha256": "50379e5d5ae031b2bc82c28fb2bb8325e3f979c0edf5c7c7aa90b2548fcc1a64",
+    "portableSha256": "4177a7836e22dce46dbc9f6db15afcc3631a3dbc9f4ad0fb34d5a3c5be126e23",
+    "adaptation": "Operator absolute paths replaced by logical references only; original results retained"
+  },
+  "independentReview": {
+    "sha256": "01e70baf6a14c625cad4f656ab07295b698fa38214066e965b0a48a89632cb2e",
+    "status": "CODE_PASS_SCOPED_ROOT_BOUNDED_UI_PASS_HIDDEN_PARTIAL_UNVERIFIED",
+    "mustFix": 0,
+    "originalCounterprobes": {
+      "tests": 8,
+      "pass": 8,
+      "previousFail": 2
+    },
+    "additionalLifecycle": {
+      "tests": 3,
+      "pass": 3
+    },
+    "component": {
+      "tests": 41,
+      "pass": 41
+    }
+  },
+  "actualBrowser": {
+    "summarySha256": "7ba36667a4eba9b63a26e28c089640c16330560a7f811600f5b640a8eff0e274",
+    "actualReactComponent": true,
+    "syntheticFetchOnly": true,
+    "ackNull500403Quarantine": true,
+    "matchingReadRecovery": true,
+    "repeatedRefreshDoesNotRepeatPost": true,
+    "viewport": "1280x720; overflow0",
+    "actualHiddenTransitionTested": false
+  },
+  "acceptance": {
+    "sourceScopedAccepted": true,
+    "integrationVerify": "pending",
+    "independentMetadataReview": "pending",
+    "sameHeadCI": "pending",
+    "gitSaved": false,
+    "mainMerged": false,
+    "realProvider": false,
+    "realFinancialOperation": false,
+    "physical": false,
+    "productionDeployment": false
+  },
+  "boundaries": [
+    "ack is saved correlation only, never current authority or successful payment/job",
+    "fresh same context/revision/requestId GET required",
+    "unknown remains held; no automatic POST or receipt persistence",
+    "visibility invalidates view/handlers; return initiates GET only",
+    "API/store/owner authorization/prices/schema unchanged",
+    "public deployment and remaining616 public export held"
+  ],
+  "next": "Focused tests/type/lint, full verify, independent metadata review, exact payload GitHub readback, same-head CI, normal main merge and merge-SHA CI.",
+  "localValidation": {
+    "targeted": {
+      "tests": 187,
+      "pass": 186,
+      "fail": 0,
+      "skip": 1
+    },
+    "rootNode": {
+      "tests": 2952,
+      "pass": 2949,
+      "fail": 0,
+      "skip": 3
+    },
+    "typecheck": "pass_normal_generator",
+    "lint": "pass",
+    "design": "pass",
+    "projectUpdate": "pass",
+    "fullVerify": "Stopped at Mini site build because separate site dependencies were absent; no source failure. Installed dependencies from same-lock existing tree; remaining stages and final-head CI required.",
+    "fullVerifyLogSha256": "65de7998b8b234afc6e50e8108816999bf47b8e75ddc340e4946588e9f30d021"
+  }
+}

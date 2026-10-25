@@ -1580,3 +1580,9 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
+
+
+<a id="esim-ack-reconciliation"></a>
+## eSIMサービス保存ackの再照合
+
+既存サービス管理UIの状態修正。目的、責任、入出力、状態/保存、失敗/復旧、承認、合格条件と未決定は[OS共通契約](rockstaros-complete-design.md#esim-ack-reconciliation)を参照。新Tool/API/価格/権限を追加しない。保存ackと現時点のread/execute権限を分け、不明時は私有情報と操作を保留しGETで照合する。

@@ -1,3 +1,7 @@
+## eSIM保存ack後の再照合UIを最新mainへ採用
+
+着手: 最新main81aca294を基点に検収済みattempt2のcomponent/testを無変更採用。主担当03/ROCK、Git10、既存ESIM-BILLING-UI-ACK-01。独立元8反例と追加3試験、component41を確認。実Reactの合成browserでack後null/500/403の情報遮断・明示GET・同context回復・POST非再送を確認し、実hidden遷移は未検証と区別。次: 対象回帰/type/lint、全verify、独立metadata検収、GitHub保存/同SHA CI、main通常統合/mergeSHA CI。API・認証・料金・実Provider/資金/端末は変更せず、公開配備/616一括公開は保留。証拠 docs/evidence/development-execution/esim-ack-main-adoption.json。
+
 ## PR207統合読戻しとWALLET-02 process強制終了復旧の限定main統合（2026-10-25）
 
 PR207は検収済みbfb3e1bfを通常mergeしたmain0d726717、同一mergeSHA6CI成功を直接読戻し。元receiptの記録時pendingは保存し、進捗/overlay/引継ぎを訂正した。次の1項目は既存WALLET-02のprocess-kill残件。主担当03/ROCK/O5（WLT01/WLT02/WLT04/B03）、Git調整G04。最新main専用treeでTestD1を共用fixtureへ移し、子processを13停止点でSIGKILL、終了確認後に新DB接続でrollback/commit耐久性・同receipt/指示一意・cap再消費なし・defaultToC holdを検査する。対象36pass（新13+既存23）、独立検収PASS/mustFix0・計測13/破壊反例7を確認。全verify成功（root2911中2908pass/3skip、仕事API1678/CSV385、重複加算なし）。初回はhost標準OpenSSL版不一致で失敗し、既設OpenSSL3指定で回復。metadata検収の未根拠headCI7記載を削除しmerge同SHA6の根拠を保持。metadata独立r2 PASS/mustFix0。現在: PR208の検収済みheadc3c0e17d/exact20pathを通常main2854d069へ統合。headtree/main tree一致、同mergeSHA全6CIとLinux実verify2911/2909pass/2skip/0failを確認。文書保存・作業branch GitHub保存・main統合を完了、公開配備は未実施。元receiptのcapture-time pendingと初回失敗は保持し、現在のproject/status/overlay/handoffはこの別metadata同期で訂正する。次は既存Pixel/eSIM候補を新mainへ通常照合し、各独立gateから再開。実Worker/鍵/料金/migrationは不変、実D1/実収益/認証端末/停電/wholeWalletは未受入。公開・配備・616一括公開は保留。証拠 docs/evidence/development-execution/wallet-process-recovery.json。

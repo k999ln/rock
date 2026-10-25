@@ -9955,5 +9955,16 @@
       "skip": 2
     },
     "mainMergeEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json"
+  },
+  "esimAcknowledgementMainAdoption": {
+    "evidence": "docs/evidence/development-execution/esim-ack-main-adoption.json",
+    "sourceScopedAccepted": true,
+    "independentMetadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "actualHiddenTransitionTested": false,
+    "physicalAccepted": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
   }
 }

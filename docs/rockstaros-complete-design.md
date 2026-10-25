@@ -1129,3 +1129,17 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
+
+
+<a id="esim-ack-reconciliation"></a>
+## eSIMサービス保存ack後の現在状態再照合
+
+目的・利用体験: 保存応答の直後に読込が失敗しても、以前の契約や私有情報を操作可能として残さない。保存revisionを案内し、明示の状態再確認はGETだけを行う。初回の本当の未契約は既存同意導線を保つ。
+
+責任・入出力: ROCKの既存UIはaccepted/requestId/revisionを一時的な照合情報として扱う。Broker・serverの本人/owner権限、workflow、料金、支払いclaimは従来の契約を維持する。EXTERNALの応答やclient ackは実行権限へ昇格しない。OWNERは現状態を確認して意図した操作だけを選ぶ。
+
+状態・保存: loading/ready/pending/unavailable/signin/changedと既知/不明の照合状態を使う。同owner/workspace/order/device、ack以上revision、対象requestIdをfresh GETで確認してから現時点の権限に沿って復帰。private bodyやcredentialを新たに永続保存しない。null/500/401/403/別owner/古い応答では私有情報・export・invoice・新契約・mutationを隠す。非表示でgenerationとflightを無効化し、復帰時はfresh GETだけを実行する。
+
+失敗・復旧・承認: 不明POST結果を自動再送しない。同時操作lockとcurrent view照合で古いhandlerを拒否。late POST/GETは権限を復活させない。既知validationエラーも現権限を再読込してから入力を戻す。保存ackは課金・job完了・契約有効・端末導入の証明ではない。
+
+合格条件・未決定: 元8反例と追加3 lifecycle、component41、関連回帰/type/lint、実React合成browserのnull/500/403と同context回復を限定検収。実browser hidden遷移は未検証でありfixture結果と区別。最新main採用後の独立metadata検収、全verify、同head/mergeSHA CIでGit受入を決める。実Provider/金融/実機/一般公開は別gate。[証拠](evidence/development-execution/esim-ack-main-adoption.json)。

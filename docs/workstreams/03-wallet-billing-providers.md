@@ -1,3 +1,7 @@
+## eSIM保存ackのUI再照合
+
+ESIM-BILLING-UI-ACK-01の検収済みattempt2を最新main81acaへ無変更採用。ROCKはUIの現在権限照合、OWNERは明示操作、EXTERNAL応答は権限に昇格しない。`node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs`、`npm run typecheck`、`npm run verify`と同head CI/独立metadata検収がGit受入条件。実金融・Provider・実機・公開は別gate。[証拠](../evidence/development-execution/esim-ack-main-adoption.json)。
+
 ## WALLET-02 process強制終了復旧fixture
 
 主担当03/ROCK/O5、WLT01/WLT02/WLT04/B03。PR207統合後main0d726717から、既存SQLite fixtureにactual child SIGKILLを13点追加。停止後のfresh connection/replay/指示一意性/capとdefault ToC holdを確認する。対象36pass・独立PASS/mustFix0、全verify成功（2911中2908pass/3skip）。metadata独立r2 PASS/mustFix0。PR208は検収済みc3c0e17d/exact20を通常main2854d069へ統合済み。同mergeSHA6CI・実Linuxverify2911/2909pass/2skip/0fail、20payload/tree一致を確認。[統合証拠](../evidence/development-execution/wallet-process-recovery-main-merge.json)は元receiptの記録時pendingと分ける。[契約](../sky-billing.md#wallet-process-recovery-fixture)／[証拠](../evidence/development-execution/wallet-process-recovery.json)。Cloudflare並行/停電/実収益/認証端末/wholeWalletは別gate。公開/配備/616一括公開保留。

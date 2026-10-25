@@ -1,0 +1,722 @@
+{
+  "schema": "rockstaros.esim-billing-ui-ack/1",
+  "unit": "ESIM-BILLING-UI-ACK-01",
+  "recordedAt": "2026-10-25T06:55:25.837111+00:00",
+  "status": "attempt2_visibility_fix_candidate_checks_passed_pending_same_independent_rereview_and_root_new_hash_browser",
+  "plan": {
+    "rootPath": "docs/evidence/development-execution/esim-billing-product-next-batch.json",
+    "sha256": "8950f7ee7bbba41aff4f3e54bb7a292133fb29fb5063f0fe9c63e4eb7ca2829c",
+    "exactScope": "Consume existing PR201 saved acknowledgement in UI. Reuse PR194 current authority and PR196/202 billing claim; no reimplementation of server/claim/authority."
+  },
+  "ownership": {
+    "checkout": "<source-candidate>",
+    "branch": "codex/esim-reconcile-ui-20261025",
+    "fixedBase": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+    "ownedProductPaths": [
+      "components/sky-linux-service.tsx",
+      "tests/sky-linux-service-reconciliation.test.mjs"
+    ],
+    "onlyAdditionalRepositoryWrite": "docs/evidence/development-execution/esim-billing-ui-ack.json",
+    "preparationReceipt": "operator-artifact:esim-reconcile-ui-preparation-20261025.json",
+    "sourceRevertsOrOtherWriterChanges": false,
+    "rootOrSharedMetadataWrites": false,
+    "gitMutations": false,
+    "additionalTemporaryHarness": "Explicit later coordinator instruction permits local synthetic actual-component fixture in tmp; no added product/API path."
+  },
+  "sourceHashes": [
+    {
+      "path": "components/sky-linux-service.tsx",
+      "baseExists": true,
+      "baseSha256": "c2a4489f244af3d3a36b20baa404049665c5229c081423a47ce778f96673858a",
+      "candidateSha256": "e3bbc84780983169df8599f51c2e0f1d6f4fd845c672451c81292974d63492c1"
+    },
+    {
+      "path": "tests/sky-linux-service-reconciliation.test.mjs",
+      "baseExists": false,
+      "baseSha256": null,
+      "candidateSha256": "409d7fbecdfb846eafc410cd1c878832aa4362dadaf13dd501e189a427059936"
+    }
+  ],
+  "exactProductPatch": {
+    "sha256": "1fa4283ad5e49c5c44e648609d01a4aaa823fcb2876ba558b80cdcae4df0a401",
+    "construction": "git diff --binary for tracked component concatenated with git diff --no-index --binary /dev/null new test; excludes self-referential receipt.",
+    "trackedNumstat": [
+      "159\t64\tcomponents/sky-linux-service.tsx"
+    ],
+    "newTestLines": 309,
+    "diffCheckExitCode": 0,
+    "delivery": "Uncommitted exact two product paths + this receipt only. Root/Git saves/integrates separately after independent acceptance."
+  },
+  "implementation": {
+    "state": "Explicit loading/ready/pending/unavailable/signin/changed read states plus ephemeral known/unknown mutation confirmation. Stores action, accepted requestId, owner/workspace or known order/device context and server saved revision; no private body or credential in storage.",
+    "ack": "Only accepted:true + safe revision at least the submitted base revision marks known saved. It never grants current read/execute, contract activation, payment, job completion or device acceptance. POST body is not used as a current view; a fresh GET is required even on normal success.",
+    "recovery": "Fresh view must retain server canRead===true, same owner/workspace/order/device or pre-accept known order/device, revision>=ack revision. A run must contain the accepted requestId, so unrelated revision growth cannot clear reconciliation. A changed context clears private inputs/body and remains blocked; restoration requires fresh matching original context or explicit page reload/new entry.",
+    "render": "All workspace/job/usage/invoice/export/new-contract and author mutation UI is hidden outside ready. Null response after known workspace/ack is not treated as no contract. Null/500 do not restore an old actionable body;401/403 shows current-read/sign-in denial distinctly. Current usage null stays unconfirmed instead of defaulting measured usage to16USD. Public16USD contract wording and existing rates unchanged.",
+    "raceFences": "Synchronous mutation lock plus current rendered-view equality rejects duplicate or retained stale handlers before another POST or UUID allocation. Read sequence discards older responses. Lifecycle/connection-check generation invalidation rejects late POST/GET and prevents unmounted writes. Reuses existing sky-execution-access-check event plus window blur/focus/pageshow; only read-only GET is automatic on recheck. Attempt2 adds document.visibilitychange setup/cleanup. Hidden/non-visible state invalidates generation/read sequence/flight, clears private view and form drafts, retains only known/unknown pending correlation. canMutate, refresh start, async response acceptance and ready-body render all independently require visible. Visible/focus/pageshow rechecks send fresh GET only; hidden rechecks cannot fetch or restore authority.",
+    "validation": "Known validation4xx without owner/auth conflict clears pending then re-reads the current server view before returning editable flow, preserving validation message and draft inputs. It does not restore a former-owner body from cached state. Owner/auth conflicts clear private context; no automatic retry.",
+    "paymentBoundary": "Existing payment endpoint/currency/price/claim logic untouched. UI payment/download handlers share current-view/synchronous guards and generation checks; no payment request can start from a pending acknowledgement or retained stale handler. Existing operationRequest is reused for normal timeout, redirects and error envelopes.",
+    "ordinaryFlow": "A genuine initial current empty workspace with no pending/previous context still exposes deliberate existing terms/consent; selected eligible order/device must match the current eligible list. No automatic accept."
+  },
+  "responseMatrix": [
+    {
+      "input": "known saved ack then GET200 null body",
+      "result": "Saved revision visible as metadata only; reconciliation pending, no private body/usage/new contract/mutation; explicit GET refresh only."
+    },
+    {
+      "input": "known saved ack then GET500/network/invalid envelope",
+      "result": "Read unavailable, old private body hidden, saved metadata retained, no POST retry."
+    },
+    {
+      "input": "known saved ack then GET401/403",
+      "result": "Current read denied/sign-in needed; private data/inputs cleared; earlier successful reply cannot revive them."
+    },
+    {
+      "input": "fresh different owner/workspace/order/device",
+      "result": "Context changed, no foreign or cached former-owner body shown; old generation discarded."
+    },
+    {
+      "input": "fresh same context but revision below saved or run requestId absent",
+      "result": "Still pending even if other work advanced revision."
+    },
+    {
+      "input": "fresh matching context/revision/requestId",
+      "result": "Current server view restores controls according to its actual access/job/invoice state, without replay."
+    },
+    {
+      "input": "known validation400",
+      "result": "No fake saved status; current authorized GET restores editable flow and rejection message."
+    },
+    {
+      "input": "unknown POST outcome/no valid ack",
+      "result": "Conservative unknown confirmation keeps actions blocked; no invented saved revision, automatic POST or new requestId."
+    }
+  ],
+  "beforeEvidence": {
+    "command": "ESIM_ACK_TEST_BASE=b1b0ca41 node --experimental-strip-types --test --test-name-pattern='saved ack then' tests/sky-linux-service-reconciliation.test.mjs",
+    "base": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+    "productSourceSha256": "c2a4489f244af3d3a36b20baa404049665c5229c081423a47ce778f96673858a",
+    "tests": 2,
+    "passed": 0,
+    "failed": 2,
+    "failureReason": "After accepted ack +null read old component offers new-contract form; after+500 old private body remains. Same final test harness compiles actual immutable base TSX in memory. No old product file overwritten.",
+    "notSecurityCount": "Two UI regressions, not a provider/duplicate-charge exploit or two production incidents."
+  },
+  "validation": {
+    "componentFixture": "41 tests pass: original29 plus12 visibility/subtest regressions. Actual component/operations-client hook fixture, not a real browser DOM acceptance.",
+    "regression": {
+      "command": "node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs tests/sky-linux-owner-response.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+      "exitCode": 0,
+      "tests": 187,
+      "passed": 186,
+      "failed": 0,
+      "skipped": 1,
+      "skip": "Existing opt-in local D1 SQL test from PR201 was not rerun for UI-only changes. No SQL/store source change and no inherited D1 result promoted to this UI acceptance."
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "prehook": "Normal existing private module generator; unlocked content. No private copy/stub/manual generated replacement."
+    },
+    "lint": {
+      "command": "npm run lint:product",
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "browserFixtureBuild": {
+      "command": "node operator-artifact:esim-ui-ack-browser-fixture-20261025/build.mjs",
+      "exitCode": 0,
+      "componentDigestMatchesCandidate": true,
+      "serverStarted": false,
+      "browserOperated": false
+    },
+    "fullVerify": "Not run in this finite scoped lease; Root/Git integration owns fixed-candidate checks.",
+    "sameHeadCI": "Not queried/asserted.",
+    "originalIndependentProbe": {
+      "command": "node --experimental-strip-types --test operator-artifact:esim-ack-independent-probes.mjs",
+      "scriptSha256": "9cb8c1fc5b1983de165ecf8e6b59b2af1311a7ffeb22e88b4e8a15805d71d820",
+      "beforeFix": {
+        "exitCode": 1,
+        "tests": 8,
+        "passed": 6,
+        "failed": 2
+      },
+      "afterFix": {
+        "exitCode": 0,
+        "tests": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "scope": "Implementer re-executed original reviewer-owned script unchanged against actual candidate. Not an independent re-review verdict or real browser acceptance."
+    },
+    "visibilityBeforeFix": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='visibility boundary' tests/sky-linux-service-reconciliation.test.mjs",
+      "tests": 2,
+      "passed": 0,
+      "failed": 2,
+      "expectedFailures": true,
+      "source": "Attempt1 component unchanged at the time; independent reproduction scenarios appended to owned tests before product fix."
+    }
+  },
+  "testCoverage": [
+    "null versus500 versus401/403 recovery; no private/contract/usage controls",
+    "POST count1, no automatic accept/newUUID/collect and stale handlers rejected even after recovery",
+    "same owner/workspace + saved revision and exact accepted run ID required",
+    "pre-accept known order/device; genuine initial empty flow and positive recovery",
+    "owner B and older deferred A responses cannot revive A/B private data in original context",
+    "newer failed read overrides older200; auth/connection/lifecycle boundary rejects old POST",
+    "ordinary validation rereads authority; foreign-owner result cannot restore cached body",
+    "uncertain POST500/network/stale ack stays unknown; no false saved state",
+    "known ack cannot upgrade canExecute:false, invoice open or running job to success",
+    "unmount causes no late state writes; unknown current usage never substitutes measured16USD",
+    "Document hidden without blur invalidates body/epoch/flight, direct hidden retained handlers/late GET/late POST cannot restore or mutate, visible return fresh GET only; all original29 scenarios retained."
+  ],
+  "earlierFailuresAndCorrections": [
+    {
+      "stage": "initial test harness",
+      "issue": "CSS default interop missing, then recursive tree helper defaulted undefined children back to root. Those were harness failures, not the old UI counterexample.",
+      "correction": "Use normal TS esModuleInterop and separate recursive visit/content functions; rerun immutable base: two meaningful expected UI failures."
+    },
+    {
+      "stage": "first lint",
+      "issue": "Cleanup ref access aliases, redundant output status role and unsafe unknown-to-string conversion.",
+      "correction": "Use stable ref aliases, implicit output role, explicit string guards; final product lint passes."
+    }
+  ],
+  "logs": {
+    "initialHarness": {
+      "path": "operator-artifact:esim-ui-ack-before.log",
+      "sha256": "f0d1f3b2f70116a4eda0ea5d87b7f08f676bc6e6de2bf4446be671c08fae5fd0"
+    },
+    "beforeFixedHarness": {
+      "path": "operator-artifact:esim-ui-ack-before-final.log",
+      "sha256": "846b6ff23d999ad7c78352a0c479b33d6ae671c37c295a43eabd022a85295b98"
+    },
+    "component": {
+      "path": "operator-artifact:esim-ui-ack-component.log",
+      "sha256": "c1fd3cf834d902650db70edf7d179eb609671bffe8aa5f85c73a373806d93acb"
+    },
+    "regression": {
+      "path": "operator-artifact:esim-ui-ack-regression.log",
+      "sha256": "cad7272622537b7ff3407eb775b5b40a0808677199eb7d8e097f77795da6f7d4"
+    },
+    "typecheck": {
+      "path": "operator-artifact:esim-ui-ack-typecheck-final.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "path": "operator-artifact:esim-ui-ack-lint-final.log",
+      "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+    },
+    "initialLint": {
+      "path": "operator-artifact:esim-ui-ack-lint.log",
+      "sha256": "a007c06adc9ee5f33628e7bbcdc71dae7519afb54cbdb65959e720f7e1064a51"
+    },
+    "attempt2BeforeIndependent": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-before-independent.log",
+      "sha256": "7d1c3469fa1d7f3a1d226ee5e33e9c08a4457a5cf060653c99406984ca230720"
+    },
+    "attempt2BeforeOwned": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-before-owned.log",
+      "sha256": "119d4e7e2a98669966d0199cd0282c8d80fc032b934e7493b2efa72fab4bd243"
+    },
+    "attempt2OriginalProbe": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-independent.log",
+      "sha256": "1919af02742c2d805fcf25633c9fbc92767024204e739a8722ad1be30e5732b6"
+    },
+    "attempt2Component": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-component-final.log",
+      "sha256": "912d006cf1f2dd7cae89e44c627d8d2ac35cd21056e60d9c005771c7b7d68969"
+    },
+    "attempt2Regression": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-regression.log",
+      "sha256": "13fe392a17cedd21ed130c7b02a8c5f231630ee96718c0673381d8cba5b0dc80"
+    },
+    "attempt2Typecheck": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-typecheck.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "attempt2Lint": {
+      "path": "operator-artifact:esim-ui-ack-attempt2-lint.log",
+      "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+    }
+  },
+  "rootBrowserHandoff": {
+    "directory": "operator-artifact:esim-ui-ack-browser-fixture-20261025",
+    "instructions": "operator-artifact:esim-ui-ack-browser-fixture-20261025/README.md",
+    "manifest": "operator-artifact:esim-ui-ack-browser-fixture-20261025/manifest.json",
+    "manifestSha256": "beaca9d18e283eacca22cb28a4ea287276e39b59ab808ca5bbbd28a13faadabb",
+    "commands": [
+      "node operator-artifact:esim-ui-ack-browser-fixture-20261025/build.mjs",
+      "node operator-artifact:esim-ui-ack-browser-fixture-20261025/serve.mjs"
+    ],
+    "url": "http://127.0.0.1:41743/",
+    "initialEmptyUrl": "http://127.0.0.1:41743/?initial=empty",
+    "stop": "Ctrl-C owned fixture server",
+    "identity": "Imports actual assigned component and operations-client from assigned tree, uses normal real React DOM and actual component CSS. No copied or separately mimicked product UI. Component hash and bundle hashes checked before serving.",
+    "syntheticBoundaries": "Next Link/workspace shell/notice are explicitly fixture host chrome only. Isolated fetch returns only synthetic Linux data/ack; all other routes reject and no authentication credential/provider/network is used. It is not a production API/auth stub or deployed app.",
+    "rootChecks": [
+      "Desktop and390px actual component; ack+null/500 hide old private body, totals/export and new-contract form",
+      "403 current-read denial distinct from null/500; do not upgrade ack to paid/active/completed",
+      "Repeated explicit refresh keeps synthetic POST count1; fresh owner-a matching revision recovers actual state",
+      "Delayed old GET + observed owner-B then release old A cannot restore either body; owner-A fresh matching recovery",
+      "Legitimate initial empty page still requires deliberate terms/choice/consent",
+      "Attempt2: choose GETをすべて保留, hide actual tab via native visibilitychange, return visible; fresh GET count rises, no POST, body stays hidden until eligible held fresh response is released. Native focus/pageshow may add reads; no old hidden response can revive body."
+    ],
+    "acceptance": "Attempt2 fixture formally rebuilt against new source hash, explicit single React alias retained. Implementer started no server/browser and does not transfer old-hash Root firstpass to this candidate. Root must restart/reload the owned local fixture and record new-hash visibility observations.",
+    "dependencyResolution": "esbuild aliases react/react-jsx-runtime/react-jsx-dev-runtime/react-dom/client explicitly to the same assigned clean-tree node_modules. Rebuild passed; no product stubs or source changes.",
+    "failureScope": "No browser runtime failure or success observed by implementer: no server/browser was started. Root reported a React double-resolution problem in a separate Eve fixture; this is not recorded as this fixture having failed.",
+    "attempt": 2,
+    "oldBrowserGate": "Old46f27eb6 limited firstpass is historical only; attempt2 actual browser remains pending."
+  },
+  "temporaryHarnessFiles": {
+    "build.mjs": "a2443ff71da423c0db6bc53ec8f8fee83fbea0e8ac19f27c03d4e3d3eae30f92",
+    "entry.jsx": "0d91fcd71753acaf01129baef9877e84dc0fe42f9f5e4cac02a07d068f65f640",
+    "index.html": "e9df4c7f31747a6b80b176ee8f22b0cef3a08f876a693dcd23042514ec7e8213",
+    "serve.mjs": "16aad745d15a69c5d042963bf1221cc829b944f79081162fb36b7db9a64b37f4",
+    "README.md": "4fceec7865e6e44ea025278b30c1592207ba258085fff25943eaf32862732722",
+    "manifest.json": "beaca9d18e283eacca22cb28a4ea287276e39b59ab808ca5bbbd28a13faadabb"
+  },
+  "limitsAndOpenGates": [
+    "Same independent reviewer must re-review attempt2 exact hashes and ESIM-ACK-VISIBILITY-01. Original MUSTFIX review is preserved unmodified; implementer local8pass is not acceptance. Root actual browser at new hash remains pending.",
+    "No generic owner identity push exists in this component/API. Silent HttpOnly cookie/account changes cannot be known before an observed server context/auth denial or visibility/focus/pageshow/connection-check boundary; no full cross-tab account-switch or server authentication acceptance is claimed.",
+    "A POST without a valid saved acknowledgement remains unknown and blocked. This UI does not invent an acknowledgement or solve server lost-write/outbox reconciliation; explicit re-entry may be needed after independent inspection.",
+    "Server ownerResponse/current authority/claim/retention/schema/price/issuer and payment collection are unchanged. No persisted client receipt, credential, owner ACL, retention start/lease duration or policy default is created.",
+    "No actual credential, paid model/provider, production D1/migration, eSIM activation, device/native OS, public release or616 bulk export executed. Existing whole ESIM01-08 gates remain false."
+  ],
+  "acceptance": {
+    "independentReviewed": false,
+    "rootActualBrowserAccepted": false,
+    "wholeEsimUnits": {
+      "ESIM-01": false,
+      "ESIM-02": false,
+      "ESIM-03": false,
+      "ESIM-04": false,
+      "ESIM-05": false,
+      "ESIM-06": false,
+      "ESIM-07": false,
+      "ESIM-08": false
+    },
+    "productionBilling": false,
+    "realProvider": false,
+    "device": false,
+    "generalLaunch": false,
+    "remaining616Bulk": "HELD"
+  },
+  "sharedSyncRequest": {
+    "owner": "Root/Git single writer after scoped independent and actual UI acceptance",
+    "request": "Sync user-visible ack/reconciliation behavior, unchanged policy/authority and remaining gates in existing design/status/README/index as required. No shared metadata or Root registry was changed by this implementer."
+  },
+  "operations": {
+    "repositoryWrites": [
+      "components/sky-linux-service.tsx",
+      "tests/sky-linux-service-reconciliation.test.mjs",
+      "docs/evidence/development-execution/esim-billing-ui-ack.json"
+    ],
+    "temporaryHarnessAuthorized": true,
+    "gitMutation": false,
+    "globalMetadataOrRootRegistry": false,
+    "otherWriterReverts": false,
+    "newSchemaOrMigration": false,
+    "productionDatabaseMutation": false,
+    "providerOrFinancialCalls": false,
+    "browserOrDeviceOperations": false,
+    "otherChatsOrSubagents": false,
+    "privateCopiesOrStubs": false,
+    "networkInstall": false,
+    "published616OrOtherSource": false,
+    "originalRootReviewModified": false,
+    "attempt1ReceiptEmbeddedUnmodified": true
+  },
+  "next": "End finite attempt2 turn. Same reviewer independently rechecks exact new hashes and original visibility finding, then Root actual UI at rebuilt new hash and Git integration; no automatic further implementation.",
+  "fixtureRefinementHistory": {
+    "previousReceiptSha256": "acd8d9d4e815b1884eef68ae9e02f785ae67fff5d9bd9a2efc9ab99b0ccfe5db",
+    "previousTemporaryFiles": {
+      "build.mjs": "072e89f0475ee4ad332fa52b0e1a7192f9e907afcb492a1e8a47678533a4b3c4",
+      "entry.jsx": "9ec0c8edeaa2163fd2845bd54d90505589711013af9d47976ba0e97c388659d2",
+      "index.html": "e9df4c7f31747a6b80b176ee8f22b0cef3a08f876a693dcd23042514ec7e8213",
+      "serve.mjs": "16aad745d15a69c5d042963bf1221cc829b944f79081162fb36b7db9a64b37f4",
+      "README.md": "8e6f99e747b583afa492224a9206a768467f89bff6633304f049ad0f00b60796",
+      "manifest.json": "b8ba5e2d2650df59a3726a3e375bb1876b5702ce0830edadcf85abc004812b44"
+    },
+    "reason": "Coordinator requested finite handoff and suggested single React resolution; product patch unchanged, no new browser acceptance claim."
+  },
+  "attempt": 2,
+  "attemptHistory": [
+    {
+      "attempt": 1,
+      "receiptSha256": "cb55ec5cf0fcb692313bbb7c5c629a5d4a6192e5d834468cc7a8b76788e9a327",
+      "receipt": {
+        "schema": "rockstaros.esim-billing-ui-ack/1",
+        "unit": "ESIM-BILLING-UI-ACK-01",
+        "recordedAt": "2026-10-25T06:36:40.677139+00:00",
+        "status": "bounded_ui_candidate_passed_local_checks_pending_independent_review_and_root_browser_acceptance",
+        "plan": {
+          "rootPath": "docs/evidence/development-execution/esim-billing-product-next-batch.json",
+          "sha256": "8950f7ee7bbba41aff4f3e54bb7a292133fb29fb5063f0fe9c63e4eb7ca2829c",
+          "exactScope": "Consume existing PR201 saved acknowledgement in UI. Reuse PR194 current authority and PR196/202 billing claim; no reimplementation of server/claim/authority."
+        },
+        "ownership": {
+          "checkout": "<source-candidate>",
+          "branch": "codex/esim-reconcile-ui-20261025",
+          "fixedBase": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+          "ownedProductPaths": [
+            "components/sky-linux-service.tsx",
+            "tests/sky-linux-service-reconciliation.test.mjs"
+          ],
+          "onlyAdditionalRepositoryWrite": "docs/evidence/development-execution/esim-billing-ui-ack.json",
+          "preparationReceipt": "operator-artifact:esim-reconcile-ui-preparation-20261025.json",
+          "sourceRevertsOrOtherWriterChanges": false,
+          "rootOrSharedMetadataWrites": false,
+          "gitMutations": false,
+          "additionalTemporaryHarness": "Explicit later coordinator instruction permits local synthetic actual-component fixture in tmp; no added product/API path."
+        },
+        "sourceHashes": [
+          {
+            "path": "components/sky-linux-service.tsx",
+            "baseExists": true,
+            "baseSha256": "c2a4489f244af3d3a36b20baa404049665c5229c081423a47ce778f96673858a",
+            "candidateSha256": "46f27eb66a1bfe78387339a7b5638b4b27823bac024150dc7aeff0353b6a2126"
+          },
+          {
+            "path": "tests/sky-linux-service-reconciliation.test.mjs",
+            "baseExists": false,
+            "baseSha256": null,
+            "candidateSha256": "fddf620f5be069378dddde9c49a91d4222a9f5ca4c2ec49adaa9a62a83fa52ca"
+          }
+        ],
+        "exactProductPatch": {
+          "sha256": "6039133f88ca309fd89e41b95e0b4ecbf82186a65ab68bae8207032346faeab7",
+          "construction": "git diff --binary for tracked component concatenated with git diff --no-index --binary /dev/null new test; excludes self-referential receipt.",
+          "trackedNumstat": [
+            "149\t64\tcomponents/sky-linux-service.tsx"
+          ],
+          "newTestLines": 253,
+          "diffCheckExitCode": 0,
+          "delivery": "Uncommitted exact two product paths + this receipt only. Root/Git saves/integrates separately after independent acceptance."
+        },
+        "implementation": {
+          "state": "Explicit loading/ready/pending/unavailable/signin/changed read states plus ephemeral known/unknown mutation confirmation. Stores action, accepted requestId, owner/workspace or known order/device context and server saved revision; no private body or credential in storage.",
+          "ack": "Only accepted:true + safe revision at least the submitted base revision marks known saved. It never grants current read/execute, contract activation, payment, job completion or device acceptance. POST body is not used as a current view; a fresh GET is required even on normal success.",
+          "recovery": "Fresh view must retain server canRead===true, same owner/workspace/order/device or pre-accept known order/device, revision>=ack revision. A run must contain the accepted requestId, so unrelated revision growth cannot clear reconciliation. A changed context clears private inputs/body and remains blocked; restoration requires fresh matching original context or explicit page reload/new entry.",
+          "render": "All workspace/job/usage/invoice/export/new-contract and author mutation UI is hidden outside ready. Null response after known workspace/ack is not treated as no contract. Null/500 do not restore an old actionable body;401/403 shows current-read/sign-in denial distinctly. Current usage null stays unconfirmed instead of defaulting measured usage to16USD. Public16USD contract wording and existing rates unchanged.",
+          "raceFences": "Synchronous mutation lock plus current rendered-view equality rejects duplicate or retained stale handlers before another POST or UUID allocation. Read sequence discards older responses. Lifecycle/connection-check generation invalidation rejects late POST/GET and prevents unmounted writes. Reuses existing sky-execution-access-check event plus window blur/focus/pageshow; only read-only GET is automatic on recheck.",
+          "validation": "Known validation4xx without owner/auth conflict clears pending then re-reads the current server view before returning editable flow, preserving validation message and draft inputs. It does not restore a former-owner body from cached state. Owner/auth conflicts clear private context; no automatic retry.",
+          "paymentBoundary": "Existing payment endpoint/currency/price/claim logic untouched. UI payment/download handlers share current-view/synchronous guards and generation checks; no payment request can start from a pending acknowledgement or retained stale handler. Existing operationRequest is reused for normal timeout, redirects and error envelopes.",
+          "ordinaryFlow": "A genuine initial current empty workspace with no pending/previous context still exposes deliberate existing terms/consent; selected eligible order/device must match the current eligible list. No automatic accept."
+        },
+        "responseMatrix": [
+          {
+            "input": "known saved ack then GET200 null body",
+            "result": "Saved revision visible as metadata only; reconciliation pending, no private body/usage/new contract/mutation; explicit GET refresh only."
+          },
+          {
+            "input": "known saved ack then GET500/network/invalid envelope",
+            "result": "Read unavailable, old private body hidden, saved metadata retained, no POST retry."
+          },
+          {
+            "input": "known saved ack then GET401/403",
+            "result": "Current read denied/sign-in needed; private data/inputs cleared; earlier successful reply cannot revive them."
+          },
+          {
+            "input": "fresh different owner/workspace/order/device",
+            "result": "Context changed, no foreign or cached former-owner body shown; old generation discarded."
+          },
+          {
+            "input": "fresh same context but revision below saved or run requestId absent",
+            "result": "Still pending even if other work advanced revision."
+          },
+          {
+            "input": "fresh matching context/revision/requestId",
+            "result": "Current server view restores controls according to its actual access/job/invoice state, without replay."
+          },
+          {
+            "input": "known validation400",
+            "result": "No fake saved status; current authorized GET restores editable flow and rejection message."
+          },
+          {
+            "input": "unknown POST outcome/no valid ack",
+            "result": "Conservative unknown confirmation keeps actions blocked; no invented saved revision, automatic POST or new requestId."
+          }
+        ],
+        "beforeEvidence": {
+          "command": "ESIM_ACK_TEST_BASE=b1b0ca41 node --experimental-strip-types --test --test-name-pattern='saved ack then' tests/sky-linux-service-reconciliation.test.mjs",
+          "base": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+          "productSourceSha256": "c2a4489f244af3d3a36b20baa404049665c5229c081423a47ce778f96673858a",
+          "tests": 2,
+          "passed": 0,
+          "failed": 2,
+          "failureReason": "After accepted ack +null read old component offers new-contract form; after+500 old private body remains. Same final test harness compiles actual immutable base TSX in memory. No old product file overwritten.",
+          "notSecurityCount": "Two UI regressions, not a provider/duplicate-charge exploit or two production incidents."
+        },
+        "validation": {
+          "componentFixture": "29 new hook tests (including subtests) pass as part of regression command; actual TSX and actual operations-client run in a deterministic React-hook/JSX-tree fixture. Real React/browser DOM is separately pending, not claimed by hook fixture.",
+          "regression": {
+            "command": "node --experimental-strip-types --test tests/sky-linux-service-reconciliation.test.mjs tests/sky-linux-owner-response.test.mjs tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs tests/rockstar-service-attachment.test.mjs tests/esim-cloud-access.test.mjs",
+            "exitCode": 0,
+            "tests": 175,
+            "passed": 174,
+            "failed": 0,
+            "skipped": 1,
+            "skip": "Existing opt-in local D1 SQL test from PR201 was not rerun for UI-only changes. No SQL/store source change and no inherited D1 result promoted to this UI acceptance."
+          },
+          "typecheck": {
+            "command": "npm run typecheck",
+            "exitCode": 0,
+            "prehook": "Normal existing private module generator; unlocked content. No private copy/stub/manual generated replacement."
+          },
+          "lint": {
+            "command": "npm run lint:product",
+            "exitCode": 0
+          },
+          "diffCheck": {
+            "command": "git diff --check",
+            "exitCode": 0
+          },
+          "browserFixtureBuild": {
+            "command": "node operator-artifact:esim-ui-ack-browser-fixture-20261025/build.mjs",
+            "exitCode": 0,
+            "componentDigestMatchesCandidate": true,
+            "serverStarted": false,
+            "browserOperated": false
+          },
+          "fullVerify": "Not run in this finite scoped lease; Root/Git integration owns fixed-candidate checks.",
+          "sameHeadCI": "Not queried/asserted."
+        },
+        "testCoverage": [
+          "null versus500 versus401/403 recovery; no private/contract/usage controls",
+          "POST count1, no automatic accept/newUUID/collect and stale handlers rejected even after recovery",
+          "same owner/workspace + saved revision and exact accepted run ID required",
+          "pre-accept known order/device; genuine initial empty flow and positive recovery",
+          "owner B and older deferred A responses cannot revive A/B private data in original context",
+          "newer failed read overrides older200; auth/connection/lifecycle boundary rejects old POST",
+          "ordinary validation rereads authority; foreign-owner result cannot restore cached body",
+          "uncertain POST500/network/stale ack stays unknown; no false saved state",
+          "known ack cannot upgrade canExecute:false, invoice open or running job to success",
+          "unmount causes no late state writes; unknown current usage never substitutes measured16USD"
+        ],
+        "earlierFailuresAndCorrections": [
+          {
+            "stage": "initial test harness",
+            "issue": "CSS default interop missing, then recursive tree helper defaulted undefined children back to root. Those were harness failures, not the old UI counterexample.",
+            "correction": "Use normal TS esModuleInterop and separate recursive visit/content functions; rerun immutable base: two meaningful expected UI failures."
+          },
+          {
+            "stage": "first lint",
+            "issue": "Cleanup ref access aliases, redundant output status role and unsafe unknown-to-string conversion.",
+            "correction": "Use stable ref aliases, implicit output role, explicit string guards; final product lint passes."
+          }
+        ],
+        "logs": {
+          "initialHarness": {
+            "path": "operator-artifact:esim-ui-ack-before.log",
+            "sha256": "f0d1f3b2f70116a4eda0ea5d87b7f08f676bc6e6de2bf4446be671c08fae5fd0"
+          },
+          "beforeFixedHarness": {
+            "path": "operator-artifact:esim-ui-ack-before-final.log",
+            "sha256": "846b6ff23d999ad7c78352a0c479b33d6ae671c37c295a43eabd022a85295b98"
+          },
+          "component": {
+            "path": "operator-artifact:esim-ui-ack-component.log",
+            "sha256": "c1fd3cf834d902650db70edf7d179eb609671bffe8aa5f85c73a373806d93acb"
+          },
+          "regression": {
+            "path": "operator-artifact:esim-ui-ack-regression.log",
+            "sha256": "cad7272622537b7ff3407eb775b5b40a0808677199eb7d8e097f77795da6f7d4"
+          },
+          "typecheck": {
+            "path": "operator-artifact:esim-ui-ack-typecheck-final.log",
+            "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+          },
+          "lint": {
+            "path": "operator-artifact:esim-ui-ack-lint-final.log",
+            "sha256": "24403a9d593ce45968872998e587fc738f900a9100b15ea2a51894b716172ce0"
+          },
+          "initialLint": {
+            "path": "operator-artifact:esim-ui-ack-lint.log",
+            "sha256": "a007c06adc9ee5f33628e7bbcdc71dae7519afb54cbdb65959e720f7e1064a51"
+          }
+        },
+        "rootBrowserHandoff": {
+          "directory": "operator-artifact:esim-ui-ack-browser-fixture-20261025",
+          "instructions": "operator-artifact:esim-ui-ack-browser-fixture-20261025/README.md",
+          "manifest": "operator-artifact:esim-ui-ack-browser-fixture-20261025/manifest.json",
+          "manifestSha256": "b8ba5e2d2650df59a3726a3e375bb1876b5702ce0830edadcf85abc004812b44",
+          "commands": [
+            "node operator-artifact:esim-ui-ack-browser-fixture-20261025/build.mjs",
+            "node operator-artifact:esim-ui-ack-browser-fixture-20261025/serve.mjs"
+          ],
+          "url": "http://127.0.0.1:41743/",
+          "initialEmptyUrl": "http://127.0.0.1:41743/?initial=empty",
+          "stop": "Ctrl-C owned fixture server",
+          "identity": "Imports actual assigned component and operations-client from assigned tree, uses normal real React DOM and actual component CSS. No copied or separately mimicked product UI. Component hash and bundle hashes checked before serving.",
+          "syntheticBoundaries": "Next Link/workspace shell/notice are explicitly fixture host chrome only. Isolated fetch returns only synthetic Linux data/ack; all other routes reject and no authentication credential/provider/network is used. It is not a production API/auth stub or deployed app.",
+          "rootChecks": [
+            "Desktop and390px actual component; ack+null/500 hide old private body, totals/export and new-contract form",
+            "403 current-read denial distinct from null/500; do not upgrade ack to paid/active/completed",
+            "Repeated explicit refresh keeps synthetic POST count1; fresh owner-a matching revision recovers actual state",
+            "Delayed old GET + observed owner-B then release old A cannot restore either body; owner-A fresh matching recovery",
+            "Legitimate initial empty page still requires deliberate terms/choice/consent"
+          ],
+          "acceptance": "Only fixture build verified. Root performs and records real browser observations independently; no full app shell/auth/provider/device acceptance inferred.",
+          "dependencyResolution": "esbuild aliases react/react-jsx-runtime/react-jsx-dev-runtime/react-dom/client explicitly to the same assigned clean-tree node_modules. Rebuild passed; no product stubs or source changes.",
+          "failureScope": "No browser runtime failure or success observed by implementer: no server/browser was started. Root reported a React double-resolution problem in a separate Eve fixture; this is not recorded as this fixture having failed."
+        },
+        "temporaryHarnessFiles": {
+          "build.mjs": "a2443ff71da423c0db6bc53ec8f8fee83fbea0e8ac19f27c03d4e3d3eae30f92",
+          "entry.jsx": "9ec0c8edeaa2163fd2845bd54d90505589711013af9d47976ba0e97c388659d2",
+          "index.html": "e9df4c7f31747a6b80b176ee8f22b0cef3a08f876a693dcd23042514ec7e8213",
+          "serve.mjs": "16aad745d15a69c5d042963bf1221cc829b944f79081162fb36b7db9a64b37f4",
+          "README.md": "8e6f99e747b583afa492224a9206a768467f89bff6633304f049ad0f00b60796",
+          "manifest.json": "b8ba5e2d2650df59a3726a3e375bb1876b5702ce0830edadcf85abc004812b44"
+        },
+        "limitsAndOpenGates": [
+          "Independent review of these exact component/test hashes and Root actual browser checks are still required. Implementer does not mark new UI accepted.",
+          "No generic owner identity push exists in this component/API. Silent HttpOnly cookie/account changes cannot be known before an observed server context/auth denial or focus/pageshow/connection-check boundary; no full cross-tab account-switch or server authentication acceptance is claimed.",
+          "A POST without a valid saved acknowledgement remains unknown and blocked. This UI does not invent an acknowledgement or solve server lost-write/outbox reconciliation; explicit re-entry may be needed after independent inspection.",
+          "Server ownerResponse/current authority/claim/retention/schema/price/issuer and payment collection are unchanged. No persisted client receipt, credential, owner ACL, retention start/lease duration or policy default is created.",
+          "No actual credential, paid model/provider, production D1/migration, eSIM activation, device/native OS, public release or616 bulk export executed. Existing whole ESIM01-08 gates remain false."
+        ],
+        "acceptance": {
+          "independentReviewed": false,
+          "rootActualBrowserAccepted": false,
+          "wholeEsimUnits": {
+            "ESIM-01": false,
+            "ESIM-02": false,
+            "ESIM-03": false,
+            "ESIM-04": false,
+            "ESIM-05": false,
+            "ESIM-06": false,
+            "ESIM-07": false,
+            "ESIM-08": false
+          },
+          "productionBilling": false,
+          "realProvider": false,
+          "device": false,
+          "generalLaunch": false,
+          "remaining616Bulk": "HELD"
+        },
+        "sharedSyncRequest": {
+          "owner": "Root/Git single writer after scoped independent and actual UI acceptance",
+          "request": "Sync user-visible ack/reconciliation behavior, unchanged policy/authority and remaining gates in existing design/status/README/index as required. No shared metadata or Root registry was changed by this implementer."
+        },
+        "operations": {
+          "repositoryWrites": [
+            "components/sky-linux-service.tsx",
+            "tests/sky-linux-service-reconciliation.test.mjs",
+            "docs/evidence/development-execution/esim-billing-ui-ack.json"
+          ],
+          "temporaryHarnessAuthorized": true,
+          "gitMutation": false,
+          "globalMetadataOrRootRegistry": false,
+          "otherWriterReverts": false,
+          "newSchemaOrMigration": false,
+          "productionDatabaseMutation": false,
+          "providerOrFinancialCalls": false,
+          "browserOrDeviceOperations": false,
+          "otherChatsOrSubagents": false,
+          "privateCopiesOrStubs": false,
+          "networkInstall": false,
+          "published616OrOtherSource": false
+        },
+        "next": "End finite implementation turn and idle. Root coordinates exact candidate independent review, real local fixture browser verification and Git/main integration; no automatic further implementation.",
+        "fixtureRefinementHistory": {
+          "previousReceiptSha256": "acd8d9d4e815b1884eef68ae9e02f785ae67fff5d9bd9a2efc9ab99b0ccfe5db",
+          "previousTemporaryFiles": {
+            "build.mjs": "072e89f0475ee4ad332fa52b0e1a7192f9e907afcb492a1e8a47678533a4b3c4",
+            "entry.jsx": "9ec0c8edeaa2163fd2845bd54d90505589711013af9d47976ba0e97c388659d2",
+            "index.html": "e9df4c7f31747a6b80b176ee8f22b0cef3a08f876a693dcd23042514ec7e8213",
+            "serve.mjs": "16aad745d15a69c5d042963bf1221cc829b944f79081162fb36b7db9a64b37f4",
+            "README.md": "8e6f99e747b583afa492224a9206a768467f89bff6633304f049ad0f00b60796",
+            "manifest.json": "b8ba5e2d2650df59a3726a3e375bb1876b5702ce0830edadcf85abc004812b44"
+          },
+          "reason": "Coordinator requested finite handoff and suggested single React resolution; product patch unchanged, no new browser acceptance claim."
+        }
+      },
+      "independentReview": {
+        "path": "<operator-root>/docs/evidence/development-execution/esim-billing-ui-ack-review.json",
+        "sha256": "e546ccb367ac977118f6089ed3f47966a0b1f36bf7a7e1f469973f6568d5ccb8",
+        "status": "MUSTFIX",
+        "mustFix": [
+          {
+            "id": "ESIM-ACK-VISIBILITY-01",
+            "priority": "P2",
+            "title": "visibilitychange does not quarantine or fence current and late private responses",
+            "path": "components/sky-linux-service.tsx",
+            "lines": [
+              129,
+              132
+            ],
+            "relatedLines": [
+              75,
+              76,
+              114
+            ],
+            "cause": "Effect listens only for window blur/focus/pageshow/access-check. document.visibilitychange is not handled, and canMutate/refresh result acceptance do not check document.visibilityState.",
+            "reproduction": [
+              "Load authorized view; set document.visibilityState=hidden and dispatch visibilitychange without a separate blur event. Retained current stop handler sends POST1 (expected0).",
+              "Start mutation, receive ack revision8 and issue GET. Hide via visibilitychange; resolve pre-hide GET with matching revision8. Private body and mutation controls are restored while hidden. Return visible via visibilitychange: GET count stays2, no fresh authority read."
+            ],
+            "evidence": {
+              "hidden": {
+                "privateBody": true,
+                "actionVisible": true,
+                "gets": 2,
+                "posts": 1
+              },
+              "visible": {
+                "privateBody": true,
+                "gets": 2
+              },
+              "lateWrites": 0
+            },
+            "impact": "The explicitly requested visibility boundary does not invalidate old responses or current actionable private UI. A matching old GET can unlock controls across hidden/visible transition without a fresh current-authority check. This is a hook-fixture UI race, not proof of server authorization bypass or an actual charge.",
+            "requiredFix": "Add visibilitychange setup/cleanup that invalidates generation/read state and hides private UI on hidden, then requires a fresh read on visible. Gate retained actions and successful read restoration against hidden visibility; keep known/unknown pending identity and avoid POST replay. Preserve ordinary visible initial load and successful recovery.",
+            "acceptance": [
+              "Both independent visibility counterexamples pass with POST0 for retained hidden handler and no hidden private/action restoration.",
+              "Visible return performs GET only, remains quarantined until fresh matching authorized response, restores ordinary controls after that response.",
+              "Keep unknown outcome no-resend, same-owner/workspace/order/device/revision/requestId guards and existing positive/validation/174 regression results."
+            ],
+            "status": "MUSTFIX_BEFORE_SCOPED_ACCEPTANCE"
+          }
+        ],
+        "originalProbe": {
+          "tests": 8,
+          "pass": 6,
+          "fail": 2,
+          "script": "operator-artifact:esim-ack-independent-probes.mjs",
+          "sha256": "9cb8c1fc5b1983de165ecf8e6b59b2af1311a7ffeb22e88b4e8a15805d71d820"
+        },
+        "sourcePreserved": true
+      },
+      "rootActualUi": {
+        "source": "Coordinator message + independent freeze report; not newly read back by implementer",
+        "candidateComponentSha256": "46f27eb66a1bfe78387339a7b5638b4b27823bac024150dc7aeff0353b6a2126",
+        "limitedResults": "Reported null/500/403/owner fixture firstpass only",
+        "visibilityAccepted": false,
+        "notTransferredToAttempt2": true
+      }
+    }
+  ],
+  "attempt2Fix": {
+    "finding": "ESIM-ACK-VISIBILITY-01",
+    "localStatus": "counterexamples_pass_same_reviewer_acceptance_pending",
+    "cause": "Window blur/focus is not equivalent to document visibilitychange; hidden could retain current action capability and accept a pre-hide matching GET.",
+    "changes": "Visible guard at action/read/async/render boundaries, plus document visibility listener invalidating epoch/flight and clearing private state when hidden. Return visible starts new GET and requires the same existing context/revision/requestId checks. No server/identity/API/schema/price extension.",
+    "knownUnknown": "Known saved revision is retained as display-only metadata. An in-flight POST hidden before reply remains unknown; its late ack is ignored and no POST is replayed.",
+    "exactOriginalCounterexamples": [
+      "Loaded current view -> hidden without blur -> retained stop callback: beforePOST1, afterPOST0.",
+      "Known ack -> pending GET -> hidden without blur -> old GET reply: before private/action restored while hidden, after never restored; visible return starts fresh GET and body waits for that matching fresh response."
+    ],
+    "additionalControls": [
+      "Retained stop/run callbacks denied while hidden even before event delivery; UUID0.",
+      "Hidden focus/pageshow/connection-check/manual refresh send no GET/POST; return visible GET only.",
+      "Visible fresh eligible handler can perform a deliberate new action; stale pre-hide handler remains denied.",
+      "Initial hidden/prerender sends no GET until visible; genuine empty onboarding stays deliberate.",
+      "Hidden in-flight mutation preserves unknown outcome; listener cleanup/unmount creates no reads or late writes."
+    ]
+  }
+}
