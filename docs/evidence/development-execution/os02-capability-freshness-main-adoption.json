@@ -93,6 +93,21 @@
     "oldAssertion": "Consumer contains expiresAt <= now",
     "replacement": "Actual consumer calls !CapabilitySnapshotFreshness.isFresh; actual production helper checks ordered nonnegative timestamps, future/expiry rejection and maximum30000ms lifetime",
     "targetedOsContractPassed": true,
-    "fixedSource4Unchanged": true
-  }
+    "fixedSource4Unchanged": true,
+    "sha256": "b666c655d869d90b9bf79c3a4372f264a1a2783c241c822af1a1cc9b036594a9",
+    "independentRootReview": {
+      "verdict": "PASS_SCOPED",
+      "mustFix": 0,
+      "actualScriptExitCode": 0,
+      "exactAssertionBlockCandidatePass": true,
+      "negativeMutantsRejected": [
+        "consumer helper call removed",
+        "future observation rejection removed",
+        "expiry rejection removed",
+        "maximumTTL removed"
+      ],
+      "independentReviewerProductEdits": 0
+    }
+  },
+  "latestSynchronizedMain": "24ad19526ed36e85efab5758d1159e7f983b9fe4"
 }
