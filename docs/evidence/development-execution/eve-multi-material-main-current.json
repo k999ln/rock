@@ -1,0 +1,61 @@
+{
+  "schema": "rockstaros.eve-multi-material-main-current/1",
+  "recordedAt": "2026-10-25T13:31:02.869360+00:00",
+  "pr": "https://github.com/k999ln/rock/pull/232",
+  "acceptedHead": "d1eabc8a6f2c85b5503c980522767cf693d5e701",
+  "mainMergeSha": "fb604256f8f1a81539d2164f6354b3d3e1b6db3c",
+  "mainTree": "e40d9c86708fd6c2eca50d8f91c56a451d422623",
+  "parents": [
+    "53d991b3f5fab2b12776e36f090ddfaa7a440a61",
+    "d1eabc8a6f2c85b5503c980522767cf693d5e701"
+  ],
+  "source9Unchanged": true,
+  "sourceHashes": {
+    "components/eve-text-estimate.tsx": "26c94e03f1a3663de35d817a592eda8b7739ad7107dd90d769ea73d6b412982a",
+    "components/work-composition-workspace.tsx": "ab42e251d37adfde2cb14d0228a41b1aedb8988c5d9ccb52f672198d8167cc4e",
+    "lib/eve-text-job.ts": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba",
+    "lib/remote-ai-text-client.ts": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051",
+    "tests/eve-text-estimate-ui.test.mjs": "4734aab656c7b6b0f96e6075e1c5dfa884a000a1cbb551da251ec886180660ba",
+    "tests/eve-text-estimate.test.mjs": "0c9396f1c491d00837c90d8636cc796978ef342f8a7d188ce8cbe77c0cee0573",
+    "tests/eve-text-job.test.mjs": "c7854b468fc5713d58a41511bf76b290ff69db54aa7943e678703482e6dc0e90",
+    "tests/work-composition-ui.test.mjs": "58b25fe5a43ca930caac40c3a43e47046a2cbad523fc75da1e3ab33cfa4abaa3",
+    "tests/eve-multi-material.test.mjs": "d20199037ed167e8849e3ec9384207b1734eea43bc88c85c6b901753151a9689"
+  },
+  "mainMerged": true,
+  "headCISuccess": 7,
+  "headLinuxVerify": {
+    "run": 40194893196,
+    "job": 121173505937,
+    "tests": 3025,
+    "pass": 3023,
+    "fail": 0,
+    "skip": 2
+  },
+  "mainCISuccess": 6,
+  "mainCIState": "all6_success",
+  "browserSummary": "docs/evidence/development-execution/eve-multi-material-browser-summary.json",
+  "browserReview": "docs/evidence/development-execution/eve-multi-material-browser-review.json",
+  "historicalCaptureReceiptsUnchanged": [
+    "docs/evidence/development-execution/eve-multi-material.json",
+    "docs/evidence/development-execution/eve-multi-material-review-r1.json",
+    "docs/evidence/development-execution/eve-multi-material-review-r2.json",
+    "docs/evidence/development-execution/eve-multi-material-main-adoption.json"
+  ],
+  "scope": "Legacy2 exact bytes and3/4 v2 saved preparation/estimate only; bounded synthetic browser supplemental evidence separately reviewed.",
+  "wholeUnitAccepted": false,
+  "paidGenerationAccepted": false,
+  "realProviderAccepted": false,
+  "productionPersistenceAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false,
+  "generalLaunch": "held",
+  "mainLinuxVerify": {
+    "run": 40197738045,
+    "job": 121182146386,
+    "tests": 3025,
+    "pass": 3023,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "448101ccf480b8093cadf0e42c0a1cf358fbeed51c05fc3467b1f681bb5c9773"
+  }
+}
