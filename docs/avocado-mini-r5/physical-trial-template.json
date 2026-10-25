@@ -1,0 +1,175 @@
+{
+  "schema": "mini-physical-trial-preparation/1",
+  "kind": "blank_record_template_not_execution_authority",
+  "taskId": "MAT15",
+  "primarySquad": "M1",
+  "primaryOwner": "ROCK",
+  "status": "NOT_RUN",
+  "executionAuthorized": false,
+  "physicalAccepted": false,
+  "providerConnected": false,
+  "invoiceVerified": false,
+  "constraints": {
+    "standalonePortable": true,
+    "maxInUseHeightMm": 200,
+    "externalTerminalCountsAsStandalone": false,
+    "display": [
+      "no_plate_or_membrane",
+      "few_display_parts",
+      "full_range_including_up_and_down",
+      "low_glare"
+    ]
+  },
+  "run": {
+    "id": null,
+    "region": null,
+    "siteRef": null,
+    "useCase": null,
+    "startedAt": null,
+    "endedAt": null,
+    "operatorApprovalRef": null,
+    "sourceCommit": null,
+    "imageSha256": null,
+    "modemModel": null,
+    "modemFirmware": null,
+    "antennaModel": null,
+    "antennaApprovalRef": null,
+    "rfComplianceRef": null,
+    "wifiChipsetDriver": null,
+    "batteryPackModel": null,
+    "packComplianceRef": null,
+    "bomRevision": null,
+    "closedEnclosureRevision": null,
+    "measurementCalibrationRef": null
+  },
+  "contract": {
+    "provider": null,
+    "termsRevision": null,
+    "sharingPermissionRef": null,
+    "period": null,
+    "currency": null,
+    "allInCostCapMinor": null,
+    "accountByteCap": null,
+    "managementTrafficCostTreatment": null,
+    "networkHardStopEvidenceRef": null,
+    "billingRounding": null,
+    "fixedFeesAndTerminationExposureMinor": null,
+    "renewalDisabledEvidenceRef": null
+  },
+  "targetsSetBeforeRun": {
+    "authorizedClientCount": null,
+    "minimumRuntimeMinutes": null,
+    "minimumDownlinkBps": null,
+    "minimumUplinkBps": null,
+    "maximumLatencyMs": null,
+    "minimumSuccessFraction": null,
+    "maximumSkinTemperatureC": null,
+    "maximumCellTemperatureC": null,
+    "minimumRailVoltageV": null,
+    "maximumRailCurrentA": null,
+    "maximumLocalStopLatencyMs": null,
+    "maximumNetworkStopLatencyMs": null,
+    "maximumApStopLatencyMs": null
+  },
+  "stages": [
+    {
+      "id": "P0_selection_and_contract",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    },
+    {
+      "id": "P1_no_radio_power_fit",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    },
+    {
+      "id": "P2_real_wifi_authentication",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    },
+    {
+      "id": "P3_satellite_data_path",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    },
+    {
+      "id": "P4_quota_faults_and_invoice",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    },
+    {
+      "id": "P5_closed_enclosure_portable",
+      "status": "NOT_RUN",
+      "evidenceRefs": [],
+      "failures": []
+    }
+  ],
+  "measurementRecords": [],
+  "requiredMeasurementFields": [
+    "timestamp",
+    "mode",
+    "dockAttached",
+    "externalPower",
+    "externalAntenna",
+    "orientation",
+    "handOcclusion",
+    "wanCapability",
+    "authenticatedClients",
+    "payloadBytesUp",
+    "payloadBytesDown",
+    "kernelBytes",
+    "providerBillableUnits",
+    "reservedCostMinor",
+    "finalCostMinor",
+    "railVoltageV",
+    "peakCurrentA",
+    "averagePowerW",
+    "skinTemperatureC",
+    "cellTemperatureC",
+    "result",
+    "evidenceRef",
+    "measurementWindowStart",
+    "measurementWindowEnd",
+    "attemptCount",
+    "successCount",
+    "successFraction",
+    "goodputUpBps",
+    "goodputDownBps",
+    "roundTripLatencyP95Ms",
+    "latencySampleCount",
+    "standaloneRuntimeMinutes",
+    "localStopLatencyMs",
+    "apStopLatencyMs",
+    "providerStopLatencyMs",
+    "providerStopStatus"
+  ],
+  "acceptance": {
+    "independentReviewer": null,
+    "reviewReceiptRef": null,
+    "displayEvidenceRef": null,
+    "singleDeviceEvidenceRef": null,
+    "invoiceReconciliationRef": null,
+    "decision": "NOT_RUN",
+    "unresolved": [
+      "Region/use case and measurable targets not selected",
+      "Hardware, compliance, contract, sharing permission and hard caps not confirmed",
+      "Real Wi-Fi, satellite, closed enclosure, battery and invoice tests not run"
+    ]
+  },
+  "privacy": "Store only anonymous identifiers and hashes in Git; never credentials, IMSI/ICCID, personal account data or private packet contents.",
+  "measurementDefinitions": {
+    "window": "UTC start/end plus local monotonic elapsed seconds; numerator and denominator evidence belong to this same window",
+    "successFraction": "successCount / attemptCount; attempts > 0, a predetermined bounded payload/checksum and timeout define success; count retries and loss separately",
+    "goodput": "verified application payload bytes * 8 / measured monotonic window seconds per direction; do not substitute PHY maximum or provider billable bytes",
+    "latency": "client application request to verified response round-trip milliseconds; record all sample timings in external evidence and report nearest-rank p95 with sample count; timeouts recorded separately, not removed from successFraction",
+    "runtime": "monotonic minutes from undocking without external power to the predeclared stop threshold; retain mode/power trace",
+    "stop": "same owner stop-request monotonic timestamp to independently observed local nft fence, AP disabled/no forwarding, and provider-confirmed network fence; provider request acknowledgement is not proof of the fence",
+    "unknown": "unknown provider status uses null providerStopLatencyMs plus providerStopStatus=unknown and unresolved reservation; never zero or success",
+    "targets": "all required targets and definitions fixed before execution; null/unmeasured fields cannot pass acceptance"
+  }
+}

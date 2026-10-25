@@ -92,4 +92,6 @@ npm run design:check
 
 ## 現行追補：建築埋込・着脱・衛星Wi-Fi
 
+2026-10-25の継続指示に基づく準備（要件変更なし）: 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。地域/用途と数値目標は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。
+
 [着脱・携帯通信設計](embedded-portable-connectivity.md)と[サービス・月次請求の統合](../service-design/08-mini-connectivity-and-billing.md)を追加。取り外し後の携帯電源を必須設計項目に更新。電池・直接衛星通信・実機は未受入、原本packageは不変。

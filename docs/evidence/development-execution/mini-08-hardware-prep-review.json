@@ -1,0 +1,108 @@
+{
+  "schema": "mini-hardware-preparation-independent-review/1",
+  "reviewedAt": "2026-10-25T10:12:36.487457+00:00",
+  "reviewer": "independent subagent /root/tethering_review",
+  "scope": {
+    "worktree": "/Users/kaiya/.codex-work/worktrees/mini215-public-digest/avokdo",
+    "mode": "read-only document review; receipt only written outside repository",
+    "files": [
+      "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+      "docs/avocado-mini-r5/physical-trial-template.json"
+    ]
+  },
+  "sourceHashes": [
+    {
+      "path": "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+      "sha256": "2505ff7d9eed24e211fce0f9fc503e39069038b891594ccd0f63ca7844a2a7fe"
+    },
+    {
+      "path": "docs/avocado-mini-r5/physical-trial-template.json",
+      "sha256": "013fef7db8118a3b08f7e9dcf47f7e38e66adc66a395493ef7c9babb13df6d3a"
+    }
+  ],
+  "decision": "PASS_FOR_PREPARATION_ONLY",
+  "mustFixCount": 0,
+  "openFindings": [],
+  "resolvedFindings": [
+    {
+      "id": "HARDWARE-PREP-P2-01",
+      "severity": "P2",
+      "problem": "Initial template had performance and stop targets without corresponding measured goodput, success denominator, runtime, latency, and distinct local/AP/provider stop records.",
+      "fixVerified": "Added required measurement fields and definitions for same measurement window, verified payload goodput, attempts/successes, RTT nearest-rank p95 and sample count, monotonic runtime, independent local/AP/provider stop observations from one request origin. Provider unknown remains null plus unknown; acknowledgement alone is not a network fence. Null or unmeasured criteria cannot pass."
+    }
+  ],
+  "independentChecks": [
+    "Read both final documents and parsed the JSON template; required measurement field names unique and complete for the resolved finding.",
+    "Official source review supports the core published modem, antenna and battery numbers and distinguishes message/UDP services from general IP sharing.",
+    "Antenna ground plane, maximum input power, modem approval, complete pack versus bare cell, device certification, sharing terms and contract liability remain explicit preconditions.",
+    "Standalone internal battery/antenna use, in-use height at most 200 mm, and all four display constraints are preserved; external terminal runs cannot be standalone acceptance.",
+    "All trial stages NOT_RUN; no execution, physical acceptance, provider connection or invoice verification asserted.",
+    "Plan separates local control evidence, simulated provider protocol, Linux packet evidence, physical radio tests and final invoice reconciliation.",
+    "Independent arithmetic confirms ideal 1 MB transfer times about 91/364 seconds, 70 mm square diagonal about 99 mm, and hypothetical usable energies 7.488/12.6 Wh."
+  ],
+  "officialSourcesChecked": [
+    {
+      "url": "https://www.iridium.com/products/iridium-certus-9770",
+      "scope": "rates, dimensions, mass, supply and passive antenna"
+    },
+    {
+      "url": "https://www.iridium.com/products/iridium-certus-9704-module",
+      "scope": "message size, JSPR, dimensions and mass"
+    },
+    {
+      "url": "https://www.quectel.com/product/bg95-s5-satellite-communication-module/",
+      "scope": "manufacturer search result/specification supports NB-NTN bands and dimensions; direct page extraction limited"
+    },
+    {
+      "url": "https://www.quectel.com/content/uploads/2024/04/Quectel_BG95-S5_Satellite_Communication_Module_Specification_V1.2.pdf",
+      "scope": "manufacturer specification reference"
+    },
+    {
+      "url": "https://www.starlink.com/public-files/specification_sheet_mini.pdf",
+      "scope": "dimensions and average power"
+    },
+    {
+      "url": "https://cdn.taoglas.com/datasheets/CGIP.25.4.A.02.pdf",
+      "scope": "Rev J ground plane, maximum input power and dimensions"
+    },
+    {
+      "url": "https://www.iridium.com/products/m1621hct-ext-antenna",
+      "scope": "external antenna dimensions, mass and polarization; no inferred Certus approval"
+    },
+    {
+      "url": "https://www.rrc-ps.com/en/power-management/battery-connectors/products/RRC1130",
+      "scope": "completed pack capacity, dimensions, current and charging range"
+    },
+    {
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-18650-P30B-80111-1.pdf",
+      "scope": "cell energy and dimensions; current revision must be resolved before adoption"
+    },
+    {
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P50B-80122.pdf",
+      "scope": "cell energy and dimensions"
+    },
+    {
+      "url": "https://www.groundcontrol.com/products/iridium/iridium-certus-100-range/iridium-certus-100-plans/",
+      "scope": "published comparison price, minimum term, termination and IoT-use limitations"
+    },
+    {
+      "url": "https://www.cubic-i.co.jp/iridium/price.html",
+      "scope": "April 2026 pricing revision; no current contract quote inferred"
+    },
+    {
+      "url": "https://docs.soracom.io/en/services/satellite",
+      "scope": "planNT1/Skylo, device certification, regional coverage and UDP payload guidance"
+    },
+    {
+      "url": "https://soracom.jp/files/fee_schedule.pdf",
+      "scope": "official fee schedule source; actual profile and all-in liability unresolved"
+    }
+  ],
+  "limitations": [
+    "This is preparation-document acceptance only, not hardware selection, procurement, contract approval, RF transmission permission, device acceptance or a billing guarantee.",
+    "No hardware, Wi-Fi radio/WPA handshake, satellite path, provider hard cap, closed enclosure, battery endurance or invoice test was independently executed.",
+    "Published sources do not establish a particular modem/antenna/pack combination or general internet sharing permission; region, use case, exact revisions and commercial terms remain unresolved.",
+    "No provider contact or network service contract was sent. Adjacent metadata under concurrent editing was outside this review.",
+    "Template remains a manual blank record, not an executable acceptance validator; measurements and approval evidence must be supplied before a trial can pass."
+  ]
+}

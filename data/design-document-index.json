@@ -1422,7 +1422,9 @@
         "docs/avocado-mini-spatial-invention.md",
         "docs/avocado-mini-hardware-design.md",
         "docs/avocado-mini-r5/embedded-portable-connectivity.md",
-        "docs/service-design/08-mini-connectivity-and-billing.md"
+        "docs/service-design/08-mini-connectivity-and-billing.md",
+        "docs/avocado-mini-r5/satellite-hardware-trial-plan.md",
+        "docs/avocado-mini-r5/physical-trial-template.json"
       ]
     },
     {
