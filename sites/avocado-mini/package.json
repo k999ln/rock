@@ -16,6 +16,7 @@
     "http-cache-semantics": "file:vendor/http-cache-semantics"
   },
   "overrides": {
-    "http-cache-semantics": "$http-cache-semantics"
+    "http-cache-semantics": "$http-cache-semantics",
+    "undici": "^8.12.2"
   }
 }

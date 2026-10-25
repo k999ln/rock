@@ -125,5 +125,14 @@
   },
   "captureTimePendingInOriginalReceiptsRetained": true,
   "next": "Newguard scoped physical independent review/evidence save is a separate authorized OS batch; fullOS/P02/Provider/financial/public gates remain independent.",
-  "recordedAt": "2026-10-25T09:54:24.626056+00:00"
+  "recordedAt": "2026-10-25T09:54:24.626056+00:00",
+  "laterMainDependencyChange": {
+    "pr": 216,
+    "head": "d89efc5584dbb5b1b0ec00c853701520a497cfb1",
+    "mergeSha": "d2222dc54fb78a035d45b7e4f75c2a45ad786173",
+    "scope": "Root/Mini undici constraint and locks updated by separate owner; preserved byte-for-byte. Prior8f failed automated update remains historical, not a claim that PR216 failed. New-main product checks succeeded; separate Dependabot results are retained by that workflow.",
+    "productCIChecksReadBack": "success",
+    "newMainBotFailuresObserved": 1
+  },
+  "metadataBaseSynchronization": "d2222dc54fb78a035d45b7e4f75c2a45ad786173"
 }
