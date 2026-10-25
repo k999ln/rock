@@ -515,3 +515,5 @@ CPU時間ではなくverified Compute Lotで計量し、入力/出力hash・環�
 
 
 2026-10-17の明示指示: 無料Cloudは画面を閉じても待機・自動続行し、再訪で結果確認。本人同意を永続保存、同ID/CASで二重実行を防止、実アカウントのSandbox請求不変を検証。本番課金はしない。従来の画面内限定を更新する。仕様はdocs/llm-evaluation-architecture.mdの画面外継続。
+
+2026-10-25の本人回答は事業者・modem未定、共通adapterと試験先行。端末固有鍵、管理下AP、網側の通信量/料金上限を[共通契約](../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)へ具体化する。Mini単体携行と表示4条件を保持し、実回線/無線/料金の受入をfixture成功に置き換えない。

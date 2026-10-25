@@ -254,7 +254,7 @@ class LinuxGate:
         return self.controller.attachment(revision, dock_id, self._now())
 
     @operation
-    def open(self, revision, grant_id, client, max_bytes):
+    def open(self, revision, grant_id, client, max_bytes, *, authority=None):
         b = binding(client)
         # One outstanding token per client, including unknown install outcomes.
         records = self._records()
@@ -271,6 +271,10 @@ class LinuxGate:
         # prevents any replay under the same grant even after process restart.
         self._save(path, record, exclusive=True)
         try:
+            if authority is not None:
+                record['networkReceipt'] = authority(dict(grant))
+                self._save(path, record)
+                require(self.controller.can_forward(grant_id, self._now()), 'grant_expired_during_authority')
             self._nft(script)
             items = self._list('table')
             name = token_name(grant_id)

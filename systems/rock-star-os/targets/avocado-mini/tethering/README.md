@@ -4,6 +4,8 @@ MAT15 / MINI-08 / NET01・DP02/03/05。2026-10-25の本人指示「Mini自身が
 
 成果は **Python/SQLiteのhost制御prototype** と、[Linux packet gate](LINUX.md)の隔離namespace実パケット試験。modem、Wi-Fi無線、本人認証UI、Provider請求には未接続。実衛星通信・携行電池・全Mini完成ではない。板/膜なし、少ない表示部、上下を含む全範囲、低眩しさの既存条件を保持し、光学sourceは変更しない。
 
+[AP認証・網側上限adapter](ACCESS.md)を追加。本人が許可した端末の固有鍵/認証状態と、HMAC/TLSで確認する網側予約をLinux転送前へ接続する。事業者・modem未定の共通protocol/試験であり、実無線・実請求の受入は別。
+
 ## 利用体験と構成
 
 ```text

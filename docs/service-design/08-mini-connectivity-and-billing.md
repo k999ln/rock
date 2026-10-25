@@ -29,6 +29,8 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 
 [Linux下位制御](../../systems/rock-star-os/targets/avocado-mini/tethering/LINUX.md): Linux packet gate候補では、同一grantのIPv4/IPv6・送受信を共有quotaで強制し、停止・離脱・再起動時に旧許可を閉じる。隔離Linuxの実packet20件とcompiler4件に合格し、独立静的/host検収mustFix0。counterは最終確定とせず予約を保持する。実衛星/AP/Broker認証・Provider請求・電池の受入は別途必要。 namespace所有claimの破棄/再利用は自動解除せず、旧processと未確定予約の管理照合が必要。
 
+[AP認証・網側上限](../../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)の共通adapterを追加。端末固有鍵、管理下hostapdの世代/認証、網側HMAC/TLS予約をLinux転送前に確認する。事業者・modemは本人回答どおり未定。実無線/衛星/請求は未受入、単体携行と表示4条件を維持。
+
 [着脱・衛星・携帯Wi-Fiの詳細](../avocado-mini-r5/embedded-portable-connectivity.md)をR5の現行追補とする。固定dockは保持・給電・任意の有線通信、可搬coreはOS・本人性・保存・携帯電源・Wi-Fiを担当する。1本自律・使用時200mm以内・別演算Hub不要は維持。原本の外部給電のみの前提を、設置中給電＋取り外し後の携帯電源へ更新する。battery部品は未選定。
 
 直接衛星通信は目標であり、屋内での受信や高速internetを保証しない。アンテナ、上り/下り、回線契約、IP/共有可否、熱/電池/収納を同一試作機で確認する。外部衛星terminalで通信できても、Mini単独衛星対応とは呼ばない。物理停止、ゲーム、local処理はcloud課金の完成待ちにしない。
