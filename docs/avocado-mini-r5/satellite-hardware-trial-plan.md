@@ -16,7 +16,7 @@ Wi-Fi端末からMiniへsi要求・短文・小ファイルを渡し、Miniが�
 - US: 米国の試験場所と州、対象構成の適合、網側/契約・用途許諾、上限とUSD等の請求条件を別profileで確認する。
 - 一方の実機結果やProviderの広域coverage説明で他方を合格にしない。両国の結果が揃うまで「日米対応」を受入済みと表示しない。国別profileと契約を替える場合も、元のgrantを閉じて未確定予約を照合し、移動先の条件で本人が再許可する。国またぎの自動課金継続を前提にしない。
 
-最初の無線なしfixture案はapplication payload 256byte / 1KiB / 16KiB。これはユーザー指定の上限や実網への送信許可ではなく、試験前に契約と予算に合わせて固定する比較点である。実転送は選定transportのpayload上限から認証/envelope分を引いて分割し、欠落・重複・順序逆転・再起動をrequest IDとchunk番号/全体digestで検出する。再送を無制限にせず回数・有効期限・byte/cost予約で止める。受信側認証・完全性確認、送達確認と処理成功の区別、offline queueの容量/TTLと失効時の破棄は次のadapter設計・試験で具体化し、現MINI-08で実装済みとは扱わない。
+最初の無線なしfixture案はapplication payload 256byte / 1KiB / 16KiB。これはユーザー指定の上限や実網への送信許可ではなく、試験前に契約と予算に合わせて固定する比較点である。実転送は選定transportのpayload上限から認証/envelope分を引いて分割し、欠落・重複・順序逆転・再起動をrequest IDとchunk番号/全体digestで検出する。再送を無制限にせず回数・有効期限・byte/cost予約で止める。受信側認証・完全性確認、送達確認と処理成功の区別、offline queueの容量/TTLと失効時の破棄は[共通message adapter](../../systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md)で無線なし実装・試験へ進めた。実modem/Providerへの接続と常駐運転は未受入。
 
 ## Modem候補
 

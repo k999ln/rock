@@ -27,6 +27,8 @@ PR209統合8f646ff3のDependabot失敗を受けて着手。main41ee45d7を基点
 
 ## Game creator host fixture exact2のmain候補（2026-10-24 / G04）
 
+現行Git受入: PR230/head4046c712全7CI、通常merge main53d991b3全6CIとLinux3010/3008pass/0fail/2skip成功。旧capture pending/浅いcheckout失敗を保持し、固定ee9 object fetch/hash検証後のsource4一致を別記録。非金融draft/createのみ、GX/wholeGAME/公開は未受入。[現行証拠](docs/evidence/development-execution/game-work-draft-main-current.json)。
+
 着手: Eve204通常merge main434f・同SHA6CI成功をclean基点に、旧7188で独立受入済みscript/test2hashを無変更採用。主担当Git10/source08、GAME-01/GM01/AI06・DX01文脈。元receipt9936と新portableは別hash、engine/save形式と再利用5・既存保全sourceを固定。判断: staticdiagnostic unverified/nullを維持し、synthetic ownerのhostProofだけを別証拠へ。検証完了: 統合40pass0fail0skip、対象lint/構文2/通常type成功。独立10probe/ownedtmp28cleanup、EPERM/inodeswap/symlinkFIFO/oversize/concurrency/midwritekill/旧save保持/partial非自動採用を限定記録。判断更新: 局所scannerで既存GameAPI request-key例を1件検出し、非credentialの説明用<request-key>へ明示。schema/金融条件/source2/policyは不変、初回reportはGit外保持。次: project/design/scanner、Draft PRの最終同headLinux実npmverify/全CIと独立metadata検収。local全体verify未実行、fresh作者SDK/本人保存/WorkJob/実engine/金融/実機/公開・wholeGAMEは未受入。Walletは最新mainのclean test-only treeを準備しただけでsource未編集。[証拠](docs/evidence/development-execution/game-creator-fixture-main-adoption.json)。
 
 ## Eve saved-source estimate-only r2のmain採用準備（2026-10-24 / G04）
@@ -923,7 +925,14 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 
 ### MINI-08 テザリング制御の実装候補（2026-10-25）
 
+最新main採用準備: source4と別Pixel fixture2は元検収hash不変。元45116526全14CIと原機能検収/fixture検収を別履歴とし、main fb604256へ通常同期。新host全verify3025/3022pass/0fail/3skip・build/APIまでexit0。統合metadata別検収→最終head全CI→通常main/同SHA CIで閉じる。実transport/Broker/AP/scheduler/実機/実課金/wholeMINIは未受入。[現行採用記録](docs/evidence/development-execution/mini-08-message-main-adoption.json)。
+
+共通message adapter着手（2026-10-25本人指示）: 日米のsi・メッセージ・小ファイル向けに、分割・有限再送・保存期限と既存byte/cost予約の共用を実装する。PR221はmain `3bb3be25`へ通常統合・同SHA全7CI成功。[統合証拠](docs/evidence/development-execution/mini-08-hardware-main-merge.json)。機種・契約・実RF/物理受入は未確定、Mini単体と表示4条件を維持。
+
+共通message検証: host回帰83件成功、独立60件＋追加負例8件成功・mustFix0。CAS迂回、失効再許可時の旧queue復活、callback再入deadlockを修正し、停止/送信を専用入口で直列化。受信内容は消費側の保存確認まで再取得可能。全verify完走exit0（主回帰2986件/2983成功/3skip/失敗0、他suiteと非加算）。[証拠](docs/evidence/development-execution/mini-08-message-adapter.json)。GitHub branch/PR229へ保存。隔離Linuxも同source83件＋実packet26件成功。初期head CIは13成功・既存Pixel正常系fixture競合1失敗で、製品sourceを変えず明示待合せへ修正し、650ms fsync遅延の独立負例で旧失敗/修正後成功・保存失敗時拒否を確認。同期source head `f59be1af`の全14CI（全verify・実Linux packet含む）成功。最終metadata headのCIはPR229へ結び、message adapterのmain採用は別追跡。
+
 統合確認: PR215はhead `04f5e757` 全14CI成功・独立検収mustFix0後、main `52b3d1d9`へ通常統合。tree一致と同SHA製品CI全13成功を確認。[統合証拠](docs/evidence/development-execution/mini-08-access-main-merge.json)。当時の別枠Dependabot zod更新失敗は成功へ含めず履歴保持。後続PR225/main f4の修正と製品7/自動更新2成功は別証拠で確認済み。手元の広い回帰で既存sky-activation1件が10秒timeout、同source単独再実行4/4成功。後続資料の独立検収では測定記録を補い再検収mustFix0。
+
 
 本人回答反映・検証: 初期対象を日米両方のsi/メッセージ/小ファイルへ確定し、9704/NB-NTN優先、9770一般IP後段へ順序を更新。国別受入profileと未実行境界を同期。独立差分検収mustFix0、mission/project/design・台帳境界チェック成功。[選択反映検収](docs/evidence/development-execution/mini-08-owner-choice-review.json)。更新headの全体verifyはPR221のCIで別追跡。
 
