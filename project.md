@@ -1,3 +1,7 @@
+## Pro原本exportから既存私有archiveへの入口候補（2026-10-25 / G04）
+
+着手: 最新mainb1b0/PR206を基点にPRO-01-ARCHIVE-ENTRYの検収済み3source/testを同hash採用。主担当10/source05、既存B05/WEB13/G04。判断: 元receipt3cebはportableで同bytes保持、Root独立review6883・localChrome UI94c0は要約/hashだけ採用。既存13archive/storeと183保護pathを保持し、自動転送・権限・schema/鍵・課金を追加しない。検証済み履歴: 関連40・独立5群、Chrome1512/390 overflow0/preview/cancel。初回preview startup失敗は維持し、成功へ換算しない。次: 統合対象試験/project:update/design:check/scannerとcanary、DraftPR exactpayload読戻し、最終head Linux actualverify/CI、独立metadata検収。merge/公開先実click/認証済server保存/native/配備/wholePRO01は未受入。11lane/95unit/42成果の有限要約をmain入口へ接続し、Root旧RQ49/165taskとmainRQ50/393taskを区別。Rootregistry非操作、残616公開保留。根拠 docs/evidence/development-execution/pro-archive-entry-main-adoption.json。
+
 ## Wallet legacy ledger DB recovery test-onlyのmain候補（2026-10-24 / G04）
 
 着手: Game205通常merge main0866・同SHA6CI成功をclean基点に、旧434fとtestbase不変の検収済みtests/billing-worker.test.mjs1hashを無変更採用。主担当Git10/source03、WALLET-02/WLT01/WLT02/WLT04/B03/GX00。元receipt5347と新portableは別hash。判断: 元memorydefault/3test/署名helper、Worker/domain/鍵/migration/価格/888/defaultToCholdを維持し、localSQLiteのfault/reopen試験だけを追加。検証完了: 統合23pass0fail0skip/対象lint/通常type成功。独立6群・rollback11位置/ack喪失/同receiptreplay/400+488と明示直列2handle、fixture全DB/WAL/SHM cleanupを記録。実processkill/Cloudflare同時処理/2認証端末/実Provider/availablecash/本番金融・wholeWALLETは未受入。次: project/design/scanner、Draft PR最終同headLinux実npmverify/全CIと独立metadata検収。local全体verify未実行。Root registryは書込/restoreせず、承認済archive8d2維持・残616公開保留。[証拠](docs/evidence/development-execution/wallet-ledger-db-recovery-main-adoption.json)。
@@ -391,7 +395,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-24 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-25 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

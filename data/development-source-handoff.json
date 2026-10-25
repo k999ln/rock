@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
+  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -25,7 +25,7 @@
   "currentOverlay": "docs/evidence/development-execution/unit-main-current-overlay.json",
   "sourcePreservation": {
     "branch": "codex/source-preservation-20261024",
-    "latestRecordedCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "latestRecordedCommit": "8d2f9f6ee66a50dc4de470f479cba7508a65851f",
     "initial49Commit": "f495bfc8721d40ab06275c1f50c9f9a98157d2ba",
     "manifests": [
       {
@@ -39,10 +39,12 @@
         "sha256": "a4df5a3ee6fc5829715ef155b45626f6dadb298baefbb86a2ec9d0eebccce2e9"
       }
     ],
-    "payloadSnapshots": 65,
-    "meaning": "49 historical/source payloads +16 reviewed OS payloads as non-executable .source snapshots. Not all Root files Git-saved; not blanket main runtime adoption.",
+    "payloadSnapshots": 72,
+    "meaning": "49historical+16reviewedOS+5originalnav+2A2A source-only snapshots; not blanket main adoption. Remaining616 public export held.",
     "wholeRootGitSaved": false,
-    "unpreservedRootBytesCount": null
+    "unpreservedRootBytesCount": null,
+    "previousCapturedCommit": "970446952d6d894348c0e57401bde42b19362bbd",
+    "previousCapturedPayloadSnapshots": 65
   },
   "historicalRetrievalFacts": {
     "threadsPreviouslyRead": 23,
@@ -658,9 +660,16 @@
   "nextExecutionPriority": [
     {
       "order": 0,
+      "unit": "PRO-01",
+      "state": "explicit_archive_entry_candidate_source_review_and_local_UI_pass",
+      "scope": "Draft PR exact payload readback, final-head actual Linux verify/all checks and independent metadata review before any merge.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
       "unit": "WALLET-02",
-      "state": "legacy_ledger_SQLite_recovery_test_only_source_pass_main_candidate",
-      "scope": "Exact-head Linux actual verify/all CI and independent metadata review; runtime/price/key/888/defaultToC unchanged.",
+      "state": "PR206_main_integrated_SQLite_test_only_remaining_crash_and_production_gates",
+      "scope": "PR206 actual merge/head CI complete; no whole Wallet, real funds, process-kill or Cloudflare concurrency acceptance.",
       "wholeUnitAccepted": false
     },
     {
@@ -758,5 +767,6 @@
     "productionDeployment": false,
     "wholeUnitAccepted": false,
     "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
-  }
+  },
+  "portableAllLanesReconciliation": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json"
 }

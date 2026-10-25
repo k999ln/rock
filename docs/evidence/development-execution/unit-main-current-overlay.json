@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.unit-main-current-overlay/1",
-  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
-  "mainAtCapture": "08669893ec8bc9aab498d38b88a60f8911fd3443",
+  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "mainAtCapture": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
   "historicalInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
   "historicalClassificationEdits": 0,
   "freshWhole95Audit": false,
@@ -467,17 +467,63 @@
       ],
       "sourceReviewSha256": "14ecc5f0d6acbd239598a6ca2f035b98702bb99e539c8c1d46fd047bb9567aed",
       "reviewSummary": "docs/evidence/development-execution/wallet-ledger-db-recovery-main-review-summary.json",
+      "mainMerged": true,
+      "wholeUnitAccepted": false,
+      "scope": "Existing legacy fixture SQL fault/reopen/replay/cap tests only; runtime/defaultToC hold unchanged. Not actual provider/cash/auth devices/Cloudflare or full Wallet acceptance.",
+      "pr": 206,
+      "acceptedHead": "33f4e7c91821e718ef8a645266d8ace0ec0fa682",
+      "mainMergeSha": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+      "mainSameShaCISuccess": 7,
+      "readbackCorrection": "Actual PR206 merge and same-head checks verified by finite Git audit; whole Wallet remains unaccepted."
+    },
+    {
+      "id": "PRO_ARCHIVE_ENTRY_CANDIDATE",
+      "units": [
+        "PRO-01"
+      ],
+      "kind": "additional_bounded_candidate",
+      "baseMain": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+      "sourceFiles": [
+        {
+          "path": "sites/avocado-mini/src/pages/pro/index.astro",
+          "sha256": "571370ef797fa8ed168a67c2ba4a6d460489c524aa88b45edb443508f1716c03",
+          "bytes": 8358
+        },
+        {
+          "path": "sites/avocado-mini/src/pro-os.js",
+          "sha256": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+          "bytes": 3289
+        },
+        {
+          "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+          "sha256": "bd549178d59e6c8df37e55ec58bc88f872d9195102c34900ef9d746c6eba6566",
+          "bytes": 9535
+        }
+      ],
+      "reviewSummary": "docs/evidence/development-execution/pro-archive-entry-main-review-summary.json",
+      "sourceReviewSha256": "688377b501423206d871c8c914d4f8b5c6778cc36bf2d5c486a8747b976dfe8d",
+      "scope": "Explicit ordinary no-referrer fixed link/manual-file handoff and three status strings. Existing parser/archive auth/store/crypto untouched.",
+      "localActualUi": true,
+      "metadataReviewPending": true,
       "mainMerged": false,
       "wholeUnitAccepted": false,
-      "scope": "Existing legacy fixture SQL fault/reopen/replay/cap tests only; runtime/defaultToC hold unchanged. Not actual provider/cash/auth devices/Cloudflare or full Wallet acceptance."
+      "authenticatedArchiveSaveAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [
     {
       "order": 0,
+      "unit": "PRO-01",
+      "state": "private_archive_entry_source_and_local_UI_pass_candidate",
+      "scope": "Final exact-head Linux actual verify/all CI and independent metadata review before merge. No authenticated server save, native migration or deployment acceptance.",
+      "wholeUnitAccepted": false
+    },
+    {
+      "order": 0,
       "unit": "WALLET-02",
-      "state": "legacy_ledger_SQLite_recovery_test_only_source_pass_main_candidate",
-      "scope": "Exact-head Linux actual verify/all CI and independent metadata review; runtime/price/key/888/defaultToC unchanged.",
+      "state": "PR206_main_integrated_SQLite_test_only_remaining_gates",
+      "scope": "PR206 exact-head Linux verify/all checks and adoption metadata review completed; real funds/process-kill/Cloudflare concurrency remain unaccepted.",
       "wholeUnitAccepted": false
     },
     {
@@ -576,5 +622,5 @@
     "state": "metadata_main_integrated"
   },
   "financialAndProductionBoundary": "Existing payment/888c/owner/revision/reservation/late CPU unchanged. No new prices, billing, external effects, deployment or physical acceptance.",
-  "previousCaptureMain": "434f8076e5e16f953f8a814430082a3cfa0dce56"
+  "previousCaptureMain": "08669893ec8bc9aab498d38b88a60f8911fd3443"
 }

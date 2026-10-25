@@ -1,0 +1,86 @@
+{
+  "schema": "rockstaros.all-lanes-main-handoff-summary/1",
+  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
+  "scope": "Portable finite summary of two operator-workspace audits, not the raw global execution registry, private sources or a complete runtime audit.",
+  "sources": [
+    {
+      "logicalId": "all-lanes-main-reconciliation-git.json",
+      "sha256": "e72d368cd529e40e6d211f9869e9c190b5f788e10257ea29ea6e2091d7574d24",
+      "includedRaw": false
+    },
+    {
+      "logicalId": "all-lanes-chat-achievement-reconciliation.json",
+      "sha256": "4cf4b3f3b2193c0c03de39596bd4888abf5deb880c16435161de34563e9f36f4",
+      "includedRaw": false
+    }
+  ],
+  "mainAtAudit": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+  "lanes": 11,
+  "units": 95,
+  "mainTasks": 393,
+  "phaseGates": 14,
+  "requirements": 50,
+  "historicalAchievements": 42,
+  "historicalThreads": 23,
+  "recentLaneChatsReadByOtherAuditor": 11,
+  "fullHistoricalReread": false,
+  "wholeUnitsAccepted": 0,
+  "fixedInventoryBase": "9a617fabfef48d82d9b3142680bb00df71776687",
+  "fixedClassificationCounts": {
+    "adopted_subset": 16,
+    "unverified": 15,
+    "external_gate": 14,
+    "existing_implementation": 49,
+    "unknown": 1
+  },
+  "fixed188DigestsVerified": true,
+  "acceptedPRs": [
+    186,
+    187,
+    188,
+    189,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206
+  ],
+  "closedUnmergedPR197": true,
+  "openPRCountAtAudit": 12,
+  "olderAndDependencyPRs": "Listed in operator audit; outside this adoption, no repair or merge authorized by this summary.",
+  "rootOldBootstrap": {
+    "baseline": "1.127/RQ49",
+    "tasks": 165,
+    "meaning": "Historical source context, not current main implementation inventory."
+  },
+  "currentMainBaseline": "2.08/RQ50",
+  "sourcePreservation": {
+    "branch": "codex/source-preservation-20261024",
+    "head": "8d2f9f6ee66a50dc4de470f479cba7508a65851f",
+    "snapshots": 72,
+    "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
+    "remaining616PublicExport": "HELD"
+  },
+  "nextProductSlice": "PRO-01 explicit local export to existing authenticated private original archive; this candidate remains unmerged pending exact-head CI and independent metadata review.",
+  "otherFollowups": [
+    "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
+    "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
+    "Mini optical/eye-safety/stop/manufacturing and Pro physical SKU/native/commerce remain external/owner gates.",
+    "Wallet process-kill followup is backlog; not a prerequisite for nonfinancial product work.",
+    "Pixel full OS/flash/signing and all physical/full-loss acceptance remain separate."
+  ],
+  "noNewSourceOrRuntimeAcceptanceFromAudit": true,
+  "generalLaunch": false,
+  "productionDeployment": false,
+  "registryCopied": false
+}

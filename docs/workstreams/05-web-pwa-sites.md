@@ -1,3 +1,7 @@
+## PRO-01原本archive入口候補
+
+検収済み3source/testをmainb1b0基点で採用。Pro local export→固定avoado.si/account/import/pro→手動再選択/本人account確認/別同意を案内し、既存archive/auth/crypto/schemaは不変。関連40/独立5群とChrome local1512/390 UIを限定確認。最終head CI/独立metadata検収、認証済server保存・公開先実click/配備/native/wholePRO01は別gate。[詳細](../rockstaros-complete-design.md#pro-original-archive-entry)／[有限11lane引継ぎ](../evidence/development-execution/all-lanes-main-handoff-summary.json)。Rootregistry非操作、残616公開保留。
+
 ## Eve saved-source見積only r2限定候補（EVE-02 / HOME01 / WEB04 / SKY21）
 
 主担当05/ROCK、統合10。保存owner/revisionのcanonical2資料+goalから既存signed-rate ceilingへ結び、itemized表示のみ。pricinggatefalse/quote/reserve/approve/send/無料job budget0を保持。expiry P2反例3を修正し独立19/初回統合70/type/lint成功。初回CIは実verify成功だがtest正規表現CodeQLで不合格。test1明示機械例外を修正しUI8/endpoint10成功、product5/他test4不変。新head CIとmechanical検収待ち。Root実UIは保存復元/consent reset/503 unavailable/quoteHTTP0だけで数値成功ではない。Smithnav入り追加UIは同10hash/main7188で限定restore/nav/入力保持/5幅HTTP0を確認しcommit保留解除。最終CI/metadata review/実numeric・expiry/paid/native/prodは別gate。[契約](../rockstaros-complete-design.md#eve-saved-source-estimate)／[証拠](../evidence/development-execution/eve-source-estimate-main-adoption.json)。

@@ -1081,7 +1081,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-24",
+  "updatedAt": "2026-10-25",
   "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
   "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
@@ -9894,16 +9894,33 @@
     "localTargetedPass": 23,
     "targetedLint": "passed",
     "typecheck": "passed_normal_pretypecheck",
-    "metadataReviewPending": true,
-    "finalHeadCIPending": true,
-    "mainMerged": false,
-    "fullVerify": "not_run_locally_required_actual_exact_finalhead_LinuxCI",
+    "metadataReviewPending": false,
+    "finalHeadCIPending": false,
+    "mainMerged": true,
+    "fullVerify": "actual_finalhead_and_main_Linux_verify_success_2898tests_2896pass_2skip_0fail",
     "fixturePlane": "local_SQLite_fault_reopen_only",
     "realProviderRevenueAccepted": false,
     "twoAuthenticatedDevicesAccepted": false,
     "cloudflareConcurrencyDurabilityAccepted": false,
     "productionFinanceAccepted": false,
     "wholeWallet02Accepted": false,
+    "publicDeployment": false,
+    "mainMergeSha": "b1b0ca41eeee26ac47fbf8ebee8e105e827a96a2",
+    "acceptedHeadCISuccess": 7,
+    "mainSameShaCISuccess": 7
+  },
+  "proArchiveEntryMainAdoption": {
+    "evidence": "docs/evidence/development-execution/pro-archive-entry-main-adoption.json",
+    "reviewSummary": "docs/evidence/development-execution/pro-archive-entry-main-review-summary.json",
+    "sourceThreePreserved": true,
+    "sourceRelatedPass": 40,
+    "independentGroups": 5,
+    "rootActualUi": "Chrome1512/390_preview_cancel_fixedlink_no_overflow",
+    "metadataReviewPending": true,
+    "finalHeadCIPending": true,
+    "mainMerged": false,
+    "authenticatedServerArchiveSaveAccepted": false,
+    "wholePRO01Accepted": false,
     "publicDeployment": false
   }
 }

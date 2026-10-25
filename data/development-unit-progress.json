@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-unit-progress/2",
-  "recordedAt": "2026-10-25T00:48:35.401651+00:00",
+  "recordedAt": "2026-10-25T06:01:47.500964+00:00",
   "scope": "Lean restart evidence ledger, not Root bootstrap execution-state copy or whole-unit delivery audit",
   "singleWriter": "Git integration; coordinator execution journal remains separately owned",
   "unitCount": 95,
@@ -1910,7 +1910,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE"
+        "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE",
+        "PRO_ARCHIVE_ENTRY_CANDIDATE"
       ]
     },
     {
