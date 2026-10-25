@@ -1,0 +1,80 @@
+{
+  "schema": "rockstaros.pixel-cache-main.merge-current/1",
+  "recordedAt": "2026-10-25T09:16:15.688138+00:00",
+  "authorization": {
+    "source": "Direct human request in this current chat; independent of Smith request",
+    "text": "続けて、準備済みのPixelとeSIMの作業も最新mainに合わせて、開発・検収・Git保存・main統合まで進めて。",
+    "scope": "Pixel/eSIM development, acceptance, Git save and normal main integration; no public deployment or additional physical actions",
+    "sourceChat": "01a16c23-d327-7401-b994-05796b175cce",
+    "sourceTurn": "01a171d3-daf1-7700-8d89-90fe178c6501",
+    "sourceUserMessage": "01a171d3-db32-7721-9eff-a4198cb698e3",
+    "directThreadReadVerified": true
+  },
+  "baseForMetadata": "41ee45d7fce8390b27c59110cc282f695f898122",
+  "pixel": {
+    "pr": 209,
+    "head": "3e2f0b103d49fc90e7fde0af46cbf863232cc886",
+    "mergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+    "headCiSuccess": 8,
+    "productCiSuccess": 7,
+    "actualMainLinux": {
+      "mergeSha": "8f646ff378bef828fb4e5ec1dee9874e8e716cdf",
+      "run": 40177661118,
+      "job": 121121750495,
+      "logSha256": "dd2d3b5363a5d13707a5f910102693270e55733ebfe367cd796915b9be5a083b",
+      "rootCounts": {
+        "tests": 2938,
+        "pass": 2936,
+        "fail": 0,
+        "skipped": 2
+      },
+      "pythonSafetyCacheAndUpdate": [
+        true,
+        true
+      ],
+      "fullVerifyExit": "success_from_GitHub_job_conclusion",
+      "productChecksSuccess": 7,
+      "dependabotFailureSeparate": true
+    },
+    "guardIndependentReviewSha256": "948769d00a75ed4e31160f43d020e3a2919167f8f9f10f85d13a337303676c97",
+    "finalMetadataIndependentReviewSha256": "d006aec4f2481d1aa8ce5bde44c5bc497f9b4f9b0006ee78dd1ba99c0ce778e8",
+    "originalSevenSourcePreserved": true,
+    "guardTwoMatchAuthorCommit": true,
+    "oldPhysicalReviewSha256": "38d8f4d32a74734ac069b93b44e2e1a2613d649230472c83fdf47c2b0361f779",
+    "newGuardPhysicalAccepted": false
+  },
+  "allMainChecksSuccess": false,
+  "mainCompletedChecks": 8,
+  "mainProductChecksSuccess": 7,
+  "mainDependabotChecksFailure": 1,
+  "unresolved": [
+    {
+      "kind": "Dependabot",
+      "run": 40177675682,
+      "job": 121121795935,
+      "error": "security_update_not_possible",
+      "package": "undici",
+      "resolvedVersion": "7.29.1",
+      "minimumNonVulnerableReportedByBot": "7.30.1",
+      "dependencyLockDiffFromBase": 0,
+      "scope": "Automated dependency update failure; separate from7 successful product CI checks; no dependency repair authorized in this batch"
+    }
+  ],
+  "preserved": {
+    "whole95Accepted": 0,
+    "baseline": "2.08 / RQ50 / 393tasks / 14phaseGates",
+    "walletMiniHostAndMiniLinux": true,
+    "rootRegistryReadOrWritten": false,
+    "historicalSourceReceiptsUnchanged": true,
+    "publicDeployment": false,
+    "remaining616PublicExport": "HELD",
+    "additionalInferenceByGit": 0,
+    "deviceActionsByGit": 0,
+    "realProviderOrFinancialAcceptance": false,
+    "p02AndWholeOSAccepted": false
+  },
+  "captureTimePendingInOriginalReceiptsRetained": true,
+  "uiMainMerged": false,
+  "uiScope": "PR213 unmerged; this metadata change contains no UI source or UI acceptance",
+  "next": "G04 dependency followup remains unresolved; newc43 physical acceptance separate; complete PR213 independently."
+}

@@ -1,3 +1,7 @@
+## PR209 main8fの現在受入
+
+Source/最終metadata独立PASS、head3e8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip。undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213未merge/UI受入は別scope。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。
+
 ## Pixel cache-only/更新fence main候補
 
 Pro207 main0d基点、検収済み9source/test無変更と追加CI1path限定。元receipt2608/独立c9c795、原cache tuple256/noevict・durable-before-effect/unknown・固定payload rollback・worker/launcher/URL保護を保持。[詳細](../rockstaros-complete-design.md#pixel-cache-only-main-port)。Node/Python/normalgenerator/type/packageと最終head Linux新Python6+23/実verify/全CI・独立metadataがgate。Gitの端末操作0、physical/fullOS/P02/追加推論は未受入、soleOS leaseを維持。Rootregistry非操作、616公開保留。

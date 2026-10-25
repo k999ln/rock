@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.development-source-handoff/2",
-  "recordedAt": "2026-10-25T07:43:49.957490+00:00",
+  "recordedAt": "2026-10-25T09:16:15.697593+00:00",
   "authority": "Current main baseline2.08/RQ50 and393 tasks/phase gates remain primary; Root1.127/RQ49 is separate source provenance",
   "sourceBaseline": "1.127/RQ01-RQ49",
   "mainContext": {
@@ -750,8 +750,8 @@
     {
       "order": 0,
       "unit": "OS-01",
-      "state": "cache_main_update_fence_source_reviewed_candidate",
-      "scope": "Run focused integration/normal generation/package/design/scanner; Draft PR exact payload readback, actual final-head Linux Python safety6+23 and npm verify/all CI; independent metadata review before merge. Device lease stays with existing OS implementer.",
+      "state": "PR209_main_integrated_new_guard_physical_unverified",
+      "scope": "PR209/main8f complete source +7productCI; Dependabot1failure undici unresolved. See docs/evidence/development-execution/pixel-cache-main-merge.json. Newguard physical/P02/fullOS and PR213 UI acceptance remain separate.",
       "wholeUnitAccepted": false
     }
   ],

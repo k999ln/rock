@@ -1,3 +1,9 @@
+## Pixel PR209 main8fの同一SHA CIと現在進捗の同期
+
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功とLinux実verify2938試験/2936成功/0失敗/2skipを確認しました。Dependabot自動更新1件はundiciの更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+
+主担当10/G04・source07。source20ff独立PASSと最終metadata3e独立PASS、head3e全8SUCCESS、main8fの製品7SUCCESS/Dependabot1FAILUREを区別。元receipt当時pendingと旧f3限定実機/元code復旧は保持し、新c43物理へ転用しない。undici7.29.1のsecurity_update_not_possibleはG04 followupへ残し、依存lock差分0・修正未実施。今回の変更はmetadataだけでUI/source/runtimeを含めない。PR213のCI fixture診断は別scope。次: このmetadataをGitHub保存/通常main統合/同SHA CI、PR213の製品source固定とCI/main受入を別に完了する。
+
 最新main55a5193eのMini host限定採用を通常取り込みし、元Mini source/進捗・Wallet受入・task/phase gateを保持。Pixel9sourceは20ff独立検収と同hash、物理要約は旧package限定。最終head CIはこの同期後に確認する。
 
 Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照合し、cache ready/replay/取消と元7f0223復旧を限定合格。元34run/2model/10agent・23出力hash保持、追加推論0。修正c43e7047の実機合格には転用しない。統合同期tree初回全verifyは共有node_modulesのvendor参照pathで1件失敗し、tree専用cloneへ切替えて再検証中（試験削除/弱化なし）。

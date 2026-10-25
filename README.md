@@ -1,3 +1,5 @@
+[PR209](https://github.com/k999ln/rock/pull/209)はmain `8f646ff3`へ通常統合済み。同一mergeSHAの製品CI7件成功とLinux実verify2938試験/2936成功/0失敗/2skipを確認しました。Dependabot自動更新1件はundiciの更新経路未解決で失敗しており、全check成功とは扱いません。[現在の統合証拠](docs/evidence/development-execution/pixel-cache-main-merge.json)。新c43 guardの実機/P02/全OS、PR213 UIのmain採用、公開配備・616一括公開は別gateです。
+
 PR209の更新fenceは、metadataを同じFDで検査・上限付き読込し、pointer/receipt/親directoryの差し替え時に拒否する修正候補です。旧headのCodeQL Highを履歴として保持し、新HEADの全CIで再確認します。実機操作・追加推論は行いません。
 
 Pixel/Linuxの[cache-only準備と更新fence](docs/rockstaros-complete-design.md#pixel-cache-only-main-port)を限定候補へ追加。既存の検証済みbytesだけでversion/capabilitiesを確認し、原request/scope/model/hashに束縛した保存・再確認・取消を使います。cache不一致や結果不明を取得/修復/推論へ自動切替しません。更新中は新しい効果を止め、固定payload/既存job・model・鍵を保持します。host検収済み、同head Linux新Python安全試験と全verify/独立metadata検収は別gate。実機配備・推論・fullOS/P02/一般公開は未受入です。Pro入口はPR207/main0dで限定統合済みです。

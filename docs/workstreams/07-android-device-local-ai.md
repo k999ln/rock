@@ -1,3 +1,7 @@
+## PR209 main8fの現在受入
+
+Source/最終metadata独立PASS、head3e8CI成功、main8f製品7CI成功・Dependabot1失敗を[統合証拠](../evidence/development-execution/pixel-cache-main-merge.json)で区別。Linux2938/2936/0fail/2skip。undici更新はG04未解決、依存修正なし。旧f3実機を新c43/P02/全OSへ転用せず、PR213未merge/UI受入は別scope。metadata検証は`npm run project:update`、`npm run design:check`、`npm run verify`。
+
 PR209追補: 利用者明示依頼のOS10/P02 guard競合修正。同FDの限定読込とmetadata置換拒否、旧実装反例と7追加回帰。ROCK主担当07、Git/CI10。新HEAD CodeQL集約/全verifyがgate、実機・追加推論なし。[証拠](../evidence/development-execution/pixel-update-guard-toctou-fix.json)。
 
 ## Pixel cache-only/更新fence main候補
