@@ -56,5 +56,6 @@
   "realProviderOrFinancialAccepted": false,
   "publicDeployment": false,
   "next": "Latest-main full verify; independent Root integration metadata review; finalhead CI and normal main/mergeSHA CI",
-  "latestSynchronizedMain": "854b0693d6e9cc87d9e9cdd0f1e6ad4d792c2271"
+  "latestSynchronizedMain": "a58c6ffa857389193727b0b6d4a867352f269f77",
+  "latestSynchronizationScope": "Preserves Mini229 normal merge including source4 and Pixel normal-case fixture. Final exact-head Linux fullverify remains required; earlier host counts retain their fb604 base."
 }
