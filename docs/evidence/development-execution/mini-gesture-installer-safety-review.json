@@ -1,0 +1,93 @@
+{
+  "schema": "rockstaros.mini-gesture-installer-independent-review/1",
+  "recordedAt": "2026-10-25T15:22:21.609737+00:00",
+  "reviewer": "Root independent of original Mini implementation author",
+  "status": "PASS_SCOPED_SOURCE_AFTER_FIX",
+  "mustFix": [],
+  "previousSourceSha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989",
+  "reviewedSource": {
+    "path": "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs",
+    "previousSha256": "6e3210add57bbd6db3a25b1ab3f98d34d602161efdc2e7a714cbcc0700a11989",
+    "sha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555"
+  },
+  "reviewedNewTest": {
+    "path": "tests/avocado-mini-gesture-installer.test.mjs",
+    "sha256": "0d3df634bece655c2718ac0bf0ad6997ec01d5ad1efcdf6fa5a28c1b29cead38"
+  },
+  "primaryReceiptSha256": "881f61a2c0abd41350738412eddaa44238041fc4d48fe2ccb6f27282d94c3f73",
+  "originalOther15HashMatches": true,
+  "independentValidation": {
+    "sameCurrentInstallerAndGestureTests": {
+      "tests": 47,
+      "pass": 47,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "7b350c1c56206b46258fc37169b90db298131031e470dfb369ae4c347124410b"
+    },
+    "separateActualInstallerCopies": [
+      {
+        "version": "old",
+        "case": "legacy-link",
+        "exitCode": 0,
+        "fetches": 1
+      },
+      {
+        "version": "old",
+        "case": "directory-link",
+        "exitCode": 0,
+        "fetches": 1
+      },
+      {
+        "version": "old",
+        "case": "normal",
+        "exitCode": 0,
+        "fetches": 1
+      },
+      {
+        "version": "new",
+        "case": "legacy-link",
+        "exitCode": 1,
+        "fetches": 0
+      },
+      {
+        "version": "new",
+        "case": "directory-link",
+        "exitCode": 1,
+        "fetches": 0
+      },
+      {
+        "version": "new",
+        "case": "normal",
+        "exitCode": 0,
+        "fetches": 1
+      }
+    ],
+    "independentScenarioScope": "Fresh owned private fixtures, known fixed model URL, synthetic trusted manifest/hash and fetch; actual installer source unchanged, no real download",
+    "normalValidReexecution": "No fetch, same inode; file0600/singlelink/private temporary cleaned",
+    "privateFixtureCleanup": true,
+    "testsNotAdditiveCoverage": true
+  },
+  "sourceInspection": [
+    "Manifest files and output directories owned/non-writable by group/other, lstat/canonical containment and O_NOFOLLOW/type/link/inode checks fail closed.",
+    "Exact known HTTPS URL,30s abort, redirect refusal,10MB hard upper limit and trusted repository SHA256 remain enforced.",
+    "New private0700 directory/exclusive no-follow0600 regular file verified and synced; atomic hardlink publication refuses all pre-existing/racing target objects.",
+    "Existing valid target is verified without replacement/fetch; wrong target/legacy object remains untouched; controlled failure cleanup retains no new temporary files in tested scenarios.",
+    "Original library/worker/model pins and other15 files remain exact; previous16-file review remains historical and does not falsely cover changed installer."
+  ],
+  "limitations": [
+    "Trusted local code/manifest and filesystem principals; no complete defense against concurrent privileged or same-UID parent/code replacement; untested ACL/filesystem variants are not certified.",
+    "UID/O_NOFOLLOW plus hardlink support required; Windows/non-supporting filesystem fail closed and are not accepted.",
+    "No actual remote download/camera/model inference/Mini hardware/physical or public deployment in review.",
+    "New corrected head must pass allCI/CodeQL and normalmain merge-SHA CI; warning count zero is not asserted."
+  ],
+  "primaryReferences": [
+    "https://nodejs.org/api/fs.html#file-system-flags"
+  ],
+  "operations": {
+    "sourceChangedByReviewer": 0,
+    "realNetworkDownload": 0,
+    "realUserFilesTouched": 0,
+    "bulk616": "HOLD"
+  },
+  "next": "Git adopts exact changed installer/newtest/author receipt and this review, preserves original other21 source plus Linux fixture8cdb; updates technical usage/platform boundary and final manifest; new samehead fullCI before normalmain/mergeCI"
+}

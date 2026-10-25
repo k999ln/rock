@@ -226,6 +226,10 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # RockstarOS — 現在の作業と再開情報
 
+## finite batchのinstaller安全性修復と最終再固定
+
+Rootが旧installer6e321の既存download/directory symlinkによる外部marker上書きを実証し、bf42全14CI成功でも採用を止めた。元Mini担当のinstaller054dda＋専用test0d3df＋primary881fだけを採用し、Root独立4150で47試験/別旧新6scenario・beforefetch拒否/marker保持/正常0600nlink1/cleanup/valid再実行fetch0を確認。Root指示により技術READMEだけ追加改版し、UID/O_NOFOLLOW/hardlink対応macOS/Linux・Windows非対応、既存物非上書き/旧残骸自動削除なし、同UID並行親交換の非保証を明記。元22のうち20とservice依存7は不変、installer/技術README改版＋新hosttest＋Linuxfixtureで固定24hash。新union全verify3074/3071pass/0fail/3skip成功（README文書追記だけ後続）、CodeQL3警告の実bug修復とDedicatedWorker限定文脈を分離しsecurity0としない。旧588失敗/bf42CI成功・採用block/原sourceレビューは保存。[最終修復記録](docs/evidence/development-execution/prepared-device-mini-security-revision.json)。次: 新manifest/headのRoot/Web再検収→同head全CI/実Linux26→通常main/mergeCI→current metadata/main保存。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開・616は保留。
+
 ## 有限batchのCI・metadata差分修復
 
 初回head588e0f8aは13CI成功・linux-packetsだけ26件中1失敗。crash子processのobserve_readyでsample秒と_fence後のvalidation秒が変わり、厳密observedAt==nowに拒否された。runtime/controller/Gateを変えず、test helperの1観測呼出しだけgate._nowを固定し直後に復元。Root独立7clockprobeで旧拒否/新成功・stale/expired/future/TTL61拒否・例外復元を確認、26packet methods/payload AST不変。元22sourceは完全固定、追加fixture1で23hashとする。実Linux26は新headCIで別検証。Web R1のservice index scope MUSTFIX1はold adapter objectをmain不変へ戻し新service pending subrecordへ分離して修復。gesture metadata R1はmustFix0。CodeQL成功checkにもmedium3件があり、手動model installerとDedicatedWorkerの信頼境界をRootが独立確認するまでsecurity0としない。元588/原receipt/source22captureを保持し、[追加採用記録](docs/evidence/development-execution/prepared-device-mini-integration-supplement.json)で最終head/manifest→独立再検収→新全CI→通常main/mergeCIを閉じる。実機/実回線/実課金/実camera精度/校正/Eve学習/wholeOS/P02/公開は未受入。

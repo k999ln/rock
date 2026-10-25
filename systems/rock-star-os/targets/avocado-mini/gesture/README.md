@@ -4,6 +4,10 @@ MAT15 / M1、ROCKのR5単体入力prototype。カメラで手・指を追い、p
 
 ## 起動
 
+モデル準備用installerは、UID、`O_NOFOLLOW`、同一filesystem内のhardlinkを使えるmacOS/Linux向けです。Windowsと未検証のACL/filesystem構成は非対応です。信頼したcheckoutと本人管理の保存先を使い、同UIDや特権者が並行して親directory/codeを交換する攻撃への完全な防御は保証しません。
+
+保存先・既存file・旧`.download`残骸にsymlink/hardlink/FIFO等があればfetch前に拒否します。新しいprivate一時領域でsize/hashを検証してから、既存対象を上書きしない方式で採用します。正常な既存modelは再fetchせず検証し、不整合な対象や古い残骸は自動削除しません。停止理由とpathを本人が確認して復旧してください。
+
 repository rootで以下を実行し、localhostの画面を開く。
 
 ```sh

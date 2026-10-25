@@ -1480,7 +1480,14 @@
           "tests/avocado-mini-gesture.test.mjs"
         ],
         "scope": "local single-camera view-only proposals; not calibrated spatial acceptance or Eve preference inference",
-        "physicalAccepted": false
+        "physicalAccepted": false,
+        "installerSafety": {
+          "evidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+          "independentReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+          "scope": "UID/O_NOFOLLOW/hardlink-capable trusted local POSIX host, non-overwriting model preparation; Windows unsupported",
+          "mainMerged": false,
+          "physicalAccepted": false
+        }
       },
       "boundedMessageService": {
         "documentation": "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md",

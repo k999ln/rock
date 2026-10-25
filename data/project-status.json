@@ -11089,13 +11089,21 @@
       "exitCode": 0,
       "logSha256": "d909ea86c75c2fa31562fb29b2dd895c6c09fc1a775a6352729f9763238eb3e8"
     },
-    "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json"
+    "integrationBatch": "docs/evidence/development-execution/prepared-device-mini-integration.json",
+    "installerSafetyRevision": {
+      "evidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
+      "sourceSha256": "054dda03cf4bd989fbe29254159dc8dd735870c5178c10582f7f6942fdd0d555",
+      "rootSourceReview": "docs/evidence/development-execution/mini-gesture-installer-safety-review.json",
+      "mustFix": 0,
+      "originalOtherGesture14Unchanged": true,
+      "readmeOnlyAdditionalDocumentationRevision": true
+    }
   },
   "preparedDeviceMiniBatch": {
     "evidence": "docs/evidence/development-execution/prepared-device-mini-integration.json",
     "latestSynchronizedMain": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
-    "fixedSourceCount": 23,
-    "status": "initial_head_linux_fixture_clock_race_pending_supplement_review_and_newhead_CI",
+    "fixedSourceCount": 24,
+    "status": "installer_security_source_pass_new_union_full_verify_pass_pending_finalhead_review_CI",
     "mainMerged": false,
     "whole95Accepted": 0,
     "publicDeployment": false,
@@ -11112,7 +11120,7 @@
     },
     "originalFixedSourceCount": 22,
     "linuxPacketSupplement": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
-    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-integration-supplement.json",
+    "currentIntegrationEvidence": "docs/evidence/development-execution/prepared-device-mini-security-revision.json",
     "originalSource22Unchanged": true,
     "originalHeadCI": {
       "head": "588e0f8a01d04264719093ceb0e967e565f65db1",
@@ -11120,7 +11128,19 @@
       "failure": 1
     },
     "codeqlMediumAlertsAtInitialHead": 3,
-    "sourceSecurityDisposition": "pending Root trusted-boundary review"
+    "sourceSecurityDisposition": "Root PASS_SCOPED_SOURCE_AFTER_FIX at054dda; DedicatedWorker scoped disposition separate; no security0 claim",
+    "originalOther20SourceUnchanged": true,
+    "newUnionHostFullVerify": {
+      "tests": 3074,
+      "pass": 3071,
+      "fail": 0,
+      "skip": 3,
+      "exitCode": 0,
+      "standardPrivateGeneration": true,
+      "noTypeStubs": true,
+      "logSha256": "eed53b420424ad9d7f718a507d46d633f0b17dc814233793d4f7596e5f467dc5",
+      "documentationReadmeChangedAfterRunOnly": true
+    }
   },
   "miniLinuxObservationFixture": {
     "evidence": "docs/evidence/development-execution/mini-linux-observation-fixture.json",
