@@ -1259,14 +1259,19 @@
   "esimMiniReadyDesignCandidate": {
     "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
     "evidence": "docs/evidence/development-execution/esim-mini-ready-design-main-adoption.json",
-    "status": "independent_source_review_pass_full_verify_and_CI_pending",
+    "status": "PR240_main_integrated_same_SHA_all_CI_success",
     "scopes": [
       "ESIM03 ready saved / preactivation explicit SQLite close-reopen test only",
       "Mini0.10 design+renderer+three images+historical reference availability only"
     ],
     "whole95Accepted": 0,
-    "mainMerged": false,
+    "mainMerged": true,
     "bulk616": "HELD",
-    "boundedCIRepair": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json"
+    "boundedCIRepair": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json",
+    "acceptedHead": "b860929c71af43c965c0590f1f427007322cbef7",
+    "mainMergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json"
   }
 }

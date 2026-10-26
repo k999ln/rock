@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.46",
+  "version": "1.47",
   "updatedAt": "2026-10-26",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -1528,7 +1528,8 @@
         "manufacturingReleased": false,
         "independentReview": "docs/evidence/development-execution/mini-spatial-design-review.json",
         "referenceAvailability": "docs/evidence/development-execution/mini-spatial-reference-availability.json",
-        "mainMerged": false
+        "mainMerged": true,
+        "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json"
       }
     },
     {

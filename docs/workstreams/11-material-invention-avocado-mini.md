@@ -4,7 +4,9 @@ ROCKは既存joint solverを制限maskで再利用し、inside edgeだけの有�
 
 # Material Invention / avocadoMini
 
-## 空間OS設計v0.10の限定保存候補
+## 空間OS設計v0.10のmain限定保存
+
+PR240/main c3c4845cと同SHA全6CIで文書・renderer・画像3を限定採用。[現行受入](../evidence/development-execution/esim-mini-ready-design-main-current.json)。作者の57頁候補receiptは保持し、参照訂正後の58頁PDFをGit外で再生成します。
 
 [設計本文](../avocado-mini-r5/spatial-computer-use-design.md)とrenderer・画像3を独立検収。PR238の通信/VIEW_ONLY/installerと日米小容量方針へ同期し、旧local研究を現行main実装と区別します。[参照可用性](../evidence/development-execution/mini-spatial-reference-availability.json)で未採用参照を明記し、616件を依存として一括追加しません。再生成PDF58頁はGit外、実光学・最終PCB・実機・製造・公開は未受入。[独立検収](../evidence/development-execution/mini-spatial-design-review.json)。Gitと同SHA CIの採用段階は主担当10へ。
 

@@ -1,0 +1,119 @@
+{
+  "schema": "rockstaros.esim-mini-ready-design-main-current/1",
+  "recordedAt": "2026-10-26T23:24:45.035896+00:00",
+  "pr": 240,
+  "acceptedHead": "b860929c71af43c965c0590f1f427007322cbef7",
+  "mainMergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+  "tree": "af0dba78001e5eb8f30a507284c9f250b47344fc",
+  "parents": [
+    "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+    "b860929c71af43c965c0590f1f427007322cbef7"
+  ],
+  "headCISuccess": 7,
+  "mainCISuccess": 6,
+  "headVerify": {
+    "run": 40417962122,
+    "tests": 3075,
+    "pass": 3073,
+    "fail": 0,
+    "skip": 2,
+    "actualLinuxParentLifetimeMethods": 4,
+    "logSha256": "cd10e94e80e83eaba401db6e6cc117c5bc9dbaf903ad40ef525fea7cc9715e03"
+  },
+  "mainVerify": {
+    "run": 40418832676,
+    "tests": 3075,
+    "pass": 3073,
+    "fail": 0,
+    "skip": 2,
+    "actualLinuxParentLifetimeMethods": 4,
+    "logSha256": "632b9fd935077a0105fe197b0b36b05097ea20b50f363ed0bdb9d4d88f7ea846"
+  },
+  "hostFullVerify": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "exitCode": 0,
+    "tests": 3075,
+    "pass": 3072,
+    "fail": 0,
+    "skip": 3,
+    "logSha256": "e07d12d1289eea05bfb9fe4b366ed906d073efdb4d14a4f75f9e813c2573e280",
+    "qualification": "One diagnosed unchanged-source retry; not a permanent cache fixture correction"
+  },
+  "historicalFailures": {
+    "hostMiniDependenciesMissing": {
+      "tests": 3075,
+      "pass": 3071,
+      "fail": 1,
+      "skip": 3,
+      "logSha256": "218fef88101bccaea3550c12eeba1f5f3fb3eea79148c55ab0416ac2d9551251",
+      "resolution": "Restored Mini exact-lock dependencies, dedicatedundici4pass"
+    },
+    "hostCachePreparationWait": {
+      "tests": 3075,
+      "pass": 3071,
+      "fail": 1,
+      "skip": 3,
+      "logSha256": "d381d831cb48b6f5a15327a599758df7551cd888b7cc995e94285d49c476083e",
+      "resolution": "Unchanged focused17pass then one diagnosed full retry succeeded; no permanent fix claim"
+    },
+    "head03ProcESRCH": {
+      "run": 40417531156,
+      "logSha256": "fd3aedc1c9f75f311ebe841708ea5a20da978d78dec58c76d12fd8d587163bcc",
+      "resolution": "One-line fixture correction atb860; runtime unchanged; newhead realLinux4success"
+    }
+  },
+  "fixedSources": {
+    "tests/rockstar-service-setup.test.mjs": "6228faffb44c81176d08ea3f0fa8c24446d10ac3b255bde37bb61a9f806b9e02",
+    "docs/avocado-mini-r5/spatial-computer-use-design.md": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6",
+    "docs/avocado-mini-r5/render-spatial-design.py": "9f2d28bf292656915587828cde5829674550fd2df10aa8a60ba41fb3ba45c9d3",
+    "docs/avocado-mini-r5/assets/orbit-lt-triptych-concept.png": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+    "docs/avocado-mini-r5/assets/e1-leairr-optical-path.png": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+    "docs/avocado-mini-r5/assets/e1-binocular-coverage.png": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+    "tests/test_pixel_worker_parent_exit.py": "0758b04343a7598d401295dc87ee60c06d55ac2fbc1e3a94db6a97ef5d9554c1"
+  },
+  "sourceManifest22Sha256": "8cca4ea3fb4ed106ef23f710b286a2caca9309dc85d3b5ed9908f81bf4c10aff",
+  "allFixedSourcesMatchAcceptedHeadAndMain": true,
+  "sourceIndependentReviews": {
+    "esim": "docs/evidence/development-execution/esim-ready-recovery-review.json",
+    "mini": "docs/evidence/development-execution/mini-spatial-design-review.json",
+    "pixelExitFixture": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json"
+  },
+  "RootFinal22ReviewSha256": "513ce62f1cfd6a5cff01d359a3f182d8d0ca5776e97d823532b016bb9e61db0e",
+  "authorCaptureReceiptsUnchanged": {
+    "docs/evidence/development-execution/esim-ready-recovery.json": "a2a01a849808e648dd555065ec3cf8046fcd6a62f55e4540cf0e164a2fc700b7",
+    "docs/evidence/development-execution/mini-spatial-design-sync.json": "74ffbb47351712f6321bb90d5f8db0479abf97090271019f1a53b6b65cb87b0a",
+    "docs/evidence/development-execution/esim-mini-ready-design-main-adoption.json": "a92e4e2f5ebcc3e48472466a9845c74aaaf90cbcc14959020715a9e1494d5ee8",
+    "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json": "bad9b044d9fe9238e6cd57a8ff8c60763b1f1225593dc38ac6070a29d4900ec7"
+  },
+  "adoptedScopes": {
+    "esim": "One new ready-save / preactivation explicit SQLite reopen acceptance case; old60 exact, controlled synthetic grant/issuer/proof, no real runtime/schema/API change",
+    "mini": "Design v0.10 book/renderer/3 individually reviewed captured images; current PR238 claims separated from old local research60 references, not a runtime/dependency bulk adoption",
+    "pixelExitFixture": "Exactly one except tuple adds proc ESRCH disappearance; productworker unchanged, PermissionError/generic OSError not caught; mockobserver5 old/new cases and actualhead/main Linux4 success separate"
+  },
+  "pdf": {
+    "outsideGitBasename": "avocado-mini-spatial-os-design.pdf",
+    "sha256": "14b5d0129a5e91a8fffc332efce16ddd7c85c517a071a14fd61ba74ac8dd3ea0",
+    "bytes": 4506989,
+    "pages": 58,
+    "blankPages": 0,
+    "textBoundsViolations": 0,
+    "japaneseTrueTypeEmbeddedEveryPage": true,
+    "independentVisualReview": "All58 pages inspected in four contact sheets, full-size detail pages4 and24; no clipping/overlap/broken glyphs. Three assets inspected individually.",
+    "layoutReportSha256": "f39a993ec53d67ee61c71b5b64752c11c3a49501bb5f2fb75720cff775686c5d",
+    "reproductionCommand": "python3 docs/avocado-mini-r5/render-spatial-design.py output/pdf/avocado-mini-spatial-os-design.pdf",
+    "environment": "Python3.12 bundled reportlab; embeddable macOS Arial Unicode TrueType default, override MINI_PDF_JAPANESE_FONT",
+    "generatedPDFGitSaved": false
+  },
+  "referenceAvailability": "docs/evidence/development-execution/mini-spatial-reference-availability.json",
+  "mainCodeQL": "checksuccess; final PR reported no new alerts. Historical scoped PR238 worker Medium1 retained, not a security-zero claim.",
+  "whole95Accepted": 0,
+  "wholeESIM03Accepted": false,
+  "wholeMiniAccepted": false,
+  "runtimeSchemaAPIChanged": false,
+  "physicalAccepted": false,
+  "actualProviderOrFinancialAccepted": false,
+  "actualCameraAccuracyOrOpticsOrPCBAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD",
+  "next": "Close this one minimal current-metadata PR through independent review/headCI/normalmain/mergeCI, then finite handoff. Physical/provider/issuer/outbox/concurrency/optics/PCB/wholeOS gates remain separate. Do not add new source scope."
+}
