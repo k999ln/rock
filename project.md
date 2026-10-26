@@ -179,7 +179,9 @@ GitHub保存・main統合は完了。公開・実Provider・別端末アカウ�
 
 # Cloud依頼フォームの改善
 
-## eSIM ready復旧試験とMini設計同期の限定採用候補（SIM01・MAT15・G04 / ROCK）
+## eSIM ready復旧試験とMini設計同期のmain限定採用（SIM01・MAT15・G04 / ROCK）
+
+現行受入: PR240/head b860929cをmain c3c4845cへ通常統合。head全7CI・同mergeSHA全6CI成功、Linux全verify3075件/3073pass/0fail/2skip、別段階の実Linux親寿命4件成功。host最終全verify3075件/3072pass/0fail/3skip・build/API成功。初回Mini依存失敗、cache待機失敗と1回の診断済みretry、旧03CIのprocESRCH失敗を保持し、成功や恒久修正に置換しない。PDF58頁はGit外、本文/renderer/画像と試験source7件は受入head/main同byte。証拠 docs/evidence/development-execution/esim-mini-ready-design-main-current.json。実機・実回線/実課金・全体受入・616一括公開の保留は不変。以下は候補作成時の履歴である。
 
 CI head03の既存Pixel parent-exit fixtureで、子の終了時proc読取りがESRCHとなる競合を確認。FileNotFoundErrorと同じ終了観測としてProcessLookupErrorだけを追加し、worker・待機・assertionは不変。合成observer旧新5比較でESRCH修正とPermissionError/生存100回の拒否・cleanupを確認（実Linux受入ではない）。新headの実Linux4試験を必要とし、失敗ログを保持する。host初回全verifyはMini依存未復元で1件失敗、固定Mini lockを復元後に該当4件成功、全verifyを再実行する。
 

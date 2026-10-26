@@ -11195,19 +11195,24 @@
   "esimReadyRecoveryTest": {
     "unit": "ESIM-03",
     "taskId": "SIM01",
-    "status": "independent_test61_pass_main_candidate",
+    "status": "PR240_main_integrated_scoped_ready_recovery_test",
     "evidence": "docs/evidence/development-execution/esim-ready-recovery.json",
     "independentReview": "docs/evidence/development-execution/esim-ready-recovery-review.json",
     "testSha256": "6228faffb44c81176d08ea3f0fa8c24446d10ac3b255bde37bb61a9f806b9e02",
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeUnitAccepted": false,
     "providerOrFinancialAccepted": false,
-    "next": "Fixed integration full verify/headCI/normalmain/mergeCI; actual HTTP/D1/concurrency/issuer/device/outbox gates remain separate."
+    "next": "Accepted scoped source/design viaPR240 and sameSHA allCI; remaining whole-unit/physical/provider gates are unchanged.",
+    "acceptedHead": "b860929c71af43c965c0590f1f427007322cbef7",
+    "mainMergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json"
   },
   "miniSpatialDesignSync": {
     "unit": "MINI-04",
     "taskId": "MAT15",
-    "status": "independent_design_reference_boundary_fixed_main_candidate",
+    "status": "PR240_main_integrated_design_v010_58page_PDF_outsideGit",
     "documentVersion": "0.10",
     "documentation": "docs/avocado-mini-r5/spatial-computer-use-design.md",
     "evidence": "docs/evidence/development-execution/mini-spatial-design-sync.json",
@@ -11216,9 +11221,28 @@
     "bookSha256": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6",
     "pdfPages": 58,
     "pdfGitSaved": false,
-    "mainMerged": false,
+    "mainMerged": true,
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
-    "next": "Fixed integration full verify/headCI/normalmain/mergeCI. Historical local references are not implicitly adopted; optics/PCB/device remain separate."
+    "next": "Accepted scoped source/design viaPR240 and sameSHA allCI; remaining whole-unit/physical/provider gates are unchanged.",
+    "acceptedHead": "b860929c71af43c965c0590f1f427007322cbef7",
+    "mainMergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json"
+  },
+  "pixelParentExitObservationFixture": {
+    "status": "PR240_main_integrated_test_only_ESRCH_observation",
+    "source": "tests/test_pixel_worker_parent_exit.py",
+    "sourceSha256": "0758b04343a7598d401295dc87ee60c06d55ac2fbc1e3a94db6a97ef5d9554c1",
+    "evidence": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json",
+    "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json",
+    "mainMerged": true,
+    "mainMergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+    "workerChanged": false,
+    "hostSyntheticOldNewCases": 5,
+    "actualHeadAndMainLinuxParentLifetimeMethods": 4,
+    "wholeOSAccepted": false,
+    "physicalAccepted": false
   }
 }

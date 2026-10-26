@@ -411,6 +411,8 @@ Miniと同じWebソース内にあります。
 
 ## 開発と検証
 
+[eSIM復旧試験・Mini設計の現行受入](docs/evidence/development-execution/esim-mini-ready-design-main-current.json)はPR240/main c3c4845cへ通常統合済みです。head7/main6CI成功、Linux3075試験失敗0。PDF58頁はGit外、実開通/実課金・光学/PCB・実機/全体受入・公開は別gateです。
+
 [eSIM ready復旧試験](docs/evidence/development-execution/esim-ready-recovery-review.json)は `node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs` で実行します。制御中断後のSQLite再open試験で、実開通・実課金の受入ではありません。
 
 [Mini空間OS設計v0.10](docs/avocado-mini-r5/spatial-computer-use-design.md)は `python3 docs/avocado-mini-r5/render-spatial-design.py output/pdf/avocado-mini-spatial-os-design.pdf` で再生成します。Python/reportlabと埋込可能な日本語TrueType fontを用意し、必要なら `MINI_PDF_JAPANESE_FONT` を指定します。PDFはGit外、旧local研究の参照可用性と採用済み実装は第1.2章で区別します。
