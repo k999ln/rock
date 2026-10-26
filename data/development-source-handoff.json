@@ -1255,5 +1255,18 @@
     "sourceIntegrationGateClosed": true,
     "wholeUnitAccepted": false,
     "next": "Close currentmetadata Git/main/CI then finite handoff; do not rerun accepted source or expand new scopes. Physical/provider/realcamera/calibration/productidentity/Jobimport/Evelearning/wholeOS/P02/publication remain separate."
+  },
+  "esimMiniReadyDesignCandidate": {
+    "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+    "evidence": "docs/evidence/development-execution/esim-mini-ready-design-main-adoption.json",
+    "status": "independent_source_review_pass_full_verify_and_CI_pending",
+    "scopes": [
+      "ESIM03 ready saved / preactivation explicit SQLite close-reopen test only",
+      "Mini0.10 design+renderer+three images+historical reference availability only"
+    ],
+    "whole95Accepted": 0,
+    "mainMerged": false,
+    "bulk616": "HELD",
+    "boundedCIRepair": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json"
   }
 }

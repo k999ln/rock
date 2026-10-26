@@ -40,7 +40,7 @@ time.sleep(30)
                 try:
                     if stat.read_text().split(') ', 1)[1].split()[0] == 'Z':
                         return
-                except FileNotFoundError:
+                except (FileNotFoundError, ProcessLookupError):
                     return
                 time.sleep(.02)
             self.fail('Child remained running after worker exit')

@@ -1,0 +1,278 @@
+{
+  "schema": "rockstaros.esim-ready-recovery-test-candidate/1",
+  "recordedAt": "2026-10-26T22:57:20.014627+00:00",
+  "unit": "ESIM-03",
+  "taskIds": [
+    "SIM01"
+  ],
+  "slice": "ESIM03-READY-RECOVERY-02",
+  "status": "IMPLEMENTER_TEST_ONLY_PASS_PENDING_INDEPENDENT_REVIEW",
+  "independentAcceptance": false,
+  "wholeUnitAccepted": false,
+  "base": {
+    "mainSha": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+    "freshGithubMainReadback": true,
+    "localBranch": "codex/esim-ready-recovery-20261026",
+    "dedicatedIndependentClone": true
+  },
+  "reusedAdoption": {
+    "pr": 236,
+    "acceptedHead": "42c005688d78daa8597b7f59f445e2c5ace9c2f7",
+    "mainMergeSha": "24ad19526ed36e85efab5758d1159e7f983b9fe4",
+    "originalTestFileSha256": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+    "existing60TestContentsByteExact": true,
+    "reconstructionCheck": "Removing only the new test and node:crypto import reproduces the base test file byte for byte.",
+    "notReimplemented": "The previous post-workspace/pre-setup-save recovery case is unchanged."
+  },
+  "ownedPaths": [
+    "tests/rockstar-service-setup.test.mjs",
+    "docs/evidence/development-execution/esim-ready-recovery.json"
+  ],
+  "sourceHashes": {
+    "tests/rockstar-service-setup.test.mjs": {
+      "before": "2b4870c32ebda6c511d928b72e3975060d8163635630c178a56f617fc1058279",
+      "after": "6228faffb44c81176d08ea3f0fa8c24446d10ac3b255bde37bb61a9f806b9e02"
+    }
+  },
+  "protectedFiveHashesUnchanged": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+    "lib/sky-linux-service-store.ts": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+  },
+  "packageAndLockUnchanged": {
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "selectedGap": {
+    "setupSource": "lib/rockstar-service-setup-store.ts runtimeReady: setup runtime.verifiedAt/receiptDigest save precedes linux.activateSetup.",
+    "linuxSource": "lib/sky-linux-service-store.ts activateSetup: current grant is rechecked, serviceStartAt/window are persisted only if not already started.",
+    "previousCoverage": "Existing normal ready path uses a Linux closure mock; PR236 actual-store case covers provision interruption, not the saved-ready/activation boundary.",
+    "finding": "No product defect reproduced; this change adds the missing acceptance case against unchanged implementation."
+  },
+  "testName": "ready activation resumes once after its receipt is saved and SQLite is reopened",
+  "fixtureReuse": {
+    "path": "tests/fixtures/billing-test-d1.mjs",
+    "changed": false,
+    "migrate": false,
+    "schema": "Existing application drizzle set applied once, never on reopen.",
+    "failureHook": "Existing TestD1.beforeBatch, armed only for the activation attempt. It asserts actual saved readyAt and independently computed SHA256 receipt digest plus unstarted workspace before throwing once.",
+    "successfulCommitHook": "Existing TestD1.afterCommit counts one actual activation batch; replay does not commit again.",
+    "actualStores": [
+      "serviceSetupStore",
+      "linuxServiceStore"
+    ],
+    "controlledFacts": [
+      "owner/current grant with explicit expiry",
+      "billing setup/reconciliation responses",
+      "issuer event and worker proof are synthetic test fixtures"
+    ]
+  },
+  "caseEvidence": {
+    "fault": "One controlled Error after setup ready receipt is durably saved, before activation batch begins. Not a mid-transaction rollback or process crash.",
+    "beforeReopen": {
+      "readyAt": "now+1000",
+      "readyReceiptDigest": "Node crypto SHA256 of exact request/proof JSON",
+      "setupRevisionDelta": 1,
+      "workspaceEqualsPreActivationDocument": true,
+      "serviceStartAt": null,
+      "serviceWindowCount": 0,
+      "canOpenSkyEve": false,
+      "faultCount": 1,
+      "activationCommitCount": 0
+    },
+    "restart": "Explicitly close original SQLite handle, assert closed, reopen same file without migration, recreate both actual product stores; four-table snapshot and saved ready document identical.",
+    "negativeBeforeActivation": [
+      "Wrong setup challenge",
+      "Wrong workspace id",
+      "Foreign owner",
+      "Revoked controlled grant"
+    ],
+    "negativeAssertions": "Immediately after each rejected call, all four persisted table snapshots equal the interrupted snapshot and activation commit count stays zero.",
+    "recovery": {
+      "sameRequestAndProof": true,
+      "savedSetupDocumentUnchanged": true,
+      "workspaceRowAndPayloadIdsPreserved": true,
+      "workspaceRevisionDelta": 1,
+      "serviceStartAt": "now+4000",
+      "serviceWindows": [
+        {
+          "start": "now+4000",
+          "end": null
+        }
+      ],
+      "activationCommitCount": 1,
+      "canOpenSkyEve": true,
+      "paymentCollected": false,
+      "initialChargeMinor": 0
+    },
+    "replay": "Same ready request at now+5000 preserves all four table bytes, setup revision, original readyAt/digest, serviceStartAt and single service window; activation commit count remains one.",
+    "expiryNegative": "Controlled grant expires at now+20000; original request at expiry+1 is rejected and activated snapshot remains unchanged. No clock mock or TTL rule is bypassed.",
+    "finalCounts": {
+      "setupRows": 1,
+      "canonicalWorkspaceRows": 1,
+      "work_jobs": 0,
+      "workspaceJobs": 0,
+      "workspaceInvoices": 0,
+      "linuxReceiptRows": 1,
+      "activationCommits": 1,
+      "faults": 1,
+      "networkAttempts": 0
+    },
+    "receiptRowQualification": "One Linux receipt is the controlled issuer fixture seeded during preparation; this is not a real issuer or worker verification receipt.",
+    "billingMockCalls": {
+      "preparation": {
+        "start": 1,
+        "reconcile": 1
+      },
+      "faultReopenRecoveryAndNegativeCases": {
+        "start": 0,
+        "reconcile": 0
+      }
+    },
+    "networkGuard": "Test-local fetch throws on any attempted external call; observed attempts zero.",
+    "clock": "Explicit now arguments increase through ready/recovery/replay/expiry; global Date and product clock logic are unchanged."
+  },
+  "verification": {
+    "baselineExistingCase": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='provision resumes one persisted canonical workspace' tests/rockstar-service-setup.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "overlapsFinalSuite": true
+    },
+    "focusedInitial": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='ready activation resumes once' tests/rockstar-service-setup.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "qualification": "Before final per-negative immediate snapshot assertions; final source is verified by whole-file run.",
+      "overlapsFinalSuite": true
+    },
+    "finalOwnedSuite": {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs",
+      "tests": 61,
+      "passed": 61,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalLint": {
+      "tool": "Existing oxlint 1.76.0 with tsgolint found through task-local subprocess PATH",
+      "target": "tests/rockstar-service-setup.test.mjs",
+      "exitCode": 0,
+      "lockedPackageEntriesMatchCandidate": [
+        "oxlint",
+        "@oxlint/binding-darwin-arm64",
+        "oxlint-tsgolint",
+        "@oxlint-tsgolint/darwin-arm64"
+      ]
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "node": "v26.12.1",
+    "logs": {
+      "baseline": {
+        "outsideGitBasename": "esim-ready-recovery-baseline.log",
+        "sha256": "fc6648195fbf46ac587f6afee0567073c2d8ad48306e60a415d877f578c049b3"
+      },
+      "focused": {
+        "outsideGitBasename": "esim-ready-recovery-focused.log",
+        "sha256": "e8c9a6e19b588a37d6375434e947e5babf7d9dc3869d44805b02b0712d9deafe"
+      },
+      "finalSuite": {
+        "outsideGitBasename": "esim-ready-recovery-suite.log",
+        "sha256": "6d387c639ded8eeccefbfe456685ad81b4c0ead6d83ccd77a713250903ede2d1"
+      },
+      "offlineFirst": {
+        "outsideGitBasename": "esim-ready-recovery-offline-deps.log",
+        "sha256": "60c98b5d014294779c33dfb37c1815f5d94c5d0dc2cbf5fa7c63b51cf37db860"
+      },
+      "offlineRetry": {
+        "outsideGitBasename": "esim-ready-recovery-offline-deps-retry.log",
+        "sha256": "8a15c0736a64f2050c338039d9566ebf927d7f180560a450388b2d33ee2dafa4"
+      },
+      "lintInitial": {
+        "outsideGitBasename": "esim-ready-recovery-lint.log",
+        "sha256": "2d650e9fa5854f8dadd208c45fb9d796938845652dd47e9a533c1ad486ac538f"
+      },
+      "lintFinal": {
+        "outsideGitBasename": "esim-ready-recovery-lint-retry.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "fullVerify": {
+      "status": "NOT_RUN",
+      "reason": "Fixed-candidate full verification and same-head CI remain Root/Git integration gates; complete offline dependency restoration is unresolved."
+    },
+    "typecheck": {
+      "status": "NOT_RUN",
+      "reason": "No TypeScript/control source changed; not claimed by this test-only candidate."
+    }
+  },
+  "dependencyPreparation": {
+    "onlineInstallPerformed": false,
+    "packageOrLockChanged": false,
+    "offlineCommand": "npm ci --offline --ignore-scripts --no-audit --no-fund",
+    "completeRestoration": false,
+    "cacheMiss": "zwitch-2.0.4.tgz absent from existing npm cache",
+    "focusedAndOwnedSuiteActuallyExecuted": true,
+    "qualification": "The offline attempt could not complete the full dependency tree. Node-focused tests executed successfully in the dedicated candidate; final lint used only exact-lock-matching existing cached tool packages. This is not full dependency installation success."
+  },
+  "failureHistory": [
+    {
+      "kind": "environment-preparation",
+      "stage": "initial offline ci",
+      "result": "EUSAGE: clone checkout had not yet produced package-lock; no install success claimed.",
+      "resolution": "Waited for independent clone checkout to complete before retry."
+    },
+    {
+      "kind": "environment-preparation",
+      "stage": "offline ci after checkout",
+      "result": "ENOTCACHED for zwitch-2.0.4.tgz",
+      "resolution": "No network retry; complete restoration remains unresolved. Focused Node tests were executable."
+    },
+    {
+      "kind": "lint-environment",
+      "stage": "initial existing oxlint invocation",
+      "result": "tsgolint executable not found in subprocess PATH; not a lint pass.",
+      "resolution": "Verified four cached linter package lock entries exactly match candidate, supplied their bin directory only to lint subprocess PATH; final lint exit0."
+    },
+    {
+      "kind": "expected-injected-fault",
+      "stage": "ready receipt saved before activation batch",
+      "count": 1,
+      "result": "Regression asserts saved receipt and unstarted workspace, then successful reopen/recovery."
+    }
+  ],
+  "cleanup": {
+    "closeAllSQLiteHandles": true,
+    "databaseWalShmJournalAndTemporaryDirectoryRemovalAsserted": true,
+    "cleanupAssertionsPassedInFinalSuite": true,
+    "databaseOrSidecarGitSaved": false
+  },
+  "acceptanceLimits": [
+    "Implementer test result only; separate independent review pending.",
+    "Node SQLite plus D1-shaped adapter is not actual deployed D1/HTTP/CSRF or concurrency acceptance.",
+    "Explicit close/reopen after controlled error is not process kill, power loss or eUICC/physical-device acceptance.",
+    "Controlled issuer event and ready proof bypass real upstream signature/attestation ingress; no real valid-ready evidence accepted.",
+    "Synthetic activation opens one local fixture service window; it does not make a real provider request, invoice, charge, debit or collection.",
+    "Generic outbox, cancellation-ready concurrency, issuer/child lifecycle, exact-device setup and whole ESIM-03 remain unaccepted.",
+    "Real provider, financial acceptance, production DDL/deployment and general publication remain unaccepted."
+  ],
+  "operations": {
+    "runtimeSourceChanged": false,
+    "schemaChanged": false,
+    "apiChanged": false,
+    "policyOrPriceChanged": false,
+    "newEnumOrOutbox": false,
+    "sharedMetadataChanged": false,
+    "commitCreated": false,
+    "pushPerformed": false,
+    "mainIntegrated": false,
+    "externalProviderOrDeviceAction": false
+  },
+  "next": "Freeze these two paths for Root-assigned independent review. Do not self-certify, mutate shared progress, commit, push or expand into runtime fixes."
+}
