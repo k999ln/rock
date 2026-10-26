@@ -51,7 +51,7 @@
     "one synthetic seeded issuer receipt, zero real network/new jobs/invoices/charges"
   ],
   "limits": [
-    "Implementer test result only; separate independent review pending.",
+    "The author receipt captured implementer-only evidence with independent review pending at that time. This separate current source review independently ran61 cases and rejected2 activation mutants; whole-product acceptance remains excluded.",
     "Node SQLite plus D1-shaped adapter is not actual deployed D1/HTTP/CSRF or concurrency acceptance.",
     "Explicit close/reopen after controlled error is not process kill, power loss or eUICC/physical-device acceptance.",
     "Controlled issuer event and ready proof bypass real upstream signature/attestation ingress; no real valid-ready evidence accepted.",
