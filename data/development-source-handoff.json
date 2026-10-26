@@ -1266,6 +1266,7 @@
     ],
     "whole95Accepted": 0,
     "mainMerged": false,
-    "bulk616": "HELD"
+    "bulk616": "HELD",
+    "boundedCIRepair": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json"
   }
 }

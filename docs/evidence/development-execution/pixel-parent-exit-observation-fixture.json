@@ -1,0 +1,88 @@
+{
+  "schema": "rockstaros.pixel-parent-exit-observation-fixture/1",
+  "status": "scoped_fixture_repair_pending_Root_independent_review_and_real_Linux_CI",
+  "failure": {
+    "head": "03a479d42ba85056343584e686037c9dd04fc4a3",
+    "run": 40417531156,
+    "test": "test_real_child_dies_when_its_worker_is_killed",
+    "observation": "ProcessLookupError ESRCH while reading proc stat after worker killed; existing FileNotFoundError branch misses this exit race",
+    "logSha256": "fd3aedc1c9f75f311ebe841708ea5a20da978d78dec58c76d12fd8d587163bcc"
+  },
+  "source": {
+    "path": "tests/test_pixel_worker_parent_exit.py",
+    "beforeSha256": "6238598ffa8c50ec50663db50dad81c1bdcbc1815c9db16850a329a161d70272",
+    "afterSha256": "0758b04343a7598d401295dc87ee60c06d55ac2fbc1e3a94db6a97ef5d9554c1",
+    "delta": "Only catch actual proc-stat disappearance as FileNotFoundError or ProcessLookupError; no sleep/assertion/runtime change"
+  },
+  "worker": {
+    "path": "toolkits/sky-linux-local/worker.py",
+    "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "unchanged": true
+  },
+  "controlledObserverProbes": {
+    "missing": {
+      "old": {
+        "exception": null,
+        "statReads": 1,
+        "cleanupChecked": true
+      },
+      "new": {
+        "exception": null,
+        "statReads": 1,
+        "cleanupChecked": true
+      }
+    },
+    "ESRCH": {
+      "old": {
+        "exception": "ProcessLookupError",
+        "statReads": 1,
+        "cleanupChecked": true
+      },
+      "new": {
+        "exception": null,
+        "statReads": 1,
+        "cleanupChecked": true
+      }
+    },
+    "zombie": {
+      "old": {
+        "exception": null,
+        "statReads": 1,
+        "cleanupChecked": true
+      },
+      "new": {
+        "exception": null,
+        "statReads": 1,
+        "cleanupChecked": true
+      }
+    },
+    "permission": {
+      "old": {
+        "exception": "PermissionError",
+        "statReads": 1,
+        "cleanupChecked": true
+      },
+      "new": {
+        "exception": "PermissionError",
+        "statReads": 1,
+        "cleanupChecked": true
+      }
+    },
+    "running": {
+      "old": {
+        "exception": "AssertionError",
+        "statReads": 100,
+        "cleanupChecked": true
+      },
+      "new": {
+        "exception": "AssertionError",
+        "statReads": 100,
+        "cleanupChecked": true
+      }
+    }
+  },
+  "qualification": "Private AST unwrapped existing test method with synthetic subprocess/worker/Path objects; five old/new comparisons test classification and cleanup only, not actual kernel parent-death proof. No repo test decorator weakened.",
+  "remainingRequired": "Independent Root delta review and new immutable head actual Linux4 parent-lifetime tests through standard CI; no diagnosed retry substituted for fixture correction.",
+  "wholeOSOrPhysicalAccepted": false,
+  "bulk616": "HELD"
+}

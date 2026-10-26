@@ -90,6 +90,8 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 ## eSIM ready復旧試験とMini設計同期の限定採用候補（SIM01・MAT15・G04 / ROCK）
 
+CI head03の既存Pixel parent-exit fixtureで、子の終了時proc読取りがESRCHとなる競合を確認。FileNotFoundErrorと同じ終了観測としてProcessLookupErrorだけを追加し、worker・待機・assertionは不変。合成observer旧新5比較でESRCH修正とPermissionError/生存100回の拒否・cleanupを確認（実Linux受入ではない）。新headの実Linux4試験を必要とし、失敗ログを保持する。host初回全verifyはMini依存未復元で1件失敗、固定Mini lockを復元後に該当4件成功、全verifyを再実行する。
+
 基準main f5ea398a。eSIMはready証拠保存後・利用開始反映前の制御中断から、同一SQLiteを明示close/reopenして同一要求を再開する試験を追加。独立61件成功、元60件/制御5sourceは不変、保存欠落/再送重複の破壊反例2件も拒否（61へ加算しない）。実D1/HTTP、process crash、issuer署名、実開通/実課金・全ESIM-03は未受入。Miniは旧local v0.9をPR238と日米方針に合わせたv0.10設計へ同期し、本文・renderer・個別画像3だけを限定保存する候補。参照可用性の誤読を修正し、旧local研究60参照を台帳化。PDFは58頁・全頁目視/文字境界/埋込fontを確認してGit外へ保持。runtime/最終光学/PCB/実機/製造/公開の合格は追加しない。証拠 docs/evidence/development-execution/esim-mini-ready-design-main-adoption.json。次は同一artifactの全verify、Root統合metadata検収、headCI、通常main統合とmergeSHA CI。616一括公開保留、共有HEAD/index保持。
 
 ## 準備済みdevice/Mini有限採用の現行受入

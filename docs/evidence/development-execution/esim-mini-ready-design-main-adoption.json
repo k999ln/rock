@@ -9,7 +9,8 @@
     "docs/avocado-mini-r5/render-spatial-design.py": "9f2d28bf292656915587828cde5829674550fd2df10aa8a60ba41fb3ba45c9d3",
     "docs/avocado-mini-r5/assets/orbit-lt-triptych-concept.png": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
     "docs/avocado-mini-r5/assets/e1-leairr-optical-path.png": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
-    "docs/avocado-mini-r5/assets/e1-binocular-coverage.png": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563"
+    "docs/avocado-mini-r5/assets/e1-binocular-coverage.png": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+    "tests/test_pixel_worker_parent_exit.py": "0758b04343a7598d401295dc87ee60c06d55ac2fbc1e3a94db6a97ef5d9554c1"
   },
   "sourceAuthorReceipts": {
     "esim": "docs/evidence/development-execution/esim-ready-recovery.json",
@@ -28,5 +29,11 @@
   "physicalOrProviderOrFinancialAccepted": false,
   "generatedPDFGitSaved": false,
   "bulk616": "HELD",
-  "next": "Run exact integration gates, Root final diff review, headCI, normalmain, mergeCI; current adoption sync separately."
+  "next": "Run exact integration gates, Root final diff review, headCI, normalmain, mergeCI; current adoption sync separately.",
+  "boundedCIRepair": {
+    "evidence": "docs/evidence/development-execution/pixel-parent-exit-observation-fixture.json",
+    "scope": "Existing test-only proc stat ESRCH disappearance classification; worker unchanged",
+    "RootDeltaReview": "pending",
+    "realLinuxNewHeadCI": "pending;03 failure retained"
+  }
 }
