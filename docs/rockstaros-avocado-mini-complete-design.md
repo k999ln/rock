@@ -81,6 +81,10 @@ Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連
 
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
+## 空間設計書のmain対応同期
+
+[空間OS設計v0.10](avocado-mini-r5/spatial-computer-use-design.md)はPR238採用済み通信・VIEW_ONLY入力・installerと日米方針の対応を記載します。文書保存候補であり、旧local研究sourceの一括採用ではありません。第1.2章と[参照可用性](evidence/development-execution/mini-spatial-reference-availability.json)で未採用依存を区別し、実光学・最終PCB・実機/製造の未受入を保持します。PDFは再生成しGit外へ保存します。
+
 現行の有限採用: 開発用Mini message serviceとVIEW_ONLY camera/安全なmodel準備、Pixel/Linux test-only補足はPR238/main440fに通常統合しhead14/main13同SHA CI成功。元candidate/snapshotの未採用値は記録時履歴として保持し、物理/実回線/実金融/校正/Eve学習/wholeOS/P02は受入へ昇格しない。[現行受入](evidence/development-execution/prepared-device-mini-main-current.json)。
 
 ## 開発用bounded message serviceの限定採用候補

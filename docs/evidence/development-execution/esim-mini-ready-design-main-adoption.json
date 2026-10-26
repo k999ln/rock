@@ -1,0 +1,32 @@
+{
+  "schema": "rockstaros.esim-mini-ready-design-main-adoption/1",
+  "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+  "recordedAt": "2026-10-26T23:04:33.994321+00:00",
+  "status": "independent_source_pass_integration_verification_pending",
+  "fixedSources": {
+    "tests/rockstar-service-setup.test.mjs": "6228faffb44c81176d08ea3f0fa8c24446d10ac3b255bde37bb61a9f806b9e02",
+    "docs/avocado-mini-r5/spatial-computer-use-design.md": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6",
+    "docs/avocado-mini-r5/render-spatial-design.py": "9f2d28bf292656915587828cde5829674550fd2df10aa8a60ba41fb3ba45c9d3",
+    "docs/avocado-mini-r5/assets/orbit-lt-triptych-concept.png": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+    "docs/avocado-mini-r5/assets/e1-leairr-optical-path.png": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+    "docs/avocado-mini-r5/assets/e1-binocular-coverage.png": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563"
+  },
+  "sourceAuthorReceipts": {
+    "esim": "docs/evidence/development-execution/esim-ready-recovery.json",
+    "mini": "docs/evidence/development-execution/mini-spatial-design-sync.json"
+  },
+  "independentReviews": {
+    "esim": "docs/evidence/development-execution/esim-ready-recovery-review.json",
+    "mini": "docs/evidence/development-execution/mini-spatial-design-review.json"
+  },
+  "runtimeSchemaAPISourceChanged": false,
+  "fullVerify": "pending on this fixed integration artifact",
+  "newHeadCI": "pending",
+  "mainMerged": false,
+  "mergeCI": "pending",
+  "whole95Accepted": 0,
+  "physicalOrProviderOrFinancialAccepted": false,
+  "generatedPDFGitSaved": false,
+  "bulk616": "HELD",
+  "next": "Run exact integration gates, Root final diff review, headCI, normalmain, mergeCI; current adoption sync separately."
+}

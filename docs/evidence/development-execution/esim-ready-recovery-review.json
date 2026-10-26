@@ -1,0 +1,66 @@
+{
+  "schema": "rockstaros.esim-ready-recovery-independent-review/1",
+  "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+  "status": "PASS_SCOPED_TEST_ONLY",
+  "reviewer": "Central Git, separate from existing eSIM source author",
+  "mustFix": [],
+  "sourceSha256": "6228faffb44c81176d08ea3f0fa8c24446d10ac3b255bde37bb61a9f806b9e02",
+  "authorEvidenceSha256": "a2a01a849808e648dd555065ec3cf8046fcd6a62f55e4540cf0e164a2fc700b7",
+  "protectedFiveHashesUnchanged": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+    "lib/sky-linux-service-store.ts": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2"
+  },
+  "original60TestsByteExact": true,
+  "reviewedBoundary": "Actual setup runtimeReady saves readyAt/digest before calling actual Linux activateSetup; existing TestD1 beforeBatch throws before activation transaction, then original SQLite handle is closed and the same file reopened without migration.",
+  "independentRun": {
+    "command": "node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs",
+    "tests": 61,
+    "pass": 61,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "f067cc8937efd99edcdb9468e029f1b9a543d509dec3a29e6dd7c9e12e18928e"
+  },
+  "additionalMutationEvidence": [
+    {
+      "case": "omit-activation-save",
+      "expectedRejected": true,
+      "exitCode": 1,
+      "logSha256": "afbd39e98440c3f2034027486d8547a289daf4b2c38405eb28f66f7c6102819f"
+    },
+    {
+      "case": "duplicate-activation-on-replay",
+      "expectedRejected": true,
+      "exitCode": 1,
+      "logSha256": "2064cd53fd88a77783b05a516e8e36d2970774fc399c01f838875016a8950d16"
+    }
+  ],
+  "mutationCountsNotAddedTo61": true,
+  "mutationHarnessSetupHistory": [
+    "First isolated clone of module graph lacked scripts/amc-goal-engine.mjs; module-load failure, not a mutation rejection.",
+    "After copying scripts, shared/stripe.mjs was absent; module-load failure, not a mutation rejection.",
+    "Copied existing shared modules; both mutants then failed the focused test with actual AssertionError. Product adoption tree never mutated."
+  ],
+  "observedGuarantees": [
+    "saved ready timestamp and independently hashed receipt digest survive explicit SQLite reopen",
+    "wrong challenge/workspace/owner/revoked grant rejected without changing four table snapshots",
+    "recovery commits one workspace activation/window at recoveredAt",
+    "replay preserves saved setup/workspace revisions and activation time; expired grant rejected",
+    "one synthetic seeded issuer receipt, zero real network/new jobs/invoices/charges"
+  ],
+  "limits": [
+    "Implementer test result only; separate independent review pending.",
+    "Node SQLite plus D1-shaped adapter is not actual deployed D1/HTTP/CSRF or concurrency acceptance.",
+    "Explicit close/reopen after controlled error is not process kill, power loss or eUICC/physical-device acceptance.",
+    "Controlled issuer event and ready proof bypass real upstream signature/attestation ingress; no real valid-ready evidence accepted.",
+    "Synthetic activation opens one local fixture service window; it does not make a real provider request, invoice, charge, debit or collection.",
+    "Generic outbox, cancellation-ready concurrency, issuer/child lifecycle, exact-device setup and whole ESIM-03 remain unaccepted.",
+    "Real provider, financial acceptance, production DDL/deployment and general publication remain unaccepted."
+  ],
+  "runtimeSchemaAPIChanged": false,
+  "mainMergedAtCapture": false,
+  "sameArtifactFullVerifyAndHeadMainCIPending": true,
+  "bulk616": "HELD"
+}

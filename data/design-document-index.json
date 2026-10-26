@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.45",
-  "updatedAt": "2026-10-25",
+  "version": "1.46",
+  "updatedAt": "2026-10-26",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -1514,6 +1514,21 @@
         "physicalAccepted": false,
         "providerConnected": false,
         "currentMainEvidence": "docs/evidence/development-execution/prepared-device-mini-main-current.json"
+      },
+      "spatialDesignDocument": {
+        "documentation": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "renderer": "docs/avocado-mini-r5/render-spatial-design.py",
+        "documentVersion": "0.10",
+        "evidence": "docs/evidence/development-execution/mini-spatial-design-sync.json",
+        "implementationBaseline": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+        "adoptedImplementationRecord": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+        "scope": "Existing local v0.9 design synchronized to accepted PR238 implementations and JP/US small-payload policy; document adoption is separate.",
+        "pdfGitPolicy": "Regenerable multi-megabyte output remains outside Git; fixed R5 package unchanged.",
+        "physicalAccepted": false,
+        "manufacturingReleased": false,
+        "independentReview": "docs/evidence/development-execution/mini-spatial-design-review.json",
+        "referenceAvailability": "docs/evidence/development-execution/mini-spatial-reference-availability.json",
+        "mainMerged": false
       }
     },
     {

@@ -1,0 +1,838 @@
+{
+  "schema": "rockstaros.mini-spatial-reference-availability/1",
+  "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+  "purpose": "Explicit boundary for historical names in the newly adopted design; this is not a runtime dependency bundle or new source acceptance.",
+  "historicalReferenceInventory": [
+    {
+      "reference": "GO-D405.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "calculate-six-exits.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "computer-use-scenarios.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "contracts/avocado-mini-supervisor.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "contracts/rockstaros-portable-runtime.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "depth-observation.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "display-coordinator.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/avocado-mini-r5/factory-development/component-verdicts.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/avocado-mini-r5/factory-development/electrical-architecture.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/avocado-mini-r5/phone-spatial-interface.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/avocado-mini-r5/product-invention-r1.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/evidence/development-execution/mini-spatial-design-sync.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/evidence/development-execution/mini-spatial-reference-availability.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+      "baselineMainExactPathExists": true,
+      "baselineMainBasenameMatches": [
+        "docs/evidence/development-execution/prepared-device-mini-main-current.json"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "docs/rockstaros-avocado-mini-complete-design.md",
+      "baselineMainExactPathExists": true,
+      "baselineMainBasenameMatches": [
+        "docs/rockstaros-avocado-mini-complete-design.md"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "docs/rockstaros-complete-design.md",
+      "baselineMainExactPathExists": true,
+      "baselineMainBasenameMatches": [
+        "docs/rockstaros-complete-design.md"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "e1-binocular-layout.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "e1-leairr-model.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "factory-development/optimize-display-layout.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "factory-development/selected-cell.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "gesture/README.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "README.md",
+        "contracts/README.md",
+        "data/README.md",
+        "docs/README.md",
+        "docs/avocado-mini-conversation-2026-09-27/README.md",
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/README.md",
+        "docs/avocado-mini-r5/research/README.md",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md",
+        "docs/design-validation/README.md",
+        "docs/evidence/hub-final-9abf78a/original-c-preflight/README.md",
+        "docs/evidence/hub-final-9abf78a/pc-counterpart/README.md",
+        "docs/evidence/rls01/citation-update-observer-20260910/README.md",
+        "docs/evidence/rls01/final-9abf78a/README.md",
+        "docs/evidence/rls01/game-intermediate-8bd2b26/README.md",
+        "docs/evidence/rls01/github-direct-install-9abf78a/README.md",
+        "docs/evidence/rls01/legal-final-9abf78a/README.md",
+        "docs/evidence/rls01/private-final-media-acquisition-20260910/README.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+        "docs/evidence/rls01/sdk-fresh-aee3d61/README.md",
+        "docs/rocketstar-design/README.md",
+        "docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md",
+        "docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/context/AVP-L2/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/README.md",
+        "docs/service-design/README.md",
+        "docs/workstreams/README.md",
+        "drizzle-legacy/post-site-bridge/README.md",
+        "drizzle-legacy/pre-site-bridge/README.md",
+        "drizzle-main/README.md",
+        "drizzle/README.md",
+        "os/physical/branding/README.md",
+        "os/physical/operator-agent-overlay/README.md",
+        "public-release/rockstaros/README.md",
+        "public-release/rockstaros/examples/fitness-sky/README.md",
+        "public-release/rockstaros/examples/tool-event-receiver/README.md",
+        "public-release/rockstaros/installer/README.md",
+        "public-release/rockstaros/packages/control-core/README.md",
+        "public-release/rockstaros/packages/sky-sdk/README.md",
+        "public-release/rockstaros/packages/sky-zema-core/README.md",
+        "scripts/README.md",
+        "scripts/ci-d4/README.md",
+        "services/README.md",
+        "services/android-attestation-verifier/README.md",
+        "services/android-attestation-verifier/vendor/keyattestation/README.md",
+        "services/operator-dock/README.md",
+        "services/sky-free-cloud-wake/README.md",
+        "services/sky-web/README.md",
+        "services/sky-web/migrations/README.md",
+        "sites/avocado-mini/creator-kit/README.md",
+        "sites/avocado-mini/vendor/http-cache-semantics/README.md",
+        "sites/sky-live/README.md",
+        "systems/rock-star-os/README.md",
+        "systems/rock-star-os/examples/game/README.md",
+        "systems/rock-star-os/experiments/startup-health/README.md",
+        "systems/rock-star-os/os/README.md",
+        "systems/rock-star-os/os/atm/README.md",
+        "systems/rock-star-os/os/benchmark/README.md",
+        "systems/rock-star-os/os/core/README.md",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/README.md",
+        "systems/rock-star-os/os/entitlement/README.md",
+        "systems/rock-star-os/os/registry/README.md",
+        "systems/rock-star-os/os/runner/README.md",
+        "systems/rock-star-os/os/system/README.md",
+        "systems/rock-star-os/os/tools/README.md",
+        "systems/rock-star-os/os/ui/README.md",
+        "systems/rock-star-os/os/update/README.md",
+        "systems/rock-star-os/os/wallet_auth/README.md",
+        "systems/rock-star-os/os/wallet_backend/README.md",
+        "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
+        "toolkits/README.md",
+        "toolkits/amc-agent/README.md",
+        "toolkits/android-branding/README.md",
+        "toolkits/avokado-llm/README.md",
+        "toolkits/esim-bootstrap/README.md",
+        "toolkits/fashion-brand-ops/README.md",
+        "toolkits/mini-game-client/README.md",
+        "toolkits/mr/README.md",
+        "toolkits/rockstar-ledger/README.md",
+        "toolkits/sky-app-client/README.md",
+        "toolkits/sky-linux-local/README.md",
+        "toolkits/sky-linux-service/README.md",
+        "toolkits/sky-mcp-connector/README.md",
+        "toolkits/sky-tool-sdk/README.md",
+        "toolkits/spider-guard/README.md",
+        "vendor/braces/README.md",
+        "workspaces/H1/README.md",
+        "workspaces/M1/README.md",
+        "workspaces/M2/README.md",
+        "workspaces/M3/README.md",
+        "workspaces/M4/README.md",
+        "workspaces/M5/README.md",
+        "workspaces/M6/README.md",
+        "workspaces/M7/README.md",
+        "workspaces/O1/README.md",
+        "workspaces/O2/README.md",
+        "workspaces/O3/README.md",
+        "workspaces/O4/README.md",
+        "workspaces/O5/README.md",
+        "workspaces/O6/README.md",
+        "workspaces/O7/README.md",
+        "workspaces/P1/README.md",
+        "workspaces/P2/README.md",
+        "workspaces/P3/README.md",
+        "workspaces/P4/README.md",
+        "workspaces/P5/README.md",
+        "workspaces/P6/README.md",
+        "workspaces/P7/README.md",
+        "workspaces/R1/README.md",
+        "workspaces/R10/README.md",
+        "workspaces/R2/README.md",
+        "workspaces/R3/README.md",
+        "workspaces/R4/README.md",
+        "workspaces/R5/README.md",
+        "workspaces/R6/README.md",
+        "workspaces/R7/README.md",
+        "workspaces/R8/README.md",
+        "workspaces/R9/README.md",
+        "workspaces/README.md"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "gesture/runtime/model.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/gesture/runtime/model.json"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "go-bridge-observer.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "go-d405-preview-host.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "go-depth-session.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "hand-preview-host.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "hand-preview.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "hand_landmark_observer.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "hardware/reference-interface-map.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "hardware/spatial-mainboard-plan.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "install-model.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/gesture/install-model.mjs"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "leairr-prewarp.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "lib/smis-camera.ts",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "lib/workflow.ts",
+      "baselineMainExactPathExists": true,
+      "baselineMainBasenameMatches": [
+        "lib/workflow.ts"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "linux/d405_depth_observer.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "message_adapter.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/tethering/message_adapter.py"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "message_service.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/tethering/message_service.py"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "mini-core-area-study.kicad_pcb",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "optical-exits.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "optical-layout-input.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "optical-layout.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "packages/rockstaros-runtime/README.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "README.md",
+        "contracts/README.md",
+        "data/README.md",
+        "docs/README.md",
+        "docs/avocado-mini-conversation-2026-09-27/README.md",
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/README.md",
+        "docs/avocado-mini-r5/research/README.md",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md",
+        "docs/design-validation/README.md",
+        "docs/evidence/hub-final-9abf78a/original-c-preflight/README.md",
+        "docs/evidence/hub-final-9abf78a/pc-counterpart/README.md",
+        "docs/evidence/rls01/citation-update-observer-20260910/README.md",
+        "docs/evidence/rls01/final-9abf78a/README.md",
+        "docs/evidence/rls01/game-intermediate-8bd2b26/README.md",
+        "docs/evidence/rls01/github-direct-install-9abf78a/README.md",
+        "docs/evidence/rls01/legal-final-9abf78a/README.md",
+        "docs/evidence/rls01/private-final-media-acquisition-20260910/README.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+        "docs/evidence/rls01/sdk-fresh-aee3d61/README.md",
+        "docs/rocketstar-design/README.md",
+        "docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md",
+        "docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/context/AVP-L2/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/README.md",
+        "docs/service-design/README.md",
+        "docs/workstreams/README.md",
+        "drizzle-legacy/post-site-bridge/README.md",
+        "drizzle-legacy/pre-site-bridge/README.md",
+        "drizzle-main/README.md",
+        "drizzle/README.md",
+        "os/physical/branding/README.md",
+        "os/physical/operator-agent-overlay/README.md",
+        "public-release/rockstaros/README.md",
+        "public-release/rockstaros/examples/fitness-sky/README.md",
+        "public-release/rockstaros/examples/tool-event-receiver/README.md",
+        "public-release/rockstaros/installer/README.md",
+        "public-release/rockstaros/packages/control-core/README.md",
+        "public-release/rockstaros/packages/sky-sdk/README.md",
+        "public-release/rockstaros/packages/sky-zema-core/README.md",
+        "scripts/README.md",
+        "scripts/ci-d4/README.md",
+        "services/README.md",
+        "services/android-attestation-verifier/README.md",
+        "services/android-attestation-verifier/vendor/keyattestation/README.md",
+        "services/operator-dock/README.md",
+        "services/sky-free-cloud-wake/README.md",
+        "services/sky-web/README.md",
+        "services/sky-web/migrations/README.md",
+        "sites/avocado-mini/creator-kit/README.md",
+        "sites/avocado-mini/vendor/http-cache-semantics/README.md",
+        "sites/sky-live/README.md",
+        "systems/rock-star-os/README.md",
+        "systems/rock-star-os/examples/game/README.md",
+        "systems/rock-star-os/experiments/startup-health/README.md",
+        "systems/rock-star-os/os/README.md",
+        "systems/rock-star-os/os/atm/README.md",
+        "systems/rock-star-os/os/benchmark/README.md",
+        "systems/rock-star-os/os/core/README.md",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/README.md",
+        "systems/rock-star-os/os/entitlement/README.md",
+        "systems/rock-star-os/os/registry/README.md",
+        "systems/rock-star-os/os/runner/README.md",
+        "systems/rock-star-os/os/system/README.md",
+        "systems/rock-star-os/os/tools/README.md",
+        "systems/rock-star-os/os/ui/README.md",
+        "systems/rock-star-os/os/update/README.md",
+        "systems/rock-star-os/os/wallet_auth/README.md",
+        "systems/rock-star-os/os/wallet_backend/README.md",
+        "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
+        "toolkits/README.md",
+        "toolkits/amc-agent/README.md",
+        "toolkits/android-branding/README.md",
+        "toolkits/avokado-llm/README.md",
+        "toolkits/esim-bootstrap/README.md",
+        "toolkits/fashion-brand-ops/README.md",
+        "toolkits/mini-game-client/README.md",
+        "toolkits/mr/README.md",
+        "toolkits/rockstar-ledger/README.md",
+        "toolkits/sky-app-client/README.md",
+        "toolkits/sky-linux-local/README.md",
+        "toolkits/sky-linux-service/README.md",
+        "toolkits/sky-mcp-connector/README.md",
+        "toolkits/sky-tool-sdk/README.md",
+        "toolkits/spider-guard/README.md",
+        "vendor/braces/README.md",
+        "workspaces/H1/README.md",
+        "workspaces/M1/README.md",
+        "workspaces/M2/README.md",
+        "workspaces/M3/README.md",
+        "workspaces/M4/README.md",
+        "workspaces/M5/README.md",
+        "workspaces/M6/README.md",
+        "workspaces/M7/README.md",
+        "workspaces/O1/README.md",
+        "workspaces/O2/README.md",
+        "workspaces/O3/README.md",
+        "workspaces/O4/README.md",
+        "workspaces/O5/README.md",
+        "workspaces/O6/README.md",
+        "workspaces/O7/README.md",
+        "workspaces/P1/README.md",
+        "workspaces/P2/README.md",
+        "workspaces/P3/README.md",
+        "workspaces/P4/README.md",
+        "workspaces/P5/README.md",
+        "workspaces/P6/README.md",
+        "workspaces/P7/README.md",
+        "workspaces/R1/README.md",
+        "workspaces/R10/README.md",
+        "workspaces/R2/README.md",
+        "workspaces/R3/README.md",
+        "workspaces/R4/README.md",
+        "workspaces/R5/README.md",
+        "workspaces/R6/README.md",
+        "workspaces/R7/README.md",
+        "workspaces/R8/README.md",
+        "workspaces/R9/README.md",
+        "workspaces/README.md"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "prepared-device-mini-main-current.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "docs/evidence/development-execution/prepared-device-mini-main-current.json"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "reference-interface-map.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "reference-reels.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "render-spatial-design.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "selected-cell-model.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "sensor-camera.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "smis-visual-input.ts",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "source-preview.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "spatial-design-assumptions.json",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "spatial-design-calculations.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "spatial/GO-D405.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "spatial/HAND-PREVIEW.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "spatial/d405-observer-host.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "stereo-observation.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "stereo-observer-host.mjs",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "stereo_marker_observer.py",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [],
+      "availability": "historical_local_reference_not_adopted_by_this_change"
+    },
+    {
+      "reference": "systems/rock-star-os/targets/avocado-mini/README.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "README.md",
+        "contracts/README.md",
+        "data/README.md",
+        "docs/README.md",
+        "docs/avocado-mini-conversation-2026-09-27/README.md",
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/README.md",
+        "docs/avocado-mini-r5/research/README.md",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md",
+        "docs/design-validation/README.md",
+        "docs/evidence/hub-final-9abf78a/original-c-preflight/README.md",
+        "docs/evidence/hub-final-9abf78a/pc-counterpart/README.md",
+        "docs/evidence/rls01/citation-update-observer-20260910/README.md",
+        "docs/evidence/rls01/final-9abf78a/README.md",
+        "docs/evidence/rls01/game-intermediate-8bd2b26/README.md",
+        "docs/evidence/rls01/github-direct-install-9abf78a/README.md",
+        "docs/evidence/rls01/legal-final-9abf78a/README.md",
+        "docs/evidence/rls01/private-final-media-acquisition-20260910/README.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+        "docs/evidence/rls01/sdk-fresh-aee3d61/README.md",
+        "docs/rocketstar-design/README.md",
+        "docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md",
+        "docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/contracts/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/context/AVP-L2/README.md",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/README.md",
+        "docs/service-design/README.md",
+        "docs/workstreams/README.md",
+        "drizzle-legacy/post-site-bridge/README.md",
+        "drizzle-legacy/pre-site-bridge/README.md",
+        "drizzle-main/README.md",
+        "drizzle/README.md",
+        "os/physical/branding/README.md",
+        "os/physical/operator-agent-overlay/README.md",
+        "public-release/rockstaros/README.md",
+        "public-release/rockstaros/examples/fitness-sky/README.md",
+        "public-release/rockstaros/examples/tool-event-receiver/README.md",
+        "public-release/rockstaros/installer/README.md",
+        "public-release/rockstaros/packages/control-core/README.md",
+        "public-release/rockstaros/packages/sky-sdk/README.md",
+        "public-release/rockstaros/packages/sky-zema-core/README.md",
+        "scripts/README.md",
+        "scripts/ci-d4/README.md",
+        "services/README.md",
+        "services/android-attestation-verifier/README.md",
+        "services/android-attestation-verifier/vendor/keyattestation/README.md",
+        "services/operator-dock/README.md",
+        "services/sky-free-cloud-wake/README.md",
+        "services/sky-web/README.md",
+        "services/sky-web/migrations/README.md",
+        "sites/avocado-mini/creator-kit/README.md",
+        "sites/avocado-mini/vendor/http-cache-semantics/README.md",
+        "sites/sky-live/README.md",
+        "systems/rock-star-os/README.md",
+        "systems/rock-star-os/examples/game/README.md",
+        "systems/rock-star-os/experiments/startup-health/README.md",
+        "systems/rock-star-os/os/README.md",
+        "systems/rock-star-os/os/atm/README.md",
+        "systems/rock-star-os/os/benchmark/README.md",
+        "systems/rock-star-os/os/core/README.md",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/README.md",
+        "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/README.md",
+        "systems/rock-star-os/os/entitlement/README.md",
+        "systems/rock-star-os/os/registry/README.md",
+        "systems/rock-star-os/os/runner/README.md",
+        "systems/rock-star-os/os/system/README.md",
+        "systems/rock-star-os/os/tools/README.md",
+        "systems/rock-star-os/os/ui/README.md",
+        "systems/rock-star-os/os/update/README.md",
+        "systems/rock-star-os/os/wallet_auth/README.md",
+        "systems/rock-star-os/os/wallet_backend/README.md",
+        "systems/rock-star-os/targets/avocado-mini/gesture/README.md",
+        "systems/rock-star-os/targets/avocado-mini/tethering/README.md",
+        "toolkits/README.md",
+        "toolkits/amc-agent/README.md",
+        "toolkits/android-branding/README.md",
+        "toolkits/avokado-llm/README.md",
+        "toolkits/esim-bootstrap/README.md",
+        "toolkits/fashion-brand-ops/README.md",
+        "toolkits/mini-game-client/README.md",
+        "toolkits/mr/README.md",
+        "toolkits/rockstar-ledger/README.md",
+        "toolkits/sky-app-client/README.md",
+        "toolkits/sky-linux-local/README.md",
+        "toolkits/sky-linux-service/README.md",
+        "toolkits/sky-mcp-connector/README.md",
+        "toolkits/sky-tool-sdk/README.md",
+        "toolkits/spider-guard/README.md",
+        "vendor/braces/README.md",
+        "workspaces/H1/README.md",
+        "workspaces/M1/README.md",
+        "workspaces/M2/README.md",
+        "workspaces/M3/README.md",
+        "workspaces/M4/README.md",
+        "workspaces/M5/README.md",
+        "workspaces/M6/README.md",
+        "workspaces/M7/README.md",
+        "workspaces/O1/README.md",
+        "workspaces/O2/README.md",
+        "workspaces/O3/README.md",
+        "workspaces/O4/README.md",
+        "workspaces/O5/README.md",
+        "workspaces/O6/README.md",
+        "workspaces/O7/README.md",
+        "workspaces/P1/README.md",
+        "workspaces/P2/README.md",
+        "workspaces/P3/README.md",
+        "workspaces/P4/README.md",
+        "workspaces/P5/README.md",
+        "workspaces/P6/README.md",
+        "workspaces/P7/README.md",
+        "workspaces/R1/README.md",
+        "workspaces/R10/README.md",
+        "workspaces/R2/README.md",
+        "workspaces/R3/README.md",
+        "workspaces/R4/README.md",
+        "workspaces/R5/README.md",
+        "workspaces/R6/README.md",
+        "workspaces/R7/README.md",
+        "workspaces/R8/README.md",
+        "workspaces/R9/README.md",
+        "workspaces/README.md"
+      ],
+      "availability": "main_name_match_check_context"
+    },
+    {
+      "reference": "tethering/MESSAGES.md",
+      "baselineMainExactPathExists": false,
+      "baselineMainBasenameMatches": [
+        "systems/rock-star-os/targets/avocado-mini/tethering/MESSAGES.md"
+      ],
+      "availability": "main_name_match_check_context"
+    }
+  ],
+  "requiredRenderAssets": [
+    {
+      "path": "docs/avocado-mini-r5/assets/orbit-lt-triptych-concept.png",
+      "sha256": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+      "bytes": 1836391,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    },
+    {
+      "path": "docs/avocado-mini-r5/assets/e1-leairr-optical-path.png",
+      "sha256": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+      "bytes": 72762,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    },
+    {
+      "path": "docs/avocado-mini-r5/assets/e1-binocular-coverage.png",
+      "sha256": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+      "bytes": 45442,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    }
+  ],
+  "optionalLogo": {
+    "path": "public/brand/rockstaros-logo-source.png",
+    "inBaselineMain": false,
+    "required": false
+  },
+  "renderEnvironment": {
+    "python": "3.12 bundled runtime used for independent regeneration",
+    "library": "reportlab",
+    "font": "User-supplied embeddable Japanese TrueType via MINI_PDF_JAPANESE_FONT; macOS default Arial Unicode.ttf",
+    "fontOrModelBinaryGitSaved": false
+  },
+  "assetProvenance": {
+    "orbit-lt-triptych-concept.png": {
+      "source": "Existing local Mini design assets, README explicitly identifies generated concept illustration; original job receipt not established",
+      "qualification": "Concept only, no real hardware/performance/identity evidence"
+    },
+    "e1-leairr-optical-path.png": {
+      "source": "Existing local engineering diagram, embedded caption names e1-leairr-prescription.json / e1-leairr-model.py; original renderer not established",
+      "qualification": "Historical hypothetical geometry, no new calculation or physical acceptance"
+    },
+    "e1-binocular-coverage.png": {
+      "source": "Existing local render-e1-binocular-map.py, read only; consumes historical work/mini-spatial-engineering/e1-binocular-map.json",
+      "qualification": "Captured illustration unchanged, not rerun/accepted optical coverage"
+    }
+  },
+  "allThreeImagesVisuallyInspected": true,
+  "imagesContainSecretOrPersonalAccountContent": false,
+  "sourceOrGeneratorNotIncludedAutomatically": true,
+  "publicReleaseOrRightsClearanceClaimed": false,
+  "bulk616": "HELD"
+}

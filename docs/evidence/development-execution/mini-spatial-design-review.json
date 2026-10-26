@@ -1,0 +1,74 @@
+{
+  "schema": "rockstaros.mini-spatial-design-independent-review/1",
+  "baselineMain": "f5ea398a4d958c90380b08ef8a18ac3948a61c0d",
+  "reviewer": "Central Git, separate from existing Mini source author",
+  "status": "PASS_SCOPED_DESIGN_AFTER_REFERENCE_BOUNDARY_FIX",
+  "mustFix": [],
+  "originalPacketManifestSha256": "e5d698a9cfd688d3666de54792b1a9a5a3e2afc991afbe9fd91fbc33c4cecc10",
+  "originalAuthorBookSha256": "0b03a2df9632bfcd06858a122a4d923ded60ae74dbcab4ce045e8b2e71b3f623",
+  "adoptedBookSha256": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6",
+  "rendererSha256": "9f2d28bf292656915587828cde5829674550fd2df10aa8a60ba41fb3ba45c9d3",
+  "renderAssets": [
+    {
+      "path": "docs/avocado-mini-r5/assets/orbit-lt-triptych-concept.png",
+      "sha256": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+      "bytes": 1836391,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "08fb147ceee704255410ee66a423d4caf0f9c9ebbbbe0e9b410d31daa3b47c54",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    },
+    {
+      "path": "docs/avocado-mini-r5/assets/e1-leairr-optical-path.png",
+      "sha256": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+      "bytes": 72762,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "1e6b17c4df7d92ad1de1bd85a9ea97636ceae77550135c9498ecedd0bedea703",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    },
+    {
+      "path": "docs/avocado-mini-r5/assets/e1-binocular-coverage.png",
+      "sha256": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+      "bytes": 45442,
+      "inPinnedMain": false,
+      "purpose": "unchanged render asset",
+      "candidateSha256": "8c221482119504553bc144d5f97b7d266b801138e720e6a475965a16b33f1563",
+      "adoption": "Unchanged captured local asset; absent from pinned main. Must be separately reviewed and included if renderer is adopted; no bulk source adoption."
+    }
+  ],
+  "centralCorrection": {
+    "finding": "Historical local source names and attached calculation wording could imply availability/adoption in main",
+    "resolution": "Added section1.2 with explicit historical/local/main boundary, 60-reference availability inventory, required PDF environment; replaced attached-calculation claim in section20. No missing source or bulk616 imported.",
+    "referenceInventory": "docs/evidence/development-execution/mini-spatial-reference-availability.json",
+    "referenceInventorySha256": "a46fef15a5600b8255ec4742f4072c71eb0d48bcb8ddf561fcce613921261360"
+  },
+  "contentReview": [
+    "Read complete engineering book and renderer, cross-checked new PR238 communication/gesture/installer claims against accepted records",
+    "All old v0.9 implementation/build/part-selection assertions are historical, not reaccepted runtime or new test evidence",
+    "Current optical full-range/low-glare, finalPCB, camera accuracy, actual satellite/device/manufacturing remain unaccepted",
+    "Original design64/616 archive not rewritten; author receipt retains original57page/hash/capture-stage flags"
+  ],
+  "sourceBinding": "Fixed24 accepted implementations compared against pinned main; no runtime changes",
+  "pdf": {
+    "outsideGitBasename": "avocado-mini-spatial-os-design.pdf",
+    "sha256": "14b5d0129a5e91a8fffc332efce16ddd7c85c517a071a14fd61ba74ac8dd3ea0",
+    "bytes": 4506989,
+    "pages": 58,
+    "blankPages": 0,
+    "textBoundsViolations": 0,
+    "japaneseTrueTypeEmbeddedEveryPage": true,
+    "independentVisualReview": "All58 pages inspected in four contact sheets, full-size detail pages4 and24; no clipping/overlap/broken glyphs. Three assets inspected individually.",
+    "layoutReportSha256": "f39a993ec53d67ee61c71b5b64752c11c3a49501bb5f2fb75720cff775686c5d",
+    "reproductionCommand": "python3 docs/avocado-mini-r5/render-spatial-design.py output/pdf/avocado-mini-spatial-os-design.pdf",
+    "environment": "Python3.12 bundled reportlab; embeddable macOS Arial Unicode TrueType default, override MINI_PDF_JAPANESE_FONT",
+    "generatedPDFGitSaved": false
+  },
+  "assetProvenanceLimits": "Captured local concept/diagnostic images inspected and retained byte-exact; generator/root research input not all revalidated or adopted. No external publication/rights-clearance claim.",
+  "rendererOptionalLogoNotRequired": true,
+  "mainMergedAtCapture": false,
+  "wholeUnitAccepted": false,
+  "physicalAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD"
+}

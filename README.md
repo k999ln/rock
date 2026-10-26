@@ -411,6 +411,10 @@ Miniと同じWebソース内にあります。
 
 ## 開発と検証
 
+[eSIM ready復旧試験](docs/evidence/development-execution/esim-ready-recovery-review.json)は `node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs` で実行します。制御中断後のSQLite再open試験で、実開通・実課金の受入ではありません。
+
+[Mini空間OS設計v0.10](docs/avocado-mini-r5/spatial-computer-use-design.md)は `python3 docs/avocado-mini-r5/render-spatial-design.py output/pdf/avocado-mini-spatial-os-design.pdf` で再生成します。Python/reportlabと埋込可能な日本語TrueType fontを用意し、必要なら `MINI_PDF_JAPANESE_FONT` を指定します。PDFはGit外、旧local研究の参照可用性と採用済み実装は第1.2章で区別します。
+
 準備済みPixel/Miniの[現行受入](docs/evidence/development-execution/prepared-device-mini-main-current.json)はPR238/main440fへ通常統合済みです。最終head14/main13CI、Linux3074試験失敗0・common103/packet26成功を確認。旧231/234は238経由の採用として区別し、元失敗・修復・検収receiptを保持します。Developer Previewの限定範囲で、実機・実回線・実camera精度・全OS・公開は別gateです。
 
 Pixel診断の正常fixtureは、実empty観測からstdout出力を順序付けて時刻・hash・CPU・privacyのassertionを維持します。`python3 -B tests/test_pixel_worker_diagnostics.py` を入口とし、[独立検収と採用段階](docs/evidence/development-execution/pixel-empty-observation-main-adoption.json)でLinuxとhost、初回CI失敗と同SHA retryを分けます。OS237とSmith235の現行Git/CI受入は各current receiptに記録し、実機・全OS・公開は別gateです。

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
@@ -603,6 +604,182 @@ void test('provision resumes one persisted canonical workspace after interrupted
   assert.deepEqual(billingCalls, { start: 1, reconcile: 1 });
   assert.equal(networkAttempts, 0);
   assert.equal(injectedFailures, 1);
+});
+
+void test('ready activation resumes once after its receipt is saved and SQLite is reopened', async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), 'rock-esim-ready-recovery-'));
+  const path = join(directory, 'ready.sqlite');
+  const handles = [];
+  const readyAt = now + 1000;
+  const recoveredAt = now + 4000;
+  const grantExpiresAt = now + 20000;
+  let permitted = true;
+  let failNextActivation = false;
+  let faultCount = 0;
+  let activationCommits = 0;
+  let expectedReceiptDigest = null;
+  let networkAttempts = 0;
+  const billingCalls = { start: 0, reconcile: 0 };
+  t.mock.method(globalThis, 'fetch', () => {
+    networkAttempts++;
+    throw new Error('External network is forbidden in ready recovery');
+  });
+  t.after(() => {
+    for (const handle of handles) handle.close();
+    rmSync(directory, { recursive: true, force: true });
+    for (const suffix of ['', '-wal', '-shm', '-journal'])
+      assert.equal(existsSync(path + suffix), false);
+    assert.equal(existsSync(directory), false);
+  });
+  function open(migrate) {
+    const db = new TestD1(path, { migrate: false });
+    handles.push(db);
+    if (migrate)
+      for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+        .filter((name) => /^\d.*\.sql$/.test(name)).sort())
+        db.database.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+    const workspaceRow = () => db.database.prepare(
+      "SELECT * FROM sky_linux_service_documents WHERE owner_user_id='owner' AND kind='workspace'",
+    ).get();
+    db.hooks.beforeBatch = () => {
+      if (!failNextActivation) return;
+      const saved = JSON.parse(db.database.prepare(
+        "SELECT payload FROM rockstar_service_setups WHERE owner_user_id='owner'",
+      ).get().payload);
+      assert.equal(saved.runtime.verifiedAt, readyAt);
+      assert.equal(saved.runtime.receiptDigest, expectedReceiptDigest);
+      const workspace = JSON.parse(workspaceRow().payload);
+      assert.equal(workspace.serviceStartAt, null);
+      assert.equal(workspace.serviceWindows.length, 0);
+      failNextActivation = false;
+      faultCount++;
+      throw new Error('Injected activation failure after ready receipt commit');
+    };
+    db.hooks.afterCommit = () => {
+      if (JSON.parse(workspaceRow().payload).serviceStartAt !== null)
+        activationCommits++;
+    };
+    const grant = async (_db, _config, owner, order, at) =>
+      permitted && at < grantExpiresAt && owner === 'owner' && order === 'order'
+        ? {
+            ownerUserId: owner, orderId: order, deviceRef: 'pixel-fixture',
+            expiresAt: grantExpiresAt, scopes: ['rockstaros_access', 'sky', 'zema', 'agents'],
+          }
+        : null;
+    const linux = linuxServiceStore(db, config, { grant });
+    const store = serviceSetupStore(db, config, {
+      grant, linux,
+      billing: () => ({
+        start: async () => {
+          billingCalls.start++;
+          return { sessionId: 'cs_test_Fixture', url: 'https://example.com/fixture-only' };
+        },
+        reconcile: async () => {
+          billingCalls.reconcile++;
+          return { setupIntentId: 'seti_Fixture', paymentMethodId: 'pm_Fixture' };
+        },
+      }),
+    });
+    const snapshot = () => JSON.stringify([
+      'rockstar_service_setups', 'sky_linux_service_documents',
+      'sky_linux_service_receipts', 'work_jobs',
+    ].map((table) => db.database.prepare(`SELECT * FROM ${table} ORDER BY id`).all()));
+    return { db, linux, store, workspaceRow, snapshot };
+  }
+
+  let opened = open(true);
+  let setup = await opened.store.draft('owner', 'order', now);
+  setup = await opened.store.accept('owner', setup.revision, {
+    quoteDigest: setup.payload.quoteDigest, accepted: true, recurringAccepted: true,
+  }, now);
+  setup = (await opened.store.startBilling('owner', setup.revision, now)).setup;
+  setup = await opened.store.reconcileBilling('owner', setup.revision, now);
+  setup = await opened.store.provision('owner', setup.revision, now);
+  const workspace = await opened.linux.get('owner');
+  // Controlled issuer fixture, not a real signed issuer or worker HTTP receipt.
+  await opened.linux.event({
+    schema: 'sky.linux-event/1', id: 'fixture-ready-issuer',
+    workspaceId: workspace.payload.id, issuedAt: now, kind: 'issuer',
+    payload: {
+      sequence: 1, orderId: 'order', deviceRef: 'pixel-fixture',
+      state: 'active', validUntil: now + 86400000,
+    },
+  }, now, { keyId: 'fixture-only' });
+  const unstartedWorkspace = await opened.linux.get('owner');
+  const request = {
+    schema: 'sky.linux-worker-request/1', action: 'setup-ready',
+    workspaceId: workspace.payload.id, issuedAt: readyAt,
+    contractDigest: workspace.payload.contractDigest,
+    setupChallenge: setup.payload.runtime.challenge, probeSha256: sha,
+  };
+  const proof = { keyId: 'fixture-only' };
+  expectedReceiptDigest = createHash('sha256').update(JSON.stringify({ request, proof })).digest('hex');
+  failNextActivation = true;
+  await assert.rejects(opened.store.runtimeReady('owner', request, proof, readyAt),
+    /Injected activation failure after ready receipt commit/);
+  assert.equal(faultCount, 1);
+  assert.equal(activationCommits, 0);
+  const savedReady = await opened.store.get('owner');
+  assert.equal(savedReady.revision, setup.revision + 1);
+  assert.equal(savedReady.payload.runtime.verifiedAt, readyAt);
+  assert.equal(savedReady.payload.runtime.receiptDigest, expectedReceiptDigest);
+  assert.deepEqual(await opened.linux.get('owner'), unstartedWorkspace);
+  assert.equal((await opened.store.view('owner', readyAt)).access.canOpenSkyEve, false);
+  const interruptedSnapshot = opened.snapshot();
+  opened.db.close();
+  assert.equal(opened.db.closed, true);
+  opened = open(false);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.deepEqual(await opened.store.get('owner'), savedReady);
+
+  await assert.rejects(opened.store.runtimeReady('owner', {
+    ...request, setupChallenge: 'wrong-challenge',
+  }, proof, recoveredAt), /準備証拠/);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.equal(activationCommits, 0);
+  await assert.rejects(opened.store.runtimeReady('owner', {
+    ...request, workspaceId: 'another-workspace',
+  }, proof, recoveredAt), /準備証拠/);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.equal(activationCommits, 0);
+  await assert.rejects(opened.store.runtimeReady('another-owner', request, proof, recoveredAt), /準備証拠/);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.equal(activationCommits, 0);
+  permitted = false;
+  await assert.rejects(opened.store.runtimeReady('owner', request, proof, recoveredAt), /利用権/);
+  assert.equal(opened.snapshot(), interruptedSnapshot);
+  assert.equal(activationCommits, 0);
+  permitted = true;
+  assert.deepEqual(await opened.store.runtimeReady('owner', request, proof, recoveredAt), savedReady);
+  const activated = await opened.linux.get('owner');
+  assert.equal(activated.id, unstartedWorkspace.id);
+  assert.equal(activated.payload.id, unstartedWorkspace.payload.id);
+  assert.equal(activated.revision, unstartedWorkspace.revision + 1);
+  assert.equal(activated.payload.serviceStartAt, recoveredAt);
+  assert.deepEqual(activated.payload.serviceWindows, [{ start: recoveredAt, end: null }]);
+  assert.equal(activationCommits, 1);
+  const view = await opened.store.view('owner', recoveredAt);
+  assert.equal(view.access.canOpenSkyEve, true);
+  assert.equal(view.access.paymentCollected, false);
+  assert.equal(view.access.initialChargeMinor, 0);
+  assert.equal(activated.payload.jobs.length, 0);
+  assert.equal(activated.payload.invoices.length, 0);
+  const activatedSnapshot = opened.snapshot();
+  assert.deepEqual(await opened.store.runtimeReady('owner', request, proof, now + 5000), savedReady);
+  assert.equal(opened.snapshot(), activatedSnapshot);
+  // Advance past expiry rather than freezing or weakening the grant's clock.
+  await assert.rejects(opened.store.runtimeReady('owner', request, proof, grantExpiresAt + 1), /利用権/);
+  assert.equal(opened.snapshot(), activatedSnapshot);
+  assert.equal(activationCommits, 1);
+  assert.equal(faultCount, 1);
+  assert.equal(opened.db.database.prepare('SELECT count(*) AS count FROM work_jobs').get().count, 0);
+  assert.equal(opened.db.database.prepare('SELECT count(*) AS count FROM rockstar_service_setups').get().count, 1);
+  assert.equal(opened.db.database.prepare(
+    "SELECT count(*) AS count FROM sky_linux_service_documents WHERE kind='workspace'",
+  ).get().count, 1);
+  assert.equal(opened.db.database.prepare('SELECT count(*) AS count FROM sky_linux_service_receipts').get().count, 1);
+  assert.deepEqual(billingCalls, { start: 1, reconcile: 1 });
+  assert.equal(networkAttempts, 0);
 });
 
 function stripeFixture(setup) {
