@@ -1,3 +1,31 @@
+### EVE-13 実browser helper限定合格（2026-10-27 / G04・ROCK）
+
+Pro独立担当が実helperをbundleし、localhostの実Web Locks/localStorageで2tabの要求待機を確認後に競合を解放。1成功1拒否、reload同ID保持、誤ID clear拒否・一致clear後nullを確認。source前後hash不変、合成key/tab/serverをcleanup。画面証拠はGit外に保持し要約だけ保存。実認証WorkJob UI/Pixel実機/本番受入へ転用しない。次は固定manifestの独立metadata検収とGit/head/main同SHA CI。
+
+### EVE-13 R4全体検証成功（2026-10-27 / G04・ROCK）
+
+正規fullverifyがexit0、root Node3162/3159pass/0fail/3hostskip、type/productlint/design/build/API/CSV成功。R3のlint2失敗を保持。固定policy scannerは変更payload0件/canary1件を確認。次はPro実helper browserの別層結果と最終manifest検収、明示Git保存・PR/headCI・通常main統合・merge同SHA CI。実機/実認証/Provider/wholeunit/公開・616保留は不変。
+
+### EVE-13 R4機械差分の独立採用（2026-10-27 / G04・ROCK）
+
+中央設定lintで出たR3の2件を、同期期限比較のmodule helper移動と試験Promise初期値だけで修正。最後のawait後dispatch直前チェックと既存assertionを保持し、独立Astraの狭いdelta検収PASS後に採用。R3 verify exit1は残し、新R4で全体検証・scanner・Pro最終検収・Git/main/CIを続ける。実認証/実機/Provider/公開/616保留は不変。
+
+### EVE-13 R3全体検証のlint差分（2026-10-27 / G04・ROCK）
+
+fullcheckoutのtype/designは成功、必須verifyはproduct lint2件でexit1。componentのDate.now purityと試験secondOutcomeのawait-thenableで、独立runtime反例の再発とは確認していない。Root局所R4へ意味不変の修正を返し、元R3 sourceと独立PASS/失敗ログを保持。Git保存・main統合は未実施。
+
+### EVE-13 R3限定source採用（2026-10-27 / G04・ROCK）
+
+独立Astra再検収を通ったsource4と原本receipt3だけをmain8e基点へ採用。R1競合/P2 1件とR2本人・期限/P2 2件は修正履歴として保持。閉じた確認先metadataとowner別Web Locks、待機後のfresh owner/期限、同ID GET-onlyを正本11項目・index・READMEへ同期。次はtype/lint/fullverify/design/scanner、別Pro最終検収・local helper browser検証、明示manifest Git保存・通常main統合・同SHA CI。実機/実認証/Provider/whole95/公開は未受入、616保留。
+
+### EVE-13 R3固定と独立再検収（2026-10-27 / G04・ROCK）
+
+Rootがローカル修正したsource4＋receipt3の7pathを固定（manifest `d4593290`）。R2のP2 2件はlock待機後の本人/見積期限の再照合で修正候補とし、Billingへ独立Astra/high再検収を依頼。関連111と既存独立probe21のauthor実行成功は独立採用へ換算しない。source未採用、Git/PR/main未実施。PASS後に中央fullverify・scanner、別Pro最終検収、Git保存・通常main統合・同SHA CIを続ける。Eveへの送信は行わず616公開保留。
+
+## EVE-13 継続準備とPR246の現行受入（2026-10-27 / G04・ROCK）
+
+人間の既存chat連携認可を元userMessageで確認し、最新main8e1aacf3から隔離準備。PR246 head548a60ec全7CI、通常main8e1aacf3全6CI/4workflow成功、Linux3135/3133pass/0fail/2skip、18blob/tree一致を[別current記録](docs/evidence/development-execution/pro-work-entry-main-current.json)へ。作者captureは不変、393task/14gate/95coreと616HOLD・原本HEAD/indexを維持。EVE-13作者は固定packet ca85d9b0・103試験/type/lintを完了、中央もsource4/元receipt・保護12のmain一致と既存103試験を確認。独立Astra依頼は初回に宛先指定の人間認可不足で自動承認審査が拒否したが、その後の具体2宛先への人間許可を元userMessageで直接確認し、同じ正規tool送信が成功。拒否履歴を保持し、作者終了後に別Billing担当のAstra/high限定検収を依頼済み。独立R1検収はCHANGES_REQUESTED/P2 1。owner単一slotの制御並行保存で両save成功/片方の未確認ID喪失を再現し、単一context強制がない通常入口への採用前に保全修正を要求。これは実browser再現や金融権限迂回の主張ではない。Eve作者宛て差戻し送信も宛先外として審査が拒否したため、その送信は再試行しない。Rootが自分の制御probeを根拠に別ローカルsubsetでR2を固定。独立再検収はR1保存競合の解消を確認したが、lock待機後の本人再確認とhandoff期限再検査のP2 2件でCHANGES_REQUESTED。関連107成功/追加待機probe8中4失敗を区別し、R2 source6とreview b2712d6aを不変保存。Rootが別ローカルR3で新しい本人GETとfresh origin/expiry・最後の同期期限checkを修正中。拒否先への転送や新しい宛先開示はなく、追加Eve送信許可を実行待ちgateにしない。source未採用・新main統合なし。次は固定R3→許可済Billing/Astraで作者と別の再検収→Sol統合→許可済Pro/Solの最終metadata検収→Git/同headCI/通常main同SHA CI。拒否を代行送信/別経路で迂回しない。Root返事待ちを追加gateにせず、実機/追加推論/契約/実資金/公開は別hold。
+
 ## Proから既存私有仕事への入口（2026-10-27 / G04・ROCK）
 
 着手: PR245通常main9cb9d148・同SHA全6CI/4workflow成功、Linux3132/3130pass/0fail/2skip、22blob/tree一致を[別current記録](docs/evidence/development-execution/smith-session-main-current.json)へ保存。新Pro固定source2/receiptは独立PASS_SCOPED、関連109/旧入口欠落3試験失敗（独立不具合3件ではない）、Root44・author CUA desktop画像を区別。判断: 既存WorkJob/owner/revision/別保存同意/同ID復旧/停止/成果取得10sourceを不変にし、ProはTool IDのみの固定正式linkを案内。検証完了: union109/109・type/lint/designとproject:update成功。host全verify exit0（Node3135/3132pass/0fail/3skip、build/site/API1678/CSV385含む）、固定policy scanner payload0/canary1。READMEの旧Smith準備中はPR245main反映済みへ訂正。次: 固定18の最終Root差分検収、限定Git/別PR/headCI/通常mainと同SHA CI。393task/14gate/95whole0、原本HEAD/index・616HOLD保持、本番仕事/実金融/実機/公開配備なし。[採用記録](docs/evidence/development-execution/pro-work-entry-main-adoption.json)。

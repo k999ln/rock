@@ -1,0 +1,128 @@
+{
+  "schema": "rockstaros.eve13-pending-recovery-main-adoption/1",
+  "recordedAt": "2026-10-27",
+  "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "branch": "codex/eve13-pending-recovery-adoption-20261027",
+  "unit": "EVE-13",
+  "primaryWorkstream": "10 Git / CI / Operations",
+  "sourceWorkstream": "05 Web / PWA / Sites",
+  "status": "R4_source_and_host_fullverify_passed_final_review_Git_pending",
+  "sourceHashes": {
+    "lib/eve-pending-recovery.ts": "a7d5e7d2728f0143c491b2f36329805443e9e0065398cda5b94c9ad65c78372d",
+    "components/work-composition-workspace.tsx": "950864046fb7673bb3b5ced72500118bd0bf22695a66590dbd8bebb6bccfc4c5",
+    "tests/eve-pending-recovery.test.mjs": "08bb693743cc5db64098bad48659a6d3f32737318bcd85e189ce349d34dc11f8",
+    "tests/work-composition-ui.test.mjs": "931d343ae55fd48457199a22095755bcc1b314d0208f20c61b5d07e3c2eb24a8",
+    "docs/evidence/development-execution/eve13-pending-recovery.json": "aca0561505903da7ffba2c30a02da5ab883a0974bc4e28df7af39f7470217fa4",
+    "docs/evidence/development-execution/eve13-pending-recovery-r2.json": "13935a9b1fbdcf91a4ce54a4da16b992ce56bb51c916798cfa489ea8babc25e1",
+    "docs/evidence/development-execution/eve13-pending-recovery-r3.json": "79a2de13eba3ed54a777ebeacddeb5b3259ecc32edd659484de1762835ba36fa",
+    "docs/evidence/development-execution/eve13-pending-recovery-r4.json": "39b9dfcf5c1dc0460eb27e7a4b79108107963df46b4ae3ed50a4a191597c0580"
+  },
+  "authorManifestSha256": "6a53c2ad9c204e5502d208801238e5f389285ecf7becfb40c198a16cf37db089",
+  "independentReview": {
+    "attempt": 3,
+    "decision": "PASS",
+    "reviewSha256": "a2a94acbaee5417504f75e9c05af932346e297e698c949ffa26f9d5cee4f380d",
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "actualModelIdentity": null
+  },
+  "priorFailures": [
+    {
+      "attempt": 1,
+      "decision": "CHANGES_REQUESTED",
+      "mustFix": 1,
+      "reviewSha256": "37d90fa546fac3386c4476d6ff745bbabe574bb5a7c3fccb3f414dd40d142406"
+    },
+    {
+      "attempt": 2,
+      "decision": "CHANGES_REQUESTED",
+      "mustFix": 2,
+      "reviewSha256": "b2712d6a53044741f1c39c036b079660d156100dbf2681a6b4349e22ddbcbf0d"
+    }
+  ],
+  "validation": {
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3162,
+        "pass": 3159,
+        "fail": 0,
+        "skip": 3
+      },
+      "logSha256": "3344675884bf98c8e8362e736aefc295b72bf109660d6177a23d07f16665a207",
+      "build": "PASS",
+      "API": "PASS",
+      "CSV": "PASS",
+      "executionLayer": "Host; not Linux CI/physical/provider"
+    },
+    "scanner": "PENDING",
+    "finalMetadataReview": {
+      "statusAtCapture": "PENDING_FIXED_MANIFEST_REVIEW",
+      "required": true,
+      "acceptanceRecordedSeparately": true
+    },
+    "helperBrowserPlatformSmoke": {
+      "verdict": "PASS_SCOPED_REAL_BROWSER_HELPER_PLATFORM",
+      "evidence": "docs/evidence/development-execution/eve13-browser-helper-summary.json",
+      "originalReviewSha256": "0a588d0012febe53beed1fabc9eeff65e546cc2e53d07bce86278d7384ad7c88",
+      "authenticatedWorkJobUIAccepted": false
+    },
+    "R3FullVerifyFailure": {
+      "passed": false,
+      "failure": "product lint2",
+      "logSha256": "18bc7cfecee09d3c6bc809ad41281dfa57db03cbc1bd883b1ec9fb0dae3e5420",
+      "typecheck": "PASS",
+      "design": "PASS",
+      "runtimeFailureDemonstrated": false
+    },
+    "scannerInitial": {
+      "payload": {
+        "exitCode": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "logSha256": "f56093263bedb79988e5bfb55849bce4109681967dab78e3d3f4c1b727774730"
+      },
+      "canary": {
+        "exitCode": 1,
+        "findings": 1,
+        "reportSha256": "14772a1db189e6778a629b951fb99c856c6b3db27cfa04321e392c838c10a179",
+        "logSha256": "213304595d9b7f3a53573778bf47a01ae90f74a5ca70f564081ac16d2b610705"
+      },
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "fixedPolicyCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true,
+      "paths": 20,
+      "payloadScope": "Explicit changed-file payload only; Git history scan is separate CI gate",
+      "syntheticCanary": true
+    },
+    "typecheck": "PASS",
+    "configuredProductLint": "PASS",
+    "design": "PASS"
+  },
+  "Git": {
+    "saved": false,
+    "mainIntegrated": false,
+    "headCI": "PENDING",
+    "mainCI": "PENDING"
+  },
+  "boundaries": {
+    "wholeEVE13Accepted": false,
+    "authenticatedBrowserAccepted": false,
+    "physicalAccepted": false,
+    "providerFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "noReplayablePayloadPersisted": true
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "independentR4Review": {
+    "decision": "PASS",
+    "reviewSha256": "01de2ac7a00d303d032a28c52eb9fc4634f46dbab45d7e4ddba81b1d444a68cc",
+    "scope": "R3 to R4 minimal configured-lint delta",
+    "actualModelIdentity": null
+  }
+}

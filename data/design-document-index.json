@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.52",
+  "version": "1.53",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3526,6 +3526,26 @@
     "independentReview": "docs/evidence/development-execution/pro-work-entry-independent-review.json",
     "existingWorkflowReused": true,
     "wholePRO02Accepted": false,
+    "physicalAccepted": false,
+    "mainIntegrated": true,
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/pro-work-entry-main-current.json"
+  },
+  "eve13PendingRecovery": {
+    "authority": "docs/rockstaros-complete-design.md#eve13-pending-recovery",
+    "toolDesign": "docs/sky-tools-complete-design.md#eve13-pending-recovery",
+    "implementation": [
+      "lib/eve-pending-recovery.ts",
+      "components/work-composition-workspace.tsx"
+    ],
+    "tests": [
+      "tests/eve-pending-recovery.test.mjs",
+      "tests/work-composition-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-adoption.json",
+    "sourceReceipt": "docs/evidence/development-execution/eve13-pending-recovery-r4.json",
+    "existingWorkflowReused": true,
+    "wholeEVE13Accepted": false,
     "physicalAccepted": false,
     "mainIntegrated": false,
     "publicDeployment": false

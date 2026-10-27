@@ -8,6 +8,7 @@ import { ExecutionSignin, useExecutionAccess } from '@/components/execution-acce
 import { useOwnerMemoryState } from '@/components/use-owner-memory-state';
 import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
+import { loadEvePendingRecovery, prepareEvePendingRecovery, saveEvePendingRecovery, clearEvePendingRecovery, evePendingRecoveryConfirms, type EvePendingRecovery } from '@/lib/eve-pending-recovery';
 import { isDefinitivePendingSaveFailure } from '@/lib/pending-owner-intent';
 import { OWNER_CHANGED, OWNER_CHANGED_MESSAGE, OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
 import { readWorkJobResponse, readWorkJobs } from '@/lib/work-job-view';
@@ -99,6 +100,35 @@ async function exactCompositionJob(id: string, owner: string): Promise<WorkJob> 
   return job;
 }
 
+function pendingHandoffExpired(handoff: EveTextHandoff): boolean {
+  return handoff.expiresAt <= Date.now();
+}
+
+async function validatePendingHandoff(operation: Pending): Promise<EveTextHandoff> {
+  const source = operation.handoff;
+  let originId: string;
+  try { originId = eveTextHandoffOrigin(source ?? ''); }
+  catch {
+    if (operation.writeAttempted) throw new OperationResponseError('INVALID_RESPONSE');
+    throw new OperationRequestError('準備条件を確認できません。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
+  }
+  let origin: WorkJob;
+  try { origin = await exactCompositionJob(originId, operation.owner); }
+  catch (cause) {
+    if (operation.writeAttempted && cause instanceof OperationRequestError &&
+      isDefinitivePendingSaveFailure(cause.status, cause.code)) throw new OperationResponseError('INVALID_RESPONSE');
+    throw cause;
+  }
+  try {
+    const checked = await validateEveTextHandoff(source ?? '', origin, operation.owner);
+    if (JSON.stringify(checked.plan) !== JSON.stringify(operation.payload.action === 'create' ? operation.payload.plan : operation.handoffPlan)) throw new Error('準備条件が変更されました。');
+    return checked;
+  } catch {
+    if (!operation.writeAttempted) throw new OperationRequestError('準備条件の版か期限が変わりました。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
+    throw new Error('保存結果は未確認です。同じ仕事の読戻しで確認してください。');
+  }
+}
+
 export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 'compose' | 'eve-text' } = {}) {
   const { accessState, setNeedsSignin } = useExecutionAccess();
   const [owner, setOwnerValue] = useState<string | null>(null);
@@ -118,10 +148,15 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
   const toolEntry = readCompositionToolEntry(new URLSearchParams(locationSearch));
   const [busy, setBusy] = useState(false);
   const [pendingOperations, setPendingOperations] = useState<Record<string, Pending>>({});
-  const pendingOwners = Object.keys(pendingOperations);
+  const [recoveryTargets, setRecoveryTargets] = useState<Record<string, EvePendingRecovery>>({});
+  const recovery = useRef(new Map<string, EvePendingRecovery>());
+  const [recoveryBlocked, setRecoveryBlocked] = useState<Record<string, boolean>>({});
+  const pendingOwners = [...new Set([...Object.keys(pendingOperations), ...Object.keys(recoveryTargets)])];
   const pending = useRef(new Map<string, Pending>());
   const inFlight = useRef(false);
   const generation = useRef(0);
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   const selectedRef = useRef('');
   useEffect(() => { selectedRef.current = memory.selected; }, [memory.selected]);
   const initializedOwners = useRef(new Set<string>());
@@ -132,12 +167,13 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
   const selected = jobs.find((job) => job.id === memory.selected && job.composition);
   const draft = memory.drafts[draftKey(memory.selected)] ?? (selected ? jobDraft(selected) : blankDraft());
   const ownPending = owner ? pendingOperations[owner] : undefined;
-  const locked = busy || loading || readingEve || !owner || Boolean(ownPending);
+  const ownRecovery = owner ? recoveryTargets[owner] : undefined;
+  const locked = Boolean(owner && recoveryBlocked[owner]) || Boolean(ownRecovery) || busy || loading || readingEve || !owner || Boolean(ownPending);
   const retainedInput = Object.values(memories).some((state) => Object.values(state.drafts).some((item) => item.dirty) || Object.values(state.editors).some((item) => item.dirty));
   usePendingSaveNavigation(busy || readingEve || pendingOwners.length > 0 || retainedInput || Object.values(eveInputs).some((input) => input.goal || input.materials.some((material) => material.name || material.text)));
 
   const refresh = useCallback(async () => {
-    if (inFlight.current) return;
+    if (!mounted.current || inFlight.current) return;
     const token = ++generation.current; setLoading(true);
     try {
       const list = readWorkJobs(await operationRequest<unknown>('/api/work-jobs'));
@@ -147,7 +183,18 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
         setOwner(null); setNeedsSignin(true); return;
       }
       if (mode === 'eve-text') setOwner(list.ownerScope);
-      const known = pending.current.get(list.ownerScope)?.payload.jobId ?? new URL(window.location.href).searchParams.get('job');
+      // Read only the currently authenticated owner's passive lookup record.
+      if (!pending.current.has(list.ownerScope)) {
+        try {
+          const restored = loadEvePendingRecovery(list.ownerScope);
+          if (restored) recovery.current.set(list.ownerScope, restored); else recovery.current.delete(list.ownerScope);
+          setRecoveryBlocked(previous => ({ ...previous, [list.ownerScope!]: false }));
+        } catch {
+          setRecoveryBlocked(previous => ({ ...previous, [list.ownerScope!]: true }));
+        }
+        setRecoveryTargets(Object.fromEntries(recovery.current));
+      }
+      const known = recovery.current.get(list.ownerScope)?.jobId ?? pending.current.get(list.ownerScope)?.payload.jobId ?? new URL(window.location.href).searchParams.get('job');
       const knownId = typeof known === 'string' ? known : '';
       if (mode === 'eve-text' && knownId) {
         try {
@@ -167,7 +214,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
       if (!initializedOwners.current.has(list.ownerScope)) {
         initializedOwners.current.add(list.ownerScope);
         const parameters = new URL(window.location.href).searchParams;
-        const id = parameters.get('job') ?? '';
+        const id = recovery.current.get(list.ownerScope)?.jobId ?? parameters.get('job') ?? '';
         if (id && list.jobs.some((job) => job.id === id && job.composition)) {
           selectedRef.current = id;
           setMemory((state) => ({ ...state, selected: id }), list.ownerScope);
@@ -204,8 +251,8 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
   useEffect(() => { if (accessState === 'ready' && !currentOwner.current) void refreshRef.current(); }, [accessState]);
 
   function canEditNow() {
-    return !locked && !inFlight.current && Boolean(owner && owner === currentOwner.current &&
-      !pending.current.has(owner) && memory.selected === selectedRef.current);
+    return mounted.current && !locked && !inFlight.current && Boolean(owner && owner === currentOwner.current &&
+      !pending.current.has(owner) && !recovery.current.has(owner) && memory.selected === selectedRef.current);
   }
   function invalidateEveFiles() {
     if (!owner || currentOwner.current !== owner) return;
@@ -228,14 +275,25 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
     if (id) url.searchParams.set('job', id); else url.searchParams.delete('job');
     window.history.replaceState(window.history.state, '', url);
   }
+  async function verifyOwnerNow(expected: string) {
+    let identity: ReturnType<typeof readRecipes>;
+    try { identity = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition')); }
+    catch (cause) { setOwner(null); throw cause; }
+    if (identity.ownerScope !== expected) {
+      setOwner(identity.ownerScope); setRecipes(identity.recipes);
+      throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+    }
+  }
   async function submit(operation: Pending, recover = false) {
-    if (inFlight.current || currentOwner.current !== operation.owner) return;
+    if (!mounted.current || inFlight.current || currentOwner.current !== operation.owner) return;
     inFlight.current = true; const token = ++generation.current; setBusy(true); setError(''); setMessage('');
     pending.current.set(operation.owner, operation);
     setPendingOperations(Object.fromEntries(pending.current));
     let confirmed = false, verifyingWrite = false;
+    let recoveryRecord: EvePendingRecovery | undefined;
     try {
       const fingerprint = await compositionPayloadFingerprint(operation.payload);
+      recoveryRecord = await prepareEvePendingRecovery(operation.owner, operation.payload, fingerprint);
       const identity = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition'));
       if (identity.ownerScope !== operation.owner) {
         setOwner(identity.ownerScope); setRecipes(identity.recipes);
@@ -251,32 +309,31 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
       }
       if (!result) {
         if (operation.handoff !== undefined) {
-          let originId: string;
-          try { originId = eveTextHandoffOrigin(operation.handoff); }
-          catch {
-            if (operation.writeAttempted) throw new OperationResponseError('INVALID_RESPONSE');
-            throw new OperationRequestError('準備条件を確認できません。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
-          }
-          let origin: WorkJob;
-          try { origin = await exactCompositionJob(originId, operation.owner); }
-          catch (cause) {
-            // An origin-read refusal cannot prove that an earlier child write failed.
-            if (operation.writeAttempted && cause instanceof OperationRequestError &&
-              isDefinitivePendingSaveFailure(cause.status, cause.code)) throw new OperationResponseError('INVALID_RESPONSE');
-            throw cause;
-          }
-          try {
-            const checked = await validateEveTextHandoff(operation.handoff, origin, operation.owner);
-            if (JSON.stringify(checked.plan) !== JSON.stringify(operation.payload.action === 'create' ? operation.payload.plan : operation.handoffPlan)) throw new Error('準備条件が変更されました。');
-          } catch {
-            if (!operation.writeAttempted) throw new OperationRequestError('準備条件の版か期限が変わりました。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
-            throw new Error('保存結果は未確認です。同じ仕事の読戻しで確認してください。');
-          }
-          if (token !== generation.current || currentOwner.current !== operation.owner) return;
+          await validatePendingHandoff(operation);
+          if (!mounted.current || token !== generation.current || currentOwner.current !== operation.owner) return;
         }
         if (mode === 'eve-text' && operation.payload.action === 'create') {
           const url = new URL(window.location.href); url.searchParams.set('job', String(operation.payload.jobId));
           window.history.replaceState(window.history.state, '', url);
+        }
+        if (token !== generation.current || currentOwner.current !== operation.owner) return;
+        // Save before dispatch: a closed page must retain a GET-only confirmation target.
+        await saveEvePendingRecovery(recoveryRecord);
+        if (!mounted.current || token !== generation.current || currentOwner.current !== operation.owner) return;
+        // The storage lock can wait. Neither an earlier identity nor a quote
+        // checked before that wait is authority for a later dispatch.
+        let currentHandoff: EveTextHandoff | undefined, handoffFailure: unknown;
+        if (operation.handoff !== undefined) {
+          try { currentHandoff = await validatePendingHandoff(operation); }
+          catch (cause) { handoffFailure = cause; }
+        }
+        if (!mounted.current || token !== generation.current || currentOwner.current !== operation.owner) return;
+        await verifyOwnerNow(operation.owner);
+        if (!mounted.current || token !== generation.current || currentOwner.current !== operation.owner) return;
+        if (handoffFailure) throw handoffFailure;
+        if (currentHandoff && pendingHandoffExpired(currentHandoff)) {
+          if (operation.writeAttempted) throw new OperationResponseError('INVALID_RESPONSE');
+          throw new OperationRequestError('見積期限が切れました。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
         }
         operation.writeAttempted = true;
         result = await operationRequest<unknown>(operation.path, operation.method, operation.payload,
@@ -327,10 +384,56 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
       if (currentOwner.current === operation.owner)
         setError(cause instanceof OperationRequestError ? cause.message : '応答を確認できません。同じ操作で結果を確認してください。入力と操作IDは保持しています。', operation.owner);
     } finally {
+      if (confirmed) {
+        try {
+          const target = loadEvePendingRecovery(operation.owner);
+          if (target) {
+            if (recoveryRecord && JSON.stringify(target) === JSON.stringify(recoveryRecord)) {
+              await clearEvePendingRecovery(recoveryRecord);
+              if (mounted.current && token === generation.current && currentOwner.current === operation.owner) await verifyOwnerNow(operation.owner);
+            } else confirmed = false;
+          }
+        } catch {
+          confirmed = false;
+        }
+        if (!confirmed) setError('保存済みの確認先を解除できません。同じ仕事の読戻しで確認してください。', operation.owner);
+      }
       if (confirmed && pending.current.get(operation.owner) === operation) pending.current.delete(operation.owner);
       setPendingOperations(Object.fromEntries(pending.current));
       inFlight.current = false; setBusy(false);
       if (currentOwner.current) void refreshRef.current();
+    }
+  }
+  async function reconcileRecovery(target: EvePendingRecovery) {
+    if (!mounted.current || inFlight.current || loading || currentOwner.current !== target.owner || recovery.current.get(target.owner) !== target) return;
+    inFlight.current = true; const token = ++generation.current; setBusy(true); setError(''); setMessage('');
+    try {
+      const before = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition'));
+      if (before.ownerScope !== target.owner) { setOwner(before.ownerScope); throw new Error('本人が変わりました。'); }
+      if (token !== generation.current || currentOwner.current !== target.owner) return;
+      const job = await exactCompositionJob(target.jobId, target.owner);
+      const matches = await evePendingRecoveryConfirms(target, job, target.owner);
+      const after = readRecipes(await operationRequest<unknown>('/api/work-jobs/composition'));
+      if (after.ownerScope !== target.owner) { setOwner(after.ownerScope); throw new Error('本人が変わりました。'); }
+      if (token !== generation.current || currentOwner.current !== target.owner) return;
+      if (!matches) throw new Error('同じ操作の保存を確認できません。');
+      await clearEvePendingRecovery(target);
+      if (!mounted.current || token !== generation.current || currentOwner.current !== target.owner) return;
+      await verifyOwnerNow(target.owner);
+      if (!mounted.current || token !== generation.current || currentOwner.current !== target.owner) return;
+      recovery.current.delete(target.owner); setRecoveryTargets(Object.fromEntries(recovery.current));
+      setJobs(current => [job, ...current.filter(item => item.id !== job.id)]);
+      selectedRef.current = job.id;
+      setMemory(state => ({ ...state, selected: job.id, drafts: { ...state.drafts, [job.id]: jobDraft(job) } }), target.owner);
+      const url = new URL(window.location.href); url.searchParams.set('job', job.id); window.history.replaceState(window.history.state, '', url);
+      setMessage('同じ仕事・操作IDの保存を読戻しで確認しました。未保存入力・同意は復元せず、再送していません。', target.owner);
+    } catch (cause) {
+      if (cause instanceof OperationRequestError && cause.status === 401) { setOwner(null); setNeedsSignin(true); }
+      if (token === generation.current && currentOwner.current === target.owner)
+        setError('保存結果は未確認です。同じ仕事・操作IDの読戻しだけを続けます。404や期限切れでも再送・別ID作成はしません。', target.owner);
+    } finally {
+      inFlight.current = false;
+      if (token === generation.current) setBusy(false);
     }
   }
   function mutate(payload: Record<string, unknown>, path = '/api/work-jobs/composition', method = 'POST') {
@@ -483,6 +586,11 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
       {privateVisible && <>
         {error && <div className={`${styles.notice} ${styles.error}`} role="alert">{error}</div>}
         {message && <output className={`${styles.notice} ${styles.success}`}>{message}</output>}
+        {owner && recoveryBlocked[owner] && <p role="alert">ブラウザーの確認記録を読み取れません。保存設定を確認してください。新しい操作は保留しています。</p>}
+        {ownRecovery && <section className={styles.notice} aria-label="保存結果の確認"><strong>保存結果を確認してください。</strong>
+          <p>再開した確認記録は照合先だけです。本文・同意・実行許可は復元せず、読戻しだけを行います。</p>
+          <button disabled={busy || loading} onClick={() => void reconcileRecovery(ownRecovery)}>{busy ? '確認中…' : '同じ操作で結果を確認'}</button>
+        </section>}
         {ownPending && <section className={styles.notice} aria-label="保存結果の確認"><strong>保存結果を確認してください。</strong>
           <p>新しい操作は保留中です。同じ操作IDで確認するので、仕事を二重に作りません。</p>
           <button disabled={busy || loading} onClick={() => void submit(ownPending, true)}>{busy ? '確認中…' : '同じ操作で結果を確認'}</button>
@@ -493,7 +601,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
           <button disabled={locked} onClick={() => chooseJob('')}><Plus size={16} /> 新しい仕事</button>
           <div className={styles.actions}><button disabled={busy || loading} onClick={() => void refreshRef.current()}><RefreshCw size={15} /> {loading ? '読込中…' : '再読込'}</button></div>
           <h2>保存した仕事</h2>
-          <ul>{privateVisible && jobs.map((job) => <li key={job.id}><button aria-current={memory.selected === job.id ? 'true' : undefined} disabled={busy || Boolean(ownPending)} onClick={() => chooseJob(job.id)}><span>{job.composition?.plan.objective}<small>{({ active: '作業中', review: '本人確認待ち', completed: '完了', cancelled: '中止' })[job.status]} · {job.steps.filter((step) => step.passed).length}/{job.steps.length}</small></span></button></li>)}</ul>
+          <ul>{privateVisible && jobs.map((job) => <li key={job.id}><button aria-current={memory.selected === job.id ? 'true' : undefined} disabled={busy || Boolean(ownPending) || Boolean(ownRecovery) || Boolean(owner && recoveryBlocked[owner])} onClick={() => chooseJob(job.id)}><span>{job.composition?.plan.objective}<small>{({ active: '作業中', review: '本人確認待ち', completed: '完了', cancelled: '中止' })[job.status]} · {job.steps.filter((step) => step.passed).length}/{job.steps.length}</small></span></button></li>)}</ul>
           {privateVisible && jobs.length === 0 && <p className={styles.empty}>仕事を保存すると、ここから再開できます。</p>}
           {mode !== 'eve-text' && <><h2>仕事のレシピ</h2>
           <p className={styles.note}>手順だけを再利用。過去の素材・成果・承認は含みません。</p>

@@ -1,3 +1,30 @@
+<a id="eve13-pending-recovery"></a>
+## EVE-13 同操作確認先の再開（限定R4）
+
+1. **目的**: composeとEve準備仕事で、応答不明の同job/operation確認先をpage消失後も保持する。再送可能なpayloadは保存しない。
+
+2. **利用体験**: 現在の本人で再度開き、保存済み確認先を同じIDのGETだけで照合する。未保存原稿・見積・同意は復元しない。未確認中は別の操作を開始しない。
+
+3. **責任**: ROCKはmetadata検証・owner隔離・lock待機後の再認証・業務契約、EXTERNALはbrowser機能、JOINTは実認証browser受入、OWNERは原稿/実行/費用の個別同意。serverの認証/owner/revision/Brokerを代替しない。
+
+4. **入出力**: version1、owner、canonical UUIDのjobId/operationId、kind(create/composition/command)、revision、SHA256 fingerprintの閉じたrecord。createはoperationId=jobId/revision0。出力は既存owner-scoped APIの読戻し。
+
+5. **状態**: 空→明示操作前に確認先保存→応答不明/再開はGET-only→同操作witness一致とfresh owner確認で完了。404/不一致/401/保存障害は未確認を維持し、TTL削除・別ID作成・自動再送をしない。
+
+6. **保存**: readOwnerScope/pendingOwnerStatus/openZemaPrivateStorageを再利用し、localStorageのrockstaros.eve-pending-recovery.v1:ownerへmetadataのみ保存。原文/descriptor/quote/file/credential/note/approval/実行権限は保存しない。同origin Web Locksのowner別exclusive区間でsave/clearの比較・変更・読戻しを直列化する。account-server backup/別端末同期ではない。
+
+7. **失敗**: 無効record/extra field/digest/revision、storage拒否/書込読戻し不一致、Web Locks非対応/拒否はmutation前に停止する。lock待機後は現在の認証ownerを再取得し、最後のawait後にhandoff結合と期限を再検査する。stale ownerのPOST/私有表示、期限切れの新規create/runを許可しない。
+
+8. **復旧**: 同job GETと保存fingerprint/witnessを照合し、clear待機後にもfresh ownerを確認して私有状態を表示する。既にcommitされた歴史的操作は現在見積が期限切れでもGET-onlyで確認できる。真に未知の送信を期限切れで消さない。
+
+9. **承認**: 復元metadataは非信頼の確認意図であり本人性/同意/新規実行権限ではない。新規書込は既存の明示同意・現在revision・見積期限・予算/API契約を通す。追加paid/provider/model実行はない。
+
+10. **合格条件**: 固定R4 source4/receipt4と独立Astra再検収の一致を確認する。R1保存競合、R2本人変更/期限切れの失敗履歴を保持し、独立probe・関連試験・fullverify・scanner/canary・別metadata検収・Git/head/main同SHA CIをそれぞれ記録する。
+
+11. **未決定の決め方**: 実browserのWeb Locks/localStorageはlocalhostの合成metadata・実2tab helperで競合1成功1拒否、reload同ID保持、誤clear拒否・一致clear成功を確認済み。実認証WorkJob UI、全Eve入口、native/実機/provider/金融/公開/whole EVE-13は追加gate。unsupported browserを無lock fallbackへ変えず、利用環境と復旧手順を個別受入する。
+
+[採用・検収の段階](evidence/development-execution/eve13-pending-recovery-main-adoption.json)。
+
 <a id="pro-private-work-entry"></a>
 ## Proから共通の私有テキスト仕事への入口（PRO-02限定候補）
 

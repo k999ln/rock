@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.eve13-lock-r3-author/1",
+  "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "author": "Root local remediation; independent acceptance required",
+  "fixes": [
+    "Fresh authenticated owner read after asynchronous save and clear locks",
+    "Fresh handoff validation and expiry check after last awaited validation before new create/run",
+    "Preserve expired already-committed GET-only recovery"
+  ],
+  "validation": {
+    "related": {
+      "pass": 111,
+      "fail": 0,
+      "skip": 0
+    },
+    "independentReviewerProbesUnmodified": {
+      "pass": 21,
+      "fail": 0,
+      "skip": 0
+    },
+    "nativeHiddenTestModel": {
+      "pass": 71,
+      "fail": 0,
+      "overlapsRelated": true,
+      "actualNode22": false
+    },
+    "targetedLint": "pass"
+  },
+  "limits": [
+    "Not independent acceptance",
+    "No real authenticated browser or physical-device acceptance",
+    "Full checkout verify and CI pending"
+  ],
+  "priorReviewSha256": "b2712d6a53044741f1c39c036b079660d156100dbf2681a6b4349e22ddbcbf0d",
+  "bulk616PublicHold": true
+}

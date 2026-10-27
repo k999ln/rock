@@ -1,0 +1,165 @@
+{
+  "schema": "rockstaros.eve13-lock-r2-source/1",
+  "recordedAt": "2026-10-27T11:37:38.457460+00:00",
+  "status": "ROOT_AUTHOR_LOCAL_PASS_PENDING_MANDATORY_INDEPENDENT_ASTRA_REVIEW",
+  "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "originalCandidateManifestSha256": "ca85d9b0b33e9a0bd5b47d459c7fd32ad4c7cc1e7b2eed1feea3c8dbf85cac52",
+  "originalIndependentReviewSha256": "37d90fa546fac3386c4476d6ff745bbabe574bb5a7c3fccb3f414dd40d142406",
+  "author": "Root local workspace remediation; no message or candidate data delivered to denied Eve chat",
+  "modelTelemetry": {
+    "actualModelIdentity": null,
+    "tokens": null,
+    "cost": null,
+    "note": "No claim of measured author model identity. Mandatory independent Astra/high review is not waived."
+  },
+  "ownership": [
+    "lib/eve-pending-recovery.ts",
+    "components/work-composition-workspace.tsx",
+    "tests/eve-pending-recovery.test.mjs",
+    "tests/work-composition-ui.test.mjs"
+  ],
+  "fix": [
+    "Origin-wide exclusive Web Lock serializes storage read/compare/write/readback and compare/delete/readback for each validated owner key. No browser-storage emulated production lock or unlocked fallback.",
+    "Missing/denied/nonfunctional lock refuses mutation. In-memory snapshot of primitive lookup fields precedes async lock wait.",
+    "Controller awaits persistence before dispatch, checks mount/owner/generation after wait, and awaits successful cleanup before retiring recovery state.",
+    "Tests await the async API and track real helper promises; native Node26 locks used when available, test-only portable model otherwise. Production capability requirement is not polyfilled by tests."
+  ],
+  "closedP2": "Original controlled storage ordering reports both success and loses one record. With same standalone probe R2 rejects competing different record and retains acknowledged first metadata. Not an actual browser multi-tab observation.",
+  "validation": {
+    "oldSameProbe": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "expectedNegative": true
+    },
+    "r2SameProbe": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0
+    },
+    "related": {
+      "tests": 107,
+      "pass": 107,
+      "fail": 0,
+      "skip": 0
+    },
+    "withoutNativeApiTestModel": {
+      "tests": 67,
+      "pass": 67,
+      "fail": 0,
+      "skip": 0,
+      "actualHost": "Node26.12.1 with native locks hidden; not an executed Node22 result"
+    },
+    "productionDefaultWithoutLocks": "Rejected with zero storage mutations; no network",
+    "helperStrictTypecheck": "PASS narrowed helper dependency graph, not full-project typecheck",
+    "targetedLint": "PASS",
+    "fullProjectTypecheckAndVerify": "NOT_RUN_ON_ROOT_SUBSET; central full checkout must run",
+    "realBrowserOrRealAuthentication": "NOT_RUN"
+  },
+  "failureHistory": [
+    "Root subset initially omitted unchanged script/spider dependencies; copied matching tracked source dependencies. Startup failures were not product failures.",
+    "Native Node26 sync-throw Web Lock callback stalled later acquisition; isolated probe timed out for sync throw and released for async callback. R2 uses async callback; only own blocked process50177 stopped after log/cwd verification. Partial/cancelled test log retained.",
+    "Test-only older-host lock model initially lacked two-argument request overload; two fixture tests failed. Added same request overload, retained expectations and reran both native107 and native-hidden67."
+  ],
+  "protected12": [
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5"
+    },
+    {
+      "path": "lib/work-store.ts",
+      "sha256": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330"
+    },
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6"
+    },
+    {
+      "path": "lib/work-composition.ts",
+      "sha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853"
+    },
+    {
+      "path": "app/api/work-jobs/composition/route.ts",
+      "sha256": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab"
+    },
+    {
+      "path": "app/api/work-jobs/route.ts",
+      "sha256": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d"
+    },
+    {
+      "path": "lib/zema-private-storage.ts",
+      "sha256": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e"
+    },
+    {
+      "path": "lib/pending-owner-intent.ts",
+      "sha256": "316a9cc1b1897bb59e6c15d1f9c607fc96a9ae53c463b3412054f69d83327d35"
+    },
+    {
+      "path": "lib/eve-text-handoff.ts",
+      "sha256": "42d9da5e576b4f2f3129e8d72015f07fbb5fef00ecc2eb0896a1cded16c167ec"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "d2f38af5ac499a7215e0ad67ee2ca344aecd20ab9f30aaa6a28ee1dba61f3767"
+    },
+    {
+      "path": "package.json",
+      "sha256": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+    }
+  ],
+  "logs": {
+    "eve13-root-lock-old-negative.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-old-negative.log",
+      "sha256": "33ce2b8d31a083bf5cf7fb030a2662e84b588d57e5a7ac0446c4b5310c2bd732"
+    },
+    "eve13-root-lock-fixed-probe.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-fixed-probe.log",
+      "sha256": "4b6e176e731acad5f51d106bdaf760a86596f96f74c982d2cb3abaec8709ae95"
+    },
+    "eve13-root-lock-final-related.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-final-related.log",
+      "sha256": "4156f04de4ca08459760ef9c3e06007d76f3b3cb0d46c6575bd6a7cd52e369f8"
+    },
+    "eve13-root-lock-test-fallback-fixed.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-test-fallback-fixed.log",
+      "sha256": "8596d8ff5ec2729eed8e767c3d170923cff7e9a7c9c2a54b5219ad2f8b54029c"
+    },
+    "eve13-root-lock-production-unavailable.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-production-unavailable.log",
+      "sha256": "7ed2185b9a476741c79939802a5739c546640ec083313466a6ad104864f785a1"
+    },
+    "eve13-root-lock-helper-typecheck-verified.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-helper-typecheck-verified.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "eve13-root-lock-lint-verified.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-lint-verified.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "eve13-root-lock-initial.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-initial.log",
+      "sha256": "9847a0a068cfa4dcb59503e13f446a67dd64062b31e87d0122301cf2ea619466"
+    },
+    "eve13-root-lock-focused.log": {
+      "privatePath": "/private/tmp/eve13-root-lock-focused.log",
+      "sha256": "08b6eca79f6ee643a695478224b8da36fb32600e96fccbce1bd921f59feed4f6"
+    }
+  },
+  "reproductionProbe": {
+    "privatePath": "/private/tmp/eve13-root-storage-interleaving-regression.mjs",
+    "sha256": "55404ad2db5f5c8c40eff70607a121b0ce79f45888ac41e8d72e2db5bb4f0e9e"
+  },
+  "browserCapability": "Navigator Web Locks required for mutations. Missing support fails closed before dispatch; metadata GET lookup remains passive.",
+  "scopeLimits": [
+    "No server/workflow/API/schema/billing/credential changes",
+    "No raw content/quote/consent/grant persisted",
+    "No Eve author chat forwarding or activation",
+    "No real provider/funds/device/production/public deployment acceptance",
+    "WholeEVE13 remains false"
+  ],
+  "bulk616": "HOLD"
+}
