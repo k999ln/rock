@@ -19,6 +19,7 @@ import {
   type CompositionPlan, type MaterialKind,
 } from '@/lib/work-composition';
 import { prepareEveTextJob, decodeEveTextMaterial, isEveTextPlan, type EveTextMaterial } from '@/lib/eve-text-job';
+import { validateEveTextHandoff, eveTextHandoffOrigin, isEveTextHandoffPlan, type EveTextHandoff } from '@/lib/eve-text-handoff';
 import EveTextEstimatePanel from '@/components/eve-text-estimate';
 import styles from './work-composition-workspace.module.css';
 
@@ -35,7 +36,7 @@ type ArtifactEditor = {
   minChars: string; requiredText: string; originalRevision: number; dirty: boolean;
 };
 type WorkspaceMemory = { selected: string; drafts: Record<string, Draft>; editors: Record<string, ArtifactEditor>; openedEditor: string };
-type Pending = { owner: string; path: string; method: string; payload: Record<string, unknown>; selected: string; transfer?: Draft; editorKey?: string };
+type Pending = { owner: string; path: string; method: string; payload: Record<string, unknown>; selected: string; transfer?: Draft; editorKey?: string; handoff?: string; handoffPlan?: CompositionPlan; writeAttempted?: boolean };
 const draftKey = (id: string) => id || 'new';
 const subscribeLocation = (listener: () => void) => { window.addEventListener('popstate', listener); return () => window.removeEventListener('popstate', listener); };
 const browserLocation = () => window.location.search;
@@ -160,7 +161,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
         if (current.ownerScope !== list.ownerScope) { setOwner(current.ownerScope); return; }
       }
       if (token !== generation.current) return;
-      list.jobs = list.jobs.filter((job) => job.composition && (mode !== 'eve-text' || isEveTextPlan(job.composition.plan)));
+      list.jobs = list.jobs.filter((job) => job.composition && (mode !== 'eve-text' || (isEveTextPlan(job.composition.plan) || isEveTextHandoffPlan(job.composition.plan))));
       setOwner(list.ownerScope); setJobs(list.jobs); setRecipes(saved.recipes);
       setNeedsSignin(false);
       if (!initializedOwners.current.has(list.ownerScope)) {
@@ -249,10 +250,35 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
         } catch (cause) { if (!(cause instanceof OperationRequestError && cause.status === 404)) throw cause; }
       }
       if (!result) {
+        if (operation.handoff !== undefined) {
+          let originId: string;
+          try { originId = eveTextHandoffOrigin(operation.handoff); }
+          catch {
+            if (operation.writeAttempted) throw new OperationResponseError('INVALID_RESPONSE');
+            throw new OperationRequestError('準備条件を確認できません。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
+          }
+          let origin: WorkJob;
+          try { origin = await exactCompositionJob(originId, operation.owner); }
+          catch (cause) {
+            // An origin-read refusal cannot prove that an earlier child write failed.
+            if (operation.writeAttempted && cause instanceof OperationRequestError &&
+              isDefinitivePendingSaveFailure(cause.status, cause.code)) throw new OperationResponseError('INVALID_RESPONSE');
+            throw cause;
+          }
+          try {
+            const checked = await validateEveTextHandoff(operation.handoff, origin, operation.owner);
+            if (JSON.stringify(checked.plan) !== JSON.stringify(operation.payload.action === 'create' ? operation.payload.plan : operation.handoffPlan)) throw new Error('準備条件が変更されました。');
+          } catch {
+            if (!operation.writeAttempted) throw new OperationRequestError('準備条件の版か期限が変わりました。元の仕事から見積もり直してください。', 409, 'EVE_PREPARATION_CHANGED');
+            throw new Error('保存結果は未確認です。同じ仕事の読戻しで確認してください。');
+          }
+          if (token !== generation.current || currentOwner.current !== operation.owner) return;
+        }
         if (mode === 'eve-text' && operation.payload.action === 'create') {
           const url = new URL(window.location.href); url.searchParams.set('job', String(operation.payload.jobId));
           window.history.replaceState(window.history.state, '', url);
         }
+        operation.writeAttempted = true;
         result = await operationRequest<unknown>(operation.path, operation.method, operation.payload,
           { [OWNER_SCOPE_HEADER]: operation.owner });
       }
@@ -293,6 +319,7 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
         window.history.replaceState(window.history.state, '', url);
       }
       setMessage(mode === 'eve-text' && job.composition?.materialCleared ? 'この仕事の素材・成果は削除済みです。再実行しません。' :
+        mode === 'eve-text' && operation.payload.action === 'run' && isEveTextHandoffPlan(job.composition!.plan) ? '見積条件の準備資料を保存しました。原文は元の仕事に保持し、費用予約・送信は行っていません。' :
         mode === 'eve-text' && operation.payload.action === 'run' ? '資料付き依頼の保存を同じ仕事から確認しました。生成した草稿ではありません。' : compositionSaveMessage(job, operation.payload), operation.owner);
     } catch (cause) {
       if (cause instanceof OperationRequestError && cause.status === 401) { setOwner(null); setNeedsSignin(true); }
@@ -309,7 +336,8 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
   function mutate(payload: Record<string, unknown>, path = '/api/work-jobs/composition', method = 'POST') {
     if (!canEditNow() || !owner) return;
     invalidateEveFiles();
-    void submit({ owner, path, method, payload, selected: memory.selected });
+    void submit({ owner, path, method, payload, selected: memory.selected,
+      ...(payload.action === 'run' && selected?.composition && isEveTextHandoffPlan(selected.composition.plan) ? { handoff: typeof payload.source === 'string' ? payload.source : '', handoffPlan: selected.composition.plan } : {}) });
   }
   function withPlan(action: 'create' | 'revise') {
     try {
@@ -319,6 +347,22 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
         : { action, jobId: crypto.randomUUID(), plan });
       else if (selected) mutate({ action, jobId: selected.id, revision: selected.revision, commandId: crypto.randomUUID(), plan });
     } catch (cause) { setError(cause instanceof SyntaxError ? '処理設定のJSONを確認してください。' : cause instanceof Error ? cause.message : '手順を確認してください。'); }
+  }
+  const handoffFlight = useRef(false);
+  async function createEstimatePreparation(handoff: EveTextHandoff) {
+    if (!canEditNow() || !owner || !selected || !currentMemory() || handoffFlight.current ||
+      handoff.originJobId !== selected.id || !isEveTextPlan(selected.composition!.plan)) throw new Error('元の仕事を再確認してください。');
+    const author = owner, originId = selected.id;
+    handoffFlight.current = true;
+    try {
+      const current = await exactCompositionJob(originId, author);
+      const checked = await validateEveTextHandoff(handoff.source, current, author);
+      if (!canEditNow() || currentOwner.current !== author || selectedRef.current !== originId || !currentMemory()) throw new Error('本人か仕事が変わりました。');
+      const transfer: Draft = { ...blankDraft(), ...checked.plan, nodes: editableNodes(checked.plan),
+        source: checked.source, dirty: true, consent: false, originJobId: originId, recipeRef: null };
+      await submit({ owner: author, path: '/api/work-jobs/composition', method: 'POST', selected: originId,
+        payload: { action: 'create', jobId: crypto.randomUUID(), plan: checked.plan }, transfer, handoff: checked.source });
+    } finally { handoffFlight.current = false; }
   }
   function changeEveMaterial(index: number, field: 'name' | 'text', value: string) {
     if (!canEditNow() || selected || !currentEveInput()) return;
@@ -517,8 +561,9 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
             {!selected ? <div className={styles.actions}><button className={styles.primary} disabled={locked || !draft.objective.trim() || !draft.acceptance.trim()} onClick={() => withPlan('create')}><Check size={16} /> 確認して仕事を保存</button></div> : <>
               {planChanged && <div className={styles.notice}><p>手順の変更後は、影響する成果の検査をやり直します。保存前に、残したい旧成果をダウンロードしてください。</p><button disabled={locked || selected.status === 'completed' || selected.status === 'cancelled'} onClick={() => withPlan('revise')}>変更した計画を保存</button></div>}
               <label className={styles.checkLabel}><input type="checkbox" checked={draft.consent} disabled={locked} onChange={(event) => edit({ consent: event.target.checked })} />この素材と処理成果を本人用の仕事に保存することを確認しました。</label>
-              {mode === 'eve-text' && materialSaved && !planChanged && <EveTextEstimatePanel
-                key={`${owner}/${selected.id}/${selected.revision}`} job={selected} ownerScope={owner} disabled={locked || draft.dirty} />}
+              {mode === 'eve-text' && materialSaved && !planChanged && isEveTextPlan(selected.composition!.plan) && <EveTextEstimatePanel
+                key={`${owner}/${selected.id}/${selected.revision}`} job={selected} ownerScope={owner} disabled={locked || draft.dirty} onPrepare={createEstimatePreparation} />}
+              {isEveTextHandoffPlan(selected.composition!.plan) && <p>この仕事は見積条件の準備用です。使う前に元資料と期限を再確認し、失効時は元の仕事で見積もり直してください。費用予約・Provider送信は行いません。</p>}
               <h2>実行と成果</h2><ol className={styles.steps}>{selected.composition!.plan.nodes.map((node, index) => {
                 const artifact = selected.composition!.artifacts[node.id];
                 const ready = runnable.some((item) => item.id === node.id);

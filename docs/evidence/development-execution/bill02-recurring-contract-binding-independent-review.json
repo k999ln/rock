@@ -1,0 +1,259 @@
+{
+  "schema": "rockstaros.independent-billing-risk-review/1",
+  "recordedAt": "2026-10-27T05:26:16.655559+00:00",
+  "status": "PASS_SCOPED",
+  "unit": "BILL02-RECURRING-QUOTE-BINDING",
+  "baseSha": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "reviewerRole": "central Git independent reviewer; not implementation author",
+  "routing": {
+    "policyPath": "data/development-model-routing.json",
+    "policySha256": "af71e5bd08d48162fd0f20035222587693866c4c9707424b4774fe7351dbca95",
+    "unit": "BILL-02",
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "actualModelIdentity": null,
+    "actualReasoningEffort": null,
+    "tokens": null,
+    "cost": null,
+    "note": "Parent requested Astra/high for this turn; actual runtime identity and usage are not independently observable. Requested routing is not telemetry. No child/chat dispatched."
+  },
+  "sourceManifest": {
+    "path": "docs/evidence/development-execution/bill02-recurring-contract-binding-source-manifest.json",
+    "sha256": "3c3d6a094ac2a93ce8fd2c3870824225bc7155045b88fc29a4f499a541fccf30"
+  },
+  "authorReceipt": {
+    "path": "docs/evidence/development-execution/bill02-recurring-contract-binding.json",
+    "sha256": "77aabab58e3134f975e3e1e53ece7528248ba8e8da8ed971cdfa7e3d78873abc"
+  },
+  "reviewedSourceFiles": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "baseSha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043",
+      "candidateSha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6",
+      "bytes": 28437
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "baseSha256": "493f616de5168a492b677957cb49e1db744957cbd86c2aa65a23e8bbc528d0e0",
+      "candidateSha256": "f7eb3a3d67210cd42f6bd827f2146df85dfa8ad1d1b5b08891263bc8f4d03243",
+      "bytes": 16450
+    },
+    {
+      "path": "tests/remote-ai-text-contract-binding.test.mjs",
+      "baseSha256": null,
+      "candidateSha256": "87301b92f4240848344475783efdc3124aab6979e6c69d19bda657406765979f",
+      "bytes": 25435
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde",
+      "equalBase": true
+    },
+    {
+      "path": "lib/remote-ai-text-pricing.ts",
+      "sha256": "0ca5e6926a79a1a811b7dd6026007a8c41928bdec095c5a05c4a94a45bbd99df",
+      "equalBase": true
+    },
+    {
+      "path": "lib/sky-recurring-plan.ts",
+      "sha256": "cf445f86e2649aebe802849f0cd7c8194454856d10dc67dc2ed297adec6fbd95",
+      "equalBase": true
+    },
+    {
+      "path": "lib/sky-recurring-usage.ts",
+      "sha256": "b469816bb44a3add1c9fac49f7bb60c77cc85556bf23834d5748f7a640e53f39",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rock-wallet.ts",
+      "sha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+      "equalBase": true
+    },
+    {
+      "path": "lib/wallet.ts",
+      "sha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+      "equalBase": true
+    },
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rockstar-entitlement-claim.ts",
+      "sha256": "eb533ae2cb1c8f4a1702e1ccb646770d05a927ea71f0ee9580dd76e092d7c794",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rockstar-service-access.ts",
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09",
+      "equalBase": true
+    },
+    {
+      "path": "db/schema.ts",
+      "sha256": "2f6d52d2dbbed7967dda57a0a8b1e5a02c1d8418591ae558ac23a48a274809ff",
+      "equalBase": true
+    },
+    {
+      "path": "drizzle/0018_sky_recurring_sandbox.sql",
+      "sha256": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6",
+      "equalBase": true
+    },
+    {
+      "path": "drizzle/0021_sky_recurring_send_guard.sql",
+      "sha256": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
+      "equalBase": true
+    }
+  ],
+  "candidateAuthorAndCentralHashesEqual": true,
+  "findings": [],
+  "requiredSourceChanges": [],
+  "invariantReview": [
+    {
+      "boundary": "server binding and approval",
+      "result": "PASS",
+      "evidence": "New create discards caller binding and persists recurring id/account/consent or explicit none in immutable quote_json. Approval domain /2 includes binding. Same request returns original row and digest; no reprice/rebind."
+    },
+    {
+      "boundary": "atomic creation",
+      "result": "PASS",
+      "evidence": "Current binding/absence is rechecked in committing INSERT SELECT. Present and absent read/create races reject without an execution row. Current contract owner is UNIQUE; no ambiguous multi-contract selection."
+    },
+    {
+      "boundary": "reserve/dispatch/final send",
+      "result": "PASS",
+      "evidence": "Stored predicate participates in pool INSERT, reserve state UPDATE, dispatch UPDATE and final send-claim INSERT SELECT. Final statement retains DB clock, owner, parent state, rate, cap, pool and required/preview scope checks; migration0021 access abort remains unchanged."
+    },
+    {
+      "boundary": "none and legacy",
+      "result": "PASS_WITH_DOCUMENTED_LIMIT",
+      "evidence": "Only genuinely missing JSON property has old compatibility. New none rejects later contract. Explicit null, malformed object, wrong schema or wrong type fail closed in independent probes. No caller can manufacture a missing/new bound quote through create."
+    },
+    {
+      "boundary": "hold and late usage",
+      "result": "PASS",
+      "evidence": "Changed binding before reserve creates no pool/hold; later denial retains original reservation or unreconciled hold and mock fetch stays0. Authorized late result settles once after replacement/parent stop, parent remains cancelled, no resend."
+    },
+    {
+      "boundary": "renewal and monetary limits",
+      "result": "PASS",
+      "evidence": "Same id/account/consent renewal and payment revision remain allowed. New approval under replacement uses new request within remaining original shared parent cap. Pricing, recurring month aggregation, Wallet, reservation schema and 10000/14000 sandbox arithmetic hashes unchanged."
+    }
+  ],
+  "independentExecution": {
+    "targeted": {
+      "exitCode": 0,
+      "tests": 74,
+      "pass": 74,
+      "fail": 0,
+      "skip": 0,
+      "cwd": "integration-candidate",
+      "command": "node --experimental-strip-types --test tests/remote-ai-text-contract-binding.test.mjs tests/remote-ai-text-store.test.mjs tests/remote-ai-text-atomic-send.test.mjs tests/remote-ai-text-service-authority.test.mjs tests/sky-recurring-usage.test.mjs tests/sky-recurring-sandbox.test.mjs",
+      "scope": "Host SQLite independent connections plus actual local Miniflare D1; mocked Provider only"
+    },
+    "priorNegative": {
+      "exitCode": 1,
+      "tests": 5,
+      "expectedFailures": 5,
+      "pass": 0,
+      "skip": 0,
+      "baseDependencyFilesVerified": 49,
+      "all49EqualGitBase": true,
+      "probeSha256": "fc8b0384ce3c4836cbf2ebbc131f19050109b9b0be32403fd34e5ec0d0825969",
+      "command": "node --experimental-strip-types --test --test-name-pattern='contract (id|stripe_account_id|consent_version|delete) replaced after dispatch|new no-contract approval cannot adopt' tests/remote-ai-text-contract-binding.test.mjs",
+      "cwd": "fixed-base-fixture",
+      "observation": "Old source mock sends for id/account/consent/delete changes; no-contract late binding completes. Old policy loop stops at first failing preview iteration; candidate tests both policies."
+    },
+    "additionalReviewerProbes": {
+      "exitCode": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cases": [
+        "5 malformed stored binding variants cannot inherit legacy missing-field compatibility",
+        "caller forged recurring binding is replaced by server none",
+        "new none changed before dispatch retains hold and sends0"
+      ],
+      "command": "node --experimental-strip-types --test reviewer-private-fixture/reviewer-probes.test.mjs",
+      "fixtureFailuresPreserved": [
+        "attempt1 cloned SQL fixture changed request_id without quote requestId; existing REMOTE_AI_TEXT_QUOTE_BINDING guard rejected fixture before tested behavior",
+        "attempt2 corrected requestId but reused UNIQUE quote_digest; existing UNIQUE constraint rejected fixture before tested behavior"
+      ],
+      "fixtureRepair": "Final probe creates a real new quote with prepareRemoteAiTextQuote at fixed timestamp. No production source or migrations changed; no guard disabled."
+    },
+    "diffCheck": {
+      "exitCode": 0
+    },
+    "typecheck": "author success only; not rerun in this bounded review",
+    "fullVerify": "not run this review; required at integration candidate",
+    "ci": "not run this review"
+  },
+  "limits": [
+    "Genuine pre-change missing-field quotes remain unbound. Legacy migration/reapproval is separate owner/design work, not silently backfilled.",
+    "Binding is stable field identity, not a monotonic revision/ABA epoch. Restoring identical fields is the same represented context.",
+    "Local D1 fixture is not production D1 or deployment acceptance.",
+    "No whole BILL02/common16USD contract/account-month/issuer epoch acceptance.",
+    "Shared design/index/status synchronization, full verify, Git save, main integration and same-SHA CI remain for next explicitly resumed integration turn.",
+    "Eve packet received but not reviewed/adopted in this Billing-only review."
+  ],
+  "operations": {
+    "sourceEdits": 0,
+    "sharedMetadataEdits": 0,
+    "gitMutations": 0,
+    "providerPaidCalls": 0,
+    "builds": 0,
+    "childOrChatDispatches": 0,
+    "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "rootIndexSha256": "181a20c14e06119d3a09bda219de507d2807053cb5d71f1daa34c71d73fe80b2",
+    "rootDirtyAnd616HoldPreserved": true,
+    "rootExclusiveDevelopmentExecutionReadOrWritten": false
+  },
+  "next": "End review turn. Parent can resume existing central integration in Sol/medium with this exact source hash set; re-review any source change.",
+  "artifacts": [
+    {
+      "file": "prior-negative.log",
+      "sha256": "e72ca01015cdf183da7fa039fad19bb5b32efb6e245207ae0e2b238d447ce1b2",
+      "bytes": 4195
+    },
+    {
+      "file": "reviewer-probes-attempt1.log",
+      "sha256": "d397790c3d1ccd847ce7e40020f24e275aad3d1dbe394dcee308f71eb4472352",
+      "bytes": 1017
+    },
+    {
+      "file": "reviewer-probes-attempt1.test.mjs",
+      "sha256": "0069840a805676b67d04fb2315e31c43fd5310c1eae2f86a384fa18520ff3ba7",
+      "bytes": 10389
+    },
+    {
+      "file": "reviewer-probes-attempt2.log",
+      "sha256": "ef8b05181bf672d849bff4624f8b06f2a056fe30d1867681f8dfa86c96627b37",
+      "bytes": 1055
+    },
+    {
+      "file": "reviewer-probes-attempt2.test.mjs",
+      "sha256": "bed8b29e749c95949583f3aeb10c6fe969b47901d2c8656047dd5e537c7c7d87",
+      "bytes": 10430
+    },
+    {
+      "file": "reviewer-probes.log",
+      "sha256": "dc9d07fa61b82d704258ffc75329544c0f0d7367022dc1d03b1fedaac4de9fe9",
+      "bytes": 408
+    },
+    {
+      "file": "reviewer-probes.test.mjs",
+      "sha256": "431711bed4e4c1295112ba4cba6b7b964e01339d59aca5df59f33e2aab298f28",
+      "bytes": 10539
+    },
+    {
+      "file": "targeted.log",
+      "sha256": "74a047b9082dbf515d32dbb2f4058ecab1e3733f2aa6735b97945b34c2f8ba95",
+      "bytes": 7879
+    }
+  ],
+  "privateOriginalReviewSha256": "d6130db07abd5e13722b9586ec0068adc3bf80b4cb0d9fe7f4eeecce4f0c6811",
+  "portableSummary": "Local absolute paths replaced with logical fixture IDs only; original review retained outside Git. Source hashes, verdict, tests and limitations preserved."
+}

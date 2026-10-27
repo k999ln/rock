@@ -1273,5 +1273,27 @@
     "headCISuccess": 7,
     "mainCISuccess": 6,
     "currentMainEvidence": "docs/evidence/development-execution/esim-mini-ready-design-main-current.json"
+  },
+  "billingEveOsGameFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+    "status": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "units": [
+      "BILL-02",
+      "EVE-02",
+      "OS-01",
+      "GAME-01"
+    ],
+    "gitHubSaved": false,
+    "mainIntegrated": false,
+    "fullVerify": "exit0; root Node3112/3109pass/0fail/3hostskip; build/API/CSV passed",
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HELD",
+    "sourceReviewEvidence": "docs/evidence/development-execution/billing-eve-os-game-source-review.json",
+    "RootBrowserEvidence": "docs/evidence/development-execution/eve-handoff-root-ui-summary.json"
   }
 }

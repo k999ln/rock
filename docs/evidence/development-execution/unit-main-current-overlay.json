@@ -1046,6 +1046,20 @@
       "realProviderAccepted": false,
       "realFinancialAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "BILL_EVE_OS_GAME_FINITE_20261027",
+      "units": [
+        "BILL-02",
+        "EVE-02",
+        "OS-01",
+        "GAME-01"
+      ],
+      "kind": "additional_bounded_candidate",
+      "state": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+      "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+      "wholeUnitAccepted": false,
+      "publicDeploymentAccepted": false
     }
   ],
   "executionPriority": [

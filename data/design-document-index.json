@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.47",
-  "updatedAt": "2026-10-26",
+  "version": "1.48",
+  "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3375,6 +3375,71 @@
     "existingWorkflowApiStoreUnchanged": true,
     "wholeGAME02Accepted": false,
     "financialExchange": false,
+    "publicDeployment": false
+  },
+  "billingRecurringQuoteBinding": {
+    "authority": "docs/rockstaros-complete-design.md#billing-recurring-quote-binding",
+    "toolDesign": "docs/sky-tools-complete-design.md#billing-recurring-quote-binding",
+    "implementation": [
+      "lib/remote-ai-text-store.ts"
+    ],
+    "tests": [
+      "tests/remote-ai-text-contract-binding.test.mjs",
+      "tests/remote-ai-text-atomic-send.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "eveTextHandoff": {
+    "authority": "docs/rockstaros-complete-design.md#eve-text-handoff",
+    "toolDesign": "docs/sky-tools-complete-design.md#eve-text-handoff",
+    "implementation": [
+      "lib/eve-text-handoff.ts",
+      "components/eve-text-estimate.tsx",
+      "components/work-composition-workspace.tsx"
+    ],
+    "tests": [
+      "tests/eve-text-handoff.test.mjs",
+      "tests/eve-text-estimate-ui.test.mjs",
+      "tests/work-composition-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "pixelInputBindingRecovery": {
+    "authority": "docs/rockstaros-complete-design.md#pixel-input-binding-recovery",
+    "toolDesign": "docs/sky-tools-complete-design.md#pixel-input-binding-recovery",
+    "implementation": [
+      "scripts/sky-linux-local-runtime.mjs"
+    ],
+    "tests": [
+      "tests/sky-linux-input-binding-recovery.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "gameIntakePathTree": {
+    "authority": "docs/rockstaros-complete-design.md#game-intake-path-tree",
+    "toolDesign": "docs/sky-tools-complete-design.md#game-intake-path-tree",
+    "implementation": [
+      "lib/game-intake.ts"
+    ],
+    "tests": [
+      "tests/game-intake.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
     "publicDeployment": false
   }
 }

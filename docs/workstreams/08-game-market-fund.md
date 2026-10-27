@@ -57,3 +57,7 @@ ROCK/08、既存AI06/GM01（DX01文脈）。固定4sourceと匿名化した原re
 ## GTA VIプレイ入口（2026-10-05）
 
 [Mini game client](../mini-game-client.md)の診断/公式client起動をAI06サブ項目として追加。ROCKのdesktop試作であり、認証・映像・操作・復旧は公式clientへ委譲する。console、実タイトル、Miniの表示/入力はJOINTの未受入。ProのPC版対応は未確認のため起動を拒否。担当・入出力・状態・保存・失敗・受入・未決定事項は同設計を正本とする。
+
+## 2026-10-27 bounded follow-up: game-intake-path-tree
+
+主担当ROCK、統合10/G04。[Game file-setのファイル／親ディレクトリ衝突拒否](../rockstaros-complete-design.md#game-intake-path-tree)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。

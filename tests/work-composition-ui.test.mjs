@@ -1,3 +1,4 @@
+import * as handoff from '../lib/eve-text-handoff.ts';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -15,6 +16,7 @@ import { executeCompositionNode } from '../lib/work-composition-executor.ts';
 
 async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, mode = 'compose', hideList = false, exactHook = null } = {}) {
   const slots = [], effects = [], inFlight = new Set(), jobs = new Map(), requests = [], listeners = new Map();
+  let estimateProps;
   let cursor = 0, tree, owner = initialOwner, corruptResponse = false, loseResponse = false, exactFailure = 0, navigationProtected = false;
   let href = `https://local.test/zema/compose${search}`;
   if (initialJobs.length) jobs.set(initialOwner, new Map(initialJobs.map((job) => [job.id, job])));
@@ -93,9 +95,9 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     addEventListener(name, callback) { if (!listeners.has(name)) listeners.set(name, new Set()); listeners.get(name).add(callback); },
     removeEventListener(name, callback) { listeners.get(name)?.delete(callback); }, confirm: () => true,
   };
-  const modules = {
+  const modules = { '@/lib/eve-text-handoff': handoff,
     // Child behavior runs in eve-text-estimate-ui; this harness owns the parent workspace.
-    '@/components/eve-text-estimate': () => null,
+    '@/components/eve-text-estimate': props => { estimateProps = props; return null; },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     'lucide-react': Object.fromEntries(['Check','Download','Play','Plus','RefreshCw'].map((name) => [name, name])),
     '@/components/workspace-shell': 'shell', '@/components/execution-access': { ExecutionSignin: 'signin', useExecutionAccess: () => ({ accessState: 'ready', setNeedsSignin }) },
@@ -114,7 +116,7 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   }
   modules['@/components/use-owner-memory-state'] = compile('components/use-owner-memory-state.ts');
   const component = compile('components/work-composition-workspace.tsx').default;
-  function render() { cursor = 0; tree = component({ mode }); effects.splice(0).forEach((effect) => effect()); }
+  function render() { cursor = 0; estimateProps = undefined; tree = component({ mode }); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) {
     if (Array.isArray(node)) node.forEach((child) => nodes(child, result));
     else if (node && typeof node === 'object') {
@@ -130,7 +132,7 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   async function click(label) { const button = find('button', label); assert.ok(button && !button.props.disabled, label); button.props.onClick(); render(); await flush(); }
   function input(id, value) { const node = nodes(tree).find((item) => item.props?.id === id); assert.ok(node && !node.props.disabled && !node.props.readOnly, id); node.props.onChange({ target: { value, checked: Boolean(value) } }); render(); }
   render(); await flush();
-  return { find, byId: (id) => nodes(tree).find((node) => node.props?.id === id), click, input, flush, render, requests, jobs, text: () => text(tree), protected: () => navigationProtected, alerts: () => nodes(tree).filter(node => node.props?.role === 'alert').map(text).join(''),
+  return { get estimateProps() { nodes(tree); return estimateProps; }, find, byId: (id) => nodes(tree).find((node) => node.props?.id === id), click, input, flush, render, requests, jobs, text: () => text(tree), protected: () => navigationProtected, alerts: () => nodes(tree).filter(node => node.props?.role === 'alert').map(text).join(''),
     owner(value) { owner = value; }, location(search) { href = `https://local.test/zema/compose${search}`; }, corrupt() { corruptResponse = true; }, lose() { loseResponse = true; }, unmount() { for (const slot of slots) slot?.cleanup?.(); }, failExact(status = 404) { exactFailure = status; },
     async focus() { for (const listener of listeners.get('focus') ?? []) listener(); render(); await flush(); },
     async consent() { const label = find('label', '本人用の仕事に保存'); const checkbox = nodes(label).find((node) => node.type === 'input'); assert.ok(checkbox); checkbox.props.onChange({ target: { checked: true } }); render(); await flush(); },
@@ -694,4 +696,73 @@ void test('Eve captured goal and material callbacks cannot change a newer input 
   assert.equal(app.byId('eve-text-0').props.value, '');
   app.input('eve-text-0', 'current material'); assert.equal(app.byId('eve-text-0').props.value, 'current material');
   assert.equal(app.requests.filter(r => r.method !== 'GET').length, 0);
+});
+
+async function handoffQuote(work, cap = 10) {
+  const bound = await eveText.prepareEveTextEstimate(work);
+  return { estimate: { currency: 'USD', maximumChargeMinor: 5, inputTokenUpperBound: 100, outputTokenLimit: 1200,
+    modelId: 'fixture-model', pricingVersion: 'fixture-1', rateCardDigest: 'a'.repeat(64), expiresAt: Date.now() + 60000 },
+    unitRates: [{ category: 'ordinary-input', rateMinorMicrosPerMillionTokens: 1000 }, { category: 'output', rateMinorMicrosPerMillionTokens: 2000 }],
+    rateSource: 'https://example.test/rates', cardId: 'fixture-card', sourceRef: bound.sourceRef, promptDigest: bound.promptDigest,
+    withinUserCap: true, userCapMinor: cap, estimateOnly: true, executionAuthorized: false, providerSubmission: 'not_performed' };
+}
+async function handoffOrigin(app) {
+  await eveDraft(app); await app.click('確認して仕事を保存'); await app.consent(); await app.click('この手順を実行');
+  const props = app.estimateProps, quote = await handoffQuote(props.job);
+  const draft = await handoff.prepareEveTextHandoff(props.job, props.ownerScope, quote, { materials: true, conditions: true, capMinor: 10 });
+  return { props, quote, draft, original: structuredClone(props.job) };
+}
+void test('estimate-bound preparation uses existing create/run/readback, retains originals and restores GET-only', async () => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app);
+  await f.props.onPrepare(f.draft); await app.flush();
+  const child = [...app.jobs.get('A').values()].find(j => j.id !== f.original.id);
+  assert.ok(child); assert.equal(child.composition.source, null); assert.equal(child.composition.plan.budgetMinor, 0);
+  assert.equal(JSON.stringify(app.jobs.get('A').get(f.original.id)), JSON.stringify(f.original));
+  assert.equal(app.byId('composition-source').props.value, f.draft.source);
+  assert.equal(app.estimateProps, undefined);
+  await app.consent(); await app.click('この手順を実行');
+  const saved = app.jobs.get('A').get(child.id);
+  assert.equal(saved.status, 'review'); assert.equal(saved.composition.artifacts.s1.text, f.draft.source);
+  assert.equal(JSON.stringify(app.jobs.get('A').get(f.original.id)), JSON.stringify(f.original));
+  const restored = await harness({ mode: 'eve-text', initialJobs: [f.original, saved], search: `?job=${saved.id}` });
+  assert.equal(restored.byId('composition-source').props.value, f.draft.source);
+  assert.equal(restored.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(app.requests.some(r => r.path.startsWith('/api/llm/')), false);
+});
+void test('changed source or owner before preparation creates no child work', async () => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app);
+  app.jobs.get('A').get(f.original.id).revision++;
+  await assert.rejects(f.props.onPrepare(f.draft)); await app.flush();
+  assert.equal(app.jobs.get('A').size, 1);
+  app.owner('B'); await app.focus(); await assert.rejects(f.props.onPrepare(f.draft));
+  assert.equal(app.jobs.get('B'), undefined);
+});
+void test('unknown create reconciles the same ID after expiry, but no new expired source write is dispatched', async t => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app);
+  app.lose(); await f.props.onPrepare(f.draft); await app.flush();
+  assert.ok(app.find('button', '同じ操作で結果を確認')); assert.equal(app.jobs.get('A').size, 2);
+  t.mock.method(Date, 'now', () => f.draft.expiresAt);
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.requests.filter(r => r.payload?.action === 'create').length, 2); // one original + one child
+  const child = [...app.jobs.get('A').values()].find(j => j.id !== f.original.id);
+  await app.consent(); await app.click('この手順を実行');
+  assert.equal(app.requests.some(r => r.payload?.action === 'run' && r.payload.jobId === child.id), false);
+  assert.equal(child.composition.source, null); assert.equal(app.find('button', '同じ操作で結果を確認'), undefined);
+  assert.match(app.alerts(), /期限/);
+});
+
+void test('unknown child create plus origin404 retains the original operation until same-child GET confirms it', async () => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app);
+  app.lose(); await f.props.onPrepare(f.draft); await app.flush();
+  assert.ok(app.find('button', '同じ操作で結果を確認'));
+  const child = [...app.jobs.get('A').values()].find(j => j.id !== f.original.id);
+  app.jobs.get('A').delete(f.original.id); app.failExact(404);
+  const writes = app.requests.filter(r => r.method !== 'GET').length;
+  await app.click('同じ操作で結果を確認');
+  assert.ok(app.find('button', '同じ操作で結果を確認'));
+  assert.equal(app.requests.filter(r => r.method !== 'GET').length, writes);
+  await app.click('同じ操作で結果を確認');
+  assert.equal(app.find('button', '同じ操作で結果を確認'), undefined);
+  assert.equal(app.jobs.get('A').size, 1); assert.equal(app.jobs.get('A').get(child.id).composition.source, null);
+  assert.equal(app.requests.filter(r => r.method !== 'GET').length, writes);
 });

@@ -1,3 +1,7 @@
+## Billing・Eve・OS復旧・Game診断の有限統合（2026-10-27 / G04・ROCK）
+
+最新main7ceef8cfから固定候補を採用準備。Billing契約binding3sourceは独立74+3成功/旧5反例、OSは初回保存前の入力hash設定だけ、Gameはfile/親directory衝突拒否。Eve最終6はunknown404と同意切替後の自然失効回帰を修正し、中央独立9・関連73成功/旧3失敗反例、Rootの自然期限実画面合格を限定確認。共通schema/価格/既存workflow/Wallet・393task/14gate/固定95whole0は保持。共有設計/index/進捗を同期し、source13不変のhost全verifyはexit0（Node3112/3109pass/0fail/3skip、build/API/CSV含む）。結果だけのmetadataを追記した最終候補について、固定scanner/独立metadata検収→限定Git保存→最終head Linux CI→通常main/同SHA CIへ進む。Git保存/main/CIは現在未完了。実機/Provider/実課金/一般公開・616bulkは保留。証拠 docs/evidence/development-execution/billing-eve-os-game-main-adoption.json。
+
 ## PR225 zod最終検収のGit保存・現行進捗同期（SYS15・G04 / ROCK）
 
 PR225は検証済みHEAD `dcf86f99ab8712d539c3ae9f8f4702a8edf3661e`（CodeQL集約を含む全8CI成功）をmain `f4ed492c9c4ae06c4c94c5c36d2f692315cae622`へ通常統合済み。同一mergeSHAの全9CI（CodeQL両言語・Dependabot2件を含む）成功、head/merge tree一致、両Linux全verify2991試験/2989pass/0fail/2skipを確認。zod警告42/54はdismissせずfixed、限定PASS/mustFix0。[最終検収](docs/evidence/development-execution/zod-security-constraint-review.json)を保存し、原本hash・CIリンク・ログhashを保持して個人端末の絶対pathだけを除いた。
@@ -551,7 +555,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-25 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-10-27 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

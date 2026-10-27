@@ -205,3 +205,68 @@ void test('manifest digest binds permissions/resources/entry/save and is indepen
   assert.notEqual((await diagnose(f)).manifestSha256, original.manifestSha256);
   assert.equal((await diagnoseGameIntake(null, f.context)).status, 'invalid_manifest');
 });
+
+// A signed/digest-bound file list still has to describe a realizable tree.
+// No filesystem writes/unpacking are needed to reject a file used as a directory.
+async function treeFixture(paths) {
+  const f = await fixture();
+  f.context.files = paths.map((path, i) => ({ path, bytes: bytes(`asset-${i}`) }));
+  f.manifest.assets = await Promise.all(f.context.files.map(async (file, i) => ({
+    id: `asset-${i}`, path: file.path, bytes: file.bytes.length,
+    sha256: await gameIntakeSha256(file.bytes), licenseId: 'MIT',
+  })));
+  f.manifest.entry = paths[0];
+  const index = f.manifest.assets.map(a => ({ bytes: a.bytes, path: a.path, sha256: a.sha256 }))
+    .sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+  f.context.packageBytes = bytes(JSON.stringify(index));
+  f.manifest.packageSha256 = await gameIntakeSha256(f.context.packageBytes);
+  f.context.grants[0].packageSha256 = f.manifest.packageSha256;
+  Object.assign(f.manifest.resources, {
+    packageBytes: f.context.packageBytes.length,
+    expandedBytes: f.context.files.reduce((n, file) => n + file.bytes.length, 0),
+    fileCount: paths.length,
+  });
+  return f;
+}
+
+void test('a file cannot also be an implicit directory even with valid hashes and rights', async () => {
+  for (const paths of [
+    ['assets', 'assets/particle.json'],
+    ['assets/particle.json', 'assets'],
+    ['ASSETS', 'assets/particle.json'],
+    ['assets/particle.json', 'Assets'],
+    ['data/particles', 'data/particles/frames/initial.json'],
+    ['data/particles/frames/initial.json', 'DATA/PARTICLES'],
+    // An intervening lexical name must not hide the ancestor.
+    ['data', 'data.json', 'data/initial.json'],
+  ]) {
+    const f = await treeFixture(paths), before = structuredClone(f);
+    const d = await diagnose(f);
+    assert.equal(d.status, 'invalid_manifest', paths.join(' | '));
+    assert.deepEqual(d.reasons, ['file_directory_collision']);
+    assert.equal(d.adapterCandidate, null);
+    assert.deepEqual(Object.values(d.checks), Array(4).fill('unverified'));
+    assert.deepEqual(Object.values(d.measurements), Array(4).fill(null));
+    assert.deepEqual(f, before);
+  }
+});
+
+void test('shared implicit directories and textual prefixes remain valid file-set candidates', async () => {
+  for (const paths of [
+    ['assets/one.json', 'assets/two.json'],
+    ['assets/one.json', 'ASSETS/two.json'],
+    ['assets', 'assets-old/particle.json'],
+    ['data.json', 'data/initial.json'],
+    ['a/b/one.json', 'a/b/c/two.json', 'a/d/three.json'],
+    ['assets.old', 'assets.old.json'],
+  ]) {
+    const f = await treeFixture(paths), before = structuredClone(f);
+    const d = await diagnose(f);
+    assert.equal(d.status, 'launch_candidate', paths.join(' | '));
+    f.manifest.assets.reverse(); f.context.files.reverse();
+    assert.equal((await diagnose(f)).packageSha256, d.packageSha256);
+    assert.equal((await diagnose(f)).status, 'launch_candidate');
+    f.manifest.assets.reverse(); f.context.files.reverse();
+    assert.deepEqual(f, before);
+  }
+});

@@ -1,3 +1,5 @@
+Eveの見積条件を予算0の準備仕事へ渡す限定候補を準備中です。保存済の資料で見積もり、通貨と比較上限、別の準備同意を確認して「この条件で準備仕事を作成」へ進みます。原文は元の仕事へ保持し、新仕事の資料保存は別の保存同意後に行います。期限切れ時は元の仕事で見積もり直します。これは有料生成の承認や予約ではありません。[契約と復旧](docs/rockstaros-complete-design.md#eve-text-handoff)、[4候補の検収・Git段階](docs/evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照してください。
+
 [PR225](https://github.com/k999ln/rock/pull/225)のzod修正はmain `f4ed492c`へ統合済みです。HEAD `dcf86f99`の全8CI、main統合SHAの全9CI（CodeQLを含む）が成功し、zod警告2件は解消しました。[最終検収・履歴](docs/evidence/development-execution/zod-security-constraint-review.json)をGit保存しています。root・MiniはZod4.6.7、shadcnは上流Zod4対応版4.22.1です。依存・schema互換性試験は `node --test tests/zod-dependency-security.test.mjs`。実機・追加推論・公開の実施は含みません。
 
 [PR207](https://github.com/k999ln/rock/pull/207)はmain `0d726717`へ通常統合済みで、同一SHAのCI6件成功を確認しました。公開・配備・616件一括公開は保留です。採用済みの[Wallet process復旧fixture](docs/sky-billing.md#wallet-process-recovery-fixture)は `node --experimental-strip-types --test tests/billing-process-recovery.test.mjs` で実行できます。合成local SQLiteの子processを13点で強制終了し、再接続・再送の一意性を検査します。POSIX限定でWindowsはskip。本番金融の受入ではありません。 [PR208](https://github.com/k999ln/rock/pull/208)はmain `2854d069`へ通常統合済みで、同mergeSHAの全6CIとLinux実verify（2911試験・2909pass・0fail・2skip）が成功しました。原本の記録時pendingと現在のGit受入を分けた[統合証拠](docs/evidence/development-execution/wallet-process-recovery-main-merge.json)を保存しています。
@@ -443,7 +445,7 @@ Mini/ProのWebソースは [sites/avocado-mini](sites/avocado-mini/) に共通�
 実装の承認・受入gate、次の作業、検証結果は [project.md](project.md)、[進捗JSON](data/project-status.json)、[作業分野](docs/workstreams/README.md)を確認してください。[全タスクの進捗](project.md#全taskの作業進捗)も参照できます。作業数は製品の完成率を表しません。GitHub保存、mainへの統合、各サイトの配備は別に記録します。
 
 <!-- project-overview:start -->
-Updated: 2026-10-25 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-27 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## 権利と公開・実機の境界

@@ -10,6 +10,32 @@ import {
 } from './remote-ai-text-pricing.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
+type RecurringContractBinding = {
+  schema: 'sky.recurring-quote-binding/1';
+  kind: 'none';
+} | {
+  schema: 'sky.recurring-quote-binding/1';
+  kind: 'recurring';
+  contractId: string;
+  stripeAccountId: string;
+  consentVersion: string;
+};
+// Existing unbound quotes retain their previous behavior. A newly bound quote
+// can never silently follow a replacement contract or consent/account change.
+// Alias values below are fixed server SQL identifiers, never request input.
+function recurringBindingMatches(alias: string) {
+  return `(json_type(${alias}.quote_json, '$.recurringContractBinding') IS NULL OR (
+    json_type(${alias}.quote_json, '$.recurringContractBinding') = 'object'
+    AND json_extract(${alias}.quote_json, '$.recurringContractBinding.schema') = 'sky.recurring-quote-binding/1'
+    AND ((json_extract(${alias}.quote_json, '$.recurringContractBinding.kind') = 'none'
+      AND NOT EXISTS (SELECT 1 FROM sky_recurring_contracts bound_contract WHERE bound_contract.owner_id = ${alias}.owner_user_id))
+    OR (json_extract(${alias}.quote_json, '$.recurringContractBinding.kind') = 'recurring'
+    AND EXISTS (SELECT 1 FROM sky_recurring_contracts bound_contract
+      WHERE bound_contract.owner_id = ${alias}.owner_user_id
+        AND bound_contract.id = json_extract(${alias}.quote_json, '$.recurringContractBinding.contractId')
+        AND bound_contract.stripe_account_id = json_extract(${alias}.quote_json, '$.recurringContractBinding.stripeAccountId')
+        AND bound_contract.consent_version = json_extract(${alias}.quote_json, '$.recurringContractBinding.consentVersion'))))))`;
+}
 export const REMOTE_AI_TEXT_MAX_QUEUE_AGE_MS = 24 * 60 * 60 * 1000;
 export type RemoteAiTextState = 'quoted' | 'reserved' | 'sending' | 'completed' | 'unreconciled' | 'cancelled' | 'expired';
 export type RemoteAiTextRecord = {
@@ -19,7 +45,7 @@ export type RemoteAiTextRecord = {
   parentJobId: string;
   parentBudgetLimitMinor: number;
   approvalDigest: string;
-  quote: RemoteAiTextQuote;
+  quote: RemoteAiTextQuote & { recurringContractBinding?: RecurringContractBinding };
   verifiedRate: VerifiedRemoteAiRateCard;
   saveResult: boolean;
   state: RemoteAiTextState;
@@ -71,10 +97,12 @@ function decode(row: Row): RemoteAiTextRecord {
     };
   } catch { throw new RemoteAiTextStoreError('STORE_UNAVAILABLE'); }
 }
-async function approvalDigest(quote: RemoteAiTextQuote, parentJobId: string, parentBudgetLimitMinor: number, saveResult: boolean) {
+async function approvalDigest(quote: RemoteAiTextQuote, parentJobId: string, parentBudgetLimitMinor: number, saveResult: boolean,
+  binding: RecurringContractBinding) {
   const value = JSON.stringify({
-    domain: 'rockstar-remote-ai-text-approval/1', quoteDigest: quote.quoteDigest,
+    domain: 'rockstar-remote-ai-text-approval/2', quoteDigest: quote.quoteDigest,
     parentJobId, parentBudgetLimitMinor, saveResult,
+    recurringContractBinding: binding,
   });
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('');
@@ -154,6 +182,7 @@ export class RemoteAiTextStore {
       JOIN remote_ai_text_inputs i ON i.execution_id = e.id AND i.owner_user_id = e.owner_user_id
       CROSS JOIN clock
       WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending'
+        AND ${recurringBindingMatches('e')}
         AND i.expires_at > MAX(clock.at, e.updated_at)
         AND e.expires_at + 86400000 > MAX(clock.at, e.updated_at)
         AND e.maximum_charge_minor >= 0 AND e.maximum_charge_minor <= e.approved_cap_minor
@@ -223,20 +252,39 @@ export class RemoteAiTextStore {
       if (!sameRequest(existing)) throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
       return { record: existing, inserted: false };
     }
+    const contract = await this.db.prepare(`SELECT id, stripe_account_id AS stripeAccountId,
+      consent_version AS consentVersion FROM sky_recurring_contracts WHERE owner_id = ?`)
+      .bind(quote.ownerId).first<{ id: string; stripeAccountId: string; consentVersion: string }>();
+    if (contract && ![contract.id, contract.stripeAccountId, contract.consentVersion]
+      .every(value => typeof value === 'string' && value.length > 0 && value.length <= 256))
+      throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
+    const binding: RecurringContractBinding = contract ? {
+      schema: 'sky.recurring-quote-binding/1', kind: 'recurring', contractId: contract.id,
+      stripeAccountId: contract.stripeAccountId, consentVersion: contract.consentVersion,
+    } : { schema: 'sky.recurring-quote-binding/1', kind: 'none' };
+    const storedQuote: RemoteAiTextRecord['quote'] = { ...quote };
+    // Never accept a caller-supplied binding, including on the unbound path.
+    delete storedQuote.recurringContractBinding;
+    storedQuote.recurringContractBinding = binding;
     const id = crypto.randomUUID();
-    const approval = await approvalDigest(quote, parentJobId, parentBudgetLimitMinor, saveResult);
+    const approval = await approvalDigest(quote, parentJobId, parentBudgetLimitMinor, saveResult, binding);
     try {
       await this.db.prepare(`INSERT INTO remote_ai_text_executions
         (id, owner_user_id, request_id, parent_job_id, model_id, card_id, rate_card_digest,
          quote_digest, approval_digest, quote_json, rate_card_json, currency,
          maximum_charge_minor, approved_cap_minor, parent_budget_limit_minor, save_result,
          state, created_at, updated_at, expires_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'quoted', ?, ?, ?)
+        SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'quoted', ?, ?, ?
+        WHERE ((? IS NULL AND NOT EXISTS (SELECT 1 FROM sky_recurring_contracts WHERE owner_id = ?))
+          OR EXISTS (SELECT 1 FROM sky_recurring_contracts WHERE owner_id = ? AND id = ?
+            AND stripe_account_id = ? AND consent_version = ?))
         ON CONFLICT(owner_user_id, request_id) DO NOTHING`)
         .bind(id, quote.ownerId, quote.requestId, parentJobId, verified.card.modelId, verified.card.cardId,
-          verified.digest, quote.quoteDigest, approval, JSON.stringify(quote), JSON.stringify(verified.card),
+          verified.digest, quote.quoteDigest, approval, JSON.stringify(storedQuote), JSON.stringify(verified.card),
           quote.ceiling.currency, quote.ceiling.maximumChargeMinor, quote.approvedCapMinor,
-          parentBudgetLimitMinor, saveResult ? 1 : 0, quote.createdAt, quote.createdAt, quote.expiresAt).run();
+          parentBudgetLimitMinor, saveResult ? 1 : 0, quote.createdAt, quote.createdAt, quote.expiresAt,
+          contract?.id ?? null, quote.ownerId, quote.ownerId, contract?.id ?? null,
+          contract?.stripeAccountId ?? null, contract?.consentVersion ?? null).run();
     } catch { throw new RemoteAiTextStoreError('STORE_UNAVAILABLE'); }
     const row = await this.findRequest(quote.ownerId, quote.requestId);
     if (!row || !sameRequest(row)) throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
@@ -255,9 +303,11 @@ export class RemoteAiTextStore {
           SELECT owner_user_id, parent_job_id, currency, parent_budget_limit_minor, 0, 0, 0, ?, ?
           FROM remote_ai_text_executions WHERE owner_user_id = ? AND id = ? AND state = 'quoted'
             AND approval_digest = ? AND expires_at > ?
+            AND ${recurringBindingMatches('remote_ai_text_executions')}
           ON CONFLICT(owner_user_id, parent_job_id) DO NOTHING`).bind(now, now, owner, id, approval, now),
         this.db.prepare(`UPDATE remote_ai_text_executions SET state = 'reserved', revision = revision + 1, updated_at = ?
-          WHERE owner_user_id = ? AND id = ? AND state = 'quoted' AND approval_digest = ?`).bind(now, owner, id, approval),
+          WHERE owner_user_id = ? AND id = ? AND state = 'quoted' AND approval_digest = ?
+            AND ${recurringBindingMatches('remote_ai_text_executions')}`).bind(now, owner, id, approval),
       ]);
     } catch { throw new RemoteAiTextStoreError('BUDGET_UNAVAILABLE'); }
     const row = await this.get(owner, id);
@@ -270,6 +320,7 @@ export class RemoteAiTextStore {
       const result = await this.db.prepare(`UPDATE remote_ai_text_executions
         SET state = 'sending', revision = revision + 1, updated_at = ?
         WHERE owner_user_id = ? AND id = ? AND approval_digest = ? AND state = 'reserved'
+          AND ${recurringBindingMatches('remote_ai_text_executions')}
           AND EXISTS (SELECT 1 FROM remote_ai_text_inputs i WHERE i.execution_id = remote_ai_text_executions.id
             AND i.owner_user_id = remote_ai_text_executions.owner_user_id AND i.expires_at > ?)`)
         .bind(now, owner, id, approval, now).run();

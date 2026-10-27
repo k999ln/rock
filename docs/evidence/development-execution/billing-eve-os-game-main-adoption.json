@@ -1,0 +1,129 @@
+{
+  "schema": "rockstaros.finite-billing-eve-os-game-adoption/1",
+  "recordedAt": "2026-10-27",
+  "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "status": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+  "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+  "units": [
+    "BILL-02",
+    "EVE-02",
+    "OS-01",
+    "GAME-01"
+  ],
+  "gitHubSaved": false,
+  "mainIntegrated": false,
+  "fullVerify": {
+    "status": "passed",
+    "exitCode": 0,
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "logSha256": "bfeee3c93bb644341ad2d502676b3d21503adf6c0119eb04a99b74eafccedc38",
+    "rootNode": {
+      "tests": 3112,
+      "pass": 3109,
+      "fail": 0,
+      "skip": 3
+    },
+    "buildAndApiAndCsvAndMetadata": "passed",
+    "scope": "macOS host; source13 hashes unchanged before/after. Final result-only metadata added after this run; exact final-head Linux CI must verify final metadata and source together.",
+    "linuxSameHeadCI": "pending"
+  },
+  "wholeUnitsAccepted": 0,
+  "physicalAccepted": false,
+  "actualProviderFinancialAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD",
+  "sourceReview": "PASS_SCOPED_ALL_FOUR_FIXED_SOURCES",
+  "independentReviewEvidence": "docs/evidence/development-execution/bill02-recurring-contract-binding-independent-review.json",
+  "newProviderCalls": 0,
+  "whole95Accepted": 0,
+  "next": "Final payload scan and independent manifest adoption review; limited Git save, final-head CI, normal main and same-SHA CI. Keep all capture-time pending receipts immutable.",
+  "sourceReviewEvidence": "docs/evidence/development-execution/billing-eve-os-game-source-review.json",
+  "fixedSources": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6"
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "sha256": "f7eb3a3d67210cd42f6bd827f2146df85dfa8ad1d1b5b08891263bc8f4d03243"
+    },
+    {
+      "path": "tests/remote-ai-text-contract-binding.test.mjs",
+      "sha256": "87301b92f4240848344475783efdc3124aab6979e6c69d19bda657406765979f"
+    },
+    {
+      "path": "lib/eve-text-handoff.ts",
+      "sha256": "42d9da5e576b4f2f3129e8d72015f07fbb5fef00ecc2eb0896a1cded16c167ec"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "d2f38af5ac499a7215e0ad67ee2ca344aecd20ab9f30aaa6a28ee1dba61f3767"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "705a615ad6c7e14c3a43d1a6fb28f487b55d1d1ab641f8a16bba1166cf93d5b1"
+    },
+    {
+      "path": "tests/eve-text-handoff.test.mjs",
+      "sha256": "26ed1eabb8155928993e01369bfe182f5fdba9f3251a9c34ff5c3dce22aac06e"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "20eb4fad2adfe5001a6d2bcb646ae89a3e5c58e4c496b0e81dcb683ba8252b23"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "03925531ebd0b9a01f6ebae5b5540543782c39726bc81e2a15796496da2b98d3"
+    },
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "sha256": "3344b6371210b01edf7889b5318a9aab5033cbb4ba8ed47db4874bf269e2a704"
+    },
+    {
+      "path": "tests/sky-linux-input-binding-recovery.test.mjs",
+      "sha256": "792d5c232eefa2e389087c5b27c2bc512e559c628084e07b87cb17f657b923de"
+    },
+    {
+      "path": "lib/game-intake.ts",
+      "sha256": "19f999d0556f0f30f8862a6604cbd9e04ca0e6b66c1707679393fcd4e7c858ba"
+    },
+    {
+      "path": "tests/game-intake.test.mjs",
+      "sha256": "df4a305be91b643765898648d3ad5eec7d5b4014e36f1a585897e20c946f8be3"
+    }
+  ],
+  "schemaOrPricingChanged": false,
+  "runtimeSourceChanged": true,
+  "finalEveAuthorPacketSha256": "1abd5a3f5bdbe2a7df395bc66e4f048938635cbf2f123cdd5ff08179cd06ff19",
+  "RootBrowserEvidence": "docs/evidence/development-execution/eve-handoff-root-ui-summary.json",
+  "captureReceipts": [
+    {
+      "path": "docs/evidence/development-execution/bill02-recurring-contract-binding.json",
+      "sha256": "77aabab58e3134f975e3e1e53ece7528248ba8e8da8ed971cdfa7e3d78873abc"
+    },
+    {
+      "path": "docs/evidence/development-execution/eve-text-handoff.json",
+      "sha256": "f6ecd8e34c9e253512a3666ec45b94d823a907d3ee2729104bcbc99e7193c4c5"
+    },
+    {
+      "path": "docs/evidence/development-execution/pixel-input-binding-recovery.json",
+      "sha256": "6d89983f843592ee2d9f39f60cc4841230d8c33f7a385508ffe6e6a9a073967d"
+    },
+    {
+      "path": "docs/evidence/development-execution/game-intake-path-tree.json",
+      "sha256": "b62840db6cd3e15d6d034d741ea85b5b84781a85e74efce4ccdc6a34b883e712"
+    }
+  ],
+  "payloadSecretInspection": {
+    "version": "8.30.1",
+    "policyControlCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+    "payloadFindings": 0,
+    "canaryFindings": 1,
+    "ignoreFile": "empty",
+    "inlineAllowIgnored": true,
+    "initialCanaryHistory": "First repetitive synthetic token did not match default detector; retained outside Git. Distinct high-entropy synthetic generic-api-key fixture produced1 finding; no real credential used.",
+    "scope": "Changed-file payload only; same-head CI covers reachable Git history separately. Not security-zero acceptance.",
+    "status": "passed changed-file payload and canary; final frozen manifest rescanned unchanged policy"
+  }
+}

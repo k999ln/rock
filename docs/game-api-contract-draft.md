@@ -376,3 +376,21 @@ pathは `systems/rock-star-os/` 相対。以下の既存実装は再利用点で
 開始時の既存回帰入口はrepository rootから `python3 scripts/test-native.py --output <new-disposable-evidence-directory>`。Linux依存と非root試験を維持し、現在のC/Hub/Wallet/author認証回帰を落とさない。新しいGX00テストを追加した後はnative root `systems/rock-star-os/` で、例えば `python3 -B -W error::ResourceWarning -m unittest discover -s tests -p 'test_wallet_backend_owner_router.py' -v` と認証owner router/game connectionの各suiteを同様に実行する。**これらの新test名は予定で、レビューSHAにはまだ存在しない。** 0件実行・skip・mock成功を合格にせず、実TLS/DB/署名の実行件数と対象外DB不変の証拠を残す。
 
 今回の成果は本設計文書とコード読取り監査のみ。追加runtime 0、追加SDK 0、新GX00/GX01試験実行0、VM/実資金操作0。status/baseline/既存署名データは本差分の変更対象に含めない。
+
+<a id="game-intake-path-tree"></a>
+
+## Game file-setのファイル／親ディレクトリ衝突拒否（2026-10-27・限定候補）
+
+- 目的・利用体験: digestと権利条件が一致する持込manifestでも、同じpathがファイルと他ファイルの親を兼ねる不正なtreeを静的診断で拒否する。
+- 責任: ROCKの既存純粋intakeが構造検査を行う。callerの本人・registry権利・実bytesの供給責任と、実engine/OS isolationの受入は既存境界を保つ。
+- 入出力: 既存128asset/240文字上限のfile-set pathを小文字化した集合へ取り、slashごとの祖先が完全なfile pathとして存在すれば既存invalid_manifest/file_directory_collisionを返す。
+- 状態: duplicate検査の直後に判定し、不正treeをlaunch_candidateやadapter候補へ昇格させない。順序・大文字小文字・深い祖先で同じ結果にする。
+- 保存: 副作用のない診断だけ。manifest・source bytes・save形式・入力objectを変更せず、解凍・実行・保存はしない。
+- 失敗: 直接/深い/大小文字違い/辞書順に別名が挟まる衝突を拒否し、checksはunverified、measurementsはnull、adapterCandidateはnullのままにする。
+- 復旧: 作者が衝突するpathを修正し、既存package index/digest/権利bindingで再診断する。入力を自動改名しない。
+- 承認: 診断のlaunch_candidateは実行権限・資金・ポイント記帳権限を付与しない。既存owner、capability、resource契約は不変。
+- 合格条件: 衝突7配列、共有directory/単なる文字prefix等の正常6配列と入力非変更を検査。旧mainのlaunch_candidate反例を独立再現し、既存作者fixture/sandbox/WorkJob/Workbench回帰を通す。
+- 未決定の決め方: Unicode/任意archive/外部engine拡張はこのportable namespace以外の新設計として決める。実作者の導入時間/成功率/復旧時間は対象を確定して別計測する。
+- 受入範囲: RQ14/GM01/AI06の静的構造検査だけ。GAME-01全体/full SDK、実game isolation、認証済保存、Wallet/実交換、実機、公開は未受入。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。

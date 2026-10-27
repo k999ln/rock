@@ -1,0 +1,46 @@
+{
+  "schema": "rockstaros.eve-handoff-root-ui/1",
+  "recordedAt": "2026-10-27T05:37:09.733505+00:00",
+  "status": "PASS_SCOPED_PANEL_DESCRIPTOR_AND_NATURAL_EXPIRY_AFTER_FIX",
+  "sourceManifest": {
+    "components/eve-text-estimate.tsx": "d2f38af5ac499a7215e0ad67ee2ca344aecd20ab9f30aaa6a28ee1dba61f3767",
+    "lib/eve-text-handoff.ts": "42d9da5e576b4f2f3129e8d72015f07fbb5fef00ecc2eb0896a1cded16c167ec",
+    "lib/eve-text-job.ts": "129589dc1e35068b7cc0fe0b817f57d6d3e06f7a3c8900e34da095e0952dfaba",
+    "lib/remote-ai-text-client.ts": "66158fdc480f090c9a2f758426fb2077d199feed3e75ac3fa81ae409e2f47051",
+    "bundleSha256": "0f0cdb9676edb4f5beafccf85bca8a0772e9d61dca66789b812b9acc274d2d11"
+  },
+  "plane": "Actual IAB React estimate panel and handoff helper with controlled saved job/rate/identity. Only RAM preparation descriptor, not actual HTTP WorkJob persistence/auth/D1 acceptance.",
+  "observed": [
+    "Explicit material estimate consent and cap produce bounded quote",
+    "Separate preparation consent enables handoff; resulting descriptor is budget0/executionAuthorizedfalse, exact sourceRef/promptDigest/cap",
+    "Overcap quote stays disabled even after consent",
+    "Old realReact bundle after consentON kept result/button beyond TTL10 and natural15s; lateprepare refused, RAM descriptor empty",
+    "Fixed samePanel consentON after TTL10+natural15s removes result/consent/button and shows expiry; no Date/visibility override"
+  ],
+  "failureHistory": [
+    "Initial harness imported server workflow creator, causing blank browser; removed unused creator from harness only, kept actual panel/helper",
+    "Old arbitrary synthetic owner name failed readOwnerScope; harness switched to actual ownerScopeFor synthetic identities, product refusal kept",
+    "One fixed10sec normal-prepare click target expired during tool roundtrip; fresh UI showed expiry; normal path rerun at60sec succeeded"
+  ],
+  "actualProviderCalls": 0,
+  "realCharges": 0,
+  "actualProductionAuthOrWorkJobSave": false,
+  "oldUiBundleSha256": "d396fecc46ea16fa381d13cfa6f7081627d7060746ac4c658784daf1c32201ee",
+  "domCount": 1,
+  "notAccepted": [
+    "Full Workspace/HTTP save or real owner auth",
+    "No timer latency SLA",
+    "Physical/provider/financial or production acceptance"
+  ],
+  "files": {
+    "final-prepared-dom.json": "ba6285edb8fdd30f52af07710cd081c8a3020c4a2978bb21a94373f91f091b34",
+    "final-prepared-ax.txt": "1fe0513e54de38c3c0fb300cf6efaf0d083cd993dc7a335cb5c93f6a42a568c9",
+    "final-prepared.png": "16618d0a16a59aa4de1f66ffcdd25f1f6ac73073b6f05b69f8a672d39ae6d031",
+    "before-fix-expiry-ax.txt": "7f2c612f68e76c2ae3ce350313f77adf656cf4c4c4369fe43fcf806e1698f6cc",
+    "before-fix-expiry.png": "07fa54f4b3be6694cd614506df7a7f9a46f67c40c6c4c59760dd9a7f89dc085d",
+    "after-fix-expiry-ax.txt": "49662210981513f4aa6cdee6f6fb88d244fd391318a2f78f7cb0dcbb3f82ae55",
+    "after-fix-expiry.png": "0ed076e26d0e7da2d80074162315bb2fb6c705d37105c44eb99f091ecb6c3cda"
+  },
+  "cleanup": "Only own CUA tab closed and own loopback Node server stopped; no user tabs/devices touched",
+  "bulk616": "HOLD"
+}

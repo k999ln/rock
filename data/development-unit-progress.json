@@ -294,7 +294,8 @@
         "EVE_TEXT_PREPARATION_CANDIDATE",
         "EVE_SOURCE_ESTIMATE_CANDIDATE",
         "EVE_RATE_UNIT_ADOPTED",
-        "EVE_MULTI_MATERIAL_ADOPTED"
+        "EVE_MULTI_MATERIAL_ADOPTED",
+        "BILL_EVE_OS_GAME_FINITE_20261027"
       ]
     },
     {
@@ -644,7 +645,8 @@
       "currentOverlayRefs": [
         "PIXEL_CACHE_MAIN_CANDIDATE",
         "PIXEL_GUARD_PHYSICAL_ADOPTED",
-        "PIXEL_OBSERVATION_FIXTURES_ADOPTED"
+        "PIXEL_OBSERVATION_FIXTURES_ADOPTED",
+        "BILL_EVE_OS_GAME_FINITE_20261027"
       ]
     },
     {
@@ -1580,7 +1582,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "BILL_FINAL_CLAIM_CANDIDATE",
-        "BILLING_SERVICE_AUTHORITY_CANDIDATE"
+        "BILLING_SERVICE_AUTHORITY_CANDIDATE",
+        "BILL_EVE_OS_GAME_FINITE_20261027"
       ]
     },
     {
@@ -2364,7 +2367,8 @@
       ],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "GAME_CREATOR_HOST_FIXTURE_CANDIDATE"
+        "GAME_CREATOR_HOST_FIXTURE_CANDIDATE",
+        "BILL_EVE_OS_GAME_FINITE_20261027"
       ]
     },
     {

@@ -1,0 +1,174 @@
+{
+  "schema": "rockstaros.billing-recurring-contract-binding/1",
+  "recordedAt": "2026-10-27T05:08:44.035306+00:00",
+  "unit": "BILL02-RECURRING-QUOTE-BINDING",
+  "taskIds": [
+    "BIL02",
+    "SIM01",
+    "SKY21",
+    "WLT02"
+  ],
+  "primaryWorkstream": "docs/workstreams/03-wallet-billing-providers.md",
+  "primaryOwner": "ROCK",
+  "status": "implemented_local74_pass_pending_independent_review_and_central_git",
+  "baseSha": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "logicalTree": "billing-bill02-20261027",
+  "sourceManifest": "docs/evidence/development-execution/bill02-recurring-contract-binding-source-manifest.json",
+  "sourceManifestSha256": "3c3d6a094ac2a93ce8fd2c3870824225bc7155045b88fc29a4f499a541fccf30",
+  "exactSourceWriteSet": [
+    "lib/remote-ai-text-store.ts",
+    "tests/remote-ai-text-atomic-send.test.mjs",
+    "tests/remote-ai-text-contract-binding.test.mjs"
+  ],
+  "metadataWriteSet": [
+    "docs/evidence/development-execution/bill02-recurring-contract-binding-source-manifest.json",
+    "docs/evidence/development-execution/bill02-recurring-contract-binding.json"
+  ],
+  "rootDirty616HoldPreserved": true,
+  "selectedBoundary": {
+    "whyNotRebuildMonthBudget": "Existing standalone recurring SQL already aggregates remote LLM settled+held/unknown and A2A across parent jobs against its existing10000minor allowance. No new account-month cap or price is inferred. Common16USD contract/month policy is still separate.",
+    "actualGap": "At fixed base, quote/approval has no persisted recurring contract identity/account/consent. Current owner contract could be replaced/deleted, consent version changed, or account swapped after dispatch; same approved job can still acquire final claim and mock-send under different current context.",
+    "scope": "New RemoteAiTextStore.create quotations pin current existing standalone recurring context or explicit absence. No generic16USD/eSIM contract/issuer epoch is invented."
+  },
+  "implementation": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "purpose": "Keep an approved quote attached to the context the user approved without copying balances or creating an authority/price DB.",
+      "snapshot": "Server-derived recurringContractBinding in existing immutable quote_json; schema sky.recurring-quote-binding/1, kind recurring with existing contractId/stripeAccountId/consentVersion or kind none. Caller-supplied binding always removed before server snapshot.",
+      "approval": "New quotations use rockstar-remote-ai-text-approval/2 digest including quoteDigest, parent/job cap, saveResult and exact context. Existing records retain stored approval and are never rebound or repriced by same request retry. Price quote digest and rate/maximum are unchanged.",
+      "atomicCreate": "Read current owner contract then use same committing INSERT SELECT to require exact identity/account/consent or current absence; stale-read replacement/creation inserts no execution.",
+      "atomicRun": "Same stored snapshot predicate in reserve pool INSERT and state UPDATE, dispatch UPDATE and final send-claim INSERT SELECT. New none marker requires actual absence, and cannot adopt a later contract in preview or required mode. PR202 scope/current rate/parent/pool/clock/recurring exception checks remain.",
+      "legacy": "Only genuine old quotes whose stored JSON lacks the field retain old behavior; new create never emits a missing field. A supplied explicit null/unknown object does not become the legacy missing path. No automatic backfill of old consent."
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "change": "Two existing recurring gate tests now create their contract before the quotation via fixture recurring flag. Their denial/retry/hold assertions are unchanged. Their former late-contract setup is now an explicit negative test in the new suite."
+    },
+    {
+      "path": "tests/remote-ai-text-contract-binding.test.mjs",
+      "change": "15 focus groups cover saved binding, caller-forgery discard, immutable terms, exact same-request retry, four final-claim replacement/deletion negatives, reserve/dispatch denial, present and absent contract read/create races, normal renewal/payment-method update, new approval recovery within original cap, lateusage once after parent stop, genuine legacy fixture vs new none, both server policies and real local D1."
+    }
+  ],
+  "runtimePath": [
+    "Existing authenticated /api/llm/quotes -> actual RemoteAiTextStore.create saves snapshot and returns bound approvalDigest",
+    "Existing approve -> reserve and budget DB commit with snapshot predicate",
+    "Existing encrypted input queue/RemoteAiTextWorkflow -> central coordinator -> actual claimDispatch and claimProviderSend predicates",
+    "Only winning original same-context claim reaches existing mocked generateText fetch; no new endpoint, provider or authority helper-only path"
+  ],
+  "financialInvariants": [
+    "Owner/currency/rate/maximum/parent cap and current-scope checks inherited unchanged. Existing Wallet/reservation schema and10000/14000 standalone sandbox arithmetic untouched;16USD,888c,author distribution and external costs remain separate.",
+    "Contract identity/account/consent change before reserve inserts neither pool nor hold. Change after reservation/dispatch denies new sending and conservatively retains original approved hold; final denial marks unreconciled without Provider fetch.",
+    "Same contract id/account/consent renewal and payment_revision change keep working; payment method revision is not invented as contract consent version.",
+    "New approval with new request ID may use current replacement context only within remaining original shared parent budget. Old unknown/held job is not auto-rebound, released or resent.",
+    "After a final authorized claim, genuine priced late usage may settle once even when the contract changes and parent stops. Parent stays cancelled, same request retry sends zero additional times."
+  ],
+  "validation": {
+    "targeted": {
+      "command": "node --experimental-strip-types --test tests/remote-ai-text-contract-binding.test.mjs tests/remote-ai-text-store.test.mjs tests/remote-ai-text-atomic-send.test.mjs tests/remote-ai-text-service-authority.test.mjs tests/sky-recurring-usage.test.mjs tests/sky-recurring-sandbox.test.mjs",
+      "exitCode": 0,
+      "tests": 74,
+      "passed": 74,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "file-backed host SQLite independent connections/Worker races +2 local D1 fixture cases +mock Provider only"
+    },
+    "localD1": "Actual create/reserve/input/final-claim SQL rejects changed consent with claim0/fetch0/held1. New separately approved request binds new consent, settles1 with oldheld1+newsettled1<=cap2. Existing PR202 local D1 scope case also passed. Exact existing relevant DDL restored; no production schema claim.",
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "normalGenerator": "existing pretypecheck only"
+    },
+    "lint": {
+      "command": "./node_modules/.bin/oxlint lib/remote-ai-text-store.ts tests/remote-ai-text-atomic-send.test.mjs tests/remote-ai-text-contract-binding.test.mjs",
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "fullVerify": "not run; central Git fixed candidate aggregation"
+  },
+  "oldVersionCounterexamples": {
+    "baseSha": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+    "logicalFixture": "bill02-contract-prior-7ceef8cf",
+    "inputManifestSha256": "84e71e2a5237e0b4ac8b24e9dc14f3d230b6203046abe7b81bab1ae11f3f9b08",
+    "probeSourceSha256": "fc8b0384ce3c4836cbf2ebbc131f19050109b9b0be32403fd34e5ec0d0825969",
+    "command": "node --experimental-strip-types --test --test-name-pattern='contract (id|stripe_account_id|consent_version|delete) replaced after dispatch|new no-contract approval cannot adopt' [fixed-base dependency fixture test]",
+    "exitCode": 1,
+    "tests": 5,
+    "failedAsExpected": 5,
+    "passed": 0,
+    "observed": "Old fixed source reaches mocksend/completed despite contract id/account/consent/delete or newly added contract. New assertions demand fetch0/unreconciled. Old no-contract loop stops on its first failing preview iteration; new candidate validates both preview and required with valid generic service scope."
+  },
+  "logicalLogs": [
+    {
+      "id": "bill02-binding-targeted-final.log",
+      "storage": "outside Git temporary log",
+      "sha256": "c303f802b4579a6882c9bc7a2c261141e7359599abaf302c0cf10ef10b114066",
+      "bytes": 7886
+    },
+    {
+      "id": "bill02-binding-typecheck.log",
+      "storage": "outside Git temporary log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+      "bytes": 148
+    },
+    {
+      "id": "bill02-binding-lint-final.log",
+      "storage": "outside Git temporary log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "id": "bill02-contract-prior-negative.log",
+      "storage": "outside Git temporary log",
+      "sha256": "7bc8f10d5fb7f5bfe212d13175d9ee5cce821d0fbd4ff19f991cd309e5ab04c6",
+      "bytes": 4353
+    }
+  ],
+  "rootFeedbackAddressed": "Initial draft treated all missing binding as compatibility. Before submission, new create was changed to always pin kind none or recurring, with approval/2; new no-contract->later contract reserve/dispatch/final negatives, required-policy positive generic scope, and absence/read-insert race prove it cannot inherit the legacy missing state. Genuine original-formula/field-missing SQL fixture verifies old compatibility without modifying any saved frozen quote.",
+  "sharedChangeRequests": [
+    {
+      "owner": "central Git single writer",
+      "paths": [
+        "docs/sky-billing.md#billing-final-send-claim",
+        "docs/rockstaros-complete-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/development-unit-progress.json"
+      ],
+      "request": "Adopt source+packet only after independent review. Add same-change design entry covering purpose/UX/ROCK responsibilities, existing quote snapshot+approval2 input/output, kinds none/recurring/legacy-missing, frozen persistence, atomic create/reserve/dispatch/final checks, same-context renewal vs replacement denial, conservative hold/lateusage/recovery, original legacy limitation and owner decision for future migration. Run design:check and full verify at fixed candidate, then limited commit/push/main/same-SHA CI; do not merge Rootdirty/616 bulk."
+    }
+  ],
+  "remainingAndOwnerConditions": [
+    "Whole BILL02/common account-month aggregation/16USD usage contract and issuer epoch still unaccepted. This is one new-quote recurring-context binding boundary, not a complete billing platform.",
+    "Genuine pre-change missing-field quotes retain previous behavior and can lack source binding. A legacy migration/requote/reapproval policy needs separate owner/central design; no silent retroactive attachment or repricing.",
+    "Binding pins stable current fields, not a monotonic contract revision/ABA history. An authorized writer restoring identical fields is the same represented context. No new epoch or contract table is inferred.",
+    "Snapshot is exposed only through existing owner-scoped quotation record; no new UI acceptance or deployment/source-client integration claim beyond existing path.",
+    "No real Provider/sandbox contract, production D1, charges, funds, key, device, browser, public deployment or new settings.",
+    "Independent Astra high review and shared design/index/status integration, central full verify and same-SHA CI remain required; implementer cannot self-accept."
+  ],
+  "operations": {
+    "managedWorktreeCreatedAtAssignedBase": true,
+    "rootSourceWrites": 0,
+    "gitCommitPushMerge": 0,
+    "childrenOrOtherChatDispatch": 0,
+    "providerOrPaidCalls": 0,
+    "schemaMigrations": 0,
+    "secretsOrPrivateInputInPacket": false
+  },
+  "review": {
+    "requiredModel": "gpt-6-astra",
+    "requiredEffort": "high",
+    "status": "pending central independent review",
+    "candidateSourceHashes": {
+      "lib/remote-ai-text-store.ts": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6",
+      "tests/remote-ai-text-atomic-send.test.mjs": "f7eb3a3d67210cd42f6bd827f2146df85dfa8ad1d1b5b08891263bc8f4d03243",
+      "tests/remote-ai-text-contract-binding.test.mjs": "87301b92f4240848344475783efdc3124aab6979e6c69d19bda657406765979f"
+    }
+  },
+  "next": "Central reviewer verifies fixed3source and74tests/old5negative; Git adds shared design/index/status at same candidate and performs limited source save/main+same-SHA CI. No wait loop."
+}

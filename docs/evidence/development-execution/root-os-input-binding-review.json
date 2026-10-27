@@ -1,0 +1,24 @@
+{
+  "status": "PASS_SCOPED_FIRST_DURABLE_SAVE",
+  "recordedAt": "2026-10-27T05:25:38.046075+00:00",
+  "sourceSha256": "3344b6371210b01edf7889b5318a9aab5033cbb4ba8ed47db4874bf269e2a704",
+  "exactDelta": "Move existing digest assignment before initial persist; remove later assignment only",
+  "independentNewSuite": {
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "skip": 0,
+    "logSha256": "c85852cc18175ad0712966438726026be81bcdd34fc2328adf3a8c75c82bc97a"
+  },
+  "review": "Read child boundary/IPC/own-child SIGKILL/reopen/legacy/refusal tests; model worker and device do not spawn",
+  "legacyMissingDigest": "Not guessed or repaired",
+  "existingGuardStopExportChanged": false,
+  "physicalOrFullOSAccepted": false,
+  "remaining": [
+    "Full candidate/Linux CI",
+    "Actual physical/background/quality/P02/powerloss gates",
+    "Existing text validation behavior is unchanged; no universal input-hardening claim"
+  ],
+  "bulk616": "HOLD",
+  "privateOriginalReviewSha256": "cc852a5521d30f5cb200fb75d705ffebb30e60dc5c97ee3d9823e0999cccc1ce"
+}

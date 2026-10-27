@@ -1081,7 +1081,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-27",
   "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
   "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
@@ -11244,5 +11244,27 @@
     "actualHeadAndMainLinuxParentLifetimeMethods": 4,
     "wholeOSAccepted": false,
     "physicalAccepted": false
+  },
+  "billingEveOsGameFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+    "status": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+    "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+    "units": [
+      "BILL-02",
+      "EVE-02",
+      "OS-01",
+      "GAME-01"
+    ],
+    "gitHubSaved": false,
+    "mainIntegrated": false,
+    "fullVerify": "exit0; root Node3112/3109pass/0fail/3hostskip; build/API/CSV passed",
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HELD",
+    "sourceReviewEvidence": "docs/evidence/development-execution/billing-eve-os-game-source-review.json",
+    "RootBrowserEvidence": "docs/evidence/development-execution/eve-handoff-root-ui-summary.json"
   }
 }
