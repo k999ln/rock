@@ -1,3 +1,16 @@
+<a id="pro-private-work-entry"></a>
+## Proから共通の私有テキスト仕事への入口（PRO-02限定候補）
+
+目的・体験: avocadopro.siのPro商品ページsourceから、avoado.siの既存`/zema/compose?tool=mr-citations`へ本人が明示clickして進む。avocadomini.siのMini、Proのbrowser notes/私有archiveと役割を分け、原稿は自動転送せず本人が選んだtextだけを共通画面へ入力する。固定linkはTool選択だけで、account選択/仕事作成/原稿保存/実行/生成/課金を開始しない。
+
+責任・入出力: ROCKは固定URL/privacy属性と既存の本人確認/owner・revision・workflow/保存/停止/成果取得を第一者API/storeで強制する。EXTERNALは外部接続やProvider応答、JOINTは実認証browser/往復/配備artifact、OWNERは利用accountと素材/実行/費用の明示同意を担う。入力はuser click、URL出力は正式HTTPS originとTool IDだけ。new tabはnoopener/noreferrer/no-referrer、Astro prefetchはfalse、原稿/本人/同意/戻り先をquery/fragmentへ入れない。
+
+状態・保存・承認: 共通画面で目的/完了条件/素材を新しく入力し計画を確認して保存する。plan保存時のsourceはnull、別の素材保存同意を得た実行で初めて原稿/結果を保存する。接続済みsource-link処理のbudget0を、service月額/回線/他AI使用料へ拡張しない。既存WorkJobとlib/workflow.ts遷移を再利用し、新しいPro専用job/DB/API/schema/価格/権限を作らない。
+
+失敗・復旧・互換: 応答不明は同じjob/操作/完全payloadを確認し、新jobや外部処理を自動再送しない。owner変更後の旧closureは送信せず本人の入力を別accountへ残さない。手順間の停止は後続を止め、保存原稿/成果を保持し、同owner/revisionを既存GET/downloadで再読込する。動作中外部処理の強制停止やnative Pro受入を主張しない。元notes/archive/sourceと既存harness/assert/Promise追跡を保持し、通常source revertで入口だけ戻せる。
+
+合格・未決定: exact2source/testと元receiptを固定、独立109関連成功、旧ページは同じ入口欠落で3試験失敗（不具合3件とは数えない）。author local CUAのdesktop描画/HTMLと実component・合成owner/handler/storage契約、実routeのSQLite回帰を区別する。実認証browser/公開cross-domain click・本番仕事・Pro実機/wholePRO02は未受入。未決条件は同artifact/本人account/同意と既存gateの共同試験で決める。[採用・検証・残条件](evidence/development-execution/pro-work-entry-main-adoption.json)。
+
 <a id="smith-saved-agent-reference"></a>
 ## Smith保存会話のAgent参照保持（SMITH-01限定候補）
 

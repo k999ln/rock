@@ -1,0 +1,119 @@
+{
+  "schema": "rockstaros.pro-work-entry-finite-main-adoption/1",
+  "recordedAt": "2026-10-27T07:49:34.566610+00:00",
+  "baseMain": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+  "branch": "codex/pro-work-entry-adoption-20261027",
+  "status": "HOST_FULL_VERIFY_SCANNER_PASS_FINAL_ROOT_DELTA_REVIEW_PENDING",
+  "primaryWorkstream": "10 Git / CI / Operations",
+  "sourceWorkstream": "05 Web / PWA / Sites",
+  "unit": "PRO-02",
+  "sourceHashes": {
+    "sites/avocado-mini/src/pages/pro/index.astro": "f035475b7e87785b29342936bc07c2ca133c52fa55b51269a755375739a6e6e6",
+    "tests/work-composition-ui.test.mjs": "25e6d1b1101230bdd097fd2400cb1f0e4d3b6da550cce559848f4566d021b870"
+  },
+  "authorManifestSha256": "7fb5ff0c1a95b58ccbea586ab44e0558ea5b352ac126f2c524d0b8423f38b219",
+  "authorReceipt": {
+    "path": "docs/evidence/development-execution/pro-work-entry-source.json",
+    "sha256": "7727b1f3d30614551bfbe923bf1384800aec028e6ff2e6a92b86152a5d1b1ef7"
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/pro-work-entry-independent-review.json",
+    "sha256": "575060d040828bdb0ce4f7a81303a044e3d555a9d5721a60bd2571863f8c10c8",
+    "RootReview": "docs/evidence/development-execution/root-pro-work-entry-review.json",
+    "decision": "PASS_SCOPED"
+  },
+  "protected": {
+    "app/zema/compose/page.tsx": "49a7b4e96c283e7ba32a7ef01bbca151bbb1b2b1573cd82e2fc6455acbb49855",
+    "components/work-composition-workspace.tsx": "705a615ad6c7e14c3a43d1a6fb28f487b55d1d1ab641f8a16bba1166cf93d5b1",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/work-composition-executor.ts": "91a53b3a4c771e4729fc1696bc2d5cf477c7a0033f5f58712dd5daea1376c4d7",
+    "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
+    "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
+    "sites/avocado-mini/src/pro-os.js": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+    "sites/avocado-mini/src/pro-local-import.mjs": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44"
+  },
+  "validation": {
+    "targeted": {
+      "tests": 109,
+      "pass": 109,
+      "fail": 0,
+      "skip": 0,
+      "countsNotAdditiveWithAuthorSite45": true
+    },
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "designCheck": "PASS",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3135,
+        "pass": 3132,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "siteBuildAndTests": "PASS_INCLUDED",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "countsNotAdditive": true,
+      "logSha256": "c0f3985283ae36ded89fa119da4b65cf3b991e3b97dfb38472f56942c6846d7f",
+      "source2UnchangedThroughout": true,
+      "resultMetadataOnlyAfterVerify": true
+    },
+    "scanner": {
+      "payload": {
+        "exitCode": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "logSha256": "d4989a547e03b98cdecde4b649017d9955d2468deb6d4f9955dbcc93416c193e"
+      },
+      "canary": {
+        "exitCode": 1,
+        "findings": 1,
+        "reportSha256": "14772a1db189e6778a629b951fb99c856c6b3db27cfa04321e392c838c10a179",
+        "logSha256": "d21307aea664445798797b5465ef0e1428d80e1fb213efb6ff19de325ce5a175"
+      },
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "fixedPolicyCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true,
+      "paths": 18,
+      "payloadScope": "Explicit changed-file payload only; Git history scan is separate CI gate",
+      "syntheticCanary": true
+    },
+    "finalRootDeltaReview": "REQUIRED_BEFORE_GIT",
+    "projectUpdate": "PASS",
+    "logs": {
+      "targeted.log": "e154e6ecbe07834e8dabdd4e4b41648b10345b31af43d4574ce2cf73c413bb92",
+      "typecheck.log": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+      "lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "design-check.log": "80fb1340c583a9b7a6ac994927179b5aea3e8854aff5d33720413d7bb9a85ca5",
+      "pre-full-project-update.log": "b7a4294b0d9ac6b34bdc77e69a06af11e6efbce9a3ea60784dbc03ed6ef3b79a"
+    },
+    "RootPreFullReadmeCorrection": "Old Smith present-tense preparation sentence changed to PR245 main-adopted. Dated project/author capture receipts unchanged."
+  },
+  "Git": {
+    "saved": false,
+    "mainIntegrated": false,
+    "headCI": "PENDING",
+    "mainCI": "PENDING"
+  },
+  "boundaries": {
+    "taskCount": 393,
+    "phaseGateCount": 14,
+    "fixedUnits": 95,
+    "wholeUnitsAccepted": 0,
+    "productionWorkflowAccepted": false,
+    "physicalAccepted": false,
+    "realProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null
+}

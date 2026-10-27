@@ -1,0 +1,106 @@
+{
+  "schema": "rockstaros.pro-work-entry-independent-review/1",
+  "recordedAt": "2026-10-27T07:45:25.664228+00:00",
+  "decision": "PASS_SCOPED",
+  "mustFix": [],
+  "manifestSha256": "7fb5ff0c1a95b58ccbea586ab44e0558ea5b352ac126f2c524d0b8423f38b219",
+  "sourceCandidate": [
+    {
+      "path": "sites/avocado-mini/src/pages/pro/index.astro",
+      "sha256": "f035475b7e87785b29342936bc07c2ca133c52fa55b51269a755375739a6e6e6",
+      "bytes": 9760
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "25e6d1b1101230bdd097fd2400cb1f0e4d3b6da550cce559848f4566d021b870",
+      "bytes": 61462
+    },
+    {
+      "path": "docs/evidence/development-execution/pro-work-entry-source.json",
+      "sha256": "7727b1f3d30614551bfbe923bf1384800aec028e6ff2e6a92b86152a5d1b1ef7",
+      "bytes": 10084
+    }
+  ],
+  "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+  "mainCompatibility": {
+    "sha": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+    "bothBeforeSourceBlobsMatchAuthorBase": true,
+    "reused10HashesMatch": true
+  },
+  "protected": {
+    "app/zema/compose/page.tsx": "49a7b4e96c283e7ba32a7ef01bbca151bbb1b2b1573cd82e2fc6455acbb49855",
+    "components/work-composition-workspace.tsx": "705a615ad6c7e14c3a43d1a6fb28f487b55d1d1ab641f8a16bba1166cf93d5b1",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/work-composition-executor.ts": "91a53b3a4c771e4729fc1696bc2d5cf477c7a0033f5f58712dd5daea1376c4d7",
+    "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
+    "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
+    "sites/avocado-mini/src/pro-os.js": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+    "sites/avocado-mini/src/pro-local-import.mjs": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44"
+  },
+  "checks": [
+    "Only one static Pro section with fixed official-domain link added. Removing it reconstructs base Astro byte-for-byte; existing notes/archive entry preserved.",
+    "Fixed href contains only tool=mr-citations, no draft/owner/consent/execute or return target; new tab noopener/noreferrer/no-referrer and prefetchfalse; no added script or API calls.",
+    "Budget0 copy explicitly limited to source-link processing and distinguishes subscription/connectivity/other AI; no hardware/native/Pro full-work or production acceptance claimed.",
+    "Removing helper and three new tests reconstructs old work-composition UI test byte-for-byte. Existing trackedHandoff Promise tracking and all assertions unchanged.",
+    "Existing real component/workflow/executor in synthetic owner/map handlers covers blank unauthenticated entry, current owner, separate source persistence consent, lost-create exact ID retry, stopped state/artifact preservation and revision-bound download; not browser-to-production HTTP proof."
+  ],
+  "verification": {
+    "related": {
+      "command": "node --experimental-strip-types --test tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs tests/work-composition-view.test.mjs tests/pro-account-import.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "tests": 109,
+      "pass": 109,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0
+    },
+    "oldEntryCounterexample": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='Pro entry|Pro work entry' tests/work-composition-ui.test.mjs",
+      "tests": 3,
+      "pass": 0,
+      "fail": 3,
+      "skip": 0,
+      "exitCode": 1,
+      "independentGapCount": 1,
+      "qualification": "The same missing entry makes all three cases fail before their downstream checks; not three independent runtime bugs.",
+      "oldPageExactBase": true,
+      "newTestExactCandidate": true
+    },
+    "visual": {
+      "kind": "independent inspection of author local CUA PNG",
+      "imageSha256": "810ad88666714e833c7ad524d3d663405831218a45649b5c7781fba365abb7ba",
+      "viewport": "1280x720",
+      "entryAndScopeCopyVisible": true,
+      "centralBrowserOperation": false,
+      "newTabClickOrAuthOrJobExecuted": false,
+      "localOnlyNotGitPayload": true
+    },
+    "fullVerify": "PENDING_ON_MAIN_UNION",
+    "finalHeadCI": "PENDING"
+  },
+  "failureHistory": "Author initial new test expected cancelled run button absent; existing component keeps disabled button. Assertion corrected to actual contract, runtime unchanged; original author log hash retained in immutable receipt.",
+  "evidence": {
+    "related.log": {
+      "privateBasename": "related.log",
+      "sha256": "d3087a87a11102935fbdcfc609d5a51a63e8923413be638aea3d65f6396b0828"
+    },
+    "old-entry-counterexample.log": {
+      "privateBasename": "old-entry-counterexample.log",
+      "sha256": "d3bc5847b10427e4978c2ed1b00bfb2821515fa239d6162a1d8b6e48aaf06adc"
+    }
+  },
+  "limits": {
+    "wholePRO02Accepted": false,
+    "realAccountProductionAuthAccepted": false,
+    "productionD1OrRealWorkflowAccepted": false,
+    "physicalAccepted": false,
+    "paidApiCalls": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "next": "Adopt exact source2/receipt on refreshed main, canonical OS/Tool/Pro design/index/project/status, fixed union checks/fullverify/scanner/finalRootreview, Git/headCI/normalmain/mergeCI. Keep author capture and private image outside Git."
+}

@@ -11369,8 +11369,51 @@
       "SKY21",
       "G04"
     ],
-    "status": "host_full_verify_scanner_passed_fixed22_final_delta_review_pending",
+    "status": "PR245_normal_main_same_sha_CI_passed",
     "evidence": "docs/evidence/development-execution/smith-session-main-adoption.json",
+    "gitHubSaved": true,
+    "mainIntegrated": true,
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "realProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "fullVerify": "exit0; Node3132/3129pass/0fail/3hostskip; build/API1678/CSV385 passed",
+    "sourcePR": 245,
+    "acceptedHead": "1cecd2312e4bfd4fedec4b3f3d1fc99c9a39eac4",
+    "mainMergeSha": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+    "sameShaCIPassed": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/smith-session-main-current.json",
+    "actualMainLinuxVerify": {
+      "tests": 3132,
+      "pass": 3130,
+      "fail": 0,
+      "skip": 2
+    }
+  },
+  "proWorkEntryFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+    "primaryWorkstream": "10 Git / CI / Operations",
+    "sourceWorkstream": "05 Web / PWA / Sites",
+    "owner": "ROCK",
+    "units": [
+      "PRO-02"
+    ],
+    "taskIds": [
+      "AMC02",
+      "SIM01"
+    ],
+    "contextualTaskRefs": [
+      "MAT16",
+      "B05",
+      "WEB13"
+    ],
+    "phaseGateContext": "B05-COMPARE",
+    "status": "host_full_verify_scanner_pass_fixed18_final_delta_review_pending",
+    "evidence": "docs/evidence/development-execution/pro-work-entry-main-adoption.json",
     "gitHubSaved": false,
     "mainIntegrated": false,
     "wholeUnitAccepted": false,
@@ -11378,6 +11421,6 @@
     "realProviderFinancialAccepted": false,
     "publicDeployment": false,
     "bulk616": "HOLD",
-    "fullVerify": "exit0; Node3132/3129pass/0fail/3hostskip; build/API1678/CSV385 passed"
+    "fullVerify": "exit0; Node3135/3132pass/0fail/3hostskip; build/site/API1678/CSV385 passed"
   }
 }

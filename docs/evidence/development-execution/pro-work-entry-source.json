@@ -1,0 +1,193 @@
+{
+  "schema": "pro-work-entry-source/1",
+  "recordedAt": "2026-10-27T07:33:58.410783+00:00",
+  "unit": "PRO-02",
+  "taskRefs": [
+    "AMC02",
+    "SIM01"
+  ],
+  "contextualTaskRefs": [
+    "MAT16",
+    "B05",
+    "WEB13"
+  ],
+  "phaseGate": "B05-COMPARE",
+  "primaryResponsibility": "ROCK / Pro09, Web05; integration10",
+  "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+  "lastObservedGitHubMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+  "status": "SOURCE_PACKET_READY_FOR_INDEPENDENT_REVIEW",
+  "gap": "Pro page has a private archive entry but no route into the existing common composition workspace. The common owner/revision/save/stop/download implementation already exists and is reused.",
+  "implementation": "User-operated fixed absolute link to https://avoado.si/zema/compose?tool=mr-citations, isolated new tab, no referrer or prefetch. Selects only connected source-link processing; carries no notes, owner, job ID or consent. Destination requires account, purpose, acceptance and separate source-save consent.",
+  "priceScope": "Budget0 only for the connected text process; service subscriptions, connectivity and other AI usage keep separate terms.",
+  "sourceFiles": {
+    "sites/avocado-mini/src/pages/pro/index.astro": {
+      "sha256": "f035475b7e87785b29342936bc07c2ca133c52fa55b51269a755375739a6e6e6",
+      "bytes": 9760,
+      "baseSha256": "571370ef797fa8ed168a67c2ba4a6d460489c524aa88b45edb443508f1716c03"
+    },
+    "tests/work-composition-ui.test.mjs": {
+      "sha256": "25e6d1b1101230bdd097fd2400cb1f0e4d3b6da550cce559848f4566d021b870",
+      "bytes": 61462,
+      "baseSha256": "52aaadb8403246621cb08942e30d74d21ef9a336ad74d9dd5d13a0054894dcda"
+    }
+  },
+  "reusedUnchanged": {
+    "app/zema/compose/page.tsx": "49a7b4e96c283e7ba32a7ef01bbca151bbb1b2b1573cd82e2fc6455acbb49855",
+    "components/work-composition-workspace.tsx": "705a615ad6c7e14c3a43d1a6fb28f487b55d1d1ab641f8a16bba1166cf93d5b1",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/work-composition-executor.ts": "91a53b3a4c771e4729fc1696bc2d5cf477c7a0033f5f58712dd5daea1376c4d7",
+    "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
+    "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
+    "sites/avocado-mini/src/pro-os.js": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+    "sites/avocado-mini/src/pro-local-import.mjs": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44"
+  },
+  "validation": {
+    "oldSource": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='Pro entry|Pro work entry' tests/work-composition-ui.test.mjs",
+      "tests": 3,
+      "pass": 0,
+      "fail": 3,
+      "reason": "Existing Pro page has no Private text work section / entry",
+      "logSha256": "88246d455662eb94588d550c5883c014cf638a7566a07b6cd9647792dd22b0c9"
+    },
+    "related": {
+      "command": "node --experimental-strip-types --test tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs tests/work-composition-view.test.mjs tests/pro-account-import.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "tests": 109,
+      "pass": 109,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "42861efbd19f01aa99ebbd986998a1f77a87bfeb95193d7a35900691fc67e9e6"
+    },
+    "finalProSubset": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "logSha256": "fdd89446dd4ab96635d0fa59641db747a5741684c775c6891252e243be086a0c",
+      "note": "Same three cases rerun after adding subscription/usage boundary copy assertion; not additional coverage."
+    },
+    "site": {
+      "command": "npm run test:avocado-mini-site",
+      "buildExit": 0,
+      "tests": 45,
+      "pass": 45,
+      "fail": 0,
+      "logSha256": "c795f75eee5274427b7591a95609b6f7ab287346152be4e39e79102365cee059",
+      "overlapNote": "Seven local-import tests overlap related suite; do not sum counts."
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exit": 0,
+      "logSha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "command": "oxlint tests/work-composition-ui.test.mjs",
+      "exit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "builtHtml": {
+      "builtHtml": "sites/avocado-mini/dist/client/_site-pages/pro/index.html",
+      "sha256": "ac86d6956b1308f764fe76589d6de6529c8070d2ea25e264ca8f9328f6b7fe4d",
+      "newWorkEntry": {
+        "href": "https://avoado.si/zema/compose?tool=mr-citations",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "referrerpolicy": "no-referrer",
+        "data-astro-prefetch": "false",
+        "data-pro-work": null
+      },
+      "existingArchiveEntryRetained": true
+    },
+    "diffCheck": 0,
+    "dependencyRootLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "dependencySiteLockSha256": "06c9e2ded0496b2c9fd6f6f263857e3d786da705fa42255080ee359f0fc04937",
+    "fullVerify": "NOT_RUN_AUTHOR; central integrated candidate owns full verify"
+  },
+  "observedBoundaries": [
+    "Unconfirmed owner: no private form and no writes; sign-in returns blank purpose/source/acceptance",
+    "Lost create response: same payload/job ID retry confirms one job with source null; separate source-save consent required",
+    "Real existing source-link executor produces artifact; cancel through common workflow preserves source/artifact; reopened cancelled job cannot run and retains revision-bound download link",
+    "Captured owner-A create after switch to B: no write and no A content under B",
+    "Astro built HTML contains exactly one new work entry and one existing archive entry"
+  ],
+  "observationLayers": {
+    "proPage": "Actual local IAB browser rendering at 1280x720 via dedicated Astro dev server plus built HTML; screenshot and AX show entry/price scope/save-stop instructions and fixed href. No external link click, login, job or account operation.",
+    "component": "Actual common React workspace under synthetic hooks/auth/transport; actual workflow and executor, in-memory map fixture",
+    "routeRegression": "Existing real composition/artifact handlers with SQLite and synthetic auth; not a new single browser-to-production end-to-end claim",
+    "realAccountBrowser": "NOT_RUN",
+    "nativePro": "NOT_RUN",
+    "publishedSite": "NOT_READ_BACK / NOT_DEPLOYED"
+  },
+  "testConstructionHistory": {
+    "firstCandidateSubset": "2 pass/1 fail: expected cancelled job run button absent, actual existing UI retains disabled button. Corrected test to assert disabled without changing runtime.",
+    "logSha256": "c5e3da573343ea70816797c0825d263dad450036e6a2c60686c9ff65cb611b22"
+  },
+  "pending": [
+    "Root independent source review",
+    "Central design/index/progress synchronization",
+    "Central full verify / Git save / latest-main adoption / exact HEAD and merge CI",
+    "Authenticated browser and deployed cross-domain entry acceptance",
+    "Whole PRO-02 real work/native acceptance"
+  ],
+  "centralDocumentationProposal": {
+    "authorityAnchor": "docs/rockstaros-complete-design.md#pro-work-entry",
+    "toolDetail": "docs/sky-tools-complete-design.md#pro-work-entry",
+    "indexKey": "Pro common text-work entry; source page plus reused common compose route, no new Tool",
+    "workstreams": [
+      "05-web-pwa-sites",
+      "09-business-pilots"
+    ],
+    "progress": "Add finite PRO-02 entry overlay only; keep wholeUnitAccepted false and 393 tasks/14 gates unchanged",
+    "contract": "Pro account archive/local notes remain distinct. User chooses fixed general-domain entry, authenticates and enters fresh private text, saves plan, separately consents to source/result storage, recovers UNKNOWN using same operation, stops between steps and reopens/downloads retained artifacts. Source-link extraction/check does not prove semantic generation, native hardware, public deployment or full PRO-02."
+  },
+  "rootPreservation": {
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "indexSha256": "181a20c14e06119d3a09bda219de507d2807053cb5d71f1daa34c71d73fe80b2",
+    "unchanged": true,
+    "rootSitesSourceDiffersFromPinnedMain": true,
+    "liveSitesReadbackPerformed": false
+  },
+  "wholePRO02Accepted": false,
+  "physicalDeviceOperations": 0,
+  "externalAccountOperations": 0,
+  "additionalModelInference": 0,
+  "paidApiCalls": 0,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "localBrowserSupplement": {
+    "recordedAt": "2026-10-27T07:33:58.410724+00:00",
+    "url": "http://127.0.0.1:4387/pro/",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "observedHref": "https://avoado.si/zema/compose?tool=mr-citations",
+    "sourceFilesUnchanged": true,
+    "snapshotFiles": [
+      {
+        "path": "local-only/pro-entry-desktop.png",
+        "sha256": "810ad88666714e833c7ad524d3d663405831218a45649b5c7781fba365abb7ba",
+        "bytes": 76735,
+        "gitCandidate": false
+      },
+      {
+        "path": "local-only/pro-entry-ax.txt",
+        "sha256": "eb67c97cbb2f6762ad6d61113044730fb72b132890e110df3a7170b30dbc28ab",
+        "bytes": 1415,
+        "gitCandidate": false
+      }
+    ],
+    "jobExecutionInBrowser": false,
+    "externalNavigation": false,
+    "authentication": false,
+    "createdTabClosed": true,
+    "dedicatedServerStopped": true,
+    "firstServerAttempt": "Wrong relative dependency-link path; no server started. Corrected own symlink location then server ran. No product source change.",
+    "serverCleanup": {
+      "command": "astro dev stop (own candidate directory)",
+      "exitCode": 0,
+      "observedResult": "Stopped dev server (pid 62952)."
+    }
+  }
+}
