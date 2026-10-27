@@ -1438,7 +1438,8 @@
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
-        "ESIM04_ASYNC_BINDING_CANDIDATE"
+        "ESIM04_ASYNC_BINDING_CANDIDATE",
+        "PR248_ESIM04_CURRENT"
       ]
     },
     {

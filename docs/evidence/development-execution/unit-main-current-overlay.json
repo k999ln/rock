@@ -1247,6 +1247,21 @@
       "mainIntegrated": false,
       "wholeUnitAccepted": false,
       "publicDeployment": false
+    },
+    {
+      "id": "PR248_ESIM04_CURRENT",
+      "kind": "current_git_acceptance",
+      "units": [
+        "ESIM-04"
+      ],
+      "pr": "https://github.com/k999ln/rock/pull/248",
+      "acceptedHead": "05978074db846d5f1ac6e2a5f52d8fd91745260a",
+      "mainMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
     }
   ],
   "executionPriority": [

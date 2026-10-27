@@ -3565,7 +3565,8 @@
     "wireUnchanged": true,
     "wholeESIM04Accepted": false,
     "parentDatabaseFreshnessAccepted": false,
-    "mainIntegrated": false,
-    "publicDeployment": false
+    "mainIntegrated": true,
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json"
   }
 }

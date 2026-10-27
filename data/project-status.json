@@ -11509,21 +11509,35 @@
     "primaryWorkstream": "10 Git / CI / Operations",
     "sourceWorkstream": "03 Wallet / Billing / Providers",
     "owner": "ROCK",
-    "status": "source_risk_and_host_fullverify_PASS_final_metadata_Git_pending",
+    "status": "PR248_normal_main_same_sha_CI_passed",
     "sourceAdopted": true,
-    "gitHubSaved": false,
-    "mainIntegrated": false,
+    "gitHubSaved": true,
+    "mainIntegrated": true,
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "providerFinancialAccepted": false,
     "publicDeployment": false,
-    "requiredIndependentReview": "Astra source PASS; Pro final fixed-manifest metadata review pending",
+    "requiredIndependentReview": "Source Astra PASS and Pro final metadata recheck PASS",
     "bulk616": "HOLD",
     "sourceManifestSha256": "0fa99bb0cf0952112d3454997bedaf767ed5804a4a432572884edc647a8f4fa9",
     "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-adoption.json",
     "independentReviewSha256": "1148016b39492cc585b5e314c92f5068a3171f0246c628cded68245c6afcf281",
     "fullVerify": "exit0; root3174/3171pass/0fail/3hostskip; build/API1678/CSV385 passed",
-    "independentRiskAccepted": true
+    "independentRiskAccepted": true,
+    "sourcePR": 248,
+    "acceptedHead": "05978074db846d5f1ac6e2a5f52d8fd91745260a",
+    "mainMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+    "sameShaCIPassed": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "actualMainLinuxVerify": {
+      "tests": 3174,
+      "pass": 3172,
+      "fail": 0,
+      "skip": 2
+    },
+    "currentMainEvidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
+    "finalMetadataReviewSha256": "28a999f7440e5fd990c0a2aefe2b2fe92731a9afe22ae3b768fb436f33ec388c"
   },
   "esimVisibilityCompletionCurrent": {
     "status": "PR213_product_and_PR224_new_hash_native_hidden_evidence_main_accepted",
@@ -11536,6 +11550,23 @@
     "providerFinancialAccepted": false,
     "generalLaunch": false,
     "wholeUnitsAccepted": 0,
-    "next": "ESIM04 source risk and host fullverify PASS; final fixed manifest scan/metadata then Git/headCI/main/mergeCI"
+    "next": "ESIM04 PR248 limited main acceptance complete; OS08 author notification awaits explicit destination-specific human permission, candidate not received/adopted. Actual authority/retention/provider/profile/financial/public gates remain open."
+  },
+  "pixelPreEffectDurabilityPreparation": {
+    "recordedAt": "2026-10-27",
+    "unit": "OS-08",
+    "baseMain": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+    "primaryWorkstream": "10 Git / CI / Operations",
+    "sourceWorkstream": "07 Android / Device / Local si host runtime",
+    "owner": "ROCK",
+    "status": "author_finite_completed_notification_send_approval_pending_candidate_not_received",
+    "sourceAdopted": false,
+    "gitHubSaved": false,
+    "mainIntegrated": false,
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "actualBlocker": "Automatic approval review rejected author notification to central Git and Root due missing direct human destination-specific send permission; central asked human async",
+    "bulk616": "HOLD"
   }
 }

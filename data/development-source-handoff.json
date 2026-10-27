@@ -936,9 +936,9 @@
     "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
     "wholeUnitsAccepted": false,
     "nextScopedCandidate": {
-      "unit": "ESIM-04",
-      "state": "SOURCE_RISK_AND_HOST_FULLVERIFY_PASS_FINAL_METADATA_GIT_PENDING",
-      "scope": "ESIM04 fixed3 host async attachment binding PASS; current facts recheck only, not parentDB refresh. Final fixed-manifest scan/Pro metadata/Git/headCI/normal main/mergeCI are separate gates."
+      "unit": "OS-08",
+      "state": "AUTHOR_NOTIFICATION_DESTINATION_APPROVAL_PENDING_CANDIDATE_NOT_RECEIVED",
+      "scope": "OS08 author notification to central Git and Root awaits direct destination-specific human send permission after automatic-review refusal. Candidate not received/adopted; no alternate transfer. ESIM04 PR248 mainb5c1/6sameSHA CI/all4workflows/Linux3174/3172pass/0fail/2skip accepted. This batch closes out metadata only, with no new Pixel/runtime acceptance. Physical/provider/financial/public/whole95 remain open; bulk616 HOLD."
     },
     "currentProgressSync": "docs/evidence/development-execution/esim-completion-progress-sync-summary.json"
   },
@@ -1325,7 +1325,14 @@
     "mainMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
     "sameShaCISuccess": 6,
     "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
-    "next": "ESIM04 fixed3 source risk and host fullverify PASS; final manifest/scan/metadata then Git/headCI/main/mergeCI",
+    "next": "OS08 author notification to central Git and Root awaits direct destination-specific human send permission after automatic-review refusal. Candidate not received/adopted; no alternate transfer. ESIM04 PR248 mainb5c1/6sameSHA CI/all4workflows/Linux3174/3172pass/0fail/2skip accepted. This batch closes out metadata only, with no new Pixel/runtime acceptance. Physical/provider/financial/public/whole95 remain open; bulk616 HOLD.",
+    "wholeUnitAccepted": false
+  },
+  "esimAttachmentAsyncBindingCurrent": {
+    "pr": 248,
+    "mainMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+    "sameShaCISuccess": 6,
+    "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
     "wholeUnitAccepted": false
   }
 }
