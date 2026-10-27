@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.51",
+  "version": "1.52",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3503,11 +3503,31 @@
     "independentReview": "docs/evidence/development-execution/smith-agent-reference-independent-review.json",
     "currentAuthorityOrExecutionAccepted": false,
     "wholeUnitAccepted": false,
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "publicDeployment": false,
     "toolReferenceSourceReceipt": "docs/evidence/development-execution/smith-tool-agent-session.json",
     "toolReferenceReview": "docs/evidence/development-execution/smith-tool-agent-r2-independent-review.json",
     "rejectedR1Review": "docs/evidence/development-execution/smith-tool-agent-attempt1-review.json",
-    "toolReferenceCandidateRevision": "R2"
+    "toolReferenceCandidateRevision": "R2",
+    "currentMainEvidence": "docs/evidence/development-execution/smith-session-main-current.json"
+  },
+  "proPrivateWorkEntry": {
+    "authority": "docs/rockstaros-complete-design.md#pro-private-work-entry",
+    "toolDesign": "docs/sky-tools-complete-design.md#pro-private-work-entry",
+    "proDesign": "docs/rockstaros-avocado-mini-complete-design.md#pro-private-work-entry",
+    "implementation": [
+      "sites/avocado-mini/src/pages/pro/index.astro"
+    ],
+    "tests": [
+      "tests/work-composition-ui.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/pro-work-entry-main-adoption.json",
+    "sourceReceipt": "docs/evidence/development-execution/pro-work-entry-source.json",
+    "independentReview": "docs/evidence/development-execution/pro-work-entry-independent-review.json",
+    "existingWorkflowReused": true,
+    "wholePRO02Accepted": false,
+    "physicalAccepted": false,
+    "mainIntegrated": false,
+    "publicDeployment": false
   }
 }

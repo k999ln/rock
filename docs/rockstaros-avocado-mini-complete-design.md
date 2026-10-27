@@ -1,3 +1,10 @@
+<a id="pro-private-work-entry"></a>
+## avocadoPro商品ページから共通仕事への限定入口
+
+[OS全体の11項目契約](rockstaros-complete-design.md#pro-private-work-entry)と[Tool契約](sky-tools-complete-design.md#pro-private-work-entry)に従う。正式Pro商品はavocadopro.si、Miniはavocadomini.si、共通RockstarOS/Sky/私有仕事はavoado.si。Proの「Open private text work」は既存compose画面へ新tabでTool IDだけを案内し、notes/私有archiveを送らず本人が選択したtextを入力する。ROCKが本人/owner/revision/保存・停止を強制し、OWNERが素材利用/費用を同意、JOINTが配備後の実認証browser/成果readbackを受け入れる。EXTERNALは外部接続事実を提供する。
+
+元notesとarchive導線を保持し、固定linkはno-referrer/noopener/noreferrer/prefetchfalse。共通計画/素材保存の別同意、未知時の同ID確認、手順間停止、保存原稿/成果の再読込/downloadを再利用する。障害時は同jobを確認し、通常revertで入口だけ戻す。source-link処理budget0とservice/回線/他AI料金を分け、ハードウェア/OS導入/Pro実機・公開仕事利用可否は同一artifactの別gateで決める。local CUA描画と合成handler/既存SQLite回帰は[元receipt](evidence/development-execution/pro-work-entry-source.json)、最新main採用/CIは[別採用記録](evidence/development-execution/pro-work-entry-main-adoption.json)へ。
+
 <a id="mini02-cone-aware-search"></a>
 ## MINI-02有限cone-aware探索（host研究の限定候補）
 

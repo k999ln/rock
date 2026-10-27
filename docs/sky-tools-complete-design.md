@@ -1,3 +1,8 @@
+<a id="pro-private-work-entry"></a>
+## Proの共通私有仕事への入口
+
+[OSの11項目契約](rockstaros-complete-design.md#pro-private-work-entry)を正本とし、既存mr-citations/source-link ToolとWorkCompositionWorkspaceを再利用する。Proの固定linkはToolだけ選び、原稿/account/同意/実行権限を渡さない。本人/owner/revision・素材保存の別同意・同操作の応答不明照合・手順間停止/成果downloadは既存API/storeが強制。budget0は接続済みのこの処理だけで他usage/サービス/回線料金を含めない。未知時は同jobを確認し、自動再実行しない。新Tool/専用job/schema/DBやnative受入は追加せず、合成試験と本番/一般公開の残gateを[採用記録](evidence/development-execution/pro-work-entry-main-adoption.json)で分ける。
+
 <a id="smith-saved-agent-reference"></a>
 ## Smithの保存Agent参照
 

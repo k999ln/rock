@@ -141,6 +141,96 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   };
 }
 
+function proWorkEntry() {
+  const page = readFileSync(new URL('../sites/avocado-mini/src/pages/pro/index.astro', import.meta.url), 'utf8');
+  const section = page.match(/<section[^>]*aria-label="Private text work"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(section, 'Pro exposes the existing private work path');
+  const anchor = section.match(/<a\s[^>]*data-pro-work[^>]*>/)?.[0];
+  assert.ok(anchor, 'work entry is a user-operated static link');
+  const attribute = name => anchor.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`))?.[1];
+  const destination = new URL(attribute('href'));
+  assert.equal(destination.origin, 'https://avoado.si');
+  assert.equal(destination.pathname, '/zema/compose');
+  assert.deepEqual([...destination.searchParams], [['tool', 'mr-citations']]);
+  assert.equal(destination.hash, ''); assert.equal(destination.username, ''); assert.equal(destination.password, '');
+  assert.equal(attribute('target'), '_blank');
+  assert.deepEqual(attribute('rel').split(/\s+/).sort(), ['noopener', 'noreferrer']);
+  assert.equal(attribute('referrerpolicy'), 'no-referrer');
+  assert.equal(attribute('data-astro-prefetch'), 'false');
+  assert.doesNotMatch(anchor, /on\w+=|download=/i);
+  assert.match(section, /Sign in/); assert.match(section, /separate consent/);
+  assert.match(section, /Stop/); assert.match(section, /same job/);
+  assert.match(section, /service subscriptions, connectivity, and other AI usage have their own terms/);
+  return destination;
+}
+
+void test('Pro work entry selects a connected free Tool without sending notes, identity or authorization', async () => {
+  const destination = proWorkEntry();
+  const route = readFileSync(new URL('../app/zema/compose/page.tsx', import.meta.url), 'utf8');
+  assert.match(route, /import WorkCompositionWorkspace from '@\/components\/work-composition-workspace'/);
+  assert.match(route, /return <WorkCompositionWorkspace \/>/);
+  const app = await harness({ search: destination.search, initialOwner: null });
+  assert.equal(app.byId('composition-source'), undefined);
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  app.owner('A'); await app.focus();
+  assert.equal(app.byId('composition-source').props.value, '');
+  assert.equal(app.byId('composition-objective').props.value, '');
+  assert.equal(app.byId('composition-acceptance').props.value, '');
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  app.unmount();
+});
+
+void test('Pro entry uses common same-ID recovery, separate source consent, stop and retained artifact download', async () => {
+  const destination = proWorkEntry(), app = await harness({ search: destination.search });
+  app.input('composition-objective', 'Proで出典を整理する');
+  app.input('composition-acceptance', '出典URLを確認できる');
+  const original = 'Synthetic Pro text（出典: [Example](https://example.test/pro-source)）';
+  app.input('composition-source', original);
+  app.lose(); await app.click('確認して仕事を保存');
+  const first = app.requests.find(r => r.payload?.action === 'create').payload;
+  assert.equal(first.plan.budgetMinor, 0);
+  assert.equal(first.source, undefined);
+  assert.equal(app.jobs.get('A').size, 1);
+  await app.click('同じ操作で結果を確認');
+  assert.deepEqual(app.requests.filter(r => r.payload?.action === 'create').at(-1).payload, first);
+  assert.equal(app.jobs.get('A').size, 1);
+  assert.equal(app.jobs.get('A').get(first.jobId).composition.source, null);
+  assert.equal(app.find('button', 'この手順を実行').props.disabled, true);
+  await app.consent(); await app.click('この手順を実行');
+  const saved = app.jobs.get('A').get(first.jobId), artifact = saved.composition.artifacts.s1.text;
+  assert.equal(saved.composition.source, original); assert.match(artifact, /https:\/\/example.test\/pro-source/);
+  await app.click('仕事を中止');
+  const stopped = app.jobs.get('A').get(first.jobId);
+  assert.equal(stopped.status, 'cancelled'); assert.equal(stopped.composition.source, original);
+  assert.equal(stopped.composition.artifacts.s1.text, artifact);
+  app.unmount();
+  const reopened = await harness({ search: `?job=${stopped.id}`, initialJobs: [stopped] });
+  assert.equal(reopened.byId('composition-source').props.value, original);
+  assert.equal(reopened.find('button', 'この手順を実行').props.disabled, true);
+  const link = reopened.find('a', '成果をダウンロード');
+  assert.equal(link.props.referrerPolicy, 'no-referrer');
+  const url = new URL(link.props.href, destination.origin);
+  assert.equal(url.pathname, '/api/work-jobs/composition/artifact');
+  assert.equal(url.searchParams.get('jobId'), stopped.id);
+  assert.equal(url.searchParams.get('revision'), String(stopped.revision));
+  assert.equal(url.searchParams.get('nodeId'), 's1');
+  reopened.unmount();
+});
+
+void test('Pro entry owner switch cannot submit a captured private create under the next owner', async () => {
+  const app = await harness({ search: proWorkEntry().search });
+  app.input('composition-objective', 'Private A objective');
+  app.input('composition-acceptance', 'Private A acceptance');
+  app.input('composition-source', 'Private A source');
+  const create = app.find('button', '確認して仕事を保存').props.onClick;
+  app.owner('B'); await app.focus(); create(); await app.flush();
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(app.jobs.get('B'), undefined);
+  assert.equal(app.byId('composition-source').props.value, '');
+  assert.doesNotMatch(app.text(), /Private A/);
+  app.unmount();
+});
+
 void test('UI executes connected text plus check, saves a sanitized recipe, and creates a distinct reusable job', async () => {
   const app = await harness();
   await app.click('文章サンプルを入力');

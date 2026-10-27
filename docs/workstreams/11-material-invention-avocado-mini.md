@@ -207,3 +207,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 [AP認証・網側上限](../../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)の共通adapterを追加。端末固有鍵、管理下hostapdの世代/認証、網側HMAC/TLS予約をLinux転送前に確認する。事業者・modemは本人回答どおり未定。実無線/衛星/請求は未受入、単体携行と表示4条件を維持。
 
 MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivity.md)。取り外し後の電源を必須化し、DP01〜05を同一試作機で受入する。請求はBIL02/O5。設計のみ、実機未受入。
+
+## Proの共通仕事入口の責任境界（2026-10-27）
+
+PRO-02の固定linkはsource workstream05/ROCKで受入れ、[Pro詳細](../rockstaros-avocado-mini-complete-design.md#pro-private-work-entry)へ接続する。既存共通WorkJob/owner/保存/停止を再利用するソフトウェア入口であり、avocadoPro実機/配置/入出力/可搬復旧・物理製造やMini光学の合格ではない。公開・本番仕事は同artifact/本人の別JOINT gateで確認する。

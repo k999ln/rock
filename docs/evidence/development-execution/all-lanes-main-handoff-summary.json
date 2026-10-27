@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "Smith fixed source4 UUID retention + tool-reference R2: combined48/type/lint/design/host fullverify3132/3129pass/0fail/3skip and scanner passed. FinalRoot22 delta review, exact Git/headCI/normalmain/mergeCI remain. R1 rejection/Root initial-pass revocation preserved.",
+  "nextProductSlice": "Pro fixed source2 private text-work entry: targeted109/type/lint/design/host fullverify3135/3132pass/0fail/3skip and scanner passed. FinalRoot18 delta review, exact Git/headCI/normalmain/mergeCI remain. Public/real-account/native/wholePRO02 not accepted.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -126,6 +126,13 @@
       "mainMergeSha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
       "sameShaCISuccess": 6,
       "evidence": "docs/evidence/development-execution/esim-webops-main-current.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 245,
+      "mainMergeSha": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/smith-session-main-current.json",
       "wholeUnitAccepted": false
     }
   ]

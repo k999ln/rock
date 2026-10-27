@@ -1,4 +1,8 @@
-Smithの保存会話では、既存UUIDまたはcatalog ToolのAgent参照を同じid/revisionで再保存し、別の会話やhandoffへ持ち越さない限定修正を準備しています。復元だけで実行は再開せず、期限・本人・現在Agent・実行同意は既存の確認を通します。[保存と復旧の契約](docs/rockstaros-complete-design.md#smith-saved-agent-reference)。
+Pro商品ページから、avoado.siの[既存私有テキスト仕事](https://avoado.si/zema/compose?tool=mr-citations)へ進む限定入口を準備しています。linkはToolだけを選び、notesや私有archiveは送信しません。利用accountを確認して新しいtextを入力し、計画保存と別の素材保存同意を確認します。応答不明は同じ仕事/操作で照合し、手順間で停止しても保存原稿/成果を保持します。この接続済みsource-link処理のbudget0と、service・回線・他AI使用料は別です。[契約・復旧](docs/rockstaros-complete-design.md#pro-private-work-entry)。公開側の修正配備は未実施です。
+
+[PR245](https://github.com/k999ln/rock/pull/245)のSmith保存参照修正はmain `9cb9d148`へ統合済みで、同SHA全6CI・4workflowが成功しました。[現在の受入証拠](docs/evidence/development-execution/smith-session-main-current.json)を元capture receiptと分けて保存しています。
+
+Smithの保存会話では、既存UUIDまたはcatalog ToolのAgent参照を同じid/revisionで再保存し、別の会話やhandoffへ持ち越さない限定修正はPR245でmainへ反映済みです。復元だけで実行は再開せず、期限・本人・現在Agent・実行同意は既存の確認を通します。[保存と復旧の契約](docs/rockstaros-complete-design.md#smith-saved-agent-reference)。
 
 [PR244](https://github.com/k999ln/rock/pull/244)はmain `9f2bf146`へ統合済みで、同SHA全6CI・4workflowが成功しました。検収済み26ファイルとmainの内容一致、Linux全verifyの結果は[別current記録](docs/evidence/development-execution/esim-webops-main-current.json)に保存しています。公開側への配備は未実施です。
 

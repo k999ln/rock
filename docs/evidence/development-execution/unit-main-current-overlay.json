@@ -1150,6 +1150,33 @@
       "state": "source4_UUID_and_tool_R2_combined48_type_lint_design_host_verify_scanner_passed_final_delta_Git_CI_pending",
       "wholeUnitAccepted": false,
       "rejectedToolR1Retained": true
+    },
+    {
+      "id": "PR245_SMITH_CURRENT",
+      "kind": "current_git_acceptance",
+      "units": [
+        "SMITH-01"
+      ],
+      "pr": "https://github.com/k999ln/rock/pull/245",
+      "acceptedHead": "1cecd2312e4bfd4fedec4b3f3d1fc99c9a39eac4",
+      "mainMergeSha": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/smith-session-main-current.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
+    },
+    {
+      "id": "PRO02_PRIVATE_WORK_ENTRY_CANDIDATE",
+      "kind": "reviewed_finite_candidate",
+      "units": [
+        "PRO-02"
+      ],
+      "baseMain": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+      "state": "source2_targeted109_type_lint_design_host_verify_scanner_pass_final_delta_Git_CI_pending",
+      "evidence": "docs/evidence/development-execution/pro-work-entry-main-adoption.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
     }
   ],
   "executionPriority": [

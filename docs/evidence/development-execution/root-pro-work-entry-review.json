@@ -1,0 +1,18 @@
+{
+  "status": "PASS_SCOPED",
+  "manifestSha256": "7fb5ff0c1a95b58ccbea586ab44e0558ea5b352ac126f2c524d0b8423f38b219",
+  "sourceTestCount": 2,
+  "checks": [
+    "All3 source/test/receipt hashes match",
+    "Only Pro product entry plus3 common UI contract regression cases added; prior harness/trackedHandoff/assertions preserved",
+    "Fixed https avoado.si compose with only mr-citations tool ID; no notes/owner/consent/execution; noopener/noreferrer/no-referrer/prefetch disabled",
+    "Budget0 scoped to source-link processing; subscription/connectivity/otherAI separated",
+    "Root independently ran workcomposition UI44/44,0fail,0skip; author109/site45 overlap not summed",
+    "Root visually inspected author local CUA screenshot; desktop link/copy visible; not Root browser operation or live auth/end-to-end acceptance",
+    "Source code reused existing owner/workflow/same-ID recovery/material-consent/stop/artifact routes; no schema/permission/runtime rewrite"
+  ],
+  "logSha256": "373718fc314e0fefa9f9bf123ae78a22324cc8a032967cd752a7bcb87b04d3dd",
+  "wholePRO02Accepted": false,
+  "realAccountPublicDeploymentAccepted": false,
+  "bulk616": "HOLD"
+}
