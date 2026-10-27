@@ -1,0 +1,205 @@
+{
+  "schema": "rockstaros.eve-text-handoff/1",
+  "recordedAt": "2026-10-27T05:34:06.080350+00:00",
+  "status": "ROOT_R2_EXPIRY_FINDING_REPAIRED_PRIMARY_VERIFIED_PENDING_ROOT_R3",
+  "unit": "EVE-02",
+  "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "workstream": "05-web-pwa-sites",
+  "primaryOwner": "ROCK",
+  "sourceActor": "Eve implementation author /root",
+  "sourceAndTests": [
+    {
+      "path": "lib/eve-text-handoff.ts",
+      "sha256": "42d9da5e576b4f2f3129e8d72015f07fbb5fef00ecc2eb0896a1cded16c167ec"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "d2f38af5ac499a7215e0ad67ee2ca344aecd20ab9f30aaa6a28ee1dba61f3767"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "705a615ad6c7e14c3a43d1a6fb28f487b55d1d1ab641f8a16bba1166cf93d5b1"
+    },
+    {
+      "path": "tests/eve-text-handoff.test.mjs",
+      "sha256": "26ed1eabb8155928993e01369bfe182f5fdba9f3251a9c34ff5c3dce22aac06e"
+    },
+    {
+      "path": "tests/eve-text-estimate-ui.test.mjs",
+      "sha256": "20eb4fad2adfe5001a6d2bcb646ae89a3e5c58e4c496b0e81dcb683ba8252b23"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "03925531ebd0b9a01f6ebae5b5540543782c39726bc81e2a15796496da2b98d3"
+    }
+  ],
+  "gap": "Existing estimate panel had no path from the displayed source-bound estimate to a confirmed preparation WorkJob. New code reuses existing composition create/run/readback and Pending, without shared store/schema edits.",
+  "contract": {
+    "purpose": "Bind an explicitly selected saved-source revision and estimate comparison conditions into a zero-budget preparation WorkJob through existing workflow APIs.",
+    "experience": "Estimate with explicit currency/comparison cap; separate materials+conditions checkbox; create preparation work. Creation saves only plan with source=null. Separate existing saveMaterial consent and compose-check run stores the reference descriptor, not original text. The original job remains unchanged.",
+    "responsibility": "ROCK validates client intent, fresh same-owner GET projection and existing workflow payload/readback. OWNER explicitly chooses material version and cap for preparation. Existing server session/owner scope header remains authentication authority. EXTERNAL pricing/real paid generation is not enabled.",
+    "inputOutput": "Canonical eve.text-handoff/1 contains ownerScope, original jobId/revision/ordered material hashes/promptDigest, normalized model/currency/rate/card/expiry/ceiling, explicit preparation cap and two consents, preparationOnly=true/executionAuthorized=false, SHA256 binding. Plan is a single compose-check, budgetMinor=0, existing USD/JPY currencies. No manuscripts are copied.",
+    "states": "Existing active -> local checker -> review -> explicit complete. Existing Pending(owner, jobId, creation fingerprint or commandId) handles uncertain create/run. Unknown original operation is retained. No new job engine or billing ledger.",
+    "storage": "Existing owner-bound work store, existing create/run GET attachment APIs, revision/fingerprint CAS unchanged. In-memory transfer draft is unsaved until separate saveMaterial run; closing the tab before that loses the unsaved descriptor. Restoring committed artifact is GET-only.",
+    "failures": "Before a new write, authenticate list owner and re-read exact original job; changed owner/source/revision/expired or altered comparison/cap/plan refuses. Auth loss preserves Pending. A source GET404 after an attempted child write cannot prove child rejection and retains unknown state. Quote expiry scheduling re-arms on preparation consent changes; repeated identical checkbox events do not invalidate the active timer. Deadline callback must request its own state update without a forced render.",
+    "recovery": "Known child GET with matching fingerprint reconciles after expiry without another POST. If child is not yet readable and original is missing or conditions expire, retain exact Pending and avoid new POST. Never-sent definitive invalidity can clear Pending so the user can return to the original and re-estimate.",
+    "approval": "Checkbox approves only the displayed preparation snapshot. It is not a signed quote, reservation, debit, provider permission or budget grant. The browser ownerScope is an intent token, not an authentication credential. Existing server API performs actual same-user authentication.",
+    "acceptance": "Exact2/3/4 source bindings, explicit cap/consents, owner/revision and final-await expiry negatives, stale callback/duplicate click refusal, original preservation, existing create/run/restore GET-only, unknown404 retention then same-ID reconciliation, zero paid endpoints/provider requests.",
+    "undecided": "Existing API has no cross-job atomic source/rate authorization. The preflight GET-to-write interval is not an execution fence. A zero-budget preparation may record an earlier snapshot; any future paid effect needs fresh server source/service/rate verification, authoritative approval, atomic budget/claim and usage reconciliation. Real browser, actual authenticated storage, Provider, finance/device/public and whole EVE remain separate."
+  },
+  "independentR1": {
+    "actor": "/root/eve_multi_review",
+    "scope": "Frozen pre-repair six-file hashes in the original R1 JSON",
+    "pathInOperatorWorkspace": "/private/tmp/eve-handoff-independent-20261027/review.json",
+    "sha256": "ef89829fcc1c9c149557c80f2e507157a445494ad4b2ddb7607b68e7bd643fe3",
+    "verdict": "CHANGES_REQUIRED",
+    "mustFixCount": 1,
+    "finding": "EVE-HANDOFF-UNKNOWN-SOURCE-GET-01",
+    "independentChecks": {
+      "helperAndPanelProbes": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0
+      },
+      "unknownCreateCounterexample": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "meaning": "Confirmed new recovery defect"
+      },
+      "authorRelatedSuites": {
+        "tests": 74,
+        "pass": 74,
+        "fail": 0,
+        "skip": 0
+      },
+      "existingApiClientSuites": {
+        "tests": 18,
+        "pass": 18,
+        "fail": 0,
+        "skip": 0
+      },
+      "countsNotAdditiveCoverage": true,
+      "assertionReview": "Existing assertions retained; helper imports/harness projection added. Realm comparisons changed to JSON byte equality without narrowing compared persisted structures."
+    },
+    "fixedSourceHashesNotYetIndependentlyReviewed": true
+  },
+  "repair": {
+    "cause": "Origin GET404 escaped to the generic definitive-write failure classifier after an already attempted child create.",
+    "change": "Classify the original source read separately. After writeAttempted=true, definitive origin read refusal becomes uncertain response; retain Pending. Never-sent malformed intent can be rejected before a write. Preserve authentication/owner exceptions.",
+    "authorReplayOfUnmodifiedIndependentCounterexample": {
+      "pass": 1,
+      "fail": 0,
+      "isIndependentR2": false
+    },
+    "newPrimaryRegressionAdded": 1
+  },
+  "primaryValidation": {
+    "related": {
+      "tests": 91,
+      "pass": 91,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheck": "npm run typecheck including normal private-module generation PASS",
+    "lint": "targeted oxlint PASS",
+    "diffCheck": "PASS",
+    "fullVerify": "NOT_RUN_in_this_finite_lane; central Git fixed candidate and CI must execute",
+    "primaryCountsNotAdditiveWithIndependent": true
+  },
+  "initialFailures": [
+    "Previously borrowed /tmp dependencies were removed, so first UI invocation did not reach assertions.",
+    "Initial isolated npm ci was blocked by network; one scoped tool escalation completed unchanged-lock dependencies.",
+    "First new original-preservation assertion compared VM/host prototypes; corrected only new assertion to exact JSON byte comparison.",
+    "Initial lint identified two unnecessary regex escapes and one generic String(payload.source); corrected without weakening assertions.",
+    "Independent R1 reproduced Pending loss; original review and probe are retained outside Git."
+  ],
+  "sharedUnchanged": [
+    "lib/workflow.ts",
+    "lib/work-store.ts",
+    "lib/remote-ai-text-store.ts",
+    "lib/work-composition.ts",
+    "app/api/work-jobs/composition/route.ts",
+    "lib/remote-ai-rate-card-registry.ts",
+    "package.json",
+    "package-lock.json"
+  ],
+  "centralMetadataRequests": {
+    "writer": "Root/central Git only",
+    "paths": [
+      "README.md",
+      "project.md",
+      "data/project-status.json",
+      "data/design-document-index.json",
+      "docs/rockstaros-complete-design.md",
+      "docs/sky-tools-complete-design.md",
+      "docs/workstreams/05-web-pwa-sites.md"
+    ],
+    "requiredSameChange": "Use contract above as eve-text-handoff anchor in both full designs and existing Eve index. Update current progress and npm run project:update. Preserve capture-time receipts, baseline/95-unit states and holds. No main/source/whole-unit success claim until actual adoption evidence."
+  },
+  "next": "Root final independent R3 on these source6 hashes, repeat unchanged10s real React browser fixture and record its actual bundle/source hashes. Central Git must not adopt a previous packet or promote primary replays to independent passes; then same-change shared metadata, fullverify/finalheadCI/normal main/sameSHA CI.",
+  "gitHubSaved": false,
+  "mainMerged": false,
+  "paidGenerationEnabled": false,
+  "publicDeployment": false,
+  "wholeEVE02Accepted": false,
+  "bulk616": "HELD",
+  "independentR2": {
+    "actor": "Root coordinator in01a16aeb-1268-7491-a2ce-cda09d15df11",
+    "verdict": "CHANGES_REQUIRED",
+    "targetPreviousManifestSha256": "58d7c1f01a849789214cd9ea81974fe2094176c65f68b3dc4b39ce4e456f91f0",
+    "targetPreviousPanelSha256": "21d223e387ef5ebd2ea232e5cc094c1462575c5980222cdb67830f2c48111246",
+    "actualBrowserBundleSha256": "d396fecc46ea16fa381d13cfa6f7081627d7060746ac4c658784daf1c32201ee",
+    "finding": "Preparation consent changes invalidate the quote natural-expiry timer",
+    "browserEvidence": [
+      "work/development-backups/eve-handoff-ui-20261027/before-fix-expiry-ax.txt",
+      "work/development-backups/eve-handoff-ui-20261027/before-fix-expiry-ax.png",
+      "work/development-backups/eve-handoff-ui-20261027/before-fix-late-prepare-refused-ax.txt"
+    ],
+    "helperStillRefusedExpiredHandoff": true,
+    "reportSummarySha256": "b555065daffeee04c602400629ea1613bf96f60eb48521de8ae098e5971f4cb1"
+  },
+  "primaryR3Repair": {
+    "sourceDelta": "Expiry effect now depends on result and handoffConsent. A redundant same-value checkbox event returns without changing epoch. Owner/active/mounted guards and helper expiry checks remain.",
+    "newNegativeControl": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='preparation consent.*deadline|redundant preparation consent' tests/eve-text-estimate-ui.test.mjs",
+      "tests": 3,
+      "beforeFixPass": 0,
+      "beforeFixExpectedFail": 3
+    },
+    "newTests": [
+      "consentON -> deadline callback itself requests a React update without unrelated render",
+      "consentON/OFF -> deadline clears quote; no clock rollback revival or stale preparation",
+      "redundant consent event retains deadline and old-owner timers cannot revive output"
+    ],
+    "primaryRelated": {
+      "tests": 91,
+      "pass": 91,
+      "fail": 0,
+      "skip": 0
+    },
+    "unchangedR1CounterexampleReplay": {
+      "pass": 1,
+      "fail": 0,
+      "actor": "implementation author, not independent R3"
+    },
+    "typecheck": "standard npm run typecheck PASS",
+    "lint": "target6 oxlint PASS",
+    "diffCheck": "PASS",
+    "independentR3": "NOT_PERFORMED; Root will rerun the same natural10s CUA fixture on this fixed source6."
+  },
+  "failureHistoryAfterR1": [
+    {
+      "actor": "Root independent R2",
+      "kind": "natural-expiry regression",
+      "status": "reproduced_before_fix; source repair and author negatives pass; final independentR3 pending"
+    }
+  ],
+  "verificationLogHashes": {
+    "eve-handoff-expiry-before.log": "34afb1e16efd2294e17e59e2adbe80ef683f233567869848f032f2fb640befbe",
+    "eve-handoff-expiry-after-focused.log": "b02df71266f39f6b19d54a2eee332f976da57ce9c9e60a9ae6a2bdb01657c613",
+    "eve-handoff-r1-replay-after-expiry.log": "a65e99c332f6911285f7538db8e8dbe09ae1ef701f6288d30be17a2b7bbc69b4",
+    "eve-handoff-expiry-typecheck.log": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+    "eve-handoff-expiry-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

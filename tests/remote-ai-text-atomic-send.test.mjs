@@ -49,11 +49,16 @@ function database(t) {
   return { db:client(sqlite), sqlite, second, file };
 }
 
-async function fixture(t, budget = 1, saveResult = false) {
+async function fixture(t, budget = 1, saveResult = false, recurring = false) {
   const { db, sqlite, second, file } = database(t);
   const parent = createWorkJob({ id: randomUUID(), templateId: 'article', title: 'Synthetic cloud test' });
   await workStore(db).create(owner, parent);
   const now = Date.now();
+  if (recurring) second.prepare(`INSERT INTO sky_recurring_contracts
+    (id,owner_id,stripe_account_id,customer_id,payment_method_id,consent_version,credit_minor,
+      period_start,period_end,status,access_until,created_at,updated_at)
+    VALUES ('fixture-recurring',?,'test-account','test-customer','test-method','fixture-consent',14000,?,?,'active',?,?,?)`)
+    .run(owner,now-1000,now+600000,now+600000,now,now);
   const pair = generateKeyPairSync('ed25519');
   const publicBytes = Uint8Array.from(pair.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32));
   const card = {
@@ -184,12 +189,7 @@ void test('unknown outcome retains hold; late genuine usage after stop settles o
 });
 
 void test('recurring access revoked on another connection is rechecked at final claim', async t => {
-  const f=await fixture(t), now=Date.now();
-  f.second.prepare(`INSERT INTO sky_recurring_contracts
-    (id,owner_id,stripe_account_id,customer_id,payment_method_id,consent_version,credit_minor,
-      period_start,period_end,status,access_until,created_at,updated_at)
-    VALUES ('fixture-recurring',?,'test-account','test-customer','test-method','fixture-consent',14000,?,?,'active',?,?,?)`)
-    .run(owner,now-1000,now+600000,now+600000,now,now);
+  const f=await fixture(t,1,false,true);
   await f.reserve();await f.queueInput();await f.store.claimDispatch(owner,f.record.id,f.record.approvalDigest);
   f.second.prepare("UPDATE sky_recurring_contracts SET status='past_due' WHERE owner_id=?").run(owner);
   await assert.rejects(f.store.claimProviderSend(owner,f.record.id), /SKY_RECURRING_ACCESS_BLOCKED/);
@@ -216,12 +216,7 @@ void test('stale request time cannot bypass the DB clock or expired rate and dur
 });
 
 void test('known recurring denial before final claim keeps the hold, reports rejection and never retries', async t => {
-  const f=await fixture(t), now=Date.now();
-  f.second.prepare(`INSERT INTO sky_recurring_contracts
-    (id,owner_id,stripe_account_id,customer_id,payment_method_id,consent_version,credit_minor,
-      period_start,period_end,status,access_until,created_at,updated_at)
-    VALUES ('fixture-recurring',?,'test-account','test-customer','test-method','fixture-consent',14000,?,?,'active',?,?,?)`)
-    .run(owner,now-1000,now+600000,now+600000,now,now);
+  const f=await fixture(t,1,false,true);
   await f.reserve();
   const claim=f.store.claimProviderSend.bind(f.store);
   t.mock.method(f.store,'claimProviderSend',async (...args)=>{

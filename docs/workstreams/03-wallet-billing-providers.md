@@ -324,3 +324,7 @@ BIL02/O5追補: [Cloud usageと100 USD枠](../sky-billing.md#cloud-usageから10
 BIL02/O5（JOINT）: [月次契約と無料Cloudの統合](../sky-billing.md#月額プランと無料cloudの統合sandbox2026-10-17)。既存契約/台帳/Stripe署名通知を再利用し、ローカル月次Sandboxで無料Cloudの実応答・合成100 USD停止・テスト入金後復旧を検証する。公開D1や実アカウントの変更は含まない。
 
 BIL02/O5（JOINT）公開実アカウント追補: [本人限定月次Sandbox移行](../sky-billing.md#公開実アカウントの月次sandbox移行2026-10-17)。検証は既存24対象試験、Sites型/build、公開UI/Stripe test invoice/署名通知、全体verify。既存データと旧契約JSON保持を必須とする。
+
+## 2026-10-27 bounded follow-up: billing-recurring-quote-binding
+
+主担当ROCK、統合10/G04。[新規見積の既存recurring契約への固定](../rockstaros-complete-design.md#billing-recurring-quote-binding)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。

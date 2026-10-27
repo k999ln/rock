@@ -1640,3 +1640,75 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 ### Wallet process強制終了のhost fixture
 
 既存legacy accountingの試験だけを拡張。目的/入力出力/責任/状態/保存/失敗復旧/承認/合格条件/未決定は[共通契約](sky-billing.md#wallet-process-recovery-fixture)を参照。新Tool/API/権限/料金はなく、default ToC holdを維持する。actual POSIX child SIGKILLをlocal SQLiteで検証してもCloudflare/停電/実資金/wholeWalletの受入にはしない。
+
+<a id="billing-recurring-quote-binding"></a>
+
+## 新規見積の既存recurring契約への固定（2026-10-27・限定候補）
+
+- 目的・利用体験: 承認した見積が別契約へ移らないよう、serverが返すowner-scoped見積データに、現在の契約ID・account・同意版、または契約なしを固定する。差替後は元見積の再利用を拒否し、別requestの新規見積・承認へ戻る。
+- 責任: ROCKの既存RemoteAiTextStoreがowner別の現在契約を読む。OWNERが既存の見積承認を行う。Stripe/Providerへの新APIや外部契約は追加しない。
+- 入出力: 既存quote/親job/上限/保存同意を入力し、既存quote_jsonにserver由来のsky.recurring-quote-binding/1（none/recurring）を保存する。approval/2 digestへ同じbindingを含め、価格quoteDigest・単価・最大額を変えない。callerのbindingは捨てる。
+- 状態: createのINSERT SELECT、reserve pool作成と状態更新、dispatch、最終send-claimの各commitで同じ保存条件と現在DBを照合する。存在・不在の読取後競合は新規rowなしで拒否する。
+- 保存: 既存の見積不変trigger、owner/request一意、保存済approvalを再利用する。同request再送で契約を付け替えたり再価格計算しない。schema/migration/Walletは不変。
+- 失敗: reserve前の不一致はpool/holdなし。予約後・送信直前の差替/削除/同意版変更は新送信を拒否し、既存reserved/unknown holdを保守的に維持する。
+- 復旧: 新requestの別承認は元の共有親予算の残額内だけで可能。送信済の真正な遅延利用量は既存claimに対し一度だけ精算し、停止した親を再開しない。自動解放・再送はしない。
+- 承認: 同じID/account/consentの契約更新・payment_revision変更は既存契約として扱う。別契約への承認転用を防ぎ、現在のaccess/status/rate/owner/parent/cap/DB clock/required権限検査も維持する。
+- 合格条件: 固定3sourceの独立74試験と追加3群、旧main5反例を確認。SQLite別接続と実local Miniflare D1の合成範囲。統合候補の全verifyと同SHA CIは別gate。
+- 未決定の決め方: 真に旧形式でfieldがない見積は従来のunbound互換を保持し、null/不正objectを旧扱いしない。旧見積移行・再同意はOWNER/中央設計で別決定する。単調epoch/ABA履歴は追加せず、同じ保存3fieldへの復元は同じ表現上の文脈とする。
+- 受入範囲: BILL-02全体、共通16USD契約・account-month/issuer epoch、production D1・実請求・公開は未受入。既存10000/14000 sandbox額、888c、外部実費を混同しない。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。
+
+<a id="eve-text-handoff"></a>
+
+## 見積条件から予算0の準備仕事へ（2026-10-27・限定候補）
+
+- 目的・利用体験: 保存した2/3/4資料の見積結果で別の準備同意と明示上限を確認し、「この条件で準備仕事を作成」へ進む。新仕事は予算0のcompose-checkだけで、原文は元の仕事へ保持する。
+- 責任: ROCKはclientの準備意図とfresh同owner GETを検査し、既存認証API/workflow/storeを再利用する。ownerScopeは意図tokenで、本人認証は既存serverだけが行う。EXTERNALへの有料実行は追加しない。
+- 入出力: eve.text-handoff/1へownerScope、元job/revision、順序付き資料hash/promptDigest、model/currency/rate/card/期限/最大額、明示比較上限と2同意を正規化しSHA256で固定する。原稿本文をdescriptorへ複写しない。
+- 状態: 既存createはplan/source=null、別saveMaterial同意後の既存runが参照descriptorを保存しreviewへ進む。実行許可・予約・生成の完了は表さない。
+- 保存: 新jobの既存owner別保存・revision/fingerprint CAS・GET復元を使う。未保存descriptorは当該page memoryのみで、tabを閉じる前の永続復旧は保証しない。元仕事は更新しない。
+- 失敗: 新規write前の本人/元job/版/資料/条件/期限不一致を拒否する。失効見積は表示と準備操作から除く。変更後の古いcallback、連打、同意撤回を無効化する。
+- 復旧: write試行済で結果不明なら同job/commandとpayloadを保持する。子GET404と元GET404は書込拒否の証拠にせず、次の同ID GETで照合する。期限後も既存保存の照合はGETだけで可能、新しい失効writeは拒否する。
+- 承認: 準備同意と既存保存同意を分ける。比較capは予算grantではなく、preparationOnly=true/executionAuthorized=false/Provider未送信を固定する。
+- 合格条件: final6の独立最終9検査、R1 unknown404反例、同意切替後の自然失効3反例、既存UI/client回帰を通す。Rootのlocal画面照合と、認証済実HTTP保存を別に記録する。
+- 未決定の決め方: fresh GETからwriteまでの間隔はcross-job atomic authorityではない。将来の有料処理は新たなserver source/service/rate検証、見積承認、原子的予約/最終claim、usage照合の設計と別受入を必要とする。
+- 受入範囲: client/合成UI/既存予算0 workflowだけ。EVE-02全体、意味的生成、実Provider、料金予約、本番本人保存、実機、公開の合格へ転用しない。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。
+
+<a id="pixel-input-binding-recovery"></a>
+
+## Linux managerの最初の保存と入力の結び付け（2026-10-27・限定候補）
+
+- 目的・利用体験: worker呼出境界でmanager processが終了しても、同ID/同じ元入力の照合に必要なhashを最初の保存から保持する。再開は停止・保存結果の照合で、推論を再送しない。
+- 責任: ROCKのhost managerが既存stateと停止検査を管理する。EXTERNAL kernel/Pixel lifecycle、OWNER導入/端末操作、JOINT実機受入は別の既存責任を保つ。
+- 入出力: 既存requestId/agentId/元入力bytes/model識別を入力し、既存run.inputSha256をrunAgentの最初のpersist前に設定する。dispatch後の同じ代入だけを除く。
+- 状態: active rowの永続化後にguest-home/workerへ進む。途中終了後のreopenは既存の中断仕事cancelとstop確認を使い、同IDは同じ保存rowへ照合する。
+- 保存: state.jsonの既存書込経路を使い、schema/API/export/agent/model/cacheを変えない。空白・改行を含む元入力bytesをhash化する。
+- 失敗: 同IDの異なる入力、失効した実行許可、停止未確認での新依頼は既存拒否を維持する。
+- 復旧: 旧rowにhashがなければ欠落を保持し、正規化済inputから推測・補完しない。既存保存成果とexport bytesを維持する。
+- 承認: 既存admission/権限guardはそのまま適用し、新権限・自動実行・新推論の許可を作らない。
+- 合格条件: 合成adapterの初回worker境界で自分のNode子processだけをSIGKILLし終了を待ち、同storeをreopenする7試験。既存lifecycle/cache回帰も確認し、同候補Linux CIへつなぐ。
+- 未決定の決め方: これはhost process死の窓の修正。停電耐久性、Pixel背景実行、P02、品質、全OSは各同一artifactの既存gateで判断する。
+- 受入範囲: worker/model/実機を起動しないhost fixture。既存実機証拠や単体APKを今回の物理受入として合算しない。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。
+
+<a id="game-intake-path-tree"></a>
+
+## Game file-setのファイル／親ディレクトリ衝突拒否（2026-10-27・限定候補）
+
+- 目的・利用体験: digestと権利条件が一致する持込manifestでも、同じpathがファイルと他ファイルの親を兼ねる不正なtreeを静的診断で拒否する。
+- 責任: ROCKの既存純粋intakeが構造検査を行う。callerの本人・registry権利・実bytesの供給責任と、実engine/OS isolationの受入は既存境界を保つ。
+- 入出力: 既存128asset/240文字上限のfile-set pathを小文字化した集合へ取り、slashごとの祖先が完全なfile pathとして存在すれば既存invalid_manifest/file_directory_collisionを返す。
+- 状態: duplicate検査の直後に判定し、不正treeをlaunch_candidateやadapter候補へ昇格させない。順序・大文字小文字・深い祖先で同じ結果にする。
+- 保存: 副作用のない診断だけ。manifest・source bytes・save形式・入力objectを変更せず、解凍・実行・保存はしない。
+- 失敗: 直接/深い/大小文字違い/辞書順に別名が挟まる衝突を拒否し、checksはunverified、measurementsはnull、adapterCandidateはnullのままにする。
+- 復旧: 作者が衝突するpathを修正し、既存package index/digest/権利bindingで再診断する。入力を自動改名しない。
+- 承認: 診断のlaunch_candidateは実行権限・資金・ポイント記帳権限を付与しない。既存owner、capability、resource契約は不変。
+- 合格条件: 衝突7配列、共有directory/単なる文字prefix等の正常6配列と入力非変更を検査。旧mainのlaunch_candidate反例を独立再現し、既存作者fixture/sandbox/WorkJob/Workbench回帰を通す。
+- 未決定の決め方: Unicode/任意archive/外部engine拡張はこのportable namespace以外の新設計として決める。実作者の導入時間/成功率/復旧時間は対象を確定して別計測する。
+- 受入範囲: RQ14/GM01/AI06の静的構造検査だけ。GAME-01全体/full SDK、実game isolation、認証済保存、Wallet/実交換、実機、公開は未受入。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。

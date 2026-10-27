@@ -424,3 +424,7 @@ ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしてい
 ### OS11 / O6: Skyの動的LLM・宣言型Agent追加
 
 ROCK主担当、SKY07/SKY21連携。private Shell API24で作者/モデルID固定を外し、owner別の固定commit/hash/明示同意と既存pin/保存を維持する。[目的・責任・全状態・失敗/復旧・合格条件](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)。非同梱Coder1.5B Q5_K_Mの実取得・生成保存、Agent実生成/同ID/失効/再同意、試験済taskだけauto候補、Broker process再起動後同成果/UI、通知tapと元65/248保持を[同一APK証拠](../evidence/pixel-open-addons.json)で受け入れる。0.5Bのecho/コード形式失敗を成功へ変えず、任意framework/nativeコード・一般品質・全OSは未受入。検証は既存Android unit/build/lint、SkyAddonStoreBoundaryTest、opt-in SkyOpenAddonAcceptanceTest、TerminalHomeIntegrationTest/WorkExperienceIntegrationTest、design/LLM/全体verify。Git保存とmain統合はPR167の実head/check-runs/mergedAt/mergeCommitへ照合する。
+
+## 2026-10-27 bounded follow-up: pixel-input-binding-recovery
+
+主担当ROCK、統合10/G04。[Linux managerの最初の保存と入力の結び付け](../rockstaros-complete-design.md#pixel-input-binding-recovery)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。

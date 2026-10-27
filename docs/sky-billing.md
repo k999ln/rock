@@ -580,3 +580,21 @@ SKY_RECURRING_SANDBOX=1 SKY_RECURRING_DB=/absolute/private/state.sqlite SKY_CLOU
 失敗・復旧・承認: checkpoint未到達/別pid/早期終了は失敗。成功/失敗/timeoutとも自身の子とDB/WAL/SHMをcleanupする。既定ToC holdは409/無変更を保ち、fixture署名を実収益の検証や課金承認にしない。
 
 合格条件: `node --experimental-strip-types --test tests/billing-process-recovery.test.mjs tests/billing-worker.test.mjs tests/earning-bridge.test.mjs tests/wallet-deposit-provenance.test.mjs` と独立反例、全verify。同一試験を重複加算しない。Windowsは明示skip、POSIX hostだけの受入。実停電/媒体損失/Cloudflare並行/二認証端末/本番金融は未受入。未決定は対象Provider/端末/障害モデルを個別gateで確定する。[証拠](evidence/development-execution/wallet-process-recovery.json)。
+
+<a id="billing-recurring-quote-binding"></a>
+
+## 新規見積の既存recurring契約への固定（2026-10-27・限定候補）
+
+- 目的・利用体験: 承認した見積が別契約へ移らないよう、serverが返すowner-scoped見積データに、現在の契約ID・account・同意版、または契約なしを固定する。差替後は元見積の再利用を拒否し、別requestの新規見積・承認へ戻る。
+- 責任: ROCKの既存RemoteAiTextStoreがowner別の現在契約を読む。OWNERが既存の見積承認を行う。Stripe/Providerへの新APIや外部契約は追加しない。
+- 入出力: 既存quote/親job/上限/保存同意を入力し、既存quote_jsonにserver由来のsky.recurring-quote-binding/1（none/recurring）を保存する。approval/2 digestへ同じbindingを含め、価格quoteDigest・単価・最大額を変えない。callerのbindingは捨てる。
+- 状態: createのINSERT SELECT、reserve pool作成と状態更新、dispatch、最終send-claimの各commitで同じ保存条件と現在DBを照合する。存在・不在の読取後競合は新規rowなしで拒否する。
+- 保存: 既存の見積不変trigger、owner/request一意、保存済approvalを再利用する。同request再送で契約を付け替えたり再価格計算しない。schema/migration/Walletは不変。
+- 失敗: reserve前の不一致はpool/holdなし。予約後・送信直前の差替/削除/同意版変更は新送信を拒否し、既存reserved/unknown holdを保守的に維持する。
+- 復旧: 新requestの別承認は元の共有親予算の残額内だけで可能。送信済の真正な遅延利用量は既存claimに対し一度だけ精算し、停止した親を再開しない。自動解放・再送はしない。
+- 承認: 同じID/account/consentの契約更新・payment_revision変更は既存契約として扱う。別契約への承認転用を防ぎ、現在のaccess/status/rate/owner/parent/cap/DB clock/required権限検査も維持する。
+- 合格条件: 固定3sourceの独立74試験と追加3群、旧main5反例を確認。SQLite別接続と実local Miniflare D1の合成範囲。統合候補の全verifyと同SHA CIは別gate。
+- 未決定の決め方: 真に旧形式でfieldがない見積は従来のunbound互換を保持し、null/不正objectを旧扱いしない。旧見積移行・再同意はOWNER/中央設計で別決定する。単調epoch/ABA履歴は追加せず、同じ保存3fieldへの復元は同じ表現上の文脈とする。
+- 受入範囲: BILL-02全体、共通16USD契約・account-month/issuer epoch、production D1・実請求・公開は未受入。既存10000/14000 sandbox額、888c、外部実費を混同しない。
+
+統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。

@@ -1,0 +1,18 @@
+{
+  "status": "PASS_SCOPED_GAME_INTAKE_DIAGNOSTIC",
+  "recordedAt": "2026-10-27T05:32:12.771764+00:00",
+  "sourceSha256": "19f999d0556f0f30f8862a6604cbd9e04ca0e6b66c1707679393fcd4e7c858ba",
+  "delta": "Only8line manifest parent path collision rejection in existing case-insensitive namespace",
+  "independentSuite": {
+    "tests": 14,
+    "pass": 14,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "ba69bb59c11472fda55576ef0d84bcfead2ae1d8f43b78b3034a41dff952d1df"
+  },
+  "sourceReview": "All parent slash boundaries checked independent of asset order; siblings and textual prefixes preserved; no unpack/execute/authority path added",
+  "fullSDKPhysicalOrFinancialAccepted": false,
+  "bulk616": "HOLD",
+  "mustFix": [],
+  "privateOriginalReviewSha256": "e89d67a4c37c749cfcebcd0f6a8d69612e1f3705f7af8460155c593d8cb26612"
+}

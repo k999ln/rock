@@ -114,6 +114,14 @@ function manifest(value: unknown): GameManifest {
   for (const key of ['id', 'path'] as const) {
     if (new Set(assets.map(a => a[key].toLowerCase())).size !== assets.length) throw new Error('duplicate_asset_' + key);
   }
+  // File-set paths share a case-insensitive portable namespace. A file may
+  // not occupy any implicit parent directory, regardless of asset ordering.
+  const paths = new Set(assets.map(a => a.path.toLowerCase()));
+  for (const path of paths) {
+    for (let slash = path.indexOf('/'); slash !== -1; slash = path.indexOf('/', slash + 1)) {
+      if (paths.has(path.slice(0, slash))) throw new Error('file_directory_collision');
+    }
+  }
   if (!Array.isArray(m.capabilities) || m.capabilities.length > 16 || !m.capabilities.every(c => typeof c === 'string' && c.length <= 128)) throw new Error('invalid_capabilities');
   if (new Set(m.capabilities).size !== m.capabilities.length) throw new Error('duplicate_capability');
   return {

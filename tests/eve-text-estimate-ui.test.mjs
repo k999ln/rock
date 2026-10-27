@@ -1,3 +1,4 @@
+import * as handoff from '../lib/eve-text-handoff.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -44,7 +45,7 @@ async function harness(onRequest) {
     } },
   };
   const jsx = (type, props) => ({ type, props });
-  const modules = { react, 'react/jsx-runtime': { jsx, jsxs: jsx }, '@/lib/eve-text-job': eve,
+  const modules = { '@/lib/eve-text-handoff': handoff, react, 'react/jsx-runtime': { jsx, jsxs: jsx }, '@/lib/eve-text-job': eve,
     '@/lib/currency-format': currency, '@/lib/remote-ai-text-client': { ...client, remoteAiTextRequest: async (path, method, body) => {
       const call = { path, method, body }; calls.push(call); return onRequest(call, props.job);
     } } };
@@ -81,9 +82,14 @@ async function harness(onRequest) {
   const click = () => { button().props.onClick(); render(); };
   async function until(predicate) { for (let i = 0; i < 100; i++) { render(); if (predicate()) return; await new Promise(r => setTimeout(r, 2)); } throw Error('timed out'); }
   render();
-  return { calls, render, button, consent, change, agree, click, text: () => text(tree), until,
+  return { calls, render, button, consent, change, agree, click,
+    prepareConsent: () => input('見積条件の準備同意'),
+    prepareButton: () => nodes(tree).find(n => n.type === 'button' && text(n).includes('この条件で準備仕事を作成')),
+    text: () => text(tree), until,
     rateRows: () => nodes(tree).filter(node => node.type === 'li').map(textContent),
     fireTimers() { const pending = [...timers.values()]; timers.clear(); pending.forEach(timer => timer.fn()); render(); },
+    fireTimersWithoutRender() { const pending = [...timers.values()]; timers.clear(); pending.forEach(timer => timer.fn()); return dirty; },
+    captureTimers: () => [...timers.values()].map(timer => timer.fn),
     get timerCount() { return timers.size; },
     get props() { return props; }, setProps(next) { props = { ...props, ...next }; render(); },
     unmount() { mounted = false; slots.forEach(s => s?.cleanup?.()); }, get lateWrites() { return lateWrites; } };
@@ -205,4 +211,69 @@ for (const count of [3, 4]) void test(`${count}-source result requires every ord
   assert.equal(h.calls.length, 1); assert.equal(h.calls[0].path, '/api/llm/estimate');
   h.setProps({ ownerScope: 'owner-b' }); assert.equal(h.text().includes('最大見積'), false);
   assert.equal(h.consent().props.checked, false); assert.equal(h.calls.length, 1);
+});
+
+void test('preparation requires separate bound consent and explicit cap, double click creates one intent without paid calls', async () => {
+  const intents = [], h = await harness((_call, work) => response(work, 10));
+  h.setProps({ ownerScope: `owner-v1:${'a'.repeat(64)}`, onPrepare: async draft => { intents.push(draft); } });
+  h.change('見積通貨', 'USD'); h.change('見積比較上限', '0.10'); h.agree(); h.click();
+  await h.until(() => h.text().includes('最大見積'));
+  assert.equal(h.prepareButton().props.disabled, true);
+  h.prepareConsent().props.onChange({ target: { checked: true } }); h.render();
+  const click = h.prepareButton().props.onClick; click(); click(); h.render();
+  await h.until(() => intents.length === 1);
+  assert.equal(intents[0].plan.budgetMinor, 0); assert.ok(handoff.isEveTextHandoffPlan(intents[0].plan));
+  assert.equal(JSON.parse(intents[0].source).payload.approval.capMinor, 10);
+  assert.equal(h.calls.length, 1); assert.equal(h.calls[0].path, '/api/llm/estimate');
+});
+void test('captured preparation and consent cannot cross a changed quote input, owner or expiry', async t => {
+  for (const change of ['input', 'owner', 'expiry']) {
+    const intents = [], h = await harness((_call, work) => response(work, 10));
+    h.setProps({ ownerScope: `owner-v1:${'a'.repeat(64)}`, onPrepare: async draft => { intents.push(draft); } });
+    h.change('見積通貨', 'USD'); h.change('見積比較上限', '0.10'); h.agree(); h.click();
+    await h.until(() => h.text().includes('最大見積'));
+    h.prepareConsent().props.onChange({ target: { checked: true } }); h.render();
+    const staleClick = h.prepareButton().props.onClick, staleConsent = h.prepareConsent().props.onChange;
+    if (change === 'input') h.change('見積比較上限', '0.20');
+    if (change === 'owner') h.setProps({ ownerScope: `owner-v1:${'b'.repeat(64)}` });
+    if (change === 'expiry') { const realNow = Date.now(); t.mock.method(Date, 'now', () => realNow + 1_000_000); h.fireTimers(); }
+    staleConsent({ target: { checked: true } }); staleClick(); h.render();
+    await new Promise(resolve => setTimeout(resolve, 5)); h.render();
+    assert.equal(intents.length, 0, change); assert.equal(h.calls.length, 1, change);
+    t.mock.restoreAll(); h.unmount();
+  }
+});
+
+for (const finalConsent of [true, false]) void test(`preparation consent ${finalConsent ? 'ON' : 'ON then OFF'} preserves natural deadline invalidation without an unrelated render`, async t => {
+  let now = Date.now(); t.mock.method(Date, 'now', () => now);
+  const expiresAt = now + 1000, intents = [];
+  const h = await harness(async (_call, work) => { const value = await response(work, 10); value.estimate.expiresAt = expiresAt; return value; });
+  h.setProps({ ownerScope: `owner-v1:${'a'.repeat(64)}`, onPrepare: async value => { intents.push(value); } });
+  h.change('見積通貨', 'USD'); h.change('見積比較上限', '0.10'); h.agree(); h.click();
+  await h.until(() => h.text().includes('最大見積'));
+  h.prepareConsent().props.onChange({ target: { checked: true } }); h.render();
+  if (!finalConsent) { h.prepareConsent().props.onChange({ target: { checked: false } }); h.render(); }
+  const staleClick = h.prepareButton().props.onClick;
+  assert.equal(h.timerCount, 1); now = expiresAt;
+  assert.equal(h.fireTimersWithoutRender(), true, 'expiry callback itself must schedule a React state update');
+  h.render(); assert.doesNotMatch(h.text(), /最大見積/); assert.match(h.text(), /有効期限/);
+  assert.equal(h.timerCount, 0); now = expiresAt - 1; h.render();
+  assert.doesNotMatch(h.text(), /最大見積/, 'cleared result cannot revive on clock rollback');
+  staleClick(); await new Promise(resolve => setTimeout(resolve, 5)); h.render();
+  assert.equal(intents.length, 0); assert.equal(h.calls.length, 1); h.unmount();
+});
+void test('redundant preparation consent and stale old-owner timers cannot disable or revive expiry', async t => {
+  let now = Date.now(); t.mock.method(Date, 'now', () => now);
+  const expiresAt = now + 1000;
+  const h = await harness(async (_call, work) => { const value = await response(work, 10); value.estimate.expiresAt = expiresAt; return value; });
+  h.setProps({ ownerScope: `owner-v1:${'a'.repeat(64)}`, onPrepare: async () => {} });
+  h.change('見積通貨', 'USD'); h.change('見積比較上限', '0.10'); h.agree(); h.click();
+  await h.until(() => h.text().includes('最大見積'));
+  h.prepareConsent().props.onChange({ target: { checked: true } }); h.render();
+  h.prepareConsent().props.onChange({ target: { checked: true } }); h.render();
+  const oldTimers = h.captureTimers(); now = expiresAt;
+  assert.equal(h.fireTimersWithoutRender(), true); h.render(); assert.doesNotMatch(h.text(), /最大見積/);
+  h.setProps({ ownerScope: `owner-v1:${'b'.repeat(64)}` }); oldTimers.forEach(fn => fn()); h.render();
+  assert.doesNotMatch(h.text(), /最大見積|有効期限/); assert.equal(h.calls.length, 1); assert.equal(h.lateWrites, 0);
+  h.unmount();
 });

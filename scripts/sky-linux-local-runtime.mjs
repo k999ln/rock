@@ -234,6 +234,7 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     const run = beginLinuxRun(agent, input, requestId, model.sha256);
     if (handoff) { run.surface = 'eve'; run.handoff = handoff; }
     run.modelName = model.name;
+    run.inputSha256 = createHash('sha256').update(input).digest('hex');
     state.runs.unshift(run); await persist();
     const child = spawnShell(['python3', `${await guestHome()}/sky-private/worker.py`, 'run'], {
       input: JSON.stringify({ jobId: requestId, modelId: model.id, modelSha256: run.modelSha256, instructions: agent.instructions, input }), timeout: 200000,
@@ -407,7 +408,6 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
           if ((prior.surface ?? null) !== (input.surface ?? null)) throw new Error('同じ依頼番号の入口が異なります。');
         } else {
           await runAgent(agent, input.input, input.requestId, handoff);
-          state.runs[0].inputSha256 = createHash('sha256').update(input.input).digest('hex');
         }
       } else if (input.action === 'stop-environment') {
         if (preparation) { prepareAbort.abort(); await preparation; }

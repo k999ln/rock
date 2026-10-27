@@ -1,0 +1,91 @@
+{
+  "schema": "rockstaros.billing-recurring-binding-source-manifest/1",
+  "unit": "BILL02-RECURRING-QUOTE-BINDING",
+  "baseSha": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "logicalTree": "billing-bill02-20261027",
+  "sourceFiles": [
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "baseSha256": "26eddb3d8a80e30e32c53cc28d36c2a6f923bdcccbeeee56693aa76f61b4b043",
+      "candidateSha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6",
+      "bytes": 28437
+    },
+    {
+      "path": "tests/remote-ai-text-atomic-send.test.mjs",
+      "baseSha256": "493f616de5168a492b677957cb49e1db744957cbd86c2aa65a23e8bbc528d0e0",
+      "candidateSha256": "f7eb3a3d67210cd42f6bd827f2146df85dfa8ad1d1b5b08891263bc8f4d03243",
+      "bytes": 16450
+    },
+    {
+      "path": "tests/remote-ai-text-contract-binding.test.mjs",
+      "baseSha256": null,
+      "candidateSha256": "87301b92f4240848344475783efdc3124aab6979e6c69d19bda657406765979f",
+      "bytes": 25435
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "lib/remote-ai-text-execution.ts",
+      "sha256": "72c7198a21a3907ffdd470a56a6b0adf5e61c2db709a4741233a5f29bdd6edde",
+      "equalBase": true
+    },
+    {
+      "path": "lib/remote-ai-text-pricing.ts",
+      "sha256": "0ca5e6926a79a1a811b7dd6026007a8c41928bdec095c5a05c4a94a45bbd99df",
+      "equalBase": true
+    },
+    {
+      "path": "lib/sky-recurring-plan.ts",
+      "sha256": "cf445f86e2649aebe802849f0cd7c8194454856d10dc67dc2ed297adec6fbd95",
+      "equalBase": true
+    },
+    {
+      "path": "lib/sky-recurring-usage.ts",
+      "sha256": "b469816bb44a3add1c9fac49f7bb60c77cc85556bf23834d5748f7a640e53f39",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rock-wallet.ts",
+      "sha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+      "equalBase": true
+    },
+    {
+      "path": "lib/wallet.ts",
+      "sha256": "2ef64207e08cd4542ebe3ca560f646c1c036b64a42f92e37f1df76c2f065e55c",
+      "equalBase": true
+    },
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rockstar-entitlement-claim.ts",
+      "sha256": "eb533ae2cb1c8f4a1702e1ccb646770d05a927ea71f0ee9580dd76e092d7c794",
+      "equalBase": true
+    },
+    {
+      "path": "lib/rockstar-service-access.ts",
+      "sha256": "c6c2c8f48df6f35b62266af38425d1d415e26036b09bec34ab881b774a76fb09",
+      "equalBase": true
+    },
+    {
+      "path": "db/schema.ts",
+      "sha256": "2f6d52d2dbbed7967dda57a0a8b1e5a02c1d8418591ae558ac23a48a274809ff",
+      "equalBase": true
+    },
+    {
+      "path": "drizzle/0018_sky_recurring_sandbox.sql",
+      "sha256": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6",
+      "equalBase": true
+    },
+    {
+      "path": "drizzle/0021_sky_recurring_send_guard.sql",
+      "sha256": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
+      "equalBase": true
+    }
+  ],
+  "newMigration": false,
+  "sourceSaveStage": "managed detached worktree only; central Git review/save/merge/CI pending",
+  "rootDirtyAnd616HoldUntouched": true
+}

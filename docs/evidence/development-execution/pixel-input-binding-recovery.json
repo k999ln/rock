@@ -1,0 +1,235 @@
+{
+  "schema": "rockstaros.pixel-input-binding-recovery/1",
+  "recordedAt": "2026-10-27T05:19:45.882776+00:00",
+  "unit": "OS-01",
+  "relatedUnit": "OS-06",
+  "workstream": "07-android-device-local-ai",
+  "responsibility": "ROCK",
+  "status": "finite_host_fix_tested_pending_independent_review_and_central_git_save",
+  "mainBase": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "sourceOwnership": [
+    "scripts/sky-linux-local-runtime.mjs",
+    "tests/sky-linux-input-binding-recovery.test.mjs",
+    "docs/evidence/development-execution/pixel-input-binding-recovery.json"
+  ],
+  "priorAdoptionReadback": {
+    "PR223": {
+      "merged": true,
+      "mergeSha": "1ec70d62461d5ca88ea17e58e14769163d2ba192",
+      "scope": "Limited guard/cache-only physical evidence and original code restoration; no inference content/latency/background acceptance"
+    },
+    "PR237": {
+      "merged": true,
+      "mergeSha": "bb432fd9548d9d53f150c1acbb95c3057ea2df37",
+      "scope": "Actual Shell future-observation guard; not reimplemented"
+    },
+    "PR238": {
+      "merged": true,
+      "mergeSha": "440f3cfbb545c802a30fbc1e6f28c95d6854ff09",
+      "scope": "Bounded fixture/Mini/source subset; no new physical acceptance"
+    },
+    "PR240": {
+      "merged": true,
+      "mergeSha": "c3c4845ca5a5d48953633516ada3e64201a9325b",
+      "scope": "ESRCH observation fixture adjustment and other lane work; worker unchanged"
+    }
+  },
+  "cause": {
+    "before": "runAgent persisted the new active run and reached worker dispatch before dispatch() attached inputSha256. A manager process dying at that boundary left a row whose same-ID comparison could not match the original request.",
+    "runtimeProof": "The actual manager reaches its synthetic worker adapter after its first save. A host Node child blocks in that adapter without starting Python/worker/model; the parent receives the saved-row digest and SIGKILLs only its own fixture child, awaits close, then opens the same fixture store with the actual manager.",
+    "oldObservedFirstDigest": null,
+    "oldSameIdReplay": "Rejected with 同じ依頼番号の内容が異なります。; no resubmission occurred.",
+    "scopeLimit": "This is a host manager process-death window and an observation of the saved file after rename. It does not attest power-loss durability, live Pixel recovery or device lifecycle."
+  },
+  "fix": {
+    "summary": "Move the existing original-input SHA256 assignment into runAgent before its first persist and before guest-home lookup/worker dispatch. Remove the post-dispatch assignment.",
+    "existingSourceDiff": {
+      "insertions": 1,
+      "deletions": 1,
+      "otherExistingSourceBytesChanged": false
+    },
+    "schemaChange": false,
+    "apiOrAuthorityChange": false,
+    "legacyPolicy": "Existing rows lacking inputSha256 remain missing and same-ID replay is rejected; no digest is inferred from stored normalized input.",
+    "unchangedBoundaries": [
+      "same ID with changed raw input is rejected",
+      "recovery cancels an interrupted run and observes stop before new work",
+      "unconfirmed stop blocks new work",
+      "execution revocation blocks admission",
+      "stored jobs, agents/models and exact exported output remain unchanged",
+      "no automatic inference replay",
+      "cache-only admission, IDs, cancellation and retained history"
+    ]
+  },
+  "sourceBindings": [
+    {
+      "path": "scripts/sky-linux-local-runtime.mjs",
+      "sha256": "3344b6371210b01edf7889b5318a9aab5033cbb4ba8ed47db4874bf269e2a704",
+      "bytes": 36414
+    },
+    {
+      "path": "tests/sky-linux-input-binding-recovery.test.mjs",
+      "sha256": "792d5c232eefa2e389087c5b27c2bc512e559c628084e07b87cb17f657b923de",
+      "bytes": 9501
+    }
+  ],
+  "originalManager": {
+    "sha256": "534bb5cf4e75de7e1bd44de1270ca59528b90df5d009b0ac89d50a362dc665e1",
+    "gitBlob": "c3586d417a88e6723e05ba00f13020c02fb25c7a"
+  },
+  "verification": {
+    "host": "macOS arm64 / Node v26.12.1",
+    "newRegressionCommand": "node --experimental-strip-types --test tests/sky-linux-input-binding-recovery.test.mjs",
+    "oldSource": {
+      "exitCode": 1,
+      "tests": 7,
+      "pass": 5,
+      "fail": 2,
+      "skipped": 0,
+      "failures": [
+        "first saved run has no input digest at the worker boundary",
+        "same-ID/same-input replay rejects after exact-boundary process death"
+      ]
+    },
+    "fixedSource": {
+      "exitCode": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skipped": 0
+    },
+    "existingLifecycle": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='^owner store|^Eve and Sky|^Pixel environment|^Pixel memory' tests/sky-linux-local.test.mjs",
+      "exitCode": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0
+    },
+    "existingCache": {
+      "command": "node --experimental-strip-types --test tests/pixel-cached-prepare.test.mjs",
+      "exitCode": 0,
+      "tests": 17,
+      "pass": 17,
+      "fail": 0,
+      "skipped": 0
+    },
+    "fixedFocusedTotal": {
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "skipped": 0
+    },
+    "sourceSnapshot": {
+      "exactMainGitBlobMatches": true,
+      "existingFilesModified": [
+        "scripts/sky-linux-local-runtime.mjs"
+      ],
+      "privateSnapshotIndexSha256": "1509118f458c8e1dd6b12eb0e0c9e3bf7d1b6fe921e8f21be7e45db9a17ccaff",
+      "snapshotsForVerificationOnlyNotForGit": true
+    },
+    "checks": {
+      "newTestNodeSyntaxExitCode": 0,
+      "ownedSourceAndTestTrailingWhitespace": false,
+      "noIndexDiffCheck": {
+        "exitCode": 1,
+        "diagnostics": "",
+        "meaning": "Files differ; no whitespace diagnostics. No index or refs changed."
+      }
+    },
+    "fullVerify": "Central Git must run on its fixed integration candidate; not run by this source lease.",
+    "LinuxCI": "Not run by this source lease; required on exact candidate.",
+    "AndroidBuildAndRuntime": "Not run; this finite change is the Linux local manager source, not the APK.",
+    "physical": "Not run; current connection/lock/other-chat lease and current device artifact were not accessed or claimed."
+  },
+  "testPreparationHistory": {
+    "initialHarness": "First draft used cleanup hooks in the wrong order and compared a UI-enriched snapshot with a raw row. Those fixture-only mistakes were corrected before the stable old-source reproduction. The original draft log is retained privately.",
+    "incompleteSnapshotAttempt": "An unanchored test-name filter also selected an existing Python worker-import fixture whose source was not materialized; a cache suite lacked its existing guard module. The filter was corrected and the exact-main guard source restored before successful runs. The worker/model/device was never started.",
+    "logs": [
+      {
+        "name": "before-test.log",
+        "sha256": "fb501e36d50e95b735d74ab2c28a43f4945838a5338378afd1ee5354a6b177a5",
+        "bytes": 2545
+      },
+      {
+        "name": "after-test.log",
+        "sha256": "d7a1536066d6a0a1ce8745c02aa4b37ccd78a3315a5a17ae0bb432a08ee98017",
+        "bytes": 727
+      },
+      {
+        "name": "existing-lifecycle-test.log",
+        "sha256": "f6f24868130ac8ca0eb9e769deb21b9546e6f5d9b430d05447a9b47092bb1ddf",
+        "bytes": 523
+      },
+      {
+        "name": "existing-cache-test.log",
+        "sha256": "a3e065acc1bf0081200f75b5ee022778de3c9c57e0d07ab7eb493bb8a5dda4d1",
+        "bytes": 1795
+      },
+      {
+        "name": "initial-harness-attempt.log",
+        "sha256": "1d66e9ed387945eb3ac5cf428925a17ace58e529d9140dcfe8aa1e29133ea0c2",
+        "bytes": 10300
+      },
+      {
+        "name": "incomplete-fixture-existing-lifecycle-test.log",
+        "sha256": "5c5d073ab6822a50c8cba4bea135049df8bf1ed913cc4abc23689c52d26f7a56",
+        "bytes": 2242
+      },
+      {
+        "name": "incomplete-fixture-existing-cache-test.log",
+        "sha256": "6c10936a15d8fd49675b6fe1090a97895a91b0693600718d2827b2873bfcdf76",
+        "bytes": 1952
+      }
+    ]
+  },
+  "preservation": {
+    "deviceOperations": 0,
+    "deviceConnectionReadbacks": 0,
+    "additionalInference": 0,
+    "existingJobReplaysOnDevice": 0,
+    "actualWorkerProcessesSpawned": 0,
+    "actualModelProcessesSpawned": 0,
+    "modelRuntimeDownloads": 0,
+    "providerCalls": 0,
+    "realJobsSubmitted": 0,
+    "keysGrantsConnectionsChanged": 0,
+    "newChatsAgentsClones": 0,
+    "sourceCommitsPushesMainEdits": 0,
+    "rootProductSourceEdits": 0,
+    "globalMetadataEdits": 0,
+    "fixtureHostChildProcesses": "Three owned Node manager children per new-suite execution; each terminated at the synthetic dispatch barrier and awaited. No child survives the suite.",
+    "existingJobsModelsDataConnections": "Untouched; only private synthetic stores and exact-ref repository snapshots used.",
+    "bulk616": "HOLD"
+  },
+  "centralWriterRequests": [
+    {
+      "owner": "Root/central Git",
+      "paths": [
+        "data/design-document-index.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/development-source-handoff.json"
+      ],
+      "request": "After independent source review, record this saved-input-before-dispatch contract and bounded host proof in existing canonical design/progress/handoff entries, preserving historical capture-time records and unaccepted physical/P02 gates. Run design:check/project:update/full verify centrally."
+    }
+  ],
+  "acceptance": {
+    "independentReview": "pending Root",
+    "gitSaved": false,
+    "mainIntegrated": false,
+    "wholeUnitAccepted": false,
+    "P02Complete": false,
+    "wholeOSAccepted": false,
+    "currentPhysicalAccepted": false,
+    "outputQualityAccepted": false,
+    "backgroundAccepted": false,
+    "powerLossDurabilityAccepted": false,
+    "realFinancialAccepted": false,
+    "publicDeployment": false
+  },
+  "next": "Root independent review of these exact source/test hashes, then central Git save/main/CI under its existing ownership. Physical acceptance remains a separate unexecuted gate; no new inference or device operation is implied."
+}

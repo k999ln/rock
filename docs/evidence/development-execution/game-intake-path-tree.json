@@ -1,0 +1,131 @@
+{
+  "schema": "rock.game-intake-path-tree-evidence/1",
+  "unit": "GAME-01",
+  "taskIds": [
+    "GM01",
+    "AI06"
+  ],
+  "requirement": "RQ14; DX01 context, no whole SDK acceptance",
+  "primaryOwner": "ROCK",
+  "primarySquad": "O5",
+  "workstream": "08-game-market-fund",
+  "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "stage": "local_candidate_independent_review_pending",
+  "scope": "Reject file/directory ancestor collisions within the existing portable file-set static intake namespace. No extraction, execution, storage, API or authority changes.",
+  "cause": "Duplicate complete paths were rejected case-insensitively, but an asset used as another asset parent directory still reached launch_candidate even when the whole signed file index was internally consistent.",
+  "change": "After strict asset parsing/duplicate checks, inspect every slash-delimited parent against the lowercase full-file path set and return existing invalid_manifest with file_directory_collision. The check is deterministic, bounded by existing 128 asset/240 character limits, independent of asset order and side-effect free.",
+  "source": {
+    "lib/game-intake.ts": {
+      "baseSha256": "e26b12aae0c5d49f81d1d0ba02c389c8b5db21cc162ca853a2bf27a755e78d58",
+      "candidateSha256": "19f999d0556f0f30f8862a6604cbd9e04ca0e6b66c1707679393fcd4e7c858ba"
+    },
+    "tests/game-intake.test.mjs": {
+      "baseSha256": "2ab22b3030eab6e0b62280db908be39ec47fadd8de9ed08fae9f29aaa1a3ff7c",
+      "candidateSha256": "df4a305be91b643765898648d3ad5eec7d5b4014e36f1a585897e20c946f8be3"
+    }
+  },
+  "protectedUnchangedSha256": {
+    "scripts/game-creator-fixture.mjs": "62c0575a28b71383e330a9e673b535a64f4111f005b2c231a7f0e88755cf8884",
+    "tests/game-creator-fixture.test.mjs": "8454117a6677e9581e1163936874d7346cfc0bbb123751f2a67ebf575d275ab1",
+    "lib/game-sandbox.ts": "02598e5d73fa22db1a4e573eaf1e83719faa29721c96e7a98159cd3144de7b36",
+    "tests/fixtures/game-sandbox-session.json": "0df00814e88721d16ca41e30b1dbb8c0ccc536c363e5f82958f292448699ea08",
+    "lib/game-work-draft.ts": "1ed31cb398d571ed11708959ab7396af2daa8392c784b362b9a69e2acc32e3a6",
+    "components/workbench.tsx": "2bd1c749e0a1106a272298b845734c2197f1643f24a2aa74e72958fada65fcdc",
+    "tests/game-work-draft.test.mjs": "52e53b8789fac9fb46621a485f96104a02ce219486166db9898ac2f2bfc9bf21",
+    "tests/game-work-draft-ui.test.mjs": "9e48f1e19eccbb26adae1b104b8b555fc24fe387768bba4e30c973ef7b2502dd"
+  },
+  "tests": {
+    "red": {
+      "command": "node --experimental-strip-types --test tests/game-intake.test.mjs",
+      "tests": 14,
+      "pass": 13,
+      "fail": 1,
+      "cause": "Validly indexed assets plus assets/particle.json returned launch_candidate on base source, contrary to invalid_manifest expectation.",
+      "logSha256": "5d2ef3a0276d8b11afed7318184c991fc9d6d58d8554eead80bc2d3b177d3b74"
+    },
+    "focused": {
+      "command": "node --experimental-strip-types --test tests/game-intake.test.mjs tests/game-creator-fixture.test.mjs tests/game-sandbox.test.mjs tests/game-work-draft.test.mjs",
+      "tests": 47,
+      "pass": 47,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "5ec97a7ef22f76d95bd731ac704bca44049f520b487666e041ac5d724f1f66e3"
+    },
+    "consumerRegression": {
+      "command": "node --experimental-strip-types --test tests/game-work-draft-ui.test.mjs tests/workbench-owner-recovery.test.mjs",
+      "tests": 51,
+      "pass": 51,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "45c3f41b1fa931c8af10c9a490b43921a9835f560375d6a72d76abd446ce935c"
+    },
+    "negativeCases": [
+      "direct parent first",
+      "direct parent last",
+      "case variant parent first",
+      "case variant parent last",
+      "deep parent first",
+      "deep uppercase parent last",
+      "intervening lexical filename"
+    ],
+    "positiveCases": [
+      "shared directory",
+      "case-variant shared implicit directory",
+      "textual prefix without slash",
+      "extension vs directory",
+      "shared deep directories",
+      "dot-separated filenames"
+    ],
+    "inputMutation": false,
+    "staticChecks": "unverified",
+    "measurements": "null",
+    "lint": {
+      "command": "./node_modules/.bin/oxlint lib/game-intake.ts tests/game-intake.test.mjs",
+      "result": "pass"
+    },
+    "typecheck": {
+      "command": "./node_modules/.bin/tsc --noEmit --strict --skipLibCheck --allowJs --target ES2022 --lib ES2023,DOM --module ESNext --moduleResolution bundler --allowImportingTsExtensions lib/game-intake.ts",
+      "result": "pass",
+      "scope": "Changed TypeScript and its real imports; not full project typecheck. No ambient stub."
+    },
+    "typecheckHistory": "Initial standalone invocation omitted repository allowJs and reported existing imported AMC .mjs declaration errors. Corrected invocation matches allowJs in tsconfig; no product or dependency workaround.",
+    "dependencies": "Reused installed node_modules from the current-main Billing worktree; no dependency edits or fresh npm ci acceptance claimed."
+  },
+  "centralWriterRequired": {
+    "design": [
+      "docs/game-api-contract-draft.md: file-set path validation, reject reason, no extraction/authority grant",
+      "docs/rockstaros-complete-design.md and docs/sky-tools-complete-design.md: corresponding intake contract/reference if indexed component scope requires",
+      "data/design-document-index.json: corresponding entry digest/references"
+    ],
+    "progress": [
+      "project.md",
+      "data/project-status.json",
+      "README.md via project:update",
+      "existing development lane/unit/current overlay and mission update/check as applicable"
+    ],
+    "sequence": [
+      "Independent review of this fixed three-path candidate",
+      "Latest-main/source hash preservation and canonical design/status synchronization",
+      "design:check and complete npm run verify on synchronized integration candidate",
+      "Exact final-head CI; normal main merge; same merge-SHA CI"
+    ],
+    "requestedAcceptance": "Scoped static malformed file-set rejection only; keep previous PR205/230 acceptance and history."
+  },
+  "notAccepted": [
+    "independent review",
+    "full integration verify",
+    "GitHub save",
+    "main integration",
+    "same-head or merge CI",
+    "external author installation/success/recovery measurements",
+    "wholeGAME01/GAME02/fullSDK",
+    "real external game or third-party engine isolation",
+    "production authenticated owner storage",
+    "financial exchange/rates/Wallet/realprovider",
+    "native/physical targets",
+    "public deployment"
+  ],
+  "bulk616": "HELD",
+  "externalDependency": "none for this pure static check",
+  "ownerAction": "none for local fixture; external/financial/public gates unchanged"
+}

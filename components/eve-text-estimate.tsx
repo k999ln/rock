@@ -1,5 +1,6 @@
 'use client';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { prepareEveTextHandoff, type EveTextHandoff } from '@/lib/eve-text-handoff';
 import type { WorkJob } from '@/lib/workflow';
 import { prepareEveTextEstimate } from '@/lib/eve-text-job';
 import { remoteAiTextRequest, readEveTextEstimate, eveTextEstimateIsCurrent, type EveTextEstimate } from '@/lib/remote-ai-text-client';
@@ -8,10 +9,11 @@ import { formatCurrencyMinor, formatCurrencyRatePerMillionTokens, parseCurrencyI
 const labels: Record<string, string> = { 'ordinary-input': '入力', 'cached-input': 'キャッシュ入力', 'cache-write': 'キャッシュ保存', output: '出力' };
 
 /** Estimates are ephemeral. Restoring a saved job never starts even an estimate. */
-export default function EveTextEstimatePanel({ job, ownerScope, disabled = false }: {
-  job: WorkJob; ownerScope: string | null; disabled?: boolean;
+export default function EveTextEstimatePanel({ job, ownerScope, disabled = false, onPrepare }: {
+  job: WorkJob; ownerScope: string | null; disabled?: boolean; onPrepare?: (handoff: EveTextHandoff) => Promise<void>;
 }) {
   const [consent, setConsent] = useState(false);
+  const [handoffConsent, setHandoffConsent] = useState(false);
   const [model, setModel] = useState('');
   const [currency, setCurrency] = useState('');
   const [cap, setCap] = useState('');
@@ -25,10 +27,12 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
   const [renderedIdentity, setRenderedIdentity] = useState(identity);
   // Adjust this component's state before React commits a different saved selection.
   if (renderedIdentity !== identity) {
-    setRenderedIdentity(identity); setConsent(false); setResult(null); setError(''); setBusy(false);
+    setRenderedIdentity(identity); setConsent(false); setHandoffConsent(false); setResult(null); setError(''); setBusy(false);
     setModel(''); setCurrency(''); setCap('');
   }
-  const view = JSON.stringify([identity, consent, model, currency, cap]);
+  const view = JSON.stringify([identity, consent, model, currency, cap, handoffConsent, result]);
+  const prepareCallback = useRef(onPrepare);
+  useLayoutEffect(() => { prepareCallback.current = onPrepare; }, [onPrepare]);
   const latest = useRef('');
   useLayoutEffect(() => {
     mounted.current = true; epoch.current++; flight.current = false;
@@ -45,17 +49,17 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
       timer = setTimeout(() => {
         if (!active || !mounted.current || token !== epoch.current) return;
         if (eveTextEstimateIsCurrent(result)) { schedule(); return; }
-        setResult(null); setError('見積の有効期限が切れました。改めて見積もってください。');
+        setResult(null); setHandoffConsent(false); setError('見積の有効期限が切れました。改めて見積もってください。');
       }, Math.max(0, Math.min(2_147_483_647, result.estimate.expiresAt - Date.now())));
     };
     schedule();
     return () => { active = false; clearTimeout(timer); };
-  }, [result]);
+  }, [result, handoffConsent]);
   const available = !disabled && Boolean(ownerScope) && ['review', 'completed'].includes(job.status) &&
     Boolean(job.composition?.source && !job.composition.materialCleared);
   function invalidate() {
     epoch.current++; flight.current = false; latest.current = '';
-    setConsent(false); setResult(null); setError(''); setBusy(false);
+    setConsent(false); setHandoffConsent(false); setResult(null); setError(''); setBusy(false);
   }
   async function estimate() {
     if (!mounted.current || latest.current !== view || flight.current || !available || !consent) return;
@@ -82,6 +86,20 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
       if (current()) setError('見積を確認できません。保存した仕事・通貨・料金の接続状態を確認し、改めて見積もってください。');
     } finally { if (current()) { flight.current = false; setBusy(false); } }
   }
+  async function prepareWork() {
+    if (!mounted.current || latest.current !== view || flight.current || !available || !handoffConsent || !result || !onPrepare || prepareCallback.current !== onPrepare || !ownerScope) return;
+    const token = epoch.current, current = () => mounted.current && token === epoch.current;
+    const approvedCap = parseCurrencyInputToMinor(cap, currency);
+    if (!cap.trim() || approvedCap === null) { setError('準備上限を明示して、改めて見積もってください。'); return; }
+    flight.current = true; setBusy(true); setError('');
+    try {
+      const handoff = await prepareEveTextHandoff(job, ownerScope, result, { materials: true, conditions: true, capMinor: approvedCap });
+      if (!current() || latest.current !== view || prepareCallback.current !== onPrepare) return;
+      await onPrepare(handoff);
+      if (current()) invalidate();
+    } catch { if (current()) setError('準備仕事へ渡せません。本人・保存資料・見積期限・明示した上限を確認し、改めて見積もってください。'); }
+    finally { if (current()) { flight.current = false; setBusy(false); } }
+  }
   // Check again during render: a valid reply may expire before React commits it.
   const displayed = result && eveTextEstimateIsCurrent(result) ? result : null;
   return <section aria-label="保存資料の料金見積">
@@ -104,6 +122,11 @@ export default function EveTextEstimatePanel({ job, ownerScope, disabled = false
         displayed.withinUserCap ? '比較用上限の範囲内です。実行費用は未承認です。' : '比較用上限を超えています。実行は開始していません。'}</p>
       <ul>{displayed.unitRates.map((rate) => <li key={rate.category}>{labels[rate.category]}：{formatCurrencyRatePerMillionTokens(rate.rateMinorMicrosPerMillionTokens, displayed.estimate.currency)}</li>)}</ul>
       <p>料金版 {displayed.estimate.pricingVersion}。<a href={displayed.rateSource} rel="noreferrer" target="_blank">単価の出典</a></p>
+      {onPrepare && <fieldset disabled={!available || busy}>
+        <p>この保存版・全資料の参照・モデル・通貨・料金版・期限・上限を、費用0の準備仕事へ渡します。実行費用の承認や予約ではありません。</p>
+        <label><input aria-label="見積条件の準備同意" type="checkbox" checked={handoffConsent} onChange={(event) => { if (!mounted.current || latest.current !== view || !available || !eveTextEstimateIsCurrent(result) || event.target.checked === handoffConsent) return; epoch.current++; flight.current = false; latest.current = ''; setHandoffConsent(event.target.checked); }} />この資料の版と表示した見積条件・比較上限で準備仕事を作ります。</label>
+        <button type="button" disabled={!handoffConsent || busy || !displayed.withinUserCap || !cap.trim()} onClick={() => void prepareWork()}>この条件で準備仕事を作成</button>
+      </fieldset>}
       <p>Providerへ送信していません。これは確定した利用明細や請求額ではありません。</p>
     </div>}
   </section>;

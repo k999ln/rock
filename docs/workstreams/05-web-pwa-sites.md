@@ -301,3 +301,7 @@ O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証�
 ROCKが指定チャットの最新OS設計と作業branchの実装履歴を照合し、mainの旧ランチャーを投稿型Homeへ置き換える候補を作成した。既存mainのRQ50、料金、Wallet、Workの権限・保存契約を残し、Skyのowner別投稿/反応/フォロー、専用鍵付きコミュニティーOS版、任意のX OAuth/API投稿、既存MCP受信、Agent/Model/Tool発見を接続。旧X埋め込みwidgetはHomeの実行経路から外した。0022〜0029は新規Web D1 migrationで、実production適用は未実施。
 
 検証: `npm run schema:check`、`npm run typecheck`、`npm run lint:product`、対象機能試験、SQLite上の全migration適用、初回候補の全体verify exit 0（OpenSSL 3指定、合成データ）。最終head `20faad5d`の同一SHA GitHub CI 4件成功、PR #183はmain `6e8b3934`に統合。ローカル最終全体verifyは既存activation試験の10秒timeoutのみで、単独再実行4/4成功。本番実Provider、X For You、自動同期、Eve履歴の別端末復元、Pixel full OS、Sites配備は未受入。次はowner A/Bと実API/MCP投稿の読戻し、実機/公開gateを別々に実施する。
+
+## 2026-10-27 bounded follow-up: eve-text-handoff
+
+主担当ROCK、統合10/G04。[見積条件から予算0の準備仕事へ](../rockstaros-complete-design.md#eve-text-handoff)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。
