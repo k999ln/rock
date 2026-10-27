@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.53",
+  "version": "1.54",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3547,6 +3547,24 @@
     "existingWorkflowReused": true,
     "wholeEVE13Accepted": false,
     "physicalAccepted": false,
+    "mainIntegrated": true,
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json"
+  },
+  "esimAttachmentAsyncBinding": {
+    "authority": "docs/rockstaros-complete-design.md#esim-attachment-async-binding",
+    "toolDesign": "docs/sky-tools-complete-design.md#esim-attachment-async-binding",
+    "implementation": [
+      "lib/rockstar-service-attachment.ts"
+    ],
+    "tests": [
+      "tests/rockstar-service-attachment.test.mjs"
+    ],
+    "sourceReceipt": "docs/evidence/development-execution/esim-attachment-async-binding.json",
+    "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-adoption.json",
+    "wireUnchanged": true,
+    "wholeESIM04Accepted": false,
+    "parentDatabaseFreshnessAccepted": false,
     "mainIntegrated": false,
     "publicDeployment": false
   }

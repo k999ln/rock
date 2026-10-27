@@ -1,4 +1,4 @@
-共通テキスト仕事とEve準備仕事の応答不明時は、同じbrowserで開き直して保存済みの同じ仕事・操作IDを確認できます。未保存原稿や同意は復元しません。未確認中は自動再送せず、Web Locksまたは保存機能が使えない環境では新規操作を止めます。[復旧条件](docs/rockstaros-complete-design.md#eve13-pending-recovery)。実認証browser・実機・公開側の受入は別です。
+PR247でmain統合・同SHA CI確認済みの共通テキスト仕事とEve準備仕事では、応答不明時に同じbrowserで開き直して保存済みの同じ仕事・操作IDを確認できます。未保存原稿や同意は復元しません。未確認中は自動再送せず、Web Locksまたは保存機能が使えない環境では新規操作を止めます。[復旧条件](docs/rockstaros-complete-design.md#eve13-pending-recovery)。実認証browser・実機・公開側の受入は別です。
 
 Pro商品ページから、avoado.siの[既存私有テキスト仕事](https://avoado.si/zema/compose?tool=mr-citations)へ進む限定入口はPR246でmainへ反映済みです。linkはToolだけを選び、notesや私有archiveは送信しません。利用accountを確認して新しいtextを入力し、計画保存と別の素材保存同意を確認します。応答不明は同じ仕事/操作で照合し、手順間で停止しても保存原稿/成果を保持します。この接続済みsource-link処理のbudget0と、service・回線・他AI使用料は別です。[契約・復旧](docs/rockstaros-complete-design.md#pro-private-work-entry)。公開側の修正配備は未実施です。
 
@@ -477,3 +477,5 @@ The offline alias helper requires SQLite authorizer/serialize/deserialize APIs (
 Repository verification (`npm run verify`) uses Node26.12.1, matching the verify workflow and the accepted offline SQLite helper API boundary. `package.json` retains the existing application engine floor; it does not declare older engines capable of the offline helper. Tests are not skipped to emulate missing authorizer/serialization APIs.
 
 Offline apply now requires an owned private0700 parent for both source copy and backup, trusted directory ancestry and a single-link complete rollback-journal SQLite copy with no recovery/WAL sidecars. It does not repair or modify a live database into that state. Backup snapshot bytes are saved, synced and restored through one O_EXCL/no-follow fd, held through the guarded commit; detected namespace replacement/disappearance refuses the operation. Single-operator offline copies are the scope; arbitrary root/same-UID host code is not isolated by this helper.
+
+開発者向け: service attachment検証の返却値は、入力から分離したsnapshotです。フィールド・署名wire・API引数・TTLは維持し、object identityの同一性を前提にせずfieldを扱います。成功値をdispatch許可にせず、現在factsと既存atomic gateを確認してください。[契約](docs/rockstaros-complete-design.md#esim-attachment-async-binding)。

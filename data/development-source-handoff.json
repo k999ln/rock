@@ -936,10 +936,11 @@
     "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
     "wholeUnitsAccepted": false,
     "nextScopedCandidate": {
-      "unit": "ESIM-03",
-      "state": "NOT_STARTED_FINITE_GAP_RECHECK_REQUIRED",
-      "scope": "Setup persistence interruption and recovery/cancel-ready fixtures; no real provider or financial actions."
-    }
+      "unit": "ESIM-04",
+      "state": "SOURCE_RISK_AND_HOST_FULLVERIFY_PASS_FINAL_METADATA_GIT_PENDING",
+      "scope": "ESIM04 fixed3 host async attachment binding PASS; current facts recheck only, not parentDB refresh. Final fixed-manifest scan/Pro metadata/Git/headCI/normal main/mergeCI are separate gates."
+    },
+    "currentProgressSync": "docs/evidence/development-execution/esim-completion-progress-sync-summary.json"
   },
   "pixelGuardPhysicalMainAdoption": {
     "pr": 223,
@@ -1318,5 +1319,13 @@
     "publicDeployment": false,
     "bulk616": "HELD",
     "fullVerify": "exit0; Node3116/3113pass/0fail/3hostskip, build/API1678/CSV385 passed"
+  },
+  "eve13PendingRecoveryCurrent": {
+    "pr": 247,
+    "mainMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+    "sameShaCISuccess": 6,
+    "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+    "next": "ESIM04 fixed3 source risk and host fullverify PASS; final manifest/scan/metadata then Git/headCI/main/mergeCI",
+    "wholeUnitAccepted": false
   }
 }

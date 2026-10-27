@@ -1,3 +1,30 @@
+<a id="esim-attachment-async-binding"></a>
+## ESIM-04 非同期attachment検証の入力結合（host限定）
+
+1. **目的**: 署名attachmentを非同期検証するとき、最初に検査した入力・署名byte・返却値を同じsnapshotへ結び、呼出元の後続変更を混入させない。
+
+2. **利用体験**: 既存のservice setup/導入判定を維持する。正常な同一signed fieldsは従来どおり確認でき、待機中に渡されたfactsが不一致になった場合はdispatch可否を拒否する。既存read/export権限は別判定のまま保持する。
+
+3. **責任**: ROCKはhelper検証と既存consumerの境界、作者04 Security/Identity、service文脈03、Git統合10。EXTERNALはissuer/Providerの事実供給、JOINTは実auth・DB・issuer統合、OWNERは端末・scope・費用等の個別承認。host factsを実parent DBの現在状態へ昇格しない。
+
+4. **入出力**: 既存ServiceAttachment閉schemaとAttachmentFacts・resolveKey・評価nowを再利用。structuredCloneした入力と独立scope配列を検査・署名byte生成・返却へ用いる。結果は同じserialized fields/signatureを持つdetachedな通常のmutable snapshotまたはnull。API引数/type・field順/domain/wireを維持する。
+
+5. **状態**: 入力→分離snapshot→従来shape/TTL/scope/facts検査→署名byte固定→鍵解決/import/実Ed25519 verify→渡されたfactsとの再照合→snapshotまたはnull。新しい永続job/state machineは追加しない。
+
+6. **保存**: 新DB/migration/cache/鍵/credential/原稿は追加しない。snapshotは呼出しのメモリー内だけ。既存caller/store/Brokerのauthority read-set・revision・予約/台帳は不変。
+
+7. **失敗**: clone不能/閉schema不一致/無効署名/鍵解決・crypto失敗はnull。元入力のscope/key/fields変更は検証済snapshotへ反映されず、完了時factsがowner/device/contract/parent epoch/audience/hash/allowed scopeと不一致ならnull。再送・権限拡大・課金へfallbackしない。
+
+8. **復旧**: 元のsigned fieldsと現在の必要factsを用いて既存判定経路から再確認する。snapshotは再利用可能なdispatch permitではなく、呼出元は既存のfresh facts取得とatomic dispatch gateを引き続き通す。中間のDB失効履歴をこのhelperだけで観測したとはしない。
+
+9. **承認**: helper成功を本人認証/新scope/親利用権/issuer lifecycle完了/Broker予約・実行許可へ置換しない。TTL・評価now・料金/利用権・同意を延長せず、既存server最終commit fenceを維持する。
+
+10. **合格条件**: 固定source/test/原本receipt3と独立Astra verdictの一致、元10leaf反例（aggregate込み12failを区別）、焦点15/選択setup11、独立probe、中央full type/lint/verify/design、scanner/canary、別metadata検収、head/main同SHA CIをそれぞれ記録する。返却identity差は元strict equal→field deep equalと明示alias試験で検証する。
+
+11. **未決定の決め方**: generic issue/renew/revokeの永続化・parent DB最新失効取得・outbox/並行crash・独立retention ACL/expiry・実eSIM profile/回線/認証/Provider/請求/productionD1/実機/公開は別gate。host helper受入をwhole ESIM04または全ESIM完成へ転用しない。
+
+[検収・Git段階](evidence/development-execution/esim-attachment-async-binding-main-adoption.json)。
+
 <a id="eve13-pending-recovery"></a>
 ## EVE-13 同操作確認先の再開（限定R4）
 

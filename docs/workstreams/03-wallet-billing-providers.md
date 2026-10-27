@@ -1,3 +1,7 @@
+## eSIM製品・自然hidden証拠の完了同期
+
+PR213の製品main採用と、後続PR224の新hash自然hidden補足受入を別時点で保持する。native Chrome実component＋合成fetch/dataの限定証拠であり、実auth/profile/provider/課金/productionD1/公開ではない。[進捗同期](../evidence/development-execution/esim-completion-progress-sync-summary.json)に旧sourceと現在証拠・残gateを整理。12:46の同期元captureではESIM04はAstra検収前だった。現在は固定3pathの独立Astra source検収・host fullverifyが成功し、残段階は最終metadata受入・Git保存・新HEAD CI・通常main統合・merge同SHA CI。[現行採用段階](../evidence/development-execution/esim-attachment-async-binding-main-adoption.json)へ進み、ROCK実装/JOINT受入/EXTERNAL契約/OWNER同意を分ける。親DB鮮度・実auth/profile/provider/金融/productionD1/実機/公開/wholeunit・616保留。
+
 ## WALLET-02 process強制終了復旧fixture
 
 主担当03/ROCK/O5、WLT01/WLT02/WLT04/B03。PR207統合後main0d726717から、既存SQLite fixtureにactual child SIGKILLを13点追加。停止後のfresh connection/replay/指示一意性/capとdefault ToC holdを確認する。対象36pass・独立PASS/mustFix0、全verify成功（2911中2908pass/3skip）。metadata独立r2 PASS/mustFix0。PR208は検収済みc3c0e17d/exact20を通常main2854d069へ統合済み。同mergeSHA6CI・実Linuxverify2911/2909pass/2skip/0fail、20payload/tree一致を確認。[統合証拠](../evidence/development-execution/wallet-process-recovery-main-merge.json)は元receiptの記録時pendingと分ける。[契約](../sky-billing.md#wallet-process-recovery-fixture)／[証拠](../evidence/development-execution/wallet-process-recovery.json)。Cloudflare並行/停電/実収益/認証端末/wholeWalletは別gate。公開/配備/616一括公開保留。
@@ -332,3 +336,7 @@ BIL02/O5（JOINT）公開実アカウント追補: [本人限定月次Sandbox移
 ## ESIM-03 初回activation commit fence（2026-10-27 / ROCK）
 
 既存SIM01/BIL02/G04。最新main927ac79aへ、activateSetupだけの固定source1とtests2/receiptを検収済みhashで採用準備。ROCKはsetup/grant/実commit期限/owner-revision CASの同一batch、EXTERNALはissuer/回線/支払い根拠、JOINTは本番D1/実HTTP、OWNERは既存同意・費用を担う。`node --experimental-strip-types --test tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs`で123/123、独立追加境界込み18/18（重複あり）、旧5leaf反例を保持。全verify/CI・Git段階と未決条件は[採用記録](../evidence/development-execution/esim-webops-main-adoption.json)へ。汎用outbox・本番・wholeunit/616公開は保留。
+
+## ESIM-04 async入力結合の限定候補
+
+ROCK/作者04、service文脈03、統合10/G04。SIM01、文脈BIL02/SKY21/DSP01。既存helperを分離snapshot・署名byte固定・完了時の与えられたfacts再照合へ変更。`node --experimental-strip-types --test tests/rockstar-service-attachment.test.mjs`、正規type/productlint/fullverify/design、独立source/metadata、scanner/canary、head/main同SHA CIで限定検収する。元wire/TTL/DB/Broker/価格は不変。評価時刻・渡されたfactsのhelper検査と実親DB失効取得を区別し、実機/Provider/全unit/公開は別gate。[11項目](../rockstaros-complete-design.md#esim-attachment-async-binding)／[採用記録](../evidence/development-execution/esim-attachment-async-binding-main-adoption.json)。

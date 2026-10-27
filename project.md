@@ -1,3 +1,23 @@
+### ESIM-04 正規全体検証成功（2026-10-27 / G04・ROCK）
+
+fullverify exit0、root3174/3171pass/0fail/3hostskip、type/productlint/design/build/API1678/CSV385成功。初回18path scanner0/canary1。現行handoffは固定source3/独立risk/host fullverify成功と残る固定manifest scan・Pro metadata・Git/headCI/main/mergeCIへ同期。元helper反例/返却identity差/実auth・親DB鮮度・Provider・実機・公開/whole95/616保留を維持。
+
+### ESIM-04 固定3pathの独立採用（2026-10-27 / G04・ROCK）
+
+独立Astraを通ったhelper/test/原本receipt3のみをmaina2b6基点へ採用。元10leaf反例（aggregate含む12fail）を区別し、入力snapshot・署名byte・返却値の結合と渡されたfactsの完了時再照合へ限定。返却identity差/呼出元互換を11項目・index・READMEへ同期し、保護12/source caller/DB/Broker/署名wire/TTL/料金を維持。次は正規fullverify・scanner・別metadata検収・Git/head/main同SHA CI。親DB失効全周/実認証/実機/Provider/公開/whole95/616保留。
+
+### eSIM完了結果の本人依頼同期（2026-10-27 / G04・ROCK）
+
+PR213製品head7/main6CI成功と、その後PR224で新hashの自然hidden/visible実component補足受入・head7/main6CI成功を別時点で保持。native Chrome＋合成fetch/dataであり実auth/Provider/課金ではない。hidden中とfresh応答保留中は私有本文/操作なし、旧応答では戻らずfresh一致後に復帰、POST0。元summary hashを保持して進捗/引継ぎ/既存unit overlayへ同期。generic issue/renew/revoke・独立retention ACL/expiry・親epoch・実profile/回線/課金/productionD1/一般公開・wholeESIMは未受入。次はESIM04固定3pathの独立Astra検収（採用前）。
+
+### PR247 EVE-13 main検収完了（2026-10-27 / G04・ROCK）
+
+head37985eaaの7CI/4workflow成功後、通常maina2b6dfd8へ統合。main同SHA6CI/4workflowと実Linuxverify3162/3160pass/0fail/2skip成功、head/main同tree・全21blob一致を確認。元pending captureと別のcurrentproofを保存し、R1/R2finding・R3lint失敗・最終metadata1件訂正履歴を保持。wholeEVE13/実認証UI/Pixel実機/Provider/金融/公開/616保留は維持。次ESIM-04候補3pathは作者作業中で未採用。
+
+### ESIM-04 async署名入力bindingの次作業（2026-10-27 / G04・ROCK）
+
+最新main a2b6dfd8（PR247統合済み、merge同SHA CI待ち）基点に隔離統合treeを準備。既存eSIM担当へhelper1/test1/receipt1だけを割当て、鍵解決/import/verify待機中の入力bindingをhost反例で確認し、成立時のみ最小修正する。署名wire/TTL/DB/料金/Brokerは不変、独立Astra必須。Root専有registry/共有WIPは非操作。前候補のcloseoutはCI成功後に別証拠へ記録し、実機/Provider/公開/wholeunit/616保留を維持。
+
 ### EVE-13 実browser helper限定合格（2026-10-27 / G04・ROCK）
 
 Pro独立担当が実helperをbundleし、localhostの実Web Locks/localStorageで2tabの要求待機を確認後に競合を解放。1成功1拒否、reload同ID保持、誤ID clear拒否・一致clear後nullを確認。source前後hash不変、合成key/tab/serverをcleanup。画面証拠はGit外に保持し要約だけ保存。実認証WorkJob UI/Pixel実機/本番受入へ転用しない。次は固定manifestの独立metadata検収とGit/head/main同SHA CI。

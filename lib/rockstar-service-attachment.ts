@@ -79,6 +79,20 @@ export function serviceAttachmentSigningBytes(
   return result;
 }
 
+function attachmentMatchesFacts(a: ServiceAttachment, facts: AttachmentFacts): boolean {
+  return !!facts.ownerAuthenticated && !!facts.deviceApproved && !!facts.deviceProofVerified &&
+    !facts.deviceRevoked && facts.contractStatus === 'active' && !!facts.issuerProfileActive &&
+    a.ownerRef === facts.ownerRef && a.contractId === facts.contractId &&
+    a.contractVersion === facts.contractVersion && a.workspaceId === facts.workspaceId &&
+    a.deviceKeyThumbprint === facts.deviceKeyThumbprint &&
+    a.parentEntitlementId === facts.parentEntitlementId &&
+    a.parentEntitlementEpoch === facts.parentEntitlementEpoch &&
+    a.audience === facts.audience && a.capabilityProfileHash === facts.capabilityProfileHash &&
+    a.manifestHash === facts.manifestHash &&
+    a.scope.every((scope) => facts.allowedScopes.includes(scope)) &&
+    a.scope.includes(facts.requiredScope);
+}
+
 /** Recheck these live facts on issue, renewal, and every new dispatch. */
 export async function verifyServiceAttachment(
   value: unknown,
@@ -87,7 +101,10 @@ export async function verifyServiceAttachment(
   now = Date.now(),
 ): Promise<ServiceAttachment | null> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const a = value as ServiceAttachment;
+  // Bind validation, key lookup, signature bytes and the returned value to one
+  // detached input. Callers may still mutate their object while crypto awaits.
+  let a: ServiceAttachment;
+  try { a = structuredClone(value) as ServiceAttachment; } catch { return null; }
   if (Object.keys(a).sort().join(',') !== [...FIELDS, 'signature'].sort().join(',')) return null;
   if (a.schema !== SERVICE_ATTACHMENT_SCHEMA ||
     ![a.issuerId, a.keyId, a.attachmentId, a.ownerRef, a.contractId,
@@ -102,27 +119,18 @@ export async function verifyServiceAttachment(
     !Array.isArray(a.scope) || a.scope.length === 0 || a.scope.length > 32 ||
     a.scope.some((s) => typeof s !== 'string' || !id.test(s)) ||
     new Set(a.scope).size !== a.scope.length ||
-    !facts.ownerAuthenticated || !facts.deviceApproved || !facts.deviceProofVerified ||
-    facts.deviceRevoked ||
-    facts.contractStatus !== 'active' || !facts.issuerProfileActive ||
-    a.ownerRef !== facts.ownerRef || a.contractId !== facts.contractId ||
-    a.contractVersion !== facts.contractVersion || a.workspaceId !== facts.workspaceId ||
-    a.deviceKeyThumbprint !== facts.deviceKeyThumbprint ||
-    a.parentEntitlementId !== facts.parentEntitlementId ||
-    a.parentEntitlementEpoch !== facts.parentEntitlementEpoch ||
-    a.audience !== facts.audience ||
-    a.capabilityProfileHash !== facts.capabilityProfileHash ||
-    a.manifestHash !== facts.manifestHash ||
-    !a.scope.every((s) => facts.allowedScopes.includes(s)) ||
-    !a.scope.includes(facts.requiredScope)) return null;
+    !attachmentMatchesFacts(a, facts)) return null;
   let signature: Uint8Array | null;
   try { signature = decodeSignature(a.signature); } catch { return null; }
   if (!signature) return null;
   try {
+    const signingBytes = serviceAttachmentSigningBytes(a);
     const raw = await resolveKey(a.issuerId, a.keyId);
     if (!raw || raw.length !== 32) return null;
     const key = await crypto.subtle.importKey('raw', raw as BufferSource, 'Ed25519', false, ['verify']);
-    return await crypto.subtle.verify('Ed25519', key, signature as BufferSource,
-      serviceAttachmentSigningBytes(a) as BufferSource) ? a : null;
+    const verified = await crypto.subtle.verify('Ed25519', key, signature as BufferSource,
+      signingBytes as BufferSource);
+    // This only rechecks the supplied host facts, not a parent DB or Broker.
+    return verified && attachmentMatchesFacts(a, facts) ? a : null;
   } catch { return null; }
 }
