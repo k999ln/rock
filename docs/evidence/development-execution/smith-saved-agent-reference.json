@@ -1,0 +1,142 @@
+{
+  "schema": "rockstaros.smith-saved-agent-reference/1",
+  "recordedAt": "2026-10-27T06:54:10.114403+00:00",
+  "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+  "unit": "SMITH-01",
+  "contextTask": "SKY21",
+  "primarySquad": "O5",
+  "primaryOwner": "ROCK",
+  "status": "source_candidate_independent_review_git_ci_pending",
+  "problem": "useSkyChatSession restores a valid UUID Agent session, then its persistence effect omits agent and overwrites the stored reference on simply reopening the thread.",
+  "change": "Retain optional session agent metadata during restore/begin; reset it with thread state; persist the same id/revision without upgrading or resolving it.",
+  "source2": [
+    {
+      "path": "components/use-sky-chat-session.ts",
+      "sha256": "502ac6d81e7580e0ef1ade0dc6d21cbb0f1bf4f2925c28751f96887811e738f2"
+    },
+    {
+      "path": "tests/sky-chat-session-recovery.test.mjs",
+      "sha256": "f13a8cffcf364be79b47edafbdaf78e858515de882fe2961afb1fa611ceea411"
+    }
+  ],
+  "oldCounterexample": {
+    "exitCode": 1,
+    "tests": 25,
+    "passed": 23,
+    "failed": 2,
+    "failedTests": [
+      "restoring and resaving an Agent conversation retains its exact saved reference",
+      "an Agent reference stays with its own thread and does not leak to a plain thread"
+    ]
+  },
+  "focused": {
+    "exitCode": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "command": "node --test --test-reporter=tap tests/sky-chat-session-recovery.test.mjs tests/sky-agent-library.test.mjs tests/sky-agent-saved-reference.test.mjs"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "command": "npm run typecheck",
+    "initialFailure": "Borrowed Root dependencies lacked stripe; rerun with dependency tree having identical package-lock hash 0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26 succeeded. No dependency/lock edits."
+  },
+  "lint": {
+    "exitCode": 0,
+    "command": "npx oxlint components/use-sky-chat-session.ts tests/sky-chat-session-recovery.test.mjs"
+  },
+  "spider": {
+    "exitCode": 0,
+    "profile": "deep",
+    "recommendedChecks": [
+      "identity-and-authorization-boundaries",
+      "network-and-outbound-boundaries"
+    ],
+    "coverage": "Existing saved-library tests reject stale/disabled/other-owner/model mismatch; session recovery tests retain no-auto-execute and route/thread/expiry boundaries."
+  },
+  "invariants": [
+    "Session UUID, tool, original createdAt, TTL10min, max8 sessions, message bounds and owner private-storage cleanup unchanged.",
+    "Metadata retention is not agent selection, current revision validation, authentication, approval or dispatch.",
+    "No API/backend/workflow/billing/schema/price changes.",
+    "No source from central eSIM/Web/Pixel/Pro lanes edited.",
+    "No reference auto-upgrade or fallback; no provider/credential/device/financial/public effects."
+  ],
+  "browser": {
+    "executed": false,
+    "reason": "Persistence-only hook change exercised through actual compiled hook and workspace integration harness; no browser or physical acceptance claimed. Future browser operations use CUA."
+  },
+  "fullVerify": {
+    "executed": false,
+    "status": "central_gate_pending",
+    "reason": "Author lane frozen by coordinator after focused source/test packet; central adoption full verify and exact-SHA CI remain required."
+  },
+  "independentReview": {
+    "status": "pending_root_separate_review",
+    "selfAccepted": false
+  },
+  "git": {
+    "saved": false,
+    "sameShaCI": "pending",
+    "mainMerged": false
+  },
+  "logs": {
+    "oldCounterexample": {
+      "path": "/private/tmp/smith-agent-reference-before.log",
+      "sha256": "8c4b7579b6b7bc0d4809dae0aa94d0b5d67739fb43f2c6de7e880f7bf7da3174"
+    },
+    "focused": {
+      "path": "/private/tmp/smith-agent-reference-after.log",
+      "sha256": "958196053966c11eef77f066c600cfa3fdaac6eaf406671de868e041b4a15d7f"
+    },
+    "typecheckInitialDependencyFailure": {
+      "path": "/private/tmp/smith-agent-reference-typecheck.log",
+      "sha256": "2b9eddc7ca7e00afb0db53828b2c52e1426ec5692b6ce8e806cb242d38d2150e"
+    },
+    "typecheck": {
+      "path": "/private/tmp/smith-agent-reference-typecheck-final.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "path": "/private/tmp/smith-agent-reference-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "spider": {
+      "path": "/private/tmp/smith-agent-reference-spider.log",
+      "sha256": "7521badf394e5abe879358587db683ba48b8a674f3746442a855ed1f5ba2b320"
+    },
+    "separateToolReferenceGap": {
+      "path": "/private/tmp/smith-tool-reference-followup.log",
+      "sha256": "947eb6f0faa5a216eca6fe106451ea75a4a54b20ba1906845d858d051fe89cb5"
+    }
+  },
+  "separateUnfixedGap": {
+    "scope": "Not part of this repair; tool-prefixed references rejected by existing session validator.",
+    "producerPaths": [
+      "lib/sky-agent-library.ts#skyAgentId",
+      "lib/sky-agent-library.ts#skyAgentEvePath",
+      "lib/sky-agent-library-store.ts#list"
+    ],
+    "consumer": "lib/zema-chat-session.ts#validSession duplicate agent guard uses UUID ID regex after earlier broader agent-ID guard",
+    "observed": "tool:mr-citations accepted by producer and URL helper, save throws, read drops; UUID reference save succeeds.",
+    "next": "Decide exact compatible Agent-ID grammar from existing producer/store; reproduce catalog Tool session with corresponding tests; fix duplicate consumer predicate separately without relaxing session UUID/owner/revision/expiry or enabling execution.",
+    "reproductionLog": {
+      "path": "/private/tmp/smith-tool-reference-followup.log",
+      "sha256": "947eb6f0faa5a216eca6fe106451ea75a4a54b20ba1906845d858d051fe89cb5"
+    },
+    "reproductionCommand": "node --input-type=module - <<'JS'\nimport {skyAgentId,skyAgentEvePath} from './lib/sky-agent-library.ts';\nimport {saveZemaChatSession,readZemaChatSessions,ZEMA_CHAT_SESSION_KEY} from './lib/zema-chat-session.ts';\nconst m=new Map(),s={getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)},now=Date.now();\nconst row={version:1,id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',toolId:'mr-citations',createdAt:now,messages:[],activeRequest:null,workflowStatus:'ready',outcome:null,agent:{id:'tool:mr-citations',revision:0}};\nconsole.log(skyAgentId(row.agent.id),skyAgentEvePath({...row.agent,sourceTool:row.toolId}));\ntry{saveZemaChatSession(row,s,now)}catch(e){console.log(e.message)}\nm.set(ZEMA_CHAT_SESSION_KEY,JSON.stringify([row]));console.log(readZemaChatSessions(s,now).length);\nJS"
+  },
+  "holds": {
+    "bulk616": "HOLD",
+    "publication": false,
+    "deployment": false,
+    "realProvider": false,
+    "deviceOperation": false,
+    "realFunds": false,
+    "wholeSmithAccepted": false
+  },
+  "centralMetadataProposal": {
+    "projectAndHandoff": "Record bounded UUID-reference retention candidate, source hashes, old2 failure/fixed34 pass and pending independent/Git/CI; do not mark full SMITH-01 or SKY21 complete.",
+    "design": "Existing owner session restoration contract: valid stored Agent references retain their exact id/revision during same-thread resave; new plain thread has no inherited reference. No requirement/schema revision."
+  }
+}

@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.50",
+  "version": "1.51",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3014,7 +3014,8 @@
     "activationReview": "docs/evidence/development-execution/esim-activation-independent-review.json",
     "activationCurrentAdoptionEvidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
     "firstActivationCommitFence": true,
-    "activationMainIntegrated": false
+    "activationMainIntegrated": true,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-webops-main-current.json"
   },
   "billingFinalSendAuthority": {
     "authority": "docs/sky-billing.md#billing-final-send-claim",
@@ -3481,8 +3482,32 @@
     "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
     "publicReadbackEvidence": "docs/evidence/development-execution/webops03-domain-release-readback.json",
     "publicSourceIdentity": "UNKNOWN",
+    "mainIntegrated": true,
+    "publicDeployment": false,
+    "wholeUnitAccepted": false,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-webops-main-current.json"
+  },
+  "smithSavedAgentReference": {
+    "authority": "docs/rockstaros-complete-design.md#smith-saved-agent-reference",
+    "toolDesign": "docs/sky-tools-complete-design.md#smith-saved-agent-reference",
+    "implementation": [
+      "components/use-sky-chat-session.ts",
+      "lib/zema-chat-session.ts"
+    ],
+    "tests": [
+      "tests/sky-chat-session-recovery.test.mjs",
+      "tests/sky-tool-agent-session.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/smith-session-main-adoption.json",
+    "sourceReceipt": "docs/evidence/development-execution/smith-saved-agent-reference.json",
+    "independentReview": "docs/evidence/development-execution/smith-agent-reference-independent-review.json",
+    "currentAuthorityOrExecutionAccepted": false,
+    "wholeUnitAccepted": false,
     "mainIntegrated": false,
     "publicDeployment": false,
-    "wholeUnitAccepted": false
+    "toolReferenceSourceReceipt": "docs/evidence/development-execution/smith-tool-agent-session.json",
+    "toolReferenceReview": "docs/evidence/development-execution/smith-tool-agent-r2-independent-review.json",
+    "rejectedR1Review": "docs/evidence/development-execution/smith-tool-agent-attempt1-review.json",
+    "toolReferenceCandidateRevision": "R2"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "status": "PASS_SCOPED_R2",
+  "packetSha256": "78fd3b86d56197af31fbc5829f44783f81a27f39e52455f93f33c4d93c5fed14",
+  "supersedesRetractedR1": true,
+  "r1MustFixClosed": "Original generic first-character condition retained byte-identically; only laterID test extends with exactcatalog allowlist. Old effectiveUUID intersection remains unchanged.",
+  "checks": [
+    "All3R2hashes match",
+    "Only catalog import/allowlist and laterID OR condition changed; original generic condition unchanged",
+    "Leading/allhyphen negative regression now included; UUID compatibility preserved",
+    "Root independently ran toolagent/savedref/hook29/29pass,0fail,0skip",
+    "No runtime binding/permission/owner/revision/disabled/disconnect changes; no production acceptance"
+  ],
+  "logSha256": "7b48d76b5e9c17dc3f212272926333a82fd92244cdeac4157b8cad4dcc017a20",
+  "bulk616": "HOLD"
+}

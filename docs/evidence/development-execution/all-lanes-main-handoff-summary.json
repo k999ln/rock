@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "Reviewed ESIM03 first-activation authority fence and WEBOPS03 legacy /install compatibility: fixed union verify, final delta review, explicit Git/headCI, normal main/sameSHA CI; no public deployment.",
+  "nextProductSlice": "Smith fixed source4 UUID retention + tool-reference R2: combined48/type/lint/design/host fullverify3132/3129pass/0fail/3skip and scanner passed. FinalRoot22 delta review, exact Git/headCI/normalmain/mergeCI remain. R1 rejection/Root initial-pass revocation preserved.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -119,6 +119,13 @@
       "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
       "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
       "mainIntegrated": false,
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 244,
+      "mainMergeSha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-webops-main-current.json",
       "wholeUnitAccepted": false
     }
   ]

@@ -1,3 +1,8 @@
+<a id="smith-saved-agent-reference"></a>
+## Smithの保存Agent参照
+
+[OSの11項目契約](rockstaros-complete-design.md#smith-saved-agent-reference)に従い、既存validatorを通るUUID/本bundle catalog exact Tool Agent id/revisionを同会話のrestore/begin/autosaveで保持しresetで消去する。既存producerのtool:<id>形式をexact catalog allowlistへ照合し、前段genericと旧UUID実効文法を維持する。R1のhyphen先頭ID受理は撤回済みでR2の独立再検収を参照する。新Tool/API/schemaやcurrent-authority許可を追加しない。期限/owner/実行同意は従来の別検査で、失敗時は保存入力を保ち自動再実行しない。合成hook/storage検収と実browser/本番/wholeunitの残条件は[採用記録](evidence/development-execution/smith-session-main-adoption.json)へ記録する。
+
 <a id="webops03-install-compatibility"></a>
 ## 旧install URLの利用開始案内への接続
 

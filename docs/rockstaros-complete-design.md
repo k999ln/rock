@@ -1,3 +1,14 @@
+<a id="smith-saved-agent-reference"></a>
+## Smith保存会話のAgent参照保持（SMITH-01限定候補）
+
+目的・体験: 保存済み会話を開くだけの再保存で、既存UUID文法または現catalogのexact `tool:<id>` Agentのid/revisionを落とさず同じ参照で履歴へ戻る。表示用参照は現在のAgent有効性・本人承認・実行許可ではない。主担当05/ROCK、Git統合10、既存SKY21/G04。ROCKは第一者store/binderでcurrent Agent・owner・revision・disable/connectの有効性を強制する。EXTERNALはProvider応答と外部接続の事実を提供し、JOINTは実認証UI/往復/実保存を受け入れ、OWNERは接続・仕事・費用の明示同意を担う。
+
+入出力・状態・保存: 入力は既存validatorを通ったZemaChatSession/1。catalog producer/store/linkの既存参照形式へ合わせ、前段のgeneric形状条件と既存UUID実効intersectionをそのまま維持して、後段ID判定に本bundleのcatalog exact allowlistだけを足す。session自身のUUID/Tool/時刻/件数/期限・safeintegerかつ非負revisionを維持し、任意prefix/unknown/cross-kind/過長/負revisionを拒否する。useSkyChatSessionはrestore/beginで任意agent参照をそのまま保持し、同threadのautosaveに同id/revisionを含め、resetで消去する。別thread/handoff/plain会話へ持ち越さず、自動upgrade/Agent選択/HTTP実行は追加しない。既存session UUID、Tool、createdAt、10分TTL、最大8会話、message上限、owner private storage cleanupを維持する。原文/本人情報をURLへ足さず、新schema/DB/API/権限は作らない。
+
+失敗・復旧・承認・互換: 保存失敗は従来の同tab会話を保ち、自動再実行しない。running復元は従来のfailed案内と履歴確認へ戻す。invalid/expired/別ownerは既存validator/session cleanupが拒否し、保存参照だけで実行を再開しない。通常source revertで戻し、既存履歴を削除しない。費用承認は既存の別gateを通す。
+
+合格・未決定: UUID参照の旧2反例を独立再現、関連34/34とbegin/reset独立2、Root別26（重複加算なし）で限定PASS。証拠は実hook/workspaceをcompileしたVM/storage harnessで、実browser/認証本番・cross-device・実Provider/wholeSMITHは未受入。tool:形式は別R2候補として検収し同じ有限unionへ採用する。R1で前段条件を除去しhyphen先頭36字IDが新規保存可能になったP2を独立再現し、Root初回PASSを撤回。R2は前段条件を元bytesのまま維持し、540形式/revision比較と29関連/旧3反例で修正を確認（各件数は重複あり）。未知/期限切れ等の不正保存は既存goodを残して拒否し、readでは不正だけを落とす。UUID hookとTool形式は別sourcehash/元receipt/検収を保持する。[採用・検証・残gate](evidence/development-execution/smith-session-main-adoption.json)。
+
 <a id="webops03-install-compatibility"></a>
 ## 旧install URLの互換入口（WEBOPS-03限定候補）
 
