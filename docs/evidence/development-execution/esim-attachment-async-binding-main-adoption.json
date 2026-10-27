@@ -1,0 +1,102 @@
+{
+  "schema": "rockstaros.esim-attachment-async-binding-main-adoption/1",
+  "recordedAt": "2026-10-27",
+  "unit": "ESIM-04",
+  "baseMain": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+  "authorBase": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "baseSourceTestCallerBlobsMatch": true,
+  "status": "source_risk_and_host_fullverify_PASS_final_manifest_metadata_Git_pending",
+  "sourceHashes": {
+    "lib/rockstar-service-attachment.ts": "26b984129106f67d656fd6fb4eac8da09dbe6a4c5848c0c84cc58ad6fd7c26df",
+    "tests/rockstar-service-attachment.test.mjs": "67ad56c08cc1419762d776cf516ded940cd84c5d1d48d54adac6d7f764a0c9fa",
+    "docs/evidence/development-execution/esim-attachment-async-binding.json": "d180ac07f19f2efa8c07b3fa24d5a5d35dcba8d30e3edbeb323a885d133884ac"
+  },
+  "authorManifestSha256": "0fa99bb0cf0952112d3454997bedaf767ed5804a4a432572884edc647a8f4fa9",
+  "independentReview": {
+    "decision": "PASS",
+    "reviewSha256": "1148016b39492cc585b5e314c92f5068a3171f0246c628cded68245c6afcf281",
+    "requestedModel": "gpt-6-astra",
+    "requestedEffort": "high",
+    "actualModelIdentity": null
+  },
+  "protected12": {
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "lib/sky-linux-service-store.ts": "6884c62612178ba1c43ba46284fd3d1613c4ecd9873ceb3b2f2c64fef4fd90df",
+    "lib/rockstar-service-setup-billing.ts": "325a00c1a87c7b031986634cd66c1a7355e36147b3ad50ef3c57f2745c97cdec",
+    "lib/rockstar-entitlement-issuer-store.ts": "291371dc9ca372283a371c948f399a924ce9de8ba52e732defe1a42906f9bc21",
+    "lib/esim-device-entitlement-store.ts": "1b38691d24e6dc391aa1699f67b6b6c3a6da5db4066b0ebc48e967adccaed73c",
+    "lib/rockstar-entitlement-event.ts": "9b4456e8837214065c77c91fad957c1b4723d13b53df6caea52ce9571614b9c9",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json": "966007266cd668b0b64e605df83924d30a0f91df5125fbe3c16ade1f3e34ddd4",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    ".oxlintrc.json": "1a7aa1c7d83b05939e4e697eed9316224caea8958c4ad12837f8be740c13a47d"
+  },
+  "compatibility": "Detached mutable return snapshot replaces input alias; serialized fields, types, arguments, wire, TTL and initial predicates preserved. Sole product consumer checks non-null, not object identity.",
+  "validation": {
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3174,
+        "pass": 3171,
+        "fail": 0,
+        "skip": 3
+      },
+      "logSha256": "b6737451caa3dffcc515489ecb674cede152ba8bd434100bb8936e9d110dc10b",
+      "build": "PASS",
+      "APIAssertions": 1678,
+      "CSVAssertions": 385,
+      "executionLayer": "Host; Linux CI and physical/provider separate"
+    },
+    "scanner": "Initial18 payload0/canary1; final exact scan captured separately",
+    "finalMetadataReview": {
+      "statusAtCapture": "PENDING_FIXED_MANIFEST_REVIEW",
+      "required": true,
+      "acceptanceRecordedSeparately": true
+    },
+    "typecheck": "PASS",
+    "configuredProductLint": "PASS",
+    "design": "PASS",
+    "scannerInitial": {
+      "payload": {
+        "exitCode": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "logSha256": "8681c957c20828c4ec12cd92271b60a5eb8b6655749f2259062699438b093f5f"
+      },
+      "canary": {
+        "exitCode": 1,
+        "findings": 1,
+        "reportSha256": "14772a1db189e6778a629b951fb99c856c6b3db27cfa04321e392c838c10a179",
+        "logSha256": "bee60706af30f54b7dffa7b52d785f684c223094f7f0ebf1b9e94375feee23a1"
+      },
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "fixedPolicyCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true,
+      "paths": 18,
+      "payloadScope": "Explicit changed-file payload only; Git history scan is separate CI gate",
+      "syntheticCanary": true
+    }
+  },
+  "Git": {
+    "saved": false,
+    "mainIntegrated": false,
+    "headCI": "PENDING",
+    "mainCI": "PENDING"
+  },
+  "boundaries": {
+    "wholeESIM04Accepted": false,
+    "parentDatabaseFreshnessAccepted": false,
+    "authenticatedProductionUIAccepted": false,
+    "physicalAccepted": false,
+    "providerFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null
+}

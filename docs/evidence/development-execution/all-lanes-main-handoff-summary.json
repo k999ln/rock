@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "EVE-13 fixed R4 source and independent R3/R4 risk reviews, host fullverify, final21 payload/canary scan and scoped real-browser helper PASS. Final independent metadata acceptance, Git save, new HEAD CI, normal main integration and merge-SHA CI remain pending. Preserve R1/R2 source findings and R3 configured-lint failure. Whole EVE13/native/authenticated UI/physical/provider/public remain unaccepted; bulk616 HOLD. Then select the next bounded Pixel/eSIM ROCK residual without substituting host/helper evidence for physical/provider gates.",
+  "nextProductSlice": "ESIM-04 fixed3 asynchronous attachment input binding: independent Astra source PASS, host fullverify3174/3171pass/0fail/3skip, type/productlint/design/build/API1678/CSV385 passed; initial18 payload0/canary1. Final exact-manifest scan and independent Pro metadata acceptance, Git save, new HEAD CI, normal main and merge-SHA CI remain separate required gates. PR247 current proof is included. Parent DB freshness/authenticated production UI/physical/provider/whole ESIM04/public remain unaccepted; bulk616 HOLD.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -140,6 +140,13 @@
       "mainMergeSha": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
       "sameShaCISuccess": 6,
       "evidence": "docs/evidence/development-execution/pro-work-entry-main-current.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 247,
+      "mainMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
       "wholeUnitAccepted": false
     }
   ]

@@ -565,7 +565,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "PR247_EVE13_CURRENT"
+      ]
     },
     {
       "id": "EVE-14",
@@ -1363,7 +1365,8 @@
         "PR194_ESIM_SUBSET",
         "ESIM_OWNER_RESPONSE_CANDIDATE",
         "ESIM_UI_ACK_ADOPTED",
-        "ESIM_NATIVE_VISIBILITY_ADOPTED"
+        "ESIM_NATIVE_VISIBILITY_ADOPTED",
+        "ESIM_VISIBILITY_COMPLETION_SYNC"
       ]
     },
     {
@@ -1434,7 +1437,9 @@
       "directMainTaskRefs": [],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "ESIM04_ASYNC_BINDING_CANDIDATE"
+      ]
     },
     {
       "id": "ESIM-05",
@@ -1485,7 +1490,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "ESIM_UI_ACK_ADOPTED",
-        "ESIM_NATIVE_VISIBILITY_ADOPTED"
+        "ESIM_NATIVE_VISIBILITY_ADOPTED",
+        "ESIM_VISIBILITY_COMPLETION_SYNC"
       ]
     },
     {
@@ -1534,7 +1540,8 @@
       "currentOverlayRefs": [
         "ESIM_OWNER_RESPONSE_CANDIDATE",
         "ESIM_UI_ACK_ADOPTED",
-        "ESIM_NATIVE_VISIBILITY_ADOPTED"
+        "ESIM_NATIVE_VISIBILITY_ADOPTED",
+        "ESIM_VISIBILITY_COMPLETION_SYNC"
       ]
     },
     {

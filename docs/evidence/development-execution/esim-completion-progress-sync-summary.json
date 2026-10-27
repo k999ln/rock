@@ -1,0 +1,77 @@
+{
+  "schema": "rockstaros.esim-completion-progress-sync/1",
+  "recordedAt": "2026-10-27T12:46:35.336676+00:00",
+  "sourceRecordSha256": "12c28eca07240154deb3ba83af03d69807b2bca4640475d1f525de9da55af9ec",
+  "product": {
+    "pr": 213,
+    "head": "f23b8841ddf61ed59c6ea5239dae7f47987afa1a",
+    "mainMerge": "2a9828b2879904d3aeb28bc6919132b70c49f3cb",
+    "headSuccess": 7,
+    "mainSuccess": 6
+  },
+  "evidence": {
+    "pr": 224,
+    "head": "9dcd1eb0518ddd7904d8ce8613e8b19589d9fdaa",
+    "mainMerge": "f59e21b362eaa16b5ad62a7709e22c3aebfe1561",
+    "headSuccess": 7,
+    "mainSuccess": 6,
+    "summaryPath": "docs/evidence/development-execution/esim-natural-visibility-summary.json",
+    "summarySha256": "aa5052fa7f8a9ac192621873dd460cfc43e295386dd714dba94332e5ced186ab",
+    "checks": {
+      "naturalNativeChromeHiddenVisibleObserved": true,
+      "nativeInitialPrivateAndActionsVisible": true,
+      "nativeHiddenPrivateAndActionsAbsent": true,
+      "nativeVisibleFreshHeldPrivateAndActionsAbsent": true,
+      "freshReadCountIncreasedBeforeReply": true,
+      "oldGetOnlyReleaseDoesNotRestore": true,
+      "freshMatchingRepliesRestorePrivateAndActions": true,
+      "postCountThroughout": 0
+    },
+    "qualification": "Normal native Chrome actual component with synthetic fetch/data; no real auth/provider/billing. Browser helper used only after native observations for old/fresh release and proof readback.",
+    "timing": "PR213 code adoption preceded supplementary hidden acceptance; no retroactive earlier pass"
+  },
+  "unacceptedExternalGates": [
+    "Real carrier/seller/issuer/provider contract and sandbox evidence",
+    "Real eSIM profile/radio and exact device/OS boot-recovery",
+    "Real payment method, charge, collection, provider usage and invoices",
+    "Production D1/configuration/isolation and general publication"
+  ],
+  "wholeESIM01To08Accepted": false,
+  "bulk616": "HOLD",
+  "nextAvailableWorkAtSourceCapture": [
+    {
+      "priority": 1,
+      "work": "ESIM04 async attachment input binding: frozen source3; independent Billing Astra/high review then central integration",
+      "accepted": false
+    },
+    {
+      "priority": 2,
+      "work": "Authenticated current authority, persisted issue/renew/revoke with parent epoch and exact owner/contract/workspace/device; atomic Broker current revision/reservation recheck",
+      "accepted": false
+    },
+    {
+      "priority": 3,
+      "work": "Independent retained-data read/export ACL and expiry; issuer/outbox/setup-ready crash/concurrency coverage under isolated local fixtures",
+      "accepted": false
+    }
+  ],
+  "meaningAtSourceCapture": "Completed bounded product/actual-native-hidden evidence synchronized; ESIM04 candidate remains independently unaccepted.",
+  "captureQualification": "The12:46 original source record and sourceRecordSha256 are retained. Its next-work/meaning fields describe capture time before independent ESIM04 source acceptance, not current execution instructions.",
+  "currentStage": {
+    "sourceRiskReview": "PASS",
+    "sourceRiskReviewSha256": "1148016b39492cc585b5e314c92f5068a3171f0246c628cded68245c6afcf281",
+    "hostFullVerifyPassed": true,
+    "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-adoption.json",
+    "remaining": [
+      "final independent metadata acceptance",
+      "Git save",
+      "new HEAD CI",
+      "normal main integration",
+      "merge-SHA CI"
+    ],
+    "wholeESIM04Accepted": false,
+    "parentDatabaseFreshnessAccepted": false,
+    "actualAuthProfileProviderFinancialProductionD1PhysicalPublicAccepted": false,
+    "bulk616": "HOLD"
+  }
+}

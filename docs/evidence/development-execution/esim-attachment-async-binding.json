@@ -1,0 +1,404 @@
+{
+  "schema": "rockstaros.esim-attachment-async-binding-candidate/1",
+  "recordedAt": "2026-10-27T12:43:06.857592+00:00",
+  "unit": "ESIM-04",
+  "slice": "ESIM04-HOST-ASYNC-INPUT-BINDING-01",
+  "taskIds": [
+    "SIM01"
+  ],
+  "primaryOwner": "ROCK",
+  "primaryWorkstream": "04 Security/Identity/Compliance",
+  "status": "IMPLEMENTER_HOST_HELPER_FIX_PASS_PENDING_BILLING_ASTRA_HIGH_REVIEW",
+  "wholeUnitAccepted": false,
+  "base": {
+    "sha": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+    "freshGithubMainAtStart": true,
+    "branch": "codex/esim-attachment-binding-20261027",
+    "dedicatedIndependentClone": true,
+    "pr244AdoptedNotRecreated": {
+      "merge": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+      "sourceReimplemented": false
+    }
+  },
+  "ownedPaths": [
+    "lib/rockstar-service-attachment.ts",
+    "tests/rockstar-service-attachment.test.mjs",
+    "docs/evidence/development-execution/esim-attachment-async-binding.json"
+  ],
+  "sourceManifest": {
+    "lib/rockstar-service-attachment.ts": {
+      "before": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+      "after": "26b984129106f67d656fd6fb4eac8da09dbe6a4c5848c0c84cc58ad6fd7c26df"
+    },
+    "tests/rockstar-service-attachment.test.mjs": {
+      "before": "c0e72d655273f1df52c8d147b255ce37ca01a5cdfc621c84cd8a3fa6b575fdef",
+      "after": "67ad56c08cc1419762d776cf516ded940cd84c5d1d48d54adac6d7f764a0c9fa"
+    }
+  },
+  "protectedHashes": {
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json": "966007266cd668b0b64e605df83924d30a0f91df5125fbe3c16ade1f3e34ddd4",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    ".oxlintrc.json": "1a7aa1c7d83b05939e4e697eed9316224caea8958c4ad12837f8be740c13a47d"
+  },
+  "legacyWireAndApi": {
+    "fieldOrderDomainAndSigningBytesFunctionByteExact": true,
+    "shapeTtlScopeSignatureFormatChecksByteExact": true,
+    "exportedTypesAndFunctionParametersUnchanged": true,
+    "signatureWireUnchanged": true,
+    "leaseTtlOrPricePolicyChanged": false,
+    "returnIdentityChange": {
+      "before": "The verified result was the caller input object and shared its scope array.",
+      "after": "A valid result is a detached entry snapshot including an independent scope array, with the same serialized fields/signature. It is not frozen or a reusable dispatch permit.",
+      "reason": "Returning the live caller object allows its fields to change while verification awaits or after a successful return.",
+      "existingAssertion": "The original valid-child identity assert.equal is replaced by assert.deepEqual. All original valid/tampered/expired/revoked cases remain; the new alias tests explicitly require detached identity and unchanged verified contents.",
+      "callsiteAudit": "Pinned-main git grep finds only lib/rockstar-service-setup.ts as product caller. It tests attachment !== null, not object identity. Actual evaluator positive and raced-facts tests pass; caller source unchanged."
+    }
+  },
+  "confirmedCounterexamples": {
+    "oldSourceSha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+    "sameFinalTestSha256": "67ad56c08cc1419762d776cf516ded940cd84c5d1d48d54adac6d7f764a0c9fa",
+    "realEd25519Crypto": true,
+    "originalCasesStillPass": 3,
+    "newFailingLeafCases": 10,
+    "nodeOldCounts": {
+      "tests": 15,
+      "pass": 3,
+      "fail": 12,
+      "cancelled": 0,
+      "skip": 0
+    },
+    "countQualification": "Ten failing new leaf cases plus two failed aggregate parents; not twelve independent vulnerabilities.",
+    "oldObservations": [
+      {
+        "stage": "resolveKey",
+        "returnedScope": [
+          "sky",
+          "zema"
+        ],
+        "allowedScopes": [
+          "sky"
+        ]
+      },
+      {
+        "stage": "importKey",
+        "returnedScope": [
+          "sky",
+          "zema"
+        ],
+        "allowedScopes": [
+          "sky"
+        ]
+      },
+      {
+        "resolved": [
+          [
+            "issuer-1",
+            "key-1"
+          ]
+        ],
+        "returned": [
+          "issuer-2",
+          "key-2"
+        ]
+      },
+      {
+        "stage": "verify",
+        "returnedScope": [
+          "sky",
+          "zema"
+        ],
+        "entryScope": [
+          "sky"
+        ]
+      },
+      {
+        "stage": "resolveKey",
+        "changedFact": "parent epoch",
+        "accepted": true
+      },
+      {
+        "stage": "importKey",
+        "changedFact": "owner authentication",
+        "accepted": true
+      },
+      {
+        "stage": "verify",
+        "changedFact": "device revocation",
+        "accepted": true
+      },
+      {
+        "stage": "verify",
+        "changedFact": "scope withdrawal",
+        "accepted": true
+      }
+    ],
+    "mechanisms": [
+      "During resolveKey/importKey, initial allowed sky fields plus a signature for later sky+zema fields pass the first policy check; mutation before signing-byte construction causes old code to return the later out-of-allowlist scope.",
+      "The resolver is called for issuer-1/key-1 but old code can verify and return later issuer-2/key-2 fields with a matching signature under the original key.",
+      "During verify the real WebCrypto call consumes the original bytes, but old code returns the caller object after its scope/signature changed.",
+      "Parent epoch, owner authentication, device revocation and scope withdrawal during awaited crypto are not rechecked by old code.",
+      "Mutating the input alias after success changes the old verified result.",
+      "The unchanged serviceAccessEvaluator product caller can return canDispatch=true after its passed device facts are revoked during resolveKey."
+    ]
+  },
+  "minimalFix": {
+    "inputSnapshot": "structuredClone the input before validation; fail closed if uncloneable. Validate and capture canonical signing bytes before any key/crypto await. Resolve the captured issuer/key and return only that detached snapshot.",
+    "factsBinding": "Extract the existing binding predicate without changing its initial semantics, and run it again against the same passed facts object after crypto succeeds. Invalid changed facts reject.",
+    "notParentDbFreshness": "No DB read, parent entitlement refresh, budget consumption, issuer callback or Broker commit recheck is added or bypassed. A caller replacing a containing snapshot reference is outside this helper object reference.",
+    "pointInTimeClock": "Existing now parameter/default and all time bounds are unchanged. This does not establish a fresh DB/lease-time authorization at dispatch commit.",
+    "inputMutationSemantics": "For an already verified valid entry, caller mutation during verify can still yield the safe original detached snapshot. No requirement to return the later mutated object is preserved."
+  },
+  "newEvidence": {
+    "observations": [
+      {
+        "stage": "resolveKey",
+        "returnedScope": null,
+        "allowedScopes": [
+          "sky"
+        ]
+      },
+      {
+        "stage": "importKey",
+        "returnedScope": null,
+        "allowedScopes": [
+          "sky"
+        ]
+      },
+      {
+        "resolved": [
+          [
+            "issuer-1",
+            "key-1"
+          ]
+        ],
+        "returned": null
+      },
+      {
+        "stage": "verify",
+        "returnedScope": [
+          "sky"
+        ],
+        "entryScope": [
+          "sky"
+        ]
+      },
+      {
+        "stage": "resolveKey",
+        "changedFact": "parent epoch",
+        "accepted": false
+      },
+      {
+        "stage": "importKey",
+        "changedFact": "owner authentication",
+        "accepted": false
+      },
+      {
+        "stage": "verify",
+        "changedFact": "device revocation",
+        "accepted": false
+      },
+      {
+        "stage": "verify",
+        "changedFact": "scope withdrawal",
+        "accepted": false
+      }
+    ],
+    "scopeAndKeySwap": "Rejected for both asynchronous pre-signing stages; resolver arguments remain issuer-1/key-1.",
+    "verifyAndPostReturnAlias": "Original signed entry fields and independent scope remain unchanged despite caller alias mutation.",
+    "passedFactsChanges": "Epoch/auth/revocation/scope withdrawal reject after awaited crypto.",
+    "caller": "Actual serviceAccessEvaluator accepts current valid input; the raced device-revocation call denies dispatch while keeping canRead/canExport/revision from the independently authorized retention snapshot."
+  },
+  "testFixture": {
+    "newKeysGenerated": false,
+    "existingPublicVector": "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json",
+    "vectorSha256": "966007266cd668b0b64e605df83924d30a0f91df5125fbe3c16ade1f3e34ddd4",
+    "keyMaterialPolicy": "Import the existing published RFC8032 test seed/public key; no new secret, trust config, credential or key file is created. Raw seed is not copied into this receipt.",
+    "realCryptoFunctions": "Ed25519 importKey/sign/verify execute normally. Gates delay their Promise delivery; they do not fabricate verification results.",
+    "noKeygenGuard": "Outside-Git preload makes generateKey throw. All final batch commands use it; it does not replace importKey/sign/verify.",
+    "scopes": "Existing fixture scopes sky/zema only; no product or registry scope added."
+  },
+  "verification": {
+    "originalPredicateBaseline": {
+      "command": "node --experimental-strip-types --test tests/rockstar-service-attachment.test.mjs",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "qualification": "Old source with deterministic existing vector and field-equality compatibility assertion, before adding async cases."
+    },
+    "oldFinalTests": {
+      "command": "node --experimental-strip-types --import /private/tmp/esim-attachment-binding-no-keygen.mjs --test tests/rockstar-service-attachment.test.mjs",
+      "exitCode": 1,
+      "tests": 15,
+      "pass": 3,
+      "fail": 12,
+      "skip": 0,
+      "sourceRestoredAfterComparison": true
+    },
+    "finalFocused": {
+      "command": "node --experimental-strip-types --import /private/tmp/esim-attachment-binding-no-keygen.mjs --test tests/rockstar-service-attachment.test.mjs",
+      "exitCode": 0,
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    "relatedExistingSubset": {
+      "target": "tests/rockstar-service-setup.test.mjs",
+      "namePattern": "^(environment preparation|post-OS module|quote freezes|profile→quote|payment pending|lost billing response|provision resumes|ready activation resumes|Stripe setup|uncertain old Stripe|new client gate)",
+      "noKeygenGuard": true,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "qualification": "Selected existing onboarding/provision/ready/billing fixture tests. Not a full run of this file: the ESIM-01 accessFixture family generates new ephemeral keys and was not run under this batch no-key-generation constraint. The actual evaluator is exercised separately in the focused file with the existing public key fixture."
+    },
+    "scopedSourceTypecheck": {
+      "argv": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--project",
+        "node_modules/.esim-attachment-typecheck.json"
+      ],
+      "exitCode": 0,
+      "config": "Ignored local scoped config extends the unchanged normal tsconfig, preserving its compiler settings/types and checking this source file; only include/files are narrowed and incremental emit disabled. Not full-project typecheck."
+    },
+    "lint": {
+      "config": "Central normal .oxlintrc.json, byte-identical to candidate base",
+      "configSha256": "1a7aa1c7d83b05939e4e697eed9316224caea8958c4ad12837f8be740c13a47d",
+      "targets": [
+        "lib/rockstar-service-attachment.ts",
+        "tests/rockstar-service-attachment.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "node": "v26.12.1",
+    "logs": {
+      "baseline": {
+        "outsideGitBasename": "esim-attachment-binding-baseline.log",
+        "sha256": "abca28371cd92ee930477a4df45a920d2859df2ba0368434123816fcb23913a3"
+      },
+      "old": {
+        "outsideGitBasename": "esim-attachment-binding-old.log",
+        "sha256": "0dbb2f8c076e769292aa327c82aadcc1f4cbc90788a0015b2ceb4573393dab3d"
+      },
+      "focused": {
+        "outsideGitBasename": "esim-attachment-binding-focused.log",
+        "sha256": "0189ec88801c8ca50739a42f29b823c63a01bbdd06ccc67bbc59c98550f37c47"
+      },
+      "focused-integration": {
+        "outsideGitBasename": "esim-attachment-binding-focused-integration.log",
+        "sha256": "f7127a5af2ba13cb2ffc3b7104b8c94b733452d91d1c2ddefaaa70733e3d8f7e"
+      },
+      "old-final": {
+        "outsideGitBasename": "esim-attachment-binding-old-final.log",
+        "sha256": "766262d353d8adbc7e50a970cf4f2e28c5a0761da3036d31190dcb4332d0c99e"
+      },
+      "focused-final": {
+        "outsideGitBasename": "esim-attachment-binding-focused-final.log",
+        "sha256": "2ab0f0356ad7be084ae9b2ccff4b6b273a9feda531c3623fa163e548bbb4e0c7"
+      },
+      "related": {
+        "outsideGitBasename": "esim-attachment-binding-related.log",
+        "sha256": "2e0b5d7bf324e06dea3109e494953e5007e61e9fba3e5877934f7f24502829a9"
+      },
+      "typecheck": {
+        "outsideGitBasename": "esim-attachment-binding-typecheck.log",
+        "sha256": "2d8856cedbde556b7bcbe334b04e5134123832a36e7548bfaa6f1810cf40a7a8"
+      },
+      "typecheck-final": {
+        "outsideGitBasename": "esim-attachment-binding-typecheck-final.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "lint": {
+        "outsideGitBasename": "esim-attachment-binding-lint.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "fullProjectTypecheckVerifyAndCI": "NOT_RUN_FOR_UNCOMMITTED_CANDIDATE; central Git owns fixed integration verification after mandatory independent review."
+  },
+  "failureHistory": [
+    {
+      "stage": "old implementation / final tests",
+      "result": "Ten async/alias/caller leaf cases fail; baseline three remain successful. Old source was restored only for this controlled comparison and fixed bytes restored in finally."
+    },
+    {
+      "stage": "initial scoped typecheck",
+      "result": "TS2688: the outside-Git config directory could not resolve Cloudflare/Node/vinext type entry points.",
+      "resolution": "Place the same scoped config under ignored candidate node_modules so normal ancestor type resolution applies; no type library/rule or diagnostic disabled; final exit0."
+    }
+  ],
+  "dependencyReuse": {
+    "newDependencyInstall": false,
+    "packageOrLockChanged": false,
+    "selectedExistingPackagesMatchLockEntry": true,
+    "scope": "Only existing parser, type and lint packages reused through ignored links/read-only binaries. Whole dependency tree/build is not validated by this batch."
+  },
+  "latestMainReadback": {
+    "base": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+    "observedMain": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+    "baseBlobs": {
+      "lib/rockstar-service-attachment.ts": {
+        "baseSha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+        "latestSha256": "27b844fe2321f23f8a37eb442cef55d0d210c43e7aa26d48957e725582ad3699",
+        "equal": true
+      },
+      "tests/rockstar-service-attachment.test.mjs": {
+        "baseSha256": "c0e72d655273f1df52c8d147b255ce37ca01a5cdfc621c84cd8a3fa6b575fdef",
+        "latestSha256": "c0e72d655273f1df52c8d147b255ce37ca01a5cdfc621c84cd8a3fa6b575fdef",
+        "equal": true
+      },
+      "lib/rockstar-service-setup.ts": {
+        "baseSha256": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+        "latestSha256": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+        "equal": true
+      }
+    },
+    "candidateRebasedOrMerged": false
+  },
+  "independentReview": {
+    "required": true,
+    "owner": "Separate Billing reviewer",
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "status": "PENDING_CENTRAL_ASSIGNMENT",
+    "reason": "Owner/device/parent epoch and allowed-scope binding change. Author acceptance cannot substitute."
+  },
+  "integrationRequests": {
+    "owner": "Central metadata/Git single writer",
+    "implementationTouchesSharedMetadata": false,
+    "needed": [
+      "Review and document detached return identity and helper-only async binding in existing ESIM-04 design/index/workstream/progress at adoption.",
+      "Keep existing setup/Broker/DB current-state commit validation unchanged and whole ESIM-04 unaccepted.",
+      "Separate prior PR244 activation adoption from this ESIM-04 host helper patch.",
+      "Independent Astra/high, fixed candidate full verification/final-head CI, normal Git/main integration and readback remain subsequent stages."
+    ]
+  },
+  "acceptanceLimits": [
+    "Host helper object/crypto Promise binding only; synthetic facts and public test keys.",
+    "No complete parent-entitlement DB revocation lifecycle, issuer install, device enrollment, new scope, Broker reservation or production D1 proof.",
+    "No key generation, new credential or secret, device work, added inference, external provider/contract, paid API, charge or publication.",
+    "Returned snapshot is detached from input but remains a mutable normal ServiceAttachment; consumers must still obtain fresh facts and enforce existing atomic dispatch checks.",
+    "Generic issuer/child issue-renew-revoke persistence, outbox, full ESIM units and public launch remain open; 616 bulk HOLD."
+  ],
+  "executionMetrics": {
+    "actualModel": null,
+    "tokens": null,
+    "cost": null
+  },
+  "operations": {
+    "callerSetupChanged": false,
+    "wireSchemaTtlPricesChanged": false,
+    "dbBrokerChanged": false,
+    "sharedMetadataOrWorkflowChanged": false,
+    "rootGitHeadIndexOrWipChanged": false,
+    "commitsCreated": false,
+    "pushPerformed": false,
+    "mainIntegrated": false
+  },
+  "next": "Freeze three paths with manifest/old-new evidence; central assigns Billing Astra/high independent review. Do not self-adopt or add follow-up features."
+}

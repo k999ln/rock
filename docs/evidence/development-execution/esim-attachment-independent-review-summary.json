@@ -1,0 +1,132 @@
+{
+  "schema": "rockstaros.independent-source-risk-review/1",
+  "decision": "PASS",
+  "mustFix": [],
+  "mustFixCount": 0,
+  "checks": [
+    {
+      "name": "candidate existing focused tests",
+      "exitCode": 0,
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "c139b149d218418bc5c316b548a430647862619b1f250546b6dbb28d90ab2add",
+      "countQualification": "Includes two aggregate test parents; not 15 independent vulnerabilities."
+    },
+    {
+      "name": "existing setup selected regression",
+      "exitCode": 0,
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "c568687fbecd149b3daf67eeee27e7ffeffcac94b0e65c4cc9c3e81ac95c0a75",
+      "qualification": "Only named existing no-keygen fixtures; not whole setup suite."
+    },
+    {
+      "name": "independently authored real-crypto/input/facts/setup probes",
+      "exitCode": 0,
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "2009d79ea1514fa5b8c71783aca277bcc46e87238df3203d7733c0754937d978"
+    },
+    {
+      "name": "same independent negative assertions on exact old source",
+      "exitCode": 1,
+      "tests": 9,
+      "pass": 0,
+      "fail": 9,
+      "logSha256": "fe9a53e0b8fe23485e27b2550c6990be7283e3082eb769c4268d31daf46cd3c8",
+      "qualification": "Nine independent leaf cases, no aggregate parents. Actual setup evaluator is not selected in old run; its module remains current candidate."
+    },
+    {
+      "name": "central configured lint on exact candidate paths",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "qualification": "Existing integration dependencies, explicit absolute candidate paths; no dependency installation or source copy."
+    },
+    {
+      "name": "scoped source typecheck",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "qualification": "Existing scoped source-only config extends normal tsconfig; noEmit and incremental false. Not full project typecheck."
+    },
+    {
+      "name": "diff whitespace check",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "executionLayers": {
+    "crypto": "Actual Node v26.12.1 WebCrypto Ed25519 import/sign/verify; existing repository PUBLIC RFC8032 vector only. No newly generated keys.",
+    "guard": {
+      "path": "/private/tmp/esim-attachment-binding-no-keygen.mjs",
+      "sha256": "cf0f5a7c15d81011d805a7ee102b5af7427a22c614c2ecee7bdff35fd1e2af93",
+      "appliedToAllCryptoTests": true,
+      "intentionalGuardAssertion": "Independent test invokes generateKey only to assert guard throws; no key generation succeeds."
+    },
+    "races": "Controlled Promise barriers around resolveKey/importKey/verify. WebCrypto receives original arguments before suspension; verification result is never replaced with a mock true.",
+    "caller": "Actual serviceAccessEvaluator with synthetic server-supplied authority snapshot and fixture terms. No live identity, issuer, Provider, DB or Broker execution.",
+    "testIndependence": "Separate probe fixture/assertions; old-source module copied from exact base into evidence directory. Candidate source never reverted or changed.",
+    "oldCounts": "Author old 10 failing leaf cases plus 2 aggregate parents is preserved as author evidence. Reviewer old comparison separately has 9 leaf failures; counts not merged."
+  },
+  "originalReviewSha256": "1148016b39492cc585b5e314c92f5068a3171f0246c628cded68245c6afcf281",
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "findingsClosed": [
+    {
+      "id": "ESIM04-INPUT-ASYNC-BINDING",
+      "status": "PASS",
+      "evidence": "Later-signed scope, owner and issuer/key changes during resolver/import no longer substitute fields after initial checks; verifier call binds resolver IDs and signature bytes to detached entry values."
+    },
+    {
+      "id": "ESIM04-RESULT-ALIAS",
+      "status": "PASS",
+      "evidence": "Caller mutations during actual WebCrypto verification and after return cannot change returned owner/parent/scope/signature. Returned object and scope are detached; return remains mutable."
+    },
+    {
+      "id": "ESIM04-PASSED-FACTS-RECHECK",
+      "status": "PASS",
+      "evidence": "Changes to passed parent epoch, contract status, allowedScopes, ownerAuthenticated and deviceProofVerified at resolver/import/verify boundaries all deny; old source accepts these independent counterexamples."
+    },
+    {
+      "id": "ESIM04-SETUP-CALLER",
+      "status": "PASS",
+      "evidence": "Actual unchanged serviceAccessEvaluator accepts valid candidate snapshot and denies parent/scope changes during resolveKey while retaining previously authorized read/export. Product callsite checks non-null, not object identity."
+    }
+  ],
+  "compatibility": {
+    "unchanged": "Exported types, constants, domain, ordered fields and signing-bytes function verified byte-identical to base. Independent signing bytes agree. Existing type/shape/signature/TTL/allowed-scope predicates retained; fact predicate extracted and reused at end. No price/API/store/DB/Broker edit.",
+    "intentionalIdentityChange": "Returned identity changes from caller alias to detached normal mutable ServiceAttachment with independent scope. Replacing the valid assertion equal by deepEqual matches that explicit contract; new alias assertions strengthen checked content/identity, and old valid/revoked/expired/tampering cases remain.",
+    "nowContract": "Same supplied now/default call-entry Date.now and TTL comparisons preserved. No dispatch-time clock refresh or lease policy expansion claimed.",
+    "factsBoundary": "Rechecks the same supplied object values at completion. It does not read fresh DB revocation state or guarantee a continuously unchanged/monotonic authority snapshot. Parent DB/Broker atomic revision/epoch checks remain required."
+  },
+  "limitations": [
+    "Full-project type/full verify, metadata/design synchronization, final-head/main integration and CI remain central work.",
+    "No real auth/provider/issuer enrollment, outbox, production D1 or complete entitlement issue-renew-revoke lifecycle accepted.",
+    "No fullESIM/whole-unit acceptance, key generation, credential creation, device changes, extra inference, paid API, contract or publication.",
+    "Returned object is mutable and not a reusable authorization; setup/Broker must obtain current facts and enforce existing atomic checks.",
+    "Specified main blob comparison is not new remote CI confirmation.",
+    "Test counts overlap and do not imply task completion percentage."
+  ],
+  "environmentIncidents": [
+    {
+      "classification": "HARNESS_DEPENDENCY_PATH_NOT_PRODUCT_FAILURE",
+      "log": "lint-missing-binary.log",
+      "sha256": "a930b4198aeee06f025b3756262f8a520bf2e5f06043aeff647fcf10a6aeb848",
+      "cause": "Candidate limited dependencies omit node_modules/.bin/oxlint.",
+      "resolution": "Use existing integration-tree binary."
+    },
+    {
+      "classification": "HARNESS_DEPENDENCY_PATH_NOT_PRODUCT_FAILURE",
+      "log": "lint-missing-tsgolint.log",
+      "sha256": "2d650e9fa5854f8dadd208c45fb9d796938845652dd47e9a533c1ad486ac538f",
+      "cause": "Running integration binary from sparse candidate cwd cannot find tsgolint.",
+      "resolution": "Run from existing integration dependency cwd with unchanged central config and absolute fixed candidate targets; exit0. No assertions/settings/source changed."
+    }
+  ]
+}

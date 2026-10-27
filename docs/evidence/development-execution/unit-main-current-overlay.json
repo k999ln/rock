@@ -1205,6 +1205,48 @@
       "wholeUnitAccepted": false,
       "physicalAccepted": false,
       "publicDeployment": false
+    },
+    {
+      "id": "PR247_EVE13_CURRENT",
+      "kind": "current_git_acceptance",
+      "units": [
+        "EVE-13"
+      ],
+      "pr": "https://github.com/k999ln/rock/pull/247",
+      "acceptedHead": "37985eaab27d6c7b4f5948f5d101abecd40d38a3",
+      "mainMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
+    },
+    {
+      "id": "ESIM_VISIBILITY_COMPLETION_SYNC",
+      "kind": "bounded_previous_main_acceptance_sync",
+      "units": [
+        "ESIM-01",
+        "ESIM-06",
+        "ESIM-08"
+      ],
+      "productPR": 213,
+      "evidencePR": 224,
+      "evidence": "docs/evidence/development-execution/esim-completion-progress-sync-summary.json",
+      "newRuntimeAcceptance": false,
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
+    },
+    {
+      "id": "ESIM04_ASYNC_BINDING_CANDIDATE",
+      "kind": "independent_reviewed_bounded_source_candidate",
+      "units": [
+        "ESIM-04"
+      ],
+      "baseMain": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+      "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-adoption.json",
+      "mainIntegrated": false,
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
     }
   ],
   "executionPriority": [
