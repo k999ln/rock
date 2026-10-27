@@ -1,6 +1,6 @@
 ## eSIM製品・自然hidden証拠の完了同期
 
-PR213の製品main採用と、後続PR224の新hash自然hidden補足受入を別時点で保持する。native Chrome実component＋合成fetch/dataの限定証拠であり、実auth/profile/provider/課金/productionD1/公開ではない。[進捗同期](../evidence/development-execution/esim-completion-progress-sync-summary.json)に旧sourceと現在証拠・残gateを整理。12:46の同期元captureではESIM04はAstra検収前だった。現在は固定3pathの独立Astra source検収・host fullverifyが成功し、残段階は最終metadata受入・Git保存・新HEAD CI・通常main統合・merge同SHA CI。[現行採用段階](../evidence/development-execution/esim-attachment-async-binding-main-adoption.json)へ進み、ROCK実装/JOINT受入/EXTERNAL契約/OWNER同意を分ける。親DB鮮度・実auth/profile/provider/金融/productionD1/実機/公開/wholeunit・616保留。
+PR213の製品main採用と、後続PR224の新hash自然hidden補足受入を別時点で保持する。native Chrome実component＋合成fetch/dataの限定証拠であり、実auth/profile/provider/課金/productionD1/公開ではない。[進捗同期](../evidence/development-execution/esim-completion-progress-sync-summary.json)に旧sourceと現在証拠・残gateを整理。12:46の同期元captureではESIM04はAstra検収前だった。現在は固定3pathの独立Astra source検収・host fullverify・Pro最終metadataを通り、PR248/mainb5c1でhead7/main6CI・全4workflow・実Linux3174/3172pass/0fail/2skipまで限定受入済み。[Git完了証拠](../evidence/development-execution/esim-attachment-async-binding-main-current.json)。次のOS08候補は作者通知2宛先の本人許可待ちで未受領・未採用。[現行採用段階](../evidence/development-execution/esim-attachment-async-binding-main-adoption.json)へ進み、ROCK実装/JOINT受入/EXTERNAL契約/OWNER同意を分ける。親DB鮮度・実auth/profile/provider/金融/productionD1/実機/公開/wholeunit・616保留。
 
 ## WALLET-02 process強制終了復旧fixture
 

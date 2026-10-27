@@ -63,15 +63,20 @@
     "hostFullVerifyPassed": true,
     "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-adoption.json",
     "remaining": [
-      "final independent metadata acceptance",
-      "Git save",
-      "new HEAD CI",
-      "normal main integration",
-      "merge-SHA CI"
+      "parentDB current authority and persisted issuer issue/renew/revoke/outbox",
+      "independent retention read/export ACL and expiry",
+      "real auth/profile/provider/financial/productionD1/physical/public acceptance"
     ],
     "wholeESIM04Accepted": false,
     "parentDatabaseFreshnessAccepted": false,
     "actualAuthProfileProviderFinancialProductionD1PhysicalPublicAccepted": false,
-    "bulk616": "HOLD"
-  }
+    "bulk616": "HOLD",
+    "mainIntegrated": true,
+    "acceptedHead": "05978074db846d5f1ac6e2a5f52d8fd91745260a",
+    "mainMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json"
+  },
+  "nextCoreWork": "OS08 author notification to central Git and Root awaits direct destination-specific human send permission after automatic-review refusal. Candidate not received/adopted; no alternate transfer. ESIM04 PR248 mainb5c1/6sameSHA CI/all4workflows/Linux3174/3172pass/0fail/2skip accepted. This batch closes out metadata only, with no new Pixel/runtime acceptance. Physical/provider/financial/public/whole95 remain open; bulk616 HOLD."
 }

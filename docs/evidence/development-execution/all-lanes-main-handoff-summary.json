@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "ESIM-04 fixed3 asynchronous attachment input binding: independent Astra source PASS, host fullverify3174/3171pass/0fail/3skip, type/productlint/design/build/API1678/CSV385 passed; initial18 payload0/canary1. Final exact-manifest scan and independent Pro metadata acceptance, Git save, new HEAD CI, normal main and merge-SHA CI remain separate required gates. PR247 current proof is included. Parent DB freshness/authenticated production UI/physical/provider/whole ESIM04/public remain unaccepted; bulk616 HOLD.",
+  "nextProductSlice": "OS08 author notification to central Git and Root awaits direct destination-specific human send permission after automatic-review refusal. Candidate not received/adopted; no alternate transfer. ESIM04 PR248 mainb5c1/6sameSHA CI/all4workflows/Linux3174/3172pass/0fail/2skip accepted. This batch closes out metadata only, with no new Pixel/runtime acceptance. Physical/provider/financial/public/whole95 remain open; bulk616 HOLD.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -147,6 +147,13 @@
       "mainMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
       "sameShaCISuccess": 6,
       "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 248,
+      "mainMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
       "wholeUnitAccepted": false
     }
   ]

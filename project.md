@@ -1,3 +1,11 @@
+### PR248 eSIM限定修正のGit・main最終検収（2026-10-27 / G04・ROCK）
+
+head05978074全7CI/4workflow成功後、通常mainb5c1ea18へ統合。同SHA6CI/4workflowと実Linux3174/3172pass/0fail/2skip成功、head/main同tree・全18blob・保護12一致、Root HEAD/index保持。元pending captureを変えずcurrentproof/index/status/unit overlay/引継ぎへ同期。metadata-only候補の正規fullverifyもexit0、root3174/3171pass/0fail/3hostskip、build/API1678/CSV385成功。初回11path scanner0/canary1。これはmetadata closeoutでPixelの未受領候補を取り込まない。Pixel作者通知2宛先の本人許可待ちは別条件として記録し、実機/実auth/親DB鮮度/Provider/金融/公開/whole95/616保留を維持。
+
+### OS-08準備と作者通知の許可待ち（2026-10-27 / G04・ROCK）
+
+最新mainb5c1（PR248統合済み・merge同SHA CI待ち）から隔離統合treeと一致依存を準備。OS08作者は有限終了したが、中央Git/Rootへの候補通知が宛先を明示した本人許可未確認としてauto-review拒否。本人へ具体2宛先のasync許可を確認し、拒否通知を別経路で移送せず候補未受領・未採用を保持。独立risk/全体検証/Git/main/実機合格は未実施。eSIM統合後CI確認は別に継続し、共有WIP/registry/616公開保留を維持。
+
 ### ESIM-04 正規全体検証成功（2026-10-27 / G04・ROCK）
 
 fullverify exit0、root3174/3171pass/0fail/3hostskip、type/productlint/design/build/API1678/CSV385成功。初回18path scanner0/canary1。現行handoffは固定source3/独立risk/host fullverify成功と残る固定manifest scan・Pro metadata・Git/headCI/main/mergeCIへ同期。元helper反例/返却identity差/実auth・親DB鮮度・Provider・実機・公開/whole95/616保留を維持。
