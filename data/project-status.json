@@ -11332,15 +11332,52 @@
       "ESIM-03",
       "WEBOPS-03"
     ],
-    "status": "host_full_verify_and_scanner_passed_fixed26_final_delta_review_pending",
+    "status": "PR244_normal_main_same_sha_CI_passed",
     "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
-    "gitHubSaved": false,
-    "mainIntegrated": false,
+    "gitHubSaved": true,
+    "mainIntegrated": true,
     "wholeUnitsAccepted": 0,
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
     "bulk616": "HELD",
-    "fullVerify": "exit0; root Node3125/3122pass/0fail/3hostskip; build/API1678/CSV385 passed"
+    "fullVerify": "exit0; root Node3125/3122pass/0fail/3hostskip; build/API1678/CSV385 passed",
+    "sourcePR": 244,
+    "acceptedHead": "5c1c1939f4d2bb18ca94d6afbd5d6c607549fe14",
+    "mainMergeSha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+    "sameShaCIPassed": true,
+    "headCISuccess": 7,
+    "mainCISuccess": 6,
+    "currentMainEvidence": "docs/evidence/development-execution/esim-webops-main-current.json",
+    "actualMainLinuxVerify": {
+      "tests": 3125,
+      "pass": 3123,
+      "fail": 0,
+      "skip": 2
+    }
+  },
+  "smithSessionFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+    "primaryWorkstream": "10 Git / CI / Operations",
+    "sourceWorkstream": "05 Web / PWA / Sites",
+    "owner": "ROCK",
+    "units": [
+      "SMITH-01"
+    ],
+    "taskIds": [
+      "SKY21",
+      "G04"
+    ],
+    "status": "host_full_verify_scanner_passed_fixed22_final_delta_review_pending",
+    "evidence": "docs/evidence/development-execution/smith-session-main-adoption.json",
+    "gitHubSaved": false,
+    "mainIntegrated": false,
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "realProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "fullVerify": "exit0; Node3132/3129pass/0fail/3hostskip; build/API1678/CSV385 passed"
   }
 }

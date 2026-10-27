@@ -1122,6 +1122,34 @@
       "publicSourceIdentity": "UNKNOWN",
       "publicDeployment": false,
       "wholeUnitAccepted": false
+    },
+    {
+      "id": "PR244_ESIM_WEBOPS_CURRENT",
+      "kind": "current_git_acceptance",
+      "units": [
+        "ESIM-03",
+        "WEBOPS-03"
+      ],
+      "pr": "https://github.com/k999ln/rock/pull/244",
+      "acceptedHead": "5c1c1939f4d2bb18ca94d6afbd5d6c607549fe14",
+      "mainMergeSha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/esim-webops-main-current.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
+    },
+    {
+      "id": "SMITH01_SESSION_REFERENCE_CANDIDATE",
+      "kind": "reviewed_finite_candidate",
+      "units": [
+        "SMITH-01"
+      ],
+      "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+      "evidence": "docs/evidence/development-execution/smith-session-main-adoption.json",
+      "state": "source4_UUID_and_tool_R2_combined48_type_lint_design_host_verify_scanner_passed_final_delta_Git_CI_pending",
+      "wholeUnitAccepted": false,
+      "rejectedToolR1Retained": true
     }
   ],
   "executionPriority": [

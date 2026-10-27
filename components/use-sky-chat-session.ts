@@ -27,6 +27,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
   const [requestStartedAt, setRequestStartedAt] = useState(0);
   const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>('ready');
   const [threadId, setThreadId] = useState('');
+  const [sessionAgent, setSessionAgent] = useState<ZemaChatSession['agent']>(undefined);
   const [threadCreatedAt, setThreadCreatedAt] = useState(0);
   const [sessionReady, setSessionReady] = useState(false);
   const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
@@ -36,6 +37,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
   const resetSession = useCallback((resetRequestTime = true) => {
     setSessionReady(false);
     setThreadId('');
+    setSessionAgent(undefined);
     setThreadCreatedAt(0);
     setMessages([]);
     setActiveRequest(null);
@@ -55,6 +57,7 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
       const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
       if (saved) {
         setThreadId(saved.id);
+        setSessionAgent(saved.agent);
         setThreadCreatedAt(saved.createdAt);
         setSelectedToolId(saved.toolId);
         setMessages(saved.messages);
@@ -118,15 +121,17 @@ export function useSkyChatSession({ loading, workView, preferredTool, requestedT
       const sessions = saveZemaChatSession({
         version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
         messages, activeRequest, workflowStatus, outcome, coordination: coordinationPlan,
+        ...(sessionAgent ? { agent: sessionAgent } : {}),
       });
       const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
       return () => window.cancelAnimationFrame(frame);
     } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome, coordinationPlan]);
+  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome, coordinationPlan, sessionAgent]);
 
   function beginSession(session: ZemaChatSession) {
     setRecentThreads(saveZemaChatSession(session));
     setThreadId(session.id);
+    setSessionAgent(session.agent);
     setThreadCreatedAt(session.createdAt);
     setCoordinationPlan(session.coordination ?? null);
     setSessionReady(true);

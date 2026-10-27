@@ -1,3 +1,4 @@
+import { catalog } from './catalog.ts';
 import {
   isTextModelProvider,
   type TextModelProviderId,
@@ -18,6 +19,8 @@ const MAX_MESSAGE_LENGTH = 4_000;
 const MAX_RESULT_LENGTH = 16_000;
 const ID = /^[0-9a-f-]{36}$/;
 const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
+// Built-in library references are passive history metadata, not a current grant.
+const TOOL_AGENT_IDS = new Set(catalog.map(tool => `tool:${tool.id}`));
 
 type SessionStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -107,7 +110,7 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
       session.workflowStatus === 'failed') &&
     (session.agent === undefined ||
       (typeof session.agent?.id === 'string' &&
-        ID.test(session.agent.id) &&
+        (ID.test(session.agent.id) || TOOL_AGENT_IDS.has(session.agent.id)) &&
         Number.isSafeInteger(session.agent.revision) &&
         session.agent.revision >= 0)) &&
     (session.coordination === undefined ||

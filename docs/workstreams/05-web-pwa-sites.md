@@ -316,3 +316,7 @@ ROCKはmain `7ceef8cf`の旧`/install`互換pageとdomain routerを対象に、�
 3domainの公開DNS/TLS/HTTPS 200とHTTP→HTTPS、総合Siteのsaved v120とMini/Pro saved v78の配備成功metadataを個別に読戻した。総合/ Miniトップの相互link未検出は描画後DOMの観測範囲に限定し、MiniのCreate下層やProからの導線は存在する。公開commit/版識別子がないためsource一致は未確認。履歴v4/v41等は現在の配信証拠に流用しない。[詳細証拠](../evidence/development-execution/webops03-domain-release-readback.json)と[互換route設計](../rockstaros-complete-design.md#webops03-install-compatibility)を参照。
 
 検証は`node --experimental-strip-types --test tests/product-domains.test.mjs tests/sky-domain-router.test.mjs`、限定lint、元routeなし/元router/外部target/query漏出の負例、実Vinext最小fixtureのHTTP GET/HEADとブラウザURL。`/connect`先はHTTP fixtureであり本人利用開始全周の合格ではない。全体verify・独立検収・同一head CI・main統合・公開配備は中央の別gate。DNS/TLS/Sites設定・配備・認証・DB・一般ローンチを変更せず、旧失敗履歴と616HOLDを保持する。
+
+## SMITH-01 保存Agent参照保持（2026-10-27 / SKY21・ROCK）
+
+main9f2bf146へ、UUID参照restore/begin/autosave/resetの固定source2・receiptを無変更採用準備。既存validator/owner cleanup/TTL/実行権限は維持。関連34、独立begin/reset2、旧2反例、Root26の重複を区別し、browser/本番/wholeunitは未受入。ROCKはhook/既存保存と第一者store/binderでcurrent Agent・owner・revision・disable/connectの有効性を強制、EXTERNALはProvider応答/外部接続事実、JOINTは実認証UI/往復、OWNERは仕事/費用同意。`node --test tests/sky-chat-session-recovery.test.mjs tests/sky-agent-library.test.mjs tests/sky-agent-saved-reference.test.mjs`と固定union全verify/同SHA CIが検証経路。[採用記録](../evidence/development-execution/smith-session-main-adoption.json)。別tool:形式はR2固定source2/receiptと独立検収で追加採用。R1のhyphen先頭ID境界P2と初回RootPASS撤回を保持し、R2は前段genericを元bytesのまま維持してexact catalogを追加する。540形式/revision比較と関連29、旧3負例はUUID側の34/2と加算しない。結合回帰では両候補source4を一緒に検証する。

@@ -1,0 +1,17 @@
+{
+  "status": "PASS_SCOPED",
+  "packetSha256": "7ec3deb22b4a36feb8539ce359eb62fb4409074b62b069dff662920ede4978b0",
+  "sourceTestCount": 2,
+  "checks": [
+    "Source/test/receipt3 hashes match",
+    "Exact hook delta retains validated UUID agent ref at restore/begin/autosave and clears it at reset",
+    "Existing storage validation unchanged; no new permission/execution/owner/grant or schema",
+    "Root independent real hook harness plus savedreference tests26/26,0fail,0skip",
+    "Author old2negative and authorrelated34 are separate counts; not added together",
+    "tool-prefixed reference acceptance is separate unresolved producer/validator gap, not fixed here"
+  ],
+  "logSha256": "75646e9abf6beffc99ed2070848d47b82aabcb9ac19fe7c858ea5c30637ecba8",
+  "browserProductionAuthAccepted": false,
+  "wholeUnitAccepted": false,
+  "bulk616": "HOLD"
+}

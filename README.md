@@ -1,3 +1,7 @@
+Smithの保存会話では、既存UUIDまたはcatalog ToolのAgent参照を同じid/revisionで再保存し、別の会話やhandoffへ持ち越さない限定修正を準備しています。復元だけで実行は再開せず、期限・本人・現在Agent・実行同意は既存の確認を通します。[保存と復旧の契約](docs/rockstaros-complete-design.md#smith-saved-agent-reference)。
+
+[PR244](https://github.com/k999ln/rock/pull/244)はmain `9f2bf146`へ統合済みで、同SHA全6CI・4workflowが成功しました。検収済み26ファイルとmainの内容一致、Linux全verifyの結果は[別current記録](docs/evidence/development-execution/esim-webops-main-current.json)に保存しています。公開側への配備は未実施です。
+
 旧`https://avoado.si/install/`の互換入口は、固定`/connect`の利用開始案内へつなぎます。最終先へquery/fragmentを渡さず、本人確認・利用権・機種適合・費用の既存手順へ進みます。eSIMの初回開始は現在のsetup/利用権を保存時にも照合し、失効/競合時は起算せず同じworkspaceから再開します。[設計・復旧](docs/rockstaros-complete-design.md#esim-runtime-commit-authority)と[今回の限定候補・Git段階](docs/evidence/development-execution/esim-webops-main-adoption.json)を参照してください。公開側の修正配備は未実施です。
 
 PR242/243はmain `927ac79a`へ統合済みで、同SHA全6CI・4workflowが成功しています。PR242初回main `e7d458f2`の失敗は保持し、[別のcurrent記録](docs/evidence/development-execution/pr242-243-main-current.json)でforward-fix後の状態を確認できます。

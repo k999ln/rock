@@ -1,0 +1,109 @@
+{
+  "schema": "rockstaros.smith-agent-reference-independent-review/1",
+  "recordedAt": "2026-10-27T06:58:13.909418+00:00",
+  "decision": "PASS_SCOPED",
+  "mustFix": [],
+  "packetSha256": "7ec3deb22b4a36feb8539ce359eb62fb4409074b62b069dff662920ede4978b0",
+  "sourceCandidate": [
+    {
+      "path": "components/use-sky-chat-session.ts",
+      "sha256": "502ac6d81e7580e0ef1ade0dc6d21cbb0f1bf4f2925c28751f96887811e738f2"
+    },
+    {
+      "path": "tests/sky-chat-session-recovery.test.mjs",
+      "sha256": "f13a8cffcf364be79b47edafbdaf78e858515de882fe2961afb1fa611ceea411"
+    },
+    {
+      "path": "docs/evidence/development-execution/smith-saved-agent-reference.json",
+      "sha256": "57c523cb648915c9b288708204b2d3d4a898a3a10c77cfc65bcc348de26ca637"
+    }
+  ],
+  "authorBase": "927ac79abd9466869e2096e044a62efe9136512d",
+  "mainSourceCompatibility": {
+    "sha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+    "beforeSourceTestBlobsEqualAuthorBase": true
+  },
+  "protected": {
+    "lib/zema-chat-session.ts": "7e9ff4a729c5c20c32a9530e7fe8531b9325a987b42d2e876ef07f031a9a5de6",
+    "lib/zema-private-storage.ts": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e",
+    "components/sky-chat-workspace.tsx": "d53505d193ea07fbf4a11007e31fda535e0c1e934898c290a720842e60371400",
+    "lib/sky-agent-library.ts": "07ffce024f32dfe6466d7647b97c43ee640c50245fde4564f4d569911335db3a",
+    "lib/sky-agent-library-store.ts": "a516d65fa662dfe8f82a2b300ae088a7d961d96bdda77980fc288700d8ff6a9b",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "findings": [
+    "Only optional sessionAgent hook state added at restore/begin, included in autosave dependencies and payload, cleared on reset. Stored id/revision retained exactly; no upgrade/current authorization inferred.",
+    "Existing save validator throws before beginSession state adoption on invalid session; read restoration uses unchanged validSession/TTL/owner private storage.",
+    "Existing workspace current-Agent resolution, API routes, execute permissions, owner cleanup, ten-minute TTL, max8 sessions and schema unchanged.",
+    "Existing test bytes are exact prefix; only two new tests appended.",
+    "Known producer tool: IDs versus duplicate UUID-only consumer predicate remains separately documented and unfixed; this acceptance is bounded to validated UUID references."
+  ],
+  "verification": {
+    "related": {
+      "command": "node --test --test-reporter=tap tests/sky-chat-session-recovery.test.mjs tests/sky-agent-library.test.mjs tests/sky-agent-saved-reference.test.mjs",
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0
+    },
+    "oldCounterexamples": {
+      "command": "node --test --test-name-pattern='restoring and resaving an Agent|Agent reference stays' tests/sky-chat-session-recovery.test.mjs",
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "exitCode": 1,
+      "sameNewTestHash": "f13a8cffcf364be79b47edafbdaf78e858515de882fe2961afb1fa611ceea411",
+      "oldHookExactGitBase": true
+    },
+    "reviewerBoundaries": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0,
+      "cases": [
+        "beginSession exact UUID/revision through next autosave; same createdAt/messages; zero requests/estimates",
+        "restored Agent thread to distinct pending handoff clears reference; original retained; zero requests/estimates"
+      ],
+      "harness": "Existing compiled actual hook/workspace VM harness with real hook return exposed in private test only; no source or validation edit",
+      "countsNotAddedToAuthorRelatedOrRoot26": true
+    },
+    "harnessSetupFailure": "First attempt selected nonexistent private old working directory before creation; tool rejected before command execution. Corrected by creating isolated tree first; no product/test result claimed.",
+    "fullVerify": "NOT_RUN_FOR_SMITH_YET",
+    "browser": "NOT_RUN"
+  },
+  "evidence": {
+    "related.log": {
+      "privateBasename": "related.log",
+      "sha256": "f824e9b02a965b0354ddc8347abe0d8094fcd05b77a891364c5bb18dbdc74516"
+    },
+    "old-counterexamples.log": {
+      "privateBasename": "old-counterexamples.log",
+      "sha256": "ef27313b2a35b79cc23e211cb8f1b17455278c5f65349ac49d30d2dd788e4461"
+    },
+    "boundaries.log": {
+      "privateBasename": "boundaries.log",
+      "sha256": "a5525124c7ecfa0ea423ec291dfdf7eee3fc3888a17f3af8d301fa2825290416"
+    },
+    "fixed/tests/reviewer-agent-reference.test.mjs": {
+      "privateBasename": "fixed/tests/reviewer-agent-reference.test.mjs",
+      "sha256": "cc0e95bad7266c1fe6a7f0b967f03b7ef6c90685abc61012f2ddbed709080a68"
+    }
+  },
+  "limits": {
+    "browserProductionAuthAccepted": false,
+    "realProvider": false,
+    "physicalAccepted": false,
+    "wholeSMITH01Accepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "next": "After PR244 main CI acceptance, exact-source2 + immutable receipt adoption to fresh main tree; canonical design/index/progress, project update, full verify, scanner, final independent metadata review, Git/headCI/normalmain/mergeCI."
+}

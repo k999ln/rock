@@ -1,0 +1,166 @@
+{
+  "schema": "rockstaros.smith-tool-agent-session/1",
+  "recordedAt": "2026-10-27T07:05:36.070049+00:00",
+  "unit": "SMITH-01",
+  "task": "SKY21",
+  "primaryOwner": "ROCK",
+  "primarySquad": "O5",
+  "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+  "status": "R2_source_candidate_root_independent_review_pending",
+  "expectedContract": {
+    "producer": "lib/sky-agent-library-store.ts#list creates tool:<catalog.id> for connected catalog tools at revision0; save increments the same id revision. lib/sky-agent-library.ts#skyAgentEvePath transfers exact id/revision/sourceTool.",
+    "consumer": "lib/zema-chat-session.ts schema already includes optional agent id/revision; existing sky-agent-library tests establish passive session metadata retention for personal UUID agents. Valid built-in producer references should survive the same save/read operation.",
+    "authority": "docs/service-design/03-product-profiles.md defines Sky as Agent hub; docs/sky-tools-complete-design.md links its owner-saved Agent revision contract to docs/rockstaros-complete-design.md#unmerged-runtime-integration and preserves Broker/workflow boundaries. Existing producer/store/schema and tests supply exact ID contracts."
+  },
+  "cause": "Two Agent predicates disagreed: earlier broad ID syntax accepted tool:catalog IDs, later UUID-only predicate rejected them; save threw and read discarded valid producer references.",
+  "change": "Preserve the original first generic ID/revision guard verbatim, retaining its effective intersection with the later UUID condition. Only extend the later ID predicate with exact existing catalog Tool references; catalog import and passive-reference Set are the only additions. No duplicate-guard refactor.",
+  "source2": [
+    {
+      "path": "lib/zema-chat-session.ts",
+      "sha256": "c30e6b327b2a7155444233abcbec7ee3af4d703ae13d927acbcb0174fd212a5c"
+    },
+    {
+      "path": "tests/sky-tool-agent-session.test.mjs",
+      "sha256": "6ccedf102470acf9d9c8254254511b6b994e5b3fc66ce48e985013d9133e0aa0"
+    }
+  ],
+  "oldSourceSha256": "7e9ff4a729c5c20c32a9530e7fe8531b9325a987b42d2e876ef07f031a9a5de6",
+  "oldCounterexample": {
+    "exitCode": 1,
+    "tests": 5,
+    "passed": 2,
+    "failed": 3,
+    "sameFinalTestFile": true,
+    "legacyUuidBoundary": "PASS on old source; tool positive cases fail as expected"
+  },
+  "focused": {
+    "exitCode": 0,
+    "tests": 46,
+    "passed": 46,
+    "failed": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "typecheckExit": 0,
+    "lintExit": 0,
+    "diffCheckExit": 0,
+    "spiderExit": 0,
+    "spiderProfile": "deep",
+    "spiderRecommendations": [
+      "database-and-storage-boundaries",
+      "code-execution-and-injection-boundaries",
+      "identity-and-authorization-boundaries",
+      "network-and-outbound-boundaries"
+    ]
+  },
+  "coverage": [
+    "Real SQLite migrated store creates connected mr-citations tool Agent; generated link exact id/revision0 and saved revision1 both round-trip.",
+    "All current catalog Tool references round-trip; existing UUID and agent-absent sessions retain behavior.",
+    "Unknown/bare/empty/overlong/case-changed/whitespace/control/path/query/cross-kind prefix and Tool-as-session-id rejected. Invalid negative/fractional/string/null/nonfinite/unsafe revisions rejected; invalid replacements preserve original storage; invalid raw entries filtered.",
+    "Passive history retention does not authorize another owner, stale revision, disabled Agent or disconnected Tool: real existing server binder continues to reject them. TTL10min and session UUID unchanged.",
+    "Old first generic ID guard is retained byte-for-byte: prior UUID acceptance intersection is not widened. Leading-hyphen36/all-hyphen36 remain rejected; old permissive but alphanumeric-start UUID-shaped forms retain their exact old behavior rather than being silently tightened."
+  ],
+  "invariants": [
+    "No changes to library producer/store, binder, schema/migrations, owner cleanup, runner, network, permissions or pricing.",
+    "No fetch/model/Tool execution added. Agent metadata is not authentication, approval, current grant or auto-upgrade.",
+    "No full SMITH-01 or SKY21 acceptance claimed. Existing task counts/phaseGates/baseline untouched.",
+    "Former UUID hook/test/receipt packet hash and all3 owned paths verified unchanged.",
+    "Root/global/index/design shared files and PR244 source paths not edited."
+  ],
+  "dependencies": {
+    "mode": "read-only node_modules symlink to existing tree with identical package-lock SHA256",
+    "lockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "lockOrDependencyFilesEdited": false
+  },
+  "browser": {
+    "executed": false,
+    "reason": "Data-validator-only change; real store/link/session integration and rejection tests cover effect. No UI/physical/authenticated-browser acceptance claimed. Future browser work CUA only."
+  },
+  "fullVerify": {
+    "executed": false,
+    "status": "required_central_adoption_gate_pending"
+  },
+  "independentReview": {
+    "status": "R2 requires new Root/central independent inspection; R1 approval revoked",
+    "selfAccepted": false
+  },
+  "git": {
+    "saved": false,
+    "mainMerged": false,
+    "sameShaCI": "central_git_pending"
+  },
+  "commands": {
+    "focused": "node --test --test-reporter=tap tests/sky-tool-agent-session.test.mjs tests/zema-chat-session.test.mjs tests/sky-agent-library.test.mjs tests/sky-agent-saved-reference.test.mjs tests/sky-chat-session-recovery.test.mjs",
+    "oldCounterexample": "Run final tests/sky-tool-agent-session.test.mjs with base 9f2bf146 lib/zema-chat-session.ts; node --test --test-reporter=tap tests/sky-tool-agent-session.test.mjs",
+    "typecheck": "npm run typecheck",
+    "lint": "npx oxlint lib/zema-chat-session.ts tests/sky-tool-agent-session.test.mjs",
+    "spider": "npm run spider:plan -- --changed"
+  },
+  "logs": {
+    "oldCounterexample": {
+      "path": "/private/tmp/smith-tool-agent-before-r2.log",
+      "sha256": "242f2b065af2a00f67c3aa61c5ab0817a5b674731ca1548f22fe2d89f76bc5b7"
+    },
+    "focused": {
+      "path": "/private/tmp/smith-tool-agent-after-r2.log",
+      "sha256": "5b1ce8266bf4aef4d3d98e58fba9bb62419e9f4984836f0fbeb617ae01f2f48f"
+    },
+    "typecheck": {
+      "path": "/private/tmp/smith-tool-agent-typecheck-r2.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "path": "/private/tmp/smith-tool-agent-lint-r2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "spider": {
+      "path": "/private/tmp/smith-tool-agent-spider-r2.log",
+      "sha256": "f480d4618e6741296fc185e8d73548f07eeacd53940c9f306faa1155e2ec68be"
+    }
+  },
+  "centralMetadataProposal": {
+    "progress": "Record only bounded catalog Tool Agent history save/read repair after independent review, preserving prior UUID candidate and prior adopted fixes; keep full SMITH-01/SKY21 open.",
+    "design": "Passive saved Agent reference accepts existing UUID or current catalog-generated tool:<id>, retaining exact nonnegative safe revision; owner/current revision/enabled/connection checks remain on existing server inference binder. No Tool addition or execution permission."
+  },
+  "limitations": [
+    "Catalog retirement/removal may invalidate old tool-reference history; no catalog version archive or migration is introduced.",
+    "Prior UUID retention hook remains a separate candidate; base9f does not contain it. This validator candidate does not claim UI hook retention alone.",
+    "Git save/main integration/exact-SHA CI and production/device acceptance remain independent."
+  ],
+  "holds": {
+    "bulk616": "HOLD",
+    "publication": false,
+    "deployment": false,
+    "realProvider": false,
+    "realFunds": false,
+    "deviceOperation": false,
+    "newCredential": false
+  },
+  "candidateRevision": "R2",
+  "revisionHistory": [
+    {
+      "revision": "R1",
+      "status": "REJECTED_UNADOPTED",
+      "packet": "/private/tmp/smith-tool-agent-session-rejected-r1/packet.json",
+      "packetSha256": "0d72ee658a0b561bbd841ac657847220932a6456fb005ef3795425a7a9ead539",
+      "archivedSourceTestReceiptRoot": "/private/tmp/smith-tool-agent-session-rejected-r1",
+      "finding": "Central independent must-fix1: deleting the first generic predicate admitted previously rejected 36-hyphen/leading-hyphen IDs; Root prior scoped PASS withdrawn.",
+      "regressionLog": {
+        "path": "/private/tmp/smith-tool-agent-r1-regression.log",
+        "sha256": "31c5c2948b14a8a2757ea71ddb0867a5b13c4b4d32f5c3ad20791be9c11c1344",
+        "exitCode": 1
+      }
+    },
+    {
+      "revision": "R2",
+      "status": "PENDING_NEW_INDEPENDENT_REVIEW",
+      "fix": "Original generic predicate unchanged; later ID branch alone extended with exact catalog Set.",
+      "uuidBoundaryOldExit": 0,
+      "oldBoundaryLog": {
+        "path": "/private/tmp/smith-tool-agent-old-boundary.log",
+        "sha256": "cb8bacc457ac70b48815982824c17d09d662d286663272f7c28324fca287b7d5"
+      },
+      "newBoundary": "Included in final focused46 pass. Ten explicit ID cases × six revision boundary values, covering valid UUID, legacy accepted alphanumeric-start 36-char form, leading hyphen, all hyphens, length/case/nonhex/dot and safe integer range."
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "rockstaros.smith-tool-agent-independent-review/1",
+  "candidateRevision": "R2",
+  "recordedAt": "2026-10-27T07:09:04.741863+00:00",
+  "decision": "PASS_SCOPED_R2",
+  "mustFix": [],
+  "sourcePacketSha256": "78fd3b86d56197af31fbc5829f44783f81a27f39e52455f93f33c4d93c5fed14",
+  "sourceFiles": [
+    {
+      "path": "lib/zema-chat-session.ts",
+      "sha256": "c30e6b327b2a7155444233abcbec7ee3af4d703ae13d927acbcb0174fd212a5c"
+    },
+    {
+      "path": "tests/sky-tool-agent-session.test.mjs",
+      "sha256": "6ccedf102470acf9d9c8254254511b6b994e5b3fc66ce48e985013d9133e0aa0"
+    },
+    {
+      "path": "docs/evidence/development-execution/smith-tool-agent-session.json",
+      "sha256": "cd7c135eaf33aca84f32a379cb787350e446a72326e7230bce75a64754f88fac"
+    }
+  ],
+  "rejectedR1": {
+    "packetSha256": "0d72ee658a0b561bbd841ac657847220932a6456fb005ef3795425a7a9ead539",
+    "reviewSha256": "4c84226a96eefc568179e3a53d664a6eedd5351827809fc020041327347d7c1d",
+    "decision": "REQUEST_CHANGES",
+    "RootInitialPassRevoked": true,
+    "counterexample": "Hyphen-leading 36-byte Agent IDs newly admitted by removed first guard",
+    "mustFixClosed": "R2 retains original first generic predicate byte-for-byte and only extends later ID branch with exact catalog allowlist. No stricter new UUID policy."
+  },
+  "findings": [
+    "Removing only catalog import/set and later ID OR reconstructs base lib/zema-chat-session.ts byte-for-byte. Original generic shape/ID predicate, session ID/TTL/bounds/revision checks untouched.",
+    "Only new Agent IDs accepted in independent matrix are exact bundled catalog tool:<id> with safeinteger nonnegative revision; current execution and owner authority remain separate existing bindings.",
+    "Catalog producer/store link revision0/1, negative forms and write-preservation/read-drop, disabled/stale/disconnected/otherowner and expiry tests execute existing code/SQLite."
+  ],
+  "protected": {
+    "lib/sky-agent-library.ts": "07ffce024f32dfe6466d7647b97c43ee640c50245fde4564f4d569911335db3a",
+    "lib/sky-agent-library-store.ts": "a516d65fa662dfe8f82a2b300ae088a7d961d96bdda77980fc288700d8ff6a9b",
+    "lib/zema-private-storage.ts": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e",
+    "components/sky-chat-workspace.tsx": "d53505d193ea07fbf4a11007e31fda535e0c1e934898c290a720842e60371400",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "verification": {
+    "related": {
+      "command": "node --test tests/sky-tool-agent-session.test.mjs tests/sky-agent-saved-reference.test.mjs tests/sky-chat-session-recovery.test.mjs",
+      "tests": 29,
+      "pass": 29,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0
+    },
+    "oldToolCounterexamples": {
+      "tests": 5,
+      "pass": 2,
+      "fail": 3,
+      "skip": 0,
+      "exitCode": 1,
+      "sameR2TestHash": "6ccedf102470acf9d9c8254254511b6b994e5b3fc66ce48e985013d9133e0aa0",
+      "oldStoreExactBase": true
+    },
+    "independentGrammarMatrix": {
+      "command": "node grammar-matrix.mjs CANDIDATE/lib/zema-chat-session.ts",
+      "cases": 540,
+      "idCases": 54,
+      "revisionCases": 10,
+      "onlyExactCatalogExtension": true,
+      "oldUuidIntersectionPreserved": true,
+      "invalidWritePreservesValid": true,
+      "invalidReadDropsOnlyInvalid": true,
+      "exitCode": 0,
+      "R1SameProbeExitCode": 1,
+      "R1FailureConfirmedAfterHarnessRepair": true
+    },
+    "combinedUUIDHookCandidate": "REQUIRED_AFTER_ADOPTION; not yet tested in same tree",
+    "countsNotAdditive": true,
+    "harnessFailuresRetained": [
+      "Initial private R1 module copy omitted toolkits detector dependency",
+      "Second private R1 copy omitted public-release handoff dependency"
+    ],
+    "harnessRepair": "Readonly links to the same existing toolkits/scripts/public-release dependencies; runtime/assertions not changed",
+    "fullVerify": "PENDING_CENTRAL_UNION",
+    "browser": "NOT_RUN"
+  },
+  "evidence": {
+    "grammar-counterexample.log": {
+      "privateBasename": "grammar-counterexample.log",
+      "sha256": "96be2a613da68005a123e4ba49b305bffde31c89ddefe18b29f0032e16b686de"
+    },
+    "grammar-matrix.mjs": {
+      "privateBasename": "grammar-matrix.mjs",
+      "sha256": "1de1990b02885a7533ac9a9a304e7ed3ecbf0a53188c5737d36b99c5e8489fa1"
+    },
+    "attempt1-matrix-initial-import-error.log": {
+      "privateBasename": "attempt1-matrix-initial-import-error.log",
+      "sha256": "eb9d4de7790282e5db205b18bc7cd770e013b7413e2c3e03a2da946dee4fee2c"
+    },
+    "attempt1-matrix-second-import-error.log": {
+      "privateBasename": "attempt1-matrix-second-import-error.log",
+      "sha256": "49c74c65e8550c0fa68117176f3b9cfa5d64479b45394b2cd1d39191f7737731"
+    },
+    "attempt1-matrix.log": {
+      "privateBasename": "attempt1-matrix.log",
+      "sha256": "3e536b473ff4f76fea7800c9ad42cc1adbbfdb513359868bad43ec073ab449bb"
+    },
+    "r2-grammar-matrix.log": {
+      "privateBasename": "r2-grammar-matrix.log",
+      "sha256": "a0edb7fb598c8176f0719d307e745a013bdd637c5385fb8d68b0537a73d9d6a3"
+    },
+    "old-tool-counterexamples.log": {
+      "privateBasename": "old-tool-counterexamples.log",
+      "sha256": "b4c97e7c077eb10bb6f4375c03656562e50728b12e41d255e81034303aea23c9"
+    },
+    "r2-related.log": {
+      "privateBasename": "r2-related.log",
+      "sha256": "95cc7b51770849ea22368b6ff1f3fd915b0fc3bdc19aabc1aa89176563f6c315"
+    }
+  },
+  "limits": {
+    "wholeUnitAccepted": false,
+    "productionBrowserAuthAccepted": false,
+    "realProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null
+}

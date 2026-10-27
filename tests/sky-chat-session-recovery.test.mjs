@@ -390,3 +390,34 @@ void test('conversation routes selected free Cloud with consent and UUID, never 
  assert.equal(req.url,'/api/llm/free-cloud');assert.match(req.body.id,/^[0-9a-f-]{36}$/);assert.equal(req.body.consent,true);assert.equal(req.body.prompt,'Synthetic free request');
  req.resolve({ok:true,json:async()=>({text:'Cloud fixture reply',reportedModel:'fixture',usage:{inputTokens:2,outputTokens:3,chargeMinor:0}})});await h.flush();assert.ok(h.text().includes('Cloud fixture reply'));assert.ok(h.text().includes('$0.00'));
 });
+
+void test('restoring and resaving an Agent conversation retains its exact saved reference', async () => {
+  for (const agent of [
+    { id: '22222222-2222-4222-8222-222222222222', revision: 0 },
+    { id: '11111111-1111-4111-8111-111111111111', revision: 7 },
+  ]) {
+    const saved = session({ agent });
+    const h = harness({ saved: [saved] }); await h.flush();
+    assert.deepEqual(h.stored()[0].agent, agent);
+    assert.equal(h.stored()[0].createdAt, saved.createdAt);
+    assert.deepEqual(h.stored()[0].messages, saved.messages);
+    assert.equal(h.requests.length, 0);
+    assert.equal(h.estimates.length, 0);
+    h.unmount();
+  }
+});
+
+void test('an Agent reference stays with its own thread and does not leak to a plain thread', async () => {
+  const agent = { id: '11111111-1111-4111-8111-111111111111', revision: 3 };
+  const otherId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+  const h = harness({ saved: [session({ agent }), session({ id: otherId })] });
+  await h.flush();
+  assert.deepEqual(h.stored().find(s => s.id === id).agent, agent);
+  await h.navigate(`tool=rockstar-amc&thread=${otherId}`);
+  assert.equal(h.stored().find(s => s.id === otherId).agent, undefined);
+  assert.deepEqual(h.stored().find(s => s.id === id).agent, agent);
+  await h.navigate(`tool=rockstar-amc&thread=${id}`);
+  assert.deepEqual(h.stored().find(s => s.id === id).agent, agent);
+  assert.equal(h.requests.length, 0);
+  h.unmount();
+});

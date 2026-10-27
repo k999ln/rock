@@ -1,0 +1,53 @@
+{
+  "schema": "rockstaros.smith-tool-agent-independent-review/1",
+  "recordedAt": "2026-10-27T07:03:20.389107+00:00",
+  "decision": "REQUEST_CHANGES",
+  "sourcePacketSha256": "0d72ee658a0b561bbd841ac657847220932a6456fb005ef3795425a7a9ead539",
+  "sourceFiles": [
+    {
+      "path": "lib/zema-chat-session.ts",
+      "sha256": "e7ce7e316e2f3957357eb75c1c459c7cecc5f56eaf972eefae61c6bc0319f347"
+    },
+    {
+      "path": "tests/sky-tool-agent-session.test.mjs",
+      "sha256": "0386a4bb3ceebb63a98427f65a5d3fa4588f04753ed1d3e4f84bcc96a91bef1f"
+    },
+    {
+      "path": "docs/evidence/development-execution/smith-tool-agent-session.json",
+      "sha256": "f93ebd2afca14a121b5a3912dbe8d7d49601e71870b2de67e733468c3713f507"
+    }
+  ],
+  "mustFix": [
+    {
+      "priority": 2,
+      "file": "lib/zema-chat-session.ts",
+      "line": 115,
+      "title": "Preserve the previously accepted Agent UUID grammar when removing the duplicate generic guard",
+      "cause": "Old validSession required both the generic alphanumeric-first predicate and ID.test. The new branch only uses ID.test, whose loose /^[0-9a-f-]{36}$/ accepts hyphen-leading forms. Removing the generic guard therefore newly admits IDs beyond both the old intersection and exact tool:catalog allowlist.",
+      "reproduction": {
+        "agent": {
+          "id": "------------------------------------",
+          "revision": 0
+        },
+        "sessionId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "oldMain9f2bf146SaveRejected": true,
+        "candidateSaveRejected": false,
+        "candidateReadRetained": true,
+        "executed": true,
+        "logSha256": "96be2a613da68005a123e4ba49b305bffde31c89ddefe18b29f0032e16b686de"
+      },
+      "impact": "Malformed passive history Agent IDs become persistable outside the stated compatibility scope. This is not a demonstrated execution/owner permission bypass.",
+      "requiredRepair": "Preserve the old UUID acceptance intersection within the UUID branch, add only the exact catalog tool allowlist, and add a regression that old-rejected hyphen-leading IDs cannot replace valid storage or survive read. Do not replace the old broad ID contract with a new stricter UUID policy or change session UUID/owner/revision/expiry/dispatch.",
+      "next": "Return exact revised source/test/receipt packet to Root and central separate review. Preserve attempt1 hashes and counterexample."
+    }
+  ],
+  "unaffected": [
+    "PR244 main9f2bf146 accepted6CI/4runs success",
+    "UUID hook source2 and its receipt fixed hashes remain accepted",
+    "No tool validator changes adopted into next union yet"
+  ],
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "bulk616": "HOLD"
+}

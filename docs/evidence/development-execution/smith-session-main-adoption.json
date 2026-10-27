@@ -1,0 +1,153 @@
+{
+  "schema": "rockstaros.smith-session-finite-main-adoption/1",
+  "recordedAt": "2026-10-27T07:02:03.580668+00:00",
+  "baseMain": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+  "branch": "codex/smith-session-adoption-20261027",
+  "status": "HOST_FULL_VERIFY_SCANNER_PASSED_FINAL_ROOT_DELTA_REVIEW_PENDING",
+  "sourceHashes": {
+    "components/use-sky-chat-session.ts": "502ac6d81e7580e0ef1ade0dc6d21cbb0f1bf4f2925c28751f96887811e738f2",
+    "tests/sky-chat-session-recovery.test.mjs": "f13a8cffcf364be79b47edafbdaf78e858515de882fe2961afb1fa611ceea411",
+    "lib/zema-chat-session.ts": "c30e6b327b2a7155444233abcbec7ee3af4d703ae13d927acbcb0174fd212a5c",
+    "tests/sky-tool-agent-session.test.mjs": "6ccedf102470acf9d9c8254254511b6b994e5b3fc66ce48e985013d9133e0aa0"
+  },
+  "authorReceipt": {
+    "path": "docs/evidence/development-execution/smith-saved-agent-reference.json",
+    "sha256": "57c523cb648915c9b288708204b2d3d4a898a3a10c77cfc65bcc348de26ca637"
+  },
+  "independentReview": {
+    "path": "docs/evidence/development-execution/smith-agent-reference-independent-review.json",
+    "sha256": "97f854230807165627424574ef2618205bd1a94e54bd483ea35033bee0dbec8e",
+    "RootReview": "docs/evidence/development-execution/root-smith-agent-reference-review.json",
+    "decision": "PASS_SCOPED"
+  },
+  "protected": {
+    "lib/zema-private-storage.ts": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e",
+    "components/sky-chat-workspace.tsx": "d53505d193ea07fbf4a11007e31fda535e0c1e934898c290a720842e60371400",
+    "lib/sky-agent-library.ts": "07ffce024f32dfe6466d7647b97c43ee640c50245fde4564f4d569911335db3a",
+    "lib/sky-agent-library-store.ts": "a516d65fa662dfe8f82a2b300ae088a7d961d96bdda77980fc288700d8ff6a9b",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "validation": {
+    "targeted": {
+      "command": "node --test --test-reporter=tap tests/sky-tool-agent-session.test.mjs tests/zema-chat-session.test.mjs tests/sky-agent-library.test.mjs tests/sky-agent-saved-reference.test.mjs tests/sky-chat-session-recovery.test.mjs",
+      "tests": 48,
+      "pass": 48,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3132,
+        "pass": 3129,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "countsNotAdditive": true,
+      "logSha256": "d025003693b6853071b1db68aef08ea81e088442f885ff2ff9d0d63a467da416",
+      "source4UnchangedThroughout": true,
+      "resultMetadataOnlyAfterVerify": true
+    },
+    "scanner": {
+      "payload": {
+        "exitCode": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "logSha256": "c916978aacb2359885611377fec2152e3370cfff6b80adc7235ed88cc766596c"
+      },
+      "canary": {
+        "exitCode": 1,
+        "findings": 1,
+        "reportSha256": "14772a1db189e6778a629b951fb99c856c6b3db27cfa04321e392c838c10a179",
+        "logSha256": "1467aadb2ca8845bab9b162124d9fa6f7f36090ae0b586ac29a7bf6553852fda"
+      },
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "fixedPolicyCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true,
+      "paths": 22,
+      "payloadScope": "Explicit changed-file payload only; Git history scan is separate CI gate",
+      "syntheticCanary": true
+    },
+    "finalRootDeltaReview": "REQUIRED_BEFORE_GIT",
+    "designCheck": "PASS",
+    "projectUpdate": "PASS",
+    "combinedIndependent": {
+      "hookTests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "UUIDAndToolBeginReset": true,
+      "grammarCases": 540,
+      "grammarBaseline": "Exact oldmain9f validator copied before adoption; same predicate intersection preserved",
+      "onlyExactCatalogExtension": true,
+      "invalidWritePreservesValid": true,
+      "invalidReadDropsOnlyInvalid": true,
+      "countsNotAdditive": true,
+      "logSha256": {
+        "combined-hook-boundaries.log": "42475f1274c12df9b3576602f10426de9a2e19c25ef15a1cfa29ae4660a23590",
+        "combined-grammar-matrix.log": "a0edb7fb598c8176f0719d307e745a013bdd637c5385fb8d68b0537a73d9d6a3"
+      }
+    },
+    "logs": {
+      "combined-targeted.log": "859e380465fdac4f482ada22cd4d5d808ac8db79bdef85e3540839ae3d7ca16c",
+      "typecheck.log": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+      "lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "design-check.log": "80fb1340c583a9b7a6ac994927179b5aea3e8854aff5d33720413d7bb9a85ca5",
+      "pre-full-project-update.log": "b7a4294b0d9ac6b34bdc77e69a06af11e6efbce9a3ea60784dbc03ed6ef3b79a"
+    },
+    "rootPreFullDocCorrection": "ROCK enforces current Agent/owner/revision/disable/connect through first-party store/binder; EXTERNAL supplies Provider responses/external connection facts; JOINT real authenticated UI/roundtrips. Source4 unchanged."
+  },
+  "optionalNextToolReferenceCandidate": "R2_FIXED_ADOPTED_AFTER_SEPARATE_REVIEW; R1_NOT_ADOPTED",
+  "Git": {
+    "saved": false,
+    "mainIntegrated": false,
+    "headCI": "PENDING",
+    "mainCI": "PENDING"
+  },
+  "boundaries": {
+    "taskCount": 393,
+    "phaseGateCount": 14,
+    "fixedUnits": 95,
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "realProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "toolReferenceReceipt": {
+    "path": "docs/evidence/development-execution/smith-tool-agent-session.json",
+    "sha256": "cd7c135eaf33aca84f32a379cb787350e446a72326e7230bce75a64754f88fac"
+  },
+  "toolReferenceR2Review": {
+    "path": "docs/evidence/development-execution/smith-tool-agent-r2-independent-review.json",
+    "sha256": "40794576db1c34c4d3d7f179fa61651f5ce340b74b58d35ef19ca2fe1d53f651",
+    "RootReview": "docs/evidence/development-execution/root-smith-tool-agent-r2-review.json",
+    "decision": "PASS_SCOPED_R2"
+  },
+  "toolReferenceR1Rejection": {
+    "path": "docs/evidence/development-execution/smith-tool-agent-attempt1-review.json",
+    "sha256": "4c84226a96eefc568179e3a53d664a6eedd5351827809fc020041327347d7c1d",
+    "originalPacketSha256": "0d72ee658a0b561bbd841ac657847220932a6456fb005ef3795425a7a9ead539",
+    "RootInitialPASSRevoked": true,
+    "mustFixClosedByR2": true
+  },
+  "protectedValidatorBeforeR2": "7e9ff4a729c5c20c32a9530e7fe8531b9325a987b42d2e876ef07f031a9a5de6",
+  "protectedValidatorIntentionalException": "Exact separately reviewed R2 source hash is in sourceHashes; other original protected files unchanged. UUID review is its capture-time independent scope.",
+  "sourcePacketSha256s": {
+    "UUID": "7ec3deb22b4a36feb8539ce359eb62fb4409074b62b069dff662920ede4978b0",
+    "ToolR2": "78fd3b86d56197af31fbc5829f44783f81a27f39e52455f93f33c4d93c5fed14"
+  }
+}
